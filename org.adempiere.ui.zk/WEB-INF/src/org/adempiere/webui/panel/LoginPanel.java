@@ -31,7 +31,6 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
@@ -317,7 +316,6 @@ public class LoginPanel extends Window implements EventListener<Event>
 
         txtUserId = new Textbox();
         txtUserId.setId("txtUserId");
-        txtUserId.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtUserId.getId());
         txtUserId.setCols(25);
         txtUserId.setMaxlength(40);
         txtUserId.setWidth("220px");
@@ -326,7 +324,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtPassword = new Textbox();
         txtPassword.setId("txtPassword");
         txtPassword.setType("password");
-        txtPassword.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtPassword.getId());
         
         txtPassword.setCols(25);
 //        txtPassword.setMaxlength(40);
@@ -336,7 +333,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         lstLanguage.setAutocomplete(true);
         lstLanguage.setAutodrop(true);
         lstLanguage.setId("lstLanguage");
-        lstLanguage.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + lstLanguage.getId());
         lstLanguage.addEventListener(Events.ON_SELECT, this);
         lstLanguage.setWidth("220px");
 
@@ -354,10 +350,13 @@ public class LoginPanel extends Window implements EventListener<Event>
 		}
 
         chkRememberMe = new Checkbox(Msg.getMsg(Language.getBaseAD_Language(), "RememberMe"));
+        chkRememberMe.setId("chkRememberMe");
 
         chkSelectRole = new Checkbox(Msg.getMsg(Language.getBaseAD_Language(), "SelectRole"));
+        chkSelectRole.setId("chkSelectRole");
         
         btnResetPassword = new ToolBarButton(Msg.getMsg(Language.getBaseAD_Language(), "ForgotMyPassword"));
+        btnResetPassword.setId("btnResetPassword");
 
         // Make the default language the language of client System
         String defaultLanguage = MClient.get(ctx, 0).getAD_Language();

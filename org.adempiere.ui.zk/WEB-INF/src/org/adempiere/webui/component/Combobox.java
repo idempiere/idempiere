@@ -19,6 +19,7 @@ package org.adempiere.webui.component;
 
 import java.util.List;
 
+import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zul.Comboitem;
 
 /**
@@ -27,7 +28,7 @@ import org.zkoss.zul.Comboitem;
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-public class Combobox extends org.zkoss.zul.Combobox
+public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 {
     /**
 	 * 
@@ -42,6 +43,7 @@ public class Combobox extends org.zkoss.zul.Combobox
     public Comboitem appendItem(String label) 
     {
         ComboItem item = new ComboItem(label);
+        item.setId(label);
         item.setParent(this);
         return item;
     }
@@ -62,6 +64,7 @@ public class Combobox extends org.zkoss.zul.Combobox
 
 	public void appendItem(String name, Object value) {
 		ComboItem item = new ComboItem(name, value);
+		item.setId(name);
 		this.appendChild(item);
 	}
 	

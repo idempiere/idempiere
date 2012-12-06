@@ -17,7 +17,6 @@ package org.adempiere.webui.apps.form;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
@@ -130,45 +129,38 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 		txtOldPassword = new Textbox();
         txtOldPassword.setId("txtOldPassword");
         txtOldPassword.setType("password");
-        txtOldPassword.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtOldPassword.getId());
         txtOldPassword.setCols(25);
         txtOldPassword.setWidth("220px");
 
         txtNewPassword = new Textbox();
         txtNewPassword.setId("txtNewPassword");
         txtNewPassword.setType("password");
-        txtNewPassword.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtNewPassword.getId());        
         txtNewPassword.setCols(25);
         txtNewPassword.setWidth("220px");
         
         txtRetypeNewPassword = new Textbox();
         txtRetypeNewPassword.setId("txtRetypeNewPassword");
         txtRetypeNewPassword.setType("password");
-        txtRetypeNewPassword.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtNewPassword.getId());        
         txtRetypeNewPassword.setCols(25);
         txtRetypeNewPassword.setWidth("220px");
         
         txtNewEMail = new Textbox();
         txtNewEMail.setId("txtNewEMail");
-        txtNewEMail.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtNewEMail.getId());        
         txtNewEMail.setCols(25);
         txtNewEMail.setWidth("220px");
         
         txtRetypeNewEMail = new Textbox();
         txtRetypeNewEMail.setId("txtRetypeNewEMail");
-        txtRetypeNewEMail.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtRetypeNewEMail.getId());        
         txtRetypeNewEMail.setCols(25);
         txtRetypeNewEMail.setWidth("220px");
         
         txtNewEMailUser = new Textbox();
         txtNewEMailUser.setId("txtNewEMailUser");
-        txtNewEMailUser.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtNewEMailUser.getId());        
         txtNewEMailUser.setCols(25);
         txtNewEMailUser.setWidth("220px");
         
         txtNewEMailUserPW = new Textbox();
         txtNewEMailUserPW.setId("txtNewEMailUserPW");
-        txtNewEMailUserPW.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtNewEMailUserPW.getId());        
         txtNewEMailUserPW.setCols(25);
         txtNewEMailUserPW.setWidth("220px");
         

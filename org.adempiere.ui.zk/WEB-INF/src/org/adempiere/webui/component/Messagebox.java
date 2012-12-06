@@ -248,6 +248,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		this.setSizable(true);
 
 		this.setVisible(true);
+		this.setId(title);
 		AEnv.showCenterScreen(this);
 
 		return returnValue;

@@ -19,7 +19,6 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
-import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Combobox;
@@ -224,7 +223,6 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     	lstSecurityQuestion.setAutocomplete(true);
     	lstSecurityQuestion.setAutodrop(true);
     	lstSecurityQuestion.setId("lstSecurityQuestion");
-    	lstSecurityQuestion.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + lstSecurityQuestion.getId());
     	lstSecurityQuestion.setWidth("220px");
     	
     	lstSecurityQuestion.getItems().clear();
@@ -234,28 +232,24 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         txtOldPassword = new Textbox();
         txtOldPassword.setId("txtOldPassword");
         txtOldPassword.setType("password");
-        txtOldPassword.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtOldPassword.getId());
         txtOldPassword.setCols(25);
         txtOldPassword.setWidth("220px");
 
         txtNewPassword = new Textbox();
         txtNewPassword.setId("txtNewPassword");
         txtNewPassword.setType("password");
-        txtNewPassword.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtNewPassword.getId());        
         txtNewPassword.setCols(25);
         txtNewPassword.setWidth("220px");
         
         txtRetypeNewPassword = new Textbox();
         txtRetypeNewPassword.setId("txtRetypeNewPassword");
         txtRetypeNewPassword.setType("password");
-        txtRetypeNewPassword.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtNewPassword.getId());        
         txtRetypeNewPassword.setCols(25);
         txtRetypeNewPassword.setWidth("220px");
         
     	txtAnswer = new Textbox();
     	txtAnswer.setId("txtAnswer");
 //        txtAnswer.setType("password");
-        txtAnswer.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtAnswer.getId());
         txtAnswer.setCols(25);
         txtAnswer.setWidth("220px");
    }

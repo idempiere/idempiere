@@ -133,6 +133,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		final ADWindow adWindow = new ADWindow(Env.getCtx(), windowId, query);
 
 		final DesktopTabpanel tabPanel = new DesktopTabpanel();		
+		tabPanel.setId(adWindow.getTitle()+"_"+adWindow.getADWindowContent().getWindowNo());
 		final Tab tab = windowContainer.addWindow(tabPanel, adWindow.getTitle(), true);
 		tab.setImage(IN_PROGRESS_IMAGE);
 		tab.setClosable(false);		

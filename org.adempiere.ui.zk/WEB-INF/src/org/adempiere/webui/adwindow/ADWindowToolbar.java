@@ -28,7 +28,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.IServiceHolder;
-import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
@@ -205,10 +204,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     {
     	ToolBarButton btn = new ToolBarButton("");
         btn.setName(BTNPREFIX+name);
-        if (windowNo > 0)
-        	btn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + btn.getName() + "_" + windowNo);
-        else
-        	btn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, btn.getName());
+        btn.setId(btn.getName());
         if (image != null)
         	btn.setImage("/images/"+image + "24.png");
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),tooltip));
@@ -623,6 +619,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 					}
 					ToolBarButton btn = createButton(mToolBarButton.getComponentName(), null, tooltiptext);
 					btn.removeEventListener(Events.ON_CLICK, this);
+					btn.setId(mToolBarButton.getName());
 					btn.setDisabled(false);
 
 					AImage aImage = Actions.getActionImage(actionId);

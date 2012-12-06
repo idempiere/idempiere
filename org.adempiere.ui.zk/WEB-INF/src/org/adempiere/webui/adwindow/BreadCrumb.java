@@ -19,7 +19,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Menupopup;
@@ -141,6 +140,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
         messageContainer = new Hbox();
         messageContainer.setStyle("float: right; height: 30px;");
         messageContainer.setAlign("center");
+        messageContainer.setId("messages");
         appendChild(messageContainer);
         
         altKeyMap.put(KeyEvent.UP, btnPrevious);
@@ -161,6 +161,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		if (clickable) {
 			BreadCrumbLink a = new BreadCrumbLink();
 			a.setLabel(label);
+			a.setId("breadcrumb-"+label);
 			a.setPathId(id);
 			a.addEventListener(Events.ON_CLICK, this);
 			if (layout.getChildren().size() > 1) {
@@ -171,6 +172,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 			layout.insertBefore(a, toolbarContainer);
 		} else {
 			Label pathLabel = new Label();
+			pathLabel.setId("breadcrumb-"+label);
 			pathLabel.setValue(label);
 			if (layout.getChildren().size() > 1) {
 				Label symbol = new Label();
@@ -272,10 +274,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
     {
     	ToolBarButton btn = new ToolBarButton("");
         btn.setName(BTNPREFIX+name);
-        if (windowNo > 0)
-        	btn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + btn.getName() + "_" + windowNo);
-        else
-        	btn.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, btn.getName());
+        btn.setId(name);
         btn.setImage("/images/"+image + "24.png");
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),tooltip));
         btn.setSclass("breadcrumb-toolbar-button");

@@ -545,6 +545,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				}
 			}
 		});
+		ip.setId(ip.getTitle()+"_"+ip.getWindowNo());
 		AEnv.showWindow(ip);
 	}
 

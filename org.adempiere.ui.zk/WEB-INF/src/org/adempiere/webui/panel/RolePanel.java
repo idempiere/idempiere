@@ -26,7 +26,6 @@ package org.adempiere.webui.panel;
 import java.sql.Timestamp;
 import java.util.Properties;
 
-import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ComboItem;
 import org.adempiere.webui.component.Combobox;
@@ -261,7 +260,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstRole.setAutocomplete(true);
         lstRole.setAutodrop(true);
         lstRole.setId("lstRole");
-        lstRole.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + lstRole.getId());
 
         lstRole.addEventListener(Events.ON_SELECT, this);
         lstRole.setWidth("220px");
@@ -270,7 +268,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstClient.setAutocomplete(true);
         lstClient.setAutodrop(true);
         lstClient.setId("lstClient");
-        lstClient.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + lstClient.getId());
 
         lstClient.addEventListener(Events.ON_SELECT, this);
         lstClient.setWidth("220px");
@@ -279,7 +276,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstOrganisation.setAutocomplete(true);
         lstOrganisation.setAutodrop(true);
         lstOrganisation.setId("lstOrganisation");
-        lstOrganisation.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + lstOrganisation.getId());
 
         lstOrganisation.addEventListener(Events.ON_SELECT, this);
         lstOrganisation.setWidth("220px");
@@ -288,13 +284,13 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstWarehouse.setAutocomplete(true);
         lstWarehouse.setAutodrop(true);
         lstWarehouse.setId("lstWarehouse");
-        lstWarehouse.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + lstWarehouse.getId());
 
         lstWarehouse.addEventListener(Events.ON_SELECT, this);
         lstWarehouse.setWidth("220px");
 
         lstDate = new WDateEditor();
         lstDate.setValue(new Timestamp(System.currentTimeMillis()));
+        lstDate.getComponent().setId("loginDate");
 
         btnOk = new Button();
         btnOk.setId("btnOk");
@@ -318,6 +314,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
             for(int i = 0; i < m_clientKNPairs.length; i++)
             {
             	ComboItem ci = new ComboItem(m_clientKNPairs[i].getName(), m_clientKNPairs[i].getID());
+            	ci.setId(ci.getLabel());
             	lstClient.appendChild(ci);
                 if (m_clientKNPairs[i].getID().equals(initDefault))
                 	lstClient.setSelectedItem(ci);
@@ -363,6 +360,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 for (int i = 0; i < roleKNPairs.length; i++)
                 {
                 	ComboItem ci = new ComboItem(roleKNPairs[i].getName(), roleKNPairs[i].getID());
+                	ci.setId(ci.getLabel());
                 	lstRole.appendChild(ci);
                     if (roleKNPairs[i].getID().equals(initDefault))
                     	lstRole.setSelectedItem(ci);
@@ -415,6 +413,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 for(int i = 0; i < orgKNPairs.length; i++)
                 {
                 	ComboItem ci = new ComboItem(orgKNPairs[i].getName(), orgKNPairs[i].getID());
+                	ci.setId(ci.getLabel());
                 	lstOrganisation.appendChild(ci);
                     if(orgKNPairs[i].getID().equals(initDefault))
                     	lstOrganisation.setSelectedItem(ci);
@@ -451,6 +450,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 for(int i = 0; i < warehouseKNPairs.length; i++)
                 {
                 	ComboItem ci = new ComboItem(warehouseKNPairs[i].getName(), warehouseKNPairs[i].getID());
+                	ci.setLabel(ci.getLabel());
                 	lstWarehouse.appendChild(ci);
                     if(warehouseKNPairs[i].getID().equals(initDefault))
                     	lstWarehouse.setSelectedItem(ci);

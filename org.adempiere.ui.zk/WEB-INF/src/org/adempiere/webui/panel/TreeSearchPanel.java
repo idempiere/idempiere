@@ -20,7 +20,6 @@ package org.adempiere.webui.panel;
 import java.util.List;
 import java.util.TreeMap;
 
-import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.AutoComplete;
 import org.adempiere.webui.component.Label;
@@ -33,6 +32,7 @@ import org.compiere.model.MTreeNode;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -54,7 +54,7 @@ import org.zkoss.zul.impl.LabelImageElement;
  * @date    Mar 3, 2007
  * @version $Revision: 0.10 $
  */
-public class TreeSearchPanel extends Panel implements EventListener<Event>, TreeDataListener
+public class TreeSearchPanel extends Panel implements EventListener<Event>, TreeDataListener, IdSpace
 {
 	/**
 	 * 
@@ -121,7 +121,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 
         cmbSearch = new AutoComplete();
         cmbSearch.setAutodrop(true);
-       	cmbSearch.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unqCmbSearch" + "_" + m_windowno + "_" + m_tabno);
+       	cmbSearch.setId("treeSearchCombo");
       
         cmbSearch.addEventListener(Events.ON_CHANGE, this);
         cmbSearch.addEventListener(Events.ON_OK, this);        

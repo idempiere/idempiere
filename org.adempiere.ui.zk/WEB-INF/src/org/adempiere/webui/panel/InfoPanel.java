@@ -1305,4 +1305,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		return "natural";
 	}
 
+	public int getWindowNo() {
+		return p_WindowNo;
+	}
 }	//	Info

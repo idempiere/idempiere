@@ -110,6 +110,8 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		}		
 		
 		addEventListener(LayoutUtils.ON_REDRAW_EVENT, this);
+		
+		setId("detailPane");
 	}
 	
 	public int getSelectedIndex() {
@@ -190,6 +192,7 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		
 		button = new ToolBarButton();		
 		button.setImage(NEW_IMAGE);
+		button.setId("BtnNew");
 		toolbar.appendChild(button);
 		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
@@ -202,6 +205,7 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		
 		button = new ToolBarButton();
 		button.setImage(EDIT_IMAGE);
+		button.setId("BtnEdit");
 		toolbar.appendChild(button);
 		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
@@ -213,6 +217,7 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		
 		button = new ToolBarButton();
 		button.setImage(DELETE_IMAGE);
+		button.setId("BtnDelete");
 		toolbar.appendChild(button);
 		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
@@ -226,6 +231,7 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		if (!tabPanel.getGridTab().isSortTab()) {
 			button = new ToolBarButton();
 			button.setImage(PROCESS_IMAGE);
+			button.setId("BtnProcess");
 			toolbar.appendChild(button);
 			button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 				@Override
@@ -240,6 +246,7 @@ public class DetailPane extends Panel implements EventListener<Event> {
 		messageContainer.setPack("end");
 		messageContainer.setAlign("center");
 		messageContainer.setSclass("adwindow-detailpane-message");
+		messageContainer.setId("messages");
 		
 		toolbar.appendChild(messageContainer);
 		toolbar.setSclass("adwindow-detailpane-toolbar");

@@ -69,6 +69,7 @@ import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -99,7 +100,7 @@ import org.zkoss.zul.impl.XulElement;
  * @author Low Heng Sin
  */
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
-DataStatusListener, IADTabpanel
+DataStatusListener, IADTabpanel, IdSpace
 {
 	public static final String ON_SWITCH_VIEW_EVENT = "onSwitchView";
 
@@ -260,6 +261,8 @@ DataStatusListener, IADTabpanel
         this.dataBinder = new GridTabDataBinder(gridTab);
 
         this.getChildren().clear();
+        
+        setId(gridTab.getName());
 
         int AD_Tree_ID = 0;
 		if (gridTab.isTreeTab())

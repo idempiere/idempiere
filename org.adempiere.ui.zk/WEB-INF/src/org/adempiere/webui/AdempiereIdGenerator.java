@@ -23,38 +23,52 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zk.ui.sys.IdGenerator;
 
+/**
+ * Id generator for selenium ide recording. 
+ * You don't need this to run ztl or zk jq selector based test script but if would help to 
+ * code or troubleshoot the test script. 
+ * 
+ * DON'T use this for other purpose, you have been warned :)
+ * 
+ * @author Carlos Ruiz
+ * @author hengsin
+ *
+ */
 public class AdempiereIdGenerator implements IdGenerator {
 
 	private static final String DEFAULT_ZK_COMP_PREFIX = "zk_comp_";
 	private static final String DESKTOP_ID_ATTRIBUTE = "org.adempiere.comp.id";
 	
-	/* use this to add a component prefix to identify zk component
-	 * if the prefix starts with unq then it will be used as is - if it doesn't then a sequence suffix will be added to guarantee uniqueness
-	 */
-	public static final String ZK_COMPONENT_PREFIX_ATTRIBUTE = "zk_component_prefix";
-
 	@Override
 	public String nextComponentUuid(Desktop desktop, Component comp, ComponentInfo compInfo) {
-		String prefix = (String) comp.getAttribute(ZK_COMPONENT_PREFIX_ATTRIBUTE);
-		if (prefix == null || prefix.length() == 0)
+		String prefix = comp.getId(); 
+					
+		if (prefix == null || prefix.length() == 0) {
 			prefix = DEFAULT_ZK_COMP_PREFIX;
-		else {
-			Pattern pattern = Pattern.compile("[^a-zA-Z_0-9]");
-			Matcher matcher = pattern.matcher(prefix);
-			StringBuffer sb = new StringBuffer();
-			while(matcher.find()) {
-				matcher.appendReplacement(sb, "_");
-			}
-			matcher.appendTail(sb);
-			prefix = sb.toString();
-			if (prefix.startsWith("unq")) { // prefix already guaranteed unique
-				if (desktop.getComponentByUuidIfAny(prefix) == null) { // but don't trust and look to avoid dups
-					return prefix;
-				} else {
-					prefix = "not" + prefix;  // set notunq as the prefix to let dev know something is wrong
-				}
-			}
 		}
+		
+		StringBuilder builder = new StringBuilder(prefix);
+		Component parent = comp.getParent();
+		while(parent != null) {
+			String id = parent.getId();
+			if (id != null && id.length() > 0)
+				builder.insert(0, id+"_");
+			parent = parent.getParent();
+		}
+		prefix = builder.toString();
+		
+		Pattern pattern = Pattern.compile("[^a-zA-Z_0-9]");
+		Matcher matcher = pattern.matcher(prefix);
+		StringBuffer sb = new StringBuffer();
+		while(matcher.find()) {
+			matcher.appendReplacement(sb, "_");
+		}
+		matcher.appendTail(sb);
+		prefix = sb.toString();
+		
+		if (desktop.getComponentByUuidIfAny(prefix) == null) { // look to avoid dups
+			return prefix;
+		} 
 
 		/* add sequence suffix to guarantee uniqueness */
 		int i = 0;

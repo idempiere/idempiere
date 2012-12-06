@@ -22,7 +22,6 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
-import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -217,7 +216,6 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 
     	txtEmail = new Textbox();
     	txtEmail.setId("txtEmail");
-    	txtEmail.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtEmail.getId());
     	txtEmail.setCols(25);
     	txtEmail.setWidth("220px");
     	txtEmail.setReadonly(false);
@@ -228,7 +226,6 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 
     	txtUserId = new Textbox();
     	txtUserId.setId("txtUserId");
-    	txtUserId.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtUserId.getId());
     	txtUserId.setCols(25);
     	txtUserId.setMaxlength(40);
     	txtUserId.setWidth("220px");
@@ -247,7 +244,6 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	    	
 	    	txtSecurityQuestion = new Textbox();
 	    	txtSecurityQuestion.setId("txtSecurityQuestion");
-	    	txtSecurityQuestion.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtSecurityQuestion.getId());
 	    	txtSecurityQuestion.setCols(25);
 	    	txtSecurityQuestion.setWidth("220px");
 	    	txtSecurityQuestion.setReadonly(true);
@@ -256,7 +252,6 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	    	txtAnswer = new Textbox();
 	    	txtAnswer.setId("txtAnswer");
 	//        txtAnswer.setType("password");
-	        txtAnswer.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE, "unq" + txtAnswer.getId());
 	        txtAnswer.setCols(25);
 	        txtAnswer.setWidth("220px");
 	        txtAnswer.setReadonly(true);

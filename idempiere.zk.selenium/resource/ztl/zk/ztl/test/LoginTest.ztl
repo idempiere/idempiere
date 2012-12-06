@@ -1,0 +1,23 @@
+<test tags="login" action="">
+	<case id="login">
+		<client>
+		<![CDATA[
+			type(jq("$loginPanel $txtUserId"), "SuperUser");
+			type(jq("$loginPanel $txtPassword"), "System");
+			click(widget(jq("$loginPanel $chkSelectRole")).$n("real"));
+			click(jq("$loginPanel $Ok")); 
+			waitResponse();
+			click(jq("$rolePanel $lstClient ~ .z-combobox-btn"));
+			click(jq("$rolePanel $lstClient $GardenWorld"));
+			click(jq("$rolePanel $lstRole ~ .z-combobox-btn"));
+			click(jq("$rolePanel $lstRole $GardenWorld\\\\ Admin"));
+			waitResponse();
+			click(jq("$rolePanel $lstOrganisation ~ .z-combobox-btn"));
+			click(jq("$rolePanel $lstOrganisation $HQ"));
+			click(jq("$rolePanel $Ok"));
+			waitResponse();
+			verifyEquals("SuperUser@GardenWorld.HQ/GardenWorld Admin", jq("$loginUserAndRole").text());
+		]]>
+		</client>
+	</case>
+</test>

@@ -18,6 +18,7 @@
 package org.adempiere.webui.component;
 
 import org.adempiere.webui.panel.ITabOnCloseHandler;
+import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zul.Tab;
 
 /**
@@ -26,7 +27,7 @@ import org.zkoss.zul.Tab;
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-public class Tabpanel extends org.zkoss.zul.Tabpanel
+public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace
 {
     /**
 	 * 

@@ -76,7 +76,9 @@ public class UserPanel extends Vbox implements EventListener<Event>
     	this.appendChild(vbox);
 
     	lblUserNameValue.setValue(getUserName() + "@" + getClientName() + "." + getOrgName()+"/"+this.getRoleName());
+    	lblUserNameValue.setStyle("cursor: pointer;");
     	lblUserNameValue.addEventListener(Events.ON_CLICK, this);
+    	lblUserNameValue.setId("loginUserAndRole");
     	LayoutUtils.addSclass("desktop-header-font", lblUserNameValue);
     	LayoutUtils.addSclass("desktop-header-username", lblUserNameValue);
     	vbox.appendChild(lblUserNameValue);
@@ -85,11 +87,12 @@ public class UserPanel extends Vbox implements EventListener<Event>
     	vbox.appendChild(hbox);
     	hbox.setAlign("center");
 
-    	preference.setLabel(Msg.getMsg(Env.getCtx(), "Preference"));    	
+    	preference.setLabel(Msg.getMsg(Env.getCtx(), "Preference"));
+    	preference.setId("preference");
     	preference.addEventListener(Events.ON_CLICK, this);
     	LayoutUtils.addSclass("desktop-header-font", preference);
     	LayoutUtils.addSclass("link", preference);
-    	preference.setParent(hbox);
+    	preference.setParent(hbox);    	
 
     	Separator sep = new Separator("vertical");
     	sep.setBar(true);
@@ -97,6 +100,7 @@ public class UserPanel extends Vbox implements EventListener<Event>
     	sep.setParent(hbox);
 
     	changeRole.setLabel(Msg.getMsg(Env.getCtx(), "changeRole"));
+    	changeRole.setId("changeRole");
     	changeRole.addEventListener(Events.ON_CLICK, this);
     	LayoutUtils.addSclass("desktop-header-font", changeRole);
     	LayoutUtils.addSclass("link", changeRole);
@@ -108,6 +112,7 @@ public class UserPanel extends Vbox implements EventListener<Event>
     	sep.setParent(hbox);
 
     	logout.setLabel(Msg.getMsg(Env.getCtx(),"Logout"));
+    	logout.setId("logout");
     	logout.addEventListener(Events.ON_CLICK, this);
     	LayoutUtils.addSclass("desktop-header-font", logout);
     	LayoutUtils.addSclass("link", logout);

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://127.0.0.1:8080/" />
+<title>login</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">login</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/webui/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=loginPanel_grdLogin_rowUser_txtUserId</td>
+	<td>SuperUser</td>
+</tr>
+<tr>
+	<td>fireEvent</td>
+	<td>id=loginPanel_grdLogin_rowUser_txtUserId</td>
+	<td>blur</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=loginPanel_grdLogin_rowPassword_txtPassword</td>
+	<td>System</td>
+</tr>
+<tr>
+	<td>fireEvent</td>
+	<td>id=loginPanel_grdLogin_rowPassword_txtPassword</td>
+	<td>blur</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=loginPanel_grdLogin_rowSelectRole_chkSelectRole-real</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=loginPanel_Ok</td>
+	<td>10</td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=rolePanel_grdChooseRole_rowclient_lstClient-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=rolePanel_grdChooseRole_rowclient_lstClient-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#rolePanel_grdChooseRole_rowclient_lstClient_zk_GardenWorld &gt; td.z-comboitem-text</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=rolePanel_grdChooseRole_rowOrganisation_lstOrganisation-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#rolePanel_grdChooseRole_rowOrganisation_lstOrganisation_HQ &gt; td.z-comboitem-text</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=rolePanel_Ok</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=loginUserAndRole</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>id=loginUserAndRole</td>
+	<td>SuperUser@GardenWorld.HQ/GardenWorld Admin</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=changeRole</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=rolePanel_grdChooseRole_rowclient_lstClient</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=rolePanel_grdChooseRole_rowclient_lstClient-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#rolePanel_grdChooseRole_rowclient_lstClient_System_ &gt; td.z-comboitem-text</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=rolePanel_Ok</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>id=loginUserAndRole</td>
+	<td>SuperUser@System.*/System Administrator</td>
+</tr>
+</tbody></table>
+</body>
+</html>

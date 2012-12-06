@@ -22,7 +22,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
-import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Datebox;
@@ -109,13 +108,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         }
 
         this.setComponent(comp);
-        String gridTabName = gridField.getGridTab() != null ? gridField.getGridTab().getTabNo() + "_" + gridField.getGridTab().getTableName() : "";
-		comp.setAttribute(AdempiereIdGenerator.ZK_COMPONENT_PREFIX_ATTRIBUTE,
-				"unqField_" 
-						+ gridField.getWindowNo() 
-						+ "_" + gridTabName 
-						+ "_" + gridField.getColumnName()
-						+ (rowIndex >= 0 ? "_" + rowIndex : ""));
+		comp.setId(gridField.getColumnName()+(rowIndex >= 0 ? "_" + rowIndex : ""));
         this.gridField = gridField;
         this.setMandatory(gridField.isMandatory(false));
         this.readOnly = gridField.isReadOnly();

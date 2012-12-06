@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="lib/selenium-java-2.25.0.jar" sourcepath="lib/selenium-java-srcs.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.8.2.jar"/>
+	<classpathentry kind="lib" path="lib/selenium-firefox-driver-2.25.0.jar"/>
+	<classpathentry kind="lib" path="lib/selenium-api-2.25.0.jar"/>
+	<classpathentry kind="lib" path="lib/selenium-support-2.25.0.jar"/>
+	<classpathentry kind="lib" path="lib/guava-12.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/json-20080701.jar"/>
+	<classpathentry kind="lib" path="lib/commons-exec-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-4.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/httpclient-4.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/ztl/ztl-2.0.0-SNAPSHOT.jar" sourcepath="lib/ztl/ztl-2.0.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/selenium-remote-driver-2.25.0.jar"/>
+	<classpathentry kind="lib" path="lib/ztl/selenium-server-standalone-2.25.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
