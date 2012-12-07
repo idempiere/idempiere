@@ -131,9 +131,6 @@ public class CustomizeGridViewPanel extends Panel
 		noLabel.setValue(Msg.getMsg(Env.getCtx(), "Available"));
 		yesLabel.setValue(Msg.getMsg(Env.getCtx(), "Selected"));
 
-		
-		yesList.setHeight("100%");
-		noList.setHeight("100%");
 		yesList.setVflex(true);
 		noList.setVflex(true);
 
@@ -157,9 +154,9 @@ public class CustomizeGridViewPanel extends Panel
 				migrateValueAcrossLists(event);
 			}
 		};
-		yesList.setSeltype("multiple");
-		noList.setSeltype("multiple");
-
+		yesModel.setMultiple(true);
+		noModel.setMultiple(true);
+		
 		bAdd.setImage("images/Next24.png");
 		bAdd.addEventListener(Events.ON_CLICK, actionListener);
 
@@ -396,14 +393,19 @@ public class CustomizeGridViewPanel extends Panel
 		}
 		Listbox listFrom = (source == bAdd || source == noList) ? noList : yesList;
 		Listbox listTo =  (source == bAdd || source == noList) ? yesList : noList;
-		SimpleListModel lmFrom = (source == bAdd || source == noList) ?
-				noModel : yesModel;
-		SimpleListModel lmTo = (lmFrom == yesModel) ? noModel : yesModel;
+		migrateLists (listFrom,listTo);	
+	}
+
+	void migrateLists (Listbox listFrom , Listbox listTo)
+	{
+		int index = 0;
+		SimpleListModel lmFrom = (SimpleListModel) listFrom.getModel();
+		SimpleListModel lmTo = (SimpleListModel) listTo.getModel();		
 		Set<?> selectedItems = listFrom.getSelectedItems();
 		List<ListElement> selObjects = new ArrayList<ListElement>();
 		for (Object obj : selectedItems) {
 			ListItem listItem = (ListItem) obj;
-			int index = listFrom.getIndexOfItem(listItem);
+			index = listFrom.getIndexOfItem(listItem);
 			ListElement selObject = (ListElement)lmFrom.getElementAt(index);
 			selObjects.add(selObject);
 		}
@@ -415,19 +417,18 @@ public class CustomizeGridViewPanel extends Panel
 			lmFrom.removeElement(selObject);
 			lmTo.addElement(selObject);
 		}
-
+		index = 0;
 		for (ListElement selObject : selObjects)
 		{
-			int index = lmTo.indexOf(selObject);
+			index = lmTo.indexOf(selObject);
 			listTo.setSelectedIndex(index);
 		}
 		if ( listTo.getSelectedItem() != null)
 		{
 			AuFocus focus = new AuFocus(listTo.getSelectedItem());
 			Clients.response(focus);
-		}
-	}	//	migrateValueAcrossLists
-
+		}	
+	}
 	
 	/**
 	 * 	Move within Yes List
@@ -665,31 +666,16 @@ public class CustomizeGridViewPanel extends Panel
 
 		public void onEvent(Event event) throws Exception {
 			if (event instanceof DropEvent)
-			{
+			{	
 				DropEvent me = (DropEvent) event;
-
 				ListItem endItem = (ListItem) me.getTarget();
-				if (!(endItem.getListbox() == yesList))
-				{
-					return;		//	move within noList
-				}
-
 				ListItem startItem = (ListItem) me.getDragged();
-				if (startItem.getListbox() == endItem.getListbox())
+				if (!(startItem.getListbox() == endItem.getListbox()))
 				{
-					return; //move within same list
+					Listbox listFrom = (Listbox)startItem.getListbox();
+					Listbox listTo =  (Listbox)endItem.getListbox();
+					migrateLists (listFrom,listTo);
 				}
-				int startIndex = noList.getIndexOfItem(startItem);
-				Object element = noModel.getElementAt(startIndex);
-				noModel.removeElement(element);
-				int endIndex = yesList.getIndexOfItem(endItem);
-				yesModel.add(endIndex, element);
-				//
-				noList.clearSelection();
-				yesList.clearSelection();
-
-				yesList.setSelectedIndex(endIndex);
-				//
 			}
 		}
 	}
