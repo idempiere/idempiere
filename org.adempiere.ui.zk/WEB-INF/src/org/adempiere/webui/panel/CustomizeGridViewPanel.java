@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,8 +65,11 @@ import org.zkoss.zul.Vbox;
  */
 public class CustomizeGridViewPanel extends Panel
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3190425241947591357L;
 
-	private static final long serialVersionUID = 4289328613547509587L;
 	private Map<Integer, String> m_columnsWidth;
 	ArrayList<Integer> tableSeqs;
 	GridView gridPanel = null;
@@ -445,6 +449,7 @@ public class CustomizeGridViewPanel extends Panel
 			return;
 		//
 		int[] indices = yesList.getSelectedIndices();
+		Arrays.sort(indices);
 		//
 		boolean change = false;
 		//
