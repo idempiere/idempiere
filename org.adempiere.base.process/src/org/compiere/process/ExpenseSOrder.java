@@ -216,7 +216,7 @@ public class ExpenseSOrder extends SvrProcess
 			if (tel.getC_Campaign_ID() != 0 && tel.getC_Campaign_ID() != m_order.getC_Campaign_ID())
 				m_order.setC_Campaign_ID(tel.getC_Campaign_ID());
 			if (!m_order.save())
-				new IllegalStateException("Cannot save Order");
+				throw new IllegalStateException("Cannot save Order");
 		}
 		
 		//	OrderLine
