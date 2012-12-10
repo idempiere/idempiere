@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zk.ui.sys.IdGenerator;
@@ -50,9 +51,12 @@ public class AdempiereIdGenerator implements IdGenerator {
 		StringBuilder builder = new StringBuilder(prefix);
 		Component parent = comp.getParent();
 		while(parent != null) {
-			String id = parent.getId();
-			if (id != null && id.length() > 0)
-				builder.insert(0, id+"_");
+			//only include id space owner to ease converting test case to use zk id selector instead of uuid
+			if (parent instanceof IdSpace) {
+				String id = parent.getId();
+				if (id != null && id.length() > 0)
+					builder.insert(0, id+"_");				
+			}
 			parent = parent.getParent();
 		}
 		prefix = builder.toString();
