@@ -360,7 +360,11 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 for (int i = 0; i < roleKNPairs.length; i++)
                 {
                 	ComboItem ci = new ComboItem(roleKNPairs[i].getName(), roleKNPairs[i].getID());
-                	ci.setId(ci.getLabel());
+                	if (lstRole.getFellowIfAny(ci.getLabel()) != null) {
+                		ci.setId(ci.getLabel()+"_"+i);
+                	} else {
+                		ci.setId(ci.getLabel());
+                	}
                 	lstRole.appendChild(ci);
                     if (roleKNPairs[i].getID().equals(initDefault))
                     	lstRole.setSelectedItem(ci);
