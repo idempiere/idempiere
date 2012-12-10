@@ -15,8 +15,12 @@
 package org.adempiere.webui.panel;
 
 import org.adempiere.webui.session.SessionManager;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.zhtml.Script;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
@@ -67,7 +71,7 @@ public class TimeoutPanel extends Window implements
 		divNorth.setParent(north);
 		divNorth.setStyle("text-align: center;");
 		
-		lCaption = new Label("You will be logged out in ");
+		lCaption = new Label(Msg.getMsg(Env.getCtx(),"killsession.logoutMessage"));
 		lCaption.setParent(divNorth);
 		lCaption.setStyle("text-align: center; font-size: 20px;");
 
@@ -119,7 +123,7 @@ public class TimeoutPanel extends Window implements
 		ltime.setStyle("text-align: center; font-size: 40px; color:red;");
 
 		
-		Html txtLbl = new Html("Minutes&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;Second");
+		Html txtLbl = new Html(Msg.getMsg(Env.getCtx(),"Minutes")+"&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;"+Msg.getMsg(Env.getCtx(),"Seconds"));
 		txtLbl.setParent(centerVlayout);
 		txtLbl.setStyle("font-size: 12px;");
 
@@ -128,7 +132,7 @@ public class TimeoutPanel extends Window implements
 		vLayout.setParent(divSouth);
 		
 		
-		Label saveLbl = new Label("Save your work!!");
+		Label saveLbl = new Label(Msg.getMsg(Env.getCtx(),"killsession.saveWorkMessage"));
 		saveLbl.setParent(vLayout);
 		saveLbl.setStyle("font-size: 20px;");
 		
