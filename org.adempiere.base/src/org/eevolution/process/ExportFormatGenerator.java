@@ -95,7 +95,7 @@ public class ExportFormatGenerator extends SvrProcess
 			String format = null;
 			if(tab.isActive())
 			{
-				if(p_IsInsertRecord&tab.isInsertRecord())
+				if(p_IsInsertRecord && tab.isInsertRecord())
 				{	
 					table = new MTable(getCtx(), tab.getAD_Table_ID(), get_TrxName());				
 				    format = createFormat(table);
