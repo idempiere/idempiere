@@ -1302,11 +1302,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             String lBrackets = listLeftBracket.getSelectedItem().getValue().toString();
 			if ( lBrackets != null )
 				openBrackets += lBrackets.length();
+			else lBrackets = "";
 			// Right brackets
             Listbox listRightBracket = (Listbox)row.getFellow("listRightBracket"+row.getId());
             String rBrackets = listRightBracket.getSelectedItem().getValue().toString();
 			if ( rBrackets != null )
 				openBrackets -= rBrackets.length();
+			else rBrackets = "";
 			// And Or
             Listbox listAndOr = (Listbox)row.getFellow("listAndOr"+row.getId());
             String andOr = listAndOr.getSelectedItem().getValue().toString();
@@ -1341,9 +1343,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         				.append(FIELD_SEPARATOR)
         				.append(andOr)
         				.append(FIELD_SEPARATOR)
-        				.append(lBrackets != null ? lBrackets : "")
+        				.append(lBrackets)
         				.append(FIELD_SEPARATOR)
-        				.append(rBrackets != null ? rBrackets : "");
+        				.append(rBrackets);
             	}
             	continue;
             }
@@ -1392,9 +1394,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             .append(FIELD_SEPARATOR)
             .append(andOr)
             .append(FIELD_SEPARATOR)
-            .append(lBrackets != null ? lBrackets : "")
+            .append(lBrackets)
             .append(FIELD_SEPARATOR)
-            .append(rBrackets != null ? rBrackets : "");
+            .append(rBrackets);
         }
         String selected = fQueryName.getValue();
 		if (selected != null) {

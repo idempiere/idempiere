@@ -1276,6 +1276,7 @@ public class CConnection implements Serializable, Cloneable
 	 *  @param transactionIsolation Connection transaction level
 	 *  @return Connection
 	 */
+	@SuppressWarnings("unused")
 	public Connection getConnection (boolean autoCommit, int transactionIsolation)
 	{
 		Connection conn = null;
