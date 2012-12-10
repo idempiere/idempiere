@@ -107,4 +107,10 @@ public class ArchiveDB implements IArchiveStore {
 		archive.setByteData(deflatedData);
 	}
 
+	@Override
+	public boolean deleteArchive(MArchive archive, MStorageProvider prov) {
+		
+		return true;
+	}
+
 }
