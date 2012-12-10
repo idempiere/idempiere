@@ -17,13 +17,15 @@
 
 package org.adempiere.webui.component;
 
+import org.zkoss.zk.ui.IdSpace;
+
 /**
  *
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-public class Grid extends org.zkoss.zul.Grid
+public class Grid extends org.zkoss.zul.Grid implements IdSpace
 {
 	private static final long serialVersionUID = -4483759833677794926L;
 
