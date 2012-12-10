@@ -492,7 +492,6 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	/**
 	 * 	Update Query Display
 	 */
-	
 	private void updateQDisplay()
 	{
 		boolean reports = reportField.isChecked();
@@ -507,16 +506,8 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		bPartnerField.setVisible(!reports);
 	}	//	updateQDisplay
 
-	
-/*	public void valueChange(ValueChangeEvent evt) 
-	{
-		if (m_archives.length > 0)
-			updateArchive.setEnabled(true);
-	}
-*/	
-	
 	public void cmd_deleteArchive(){
-	  FDialog.ask(m_WindowNo, this.form, "ArchiveDelete?", new Callback<Boolean>() {
+	  FDialog.ask(m_WindowNo, this.form, "DeleteRecord?", new Callback<Boolean>() {
 			
 			@Override
 			public void onCallback(Boolean result) 
@@ -525,28 +516,12 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 				{
 					MArchive ar = m_archives[m_index];
 					ar.delete(true);
-				}					
-				tabbox.setSelectedIndex(0);
-				dynInit();
+					tabbox.setSelectedIndex(0);
+					dynInit();
+				}
 			}
 		});
 	}
-	/**
-	 * 	Update Query Display 
-	
-	private void updateQDisplay()
-	{
-		boolean reports = reportField.isChecked();
-		log.config("Reports=" + reports);
-
-		//	Show
-		processLabel.setVisible(reports);
-		processField.setVisible(reports);
-		
-		//	Hide
-		bPartnerLabel.setVisible(!reports);
-		bPartnerField.setVisible(!reports);
-	}	//	updateQDisplay
 
 	/**
 	 * 	Update View Display
@@ -571,13 +546,14 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		
 		bBack.setEnabled(m_index > 0);
 		bNext.setEnabled(m_index < m_archives.length-1);
+		deleteArchive.setEnabled(m_archives.length > 0);
 		updateArchive.setEnabled(false);
 		
 		log.info("Index=" + m_index + ", Length=" + m_archives.length);
 		
 		if (m_archives.length == 0)
 		{
-			positionInfo.setValue("No Record Found");
+			positionInfo.setValue(Msg.getMsg(Env.getCtx(), "NoRecordsFound"));
 			createdByField.setText("");
 			createdField.setValue(null);
 			nameField.setText("");
