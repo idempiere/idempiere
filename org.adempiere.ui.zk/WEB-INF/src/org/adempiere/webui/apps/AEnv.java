@@ -201,6 +201,9 @@ public final class AEnv
 		Env.exitEnv(status);
 	}	//	exit
 
+	/**
+	 * logout AD_Session
+	 */
 	public static void logout()
 	{
 		String sessionID = Env.getContext(Env.getCtx(), "#AD_Session_ID");
