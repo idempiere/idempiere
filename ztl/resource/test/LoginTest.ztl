@@ -2,13 +2,17 @@
 	<case id="login">
 		<client>
 		<![CDATA[
-			type(jq("$loginPanel $txtUserId"), "SuperUser");
-			type(jq("$loginPanel $txtPassword"), "System");
+			type(jq("$loginPanel $txtUserId"), "GardenAdmin");
+			type(jq("$loginPanel $txtPassword"), "GardenAdmin");
 			click(widget(jq("$loginPanel $chkSelectRole")).$n("real"));
 			click(jq("$loginPanel $Ok")); 
 			waitResponse();
-			click(jq("$rolePanel $lstClient ~ .z-combobox-btn"));
-			click(jq("$rolePanel $lstClient $GardenWorld"));
+			JQuery lstClient = jq("$rolePanel $lstClient");
+			if (lstClient.exists() && lstClient.isVisible()) {
+				click(jq("$rolePanel $lstClient ~ .z-combobox-btn"));
+				click(jq("$rolePanel $lstClient $GardenWorld"));
+				waitResponse();
+			}
 			click(jq("$rolePanel $lstRole ~ .z-combobox-btn"));
 			click(jq("$rolePanel $lstRole $GardenWorld\\\\ Admin"));
 			waitResponse();
@@ -16,7 +20,7 @@
 			click(jq("$rolePanel $lstOrganisation $HQ"));
 			click(jq("$rolePanel $Ok"));
 			waitResponse();
-			verifyEquals("SuperUser@GardenWorld.HQ/GardenWorld Admin", jq("$loginUserAndRole").text());
+			verifyEquals("GardenAdmin@GardenWorld.HQ/GardenWorld Admin", jq("$loginUserAndRole").text());
 		]]>
 		</client>
 	</case>

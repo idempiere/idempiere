@@ -18,47 +18,32 @@
 </tr>
 <tr>
 	<td>type</td>
-	<td>id=loginPanel_grdLogin_rowUser_txtUserId</td>
-	<td>SuperUser</td>
+	<td>id=loginPanel_txtUserId</td>
+	<td>GardenAdmin</td>
 </tr>
 <tr>
 	<td>fireEvent</td>
-	<td>id=loginPanel_grdLogin_rowUser_txtUserId</td>
+	<td>id=loginPanel_txtUserId</td>
 	<td>blur</td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>id=loginPanel_grdLogin_rowPassword_txtPassword</td>
-	<td>System</td>
+	<td>id=loginPanel_txtPassword</td>
+	<td>GardenAdmin</td>
 </tr>
 <tr>
 	<td>fireEvent</td>
-	<td>id=loginPanel_grdLogin_rowPassword_txtPassword</td>
+	<td>id=loginPanel_txtPassword</td>
 	<td>blur</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>id=loginPanel_grdLogin_rowSelectRole_chkSelectRole-real</td>
+	<td>id=loginPanel_lstLanguage-btn</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>id=loginPanel_Ok</td>
-	<td>10</td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>id=rolePanel_grdChooseRole_rowclient_lstClient-btn</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=rolePanel_grdChooseRole_rowclient_lstClient-btn</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>css=#rolePanel_grdChooseRole_rowclient_lstClient_zk_GardenWorld &gt; td.z-comboitem-text</td>
+	<td>css=#loginPanel_lstLanguage_English &gt; td.z-comboitem-text</td>
 	<td></td>
 </tr>
 <tr>
@@ -68,12 +53,57 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>id=rolePanel_grdChooseRole_rowOrganisation_lstOrganisation-btn</td>
+	<td>id=loginPanel_chkSelectRole-real</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=#rolePanel_grdChooseRole_rowOrganisation_lstOrganisation_HQ &gt; td.z-comboitem-text</td>
+	<td>id=loginPanel_Ok</td>
+	<td>10</td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=rolePanel_lstClient-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=rolePanel_lstClient-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#rolePanel_lstClient_GardenWorld &gt; td.z-comboitem-text</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=rolePanel_lstRole-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#rolePanel_lstRole_GardenWorld_Admin &gt; td.z-comboitem-text</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=rolePanel_lstOrganisation-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#rolePanel_lstOrganisation_HQ &gt; td.z-comboitem-text</td>
 	<td></td>
 </tr>
 <tr>
@@ -89,7 +119,7 @@
 <tr>
 	<td>assertText</td>
 	<td>id=loginUserAndRole</td>
-	<td>SuperUser@GardenWorld.HQ/GardenWorld Admin</td>
+	<td>GardenAdmin@GardenWorld.HQ/GardenWorld Admin</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -98,17 +128,32 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>id=rolePanel_grdChooseRole_rowclient_lstClient</td>
+	<td>id=rolePanel_lstClient</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>id=rolePanel_grdChooseRole_rowclient_lstClient-btn</td>
+	<td>id=rolePanel_lstRole-btn</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=#rolePanel_grdChooseRole_rowclient_lstClient_System_ &gt; td.z-comboitem-text</td>
+	<td>css=#rolePanel_lstRole_GardenWorld_User &gt; td.z-comboitem-text</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=rolePanel_lstOrganisation-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#rolePanel_lstOrganisation_HQ &gt; td.z-comboitem-text</td>
 	<td></td>
 </tr>
 <tr>
@@ -124,7 +169,7 @@
 <tr>
 	<td>assertText</td>
 	<td>id=loginUserAndRole</td>
-	<td>SuperUser@System.*/System Administrator</td>
+	<td>GardenAdmin@GardenWorld.HQ/GardenWorld User</td>
 </tr>
 </tbody></table>
 </body>

@@ -1,4 +1,4 @@
-package zk.selenese.test;
+package test;
 
 import java.util.concurrent.TimeUnit;
 import org.junit.*;
@@ -19,49 +19,52 @@ public class LoginTest {
 	public void setUp() throws Exception {
 		driver = new FirefoxDriver();
 		baseUrl = "http://127.0.0.1:8080/";
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 	}
 
 	@Test
 	public void testLogin() throws Exception {
 		// open | /webui/ | 
-		driver.get(baseUrl + "/webui/");
-		// type | id=loginPanel_grdLogin_rowUser_txtUserId | SuperUser
-		driver.findElement(By.id("loginPanel_grdLogin_rowUser_txtUserId")).clear();
-		driver.findElement(By.id("loginPanel_grdLogin_rowUser_txtUserId")).sendKeys("SuperUser");
+		driver.get(baseUrl + "webui/");
+		// type | id=loginPanel_grdLogin_rowUser_txtUserId | GardenAdmin
+		driver.findElement(By.id("loginPanel_txtUserId")).clear();
+		driver.findElement(By.id("loginPanel_txtUserId")).sendKeys("GardenAdmin");
 		
 		// fireEvent | id=loginPanel_grdLogin_rowUser_txtUserId | blur
 		// not needed for webdriver
-		// type | id=loginPanel_grdLogin_rowPassword_txtPassword | System
-		driver.findElement(By.id("loginPanel_grdLogin_rowPassword_txtPassword")).clear();
-		driver.findElement(By.id("loginPanel_grdLogin_rowPassword_txtPassword")).sendKeys("System");
+		// type | id=loginPanel_grdLogin_rowPassword_txtPassword | GardenAdmin
+		driver.findElement(By.id("loginPanel_txtPassword")).clear();
+		driver.findElement(By.id("loginPanel_txtPassword")).sendKeys("GardenAdmin");
 		// fireEvent | id=loginPanel_grdLogin_rowPassword_txtPassword | blur
 		// not needed for webdriver
 		// click | id=loginPanel_grdLogin_rowSelectRole_chkSelectRole-real | 
-		driver.findElement(By.id("loginPanel_grdLogin_rowSelectRole_chkSelectRole-real")).click();
+		driver.findElement(By.id("loginPanel_chkSelectRole-real")).click();
 		// click | loginPanel_Ok | 10
 		driver.findElement(By.id("loginPanel_Ok")).click();
 		// waitForElementPresent | id=rolePanel_grdChooseRole_rowclient_lstClient-btn | 
 		for (int second = 0;; second++) {
 			if (second >= 60) fail("timeout");
-			try { if (isElementPresent(By.id("rolePanel_grdChooseRole_rowclient_lstClient-btn"))) break; } catch (Exception e) {}
+			try { if (isElementPresent(By.id("rolePanel_lstClient-btn"))) break; } catch (Exception e) {}
 			Thread.sleep(1000);
 		}
 
-		// click | id=rolePanel_grdChooseRole_rowclient_lstClient-btn | 
-		driver.findElement(By.id("rolePanel_grdChooseRole_rowclient_lstClient-btn")).click();
-		// click | css=#rolePanel_grdChooseRole_rowclient_lstClient_GardenWorld > td.z-comboitem-text | 
-		driver.findElement(By.cssSelector("#rolePanel_grdChooseRole_rowclient_lstClient_GardenWorld > td.z-comboitem-text")).click();
-		Thread.sleep(1000);
+		WebElement lstClient = driver.findElement(By.id("rolePanel_lstClient"));
+		if (lstClient != null && lstClient.isDisplayed()) {
+			// click | id=rolePanel_grdChooseRole_rowclient_lstClient-btn | 
+			driver.findElement(By.id("rolePanel_lstClient-btn")).click();
+			// click | css=#rolePanel_grdChooseRole_rowclient_lstClient_GardenWorld > td.z-comboitem-text | 
+			driver.findElement(By.cssSelector("#rolePanel_lstClient_GardenWorld > td.z-comboitem-text")).click();
+			Thread.sleep(1000);
+		}
 		// click | id=rolePanel_grdChooseRole_rowRole_lstRole-btn | 
-		driver.findElement(By.id("rolePanel_grdChooseRole_rowRole_lstRole-btn")).click();
+		driver.findElement(By.id("rolePanel_lstRole-btn")).click();
 		// click | css=#rolePanel_grdChooseRole_rowRole_lstRole_GardenWorld_Admin > td.z-comboitem-text | 
-		driver.findElement(By.cssSelector("#rolePanel_grdChooseRole_rowRole_lstRole_GardenWorld_Admin > td.z-comboitem-text")).click();
+		driver.findElement(By.cssSelector("#rolePanel_lstRole_GardenWorld_Admin > td.z-comboitem-text")).click();
 		Thread.sleep(1000);
 		// click | id=rolePanel_grdChooseRole_rowOrganisation_lstOrganisation-btn | 
-		driver.findElement(By.id("rolePanel_grdChooseRole_rowOrganisation_lstOrganisation-btn")).click();
+		driver.findElement(By.id("rolePanel_lstOrganisation-btn")).click();
 		// click | css=#rolePanel_grdChooseRole_rowOrganisation_lstOrganisation_HQ > td.z-comboitem-text | 
-		driver.findElement(By.cssSelector("#rolePanel_grdChooseRole_rowOrganisation_lstOrganisation_HQ > td.z-comboitem-text")).click();
+		driver.findElement(By.cssSelector("#rolePanel_lstOrganisation_HQ > td.z-comboitem-text")).click();
 		// click | rolePanel_Ok | 
 		driver.findElement(By.id("rolePanel_Ok")).click();
 		// waitForElementPresent | loginUserAndRole | 
@@ -70,8 +73,8 @@ public class LoginTest {
 			try { if (isElementPresent(By.id("loginUserAndRole"))) break; } catch (Exception e) {}
 			Thread.sleep(1000);
 		}
-		// assertText | loginUserAndRole | SuperUser@GardenWorld.HQ/GardenWorld Admin
-		assertEquals("SuperUser@GardenWorld.HQ/GardenWorld Admin", driver.findElement(By.id("loginUserAndRole")).getText());
+		// assertText | loginUserAndRole | GardenAdmin@GardenWorld.HQ/GardenWorld Admin
+		assertEquals("GardenAdmin@GardenWorld.HQ/GardenWorld Admin", driver.findElement(By.id("loginUserAndRole")).getText());
 	}
 
 	@After
