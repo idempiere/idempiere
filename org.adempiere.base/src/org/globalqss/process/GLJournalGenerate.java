@@ -55,6 +55,8 @@ import org.compiere.process.SvrProcess;
 import org.compiere.report.MReportTree;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Language;
+import org.compiere.util.Msg;
 
 /**
  *	GL Journal Generator
@@ -410,6 +412,9 @@ public class GLJournalGenerate extends SvrProcess
 			        	j.setAD_Org_ID(journalGenerator.getAD_Org_ID());
 			        else
 			        	j.setAD_Org_ID(Env.getAD_Org_ID(getCtx()));
+					if (j.getAD_Org_ID() == 0) {
+						throw new AdempiereException(Msg.getMsg(Language.getBaseAD_Language(), "Org0NotAllowed"));
+					}
 			        j.setC_Currency_ID(as.getC_Currency_ID());
 			        j.setC_DocType_ID(journalGenerator.getC_DocType_ID());
 			        j.setControlAmt(Env.ZERO);
@@ -512,11 +517,14 @@ public class GLJournalGenerate extends SvrProcess
 		if (j != null && p_DocAction != null) {
 			// DocAction
 			if (!j.processIt(p_DocAction))
-				throw new AdempiereException("Could not " + p_DocAction + " journal");
+				throw new AdempiereException("Couldn't set docAction: " + p_DocAction + ((org.compiere.process.DocAction) j).getProcessMsg()+ " journal");
 			j.saveEx();
 		}
+		
+		StringBuilder msg = new StringBuilder(Msg.parseTranslation(getCtx(), "@Created@ @GL_Journal_ID@=")).append(j.getDocumentNo());
+		addLog(j.get_ID(), null, null, msg.toString(), MJournal.Table_ID, j.get_ID());
 
-		return "@OK@" + (j != null ? " @Created@ @GL_Journal_ID@=" + j.getDocumentNo() : "");
+		return "@OK@";
 	}	//	doIt
 
 	private BigDecimal applyMultiplierAndFactor(BigDecimal sourceAmt, BigDecimal amtMultiplier, int roundFactor) {

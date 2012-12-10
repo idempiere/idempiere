@@ -194,8 +194,7 @@ public class ReportProcessor
             } 
             else if (para.getP_Number() != null)
             {
-                if (para.getP_Number_To() != null
-                        && !para.getP_Number_To().equals(""))
+                if (para.getP_Number_To() != null)
                 {
                     try
                     {

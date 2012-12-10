@@ -308,7 +308,7 @@ public class MMailText extends X_R_MailText
 		if (m_bpartner != null && m_bpartner.getAD_Language() != null)
 		{
 			StringBuilder key = new StringBuilder().append(m_bpartner.getAD_Language()).append(get_ID());
-			MMailTextTrl trl = s_cacheTrl.get(key);
+			MMailTextTrl trl = s_cacheTrl.get(key.toString());
 			if (trl == null)
 			{
 				trl = getTranslation(m_bpartner.getAD_Language());

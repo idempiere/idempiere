@@ -163,7 +163,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 		BufferedOutputStream out = null;
 		try {
 			// create destination folder
-			StringBuilder msgfile = new StringBuilder().append(archivePathRoot).append(File.separator)
+			StringBuilder msgfile = new StringBuilder().append(archivePathRoot)
 					.append(archive.getArchivePathSnippet());
 			final File destFolder = new File(msgfile.toString());
 			if (!destFolder.exists()) {
@@ -224,6 +224,25 @@ public class ArchiveFileSystem implements IArchiveStore {
 			log.fine(archivePathRoot);
 		}
 		return archivePathRoot;
+	}
+
+	@Override
+	public boolean deleteArchive(MArchive archive, MStorageProvider prov) {
+		String archivePathRoot = getArchivePathRoot(prov);
+		if ("".equals(archivePathRoot)) {
+			throw new IllegalArgumentException("no attachmentPath defined");
+		}
+		StringBuilder msgfile = new StringBuilder().append(archivePathRoot)
+				.append(archive.getArchivePathSnippet()).append(archive.get_ID()).append(".pdf");
+		
+		File file=new File(msgfile.toString());
+		if (file !=null && file.exists()) {
+			if (!file.delete()) {
+				log.warning("unable to delete " + file.getAbsolutePath());
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

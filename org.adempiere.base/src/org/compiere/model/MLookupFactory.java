@@ -363,7 +363,7 @@ public class MLookupFactory
 	{
 		//	Try cache - assume no language change
 		StringBuilder key = new StringBuilder().append(Env.getAD_Client_ID(ctx)).append("|").append(String.valueOf(AD_Reference_Value_ID));
-		MLookupInfo retValue = (MLookupInfo)s_cacheRefTable.get(key);
+		MLookupInfo retValue = (MLookupInfo)s_cacheRefTable.get(key.toString());
 		if (retValue != null)
 		{
 			s_log.finest("Cache: " + retValue);
@@ -687,8 +687,8 @@ public class MLookupFactory
 
 		//try cache
 		StringBuilder cacheKey = new StringBuilder().append(Env.getAD_Client_ID(ctx)).append("|").append(TableName).append(".").append(KeyColumn);
-		if (s_cacheRefTable.containsKey(cacheKey))
-			return s_cacheRefTable.get(cacheKey).cloneIt();
+		if (s_cacheRefTable.containsKey(cacheKey.toString()))
+			return s_cacheRefTable.get(cacheKey.toString()).cloneIt();
 
 		ArrayList<LookupDisplayColumn> list = getListIdentifiers(TableName);
 		

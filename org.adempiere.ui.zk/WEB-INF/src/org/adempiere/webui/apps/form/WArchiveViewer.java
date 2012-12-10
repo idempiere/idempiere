@@ -26,6 +26,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -48,6 +49,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.Archive;
 import org.compiere.model.MArchive;
 import org.compiere.model.MLookup;
@@ -111,6 +113,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	private Textbox helpField = new Textbox();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private Button updateArchive = new Button(); 
+	private Button deleteArchive = new Button(); 
 		
 	private Tabbox tabbox = new Tabbox();
 	private Tabs tabs = new Tabs();
@@ -194,15 +197,19 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		updateArchive.setTooltiptext(Msg.getMsg(Env.getCtx(), "Update"));
 		updateArchive.addEventListener(Events.ON_CLICK, this);
 		
+		deleteArchive.setImage("/images/Delete24.png");
+		deleteArchive.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
+		deleteArchive.addEventListener(Events.ON_CLICK, this);
+		
 		bRefresh.setImage("/images/Refresh24.png");
 		bRefresh.setTooltiptext(Msg.getMsg(Env.getCtx(), "Refresh"));
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 		
-		bBack.setImage("/images/Parent24.png");
+		bBack.setImage("/images/wfBack24.png");
 		bBack.setTooltiptext(Msg.getMsg(Env.getCtx(), "Previous"));
 		bBack.addEventListener(Events.ON_CLICK, this);
 		
-		bNext.setImage("/images/Detail24.png");
+		bNext.setImage("/images/wfNext24.png");
 		bNext.setTooltiptext(Msg.getMsg(Env.getCtx(), "Next"));
 		bNext.addEventListener(Events.ON_CLICK, this);
 		
@@ -405,8 +412,9 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		row.setSpans("4");
 		div = new Div();
 		div.setAlign("right");
+		div.appendChild(deleteArchive);
 		div.appendChild(bRefresh);
-		div.appendChild(updateArchive);
+		div.appendChild(updateArchive);		
 		row.appendChild(div);
 				
 		createdByField.setReadonly(true);
@@ -449,6 +457,8 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		
 		if (e.getTarget() == updateArchive)
 			cmd_updateArchive();
+		else if(e.getTarget() == deleteArchive)
+		    cmd_deleteArchive();
 		else if (e.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
 			SessionManager.getAppDesktop().closeActiveWindow();
 		else if (e.getTarget().getId().equals(ConfirmPanel.A_OK))
@@ -479,16 +489,9 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		}
 	}
 	
-/*	public void valueChange(ValueChangeEvent evt) 
-	{
-		if (m_archives.length > 0)
-			updateArchive.setEnabled(true);
-	}
-*/	
 	/**
 	 * 	Update Query Display
 	 */
-	
 	private void updateQDisplay()
 	{
 		boolean reports = reportField.isChecked();
@@ -502,6 +505,23 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		bPartnerLabel.setVisible(!reports);
 		bPartnerField.setVisible(!reports);
 	}	//	updateQDisplay
+
+	public void cmd_deleteArchive(){
+	  FDialog.ask(m_WindowNo, this.form, "DeleteRecord?", new Callback<Boolean>() {
+			
+			@Override
+			public void onCallback(Boolean result) 
+			{
+				if (result)
+				{
+					MArchive ar = m_archives[m_index];
+					ar.delete(true);
+					tabbox.setSelectedIndex(0);
+					dynInit();
+				}
+			}
+		});
+	}
 
 	/**
 	 * 	Update View Display
@@ -526,13 +546,14 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		
 		bBack.setEnabled(m_index > 0);
 		bNext.setEnabled(m_index < m_archives.length-1);
+		deleteArchive.setEnabled(m_archives.length > 0);
 		updateArchive.setEnabled(false);
 		
 		log.info("Index=" + m_index + ", Length=" + m_archives.length);
 		
 		if (m_archives.length == 0)
 		{
-			positionInfo.setValue("No Record Found");
+			positionInfo.setValue(Msg.getMsg(Env.getCtx(), "NoRecordsFound"));
 			createdByField.setText("");
 			createdField.setValue(null);
 			nameField.setText("");

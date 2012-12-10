@@ -97,7 +97,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2328810326636468776L;
+	private static final long serialVersionUID = -3181940154166340664L;
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 
@@ -109,7 +109,7 @@ public class GridTable extends AbstractTableModel
 	 *  @param TableName table name
 	 *  @param WindowNo window no
 	 *  @param TabNo tab no
-	 *  @param withAccessControl    if true adds AD_Client/Org restrictuins
+	 *  @param withAccessControl    if true adds AD_Client/Org restrictions
 	 */
 	public GridTable(Properties ctx, int AD_Table_ID, String TableName, int WindowNo, int TabNo,
 		boolean withAccessControl)
@@ -878,7 +878,6 @@ public class GridTable extends AbstractTableModel
 	 *  @param col col
 	 *  @param ascending ascending
 	 */
-	@SuppressWarnings("unchecked")
 	public void sort (int col, boolean ascending)
 	{
 		log.info("#" + col + " " + ascending);
@@ -1144,7 +1143,7 @@ public class GridTable extends AbstractTableModel
 				Collections.reverse(toremove);
 				for(Integer row : toremove)
 				{
-					m_sort.remove(row);
+					m_sort.remove(row.intValue());
 				}
 			}
 		}

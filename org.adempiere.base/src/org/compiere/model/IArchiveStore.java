@@ -19,5 +19,6 @@ public interface IArchiveStore {
 
 	public void save(MArchive archive, MStorageProvider prov,byte[] inflatedData);
 	
+	public boolean deleteArchive(MArchive archive, MStorageProvider prov);
 
 }

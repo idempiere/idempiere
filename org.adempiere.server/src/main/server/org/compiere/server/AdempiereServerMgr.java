@@ -49,7 +49,7 @@ public class AdempiereServerMgr
 	 * 	Get Adempiere Server Manager
 	 *	@return mgr
 	 */
-	public static AdempiereServerMgr get()
+	public synchronized static AdempiereServerMgr get()
 	{
 		if (m_serverMgr == null)
 		{
@@ -62,7 +62,7 @@ public class AdempiereServerMgr
 	}	//	get
 	
 	/**	Singleton					*/
-	private static	AdempiereServerMgr	m_serverMgr = null;
+	private static AdempiereServerMgr	m_serverMgr = null;
 	/**	Logger			*/
 	protected CLogger	log = CLogger.getCLogger(getClass());
 	

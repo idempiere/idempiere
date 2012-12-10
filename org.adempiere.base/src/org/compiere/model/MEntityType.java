@@ -51,7 +51,7 @@ public class MEntityType extends X_AD_EntityType
 	 * 	@param ctx context
 	 *	@return entity type array
 	 */
-	static public MEntityType[] getEntityTypes(Properties ctx)
+	static synchronized public MEntityType[] getEntityTypes(Properties ctx)
 	{
 		if (s_entityTypes != null)
 			return s_entityTypes;

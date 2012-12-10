@@ -117,7 +117,7 @@ public class MClientShare extends X_AD_ClientShare
 				s_shares.put("0_0", Boolean.TRUE);
 		}	//	load
 		StringBuilder key = new StringBuilder().append(AD_Client_ID).append("_").append(AD_Table_ID);
-		return s_shares.get(key);
+		return s_shares.get(key.toString());
 	}	//	load
 	
 	/**	Shared Info								*/

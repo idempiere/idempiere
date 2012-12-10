@@ -275,5 +275,14 @@ public class MArchive extends X_AD_Archive {
 		log.fine(toString());
 		return true;
 	} // beforeSave
+	
+	protected boolean beforeDelete ()
+	{
+		IArchiveStore prov = provider.getArchiveStore();
+		if (prov != null)
+			return prov.deleteArchive(this,provider);
+		return true;
+		
+	}
 
 } // MArchive
