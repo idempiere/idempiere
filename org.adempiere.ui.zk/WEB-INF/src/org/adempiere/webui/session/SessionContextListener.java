@@ -316,7 +316,7 @@ public class SessionContextListener implements ExecutionInit,
 		MSession mSession = MSession.get(Env.getCtx(), false);
 		if(mSession!=null && !mSession.isProcessed() && (Env.getContext(Env.getCtx(), "isReloaded")==null  || Env.getContext(Env.getCtx(), "isReloaded").equals("")  || Env.getContext(Env.getCtx(), "isReloaded").equals("N"))){
 	        mSession.setProcessed(true);
-	        mSession.save();
+	        mSession.saveEx();
 		}
 		Env.setContext(Env.getCtx(), "isReloaded", "N");
 	}
@@ -331,7 +331,7 @@ public class SessionContextListener implements ExecutionInit,
 		MSession mSession = MSession.get(Env.getCtx(), false);
 		if(mSession!=null && mSession.isProcessed()){
 			mSession.setProcessed(false);
-			mSession.save();
+			mSession.saveEx();
 		}else if(mSession!=null){
 			Env.setContext(Env.getCtx(), "isReloaded", "Y");
 		}
