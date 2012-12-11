@@ -101,8 +101,9 @@ public class Zipper {
      }
 	static public String getParentDir(File zipFilepath)
     {
+		ZipFile zipFile = null;
 		try {
-		ZipFile zipFile = new ZipFile(zipFilepath);
+		zipFile = new ZipFile(zipFilepath);
 		Enumeration<? extends ZipEntry> entries = zipFile.entries();
 		ZipEntry entry = entries.nextElement();
 		File tempfile = new File(entry.getName());
@@ -114,6 +115,14 @@ public class Zipper {
 		      ioe.printStackTrace();
 		      return "";
 	    }
+		finally{
+			if (zipFile != null) {
+				try {
+					zipFile.close();
+				} catch (Exception e) {}
+				zipFile = null;
+			}
+		}
      }
 	}//	CreateZipFile
 

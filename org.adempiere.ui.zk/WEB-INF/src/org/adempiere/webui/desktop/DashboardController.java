@@ -210,9 +210,10 @@ public class DashboardController implements EventListener<Event> {
 
 		    		URL url = getClass().getClassLoader().getResource("org/compiere/css/PAPanel.css");
 					InputStreamReader ins;
+					BufferedReader bufferedReader = null;
 					try {
 						ins = new InputStreamReader(url.openStream());
-						BufferedReader bufferedReader = new BufferedReader( ins );
+						bufferedReader = new BufferedReader( ins );
 						String cssLine;
 						result.append("<style type=\"text/css\">");
 						while ((cssLine = bufferedReader.readLine()) != null)
@@ -221,7 +222,14 @@ public class DashboardController implements EventListener<Event> {
 					} catch (Exception e1) {
 						logger.log(Level.SEVERE, e1.getLocalizedMessage(), e1);
 					}
-
+					finally{
+						if (bufferedReader != null) {
+							try {
+								bufferedReader.close();
+							} catch (Exception e) {}
+							bufferedReader = null;
+						}
+					}
 					result.append("</head><body><div class=\"content\">\n");
 
 //	            	if(description != null)

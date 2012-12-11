@@ -114,9 +114,10 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 		URL url = getClass().getClassLoader().
 			getResource("org/compiere/css/PAPanel.css");
 		InputStreamReader ins;
+		BufferedReader bufferedReader = null;
 		try {
 			ins = new InputStreamReader(url.openStream());
-			BufferedReader bufferedReader = new BufferedReader( ins );
+			bufferedReader = new BufferedReader( ins );
 			String cssLine;
 			result.append("<style type=\"text/css\">");
 			while ((cssLine = bufferedReader.readLine()) != null) 
@@ -124,6 +125,14 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 			result.append("</style>");
 		} catch (IOException e1) {
 			log.log(Level.SEVERE, e1.getLocalizedMessage(), e1);
+		}
+		finally{
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (Exception e) {}
+				bufferedReader = null;
+			}
 		}
 		//System.out.println(result);
 		switch (requestPage) {

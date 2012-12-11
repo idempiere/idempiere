@@ -37,6 +37,7 @@ public class RestletUtil {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T toObject(Representation entity) {
+		ObjectInputStream ois = null;
 		try {
 			if (entity instanceof WrapperRepresentation) {
 				entity = ((WrapperRepresentation)entity).getWrappedRepresentation();
@@ -46,7 +47,7 @@ public class RestletUtil {
 				return (T) or.getObject();
 			} else if (entity instanceof InputRepresentation) {
 				InputRepresentation ir = (InputRepresentation) entity;
-				ObjectInputStream ois = new ObjectInputStream(ir.getStream());
+				ois = new ObjectInputStream(ir.getStream());
 				return (T) ois.readObject();
 			} else {
 				return null;
@@ -54,6 +55,14 @@ public class RestletUtil {
 		} catch (Exception e) {
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			return null;
+		}
+		finally{
+			if (ois != null) {
+				try {
+					ois.close();
+				} catch (Exception e2) {}
+				ois = null;
+			}
 		}
 	}
 }

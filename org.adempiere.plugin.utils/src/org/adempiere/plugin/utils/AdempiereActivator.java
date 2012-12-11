@@ -75,11 +75,12 @@ public class AdempiereActivator implements BundleActivator {
 		URL packout = context.getBundle().getEntry("/META-INF/2Pack.zip");
 		if (packout != null) {
 			IDictionaryService service = Service.locator().locate(IDictionaryService.class).getService();
+			FileOutputStream zipstream = null;
 			try {
 				// copy the resource to a temporary file to process it with 2pack
 				InputStream stream = context.getBundle().getEntry("/META-INF/2Pack.zip").openStream();
 				File zipfile = File.createTempFile(getName(), ".zip");
-				FileOutputStream zipstream = new FileOutputStream(zipfile);
+				zipstream = new FileOutputStream(zipfile);
 			    byte[] buffer = new byte[1024];
 			    int read;
 			    while((read = stream.read(buffer)) != -1){
@@ -89,6 +90,13 @@ public class AdempiereActivator implements BundleActivator {
 				service.merge(context, zipfile);
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, "Error on Dictionary service", e);
+			}
+			finally{
+				if (zipstream != null) {
+					try {
+						zipstream.close();
+					} catch (Exception e2) {}
+				}
 			}
 		} 
 	}

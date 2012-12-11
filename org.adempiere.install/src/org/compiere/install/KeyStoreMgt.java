@@ -162,6 +162,14 @@ public class KeyStoreMgt
 				log.log(Level.SEVERE, "load", e);
 				return null;
 			}
+			finally{
+				if (is != null) {
+					try {
+						is.close();
+					} catch (Exception e2) {}
+					is = null;
+				}
+			}
 			m_keyStore.load(is, m_password);
 		}
 		else

@@ -244,6 +244,14 @@ public class MPasswordRule extends X_AD_PasswordRule {
 		} catch (Exception e) {
 			props = null;
 		}
+		finally{
+			if (in != null) {
+				try {
+					in.close();
+				} catch (Exception e2) {}
+				in = null;
+			}
+		}
 		if (props == null)
 			return new MessageResolver();
 		else

@@ -36,9 +36,10 @@ public class StoredHtmlSrc extends MultiPartElement implements Printable {
 			return;
 		}			
 		InputStreamReader ins;
+		BufferedReader bufferedReader = null;
 		try {
 			ins = new InputStreamReader(url.openStream());
-			BufferedReader bufferedReader = new BufferedReader( ins );
+			bufferedReader = new BufferedReader( ins );
 			String cssLine;
 			String result="";
 			while ((cssLine = bufferedReader.readLine()) != null) 
@@ -46,6 +47,14 @@ public class StoredHtmlSrc extends MultiPartElement implements Printable {
 			this.setTagText(result);
 		} catch (IOException e1) {
 			log.warning("failed to load html-src: " + srcLocation);
+		}
+		finally{
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (IOException e) {}
+				bufferedReader = null;
+			}
 		}
 	}
 }

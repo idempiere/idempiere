@@ -207,9 +207,10 @@ public class ConfigOracle implements IDatabaseConfig
 
 		log.fine(tnsnames);
 		StringBuffer sb = new StringBuffer();
+		FileReader fr = null;
 		try
 		{
-			FileReader fr = new FileReader (tnsfile);
+			fr = new FileReader (tnsfile);
 			int c;
 			while ((c = fr.read()) != -1)
 				sb.append((char)c);
@@ -219,6 +220,14 @@ public class ConfigOracle implements IDatabaseConfig
 			log.warning("Error Reading " + tnsnames);
 			ex.printStackTrace();
 			return null;
+		}
+		finally{
+			if (fr != null) {
+				try {
+					fr.close();
+				} catch (Exception e) {}
+				fr = null;
+			}
 		}
 		if (sb.length() == 0)
 			return null;
