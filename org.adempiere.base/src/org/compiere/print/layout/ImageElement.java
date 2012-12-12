@@ -44,6 +44,11 @@ import org.compiere.util.Env;
 public class ImageElement extends PrintElement
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 905615948952506059L;
+
+	/**
 	 *	Create Image from URL
 	 *	@param imageURLString image url
 	 *	@return image element

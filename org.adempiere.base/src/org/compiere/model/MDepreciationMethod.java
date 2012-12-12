@@ -19,6 +19,11 @@ import org.compiere.util.DB;
  */
 public class MDepreciationMethod extends X_A_Depreciation_Method
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4622027905888469713L;
+
 	/** Standard Constructor */
 	public MDepreciationMethod (Properties ctx, int A_Depreciation_Method_ID, String trxName)
 	{

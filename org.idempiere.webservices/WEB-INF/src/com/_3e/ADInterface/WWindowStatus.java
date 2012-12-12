@@ -22,6 +22,11 @@ public class WWindowStatus
 {
 	public static class AD_WrongTabException extends Exception
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8949499217396844364L;
+
 		public AD_WrongTabException( String msg ) {
 			super(msg);
 		}

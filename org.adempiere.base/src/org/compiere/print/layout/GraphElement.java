@@ -31,6 +31,11 @@ import org.compiere.print.MPrintGraph;
 public class GraphElement extends PrintElement
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1723609598698053387L;
+
+	/**
 	 *	Constructor
 	 *  @param pg graph model
 	 */

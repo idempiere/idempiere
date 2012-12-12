@@ -49,6 +49,11 @@ import org.compiere.util.Util;
 public class StringElement extends PrintElement
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 239112399504036626L;
+
+	/**
 	 *	Standard Field Constructor.
 	 *  Created in LayoutEngine
 	 *  @param inText text

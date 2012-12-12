@@ -177,7 +177,12 @@ public class NumberBox extends Div
     private Popup getCalculatorPopup()
     {
         Popup popup = new Popup() {
-        	@Override
+        	/**
+			 * 
+			 */
+			private static final long serialVersionUID = -5991248152956632527L;
+
+			@Override
         	public void onPageAttached(Page newpage, Page oldpage) {
         		super.onPageAttached(newpage, oldpage);
         		if (newpage != null) {

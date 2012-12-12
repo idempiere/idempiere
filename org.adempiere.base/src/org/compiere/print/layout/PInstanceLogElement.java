@@ -31,6 +31,10 @@ import org.compiere.util.Util;
  * 			<li>FR [ 1966406 ] Report Engine: AD_PInstance_Logs should be displayed
  */
 public class PInstanceLogElement extends GridElement {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8315529954507023182L;
 	private int m_effectiveRowCount = 0;
 	
 	public PInstanceLogElement(Properties ctx, MQuery query, MPrintTableFormat tFormat)

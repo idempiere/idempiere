@@ -34,6 +34,11 @@ import org.compiere.print.MPrintFormatItem;
 public class BoxElement extends PrintElement
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1956804687979601523L;
+
+	/**
 	 * 	BoxElement
 	 * 	@param item item
 	 * 	@param color color

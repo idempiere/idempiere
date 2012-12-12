@@ -19,6 +19,11 @@ import org.idempiere.fa.feature.UseLifeImpl;
 public class MAssetClass extends X_A_Asset_Class
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6526341869523579715L;
+
+	/**
 	 *
 	 */
 	public MAssetClass(Properties ctx, int A_Asset_Class_ID, String trxName)

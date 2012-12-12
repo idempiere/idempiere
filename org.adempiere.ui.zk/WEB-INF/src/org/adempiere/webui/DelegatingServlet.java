@@ -12,6 +12,10 @@ import javax.servlet.http.HttpServlet;
 
 public class DelegatingServlet extends HttpServlet {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7061080629329202814L;
 	private final HttpServlet delegate;
 
 	public DelegatingServlet(HttpServlet delegate) {
