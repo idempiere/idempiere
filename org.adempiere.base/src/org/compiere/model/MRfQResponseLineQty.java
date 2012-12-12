@@ -231,6 +231,12 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
     	}
     	return false;
 	}	//	equals
+    
+    public int hashCode()
+	{
+	  assert false : "hashCode not designed";
+	  return 42; // any arbitrary constant will do
+	}
 
 	/**
 	 * 	Before Save

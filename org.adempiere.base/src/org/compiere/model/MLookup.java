@@ -276,6 +276,12 @@ public final class MLookup extends Lookup implements Serializable
 		}
 		return false;
 	}	//	equals
+	
+	public int hashCode()
+	{
+	  assert false : "hashCode not designed";
+	  return 42; // any arbitrary constant will do
+	}
 
 	/**
 	 *	Return Size

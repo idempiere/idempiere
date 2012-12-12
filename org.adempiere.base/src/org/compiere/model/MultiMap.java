@@ -234,6 +234,12 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 	{
 		throw new java.lang.UnsupportedOperationException("Method equals() not implemented.");
 	}
+	
+	public int hashCode()
+	{
+	  assert false : "hashCode not designed";
+	  return 42; // any arbitrary constant will do
+	}
 
 	/**************************************************************************
 	 *  Returns class name and number of entries

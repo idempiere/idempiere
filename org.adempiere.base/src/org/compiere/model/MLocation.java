@@ -419,6 +419,12 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		return equals(cmp);
 	}	//	equals
 
+	public int hashCode()
+	{
+	  assert false : "hashCode not designed";
+	  return 42; // any arbitrary constant will do
+	}
+
 	/**
 	 * 	Print Address Reverse Order
 	 *	@return true if reverse depending on country
