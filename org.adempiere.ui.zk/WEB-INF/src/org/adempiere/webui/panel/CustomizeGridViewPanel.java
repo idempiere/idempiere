@@ -185,36 +185,7 @@ public class CustomizeGridViewPanel extends Panel
 
 		bDown.setImage("images/Detail24.png");
 		bDown.addEventListener(Events.ON_CLICK, actionListener);
-
-		EventListener<Event> yesListMouseMotionListener = new EventListener<Event>()
-		{
-			public void onEvent(Event event) throws Exception {
-				if (event instanceof DropEvent)
-				{
-					DropEvent me = (DropEvent) event;
-					ListItem startItem = (ListItem) me.getDragged();
-					ListItem endItem = (ListItem) me.getTarget();
-					if (startItem.getListbox() == endItem.getListbox() && startItem.getListbox() == yesList)
-					{
-						int startIndex = yesList.getIndexOfItem(startItem);
-						int endIndex = yesList.getIndexOfItem(endItem);
-						Object endElement = yesModel.getElementAt(endIndex);
-						Object element = yesModel.getElementAt(startIndex);
-						yesModel.removeElement(element);
-						endIndex = yesModel.indexOf(endElement);
-						yesModel.add(endIndex, element);
-						yesList.setSelectedIndex(endIndex);
-						if ( yesList.getSelectedItem() != null)
-						{
-							AuFocus focus = new AuFocus(yesList.getSelectedItem());
-							Clients.response(focus);
-						}
-					}
-				}
-			}
-		};
-		yesList.addOnDropListener(yesListMouseMotionListener);
-
+		
 		ListHead listHead = new ListHead();
 		listHead.setParent(yesList);
 		ListHeader listHeader = new ListHeader();
@@ -397,10 +368,15 @@ public class CustomizeGridViewPanel extends Panel
 		}
 		Listbox listFrom = (source == bAdd || source == noList) ? noList : yesList;
 		Listbox listTo =  (source == bAdd || source == noList) ? yesList : noList;
-		migrateLists (listFrom,listTo);	
+		int endIndex = yesList.getIndexOfItem(listTo.getSelectedItem());	
+		//Listto is empty. 
+		if (endIndex<0 )
+			endIndex=0;
+		
+		migrateLists (listFrom,listTo,endIndex);	
 	}
 
-	void migrateLists (Listbox listFrom , Listbox listTo)
+	void migrateLists (Listbox listFrom , Listbox listTo , int endIndex	)
 	{
 		int index = 0;
 		SimpleListModel lmFrom = (SimpleListModel) listFrom.getModel();
@@ -419,21 +395,32 @@ public class CustomizeGridViewPanel extends Panel
 				continue;
 
 			lmFrom.removeElement(selObject);
-			lmTo.addElement(selObject);
-		}
-		index = 0;
-		for (ListElement selObject : selObjects)
-		{
+			lmTo.add(endIndex, selObject);
+			endIndex++;			
 			index = lmTo.indexOf(selObject);
 			listTo.setSelectedIndex(index);
 		}
-		if ( listTo.getSelectedItem() != null)
-		{
-			AuFocus focus = new AuFocus(listTo.getSelectedItem());
-			Clients.response(focus);
-		}	
 	}
 	
+	/**
+	 * 	Move within Yes List with Drag Event and Multiple Choice
+	 *	@param event event
+	 */
+	void migrateValueWithinYesList (int endIndex, List<ListElement> selObjects)
+	{
+		int length = selObjects.size();
+		int iniIndex =0;
+		Arrays.sort(selObjects.toArray());	
+		ListElement endObject = (ListElement)yesModel.getElementAt(endIndex);
+
+		for (int i = 0; i < length; i++) {
+			iniIndex = yesModel.indexOf(selObjects.get(i));
+			ListElement selObject = (ListElement)yesModel.getElementAt(iniIndex);
+			yesModel.removeElement(selObject);
+			endIndex = yesModel.indexOf(endObject);
+			yesModel.add(endIndex, selObject);
+		}		
+	}
 	/**
 	 * 	Move within Yes List
 	 *	@param event event
@@ -672,14 +659,33 @@ public class CustomizeGridViewPanel extends Panel
 		public void onEvent(Event event) throws Exception {
 			if (event instanceof DropEvent)
 			{	
+				int endIndex = 0;
 				DropEvent me = (DropEvent) event;
 				ListItem endItem = (ListItem) me.getTarget();
 				ListItem startItem = (ListItem) me.getDragged();
+				
+				if (!startItem.isSelected())
+					startItem.setSelected(true);
+					
 				if (!(startItem.getListbox() == endItem.getListbox()))
-				{
+				{			
 					Listbox listFrom = (Listbox)startItem.getListbox();
-					Listbox listTo =  (Listbox)endItem.getListbox();
-					migrateLists (listFrom,listTo);
+					Listbox listTo =  (Listbox)endItem.getListbox();		
+					endIndex = yesList.getIndexOfItem(endItem);
+					migrateLists (listFrom,listTo,endIndex);
+					
+				}else if (startItem.getListbox() == endItem.getListbox() && startItem.getListbox() == yesList)
+				{  
+					List<ListElement> selObjects = new ArrayList<ListElement>();
+					endIndex = yesList.getIndexOfItem(endItem);	
+					for (Object obj : yesList.getSelectedItems()) {
+						ListItem listItem = (ListItem) obj;
+						int index = yesList.getIndexOfItem(listItem);
+						ListElement selObject = (ListElement)yesModel.getElementAt(index);				
+						selObjects.add(selObject);						
+					}
+					migrateValueWithinYesList (endIndex, selObjects);
+					yesList.clearSelection();
 				}
 			}
 		}
