@@ -112,6 +112,19 @@ public interface I_C_BankStatement
 	/** Get C_BankStatement_UU	  */
 	public String getC_BankStatement_UU();
 
+    /** Column name CopyFrom */
+    public static final String COLUMNNAME_CopyFrom = "CopyFrom";
+
+	/** Set Copy From.
+	  * Copy From Record
+	  */
+	public void setCopyFrom (String CopyFrom);
+
+	/** Get Copy From.
+	  * Copy From Record
+	  */
+	public String getCopyFrom();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -140,6 +153,19 @@ public interface I_C_BankStatement
 	  * Process which will generate a new document lines based on an existing document
 	  */
 	public String getCreateFrom();
+
+    /** Column name DateAcct */
+    public static final String COLUMNNAME_DateAcct = "DateAcct";
+
+	/** Set Account Date.
+	  * Accounting Date
+	  */
+	public void setDateAcct (Timestamp DateAcct);
+
+	/** Get Account Date.
+	  * Accounting Date
+	  */
+	public Timestamp getDateAcct();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

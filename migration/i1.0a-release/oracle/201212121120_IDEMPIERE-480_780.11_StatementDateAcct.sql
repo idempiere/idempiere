@@ -135,3 +135,57 @@ UPDATE AD_Field SET IsSameLine='Y',Updated=TO_DATE('2011-07-22 17:15:20','YYYY-M
 -- --
 UPDATE AD_Column SET Callout='org.compiere.model.CalloutEngine.dateAcct',Updated=TO_DATE('2011-07-26 15:12:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=4918
 ;
+
+-- Dec 12, 2012 11:39:16 AM COT
+-- IDEMPIERE-480 Huge bug with FactAcctReset and Automatic Accounting
+UPDATE AD_Field SET ColumnSpan=2, SeqNo=60, IsDisplayed='Y', XPosition=4,Updated=TO_DATE('2012-12-12 11:39:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=61967
+;
+
+-- Dec 12, 2012 11:39:16 AM COT
+-- IDEMPIERE-480 Huge bug with FactAcctReset and Automatic Accounting
+UPDATE AD_Field SET SeqNo=150,Updated=TO_DATE('2012-12-12 11:39:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3997
+;
+
+-- Dec 12, 2012 11:39:16 AM COT
+-- IDEMPIERE-480 Huge bug with FactAcctReset and Automatic Accounting
+UPDATE AD_Field SET SeqNo=160,Updated=TO_DATE('2012-12-12 11:39:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8686
+;
+
+-- Dec 12, 2012 11:39:16 AM COT
+-- IDEMPIERE-480 Huge bug with FactAcctReset and Automatic Accounting
+UPDATE AD_Field SET SeqNo=170,Updated=TO_DATE('2012-12-12 11:39:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8687
+;
+
+-- Dec 12, 2012 11:39:16 AM COT
+-- IDEMPIERE-480 Huge bug with FactAcctReset and Automatic Accounting
+UPDATE AD_Field SET SeqNo=180,Updated=TO_DATE('2012-12-12 11:39:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=10585
+;
+
+-- Dec 12, 2012 11:39:17 AM COT
+-- IDEMPIERE-480 Huge bug with FactAcctReset and Automatic Accounting
+UPDATE AD_Field SET SeqNo=190,Updated=TO_DATE('2012-12-12 11:39:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=10586
+;
+
+-- Dec 12, 2012 11:39:17 AM COT
+-- IDEMPIERE-480 Huge bug with FactAcctReset and Automatic Accounting
+UPDATE AD_Field SET SeqNo=200, IsDisplayed='Y', XPosition=5,Updated=TO_DATE('2012-12-12 11:39:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=10587
+;
+
+-- Dec 12, 2012 11:39:17 AM COT
+-- IDEMPIERE-480 Huge bug with FactAcctReset and Automatic Accounting
+UPDATE AD_Field SET SeqNo=210,Updated=TO_DATE('2012-12-12 11:39:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3999
+;
+
+-- Dec 12, 2012 11:41:08 AM COT
+-- IDEMPIERE-480 Huge bug with FactAcctReset and Automatic Accounting
+UPDATE AD_Column SET DefaultValue='@DateAcct@',Updated=TO_DATE('2012-12-12 11:41:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=5216
+;
+
+-- Dec 12, 2012 11:41:34 AM COT
+-- IDEMPIERE-480 Huge bug with FactAcctReset and Automatic Accounting
+UPDATE AD_Field SET IsReadOnly='Y',Updated=TO_DATE('2012-12-12 11:41:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4121
+;
+
+SELECT register_migration_script('201212121120_IDEMPIERE-480_780.11_StatementDateAcct.sql') FROM dual
+;
+
