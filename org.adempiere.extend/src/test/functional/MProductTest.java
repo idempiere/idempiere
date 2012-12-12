@@ -1,18 +1,7 @@
 //MProductTest.java
 package test.functional;
 
-import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
-import org.compiere.model.MProductPricing;
-import org.compiere.model.X_I_Product;
-import org.compiere.util.DB;
-import org.compiere.util.Env;
-
 import test.AdempiereTestCase;
 
 public class MProductTest extends AdempiereTestCase {

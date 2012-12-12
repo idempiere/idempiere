@@ -28,12 +28,9 @@
 ***********************************************************************/
 package test.functional;
 
-import java.math.BigDecimal;
-
 import org.compiere.model.MAlert;
 import org.compiere.model.MAlertProcessor;
 import org.compiere.model.MAlertProcessorLog;
-import org.compiere.model.MProductPricing;
 import org.compiere.model.X_AD_AlertProcessor;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;

@@ -25,7 +25,6 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBankAccount;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
-import org.compiere.model.MPeriod;
 import org.compiere.util.Env;
 
 /**
