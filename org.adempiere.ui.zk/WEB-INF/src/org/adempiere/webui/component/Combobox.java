@@ -43,7 +43,8 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
     public Comboitem appendItem(String label) 
     {
         ComboItem item = new ComboItem(label);
-        item.setId(label);
+        if (getFellowIfAny(label) == null )
+        	item.setId(label);
         item.setParent(this);
         return item;
     }
@@ -64,7 +65,8 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 
 	public void appendItem(String name, Object value) {
 		ComboItem item = new ComboItem(name, value);
-		item.setId(name);
+		if (getFellowIfAny(name) == null)
+			item.setId(name);
 		this.appendChild(item);
 	}
 	
