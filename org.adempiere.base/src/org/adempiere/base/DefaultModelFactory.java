@@ -269,7 +269,7 @@ public class DefaultModelFactory implements IModelFactory {
 				s_log.warning("No transaction Constructor for " + clazz + " (" + msg + ")");
 			}
 
-			PO po = (PO)constructor.newInstance(new Object[] {Env.getCtx(), new Integer(Record_ID), trxName});
+			PO po = constructor!=null ? (PO)constructor.newInstance(new Object[] {Env.getCtx(), new Integer(Record_ID), trxName}) : null;
 			return po;
 		}
 		catch (Exception e)

@@ -1032,7 +1032,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 				throw new DBException("Could not lock record for " + po.toString() + " caused by " + e.getLocalizedMessage());
 			} finally {
 				try {
-					setStatementTimeout(stmt.getConnection(), currentTimeout);
+					if(stmt!=null)setStatementTimeout(stmt.getConnection(), currentTimeout);
 				} catch (SQLException e) {}
 				DB.close(rs, stmt);
 			}			

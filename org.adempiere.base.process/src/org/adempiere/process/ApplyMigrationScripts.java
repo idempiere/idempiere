@@ -156,7 +156,7 @@ public class ApplyMigrationScripts extends SvrProcess {
 						log.saveError("Error", msglog.toString());
 						log.severe(e.getMessage());
 					} finally {
-						stmt.close();
+						if (stmt != null)stmt.close();
 						if(execOk)
 							conn.commit();
 						else

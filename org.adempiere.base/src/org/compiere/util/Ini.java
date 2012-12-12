@@ -329,9 +329,11 @@ public final class Ini implements Serializable
 
 		try
 		{
-			InputStream is = fc.getInputStream();
-			s_prop.load(is);
-			is.close();
+			if (fc != null) {
+				InputStream is = fc.getInputStream();
+				s_prop.load(is);
+				is.close();
+			}			
 		}
 		catch (Throwable t)
 		{
