@@ -20,7 +20,7 @@ public class Doc_AssetReval extends Doc
 {
 
 	
-	private final String POSTINGTYPE_Actual = "A";
+	private static final String POSTINGTYPE_Actual = "A";
 	public Doc_AssetReval (MAcctSchema as, ResultSet rs, String trxName)
 	{
 		super(as, MAssetReval.class, rs, MDocType.DOCBASETYPE_GLJournal, trxName);

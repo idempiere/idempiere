@@ -39,7 +39,7 @@ import org.compiere.util.Msg;
  *
  */
 public abstract class PaymentFormCheck extends PaymentForm {
-	private final String PAYMENTRULE = MInvoice.PAYMENTRULE_Check;
+	private static final String PAYMENTRULE = MInvoice.PAYMENTRULE_Check;
 	
 	/** Start Payment */
 	public int 					m_C_Payment_ID = 0;

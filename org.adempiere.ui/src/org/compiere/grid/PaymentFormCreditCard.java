@@ -36,7 +36,7 @@ import org.compiere.util.ValueNamePair;
  *
  */
 public abstract class PaymentFormCreditCard extends PaymentForm {
-	private final String PAYMENTRULE = MInvoice.PAYMENTRULE_CreditCard;
+	private static final String PAYMENTRULE = MInvoice.PAYMENTRULE_CreditCard;
 	
 	/** Start Payment */
 	public int 					m_C_Payment_ID = 0;
