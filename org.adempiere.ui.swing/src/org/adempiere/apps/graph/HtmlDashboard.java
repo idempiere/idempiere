@@ -456,7 +456,7 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 		}
 	}
 	
-	class PageLoader implements Runnable
+	static class PageLoader implements Runnable
 	{
 	    private JEditorPane html;
 	    private URL         url;

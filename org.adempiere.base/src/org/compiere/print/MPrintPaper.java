@@ -249,7 +249,7 @@ public class MPrintPaper extends X_AD_PrintPaper
 	/**
 	 * 	Media Size Name 
 	 */
-	class CMediaSizeName extends MediaSizeName
+	static class CMediaSizeName extends MediaSizeName
 	{
 		/**
 		 * 

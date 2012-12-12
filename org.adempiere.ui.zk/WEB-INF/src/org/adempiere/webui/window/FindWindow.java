@@ -1954,7 +1954,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @author Karsten Thiemann, kthiemann@adempiere.org
      *
     **/
-    private class SimpleTreeNode {
+    private static class SimpleTreeNode {
 
         private int nodeId;
 

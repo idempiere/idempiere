@@ -20,7 +20,7 @@ import org.compiere.model.MQuery;
 
 public class WWindowStatus 
 {
-	public class AD_WrongTabException extends Exception
+	public static class AD_WrongTabException extends Exception
 	{
 		public AD_WrongTabException( String msg ) {
 			super(msg);

@@ -399,7 +399,7 @@ public class InventoryCountCreate extends SvrProcess
 	 * @author Karsten Thiemann, kthiemann@adempiere.org
 	 *
 	 */
-	private class SimpleTreeNode {
+	private static class SimpleTreeNode {
 
 		private int nodeId;
 

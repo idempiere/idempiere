@@ -435,7 +435,7 @@ public class PaySelect
 	/**************************************************************************
 	 *  Bank Account Info
 	 */
-	public class BankInfo
+	public static class BankInfo
 	{
 		/**
 		 * 	BankInfo

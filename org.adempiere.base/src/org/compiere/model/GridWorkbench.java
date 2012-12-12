@@ -512,7 +512,7 @@ public class GridWorkbench implements Serializable
 	/**************************************************************************
 	 *  Window Type
 	 */
-	class WBWindow
+	static class WBWindow
 	{
 		/**
 		 * 	WBWindow

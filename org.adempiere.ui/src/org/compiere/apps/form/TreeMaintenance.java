@@ -158,7 +158,7 @@ public class TreeMaintenance {
 	/**************************************************************************
 	 * 	Tree Maintenance List Item
 	 */
-	public class ListItem
+	public static class ListItem
 	{
 		/**
 		 * 	ListItem

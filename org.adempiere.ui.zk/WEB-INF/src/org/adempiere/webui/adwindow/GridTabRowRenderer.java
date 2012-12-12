@@ -641,7 +641,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		this.gridPanel = gridPanel;
 	}
 
-	class RowListener implements EventListener<Event> {
+	static class RowListener implements EventListener<Event> {
 
 		private Grid _grid;
 

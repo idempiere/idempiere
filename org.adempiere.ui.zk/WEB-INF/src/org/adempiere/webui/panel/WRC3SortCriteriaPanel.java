@@ -427,7 +427,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 	/**
 	 * List Item
 	 */
-	public class ListElement extends NamePair {
+	public static class ListElement extends NamePair {
 		/**
 		 *
 		 */

@@ -584,7 +584,7 @@ public class CustomizeGridViewPanel extends Panel
 	 * List Item
 	 * @author Teo Sarca
 	 */
-	private class ListElement extends NamePair {
+	private static class ListElement extends NamePair {
 		/**
 		 *
 		 */

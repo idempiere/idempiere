@@ -1138,7 +1138,7 @@ DataStatusListener, IADTabpanel, IdSpace
 		Events.sendEvent(this, new Event(ON_SWITCH_VIEW_EVENT, this));
 	}
 
-	class ZoomListener implements EventListener<Event> {
+	static class ZoomListener implements EventListener<Event> {
 
 		private IZoomableEditor searchEditor;
 
