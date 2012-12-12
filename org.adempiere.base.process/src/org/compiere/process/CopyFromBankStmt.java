@@ -22,7 +22,6 @@ import java.util.logging.Level;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MPayment;
-import org.compiere.model.X_C_BankStatement;
 import org.compiere.util.DB;
 
 /**
@@ -71,12 +70,12 @@ public class CopyFromBankStmt extends SvrProcess
 		MBankStatement from = new MBankStatement(getCtx(), m_C_BankStatement_ID, get_TrxName());
 		MBankStatement to = new MBankStatement (getCtx(), To_C_BankStatement_ID, get_TrxName());
 		int no = 0;
+		
+		if ( ! (MBankStatement.DOCSTATUS_Completed.equals(from.getDocStatus()) || MBankStatement.DOCSTATUS_Closed.equals(from.getDocStatus())) )
+			throw new IllegalArgumentException("Source must be closed or complete");
 
-		MBankStatementLine[] fromLines = from.getLines(false);
-		for (int i = 0; i < fromLines.length; i++)
+		for (MBankStatementLine fromLine : from.getLines(false))
 		{
-			MBankStatementLine fromLine = fromLines[i];
-
 			if (fromLine.getC_Payment_ID() > 0)
 			{
 				// check if payment is used on another statement
@@ -84,16 +83,18 @@ public class CopyFromBankStmt extends SvrProcess
 						+ " FROM C_BankStatementLine bsl, C_BankStatement bs"
 						+ " WHERE bs.C_BankStatement_ID=bsl.C_BankStatement_ID"
 						+ " AND bs.DocStatus IN ('DR', 'CO', 'CL')"
-						+ " AND bsl.C_Payment_ID="+fromLine.getC_Payment_ID();
-				if (DB.getSQLValueEx(get_TrxName(), sql) == 0)
+						+ " AND bsl.C_Payment_ID=?";
+				if (DB.getSQLValueEx(get_TrxName(), sql, fromLine.getC_Payment_ID()) < 0)
 				{
 					MBankStatementLine toLine = new MBankStatementLine(to);
 					toLine.setPayment(new MPayment(getCtx(), fromLine.getC_Payment_ID(), get_TrxName()));
 					toLine.saveEx();
 					no++;
+				} else {
+					log.info("C_BankStatementLine not copied - related to a payment already present in a bank statement");
 				}
 			}
-			else if (from.getDocStatus().equals(X_C_BankStatement.DOCSTATUS_Completed) || from.getDocStatus().equals(X_C_BankStatement.DOCSTATUS_Closed))
+			else
 			{
 				MBankStatementLine toLine = new MBankStatementLine(to);
 				toLine.setC_Currency_ID(fromLine.getC_Currency_ID());
