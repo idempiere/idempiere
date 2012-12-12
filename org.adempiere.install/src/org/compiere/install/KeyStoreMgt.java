@@ -156,6 +156,7 @@ public class KeyStoreMgt
 			try
 			{
 				is = new FileInputStream (m_file);
+				m_keyStore.load(is, m_password);
 			}
 			catch (Exception e)
 			{
@@ -170,7 +171,6 @@ public class KeyStoreMgt
 					is = null;
 				}
 			}
-			m_keyStore.load(is, m_password);
 		}
 		else
 			return null;	//	does not exist
