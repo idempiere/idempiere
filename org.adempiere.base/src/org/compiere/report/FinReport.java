@@ -458,7 +458,7 @@ public class FinReport extends SvrProcess
 			if (PostingType != null && PostingType.length() > 0)
 				select.append(" AND PostingType='").append(PostingType).append("'");
 			// globalqss - CarlosRuiz
-			if (PostingType.equals(MReportColumn.POSTINGTYPE_Budget)) {
+			if (MReportColumn.POSTINGTYPE_Budget.equals(PostingType)) {
 				if (m_columns[col].getGL_Budget_ID() > 0)
 					select.append(" AND GL_Budget_ID=" + m_columns[col].getGL_Budget_ID());
 			}
@@ -977,7 +977,7 @@ public class FinReport extends SvrProcess
 				if (PostingType != null && PostingType.length() > 0)
 					select.append(" AND fb.PostingType='").append(PostingType).append("'");
 				// globalqss - CarlosRuiz
-				if (PostingType.equals(MReportColumn.POSTINGTYPE_Budget)) {
+				if (MReportColumn.POSTINGTYPE_Budget.equals(PostingType)) {
 					if (m_columns[col].getGL_Budget_ID() > 0)
 						select.append(" AND GL_Budget_ID=" + m_columns[col].getGL_Budget_ID());
 				}

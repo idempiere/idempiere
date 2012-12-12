@@ -174,9 +174,9 @@ public class ADLookup {
 			 ile = ile+1;				
 			}*/
 			int ile = 0;
-			finalSQL = info.getSQLCount();
+			finalSQL = info!=null ? info.getSQLCount() : "";
 			PreparedStatement pstmt = DB.prepareStatement(finalSQL, null);
-			info.setParameters (pstmt, true);
+			if (info!=null) info.setParameters (pstmt, true);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next())
 				ile = rs.getInt(1);

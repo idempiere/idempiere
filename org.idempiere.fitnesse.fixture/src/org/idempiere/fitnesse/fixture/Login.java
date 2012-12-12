@@ -139,7 +139,7 @@ public class Login extends TableFixture {
 			)
 			return null; // already logged with same data
 		
-		org.compiere.util.Login login = new org.compiere.util.Login(m_ads.getCtx());
+		org.compiere.util.Login login = new org.compiere.util.Login(m_ads!=null ? m_ads.getCtx() : null);
 		KeyNamePair[] roles = login.getRoles(m_user, m_password);
 		if (roles != null)
 		{

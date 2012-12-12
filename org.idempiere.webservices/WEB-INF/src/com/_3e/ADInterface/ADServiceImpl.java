@@ -1057,7 +1057,8 @@ public class ADServiceImpl implements ADService {
 					value = "2000/01/01 "+ value;
 					d = m_cs.dateTimeFormat.parse(value);
 				}
-				ts = new Timestamp(d.getTime());
+				if (d!=null) 
+					ts = new Timestamp(d.getTime());
 			}
 			catch (Exception e)
 			{

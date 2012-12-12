@@ -519,7 +519,7 @@ public class WAcctViewerData
 		
 			if (column != null && column.startsWith("Date"))
 				rm.addColumn(new RColumn(ctx, column, DisplayType.Date));
-			else if (column.startsWith("UserElement"))
+			else if (column!=null && column.startsWith("UserElement"))
 			{
 				if (column.indexOf('1') != -1)
 					rm.addColumn(new RColumn(ctx, column, DisplayType.TableDir, null, 0, m_ref1));

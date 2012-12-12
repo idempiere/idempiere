@@ -611,7 +611,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 			
 			Update.append(" SET ");
 			
-			int f = updateFields.length();
+			int f = updateFields!=null ? updateFields.length() : 0;
 			int fj = joinFields.length();
 			String updateField = null;
 			String joinField = null;

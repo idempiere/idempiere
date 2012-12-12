@@ -594,7 +594,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 			if (listitem != null)
 				pp = listitem.toKeyNamePair();
 			
-			m_product = MProduct.get (Env.getCtx(), pp.getKey());
+			m_product = pp!= null ? MProduct.get (Env.getCtx(), pp.getKey()) : null;
 			createMainPanel();
 			//sizeIt();
 		}

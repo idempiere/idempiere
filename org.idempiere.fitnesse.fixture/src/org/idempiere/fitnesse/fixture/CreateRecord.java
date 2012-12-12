@@ -85,7 +85,7 @@ public class CreateRecord extends TableFixture {
 					tableOK = true;
 					gpo = table.getPO(0, null);
 				}
-		    	poinfo = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
+		    	poinfo = POInfo.getPOInfo(ctx, table!=null ? table.getAD_Table_ID() : 0);
 			} else if (cell_title.equalsIgnoreCase("*Save*")) {
 				if (i != rows-1) {
 					exception(getCell(i, 1), new Exception("*Save* must be called in last row"));

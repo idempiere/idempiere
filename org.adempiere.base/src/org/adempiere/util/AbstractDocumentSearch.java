@@ -284,10 +284,12 @@ public abstract class AbstractDocumentSearch {
 				}
 			}
 		}
-		log.fine(whereString.toString());
-		
+
 		final MQuery query = new MQuery(tableName);
-		query.addRestriction(whereString.toString());
+		if (whereString != null) {
+			log.fine(whereString.toString());
+			query.addRestriction(whereString.toString());
+		}
 		final boolean ok = openWindow(windowId, query);
 		if (!ok) {
 			StringBuilder msglog = new StringBuilder("Unable to open window: ").append(whereString.toString());			

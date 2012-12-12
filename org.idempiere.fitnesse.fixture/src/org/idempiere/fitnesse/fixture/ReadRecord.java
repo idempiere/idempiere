@@ -83,7 +83,7 @@ public class ReadRecord extends TableFixture {
 				} else {
 					tableOK = true;
 				}
-		    	poinfo = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
+		    	poinfo = POInfo.getPOInfo(ctx, table!=null ? table.getAD_Table_ID() : 0);
 			} else if (cell_title.equalsIgnoreCase("*Where*")) {
 				if (i != 1) {
 					exception(getCell(i, 1), new Exception("*Where* must be defined in second row"));

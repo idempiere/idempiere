@@ -170,9 +170,9 @@ public class MAssetAddition extends X_A_Asset_Addition
 			asset.setA_Asset_Group_ID(product.getA_Asset_Group_ID());
 			MAttributeSetInstance asi = MAttributeSetInstance.create(Env.getCtx(), product, null);
 			asset.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
-		}
-		asset.setName(product.getName().concat(project.getName()));
-		asset.setValue(product.getName().concat(project.getName()));	
+			asset.setName(product.getName().concat(project.getName()));
+			asset.setValue(product.getName().concat(project.getName()));
+		}	
 		asset.saveEx();
 		asset.dump();
 		

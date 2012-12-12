@@ -163,7 +163,7 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 			if (product_id > 0) {
 				MProduct prod = MProduct.get(m.getCtx(), product_id);
 				isAsset = (prod != null && prod.get_ID() > 0 && prod.isCreateAsset());
-				assetGroup_ID = prod.getA_Asset_Group_ID();
+				assetGroup_ID = prod!=null ? prod.getA_Asset_Group_ID() : 0;
 			}
 				
 			// end modification by @win

@@ -326,7 +326,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         }
         //
 
-        if (m_clientKNPairs.length == 1) {
+        if (m_clientKNPairs!=null && m_clientKNPairs.length == 1) {
         	// don't show client if is just one
 			lstClient.setSelectedIndex(0);
 			lblClient.setVisible(false);

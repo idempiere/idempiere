@@ -207,6 +207,7 @@ public class Doc_MatchPO extends Doc
 			FactLine cr = fact.createLine(null,
 				m_pc.getAccount(ProductCost.ACCTTYPE_P_PPV, as),
 				as.getC_Currency_ID(), isReturnTrx ? difference.negate() : difference);
+			MAccount acct_cr = null;
 			if (cr != null)
 			{
 				cr.setQty(isReturnTrx ? getQty().negate() : getQty());
@@ -219,12 +220,14 @@ public class Doc_MatchPO extends Doc
 				cr.setC_UOM_ID(m_oLine.getC_UOM_ID());
 				cr.setUser1_ID(m_oLine.getUser1_ID());
 				cr.setUser2_ID(m_oLine.getUser2_ID());
+				acct_cr = cr.getAccount(); // PPV Offset
 			}
 
 			//  PPV Offset
 			FactLine dr = fact.createLine(null,
 				getAccount(Doc.ACCTTYPE_PPVOffset, as),
 				as.getC_Currency_ID(), isReturnTrx ? difference : difference.negate());
+			MAccount acct_db = null;
 			if (dr != null)
 			{
 				dr.setQty(isReturnTrx ? getQty() : getQty().negate());
@@ -237,16 +240,14 @@ public class Doc_MatchPO extends Doc
 				dr.setC_UOM_ID(m_oLine.getC_UOM_ID());
 				dr.setUser1_ID(m_oLine.getUser1_ID());
 				dr.setUser2_ID(m_oLine.getUser2_ID());
+				acct_db =  dr.getAccount(); // PPV
 			}
 
 			// Avoid usage of clearing accounts
 			// If both accounts Purchase Price Variance and Purchase Price Variance Offset are equal
 			// then remove the posting
 
-			MAccount acct_db =  dr.getAccount(); // PPV
-			MAccount acct_cr = cr.getAccount(); // PPV Offset
-
-			if ((!as.isPostIfClearingEqual()) && acct_db.equals(acct_cr) && (!isInterOrg)) {
+			if ((!as.isPostIfClearingEqual()) && acct_db!=null && acct_db.equals(acct_cr) && (!isInterOrg)) {
 
 				BigDecimal debit = dr.getAmtSourceDr();
 				BigDecimal credit = cr.getAmtSourceCr();

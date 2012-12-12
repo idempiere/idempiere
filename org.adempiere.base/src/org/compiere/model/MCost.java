@@ -1656,7 +1656,7 @@ public class MCost extends X_M_Cost
 		}
 		
 		//-ve current qty will break moving average costing
-		if ((ce.isAveragePO() || ce.isAverageInvoice()) && is_ValueChanged(COLUMNNAME_CurrentQty)) 
+		if (ce!=null && (ce.isAveragePO() || ce.isAverageInvoice()) && is_ValueChanged(COLUMNNAME_CurrentQty)) 
 		{
 			if (getCurrentQty().signum() < 0)
 			{
