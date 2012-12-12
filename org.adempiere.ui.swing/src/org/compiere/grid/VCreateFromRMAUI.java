@@ -39,7 +39,6 @@ import org.compiere.util.Msg;
 
 public class VCreateFromRMAUI extends CreateFromRMA implements VetoableChangeListener
 {
-	private static final long serialVersionUID = 1L;
 	
 	private VCreateFromDialog dialog;
 

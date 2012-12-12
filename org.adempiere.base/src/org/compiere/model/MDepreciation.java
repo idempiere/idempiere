@@ -20,7 +20,11 @@ import org.idempiere.fa.exceptions.AssetNotSupportedException;
  */
 public class MDepreciation extends X_A_Depreciation
 {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -632058079835100100L;
 
 	/** Standard Constructor */
 	public MDepreciation (Properties ctx, int A_Depreciation_ID, String trxName)

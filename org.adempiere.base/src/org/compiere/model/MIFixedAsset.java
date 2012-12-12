@@ -23,8 +23,11 @@ import org.compiere.util.Util;
  */
 public class MIFixedAsset extends X_I_FixedAsset
 {
-	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6394518107160329652L;
 	/** Default depreciation method */
 	private static final String s_defaultDepreciationType = "SL";
 	

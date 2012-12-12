@@ -36,10 +36,11 @@ import org.compiere.model.MTreeNode;
  */
 public class VTreeTransferHandler extends TransferHandler {
 
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2799737958477528717L;
 
 	public int getSourceActions(JComponent c) {
 		return TransferHandler.MOVE;

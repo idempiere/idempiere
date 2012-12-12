@@ -47,8 +47,11 @@ import org.zkoss.zul.Toolbarbutton;
  */
 public class DPCalendar extends DashboardPanel implements EventListener<Event> {
 
-	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -224914882522997787L;
 	private Calendars calendars;
 	private SimpleCalendarModel scm;
 	private Toolbarbutton btnCal, btnRefresh;

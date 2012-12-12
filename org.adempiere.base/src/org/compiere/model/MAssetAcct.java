@@ -21,7 +21,12 @@ import org.compiere.util.TimeUtil;
  */
 public class MAssetAcct extends X_A_Asset_Acct
 {
-	private static final long serialVersionUID = 1L;
+	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3919172418904053712L;
 
 	/**
 	 * DO NOT USE DIRECTLY

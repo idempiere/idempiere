@@ -35,8 +35,11 @@ import org.idempiere.fa.util.POCacheLocal;
 public class MAssetAddition extends X_A_Asset_Addition
 	implements DocAction
 {
-	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5977180589101094202L;
 	/** Static Logger */
 	private static CLogger s_log = CLogger.getCLogger(MAssetAddition.class);
 

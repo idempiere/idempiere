@@ -11,7 +11,11 @@ package org.idempiere.fa.exceptions;
  */
 public class AssetNotImplementedException extends AssetException
 {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7015542410574849684L;
 
 	public AssetNotImplementedException(String additionalMessage)
 	{

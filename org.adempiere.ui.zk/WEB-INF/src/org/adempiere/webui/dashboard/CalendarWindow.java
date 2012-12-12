@@ -65,8 +65,11 @@ import org.zkoss.zul.Toolbarbutton;
  *
  */
 public class CalendarWindow extends Window implements EventListener<Event> {
-	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5620139733919619691L;
 	private Calendars calendars;
 	private SimpleCalendarModel scm;
 	private Toolbarbutton btnRefresh;

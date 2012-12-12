@@ -27,8 +27,11 @@ import org.compiere.util.TimeUtil;
 public class MAssetReval extends X_A_Asset_Reval
 implements DocAction
 {
-	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3937514008250840440L;
 	private boolean		m_justPrepared = false;
 
 	public MAssetReval(Properties ctx, int X_A_Asset_Reval_ID, String trxName)

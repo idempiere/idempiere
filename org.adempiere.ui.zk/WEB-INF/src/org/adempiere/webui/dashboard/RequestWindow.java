@@ -53,8 +53,12 @@ import org.zkoss.zul.Timebox;
  *
  */
 public class RequestWindow extends Window implements EventListener<Event> {
-	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7757368164776005797L;
+
 	private static CLogger log = CLogger.getCLogger(RequestWindow.class);
 	
 	/** Read Only				*/

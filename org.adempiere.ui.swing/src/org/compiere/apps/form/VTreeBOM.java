@@ -252,7 +252,12 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener, TreeS
 				DisplayType.Search, language, MProduct.COLUMNNAME_M_Product_ID, 0, false,
 				" M_Product.IsSummary = 'N'");
 		fieldProduct = new VLookup ("M_Product_ID", false, false, true,  m_fieldProduct) {
-			private static final long serialVersionUID = 1L;
+			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1084743143950828526L;
+
 			public void setValue(Object value) {
 				super.setValue(value);
 			}

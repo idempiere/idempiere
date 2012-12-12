@@ -55,7 +55,6 @@ import org.compiere.util.Msg;
 
 public class VCreateFromStatementUI extends CreateFromStatement implements ActionListener
 {
-	private static final long serialVersionUID = 1L;
 	
 	private VCreateFromDialog dialog;
 

@@ -16,7 +16,11 @@ import org.idempiere.fa.feature.UseLifeImpl;
 public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 	implements UseLife
 {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3458020679308192943L;
 
 	/**
 	 * Get Asset Group Accountings for given group

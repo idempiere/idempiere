@@ -28,7 +28,12 @@ import org.idempiere.fa.exceptions.AssetException;
 public class MDepreciationEntry extends X_A_Depreciation_Entry
 implements DocAction
 {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6631244784741228058L;
+
 
 	/** Standard Constructor */
 	public MDepreciationEntry(Properties ctx, int A_Depreciation_Entry_ID, String trxName)

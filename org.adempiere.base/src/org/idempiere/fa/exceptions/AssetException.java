@@ -11,7 +11,11 @@ import org.adempiere.exceptions.AdempiereException;
  */
 public class AssetException extends AdempiereException
 {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2163958702697438015L;
 
 	public AssetException()
 	{

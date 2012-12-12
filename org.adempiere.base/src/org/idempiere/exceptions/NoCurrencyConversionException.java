@@ -29,7 +29,11 @@ import org.compiere.util.Env;
  */
 public class NoCurrencyConversionException extends AdempiereException
 {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1593966161685137709L;
 
 	/**
 	 * 

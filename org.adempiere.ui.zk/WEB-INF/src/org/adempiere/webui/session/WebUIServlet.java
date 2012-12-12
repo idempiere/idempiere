@@ -45,9 +45,12 @@ import org.adempiere.util.ServerContextURLHandler;
  */
 public class WebUIServlet extends DHtmlLayoutServlet
 {
-	private static final long    serialVersionUID = 1L;
 
-    /** Logger for the class * */
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5625631664012999381L;
+	/** Logger for the class * */
     private static CLogger logger;
 
     public void init(ServletConfig servletConfig) throws ServletException
