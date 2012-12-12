@@ -15,7 +15,6 @@ package org.idempiere.fitnesse.fixture;
 
 import org.idempiere.fitnesse.server.fit.IFitFixtureFactory;
 
-import fit.Fixture;
 import fit.FixtureName;
 
 /**
@@ -37,10 +36,10 @@ public class FitFixtureFactory implements IFitFixtureFactory {
 	 * @see org.idempiere.fitnesse.server.fit.IFixtureFactory#getFixture(FixtureName)
 	 */
 	@Override
-	public Fixture getFixture(FixtureName fixtureName) {
+	public Object getFixture(FixtureName fixtureName) {
 		String className = fixtureName.toString();
 		try {
-			Class<Fixture> clazz = (Class<Fixture>) getClass().getClassLoader().loadClass(className);
+			Class<?> clazz = getClass().getClassLoader().loadClass(className);
 			return clazz.newInstance();
 		} catch (ClassNotFoundException e) {
 		} catch (InstantiationException e) {
@@ -50,7 +49,7 @@ public class FitFixtureFactory implements IFitFixtureFactory {
 		if (!fixtureName.isFullyQualified()) {
 			className = DEFAULT_PACKAGE + "." + fixtureName.toString();
 			try {
-				Class<Fixture> clazz = (Class<Fixture>) getClass().getClassLoader().loadClass(className);
+				Class<?> clazz = getClass().getClassLoader().loadClass(className);
 				return clazz.newInstance();
 			} catch (ClassNotFoundException e) {
 			} catch (InstantiationException e) {

@@ -13,13 +13,16 @@
  *****************************************************************************/
 package org.idempiere.fitnesse.server.fit;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.adempiere.base.Service;
 
 import fit.Fixture;
+import fit.FixtureClass;
 import fit.FixtureLoader;
 import fit.FixtureName;
+import fit.exception.CouldNotLoadComponentFitFailureException;
 import fit.exception.NoSuchFixtureException;
 
 /**
@@ -38,10 +41,43 @@ public class OSGiFixtureLoader extends FixtureLoader {
 		FixtureName fixtureName = new FixtureName(className);
 		List<IFitFixtureFactory> factories = Service.locator().list(IFitFixtureFactory.class).getServices();
 		for(IFitFixtureFactory factory : factories) {
-			Fixture fixture = factory.getFixture(fixtureName);
-			if (fixture != null)
-				return fixture;
+			Object fixture = factory.getFixture(fixtureName);
+			if (fixture != null && fixture instanceof Fixture)
+				return (Fixture) fixture;
 		}
+		Fixture fixture = instantiateFirstValidFixtureClass(fixtureName);
+		return fixture;
+	}
+	
+	private Fixture instantiateFixture(String fixtureName) throws Throwable {
+		Class<?> classForFixture = loadFixtureClass(fixtureName);
+		FixtureClass fixtureClass = new FixtureClass(classForFixture);
+		return fixtureClass.newInstance();
+	}
+
+	private Class<?> loadFixtureClass(String fixtureName) {
+		try {
+			return getClass().getClassLoader().loadClass(fixtureName);
+		} catch (ClassNotFoundException deadEnd) {
+			if (deadEnd.getMessage().equals(fixtureName))
+				throw new NoSuchFixtureException(fixtureName);
+			throw new CouldNotLoadComponentFitFailureException(
+					deadEnd.getMessage(), fixtureName);
+		}
+	}
+
+	private Fixture instantiateFirstValidFixtureClass(FixtureName fixtureName)
+			throws Throwable {
+		for (Iterator<String> i = fixtureName.getPotentialFixtureClassNames(
+				fixturePathElements).iterator(); i.hasNext();) {
+			String each = i.next();
+			try {
+				return instantiateFixture(each);
+			} catch (NoSuchFixtureException ignoreAndTryTheNextCandidate) {
+				//
+			}
+		}
+
 		throw new NoSuchFixtureException(fixtureName.toString());
 	}
 }

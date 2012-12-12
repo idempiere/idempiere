@@ -7,7 +7,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.internal.WrapsDriver;
 
 /**
  * utility class to find elements using zk jq selector
@@ -37,10 +37,10 @@ public class Zk {
 			if (context instanceof WebDriver) {
 				executor = (JavascriptExecutor) context;
 			} else {
-				RemoteWebElement element = (RemoteWebElement) context;
+				WebElement element = (WebElement) context;
 				String id = element.getAttribute("id");
 				selector = "#"+id+" "+selector;
-				executor = (JavascriptExecutor) element.getWrappedDriver();
+				executor = (JavascriptExecutor) ((WrapsDriver)element).getWrappedDriver();
 			}
 			List<WebElement> list = (List<WebElement>) executor.executeScript("return jq('" + selector + "').get();");
 			return list;

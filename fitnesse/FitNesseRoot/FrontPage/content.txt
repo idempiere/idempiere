@@ -1,4 +1,4 @@
-!1 Welcome to !-GlobalQSS-! !-ADempiere-! [[FitNesse][FitNesse.FitNesse]]!
+!1 Welcome to !-iDempiere-! [[FitNesse][FitNesse.FitNesse]]!
 !3 ''The fully integrated stand-alone acceptance testing framework and wiki.''
 
 # Here is a good place to add your first page (WikiWord). For example, MyTopLevelApplicationPage
@@ -6,6 +6,10 @@
 Suites:
 IdempiereSuite
 AvgCostSuite
+
+Zk Examples:
+ZkSingleClientLogin
+ZkMultiClientLogin
 
 
 | '''To Learn More...'''|

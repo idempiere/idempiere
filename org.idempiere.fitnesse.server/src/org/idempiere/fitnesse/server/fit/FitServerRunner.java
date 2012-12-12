@@ -5,6 +5,7 @@ import org.idempiere.fitnesse.server.Runner;
 
 import fit.Counts;
 import fit.FitServer;
+import fitlibrary.suite.FitLibraryServer;
 
 /**
  * Adapted from http://sourceforge.net/projects/patang/
@@ -19,8 +20,16 @@ class FitServerRunner extends Runner {
 
 	@Override
 	protected Counts run(String[] params) throws Exception {
-		FitServer fitServer = new FitServer();
+//		FitServer fitServer = new FitServer();
+		MyFitLibraryServer fitServer = new MyFitLibraryServer();
 		fitServer.run(params);
+//		fitServer.run(params);
 		return fitServer.getCounts();
+	}
+	
+	class MyFitLibraryServer extends FitLibraryServer {
+		public Counts getCounts() {
+			return suiteTestResults.getCounts();
+		}
 	}
 }

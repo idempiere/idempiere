@@ -13,7 +13,6 @@
  *****************************************************************************/
 package org.idempiere.fitnesse.server.fit;
 
-import fit.Fixture;
 import fit.FixtureName;
 
 /**
@@ -28,5 +27,5 @@ public interface IFitFixtureFactory {
 	 * @param fixtureName
 	 * @return Fixture
 	 */
-	public Fixture getFixture(FixtureName fixtureName);
+	public Object getFixture(FixtureName fixtureName);
 }

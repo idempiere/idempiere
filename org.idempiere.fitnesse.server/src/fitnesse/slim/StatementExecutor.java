@@ -7,6 +7,7 @@ import fitnesse.slim.converters.*;
 import java.beans.PropertyEditorManager;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Constructor;
 import java.util.*;
 
 import org.adempiere.base.Service;
@@ -141,7 +142,50 @@ public class StatementExecutor implements StatementExecutorInterface {
 		}
 	}
         
+	Class<?> k = searchPathsForClass(className);
+    Constructor<?> constructor = getConstructor(k.getConstructors(), args);
+    if (constructor == null)
+    	throw new SlimError(String.format("message:<<NO_CONSTRUCTOR %s>>", className));
+
+    Object newInstance = constructor.newInstance(ConverterSupport.convertArgs(args, constructor
+        .getParameterTypes()));
+    
+    if (newInstance instanceof StatementExecutorConsumer) {
+    	((StatementExecutorConsumer) newInstance).setStatementExecutor(this);
+    }
+    
+    return newInstance;
+  }
+  
+  private Class<?> searchPathsForClass(String className) {
+    Class<?> k = getClass(className);
+    if (k != null)
+      return k;
+    List<String> reversedPaths = new ArrayList<String>(paths);
+    Collections.reverse(reversedPaths);
+    for (String path : reversedPaths) {
+      k = getClass(path + "." + className);
+      if (k != null)
+        return k;
+    }
     throw new SlimError(String.format("message:<<NO_CLASS %s>>", className));
+  }
+  
+  private Class<?> getClass(String className) {
+    try {
+      return getClass().getClassLoader().loadClass(className);
+    } catch (ClassNotFoundException e) {
+      return null;
+    }
+  }
+  
+  private Constructor<?> getConstructor(Constructor<?>[] constructors, Object[] args) {
+    for (Constructor<?> constructor : constructors) {
+      Class<?> arguments[] = constructor.getParameterTypes();
+      if (arguments.length == args.length)
+        return constructor;
+    }
+    return null;
   }
   
   public Object call(String instanceName, String methodName, Object... args) {

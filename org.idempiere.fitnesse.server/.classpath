@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="selenium-server-standalone-2.27.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="fitlibraryweb-2.0.jar" sourcepath="fitlibrarywebSrc-2.0.zip"/>
+	<classpathentry exported="true" kind="lib" path="log4j-1.2.16.jar"/>
+	<classpathentry exported="true" kind="lib" path="fitlibrary-2.0.jar" sourcepath="fitlibrarySrc-2.0.zip"/>
 	<classpathentry exported="true" kind="lib" path="fitnesse.jar" sourcepath="fitnesse-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
