@@ -107,7 +107,6 @@ public class RfQResponseRank extends SvrProcess
 	 *	@param rfq RfQ 
 	 *	@param responses responses
 	 */
-	@SuppressWarnings("unchecked")
 	private void rankLines (MRfQ rfq, MRfQResponse[] responses)
 	{
 		MRfQLine[] rfqLines = rfq.getLines();

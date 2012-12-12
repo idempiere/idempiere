@@ -884,7 +884,6 @@ public class ModelValidationEngine
 		}
 
 		//osgi event handlers
-		@SuppressWarnings("rawtypes")
 		Event event = new Event(IEventTopics.PREF_AFTER_LOAD, (Map<String, ?>)null);
 		EventManager.getInstance().sendEvent(event);
 	}

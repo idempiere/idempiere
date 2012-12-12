@@ -98,7 +98,6 @@ public class ScheduleUtil
 	 *	@param trxName transaction
 	 *  @return Array of existing Assignments or null - if free
 	 */
-	@SuppressWarnings("unchecked")
 	public MAssignmentSlot[] getAssignmentSlots (int S_Resource_ID,
 		Timestamp start_Date, Timestamp end_Date,
 		BigDecimal qty, boolean getAll, String trxName)

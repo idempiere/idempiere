@@ -104,7 +104,6 @@ public class ExportHelper {
 	 * 	Process - Generate Export Format
 	 *	@return info
 	 */
-	@SuppressWarnings("unchecked")
 	public String exportRecord (PO po, Integer ReplicationMode , String ReplicationType, Integer ReplicationEvent) throws Exception
 	{
 		MClient client = MClient.get (po.getCtx(), m_AD_Client_ID);

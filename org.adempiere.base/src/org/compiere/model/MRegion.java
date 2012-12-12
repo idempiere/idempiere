@@ -118,7 +118,6 @@ public final class MRegion extends X_C_Region
 	 * 	@param ctx context
 	 *  @return MCountry Array
 	 */
-	@SuppressWarnings("unchecked")
 	public static MRegion[] getRegions(Properties ctx)
 	{
 		if (s_regions == null || s_regions.size() == 0)
@@ -135,7 +134,6 @@ public final class MRegion extends X_C_Region
 	 *  @param C_Country_ID country
 	 *  @return MRegion Array
 	 */
-	@SuppressWarnings("unchecked")
 	public static MRegion[] getRegions (Properties ctx, int C_Country_ID)
 	{
 		if (s_regions == null || s_regions.size() == 0)

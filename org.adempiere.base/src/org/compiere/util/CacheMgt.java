@@ -218,7 +218,6 @@ public class CacheMgt
 	 * 	@param Record_ID record if applicable or 0 for all
 	 * 	@return number of deleted cache entries
 	 */
-	@SuppressWarnings("unchecked")
 	protected int resetLocalCache (String tableName, int Record_ID)
 	{
 		if (tableName == null)
@@ -253,7 +252,6 @@ public class CacheMgt
 	 * 	Total Cached Elements
 	 *	@return count
 	 */
-	@SuppressWarnings("unchecked")
 	public int getElementCount()
 	{
 		int total = 0;
