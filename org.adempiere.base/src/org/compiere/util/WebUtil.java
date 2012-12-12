@@ -962,7 +962,7 @@ public final class WebUtil
 			out.close();
 			//
 			time = System.currentTimeMillis() - time;
-			double speed = (fileLength/1024) / ((double)time/1000);
+			double speed = (fileLength/(double)1024) / (time/(double)1000);
 			log.info("Length=" 
 				+ fileLength + " - " 
 				+ time + " ms - " 
@@ -1015,7 +1015,7 @@ public final class WebUtil
 			in.close();
 			//
 			time = System.currentTimeMillis() - time;
-			double speed = (fileLength/1024) / ((double)time/1000);
+			double speed = (fileLength/(double)1024) / (time/(double)1000);
 			log.info("Length=" 
 				+ fileLength + " - " 
 				+ time + " ms - " 
