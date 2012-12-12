@@ -1,0 +1,52 @@
+This tests deleting a client that has bookings.  Deleting a client that has current bookings should fail, we should have to cancel any bookings first.
+
+ * Let's set up our items first.
+
+|''setup''|
+|''rental item name''|''count''|''$/hour''|''$/day''|''$/week''|''deposit''|
+|coffee dispenser|10|1.50|8.20|60.00|0.00|
+|hot water dispenser|12|1.50|8.00|50.00|0.00|
+|cup|500|0.05|0.45|2.00|0.10|
+|coffee pot|20|1.50|12.00|60.00|0.00|
+| coffee urn | 20| 1.50| 12.00|60.00| 50.00|
+| table | 20 | 6.00 | 48.00| 200.00| 80.00|
+
+
+
+|''begin admin transaction''| Bill |
+|''create client''|Fred|''with phone number''|379 5055|''in city''|Auckland|''in zone''|South|''at address''|93 Carbine Rd|
+|''complete transaction''|
+
+
+|''begin transaction for client''| Fred |''staff''| Bill|
+|''book''|2||coffee dispenser|''on''|2004/05/08 09:01|''for''|2 hours|
+|''pay with cash $''|6.00|
+|''complete transaction''|
+
+
+ ---- * Actions:
+|''time is now''|2004/05/08 09:02|
+
+ * Now delete our client.  This should fail because we have outstanding bookings.
+
+|''begin admin transaction''| Bill |
+|'''reject'''|''delete client''|Fred|
+|''complete transaction''|
+
+ * Now we can cancel the booking
+
+
+|''begin transaction for client''| Fred |''staff''| Bill|
+|''cancel booking of''|2||coffee dispenser|''on''|2004/05/08 09:01|''for''|2 hours|
+|''refund cash $''|6.00|
+|''complete transaction''|
+
+ * Now we should be able to delete our client.
+
+|''begin admin transaction''| Bill |
+|'''ensure'''|''delete client''|Fred|
+|''complete transaction''|
+
+
+|''client list''|
+|''name''|''phone''|''city''|''zone''|''address''|

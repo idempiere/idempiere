@@ -1,0 +1,5 @@
+A ${rule} defines for the business domain:
+ * Calculation rules - examples that show how values are calculated
+  * Eg, the discount
+ * Constraint rules - examples that show what's permitted (or not):
+  * Eg, validation rules for a property, several properties, or on the elements of a collection

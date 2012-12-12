@@ -1,0 +1,25 @@
+!2 The result of an action can't be used if there is a problem with one of the arguments to the action
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border>
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr>
+</table>
+<table border>
+<tr><td>check</td><td>add</td><td>AA</td><td>2</td></tr>
+</table>
+<table border>
+<tr><td>check</td><td>add</td><td>1</td><td>AA</td></tr>
+</table>
+<table border>
+<tr><td>show</td><td>add</td><td>AA</td></tr>
+</table>-!|!-<table border>
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr>
+</table>
+<table border>
+<tr><td>check</td><td>add</td><td class="error">AA<hr/> <span class="fit_label">Invalid Number</span></td><td>2</td></tr>
+</table>
+<table border>
+<tr><td>check</td><td>add</td><td>1</td><td class="error">AA<hr/> <span class="fit_label">Invalid Number</span></td></tr>
+</table>
+<table border>
+<tr><td>show</td><td>add</td><td class="error">AA<hr/> <span class="fit_label">Invalid Number</span></td></tr>
+</table>-!|

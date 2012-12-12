@@ -1,0 +1,8 @@
+|!-DiscountGroupOrderedList-!|
+|''order''|''future value''|''max owing''|''min purchase''|''discount percent''|
+|1|low|0.00|0.00|0|
+|2|low|0.00|2000.00|3|
+|3|medium|500.00|600.00|3|
+|4|medium|0.00|500.00|5|
+|5|high|2000.00|2000.00|10|
+

@@ -1,0 +1,94 @@
+!**< def
+!define body (|''name is default within''|name|
+
+|''get''|@{@{this}.name}|is|@{name}|
+)
+!define body2 (|''other''|name|
+
+|''name is default within''|@{name}|
+)
+!define test (!|fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest|
+
+|define action|Person|
+|${body}|
+
+|define action|Person|
+|${body2}|
+
+|'''set'''|rick.name|'''to'''|Rick|
+|'''set'''|rick.class|'''to'''|Person|
+
+|'''oo'''|rick|''other''|Rick|
+
+|''get''|@{this}|'''is'''|@{this}|
+)
+**!
+There is no need to explicitly use an '''oo''' special action inside a defined action; if any action within the body can be applied with an '''oo''' it will be.
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>define action</td>
+<td>Person</td>
+</tr>
+<tr><td colspan="2"><table border="1" cellspacing="0">
+<tr><td class="pass"><i>name is default within</i></td>
+<td>name</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>@{@{this}.name}</td>
+<td>is</td>
+<td>@{name}</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>define action</td>
+<td>Person</td>
+</tr>
+<tr><td colspan="2"><table border="1" cellspacing="0">
+<tr><td class="pass"><i>other</i></td>
+<td>name</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>name is default within</i></td>
+<td>@{name}</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>rick.name</td>
+<td><b>to</b></td>
+<td>Rick</td>
+</tr>
+<tr><td><b>set</b></td>
+<td>rick.class</td>
+<td><b>to</b></td>
+<td>Person</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><b>oo</b></td>
+<td>rick</td>
+<td class="pass"><i>other</i></td>
+<td>Rick</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>rick</td>
+<td><b>is</b></td>
+<td class="pass">rick</td>
+</tr>
+</table>-!|

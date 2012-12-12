@@ -1,0 +1,2 @@
+|''class''|concrete one|
+|''count''|3|

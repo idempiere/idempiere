@@ -1,0 +1,36 @@
+!*< def
+!define html ({{{<t-table id='t1'>
+<tr>
+<td><bb/><input type="text" id="withValue" value="red"/></td>
+<td><input type="text" id="withValue" value="green"/></td>
+</tr>
+<tr>
+<td id="tdd" name="tddd"><input type="text" id="withValue" value="yellow"/></td>
+</tr>
+</t-table>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''with''|//table//tr[1]//td[1]|''do''|
+|''text of''|//input[@id="withValue"]|''is''|red|
+|''text of''|//input[@id="withValue"]|''becomes''|red|
+
+|''with''|//table//tr[1]//td[2]|''do''|
+|''text of''|//input[@id="withValue"]|''is''|green|
+
+|''with''|//table//tr[2]|''do''|
+|''text of''|//input[@id="withValue"]|''is''|yellow|
+
+|''with''|tdd|''do''|
+|''text of''|//input[@id="withValue"]|''is''|yellow|
+
+|''with''|name=tddd|''do''|
+|''text of''|//input[@id="withValue"]|''is''|yellow|
+
+|''with''|name=tddd|''do''|
+|''element exists''|//input[@id="withValue"]|

@@ -1,0 +1,20 @@
+!2 The 'start' action allows a series of tables to be used to test through the same actor. It's especially handy when tables in between use other fixtures, such as a ''!-RowFixture-!''.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan=3>fit.ActionFixture</td></tr>
+<tr><td>start</td><td colspan=2>fit.specify.ActionFixtureUnderTest</td></tr>
+<tr><td>enter</td><td>enterResult</td><td>134</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td colspan=3>fit.ActionFixture</td></tr>
+<tr><td>check</td><td>intResultMethod</td><td>134</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan=3>fit.ActionFixture</td></tr>
+<tr><td>start</td><td colspan=2>fit.specify.ActionFixtureUnderTest</td></tr>
+<tr><td>enter</td><td>enterResult</td><td>134</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td colspan=3>fit.ActionFixture</td></tr>
+<tr><td>check</td><td>intResultMethod</td><td class="pass">134</td></tr>
+</table>-!|
+ * There is no ''start'' in the second table

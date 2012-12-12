@@ -1,0 +1,9 @@
+!2 ''!-DoFixture-!'' checks the fixture first for a method. Thus the fixture is an optional adapter for the System Under Test:
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table><tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr></table>
+<table>
+<tr><td>hidden method</td></tr>
+</table>-!|!-<table><tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr></table>
+<table>
+<tr><td>hidden method</td></tr>
+</table>-!|

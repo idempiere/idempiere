@@ -1,0 +1,8 @@
+|''client''|Joanna|''hires''|5|''of''|coffee dispenser|''for''|1|''days''|
+|''client''|Joanna|''hires''|2|''of''|hot water dispenser|''for''|2|''days''|
+|check|cost|16.00|
+
+|''rental list''|
+|''client''|''rental item''|''count''|''days''|
+|Joanna|coffee dispenser|5|1|
+|Joanna|hot water dispenser|2|2|

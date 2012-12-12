@@ -1,0 +1,138 @@
+!3 Make sure that all rows of a table are interpreted, even if rows have been added to it.
+!**< def
+!define test (|!-fitlibrary.specify.definedAction.DefinedActionUnderTest-!|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActions.OneDefinedAction|
+
+|''set expand defined actions''|true|
+
+|''login''|rick|''with''||
+|''login''|rick|''with''||
+|''login''|rick|''with''||
+|''login''|rick|''with''||
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.definedAction.DefinedActionUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>clear defined actions</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>define actions at</i></td>
+<td><a href="FitLibrary.SpecifiCations.DefinedActions.OneDefinedAction">.FitLibrary.SpecifiCations.DefinedActions.OneDefinedAction</a></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>set expand defined actions</i></td>
+<td>true</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>login</i></td>
+<td>rick</td>
+<td class="pass"><i>with</i></td>
+<td>&nbsp;</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActions.OneDefinedAction'>.FitLibrary.SpecifiCations.DefinedActions.OneDefinedAction</a>:</span>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="pass">with</td>
+<td>//input[@id="userName"]</td>
+<td class="pass">enter text</td>
+<td>rick</td></tr></table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="pass">with</td>
+<td>//input[@id="password"]</td>
+<td class="pass">enter text</td>
+<td></td></tr></table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="pass">submit</td>
+<td>//form</td></tr></table>
+<br/></html></td></tr>
+<tr><td class="pass"><i>login</i></td>
+<td>rick</td>
+<td class="pass"><i>with</i></td>
+<td>&nbsp;</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActions.OneDefinedAction'>.FitLibrary.SpecifiCations.DefinedActions.OneDefinedAction</a>:</span>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="pass">with</td>
+<td>//input[@id="userName"]</td>
+<td class="pass">enter text</td>
+<td>rick</td></tr></table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="pass">with</td>
+<td>//input[@id="password"]</td>
+<td class="pass">enter text</td>
+<td></td></tr></table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="pass">submit</td>
+<td>//form</td></tr></table>
+<br/></html></td></tr>
+<tr><td class="pass"><i>login</i></td>
+<td>rick</td>
+<td class="pass"><i>with</i></td>
+<td>&nbsp;</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActions.OneDefinedAction'>.FitLibrary.SpecifiCations.DefinedActions.OneDefinedAction</a>:</span>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="pass">with</td>
+<td>//input[@id="userName"]</td>
+<td class="pass">enter text</td>
+<td>rick</td></tr></table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="pass">with</td>
+<td>//input[@id="password"]</td>
+<td class="pass">enter text</td>
+<td></td></tr></table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="pass">submit</td>
+<td>//form</td></tr></table>
+<br/></html></td></tr>
+<tr><td class="pass"><i>login</i></td>
+<td>rick</td>
+<td class="pass"><i>with</i></td>
+<td>&nbsp;</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActions.OneDefinedAction'>.FitLibrary.SpecifiCations.DefinedActions.OneDefinedAction</a>:</span>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="pass">with</td>
+<td>//input[@id="userName"]</td>
+<td class="pass">enter text</td>
+<td>rick</td></tr></table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="pass">with</td>
+<td>//input[@id="password"]</td>
+<td class="pass">enter text</td>
+<td></td></tr></table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="pass">submit</td>
+<td>//form</td></tr></table>
+<br/></html></td></tr>
+</table>-!|

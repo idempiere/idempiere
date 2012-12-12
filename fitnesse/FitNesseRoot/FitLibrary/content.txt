@@ -1,0 +1,115 @@
+!**< defines
+!define REGRACE_LINK {false}
+!define REGRACE_TOC {false}
+
+!define advanced {Advanced (and more technical) features of FitLibrary, including:
+ * Specific sorts of collections:
+  * ordered, unordered, subsets, maps, arrays
+ * [[''Defined actions''][.FitLibrary.UserGuide.FitLibraryByExample.DefinedActions]]
+ * [[''Dynamic variables''][.FitLibrary.AdvancedTutorials.DynamicVariables]]
+ * [[Multiple flow objects][.FitLibrary.AdvancedTutorials.MultipleFlowObjects]]
+ * Implementation details:
+  * [[setUp, tearDown, onFailure methods][.FitLibrary.AdvancedTutorials.SetUpTearDownOnFailure]]
+  * runtime information access in fixture code
+  * specialised handling of table cell text
+ * [[Migrating from Slim to FitLibrary][.FitLibrary.AdvancedTutorials.MigratingSlimDecisionTables]]
+ * [[Logging techniques][.FitLibrary.AdvancedTutorials.LoggingTechniques]] using '''show''', '''show after''' and [[''log4j''][.FitLibrary.AdvancedTutorials.LoggingTechniques.Log4jLogging]] logging
+}
+
+**!
+!3 Invented and developed in Java by [[''Rick Mugridge''][.FitLibrary.GlosSary.RickMugridge]], http://www.rimuresearch.com
+
+|!3 ^WhatIsNew|''What's new in this release.''|
+|!3 ^ToDo|''Things we might do.''|
+
+|!3 ^BeginningTutorial|''First tutorial for FitLibrary''|
+|!3 >AdvancedTutorials|''${advanced}''|
+|!3 ^UserGuide|''User guide for FitLibrary''|
+|!3 ^ReferenCe|''Reference for FitLibrary''|
+|!3 ^SpecifiCations|''Storytests that specify FitLibrary. These are used to drive the development of FitLibrary''|
+
+|!3 ^SuiteFixture|''Details of suite fixtures''|
+|!3 ^FitBook|''Example storytests from the [[Fit Book][.FitLibrary.GlosSary.FitBook]]''|
+|!3 ^RentEz|''An extended example of storytests for an application. These build on the example in the [[Fit Book][.FitLibrary.GlosSary.FitBook]].''|
+|!3 ^GlosSary|''Glossary of terms used in FitLibrary''|
+|!3 ^CrossReference|''A way of getting cross reference information about actions used by storytest''|
+|!3 ^BuildingFitLibrary|''Details of the build process for FitLibrary''|
+
+!c !img http://files/images/fitBookCover.jpeg
+
+>WasSuiteSetUp
+
+!1 Temporarily disabled tests:
+
+.FitLibrary.SpecifiCations.DefinedActions.BasedOnClass.UseTheTextThisInClassBasedActions
+
+!**< glossary reference definitions
+!define action ([[''workflow action''][.FitLibrary.GlosSary.WorkflowAction]])
+!define actionMethod ([[''action method''][.FitLibrary.GlosSary.ActionMethod]])
+!define actions ([[''actions phase''][.FitLibrary.GlosSary.ActionsPhase]])
+!define arrayTraverse ([[''arrayTraverse''][.FitLibrary.GlosSary.ArrayTraverse]])
+!define autoWrapped ([[''auto-wrapped''][.FitLibrary.GlosSary.AutoWrapping]])
+!define checks ([[''after phase''][.FitLibrary.GlosSary.AfterPhase]])
+!define collectionSetUpTraverse ([[''collectionSetUpTraverse''][.FitLibrary.GlosSary.CollectionSetUpTraverse]])
+!define copyright {''Copyright (c) 2004 - 2009'' [[''Rick Mugridge''][.FitLibrary.GlosSary.RickMugridge]], ''http://www.rimuresearch.com''}
+!define ddd ([[''Domain Driven Design''][.FitLibrary.GlosSary.DomainDrivenDesign]])
+!define doFixture ([[''doFixture''][.FitLibrary.GlosSary.DoFixture]])
+!define doTraverse ([[''doTraverse''][.FitLibrary.GlosSary.DoTraverse]])
+!define domainAdapter ([[''Domain Adapter''][.FitLibrary.GlosSary.DomainAdapter]])
+!define domainObject ([[''Domain object''][.FitLibrary.GlosSary.DomainObject]])
+!define domainObjectCheck ([[''domainObjectCheck''][.FitLibrary.GlosSary.DomainObjectCheck]])
+!define domainObjectSetUp ([[''domainObjectSetUp''][.FitLibrary.GlosSary.DomainObjectSetUp]])
+!define domainFixture ([[''domainFixture''][.FitLibrary.GlosSary.DomainFixture]])
+!define domainTraverse ([[''domainTraverse''][.FitLibrary.GlosSary.DomainTraverse]])
+!define entity ([[''Entity''][.FitLibrary.GlosSary.DomainEntity]])
+!define extendedCamelCase ([[''extendedCamelCasing''][.FitLibrary.GlosSary.ExtendedCamelCase]])
+!define expected ([[''expected''][.FitLibrary.GlosSary.ExpectedValue]])
+!define finder ([[''finder method''][.FitLibrary.GlosSary.FinderMethod]])
+!define fit ([[''Fit''][.FitLibrary.GlosSary.FiT]])
+!define fitBook ([[''Fit Book''][.FitLibrary.GlosSary.FitBook]])
+!define fitLibrary ([[''fitLibrary''][.FitLibrary.GlosSary.FitLibrary]])
+!define fitLibrary2 ([[''fitLibraryGeneric''][.FitLibrary.GlosSary.FitLibraryGeneric]])
+!define fitNesse ([[''fitNesse''][.FitLibrary.GlosSary.FitNesse]])
+!define fixture ([[''Fixture''][.FitLibrary.GlosSary.FixTure]])
+!define fixturingMethod ([[''fixturing method''][.FitLibrary.GlosSary.FixturingMethod]])
+!define flow ([[''flow''][.FitLibrary.GlosSary.FloW]])
+!define getter ([[''getter''][.FitLibrary.GlosSary.GetterMethod]])
+!define given ([[''given''][.FitLibrary.GlosSary.GivenValue]])
+!define gpl2 (''Released under the terms of the GNU General Public License version 2 or later.'')
+!define key ([[''key''][.FitLibrary.GlosSary.EntityKey]])
+!define keywords ([[''keywords''][.FitLibrary.GlosSary.KeyWords]])
+!define label ([[''label''][.FitLibrary.GlosSary.ColumnLabel]])
+!define listSetUp ([[''collectionSetUp''][.FitLibrary.GlosSary.CollectionSetUp]])
+!define listTraverse ([[''listTraverse''][.FitLibrary.GlosSary.ListTraverse]])
+!define mapTraverse ([[''mapTraverse''][.FitLibrary.GlosSary.MapTraverse]])
+!define objectFactoryMethod ([[''object factory method''][.FitLibrary.GlosSary.ObjectFactoryMethod]])
+!define objectUnderTest ([[''Object Under Test''][.FitLibrary.GlosSary.ObjectUnderTest]])
+!define parseDelegate ([[''Parser delegate''][.FitLibrary.GlosSary.ParseDelegate]])
+!define parserDelegateMethod ([[''Parser delegate method''][.FitLibrary.GlosSary.ParserDelegateMethod]])
+!define parser ([[''Parser''][.FitLibrary.GlosSary.ParSer]])
+!define pleaseIgnore (''Please ignore this: it simply hides away the definitions that are needed for nested tables.'')
+!define programmers (!3 This is only relevant to programmers)
+!define rick ([[''Rick Mugridge''][.FitLibrary.GlosSary.RickMugridge]])
+!define rule ([[''business rule''][.FitLibrary.GlosSary.BusinessRule]])
+!define ruleMethod ([[''rule method''][.FitLibrary.GlosSary.RuleMethod]])
+!define selector ([[''fitLibrarySelector''][.FitLibrary.GlosSary.FitLibrarySelector]])
+!define selfParse ([[''self parse''][.FitLibrary.GlosSary.SelfParse]])
+!define setter ([[''setter''][.FitLibrary.GlosSary.SetterMethod]])
+!define setup ([[''before phase''][.FitLibrary.GlosSary.BeforePhase]])
+!define setUpMethod ([[''setUp method''][.FitLibrary.GlosSary.SetUpMethod]])
+!define suiteSetUpMethod ([[''suite setUp method''][.FitLibrary.GlosSary.SuiteSetUpMethod]])
+!define setTraverse ([[''setTraverse''][.FitLibrary.GlosSary.SetTraverse]])
+!define show ([[''show method''][.FitLibrary.GlosSary.ShowMethod]])
+!define storytest ([[''storytest''][.FitLibrary.GlosSary.StoryTest]])
+!define subsetTraverse ([[''subsetTraverse''][.FitLibrary.GlosSary.SubsetTraverse]])
+!define suite ([[''suite fixture''][.FitLibrary.GlosSary.SuiteFixture]])
+!define suiteTearDownMethod ([[''suite tearDown method''][.FitLibrary.GlosSary.SuiteTearDownMethod]])
+!define sut ([[''System Under Test''][.FitLibrary.GlosSary.SystemUnderTest]])
+!define tearDownMethod ([[''tearDown method''][.FitLibrary.GlosSary.TearDownMethod]])
+!define traverse ([[''Traverse''][.FitLibrary.GlosSary.TraVerse]])
+!define valueObject ([[''Value Object''][.FitLibrary.GlosSary.ValueObject]])
+!define workflow ([[''workflow''][.FitLibrary.GlosSary.WorkFlow]])
+!define workflowTraverse ([[''doTraverse {doFixture}''][.FitLibrary.GlosSary.DoTraverse]])
+
+**!
+----'''The following copyright notice applies to all the pages/files in the ${fitLibrary} user guide and specifications that are provided in a release.'''

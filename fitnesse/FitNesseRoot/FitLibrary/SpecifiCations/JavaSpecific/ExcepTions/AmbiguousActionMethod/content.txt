@@ -1,0 +1,16 @@
+!**< def
+!define test (!|fitlibrary.specify.exception.AmbiguousActionMethod|
+
+|overloaded|1|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.exception.AmbiguousActionMethod</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error">overloaded<hr/> <span class="fit_label"><ul><li>"overloaded" is ambiguous</li></ul></span></td>
+<td>1</td>
+</tr>
+</table>-!|

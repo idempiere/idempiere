@@ -1,0 +1,37 @@
+!**< def
+!define array (|1|
+|2|
+|3|
+)
+!define test (!|fitlibrary.specify.arrayParser.Match|
+
+|'''check'''|''array123''|${array}|
+
+|'''check'''|''arrayEmpty''||
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.arrayParser.Match</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>array123</i></td>
+<td><table border="1" cellspacing="0">
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>2</td>
+</tr>
+<tr class="pass"><td>3</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>arrayEmpty</i></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>-!|

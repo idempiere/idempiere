@@ -1,0 +1,4 @@
+A plugin method can specify how to create an object of a given type. This is especially useful if the type is an interface or abstract class in Java.
+^SpecifyCall
+^SpecifyCallDoesNotHandleClass
+^SpecifyCallThrowsException

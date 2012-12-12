@@ -1,0 +1,64 @@
+!**< def
+!define body (|''name is for default object''|name|
+
+|''get''|@{@{this}.name}|is|@{name}|
+)
+!define test (!|fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest|
+
+|define action|Person|
+|${body}|
+
+|'''set'''|rick.name|'''to'''|Rick|
+|'''set'''|rick.class|'''to'''|Person|
+|'''set'''|this|'''to'''|rick|
+
+|''name is for default object''|Rick|
+)
+**!
+If the dynamic variable ''this'' is set, it's treated as the default object. This avoids the need to explicitly use an '''oo''' special action.
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>define action</td>
+<td>Person</td>
+</tr>
+<tr><td colspan="2"><table border="1" cellspacing="0">
+<tr><td class="pass"><i>name is for default object</i></td>
+<td>name</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>@{@{this}.name}</td>
+<td>is</td>
+<td>@{name}</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>rick.name</td>
+<td><b>to</b></td>
+<td>Rick</td>
+</tr>
+<tr><td><b>set</b></td>
+<td>rick.class</td>
+<td><b>to</b></td>
+<td>Person</td>
+</tr>
+<tr><td><b>set</b></td>
+<td>this</td>
+<td><b>to</b></td>
+<td>rick</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>name is for default object</i></td>
+<td>Rick</td>
+</tr>
+</table>-!|

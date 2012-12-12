@@ -1,0 +1,20 @@
+!3 4. Unknown Page
+#
+When run, this storytest gives the error "''Received Status code = 404: Not Found''", as the file can't be found.
+
+Remember to run the server on [[this page][<HttpClientTutorial.RunFileServer]] if you get a "''Connection refused''" error.
+
+|''with http client''|
+
+ * Request an unknown page:
+
+|''http get''|http://localhost:8093/files/unknownPage.html|
+
+|'''show'''|''headers''|
+
+|''headers include''|
+|''name''|''value''|
+|Content-Type|text/html; charset=UTF-8|
+----!3 5. Next
+#
+On [[this page][UseProxy]], we'll see how to access a page through a web proxy.

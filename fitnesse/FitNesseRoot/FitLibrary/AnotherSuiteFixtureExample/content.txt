@@ -1,0 +1,7 @@
+This defines another suite
+ * This page includes a symbolic link to .FitLibrary.SuiteFixtureExample so that we can access the same storytests as the other suite
+ * This page includes a different ..FitLibrary.AnotherSuiteFixtureExample.SuiteSetUp from the other suite
+ * In this case, it uses the same suite fixture but chooses a different keyword
+ * So a different subset of storytests are run
+|!contents|
+

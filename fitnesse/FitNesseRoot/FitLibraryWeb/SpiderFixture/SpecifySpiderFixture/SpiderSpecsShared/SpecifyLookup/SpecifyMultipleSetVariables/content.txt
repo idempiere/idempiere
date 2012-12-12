@@ -1,0 +1,8 @@
+|''lookup''|
+|one|hit?|dog?|
+|two|2|lucky|
+|one|1|rover|
+
+|''get''|@{hit}|is|1|
+
+|''get''|@{dog}|is|rover|

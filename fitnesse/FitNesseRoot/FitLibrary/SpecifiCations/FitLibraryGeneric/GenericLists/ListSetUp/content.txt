@@ -1,0 +1,36 @@
+!***< def
+!define strings (
+|abc|
+|def|
+)
+!define colours (
+|''colour''|
+|blue|
+|red|
+|green|
+)
+!define black (
+|''colour''|
+|black|
+)
+!define listOfLists (
+|${colours}|
+|${black}|
+||
+)
+!define someLists (
+ * List<String>
+|''a list of string''|${strings}|
+ * List<Colour>
+|''a list''|${colours}|
+ * List<List<Colour>>
+|''a list of lists''|${listOfLists}|
+)
+**!
+!|fitlibraryGeneric.specify.collections.GenericCollections|
+
+${someLists}
+
+|''checks''|
+
+${someLists}

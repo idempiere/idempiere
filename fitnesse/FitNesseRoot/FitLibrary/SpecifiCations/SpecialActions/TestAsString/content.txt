@@ -1,0 +1,48 @@
+The special action '''as string''' can be applied to an action that returns a String (or other object that can be turned into a String).
+
+The rows in the table that follow may then access String methods, as show in the example below:
+
+|'''as string'''|''get''|Hello there world|
+|''compare to''|Hello|>|0|
+|'''show'''|''concat''|-- Hello|
+|''contains''|there|
+|''ends with''|world|
+|''equals ignore case''|hello there world|
+|''index of''|there|'''is'''|6|
+|''index''|e|''of''|3|'''is'''|8|
+|''is equals''|Hello there world|
+|'''not'''|''is empty''|
+|''last index of''|e|'''is'''|10|
+|''length''|>|5|
+
+|'''as string'''|''get''|Hello there world|
+|''matches''|Hell.*ld|
+|''replace''|e||E|'''is'''|HEllo thErE world|
+|''replace''|e..|''all''|E|'''is'''|HEo thE world|
+|'''show'''|''split''|o|
+|'''show'''|''split''| |
+|'''show'''|''split''|\n|
+|''starts with''|Hello|
+|''substring''|10|'''is'''|e world|
+|''substring''|1||3|'''is'''|el|
+|''to lower case''|'''is'''|hello there world|
+|''to upper case''|'''is'''|HELLO THERE WORLD|
+
+|'''as string'''|''get''|Hello there world|
+|''split''| |
+|Hello|
+|there|
+|world|
+
+|'''as string'''|''get''|Hello-there-world|
+|''split''|e|
+|H|
+|llo-th|
+|r|
+|-world|
+
+|'''as string'''|''get''|Hello there world|
+|'''as string'''|''replace''|o||O|
+|'''as string'''|''substring''|10|
+|'''as string'''|''substring''|2|
+|'''show'''|''to string''|

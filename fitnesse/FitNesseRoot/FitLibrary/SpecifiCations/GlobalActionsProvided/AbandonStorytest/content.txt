@@ -1,0 +1,38 @@
+!2 A storytest can be abandoned, so that the rest doesn't run
+When a storytest is abandoned with ''abandon storytest'', the rest of the storytest is not run and that table is coloured as ignored. This allows for test selection to be managed both in the storytest and programmatically.
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border>
+<tr><td>fitlibrary.specify.global.ExtraGlobal</td></tr>
+</table>
+<table border>
+<tr><td>abandon storytest</td></tr>
+</table>
+<table border>
+<tr><td>add</td><td>1</td></tr>
+</table>
+<table border>
+<tr><td>add</td><td>2</td></tr>
+</table>
+<table border>
+<tr><td>check</td><td>sum</td><td>3</td></tr>
+</table>
+<table border>
+<tr><td>check</td><td>sum</td><td>4</td></tr>
+</table>-!|!-<table border>
+<tr><td>fitlibrary.specify.global.ExtraGlobal</td></tr>
+</table>
+<table border>
+<tr><td class="ignore">abandon storytest</td></tr>
+</table>
+<table border>
+<tr><td class="ignore">add</td><td class="ignore">1</td></tr>
+</table>
+<table border>
+<tr><td class="ignore">add</td><td class="ignore">2</td></tr>
+</table>
+<table border>
+<tr><td class="ignore">check</td><td class="ignore">sum</td><td class="ignore">3</td></tr>
+</table>
+<table border>
+<tr><td class="ignore">check</td><td class="ignore">sum</td><td class="ignore">4</td></tr>
+</table>-!|

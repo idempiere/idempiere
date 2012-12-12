@@ -1,0 +1,11 @@
+!2 Checking only
+So the fixture moves immediately to a ''checking'' state and uses one of the list fixtures or domain object fixture to check each of the tables
+
+^SpecifyPrimitive
+
+^SpecifyArrays
+^SpecifyLists
+^SpecifySets
+^SpecifyMaps
+
+^SpecifyObject

@@ -1,0 +1,27 @@
+Can request that elapsed time information is added to tables.
+
+The setting applies to this and subsequent storytests (until it's changed), so it can be set at a suite level (eg, in ''!-SuiteSetUp-!'').
+
+The timing information is in milliseconds.
+
+The timing information has a tooltip which gives date/time information. 
+
+|''runtime configuration''|
+|''add timings''|true|
+
+|''start stop watch''|
+
+|''stop watch''|<|200|
+
+|''sleep for''|20|
+
+|''stop watch''|<|200|
+
+|''sleep for''|100|
+
+|''stop watch''|<|200|
+
+|''runtime configuration''|
+|''add timings''|false|
+
+|''stop watch''|>|100|

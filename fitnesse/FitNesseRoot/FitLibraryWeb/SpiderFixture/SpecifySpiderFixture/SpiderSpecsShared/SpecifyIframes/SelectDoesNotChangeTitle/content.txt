@@ -1,0 +1,9 @@
+|''keywords''|htmlunit,ie,firefox|
+
+!include -c <SpecifyIframes.SpecSetUp
+
+|''title''|'''is'''|White|
+
+|''frame by name''|green|
+
+|''title''|'''is'''|White|

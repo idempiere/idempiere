@@ -1,0 +1,18 @@
+ * Once it's past the time for the next maintenace of an identified rental item, it's not available for rental
+
+ * Action:
+|''begin admin transaction''| Bill |
+|''add''|0|''of type''|barbeque|''costing''|20.00|''/hour''|100.00|''/day''|500.00|''/week''|200.00|''bond''|
+|''add identified''|bbq001|''of type''|barbeque|''last maintained''|2004/4/15 11:34|''period of''|3|''months''|
+|''complete transaction''|
+
+|''time is now''| 2004/08/06 09:02|
+----
+ * It's not available:
+|''rental item list''|
+| ''name''| ''free count'' |
+|barbeque | 0         |
+ * It's still to be maintained:
+|''identified rental item subset''|
+|''identifier''|''last maintained''|
+|bbq001|2004/4/15 11:34|

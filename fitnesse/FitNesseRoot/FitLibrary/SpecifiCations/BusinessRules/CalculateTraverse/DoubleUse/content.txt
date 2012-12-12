@@ -1,0 +1,48 @@
+!2 One ''!-CalculateFixture-!'' object can be used more than once
+!**< def
+!define test (
+!|fitlibrary.specify.calculate.DoubleUse|
+
+|''calculating''|
+|a|b||c|
+|1|2||3|
+
+|''calculating''|
+|a|b||c|
+|1|2||3|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.calculate.DoubleUse</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="4"><i>calculating</i></td>
+</tr>
+<tr><td>a</td>
+<td>b</td>
+<td>&nbsp;</td>
+<td>c</td>
+</tr>
+<tr><td>1</td>
+<td>2</td>
+<td>&nbsp;</td>
+<td class="pass">3</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="4"><i>calculating</i></td>
+</tr>
+<tr><td>a</td>
+<td>b</td>
+<td>&nbsp;</td>
+<td>c</td>
+</tr>
+<tr><td>1</td>
+<td>2</td>
+<td>&nbsp;</td>
+<td class="pass">3</td>
+</tr>
+</table>-!|
+

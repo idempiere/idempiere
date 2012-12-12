@@ -1,0 +1,3 @@
+|''rentals for client''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|cup|100|2004/05/06 09:01|2004/05/20 09:01|

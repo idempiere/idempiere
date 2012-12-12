@@ -1,0 +1,248 @@
+!**< def
+!define test (!|fitlibrary.specify.workflow.SpecialsAndSequence|
+
+|'''check'''|''plus''|1|2|3|
+
+|'''show'''|''plus''|1|2|
+
+|'''show after'''|''plus''|1|2|
+
+|'''show escaped'''|''and''|<b>|2</b>|
+
+|'''not'''|''or''|false|false|
+|'''not'''|''or''|true|false|
+
+|'''not true'''|''or''|false|false|
+|'''not true'''|''or''|true|false|
+
+|'''not'''|''runtimeException''|||
+|'''not'''|''badNumberException''|a||
+|'''not'''|''fitLibraryException''|some error||
+|'''not'''|''fitLibraryShowException''|some msg||
+
+|'''ensure'''|''or''|true|false|
+|'''ensure'''|''or''|false|false|
+
+|'''set'''|x|''plus''|1|2|
+|''get''|@{x}|'''is'''|3|
+
+|'''set'''|x|=|1+2|
+|''get''|@{x}|'''is'''|3|
+
+|'''set symbol named'''|x|''plus''|1|2|
+|''get symbol named''|x|'''is'''|3|
+
+|'''set symbol  named'''|x|=|1+2|
+|''get symbol named''|x|'''is'''|3|
+
+
+|''plus''|1|2|'''is'''|3|
+
+|''plus''|1|2|'''becomes'''|3|
+
+|''plus''|1|20|'''matches'''|.1|
+
+|'''not true'''|''badNumberException''|a||
+|'''not true'''|''fitLibraryException''|some error||
+|'''not true'''|''fitLibraryShowException''|some msg||
+|'''not true'''|''runtimeException''|||
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.SpecialsAndSequence</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>plus</i></td>
+<td>1</td>
+<td>2</td>
+<td class="pass">3</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show</b></td>
+<td><i>plus</i></td>
+<td>1</td>
+<td>2</td>
+<td bgcolor=#C0C0FF>3</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show after</b></td>
+<td><i>plus</i></td>
+<td>1</td>
+<td>2</td>
+</tr>
+</table><div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12346');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12346"/></a>
+&nbsp;<span class="meta">Logs</span><div class="hidden" id="12346">
+<pre>3<br/></pre>
+</div></div>
+
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show escaped</b></td>
+<td><i>and</i></td>
+<td>&lt;b&gt;</td>
+<td>2&lt;/b&gt;</td>
+<td bgcolor=#C0C0FF><pre>&lt;b>2&lt;/b></pre></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><b>not</b></td>
+<td><i>or</i></td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr><td class="fail"><b>not</b></td>
+<td><i>or</i></td>
+<td>true</td>
+<td>false</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><b>not true</b></td>
+<td><i>or</i></td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr><td class="fail"><b>not true</b></td>
+<td><i>or</i></td>
+<td>true</td>
+<td>false</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><b>not</b></td>
+<td><i>runtimeException</i></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td class="pass"><b>not</b></td>
+<td><i>badNumberException</i></td>
+<td>a</td>
+<td>&nbsp;</td>
+<td bgcolor=#C0C0FF>Invalid Number</td></tr>
+<tr><td class="pass"><b>not</b></td>
+<td><i>fitLibraryException</i></td>
+<td>some error</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td class="pass"><b>not</b></td>
+<td><i>fitLibraryShowException</i></td>
+<td>some msg</td>
+<td>&nbsp;</td>
+<td bgcolor=#C0C0FF>some msg</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><b>ensure</b></td>
+<td><i>or</i></td>
+<td>true</td>
+<td>false</td>
+</tr>
+<tr><td class="fail"><b>ensure</b></td>
+<td><i>or</i></td>
+<td>false</td>
+<td>false</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>x</td>
+<td><i>plus</i></td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr><td><i>get</i></td>
+<td>3</td>
+<td><b>is</b></td>
+<td colspan="2" class="pass">3</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>x</td>
+<td>=</td>
+<td>1+2</td>
+</tr>
+<tr><td><i>get</i></td>
+<td>3</td>
+<td><b>is</b></td>
+<td class="pass">3</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set symbol named</b></td>
+<td>x</td>
+<td><i>plus</i></td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr><td><i>get symbol named</i></td>
+<td>x</td>
+<td><b>is</b></td>
+<td colspan="2" class="pass">3</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set symbol  named</b></td>
+<td>x</td>
+<td>=</td>
+<td>1+2</td>
+</tr>
+<tr><td><i>get symbol named</i></td>
+<td>x</td>
+<td><b>is</b></td>
+<td class="pass">3</td>
+</tr>
+</table>
+<br/><br/><table border="1" cellspacing="0">
+<tr><td><i>plus</i></td>
+<td>1</td>
+<td>2</td>
+<td><b>is</b></td>
+<td class="pass">3</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>plus</i></td>
+<td>1</td>
+<td>2</td>
+<td><b>becomes</b></td>
+<td class="pass">3</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>plus</i></td>
+<td>1</td>
+<td>20</td>
+<td><b>matches</b></td>
+<td class="pass">.1</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><b>not true</b></td>
+<td><i>badNumberException</i></td>
+<td class="error">a<hr/> <span class="fit_label">Invalid Number</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td class="error"><b>not true</b><hr/> <span class="fit_label">some error</span></td>
+<td><i>fitLibraryException</i></td>
+<td>some error</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td class="error"><b>not true</b></td>
+<td><i>fitLibraryShowException</i></td>
+<td>some msg</td>
+<td>&nbsp;</td>
+<td bgcolor=#C0C0FF>some msg</td></tr>
+<tr><td class="error"><b>not true</b><hr><pre><div class="fit_stacktrace"></div></pre></td>
+<td><i>runtimeException</i></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</table>-!|
+

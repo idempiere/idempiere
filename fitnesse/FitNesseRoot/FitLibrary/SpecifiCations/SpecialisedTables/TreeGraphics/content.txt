@@ -1,0 +1,42 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoTree</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td>tree</td><td colspan="2"><ul><li>a</li><li>BB</li></ul></td></tr>
+<tr><td>show</td><td colspan="3">tree</td></tr>
+<tr><td>show</td><td>tree</td><td colspan="2"><ul><li>A</li><li>B</li></ul></td></tr>
+<tr><td>check</td><td>tee tree</td><td>A<ul><li>A</li></ul></td><td>B<ul><li>A</li></ul></td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>show</td><td colspan="2">it</td></tr>
+<tr><td>check</td><td>it</td><td>B<ul><li>a</li><li>BB</li></ul></td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td colspan="3">it</td></tr>
+<tr><td>check</td><td>title</td><td>B</td></tr>
+<tr><td>show</td><td colspan="2">children</td></tr>
+<tr><td>check</td><td>children</td><td>[a, b]</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoTree</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td>tree</td><td colspan="2" class="pass"><ul><li>a</li><li>BB</li></ul></td></tr>
+<tr><td>show</td><td colspan="3">tree</td>
+<td bgcolor=#C0C0FF><ul><li>a</li><li>BB</li></ul></td></tr>
+<tr><td>show</td><td>tree</td><td colspan="2"><ul><li>A</li><li>B</li></ul></td>
+<td bgcolor=#C0C0FF>AB</td></tr>
+<tr><td>check</td><td>tee tree</td><td>A<ul><li>A</li></ul></td><td class="pass">B<ul><li>A</li></ul></td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>show</td><td colspan="2">it</td>
+<td bgcolor=#C0C0FF>B<ul><li>a</li><li>BB</li></ul></td></tr>
+<tr><td>check</td><td>it</td><td class="pass">B<ul><li>a</li><li>BB</li></ul></td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td colspan="3">it</td></tr>
+<tr><td>check</td><td>title</td><td class="pass">B</td></tr>
+<tr><td>show</td><td colspan="2">children</td>
+<td bgcolor=#C0C0FF>a, BB</td></tr>
+<tr><td>check</td><td>children</td><td class="fail">[a, b] <span class="fit_label">expected</span><hr>a, BB <span class="fit_label">actual</span></td></tr>
+</table>-!|

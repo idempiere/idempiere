@@ -1,0 +1,12 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="5">fitlibrary.specify.TimesCombination</td></tr>
+<tr><td>&nbsp;</td><td>1</td><td>2</td><td colspan="2">3</td></tr>
+<tr><td>1</td><td>1</td><td colspan="3">2</td></tr>
+<tr><td>2</td><td>2</td><td>4</td><td>6</td><td>9</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="5">fitlibrary.specify.TimesCombination</td></tr>
+<tr><td>&nbsp;</td><td>1</td><td>2</td><td colspan="2">3</td></tr>
+<tr><td class="error">1<hr/> <span class="fit_label">Missing table cells</span></td><td>1</td><td colspan="3">2</td></tr>
+<tr><td class="error">2<hr/> <span class="fit_label">Extra table cells</span></td><td>2</td><td>4</td><td>6</td><td>9</td></tr>
+</table>-!|

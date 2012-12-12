@@ -1,0 +1,7 @@
+ * The following sets the system property:
+
+|''set system property''|abc|''to''|def|
+
+ * And it also sets the corresponding dynamic variable:
+
+|''get''|@{abc}|'''is'''|def|

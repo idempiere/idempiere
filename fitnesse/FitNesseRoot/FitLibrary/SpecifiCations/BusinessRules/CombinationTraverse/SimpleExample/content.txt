@@ -1,0 +1,14 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="4">fitlibrary.specify.TimesCombination</td></tr>
+<tr><td>&nbsp;</td><td>1</td><td>2</td><td>3</td></tr>
+<tr><td>1</td><td>1</td><td>2</td><td>3</td></tr>
+<tr><td>2</td><td>2</td><td>4</td><td>6</td></tr>
+<tr><td>3</td><td>300</td><td>6</td><td>9</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="4">fitlibrary.specify.TimesCombination</td></tr>
+<tr><td>&nbsp;</td><td>1</td><td>2</td><td>3</td></tr>
+<tr><td>1</td><td class="pass">1</td><td class="pass">2</td><td class="pass">3</td></tr>
+<tr><td>2</td><td class="pass">2</td><td class="pass">4</td><td class="pass">6</td></tr>
+<tr><td>3</td><td class="fail">300 <span class="fit_label">expected</span><hr>3 <span class="fit_label">actual</span></td><td class="pass">6</td><td class="pass">9</td></tr>
+</table>-!|

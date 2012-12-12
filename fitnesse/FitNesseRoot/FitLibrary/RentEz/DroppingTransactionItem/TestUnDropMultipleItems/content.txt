@@ -1,0 +1,11 @@
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|1||Truck|''for''|1 day|
+|''drop rent''|1||Truck|''for''|1 day|
+|''rent''|1||Bike|''for''|1 day|
+|''rent''|1||Tricycle|''for''|1 day|
+|''drop rent''|1||Tricycle|''for''|1 day|
+|''drop rent''|1||Bike|''for''|1 day|
+|''undrop rent''|1||Tricycle|''for''|1 day|
+|''undrop rent''|1||Truck|''for''|1 day|
+|''pay with cash $''|2020.00|
+|''complete transaction''|

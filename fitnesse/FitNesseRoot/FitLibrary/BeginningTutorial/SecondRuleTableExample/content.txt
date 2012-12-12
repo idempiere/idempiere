@@ -1,0 +1,62 @@
+!3 A Rule Table for Credit Limits
+#
+In our next rule table example, the credit limit is determined from several inputs (From ${fitBook}, p17):
+
+ * Credit is allowed, up to an amount of $1000, for a customer who has been trading with us for more than 12 months, has paid reliably over that period, and has a current balance owing of less than $6,000.
+
+|''Credit is allowed for worthy customers''|
+|''months as customer''|''has paid reliably''|''balance owing''|''credit is allowed?''|''credit limit?''|
+|14|yes|5000.00|yes|1000.00|
+|12|yes|5000.00|no|0.00|
+|14|no|5000.00|no|0.00|
+|14|yes|6000.00|no|0.00|
+
+As the business rule is so long, we've summarised it in the first row of the table.
+
+Here we have three inputs and two results. We name the columns to be clear about their role.
+#
+!3 Splitting the business rule into two
+#
+Now, you may have noticed that whenever credit is allowed, the credit limit is fixed. So we can split the business rule into two rules:
+
+ * Credit is allowed for a customer who has been trading with us for more than 12 months, has paid reliably over that period, and has a current balance owing of less than $6,000.
+
+ * When credit is allowed, up to an amount of $1000 is permitted.
+
+|''Credit is allowed for worthy customers''|
+|''months as customer''|''has paid reliably''|''balance owing''|''credit is allowed?''|
+|14|yes|5000.00|yes|
+|12|yes|5000.00|no|
+|14|no|5000.00|no|
+|14|yes|6000.00|no|
+
+|''Credit limit depends on whether credit is allowed''|
+|''credit is allowed''|''credit limit?''|
+|yes|1000.00|
+|no|0.00|
+#
+!3 Splitting into separate tables for each major case
+#
+Sometimes it's convenient to have a table for each of the major cases of a business rule. For example, we could split into tables based on whether the customer has been trading with us for long enough, or not.
+
+|''Credit is allowed for worthy customers''|
+|''months as customer''|''has paid reliably''|''balance owing''|''credit is allowed?''|
+|14|yes|5000.00|yes|
+|14|no|5000.00|no|
+|14|yes|6000.00|no|
+
+We can now include the fixed value in the header of the table.
+
+|''Credit is allowed for worthy customers who have been trading with us for''|14|''months''|
+|''has paid reliably''|''balance owing''|''credit is allowed?''|
+|yes|5000.00|yes|
+|no|5000.00|no|
+|yes|6000.00|no|
+
+The first row now also provides an input that applies to all the data rows in that table.
+
+The ''months'' input is in the second cell of that header row. As we'll see soon, such inputs are in evenly-numbered cells, with the odd cells containing explanatory text.
+#
+!3 Code
+#
+Here's the [[code for this example][^CodeForCreditLimits]]

@@ -1,0 +1,17 @@
+!*< def
+!define html ({{{<head>
+  <title>
+    A split
+    title
+  </title>
+</head>}}})
+*!
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''title''|'''becomes'''|A split title|
+
+|''title''|'''is'''|A split title|

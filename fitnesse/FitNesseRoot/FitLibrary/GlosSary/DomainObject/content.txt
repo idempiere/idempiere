@@ -1,0 +1,25 @@
+!3 ${domainObject}s
+Examples of ''domain objects'':
+ * Company, User, Account, Project, !-RentalItem-!, Invoice, Container, Vehicle, Ship, Flight
+ * Payment, !-AlertSignal-!, Agreement, Document, Meter, Instrument, Debt, Tender, Contract
+ * !-GoldFuture-!, !-PurchaseAgreement-!, !-LegalDefinition-!, !-SecondParty-!, !-PaymentArrangement-!
+A ''domain object'' is an object from the application/business/organisation domain.
+ * A ''domain object'' is relevant to Customers, Business Analysts, Product Managers and others with a business perspective
+ * A ''domain object'' may be well understood in the business, using a clear term
+ * A ''domain object'' may be invented during the development of a system, as the need for a new abstraction or conceptualisation arises. This could arise from refactorings carried out by the programmers, after discussions with the business-oriented people on a team
+ * What counts as a ''domain object'' depends on the particular business perspective
+  * You can't say whether something is a ''domain object'' without taking account of the context of the application
+  * For examples, people who do on-site installation may have access to ''domain object'' that the usual users are unaware of
+See ${ddd} for some great discussions of the complexity and variability of ''domain objects''. This distinguishes between a ${entity} and a ${valueObject}.
+!3 ''domain objects'' and ${storytest}s
+Storytests can check and set up domain object values. For examples of checking the properties of ''domain objects'', see the following:
+ * [[''!-SimpleProperties-!''][.FitLibrary.SpecifiCations.DomainObject.DomainObjectChecking.SimpleProperties]]
+ * [[''!-ListProperties-!''][.FitLibrary.SpecifiCations.DomainObject.DomainObjectChecking.ListProperties]]
+ * [[''!-ObjectProperties-!''][.FitLibrary.SpecifiCations.DomainObject.DomainObjectChecking.ObjectProperties]]
+For examples of setting up domain objects, see:
+ * [[''!-DomainObjectSetUp-!''][.FitLibrary.SpecifiCations.DomainObject.DomainObjectInjection.SetUpSucceeds]]
+Note:
+ * The above examples are a part of the specifications (${storytest}s) for ${fitLibrary} itself.
+ * These ${storytest}s are different from the ones you'll be using
+ * They show embedded tables for both a ${storytest} and the report that's expected when running that storytest.
+ * The overall ${storytest} passes if the actual report matches the expected one.

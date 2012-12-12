@@ -1,0 +1,8 @@
+!2 How to, in storytests
+ * Edit nested tables:
+  * EditingNestedTablesInFitNesse
+ * Ignore some tables in a page/file:
+  * ^IgnoreTables
+ * Avoid lots of similar workflow storytests, which are boring, difficult to change, and rather verbose:
+  * ^ExtractCalculations
+

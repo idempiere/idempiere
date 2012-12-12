@@ -1,0 +1,11 @@
+!**< def
+!define map (|a|b|
+|b|c|
+)
+**!
+!|fitlibrary.specify.domain.Maps|
+
+|''a string map''|${map}|
+----
+----
+|''a string map''|${map}|

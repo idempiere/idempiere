@@ -1,0 +1,108 @@
+!**< def
+!define body (|''login''|user|''with''| password |''fails''|
+
+|''with''|//input[@id="userName"]|''enter text''|@{user}|
+
+|''with''|//input[@id="password"]|''enter text''|@{password}|
+
+|''submit''|//form|
+)
+!define test (
+!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|define action|
+|${body}|
+
+|''with''|//input[@id="userName"]|''enter text''|USER|
+
+|''login''|rick|''with''|password|''fails''|
+
+|''expected test results''|5|''right''|3|''wrong''|0|''ignored''|0|''exceptions''|
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br/><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.definedAction.DefinedActionUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>define action</td>
+</tr>
+<tr><td><table border="1" cellspacing="0">
+<tr><td class="pass"><i>login</i></td>
+<td>user</td>
+<td class="pass"><i>with</i></td>
+<td>password</td>
+<td class="pass"><i>fails</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>with</i></td>
+<td>//input[@id="userName"]</td>
+<td><i>enter text</i></td>
+<td>@{user}</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>with</i></td>
+<td>//input[@id="password"]</td>
+<td><i>enter text</i></td>
+<td>@{password}</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>submit</i></td>
+<td>//form</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>with</i></td>
+<td>//input[@id="userName"]</td>
+<td class="pass"><i>enter text</i></td>
+<td>USER</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="fail"><i>login</i></td>
+<td>rick</td>
+<td class="fail"><i>with</i></td>
+<td>password</td>
+<td class="fail"><i>fails</i></td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call:</span>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>with</i></td>
+<td>//input[@id="userName"]</td>
+<td class="pass"><i>enter text</i></td>
+<td>rick</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="fail"><i>with</i></td>
+<td>//input[@id="password"]</td>
+<td class="fail"><i>enter text</i></td>
+<td>password</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>submit</i></td>
+<td>//form</td>
+</tr>
+</table>
+</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>expected test results</i></td>
+<td>5</td>
+<td><i>right</i></td>
+<td>3</td>
+<td><i>wrong</i></td>
+<td>0</td>
+<td><i>ignored</i></td>
+<td>0</td>
+<td><i>exceptions</i></td>
+</tr>
+</table>-!|

@@ -1,0 +1,5 @@
+${programmers}
+This ${traverse} checks a given array against a table.
+!3 Examples
+ * .FitLibrary.UserGuide.FitLibraryByExample.SimpleArray
+ * .FitLibrary.SpecifiCations.CollectionSpecifications.ArrayTraverse

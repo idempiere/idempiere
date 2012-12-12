@@ -1,0 +1,10 @@
+Delete
+
+|''begin admin transaction''| Bill |
+|''remove delivery city''|Auckland|''zone''|East|
+|''complete transaction''|
+
+----Check
+|''delivery cost list''|
+|''city''  |  ''zone''    | ''delivery rate flat fee'' | ''delivery rate %'' |
+|Auckland| West|12.00|4|

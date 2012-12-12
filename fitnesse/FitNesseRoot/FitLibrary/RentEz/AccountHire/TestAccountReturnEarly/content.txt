@@ -1,0 +1,17 @@
+|check|''account owing for''| Bob |''is''|0.00|
+
+|''begin transaction for client''| Bob |''staff''| Bill |
+|''rent''|1||Tricycle|''for''|2 day|
+|''pay on account $''|40.00|
+|''complete transaction''|
+
+|check|''account owing for''| Bob |''is''|40.00|
+
+|''time is now''| 2004/05/07 09:01|
+
+|''begin transaction for client''| Bob |''staff''| Bill |
+|''return items''|1||Tricycle|
+|''refund account $''|20.00|
+|''complete transaction''|
+
+|check|''account owing for''| Bob |''is''|20.00|

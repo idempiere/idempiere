@@ -1,0 +1,21 @@
+!2 All columns after a second empty column are ignored
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=7>calculate</td></tr>
+<tr><td>a</td><td>b</td><td></td><td>plus</td><td></td><td>notes</td><td>notes</td></tr>
+<tr><td>1</td><td>12</td><td></td><td>13</td><td></td><td>n</td><td>n</td></tr>
+<tr><td>-2</td><td>107</td><td></td><td>105</td><td></td><td colspan="2">n n</td></tr>
+<tr><td>0</td><td>12</td><td></td><td>13</td><td></td><td>n</td><td>n</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=7>calculate</td></tr>
+<tr><td>a</td><td>b</td><td></td><td>plus</td><td></td><td>notes</td><td>notes</td></tr>
+<tr><td>1</td><td>12</td><td></td><td class="pass">13</td><td></td><td>n</td><td>n</td></tr>
+<tr><td>-2</td><td>107</td><td></td><td class="pass">105</td><td></td><td colspan="2">n n</td></tr>
+<tr><td>0</td><td>12</td><td></td><td class="fail">13 <span class="fit_label">expected</span><hr>12 <span class="fit_label">actual</span></td><td></td><td>n</td><td>n</td></tr>
+</table>-!|

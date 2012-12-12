@@ -1,0 +1,130 @@
+!**< def
+!define ints12 (|''count''|
+|1|
+|2|
+)
+!define intsc2 (|''count''|
+|c|
+|2|
+)
+!define testInts (!|fitlibrary.specify.listParser.ParseCounts|
+
+|''given counts''|${ints12}|
+|''count''|
+|1|
+|2|
+
+|''given iterator''|${ints12}|
+|''count''|
+|1|
+|2|
+
+|''given counts''||
+|''count''|
+
+|''given counts''|${intsc2}|
+|''count''|
+|2|
+)
+
+!define colours (|''name''|
+|red|
+|green|
+)
+!define testExpectedMethod (!|fitlibrary.specify.listParser.ParseCounts|
+
+|''given colours''|${colours}|
+|''name''|
+)
+
+**!
+ * The component type of the List is unknown. So the programmer has to write a factory method that is called to create an object for each row of the inner table. In Java, the name of this method is based on the header row of the inner table.
+ * It's not possible to create a List that directly contains another List. With support for generic classes, this could be done.
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${testInts}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.listParser.ParseCounts</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given counts</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>count</i></td>
+</tr>
+<tr><td>1</td>
+</tr>
+<tr><td>2</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr><td colspan="2"><i>count</i></td>
+</tr>
+<tr><td colspan="2" class="pass">1</td>
+</tr>
+<tr><td colspan="2" class="pass">2</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given iterator</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>count</i></td>
+</tr>
+<tr><td>1</td>
+</tr>
+<tr><td>2</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr><td colspan="2"><i>count</i></td>
+</tr>
+<tr><td colspan="2" class="pass">1</td>
+</tr>
+<tr><td colspan="2" class="pass">2</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given counts</i></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="pass"><td colspan="2"><i>count</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given counts</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>count</i></td>
+</tr>
+<tr><td class="error" class="error">c<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td>2</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr><td colspan="2"><i>count</i></td>
+</tr>
+<tr><td colspan="2" class="pass">2</td>
+</tr>
+</table>-!|
+ * Here's the error message that's shown if the factory method is missing:
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${testExpectedMethod}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.listParser.ParseCounts</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given colours</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td class="error"><i>name</i><hr/> <span class="fit_label">Missing method</span></td>
+</tr>
+<tr><td class="ignore">red</td>
+</tr>
+<tr><td class="ignore">green</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr class="pass"><td colspan="2"><i>name</i></td>
+</tr>
+</table>-!|

@@ -1,0 +1,33 @@
+!**< def
+!define body (|''login''|user|''with''| password |
+
+|''with''|//input[@id="userName"]|''enter text''|@{user}|
+
+|''with''|//input[@id="password"]|''enter text''|@{password}|
+
+|''submit''|//form|
+)
+!define body2 (|''login2''| user |''with''| password |
+
+|''login''|@{user}|''with''|@{password}|
+)
+**!
+|!-fitlibrary.DefineAction-!|
+|${body}|
+
+|!-fitlibrary.DefineAction-!|
+|${body2}|
+
+!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|''login''|rick|''with''||
+
+ * The key words can be reorganised:
+
+|''login with''|rick|||
+
+ * And they can use a leading uppercase letter:
+
+|''login''|rick|''With''||
+
+|''login2''|rick|''with''||

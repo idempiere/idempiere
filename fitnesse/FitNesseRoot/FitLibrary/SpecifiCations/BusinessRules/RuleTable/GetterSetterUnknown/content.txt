@@ -1,0 +1,26 @@
+!**< define
+!define test (!|fitlibrary.specify.calculate.RuleTableExample|
+|in|in3|out3?|
+|1|1|2|
+|2|2|4|
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.calculate.RuleTableExample</td>
+</tr>
+<tr><td>in</td>
+<td class="error">in3<hr/> <span class="fit_label">Missing method, possibly: <ul><li>public void setIn3(ArgType in3) { }</li></ul><hr/>In:<ul><li>fitlibrary.specify.calculate.RuleTableExample</li><li>fitlibrary.specify.calculate.RuleTableExample.Sut</li></ul></span></td>
+<td class="error">out3?<hr/> <span class="fit_label">Missing method, possibly: <ul><li>public Rule getOut3() { }</li></ul><hr/>In:<ul><li>fitlibrary.specify.calculate.RuleTableExample</li><li>fitlibrary.specify.calculate.RuleTableExample.Sut</li></ul></span></td>
+</tr>
+<tr><td>1</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr><td>2</td>
+<td>2</td>
+<td>4</td>
+</tr>
+</table>-!|

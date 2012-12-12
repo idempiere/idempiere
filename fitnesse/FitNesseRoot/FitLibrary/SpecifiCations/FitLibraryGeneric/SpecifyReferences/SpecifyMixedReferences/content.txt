@@ -1,0 +1,11 @@
+!|fitlibrary.specify.DomainFixtureUnderTest|
+
+|''point 2''|!include ColourIndexRef|
+
+|''actions''|
+
+|''checks''|
+
+|''point 2''|!include ThisPoint|
+
+|''point 2''|!include ColourIndexRef|

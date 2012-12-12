@@ -1,0 +1,17 @@
+|''with web services client''|
+
+|''to''|http://localhost:8081/ws|''post soap11''|<countOf>Oranges</countOf>|
+
+|''xpath''|//count|''in response''|'''is'''|44|
+
+|''to''|http://localhost:8081/ws|''post soap11''|<countOf>Oranges</countOf>|
+
+|''xpath''|//count|''in response''|'''is'''|23|
+
+|''to''|http://localhost:8081/ws|''post soap11''|<countOf>Apples</countOf>|
+
+|''xpath''|//count|''in response''|'''is'''|17|
+
+|''to''|http://localhost:8081/ws|''post soap11''|<countOf>Apples</countOf>|
+
+|''xpath''|//count|''in response''|'''is'''|9|

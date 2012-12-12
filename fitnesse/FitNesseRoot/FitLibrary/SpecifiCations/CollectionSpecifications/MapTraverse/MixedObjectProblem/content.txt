@@ -1,0 +1,37 @@
+!**< def
+!define map (|red|green|
+|1|2|
+)
+!define test (!|fitlibrary.specify.mapTraverse.MixedMap|
+
+|''checks''|
+
+|''mixed map''|${map}|
+)
+**!
+If the actual map is of mixed types, the strategy used to determine a suitable Parser for the key and value is flawed. So some won't be matched.
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.mapTraverse.MixedMap</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>mixed map</i></td>
+<td><table border="1" cellspacing="0">
+<tr class="pass"><td>red</td>
+<td>green</td>
+</tr>
+<tr><td class="fail">1 <span class="fit_label">missing</span></td>
+<td>2</td>
+</tr>
+<tr>
+<td class="fail">Count[1] <span class="fit_label">surplus</span></td>
+<td>Count[2]</td></tr></table>
+</td>
+</tr>
+</table>-!|

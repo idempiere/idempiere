@@ -1,0 +1,21 @@
+[[The web page is here][files/delaysWithAjax.html]]
+
+Here we change the option:
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.AjaxTiming.HandlingChanges.DefinedActions|
+
+|''ajax on port''|${FITNESSE_PORT}|
+
+|''becomes timeout''|2000|
+
+|''get url''|http://localhost:@{fitNessePort}/files/delaysWithAjax.html|
+
+|''with''|newOption|''select option''|red|
+
+|''click''|changeOption|
+
+|''option of''|optionUnderChange|'''becomes'''|Red|
+
+Have a go yourself at finishing the storytest [[on this page][^HandleTextAsWell]] to include the text change.
+
+Note that [[this page][^HandleTextAsWell]] also continues the tutorial.

@@ -1,0 +1,16 @@
+!2 The first expected element is missing
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.PrimitiveArrayFixtureWithCollection</td></tr>
+<tr><td>two</td></tr>
+<tr><td>three</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.PrimitiveArrayFixtureWithCollection</td></tr>
+<tr><td class="fail">two <span class="fit_label">missing</span></td></tr>
+<tr><td class="fail">three <span class="fit_label">missing</span></td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">one</span> <span class="fit_label">surplus</span></td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">two</span> <span class="fit_label">surplus</span></td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">three</span> <span class="fit_label">surplus</span></td></tr></table>-!|

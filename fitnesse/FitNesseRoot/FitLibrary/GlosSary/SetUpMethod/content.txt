@@ -1,0 +1,5 @@
+When a ${fixture}, ${traverse}, or {domainAdapter} is created and starts to interpret a table, it will automatically first call a public method ''setUp()'', if it exists. The method is called only once.
+
+The method that's actually called is the ''setUp()'' method that's found in the first object, starting at the ${fixture} or ${traverse} and following down the ${sut} chain. However, an object is only considered if it is a ${fixture}, ${traverse}, or {domainAdapter}.
+
+The ${tearDownMethod} servers a similar purpose, but is called at the end of interpretation. See details there of a potential confusion.

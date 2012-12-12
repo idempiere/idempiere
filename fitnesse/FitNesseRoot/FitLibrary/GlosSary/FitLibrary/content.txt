@@ -1,0 +1,7 @@
+FitLibrary in Java was developed by Rick Mugridge, http://www.rimuresearch.com, in 2004. It gained initial attention with ''!-DoFixture-!'', a Fit fixture that expressed workflow storytests in a more compact form than ''!-ActionFixture-!'' one of the three main fixtures of Fit.
+
+Rick has evolved FitLibrary considerably since 2004.
+
+It was originally based on Fit. Since August 2006, it can operate independently of Fit, but it still can inter-operate with Fit.
+
+There are ports (or reimplementations) to other languages for earlier versions of FitLibrary: see OtherLanguages.

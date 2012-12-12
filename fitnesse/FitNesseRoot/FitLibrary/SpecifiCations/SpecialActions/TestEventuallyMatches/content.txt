@@ -1,0 +1,61 @@
+!2 'eventually matches' pattern matches an action against a value, and it's prepared to wait awhile for the match to occur. It times out based on the ''becomes'' timeout value.
+!**< def
+!define test1 {!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|''becomes timeout''|20|
+
+|int property|'''eventually matches'''|2|
+
+|boolean property|'''eventually matches'''|tr.e|
+
+|boolean property|'''eventually matches'''|t.e|
+
+|string property|'''eventually matches'''|appl.*ie|
+
+|''x''|1|''y''|3|'''eventually matches'''|(1,.)|
+}
+
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test1}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>becomes timeout</i></td>
+<td>20</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>int property</td>
+<td><b>eventually matches</b></td>
+<td class="pass">2</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>boolean property</td>
+<td><b>eventually matches</b></td>
+<td class="pass">tr.e</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>boolean property</td>
+<td><b>eventually matches</b></td>
+<td class="fail">t.e <span class="fit_label">expected</span><hr>true <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td><b>eventually matches</b></td>
+<td class="pass">appl.*ie</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>x</i></td>
+<td>1</td>
+<td><i>y</i></td>
+<td>3</td>
+<td><b>eventually matches</b></td>
+<td class="pass">(1,.)</td>
+</tr>
+</table>-!|

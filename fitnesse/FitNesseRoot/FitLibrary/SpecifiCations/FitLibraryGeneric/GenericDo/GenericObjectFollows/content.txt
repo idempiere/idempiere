@@ -1,0 +1,20 @@
+!**< def
+!define colour (
+|'''check'''|''identity''|red|red|
+
+|'''check'''|''identity''|green|green|
+)
+**!
+!|fitlibraryGeneric.specify.workflow.GenericObjectFollows|
+
+|''a generic colour object''|
+|'''check'''|''identity''|red|red|
+|'''check'''|''identity''|green|green|
+
+|''a generic colour object''|
+|${colour}|
+
+|''a generic integer object''|
+|'''check'''|''identity''|0|0|
+|'''check'''|''identity''|535|535|
+

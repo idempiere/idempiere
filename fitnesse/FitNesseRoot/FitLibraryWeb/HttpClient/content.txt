@@ -1,0 +1,8 @@
+An HTTP Client can carry out various HTTP requests:
+
+ * HEAD, to get the head information from a URL (to either display the headers or check some of them).
+
+ * GET, to get a page from a URL (to display the text or check it as plain text or XML). Eg, ^GetExample
+
+^SpecifiCations
+^HttpClientTutorial

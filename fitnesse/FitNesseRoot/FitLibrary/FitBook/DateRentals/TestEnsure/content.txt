@@ -1,0 +1,4 @@
+|''begin transaction for client''| Joanna |''staff''| Darryl|
+|ensure|''rent''|100||cup|''for''|2|''weeks''|
+|ensure|''pay with cash $''|210.00|
+|ensure|''complete transaction''|

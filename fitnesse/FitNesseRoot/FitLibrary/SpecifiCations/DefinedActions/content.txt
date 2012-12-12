@@ -1,0 +1,47 @@
+!3 Building higher-level domain languages
+It can be convenient to define the actions in a high-level domain language in terms of actions in a lower-level language, such as actions that drive web tests. Rather than writing fixture code to translate the high-level actions, ''defined actions'' can sometimes be used instead.
+
+This means that a fixture, such as ''!-HtmlFixture-!'', can be used for the low-level of web testing, while still maintaining storytests in high-level terms that are business-oriented instead of being based on the UI.
+!3 DefinedActions
+A defined action is called with appropriate parameters and the body of the defined action is run after parameter substitutions
+
+See .FitLibrary.UserGuide.FitLibraryByExample.DefinedActions for further details.
+
+^CallPasses
+>CallPassesWithOldStyle
+>CallFails
+^NestedCallPasses
+>NestedCallFails
+>InfiniteCallFails
+>CallWithNestedTablePasses
+^ExpandedBody
+>ShowInBodyIsShownBesideCall
+^EmptyBody
+^HandlesSubstitutionsInXml
+^HandlesXmlArguments
+
+^ReturnsLastValue
+>DoesNotReturnLastValue
+
+^DefinedElsewhere
+^DefinedElsewhereTwo
+^DefinedElsewhereExpanded
+^DefinedElsewhereInUnicode
+^DefinedInHierarchy
+^DefinedInMixedAndRepetitiveHierarchy
+
+^DefinedWithRootLocation
+
+^AbandonInDefinedAction
+^AbandonInNestedDefinedAction
+^StopOnErrorInDefinedAction
+
+>BasedOnClass
+
+^WrongCall
+^BlankParameter
+^DuplicatedParameter
+
+^NestedTablesAsArguments
+
+^AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain

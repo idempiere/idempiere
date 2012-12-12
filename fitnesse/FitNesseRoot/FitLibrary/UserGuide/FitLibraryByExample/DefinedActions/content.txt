@@ -1,0 +1,84 @@
+!1 DefinedActions
+DefinedActions allow high-level actions to be defined in terms of lower-level actions. For example, business-level actions can be mapped into automatic actions carried out through a web browser, through web services, etc.
+
+This means that:
+
+ * Storytests can be concise and to the point, with additional detail included in the ''defined actions''.
+
+ * There is no need to repeat sequences of tables; instead, use ''defined actions'' to build a higher-level "domain language"
+
+These can be applied with any flow storytests and any fixtures, including Fit fixture.
+!2 1. ''Defined actions'' for shared use across a suite
+''Defined actions'' can be specified so that they are processed once for a suite. Eg, within the ''!-SuiteSetUp-!'' page, include one or more tables that reference where ''defined actions'' are to be found:
+
+!|MySuiteFixture|
+
+|''define actions at''|!-.MyApp.ActionDefinitions-!|
+
+The page name provided as the argument to the action above must be a complete and valid path, starting with ".".
+
+The defined actions in ''!-.MyApp.ActionDefinitions-!'', and its child pages, can then used in that suite.
+
+The page structure could look like this, with the defined actions organised by function:
+{{{
+MyApp
+ * ActionDefinitions
+   * DiscountVouchers
+     * EnterVoucher
+   * SaleConfirmation
+   * CreateOrder
+     * MultilineOrder
+   etc
+}}}
+In each of those pages, there can be zero or more defined actions specified. For example, the following specifies two defined actions (''loginWith'' and ''getUrlGivingTitle'') shown in wiki syntax:
+{{{
+|''login''|user|''with''|pass|
+
+|''with''|//input[@id="userName"]|''enter text''|@{user}|
+
+|''with''|//input[@id="password"]|''enter text''|@{pass}|
+
+|''submit''|//form|
+----
+|''get url''|url|''giving title''|title|
+
+|''get url''|@{url}|
+
+|''title''|'''becomes'''|@{title}|
+----
+}}}The first row specifies the name and arguments of the ''defined action'', following the usual form of ''!-DoFixture-!'' actions. The even cells contain the parameter names (eg, ''URL'' and ''TITLE''). They are in uppercase here, but that's not necessary.
+
+The subsequent tables (up to the !- ---- -! or the end of the page) give the ''body'' of the ''defined action'', and can include use of the parameters at any point. The example above uses the parameters by themselves in various cells. In general, the parameters can be included with other text. The following tables make up the body of the ''defined action''.
+
+!2 2. Using a Defined Action
+When a defined action is used ("''called''") in a storytest, the ''body'' of the defined action is run after parameter substitution. Consider the following action:
+
+|''get url''|http://localhost:8080|''giving title''|!-FrontPage-!|
+
+This matches the ''defined action'' given above. So the parameter URL takes the value "!-http://localhost:8080-!" and the parameter TITLE takes the value "!-FrontPage-!". These are substituted into the body, to give the following:
+
+|''get url''|http://localhost:8080|
+
+|''title''|'''becomes'''|!-FrontPage-!|
+
+This is then run in the usual way. If further defined actions are used within the body, these are treated in the same way.
+
+If the use of a ''defined action'' passes, the original use is coloured green. Otherwise, it's coloured red or yellow, and the full details of what failed are shown in the report.
+
+By including the following table in a storytest, the subsequent uses of ''defined actions'' within the storytest will be expanded even when they pass:
+
+|''set expand defined actions''|true|
+#
+!2 3. Class-Based Defined Actions
+#
+These are an experimental feature that will probably be dropped. An alternative and more powerful approach is to use dynamic variables within the keywords of actions.
+
+See ^ClassBasedDefinedActions
+#
+!2 4. Inline
+#
+It's not recommended, but it's possible to specify ''defined actions'' [[inline, within a storytest][^InLine]].
+#
+!2 5. Specifications
+#
+See .FitLibrary.SpecifiCations.DefinedActions

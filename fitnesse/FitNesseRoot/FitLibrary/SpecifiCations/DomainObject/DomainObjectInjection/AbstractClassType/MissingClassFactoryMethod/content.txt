@@ -1,0 +1,28 @@
+ * ${fitLibrary} tries to call a concreteFactory method (here ''concreteClassOfAbstractUser()'') but it doesn't exist
+!**< def
+!define user (||Bad Payer|
+|''name''|Brad Prayer|
+)
+!define test (!|fitlibrary.specify.domain.MissingClassFactoryMethod|
+
+|''abstract user''|${user}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.MissingClassFactoryMethod</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>abstract user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td>&nbsp;</td>
+<td class="error">Bad Payer<hr/> <span class="fit_label">Missing method</span></td>
+</tr>
+<tr><td class="ignore"><i>name</i></td>
+<td>Brad Prayer</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

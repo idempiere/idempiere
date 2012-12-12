@@ -1,0 +1,10 @@
+!|fitlibrary.DoFixture|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine|
+
+|''do this now''|
+|''full address''|''name''|
+|paradise|adam|
+|paradise|eve|

@@ -1,0 +1,86 @@
+!1 2. In Fixturing/Code
+#
+Several techniques can be used at the fixturing/code level. The first, ''Print'', is quick, but can often be unsatisfactory.
+#
+----!2 2.1 Print
+#
+ Use {{{    System.out.println();}}} to print information. For example, consider the following tables:
+
+!|fitlibrary.specify.log.LogExampleFromFixture|
+
+|''action that prints''|log4j|
+
+|''action that prints''|<u>text</u>|
+
+The underlying method as as follows:{{{	public boolean actionThatPrints(String s) {
+		System.out.println("Output "+s);
+		return true;
+	}
+}}}The output from this is available after running a '''Test''' or '''Suite'''.
+
+ * The output is accessed from the ''Output Captured'' button in the top-right-hand corner of the report.
+ * You can see that if you run this as a '''Test'''.
+ * The ''Output Captured'' button is only shown in a report if there is some output.
+
+The output is "escaped" so that any HTML is shown as the literal text rather than being displayed by the browser (eg, you see "<u>text</u>" rather than "''text''").
+
+ * But sometimes it can be more convenient to be able to structure displayed information, such as in a list or table.
+
+The major disadvantage of the ''Print'' approach is that you need to flip back and forth between the storytest and the output in order to understand what's going on.
+
+ * This can be avoided by printing extra information so that you can see what-happens-when in relation to the tables.
+ * But that's extra work, repeating information and losing the advantage of the report information being displayed directly in the tables.
+#
+----!2 2.2 show()
+#
+Fixturing code can call the ''show()'' method to have information shown in the current row:
+
+|''action that shows''|AFTER <u>all</u>|
+
+The underlying method is in a subclass of ''!-DoFixture-!'':{{{	public void actionThatShows(String s) {
+		show(s);
+	}
+}}}If your class is not a subclass of ''!-DoFixture-!'' (or equivalent) but is being used as a fixturing class (ie, so that ''!-FitLibrary-!'' auto-wraps it in a ''!-DoFixture-!''), you need to do a little more.
+
+ * You can access the ''show()'' method by having your class ''implement !-RuntimeContextual-!'' so that it has a runtime injected into it.
+ * The runtime has a ''show()'' method.
+
+If your class is neither of those, then it's not possible to use this method. However, the some of the later techniques do apply.
+#
+----!2 2.3 showAfterTable()
+#
+Fixturing code can call the ''showAsAfterTable()'' method to have information shown after the table:
+
+|''action that shows after table''|AFTER <u>all</u>|
+
+The underlying method is in a subclass of ''!-DoFixture-!'':{{{	public void actionThatShowsAfterTable(String s) {
+		showAsAfterTable("My Log", s);
+	}
+}}}If your class is not a subclass of ''!-DoFixture-!'' (or equivalent) but is being used as a fixturing class (ie, so that ''!-FitLibrary-!'' auto-wraps it in a ''!-DoFixture-!''), you need to do a little more.
+
+ * You can access the ''showAsAfterTable()'' method by having your class ''implement !-RuntimeContextual-!'' so that it has a runtime injected into it.
+ * The runtime has a ''showAsAfterTable()'' method.
+
+If your class is neither of those, then it's not possible to use this method. However, the next two techniques do apply.
+#
+----!2 2.4 Request '''show''' when things go wrong
+#
+If an error is discovered by your fixture code, it can throw a ''!-FitLibraryShowException-!''. This will be caught by ''!-FitLibrary-!'' and the information will be shown after the current table.
+
+This is useful when the information displayed is best structured with HTML.
+
+For example, consider the following action:
+
+|''action that shows on error''|bad data|
+
+|''action that shows on error''|<ul><li>bad<li>data</ul>|
+
+The underlying method is:{{{	public void actionThatShows(String s) {
+		throw new FitLibraryShowException(new Show(s));
+	}
+}}}The class concerned can be any class at all. It does not need to be a subclass of ''!-DoFixture-!'', for example.
+#
+----!2 Next
+#
+On the [[next page of this tutorial][Log4jLogging]] we show how to handle logging with ''log4j'' from within code, and how to configure logging through storytest actions.
+

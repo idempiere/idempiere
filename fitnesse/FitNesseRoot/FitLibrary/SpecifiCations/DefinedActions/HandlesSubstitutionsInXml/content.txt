@@ -1,0 +1,21 @@
+!**< def
+!define body (|''make xml for user''|USER|''with''|PASSWORD|
+
+|'''set'''|xml|''to''|<a><user password="@{PASSWORD}">@{USER}</user><a>|
+
+)
+**!
+|!-fitlibrary.DefineAction-!|
+|${body}|
+
+|''make xml for user''|rick|''with''|kiwi|
+
+|''get''|@{xml}|'''is'''|<a><user password="kiwi">rick</user><a>|
+
+|'''show'''|''get''|@{xml}|
+
+|'''show escaped'''|''get''|@{xml}|
+
+|'''show'''|''get''|<a><user password="kiwi">rick</user><a>|
+
+|'''show escaped'''|''get''|<a><user password="kiwi">rick</user><a>|

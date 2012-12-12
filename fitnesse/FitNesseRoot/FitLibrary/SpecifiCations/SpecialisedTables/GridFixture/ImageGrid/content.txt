@@ -1,0 +1,22 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.GridFixtureUnderTest</td></tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="5">images</td></tr>
+<tr><td><img src="/files/gameImages/wall.jpg"></td>
+<td><img src="/files/gameImages/space.jpg"></td>
+<td><img src="/files/gameImages/box.jpg"></td>
+<td><img src="/files/gameImages/space.jpg"></td>
+<td><img src="/files/gameImages/wall.jpg"></td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.GridFixtureUnderTest</td></tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="5">images</td></tr>
+<tr><td class="pass"><img src="/files/gameImages/wall.jpg"></td>
+<td class="pass"><img src="/files/gameImages/space.jpg"></td>
+<td class="pass"><img src="/files/gameImages/box.jpg"></td>
+<td class="pass"><img src="/files/gameImages/space.jpg"></td>
+<td class="pass"><img src="/files/gameImages/wall.jpg"></td></tr>
+</table>-!|

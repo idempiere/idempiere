@@ -1,0 +1,44 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!include -seamless SinglePropertyReference|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary2.specify.DomainFixtureUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>colour 2</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>use</i></td>
+<td><i>colour</i></td>
+</tr>
+</table>
+<br></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>actions</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>colour 2</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>colour</i></td>
+<td class="pass">yellow</td>
+</tr>
+</table>
+<br></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>colour 2</i></td>
+<td class="pass"><table border="1" cellspacing="0">
+<tr><td><i>use</i></td>
+<td><i>colour</i></td>
+</tr>
+</table>
+<br></td>
+</tr>
+</table>
+<br>-!|

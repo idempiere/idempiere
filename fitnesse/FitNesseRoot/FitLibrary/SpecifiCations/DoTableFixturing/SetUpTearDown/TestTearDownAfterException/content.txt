@@ -1,0 +1,16 @@
+ * ''tearDown()'' is called even if an exception is thrown during a storytest
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table>
+<tr><td>fitlibrary.specify.workflow.TearDown</td></tr>
+</table>
+<br>
+<table>
+<tr><td>an exception</td></tr>
+</table>-!|!-<table>
+<tr><td>fitlibrary.specify.workflow.TearDown</td></tr>
+</table>
+<br>
+<table>
+<tr><td class="error" class="error">an exception<hr><pre><div class="fit_stacktrace"></div></pre></td></tr>
+</table>
+<br/><table border="1" cellspacing="0"><tr><td class="error"><i>Error in storytest tear down: </i><hr><pre><div class="fit_stacktrace"></div></pre></td></tr></table>-!|

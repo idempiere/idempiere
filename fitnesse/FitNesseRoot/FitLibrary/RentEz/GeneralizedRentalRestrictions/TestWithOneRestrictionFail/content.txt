@@ -1,0 +1,3 @@
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|'''reject'''|''rent''|1||Bike|''for''|1 day|
+|''complete transaction''|

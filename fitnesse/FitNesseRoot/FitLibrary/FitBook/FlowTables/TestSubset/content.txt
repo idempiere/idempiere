@@ -1,0 +1,4 @@
+|!-DiscountGroupSubsetList-!|
+|''future value''|''max owing''|''min purchase''|''discount %''|
+|high|2000.00|2000.00|10|
+|medium|0.00|500.00|5|

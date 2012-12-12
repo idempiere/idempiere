@@ -1,0 +1,19 @@
+!include <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+!*< def
+!define red ({{{<head><title>Red</title></head><body><div id='dr'>reddening</div></body>}}})
+!define green ({{{<head><title>Green</title></head><body><div id='dg'>greening</div></body>}}})
+)
+!define html ({{{<head><title>White</title></head><body>
+    <div id='d1'>white one</div>
+    <div>
+      <iframe src="red.html" name="red" id='redId' height="600" width="120"></iframe>
+      <iframe src="green.html" name="green" height="600" width="120"></iframe>
+    </div>
+    whitening
+  </body>}}})
+*!
+
+|''make file''|red.html|''from''|${red}|
+|''make file''|green.html|''from''|${green}|
+
+|''with html''|${html}|

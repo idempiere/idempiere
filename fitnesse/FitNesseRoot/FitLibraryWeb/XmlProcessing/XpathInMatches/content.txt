@@ -1,0 +1,18 @@
+|''with xml''|
+
+|''xpath''|//b|''in''|<a><b>xyz</b></a>|''matches''|xyz|
+
+|''xpath''|//b|''in''|<a><b>xyz<c/></b></a>|''matches''|xyz|
+
+|''xpath''|//b|''in''|<a><b>xyz</b></a>|''matches''|x..|
+
+|''xpath''|//b|''in''|<a><b>xyz</b></a>|''matches''|x.*|
+
+|''xpath''|//b|''in''|<a><b>xyz</b></a>|''matches''|.*x.*|
+
+|''xpath''|//b|''in''|<a><b>xyz</b></a>|''matches''|.*y.*|
+
+|''xpath''|//b|''in''|<a><b>xyz</b></a>|''matches''|[x,y,z]y[y,z]|
+
+#|'''not'''|''xpath''|//b|''in''|<a><b>xyz</b></a>|''matches''|x|
+

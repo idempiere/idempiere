@@ -1,0 +1,12 @@
+|''mock ${soap} on port''|8081|
+|''xpath''|//depart/attribute::location|''is''|SYD|
+|''xpath''|//arrive/attribute::location|''is''|AKL|
+|''xpath''|!-//start-!|''is''|2009-08-09|
+|''xpath''|!-//end-!|''is''|2009-08-11|
+|''response''|<response>confirmed</response>|
+
+!define xml {<travel><depart location="SYD" /><arrive location="AKL" /><start>2009-08-09</start><end>2009-08-11</end></travel>}
+
+|''to''|http://localhost:8081/service|''post ${soap}''|${xml}|'''is'''|<response>confirmed</response>|
+
+|''close''|

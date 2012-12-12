@@ -1,0 +1,130 @@
+If we try recording to a property file that already exists, we make use of the properties already defined in it. However, any undefined properties that are used in the storytest (with '''is''', '''check''', and '''becomes''') are added to the property file.
+!**< def
+!define suite1 (!|fitlibrary.DoFixture|
+
+|''remove file''|testPropertyFile.txt|
+
+|''record to file''|testPropertyFile.txt|
+
+|''get''|a-value|'''is'''|@{a}|
+
+|''get''|@{a}|'''is'''|a-value|
+
+|'''check'''|''get''|@{c}|c-value|
+)
+!define suite2 (!|fitlibrary.DoFixture|
+
+|''record to file''|testPropertyFile.txt|
+
+|'''check'''|''get''|c-value|@{c}|
+
+|''get''|@{a}|'''is'''|a-value|
+
+|'''check'''|''get''|@{c}|c-value|
+)
+!define suite3 (!|fitlibrary.DoFixture|
+
+|''add dynamic variables from file''|testPropertyFile.txt|
+
+|''get''|@{a}|'''is'''|a-value|
+
+|'''check'''|''get''|@{c}|c-value|
+
+|''remove file''|testPropertyFile.txt|
+)
+**!
+
+|!-fitlibrary.spec.SpecifySuiteFixture-!|
+|${suite1}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.DoFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>remove file</i></td>
+<td>testPropertyFile.txt</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>record to file</i></td>
+<td>testPropertyFile.txt</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>a-value</td>
+<td><b>is</b></td>
+<td class="pass">@{a}<hr>a-value <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>a-value</td>
+<td><b>is</b></td>
+<td class="pass">a-value</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>get</i></td>
+<td>@{c}</td>
+<td class="fail">c-value <span class="fit_label">expected</span><hr>@{c} <span class="fit_label">actual</span></td>
+</tr>
+</table>-!|
+|${suite2}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.DoFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>record to file</i></td>
+<td>testPropertyFile.txt</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>get</i></td>
+<td>c-value</td>
+<td class="pass">@{c}<hr>c-value <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>a-value</td>
+<td><b>is</b></td>
+<td class="pass">a-value</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>get</i></td>
+<td>c-value</td>
+<td class="pass">c-value</td>
+</tr>
+</table>-!|
+|${suite3}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.DoFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>add dynamic variables from file</i></td>
+<td>testPropertyFile.txt</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>a-value</td>
+<td><b>is</b></td>
+<td class="pass">a-value</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>get</i></td>
+<td>c-value</td>
+<td class="pass">c-value</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>remove file</i></td>
+<td>testPropertyFile.txt</td>
+</tr>
+</table>-!|

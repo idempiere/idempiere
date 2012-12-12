@@ -1,0 +1,11 @@
+|''login''|user|''with''|password|
+
+|''with''|//input[@id="userName"]|''enter text''|@{user}|
+
+|''with''|//input[@id="password"]|''enter text''|@{password}|
+
+|''submit''|//form|
+
+^AnotherDefinition
+
+!contents

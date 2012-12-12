@@ -1,0 +1,69 @@
+!**< def
+!define test (!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActions.AbandonDefinedAction|
+
+|''set expand defined actions''|true|
+
+|''act 2''|
+
+|''act 2''|
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.definedAction.DefinedActionUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>clear defined actions</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>define actions at</i></td>
+<td><a href="FitLibrary.SpecifiCations.DefinedActions.AbandonDefinedAction">.FitLibrary.SpecifiCations.DefinedActions.AbandonDefinedAction</a></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>set expand defined actions</i></td>
+<td>true</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="ignore"><i>act 2</i></td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActions.AbandonDefinedAction'>.FitLibrary.SpecifiCations.DefinedActions.AbandonDefinedAction</a>:</span>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="ignore">act</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActions.AbandonDefinedAction'>.FitLibrary.SpecifiCations.DefinedActions.AbandonDefinedAction</a>:</span>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td>show</td>
+<td>get</td>
+<td>1</td>
+<td bgcolor=#C0C0FF>1</td></tr></table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="ignore">abandon storytest</td></tr>
+<tr>
+<td class="ignore">show</td>
+<td class="ignore">get</td>
+<td class="ignore">2</td></tr></table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td class="ignore">show</td>
+<td class="ignore">get</td>
+<td class="ignore">3</td></tr></table></td></tr></table>
+<br/></html></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="ignore"><i>act 2</i></td>
+</tr>
+</table>-!|

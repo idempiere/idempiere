@@ -1,0 +1,46 @@
+!**< def
+!define testStrings {!|fitlibrary.specify.listParser.Parse|
+
+|''given list''||
+|''any header will do''|
+
+|''given strings''|a,b,c|
+|a|
+|b|
+|c|
+
+|''given integers''|1,2,3|
+}
+**!
+ * It's assumed that the list is either empty or has Strings in it
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${testStrings}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.listParser.Parse</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given list</i></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="pass"><td colspan="2"><i>any header will do</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given strings</i></td>
+<td>a,b,c</td>
+</tr>
+<tr class="pass"><td colspan="2">a</td>
+</tr>
+<tr class="pass"><td colspan="2">b</td>
+</tr>
+<tr class="pass"><td colspan="2">c</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="error"><i>given integers</i><hr><pre><div class="fit_stacktrace"></div></pre></td>
+<td>1,2,3</td>
+</tr>
+</table>-!|
+
+Notice that the last table fails because we are assuming in the code that the list will contain integers, but the list is actually parsed as strings. With generic classes, it would be possible to determine the component type of the list.
+

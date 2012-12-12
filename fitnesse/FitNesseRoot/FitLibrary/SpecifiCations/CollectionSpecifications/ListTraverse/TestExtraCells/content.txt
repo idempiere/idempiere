@@ -1,0 +1,15 @@
+!2 There is an extra cell in the 3rd row
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.ArrayFixtureUnderTest</td></tr>
+<tr><td>+</td><td colspan="2">&amp;</td></tr>
+<tr><td>1</td><td>one</td><td>extra</td></tr>
+<tr><td>1</td><td colspan="2">two</td></tr>
+<tr><td>2</td><td colspan="2">two</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.ArrayFixtureUnderTest</td></tr>
+<tr><td>+</td><td colspan="2">&amp;</td></tr>
+<tr><td class="error">1<hr/> <span class="fit_label">Extra table cells</span></td><td>one</td><td>extra</td></tr>
+<tr><td>1</td><td colspan="2">two</td></tr>
+<tr><td>2</td><td colspan="2">two</td></tr>
+</table>-!|

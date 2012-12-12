@@ -1,0 +1,9 @@
+ * As this has no keywords, the storytest is run
+|''chat''|
+
+|''connect user''|sarah|
+
+|''user''|sarah|''creates''|fit|''room''|
+|''user''|sarah|''enters''|fit|''room''|
+
+

@@ -1,0 +1,9 @@
+|''keywords''|chrome,htmlunit,firefox|
+
+!2 Not supported in IE
+
+!include -c <SpecifyFrames.SpecSetUp
+
+|''frame by name''|through.r|
+
+|''page source''|contains|reddening|

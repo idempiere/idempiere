@@ -1,0 +1,55 @@
+A ${finder} can also be used to introduce a specialised ${parser} for a storytest. For example, we may want to treat an empty cell as a null String instead of an empty String.
+
+!**< def
+!define test (!|fitlibrary.specify.entityParser.NullString|
+----
+|'''check'''|''null string''||
+|'''check'''|''other string''|abc|abc|
+
+|'''check'''|''positive int''||0|
+|'''check'''|''positive int''|-1|1|
+
+|list|
+|name|
+|Lars|
+||
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.entityParser.NullString</td>
+</tr>
+</table>
+<hr><br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>null string</i></td>
+<td colspan="2" class="pass">&nbsp;</td>
+</tr>
+<tr><td><b>check</b></td>
+<td><i>other string</i></td>
+<td>abc</td>
+<td class="pass">abc</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>positive int</i></td>
+<td>&nbsp;</td>
+<td class="pass">0</td>
+</tr>
+<tr><td><b>check</b></td>
+<td><i>positive int</i></td>
+<td>-1</td>
+<td class="pass">1</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>list</td>
+</tr>
+<tr><td>name</td>
+</tr>
+<tr><td class="pass">Lars</td>
+</tr>
+<tr><td class="pass">&nbsp;</td>
+</tr>
+</table>-!|

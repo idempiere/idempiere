@@ -1,0 +1,17 @@
+!*< def
+!define html ({{{<input type="text" id="in" value="t"/>
+<p name="pp" value="ppp">bla</p>}}})
+*!
+
+|''keywords''||
+
+!2 Currently no longer available in any browser we support: firefox, htmlunit and ie.
+!2 For an explanation see:  http://code.google.com/p/selenium/wiki/XpathInWebDriver
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''element value''|//p/attribute::value|'''is'''|pp|
+
+|''element value''|//input/attribute::type|'''is'''|text|

@@ -1,0 +1,69 @@
+!**< def
+!define body (|''infinite''|USER|''with''|PASSWORD|
+
+|''infinite''|@{USER}|''with''|@{PASSWORD}|
+)
+!define test (
+!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|define action|
+|${body}|
+
+|''infinite''|rick|''with''|password|
+
+|''expected test results''|2|''right''|0|''wrong''|0|''ignored''|2|''exceptions''|
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br/><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.definedAction.DefinedActionUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>define action</td>
+</tr>
+<tr><td><table border="1" cellspacing="0">
+<tr><td class="pass"><i>infinite</i></td>
+<td>USER</td>
+<td class="pass"><i>with</i></td>
+<td>PASSWORD</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>infinite</i></td>
+<td>@{USER}</td>
+<td><i>with</i></td>
+<td>@{PASSWORD}</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><i>infinite</i><hr/> <span class="fit_label"></span></td>
+<td>rick</td>
+<td class="error"><i>with</i><hr/> <span class="fit_label"></span></td>
+<td>password</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call:</span>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><i>infinite</i><hr/> <span class="fit_label">Infinite calling of defined actions</span></td>
+<td>rick</td>
+<td><i>with</i></td>
+<td>password</td>
+</tr>
+</table>
+</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>expected test results</i></td>
+<td>2</td>
+<td><i>right</i></td>
+<td>0</td>
+<td><i>wrong</i></td>
+<td>0</td>
+<td><i>ignored</i></td>
+<td>2</td>
+<td><i>exceptions</i></td>
+</tr>
+</table>-!|

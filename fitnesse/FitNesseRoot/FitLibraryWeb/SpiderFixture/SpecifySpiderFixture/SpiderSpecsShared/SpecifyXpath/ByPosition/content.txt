@@ -1,0 +1,50 @@
+!*< def
+!define html ({{{<div>
+  <div><p>red</p><p>green</p></div>
+  <div><p>Red</p><p>Green</p></div>
+  <input name="a[0]" value="AA" type="radio" checked=true>
+  <input name="a[0]" value="B|B" type="radio" checked=true>
+</div>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''text of''|//div//div//p|''is''|red|
+
+|''text of''|//div//div//p[1]|''is''|red|
+
+|''text of''|//div//div//p[2]|''is''|green|
+|''text of''|//div//div[2]//p|''is''|Red|
+
+|''text of''|//div//div[2]//p[2]|''is''|Green|
+
+|''text of''|//div//div//p[last()]|''is''|green|
+
+|''text of''|//div//input[last()]|''is''|B!-|-!B|
+
+|''text of''|//input[1]|''is''|AA|
+|''text of''|//input[2]|''is''|B!-|-!B|
+
+ * '''When multiple matches first one will be returned:'''
+
+|''text of''|//p|''is''|red|
+|''text of''|//p[1]|''is''|red|
+
+|''text of''|//p[2]|''is''|green|
+
+ * '''Indexing this way won't work (exception will be thrown) if elements exist in different relative parts of the DOM graph and the child axis is affecting the order''':
+
+!note take the word '''reject''' off here and you will see the exception..
+|'''reject'''|''text of''|//p[3]|
+|'''reject'''|''text of''|//p[4]|
+
+ * '''However specifying the xpath in this form will work and allow you to retrieve elements in document order:'''
+
+|''text of''|(//p)[3]|''is''|Red|
+
+|''text of''|(//div//p)[4]|''is''|Green|
+

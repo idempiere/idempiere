@@ -1,0 +1,70 @@
+Here's the pdf file that this storytest looks at: http://files/pdf/eg.pdf.
+
+ * It's worth reading this as it is a document that discusses the issues in accessing text from PDFs.
+
+|''with PDF''|
+
+|''open''|pdf/eg.pdf|
+
+|''number of pages''|'''is'''|2|
+
+|''select all pages''|
+
+|'''show'''|''text''|
+
+ * We can check that the whole document contains some specific text:
+
+|''text''|''contains''|PDF|
+
+|''text''|''contains''|PDF Format|
+
+|''text''|''contains''|PDF Format PDFs do not retain paragraph|
+
+ * We can use pattern matching if we want to ignore parts of the document:
+
+|''text''|''matches''|PDF Format PDFs do not .* paragraph|
+
+ * The footer appears twice (and it is added in the middle of the main text):
+
+|''text''|''matches''|Extracting Paragraphs from PDFs.*Extracting Paragraphs from PDFs|
+
+ * The flow of text from one column to the next is captured here (luckily, but not between pages):
+
+|''text''|''matches''|If the space between that line and the previous one is larger than a space threshhold|
+
+ * We can use the paragraph structure to select a relative paragraph:
+
+|''paragraph below heading''|pdfbox|'''contains'''|extracts the text elements|
+
+|''paragraph after containing''|Limitations|'''contains'''|a simple approach|
+
+ * Show the text with breaks between the paragraphs, to make it easier to see the results:
+
+|show|paragraphed text|
+
+ * We can match some of the paragraphs:
+
+|paragraphs from|0|to|6|
+|Extracting Paragraphs from PDF Files|
+|PDF Format|
+|PDFs do not retain paragraph, heading, etc information. Instead, a PDF encodes a rendered form of a document, rather like the individual characters that are rendered on a screen. A PDF file can be thought of as containing a sequence of pieces of information. Each piece of text is located at a particular (x,y,z) position, along with font information.|
+|Depending on the application writing the PDF file, a word may be added as a single word, or it may be added as several substrings. Some applications tend to add each of the characters of a word separately.|
+|Space characters are not (usually) added to the file, as they don't add anything to the rendering.|
+|pdfbox|
+|PDFDocument uses pdfbox to do much of the work. pdfbox extracts the text elements from a PDF file, taking account of columns of text and pages. pdfbox works out where to add spaces, and is configured by PDFDocument to add a space at the end of each line.|
+
+|show|text|
+
+|''select page''|2|
+
+|show|paragraphed text|
+
+ * This shows the affect of customising the heuristics:
+
+|''customise''|
+|''basic paragraph drop''|4|
+|''height space factor''|0.5|
+
+|show|paragraphed text|
+
+|''close PDF file''|

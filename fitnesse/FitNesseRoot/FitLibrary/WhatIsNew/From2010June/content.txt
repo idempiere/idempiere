@@ -1,0 +1,30 @@
+!2 Defined actions Parameters
+#
+''Defined action'' parameters are now used in the body of the ''defined action'' in the same way as ''dynamic variables''.
+
+Eg, the parameter ''x'' is now used in the body as ''@{x}''. This makes ''defined actions'' consistent with ''multi defined actions''.
+
+Eg, See .FitLibrary.SpecifiCations.DefinedActions.DefinedElsewhere
+
+For class-based (OO) ''defined actions'', ''this'' is now used as ''@{this}''. Eg, see .FitLibrary.SpecifiCations.DefinedActions.BasedOnClass.SingleClass
+
+If you have existing ''defined actions'', they will continue to run if the following action is called before any defined actions are loaded:
+
+|''auto translate defined action parameters''|
+
+This action can be included in ''!-SuiteSetUp-!'', for example.
+
+It's possible to have a mix of defined actions, some using this new style and some using the old style:
+
+ * The auto-translation first checks whether any parameter ''x'' is already used in the body as ''@{x}''.
+ * If so, it doesn't carry out the auto-translation.
+
+See .FitLibrary.SpecifiCations.DefinedActions.CallPassesWithOldStyle
+
+For documentation on ''defined actions'', see .FitLibrary.UserGuide.FitLibraryByExample.DefinedActions
+#
+!2 Nested tables
+#
+ * Dynamic variables can now hold nested tables. Eg, see .FitLibrary.SpecifiCations.DynamicVariables.NestedTablesArePermitedAsTheValueOfDynamicVariables
+
+ * Nested tables can be passed as arguments to ''defined actions'' and ''multi defined actions''. Eg, see .FitLibrary.SpecifiCations.DefinedActions.CallWithNestedTablePasses

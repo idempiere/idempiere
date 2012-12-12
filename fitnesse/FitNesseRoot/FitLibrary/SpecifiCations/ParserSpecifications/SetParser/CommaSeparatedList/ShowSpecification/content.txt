@@ -1,0 +1,28 @@
+!3 A Set is shown as a comma-separated list in an error message
+!**< def
+!define test {!|fitlibrary.specify.setParser.Match|
+
+|'''check'''|''set of 123''|4,5|
+
+|'''check'''|''set empty''|0|
+}
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.setParser.Match</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>set of 123</i></td>
+<td class="fail">4,5 <span class="fit_label">expected</span><hr>1, 2, 3 <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>set empty</i></td>
+<td class="fail">0 <span class="fit_label">expected</span><hr> <span class="fit_label">actual</span></td>
+</tr>
+</table>-!|
+
+We can't show the actual comma-separated list for the set in the expected report here because the order will differ in different implementations

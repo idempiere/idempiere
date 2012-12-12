@@ -1,0 +1,29 @@
+Start by creating our clients.
+
+|''setup''|
+|''client name''|''phone''|''city''|''zone''|''delivery address''|
+|Joanna|373 7599|Auckland|CBD|10 Princes St|
+
+
+|''begin admin transaction''| Bill |
+|''create client''|Fred|''with phone number''|379 5055|''in city''|Auckland|''in zone''|South|''at address''|93 Carbine Rd|
+|''complete transaction''|
+
+We should have two clients in our client list.
+
+|''client list''|
+|''name''|''phone''|''city''|''zone''|''address''|
+|Joanna|373 7599|Auckland|CBD|10 Princes St|
+|Fred|379 5055|Auckland|South|93 Carbine Rd|
+
+Now delete a client.
+
+|''begin admin transaction''| Bill |
+|''delete client''|Joanna|
+|''complete transaction''|
+
+Should now only have one client.
+
+|''client list''|
+|''name''|''phone''|''city''|''zone''|''address''|
+|Fred|379 5055|Auckland|South|93 Carbine Rd|

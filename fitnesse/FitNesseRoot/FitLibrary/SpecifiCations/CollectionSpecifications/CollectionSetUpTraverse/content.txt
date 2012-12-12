@@ -1,0 +1,8 @@
+!3 This has been trimmed right back, ready to be removed altogether
+^CreateList - an ordered list is created by creating an element for each row of the table
+^CreateSet - an unordered list is created by creating an element for each row of the table
+^CreateMap - a map is created by creating an element for each row of the table and explicitly adding it to the map
+
+^MissingObjectFactoryMethod - the ${objectFactoryMethod} is missing
+^ObjectFactoryMethodException - an exception may be thrown in the ${objectFactoryMethod}
+^RowsShortOrLong - an error is given if the rows have too many or too few cells

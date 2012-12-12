@@ -1,0 +1,49 @@
+Let's see how to swtich to a window that has no ''target'' name (the white one).
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.AjaxTiming.HandlingChanges.DefinedActions|
+
+|''ajax on port''|${FITNESSE_PORT}|
+
+|''get url''|http://localhost:@{fitNessePort}/files/handlingWindows.html|
+
+|''text of''|//h1|'''is'''|Handling Windows|
+
+ * Go White. As it has no ''target'' (the second argument to the javascript call), we select it immediately:
+
+|''click and select resulting window''|popupWhite|
+
+|''text of''|//h1|'''is'''|White|
+
+|''select initial window''|
+
+ * Go Blue
+
+|''click''|popupBlue|
+
+|''select window''|window with blue|
+
+|''text of''|//h1|'''is'''|Blue|
+
+ * Go Back to White. As it has no ''target'', we have to select it by some of its contents; here we use the ''title''.
+
+|''select window with''|//title|''as''|!-PopUp White-!|
+
+|''text of''|//h1|'''is'''| White |
+
+ * Close White:
+
+|''close''|
+
+ * Close Blue:
+
+|''select window''|window with blue|
+
+|''close''|
+
+ * So we're back on the initial window
+
+|''text of''|//h1|'''is'''|Handling Windows|
+
+!2 Next
+#
+For the next part: [[Part7: Handling Delays][<SpiderTutorial.AjaxTiming]]

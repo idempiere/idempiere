@@ -1,0 +1,8 @@
+^SetUp
+
+^CalculateDeliveryRate
+^BookingWithDelivery
+^DeliveryWithSpecifiedAddress
+^CancelDelivery
+^CancelBookingsWithDelivery
+^ChangeDelivery

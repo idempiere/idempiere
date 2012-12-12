@@ -1,0 +1,16 @@
+ * The three underlying elements are each a pair(1.11,2.22).
+ * This shows that ''!-ScientificDouble-!'' takes account of the precision of the expected value in making the comparison
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.ArrayFixtureUnderTestWithScientificDouble</td></tr>
+<tr><td>one</td><td>two</td></tr>
+<tr><td>1</td><td>2</td></tr>
+<tr><td>1.1</td><td>2.2</td></tr>
+<tr><td>1.11</td><td>2.22</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.ArrayFixtureUnderTestWithScientificDouble</td></tr>
+<tr><td>one</td><td>two</td></tr>
+<tr><td class="pass">1</td><td class="pass">2</td></tr>
+<tr><td class="pass">1.1</td><td class="pass">2.2</td></tr>
+<tr><td class="pass">1.11</td><td class="pass">2.22</td></tr>
+</table>-!|

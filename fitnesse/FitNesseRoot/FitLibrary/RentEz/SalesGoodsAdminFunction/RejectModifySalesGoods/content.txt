@@ -1,0 +1,8 @@
+Can't modify sales goods that have not been added
+
+|''begin admin transaction''| Bill |
+|''reject''|''add ''|10|''to sales item of type''|cake|
+|''complete transaction''|
+
+|''sales item list''|
+| ''name''| ''count'' |''selling price''|

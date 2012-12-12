@@ -1,0 +1,11 @@
+|''begin transaction for client''| Bob |''staff''| John |
+|''rent''|1||Truck|''for''|1 day|
+|''pay with cash $''|2000.00|
+|''complete transaction''|
+
+|''total commission''|
+|''staff''|''total''|
+|Bill|0.00|
+|Pual|0.00|
+|John|200.00|
+

@@ -1,0 +1,16 @@
+${programmers}
+When a collection is being created from a setup table, an ${objectFactoryMethod} is called for each row of the table. This is needed because the type of the elements of the collection are not known (prior to jdk1.5).
+ * The name of the ${objectFactoryMethod} is formed from concatenating each of the ${label}s in the table and applying ${extendedCamelCase} to them
+  * Eg, the labels "name", "owing" form the ${objectFactoryMethod} name of ''nameOwing()''.
+ * The ${objectFactoryMethod} takes an argument for each ${label} column in the table, in order.
+ * The ${objectFactoryMethod} is called once for each element row of the table, passing the values from the table as arguments (suitably parsed).
+The responsibility of the ${objectFactoryMethod} depends on whether the ${listSetUp} has been passed a Collection or not:
+ * For an embedded table, a list is automatically constructed by ${fitLibrary} and passed to the ${listSetUp}. The ${objectFactoryMethod} creates a suitable object from the arguments and returns it. It's automatically added to the list.
+ * For a table that's not embedded, there are two possibilities:
+  * A list was passed to the ${listSetUp} when it was selected. The ${objectFactoryMethod} creates a suitable object from the arguments and returns it. It's automatically added to the list.
+  * '''No''' list was passed to the ${listSetUp} when it was selected. The ${objectFactoryMethod} is then responsible for adding the created object to some collection itself. It doesn't need to return it. This option is provided for:
+   * Backwards compatibility, because this was how ''!-SetUpFixture-!'' worked
+   * Creating other types of collections, such as ''Maps''
+   * When it's necessary to wire up bidirectional associations between objects (To do: discuss this in detail.)
+!3 Examples
+ * See [[''chat example''][.FitLibrary.UserGuide.FitLibraryByExample.WorkFlow.WorkflowCode]]

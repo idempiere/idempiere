@@ -1,0 +1,16 @@
+!*< def
+!define html ({{{<ul><li n=1>a</li><li n=2>b</li><li n=3>c</li></ul>
+<select><option name=n1>N1</option><option name=n2>N2</option></select>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''attribute''|text|''of children of type''|li|''of''|//ul|'''is'''|a,b,c|
+
+|''attribute''|n|''of children of type''|li|''of''|//ul|'''is'''|1,2,3|
+
+|''attribute''|name|''of children of type''|option|''of''|//select|'''is'''|n1,n2|

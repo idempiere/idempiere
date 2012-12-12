@@ -1,0 +1,107 @@
+This tests your credit card validation routines.
+View the ImportantInformation page for more details on implementing this.
+
+ * Note that credit card expiry dates are in the format (month / year)
+
+!3 Valid cards
+#
+|''Valid Credit Cards''|
+|''Credit Card No''|''Card Type''|''Expires''|
+|5169961933224494|Mastercard|04/12|
+|4485891284549100|Visa|01/12|
+|378238305872855|American Express|12/11|
+|30328219479275|Diners Club|11/11|
+#
+!3 Incorrect card types
+#
+|''Invalid Credit Cards''|
+|''Credit Card No''|''Card Type''|''Expires''|
+|5420218419129712|American Express|12/12|
+|4532236754255544|Visar|12/11|
+#
+!3 Expired
+|''Invalid Credit Cards''|
+|''Credit Card No''|''Card Type''|''Expires''|
+|4024007154824048|Visa|02/10|
+#
+!3 Invalid card numbers
+#
+|''Invalid Credit Cards''|
+|''Credit Card No''|''Card Type''|''Expires''|
+|5169961983244414|Mastercard|02/13|
+|xxxxxxxxxxxxxxxx|Visa|02/12|
+
+
+
+
+|''Validate Credit Card''|
+|''Credit Card No''|''Card Type''|''Expires''|''Valid Number''|
+|5169961933224494|Mastercard|12/05||true|
+|5379884413318972|Mastercard|12/05||true|
+|5243914958172676|Mastercard|12/05||true|
+|5139937872916099|Mastercard|12/05||true|
+|5500400191544291|Mastercard|12/05||true|
+|5390600729532980|Mastercard|12/05||true|
+|5188239259404827|Mastercard|12/05||true|
+|5551559755184006|Mastercard|12/05||true|
+|4485891284549100|Visa|12/05||true|
+|4024007135429073|Visa|12/05||true|
+|4052577022845271|Visa|12/05||true|
+|4024007125032481|Visa|12/05||true|
+|4916628240163678|Visa|12/05||true|
+|4916559188232060|Visa|12/05||true|
+|4916061680920094|Visa|12/05||true|
+|4556422493178|Visa|12/05||true|
+|4556050997607|Visa|12/05||true|
+|4367400659073|Visa|12/05||true|
+|4929879540090|Visa|12/05||true|
+|4024007190677|Visa|12/05||true|
+|378238305872855|American Express|12/05||true|
+|372730553483969|American Express|12/05||true|
+|342572497211925|American Express|12/05||true|
+|379397670726069|American Express|12/05||true|
+|30328219479275|Diners Club|12/05||true|
+|30181250802842|Diners Club|12/05||true|
+|6011404643081688|Discover|12/05||true|
+
+
+!3 The following are all valid numbers, but should return false due to incorrect card types.
+
+|''Validate Credit Card''|
+|''Credit Card No''|''Card Type''|''Expires''||''Valid Number''|
+|5420218419129712|American Express|12/05||false|
+|4532236754255544|Visar|12/05||false|
+|4532686278150474|Mastercard|12/05||false|
+|348148246050767|American Express|03/05||false|
+
+
+!3 Test expiry date validation.
+
+|''Validate Credit Card''|
+|''Credit Card No''|''Card Type''|''Expires''||''Valid Number''|
+|4024007154824048|Visa|02/05||false|
+|4024007154824048|Visa|04/05||false|
+|4024007154824048|Visa|05/04||false|
+|4024007154824048|Visa|05/05||true|
+|4024007154824048|Visa|06/04||false|
+|4024007154824048|Visa|04/06||true|
+
+!3 Here are some invalid card numbers...
+
+|''Validate Credit Card''|
+|''Credit Card No''|''Card Type''|''Expires''||''Valid Number''|
+|5169961983244414|Mastercard|02/06||false|
+|5972884413418972|Mastercard|02/06||false|
+|5643914958172676|Mastercard|02/06||false|
+|4085891484739100|Visa|02/06||false|
+|xxxxxxxxxxxxxxxx|Visa|02/06||false|
+|102938475693892|Visa|02/06||false|
+|405257702284527|Mastercard|02/06||false|
+|4024007125632481|American Express|02/06||false|
+|4256050997607|Mastercard|02/06||false|
+|436740o659073|Diners Club|02/06||false|
+|378238357872855|American Express|02/06||false|
+|347148346051767|American Express|02/06||false|
+|30328554553609|American Express|02/06||false|
+|30291266636411|Discover|02/06||false|
+|6011404643082688|Discover|12/05||false|

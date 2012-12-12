@@ -1,0 +1,7 @@
+!2 It's wrong if an exception is not thrown with the special string "error".
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>plus()</td></tr>
+<tr><td>error</td></tr></table>-!|!-<table><tr><td>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>plus()</td></tr>
+<tr><td class="fail">error <span class="fit_label">expected</span><hr>0 <span class="fit_label">actual</span></td></tr></table>-!|

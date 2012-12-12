@@ -1,0 +1,27 @@
+!***< def
+!define list (
+|''colour''|
+|green|
+
+)
+!define list2 (
+|''colour''|
+|yellow|
+|black|
+|white|
+
+)
+!define listOfList (
+|${list2}|
+|${list}|
+
+)
+**!
+!|fitlibraryGeneric.specify.collections.GenericCollections|
+
+ * List<Set<Colour>>
+|''a list of sets''|${listOfList}|
+
+|''checks''|
+ * List<Set<Colour>>
+|''a list of sets''|${listOfList}|

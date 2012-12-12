@@ -1,0 +1,36 @@
+!3 If there is a constructor that takes a String, use that to create objects of the given class (ie, "self-parse")
+The constructor does not need to be '''public'''.
+!**< def
+!define test {!|fitlibrary.specify.parser.UseConstructor|
+----
+|'''check'''|a point|(12,34)|(12,34)|
+
+|''a point as domain object''|(12,34)|
+|x|12|
+|y|34|
+}
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.UseConstructor</td>
+</tr>
+</table>
+<hr/>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td>a point</td>
+<td>(12,34)</td>
+<td class="pass">(12,34)</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>a point as domain object</i></td>
+<td>(12,34)</td>
+</tr>
+<tr><td>x</td>
+<td class="pass">12</td>
+</tr>
+<tr><td>y</td>
+<td class="pass">34</td>
+</tr>
+</table>-!|

@@ -1,0 +1,34 @@
+!*< def
+!define target ({{{<head>
+  <title>To here</title>
+</head>}}})
+!define html ({{{<head><title>Start</title></head>
+  <body>
+    <a id = "one" href="other.html">Link</a>
+  </body>}}})
+*!
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''make file''|other.html|''from''|${target}|
+
+|''with html''|${html}|
+
+|''title''|'''is'''| Start |
+
+|''click''|//a[@id="one"]|
+
+|''title''|'''is'''|To here|
+
+|''back''|
+
+|''title''|'''is'''| Start |
+
+|''forward''|
+
+|''title''|'''is'''|To here|
+
+|''back''|
+
+|''title''|'''is'''| Start |

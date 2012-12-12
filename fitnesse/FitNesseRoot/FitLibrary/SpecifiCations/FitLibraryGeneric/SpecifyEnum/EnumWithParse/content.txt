@@ -1,0 +1,9 @@
+!3 The enum LIGHTRED can be written in various ways
+ * Spaces added
+ * Case changed
+!|fitlibraryGeneric.specify.enumerator.EnumWithParse|
+
+|''enumeration''|light red|
+----
+----
+|''enumeration''|lightred|

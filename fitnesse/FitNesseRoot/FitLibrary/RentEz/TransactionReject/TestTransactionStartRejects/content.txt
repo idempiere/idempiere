@@ -1,0 +1,5 @@
+!3 Transaction starts that fail to work:
+
+|'''not'''|''begin transaction for client''|Unknown Client|''staff''|Bill|
+
+|'''not'''|''begin transaction for client''|Joanna|''staff''|Unknown Staff|

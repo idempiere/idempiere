@@ -1,0 +1,4 @@
+This ${traverse} checks a ''subset'' (ie, some of an unordered list) against a table.
+!3 Examples
+ * .FitLibrary.UserGuide.FitLibraryByExample.SubSet
+ * .FitLibrary.SpecifiCations.CollectionSpecifications.SubsetTraverse

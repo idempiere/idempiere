@@ -1,0 +1,16 @@
+!3 ''Fit for Developing Software'', Rick Mugridge and Ward Cunningham, Prentice-Hall, 2005.
+
+!img http://files/images/fitBookCover.jpeg
+
+!3 Praise for the book:
+
+ * "Rick and Ward continue to amaze me. Testing business rules is a fundamentally hard thing that has confounded many, and yet these two have devised a mechanism that cuts to the essence of the problem. In this work they offer a simple, thorough, approachable, and automatable means of specifying and testing such rules."
+'''Grady Booch''', IBM Fellow
+
+
+ * "By providing a simple, effective method for creating and automating tabular examples of requirements, Fit has dramatically improved how domain experts, analysts, testers, and programmers collaborate to produce quality software."
+'''Joshua Kerievsky''', founder, Industrial Logic, Inc., and author of ''Refactoring to Patterns''
+
+
+ * "Even with the best approaches, there always seemed to be a gap between the software that was written and the software the user wanted. With Fit we can finally close the loop. This is an important piece in the agile development puzzle."
+'''Dave Thomas''', coauthor of ''The Pragmatic Programmer''

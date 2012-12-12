@@ -1,0 +1,73 @@
+!2 'contains' checks that the actual value, as a string, contains the expectect value
+!**< def
+!define test {!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|int property|contains|2|
+
+|boolean property|contains|tru|
+
+|boolean property|contains|ue|
+
+|string property|contains|apple|
+
+|string property|contains|orange|
+
+|''x''|1|''y''|3|''contains''|(1,|
+
+|''x''|1|''y''|3|''contains''|(x,|
+}
+
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>int property</td>
+<td>contains</td>
+<td class="pass">2</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>boolean property</td>
+<td>contains</td>
+<td class="pass">tru</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>boolean property</td>
+<td>contains</td>
+<td class="pass">ue</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td>contains</td>
+<td class="pass">apple</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td>contains</td>
+<td class="fail">orange <span class="fit_label">expected</span><hr>apple pie <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>x</i></td>
+<td>1</td>
+<td><i>y</i></td>
+<td>3</td>
+<td><i>contains</i></td>
+<td class="pass">(1,</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>x</i></td>
+<td>1</td>
+<td><i>y</i></td>
+<td>3</td>
+<td><i>contains</i></td>
+<td class="fail">(x, <span class="fit_label">expected</span><hr>(1,3) <span class="fit_label">actual</span></td>
+</tr>
+</table>-!|

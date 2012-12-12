@@ -1,0 +1,26 @@
+!*< def
+!define html ({{{<input type="text" id="nothing"/>
+<input type="text" id="withValue" value="red"/>
+<input type="text" id="disabled" value="blue" disabled="true"/>
+<input type="text" id="onlySpacesInText">   </input>
+<input type="text" id="withText">green</input>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''text of''|//input[@id="nothing"]|''is''||
+
+|''text of''|//input[@id="withValue"]|''is''|red|
+
+|''text of''|//input[@id="disabled"]|''is''|blue|
+
+ * Text wrapped by the <input> tags is irrelevant:
+
+|''text of''|//input[@id="onlySpacesInText"]|''is''||
+
+|''text of''|//input[@id="withText"]|''is''||
+

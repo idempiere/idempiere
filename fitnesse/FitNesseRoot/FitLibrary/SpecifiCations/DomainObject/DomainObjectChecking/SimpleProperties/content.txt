@@ -1,0 +1,68 @@
+!3 The expected property-value pairs are given across a row of the table.
+ * More than one pair can be in a row.
+ * There's no need to check all of the properties
+For example, a ''User'' has a ''name'' and an amount they ''owe'' us:
+
+!**< def
+!define user1 (|''name''|Poor Payer|
+|''owe''|10000.00|
+)
+!define user2 (|''name''|Poor Payer|''owe''|10000.00|
+)
+!define user3 (|''name''|Poor Payer|
+)
+!define test (!|fitlibrary.specify.domain.UserAdapter|
+
+|''checks''|
+
+|''slow paying user''|${user1}|
+
+|''slow paying user''|${user2}|
+
+|''slow paying user''|${user3}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.UserAdapter</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>slow paying user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td class="pass">Poor Payer</td>
+</tr>
+<tr><td><i>owe</i></td>
+<td class="pass">10000.00</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>slow paying user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td class="pass">Poor Payer</td>
+<td><i>owe</i></td>
+<td class="pass">10000.00</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>slow paying user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td class="pass">Poor Payer</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

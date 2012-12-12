@@ -1,0 +1,41 @@
+ * No type is specified in the nested table
+ * As the property type is an abstract class, no object can be created
+!**< def
+!define user (|''name''|Brad Prayer|
+)
+!define test (!|fitlibrary.specify.domain.PropertyOfInterfaceType|
+
+|''abstract user''|${user}|
+
+|''checks''|
+
+|''abstract user''|${user}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.PropertyOfInterfaceType</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>abstract user</i></td>
+<td class="error"><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td>Brad Prayer</td>
+</tr>
+</table><hr/> <span class="fit_label">Class is abstract</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>abstract user</i></td>
+<td class="fail"><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td>Brad Prayer</td>
+</tr>
+</table> <span class="fit_label">expected</span><hr> <span class="fit_label">actual</span></td>
+</tr>
+</table>-!|

@@ -1,0 +1,39 @@
+!2 Ajax and other Delays
+#
+Due to ajax, plus general delays in loading pages, etc, changes on the browser may take some time to happen. For example, when the user clicks on an element, a web services call may be used to gather information from the server to display. Allowance needs to be made for these delays.
+
+The usual approach is to put in explicit delays to allow time for things to happen. But there's a trade-off here. If the delay is too short, the test may fail sometimes. If the delay is too long, the test will run very slowly.
+
+''!-SpiderFixture-!'' solves this problem by automatically checking regularly until an element appears:
+ * If the element is there already, it succeeds immediately and the action continues (such as checking the text of that element).
+ * If the element is not there initially, ''!-SpiderFixture-!'' checks regularly for it. As soon as it does appear, the action continues.
+ * If the element doesn't appear after a ''timeout'' period, the action fails.
+#
+!2 Actions affected
+#
+The actions that allow for a delay before they are satisfied include:
+ * Using an element that has been added or altered in the page (eg, new input fields, new options in a select, etc)
+ * Checking for the existence of an element that may have been added
+ * Checking for the non-existence of an attribute that may have been removed
+ * Checking for text or a regular expression in a page for text that may have been added
+ * Selecting a frame or iframe
+#
+!2 Timeout period
+#
+The timeout period can be adjusted at any point in a storytest, tuned to what's needed. It doesn't matter if the timeout period is longer when tests pass, as ''!-SpiderFixture-!'' will only wait as long as necessary (maybe not at all). However, if an element fails to appear, it takes longer before it fails. Ideally, the storytests will generally be passing, so the time overhead will be largely irrelevant.
+
+To change the timeout period (in milliseconds):
+
+|''checking timeout''|50|
+
+This is set to 1000 by default.
+
+If there are one or two places where the delay is much longer, you can set the timeout period longer just before each such place, and set it down again afterwards.
+#
+!2 Technical detail
+#
+''!-SpiderFixture-!'' works out the polling rate (checking the browser for an element) from the ''checking timeout'' as follows:
+
+ * Polling rate is timeout / 50
+ * But the minimum poll rate is 2 milliseconds
+ * And the maximum poll rate is 10 milliseconds

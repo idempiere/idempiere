@@ -1,0 +1,14 @@
+|''mock full soap as''| SOAP11|''on port''|8081|
+|''matches URL''|/service|
+|''matches request''|${soap11}<request a="a" b="b">in</request>${endSoap11}|
+|''response''|${soap11}<response>out</response>${endSoap11}|
+
+|''to''|http://localhost:8081/service|''as''|SOAP11|''post full soap''|${soap11}<request b="b" a="a">in</request>${endSoap11}|'''is'''|${soap11}<response>out</response>${endSoap11}|
+
+|''reply content type''|'''is'''|text/xml;charset=utf-8|
+
+|'''show'''|''reply''|
+
+|'''show escaped'''|''reply''|
+
+|''close''|

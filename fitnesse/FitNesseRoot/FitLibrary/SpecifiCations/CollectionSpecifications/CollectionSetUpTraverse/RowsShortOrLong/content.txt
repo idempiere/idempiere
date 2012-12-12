@@ -1,0 +1,58 @@
+!2 An error is given if a row is short or long.
+!**< def
+!define in (|''name''|''owe''|
+|emma|130.00||
+|james|
+)
+!define out (|''name''|''owe''|
+|emma|130.00|
+|james|120.00|
+)
+!define test (
+!|fitlibrary.specify.collectionSetUp.SetUpList|
+
+|''IOUs''|${in}|
+----
+----
+|''IOUs''|${out}|
+
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.collectionSetUp.SetUpList</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>IOUs</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td colspan="2"><i>owe</i></td>
+</tr>
+<tr><td class="error">emma<hr/> <span class="fit_label">Row should be 2 cells wide</span></td>
+<td>130.00</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td colspan="3" class="error">james<hr/> <span class="fit_label">Row should be 2 cells wide</span></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<hr><br><hr><br><table border="1" cellspacing="0">
+<tr><td><i>IOUs</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td><i>owe</i></td>
+</tr>
+<tr><td class="fail">emma <span class="fit_label">missing</span></td>
+<td>130.00</td>
+</tr>
+<tr><td class="fail">james <span class="fit_label">missing</span></td>
+<td>120.00</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br>-!|

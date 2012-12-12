@@ -1,0 +1,32 @@
+!**< def
+!define testStrings {!|fitlibrary.specify.mapParser.Parse|
+
+|''given map''||
+
+|''given map''|red->green, blue->yellow|
+|red|green|
+|blue|yellow|
+}
+**!
+ * It's assumed that the map is either empty or is a map from String to String
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${testStrings}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.mapParser.Parse</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr class="pass"><td><i>given map</i></td>
+<td>&nbsp;</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>given map</i></td>
+<td>red-&gt;green, blue-&gt;yellow</td>
+</tr>
+<tr class="pass"><td>red</td>
+<td>green</td>
+</tr>
+<tr class="pass"><td>blue</td>
+<td>yellow</td>
+</tr>
+</table>-!|

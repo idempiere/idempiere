@@ -1,0 +1,44 @@
+!*< def
+!define target {<head><title>To Here</title></head>othering
+<a href='javascript:window.close()'>closing</a>
+}
+!define html ({{{<head><title>From</title></head>
+<div id='popup' onclick="javascript:window.open('other.html', 'my own name', 'width=400,height=200,scrollbars=yes')">Option</input>">Linkk</div>
+homing}}})
+*!
+
+|''keywords''|chrome,htmlunit, firefox|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''make file''|other.html|''from''|${target}|
+
+|''with html''|${html}|
+
+|''page source''|contains|homing|
+
+|show|windows|
+
+|''click''|popup|
+
+ * htmlunit automatically selects the popup window, but Firefox doesn't:
+
+|show|windows|
+
+ * So we allow for both here by always explicitly selecting the required window:
+
+|''select initial window''|
+
+|show|windows|
+
+|''page source''|contains|homing|
+
+|''title''|'''is'''|From|
+
+|''select other window''|
+
+|show|windows|
+
+|''page source''|contains|othering|
+
+|''text of''|//title|'''is'''|To Here|

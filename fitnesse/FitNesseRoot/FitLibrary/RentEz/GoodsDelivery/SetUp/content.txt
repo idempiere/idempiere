@@ -1,0 +1,24 @@
+|!-rent.StartApplication-!|
+
+|''setup''|
+|''rental item name''|''count''|''$/hour''|''$/day''|''$/week''|''deposit''|
+|coffee dispenser|10|1.50|8.20|60.00|0.00|
+
+|''setup''|
+|''client name''|''phone''|''city''|''zone''|''delivery address''|
+|Joanna|373 7599|Auckland|CBD|10 Princes St|
+
+|''setup''|
+|''staff name''|''phone''|
+|Bill|555 9876|
+
+|''setup''|
+|''city''|''zone''|''delivery rate flat fee''|''delivery rate %''|
+|Auckland| CBD|8.00|3|
+|Auckland| Central|8.00|3|
+|Auckland| South|6.00|2|
+|Auckland| North Shore|15.00|5|
+|Auckland| West|12.00|4|
+|Auckland| East|12.00|4|
+
+|''time is now''| 2005/05/06 09:01|

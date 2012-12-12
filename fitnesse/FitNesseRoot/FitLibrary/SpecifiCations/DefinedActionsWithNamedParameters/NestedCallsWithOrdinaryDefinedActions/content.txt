@@ -1,0 +1,60 @@
+!**< def
+!define test (!|fitlibrary.DoFixture|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine|
+
+|''set expand defined actions''|true|
+
+|''ordinary''|
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.DoFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>clear defined actions</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>define actions at</i></td>
+<td><a href="FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine">.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine</a></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>set expand defined actions</i></td>
+<td>true</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>ordinary</i></td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine'>.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine</a>:</span>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td>do twice</td></tr>
+<tr class="pass"><td>address</td></tr>
+<tr><td class="pass">te aroha</td><td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine'>.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine</a>:</span><table border="1" cellspacing="0">
+<tr><td>do this now</td></tr>
+<tr class="pass"><td>name</td><td>full address</td></tr>
+<tr><td class="pass">adam</td><td class="pass">te aroha</td><td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine'>.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine</a>:</span><table border="1" cellspacing="0">
+<tr><td>show</td><td>get</td><td>adam</td><td bgcolor=#C0C0FF>adam</td></tr>
+</table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td>show</td><td>get</td><td>te aroha</td><td bgcolor=#C0C0FF>te aroha</td></tr>
+</table></td></tr>
+<tr><td class="pass">eve</td><td class="pass">te aroha</td><td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine'>.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine</a>:</span><table border="1" cellspacing="0">
+<tr><td>show</td><td>get</td><td>eve</td><td bgcolor=#C0C0FF>eve</td></tr>
+</table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td>show</td><td>get</td><td>te aroha</td><td bgcolor=#C0C0FF>te aroha</td></tr>
+</table></td></tr>
+</table></td></tr>
+</table></td></tr>
+</table>-!|

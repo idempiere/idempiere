@@ -1,0 +1,30 @@
+!3 8. Ordering the requests
+#
+If we really want to constrain the order of the requests for oranges and apples, we can do that within a single table.
+
+|''with mock web services''|
+
+|''mock soap11 on port''|8081|
+|''xpath''|//countOf|''is''|Oranges|
+|''response''|<count>44</count>|
+|''response''|<count>23</count>|
+|''then''|
+|''xpath''|//countOf|''is''|Apples|
+|''response''|<count>17</count>|
+|''response''|<count>9</count>|
+
+|''close after''|5|''seconds''|
+
+This will only match the following sequence of calls:
+
+ * (oranges/44), (oranges/23), (apples/17), (apples/9)
+
+OrangesThenApples works.
+
+But OrangesAndApples doesn't.
+#
+!3 9. Next
+#
+What if we want to repeat 0 once there are no more oranges?
+
+An example is [[on this page][RepeatResponse]].

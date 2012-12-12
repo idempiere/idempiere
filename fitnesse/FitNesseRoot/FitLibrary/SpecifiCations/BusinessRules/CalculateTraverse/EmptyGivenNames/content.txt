@@ -1,0 +1,17 @@
+!2 Given columns don't need to be named. The expected columns appear to the right of the last empty column.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="4">fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=5>calculate</td></tr>
+<tr><td></td><td></td><td>&nbsp;</td><td>sum</td></tr>
+<tr><td>10</td><td>1</td><td></td><td>11</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="4">fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=5>calculate</td></tr>
+<tr><td></td><td></td><td>&nbsp;</td><td>sum</td></tr>
+<tr><td>10</td><td>1</td><td></td><td class="pass">11</td></tr>
+</table>-!|

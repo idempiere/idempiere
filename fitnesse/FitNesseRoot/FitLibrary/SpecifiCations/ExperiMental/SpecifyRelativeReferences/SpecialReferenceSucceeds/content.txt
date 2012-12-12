@@ -1,0 +1,35 @@
+!3 The reference '1st' is a special one and so results in a call to the fixture method ''findClient("1st")''
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.References</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>set up accounts</i></td></tr>
+<tr><td><i>owing</i></td></tr>
+<tr><td>10</td></tr><tr><td>100</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>add</i></td><td>10</td><td><i> to </i></td><td>1st</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>accounts</i></td></tr>
+<tr><td><i>owing</i></td></tr>
+<tr><td>20</td></tr>
+<tr><td>100</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.References</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>set up accounts</i></td></tr>
+<tr><td><i>owing</i></td></tr>
+<tr><td>10</td></tr><tr><td>100</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td class="pass"><i>add</i></td><td>10</td><td class="pass"><i> to </i></td><td>1st</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>accounts</i></td></tr>
+<tr><td><i>owing</i></td></tr>
+<tr><td class="pass">20</td></tr>
+<tr><td class="pass">100</td></tr>
+</table>-!|

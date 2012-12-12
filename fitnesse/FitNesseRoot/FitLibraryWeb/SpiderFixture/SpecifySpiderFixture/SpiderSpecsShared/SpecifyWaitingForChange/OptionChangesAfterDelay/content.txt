@@ -1,0 +1,23 @@
+!*< def
+!define html [{{{<script type="text/javascript">
+function addInput(){
+  document.getElementById("22").selectedIndex = 1;
+}
+</script>
+<input type="button" id="ok" value="OK"
+onclick="javascript:setTimeout('addInput()', 50)"/>
+
+<select id='22'><option id ='blue'>Blue</option><option id ='red'>Red</option></select>}}}]
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''option of''|22|''is''|Blue|
+
+|''click''|ok|
+
+|''option of''|22|'''becomes'''|Red|

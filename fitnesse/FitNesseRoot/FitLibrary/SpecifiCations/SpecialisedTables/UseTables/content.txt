@@ -1,0 +1,26 @@
+!*> defines
+!define tables {|a|b|c|
+
+|d|
+}
+*!
+
+Fixturing code can access table directly.
+
+!|fitlibrary.specify.specialisedTables.UseTables|
+
+This works fine for action parameters:
+
+|''use tables''|${tables}|
+
+And works fine with dynamic variables:
+
+|'''set'''|x|''to''|${tables}|
+
+|''use tables''|@{x}|
+
+But it doesn't work properly with '''show''' or '''is'''.
+
+|'''show'''|''return tables''|${tables}|
+
+As I only need to use them in action parameters, I'm not going to fix it now.

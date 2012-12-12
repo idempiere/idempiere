@@ -1,0 +1,15 @@
+!3 ''Previous rentals within a transaction limit what can be rented.''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|5||coffee dispenser|''for''|1 week|
+|'''not'''|''rent''|6||coffee dispenser|''for''|1 week|
+|''pay with cash $''|287.00|
+|''complete transaction''|
+ * ''Checks''
+|''rentals of client''|Joanna|
+|''rental item''|''count''|
+|coffee dispenser|5|
+
+|''rental item subset''|
+|''name''|''free count''|
+|coffee dispenser|5|
+

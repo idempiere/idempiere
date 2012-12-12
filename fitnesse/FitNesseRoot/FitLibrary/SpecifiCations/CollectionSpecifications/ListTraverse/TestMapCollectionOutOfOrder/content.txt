@@ -1,0 +1,32 @@
+!*< test
+!define test {!|fitlibrary.specify.ArrayFixtureUnderTestWithMap|
+
+|''map''|
+|+|&|
+|1|one|
+|2|two|
+|1|two|
+}
+*!
+!2 Each element is a Map. The elements here are not in the correct order.
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.ArrayFixtureUnderTestWithMap</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="2"><i>map</i></td>
+</tr>
+<tr><td>+</td>
+<td>&amp;</td>
+</tr>
+<tr><td class="pass">1</td>
+<td class="pass">one</td>
+</tr>
+<tr><td class="fail">2 <span class="fit_label">missing</span></td>
+<td>two</td>
+</tr>
+<tr><td class="pass">1</td>
+<td class="pass">two</td>
+</tr>
+<tr><td class="fail"> <span class="fit_grey">2</span> <span class="fit_label">surplus</span></td><td> <span class="fit_grey">two</span></td></tr></table>-!|

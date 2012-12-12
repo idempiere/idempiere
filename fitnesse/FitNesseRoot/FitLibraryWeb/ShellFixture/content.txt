@@ -1,0 +1,58 @@
+!2 A fixture for running local commands through a shell
+#
+This a variation of a fixture available with ''!-FitNesse-!''. However, as ''!-FitLibrary-!'' allows for multiple fixtures running at once, this handles a single shell command.
+
+>JavaExample
+
+#
+----!3 Starting and Finishing
+#
+ * To start a shell command and wait for it to finish:
+
+|''with shell''|
+
+|''synchronously''|java -help|
+
+ * To start a shell command but not wait for it to finish, so that the output can be processed as it's running:
+
+|''asynchronously''|java -help|
+
+ * To wait for the process to finish:
+
+|''wait to finish''|
+
+|''wait to finish''|2000|
+#
+----!3 Checking next output (sys out and sys err)
+#
+ * Check the contents of the next line of output (the line is then discarded):
+
+|''sys out line''|'''is'''|Usage: java [-options] class [args...]|
+
+|''sys out line''|'''contains'''|(to execute a class)|
+
+|''sys err line''|'''contains'''|!-RuntimeException-!|
+
+ * Check the contents of the next line of output, but only wait for a given period in milliseconds (only relevant with asynchronous execution):
+
+|''sys out line waiting for''|10|'''contains'''|(to execute a class)|
+
+|''sys err line waiting for'''|10|'''matches'''|Exception.*|
+
+ * Scan through the lines of output until finding a match (the lines are discarded):
+
+|''first matching line with''|hot|''in sys out''|'''matches'''|synonym|
+
+|''first matching line with''|verbose|''in sys err''|'''matches'''|jni|
+
+ * Scan through the lines of output until finding a match with a timeout (the lines are discarded):
+
+|''first matching line with''|hot|''waiting for''|200|''in sys out''|'''matches'''|synonym|
+
+|''first matching line with''|verbose|''waiting for''|200|''in sys err''|'''matches'''|jni|
+
+----!3 Remaining output
+|'''show'''|''outputs remaining''|
+
+----!3 Providing input
+|''write input''|Hello World|

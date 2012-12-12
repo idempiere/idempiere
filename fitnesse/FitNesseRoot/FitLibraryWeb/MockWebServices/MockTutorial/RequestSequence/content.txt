@@ -1,0 +1,28 @@
+!3 6. A Sequence of Responses for a Request
+We can handle a sequence of requests for the stock count for oranges, where the count may change on each request. We extend the second table, as follows:
+
+|''with mock web services''|
+
+|''mock soap11 on port''|8081|
+|''xpath''|//countOf|''is''|Oranges|
+|''response''|<count>44</count>|
+|''response''|<count>23</count>|
+|''response''|<count>10</count>|
+|''response''|<count>0</count>|
+
+|''close after''|5|''seconds''|
+
+Now, our system will get back responses from 4 requests for oranges: 44, 23, 10, 0.
+
+ * We can try that with FourOrangeCalls
+
+The close will fail unless exactly 4 requests for oranges have been received within the time period.
+
+ * We can try that with too many: FiveOrangeCalls and with too few: OrangesCall
+#
+!3 7. Next
+#
+What if we want to provide counts for apples and oranges?
+
+An example is [[on this page][AlternativeRequests]].
+#

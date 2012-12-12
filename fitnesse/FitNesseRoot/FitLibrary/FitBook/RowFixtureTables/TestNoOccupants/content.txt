@@ -1,0 +1,2 @@
+|!-OccupantList-!|
+|''user''|''room''|

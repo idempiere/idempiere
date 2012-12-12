@@ -1,0 +1,8 @@
+|''begin admin transaction''| Bill |
+|''remove for repair''|coffee dispenser||2|
+|''complete transaction''|
+
+|''begin admin transaction''| Bill |
+|'''reject'''|''return from repair''|coffee dispenser||3|
+|'''reject'''|''return from repair''|coffee mug||2|
+|''complete transaction''|

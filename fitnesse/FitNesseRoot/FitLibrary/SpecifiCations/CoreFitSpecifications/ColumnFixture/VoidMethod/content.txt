@@ -1,0 +1,6 @@
+!2 An exception is thrown if a method doesn't return a value (is void).
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>voidMethod()</td></tr></table>-!|
+|!-<table><tr><td>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td class="error">voidMethod()<hr><pre><div class="fit_stacktrace"></div></pre></td></tr></table>-!|

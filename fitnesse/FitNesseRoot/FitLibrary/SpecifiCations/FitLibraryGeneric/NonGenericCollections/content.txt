@@ -1,0 +1,30 @@
+!***< def
+!define rg (
+|''colour''|
+|red|
+|green|
+
+)
+!define map (
+|a|b|
+|c|d|
+
+)
+**!
+ * A non-generic list or set is handled in the usual way
+
+!|fitlibraryGeneric.specify.collections.NonGenericCollections|
+
+|''a list''|${rg}|
+
+|''a set''|${rg}|
+
+|''a map''|${map}|
+----
+----
+|''a list''|${rg}|
+
+|''a set''|${rg}|
+
+|''a map''|${map}|
+

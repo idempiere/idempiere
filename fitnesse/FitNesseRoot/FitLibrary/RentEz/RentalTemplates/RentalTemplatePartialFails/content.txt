@@ -1,0 +1,26 @@
+ * Setup template
+|''create template''|coffee break|
+|''one''|coffee dispenser|''for''|20|''people''|
+|''one''|hot water dispenser|''for''|20|''people''|
+|''one''|coffee table|''for''|40|''people''|
+|''one''|cup|''for''|1|''people''|
+
+|''create template''|21st party|
+|''one''|yardie glass|''for''|1000|''people''|
+|''one''|balloon|''for''|10|''people''|
+|''one''|cup|''for''|1|''people''|
+
+ * Client fills 2 templates, 1st one pass, 2nd fails due to the lack of available items
+|''begin transaction for client''|Joanna|''staff''|Bill|
+|'''check'''|''fill template''|coffee break|''for''|21|''people for''|1 day|91.85|
+|'''not'''|''fill template''|21st party|''for''|480|''people for''|1 day|
+|''pay with cash $''|91.85|
+|''complete transaction''|
+
+ * ''Checks''
+|''rentals of client''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee dispenser|2|2004/05/06 09:01|2004/05/07 09:01|
+|hot water dispenser|2|2004/05/06 09:01|2004/05/07 09:01|
+|coffee table|1|2004/05/06 09:01|2004/05/07 09:01|
+|cup|21|2004/05/06 09:01|2004/05/07 09:01|

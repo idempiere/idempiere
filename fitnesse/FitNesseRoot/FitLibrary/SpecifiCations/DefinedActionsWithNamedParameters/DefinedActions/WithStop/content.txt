@@ -1,0 +1,13 @@
+|''stopper''|
+|''name''|''full address''|
+
+|''abandon storytest''|
+
+|''should ignore this''|
+----
+|''stopper on error''|
+|''name''|''full address''|
+
+|''get''|1|'''is'''|2|
+
+|''should ignore this''|

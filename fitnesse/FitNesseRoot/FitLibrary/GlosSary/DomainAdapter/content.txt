@@ -1,0 +1,10 @@
+${programmers}
+A DomainAdapter is an object that acts as an adapter between FitLibrary and an application object.
+
+A DomainAdapter provides a method to access the associated application object (the so-called ObjectUnderTest). When FitLibrary looks for a method in the ObjectUnderTest, it first checks if the method is in the DomainAdapter. If it is, it calls that method. If the method doesn't appear in the DomainObject, then FitLibrary checks for the method in the ObjectUnderTest.
+
+Using a DomainAdapter means that you don't need to subclass a ${fitLibrary} ${traverse} or ${fixture}. This has the advantage that:
+ * Your DomainAdapter can be part of your own class hierarchy.
+ * You are much more independent from the implementation details of ${fitLibrary}.
+ * You no longer see the internal methods of the ${fixture} in your IDE, as you did when you had to subclass a ${fixture}.
+Note that the classes ''Fixture'' and ''Traverse'' are subtypes of ''!-DomainAdapter-!''

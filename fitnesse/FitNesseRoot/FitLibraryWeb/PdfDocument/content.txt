@@ -1,0 +1,90 @@
+The PdfDocument fixture allows for the text within a PDF file to be checked.
+
+Paragraph information is no longer explicit in a PDF.
+
+ * PdfDocument uses some simple heuristics to try and segment the text into paragraphs.
+ * However, it is weak at doing this in general.
+
+Here's a document that discusses the issues in accessing text from PDFs and tuning the paragraph-segmenting heuristics in PdfDocument:
+
+ *  http://files/pdf/eg.pdf.
+#
+!2 Example
+#
+Here's a >RunningExample
+#
+!2 Commands
+#
+!3 1. Start, Open, Close
+#
+ * Start checking PDF:
+
+|''with PDF''|
+
+ * Open a PDF file:
+
+|''open''|Submission.pdf|
+
+ * Finish processing the pdf by closing the file:
+
+|''close PDF file''|
+#
+!3 2. Pages
+#
+ * Confirm the number of pages:
+
+|''number of pages''|''is''|2|
+
+ * Select a specific page:
+
+|''select page''|1|
+
+ * Select all pages
+
+|''select all pages''|
+#
+!3 3. Checking for text anywhere
+#
+ * Show the text of the current page(s):
+
+|'''show'''|''text''|
+
+ * Check that a string appears somewhere in the text in the current page(s):
+
+|''text''|''contains''|Thanks for your submission|
+
+ * Check that the regular expression appears somewhere in the text in the current page(s):
+
+|''text''|''matches''|Thanks for yo.* submission|
+#
+!3 4. Paragraphs
+#
+ * Select the text below a given heading and up to the next heading (can also use '''contains''' and '''matches''':
+
+|''paragraph below heading''|Follow Up:|''is''|We will contact you in the next few days to provide feedback on your submission.|
+
+ * Select the text below a given heading and up to the next heading (can also use '''contains''' and '''matches''':
+
+|''paragraph after containing''|Conclusions|''contains''|There's no more to say on this topic.|
+
+ * Check a range of paragraphs:
+
+|paragraphs from|0|to|3|
+|Extracting Paragraphs from PDF Files|
+|PDF Format|
+|PDFs do not retain paragraph, heading, etc information. Instead, a PDF encodes a rendered form of a document, rather like the individual characters that are rendered on a screen. A PDF file can be thought of as containing a sequence of pieces of information. Each piece of text is located at a particular (x,y,z) position, along with font information.|
+|Depending on the application writing the PDF file, a word may be added as a single word, or it may be added as several substrings. Some applications tend to add each of the characters of a word separately.|
+#
+!3 5. Dump Image
+#
+ * Dump an image of the PDF and include it in the storytest report:
+
+|''show pdf as image''|
+
+This only works with some PDFs. For example, the PDF provided in the ^RunningExample doesn't display the characters.
+#
+!2 Implementation
+#
+This uses the apache open-source ''pdfbox'' system.
+
+See http://incubator.apache.org/pdfbox/ for further details.

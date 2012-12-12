@@ -1,0 +1,13 @@
+!|fitlibrary.specify.DomainFixtureUnderTest|
+
+|''colour 3''|!include .FitLibraryGeneric.SpecifyReferences.MapRef|
+
+|''actions''|
+
+|''checks''|
+
+|''colour 3''|!include .FitLibraryGeneric.SpecifyReferences.MapRef|
+
+|''colour 3''|!include BlackColour|
+
+

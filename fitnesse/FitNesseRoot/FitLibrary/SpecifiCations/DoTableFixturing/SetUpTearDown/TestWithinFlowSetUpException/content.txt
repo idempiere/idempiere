@@ -1,0 +1,12 @@
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.WithinFlow</td></tr>
+</table>
+<table>
+<tr><td colspan="3"><i>with set up exception</i></td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.WithinFlow</td></tr>
+</table>
+<table>
+<tr><td colspan="3" class="error"><i>with set up exception</i><hr><pre><div class="fit_stacktrace"></div></pre></td></tr>
+</table>-!|

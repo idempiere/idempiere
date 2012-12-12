@@ -1,0 +1,8 @@
+!**< glossary reference definitions
+!define copyright {''Copyright (c) 2004 - 2010'' [[''Rick Mugridge''][.FitLibrary.GlosSary.RickMugridge]], ''http://www.rimuresearch.com''}
+!define gpl2 (''Released under the terms of the GNU General Public License version 2 or later.'')
+**!
+----${copyright}
+${gpl2}
+
+([[!-FitLibrary.Specifications-!][.FitLibrary.SpecifiCations]]) ([[!-FitLibrary.UserGuide-!][.FitLibrary.UserGuide]])  ([[!-FitLibrary.Glossary-!][.FitLibrary.GlosSary]])

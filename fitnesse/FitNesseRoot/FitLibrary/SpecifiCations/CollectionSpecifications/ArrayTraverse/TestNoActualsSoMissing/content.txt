@@ -1,0 +1,9 @@
+!2 No elements exist
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.PrimitiveArrayFixtureUnderTestEmpty</td></tr>
+<tr><td>one</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.PrimitiveArrayFixtureUnderTestEmpty</td></tr>
+<tr><td class="fail">one <span class="fit_label">missing</span></td></tr>
+</table>-!|

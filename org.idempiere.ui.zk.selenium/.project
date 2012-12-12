@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>idempiere.zk.selenium</name>
+	<name>org.idempiere.ui.zk.selenium</name>
 	<comment></comment>
 	<projects>
 	</projects>

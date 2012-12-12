@@ -1,0 +1,262 @@
+!**< def
+!define test (!|fitlibrary.specify.parser.ParserUnderTest|
+
+!|valid|
+|short|
+|1|
+|-13455|
+|-0|
+
+!|valid|
+|class Short|
+|1|
+|-13455|
+|-0|
+||
+
+!|valid|
+|class Short null|
+||
+
+!|valid|
+|int|
+|1|
+|-13455|
+|-0|
+
+!|valid|
+|Integer|
+|1|
+|-13455|
+|-0|
+||
+
+!|valid|
+|Integer null|
+||
+
+!|valid|
+|long|
+|1|
+|-13455|
+|-0|
+
+!|valid|
+|class Long|
+|1|
+|-13455|
+|-0|
+||
+
+!|valid|
+|class Long null|
+||
+
+!|invalid|
+|short|
+||
+|+|
+|1.5|
+
+!|invalid|
+|class Short|
+|+|
+|1.5|
+
+!|invalid|
+|int|
+||
+|+|
+|1.5|
+
+!|invalid|
+|Integer|
+|+|
+|1.5|
+
+!|invalid|
+|long|
+||
+|+|
+|1.5|
+
+!|invalid|
+|class Long|
+|+|
+|1.5|
+)
+**!
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.ParserUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>short</td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>-13455</td>
+</tr>
+<tr class="pass"><td>-0</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>class Short</td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>-13455</td>
+</tr>
+<tr class="pass"><td>-0</td>
+</tr>
+<tr class="pass"><td>&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>class Short null</td>
+</tr>
+<tr class="pass"><td>&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>int</td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>-13455</td>
+</tr>
+<tr class="pass"><td>-0</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>Integer</td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>-13455</td>
+</tr>
+<tr class="pass"><td>-0</td>
+</tr>
+<tr class="pass"><td>&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>Integer null</td>
+</tr>
+<tr class="pass"><td>&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>long</td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>-13455</td>
+</tr>
+<tr class="pass"><td>-0</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>class Long</td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>-13455</td>
+</tr>
+<tr class="pass"><td>-0</td>
+</tr>
+<tr class="pass"><td>&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>class Long null</td>
+</tr>
+<tr class="pass"><td>&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>short</td>
+</tr>
+<tr><td class="error"><hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">+<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">1.5<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>class Short</td>
+</tr>
+<tr><td class="error">+<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">1.5<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>int</td>
+</tr>
+<tr><td class="error"><hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">+<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">1.5<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>Integer</td>
+</tr>
+<tr><td class="error">+<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">1.5<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>long</td>
+</tr>
+<tr><td class="error"><hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">+<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">1.5<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>class Long</td>
+</tr>
+<tr><td class="error">+<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">1.5<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>-!|

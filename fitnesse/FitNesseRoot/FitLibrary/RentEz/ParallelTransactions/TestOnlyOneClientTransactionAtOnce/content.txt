@@ -1,0 +1,3 @@
+|''begin transaction for client''| Joanna |''staff''| Bill|
+
+|'''reject'''|''begin transaction for client''| Joanna |''staff''| Bill|

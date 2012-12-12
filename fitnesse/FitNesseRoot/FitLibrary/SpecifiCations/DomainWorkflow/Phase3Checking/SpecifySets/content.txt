@@ -1,0 +1,10 @@
+!**< def
+!define colours (|''colour''|
+|red|
+|green|
+)
+**!
+!|fitlibrary.specify.domain.Sets|
+----
+----
+|''a set of colours''|${colours}|

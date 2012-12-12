@@ -1,0 +1,9 @@
+|''begin admin transaction''| Bill |
+|''add sales item''|10|''of type''|cake|''costing''|3.00|''each''|
+|''add sales item''|10|''of type''|chips|''costing''|5.00|''each''|
+|''complete transaction''|
+
+|''sales item list''|
+| ''name''| ''count'' |''selling price''|
+| cake    |  10       |  3.00           |
+| chips   |  10       |  5.00           |

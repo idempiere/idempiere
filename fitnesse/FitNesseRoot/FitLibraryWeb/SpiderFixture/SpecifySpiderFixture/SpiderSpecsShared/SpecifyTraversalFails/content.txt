@@ -1,0 +1,18 @@
+!*< def
+!define target (<head><title>To here</title></head>
+)
+!define html (<a id = "one" href="another.html">Link</a>
+)
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''make file''|other.html|''from''|${target}|
+
+|''with html''|${html}|
+
+|'''reject'''|''click''|two|
+
+|'''reject'''|''click on named link''|Slink|

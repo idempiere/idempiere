@@ -1,0 +1,276 @@
+!**< def
+!define c1 (
+!|fitlibrary.specify.suite.SimpleSetUp|
+
+|''select or''|complete|
+
+|'''check'''|''set up count''|1|
+|'''check'''|''tear down count''|0|
+
+|'''check'''|''suite set up count''|1|
+|'''check'''|''suite tear down count''|0|
+
+|'''check'''|''total local set ups''|0|
+|'''check'''|''total local tear downs''|0|
+)
+!define c2 (
+|'''check'''|''suite set up count''|1|
+|'''check'''|''suite tear down count''|0|
+
+|'''check'''|''total local set ups''|0|
+|'''check'''|''total local tear downs''|0|
+
+|''keywords''|complete,money|
+
+|''aFixture''|
+|''and some immediate action''|
+
+|'''check'''|''local set up count''|1|
+
+|''and more''|
+
+|''and more besides''|
+
+|'''check'''|''local set up count''|1|
+)
+!define c2B (
+|'''check'''|''suite set up count''|1|
+|'''check'''|''suite tear down count''|0|
+
+|'''check'''|''total local set ups''|1|
+|'''check'''|''total local tear downs''|1|
+
+|''keywords''|complete,money|
+
+|''aFixture''|
+|''and some immediate action''|
+
+|'''check'''|''local set up count''|1|
+
+|''and more''|
+
+|''and more besides''|
+
+|'''check'''|''local set up count''|1|
+)
+!define c3 (
+|'''check'''|''suite set up count''|1|
+|'''check'''|''suite tear down count''|0|
+
+|'''check'''|''total local set ups''|2|
+|'''check'''|''total local tear downs''|2|
+
+|''keywords''|underway|
+
+|''a fixture''|
+
+|'''check'''|''local set up count''|1|
+
+|''and some immediate action''|
+
+|'''check'''|''local set up count''|1|
+)
+!define c4 (
+|'''check'''|''total local set ups''|2|
+|'''check'''|''total local tear downs''|2|
+)
+**!
+|!-fitlibrary.spec.SpecifySuiteFixture-!|
+|${c1}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.suite.SimpleSetUp</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="pass"><i>select or</i></td>
+<td>complete</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>set up count</i></td>
+<td class="pass">1</td>
+</tr>
+<tr><td><b>check</b></td>
+<td><i>tear down count</i></td>
+<td class="pass">0</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>suite set up count</i></td>
+<td class="pass">1</td>
+</tr>
+<tr><td><b>check</b></td>
+<td><i>suite tear down count</i></td>
+<td class="pass">0</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>total local set ups</i></td>
+<td class="pass">0</td>
+</tr>
+<tr><td><b>check</b></td>
+<td><i>total local tear downs</i></td>
+<td class="pass">0</td>
+</tr>
+</table>-!|''Normally in !-SuiteSetUp-!''|
+|${c2}|!-<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>suite set up count</i></td>
+<td class="pass">1</td>
+</tr>
+<tr><td><b>check</b></td>
+<td><i>suite tear down count</i></td>
+<td class="pass">0</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>total local set ups</i></td>
+<td class="pass">0</td>
+</tr>
+<tr><td><b>check</b></td>
+<td><i>total local tear downs</i></td>
+<td class="pass">0</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>keywords</i></td>
+<td>complete,money</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>aFixture</i></td>
+</tr>
+<tr><td class="pass"><i>and some immediate action</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>local set up count</i></td>
+<td class="pass">1</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="pass"><i>and more</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="pass"><i>and more besides</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>local set up count</i></td>
+<td class="pass">1</td>
+</tr>
+</table>-!|''Test One is selected''|
+|${c2B}|!-<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>suite set up count</i></td>
+<td class="pass">1</td>
+</tr>
+<tr><td><b>check</b></td>
+<td><i>suite tear down count</i></td>
+<td class="pass">0</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>total local set ups</i></td>
+<td class="pass">1</td>
+</tr>
+<tr><td><b>check</b></td>
+<td><i>total local tear downs</i></td>
+<td class="pass">1</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>keywords</i></td>
+<td>complete,money</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>aFixture</i></td>
+</tr>
+<tr><td class="pass"><i>and some immediate action</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>local set up count</i></td>
+<td class="pass">1</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="pass"><i>and more</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="pass"><i>and more besides</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>local set up count</i></td>
+<td class="pass">1</td>
+</tr>
+</table>-!|''Test One is selected again''|
+|${c3}|!-<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>suite set up count</i></td>
+<td class="pass">1</td>
+</tr>
+<tr><td><b>check</b></td>
+<td><i>suite tear down count</i></td>
+<td class="pass">0</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>total local set ups</i></td>
+<td class="pass">2</td>
+</tr>
+<tr><td><b>check</b></td>
+<td><i>total local tear downs</i></td>
+<td class="pass">2</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>keywords</i></td>
+<td>underway</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="ignore"><i>a fixture</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="ignore"><b>check</b></td>
+<td class="ignore"><i>local set up count</i></td>
+<td class="ignore">1</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="ignore"><i>and some immediate action</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="ignore"><b>check</b></td>
+<td class="ignore"><i>local set up count</i></td>
+<td class="ignore">1</td>
+</tr>
+</table>-!|''Test Two is not selected''|
+|${c4}|!-<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>total local set ups</i></td>
+<td class="pass">2</td>
+</tr>
+<tr><td><b>check</b></td>
+<td><i>total local tear downs</i></td>
+<td class="pass">2</td>
+</tr>
+</table>-!||
+
+

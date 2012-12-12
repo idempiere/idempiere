@@ -1,0 +1,90 @@
+It can be helpful to add logging to understand what's going on with storytests, and especially when something does not seem right.
+
+In this tutorial we show how to add logging at the storytest and at the fixturing/code level. We start with the storytest level.
+#
+!1 1. In Storytests
+#
+Several techniques can be used at the storytest level without further support at the fixturing/code level.
+#
+----!2 1.1 Show with actions
+#
+Use the '''show''' special action to display the value of an action directly in the report.
+
+For example, the action in the second table below results in "My result". This is displayed at the end of the row:
+
+!|fitlibrary.specify.log.LogExample|
+
+|'''show'''|''some action''|
+
+Here the output of the action contains HTML ("<u>text</u>"), so it is rendered by the browser:
+
+|'''show'''|''some action with html''|
+
+This can be convenient if you want to organise the data or highlight it in some way. For example, tabular data may be displayed in an HTML table.
+
+However, if you want to see the literal form, use '''show escaped''':
+
+|'''show escaped'''|''some action with html''|
+#
+----!2 1.2 Show with dynamic variables
+#
+We can show the value of a dynamic variable as well. Eg:
+
+|'''set'''|colour|''to''|red|
+
+|'''show'''|''get''|roses are @{colour}|
+
+|''get''|roses are @{colour}|'''is'''|roses are red|
+#
+----!2 1.3 Show After
+#
+This approach is convenient when you don't expect to look at the logged result very often, or it's long, so you don't want it visually cluttering up the report.
+
+'''show after''' includes the result of the action in a folding area after the table.
+
+|'''show after'''|some action|
+|'''show after'''|''some action with html''|
+
+To simply include some text, use the ''get'' action, which just returns that text supplied to it:
+
+|'''show after'''|''get''|Some text|
+#
+----!2 1.4 Show After As
+#
+If there's lot of information, or different categories of information, it may be worth segmenting the '''show after''' logs into different folding areas.
+
+'''show after as''' includes name of the folding area as the first argument and provided the result of the action (such as ''some action'' below) in a named folding area after the table.
+
+|'''show after as'''|Other Log|some action|
+|'''show after as'''|Further Log|''some action with html''|
+|'''show after as'''|Other Log|''some action with html''|
+
+To simply include some text, use:
+
+|'''show after as'''|Other Log|''get''|Some text|
+#
+----!2 1.5 Log Text
+#
+If you want timing information included, or want to also log to a file (or elsewhere), this is a useful approach.
+
+'''logged''' logs the result of the action (such as ''some action'' below) in a folding area after the table. See later in this tutorial (2 pages on) for how to have this also logged to a file (or elsewhere).
+
+|'''logged'''|some action|
+|'''logged'''|''some action with html''|
+|'''logged'''|''some action with html''|
+
+You can also put '''logged''' at the end of the row:
+
+|some action|'''logged'''|
+
+To simply include some text, use:
+
+|'''logged'''|''get''|Some text|
+
+or
+
+|''log text''|Some text|
+#
+----!2 Next
+#
+On the [[next page of this tutorial][^FixtureLogging]] we show how to handle logging from the fixture/code level.

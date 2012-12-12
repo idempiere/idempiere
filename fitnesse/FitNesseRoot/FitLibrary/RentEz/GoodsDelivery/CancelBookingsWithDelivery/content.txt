@@ -1,0 +1,34 @@
+---- * Given:
+|''begin delivery transaction for client''| Joanna |''staff''| Bill|
+|''book''|2||coffee dispenser|''on''|2005/05/08 09:01|''for''|2 hours|
+|''book''|2||coffee dispenser|''on''|2005/05/09 09:01|''for''|2 hours|
+|''pay with cash $''|28.36|
+|''complete transaction''|
+
+---- * Checks
+|''deliveries for client''| Joanna |
+|''date''|''city''|''zone''|''delivery address''|''item''|''item count''|
+|2005/05/08 09:01|Auckland|CBD|10 Princes St|coffee dispenser|2|
+|2005/05/09 09:01|Auckland|CBD|10 Princes St|coffee dispenser|2|
+
+|''client booking list''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee dispenser|2|2005/05/08 09:01|2005/05/08 11:01|
+|coffee dispenser|2|2005/05/09 09:01|2005/05/09 11:01|
+---- * Actions
+|''time is now''|2005/05/07 09:02|
+
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''cancel booking of''|2||coffee dispenser|''on''|2005/05/08 09:01|''for''|2 hours|
+|''refund cash $''|14.18|
+|''complete transaction''|
+
+---- * Checks
+If all the bookings in a delivery is cancelled, the delivery should be cancelled as well.
+|''deliveries for client''| Joanna |
+|''date''|''city''|''zone''|''delivery address''|''item''|''item count''|
+|2005/05/09 09:01|Auckland|CBD|10 Princes St|coffee dispenser|2|
+
+|''client booking list''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee dispenser|2|2005/05/09 09:01|2005/05/09 11:01|

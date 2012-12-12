@@ -1,0 +1,17 @@
+!2 All elements are in the correct order, except that an extra row is expected at the start
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table>
+<tr><td>fitlibrary.specify.ArrayFixtureUnderTest</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+<tr><td>0</td><td>zero</td></tr>
+<tr><td>1</td><td>one</td></tr>
+<tr><td>1</td><td>two</td></tr>
+<tr><td>2</td><td>two</td></tr>
+</table>-!|!-<table>
+<tr><td>fitlibrary.specify.ArrayFixtureUnderTest</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+<tr><td class="fail">0 <span class="fit_label">missing</span></td><td>zero</td></tr>
+<tr><td class="pass">1</td><td class="pass">one</td></tr>
+<tr><td class="pass">1</td><td class="pass">two</td></tr>
+<tr><td class="pass">2</td><td class="pass">two</td></tr>
+</table>-!|

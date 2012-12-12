@@ -1,0 +1,45 @@
+!2 If the method returns an object that's a subtype of the result type of the method, use a specialised Parser to parse the expected result and check it.
+!**< def
+!define test (
+!|fitlibrary.specify.calculate.ResultingObjectIsSubType|
+
+|''calculate''|
+|''colour''||''superclass''|
+|red||red|
+
+|''calculate''|
+|''colour''||''interface''|
+|red||red|
+
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.calculate.ResultingObjectIsSubType</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="3"><i>calculate</i></td>
+</tr>
+<tr><td><i>colour</i></td>
+<td>&nbsp;</td>
+<td><i>superclass</i></td>
+</tr>
+<tr><td>red</td>
+<td>&nbsp;</td>
+<td class="pass">red</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="3"><i>calculate</i></td>
+</tr>
+<tr><td><i>colour</i></td>
+<td>&nbsp;</td>
+<td><i>interface</i></td>
+</tr>
+<tr><td>red</td>
+<td>&nbsp;</td>
+<td class="pass">red</td>
+</tr>
+</table>
+<br>-!|

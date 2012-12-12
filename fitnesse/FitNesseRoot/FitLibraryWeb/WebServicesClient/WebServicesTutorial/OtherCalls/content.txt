@@ -1,0 +1,66 @@
+!*< xml
+!define soap11 ({{{<?xml version='1.0' encoding='utf-8'?>
+<soap:Envelope xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/'>
+<soap:Body>}}})
+!define endSoap11 ({{{</soap:Body></soap:Envelope>}}})
+
+!define soap12 ({{{<?xml version='1.0' encoding='utf-8'?>
+<soap12:Envelope xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:soap12='http://www.w3.org/2003/05/soap-envelope'>
+<soap12:Body>}}})
+!define endSoap12 ({{{</soap12:Body></soap12:Envelope>}}})
+*!
+!1 5. Other Web Services
+#
+The above example uses soap1.1. It's also possible to use:
+
+ * soap1.2
+
+ * plain text
+
+ * soap (either version) without automatica soap wrapping
+  * This allows additional detail to be included in the explicit soap header (such as for security)
+  * The reply is also not automatically unwrapped, allowing for details to be checked in that header
+#
+----!3 6. Running the web services server
+#
+As before, you need to run the web service server on [[this page][RunWebServiceServer]].
+#
+----!3 7. Using soap1.2
+#
+|''with web services client''|
+
+|''to''|http://localhost:8093/ws|''post soap12''|<Count>100</Count>|
+
+|'''show escaped'''|''reply''|
+
+|''xpath''|!-//CountResult-!|''in response''|'''is'''|101|
+#
+----!3 8. Using plain text
+#
+|''to''|http://localhost:8093/ws|''post text''|count=100|
+
+|'''show'''|''reply escaped''|
+
+|''xpath''|//string|''in response''|'''is'''|101|
+#
+----!3 9. Using Raw Soap with soap1.1
+#
+|''to''|http://localhost:8093/ws|''as''|SOAP11|''post full soap''|${soap11}<Count>1000</Count>${endSoap11}|
+
+|'''show'''|''reply escaped''|
+
+|''xpath''|!-//CountResult-!|''in response''|'''is'''|1001|
+#
+----!3 10. Using Raw Soap with soap1.2
+#
+|''to''|http://localhost:8093/ws|''as''|SOAP12|''post full soap''|${soap12}<Count>10000</Count>${endSoap12}|
+
+|'''show'''|''reply escaped''|
+
+|''xpath''|!-//CountResult-!|''in response''|'''is'''|10001|
+#
+----!3 11. The End
+#
+That's the end of this tutorial on calling web services.
+
+You may like to look at the [[specifications][.FitLibraryWeb.WebServicesClient.SpecifiCations]], which also include running the server (and proxy server).

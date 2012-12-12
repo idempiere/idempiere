@@ -1,0 +1,25 @@
+^TestActions, where workflow actions are shown to be mapped to methods.
+^TestPropertyGetter, where some workflow actions may be mapped to a property getter.
+
+^TestKeywords, where some cells takes keywords to help identify the action's argument.
+^TestAnyCharacters, where any character is allowed in a keyword.
+
+^AutoWrapping, in which some returned values from an action are automatically wrapped as a Do table for processing the rest of the table.
+^SelectWrapping, in which an action directly selects a Traverse, such as '''calculate''', for processing the rest of the table.
+
+^TestBooleanAction, in which an action is coloured red or green when it returns a boolean value.
+
+^TestReturnedFixture
+^TestReturnedFixtureDoesNotWreckFlow
+
+^TestMultiStepAccess
+
+^TestNestedTablesOfLists
+^TestNestedTablesWithEntities
+^TestNestedTableWithDomainObject
+
+^ErrorHandling, in which we specify how various errors are handled
+
+|^SequenceCallSecond|''If an action, with keywords, doesn't have a corresponding method, we try a sequence call instead (no keywords after the first)''|
+
+|^PassedText|''Special characters, such as \n and tags can be passed through actions''|

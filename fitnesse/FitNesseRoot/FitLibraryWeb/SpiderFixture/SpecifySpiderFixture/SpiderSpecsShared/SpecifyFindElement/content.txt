@@ -1,0 +1,61 @@
+!*< def
+!define html ({{{
+<h1>h0</h1>
+<input id='0', disabled='true'/>
+<b>
+   <h1 align='left' dir='rtl'>h1</h1>
+   <input id='1', alt='n1', size='20', value='v1'/>
+   <c>
+       <h1>h2</h1>
+       <input id='2' type='submit'>
+       <d>
+           <h1>h3</h1>
+           <input id='3', enabled='false'/>
+       </d>
+   </c>
+</b>}}})
+*!
+
+|''keywords''|chrome,htmlunit,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''find element from''|//b|''with tag''|input|''where''|
+|''attribute''|id|''is''|2|
+|''show''|
+
+|''find element from''|//b|''with tag''|h1|''where''|
+|''show''|
+
+|''find element from''|//b|''with tag''|h1|''where''|
+|''text is''|h2|
+|''show''|
+
+|''find element from''|//b|''with tag''|h1|''where''|
+|''attribute''|align|''contains''|le|
+|''attribute''|dir|''contains''|r|
+|''show''|
+|''select''|
+|''attribute''|align|''of''|.|'''is'''|left|
+
+
+|''find element from''|//b|''with tag''|h1|''where''|
+|''attribute''|align|''matches''|le.t|
+|''show''|
+|''attribute''|dir|''matches''|r.l|
+|''show''|
+|''select''|
+|''attribute''|align|''of''|.|'''is'''|left|
+
+|''find element from''|//b|''with tag''|h1|''where''|
+|''text contains''|2|
+|''select''|
+|''text of''|.|'''is'''|h2|
+
+|''find element from''|//b|''with tag''|h1|''where''|
+|''text matches''|.2|
+|''select''|
+|''text of''|.|'''is'''|h2|
+

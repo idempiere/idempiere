@@ -1,0 +1,5 @@
+A table that is used to check or setup a collection of elements has a row that includes ${label}s for each of the columns of the table, with one row for each element of the collection.
+
+!3 Examples
+ * .FitLibrary.UserGuide.FitLibraryByExample.OrderedList
+ * .FitLibrary.UserGuide.FitLibraryByExample.DoFixture.SetUpFixture

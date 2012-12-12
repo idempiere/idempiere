@@ -1,0 +1,19 @@
+!|fitlibraryGeneric.specify.collections.GenericMaps|
+
+----
+|''a map''|
+|green|blue|
+|black|yellow|
+
+|''a subset map''|
+|green|blue|
+|black|yellow|
+
+|''a subset map''|
+|green|blue|
+
+|''a subset map''|
+|black|yellow|
+
+|''a subset map''|
+

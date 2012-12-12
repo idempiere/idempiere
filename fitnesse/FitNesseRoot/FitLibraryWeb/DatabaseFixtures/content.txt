@@ -1,0 +1,82 @@
+Two simple wrappers are provided for two fixtures that provide database access to Oracle and MySQL.
+
+The underlying fixtures are in ''!-DbFit-!'', written by Gojko Adzic, http://gojko.net/fitnesse/dbfit.
+
+Here's an example with MySQL. For access to an Oracle database, use ''!-fitlibrary.database.Oracle-!'' instead.
+#
+----!3 1. Connect to the database
+!|fitlibrary.database.MySql|
+
+|''connect''|localhost|''with user''|rick|''and password''|past|''to''|myDB|
+
+where ''localhost'' is a host, instance or service name, ''rick'' is the user, ''past'' is the password, and ''myDB'' is the database SID.
+
+To user non-standard connection properties, use the following table form instead:
+
+|''connect''|data source=Instance;user id=rick;password=past;database=myDB;|
+
+See http://www.fitnesse.info/dbfit:reference:databaseunittests:helloworld:connecttothedatabase for further details of the non-standard connection form.
+#
+----!3 2. Running a simple query
+#
+Eg.
+
+|''Query''| select 'test' as x|
+|x|
+|test|
+
+For further examples and details of running queries, see:
+ * http://www.fitnesse.info/dbfit:reference:databaseunittests:helloworld:testingasimplequery
+ * http://www.fitnesse.info/dbfit:reference:commandreference:querycommand
+#
+----!3 3. Inserting rows
+#
+Eg.
+
+|Insert|Test_DBFit|
+|name|luckyNumber|
+|pera|1|
+|nuja|2|
+|nnn|3|
+
+For further examples and details of insertions, see:
+ * http://www.fitnesse.info/dbfit:reference:commandreference:insertcommand
+
+#
+----!3 4. Update
+#
+Eg.
+
+|Update|Test_DBFit|
+|name|luckyNumber|
+|pera|10|
+
+For further examples and details of insertions, see:
+ * http://www.fitnesse.info/dbfit:reference:commandreference:updatecommand
+
+#
+----!3 5. Execute Stored Procedure
+#
+For examples and details, see:
+ * http://www.fitnesse.info/dbfit:reference:commandreference:executeprocedurecommand
+
+#
+----!3 6. Execute SQL statement
+#
+Eg, to create a table.
+
+For examples and details, see:
+ * http://www.fitnesse.info/dbfit:reference:commandreference:executecommand
+
+#
+----!3 7. Inspect - to extract meta-data for conversion to a test
+#
+For examples and details, see:
+ * http://www.fitnesse.info/dbfit:reference:commandreference:inspectcommand
+#
+
+----!3 8. Store Query and Compare Stored Queries
+#
+For examples and details, see:
+ * http://www.fitnesse.info/dbfit:reference:commandreference:storequerycommand
+ * http://www.fitnesse.info/dbfit:reference:commandreference:comparestoredqueriescommand

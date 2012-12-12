@@ -1,0 +1,14 @@
+!*> xml
+!define soap11 (<?xml version='1.0' encoding='utf-8'?><soap:Envelope xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/'><soap:Body>)
+!define endSoap11 (</soap:Body></soap:Envelope>)
+
+!define soap12 (<?xml version='1.0' encoding='utf-8'?><soap12:Envelope xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:soap12='http://www.w3.org/2003/05/soap-envelope'><soap12:Body>)
+!define endSoap12 (</soap12:Body></soap12:Envelope>)
+*!
+
+>SingleSoap11
+^SingleSoap12
+^Soap11FromFile
+^Soap12FromFile
+^Soap11FromFolder
+^Soap12FromFolder

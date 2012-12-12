@@ -1,0 +1,54 @@
+!2 A ''!-SuiteFixture-!'' is used at the start
+ * It selects all storytests with the keyword ''complete''
+ * If a storytest is not selected, such as ''Test Two'', the ''keywords'' table at the start is marked as '''ignored'''
+|!-fitlibrary.spec.SpecifySuiteFixture-!|
+|!-<table>
+<tr><td>fitlibrary.specify.suite.Simple</td></tr>
+</table>
+<table>
+<tr><td><i>select or</i></td><td>complete</td></tr>
+</table>-!|!-<table>
+<tr><td>fitlibrary.specify.suite.Simple</td></tr>
+</table>
+<table>
+<tr><td class="pass"><i>select or</i></td><td>complete</td></tr>
+</table>-!|''Normally in !-SuiteSetUp-!''|
+|!-<table>
+<tr><td><i>keywords</i></td><td>complete,money</td></tr>
+</table>
+<table>
+<tr><td><i>a fixture</i></td></tr>
+<tr><td><i>and some immediate action</i></td></tr>
+</table>
+<table>
+<tr><td><i>and more</i></td></tr>
+</table>
+<table>
+<tr><td><i>and more besides</i></td></tr>
+</table>-!|!-<table>
+<tr><td><i>keywords</i></td><td>complete,money</td></tr>
+</table>
+<table>
+<tr><td><i>a fixture</i></td></tr>
+<tr><td class="pass"><i>and some immediate action</i></td></tr>
+</table>
+<table>
+<tr><td class="pass"><i>and more</i></td></tr>
+</table>
+<table>
+<tr><td class="pass"><i>and more besides</i></td></tr>
+</table>-!|''Test One is selected''|
+|!-<table>
+<tr><td><i>keywords</i></td><td>underway</td></tr>
+</table>
+<table>
+<tr><td><i>a fixture</i></td></tr>
+<tr><td><i>and some immediate action</i></td></tr>
+</table>-!|!-<table>
+<tr><td><i>keywords</i></td><td>underway</td></tr>
+</table>
+<table>
+<tr><td class="ignore"><i>a fixture</i></td></tr>
+<tr><td class="ignore"><i>and some immediate action</i></td></tr>
+</table>-!|''Test Two is not selected''|
+

@@ -1,0 +1,7 @@
+|''begin trans...''| Joanna |''staff''| Bill|
+|''book''|coffee break|''for''|40|''on''|2004/06/01 18:00|''for''|1 day|''every''|1 week|
+|''complete transaction''|
+
+|''booked template list''|Joanna|
+|''template''|''people''|''from''         |''to''          |''repeat''|
+|coffee break|40        |2004/06/01 18:00 |2004/06/02 18:00| 1 week   |

@@ -1,0 +1,28 @@
+!*< def
+!define html ({{{<form>
+    <input type="radio" id="white" value="white" name="colour"/>White<br/>
+    <input type="radio" id="clicky" value="blue" onclick="javascript:document.title='Licky'"/>Clicky
+    <input type="radio" id="changed" value="blue" onchange="javascript:document.title='Hanging'"/>Changing
+</form>}}})
+*!
+
+!2 Not supported in IE
+!2 !-Not supported in HtmlUnit since version 2.8 -- see HtmlUnit bug #3018437-!
+
+|''keywords''|chrome,firefox|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''with''|clicky|''select''|true|
+
+|''title''|'''is'''|Licky|
+
+|''with''|changed|''select''|true|
+
+|''title''|'''is'''|Hanging|
+
+|''with''|white|''select''|true|
+
+|''title''|'''is'''|Hanging|

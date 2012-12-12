@@ -1,0 +1,21 @@
+!3 Distinct term tables are alternatives, and can be used in either order. But later terms won't be effective if earlier ones match. In the following, we insert an or term at the start to revise the expectations.
+|''mock plain text on port''|8081|
+|''matches request''|in|
+|''response''|out|
+
+|''mock plain text on port''|8081|
+|''matches request''|in2|
+|''response''|out2|
+
+|''to''|http://localhost:8081/ws|''post text''|in|'''is'''|out|
+
+|''mock plain text on port''|8081|
+|''insert''|
+|''matches request''|in2|
+|''response''|out|
+
+|''to''|http://localhost:8081/ws|''post text''|in2|'''is'''|out|
+
+|''to''|http://localhost:8081/ws|''post text''|in2|'''is'''|out2|
+
+|''close''|

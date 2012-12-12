@@ -1,0 +1,23 @@
+!*> file contents
+!define contents (eg1=索する前の月へ前の月へ\n
+eg2=オンラインヘルプ 連絡先\n
+eg3=abc\n
+)
+**!
+!|fitlibrary.DoFixture|
+
+|''file''|unicode.properties|
+|''write unicode''|${contents}|
+
+|''add dynamic variables from unicode file''|unicode.properties|
+
+|show|get|@{eg1}|
+
+|get|@{eg1}|is|索する前の月へ前の月へ|
+
+|get|@{eg2}|is|オンラインヘルプ 連絡先|
+
+|get|@{eg3}|is|abc|
+
+|''file''|unicode.properties|
+|''delete''|

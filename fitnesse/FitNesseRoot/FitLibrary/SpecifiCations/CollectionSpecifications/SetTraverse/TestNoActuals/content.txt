@@ -1,0 +1,9 @@
+!2 ''!-SetFixture-!'' ignores the actual collection if it's empty
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.SetFixtureUnderTest3</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.SetFixtureUnderTest3</td></tr>
+<tr class="pass"><td>+</td><td>&amp;</td></tr>
+</table>-!|

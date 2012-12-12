@@ -1,0 +1,16 @@
+!**< def
+!define obj (
+|''t''|red|
+
+)
+!define int (
+|''t''|23|
+
+)
+**!
+!|fitlibraryGeneric.specify.workflow.Check|
+
+----
+|'''check'''|''a generic colour object''|${obj}|
+
+|'''check'''|''a generic integer object''|${int}|

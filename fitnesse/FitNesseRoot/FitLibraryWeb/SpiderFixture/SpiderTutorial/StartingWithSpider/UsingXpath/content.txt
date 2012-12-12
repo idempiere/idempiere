@@ -1,0 +1,62 @@
+To check that text more precisely, we'll use ''xpath'' notation to refer to the header element in the html.
+
+To work out the appropriate xpath, we could load the page into a browser and look at the html source. (Eg, in Firefox, select the the '''Page Source''' menu item from the '''View''' menu (or use Ctrl-U)).
+
+However, that's laborious, awkward and error prone. I find the best approach is to use Firefox with two handy plugins:
+
+ * Firebug: install and documentation at http://getfirebug.com
+ * xpather: install and documentation at https://addons.mozilla.org/en-US/firefox/addon/1192
+
+Start your own copy of Firefox explicitly before installing these; the Firefox copy started by ''!-SpiderFixture-!'' does not have any plugins and shouldn't have them added.
+#
+!2 Firebug
+#
+Once you've installed Firebug, select the menu item '''Tools/Firebug/Open Firebug''' within firefox. This opens a panel at the bottom of the firefox window.
+
+Now right-click on the header "!-TemplateFixture-!" at the top of the page and select the menu item '''Inspect Element'''.
+
+You'll see that element of the HTML is high-lighted in the bottom panel as follows:
+{{{   <span class="page_title">TemplateFixture</span>
+}}}So we have a way of refering to that text, using xpath.
+#
+!2 XPather
+#
+To use XPather to pick an xpath to locate that element, right-click on the header again and select '''Show in XPather'''.
+
+This gives us a little window with an ''xpath'' of:
+{{{   /html/body/div[2]/div[1]/span
+}}}Unfortunately, that's not very helpful, as any change to the structure of the page may mean it no longer works. We're better off locating the element by using the class involved:
+{{{   //span[@class="page_title"]
+}}}We can check that works, and is unique, by typing it into the top text field of the little XPather window.
+
+It's correct, so let's use it. We'll use the same start to the storytest:
+#
+!2 Extended Storytest
+#
+!|fitlibrary.spider.SpiderFixture|
+
+|''start spider with''|firefox|
+
+|''shutdown browser automatically''|false|
+
+|''get url''|http://localhost:${FITNESSE_PORT}/FitLibraryWeb.TemplateFixture|
+
+|''title''|'''is'''|!-FitLibraryWeb.TemplateFixture-!|
+
+And now we check the specific text:
+
+|''text of''|//span[@class="page_title"]|'''is'''|!-TemplateFixture-!|
+#
+!2 xpath
+#
+For introductions and tutorials on xpath, see:
+ * XPath in wikipedia (eg, at http://en.wikipedia.ord/wiki/XPath) for a general introduction
+ * http://www.w3schools.com/XPath for tutorials
+ * http://www.w3.org/TR/xpath for a detailed reference
+ * or google XPath for other resources
+
+Unfortunately, I don't know of any tutorials that are both clear and comprehensive; most just give a few examples and don't explain the generality.
+#
+!2 Next Step
+#
+Let's now add the clicking of the '''Suite''' button, as covered [[on this page][ClickingButton]]

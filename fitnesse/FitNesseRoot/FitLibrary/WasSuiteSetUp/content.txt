@@ -1,0 +1,4 @@
+!***> configuration
+|auto wrap pojo with !-DoFixture-!|
+
+***!

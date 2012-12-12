@@ -1,0 +1,28 @@
+!3 Incorrect type of value supplied for a property
+!**< def
+!define user (|''name''|Poor Payer|
+|''owe''|green|
+)
+!define test (!|fitlibrary.specify.domain.UserAdapter|
+
+|''user''|${user}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.UserAdapter</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td>Poor Payer</td>
+</tr>
+<tr><td><i>owe</i></td>
+<td class="error">green<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

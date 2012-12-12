@@ -1,0 +1,9 @@
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|'''reject'''|''undrop rent''|1||Truck|''for''|1 day|
+|''rent''|1||Truck|''for''|1 day|
+|'''reject'''|''undrop rent''|1||Truck|''for''|1 day|
+|''drop rent''|1||Truck|''for''|1 day|
+|''undrop rent''|1||Truck|''for''|1 day|
+|'''reject'''|''undrop rent''|1||Truck|''for''|1 day|
+|''pay with cash $''|2000.00|
+|''complete transaction''|

@@ -1,0 +1,18 @@
+|''with shell''|
+
+|''synchronously''|java -help|
+
+|''wait to finish''|
+
+|''sys out line''|'''is'''|Usage: java [-options] class [args...]|
+|''sys out line''|'''is'''|(to execute a class)|
+
+|''first matching line with''|hot|''in sys out''|'''matches'''|synonym|
+
+|''first matching line with''|verbose|''in sys out''|'''matches'''|jni|
+
+|''first matching line with''|splash|''in sys out''|
+
+|''sys out line''|'''matches'''|splash scr..n|
+
+|'''show'''|outputs remaining|

@@ -1,0 +1,41 @@
+This page contains a third ''defined action'', added from the previous page.
+
+|''suite test on port''|port|
+
+|''set expand defined actions''|true|
+
+!|fitlibrary.spider.SpiderFixture|
+
+|''start spider with''|firefox|
+
+|''set''|fitNessePort|''to''|@{port}|
+
+|''shutdown browser automatically''|false|
+----
+|''check suite''|suite|''passes''|
+
+|''get url''|http://localhost:@{fitNessePort}/FitLibraryWeb.@{suite}|
+
+|''title''|'''is'''|!-FitLibraryWeb.@{suite}-!|
+
+|''text of''|//span[@class="page_title"]|'''is'''| @{suite}|
+
+|''click on named link''|Suite|
+
+|''element''|//div[@id='test-summary' and @class='pass']|'''exists'''|
+
+|''text of''|//div[@id='test-summary']|'''contains'''|right, 0 wrong, 0 ignored, 0 exceptions|
+----
+|''check suite''|suite|''at''|prefix|''passes''|
+
+|''get url''|http://localhost:@{fitNessePort}/FitLibraryWeb.@{prefix}@{suite}|
+
+|''title''|'''is'''|!-FitLibraryWeb.@{prefix}@{suite}-!|
+
+|''text of''|//span[@class="page_title"]|'''is'''| @{suite}|
+
+|''click on named link''|Suite|
+
+|''element''|//div[@id='test-summary' and @class='pass']|'''exists'''|
+
+|''text of''|//div[@id='test-summary']|'''matches'''|right, 0 wrong, .* ignored, 0 exceptions|

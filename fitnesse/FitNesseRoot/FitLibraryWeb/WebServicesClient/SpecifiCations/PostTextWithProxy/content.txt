@@ -1,0 +1,31 @@
+|''with web services client''|
+
+|''proxy url''|localhost|''with port''|5556|
+
+|'''also run'''|''with web server for testing''|
+
+|'''also run'''|''with proxy server for testing''|
+
+|''start logging''|
+
+|''start proxy server on port''|5556|
+
+|''start file server on port''|8094|''at directory''|!-FitNesseRoot-!|
+
+|''post text''|http://localhost:8094/ws|''with''|count=100|
+
+|''headers include''|
+|''name''|''value''|
+|Passed-Thru-Proxy|true|
+
+|'''show'''|''headers''|
+
+|'''show'''|''reply''|
+
+|'''show'''|''reply escaped''|
+
+|reply|contains|101|
+
+|''stop testing server''|
+
+|''stop proxy server''|

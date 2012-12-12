@@ -1,0 +1,47 @@
+!**< def
+!define mapAB (|a|b|
+|A|B|
+)
+!define ints (|1|2|
+|3|4|
+)
+!define testInts (!|fitlibrary.specify.mapParser.Parse|
+
+|''given map''|${mapAB}|
+|a|b|
+|A|B|
+
+|''given map''||
+)
+
+**!
+ * The component types of the Map are unknown. So a Map of String to String is created.
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${testInts}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.mapParser.Parse</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>given map</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td>a</td>
+<td>b</td>
+</tr>
+<tr><td>A</td>
+<td>B</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr class="pass"><td>a</td>
+<td>b</td>
+</tr>
+<tr class="pass"><td>A</td>
+<td>B</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr class="pass"><td><i>given map</i></td>
+<td>&nbsp;</td>
+</tr>
+</table>-!|

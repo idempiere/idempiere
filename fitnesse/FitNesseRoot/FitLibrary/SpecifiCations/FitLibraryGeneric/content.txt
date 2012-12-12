@@ -1,0 +1,32 @@
+!2 FitLibraryGeneric supports generic classes
+${fitLibrary2} mainly has an impact at the fixture code level:
+ * Direct use of enums (See ^SpecifyEnum)
+ * It takes account of the generic class type parameters for built-in classes like List<T> as well as generic classes that are used in an application (^GenericObjects). It tracks the generic types used at runtime (thus avoiding the loss of type information that's usual in Java: so-called ''type erasure'').
+ * With generic collections, such as List<T>, Set<T>, Map<S,T>, etc, ${fitLibrary2} can create objects as elements of the collection without the need for helper methods (see >GenericLists, >GenericSets, >GenericMaps).
+
+At the storytest table level, ${fitLibrary2} enables the use of nested lists, sets, maps and arrays (see >GenericLists, >GenericSets, >GenericMaps, ^GenericObjects).
+
+Note that generics don't necessarily require that nested tables be used, even though the following specifications tend to use nested tables for convenience.
+
+>GenericLists
+>GenericSets
+>GenericMaps
+>GenericObjects
+
+>MixedCollections
+
+>NonGenericCollections
+>GenericCollectionsUseObjectFactoryMethodToEaseMigration
+>NullGenericCollections
+
+>GenericCalculate
+>GenericDo
+
+>SpecifyEnum
+>GenericFinder
+
+>SpecifySubTypeCollections
+>SpecifyNestedDo
+>SpecifyReferences - disabled (experimental, but will probably not be kept.)
+
+>UnboundTypeVariables

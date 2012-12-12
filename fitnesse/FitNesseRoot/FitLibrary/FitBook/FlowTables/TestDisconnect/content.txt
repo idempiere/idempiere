@@ -1,0 +1,15 @@
+| !-ChatStart-! |
+
+|''connect user''|anna|
+
+|''user''|anna|''creates''|lotr|''room''|
+
+|''user''|anna|''enters''|lotr|''room''|
+
+|''users in room''|lotr|
+|''name''|
+|luke|
+
+|''disconnect user''|anna|
+
+|check|''occupant count''|lotr|0|

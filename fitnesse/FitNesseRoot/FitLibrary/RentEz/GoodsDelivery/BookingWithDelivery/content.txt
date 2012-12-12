@@ -1,0 +1,12 @@
+|''begin delivery transaction for client''| Joanna |''staff''| Bill|
+|''book''|2||coffee dispenser|''on''|2005/05/08 09:01|''for''|2 hours|
+|''pay with cash $''|14.18|
+|''complete transaction''|
+
+|''deliveries for client''| Joanna |
+|''date''|''city''|''zone''|''delivery address''|''item''|''item count''|
+|2005/05/08 09:01|Auckland|CBD|10 Princes St|coffee dispenser|2|
+
+|''client booking list''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee dispenser|2|2005/05/08 09:01|2005/05/08 11:01|

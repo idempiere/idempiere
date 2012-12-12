@@ -1,0 +1,83 @@
+!2 'not' and 'reject' test that either a boolean action returns false or any action throws an exception
+!**< def
+!define test1 (!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|not|a right action|1|
+|not|a wrong action|1.5||2.2|
+|not|an exception action|
+
+|reject|a right action|1|
+|reject|a wrong action|1.5||2.2|
+|reject|an exception action|
+)
+!define test2 (!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|not|a parse failure|s|
+|not|a missing method|
+
+|reject|a parse failure|s|
+|reject|a missing method|
+)
+**!
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test1}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="fail">not</td>
+<td>a right action</td>
+<td colspan="3">1</td>
+</tr>
+<tr><td class="pass">not</td>
+<td>a wrong action</td>
+<td>1.5</td>
+<td>&nbsp;</td>
+<td>2.2</td>
+</tr>
+<tr><td class="pass">not</td>
+<td colspan="4">an exception action</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="fail">reject</td>
+<td>a right action</td>
+<td colspan="3">1</td>
+</tr>
+<tr><td class="pass">reject</td>
+<td>a wrong action</td>
+<td>1.5</td>
+<td>&nbsp;</td>
+<td>2.2</td>
+</tr>
+<tr><td class="pass">reject</td>
+<td colspan="4">an exception action</td>
+</tr>
+</table>-!|
+
+ * While a parse error (such as a number format exception) will be treated as success, a missing method or other such error is reported as such.
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test2}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass">not</td>
+<td>a parse failure</td>
+<td>s</td>
+<td bgcolor=#C0C0FF>Invalid Number</td></tr>
+<tr><td class="error">not<hr/> <span class="fit_label">Missing method</span></td>
+<td colspan="2">a missing method</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass">reject</td>
+<td>a parse failure</td>
+<td>s</td>
+<td bgcolor=#C0C0FF>Invalid Number</td></tr>
+<tr><td class="error">reject<hr/> <span class="fit_label">Missing method</span></td>
+<td colspan="2">a missing method</td>
+</tr>
+</table>-!|

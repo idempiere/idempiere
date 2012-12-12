@@ -1,0 +1,30 @@
+!2 Introduction to ${fitLibrary}
+ * ${fitLibrary} is an open-source framework for developing and running ${storytest}s. It was first developed in 2004 as a library for ${fit}, and has evolved considerably since then.
+ * Many of the additions and changes of this latest release have been trialled over the last 6 months with companies that I've worked with. They have developed many hundreds of complex ${storytest}s.
+ * Many examples of the development of ${storytest}s using ${fit} and an earlier version of ${fitLibrary} are covered in:
+   * !3 ''Fit for Developing Software'', Rick Mugridge and Ward Cunningham, Prentice-Hall, 2005.
+ * Much of this book is still relevant to storytesting with the latest ${fitLibrary}.
+
+|!1 [[''!-FitLibrary by Example-!''][^FitLibraryByExample]]|
+
+ * We show the use of ${fitLibrary} for ${storytest}s with lots of little examples
+ * If you want to get started with ${fitLibrary}, start with these examples.
+ * If you're familiar with ${fitLibrary}, you'll see in these examples that new capability has been added.
+----!3 Running storytests in batch with FitLibraryRunner and ''^FolderRunner''
+ * To use ${fitLibrary} in Java with ${fitNesse}, you need to include the following at the top level page of your project:
+{{{
+    !define TEST_RUNNER {fitlibrary.suite.FitLibraryServer}
+}}} * ''!-FitLibrary-!'' requires jdk 1.6
+ * Batch testing of ''!-FitNesse-!'' storytests (wiki format) is supported. See FitLibraryRunner
+
+ * ''^FolderRunner'' runs Fit tests in batch, as an alternative to ''!-FitNesse-!'' (using HTML and XLS formats instead of wiki format).
+!3 How to achieve various tasks with ${fitLibrary}
+This is just a beginning...
+ * ^HowTo for storytest writers
+ * ^FaQ4Programmers
+!3 Downloads
+ * Download ${fitLibrary} at https://sourceforge.net/projects/fitlibrary/
+!3 ''!-FitLibrary-!'' in other programming languages
+ * ^OtherLanguages
+!3 ^FurtherInformation
+ * Here's some ^FurtherInformation about ${fitLibrary}.

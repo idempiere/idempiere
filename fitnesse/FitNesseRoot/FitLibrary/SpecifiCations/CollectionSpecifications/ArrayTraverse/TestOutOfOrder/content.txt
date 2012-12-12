@@ -1,0 +1,14 @@
+!2 Some elements are out of order
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.PrimitiveArrayFixtureWithCollection</td></tr>
+<tr><td>one</td></tr>
+<tr><td>three</td></tr>
+<tr><td>two</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.PrimitiveArrayFixtureWithCollection</td></tr>
+<tr class="pass"><td>one</td></tr>
+<tr><td class="fail">three <span class="fit_label">missing</span></td></tr>
+<tr class="pass"><td>two</td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">three</span> <span class="fit_label">surplus</span></td></tr></table>-!|

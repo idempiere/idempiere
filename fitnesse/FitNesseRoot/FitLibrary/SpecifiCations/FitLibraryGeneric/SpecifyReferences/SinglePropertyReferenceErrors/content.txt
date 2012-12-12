@@ -1,0 +1,11 @@
+!|fitlibrary.specify.DomainFixtureUnderTest|
+
+|''colour 2''|!include -seamless ColourRefWrong|
+
+|''actions''|
+
+|''checks''|
+
+|''colour 2''|!include -seamless TheColourBlueGreen|
+
+|''colour 2''|!include -seamless ColourRef|

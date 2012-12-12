@@ -1,0 +1,9 @@
+!|fitlibrary.http.HttpClientFixture|
+
+|reject|''http head''|http://localhost:${FITNESSE_PORT}|
+
+|'''show'''|''headers''|
+
+|''headers include''|
+|''name''|''value''|
+|Content-Type|text/html; charset=utf-8|

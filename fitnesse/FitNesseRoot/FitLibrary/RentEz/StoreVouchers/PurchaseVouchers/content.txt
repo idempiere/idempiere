@@ -1,0 +1,8 @@
+!3 ''Purchase a voucher.''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|'''ensure'''|''purchase voucher $''|150.00|
+|''complete transaction''|
+
+
+!3 ''Check the point balance for a client has increased''
+|'''check'''|point balance for client|Joanna|2.50|

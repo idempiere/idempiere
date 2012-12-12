@@ -1,0 +1,18 @@
+---- Add Sales Goods
+|''begin admin transaction''| Bill |
+|''add sales item''|5|''of type''|cake|''costing''|3.00|''each''|
+|''complete transaction''|
+
+|''sales item list''|
+| ''name''| ''count'' |''selling price''|
+| cake    |  5       |  3.00            |
+
+---- Increase count
+|''begin admin transaction''| Bill |
+|''add ''|10|''to sales item of type''|cake|
+|''complete transaction''|
+
+---- Check
+|''sales item list''|
+| ''name''| ''count'' |''selling price''|
+| cake    |  15       |  3.00            |

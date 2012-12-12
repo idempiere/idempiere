@@ -1,0 +1,42 @@
+!3 Setup template
+|''create template''|coffee break|
+|''one''|coffee dispenser|''for''|booking or renting|''for''|20|''people''|
+|''one''|hot water dispenser|''for''|booking or renting|''for''|20|''people''|
+|''one''|coffee table|''for''|booking or renting|''for''|40|''people''|
+|''one''|cup|''for''|booking or renting|''for''|1|''people''|
+
+|''create template''|21st party|
+|''one''|yardie glass|''for''|booking or renting|''for''|1000|''people''|
+|''one''|balloon|''for''|booking or renting|''for''|10|''people''|
+|''one''|cup|''for''|booking or renting|''for''|1|''people''|
+|''one''|coke|''for''|sale|''for''|5|''people''|
+|''one''|cake|''for''|sale|''for''|10|''people''|
+|''one''|chips|''for''|sale|''for''|5|''people''|
+
+!3 Transaction
+ * Begin transaction for client - she'll pickup these items.
+|''begin transaction for client''|Joanna|''staff''|Bill|
+|''fill rent template''|coffee break|''for''|20|''people for''|1 day|
+|''fill book template''|21st party|''for''|100|''people on''|2004/05/06 09:02|''for''|1 day|
+|''pay with cash $''|593.20|
+|''complete transaction''|
+
+!3 Checking
+|''rentals of client''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee dispenser|1|2004/05/06 09:01|2004/05/07 09:01|
+|hot water dispenser|1|2004/05/06 09:01|2004/05/07 09:01|
+|coffee table|1|2004/05/06 09:01|2004/05/07 09:01|
+|cup|20|2004/05/06 09:01|2004/05/07 09:01|
+
+|''client booking list''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|yardie glass|1|2004/05/06 09:02|2004/05/07 09:02|
+|balloon|10|2004/05/06 09:02|2004/05/07 09:02|
+|cup|100|2004/05/06 09:02|2004/05/07 09:02|
+
+|''salesGoodsSubset''|
+| name| count |
+|cake|40|
+|coke|30|
+|chips|30|

@@ -1,0 +1,15 @@
+!2 A cell is missing in the 3rd row
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.ArrayFixtureUnderTest</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+<tr><td colspan="2">1</td></tr>
+<tr><td>1</td><td>two</td></tr>
+<tr><td>2</td><td>two</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.ArrayFixtureUnderTest</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+<tr><td colspan="2" class="error">1<hr/> <span class="fit_label">Missing table cells</span></td></tr>
+<tr><td>1</td><td>two</td></tr>
+<tr><td>2</td><td>two</td></tr>
+</table>-!|

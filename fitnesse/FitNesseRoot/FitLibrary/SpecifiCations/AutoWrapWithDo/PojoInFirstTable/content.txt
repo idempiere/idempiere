@@ -1,0 +1,13 @@
+|fitlibrary.specify.autowrap.Pojo|
+
+|identity|1|is|1|
+
+|identity|1|becomes|1|
+
+|check|identity|1|1|
+
+|set|x|identity|2|
+
+|get|@{x}|is|2|
+
+

@@ -1,0 +1,11 @@
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <SpecifyWholeTable.SpecSetUp
+
+|''table values''|//table|
+|Red|green|
+|yellow|orange|
+
+ * The following ensures that the test passes overall, even though parts of it fail:
+
+|''expected test results''|3|''right''|2|''wrong''|0|''ignored''|0|''exceptions''|

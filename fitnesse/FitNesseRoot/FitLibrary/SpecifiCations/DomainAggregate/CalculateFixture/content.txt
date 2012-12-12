@@ -1,0 +1,88 @@
+CalculateFixture can include nested tables as both ''given'' and ''expected'' values.
+
+This is expecially useful for writing calculation or constraint rules that involve domain objects and/or collections:
+ * Nested collections are defined in the table form that's used with ''!-ArrayFixture-!'' (etc) and ''!-SetUpFixture-!''.
+ * Nested domain objects are defined in the table form that's used with ''!-DomainObjectSetUpFixture-!'' and ''!-DomainObjectCheckFixture-!''
+!**< def
+!define pt00 (|''x''|0|
+|''y''|0|
+)
+!define pt11 (|''x''|1|
+|''y''|1|
+)
+!define pt577 (|''x''|5|
+|''y''|77|
+)
+!define pt678 (|''x''|6|
+|''y''|78|
+)
+!define pts00 (|''x''|''y''|
+|0|0|
+)
+!define pts0000 (|''x''|''y''|
+|0|0|
+|0|0|
+)
+!define pts1234 (|''x''|''y''|
+|1|2|
+|3|4|
+)
+**!
+!3 Domain Objects
+For example, to specify that a given object is expected from a calculation:
+|!-fitlibrary.specify.NestedCalculateFixture-!|
+
+|!-calculate-!|
+|''x''|''y''||''point''|
+|0|0||${pt00}|
+|5|77||${pt577}|
+
+For example, to specify that a calculation takes an object and results in some simple value:
+|!-calculate-!|
+|''point''||''x''|''y''|
+|${pt577}||5|77|
+|${pt00}||0|0|
+
+For example, to specify that a calculation takes an object and returns another:
+|!-calculate-!|
+|''point''||''shifted point''|
+|${pt577}||${pt678}|
+|${pt00}||${pt11}|
+!3 Collections of Domain Objects
+For example, to specify that a given collection is expected from a calculation:
+|!-calculate-!|
+|''list''||''points''|
+|0,0||${pts00}|
+|1,2,3,4||${pts1234}|
+
+For example, to specify that a calculation takes a collection and results in some simple value:
+|!-calculate-!|
+|''points''||''first x''|
+|${pts00}||0|
+|${pts1234}||1|
+
+For example, to specify that a calculation takes a collection and returns another:
+|!-calculate-!|
+|''points''||''identity''|
+|${pts00}||${pts00}|
+|${pts1234}||${pts1234}|
+
+|!-calculate-!|
+|''set of points''||''identity''|
+|${pts00}||${pts00}|
+|${pts1234}||${pts1234}|
+
+For example, to specify that the elements of a collection must be unique:
+|!-calculate-!|
+|''points''||''valid?''|
+|${pts00}||true|
+|${pts1234}||true|
+|${pts0000}||false|
+
+!3 Objects and Collections
+For example, to specify that a point results in a collection of two of that point:
+|!-calculate-!|
+|''point''||''points''|
+|${pt00}||${pts0000}|
+
+|''expected test results''|39|''right''|0|''wrong''|0|''ignored''|0|''exceptions''|

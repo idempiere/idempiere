@@ -1,0 +1,19 @@
+!3 An exception in tearDown() of any added fixture is caught and displayed in the first table
+!**< def
+!define test (!|add|fitlibrary.specify.select.SelectWithTearDownFailing|as|first|
+
+!|add|fitlibrary.specify.select.SelectWithTearDownFailing|as|second|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>add named</td>
+<td>first</td>
+<td>fitlibrary.specify.select.SelectWithTearDownFailing</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>add named</td>
+<td>second</td>
+<td>fitlibrary.specify.select.SelectWithTearDownFailing</td></tr>
+</table>
+<br/><table border="1" cellspacing="0"><tr><td class="error" class="error"><i>Error in storytest tear down: </i><hr><pre><div class="fit_stacktrace"></div></pre><hr><pre><div class="fit_stacktrace"></div></pre></td></tr></table>-!|

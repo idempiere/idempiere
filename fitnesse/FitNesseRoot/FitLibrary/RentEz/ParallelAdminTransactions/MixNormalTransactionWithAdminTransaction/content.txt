@@ -1,0 +1,24 @@
+Joanna tries to hire out coffee dispensers, but they have just received a new shipment.
+
+!3 ''Rental of coffee dispensers for 3 days:''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|'''reject'''|''rent''|2||coffee dispenser|''for''|3 days|
+
+Bill adds the new shipment to the system, while Joanna waits.
+
+|''begin admin transaction''| Bill |
+|''add''|2|''of type''|coffee dispenser|''costing''|20.00|''/hour''|50.00|''/day''|500.00|''/week''|0.00|''bond''|
+|''complete transaction''|
+
+|''rental item subset''|
+| ''name''   | ''free count'' |''hourly rate''|''daily rate''|''weekly rate''|''bond'' |
+| coffee dispenser | 2         | 20.00         | 50.00       | 500.00        | 0.00  |
+
+|''resume transaction for client''| Joanna |
+|''rent''|2||coffee dispenser|''for''|3 days|
+|''pay with cash $''|300.00|
+|''complete transaction''|
+
+
+
+

@@ -1,0 +1,5 @@
+|!-OccupantList-!|
+|''user''|''room''|
+|anna|lotr|
+|luke|Lotr|
+|warren|shrek|

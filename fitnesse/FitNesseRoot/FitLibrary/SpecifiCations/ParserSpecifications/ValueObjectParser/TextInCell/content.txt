@@ -1,0 +1,51 @@
+For a ''value object'' to be represented as text in a cell, it needs one or more of the following:
+ * A ''public static Object parse(String)'' method in the class; and/or
+ * A ''public constructor that takes a String as argument; and/or
+ * A ''delegate parser'' that will handle parsing a String into an object of the ''value object'' class; and/or
+  * A ''delegate parser'' is needed if the value object belong to a class that you can't change. Eg, if you're using a provided ''Date'' or ''Point'', etc; and/or
+ * For checking only, the result of ''toString()'' can be used
+!3 ''Value Object'' has it's own parse() method
+When a ''value object'' class has a ''parse()'' method, that's used to convert between text in a cell and an object of that class:
+
+>SelfParseString
+>HasParseMethod
+^UseStaticParseMethod
+
+!3 ''Value Object'' has a constructor that takes a String
+
+^HasConstructorWithString
+^HasConstructorWithStringThatThrows
+
+!3 ''Value Object'' has an associated !-PropertyEditor-!
+^HasPropertyEditor
+
+!3 ''Value Object'' is parsed by a ${parseDelegate}
+You may be using a library class, such as a ''Date'', as a ''value object''. But you're unable to change it. So you can use a ${parseDelegate} instead. The ${parseDelegate} needs to be registered to handle parsing of a specific ''value object'' class.
+ * We'll pretend that class ''!-MyFixedPoint-!'' is to be a ''value object'', but that we can't alter it to add a ''parse()'' method.
+ * So we introduce a ${parseDelegate}, ''!-MyFixedPointDelegate-!''. In Java the delegate class ''!-MyFixedPointDelegate-!'' has a method:
+  * ''public !-MyFixedPoint-! parse(String)'' that parses a String into a ''!-MyFixedPoint-!'' object
+  * This method is used twice in the first table, to parse (and create) both the value for the argument and the ''expected'' value.
+  * It's used once in the second table, to create the argument.
+ * In Java, the ''!-MyFixedPoint-!'' class still needs an ''equals()'' method to compare the ''expected'' and ''actual'' values.
+  * This is used in the first two tables
+ * In Java, the ''!-MyFixedPoint-!'' class also needs a ''toString()'' method to show itself when there is an error
+  * This is shown in the second table, where the ''expected'' and the ''actual'' value of the point differ, and so the ''actual value'' needs to be displayed
+ * If the type of the result of a method call is a value object, it will not be auto-wrapped with a ''!-DomainObjectCheckTraverse-!''.
+  * That's so that it can be '''check'''ed in workflow, which is usually what's required
+  * So we need to explicitly wrap it in the code if we want to check its properties.
+ * Similar methods will be required with other programming languages. See the appropriate documentation.
+>ObjectDelegateForDate
+^ObjectDelegate
+^ClassDelegate
+^SpecifyParseDelegate
+^SpecifySuperParseDelegate
+
+Optional functionality can be provided in a ${parseDelegate} so that it:
+ * Can also be responsible for the ''equals()'' check. Then, specialised checking can be provided (such as over a subset of the properties).
+ * Can also be responsible for the ''show'' (ie, ''toString()''). Then the display format of the ''value object'' can be controlled. Eg, to display the ''Date'' in the appropropriate format.
+
+!3 ''Value Object'' doesn't have a ''parse()'' method nor a parse delegate, but is only checked
+If it's only checked, ${fitLibrary} makes use of the ''toString()'' method and matches by comparing strings:
+
+^UseToStringForResult
+

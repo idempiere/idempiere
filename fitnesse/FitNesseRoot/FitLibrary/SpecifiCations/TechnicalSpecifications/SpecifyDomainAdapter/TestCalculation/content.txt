@@ -1,0 +1,53 @@
+!3 A ''domain adapter'' may be used in a ''!-CalculateFixture-!''
+!**< def
+!define test {!|fitlibrary.DoFixture|
+
+|start|!-fitlibrary.specify.DomainAdapterUnderTest-!|
+
+|calculate|
+|''a''|''b''||''product''|
+|11|2||22|
+
+|calculate|
+|''x''|''y''||''sum''|
+|1|2||3|
+}
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.DoFixture</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>start</td>
+<td>fitlibrary.specify.DomainAdapterUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="4">calculate</td>
+</tr>
+<tr><td><i>a</i></td>
+<td><i>b</i></td>
+<td>&nbsp;</td>
+<td><i>product</i></td>
+</tr>
+<tr><td>11</td>
+<td>2</td>
+<td>&nbsp;</td>
+<td class="pass">22</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="4">calculate</td>
+</tr>
+<tr><td><i>x</i></td>
+<td><i>y</i></td>
+<td>&nbsp;</td>
+<td><i>sum</i></td>
+</tr>
+<tr><td>1</td>
+<td>2</td>
+<td>&nbsp;</td>
+<td class="pass">3</td>
+</tr>
+</table>-!|

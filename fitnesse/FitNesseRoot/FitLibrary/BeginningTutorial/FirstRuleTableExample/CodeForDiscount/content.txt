@@ -1,0 +1,59 @@
+We repeat the table for convenience:
+
+|''A 5% discount is provided whenever the total purchase is greater than $1,000''|
+|''given amount''|''expected discount?''|
+|0.00|0.00|
+|999.95|0.00|
+|1000.00|0.00|
+|1010.00|50.50|
+
+The class ''Global'' is loaded due to the first (infrastructure) table, that's included in .FitLibrary.BeginningTutorial.SuiteSetUp. The ''Global'' is used so that technical details such as class and package names are not visible in storytests.
+
+Ths ''Global'' class includes the following method:
+----{{{	public Rule a5PercentDiscountIsProvidedWheneverTheTotalPurchaseIsGreaterThanDollar1Comma000() {
+		return new DiscountRule();
+	}
+}}}----This method is called when the first (visible) table of the storytest is executed. The first row of that table is turned into a method name (using extended camel casing).
+
+And here's the code for ''!-DiscountRule-!'':
+----{{{public class DiscountRule implements Rule {
+	private DiscountingApplication sut = new DiscountingApplication();
+	private double givenAmount;
+
+	public void setGivenAmount(double givenAmount) {
+		this.givenAmount = givenAmount;
+	}
+	public double getExpectedDiscount() {
+		return sut.expectedDiscount(givenAmount);
+	}
+}
+}}}----Because the ''!-DiscountRule-!'' class implements ''Rule'' (a marker interface), the rest of the table is treated as a rule table:
+
+ * The second row of the table names the input and expected columns. These are mapped directly to the setter and getter methods in ''!-DiscountRule-!''
+ * The third row leads to:
+   * The method ''setGivenAmount()'' being called with the value 0.00
+   * The method ''getExpectedDiscount()'' being called and it's result compared against the expected value of 0.00.
+   * As the expected value matches, it is coloured green
+ * The 4th, 5th and 6th rows are treated similarly to the third row, as decribed above
+
+So the ''!-DiscountRule-!'' acts as a "fixture" to manage the test, calling into the appropriate method in the application under test.
+
+The relevant code for the ''!-DiscountingApplication -!'' is as follows:
+----{{{public class DiscountingApplication {
+	public double expectedDiscount(double amount) {
+		if (amount > 1000.00)
+			return amount * 0.05;
+		return 0.00;
+	}
+}
+}}}----In this case:
+
+ * ''!-DiscountRule-!'' creates the application object so that it can call into it.
+ * No further setup of the application is needed, because the discount only depends on the amount; it does not depend on the state of the application.
+ * Money is (badly) represented as a ''double'', rather than as a ''Money'' type.
+
+We'll see variations on these later.
+
+!3 Next
+#
+[[Second Rule Table Example][.FitLibrary.BeginningTutorial.SecondRuleTableExample]]

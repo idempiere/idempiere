@@ -1,0 +1,5 @@
+In a ${checks} of a ${workflow} ${storytest}, we specify how the ${sut} should've changed (or not) due to the ${action}s in the ${actions}.
+
+From a testing perspective, these are the ''checks'' that are carried out.
+!3 Examples
+ * See .FitLibrary.UserGuide.FitLibraryByExample.WorkFlow

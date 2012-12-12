@@ -1,0 +1,9 @@
+!2 The possible class locations and arguments of a missing method are displayed in a report
+
+|''Only a ${sut} is involved''|''A ${domainAdapter} is also involved''|
+|^ActionMissingWithOnlySut|^ActionMissingWithAdapter|
+|^NullaryActionMissingWithOnlySut|^NullaryActionMissingWithAdapter|
+|^GetterMissingWithOnlySut|^GetterMissingWithAdapter|
+|^SetterMissingWithOnlySut|^SetterMissingWithAdapter|
+|^FinderMissingWithOnlySut|^FinderMissingWithAdapter|
+|^NestedFinderMissingWithOnlySut|^NestedFinderMissingWithAdapter|

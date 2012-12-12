@@ -1,0 +1,12 @@
+!|fitlibrary.specify.DomainFixtureUnderTest|
+
+|''colour 2''|!include ColourArrayIndexRef|
+
+|''actions''|
+
+|''checks''|
+
+|''colour 2''|!include TheColour|
+
+|''colour 2''|!include ColourArrayIndexRef|
+

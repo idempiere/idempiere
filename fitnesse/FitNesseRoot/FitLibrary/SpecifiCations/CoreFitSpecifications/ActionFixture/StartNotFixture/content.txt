@@ -1,0 +1,10 @@
+!2 The actor (''start'' class) has to be a ''Fixture'' subclass
+ * Notice how subsequent rows of the table are interpreted even though the ''start'' failed. Similarly for the table below, where !-ActionFixture-! continues even though there is a problem (exception) with a row.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td>fit.specify.ClearActionFixture</td></tr></table>
+<table><tr><td colspan=3>fit.ActionFixture</td></tr>
+<tr><td>start</td><td colspan=2>fit.specify.NonFixture</td></tr>
+<tr><td>enter</td><td>x</td><td>12</td></tr></table>-!|!-<table><tr><td>fit.specify.ClearActionFixture</td></tr></table>
+<table><tr><td colspan=3>fit.ActionFixture</td></tr>
+<tr><td class="error">start<hr/> <span class="fit_label"></span></td><td colspan=2>fit.specify.NonFixture</td></tr>
+<tr><td class="error">enter<hr/> <span class="fit_label">You must start a fixture using the 'start' keyword.</span></td><td>x</td><td>12</td></tr></table>-!|

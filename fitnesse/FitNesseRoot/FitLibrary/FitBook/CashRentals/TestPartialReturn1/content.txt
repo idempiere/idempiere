@@ -1,0 +1,11 @@
+|''rental entry''|
+|''client''|''rental item''|''count''|''days''|
+|Joanna|coffee dispenser|5|1|
+|Joanna|hot water dispenser|2|2|
+
+|''client''|Joanna|''returns''|4|''of''|coffee dispenser|
+|''client''|Joanna|''returns''|2|''of''|hot water dispenser|
+
+|''rental list''|
+|''client''|''rental item''|''count''|''days''|
+|Joanna|coffee dispenser|1|1|

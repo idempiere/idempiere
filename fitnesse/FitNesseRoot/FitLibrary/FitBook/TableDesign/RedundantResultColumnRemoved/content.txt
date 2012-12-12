@@ -1,0 +1,8 @@
+|!-CalculateCredit-!|
+|months|reliable|balance|creditLimit()|
+|14|true|5000.00|1000.00|
+|''0''|true|0.00|0.00|
+|24|''false''|0.00|0.00|
+|18|true|''6000.00''|0.00|
+|''12''|true|5500.00|1000.00|
+

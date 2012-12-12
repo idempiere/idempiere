@@ -1,0 +1,49 @@
+!***< def
+!define t (
+|green|
+|red|
+
+)
+!define test (
+!|fitlibraryGeneric.specify.unbound.ClassHasUnboundGenericArrayTypeVariable|
+
+|''t''|${t}|
+
+|''checks''|
+
+|''t''|${t}|
+
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibraryGeneric.specify.unbound.ClassHasUnboundGenericArrayTypeVariable</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="error"><i>t</i><hr/> <span class="fit_label">Type variable T is unbound</span></td>
+<td><br><table border="1" cellspacing="0">
+<tr><td>green</td>
+</tr>
+<tr><td>red</td>
+</tr>
+</table>
+<br></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="error"><i>t</i><hr/> <span class="fit_label">Type variable T is unbound</span></td>
+<td><br><table border="1" cellspacing="0">
+<tr><td>green</td>
+</tr>
+<tr><td>red</td>
+</tr>
+</table>
+<br></td>
+</tr>
+</table>
+<br>-!|

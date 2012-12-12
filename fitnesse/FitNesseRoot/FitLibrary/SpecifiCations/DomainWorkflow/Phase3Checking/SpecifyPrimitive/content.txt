@@ -1,0 +1,10 @@
+!|fitlibrary.specify.domain.Primitives|
+----
+----
+|''an int''|3|
+
+|''a double''|3.14159|
+
+|''a boolean''|true|
+
+|''a string''|my value|

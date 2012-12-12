@@ -1,0 +1,9 @@
+!2 A method may return different results on each call.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td colspan=2>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>increment()</td><td>increment()</td></tr>
+<tr><td>1</td><td>2</td></tr>
+<tr><td>3</td><td>4</td></tr></table>-!|!-<table><tr><td colspan=2>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>increment()</td><td>increment()</td></tr>
+<tr><td class="pass">1</td><td class="pass">2</td></tr>
+<tr><td class="pass">3</td><td class="pass">4</td></tr></table>-!|

@@ -1,0 +1,25 @@
+!*< def
+!define html [{{{<script type="text/javascript">
+function addInput(){
+  var td = document.createElement("td");
+  td.innerHTML = "green";
+  td.setAttribute("id","d");
+  var tr = document.getElementById("t");
+  tr.removeChild(tr.lastChild);
+  tr.appendChild(td);
+}
+</script>
+<input type="button" id="ok" value="OK" onclick="javascript:setTimeout('addInput()', 50)"/>
+
+<table><tr id="t"><td id="e">cell</td></tr></table>}}}]
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''click''|ok|
+
+|''text of''|d|'''becomes'''|green|

@@ -1,0 +1,5 @@
+|''calculate discounts with''|low|''future value''|
+|''owing''|''purchase''|''discount()''|
+|0.00|0.00|0.00|
+|0.00|1000.00|0.00|
+|1000.00|5000.00|0.00|

@@ -1,0 +1,11 @@
+|''create soap file''|test1.xml|''with''|${soap11}<response>out</response>${endSoap11}|
+
+|''mock full soap as''| SOAP11|''on port''|8081|
+|''matches request''|${soap11}<request a="a" b="b">in</request>${endSoap11}|
+|''response from file''|!-FitNesseRoot/files/soap/test1.xml-!|
+
+|''to''|http://localhost:8081/service|''as''|SOAP11|''post full soap''|${soap11}<request b="b" a="a">in</request>${endSoap11}|'''is'''|${soap11}<response>out</response>${endSoap11}|
+
+|''reply content type''|'''is'''|text/xml;charset=utf-8|
+
+|''close''|

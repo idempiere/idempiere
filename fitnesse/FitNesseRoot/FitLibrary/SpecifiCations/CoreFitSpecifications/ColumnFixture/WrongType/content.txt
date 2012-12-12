@@ -1,0 +1,8 @@
+!2 An exception is thrown if the input for a field, or the expected value of a method, is of the wrong type.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td colspan=2>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>a</td><td>plus()</td></tr>
+<tr><td>one</td><td>one</td></tr></table>-!|
+|!-<table><tr><td colspan=2>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>a</td><td>plus()</td></tr>
+<tr><td class="error">one<hr><pre><div class="fit_stacktrace"></div></pre></td><td class="error">one<hr/> <span class="fit_label"></span></td></tr></table>-!|

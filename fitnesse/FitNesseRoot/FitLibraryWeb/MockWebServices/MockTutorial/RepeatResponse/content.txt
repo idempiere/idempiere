@@ -1,0 +1,31 @@
+!3 9. Repeating a response
+What if we want the last reponse to be repeated, any number of times. Eg, once the count of oranges gets to 0, it stays at that count:
+
+|''with mock web services''|
+
+|''mock soap11 on port''|8081|
+|''xpath''|//countOf|''is''|Oranges|
+|''response''|<count>44</count>|
+|''response''|<count>23</count>|
+|''response''|<count>10</count>|
+
+|''mock soap11 on port''|8081|
+|''xpath''|//countOf|''is''|Oranges|
+|''response''|<count>0</count>|
+|''repeat''|
+
+|''close after''|5|''seconds''|
+
+This will provide a sequence of responses of: 44, 23, 10, 0, 0, 0, ...
+
+Both FourOrangeCalls and FiveOrangeCalls work.
+
+Some others that fail with it: ApplesCall, OrangesCall.
+
+An error will be given if there are fewer than four requests for orange counts, but four or more are permitted.
+#
+!3 10. Next
+#
+We can have several services on the same port (and we can have them across ports as well)
+
+An example is [[on this page][SeveralServices]].

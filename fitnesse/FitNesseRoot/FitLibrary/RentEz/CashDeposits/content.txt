@@ -1,0 +1,4 @@
+^TestRentalWithDeposit
+^TestReturnWithDeposit
+^TestPartialReturn
+^TestDamagedItems

@@ -1,0 +1,9 @@
+!**< def
+!define map (|red|green|
+|yellow|blue|
+)
+**!
+!|fitlibrary.specify.domain.Maps|
+----
+----
+|''a colour map''|${map}|

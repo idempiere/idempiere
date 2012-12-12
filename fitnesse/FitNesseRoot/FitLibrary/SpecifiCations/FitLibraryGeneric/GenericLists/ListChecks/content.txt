@@ -1,0 +1,23 @@
+!***< def
+!define rg (|''colour''|
+|red|
+|green|
+)
+!define yb (|''colour''|
+|yellow|
+|blue|
+)
+!define listOfLists (|${rg}|
+|${yb}|
+)
+**!
+ * A list is expressed as a nested table
+ * A list of lists is expressed as a doubly-nested table
+
+!|fitlibraryGeneric.specify.collections.GenericCollections|
+
+|''checks''|
+ * List<Colour>
+|''a list''|${rg}|
+ * List<List<Colour>>
+|''a list of lists''|${listOfLists}|

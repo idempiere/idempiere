@@ -1,0 +1,44 @@
+Templates are handy when we want to make several variations of a xml file or content (or any plain text).
+
+The variation points are marked in the template file (eg, !-$startDate-!), and these can be substituted for required values through dynamic properties.
+
+''!-TemplateFixture-!'' uses ''!-Velocity-!'', an apache, open-source template-handling system, which in turn uses apache commons: collections and lang. See http://velocity.apache.org, http://commons.apache.org
+
+Note that ''Velocity'' only handle relative file names.
+!2 Actions
+ * Apply the current dynamic variables to the specifed template file and show the result as a string:
+
+|'''set'''|startDate|''to''|24 Dec 2009|
+
+|'''show'''|''get template''|request.xml|
+
+ * This can be used in various ways:
+
+  * Write the result to a file:
+
+|'''set'''|startDate|''to''|24 Dec 2009|
+
+|set|result|''get template''|request.xml|
+
+|''file''|lateRequest.xml|
+|''write''|@{result}|
+
+  * Use the result in a web service call:
+
+|'''set'''|startDate|''to''|24 Dec 2009|
+
+|set|result|''get template''|request.xml|
+
+|!-fitlibrary.ws.WebServicesClientFixture-!|
+|''post''|http://bla.com|''with''|@{result}|
+
+  * Use the result in a web service mock:
+
+|'''set'''|startDate|''to''|24 Dec 2009|
+
+|set|result|''get template''|request.xml|
+
+|''mock soap on port''|8081|
+|''matches URL''|/service|
+|''matches request''|<request a="a" b="b">in</request>|
+|''response''|@{result}|

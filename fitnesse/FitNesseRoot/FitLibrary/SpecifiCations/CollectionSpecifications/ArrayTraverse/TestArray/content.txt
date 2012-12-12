@@ -1,0 +1,13 @@
+!2 All elements are in the correct order
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.PrimitiveArrayFixtureUnderTest</td></tr>
+<tr><td>1</td></tr>
+<tr><td>2</td></tr>
+<tr><td>3</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.PrimitiveArrayFixtureUnderTest</td></tr>
+<tr class="pass"><td>1</td></tr>
+<tr class="pass"><td>2</td></tr>
+<tr class="pass"><td>3</td></tr>
+</table>-!|

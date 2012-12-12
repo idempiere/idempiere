@@ -1,0 +1,15 @@
+!2 A surplus row is a row that's not expected to be in the actual list:
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table>
+<tr><td colspan=2>fit.specify.RowFixtureUnderTest</td></tr>
+<tr><td>s</td><td>a</td></tr>
+<tr><td>one</td><td>1</td></tr>
+<tr><td>two</td><td>2</td></tr>
+</table>-!|!-<table>
+<tr><td colspan=2>fit.specify.RowFixtureUnderTest</td></tr>
+<tr><td>s</td><td>a</td></tr>
+<tr><td class="pass">one</td><td class="pass">1</td></tr>
+<tr><td class="pass">two</td><td class="pass">2</td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">two</span> <span class="fit_label">surplus</span></td>
+<td> <span class="fit_grey">1</span></td></tr></table>-!|

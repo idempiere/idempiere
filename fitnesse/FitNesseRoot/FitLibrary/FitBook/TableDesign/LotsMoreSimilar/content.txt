@@ -1,0 +1,9 @@
+|''chat server''|
+
+||anna|''connects''|
+
+||anna|''creates''|lotr|''room''|
+
+||anna|''enters''|lotr|''room''|
+
+|reject||anna|''removes''|lotr|''room''|

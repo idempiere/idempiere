@@ -1,0 +1,88 @@
+!1 Part Four
+#
+Let's look at how to manage with HTML forms.
+
+We'll write storytests to handle the tables on a web page. [[The web page is here.][files/handlingForms.html]]
+
+You may find it convenient to open this page in another window, so you can easily look at it at the same time as the storytests below.
+
+We'll make use of only one ''defined action'' here, to start spider, and show the details in the storytests.
+
+ * In a real storytest, we'd want to hide much of the following detail in ''defined actions''.
+ * We no longer request that ''defined action'' calls are expanded.
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.AjaxTiming.HandlingChanges.DefinedActions|
+
+|''spider on port''|${FITNESSE_PORT}|
+
+|''get url''|http://localhost:@{fitNessePort}/files/handlingForms.html|
+
+ * We'll change the various HTML form elements and check them to show how that can also be done.
+
+ * Text:
+
+|''with''|name|''set text''|Rick Mugridge|
+
+|''text of''|name|''is''|Rick Mugridge|
+
+ * Text Area:
+
+|''with''|address|''set text''|Waimauku, New Zealand|
+
+|''text of''|address|''is''|Waimauku, New Zealand|
+
+ * Password:
+
+|''with''|passwd|''set text''|pastword|
+
+|''text of''| passwd|'''is'''|pastword|
+
+ * Checkbox:
+
+|''with''|spam|''select''|true|
+
+|''checkbox''|spam|''is''|true|
+
+ * Radio button:
+
+|''with''|100|''select''|true|
+
+|''checkbox''|100|''is''|true|
+
+ * Select
+
+|''with''|type|''select option''|Private|
+
+|''option of''|type|''is''| Private |
+
+ * Muliple Select
+
+|''with''|interests|''add selection''|Business|
+|''with''|interests|''add selection''|Holidays|
+
+|''option list of''| interests |'''is'''|Business, Holidays |
+
+|''with''| interests |''remove selection''|Business|
+
+|''option list of''| interests |'''is'''| Holidays |
+
+ * We'll delay, so you have time to look at the changed web page:
+
+|''sleep for''|5000|
+
+ * Submit
+
+|''click''|submit|
+
+Note that above leads to a page with an error message, even though the test passes.
+
+!2 Note
+#
+In testing a real system, we'd:
+
+ * probably have to use ''xpath'' expressions to locate the elements on the form, as all elements won't necessarily have IDs
+ * need to verify that we'd got to the correct page (by ''url'' or ''title'') and that it has the correct contents.
+
+!2 Next
+#
+The next part is here: [[Part 5: Handling Tables][<SpiderTutorial.HandlingTables]]

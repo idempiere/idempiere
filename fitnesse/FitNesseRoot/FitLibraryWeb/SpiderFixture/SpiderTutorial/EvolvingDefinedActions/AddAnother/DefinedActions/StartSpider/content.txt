@@ -1,0 +1,12 @@
+|''suite test on port''|port|
+
+|''set expand defined actions''|true|
+
+!|fitlibrary.spider.SpiderFixture|
+
+|''start spider with''|firefox|
+
+|''set''|fitNessePort|''to''|@{port}|
+
+|''shutdown browser automatically''|false|
+----

@@ -1,0 +1,41 @@
+!**< def
+!define test (!|fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest|
+
+|'''set'''|rick.class|'''to'''|Person|
+
+|'''oo'''|rick|''surname is''|Mugridge|
+
+|''expected test results''|1|''right''|0|''wrong''|0|''ignored''|1|''exceptions''|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>rick.class</td>
+<td><b>to</b></td>
+<td>Person</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><b>oo</b><hr/> <span class="fit_label">Unknown defined action for object of class Person</span></td>
+<td>rick</td>
+<td><i>surname is</i></td>
+<td>Mugridge</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="fail"><i>expected test results</i> <span class="fit_label">expected</span><hr>0 right, 0 wrong, 0 ignored, 1 exceptions <span class="fit_label">actual</span></td>
+<td>1</td>
+<td><i>right</i></td>
+<td>0</td>
+<td><i>wrong</i></td>
+<td>0</td>
+<td><i>ignored</i></td>
+<td>1</td>
+<td><i>exceptions</i></td>
+</tr>
+</table>-!|

@@ -1,0 +1,15 @@
+|''with http client''|
+
+|'''also run'''|''with web server for testing''|
+
+|''start file server on port''|8096|''at directory''|!-FitNesseRoot-!|
+
+|''http head''|http://localhost:8096/files/handlingWindows.html|
+
+|'''show'''|''headers''|
+
+|''headers include''|
+|''name''|''value''|
+|Content-Type|text/html; charset=UTF-8|
+
+|''stop testing server''|

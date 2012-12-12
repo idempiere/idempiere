@@ -1,0 +1,18 @@
+!|fitlibrary.specify.domain.Primitives|
+
+|''an int''|303|
+
+|''a double''|4|
+
+|''a boolean''|false|
+
+|''a string''|String|
+----
+----
+|''an int''|303|
+
+|''a double''|4|
+
+|''a boolean''|false|
+
+|''a string''|String|

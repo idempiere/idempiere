@@ -1,0 +1,15 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.SucceedConstraint</td>
+</tr>
+<tr><td>b</td><td>m</td></tr>
+<tr><td>1</td><td>2</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.SucceedConstraint</td>
+</tr>
+<tr><td class="error">b<hr/> <span class="fit_label">Missing method</span></td><td>m</td></tr>
+<tr><td class="ignore">1</td><td class="ignore">2</td></tr>
+</table>-!|
+
+extra
+extra

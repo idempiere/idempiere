@@ -1,0 +1,23 @@
+!2 If a field cell contains a repeat string that has been defined by the fixture (here '"'), the previous value is provided instead for that cell in the result.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest2</td></tr>
+</table>
+<table>
+<tr><td colspan=4>calc</td></tr>
+<tr><td>a</td><td>b</td><td></td><td>plus</td></tr>
+<tr><td>0</td><td>0</td><td></td><td>0</td></tr>
+<tr><td>"</td><td>1</td><td></td><td>1</td></tr>
+<tr><td>-1</td><td>"</td><td></td><td>0</td></tr>
+<tr><td>1</td><td>2</td><td></td><td>3</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest2</td></tr>
+</table>
+<table>
+<tr><td colspan=4>calc</td></tr>
+<tr><td>a</td><td>b</td><td></td><td>plus</td></tr>
+<tr><td>0</td><td>0</td><td></td><td class="pass">0</td></tr>
+<tr><td>"</td><td>1</td><td></td><td class="pass">1</td></tr>
+<tr><td>-1</td><td>"</td><td></td><td class="pass">0</td></tr>
+<tr><td>1</td><td>2</td><td></td><td class="pass">3</td></tr>
+</table>-!|

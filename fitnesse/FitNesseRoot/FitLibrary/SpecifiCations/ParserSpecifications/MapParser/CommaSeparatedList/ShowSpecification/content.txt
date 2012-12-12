@@ -1,0 +1,28 @@
+!3 A Map is shown as a comma-separated list in an error message
+!**< def
+!define test {!|fitlibrary.specify.mapParser.Match|
+
+|''map of string abc''|'''is'''|a->B,B->c|
+
+|''map empty''|'''is'''|x->y|
+}
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.mapParser.Match</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>map of string abc</i></td>
+<td><b>is</b></td>
+<td class="fail">a-&gt;B,B-&gt;c <span class="fit_label">expected</span><hr>b->c, c->a, a->b <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>map empty</i></td>
+<td><b>is</b></td>
+<td class="fail">x-&gt;y <span class="fit_label">expected</span><hr> <span class="fit_label">actual</span></td>
+</tr>
+</table>-!|
+
+

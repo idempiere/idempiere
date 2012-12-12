@@ -1,0 +1,13 @@
+ * This is the same as with an ordered list, except that the rows contain the elements in any order.
+ * We show lists can be checked in both the ${checks} and ${actions}
+!|fitlibrary.eg.Collections|
+
+|list is|1,2,3|
+
+|''unordered list''|
+|''item''|
+|3|
+|1|
+|2|
+
+For programming details, see CollectionsCode.

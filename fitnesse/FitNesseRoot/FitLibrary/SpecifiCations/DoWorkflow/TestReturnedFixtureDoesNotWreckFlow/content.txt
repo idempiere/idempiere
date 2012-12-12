@@ -1,0 +1,34 @@
+!2 Problem identified by Jeff Nielsen:
+And now fixed.
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table><tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr></table>
+<table>
+<tr><td><i>add</td><td>12</td></tr>
+<tr><td><i>get</i></td><td>0</td><td><i>slice</i></td><td>0</td></tr>
+<tr><td>s</td></tr>
+<tr><td>A0a</td></tr>
+<tr><td>A0b</td></tr>
+</table>
+And another:
+<table>
+<tr><td><i>add</td><td>12</td></tr>
+<tr><td><i>get</i></td><td>1</td><td><i>slice</i></td><td>2</td></tr>
+<tr><td>s</td></tr>
+<tr><td>B2a</td></tr>
+<tr><td>B2b</td></tr>
+</table>-!|!-<table><tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr></table>
+<table>
+<tr><td><i>add</td><td>12</td></tr>
+<tr><td><i>get</i></td><td>0</td><td><i>slice</i></td><td>0</td></tr>
+<tr><td>s</td></tr>
+<tr><td class="pass">A0a</td></tr>
+<tr><td class="pass">A0b</td></tr>
+</table>
+And another:
+<table>
+<tr><td><i>add</td><td>12</td></tr>
+<tr><td><i>get</i></td><td>1</td><td><i>slice</i></td><td>2</td></tr>
+<tr><td>s</td></tr>
+<tr><td class="pass">B2a</td></tr>
+<tr><td class="pass">B2b</td></tr>
+</table>-!|

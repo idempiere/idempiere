@@ -1,0 +1,45 @@
+!**< def
+!define users (|name|
+|For Ced|
+)
+!define test (!|fitlibrary.specify.exception.ExceptionThrownByGetterInCollection|
+
+|departments|
+|users|
+|${users}|
+
+|''expected test results''|0|''right''|2|''wrong''|0|''ignored''|2|''exceptions''|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.exception.ExceptionThrownByGetterInCollection</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>departments</td>
+</tr>
+<tr><td>users</td>
+</tr>
+<tr><td class="fail"><table border="1" cellspacing="0">
+<tr><td>name</td>
+</tr>
+<tr><td class="error">For Ced<hr><pre><div class="fit_stacktrace">fitlibrary.specify.exception.ForcedException</div></pre> <span class="fit_label">missing</span></td>
+</tr>
+<tr>
+<td class="error">&nbsp;<hr><pre><div class="fit_stacktrace">fitlibrary.specify.exception.ForcedException</div></pre> <span class="fit_label">surplus</span></td></tr></table> <span class="fit_label">missing</span></td>
+</tr>
+<tr>
+<td class="fail"> <span class="fit_grey">A user</span> <span class="fit_label">surplus</span></td></tr></table>
+<br><table border="1" cellspacing="0">
+<tr><td class="pass"><i>expected test results</i></td>
+<td>0</td>
+<td><i>right</i></td>
+<td>2</td>
+<td><i>wrong</i></td>
+<td>0</td>
+<td><i>ignored</i></td>
+<td>2</td>
+<td><i>exceptions</i></td>
+</tr>
+</table>-!|

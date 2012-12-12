@@ -1,0 +1,25 @@
+!**< def
+!define test (!|fitlibrary.DoFixture|
+
+|''set system property to''|abc|
+
+|''set system property to''|abc|ABC|DEF|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.DoFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><i>set system property to</i><hr/> <span class="fit_label">Missing class or Missing method. Possibly:<ul><li>public Type setSystemPropertyTo(Type1 arg1) { }</li></ul></span></td>
+<td>abc</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><i>set system property to</i><hr/> <span class="fit_label">Missing class or Missing method. Possibly:<ul><li>public Type setSystemPropertyToABC(Type1 arg1, Type2 arg2) { }</li><li>public Type setSystemPropertyTo(Type p1, Type p2, Type p3) {}</li></ul></span></td>
+<td>abc</td>
+<td>ABC</td>
+<td>DEF</td>
+</tr>
+</table>-!|

@@ -1,0 +1,51 @@
+!2 If we start in non-flow, such as with a column fixture, when we hit a table later in the storytest that can be used in flow, it will be
+
+!**< def
+!define test (!|fit.specify.MyColumnFixture|
+|x|x?|
+|0|0|
+|1|1|
+
+!|fitlibrary.specify.SystemUnderTest|
+
+|int property|is|2|
+
+!|fitlibrary.specify.SystemUnderTest|
+
+|int property|is|2|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fit.specify.MyColumnFixture</td>
+</tr>
+<tr><td>x</td>
+<td>x?</td>
+</tr>
+<tr><td>0</td>
+<td class="pass">0</td>
+</tr>
+<tr><td>1</td>
+<td class="pass">1</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.SystemUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>int property</td>
+<td>is</td>
+<td class="pass">2</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.SystemUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>int property</td>
+<td>is</td>
+<td class="pass">2</td>
+</tr>
+</table>-!|

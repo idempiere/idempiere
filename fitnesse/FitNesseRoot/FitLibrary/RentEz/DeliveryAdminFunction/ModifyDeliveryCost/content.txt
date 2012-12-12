@@ -1,0 +1,11 @@
+Change
+
+|''begin admin transaction''| Bill |
+|''change delivery city''|Auckland|''zone''|East|''flat rate''|12.00|''delivery rate %''|4|''to flat rate''|15.00|
+|''complete transaction''|
+
+----Check
+|''delivery cost list''|
+|''city''  |  ''zone''    | ''delivery rate flat fee'' | ''delivery rate %'' |
+|Auckland| West|12.00|4|
+|Auckland| East|15.00|4|

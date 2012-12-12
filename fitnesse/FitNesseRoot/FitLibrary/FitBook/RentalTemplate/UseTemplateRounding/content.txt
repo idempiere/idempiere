@@ -1,0 +1,12 @@
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''fill template''|coffee breaker|''for''|21|''people for''|1 day|
+|''pay with cash $''|65.40|
+|''complete transaction''|
+
+|''rentals of client''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee dispenser|2|2004/05/06 09:01|2004/05/07 09:01|
+|hot water dispenser|2|2004/05/06 09:01|2004/05/07 09:01|
+|coffee table|1|2004/05/06 09:01|2004/05/07 09:01|
+|cup|24|2004/05/06 09:01|2004/05/07 09:01|
+

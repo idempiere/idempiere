@@ -1,0 +1,24 @@
+!**< defs
+!define list (|''colour''|
+|red|
+|green|
+)
+!define list2 (|''colour''|
+|yellow|
+|blue|
+)
+!define listOfList (|${list}|
+|${list2}|
+)
+**!
+!|fitlibraryGeneric.specify.collections.GenericCollections|
+----
+----
+ * Set<List<Colour>>
+|''a set of lists''|${listOfList}|
+ * List<Set<Colour>>
+|''a list of sets''|${listOfList}|
+ * Empty Set<List<Colour>>
+|''an empty set of lists''||
+ * Empty List<Set<Colour>>
+|''an empty list of sets''||

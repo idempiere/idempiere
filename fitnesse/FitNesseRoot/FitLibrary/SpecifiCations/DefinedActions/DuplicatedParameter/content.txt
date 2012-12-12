@@ -1,0 +1,24 @@
+!**< def
+!define test (!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActions.DuplicatedParameter.OneDefinedAction|
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.definedAction.DefinedActionUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>clear defined actions</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><i>define actions at</i><hr/> <span class="fit_label"><ul><li>Parameter name '<b>USER</b>' is duplicated in <b>loginWith</b> in <a href='FitLibrary.SpecifiCations.DefinedActions.DuplicatedParameter.OneDefinedAction'>.FitLibrary.SpecifiCations.DefinedActions.DuplicatedParameter.OneDefinedAction</a>:</li>
+</ul></span></td>
+<td><a href="FitLibrary.SpecifiCations.DefinedActions.DuplicatedParameter.OneDefinedAction">.FitLibrary.SpecifiCations.DefinedActions.DuplicatedParameter.OneDefinedAction</a></td>
+</tr>
+</table>-!|

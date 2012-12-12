@@ -1,0 +1,21 @@
+!*< def
+!define target (<head><title>To here</title></head>
+)
+!define html (<form name="one" method="get" action="unknown.html">
+  <input type="text" value="name" id="txt"/>
+  <input type="submit" value="OK"/>
+</form>
+)
+*!
+
+|''keywords''||
+
+!include <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''make file''|other.html|''from''|${target}|
+
+|''with html''|${html}|
+
+|'''reject'''|''submit''|name=one|
+
+|'''reject'''|''submit''|//form[@name="one"]|

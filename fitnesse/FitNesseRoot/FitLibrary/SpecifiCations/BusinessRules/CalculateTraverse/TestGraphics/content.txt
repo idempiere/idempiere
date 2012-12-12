@@ -1,0 +1,19 @@
+!2 The values can be graphic
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=4>calculate</td></tr>
+<tr><td>1</td><td>2</td><td>&nbsp;</td><td>+</td></tr>
+<tr><td>a</td><td>b</td><td>&nbsp;</td><td><ul><li>a</li><li>b</li></ul></td></tr>
+<tr><td>A<ul><li>a</li></ul></td><td>B<ul><li>b</li></ul></td><td>&nbsp;</td><td><ul><li>A<ul><li>a</li></ul></li><li>B<ul><li>b</li></ul></li></ul></td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=4>calculate</td></tr>
+<tr><td>1</td><td>2</td><td>&nbsp;</td><td>+</td></tr>
+<tr><td>a</td><td>b</td><td>&nbsp;</td><td class="pass"><ul><li>a</li><li>b</li></ul></td></tr>
+<tr><td>A<ul><li>a</li></ul></td><td>B<ul><li>b</li></ul></td><td>&nbsp;</td><td class="pass"><ul><li>A<ul><li>a</li></ul></li><li>B<ul><li>b</li></ul></li></ul></td></tr>
+</table>-!|

@@ -1,0 +1,3 @@
+|!2 ''Details of changes in this release''|12 August 2010|
+
+ * Fixed a bug with passing XML strings as parameters to ''defined actions''

@@ -1,0 +1,7 @@
+This is an action in a ${workflow} table. Such an action may:
+ * Be carried out by a user through a user interface
+ * Happen automatically: Eg, at a given time, or after some time has elapsed since some event or action
+ * Be due to an action of another system, such as it sending data or signalling an event
+!3 For example
+ * .FitLibrary.UserGuide.FitLibraryByExample.WorkFlow
+ * .FitLibrary.SpecifiCations.DoWorkflow.TestActions

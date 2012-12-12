@@ -1,0 +1,8 @@
+!|fitlibrary.spider.specify.SpecifySpiderSuite|
+
+|'''set'''|webDriver.driver|''to''|ie|
+|'''set'''|serverPort|''to''|8996|
+
+|''start spider on port''|@{serverPort}|''with''| @{webDriver.driver} |
+
+|''select or''| @{webDriver.driver} |

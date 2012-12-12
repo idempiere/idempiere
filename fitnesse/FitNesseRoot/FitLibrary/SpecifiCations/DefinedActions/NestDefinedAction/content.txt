@@ -1,0 +1,3 @@
+|nested|obj|
+
+|''object''|'''is'''|@{obj}|

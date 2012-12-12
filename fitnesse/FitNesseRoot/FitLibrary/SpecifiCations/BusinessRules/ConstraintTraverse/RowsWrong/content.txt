@@ -1,0 +1,14 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.SucceedConstraint</td>
+</tr>
+<tr><td>a</td><td colspan="2">b</td></tr>
+<tr><td colspan=3>1</td></tr>
+<tr><td>1</td><td>2</td><td>2</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.SucceedConstraint</td>
+</tr>
+<tr><td>a</td><td colspan="2">b</td></tr>
+<tr><td colspan=3 class="error">1<hr/> <span class="fit_label">Row should be 2 cells wide</span></td></tr>
+<tr><td class="error">1<hr/> <span class="fit_label">Row should be 2 cells wide</span></td><td>2</td><td>2</td></tr>
+</table>-!|

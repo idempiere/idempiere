@@ -1,0 +1,13 @@
+!**> test
+!define test (!|Column|
+|unknown?|
+)
+
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>Column</td>
+</tr>
+<tr><td class="error">unknown?<hr/> <span class="fit_label">Could not find method: unknown?.</span></td>
+</tr>
+</table>-!|

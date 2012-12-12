@@ -1,0 +1,41 @@
+!*< def
+!define one (<head><title>One Title</title></head>
+)
+!define two (<head><title>Two Title</title></head>
+)
+!define html ({{{<head><title>From</title></head>
+<a id="one" href="one.html" target="Window One">One</a>
+<a id="two" href="two.html" target="Window Two">Two</a> }}})
+*!
+
+|''keywords''|chrome,htmlunit, firefox|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''make file''|one.html|''from''|${one}|
+|''make file''|two.html|''from''|${two}|
+
+|''with html''|${html}|
+
+|''click''|one|
+|''click''|two|
+
+|''title''|'''is'''|From|
+
+|''select window''|Window One|
+|''title''|'''is'''|One Title|
+
+|''select initial window''|
+|''title''|'''is'''|From|
+
+|''select window''|Window One|
+|''title''|'''is'''|One Title|
+
+|''select window''|Window Two|
+|''title''|'''is'''|Two Title|
+
+|''select window''|Window One|
+|''title''|'''is'''|One Title|
+
+|''select initial window''|
+|''title''|'''is'''|From|

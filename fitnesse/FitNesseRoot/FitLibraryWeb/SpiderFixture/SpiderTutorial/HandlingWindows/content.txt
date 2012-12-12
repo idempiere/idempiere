@@ -1,0 +1,46 @@
+!1 Part 6
+#
+Let's look at how to handle windows.
+
+We'll write storytests to handle several windows that can be opened as popups from a web page. [[The web page is here.][files/handlingWindows.html]]
+
+That web page has:
+
+ * A link that creates a (Red) window in the browser (in fireFox and Google Chrome it appears in another tab)
+ * 2 buttons that create blue and white popup windows (using javascript).
+  * The blue and white windows popup and will appear in the same place, so you'll need to drag the windows to see them both.
+  * The white popup window doesn't have a ''target'' name.
+  * This impacts on how we can refer to it.
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.AjaxTiming.HandlingChanges.DefinedActions|
+
+|''ajax on port''|${FITNESSE_PORT}|
+
+|''get url''|http://localhost:@{fitNessePort}/files/handlingWindows.html|
+
+|''text of''|//h1|'''is'''|Handling Windows|
+
+ * Go Red
+
+|''click''|accessRed|
+
+ * The red window has a ''target'' name (the ''target'' value in the ''a'' link in the HTML) and so we can refer to it easily:
+
+|''select window''|window with red|
+
+ * So now any reference to elements are to the currently-selected window:
+
+|''text of''|//h1|'''is'''|Red|
+
+ * Close the current (Red) window:
+
+|''close''|
+
+|''select initial window''|
+
+ * We're back on the initial page:
+
+|''text of''|//h1|'''is'''|Handling Windows|
+
+
+Let's now try the blue and white popup windows and switch between them [[on this page][^NoTarget]]

@@ -1,0 +1,37 @@
+!*< def
+!define html ({{{  <div id="nothing"/>
+  <span id="onlySpacesInText">   </span>
+  <div id="withText">green</div>
+  <span id="withMultiText">yellow\n
+orange</span>
+  <span id="withMultiTextCR">yellow\rorange</span>
+  <span id="withMultiTextBR">yellow<br/>orange</span>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''plain text of''|//div[@id="nothing"]|''matches''||
+
+|''plain text of''|//span[@id="onlySpacesInText"]|''matches''||
+
+|''plain text of''|//div[@id="withText"]|''matches''|green|
+
+|''plain text of''|//div[@id="withText"]|''matches''|gr.*n|
+
+ * \n in text gets converted into a space:
+
+|''plain text of''|//span[@id="withMultiText"]|''matches''|yellow orange|
+
+ * \r in text gets converted into a space:
+
+|''plain text of''|//span[@id="withMultiTextCR"]|''matches''|yellow orange|
+
+ * <br/> in text gets replaced by a space:
+
+|''plain text of''|//span[@id="withMultiTextBR"]|''matches''|yellow orange|
+
+|''plain text of''|//span[@id="withMultiText"]|''matches''|yellow.orange|

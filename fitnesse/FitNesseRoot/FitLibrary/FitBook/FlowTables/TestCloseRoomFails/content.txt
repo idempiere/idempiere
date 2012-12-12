@@ -1,0 +1,13 @@
+!2 A room can't be removed if someone is in it
+| !-ChatStart-! |
+
+|''connect user''|anna|
+
+|''user''|anna|''creates''|lotr|''room''|
+
+|''user''|anna|''enters''|lotr|''room''|
+|reject|''remove''|lotr|''room''|
+
+|''user''|anna|''leaves''|lotr|''room''|
+|''remove''|lotr|''room''|
+

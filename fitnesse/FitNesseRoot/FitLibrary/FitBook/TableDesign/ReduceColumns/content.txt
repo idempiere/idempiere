@@ -1,0 +1,6 @@
+|''rental items list''|
+| ''name''   | ''count'' |
+| coffee urn | 10 |
+| table      | 20 |
+| coffee pot | 20 |
+| chair      | 20 |

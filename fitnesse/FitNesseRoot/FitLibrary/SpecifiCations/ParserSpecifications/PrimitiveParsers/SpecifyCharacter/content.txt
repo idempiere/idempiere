@@ -1,0 +1,181 @@
+!**< test
+!define test (!|fitlibrary.specify.parser.ParserUnderTest|
+
+!|valid|
+|char|
+|1|
+|a|
+||
+|=|
+
+!|valid|
+|Character|
+|1|
+|a|
+||
+|=|
+
+!|valid|
+|byte|
+|0|
+|1|
+|127|
+
+!|valid|
+|class Byte|
+|0|
+|1|
+|127|
+
+!|valid|
+|string|
+|12345|
+|abc|
+||
+|=%^|
+
+!|invalid|
+|char|
+|++|
+|1.5.6|
+
+!|invalid|
+|Character|
+|++|
+|1.5.6|
+
+!|invalid|
+|byte|
+|a|
+|128|
+|++|
+|1.5.6|
+
+!|invalid|
+|class Byte|
+|a|
+|128|
+|++|
+|1.5.6|
+)
+**!
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.ParserUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>char</td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>a</td>
+</tr>
+<tr class="pass"><td>&nbsp;</td>
+</tr>
+<tr class="pass"><td>=</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>Character</td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>a</td>
+</tr>
+<tr class="pass"><td>&nbsp;</td>
+</tr>
+<tr class="pass"><td>=</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>byte</td>
+</tr>
+<tr class="pass"><td>0</td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>127</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>class Byte</td>
+</tr>
+<tr class="pass"><td>0</td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>127</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>string</td>
+</tr>
+<tr class="pass"><td>12345</td>
+</tr>
+<tr class="pass"><td>abc</td>
+</tr>
+<tr class="pass"><td>&nbsp;</td>
+</tr>
+<tr class="pass"><td>=%^</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>char</td>
+</tr>
+<tr class="fail"><td>++</td>
+</tr>
+<tr class="fail"><td>1.5.6</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>Character</td>
+</tr>
+<tr class="fail"><td>++</td>
+</tr>
+<tr class="fail"><td>1.5.6</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>byte</td>
+</tr>
+<tr><td class="error">a<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">128<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">++<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">1.5.6<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>class Byte</td>
+</tr>
+<tr><td class="error">a<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">128<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">++<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">1.5.6<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>-!|

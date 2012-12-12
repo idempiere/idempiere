@@ -1,0 +1,17 @@
+!|fitlibrary.spider.SpiderFixture|
+
+|''start spider with''|firefox|
+
+|''shutdown browser automatically''|false|
+
+|''get url''|http://localhost:${FITNESSE_PORT}/FitLibraryWeb.TemplateFixture|
+
+|''title''|'''is'''|!-FitLibraryWeb.TemplateFixture-!|
+
+|''click''|//div[@class="actions"]/a[1]|
+
+|''click on named link''|Suite|
+
+|''text of''|//div[@id='test-summary']/strong|'''contains'''|Test Pages:|
+
+|''text of''|//div[@id='test-summary']|'''contains'''|right, 0 wrong, 0 ignored, 0 exceptions|

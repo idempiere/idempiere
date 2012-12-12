@@ -1,0 +1,31 @@
+!*< def
+!define html [{{{<head>
+<title>Change Me</title>
+<script type="text/javascript">
+function show_alert()
+{
+alert("Close Me!");
+document.title='Changed!';
+}
+</script>
+</head>
+<body>
+<input type="button" id="popalert" onclick="show_alert()" value="alert" />
+</body>
+}}}]
+*!
+
+|''keywords''|firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''click''|popalert|
+
+''You can get the text from any alert:''
+|alert message|is|Close Me!|
+
+|dismiss alert|
+
+|''title''|'''is'''|Changed!|

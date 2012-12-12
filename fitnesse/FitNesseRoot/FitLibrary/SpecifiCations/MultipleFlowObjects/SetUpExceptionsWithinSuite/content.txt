@@ -1,0 +1,19 @@
+!3 An exception in setUp() of the added fixture is caught and displayed
+!**< def
+!define test (!|fitlibrary.suite.SuiteFixture|
+
+!|add|fitlibrary.specify.select.SelectWithSetUpFailing|as|first|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.suite.SuiteFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error">add named<hr><pre><div class="fit_stacktrace">
+</div></pre></td>
+<td>first</td>
+<td>fitlibrary.specify.select.SelectWithSetUpFailing</td></tr>
+</table>-!|

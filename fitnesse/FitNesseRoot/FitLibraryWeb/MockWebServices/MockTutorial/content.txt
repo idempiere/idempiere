@@ -1,0 +1,22 @@
+!3 1. Why mock Web Services?
+#
+Consider a system ("our" system), which is being tested. It makes web service calls to other systems, to gather data or have an impact on those other systems.
+
+It can be difficult to test our system when we don't have complete control of those other systems. Even if we can set up those other systems to respond appropriately, it can be a pain to coordinate. So often we're forced to test in the context of those other systems, making use of their current data. That brings its own problems. And it may be difficult to force those other systems to respond in odd ways (eg, with obscure errors), so it makes it very difficult to test our error-handling. For example, does our system react correctly, such as informing the user, if another system is unavailable for a few seconds.
+
+There may also be problems with calling a web service that has serious impacts, such as carrying out a credit card payment.
+
+A reasonable approach to these problems is to mock the web service to each of those other systems. This means that the test defines how another system should respond. Because the test is written to test certain behaviour, it's often OK to work out what specific ways the other systems should respond. There are techniques that help in defining the mock behaviour, as we discuss next. We also highlight some of the (fundamental) limitations of this approach.
+#
+----!3 2. Defining Mock Web Services
+''!-MockWebServicesFixture-!'' allows one or more web services to be defined.
+
+ * It can handle soap1.1 and soap1.2, as well as plain text web services.
+ * In the following, we use soap1.1, and discuss the other formats later.
+
+We start simply, and build up to more complex scenarios in the following pages.
+#
+----!3 3. Next
+#
+Let's look at our first example [[on this page][^SimplyRespond]].
+

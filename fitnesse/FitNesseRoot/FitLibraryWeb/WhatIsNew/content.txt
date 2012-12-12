@@ -1,0 +1,77 @@
+!2 17 October 2011 - fitlibraryweb-2.0.jar
+This upgrade bundles fitlibrary-2.0.jar and a version number has also been added to the to fitlibraryweb jar file. If you upgrading and overwriting older jar files delete the older versions of fitLibrary.jar and fitbraryweb.jar
+
+#
+ * SpiderFixture:
+  * Added new locators: 
+   * Use '''css=''' to use 'css selectors'. See .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyCssSelectorLocator
+   * Use '''class=''' to select by class name. See .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyLocators
+  * Now supports Google Chrome as a driver source. See specifications at .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpiderWithChrome
+  * Upgraded Spider to work with release version of Selenium - v2.8
+  * Added new fixture method 'select window with contains' to select windows with a locator containing some text. See bottom of page .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpiderSpecsShared.SpecifyWindows.SelectPopUpByXpath 
+  * Fix: '''(//foo//bar/baz)[2]''' style xpaths were not being recognised by spider fixture as valid xpath - making it difficult to select elements in document order. See .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpiderSpecsShared.SpecifyXpath.ByPosition for further documentation.
+  * Documented pre-existing 'options' (used on Select elements) fixture method with new Specifiction. See .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifySelect.CheckListOfSelectOptions Also improved cross browser issues with this method. 
+ 
+ * XmlProcessing:
+   * xml 'similar to' comparison now more lenient when it comes to repeating nodes of the same name.
+
+ * Web Services Client
+  * Allow for ssl certificates to be ignored with https. Added to docs at .FitLibraryWeb.WebServicesClient
+
+!2 5 April 2011
+#
+ * SpiderFixture:
+  * Upgraded Spider to Selenium 2.0b3
+  * Improved support for Internet Explorer, many of the specifications now re-enabled to show they work with Internet Explorer
+  * Add support for interacting with popup Alert() dialogs. See .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpiderSpecsShared.SpecifyAlert
+  * Added new fixture method 'execute !-JavaScript with element' which locates an element and passes it to !-JavaScript-! as a parameter. See .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyJavaScript.ExecuteJavaScript
+  * Added new fixture method 'text of element only' to return just the text() of a html element without including any child inner html text. See .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpiderSpecsShared.SpecifyTextOfElementOnly 
+  * Fix !-ForEach-! fixture method and improve specifications. See .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpiderSpecsShared.ForEach
+ 
+ * XmlProcessing:
+   * Ability to define a name space alias and URI in XML fixture
+
+!2 2 March 2011
+#
+ * Upgraded Spider to Selenium 2.0b2.
+ * Extended lookup table. See .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyLookup
+ * Added |help| for Spider
+#
+!2 3 December 2010
+#
+ * Added some missing files that are needed for the specs
+#
+!2 1 December 2010
+#
+ * SpiderFixture:
+  * Upgraded to ''!-WebDriver-!'' a6
+
+ * HttpClient:
+  * Added specs that test the client against a local file server
+  * Added specs that test the client with a proxy server
+  * Changed the implementation to use httpClient 4.0
+  * Added tutorial: .FitLibraryWeb.HttpClient.HttpClientTutorial
+
+ * WebServicesClient:
+  * Now distinguish between soap1.1 and soap1.2
+  * Added specs that test the client against a local web services server
+  * Added specs that test the client with a proxy against a local web services server
+  * Changed the implementation to use httpComponents 4.0
+  * Added tutorial: .FitLibraryWeb.WebServicesClient.WebServicesTutorial
+#
+!2 12 August 2010
+#
+ * SpiderFixture:
+  * Added ability to check whether an element is visible or not
+  * Extended tutorial to cover visibility
+#
+!2 5 August 2010
+#
+ * SpiderFixture:
+  * A substantial tutorial on SpiderFixture has been included
+  * The specs related to handling delays have been expanded
+
+ * PdfDocument:
+  * PdfDocument has been revised to handle a wider range of PDFs.
+  * Documentation of what is does has been expanded.
+  * It uses a more recent release of pdfbox

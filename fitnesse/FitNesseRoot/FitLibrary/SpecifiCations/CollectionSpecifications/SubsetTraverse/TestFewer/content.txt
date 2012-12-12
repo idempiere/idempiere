@@ -1,0 +1,13 @@
+!2 ''!-SubsetFixture-!'' can check for a subset
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.SubsetFixtureUnderTest</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+<tr><td>1</td><td>one</td></tr>
+<tr><td>2</td><td>two</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.SubsetFixtureUnderTest</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+<tr><td class="pass">1</td><td class="pass">one</td></tr>
+<tr><td class="pass">2</td><td class="pass">two</td></tr>
+</table>-!|

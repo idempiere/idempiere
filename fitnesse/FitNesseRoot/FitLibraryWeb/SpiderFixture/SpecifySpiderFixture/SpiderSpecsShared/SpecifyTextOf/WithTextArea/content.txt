@@ -1,0 +1,29 @@
+!*< def
+!define html ({{{  <textarea id="nothing"></textarea>
+  <textarea id="withValue" value="red"></textarea>
+  <textarea id="onlySpacesInText">   </textarea>
+  <textarea id="withText">green</textarea>
+  <textarea id="disabled" disabled="true">blue</textarea>
+  <textarea id="withMultiText">yellow
+orange</textarea>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''text of''|//textarea[@id="nothing"]|''is''||
+
+|''text of''|//textarea[@id="disabled"]|''is''|blue|
+
+|''text of''|//textarea[@id="onlySpacesInText"]|''is''||
+
+|''text of''|//textarea[@id="withText"]|''is''|green|
+
+|''text of''|//textarea[@id="withMultiText"]|''matches''|yellow.*orange|
+
+ * The value of a <textarea> is ignored:
+
+|''text of''|//textarea[@id="withValue"]|''is''||

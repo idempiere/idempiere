@@ -1,0 +1,40 @@
+!**< def
+!define list (|''count''|
+|2|
+|3|
+|1|
+)
+!define test (!|fitlibrary.specify.setParser.Match|
+
+|'''check'''|''set of count 123''|${list}|
+
+|'''check'''|''set empty''||
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.setParser.Match</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>set of count 123</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>count</i></td>
+</tr>
+<tr><td class="pass">2</td>
+</tr>
+<tr><td class="pass">3</td>
+</tr>
+<tr><td class="pass">1</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>set empty</i></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>-!|

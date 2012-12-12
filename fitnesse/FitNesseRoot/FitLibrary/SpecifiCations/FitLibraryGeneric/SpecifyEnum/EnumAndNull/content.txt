@@ -1,0 +1,29 @@
+!***< def
+!define test (
+!|fitlibraryGeneric.specify.enumerator.BareEnum|
+
+|''enumeration''||
+----
+----
+|''enumeration''||
+
+)
+**!
+An empty cell is interpreted as a null for an enum
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibraryGeneric.specify.enumerator.BareEnum</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>enumeration</i></td>
+<td>&nbsp;</td>
+</tr>
+</table>
+<hr><br><hr><br><table border="1" cellspacing="0">
+<tr><td><i>enumeration</i></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>
+<br>-!|

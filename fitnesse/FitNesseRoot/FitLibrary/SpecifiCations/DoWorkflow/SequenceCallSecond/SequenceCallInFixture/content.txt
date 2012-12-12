@@ -1,0 +1,7 @@
+!2 If there is no method that matches an action in Do style (alternating keywords and arguments), then treat it as a sequence call (name, followed by arguments):
+
+!|fitlibrary.DoFixture|
+
+|''set system property to''|abc|ABC|
+
+|get|@{abc}|is|ABC|

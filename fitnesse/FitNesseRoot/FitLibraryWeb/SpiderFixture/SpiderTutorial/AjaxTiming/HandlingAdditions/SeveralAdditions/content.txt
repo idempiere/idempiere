@@ -1,0 +1,46 @@
+[[The web page is here][files/delaysWithAjax.html]]
+
+Here's the result. There are some suggested exercises below.
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.AjaxTiming.HandlingChanges.DefinedActions|
+
+|''ajax on port''|${FITNESSE_PORT}|
+
+|''checking timeout''|2000|
+
+|''get url''|http://localhost:@{fitNessePort}/files/delaysWithAjax.html|
+
+ * Text:
+
+|''click''|addText|
+
+|''text of''|text0|'''is'''|green0|
+
+|''click''|addText|
+
+|''text of''|text1|'''is'''|green1|
+
+ * Radio:
+
+|''click''|addRadio|
+
+|''element''|radio0|''exists''|
+
+|''with''|radio0|''select''|true|
+
+|''checkbox''|radio0|''is''|true|
+
+ * Div:
+
+|''click''|addDiv|
+
+|''text of''|aDiv0|'''is'''|Blue skies 0|
+
+!2 Possible exercises:
+#
+ * Extend the storytest above to '''Add Button After Delay'''
+ * Extend the storytest above to add multiple radios, etc
+ * Change the storytest to alter the delay period, with an action that first clicks on one of the ''delay'' radio buttons to change it
+ * Introduce ''defined actions'' to avoid repetition
+
+Let's look at handling the delayed removal of elements, [[on this page][<AjaxTiming.HandlingRemovals]]

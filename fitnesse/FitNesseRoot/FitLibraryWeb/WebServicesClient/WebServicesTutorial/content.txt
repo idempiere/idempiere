@@ -1,0 +1,44 @@
+!1 Calling Web Services
+#
+Let's look at how to call a web service from a storytest. This example uses soap1.1, but it's also possible to use soap1.2 and plain text.
+
+We need to run a web services server for it to talk to: open [[this page][^RunWebServiceServer]] in another browser window so you can see them both at the same time.
+
+The web service server need to be running for this storytest to pass. Once that's running, run this storytest with '''Test'''.
+
+ * If the web service server is not running, a "''The target server failed to respond''" error will be given (by the proxy server).
+#
+!3 1. An Example
+#
+This calls a web service. We pass it a number and it returns the number with one added to it.
+
+|''with web services client''|
+
+ * Here we specify the url for the web service, the version of soap, and the xml contents.
+  * The given xml contents is automatically wrapped with a standard soap1.1 xml wrapper before being sent
+
+|''to''|http://localhost:8093/ws|''post soap11''|<Count>100</Count>|
+
+ * This shows the headers in the reply:
+
+|'''show'''|''headers''|
+
+ * This shows the reply received (tags are not shown when rendered as html):
+
+|'''show'''|''reply''|
+
+ * This shows the reply received with tags shown (''escaped''):
+
+|'''show escaped'''|''reply''|
+
+ * This checks the plain text (after tags are removed) in the reply:
+
+|reply|contains|101|
+
+ * This uses xmlunit to check that the value of an xpath expression is as expected.
+
+|''xpath''|!-//CountResult-!|''in response''|'''is'''|101|
+#
+----!3 2. Next
+#
+On [[this page][^UseProxy]], we'll see how to use a proxy and how to turn on logging.

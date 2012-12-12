@@ -1,0 +1,46 @@
+!*< def
+!define html ({{{
+  <div id="withSimpleInnerHtml">yellow<b> orange</b></div>
+  <div id="emptyContent"></div>
+  <div id="noInnerHtml">Hello World</div>
+  <div id="textOnBothSides">one<span>two</span>three</div>
+  <div id="upperCaseIrrelevant">yellow<B>orange</B></div>
+  <div id="whenOnlyInnerHtml"><span>deleteme</span></div>
+  <div id="complexInnerHtml">only<span>top<div>middle<br><span>bottom</span></div>top2</span>this</div>
+  <div id="whenTwoBlocksOfInnerHtml">one<span>delete</span>two<span>me</span>three</div>
+  <div id="whenAttributes"><div class="iopsm"><span class="bolded">9:15 PM</span> Mon 2nd</div>Los Angeles<br></div>}}})
+*!
+
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+
+ * with the standard ''text of'' inner tags are removed but the text remains (this is typically what the user will see in the browser):
+
+|''text of''|//div[@id="withSimpleInnerHtml"]|''is''|yellow orange|
+
+ * '''to access the exact text of the element only use:'''
+
+|''text of element only''|//div[@id="withSimpleInnerHtml"]|''is''|yellow|
+
+ * more examples
+
+|''text of element only''|//div[@id="emptyContent"]|''is''||
+
+|''text of element only''|//div[@id="noInnerHtml"]|''is''|Hello World|
+
+|''text of element only''|//div[@id="textOnBothSides"]|''is''|onethree|
+
+|''text of element only''|//div[@id="upperCaseIrrelevant"]|''is''|yellow|
+
+|''text of element only''|//div[@id="whenOnlyInnerHtml"]|''is''||
+
+|''text of element only''|//div[@id="complexInnerHtml"]|''is''|onlythis|
+
+|''text of element only''|//div[@id="whenTwoBlocksOfInnerHtml"]|''is''|onetwothree|
+
+|''text of element only''|//div[@id="whenAttributes"]|''is''|Los Angeles|

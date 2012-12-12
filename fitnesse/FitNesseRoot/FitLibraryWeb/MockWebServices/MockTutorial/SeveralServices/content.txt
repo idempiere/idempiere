@@ -1,0 +1,59 @@
+(The examples from here are not set up to run)
+#
+!3 10. Several services on the same port
+Where there are several web services on the same port, we can distinguish between them. For example:
+
+|''with mock web services''|
+
+|''mock soap11 on port''|8081|
+|''matches URL''|/stockCount|
+|''xpath''|//countOf|''is''|Oranges|
+|''response''|<count>10</count>|
+
+|''mock soap11 on port''|8081|
+|''matches URL''|/creditRating|
+|''xpath''|//user|''is''|1234567|
+|''response''|<rating>90</rating>|
+
+Then an incoming request is matched against the URL as well as the contents of the request.
+#
+----!3 11. Matching several parts of xml
+#
+The response may depend on several details within the request. For example:
+
+|''mock soap11 on port''|8081|
+|''xpath''|//name[@a="st"]|''is''|street|
+|''xpath''|//address[@id="add"]|''matches''|fanshawe|
+|''response''|<response>out</response>|
+
+Both xpaths in the table above have to match before the response will be used.
+#
+----!3 12. Inserting a matcher to dynamically change the behaviour of the mock web services
+Consider a test in which we want to change the number of oranges available at a specific point in the test.  We can do that by inserting a new matcher at the start of the matchers so that it will be applied first.
+
+Eg:
+|''mock soap11 on port''|8081|
+|''xpath''|//countOf|''is''|Oranges|
+|''response''|<count>0</count>|
+|''repeat''|
+
+... later in the storytest, so that the next request for orange count will return 10, irrespecive of what other matchers specify
+|''mock soap11 on port''|8081|
+|''xpath''|//countOf|''is''|Oranges|
+|''response''|<count>10</count>|
+|''insert''|
+|''repeat''|
+#
+#
+----!3 13. Gathering the data for the Mock Web Services
+#
+See <FitLibraryWeb.RecordWebServices for details
+#
+----!3 14. Templating mechanisms
+Once a few tests have been written to mock web services, you'll find some repetition. Rather than having a lot of sinmilar responses, it makes sense to use a templating approach to building the xml in the response.
+
+See <FitLibraryWeb.TemplateFixture and <FitLibraryWeb.TemplateFixture.TemplateFixtureDocs.
+#
+----!3 15. Some potential limitations
+ * The only way to specify that a certain response should be returned a fixed number of times is to include it that many times. It might be useful to have a repeat number on a response
+ * It's not possible to specify that a certain response should be returned until a certain time has elapsed; thereafter the next response applies.

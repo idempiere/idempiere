@@ -1,0 +1,13 @@
+!**< def
+!define colours (|''colour''|
+|black|
+|white|
+)
+**!
+!|fitlibrary.specify.domain.Lists|
+ * List<Colour>
+|''a colour list''|${colours}|
+----
+----
+ * List<Colour>
+|''a colour list''|${colours}|

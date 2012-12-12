@@ -1,0 +1,62 @@
+The ''!-ElectronicMail-!'' fixture allow for testing that email has been sent.
+#
+!2 Example:
+#
+|''with email''|
+|''connect using host''|imapper|''and protocol''|imap|''with user name''|testGig|''and password''|ssap|
+|''open folder''|INBOX|
+|''wait up to''|100|''seconds for message to arrive''|
+|''select message with subject matching''|Confirmation|
+|''check message body contains''|confirmed|
+|''has attachment''|Confirmation.PDF|
+|''download attachment''|Confirmation.PDF|to file|Confirmation.PDF|
+|''delete message''|
+|''disconnect''|
+#
+!2 Commands
+#
+ * Access e-mail:
+
+|''with email''|
+
+ * Connect to a server:
+
+|''connect using host''|'''host'''|''and protocol''|'''protocol'''|''with user name''|'''name'''|''and password''|'''password'''|
+
+ * Open a named folder:
+
+|''open folder''|INBOX|
+
+ * Delay, waiting for the email to arrive:
+
+|''wait up to''|5|''seconds for message to arrive''|
+
+ * Select a message by the subject:
+
+|''select message with subject matching''|Confirmation|
+
+ * Check that message body contains some text:
+
+|''check message body contains''|confirmed|
+
+ * Check that the current message has the named attachment:
+
+|''has attachment''|Confirmation.PDF|
+
+ * Download the named attachment as the file:
+
+|''download attachment''|Confirmation.PDF|to file|Confirmation.PDF|
+
+ * Delete the current message from the mail box:
+
+|''delete message''|
+
+ * Disconnect from the map server:
+
+|''disconnect''|
+#
+!2 Implementation
+#
+This makes use of the ''javamail'' system.
+
+See http://java.sun.com/products/javamail/ for further details.

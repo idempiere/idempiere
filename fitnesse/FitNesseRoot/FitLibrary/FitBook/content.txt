@@ -1,0 +1,30 @@
+Example storytests from the ${fitBook}.
+
+Some of these fail, giving:
+ * 39 right, 19 wrong, 2 ignored, and 9 exceptions
+
+* ^ColumnFixtureTables
+* ^ActionFixtureTables
+* ^RowFixtureTables
+* ^TableSequences
+* ^CreatingTables
+* ^FlowTables
+* ^CustomTables
+* ^AdvancedTables
+
+* ^LateReturns
+* ^CashRentals
+* ^DateRentals
+* ^EarlyReturn
+* ^RentalTemplate
+* ^TableDesign
+
+* ^CashRentalFixtures
+
+* ^ArchiTecture
+* ^TypeAdapter
+
+!path fitlibrary.jar
+!path lib/rentEz.jar
+!path lib/fitbook.jar
+!define TEST_RUNNER {fitlibrary.suite.FitLibraryServer}

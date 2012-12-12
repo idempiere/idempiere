@@ -1,0 +1,6 @@
+^OnFailureIsCalledOnError
+^OnFailureIsNotCalledWhenNoError
+
+^OnFailureReturnsResultWhichIsShown
+^OnFailureWithResultIsNotCalled
+

@@ -1,0 +1,10 @@
+!3 ''10% Rentez Dollar (point) is awarded''
+ * ''More Rentez Dollar (point) is awarded for transaction more than $500.00''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|8||coffee dispenser|''for''|5 days|
+|''rent''|8||hot water dispenser|''for''|5 days|
+|'''ensure'''|''pay with credit card $''|648.00|''card type''|Visa|''expires''|10/05|''number''|4485891284549100|
+|''complete transaction''|
+
+ * ''The point balance for a client changes''
+|'''check'''|point balance for client|Joanna|34.80|

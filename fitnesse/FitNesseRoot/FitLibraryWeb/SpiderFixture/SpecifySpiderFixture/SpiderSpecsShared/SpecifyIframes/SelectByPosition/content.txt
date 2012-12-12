@@ -1,0 +1,11 @@
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <SpecifyIframes.SpecSetUp
+
+|''page source''|contains|whitening|
+
+|''page source''|does not contain|reddening|
+
+|''frame''|0|
+
+|''page source''|contains|reddening|

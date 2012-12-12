@@ -1,0 +1,6 @@
+ * ''Check the booking has been made''
+|''bookings for''|Joanna|
+|rental item|count|''start date''|''end date''|
+|cup|40|2004/06/01 18:00|2004/06/02 18:00|
+|table|5|2004/06/01 18:00|2004/06/02 18:00|
+

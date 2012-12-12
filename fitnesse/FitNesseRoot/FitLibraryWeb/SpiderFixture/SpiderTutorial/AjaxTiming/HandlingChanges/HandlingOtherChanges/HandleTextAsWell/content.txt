@@ -1,0 +1,33 @@
+[[The web page is here][files/delaysWithAjax.html]]
+
+Here's the storytest, with three cells left for you to complete (those marked with "??")
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.AjaxTiming.HandlingChanges.DefinedActions|
+
+|''ajax on port''|${FITNESSE_PORT}|
+
+|''becomes timeout''|2000|
+
+|''get url''|http://localhost:@{fitNessePort}/files/delaysWithAjax.html|
+
+|''with''|newOption|''select option''|red|
+
+|''click''|changeOption|
+
+|''option of''|optionUnderChange|'''becomes'''|Red|
+
+|''with''|??|''set text''|Skies are grey|
+
+|''click''|??|
+
+|''text of''|??|'''becomes'''|Skies are grey|
+
+Hint:
+
+ * If you're using ''fireBug'', find out the ''id'' of the HTML elements by right clicking on the element and selecting "''Inspect element''".
+ * See [[this page][<SpiderTutorial.StartingWithSpider.UsingXpath]] for help with finding out ''id''s and other ''xpaths''.
+ * See <SpiderFixture.DocuMentation.CommandUserGuide for a complete list of all the spider actions.
+
+OK, so that finishes our tour of handling delayed changes to elements.
+
+Let's now look at handling delays in elements being created [[on this page][<AjaxTiming.HandlingAdditions]]

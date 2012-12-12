@@ -1,0 +1,39 @@
+!*< def
+!define optionValues {|first|
+|second|
+|third|
+}
+*!
+#
+!3 Introduction
+''!-SpiderFixture-!'' is for testing a system through a web user interface. It is a ''!-FitLibrary-!'' fixture layered on top of ''!-WebDriver-!'', which emulates a user viewing and acting through a browser. See http://code.google.com/p/webdriver/ for details of ''!-WebDriver-!''.
+
+''!-WebDriver-!'' itself can drive testing through one of several drivers, include ''htmlUnit'', ''Firefox'', ''IE'', and ''Google Chrome''.
+
+By using ''!-SpiderFixture-!'', a storytest can get a url, click on a link, make selections and enter data in a form and submit it. It can also check for specific values of elements on the page, such as the value of an input text or a radio button. Any element on a page is identified with a ''locator''.
+
+There are several different ways of locating (identifying) html elements on the page. The examples in ^CommandUserGuide largely use xpath expressions, but it's also possible to locate by id, by name, and by link text. See ^OtherLocators for details of these other locators.
+
+There are several actions that should immediately make a change, such as setting the text. By default, these actions also check that the change has happened correctly. See near the end of this page for details of turning off this automatic checking, as well as changing the timeout period for checking.
+
+Due to ajax, plus general delays in loading pages, etc, changes on the browser may take some time to happen. The way ''!-SpiderFixture-!'' handles this is covered in ^PollingForAnElement.
+
+''!-SpiderFixture-!'' ^NeedsVariousJars
+
+----!3 Select driver:
+!3 Selecting the driver to use:
+|''start spider with''|firefox|
+
+where the driver is "firefox" or "htmlunit". For details of managing Firefox profiles, see ^FirefoxProfiles.
+
+----!3 Proxy
+ * Defines a proxy to be used. Needs to be called before any other actions. (This is to be changed to support the different drivers!)
+
+|''proxy''|proxy2|''with port''|5865|
+----
+|!3 ^CommandUserGuide|''A user guide to ''!-SpiderFixture-!'' actions''|
+
+----!3 Restart Driver ([[spec][.FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyZzRestartWith]])
+To restart spider with a different driver (carrying cookies across):
+
+|''restart with''|firefox|

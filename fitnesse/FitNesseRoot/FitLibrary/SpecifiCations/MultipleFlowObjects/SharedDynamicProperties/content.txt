@@ -1,0 +1,39 @@
+!|fitlibrary.SelectFixture|
+
+|set|fruit|to|pear|
+
+|becomes timeout|12345|
+
+|becomes timeout|is|12345|
+
+|''add''|!-fitlibrary.specify.select.FirstSelect-!|''as''|first|
+|''add''|!-fitlibrary.specify.select.SecondSelect-!|''as''|second|
+
+|get|@{fruit}|is|pear|
+
+|set|fruit|to|apple|
+
+|get|@{fruit}|is|apple|
+
+|''select''|first|
+
+|becomes timeout|is|12345|
+
+|get|@{fruit}|is|apple|
+
+|set|fruit|to|orange|
+
+|''select''|second|
+
+|becomes timeout|is|12345|
+
+|get|@{fruit}|is|orange|
+
+|''select''|first|
+
+|get|@{fruit}|is|orange|
+
+|''select''|second|
+
+|get|@{fruit}|is|orange|
+

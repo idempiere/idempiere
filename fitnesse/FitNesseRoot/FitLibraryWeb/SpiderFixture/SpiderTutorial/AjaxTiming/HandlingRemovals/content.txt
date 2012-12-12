@@ -1,0 +1,40 @@
+[[The web page is here][files/delaysWithAjax.html]]
+
+We're going to create a new button and then click it to delete it.
+
+Let's try it and see...
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.AjaxTiming.HandlingChanges.DefinedActions|
+
+|''ajax on port''|${FITNESSE_PORT}|
+
+|''checking timeout''|2000|
+
+|''get url''|http://localhost:@{fitNessePort}/files/delaysWithAjax.html|
+
+|''click''|addButton|
+
+|''element''|button0|''exists''|
+
+|''click''| button0 |
+
+|''element''|button0|''does not exist''|
+
+The last action checks that the element doesn't exist.
+
+ * If the element currently exists, spider is prepared to wait.
+ * If the element is removed within the timeout period, the action passes
+ * If the element remains for the whole timeout period, it fails
+
+We can verify the timeout with the following because that button will remain. Hence the following fails:
+
+|''element''| addButton |''does not exist''|
+
+!2 Exercise
+#
+Extend the above storytest to add and remove several buttons
+
+Let's now look at handling elements whose visibility changes [[on this page][HandlingVisibility]].
+
+
+

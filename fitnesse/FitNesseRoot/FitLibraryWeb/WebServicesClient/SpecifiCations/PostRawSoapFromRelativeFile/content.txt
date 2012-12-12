@@ -1,0 +1,22 @@
+|''with web services client''|
+
+|'''also run'''|''with web server for testing''|
+
+|''start file server on port''|8094|''at directory''|!-FitNesseRoot-!|
+
+|''relative file''|soap/test.xml|
+|''write''|${soap11}<Count>100</Count>${endSoap11}|
+
+|''to''|http://localhost:8094/ws|''as''|SOAP11|''post full soap from relative file''|soap/test.xml|
+
+|'''show'''|''headers''|
+
+|'''show'''|''reply''|
+
+|'''show'''|''reply escaped''|
+
+|reply|contains|101|
+
+|''xpath''|!-//CountResult-!|''in response''|'''is'''|101|
+
+|''stop testing server''|

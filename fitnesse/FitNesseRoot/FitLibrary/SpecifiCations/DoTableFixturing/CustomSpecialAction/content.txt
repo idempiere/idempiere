@@ -1,0 +1,21 @@
+!2 Special actions, like 'check' can be defined in the fixture subclass. These take a ''Parse'' as argument.
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table><tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr></table>
+<table>
+<tr><td>special action</td><td>right</td></tr>
+</table>
+<table>
+<tr><td>special action</td><td>wrong</td></tr>
+</table>
+<table>
+<tr><td>special action</td><td>other</td></tr>
+</table>-!|!-<table><tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr></table>
+<table>
+<tr><td>special action</td><td class="pass">right</td></tr>
+</table>
+<table>
+<tr><td>special action</td><td class="fail">wrong</td></tr>
+</table>
+<table>
+<tr><td>special action</td><td>other</td></tr>
+</table>-!|

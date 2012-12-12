@@ -1,0 +1,32 @@
+!**< def
+!define fixture {!-fitlibrary.specify.DoFixtureFlowUnderTest-!}
+!define br {!-<br>-!}
+!define inner1 (|x|12|
+)
+!define Test (|${fixture}|
+
+|check|copy a point|${inner1}|${inner1}|
+${br})
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${Test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>check</td>
+<td>copy a point</td>
+<td><table border="1" cellspacing="0">
+<tr><td>x</td>
+<td>12</td>
+</tr>
+</table>
+</td>
+<td><table border="1" cellspacing="0">
+<tr><td>x</td>
+<td class="pass">12</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

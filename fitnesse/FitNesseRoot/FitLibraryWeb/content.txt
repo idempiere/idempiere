@@ -1,0 +1,32 @@
+!*< paths and defines
+!define REGRACE_LINK {false}
+!define REGRACE_TOC {false}
+
+*!
+The fixtures (code and documentation) in FitLibraryWeb were kindly donated by '''Air New Zealand''' in October 2009.
+
+It is based on developments by Rick Mugridge and others at '''Air New Zealand''' from May 2008 to October 2009.
+
+FitLibraryWeb depends on ''!-FitLibrary-!'' and is now part of the ''!-FitLibrary-!'' open-source project.
+
+|!3 Description|!3 Tool|!3 Tutorial/Docs|!3 Specification/Example|
+|''Web testing, through a variety of browsers''|>SpiderFixture|[[Spider Tutorial][^SpiderFixture.SpiderTutorial]]|[[Spider Specifications][^SpiderFixture.SpecifySpiderFixture]]|
+|''xml diff, transform, etc''|>XmlProcessing||[[XML Examples][>XmlProcessing]]|
+|''A web services client''|>WebServicesClient|[[Web Services Client Tutorial][.FitLibraryWeb.WebServicesClient.WebServicesTutorial]]|[[Specifications for plain text, soap11, soap12 web service calls][^WebServicesClient.SpecifiCations]]|
+|''Mocking one or more web services''|>MockWebServices|[[Mock Web Services Tutorial][.FitLibraryWeb.MockWebServices.MockTutorial]]|Specifications: [[plain text][^MockWebServices.SpecifiCations.PlainTextServices]], [[soap11][^MockWebServices.SpecifiCations.Soap11Mocking]], [[soap12][^MockWebServices.SpecifiCations.Soap12Mocking]], [[raw soap][^MockWebServices.SpecifiCations.FullSoapMocking]]|
+|''Recording web services''|>RecordWebServices|[[Docs][^RecordWebServices.RecordingDocumentation]]|[[running example][.FitLibraryWeb.RecordWebServices.SpecifiCation]]|
+|''An HTTP client, for testing at the HTTP level''|^HttpClient|[[HTTP Client Tutorial][^HttpClient.HttpClientTutorial]]|[[HTTP Client Specifications][^HttpClient.SpecifiCations]]|
+|''Running a shell/command''|>ShellFixture|[[Docs][>ShellFixture]]|[[Example][^ShellFixture.JavaExample]]|
+|''Using templates (for xmls, etc)''|>TemplateFixture|[[Docs][^TemplateFixture.TemplateFixtureDocs]]|[[Specifications][^TemplateFixture]]|
+|''Creating arbitrary dates''|>CreateDate|[[Docs][>CreateDate]]|[[Detailed Examples][>CreateDate.DetailedExample]]|
+|''Database access (a ''!-DoFixture-! ''wrapper for dbfit)''|>DatabaseFixtures|[[Docs][>DatabaseFixtures]]||
+|''Checking the contents of email''|>ElectronicMail|[[Docs][>ElectronicMail]]||
+|''Checking the contents of a PDF''|>PdfDocument|[[Docs][>PdfDocument]]|[[Example][^PdfDocument.RunningExample]]|
+
+|!2 ^WhatIsNew|
+
+^CheckFolderRunner
+
+^ThingsToDo
+
+

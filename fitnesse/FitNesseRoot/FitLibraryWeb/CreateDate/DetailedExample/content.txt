@@ -1,0 +1,135 @@
+!3 today
+By default, the date is today's date, of the form "d MMM yyyy":
+
+|''with date''|
+|''create variable''|date|
+
+|'''show'''|''get''|@{date}|
+
+The ''create variable'' row specifies the variable to create.
+----!3 In the past
+Let's go back in time:
+
+|''with date''|
+|''-''|2|''years''|
+|''+''|2|''months''|
+|''create variable''|past|
+
+|'''show'''|''get''|@{past}|
+
+ * In general, we can go back/forward in ''years'', ''months'', ''days'' and ''minutes''.
+ * The ''create variable'' row has to be after altering the date/time
+----!3 In the future
+|''with date''|
+|''+''|2|''months''|
+|''create variable''|future|
+
+|'''show'''|''get''|@{future}|
+----!3 Date Format
+We can specify the date format for one or more variables, picking out different aspects of a date/time (eg, for selecting from a pull-down in a web browser):
+
+|''with date''|
+|''create variable''|day#|''with format''|d|
+|''create variable''|day00#|''with format''|dd|
+|''create variable''|month#|''with format''|M|
+|''create variable''|month00#|''with format''|MM|
+|''create variable''|monthShort|''with format''|MMM|
+|''create variable''|monthLong|''with format''|MMMM|
+|''create variable''|hour|''with format''|h:mma|
+
+|'''show'''|''get''|day @{day#} (or @{day00#}) of @{monthLong} (or @{monthShort} or @{month00#} or @{month#}) at @{hour}|
+
+Here the variables all apply to the same date (see the complex example below for variation on this).
+  * "d" is the day number of the month (1..31). "dd" will ensure there are two digits.
+  * "h:mma" formats it as a 12-hour clock with AM/PM.
+  * For possible date/time formats, see ''help'' below.
+----!3 Format for day of the week (Monday, etc)
+|''with date''|
+|''create variable''|dayOfWeek|''with format''|EEEE|
+
+|'''show'''|''get''|@{dayOfWeek}|
+----!3 Time zone selection
+|''with date''|
+|''time zone''|America/Los_Angeles|
+|''create variable''|us-date|
+
+|show|get|@{us-date}|
+
+See ''help'' below for possible time zones
+----!3 Upper case month name
+In the following we pick a particular date for today so that these examples continue to work (in NZ only). The ''pick date time'' row is intended for testing only.
+
+|''with date''|
+|''pick date time''|1243987143111|
+|''to upper''|
+|''create variable''|DATE|''with format''|EEEE d MMM yyy H:mm|
+
+|''get''|@{DATE}|'''is'''|WEDNESDAY 3 JUN 2009 11:59|
+
+|''with date''|
+|''pick date time''|1243987143111|
+|''time zone''|Pacific/Auckland|
+|''+''|30|''days''|
+|''create variable''|pickupdate1|''with format''|dd MMM yy|
+|''+''|40|''days''|
+|''create variable''|dropoffdate1|''with format''|dd MMM yy|
+
+|''get''|@{pickupdate1} -- @{dropoffdate1}|'''is'''|03 Jul 09 -- 12 Aug 09|
+
+----!3 Selecting the day of the week required
+We can specify the day of the week required.
+
+|''with date''|
+|''pick date time''|1243987143111|
+|''+''|1|''years''|
+|''+''|3|''weeks''|
+|''on Friday''|
+|''create variable''|friday|''with format''|EEEE d MMMM yyyy|
+
+|''get''|@{friday}|'''is'''|Friday 25 June 2010|
+
+Any day of the week can be selected. The date is moved forward into the future and backwards into the past to the right day.
+----!3 Last day of the month
+|''with date''|
+|''pick date time''|1243987143111|
+|''time zone''|America/Los_Angeles|
+|''+''|2|''months''|
+|''last day of month''|
+|''create variable''|usa-end-of-month|''with format''|EEEE d MMMM|
+|''+''|1|''days''|
+|''create variable''|plus1|''with format''|EEEE d MMMM|
+
+|''get''|@{usa-end-of-month}|'''is'''|Monday 31 August|
+|''get''|@{plus1}|'''is'''|Tuesday 1 September|
+
+----!3 Start with an existing date
+|''with date''|
+|''date is''|3 June 2009|''using''|d MMMM YYYY|
+|''+''|2|''months''|
+|''last day of month''|
+|''create variable''|end-of-month|''with format''|EEEE d MMMM|
+
+|''get''|@{end-of-month}|'''is'''|Monday 31 August|
+
+----!3 A crazy example, showing how that the ordering of the rows is important
+|''with date''|
+|''pick date time''|1243987143111|
+|''time zone''|America/Los_Angeles|
+|''+''|2|''months''|
+|''-''|4|''minutes''|
+|''on Thursday''|
+|''create variable''|usa-date|''with format''|EEEE d MMMM yyyy|
+|''create variable''|usa-time|''with format''|H:mm|
+|''last day of month''|
+|''create variable''|usa-end-of-month|''with format''|EEEE d MMMM|
+
+|''get''|@{usa-date} at @{usa-time}, ending on @{usa-end-of-month}|'''is'''|Thursday 6 August 2009 at 16:55, ending on Monday 31 August|
+
+Notice that:
+ * The date of ''usa-date'' differs from ''usa-end-of-month''. A variable is created using the date/time set up previously in the table.
+ * When we select the ''last day of the month'', the ''on Thursday'' is ignored.
+----!3 Help information
+For the possible date/time formats and possible time zones, run the test and expand the logs that are added after the table below:
+
+|''with date''|
+|''help''|

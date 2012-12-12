@@ -1,0 +1,35 @@
+|!-rent.StartApplication-!|
+
+|''setup''|
+|''rental item name''|''count''|''$/hour''|''$/day''|''$/week''|''deposit''|
+|coffee dispenser|10|1.50|8.20|60.00|0.00|
+|hot water dispenser|12|1.50|8.00|50.00|0.00|
+|cup|500|0.05|0.45|2.00|0.10|
+
+|''setup''|
+|''client name''|''phone''|
+|Joanna|373 7599|
+
+|''setup''|
+|''staff name''|''phone''|
+|Bill|555 9876|
+
+|''time is now''| 2004/05/06 09:01|
+
+|''set up rentals''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|cup|100|2004/05/06 09:01|2004/05/07 09:01|
+
+|''time is now''|2004/05/07 08:01|
+
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''return items''|100||cup|
+|''refund cash $''|10.00|
+|''complete transaction''|
+
+|''rentals of client''|Joanna|
+|''rental item''|
+
+|''rental item subset''|
+|''name''|''count''|
+|cup|500|

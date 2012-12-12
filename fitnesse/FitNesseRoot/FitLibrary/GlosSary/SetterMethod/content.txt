@@ -1,0 +1,4 @@
+${programmers}
+A ${setter} is for changing the the value of a property. Also see ${getter}.
+
+A ${setter} for a property is used in the ${setup} of ${workflow}.

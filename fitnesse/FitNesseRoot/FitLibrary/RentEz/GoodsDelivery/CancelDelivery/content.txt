@@ -1,0 +1,22 @@
+---- * Given:
+|''begin delivery transaction for client''| Joanna |''staff''| Bill|
+|''book''|2||coffee dispenser|''on''|2005/05/08 09:01|''for''|2 hours|
+|''pay with cash $''|14.18|
+|''complete transaction''|
+
+---- * Actions
+|''time is now''|2005/05/08 09:02|
+
+ * Partial delivery cancellations are not allowed.
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|'''not'''|''cancel delivery''|2005/05/08 09:01|''city''|Auckland|''zone''|CBD|''address''|10 Princes St|''item''|coffee dispenser|''item count''|1|''for''|2 hours|
+|''cancel delivery''|2005/05/08 09:01|''city''|Auckland|''zone''|CBD|''address''|10 Princes St|''item''|coffee dispenser|''item count''|2|''for''|2 hours|
+|''refund cash $''|14.18|
+|''complete transaction''|
+
+---- * Checks
+|''deliveries for client''| Joanna |
+|''date''|''city''|''zone''|''delivery address''|''item''|''item count''|
+
+|''client booking list''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|

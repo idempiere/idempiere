@@ -1,0 +1,16 @@
+!*< def
+!define html ({{{<div>
+  <div><p id="red">red</p><p>green</p></div>
+  <div><p id="red">Red</p><p>Green</p></div>
+</div>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''text of''|//div//div//p[@id="red"]|''is''|red|
+
+|''text of''|//div//div[2]//p[@id="red"]|''is''|Red|

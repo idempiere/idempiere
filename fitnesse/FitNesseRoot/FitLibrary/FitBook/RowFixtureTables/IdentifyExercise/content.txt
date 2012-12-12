@@ -1,0 +1,12 @@
+|!-CardHandList-!|
+|''suit''|''card''|
+|heart|ace|
+|heart|queen|
+|diamond|king|
+|diamond|7|
+|club|king|
+|club|jack|
+|club|10|
+|club|9|
+|club|4|
+|spade|ace|

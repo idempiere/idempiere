@@ -1,0 +1,7 @@
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <SpecifyIframes.SpecSetUp
+
+!3 It's not possible, currently, to select a frame or iframe by id
+
+|'''reject'''|''frame by name''|//iframe[@id='redId']|

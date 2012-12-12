@@ -1,0 +1,22 @@
+Checking whether the system can pick up invalid email formats.
+
+Take a look at the [[java.util.regex][http://www.cs.auckland.ac.nz/references/java/java1.5/api/java/util/regex/package-summary.html]] package for information on how to use regular expressions.
+
+ * Here are some valid emails.
+
+|''Validate Email''|
+|''Email''||''Valid''|
+|john@yahoo.com||true|
+|john.smith@yahoo.com||true|
+|apple_craig@hotmail.com||true|
+|nikky@auckland.ac.nz||true|
+
+ * Here are some invalid emails
+
+|''Validate Email''|
+|''Email''||''Valid''|
+|john||false|
+|craig@@mail.com||false|
+|http://www.google.com||false|
+|rick@fit..org||false|
+|rick@fit||false|

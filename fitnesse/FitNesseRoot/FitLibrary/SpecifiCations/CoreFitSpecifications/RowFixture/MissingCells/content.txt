@@ -1,0 +1,20 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fit.specify.RowFixtureUnderTest</td></tr>
+<tr><td>a</td><td>s</td></tr>
+<tr><td colspan="2">0</td></tr>
+<tr><td colspan="2">1</td></tr>
+<tr><td colspan="2">2</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fit.specify.RowFixtureUnderTest</td></tr>
+<tr><td>a</td><td>s</td></tr>
+<tr><td colspan="2" class="fail">0 <span class="fit_label">missing</span></td></tr>
+<tr><td colspan="2" class="fail">1 <span class="fit_label">missing</span></td></tr>
+<tr><td colspan="2" class="pass">2</td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">1</span> <span class="fit_label">surplus</span></td>
+<td> <span class="fit_grey">two</span></td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">1</span> <span class="fit_label">surplus</span></td>
+<td> <span class="fit_grey">one</span></td></tr></table>-!|
+ * note that this storytest is sensitive to row order

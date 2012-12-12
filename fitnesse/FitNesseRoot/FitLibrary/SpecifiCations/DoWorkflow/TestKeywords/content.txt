@@ -1,0 +1,120 @@
+!2 Keywords separate several parameters
+ * There are keywords in the first cell and every second cell after that.
+ * By convention, such keywords are shown in ''italics''.
+ * There can be a keyword after the last argument.
+ * The keywords can be distributed between those cells how you like.
+The following ''buy'' actions all call the same method: ''buyAtDollarWithDiscountPercent()''
+!**< def
+!define test1 (!|fitlibrary.specify.workflow.Keywords|
+
+|''buy''|1|''at $''|12.00|''with discount''|10|''%''|
+|''buy''|4|''at $''|10.00|''with discount''|10|''%''|
+
+|'''check'''|''total owing $''|46.80|
+)
+!define test2 (!|fitlibrary.specify.workflow.Keywords|
+
+|''buy at $ with discount %''|1||12.00||10|
+
+|''buy at $''|1||10.00|''with discount %''|10|
+
+|''buy at $ with discount''|1||10.00||10|''%''|
+
+||1|''buy at $ with discount''|10.00||10|''%''|
+
+||1||10.00||10|''buy at $ with discount %''|
+
+|'''check'''|''total owing $''|46.80|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test1}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.Keywords</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>buy</i></td>
+<td>1</td>
+<td><i>at $</i></td>
+<td>12.00</td>
+<td><i>with discount</i></td>
+<td>10</td>
+<td><i>%</i></td>
+</tr>
+<tr><td><i>buy</i></td>
+<td>4</td>
+<td><i>at $</i></td>
+<td>10.00</td>
+<td><i>with discount</i></td>
+<td>10</td>
+<td><i>%</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>total owing $</i></td>
+<td class="pass">46.80</td>
+</tr>
+</table>-!|
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test2}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.Keywords</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>buy at $ with discount %</i></td>
+<td>1</td>
+<td>&nbsp;</td>
+<td>12.00</td>
+<td>&nbsp;</td>
+<td>10</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>buy at $</i></td>
+<td>1</td>
+<td>&nbsp;</td>
+<td>10.00</td>
+<td><i>with discount %</i></td>
+<td>10</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>buy at $ with discount</i></td>
+<td>1</td>
+<td>&nbsp;</td>
+<td>10.00</td>
+<td>&nbsp;</td>
+<td>10</td>
+<td><i>%</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>&nbsp;</td>
+<td>1</td>
+<td><i>buy at $ with discount</i></td>
+<td>10.00</td>
+<td>&nbsp;</td>
+<td>10</td>
+<td><i>%</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>&nbsp;</td>
+<td>1</td>
+<td>&nbsp;</td>
+<td>10.00</td>
+<td>&nbsp;</td>
+<td>10</td>
+<td><i>buy at $ with discount %</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>total owing $</i></td>
+<td class="pass">46.80</td>
+</tr>
+</table>-!|
+
+

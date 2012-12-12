@@ -1,0 +1,10 @@
+|''mock ${soap} on port''|8081|
+|''matches URL''|/service|
+|''matches request''|<request a="a">in</request>|
+|''response''|<response>out</response>|
+
+
+|'''reject'''|''to''|http://localhost:8081/service|''post ${soap}''|<request b="b">in</request>|
+
+|''close with errors''|>=|2|
+

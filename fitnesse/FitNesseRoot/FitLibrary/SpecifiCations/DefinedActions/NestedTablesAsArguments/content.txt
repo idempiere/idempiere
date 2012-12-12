@@ -1,0 +1,13 @@
+!**> defs
+!define inner (|a|0|
+|b|2|
+)
+*!
+!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActions.NestDefinedAction|
+
+|''nested''|${inner}|
+

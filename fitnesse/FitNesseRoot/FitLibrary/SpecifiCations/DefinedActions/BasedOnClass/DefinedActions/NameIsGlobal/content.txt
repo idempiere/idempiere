@@ -1,0 +1,3 @@
+|''name is''|name|
+
+|''get''|@{anna.name}|'''is not'''|@{name}|

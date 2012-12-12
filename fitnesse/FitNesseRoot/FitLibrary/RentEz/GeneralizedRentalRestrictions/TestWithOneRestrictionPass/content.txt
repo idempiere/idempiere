@@ -1,0 +1,4 @@
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|1||Bike|''for''|1 day|''with restriction''|1|''satisfied''|
+|''pay with cash $''|200.00|
+|''complete transaction''|

@@ -1,0 +1,13 @@
+!2 An explicit error code can be provided in any response.
+This is useful to mock service calls that fail with various error codes, including a 404 error.
+
+|''mock plain text on port''|8081|
+|''matches URL''|/ws|
+|''matches request''|in|
+|''response code''|300|''with''|out|
+
+ * When we call the web service it fails because of the result code not being 200:
+
+|'''reject'''|''to''|http://localhost:8081/ws|''post text''|in|
+
+|''close''|

@@ -1,0 +1,31 @@
+!**< def
+!define test (|''add global''|!-fitlibrary.specify.global.ExtraGlobal_MISSPELT-!|
+
+|''new global action''|
+
+|''add global''|!-fitlibrary.specify.global.ExtraGlobal-!|
+
+|''new global action''|
+)
+**!
+'''add global''' adds a new global object, so that it's methods can be called as actions
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td><i>add global</i></td>
+<td class="error">fitlibrary.specify.global.ExtraGlobal_MISSPELT<hr/> <span class="fit_label">Missing class or Missing method. Possibly:<ul><li>public Type getFitlibraryDotSpecifyDotGlobalDotExtraGlobal_MISSPELT() { }</li><li>public Type fitlibraryDotSpecifyDotGlobalDotExtraGlobal_MISSPELT() { }</li></ul></span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><i>new global action</i><hr/> <span class="fit_label">Missing class or Missing method. Possibly:<ul><li>public Type getNewGlobalAction() { }</li><li>public Type newGlobalAction() { }</li></ul></span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>add global</i></td>
+<td>fitlibrary.specify.global.ExtraGlobal</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>new global action</i></td>
+</tr>
+</table>-!|

@@ -1,0 +1,18 @@
+${fitLibrary} provides a limited means of recording storytests: those in which dynamic variables are used.
+
+A single unbound dynamic variable that is used as the expected value in '''is''', '''becomes''' or '''check''' can be recorded. This depends on a recording having been started, in which the property file name is specified.
+
+If a property file defines a subset of the values, any unbound ones will be added.
+
+|^NewPropertyFile|''Any such unbound dynamic variables are written to a new file.''|
+|^ExistingPropertyFile|''Any such unbound dynamic variables are written to an existing file.''|
+|^NotJustDynamicVariable|''Recording only works with a single dynamic variable, with no extra text.''|
+|^FileProblem|''There is a problem in writing the property file at the end of a storytest.''|
+
+It would be possible to generalise the binding process so that it included expected values such as the following:
+ * AB@{cd}CD
+ * @{a}/@{b}
+ * @{a}+@{a}
+As well as bindings for '''matches'''.
+
+Let Rick know if you have a need for this generality.

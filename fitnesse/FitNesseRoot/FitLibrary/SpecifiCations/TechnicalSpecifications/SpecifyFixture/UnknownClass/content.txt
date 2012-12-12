@@ -1,0 +1,6 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border>
+<tr><td>Unknown</td></tr>
+</table>-!|!-<table border>
+<tr><td class="error">Unknown<hr/> <span class="fit_label">Missing class or Missing method. Possibly:<ul><li>public Type getUnknown() { }</li><li>public Type unknown() { }</li></ul></span></td></tr>
+</table>-!|

@@ -1,0 +1,41 @@
+!2 Ambiguity is signalled when more than one special action + action fits
+!**< def
+!define test1 {!|fitlibrary.specify.specialAction.AmbiguousSpecial|
+
+|check|act|1|is|2|
+
+|not|act2|1|is|2|
+
+|not|act2|1|<|2|
+}
+
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test1}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.specialAction.AmbiguousSpecial</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error">check<hr/> <span class="fit_label">Ambiguity between: Special check(Row,TestResults) in fitlibrary.traverse.workflow.DoTraverse AND is(TestResults,Row)</span></td>
+<td>act</td>
+<td>1</td>
+<td>is</td>
+<td>2</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error">not<hr/> <span class="fit_label">Ambiguity between: is(TestResults,Row) AND Special not(DoAction) + act2Is(String,String) (in fitlibrary.flow.GlobalActionScope + fitlibrary.specify.specialAction.AmbiguousSpecial)</span></td>
+<td>act2</td>
+<td>1</td>
+<td>is</td>
+<td>2</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error">not<hr/> <span class="fit_label">Ambiguity between: Special lessThan(DoAction,Object) + not1(String) (in fitlibrary.flow.GlobalActionScope + fitlibrary.specify.specialAction.AmbiguousSpecial) AND Special not(DoAction) + act2LessThan(String,String) (in fitlibrary.flow.GlobalActionScope + fitlibrary.specify.specialAction.AmbiguousSpecial)</span></td>
+<td>act2</td>
+<td>1</td>
+<td>&lt;</td>
+<td>2</td>
+</tr>
+</table>-!|

@@ -1,0 +1,23 @@
+ * Start the chat server:
+|!-fit.ActionFixture-!|
+|start|!-ChatServer2-!|
+ * Anna connects, creates a new room and enters it:
+|!-fit.ActionFixture-!|
+|enter|user|anna|
+|press|connect|
+|enter|room|lotr|
+|press|new room|
+|press|enter room|
+ * Anna is the only occupant of lotr:
+|!-OccupantList2-!|
+|room|user|
+|lotr|anna|
+ * Anna disconnects:
+|!-fit.ActionFixture-!|
+|press|disconnect|
+ * So there are now no occupants:
+|!-OccupantList2-!|
+|room|user|
+
+|fit.Summary|
+

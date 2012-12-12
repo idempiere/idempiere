@@ -1,0 +1,5 @@
+!3 Rick Mugridge, Rimu Research, http://www.rimuresearch.com
+
+I am the inventor of ${fitLibrary}, which I developed in Java (and continue to do so).
+
+For my email address, see my company website, http://www.rimuresearch.com

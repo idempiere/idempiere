@@ -1,0 +1,19 @@
+!***< def
+!define map (|red|green|
+|white|black|
+|blue|yellow|
+)
+!define mapOfMaps (|black|${map}|
+)
+**!
+!|fitlibraryGeneric.specify.collections.GenericMaps|
+
+|''a map''|${map}|
+
+|''a map of maps''|${mapOfMaps}|
+
+|''checks''|
+
+|''a map''|${map}|
+
+|''a map of maps''|${mapOfMaps}|

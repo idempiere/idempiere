@@ -1,0 +1,82 @@
+If a workflow action returns an array or a Collection or an Iterator, that collection is auto-wrapped with a suitable ''Traverse'' so that it can be checked against the rest of the table:
+!**< def
+!define test (!|fitlibrary.specify.workflow.AutoWrap|
+
+|''an array of Point''|
+|''x''|''y''|
+|0|0|
+|5|5|
+
+|''a list of Point''|
+|''x''|''y''|
+|0|0|
+|5|5|
+
+|''an iterator of Point''|
+|''x''|''y''|
+|0|0|
+|5|5|
+
+|''a set of Point''|
+|''x''|''y''|
+|0|0|
+|5|5|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.AutoWrap</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="2"><i>an array of Point</i></td>
+</tr>
+<tr><td><i>x</i></td>
+<td><i>y</i></td>
+</tr>
+<tr><td class="pass">0</td>
+<td class="pass">0</td>
+</tr>
+<tr><td class="pass">5</td>
+<td class="pass">5</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="2"><i>a list of Point</i></td>
+</tr>
+<tr><td><i>x</i></td>
+<td><i>y</i></td>
+</tr>
+<tr><td class="pass">0</td>
+<td class="pass">0</td>
+</tr>
+<tr><td class="pass">5</td>
+<td class="pass">5</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="2"><i>an iterator of Point</i></td>
+</tr>
+<tr><td><i>x</i></td>
+<td><i>y</i></td>
+</tr>
+<tr><td class="pass">0</td>
+<td class="pass">0</td>
+</tr>
+<tr><td class="pass">5</td>
+<td class="pass">5</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="2"><i>a set of Point</i></td>
+</tr>
+<tr><td><i>x</i></td>
+<td><i>y</i></td>
+</tr>
+<tr><td class="pass">0</td>
+<td class="pass">0</td>
+</tr>
+<tr><td class="pass">5</td>
+<td class="pass">5</td>
+</tr>
+</table>-!|

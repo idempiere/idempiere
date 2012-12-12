@@ -1,0 +1,10 @@
+A staff member needs to be able to add a new client into the system.
+
+|''begin admin transaction''| Bill |
+|''create client''|Fred|''with phone number''|379 5055|''with email''|bill@corktown.com|''in city''|Auckland|''in zone''|South|''at address''|93 Carbine Rd|
+|''complete transaction''|
+
+
+|''client list''|
+|''name''|''email''|''phone''|''city''|''zone''|''address''|
+|Fred|bill@corktown.com|379 5055|Auckland|South|93 Carbine Rd|

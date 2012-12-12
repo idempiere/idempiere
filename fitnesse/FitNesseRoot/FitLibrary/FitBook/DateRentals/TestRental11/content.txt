@@ -1,0 +1,6 @@
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|100||cup|''for''|2|''weeks''|
+|''pay with cash $''|410.00|
+|reject|''cancel transaction''|
+|''refund cash $''|410.00|
+|''cancel transaction''|

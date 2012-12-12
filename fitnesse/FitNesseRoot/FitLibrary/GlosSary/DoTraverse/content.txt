@@ -1,0 +1,10 @@
+This ${traverse} interprets tables of ${workflow}.
+
+Workflow storytests specify the step-by-step processing of a business process, or part of such a process. Such storytests are best expressed in a more abstract form than the actions through a user interface.
+
+An extended form of ${doTraverse} is ${domainTraverse}.
+
+See:
+ * .FitLibrary.UserGuide.FitLibraryByExample.WorkFlow
+!3 Note
+This supports the functionality of ${doFixture}

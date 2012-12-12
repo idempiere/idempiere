@@ -1,0 +1,13 @@
+!**< def
+!define account (|''id''|2|
+|''payment history''|good payer|
+)
+!define user (|''name''|Paul|
+|''account''|${account}|
+)
+**!
+!|fitlibrary.specify.domain.Objects|
+----
+----
+|''user''|${user}|
+

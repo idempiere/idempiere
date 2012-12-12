@@ -1,0 +1,35 @@
+!2 We can access private fields directly
+!**< def
+!define set (
+|field1|field2|
+|1|2|
+|3|4|
+)
+!define test (!|fitlibrary.specify.set.AccessPrivateFields|
+
+|a set|'''is'''|${set}|
+)
+**!
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.set.AccessPrivateFields</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>a set</td>
+<td><b>is</b></td>
+<td><br/><table border="1" cellspacing="0">
+<tr><td>field1</td>
+<td>field2</td>
+</tr>
+<tr><td class="pass">1</td>
+<td class="pass">2</td>
+</tr>
+<tr><td class="pass">3</td>
+<td class="pass">4</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

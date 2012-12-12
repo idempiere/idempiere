@@ -1,0 +1,60 @@
+!1 Part Two
+#
+[[The first part of the tutorial][StartingWithSpider]] covered writing a storytest for running the ''!-TemplateFixture-!'' suite.
+
+Let's look at also running the ''!-XmlProcessing-!'' suite. I've split it up into three sections, separated by horizontal lines, so you can see the pattern.
+
+You may like to run it.
+----
+!|fitlibrary.spider.SpiderFixture|
+
+|''start spider with''|firefox|
+
+|''shutdown browser automatically''|false|
+----
+|''get url''|http://localhost:${FITNESSE_PORT}/FitLibraryWeb.TemplateFixture|
+
+|''title''|'''is'''|!-FitLibraryWeb.TemplateFixture-!|
+
+|''text of''|//span[@class="page_title"]|'''is'''|!-TemplateFixture-!|
+
+|''click on named link''|Suite|
+
+|''element''|//div[@id='test-summary' and @class='pass']|'''exists'''|
+
+|''text of''|//div[@id='test-summary']|'''contains'''|right, 0 wrong, 0 ignored, 0 exceptions|
+----
+Now we handle ''!-XmlProcessing-!'' (by copying and pasting and altering some of the text in the tables from above):
+
+|''get url''|http://localhost:${FITNESSE_PORT}/FitLibraryWeb.XmlProcessing|
+
+|''title''|'''is'''|!-FitLibraryWeb.XmlProcessing-!|
+
+|''text of''|//span[@class="page_title"]|'''is'''|!-XmlProcessing-!|
+
+|''click on named link''|Suite|
+
+|''element''|//div[@id='test-summary' and @class='pass']|'''exists'''|
+
+|''text of''|//div[@id='test-summary']|'''contains'''|right, 0 wrong, 0 ignored, 0 exceptions|
+----
+!2 Reflection
+#
+That works fine. But it's starting to get messy. And it's not clear what some of it's about as there is a lot of detail to read through.
+
+We could add further comments, and that might help.
+
+We soon want to also check that the ''!-MockWebServices-!'' suite works. Again, we could copy and paste.
+
+The above approach means:
+
+ * It makes it still harder to see what's going on
+ * If we need to change the way the verification works, because of a change to the html that's used, we have to search through and change it repeatedly
+ * It's easy to get lost in the detail, so that we don't notice we've missed an important case
+ * If we want to check with a product owner about whether a storytest is correct, they're likely to be distracted and/or dismayed by the technical detail of xpaths, etc
+#
+!2 Being Elegant and Precise
+#
+Notice that the tables above that check ''!-XmlProcessing-!'' are the same as the corresponding tables for !-TemplateFixture-! except for a few little details (the names).
+
+So let's look at being elegant and precise with ''defined actions'', as covered on the [[next page][^UsingDefinedActions]].

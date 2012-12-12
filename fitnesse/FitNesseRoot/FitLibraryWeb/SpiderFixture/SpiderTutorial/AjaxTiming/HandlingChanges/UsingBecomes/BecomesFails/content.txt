@@ -1,0 +1,19 @@
+We can run this to see how it fails.
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.AjaxTiming.HandlingChanges.DefinedActions|
+
+|''ajax on port''|${FITNESSE_PORT}|
+
+|''becomes timeout''|6000|
+
+|''get url''|http://localhost:@{fitNessePort}/files/delaysWithAjax.html|
+
+|''title''|'''is'''|Delays With Ajax|
+
+|''with''|newTitle|''set text''|Fancy Title|
+
+|''click''|changeTitle|
+
+|''title''|'''becomes'''|The Wrong Title|
+
+[[Back to the previous page][<HandlingChanges.UsingBecomes]]

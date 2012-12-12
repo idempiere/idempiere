@@ -1,0 +1,38 @@
+!*< xml
+!define xml ({{{<a>
+  A
+</a>}}})
+!define xml2 (<a>
+ A
+</a>
+)
+*!
+|''with xml''|
+
+|''xml''|<a>A</a>|''similar to''|<a>A</a>|
+|''xml''|${xml}|''similar to''|${xml}|
+|''xml''|<a>A</a>|''similar to''|<a>A </a>|
+|''xml''|<a>A</a>|''similar to''|<a> A</a>|
+|''xml''|<a>A</a>|''similar to''|${xml2}|
+
+|''xml''|<a id1="1" id2="2">A</a>|''similar to''|<a id2="2" id1="1">A</a>|
+
+ * This is the same xml that fails in the ''same as'' specification:
+
+|''xml''|<a><b>1</b><c>2</c></a>|''similar to''|<a><c>2</c><b>1</b></a>|
+
+ * Similar to will work with repeating nodes of same name but in different order:
+
+|''xml''|<a><b>1</b><b>2</b></a>|''similar to''|<a><b>2</b><b>1</b></a>|
+
+ * Even if name spaces are used in ''similar to'', they do not need to be declared first:
+
+|''xml''|<f:a xmlns:f="urn:f">A</f:a>|''similar to''|<f:a xmlns:f="urn:f">A</f:a>|
+
+ * Failing examples:
+
+|'''not'''|''xml''|<a>A</a>|''similar to''|<a>B</a>|
+|'''not'''|''xml''|<a>A</a>|''similar to''|<m>A</m>|
+|'''not'''|''xml''|<a id="1">A</a>|''similar to''|<a id="2">A</a>|
+|'''not'''|''xml''|<f:a xmlns:f="urn:f">A</f:a>|''similar to''|<g:a xmlns:g="urn:g">A</g:a>|
+

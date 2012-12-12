@@ -1,0 +1,6 @@
+!3 There are various cases when a type variable may not be bound
+^InitialClassHasUnboundTypeVariable
+^InitialClassHasUnboundParametricTypeVariable
+^InitialClassHasUnboundGenericArrayTypeVariable
+^SuperClassHasUnboundTypeVariable
+^GenericMethod

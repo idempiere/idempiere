@@ -1,0 +1,13 @@
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''book''|1||coffee dispenser|''on''|2004/05/08 09:01|''for''|2 hours|
+|''book''|1||coffee dispenser|''on''|2004/05/08 09:01|''for''|2 hours|
+|''pay with cash $''|6.00|
+|''complete transaction''|
+ * ''Checks''
+|''client booking list''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee dispenser|2|2004/05/08 09:01|2004/05/08 11:01|
+
+|''rental item subset''|
+|''name''|''free count''|
+|coffee dispenser|10|

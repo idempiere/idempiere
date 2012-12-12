@@ -1,0 +1,62 @@
+There are a lot of changes to ''!-FitLibrary-!'' in this version.
+!3 1. ''!-FitLibraryGeneric-!''
+#
+''!-FitLibrary-!'' supports jdk1.5 generics and enums through a separate jar (''fitLibraryGeneric.jar'') that's supplied with this release. If you're running jdk1.5 or later, that jar will be used automatically.
+
+''!-FitLibrary-!'' itself still only depends on jdk1.4, but runs with Java versions up to jdk1.6.
+
+''!-FitLibraryGeneric-!'' supports  (see .FitLibrary.SpecifiCations.FitLibraryGeneric for details):
+ * Generic lists, sets, maps and other collections. This means that fixture code is no longer needed to create collections, as ''!-FitLibrary-!'' can determine the element type through reflection.
+ * Generic classes defined in an application. ''!-FitLibrary-!'' maintains full generic type information at runtime (reversing Java's ''type erasure'').
+ * Enums. Enum constants can be used directly in storytest. ''!-FitLibrary-!'' manages them directly.
+
+The file ''fitlibraryGeneric.jar'' needs to be on the classpath and the ''!-FitLibraryServer-!'' needs to be used (see 3. below).
+#
+!3 2. Support for legacy fixtures in ''!-DoFixture-!'' tables
+Fit fixtures are supported again by name with ''!-DoFixture-!''. Even if a storytest is in flow, a table can name a Fit (or any other) fixture class and it will be run.
+#
+!3 3. Getting into Flow
+It is no longer necessary for the first table of a storytest to be a ''!-DoFixture-!'' for a storytest to go into flow. Now, the first ''!-DoFixture-!'' table in a storytest will take over flow.
+This depends on using ''!-FitLibraryServer-!'' instead of ''!-FitServer-!''. To do so, place this way up in the page hierarchy:
+{{{
+!define TEST_RUNNER {fitlibrary.suite.FitLibraryServer}
+}}}See .FitLibrary.SpecifiCations.GoingIntoFlow for further details.
+#
+!3 4. New (Postfix) Special Actions in ''!-DoFixture-!''
+Instead of writing:
+
+|'''check'''|''some action''|a|''with arg''|b|44|
+
+you can now write:
+
+|''some action''|a|''with arg''|b|'''is'''|44|
+
+A similar special action is prepared to wait awhile before the actual value is the same as the expected value:
+
+|''some action''|a|''with arg''|b|'''becomes'''|4.*|
+
+A similar special action does pattern matching:
+
+|''some action''|a|''with arg''|b|'''matches'''|4.*|
+
+See .FitLibrary.UserGuide.FitLibraryByExample.DoFixture.DoFixtureSummary for further details.
+#
+!3 5. ''!-SelectFixture-!''
+See example in .FitLibrary.UserGuide.FitLibraryByExample.SelectFixture
+
+See .FitLibrary.SpecifiCations.MultipleFlowObjects for the specification
+#
+!3 6. Defined Actions
+It can be convenient to define the actions in a high-level domain language in terms of actions in a lower-level language, such as actions that drive web tests. Rather than writing fixture code to translate the high-level actions, ''defined actions'' can be used instead.
+
+See example in .FitLibrary.UserGuide.FitLibraryByExample.DefinedActions
+
+See .FitLibrary.SpecifiCations.DefinedActions
+#
+!3 7. Dynamic Variables
+These are not based on the Fit Fixture symbols, as I needed them to be thread-safe and separated across storytests to allow for several storytests to be run in parallel.
+#
+!3 8. Bug Fixes
+Two bugs have been fixed:
+ * A ''!-DoFixture-!'' subclass may define ''setUp()'' and ''tearDown()'' methods, which are called just before and just after processing. Sometimes the ''tearDown()'' method was called at the wrong time.
+ * When a ''!-DoFixture-!'' was used in a storytest that was run with the standard ''!-FitServer-!'', it processed the first row of the table again and complained about a strange method. This now works with ''!-FitServer-!'', as well as with ''!-FitLibraryServer-!''.

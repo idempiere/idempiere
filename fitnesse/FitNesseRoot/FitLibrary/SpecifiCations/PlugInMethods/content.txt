@@ -1,0 +1,3 @@
+>ObjectCreationPlugin - ''to construct an object of a given type which can't be created automatically''
+.FitLibrary.SpecifiCations.ParserSpecifications.EntityParser - to use a ${finder} to handle a text value
+.FitLibrary.SpecifiCations.ParserSpecifications.ValueObjectParser.TextInCell.DelegateParseString - to use a delegate

@@ -1,0 +1,20 @@
+!*< def
+!define html {<head><script type='text/javascript' src='http://isis-t02:8080/vgrabview/static-9-8-0.release.9.8.0.4/scripts/mootools-1.2.1-core-yc.js'></script></head><body>
+<form><input id="input3" type="text" onkeypress="document.getElementById('span1').innerHTML = '123';"/></form>
+<div id="divv">one<span id="span1"><img src="stuff" height="16" width="16"/></span>two</div>
+}
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''text of''|//div|''is''|onetwo|
+
+|''with''| input3 |''set text''|...|
+
+|''text of''|//div|''is''|one123two|
+
+|''text of''|//div/span|''becomes''|123|

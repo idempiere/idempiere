@@ -1,0 +1,94 @@
+!**< def
+!define body (|''login after''|user|''with''|pass|
+
+|show|get|@{user}|
+
+|show|get|@{user}+@{pass}|
+)
+!define test (!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|define action|
+|${body}|
+
+|login after|Rick|with|Pass|
+
+|''set expand defined actions''|true|
+
+|login after|Rick|with|Pass|
+)
+*!
+!3 Any show within the body of a defined action is shown at the point of call, unless the defined action calls are already being expanded.
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.definedAction.DefinedActionUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>define action</td>
+</tr>
+<tr><td><table border="1" cellspacing="0">
+<tr><td class="pass"><i>login after</i></td>
+<td>user</td>
+<td class="pass"><i>with</i></td>
+<td>pass</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>show</td>
+<td>get</td>
+<td>@{user}</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>show</td>
+<td>get</td>
+<td>@{user}+@{pass}</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass">login after</td>
+<td>Rick</td>
+<td class="pass">with</td>
+<td>Pass</td>
+<td>
+<table border="1" cellspacing="0">
+<tr>
+<td>show</td>
+<td>get</td>
+<td>Rick</td>
+<td bgcolor=#C0C0FF>Rick</td></tr>
+<tr>
+<td>show</td>
+<td>get</td>
+<td>Rick+Pass</td>
+<td bgcolor=#C0C0FF>Rick+Pass</td></tr></table></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>set expand defined actions</i></td>
+<td>true</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="ignore">login after</td>
+<td>Rick</td>
+<td class="ignore">with</td>
+<td>Pass</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call:</span>
+<br/><table border="1" cellspacing="0">
+<tr>
+<td>show</td>
+<td>get</td>
+<td>Rick</td>
+<td bgcolor=#C0C0FF>Rick</td></tr></table>
+<br/><table border="1" cellspacing="0">
+<tr>
+<td>show</td>
+<td>get</td>
+<td>Rick+Pass</td>
+<td bgcolor=#C0C0FF>Rick+Pass</td></tr></table>
+</td></tr>
+</table>-!|

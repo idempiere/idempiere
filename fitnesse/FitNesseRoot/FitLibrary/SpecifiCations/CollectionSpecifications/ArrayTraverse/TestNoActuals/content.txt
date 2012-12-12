@@ -1,0 +1,7 @@
+!2 No elements are expected or exist
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.PrimitiveArrayFixtureUnderTestEmpty</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td class="pass">fitlibrary.specify.PrimitiveArrayFixtureUnderTestEmpty</td></tr>
+</table>-!|

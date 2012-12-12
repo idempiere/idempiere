@@ -1,0 +1,44 @@
+!**< def
+!define test (|clear defined actions|
+
+|define actions at|.FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions|
+
+|''set expand defined actions''|true|
+
+|''def action 3''|
+
+|''permanently in scope''|
+)
+*!
+!2 As the defined action execution creates the first flowable object of the storytest, it becomes the flow object thereafter
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|
+|!-<table border="1" cellspacing="0">
+<tr><td>clear defined actions</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>define actions at</td>
+<td><a href="FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions">.FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions</a></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>set expand defined actions</i></td>
+<td>true</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>def action 3</i></td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions'>.FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions</a>:</span>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.definedAction.TemporaryFixturing</td></tr>
+<tr><td class="pass">permanently in scope</td></tr>
+</table></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>permanently in scope</i></td>
+</tr>
+</table>-!|
+

@@ -1,0 +1,13 @@
+ * actions
+|''begin transaction for client''| Joanna |''staff''| Bill|
+
+|''begin transaction for client''| Bob|''staff''| Pual|
+
+|''begin transaction for client''| Joe |''staff''| Bill|
+ * checks
+|''transactions pending''|
+|''client''|''staff''|''owing''|
+|Joanna|Bill|0.00|
+|Bob|Pual|0.00|
+|Joe |Bill|0.00|
+

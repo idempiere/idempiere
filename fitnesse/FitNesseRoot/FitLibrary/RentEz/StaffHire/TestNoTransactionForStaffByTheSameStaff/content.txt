@@ -1,0 +1,4 @@
+|'''reject'''|''begin transaction for client''| Pual|''staff''| Pual |
+
+|''begin transaction for client''| Bill|''staff''| Pual |
+|''complete transaction''|

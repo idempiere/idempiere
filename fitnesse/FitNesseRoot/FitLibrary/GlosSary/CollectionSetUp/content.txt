@@ -1,0 +1,1 @@
+See .FitLibrary.UserGuide.FitLibraryByExample.SetUpFixture for details.

@@ -1,0 +1,9 @@
+!3 Instead of subclassing a ''!-FitLibrary-!'' fixture class, a ''domain adapter'' can be used.
+A ''domain adapter'' is used like a SUT except that it may implement the interface ''!-DomainAdapter-!'', in which case it can in turn refer to a SUT. This allows a chain of SUTs, by the way. But more importantly:
+ * It allows for ''domain adapters'' to be organised into their own type hierarchy independent of fixtures
+ * The fixture methods are not available, simplifying the interface of those classes
+
+^TestStartDoDomainAdapter
+^TestCalculation
+^TestSetUp
+^TestSetUpMethodAccess

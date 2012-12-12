@@ -1,0 +1,119 @@
+!2 'is' checks an action against a value (and diff handles multiple blank differences)
+Extra or missing spaces at either end of an inserted or deleted subsequence are shown as Deltas.
+
+In the following, ''string property'' has one blank in the middle of the string and ''string property with two blanks'' has two blanks in the middle.
+
+!**< def
+!define test1 {!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+ * two blanks expected:
+
+|string property|is|apple  pie|
+
+ * one blank expected:
+
+|string property|is|apple pie|
+
+ * no blanks expected:
+
+|string property|is|applepie|
+
+ * two blanks expected:
+
+|string property with two blanks|is|apple  pie|
+
+ * one blank expected:
+
+|string property with two blanks|is|apple pie|
+
+ * no blanks expected:
+
+|string property with two blanks|is|applepie|
+
+ * nbsp expected:
+
+|string property with non breaking space|is|apple&nbsp;pie|
+
+ * one blank expected:
+
+|string property with non breaking space|is|apple pie|
+}
+
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test1}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><ul>
+	<li>two blanks expected:</li>
+</ul>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td>is</td>
+<td class="fail">apple  pie <span class="fit_label">expected</span><hr>apple pie <span class="fit_label">actual</span><hr><divv style='color:white'>apple </divv><strike>&Delta;</strike><divv style='color:white'>pie</divv> <span class="fit_label">diff</span></td>
+</tr>
+</table>
+<br/><ul>
+	<li>one blank expected:</li>
+</ul>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td>is</td>
+<td class="pass">apple pie</td>
+</tr>
+</table>
+<br/><ul>
+	<li>no blanks expected:</li>
+</ul>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td>is</td>
+<td class="fail">applepie <span class="fit_label">expected</span><hr>apple pie <span class="fit_label">actual</span><hr><divv style='color:white'>apple</divv><b>&Delta;</b><divv style='color:white'>pie</divv> <span class="fit_label">diff</span></td>
+</tr>
+</table>
+<br/><ul>
+	<li>two blanks expected:</li>
+</ul>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property with two blanks</td>
+<td>is</td>
+<td class="pass">apple  pie</td>
+</tr>
+</table>
+<br/><ul>
+	<li>one blank expected:</li>
+</ul>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property with two blanks</td>
+<td>is</td>
+<td class="fail">apple pie <span class="fit_label">expected</span><hr>apple  pie <span class="fit_label">actual</span><hr><divv style='color:white'>apple </divv><b>&Delta;</b><divv style='color:white'>pie</divv> <span class="fit_label">diff</span></td>
+</tr>
+</table>
+<br/><ul>
+	<li>no blanks expected:</li>
+</ul>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property with two blanks</td>
+<td>is</td>
+<td class="fail">applepie <span class="fit_label">expected</span><hr>apple  pie <span class="fit_label">actual</span><hr><divv style='color:white'>apple</divv><b>&Delta;&Delta;</b><divv style='color:white'>pie</divv> <span class="fit_label">diff</span></td>
+</tr>
+</table>
+<br/><ul>
+	<li>nbsp expected:</li>
+</ul>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property with non breaking space</td>
+<td>is</td>
+<td class="pass">apple&amp;nbsp;pie</td>
+</tr>
+</table>
+<br/><ul>
+	<li>one blank expected:</li>
+</ul>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property with non breaking space</td>
+<td>is</td>
+<td class="fail">apple pie <span class="fit_label">expected</span><hr>apple&amp;nbsp;pie <span class="fit_label">actual</span><hr><divv style='color:white'>apple</divv><strike>&Delta;</strike><b>&amp;nbsp;</b><divv style='color:white'>pie</divv> <span class="fit_label">diff</span></td>
+</tr>
+</table>-!|

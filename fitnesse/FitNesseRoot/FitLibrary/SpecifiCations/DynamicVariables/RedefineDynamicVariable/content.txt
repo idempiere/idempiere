@@ -1,0 +1,10 @@
+!|fitlibrary.DoFixture|
+
+|'''set'''|prop|''to''|Value|
+
+|''get''|@{prop}|''matches''|Value|
+
+|'''set'''|prop|''to''|Value Two|
+
+|''get''|@{prop}|''matches''|Value Two|
+

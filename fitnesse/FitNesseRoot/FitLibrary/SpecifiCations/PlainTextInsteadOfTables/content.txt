@@ -1,0 +1,9 @@
+${doFixture} tables can be written as plain text tables. These are interpreted as calls to defined actions.
+
+^DefinedActionCalls
+^DefinedActionCallsWithClasses
+
+^AmbiguityAcrossDefinedActions
+^LargeMatchWithSameKeywordsTrumpsSmallerOne
+
+|!contents|

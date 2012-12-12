@@ -1,0 +1,13 @@
+ * setUp() is called once the fixture object has started running the table
+ * If it throws an exception inside setUp(), this is shown in the report (and it continues)
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table>
+<tr><td colspan=3>fitlibrary.specify.CalculateFixtureSetUpWithException</td></tr>
+<tr><td><i>a</i></td><td></td><td><i>result</i></td></tr>
+<tr><td>1</td><td></td><td>2</td></tr>
+</table>-!|!-<table>
+<tr><td colspan=3 class="error">fitlibrary.specify.CalculateFixtureSetUpWithException<hr><pre><div class="fit_stacktrace"></div></pre></td></tr>
+<tr><td><i>a</i></td><td></td><td><i>result</i></td></tr>
+<tr><td>1</td><td></td><td class="pass">2</td></tr>
+</table>-!|
+

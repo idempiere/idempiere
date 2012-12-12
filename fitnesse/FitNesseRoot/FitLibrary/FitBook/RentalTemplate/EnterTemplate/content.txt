@@ -1,0 +1,5 @@
+|''enter template''|coffee break|
+|''rental item''|''proportion''|
+|cups|1.1|
+|spoons|0.6|
+|drinks table|0.05|

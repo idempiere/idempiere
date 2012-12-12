@@ -1,0 +1,17 @@
+!3 ''Parsers'' are selected automatically by ${fitLibrary}
+!3 ''Parsers'' are responsible for:
+ * ''Parsing'': Turning the contents of a cell (a String or embedded tables) into a primitive value, collection or object. A Parser uses a suitable ''traverse'' to create a value from embedded tables. Sometimes, a ''factory method'' is also needed.
+ * ''Matching'': Ensuring that the contents of a cell (String or embedded tables) corresponds to a primitive value, collection or object. A ${parser} uses a suitable ${traverse} to match against embedded tables.
+ * ''Showing'': Turning a primitive value, collection or object into a String message, for when an expected String doesn't match the actual value.
+!3 There are ${parser}''s'' for:
+ * The primitive types and their corresponding object forms. Eg, '''int''', '''Integer''', '''char''', '''Character'''. And String.
+  * ^PrimitiveParsers
+ * Each of the collection types: Array, List, Set, Map, Iterator
+  * ^ArrayParser, ^ListParser, ^SetParser, ^MapParser
+ * For specialised ''graphical'' values within cells (see information elsewhere for these)
+ * For a ${valueObject} -- which has its own ''parse()'' method for handling text from cells, or it is constructed/checked with an embedded table
+  * ^ValueObjectParser
+ * For an ${entity} -- which is identified by String key (using a ''find'' method), or it is constructed/checked with an embedded table
+  * ^EntityParser
+
+!contents -R

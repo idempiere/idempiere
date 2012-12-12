@@ -1,0 +1,7 @@
+!2 Header row is missing
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.ArrayFixtureUnderTest</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td class="error">fitlibrary.specify.ArrayFixtureUnderTest<hr/> <span class="fit_label">Missing row</span></td></tr>
+</table>-!|

@@ -1,0 +1,12 @@
+
+The delivery rate is the flat fee plus the percentage of the total cost of the booking.
+
+|''calculated delivery rate''|
+|''Actual $ spent''|''city''|''zone''||''delivery fee $''|
+|100.00|Auckland|CBD||11.00|
+|100.00|Auckland|West||16.00|
+|100.00|Auckland|East||16.00|
+|100.00|Auckland|Central||11.00|
+|100.00|Auckland|South||8.00|
+|100.00|Auckland|North Shore||20.00|
+

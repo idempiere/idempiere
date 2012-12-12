@@ -1,0 +1,3 @@
+!2 The fixture class named in the ''start'' must exist
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td colspan=2>fit.ActionFixture</td></tr><tr><td>start</td><td>UnknownFixture</td></tr></table>-!|!-<table><tr><td colspan=2>fit.ActionFixture</td></tr><tr><td class="error">start<hr/> <span class="fit_label">Could not find fixture: UnknownFixture.</span></td><td>UnknownFixture</td></tr></table>-!|

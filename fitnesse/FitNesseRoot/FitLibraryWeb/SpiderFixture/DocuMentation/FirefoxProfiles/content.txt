@@ -1,0 +1,58 @@
+!2 Profiles in Firefox
+#
+A profile in Firefox is where your personal configuration is stored (i.e. bookmarks, proxy settings etc).
+
+When Firefox is installed, a profile called ''default'' is created.
+
+It is possible to create new profiles using the ''-profileManager'' command line option for Firefox.
+
+ * The majority of settings that you modify through the ''tools->options'' are stored inside this profile, as well as many options that can't be set via Firefox's menus.
+
+You can see a list of all these properties by typing
+{{{    about:config
+}}}into the URL bar.
+
+Firefox will show in bold any changes you have made from the default profile setting.
+
+ * This will include any changes to your proxy/network settings.
+ * You can change and even add new properties here although you need to be careful.
+
+For further information on Firefox profiles see http://support.mozilla.com/en-US/kb/Profiles
+#
+!2 Setting Profile Properties with Spider
+#
+Before ''!-SpiderFixture-!'' opens the browser, it will create a brand new profile just as if you had installed Firefox for the first time.
+
+ * You can use Spider's ''firefox profile'' call to directly manipulate those same ''about:config'' properties.
+
+Here's an example of some of the properties I use:
+
+|''firefox profile''|network.proxy.http|''as string''|myproxy|
+|''firefox profile''|network.proxy.type|''as integer''|1|
+|''firefox profile''|network.proxy.http_port|''as integer''|5862|
+|''firefox profile''|network.proxy.no_proxies_on|''as string''|localhost, 127.0.0.1|
+|''firefox profile''|app.update.enabled|''as boolean''|false|
+|''firefox profile''|extensions.update.enabled|''as boolean''|false|
+|''firefox profile''|layout.spellcheckDefault|''as integer''|0|
+|''firefox profile''|browser.formfill.enable|''as boolean''|false|
+
+Again you can figure out what works for you by making changes in Firefox and looking at the values in ''about:config''.
+
+The benefit of this approach is that anyone can run your tests without needing to create a Firefox profile beforehand.
+#
+!2 Selecting an existing Profile with Spider
+#
+Sometimes it's necessary to use an existing profile because some of Firefox's options cannot be set with about:config properties. Eg:
+
+    * disabling the Flash add-on or
+    * installing extensions.
+
+''!-SpiderFixture-!'' will allow you to use a specific profile if you want to, using:
+
+|''use firefox profile''|!-MyProfileNameHere-!|
+
+When you do this, ''!-Spiderfixture-!'' creates a copy of this profile.
+
+ * You can reconfigure it further using ''firefox profile'' options and it will have a separate session / cookies etc.
+
+Darren

@@ -1,0 +1,26 @@
+!*< def
+!define html ({{{  <p id="nothing"/>
+  <div id="onlySpacesInText">   </div>
+  <h1 id="withText">green</h1>
+  <div id="disabled" disabled="true">blue</div>
+  <div id="withMultiText">yellow
+   orange</div>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''text of''|//p[@id="nothing"]|''matches''||
+
+|''text of''|//div[@id="onlySpacesInText"]|''matches''||
+
+|''text of''|//h1[@id="withText"]|''matches''|green|
+
+|''text of''|//h1[@id="withText"]|''matches''|g.*n.*|
+
+|''text of''|//div[@id="disabled"]|''matches''|blue|
+
+|''text of''|//div[@id="withMultiText"]|''matches''|yellow orange|

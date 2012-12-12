@@ -1,0 +1,29 @@
+!*< def
+!define html ({{{Various
+ text spread over several lines
+ with&nbsp;no breaking spaces
+ and<br>two styles of<br/>line breaks
+ also   extra&nbsp; &nbsp; &nbsp;spaces
+    even over line feeds are ignored.
+<b>lines</b>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''page source cleaned''|'''contains'''|spread|
+
+|''page source cleaned''|'''contains'''|over several|
+
+|''page source cleaned''|'''contains'''|with no break|
+
+|''page source cleaned''|'''contains'''|and two|
+
+|''page source cleaned''|'''contains'''|and two styles of line breaks|
+
+|''page source cleaned''|'''contains'''|with no breaking spaces and two styles of line breaks|
+
+|''page source cleaned''|'''contains'''|also extra spaces even over line feeds are ignored|

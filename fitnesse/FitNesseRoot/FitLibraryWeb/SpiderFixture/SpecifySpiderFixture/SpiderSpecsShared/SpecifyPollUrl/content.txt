@@ -1,0 +1,19 @@
+This special action polls a given url until a condition is satisfied.  Here's an example:
+
+|'''poll url'''|http://localhost|'''until'''|''element''|//div|''exists''|
+
+In general, it is of the form:
+
+|'''poll url'''|http://localhost|'''until'''|''some boolean action''|
+
+The action needs to return a boolean result.
+
+The poll period is defined by the ''poll url timeout'', which can be changed by using the following action:
+
+|''poll url timeout''|1000|
+
+where the timeout period is in milliseconds.
+
+^PollSucceeds
+^PollFails
+^PollHasIncorrectCondition

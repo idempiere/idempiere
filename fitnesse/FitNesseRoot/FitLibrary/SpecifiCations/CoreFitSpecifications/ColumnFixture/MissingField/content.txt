@@ -1,0 +1,5 @@
+!2 An exception is thrown if a field doesn't exist.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>unknownField</td></tr></table>-!|!-<table><tr><td>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td class="error">unknownField<hr/> <span class="fit_label">Could not find field: unknownField.</span></td></tr></table>-!|

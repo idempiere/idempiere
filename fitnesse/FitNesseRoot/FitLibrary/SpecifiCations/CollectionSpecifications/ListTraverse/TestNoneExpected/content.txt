@@ -1,0 +1,17 @@
+!2 No elements are expected
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.ArrayFixtureUnderTest</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.ArrayFixtureUnderTest</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">1</span> <span class="fit_label">surplus</span></td>
+<td> <span class="fit_grey">one</span></td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">1</span> <span class="fit_label">surplus</span></td>
+<td> <span class="fit_grey">two</span></td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">2</span> <span class="fit_label">surplus</span></td>
+<td> <span class="fit_grey">two</span></td></tr></table>-!|

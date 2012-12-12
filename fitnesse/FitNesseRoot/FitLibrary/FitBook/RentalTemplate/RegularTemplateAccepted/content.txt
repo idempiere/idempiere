@@ -1,0 +1,45 @@
+|!-rent.StartApplication-!|
+
+|''setup''|
+|''rental item name''|''count''|''$/hour''|''$/day''|''$/week''|''deposit''|
+|coffee dispenser|10|1.50|8.20|60.00|0.00|
+|hot water dispenser|12|1.50|8.00|50.00|0.00|
+|cup|500|0.05|0.45|2.00|0.10|
+
+|''setup''|
+|''client name''|''phone''|
+|Joanna|373 7599|
+
+|''setup''|
+|''staff name''|''phone''|
+|Bill|555 9876|
+
+|''time is now''| 2004/05/06 09:01|
+
+|''template entry''|coffee break|
+|''item''|''for''|
+|coffee dispenser|20|
+|hot water dispenser|20|
+|coffee table|40|
+|cup|0.9|
+
+|''booked template entry''|Joanna|
+|''template''|''people''|''from''         |''to''          |''repeat''|
+|coffee break|21        |2004/06/01 18:00 |2004/06/02 18:00| 1 week   |
+
+|''time is now''| 2004/06/01 18:01|
+
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''accept booking''|coffee break|''for''|21|''on''|2004/06/01 18:00|''for''|1 day|''every''|1 week|
+|''complete transaction''|
+
+|''rentals of client''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee dispenser|2|2004/05/06 09:01|2004/05/07 09:01|
+|hot water dispenser|2|2004/05/06 09:01|2004/05/07 09:01|
+|coffee table|1|2004/05/06 09:01|2004/05/07 09:01|
+|cup|24|2004/05/06 09:01|2004/05/07 09:01|
+
+|''booked template list''|Joanna|
+|''template''|''people''|''from''         |''to''          |''repeat''|
+|coffee break|21        |2004/06/02 18:00 |2004/06/03 18:00| 1 week              |

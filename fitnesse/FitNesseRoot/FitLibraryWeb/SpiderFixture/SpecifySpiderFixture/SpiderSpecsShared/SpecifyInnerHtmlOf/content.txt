@@ -1,0 +1,31 @@
+!*< def
+!define html ({{{
+  <tt id="withTag">yellow <B>orange</B></tt>
+  <table><tr><td class="bodyCopy"><p>This text will be preserved with <b>bold</b> tags and <em>emphasis</em> tags etc</p></td></tr></table>
+  <table><tr><td class="bodyUpper"><P>This text will be preserved with <B>bold</B> tags and <EM>emphasis</EM> tags etc</P></td></tr></table>}}})
+*!
+
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+
+ * with the standard ''text of'' inner tags are removed:
+
+|''text of''|//tt[@id="withTag"]|''is''|yellow orange|
+
+* to preserve tags:
+
+|''inner html of''|//tt[@id="withTag"]|''is''|yellow <b>orange</b>|
+
+* a more complex example, extract text with tags from with table tags:
+
+|''inner html of''|//td[@class="bodyCopy"]|'''is'''|<p>This text will be preserved with <b>bold</b> tags and <em>emphasis</em> tags etc</p>|
+
+* there are compatability issues where some browsers convert to upper case, so we always convert to lower regardless of browser:
+
+|''inner html of''|//td[@class="bodyUpper"]|'''is'''|<p>This text will be preserved with <b>bold</b> tags and <em>emphasis</em> tags etc</p>|
+

@@ -1,0 +1,16 @@
+${programmers}
+A ${parser} is part of the implementation of ${fitLibrary}
+
+There is a ${parser} for each class or primitive type
+
+For user-defined classes, some of the responsibility is passed to either:
+ * The class itself, with ${selfParse}
+ * A ${finder}
+ * A ${parseDelegate}
+
+The ${parser} is responsible for:
+ * Converting the contents of a cell (string or embedded table) into a value of the class or type
+ * Comparing two values to see if they match
+ * Showing a value as a string
+See:
+ * .FitLibrary.SpecifiCations.ParserSpecifications

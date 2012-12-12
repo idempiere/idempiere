@@ -1,0 +1,11 @@
+!|fitlibrary.specify.DomainFixtureUnderTest|
+
+|''point 2''|!include .FitLibraryGeneric.SpecifyReferences.PointRef|
+
+|''actions''|
+
+|''checks''|
+
+|''point 2''|!include .FitLibraryGeneric.SpecifyReferences.ThePoint|
+
+|''point 2''|!include .FitLibraryGeneric.SpecifyReferences.PointRef|

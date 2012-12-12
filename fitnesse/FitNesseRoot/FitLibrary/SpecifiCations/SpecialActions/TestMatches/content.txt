@@ -1,0 +1,54 @@
+!2 'matches' pattern matches an action against a value
+!**< def
+!define test1 {!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|int property|matches|2|
+
+|boolean property|matches|tr.e|
+
+|boolean property|matches|t.e|
+
+|string property|matches|appl.*ie|
+
+|''x''|1|''y''|3|''matches''|(1,.)|
+}
+
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test1}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>int property</td>
+<td>matches</td>
+<td class="pass">2</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>boolean property</td>
+<td>matches</td>
+<td class="pass">tr.e</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>boolean property</td>
+<td>matches</td>
+<td class="fail">t.e <span class="fit_label">expected</span><hr>true <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td>matches</td>
+<td class="pass">appl.*ie</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>x</i></td>
+<td>1</td>
+<td><i>y</i></td>
+<td>3</td>
+<td><i>matches</i></td>
+<td class="pass">(1,.)</td>
+</tr>
+</table>-!|

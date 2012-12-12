@@ -1,0 +1,24 @@
+!**< def
+!define test (!|fitlibrary.specify.workflow.OnFailureWithException|
+
+|''result''|'''is'''|true|
+
+|''end''|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.OnFailureWithException</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>result</i></td>
+<td><b>is</b></td>
+<td class="pass">true</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>end</i></td>
+</tr>
+</table>-!|
+

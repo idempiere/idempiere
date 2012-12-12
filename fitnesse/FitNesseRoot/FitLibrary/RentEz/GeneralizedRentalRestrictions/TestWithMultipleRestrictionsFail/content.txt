@@ -1,0 +1,5 @@
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|'''reject'''|''rent''|1||Truck|''for''|1 day|''with restriction''|3|''satisfied''|
+|'''reject'''|''rent''|1||Truck|''for''|1 day|''with restriction''|2|''satisfied''|
+|'''reject'''|''rent''|1||Truck|''for''|1 day|
+|''complete transaction''|

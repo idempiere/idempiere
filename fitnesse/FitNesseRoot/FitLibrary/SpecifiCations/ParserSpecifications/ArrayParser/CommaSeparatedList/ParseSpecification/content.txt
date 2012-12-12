@@ -1,0 +1,106 @@
+!**< def
+!define testInts {!|fitlibrary.specify.arrayParser.Parse|
+
+|''given ints''|1,2,3|
+|1|
+|2|
+|3|
+
+|''given ints''||
+
+|''given ints''|1,2,c|
+}
+
+!define testIntsNested {!|fitlibrary.specify.arrayParser.Parse|
+
+|''given ints2D''|1,(2,3),4|
+}
+
+!define testString {!|fitlibrary.specify.arrayParser.Parse|
+
+|''given strings''|(1,2),3|
+|(1|
+|2)|
+|3|
+}
+
+!define testStringQuote {!|fitlibrary.specify.arrayParser.Parse|
+
+|''given strings''|"(1,2)",3|
+|"(1|
+|2)"|
+|3|
+}
+**!
+ * Primitive values are simple
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${testInts}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.arrayParser.Parse</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given ints</i></td>
+<td>1,2,3</td>
+</tr>
+<tr class="pass"><td colspan="2">1</td>
+</tr>
+<tr class="pass"><td colspan="2">2</td>
+</tr>
+<tr class="pass"><td colspan="2">3</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="pass"><i>given ints</i></td>
+<td>&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given ints</i></td>
+<td class="error">1,2,c<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>-!|
+ * But nested arrays can't be specified in a comma-separated form
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${testIntsNested}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.arrayParser.Parse</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given ints2D</i></td>
+<td class="error">1,(2,3),4<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>-!|
+ * Strings don't work if they contain ",", as in "(1,2)"
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${testString}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.arrayParser.Parse</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given strings</i></td>
+<td>(1,2),3</td>
+</tr>
+<tr class="pass"><td colspan="2">(1</td>
+</tr>
+<tr class="pass"><td colspan="2">2)</td>
+</tr>
+<tr class="pass"><td colspan="2">3</td>
+</tr>
+</table>-!|
+ * There is '''no''' notion of quoting a String
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${testStringQuote}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.arrayParser.Parse</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given strings</i></td>
+<td>"(1,2)",3</td>
+</tr>
+<tr class="pass"><td colspan="2">"(1</td>
+</tr>
+<tr class="pass"><td colspan="2">2)"</td>
+</tr>
+<tr class="pass"><td colspan="2">3</td>
+</tr>
+</table>-!|

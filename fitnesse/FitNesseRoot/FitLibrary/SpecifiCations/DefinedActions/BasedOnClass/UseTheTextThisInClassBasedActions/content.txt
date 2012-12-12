@@ -1,0 +1,11 @@
+Class based defined actions should be able to be overriden by derived classes to provide no implementation method.
+
+!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActions.BasedOnClass.DefinedActions|
+
+|'''set'''|msg.class|'''to'''|Message|
+
+|''oo''|msg|''set a message''|
+
+|get|@{message}|is|hello this is a message|

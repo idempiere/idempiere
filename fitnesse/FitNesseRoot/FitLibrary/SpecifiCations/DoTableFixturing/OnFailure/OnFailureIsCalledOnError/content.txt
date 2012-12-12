@@ -1,0 +1,41 @@
+!**< def
+!define test (!|fitlibrary.specify.workflow.OnFailureWithException|
+
+|''!-with FitLibrary logger-!''|
+|''level''|ALL|
+
+|''result''|'''is'''|false|
+
+|''end''|
+)
+**!
+We include logging so it's easier to see what's going on:
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.OnFailureWithException</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="2"><i>with FitLibrary logger</i></td>
+</tr>
+<tr><td><i>level</i></td>
+<td>ALL</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>result</i></td>
+<td><b>is</b></td>
+<td class="fail">false <span class="fit_label">expected</span><hr>true <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>end</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0"><tr><td class="error"><i>Error in storytest tear down: </i><hr/> <span class="fit_label">onFailure() called</span></td></tr></table>-!|
+
+ * Note: the following table has to be outside the specification. If it's at the end, logging is turned off before the onError() method is called and so the call is not logged!
+
+|''!-with FitLibrary logger-!''|
+|''level''|OFF|

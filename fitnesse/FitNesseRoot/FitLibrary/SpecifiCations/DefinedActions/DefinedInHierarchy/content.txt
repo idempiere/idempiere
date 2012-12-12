@@ -1,0 +1,13 @@
+!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|''clear defined actions''|
+
+|''set expand defined actions''|true|
+
+|''define actions slowly at''|.FitLibrary.SpecifiCations.DefinedActions.InHierarchy|
+
+|''login''|rick|''with''||
+
+|''login2''|rick|''with''||
+
+

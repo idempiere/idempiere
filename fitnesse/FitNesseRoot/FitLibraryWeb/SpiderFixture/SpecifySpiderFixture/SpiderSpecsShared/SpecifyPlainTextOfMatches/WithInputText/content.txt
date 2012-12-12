@@ -1,0 +1,24 @@
+!*< def
+!define html ({{{  <input type="text" id="withSpaces" value="red    green"/>
+  <input type="text" id="withTAB" value="red\tgreen"/>
+  <input type="text" id="withNL" value="red\ngreen"/>
+  <input type="text" id="withCR" value="red\rgreen"/>
+  <input type="text" id="withTags" value="red <b>green</b>"/>
+  <input type="text" id="withBR" value="red<br/>green"/>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''plain text of''|//input[@id="withSpaces"]|''matches''|red green|
+|''plain text of''|//input[@id="withTAB"]|''matches''|red green|
+|''plain text of''|//input[@id="withTags"]|''matches''|red green|
+|''plain text of''|//input[@id="withBR"]|''matches''|red green|
+
+ * The handling of \n and \r differs between Firefox, htmlUnit and Selenium. Firefox adds a space
+
+|''plain text of''|//input[@id="withNL"]|''matches''|red.*green|
+|''plain text of''|//input[@id="withCR"]|''matches''|red.*green|

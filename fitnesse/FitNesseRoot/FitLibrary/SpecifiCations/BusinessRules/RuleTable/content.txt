@@ -1,0 +1,7 @@
+!3 This is like a !-ColumnFixture-! from Fit (and thus like a Decision Table from Slim)
+^OneInAndOneOut
+^WithResetAndExecute
+!3 Errors:
+^RowsVaryInWidth
+^GetterSetterUnknown
+^MethodsThrowExceptions

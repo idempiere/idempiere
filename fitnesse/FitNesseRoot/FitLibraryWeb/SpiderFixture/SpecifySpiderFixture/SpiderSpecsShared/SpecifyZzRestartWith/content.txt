@@ -1,0 +1,6 @@
+This action permits a switch in the middle of a spider storytest from one driver to another. Cookies are carried across.
+
+For example, this could be used to quickly go through the first part of a scenario using htmlunit and then switch to firefox to permit manual testing.
+
+>SimpleRestart
+>RestartWithCookies

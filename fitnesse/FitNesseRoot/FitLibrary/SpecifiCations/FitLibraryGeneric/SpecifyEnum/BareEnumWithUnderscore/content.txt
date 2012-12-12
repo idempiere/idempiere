@@ -1,0 +1,19 @@
+!3 The enum BLUE_GREEN with an underscore can be written in various ways
+ * Spaces added
+ * Underscore replaced by a single space
+ * Case changed
+!|fitlibraryGeneric.specify.enumerator.BareEnum|
+
+|''enumeration''|blue_green|
+----
+----
+|''enumeration''|blue _ green|
+
+|''enumeration''|blue green|
+
+|''enumeration''|blue      green|
+
+|''enumeration''|BLUE_GREEN|
+
+|''enumeration''|BLUE GREEN|
+

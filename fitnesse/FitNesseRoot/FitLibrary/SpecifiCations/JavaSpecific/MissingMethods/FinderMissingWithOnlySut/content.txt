@@ -1,0 +1,18 @@
+!3 A ${finder} is missing with only a ${sut} (no ${domainAdapter})
+!**< def
+!define test (!|fitlibrary.specify.missingMethod.FinderInJustSut|
+
+|''add''|red|''to colour mix''|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.missingMethod.FinderInJustSut</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>add</i></td>
+<td class="error">red<hr/> <span class="fit_label">Either Colour is <ul><li>A <b>Value Object</b>. So missing parse method: public static Colour parse(String s) { }<br/>in class fitlibrary.specify.missingMethod.FinderInJustSut$Colour; or</li><li><b>An Entity</b>. So missing finder method: public Colour findColour(String key) { } , possibly in classes:<ul><li>fitlibrary.specify.missingMethod.FinderInJustSut</li></ul></li></ul></span></td>
+<td><i>to colour mix</i></td>
+</tr>
+</table>-!|

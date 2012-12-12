@@ -1,0 +1,21 @@
+!*< def
+!define html {<form><input id="input3" type="text" onkeypress="javascript:document.getElementById('divvv').innerHTML = this.value;"/></form>
+<div id="divvv"/>
+}
+*!
+
+|''keywords''|chrome,htmlunit,firefox|
+
+!2 Not supported by IE
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''with''| input3 |''set text''|abc|
+
+|''text of''| input3 |''is''|abc|
+
+ * This doesn't work '''as expected''' in htmlUnit or firefox (it doesn't get "abc") nor Selenium (it's unchanged):
+
+|''text of''|//div|''is''|ab|

@@ -1,0 +1,6 @@
+|''rent''|100||cup|''for''|2|''weeks''|
+|check|cost|210.00|
+
+|''rentals for client''|Joanna|
+|''rental item''|''count''|''weeks''|
+|cup|100|2|

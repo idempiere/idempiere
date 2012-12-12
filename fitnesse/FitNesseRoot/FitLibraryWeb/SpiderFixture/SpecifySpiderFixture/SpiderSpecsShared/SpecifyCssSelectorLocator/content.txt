@@ -1,0 +1,43 @@
+!*< def
+!define html ({{{<span><a href="http://foo.bar">link selected by href</a>"></span>
+<span><a href="http://matchme.com">link selected by href with regex</a>"></span>
+<div id="byid">some text selected by id</div>
+<div><span>span child in a div</span></div>
+<div><div><span>span child in a div child in a div</span></div></div>
+<a href="http://bar.foo" title="hello">I have a title attribute</a>
+<a href="http://bar.foo" title="hello">I have no title attribute</a>
+<div style="small bold link">I have space separated attributes</div>
+<form>
+<input name="rad" value="I am checked" checked type="radio">Checked
+<input name="rad" value="I am not checked" type="radio">Not Checked}}})
+*!
+
+|''keywords''|chrome,firefox|
+
+!3 note: Only partially work in IE7 and html unit
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+
+|''text of''|css=div#byid|is|some text selected by id|
+
+
+|''text of''|!-css=a[href="http://foo.bar"]-!|is|link selected by href|
+
+|''text of''|css=a[href*="match"]|is|link selected by href with regex|
+
+
+|''text of''|css=div > span|is|span child in a div|
+|''text of''|css=div > div > span|is|span child in a div child in a div|
+
+|''text of''|css=a[title]|is|I have a title attribute|
+
+|''text of''|css=div[style~="small"]|is|I have space separated attributes|
+|''text of''|css=div[style~="bold"]|is|I have space separated attributes|
+|''text of''|css=div[style~="link"]|is|I have space separated attributes|
+
+|''text of''|css=input:checked|is|I am checked|
+
+

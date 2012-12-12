@@ -1,0 +1,21 @@
+!**< def
+!define test (!|fitlibrary.specify.GridFixtureUnderTest|
+
+|empty|
+|a|b|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.GridFixtureUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="2">empty</td>
+</tr>
+<tr class="fail"><td>a</td>
+<td>b</td>
+</tr>
+<tr>
+<td colspan="2"><i>Actuals:</i></td></tr></table>-!|
+

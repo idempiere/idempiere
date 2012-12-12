@@ -1,0 +1,41 @@
+Let's look at how to manage with HTML tables (or any other elements that have sub-structure).
+
+We'll write storytests to handle the tables on a web page. [[The web page is here.][files/handlingTables.html]]
+
+You may find it convenient to open this page in another window, so you can easily look at it at the same time as the storytests below.
+
+!2 1. We can check the whole contents of a table.
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.AjaxTiming.HandlingChanges.DefinedActions|
+
+|''spider on port''|${FITNESSE_PORT}|
+
+|''get url''|http://localhost:@{fitNessePort}/files/handlingTables.html|
+
+|''table values''|pls|
+|Name|Possible Influences|Year|
+|Scala|Java, Haskell|2003|
+|C#|Java, Delphi, C++|2000|
+|!-JavaScript-!|Java|1995|
+|Java|C++|1995|
+|Ruby|Perl, Smalltalk, Eiffel, Lisp|1995|
+|Haskell|Lazy ML, Miranda|1990|
+|C++|C, Simula, Smalltalk|1983|
+|Smalltalk|Simula, Lisp|1980|
+
+The above table matches the text of the given table exactly.
+
+ * It must have all the cells in the same place in order to match.
+ * All the text in a cell is considered, even text within elements in a cell, such as the link on the first column.
+
+!2 2. We can also check (or act on) particular cells, using ''xpaths''
+#
+|''text of''|//table//tr[2]//td|''is''|Scala|
+
+|''click''|//table//tr[2]//td//a|
+
+The above makes use of an ''xpath'' expression to select the first cell of the second row of the table.
+
+!2 Rows
+#
+Let's look at checking and/or acting on cells within a particular row [[on this page][^WithinRow]]

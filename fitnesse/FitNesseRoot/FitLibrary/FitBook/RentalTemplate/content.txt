@@ -1,0 +1,16 @@
+^CreateTemplate
+^CreateTemplate2
+^UseTemplate
+^UseTemplateToBook
+^EnterTemplate
+^NestTemplate
+^NestTemplate2
+^CreateTemplateNoPeople
+^CreateTemplate3
+^UseTemplateRounding
+^RegularBooking
+^RegularTemplateBookingPartial
+^RegularTemplateBooking
+^RegularTemplateAccepted
+
+!path C:\Documents and Settings\rick\My Documents\work\fitnesse\Examples\PseudoRPS\build

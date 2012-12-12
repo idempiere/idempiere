@@ -1,0 +1,21 @@
+|''begin transaction for client''| Bob |''staff''| Bill |
+|''rent''|1||Truck|''for''|1 day|
+ * Actions
+
+|''begin transaction for client''| Joanna |''staff''| Bill |
+|'''reject'''|''book''|1||Truck|''on''|2004/05/06 11:01|''for''|2 days|
+|''complete transaction''|
+
+|''resume transaction for client''| Bob|
+|''pay with cash $''|2000.00|
+|''complete transaction''|
+ * Checks
+|''rentals of client''|Bob|
+|''rental item''|''count''|''start date''|''end date''|
+|Truck|1|2004/05/06 09:01|2004/05/07 09:01|
+
+|''rental item subset''|
+|''name''|''free count''|
+|Truck|0|
+
+

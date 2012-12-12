@@ -1,0 +1,3 @@
+|!-CalculateRefund-!|
+|''per hour''|''per day''|''per week''|''pay from''|''pay to''|''returned''|''refund()''|
+|0.05|0.45|2.00|2004/05/06 09:01|2004/05/06 12:01|2004/05/06 11:00|5.00|

@@ -1,0 +1,7 @@
+|!-DiscountGroupArrayList-!|
+|''futureValue''|''maxOwing''|''minPurchase''|''discountPercent''|
+|low|0.00|0.00|0|
+|low|0.00|2000.00|3|
+|medium|500.00|600.00|3|
+|high|2000.00|2000.00|10|
+|medium|0.00|500.00|5|

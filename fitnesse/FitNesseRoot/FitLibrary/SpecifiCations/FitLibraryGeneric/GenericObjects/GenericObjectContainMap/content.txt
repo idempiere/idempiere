@@ -1,0 +1,15 @@
+!***< def
+!define ts (
+|true|1|
+|false|2|
+)
+!define gen (|''fun''|${ts}|
+)
+**!
+!|fitlibraryGeneric.specify.object.GenericObjectContainsMap|
+
+|''gen''|${gen}|
+
+|''checks''|
+
+|''gen''|${gen}|

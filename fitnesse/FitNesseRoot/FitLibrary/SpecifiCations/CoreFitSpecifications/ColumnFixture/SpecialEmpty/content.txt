@@ -1,0 +1,11 @@
+!2 If a field cell is empty, its current value is provided in that cell in the result. The same for a method call.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td colspan=3>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>a</td><td>b</td><td>plus()</td></tr>
+<tr><td></td><td></td><td></td></tr>
+<tr><td>1</td><td>2</td><td>3</td></tr>
+<tr><td></td><td></td><td></td></tr></table>-!|!-<table><tr><td colspan=3>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>a</td><td>b</td><td>plus()</td></tr>
+<tr><td> <span class="fit_grey">0</span></td><td> <span class="fit_grey">0</span></td><td> <span class="fit_grey">0</span></td></tr>
+<tr><td>1</td><td>2</td><td class="pass">3</td></tr>
+<tr><td> <span class="fit_grey">1</span></td><td> <span class="fit_grey">2</span></td><td> <span class="fit_grey">3</span></td></tr></table>-!|

@@ -1,0 +1,13 @@
+!2 An unexpected exception is marked as such:
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border><tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr>
+</table>
+<table border>
+<tr><td>exception</td></tr>
+</table>-!|
+|!-<table border><tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr>
+</table>
+<table border>
+<tr><td class="error">exception<hr><pre><div class="fit_stacktrace"></div></pre></td></tr>
+</table>-!|
+

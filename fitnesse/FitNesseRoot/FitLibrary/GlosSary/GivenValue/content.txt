@@ -1,0 +1,6 @@
+A ${given} value is a value that's suppplied as an input value to:
+ * An action
+ * A value to the left of the empty column in a calculation table
+ * A value in a combination table
+ * Set the value of a property of a ${domainObject}
+Compare this to an ${expected}.

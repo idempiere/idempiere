@@ -1,0 +1,137 @@
+!1 Important
+#
+To use ''!-FitLibrary-!'', it is now necessary to include the following in the top-most page of your suite:
+{{{
+!define TEST_RUNNER {fitlibrary.suite.FitLibraryServer}
+}}}
+It may be necessary to recompile/jar all fixturing code, as the underlying implementation has changed in several significant ways.
+---->ImplementationChanges
+----!2 Additions
+#
+!2 1. Fit included
+#
+ * ''Fit'' is now included in the ''!-FitLibrary-!'' download.
+ * ''Fit'' will continue to run under ''!-FitNesse-!'' but ''!-FitNesse-!'' will no longer come with the ''Fit'' framework code included.
+ * ''Fit'' variables can be accessed from ''!-FitLibrary-!'' - see below.
+
+Fit can continue to be used with ''!-FitServer-!''. However, if you want to mix Fit and ''!-FitLibrary-!'' capability, you have to use ''!-FitLibraryServer-!'' as explained at the top.
+#
+----!2 2. Do Tables (and flow)
+#
+!3 !-DoFixture-! and Sequence-style actions
+#
+ * !-DoFixture-! first tries to find a method that matches an action in keyword style (inter-leaved keywords and arguments)
+ * Only if there is no match, it then tries to find a method in sequence style (the first cell contains the name of the method and subsequent cells contain the arguments)
+ * This works with all the infix special actions ('''is''', '''matches''', etc)
+ * This works with the following prefix special actions: '''check''', '''not''', '''reject''', '''show''', '''show after''', '''show escaped''', '''set''', '''set symbol named''', '''log'''
+ * This makes it particularly easy to access ordinary methods within a SUT without having to write adapter methods in keyword style.
+#
+!3 New special action in !-DoFixture-!
+#
+ * The action 'not true' is like 'not', except that it gives an error if an exception has been thrown. For example:
+
+|'''not true'''|''some action''|1|''on''|2|
+#
+!3 Auto-wrapping of bare objects with !-DoFixture-!
+#
+ * If the first table in a storytest creates an object that's not a fixture, it will be auto-wrapped with !-DoFixture-!
+ * This means that it's not necessary to subclass fixtures for usual development
+ * Bare objects used to be auto-wrapped by !-DomainFixture-!. If that behaviour is still required, make those classes implement the marker interface ''!-DomainFixtured-!''. If that will be painful, let me (Rick Mugridge) know and I will consider a configuration option to make it work like it used to.
+#
+!3 ''!-SelectFixture-!'' capability now part of flow
+#
+It's no longer necessary to use a ''!-SelectFixture-!'' to switch between ''!-DoFixture-!''s. This switching behaviour has been generalised and included as a part of standard flow.
+
+So you can simply remove the ''!-SelectFixture-!'' table in your storytests. See .FitLibrary.AdvancedTutorials.MultipleFlowObjects for how to use the new, generalised features.
+#
+!3 Tailored colouring of table cells
+#
+It's now possible for ordinary code to make changes to the colouring and messages of the current row of the current table. This allows for tailored error reporting.
+
+See .FitLibrary.SpecifiCations.PojoAccessToCurrentRow
+#
+!3 ''!-GlobalMethod-!'' Objects
+#
+See .FitLibrary.SpecifiCations.AddingGlobalActionsObject
+#
+!3 Using Fit variables in !-FitLibrary-!
+#
+ * From !-FitLibrary-!, it is now possible set change and access Fit variables.
+ * See .FitLibrary.SpecifiCations.DynamicVariables.SpecifyConvertFromToFitSymbols
+#
+!3 onFailure() method call
+#
+The ''onFailure()'' method can be defined in a fixture. It is called if the storytest has failed (fails/errors), and allow for diagnostic information to be included in the report, such as a screen dump.
+
+See .FitLibrary.AdvancedTutorials.SetUpTearDownOnFailure for further details.
+#
+!3 ''Scope''
+#
+When a fixture executes now, an action can lead to a call to any method of an object that is in ''scope''. Such scope includes the following:
+
+ * The standard global action methods, such as to set dynamic variables, change a timeout, etc
+ * The user-provided globals, if any (see above for details)
+ * The suite fixture, if any
+ * The main fixture for the storytest, if any
+ * Any fixtures that are in action within a table, if any. This arises when an action returns a fixture (or auto-wrapped object) that interprets the rest of the table.
+
+Any fixtures introduced within a table (other than the main fixture for the storytest) go out of scope at the end of that table.
+
+When a defined action is called, the scope for the execution of the body of the defined action is the same as the scope in action at the point of call. This means that:
+
+ * If a defined action is called as a row in a larger table, it will include any fixtures in scope that are due to that table
+ * When defined actions call defined actions they may expand the scope further. Any scope that is introduced in a table within a defined action is removed when that table is finished executing.
+#
+----!2 3. Defined Actions
+#
+!3 Loading defined actions
+#
+ * An action has been added to allow defined actions to be loaded quickly when the !-FitNesseRoot-! directory is not in the usual place.
+ * The extra argument is a relative or absolute location for the !-FitNesseRoot-! directory
+ * See .FitLibrary.SpecifiCations.DefinedActions.DefinedWithRootLocation
+ * For example:
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActions.OneDefinedAction|''from''|!-../whereIkeepFitNesse/FitNesseRoot-!|
+#
+!3 Link to defining page for defined action
+#
+ * Consider when a defined action is called in a storytest
+ * If there is an error in the defined action body, or if the body is to be expanded regardless, this is shown in an added cell.
+ * This has been changed so that a link is included back to the page in which the defined action was given.
+ * For example, see .FitLibrary.SpecifiCations.DefinedActions.DefinedElsewhereExpanded
+#
+!3 Plain text tables
+Plain text now uses the wiki syntax for plain text tables ("![ ... ]!"). For example:
+
+![
+address is at Waimauku
+]!
+
+Such plain text tables can only refer to defined actions; other actions are ignored. If more than one defined action matches, the one with more keywords is used.
+
+See .FitLibrary.SpecifiCations.PlainTextInsteadOfTables
+#
+!3 ''Scope'' when a defined action is executing
+#
+As explained above, the scope that's active when a defined action is executing depends on the scope at the time of the call.
+
+This changes the execution model slightly, such as when a defined action is called within the third row of a table and the first row has introduced a new fixture (or object).
+#
+----!2 4. Rule Table
+#
+A ''!-RuleTable-!'' acts rather like a ''!-ColumnFixture-!'' tables, except that setters are used for the inputs. See the example at .FitLibrary.BeginningTutorial.FirstRuleTableExample.
+#
+----!2 5. Fixed Problems
+!3 Bug fixes
+#
+ * !-DebugPage-!, a Java class that's handy for running a storytest from within a debugger, works again with !-FitNesse-!. It had previously failed because of changes to the !-FitNesse-! code.
+ * All subclasses of class ''Number'' are now treated as primitive types and are not ${autoWrapped} by !-DoFixture-!.
+ * Checks are now made for blank parameters and for duplicated parameters in the definition of a defined action. See .FitLibrary.SpecifiCations.DefinedActions.BlankParameter and .FitLibrary.SpecifiCations.DefinedActions.DuplicatedParameter
+ * When a ''stop on error'' is required, when there is an error inside a defined action it now stops the storytest
+ * ''setUp()'' and ''tearDown()'' methods are now called correctly, including when a storytest is abandoned
+#
+----!2 6. Removed
+#
+ * Obscure Functionality: It's no longer possible to have !-DoFixture-! fake the results it expects. This was added to record Selenium results several years ago, but was not effective. However, it's possible to record with dynamic variables.
+ * Templates have been removed, as they are now superceded by multi-defined actions.  See .FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters
+ * ''!-DomainFixture-!'' is no longer used as the default wrapper for the first object of a storytest. See section 2 above for further details.

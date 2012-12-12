@@ -1,0 +1,9 @@
+|!-fit.ActionFixture-!|
+|start|!-BuyActions-!|
+|check|total|00.00|
+|enter|price|12.00|
+|press|buy|
+|check|total|12.00|
+|enter|price|100.00|
+|press|buy|
+|check|total|112.00|

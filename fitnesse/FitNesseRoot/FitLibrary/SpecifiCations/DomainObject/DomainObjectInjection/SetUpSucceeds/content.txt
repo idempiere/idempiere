@@ -1,0 +1,115 @@
+ * Domain object setup follows exactly the same pattern as with checking
+ * Progammers: a factory method is required for setting up the embedded ''phone'' list
+!**< def
+!define account (|''id''|456778|
+|''payment history''|poor|
+)
+!define phones (|''country''|''region''|''number''|
+|64|9|7375000|
+|64|27|4222112|
+)
+!define user (|''name''|Bad Payer|
+|''owe''|30000.00|
+|''phones''|${phones}|
+|''account''|${account}|
+)
+!define test (!|fitlibrary.specify.domain.UserAdapter|
+
+|''user''|${user}|
+
+|''checks''|
+
+|''user''|${user}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.UserAdapter</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td>Bad Payer</td>
+</tr>
+<tr><td><i>owe</i></td>
+<td>30000.00</td>
+</tr>
+<tr><td><i>phones</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>country</i></td>
+<td><i>region</i></td>
+<td><i>number</i></td>
+</tr>
+<tr><td>64</td>
+<td>9</td>
+<td>7375000</td>
+</tr>
+<tr><td>64</td>
+<td>27</td>
+<td>4222112</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr><td><i>account</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>id</i></td>
+<td>456778</td>
+</tr>
+<tr><td><i>payment history</i></td>
+<td>poor</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td class="pass">Bad Payer</td>
+</tr>
+<tr><td><i>owe</i></td>
+<td class="pass">30000.00</td>
+</tr>
+<tr><td><i>phones</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>country</i></td>
+<td><i>region</i></td>
+<td><i>number</i></td>
+</tr>
+<tr><td class="pass">64</td>
+<td class="pass">9</td>
+<td class="pass">7375000</td>
+</tr>
+<tr><td class="pass">64</td>
+<td class="pass">27</td>
+<td class="pass">4222112</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr><td><i>account</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>id</i></td>
+<td class="pass">456778</td>
+</tr>
+<tr><td><i>payment history</i></td>
+<td class="pass">poor</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

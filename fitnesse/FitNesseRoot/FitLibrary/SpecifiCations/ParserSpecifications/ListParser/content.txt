@@ -1,0 +1,6 @@
+!3 A List may be represented as a comma separated list or as an embedded table
+A ''ListParser'' is only applied in Java with:
+ * An array, if ''ArrayParser'' is not applicable
+ * A ''Collection'' when a ''SetParser'' is not applicable
+ * An ''Iterator''
+|!contents|

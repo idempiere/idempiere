@@ -1,0 +1,11 @@
+${programmers}
+#
+In many cases, ${fitLibrary} will automatically choose a suitable ${traverse} to interpret a value that's:
+
+ * Returned from a ${actionMethod} for a ${workflow} action
+ * Returned from a ${ruleMethod} for the ${expected} value of a ${rule}
+
+However, while an ${entity} will be auto-wrapped, a ${valueObject}, such as a primitive value, will not be.
+
+ * That's because a ${valueObject} resulting from an action may be checked against an ${expected} string value
+ * So if you want to apply a ${valueObject} to the rest of a ${workflow} table, you need to explicitly wrap it, using a ${selector}.

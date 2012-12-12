@@ -1,0 +1,34 @@
+Wrap the current object with a ''!-CalculateTraverse-!'', which is applied to the rest of the table:
+!**< def
+!define test (!|fitlibrary.specify.workflow.SelectWrap|
+
+|'''calculate'''|
+|''a''|''b''||''+''|
+|1|2||3|
+|100|-3||97|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.SelectWrap</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="4"><b>calculate</b></td>
+</tr>
+<tr><td><i>a</i></td>
+<td><i>b</i></td>
+<td>&nbsp;</td>
+<td><i>+</i></td>
+</tr>
+<tr><td>1</td>
+<td>2</td>
+<td>&nbsp;</td>
+<td class="pass">3</td>
+</tr>
+<tr><td>100</td>
+<td>-3</td>
+<td>&nbsp;</td>
+<td class="pass">97</td>
+</tr>
+</table>-!|

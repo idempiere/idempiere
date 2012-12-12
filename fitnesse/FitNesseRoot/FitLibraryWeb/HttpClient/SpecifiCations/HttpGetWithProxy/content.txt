@@ -1,0 +1,27 @@
+|''with http client''|
+
+|''proxy url''|localhost|''with port''|5557|
+
+|'''also run'''|''with web server for testing''|
+
+|'''also run'''|''with proxy server for testing''|
+
+|''start proxy server on port''|5557|
+
+|''start logging''|
+
+|''start file server on port''|8096|''at directory''|!-FitNesseRoot-!|
+
+|''http get''|http://localhost:8096/files/handlingWindows.html|
+
+|'''show'''|''headers''|
+
+|''headers include''|
+|''name''|''value''|
+|Content-Type|text/html; charset=UTF-8|
+
+|'''show'''|''reply escaped''|
+
+|''stop testing server''|
+
+|''stop proxy server''|

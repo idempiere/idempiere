@@ -1,0 +1,7 @@
+!**> technical infrastructure
+
+The following is needed to run this as a test. It's discussed in the code details. It can be set up by someone who has some technical knowledge.
+
+|''add global''|!-fitlibrary.tutorial.Global-!|
+
+**!

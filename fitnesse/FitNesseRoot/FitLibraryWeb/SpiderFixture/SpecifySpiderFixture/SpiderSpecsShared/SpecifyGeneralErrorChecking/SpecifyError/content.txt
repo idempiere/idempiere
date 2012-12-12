@@ -1,0 +1,28 @@
+It's annoying to have to check after every page traversal whether an error has occurred. An action is provided that sets up ''!-SpiderFixture-!'' to automatically checks for an error message whenever a title is checked or a request is made to go to a URL.
+
+The ''show error diagnostics at when page contains'' action below means that ''!-SpiderFixture-!'' automatically checks for the error pattern (here, ".*error") in the text of the page. If it finds that pattern, it shows the text of the selected element (here, ''//msg''). If there is no xpath given or no matching element, the whole page is shown (as plain text, not as rendered html).
+!**< def
+!define html ({{{<head>
+   <title>A title</title>
+</head>
+Some error
+<msg>404 Message</msg>
+}}}
+)
+**!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''title''|'''is'''|A title|
+
+|''show error diagnostics at''|//msg|''when page contains''|.*error|
+
+|''title''|'''is'''|A title|
+
+|''check for error''|
+
+|''expected test results''|2|''right''|0|''wrong''|0|''ignored''|2|''exceptions''|

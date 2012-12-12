@@ -1,0 +1,77 @@
+The methods to validate credit cards can be found at http://www.beachnet.com/~hstiles/cardtype.html
+
+The numbers have been checked through http://javascript.internet.com/forms/val-credit-card.html - look at their code for more explanation.
+
+I've duplicated the document below, however the original is simpler for formatting reasons.
+
+
+
+This document outlines procedures and algorithms for Verifying the accuracy and validity of credit card numbers. Most credit card numbers are encoded with a "Check Digit". A check digit is a digit added to a number (either at the end or the beginning) that validates the authenticity of the number. A simple algorithm is applied to the other digits of the number which yields the check digit. By running the algorithm, and comparing the check digit you get from the algorithm with the check digit encoded with the credit card number, you can verify that you have correctly read all of the digits and that they make a valid combination.
+
+Possible uses for this information:
+
+    * When a user has keyed in a credit card number (or scanned it) and you want to validate it before sending it our for debit authorization.
+    * When issuing cards, say an affinity card, you might want to add a check digit using the MOD 10 method.
+
+1.Prefix, Length, and Check Digit Criteria
+
+Here is a table outlining the major credit cards that you might want to validate.
+
+|CARD TYPE|Prefix|Length|Check digit algorithm|
+|MASTERCARD|51-55|16|mod 10|
+|VISA|4|13, 16|mod 10|
+|AMEX|34, 37|15|mod 10|
+|Diners Club/Carte Blanche|300-305, 36, 38|14|mod 10|
+|Discover|6011|16|mod 10|
+|enRoute|2014, 2149|15|any|
+|JCB|3|16|mod 10|
+|JCB|2131, 1800|15|mod 10|
+
+
+2. LUHN Formula (Mod 10) for Validation of Primary Account Number
+
+The following steps are required to validate the primary account number:
+
+Step 1: Double the value of alternate digits of the primary account number beginning with the second digit from the right (the first right-hand digit is the check digit.)
+
+Step 2: Add the individual digits comprising the products obtained in Step 1 to each of the unaffected digits in the original number.
+
+Step 3: The total obtained in Step 2 must be a number ending in zero (30, 40, 50, etc.) for the account number to be validated.
+
+For example, to validate the primary account number 49927398716:
+
+Step 1:
+{{{
+        4 9 9 2 7 3 9 8 7 1 6
+         x2  x2  x2  x2  x2
+ ------------------------------
+         18   4   6  16   2
+}}}
+
+
+
+
+Step 2: 4 +(1+8)+ 9 + (4) + 7 + (6) + 9 +(1+6) + 7 + (2) + 6
+
+Step 3: Sum = 70 : Card number is validated
+
+Note: Card is valid because the 70/10 yields no remainder.
+
+The great folks at ICVERIFY are the original source of this data, I only formatted it in HTML.
+
+If you are in the market, I wrote a set of FoxPro modules for Windows/Dos that interface nicely with ICVERIFY in a multi-user LAN setup. You just set up ICVERIFY on a single station, and all stations on the LAN can authorize credit cards with a single FOXBASE function call. Of course, you have to license ICVERIFY by the node, but it is very reasonable. I also wrote a couple of simple functions to perform pre-authorization, card screening, etc.
+
+Here is a Microsoft Excel worksheet that will validate a number for you (useful for understanding the algorithm, it is in a .ZIP compressed format)
+
+Horace Vallas made a NeoWebScript (Tcl really) procedure that implements it.
+Check it out at https://enterprise.neosoft.com/secureforms/hav/
+
+Because I get at least a letter a week regarding this routine, here are some additional helpful notes:
+
+Make sure that you:
+
+   1. have started with the rightmost digit (including the check digit) (figure odd and even based upon the rightmost digit being odd, regardless of the length of the Credit Card.) ALWAYS work right to left.
+   2. the check digit counts as digit #1 (assuming that the rightmost digit is the check digit) and is not doubled
+   3. double every second digit (starting with digit # 2 from the right)
+   4. remember that when you double a number over 4, (6 for example) you don't add the result to your total, but rather the sum of the digits of the result (in the above example 6*2=12 so you would add 1+2 to your total (not 12).
+   5. always include the Visa or M/C/ prefix. 

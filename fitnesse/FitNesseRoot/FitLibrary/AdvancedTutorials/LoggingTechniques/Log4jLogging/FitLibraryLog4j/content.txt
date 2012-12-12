@@ -1,0 +1,54 @@
+!|fitlibrary.specify.log.AppWithLog4j|
+
+We need to add the following table afer our main fixture, otherwise the ''!-configure FitLibrary logger-!'' will take control of the storytest.
+
+|''!-with FitLibrary logger-!''|
+|''show after''|true|
+|''level''|TRACE|
+
+The above fixture is as follows:
+{{{   public class AppWithLog4j {
+	private static Logger logger = Logger.getLogger(AppWithLog4j.class);
+
+	public boolean call() {
+		logger.trace("App called");
+		return true;
+	}
+   }
+}}}The action ''call into application'' calls the method ''call()'' above.
+
+|''with log4j''|
+|''show after''|true|
+|''level''|TRACE|
+
+ * On ''Test'', the following has text added after the table, because we've enabled ''show after'' and the level is TRACE:
+
+|''call''|
+
+|''with log4j''|
+|''level''|DEBUG|
+
+ * The following only adds logging from ''!-FitLibrary-!'' because the level of log4j is DEBUG, so trace() calls are not shown:
+
+|''call''|
+
+ * Note that the following only turns off the logging into ''show after'' (by removing the appender); it does not have any other impact on logging with log4j.
+
+|''with log4j''|
+|''show after''|false|
+
+|''!-with FitLibrary logger-!''|
+|''show after''|false|
+
+ * The following does not add text because we've disabled ''show after'' for both loggers:
+
+|''call''|
+
+!2 Notice:
+#
+It pays to turn off all logging into ''show after'' at the end of the storytest, so that it doesn't affect other storytests.
+
+#
+----!1 Next
+#
+Return to the [[last page of the tutorial here][<LoggingTechniques.Log4jLogging]]

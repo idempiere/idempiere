@@ -1,0 +1,4 @@
+|!-hire.ChangeRentals-!|
+|''rental item''|''count''|''days''|''returns()''|''running total()''|
+|coffee urn|5|1|true|-100.00|
+|hot water urn|2|1|true|-140.00|

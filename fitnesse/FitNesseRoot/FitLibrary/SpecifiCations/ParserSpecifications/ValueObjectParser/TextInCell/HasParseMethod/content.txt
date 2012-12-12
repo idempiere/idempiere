@@ -1,0 +1,18 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.ClassWithParseMethod</td></tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a value set with its own parse method</i></td></tr>
+<tr><td><i>value</i></td></tr>
+<tr><td>1</td></tr>
+<tr><td>2</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.ClassWithParseMethod</td></tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a value set with its own parse method</i></td></tr>
+<tr><td><i>value</i></td></tr>
+<tr><td class="pass">1</td></tr>
+<tr><td class="pass">2</td></tr>
+</table>-!|

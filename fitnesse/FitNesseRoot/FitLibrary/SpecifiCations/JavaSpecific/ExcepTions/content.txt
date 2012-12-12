@@ -1,0 +1,20 @@
+!2 Various errors and exceptions are caught by ${fitLibrary} and shown in the report.
+|!3 ''Application exceptions''|''Nested''|
+|^ExceptionThrownByAction||
+|^ExceptionThrownBySetterInObject|^ExceptionThrownBySetterInNestedObject|
+|^ExceptionThrownByGetterInObject|^ExceptionThrownByGetterInNestedObject|
+|^ExceptionThrownByGetterInCollection|^ExceptionThrownByGetterInNestedCollection|
+|^ExceptionThrownByFinder|^ExceptionThrownByNestedFinder|
+|^ExceptionThrownByShow|^ExceptionThrownByNestedShow|
+|^ExceptionThrownByEquals|^ExceptionThrownByNestedEquals|
+|^ExceptionThrownByParse|^ExceptionThrownByNestedParse|
+|^ExceptionThrownByToString|^ExceptionThrownByNestedToString|
+
+|!3 ''Classes''|
+|^UnknownClass|
+|^ConstructorNotVisible|
+|^NoNullaryConstructor|
+
+|!3 ''Methods''|
+|^AmbiguousActionMethod|
+|'''to be continued....'''|

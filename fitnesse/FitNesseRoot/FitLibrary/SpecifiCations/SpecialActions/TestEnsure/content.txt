@@ -1,0 +1,52 @@
+!2 '''ensure''' tests that a boolean action returns true. Any exception is signalled in the report.
+!**< def
+!define test1 (!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|'''ensure'''|''a right action''|1|
+|'''ensure'''|''a wrong action''|1.5||2.2|
+|'''ensure'''|''an exception action''|
+)
+!define test2 (!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|'''ensure'''|''a parse failure''|s|
+|'''ensure'''|''a missing method''|
+)
+**!
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test1}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><b>ensure</b></td>
+<td><i>a right action</i></td>
+<td colspan="3">1</td>
+</tr>
+<tr><td class="fail"><b>ensure</b></td>
+<td><i>a wrong action</i></td>
+<td>1.5</td>
+<td>&nbsp;</td>
+<td>2.2</td>
+</tr>
+<tr><td class="error"><b>ensure</b><hr><pre><div class="fit_stacktrace"></div></pre></td>
+<td colspan="4"><i>an exception action</i></td>
+</tr>
+</table>-!|
+
+ * While a parse error (such as a number format exception) will be treated as success, a missing method or other such error is reported as such.
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test2}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><b>ensure</b></td>
+<td><i>a parse failure</i></td>
+<td class="error">s<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error"><b>ensure</b><hr/> <span class="fit_label">Missing method</span></td>
+<td colspan="2"><i>a missing method</i></td>
+</tr>
+</table>-!|

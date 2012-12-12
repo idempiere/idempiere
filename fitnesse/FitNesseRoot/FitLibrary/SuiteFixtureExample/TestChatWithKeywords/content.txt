@@ -1,0 +1,10 @@
+ * This has keywords, and it's selected to be run when the keyword for the suite that's run includes 'complete' or 'connect'
+|''keywords''|complete,connect|
+
+|''chat''|
+
+|''connect user''|sarah|
+
+|''user''|sarah|''creates''|fit|''room''|
+|''user''|sarah|''enters''|fit|''room''|
+

@@ -1,0 +1,42 @@
+!**< def
+!define test {!|fitlibrary.specify.valueObject.ParseMyFixedPointAsStringWithDelegate|
+
+|'''check'''|a fixed point|(12,34)|(12,34)|
+
+|'''check'''|a fixed point|(12,34)|(0,0)|
+
+|''a fixed point as domain object''|(12,34)|
+|x|12|
+|y|34|
+}
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.valueObject.ParseMyFixedPointAsStringWithDelegate</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td>a fixed point</td>
+<td>(12,34)</td>
+<td class="pass">(12,34)</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td>a fixed point</td>
+<td>(12,34)</td>
+<td class="fail">(0,0) <span class="fit_label">expected</span><hr>(12,34) <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a fixed point as domain object</i></td>
+<td>(12,34)</td>
+</tr>
+<tr><td>x</td>
+<td class="pass">12</td>
+</tr>
+<tr><td>y</td>
+<td class="pass">34</td>
+</tr>
+</table>-!|

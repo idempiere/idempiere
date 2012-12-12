@@ -1,0 +1,9 @@
+In the past it has sometimes been difficult to word actions so that they both read well and give good error messages.
+
+''!-FitLibrary-!'' now allows for ordinary code to provide useful reporting information. Code can now make changes to the current row that's under execution. It can:
+
+ * Add a cell with a '''show''' value in it
+ * Pass, fail, ignore or give an error for a specific cell in a row.
+
+^AddShowCell
+^PassFailCell

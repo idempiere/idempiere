@@ -1,0 +1,7 @@
+!|fitlibrary.specify.domain.PrimitiveActions|
+
+|''an int''|303|
+----
+|'''check'''|''double it''|606|
+----
+|''an int''|606|

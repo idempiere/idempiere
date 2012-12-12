@@ -1,0 +1,6 @@
+!3 A problem with a missing ''start'' in ''!-ActionFixture-!''
+The first table with an ''!-ActionFixture-!'' needs a ''start''
+!|fitlibrary.specify.ClearStartInActionFixture|
+
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td colspan=3>fit.ActionFixture</td></tr><tr><td>enter</td><td>enterString</td><td>a string</td></tr></table>-!|!-<table><tr><td colspan=3>fit.ActionFixture</td></tr><tr><td class="error">enter<hr/> <span class="fit_label">You must start a fixture using the 'start' keyword.</span></td><td>enterString</td><td>a string</td></tr></table>-!|

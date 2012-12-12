@@ -1,0 +1,33 @@
+!1 Part 7: Handling Delays with Ajax
+
+When a web application makes use of ajax, there can be delays.
+
+For example, when the user clicks on a button, the browser may quietly call through to the server, get some new content and add it to the page. Depending on the load on the system, there may be a small delay before the new content appears.
+
+So we have to make allowance for those delays in our automated tests.
+#
+!2 An Example
+#
+I suggest that you play with [[this web page][files/delaysWithAjax.html]]. And then come back here (using the '''Back''' button on the browser). We'll then look at how to handle the time delays with that web page in our tests.
+#
+!2 (Mis-)Using Sleeps
+#
+The common approach is to include explicit ''wait'' or ''sleep'' actions after an action that may take some time. But this approach has its problems:
+
+ * If we make the ''sleep'' time too short, we will sometimes get spurious errors that are just due to delays
+ * If we make the ''sleep'' time too long, the tests will take a lot longer to run.
+
+It's difficult to balance between these two problems, and especially when tests need to be run in different environments in which the delay is likely to differ substantially. Trying to "tune" the ''sleeps'' can be very painful.
+#
+!2 Timeouts instead
+#
+The approach that we take with ''!-SpiderFixture-!'' is to instead specify a timeout period after which a test will fail.
+
+ * That means that the test passes as quickly as it can.
+ * Only if a test fails will it wait for the time-out period before failing.
+ * So we get the best of both worlds, and don't have the balance two conflicting aims, as in the ''sleep'' approach above.
+ * The timeout period can be set globally, and just altered locally if we need longer timeout in one spot than usual
+
+In fact, there are two separate timeouts, as we'll see.
+
+Let's start with handling ajax-style [[changes to existing HTML elements][^HandlingChanges]]

@@ -1,0 +1,18 @@
+^RowsCorrect
+^RowsAnyOrder
+^ColumnsAnyOrder
+^ColumnsRepeated
+^SomeColumns
+!2 Missing and Surplus Rows
+^MissingRow
+^SurplusRow
+!2 Wrong Values
+^WrongNonKey
+^WrongKey
+^WrongKeyDuplicated
+^InconsistentColumns
+!2 Errors
+^BadFieldNames
+^ExtraCellsIgnored
+^MissingCells
+^SpecialCellValue

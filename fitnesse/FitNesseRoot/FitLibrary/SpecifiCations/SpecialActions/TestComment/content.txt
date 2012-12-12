@@ -1,0 +1,11 @@
+!2 'comment' ignores the rest of the table (but doesn't colour it as ignored)
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table><tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr></table>
+<table>
+<tr><td colspan=2>comment</td></tr>
+<tr><td>show</td><td>shown</td></tr>
+</table>-!|!-<table><tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr></table>
+<table>
+<tr><td colspan=2>comment</td></tr>
+<tr><td>show</td><td>shown</td></tr>
+</table>-!|

@@ -1,0 +1,23 @@
+!***< def
+!define set (
+|''colour''|
+|red|
+
+)
+!define list (
+|${set}|
+|${set}|
+
+)
+!define gen (
+|''ts''|${list}|
+
+)
+**!
+!|fitlibraryGeneric.specify.object.GenericListOfSets|
+
+|''gen''|${gen}|
+
+|''checks''|
+
+|''gen''|${gen}|

@@ -1,0 +1,20 @@
+!*< def
+!define html ({{{
+  <div id='message'>Hello World!</div>}}})
+*!
+
+|''keywords''|chrome,firefox,ie,htmlunit|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+''In the example below, the text 'message' gets passed into the javascript body as the arguments[0] value ''
+
+|''execute !-JavaScript-!''| var theDiv=document.getElementById(arguments[0]); return theDiv.innerHTML;|with|message|'''is'''|Hello World!|
+
+''Of course !-FitLibrary-! dynamic variables can be used for the arguments''
+
+|set|id to find|to|message|
+
+|''execute !-JavaScript-!''| var theDiv=document.getElementById(arguments[0]); return theDiv.innerHTML;|with|@{id to find}|'''is'''|Hello World!|

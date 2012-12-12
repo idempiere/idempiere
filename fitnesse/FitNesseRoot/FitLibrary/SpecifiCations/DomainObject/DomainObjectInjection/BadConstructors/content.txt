@@ -1,0 +1,44 @@
+!**< def
+!define manager (|''name''|Yellow|
+)
+!define department (|''city''|Auckland|
+)
+!define employee (|''name''|Red|
+|''manager''|${manager}|
+|''department''|${department}|
+)
+!define test (!|fitlibrary.specify.domain.BadConstructorsInNestedObjects|
+
+|''employee''|${employee}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.BadConstructorsInNestedObjects</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>employee</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td>Red</td>
+</tr>
+<tr><td><i>manager</i></td>
+<td class="error"><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td>Yellow</td>
+</tr>
+</table><hr/> <span class="fit_label">Class has no default constructor</span></td>
+</tr>
+<tr><td><i>department</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>city</i></td>
+<td>Auckland</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

@@ -1,0 +1,36 @@
+!2 Table Smells
+^MagicNumbers ... have the fixture map ^MagicNumbersFixed
+^BrainTwisters .. ^BrainUntwisted
+^SettingUp
+^ColumnForAction
+^SplitValues ... ^UnsplitValues
+^OneOrZeroElements
+^ManyListRows ... ^ReduceColumns ... ^ReduceListWithArgs .. ^ReduceListWithSubset
+
+!2 Still to organise
+ * Redundancy adds noise and slows evolution
+ * Clear intent enables communication
+ * Organisation enables communication
+ * Mixed messages are missed: say one thing clearly
+ * Premature or unnecessary commitment (tests carry into new technology)
+^CombineTables ... two tables better as one
+^RedundantResultColumn ... don't say it twice ^RedundantResultColumnRemoved
+^RedundantColumnValues ... all the same values in a given column ^RedundantColumnValuesFixed1 and ^RedundantColumnValuesFixed2
+^RedundantAdd ... repeated value shows
+^LotsOfActions ... can be expressed more succinctly
+^IntentUnclear ... so comments and clear examples are needed
+^TestSubset ... to focus on essentials and reduce dependencies
+^TestSelectedSubset ... select with arguments to focus
+^OrganiseTable ... so it's easier to see what the main cases are, and which are missing
+^SplitTableThatMixesTests ... for orthogonal concerns
+^SplitBusinessRulesAndValidation ... a specific orthogonality issue
+^LotsOfSimilarTests ... show that a more abstract business rule needs to emerge
+^LongSetUp ... so compact it with ''!-EntryFixture-!''
+^LotsOfSimilarSetUp and ^LotsMoreSimilar ... so share it ^ShareIt
+^SetUpThroughActions ... better to turn it into entry setup
+^TestThroughUi ... so back off and test UI separately
+^TestUi ... again, avoid unnecessary commitment to particular technology
+^UnclearWorkFlowPhases ... clearly separate setup, change state, and check
+^HardToFollowChanges ... show screen dump, HTML when things go wrong
+^TextIsAwkward ... use graphics
+^MediateChangeWithFixture ... so many application changes don't break the tests

@@ -1,0 +1,3 @@
+!3 Generic types are also retained with the result of an action
+^GenericCheck
+^GenericObjectFollows

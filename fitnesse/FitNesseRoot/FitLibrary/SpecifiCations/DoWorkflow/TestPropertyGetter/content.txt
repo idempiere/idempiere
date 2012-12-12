@@ -1,0 +1,24 @@
+If an action has no arguments and doesn't correspond to a method, the property is accessed instead:
+!**< def
+!define test (!|fitlibrary.specify.workflow.PropertyAccess|
+
+|''true property''|
+
+|'''check'''|int property with 3|3|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.PropertyAccess</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="pass"><i>true property</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td>int property with 3</td>
+<td class="pass">3</td>
+</tr>
+</table>-!|

@@ -1,0 +1,72 @@
+!*< def
+!define one (<head><title>One Title</title></head>
+)
+!define two (<head><title>Two Title</title></head>
+)
+!define html ({{{<head><title>From</title></head>
+<a id="one" href="one.html" target="Window One">One</a>
+<a id="two" href="two.html" target="Window Two">Two</a> }}})
+*!
+
+|''keywords''|chrome,firefox,htmlunit|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''make file''|one.html|''from''|${one}|
+|''make file''|two.html|''from''|${two}|
+
+|''with html''|${html}|
+
+|''click''|one|
+|''click''|two|
+
+|''title''|'''is'''|From|
+
+|show|windows|
+
+|''select window''|Window One|
+|''title''|'''is'''|One Title|
+
+|show|windows|
+
+|''select initial window''|
+|''title''|'''is'''|From|
+
+|show|windows|
+
+|''select window''|Window One|
+|''title''|'''is'''|One Title|
+
+|show|windows|
+
+|''select window''|Window Two|
+|''title''|'''is'''|Two Title|
+
+|show|windows|
+
+|''select window''|Window One|
+|''select window''|Window Two|
+|''select window''|Window Two|
+|''select window''|Window One|
+|''select window''|Window Two|
+
+|''close''|
+
+|show|windows|
+
+ * Firefox and Htmlunit differ in what window is selected on a close. So it is necessary to select the required window after one is closed:
+
+|''select window''|Window One|
+
+|''title''|'''is'''|One Title|
+
+|''close''|
+
+|''select initial window''|
+
+|''title''|'''is'''|From|
+
+|''click''|two|
+
+|''select window''|Window Two|
+|''title''|'''becomes'''|Two Title|

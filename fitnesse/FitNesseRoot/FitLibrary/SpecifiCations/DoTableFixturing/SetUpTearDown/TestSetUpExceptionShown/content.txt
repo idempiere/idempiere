@@ -1,0 +1,9 @@
+ * ''setUp()'' is called once the ''flow fixture object'' has started running the whole storytest
+ * If an exception is thrown inside ''setUp()'', it is shown in the report
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table>
+<tr><td>fitlibrary.specify.workflow.SetUpWithException</td></tr>
+</table>-!|!-<table>
+<tr><td class="error">fitlibrary.specify.workflow.SetUpWithException<hr><pre><div class="fit_stacktrace"></div></pre></td></tr>
+</table>-!|
+

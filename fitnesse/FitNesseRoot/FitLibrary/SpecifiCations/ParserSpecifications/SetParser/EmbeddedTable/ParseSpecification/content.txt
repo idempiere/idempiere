@@ -1,0 +1,78 @@
+!**< def
+!define ints12 (|''count''|
+|1|
+|2|
+)
+!define intsc2 (|''count''|
+|c|
+|2|
+)
+!define testInts (!|fitlibrary.specify.setParser.Parse|
+
+|''given set''|${ints12}|
+|''count''|
+|1|
+|2|
+
+|''given set''||
+|''count''|
+
+|''given set''|${intsc2}|
+|''count''|
+|2|
+)
+
+!define colours (|''name''|
+|red|
+|green|
+)
+**!
+ * The component type of the List is unknown. So the programmer has to write a factory method that is called to create an object for each row of the inner table. In Java, the name of this method is based on the header row of the inner table.
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${testInts}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.setParser.Parse</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given set</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>count</i></td>
+</tr>
+<tr><td>1</td>
+</tr>
+<tr><td>2</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr><td colspan="2"><i>count</i></td>
+</tr>
+<tr><td colspan="2" class="pass">1</td>
+</tr>
+<tr><td colspan="2" class="pass">2</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given set</i></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="pass"><td colspan="2"><i>count</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given set</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>count</i></td>
+</tr>
+<tr><td class="error" class="error">c<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td>2</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr><td colspan="2"><i>count</i></td>
+</tr>
+<tr><td colspan="2" class="pass">2</td>
+</tr>
+</table>-!|

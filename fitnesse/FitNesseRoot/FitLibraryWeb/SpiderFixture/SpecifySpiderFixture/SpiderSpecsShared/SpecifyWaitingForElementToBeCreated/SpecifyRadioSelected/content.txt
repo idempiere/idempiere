@@ -1,0 +1,27 @@
+!*< def
+!define html [{{{<script type="text/javascript">
+function addInput(){
+   document.getElementById("green").setAttribute("checked","yes");
+}
+</script>
+<input type="button" id="ok" value="OK" onclick="javascript:setTimeout('addInput()', 50)"/>
+<form>
+<input type="radio" name='colour' id="green" value="green"/>Green<br/>
+<input type="radio" name='colour' id="red" value="red" checked/>Red<br/>
+</form>}}}]
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''checkbox''|green|''is''|false|
+|''checkbox''|red|''is''|true|
+
+|''click''|ok|
+
+|''checkbox''|green|''becomes''|true|
+#|''checkbox''|red|''becomes''|false| doesn't work
+

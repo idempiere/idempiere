@@ -1,0 +1,8 @@
+!2 Exceptions with the ''press'', ''enter'' and ''check'' methods are handled (with minor inconsistency)
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td colspan=3>fit.ActionFixture</td></tr><tr><td>start</td><td colspan=2>fit.specify.ActionFixtureUnderTest</td></tr><tr><td>enter</td><td>enterThrows</td><td>a string</td></tr><tr><td>enter</td><td>enterThrows</td><td>error</td></tr><tr><td>press</td><td colspan=2>pressThrows</td></tr><tr><td>check</td><td>checkThrows</td><td>0</td></tr></table>-!|
+|!-<table><tr><td colspan=3>fit.ActionFixture</td></tr><tr><td>start</td><td colspan=2>fit.specify.ActionFixtureUnderTest</td></tr><tr><td class="error">enter<hr><pre><div class="fit_stacktrace">
+</div></pre></td><td>enterThrows</td><td>a string</td></tr><tr><td class="error">enter<hr><pre><div class="fit_stacktrace">
+</div></pre></td><td>enterThrows</td><td>error</td></tr><tr><td class="error">press<hr><pre><div class="fit_stacktrace">
+</div></pre></td><td colspan=2>pressThrows</td></tr><tr><td>check</td><td>checkThrows</td><td class="error">0<hr><pre><div class="fit_stacktrace">
+</div></pre></td></tr></table>-!|

@@ -1,0 +1,12 @@
+^TestNoBookings
+^TestMakeBooking
+^TestMakeMultiBooking
+^TestCollectBooking
+^TestCollectBookingEarly
+^TestCancelBooking
+^TestChangeBooking
+
+^TestBookingUnavailable
+^TestBookingClashes
+^TestRentalClashesWithBooking
+^TestBookingsDoNotClash

@@ -1,0 +1,19 @@
+!2 Inputs and outputs are processed from left to right. Processing continues across a row even if an earlier method call was wrong.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=4>calculate</td></tr>
+<tr><td>a</td><td></td><td>plus</td><td>plus</td></tr>
+<tr><td>1</td><td></td><td>1</td><td>1</td></tr>
+<tr><td>2</td><td></td><td>0</td><td>2</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=4>calculate</td></tr>
+<tr><td>a</td><td></td><td>plus</td><td>plus</td></tr>
+<tr><td>1</td><td></td><td class="pass">1</td><td class="pass">1</td></tr>
+<tr><td>2</td><td></td><td class="fail">0 <span class="fit_label">expected</span><hr>2 <span class="fit_label">actual</span></td><td class="pass">2</td></tr>
+</table>-!|

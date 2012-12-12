@@ -1,0 +1,15 @@
+!*< def
+!define html ({{{<dv id="divv"/>
+<p name="pp">bla</p>}}})
+*!
+|''keywords''|chrome,htmlunit,firefox|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''poll url timeout''|500|
+
+|'''poll url'''|http://localhost:${FITNESSE_PORT}/files/test.html|'''until'''|''element''|//p[@name="qq"]|''exists''|
+
+|''expected test results''|1|''right''|0|''wrong''|0|''ignored''|1|''exceptions''|

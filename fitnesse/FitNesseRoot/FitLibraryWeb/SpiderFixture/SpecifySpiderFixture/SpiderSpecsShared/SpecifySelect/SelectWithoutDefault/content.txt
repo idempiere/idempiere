@@ -1,0 +1,41 @@
+!*< def
+!define html ({{{<select id="colour" class="dps">
+  <option value="">None</option>
+  <option value="RED">Red</option>
+  <option value="GREEN">Green</option>
+  <OPTION VALUE="VIOLET">Violet</OPTION>
+</select>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''option of''|colour|''is''|None|
+
+|''with''|colour|''select option''|RED|
+
+|''option of''|colour|''is''|RED|
+
+|''with''|colour|''select option''| VIOLET |
+
+|''option of''|colour|''is''| VIOLET |
+
+* Can select empty option when value empty but text present
+
+|''with''|colour|''select option''||
+
+|''option of''|colour|''is''|None|
+
+* Can select empty option by text
+
+
+|''with''|colour|''select option''| VIOLET |
+
+|''with''|colour|''select text''|None|
+
+|''option of''|colour|''is''|None|
+
+

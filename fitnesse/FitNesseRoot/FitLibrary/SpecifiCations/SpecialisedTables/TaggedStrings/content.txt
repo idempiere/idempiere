@@ -1,0 +1,44 @@
+!3 Sometimes we want the html tags in a cell to be kept; they're usually discarded.
+If the type of a parameter, etc is a subtype of ''!-TaggedString-!'', the tags and all are supplied as a String
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoWithTags</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td>tagged text</td><td><b>bold</b></td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td>tag text</td><td><b>bold</b></td><td><b>bold</b></td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td>tag text</td><td><table><tr><td>one</td></tr></table></td><td><table><tr><td>one</td></tr></table></td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td>tag text</td><td><ul><li>one</li></li>two</li></ul></td>
+<td><ul><li>one</li></li>two</li></ul></td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td>tag text</td><td><b>bold</b></td><td>bold</td></tr>
+<tr><td>check</td><td>tag text</td><td>bold</td>
+<td><b>bold</b></td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoWithTags</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td>tagged text</td><td class="pass"><b>bold</b></td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td>tag text</td><td><b>bold</b></td><td class="pass"><b>bold</b></td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td>tag text</td><td><table><tr><td>one</td></tr></table></td><td class="pass"><table><tr><td>one</td></tr></table></td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td>tag text</td><td><ul><li>one</li></li>two</li></ul></td>
+<td class="pass"><ul><li>one</li></li>two</li></ul></td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td>tag text</td><td><b>bold</b></td><td class="fail">bold <span class="fit_label">expected</span><hr><b>bold</b> <span class="fit_label">actual</span></td></tr>
+<tr><td>check</td><td>tag text</td><td>bold</td>
+<td class="fail"><b>bold</b> <span class="fit_label">expected</span><hr>bold <span class="fit_label">actual</span></td></tr>
+</table>-!|

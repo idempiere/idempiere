@@ -1,0 +1,46 @@
+ * Here we specify ${fitLibrary} by example, using ${fitLibrary} tables
+ * The following assumes considerable familiarity with the ideas of ${fitLibrary}
+ * This is '''not''' intended as a tutorial. See .FitLibrary.UserGuide for that.
+
+|^ReadingSpecifications|''The format of the storytests/specifications''|
+
+!3 ''Storytests for specifying:''
+
+|^DoWorkflow|''A sequence of actions on a system, starting in some state (!-DoFixture-!)''|
+|^SpecialActions|''Special actions are modifiers of actions, such as "is", "check", "show" and "show after"''|
+|^GlobalActionsProvided|''Various actions are built into !-FitLibrary-!, such as "start stopwatch"''|
+|^AutoWrapWithDo|''A non-fixture object created in the first table with be auto-wrapped with !-DoFixture-!''|
+|>MultipleFlowObjects|''More than one flow object can be current at once.''|
+|^GoingIntoFlow|''Using !-FitLibraryServer-!, it's not necessary for the first table to have a !-DoFixture-! table in order to be in flow''|
+|^PlainTextInsteadOfTables|''Flow actions can be written in plain text, instead of in tables''|
+|^DoTableFixturing|''Specialised fixturing, such as "setUp()/tearDown()", parse delegates, access to current row, custom special actions''|
+|^AddingGlobalActionsObject|''How an object with global methods can be added''|
+
+|^CollectionSpecifications|''Various collections of elements, such as lists, sets, maps, arrays, etc (both checking and setup)''|
+|^BusinessRules|''Calculation rules, constraints, and combinations''|
+|^DomainObject|''The property values of ${domainObject}s (both checking and setup)''|
+|^DomainAggregate|''The aggregate structure of ${domainObject}s''|
+
+|^DomainWorkflow|''As with ^DoWorkflow, but with support for three phases of ${workflow}'': ${setup}, ${actions} and ${checks}|
+|^SpecialisedTables|''Grids of values, images, HTML lists, file comparisons, etc''|
+|[[File Handler][.FitLibrary.SpecifiCations.GlobalActionsProvided.FileProcessing]]|''Provides a way to read and write files in a storytest''|
+
+|^SuiteFixture|''How the same suite of storytests can be used to test a system in very different ways''|
+
+|^DynamicVariables|''How variables can be used in storytests at runtime''|
+|^DefinedActions|''Parameterised actions can be defined within storytests''|
+|^DefinedActionsWithNamedParameters|''(Multi Defined Actions) Parameterised actions with optional named parameters''|
+
+|^ParserSpecifications|''How values are parsed from strings and embedded tables into valus and objects''|
+|^FitLibraryGeneric|''Support for Java generics and enums''|
+|>PlugInMethods|''Various plugin methods that may be used, including for object creation''|
+|^TechnicalSpecifications|''Detailed specifications that are more likely to be of interest to those who port ${fitLibrary} to other languages''|
+|^JavaSpecific|''Details that are specific to Java and may not be implemented in other languages''|
+|^AlienEvaluator|''How ${fitLibrary} inter-operates with ${fit}''|
+|^ExperiMental|''Some experimental features that may well be dropped''|
+
+|^CoreFitSpecifications|''Specifications for the Java version of Fit''|
+|>ZiEndFolderRunner|''Checks that ''!-FolderRunner-!'' is working ok''|
+
+Contents in alphabetical order:
+|!contents|

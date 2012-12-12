@@ -1,0 +1,27 @@
+---- * Given:
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''book''|8||coffee dispenser|''on''|2004/05/08 09:01|''for''|2 days|
+|''pay with cash $''|131.20|
+|''complete transaction''|
+
+ * Check:
+''The point balance for a client changes:''
+|'''check'''|point balance for client|Joanna|1.56|
+
+---- * Actions:
+|''time is now''|2004/05/08 09:02|
+
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''cancel booking of''|8||coffee dispenser|''on''|2004/05/08 09:01|''for''|2 days|
+|''refund cash $''|131.20|
+|''complete transaction''|
+---- * Checks:
+''The point balance for a client changes:''
+|'''check'''|point balance for client|Joanna|0.00|
+
+|''client booking list''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+
+|''rental item subset''|
+|''name''|''free count''|
+|coffee dispenser|20|

@@ -1,0 +1,15 @@
+|!3 Spider with different browsers|''On port''|
+|^SpiderWithChrome|8999|
+|^SpiderWithHtmlUnit|8998|
+|^SpiderWithFirefox|8997|
+|^SpiderWithIe|8996|
+
+|^SpiderSpecsShared|''These are the specs that are shared by the browser-specific specifications above''|
+#
+!2 Note
+ * See ^HowSpecsWork
+
+>SpecSetUp
+>SuiteSetUp
+>TearDown
+

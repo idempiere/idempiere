@@ -1,0 +1,4 @@
+|!-fit.ActionFixture-!|
+|start|!-ChatServerActions2-!|
+|enter|room|lotr|
+|check|occupant count|error|

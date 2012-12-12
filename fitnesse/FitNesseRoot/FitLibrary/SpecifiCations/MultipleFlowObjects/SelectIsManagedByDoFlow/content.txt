@@ -1,0 +1,18 @@
+|''add named''| first |!-fitlibrary.specify.select.FirstSelect-!|
+|''add named''| second |!-fitlibrary.specify.select.SecondSelect-!|
+
+|''select''|first|
+
+|''count''|'''is'''|1|
+
+|''select''|second|
+
+|''count''|'''is'''|2|
+
+|''select''|first|
+
+|''count''|'''is'''|1|
+
+|''select''|second|
+
+|''count''|'''is'''|2|

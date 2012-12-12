@@ -1,0 +1,3 @@
+The method ''suiteTearDown()'' is called on a ${suite} after it finished processing all storytests.
+
+See the corresponding ${suiteSetUpMethod}.

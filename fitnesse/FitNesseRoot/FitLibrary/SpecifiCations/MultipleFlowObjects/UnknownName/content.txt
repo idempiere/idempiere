@@ -1,0 +1,16 @@
+!**< def
+!define test (!|fitlibrary.SelectFixture|
+
+|''select''|first|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.SelectFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><i>select</i><hr/> <span class="fit_label">Unknown name</span></td>
+<td>first</td>
+</tr>
+</table>-!|

@@ -1,0 +1,4 @@
+!3 A Map may be represented as a comma separated list or as an embedded table
+A ''MapParser'' is only applied in Java with:
+ * A ''Map''
+|!contents|

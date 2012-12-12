@@ -1,0 +1,32 @@
+For a full description of ''suite fixtures'' and their rationale, see ^DetailsAndRationale
+
+Consider the following simple example that we used in introducing ${workflow}:
+!***< def
+${pleaseIgnore}
+!define roomsIn (|''name''|''owner''|''users''|
+|pirates|sarah||
+)
+!define users (|''name''|
+|sarah|
+)
+!define rooms (|''name''|''users''|
+|pirates|${users}|
+)
+**!
+| !-fitlibrary.eg.chat.ChatSystem-! |
+
+|''users''|${users}|
+|''rooms''|${roomsIn}|
+----
+|''user''|sarah|''enters''|pirates|''room''|
+----
+|''users''|${users}|
+|''rooms''|${rooms}|
+
+The first table includes the name of a fixture class, ''!-fitlibrary.eg.chat.ChatSystem-!''. This ties this storytest to this particular fixture. If we wanted to run this storytest by testing the chat system through a web interface, we could introduce a different fixture that instead uses Selenium, for example, to do the testing. This would mean changing the fixture class name in the first table whenever we switched between the two sorts of tests.
+
+By using suite fixtures, we can use the storytest for testing either way, without having to change the storytest. Let's see how that's done with SuiteFixtureExample.
+
+For a programmer's view of ''suite fixtures'', see ^ProgrammerSuiteFixture
+
+For a Customer's view of ''suite fixtures'', see ^CustomerSuiteFixture

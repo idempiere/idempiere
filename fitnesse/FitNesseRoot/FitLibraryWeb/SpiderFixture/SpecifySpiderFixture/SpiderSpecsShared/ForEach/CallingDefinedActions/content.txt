@@ -1,0 +1,32 @@
+Example show that !-ForEach-! fixture can be used to call parameterized defined actions
+
+!include -c .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+!**< def
+!define body (|''append with and''|VALUE|
+
+|set|GLOBAL|to|@{GLOBAL} and @{VALUE}|
+)
+
+**!
+|!-fitlibrary.DefineAction-!|
+|${body}|
+
+''Call defined action '''with out''' using !-ForEach-! fixture''
+
+|set|GLOBAL|to|red|
+
+|append with and|yellow|
+|append with and|pink|
+|append with and|green|
+
+|get|@{GLOBAL}|is|red and yellow and pink and green|
+
+''Call defined action again, this time '''WITH''' for each'': 
+
+|set|GLOBAL|to|red|
+
+|''for each''|color|''in''|yellow,pink,green|
+|append with and|@{color}|
+
+|get|@{GLOBAL}|is|red and yellow and pink and green|

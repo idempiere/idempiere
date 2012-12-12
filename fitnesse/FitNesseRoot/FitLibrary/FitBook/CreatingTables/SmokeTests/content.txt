@@ -1,0 +1,5 @@
+|!-eg.AllFiles-!|
+|!-PatientTests/*Smoke.html-!||
+|!-StaffScheduleTests/*Smoke.html-!||
+|!-BedOccupancyTests/*Smoke.html-!||
+|!-ObservationTests/*Smoke.html-!||

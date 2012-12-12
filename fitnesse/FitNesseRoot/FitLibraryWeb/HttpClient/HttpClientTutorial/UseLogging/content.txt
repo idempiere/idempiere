@@ -1,0 +1,38 @@
+!3 8. Logging
+#
+It can sometimes be useful to turn on logging to see what's going on (and when).
+
+Run a different file server on port 8092 [[on this page][<HttpClientTutorial.RunFileServerWithLogging]].
+
+ * This also does logging; it will appear after the final table in the report [[on this page][<HttpClientTutorial.RunFileServerWithLogging]]
+ * Run it again if you get a "''Connection refused''" error.
+
+|''with http client''|
+
+ * Turn on logging of the underlying fixtures:
+
+|''with fixturing logger''|
+|''level''|ALL|
+|''show after''|true|
+
+ * After running the '''Test''', open the folding area called ''Logging'' after the next table:
+
+|''http get''|http://localhost:8092/files/handlingWindows.html|
+
+|'''show'''|''headers''|
+
+|''headers include''|
+|''name''|''value''|
+|Content-Type|text/html; charset=UTF-8|
+
+|'''show escaped'''|''reply''|
+#
+----!3 9. The End
+#
+That's the end of this tutorial on using httpClient for simple access to a web site.
+
+For testing web systems in general, the following are more likely to be useful:
+
+ * For testing web systems at the user level, see the [[Spider Turorial][.FitLibraryWeb.SpiderFixture.SpiderTutorial]]
+
+ * For testing web services through XML (soap, or plain text), see the [[Web Services Tutorial][.FitLibraryWeb.WebServicesClient.WebServicesTutorial]]

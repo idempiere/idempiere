@@ -1,0 +1,42 @@
+!**< def
+!define boss (|name|For Ced|
+)
+!define test (!|fitlibrary.specify.exception.ExceptionThrownByGetter|
+
+|check user|
+|boss|${boss}|
+
+|''expected test results''|0|''right''|0|''wrong''|0|''ignored''|1|''exceptions''|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.exception.ExceptionThrownByGetter</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="2">check user</td>
+</tr>
+<tr><td>boss</td>
+<td><table border="1" cellspacing="0">
+<tr><td>name</td>
+<td class="error">For Ced<hr><pre><div class="fit_stacktrace">fitlibrary.specify.exception.ForcedException
+	at fitlibrary.specify.exception.ExceptionThrownByGetter$User.getName
+</div></pre></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="pass"><i>expected test results</i></td>
+<td>0</td>
+<td><i>right</i></td>
+<td>0</td>
+<td><i>wrong</i></td>
+<td>0</td>
+<td><i>ignored</i></td>
+<td>1</td>
+<td><i>exceptions</i></td>
+</tr>
+</table>-!|

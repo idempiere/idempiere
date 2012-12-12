@@ -1,0 +1,3 @@
+A '''show''' special action may be used to show the result of an action. It can be convenient to instead have the method itself signal that something should be shown. If the method that's called for an action throws a ''!-FitLibraryShowException-!'', the included text is shown in a cell that's added to the row.
+
+!contents -R2

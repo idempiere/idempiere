@@ -1,0 +1,3 @@
+!2 A press method need not be void
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td colspan=2>fit.ActionFixture</td></tr><tr><td>start</td><td>fit.specify.ActionFixtureUnderTest</td></tr><tr><td>press</td><td>pressMethodReturningInt</td></tr></table>-!|!-<table><tr><td colspan=2>fit.ActionFixture</td></tr><tr><td>start</td><td>fit.specify.ActionFixtureUnderTest</td></tr><tr><td>press</td><td>pressMethodReturningInt</td></tr></table>-!|

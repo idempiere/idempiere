@@ -1,0 +1,29 @@
+Logging support is provided. To start/enable logging, use the ''start logging'' action. If this is not called, any subsequent ''log'' actions are ignored.
+
+To start logging, specify a file name with the ''start log'' action; this file name can include a directory, which will be created if necessary.
+
+To log text to the file, use the ''log message'' action, which takes a string as argument. To log the result of an action, use the ''log'' action.
+
+|spider|
+
+ * To see the results of logging, uncomment the following (invisible) line.
+
+#|start logging|C:/logs/log|
+
+|set|stuff|to|STUFF|
+
+ * The following just makes sure that the test passes:
+
+|''get''|@{stuff}|'''is'''|STUFF|
+
+ * The text is logged directly (with any ''dynamic variables'' substituted:
+
+|log message|@{stuff}|
+
+ * The text that results from an action is logged:
+
+|log|get|and more stuff @{stuff}|
+
+When the ''start logging'' action is called in a storytest that is being run, the current date/time is added to the given filename to create the name of the log file. This log file name is used for all storytests that are run within a single suite.
+
+For example, this storytest was previously run to give the log file ''log_2009-04-16_12-06.0.txt'' in the directory ''C:/logs/''.

@@ -1,0 +1,57 @@
+!**< def
+!define map1 (|a|
+|A|B|
+)
+!define map2 (|A|B|C|
+|a|b|
+)
+!define test (!|fitlibrary.specify.mapTraverse.StringMap|
+
+|''checks''|
+
+|''string map''|${map1}|
+
+|''string map''|${map2}|
+)
+**!
+Each row for an expected element of the Map needs to be two cells wide.
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.mapTraverse.StringMap</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>string map</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td colspan="2" class="error">a<hr/> <span class="fit_label">Missing table cells</span></td>
+</tr>
+<tr class="pass"><td>A</td>
+<td>B</td>
+</tr>
+<tr>
+<td class="fail">a <span class="fit_label">surplus</span></td>
+<td>b</td></tr></table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>string map</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td class="error">A<hr/> <span class="fit_label">Extra table cells</span></td>
+<td>B</td>
+<td>C</td>
+</tr>
+<tr class="pass"><td>a</td>
+<td colspan="2">b</td>
+</tr>
+<tr>
+<td class="fail">A <span class="fit_label">surplus</span></td>
+<td>B</td></tr></table>
+</td>
+</tr>
+</table>-!|

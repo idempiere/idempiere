@@ -1,0 +1,293 @@
+!**< def
+!define test1 (!|fitlibrary.specify.workflow.PojoGivesErrorsAndFails|
+
+|''returns false''|'''is'''|true|
+
+|''throws exception''|'''is'''|3|
+
+|''returns false''|'''is'''|true|
+
+|''throws exception''|'''is'''|3|
+)
+!define test2 (!|fitlibrary.specify.workflow.PojoGivesErrorsAndFails|
+
+|''set stop on error''|true|
+
+|''returns false''|'''is'''|true|
+
+|''throws exception''|'''is'''|3|
+
+|''returns false''|'''is'''|true|
+
+|''throws exception''|'''is'''|3|
+)
+!define test3 (!|fitlibrary.specify.workflow.PojoGivesErrorsAndFails|
+
+|''set stop on error''|true|
+
+|''throws exception''|'''is'''|3|
+
+|''returns false''|'''is'''|true|
+
+|''throws exception''|'''is'''|3|
+)
+!define test4 (!|fitlibrary.specify.workflow.PojoGivesErrorsAndFails|
+
+|''runtime configuration''|
+|''stop after''|2|''errors or''|2|''fails''|
+
+|''returns false''|'''is'''|true|
+
+|''throws exception''|'''is'''|3|
+
+|''returns false''|'''is'''|true|
+
+|''throws exception''|'''is'''|3|
+)
+!define test5 (!|fitlibrary.specify.workflow.PojoGivesErrorsAndFails|
+
+|''runtime configuration''|
+|''stop after''|2|''errors or''|2|''fails''|
+
+|''throws exception''|'''is'''|3|
+
+|''returns false''|'''is'''|true|
+
+|''throws exception''|'''is'''|3|
+
+|''returns false''|'''is'''|true|
+)
+**!
+Sometimes a storytest can take more than a few seconds to run, such as with web testing.
+
+Once an error or two occurs, the following errors tend to be irrelevant anyway, so there's not point wasting time by continuing.
+
+For example, when a click on a link fails because the link is not there, there's little point in testing the contents of the expected page.
+#
+!2 1. Here's what happens by default:
+#
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test1}|!-<table border="1" cellspacing="0">
+	<tr>
+		<td>fitlibrary.specify.workflow.PojoGivesErrorsAndFails</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>returns false</i></td>
+		<td><b>is</b></td>
+		<td class="fail">true <span class="fit_label">expected</span><hr>false <span class="fit_label">actual</span></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>throws exception</i></td>
+		<td><b>is</b></td>
+		<td class="error">3<hr/> <span class="fit_label">error</span></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>returns false</i></td>
+		<td><b>is</b></td>
+		<td class="fail">true <span class="fit_label">expected</span><hr>false <span class="fit_label">actual</span></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>throws exception</i></td>
+		<td><b>is</b></td>
+		<td class="error">3<hr/> <span class="fit_label">error</span></td>
+	</tr>
+</table>-!|
+#
+!2 2. Stop on any error or fail
+#
+To stop a storytest on errors, one approach is to stop on any error or fail (yellow or red). 
+
+In the following, we stop on a fail (red). The setting applies to this and subsequent storytests (until it's changed), so it can be set at a suite level (eg, in ''!-SuiteSetUp-!'').
+
+The rest of the tables are marked in gray to show they've been ignored:
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test2}|!-<table border="1" cellspacing="0">
+	<tr>
+		<td>fitlibrary.specify.workflow.PojoGivesErrorsAndFails</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>set stop on error</i></td>
+		<td>true</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>returns false</i></td>
+		<td><b>is</b></td>
+		<td class="fail">true <span class="fit_label">expected</span><hr>false <span class="fit_label">actual</span></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="ignore"><i>throws exception</i></td>
+		<td class="ignore"><b>is</b></td>
+		<td class="ignore">3</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="ignore"><i>returns false</i></td>
+		<td class="ignore"><b>is</b></td>
+		<td class="ignore">true</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="ignore"><i>throws exception</i></td>
+		<td class="ignore"><b>is</b></td>
+		<td class="ignore">3</td>
+	</tr>
+</table>-!|
+
+In the following, we stop on an error (yellow):
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test3}|!-<table border="1" cellspacing="0">
+	<tr>
+		<td>fitlibrary.specify.workflow.PojoGivesErrorsAndFails</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>set stop on error</i></td>
+		<td>true</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>throws exception</i></td>
+		<td><b>is</b></td>
+		<td class="error">3<hr/> <span class="fit_label">error</span></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="ignore"><i>returns false</i></td>
+		<td class="ignore"><b>is</b></td>
+		<td class="ignore">true</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="ignore"><i>throws exception</i></td>
+		<td class="ignore"><b>is</b></td>
+		<td class="ignore">3</td>
+	</tr>
+</table>-!|
+#
+!2 3. Finer-scale control of stopping
+#
+Here we stop after 2 fails:
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test4}|!-<table border="1" cellspacing="0">
+	<tr>
+		<td>fitlibrary.specify.workflow.PojoGivesErrorsAndFails</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td colspan="5"><i>runtime configuration</i></td>
+	</tr>
+	<tr>
+		<td><i>stop after</i></td>
+		<td>2</td>
+		<td><i>errors or</i></td>
+		<td>2</td>
+		<td><i>fails</i></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>returns false</i></td>
+		<td><b>is</b></td>
+		<td class="fail">true <span class="fit_label">expected</span><hr>false <span class="fit_label">actual</span></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>throws exception</i></td>
+		<td><b>is</b></td>
+		<td class="error">3<hr/> <span class="fit_label">error</span></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>returns false</i></td>
+		<td><b>is</b></td>
+		<td class="fail">true <span class="fit_label">expected</span><hr>false <span class="fit_label">actual</span></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="ignore"><i>throws exception</i></td>
+		<td class="ignore"><b>is</b></td>
+		<td class="ignore">3</td>
+	</tr>
+</table>-!|
+
+Here we stop after 2 errors:
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test5}|!-<table border="1" cellspacing="0">
+	<tr>
+		<td>fitlibrary.specify.workflow.PojoGivesErrorsAndFails</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td colspan="5"><i>runtime configuration</i></td>
+	</tr>
+	<tr>
+		<td><i>stop after</i></td>
+		<td>2</td>
+		<td><i>errors or</i></td>
+		<td>2</td>
+		<td><i>fails</i></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>throws exception</i></td>
+		<td><b>is</b></td>
+		<td class="error">3<hr/> <span class="fit_label">error</span></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>returns false</i></td>
+		<td><b>is</b></td>
+		<td class="fail">true <span class="fit_label">expected</span><hr>false <span class="fit_label">actual</span></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>throws exception</i></td>
+		<td><b>is</b></td>
+		<td class="error">3<hr/> <span class="fit_label">error</span></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="ignore"><i>returns false</i></td>
+		<td class="ignore"><b>is</b></td>
+		<td class="ignore">true</td>
+	</tr>
+</table>-!|
+
+!2 4. Stopping when response is too slow
+#
+It can be handy to test that things happen within a given expected response time.
+
+A stopwatch can be used to do this. See: .FitLibrary.SpecifiCations.GlobalActionsProvided.StopWatch

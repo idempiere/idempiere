@@ -1,0 +1,12 @@
+^PostText
+^SoapV11
+^SoapV12
+^SoapRaw
+^PostTextWithProxy
+^SoapV11WithProxy
+^SoapV12WithProxy
+^SoapRawWithProxy
+^PostTextFromRelativeFile
+^PostSoap11FromRelativeFile
+^PostSoap12FromRelativeFile
+^PostRawSoapFromRelativeFile

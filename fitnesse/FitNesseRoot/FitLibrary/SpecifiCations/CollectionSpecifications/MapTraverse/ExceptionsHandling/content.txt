@@ -1,0 +1,33 @@
+!**< def
+!define map (|a|b|
+)
+!define test (!|fitlibrary.specify.mapTraverse.ErrorMap|
+
+|''checks''|
+
+|''error map''|${map}|
+)
+**!
+Any exception is caught and shown in the table.
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.mapTraverse.ErrorMap</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>error map</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td class="error">a<hr><pre><div class="fit_stacktrace"></div></pre></td>
+<td>b</td>
+</tr>
+<tr>
+<td class="fail">a <span class="fit_label">surplus</span></td>
+<td>InError[]</td></tr></table>
+</td>
+</tr>
+</table>-!|

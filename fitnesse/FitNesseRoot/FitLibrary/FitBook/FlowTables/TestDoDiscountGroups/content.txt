@@ -1,0 +1,26 @@
+|Discounts|
+
+|set ups|
+|''future value''|''max balance''|''min purchase''|''discount %''|
+|low|0.00|0.00|0|
+|medium|0.00|500.00|5|
+|medium|500.00|500.00|3|
+|high|500.00|2000.00|10|
+|high|1000.00|500.00|5|
+
+|''calculate with''|low|''future value''|
+|''owing''|''purchase''||''discount''|
+|0.00|1000.00||0.00|
+|1000.00|5000.00||0.00|
+
+|ordered list|
+|''future value''|''max owing''|''min purchase''|''discount %''|
+|low|0.00|0.00|0|
+|medium|0.00|500.00|5|
+|medium|500.00|500.00|3|
+|high|500.00|2000.00|10|
+|high|1000.00|500.00|5|
+
+|subset|
+|''future value''|''max owing''|''min purchase''|''discount %''|
+|low|0.00|0.00|0|

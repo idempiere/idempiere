@@ -1,0 +1,191 @@
+!**< def
+!define test (!|fitlibrary.specify.definedAction.OtherFixturing|
+
+|clear defined actions|
+
+|define actions at|.FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions|
+
+|''set expand defined actions''|true|
+
+|''value''|'''is'''|0|
+|other|1|
+|''value''|'''is'''|1|
+|other|2|
+|''value''|'''is'''|2|
+
+|''value''|'''is'''|0|
+
+|''def value''|0|
+
+|other|1|
+|''def value''|1|
+|other|2|
+|''def value''|2|
+
+|''def value again''|0|
+
+|other|1|
+|''def value again''|1|
+
+|other|100|
+|''def value again again''|100|
+
+|''value''|'''is'''|0|
+)
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.definedAction.OtherFixturing</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>clear defined actions</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>define actions at</td>
+<td><a href="FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions">.FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions</a></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>set expand defined actions</i></td>
+<td>true</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>value</i></td>
+<td><b>is</b></td>
+<td class="pass">0</td>
+</tr>
+<tr><td>other</td>
+<td colspan="2">1</td>
+</tr>
+<tr><td><i>value</i></td>
+<td><b>is</b></td>
+<td class="pass">1</td>
+</tr>
+<tr><td>other</td>
+<td colspan="2">2</td>
+</tr>
+<tr><td><i>value</i></td>
+<td><b>is</b></td>
+<td class="pass">2</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>value</i></td>
+<td><b>is</b></td>
+<td class="pass">0</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>def value</i></td>
+<td>0</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions'>.FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions</a>:</span><table border="1" cellspacing="0">
+<tr><td>value</td><td>is</td><td class="pass">0</td></tr>
+</table></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>other</td>
+<td>1</td>
+</tr>
+<tr><td class="pass"><i>def value</i></td>
+<td>1</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions'>.FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions</a>:</span><table border="1" cellspacing="0">
+<tr><td>value</td><td>is</td><td class="pass">1</td></tr>
+</table></td></tr>
+<tr><td>other</td>
+<td>2</td>
+</tr>
+<tr><td class="pass"><i>def value</i></td>
+<td>2</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions'>.FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions</a>:</span><table border="1" cellspacing="0">
+<tr><td>value</td><td>is</td><td class="pass">2</td></tr>
+</table></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>def value again</i></td>
+<td>0</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions'>.FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions</a>:</span><table border="1" cellspacing="0">
+<tr><td>value</td><td>is</td><td class="pass">0</td></tr>
+</table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td>other</td><td>11</td></tr>
+<tr><td>value</td><td>is</td><td class="pass">11</td></tr>
+<tr><td>other</td><td>12</td></tr>
+<tr><td>value</td><td>is</td><td class="pass">12</td></tr>
+</table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td>value</td><td>is</td><td class="pass">0</td></tr>
+</table></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>other</td>
+<td>1</td>
+</tr>
+<tr><td class="pass"><i>def value again</i></td>
+<td>1</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions'>.FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions</a>:</span><table border="1" cellspacing="0">
+<tr><td>value</td><td>is</td><td class="pass">1</td></tr>
+</table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td>other</td><td>11</td></tr>
+<tr><td>value</td><td>is</td><td class="pass">11</td></tr>
+<tr><td>other</td><td>12</td></tr>
+<tr><td>value</td><td>is</td><td class="pass">12</td></tr>
+</table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td>value</td><td>is</td><td class="pass">1</td></tr>
+</table></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>other</td>
+<td>100</td>
+</tr>
+<tr><td class="pass"><i>def value again again</i></td>
+<td>100</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions'>.FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions</a>:</span><table border="1" cellspacing="0">
+<tr><td>value</td><td>is</td><td class="pass">100</td></tr>
+</table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td class="pass">def value again</td><td>100</td><td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions'>.FitLibrary.SpecifiCations.DefinedActions.AnyObjectsAddedToScopeDuringDefinedActionBodyExecutionAreRemovedAgain.DefinedActions</a>:</span><table border="1" cellspacing="0">
+<tr><td>value</td><td>is</td><td class="pass">100</td></tr>
+</table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td>other</td><td>11</td></tr>
+<tr><td>value</td><td>is</td><td class="pass">11</td></tr>
+<tr><td>other</td><td>12</td></tr>
+<tr><td>value</td><td>is</td><td class="pass">12</td></tr>
+</table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td>value</td><td>is</td><td class="pass">100</td></tr>
+</table></td></tr>
+</table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td>other</td><td>110</td></tr>
+<tr><td>value</td><td>is</td><td class="pass">110</td></tr>
+<tr><td>other</td><td>120</td></tr>
+<tr><td>value</td><td>is</td><td class="pass">120</td></tr>
+</table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td>value</td><td>is</td><td class="pass">100</td></tr>
+</table>
+<br/><hr/>
+</html></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>value</i></td>
+<td><b>is</b></td>
+<td class="pass">0</td>
+</tr>
+</table>-!|

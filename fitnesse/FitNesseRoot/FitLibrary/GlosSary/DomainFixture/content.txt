@@ -1,0 +1,27 @@
+${domainFixture} is an extension of ${doFixture} that more explicitly supports the 3 phases of ${workflow}:
+ * ${setup}: defines the ''given'' state of the ${sut} before the actions are carried out
+  * This will usually be brief compared to the sequence of actions that would need to be carried out to bring  the ${sut} from its initial state into the required state
+ * ${actions}: defines the actions that are carried out (by a user or some other system or by a scheduled task)
+  * One or more of these may also carry out checks:
+   * Whether the result of an action is as expected
+   * Whether an action was rejected as invalid, as expected
+ * ${checks}: defines the ''expected'' state of the ${sut} after the actions have been carried out
+A ${domainFixture} ${storytest} is organised into these three phases.
+ * They are separated with a horizontal line, using
+{{{
+<hr>}}}
+Alternatively:
+  * The end of the ${setup} phase and thus the start of the ${actions} phase is signalled with the following table:
+|''actions''|
+ * The end of the ${actions} phase and thus the start of the ${checks} phase is signalled with the following table:
+|''checks''|
+
+If there are no Actions, the ''checks'' table can be used to signal a switch from the setup phase directly into the Checks phase.
+
+!3 For Programmers
+In each of the phases the following apply at run time:
+ * In the ${setup}, each table defines a property-value pair. A ${setter} method is called with the value.
+ * In the ${actions}, ${domainFixture} acts the same as ${doFixture}
+ * In the ${checks}, each table defines a property-value pair. A ${getter} method is called to retrieve the value and that's matched against the expected value.
+
+DomainTraverse provides the actual implementation.

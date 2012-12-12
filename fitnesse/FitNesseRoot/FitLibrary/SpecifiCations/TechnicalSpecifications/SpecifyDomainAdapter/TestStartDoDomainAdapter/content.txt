@@ -1,0 +1,32 @@
+!3 A ''domain adapter'' may be started with a ''!-DoFixture-!''
+!**< def
+!define test {!|fitlibrary.DoFixture|
+
+|start|!-fitlibrary.specify.DomainAdapterUnderTest-!|
+
+|call|1|
+|call in sut|2|
+|call in sut sut|3|
+}
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.DoFixture</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>start</td>
+<td>fitlibrary.specify.DomainAdapterUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="pass">call</td>
+<td>1</td>
+</tr>
+<tr><td class="pass">call in sut</td>
+<td>2</td>
+</tr>
+<tr><td class="pass">call in sut sut</td>
+<td>3</td>
+</tr>
+</table>-!|

@@ -1,0 +1,21 @@
+|!-rent.StartApplication-!|
+
+|''setup''|
+|''rental item name''|''count''|''$/hour''|''$/day''|''$/week''|''deposit''|
+|coffee dispenser|10|1.50|8.20|60.00|0.00|
+|hot water dispenser|12|1.50|8.00|50.00|0.00|
+|cup|500|0.05|0.45|2.00|0.10|
+|coffee pot|20|1.50|12.00|60.00|0.00|
+| coffee urn | 20| 1.50| 12.00|60.00| 50.00|
+| table | 20 | 6.00 | 48.00| 200.00| 80.00|
+
+|''setup''|
+|''client name''|''phone''|
+|Joanna|373 7599|
+|Xiaosong|555 1225|
+
+|''setup''|
+|''staff name''|''phone''|
+|Bill|555 9876|
+
+|''time is now''| 2004/05/06 09:01|

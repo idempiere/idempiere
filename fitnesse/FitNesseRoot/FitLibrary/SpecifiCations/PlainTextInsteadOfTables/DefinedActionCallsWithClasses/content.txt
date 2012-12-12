@@ -1,0 +1,18 @@
+!**< def
+!define test (!|fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest|
+
+|''define actions at''|.FitLibrary.SpecifiCations.PlainTextInsteadOfTables.DefinedActions|
+
+|'''set'''|rick.class|'''to'''|Person|
+|'''set'''|rick.address|'''to'''|Waimauku|
+|'''set'''|this|'''to'''|rick|
+
+#|''address is''|Waimauku|
+
+- address is Waimauku
+)
+**!
+
+If the dynamic variable ''this'' is set, it's treated as the default object. This avoids
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!--!|

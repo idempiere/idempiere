@@ -1,0 +1,43 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!include -seamless SinglePropertyReferenceErrors|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DomainFixtureUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>colour 2</i></td>
+<td class="error"><table border="1" cellspacing="0">
+<tr><td>use</td>
+<td class="error">unknown property<hr/> <span class="fit_label">Missing method</span></td>
+</tr>
+</table></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>actions</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>colour 2</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>colour</i></td>
+<td class="pass">blue-green</td>
+</tr>
+</table>
+<br></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>colour 2</i></td>
+<td class="fail"><table border="1" cellspacing="0">
+<tr><td><i>use</i></td>
+<td><i>colour</i></td>
+</tr>
+</table> <span class="fit_label">expected</span><hr>MyColour[blue-green] <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br>-!|
+

@@ -1,0 +1,22 @@
+!*< def
+!define html [{{{<head><title>A title</title>
+<script type="text/javascript">
+function change(){
+   document.title='New Title';
+}
+</script>
+</head>
+<input type="checkbox" id="checked"
+onclick="javascript:setTimeout('change()', 50)">Option</input>}}}
+]
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''click''| checked |
+
+|''title''|'''becomes'''|New Title|

@@ -1,0 +1,51 @@
+!**< define
+!define test (!|fitlibrary.specify.calculate.RuleTableWithResetAndExecute|
+|expected resets|expected executes|resets?|executes?|expected resets|expected executes|resets?|executes?|
+|             1 |               0 |     1 |       1 |             1 |               1 |     1 |       1 |
+|             2 |               1 |     2 |       2 |             2 |               2 |     2 |       2 |
+|             3 |               2 |     3 |       3 |             3 |               3 |     3 |       3 |
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="8">fitlibrary.specify.calculate.RuleTableWithResetAndExecute</td>
+</tr>
+<tr><td>expected resets</td>
+<td>expected executes</td>
+<td>resets?</td>
+<td>executes?</td>
+<td>expected resets</td>
+<td>expected executes</td>
+<td>resets?</td>
+<td>executes?</td>
+</tr>
+<tr><td>1</td>
+<td>0</td>
+<td class="pass">1</td>
+<td class="pass">1</td>
+<td>1</td>
+<td>1</td>
+<td class="pass">1</td>
+<td class="pass">1</td>
+</tr>
+<tr><td>2</td>
+<td>1</td>
+<td class="pass">2</td>
+<td class="pass">2</td>
+<td>2</td>
+<td>2</td>
+<td class="pass">2</td>
+<td class="pass">2</td>
+</tr>
+<tr><td>3</td>
+<td>2</td>
+<td class="pass">3</td>
+<td class="pass">3</td>
+<td>3</td>
+<td>3</td>
+<td class="pass">3</td>
+<td class="pass">3</td>
+</tr>
+</table>-!|

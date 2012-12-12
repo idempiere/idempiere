@@ -1,0 +1,5 @@
+|!-DoTransfer-!|
+|''transfer''|some text 2|
+|check|''result''|some text 2|
+|''transfer''|other|
+|check|''result''|other|

@@ -1,0 +1,31 @@
+!3 With Logging
+#
+This runs a file server on port 8092 with logging enabled.
+#
+!3 Running
+#
+This runs a file server on local port 8092 when you run it as a '''Test'''.
+
+It closes down after the given period in seconds.
+
+!|fitlibrary.server.WebServerForTestingFixture|
+
+|''with fixturing logger''|
+|''level''|ALL|
+|''show after''|true|
+
+|''start file server on port''|8092|''at directory''|!-FitNesseRoot-!|
+
+|''stop testing server after''|10|''seconds''|
+
+Once it stops running, you can run it again.
+
+ * If you run it too soon, it will give an error because the port is already busy.
+
+ * That can happen if you press the back button soon after hitting '''Test''' and press '''Test''' again; the test is still running in the background.
+#
+!3 Warning
+#
+This file server has limited capability, and is only intended for testing purposes.
+
+While it limits the files that can be accessed to the specified directory, it is not guaranteed to be secure.

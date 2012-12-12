@@ -1,0 +1,190 @@
+!**< def
+!define test (!|fitlibrary.specify.parser.ParserUnderTest|
+
+!|valid|
+|float|
+|1.0|
+|1|
+|+1.3455|
+|-0.004|
+
+!|valid|
+|class Float|
+|1.0|
+|1|
+|+1.3455|
+|-0.004|
+||
+
+!|valid|
+|class Float null|
+||
+
+!|valid|
+|double|
+|1.0|
+|1|
+|+1.3455|
+|-0.004|
+
+!|valid|
+|class Double|
+|1.0|
+|1|
+|+1.3455|
+|-0.004|
+||
+
+!|valid|
+|class Double null|
+||
+
+!|invalid|
+|float|
+||
+|+|
+|1.5.6|
+
+!|invalid|
+|class Float|
+|+|
+|1.5.6|
+
+!|invalid|
+|double|
+||
+|+|
+|1.5.6|
+
+!|invalid|
+|class Double|
+|+|
+|1.5.6|
+)
+**!
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.ParserUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>float</td>
+</tr>
+<tr class="pass"><td>1.0</td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>+1.3455</td>
+</tr>
+<tr class="pass"><td>-0.004</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>class Float</td>
+</tr>
+<tr class="pass"><td>1.0</td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>+1.3455</td>
+</tr>
+<tr class="pass"><td>-0.004</td>
+</tr>
+<tr class="pass"><td>&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>class Float null</td>
+</tr>
+<tr class="pass"><td>&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>double</td>
+</tr>
+<tr class="pass"><td>1.0</td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>+1.3455</td>
+</tr>
+<tr class="pass"><td>-0.004</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>class Double</td>
+</tr>
+<tr class="pass"><td>1.0</td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>+1.3455</td>
+</tr>
+<tr class="pass"><td>-0.004</td>
+</tr>
+<tr class="pass"><td>&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>class Double null</td>
+</tr>
+<tr class="pass"><td>&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>float</td>
+</tr>
+<tr><td class="error"><hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">+<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">1.5.6<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>class Float</td>
+</tr>
+<tr><td class="error">+<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">1.5.6<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>double</td>
+</tr>
+<tr><td class="error"><hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">+<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">1.5.6<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>class Double</td>
+</tr>
+<tr><td class="error">+<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error">1.5.6<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+</table>-!|

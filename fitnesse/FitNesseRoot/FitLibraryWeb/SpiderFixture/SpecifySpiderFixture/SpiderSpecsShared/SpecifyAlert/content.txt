@@ -1,0 +1,7 @@
+''Note: alerts are currently not supported with htmlunit.''
+
+^CloseAlertsWithDismiss
+^AlertsCanAlsoBeClosedWithAcceptAlert
+^ConfirmAlerts
+^CanEnterTextIntoPromptAlert
+^DismissPromptAlertToAbandonTextEntry

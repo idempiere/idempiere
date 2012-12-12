@@ -1,0 +1,49 @@
+Dynamic variables allow for storytests to take different values, depending on the values that have been defined.
+
+As a general rule, it's better to set a single value to a ''dynamic variable''.
+
+ * Rather than using an !-!include-! and revising the value of variables and dynamic variables to alter the contents of the !-!include-!, make use of ''defined actions'' with appropriate parameters.
+
+Dynamic variables  can be loaded from a properties file, as well as being set within storytests.
+!2 Using Dynamic variables
+ * The value of a dynamic variable is accessed using the @{} form. Eg:
+
+|''with''|//input|''set text''|@{simone.name}|
+
+ * They may be nested, such as within ''defined actions''. Eg, where ''person'' is a parameter, the value of the variable is resolved before resolving the dynamic variable value:
+
+|''with''|//input|''set text''|@{@{person}.name}|
+
+ * To show the value of one or more dynamic variables:
+
+|'''show'''|''get''|@{simone.name} with card @{simone.credit card.number}|
+
+ * If a dynamic variable doesn't have a value, the @{} form remains
+!2 Changing Dynamic variables
+ * Load dynamic variables from a property file:
+
+|''add dynamic variables from file''|c:/props.txt|
+
+ * Load dynamic variables from a unicode-based property file:
+
+|''add dynamic variables from unicode file''|c:/props.uni|
+
+ * Set a dynamic variable to a string in a storytest:
+
+|'''set'''|simone.name|''to''|Simone|
+
+ * Set a dynamic variable to the result of an action:
+
+|'''set'''|simone.id|''add''|Simone|''to''|Persons|
+
+ * Set several dynamic variables at once in a storytest:
+
+|''set variables''|
+|simone.name|Simone|
+|simone.credit card.number|41111111|
+
+ * Clear all dynamic properties:
+
+|''clear dynamic variables''|
+!2 Specification
+|.FitLibrary.SpecifiCations.DynamicVariables|

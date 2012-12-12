@@ -1,0 +1,38 @@
+!3 Matching still requires the expected values to be parsed.
+So, once again, we can only handle an empty Map or a Map of String to String in comma-separated form
+!**< def
+!define test {!|fitlibrary.specify.mapParser.Match|
+
+|''map of string abc''|'''is'''|a->b,b->c,c->a|
+
+|''map empty''|'''is'''||
+
+|''map of 123''|'''is'''|1->2,2->3,3->4|
+}
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.mapParser.Match</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>map of string abc</i></td>
+<td><b>is</b></td>
+<td class="pass">a-&gt;b,b-&gt;c,c-&gt;a</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>map empty</i></td>
+<td><b>is</b></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>map of 123</i></td>
+<td><b>is</b></td>
+<td class="fail">1-&gt;2,2-&gt;3,3-&gt;4 <span class="fit_label">expected</span><hr>1->2, 2->3, 3->4 <span class="fit_label">actual</span></td>
+</tr>
+</table>-!|
+
+The last table fails because the actual Map is not from String to String
+

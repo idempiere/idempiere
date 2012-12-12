@@ -1,0 +1,25 @@
+!3 5. Matching the request
+#
+Let's extend the second table, as follow:
+
+|''with mock web services''|
+
+|''mock soap11 on port''|8081|
+|''xpath''|//countOf|''is''|Oranges|
+|''response''|<count>44</count>|
+
+|''close after''|5|''seconds''|
+
+Now, the response of 44 will only be sent if the request exactly matches "oranges":
+
+ * Try it with OrangesCall.
+
+If the request doesn't match, an error (404) is returned:
+
+ * Try running ApplesCall with it to see this error.
+#
+!3 6. Next
+#
+But what if there are several requests, because our system checks regularly for the stock count.
+
+An example of that is on [[this page][RequestSequence]].

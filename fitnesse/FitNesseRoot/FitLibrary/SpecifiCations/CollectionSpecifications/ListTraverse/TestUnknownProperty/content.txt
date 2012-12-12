@@ -1,0 +1,15 @@
+!2 A property that is not within any of the elements is rejected.
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.ArrayFixtureUnderTest</td></tr>
+<tr><td>+</td><td>&amp;</td><td>some</td></tr>
+<tr><td>1</td><td>one</td><td></td></tr>
+<tr><td>1</td><td>two</td><td></td></tr>
+<tr><td>2</td><td>two</td><td></td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.ArrayFixtureUnderTest</td></tr>
+<tr><td>+</td><td>&amp;</td><td class="error">some<hr/> <span class="fit_label">Could not find property some </span></td></tr>
+<tr><td>1</td><td>one</td><td></td></tr>
+<tr><td>1</td><td>two</td><td></td></tr>
+<tr><td>2</td><td>two</td><td></td></tr>
+</table>-!|

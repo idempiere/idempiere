@@ -1,0 +1,8 @@
+!3 A Dynamic Variable can be set and used in storytests
+!|fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DynamicVariables.RandomSelection.DefinedActions|
+
+|''random variable values''|
+
+|'''show'''|''get''|@{register.title}|

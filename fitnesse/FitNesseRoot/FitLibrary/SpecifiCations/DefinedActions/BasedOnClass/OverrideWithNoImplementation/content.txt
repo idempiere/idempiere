@@ -1,0 +1,27 @@
+Class based defined actions should be able to be overriden by derived classes to provide no implementation method.
+
+!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActions.BasedOnClass.DefinedActions|
+
+|set|helloGreeting|to|will be overriden|
+|set|goodbyeGreeting|to|will not be overriden|
+|set|somethingGreeting|to|will call super version not this|
+
+|'''set'''|nation.class|'''to'''|France|
+|'''set'''|France.super|'''to'''|Country|
+
+|''oo''|nation|''say hello''|
+|''oo''|nation|''say something''|
+|''oo''|nation|''say goodbye''|
+
+
+|get|@{helloGreeting}|is|bonjour!|
+
+|get|@{somethingGreeting}|is|there i've said something!|
+
+
+''The 'say goodbye' defined action in nation france is overriden but provides a null implementation therefore variable will remain as above and super Country class should not be called''
+|get|@{goodbyeGreeting}|is|will not be overriden|

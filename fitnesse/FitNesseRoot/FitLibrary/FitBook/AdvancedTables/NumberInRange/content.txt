@@ -1,0 +1,6 @@
+|!-StressTest-!|
+|clients|max reaction time|within time()|
+|1|10|true|
+|10|10|true|
+|100|30|true|
+|500|60|true|

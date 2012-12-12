@@ -1,0 +1,60 @@
+The Recorder will pass through and record web service calls on multiple ports. For each port, for each web service call:
+
+ * The call is passed on to the real web service
+ * The result from that call to the real web service is returned
+ * The request and response are saved to files
+#
+!2 Running
+#
+The recorder is started with the following command (where the classpath needs to be filled in with jars from the ''lib'' folder:
+
+!-java -cp ... fitlibrary.ws.recorder.WebServicesRecorder record.config recordingResults SOAP12-!
+
+where:
+
+ * ''record.config'' is the name of a property file which specifies what is to be recorded (its contents are defined below).
+ * ''recordingResults'' is the folder where the results are to be recorded and ''record.config'' is a property file that defines ports to record on, etc.
+ * The last, optional argument is "SOAP11" or "SOAP12" ("SOAP11" is the default).
+
+When you've recorded sufficient web service calls, simply stop/kill the above Java program.
+#
+!2 Property file
+#
+This defines what ports are to be recorded from.
+
+Here's an example property file:
+
+----localPort1: 8081
+ws1:http://realWS:8080
+----
+This defines one port to record on, and the real web service URL (just host and port).
+
+In general, one or more ports can be defined with ''localPortN'' and ''wsN'', where ''N'' is 1, 2, 3, ... in sequence.
+
+For example, a second port could be added to the file above with the following extra lines:
+----localPort2: 8082
+ws2:http://realWS2:8080
+----!2 Recorded files
+For a given run of the recorder, it records the request/responses pairs in a folder with a time-specific name like "2009-06-23_11-33" within the recording folder defined on the command line. With the time-based folder it creates the following files:
+ * storytest8081.text
+  * The name includes the port number that the web service call was received on
+  * It contains the wiki required to directly use the mock web service system. This text will need to be pasted into a storytest in !-FitNesse-! to make use of it.
+ * !-Port8081Response1-!
+  * The first request/response
+  * The name includes the port number concerned and the request/response number on that port
+  * A folder that contains two files, containing the request and the response, in ''request.zml'' and ''response.xml''
+ * !-Port8081Response2-!
+  * The second request/response
+ * etc
+#
+!2 Using the results
+#
+Direct recordings of web service calls are a good start, but it's likely to be necessary to alter them for longer term use. The following changes are likely to be needed, to reduce maintenance cost and to allow for changes in the order of web service calls that make sense:
+
+ * If soap1.1 or soap1.2 are being used with standard xml wrappers, these can be removed from the files and the tables changed to reflect the specific soap version.
+ * If some parts of the xml in the request are irrelevant to the call, it would be better to use an xpath for matching instead of a complete match.
+ * If there are dates encoded in the request and/or response, it may be necessary to use templating to plug in suitable dates in the request and/or response.
+ * if several requests and/or responses are much the same, except for minor data, it may be better to use templating for them instead.
+ * if a sequence of requests that are much the same should be responded to with a standard sequence of reponses, these could be encoded with ''responses from folder'' in the table.
+ * If the last request/responses in a sequence are all the same, they can be replaced with a ''repeat'' in the table.
+ * If there are several different types of web service call on a single port, they will be recorded as a sequence. However, the sequence may apply to the two services independently. In that case the tables setting up the mock web services will need to be split into two separate sequences.

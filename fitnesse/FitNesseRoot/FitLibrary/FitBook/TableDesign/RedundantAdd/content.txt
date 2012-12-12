@@ -1,0 +1,7 @@
+ * ''Special setup of staff members:''
+|''enter staff''|
+|''name'' |''phone''      | add() |
+| Bob     | (09) 555 9876 | true  |
+| Bill    | (09) 555 1234 | true  |
+
+^UseEntryFixture

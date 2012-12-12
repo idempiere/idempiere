@@ -1,0 +1,15 @@
+An ${action} in the ${actions} of ${workflow} consists of a row of a table.
+ * The first cell and every second cell after that contains a ''keyword''
+ * These ${keywords} tell you what the ${action} is about
+ * The other cells contain information that's used by the ${action}, such as which User, Room, or amount of money.
+ * ${keywords} are often ''italicised''
+!3 Examples
+ * See .FitLibrary.UserGuide.FitLibraryByExample.WorkFlow
+!3 Programmers: Creating a method name from an action
+The ${keywords} of an action are concatentated together, with spaces between and converted into a valid Java identifier using ${extendedCamelCase}. Eg:
+ * "first example" is mapped to "firstExample"
+ * "%age" is mapped to "percentAge"
+ * "while" is mapped to "_while"
+There's no need to work out the mapping. Run the storytest and ${fitLibrary} will tell you the name of the method that it expects (if it doesn't exist), along with its arguments.
+
+Eg, see: .FitLibrary.UserGuide.FitLibraryByExample.WorkFlow.GeneralCodeDetails

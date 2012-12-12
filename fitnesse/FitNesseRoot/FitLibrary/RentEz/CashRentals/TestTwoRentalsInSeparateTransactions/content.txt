@@ -1,0 +1,22 @@
+!3 ''Two rentals in separate transactions''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|2||coffee dispenser|''for''|3 days|
+|''pay with cash $''|49.20|
+|''complete transaction''|
+
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|1||hot water dispenser|''for''|3 days|
+|''pay with cash $''|24.00|
+|''complete transaction''|
+
+ * ''Checks''
+|''rentals of client''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee dispenser|2|2004/05/06 09:01|2004/05/09 09:01|
+|hot water dispenser|1|2004/05/06 09:01|2004/05/09 09:01|
+
+|''rental item subset''|
+|''name''|''free count''|
+|coffee dispenser|8|
+|hot water dispenser|11|
+

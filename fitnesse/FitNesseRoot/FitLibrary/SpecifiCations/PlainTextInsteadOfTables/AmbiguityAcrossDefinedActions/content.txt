@@ -1,0 +1,13 @@
+!|fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.PlainTextInsteadOfTables.AmbiguityAcrossDefinedActions.DefinedActions|
+
+|'''set'''|address|'''to'''|Waimauku|
+
+![
+address is at Waimauku
+]!
+
+|''expected test results''|0|''right''|0|''wrong''|0|''ignored''|1|''exceptions''|

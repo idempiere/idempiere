@@ -1,0 +1,46 @@
+!*< def
+!define html ({{{<span class="left_menu important">menu</span>
+<input type="text" id="textual" name="radish" value="red"/>
+<a href="other.html">Link</a>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+#
+!2 Various locators are possible in addition to xpaths
+#
+ * Here the locator starts with "//" and is therefore an xpath
+
+|''with''|//input[@id="textual"]|''set text''|RED|
+
+ * Here we specify it's an ''id'', with "id=":
+
+|''text of''|id=textual|''is''|RED|
+
+ * Here we specify it's an ''id'' by default:
+
+|''text of''|textual|''is''|RED|
+
+ * Here we specify it's a ''name'', with "name=":
+
+|''with''|name=radish|''set text''|mauve|
+
+ * Use a 'css locators' to check the element is updated:
+
+|''element value''|css=input#textual|is|mauve|
+
+ * Elements can also be located by class name:
+
+|''text of''|class=left_menu|is|menu|
+|''text of''|class=important|is|menu|
+
+but compound classes are not allowed:
+
+|'''reject'''|''element exists''|class=left menu important|
+
+ * Here we specify it's a ''link'' text, with "link=":
+
+|''click''|link=Link|

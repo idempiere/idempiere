@@ -1,0 +1,13 @@
+!3 A generic finder is used in preference to a non-generic one
+!*< def
+!define pair (
+|first|1|
+|second|2|
+)
+**!
+|!-fitlibraryGeneric.specify.genericFinder.GenericAndNonGenericFinder-!|
+
+|integer integer pair|first pair|
+----
+----
+|integer integer pair|${pair}|

@@ -1,0 +1,7 @@
+|transaction form|
+|''Quantity''| ''Rental Item'' |''hours''| ''days''| ''weeks''|  ''Cost'' |
+| 3 | coffee urn | 0 | 2 | 0 |  222.00 |
+| 4 | coffee urn | 0 | 3 | 0 |  344.00 |
+| 7 | table      | 0 | 3 | 0 | 1568.00 |
+||
+|''Total $''|||||2134.00 |

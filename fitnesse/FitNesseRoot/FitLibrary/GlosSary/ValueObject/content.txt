@@ -1,0 +1,18 @@
+A ValueObject is a domain object that doesn't have identity. There may be several copies of the "same" ValueObject, and they'll be treated as being the same if they have the same contents. Compare this to an DomainEntity.
+
+Here are some examples of domain objects that will ''usually'' be a ValueObject:
+ * ''Date''
+ * ''Count''
+ * ''Money''
+ * ''Point''
+ * ''Circle''
+They'll often very simple, but don't have to be.
+
+There can be several ''copies'' of the same ValueObject in a storytest. And so we can simply include their whole value several times. The value may be a String, such as the ''Date'' "04/04/2006. Or it could be a table, such as the following ''Point'':
+
+|x|23|
+|y|45|
+
+That ''Point'' could also be represented in a String as "(23,45)"
+
+For a good introduction to the notion of ValueObject, see ${ddd}.

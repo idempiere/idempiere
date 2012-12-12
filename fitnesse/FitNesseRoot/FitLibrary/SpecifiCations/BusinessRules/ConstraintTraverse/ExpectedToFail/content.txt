@@ -1,0 +1,34 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.FailConstraint</td>
+</tr>
+<tr><td>b</td>
+<td>a</td>
+</tr>
+<tr><td>1</td>
+<td>2</td>
+</tr>
+
+<tr><td>2</td>
+<td>3</td>
+</tr>
+<tr><td>3</td>
+<td>2</td>
+</tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.FailConstraint</td>
+</tr>
+<tr><td>b</td>
+<td>a</td>
+</tr>
+<tr class="pass"><td>1</td>
+<td>2</td>
+</tr>
+
+<tr class="pass"><td>2</td>
+<td>3</td>
+</tr>
+<tr class="fail"><td>3</td>
+<td>2</td>
+</tr>
+</table>-!|

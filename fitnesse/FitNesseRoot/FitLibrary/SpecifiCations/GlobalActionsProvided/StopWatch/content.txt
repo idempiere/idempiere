@@ -1,0 +1,65 @@
+!**< def
+!define test (|''start stop watch''|
+
+|''stop watch''|<|200|
+
+|''sleep for''|20|
+
+|''stop watch''|<|200|
+
+|''sleep for''|100|
+
+|''stop watch''|<|200|
+
+|''stop watch''|>|100|
+)
+**!
+A stopwatch is handy if you want a storytest to fail if too much time has elapsed. That is, it can be used to test performance.
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td><i>start stop watch</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>stop watch</i></td>
+<td>&lt;</td>
+<td class="pass">200</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>sleep for</i></td>
+<td>20</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>stop watch</i></td>
+<td>&lt;</td>
+<td class="pass">200</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>sleep for</i></td>
+<td>100</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>stop watch</i></td>
+<td>&lt;</td>
+<td class="pass">200</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>stop watch</i></td>
+<td>&gt;</td>
+<td class="pass">100</td>
+</tr>
+</table>-!|
+
+|''start stop watch''|
+
+|''sleep for''|20|
+
+|'''show'''|''stop watch''|
+
+

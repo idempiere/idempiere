@@ -1,0 +1,35 @@
+!**< defs
+!define simple (|''suite''|
+
+|'''set'''|xx|''to''|1|
+)
+!define one (|''get''|@{xx}|'''is'''|1|
+
+|'''set'''|xx|''to''|2|
+)
+!define two (|''get''|@{xx}|'''is'''|1|
+)
+**!
+|!-fitlibrary.spec.SpecifySuiteFixture-!|
+|${simple}|${simple}||
+|${one}|!-<table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>1</td>
+<td><b>is</b></td>
+<td class="pass">1</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>xx</td>
+<td><i>to</i></td>
+<td>2</td>
+</tr>
+</table>-!||
+|${two}|!-<table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>1</td>
+<td><b>is</b></td>
+<td class="pass">1</td>
+</tr>
+</table>-!||

@@ -1,0 +1,18 @@
+!2 Boolean
+The following are treated as true:
+ * true
+ * yes
+ * y
+ * 1
+ * +
+All other values are treated as false.
+
+!|fit.ActionFixture|
+|start|	fit.specify.ActionFixtureUnderTest|
+|check|	booleanTrue|	true|
+|check|	booleanTrue|	yes|
+|check|	booleanTrue|	y|
+|check|	booleanTrue|	1|
+|check|	booleanTrue|	+|
+|check|	booleanFalse|	false|
+|check|	booleanFalse|	nonBoolean|

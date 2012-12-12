@@ -1,0 +1,15 @@
+!*< def
+!define html ({{{<head>
+  <title>A title</title></head>
+  <input type="checkbox" id="checked" onclick="javascript:document.title='New Title'">Option</input>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''click''| checked |
+
+|''title''|'''is'''|New Title|

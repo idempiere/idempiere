@@ -1,0 +1,127 @@
+!1 3. log4j logging
+#
+There are three aspects to logging with log4j when using ''!-FitLibrary-!''.
+
+ * Sections 3.3, 3.4 and 3.5 apply whether you're currently using log4j or not.
+ * Sections 3.1, 3.2 and 3.6 are only relevant to you if you're currently using log4j for logging in your application.
+
+We assume familiarity with log4j. See the manual that's part of the log4j download for a good introduction.
+
+If you use another logging system, and would like to be able to hook it into ''show after'' as in 3.1 below:
+
+ * Contact me and I can add a plugin mechanism to allow it. Rick Mugridge (rick at rimuresearch.com).
+#
+----!2 3.1 Appending log4j output after tables
+#
+If you're having trouble working out what's going on (or wrong) in a storytest and/or your code, you may find it convenient to have your log4j logs appended after !-FitLibrary-! tables.
+
+To start this, add the following action to the top of your storytest, just after the table that specifies the main fixture (''false'' stops it):
+
+|''with log4j''|
+|''show after''|true|
+
+This adds a special log4j ''Appender'' that will display log information in the report. (See the log4j docs for details of ''Appender''s if you're interested.)
+
+ * This will not affect other appenders that you use in your application, such as writing to a log file.
+ * You configure logging to be enabled in log4j in the usual manner in order for logs to appear.
+
+When ''!-FitLibrary-!'' runs a storytest with ''show after'' turned on for log4j.
+
+ * All the logging information that arrives while a table is executing will be appended to that table.
+ * The logging is thread-safe, so it will handle logging from several threads at once.
+ * Any logging that occurs after the storytest finished will not be shown in the report.
+
+Log4j levels can also be controller with the following actions, for example:
+
+|''with log4j''|
+|''level''|DEBUG|''for''|''com.corp.us.app.pck''|
+
+or, for all:
+
+|''with log4j''|
+|''level''|TRACE|
+
+Note that this is a global setting; it's not specific to a storytest and so will affect subsequent storytests in a suite. It's assumed that it will normally be used with a single storytest while investigating its behaviour.
+
+With careful use of packages (or other log4j ''names''), you can easily tailor the logs that are collected and thus shown after tables.
+
+See [[this page for an example][^ExampleLog4j]]
+#
+----!2 3.2 Logging to log4j from fixture code
+#
+Fixturing code can call the ''logText()'' method to have information logged with log4j (it will only show up if logging in normal log4j  is enabled):
+
+|''action that logs''|logging to go to log4j|
+
+The underlying method is in a subclass of ''!-DoFixture-!'':{{{	public void actionThatLogs(String s) {
+		logText(s);
+	}
+}}}#
+----!2 3.3 Using !-FixturingLogger-! in your fixture
+#
+Here's how to use it in your fixture code if:
+
+ * You don't use log4j in your application code, or
+ * You prefer to keep your fixture and application logging completely separate
+
+Similar actions to those above apply. However, it uses a separate "name space" so that its logging does not affect normal uses of log4j.
+
+See [[this page for an example][>ExampleFixturingLogger]]
+
+!-FixturingLogger-! is used by some of the fixtures in ''!-FitLibraryWeb-!'', such as for ''web services''.
+#
+----!2 3.4 Logging of ''!-FitLibrary-!'' itself
+#
+''!-FitLibrary-!'' uses log4j for logging as well. However, it uses another, separate "name space" so that its logging does not affect normal uses of log4j.
+
+You may like to turn on the logging in ''!-FitLibrary-!'' so you can see what it's doing. For example:
+
+|''!-with FitLibrary logger-!''|
+|''level''|TRACE|
+|''show after''|true|
+
+See [[this page for an example][^FitLibraryLog4j]]
+#
+----!2 3.5 Configuring ''!-FitLibraryLogger-!'' and ''!-FixturingLogger-!'' from property files
+#
+Two property files in the ''fitnesse'' directory (at the same level as ''!-FitNesseRoot-!'') are used to configure ''!-FitLibraryLogger-!'' and ''!-FixturingLogger-!'':
+
+ * !-FitLibraryLogger.properties-!
+ * !-FixturingLogger.properties-!
+
+These use the standard log4j property configuration format, but are instead applied to the specialised loggers ''!-FitLibraryLogger-!'' and ''!-FixturingLogger-!''.
+
+These two files are both the same (as provided), as follows:
+{{{    log4j.rootLogger=OFF,consoleAppender
+    log4j.appender.consoleAppender=org.apache.log4j.ConsoleAppender
+    log4j.appender.consoleAppender.layout=org.apache.log4j.PatternLayout
+    log4j.appender.consoleAppender.layout.ConversionPattern=%r [%t] %-5p %c %x - %m%n
+    log4j.appender.fileAppender=org.apache.log4j.RollingFileAppender
+    log4j.appender.fileAppender.File=logForFitLibrary.txt
+    log4j.appender.fileAppender.MaxFileSize=10MB
+    log4j.appender.fileAppender.MaxBackupIndex=1
+    log4j.appender.fileAppender.layout=org.apache.log4j.PatternLayout
+    log4j.appender.fileAppender.layout.ConversionPattern=%r [%t] %-5p %c %x - %m%n
+}}}To turn on logging to the console, change the first line to:
+{{{    log4j.rootLogger=ALL,consoleAppender
+}}}To just turn on logging after tables, change the first line to:
+{{{    log4j.rootLogger=ALL
+}}}To just turn on file logging, change the first line to:
+{{{    log4j.rootLogger=ALL,fileAppender
+}}}This may be helpful if a '''Test''' or '''Suite''' doesn't complete, as it will log all the communications that ''!-FitLibraryServer-!'' has with ''!-FitNesse-!''.
+
+You may want to also change the name of the logging file, and various other attributes. See the log4j documentation for details.
+
+To turn on after-table, console and file logging, change the first line to:
+{{{    log4j.rootLogger=ALL,consoleAppender,fileAppender
+}}}#
+----!2 3.6 Routing to Standard log4j
+#
+The logging from ''!-FitLibraryLogger-!''  and/or ''!-FixturingLogger-!'' can be routed to the standard log4j:
+
+ * So that you can include it in your usual log files, etc.
+ * This is done at the code level. See [[this page for an example][>RoutingLogger]].
+#
+!1 The End
+#
+That's the end of this tutorial on logging.

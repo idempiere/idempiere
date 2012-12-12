@@ -1,0 +1,65 @@
+!2 A diff is not shown in some circumstances, as covered below:
+
+!**< def
+!define test {!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+ * Don't diff if actual or expected are less than 5 characters:
+
+|''get''|1234|'''is'''|12345678|
+
+|''get''|12345678|'''is'''|1234|
+
+ * Don't diff if more than 10% of the matching characters match more than one character:
+
+|''get''|24680|'''is'''|1234567890123456789012345678901234567890|
+
+ * But do diff if there is any match of three characters or more:
+
+|''get''|24680234|'''is'''|1234567890123456789012345678901234567890|
+
+}
+
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><ul>
+	<li>Don't diff if actual or expected are less than 5 characters:</li>
+</ul>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>1234</td>
+<td><b>is</b></td>
+<td class="fail">12345678 <span class="fit_label">expected</span><hr>1234 <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>12345678</td>
+<td><b>is</b></td>
+<td class="fail">1234 <span class="fit_label">expected</span><hr>12345678 <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><ul>
+	<li>Don't diff if more than 10% of the matching characters match more than one character:</li>
+</ul>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>24680</td>
+<td><b>is</b></td>
+<td class="fail">1234567890123456789012345678901234567890 <span class="fit_label">expected</span><hr>24680 <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><ul>
+	<li>But do diff if there is any match of three characters or more:</li>
+</ul>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>24680234</td>
+<td><b>is</b></td>
+<td class="fail">1234567890123456789012345678901234567890 <span class="fit_label">expected</span><hr>24680234 <span class="fit_label">actual</span><hr><strike>1</strike><divv style='color:white'>2</divv><strike>3</strike><divv style='color:white'>4</divv><strike>5</strike><divv style='color:white'>6</divv><strike>7</strike><divv style='color:white'>8</divv><strike>9</strike><divv style='color:white'>0</divv><strike>1</strike><divv style='color:white'>234</divv><strike>56789012345678901234567890</strike> <span class="fit_label">diff</span></td>
+</tr>
+</table>
+<br/>-!|

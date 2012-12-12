@@ -1,0 +1,37 @@
+!3 ''No Rentez Dollar (point) is awarded''
+ * ''The initial point balance for a client is 0.00''
+|'''check'''|point balance for client|Joanna|0.00|
+
+ * ''No Rentez Dollar (point) is awarded for transaction less than $100.00''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|2||coffee dispenser|''for''|3 days|
+|''rent''|1||hot water dispenser|''for''|3 days|
+|''pay with cash $''|73.20|
+|''complete transaction''|
+
+ * ''The point balance for a client remains 0.00''
+|'''check'''|point balance for client|Joanna|0.00|
+
+----
+!3 ''5% Rentez Dollar (point) is awarded''
+ * ''Rentez Dollar (point) is awarded for transaction more than $100.00''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|4||coffee dispenser|''for''|3 days|
+|''rent''|2||hot water dispenser|''for''|3 days|
+|''pay with cash $''|146.40|
+|''complete transaction''|
+
+ * ''The point balance for a client changes''
+|'''check'''|point balance for client|Joanna|2.32|
+
+----
+!3 ''10% Rentez Dollar (point) is awarded''
+ * ''More Rentez Dollar (point) is awarded for transaction more than $500.00''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|8||coffee dispenser|''for''|5 days|
+|''rent''|8||hot water dispenser|''for''|5 days|
+|''pay with cash $''|648.00|
+|''complete transaction''|
+
+ * ''The point balance for a client changes''
+|'''check'''|point balance for client|Joanna|37.12|

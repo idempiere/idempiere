@@ -1,0 +1,3 @@
+|''with file''|<bla>bla</bla>|
+
+|''get template''|templateDiry/test.txt|'''is'''|<bla>bla</bla>|

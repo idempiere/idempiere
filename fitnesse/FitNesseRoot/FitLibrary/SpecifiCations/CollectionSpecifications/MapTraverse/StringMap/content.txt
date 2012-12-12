@@ -1,0 +1,53 @@
+!**< def
+!define map1 (|a|b|
+|A|B|
+)
+!define map2 (|A|B|
+|a|b|
+)
+!define test (!|fitlibrary.specify.mapTraverse.StringMap|
+
+|''checks''|
+
+|''string map''|${map1}|
+
+|''string map''|${map2}|
+)
+**!
+A table for a map contains, after the header, a row for each element of the map. A row consists of two cells: for the key and the value. The rows can be in any order, as a Map is also a set.
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.mapTraverse.StringMap</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>string map</i></td>
+<td><table border="1" cellspacing="0">
+<tr class="pass"><td>a</td>
+<td>b</td>
+</tr>
+<tr class="pass"><td>A</td>
+<td>B</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>string map</i></td>
+<td><table border="1" cellspacing="0">
+<tr class="pass"><td>A</td>
+<td>B</td>
+</tr>
+<tr class="pass"><td>a</td>
+<td>b</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

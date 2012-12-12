@@ -1,0 +1,22 @@
+!3 A Dynamic Variable can be set and used in storytests
+!|fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest|
+
+|'''set'''|D|''to''|d|
+
+|''select''|colour|''randomly''|
+|green|
+|re@{D}|
+|yellow|
+|$white|
+
+|''get''|@{colour}|'''is'''|red|
+|''get''|@{colour}|'''is'''|green|
+|''get''|@{colour}|'''is'''|yellow|
+|''get''|@{colour}|'''is'''|$white|
+
+|''expected test results''|1|''right''|3|''wrong''|0|''ignored''|0|''exceptions''|
+
+|''select''|colour|''randomly''|
+
+|''expected test results''|1|''right''|0|''wrong''|0|''ignored''|1|''exceptions''|
+

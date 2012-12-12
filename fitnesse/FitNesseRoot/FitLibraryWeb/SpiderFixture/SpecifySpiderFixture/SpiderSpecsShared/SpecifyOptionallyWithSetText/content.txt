@@ -1,0 +1,27 @@
+!*< def
+!define html (<input type="text" id="withValue" value="red"/>
+<input type="text" id="disabled" value="blue" disabled="true"/>
+)
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''optionally with''|//input[@id="withValue"]|''set text''|RED|
+
+|''text of''|//input[@id="withValue"]|''is''|RED|
+
+|''optionally with''|//input[@id="withValue"]|''set text''|mauve|
+
+|''text of''|//input[@id="withValue"]|''is''|mauve|
+
+ * Not able to change a disabled input text:
+
+|''optionally with''|//input[@id="disabled"]|''set text''|BLUE|
+
+|''text of''|//input[@id="disabled"]|''is''|blue|
+
+|''optionally with''|//input[@id="missing"]|''set text''|RED|

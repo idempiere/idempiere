@@ -1,0 +1,17 @@
+!**< def
+!define test (
+!|fitlibraryGeneric.specify.genericFinder.GenericFinderException|
+
+|integer integer pair|first pair|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibraryGeneric.specify.genericFinder.GenericFinderException</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>integer integer pair</td>
+<td class="error">first pair<hr><pre><div class="fit_stacktrace"></div></pre></td>
+</tr>
+</table>-!|

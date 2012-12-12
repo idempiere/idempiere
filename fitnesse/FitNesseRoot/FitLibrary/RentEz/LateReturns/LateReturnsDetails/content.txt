@@ -1,0 +1,9 @@
+A late fee may be charged if equipment is expected to be returned by a certain time. The fee depends on:
+ * How long the item was hired for. There is usually one hour's grace. However, the longer the time, the longer the grace period.
+ * If the return is beyond the grace period, the late fee is based either on the extra time or on the extra time minus the grace period. The choice of approach is defined in a database configuration table that's set up specifically for a hire company and is not likely to change.
+ * The late fee is simply the extra time, as defined above, charged at the usual rate for that item.
+ * However, when the item is in high demand, there is a reduced grace period and an extra late fee is charged. This is especially important for hire items that have been booked out, as the hire company staff would need to source replacement equipment from elsewhere at some cost. The extra late fee may be associated with each hire item.
+
+Note:
+ * This is more detailed than you'd expect to see in an XP project.
+ * More tests are needed for this story.

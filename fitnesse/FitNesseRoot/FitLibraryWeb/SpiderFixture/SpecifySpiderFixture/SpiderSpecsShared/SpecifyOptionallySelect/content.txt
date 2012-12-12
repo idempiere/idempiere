@@ -1,0 +1,27 @@
+!*< def
+!define html ({{{<select id="colour">
+  <option selected="selected">Red</option>
+  <option>Green</option>
+  <option>Blue</option>
+  <option>Black</option>
+</select>}}})
+*!
+The option is only selected if it is non-blank and if the xpath element is found. Otherwise it quietly succeeds without doing anything.
+
+This allows for web actions that only apply in some circumstances.
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''option of''|colour|'''is'''|Red|
+
+|''optionally with''|colour|''select option''||
+
+|''option of''|colour|'''is'''|Red|
+
+|''optionally with''|colour|''select option''|Black|
+
+|''option of''|colour|'''is'''|Black|

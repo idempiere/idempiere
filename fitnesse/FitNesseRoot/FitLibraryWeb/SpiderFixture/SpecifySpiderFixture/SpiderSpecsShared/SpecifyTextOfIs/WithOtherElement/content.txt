@@ -1,0 +1,41 @@
+!*< def
+!define html ({{{  <p id="nothing"/>
+  <div id="onlySpacesInText">   </div>
+  <h1 id="withText">green</h1>
+  <div id="disabled" disabled="true">blue</div>
+  <div id="withMultiText">yellow
+  orange</div>
+  <tt id="withTag">yellow <b>orange</b></tt>
+  <tt id="withTag2">yellow <bb/>orange</tt>
+  <tt id="withEscaped">yellow &lt;&gt;</tt>
+  <tt id="withSpace">yellow orange</tt>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''text of''|//p[@id="nothing"]|''is''||
+
+|''text of''|//div[@id="onlySpacesInText"]|''is''||
+
+|''text of''|//h1[@id="withText"]|''is''|green|
+
+|''text of''|//div[@id="disabled"]|''is''|blue|
+
+|''text of''|//div[@id="withMultiText"]|''is''|yellow orange|
+
+ * The tag is removed:
+
+|''text of''|//tt[@id="withTag"]|''is''|yellow orange|
+
+ * In htmlUnit, the tag is removed, but so is the remaining text (incorrectly) when it is a tag of the form <bb/>:
+
+|''text of''|//tt[@id="withTag2"]|''matches''|yellow.*|
+
+|''text of''|//tt[@id="withSpace"]|''matches''|yellow orange|
+
+|''text of''|//tt[@id="withEscaped"]|''is''|yellow <>|
+

@@ -1,0 +1,29 @@
+ * The Class returned by the concreteFactory method has to be a subclass of the required type
+ * Here we get back a String, which is not a subclass of ''!-AbstractUser-!''
+!**< def
+!define user (||Null|
+|''name''|Brad Prayer|
+)
+!define test (!|fitlibrary.specify.domain.BadClassFromClassFactoryMethod|
+
+|''abstract user''|${user}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.BadClassFromClassFactoryMethod</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>abstract user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td>&nbsp;</td>
+<td class="error">Null<hr/> <span class="fit_label">Unexpected null from method for type Null</span></td>
+</tr>
+<tr><td class="ignore"><i>name</i></td>
+<td>Brad Prayer</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

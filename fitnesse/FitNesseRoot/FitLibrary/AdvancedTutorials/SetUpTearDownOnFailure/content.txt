@@ -1,0 +1,41 @@
+Sometimes it's handy to be able to run some code when a fixture (or ''!-DomainAdapter-!'') starts and/or stops running.
+
+ * For example, resources can be allocated at the start and released at the end.
+
+It's also handy to be able to take special action if a storytest fails.
+
+ * For example, doing a screen dump of the browser interface when something has gone wrong.
+
+These are handled with three methods that may be optionally included in a fixture (or ''!-DomainAdapter-!''):
+
+ * setUp()
+ * onFailure()
+ * tearDown()
+
+All of these methods are called, if they exist, even if stop-on-error is set.
+
+For the main fixture (or ''!-DomainAdapter-!'') that is used for the whole storytest:
+
+ * setUp() -- called at the beginning, before any table is interpreted.
+ * onFailure() -- called at the end of the storytest, after all tables have been interpreted, but only if an error/fail has occurred. Called just before tearDown().
+ * tearDown() -- called at the end of the storytest, after all tables have been interpreted.
+
+Other fixtures may be created to interpret a single table (or part of a table). In that case:
+
+ * setUp() -- called at the beginning, before the table (or part of the table) is interpreted.
+ * onFailure() -- called at the end of the table, but only if an error/fail has occurred. Called just before tearDown().
+ * tearDown() -- called at the end of the table.
+
+If the onFailure() method is called, as there has been a fail/error, and it returns a value:
+
+ * That returned value is added as text to the end of the first row of the last table that's been interpreted, and marked as shown.
+ * The text can be HTML, which will be rendered by the browser. This allows for screen dumps and etc to be created.
+
+For suite fixtures, there are corresponding methods:
+
+ * suiteSetUp()
+ * suiteTearDown()
+#
+!3 See
+#
+.FitLibrary.SpecifiCations.DoTableFixturing.OnFailure for specifications of ''onFailure()''

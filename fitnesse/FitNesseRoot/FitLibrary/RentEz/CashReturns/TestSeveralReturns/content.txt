@@ -1,0 +1,14 @@
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''return items''|3||coffee dispenser|
+|''complete transaction''|
+
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''return items''|2||coffee dispenser|
+|''complete transaction''|
+
+|''rentals of client''|Joanna|
+|''rental item''|
+
+|''rental item subset''|
+|''name''|''free count''|
+|coffee dispenser|10|

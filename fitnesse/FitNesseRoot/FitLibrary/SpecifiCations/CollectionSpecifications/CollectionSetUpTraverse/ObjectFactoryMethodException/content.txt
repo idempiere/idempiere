@@ -1,0 +1,27 @@
+!3 The exception is caught and shown
+!**< def
+!define test (!|fitlibrary.specify.collectionSetUp.ExceptionInObjectFactoryMethod|
+----
+|''create''|
+|''bad''|''method''|
+|1|2|
+)
+**!
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.collectionSetUp.ExceptionInObjectFactoryMethod</td>
+</tr>
+</table>
+<hr/>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="2"><i>create</i></td>
+</tr>
+<tr><td><i>bad</i></td>
+<td><i>method</i></td>
+</tr>
+<tr><td class="error">1<hr><pre><div class="fit_stacktrace">
+</div></pre></td>
+<td>2</td>
+</tr>
+</table>-!|

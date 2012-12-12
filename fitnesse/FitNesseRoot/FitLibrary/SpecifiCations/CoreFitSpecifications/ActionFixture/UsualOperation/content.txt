@@ -1,0 +1,23 @@
+!3 ''!-ActionFixture-!'' continues even if there is a problem (wrong) with a row.
+
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan=3>fit.ActionFixture</td></tr>
+<tr><td>start</td><td colspan=2>fit.specify.ActionFixtureUnderTest</td></tr>
+<tr><td>enter</td><td>enterString</td><td>a string</td></tr>
+<tr><td>enter</td><td>enter string</td><td>a string</td></tr>
+<tr><td>press</td><td colspan=2>pressMethod</td></tr>
+<tr><td>check</td><td>intResultMethod</td><td>1</td></tr>
+<tr><td>check</td><td>intResultMethod</td><td>0</td></tr>
+<tr><td>check</td><td>intResultMethod</td><td></td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan=3>fit.ActionFixture</td></tr>
+<tr><td>start</td><td colspan=2>fit.specify.ActionFixtureUnderTest</td></tr>
+<tr><td>enter</td><td>enterString</td><td>a string</td></tr>
+<tr><td>enter</td><td>enter string</td><td>a string</td></tr>
+<tr><td>press</td><td colspan=2>pressMethod</td></tr>
+<tr><td>check</td><td>intResultMethod</td><td class="fail">1 <span class="fit_label">expected</span><hr>0 <span class="fit_label">actual</span></td></tr>
+<tr><td>check</td><td>intResultMethod</td><td class="pass">0</td></tr>
+<tr><td>check</td><td>intResultMethod</td><td> <span class="fit_grey">0</span></td></tr>
+</table>-!|
+Notice the above use of the ''camel'' form of the method "enterString" as "enter string".

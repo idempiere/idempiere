@@ -1,0 +1,18 @@
+!***< def
+!define ts (
+|''colour''|
+|red|
+
+)
+!define gen (
+|''ts''|${ts}|
+
+)
+**!
+!|fitlibraryGeneric.specify.object.GenericObjectContainsList|
+
+|''gen''|${gen}|
+
+|''checks''|
+
+|''gen''|${gen}|

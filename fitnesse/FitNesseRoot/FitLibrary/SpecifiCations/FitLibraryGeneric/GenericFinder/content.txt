@@ -1,0 +1,7 @@
+^OnlyNonGenericFinder
+^GenericFinderSucceeds
+^GenericFinderException
+^GenericFinderWhereTypeDoesNotMatch
+^BothNonGenericAndGenericFinder
+^GenericShow
+^GenericShowException

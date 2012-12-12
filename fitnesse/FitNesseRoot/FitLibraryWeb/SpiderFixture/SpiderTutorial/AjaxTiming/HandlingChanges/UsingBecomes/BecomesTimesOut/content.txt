@@ -1,0 +1,19 @@
+We can run this to see it fail due to the timeout begin less than 5 seconds.
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.AjaxTiming.HandlingChanges.DefinedActions|
+
+|''ajax on port''|${FITNESSE_PORT}|
+
+|''becomes timeout''|4000|
+
+|''get url''|http://localhost:@{fitNessePort}/files/delaysWithAjax.html|
+
+|''title''|'''is'''|Delays With Ajax|
+
+|''with''|newTitle|''set text''|Fancy Title|
+
+|''click''|changeTitle|
+
+|''title''|'''becomes'''|Fancy Title|
+
+[[Back to previous page][<HandlingChanges.UsingBecomes]]

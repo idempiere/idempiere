@@ -1,0 +1,24 @@
+!3 A ${setter} is missing with only a ${sut} (no ${domainAdapter})
+!**< def
+!define colour (|''name''|red|
+)
+!define test (!|fitlibrary.specify.missingProperty.InJustSut|
+
+|''colour''|${colour}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.missingProperty.InJustSut</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>colour</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td class="error"><i>name</i><hr/> <span class="fit_label">Missing method, possibly: <ul><li>public void setName(ArgType name) { }</li></ul><hr/>In:<ul><li>fitlibrary.specify.missingProperty.InJustSut.Colour</li><li>fitlibrary.specify.missingProperty.InJustSut</li></ul></span></td>
+<td>red</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

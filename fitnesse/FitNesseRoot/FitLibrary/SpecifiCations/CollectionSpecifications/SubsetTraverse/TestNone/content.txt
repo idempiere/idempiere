@@ -1,0 +1,12 @@
+!2 ''!-SubsetFixture-!'' can check for none (although it's not much use)
+|!-fitlibrary.specify.SubsetFixtureUnderTest-!|
+|+|&|
+
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.SubsetFixtureUnderTest</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.SubsetFixtureUnderTest</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+</table>-!|

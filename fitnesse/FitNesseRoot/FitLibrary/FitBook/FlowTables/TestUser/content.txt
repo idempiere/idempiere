@@ -1,0 +1,11 @@
+|!-ChatStart-!|
+
+|''connect''|anna|
+|''creates''|lotr|''room''|
+|''enters''|lotr|''room''|
+
+|''room''|lotr|
+|check|''owner''|anna|
+|''rename''|LOTR|
+
+|check|''occupant count''|LOTR|1|

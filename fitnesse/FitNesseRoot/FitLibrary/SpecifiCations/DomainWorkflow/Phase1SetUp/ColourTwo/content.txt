@@ -1,0 +1,3 @@
+|''colour''|purple|
+|''count''|200|
+|''sub colours''|!include SubColours|

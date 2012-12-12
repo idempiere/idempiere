@@ -1,0 +1,52 @@
+ * The Class returned by the concreteFactory method has to have a nullary constructor so that an object can be created
+ * That constructor can be non-public
+!**< def
+!define user (
+||No Nullary|
+|''name''|Brad Prayer|
+
+)
+!define user2 (
+||Private|
+|''name''|Brad Prayer|
+
+)
+!define test (!|fitlibrary.specify.domain.BadClassFromClassFactoryMethodForInterface|
+
+|''abstract user''|${user}|
+
+|''abstract user''|${user2}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.BadClassFromClassFactoryMethodForInterface</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>abstract user</i></td>
+<td><br><table border="1" cellspacing="0">
+<tr><td>&nbsp;</td>
+<td class="error">No Nullary<hr/> <span class="fit_label">Class has no default constructor</span></td>
+</tr>
+<tr><td class="ignore"><i>name</i></td>
+<td>Brad Prayer</td>
+</tr>
+</table>
+<br></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>abstract user</i></td>
+<td><br><table border="1" cellspacing="0">
+<tr><td>&nbsp;</td>
+<td>Private</td>
+</tr>
+<tr><td><i>name</i></td>
+<td>Brad Prayer</td>
+</tr>
+</table>
+<br></td>
+</tr>
+</table>-!|
+

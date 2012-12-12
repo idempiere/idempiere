@@ -1,0 +1,78 @@
+!2 'becomes' checks an action against a value; it's prepared to wait for awhile for it to change, with a timeout specified by ''becomes timeout''
+!**< def
+!define test1 {!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|''becomes timeout''|10|
+
+|int property|'''becomes'''|2|
+
+|boolean property|'''becomes'''|true|
+
+|string property|'''becomes'''|apple pie|
+
+|string property|'''becomes'''|apple and blueberry e|
+
+|missing property|'''becomes'''|pi|
+
+|ambiguous|1|'''becomes'''|2|
+
+|''x''|1|''y''|3|'''becomes'''|(1,3)|
+}
+
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test1}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>becomes timeout</i></td>
+<td>10</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>int property</td>
+<td><b>becomes</b></td>
+<td class="pass">2</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>boolean property</td>
+<td><b>becomes</b></td>
+<td class="pass">true</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td><b>becomes</b></td>
+<td class="pass">apple pie</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td><b>becomes</b></td>
+<td class="fail">apple and blueberry e <span class="fit_label">expected</span><hr>apple pie <span class="fit_label">actual</span><hr><divv style='color:white'>apple </divv><strike>and blueberry&Delta;</strike><b>pi</b><divv style='color:white'>e</divv> <span class="fit_label">diff</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error">missing property<hr/> <span class="fit_label">Missing class or Missing method.</span></td>
+<td><b>becomes</b></td>
+<td>pi</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>ambiguous</td>
+<td>1</td>
+<td><b>becomes</b></td>
+<td class="fail">2 <span class="fit_label">expected</span><hr> <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>x</i></td>
+<td>1</td>
+<td><i>y</i></td>
+<td>3</td>
+<td><b>becomes</b></td>
+<td class="pass">(1,3)</td>
+</tr>
+</table>-!|

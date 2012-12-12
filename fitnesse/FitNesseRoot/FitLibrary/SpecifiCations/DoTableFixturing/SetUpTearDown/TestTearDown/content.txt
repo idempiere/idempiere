@@ -1,0 +1,20 @@
+ * ''tearDown()'' is called on the object once the workflow has finished running the whole storytest
+ * To check this has happened, the fixture here throws an exception inside tearDown()
+ * So we check that that has happened
+!**< def
+!define test (!|fitlibrary.specify.workflow.TearDown|
+
+|some action|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.TearDown</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass">some action</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0"><tr><td class="error"><i>Error in storytest tear down: </i><hr><pre><div class="fit_stacktrace"></div></pre></td></tr></table>-!|
+

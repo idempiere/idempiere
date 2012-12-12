@@ -1,0 +1,14 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.MixedCombination</td></tr>
+<tr><td>&nbsp;</td><td>1</td><td>2</td></tr>
+<tr><td>a</td><td>true</td><td>false</td></tr>
+<tr><td>b</td><td>true</td><td>false</td></tr>
+<tr><td>c</td><td>true</td><td>true</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.MixedCombination</td></tr>
+<tr><td>&nbsp;</td><td>1</td><td>2</td></tr>
+<tr><td>a</td><td class="pass">true</td><td class="pass">false</td></tr>
+<tr><td>b</td><td class="pass">true</td><td class="pass">false</td></tr>
+<tr><td>c</td><td class="pass">true</td><td class="fail">true <span class="fit_label">expected</span><hr>false <span class="fit_label">actual</span></td></tr>
+</table>-!|

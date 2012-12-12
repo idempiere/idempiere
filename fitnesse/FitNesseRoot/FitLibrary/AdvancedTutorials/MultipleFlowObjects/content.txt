@@ -1,0 +1,35 @@
+A storytest may need to check/update different sub-systems or systems in order to carry out a test.
+
+For example:
+
+ * It may be interacting through a web browser but also also checking a database.
+ * It may be calling a web service, checking email has been sent, and verifying that the PDF attached to the email is correct.
+ * It may be calling several different web services
+ * It may be interacting with several distinct subsystems, through their APIs
+
+Let's continue with the browser/database example, for now:
+
+... TO BE COMPLETED
+
+But what happens if the actions of two flow objects are the same? This would happen if we were using two web services, for example.
+
+As we see in the next example, it's necessary to explicitly select between them:
+
+|''add''|!-fitlibrary.specify.select.FirstSelect-!|''as''|first|
+|''add''|!-fitlibrary.specify.select.SecondSelect-!|''as''|second|
+
+|''select''|first|
+
+|''count''|'''is'''|1|
+
+|''select''|second|
+
+|''count''|'''is'''|2|
+
+|''select''|first|
+
+|''count''|'''is'''|1|
+
+|''select''|second|
+
+|''count''|'''is'''|2|

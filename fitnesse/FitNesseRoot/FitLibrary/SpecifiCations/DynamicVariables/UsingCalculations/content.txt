@@ -1,0 +1,74 @@
+!3 A Dynamic Variable can be set and used in storytests
+!**< def
+!define test (!|fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest|
+
+|'''set'''|colour|''to''|1|
+
+|'''set'''|sum|=|1+2|
+
+|get|@{sum}|is|3|
+
+|'''set'''|sum|=|@{sum}*@{sum}|
+
+|get|@{sum}|is|9|
+
+|'''set'''|sum|=|@{sum}*0|
+
+|get|@{sum}|is|0|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>colour</td>
+<td><i>to</i></td>
+<td>1</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>sum</td>
+<td>=</td>
+<td>1+2</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>get</td>
+<td>3</td>
+<td>is</td>
+<td class="pass">3</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>sum</td>
+<td>=</td>
+<td>3*3</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>get</td>
+<td>9</td>
+<td>is</td>
+<td class="pass">9</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>sum</td>
+<td>=</td>
+<td>9*0</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>get</td>
+<td>0</td>
+<td>is</td>
+<td class="pass">0</td>
+</tr>
+</table>
+-!|

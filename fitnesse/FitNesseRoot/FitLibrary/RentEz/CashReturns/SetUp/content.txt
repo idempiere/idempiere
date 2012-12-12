@@ -1,0 +1,5 @@
+!include .FitLibrary.RentEz.SetUp
+|''given rentals''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee dispenser|5|2004/05/05 09:01|2004/05/06 09:01|
+

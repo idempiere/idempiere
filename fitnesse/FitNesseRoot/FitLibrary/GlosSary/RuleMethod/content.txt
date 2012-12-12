@@ -1,0 +1,7 @@
+${programmers}
+A ${ruleMethod} is called for each row of a calculations rule table.
+ * It's name is derived from the ${label}s in the header row of the table
+ * It has one argument for each ${given} value and returns a value that's used to check the ${expected} value of the calculation rule
+!3 Examples
+ * .FitLibrary.UserGuide.FitLibraryByExample.CalculationRule
+ * .FitLibrary.UserGuide.FitLibraryByExample.ConstraintRule

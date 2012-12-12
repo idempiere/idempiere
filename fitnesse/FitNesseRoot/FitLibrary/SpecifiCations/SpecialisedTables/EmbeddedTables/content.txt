@@ -1,0 +1,175 @@
+!**< def
+!define table0 (|''embedded2''|
+)
+!define table1 (|''embedded3''|
+)
+!define table2 (|${table1}|''embedded4''|
+)
+!define table3 (|''embedded1''|${table0}|
+)
+!define list (
+ * one
+)
+!define table4 (|${list}|${table1}|
+)
+!define test (!|fitlibrary.specify.DoTable|
+
+|check|''first cell value''|3|${table1}|
+|check|''first cell value''|3|4|
+
+|show|''first cell value''|${table2}|
+
+|show|''a table''|
+
+|check|''first cell string value''|${table3}|''embedded1''|
+|check|''first cell string value''|${table3}|''one''|
+|check|''first cell string value''|${table4}|${list}|
+
+|check|''first cell value''|${table2}|${table1}|
+
+|check|''null table''|12|
+
+|''expected test results''|3|''right''|1|''wrong''|0|''ignored''|3|''exceptions''|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoTable</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>check</td>
+<td><i>first cell value</i></td>
+<td class="error">3<hr/> <span class="fit_label">Missing table</span></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>embedded3</i></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr><td>check</td>
+<td><i>first cell value</i></td>
+<td class="error">3<hr/> <span class="fit_label">Missing table</span></td>
+<td>4</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>show</td>
+<td><i>first cell value</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><table border="1" cellspacing="0">
+<tr><td><i>embedded3</i></td>
+</tr>
+</table>
+</td>
+<td><i>embedded4</i></td>
+</tr>
+</table>
+</td>
+<td bgcolor=#C0C0FF><table border="1" cellspacing="0">
+<tr><td><i>embedded3</i></td>
+</tr>
+</table>
+</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>show</td>
+<td><i>a table</i></td>
+<td bgcolor=#C0C0FF><html><table border="1" cellspacing="0"><tr><td>one</td><td>two</td><td>three</td></tr></table></html></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>check</td>
+<td><i>first cell string value</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>embedded1</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>embedded2</i></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+<td class="pass"><i>embedded1</i></td>
+</tr>
+<tr><td>check</td>
+<td><i>first cell string value</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>embedded1</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>embedded2</i></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+<td class="fail"><i>one</i> <span class="fit_label">expected</span><hr>embedded1 <span class="fit_label">actual</span></td>
+</tr>
+<tr><td>check</td>
+<td><i>first cell string value</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td>
+<ul>
+	<li>one
+</li>
+</ul>
+</td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>embedded3</i></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+<td class="pass">
+<ul>
+	<li>one
+</li>
+</ul>
+</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>check</td>
+<td><i>first cell value</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><table border="1" cellspacing="0">
+<tr><td><i>embedded3</i></td>
+</tr>
+</table>
+</td>
+<td><i>embedded4</i></td>
+</tr>
+</table>
+</td>
+<td class="pass"><table border="1" cellspacing="0">
+<tr><td><i>embedded3</i></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>check</td>
+<td><i>null table</i></td>
+<td class="error">12<hr/> <span class="fit_label">Missing table</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>expected test results</i></td>
+<td>3</td>
+<td><i>right</i></td>
+<td>1</td>
+<td><i>wrong</i></td>
+<td>0</td>
+<td><i>ignored</i></td>
+<td>3</td>
+<td><i>exceptions</i></td>
+</tr>
+</table>-!|
+
+
+
+

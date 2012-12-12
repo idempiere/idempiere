@@ -1,0 +1,3 @@
+|''his name is''|name|
+
+|''get''|@{@{this}.name}|is|@{name}|

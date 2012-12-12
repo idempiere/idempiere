@@ -1,0 +1,6 @@
+!3 Support in Python, C# and other programming languages
+ * John Roth has added ''!-FitLibrary-!'' to the Python version of Fit (for both core Fit and ''!-FitNesse-!''). This is available at www.python.org/pypi
+ * Mike Stockdale has released a C# port for much of ''!-FitLibrary-!'' at https://sourceforge.net/projects/fitlibrary/
+ * Randy Coulman has ported FitLibrary to Smalltalk
+ * Work may be underway on ports for Ruby, J#, C++, and PHP.
+

@@ -1,0 +1,11 @@
+!2 The actual collection is empty
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.SetFixtureUnderTest3</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+<tr><td>1</td><td>one</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.SetFixtureUnderTest3</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+<tr><td class="fail">1 <span class="fit_label">missing</span></td><td>one</td></tr>
+</table>-!|

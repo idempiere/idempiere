@@ -1,0 +1,12 @@
+^SpecifyWithoutSuiteFixture
+^SpecifyFilteringWithSelection
+^SpecifyDifferentSuiteFixture
+^SpecifyWithoutSelection
+^SpecifyShareResources
+>SpecifyFixtureClassNameHandled
+^SpecifyDoFixtureClassName
+
+^SetUpHandling
+^SuiteActionIsUsefulWhenOnlyNeedDynamicVariablesFromSuite
+
+^DynamicVariablesPassedFromSuite

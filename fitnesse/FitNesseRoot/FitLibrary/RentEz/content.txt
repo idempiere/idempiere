@@ -1,0 +1,56 @@
+!3 Example Storytests
+These storytests and associated code were developed in 2004 and 2005 at the University of Auckland, New Zealand.
+
+Rick Mugridge wrote these initial storytests in 2004 for a Software Engineering year 3 project course he taught in agile software development. The storytests were used in 2004 by 70 students, in teams of 6, to develop the software for RentEz in a storytest driven manner.
+
+An earlier version of these storytests served as examples in the ${fitBook}.
+
+In 2005, the best code from 2004 was distributed to 80 students in the next year's version of the project course.  Six year 4 students acted as customers and project managers under Rick's supervision, and were responsible for writing new stories and adding considerably to the set of storytests from 2004. These extra storytests served to drive further development work on RentEz by the year 3 students.
+
+In both years, the students met for 6 hours a week for one semester to do their project work. They were discouraged from working on the project outside those times. They practiced all of the XP practices, although only some teams were proficient at TDD.
+
+The storytests distributed here are from the end of the 2005 project course. The code supplied here was from one of the best teams from that year. All the students involved from 2005 have given permission to make these examples available.
+
+|!contents|
+
+^SetUp
+!2 Storytests
+^CashRentals
+^CashReturns
+^CashDeposits
+^AdminFunctions
+^AdminFunctions2
+^BookedRentals
+^SalesGoods
+^ChargeFairly
+^CannotPay
+^AccountHire
+^BookingClash
+^TransactionReject
+^TransactionCancel
+^DroppingTransactionItem
+^RentalTemplates
+^BookingTemplates
+^ParallelTransactions
+^PromotionsBonusPointSystem
+^StoreVouchers
+^PaymentMixture
+^GeneralizedRentalRestrictions
+^CommissionForStaffMembers
+^EditingTransactionItem
+^StaffHire
+^ParallelAdminTransactions
+^StaffDiscount
+^CreditCard
+^GoodsDelivery
+^ClientManagement
+^SalesGoodsAdminFunction
+^DeliveryAdminFunction
+^DeliveryManagement ( ignore for now )
+^LateReturns
+^CompositeTemplate
+
+!path lib/rentEz.jar
+#!path C:\Documents and Settings\RimuResearch\My Documents\work\RentEz\classes
+!define TEST_RUNNER {fitlibrary.suite.FitLibraryServer}
+

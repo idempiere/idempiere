@@ -1,0 +1,11 @@
+!3 ''Check the initial point balance for a client is zero''
+|'''check'''|point balance for client|Joanna|0.00|
+
+!3 ''Pay using a voucher. No award is given no matter what.''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|6||coffee dispenser|''for''|3 days|
+|''pay with voucher $''|150.00|
+|''complete transaction''|
+
+!3 ''Check the point balance for a client is still zero''
+|'''check'''|point balance for client|Joanna|0.00|

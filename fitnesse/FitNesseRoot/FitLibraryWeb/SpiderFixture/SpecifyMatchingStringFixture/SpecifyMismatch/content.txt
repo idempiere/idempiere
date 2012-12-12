@@ -1,0 +1,15 @@
+|''match''|one|
+|oNe|
+
+|''match''|one|
+|o.ee|
+
+|''match''|one\ntwo|
+|One|
+|two|
+
+|''match''|one\ntwo|
+|o.*|
+|.w|
+
+|''expected test results''|2|''right''|4|''wrong''|0|''ignored''|0|''exceptions''|

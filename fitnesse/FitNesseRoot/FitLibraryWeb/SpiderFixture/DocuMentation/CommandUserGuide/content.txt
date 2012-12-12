@@ -1,0 +1,521 @@
+!*****> Page traversal: Get url, click, back, forward, title, url, poll url
+
+ * Get the given url ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyGetUrl]]):
+
+|''get url''|http://localhost/SpiderFixture|
+
+ * Click on the link identified by an xpath ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyClick]]):
+
+|''click''|//a[@id="link12"]|
+
+ * Click on the link identified by the name of the link ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyClickOnNamedLink.SpecifyNamedLink]]):
+
+|''click on named link''|link name|
+
+ * Click on the link identified by substring of the name of the link ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyClickOnNamedLink.SpecifyPartiallyNamedLink]]):
+
+|''click on partially named link''|link name|
+
+ * Selecting a popup that results:
+
+|''click''|locator|''and select resulting window''|
+
+Note that if a click leads to a popup window being open, it's best to explicitly select that window (See the ''Windows'' section below).
+
+ * Back button ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyBackAndForward]]):
+
+|''back''|
+
+ * Forward button ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyBackAndForward]]):
+
+|''forward''|
+
+ * Refresh current page ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyRefresh]]):
+
+|''refresh page''|
+
+ * Check title of current page ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyTitleIs]]):
+
+|''title''|'''is'''|!-SpiderFixture-!|
+
+ * Check url of current page ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyUrlIs]]):
+
+|''url''|'''is'''|http://localhost/SpiderFixture|
+
+ * Poll a Url until some condition is satisfied ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyPollUrl]]):
+
+|'''poll url'''|http://localhost:${FITNESSE_PORT}/files/test.html|'''until'''|''element''|//p[@name="pp"]|''exists''|
+
+ * Change the poll url timeout period, in milliseconds:
+
+|''poll url timeout''|5000|
+----
+**********!
+#
+!*****> Form Submit
+
+ * Submit the form identified by an xpath ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyFormSubmit]]):
+
+|''submit''|//form|
+
+ * Click on a submit to submit the form concerned:
+
+|''click''|//input[@type="submit"]|
+----
+**********!
+#
+!*****> Checking and changing text
+
+ * Check (exactly) the text of a text area, input text, or any element ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyTextOf]]):
+
+|''text of''|//textarea[@id="address"]|'''is'''|some text|
+|''text of''|//input[@id="withValue"]	|'''is'''|some other text|
+|''text of''|//div[@id="ision"]|'''is'''|some more text|
+
+ * Check text of a text area, input text, or any element against a pattern ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyTextOfMatches]]):
+
+|''text of''|//textarea[@id="address"]|'''matches'''|some .* pattern|
+
+ * Check the plain text of a text area, etc, ignoring whitespace, tags, etc ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyPlainTextOf]], [[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyPlainTextOfMatches]]):
+
+|''plain text of''|//input[@id="withSpaces"]|''is''|red green|
+
+ * Check the text preserve inner tags ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyInnerHtmlOf]]):
+
+|''inner html of''|//tt[@id="withTag"]|''is''|yellow <b>orange</b>|
+
+ * Check the text and prune inner tags' content ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyTextOfElementOnly]]):
+
+|''text of element only''|//tt[@id="withTag"]|''is''|yellow|
+
+ * Change text of text area or input text ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyWithSetText]]):
+
+|''with''|//input[@id="firstName"]|''set text''|John|
+
+ * Add text to a text area or input text ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyWithAddText]]):
+
+|''with''|//input[@id="firstName"]|''add text''|.|
+
+Note that any text changes are (optionally) verified to have occurred (see AutoChangeCheck).
+----
+**********!
+#
+!*****> Matching text anywhere in the page
+
+ * Check whether some text (or a pattern) occurs anywhere in the source of the page (includes the html)  ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyPageContainsText]]).
+
+|''page source''|'''contains'''|spread|
+
+ * Matching with a pattern ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyPageContainsRegularExpression]]):
+
+|''page source''|'''matches'''|spag*ti|
+
+To use special characters, such as !-|-! in regular expressions, escape the characters as follows (but without spaces between "!" and "-" and between "-" and "!"):
+
+ ! -|- !
+
+ * Accessing a substring of the page source:
+
+|''page substring from''|te|''to''|t|''is''|x|
+----
+**********!
+#
+!*****> Checkbox and radio button
+
+([[checkbox spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyCheckbox]], [[radio spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyRadio]])
+
+ * Is a checkbox or radio button checked/selected?
+
+|''checkbox''|//input[@id="checked"]|'''is'''|true|
+
+ * Is a checkbox unchecked?
+
+|''checkbox''|//input[@id="checked"]|'''is'''|false|
+
+ * Check a checkbox (and (optionally) check it's happened):
+
+|''with''|//input[@id="checked"]|''select''|true|
+
+ * Uncheck a checkbox (and (optionally) check it's happened):
+
+|''with''|//input[@id="checked"]|''select''|false|
+
+Note that checkbox changes are (optionally) verified to have occurred (see AutoChangeCheck).
+----
+**********!
+#
+!*****> Select options
+
+([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifySelect]])
+
+Note that select changes are (optionally) verified to have occurred (see .#changes).
+
+ * check the current option of a select:
+
+|''option of''|//select[@name="colour"]|'''is'''|red|
+
+ * select a specific option by name (and (optionally) check it's happened):
+
+|''with''|//select[@name="colour"]|''select option''|red|
+
+ * Select an option by index (starts at 1):
+
+|''with''|//select[@name="colour"]|''select option at''|4|
+
+ * optionally select a specific option by name ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyOptionallySelect]]):
+
+The action is ignored if the option is blank.
+
+|''optionally with''|//select[@name="colour"]|''select option''|red|
+
+ * select a specific option by xpath (and (optionally) check it's happened):
+
+|''with''|//select[@name="colour"]|''select''|true|
+
+ * check all the details of the possible options of a select (in order):
+
+|''options''|//select[@name='infants']|
+|''text''|''value''|''selected''|
+|first|First|false|
+|second|Second|false|
+
+ * Check that an option is not selected:
+
+|''option of''|//select[@name="colour"]|'''is'''||
+
+ * Check that an option is not selected (alternative):
+
+|''option of''|//select[@name="colour"]|''is not selected''|
+
+Note that any select changes are (optionally) verified to have occurred (see AutoChangeCheck).
+----
+**********!
+#
+!*****> Multi-select options
+
+([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyMultiSelect]])
+
+ * check the current options of a multi select (in order):
+
+|''option list of''|//select[@name="multi"]|'''is'''|red, green|
+
+ * check the list of option values of a select (when values include a ","):
+
+|''option values''|//select[@name='infants']|'''is'''|${optionValues}|
+
+ * Add a selection
+
+|''with''|name=multi|'''add selection'''|blue|
+
+ * Remove a selection
+
+|''with''|name=multi|'''remove selection'''|red|
+
+Note that multi-select changes are (optionally) verified to have occurred (see .#changes).
+----
+**********!
+#
+!*****> General elements: existence, value, attributes and count
+
+ * Does a given element exist on the page? ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyElementExists]])
+
+|''element''|//input[@name='save']|''exists''|
+
+ * Does a given element not exist on the page? (This will show an error if the xpath is incorrectly formed)  ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyElementDoesNotExist]]):
+
+|''element''|//input[@name='save']|''does not exist''|
+
+ * Check the value of an element ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyElementValue]]):
+
+|''element value''|//div//div|'''is'''|current|
+
+ * Check an attribute value of an element ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyElementAttributes]]):
+
+|''attribute''|symphony|''of''|//div//beethoven|'''is'''|fourth|
+
+ * Count of elements matching an xpath ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyElementCount]]):
+
+|''count of''|//p[@id="p"]|''is''|3|
+
+ * Checking the attribute value (or text) for a set of children of some type under some element ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyTheAttributeOfChildrenOfTypeOfElement]]):
+
+|''attribute''|text|''of children of type''|li|''of''|//ul|'''is'''|a,b,c|
+|''attribute''|name|''of children of type''|option|''of''|//select|'''is'''|n1,n2|
+----
+**********!
+#
+!*****> Applying commands to elements under a selected element
+
+([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyWithinContext]])
+
+ * It can be convenient to select an element, such as a table row, and then have subsequent actions apply within that element. For example, the second row of the following action accesses within the first cell of the html table selected:
+
+|''with''|//table//tr[1]//td[1]|''do''|
+|''text of''|//input[@id="withValue"]|'''is'''|red|
+
+ * The following action finds a row with some match criteria. Subsequent rows of the action apply to the selected row:
+
+|''with table''|//table|''select row with''|//*[contains(text(),"blue")]|
+|''text of''|//row3|'''is'''|blue|
+
+ * The following selects an element in the page, and then shows an attribute (or text):
+
+|''attribute''|value|''of type''|option|''of''|id=selector|'''is'''|a,b,c|
+ * The following shows various attributes (and text):
+
+|''attributes of type''|option|''of''|id=selector|
+|value|id|text|
+|...|...|...|
+----
+**********!
+#
+!*****> Finding an element by (partially) matching on its attributes
+
+([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyFindElement]])
+
+Sometimes it's very difficult to select an element by xpath, or the xpath is very fragile to minor structural changes to the elements of the page. So we provide a way of selecting an element based on (partially) matching attributes and/or text of the element.
+
+Eg:
+
+|''find element from''|//b|''with tag''|h1|''where''|
+|''attribute''|align|''contains''|le|
+|''attribute''|dir|''contains''|r|
+|''show''|
+|''select''|
+|''attribute''|align|''of''|.|'''is'''|left|
+
+The first row specifies a locator for an element as the top level of a subtree of the DOM. So the search for the element is over elements within that element.
+
+The second and third rows specify a filter: only consider elements with an attribute with some value ('''is''', '''contains''', or '''matches'''). The fourth row shows the remaining elements. It's also possible to filter on the text of elements.
+
+The fifth row selects the one remaining element. If, however, there are no elements or more than one, an error is given.
+
+Any rows after the ''select'' row then operate on that selected element (as discussed in the previous section). In the example above, the "align" attribute value is checked.
+----
+**********!
+#
+!*****> Tables
+
+([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyWholeTable]])
+
+ * Check the text in a whole table:
+
+|''table values''|//table[@name='myTable']|
+|''name''|''address''|
+|John|First St|
+|Tony|Second St|
+
+ * An element of a table can be accessed directly with an xpath ([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyTableParts]]). For example, the following accesses the textarea in the second cell of the second row:
+
+|''text of''|//table//tr[2]//td[2]//textarea|'''is'''|green|
+----
+**********!
+#
+!*****> Frames
+
+([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyFrames]])
+
+The first frame !-(#0)-! of a frameset is selected automatically. The current title and url are of that first frame, rather than of the loaded html containing the frameset.
+
+ * Select frame by number (zero-based). This changes the title, and limits the html elements to those that are in the selected frame.
+
+|''frame''|12|
+
+ * Select a frame by ''name'' or ''id'' in the current frameset:
+
+|''frame by name''|first|
+
+ * Select the default frame of the current frameset (By default, the first one):
+
+|''default frame''|
+----
+**********!
+#
+!*****> iFrames
+
+([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyIframes]])
+
+ * Select iframe by number (zero-based). This limits the html elements to those that are in the selected iframe.
+
+|''frame''|12|
+
+ * Select an iframe by ''name'' or ''id'':
+
+|''frame by name''|first|
+
+ * Select the default frame, so can see the outer-most html:
+
+|''default frame''|
+----
+**********!
+#
+!*****> Alerts
+
+([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyAlert]])
+
+* To close a pop-up Alert with cancel:
+
+|''dismiss alert'|
+
+ * To accept a confirmation Alert:
+
+|''accept alert''|
+
+* To check the text of an Alert:
+
+|''alert message''|is|Close Me!|
+
+ * To Enter text into a prompt alert:
+
+|''enter alert text''|Hello World!|
+----
+**********!
+#
+!*****> Windows
+
+([[spec][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyWindows]])
+
+ * To select a named window:
+
+|''select window''|Messages|
+
+ * To select the first window that was opened:
+
+|''select initial window''|
+
+ * To select a second, other window (useful if a popup is unnamed):
+
+|''select other window''|
+
+ * To select another window where the text of an xpath is as given:
+
+|''select window with''|//title|''as''|To Here|
+
+ * To close the current window (which may or may not go back to the previous window, so it's best to explicitly select the window afterwards):
+
+|''close''|
+
+ * To see the (possibly internal) name for the current window
+
+|'''show'''|''current window''|
+
+ * To see the (possibly internal) names of all windows:
+
+|'''show'''|''window''|
+
+Note that Firefox and htmlUnit differ in their behaviour with opening popups.
+----
+**********!
+#
+!*****> Screen dump
+
+ * This shows a screen dump or the html source, as well as displaying the html to sys out:
+
+|'''show'''|''screen dump''|
+
+To include a screen dump on shutdown if there were any errors:
+
+|''shut down with screen dump on failure''|
+----
+**********!
+#
+!*****> Cookies
+
+ * Add the given cookie:
+
+|''add cookie''|customer|''with value''|bach|
+
+ * Delete a cookie:
+
+|''delete cookie''|customer|
+
+ * Delete all cookies:
+
+|''delete all cookies''|
+
+ * Check the value of each of the cookies:
+
+|''cookies''|
+|''name''|''value''|
+|customer|bach|
+|id|123456|
+----
+**********!
+#
+!*****> Lookup table
+
+A lookup table is a way of looking up one value, given another. This is useful to map between the values used in high-level storytests and the values that are needed to selection an option in a select, for example. Pattern matching is used to match the input value.
+
+|''lookup''|
+|given|result?|
+|one|1|
+|two|2|
+|thr.*|3|
+
+This takes the value of the dynamic variable ''given'' and tries to match it (with pattern matching) to the values in that column. If one matches, it binds the corresponding value in the second column to the dynamic variable ''result''.
+
+For example, if ''given'' has the value "two", ''result'' will be bound to the value "2".
+
+In the following, we use the ''result'' in selecting an option:
+
+|''with''|//select[@name="colour"]|''select option''|@{result}|
+----
+**********!
+#
+!*****> Mouse speed
+
+ * Change the mouse speed to slow or fast:
+
+|''mouse speed''|'''is'''|slow|
+
+|''make mouse speed''|fast|
+----
+**********!
+#
+!*****> Execute ''!-JavaScript-!''
+
+|''execute !-JavaScript-!''|var xxx = 1;|
+----
+**********!
+#
+!*****> General error diagnostics
+
+When a website responds with an error message that's not expected, it's handy if diagnostic information is automatically provided about this in the storytest report.
+
+To request such diagnostic information whenever it occurs, use the following action:
+
+|''show error diagnostics at''|//div[@name='error']|''when page contains''|.*error|
+
+Given this, the page is checked for the given regular expression in the following circumstances:
+
+ * The title is checked, as with:
+
+|''title''|'''is'''|Help|
+
+ * An explicit check is requested, with:
+
+|''check for error''|
+
+If the page matches the regular expression, the text of the given xpath element is shown in the report. If there is no xpath given or no matching element, the whole page is shown (as plain text, not as rendered html).
+
+([[specs][<SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyGeneralErrorChecking.SpecifyError]])
+----
+**********!
+#
+!*****> Shut down
+
+ * Don't shutdown automatically: handy if you want to see what may have gone wrong:
+
+|''shutdown browser automatically''|false|
+
+ * Shut down spider
+
+|''shut down''|
+
+ * shut down after taking a screen dump if there were errors:
+
+|''shut down with screen dump on failure''|
+!anchor changes
+----
+**********!
+

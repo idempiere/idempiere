@@ -1,0 +1,57 @@
+!**< def
+!define test (!|fitlibrary.DoFixture|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine|
+
+|''do this now''|
+|''name''|''full address''|
+|adam|paradise|
+|eve|paradise|
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.DoFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>define actions at</i></td>
+<td><a href="FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine">.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefine</a></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="2"><i>do this now</i></td>
+</tr>
+<tr class="pass"><td><i>name</i></td>
+<td><i>full address</i></td>
+</tr>
+<tr class="pass"><td>adam</td>
+<td>paradise</td>
+<td>
+<table border="1" cellspacing="0">
+<tr>
+<td>show</td>
+<td>get</td>
+<td>adam</td>
+<td bgcolor=#C0C0FF>adam</td></tr>
+<tr>
+<td>show</td>
+<td>get</td>
+<td>paradise</td>
+<td bgcolor=#C0C0FF>paradise</td></tr></table></td></tr>
+<tr class="pass"><td>eve</td>
+<td>paradise</td>
+<td>
+<table border="1" cellspacing="0">
+<tr>
+<td>show</td>
+<td>get</td>
+<td>eve</td>
+<td bgcolor=#C0C0FF>eve</td></tr>
+<tr>
+<td>show</td>
+<td>get</td>
+<td>paradise</td>
+<td bgcolor=#C0C0FF>paradise</td></tr></table></td></tr>
+</table>-!|

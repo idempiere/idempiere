@@ -1,0 +1,5 @@
+^WorkingExample - an example that shows how the concrete class of an object is specified in the table
+^NoTypeSpecified - the type needs to be specified
+^MissingClassFactoryMethod - the method called to get the Class is missing
+^ReturnedClassConstructorIsNotValid - the returned class cannot be instantiated
+^ReturnedClassIsNotSubType - the returned class is not a subclass of the property type

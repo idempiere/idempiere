@@ -1,0 +1,44 @@
+!3 Build process
+#
+The Ant script ''build.xml'' provided in the top-level directory of the distributed release defines the build process.
+
+This is organised for a Hudson (http://www.hudson-ci.org) pipeline of ''projects'' for continuous integration. These are defined in Hudson as follows:
+
+ * ''fitlibrary.build'' - polls git for a change and runs one Ant target:
+  * ''jar'' - compiles and creates ''fitlibrary.jar''. It copies this jar into the ''!-FitLibraryWeb-!'' directory. See below for directory-structure assumptions.
+
+ * ''fitlibrary.specifications'' - follows from the previous stage (if successful). Runs two Ant targets:
+  * ''delete-batch-runner-results-dir''
+  * ''batch-run-specifications'' -- runs the ''!-FitLibrary-!'' specifications in batch using ''!-FitLibraryRunner-!''
+
+ * ''fitlibrary.create.release.zip'' - follows from previous stage. Runs Ant target:
+  * ''create-release-zip'' - Copies all files for release into a separate folder and zips them up
+
+ * ''fitlibrary.check.release'' - follows from previous stage. Runs Ant target:
+  * ''release-check'' - runs the ''!-FitLibrary-!'' specifications in batch again from an unzipped copy of the release, integrated with a fresh copy of ''!-FitNesse-!''
+
+ * ''fitlibrary.final.release'' - follows from previous stage. Runs Ant target:
+  * ''final-release'' - Renames the zip created from the ''fitlibrary.create.release.zip'' stage to include the date. Within Hudson, ''final.release.dir'' is changed so that it appears in win7 space.
+
+All of these Hudson projects share the workspace of ''fitlibrary.build''.
+#
+!3 Directory Structure Assumptions
+#
+The build process for ''!-FitLibrary-!'' assumes two git projects that are held in the same directory, as follows:
+
+ * ''fitlibrary''
+ * ''fitlibraryweb''
+
+This allow the build process to copy any ''fitlibrary.jar'' update into ''../fitlibraryweb/fitnesse''.
+
+Note that with the Hudson pipeline, this happens within Hudson's copy of the files when it clones them from git (which, currently, is unnecessary).
+
+It is necessary to run the first stage, at least, of this process directly within the git folder so that:
+
+ * ''!-FitNesse-!'' and ''!-FitLibraryRunner-!'' can be used to test changes to ''!-FitLibrary-!''.
+ * ''!-FitNesse-!'' and ''!-FitLibraryRunner-!'' can be used to test ''!-FitLibraryWeb-!'' with the latest ''fitlibrary.jar''.
+
+It is assumed that after the build succeeds, after any change to ''!-FitLibrary-!'':
+
+ * The updated ''fitlibrary.jar'' that was auto-copied into ''fitlibraryweb'' will be committed
+ * Thus kicking off the ''fitlibraryweb'' build.

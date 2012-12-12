@@ -1,0 +1,26 @@
+!**< defs
+!define colours (|''colour''|
+|blue|
+|red|
+|green|
+)
+!define black (|''colour''|
+|black|
+)
+!define listOfLists (|${colours}|
+|${black}|
+||
+)
+!define someLists ( * Set<Colour>
+|''a set''|${colours}|
+ * Set<Set<Colour>>
+|''a set of sets''|${listOfLists}|
+)
+**!
+!|fitlibraryGeneric.specify.collections.GenericCollections|
+
+${someLists}
+
+|''checks''|
+
+${someLists}

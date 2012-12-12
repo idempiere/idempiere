@@ -1,0 +1,28 @@
+|transaction|
+|enter|count| 3 |
+|enter|rental item| coffee urn |
+|enter|hours| 0 |
+|enter|days| 2 |
+|enter|weeks| 0 |
+|press|hire|
+|check|total|222.00|
+ * Don't need to enter hours and weeks again:
+|transaction|
+|enter|count| 4 |
+|enter|rental item| coffee urn |
+|enter|days| 3 |
+|press|hire|
+|check|total|344.00|
+
+|transaction|
+|enter|count| 7 |
+|enter|rental item| table |
+|enter|days| 3 |
+|press|hire|
+|check|total|1568.00|
+
+|transaction|
+|enter|cash|3134.00|
+|press|pay|
+
+^UseCustomActions

@@ -1,0 +1,25 @@
+!*< def
+!define html ({{{<input type="text" id="in" value="abc", class='c1', enabled='false'/>
+<dvv id="divv"/>
+<p name="pp">bla</p>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''attribute''|value|''of''|//input[@id="in"]|''is''|abc|
+
+|''attribute''|id|''of''|//dvv[@id="divv"]|''is''|divv|
+
+|''attribute''|name|''of''|//p|''is''|pp|
+
+|'''not'''|''attribute''|class|''of''|//p|''exists''|
+
+|'''not'''|''attribute''|className|''of''|//p|''exists''|
+
+|'''not'''|''attribute''|enabled|''of''|//p|''exists''|
+
+|'''not'''|''attribute''|unknwon|''of''|//p|''exists''|

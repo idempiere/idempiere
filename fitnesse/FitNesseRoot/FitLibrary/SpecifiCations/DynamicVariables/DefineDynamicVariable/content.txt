@@ -1,0 +1,23 @@
+The value of a ''dynamic variable'' can be '''set''' at any point. Eg, ''prop.a'' is set to the text "A":
+
+|'''set'''|prop.a|''to''|A|
+
+To use the value of a ''dynamic variable'', use the @{} form.
+
+Eg, here we use the action ''get'' to access the literal text "A" and compare it to the value:
+
+|''get''|A|'''is'''|@{prop.a}|
+
+Here we reverse things and use the action ''get'' to access the value of the ''dynamic variable'':
+
+|''get''|@{prop.a}|'''is'''|A|
+
+|''get''|@{prop.a}|'''is'''|@{prop.a}|
+
+A cell may contain several ''dynamic variables along with text:
+
+|'''set'''|prop.b|''to''|B|
+
+|''get''|--@{prop.a}++@{prop.b}|'''is'''|--A++B|
+
+|''get''|@{prop.b}+@{prop.a}|'''is'''|B+A|

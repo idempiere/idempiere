@@ -1,0 +1,79 @@
+!2 When an action throws a !-FitLibraryShowException-!, it defines what text is to be shown in an extra cell added to the row:
+!**< def
+!define body (|''add''|name|
+
+|add cell to|@{name}|
+
+|add cell to|@{name}+@{name}|
+)
+!define test (!|fitlibrary.specify.workflow.ExceptionAddsCells|
+
+|define action|Person|
+|${body}|
+----
+|'''set'''|rick.name|'''to'''|Rick|
+|'''set'''|rick.class|'''to'''|Person|
+
+|'''oo'''|rick|''add''|Rick|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.ExceptionAddsCells</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>define action</td>
+<td>Person</td>
+</tr>
+<tr><td colspan="2"><table border="1" cellspacing="0">
+<tr><td class="pass"><i>add</i></td>
+<td>name</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>add cell to</td>
+<td>@{name}</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>add cell to</td>
+<td>@{name}+@{name}</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<hr/>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>rick.name</td>
+<td><b>to</b></td>
+<td>Rick</td>
+</tr>
+<tr><td><b>set</b></td>
+<td>rick.class</td>
+<td><b>to</b></td>
+<td>Person</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><b>oo</b><hr/> <span class="fit_label"></span></td>
+<td>rick</td>
+<td class="error"><i>add</i><hr/> <span class="fit_label"></span></td>
+<td>Rick</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call:</span>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error">add cell to</td>
+<td>Rick</td>
+<td bgcolor=#C0C0FF>added: Rick<hr>next line</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error">add cell to</td>
+<td>Rick+Rick</td>
+<td bgcolor=#C0C0FF>added: Rick+Rick<hr>next line</td></tr>
+</table>
+</td></tr>
+</table>-!|
+
+

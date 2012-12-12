@@ -1,0 +1,10 @@
+A ${storytest} has two natures:
+ * As an example, specifying domain object, business rules, constraints, etc
+ * As an automated test, which checks that the ${sut} acts and continues to act as required
+A ${storytest} often tells a little story.
+
+Some people refer to these as ''acceptance tests''. However:
+ * They have a different role, as ${storytest}s are often written for a ''story'' (a small piece of functionality) before development of the code, etc for that ''story''.
+ * Because they are used to specify business rules, they are not always ''end to end''
+ * They tend to be written in a more abstract form than usual ''acceptance tests'' (which tend to be written in terms of the user interface).
+Joshua Kerievsky introduced the terms ${storytest} and ''Storytest Driven Development''. See http://industrialxp.org.

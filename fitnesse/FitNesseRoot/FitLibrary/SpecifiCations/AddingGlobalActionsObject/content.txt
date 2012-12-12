@@ -1,0 +1,20 @@
+A standard global object provides methods that correspond to standard ''global actions''. For example, the '''comment''' action (which means that the rest of the table is ignored) is a global action defined within the standard global object.
+
+It's possible to add custom global objects with ''global actions'' that can be used anywhere in a suite of storytests.
+
+These are useful for the following:
+
+ * Avoiding the need to mention class and package names in tables
+ * including actions that are useful within a range of storytests. This avoids the need for specialised fixturing code for each such case.
+
+Such ''global objects'' are best added within the ''!-SuiteSetUp-!'' page so that they are available in all storytests in that suite.
+
+For example:
+
+|''add global''|!-fitlibrary.specify.global.ExtraGlobal-!|
+
+An object of the class !-fitlibrary.tutorial.Global-! is added as a global object. This includes a method ''withACalculator()'', which returns an object, so that a storytest can begin with:
+
+|''new global action''|
+
+For an example of using this with a suite, see .FitLibrary.BeginningTutorial.CalculatorBusinessProcessExample. You will need to runt the test to see it all.

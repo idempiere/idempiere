@@ -1,0 +1,72 @@
+!3 A map is created indirectly with a List
+In ${fitLibrary2}, with generics, a map can be created directly
+!**< def
+!define emma (
+|''owe''|130.00|
+
+)
+!define james (
+|''name''|james|
+|''owe''|120.00|
+)
+!define mapIn (|''name''|''owe''|
+|emma|130.00|
+|james|120.00|
+)
+!define mapOut (|emma|${emma}|
+|james|${james}|
+)
+!define test (!|fitlibrary.specify.collectionSetUp.SetUpMap|
+----
+|''IOU map''|${mapIn}|
+----
+|''IOU map''|${mapOut}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.collectionSetUp.SetUpMap</td>
+</tr>
+</table>
+<hr><br><table border="1" cellspacing="0">
+<tr><td><i>IOU map</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td><i>owe</i></td>
+</tr>
+<tr><td>emma</td>
+<td>130.00</td>
+</tr>
+<tr><td>james</td>
+<td>120.00</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<hr><br><table border="1" cellspacing="0">
+<tr><td><i>IOU map</i></td>
+<td><table border="1" cellspacing="0">
+<tr class="pass"><td>emma</td>
+<td><br><table border="1" cellspacing="0">
+<tr><td><i>owe</i></td>
+<td class="pass">130.00</td>
+</tr>
+</table>
+<br></td>
+</tr>
+<tr class="pass"><td>james</td>
+<td><br><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td class="pass">james</td>
+</tr>
+<tr><td><i>owe</i></td>
+<td class="pass">120.00</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

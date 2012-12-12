@@ -1,0 +1,13 @@
+!2 A table for a core fixture, such as ''!-ColumnFixture-!'', can have one or more arguments following the fixture class name in the first row of the table.
+These can be used to pass extra information to the fixture, such as values that apply to all of the rows.
+
+These arguments can be accessed as Strings by the fixture subclass written by the programmer.
+
+In this example, two arguments are provided in this way:
+
+|!-fit.specify.ColumnFixtureUnderTestWithArgs-!|1|2|
+|''third''|''sum()''|
+|0|3|
+|10|13|
+
+The way the arguments are collected is implementation-dependent. In the Java version, they are accessed in a fixture by calling the inherited method ''getArgs()'', which return a ''String[]''.

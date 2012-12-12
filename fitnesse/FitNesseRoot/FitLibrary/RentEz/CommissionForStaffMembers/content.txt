@@ -1,0 +1,7 @@
+^SetUp
+^TestNoCommissionYet
+^TestNoCommissionFromTransaction
+^TestCommissionFromTransaction
+^TestCommissionFromTransactionWithRounding
+^TestCommissionFromIncompleteTransaction
+^TestNoCommissionToStaffForHireByStaff

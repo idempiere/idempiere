@@ -1,0 +1,7 @@
+|!-rent.StartApplication-!|
+
+|''setup''|
+|''staff name''|''phone''|
+|Bill|555 9876|
+
+|''time is now''| 2005/05/06 09:01|

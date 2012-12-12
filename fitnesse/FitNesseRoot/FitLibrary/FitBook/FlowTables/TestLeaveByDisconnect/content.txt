@@ -1,0 +1,12 @@
+!2 A disconnected user leaves all rooms
+| !-ChatStart-! |
+
+|''connect user''|anna|
+
+|''user''|anna|''creates''|lotr|''room''|
+
+|''user''|anna|''enters''|lotr|''room''|
+
+|''disconnect user''|anna|
+
+|''room is empty''|lotr|

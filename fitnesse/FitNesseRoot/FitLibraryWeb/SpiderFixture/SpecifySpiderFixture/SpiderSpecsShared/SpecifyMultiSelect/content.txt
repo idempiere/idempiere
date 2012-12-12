@@ -1,0 +1,26 @@
+!*< def
+!define html ({{{<select id="colour" multiple="yes">
+  <option value="red" selected="selected">Red</option>
+  <option value="green">Green</option>
+  <option value="blue">Blue</option>
+  <option value="black">Black</option>
+</select>}}})
+*!
+
+|''keywords''|htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''title''|'''is'''||
+
+|''option list of''|colour|'''is'''|red|
+
+|''with''|colour|''add selection''|black|
+
+|''option list of''|colour|'''is'''|red, black|
+
+|''with''|colour|''remove selection''|red|
+
+|''option list of''|colour|'''is'''|black|

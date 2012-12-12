@@ -1,0 +1,7 @@
+!2 ''!-SubsetFixture-!'' is the same as ''!-SetFixture-!'', except that it tests that the expected rows are a subset of the actual collection (ie, it ignores surplus)
+^TestAll
+^TestFewer
+^TestNone
+^TestMissing
+^TestMismatch
+^TestMap

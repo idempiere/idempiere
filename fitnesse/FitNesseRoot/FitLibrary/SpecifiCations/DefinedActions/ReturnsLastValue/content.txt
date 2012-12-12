@@ -1,0 +1,23 @@
+!**< def
+!define body (|''aa''|
+
+|object|
+)
+!define body2 (|''bb''|
+
+|aa|
+)
+**!
+!1 This has been disabled - I'll add an explicit '''return''' for this case.
+
+!3 The value of the last action within a ''defined action'' is returned as the result of calling that ''defined action''. However, this doesn't work if the returned value is a collection, such as a List.
+|!-fitlibrary.DefineAction-!|
+|${body}|
+
+|!-fitlibrary.DefineAction-!|
+|${body2}|
+
+!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|''bb''|
+|''get a''|'''is'''|0|

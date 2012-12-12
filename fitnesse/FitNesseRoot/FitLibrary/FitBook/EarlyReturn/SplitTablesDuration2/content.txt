@@ -1,0 +1,21 @@
+!|rent.CalculateRefund2|
+
+|''refund $''|5.00|''per hour''|45.00|''per day''|200.00|''per week''|
+|''paid time''|''actual time''||''refund''|
+|3 hours|3 hours||0.00|
+|3 hours|2 hours||5.00|
+|5 hours|1 hours||20.00|
+
+|''refund $''|5.00|''per hour''|45.00|''per day''|200.00|''per week''|
+|''paid time''|''actual time''||''refund''|
+|1 day|1 day||0.00|
+|1 day|23 hours||0.00|
+|2 days|1 day||45.00|
+|1 day|9 hours||0.00|
+|1 day|8 hours||5.00|
+
+|''refund $''|5.00|''per hour''|45.00|''per day''|200.00|''per week''|
+|''paid time''|''actual time''||''refund''|
+|1 week|1 week||0.00|
+|1 week|6 days||0.00|
+|2 weeks|1 week||200.00|

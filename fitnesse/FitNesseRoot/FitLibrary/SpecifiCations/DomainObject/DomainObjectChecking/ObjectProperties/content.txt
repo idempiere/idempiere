@@ -1,0 +1,53 @@
+!3 The value of a propery that's another domain object may be shown as an embedded table
+ * The embedded table is the same as for the outer table, except that it starts with the ''label'' row
+ * As usual, only some of the properties of the embedded object may be specified
+ * Programmers: The processing of the embedded table happens automatically; you don't have to write any fixturing code for that
+For example, a ''User'' also has a single ''Account'':
+!**< def
+!define user (
+|''name''|Poor Payer|
+|''account''|${account}|
+
+)
+!define account (
+|''id''|456778|
+|''payment history''|poor|
+
+)
+!define test (!|fitlibrary.specify.domain.UserAdapter|
+
+|''checks''|
+
+|''slow paying user''|${user}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.UserAdapter</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>slow paying user</i></td>
+<td><br><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td class="pass">Poor Payer</td>
+</tr>
+<tr><td><i>account</i></td>
+<td><br><table border="1" cellspacing="0">
+<tr><td><i>id</i></td>
+<td class="pass">456778</td>
+</tr>
+<tr><td><i>payment history</i></td>
+<td class="pass">poor</td>
+</tr>
+</table>
+<br></td>
+</tr>
+</table>
+<br></td>
+</tr>
+</table>-!|

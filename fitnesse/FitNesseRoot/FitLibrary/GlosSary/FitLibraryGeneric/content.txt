@@ -1,0 +1,5 @@
+${programmers}
+${fitLibrary2} is an extension of ${fitLibrary} that provides support for Java generics.
+ * It eliminates the need for ${objectFactoryMethod}s in most cases
+ * It is currently complete except for handling application-defined generic classes and methods. This is being added as we speak
+ * It will only be made available for general release when that's completed.

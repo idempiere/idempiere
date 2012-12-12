@@ -1,0 +1,4 @@
+A ${collectionSetUpTraverse} is used to set up (create) a list.
+!3 Examples
+ * See ..FitLibrary.UserGuide.FitLibraryByExample.DoFixture.SetUpFixture
+ * See .FitLibrary.SpecifiCations.CollectionSpecifications.CollectionSetUpTraverse

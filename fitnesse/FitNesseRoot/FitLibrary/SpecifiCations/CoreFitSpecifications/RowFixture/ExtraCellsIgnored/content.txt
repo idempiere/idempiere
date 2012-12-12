@@ -1,0 +1,15 @@
+!2 Extra cells are ignored and can be used to include comments
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fit.specify.RowFixtureUnderTest</td></tr>
+<tr><td colspan="3">a</td></tr>
+<tr><td>1</td><td>extra</td><td>extra</td></tr>
+<tr><td colspan="3">1</td></tr>
+<tr><td>2</td><td colspan="2">extra</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fit.specify.RowFixtureUnderTest</td></tr>
+<tr><td colspan="3">a</td></tr>
+<tr><td class="pass">1</td><td>extra</td><td>extra</td></tr>
+<tr><td colspan="3" class="pass">1</td></tr>
+<tr><td class="pass">2</td><td colspan="2">extra</td></tr>
+</table>-!|

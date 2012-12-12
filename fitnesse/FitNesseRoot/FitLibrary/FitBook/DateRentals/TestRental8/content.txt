@@ -1,0 +1,6 @@
+|''begin transaction for client''| Joanna |
+|''rent''|100||cup|''for''|2|''weeks''|
+|check|''total is $''|210.00 |
+|''pay with cash $''|210.00|
+|check|''total is $''|0.00 |
+|''complete transaction''|

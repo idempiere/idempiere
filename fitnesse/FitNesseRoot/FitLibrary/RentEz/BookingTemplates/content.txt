@@ -1,0 +1,4 @@
+^SetUp
+
+^BookingTemplateSimple
+^BookingTemplatePartialFails

@@ -1,0 +1,9 @@
+|''mock ${soap} on port''|8081|
+|''xpath''|//request/attribute::a|''is''|A|
+|''xpath''|//request/attribute::b|''is''|b|
+|''xpath''|//start|''is''|now|
+|''response''|<response>out</response>|
+
+|''to''|http://localhost:8081/service|''post ${soap}''|<request b="b" a="A">in<start>now</start></request>|'''is'''|<response>out</response>|
+
+|''close''|

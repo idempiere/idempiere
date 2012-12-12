@@ -1,0 +1,39 @@
+!3 If there is a constructor that takes a String, use that to create objects of the given class (ie, "self-parse")
+If the constructor throws an exception, include that in the report
+!**< def
+!define test {!|fitlibrary.specify.parser.UseConstructor|
+----
+|'''check'''|a point|(12;34)|(12,34)|
+
+|''a point as domain object''|12|
+|x|12|
+|y|34|
+}
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.UseConstructor</td>
+</tr>
+</table>
+<hr/>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td>a point</td>
+<td class="error">(12;34)<hr><pre><div class="fit_stacktrace">
+</div></pre></td>
+<td>(12,34)</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>a point as domain object</i></td>
+<td class="error">12<hr><pre><div class="fit_stacktrace">
+</div></pre></td>
+</tr>
+<tr><td class="error">x<hr/> <span class="fit_label">Missing class or Missing method. Possibly:<ul><li>public Type x(Type1 arg1) { }</li></ul><hr/>Possibly in class:<ul><li>fitlibrary.specify.parser.UseConstructor</li></ul></span></td>
+<td>12</td>
+</tr>
+<tr><td class="error">y<hr/> <span class="fit_label">Missing class or Missing method. Possibly:<ul><li>public Type y(Type1 arg1) { }</li></ul><hr/>Possibly in class:<ul><li>fitlibrary.specify.parser.UseConstructor</li></ul></span></td>
+<td>34</td>
+</tr>
+</table>-!|

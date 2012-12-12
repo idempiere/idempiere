@@ -1,0 +1,50 @@
+!2 Use a returned fixture:
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table><tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr></table>
+<table>
+<tr><td><i>get</i></td><td>0</td><td><i>slice</i></td><td>0</td></tr>
+<tr><td>s</td></tr>
+<tr><td>A0a</td></tr>
+<tr><td>A0b</td></tr>
+</table>
+And another:
+<table>
+<tr><td><i>get</i></td><td>1</td><td><i>slice</i></td><td>2</td></tr>
+<tr><td>s</td></tr>
+<tr><td>B2a</td></tr>
+<tr><td>B2b</td></tr>
+</table>
+And another is wrong:
+<table>
+<tr><td><i>get</i></td><td>1</td><td><i>slice</i></td><td>2</td></tr>
+<tr><td>s</td></tr>
+<tr><td>BB2a</td></tr>
+<tr><td>BB2b</td></tr>
+<tr><td>B2a surplus</td></tr>
+<tr><td>B2b surplus</td></tr>
+</table>-!|!-<table><tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr></table>
+<table>
+<tr><td><i>get</i></td><td>0</td><td><i>slice</i></td><td>0</td></tr>
+<tr><td>s</td></tr>
+<tr><td class="pass">A0a</td></tr>
+<tr><td class="pass">A0b</td></tr>
+</table>
+And another:
+<table>
+<tr><td><i>get</i></td><td>1</td><td><i>slice</i></td><td>2</td></tr>
+<tr><td>s</td></tr>
+<tr><td class="pass">B2a</td></tr>
+<tr><td class="pass">B2b</td></tr>
+</table>
+And another is wrong:
+<table>
+<tr><td><i>get</i></td><td>1</td><td><i>slice</i></td><td>2</td></tr>
+<tr><td>s</td></tr>
+<tr><td class="fail">BB2a <span class="fit_label">missing</span></td></tr>
+<tr><td class="fail">BB2b <span class="fit_label">missing</span></td></tr>
+<tr><td class="fail">B2a surplus <span class="fit_label">missing</span></td></tr>
+<tr><td class="fail">B2b surplus <span class="fit_label">missing</span></td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">B2a</span> <span class="fit_label">surplus</span></td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">B2b</span> <span class="fit_label">surplus</span></td></tr></table>-!|

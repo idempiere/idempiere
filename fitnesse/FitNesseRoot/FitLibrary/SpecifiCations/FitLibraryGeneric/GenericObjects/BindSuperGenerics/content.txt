@@ -1,0 +1,17 @@
+!***< def
+!define t (
+|''colour''|red|
+
+)
+!define gen (
+|''t''|${t}|
+
+)
+**!
+!|fitlibraryGeneric.specify.object.BindSuperGenerics|
+
+|''gen''|${gen}|
+
+|''checks''|
+
+|''gen''|${gen}|

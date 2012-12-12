@@ -1,0 +1,19 @@
+|''with web services client''|
+
+|'''also run'''|''with web server for testing''|
+
+|''start file server on port''|8094|''at directory''|!-FitNesseRoot-!|
+
+|''to''|http://localhost:8094/ws|''post text''|count=100|
+
+|'''show'''|''headers''|
+
+|'''show'''|''reply''|
+
+|'''show'''|''reply escaped''|
+
+|reply|contains|101|
+
+|''xpath''|//string|''in response''|'''is'''|101|
+
+|''stop testing server''|

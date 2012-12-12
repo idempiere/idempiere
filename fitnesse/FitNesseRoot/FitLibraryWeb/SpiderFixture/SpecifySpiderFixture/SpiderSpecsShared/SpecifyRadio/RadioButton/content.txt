@@ -1,0 +1,30 @@
+!*< def
+!define html ({{{<form>
+    <input type="radio" id="white" value="white" name="colour"/>White<br/>
+    <input type="radio" id="red" value="red" name="colour" checked/>Red<br/>
+    <input type="radio" id="green" value="green" name="colour"/>Green<br/>
+    <input type="radio" id="blue" value="blue" disabled="disabled" name="colour"/>Blue
+</form>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''checkbox''|//input[@id="red"]|''is''|true|
+|''checkbox''|//input[@id="white"]|''is''|false|
+
+|''with''|//input[@id="white"]|''select''|true|
+
+|''checkbox''|//input[@id="white"]|''is''|true|
+
+|''with''|//input[@id="red"]|''select''|true|
+
+|''checkbox''|//input[@id="red"]|''is''|true|
+|''checkbox''|//input[@id="white"]|''is''|false|
+ * Can't select a disabled radio:
+|'''not'''|''with''|//input[@id="blue"]|''select''|true|
+
+|''checkbox''|red|''is''|true|

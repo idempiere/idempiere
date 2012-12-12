@@ -1,0 +1,23 @@
+!2 A note is ignored:
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border><tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr>
+</table>
+<table border>
+<tr><td>note</td><td>any note</td><td>spread over several</td><td></td><td>cells</td></tr>
+</table>
+<table border>
+<tr><td>note</td><td>zero or more cells</td></tr>
+</table>
+<table border>
+<tr><td>note</td></tr>
+</table>-!|!-<table border><tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr>
+</table>
+<table border>
+<tr><td>note</td><td>any note</td><td>spread over several</td><td></td><td>cells</td></tr>
+</table>
+<table border>
+<tr><td>note</td><td>zero or more cells</td></tr>
+</table>
+<table border>
+<tr><td>note</td></tr>
+</table>-!|

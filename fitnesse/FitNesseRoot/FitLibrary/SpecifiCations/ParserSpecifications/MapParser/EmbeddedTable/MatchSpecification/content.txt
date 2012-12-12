@@ -1,0 +1,38 @@
+!**< def
+!define list (|1|2|
+|2|3|
+|3|4|
+)
+!define test (!|fitlibrary.specify.mapParser.Match|
+
+|''map of 123''|'''is'''|${list}|
+|''map empty''|'''is'''||
+)
+**!
+The Parser uses the key and value types of one of the elements of the Map to parse them all
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.mapParser.Match</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>map of 123</i></td>
+<td><b>is</b></td>
+<td><table border="1" cellspacing="0">
+<tr class="pass"><td>1</td>
+<td>2</td>
+</tr>
+<tr class="pass"><td>2</td>
+<td>3</td>
+</tr>
+<tr class="pass"><td>3</td>
+<td>4</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr><td><i>map empty</i></td>
+<td><b>is</b></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>-!|

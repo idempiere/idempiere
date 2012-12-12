@@ -1,0 +1,62 @@
+!2 1. Logging into the report
+ * A storytest table (or a fixture) may log text that is added in a folding area after the table concerned. See .FitLibrary.SpecifiCations.DoWorkflow.SpecialActions.TestShowAfter
+#
+
+!2 1. ''Dynamic Variables'' in Fit tables
+ * If a Fit table is used within a flow storytest (ie, started with ''!-DoFixture-!''), any ''dynamic variables'' in that table are substituted before Fit is called. This allows ''dynamic variables'' that have been set within ''!-FitLibrary-!'' to be used in Fit tables. See .FitLibrary.SpecifiCations.AlienEvaluator.DynamicVariablesSubstitutedForFit
+ * Changes to the dynamic variables (and timeout values) in one ''!-DoFixture-!'' will be seen in other ''!-DoFixtures-!'' that are being managed by a ''!-SelectFixture-!''.
+ * Dynamic variables can be updated from a unicode-based property file.
+!2 2. New Special Actions
+ * ''is not'' (see .FitLibrary.SpecifiCations.DoWorkflow.SpecialActions.TestIsNot)
+ * ''does not match'' (see .FitLibrary.SpecifiCations.DoWorkflow.SpecialActions.TestDoesNotMatch)
+!2 3. Logging
+ * Logging capability has been added. See ...
+----!1 January 2009 Version
+!2 1. Changes to ''Defined Actions''
+ * There is now a much more convenient way of specifying ''defined actions'' that are to be used in a suite.
+ * Any ''show''s in a ''defined action'' body are now displayed at the outer-most point of call of the ''defined action''.
+ * An object-oriented form of ''defined actions'' is provided
+ * It's no longer necessary to make explicit use of '''oo''' special actions
+ * A wiki class can be used in an '''oo'' special action as well as a wiki object
+See .FitLibrary.UserGuide.FitLibraryByExample.DefinedActions
+!2 2. Changes to Dynamic Variables
+ * Dynamic properties can now hold arbitrary objects as values, not just Strings
+ * A dynamic variable can be set to the value of an action. Eg:
+|'''set'''|id|''some action of''|person|
+ * Dynamic properties are still rather experimental and very likely subject to further (non-backwards compatible) change. In particular, their "object nature" will be explored much further (in a cross-over with ''defined actions'').
+See .FitLibrary.UserGuide.FitLibraryByExample.DynamicVariables
+!2 3. ''New Instance'' Plugin Support
+ * Where a value of an interface or abstract class is needed, it's possible to specify the details of the concrete class to be constructed. But this is specific to a particular interface or class. It would be handy to define a general object creation mechanism. For example, this is needed for creating objects corresponding to xml with xmlBeans.
+ * It's now possible to define a "plugin" method in a fixture or domain adapter, a ''newInstancePlugin()''. This takes a class as argument and is expect to return a new instance of that class (or to return null if it doesn't handle the class provided).
+See .FitLibrary.SpecifiCations.PlugInMethods.ObjectCreationPlugin.SpecifyCall and the corresponding class, ''!-HasNewInstancePlugin-!''.
+!2 4. Super Parse Delegation
+''!-FitLibrary-!'' has a general ''parse delegate'' mechanism, which specifies a class or object that's used to parse an object of a particular type. However:
+ * It is only applied to a class that is exactly the specified type
+ * It does not provide a mechanism to handle object comparison or showing the value of an object.
+''!-FitLibrary-!'' fixtures (and traverses) now have a method to register a ''parse delegate'' that applies to a type and any subtype of that type. That method is ''registerSuperParseDelegate()''.
+ * See .FitLibrary.SpecifiCations.ParserSpecifications.ValueObjectParser.TextInCell.DelegateParseString.SpecifySuperParseDelegate for an example of the use of this, and the corresponding class ''!-ParseMyFixedPointAsStringWithSuperDelegate-!''.
+The delegate has the following methods (with only the first one being mandatory):
+ * ''parse()'' to convert a String to an object of the given type. This could be used, for example, when you want to parse an object of some class that you're unable to change, such as a ''Date''.
+ * ''matches()'' to check whether two objects of the given type are equal. This could be used, for example, if you don't want to rely on the normal ''equals()'' method of the object concerned, such as to ignore some properties.
+ * ''show()'' to display an object of the given type, such as in a ''show'' special action or in an error message. This could be used, for example, to display a terse or otherwise specialised form of an object when that's sufficient.
+Super parse delegates are only applied if there is no ordinary parse delegate that applies.
+
+Super parse delegates are applied in pseudo-random order. If two or more super parse delegates my apply to a particular type, either one may be chosen, as determined at runtime.
+ * If this proves to be a problem, let me know and I will change the system in future to check for ambiguity so as to avoid the random choice. This would have a performance implication  if there were lots of them.
+See .FitLibrary.SpecifiCations.ParserSpecifications.ValueObjectParser.TextInCell.SpecifySuperParseDelegate
+!2 5. ''!-PropertyEditors-!'' used for parsing
+If a ''!-PropertyEditor-!'' exists for a given class, that's used by ''!-FitLibrary-!'' to
+ * parse text in table cells to create an object of that class (using the ''!-PropertyEditor-!'' method ''setAsText()'')
+ * show an object of that class in a report (using the ''!-PropertyEditor-!'' method ''getAsText()'').
+For a class ''!-a.b.MyClass-!'', it will look for a class ''!-a.b.MyClassEditor-!'' that ''implements !-PropertyEditor-!'' to use for this, as is usual with Java ''!-PropertyEditors-!''.
+
+Such ''!-PropertyEditors-!'' are used for handling primitive and built-in types like, '''char''' and '''Boolean'''.
+
+See .FitLibrary.SpecifiCations.ParserSpecifications.ValueObjectParser.TextInCell.HasPropertyEditor
+!2 6. Show
+ * The ''show'' special action now colours the added cell blue
+ * A method called from a ''!-DoFixture-!'' action can throw a ''!-FitLibraryShowException-!'', which contains some text (can be html). That text is inserted in an extra cell that's added to the row. This allows for extra information to be provided when things go wrong (or for debugging). See .FitLibrary.SpecifiCations.DoWorkflow.ShowExceptionHandling
+!2 7. Recording with Dynamic Variables
+Where a storytest makes use of ''dynamic variables'', it can be used to record, in a limited way, variations of data.
+
+See .FitLibrary.SpecifiCations.DynamicVariables.RecordPropertyFile

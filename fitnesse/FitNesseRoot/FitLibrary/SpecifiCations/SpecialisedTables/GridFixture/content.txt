@@ -1,0 +1,11 @@
+A ''!-GridFixture-!'' checks an ''Object[][]'' against the table. So it's like ''!-ArrayFixture-!'' except that there are no labels.
+
+^EmptyGrid
+^EmptyGridExpected
+^EmptyGridNotExpected
+^StringGrid
+^StringGridNotExpected
+^IntGrid
+^TreeGrid
+^ImageGrid
+

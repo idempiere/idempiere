@@ -1,0 +1,22 @@
+!*< def
+!define html ({{{<input type="checkbox" id="checked" checked="yes">Option</input>
+<input type="checkbox" id="check">Option</input>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''checkbox''|//input[@id="checked"]|''is''|true|
+
+|''checkbox''|//input[@id="check"]|''is''|false|
+
+|''with''|//input[@id="check"]|''select''|true|
+
+|''checkbox''|//input[@id="check"]|''is''|true|
+
+|''with''|//input[@id="check"]|''select''|false|
+
+|''checkbox''|//input[@id="check"]|''is''|false|

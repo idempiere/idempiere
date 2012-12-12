@@ -1,0 +1,1 @@
+${domainTraverse} provides the actual implementation of ${domainFixture}.

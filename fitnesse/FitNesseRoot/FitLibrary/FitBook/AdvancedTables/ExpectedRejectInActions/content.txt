@@ -1,0 +1,7 @@
+|!-fit.ActionFixture-!|
+|start|!-ChatServerActions2-!|
+|enter|user|anna|
+|press|connect|
+|enter|room|lotr|
+|press|enter room|
+|check|room entered|no|

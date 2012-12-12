@@ -1,0 +1,6 @@
+|''rental items list''|
+| ''name''   | ''count'' |''hourly rate''|''daily rate''|''weekly rate''|''deposit'' |
+| coffee urn | 10            | 1.50          | 12.00        |  60.00        | 50.00   |
+| table      | 20            | 6.00          | 48.00        | 200.00        | 80.00   |
+| coffee pot | 20            | 1.50          | 12.00        |  60.00        |  0.00   |
+| chair      | 20            | 6.00          | 48.00        | 200.00        |  0.00   |

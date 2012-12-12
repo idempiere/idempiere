@@ -1,0 +1,40 @@
+The locators that may be used are as follows:
+ * By '''id'''. Eg:
+
+|click|gButton|
+|click|id=gButton|
+
+ * By '''name'''. Eg:
+
+|click|name=submitter|
+
+ * By '''xpath'''. Eg:
+
+|click|//input[@name="surname"]|
+|click|xpath=//input[@name="surname"]|
+
+ * By '''link''' name:
+
+|click|link=Go Home|
+
+ * By '''class''' name:
+
+|click|class=bold|
+|click|class=float_left|
+
+* By '''css selector''' - see http://www.w3.org/TR/css3-selectors/#content-selectors . Eg:
+
+|click|css=input#submit|
+
+
+If there is no explicit "=" in the locator:
+
+ * '''xpath''' is used if the locator starts with "//"
+
+ * otherwise, an '''id''' is assumed
+
+(This follows the conventions of Selenium.)
+
+There is also an form of ''click'' that takes a part of a link (see <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecifyClickOnNamedLink.SpecifyPartiallyNamedLink).
+
+See <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecifyLocators

@@ -1,0 +1,18 @@
+!2 Cross-reference of the use of  fixtures and ${doFixture} actions in storytests in a suite
+ * This can be included in any page. The argument to ''xref'' is the full name of a suite.
+ * ''xref'' runs through all storytests in the suite and determines which actions are used in which storytest.
+
+ * It also walks over ''defined actions'' that are referenced in the suite and builds a cross-reference for those.
+
+ * It produces a table, with links to the relevant pages
+
+ * Because ''xref'' can't easily tell what rows are ${doFixture} actions, it marks those that may not be with a "~" and these appear at the end of the cross-reference table.
+
+Run this test to get a cross-reference of the use of  ${doFixture} actions in storytests in the suite mentioned
+
+!|fitlibrary.DoFixture|
+
+|''xref''|.FitLibrary.SpecifiCations.DefinedActions|
+
+!3 Note that this doesn't work with all ''!-FitNesse-!'' versions, as it depends on trinidad code within ''!-FitNesse-!''.
+It is known to work with fitnesse20090818

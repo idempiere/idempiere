@@ -1,0 +1,26 @@
+!1 Part Three
+#
+Let's now see how ''defined actions'' need to evolve.
+
+Consider the storytest from the previous tutorial:
+
+|''define actions at''|..FitLibraryWeb.SpiderFixture.SpiderTutorial.DefinedActions.UsingDefinedActions.DefinedActions|
+
+|''suite test on port''|${FITNESSE_PORT}|
+
+|''check suite''|!-TemplateFixture-!|''passes''|
+
+|''check suite''|!-XmlProcessing-!|''passes''|
+
+We'd also like to use it to run some of the ''!-SpiderFixture-!'' storytests, those concerned with radio buttons. We could try using:
+
+|''check suite''|!-SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyRadio-!|''passes''|
+
+If you run that, however, you'll see that it fails. That's because the page name is incorrect.
+
+So we need a variation on ''check suite passes'':
+
+ * We need to pass in the "prefix" page as well
+ * We need to ignore the ''ignored'' count
+
+Let's do that [[on this page][^AddDefinedAction]].

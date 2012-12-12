@@ -1,0 +1,6 @@
+!3 An Array may be represented as a comma separated list or as an embedded table
+An ''ArrayParser'' is only applied if:
+ * The array is of a primitive type (or a corresponding class, such as ''Double'')
+ * The array is of String
+ * It's a multi-dimensional array (eg int[][])
+|!contents|

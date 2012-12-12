@@ -1,0 +1,21 @@
+|!-rent.StartApplication-!|
+
+|''setup''|
+|''sales item name''|''count''|''selling price''|
+|coke|10|3.00|
+|chips|10|5.00|
+|cake|10|30.00|
+
+|''setup''|
+|''client name''|''phone''|
+|Joanna|373 7599|
+|Bob|352 2353|
+|Joe|334 2433|
+
+|''setup''|
+|''staff name''|''phone''|
+|Bill|555 9876|
+|John|554 2362|
+|Pual|232 2356|
+
+|''time is now''| 2004/05/06 09:01|

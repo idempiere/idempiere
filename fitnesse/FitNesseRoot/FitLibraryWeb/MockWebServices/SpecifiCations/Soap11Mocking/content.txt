@@ -1,0 +1,4 @@
+!contents -R
+
+!define soap {soap11}
+!define replyContentType {text/xml;charset=utf-8}

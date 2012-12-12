@@ -1,0 +1,17 @@
+!3 ''Additional Setup''
+ * ''Bill tops up point balance to 100.00''
+|''begin admin transaction''|Bill|
+|''topup''|100.00|''points for client''|Joanna|
+|''complete transaction''|
+
+|'''check'''|point balance for client|Joanna|100.00|
+
+!3 ''Pay with points''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|2||coffee dispenser|''for''|3 days|
+|''rent''|1||hot water dispenser|''for''|3 days|
+|''pay with points $''|73.20|
+|''complete transaction''|
+
+ * ''No bonus points awarded, because paid by points''
+|'''check'''|point balance for client|Joanna|26.80|

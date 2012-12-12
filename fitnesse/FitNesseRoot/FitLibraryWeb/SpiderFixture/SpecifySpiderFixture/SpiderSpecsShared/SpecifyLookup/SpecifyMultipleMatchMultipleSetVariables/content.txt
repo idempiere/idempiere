@@ -1,0 +1,29 @@
+|set variables|
+|animal|dog|
+|breed|beagle|
+|sex|female|
+
+|''lookup''|
+|@{animal}|@{breed}|name?|@{sex}|size?|
+|cat|persian|lucky|male|small|
+|dog|foxhound|rover|male|medium|
+|dog|beagle|samson|male|large|
+|dog|beagle|samantha|female|small|
+|cat|siamese|lucy|female|large|
+
+''' This one is correct chosen because 'male' is a valid matches on the string female '''
+|''get''|@{name}|is|samson|
+|''get''|@{size}|is|large|
+
+
+''' Here's the test again using lookup table values that starts with regex ^ should now only match the female string'''
+|''lookup''|
+|@{animal}|@{breed}|name?|@{sex}|size?|
+|cat|persian|lucky|^male|small|
+|dog|foxhound|rover|^male|medium|
+|dog|beagle|samson|^male|large|
+|dog|beagle|samantha|female|small|
+|cat|siamese|lucy|female|large|
+
+|''get''|@{name}|is|samantha|
+|''get''|@{size}|is|small|

@@ -1,0 +1,9 @@
+!3 ''The initial point balance for a client is 0.00''
+|'''check'''|point balance for client|Joanna|0.00|
+
+!3 ''Bill tops up point balance to 10.00''
+|''begin admin transaction''|Bill|
+|''topup''|10.00|''points for client''|Joanna|
+|''complete transaction''|
+
+|'''check'''|point balance for client|Joanna|10.00|

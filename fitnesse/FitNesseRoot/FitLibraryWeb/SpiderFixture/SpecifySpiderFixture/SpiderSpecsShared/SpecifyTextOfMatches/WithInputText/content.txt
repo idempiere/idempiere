@@ -1,0 +1,19 @@
+!*< def
+!define html ({{{  <input type="text" id="nothing"/>
+  <input type="text" id="withValue" value="red"/>
+  <input type="text" id="disabled" value="blue" disabled="true"/>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''text of''|//input[@id="nothing"]|''matches''||
+
+|''text of''|//input[@id="withValue"]|''matches''|red|
+
+|''text of''|//input[@id="withValue"]|''matches''|r.*d|
+
+|''text of''|//input[@id="disabled"]|''matches''|.*blue|

@@ -1,0 +1,73 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td><i>a list of point</i></td><td colspan="2">
+<table>
+<tr><td><i>x</i></td><td><i>y</i></td></tr>
+<tr><td>0</td><td>0</td></tr>
+<tr><td>5</td><td>5</td></tr>
+</table></td></tr>
+<tr><td>check</td><td><i>copy of list of point</i></td><td>
+<table>
+<tr><td><i>x</i></td><td><i>y</i></td></tr>
+<tr><td>0</td><td>1</td></tr>
+<tr><td>2</td><td>3</td></tr>
+</table></td><td><table>
+<tr><td><i>x</i></td><td><i>y</i></td></tr>
+<tr><td>0</td><td>1</td></tr>
+<tr><td>2</td><td>3</td></tr>
+</table></td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td><i>a list of point</i></td><td colspan="2">
+<table>
+<tr><td><i>x</i></td><td><i>y</i></td></tr>
+<tr><td class="pass">0</td><td class="pass">0</td></tr>
+<tr><td class="pass">5</td><td class="pass">5</td></tr>
+</table></td></tr>
+<tr><td>check</td><td><i>copy of list of point</i></td><td>
+<table>
+<tr><td><i>x</i></td><td><i>y</i></td></tr>
+<tr><td>0</td><td>1</td></tr>
+<tr><td>2</td><td>3</td></tr>
+</table></td><td><table>
+<tr><td><i>x</i></td><td><i>y</i></td></tr>
+<tr><td class="pass">0</td><td class="pass">1</td></tr>
+<tr><td class="pass">2</td><td class="pass">3</td></tr>
+</table></td></tr>
+</table>-!|
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td><i>copy of list of point</i></td><td>
+<table>
+<tr><td><i>x</i></td><td><i>y</i></td></tr>
+<tr><td>0</td><td>1</td></tr>
+<tr><td>2</td><td>3</td></tr>
+</table></td><td><table>
+<tr><td><i>x</i></td><td><i>y</i></td></tr>
+<tr><td>0</td><td>4</td></tr>
+</table></td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td><i>copy of list of point</i></td><td>
+<table>
+<tr><td><i>x</i></td><td><i>y</i></td></tr>
+<tr><td>0</td><td>1</td></tr>
+<tr><td>2</td><td>3</td></tr>
+</table></td><td><table>
+<tr><td><i>x</i></td><td><i>y</i></td></tr>
+<tr><td class="pass">0</td><td class="fail">4 <span class="fit_label">expected</span><hr>1 <span class="fit_label">actual</span></td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">2</span> <span class="fit_label">surplus</span></td>
+<td> <span class="fit_grey">3</span></td></tr></table></td></tr>
+</table>-!|

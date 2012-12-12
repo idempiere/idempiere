@@ -1,0 +1,12 @@
+!**< def
+!define pair (
+|first|1|
+|second|2|
+)
+**!
+|!-fitlibraryGeneric.specify.genericFinder.NonGenericFinderForGeneric-!|
+
+|integer integer pair|first pair|
+----
+----
+|integer integer pair|${pair}|

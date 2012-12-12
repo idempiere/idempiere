@@ -1,0 +1,26 @@
+!**< define
+!define test (!|fitlibrary.specify.calculate.RuleTableExample|
+|in|in2|out?|
+|1|1|2|4|
+|2|2|4|
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td colspan="4">fitlibrary.specify.calculate.RuleTableExample</td>
+</tr>
+<tr><td>in</td>
+<td>in2</td>
+<td colspan="2">out?</td>
+</tr>
+<tr><td class="error">1<hr/> <span class="fit_label">Irregular shaped: This row differs in width from the header</span></td>
+<td>1</td>
+<td>2</td>
+<td>4</td>
+</tr>
+<tr><td>2</td>
+<td>2</td>
+<td colspan="2">4</td>
+</tr>
+</table>-!|

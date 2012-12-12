@@ -1,0 +1,4 @@
+ * Changed ''!-FolderRunner-!'' so it is now included as a part of the normal ''!-FitLibrary-!'' release, rather than needing a specialised one.
+  * Included some ''!-FolderRunner-!'' tests that are also checked through ''!-FitNesse-!''.
+ * Fixed an obscure bug in ''defined action'' parameters
+ * Added some advanced tutorials: .FitLibrary.AdvancedTutorials

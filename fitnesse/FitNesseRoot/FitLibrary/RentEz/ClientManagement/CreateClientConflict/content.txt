@@ -1,0 +1,17 @@
+ * Create an initial client Fred, and another client called Fred inside the same transaction
+
+|''begin admin transaction''| Bill |
+|'''ensure'''|''create client''|Fred|''with phone number''|379 5055|''in city''|Auckland|''in zone''|South|''at address''|93 Carbine Rd|
+|'''reject'''|''create client''|Fred|''with phone number''|912 3050|''in city''|Auckland|''in zone''|CBD|''at address''|72 Symonds St|
+|''complete transaction''|
+
+ * Try creating another client Fred in a different transaction
+
+|''begin admin transaction''| Bill |
+|'''reject'''|''create client''|Fred|''with phone number''|864 9078|''in city''|Auckland|''in zone''|East|''at address''|22 Howick Rd|
+|''complete transaction''|
+
+
+|''client list''|
+|''name''|''phone''|''city''|''zone''|''address''|
+|Fred|379 5055|Auckland|South|93 Carbine Rd|

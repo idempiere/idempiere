@@ -1,0 +1,13 @@
+|''create soap file''|response1.xml|''with''|<response>out1</response>|
+|''create soap file''|response2.xml|''with''|<response>out2</response>|
+|''create soap file''|response3.xml|''with''|<response>out3</response>|
+
+|''mock ${soap} on port''|8081|
+|''matches request''|<request a="a" b="b">in</request>|
+|''responses from folder''|!-FitNesseRoot/files/soap-!|
+
+|''to''|http://localhost:8081/service|''post ${soap}''|<request b="b" a="a">in</request>|'''is'''|<response>out1</response>|
+|''to''|http://localhost:8081/service|''post ${soap}''|<request b="b" a="a">in</request>|'''is'''|<response>out2</response>|
+|''to''|http://localhost:8081/service|''post ${soap}''|<request b="b" a="a">in</request>|'''is'''|<response>out3</response>|
+
+|''close''|

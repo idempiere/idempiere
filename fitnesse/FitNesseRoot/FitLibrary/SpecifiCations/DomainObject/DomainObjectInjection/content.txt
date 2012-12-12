@@ -1,0 +1,10 @@
+^SetUpSucceeds
+^AbstractClassType
+^InterfaceType
+^EmptyCellIsNull
+
+^UnknownProperty
+^IncorrectValueType
+^IncompletePair
+^BadConstructors
+

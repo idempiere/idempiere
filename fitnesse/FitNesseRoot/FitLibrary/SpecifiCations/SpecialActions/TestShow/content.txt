@@ -1,0 +1,47 @@
+!**< def
+!define test (!|fitlibrary.specify.specialAction.SpecialActions|
+
+|'''show'''|''ten''|
+
+|'''show'''|''html''|
+
+|'''show'''|''int property''|
+
+|'''show'''|a true action|
+|'''show'''|a false action|
+|'''show'''|an error action|
+)
+**!
+!2 'show' adds a new cell to the row to show the returned value of an action
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.specialAction.SpecialActions</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show</b></td>
+<td><i>ten</i></td>
+<td bgcolor=#C0C0FF>10</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show</b></td>
+<td><i>html</i></td>
+<td bgcolor=#C0C0FF><ul><li>ita<li>lics</ul></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show</b></td>
+<td><i>int property</i></td>
+<td bgcolor=#C0C0FF>2</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show</b></td>
+<td>a true action</td>
+<td bgcolor=#C0C0FF>true</td></tr>
+<tr><td><b>show</b></td>
+<td>a false action</td>
+<td bgcolor=#C0C0FF>false</td></tr>
+<tr><td class="error"><b>show</b><hr/> <span class="fit_label">whoops</span></td>
+<td>an error action</td>
+</tr>
+</table>-!|

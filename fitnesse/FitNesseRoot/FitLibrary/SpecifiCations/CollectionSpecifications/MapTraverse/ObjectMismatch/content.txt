@@ -1,0 +1,44 @@
+!**< def
+!define map (|yellow|orange|
+|orange|green|
+)
+!define test (!|fitlibrary.specify.mapTraverse.ColourMap|
+
+|''checks''|
+
+|''colour map''||
+
+|''colour map''|${map}|
+)
+**!
+The error given on a mismatch will depend on whether the key of an element of the actual map corresponds to the key cell of a row in the table.
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.mapTraverse.ColourMap</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>colour map</i></td>
+<td class="fail">&nbsp; <span class="fit_label">expected</span><hr>Colour[red]->Colour[green], Colour[yellow]->Colour[blue] <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>colour map</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td>yellow</td>
+<td class="fail">orange <span class="fit_label">expected</span><hr>Colour[blue] <span class="fit_label">actual</span></td>
+</tr>
+<tr><td class="fail">orange <span class="fit_label">missing</span></td>
+<td>green</td>
+</tr>
+<tr>
+<td class="fail">Colour[red] <span class="fit_label">surplus</span></td>
+<td>Colour[green]</td></tr></table>
+</td>
+</tr>
+</table>-!|

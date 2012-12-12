@@ -1,0 +1,23 @@
+!*< def
+!define html ({{{
+    <input type="text" id="textual" name="radish" value="red"/>
+    <a href="other.html">Click Me</a>
+}}})
+*!
+
+|''keywords''|chrome,firefox,ie,htmlunit|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+''In the example below, the div element is found using the locator id 'message' and gets passed into the javascript body as the arguments[0] value''
+
+|''execute !-JavaScript-!''| var theInput=arguments[0]; return theInput.value;|with element|//input[@id='textual']|'''is'''|red|
+
+''Of course all of the other locator types will also work:''
+
+|''execute !-JavaScript-!''|return arguments[0].value;|with element|id=textual|'''is'''|red|
+|''execute !-JavaScript-!''|return arguments[0].value;|with element|textual|'''is'''|red|
+|''execute !-JavaScript-!''|return arguments[0].value;|with element|name=radish|'''is'''|red|
+|''execute !-JavaScript-!''|return arguments[0].href;|with element|link=Click Me|'''contains'''|other.html|

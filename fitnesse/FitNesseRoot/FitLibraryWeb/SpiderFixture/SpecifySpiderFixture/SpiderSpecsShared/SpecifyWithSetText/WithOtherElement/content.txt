@@ -1,0 +1,20 @@
+!*< def
+!define html (<divv id="withValue" value="red" onkeypress="some JS function needed here"/>
+)
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''with''|//divv[@id="withValue"]|''set text''|RED|
+
+|''text of''|//divv[@id="withValue"]|''is''|RED|
+
+|''with''|//divv[@id="withValue"]|''set text''|mauve|
+
+|''text of''|//divv[@id="withValue"]|''is''|mauve|
+
+|''set checking''|false|

@@ -1,0 +1,21 @@
+!*< defs
+!define p (|name|Rick|
+)
+!define pp (|name|
+|Rick|
+)
+**!
+!|fitlibrary.specify.plugin.HasNewInstancePlugin|
+
+|person|${p}|
+
+|persons|${pp}|
+
+|person list|${pp}|
+----
+----
+|person|${p}|
+
+|persons|${pp}|
+
+|person list|${pp}|

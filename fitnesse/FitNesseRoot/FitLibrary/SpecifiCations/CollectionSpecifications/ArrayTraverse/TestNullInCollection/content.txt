@@ -1,0 +1,31 @@
+!**< def
+!define list (|name|
+||
+|fitlibrary|
+)
+!define test (
+!|fitlibrary.specify.collection.NullInCollection|
+
+|list|'''is'''|${list}|
+)
+*!
+!2 An element of the collection may be null
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br/><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.collection.NullInCollection</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>list</td>
+<td><b>is</b></td>
+<td><table border="1" cellspacing="0">
+<tr><td class="error">name<hr/> <span class="fit_label">An element of the collection is null</span></td>
+</tr>
+<tr><td>&nbsp;</td>
+</tr>
+<tr><td>fitlibrary</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

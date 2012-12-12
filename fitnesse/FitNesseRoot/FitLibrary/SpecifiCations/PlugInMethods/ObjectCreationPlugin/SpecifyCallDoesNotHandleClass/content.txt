@@ -1,0 +1,23 @@
+!*< defs
+!define p (|name|Poppy|
+)
+!define test (!|fitlibrary.specify.plugin.HasNewInstancePlugin|
+
+|dog|${p}|
+)
+**!
+!3 If the ''newInstancePlugin()'' returns null, it's ignored.
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.plugin.HasNewInstancePlugin</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>dog</td>
+<td class="error"><table border="1" cellspacing="0">
+<tr><td>name</td>
+<td>Poppy</td>
+</tr>
+</table><hr/> <span class="fit_label">Class is abstract: fitlibrary.specify.plugin.HasNewInstancePlugin$Dog</span></td>
+</tr>
+</table>-!|

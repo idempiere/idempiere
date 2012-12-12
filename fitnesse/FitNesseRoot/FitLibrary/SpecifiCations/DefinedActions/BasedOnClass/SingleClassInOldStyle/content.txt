@@ -1,0 +1,94 @@
+!**< def
+!define body (|''name is single class 2''|NAME|
+
+|''get''|@{this.name}|is| NAME |
+)
+!define test (|''auto translate defined action parameters''|
+
+|''set expand defined actions''|true|
+
+!|fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest|
+
+|define action|Person|
+|${body}|
+
+|'''set'''|rick.name|'''to'''|Rick|
+|'''set'''|rick.class|'''to'''|Person|
+
+|'''oo'''|rick|''name is single class 2''|Rick|
+
+|''expected test results''|3|''right''|0|''wrong''|0|''ignored''|0|''exceptions''|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td><i>auto translate defined action parameters</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>set expand defined actions</i></td>
+<td>true</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>define action</td>
+<td>Person</td>
+</tr>
+<tr><td colspan="2"><table border="1" cellspacing="0">
+<tr><td class="pass"><i>name is single class 2</i></td>
+<td>NAME</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>@{this.name}</td>
+<td>is</td>
+<td>NAME</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>rick.name</td>
+<td><b>to</b></td>
+<td>Rick</td>
+</tr>
+<tr><td><b>set</b></td>
+<td>rick.class</td>
+<td><b>to</b></td>
+<td>Person</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><b>oo</b></td>
+<td>rick</td>
+<td class="pass"><i>name is single class 2</i></td>
+<td>Rick</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call:</span>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>Rick</td>
+<td>is</td>
+<td class="pass">Rick</td>
+</tr>
+</table>
+</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>expected test results</i></td>
+<td>3</td>
+<td><i>right</i></td>
+<td>0</td>
+<td><i>wrong</i></td>
+<td>0</td>
+<td><i>ignored</i></td>
+<td>0</td>
+<td><i>exceptions</i></td>
+</tr>
+</table>-!|

@@ -1,0 +1,5 @@
+The application that's being tested is sometimes referred to as the ${sut}. The following are not included:
+ * A ${fixture}
+ * A ${traverse}
+ * A ${domainAdapter}
+

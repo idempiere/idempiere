@@ -1,0 +1,27 @@
+!**< def
+!define rgRenamed (
+|''colour renamed''|
+|red|
+|green|
+
+)
+!define rg (
+|''colour''|
+|red|
+|green|
+
+)
+**!
+ * A list is expressed as a nested table
+ * A list of lists is expressed as a doubly-nested table
+
+!|fitlibraryGeneric.specify.collections.GenericCollectionsUseObjectFactory|
+
+|''a list''|${rgRenamed}|
+|''a set''|${rgRenamed}|
+
+----
+----
+|''a list''|${rg}|
+|''a set''|${rg}|
+

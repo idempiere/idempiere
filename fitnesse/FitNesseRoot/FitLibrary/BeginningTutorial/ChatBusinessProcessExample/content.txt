@@ -1,0 +1,14 @@
+When a user enters a chat room, they are then an occupant of that room.
+
+|''with chat''|
+
+|''given''|anna|''is a connected user''|
+
+|''given''|lotr|''is a chat room''|
+
+|''when''|anna|''enters''|lotr|''room''|
+
+|''then occupants of''|lotr|''are''|
+|''name''|
+|anna|
+

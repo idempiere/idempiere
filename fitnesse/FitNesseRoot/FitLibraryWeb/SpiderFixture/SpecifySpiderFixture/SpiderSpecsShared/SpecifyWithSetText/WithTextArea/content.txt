@@ -1,0 +1,40 @@
+!*< def
+!define html {  <textarea id="nothing"></textarea>
+  <textarea id="withNoValue"></textarea>
+  <textarea id="disabled" disabled="true">blue</textarea>
+  <textarea id="withMultiText">yellow
+orange</textarea>
+}
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''with''|//textarea[@id="withNoValue"]|''set text''|RED|
+
+|''text of''|//textarea[@id="withNoValue"]|''is''|RED|
+
+|''with''|//textarea[@id="withNoValue"]|''set text''|RED\nGREEN\nBLUE|
+
+|''text of''|//textarea[@id="withNoValue"]|''is''|RED GREEN BLUE|
+
+|''with''|//textarea[@id="withNoValue"]|''set text''|mauve|
+
+|''text of''|//textarea[@id="withNoValue"]|''is''|mauve|
+
+|''with''|//textarea[@id="withNoValue"]|''set text''||
+
+|''text of''|//textarea[@id="withNoValue"]|''is''||
+
+ * Unable to change a disabled textarea. But it is cleared:
+
+|''set checking''|false|
+
+|''text of''|//textarea[@id="disabled"]|''is''|blue|
+
+|''with''|//textarea[@id="disabled"]|''set text''|BLUE|
+
+|''text of''|//textarea[@id="disabled"]|''is''|blue|

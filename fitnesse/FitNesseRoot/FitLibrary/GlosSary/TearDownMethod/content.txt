@@ -1,0 +1,11 @@
+When a ${fixture}, ${traverse}, or {domainAdapter} finishing interpretation, it will automatically call a public method ''tearDown()'', if it exists. The method is called only once. There are two cases:
+ * The fixture is a ${doFixture} in ${flow}. The ''tearDown()'' call occurs after all the tables in the storytest have been interpreted
+ * Otherwise, the ''tearDown()'' call occurs after that fixture has finished processing its first table.
+The method that's actually called is the ''tearDown()'' method that's found in the first object, starting at the ${fixture} or ${traverse} and following down the ${sut} chain. However, an object is only considered if it is a ${fixture}, ${traverse}, or {domainAdapter}.
+
+The ${setUpMethod} servers a similar purpose, but is called at the start of interpretation.
+
+Sometimes the behaviour may be surprising:
+ * Consider when the same ${domainAdapter} is referenced by two fixtures on a page, one being a ${doFixture} in ${flow}. The ${domainAdapter} has ''setUp()'' and ''tearDown()'' methods, but the fixtures do not. When the first table is interpreted, the ''setUp()'' method of the ${domainAdapter} is called. When (say) the third table in the storytest has been interpreted by the second (non-${flow}) fixture,  the ''tearDown()'' method is called for that table.
+ * However, if the second (non-${flow}) fixture had ''setUp()'' and ''tearDown()'' methods, they would be called instead for the third table. At the end of the storytest, the ''tearDown()'' method of the ${domainAdapter} would then be called.
+In other words, take care when sharing ${domainAdapter}s between fixtures.

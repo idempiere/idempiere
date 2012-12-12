@@ -1,0 +1,22 @@
+Unlike a ${valueObject}, you can only create one copy of a specific ${entity}. If you create two copies of an ${entity} with the same properties, they'll still be different.
+
+Consider when we create a ''User'' ${entity} early in a ${storytest}. There are two ways that you'll want to use that ${entity} later:
+ * To check that it has the correct property (or method-call) values
+  * In this case, we can simply use a table (possibly embedded) to specify the values that we expect
+ * To pass it as an argument in a ${workflow} action
+  * In this case, we need a way to refer to it.
+So if you want to refer to an existing ${entity} in a ${storytest}, you have to refer to it indirectly, by a ''String'' ${key}.
+ * If a cell contains a ''String'' and an ${entity} is expected (ie, given the corresponding parameter type), the ''String'' will be treated as a ${key}.
+ * A class is treated as an ${entity} if it doesn't provide a ''parse()'' method for parsing Strings for instances. Compare this to a ${valueObject}, which does have that method.
+ * If the ${entity} type is the class ''User'', the following ${finder} is called in the ${domainAdapter}:
+{{{ public Object findUser(String s);}}}
+This will become clearer with a ^SimpleExample.
+
+A ${finder} can also be used for a ${key} in a nested table.
+
+A ${finder} may also be used to introduce specialised parsing into a storytest, such as when you want to treat an empty cell as a null for a String:
+ * ^FinderAsSpecialisedParser
+
+There are two possibilities of error:
+ * ^MissingFinderMethod, in which the finder method isn't defined.
+ * ^MissingEntity, in which the given ${key} doesn't correspond to any ${entity}.

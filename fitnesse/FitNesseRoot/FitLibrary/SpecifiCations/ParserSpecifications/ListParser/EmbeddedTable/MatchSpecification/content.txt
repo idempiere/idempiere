@@ -1,0 +1,53 @@
+!**< def
+!define list (|''count''|
+|2|
+|3|
+)
+!define test (!|fitlibrary.specify.listParser.Match|
+
+|'''check'''|''counts 23''|${list}|
+
+|'''check'''|''iterator 23''|${list}|
+
+|'''check'''|''list empty''||
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.listParser.Match</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>counts 23</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>count</i></td>
+</tr>
+<tr><td class="pass">2</td>
+</tr>
+<tr><td class="pass">3</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>iterator 23</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>count</i></td>
+</tr>
+<tr><td class="pass">2</td>
+</tr>
+<tr><td class="pass">3</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>list empty</i></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>-!|

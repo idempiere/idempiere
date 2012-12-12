@@ -1,0 +1,47 @@
+!2 The ''!-SuiteFixture-!'' can pass resources to the storytest fixtures it creates
+ * We test this in a bizarre way: by having the resources affect the storytests. The count supplied to the suite fixture is passed to each storytest fixture in turn, incremented each time
+|!-fitlibrary.spec.SpecifySuiteFixture-!|
+|!-<table>
+<tr><td>fitlibrary.specify.suite.Simple</td></tr>
+</table>
+<table>
+<tr><td><i>select or</i></td><td>complete</td></tr>
+</table>
+<table>
+<tr><td><i>count is</i></td><td>10</td></tr>
+</table>-!|!-<table>
+<tr><td>fitlibrary.specify.suite.Simple</td></tr>
+</table>
+<table>
+<tr><td class="pass"><i>select or</i></td><td>complete</td></tr>
+</table>
+<table>
+<tr><td><i>count is</i></td><td>10</td></tr>
+</table>-!|''Normally in !-SuiteSetUp-!''|
+|!-<table>
+<tr><td><i>keywords</i></td><td>complete,money</td></tr>
+</table>
+<table>
+<tr><td colspan=3><i>a fixture</i></td></tr>
+<tr><td>check</td><td><i>count</i></td><td>10</td></tr>
+</table>-!|!-<table>
+<tr><td><i>keywords</i></td><td>complete,money</td></tr>
+</table>
+<table>
+<tr><td colspan=3><i>a fixture</i></td></tr>
+<tr><td>check</td><td><i>count</i></td><td class="pass">10</td></tr>
+</table>-!|''Test One is selected''|
+|!-<table>
+<tr><td><i>keywords</i></td><td>complete</td></tr>
+</table>
+<table>
+<tr><td colspan=3><i>a fixture</i></td></tr>
+<tr><td>check</td><td><i>count</i></td><td>11</td></tr>
+</table>-!|!-<table>
+<tr><td><i>keywords</i></td><td>complete</td></tr>
+</table>
+<table>
+<tr><td colspan=3><i>a fixture</i></td></tr>
+<tr><td>check</td><td><i>count</i></td><td class="pass">11</td></tr>
+</table>-!|''Test Two is selected''|
+

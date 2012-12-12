@@ -1,0 +1,25 @@
+!2 Hire items with deposit and return them
+|''begin transaction for client''| Joanna |''staff''| Bill  |
+|check|''rent''| 3 || coffee urn |''for''|2 days|222.00 |
+|check|''rent''| 4 || coffee urn |''for''|3 days|344.00 |
+|check|''rent''| 7 || table      |''for''|3 days|1568.00 |
+|''pay with cash $''| 2134.00 |
+|''complete transaction''|
+----
+ * Two days later...
+|''time is now''| 2004/05/08 08:30 |
+ * Joanna returns the items and Bob refunds the bond, but Joanna decides to not return them after all:
+|''begin transaction for client''| Joanna |''staff''| Bill |
+|check|''return items''| 3 || coffee urn  | -150.00 |
+|''refund cash $''| 150.00 |
+|not|''cancel transaction''|
+|''pay with cash $''| 150.00 |
+|''cancel transaction''|
+ * But she needs to pay Bob back the refunded money first, before it can be cancelled
+
+ * The client's hires are unaltered:
+|''rentals of client''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee urn|3|2004/05/06 09:01|2004/05/08 09:01|
+|coffee urn|4|2004/05/06 09:01|2004/05/09 09:01|
+|table|7|2004/05/06 09:01|2004/05/09 09:01|

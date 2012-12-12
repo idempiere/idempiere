@@ -1,0 +1,55 @@
+!**< def
+!define test (!|fitlibrary.specify.access.CurrentRow|
+
+|''action that passes cell''|1|
+
+|''action that passes cell''|0|
+
+|''action that fails cell''|1|
+
+|''action that fails cell''|0|
+
+|''action that fails cell''|1|''with actual''|2|
+
+|''action with error in cell''|2|''with message''|Wrong|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.access.CurrentRow</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>action that passes cell</i></td>
+<td class="pass">1</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>action that passes cell</i></td>
+<td>0</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>action that fails cell</i></td>
+<td class="fail">1</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="fail"><i>action that fails cell</i></td>
+<td>0</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>action that fails cell</i></td>
+<td class="fail">1 <span class="fit_label">expected</span><hr>2 <span class="fit_label">actual</span></td>
+<td><i>with actual</i></td>
+<td>2</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>action with error in cell</i></td>
+<td>2</td>
+<td class="error"><i>with message</i><hr/> <span class="fit_label">Wrong</span></td>
+<td>Wrong</td>
+</tr>
+</table>-!|

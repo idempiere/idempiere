@@ -1,0 +1,22 @@
+!2 Not Covered
+#
+We haven't covered here (which are covered in the [[Manual][<SpiderFixture.DocuMentation]]):
+
+ * Actions that go ''back'' and ''forward'' between pages
+ * Checking and setting cookies
+ * Handling frames and iframes
+ * Making screen dumps
+ * Executing javaScript from within the storytest for specialised actions
+ * Accessing element attributes and counting elements
+ * Checking for errors in a general way
+
+See the [[Manual][<SpiderFixture.DocuMentation]] and the [[Specs][<SpiderFixture.SpecifySpiderFixture]] for further details and actions.
+
+!2 Xpath Expressions
+#
+We haven't said much about ''xpath'' expressions.
+
+ * These are important in locating elements.
+ * See the resources listed [[here][<SpiderTutorial.StartingWithSpider.UsingXpath]]. Use Xpather and experiment.
+
+!2 Good Luck!

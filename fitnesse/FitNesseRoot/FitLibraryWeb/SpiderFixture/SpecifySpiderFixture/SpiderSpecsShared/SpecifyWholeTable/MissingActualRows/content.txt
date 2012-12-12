@@ -1,0 +1,8 @@
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <SpecifyWholeTable.SpecSetUp
+
+|''table values''|//table|
+|red|green|
+
+|''expected test results''|3|''right''|2|''wrong''|0|''ignored''|0|''exceptions''|

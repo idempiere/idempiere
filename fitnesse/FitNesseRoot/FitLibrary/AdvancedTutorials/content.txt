@@ -1,0 +1,27 @@
+|[[Multiple Flow Objects][>MultipleFlowObjects]]|''For when a storytest has to affect different parts of a system, or several systems. Eg, running through a web browser and updating/checking a database''|
+|[[Defined Actions][.FitLibrary.UserGuide.FitLibraryByExample.DefinedActions]]|''For when we find we're repeating the same sequence of actions, and want to name them as a single action''|
+|[[Dynamic Variables][>DynamicVariables]]|''Dynamic variables allow for storytests to take different values, depending on the values that have been defined.''|
+
+Specific Sorts of Collections:
+
+|[[An ordered list][.FitLibrary.UserGuide.FitLibraryByExample.OrderedList]]|''Where the order of the elements in a collection is important''|
+|[[An unordered list][.FitLibrary.UserGuide.FitLibraryByExample.UnorderedList]]|''Where the order of the elements is irrelevant''|
+|[[Handling Subsets][.FitLibrary.UserGuide.FitLibraryByExample.SubSet]]|''Checking a subset of a collection''|
+|[[Handling Maps][.FitLibrary.UserGuide.FitLibraryByExample.MapHandling]]|''Checking when the underlying data is stored as a Map''|
+|[[Handling Arrays][.FitLibrary.UserGuide.FitLibraryByExample.SimpleArray]]|''Checking when the underlying (simple) data is stored as an array''|
+
+Implementation details:
+
+|[[set up, tear down, on failure methods][>SetUpTearDownOnFailure]]|''How to have code run when a fixture or storytest starts or finishes, and when it finishes with errors''|
+|[[Runtime injection][>RuntimeInjection]]|''Technical details for advanced use of fixtures''|
+|[[Specialised handling of table cell text][>CustomParsing]]|''How to handle null strings, special values, etc with custom parsing''|
+
+Migrating from Slim to ''!-FitLibrary-!''
+
+|[[Migrating Decision Tables][^MigratingSlimDecisionTables]]|''How Slim storytests that only use decision tables can be very easily moved to ''!-FitLibrary-!'' ''|
+
+Logging Techniques
+
+|[[Logging Techniques][^LoggingTechniques]]|''How to log information to help understand what is happening''|
+
+This will be expanded further.

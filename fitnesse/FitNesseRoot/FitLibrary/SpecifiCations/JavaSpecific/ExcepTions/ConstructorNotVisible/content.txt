@@ -1,0 +1,10 @@
+!**< def
+!define test (!|fitlibrary.specify.exception.ConstructorNotVisible|
+)
+**!
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.exception.ConstructorNotVisible</td>
+</tr>
+</table>-!|

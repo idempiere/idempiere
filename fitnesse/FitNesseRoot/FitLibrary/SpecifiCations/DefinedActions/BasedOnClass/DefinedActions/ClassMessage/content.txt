@@ -1,0 +1,3 @@
+|set a message|
+
+|set|message|to|hello this is a message|

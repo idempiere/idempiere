@@ -1,0 +1,8 @@
+Spider waits for the appropriate element to appear. It polls up to the value of the check period. It gathers the text, or whatever, as soon as it can.
+
+>SpecifyTextOf
+>SpecifyPatternMatch
+>SpecifyElementExists
+>SpecifyAttributeExists
+>SpecifyOptionSelected
+>SpecifyRadioSelected

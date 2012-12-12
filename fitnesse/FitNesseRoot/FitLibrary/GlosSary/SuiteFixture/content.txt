@@ -1,0 +1,9 @@
+With ${suite}s:
+ * ${storytest}s no longer need to mention any class names. This means that the same storytests can easily be used with different fixturing for testing at different levels, such as directly into the domain layer and through a GUI or web interface.
+ * Storytests can be filtered for a particular test run. For example, when only the completed storytests should be run on the build machine.
+ * The fixtures for the storytests in a suite can easily share resources, such as database connections.
+ * Each suite can provide different configuration information, such as selecting a DB or Spring configurations.
+ * The ${suiteSetUpMethod} and ${suiteTearDownMethod} are called at the start and end of suite processing.
+See:
+ * ..FitLibrary.SuiteFixture
+ * .FitLibrary.SpecifiCations.SuiteFixture for further details

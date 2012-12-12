@@ -1,0 +1,10 @@
+!**< def
+!define test (!|fitlibrary.specify.exception.NoNullaryConstructor|
+)
+**!
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td class="error">fitlibrary.specify.exception.NoNullaryConstructor<hr/> <span class="fit_label">Class has no default constructor: fitlibrary.specify.exception.NoNullaryConstructor</span></td>
+</tr>
+</table>-!|

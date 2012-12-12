@@ -1,0 +1,69 @@
+!2 Clicking the '''Suite''' button
+#
+Let's now locate the '''Suite''' button. With Firebug we see that the structure is:
+{{{   <div class="actions">
+          <a accesskey="" href="FitLibraryWeb.TemplateFixture?suite">Suite</a>
+}}}We could either locate it by xpath (//div[@class="actions"]/a[1]) or by the name of the link ("Suite").
+
+That xpath assumes that the "Suite" button will always be the first one, so it's more fragile (and harder to debug) if the position changes. At least, if the name changes, we'll have a good idea of what to change it to.
+
+So let's locate it by name.
+#
+!2 Verifying a Pass
+#
+Now let's consider how to verify that the suite passes. We run the suite by hand, by clicking on "Suite", and inspect the result.
+
+We see that when the suite run finishes, a box near the top has been coloured green. At the time I wrote this, firebug's inspection showed:
+{{{   <div id="test-summary" class="pass">
+      <strong>Test Pages:</strong>
+      5 right, 0 wrong, 0 ignored, 0 exceptions
+      <strong>Assertions:</strong>
+      8 right, 0 wrong, 0 ignored, 0 exceptions
+   </div>}}}So we can check for success for verifying that that element contains "0 wrong, 0 ignored, 0 exceptions" -- ie, all passed. We'll use XPather to verify the xpath:
+{{{   //div[@id='test-summary']}}}Yes, that does.
+
+Alternatively, we could simply check that the ''div'' appears with a pass (rendered as green). We can use XPather to check that too:
+{{{   //div[@id='test-summary' and @class='pass']}}}Yes that does.
+#
+!2 The revised Storytest
+#
+So the whole storytest becomes:
+
+!|fitlibrary.spider.SpiderFixture|
+
+|''start spider with''|firefox|
+
+|''shutdown browser automatically''|false|
+
+|''get url''|http://localhost:${FITNESSE_PORT}/FitLibraryWeb.TemplateFixture|
+
+|''title''|'''is'''|!-FitLibraryWeb.TemplateFixture-!|
+
+|''text of''|//span[@class="page_title"]|'''is'''|!-TemplateFixture-!|
+
+|''click on named link''|Suite|
+
+|''element''|//div[@id='test-summary' and @class='pass']|''exists''|
+
+|''text of''|//div[@id='test-summary']|'''contains'''|right, 0 wrong, 0 ignored, 0 exceptions|
+#
+!2 Summary
+#
+So we've made some progress. We've covered the basics of using ''!-SpiderFixture-!'' to:
+
+ * Get a page
+ * Verify the title
+ * Verify the text of an element on the page, located by ''xpath''
+ * Click a button, located by the link name
+ * Verify the existence of an element, located by ''xpath''
+
+You may have noticed that the suite takes some time to complete, yet we have written the storytest as if it happens immediately. However, that's fine as:
+
+ * When the next action after the ''get url'' action is called, the page will already be loaded.
+ * As we cover in a later part, this works fine until ajax is involved
+
+We've also introduced the use of ''Firebug'' and ''XPather'' as very useful tools for finding the best way to locate html elements on the page. So far, we've been lucky that it's been straightforward to do so. We'll cover hard-to-locate elements in a later tutorial.
+
+!2 Next
+#
+You may like to proceed to the next part of the tutorial now: [[Part Two: Defined Actions][<SpiderTutorial.DefinedActions]]

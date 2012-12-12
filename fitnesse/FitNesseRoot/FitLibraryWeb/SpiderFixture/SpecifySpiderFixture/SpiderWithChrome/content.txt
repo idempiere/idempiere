@@ -1,0 +1,3 @@
+!contents
+To set up Chrome support, first download the appropriate ''chromedriver'' for your platform from the downloads page at http://chromium.googlecode.com/. 
+Make sure the server can be located on your PATH or specify its location via the '''webdriver.chrome.driver''' java system property.  

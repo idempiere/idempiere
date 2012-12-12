@@ -1,0 +1,218 @@
+ * Information can be included in a folded area after the table concerned.
+ * This special action executions the action in the rest of the row and adds the result, as text.
+ * Text logged within the call to a ''defined action'' is included after the table containing the (outermost) call.
+ * The text can also be logged from within do fixture code, by calling the method ''showAfterTable() or showAsAfterTable()''.
+
+!**< def
+!define test (!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.SpecialActions.TestShowAfter.DefinedActions|
+
+|'''show after'''|''with''|//input[@id="userName"]|''enter text''|chad|
+
+|''login''|rick|''with''||
+
+|''login2''|rick|''with''||
+
+|'''show after'''|get|<i>Some text</i>|
+
+|''set''|message|''to''|!-MessaGe-!|
+
+|'''show after'''|get|<b>Some more @{message}</b>|
+
+|'''show after'''|''a void''|
+
+|'''show after as'''|count folding|''count''|
+
+|'''show after'''|''count''|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.definedAction.DefinedActionUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>clear defined actions</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>define actions at</i></td>
+<td><a href="FitLibrary.SpecifiCations.SpecialActions.TestShowAfter.DefinedActions">.FitLibrary.SpecifiCations.SpecialActions.TestShowAfter.DefinedActions</a></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show after</b></td>
+<td><i>with</i></td>
+<td>//input[@id="userName"]</td>
+<td><i>enter text</i></td>
+<td>chad</td>
+</tr>
+</table><div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12345');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12345"/></a>
+&nbsp;<span class="meta">Logs</span><div class="hidden" id="12345">
+<pre>true</pre>
+</div></div>
+
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>login</i></td>
+<td>rick</td>
+<td class="pass"><i>with</i></td>
+<td>&nbsp;</td>
+</tr>
+</table><div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12346');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12346"/></a>
+&nbsp;<span class="meta">Logs</span><div class="hidden" id="12346">
+<pre>About to login rick with password ""</pre>
+</div></div>
+<div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12347');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12347"/></a>
+&nbsp;<span class="meta">login</span><div class="hidden" id="12347">
+<pre>Logged in rick with password ""</pre>
+</div></div>
+
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>login2</i></td>
+<td>rick</td>
+<td class="pass"><i>with</i></td>
+<td>&nbsp;</td>
+</tr>
+</table><div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12348');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12348"/></a>
+&nbsp;<span class="meta">Logs</span><div class="hidden" id="12348">
+<pre>About to login rick with password ""</pre>
+</div></div>
+<div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12349');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12349"/></a>
+&nbsp;<span class="meta">login</span><div class="hidden" id="12349">
+<pre>Logged in rick with password ""</pre>
+</div></div>
+
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show after</b></td>
+<td>get</td>
+<td>&lt;i&gt;Some text&lt;/i&gt;</td>
+</tr>
+</table><div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12350');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12350"/></a>
+&nbsp;<span class="meta">Logs</span><div class="hidden" id="12350">
+<pre><i>Some text</i></pre>
+</div></div>
+
+<br/><table border="1" cellspacing="0">
+<tr><td><i>set</i></td>
+<td>message</td>
+<td><i>to</i></td>
+<td>MessaGe</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show after</b></td>
+<td>get</td>
+<td>&lt;b&gt;Some more MessaGe&lt;/b&gt;</td>
+</tr>
+</table><div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12351');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12351"/></a>
+&nbsp;<span class="meta">Logs</span><div class="hidden" id="12351">
+<pre><b>Some more MessaGe</b></pre>
+</div></div>
+
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show after</b></td>
+<td><i>a void</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show after as</b></td>
+<td>count folding</td>
+<td><i>count</i></td>
+</tr>
+</table><div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12352');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12352"/></a>
+&nbsp;<span class="meta">count folding</span><div class="hidden" id="12352">
+<pre>22</pre>
+</div></div>
+
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show after</b></td>
+<td><i>count</i></td>
+</tr>
+</table>
+<div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12353');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12353"/></a>
+&nbsp;<span class="meta">Logs</span><div class="hidden" id="12353">
+<pre>22</pre>
+</div></div>-!|
+
+!**< def
+!define test (!|fitlibrary.specify.specialAction.SpecialActions|
+
+|'''show after'''|a true action|
+|'''show after'''|a false action|
+|'''show after'''|an error action|
+)
+**!
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.specialAction.SpecialActions</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show after</b></td>
+<td class="pass">a true action</td>
+</tr>
+<tr><td><b>show after</b></td>
+<td class="fail">a false action</td>
+</tr>
+<tr><td class="error"><b>show after</b><hr/> <span class="fit_label">whoops</span></td>
+<td>an error action</td>
+</tr>
+</table><div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12355');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12355"/></a>
+&nbsp;<span class="meta">Logs</span><div class="hidden" id="12355">
+<pre>true<br/>false<br/></pre>
+</div></div>-!|

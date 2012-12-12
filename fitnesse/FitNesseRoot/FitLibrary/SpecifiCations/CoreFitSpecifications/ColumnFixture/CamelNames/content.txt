@@ -1,0 +1,7 @@
+!2 Camel names, like ''!-ActionFixture-!'':
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td colspan=4>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>camelFieldName</td><td>camel field name</td><td>getCamelFieldName()</td><td>get camel field name()</td></tr>
+<tr><td>one</td><td>two</td><td>two</td><td>two</td></tr></table>-!|!-<table><tr><td colspan=4>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>camelFieldName</td><td>camel field name</td><td>getCamelFieldName()</td><td>get camel field name()</td></tr>
+<tr><td>one</td><td>two</td><td class="pass">two</td><td class="pass">two</td></tr></table>-!|

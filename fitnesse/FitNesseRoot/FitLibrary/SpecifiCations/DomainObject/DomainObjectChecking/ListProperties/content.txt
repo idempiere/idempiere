@@ -1,0 +1,87 @@
+!3 The value of a list propery is shown as an embedded table
+ * The embedded table is the same as a ordered list table, except that it starts with the ''label'' row
+ * As usual, only some of the properties of elements of the list may be specified
+ * The same approach is used for a property that is a ''Set'', array or ''Map''
+ * Programmers: The processing of the embedded table happens automatically; you don't have to write any fixturing code for that
+For example, a ''User'' also has a list of phone numbers:
+!**< def
+!define phones (|''country''|''region''|''number''|
+|64|9|3737598|
+|64|27|4556112|
+)
+!define phones2 (|''number''|
+|3737598|
+|4556112|
+)
+!define user1 (|''name''|Poor Payer|
+|''phones''|${phones}|
+)
+!define user2 (|''name''|Poor Payer|
+|''phones''|${phones2}|
+)
+!define test (!|fitlibrary.specify.domain.UserAdapter|
+
+|''checks''|
+
+|''slow paying user''|${user1}|
+
+|''slow paying user''|${user2}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.UserAdapter</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>slow paying user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td class="pass">Poor Payer</td>
+</tr>
+<tr><td><i>phones</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>country</i></td>
+<td><i>region</i></td>
+<td><i>number</i></td>
+</tr>
+<tr><td class="pass">64</td>
+<td class="pass">9</td>
+<td class="pass">3737598</td>
+</tr>
+<tr><td class="pass">64</td>
+<td class="pass">27</td>
+<td class="pass">4556112</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>slow paying user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td class="pass">Poor Payer</td>
+</tr>
+<tr><td><i>phones</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>number</i></td>
+</tr>
+<tr><td class="pass">3737598</td>
+</tr>
+<tr><td class="pass">4556112</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

@@ -1,0 +1,28 @@
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <SpecifyFrames.SpecSetUp
+
+ * With a frameset, the first frame is '''not''' selected automatically.
+ * The current title and url are of the loaded html containing the frameset.
+|''url''|'''matches'''|.*/test.html|
+
+|''frame''|0|
+
+|''page source''|contains|reddening|
+
+ * Select second frame:
+|''frame''|1|
+
+|''page source''|contains|greening|
+
+|''url''|'''matches'''|.*/green.html |
+
+|''page source''|contains|greening|
+
+ * Select first frame:
+|''frame''|0|
+
+|''url''|'''matches'''|.*/red.html|
+
+|''page source''|contains|reddening|
+

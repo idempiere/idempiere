@@ -1,0 +1,6 @@
+See ${valueObject} for a brief introduction to value objects.
+
+A ${valueObject} can be parsed as a String (eg, a ''Date'') or an embedded table (eg, a ''Point''), depending on how simple it is.
+
+| >TextInCell|''Ways of converting from text to a value, and back again.''|
+|>NestedTableInCell|''Converting from a nested table to an object, and back again.''|

@@ -1,0 +1,50 @@
+!3 ''Additional Setup''
+ * ''Bill tops up point balance to 25.00''
+|''begin admin transaction''|Bill|
+|''topup''|25.00|''points for client''|Joanna|
+|''complete transaction''|
+
+ * ''Checks the initial point balance''
+|'''check'''|point balance for client|Joanna|25.00|
+
+!3 ''Try to pay with points & voucher and pay with cash instead.''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|2||coffee dispenser|''for''|3 days|
+|''rent''|1||hot water dispenser|''for''|3 days|
+|''pay with points $''|25.00|
+|'''reject'''|''pay with voucher $''|50.00|
+|''pay with cash $''|48.20|
+|''complete transaction''|
+
+|'''check'''|point balance for client|Joanna|0.00|
+
+!3 ''Try to pay with points & voucher and pay with account instead.''
+
+ * ''Bill tops up point balance to 25.00''
+|''begin admin transaction''|Bill|
+|''topup''|25.00|''points for client''|Joanna|
+|''complete transaction''|
+
+|check|''account owing for''| Joanna |''is''|0.00|
+
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|2||coffee dispenser|''for''|3 days|
+|''rent''|1||hot water dispenser|''for''|3 days|
+|''pay with points $''|25.00|
+|'''reject'''|''pay with voucher $''|50.00|
+|''pay with account $''|48.20|
+|''complete transaction''|
+
+|check|''account owing for''| Joanna |''is''|48.20|
+
+!3 ''Pay with cash & account.''
+|check|''account owing for''| Joanna |''is''|48.20|
+
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|2||coffee dispenser|''for''|3 days|
+|''rent''|1||hot water dispenser|''for''|3 days|
+|''pay with account $''|25.00|
+|''pay with cash $''|48.20|
+|''complete transaction''|
+
+|check|''account owing for''| Joanna |''is''|73.20|

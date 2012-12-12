@@ -1,0 +1,28 @@
+!3 Test discounts against configured Discount Groups:
+|!-DiscountGroupsEntry-!|
+|future value|max balance|min purchase|discount percent|add()|
+|low|0.00|0.00|0|true|
+|medium|0.00|500.00|5|true|
+|medium|500.00|500.00|3|true|
+|high|500.00|2000.00|10|true|
+|high|1000.00|500.00|5|true|
+ * Low Future Value:
+|!-CalculateDiscounts-!|
+|future value|owing|purchase|discount()|
+|low|0.00|1000.00|0.00|
+||1000.00|5000.00|0.00|
+ * Medium Future Value:
+|!-CalculateDiscounts-!|
+|future value|owing|purchase|discount()|
+|medium|0.00|400.00|0.00|
+||0.00|600.00|30.00|
+||2000.00|1000.00|0.00|
+ * High Future Value:
+|!-CalculateDiscounts-!|
+|future value|owing|purchase|discount()|
+|high|0.00|400.00|0.00|
+||0.00|600.00|30.00|
+||1100.00|500.00|0.00|
+||1000.00|500.00|25.00|
+||2000.00|2000.00|0.00|
+||400.00|2000.00|200.00|

@@ -1,0 +1,205 @@
+!***< def
+!define colours (
+|''colour''|
+|blue|
+|red|
+|green|
+
+)
+!define black (
+|''colour''|
+|black|
+
+)
+!define listOfLists (
+|${colours}|
+|${black}|
+||
+
+)
+!define map (
+|red|green|
+
+)
+!define someLists (
+ * List<Colour>
+|''a list''||
+
+|''a list''|${colours}|
+
+|''a list of lists''||
+
+|''a list of lists''|${listOfLists}|
+
+|''a set''||
+
+|''a set''|${colours}|
+
+|''a set of sets''||
+
+|''a set of sets''|${listOfLists}|
+
+|''a map''||
+
+|''a map''|${map}|
+
+|''an array''||
+
+|''an array''|${colours}|
+
+)
+!define test (
+!|fitlibraryGeneric.specify.collections.NullGenericCollections|
+----
+----
+${someLists}
+
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibraryGeneric.specify.collections.NullGenericCollections</td>
+</tr>
+</table>
+<hr><br><hr><br><br><ul>
+	<li>List&lt;Colour&gt;</li>
+</ul>
+<table border="1" cellspacing="0">
+<tr><td><i>a list</i></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a list</i></td>
+<td class="fail"><br><table border="1" cellspacing="0">
+<tr><td><i>colour</i></td>
+</tr>
+<tr><td>blue</td>
+</tr>
+<tr><td>red</td>
+</tr>
+<tr><td>green</td>
+</tr>
+</table> <span class="fit_label">expected</span><hr> <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a list of lists</i></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a list of lists</i></td>
+<td class="fail"><br><table border="1" cellspacing="0">
+<tr><td><br><table border="1" cellspacing="0">
+<tr><td><i>colour</i></td>
+</tr>
+<tr><td>blue</td>
+</tr>
+<tr><td>red</td>
+</tr>
+<tr><td>green</td>
+</tr>
+</table>
+<br></td>
+</tr>
+<tr><td><br><table border="1" cellspacing="0">
+<tr><td><i>colour</i></td>
+</tr>
+<tr><td>black</td>
+</tr>
+</table>
+<br></td>
+</tr>
+<tr><td>&nbsp;</td>
+</tr>
+</table> <span class="fit_label">expected</span><hr> <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a set</i></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a set</i></td>
+<td class="fail"><br><table border="1" cellspacing="0">
+<tr><td><i>colour</i></td>
+</tr>
+<tr><td>blue</td>
+</tr>
+<tr><td>red</td>
+</tr>
+<tr><td>green</td>
+</tr>
+</table> <span class="fit_label">expected</span><hr> <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a set of sets</i></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a set of sets</i></td>
+<td class="fail"><br><table border="1" cellspacing="0">
+<tr><td><br><table border="1" cellspacing="0">
+<tr><td><i>colour</i></td>
+</tr>
+<tr><td>blue</td>
+</tr>
+<tr><td>red</td>
+</tr>
+<tr><td>green</td>
+</tr>
+</table>
+<br></td>
+</tr>
+<tr><td><br><table border="1" cellspacing="0">
+<tr><td><i>colour</i></td>
+</tr>
+<tr><td>black</td>
+</tr>
+</table>
+<br></td>
+</tr>
+<tr><td>&nbsp;</td>
+</tr>
+</table> <span class="fit_label">expected</span><hr> <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a map</i></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a map</i></td>
+<td class="fail"><br><table border="1" cellspacing="0">
+<tr><td>red</td>
+<td>green</td>
+</tr>
+</table> <span class="fit_label">expected</span><hr> <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>an array</i></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>an array</i></td>
+<td class="fail"><br><table border="1" cellspacing="0">
+<tr><td><i>colour</i></td>
+</tr>
+<tr><td>blue</td>
+</tr>
+<tr><td>red</td>
+</tr>
+<tr><td>green</td>
+</tr>
+</table> <span class="fit_label">expected</span><hr> <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br><br><br>-!|
+

@@ -1,0 +1,25 @@
+!**< def
+!define body (|''nested login passes''|user|''with''|pass|
+
+|''with''|//input[@id="userName"]|''enter text''|@{user}|
+
+|''with''|//input[@id="password"]|''enter text''|@{pass}|
+
+|''submit''|//form|
+)
+!define body2 (|''login2 passes''|user|''with''|pass|
+
+|''nested login passes''|@{user}|''with''|@{pass}|
+)
+**!
+|!-fitlibrary.DefineAction-!|
+|${body}|
+
+|!-fitlibrary.DefineAction-!|
+|${body2}|
+
+!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|''login2 passes''|rick|''with''||
+
+|''expected test results''|6|''right''|0|''wrong''|0|''ignored''|0|''exceptions''|

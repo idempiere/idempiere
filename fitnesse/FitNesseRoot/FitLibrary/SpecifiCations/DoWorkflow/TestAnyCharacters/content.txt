@@ -1,0 +1,47 @@
+!2 Any characters can be used in the keywords of actions
+!**< def
+!define test (!|fitlibrary.specify.workflow.AnyCharactersInActions|
+
+|'''check'''||1|+|2|=|3|
+
+|'''check'''|"|fit library|"+"|2|"=|fit library 2|
+
+|'''check'''|[|true|''&&''|false|]=|false|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.AnyCharactersInActions</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td>&nbsp;</td>
+<td>1</td>
+<td>+</td>
+<td>2</td>
+<td>=</td>
+<td class="pass">3</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td>"</td>
+<td>fit library</td>
+<td>"+"</td>
+<td>2</td>
+<td>"=</td>
+<td class="pass">fit library 2</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td>[</td>
+<td>true</td>
+<td><i>&amp;&amp;</i></td>
+<td>false</td>
+<td>]=</td>
+<td class="pass">false</td>
+</tr>
+</table>-!|
+

@@ -1,0 +1,11 @@
+^CreateTemplate
+^CreateTemplateWithItemLessThanOne
+^AlteringTemplateAfterSetup
+
+^RentalTemplateSimple
+^RentalTemplateMorePeopleThanDivider
+^RentalTemplateNotEnoughItems
+^RentalTemplatePartialFails
+
+
+^SetUp

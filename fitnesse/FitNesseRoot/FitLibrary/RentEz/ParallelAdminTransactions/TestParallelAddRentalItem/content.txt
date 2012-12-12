@@ -1,0 +1,14 @@
+|''begin admin transaction''| Bill |
+|''add''|2|''of type''|party tent|''costing''|20.00|''/hour''|100.00|''/day''|500.00|''/week''|200.00|''bond''|
+
+|''begin admin transaction''| John |
+|''add''|3|''of type''|karaoke machine|''costing''|15.00|''/hour''|60.00|''/day''|300.00|''/week''|200.00|''bond''|
+|''complete transaction''|
+
+|''resume admin transaction for''| Bill |
+|''complete transaction''|
+
+|''rental item subset''|
+| ''name''   | ''free count'' |''hourly rate''|''daily rate''|''weekly rate''|''bond'' |
+| party tent | 2         | 20.00         | 100.00       | 500.00        | 200.00  |
+| karaoke machine | 3         | 15.00         | 60.00       | 300.00        | 200.00  |

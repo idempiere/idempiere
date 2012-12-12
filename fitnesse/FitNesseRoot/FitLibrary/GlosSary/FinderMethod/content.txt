@@ -1,0 +1,28 @@
+${programmers}
+A ${finder} can:
+ * Look up an existing ${entity} by a String key; or
+ * Create an object from a String (ie, parse it)
+It was originally designed for the first case above, hence the name
+!3 Entity Lookup
+For example, here's a ${finder} for an ${entity} class ''User'':
+----{{{    public User findUser(String s) {
+       return users.get(s);
+    } }}}----This assumes that the ''Map'' of ''users'' maps from the name to the corresponding ''User''.
+
+It can be convenient to have the ${finder} also create the Entity when the String is sufficient to completely descrive the Entity. For example, here's a finder for a ''State'', which simply has a name:
+----{{{    public User findUser(String s) {
+       State state = states.get(s);
+       if (state == null) {
+           state = new State(s);
+           states.put(s,state);
+       }
+       return state ;
+    } }}}----For a full example, see .FitLibrary.SpecifiCations.ParserSpecifications.EntityParser.SimpleExample
+!3 Parsing
+For example, here's a ${finder} that treats the String "null" as a null value instead of a String:
+----{{{    public String findString(String s) {
+       if (s.equals("null"))
+           return null;
+       return s;
+    } }}}----For a full example, see .FitLibrary.SpecifiCations.ParserSpecifications.EntityParser.FinderAsSpecialisedParser
+

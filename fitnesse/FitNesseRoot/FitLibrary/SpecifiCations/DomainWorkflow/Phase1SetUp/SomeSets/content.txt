@@ -1,0 +1,4 @@
+ * Set<Colour>
+|''a set''|!include ColourSet|
+ * Set<Set<Colour>>
+|''a set of sets''|!include ListColourList|

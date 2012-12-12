@@ -1,0 +1,95 @@
+!2 When an action throws a !-FitLibraryShowException-!, it defines what text is to be shown in an extra cell added to the row:
+!**< def
+!define test (!|fitlibrary.specify.workflow.ExceptionAddsCells|
+----
+|add cell to|gh|
+
+|add cell to|gh|'''is'''|true|
+
+|add cell to|gh|'''matches'''|tr.e|
+
+|add cell to|gh|'''becomes'''|true|
+
+|'''check'''|add cell to|gh|true|
+
+|'''not'''|add cell to|gh|
+
+|'''reject'''|add cell to|gh|
+
+|'''show'''|add cell to|gh|
+
+|'''set'''|var|add cell to|gh|
+
+|'''ensure'''|add cell to|gh|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.ExceptionAddsCells</td>
+</tr>
+</table>
+<hr/>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error">add cell to</td>
+<td>gh</td>
+<td bgcolor=#C0C0FF>added: gh<hr>next line</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>add cell to</td>
+<td>gh</td>
+<td class="error"><b>is</b></td>
+<td>true</td>
+<td bgcolor=#C0C0FF>added: gh<hr>next line</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>add cell to</td>
+<td>gh</td>
+<td class="error"><b>matches</b></td>
+<td>tr.e</td>
+<td bgcolor=#C0C0FF>added: gh<hr>next line</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>add cell to</td>
+<td>gh</td>
+<td class="error"><b>becomes</b></td>
+<td>true</td>
+<td bgcolor=#C0C0FF>added: gh<hr>next line</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><b>check</b></td>
+<td>add cell to</td>
+<td>gh</td>
+<td>true</td>
+<td bgcolor=#C0C0FF>added: gh<hr>next line</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><b>not</b></td>
+<td>add cell to</td>
+<td>gh</td>
+<td bgcolor=#C0C0FF>added: gh<hr>next line</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><b>reject</b></td>
+<td>add cell to</td>
+<td>gh</td>
+<td bgcolor=#C0C0FF>added: gh<hr>next line</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><b>show</b></td>
+<td>add cell to</td>
+<td>gh</td>
+<td bgcolor=#C0C0FF>added: gh<hr>next line</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><b>set</b></td>
+<td>var</td>
+<td>add cell to</td>
+<td>gh</td>
+<td bgcolor=#C0C0FF>added: gh<hr>next line</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><b>ensure</b></td>
+<td>add cell to</td>
+<td>gh</td>
+<td bgcolor=#C0C0FF>added: gh<hr>next line</td></tr>
+</table>-!|

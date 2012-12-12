@@ -1,0 +1,29 @@
+Here's the change, which introduces a new ''defined action'', as shown in the last table below.
+
+We've left out the ''!-SpiderFixture-!'' check simply because it takes so long.
+
+If you click to go to the page linked to in the first table, you'll see that the ''defined actions'' have also been reorganised.
+
+If you run this test, you'll also see that "''stop watches''" have been added to give feedback on the time that things take.
+
+ * You may find it useful to use ''stop watches'' in your own tests in the future.
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.EvolvingDefinedActions.AddAnother.DefinedActions|
+
+|''suite test on port''|${FITNESSE_PORT}|
+
+|''check suite''|!-TemplateFixture-!|''passes''|
+
+|''check suite''|!-XmlProcessing-!|''passes''|
+
+|''check test''|!-DetailedExample-!|''at''|!-CreateDate.-!|''passes''|
+
+!2 Evolution
+
+That's it for this part. We've seen how ''defined actions'' can evolve as your needs change.
+
+In general, it's not possible to design them all ahead of time. The best way is to evolve them and ''refactor'' them as you go. Yes, this make them like code.
+
+!2 Next
+#
+The next part is here: [[Part 4: Handling Forms][<SpiderTutorial.HandlingForms]]

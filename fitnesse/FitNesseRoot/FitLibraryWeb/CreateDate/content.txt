@@ -1,0 +1,7 @@
+Including actual dates in storytests can be a pain, as they need to be changed to make sense.
+
+The ''!-CreateDate-!'' fixture creates dates/times in the past and future, for different time zones. It uses a format to specify the detailed form of the date/time required.
+
+It uses '''Joda Time''': see http://joda-time.sourcefoge.net/
+
+^DetailedExample

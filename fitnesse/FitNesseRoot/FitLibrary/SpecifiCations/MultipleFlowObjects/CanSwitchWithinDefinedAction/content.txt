@@ -1,0 +1,36 @@
+!**< def
+!define body (|''switch''|
+
+|''select''|second|
+
+|''count''|'''is'''|2|
+
+|get|@{var}|'''is'''|22|
+
+|''select''|first|
+)
+**!
+!|fitlibrary.SelectFixture|
+
+|set expand defined actions|true|
+
+|''define action''|
+|${body}|
+
+|''add''|!-fitlibrary.specify.select.FirstSelect-!|''as''|first|
+|''add''|!-fitlibrary.specify.select.SecondSelect-!|''as''|second|
+
+|''select''|first|
+
+|''count''|'''is'''|1|
+
+|set|var|to|22|
+
+|''switch''|
+
+|''count''|'''is'''|1|
+
+|''select''|second|
+
+|''count''|'''is'''|2|
+

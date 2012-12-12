@@ -1,0 +1,9 @@
+|''begin admin transaction''| Bill |
+|''add''|0|''of type''|barbeque|''costing''|20.00|''/hour''|100.00|''/day''|500.00|''/week''|200.00|''bond''|
+|''add identified''|bbq001|''of type''|barbeque|''last maintained''|2004/4/15 11:34|''period of''|3|''months''|
+|'''reject'''|''add identified''|bbq001|''of type''|barbeque|''last maintained''|2004/4/15 11:34|''period of''|3|''months''|
+|''complete transaction''|
+
+|''rental item list''|
+| ''name''| ''free count'' |''hourly rate''|''daily rate''|''weekly rate''|''bond'' |
+|barbeque | 1         | 20.00         | 100.00       | 500.00        | 200.00  |

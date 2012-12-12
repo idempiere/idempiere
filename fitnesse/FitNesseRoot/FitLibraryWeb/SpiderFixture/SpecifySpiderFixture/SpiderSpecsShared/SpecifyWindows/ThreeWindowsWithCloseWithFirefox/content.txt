@@ -1,0 +1,51 @@
+!*< def
+!define wone (<head><title>WOne Title</title></head>
+)
+!define wtwo (<head><title>WTwo Title</title></head>
+)
+!define html ({{{<head><title>WFrom</title></head>
+<a id="wone" href="wone.html" target="Window WOne">One</a>
+<a id="wtwo" href="wtwo.html" target="Window WTwo">Two</a> }}})
+*!
+
+|''keywords''|firefox|
+
+!include <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''make file''|wone.html|''from''|${wone}|
+|''make file''|wtwo.html|''from''|${wtwo}|
+
+|''with html''|${html}|
+
+|''click''|wone|
+|''click''|wtwo|
+
+|''title''|'''is'''|WFrom|
+
+|''select window''|Window WOne|
+|''title''|'''is'''|WOne Title|
+
+|''select initial window''|
+|''title''|'''becomes'''|WFrom|
+
+|''select window''|Window WOne|
+|''title''|'''becomes'''|WOne Title|
+
+|''select window''|Window WTwo|
+|''title''|'''becomes'''|WTwo Title|
+
+|''select window''|Window WOne|
+|''select window''|Window WTwo|
+|''select window''|Window WTwo|
+|''select window''|Window WOne|
+|''select window''|Window WTwo|
+
+ * Unexpected window selected after close:
+
+|''close''|
+|''title''|'''becomes'''|WFrom |
+
+ * Unexpected window selected after close:
+
+|''close''|
+|''title''|'''becomes'''|WOne Title|

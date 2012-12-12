@@ -1,0 +1,26 @@
+!**< def
+!define intArray (|10|
+|20|
+)
+!define colourArray (|''colour''|
+|red|
+)
+!define intArray2 (|${intArray}|
+|${intArray}|
+)
+**!
+!|fitlibrary.specify.domain.Array|
+ * int[]:
+|''an int array''|${intArray}|
+ * Colour[]:
+|''a colour array''|${colourArray}|
+ * int[][]
+|''a 2D array''|${intArray2}|
+----
+----
+ * int[]:
+|''an int array''|${intArray}|
+ * Colour[]:
+|''a colour array''|${colourArray}|
+ * int[][]
+|''a 2D array''|${intArray2}|

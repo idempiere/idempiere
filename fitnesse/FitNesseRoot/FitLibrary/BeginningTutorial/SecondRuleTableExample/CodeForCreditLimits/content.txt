@@ -1,0 +1,76 @@
+!3 Tables
+#
+Here's some of the tables again, for convenience:
+
+|''Credit is allowed for worthy customers''|
+|''months as customer''|''has paid reliably''|''balance owing''|''credit is allowed?''|
+|14|yes|5000.00|yes|
+|12|yes|5000.00|no|
+|14|no|5000.00|no|
+|14|yes|6000.00|no|
+
+|''Credit limit depends on whether credit is allowed''|
+|''credit is allowed''|''credit limit?''|
+|yes|1000.00|
+|no|0.00|
+
+|''Credit is allowed for worthy customers who have been trading with us for''|14|''months''|
+|''has paid reliably''|''balance owing''|''credit is allowed?''|
+|yes|5000.00|yes|
+|no|5000.00|no|
+|yes|6000.00|no|
+----As before, we start with the relevant methods in ''Global'':
+{{{public class Global {
+	public Rule creditIsAllowedForWorthyCustomers() {
+		return new CreditRule();
+	}
+
+	public Rule creditLimitDependsOnWhetherCreditIsAllowed() {
+		return new CreditLimitRule();
+	}
+
+	public Rule creditIsAllowedForWorthyCustomersWhoHaveBeenTradingWithUsForMonths(int months) {
+		CreditRule creditLimitRule = new CreditRule();
+		creditLimitRule.setMonthsAsCustomer(months);
+		return creditLimitRule;
+	}
+}
+}}}----And here's the ''!-CreditRule-!'' class:
+{{{public class CreditRule implements Rule {
+	private CreditApplication sut = new CreditApplication();
+	private int monthsAsCustomer;
+	private boolean hasPaidReliably;
+	private double balanceOwing;
+
+	public void setMonthsAsCustomer(int monthsAsCustomer) {
+		this.monthsAsCustomer = monthsAsCustomer;
+	}
+	public void setHasPaidReliably(boolean hasPaidReliably) {
+		this.hasPaidReliably = hasPaidReliably;
+	}
+	public void setBalanceOwing(double balanceOwing) {
+		this.balanceOwing = balanceOwing;
+	}
+	public boolean getCreditIsAllowed() {
+		return sut.creditPermitted(monthsAsCustomer, hasPaidReliably, balanceOwing);
+	}
+	public double getCreditLimit() {
+		return sut.creditLimit(monthsAsCustomer, hasPaidReliably, balanceOwing);
+	}
+}
+}}}----Again, this implements ''Rule'', the marker interface. It has setter methods for each of the given column values, and getter methods for the results columns.
+
+It calls into the application to test it:
+----{{{public class CreditApplication {
+	public boolean creditPermitted(int monthsAsCustomer, boolean hasPaidReliably,
+			double balanceOwing) {
+		return monthsAsCustomer > 12 && hasPaidReliably && balanceOwing < 6000.0;
+	}
+	public double creditLimit(int monthsAsCustomer, boolean hasPaidReliably,
+			double balanceOwing) {
+		if (creditPermitted(monthsAsCustomer, hasPaidReliably, balanceOwing))
+			return 1000.0;
+		return 0.00;
+	}
+}
+}}}----Note that, in practice, the application code could well be structured around Customer objects.

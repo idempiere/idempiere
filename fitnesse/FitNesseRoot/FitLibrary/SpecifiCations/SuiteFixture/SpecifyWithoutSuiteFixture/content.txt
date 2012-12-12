@@ -1,0 +1,18 @@
+!2 Here we have no ''!-SpecifyFixture-!'' started
+(Each of the outer rows corresponds to a separate storytest.)
+
+|!-fitlibrary.spec.SpecifySuiteFixture-!|
+|!-<table>
+<tr><td colspan=3>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr>
+<tr><td>check</td><td>sum</td><td>0</td></tr>
+</table>-!|!-<table>
+<tr><td colspan=3>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr>
+<tr><td>check</td><td>sum</td><td class="pass">0</td></tr>
+</table>-!|
+|!-<table>
+<tr><td colspan=3><i>do under test</i></td></tr>
+<tr><td>check</td><td>sum</td><td>0</td></tr>
+</table>-!|!-<table>
+<tr><td colspan=3 class="error"><i>do under test</i><hr/> <span class="fit_label"></span></td></tr>
+<tr><td class="error">check<hr/> <span class="fit_label"></span></td><td>sum</td><td>0</td></tr>
+</table>-!|

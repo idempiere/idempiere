@@ -1,0 +1,36 @@
+!**< def
+!define pair (
+|first|1|
+|second|2|
+)
+!define test (
+!|fitlibraryGeneric.specify.genericFinder.GenericFinderMismatches|
+
+|integer integer pair|first pair|
+----
+----
+|integer integer pair|${pair}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibraryGeneric.specify.genericFinder.GenericFinderMismatches</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>integer integer pair</td>
+<td>first pair</td>
+</tr>
+</table>
+<hr><br><hr><br><table border="1" cellspacing="0">
+<tr><td>integer integer pair</td>
+<td class="fail"><br><table border="1" cellspacing="0">
+<tr><td>first</td>
+<td>1</td>
+</tr>
+<tr><td>second</td>
+<td>2</td>
+</tr>
+</table> <span class="fit_label">expected</span><hr> <span class="fit_label">actual</span></td>
+</tr>
+</table>-!|

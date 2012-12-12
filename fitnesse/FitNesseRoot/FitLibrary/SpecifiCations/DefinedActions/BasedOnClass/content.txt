@@ -1,0 +1,27 @@
+!3 Dynamic Variables may be combined with class-based defined actions to provide OO defined actions
+ * This relies on the class of a wiki object being set, as in the example below
+ * A class may define a superclass, as with the class Person below
+ * A ''oo'' action dispatches on the basis of the class of the wiki object concerned
+ * If the defined action is not defined for the class, it looks it up in the superclass, and etc
+This approach is only intended for advanced storytest writers.
+
+>SingleClass
+>SingleClassFails
+>SuperClass
+>SuperClassFails
+>OverrideDefinedAction
+>OverrideWithNoImplementation
+>MissingDefinedAction
+>UnknownClass
+>DefaultObject
+>DefaultObjectWithinDefinedAction
+>DefinedElsewhere
+>DefinedElsewhereWithoutClass
+>DefinedElsewhereWithMultipleLevels
+>ClassInsteadOfObject
+>UseTheTextThisInClassBasedActions
+
+
+>DefinedActions
+
+^SingleClassInOldStyle

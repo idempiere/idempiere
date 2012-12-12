@@ -1,0 +1,31 @@
+!**< def
+!define map (|a|b|
+)
+!define test (!|fitlibrary.specify.mapTraverse.Empty|
+
+|''checks''|
+
+|''empty map''|${map}|
+)
+**!
+When the actual map is empty, any expected elements will be "missing"
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.mapTraverse.Empty</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>empty map</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td class="fail">a <span class="fit_label">missing</span></td>
+<td>b</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

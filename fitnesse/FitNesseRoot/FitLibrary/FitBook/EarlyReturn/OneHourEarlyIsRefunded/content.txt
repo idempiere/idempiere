@@ -1,0 +1,10 @@
+|''rental entry''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|cup|100|2004/05/06 09:01|2004/05/06 12:01|
+
+|''time is now''|2004/05/06 11:00|
+
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''return''|100||cup|
+|''refund cash $''|15.00|
+|''complete transaction''|

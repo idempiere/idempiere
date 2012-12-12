@@ -1,0 +1,36 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.ResetCounts</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>fit.Summary</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>unknown</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td colspan="2">fit.ActionFixture</td></tr>
+<tr><td>start</td><td>unknown</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>fit.Summary</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.ResetCounts</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>fit.Summary</td></tr>
+<tr>
+<td> <span class="fit_grey">counts</span></td>
+<td class="pass"> <span class="fit_grey">0 right, 0 wrong, 0 ignored, 0 exceptions</span></td></tr></table>
+<table border="1" cellspacing="0">
+<tr><td class="error">unknown<hr/> <span class="fit_label"></span></td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td colspan="2">fit.ActionFixture</td></tr>
+<tr><td class="error">start<hr/> <span class="fit_label">Could not find fixture: unknown.</span></td><td>unknown</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>fit.Summary</td></tr>
+<tr>
+<td> <span class="fit_grey">counts</span></td>
+<td class="fail"> <span class="fit_grey">0 right, 0 wrong, 0 ignored, 2 exceptions</span></td></tr></table>-!|

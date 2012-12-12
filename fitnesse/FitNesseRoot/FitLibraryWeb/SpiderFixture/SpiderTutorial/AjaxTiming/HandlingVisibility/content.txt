@@ -1,0 +1,37 @@
+[[The web page is here][files/delaysWithAjax.html]]
+
+We're going to test that an element changes its visibility after a delay.
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.AjaxTiming.HandlingChanges.DefinedActions|
+
+|''ajax on port''|${FITNESSE_PORT}|
+
+|''becomes timeout''|2000|
+
+|''get url''|http://localhost:@{fitNessePort}/files/delaysWithAjax.html|
+
+|''element''|visibilityUnderChange|''visible''|
+
+|''click''|makeInvisible|
+
+|''element''|visibilityUnderChange|''visible''|
+
+|''element''|visibilityUnderChange|''invisible''|'''becomes'''|true|
+
+|''click''| makeVisible|
+
+|''element''|visibilityUnderChange|''invisible''|
+
+|''element''|visibilityUnderChange|''visible''|'''becomes'''|true|
+
+The last action checks that the element is visible.
+
+ * If the element is invisible, spider is prepared to wait.
+ * If the element becomes visible within the timeout period, the action passes
+ * If the element remains invisible for the whole timeout period, it fails
+#
+!1 Next
+#
+That's the end of the tutorial.  See [[Wrap Up][<SpiderTutorial.WrapUp]] for a summary, etc.
+
+

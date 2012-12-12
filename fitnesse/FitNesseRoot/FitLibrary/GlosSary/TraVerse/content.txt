@@ -1,0 +1,12 @@
+A ${traverse} plays the role of a ${fixture} in the implementation of ${fitLibrary}. A ${traverse} differs in the following ways:
+ * It can return a result
+ * It has differently-named methods, which explicitly pass parameters that are held in a ${fixture}
+ * It is a ${domainAdapter}, like any other
+For backwards compatibility, all the ${fitLibrary} ${fixture}s remain. They simply pass responsibility onto a corresponding ${traverse}. It's fine to mix the use of ${fixture}s and ${traverse}s.
+
+There are some ${traverse}s that have no corresponding ${fixture}. Eg, ${mapTraverse}.
+
+In most cases, you don't need to know about the ${traverse}s:
+ * It's not necessary to subclass either a ${traverse} or ${fixture}. Just use a bare class. If you need specialised methods beyond those in your application classes, use a ${domainAdapter}.
+ * Objects returned from ${workflow} actions are auto-wrapped, so you don't usually need to explciitly select a ${traverse}. You do, for example, if you want to treat a ''List'' as a ''Set''. If you do:
+ * Call the appropropriate selector method in ''!-FitLibrarySelector-!'' to choose the appropriate one. Using these methods makes your fixturing code less dependent on the implementation details of ${fitLibrary}.

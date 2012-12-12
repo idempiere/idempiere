@@ -1,0 +1,7 @@
+This is to verify that some of the fixtures work under ''!-FolderRunner-!''
+
+ * The ''!-SpiderFixture-!'' '''specifications''' don't because they currently depend on ''!-FitNesse-!'' running. Usual uses of ''!-SpiderFixture-!'' should be fine.
+
+!|fitlibrary.runner.FolderRunnerFixture|
+
+|''run''|folderRunner/tests|''giving''|folderRunner/reports|

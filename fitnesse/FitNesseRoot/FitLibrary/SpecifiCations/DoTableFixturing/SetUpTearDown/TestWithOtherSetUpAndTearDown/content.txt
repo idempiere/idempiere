@@ -1,0 +1,25 @@
+If workflow temporarily continues with another object, that also has its ''setUp()'' and ''tearDown()'' methods called
+!**< def
+!define test (!|fitlibrary.specify.workflow.SetUpTearDownOfOther|
+
+|''with other set up''|
+|''is set up''|
+
+|''with other tear down''|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.SetUpTearDownOfOther</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>with other set up</i></td>
+</tr>
+<tr><td class="pass"><i>is set up</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="error"><i>with other tear down</i><hr><pre><div class="fit_stacktrace"></div></pre></td>
+</tr>
+</table>-!|

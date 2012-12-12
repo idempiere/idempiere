@@ -1,0 +1,59 @@
+''!-FitLibrary-!'' now depends on Java 6.
+#
+!3 ''!-DoFixture-!''
+#
+ * Added infix special actions '''contains''', '''eventually contains''', '''does not contain''', '''optionally'''. See .FitLibrary.SpecifiCations.DoWorkflow.SpecialActions.TestContains and .FitLibrary.SpecifiCations.DoWorkflow.SpecialActions.TestNotContains and .FitLibrary.SpecifiCations.DoWorkflow.SpecialActions.TestOptionally, .FitLibrary.SpecifiCations.DoWorkflow.SpecialActions.TestEventuallyContains
+
+ * Added relationals, <, <=, >, >=, =. See .FitLibrary.SpecifiCations.DoWorkflow.SpecialActions.TestRelationals
+
+ * Added a ''stop watch'' and ''sleep for'': See .FitLibrary.SpecifiCations.DoWorkflow.TestStopWatch
+
+ * When longer strings don't match with '''is''', etc, a diff is shown. See .FitLibrary.SpecifiCations.DoWorkflow.SpecialActions.TestIs, .FitLibrary.SpecifiCations.DoWorkflow.SpecialActions.TestIsDiffWithBlanks.
+
+ * A new action uses pattern matching to extract pieces of text out of a string. See .FitLibrary.SpecifiCations.DoWorkflow.TestHarvestFromText
+
+ * Fixed auto-wrapping so that it doesn't auto-wrap Boolean, Number, Character
+
+ * Added some support for plain text for single-table actions. This is still experimental, somewhat incomplete, and may change. This is not supported within defined actions. See .FitLibrary.SpecifiCations.PlainTextInsteadOfTables
+
+ * To produce a cross reference of all calls to actions and defined actions, see .FitLibrary.CrossReference. This is not precise, as it cannot easily tell which are data rows in tables.
+#
+!3 Defined Actions
+#
+ * Sped up loading defined actions by reading them directly from the file system.  This does mean that !-FitNesse-! features such as !-FitNesse-! variables and includes are not available. For backwards compatibility, a variation is available that uses the slow way.... Now defined action name lookup is case sensitive, while previously it was not.
+
+ * Changed the way that defined action calls are shown in the report.
+
+ * Partially implemented a multi-defined action. This may change. More details later... See .FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters
+#
+!3 ''!-SuiteFixture-!''
+ * Fixed a problem with ''!-SuiteFixture-!'' so that it now passes a copy of its dynamic variables to the fixture in each storytest.
+
+ * Allow for ''set stop on error'' to be set at the SuiteFixture level.
+#
+!3 ''!-SelectFixture-!''
+ * Can now add to the SUT set a fixture that is returned from an action. See .FitLibrary.SpecifiCations.MultipleFlowObjects.AddingFixtureFromAnAction
+
+ * Note that the behaviour of ''!-SelectFixture-!'' is soon going to be built into the fundamental flow mechanism.
+#
+!3 New fixtures
+#
+ * Added specialised Map fixtures. See .FitLibrary.SpecifiCations.FitLibraryGeneric.GenericMaps.GenericSubsetMap and .FitLibrary.SpecifiCations.FitLibraryGeneric.GenericMaps.ListOfMaps
+
+ * Randomly generating dynamic variables:
+
+|''select''|colour|''randomly''|
+|<green>|
+|re@{D}|
+|yellow|
+|$white|
+
+This binds the dynamic variable ''colour'' to one of four possibilities, selected randomly. See .FitLibrary.SpecifiCations.DynamicVariables.RandomSelection
+#
+!3 Implementation Changes
+#
+ * Some of the built-in mechanism of ''!-FitLibrary-!'' are now pluggable. Eg, you can alter the way that methods are looked up or the way that stack dumps for exceptions are shown in the report. See class ''!-fitlibrary.global.PlugBoard-!'', which requires that alternative objects are thread safe.
+
+ * I've also started to get ready to make more parts pluggable: See ''!-fitlibrary.global.TemporaryPlugBoardForRuntime-!'' for the first step.
+
+ * In a later release, I am planning to integrate a ''!-ColumnFixture-!'' look-alike into ''!-FitLibrary-!'' and then remove all dependency on ''Fit'' code.

@@ -1,0 +1,43 @@
+Run ('''Test''') this page to see the help documentation.
+
+!2 1. Actions always available
+#
+Here are the actions that are always available:
+
+|''help''|
+
+Notice that they have tooltips, with further information. The display is designed to make it easy to copy and paste an action, before altering any arguments.
+
+!2 2. Now we add an object
+#
+Now we add an object, so it's added to the scope:
+
+!|fitlibrary.specify.workflow.Keywords|
+
+And the actions are now extended:
+
+|''help''|
+
+Notice that the first few actions are not in flow style (alternating keywords and data) and don't have tooltips. That's because there is no documentation associated with them.
+
+If you need better documentation, ask the developer of the fixturing code to do some work. Here's how: ^AnnotationsForHelp
+
+!2 3. Add another object
+#
+Let's add an object into scope (and this has a chain of System Under Tests - ignore that if it doesn't make sense to you):
+
+|'''also run'''|''add object''|
+
+|''help''|
+
+!2 4. Finding some help
+#
+We can also look for actions with some text in the name or the tooltip associated with it:
+
+|''help with''|show|
+
+|''help with''|<|
+
+|''help with''|greater|
+
+|''help with''|file|

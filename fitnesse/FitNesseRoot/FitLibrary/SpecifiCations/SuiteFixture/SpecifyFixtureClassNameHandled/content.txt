@@ -1,0 +1,46 @@
+|!-fitlibrary.spec.SpecifySuiteFixture-!|
+|!-<table>
+<tr><td>fitlibrary.specify.suite.Simple</td></tr>
+</table>
+<table>
+<tr><td><i>select or</i></td><td>complete</td></tr>
+</table>-!|!-<table>
+<tr><td>fitlibrary.specify.suite.Simple</td></tr>
+</table>
+<table>
+<tr><td class="pass"><i>select or</i></td><td>complete</td></tr>
+</table>-!|
+|!-<table>
+<tr><td><i>keywords</i></td><td>complete,money</td></tr>
+</table>
+<table>
+<tr><td colspan=2>fit.ColumnFixture</td></tr>
+<tr><td><i>and some </i></td><td><i>immediate action()</i></td></tr>
+</table>-!|!-<table>
+<tr><td><i>keywords</i></td><td>complete,money</td></tr>
+</table>
+<table>
+<tr><td colspan=2>fit.ColumnFixture</td></tr>
+<tr><td class="error"><i>and some </i><hr/> <span class="fit_label">Could not find field: and some.</span></td><td><i>immediate action()</i></td></tr>
+</table>-!|
+ * And when it's the first table of a storytest:
+|!-fitlibrary.spec.SpecifySuiteFixture-!|
+|!-<table>
+<tr><td>fitlibrary.specify.suite.Simple</td></tr>
+</table>
+<table>
+<tr><td><i>select or</i></td><td>complete</td></tr>
+</table>-!|!-<table>
+<tr><td>fitlibrary.specify.suite.Simple</td></tr>
+</table>
+<table>
+<tr><td class="pass"><i>select or</i></td><td>complete</td></tr>
+</table>-!|
+|!-<table>
+<tr><td colspan=2>fit.ColumnFixture</td></tr>
+<tr><td><i>and some </i></td><td><i>immediate action()</i></td></tr>
+</table>-!|!-<table>
+<tr><td colspan=2>fit.ColumnFixture</td></tr>
+<tr><td class="error"><i>and some </i><hr/> <span class="fit_label">Could not find field: and some.</span></td><td><i>immediate action()</i></td></tr>
+</table>-!|
+

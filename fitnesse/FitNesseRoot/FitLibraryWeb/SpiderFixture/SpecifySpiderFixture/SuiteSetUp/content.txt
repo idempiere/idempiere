@@ -1,0 +1,11 @@
+!|fitlibrary.spider.specify.SpecifySpiderSuite|
+
+ * The following driver can be firefox, htmlunit, ie.
+ * The following port number has to be a port that is currently unused. So it can't be the same as the ''!-FitNesse-!'' port.
+
+|'''set'''|webDriver.driver|''to''|htmlunit|
+|'''set'''|serverPort|''to''|8998|
+
+|''start spider on port''|@{serverPort}|''with''| @{webDriver.driver} |
+
+|''select or''| @{webDriver.driver} |

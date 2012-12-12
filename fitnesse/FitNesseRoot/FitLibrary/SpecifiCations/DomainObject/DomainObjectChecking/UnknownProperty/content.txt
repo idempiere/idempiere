@@ -1,0 +1,34 @@
+!3 Unknown properties of the object are marked as such
+!**< def
+!define user (|''name''|Poor Payer|
+|''owing''|10000.00|
+)
+!define test (!|fitlibrary.specify.domain.UserAdapter|
+
+|''checks''|
+
+|''slow paying user''|${user}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.UserAdapter</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>slow paying user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td class="pass">Poor Payer</td>
+</tr>
+<tr><td class="error"><i>owing</i><hr/> <span class="fit_label">Missing method</span></td>
+<td>10000.00</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

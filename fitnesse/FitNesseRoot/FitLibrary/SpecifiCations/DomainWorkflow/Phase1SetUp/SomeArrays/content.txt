@@ -1,0 +1,6 @@
+ * Colour[]
+|''an array''|!include .FitLibrary.SpecifiCations.DomainWorkflow.Phase1SetUp.AnArray|
+ * int[]
+|''an int array''|!include .FitLibrary.SpecifiCations.DomainWorkflow.Phase1SetUp.IntArray|
+ * int[][]
+|''a 2D array''|!include IntArray2|

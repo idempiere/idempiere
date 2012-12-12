@@ -1,0 +1,42 @@
+!2 A Class type is parsed as the Java full class name
+
+!**< def
+!define test (!|fitlibrary.specify.parser.ParserUnderTest|
+
+!|valid|
+|class name|
+|fitlibrary.specify.parser.ParserUnderTest|
+|java.awt.Point|
+
+!|invalid|
+|class name|
+||
+|ParserUnderTest|
+)
+**!
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.ParserUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>valid</td>
+</tr>
+<tr><td>class name</td>
+</tr>
+<tr class="pass"><td>fitlibrary.specify.parser.ParserUnderTest</td>
+</tr>
+<tr class="pass"><td>java.awt.Point</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>invalid</td>
+</tr>
+<tr><td>class name</td>
+</tr>
+<tr><td class="error"><hr/> <span class="fit_label">Unable to parse "" of type</span></td>
+</tr>
+<tr><td class="error">ParserUnderTest<hr/> <span class="fit_label">Unable to parse "ParserUnderTest" of type</span></td>
+</tr>
+</table>-!|

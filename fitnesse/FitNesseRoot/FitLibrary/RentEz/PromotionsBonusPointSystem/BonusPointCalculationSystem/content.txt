@@ -1,0 +1,11 @@
+ * For every dollar over $100 spent, 5 Rentnz cents are awarded; and for every dollor over $500 spent, 10 Rentnz cents are awarded.
+ * Note: the points will be round up to the nearest cent (e.g. 0.001 -> 0.01)
+|calculated discount|
+|''Actual $ spent''||''Rentnz $''|
+|100.00||0.00|
+|100.01||0.01|
+|100.10||0.01|
+|101.00||0.05|
+|380.00||14.00|
+|500.00||20.00|
+|725.00||42.50|

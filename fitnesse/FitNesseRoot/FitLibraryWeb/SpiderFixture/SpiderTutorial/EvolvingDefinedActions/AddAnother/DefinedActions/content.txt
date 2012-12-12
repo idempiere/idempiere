@@ -1,0 +1,14 @@
+^StartSpider
+^CheckSuiteOrTest
+
+We see here that this page doesn't contain any ''defined actions''. Instead, they are provided in children pages of this one.
+
+When ''!-FitLibrary-!'' loads ''defined actions'' from a page, it also loads from any children of that page. So the ''defined actions'' in ^StartSpider are also loaded.
+
+This is a good way to organise larger number of defined actions. Organise them in a hierarchy, grouped by function. It makes it easier to find and reuse them.
+
+Often, ''defined actions'' are shared across all of the storytests of a suite.
+
+ * So it makes sense to load them from within a ''!-SuiteSetUp-!'' page for the whole suite so that they're only loaded once.
+ * ''!-FitNesse-!'' automatically loads the ''!-SuiteSetup-!'' page before all others in a suite (see the ''!-FitNesse-!'' documentation for more details)
+

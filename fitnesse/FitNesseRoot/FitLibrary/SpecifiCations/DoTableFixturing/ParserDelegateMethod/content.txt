@@ -1,0 +1,23 @@
+!**< def
+!define test (
+!|fitlibrary.specify.workflow.ParserDelegateMethod|
+----
+|'''check'''|''same date''|2004/04/28 16:03|2004/04/28 16:03|
+
+)
+**!
+!2 Other text data types can also be handled with a ${parserDelegateMethod} in a ${domainAdapter}
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.ParserDelegateMethod</td>
+</tr>
+</table>
+<hr><br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>same date</i></td>
+<td>2004/04/28 16:03</td>
+<td class="pass">2004/04/28 16:03</td>
+</tr>
+</table>
+<br>-!|
+

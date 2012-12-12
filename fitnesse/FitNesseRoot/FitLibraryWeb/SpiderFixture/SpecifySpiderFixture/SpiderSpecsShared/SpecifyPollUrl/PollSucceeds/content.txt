@@ -1,0 +1,13 @@
+!*< def
+!define html ({{{<dv id="divv"/>
+<p name="pp">bla</p>}}})
+*!
+|''keywords''|chrome,htmlunit,firefox|
+
+!2 Not supported in IE
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|'''poll url'''|http://localhost:@{serverPort}/files/@{webDriver.driver}/test.html|'''until'''|''element''|//p[@name="pp"]|''exists''|

@@ -1,0 +1,53 @@
+We've added the new ''defined action'' for tests.
+
+To avoid repetition, we've introduced an additional ''defined action'' that covers all the cases and is called by the others.
+
+Notice that we want to keep the "domain language" used in storytests simple, so we don't use that last ''defined action'' directly in storytests because it exposes some low-elevel detail (the name of the link to click).
+
+
+|''check suite''|suite|''passes''|
+
+|''check suite''|@{suite}|''at''| |''passes''|
+
+----
+|''check suite''|suite|''at''|prefix|''passes''|
+
+|''check suite''|@{suite}|''at''|@{prefix}|''with link''|Suite|''passes''|
+----
+|''check test''|test|''passes''|
+
+|''check test''|@{test}|''at''| |''passes''|
+----
+|''check test''|test|''at''|prefix|''passes''|
+
+|''check suite''|@{test}|''at''|@{prefix}|''with link''|Test|''passes''|
+----
+|''check suite''|suite|''at''|prefix|''with link''|suiteOrTest|''passes''|
+
+|''start stop watch''|
+
+|'''show'''|''stop watch''|
+
+|''get url''|http://localhost:@{fitNessePort}/FitLibraryWeb.@{prefix}@{suite}|
+
+|'''show'''|''stop watch''|
+
+|''title''|'''is'''|!-FitLibraryWeb.@{prefix}@{suite}-!|
+
+|'''show'''|''stop watch''|
+
+|''text of''|//span[@class="page_title"]|'''is'''| @{suite}|
+
+|'''show'''|''stop watch''|
+
+|''click on named link''|@{suiteOrTest}|
+
+|'''show'''|''stop watch''|
+
+|''element''|//div[@id='test-summary' and @class='pass']|'''exists'''|
+
+|'''show'''|''stop watch''|
+
+|''text of''|//div[@id='test-summary']|'''matches'''|right, 0 wrong, .* ignored, 0 exceptions|
+
+|'''show'''|''stop watch''|

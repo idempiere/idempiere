@@ -1,0 +1,66 @@
+!**< def
+!define phones (|''country''|''region''|''number''|
+|64|9|3737597|
+|64|27|4556112|
+)
+!define account (|''id''|45678|
+|''payment history''|poor|
+)
+!define user (|''name''|P. oor Payer|
+|''phones''|${phones}|
+|''account''|${account}|
+)
+!define test (!|fitlibrary.specify.domain.UserAdapter|
+
+|''checks''|
+
+|''slow paying user''|${user}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.UserAdapter</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>slow paying user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td class="fail">P. oor Payer <span class="fit_label">expected</span><hr>Poor Payer <span class="fit_label">actual</span><hr><divv style='color:white'>P</divv><strike>.&Delta;</strike><divv style='color:white'>oor Payer</divv> <span class="fit_label">diff</span></td>
+</tr>
+<tr><td><i>phones</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>country</i></td>
+<td><i>region</i></td>
+<td><i>number</i></td>
+</tr>
+<tr><td class="pass">64</td>
+<td class="pass">9</td>
+<td class="fail">3737597 <span class="fit_label">expected</span><hr>3737598 <span class="fit_label">actual</span></td>
+</tr>
+<tr><td class="pass">64</td>
+<td class="pass">27</td>
+<td class="pass">4556112</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr><td><i>account</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>id</i></td>
+<td class="fail">45678 <span class="fit_label">expected</span><hr>456778 <span class="fit_label">actual</span></td>
+</tr>
+<tr><td><i>payment history</i></td>
+<td class="pass">poor</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

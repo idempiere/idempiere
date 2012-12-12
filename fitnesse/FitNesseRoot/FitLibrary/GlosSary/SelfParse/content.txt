@@ -1,0 +1,6 @@
+${programmers}
+With ${selfParse}, a ${valueObject} class is responsible for some of the responsibilities of a ${parser}. In Java, it:
+ * Has a ''parse()'' method:
+{{{        public static Object parse(String s);}}} * Has an ''equals()'' method to compare one object of the class with another when matching an ''expected'' and ''actual'' value:
+{{{        public boolean equals(Object object);}}} * Has a ''toString()'' method to show itself as a String, for use in error messages:
+{{{        public String toString();}}}

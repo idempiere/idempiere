@@ -1,0 +1,62 @@
+!**< defs
+!define simple (
+!|fitlibrary.specify.suite.Simple|
+
+|'''set'''|xx|''to''|1|
+)
+!define one (
+!|fitlibrary.specify.suite.MyOtherDoFixture|
+
+|action on that|
+
+|''get''|@{xx}|'''is'''|1|
+
+|'''set'''|xx|''to''|2|
+)
+!define two (
+!|fitlibrary.specify.suite.MyOtherDoTraverse|
+
+|action on that|
+
+|''get''|@{xx}|'''is'''|1|
+)
+**!
+|!-fitlibrary.spec.SpecifySuiteFixture-!|
+|${simple}|${simple}|
+|${one}|!-<br/><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.suite.MyOtherDoFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass">action on that</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>1</td>
+<td><b>is</b></td>
+<td class="pass">1</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>xx</td>
+<td><i>to</i></td>
+<td>2</td>
+</tr>
+</table>-!|
+|${two}|!-<br/><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.suite.MyOtherDoTraverse</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass">action on that</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>1</td>
+<td><b>is</b></td>
+<td class="pass">1</td>
+</tr>
+</table>-!|

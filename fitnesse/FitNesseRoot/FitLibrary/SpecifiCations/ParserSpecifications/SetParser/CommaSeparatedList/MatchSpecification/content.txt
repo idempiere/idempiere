@@ -1,0 +1,35 @@
+!3 Matching still requires the expected values to be parsed.
+So, once again, we can only handle an empty set or a Set of String in comma-separated form
+!**< def
+!define test {!|fitlibrary.specify.setParser.Match|
+
+|'''check'''|''set of string abc''|a,b,c|
+
+|'''check'''|''set of 123''|1,2,3|
+
+|'''check'''|''set empty''||
+}
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.setParser.Match</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>set of string abc</i></td>
+<td class="pass">a,b,c</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>set of 123</i></td>
+<td class="fail">1,2,3 <span class="fit_label">expected</span><hr>1, 2, 3 <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>set empty</i></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>-!|

@@ -1,0 +1,33 @@
+So now we change the second ''defined action'' so it in turn calls the third one. It passes an empty "''prefix''" argument.
+
+In general, it's not quite as easy as this to remove repetition in ''defined actions''. Sometimes it's necessary to take parts out of two and make a third ''defined action''.
+
+|''suite test on port''|port|
+
+|''set expand defined actions''|true|
+
+!|fitlibrary.spider.SpiderFixture|
+
+|''start spider with''|firefox|
+
+|''set''|fitNessePort|''to''|@{port}|
+
+|''shutdown browser automatically''|false|
+----
+|''check suite''|suite|''passes''|
+
+|''check suite''|@{suite}|''at''| |''passes''|
+----
+|''check suite''|suite|''at''|prefix|''passes''|
+
+|''get url''|http://localhost:@{fitNessePort}/FitLibraryWeb.@{prefix}@{suite}|
+
+|''title''|'''is'''|!-FitLibraryWeb.@{prefix}@{suite}-!|
+
+|''text of''|//span[@class="page_title"]|'''is'''| @{suite}|
+
+|''click on named link''|Suite|
+
+|''element''|//div[@id='test-summary' and @class='pass']|'''exists'''|
+
+|''text of''|//div[@id='test-summary']|'''matches'''|right, 0 wrong, .* ignored, 0 exceptions|

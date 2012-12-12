@@ -1,0 +1,37 @@
+|!-rent.StartApplication-!|
+
+|''setup''|
+|''rental item name''|''count''|''$/hour''|''$/day''|''$/week''|''deposit''|
+|coffee dispenser|10|1.50|8.20|60.00|0.00|
+|hot water dispenser|12|1.50|8.00|50.00|0.00|
+|cup|500|0.05|0.45|2.00|0.10|
+
+|''setup''|
+|''client name''|''phone''|
+|Joanna|373 7599|
+
+|''setup''|
+|''staff name''|''phone''|
+|Bill|555 9876|
+
+|''time is now''| 2004/05/06 09:01|
+
+|''refund $''|5.00|''per hour''|45.00|''per day''|200.00|''per week''|
+|''paid time''|''actual time''||''refund''|
+|3 hours|3 hours||0.00|
+|3 hours|2 hours||5.00|
+|5 hours|1 hours||20.00|
+
+|''refund $''|5.00|''per hour''|45.00|''per day''|200.00|''per week''|
+|''paid time''|''actual time''||''refund''|
+|1 day|1 day||0.00|
+|1 day|23 hours||0.00|
+|2 days|1 day||45.00|
+|1 day|9 hours||0.00|
+|1 day|8 hours||5.00|
+
+|''refund $''|5.00|''per hour''|45.00|''per day''|200.00|''per week''|
+|''paid time''|''actual time''||''refund''|
+|1 week|1 week||0.00|
+|1 week|6 days||0.00|
+|2 weeks|1 week||200.00|

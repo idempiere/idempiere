@@ -1,0 +1,41 @@
+This is very similar to the last example, but a different logger is used: ''!-FixturingLogger-!''.
+
+!|fitlibrary.specify.log.AppWithFixturingLogger|
+
+The above fixturing code is as follows:
+{{{   public class AppWithFixturingLogger {
+	private static Logger logger = FixturingLogger.getLogger(AppWithLog4j.class);
+
+	public boolean call() {
+		logger.trace("App called");
+		return true;
+	}
+   }
+}}}
+|''with fixturing logger''|
+|''level''|TRACE|
+|''show after''|true|
+
+ * On ''Test'', the following has text added after the table, because we've enabled ''show after'' and the level is TRACE:
+
+|''call''|
+
+|''with fixturing logger''|
+|''level''|DEBUG|
+
+ * The following does not add text because the level is DEBUG, so trace() calls are not shown:
+
+|''call''|
+
+|''with fixturing logger''|
+|''level''|TRACE|
+|''show after''|false|
+
+ * The following does not add text because we've disabled ''show after'':
+
+|''call''|
+
+#
+----!1 Next
+#
+Continue with the [[rest of the tutorial here][<LoggingTechniques.Log4jLogging]]

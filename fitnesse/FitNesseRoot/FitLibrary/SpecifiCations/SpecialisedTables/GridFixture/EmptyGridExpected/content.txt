@@ -1,0 +1,22 @@
+!**< def
+!define test (!|fitlibrary.specify.GridFixtureUnderTest|
+
+|strings|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.GridFixtureUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>strings</td>
+</tr>
+<tr>
+<td colspan="2"><i>Actuals:</i></td></tr>
+<tr>
+<td> <span class="fit_grey">a</span></td>
+<td> <span class="fit_grey">b</span></td></tr>
+<tr>
+<td> <span class="fit_grey">c</span></td>
+<td> <span class="fit_grey">d</span></td></tr></table>-!|

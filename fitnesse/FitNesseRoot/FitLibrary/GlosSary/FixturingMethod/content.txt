@@ -1,0 +1,5 @@
+This is a special method that's called on a ${fixture}, ${traverse} or ${domainObject}. It is '''not''' called on any other type of object, such as a plain ${sut}. The fixturing methods are as follows:
+ *  ${setUpMethod} or ${tearDownMethod}
+ * A ${finder}
+ * A ${parserDelegateMethod}
+and some others...

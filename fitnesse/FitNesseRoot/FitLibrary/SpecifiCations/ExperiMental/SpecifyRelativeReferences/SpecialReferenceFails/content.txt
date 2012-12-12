@@ -1,0 +1,39 @@
+!3 The reference '2nd' is a special one and so results in a call to the fixture method ''findClient("1st")'' - but this fails to parse the string
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.References</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>set up accounts</i></td></tr>
+<tr><td><i>owing</i></td></tr>
+<tr><td>10</td></tr><tr><td>100</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>add</i></td><td>10</td><td><i> to </i></td><td>2nd</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>accounts</i></td></tr>
+<tr><td><i>owing</i></td></tr>
+<tr><td>20</td></tr>
+<tr><td>100</td></tr>
+</table>-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.References</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>set up accounts</i></td></tr>
+<tr><td><i>owing</i></td></tr>
+<tr><td>10</td></tr><tr><td>100</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>add</i></td><td>10</td><td><i> to </i></td><td class="error">2nd<hr><pre><div class="fit_stacktrace"></div></pre></td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>accounts</i></td></tr>
+<tr><td><i>owing</i></td></tr>
+<tr><td class="fail">20 <span class="fit_label">missing</span></td></tr>
+<tr><td class="fail">100 <span class="fit_label">missing</span></td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">10</span> <span class="fit_label">surplus</span></td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">100</span> <span class="fit_label">surplus</span></td></tr></table>-!|

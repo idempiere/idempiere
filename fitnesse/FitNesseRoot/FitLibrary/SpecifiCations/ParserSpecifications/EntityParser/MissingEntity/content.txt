@@ -1,0 +1,25 @@
+!**< def
+!define test {!|fitlibrary.specify.entityParser.UserAdapter|
+
+|''actions''|
+
+|''add''|Romano Numero|''debt''|2.00|
+}
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.entityParser.UserAdapter</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>actions</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>add</i></td>
+<td class="error">Romano Numero<hr><pre><div class="fit_stacktrace">
+</div></pre></td>
+<td><i>debt</i></td>
+<td>2.00</td>
+</tr>
+</table>-!|

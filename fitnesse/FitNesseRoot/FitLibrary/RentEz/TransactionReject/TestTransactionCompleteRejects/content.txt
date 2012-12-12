@@ -1,0 +1,3 @@
+!3 Transaction complete fails as it is not yet started:
+
+|not|''complete transaction''|

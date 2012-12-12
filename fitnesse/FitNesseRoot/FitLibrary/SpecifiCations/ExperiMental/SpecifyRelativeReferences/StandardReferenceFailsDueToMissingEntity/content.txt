@@ -1,0 +1,26 @@
+!3 References that fail because the entity is missing
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.References</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>set up accounts</i></td></tr>
+<tr><td><i>owing</i></td></tr>
+<tr><td>10</td></tr><tr><td>100</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>add</i></td><td>20</td><td><i> to </i></td><td>the third account</td></tr>
+<tr><td><i>add</i></td><td>20</td><td><i> to </i></td><td>account#4</td></tr>
+</table>-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.References</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>set up accounts</i></td></tr>
+<tr><td><i>owing</i></td></tr>
+<tr><td>10</td></tr><tr><td>100</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>add</i></td><td>20</td><td><i> to </i></td><td class="error">the third account<hr><pre><div class="fit_stacktrace"></div></pre></td></tr>
+<tr><td><i>add</i></td><td>20</td><td><i> to </i></td><td class="error">account#4<hr><pre><div class="fit_stacktrace"></div></pre></td></tr>
+</table>-!|

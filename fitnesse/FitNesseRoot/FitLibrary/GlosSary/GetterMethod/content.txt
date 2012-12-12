@@ -1,0 +1,4 @@
+${programmers}
+A ${getter} is a method that's used to get the value of a ''property''. This is Java Beans terminology.
+
+Also see ${setter}.

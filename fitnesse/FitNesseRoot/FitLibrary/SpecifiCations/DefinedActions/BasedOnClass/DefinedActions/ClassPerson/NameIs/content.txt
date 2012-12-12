@@ -1,0 +1,3 @@
+|''name is''|NAME|
+
+|''get''|@{this.name}|is|NAME|

@@ -1,0 +1,45 @@
+!3 5. Using a Proxy
+#
+In many organisations, it's necessary to access external web sites through a proxy.
+
+ * Then the proxy will be configured in your browser.
+ * If it's an authenticating proxy, you may have to log in.
+
+If you're testing, and need to go through a proxy, httpClient can be configured to use a specified proxy.
+
+ * In this example, we configure it to use a local proxy on port 5555.
+ * In your tests, you'd configure it to your own proxy.
+ * In the next step, we'll see how to run a suitable proxy server.
+
+#
+----!3 6. Example of Using a Proxy
+#
+When first run, this storytest gives a "''Connection to http://localhost:5555 refused''" error as the proxy server is not running.
+
+|''with http client''|
+
+|''proxy url''|localhost|''with port''|5555|
+
+|''http get''|http://localhost:8093/files/handlingWindows.html|
+
+|'''show'''|''headers''|
+
+|''headers include''|
+|''name''|''value''|
+|Content-Type|text/html; charset=UTF-8|
+#
+----!3 7. Running the Proxy Server
+#
+Let's now run a proxy server for it to talk to: open [[this page][RunProxy]] in (yet) another browser window.
+
+Notice that both the proxy server and the file server need to be running for this storytest to pass.
+
+ * If the proxy server is not running, a "''Connection to http://localhost:5555 refused''" error is given.
+ * If the proxy server is running, but the file server is not, a "''The target server failed to respond''" error will be given (by the proxy server).
+
+Run the file server on [[this page][<HttpClientTutorial.RunFileServer]].
+
+#
+----!3 8. Next
+#
+Finally, on [[this page][UseLogging]], we'll see how to turn on logging to get more information about what's going on.

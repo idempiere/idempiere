@@ -1,0 +1,11 @@
+!2 No elements exist
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.ArrayFixtureUnderTest3</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+<tr><td>1</td><td>2</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.ArrayFixtureUnderTest3</td></tr>
+<tr><td>+</td><td>&amp;</td></tr>
+<tr><td class="fail">1 <span class="fit_label">missing</span></td><td>2</td></tr>
+</table>-!|

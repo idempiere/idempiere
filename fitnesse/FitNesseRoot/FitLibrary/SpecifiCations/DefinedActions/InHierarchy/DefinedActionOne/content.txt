@@ -1,0 +1,9 @@
+|''login''|user|''with''|password|
+
+first text
+
+|''with''|//input[@id="userName"]|''enter text''|@{user}|
+
+|''with''|//input[@id="password"]|''enter text''|@{password}|
+
+|''submit''|//form|

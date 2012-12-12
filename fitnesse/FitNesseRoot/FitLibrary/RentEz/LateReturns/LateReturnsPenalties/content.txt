@@ -1,0 +1,17 @@
+|!-hire.TestLate-!|
+|hoursLate|grace|countGrace|highDemand|extraHours()|
+|0|1|true|0|0|
+|0.9|1|false|0|0|
+|1|1|true|0|1|
+|1|1|false|0|0|
+|9|1|true|0|9|
+|19|2|false|0|17|
+
+|!-hire.TestLate-!|
+|hoursLate|grace|countGrace|highDemand|extraHours()|
+|0|1|true|10|0|
+|0.9|1|false|10|0|
+|1|1|true|5|6|
+|1|1|false|12|0|
+|9|1|true|10|19|
+|19|2|false|100|117|

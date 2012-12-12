@@ -1,0 +1,63 @@
+This page contains two ''defined actions'', separated by a horizontal line. The ''defined actions'' are named according to the first table:
+
+ * ''suite test on port''
+ * ''check suite passes''
+
+Each of these take a single parameter (in the second cell of the first table of each).
+
+Let's look further at the first ''defined action'', ''suite test on port''.
+
+ * The first (''header'') table names the ''defined action'' and names a single parameter ("''port''"). The following 5 tables make up the ''body'' of the ''defined action'' (down to the horizontal line).
+ * When a ''defined action'' is called, as on the previous page, the body is run after substituting the argument of the call for all uses of the parameter in the body.
+ * For example, if the first ''defined action'' is called with an argument 8090, the @{port} is treated as being 8090.
+ * This means that the same sequence of actions (in the body of the ''defined action'') can be used with different values.
+
+|''suite test on port''|port|
+
+|''set expand defined actions''|true|
+
+!|fitlibrary.spider.SpiderFixture|
+
+|''start spider with''|firefox|
+
+|''set''|fitNessePort|''to''|@{port}|
+
+|''shutdown browser automatically''|false|
+----
+In the second ''defined action'', which follows, the name "''check suite passes''" is made of two parts, from the first and third cells ("''check suite''" and "''passes''"). The second cell contains the parameter ("''suite''").
+
+The parameter ''suite'' is used in three places in the body of the ''defined action'', as seen below.
+
+On the previous page, when the test is run the ''defined action'' call is expanded. You may like to go back and look again.
+
+!3 In general:
+#
+ * ''Defined actions'' can take any number of parameters, including none
+ * A use of a parameter in the body of a ''defined action'' is of the form "@{''parameterName''}"
+ * A parameter can be used several times in the body
+ * A ''defined action'' can in turn call other ''defined actions'', passing parameters
+ * Calls to ''defined actions'' are automatically expanded if something goes wrong when a storytest is run.
+ * You can request that all calls are expanded, using the ''set expand defined actions'' action, as shown in the first ''defined action'' above
+
+ * ''Defined actions'' follow the usual ''!-FitLibrary-!'' convention of actions starting with a keyword and then alternating between data and keyword cells.
+ * ''Defined actions'' are a part of ''!-FitLibrary-!'' and can be used with any tables. They are not limited to use with ''!-SpiderFixture-!''
+
+ * ''Defined actions'' are a good way to avoid repetitive tables. This makes it easier to maintain the storytests under changes in the system.
+ * They are also a good way to provide concise business level terminology, hiding the details of how the tests are carried out.
+
+For the next tutorial [[see ''Evolving Defined Actions''][<SpiderTutorial.EvolvingDefinedActions]]
+
+|''check suite''|suite|''passes''|
+
+|''get url''|http://localhost:@{fitNessePort}/FitLibraryWeb.@{suite}|
+
+|''title''|'''is'''|!-FitLibraryWeb.@{suite}-!|
+
+|''text of''|//span[@class="page_title"]|'''is'''| @{suite}|
+
+|''click on named link''|Suite|
+
+|''element''|//div[@id='test-summary' and @class='pass']|'''exists'''|
+
+|''text of''|//div[@id='test-summary']|'''contains'''|right, 0 wrong, 0 ignored, 0 exceptions|
+----

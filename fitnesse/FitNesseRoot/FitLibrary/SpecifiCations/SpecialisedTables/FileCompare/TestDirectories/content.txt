@@ -1,0 +1,17 @@
+!|fitlibrary.CompareFilesFixture|
+!2 A directory with files is equal to itself
+!|check|directory|testFiles/selfDiry|same as|testFiles/selfDiry|selfDiry|
+!2 The two directories are equal
+!|check|directory|testFiles/diry1|same as|testFiles/diry2|diry1|
+!2 Differing directories due to different files
+!|check|directory|testFiles/diry3|same as|testFiles/diry4|!-diry3<ul><li>threeLines.txt<ul><li><i>Missing</i></li></ul> </li><li>empty.txt<ul><li><i>Surplus</i></li></ul></li></ul>-!|
+!2 Differing directories due to extra files
+!|check|directory|testFiles/diry4|same as|testFiles/diry5|!-diry4<ul><li>empty.txt</li><li>alsoEmpty.xls <ul><li><i>Surplus</i></li></ul></li></ul>-!|
+!2 Differing directories due to different sub-directories
+!|check|directory|testFiles/diry5|same as|testFiles/diry6|!-diry5<ul><li>alsoEmpty.xls</li><li>empty.txt</li><li>emptyFolder<ul><li><i>Surplus folder</i></li></ul></li></ul>-!|
+!2 Differing directories due to different file size
+!|check|directory|testFiles/diry5|same as|testFiles/diry7|!-diry5<ul><li>alsoEmpty.xls</li><li>empty.txt<ul><li><i>File shorter by 3 bytes than:</i></li><li>empty.txt</li></ul></li></ul>-!|
+!2 Differing directories due to different file contents
+!|check|directory|testFiles/diry7|same as|testFiles/diry8|!-diry7<ul><li>alsoEmpty.xls</li><li>empty.txt<ul><li><i>Files differ at byte position 2</i></li><li>empty.txt</li></ul></li></ul>-!|
+
+Note that git doesn't track empty directories, so all of the so-called empty directories used here have, in fact, a single file in them of 0 bytes.

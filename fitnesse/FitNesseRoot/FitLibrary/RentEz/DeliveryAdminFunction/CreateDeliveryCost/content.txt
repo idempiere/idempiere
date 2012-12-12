@@ -1,0 +1,14 @@
+Create
+
+|''begin admin transaction''| Bill |
+|''add delivery city''|Auckland|''zone''|CBD|''flat rate''|6.00|''delivery rate %''|3|
+|''add delivery city''|Auckland|''zone''|North Shore|''flat rate''|10.00|''delivery rate %''|4|
+|''complete transaction''|
+
+----Check
+|''delivery cost list''|
+|''city''  |  ''zone''    | ''delivery rate flat fee'' | ''delivery rate %'' |
+|Auckland| West|12.00|4|
+|Auckland| East|12.00|4|
+| Auckland |  CBD         |            6.00            |          3          |
+| Auckland |  North Shore |           10.00            |          4          |

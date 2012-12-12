@@ -1,0 +1,57 @@
+!**< def
+!define test (!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+| appends |
+| plus|
+| plus|
+
+|another object|
+| plus|
+|access other|
+
+An Integer is not wrapped, so parseInt won't apply to it:
+
+|an Integer|
+|parse int|3|is|3|
+)
+**!
+
+ * If a workflow action returns an object, it's wrapped in a new ''!-WorkflowTraverse-!'', so that the object  can be tested in the rest of the table.
+ * However, this doesn't apply if the object is any of the following: a Fixture, a Traverse, an array, a Collection, a primitive value or a Value Object.
+ * Primitive values include int, boolean, float, double, char, Boolean, Character, as well as all the Number subclasses (Integer, BigDecimal, Byte, Long etc etc).
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>appends</td>
+</tr>
+<tr><td>plus</td>
+</tr>
+<tr><td>plus</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>another object</td>
+</tr>
+<tr><td>plus</td>
+</tr>
+<tr><td class="pass">access other</td>
+</tr>
+</table>
+<br/>An Integer is not wrapped, so parseInt won't apply to it:<br/><br/><table border="1" cellspacing="0">
+<tr><td colspan="4">an Integer</td>
+</tr>
+<tr><td class="error">parse int<hr/> <span class="fit_label">Missing class or Missing method</span></td>
+<td>3</td>
+<td>is</td>
+<td>3</td>
+</tr>
+</table>-!|
+
+ * ''appends()'' returns a String, which is not auto-wrapped, and so ''plus()'' is applied to the original ''!-DoFixture-!''
+ * ''anotherObject()'' returns a fixture, which is itself not auto-wrapped
+ * Now ''plus()'' is not found in that fixture, as it's a method of that new fixture, and so the method in the original ''!-DoFixture-!'' is called instead (outer scope)
+ * But ''accessOther()'' is found in that fixture, and so is executed there.

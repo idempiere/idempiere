@@ -1,0 +1,9 @@
+|!-rent.CalculateFairCharge-!|
+
+|''rates $''|5.00|''per hour''|45.00|''per day''|200.00|''per week''|
+|''duration''||''fairly-charged duration''|
+|1 day||1 day|
+|8 hours||8 hours|
+|9 hours||1 day|
+|23 hours||1 day|
+|3 days 4 hours||3 days 4 hours|

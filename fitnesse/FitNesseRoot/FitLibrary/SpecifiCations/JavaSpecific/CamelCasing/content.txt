@@ -1,0 +1,72 @@
+Extended camel is used with all of ${fitLibrary}, taking camel casing one step further. It converts a name into a valid identifier in the language concerned. For example, in Java the name "% discount" is translated into "percent discount", which is then camel-cased into "percentDiscount".
+
+|!-fitlibrary.specify.utility.CamelCase-!|
+
+|''calculate''|
+|name   || identifier |
+|" hi " || quoteHiQuote |
+|^`{}~  || caretBackquoteLeftBraceRightBraceTilde |
+|two words      || twoWords |
+|2 words        || twoWords |
+|cost $         || costDollar |
+|!!             || bangBang |
+|meet @         || meetAt |
+|rick@rimuResearch.com  || rickAtRimuResearchDotCom |
+|               || blank |
+
+|''calculate''|
+|name           || identifier |
+|abstract||abstract_|
+|assert||assert_|
+|boolean||boolean_|
+|break||break_|
+|byte||byte_|
+|case           || case_ |
+|catch          || catch_ |
+|char||char_|
+|class          || class_ |
+|const||const_|
+|continue||continue_|
+|default||default_|
+|do             || do_ |
+|double||double_|
+|else           || else_ |
+|enum||enum_|
+|extends        || extends_ |
+|false||false_|
+|final||final_|
+|finally        || finally_ |
+|float||float_|
+|for            || for_ |
+|goto||goto_|
+|if             || if_ |
+|implements     || implements_ |
+|import||import_|
+|instanceof     || instanceof_ |
+|int||int_|
+|interface      || interface_ |
+|long||long_|
+|native||native_|
+|new||new_|
+|null           || null_ |
+|package||package_|
+|private        || private_ |
+|protected      || protected_ |
+|public         || public_ |
+|return         || return_ |
+|short||short_|
+|static         || static_ |
+|strictfp||strictfp_|
+|super          || super_ |
+|switch||switch_|
+|synchronized||synchronized_|
+|this           || this_ |
+|throws         || throws_ |
+|throw          || throw_ |
+|transient||transient_|
+|true||true_|
+|try||try_|
+|void||void_|
+|volatile||volatile_|
+|while||while_|
+

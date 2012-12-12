@@ -1,0 +1,9 @@
+|calculate late extra|
+|''hours late''|''grace''|''count grace''|''extra time()''|
+|0|1|yes|0|
+|0.9|1|no|0|
+|1|1|yes|1|
+|1|1|no|0|
+|9|1|yes|9|
+|19|2|no|17|
+

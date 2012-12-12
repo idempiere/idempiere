@@ -1,0 +1,80 @@
+!2 'contains' checks that the actual value, as a string, contains the expectect value
+!**< def
+!define test {!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|''becomes timeout''|10|
+
+|int property|'''eventually contains'''|2|
+
+|boolean property|'''eventually contains'''|tru|
+
+|boolean property|'''eventually contains'''|ue|
+
+|string property|'''eventually contains'''|apple|
+
+|string property|'''eventually contains'''|orange|
+
+|''x''|1|''y''|3|'''eventually contains'''|(1,|
+
+|''x''|1|''y''|3|'''eventually contains'''|(x,|
+}
+
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>becomes timeout</i></td>
+<td>10</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>int property</td>
+<td><b>eventually contains</b></td>
+<td class="pass">2</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>boolean property</td>
+<td><b>eventually contains</b></td>
+<td class="pass">tru</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>boolean property</td>
+<td><b>eventually contains</b></td>
+<td class="pass">ue</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td><b>eventually contains</b></td>
+<td class="pass">apple</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td><b>eventually contains</b></td>
+<td class="fail">orange <span class="fit_label">expected</span><hr>apple pie <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>x</i></td>
+<td>1</td>
+<td><i>y</i></td>
+<td>3</td>
+<td><b>eventually contains</b></td>
+<td class="pass">(1,</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>x</i></td>
+<td>1</td>
+<td><i>y</i></td>
+<td>3</td>
+<td><b>eventually contains</b></td>
+<td class="fail">(x, <span class="fit_label">expected</span><hr>(1,3) <span class="fit_label">actual</span></td>
+</tr>
+</table>-!|

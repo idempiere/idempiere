@@ -1,0 +1,5 @@
+ * ''Special setup of staff members:''
+|''enter staff''|
+|''name'' |''phone''      |
+| Bob     | (09) 555 9876 |
+| Bill    | (09) 555 1234 |

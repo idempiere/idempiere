@@ -1,0 +1,49 @@
+!2 Introduction
+#
+In ''!-FitLibrary-!'', one or more tables are used to specify business rules and processes.
+
+Tables are used for two important reasons:
+
+ * They help to clarify the language of the domain
+ * They provide a structure in which feedback is provided, such as whether a test passed or not.
+
+As we'll see in the following, tables are used in several different ways.
+#
+!2 Business Rules
+#
+A rule table is a way of defining, and testing, a business rule by providing several examples.
+
+|>FirstRuleTableExample|''Discount business rules''|
+|>SecondRuleTableExample|''Credit limit rules''|
+
+Another approach to rules tables is here: .FitLibrary.UserGuide.FitLibraryByExample.CalculationRule
+#
+!2 Business Processes
+#
+A business process concerns the order that things happen, and their consequences.
+
+A workflow storytest shows what happens when an action is carried out on the system. The action could be carried out by:
+ * A user through a user interface
+ * Another system that sends or requests data and gives some signal
+ * An automatic background process that happens at certain times, such as every 10 minutes or at the end of the day
+
+|^CalculatorBusinessProcessExample|''Steps in using a calculator''|
+|>ChatBusinessProcessExample|''Steps in using a simple chat system''|
+|^ChatBadPath|''When an action is expected to fail''|
+
+Sometimes, some of the tables used in defining a business process will specify the details of a single business object, such as a Customer.
+
+--- examples of setting up and checking individual business objects...
+
+Or we may want to deal with collections of things, such as a list of customers who owe us more than $10,000.
+
+... examples of setting up and checking collections...
+
+
+For further details, see .FitLibrary.UserGuide and .FitLibrary.ReferenCe.DoTables
+
+!2 Under Development
+#
+This tutorial is still under development. You'll find further information at .FitLibrary.UserGuide
+
+^SuiteSetUp

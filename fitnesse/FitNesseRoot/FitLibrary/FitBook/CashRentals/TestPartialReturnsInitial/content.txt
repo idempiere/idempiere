@@ -1,0 +1,41 @@
+|!-fit.ActionFixture-!|
+|start|rent.Application|
+
+|!-rent.RentalItems-!|
+|''name''|''count''|''cost per day''|''add()''|
+|coffee dispenser|10|8.20|true|
+|hot water dispenser|12|8.00|true|
+
+|!-rent.Clients-!|
+|''name''|''phone''|''add()''|
+|Joanna|373 7599|true|
+
+|!-fit.ActionFixture-!|
+|enter|client name|Joanna|
+|enter|item|coffee dispenser|
+|enter|count|5|
+|enter|days|1|
+|press|hire|
+|check|cost|41.00|
+|enter|item|hot water dispenser|
+|enter|count|2|
+|press|hire|
+|check|cost|16.00|
+
+|!-rent.RentalList-!|
+|''client''|''rental item name''|''count''|''days''|
+|Joanna|coffee dispenser|5|1|
+|Joanna|hot water dispenser|2|1|
+
+|!-fit.ActionFixture-!|
+|enter|client name|Joanna|
+|enter|item|coffee dispenser|
+|enter|count|4|
+|press|return|
+|enter|item|hot water dispenser|
+|enter|count|2|
+|press|returns|
+
+|!-rent.RentalList-!|
+|''client''|''rental item name''|''count''|''days''|
+|Joanna|coffee dispenser|1|1|

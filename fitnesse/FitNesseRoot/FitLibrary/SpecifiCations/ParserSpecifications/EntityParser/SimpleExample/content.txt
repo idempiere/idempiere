@@ -1,0 +1,68 @@
+Let's say we want to represent various users with a ''User'' ${entity}. Instances of ''User'' are stored in the database, which generates unique ${key}s. The name is not sufficient as a ${key}, because of potential clashes. In a given ${storytest}, however, we'll make sure that the ''name'' is unique.
+
+!**< def
+!define user1 (|''name''|Romano Numero|
+|''owe''|12.00|
+)
+!define user2 (|''name''|Romano Numero|
+|''owe''|14.00|
+)
+!define test (!|fitlibrary.specify.entityParser.UserAdapter|
+
+|''user''|${user1}|
+
+|''actions''|
+
+|''add''|Romano Numero|''debt''|2.00|
+
+|''checks''|
+
+|''user''|${user2}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.entityParser.UserAdapter</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td>Romano Numero</td>
+</tr>
+<tr><td><i>owe</i></td>
+<td>12.00</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>actions</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="pass"><i>add</i></td>
+<td>Romano Numero</td>
+<td class="pass"><i>debt</i></td>
+<td>2.00</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td class="pass">Romano Numero</td>
+</tr>
+<tr><td><i>owe</i></td>
+<td class="pass">14.00</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

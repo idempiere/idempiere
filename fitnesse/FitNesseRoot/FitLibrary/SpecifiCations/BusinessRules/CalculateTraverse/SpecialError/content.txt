@@ -1,0 +1,20 @@
+!3 Exceptions are expected when a special string is supplied by the fixture, such as "exception". If the cell is blank and an exception is thrown, "error" is reported. The exception is reported if something else was expected.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest2</td></tr>
+</table>
+<table>
+<tr><td colspan=2>calc</td></tr>
+<tr><td></td><td>exception method</td></tr>
+<tr><td></td><td>exception</td></tr>
+<tr><td></td><td>no exception</td></tr>
+</table>-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest2</td></tr>
+</table>
+<table>
+<tr><td colspan=2>calc</td></tr>
+<tr><td></td><td>exception method</td></tr>
+<tr><td></td><td class="pass">exception</td></tr>
+<tr><td></td><td class="error">no exception<hr><pre><div class="fit_stacktrace"></div></pre></td></tr>
+</table>-!|

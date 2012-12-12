@@ -1,0 +1,48 @@
+!*< def
+!define html ({{{  <div id="nothing"></div>
+  <span id="onlySpacesInText">   </span>
+  <div id="withText">green</div>
+  <span id="withMultiTextNL">yellow\n
+ orange</span>
+  <span id="withMultiTextCR">yellow\rorange</span>
+  <span id="withMultiTextBR">yellow <br>orange</span>
+  <span id="withMultiTextBR2">yellow <br/>orange</span>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''text of''|//div[@id="nothing"]|''matches lines''|
+
+|''text of''|//span[@id="onlySpacesInText"]|''matches lines''|
+
+|''text of''|//div[@id="withText"]|''matches lines''|
+|green|
+
+|''text of''|//div[@id="withText"]|''matches lines''|
+|gr.*n|
+
+ * \n is replaced by a space:
+
+|''text of''|//span[@id="withMultiTextNL"]|''matches lines''|
+|yellow orange|
+
+  * \r is replaced by a space:
+
+|''text of''|//span[@id="withMultiTextCR"]|''matches lines''|
+|yellow orange|
+
+ * <br> is replaced with a line separator:
+
+|''text of''|//span[@id="withMultiTextBR"]|''matches lines''|
+|yellow|
+|orange|
+
+ * <br/> is replaced with a line separator:
+
+|''text of''|//span[@id="withMultiTextBR2"]|''matches lines''|
+|yellow|
+|orange|

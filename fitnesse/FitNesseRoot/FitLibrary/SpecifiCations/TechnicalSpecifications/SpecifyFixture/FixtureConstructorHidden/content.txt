@@ -1,0 +1,7 @@
+!3 A non-public constructor is now handled
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border>
+<tr><td>fitlibrary.specify.initialClass.ClassWithHiddenConstructor</td></tr>
+</table>-!|!-<table border>
+<tr><td>fitlibrary.specify.initialClass.ClassWithHiddenConstructor</td></tr>
+</table>-!|

@@ -1,0 +1,13 @@
+|!-rent.StartApplication-!|
+
+|''enter rental items''|
+|''name''|''count''|''$/day''|
+|coffee dispenser|10|8.20|
+|hot water dispenser|12|8.00|
+
+|''enter clients''|
+|''name''|''phone''|
+|Joanna|373 7599|
+
+|''client''|Joanna|
+

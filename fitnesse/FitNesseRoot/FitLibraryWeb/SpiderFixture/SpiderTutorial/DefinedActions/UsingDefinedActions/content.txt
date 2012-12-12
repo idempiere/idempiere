@@ -1,0 +1,33 @@
+We'll take the 3 sections of the previous storytest and use ''defined actions'' to give a higher-level view of what's going on.
+
+If we ignore the first table for the moment, the other tables summarise what's going on:
+
+ * We're running a ''suite'' test (this starts up ''!-SpiderFixture-!'', etc on the given port)
+ * We check one suite
+ * We check a second suite
+
+Start by pressing the '''Test''' button to see what happens. Notice that the same sequence of actions occur on the associated browser, and that the report shows the last three actions below expanded.
+
+We need to begin by telling ''!-FitLibrary-!'' to load the ''defined actions'' (unfortunately, this has to be a complete page name).
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.DefinedActions.UsingDefinedActions.DefinedActions|
+
+|''suite test on port''|${FITNESSE_PORT}|
+
+|''check suite''|!-TemplateFixture-!|''passes''|
+
+|''check suite''|!-XmlProcessing-!|''passes''|
+
+So let's look at how this works. Notice the names of the two actions used in the last 3 tables above.
+
+ * The first action, ''suite test on port'', takes a single argument, the port number.
+
+ * The second of the actions, ''check suite passes'', take a single argument, the name of the suite concerned.
+
+Now, for an explanation of ''defined actions'', click on the [[link][.FitLibraryWeb.SpiderFixture.SpiderTutorial.DefinedActions.UsingDefinedActions.DefinedActions]] contained in the single argument of the ''define actions at'' in the first table above.
+
+ * This takes us to where these actions are defined (that's why they're called ''defined actions'').
+
+!2 Next
+#
+For the next part of the tutorial see [[''Part 3: Evolving Defined Actions''][<SpiderTutorial.EvolvingDefinedActions]]

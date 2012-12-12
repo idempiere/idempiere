@@ -1,0 +1,11 @@
+ * Setup:
+|''begin admin transaction''| Bill |
+|''add''|0|''of type''|barbeque|''costing''|20.00|''/hour''|100.00|''/day''|500.00|''/week''|200.00|''bond''|
+|''add identified''|bbq001|''of type''|barbeque|''last maintained''|2004/05/06 9:01|''period of''|3|''months''|
+|''complete transaction''|
+
+---- * Action:
+|''begin admin transaction''| Bill |
+|'''reject'''|''maintenance complete''|bbq1|
+|'''reject'''|''maintenance complete''|bbq2|
+|''complete transaction''|

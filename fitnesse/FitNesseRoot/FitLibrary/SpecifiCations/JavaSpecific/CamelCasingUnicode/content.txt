@@ -1,0 +1,22 @@
+|!-fitlibrary.specify.utility.CamelCase-!|
+
+|''calculate''|
+|name           || identifier |
+|Δ||u3B4|
+|Ελληνικό||u3B5u3BBu3BBu3B7u3BDu3B9u3BAu3CC|
+|█||u2588 |
+
+ * Here we configure it to keep unicode characters that are permissible in Java identifiers
+
+|''runtime configuration''|
+|''keep unicode''|true|
+
+|''calculate''|
+|name           || identifier |
+|Δ||δ|
+|Ελληνικό||ελληνικό|
+|█||u2588 |
+|█Ελληνικό||u2588Ελληνικό|
+
+|''runtime configuration''|
+|''keep unicode''|false|

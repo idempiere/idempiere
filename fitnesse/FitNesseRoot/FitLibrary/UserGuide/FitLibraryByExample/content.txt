@@ -1,0 +1,62 @@
+!3 Tables for business processes (workflow with ${domainTraverse})
+#
+!4 This needs to be revised!
+#
+|^SetUpFixture |''To create collections (lists, sets, etc)''|
+
+An earlier version of ^DoFixture was ^SequenceFixture, which doesn't have inter-leaved keywords in actions.
+
+|^SequenceFixture|''For workflow storytests without keywords in actions''|
+
+!3 Tables for checking (and creating) collections (lists, sets, arrays, etc)
+#
+!4 This section has now been included in the [[advanced tutorial][.FitLibrary.AdvancedTutorials]]
+Tables are often used to check that collections, such as lists, are as expected. Here's some more detail of checking (different sorts of collections:
+
+|^OrderedList|''A list, array, etc''|
+|^UnorderedList|''A set''|
+|^SubSet|''for part of an ^UnorderedList''|
+|^SimpleArray|''for arrays''|
+|^MapHandling|''for maps''|
+
+Nested tables show the relationships of ${domainObject}s, with a layout a little like a user interface. For more details, see ^NestedTables
+!3 Tables for calculation rules and constraints:
+Calculation and constraint rules focus on expressing specific business rules that will impact, indirectly, on workflow. Rather than having lots of workflow storytests to express such business rules, we isolate and express the business rules in a compact form. Extracting such business rules is a significant element of developing a domain model with storytests.
+
+|^CalculationRule|''Rules for calculations, such as the discount''|
+|^ConstraintRule|''Rules for constraints, such as valid and invalid date ranges''|
+
+A minor variant of these two is a combination rule.
+
+|^CombinationRule|''Rules for possible combinations''|
+!3 Specialised Tables
+|^CommentTables|''Tables for comments''|
+|^GridTables|''Tables for testing grids''|
+|^ImageGrids|''Tables for testing grids containing images''|
+| ^FileComparison|''Tables for comparing files and directories''|
+|^DotGraphics|''Tables for testing inter-connected data in a visible form''|
+|^TaggedStrings|''Tables for directly testing html text''|
+|^TreeList|''Tables for testing nested html lists''|
+
+!3 Suite Fixture
+#
+!4 This needs to be revised!
+#
+|.FitLibrary.SuiteFixture|''A suite fixture ...''|
+|.FitLibrary.SuiteFixture.DetailsAndRationale|''Rationale for suitte fixtures''|
+|.FitLibrary.SpecifiCations.SuiteFixture|''See here for further details''|
+
+!3 Defined Actions and Dynamic Variables
+|^DefinedActions|''A defined action defines a sequence of actions (parameterised)  that can be reused in workflow storytests.''|
+
+!3 How to Change the Way that the Text in Table Cells is Converted to Values (for Programmers)
+The text in a table cell is converted into a value (primitive value or object) before it is used by ${fitLibrary}. But sometimes code is needed to make this work as you want. For example, you may want:
+ * to handle dates in a certain format
+ * to enter (and show) an object of your own class as text
+ * an empty cell to mean a null String, rather than an empty one
+ * to refer to an entity by a "key" string
+Here's how we can deal with these >TextToValues.
+!3 Variables (for Programmers)
+Consider a system in which the id for an account is auto-generated when the account is created. We want to specify that the id is created and that it can be used to refer to the account later in the storytest.
+ * ^VariAble
+

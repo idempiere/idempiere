@@ -1,0 +1,20 @@
+It's possible, of course, to use a fixture directly, by calling its methods in code.
+
+However, it's assumed in ''!-FitLibrary-!'' that the underlying framework will inject a runtime into all fixture objects. The runtime contains such information as:
+
+ * Values of dynamic variables
+ * Values of time-outs
+ * Defined actions
+ * References to the global action object, which provides methods for dealing with dynamic variables and etc
+
+If you try to use a fixture programmatically you may get an error "Runtime has not been injected into this". Here's the fix:
+
+After you create your fixture object, explicitly inject a runtime into it.  Eg:
+----{{{MyDoFixture doF = new MyDoFixture();
+doF.setRuntime(new RuntimeContextContainer());
+}}}----
+Now it's possible for this to be done automatically, and this will be added later. I don't want to do it automatically at this stage because it will hide any other potential problems with runtime.
+
+!**> Note for Rick
+!2 Don't rename this page as it's referenced from within the code at Traverse.getRuntimeContext()
+**!

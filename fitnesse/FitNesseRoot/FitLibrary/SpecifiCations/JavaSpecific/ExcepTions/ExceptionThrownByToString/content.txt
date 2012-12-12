@@ -1,0 +1,33 @@
+!**< def
+!define test (!|fitlibrary.specify.exception.ExceptionThrownByToString|
+
+|'''check'''|''value''|12|
+
+|''expected test results''|0|''right''|0|''wrong''|0|''ignored''|1|''exceptions''|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.exception.ExceptionThrownByToString</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>value</i></td>
+<td class="error">12<hr><pre><div class="fit_stacktrace">fitlibrary.specify.exception.ForcedException
+	at fitlibrary.specify.exception.ExceptionThrownByToString$Value.toString
+</div></pre></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="pass"><i>expected test results</i></td>
+<td>0</td>
+<td><i>right</i></td>
+<td>0</td>
+<td><i>wrong</i></td>
+<td>0</td>
+<td><i>ignored</i></td>
+<td>1</td>
+<td><i>exceptions</i></td>
+</tr>
+</table>-!|

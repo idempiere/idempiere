@@ -1,0 +1,28 @@
+!*< def
+
+!define html ({{{<head><title>Title</title></head>
+  <body>
+    <input name="Field" value="initial"/>
+  </body>}}})
+*!
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''title''|''is''|Title|
+
+|''text of''|//input[@name='Field']|''is''|initial|
+
+|''with''|//input[@name='Field']|''set text''|changed|
+
+|''text of''|//input[@name='Field']|''is''|changed|
+
+|''refresh page''|
+
+|''title''|''is''|Title|
+
+|''text of''|//input[@name='Field']|'''is'''|initial|
+
+

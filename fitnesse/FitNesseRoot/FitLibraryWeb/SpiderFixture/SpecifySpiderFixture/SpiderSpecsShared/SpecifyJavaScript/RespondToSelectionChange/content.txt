@@ -1,0 +1,20 @@
+!*< def
+!define html {<select id="selector" onchange="javascript:document.getElementById('divv').innerHTML = this.value;">
+   <option value="a">A</option>
+   <option value="b">B</option>
+</select>
+<div id="divv"/>
+}
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''with''|//select|''select option''|b|
+
+|''option of''|//select|''is''|b|
+
+|''text of''|//div|''is''|b|

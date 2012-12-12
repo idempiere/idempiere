@@ -1,0 +1,3 @@
+The ${actions} of ${workflow} follows from the ${setup}. It consists of one or more ${action}s that (may) impact on the ${sut}.
+!3 Examples
+ * See .FitLibrary.UserGuide.FitLibraryByExample.WorkFlow

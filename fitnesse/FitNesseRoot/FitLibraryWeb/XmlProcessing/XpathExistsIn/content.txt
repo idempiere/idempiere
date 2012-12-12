@@ -1,0 +1,26 @@
+|''with xml''|
+
+|''xpath''|/a|''exists in ''|<a><b>A</b></a>|
+
+|''xpath''|/a/b|''exists in ''|<a><b>A</b></a>|
+
+|''xpath''|//b|''exists in ''|<a><b>A</b></a>|
+
+|''xpath''|//b[@id='1']|''exists in ''|<a><b id='1'>A</b></a>|
+
+|''xpath''|//g|''exists in''|<root xmlns:n="urn:n"><n:f>xyz</n:f><g>GG</g></root>|
+
+ * The name space has to be specified if it's used in the xpath:
+
+|''name space''|n|
+
+|''xpath''|//n:f|''exists in''|<root xmlns:n="urn:n"><n:f>xyz</n:f></root>|
+
+
+|'''not'''|''xpath''|/a/c|''exists in ''|<a><b>A</b></a>|
+
+|'''not'''|''xpath''|//c|''exists in ''|<a><b>A</b></a>|
+
+|'''not'''|''xpath''|//b[@id='2']|''exists in ''|<a><b id='1'>A</b></a>|
+
+|'''not'''|''xpath''|//n:g|''exists in''|<root xmlns:n="urn:n"><n:f>xyz</n:f></root>|

@@ -1,0 +1,15 @@
+!*< def
+!define html {<input type="checkbox" id="checked" onclick="javascript:document.getElementById('divv').innerHTML = 'B';">Option</input>
+  <div id="divv">A</div>
+}
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''click''|checked|
+
+|''text of''|//div|''is''|B|

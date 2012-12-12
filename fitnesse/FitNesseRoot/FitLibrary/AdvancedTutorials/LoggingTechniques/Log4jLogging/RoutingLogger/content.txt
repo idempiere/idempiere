@@ -1,0 +1,54 @@
+This is very similar to the last example, but we ensure that all logs are '''also''' routed to the normal log4j.
+
+!|fitlibrary.specify.log.AppWithFixturingLogger|
+
+We use this action to do it:
+
+|''route logging''|
+
+The above fixturing code is as follows:
+{{{   public class AppWithFixturingLogger {
+	private static Logger logger = FixturingLogger.getLogger(AppWithLog4j.class);
+
+	public boolean call() {
+		logger.trace("App called");
+		return true;
+	}
+	public void routeLogging() {
+		Logger.getRootLogger().setLevel(Level.ALL);
+		Logger.getRootLogger().addAppender(new ConsoleAppender(new SimpleLayout()));
+		FixturingLogger.setDelegatingToNormalLogger(true);
+	}
+   }
+}}}
+|''with fixturing logger''|
+|''level''|TRACE|
+
+ * On ''Test'', the following has text added after the table, because we've enabled ''show after'' and the level is TRACE:
+
+|''call''|
+
+|''with fixturing logger''|
+|''level''|DEBUG|
+
+ * The following does not add text after the table because the level is DEBUG, so trace() calls are not shown there:
+
+|''call''|
+
+|''with fixturing logger''|
+|''level''|TRACE|
+|''show after''|false|
+
+ * The following does not add text after the table because we've disabled ''show after'':
+
+|''call''|
+#
+!2 Routed logs
+#
+Notice that while we have reconfigured the ''fixturing logger'' at several points above, the normal ''log4j logger'' is unaltered and so it continues to log to the console.
+
+See ''Output Captured'' after running this storytest to see the logs that were directed to the console.
+#
+----!1 Next
+#
+Continue with the [[rest of the tutorial here][<LoggingTechniques.Log4jLogging]]

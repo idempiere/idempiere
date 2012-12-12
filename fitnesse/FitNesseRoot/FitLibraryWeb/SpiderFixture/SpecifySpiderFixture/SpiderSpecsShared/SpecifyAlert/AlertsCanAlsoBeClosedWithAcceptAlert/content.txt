@@ -1,0 +1,33 @@
+!*< def
+!define html [{{{<head>
+<title>Change Me</title>
+<script type="text/javascript">
+function show_alert()
+{
+alert("Close Me!");
+document.title='Changed!';
+}
+</script>
+</head>
+<body>
+<input type="button" id="popalert" onclick="show_alert()" value="alert" />
+</body>
+}}}]
+*!
+
+''This specification is basically the same as CloseAlertsWithDismiss, just shows that you can also close the single button alerts with the '''accept alert''' fixture method.''
+
+|''keywords''|firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''click''|popalert|
+
+''You can get the text from any alert:''
+|alert message|is|Close Me!|
+
+|'''accept alert'''|
+
+|''title''|'''is'''|Changed!|

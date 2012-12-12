@@ -1,0 +1,26 @@
+!*< xml
+!define xml ({{{<a>
+  A
+</a>}}})
+!define xml2 ({{{<a>
+ A
+</a>}}})
+*!
+|''with xml''|
+
+|''xml''|<a>A</a>|''same as''|${xml}|
+|''xml''|<a>A</a>|''same as''|<a>A</a>|
+|''xml''|${xml}|''same as''|${xml}|
+|''xml''|<a>A</a>|''same as''|<a>A </a>|
+|''xml''|<a>A</a>|''same as''|<a> A</a>|
+|''xml''|<a>A</a>|''same as''|${xml2}|
+
+|''xml''|<a id1="1" id2="2">A</a>|''same as''|<a id2="2" id1="1">A</a>|
+
+ * Failing examples:
+
+|'''not'''|''xml''|<a><b>1</b><c>2</c></a>|''same as''|<a><c>2</c><b>1</b></a>|
+
+|'''not'''|''xml''|<a>A</a>|''same as''|<a>B</a>|
+|'''not'''|''xml''|<a>A</a>|''same as''|<m>A</m>|
+|'''not'''|''xml''|<a id="1">A</a>|''same as''|<a id="2">A</a>|

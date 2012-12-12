@@ -1,0 +1,39 @@
+Just before Fit is run on a particular table, all dynamic variables are substituted in that table's cells. This allows Fit tables, used within the context of a ''!-DoFixture-!'' in flow, to make use of dynamic variables that are set from with ''!-FitLibrary-!'' tables/fixtures.
+
+!**< def
+!define test (!|fitlibrary.DoFixture|
+
+|set|fortyThree|to|43|
+
+|!-fit.specify.MyColumnFixture-!|
+|x|x?|
+|43|@{fortyThree}|
+|5|5|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.DoFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>set</td>
+<td>fortyThree</td>
+<td>to</td>
+<td>43</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="2">fit.specify.MyColumnFixture</td>
+</tr>
+<tr><td>x</td>
+<td>x?</td>
+</tr>
+<tr><td>43</td>
+<td class="pass">43</td>
+</tr>
+<tr><td>5</td>
+<td class="pass">5</td>
+</tr>
+</table>
+-!|

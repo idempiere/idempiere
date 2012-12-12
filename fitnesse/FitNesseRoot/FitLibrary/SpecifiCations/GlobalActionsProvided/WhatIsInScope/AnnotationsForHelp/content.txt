@@ -1,0 +1,96 @@
+!2 1. Help by default
+#
+By default, ''help'' reflects on the methods of each object that is in scope and displays information about them.
+
+ * It can determine the method name and the types of the parameters, but that's all
+ * It cannot determine how to break the method name up into keywords, so can't show it in the standard ''!-DoFixture-!'' style of alternating keywords and data.
+ * I suppose it could reflect on the javaDocs, but I'm not sure that that would help very often.
+ * I will later consider how to handle annotations for methods in classes that cannot be changed.
+ * An advanced tutorial will be added that explains ''scope'' and the general execution model of ''!-FitLibrary-!''
+#
+!2 2. Providing better help by adding annotations
+#
+The methods that are available as actions in ''!-FitLibrary-!'' have had annotations added to them.
+
+These annotations can also be used for your fixturing code, if you wish. However, if you don't want to use this approach with your fixturing code, simply add the class annotation below.
+
+There are 5 different annotations, although you probably only need the first 4. Let's start with the class annotation.
+#
+!2 3. ''!-@ShowSelectedActions-!''
+#
+If this annotation is added to a class or interface, then only the methods with action-specific annotations will be listed.
+
+Here's an example:
+{{{  @ShowSelectedActions
+  public class AbstractFileHandler implements DomainAdapter {...}
+}}}
+If this annotation is not added to the class of an object in scope, then a method will be listed unless it has an annotation to ignore it (see below).
+#
+!2 4. ''!-@SimpleAction-!''
+#
+This annotation has two elements, as can be seen in the example below:
+
+ * ''wiki'' contains the HTML text for the action, and can contain unicode. The italics/bold tags will affect the display, but won't be copied by the user.
+ * ''tooltip'' contains the text that is shown when the user hovers the mouse over the displayed action.
+  * The ''tooltip'' can contain \n.
+  * Any double-quote in the ''tooltip'' will be changed to a single quote (due to limitations of Javascript).
+  * The ''tooltip'' text is plain text; html tags do not affect the formatting.
+
+Here's an example:
+{{{  	@SimpleAction(wiki="|''<i>write</i>''|contents|",
+			tooltip="Write the contents to the file.")
+	public void write(String content) throws IOException {...}
+}}}
+#
+!2 4. ''!-@NullaryAction-!''
+#
+This annotation has one element, as can be seen in the example below. This is the tooltip, as in ''!-@SimpleAction-!''.
+
+Where an action has no arguments, the name can usually be generated automatically from the method name (with appropriate formatting). So using this saves some effort. 
+
+But the result will not be right if:
+
+ * You want to retain capitals or some camel casing in your action name.
+ * The action uses special characters, such as "$", which are translated into text, such as "dollar" by ''!-FitLibrary-!'' when looking up a method for an action.
+ * You use unicode
+
+In which case, use ''!-@SimpleAction-!'' instead.
+
+Here's an example from ''!-AbstractFileHandler-!'':
+{{{  	@NullaryAction(tooltip="Read the contents of the file, so we can use it or check (parts of) it.")
+	public String read() throws IOException {...}
+}}}
+#
+!2 5. ''!-@CompoundAction-!''
+#
+This is intended for actions that return an object, for further actions to be carried out on the result. Eg, this is used with the ''!-FileHandler-!'' that's returned from the ''file'' action.
+
+This annotation has two elements, the same as with ''!-@SimpleAction-!'', as can be seen in the example below.
+
+As well as displaying details of this action, this also displays the extra actions that are available in the rest of the table.
+
+Here's an example from ''!-GlobalActionScope-!'':
+{{{	@CompoundAction(wiki="|''<i>file</i>''|absolute file name|",
+			tooltip="Access the given file and allow actions on it in the rest of the table.")
+	public FileHandler file(String fileName) {...}
+
+}}}
+#
+!2 5. ''!-@AnAction-!''
+#
+This is the most general, and you'll only need to use it if you want to explicitly ignore a method or if you've written your own ''special actions''.
+
+This annotation has 4 elements, as can be seen in the example below:
+
+ * ''wiki'', as above. If this is the empty string, this will be automatically generated from the method name.
+ * ''tooltip'', as above.
+ * ''actionType'', which is one of:
+  * SIMPLE, this is not really needed, as it's covered by the annotations above
+  * PREFIX, for a ''special'' action that appears at the start of the row, such as '''show'''. The string "action...|" is automatically added to the end of the wiki.
+  * SUFFIX, for a ''special'' action that appears at the end of the row, such as '''is'''.
+  * SELF_FORMAT, for a PREFIX that needs specialised formatting of the wiki, such as '''check''', because of the expected value on the end of the row.
+  * IGNORE, so that the action is not listed
+ * ''isCompound'', which is true if the action is a compound action (in the sense of ''!-@CompoundAction-!'' above)
+
+See the ''!-FitLibrary-!'' class ''!-GlobalActionScope-!'' for examples of the use of these.
+

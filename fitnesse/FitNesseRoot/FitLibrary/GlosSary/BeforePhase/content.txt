@@ -1,0 +1,7 @@
+The ${setup} of a ${workflow} ${storytest} specifies the state or information of the ${sut} prior to any actions being carried.
+ * This serves to precisely define the context for the ${action}s that follow.
+ * The ${setup} simply defines the data without validation, rather than carrying out a sequence of actions to cause the ${sut} to be put into the required state.
+
+From a testing perspective, this is the ''setup'' phase.
+!3 Examples
+ * See .FitLibrary.UserGuide.FitLibraryByExample.WorkFlow

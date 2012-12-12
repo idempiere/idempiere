@@ -1,0 +1,15 @@
+|''login''|user|''with''|pass|
+
+|'''show after'''|get|About to login @{user} with password "@{pass}"|
+
+|''with''|//input[@id="userName"]|''enter text''|@{user}|
+
+|''with''|//input[@id="password"]|''enter text''|@{pass}|
+
+|''submit''|//form|
+
+|''show after as''|login|get|Logged in @{user} with password "@{pass}"|
+----
+|''login2''| user |''with''| pass |
+
+|''login''|@{user}|''with''|@{pass}|

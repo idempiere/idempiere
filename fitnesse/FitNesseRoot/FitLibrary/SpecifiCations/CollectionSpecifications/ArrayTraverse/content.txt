@@ -1,0 +1,14 @@
+!2 ArrayTraverse is like ListTraverse, except that it handles arrays and doesn't have a header row.
+ * If the array elements are objects, it uses their ''toString()'' value
+ * If a collection is supplied, it's copied into an array and that's used
+^TestArray
+^TestAll
+^TestSomeInOrder
+^TestOutOfOrder
+^TestInsertAtStart
+^TestDeleteAtStart
+^TestNoneExpected
+^TestMixedObjects
+^TestNoActuals
+^TestNoActualsSoMissing
+^TestNullInCollection

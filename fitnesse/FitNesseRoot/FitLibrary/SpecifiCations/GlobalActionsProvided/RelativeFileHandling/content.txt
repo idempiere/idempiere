@@ -1,0 +1,25 @@
+The ''file'' global action gives access to several actions (in the same table) for manipulating files.
+
+As well as the standard File methods, it provides an easy way to read and write data to files.
+
+|''relative file''|.|
+|''directory''|'''is'''|true|
+|'''show'''|''absolute path''|
+|'''show'''|''last modified''|
+|'''show'''|''list''|
+|'''show'''|''length''|
+
+|''relative file''|tempExample.txt|
+|''write''|Some text|
+|'''show'''|''length''|
+|''append''|Some text|
+|'''show'''|''length''|
+|''directory''|'''is'''|false|
+|'''show'''|''absolute path''|
+|'''show'''|''last modified''|
+|'''show'''|''list''|
+|'''show'''|''read''|
+|''delete''|
+|''exists''|'''is'''|false|
+
+See FileProcessing for a list of further actions that also apply here.

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.idempiere.zk.selenium.fitnesse.fit.factory">
+   <implementation class="org.idempiere.ui.zk.selenium.fitnesse.FitFixtureFactory"/>
+   <service>
+      <provide interface="org.idempiere.fitnesse.server.fit.IFitFixtureFactory"/>
+   </service>
+</scr:component>

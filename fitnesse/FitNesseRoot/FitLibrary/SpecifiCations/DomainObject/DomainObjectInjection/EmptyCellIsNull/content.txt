@@ -1,0 +1,51 @@
+ * An empty cell for a domain object means that there isn't one (ie, null)
+!**< def
+!define user (
+|''name''|Brad Split|
+|''manager''||
+
+)
+!define test (!|fitlibrary.specify.domain.EmptyCellIsNull|
+
+|''user''|${user}|
+
+|''checks''|
+
+|''user''|${user}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.EmptyCellIsNull</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>user</i></td>
+<td><br><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td>Brad Split</td>
+</tr>
+<tr><td><i>manager</i></td>
+<td>&nbsp;</td>
+</tr>
+</table>
+<br></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>user</i></td>
+<td><br><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td class="pass">Brad Split</td>
+</tr>
+<tr><td><i>manager</i></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>
+<br></td>
+</tr>
+</table>-!|

@@ -1,0 +1,23 @@
+!***< def
+!define rg (|''colour''|
+|green|
+|red|
+)
+!define yb (|''colour''|
+|yellow|
+|blue|
+)
+!define listOfLists (|${yb}|
+|${rg}|
+)
+**!
+ * A set is expressed as a nested table
+ * A set of sets is expressed as a doubly-nested table
+!|fitlibraryGeneric.specify.collections.GenericCollections|
+
+|''checks''|
+ * Set<Colour>
+|''a set''|${rg}|
+ * Set<Set<Colour>>
+|''a set of sets''|${listOfLists}|
+ * Note: Checking nested sets is not handled correctly, in general, at the moment

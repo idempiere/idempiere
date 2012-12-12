@@ -1,0 +1,38 @@
+!2 '''optionally''' passes regardless of whether the embedded action passes or not. However, show any !-FitLibraryExceptions-! as exceptions.
+
+If the action returns false or throws a normal exception, the details are added in an extra cell as an aid to understanding.
+
+!**< def
+!define test1 (!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|'''optionally'''|a right action|1|
+|'''optionally'''|a wrong action|1.5||2.2|
+|'''optionally'''|an exception action|
+|'''optionally'''|an unknown action|
+
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test1}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><b>optionally</b></td>
+<td>a right action</td>
+<td colspan="3">1</td>
+</tr>
+<tr><td class="pass"><b>optionally</b></td>
+<td>a wrong action</td>
+<td>1.5</td>
+<td>&nbsp;</td>
+<td>2.2</td>
+<td bgcolor=#C0C0FF>false</td></tr>
+<tr><td class="pass"><b>optionally</b></td>
+<td colspan="4">an exception action</td>
+<td bgcolor=#C0C0FF><hr><pre><div class="fit_stacktrace">java.lang.RuntimeException: testing</div></pre></td></tr>
+<tr><td class="error" class="pass"><b>optionally</b><hr/> <span class="fit_label">Missing method</span></td>
+<td colspan="4">an unknown action</td>
+</tr>
+</table>
+<br/>-!|

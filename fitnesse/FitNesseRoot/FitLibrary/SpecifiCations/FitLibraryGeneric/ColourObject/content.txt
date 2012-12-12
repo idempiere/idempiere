@@ -1,0 +1,7 @@
+|''set colour''|sky blue|
+
+|check|''colour''|sky blue|
+
+|''set point''|!include .FitLibrary.SpecifiCations.FitLibraryGeneric.ThePoint|
+
+|check|''point''|!include .FitLibrary.SpecifiCations.FitLibraryGeneric.ThePoint|

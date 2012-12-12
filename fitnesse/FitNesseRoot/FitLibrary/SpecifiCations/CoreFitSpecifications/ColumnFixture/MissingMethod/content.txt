@@ -1,0 +1,5 @@
+!2 An exception is thrown if a method doesn't exist.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>unknownMethod()</td></tr></table>-!|!-<table><tr><td>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td class="error">unknownMethod()<hr/> <span class="fit_label">Could not find method: unknownMethod().</span></td></tr></table>-!|

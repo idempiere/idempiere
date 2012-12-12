@@ -1,0 +1,50 @@
+!3 3. Mocking a simple response
+#
+Let's mock a soap1.1 web service that returns the available stock count for a specified item.
+
+ * For our first test, there will be a single request for the count of "oranges" and a single response of "44".
+ * We'd need to configure our system so that it goes to http://localhost:8081.
+  * However, if your system is running on another computer, you'd need to alter the url to suit.
+
+For a start, we'll ignore the details of the request and simply specify the response.
+
+|''with mock web services''|
+
+|''mock soap11 on port''|8081|
+|''response''|<count>44</count>|
+
+The above table immediately starts the mock web services server.
+
+At this point, we'd normally have some other tables that run our system.
+
+ * Eg, it may check that the UI displays that there are 44 oranges.
+ * We'll ignore that aspect here and focus on how to set up mock web services
+
+At the end of the storytest, we close the mock web server, after a delay.
+
+ * It will fail if no request was received on port 8081 or unexpected requests were received.
+ * Details of what happened will then appear in the folding area after the table.
+
+|''close after''|5|''seconds''|
+
+Run this as a '''Test''' and you'll see that it stops after 5 seconds with an error because nothing has connected to the web service.
+#
+----!3 4. Seeing it Run
+#
+To see the above mocking work, open OrangesCall in another browser window so you can see both pages at the same time.
+
+Run this page again and then run OrangesCall.
+
+So now:
+
+ * The final table passes.
+ * The folded log tells us that a single call occurred
+ * OrangesCall also passes
+
+Notice what happens when you run this page and then run OrangesCall twice quickly.
+#
+----!3 5. Next
+#
+But what happens if the web service call asks for the count of ''apples'' instead? We still return 44.
+
+Let's see how to match on the contents of the request [[on this page][MatchRequest]].

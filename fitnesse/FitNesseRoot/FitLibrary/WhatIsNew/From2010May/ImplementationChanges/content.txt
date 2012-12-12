@@ -1,0 +1,27 @@
+Relevance:
+ * It's not necessary to be aware of the following unless you're doing advanced extensions that rely on the implementation of ''!-FitLibrary-!''.
+
+There are many changes to the underlying implementation of ''!-FitLibrary-!'':
+
+ * Tables, Table, Row and Cell are now Java interfaces, rather than classes.
+ * The functionality of ''!-DoFixture-!'', ''!-SelectFixture-!'', ''!-DomainFixture-!'' and some of ''!-SuiteFixture-!'' is now handled by ''!-DoFlow-!''.
+ * ''!-TestResults-!'' is now a Java interface, with ''!-TestResultsOnCount-!'' the corresponding class.
+ * Some classes have shifted to new packages
+#
+!3 Table, Row, Cell
+#
+ * Tables, Table, Row and Cell are now Java interfaces, rather than classes.
+ * There are two implementations, one based on ''Parse'' (eg, ''!-TableOnParse-!''), and the other based on a completely different structure.
+ * Use the static methods in ''!-TableFactory-!'' to creates a Row, Cell, etc.
+#
+!3 ''!-DoFlow-!''
+#
+ * The functionality of ''!-DoFixture-!'', ''!-SelectFixture-!'', ''!-DomainFixture-!'' and some of ''!-SuiteFixture-!'' is now handled by a new '''internal''' object, of class ''!-DoFlow-!''.
+ * It is no longer necessary to use a ''!-SelectFixture-!'' explicitly. More than one object can be current at once.
+ * ''!-DoFlow-!'' now controls the flow style execution of actions.
+ * It manages calls to ''!-setUp()-!'' and ''!-tearDown()-!'' at the correct time.
+ * It manages calls to ''!-suiteSetUp()-!'' and ''!-suiteTearDown()-!'' at the correct time.
+ * It makes sure that the appropriate information is shared between tests when there is a suite fixture.
+ * It makes use of a Scope Stack to determine the order of lookup of methods corresponding to classes.
+ * The Scope Stack has a Global method object for lookup of standard methods.
+ * Other global methods can be introduced at runtime.

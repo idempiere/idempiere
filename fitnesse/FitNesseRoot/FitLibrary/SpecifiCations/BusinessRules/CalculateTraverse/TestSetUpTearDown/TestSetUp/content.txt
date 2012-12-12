@@ -1,0 +1,10 @@
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table>
+<tr><td colspan=3>fitlibrary.specify.CalculateFixtureSetUp</td></tr>
+<tr><td><i>a</i></td><td></td><td><i>result</i></td></tr>
+<tr><td>1</td><td></td><td>2</td></tr>
+</table>-!|!-<table>
+<tr><td colspan=3>fitlibrary.specify.CalculateFixtureSetUp</td></tr>
+<tr><td><i>a</i></td><td></td><td><i>result</i></td></tr>
+<tr><td>1</td><td></td><td class="pass">2</td></tr>
+</table>-!|

@@ -1,0 +1,9 @@
+^AddPointSystemToAccount
+^BonusPointCalculationSystem
+^AwardBonusPointToCustomer
+^PaymentByBonusPoint
+^NotEnoughBonusPoint
+^BonusPointsRemovedForDroppedTransasctions
+^BonusPointsRemovedForCancelledBookings
+
+^SetUp

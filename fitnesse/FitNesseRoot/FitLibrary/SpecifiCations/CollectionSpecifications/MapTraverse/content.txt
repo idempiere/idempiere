@@ -1,0 +1,12 @@
+!3 A ''MapTraverse'' checks that a table corresponds to a given ''Map''
+^EmptyMap
+^StringMap
+^ObjectMap
+
+^EmptyMismatch
+^ObjectMismatch
+^ExpectedKeyNotUnique
+^MixedObjectProblem
+
+^RowsWrong
+^ExceptionsHandling

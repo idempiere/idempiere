@@ -1,0 +1,21 @@
+!***< def
+!define v (
+|''colour''|red|
+
+)
+!define t (
+|''v''|${v}|
+
+)
+!define gen (
+|''t''|${t}|
+
+)
+**!
+!|fitlibraryGeneric.specify.object.NestedGenericObjects|
+
+|''gen''|${gen}|
+
+|''checks''|
+
+|''gen''|${gen}|

@@ -1,0 +1,15 @@
+!**< def
+!define test (!|fitlibrary.specify.access.CurrentRow|
+
+|''action that adds a show cell''|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.access.CurrentRow</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>action that adds a show cell</i></td>
+<td bgcolor=#C0C0FF>hello</td></tr>
+</table>-!|

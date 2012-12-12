@@ -1,0 +1,13 @@
+!3 An exception in setUp() of the added object is caught and displayed
+!**< def
+!define test (!|add named|first|fitlibrary.specify.select.SelectWithSetUpFailing|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td class="error">add named<hr><pre><div class="fit_stacktrace">
+</div></pre></td>
+<td>first</td>
+<td>fitlibrary.specify.select.SelectWithSetUpFailing</td>
+</tr>
+</table>-!|

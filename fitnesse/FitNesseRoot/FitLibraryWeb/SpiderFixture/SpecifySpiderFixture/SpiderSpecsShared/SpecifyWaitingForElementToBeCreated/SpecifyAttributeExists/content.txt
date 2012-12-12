@@ -1,0 +1,23 @@
+!*< def
+!define html [{{{<script type="text/javascript">
+function addInput(){
+   document.getElementById("22").setAttribute("value","33");
+}
+</script>
+<input type="button" id="ok" value="OK"
+onclick="javascript:setTimeout('addInput()', 50)"/>
+
+<div id='22'>.</div>}}}]
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''click''|ok|
+
+|''attribute''|value|''of''|22|'''exists'''|
+
+|''attribute''|value|''of''|22|'''is'''|33|

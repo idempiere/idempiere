@@ -1,0 +1,4 @@
+^TitleChangesAfterDelay
+^TextChangesAfterDelay
+^ElementAttributeChangesAfterDelay
+^OptionChangesAfterDelay

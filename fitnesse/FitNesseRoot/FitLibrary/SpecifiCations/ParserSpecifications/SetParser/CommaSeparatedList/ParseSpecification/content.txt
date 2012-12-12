@@ -1,0 +1,38 @@
+!**< def
+!define testStrings {!|fitlibrary.specify.setParser.Parse|
+
+|''given set''||
+|''any header will do''|
+
+|''given colour set''|red,green|
+|''name''|
+|red|
+|green|
+}
+**!
+ * It's assumed that the set is either empty or has Strings in it, as with ''!-ListParser-!''
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${testStrings}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.setParser.Parse</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given set</i></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="pass"><td colspan="2"><i>any header will do</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>given colour set</i></td>
+<td>red,green</td>
+</tr>
+<tr><td colspan="2" class="error"><i>name</i><hr/> <span class="fit_label">Could not find property name</span></td>
+</tr>
+<tr><td colspan="2">red</td>
+</tr>
+<tr><td colspan="2">green</td>
+</tr>
+</table>-!|
+
+The last table has an error because the Set returned is of strings, not colours

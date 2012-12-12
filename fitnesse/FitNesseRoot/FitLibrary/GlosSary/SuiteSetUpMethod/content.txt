@@ -1,0 +1,3 @@
+The method ''suiteSetUp()'' is called on a ${suite} before it starts processing subsequent storytests.
+
+See the corresponding ${suiteTearDownMethod}.

@@ -1,0 +1,20 @@
+!*< def
+!define html ({{{<div>
+  <div><p name="red">red</p><p name="green">green</p></div>
+  <div><p>Red</p><p name="Green">Green</p></div>
+</div>}}})
+*!
+
+|''keywords''|chrome,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+IE can handle the following form, but not the xpath form //div[@name='red']
+
+|''text of''|name=red|''is''|red|
+
+|''text of''|name=green|''is''|green|
+
+|''text of''|name=Green|''is''|Green|

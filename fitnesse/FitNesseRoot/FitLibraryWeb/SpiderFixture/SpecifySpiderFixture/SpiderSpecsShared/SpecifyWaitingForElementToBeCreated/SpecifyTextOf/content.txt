@@ -1,0 +1,43 @@
+!*< def
+!define html [{{{<script type="text/javascript">
+function addInput(){
+   document.getElementById("22").innerHTML += "<input type='text' id='in' value='green'>";
+}
+</script>
+<input type="button" id="ok" value="OK"
+onclick="javascript:setTimeout('addInput()', 50)"/>
+
+<div id='22'>.</div>}}}]
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|shutdown browser automatically|false|
+
+Note that firefox and htmlUnit seem to be process the javascript delay differently
+
+|''checking timeout''|1000|
+
+|''start stop watch''|
+
+|''with html''|${html}|
+
+|'''show'''|''stop watch''|
+
+|''start stop watch''|
+
+|''click''|ok|
+
+|'''show'''|''stop watch''|
+
+
+|''start stop watch''|
+
+|''text of''|in|'''is'''|green|
+
+|''stop watch''|<|750|
+
+|'''show'''|''stop watch''|
+

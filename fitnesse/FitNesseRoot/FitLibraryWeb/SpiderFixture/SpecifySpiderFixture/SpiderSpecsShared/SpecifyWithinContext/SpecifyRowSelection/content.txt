@@ -1,0 +1,30 @@
+!*< def
+!define html ({{{<t-table id='t1'>
+<tr>
+<td><row1/>ONE</td><td><input type="text" id="withValue" value="green"/></td>
+</tr>
+<tr>
+<td><row2/><input type="text" id="withValue" value="yellow"/></td>
+</tr>
+<tr><td><row3>blue</row3></td></tr>
+</t-table>}}})
+
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''with table''|//table|''select row with''|//row1|
+|''text of''|//input[@id="withValue"]|''is''|green|
+
+|''with table''|//table|''select row with''|//row2|
+|''text of''|//input[@id="withValue"]|''is''|yellow|
+
+#|''with table''|//table|''select row with''|//row3|
+#|''text of''|//row3|''is''|blue|
+
+#|''with table''|//table|''select row with''|//*[contains(text(),"blue")]|
+#|''text of''|//row3|''is''|blue|

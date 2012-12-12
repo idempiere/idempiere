@@ -1,0 +1,12 @@
+!3 Tables can be used to test (some of) the properties of a domain object.
+^SimpleProperties are listed as name-value pairs, similar to how a UI may be laid out with label-entry pairs.
+^ListProperties may be included. Lists are shown downwards, as usual.
+^ObjectProperties. A property may be another domain object. That can be shown as an embedded table.
+^PrivatePropertyMethods
+
+^ChecksFail - when expectations aren't met, the differences are shown in the report
+
+^UnknownProperty
+^IncorrectValueType
+^IncompletePair
+

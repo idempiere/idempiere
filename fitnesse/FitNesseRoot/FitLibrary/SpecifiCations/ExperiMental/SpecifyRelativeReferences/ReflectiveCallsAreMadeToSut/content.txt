@@ -1,0 +1,10 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.References</td></tr>
+<tr><td><i>with person</i></td><td colspan="2">the person</td></tr>
+<tr><td>check</td><td><i>name</i></td><td>ward</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.References</td></tr>
+<tr><td><i>with person</i></td><td colspan="2">the person</td></tr>
+<tr><td>check</td><td><i>name</i></td><td class="pass">ward</td></tr>
+</table>-!|

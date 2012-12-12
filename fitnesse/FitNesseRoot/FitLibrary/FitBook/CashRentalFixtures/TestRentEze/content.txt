@@ -1,0 +1,11 @@
+|!-DoRentEze-!|
+
+|''setup''|
+|''rental item''|''count''|''$/hour''|
+|coffee dispenser|10|8.20|
+|hot water dispenser|12|8.00|
+
+|''rental items''|
+|''name''|''count''|''$/hour''|
+|coffee dispenser|10|8.20|
+|hot water dispenser|12|8.00|

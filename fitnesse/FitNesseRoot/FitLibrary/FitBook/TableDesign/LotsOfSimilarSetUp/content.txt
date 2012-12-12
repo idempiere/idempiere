@@ -1,0 +1,10 @@
+|''chat server''|
+
+||anna|''connects''|
+
+||anna|''creates''|lotr|''room''|
+
+||anna|''removes''|lotr|''room''|
+
+|''rooms list''|
+|''name''|

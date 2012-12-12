@@ -1,0 +1,36 @@
+!3 If a nested table is used, difference are shown in the table. Otherwise, a comma-separated list is used.
+!**< def
+!define array (|1|
+|2|
+)
+!define test (!|fitlibrary.specify.arrayParser.Match|
+
+|'''check'''|''array123''|${array}|
+
+|'''check'''|''array123''||
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.arrayParser.Match</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>array123</i></td>
+<td><table border="1" cellspacing="0">
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>2</td>
+</tr>
+<tr>
+<td class="fail"> <span class="fit_grey">3</span> <span class="fit_label">surplus</span></td></tr></table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>array123</i></td>
+<td class="fail"> <span class="fit_label">expected</span><hr>1, 2, 3 <span class="fit_label">actual</span></td>
+</tr>
+</table>-!|

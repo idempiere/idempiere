@@ -1,0 +1,23 @@
+!3 Reference that fails because the actual entity is not expected
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.References</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>set up accounts</i></td></tr>
+<tr><td><i>owing</i></td></tr>
+<tr><td>10</td></tr><tr><td>100</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td><i>with</i></td><td>the first</td><td>the second account</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.References</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>set up accounts</i></td></tr>
+<tr><td><i>owing</i></td></tr>
+<tr><td>10</td></tr><tr><td>100</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td><i>with</i></td><td>the first</td><td class="fail">the second account <span class="fit_label">expected</span><hr>the first Account <span class="fit_label">actual</span></td></tr>
+</table>-!|

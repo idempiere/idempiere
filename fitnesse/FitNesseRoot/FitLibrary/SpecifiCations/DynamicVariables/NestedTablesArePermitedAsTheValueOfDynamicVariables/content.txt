@@ -1,0 +1,14 @@
+!**< def
+!define t {|''a''|0|
+|''b''|2|
+}
+**!
+
+|set|x|to|${t}|
+
+!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|object|'''is'''|${t}|
+
+
+|object|''is''|@{x}|

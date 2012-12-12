@@ -1,0 +1,22 @@
+|''match''|one|
+|one|
+
+|''match''|one|
+|o.e|
+
+|''match''|one\ntwo|
+|one|
+|two|
+
+|''match''|one \ntwo|
+|one|
+|two|
+
+|''match''|one\n  two|
+|one|
+|two|
+
+|''match''|one\ntwo|
+|o.*|
+|.wo|
+

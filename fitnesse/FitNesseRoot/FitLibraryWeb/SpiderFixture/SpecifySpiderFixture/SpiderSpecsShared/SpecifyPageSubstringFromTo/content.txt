@@ -1,0 +1,17 @@
+!*< def
+!define html ({{{Various
+  text spread over several
+  <b>lines</b>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+ * We also get the space:
+
+|''page substring from''|spread|''to''|sev|''matches''|.over|
+
+|''page substring from''|te|''to''|t|''is''|x|

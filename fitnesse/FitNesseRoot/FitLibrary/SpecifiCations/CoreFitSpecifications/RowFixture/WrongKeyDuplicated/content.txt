@@ -1,0 +1,18 @@
+!2 If there are several rows with the same key as the one that's wrong, it's treated as a replacement as well.
+Here the expected "|two|3|" was actually "|two|2|":
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fit.specify.RowFixtureUnderTest</td></tr>
+<tr><td>s</td><td>a</td></tr>
+<tr><td>two</td><td>3</td></tr>
+<tr><td>two</td><td>1</td></tr>
+<tr><td>one</td><td>1</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fit.specify.RowFixtureUnderTest</td></tr>
+<tr><td>s</td><td>a</td></tr>
+<tr><td class="fail">two <span class="fit_label">missing</span></td><td>3</td></tr>
+<tr><td class="pass">two</td><td class="pass">1</td></tr>
+<tr><td class="pass">one</td><td class="pass">1</td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">two</span> <span class="fit_label">surplus</span></td>
+<td> <span class="fit_grey">2</span></td></tr></table>-!|

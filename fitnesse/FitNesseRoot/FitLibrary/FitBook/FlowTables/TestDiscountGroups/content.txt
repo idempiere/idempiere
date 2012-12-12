@@ -1,0 +1,7 @@
+|!-DiscountGroupsEntry-!|
+|future value|max balance|min purchase|discount %|add()|
+|low|0.00|0.00|0|true|
+|medium|0.00|500.00|5|true|
+|medium|500.00|500.00|3|true|
+|high|500.00|2000.00|10|true|
+|high|1000.00|500.00|5|true|

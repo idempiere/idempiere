@@ -1,0 +1,13 @@
+!2 All objects of mixed types are in the correct order.
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.PrimitiveArrayFixtureUnderTestMixed</td></tr>
+<tr><td>1</td></tr>
+<tr><td>2.0</td></tr>
+<tr><td>three</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.PrimitiveArrayFixtureUnderTestMixed</td></tr>
+<tr class="pass"><td>1</td></tr>
+<tr class="pass"><td>2.0</td></tr>
+<tr class="pass"><td>three</td></tr>
+</table>-!|

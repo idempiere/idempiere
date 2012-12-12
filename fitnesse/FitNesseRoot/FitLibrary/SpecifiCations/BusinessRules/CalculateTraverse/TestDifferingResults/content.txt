@@ -1,0 +1,31 @@
+!2 A method need not take any arguments and may return different results on each call.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=2>calculate</td></tr>
+<tr><td></td><td>increment</td></tr>
+<tr><td></td><td>1</td></tr>
+<tr><td></td><td>2</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td colspan="3">calculate</td></tr>
+<tr><td></td><td>increment</td><td>increment</td></tr>
+<tr><td></td><td>3</td><td>4</td></tr>
+<tr><td></td><td>5</td><td>6</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=2>calculate</td></tr>
+<tr><td></td><td>increment</td></tr>
+<tr><td></td><td class="pass">1</td></tr>
+<tr><td></td><td class="pass">2</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td colspan="3">calculate</td></tr>
+<tr><td></td><td>increment</td><td>increment</td></tr>
+<tr><td></td><td class="pass">3</td><td class="pass">4</td></tr>
+<tr><td></td><td class="pass">5</td><td class="pass">6</td></tr>
+</table>-!|

@@ -1,0 +1,9 @@
+!**< def
+!define test (!|fitlibrary.specify.exception.UnknownClass|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td class="error">fitlibrary.specify.exception.UnknownClass<hr/> <span class="fit_label">Missing class or Missing method. Possibly:<ul><li>public Type getFitlibraryDotSpecifyDotExceptionDotUnknownClass() { }</li><li>public Type fitlibraryDotSpecifyDotExceptionDotUnknownClass() { }</li></ul></span></td>
+</tr>
+</table>-!|

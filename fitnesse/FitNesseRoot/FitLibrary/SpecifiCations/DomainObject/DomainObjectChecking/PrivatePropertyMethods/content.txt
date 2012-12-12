@@ -1,0 +1,14 @@
+!**< def
+!define props (
+|''private prop''|4|
+
+|''private prop in super''|4|
+
+)
+**!
+!|fitlibrary.specify.domain.PrivatePropertyMethods|
+
+${props}
+----
+----
+${props}

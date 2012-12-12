@@ -1,0 +1,10 @@
+|''rent''|100||cup|''for''|2|''weeks''|
+|check|cost|210.00|
+
+|''rentals for client''|Joanna|
+|''rental item''|''count''|''start date''|''hours''|''days''|''weeks''|
+|cup|100|2004/05/06 09:01|0|0|2|
+
+|''rental item subset list''|
+|''name''|''count''|
+|cup|400|

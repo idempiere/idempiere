@@ -1,0 +1,22 @@
+!*< def
+!define html {<t-table>
+<tr><td>red</td><td><input type="text" id="withValue" value="Red"/></td></tr>
+<tr>
+    <td><textarea id="withText">Green</textarea></td>
+    <td><textarea id="withText">green</textarea></td>
+</tr>
+</t-table>
+}
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''text of''|//table//tr//td|''is''|red|
+
+|''text of''|//table//tr//td[2]//input|''is''|Red|
+
+|''text of''|//table//tr[2]//td[2]//textarea|''is''|green|

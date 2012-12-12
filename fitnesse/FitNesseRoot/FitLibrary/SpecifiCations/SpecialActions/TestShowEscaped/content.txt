@@ -1,0 +1,48 @@
+!**< def
+!define test (!|fitlibrary.specify.specialAction.SpecialActions|
+
+|'''show escaped'''|''ten''|
+
+|'''show escaped'''|''html''|
+
+|'''show escaped'''|''a true action''|
+|'''show escaped'''|''a false action''|
+|'''show escaped'''|''an error action''|
+
+|'''show escaped'''|''a string with white space''|
+)
+**!
+!2 'show' adds a new cell to the row to show the returned value of an action
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.specialAction.SpecialActions</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show escaped</b></td>
+<td><i>ten</i></td>
+<td bgcolor=#C0C0FF><pre>10</pre></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show escaped</b></td>
+<td><i>html</i></td>
+<td bgcolor=#C0C0FF><pre>&lt;ul>&lt;li>ita&lt;li>lics&lt;/ul></pre></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show escaped</b></td>
+<td><i>a true action</i></td>
+<td bgcolor=#C0C0FF><pre>true</pre></td></tr>
+<tr><td><b>show escaped</b></td>
+<td><i>a false action</i></td>
+<td bgcolor=#C0C0FF><pre>false</pre></td></tr>
+<tr><td class="error"><b>show escaped</b><hr/> <span class="fit_label">whoops</span></td>
+<td><i>an error action</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show escaped</b></td>
+<td><i>a string with white space</i></td>
+<td bgcolor=#C0C0FF><pre>	line one
+	line	2</pre></td></tr>
+</table>-!|

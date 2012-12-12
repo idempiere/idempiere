@@ -1,0 +1,10 @@
+|!-TaxInvoice-!|
+|Uni of Auckland|Delivered to:|Number:|216017-01|
+|Private Bag 92019|Attn: Sal Mayha|Date:|05/01/04|
+|Auckland|Uni of Auckland|Order:|TC000015473-REPL|
+|||Cust:|UNI34|
+|'' #''|''Part Number''|''Description''|''Dispatch''|''Price''|''Total''|
+|1|CAT 98142-00-GH|L3 Switch 32x1000T|1|6804.00|6804.00|
+|2|CAT 99000-01-PH|Macronetic switch|2|2317.00|2317.00|
+|||||Total:|9121.00|
+|Special Delivery:|AS0555P|

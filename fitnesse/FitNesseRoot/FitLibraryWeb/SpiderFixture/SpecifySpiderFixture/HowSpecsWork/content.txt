@@ -1,0 +1,62 @@
+!*< def
+!define html ({{{<input type="text" id="nothing"/>
+<input type="text" id="withValue" value="red"/>
+<input type="text" id="disabled" value="blue" disabled="true"/>
+<input type="text" id="onlySpacesInText">   </input>
+<input type="text" id="withText">green</input>}}})
+*!
+The ''!-SpiderFixture-!'' storytests/specs:
+
+ 1 Are written to be as self-contained as possible.
+ 1 Are organised so that the same storytests can be used for testing spider with htmlunit, Firefox and IE.
+ 1 Use special tabs for tables.
+#
+----!3 1. Self-contained
+#
+The contents of the html being accessed by the spider actions in the storytest are included in that storytest.
+
+ * The contents of the html is defined using a ''!-!define-!'' so that it can be formatted nicely. Edit this page to see how the following table is defined.
+
+Consider the [[!-input text storytest-!][.FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.SpecifyTextOf.WithInputText]] which includes the following table:
+
+|''with html''|${html}|
+
+This html is saved to a file ("test.html") within the ''files'' directory of !-FitNesse-! and then within a directory for the browser/driver concerned. 
+
+ * Eg, for firefox, it's saved in "!-FitNesseRoot/files/firefox/-!".
+ * It's saved there so that spider can access that page through a specialised test server at http://localhost:2998/files/firefox/test.html
+   * Note: this link will only work while the test server is running, and that's only while a spider spec is running.
+ * The server port is different for the storytests for each driver, so that the storytests for firefox and IE, for example, can be run in parallel.
+ * The test server is started for each storytest and is shut down when it finishes.
+ * The ''with html'' action also automatically does a ''get url'' on that page, so that subsequent actions can work from there.
+#
+----!3 2. Shared storytests
+#
+A single suite contains all the spider storytests/specs, at SpiderSpecsShared. These storytests are not intended to be run from there. Instead, there are separate suites that share these storytests, but define specific differences:
+
+ * The name of the driver/browser that spider is to use
+ * The port that the test server is to run on for that driver
+
+For example, see SpiderWithHtmlUnit. This has it's own [[!-SuiteSetUp-!][SpiderWithHtmlUnit.SuiteSetUp]] which defined the above "parameters".
+
+To see how the storytests are shared, go to SpiderWithHtmlUnit and click on the '''Properties''' button in the top-left of the window.
+
+ * You'll see at the bottom of the resulting page that there is a ''Symbolic Link'' to .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpiderSpecsShared
+
+To run the SpiderWithHtmlUnit suite, simply go to that page and click the '''Suite''' button.
+
+ * This first runs the [[!-SuiteSetUp-!][SpiderWithHtmlUnit.SuiteSetUp]]
+ * Then it runs each of the pages within the shared suite
+
+Because of the different setups in the suite setups for htmlunit, firefox, and IE, the same storytests are run with a different driver and port for the test server.
+
+If you want to run a single storytest, click into the suite.
+
+ * Eg, Start at SpiderWithHtmlUnit and click on ''!-SpecifiCations-!''.
+ * Notice that the URL for the page includes SpiderWithHtmlUnit.
+ * When running a test within that, the appropriate ''!-SuiteSetUp-!'' will be run first.
+ * So simply traverse through from SpiderWithHtmlUnit, SpiderWithFirefox or SpiderWithIe to be able to run the same storytest under different browsers/drivers.
+#
+----!3 3. Handling tables
+The html that's given in such a storytest can't contain the following tags because they are interpreted by ''!-FitLibrary-!'', giving odd errors:{{{<table>...</table>}}}So instead we use:{{{<t-table >...</t-table >}}} and these are translated before writing to the file.
+

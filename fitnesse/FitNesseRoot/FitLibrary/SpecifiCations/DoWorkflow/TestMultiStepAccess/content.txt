@@ -1,0 +1,77 @@
+It's possible to keep stepping into other objects, etc, down the table. If an action in any row returns a ${traverse} or Fixture or an ${entity} that's ${autoWrapped}, that applies to the rest of the table.
+
+!**< def
+!define test (!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|point holder|
+|point|
+|check|x|24|
+|check|y|7|
+)
+!define inner2 (|check|x|24|
+
+|check|y|7|
+)
+!define inner1 (|point|
+|${inner2}|
+)
+!define test2 (!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|point holder|
+|${inner1}|
+)
+**!
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="3">point holder</td>
+</tr>
+<tr><td colspan="3">point</td>
+</tr>
+<tr><td>check</td>
+<td>x</td>
+<td class="pass">24</td>
+</tr>
+<tr><td>check</td>
+<td>y</td>
+<td class="pass">7</td>
+</tr>
+</table>-!|
+
+To enable the subsequent rows to be split, use embedded tables:
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test2}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>point holder</td>
+</tr>
+<tr><td><table border="1" cellspacing="0">
+<tr><td>point</td>
+</tr>
+<tr><td><table border="1" cellspacing="0">
+<tr><td>check</td>
+<td>x</td>
+<td class="pass">24</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>check</td>
+<td>y</td>
+<td class="pass">7</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|
+
+Not all objects are ${autoWrapped}, because some provide values which are checked against an ${expected} string, such as Dates. It's not ideal, but we only auto-wrap an ${entity}. A ${valueObject} is not ${autoWrapped}.

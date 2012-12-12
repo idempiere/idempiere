@@ -1,0 +1,18 @@
+!***< def
+!define ts (
+|1|
+|2|
+
+)
+!define gen (
+|''ts''|${ts}|
+
+)
+**!
+!|fitlibraryGeneric.specify.object.GenericObjectContainsGenericPrimitiveArray|
+
+|''gen''|${gen}|
+
+|''checks''|
+
+|''gen''|${gen}|

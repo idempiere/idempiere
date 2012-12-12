@@ -1,0 +1,15 @@
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <SpecifyFrames.SpecSetUp
+
+
+|''frame by name''|green|
+
+|''url''|'''does not match'''|.*/test.html|
+
+|''page source''|contains|greening|
+
+|''default frame''|
+
+|''url''|'''matches'''|.*/test.html|
+

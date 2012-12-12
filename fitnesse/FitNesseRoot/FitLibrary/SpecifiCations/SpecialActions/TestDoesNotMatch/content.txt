@@ -1,0 +1,81 @@
+!2 Fails if an action is pattern matched against a value
+!**< def
+!define test1 {!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|int property|does not match|2|
+
+|int property|does not match|20|
+
+|boolean property|does not match|te|
+
+|boolean property|does not match|true|
+
+|string property|does not match|appl.*ie|
+
+|string property|does not match|rappl.*i|
+
+|''x''|1|''y''|3|''does not match''|(1,.)|
+
+|''x''|1|''y''|3|''does not match''|(10,.)|
+}
+
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test1}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>int property</td>
+<td>does not match</td>
+<td class="fail">2</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>int property</td>
+<td>does not match</td>
+<td class="pass">20</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>boolean property</td>
+<td>does not match</td>
+<td class="pass">te</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>boolean property</td>
+<td>does not match</td>
+<td class="fail">true</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td>does not match</td>
+<td class="fail">appl.*ie <span class="fit_label">expected</span><hr>apple pie <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td>does not match</td>
+<td class="pass">rappl.*i</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>x</i></td>
+<td>1</td>
+<td><i>y</i></td>
+<td>3</td>
+<td><i>does not match</i></td>
+<td class="fail">(1,.) <span class="fit_label">expected</span><hr>(1,3) <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>x</i></td>
+<td>1</td>
+<td><i>y</i></td>
+<td>3</td>
+<td><i>does not match</i></td>
+<td class="pass">(10,.)</td>
+</tr>
+</table>-!|

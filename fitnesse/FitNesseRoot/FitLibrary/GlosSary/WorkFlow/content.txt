@@ -1,0 +1,11 @@
+WorkFlow is concerned with the sequence of actions that are carried out to achieve some goal.
+
+A ${workflow} ${storytest} will specify an example sequence of actions. Such a ${storytest} will usually consist of three sections, in order:
+ * ${setup}, which specifies the state of the system prior to carrying out the steps
+ * ${actions}, which specifies the actions being carried out
+ * ${checks}, whicn specify the state of parts of the system that have changed (or not) due to the actions.
+These don't always appear:
+ * There may be no ''setup'' section because the actions occur with the system having just started.
+ * The ''actions'' may carry out some ''checks'' as they go. For example, we may specify that an particular ''action'' will be rejected because it's not valid to carry out that action in that state.
+ * There may be no ''checks'' section, either because the ''checks'' occurred along with the ''actions''.
+

@@ -1,0 +1,12 @@
+|''act''|
+
+|'''show'''|''get''|1|
+
+|''abandon storytest''|
+|'''show'''|''get''|2|
+
+|'''show'''|''get''|3|
+----
+|''act 2''|
+
+|''act''|

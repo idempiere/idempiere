@@ -1,0 +1,15 @@
+!2 All elements are in the correct order, except that an extra row is expected at the start
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.PrimitiveArrayFixtureWithCollection</td></tr>
+<tr><td>zero</td></tr>
+<tr><td>one</td></tr>
+<tr><td>two</td></tr>
+<tr><td>three</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.PrimitiveArrayFixtureWithCollection</td></tr>
+<tr><td class="fail">zero <span class="fit_label">missing</span></td></tr>
+<tr class="pass"><td>one</td></tr>
+<tr class="pass"><td>two</td></tr>
+<tr class="pass"><td>three</td></tr>
+</table>-!|

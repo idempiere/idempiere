@@ -1,0 +1,23 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.GridFixtureUnderTest</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td colspan="2">strings</td></tr>
+<tr><td>a</td><td>2</td></tr>
+<tr><td>c</td><td>4</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.GridFixtureUnderTest</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td colspan="2">strings</td></tr>
+<tr><td class="pass">a</td><td class="fail">2</td></tr>
+<tr><td class="pass">c</td><td class="fail">4</td></tr>
+<tr>
+<td colspan="2"><i>Actuals:</i></td></tr>
+<tr>
+<td> <span class="fit_grey">a</span></td>
+<td> <span class="fit_grey">b</span></td></tr>
+<tr>
+<td> <span class="fit_grey">c</span></td>
+<td> <span class="fit_grey">d</span></td></tr></table>-!|

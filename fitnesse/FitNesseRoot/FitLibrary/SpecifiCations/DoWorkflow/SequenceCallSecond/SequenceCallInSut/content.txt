@@ -1,0 +1,10 @@
+!|fitlibrary.DoFixture|
+
+|start|fitlibrary.specify.workflow.Keywords|
+
+|sum|is|0.0|
+
+|buy at $ with discount%|2|1.0|0|
+
+|sum|is|2.0|
+

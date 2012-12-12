@@ -1,0 +1,11 @@
+Chat Room Changes:
+
+^TestInitial
+^TestConnectAndDisconnect
+^TestTwoInLotr
+
+^FitSummary
+
+Discount Group Changes:
+
+^TestDiscountGroup

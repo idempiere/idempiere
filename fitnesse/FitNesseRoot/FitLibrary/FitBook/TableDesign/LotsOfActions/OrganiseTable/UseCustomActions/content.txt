@@ -1,0 +1,9 @@
+|transaction|
+|check|''hire''| 3 || coffee urn |''for''| 0 |''hours''| 2 |''days''| 0 |''weeks''|  222.00 |
+|check|''hire''| 4 || coffee urn |''for''| 0 |''hours''| 3 |''days''| 0 |''weeks''|  344.00 |
+|check|''hire''| 7 || table      |''for''| 0 |''hours''| 3 |''days''| 0 |''weeks''| 1568.00 |
+
+|transaction|
+|''pay with cash $''|2134.00 |
+
+^UseBusinessForm

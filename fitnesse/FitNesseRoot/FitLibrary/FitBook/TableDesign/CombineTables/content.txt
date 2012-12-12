@@ -1,0 +1,22 @@
+|''create template''|wedding|
+|''add item''|cup|''with multiplier''|1.0|
+|''add item''|table|''with multipler''|0.125|
+ * ''Make a booking off that template:''
+|''begin transaction for client''| Joanna |''staff''| Bob |
+
+|''transaction''|
+|''select template''|wedding|''for''|40|''people on''|2004/06/01 18:00|''for''|0|''weeks''|1|''days''|0|''hours''|
+
+|''complete transaction''|
+ * ''Check the booking has been made''
+|''bookings for''|Joanna|
+|rental item|count|
+|cup|40|
+|table|5|
+
+|''bookings for''|Joanna|
+|rental item|''start date''|''end date''|
+|cup|2004/06/01 18:00|2004/06/02 18:00|
+|table|2004/06/01 18:00|2004/06/02 18:00|
+
+^CombinedTables

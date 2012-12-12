@@ -1,0 +1,83 @@
+!**< define
+!define test (!|fitlibrary.specify.calculate.RuleTableMethodsThrowExceptions|
+|in throws exception|in|out throws exception|out?|reset throws exception|execute throws exception|
+|             false |1 |              false |  1 |                false |                  false |
+|              true |1 |              false |  1 |                false |                  false |
+|             false |1 |               true |  1 |                false |                  false |
+|             false |1 |              false |  1 |                 true |                  false |
+|             false |1 |              false |  1 |                false |                  false |
+|             false |1 |              false |  1 |                false |                   true |
+|             false |1 |              false |  1 |                false |                   true |
+|             false |1 |              false |  1 |                false |                  false |
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="6">fitlibrary.specify.calculate.RuleTableMethodsThrowExceptions</td>
+</tr>
+<tr><td>in throws exception</td>
+<td>in</td>
+<td>out throws exception</td>
+<td>out?</td>
+<td>reset throws exception</td>
+<td>execute throws exception</td>
+</tr>
+<tr><td>false</td>
+<td>1</td>
+<td>false</td>
+<td class="pass">1</td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr><td>true</td>
+<td class="error">1<hr/> <span class="fit_label">in exception</span></td>
+<td>false</td>
+<td>1</td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr><td>false</td>
+<td>1</td>
+<td>true</td>
+<td class="error">1<hr/> <span class="fit_label">out exception</span></td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr><td>false</td>
+<td>1</td>
+<td>false</td>
+<td class="pass">1</td>
+<td>true</td>
+<td>false</td>
+</tr>
+<tr><td class="error">false<hr/> <span class="fit_label">reset exception</span></td>
+<td>1</td>
+<td>false</td>
+<td>1</td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr><td>false</td>
+<td>1</td>
+<td>false</td>
+<td class="pass">1</td>
+<td>false</td>
+<td>true</td>
+</tr>
+<tr><td>false</td>
+<td>1</td>
+<td>false</td>
+<td class="error">1<hr/> <span class="fit_label">execute exception</span></td>
+<td>false</td>
+<td>true</td>
+</tr>
+<tr><td>false</td>
+<td>1</td>
+<td>false</td>
+<td class="pass">1</td>
+<td>false</td>
+<td>false</td>
+</tr>
+</table>-!|

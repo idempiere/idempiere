@@ -1,0 +1,48 @@
+!2 A ''!-SuiteFixture-!'' is used at the start
+ * It doesn't specify any keywords
+ * So all storytests are selected
+|!-fitlibrary.spec.SpecifySuiteFixture-!|
+|!-<table>
+<tr><td>fitlibrary.specify.suite.Simple</td></tr>
+</table>-!|!-<table>
+<tr><td>fitlibrary.specify.suite.Simple</td></tr>
+</table>-!|''Normally in !-SuiteSetUp-!''|
+|!-<table>
+<tr><td><i>keywords</i></td><td>complete,money</td></tr>
+</table>
+<table>
+<tr><td><i>a fixture</i></td></tr>
+<tr><td><i>and some immediate action</i></td></tr>
+</table>
+<table>
+<tr><td><i>and more</i></td></tr>
+</table>
+<table>
+<tr><td><i>and more besides</i></td></tr>
+</table>-!|!-<table>
+<tr><td><i>keywords</i></td><td>complete,money</td></tr>
+</table>
+<table>
+<tr><td><i>a fixture</i></td></tr>
+<tr><td class="pass"><i>and some immediate action</i></td></tr>
+</table>
+<table>
+<tr><td class="pass"><i>and more</i></td></tr>
+</table>
+<table>
+<tr><td class="pass"><i>and more besides</i></td></tr>
+</table>-!|''Test One is selected''|
+|!-<table>
+<tr><td><i>keywords</i></td><td>underway</td></tr>
+</table>
+<table>
+<tr><td><i>a fixture</i></td></tr>
+<tr><td><i>and some immediate action</i></td></tr>
+</table>-!|!-<table>
+<tr><td><i>keywords</i></td><td>underway</td></tr>
+</table>
+<table>
+<tr><td><i>a fixture</i></td></tr>
+<tr><td class="pass"><i>and some immediate action</i></td></tr>
+</table>-!|''Test Two is selected''|
+

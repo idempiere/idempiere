@@ -1,0 +1,30 @@
+!*< def
+!define html {  <textarea id="nothing"></textarea>
+  <textarea id="withNoValue"></textarea>
+  <textarea id="disabled" disabled="true">blue</textarea>
+  <textarea id="withMultiText">yellow
+orange</textarea>
+}
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''with''|//textarea[@id="withNoValue"]|''add text''|RED|
+
+|''text of''|//textarea[@id="withNoValue"]|''is''|RED|
+
+|''with''|//textarea[@id="withNoValue"]|''add text''|mauve|
+
+|''text of''|//textarea[@id="withNoValue"]|''is''|REDmauve|
+
+ * Unable to change a disabled textarea:
+
+|''set checking''|false|
+
+|''with''|//textarea[@id="disabled"]|''add text''|BLUE|
+
+|''text of''|//textarea[@id="disabled"]|''is''|blue|

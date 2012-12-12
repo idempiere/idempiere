@@ -1,0 +1,12 @@
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|100||cup|''for''|2|''weeks''|
+|''pay with cash $''|210.00|
+|''complete transaction''|
+
+|''rentals for client''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|cup|100|2004/05/06 09:01|2004/05/20 09:01|
+
+|''rental item subset''|
+|''name''|''count''|
+|cup|400|

@@ -1,0 +1,15 @@
+!2 An exception is thrown if the empty column is missing.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td>calculate</td></tr>
+<tr><td>unknownField</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td>calculate</td></tr>
+<tr><td class="error">unknownField<hr/> <span class="fit_label">No calculated column</span></td></tr>
+</table>-!|

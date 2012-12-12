@@ -1,0 +1,29 @@
+!3 The object need not be a fixture
+!**< def
+!define test (|add named|x|get|Some text|
+
+|select|x|
+
+|char at|2|is|m|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>add named</td>
+<td>x</td>
+<td>get</td>
+<td>Some text</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>select</td>
+<td>x</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>char at</td>
+<td>2</td>
+<td>is</td>
+<td class="pass">m</td>
+</tr>
+</table>-!|

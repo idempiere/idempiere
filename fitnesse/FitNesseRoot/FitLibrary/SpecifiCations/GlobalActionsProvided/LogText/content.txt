@@ -1,0 +1,11 @@
+!2 '''logged''' logs the result of an action, if any
+#
+|''log text''|Here's a message|
+
+|''define actions at''|.FitLibrary.SpecifiCations.GlobalActionsProvided.LogText.DefinedActions|
+
+|''an act''|A message|
+
+|''set expand defined actions''|true|
+
+|''an act''|A message|

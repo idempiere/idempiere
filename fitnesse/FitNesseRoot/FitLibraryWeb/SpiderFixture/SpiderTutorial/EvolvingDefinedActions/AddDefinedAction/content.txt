@@ -1,0 +1,17 @@
+So we'll introduce a new ''defined action'', called ''check suite at passes'' that takes two arguments, and is used with "!-SpecifySpiderFixture-!" in the last action (table) below..
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.EvolvingDefinedActions.AddDefinedAction.DefinedActions|
+
+|''suite test on port''|${FITNESSE_PORT}|
+
+|''check suite''|!-TemplateFixture-!|''passes''|
+
+|''check suite''|!-XmlProcessing-!|''passes''|
+
+|''check suite''|!-SpecifyRadio-!|''at''|!-SpiderFixture.SpecifySpiderFixture.SpiderWithHtmlUnit.SpecifiCations.-!|''passes''|
+
+That all works. But if we look at the second and third ''defined action'', they look rather similar.
+
+So we have repetition in the ''defined actions'' themselves. How do we manage that?
+
+By removing the repetition, as shown [[on this page][RemoveRepetition]].

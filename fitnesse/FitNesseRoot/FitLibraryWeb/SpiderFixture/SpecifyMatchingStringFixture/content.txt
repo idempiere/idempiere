@@ -1,0 +1,9 @@
+This provides pattern matching for a sequence of lines
+
+^SpecifyNone
+^SpecifyMatch
+^SpecifyMismatch
+^SpecifyMissingActual
+^SpecifyExtraActual
+^SpecifyExtraCells
+^SetUp

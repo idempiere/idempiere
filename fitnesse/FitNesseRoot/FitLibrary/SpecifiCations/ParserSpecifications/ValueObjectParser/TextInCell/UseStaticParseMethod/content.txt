@@ -1,0 +1,28 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.ClassWithParseMethod2</td></tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>show</td><td colspan="5">my class</td></tr>
+<tr><td>check</td><td>my class</td><td colspan="4">i 3</td></tr>
+<tr><td>check</td><td>same my class</td><td>i 4</td><td colspan="3">i 4</td></tr>
+<tr><td>check</td><td>my class</td><td>i 3</td><td>+</td><td>i 1</td><td>i 4</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.ClassWithParseMethod2</td></tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>show</td><td colspan="5">my class</td>
+<td bgcolor=#C0C0FF>i 3</td></tr>
+<tr><td>check</td><td>my class</td><td colspan="4" class="pass">i 3</td></tr>
+<tr><td>check</td><td>same my class</td><td>i 4</td><td colspan="3" class="pass">i 4</td></tr>
+<tr><td>check</td><td>my class</td><td>i 3</td><td>+</td><td>i 1</td><td class="pass">i 4</td></tr>
+</table>-!|
+
+The ''static parse()'' method of a class is used if a object of that type needs a ''!-TypeAdapter-!''
+
+In this example, the method ''myClass()'' returns an object of class ''!-MyClass-!''. This has the following methods, which are all needed for parsing to work:
+ * ''public static parse(String s)'' is used to parse a String from a Fit table cell. It  needs to return an object (not a primitive value or ''void'').
+ * ''public String toString()'' is used to unparse an Object, to display the actual result in a reported cell.
+ * ''public boolean equals(Object object)'' is used to compare an expected and an actual value to see if they're the same.
+
+This capability is provided for all fixtures in the ''!-FitNesse-!'' version of Fit.

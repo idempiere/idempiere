@@ -1,0 +1,6 @@
+!2 The tables doesn't need to do anything
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td>fit.ActionFixture</td></tr></table>-!|!-<table><tr><td>fit.ActionFixture</td></tr></table>-!|
+
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td colspan=2>fit.ActionFixture</td></tr><tr><td>start</td><td>fit.specify.ActionFixtureUnderTest</td></tr></table>-!|!-<table><tr><td colspan=2>fit.ActionFixture</td></tr><tr><td>start</td><td>fit.specify.ActionFixtureUnderTest</td></tr></table>-!|

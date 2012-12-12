@@ -1,0 +1,46 @@
+ * An Entity in a nested table is referenced when there are find/show methods for it in any of the nesting fixtures
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table>
+<tr><td colspan="2">fitlibrary.specify.EntityInNestedArray</td></tr>
+<tr><td><i>id</i></td><td><i>sub</i></td></tr>
+<tr><td>1</td><td><table>
+<tr><td><i>actions</i></td><td><table>
+<tr><td><i>name</i></td><td><i>type</i></td></tr>
+<tr><td>First</td><td>first</td></tr>
+<tr><td>First</td><td>second</td></tr>
+</table></td></tr>
+</table></td></tr>
+</table>-!|!-<table>
+<tr><td colspan="2">fitlibrary.specify.EntityInNestedArray</td></tr>
+<tr><td><i>id</i></td><td><i>sub</i></td></tr>
+<tr><td class="pass">1</td><td><table>
+<tr><td><i>actions</i></td><td><table>
+<tr><td><i>name</i></td><td><i>type</i></td></tr>
+<tr><td class="pass">First</td><td class="pass">first</td></tr>
+<tr><td class="pass">First</td><td class="fail">second <span class="fit_label">expected</span><hr>first <span class="fit_label">actual</span></td></tr>
+</table></td></tr>
+</table></td></tr>
+</table>-!|
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table>
+<tr><td colspan="2">fitlibrary.specify.EntityInNestedArray</td></tr>
+<tr><td><i>id</i></td><td><i>actions</i></td></tr>
+<tr><td class="pass">1</td><td>
+<table>
+<tr><td><i>name</i></td><td><i>type</i></td></tr>
+<tr><td>First</td><td>first</td></tr>
+<tr><td>First</td><td>second</td></tr>
+</table>
+</td></tr>
+</table>-!|!-<table>
+<tr><td colspan="2">fitlibrary.specify.EntityInNestedArray</td></tr>
+<tr><td><i>id</i></td><td><i>actions</i></td></tr>
+<tr><td class="pass" class="pass">1</td><td>
+<table>
+<tr><td><i>name</i></td><td><i>type</i></td></tr>
+<tr><td class="pass">First</td><td class="pass">first</td></tr>
+<tr><td class="pass">First</td><td class="fail">second <span class="fit_label">expected</span><hr>first <span class="fit_label">actual</span></td></tr>
+</table>
+</td></tr>
+</table>-!|

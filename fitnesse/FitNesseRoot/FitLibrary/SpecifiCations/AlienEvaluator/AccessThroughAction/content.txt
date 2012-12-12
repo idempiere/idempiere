@@ -1,0 +1,28 @@
+!3 Handle Fit fixtures as Alien Evaluators
+!**< def
+!define test {!|fit.specify.AlienEvaluator|
+
+|''fixture''|
+|x|x()|
+|43|43|
+|5|5|
+}
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fit.specify.AlienEvaluator</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="2"><i>fixture</i></td>
+</tr>
+<tr><td>x</td>
+<td>x()</td>
+</tr>
+<tr><td>43</td>
+<td class="pass">43</td>
+</tr>
+<tr><td>5</td>
+<td class="pass">5</td>
+</tr>
+</table>-!|

@@ -1,0 +1,55 @@
+[[The web page is here.][files/handlingTables.html]]
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.AjaxTiming.HandlingChanges.DefinedActions|
+
+|''spider on port''|${FITNESSE_PORT}|
+
+|''get url''|http://localhost:@{fitNessePort}/files/handlingTables.html|
+
+!2 3. We can check (or act on) particular rows at a specific place:
+#
+|''with''|//table//tr[2]|''do''|
+|''text of''|//td[1]|''is''|Scala|
+|''text of''|//td[2]|''matches''|Java, H.*|
+|''text of''|//td[3]|''is''|2003|
+
+The first row of the above table matches on a particular element on the page.
+
+ * Subsequent rows of the table are relative to that element.
+ * Most spider actions can be used here (those that relate to specific elements), such as to click a link or change a radio button
+ * This type of table can be used to access into any element with sub-structure, such as a table, list, div, etc.
+
+!2 4. And we can check (or act on) the contents of a row that matches some criteria:
+#
+Often we want to check just one row of a table, and we don'y know or care where it might be in the table.
+
+|''find element from''|//table|''with tag''|tr|''where''|
+|''text contains''|Scala|
+|''show''|
+|''select''|
+|''text of''|//td[1]|''is''|Scala|
+|''text of''|//td[2]|''matches''|Java, H.*|
+|''text of''|//td[3]|''is''|2003|
+|''click''|//td[1]//a|
+
+The first row of the above table matches on a particular row of the table, so we can check or act on cells within that row:
+
+ * The first row select the element that contains the substructure
+ * The second row selects the ''tr'' child that has the given text
+ * The third row displays the contents of that row in the report (this is handy for when things go wrong)
+ * The 4th row specifies that the selection is complete. Subsequent rows check/act within the context of the chosen row
+ * Eg, the 5th row checks that the first cell of the row contains some text
+ * All rows after the ''select'' may use most of the spider actions those that relate to specific elements)
+
+!2 Handling any Structures
+#
+As with the previous example, this type of table can be used to match any sub-element of any structure, such as a table, list, div, etc.
+
+See .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecifyFindElement for further examples. These show the other types of selectors that can be used, such as:
+
+ * An attribute of an element has some value
+ * The text '''matches''' or '''contains''' some text
+
+!2 Next
+#
+For the next part: [[Part6: Handling Windows][<SpiderTutorial.HandlingWindows]]

@@ -1,0 +1,32 @@
+!3 A ${getter} is missing with a ${domainAdapter}
+The ${domainAdapter} can supply a ${getter}.
+
+!**< def
+!define colour (|''name''|red|
+)
+!define test (!|fitlibrary.specify.missingProperty.InDomainAdapter|
+
+|'''checks'''|
+
+|''colour''|${colour}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.missingProperty.InDomainAdapter</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>checks</b></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>colour</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td class="error"><i>name</i><hr/> <span class="fit_label">Missing method, possibly: <ul><li>public Type getName() { }</li></ul><hr/>In:<ul><li>fitlibrary.specify.missingProperty.InJustSut.Colour</li><li>fitlibrary.specify.missingProperty.InDomainAdapter</li><li>fitlibrary.specify.missingProperty.InJustSut</li></ul></span></td>
+<td>red</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

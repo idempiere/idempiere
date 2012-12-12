@@ -1,0 +1,1 @@
+A ${doFixture} is in ''flow'' when it is the fixture referenced in the first table. Instead of interpreting just that table, as is usual with Fit, it interprets (at least some rows of) all of the tables in the storytest.

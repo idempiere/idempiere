@@ -1,0 +1,9 @@
+|''mock plain text on port''|8081|
+|''matches request''|in|
+|''response''|out|
+
+|''to''|http://localhost:8081/ws|''post text''|in|'''is'''|out|
+
+|'''reject'''|''to''|http://localhost:8081/ws|''post text''|in two|
+
+|''close with errors''|>=|1|

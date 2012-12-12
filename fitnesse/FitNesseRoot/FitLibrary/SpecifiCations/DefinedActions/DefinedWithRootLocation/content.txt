@@ -1,0 +1,7 @@
+!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActions.OneDefinedAction|''from''|!-./FitNesseRoot-!|
+
+|''login''|rick|''with''||

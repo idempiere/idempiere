@@ -1,0 +1,35 @@
+[[The web page is here][files/delaysWithAjax.html]]
+
+Let's run this to see what happens. The explanation is embedded below:
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.AjaxTiming.HandlingChanges.DefinedActions|
+
+|''ajax on port''|${FITNESSE_PORT}|
+
+|''get url''|http://localhost:@{fitNessePort}/files/delaysWithAjax.html|
+
+|''checking timeout''|100|
+
+|''click''|addText|
+
+|''text of''|text0|'''is'''|green0|
+
+The above table fails, because spider only waits for 100 milliseconds for an HTML element to appear.
+
+In the following, we try again, but first change spider's ''checking timeout'' to be 2 seconds. So after that, spider will wait up to 6 seconds for it to appear.
+
+|''checking timeout''|2000|
+
+|''get url''|http://localhost:@{fitNessePort}/files/delaysWithAjax.html|
+
+|''click''|addText|
+
+|''text of''|text0|'''is'''|green0|
+
+Yes, so that worked fine. Similar to ''!-FitLibrary's-!'' ''becomes'' timeout:
+
+ * Spider waits until the element appears or until the timeout period has elapsed.
+ * So the test will run as quickly as possible when they pass.
+ * However, if an element fails to appear, the whole timeout period will be used.
+
+So let's extend the storytest to check the addition of several elements, [[on this page][^SeveralAdditions]]

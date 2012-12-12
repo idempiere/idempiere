@@ -1,0 +1,11 @@
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <SpecifyIframes.SpecSetUp
+#
+!3 It's possible to select a frame or iframe by id
+#
+|''frame by name''|redId|
+
+|'''not'''|''element''|//div[@id='d1']|''exists''|
+|'''not'''|''element''|//div[@id='dg']|''exists''|
+|''text of''|//div[@id='dr']|'''is'''|reddening|

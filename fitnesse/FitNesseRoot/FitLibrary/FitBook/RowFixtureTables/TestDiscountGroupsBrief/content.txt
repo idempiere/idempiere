@@ -1,0 +1,7 @@
+|!-DiscountGroupArrayList-!|
+|''discount percent''|''future value''|
+|0|low|
+|3|low|
+|3|medium|
+|5|medium|
+|10|high|

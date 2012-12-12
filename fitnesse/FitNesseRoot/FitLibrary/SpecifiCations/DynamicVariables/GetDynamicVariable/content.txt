@@ -1,0 +1,11 @@
+!|fitlibrary.DoFixture|
+
+|'''set'''|prop|''to''|Value|
+|'''set'''|colour|''to''|red|
+|'''set'''|both|''to''|@{prop}/@{colour}|
+
+|show|''get''|@{prop} @{colour}|
+|show|''get''|@{both}|
+
+|''get''|@{prop} @{colour}|'''is'''| Value red |
+

@@ -1,0 +1,36 @@
+!*< xml
+!define xml ({{{<a>
+  A
+</a>}}})
+!define xml2 ({{{<a>
+ A
+</a>}}})
+*!
+|''with xml''|
+
+ * If name spaces are used in ''same as'', they need to be declared first:
+
+ * Unnamed name space:
+
+|name space||
+
+|''xml''|<a xmlns="urn:f">A</a>|''same as''|<a xmlns="urn:f">A</a>|
+
+|name space|soap|
+
+|''xml''|<soap:Envelope xmlns:soap="urn:f"><soap:Body stuff="a"><request b="b" a="a">in</request></soap:Body></soap:Envelope>|''same as''|<soap:Envelope xmlns:soap="urn:f"><soap:Body stuff="a"><request a="a" b="b">in</request></soap:Body></soap:Envelope>|
+
+
+|''xml''|<soap:Envelope xmlns:soap="urn:f"><soap:Body stuff="a"><request a="a" b="b">A</request></soap:Body></soap:Envelope>|''same as''|<soap:Envelope xmlns:soap="urn:f"><soap:Body stuff="a"><request b="b" a="a">A</request></soap:Body></soap:Envelope>|
+
+|name space|f|
+
+|''xml''|<f:a xmlns:f="urn:f">A</f:a>|''same as''|<f:a xmlns:f="urn:f">A</f:a>|
+
+ * Failing examples:
+
+|'''not'''|''xml''|<a><b>1</b><c>2</c></a>|''same as''|<a><c>2</c><b>1</b></a>|
+
+|'''not'''|''xml''|<a>A</a>|''same as''|<a>B</a>|
+|'''not'''|''xml''|<a>A</a>|''same as''|<m>A</m>|
+|'''not'''|''xml''|<a id="1">A</a>|''same as''|<a id="2">A</a>|

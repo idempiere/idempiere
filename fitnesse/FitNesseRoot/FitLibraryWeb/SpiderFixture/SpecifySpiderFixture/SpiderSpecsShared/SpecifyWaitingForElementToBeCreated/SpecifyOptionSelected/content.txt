@@ -1,0 +1,26 @@
+!*< def
+!define to {setTimeout('addInput()', 50)}
+!define fn {function addInput()}
+!define body {  document.getElementById("22").innerHTML += "<option id ='blue'>Blue</option>";}
+!define html [{{{<script type="text/javascript">
+function addInput(){
+   document.getElementById("22").innerHTML += "<option id ='blue'>Blue</option>";
+}
+</script>
+<input type="button" id="ok" value="OK"
+onclick="javascript:setTimeout('addInput()', 50)"/>
+
+<select id='22'></select>}}}]
+*!
+
+|''keywords''|chrome,firefox|
+
+!2 Not supported in IE
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''click''|ok|
+
+|''with''|22|''select option''|Blue|

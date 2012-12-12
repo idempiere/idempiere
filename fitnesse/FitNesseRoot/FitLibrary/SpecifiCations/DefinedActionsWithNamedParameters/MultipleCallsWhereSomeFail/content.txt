@@ -1,0 +1,49 @@
+!**< def
+!define test (!|fitlibrary.DoFixture|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefineFails|
+
+|''do this now''|
+|''name''|''full address''|
+|adam|paradise|
+|eve|paradise|
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.DoFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>clear defined actions</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>define actions at</i></td>
+<td><a href="FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefineFails">.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefineFails</a></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="2"><i>do this now</i></td>
+</tr>
+<tr class="pass"><td><i>name</i></td>
+<td><i>full address</i></td>
+</tr>
+<tr class="pass"><td>adam</td>
+<td>paradise</td>
+</tr>
+<tr><td class="fail">eve</td>
+<td class="fail">paradise</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefineFails'>.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefineFails</a>:</span><table border="1" cellspacing="0">
+<tr><td>get</td><td>eve</td><td>is</td><td class="fail">adam <span class="fit_label">expected</span><hr>eve <span class="fit_label">actual</span></td></tr>
+</table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td>get</td><td>paradise</td><td>is</td><td class="pass">paradise</td></tr>
+</table>
+<br/></html></td></tr>
+</table>-!|

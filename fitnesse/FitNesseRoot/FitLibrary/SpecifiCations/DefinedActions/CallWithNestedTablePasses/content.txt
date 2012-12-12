@@ -1,0 +1,15 @@
+!**< def
+!define body (|''nested''|nest|
+
+|''birds''|@{nest}|
+)
+!define nest (
+|a|1|
+)
+*!
+!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|define action|
+|${body}|
+
+|''nested''|${nest}|

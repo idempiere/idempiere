@@ -1,0 +1,12 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="4">fitlibrary.CommentFixture</td></tr>
+<tr><td>any old</td><td colspan="3">stuff</td></tr>
+<tr><td>is</td><td>completely</td><td colspan="2">ignored</td></tr>
+<tr><td>and</td><td>not even</td><td>coloured as</td><td>ignored</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="4">fitlibrary.CommentFixture</td></tr>
+<tr><td>any old</td><td colspan="3">stuff</td></tr>
+<tr><td>is</td><td>completely</td><td colspan="2">ignored</td></tr>
+<tr><td>and</td><td>not even</td><td>coloured as</td><td>ignored</td></tr>
+</table>-!|

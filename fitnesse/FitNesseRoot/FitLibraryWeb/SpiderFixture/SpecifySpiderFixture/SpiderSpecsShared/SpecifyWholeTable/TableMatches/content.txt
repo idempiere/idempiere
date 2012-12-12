@@ -1,0 +1,7 @@
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <SpecifyWholeTable.SpecSetUp
+
+|''table values''|//table|
+|red|green|
+|yellow|blue|

@@ -1,0 +1,22 @@
+This runs a proxy server on local port 5555 when you run it as a '''Test'''.
+
+It closes down after the given period in seconds.
+
+!|fitlibrary.server.ProxyServerFixture|
+
+|''with fixturing logger''|
+|''level''|ALL|
+
+|''start proxy server on port''|5555|
+
+|''stop proxy server after''|60|''seconds''|
+
+Once it stops running, you can run it again (as with the file server).
+
+ * If you run it too soon, it will give an error because the port is already busy.
+
+ * That can happen if you press the back button soon after hitting '''Test''' and press '''Test''' again; the test is still running in the background.
+#
+!3 Warning
+#
+This proxy server has limited capability, and is only intended for testing purposes.

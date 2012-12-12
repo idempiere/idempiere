@@ -1,0 +1,8 @@
+!2 A row that's too long leads to an exception.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td colspan=4>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>a</td><td>b</td><td colspan=2>plus()</td></tr>
+<tr><td>1</td><td>12</td><td>13</td><td>14</td></tr></table>-!|
+|!-<table><tr><td colspan=4>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>a</td><td>b</td><td colspan=2>plus()</td></tr>
+<tr><td>1</td><td>12</td><td class="pass">13</td><td class="error">14<hr><pre><div class="fit_stacktrace"></div></pre></td></tr></table>-!|

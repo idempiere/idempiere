@@ -1,0 +1,13 @@
+!***< def
+!define t (|''colour''|red|
+)
+!define gen (|''t''|${t}|
+)
+**!
+!|fitlibraryGeneric.specify.object.GenericObjectContainsGeneric|
+
+|''gen''|${gen}|
+
+|''checks''|
+
+|''gen''|${gen}|

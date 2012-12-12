@@ -1,0 +1,25 @@
+!**< def
+!define group {(.*)}
+!define test (|''harvest''|match, stick|''using pattern''|pre${group}|''from''|preMatch,Stickpost|
+
+|''get''|@{match}-@{stick}|'''is'''|@{match}-@{stick}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|
+|!-<table border="1" cellspacing="0">
+<tr><td class="error"><i>harvest</i><hr/> <span class="fit_label">Expected 2 bracketed groups, but there is only 1</span></td>
+<td>match, stick</td>
+<td><i>using pattern</i></td>
+<td>pre(.*)</td>
+<td><i>from</i></td>
+<td>preMatch,Stickpost</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>@{match}-@{stick}</td>
+<td><b>is</b></td>
+<td class="pass">@{match}-@{stick}</td>
+</tr>
+</table>-!|

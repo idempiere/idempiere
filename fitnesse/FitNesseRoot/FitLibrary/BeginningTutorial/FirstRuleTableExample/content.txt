@@ -1,0 +1,30 @@
+!3 Rule Table for Discounts
+#
+A rule table is a way of defining, and testing, a business rule by providing several examples.
+
+In our first example, the discount is determined from a price (From ${fitBook}, p13):
+
+|''A 5% discount is provided whenever the total purchase is greater than $1,000''|
+|''given amount''|''expected discount?''|
+|0.00|0.00|
+|999.95|0.00|
+|1000.00|0.00|
+|1010.00|50.50|
+
+The table format:
+
+ * The first row of the table above describes the business rule. This row is called the "header".
+
+ * The second row names the input and result columns. Here there is one input ("''given amount''") and one result ("''expected discount?''").
+
+ * The subsequent rows are examples. For example, when the ''given amount'' is 1010.00, the ''expected discount'' is 50.50.
+
+ * The input column is to the left of the results column. Results are distinguished with a ''?'' at the end of the name.
+
+!3 Code
+#
+Here's the [[code for this example][^CodeForDiscount]]
+
+!3 Next
+#
+SecondRuleTableExample

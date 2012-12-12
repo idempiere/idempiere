@@ -1,0 +1,7 @@
+|''match''|one|
+|one|two|
+
+|''match''|one\ntwo|
+|one|two|
+
+|''expected test results''|0|''right''|0|''wrong''|0|''ignored''|2|''exceptions''|

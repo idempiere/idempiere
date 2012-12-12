@@ -1,0 +1,19 @@
+!*< xml
+!define xml (<city><street>
+<house>manor</house>
+</street></city>
+)
+!define xsl (<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:output method="xml" version="1.0" encoding="UTF-8"/>
+
+<xsl:template match="street">
+  <xsl:param name="whatHouse"><xsl:value-of select="."/></xsl:param>
+  <xsl:element name="{$whatHouse}"/>
+</xsl:template>
+
+</xsl:stylesheet>
+)
+*!
+|''with xml''|
+
+|''transform''|${xml}|''with''|${xsl}|'''is'''|<manor/>|

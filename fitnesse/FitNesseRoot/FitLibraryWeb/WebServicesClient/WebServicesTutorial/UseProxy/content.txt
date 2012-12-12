@@ -1,0 +1,51 @@
+!1 2. Proxy Server
+#
+In many organisations, it's necessary to access external web sites through a proxy.
+
+ * Then the proxy will be configured in your browser.
+ * If it's an authenticating proxy, you may have to log in.
+
+If you're testing, and need to go through a proxy, the ''web services client'' can be configured to use a specified proxy.
+
+ * In this example, we configure it to use a local proxy on port 5555.
+ * In your tests, you'd configure it to your own proxy.
+#
+!3 3. Running a local proxy server
+#
+We first need to run a proxy server for it to talk to: open [[this page][.FitLibraryWeb.HttpClient.HttpClientTutorial.RunProxy]] in (yet) another browser window.
+
+Both the proxy server and the web service server need to be running for this storytest to pass.
+
+ * If the proxy server is not running, a "''Connection to http://localhost:5555 refused''" error is given.
+ * If the proxy server is running, but the file server is not, a "''The target server failed to respond''" error will be given (by the proxy server).
+
+Run the web service server on [[this page][RunWebServiceServer]].
+#
+!3 4. An example
+#
+|''with web services client''|
+
+ * Turn on logging of the underlying fixtures:
+
+|''with fixturing logger''|
+|''level''|ALL|
+
+ * Specify the proxy to use:
+
+|''proxy url''|localhost|''with port''|5555|
+
+|''to''|http://localhost:8093/ws|''post soap11''|<Count>100</Count>|
+
+|'''show'''|''headers''|
+
+|'''show'''|''reply''|
+
+|'''show escaped'''|''reply''|
+
+|reply|contains|101|
+
+|''xpath''|!-//CountResult-!|''in response''|'''is'''|101|
+#
+----!3 5. Next
+#
+Finally, [[on this page][OtherCalls]], we look at other ways to call web services.

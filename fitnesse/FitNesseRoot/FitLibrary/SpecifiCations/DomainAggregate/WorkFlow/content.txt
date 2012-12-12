@@ -1,0 +1,29 @@
+|!-fitlibrary.specify.AggregateDoFixture-!|
+!**< def
+!define vector1 (|''x''|10|
+|''y''|20|
+)
+!define vector2 (|''x''|1|
+|''y''|2|
+)
+!define vector3 (|''x''|11|
+|''y''|22|
+)
+!define vectors1 (|''x''|''y''|
+|1|2|
+|10|20|
+)
+!define vectors2 (|''x''|''y''|
+|11|22|
+|20|40|
+)
+
+**!
+|check|''sum''|${vector1}|''and''|${vector2}|''gives''|${vector3}|
+
+|check|''set''|${vector1}|''and''|${vector2}|''gives''|${vectors1}|
+
+|check|''add''|${vectors1}|''and''|${vector1}|''gives''|${vectors2}|
+
+|''expected test results''|10|''right''|0|''wrong''|0|''ignored''|0|''exceptions''|
+

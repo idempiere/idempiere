@@ -1,0 +1,8 @@
+|''begin admin transaction''| Bill |
+|''add''|2|''of type''|party tent|''costing''|20.00|''/hour''|100.00|''/day''|500.00|''/week''|200.00|''bond''|
+|'''reject'''|''add''|2|''of type''|party tent|''costing''|20.00|''/hour''|100.00|''/day''|500.00|''/week''|200.00|''bond''|
+|''complete transaction''|
+
+|''rental item list''|
+| ''name''   | ''free count'' |''hourly rate''|''daily rate''|''weekly rate''|''bond'' |
+| party tent | 2         | 20.00         | 100.00       | 500.00        | 200.00  |

@@ -1,0 +1,17 @@
+Fit version 2003-9-15
+^UsualOperation
+^SameActor
+^SwitchActor
+^SelfStarter
+!3 Unusual conditions and error handling
+^NoStart
+^StartNotFixture
+^ActionExceptions
+^ActionsExistWithRightType
+^PressCanBeVoid
+^EmptyTable
+^StartMustExist
+^MissingCellsInRows
+^ExtraCellsInRows
+>BooleanEquals
+

@@ -1,0 +1,6 @@
+This ${traverse} checks a given ''Map'' against a table.
+!3 Examples
+ * .FitLibrary.UserGuide.FitLibraryByExample.MapHandling
+ * .FitLibrary.SpecifiCations.CollectionSpecifications.MapTraverse
+A ${setTraverse} can also check a ''Map'', if it's explicitly passed one. See:
+ * .FitLibrary.SpecifiCations.CollectionSpecifications.SetTraverse.TestMap

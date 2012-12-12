@@ -1,0 +1,11 @@
+!3 ''Rentez Dollar (point) is awarded correctly''
+ * ''Rentez Dollar (point) is awarded for transaction more than $100.00''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|5||coffee dispenser|''for''|3 days|
+|''rent''|2||hot water dispenser|''for''|3 days|
+|''drop rent''|2||hot water dispenser|''for''|3 days|
+|''pay with cash $''|123.00|
+|''complete transaction''|
+
+ * ''The point balance for a client changes''
+|'''check'''|point balance for client|Joanna|1.15|

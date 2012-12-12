@@ -1,0 +1,33 @@
+ * The order of the OR transactions is irrelevant
+
+|''mock ${soap} on port''|8081|
+|''matches URL''|/service2|
+|''matches request''|<request a="a" b="b">in</request>|
+|''response''|<response>out</response>|
+
+|''mock ${soap} on port''|8081|
+|''matches URL''|/service2|
+|''matches request''|<request a="1" b="2">in</request>|
+|''response''|<response>out2</response>|
+
+|''to''|http://localhost:8081/service2|''post ${soap}''|<request b="b" a="a">in</request>|'''is'''|<response>out</response>|
+
+|''to''|http://localhost:8081/service2|''post ${soap}''|<request b="2" a="1">in</request>|'''is'''|<response>out2</response>|
+
+ * Now use them in reverse order
+
+|''mock ${soap} on port''|8082|
+|''matches URL''|/service2|
+|''matches request''|<request a="a" b="b">in</request>|
+|''response''|<response>out</response>|
+
+|''mock ${soap} on port''|8082|
+|''matches URL''|/service2|
+|''matches request''|<request a="1" b="2">in</request>|
+|''response''|<response>out2</response>|
+
+|''to''|http://localhost:8082/service2|''post ${soap}''|<request b="2" a="1">in</request>|'''is'''|<response>out2</response>|
+
+|''to''|http://localhost:8082/service2|''post ${soap}''|<request b="b" a="a">in</request>|'''is'''|<response>out</response>|
+
+|''close''|

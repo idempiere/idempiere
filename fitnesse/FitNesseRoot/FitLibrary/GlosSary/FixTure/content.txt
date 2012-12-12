@@ -1,0 +1,5 @@
+A ${fixture} is a class in ${fit} that is responsible for interpreting a table. For example, a ''!-RowFixture-!'' checks that the elements of a collection match the given values in the table.
+
+While ${fitLibrary} continues to support ${fixture}s, it:
+ * Uses a similar class, a ${traverse}
+ * Doesn't require that you subclass a ${fitLibrary} ${fixture} or ${traverse}, instead using ${domainAdapter}s.

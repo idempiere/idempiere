@@ -1,0 +1,12 @@
+${programmers}
+A ParseDelegate is responsible for parsing a String into a value object for a particular ''object value'' class. The details for Java are as follows.
+ * The ParseDelegate is registered as a delegate for a particular class.
+ * Call the method {{{LookupParser.registerParseDelegate()}}}. Eg:
+  * {{{LookupParser.registerParseDelegate(FixedPoint.class, FixedPointDelegate.class);}}}
+ * The first argument is the ''value object'' class concerned
+ * The second argument is either:
+  * A class, in which case it has a method ''public static Object parse(String s)''; or
+  * An object, in which case it has a method ''public Object parse(String s)'';
+A ${parseDelegate} may be specified for any type, and so will be override the provided ${parser} for that type for the duration of the storytest concerned.
+
+For example, see .FitLibrary.SpecifiCations.ParserSpecifications.ValueObjectParser.TextInCell.DelegateParseString

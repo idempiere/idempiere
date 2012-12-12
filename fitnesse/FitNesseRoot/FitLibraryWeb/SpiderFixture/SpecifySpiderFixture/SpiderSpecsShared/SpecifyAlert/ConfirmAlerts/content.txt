@@ -1,0 +1,51 @@
+!*< def
+!define html [{{{<head>
+<title>Confirmation</title>
+<script type="text/javascript">
+function show_alert()
+{
+  var r=confirm("Press a button");
+  var div = document.getElementById("response");
+  if (r==true)
+  {
+    div.appendChild(document.createTextNode("OK"));
+  }
+  else
+  {
+    div.firstChild.data = "Cancel";
+  }
+}
+</script>
+</head>
+<body>
+<div id='response'></div>
+<input type="button" id="popalert" onclick="show_alert()" value="alert" />
+</body>
+}}}]
+*!
+
+
+|''keywords''|firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''click''|popalert|
+
+|alert message|is|Press a button|
+
+'''Use accept to click OK'''
+
+|accept alert|
+
+|text of|response|becomes|OK|
+
+'''Use dismiss to Cancel'''
+
+|''click''|popalert|
+
+|dismiss alert|
+
+|text of|response|becomes|Cancel|
+

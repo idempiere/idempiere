@@ -1,0 +1,61 @@
+!**< def
+!define test (
+!|fitlibrary.specify.workflow.SetUpTearDownNotCalledOnSut|
+----
+|check|setUps|0|
+|check|tearDowns|0|
+
+|something|
+
+|check|setUps|0|
+|check|tearDowns|0|
+
+|pass sut on|
+
+|check|setUps|0|
+|check|tearDowns|0|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.SetUpTearDownNotCalledOnSut</td>
+</tr>
+</table>
+<hr><br><br><table border="1" cellspacing="0">
+<tr><td>check</td>
+<td>setUps</td>
+<td class="pass">0</td>
+</tr>
+<tr><td>check</td>
+<td>tearDowns</td>
+<td class="pass">0</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>something</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>check</td>
+<td>setUps</td>
+<td class="pass">0</td>
+</tr>
+<tr><td>check</td>
+<td>tearDowns</td>
+<td class="pass">0</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>pass sut on</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>check</td>
+<td>setUps</td>
+<td class="pass">0</td>
+</tr>
+<tr><td>check</td>
+<td>tearDowns</td>
+<td class="pass">0</td>
+</tr>
+</table>-!|

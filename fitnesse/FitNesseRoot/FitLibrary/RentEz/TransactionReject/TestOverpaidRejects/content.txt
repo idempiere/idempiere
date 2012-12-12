@@ -1,0 +1,7 @@
+!3 ''Transactions actions that fail, as too much paid''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|2||coffee dispenser|''for''|3 days|
+|''pay with cash $''|149.20|
+|'''not'''|''complete transaction''|
+|''refund cash $''|100.00|
+|''complete transaction''|

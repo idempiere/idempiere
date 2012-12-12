@@ -1,0 +1,9 @@
+|''create soap file''|test1.xml|''with''|<response>out</response>|
+
+|''mock ${soap} on port''|8081|
+|''matches request''|<request a="a" b="b">in</request>|
+|''response from file''|!-FitNesseRoot/files/soap/test1.xml-!|
+
+|''to''|http://localhost:8081/service|''post ${soap}''|<request b="b" a="a">in</request>|'''is'''|<response>out</response>|
+
+|''close''|

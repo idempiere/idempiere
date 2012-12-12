@@ -1,0 +1,16 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.GridFixtureUnderTest</td></tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="2">ints</td></tr>
+<tr><td>1</td><td>2</td></tr>
+<tr><td>3</td><td>4</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.GridFixtureUnderTest</td></tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="2">ints</td></tr>
+<tr><td class="pass">1</td><td class="pass">2</td></tr>
+<tr><td class="pass">3</td><td class="pass">4</td></tr>
+</table>-!|

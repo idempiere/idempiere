@@ -1,0 +1,48 @@
+ * Wrap the current object with a ''!-ConstraintTraverse-!'', which is applied to the rest of the table.
+ * With "'''constraint'''", the examples are expected to succeed (the method returns true).
+ * With "'''failing constraint'''", the examples are expected to fail (the method returns false).
+!**< def
+!define test (!|fitlibrary.specify.workflow.SelectWrap|
+
+|'''constraint'''|
+|''a <''|''b''|
+|1|2|
+|-100|200|
+
+|'''failing constraint'''|
+|''a <''|''b''|
+|10|2|
+|1000|200|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.SelectWrap</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="2"><b>constraint</b></td>
+</tr>
+<tr><td><i>a &lt;</i></td>
+<td><i>b</i></td>
+</tr>
+<tr class="pass"><td>1</td>
+<td>2</td>
+</tr>
+<tr class="pass"><td>-100</td>
+<td>200</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="2"><b>failing constraint</b></td>
+</tr>
+<tr><td><i>a &lt;</i></td>
+<td><i>b</i></td>
+</tr>
+<tr class="pass"><td>10</td>
+<td>2</td>
+</tr>
+<tr class="pass"><td>1000</td>
+<td>200</td>
+</tr>
+</table>-!|

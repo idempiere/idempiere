@@ -1,0 +1,65 @@
+!**< def
+!define test (!|fitlibrary.DoFixture|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.WithDynamics|
+
+|'''set'''|name|''to''|23|
+|'''set'''|global|''to''|24|
+
+|''global setter''|
+|''name''|''full address''|
+|adam|paradise|
+|eve|paradise|
+
+|'''get'''|@{name}|'''is'''|23|
+|'''get'''|@{global}|'''is'''|eve|
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.DoFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>define actions at</i></td>
+<td><a href="FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.WithDynamics">.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.WithDynamics</a></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>name</td>
+<td><i>to</i></td>
+<td>23</td>
+</tr>
+<tr><td><b>set</b></td>
+<td>global</td>
+<td><i>to</i></td>
+<td>24</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="2"><i>global setter</i></td>
+</tr>
+<tr class="pass"><td><i>name</i></td>
+<td><i>full address</i></td>
+</tr>
+<tr class="pass"><td>adam</td>
+<td>paradise</td>
+</tr>
+<tr class="pass"><td>eve</td>
+<td>paradise</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>get</b></td>
+<td>23</td>
+<td><b>is</b></td>
+<td class="pass">23</td>
+</tr>
+<tr><td><b>get</b></td>
+<td>eve</td>
+<td><b>is</b></td>
+<td class="pass">eve</td>
+</tr>
+</table>-!|

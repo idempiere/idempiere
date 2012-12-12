@@ -1,0 +1,23 @@
+ * Setup template
+|''create template''|coffee break|
+|''one''|coffee dispenser|''for''|20|''people''|
+|''one''|hot water dispenser|''for''|20|''people''|
+|''one''|coffee table|''for''|40|''people''|
+|''one''|cup|''for''|1|''people''|
+
+ * Begin transaction for client
+|''begin transaction for client''|Joanna|''staff''|Bill|
+|'''check'''|''fill book template''|coffee break|''for''|20|''people on''|2004/05/08 09:01|''for''|2 hours|28.00|
+|''pay with cash $''|28.00|
+|''complete transaction''|
+
+ * ''Checks''
+|''rentals of client''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+
+|''client booking list''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee dispenser|1|2004/05/08 09:01|2004/05/08 11:01|
+|hot water dispenser|1|2004/05/08 09:01|2004/05/08 11:01|
+|coffee table|1|2004/05/08 09:01|2004/05/08 11:01|
+|cup|20|2004/05/08 09:01|2004/05/08 11:01|

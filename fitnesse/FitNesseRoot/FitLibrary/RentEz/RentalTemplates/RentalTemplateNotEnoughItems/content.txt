@@ -1,0 +1,16 @@
+!2 Not enough cups
+ * Setup template with less than one item
+|''create template''|coffee break|
+|''one''|coffee dispenser|''for''|20|''people''|
+|''one''|hot water dispenser|''for''|20|''people''|
+|''one''|coffee table|''for''|40|''people''|
+|''one''|cup|''for''|1|''people''|
+
+ * Begin transaction for client
+|''begin transaction for client''|Joanna|''staff''|Bill|
+|'''not'''|''fill template''|coffee break|''for''|501|''people for''|1 day|
+|''complete transaction''|
+
+ * ''Checks''
+|''rentals of client''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|

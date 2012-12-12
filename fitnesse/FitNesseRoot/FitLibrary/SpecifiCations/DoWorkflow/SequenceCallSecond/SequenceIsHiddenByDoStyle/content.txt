@@ -1,0 +1,9 @@
+!|fitlibrary.DoFixture|
+
+|start|!-fitlibrary.specify.workflow.DoSeqAmbiguity-!|
+
+|add|1|to|2|is|3|
+
+|add|1|9|2|is|12|
+
+|check|add|1|9|2|12|

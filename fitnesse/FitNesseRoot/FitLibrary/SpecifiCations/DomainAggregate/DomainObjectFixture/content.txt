@@ -1,0 +1,34 @@
+|!-fitlibrary.specify.AggregateDomainObject-!|
+!**< def
+!define phones (|''phone''|
+|411|
+|549|
+)
+!define address1 (|''address1''|Auckland|
+|''address2''|NZ|
+)
+!define address2 (|''address1''|Portland|
+|''address2''|USA|
+)
+!define authors (|''name''|''phones''|''address''|
+|Rick|${phones}|${address1}|
+|Ward||${address2}|
+)
+!define attributes (|''name''|''value''|
+|''title''|Fit For Developing Software|
+|''date''|2005|
+)
+!define publisher (|''name''|Prentice Hall|
+)
+**!
+|''create book''|
+|''attributes''|${attributes}|
+|''authors''|${authors}|
+|''publisher''|${publisher}|
+
+|''check book''|
+|''attributes''|${attributes}|
+|''authors''|${authors}|
+|''publisher''|${publisher}|
+
+|''expected test results''|14|''right''|0|''wrong''|0|''ignored''|0|''exceptions''|

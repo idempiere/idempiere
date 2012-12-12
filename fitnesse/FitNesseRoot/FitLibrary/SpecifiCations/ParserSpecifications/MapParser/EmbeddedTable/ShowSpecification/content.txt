@@ -1,0 +1,63 @@
+!3 If a nested table is used, difference are shown in the table. Otherwise, a comma-separated list is used.
+!**< def
+!define list (|1|4|
+|2|3|
+|4|5|
+)
+!define test (!|fitlibrary.specify.mapParser.Match|
+
+|''map of 123''|'''is'''|${list}|
+
+|''map of 123''|'''is'''||
+
+|''map empty''|'''is'''|${list}|
+)
+**!
+The Parser uses the key and value types of one of the elements of the Map to parse them all
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.mapParser.Match</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>map of 123</i></td>
+<td><b>is</b></td>
+<td><table border="1" cellspacing="0">
+<tr><td>1</td>
+<td class="fail">4 <span class="fit_label">expected</span><hr>2 <span class="fit_label">actual</span></td>
+</tr>
+<tr class="pass"><td>2</td>
+<td>3</td>
+</tr>
+<tr><td class="fail">4 <span class="fit_label">missing</span></td>
+<td>5</td>
+</tr>
+<tr>
+<td class="fail">3 <span class="fit_label">surplus</span></td>
+<td>4</td></tr></table>
+</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>map of 123</i></td>
+<td><b>is</b></td>
+<td class="fail"> <span class="fit_label">expected</span><hr>1->2, 2->3, 3->4 <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>map empty</i></td>
+<td><b>is</b></td>
+<td><table border="1" cellspacing="0">
+<tr><td class="fail">1 <span class="fit_label">missing</span></td>
+<td>4</td>
+</tr>
+<tr><td class="fail">2 <span class="fit_label">missing</span></td>
+<td>3</td>
+</tr>
+<tr><td class="fail">4 <span class="fit_label">missing</span></td>
+<td>5</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

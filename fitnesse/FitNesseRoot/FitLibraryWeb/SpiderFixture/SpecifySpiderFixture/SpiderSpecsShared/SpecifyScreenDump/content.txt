@@ -1,0 +1,26 @@
+!*< def
+!define html ({{{<html><head><title>Test Dump</title></head><body>
+<h1>A Title</h1>
+ <select name="colour">
+  <option value=""></option>
+  <option selected="selected" value="red">Red</option>
+</select>
+<p>
+<i>Some other text</i>
+<p>
+And some more.
+<ul>
+<li>One
+<li>Two
+<li>Three
+</ul>
+</body></html>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|screen dump|

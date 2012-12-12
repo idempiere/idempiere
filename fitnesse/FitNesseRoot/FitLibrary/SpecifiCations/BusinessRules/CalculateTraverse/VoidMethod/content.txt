@@ -1,0 +1,17 @@
+!2 An exception is thrown if a method doesn't return a value (is void).
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=2>calculate</td></tr>
+<tr><td>&nbsp;</td><td>voidMethod</td></tr>
+<tr><td>&nbsp;</td><td>2</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=2>calculate</td></tr>
+<tr><td>&nbsp;</td><td class="error">voidMethod<hr/> <span class="fit_label">Method voidMethod is void.</span></td></tr>
+<tr><td class="ignore">&nbsp;</td><td class="ignore">2</td></tr>
+</table>-!|

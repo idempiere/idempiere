@@ -1,0 +1,8 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fit.specify.RowFixtureUnderTest2</td></tr>
+<tr><td>x</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fit.specify.RowFixtureUnderTest2</td></tr>
+<tr><td class="error">x<hr/> <span class="fit_label">Could not find field: x.</span></td></tr>
+</table>-!|

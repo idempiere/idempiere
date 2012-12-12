@@ -1,0 +1,31 @@
+ * Entities may be used in nested tables (requiring find method in the fixture)
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td><i>copy of list of entity</i></td><td>
+<table>
+<tr><td><i>entity</i></td></tr>
+<tr><td>0</td></tr>
+<tr><td>2</td></tr>
+</table></td><td><table>
+<tr><td><i>entity</i></td></tr>
+<tr><td>0</td></tr>
+<tr><td>2</td></tr>
+</table></td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>check</td><td><i>copy of list of entity</i></td><td>
+<table>
+<tr><td><i>entity</i></td></tr>
+<tr><td>0</td></tr>
+<tr><td>2</td></tr>
+</table></td><td><table>
+<tr><td><i>entity</i></td></tr>
+<tr><td class="pass">0</td></tr>
+<tr><td class="pass">2</td></tr>
+</table></td></tr>
+</table>-!|

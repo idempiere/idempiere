@@ -1,0 +1,43 @@
+!3 A named property is not a property of the object concerned
+!**< def
+!define account (|''ID''|456778|
+|''payment history''|poor|
+)
+!define user (|''name''|Poor Payer|
+|''owing''|10000.00|
+|''account''|${account}|
+)
+!define test (!|fitlibrary.specify.domain.UserAdapter|
+
+|''user''|${user}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.UserAdapter</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td>Poor Payer</td>
+</tr>
+<tr><td class="error"><i>owing</i><hr/> <span class="fit_label">Missing</span></td>
+<td>10000.00</td>
+</tr>
+<tr><td><i>account</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td class="error"><i>ID</i><hr/> <span class="fit_label">Missing</span></td>
+<td>456778</td>
+</tr>
+<tr><td><i>payment history</i></td>
+<td>poor</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

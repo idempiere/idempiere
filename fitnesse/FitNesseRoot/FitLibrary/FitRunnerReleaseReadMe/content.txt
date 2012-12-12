@@ -1,0 +1,31 @@
+!1 ''!-FitLibraryForFit-!''
+This contains the latest release of ''!-FitLibrary-!'' with ''!-FolderRunner-!''.
+!3 Note
+ * This ''!-FitLibrary-!'' release contains all the ''Fit'' code, ready built in.
+ * It does '''not''' work with the ''Fit'' version from http://fit.c2.com
+!2 Tests, User Guide, etc
+The User Guide, Specifications and Tests for ''!-FitLibrary-!'' are organised in three folders:
+!-<h4>(1) tests</h4>-!This contains:
+ * The !-<a href="tests/FitLibrary/UserGuide/index.html">FitLibrary.UserGuide</a>-!, the user documentation for ''!-FitLibrary-!'' and ''!-FolderRunner-!''.
+ * The !-<a href="tests/FitLibrary/SpecifiCations/index.html">FitLibrary.Specifications</a>-!.
+ * The !-<a href="tests/FitLibrary/GlosSary/index.html">FitLibrary.Glossary</a>-!, which is used in the !-<a href="tests/FitLibrary/UserGuide/index.html">FitLibrary.UserGuide</a>-! and !-<a href="tests/FitLibrary/SpecifiCations/index.html">FitLibrary.Specifications</a>-!.
+You can run ''!-FolderRunner-!'' on all of these to get reports, including the User Guide. Double-click on either:
+ * ''runTests.bat''.  This uses ''Ant'' to run ''!-FitLibrary-!'' on all the test files in the directory ''tests'' and writes the reports into !-<a href="reports/reportIndex.html"><i>reports</i></a>-!. It provides a simple GUI frontend to show progress. However, if you don't have ''Ant'' installed, double-click on either of the following.
+ * The ''fitlibraryRunner.jar''.
+ * The ''fitlibraryRunnerXls.jar''. This is the same as ''fitlibraryRunner.jar'', but includes spreadsheet handling.
+Some of the specifications used to assume that ''Dot'' was installed (''Dot'' is available at http://www.graphviz.org).
+!-<h4>(2) spreadsheetTests</h4>-! * This contains tests that mix spreadsheet and html files.
+ * To run them, double-click on ''runSpreadsheet.bat''. This runs ''Ant'' with the ''runSpreadsheet'' target, which produces the reports in ''spreadsheetReports''
+!-<h4>(3) suiteTests</h4>-! * This contains tests that use !-<a href="tests/FitLibrary/GlosSary/SuiteFixture/index.html"><i>suite fixture</i></a>-!.
+ * To run them, double-click on ''runSuite.bat''. This runs ''Ant'' with the ''runSuite'' target, which runs ''!-FolderRunner-!'' twice and produces the reports in ''suiteTests/reports'' and ''suiteTests/otherReports''
+!2 src
+The ''src'' directory contains the following:
+ * ''bookExamplesSrc.zip'', the Fit Book examples
+ * ''fitFromFitNesseSrc.zip'', the source for Fit from ''!-FitNesse-!'' that used in ''!-FitLibrary-!''. (This version does '''not''' use the Fit version from http://fit.c2.com.)
+ * ''!-FitLibrarySrc.jar-!'', the source for ''!-FitLibrary-!''.
+!2 lib
+The ''lib'' directory contains two (possily out-of-date) jar files that may be useful: ''junit.jar'' and ''poi.jar''. The latter supports the reading of Excel spreadsheet files and is used by ''!-FolderRunner-!'' when running storytests that are in spreadsheet files.
+!2 Any Suggestions?
+Any suggestions for improvements in this release are most welcome.
+
+Rick Mugridge, http://www.RimuResearch.com.

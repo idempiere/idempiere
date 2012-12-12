@@ -1,0 +1,18 @@
+!2 If a key value is wrong, it's treated as a replacement (missing + surplus).
+Here the expected "|3|one|" was actually "|1|one|" (the same as above but the columns are reordered):
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fit.specify.RowFixtureUnderTest</td></tr>
+<tr><td>a</td><td>s</td></tr>
+<tr><td>2</td><td>two</td></tr>
+<tr><td>1</td><td>two</td></tr>
+<tr><td>3</td><td>one</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fit.specify.RowFixtureUnderTest</td></tr>
+<tr><td>a</td><td>s</td></tr>
+<tr><td class="pass">2</td><td class="pass">two</td></tr>
+<tr><td class="pass">1</td><td class="pass">two</td></tr>
+<tr><td class="fail">3 <span class="fit_label">missing</span></td><td>one</td></tr>
+<tr>
+<td class="fail"> <span class="fit_grey">1</span> <span class="fit_label">surplus</span></td>
+<td> <span class="fit_grey">one</span></td></tr></table>-!|

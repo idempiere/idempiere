@@ -1,0 +1,25 @@
+!2 ''!-ArrayFixture-!'' takes account of the order of the sequence
+^TestAll
+^TestSomeInOrder
+^TestOutOfOrder
+^TestInsertAtStart
+^TestNoneExpected
+^TestAllWithProperty
+^TestMixedObjects
+^TestNoActuals
+^TestNoActualsSoMissing
+^TestUsingValueObjects
+^TestUsingScientificDouble
+!2 It handles a collection of Map, to handle dynamic collections such as from JTable
+^TestMapCollection
+^TestMapCollectionOutOfOrder
+^TestMixedCollection
+!2 It handles trees and images
+^TestTrees
+!2 Collections may be nested
+^TestEntityInNestedArray
+!2 Errors
+^TestMissingCells
+^TestExtraCells
+^TestMissingRows
+^TestUnknownProperty

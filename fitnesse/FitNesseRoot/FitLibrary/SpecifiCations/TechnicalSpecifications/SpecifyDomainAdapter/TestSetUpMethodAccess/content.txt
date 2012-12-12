@@ -1,0 +1,3 @@
+A method is called for the set up of embedded tables. This method can be defined in a ''!-DomainAdapter-!''.
+
+|Fail this|

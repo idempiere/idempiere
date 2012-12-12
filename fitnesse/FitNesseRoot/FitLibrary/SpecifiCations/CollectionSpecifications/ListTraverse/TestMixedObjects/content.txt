@@ -1,0 +1,17 @@
+!2 All elements of mixed types are in the correct order and all fields are accounted for. An unknown field for a particular object is accepted as long as the corresponding cell is empty.
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.ArrayFixtureUnderTest2</td></tr>
+<tr><td>+</td><td>&amp;</td><td>some</td></tr>
+<tr><td>1</td><td>one</td><td></td></tr>
+<tr><td>1</td><td>two</td><td></td></tr>
+<tr><td>2</td><td>two</td><td>xxx</td></tr>
+<tr><td></td><td></td><td>one</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.ArrayFixtureUnderTest2</td></tr>
+<tr><td>+</td><td>&amp;</td><td>some</td></tr>
+<tr><td class="pass">1</td><td class="pass">one</td><td class="pass"></td></tr>
+<tr><td class="pass">1</td><td class="pass">two</td><td class="pass"></td></tr>
+<tr><td class="pass">2</td><td class="pass">two</td><td class="fail">xxx <span class="fit_label">expected</span><hr> <span class="fit_label">actual</span></td></tr>
+<tr><td class="pass"></td><td class="pass"></td><td class="pass">one</td></tr>
+</table>-!|

@@ -1,0 +1,51 @@
+ * If the type of a property is an interface or an abstract class, ${fitLibrary} can't construct an object of that type
+ * So the table for the object needs to specify the specific type. This is done with an empty property name. In the example below, the type is expressed as "Bad Payer"
+ * ${fitLibrary} calls a concreteFactory method (here ''concreteClassOfAbstractUser()'') with the type as a String argument (here "Bad Payer") and gets back the Class for the concrete object that is then created
+!**< def
+!define user (||Bad Payer|
+|''name''|Brad Prayer|
+)
+!define test (!|fitlibrary.specify.domain.NotConcrete|
+
+|''abstract user''|${user}|
+
+|''checks''|
+
+|''abstract user''|${user}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.NotConcrete</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>abstract user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td>&nbsp;</td>
+<td>Bad Payer</td>
+</tr>
+<tr><td><i>name</i></td>
+<td>Brad Prayer</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>abstract user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td>&nbsp;</td>
+<td class="pass">Bad Payer</td>
+</tr>
+<tr><td><i>name</i></td>
+<td class="pass">Brad Prayer</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

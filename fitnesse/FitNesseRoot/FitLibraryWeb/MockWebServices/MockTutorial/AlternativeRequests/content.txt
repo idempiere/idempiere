@@ -1,0 +1,36 @@
+!3 7. Alternative requests
+So far, we've assumed that we're only interested in a specific request. What if we want to provide counts for apples and oranges? We can do that with two table, as follows:
+
+|''with mock web services''|
+
+|''mock soap11 on port''|8081|
+|''xpath''|//countOf|''is''|Oranges|
+|''response''|<count>44</count>|
+|''response''|<count>23</count>|
+
+|''mock soap11 on port''|8081|
+|''xpath''|//countOf|''is''|Apples|
+|''response''|<count>17</count>|
+|''response''|<count>9</count>|
+
+|''close after''|5|''seconds''|
+
+This passes when you also run OrangesAndApples
+
+When a request comes in, it's matched against the first table. As that doesn't match, it's then matched against the second table.
+
+This means that we don't care which order the requsts for apples and oranges come in. Once a response has been used, it's not used again. So we could end up with the following alternative sequences of requests/responses:
+
+ * (oranges/44), (oranges/23), (apples/17), (apples/9) '''or'''
+ * (oranges/44), (apples/17), (oranges/23), (apples/9) '''or'''
+ * (oranges/44), (apples/17), (apples/9), (oranges/23)  '''or''', etc...
+
+That is, the two tables define a partial order, with a complete order within a single table.
+
+To see it fail, try OrangesCall or ApplesCall.
+#
+!3 8. Next
+#
+What if we want to constrain the order of the requests for oranges and apples?
+
+An example is [[on this page][ConstrainSequence]].

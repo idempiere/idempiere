@@ -1,0 +1,19 @@
+!*< def
+!define html ({{{Various
+ text spread over several
+ <b>lines</b>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''page source''|'''contains'''|spread|
+
+|''page source''|'''contains'''|over several|
+
+|''page source''|'''contains'''|lines|
+
+|''page source''|'''eventually contains'''|Various text|

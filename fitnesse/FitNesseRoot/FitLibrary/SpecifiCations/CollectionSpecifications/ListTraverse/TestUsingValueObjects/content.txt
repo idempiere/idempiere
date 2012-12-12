@@ -1,0 +1,14 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.ArrayFixtureUnderTestWithValueObjects</td></tr>
+<tr><td>one</td><td>two</td></tr>
+<tr><td>i 1</td><td>i 2</td></tr>
+<tr><td>i 3</td><td>i 4</td></tr>
+<tr><td>i 5</td><td>i 6</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.ArrayFixtureUnderTestWithValueObjects</td></tr>
+<tr><td>one</td><td>two</td></tr>
+<tr><td class="pass">i 1</td><td class="pass">i 2</td></tr>
+<tr><td class="pass">i 3</td><td class="pass">i 4</td></tr>
+<tr><td class="pass">i 5</td><td class="pass">i 6</td></tr>
+</table>-!|

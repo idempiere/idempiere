@@ -1,0 +1,16 @@
+!2 A list of maps can be handled in a convenient table when the maps are Map<String,T>
+
+!|fitlibraryGeneric.specify.collections.GenericMaps|
+
+----
+|''a list of maps''|
+|''color''|''count''|
+|red|1|
+|green|2|
+|yellow|three|
+
+|''a list of maps with empty''|
+|''color''|''count''|
+|red|1|
+||2|
+

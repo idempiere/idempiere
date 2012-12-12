@@ -1,0 +1,56 @@
+!*< def
+!define html ({{{<select id="colour">
+  <option value=""></option>
+  <option selected="selected" value="red">Red</option>
+  <option>Green</option>
+  <option id ='blue'>Blue</option>
+  <option id='black'>Black</option>
+  <option value='yellow'>Yellow</option>
+  <option value='punk'>Pink</option>
+  <OPTION VALUE="VIOLET">Violet</OPTION>
+</select>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''option of''|colour|''is''|red|
+
+|''with''|colour|''select option''|Black|
+
+|''option of''|colour|''is''|Black|
+
+|reject|''with''|colour"|''select option''|Missing|
+
+ * If an option has a value, that's used instead:
+
+|''with''|colour|''select option''|yellow|
+
+|''option of''|colour|''is''| yellow |
+
+ * And case doesn't matter:
+
+|''with''|colour|''select option''| VIOLET |
+
+|''option of''|colour|''is''| VIOLET |
+
+* Can select empty option
+
+|''with''|colour|''select option''||
+
+|''option of''|colour|''is''||
+
+* select by text
+
+|''with''|colour|''select text''| Pink |
+
+|''option of''|colour|''is''|punk|
+
+* Can select empty option with text
+
+|''with''|colour|''select text''||
+
+|''option of''|colour|''is''||

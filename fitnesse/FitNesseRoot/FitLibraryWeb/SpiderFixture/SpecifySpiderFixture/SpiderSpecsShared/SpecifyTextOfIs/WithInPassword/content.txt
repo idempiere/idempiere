@@ -1,0 +1,23 @@
+!*< def
+!define html ({{{<input type="password" id="nothing"/>
+<input type="password" id="withValue" value="red"/>
+<input type="password" id="disabled" value="blue" disabled="true"/>
+<input type="password" id="onlySpacesInText">   </input>
+<input type="password" id="withText">green</input>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''text of''|//input[@id="nothing"]|''is''||
+
+|''text of''|//input[@id="withValue"]|''is''|red|
+
+|''text of''|//input[@id="disabled"]|''is''|blue|
+ * Text wrapped by the <input> tags is irrelevant:
+|''text of''|//input[@id="onlySpacesInText"]|''is''||
+
+|''text of''|//input[@id="withText"]|''is''||

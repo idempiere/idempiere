@@ -1,0 +1,6 @@
+!3 ''Pay using a voucher with expire date.''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|2||coffee dispenser|''for''|3 days|
+|'''reject'''|''pay with voucher $''|50.00|''that expires after''|2004/05/05 17:00|
+|''pay with voucher $''|50.00|''that expires after''|2004/05/06 17:00|
+|''complete transaction''|

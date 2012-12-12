@@ -1,0 +1,14 @@
+!2 A table can include a mixture of fields and methods.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td colspan=4>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>a</td><td>b</td><td>plus()</td><td>minus()</td></tr>
+<tr><td>1</td><td>12</td><td>13</td><td>-11</td></tr></table>-!|!-<table><tr><td colspan=4>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>a</td><td>b</td><td>plus()</td><td>minus()</td></tr>
+<tr><td>1</td><td>12</td><td class="pass">13</td><td class="pass">-11</td></tr></table>-!|
+ * And "?" can be used instead of "()"
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td colspan=4>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>a</td><td>b</td><td>plus?</td><td>minus?</td></tr>
+<tr><td>1</td><td>12</td><td>13</td><td>-11</td></tr></table>-!|!-<table><tr><td colspan=4>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>a</td><td>b</td><td>plus?</td><td>minus?</td></tr>
+<tr><td>1</td><td>12</td><td class="pass">13</td><td class="pass">-11</td></tr></table>-!|

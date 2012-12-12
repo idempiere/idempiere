@@ -1,0 +1,18 @@
+!2 An exception is thrown if the input for a field, or the expected value of a method, is of a type that can't be parsed (as it's not defined).
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=3>calculate</td></tr>
+<tr><td>calendar</td><td></td><td>use</td></tr>
+<tr><td>24 Sept 2003</td><td></td><td>24 Sept 2003</td></tr>
+</table>-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=3>calculate</td></tr>
+<tr><td>calendar</td><td></td><td>use</td></tr>
+<tr><td class="error">24 Sept 2003<hr/> <span class="fit_label"></span></td><td></td><td>24 Sept 2003</td></tr>
+</table>-!|

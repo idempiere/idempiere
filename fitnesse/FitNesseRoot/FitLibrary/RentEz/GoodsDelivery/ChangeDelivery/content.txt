@@ -1,0 +1,39 @@
+!3 Create a delivery
+|''begin delivery transaction for client''| Joanna |''staff''| Bill|
+|''book''|2||coffee dispenser|''on''|2005/05/08 09:01|''for''|2 hours|
+|''pay with cash $''|14.18|
+|''complete transaction''|
+
+!3 One day later
+
+|''time is now''| 2005/05/07 09:01|
+
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''change delivery on''|2005/05/08 09:01|''item''|coffee dispenser|''item count''|2|''for''|2 hours|''city''|Auckland|''zone''|CBD|''delivery address''|10 Princes St|''to delivery address''|200 Queen St|
+|''complete transaction''|
+
+ * ''Checks''
+|''deliveries for client''| Joanna |
+|''date''|''city''|''zone''|''delivery address''|''item''|''item count''|
+|2005/05/08 09:01|Auckland|CBD|200 Queen St|coffee dispenser|2|
+
+|''client booking list''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee dispenser|2|2005/05/08 09:01|2005/05/08 11:01|
+
+!3 Half an hour later
+|''time is now''| 2005/05/07 09:31|
+
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''change delivery on''|2005/05/08 09:01|''item''|coffee dispenser|''item count''|2|''for''|2 hours|''city''|Auckland|''zone''|CBD|''delivery address''|200 Queen St|''to zone''|East|''to delivery address''|200 Burswood Drive|
+|''pay with cash $''|4.06|
+|''complete transaction''|
+
+ * ''Checks''
+|''deliveries for client''| Joanna |
+|''date''|''city''|''zone''|''delivery address''|''item''|''item count''|
+|2005/05/08 09:01|Auckland|East|200 Burswood Drive|coffee dispenser|2|
+
+|''client booking list''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee dispenser|2|2005/05/08 09:01|2005/05/08 11:01|

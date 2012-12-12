@@ -1,0 +1,9 @@
+!3 Check that we can start a transaction, hire something, and then cancel the transaction without making payment
+|''begin transaction for client''| Joanna |''staff''| Bill |
+|'''check'''|''rent''| 5 || coffee pot |''for''|5 hours|37.50|
+|''cancel transaction''|
+
+ * Check the client's hires in progress:
+|''rentals of client''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+

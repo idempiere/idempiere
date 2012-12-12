@@ -1,0 +1,13 @@
+!3 ''Then'' within a term table defines a required order (a sequence)
+ * Here the order is followed:
+
+|''mock plain text on port''|8081|
+|''matches request''|in|
+|''response''|out|
+|''repeat''|
+
+|''to''|http://localhost:8081/ws|''post text''|in|'''is'''|out|
+|''to''|http://localhost:8081/ws|''post text''|in|'''is'''|out|
+|''to''|http://localhost:8081/ws|''post text''|in|'''is'''|out|
+
+|''close''|

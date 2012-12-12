@@ -1,0 +1,9 @@
+|''begin transaction for client''| Joanna |''staff''| Bill |
+|''rent''|1||Truck|''for''|1 day|
+|''modify amount on rent''|1||Truck|''for''|1 day|''to''|2|
+|''pay with cash $''|4000.00|
+|''complete transaction''|
+
+|''rental item subset''|
+|''name''|''free count''|
+|Truck|0|

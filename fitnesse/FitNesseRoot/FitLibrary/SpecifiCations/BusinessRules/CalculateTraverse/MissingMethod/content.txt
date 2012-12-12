@@ -1,0 +1,37 @@
+!2 An exception is thrown if a method doesn't exist.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan="3">calculate</td></tr>
+<tr><td></td><td>unknownMethod</td></tr>
+<tr><td></td><td>2</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td colspan="3">calculate</td></tr>
+<tr><td>some arg</td><td></td><td>unknownMethod</td></tr>
+<tr><td>2</td><td></td><td>1</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td colspan="4">calculate</td></tr>
+<tr><td>some arg</td><td>another</td><td></td><td>unknownMethod</td></tr>
+<tr><td>2</td><td>3</td><td></td><td>1</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan="3">calculate</td></tr>
+<tr><td></td><td class="error">unknownMethod<hr/> <span class="fit_label">Missing method</span></td></tr>
+<tr><td class="ignore"></td><td class="ignore">2</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td colspan="3">calculate</td></tr>
+<tr><td>some arg</td><td></td><td class="error">unknownMethod<hr/> <span class="fit_label">Missing method</span></td></tr>
+<tr><td class="ignore">2</td><td class="ignore"></td><td class="ignore">1</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td colspan="4">calculate</td></tr>
+<tr><td>some arg</td><td>another</td><td></td><td class="error">unknownMethod<hr/> <span class="fit_label">Missing method</span></td></tr>
+<tr><td class="ignore">2</td><td class="ignore">3</td><td class="ignore"></td><td class="ignore">1</td></tr>
+</table>-!|

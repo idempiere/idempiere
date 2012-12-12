@@ -1,0 +1,15 @@
+!3 An array of enums
+!*< def
+!define list (
+|light red|
+|blue green|
+)
+**!
+!|fitlibraryGeneric.specify.enumerator.BareEnum|
+
+|''array''|${list}|
+----
+----
+|''array''|${list}|
+
+|''array''|light red, blue green|

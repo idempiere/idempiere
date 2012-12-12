@@ -1,0 +1,15 @@
+!*> xm
+!define match (<a>
+<name b="b" a="st">street</name>
+<address id='add'>fanshawe</address>
+</a>
+)
+*!
+|''mock ${soap} on port''|8081|
+|''xpath''|//name[@a="st"]|''is''|street|
+|''xpath''|//address[@id="add"]|''is''|fanshawe|
+|''response''|<response>out</response>|
+
+|''to''|http://localhost:8081/service|''post ${soap}''|${match}|'''is'''|<response>out</response>|
+
+|''close''|

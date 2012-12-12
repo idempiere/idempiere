@@ -1,0 +1,24 @@
+!**< def
+!define file ({{{<bla>
+  #foreach( $a in $list )
+     <t>$a.name</t>
+  #end
+</bla>
+}}})
+!define result ({{{<bla>
+    <t>red</t>
+    <t>green</t>
+</bla>
+}}})
+**!
+|''with file''|${file}|
+
+|''set named list''|list|''to''|red, green|
+
+|set|t|''get template''|templateDiry/test.txt|
+
+|show|get|@{t}|
+
+|!-fitlibrary.xml.XmlDoFixture-!|
+|xml|@{t}|same as|${result}|
+

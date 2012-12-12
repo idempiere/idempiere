@@ -1,0 +1,30 @@
+!3 Methods setUp() and tearDown() are both called
+The class is defined so that the ''setUp()'' method has to be called for the first table to succeed. The ''tearDown()'' method throws an exception, which we check for. This is a round-about way to verify that the ''teardown()'' method has been called, because it's the last thing that happens.
+!**< def
+!define test (!|fitlibrary.specify.constraint.SetUpAndTearDownCalled|
+
+|''constraint''|
+|''a''|''b''|
+|1|2|
+|2|3|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.constraint.SetUpAndTearDownCalled</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="2"><i>constraint</i></td>
+</tr>
+<tr><td><i>a</i></td>
+<td><i>b</i></td>
+</tr>
+<tr class="pass"><td>1</td>
+<td>2</td>
+</tr>
+<tr class="pass"><td>2</td>
+<td>3</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0"><tr><td class="error"><i>Error in storytest tear down: </i><hr><pre><div class="fit_stacktrace"></div></pre></td></tr></table>-!|

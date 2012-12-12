@@ -1,0 +1,22 @@
+Fit version 2003-9-15
+^TestsExplicit
+^TestsFail
+^TestFieldsAndMethods
+!3 Details of operation
+^TestLeftToRight
+^TestDifferingResults
+^RowsShort
+^CamelNames
+^FixtureArguments
+!3 Two special cell contents
+^SpecialError
+^SpecialErrorWrong
+^SpecialEmpty
+!3 Error Conditions
+^MissingField
+^MissingMethod
+^VoidMethod
+^WrongType
+^CannotParse
+^MissingFirstRow
+^RowsLong

@@ -1,0 +1,12 @@
+!2 Exceptions are expected with the special string "error". If the cell is blank and an exception is thrown, "error" is reported. The exception is reported if something else was expected.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>exceptionMethod()</td></tr>
+<tr><td>error</td></tr>
+<tr><td></td></tr>
+<tr><td>no exception</td></tr></table>-!|
+|!-<table><tr><td>fit.specify.ColumnFixtureUnderTest</td></tr>
+<tr><td>exceptionMethod()</td></tr>
+<tr><td class="pass">error</td></tr>
+<tr><td> <span class="fit_grey">error</span></td></tr>
+<tr><td class="error">no exception<hr><pre><div class="fit_stacktrace"></div></pre></td></tr></table>-!|

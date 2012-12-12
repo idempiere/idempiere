@@ -1,0 +1,42 @@
+!1 This Release:
+#
+|!2 ''Details of changes in release''|Version '''2.0''', 17 October 2011|
+
+ * Added the action-modifier ("special" action) '''show with tags'''. See .FitLibrary.SpecifiCations.SpecialActions.TestShowWithTags
+ * Made ''!-FitLibrary's-!'' ''!-DebugPage-!'' Java class more convenient to use inside an IDE for debugging. Call ''!-DebugPage.run(String[] fullPageNames, String fitNesseDiry, int port)-!'' from your own class.
+ * Added an alternative protocol so that ''!-ZiBreve-!'' can run tests in a non-batch way. This allows for tests to be created dynamically by "running" defined actions and recording them, and run through ''!-FitLibrary-!'' as they're created.  
+
+|!2 ''Details of changes in release''|1 March 2010|
+
+ * Revised the previous addition so that the errors are signalled for the row where they occur. Updated the specs to show how info can be added to the current row. See .FitLibrary.SpecifiCations.GlobalActionsProvided.OnErrorListener
+
+|!2 ''Details of changes in release''|24 February 2010|
+
+ * Technical addition: Can register a listener to be informed of errors, so that stopping on errors can be tailored. See .FitLibrary.SpecifiCations.GlobalActionsProvided.OnErrorListener
+
+|!2 ''Details of changes in this release''|21 February 2011|
+
+ * Can request that elapsed time information be added to the table in the report. See .FitLibrary.SpecifiCations.GlobalActionsProvided.ElapsedTimesAdded
+ * Can request that a storytest stop running if there are more than a specified number of exceptions and/or fails. This generalises stopOnError. See .FitLibrary.SpecifiCations.GlobalActionsProvided.StoppingOnErrors
+ * Can find out what actions may be called at a point in a storytest, based on what is in scope. See .FitLibrary.SpecifiCations.GlobalActionsProvided.WhatIsInScope
+
+|!2 ''Details of changes in release''|3 December 2010|
+
+ * Logging property files are now optional.
+
+|!2 ''Details of changes in release''|1 December 2010|
+
+ * Added log4j logging capability. See .FitLibrary.AdvancedTutorials.LoggingTechniques for details on using this logging, as well as approaches to logging that are visible in the report page.
+ * Added retry capability to batch running. See FitLibraryRunner for details
+ * Revised the internal implementation of many of the ''special actions'' (.FitLibrary.SpecifiCations.SpecialActions).
+ * Extended the [[''File'' handling capability][.FitLibrary.SpecifiCations.GlobalActionsProvided.FileProcessing]]
+ * Added [[''relative file'' handling][.FitLibrary.SpecifiCations.GlobalActionsProvided.RelativeFileHandling]], so that file accesses will work correctly both when running in ''!-FitNesse-!'' and in batch.
+ * Added ''String'' handling capability. See .FitLibrary.SpecifiCations.SpecialActions.TestAsString
+ * Added the special action '''show predefined''' to use a <pre> tag to show the whitespace (tabs, new lines, etc) in the resulting string. See .FitLibrary.SpecifiCations.SpecialActions.TestShowPredefined
+ * Updated to use fitnesse release 20101101
+ * Allow for configuring ''!-FitLibrary-!'' so that it leaves unicode characters in class and method names that are valid Java characters. See .FitLibrary.SpecifiCations.JavaSpecific.CamelCasingUnicode
+ * Where a List<Map<String,T>> is provided to a ''!-SetFixture-!'', ''!-ArrayFixture-!'', or ''!-SubsetFixture-!'', map keys are tested both in extended camel case form as well as in plain form. So a table header of '&' will match both '&' and 'ampersand'. See .FitLibrary.SpecifiCations.CollectionSpecifications.ListTraverse.TestMapCollection
+ * Access is now available through ''!-RuntimeContextual-!'' to the full details of the current row being executed through the method ''!-RuntimeContextInternal.row()-!''
+#
+----!1 Earlier Releases:
+|!contents|

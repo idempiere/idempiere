@@ -1,0 +1,26 @@
+The first fixture can register once a Parser for a particular type, rather than having to include the parse() method in every fixture.
+
+Here we directly access a ''Date(2004-1900,2,3)'':
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.ObjectDelegateForDate</td></tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>check</td><td>date</td><td>2004/03/03 00:00</td></tr>
+<tr><td>check</td><td>date</td><td>2004/03/03 00:01</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.ObjectDelegateForDate</td></tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>check</td><td>date</td><td class="pass">2004/03/03 00:00</td></tr>
+<tr><td>check</td><td>date</td><td class="fail">2004/03/03 00:01 <span class="fit_label">expected</span><hr>Wed Mar 03 00:00:00 NZDT 2004 <span class="fit_label">actual</span></td></tr>
+</table>-!|
+
+This may be specific to ''Date'', but it shows two problems:
+ * We'd like to display the ''Date'' in the same form that we expect it to be entered. This occurs in ''show'' and when the value is not as expected (as in the last row above).
+ * The Date display is locale-dependent, so we can't test that the correct date is shown (ie, |report|show|date|Wed Mar 03 00:00:00 NZDT 2004|)
+For the first problem, there are several possible solutions:
+ * Use a subclass or wrapper of ''Date'' in the SUT and provide an different ''toString()'' method, which is what is used by default by Fit. This means wrapping (output) Dates in the fixture. And changing the SUT itself to use such wrappers, which will be needed when !-RowFixture-!, etc access Date values.
+ * Have a method ''toString()'', like ''parse()'', but for displaying an object.
+ * Allow for new ''!-TypeAdapter-!''s to be registered.

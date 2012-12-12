@@ -1,0 +1,44 @@
+!**< def
+!define test (
+!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|'''check'''|''same date''|2004/04/28 16:03|2004/04/28 16:03|
+
+)
+!define test2 (
+!|fitlibrary.specify.workflow.ParserDelegateMethod|
+----
+|'''check'''|''same date''|2004/04/28 16:03|2004/04/28 16:03|
+
+)
+**!
+!2 Other text data types are handled with a ''parse delegate'' in the ''!-DoFixture-!'':
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>same date</i></td>
+<td>2004/04/28 16:03</td>
+<td class="pass">2004/04/28 16:03</td>
+</tr>
+</table>
+<br>-!|
+
+!2 Or a ${parserDelegateMethod} in a ${domainAdapter}
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test2}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.ParserDelegateMethod</td>
+</tr>
+</table>
+<hr><br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>same date</i></td>
+<td>2004/04/28 16:03</td>
+<td class="pass">2004/04/28 16:03</td>
+</tr>
+</table>
+<br>-!|
+

@@ -1,0 +1,15 @@
+!2 The columns can be given in any order
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fit.specify.RowFixtureUnderTest</td></tr>
+<tr><td>s</td><td>a</td></tr>
+<tr><td>two</td><td>1</td></tr>
+<tr><td>one</td><td>1</td></tr>
+<tr><td>two</td><td>2</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fit.specify.RowFixtureUnderTest</td></tr>
+<tr><td>s</td><td>a</td></tr>
+<tr><td class="pass">two</td><td class="pass">1</td></tr>
+<tr><td class="pass">one</td><td class="pass">1</td></tr>
+<tr><td class="pass">two</td><td class="pass">2</td></tr>
+</table>-!|

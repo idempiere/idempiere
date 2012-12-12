@@ -1,0 +1,2 @@
+|''create template''|conference|
+|''template''|coffee break|''for''|...|

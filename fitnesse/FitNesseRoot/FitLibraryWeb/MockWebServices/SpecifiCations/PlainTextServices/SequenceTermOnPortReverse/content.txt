@@ -1,0 +1,16 @@
+!3 ''Then'' within a term table defines a required order (a sequence)
+
+ * The requests come in reverse order and therefore the first one fails:
+
+|''mock plain text on port''|8082|
+|''matches request''|in|
+|''response''|out|
+|''then''|
+|''matches request''|in2|
+|''response''|out2|
+
+|'''reject'''|''to''|http://localhost:8082/ws|''post text''|in2|
+
+|''to''|http://localhost:8082/ws|''post text''|in|'''is'''|out|
+
+|''close with errors''|>=|1|

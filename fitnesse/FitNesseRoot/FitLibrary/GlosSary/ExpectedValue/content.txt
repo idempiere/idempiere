@@ -1,0 +1,5 @@
+An ${expected} value is a value that's expected as the result of something that happens in the ${sut}:
+ * The result of an action that's being '''check''ed
+ * A value to the right of the empty column in a calculation table
+ * The value of a property of a ${domainObject} that's being checked
+Compare this to an ${given}.

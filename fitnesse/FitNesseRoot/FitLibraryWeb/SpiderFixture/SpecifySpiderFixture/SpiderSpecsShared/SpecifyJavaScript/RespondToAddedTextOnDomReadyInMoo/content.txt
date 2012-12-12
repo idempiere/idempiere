@@ -1,0 +1,28 @@
+!*< def
+!define openBrace ({)
+!define html {<head><script type='text/javascript' src='../mootools-1.2.3-core-nc.js'></script>
+
+<script type='text/javascript'>
+window.addEvent('domready', function() ^@(
+  $('123').set('html','123');
+^@));
+</script>
+
+</head><body>
+<div class="1"><div class="2"><div id="seatsleft">one<span id="123"><img src="stuff" height="16" width="16" alt="loading" style="display: inline; margin: 0 0 -3px 0;"/></span>
+two
+</div></div></div>
+}
+*!
+
+|''keywords''|chrome,firefox,htmlunit,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''text of''|123|''becomes''|123|
+
+|''text of''| seatsleft |''is''|one123two|
+
+|''text of''|//div[@id="seatsleft"]//span|''becomes''|123|

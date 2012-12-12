@@ -1,0 +1,72 @@
+!**< defs
+!define tut1 {The basics of using ''!-SpiderFixture-!'' to:
+
+ * Get a page
+ * Verify the title
+ * Verify the text of an element on the page, located by ''xpath''
+ * Click a button, located by the link name
+ * Verify the existence of an element, located by ''xpath''
+
+We also introduce the use of ''Firebug'' and ''XPather''.
+}
+!define tut2 {The basics of creating a domain language to:
+
+ * Avoid duplication
+ * Avoid getting lost in the detail.
+
+We introduce ''defined actions''.
+}
+!define tut3 {Evolving and organising ''defined actions'':
+
+ * A change is needed
+ * How to organise more than a few ''defined actions''
+}
+!define tut4 {Handling Forms:
+
+ * Checking and changing elements on a form
+ * Submitting a form
+}
+!define tut5 {Handling tables (and other structures):
+
+ * How to check the whole contents of a table
+ * How to check and change pieces of a table
+ * How to find a particular row of a table so that the rest of it can be checked
+
+And how this applies to any HTML elements with sub-structure
+}
+!define tut6 {Handling windows:
+
+ * How to select a window by name
+ * Closing windows
+ * How to select a window by its contents
+}
+!define tut7 {Dealing with delays:
+
+ * Delays in loading a page
+ * Delays in changes to the current page due to ajax:
+  * There's a delay before an element appears
+  * There's a delay before the text, etc of an element changes
+  * There's a delay before an element is removed
+  * There's a delay before an element is made visible or invisible
+
+Along the way, we also use spider actions to:
+
+ * Change and check ''radio button''s and ''select''s
+ * Check for the existence or non-existence of HTML elements
+
+And we touch on handling invisible elements, but don't cover this in detail.
+}
+!define tut8 {Where we mention some things that we haven't covered in this tutorial.
+}
+**!
+
+|!1 !c ''Tutorial on Using ''!-SpiderFixture-!'' ''|
+|!2 [[Part 1][^StartingWithSpider]]|${tut1}|
+|!2 [[Part 2][^DefinedActions]]|${tut2}|
+|!2 [[Part 3][^EvolvingDefinedActions]]|${tut3}|
+|!2 [[Part 4][^HandlingForms]]|${tut4}|
+|!2 [[Part 5][^HandlingTables]]|${tut5}|
+|!2 [[Part 6][^HandlingWindows]]|${tut6}|
+|!2 [[Part 7][^AjaxTiming]]|${tut7}|
+|!2 [[Part 8][^WrapUp]]|${tut8}|
+|!2 [[Part 9][<SpiderFixture.DocuMentation.FirefoxProfiles]]|Firefox profiles|

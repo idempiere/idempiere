@@ -1,0 +1,56 @@
+!3 Value Object parses Strings itself
+ * As a value object class, in Java the underlying class ''!-MyPoint-!'' has a method:
+  * ''public static !-MyPoint-! parse(String)''
+  * This method is used twice in the first table, to parse (and create) both the value for the argument and the ''expected'' value.
+  * It's used once in the second table, to create the argument.
+ * In Java, the ''!-MyPoint-!'' class also needs an ''equals()'' method to compare the ''expected'' and ''actual'' values.
+  * This is used in the first two tables
+ * In Java, the ''!-MyPoint-!'' class also needs a ''toString()'' method to show itself when there is an error
+  * This is shown in the second table, where the ''expected'' and the ''actual'' value of the point differ, and so the ''actual value'' needs to be displayed
+ * If the type of the result of a method call is a value object, it will not be auto-wrapped with a ''!-DomainObjectCheckTraverse-!''.
+  * That's so that it can be '''check'''ed in workflow, which is usually what's required
+  * So we need to explicitly wrap it in the code if we want to check its properties.
+  * This is shown in the third table
+ * Similar methods will be required with other programming languages. See the appropriate documentation.
+!**< def
+!define test {!|fitlibrary.specify.valueObject.ParseMyPoint|
+
+|'''check'''|a point|(12,34)|(12,34)|
+
+|'''check'''|a point|(12,34)|(0,0)|
+
+|''a point as domain object''|(12,34)|
+|x|12|
+|y|34|
+}
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.valueObject.ParseMyPoint</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td>a point</td>
+<td>(12,34)</td>
+<td class="pass">(12,34)</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td>a point</td>
+<td>(12,34)</td>
+<td class="fail">(0,0) <span class="fit_label">expected</span><hr>(12,34) <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a point as domain object</i></td>
+<td>(12,34)</td>
+</tr>
+<tr><td>x</td>
+<td class="pass">12</td>
+</tr>
+<tr><td>y</td>
+<td class="pass">34</td>
+</tr>
+</table>-!|

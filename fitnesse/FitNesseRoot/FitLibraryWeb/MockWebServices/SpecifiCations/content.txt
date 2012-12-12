@@ -1,0 +1,8 @@
+|!3 ^PlainTextServices|''Specifications for mocking plain text web services''|
+|!3 >Soap11Mocking|''Specifications for mocking SOAP 1.1 web services''|
+|!3 >Soap12Mocking|''Specifications for mocking SOAP 1.2 web services''|
+|!3 >FullSoapMocking|''Specification for mocking soap and providing full soap headers (eg, to include security information)''|
+
+>MockingSoapShared -- ignore this, it's used for soap11, soap12 and raw soap specs above, each with different variables to suit
+
+^SetUp

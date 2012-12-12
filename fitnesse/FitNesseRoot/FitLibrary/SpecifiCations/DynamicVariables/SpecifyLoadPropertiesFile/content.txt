@@ -1,0 +1,25 @@
+!*> file
+!define contents (eg1=Example One\n
+eg2=a,b,c\n
+eg3=abc\n
+)
+**!
+!|fitlibrary.DoFixture|
+
+|''file''|vars.properties|
+|''write''|${contents}|
+
+|''add dynamic variables from file''|vars.properties|
+
+|show|get|@{eg1}|
+
+|get|@{eg1}|is|Example One|
+
+|get|@{eg2}|is|a,b,c |
+
+|get|@{eg3}|is|abc|
+
+|get|@{eg333}|is|@{eg333}|
+
+|''file''|vars.properties|
+|''delete''|

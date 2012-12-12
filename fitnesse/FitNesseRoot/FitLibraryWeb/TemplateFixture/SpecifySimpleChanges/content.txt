@@ -1,0 +1,12 @@
+|''with file''|<bla t="$t">$a</bla>|
+
+|''set''|a|''to''|bla|
+|''set''|t|''to''|T|
+
+|''get template''|templateDiry/test.txt|'''is'''|<bla t="T">bla</bla>|
+
+|''set''|a|''to''|Z|
+|''set''|t|''to''|U|
+
+|''get template''|templateDiry/test.txt|'''is'''|<bla t="U">Z</bla>|
+

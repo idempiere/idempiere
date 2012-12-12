@@ -1,0 +1,17 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoGraphics</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>actions</td></tr>
+</table><table border="1" cellspacing="0">
+<tr><td>check</td><td>graph</td><td><img src="/files/dots/ChatGraph.gif"></td></tr>
+</table>-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoGraphics</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td>actions</td></tr>
+</table><table border="1" cellspacing="0">
+<tr><td>check</td><td>graph</td><td class="pass"><img src="/files/dots/ChatGraph.gif"></td></tr>
+</table>-!|

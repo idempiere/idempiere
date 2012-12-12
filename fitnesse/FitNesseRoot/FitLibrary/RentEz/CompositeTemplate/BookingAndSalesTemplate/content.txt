@@ -1,0 +1,37 @@
+!3 Set up template
+* A template can contain rental items as well as sale goods
+|''create template''|21st party|
+|''one''|yardie glass|''for''|booking or renting|''for''|1000|''people''|
+|''one''|balloon|''for''|booking or renting|''for''|10|''people''|
+|''one''|cup|''for''|booking or renting|''for''|1|''people''|
+|''one''|coke|''for''|sale|''for''|5|''people''|
+|''one''|cake|''for''|sale|''for''|10|''people''|
+|''one''|chips|''for''|sale|''for''|5|''people''|
+----
+!3 Transaction
+ * Begin transaction for client - she'll pickup these items.
+|''begin transaction for client''|Joanna|''staff''|Bill|
+|''fill book template''|21st party|''for''|100|''people on''|2004/06/06 09:02|''for''|1 day|
+|''pay with cash $''|518.00|
+|''complete transaction''|
+
+----
+!3 Checking
+* Checking sales sales goods left
+
+|''salesGoodsSubset''|
+| name| count |
+|cake|40|
+|coke|30|
+|chips|30|
+
+* No rental items yet for Joanna
+|''rentals of client''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+
+* Check Joanna's booking list
+|''client booking list''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|yardie glass|1|2004/06/06 09:02|2004/06/07 09:02|
+|balloon|10|2004/06/06 09:02|2004/06/07 09:02|
+|cup|100|2004/06/06 09:02|2004/06/07 09:02|

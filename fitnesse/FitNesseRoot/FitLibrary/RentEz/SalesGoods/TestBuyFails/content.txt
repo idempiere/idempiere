@@ -1,0 +1,7 @@
+|''begin transaction for client''| Bob |''staff''| Bill |
+|'''reject'''|''buy''| 15 || chips |
+|''complete transaction''|
+
+|sales goods subset|
+| name             | count |
+| chips | 10    |

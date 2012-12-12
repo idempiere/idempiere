@@ -1,0 +1,19 @@
+!**< test
+!define test (!|Import|
+|fitlibrary.speciallyNamedPackage|
+
+!|ClassInOddPackage|
+)
+
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>Import</td>
+</tr>
+<tr><td>fitlibrary.speciallyNamedPackage</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>ClassInOddPackage</td>
+</tr>
+</table>-!|

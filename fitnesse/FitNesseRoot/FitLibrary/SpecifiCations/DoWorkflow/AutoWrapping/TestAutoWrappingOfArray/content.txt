@@ -1,0 +1,40 @@
+If a workflow action returns an array of primitive (eg '''int''') or associated class (eg '''Double'''), it's automatically wrapped with a ''!-PrimitiveArrayTraverse-!'', so that the array can be tested against the rest of the table:
+!**< test
+!define test (!|fitlibrary.specify.workflow.AutoWrap|
+
+|''an array of int''|
+|1|
+|2|
+|3|
+
+|''an array of integer''|
+|1|
+|2|
+|3|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.AutoWrap</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>an array of int</i></td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>2</td>
+</tr>
+<tr class="pass"><td>3</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>an array of integer</i></td>
+</tr>
+<tr class="pass"><td>1</td>
+</tr>
+<tr class="pass"><td>2</td>
+</tr>
+<tr class="pass"><td>3</td>
+</tr>
+</table>-!|

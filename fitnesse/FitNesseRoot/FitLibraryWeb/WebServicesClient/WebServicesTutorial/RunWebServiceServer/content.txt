@@ -1,0 +1,19 @@
+This runs a server (both file server and web services server) on local port 8093 when you run it as a '''Test'''.
+
+!|fitlibrary.server.WebServerForTestingFixture|
+
+|''start file server on port''|8093|''at directory''|!-FitNesseRoot-!|
+
+|''stop testing server after''|60|''seconds''|
+
+Once it stops running, you can run it again.
+
+ * If you run it too soon, it will give an error because the port is already busy.
+
+ * That can happen if you press the back button soon after hitting '''Test''' and press '''Test''' again; the test is still running in the background.
+#
+!3 Warning
+#
+This file server has limited capability, and is only intended for testing purposes.
+
+It is not guaranteed to be secure.

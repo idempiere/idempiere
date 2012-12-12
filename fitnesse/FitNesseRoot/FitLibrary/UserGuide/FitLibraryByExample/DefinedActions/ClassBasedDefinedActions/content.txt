@@ -1,0 +1,18 @@
+''Defined actions'' may also be defined within classes, to provide an object-oriented approach to storytests. The class system is similar to Java but much simpler; there isn't a notion of static methods, for example.
+
+We need to describe the following:
+ * How ''defined actions'' as associated with a class. This is either:
+  * Through a local definition of a ''defined action'', which also specifies a class
+  * Through a convention of organising ''defined actions'' for a class within a page hierarchy headed by a page with the name ''!-ClassColour-!'', where ''Colour'' is the name of the class of those ''defined actions''.
+ * How instances (''wiki objects") are defined
+ * How the class of an instance is defined
+ * How superclasses are defined
+ * How dispatching occurs for calling OO ''defined actions'', using a '''oo''' special action (to be renamed!)
+ * How the instance and instance properties are accessed within a ''defined action''
+ * How we can implicitly use the '''oo''' special action
+ * How we can use a class itself as an instance when there is only one instance of a class needed at once in a storytest
+''Dynamic variables'' are used to define instances, instance properties, and class and superclass relationships.
+
+''To be continued....''
+
+See .FitLibrary.SpecifiCations.DefinedActions.BasedOnClass

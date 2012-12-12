@@ -1,0 +1,13 @@
+ * With a frameset, the first frame is selected automatically.
+ * The current title and url are of that first frame, rather than of the loaded html containing the frameset.
+
+Firefox and htmlunit differ in several ways with frames:
+ * The //title of a selected frame and |title| may differ
+ * The default frame behaviour may differ
+
+>SpecSetUp
+^SelectFrameByNumber
+^SelectFrameByName
+^SelectFrameByDottedName
+^SelectDefaultFrame
+^SelectFrameFails

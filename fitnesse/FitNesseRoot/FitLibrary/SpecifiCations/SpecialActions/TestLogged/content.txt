@@ -1,0 +1,19 @@
+!2 '''logged''' logs the result of an action, if any
+!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|''int property''|'''logged'''|
+
+|'''logged'''|''int property''|
+
+|boolean property|'''logged'''|
+
+|''log text''|Here's the string result:|
+|string property|'''logged'''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.SpecialActions.TestLogged.DefinedActions|
+
+|''an act''|A message|
+
+|''set expand defined actions''|true|
+
+|''an act''|A message|

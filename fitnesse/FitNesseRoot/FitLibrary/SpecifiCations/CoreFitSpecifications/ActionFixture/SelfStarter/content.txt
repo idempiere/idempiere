@@ -1,0 +1,2 @@
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table><tr><td colspan=3>fit.specify.SelfStarter</td></tr><tr><td>enter</td><td>enterString</td><td>a string</td></tr><tr><td>check</td><td>s</td><td>a string</td></tr></table>-!|!-<table><tr><td colspan=3>fit.specify.SelfStarter</td></tr><tr><td>enter</td><td>enterString</td><td>a string</td></tr><tr><td>check</td><td>s</td><td class="pass">a string</td></tr></table>-!|

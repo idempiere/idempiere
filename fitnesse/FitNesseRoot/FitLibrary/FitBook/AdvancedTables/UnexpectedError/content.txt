@@ -1,0 +1,4 @@
+|!-CalculateDiscount-!|
+|amount|discount()|
+|-100.00|0.00|
+|1200.00|60.00|

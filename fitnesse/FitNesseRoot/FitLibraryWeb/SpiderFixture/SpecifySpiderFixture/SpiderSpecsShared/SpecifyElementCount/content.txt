@@ -1,0 +1,14 @@
+!*< def
+!define html ({{{<pq id="p"/><pq id="p"/><pq id="p"/>
+<p name="pp">bla</p>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''count of''|//pq[@id="p"]|''is''|3|
+
+|''count of''|//q|''is''|0|

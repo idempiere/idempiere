@@ -1,0 +1,76 @@
+!2 Appendix A. Defining an Action Within a Storytest
+An action definition can be included within a storytest, but it's messier than with suites (as above). Here's an example:
+
+!**< hide
+!define getUrlGiving (
+|''get url''|url|''giving title''|title|
+
+|''get url''|@{url}|
+
+|''title''|'''becomes'''|@{title}|
+)
+
+**!
+|!-fitlibrary.DefineAction-!|
+|${getUrlGiving}|
+
+The first row of the table has the fixture ''!-fitlibrary.DefineAction-!''. The second row of the table contains several nested tables. The first of these tables gives the defined action, with the even cells containing parameter names (here, ''URL'' and ''TITLE''). They are in uppercase here, but that's not necessary.
+
+The subsequent (nested) tables give the ''body'' of the ''defined action'', and can include use of the parameters at any point. The example above uses the parameters by themselves in various cells. In general, the parameters can be included with other text.
+!3 A.1 Wiki Format for ''defined actions'' Within a Storytest
+Here it is shown in wiki format:
+
+----{{{
+!**< hide
+!define getUrlGiving (
+|''get url''|url|''giving title''|title|
+
+|''get url''|@{url}|
+
+|''title''|'''becomes'''|@{title}|
+)
+
+**!
+|!-fitlibrary.DefineTemplate-!|
+|!-${getUrlGiving}-!|
+}}}----
+This, unfortunately, uses lots of messy wiki hieroglyphics!
+
+Let's go through them, step by step.
+
+!3 A.2 Hiding text by folding
+The text surrounded by the following is folded up and hidden:
+----{{{
+!**< hide
+...
+
+**!
+}}}----
+If you want to be able to see the text inside the folded area, replace the "<" by a ">". Then, when not editing the text, you can fold/unfold the text, etc inside that folding area by clicking on the little triangle.
+
+!3 A.3 Defining nested tables
+Nested tables can't be written directly in place. They need to be ''defined'' and used as we see above.
+
+A definition has a name and a value (inside brackets). The value may be on a single line, such as:
+----{{{
+!define date (20 Dec 2009)
+}}}----
+Or it may be over several lines, such as:
+----{{{
+!define getUrlGiving (
+|''get url''|url|''giving title''|title|
+
+|''get url''|@{url}|
+
+|''title''|'''becomes'''|@{title}|
+)
+}}}----
+''!-FitNesse-!'' is fussy about the format of the ''define'':
+ * "!define" has to be at the start of the line, without a space in the middle.
+ * The name of the define can't have spaces in it. I suggest just using letters and digits.
+ * There has to be one space after the name and before the first bracket
+ * There can't be a ")" inside the value of the define.
+If you need to include a ")" inside the value, uses "{" and "}" instead to delimit the value. Then you can't use "}" inside the value. If you need to use both ")" and "}" you have to break the text up with several !defines so that any define has either one or the other, but not both.
+
+A defined value is used as follows: !-${getUrlGiving}-!. In our example above, we use that to include the nested tables inside the second row of the ''define action'' table.
+

@@ -1,0 +1,3 @@
+|''login2''|user|''with''|PASSWORD|
+
+|''login''|@{user}|''with''|@{PASSWORD}|

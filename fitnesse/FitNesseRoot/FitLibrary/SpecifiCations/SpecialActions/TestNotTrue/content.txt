@@ -1,0 +1,54 @@
+!2 '''not true''' tests that a boolean action returns false. Any exception is signalled in the report.
+#
+Note the difference between '''not true''' and '''not'''.
+!**< def
+!define test1 (!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|'''not true'''|''a right action''|1|
+|'''not true'''|''a wrong action''|1.5||2.2|
+|'''not true'''|''an exception action''|
+)
+!define test2 (!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|'''not true'''|''a parse failure''|s|
+|'''not true'''|''a missing method''|
+)
+**!
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test1}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="fail"><b>not true</b></td>
+<td><i>a right action</i></td>
+<td colspan="3">1</td>
+</tr>
+<tr><td class="pass"><b>not true</b></td>
+<td><i>a wrong action</i></td>
+<td>1.5</td>
+<td>&nbsp;</td>
+<td>2.2</td>
+</tr>
+<tr><td class="error"><b>not true</b><hr><pre><div class="fit_stacktrace"></div></pre></td>
+<td colspan="4"><i>an exception action</i></td>
+</tr>
+</table>-!|
+
+ * While a parse error (such as a number format exception) will be treated as success, a missing method or other such error is reported as such.
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test2}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><b>not true</b></td>
+<td><i>a parse failure</i></td>
+<td class="error">s<hr/> <span class="fit_label">Invalid Number</span></td>
+</tr>
+<tr><td class="error"><b>not true</b><hr/> <span class="fit_label">Missing method</span></td>
+<td colspan="2"><i>a missing method</i></td>
+</tr>
+</table>-!|

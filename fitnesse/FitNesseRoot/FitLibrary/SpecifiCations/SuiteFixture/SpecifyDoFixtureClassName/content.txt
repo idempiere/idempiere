@@ -1,0 +1,33 @@
+!**< defs
+!define simple (
+!|fitlibrary.specify.suite.Simple|
+)
+!define one (
+!|fitlibrary.specify.suite.MyOtherDoFixture|
+
+|action on that|
+)
+!define two (
+!|fitlibrary.specify.suite.MyOtherDoTraverse|
+
+|action on that|
+)
+**!
+|!-fitlibrary.spec.SpecifySuiteFixture-!|
+|${simple}|${simple}|
+|${one}|!-<br/><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.suite.MyOtherDoFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass">action on that</td>
+</tr>
+</table>-!|
+|${two}|!-<br/><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.suite.MyOtherDoTraverse</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass">action on that</td>
+</tr>
+</table>-!|

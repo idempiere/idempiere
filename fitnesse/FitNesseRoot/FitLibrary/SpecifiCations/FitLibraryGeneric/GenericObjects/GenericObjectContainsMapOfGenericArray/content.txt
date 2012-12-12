@@ -1,0 +1,30 @@
+!***< def
+!define ls (
+|''colour''|
+|red|
+|green|
+
+)
+!define ls2 (
+|''colour''|
+|yellow|
+|blue|
+
+)
+!define ts (
+|1|${ls2}|
+|2|${ls}|
+
+)
+!define gen (
+|''ts''|${ts}|
+
+)
+**!
+!|fitlibraryGeneric.specify.object.GenericObjectContainsMapOfGenericArray|
+
+|''gen''|${gen}|
+
+|''checks''|
+
+|''gen''|${gen}|

@@ -1,0 +1,55 @@
+!**< def
+!define test (!|fitlibrary.specify.specialAction.SpecialActions|
+
+|'''show predefined'''|''a string with white space''|
+
+|'''show predefined'''|''ten''|
+
+|'''show predefined'''|''html''|
+
+|'''show predefined'''|''int property''|
+
+|'''show predefined'''|''a true action''|
+|'''show predefined'''|''a false action''|
+|'''show predefined'''|''an error action''|
+)
+**!
+!2 'show predefined' adds a new cell to the row to show the returned value of an action, with <pre> tags around it to show new lines, tabs, etc
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.specialAction.SpecialActions</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show predefined</b></td>
+<td><i>a string with white space</i></td>
+<td bgcolor=#C0C0FF><pre>	line one
+	line	2</pre></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show predefined</b></td>
+<td><i>ten</i></td>
+<td bgcolor=#C0C0FF><pre>10</pre></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show predefined</b></td>
+<td><i>html</i></td>
+<td bgcolor=#C0C0FF><pre><ul><li>ita<li>lics</ul></pre></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show predefined</b></td>
+<td><i>int property</i></td>
+<td bgcolor=#C0C0FF><pre>2</pre></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show predefined</b></td>
+<td><i>a true action</i></td>
+<td bgcolor=#C0C0FF><pre>true</pre></td></tr>
+<tr><td><b>show predefined</b></td>
+<td><i>a false action</i></td>
+<td bgcolor=#C0C0FF><pre>false</pre></td></tr>
+<tr><td class="error"><b>show predefined</b><hr/> <span class="fit_label">whoops</span></td>
+<td><i>an error action</i></td>
+</tr>
+</table>-!|

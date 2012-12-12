@@ -1,0 +1,5 @@
+!3 ''Transactions actions that fail, as hire items unavailable''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|'''not'''|''rent''|500||coffee dispenser|''for''|3 days|
+|'''not'''|''rent''|500||hot water dispenser|''for''|3 days|
+|''complete transaction''|

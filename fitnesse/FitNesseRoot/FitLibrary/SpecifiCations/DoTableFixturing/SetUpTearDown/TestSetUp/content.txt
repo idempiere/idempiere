@@ -1,0 +1,17 @@
+ * ''setUp()'' is called before running the table
+ * Here, the ''setUp()'' method shows it has worked by setting ''is set up'' to true
+
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table>
+<tr><td>fitlibrary.specify.workflow.SetUp</td></tr>
+</table>
+<br>
+<table>
+<tr><td>check</td><td><i>is set up</i></td><td>true</td></tr>
+</table>-!|!-<table>
+<tr><td>fitlibrary.specify.workflow.SetUp</td></tr>
+</table>
+<br>
+<table>
+<tr><td>check</td><td><i>is set up</i></td><td class="pass">true</td></tr>
+</table>-!|

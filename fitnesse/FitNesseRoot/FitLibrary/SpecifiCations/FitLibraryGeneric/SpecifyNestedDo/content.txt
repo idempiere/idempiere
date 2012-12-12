@@ -1,0 +1,8 @@
+!|fitlibraryGeneric.specify.DomainFixtureUnderTest|
+
+|''actions''|
+
+|''colour''|
+|!include ColourObject|
+
+|''checks''|

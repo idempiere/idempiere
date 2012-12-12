@@ -1,0 +1,3 @@
+These storytests are necessarily Java-specific. There's likely to be similar storytests for implementations in other programming languages
+|!contents|
+

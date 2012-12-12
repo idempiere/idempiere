@@ -1,0 +1,12 @@
+!|fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.PlainTextInsteadOfTables.AmbiguityAcrossDefinedActions.DefinedActions|
+
+|'''set'''|place.address|'''to'''|Waimauku|
+
+![
+address is Waimauku in NZ in 2010
+address is Waimauku in NZ on 2010
+]!

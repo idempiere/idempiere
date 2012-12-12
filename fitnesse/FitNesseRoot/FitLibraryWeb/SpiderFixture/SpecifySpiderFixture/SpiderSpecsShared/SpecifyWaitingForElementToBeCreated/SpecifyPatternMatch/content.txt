@@ -1,0 +1,22 @@
+!*< def
+!define html [{{{<script type="text/javascript">
+function addInput(){
+   document.getElementById("22").innerHTML += "A match in time saves nine";
+}
+</script>
+<input type="button" id="ok" value="OK" onclick="javascript:setTimeout('addInput()', 50)"/>
+
+<div id='22'>.</div>}}}]
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''click''|ok|
+
+|''page source''|contains|match|
+
+|''page contains regular expression''|.*match.*ine|

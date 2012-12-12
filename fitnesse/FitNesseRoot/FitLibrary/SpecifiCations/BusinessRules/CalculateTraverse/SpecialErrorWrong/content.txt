@@ -1,0 +1,17 @@
+!3 It's wrong if an exception is not thrown when it's expected.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest2</td></tr>
+</table>
+<table>
+<tr><td colspan=4>calc</td></tr>
+<tr><td>a</td><td>b</td><td></td><td>plus</td></tr>
+<tr><td>1</td><td>2</td><td></td><td>exception</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest2</td></tr>
+</table>
+<table>
+<tr><td colspan=4>calc</td></tr>
+<tr><td>a</td><td>b</td><td></td><td>plus</td></tr>
+<tr><td>1</td><td>2</td><td></td><td class="fail">exception</td></tr>
+</table>-!|

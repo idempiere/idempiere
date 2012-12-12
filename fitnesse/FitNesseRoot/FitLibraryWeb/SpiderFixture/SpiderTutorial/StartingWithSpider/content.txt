@@ -1,0 +1,66 @@
+!**< hide
+!define spider {''!-SpiderFixture-!''}
+**!
+In this tutorial, we'll look at the first steps of creating a storytest for a web site. We assume that you're somewhat familiar with:
+
+ * HTML -- if not, a good introduction is http://www.w3schools.com/html
+ * ''!-FitLibrary-!'' tables -- if not, see the introductory tutorials that come with ''!-FitLibrary-!'' (they may be at .FitLibrary.BeginningTutorial)
+
+We'll use ${spider} to run some test suites in ''!-FitNesse-!'' and check that they all pass.
+
+By the way, this storytest will end up being extended as one step in the continuous integration of ''!-FitLibraryWeb-!'' development.
+
+We'll begin by running the suite for ''!-TemplateFixture-!'', checking that it passes.
+#
+!2 Accessing the page
+#
+We'll use ${spider} running ''Firefox'' (so you'll need to be sure that a version of Firefox not older than a year is installed):
+
+!|fitlibrary.spider.SpiderFixture|
+
+|''start spider with''|firefox|
+
+We want to check that it's working correctly, so let's ensure that the firefox browser is left open at the end of the storytest:
+
+|''shutdown browser automatically''|false|
+
+Now we need to access the right ''!-FitNesse-!'' page, running with the right port:
+
+ * We use the special symbol FITNESSE_PORT so it doesn't matter which port ''!-FitNesse-!'' happens to be running on (you'll only see this symbol in the following table when editing).
+ * We use the ${spider} action ''get url'' to load the page
+
+|''get url''|http://localhost:${FITNESSE_PORT}/FitLibraryWeb.TemplateFixture|
+
+Let's try it out. It's easier to see if you shrink the size of this window and move it to the right-side of the screen. When a new firefox window is created, it will be in the top-left of the screen.
+
+OK, so now let's press the '''Test''' button near the top left and see what happens...
+
+ * A firefox browser page should come up, showing the right page.
+ * The 2nd and 4th of the tables above should be coloured green (as well as some more below).
+ * Each time you run it, a new firefox window will appear.
+#
+!2 Verifying the title
+#
+Now we have the page loaded, we can check that the title of the page is correct:
+
+|''title''|'''is'''|!-FitLibraryWeb.TemplateFixture-!|
+
+The ''title'' action returns the title of the current page. The '''is''' part checks the exact title.
+
+We could check a part of the title, using '''contains''':
+
+|''title''|'''contains'''|!-TemplateFixture-!|
+
+Or we could use pattern matching (using regular expressions):
+
+|''title''|'''matches'''|.emplate.ixture|
+
+(where the "." matches any character)
+#
+!2 Verifying text on the page
+#
+Let's now verify that the top of the page contains the text "!-TemplateFixture-!". We can do this by simply checking that that text appears anywhere on the page:
+
+|''page source''|'''contains'''|!-TemplateFixture-!|
+
+But that's not very precise -- it's just checking that it occurs anywhere. Let's be more precise [[on this page][>UsingXpath]]

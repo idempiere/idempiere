@@ -1,0 +1,33 @@
+|''with xml''|
+
+|''xpath''|//b|''in''|<a><b>xyz</b></a>|''is''|xyz|
+
+|''xpath''|//b|''in''|<a><b>xyz</b></a>|'''is'''|xyz|
+
+|''xpath''|//b|''in''|<a><b>xyz<c/></b></a>|''is''|xyz|
+
+|''xpath''|count(//b)|''in''|<a><b>xyz<c/></b></a>|''is''|1|
+
+|''xpath''|//b|''in''|<a><b>xyz</b></a>|''is not''|x|
+
+ * The name space does not have to be specified if it's not used in the xml:
+
+|''xpath''|//g|''in''|<root xmlns:n="urn:n"><n:f>xyz<g>GG</g></n:f></root>|'''is'''|GG|
+
+ * The empty name space is removed from any tag before processing
+
+|''xpath''|//g|''in''|<root xmlns="urn:n"><f>xyz</f><g>GG</g></root>|'''is'''|GG|
+
+|''xpath''|!-//request/attribute::LocationCode-!|''in''|<request xmlns:f="http://services.com/Reservation/3/3" b="b" !-LocationCode-!="OOL">in<!-StartDate-!>2009-08-09Z</!-StartDate-!><!-EndDate-!>2009-08-11Z</!-EndDate-!></request>|''is''|OOL|
+
+ * The name space has to be specified if it's used in the xpath:
+
+|''name space prefix''|g|uri|urn:www.foo.com|
+
+|''xpath''|//g:f|''in''|<root xmlns:g="urn:www.foo.com"><g:f>xyz</g:f></root>|''is''|xyz|
+
+ * But prefix doesn't have to be the same as long as the uri is correct:
+
+|''name space prefix''|gg|uri|urn:www.foo.com|
+
+|''xpath''|//gg:f|''in''|<root xmlns:g="urn:www.foo.com"><g:f>xyz</g:f></root>|''is''|xyz|

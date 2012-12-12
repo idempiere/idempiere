@@ -1,0 +1,51 @@
+|''with recording web services''|
+
+|''relative file''|recorder.properties|
+|''write''|localPort1: 8094\nws1:http://localhost:8098\n|
+
+|''start recorder with properties at''|!-FitNesseRoot-!/files/recorder.properties|''adding results to''|testFolder|''in folder''|!-FitNesseRoot-!/files/recorder|''with soap version''|SOAP12|
+
+|'''also run'''|''with web server for testing''|
+
+|''start file server on port''|8098|''at directory''|!-FitNesseRoot-!|
+
+|'''also run'''|''with web services client''|
+
+|''to''|http://localhost:8094/ws|''post soap12''|<Count>100</Count>|
+
+|''stop recorder''|
+
+|''stop testing server''|
+
+|''relative file''|recorder/testFolder|
+|'''show'''|''list''|
+
+|''relative file''|recorder/testFolder/storytest8094.txt|
+|'''show predefined'''|''read''|
+|''read''|'''contains'''|mock full soap as|
+|''read''|'''contains'''|SOAP12|
+|''read''|'''contains'''|8094|
+|''delete''|
+
+|''relative file''|!-recorder/testFolder/Port8094Response1-!|
+|'''show'''|''list''|
+
+|''relative file''|!-recorder/testFolder/Port8094Response1/request.xml-!|
+|'''show escaped'''|''read''|
+|''delete''|
+
+|''relative file''|!-recorder/testFolder/Port8094Response1/response.xml-!|
+|'''show escaped'''|''read''|
+|''delete''|
+
+|''relative file''|recorder.properties|
+|''delete''|
+
+|''relative file''|!-recorder/testFolder/Port8094Response1-!|
+|''delete''|
+
+|''relative file''|recorder/testFolder|
+|''delete''|
+
+|''relative file''|recorder|
+|''delete''|

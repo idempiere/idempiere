@@ -1,0 +1,25 @@
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <SpecifyIframes.SpecSetUp
+
+|''text of''|//div[@id='d1']|'''is'''|white one|
+|'''not'''|''element''|//div[@id='dr']|''exists''|
+|'''not'''|''element''|//div[@id='dg']|''exists''|
+
+|''frame by name''|green|
+
+|'''not'''|''element''|//div[@id='d1']|''exists''|
+|'''not'''|''element''|//div[@id='dr']|''exists''|
+|''text of''|//div[@id='dg']|'''is'''|greening |
+
+|''default frame''|
+
+|''text of''|//div[@id='d1']|'''is'''|white one|
+|'''not'''|''element''|//div[@id='dr']|''exists''|
+|'''not'''|''element''|//div[@id='dg']|''exists''|
+
+|''frame''|0|
+
+|'''not'''|''element''|//div[@id='d1']|''exists''|
+|'''not'''|''element''|//div[@id='dg']|''exists''|
+|''text of''|//div[@id='dr']|'''is'''|reddening|

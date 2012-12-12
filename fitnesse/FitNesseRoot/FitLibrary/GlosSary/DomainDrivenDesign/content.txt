@@ -1,0 +1,5 @@
+''Domain-Driven Design, Tackling Complexity in the Heart of Software'', Eric Evans, Addison-Wesley, 2004
+
+This discusses all of the following:
+ * ValueObject
+ * DomainEntity

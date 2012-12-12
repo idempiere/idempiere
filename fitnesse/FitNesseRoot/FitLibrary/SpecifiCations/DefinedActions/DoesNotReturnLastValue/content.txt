@@ -1,0 +1,72 @@
+!**< def
+!define body (|''aa fails''|
+
+|object missing|
+)
+!define body2 (|''bb fails''|
+
+|aa fails|
+)
+!define test (
+|!-fitlibrary.DefineAction-!|
+|${body}|
+
+|!-fitlibrary.DefineAction-!|
+|${body2}|
+
+!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|''bb fails''|
+|''get a''|'''is'''|0|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.DefineAction</td>
+</tr>
+<tr><td><table border="1" cellspacing="0">
+<tr><td class="pass"><i>aa fails</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>object missing</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>fitlibrary.DefineAction</td>
+</tr>
+<tr><td><table border="1" cellspacing="0">
+<tr><td class="pass"><i>bb fails</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>aa fails</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.definedAction.DefinedActionUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="3" class="error"><i>bb fails</i><hr/> <span class="fit_label"></span></td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call:</span><table border="1" cellspacing="0">
+<tr><td class="error">aa fails<hr/> <span class="fit_label"></span></td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call:</span><table border="1" cellspacing="0">
+<tr><td class="error">object missing<hr/> <span class="fit_label">Missing class or Missing method.</span></td>
+</tr>
+</table>
+</td></tr>
+</table>
+</td></tr>
+<tr><td class="error"><i>get a</i><hr/> <span class="fit_label">Missing class or Missing method.</span></td>
+<td><b>is</b></td>
+<td>0</td>
+</tr>
+</table>-!|

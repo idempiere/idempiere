@@ -1,0 +1,13 @@
+|set|animal|to|dog|
+
+|set|breed|to|beagle|
+
+|''lookup''|
+|@{animal}|@{breed}|name?|
+|cat|persian|lucky|
+|dog|foxhound|rover|
+|dog|beagle|samson|
+|cat|siamese|lucy|
+
+
+|''get''|@{name}|is|samson|

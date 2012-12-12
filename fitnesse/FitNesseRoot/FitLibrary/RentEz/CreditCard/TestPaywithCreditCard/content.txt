@@ -1,0 +1,9 @@
+|''begin transaction for client''| Bob |''staff''| Bill |
+|''rent''|1||Tricycle|''for''|1 day|
+|'''ensure'''|''pay with credit card $''|20.00|''card type''|Visa|''expires''|11/05|''number''|4485891284549100|
+|''complete transaction''|
+
+|''begin transaction for client''| Bob |''staff''| Bill |
+|''rent''|1||Bike|''for''|1 day|
+|'''reject'''|''pay with credit card $''|200.00|''card type''|Visa|''expires''|12/05|''number''|49937395716|
+|'''not'''|''complete transaction''|

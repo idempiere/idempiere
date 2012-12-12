@@ -1,0 +1,56 @@
+!|fitlibrary.specify.log.AppWithLog4j|
+
+The above fixture refers to an object of class ''!-AppWithLog4j-!'', as follows:
+{{{   public class AppWithLog4j {
+	private static Logger logger = Logger.getLogger(AppWithLog4j.class);
+
+	public boolean call() {
+		logger.trace("App called");
+		return true;
+	}
+	public void alsoShowFixturingInNormalLog(boolean delegate) {
+		FixturingLogger.setDelegatingToNormalLogger(delegate);
+	}
+	public void alsoShowFitLibraryInNormalLog(boolean delegate) {
+		FitLibraryLogger.setDelegatingToNormalLogger(delegate);
+	}
+   }
+}}}The action ''call into application'' calls the method ''call()'' above.
+
+The last 2 methods above illustrate how to redirect these other loggers to the normal log4j logger. This may be useful if you want to interweave normal logging with the other specialised loggers.
+
+|''with log4j''|
+|''show after''|true|
+|''level''|TRACE|
+
+ * On ''Test'', the following has text added after the table, because we've enabled ''show after'' and the level is TRACE:
+
+|''call''|
+
+|''!-with FitLibrary logger-!''|
+|''level''|TRACE|
+
+|''call''|
+
+|''!-with FitLibrary logger-!''|
+|''level''|OFF|
+
+|''with log4j''|
+|''level''|DEBUG|
+
+ * The following does not add text because the level is DEBUG, so trace() calls are not shown:
+
+|''call''|
+
+|''with log4j''|
+|''level''|TRACE|
+|''show after''|false|
+
+ * The following does not add text because we've disabled ''show after'':
+
+|''call''|
+
+#
+----!1 Next
+#
+Continue with the [[rest of the tutorial here][<LoggingTechniques.Log4jLogging]]

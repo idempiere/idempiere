@@ -1,0 +1,14 @@
+|''spider on port''|port|
+
+|''set''|fitNessePort|''to''|@{port}|
+
+!|fitlibrary.spider.SpiderFixture|
+
+|''start spider with''|firefox|
+
+|''shutdown browser automatically''|false|
+----
+|''ajax on port''|port|
+
+|''spider on port''|@{port}|
+----

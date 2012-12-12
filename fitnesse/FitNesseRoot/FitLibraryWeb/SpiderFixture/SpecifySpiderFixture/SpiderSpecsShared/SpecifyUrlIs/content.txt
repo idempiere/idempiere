@@ -1,0 +1,13 @@
+!*< def
+!define html ({{{<head>
+  <title>A title</title>
+</head>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''url''|'''matches'''|http://localhost.*/files/.*/test.html|

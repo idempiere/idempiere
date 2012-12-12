@@ -1,0 +1,32 @@
+!2 The generic type of an object that's returned from a do action is retained so that any subsequent calls into that object are bound correctly.
+!**< def
+!define test (
+!|fitlibraryGeneric.specify.calculate.GenericCalculate|
+
+|''gen''|
+|''calculate''|
+|||''identity''|
+|red||red|
+
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibraryGeneric.specify.calculate.GenericCalculate</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td colspan="3"><i>gen</i></td>
+</tr>
+<tr><td colspan="3"><i>calculate</i></td>
+</tr>
+<tr><td>&nbsp;</td>
+<td>&nbsp;</td>
+<td><i>identity</i></td>
+</tr>
+<tr><td>red</td>
+<td>&nbsp;</td>
+<td class="pass">red</td>
+</tr>
+</table>
+<br>-!|

@@ -1,0 +1,7 @@
+|''lookup''|
+|one|hit?|
+|two|2|
+|one|1|
+|one|11|
+
+|''get''|@{hit}|is|1|

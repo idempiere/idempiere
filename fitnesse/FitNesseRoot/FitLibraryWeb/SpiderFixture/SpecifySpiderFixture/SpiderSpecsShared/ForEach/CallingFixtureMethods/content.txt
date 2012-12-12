@@ -1,0 +1,23 @@
+''for each'' runs the action in the second row of the table several times, once for each of the values in the list in the second argument of the first row. For each value in turn, the ''dynamic property'' ''a'' takes the value of the next element of the list. In addition, the property ''fromZero'' gives the index number of the element from the list, starting at 0. The property ''fromOne'' is the same as ''fromZero'' except that it counts the index from 1.
+
+As ''for each'' is run, the results for each run of the second row are added to the report table.
+
+!include -c .FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|set|series|to||
+
+|''for each''|fibonacci_series|''in''|1,1,2,3,5|
+|set|series|to|@{series}@{fibonacci_series}|
+
+|get|@{series}|is|11235|
+
+''Example accessing indexes:''
+
+|set|indexes|to||
+
+|''for each''|expected|''in''|01,12,23,34,45,56,67,78,89,910|
+|set|indexes|to|@{indexes}@{expected}=@{fromZero}@{fromOne},|
+
+|get|@{indexes}|is|01=01,12=12,23=23,34=34,45=45,56=56,67=67,78=78,89=89,910=910,|
+
+

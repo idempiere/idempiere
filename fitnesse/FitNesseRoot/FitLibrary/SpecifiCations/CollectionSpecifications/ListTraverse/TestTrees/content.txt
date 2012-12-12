@@ -1,0 +1,15 @@
+!2 Elements can be non-textual things, like HTML lists
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.ArrayFixtureUnderTestGraphics</td></tr>
+<tr><td>i</td><td>tree</td></tr>
+<tr><td>1</td><td>a</td></tr>
+<tr><td>1</td><td><ul><li>a</li></ul></td></tr>
+<tr><td>2</td><td><ul><li>a</li><li>BB</li></ul></td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.ArrayFixtureUnderTestGraphics</td></tr>
+<tr><td>i</td><td>tree</td></tr>
+<tr><td class="pass">1</td><td class="pass">a</td></tr>
+<tr><td class="pass">1</td><td class="pass"><ul><li>a</li></ul></td></tr>
+<tr><td class="pass">2</td><td class="pass"><ul><li>a</li><li>BB</li></ul></td></tr>
+</table>-!|

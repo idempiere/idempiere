@@ -1,0 +1,24 @@
+!|fitlibraryGeneric.specify.DomainFixtureUnderTest|
+!***< def
+!define typed (||''count''|
+|concrete one|3|
+)
+!define set ( * Set<Attribute> contains Colours
+|''a set of attribute''|${typed}|
+)
+!define listAttribute (||''count''|
+|concrete one|3|
+)
+!define colours ( * List<Attribute> contains Colours
+|''a list of attribute''|${listAttribute}|
+)
+**!
+${set}
+${colours}
+
+|''actions''|
+
+|''checks''|
+
+${set}
+${colours}

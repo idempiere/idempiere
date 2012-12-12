@@ -1,0 +1,16 @@
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=5>calculate</td></tr>
+<tr><td>name</td><td></td><td>getCamelField</td><td>get camel field</td><td>+</td></tr>
+<tr><td>two</td><td></td><td>two</td><td>two</td><td>two+</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=5>calculate</td></tr>
+<tr><td>name</td><td></td><td>getCamelField</td><td>get camel field</td><td>+</td></tr>
+<tr><td>two</td><td></td><td class="pass">two</td><td class="pass">two</td><td class="pass">two+</td></tr>
+</table>-!|

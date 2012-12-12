@@ -1,0 +1,40 @@
+!***< def
+!define test (
+!|fitlibraryGeneric.specify.enumerator.BareEnum|
+
+|''enumeration''|light red|
+----
+----
+|''enumeration''|green|
+
+|''enumeration''|${list}|
+
+)
+!define list (
+|light red|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibraryGeneric.specify.enumerator.BareEnum</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>enumeration</i></td>
+<td>light red</td>
+</tr>
+</table>
+<hr><br><hr><br><table border="1" cellspacing="0">
+<tr><td><i>enumeration</i></td>
+<td class="fail">green <span class="fit_label">expected</span><hr>LIGHTRED <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>enumeration</i></td>
+<td class="fail"><br><table border="1" cellspacing="0">
+<tr><td>light red</td>
+</tr>
+</table> <span class="fit_label">unexpected collection</span></td>
+</tr>
+</table>
+<br>-!|

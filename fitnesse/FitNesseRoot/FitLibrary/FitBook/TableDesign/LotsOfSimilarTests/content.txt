@@ -1,0 +1,5 @@
+.FitBook.XpProjectInFlow.XpProjectOne.EarlyReturn
+ * Collapse lots of workflow into one or two, with business rules extracted:
+^BusinessRule
+ * This makes it easier to see that the various cases are covered.
+ * And it's easier to understand what the business rule is about.

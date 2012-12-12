@@ -1,0 +1,6 @@
+|!-CalculateCredit-!|
+|''months''|''reliable''|''balance''|''allow credit()''|''credit limit()''|
+|13|true|5900.00|true|1000.00|
+|12|true|0.00|false|1000.00|
+|24|false|1000.00|false|0.00|
+|18|false|6000.00|true|1000.00|

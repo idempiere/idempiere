@@ -1,0 +1,61 @@
+!**< def
+!define map1 (|yellow|blue|
+|red|green|
+|red|blue|
+)
+!define map2 (|yellow|blue|
+|red|blue|
+|red|green|
+)
+!define test (!|fitlibrary.specify.mapTraverse.ColourMap|
+
+|''checks''|
+
+|''colour map''|${map1}|
+
+|''colour map''|${map2}|
+)
+**!
+Each of the expected elements are matched in turn against the actual elements of the Map. So the order of the rows imnpacts on the error message given.
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.mapTraverse.ColourMap</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>colour map</i></td>
+<td><table border="1" cellspacing="0">
+<tr class="pass"><td>yellow</td>
+<td>blue</td>
+</tr>
+<tr class="pass"><td>red</td>
+<td>green</td>
+</tr>
+<tr><td class="fail">red <span class="fit_label">missing</span></td>
+<td>blue</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>colour map</i></td>
+<td><table border="1" cellspacing="0">
+<tr class="pass"><td>yellow</td>
+<td>blue</td>
+</tr>
+<tr><td>red</td>
+<td class="fail">blue <span class="fit_label">expected</span><hr>Colour[green] <span class="fit_label">actual</span></td>
+</tr>
+<tr><td class="fail">red <span class="fit_label">missing</span></td>
+<td>green</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

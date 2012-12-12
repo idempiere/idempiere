@@ -1,0 +1,32 @@
+!3 Charge for a larger time period if it's better for the customer
+''Eg, Charge for one week instead of 6 days if it's less. We assume a single item rented here:''
+
+|!-hire.CalculateChargeFairly-!|
+|''$/hour''|''$/day''|''hours''|''days''||''cost in $''|
+| 1.00     |  5.00   |  3      | 0      || 3.00        |
+|          |         |  4      |        || 4.00         |
+|          |         |  5      |        || 5.00   |
+|          |         |  6      |        || 5.00   |
+|          |         |  11     |        || 5.00   |
+| 1.00     |  5.00   |  3      | 1      || 8.00   |
+|          |         |  4      |        || 9.00   |
+|          |         |  5      |        ||10.00   |
+|          |         |  6      |        ||10.00   |
+|          |         |  11     |        ||10.00   |
+
+|!-hire.CalculateChargeFairly-!|
+|''$/hour'' |''$/day'' |''hours''|''days''||''cost in $''|
+| 1.00     |  2.00   |  1      | 0      || 1.00   |
+|          |         |  3      |        || 2.00   |
+
+|!-hire.CalculateChargeFairly-!|
+|''$/day'' |''$/week'' |''days''|''weeks''||''cost in $''|
+| 1.00    |  5.00    |  3     | 0       || 3.00   |
+|         |          |  4     |         || 4.00   |
+|         |          |  5     |         || 5.00   |
+|         |          |  6     |         || 5.00   |
+| 1.00    |  5.00    |  3     | 1       || 8.00   |
+|         |          |  4     |         || 9.00   |
+|         |          |  5     |         ||10.00   |
+|         |          |  6     |         ||10.00   |
+''Also need to use this fair charging approach when calculating how much extra to charge or what to refund, so both parties are treated fairly.''

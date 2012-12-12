@@ -1,0 +1,11 @@
+!|fitlibrary.CompareFilesFixture|
+!2 Two empty files are the same
+|check|''file''|testFiles/empty.txt|''same as''|testFiles/alsoEmpty.xls|OK|
+!2 A file is equal to itself
+|check|''file''|testFiles/threeLines.txt|''same as''|testFiles/threeLines.txt|OK|
+!2 The two files are equal
+|check|''file''|testFiles/threeLines.txt|''same as''|testFiles/alsoThreeLines.txt|OK|
+!2 Differing file lengths
+|check|''file''|testFiles/threeLines.txt|''same as''|testFiles/empty.txt|!-threeLines.txt<ul><li><i>File longer by 19 bytes than:</i></li><li>empty.txt</li></ul>-!|
+!2 Differing file contents
+|check|''file''|testFiles/threeLines.txt|''same as''|testFiles/differingThreeLines.txt|!-threeLines.txt<ul><li><i>Files differ at byte position 9</i></li><li>differingThreeLines.txt</li></ul>-!|

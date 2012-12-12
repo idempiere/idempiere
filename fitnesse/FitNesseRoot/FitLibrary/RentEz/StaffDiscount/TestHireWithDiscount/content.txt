@@ -1,0 +1,5 @@
+|''begin transaction for client''| John|''staff''| Bill|
+|''rent''|1||Truck|''for''|1 day|
+|''rent''|1||Tricycle|''for''|1 day|
+|''pay with cash $''|1767.50|
+|''complete transaction''|

@@ -1,0 +1,126 @@
+!**< def
+!define test1 (!|fitlibrary.specify.global.OnErrorHandler|
+
+|''fails''|
+
+|''exceptions''|
+
+|''exceptions''|
+
+|''fails''|
+)
+!define test2 (!|fitlibrary.specify.global.OnErrorHandler|
+
+|'''inform on fail or error in storytest'''|''listener''|
+
+|''fails''|
+
+|''exceptions''|
+
+|''exceptions''|
+
+|''fails''|
+)
+*!
+!3 This is a technical action, intended for programmers.
+#
+By default, a storytest continues running through to the end.
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test1}|!-<table border="1" cellspacing="0">
+	<tr>
+		<td>fitlibrary.specify.global.OnErrorHandler</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="fail"><i>fails</i></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="error"><i>exceptions</i><hr/> <span class="fit_label">error</span></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="error"><i>exceptions</i><hr/> <span class="fit_label">error</span></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="fail"><i>fails</i></td>
+	</tr>
+</table>-!|
+
+An on-error listener may be registered with ''!-FitLibrary-!'', so that is stops after 2 exceptions.
+
+In the following, we add a show cell each time the stopOnError() method is called. 
+
+When there have been 2 errors, an extra show cell is added to show that, and it stops:
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test2}|!-<table border="1" cellspacing="0">
+	<tr>
+		<td>fitlibrary.specify.global.OnErrorHandler</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><b>inform on fail or error in storytest</b></td>
+		<td><i>listener</i></td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="fail"><i>fails</i></td>
+	<td bgcolor=#C0C0FF>stopOnError with 1 fails and 0 errors</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="error"><i>exceptions</i><hr/> <span class="fit_label">error</span></td>
+	<td bgcolor=#C0C0FF>stopOnError with 1 fails and 1 errors</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="error"><i>exceptions</i><hr/> <span class="fit_label">error</span></td>
+	<td bgcolor=#C0C0FF>stopOnError with 1 fails and 2 errors</td><td bgcolor=#C0C0FF>Stopping</td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td class="ignore"><i>fails</i></td>
+	</tr>
+</table>-!|
+
+''!-OnErrorHandler-!'' is as follows:
+{{{public class OnErrorHandler implements RuntimeContextual, OnError {
+	private RuntimeContextInternal runtime;
+
+	public boolean stopOnError(int fails, int errors) {
+		runtime.currentRow().addShow("stopOnError with "+fails+" fails and "+errors+" errors");
+		if (errors >= 2)
+			runtime.currentRow().addShow("Stopping");
+		return errors >= 2;
+	}
+	
+	public Object listener() {
+		return this;
+	}
+	
+	public boolean fails() {
+		return false;
+	}
+
+	public boolean exceptions() {
+		throw new FitLibraryException("error");
+	}
+
+	public Object getSystemUnderTest() {
+		return null;
+	}
+
+	public void setRuntimeContext(RuntimeContextInternal runtime) {
+		this.runtime = runtime;
+	}
+}
+}}}

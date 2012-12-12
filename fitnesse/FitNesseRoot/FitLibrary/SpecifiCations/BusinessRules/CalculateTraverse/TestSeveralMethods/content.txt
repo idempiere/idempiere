@@ -1,0 +1,17 @@
+!2 A table can include several methods.
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=5>calculate</td></tr>
+<tr><td>a</td><td>b</td><td>&nbsp;</td><td>plus</td><td>minus</td></tr>
+<tr><td>1</td><td>12</td><td>&nbsp;</td><td>13</td><td>-11</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=5>calculate</td></tr>
+<tr><td>a</td><td>b</td><td>&nbsp;</td><td>plus</td><td>minus</td></tr>
+<tr><td>1</td><td>12</td><td>&nbsp;</td><td class="pass">13</td><td class="pass">-11</td></tr>
+</table>-!|

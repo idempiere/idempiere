@@ -1,0 +1,28 @@
+${programmers}
+Most of the time, there's no need to specifically mention the code that will interpret a table:
+ * If the method for a ${workflow} action returns a List, Set, array, Map, ${entity}, etc, it will be ${autoWrapped} with an appropriate ${traverse}
+ * If a nested table corresponds to the argument of a method, the appropriate ${traverse} will be used to set up the collection, array, map or object
+However, you may want to use a specific ${traverse} in your code.
+ * For example, you may prefer to have a ''!-SetTraverse-!'' manage a ''Map'' instead of ''!-MapTraverse-!'', the default.
+ * For example, you may prefer to have a ''!-SetTraverse-!'' manage an array instead of ''!-ArrayTraverse-!'', the default.
+ * Rather than referring to the specific ${traverse}, call the appropriate factory method in class ''!-FitLibrarySelector-!''.
+!3 Factory methods
+${workflow}:
+ * public static Traverse selectWorkflow(Object sut);
+Collections:
+ * public static Traverse selectPrimitiveArray(Object array);
+ * public static Traverse selectUnorderedList(Object actuals);
+ * public static !-CollectionTraverse-! selectUnorderedList();
+ * public static Traverse selectOrderedList(Object actuals);
+ * public static !-CollectionTraverse-! selectOrderedList();
+ * public static Traverse selectSet(Object actuals);
+ * public static !-CollectionTraverse-! selectSet();
+ * public static Traverse selectSubset(Object actuals);
+ * public static !-CollectionTraverse-! selectSubset();
+ * public static Traverse selectMap(Map result);
+Collections Setup:
+ * public static Traverse selectCollectionSetUp();
+ * public static Traverse selectCollectionSetUp(Collection collection);
+${domainObject}s:
+ * public static Traverse selectDomainCheck(Object domainObject);
+ * public static Traverse selectDomainSetUp(Object domainObject)

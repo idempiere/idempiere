@@ -1,0 +1,52 @@
+A '''start''' special action creates an object of the specified class and carries out the rest of the workflow on it.
+!**< def
+!define test (!|fitlibrary.specify.workflow.SelectWrap|
+
+!|start|fitlibrary.specify.eg.Rectangle|
+
+|'''check'''|''x''|0|
+|'''check'''|''y''|0|
+
+|''set location''|100||200|
+
+|'''check'''|''x''|100|
+|'''check'''|''y''|200|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.SelectWrap</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>start</td>
+<td>fitlibrary.specify.eg.Rectangle</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>x</i></td>
+<td class="pass">0</td>
+</tr>
+<tr><td><b>check</b></td>
+<td><i>y</i></td>
+<td class="pass">0</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>set location</i></td>
+<td>100</td>
+<td>&nbsp;</td>
+<td>200</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>x</i></td>
+<td class="pass">100</td>
+</tr>
+<tr><td><b>check</b></td>
+<td><i>y</i></td>
+<td class="pass">200</td>
+</tr>
+</table>-!|

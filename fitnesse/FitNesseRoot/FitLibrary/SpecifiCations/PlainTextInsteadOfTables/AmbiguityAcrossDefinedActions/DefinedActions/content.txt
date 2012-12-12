@@ -1,0 +1,15 @@
+|''address is''|address|
+
+|''get''|@{place.address}|'''is'''|@{address}|
+----
+|''address is at''| address |
+
+|''get''|@{place.address}|'''is'''|@{address}|
+----
+|''address is''|name|''in''|country|
+
+|''get''|@{place.address}|'''is'''|@{name}|
+----
+|''address is''|name|''in''|country|''in''|year|
+
+|''get''|@{place.address}|'''is'''|@{name}|

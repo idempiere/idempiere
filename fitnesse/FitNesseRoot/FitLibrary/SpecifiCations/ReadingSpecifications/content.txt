@@ -1,0 +1,56 @@
+${fitLibrary} is specified by example by using storytests, written with ${fitLibrary} tables.
+ * Some of these ${storytest}/specifications are suitable for the general reader.
+ * Some are technical in nature, and define the finer detail of ${storytest} interpretation, such as the form of an error message
+ * A very few of the storytests are language specific. These are classified as being specific to Java here.
+Here's an example of a specification:
+!**< test
+!define test (!|fitlibrary.specify.workflow.Sum|
+
+|add|1|
+|add|2|
+
+|check|sum|3|
+
+|check|sum|4|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.Sum</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>add</td>
+<td>1</td>
+</tr>
+<tr><td>add</td>
+<td>2</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>check</td>
+<td>sum</td>
+<td class="pass">3</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>check</td>
+<td>sum</td>
+<td class="fail">4 <span class="fit_label">expected</span><hr>3 <span class="fit_label">actual</span></td>
+</tr>
+</table>-!|
+
+The second row of the specification table contains two cells:
+ * The left cell holds a sequence of tables that are under test.
+ * The right cell holds the report that's expected from running the tables in the left cell.
+  * Sometimes, only some part of the error message is shown in the right, as error messages can contain programming-language-specific information.
+ * Sometimes two rows are used instead of two cells in a single row.
+The storytest passes if the test tables and the report tables are the same (ignoring extra error information)
+ * The assertion count reported for the storytest is different from usual
+ * It is based on the number of cells in the test tables, because they are all matched between the test and report
+The storytests are written in the context of underlying code:
+ * For most of the storytests, that code is very simple. The storytest and associated code act as a simple but reasonable example of the use of that ${fitLibrary} feature.
+ * Sometimes that code is engineered specifically to define unusual behaviour. For example, we specify that a ''tearDown()'' method for a Traverse is called even if an exception is thrown during table interpretation. The underlying class is tailored specifically for this, and doesn't serve as a useful example of code.
+The ${storytest}s for ${fitLibrary} are in transition:
+ * The terminology of the specifications is changing to be organised around the role of a table, rather than the specific fixture/traverse that's used. This is consistent with the current approach in ${fitLibrary} of not using fixtures/traverses explicitly.
+ * The ones that use a class immediately in the package ''fitlibrary.specify'' are still to be changed. Revised and new ${storytest}s use classes in sub-packages of ''fitlibrary.specify'', such as ''fitlibrary.specify.workflow''.

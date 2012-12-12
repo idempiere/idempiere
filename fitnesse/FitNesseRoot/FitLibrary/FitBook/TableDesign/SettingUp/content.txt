@@ -1,0 +1,4 @@
+|''set up booked list''|Joanna|
+|''rental item''  |''count'' |''from''         |''to''          |
+|coffee dispenser|2        |2004/06/01 18:00 |2004/06/02 18:00|
+|cup|40        |2004/06/01 18:00 |2004/06/02 18:00|

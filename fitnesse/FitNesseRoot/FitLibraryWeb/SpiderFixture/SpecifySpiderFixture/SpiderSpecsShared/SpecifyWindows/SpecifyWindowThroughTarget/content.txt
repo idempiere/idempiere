@@ -1,0 +1,28 @@
+!*< def
+!define target (<head><title>To here</title></head>
+)
+!define target2 (<head><title>Third</title></head>
+)
+!define html ({{{<head><title>From</title></head>
+<a id = "one" href="other.html" target="Target Window">Link</a>
+<a title="Mr Sir" href="third.html">Link2</a> }}})
+*!
+
+|''keywords''|chrome,htmlunit, firefox|
+
+!2 Not supported by IE
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''make file''|other.html|''from''|${target}|
+|''make file''|third.html|''from''|${target2}|
+
+|''with html''|${html}|
+
+|''click''|one|
+
+|''title''|'''is'''|From|
+
+|''select window''|Target Window|
+
+|''title''|'''is'''|To here|

@@ -1,0 +1,49 @@
+!2 When is it easy to migrate decision tables?
+#
+Slim storytests that only use decision tables can be easily migrated to ''!-FitLibrary-!'' when:
+
+ * The fixtures are written in Java
+ * Use is '''not''' made of the following in cells in the tables
+   * 3 < _ < 6
+   * ~=3.14
+   * < 5
+   * != 4
+   * $p=
+   * $p
+
+ * No use is made of the ''table()'' method in the fixture code
+#
+!2 Why bother?
+#
+Scenarios in Slim are limited to containing ''Script Tables'', so it doesn't help with repetition in decision tables.
+
+''!-FitLibrary-!'' has something similar to scenarios, called [[''defined actions''][.FitLibrary.UserGuide.FitLibraryByExample.DefinedActions]], but they're superior as they can contain any tables.
+
+''!-FitLibrary-!'' has other capability that you may like to use, such as ''!-FitLibraryWeb-!'' fixtures for testing web systems (''!-SpiderFixture-!''), email, PDFs, databases, etc.
+#
+!2 How to change
+#
+There are four simple step:
+
+1. In the top-level page of your projects, add the following:
+#
+{{{!define TEST_RUNNER {fitlibrary.suite.FitLibraryServer}
+}}}2. Remove the following:
+#
+{{{!define TEST_SYSTEM(slim}
+}}}#
+#
+3. Add the classpath for fitlibrary.jar:
+#
+{{{!path fitlibrary.jar
+}}}4. Finally, with your fixture classes, have them implement the Java interface ''!-RuleTable-!''.
+
+  * This is an empty ''interface'' that's used a marker so that ''!-FitLibrary-!'' can tell that the table should be treated as a decision table.
+#
+!2 For example
+#
+!|fitlibrary.specify.calculate.RuleTableExample|
+|in|in2|out?|
+|1|1|2|
+|2|2|4|
+|3|4|7|

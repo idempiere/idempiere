@@ -1,0 +1,21 @@
+Consider where there is no ${parser} for an object of class Object, and no parse() delegate either. If we only access it (result of method or getter), we simply use do a ''String'' comparison using its ''toString()'' method.
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.UseToStringForChecking</td></tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>show</td><td colspan="2">use toString</td></tr>
+<tr><td>check</td><td>use toString</td><td>77</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.UseToStringForChecking</td></tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td>show</td><td colspan="2">use toString</td>
+<td bgcolor=#C0C0FF>77</td></tr>
+<tr><td>check</td><td>use toString</td><td class="pass">77</td></tr>
+</table>-!|
+
+Of course, this won't always do what we want, but then nothing is lost.
+
+Where it's a class (not class Object nor String) that has no parse mechanism, it's treated as an ${entity} (in the ''!-DomainDrivenDesign-!'' sense) and the text is treated as a reference.

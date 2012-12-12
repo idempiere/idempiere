@@ -1,0 +1,49 @@
+!3 If a nested table is used, difference are shown in the table. Otherwise, a comma-separated list is used.
+!**< def
+!define list (|''count''|
+|1|
+|2|
+|3|
+)
+!define test (!|fitlibrary.specify.listParser.Match|
+
+|'''check'''|''counts 23''|${list}|
+
+|'''check'''|''counts 23''||
+
+|'''check'''|''iterator 23''||
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.listParser.Match</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>counts 23</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>count</i></td>
+</tr>
+<tr><td class="fail">1 <span class="fit_label">missing</span></td>
+</tr>
+<tr><td class="pass">2</td>
+</tr>
+<tr><td class="pass">3</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>counts 23</i></td>
+<td class="fail">&nbsp; <span class="fit_label">expected</span><hr>Count[2], Count[3] <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>iterator 23</i></td>
+<td class="fail">&nbsp; <span class="fit_label">expected</span><hr>Count[2], Count[3] <span class="fit_label">actual</span></td>
+</tr>
+</table>-!|

@@ -1,0 +1,68 @@
+!1 Parsing
+#
+''!-FitLibrary-!'' turns the text in a table cell into a value, such as an ''int'', ''String'' or ''Date''.
+
+However, sometimes:
+
+ * You want to handle text in a special way. Eg, you want to treat "" or "null" as a null value rather than as a normal ''String''.
+ * You want to use simple text to represent objects of your own types
+
+''!-FitLibrary-!'' provides several mechanisms to cover these.
+
+!3 Handling Special values with a ''Finder Method''
+
+For example, if we want to treat the text "null" in a table cell as representing '''null''', rather than the String "null", we can use a finder method.
+
+In your fixturing code, include the following method:
+{{{  public String findString(String s) {
+    if ("null".equals(s))
+      return null;
+    return s;
+  }
+}}} * ''!-FitLibrary-!'' finds a method corresponding to an action.
+ * It automatically parses the arguments, based on their types, and calls the method.
+ * It also uses this approach for the returned value, based on the return type.
+
+By default, it uses built-in Parsers for the standard types. However:
+
+ * It first checks if there is a ''finder method'' for each type in the fixturing code (actually, generally in scope, as discussed below).
+ * For type ''T'', the ''finder method'' is ''findT(String s)'' with a return type.
+ * If a ''finder method'' exists, ''!-FitLibrary-!'' instead uses that to turn the text from the table cell into an object.
+ * This works for any table in ''!-FitLibrary-!''
+
+Consider another example, where we want to handle ''!-TimeStamp-!'' values in a special way. We would include a ''finder method'' for it:
+{{{  public TimeStamp findTimeStamp(String s) {
+    ...
+  }
+}}}This can then incorporate specialised code for handling odd ''!-TimeStamp-!''s, such as unknown ones.
+
+There is a corresponding method for displaying an object, a ''show method''.
+
+For example, if we wanted to show a '''null''' String as a empty String in any displays in a report, we could include the following method:
+{{{  public String showString(String s) {
+    if (s == null)
+      return "";
+    return s;
+  }
+}}}
+#
+Why is it called a ''finder method''.
+
+I originally added this capability to allow for a domain-driven-design approach to storytests.
+
+Sometimes you need to refer to an existing entity in a storytest. But it may not be possible to refer to it by a visible key, or the key may be too long.
+
+So the idea is that you can invent names to refer to entities, such as "the customer", or "the third transaction". The ''finder method'' interprets these names for you, returning a reference to the appropriate object.
+
+After I added this, I realised that it could also be used for parsing arbitrary text for types with concrete values, such as dates and user-defined types. So I now use finders for those cases as well.
+
+What if a ''finder method'' needs to apply across lots of fixtures? Rather than repeating the finder code, you can include it in a custom global actions object. See .FitLibrary.SpecifiCations.AddingGlobalActionsObject for further details.
+
+!3 Parsing with user-defined classes
+#
+Instead of using ''finder methods'', it's possible to define a static method in your class C of the form:
+
+{{{  public static C parser(String s) {
+    ...
+  }
+}}}This is called by ''!-FitLibrary-!'' to turn text into an object of type C.

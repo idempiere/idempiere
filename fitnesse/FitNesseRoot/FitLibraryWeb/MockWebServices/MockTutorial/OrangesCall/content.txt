@@ -1,0 +1,11 @@
+|''with web services client''|
+
+|''to''|http://localhost:8081/ws|''post soap11''|<countOf>Oranges</countOf>|
+
+|'''show'''|''headers''|
+
+|'''show'''|''reply''|
+
+|'''show'''|''reply escaped''|
+
+|''xpath''|//count|''in response''|'''is'''|44|

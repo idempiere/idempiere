@@ -1,0 +1,17 @@
+!2 Wrong values are reported
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=4>calculate</td></tr>
+<tr><td>a</td><td>b</td><td>&nbsp;</td><td>plus</td></tr>
+<tr><td>0</td><td>12</td><td>&nbsp;</td><td>13</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.CalculateFixtureUnderTest</td></tr>
+</table>
+<table>
+<tr><td colspan=4>calculate</td></tr>
+<tr><td>a</td><td>b</td><td>&nbsp;</td><td>plus</td></tr>
+<tr><td>0</td><td>12</td><td>&nbsp;</td><td class="fail">13 <span class="fit_label">expected</span><hr>12 <span class="fit_label">actual</span></td></tr>
+</table>-!|

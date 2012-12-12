@@ -1,0 +1,11 @@
+|''begin transaction for client''| Bob |''staff''| Pual |
+|''rent''|1||Tricycle|''for''|1 day|
+|''pay with cash $''|20.00|
+|''complete transaction''|
+
+|''total commission''|
+|''staff''|''total''|
+|Bill|0.00|
+|Pual|4.00|
+|John|0.00|
+

@@ -1,0 +1,10 @@
+^TestSingleRental
+^TestTwoRentals
+^TestTwoRentalsInSeparateTransactions
+
+^TestSingleRentalWithDeposit
+
+^TestRentalsUnavailable
+^TestRentalsUnavailableNow
+
+^SetUp

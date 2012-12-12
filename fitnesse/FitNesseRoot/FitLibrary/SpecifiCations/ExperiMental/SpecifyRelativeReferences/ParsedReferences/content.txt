@@ -1,0 +1,42 @@
+!3 Some references are handled internally and result in a call to a method, such as findClient(0)
+!|fitlibrary.specify.References|
+
+|''calculate reference''|client|
+|''text''||''index''|
+|the||0|
+|this||0|
+|the first||0|
+|this first||0|
+|the client||0|
+|this client||0|
+|the first client||0|
+|this first client||0|
+|!-client#1-!||0|
+
+|''calculate reference''|account|
+|''text''||''index''|
+|the second||1|
+|this second||1|
+|the second account||1|
+|this second account||1|
+|!-account#2-!||1|
+
+|''calculate reference''|project|
+|''text''||''index''|
+|the third||2|
+|the third project||2|
+|!-project#3-!||2|
+|the fourth||3|
+|the fourth project||3|
+|!-project#4-!||3|
+|!-project#5-!||4|
+|!-project#6-!||5|
+|!-project#7-!||6|
+
+|''calculate reference''|person|
+|''text''||''index''|
+|the last||-1|
+|this last||-1|
+|the last person||-1|
+|this last person||-1|
+

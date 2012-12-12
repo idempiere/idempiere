@@ -1,0 +1,55 @@
+!**< def
+!define test (!|fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActions.BasedOnClass.DefinedActions|
+
+|'''set'''|anna.name|'''to'''|Anna|
+
+|setExpandDefinedActions|true|
+
+|''name is''|Isis|
+)
+**!
+
+If the dynamic variable ''this'' is set, it's treated as the default object. This avoids
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>clear defined actions</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>define actions at</i></td>
+<td><a href="FitLibrary.SpecifiCations.DefinedActions.BasedOnClass.DefinedActions">.FitLibrary.SpecifiCations.DefinedActions.BasedOnClass.DefinedActions</a></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>anna.name</td>
+<td><b>to</b></td>
+<td>Anna</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>setExpandDefinedActions</td>
+<td>true</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>name is</i></td>
+<td>Isis</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call</span>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr>
+<td>get</td>
+<td>Anna</td>
+<td>is not</td>
+<td class="pass">Isis</td></tr></table>
+<br/></html></td></tr>
+</table>-!|

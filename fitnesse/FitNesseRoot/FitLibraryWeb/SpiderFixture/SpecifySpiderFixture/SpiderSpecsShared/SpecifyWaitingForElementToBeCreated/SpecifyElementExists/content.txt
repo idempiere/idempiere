@@ -1,0 +1,30 @@
+!*< def
+!define html [{{{<script type="text/javascript">
+function addInput(){
+  document.getElementById("22").innerHTML += "<input type='text' id='in' value='green'>";
+}
+</script>
+<input type="button" id="ok" value="OK"
+onclick="javascript:setTimeout('addInput()', 50)"/>
+
+<div id='22'>.</div>}}}]
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''start stop watch''|
+
+|'''show'''|''stop watch''|
+
+|''click''|ok|
+
+|'''show'''|''stop watch''|
+
+|''element''|in|'''exists'''|
+
+|'''show'''|''stop watch''|
+

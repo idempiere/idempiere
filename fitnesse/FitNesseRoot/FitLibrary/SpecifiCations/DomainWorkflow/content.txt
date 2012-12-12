@@ -1,0 +1,8 @@
+!2 ''!-DomainFixture-!'' is a new type of fixture
+ * It aims to provide a more direct way of expressing the business domain, without the need for fixtures that mediate/map between the storytests and the SUT
+ * It operates on the SUT as a bean object with properties, methods, etc
+ * So it can handle checking, setup, etc without mentioning other fixtures
+ * It has 3 phases: ${setup}, ${actions}, and ${checks}. In each state, it interprets tables differently
+ * It is a subclass of ''!-DoFixture-!'' and inherits all of the workflow processing from that
+
+|!contents|

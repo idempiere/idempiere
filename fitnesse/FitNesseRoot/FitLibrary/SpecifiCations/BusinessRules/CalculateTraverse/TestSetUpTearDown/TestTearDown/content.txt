@@ -1,0 +1,16 @@
+ * tearDown() is called once the fixture object has finished running the table
+ * To check this has happened, the fixture here throws an exception inside tearDown()
+ * So we check that that has happened
+ * The calculation row also throws an exception, and we check that that's also reported, and that tearDown() is still called
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table>
+<tr><td colspan=3>fitlibrary.specify.CalculateFixtureTearDown</td></tr>
+<tr><td><i>a</i></td><td></td><td><i>result</i></td></tr>
+<tr><td>1</td><td></td><td>2</td></tr>
+</table>-!|!-<table>
+<tr><td colspan=3>fitlibrary.specify.CalculateFixtureTearDown</td></tr>
+<tr><td><i>a</i></td><td></td><td><i>result</i></td></tr>
+<tr><td>1</td><td></td><td class="error">2<hr><pre><div class="fit_stacktrace"></div></pre></td></tr>
+</table>
+<br/><table border="1" cellspacing="0"><tr><td class="error"><i>Error in storytest tear down: </i><hr><pre><div class="fit_stacktrace"></div></pre></td></tr></table>-!|
+

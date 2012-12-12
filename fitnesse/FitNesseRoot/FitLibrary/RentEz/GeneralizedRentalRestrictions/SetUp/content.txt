@@ -1,0 +1,29 @@
+|!-rent.StartApplication-!|
+
+|''setup''|
+|''rental item name''|''count''|''$/hour''|''$/day''|''$/week''|''deposit''|
+|Tricycle|1|3.00|20.00|80.00|0.00|
+|Bike|1|30.00|200.00|800.00|0.00|
+|Truck|1|300.00|2000.00|8000.00|0.00|
+
+|''setup''|
+|''restriction id''|''Constraint''|
+|1|Must be over the age of 5|
+|2|Must be over the age of 20|
+|3|Must have heavy traffic license|
+
+|''Apply Restrictions''|
+|''rental item name''|''restriction id''|
+|Bike|1|
+|Truck|2|
+|Truck|3|
+
+|''setup''|
+|''client name''|''phone''|
+|Joanna|373 7599|
+
+|''setup''|
+|''staff name''|''phone''|
+|Bill|555 9876|
+
+|''time is now''| 2004/05/06 09:01|

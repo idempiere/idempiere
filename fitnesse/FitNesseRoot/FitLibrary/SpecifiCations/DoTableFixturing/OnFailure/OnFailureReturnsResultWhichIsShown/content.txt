@@ -1,0 +1,23 @@
+!**< def
+!define test (!|fitlibrary.specify.workflow.OnFailureWithResult|
+
+|''result''|'''is'''|false|
+
+|''end''|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.workflow.OnFailureWithResult</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>result</i></td>
+<td><b>is</b></td>
+<td class="fail">false <span class="fit_label">expected</span><hr>true <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>end</i></td></tr>
+</table>
+<br/><table border="1" cellspacing="0"><tr><td><i>Error in storytest tear down: </i></td><td bgcolor=#C0C0FF>onFailure() called</td></tr></table>-!|

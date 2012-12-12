@@ -1,0 +1,22 @@
+!3 ''Change the length of a booking for the future''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''book''|2||coffee dispenser|''on''|2004/05/08 09:01|''for''|2 hours|
+|''pay with cash $''|6.00|
+|''complete transaction''|
+
+!3 ''One day later...''
+|''time is now''| 2004/05/07 09:01|
+
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''change period of''|2||coffee dispenser|''for''|2004/05/08 09:01|''with duration of''|2 hours|''to''|5 hours|
+|''pay with cash $''|9.00|
+|''complete transaction''|
+
+ * ''Checks''
+|''client booking list''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|coffee dispenser|2|2004/05/08 09:01|2004/05/08 14:01|
+
+|''rental item subset''|
+|''name''|''free count''|
+|coffee dispenser|10|

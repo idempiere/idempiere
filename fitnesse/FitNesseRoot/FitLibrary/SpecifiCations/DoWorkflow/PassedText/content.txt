@@ -1,0 +1,28 @@
+!|fitlibrary.specify.workflow.TextPassed|
+
+ * If you edit this page, you'll see that the next action has a new line in the middle of the string:
+
+|''is several lines''|!-abc
+def-!|
+
+|'''set'''|x|''to''|!-abc
+def-!|
+
+|''is several lines''|@{x}|
+
+|''has tags''|!-&lt;a&gt;A&lt;b/&gt;&lt;/a&gt;-!|
+
+|'''set'''|t|''to''|!-&lt;a&gt;A&lt;b/&gt;&lt;/a&gt;-!|
+
+|''has tags''|@{t}|
+
+|note|This doesn't work|''is several lines with newlines''|!-
+abc
+def
+
+-!|
+
+!define msg {abc
+def}
+
+|''is several lines without newline''|${msg}|

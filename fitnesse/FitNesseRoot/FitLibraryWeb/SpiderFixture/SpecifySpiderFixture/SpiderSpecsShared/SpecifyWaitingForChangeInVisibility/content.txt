@@ -1,0 +1,95 @@
+!*< def
+!define html [{{{<script type="text/javascript">
+function makeVisible(){
+  document.getElementById("pp").style.display='block';
+}
+function makeInvisible(){
+  document.getElementById("pp").style.display='none';
+}
+function unhide(){
+  document.getElementById("pp2").style.visibility='visible';
+}
+function hide(){
+  document.getElementById("pp2").style. visibility ='hidden';
+}
+</script>
+<input type="button" id="on" value="ON"
+onclick="javascript:setTimeout('makeVisible()', 50)"/>
+
+<input type="button" id="off" value="OFF"
+onclick="javascript:setTimeout('makeInvisible()', 50)"/>
+
+<p id="pp" style="display:none">bla
+  <q id='qq'/>
+</p>
+
+<input type="button" id="unhide" value="UNHIDE"
+onclick="javascript:setTimeout('unhide()', 50)"/>
+
+<input type="button" id="hide" value="HIDE"
+onclick="javascript:setTimeout('hide()', 50)"/>
+
+<p id="pp2" style="visibility:hidden">bla
+  <q id='qq2'/>
+</p>}}}]
+*!
+
+|''keywords''|htmlunit|
+
+!2 Not supported in IE, Firefox, Chrome
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+ * We can vary visiblity through changes to ''display''
+
+|''element''|pp|''invisible''|
+
+|''element''|qq|''invisible''|
+
+|''click''|on|
+
+|''element''|pp|''invisible''|
+
+|''element''|qq|''invisible''|
+
+|''element''|pp|''visible''|'''becomes'''|true|
+
+|''element''|qq|''visible''|'''becomes'''|true|
+
+|''click''|off|
+
+|''element''|pp|''visible''|
+
+|''element''|qq|''visible''|
+
+|''element''|pp|''visible''|'''becomes'''|false|
+
+|''element''|qq|''visible''|'''becomes'''|false|
+
+ * We can vary visiblity through changes to ''visibility''
+
+|''element''|pp2|''invisible''|
+
+|''element''|qq2|''invisible''|
+
+|''click''|unhide|
+
+|''element''|pp2|''invisible''|
+
+|''element''|qq2|''invisible''|
+
+|''element''|pp2|''visible''|'''becomes'''|true|
+
+|''element''|qq2|''visible''|'''becomes'''|true|
+
+|''click''|hide|
+
+|''element''|pp2|''visible''|
+
+|''element''|qq2|''visible''|
+
+|''element''|pp2|''visible''|'''becomes'''|false|
+
+|''element''|qq2|''visible''|'''becomes'''|false|

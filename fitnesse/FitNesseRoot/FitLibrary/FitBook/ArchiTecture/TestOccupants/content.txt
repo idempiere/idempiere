@@ -1,0 +1,4 @@
+|!-OccupantList-!|
+|''user''|''login time''|''entry time''|
+|anna|15:45|15:48|
+|luke|16:03|17:14|

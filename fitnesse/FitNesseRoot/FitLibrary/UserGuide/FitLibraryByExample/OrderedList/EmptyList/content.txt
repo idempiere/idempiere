@@ -1,0 +1,7 @@
+|!-fitlibrary.eg.Collections-!|
+
+ * Create a list with 4 elements
+|list is||
+
+|''ordered list''|
+|''item''|

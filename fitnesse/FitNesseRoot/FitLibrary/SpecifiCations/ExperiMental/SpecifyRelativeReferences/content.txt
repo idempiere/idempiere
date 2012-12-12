@@ -1,0 +1,8 @@
+!3 Entity References like ''the first client'' are used in Fit table cells to refer to particular entities
+If a class doesn't have a parse mechanism (other than classes Object and String), it's treated as an Entity class (in the ''!-DomainDrivenDesign-!'' sense) and the cell text is treated as a reference to an Entity of that class.
+
+Here we specify how a reference can be in terms of its position in a collection, such as "first account".
+
+If a cell is expected to hold an Entity (or Entity reference) and it's of the form "the first orange", a call is made to a finder method, passing the index of the element in the collection. Eg, if an Orange is expected, a call will be made to the method Orange findOrange(int index). This is expected to look up the particular Orange by relative position in some collection.
+
+|!contents|

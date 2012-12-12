@@ -1,0 +1,39 @@
+!***< def
+!define t (
+|''colour''|red|
+
+)
+!define test (!|fitlibraryGeneric.specify.unbound.MethodHasUnboundTypeVariable|
+
+|''actions''|
+
+|'''check'''|''same''|${t}|${t}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibraryGeneric.specify.unbound.MethodHasUnboundTypeVariable</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>actions</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="error"><b>check</b><hr/> <span class="fit_label">Missing class or Missing method. Possibly:<ul><li>Type variable T is unbound in public <T> T fitlibraryGeneric.specify.unbound.MethodHasUnboundTypeVariable.same(T)</li><li>public Type check(Type1 arg1, Type2 arg2) { }</li><li>public Type check(Type p1, Type p2, Type p3) {}</li></ul><hr/>Possibly in class:<ul><li>fitlibraryGeneric.specify.unbound.MethodHasUnboundTypeVariable</li></ul></span></td>
+<td><i>same</i></td>
+<td><br/><table border="1" cellspacing="0">
+<tr><td><i>colour</i></td>
+<td>red</td>
+</tr>
+</table>
+<br/></td>
+<td><br/><table border="1" cellspacing="0">
+<tr><td><i>colour</i></td>
+<td>red</td>
+</tr>
+</table>
+<br/></td>
+</tr>
+</table>-!|

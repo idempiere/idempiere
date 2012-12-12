@@ -1,0 +1,5 @@
+The ${storytest}s in here are experimental. They may be altered or removed entirely, so I suggest that you don't depend on them.
+
+If you have any comments about these, please contact ${rick}.
+
+|!contents|

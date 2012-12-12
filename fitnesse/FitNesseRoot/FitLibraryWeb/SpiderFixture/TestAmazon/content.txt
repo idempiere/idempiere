@@ -1,0 +1,29 @@
+!|fitlibrary.spider.SpiderFixture|
+
+|''proxy''|proxy2|''with port''|5865|
+
+|''get url''|http://www.amazon.com|
+
+|''title''|'''is'''|Amazon.com: Online Shopping for Electronics, Apparel, Computers, Books, DVDs & more|
+
+|''with''|//input[@title='Search for']|''set text''|Rick Mugridge|
+
+|''submit''|//input[@alt='Go']|
+
+|''title''|'''is'''|Amazon.com: Rick Mugridge|
+
+|''element''|//div[@class='resultCount']|''exists''|
+
+|'''not'''|''element''|//h1[@id='noResultsTitle']|''exists''|
+
+|''page source''|contains|Fit|
+
+|''with''|//input[@title='Search for']|''set text''|asdasdasdasdasdasd|
+
+|''submit''|//input[@alt='Go']|
+
+|''title''|'''is'''|Amazon.com: asdasdasdasdasdasd|
+
+|''element''|//h1[@id='noResultsTitle']|''exists''|
+
+|'''not'''|''element''|//td[@class='resultCount']|''exists''|

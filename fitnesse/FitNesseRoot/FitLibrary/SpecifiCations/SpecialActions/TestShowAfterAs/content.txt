@@ -1,0 +1,79 @@
+!**< def
+!define test (!|fitlibrary.specify.specialAction.SpecialActions|
+
+|'''show after as'''|Log1|''ten''|
+
+|'''show after as'''|Log2|''html''|
+
+|'''show after as'''|Log3|a true action|
+|'''show after as'''|Log2|a false action|
+|'''show after as'''|Log1|an error action|
+)
+**!
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.specialAction.SpecialActions</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show after as</b></td>
+<td>Log1</td>
+<td><i>ten</i></td>
+</tr>
+</table><div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12345');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12345"/></a>
+&nbsp;<span class="meta">Log1</span><div class="hidden" id="12345">
+<pre>10<br/></pre>
+</div></div>
+
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show after as</b></td>
+<td>Log2</td>
+<td><i>html</i></td>
+</tr>
+</table><div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12346');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12346"/></a>
+&nbsp;<span class="meta">Log2</span><div class="hidden" id="12346">
+<pre><ul><li>ita<li>lics</ul><br/></pre>
+</div></div>
+
+<br/><table border="1" cellspacing="0">
+<tr><td><b>show after as</b></td>
+<td class="pass">Log3</td>
+<td>a true action</td>
+</tr>
+<tr><td><b>show after as</b></td>
+<td class="fail">Log2</td>
+<td>a false action</td>
+</tr>
+<tr><td class="error"><b>show after as</b><hr/> <span class="fit_label">whoops</span></td>
+<td>Log1</td>
+<td>an error action</td>
+</tr>
+</table><div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12348');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12348"/></a>
+&nbsp;<span class="meta">Log3</span><div class="hidden" id="12348">
+<pre>true<br/></pre>
+</div></div>
+<div class="included">
+<div style="float: right;" class="meta">
+<a href="javascript:expandAll();">Expand All</a> |
+ <a href="javascript:collapseAll();">Collapse All</a></div>
+<a href="javascript:toggleCollapsable('12347');">
+<img src="/files/images/collapsableClosed.gif" class="left" id="img12347"/></a>
+&nbsp;<span class="meta">Log2</span><div class="hidden" id="12347">
+<pre>false<br/></pre>
+</div></div>-!|

@@ -1,0 +1,27 @@
+!3 Bill created the coffee break template, but then decided to make some changes, so he adjusts the template accordingly.
+
+ * Setup template
+|''create template''|coffee break|
+|''one''|coffee dispenser|''for''|20|''people''|
+|''one''|hot water dispenser|''for''|20|''people''|
+|''one''|coffee table|''for''|40|''people''|
+|''one''|cup|''for''|1|''people''|
+
+ * Begin transaction for client
+|''begin transaction for client''|Joanna|''staff''|Bill|
+|''fill template''|coffee break|''for''|30|''people for''|1 day|
+|''pay with cash $''|95.90|
+|''complete transaction''|
+
+ * Alter coffee break
+|''begin admin transaction''| Bill |
+|''alter template''|coffee break|
+|''one''|coffee table|''for''|20|''people''|
+|''delete''|hot water dispenser|
+|''complete transaction''|
+
+ * Begin transaction for client
+|''begin transaction for client''|Joanna|''staff''|Bill|
+|''fill template''|coffee break|''for''|30|''people for''|1 day|
+|''pay with cash $''|129.90|
+|''complete transaction''|

@@ -1,0 +1,19 @@
+!3 A class delegate is registered to handle parsing text from a cell of the given type (''!-MyValue-!'')
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.ClassDelegate</td></tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a value set with a class delegate</i></td></tr>
+<tr><td><i>value</i></td></tr>
+<tr><td>1</td></tr>
+<tr><td>2</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.parser.ClassDelegate</td></tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>a value set with a class delegate</i></td></tr>
+<tr><td><i>value</i></td></tr>
+<tr><td class="pass">1</td></tr>
+<tr><td class="pass">2</td></tr>
+</table>-!|

@@ -1,0 +1,16 @@
+Nested tables may be used in a general way in ''!-FitLibrary-!'' fixtures, to show nested objects and collections. This can allow for domain objects to be more directly expressed, directly showing the associations. This is instead of having to associate different domain objects through keys, much as with a relational model.
+
+It's especially useful for showing ''aggregates'', in the ''Domain Driven Design'' sense of ''aggregate''.
+
+Nested tables may used for the set up of nested objects and collections, as in:
+ * ''!-SetUpFixture-!'', as shown in ^DomainObjectFixture and ^CalculateFixture;
+ * ''!-DomainObjectSetUpFixture-!'', as shown in ^DomainObjectFixture, where a property may be an object or a collection;
+ * the given values in ^CalculateFixture and ''!-ConstraintFixture-!''
+ * and the arguments of actions in ^WorkFlow
+Nested tables may be used for checking of nested objects and collections, as in
+ * ''!-ArrayFixture-!'' and the related ''!-SetFixture-!'' and ''!-SubsetFixture-!'', as shown in ^DomainObjectFixture and ^CalculateFixture;
+ * ^DomainObjectFixture, for ''!-DomainObjectCheckFixture-!'';
+ * the expected values in ^CalculateFixture
+ * and the expected value of an action in ^WorkFlow
+
+!contents

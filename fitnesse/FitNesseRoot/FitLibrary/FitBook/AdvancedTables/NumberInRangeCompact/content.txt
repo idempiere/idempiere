@@ -1,0 +1,6 @@
+|!-StressTest-!|
+|clients|reaction time()|
+|1|<10|
+|10|<10|
+|100|<30|
+|500|<60|

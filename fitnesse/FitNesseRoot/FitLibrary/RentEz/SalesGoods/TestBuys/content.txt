@@ -1,0 +1,8 @@
+|''begin transaction for client''| Bob |''staff''| Bill |
+|''buy''| 5 || chips |
+|''pay with cash $''|25.00|
+|''complete transaction''|
+
+|sales goods subset|
+| name             | count |
+| chips | 5    |

@@ -1,0 +1,48 @@
+!3 For each property name, there must be an expected value
+!**< def
+!define user1 (|''name''|Poor Payer|
+|''owe''|
+)
+!define user2 (|''name''|Poor Payer|''owe''|
+)
+!define test (!|fitlibrary.specify.domain.UserAdapter|
+
+|''checks''|
+
+|''slow paying user''|${user1}|
+
+|''slow paying user''|${user2}|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.domain.UserAdapter</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>checks</i></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>slow paying user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td class="pass">Poor Payer</td>
+</tr>
+<tr><td colspan="2" class="error"><i>owe</i><hr/> <span class="fit_label">Missing table cells</span></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>slow paying user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td class="pass">Poor Payer</td>
+<td class="error"><i>owe</i><hr/> <span class="fit_label">Missing table cells</span></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>-!|

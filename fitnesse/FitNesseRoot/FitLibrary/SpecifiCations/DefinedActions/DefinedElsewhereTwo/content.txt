@@ -1,0 +1,9 @@
+!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActions.ElseWhere|
+
+|''login''|rick|''with''||
+
+|''login2''|rick|''with''||

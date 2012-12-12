@@ -1,0 +1,15 @@
+!2 All elements there and we use a property to access
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.SetFixtureUnderTest</td></tr>
+<tr><td>prop</td><td>&amp;</td></tr>
+<tr><td>1</td><td>one</td></tr>
+<tr><td>1</td><td>two</td></tr>
+<tr><td>2</td><td>two</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="2">fitlibrary.specify.SetFixtureUnderTest</td></tr>
+<tr><td>prop</td><td>&amp;</td></tr>
+<tr><td class="pass">1</td><td class="pass">one</td></tr>
+<tr><td class="pass">1</td><td class="pass">two</td></tr>
+<tr><td class="pass">2</td><td class="pass">two</td></tr>
+</table>-!|

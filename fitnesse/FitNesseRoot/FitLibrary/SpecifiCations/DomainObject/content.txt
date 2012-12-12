@@ -1,0 +1,4 @@
+Tables may check the values of a domain object, as well as create it.
+ * Such tables refer directly to the properties of the domain object.
+ * A property may, in turn, be a collection or another domain object. So such tables may include nested tables.
+|!contents|

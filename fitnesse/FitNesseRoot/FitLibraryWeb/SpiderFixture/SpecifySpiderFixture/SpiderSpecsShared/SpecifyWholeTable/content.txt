@@ -1,0 +1,8 @@
+>SpecSetUp
+^TableMatches
+^TableValueMismatches
+^MissingExpectedRows
+^MissingActualRows
+^MissingExpectedCells
+^MissingActualCells
+^VariousMismatches

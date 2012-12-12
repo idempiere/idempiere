@@ -1,0 +1,35 @@
+!3 Matching still requires the expected values to be parsed.
+So, once again, we can only handle an empty list or a List of String in comma-separated form
+!**< def
+!define test {!|fitlibrary.specify.listParser.Match|
+
+|'''check'''|''string abc''|a,b,c|
+
+|'''check'''|''list 123''|1,2,3|
+
+|'''check'''|''list empty''||
+}
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.listParser.Match</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>string abc</i></td>
+<td class="pass">a,b,c</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>list 123</i></td>
+<td class="fail">1,2,3 <span class="fit_label">expected</span><hr>1, 2, 3 <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><b>check</b></td>
+<td><i>list empty</i></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>-!|

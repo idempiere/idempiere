@@ -1,0 +1,14 @@
+!*< def
+!define html ({{{<head>
+   <title>A title</title>
+</head>}}})
+*!
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''get url''|http://localhost:@{serverPort}/files/@{webDriver.driver}/test.html/@{UNBOUND-VAR}|
+
+|''expected test results''|1|''right''|0|''wrong''|0|''ignored''|1|''exceptions''|

@@ -1,0 +1,11 @@
+|say hello|
+
+|set|helloGreeting|to|dont call me!|
+----
+|say goodbye|
+
+|set|goodbyeGreeting|to|dont call me either!|
+----
+|say something|
+
+|set|somethingGreeting|to|there i've said something!|

@@ -1,0 +1,96 @@
+!**< def
+!define test (!|fitlibrary.DoFixture|
+
+|''clear defined actions''|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefineFails|
+
+|''do this now''|
+|''name''|''full address''|''other''|
+|adam|paradise|
+|eve|paradise|
+
+|''do this now''|
+|''name''|''name''|
+|adam|paradise|
+
+|''do this now''|
+|''name''|''full address''|
+|adam|
+
+
+|''do this now''|
+|''name''|''full address''|
+|adam|paradise|other|
+
+|''do this now''|
+|''name''|''full address''|
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.DoFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>clear defined actions</i></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>define actions at</i></td>
+<td><a href="FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefineFails">.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.MultiDefineFails</a></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="3" class="error"><i>do this now</i><hr/> <span class="fit_label">Expected 2 parameters but there were 3</span></td>
+</tr>
+<tr><td><i>name</i></td>
+<td><i>full address</i></td>
+<td><i>other</i></td>
+</tr>
+<tr><td>adam</td>
+<td colspan="2">paradise</td>
+</tr>
+<tr><td>eve</td>
+<td colspan="2">paradise</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="2" class="error"><i>do this now</i><hr/> <span class="fit_label">Duplicate parameter: 'name'</span></td>
+</tr>
+<tr><td><i>name</i></td>
+<td><i>name</i></td>
+</tr>
+<tr><td>adam</td>
+<td>paradise</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="2"><i>do this now</i></td>
+</tr>
+<tr class="pass"><td><i>name</i></td>
+<td><i>full address</i></td>
+</tr>
+<tr><td colspan="2" class="error">adam<hr/> <span class="fit_label">Expected 2 parameters but there were 1</span></td>
+</tr>
+</table>
+<br/><br/><table border="1" cellspacing="0">
+<tr><td colspan="3"><i>do this now</i></td>
+</tr>
+<tr class="pass"><td><i>name</i></td>
+<td colspan="2"><i>full address</i></td>
+</tr>
+<tr><td class="error">adam<hr/> <span class="fit_label">Expected 2 parameters but there were 3</span></td>
+<td>paradise</td>
+<td>other</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="2" class="error"><i>do this now</i><hr/> <span class="fit_label">Missing data rows in table</span></td>
+</tr>
+<tr><td><i>name</i></td>
+<td><i>full address</i></td>
+</tr>
+</table>-!|
+

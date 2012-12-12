@@ -1,0 +1,42 @@
+|''def action''|
+
+|''def action 2''|
+----
+|''def action 2''|
+
+!|fitlibrary.specify.definedAction.TemporaryFixturing|
+|temporarily in scope|
+----
+|''def action 3''|
+
+!|fitlibrary.specify.definedAction.TemporaryFixturing|
+|permanently in scope|
+----
+|''def value''|v|
+
+|value|is|@{v}|
+----
+|''def value again''|v|
+
+|value|is|@{v}|
+
+|other|11|
+|''value''|'''is'''|11|
+|other|12|
+|''value''|'''is'''|12|
+
+|value|is|@{v}|
+----
+|''def value again again''|v|
+
+|value|is|@{v}|
+
+|''def value again''|@{v}|
+
+|other|110|
+|''value''|'''is'''|110|
+|other|120|
+|''value''|'''is'''|120|
+
+|value|is|@{v}|
+----

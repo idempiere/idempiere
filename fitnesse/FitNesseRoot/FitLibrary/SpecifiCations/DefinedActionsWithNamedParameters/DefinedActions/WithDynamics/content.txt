@@ -1,0 +1,5 @@
+|''global setter''|
+|''name''|''full address''|
+
+|'''set'''|global|''to''|@{name}|
+

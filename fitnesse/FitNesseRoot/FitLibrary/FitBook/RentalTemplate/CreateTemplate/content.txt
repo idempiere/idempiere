@@ -1,0 +1,5 @@
+|''create template''|
+|''add item''|coffee dispenser|''with multipler''|0.04|
+|''add item''|hot water dispenser|''with multipler''|0.04|
+|''add item''|coffee table|''with multipler''|0.02|
+|''add item''|cup|''with multiplier''|1|

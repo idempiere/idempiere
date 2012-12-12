@@ -1,0 +1,5 @@
+!2 Dynamic variables allow a storytest to be used with variations of data, where the variations are defined by ''dynamic variables'' that are set in the storytest (or loaded from a property file).
+|!contents -R|
+
+^HowTagsAreHandled
+

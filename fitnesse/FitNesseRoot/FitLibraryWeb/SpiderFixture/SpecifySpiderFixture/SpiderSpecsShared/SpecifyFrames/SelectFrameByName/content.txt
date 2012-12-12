@@ -1,0 +1,12 @@
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <SpecifyFrames.SpecSetUp
+
+|''frame by name''|red|
+
+|''page source''|contains|reddening|
+
+|''frame by name''|green|
+
+|''page source''|contains|greening|
+

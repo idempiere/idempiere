@@ -1,0 +1,34 @@
+Several actions that make immediate changes also verify that the change has happened.
+
+The actions concerned are:
+
+|''with''|locator|''set text''|text|
+
+|''with''|locator|''add text''|text|
+
+|''with''|locator|''select''|true|
+
+|''with''|locator|''select option''|option|
+
+|''with''|locator|''select option at''|3|
+
+|''with''|locator|''add selection''|option|
+
+|''with''|locator|''remove selection''|option|
+#
+!2 Changing such checking
+#
+The checking can be turned off with the action:
+
+|''set checking''|false|
+
+And turned on again with the action:
+
+|''set checking''|true|
+
+There is a timeout period for checking, because they may be a delay due to !-JavaScript-!. The actions repeatedly check until either the value changes as expected or the timeout period is reached. If it times out, an error is given.
+
+The timeout period for checking can be altered, as follows (in milliseconds):
+
+|''checking timeout''|100|
+

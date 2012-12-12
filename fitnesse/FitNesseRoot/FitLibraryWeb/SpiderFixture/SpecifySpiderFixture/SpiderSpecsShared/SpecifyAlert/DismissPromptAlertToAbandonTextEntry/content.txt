@@ -1,0 +1,34 @@
+!*< def
+!define html [{{{<head>
+<title>Change Me</title>
+<script type="text/javascript">
+function show_alert()
+{
+var title = prompt("Enter title:", "default");
+document.title=title;
+}
+</script>
+</head>
+<body>
+<input type="button" id="popalert" onclick="show_alert()" value="alert" />
+</body>
+}}}]
+*!
+
+'''Prompt Alerts can also be dismissed, Spider Fixture will can do that:'''
+
+|''keywords''|firefox,ie|
+
+'''Note: This specification actually works in IE too, however I'm not sure how to automatically switch off the pop script blocking which seems to block script alerts which stop it working.'''
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''click''|popalert|
+
+|enter alert text|New Title!!|
+
+|'''dismiss alert'''|
+
+|''title''|'''is not'''|New Title!!|

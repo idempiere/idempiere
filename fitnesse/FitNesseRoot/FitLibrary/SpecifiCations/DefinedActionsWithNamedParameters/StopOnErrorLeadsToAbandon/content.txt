@@ -1,0 +1,56 @@
+!**< def
+!define test (!|fitlibrary.DoFixture|
+
+|''define actions at''|.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.WithStop|
+
+|''set stop on error''|true|
+
+|''stopper on error''|
+|''name''|''full address''|
+|adam|paradise|
+|eve|paradise|
+
+|should be ignored|
+)
+
+*!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.DoFixture</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>define actions at</i></td>
+<td><a href="FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.WithStop">.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.WithStop</a></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>set stop on error</i></td>
+<td>true</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td colspan="2"><i>stopper on error</i></td>
+</tr>
+<tr class="pass"><td><i>name</i></td>
+<td><i>full address</i></td>
+</tr>
+<tr><td class="fail">adam</td>
+<td class="fail">paradise</td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call <a href='FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.WithStop'>.FitLibrary.SpecifiCations.DefinedActionsWithNamedParameters.DefinedActions.WithStop</a>:</span><table border="1" cellspacing="0">
+<tr><td>get</td><td>1</td><td>is</td><td class="fail">2 <span class="fit_label">expected</span><hr>1 <span class="fit_label">actual</span></td></tr>
+</table>
+<br/><br/>
+<table border="1" cellspacing="0">
+<tr><td class="ignore">should ignore this</td></tr>
+</table>
+<br/></html></td></tr>
+<tr><td class="ignore">eve</td>
+<td class="ignore">paradise</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="ignore">should be ignored</td>
+</tr>
+</table>-!|

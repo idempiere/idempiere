@@ -1,0 +1,15 @@
+!2 Teardown occurs even when there is an exception during table execution
+!|fitlibrary.spec.SpecifyFixture|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.WithinFlow</td></tr>
+</table>
+<table>
+<tr><td><i>with tear down</i></td></tr>
+<tr><td><i>an exception</i></td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.WithinFlow</td></tr>
+</table>
+<table>
+<tr><td class="error"><i>with tear down</i><hr><pre><div class="fit_stacktrace"></div></pre></td></tr>
+<tr><td class="error"><i>an exception</i><hr><pre><div class="fit_stacktrace"></div></pre></td></tr>
+</table>-!|

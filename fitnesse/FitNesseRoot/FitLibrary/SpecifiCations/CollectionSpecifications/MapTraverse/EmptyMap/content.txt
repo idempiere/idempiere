@@ -1,0 +1,22 @@
+!**< def
+!define test (
+!|fitlibrary.specify.mapTraverse.Empty|
+----
+----
+|''empty map''||
+
+)
+**!
+An empty map matches a table with no extra rows
+
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.mapTraverse.Empty</td>
+</tr>
+</table>
+<hr><br><hr><br><table border="1" cellspacing="0">
+<tr><td><i>empty map</i></td>
+<td class="pass">&nbsp;</td>
+</tr>
+</table>
+<br>-!|

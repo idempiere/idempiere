@@ -1,0 +1,8 @@
+^TestPartialReturnsInitial
+^SetUp1
+^TestRental1
+^TestPartialReturn1
+^SetUp2
+^TestRental2
+^TestPartialReturn2
+(These tests are completed in the next chapter, so they don't run.)

@@ -1,0 +1,69 @@
+!3 A Dynamic Variable can be set and used in storytests
+!**< def
+!define test (!|fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest|
+
+|'''set'''|colour|''to''|red|
+
+|''get''|@{colour}|'''is'''|red|
+
+|''get''|@{colour}|'''is'''|@{colour}|
+
+|''get''|red|'''is'''|@{colour}|
+
+|''get''|green|'''is'''|@{colour}|
+
+|''expected test results''|3|''right''|1|''wrong''|0|''ignored''|0|''exceptions''|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.dynamicVariable.DynamicVariablesUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><b>set</b></td>
+<td>colour</td>
+<td><i>to</i></td>
+<td>red</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>red</td>
+<td><b>is</b></td>
+<td class="pass">red</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>red</td>
+<td><b>is</b></td>
+<td class="pass">red</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>red</td>
+<td><b>is</b></td>
+<td class="pass">red</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>green</td>
+<td><b>is</b></td>
+<td class="fail">red <span class="fit_label">expected</span><hr>green <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>expected test results</i></td>
+<td>3</td>
+<td><i>right</i></td>
+<td>1</td>
+<td><i>wrong</i></td>
+<td>0</td>
+<td><i>ignored</i></td>
+<td>0</td>
+<td><i>exceptions</i></td>
+</tr>
+</table>-!|

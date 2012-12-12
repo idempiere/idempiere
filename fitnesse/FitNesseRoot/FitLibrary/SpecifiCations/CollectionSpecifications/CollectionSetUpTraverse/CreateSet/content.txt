@@ -1,0 +1,54 @@
+!3 A set is created
+!**< def
+!define set (|''name''|''owe''|
+|emma|130.00|
+|james|120.00|
+)
+!define test (
+!|fitlibrary.specify.collectionSetUp.SetUpSet|
+
+|''IOU set''|${set}|
+----
+----
+|''IOU set''|${set}|
+
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<br><table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.collectionSetUp.SetUpSet</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>IOU set</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td><i>owe</i></td>
+</tr>
+<tr><td>emma</td>
+<td>130.00</td>
+</tr>
+<tr><td>james</td>
+<td>120.00</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<hr><br><hr><br><table border="1" cellspacing="0">
+<tr><td><i>IOU set</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td><i>owe</i></td>
+</tr>
+<tr><td class="pass">emma</td>
+<td class="pass">130.00</td>
+</tr>
+<tr><td class="pass">james</td>
+<td class="pass">120.00</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br>-!|

@@ -1,0 +1,5 @@
+|''create template''|coffee break|
+|''one''|coffee dispenser|''for''|20|''people''|
+|''one''|hot water dispenser|''for''|20|''people''|
+|''one''|coffee table|''for''|40|''people''|
+|''one''|cup|''for''|1|''people''|

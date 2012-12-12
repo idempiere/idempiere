@@ -1,0 +1,21 @@
+!include <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+!*< def
+!define red ({{{<head><title>Red</title></head>reddening}}})
+!define green ({{{<head><title>Green</title></head>greening}}})
+!define through ({{{<frameset cols="*, *">
+    <frame name="r" src="red.html"/>
+</frameset>}}})
+!define html ({{{<head><title>Start</title></head>
+  <frameset cols="*, *">
+    <frame name="red" src="red.html"/>
+    <frame name="green" src="green.html"/>
+    <frame name="through" src="through.html"/>
+  </frameset>}}})
+*!
+
+|''make file''|red.html|''from''|${red}|
+|''make file''|green.html|''from''|${green}|
+|''make file''|through.html|''from''|${through}|
+
+|''with html''|${html}|
+

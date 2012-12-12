@@ -1,0 +1,172 @@
+!**< def
+!define test (!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|''int property''|'''='''|2|
+|''int property''|'''<='''|2|
+|''int property''|'''>='''|2|
+|''int property''|'''<'''|11|
+|''int property''|'''>'''|11|
+|''int property''|'''>'''|a|
+
+|''boolean property''|'''='''|true|
+|''boolean property''|'''>'''|false|
+
+|''get''|a|'''<'''|b|
+|''get''|a|'''<='''|b|
+|''get''|b|'''>'''|a|
+|''get''|b|'''>='''|a|
+
+|''get''|a|'''='''|a|
+|''get''|a|'''>='''|a|
+|''get''|a|'''<='''|a|
+
+|''get''|a|'''>'''|b|
+|''get''|a|'''>='''|b|
+|''get''|b|'''<'''|a|
+|''get''|b|'''<='''|a|
+|''get''|b|'''='''|a|
+
+ * Note that ''get'' returns a String and so string comparisons are used, giving some strange results with digits:
+
+|''get''|11|<=|2|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+	<tr>
+		<td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>int property</i></td>
+		<td><b>=</b></td>
+		<td class="pass">2</td>
+	</tr>
+	<tr>
+		<td><i>int property</i></td>
+		<td><b>&lt;=</b></td>
+		<td class="pass">2</td>
+	</tr>
+	<tr>
+		<td><i>int property</i></td>
+		<td><b>&gt;=</b></td>
+		<td class="pass">2</td>
+	</tr>
+	<tr>
+		<td><i>int property</i></td>
+		<td><b>&lt;</b></td>
+		<td class="pass">11</td>
+	</tr>
+	<tr>
+		<td><i>int property</i></td>
+		<td><b>&gt;</b></td>
+		<td class="fail">11 <span class="fit_label">expected</span><hr>2 <span class="fit_label">actual</span></td>
+	</tr>
+	<tr>
+		<td class="error"><i>int property</i><hr/> <span class="fit_label">Invalid Number</span></td>
+		<td><b>&gt;</b></td>
+		<td>a</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>boolean property</i></td>
+		<td><b>=</b></td>
+		<td class="pass">true</td>
+	</tr>
+	<tr>
+		<td><i>boolean property</i></td>
+		<td><b>&gt;</b></td>
+		<td class="pass">false</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>get</i></td>
+		<td>a</td>
+		<td><b>&lt;</b></td>
+		<td class="pass">b</td>
+	</tr>
+	<tr>
+		<td><i>get</i></td>
+		<td>a</td>
+		<td><b>&lt;=</b></td>
+		<td class="pass">b</td>
+	</tr>
+	<tr>
+		<td><i>get</i></td>
+		<td>b</td>
+		<td><b>&gt;</b></td>
+		<td class="pass">a</td>
+	</tr>
+	<tr>
+		<td><i>get</i></td>
+		<td>b</td>
+		<td><b>&gt;=</b></td>
+		<td class="pass">a</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>get</i></td>
+		<td>a</td>
+		<td><b>=</b></td>
+		<td class="pass">a</td>
+	</tr>
+	<tr>
+		<td><i>get</i></td>
+		<td>a</td>
+		<td><b>&gt;=</b></td>
+		<td class="pass">a</td>
+	</tr>
+	<tr>
+		<td><i>get</i></td>
+		<td>a</td>
+		<td><b>&lt;=</b></td>
+		<td class="pass">a</td>
+	</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>get</i></td>
+		<td>a</td>
+		<td><b>&gt;</b></td>
+		<td class="fail">b <span class="fit_label">expected</span><hr>a <span class="fit_label">actual</span></td>
+	</tr>
+	<tr>
+		<td><i>get</i></td>
+		<td>a</td>
+		<td><b>&gt;=</b></td>
+		<td class="fail">b <span class="fit_label">expected</span><hr>a <span class="fit_label">actual</span></td>
+	</tr>
+	<tr>
+		<td><i>get</i></td>
+		<td>b</td>
+		<td><b>&lt;</b></td>
+		<td class="fail">a <span class="fit_label">expected</span><hr>b <span class="fit_label">actual</span></td>
+	</tr>
+	<tr>
+		<td><i>get</i></td>
+		<td>b</td>
+		<td><b>&lt;=</b></td>
+		<td class="fail">a <span class="fit_label">expected</span><hr>b <span class="fit_label">actual</span></td>
+	</tr>
+	<tr>
+		<td><i>get</i></td>
+		<td>b</td>
+		<td><b>=</b></td>
+		<td class="fail">a <span class="fit_label">expected</span><hr>b <span class="fit_label">actual</span></td>
+	</tr>
+</table>
+<br/><ul>
+	<li>Note that <i>get</i> returns a String and so string comparisons are used, giving some strange results with digits:</li>
+</ul>
+<br/><table border="1" cellspacing="0">
+	<tr>
+		<td><i>get</i></td>
+		<td>11</td>
+		<td>&lt;=</td>
+		<td class="pass">2</td>
+	</tr>
+</table>-!|

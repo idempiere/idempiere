@@ -1,0 +1,47 @@
+!*< def
+!define html ({{{  <textarea id="nothing"></textarea>
+  <textarea id="withValue" value="red"></textarea>
+  <textarea id="onlySpacesInText">   </textarea>
+  <textarea id="withText">green</textarea>
+  <textarea id="disabled" disabled="true">blue</textarea>
+  <textarea id="withMultiText">yellow\n
+orange</textarea>
+  <textarea id="withMultiTextCR">yellow\rorange</textarea>
+  <textarea id="withMultiTextBR">yellow<br/>orange</textarea>}}})
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+ * Note that Firefox can only handle a textarea if it has a separate closing tag
+
+|''plain text of''|//textarea[@id="nothing"]|''matches''||
+
+|''plain text of''|//textarea[@id="disabled"]|''matches''|blue|
+
+|''plain text of''|onlySpacesInText|''matches''||
+
+|''plain text of''|//textarea[@id="withText"]|''matches''|green|
+
+|''plain text of''|//textarea[@id="withText"]|''matches''|gr.*n|
+
+ * \n in text gets converted into a space:
+
+|''plain text of''|//textarea[@id="withMultiText"]|''matches''|yellow orange|
+
+ * \r in text gets converted into a space:
+
+|''plain text of''|//textarea[@id="withMultiTextCR"]|''matches''|yellow orange|
+
+ * <br/> in text gets replaced by a space:
+
+|''plain text of''|//textarea[@id="withMultiTextBR"]|''matches''|yellow orange|
+
+|''plain text of''|//textarea[@id="withMultiText"]|''matches''|yellow.orange|
+
+ * The value of a <textarea> is ignored:
+
+|''plain text of''|//textarea[@id="withValue"]|''matches''||

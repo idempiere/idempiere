@@ -1,0 +1,23 @@
+[[The web page is here.][files/delaysWithAjax.html]]
+
+You may find it convenient to open this page in another window, so you can easily look at it at the same time as the storytests below.
+
+Let's start by seeing it fail. Then we can see how to fix it.
+
+|''define actions at''|.FitLibraryWeb.SpiderFixture.SpiderTutorial.AjaxTiming.HandlingChanges.DefinedActions|
+
+|''ajax on port''|${FITNESSE_PORT}|
+
+|''get url''|http://localhost:@{fitNessePort}/files/delaysWithAjax.html|
+
+|''title''|'''is'''|Delays With Ajax|
+
+|''with''|newTitle|''set text''|Fancy Title|
+
+|''click''|changeTitle|
+
+|''title''|'''is'''|Fancy Title|
+
+When we run the test, the last table fails, because the title is still the original one.
+
+So we need to allow for the time delay before the change occurs, as we see [[on the next page][^UsingBecomes]]

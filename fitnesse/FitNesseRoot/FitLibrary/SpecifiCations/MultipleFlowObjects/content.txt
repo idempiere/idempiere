@@ -1,0 +1,19 @@
+!3 Usual flow now allows for a single storytest to use several different flow objects (objects or fixtures).
+
+ * The flow objects are all available all of the time.
+ * If more than one flow object has a method that may match an action, you can select between them.
+
+>SelectsWork
+>NotDoFixture
+>SetUpExceptions
+>SetUpExceptionsWithinSuite
+>TearDownExceptions
+>TearDownExceptionsWithinSuite
+>UnknownName
+>SharedDynamicProperties
+>CanSwitchWithinDefinedAction
+>AddingFixtureFromAnAction
+^WhenAddedObjectIsFixtureOrTraverseRuntimeIsInjectedIntoIt
+
+
+>SelectIsManagedByDoFlow

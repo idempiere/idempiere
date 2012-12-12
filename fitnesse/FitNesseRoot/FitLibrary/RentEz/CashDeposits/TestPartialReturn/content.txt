@@ -1,0 +1,16 @@
+|''given rentals''|Joanna|
+|''rental item''|''count''|''start date''|''end date''|
+|cup|100|2004/05/05 09:01|2004/05/06 09:01|
+
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''return items''|50||cup|
+|''refund cash $''|5.00|
+|''complete transaction''|
+
+|''rentals of client''|Joanna|
+|''rental item''|''count''|
+|cup|50|
+
+|''rental item subset''|
+|''name''|''free count''|
+|cup|450|

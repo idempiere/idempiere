@@ -1,0 +1,17 @@
+!3 ''Not Enough Points''
+ * ''Bill tops up point balance to 10.00''
+|''begin admin transaction''|Bill|
+|''topup''|10.00|''points for client''|Joanna|
+|''complete transaction''|
+
+|'''check'''|point balance for client|Joanna|10.00|
+
+!3 ''Try to pay with points, but fails because not enough points avaiable''
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|2||coffee dispenser|''for''|3 days|
+|''rent''|1||hot water dispenser|''for''|3 days|
+|'''reject'''|''pay with points $''|73.20|
+|''pay with cash $''|73.20|
+|''complete transaction''|
+
+|'''check'''|point balance for client|Joanna|10.00|

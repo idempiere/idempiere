@@ -1,0 +1,15 @@
+|''setup delivery transaction for client''| Joanna |''on''|2005/05/08 09:01|''staff''| Bill|
+|''book''|2||coffee dispenser|''for''|2 hours|
+|''book''|3||coffee urn|''for''|3 hours|
+
+|''setup delivery transaction for client''| Joanna |''on''|2005/05/08 15:01|''staff''| Bill|
+|''book''|2||table|''for''|0.5 day|
+|''book''|3||cup|''for''|2.5 hours|
+
+
+|''begin delivery transaction for client''| Joanna |''on''|2005/05/08 09:01|''city''|Auckland|''zone''|North Shore|''|''staff''| Bill|
+|''book''|10||coffee dispenser|
+
+|''delivery schedule for''|2005/05/08 09:01|
+|''date''|''city''|''zone''|''delivery address''|
+|2005/05/08 09:01|Auckland|CBD|10 Princes St|

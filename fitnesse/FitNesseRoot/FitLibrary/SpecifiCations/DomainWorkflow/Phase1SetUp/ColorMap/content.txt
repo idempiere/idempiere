@@ -1,0 +1,4 @@
+|''key''|''value''|
+|red|!include GreenObject|
+|white|!include BlackObject|
+|blue|!include YellowObject|

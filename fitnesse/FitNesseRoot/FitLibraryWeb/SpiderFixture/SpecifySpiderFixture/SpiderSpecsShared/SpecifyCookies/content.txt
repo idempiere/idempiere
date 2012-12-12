@@ -1,0 +1,32 @@
+!*< def
+!define html (<head>
+<title>A title</title></head>
+)
+*!
+
+|''keywords''|chrome,htmlunit,firefox,ie|
+
+!include -c <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
+
+|''with html''|${html}|
+
+|''delete all cookies''|
+
+|''add cookie''|brownie|''with value''|chocolate|
+|''add cookie''| chocolate |''with value''|chips|
+
+|''cookies''|
+|''name''|''value''|''path''|
+|brownie|chocolate|/|
+| chocolate |chips|/|
+
+|''delete cookie''|brownie|
+
+|''cookies''|
+|''name''|''value''|''path''|
+| chocolate |chips|/|
+
+|''delete all cookies''|
+
+|''cookies''|
+|''name''|''value''|

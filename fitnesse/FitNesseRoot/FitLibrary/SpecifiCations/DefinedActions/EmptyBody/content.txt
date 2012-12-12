@@ -1,0 +1,55 @@
+!**< def
+!define body (|no body|
+)
+
+!define test (!|fitlibrary.specify.definedAction.DefinedActionUnderTest|
+
+|define action|
+|${body}|
+
+|''set expand defined actions''|true|
+
+|''no body''|
+
+|''expected test results''|1|''right''|0|''wrong''|1|''ignored''|0|''exceptions''|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.definedAction.DefinedActionUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>define action</td>
+</tr>
+<tr><td><table border="1" cellspacing="0">
+<tr><td class="pass">no body</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>set expand defined actions</i></td>
+<td>true</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="ignore"><i>no body</i></td>
+<td bgcolor=#DADAFF> <span class="fit_label">Defined action call:</span>
+<table border="1" cellspacing="0">
+<tr>
+<td>comment</td></tr></table></td></tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td class="pass"><i>expected test results</i></td>
+<td>1</td>
+<td><i>right</i></td>
+<td>0</td>
+<td><i>wrong</i></td>
+<td>1</td>
+<td><i>ignored</i></td>
+<td>0</td>
+<td><i>exceptions</i></td>
+</tr>
+</table>-!|

@@ -1,0 +1,25 @@
+A business process concerns the order that things happen, and their consequences.
+
+Here we show how adding and multiplying on a calculator affect the total.
+
+|''with a calculator''|
+
+|''given the total is''|10|
+
+|''+''|5|
+
+|''*''|10|
+
+|''the total now is''|150|
+
+But we don't get any useful feedback (by default) if the expected value is wrong:
+
+|''the total now is''|140|
+
+So we can use the special '''is''' instead, as follows:
+
+|''the total now''|'''is'''|140|
+
+as it shows what the actual result was. After all, it's just as easy to make mistakes in tests.
+
+Next: ChatBusinessProcessExample

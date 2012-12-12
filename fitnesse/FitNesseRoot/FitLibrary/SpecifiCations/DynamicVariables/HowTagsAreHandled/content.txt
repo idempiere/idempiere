@@ -1,0 +1,21 @@
+When a ''dynamic variable'' value contains html or xml tags, they are treated in a special way.
+
+|'''set'''|xml|''to''|<a>A</a>|
+
+|''get''|<a>A</a>|'''is'''|@{xml}|
+
+|'''show'''|''get''|(@{xml})|
+
+|'''show with tags'''|''get''|@{xml}|
+
+The result is the same when the same text comes from an action:
+
+!|fitlibrary.specify.dynamicVariable.Xml|
+
+|'''set'''|xml2|''some xml''|
+
+|'''show'''|''get''|(@{xml2})|
+
+|'''show with tags'''|''get''|@{xml2}|
+
+

@@ -1,0 +1,42 @@
+!3 1. Get fails without a server
+#
+Let's start with GET-ting a page from a server. We use the ''!-HttpClientFixture-!'' fixture to do this.
+
+Run '''Test''':
+
+ * This will initially fail, with a ''connection refused''.
+ * That's because there is no server running on port 8093. We'll fix that shortly, in #3 below.
+ * However, if you already have a server running on port 8093, you may get a response! See #2 below for how to fix that.
+
+|''with http client''|
+
+ * Request a page from the given port on localhost (ie on the current machine):
+
+|''http get''|http://localhost:8093/files/handlingWindows.html|
+
+ * If it succeeds, this will display the HTTP headers from the reply
+
+|'''show'''|''headers''|
+
+ * This table allows us to check that certain headers are as expected. In this case, we simply test the ''Content-Type'' header value:
+
+|''headers include''|
+|''name''|''value''|
+|Content-Type|text/html; charset=UTF-8|
+
+ * If it succeeds, the following will display the reply received. Because it's HTML, we ''escape'' it so we can see the underlying HTML:
+
+|'''show escaped'''|''reply''|
+#
+----!3 2. If your own server is running on port 8093
+#
+Change the port number in the second table above to another 4-digit number in the 8000-9000 range (avoid 8080). You'll also need to change the port number in [[this page][^RunFileServer]] to be the same before step #3 will work.
+#
+#
+----!3 3. Get succeeds when a server is running
+#
+Let's run a server for it to talk to: open [[this page][^RunFileServer]] in another browser window so you can see them both at the same time.
+#
+----!3 4. Next
+#
+On [[this page][^BadGet]], we'll see what happens if the page is not known about by the server.

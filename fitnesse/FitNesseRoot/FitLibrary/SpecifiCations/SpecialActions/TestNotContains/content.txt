@@ -1,0 +1,62 @@
+!2 'matches' pattern matches an action against a value
+!**< def
+!define test1 {!|fitlibrary.specify.DoFixtureFlowUnderTest|
+
+|int property|'''does not contain'''|3|
+
+|boolean property|'''does not contain'''|tru|
+
+|boolean property|'''does not contain'''|True|
+
+|string property|'''does not contain'''|apple|
+
+|string property|'''does not contain'''|orange|
+
+|''x''|1|''y''|3|'''does not contain'''|(10,|
+}
+
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test1}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.DoFixtureFlowUnderTest</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>int property</td>
+<td><b>does not contain</b></td>
+<td class="pass">3</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>boolean property</td>
+<td><b>does not contain</b></td>
+<td class="fail">tru <span class="fit_label">expected</span><hr>true <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>boolean property</td>
+<td><b>does not contain</b></td>
+<td class="pass">True</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td><b>does not contain</b></td>
+<td class="fail">apple <span class="fit_label">expected</span><hr>apple pie <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td>string property</td>
+<td><b>does not contain</b></td>
+<td class="pass">orange</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>x</i></td>
+<td>1</td>
+<td><i>y</i></td>
+<td>3</td>
+<td><b>does not contain</b></td>
+<td class="pass">(10,</td>
+</tr>
+</table>-!|

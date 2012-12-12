@@ -1,0 +1,64 @@
+!*< xml
+!define xml (<a>
+A
+</a>
+)
+!define xml2 (<a>
+ A
+</a>
+)
+!define xml3 (<z>
+<y>
+<x></x>
+<x><a id="1">A</a></x>
+</y>
+</z>
+)
+!define xml4 (<z>
+<y>
+<x><w><a id="2">A</a></w></x>
+</y>
+</z>
+)
+!define xsl (<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:output method="xml" version="1.0" encoding="UTF-8"/>
+
+<xsl:template match="street">
+  <xsl:param name="whatHouse"><xsl:value-of select="."/></xsl:param>
+  <xsl:element name="{$whatHouse}"/>
+</xsl:template>
+
+</xsl:stylesheet>
+)
+*!
+|''with xml''|
+
+|''xml''|<a>A</a>|''same as''|<a>B</a>|
+
+|''xml''|<a id="1">A</a>|''same as''|<a id="2">A</a>|
+
+|''xml''|<z><y><x><a id="1">A</a></x></y></z>|''same as''|<z><y><x><a id="2">A</a></x></y></z>|
+
+|''xml''|${xml3}|''same as''|${xml4}|
+
+|''xml''|<a>A|''same as''|${xml2}|
+
+|''xml''|<a>A</a>|''similar to''|<a>A|
+
+|''xpath''|/a/c[@|''exists in ''|<a><b>A</b></a>|
+
+|''xpath''|/a/c|''exists in ''|<a><b>A</b>|
+
+|''xpath''|/a/c|''exists in ''|<a><b>A</b></a>|
+
+|''xpath''|//b|''in''|<a><b>xyz</b></a>|''is''|x|
+
+|''xpath''|//b[@|''in''|<a><b>xyz</b></a>|''is''|x|
+
+|''xpath''|//b[@|''in''|<a><b>xyz</b>|''is''|x|
+
+|''transform''|<city><street>|''with''|${xsl}|
+
+|''transform''|<city></city>|''with''|junk xsl|
+
+|''expected test results''|0|''right''|3|''wrong''|0|''ignored''|11|''exceptions''|

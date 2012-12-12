@@ -1,0 +1,37 @@
+Versions:
+ * Add to the bottom of a report: fitLibrary version and date of run.
+  * Include a manifest in the build that includes the build date.
+  * Consider allowing other text too, with a link to important new information.
+
+New Releases:
+ * Make it easy to check if there's a newer release
+ * Consider better ways to deliver it
+
+Notation:
+ * Rename special action to action-modifier
+ * Add given, when, then forms - perhaps as action-modifiers (ie, special actions)
+
+Organisation:
+ * Collect all global actions together. Ensure this includes |show predefined| and the variations of |set|
+ * Collect all action-modifiers together (ie special actions). Ensure this includes |also run|
+
+Publishing and Documentation:
+ * Tidy up guide and specs and put them on the web for direct access.
+ * Write more introductory tutorials
+ * Write up the execution model
+ * Provide better info on using spreadsheets with folderRunner
+
+Fixtures:
+ * Move table lookup from fitLibraryWeb into here
+ * Check whether |file| writing builds intermediate directories if needed
+
+Problems:
+ * Investigate the problem related to DBFit
+ * Investigate bug list on SF
+
+Specification:
+ * Change the specs to be explicit about the actions in the class used, and to be chattier about what's going on.
+
+Help:
+ * Have |help| just list the "common" actions and action-modifiers for beginners. Have |help all| for the lot.
+  * Requires an extra annotation

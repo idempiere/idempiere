@@ -1,0 +1,36 @@
+!**< def
+!define user (|''name''|Romano Numero|
+|''owe''|12.00|
+)
+!define test (!|fitlibrary.specify.entityParser.MissingFinderMethod|
+
+|''user''|${user}|
+
+|''add''|Romano Numero|''debt''|2.00|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.entityParser.MissingFinderMethod</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td><i>user</i></td>
+<td><table border="1" cellspacing="0">
+<tr><td><i>name</i></td>
+<td>Romano Numero</td>
+</tr>
+<tr><td><i>owe</i></td>
+<td>12.00</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br><table border="1" cellspacing="0">
+<tr><td class="error"><i>add</i><hr/> <span class="fit_label">Missing</span></td>
+<td>Romano Numero</td>
+<td class="error"><i>debt</i><hr/> <span class="fit_label">Missing</span></td>
+<td>2.00</td>
+</tr>
+</table>-!|

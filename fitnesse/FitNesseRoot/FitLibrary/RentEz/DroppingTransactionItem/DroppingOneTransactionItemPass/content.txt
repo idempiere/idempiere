@@ -1,0 +1,8 @@
+|''begin transaction for client''| Joanna |''staff''| Bill|
+|''rent''|1||Truck|''for''|1 day|
+|''drop rent''|1||Truck|''for''|1 day|
+|''complete transaction''|
+
+|''rental item subset''|
+|''name''|''free count''|
+|Truck|1|

@@ -1,0 +1,42 @@
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.References</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>set up accounts</i></td></tr>
+<tr><td><i>owing</i></td></tr>
+<tr><td>10</td></tr>
+<tr><td>100</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>set up account references</i></td></tr>
+<tr><td><i>account</i></td></tr>
+<tr><td>the first</td></tr>
+<tr><td>the second</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>check account references</i></td></tr>
+<tr><td><i>account</i></td></tr>
+<tr><td>the first</td></tr>
+<tr><td>the second</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td>fitlibrary.specify.References</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>set up accounts</i></td></tr>
+<tr><td><i>owing</i></td></tr>
+<tr><td>10</td></tr>
+<tr><td>100</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>set up account references</i></td></tr>
+<tr><td><i>account</i></td></tr>
+<tr><td>the first</td></tr>
+<tr><td>the second</td></tr>
+</table>
+<table border="1" cellspacing="0">
+<tr><td><i>check account references</i></td></tr>
+<tr><td><i>account</i></td></tr>
+<tr><td class="pass">the first</td></tr>
+<tr><td class="pass">the second</td></tr>
+</table>-!|

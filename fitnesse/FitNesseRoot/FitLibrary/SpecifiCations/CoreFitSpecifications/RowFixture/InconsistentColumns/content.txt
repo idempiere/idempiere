@@ -1,0 +1,15 @@
+!2 Repeated columns have to be consistent:
+|!-fitlibrary.spec.SpecifyFixture-!|
+|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fit.specify.RowFixtureUnderTest</td></tr>
+<tr><td>s</td><td>a</td><td>s</td></tr>
+<tr><td>two</td><td>1</td><td>one</td></tr>
+<tr><td>one</td><td>1</td><td>two</td></tr>
+<tr><td>two</td><td>2</td><td>two</td></tr>
+</table>-!|!-<table border="1" cellspacing="0">
+<tr><td colspan="3">fit.specify.RowFixtureUnderTest</td></tr>
+<tr><td>s</td><td>a</td><td>s</td></tr>
+<tr><td class="pass">two</td><td class="pass">1</td><td class="fail">one <span class="fit_label">expected</span><hr>two <span class="fit_label">actual</span></td></tr>
+<tr><td class="pass">one</td><td class="pass">1</td><td class="fail">two <span class="fit_label">expected</span><hr>one <span class="fit_label">actual</span></td></tr>
+<tr><td class="pass">two</td><td class="pass">2</td><td class="pass">two</td></tr>
+</table>-!|

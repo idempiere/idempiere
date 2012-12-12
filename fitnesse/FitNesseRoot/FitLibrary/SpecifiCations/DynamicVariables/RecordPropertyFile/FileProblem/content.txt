@@ -1,0 +1,32 @@
+!**< def
+!define test (|''record to file''|pleaseThrowAnExceptionOnThisFile|
+
+|''get''|a-value|'''is'''|@{a}|
+
+|''get''|@{a}|'''is'''|a-value|
+)
+**!
+|!-fitlibrary.spec.SpecifyFixture-!|
+|${test}|!-<table border="1" cellspacing="0">
+<tr><td><i>record to file</i></td>
+<td>pleaseThrowAnExceptionOnThisFile</td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>a-value</td>
+<td><b>is</b></td>
+<td class="pass">@{a}<hr>a-value <span class="fit_label">actual</span></td>
+</tr>
+</table>
+<br/><table border="1" cellspacing="0">
+<tr><td><i>get</i></td>
+<td>a-value</td>
+<td><b>is</b></td>
+<td class="pass">a-value</td>
+</tr>
+</table>
+<table border="1" cellspacing="0">
+<tr>
+<td>note</td>
+<td class="error"> <span class="fit_label">Problem on writing property file:</span><hr/>Some file exception</td></tr></table>-!|

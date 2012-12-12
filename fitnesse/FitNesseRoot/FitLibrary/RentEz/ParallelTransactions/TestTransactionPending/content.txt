@@ -1,0 +1,6 @@
+|''begin transaction for client''| Joanna |''staff''| Bill|
+
+|''transactions pending''|
+|''client''|''staff''|''owing''|
+|Joanna|Bill|0.00|
+
