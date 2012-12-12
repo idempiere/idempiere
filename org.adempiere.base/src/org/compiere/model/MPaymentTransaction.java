@@ -75,7 +75,12 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	protected boolean beforeSave(boolean newRecord) 
 	{
 		if (getCreditCardVV() != null)
-			setCreditCardVV(PaymentUtil.encrpytCvv(getCreditCardVV()));
+		{
+			String encrpytedCvv = PaymentUtil.encrpytCvv(getCreditCardVV());
+			if (!encrpytedCvv.equals(getCreditCardVV()))
+				setCreditCardVV(encrpytedCvv);
+		}
+		
 		return true;
 	}
 	
@@ -226,7 +231,9 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 //					setErrorMessage(Msg.getMsg(getCtx(), msg));
 //				} else {
 					// Process if validation succeeds
-					approved = pp.processCC ();
+					approved = pp.processCC();
+					setCreditCardNumber(PaymentUtil.encrpytCreditCard(getCreditCardNumber()));
+					setCreditCardVV(PaymentUtil.encrpytCvv(getCreditCardVV()));
 					setIsApproved(approved);
 					
 					if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))
@@ -319,8 +326,6 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 			m_mPaymentTransaction.setIsDelayedCapture(false);
 			boolean ok = m_mPaymentTransaction.processOnline(get_TrxName());
 			m_mPaymentTransaction.setRef_PaymentTransaction_ID(getC_PaymentTransaction_ID());
-//			m_mPaymentTransaction.setCreditCardNumber(PaymentUtil.encrpytCreditCard(getCreditCardNumber()));
-//			m_mPaymentTransaction.setCreditCardVV(PaymentUtil.encrpytCvv(getCreditCardVV()));
 			m_mPaymentTransaction.saveEx();
 			
 			if (trx != null)
@@ -334,9 +339,6 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 				setIsVoided(true);
 				setR_VoidMsg(m_mPaymentTransaction.getR_VoidMsg());
 				setRef_PaymentTransaction_ID(m_mPaymentTransaction.getC_PaymentTransaction_ID());
-				
-//				setCreditCardNumber(PaymentUtil.encrpytCreditCard(getCreditCardNumber()));
-//	            setCreditCardVV(PaymentUtil.encrpytCvv(getCreditCardVV()));
 			}
 			else
 				setErrorMessage(m_mPaymentTransaction.getErrorMessage());

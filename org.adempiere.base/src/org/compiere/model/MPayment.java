@@ -512,7 +512,7 @@ public final class MPayment extends X_C_Payment
 //					setErrorMessage(Msg.getMsg(getCtx(), msg));
 //				} else {
 					// Process if validation succeeds
-					approved = pp.processCC ();
+					approved = pp.processCC();
 					
 					if (approved)
 						setErrorMessage(null);
@@ -534,6 +534,9 @@ public final class MPayment extends X_C_Payment
 		
 		if (approved)
 		{
+			setCreditCardNumber(PaymentUtil.encrpytCreditCard(getCreditCardNumber()));
+			setCreditCardVV(PaymentUtil.encrpytCvv(getCreditCardVV()));
+			
 			setDateTrx(new Timestamp(System.currentTimeMillis()));
 			setDateAcct(new Timestamp(System.currentTimeMillis()));
 			setProcessed(true);		// prevent editing of payment details once approved
@@ -728,6 +731,23 @@ public final class MPayment extends X_C_Payment
 					log.saveError("Error", Msg.parseTranslation(getCtx(), "BP different from BP Order"));
 					return false;
 				}
+			}
+		}
+		
+		if (isProcessed())
+		{
+			if (getCreditCardNumber() != null)
+			{
+				String encrpytedCCNo = PaymentUtil.encrpytCreditCard(getCreditCardNumber());
+				if (!encrpytedCCNo.equals(getCreditCardNumber()))
+					setCreditCardNumber(encrpytedCCNo);
+			}
+			
+			if (getCreditCardVV() != null)
+			{
+				String encrpytedCvv = PaymentUtil.encrpytCvv(getCreditCardVV());
+				if (!encrpytedCvv.equals(getCreditCardVV()))
+					setCreditCardVV(encrpytedCvv);
 			}
 		}
 
@@ -2850,13 +2870,6 @@ public final class MPayment extends X_C_Payment
 					return false;
 				}
 			}
-		}
-
-		// clear out the cc data when a Void happens since at that point we won't need the card information any longer
-		if (getTenderType().equals(TENDERTYPE_CreditCard))
-		{
-			setCreditCardNumber(PaymentUtil.encrpytCreditCard(getCreditCardNumber()));
-			setCreditCardVV(PaymentUtil.encrpytCvv(getCreditCardVV()));
 		}
 
 		if (getC_Invoice_ID() != 0)
