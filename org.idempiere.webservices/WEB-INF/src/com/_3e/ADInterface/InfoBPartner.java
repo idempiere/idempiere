@@ -9,8 +9,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
-import pl.x3E.adInterface.DataField;
-import pl.x3E.adInterface.DataRow;
+import org.idempiere.adInterface.x10.DataField;
+import org.idempiere.adInterface.x10.DataRow;
 
 
 public class InfoBPartner implements ADInfo {

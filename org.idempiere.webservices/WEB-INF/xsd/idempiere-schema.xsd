@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  targetNamespace="http://3e.pl/ADInterface"
-  xmlns:tns="http://3e.pl/ADInterface"
+  targetNamespace="http://idempiere.org/ADInterface/1_0"
+  xmlns:tns="http://idempiere.org/ADInterface/1_0"
   elementFormDefault="qualified">
 
    <xsd:element name="Window" type="tns:Window"/>
@@ -356,13 +356,32 @@
 </xsd:sequence>
 </xsd:complexType>
 
-<xsd:complexType name="StandardResponse">
-<xsd:sequence>
-   	<xsd:element name="Error" type="xsd:string"/>   	
-</xsd:sequence>
-<xsd:attribute name="IsError" type="xsd:boolean"/>
-<xsd:attribute name="RecordID" type="xsd:int"/>   	
-</xsd:complexType>
+	<xsd:complexType name="StandardResponse">
+		<xsd:sequence>
+			<xsd:element name="Error" type="xsd:string" minOccurs="0" />
+			<xsd:element name="Summary" type="xsd:string" minOccurs="0" />
+			<xsd:element name="LogInfo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="Data" type="xsd:hexBinary" minOccurs="0" />
+			<xsd:element name="outputFields" type="tns:outputFields" minOccurs="0"/>
+			<xsd:element name="RunProcessResponse" type="tns:RunProcessResponse"  minOccurs="0"/>
+			<xsd:element name="WindowTabData" type="tns:WindowTabData"   minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="IsError" type="xsd:boolean" />
+		<xsd:attribute name="IsRolledBack" type="xsd:boolean" />
+		<xsd:attribute name="RecordID" type="xsd:int" />
+		<xsd:attribute name="ReportFormat" type="xsd:string" use="optional" />
+	</xsd:complexType>
+
+	<xsd:complexType name="outputFields">
+		<xsd:sequence>
+			<xsd:element name="outputField" type="tns:outputField" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="outputField">
+		<xsd:attribute name="column" type="xsd:string" />
+		<xsd:attribute name="value" type="xsd:string" />
+		<xsd:attribute name="Text" type="xsd:string" />
+	</xsd:complexType>
 
 
 <xsd:element name="Location" type="tns:Location"/>
@@ -400,6 +419,7 @@
      <xsd:element name="serviceType" type="xsd:string"/>
      <xsd:element name="tableName" type="xsd:string"/>
      <xsd:element name="recordID" type="xsd:int"/>
+     <xsd:element name="recordIDVariable" type="xsd:string" minOccurs="0"/>
      <xsd:element name="docAction" type="xsd:string"/>
    </xsd:sequence>
    </xsd:complexType>
@@ -457,7 +477,8 @@
      <xsd:element name="serviceType" type="xsd:string"/>
      <xsd:element name="TableName" type="xsd:string"/>
      <xsd:element name="RecordID" type="xsd:int"/>
-     <xsd:element name="Filter" type="xsd:string"/>
+     <xsd:element name="recordIDVariable" type="xsd:string" minOccurs="0"/>
+     <xsd:element name="Filter" type="xsd:string"  minOccurs="0" maxOccurs="1"/>
      <xsd:element name="Action">
      	<xsd:simpleType>
      		<xsd:restriction base="xsd:string">
@@ -465,6 +486,7 @@
      			<xsd:enumeration value="Read"></xsd:enumeration>
      			<xsd:enumeration value="Update"></xsd:enumeration>
      			<xsd:enumeration value="Delete"></xsd:enumeration>
+     			<xsd:enumeration value="CreateUpdate"></xsd:enumeration>
      		</xsd:restriction>
      	</xsd:simpleType>
      </xsd:element>
@@ -477,6 +499,62 @@
      <xsd:element name="ModelCRUD" type="tns:ModelCRUD" minOccurs="1" maxOccurs="1"/>
      <xsd:element name="ADLoginRequest" type="tns:ADLoginRequest" minOccurs="1" maxOccurs="1"/>
    </xsd:sequence>
-   </xsd:complexType>
+ </xsd:complexType>
+
+
+	<xsd:complexType name="operations">
+		<xsd:sequence>
+			<xsd:element name="operation" type="tns:operation" minOccurs="1" maxOccurs="unbounded"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="operation">
+		<xsd:sequence>
+			<xsd:element name="TargetPort">
+		     	<xsd:simpleType>
+		     		<xsd:restriction base="xsd:string">
+		     			<xsd:enumeration value="createData"></xsd:enumeration>
+		     			<xsd:enumeration value="readData"></xsd:enumeration>
+		     			<xsd:enumeration value="updateData"></xsd:enumeration>
+		     			<xsd:enumeration value="deleteData"></xsd:enumeration>
+		     			<xsd:enumeration value="runProcess"></xsd:enumeration>
+		     			<xsd:enumeration value="setDocAction"></xsd:enumeration>
+		     			<xsd:enumeration value="createUpdateData"></xsd:enumeration>
+		     		</xsd:restriction>
+		     	</xsd:simpleType>
+		     </xsd:element>
+			<xsd:element name="ModelCRUD" type="tns:ModelCRUD" minOccurs="0"></xsd:element>
+			<xsd:element name="ModelSetDocAction" type="tns:ModelSetDocAction" minOccurs="0"></xsd:element>
+			<xsd:element name="ModelRunProcess" type="tns:ModelRunProcess" minOccurs="0"></xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="preCommit" type="xsd:boolean" default="false"></xsd:attribute>
+		<xsd:attribute name="postCommit" type="xsd:boolean" default="false"></xsd:attribute>
+	</xsd:complexType>
+	<xsd:element name="CompositeModelRequest" type="tns:CompositeModelRequest"></xsd:element>
+	<xsd:complexType name="CompositeModelRequest">
+		<xsd:sequence>
+			<xsd:element name="ADLoginRequest" type="tns:ADLoginRequest"></xsd:element>
+		     <xsd:element name="serviceType" type="xsd:string"/>
+			<xsd:element name="operations" type="tns:operations" maxOccurs="unbounded"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+<xsd:element name="CompositeResponses" type="tns:CompositeResponses"></xsd:element>
+
+<xsd:complexType name="CompositeResponses">
+	<xsd:sequence>
+		<xsd:element name="CompositeResponse" type="tns:CompositeResponse" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+	</xsd:sequence>
+</xsd:complexType>
+
+
+<xsd:complexType name="CompositeResponse">
+	<xsd:sequence>
+		<xsd:element name="StandardResponse" type="tns:StandardResponse" minOccurs="1" maxOccurs="unbounded"></xsd:element>
+	</xsd:sequence>
+</xsd:complexType>
+
+
 
 </xsd:schema>

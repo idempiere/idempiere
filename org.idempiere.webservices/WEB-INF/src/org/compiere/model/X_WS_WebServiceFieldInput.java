@@ -30,7 +30,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100713L;
+	private static final long serialVersionUID = 20121118L;
 
     /** Standard Constructor */
     public X_WS_WebServiceFieldInput (Properties ctx, int WS_WebServiceFieldInput_ID, String trxName)
@@ -97,6 +97,113 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
+			.getPO(getAD_Reference_ID(), get_TrxName());	}
+
+	/** Set Reference.
+		@param AD_Reference_ID 
+		System Reference and Validation
+	  */
+	public void setAD_Reference_ID (int AD_Reference_ID)
+	{
+		if (AD_Reference_ID < 1) 
+			set_Value (COLUMNNAME_AD_Reference_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
+	}
+
+	/** Get Reference.
+		@return System Reference and Validation
+	  */
+	public int getAD_Reference_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set DB Column Name.
+		@param ColumnName 
+		Name of the column in the database
+	  */
+	public void setColumnName (String ColumnName)
+	{
+		set_Value (COLUMNNAME_ColumnName, ColumnName);
+	}
+
+	/** Get DB Column Name.
+		@return Name of the column in the database
+	  */
+	public String getColumnName () 
+	{
+		return (String)get_Value(COLUMNNAME_ColumnName);
+	}
+
+	/** Set Identifier Logic.
+		@param IdentifierLogic Identifier Logic	  */
+	public void setIdentifierLogic (String IdentifierLogic)
+	{
+		set_Value (COLUMNNAME_IdentifierLogic, IdentifierLogic);
+	}
+
+	/** Get Identifier Logic.
+		@return Identifier Logic	  */
+	public String getIdentifierLogic () 
+	{
+		return (String)get_Value(COLUMNNAME_IdentifierLogic);
+	}
+
+	/** Set Identifier.
+		@param IsIdentifier 
+		This column is part of the record identifier
+	  */
+	public void setIsIdentifier (boolean IsIdentifier)
+	{
+		set_Value (COLUMNNAME_IsIdentifier, Boolean.valueOf(IsIdentifier));
+	}
+
+	/** Get Identifier.
+		@return This column is part of the record identifier
+	  */
+	public boolean isIdentifier () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsIdentifier);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Allow Null Value.
+		@param IsNullIdentifier 
+		Should allow null value for identifiere field
+	  */
+	public void setIsNullIdentifier (boolean IsNullIdentifier)
+	{
+		set_Value (COLUMNNAME_IsNullIdentifier, Boolean.valueOf(IsNullIdentifier));
+	}
+
+	/** Get Allow Null Value.
+		@return Should allow null value for identifiere field
+	  */
+	public boolean isNullIdentifier () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsNullIdentifier);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Web Service Field Input.

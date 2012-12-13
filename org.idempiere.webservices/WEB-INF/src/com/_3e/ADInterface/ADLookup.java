@@ -18,11 +18,11 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.ValueNamePair;
 import org.compiere.util.WebSessionCtx;
 
-import pl.x3E.adInterface.DataField;
-import pl.x3E.adInterface.DataRow;
-import pl.x3E.adInterface.DataSet;
-import pl.x3E.adInterface.LookupValue;
-import pl.x3E.adInterface.LookupValues;
+import org.idempiere.adInterface.x10.DataField;
+import org.idempiere.adInterface.x10.DataRow;
+import org.idempiere.adInterface.x10.DataSet;
+import org.idempiere.adInterface.x10.LookupValue;
+import org.idempiere.adInterface.x10.LookupValues;
 
 /*
  * ADEMPIERE/COMPIERE
@@ -42,8 +42,11 @@ public class ADLookup {
 	static final int TYPE_BUISNESS_PARTNER = 002;
 	
 	private String m_columnName;
+	private int m_type;
 	private String m_tableName;
 	private String m_keyColumnName;
+	private Boolean IsQueryJoin;
+	private boolean m_isSOTRX;
 	
 	private final int MAX_PRODUCT_ROWS=500;
 	
@@ -69,7 +72,8 @@ public class ADLookup {
 	
 	
 	private String getWhereClause( String keyColumn, DataRow params ) {
-		String whereClause = "IsSummary='N'";	
+		String whereClause = "IsSummary='N'";
+		String lookupColumn = keyColumn;		
 		return whereClause;
 	}
 	
@@ -127,6 +131,8 @@ public class ADLookup {
 		//String whereClause = getWhere(adr);		
 		String whereClause = getWhereClause(m_columnName, adr);
 		String finalSQL="";		
+		
+		IsQueryJoin = false;
 		
 		String mode = "normal"; 
 		for (int i=0; i< adr.sizeOfFieldArray(); i++) {
@@ -194,14 +200,16 @@ public class ADLookup {
 			//join�w
 			if ((ile==1))
 			{
-			 System.out.println("Znalaz�em 1 rekord wi�c szukam dla bez join. W kliencie zostanie automatycznie uzupe�niona warto�c");				 			 
+			 System.out.println("Znalazï¿½em 1 rekord wiï¿½c szukam dla bez join. W kliencie zostanie automatycznie uzupeï¿½niona wartoï¿½c");
+			 IsQueryJoin = false;				 			 
 			}
 			//Jesli wiecej niz jeden to uzywamy join�w
 			//Spowoduje to wyswietlenie rekord�w spe�niajacych kryterium
 			//w oknie LookUp'a
 			if (ile>1)
 			{
-			 System.out.println("Znalaz�em wi�cej ni� 1 rekord wi�c szukam dla whereClause i z joinami. W kliencie zostanie wy�wietlone LookUpWindow z przefiltrowanymi rekordami.");		 			 
+			 System.out.println("Znalazï¿½em wiï¿½cej niï¿½ 1 rekord wiï¿½c szukam dla whereClause i z joinami. W kliencie zostanie wyï¿½wietlone LookUpWindow z przefiltrowanymi rekordami.");
+			 IsQueryJoin = true;		 			 
 
 			}	
 			ds = getResult(info, ds, ile, mode);			

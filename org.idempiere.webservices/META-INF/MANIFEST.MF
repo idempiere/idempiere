@@ -7,17 +7,17 @@ Bundle-Activator: org.idempiere.webservices.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.servlet;version="3.0.0",
  javax.servlet.http;version="3.0.0",
- org.apache.commons.codec;version="1.3.0",
  org.apache.commons.codec.binary;version="1.3.0",
- org.apache.commons.logging;version="1.1.1",
- org.osgi.framework;version="1.3.0"
+ org.osgi.framework;version="1.6.0"
 Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
  org.adempiere.report.jasper.library;bundle-version="1.0.0",
  org.adempiere.ui;bundle-version="1.0.0",
  org.apache.ecs;bundle-version="1.0.0"
-Bundle-ClassPath: WEB-INF/lib/stax2-api-3.1.1.jar,
+Bundle-ClassPath: .,
+ WEB-INF/lib/spring-osgi-extender-1.2.1.jar,
+ WEB-INF/lib/spring-aop-3.0.7.RELEASE.jar,
+ WEB-INF/lib/stax2-api-3.1.1.jar,
  WEB-INF/lib/spring-web-3.0.7.RELEASE.jar,
- .,
  WEB-INF/lib/spring-context-3.0.7.RELEASE.jar,
  WEB-INF/lib/spring-beans-3.0.7.RELEASE.jar,
  WEB-INF/lib/spring-core-3.0.7.RELEASE.jar,
@@ -27,13 +27,15 @@ Bundle-ClassPath: WEB-INF/lib/stax2-api-3.1.1.jar,
  WEB-INF/lib/cxf-2.6.2.jar,
  WEB-INF/lib/neethi-3.0.2.jar,
  WEB-INF/lib/xmlschema-core-2.0.3.jar,
- WEB-INF/lib/spring-aop-3.0.7.RELEASE.jar,
  WEB-INF/lib/cxf-rt-frontend-jaxws-2.6.1.jar,
- WEB-INF/lib/generated_xbeans.jar,
  WEB-INF/lib/xmlbeans-2.5.0.jar,
- WEB-INF/lib/composite_XMLSBean.jar
+ WEB-INF/lib/aopalliance-1.0.jar,
+ WEB-INF/lib/commons-logging-1.1.1.jar,
+ WEB-INF/lib/Idempiere-XMLSBean-1.0.jar
 Export-Package: com._3e.ADInterface,
- com.adaxa.ws,
- com.adaxa.ws.impl,
- com.globalqss.ObPOSInterface
+ org.compiere.model,
+ org.idempiere.adInterface.x10,
+ org.idempiere.adInterface.x10.impl,
+ org.idempiere.webservices,
+ org.idempiere.webservices.fault
 Web-ContextPath: ADInterface
