@@ -1,8 +1,8 @@
-!contents
 '''IDEMPIERE-369 Master Detail Improvement'''
 Bugs: Field translation tab not show
 
 !include -c ZkSystemAdminLogin
+
 '''Open Window, Tab & Field'''
 |''combobox''|$treeSearchCombo|''select item''|!-Window, Tab & Field-!|
 |''wait response''|
