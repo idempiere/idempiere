@@ -81,3 +81,5 @@ INSERT INTO WS_WebServiceFieldInput (AD_Client_ID,AD_Column_ID,AD_Org_ID,Created
 INSERT INTO WS_WebServiceTypeAccess (AD_Client_ID,AD_Org_ID,AD_Role_ID,Created,CreatedBy,IsActive,IsReadWrite,Updated,UpdatedBy,WS_WebServiceType_ID) VALUES (11,0,50004,TO_DATE('2009-01-30 19:50:41','YYYY-MM-DD HH24:MI:SS'),100,'Y','Y',TO_DATE('2009-01-30 19:50:41','YYYY-MM-DD HH24:MI:SS'),100,50001)
 ;
 
+SELECT register_migration_script('WS003_WebServicesConfigGardenWorldSample.sql') FROM dual
+;

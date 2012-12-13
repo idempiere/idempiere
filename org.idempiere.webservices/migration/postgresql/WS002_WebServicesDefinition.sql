@@ -27,3 +27,6 @@ INSERT INTO WS_WebServiceMethod (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Descri
 
 INSERT INTO WS_WebServiceMethod (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Description,IsActive,Name,Updated,UpdatedBy,Value,WS_WebService_ID,WS_WebServiceMethod_ID) VALUES (0,0,TO_TIMESTAMP('2009-01-30 19:22:50','YYYY-MM-DD HH24:MI:SS'),100,'Access records via conditions on columns - return data rows','Y','Query Data',TO_TIMESTAMP('2009-01-30 19:22:50','YYYY-MM-DD HH24:MI:SS'),100,'queryData',50001,50028)
 ;
+
+SELECT register_migration_script('WS002_WebServicesDefinition.sql') FROM dual
+;
