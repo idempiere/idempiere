@@ -34,9 +34,9 @@ import java.io.FilenameFilter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
-import java.util.Vector;
 import java.util.logging.Level;
 
 import org.compiere.Adempiere;
@@ -63,7 +63,7 @@ public class PrepareMigrationScripts extends SvrProcess {
 
 		// The list of files can also be retrieved as File objects
 		File[] dirList = dir.listFiles();
-		Vector<String> fileName = new Vector<String>();
+		ArrayList<String> fileName = new ArrayList<String>();
 
 		FilenameFilter filter = new FilenameFilter() {
 			public boolean accept(File dir, String name) {

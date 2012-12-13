@@ -1,7 +1,7 @@
 package org.compiere.print;
 
+import java.util.ArrayList;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.logging.Level;
 
 import org.compiere.model.MProcess;
@@ -90,7 +90,7 @@ public class ServerReportCtl {
 		ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
 		pi.setPrintPreview( !IsDirectPrint );
 		pi.setRecord_ID ( Record_ID );
-		Vector<ProcessInfoParameter> jasperPrintParams = new Vector<ProcessInfoParameter>();
+		ArrayList<ProcessInfoParameter> jasperPrintParams = new ArrayList<ProcessInfoParameter>();
 		ProcessInfoParameter pip;
 		if (printerName!=null && printerName.trim().length()>0) {
 			// Override printer name

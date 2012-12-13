@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
@@ -1872,7 +1871,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		listbox.setHeight("400px");
 
 		// Display the first 5 fields data exclude Organization, Client and YesNo field data
-		Vector<String> columnNames = new Vector<String>();
+		ArrayList<String> columnNames = new ArrayList<String>();
 		GridField[] fields = adTabbox.getSelectedGridTab().getFields();
 		if(adTabbox.getSelectedGridTab().getField("DocumentNo")!=null){
 			columnNames.add(adTabbox.getSelectedGridTab().getField("DocumentNo").getColumnName());
@@ -1899,7 +1898,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			}
 		}
 
-		Vector<String> data = new Vector<String>();
+		ArrayList<String> data = new ArrayList<String>();
 		int noOfRows = adTabbox.getSelectedGridTab().getRowCount();
 		for(int i=0; i<noOfRows; i++)
 		{

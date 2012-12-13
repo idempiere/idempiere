@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -2494,7 +2493,7 @@ public final class MRole extends X_AD_Role
 		if (maxIndex <= 0)
 			return maxIndex;
 		//
-		final Vector<String> validOptions = new Vector<String>();
+		final ArrayList<String> validOptions = new ArrayList<String>();
 		final List<Object> params = new ArrayList<Object>();
 		params.add(clientId);
 		params.add(docTypeId);
@@ -2519,7 +2518,7 @@ public final class MRole extends X_AD_Role
 			if (roles.size() > 0) {
 
 				MDocType doc = new MDocType(getCtx(), docTypeId, get_TrxName());
-				Vector<String> option = new Vector<String>();
+				ArrayList<String> option = new ArrayList<String>();
 				for (int j = 0; j < options.length; j++) {
 					if (options[j] != null)
 						option.add(options[j]);
