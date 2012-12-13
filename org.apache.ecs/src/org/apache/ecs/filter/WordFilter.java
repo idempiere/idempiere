@@ -72,7 +72,7 @@ public class WordFilter extends java.util.Hashtable<String, Object> implements F
         String tmp = "";
         // the true at the end is the key to making it work
         StringTokenizer st = new StringTokenizer(to_process, " ", true);
-        StringBuffer newValue = new StringBuffer(to_process.length() + 50);
+        StringBuilder newValue = new StringBuilder(to_process.length() + 50);
         while ( st.hasMoreTokens() )
         {
             tmp = st.nextToken();

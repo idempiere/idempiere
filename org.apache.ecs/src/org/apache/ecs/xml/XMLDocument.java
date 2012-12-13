@@ -91,7 +91,7 @@ public class XMLDocument
 	public XMLDocument (double version, boolean standalone)
 	{
 		prolog = new Vector<Object> (2);
-		StringBuffer versionStr = new StringBuffer ();
+		StringBuilder versionStr = new StringBuilder ();
 		versionStr.append ("<?xml version=\"");
 		versionStr.append (version);
 		versionStr.append ("\" standalone=\"");
@@ -270,7 +270,7 @@ public class XMLDocument
      */
 	public final String toString ()
 	{
-		StringBuffer retVal = new StringBuffer ();
+		StringBuilder retVal = new StringBuilder ();
 		if (codeset != null)
 		{
 			for (int i = 0; i < prolog.size (); i++)
@@ -307,7 +307,7 @@ public class XMLDocument
      */
 	public final String toString (String codeset)
 	{
-		StringBuffer retVal = new StringBuffer ();
+		StringBuilder retVal = new StringBuilder ();
 		for (int i = 0; i < prolog.size (); i++)
 		{
 			ConcreteElement e = (ConcreteElement)prolog.elementAt (i);

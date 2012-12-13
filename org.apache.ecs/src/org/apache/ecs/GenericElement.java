@@ -643,7 +643,7 @@ public abstract class GenericElement implements Element,Serializable
 
     protected String createStartTag()
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(getStartTagChar());
 
         if(getBeginStartModifierDefined())
@@ -663,7 +663,7 @@ public abstract class GenericElement implements Element,Serializable
     protected String createEndTag()
     {
         setEndStartModifier('/');
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(getStartTagChar());
 
         if(getEndStartModifierDefined())

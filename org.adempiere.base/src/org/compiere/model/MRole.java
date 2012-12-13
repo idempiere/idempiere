@@ -1881,7 +1881,7 @@ public final class MRole extends X_AD_Role
 	public String addAccessSQL (String SQL, String TableNameIn, 
 		boolean fullyQualified, boolean rw)
 	{
-		StringBuffer retSQL = new StringBuffer();
+		StringBuilder retSQL = new StringBuilder();
 
 		//	Cut off last ORDER BY clause
 		String orderBy = "";
