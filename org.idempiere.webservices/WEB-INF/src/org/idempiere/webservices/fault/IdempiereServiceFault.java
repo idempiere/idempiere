@@ -7,15 +7,15 @@ import javax.xml.ws.WebFault;
 public class IdempiereServiceFault extends RuntimeException{
 
 	public IdempiereServiceFault(String string, QName qName) {
-		// TODO Auto-generated constructor stub
+		super(string);
 	}
 
 	public IdempiereServiceFault(String string, Throwable cause, QName qName) {
-		// TODO Auto-generated constructor stub
+		super(string, cause);
 	}
 
 	public IdempiereServiceFault(Exception exception) {
-		// TODO Auto-generated constructor stub
+		super(exception);
 	}
 
 	/**

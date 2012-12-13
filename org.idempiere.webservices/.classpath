@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/composite_XMLSBean.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/xmlbeans-2.5.0.jar" sourcepath="E:/spring/xmlbeans-2.5.0-source.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/generated_xbeans.jar" sourcepath="XBeans/src"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/cxf-rt-frontend-jaxws-2.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/Idempiere-XMLSBean-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-osgi-extender-1.2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-aop-3.0.7.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/aopalliance-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/xmlbeans-2.5.0.jar" sourcepath="E:/spring/xmlbeans-2.5.0-source.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/cxf-rt-frontend-jaxws-2.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/stax2-api-3.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/xmlschema-core-2.0.3.jar" sourcepath="E:/spring/xmlschema-core-2.0.3-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/cxf-2.6.2.jar" sourcepath="E:/bizzidium/apache-cxf-2.6.2-src.zip"/>

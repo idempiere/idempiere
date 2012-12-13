@@ -29,59 +29,61 @@
 
 package com._3e.ADInterface;
 
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.jws.WebService;
 import javax.xml.namespace.QName;
+import javax.xml.ws.WebServiceContext;
 
 import org.apache.xmlbeans.StringEnumAbstractBase.Table;
+import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
 import org.compiere.model.MRefTable;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
-import org.compiere.model.MWebService;
 import org.compiere.model.MWebServiceType;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
 import org.compiere.model.X_AD_Reference;
-import org.compiere.model.X_WS_WebServiceMethod;
+import org.compiere.model.X_WS_WebServiceFieldInput;
 import org.compiere.model.X_WS_WebService_Para;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
-import org.compiere.util.Login;
 import org.compiere.util.Trx;
+import org.compiere.util.ValueNamePair;
+import org.idempiere.adInterface.x10.ADLoginRequest;
+import org.idempiere.adInterface.x10.DataField;
+import org.idempiere.adInterface.x10.DataRow;
+import org.idempiere.adInterface.x10.DataSet;
+import org.idempiere.adInterface.x10.ModelCRUD;
+import org.idempiere.adInterface.x10.ModelCRUD.Action.Enum;
+import org.idempiere.adInterface.x10.ModelCRUDRequestDocument;
+import org.idempiere.adInterface.x10.ModelGetList;
+import org.idempiere.adInterface.x10.ModelGetListRequestDocument;
+import org.idempiere.adInterface.x10.ModelRunProcess;
+import org.idempiere.adInterface.x10.ModelRunProcessRequestDocument;
+import org.idempiere.adInterface.x10.ModelSetDocAction;
+import org.idempiere.adInterface.x10.ModelSetDocActionRequestDocument;
+import org.idempiere.adInterface.x10.RunProcess;
+import org.idempiere.adInterface.x10.RunProcessDocument;
+import org.idempiere.adInterface.x10.RunProcessResponse;
+import org.idempiere.adInterface.x10.RunProcessResponseDocument;
+import org.idempiere.adInterface.x10.StandardResponse;
+import org.idempiere.adInterface.x10.StandardResponseDocument;
+import org.idempiere.adInterface.x10.WindowTabData;
+import org.idempiere.adInterface.x10.WindowTabDataDocument;
+import org.idempiere.webservices.AbstractService;
+import org.idempiere.webservices.IWSValidator;
 import org.idempiere.webservices.fault.IdempiereServiceFault;
-
-import pl.x3E.adInterface.ADLoginRequest;
-import pl.x3E.adInterface.DataField;
-import pl.x3E.adInterface.DataRow;
-import pl.x3E.adInterface.DataSet;
-import pl.x3E.adInterface.ModelCRUD;
-import pl.x3E.adInterface.ModelCRUDRequestDocument;
-import pl.x3E.adInterface.ModelGetList;
-import pl.x3E.adInterface.ModelGetListRequestDocument;
-import pl.x3E.adInterface.ModelRunProcess;
-import pl.x3E.adInterface.ModelRunProcessRequestDocument;
-import pl.x3E.adInterface.ModelSetDocAction;
-import pl.x3E.adInterface.ModelSetDocActionRequestDocument;
-import pl.x3E.adInterface.RunProcess;
-import pl.x3E.adInterface.RunProcessDocument;
-import pl.x3E.adInterface.RunProcessResponse;
-import pl.x3E.adInterface.RunProcessResponseDocument;
-import pl.x3E.adInterface.StandardResponse;
-import pl.x3E.adInterface.StandardResponseDocument;
-import pl.x3E.adInterface.WindowTabData;
-import pl.x3E.adInterface.WindowTabDataDocument;
-import pl.x3E.adInterface.ModelCRUD.Action.Enum;
 
 /*
  * ADEMPIERE/COMPIERE
@@ -94,6 +96,12 @@ import pl.x3E.adInterface.ModelCRUD.Action.Enum;
  * Contributors: Carlos Ruiz - globalqss
  *     Add model oriented method modelSetDocAction
  *     Some Polish messages translated to english using google translate
+ *     Deepak Pansheriya 
+ *     Abstracting out Authenticate and login method
+ *     Re factored to add support for composite web service
+ *     Added CreateUpdate end point
+ *     Added Support for Ctx Variable and ability to pass ctx variable in request
+ *     Added configurable output fields
  */
 
 
@@ -103,103 +111,186 @@ import pl.x3E.adInterface.ModelCRUD.Action.Enum;
  *
  */
 @WebService(endpointInterface="com._3e.ADInterface.ModelADService", serviceName="ModelADService",targetNamespace="http://3e.pl/ADInterface")
-public class ModelADServiceImpl implements ModelADService {
+public class ModelADServiceImpl extends AbstractService implements ModelADService {
 
 	private static CLogger	log = CLogger.getCLogger(ModelADServiceImpl.class);
 	
 	private static String webServiceName = new String("ModelADService");
 	
-	private CompiereService m_cs;
+	private boolean manageTrx = true;
 
-	private MWebService m_webservice = null;
-	private X_WS_WebServiceMethod m_webservicemethod;
-	private MWebServiceType m_webservicetype;
+	private String localTrxName = null;
+	
+	public boolean isManageTrx() {
+		return manageTrx;
+	}
+
+	public void setManageTrx(boolean manageTrx) {
+		this.manageTrx = manageTrx;
+	}
+
+	public String getLocalTrxName() {
+		return localTrxName;
+	}
+
+	public void setLocalTrxName(String locatTrxName) {
+		this.localTrxName = locatTrxName;
+	}
 
 	public ModelADServiceImpl()
 	{
-		m_cs = new CompiereService();
-		m_cs.connect();			
 		
 		log.info("Creating session object ADService");
 	}
 	
-	public String getVersion() {
-		return "0.7.0";
+	public ModelADServiceImpl(WebServiceContext ctx)
+	{
+		this.ctx =ctx;
+		
+		log.info("Creating session object ADService");
 	}
-	
+	public String getVersion() {
+		return "0.8.0";
+	}
+
 	/*
-	 * Model oriented web service to change DocAction for documents, i.e. Complete a Material Receipt
-	 * WARNING!!! This web service complete documents not via workflow, so it jump over any approval step considered in document workflow
-	 *   To complete documents using workflow it's better to use the runProcess web service
+	 * Model oriented web service to change DocAction for documents, i.e.
+	 * Complete a Material Receipt WARNING!!! This web service complete
+	 * documents not via workflow, so it jump over any approval step considered
+	 * in document workflow To complete documents using workflow it's better to
+	 * use the runProcess web service
 	 */
-	public StandardResponseDocument setDocAction(
-			ModelSetDocActionRequestDocument req) {
-    	StandardResponseDocument ret = StandardResponseDocument.Factory.newInstance();
-    	StandardResponse resp = ret.addNewStandardResponse();
-    	ModelSetDocAction modelSetDocAction = req.getModelSetDocActionRequest().getModelSetDocAction();
+	public StandardResponseDocument setDocAction(ModelSetDocActionRequestDocument req) {
+		
+		StandardResponseDocument ret = StandardResponseDocument.Factory.newInstance();
+		StandardResponse resp = ret.addNewStandardResponse();
+		ModelSetDocAction modelSetDocAction = req.getModelSetDocActionRequest().getModelSetDocAction();
 		String serviceType = modelSetDocAction.getServiceType();
 
-    	ADLoginRequest reqlogin = req.getModelSetDocActionRequest().getADLoginRequest();
+		ADLoginRequest reqlogin = req.getModelSetDocActionRequest().getADLoginRequest();
 
-    	String err = modelLogin(reqlogin, webServiceName, "setDocAction", serviceType);
-    	if (err != null && err.length() > 0) {
-    		resp.setError(err);
-        	resp.setIsError(true);
-        	return ret;
-    	}
-    	
-    	Properties ctx = m_cs.getM_ctx();
+		CompiereService m_cs = getCompiereService();
 
-    	// Validate parameters
-    	modelSetDocAction.setTableName(validateParameter("tableName", modelSetDocAction.getTableName()));
-    	modelSetDocAction.setRecordID(validateParameter("recordID", modelSetDocAction.getRecordID()));
-    	modelSetDocAction.setDocAction(validateParameter("docAction", modelSetDocAction.getDocAction()));
-    	
-    	String tableName = modelSetDocAction.getTableName();
-    	int recordID = modelSetDocAction.getRecordID();
-    	String docAction = modelSetDocAction.getDocAction();
-    	resp.setRecordID (recordID);
-    	
-    	// start a trx
-    	String trxName = Trx.createTrxName("ws_modelSetDocAction");
-		Trx trx = Trx.get(trxName, false);
-    	
-    	// get the PO for the tablename and record ID
-    	MTable table = MTable.get(ctx, tableName);
-    	if (table == null)
-    		return rollbackAndSetError(trx, resp, ret, true, "No table " + tableName);
-    	PO po = table.getPO(recordID, trxName);
-    	if (po == null)
-    		return rollbackAndSetError(trx, resp, ret, true, "No Record " + recordID + " in " + tableName);
+		String err = login(reqlogin, webServiceName, "setDocAction", serviceType);
+		if (err != null && err.length() > 0) {
+			resp.setError(err);
+			resp.setIsError(true);
+			return ret;
+		}
 
-    	// set explicitly the column DocAction to avoid automatic process of default option
-   		po.set_ValueOfColumn("DocAction", docAction);
+
+		try {
+			// Validate parameters
+			modelSetDocAction.setTableName(validateParameter("tableName", modelSetDocAction.getTableName()));
+			modelSetDocAction.setRecordID(validateParameter("recordID", modelSetDocAction.getRecordID()));
+			modelSetDocAction.setDocAction(validateParameter("docAction", modelSetDocAction.getDocAction()));
+		} catch (IdempiereServiceFault e) {
+			resp.setError(e.getMessage());
+			resp.setIsError(true);
+			return ret;
+		}
+		
+		Properties ctx = m_cs.getM_ctx();
+
+		// start a trx
+		String trxName = localTrxName;
+		if (trxName == null) {
+			trxName = Trx.createTrxName("ws_modelSetDocAction");
+			manageTrx = true;
+		}
+
+		Trx trx = Trx.get(trxName, true);
+		
+		Map<String, Object> requestCtx = getRequestCtx();
+
+		String tableName = modelSetDocAction.getTableName();
+
+		String recordIDVar = modelSetDocAction.getRecordIDVariable();
+		int recordID = modelSetDocAction.getRecordID();
+
+		if (recordIDVar != null && recordIDVar.startsWith("@")) {
+			Integer retVal = (Integer) parseVariable(recordIDVar, null, null, requestCtx);
+			if (retVal == null) {
+				return rollbackAndSetError(trx, resp, ret, true, "Cannot resolve variable: " + recordIDVar);
+			}
+			recordID=retVal;
+		}
+
+		String docAction = modelSetDocAction.getDocAction();
+		resp.setRecordID(recordID);
+
+		// get the PO for the tablename and record ID
+		MTable table = MTable.get(ctx, tableName);
+		if (table == null)
+			return rollbackAndSetError(trx, resp, ret, true, "No table " + tableName);
+
+		PO po = table.getPO(recordID, trxName);
+		if (po == null)
+			return rollbackAndSetError(trx, resp, ret, true, "No Record " + recordID + " in " + tableName);
+
+		// set explicitly the column DocAction to avoid automatic process of
+		// default option
+		po.set_ValueOfColumn("DocAction", docAction);
 		if (!po.save())
-			return rollbackAndSetError(trx, resp, ret, true, "Cannot save before set docAction: " + CLogger.retrieveErrorString("no log message"));
-    	
-    	// call process it
-    	try {
-			if (! ((org.compiere.process.DocAction) po).processIt(docAction))
-				return rollbackAndSetError(trx, resp, ret, true, "Couldn't set docAction: " + ((org.compiere.process.DocAction) po).getProcessMsg());
+			return rollbackAndSetError(trx, resp, ret, true,
+					"Cannot save before set docAction: " + CLogger.retrieveErrorString("no log message"));
+
+		MWebServiceType m_webservicetype = getWebServiceType();
+
+		// For passing action to validators
+		requestCtx.put("DocAction", docAction);
+
+		// Fire Event
+		StandardResponseDocument retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIME_BEFORE_PARSE, po, null, trx, requestCtx,
+				resp, ret);
+		if (retResp != null)
+			return retResp;
+
+		// call process it
+		try {
+			if (!((org.compiere.process.DocAction) po).processIt(docAction))
+				return rollbackAndSetError(trx, resp, ret, true,
+						"Couldn't set docAction: " + ((org.compiere.process.DocAction) po).getProcessMsg());
 		} catch (Exception e) {
 			return rollbackAndSetError(trx, resp, ret, true, e.toString());
 		}
 
-    	// close the trx
+		// Fire Event
+		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIME_BEFORE_SAVE, po, null, trx, requestCtx, resp, ret);
+		if (retResp != null)
+			return retResp;
+
+		// close the trx
 		if (!po.save())
-			return rollbackAndSetError(trx, resp, ret, true, "Cannot save after set docAction: " + CLogger.retrieveErrorString("no log message"));
-			
-		if (!trx.commit())
+			return rollbackAndSetError(trx, resp, ret, true,
+					"Cannot save after set docAction: " + CLogger.retrieveErrorString("no log message"));
+
+		// Fire Event
+		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIME_AFTER_SAVE, po, null, trx, requestCtx, resp, ret);
+		if (retResp != null)
+			return retResp;
+
+		if (manageTrx && !trx.commit())
 			return rollbackAndSetError(trx, resp, ret, true, "Cannot commit after docAction");
-			
-		trx.close();
-    	
-    	// resp.setError("");
-    	resp.setIsError(false);
+
+		if (manageTrx)
+			trx.close();
+
+		// resp.setError("");
+		resp.setIsError(false);
+
+		POInfo poinfo = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
+		setOuputFields(resp, m_webservicetype, po, poinfo);
+		
+		
+		
 		return ret;
 	}
 
 	private String validateParameter(String parameterName, String string) {
+		
+		MWebServiceType m_webservicetype= getWebServiceType();
+		
 		X_WS_WebService_Para para = m_webservicetype.getParameter(parameterName);
 		if (para == null && (string == null || string.length() == 0))
 			// if parameter not configured but didn't receive value (optional param)
@@ -254,175 +345,37 @@ public class ModelADServiceImpl implements ModelADService {
 		return (Enum) table.forString(string);
 	}
 
-	private StandardResponseDocument rollbackAndSetError(Trx trx,
-			StandardResponse resp, StandardResponseDocument ret, boolean isError,
-			String string) {
-		resp.setError(string);
-    	resp.setIsError(isError);
-    	trx.rollback();
-    	trx.close();
-    	return ret;
-	}
-
-	private String modelLogin(ADLoginRequest r, String webService, String method, String serviceType) {
-
-    	// TODO: Share login between different sessions
-		if (   m_cs.isLoggedIn()
-			&& m_cs.getM_AD_Client_ID() == r.getClientID()
-			&& m_cs.getM_AD_Org_ID() == r.getOrgID()
-			&& m_cs.getM_AD_Role_ID() == r.getRoleID()
-			&& m_cs.getM_AD_Warehouse_ID() == r.getWarehouseID()
-			&& r.getUser().equals(m_cs.getUser())
-			)
-			return authenticate(webService, method, serviceType); // already logged with same data
-
-		Login login = new Login(m_cs.getM_ctx());
-		KeyNamePair[] roles = login.getRoles(r.getUser(), r.getPass());
-		if (roles != null)
-		{
-			boolean okrole = false;
-			for (KeyNamePair role : roles) {
-				if (role.getKey() == r.getRoleID()) {
-					okrole = true;
-					break;
-				}
-			}
-			if (!okrole)
-				return "Error logging in - role not allowed for this user";
-
-			KeyNamePair[] clients = login.getClients( new KeyNamePair(r.getRoleID(), "" ) );
-			boolean okclient = false;
-			for (KeyNamePair client : clients) {
-				if (client.getKey() == r.getClientID()) {
-					okclient = true;
-					break;
-				}
-			}
-			if (!okclient)
-				return "Error logging in - client not allowed for this role";
-
-			m_cs.getM_ctx().setProperty("#AD_Client_ID", "" + r.getClientID());
-			
-			KeyNamePair[] orgs  = login.getOrgs( new KeyNamePair(r.getRoleID(), "" ));
-
-			if (orgs == null)
-				return "Error logging in - no organizations for this role";
-
-			KeyNamePair orglogin = null;
-			boolean okorg = false;
-			for (KeyNamePair org : orgs) {
-				if (org.getKey() == r.getOrgID()) {
-					okorg = true;
-					orglogin = org;
-					break;
-				}
-			}
-			if (!okorg)
-				return "Error logging in - org not allowed for this role";
-
-			KeyNamePair[] warehouses = login.getWarehouses( new KeyNamePair(r.getOrgID(), "" ) );
-			boolean okwh = false;
-			for (KeyNamePair warehouse : warehouses) {
-				if (warehouse.getKey() == r.getWarehouseID()) {
-					okwh = true;
-					break;
-				}
-			}
-			if (!okwh)
-				return "Error logging in - warehouse not allowed for this org";
-			
-			String error = login.validateLogin(orglogin);
-			if (error != null && error.length() > 0)
-				return error;
-
-			int AD_User_ID = Env.getAD_User_ID(m_cs.getM_ctx());
-			
-			if ( !m_cs.login( AD_User_ID, r.getRoleID(), r.getClientID(), r.getOrgID(), r.getWarehouseID(), r.getLang() ) )
-				return "Error logging in";
-		}
-		else
-		{
-			return "Error logging in - no roles or user/pwd invalid for user " + r.getUser();
-		}
-		
-		return authenticate(webService, method, serviceType);
-	}
-
-	private String authenticate(String webServiceValue, String methodValue, String serviceTypeValue) {
-		m_webservice  = MWebService.get(m_cs.getM_ctx(), webServiceValue);
-		if (m_webservice == null || ! m_webservice.isActive())
-			return "Web Service " + webServiceValue + " not registered";
-
-		m_webservicemethod = m_webservice.getMethod(methodValue);
-		if (m_webservicemethod == null || ! m_webservicemethod.isActive())
-			return "Method " + methodValue + " not registered";
-
-		m_webservicetype = null;
-		final String sql = "SELECT * FROM WS_WebServiceType " +
-				"WHERE AD_Client_ID=? " +
-				"AND WS_WebService_ID=? " +
-				"AND WS_WebServiceMethod_ID=? " +
-				"AND Value=? " +
-				"AND IsActive='Y'";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt(1, m_cs.getM_AD_Client_ID());
-			pstmt.setInt(2, m_webservice.getWS_WebService_ID());
-			pstmt.setInt(3, m_webservicemethod.getWS_WebServiceMethod_ID());
-			pstmt.setString(4, serviceTypeValue);
-			rs = pstmt.executeQuery ();
-			if (rs.next ())
-				m_webservicetype = new MWebServiceType (m_cs.getM_ctx(), rs, null);
-		}
-		catch (Exception e)
-		{
-			throw new IdempiereServiceFault(e.getClass().toString() + " " + e.getMessage() + " sql=" + sql, e.getCause(), new QName("authenticate"));
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		
-		if (m_webservicetype == null)
-			return "Service type " + serviceTypeValue + " not configured";
-		
-		return null;
-	}
+	
 
 	public RunProcessResponseDocument runProcess(ModelRunProcessRequestDocument req) {
 		RunProcessResponseDocument resbadlogin = RunProcessResponseDocument.Factory.newInstance();
 		RunProcessResponse rbadlogin = resbadlogin.addNewRunProcessResponse();
-    	ModelRunProcess modelRunProcess = req.getModelRunProcessRequest().getModelRunProcess();
+		ModelRunProcess modelRunProcess = req.getModelRunProcessRequest().getModelRunProcess();
 		String serviceType = modelRunProcess.getServiceType();
 
 		ADLoginRequest reqlogin = req.getModelRunProcessRequest().getADLoginRequest();
 
-    	String err = modelLogin(reqlogin, webServiceName, "runProcess", serviceType);
-    	if (err != null && err.length() > 0) {
-    		rbadlogin.setError(err);
-    		rbadlogin.setIsError( true );
-        	return resbadlogin;
-    	}
+		String err = login(reqlogin, webServiceName, "runProcess", serviceType);
+		if (err != null && err.length() > 0) {
+			rbadlogin.setError(err);
+			rbadlogin.setIsError(true);
+			return resbadlogin;
+		}
 
-    	// Validate parameters
-    	modelRunProcess.setADMenuID(validateParameter("AD_Menu_ID", modelRunProcess.getADMenuID()));
-    	modelRunProcess.setADProcessID(validateParameter("AD_Process_ID", modelRunProcess.getADProcessID()));
-    	modelRunProcess.setADRecordID(validateParameter("AD_Record_ID", modelRunProcess.getADRecordID()));
-    	modelRunProcess.setDocAction(validateParameter("DocAction", modelRunProcess.getDocAction()));
+		// Validate parameters
+		modelRunProcess.setADMenuID(validateParameter("AD_Menu_ID", modelRunProcess.getADMenuID()));
+		modelRunProcess.setADProcessID(validateParameter("AD_Process_ID", modelRunProcess.getADProcessID()));
+		modelRunProcess.setADRecordID(validateParameter("AD_Record_ID", modelRunProcess.getADRecordID()));
+		modelRunProcess.setDocAction(validateParameter("DocAction", modelRunProcess.getDocAction()));
 
 		RunProcessDocument docprocess = RunProcessDocument.Factory.newInstance();
-    	RunProcess reqprocess = docprocess.addNewRunProcess();
-    	reqprocess.setParamValues(modelRunProcess.getParamValues());
-    	reqprocess.setADProcessID(modelRunProcess.getADProcessID());
-    	reqprocess.setADMenuID(modelRunProcess.getADMenuID());
-    	reqprocess.setADRecordID(modelRunProcess.getADRecordID());
-    	reqprocess.setDocAction(modelRunProcess.getDocAction());
-    	return Process.runProcess(m_cs, docprocess);
+		RunProcess reqprocess = docprocess.addNewRunProcess();
+		reqprocess.setParamValues(modelRunProcess.getParamValues());
+		reqprocess.setADProcessID(modelRunProcess.getADProcessID());
+		reqprocess.setADMenuID(modelRunProcess.getADMenuID());
+		reqprocess.setADRecordID(modelRunProcess.getADRecordID());
+		reqprocess.setDocAction(modelRunProcess.getDocAction());
+		return Process.runProcess(getCompiereService(), docprocess);
 	}
 
 	public WindowTabDataDocument getList(ModelGetListRequestDocument req) {
@@ -435,7 +388,7 @@ public class ModelADServiceImpl implements ModelADService {
 
 		ADLoginRequest reqlogin = req.getModelGetListRequest().getADLoginRequest();
 
-    	String err = modelLogin(reqlogin, webServiceName, "getList", serviceType);
+    	String err = login(reqlogin, webServiceName, "getList", serviceType);
     	if (err != null && err.length() > 0) {
     		res.setError(err);
     		res.setErrorInfo(err);
@@ -455,6 +408,8 @@ public class ModelADServiceImpl implements ModelADService {
     	else
     		filter = " AND " + filter;
 
+    	CompiereService m_cs = getCompiereService();
+    	
     	Properties ctx = m_cs.getM_ctx();
 
     	X_AD_Reference ref = new X_AD_Reference(ctx, ref_id, null);
@@ -463,6 +418,7 @@ public class ModelADServiceImpl implements ModelADService {
 		ArrayList<String> listColumnNames = new ArrayList<String>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		MWebServiceType m_webservicetype= getWebServiceType();
     	if (X_AD_Reference.VALIDATIONTYPE_ListValidation.equals(ref.getValidationType())) {
     		// Fill List Reference
     		String ad_language = Env.getAD_Language(ctx);
@@ -632,49 +588,65 @@ public class ModelADServiceImpl implements ModelADService {
 	} // getList
 
 	public StandardResponseDocument deleteData(ModelCRUDRequestDocument req) {
-    	StandardResponseDocument ret = StandardResponseDocument.Factory.newInstance();
-    	StandardResponse resp = ret.addNewStandardResponse();
-    	ModelCRUD modelCRUD = req.getModelCRUDRequest().getModelCRUD();
+		StandardResponseDocument ret = StandardResponseDocument.Factory.newInstance();
+		StandardResponse resp = ret.addNewStandardResponse();
+		ModelCRUD modelCRUD = req.getModelCRUDRequest().getModelCRUD();
 		String serviceType = modelCRUD.getServiceType();
-    	
-    	ADLoginRequest reqlogin = req.getModelCRUDRequest().getADLoginRequest();
-    	String err = modelLogin(reqlogin, webServiceName, "deleteData", serviceType);
-    	if (err != null && err.length() > 0) {
-    		resp.setError(err);
-        	resp.setIsError(true);
-        	return ret;
-    	}
 
-    	// Validate parameters vs service type
-		validateCRUD(modelCRUD);
+		ADLoginRequest reqlogin = req.getModelCRUDRequest().getADLoginRequest();
+		String err = login(reqlogin, webServiceName, "deleteData", serviceType);
+		if (err != null && err.length() > 0) {
+			resp.setError(err);
+			resp.setIsError(true);
+			return ret;
+		}
 
-    	String tableName = modelCRUD.getTableName();
-    	int recordID = modelCRUD.getRecordID();
-    	resp.setRecordID (recordID);
+		// Validate parameters vs service type
+		try{
+			validateCRUD(modelCRUD);
+		} catch (IdempiereServiceFault e) {
+			resp.setError(e.getMessage());
+			resp.setIsError(true);
+			return ret;
+		}
 
-    	Properties ctx = m_cs.getM_ctx();
-    	
-    	// start a trx
-    	String trxName = Trx.createTrxName("ws_modelDeleteData");
-		Trx trx = Trx.get(trxName, false);
-    	
-    	// get the PO for the tablename and record ID
-    	MTable table = MTable.get(ctx, tableName);
-    	if (table == null)
-    		return rollbackAndSetError(trx, resp, ret, true, "No table " + tableName);
-    	PO po = table.getPO(recordID, trxName);
-    	if (po == null)
-    		return rollbackAndSetError(trx, resp, ret, true, "No Record " + recordID + " in " + tableName);
+		String tableName = modelCRUD.getTableName();
+		int recordID = modelCRUD.getRecordID();
+		resp.setRecordID(recordID);
 
-    	if (!po.delete(false))
-    		return rollbackAndSetError(trx, resp, ret, true, "Cannot delete record " + recordID + " in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
+		CompiereService m_cs = getCompiereService();
+		Properties ctx = m_cs.getM_ctx();
 
-    	// close the trx
-		if (!trx.commit())
-    		return rollbackAndSetError(trx, resp, ret, true, "Cannot commit transaction after delete record " + recordID + " in " + tableName);
+		// start a trx
+		String trxName = localTrxName;
+		Trx trx = null;
+		if (trxName == null) {
+			trxName = Trx.createTrxName("ws_modelCreateData");
+			manageTrx = true;
+		}
 
-		trx.close();
-    	
+		trx = Trx.get(trxName, true);
+
+		// get the PO for the tablename and record ID
+		MTable table = MTable.get(ctx, tableName);
+		if (table == null)
+			return rollbackAndSetError(trx, resp, ret, true, "No table " + tableName);
+		PO po = table.getPO(recordID, trxName);
+		if (po == null)
+			return rollbackAndSetError(trx, resp, ret, true, "No Record " + recordID + " in " + tableName);
+
+		if (!po.delete(false))
+			return rollbackAndSetError(trx, resp, ret, true,
+					"Cannot delete record " + recordID + " in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
+
+		// close the trx
+		if (manageTrx && !trx.commit())
+			return rollbackAndSetError(trx, resp, ret, true, "Cannot commit transaction after delete record " + recordID + " in "
+					+ tableName);
+
+		if (manageTrx)
+			trx.close();
+
 		return ret;
 	}
 
@@ -686,13 +658,14 @@ public class ModelADServiceImpl implements ModelADService {
 	}
 
 	public StandardResponseDocument createData(ModelCRUDRequestDocument req){
+		
     	StandardResponseDocument ret = StandardResponseDocument.Factory.newInstance();
     	StandardResponse resp = ret.addNewStandardResponse();
     	ModelCRUD modelCRUD = req.getModelCRUDRequest().getModelCRUD();
 		String serviceType = modelCRUD.getServiceType();
     	
     	ADLoginRequest reqlogin = req.getModelCRUDRequest().getADLoginRequest();
-    	String err = modelLogin(reqlogin, webServiceName, "createData", serviceType);
+    	String err = login(reqlogin, webServiceName, "createData", serviceType);
     	if (err != null && err.length() > 0) {
     		resp.setError(err);
         	resp.setIsError(true);
@@ -700,15 +673,29 @@ public class ModelADServiceImpl implements ModelADService {
     	}
 
     	// Validate parameters vs service type
-		validateCRUD(modelCRUD);
+    	try{
+    		validateCRUD(modelCRUD);
+    	} catch (IdempiereServiceFault e) {
+			resp.setError(e.getMessage());
+			resp.setIsError(true);
+			return ret;
+		}
 
     	String tableName = modelCRUD.getTableName();
 
+    	CompiereService m_cs= getCompiereService();
     	Properties ctx = m_cs.getM_ctx();
     	
     	// start a trx
-    	String trxName = Trx.createTrxName("ws_modelCreateData");
-		Trx trx = Trx.get(trxName, false);
+    	String trxName = localTrxName;
+    	Trx trx = null;
+    	if(trxName==null){
+    		trxName = Trx.createTrxName("ws_modelCreateData");
+    		manageTrx = true;
+    	}
+    		
+    	trx = Trx.get(trxName, true);
+    	
     	
     	// get the PO for the tablename and record ID
     	MTable table = MTable.get(ctx, tableName);
@@ -721,99 +708,377 @@ public class ModelADServiceImpl implements ModelADService {
     	POInfo poinfo = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
     	
     	DataRow dr = modelCRUD.getDataRow();
-    	
-    	for (DataField field : dr.getFieldArray()) {
-    		// TODO: Implement lookup
-    		if (m_webservicetype.isInputColumnNameAllowed(field.getColumn())) {
-				int idxcol = po.get_ColumnIndex(field.getColumn());
-				if (idxcol < 0) {
-	    			// The column doesn't exist - it must exist as it's defined in security
-					return rollbackAndSetError(trx, resp, ret, true, "Web service type "
-							+ m_webservicetype.getValue() + ": input column "
-							+ field.getColumn() + " does not exist");
-				} else {
-					try {
-						setValueAccordingToClass(po, poinfo, field, idxcol);
-					}
-					catch (IdempiereServiceFault e) {
-						log.log(Level.WARNING, "Error setting value", e);
-						return rollbackAndSetError(trx, resp, ret, true, "Web service type "
-								+ m_webservicetype.getValue() + ": input column "
-								+ field.getColumn() + " value could not be set: " + e.getLocalizedMessage());
-					}
-				}
-    		} else {
-    			
-    			return rollbackAndSetError(trx, resp, ret, true, "Web service type "
-						+ m_webservicetype.getValue() + ": input column "
-						+ field.getColumn() + " not allowed");
-    		}
-    	}
+    	MWebServiceType m_webservicetype= getWebServiceType();
 
+    	Map<String,Object> requestCtx = getRequestCtx();
+    	
+    	DataField[] fields = dr.getFieldArray();
+    	StandardResponseDocument retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIME_BEFORE_PARSE, po, fields,trx,requestCtx, resp, ret);
+		if (retResp != null)
+			return retResp;
+		
+    	retResp= scanFields(fields, m_webservicetype, po, poinfo, trx,resp,ret);
+    	if(retResp!=null)
+    		return retResp;
+    	
+    	retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIME_AFTER_PARSE, po, fields,trx,requestCtx, resp, ret);
+		if (retResp != null)
+			return retResp;
+    	
+
+    	retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIME_BEFORE_SAVE, po, fields,trx,requestCtx, resp, ret);
+		if (retResp != null)
+			return retResp;
+		
     	if (!po.save())
     		return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
 
+    	retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIME_AFTER_SAVE, po, fields,trx,requestCtx, resp, ret);
+		if (retResp != null)
+			return retResp;
+		
     	int recordID = po.get_ID();
     	resp.setRecordID (recordID);
+    	
+    	//Update ctx variable for consecutive calls
+    	if(requestCtx!=null){
+    		requestCtx.put(po.get_TableName(), po);
+    	}
 
     	// close the trx
-		if (!trx.commit())
+		if (manageTrx && !trx.commit())
     		return rollbackAndSetError(trx, resp, ret, true, "Cannot commit transaction after create record " + recordID + " in " + tableName);
 
-		trx.close();
+		if (manageTrx)
+			trx.close();
     	
+		setOuputFields(resp, m_webservicetype,po,poinfo);
+		
 		return ret;
 	} // createData
 
-	private void setValueAccordingToClass(PO po, POInfo poinfo,
-			DataField field, int idxcol) {
+	public StandardResponseDocument createUpdateData(ModelCRUDRequestDocument req) {
+		StandardResponseDocument ret = StandardResponseDocument.Factory.newInstance();
+		StandardResponse resp = ret.addNewStandardResponse();
+		ModelCRUD modelCRUD = req.getModelCRUDRequest().getModelCRUD();
+		String serviceType = modelCRUD.getServiceType();
+
+		ADLoginRequest reqlogin = req.getModelCRUDRequest().getADLoginRequest();
+		String err = login(reqlogin, webServiceName, "createData", serviceType);
+		if (err != null && err.length() > 0) {
+			resp.setError(err);
+			resp.setIsError(true);
+			return ret;
+		}
+
+		// Validate parameters vs service type
+		try{
+			validateCRUD(modelCRUD);
+		} catch (IdempiereServiceFault e) {
+			resp.setError(e.getMessage());
+			resp.setIsError(true);
+			return ret;
+		}
+
+		String tableName = modelCRUD.getTableName();
+
+		CompiereService m_cs = getCompiereService();
+		Properties ctx = m_cs.getM_ctx();
+
+		// start a trx
+		String trxName = localTrxName;
+		Trx trx = null;
+		if (trxName == null) {
+			trxName = Trx.createTrxName("ws_modelCreateData");
+			manageTrx = true;
+		}
+		trx = Trx.get(trxName, true);
+
+		// get the PO for the tablename and record ID
+		MTable table = MTable.get(ctx, tableName);
+		if (table == null)
+			return rollbackAndSetError(trx, resp, ret, true, "No table " + tableName);
+
+		DataRow dr = modelCRUD.getDataRow();
+		DataField fields[] = dr.getFieldArray();
+
+		PO holderPo = table.getPO(0, trxName);
+		POInfo poinfo = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
+
+		MWebServiceType m_webservicetype = getWebServiceType();
+		Map<String, Object> requestCtx = getRequestCtx();
+
+		StandardResponseDocument retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIME_BEFORE_PARSE, holderPo, fields, trx,
+				requestCtx, resp, ret);
+		if (retResp != null)
+			return retResp;
+
+		retResp = scanFields(fields, m_webservicetype, holderPo, poinfo, trx, resp, ret);
+		if (retResp != null)
+			return retResp;
+
+		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIME_AFTER_PARSE, holderPo, fields, trx, requestCtx, resp, ret);
+		if (retResp != null)
+			return retResp;
+
+		boolean isCreate = false;
+		boolean isUpdate = false;
+
+		String action = modelCRUD.getAction().toString();
+		if (action.equals("Create"))
+			isCreate = true;
+		if (action.equals("Update"))
+			isUpdate = true;
+		if (action.equals("CreateUpdate")) {
+			isCreate = true;
+			isUpdate = true;
+		}
+
+		ArrayList<String> identifierList = m_webservicetype.getKeyColumns();
+
+		// For update it is mandatory to pass key column
+		if (isUpdate && identifierList.size() == 0) {
+			return rollbackAndSetError(trx, resp, ret, true, "Web service type " + m_webservicetype.getValue()
+					+ ": There is no key column found ");
+		}
+
+		// Check for existing element
+		int record_id = 0;
+		ArrayList<Object> resovedValue = new ArrayList<Object>();
+		if (identifierList.size() > 0) {
+			StringBuilder sqlBuilder = new StringBuilder("Select ");
+			sqlBuilder.append(table.getTableName()).append("_ID from ").append(table.getTableName()).append(" ot Where ");
+			ArrayList<Object> sqlParaList = new ArrayList<Object>();
+			for (String colName : identifierList) {
+				X_WS_WebServiceFieldInput fieldInput = m_webservicetype.getFieldInput(colName);
+				if (fieldInput.getIdentifierLogic() == null) {
+					if (holderPo.get_Value(colName) == null && fieldInput.isNullIdentifier()) {
+						sqlBuilder.append(" ot.").append(colName).append(" Is Null AND ");
+					} else if (holderPo.get_Value(colName) == null) {
+						return rollbackAndSetError(trx, resp, ret, true, "Web service type " + m_webservicetype.getValue()
+								+ ": Record Identifiier column " + colName + " must be set");
+					} else {
+						sqlBuilder.append(" ot.").append(colName).append("=? AND ");
+						sqlParaList.add(holderPo.get_Value(colName));
+						resovedValue.add(holderPo.get_Value(colName));
+					}
+				} else {
+					// SQL
+					String sql = parseSQL(fieldInput.getIdentifierLogic(), sqlParaList, holderPo, poinfo, requestCtx);
+					sqlBuilder.append(" ot.").append(colName).append(" = (").append(sql).append(") AND ");
+					resovedValue.add("DYN SQL");
+				}
+			}
+			sqlBuilder.append(" ot.AD_Client_ID= ?");
+			sqlParaList.add(Env.getAD_Client_ID(Env.getCtx()));
+
+			String sql = sqlBuilder.toString();
+			log.info("Web service type " + m_webservicetype.getValue() + "SQL to check existing record " + sql);
+			try {
+				record_id = DB.getSQLValueEx(trxName, sql, sqlParaList);
+			} catch (Exception e) {
+				log.log(Level.SEVERE, "ExistingRecordCheck: Exception while executing SQL :" + sql);
+				return rollbackAndSetError(trx, resp, ret, true, "Web service type " + m_webservicetype.getValue()
+						+ " Exception while executing sql :" + sql);
+			}
+		}
+		if (record_id == -1)
+			record_id = 0;
+
+		if (!isCreate && record_id == 0) {
+			resp.setError("No Record to update for " + table.getTableName() + " with (" + identifierList.toString() + ") = ("
+					+ resovedValue.toString() + ")");
+			resp.setIsError(true);
+			return ret;
+		}
+
+		if (record_id > 0 && !isUpdate) {
+			resp.setError("Record already presents with " + table.getTableName() + "_ID = " + record_id);
+			resp.setIsError(true);
+			return ret;
+		}
+
+		PO po = table.getPO(record_id, trxName);
+
+		if (po == null)
+			return rollbackAndSetError(trx, resp, ret, true, "Cannot create PO for " + tableName);
+
+		if (po.get_ColumnIndex("Processed") >= 0 && po.get_ValueAsBoolean("Processed")) {
+			resp.setError("Record not updatable for " + table.getTableName() + "_ID = " + record_id);
+			resp.setIsError(true);
+			return ret;
+		}
+
+		// Setting value back from holder to new persistent po
+		for (DataField field : fields) {
+			int indx = poinfo.getColumnIndex(field.getColumn());
+			if (indx != -1) {
+				po.set_ValueNoCheck(field.getColumn(), holderPo.get_Value(field.getColumn()));
+			}
+		}
+
+		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIME_BEFORE_SAVE, holderPo, fields, trx, requestCtx, resp, ret);
+		if (retResp != null)
+			return retResp;
+
+		if (!po.save())
+			return rollbackAndSetError(trx, resp, ret, true,
+					"Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
+
+		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIME_AFTER_SAVE, holderPo, fields, trx, requestCtx, resp, ret);
+		if (retResp != null)
+			return retResp;
+
+		int recordID = po.get_ID();
+		resp.setRecordID(recordID);
+
+		// Update ctx variable for consecutive calls
+		if (requestCtx != null) {
+			requestCtx.put(po.get_TableName(), po);
+		}
+
+		// close the trx
+		if (manageTrx && !trx.commit())
+			return rollbackAndSetError(trx, resp, ret, true, "Cannot commit transaction after create record " + recordID + " in "
+					+ tableName);
+
+		if (manageTrx)
+			trx.close();
+
+		setOuputFields(resp, m_webservicetype, po, poinfo);
+
+		return ret;
+	} // createUpdateData
+
+	private void setValueAccordingToClass(PO po, POInfo poinfo, DataField field, int idxcol) {
+		CompiereService m_cs = getCompiereService();
 		// Evaluate the type of the column and assign a proper variable
-		Class<?> columnClass = poinfo.getColumnClass(idxcol);
+		Class columnClass = poinfo.getColumnClass(idxcol);
 		Object value = null;
-		if (field.getVal() == null || field.getVal().length() == 0) {
+		String strValue = field.getVal();
+		String lookupValue = field.getLval();
+		if (lookupValue != null && !"".equals(lookupValue)) {
+
+			Lookup lookup = poinfo.getColumnLookup(idxcol);
+			if (lookup == null) {
+				throw new IdempiereServiceFault(field.getColumn() + " is not lookup column. Pass Value in val element ", new QName(
+						"LookupResolutionFailed"));
+			}
+			if (lookup.getSize() == 0)
+				lookup.refresh();
+			Object[] list = lookup.getData(true, true, true, false).toArray();
+
+			for (Object pair : list) {
+				if (pair instanceof KeyNamePair) {
+					KeyNamePair p = (KeyNamePair) pair;
+					if (p.getName().equals(lookupValue)) {
+						value = p.getID();
+						break;
+					}
+				} else {
+					ValueNamePair p = (ValueNamePair) pair;
+					if (p.getName().equals(lookupValue)) {
+						value = p.getValue();
+						break;
+					}
+				}
+			}
+
+			if (value == null) {
+				throw new IdempiereServiceFault(" Invalid Lookup value:" + lookupValue, new QName("LookupResolutionFailed"));
+			}
+
+		} else if (strValue == null || strValue.length() == 0) {
 			value = null;
-		} else if (columnClass == Boolean.class) {
-			if ("Y".equalsIgnoreCase(field.getVal()) || "true".equalsIgnoreCase(field.getVal()))
-				value = new Boolean(true);
-			else if ("N".equalsIgnoreCase(field.getVal()) || "false".equalsIgnoreCase(field.getVal()))
-				value = new Boolean(false);
-			else
-				throw new IdempiereServiceFault("Web service type "
-						+ m_webservicetype.getValue() + ": input column "
-						+ field.getColumn() + " wrong value " + field.getVal(),
-						new QName("setValueAccordingToClass"));
-		} else if (columnClass == Integer.class) {
-			try {
-				value = Integer.parseInt(field.getVal());
-			} catch (NumberFormatException e) {
-				throw new IdempiereServiceFault(e.getClass().toString() + " " + e.getMessage() + " for " + field.getColumn(), e.getCause(), new QName("setValueAccordingToClass"));
+		} else {
+			Map<String, Object> requestCtx = getRequestCtx();
+			if (requestCtx != null && strValue.charAt(0) == '@') {
+				String varName = strValue.substring(1);
+				if (varName.charAt(0) == '#') {
+					varName = varName.substring(1);
+					strValue = m_cs.getM_ctx().getProperty(varName);
+				} else {
+					int indDot = varName.indexOf(".");
+					if (indDot == -1) {
+						// If there is no table name, then it should be
+						// premitive data type
+						value = requestCtx.get(varName);
+					} else {
+						String tblName = varName.substring(0, indDot);
+						String colName = varName.substring(indDot + 1);
+						if (colName.indexOf(".") >= 0) {
+							throw new IdempiereServiceFault(field.getVal() + " contains un supported multi level object resolution",
+									new QName("resolveCtxVariable"));
+						}
+						Object obj = requestCtx.get(tblName);
+						if (obj == null || !(obj instanceof PO)) {
+							throw new IdempiereServiceFault(" input column " + field.getColumn() + " can not found object of " + tblName
+									+ ". Request variable " + field.getVal() + " can not resolved", new QName("resolveCtxVariable"));
+						}
+
+						PO refPO = (PO) obj;
+						value = refPO.get_Value(colName);
+
+					}
+
+					if (value == null) {
+						throw new IdempiereServiceFault(
+								" input column " + field.getColumn() + " can not be resolved for value " + strValue, new QName(
+										"resolveCtxVariable"));
+					}
+				}
 			}
-		} else if (columnClass == BigDecimal.class) {
-			try {
-				value = new BigDecimal(field.getVal());
-			} catch (Exception e) {
-				throw new IdempiereServiceFault(e.getClass().toString() + " " + e.getMessage() + " for " + field.getColumn(), e.getCause(), new QName("setValueAccordingToClass"));
+			if (value == null) {
+
+				value = convertToObj(strValue, columnClass, field.getColumn());
 			}
-		} else if (columnClass == Timestamp.class) {
-			try {
-				value = Timestamp.valueOf(field.getVal());
-			} catch (Exception e) {
-				throw new IdempiereServiceFault(e.getClass().toString() + " " + e.getMessage() + " for " + field.getColumn(), e.getCause(), new QName("setValueAccordingToClass"));
-			}
-		} else if (columnClass == byte[].class) {
-			throw new IdempiereServiceFault("Web service type "
-					+ m_webservicetype.getValue() + ": input column "
-					+ field.getColumn() + " LOB not supported",
-					new QName("setValueAccordingToClass"));
-		} else  {
-			value = field.getVal();
 		}
 		if (!po.set_ValueOfColumnReturningBoolean(field.getColumn(), value))
-			throw new IdempiereServiceFault("Cannot set value of column "
-					+ field.getColumn(),
-					new QName("setValueAccordingToClass"));
+			throw new IdempiereServiceFault("Cannot set value of column " + field.getColumn(), new QName("setValueAccordingToClass"));
 	}
 
+	public StandardResponseDocument scanFields(DataField[] fields,MWebServiceType m_webservicetype,PO po,POInfo poinfo,Trx trx,StandardResponse resp, StandardResponseDocument ret){
+		Map<String,Object> requestCtx = getRequestCtx();
+		
+		for (DataField field : fields) {
+			// Implement lookup
+			X_WS_WebServiceFieldInput fieldInput = m_webservicetype.getFieldInput(field.getColumn());
+			if (fieldInput != null) {
+				//Is ctx variable
+				if (fieldInput.getAD_Column_ID() == 0 && fieldInput.getColumnName() != null) { 
+					String varName = fieldInput.getColumnName();
+					Class columnClass = getVariableType(varName, fieldInput.getAD_Reference_ID());
+					Object objVal = convertToObj(field.getVal(),columnClass,varName); 
+					requestCtx.put(varName, objVal);
+					
+				} else{ 
+
+					int idxcol = po.get_ColumnIndex(field.getColumn());
+					if (idxcol < 0) {
+						// The column doesn't exist - it must exist as it's
+						// defined in security
+						return rollbackAndSetError(trx, resp, ret, true, "Web service type " + m_webservicetype.getValue()
+								+ ": input column " + field.getColumn() + " does not exist");
+					} else {
+						try {
+							setValueAccordingToClass(po, poinfo, field, idxcol);
+						} catch (IdempiereServiceFault e) {
+							log.log(Level.WARNING, "Error setting value", e);
+							return rollbackAndSetError(trx, resp, ret, true, "Web service type " + m_webservicetype.getValue()
+									+ ": input column " + field.getColumn() + " value could not be set: " + e.getLocalizedMessage());
+						}
+					}
+				}
+			} else {
+
+				return rollbackAndSetError(trx, resp, ret, true, "Web service type " + m_webservicetype.getValue() + ": input column "
+						+ field.getColumn() + " not allowed");
+			}
+		}
+		
+		return null;
+	}
+	
 	public StandardResponseDocument updateData(ModelCRUDRequestDocument req){
     	StandardResponseDocument ret = StandardResponseDocument.Factory.newInstance();
     	StandardResponse resp = ret.addNewStandardResponse();
@@ -821,7 +1086,7 @@ public class ModelADServiceImpl implements ModelADService {
 		String serviceType = modelCRUD.getServiceType();
     	
     	ADLoginRequest reqlogin = req.getModelCRUDRequest().getADLoginRequest();
-    	String err = modelLogin(reqlogin, webServiceName, "updateData", serviceType);
+    	String err = login(reqlogin, webServiceName, "updateData", serviceType);
     	if (err != null && err.length() > 0) {
     		resp.setError(err);
         	resp.setIsError(true);
@@ -829,17 +1094,33 @@ public class ModelADServiceImpl implements ModelADService {
     	}
 
     	// Validate parameters vs service type
-		validateCRUD(modelCRUD);
+		try{
+			validateCRUD(modelCRUD);
+		} catch (IdempiereServiceFault e) {
+			resp.setError(e.getMessage());
+			resp.setIsError(true);
+			return ret;
+		}
 
     	String tableName = modelCRUD.getTableName();
     	int recordID = modelCRUD.getRecordID();
     	resp.setRecordID (recordID);
 
+    	CompiereService m_cs = getCompiereService();
+    	MWebServiceType m_webservicetype= getWebServiceType();
     	Properties ctx = m_cs.getM_ctx();
     	
     	// start a trx
-    	String trxName = Trx.createTrxName("ws_modelUpdateData");
-		Trx trx = Trx.get(trxName, false);
+    	String trxName = localTrxName;
+    	Trx trx = null;
+    	if(trxName==null){
+    		trxName = Trx.createTrxName("ws_modelCreateData");
+    		manageTrx = true;
+    	}
+    	
+    	trx = Trx.get(trxName, true);
+    	
+    	
     	
     	// get the PO for the tablename and record ID
     	MTable table = MTable.get(ctx, tableName);
@@ -851,43 +1132,30 @@ public class ModelADServiceImpl implements ModelADService {
     	POInfo poinfo = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
 
     	DataRow dr = modelCRUD.getDataRow();
-    	for (DataField field : dr.getFieldArray()) {
-    		// TODO: Implement lookup
-    		if (m_webservicetype.isInputColumnNameAllowed(field.getColumn())) {
-				int idxcol = po.get_ColumnIndex(field.getColumn());
-				if (idxcol < 0) {
-	    			// The column doesn't exist - it must exist as it's defined in security
-					return rollbackAndSetError(trx, resp, ret, true, "Web service type "
-							+ m_webservicetype.getValue() + ": input column "
-							+ field.getColumn() + " does not exist");
-				} else {
-					try {
-						setValueAccordingToClass(po, poinfo, field, idxcol);
-					}
-					catch (IdempiereServiceFault e) {
-						log.log(Level.WARNING, "Error setting value", e);
-						return rollbackAndSetError(trx, resp, ret, true, "Web service type "
-								+ m_webservicetype.getValue() + ": input column "
-								+ field.getColumn() + " value could not be set: " + e.getLocalizedMessage());
-					}
-				}
-    		} else {
-    			
-    			return rollbackAndSetError(trx, resp, ret, true, "Web service type "
-						+ m_webservicetype.getValue() + ": input column "
-						+ field.getColumn() + " not allowed");
-    		}
-    	}
+    	
+    	StandardResponseDocument retResp = scanFields(dr.getFieldArray(), m_webservicetype, po, poinfo, trx, resp, ret);
+		if (retResp != null)
+			return retResp;
 
+    	if(po.get_ColumnIndex("Processed")>=0 && po.get_ValueAsBoolean("Processed")){
+    		resp.setError("Record is processed and can not be updated");
+    		resp.setIsError(true);
+    		return ret;
+    	}
+    	
     	if (!po.save())
     		return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
 
-    	// close the trx
-		if (!trx.commit())
-    		return rollbackAndSetError(trx, resp, ret, true, "Cannot commit transaction after delete record " + recordID + " in " + tableName);
+		// close the trx
+		if (manageTrx && !trx.commit())
+			return rollbackAndSetError(trx, resp, ret, true, "Cannot commit transaction after create record " + recordID + " in "
+					+ tableName);
 
-		trx.close();
-    	
+		if (manageTrx)
+			trx.close();
+
+		setOuputFields(resp, m_webservicetype, po, poinfo);
+
 		return ret;
 	} // updateData
 
@@ -899,18 +1167,41 @@ public class ModelADServiceImpl implements ModelADService {
 		int cnt = 0;
     	
     	ADLoginRequest reqlogin = req.getModelCRUDRequest().getADLoginRequest();
-    	String err = modelLogin(reqlogin, webServiceName, "readData", serviceType);
+    	String err = login(reqlogin, webServiceName, "readData", serviceType);
     	if (err != null && err.length() > 0) {
     		resp.setError(err);
         	return ret;
     	}
 
     	// Validate parameters vs service type
-		validateCRUD(modelCRUD);
+		try{
+			validateCRUD(modelCRUD);
+		} catch (IdempiereServiceFault e) {
+			resp.setError(e.getMessage());
+			return ret;
+		}
 
+		CompiereService m_cs = getCompiereService();
+    	MWebServiceType m_webservicetype= getWebServiceType();
+    	
+    	// start a trx
+    	String trxName = localTrxName;
+    	
+    	
     	Properties ctx = m_cs.getM_ctx();
     	String tableName = modelCRUD.getTableName();
-    	int recordID = modelCRUD.getRecordID();
+    	
+    	String recordIDVar = modelCRUD.getRecordIDVariable();
+		int recordID = modelCRUD.getRecordID();
+
+		if (recordIDVar != null && recordIDVar.startsWith("@")) {
+			Integer retVal = (Integer) parseVariable(recordIDVar, null, null, getRequestCtx());
+			if (retVal == null) {
+				resp.setError("Cannot resolve variable: " + recordIDVar);
+				return ret;
+			}
+			recordID=retVal;
+		}
 
     	// get the PO for the tablename and record ID
     	MTable table = MTable.get(ctx, tableName);
@@ -919,7 +1210,7 @@ public class ModelADServiceImpl implements ModelADService {
 					+ m_webservicetype.getValue() + ": table "
 					+ tableName + " not found",
 					new QName("readData"));
-    	PO po = table.getPO(recordID, null);
+    	PO po = table.getPO(recordID, trxName);
     	if (po == null) {
     		resp.setSuccess(false);
         	resp.setRowCount(cnt);
@@ -956,13 +1247,14 @@ public class ModelADServiceImpl implements ModelADService {
 	}
 
 	public WindowTabDataDocument queryData(ModelCRUDRequestDocument req) {
+		CompiereService m_cs = getCompiereService();
 		WindowTabDataDocument ret = WindowTabDataDocument.Factory.newInstance();
 		WindowTabData resp = ret.addNewWindowTabData();
     	ModelCRUD modelCRUD = req.getModelCRUDRequest().getModelCRUD();
 		String serviceType = modelCRUD.getServiceType();
     	
     	ADLoginRequest reqlogin = req.getModelCRUDRequest().getADLoginRequest();
-    	String err = modelLogin(reqlogin, webServiceName, "queryData", serviceType);
+    	String err = login(reqlogin, webServiceName, "queryData", serviceType);
     	if (err != null && err.length() > 0) {
     		resp.setError(err);
         	return ret;
@@ -973,7 +1265,8 @@ public class ModelADServiceImpl implements ModelADService {
 
     	Properties ctx = m_cs.getM_ctx();
     	String tableName = modelCRUD.getTableName();
-
+    	
+    	MWebServiceType  m_webservicetype = getWebServiceType();
     	// get the PO for the tablename and record ID
     	MTable table = MTable.get(ctx, tableName);
     	if (table == null)

@@ -32,6 +32,8 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -42,6 +44,7 @@ import org.compiere.util.DB;
  *	Web Services Type Model
  *	
  *  @author Carlos Ruiz
+ *  @author Deepak Pansheriya - Updated to support CreateUpdate service
  */
 public class MWebServiceType extends X_WS_WebServiceType
 {
@@ -58,7 +61,15 @@ public class MWebServiceType extends X_WS_WebServiceType
 	/**	Allowed output columns	*/
 	private String[]	m_outputcolumnnames = null;
 	
+	private Map<String, X_WS_WebServiceFieldInput> m_inputFieldMap = null;
 	
+	private ArrayList<String> m_keyColumns = null;	
+	
+	public ArrayList<String> getKeyColumns() {
+		getInputFieldMap(false);
+		return m_keyColumns;
+	}
+
 	/**
 	 * 	Get Parameters
 	 *	@param requery requery
@@ -238,7 +249,6 @@ public class MWebServiceType extends X_WS_WebServiceType
 	}	//	isOutputColumnNameAllowed
 	
 	/**	Static Logger	*/
-	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MWebServiceType.class);
 	
 	/**************************************************************************
@@ -270,5 +280,65 @@ public class MWebServiceType extends X_WS_WebServiceType
 	{
 		super(ctx, rs, trxName);
 	}	//	MWebServiceType
+	
+	/**
+	 * 
+	 * @param requery
+	 */
+	public void getInputFieldMap(boolean requery){
+		if(!requery && m_inputFieldMap!=null)
+			return;
+		
+		if(m_inputFieldMap!=null)
+			m_inputFieldMap.clear();
+		else
+			m_inputFieldMap = new HashMap<String, X_WS_WebServiceFieldInput>();
+			
+		if(m_keyColumns==null)
+			m_keyColumns = new ArrayList<String>();
+		else
+			m_keyColumns.clear();
+			
+		
+		String sql = "SELECT coalesce(c.ColumnName,f.ColumnName),f.* FROM WS_WebServiceFieldInput f left join AD_Column c on c.AD_Column_ID=f.AD_Column_ID " +
+				"WHERE f.WS_WebServiceType_ID=? " +
+				"AND (c.IsActive='Y' OR c.IsActive is null)" +
+				"AND f.IsActive='Y' " +
+				"ORDER BY c.ColumnName";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, get_TrxName());
+			pstmt.setInt (1, getWS_WebServiceType_ID());
+			rs = pstmt.executeQuery ();
+			while (rs.next ())
+			{
+				String colName =  rs.getString(1);
+				X_WS_WebServiceFieldInput inputField = new X_WS_WebServiceFieldInput(getCtx(), rs, null);
+				if(inputField.isIdentifier())
+					m_keyColumns.add(colName);
+				
+				m_inputFieldMap.put(colName,inputField );
+			}
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}	
+		
+	}
+	
+	public X_WS_WebServiceFieldInput getFieldInput(String colName){
+		getInputFieldMap(false);
+		
+		return m_inputFieldMap.get(colName);
+	}
 	
 }	//	MWebServiceType

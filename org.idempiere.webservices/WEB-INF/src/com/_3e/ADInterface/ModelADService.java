@@ -36,13 +36,13 @@ import javax.jws.soap.SOAPBinding.ParameterStyle;
 import javax.jws.soap.SOAPBinding.Style;
 import javax.jws.soap.SOAPBinding.Use;
 
-import pl.x3E.adInterface.ModelCRUDRequestDocument;
-import pl.x3E.adInterface.ModelGetListRequestDocument;
-import pl.x3E.adInterface.ModelRunProcessRequestDocument;
-import pl.x3E.adInterface.ModelSetDocActionRequestDocument;
-import pl.x3E.adInterface.RunProcessResponseDocument;
-import pl.x3E.adInterface.StandardResponseDocument;
-import pl.x3E.adInterface.WindowTabDataDocument;
+import org.idempiere.adInterface.x10.ModelCRUDRequestDocument;
+import org.idempiere.adInterface.x10.ModelGetListRequestDocument;
+import org.idempiere.adInterface.x10.ModelRunProcessRequestDocument;
+import org.idempiere.adInterface.x10.ModelSetDocActionRequestDocument;
+import org.idempiere.adInterface.x10.RunProcessResponseDocument;
+import org.idempiere.adInterface.x10.StandardResponseDocument;
+import org.idempiere.adInterface.x10.WindowTabDataDocument;
 
 @WebService(targetNamespace="http://3e.pl/ADInterface")
 @SOAPBinding(style=Style.RPC,use=Use.LITERAL,parameterStyle=ParameterStyle.WRAPPED)
@@ -65,5 +65,7 @@ public interface ModelADService {
     public WindowTabDataDocument readData(ModelCRUDRequestDocument req);
 
     public WindowTabDataDocument queryData(ModelCRUDRequestDocument req);
+    
+    public StandardResponseDocument createUpdateData(ModelCRUDRequestDocument req);
 
 }

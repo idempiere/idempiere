@@ -16,8 +16,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
-import pl.x3E.adInterface.DataField;
-import pl.x3E.adInterface.DataRow;
+import org.idempiere.adInterface.x10.DataField;
+import org.idempiere.adInterface.x10.DataRow;
 
 
 public class InfoProduct  implements ADInfo {

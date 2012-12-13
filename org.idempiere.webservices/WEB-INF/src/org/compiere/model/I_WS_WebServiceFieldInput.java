@@ -77,6 +77,34 @@ public interface I_WS_WebServiceFieldInput
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Reference_ID */
+    public static final String COLUMNNAME_AD_Reference_ID = "AD_Reference_ID";
+
+	/** Set Reference.
+	  * System Reference and Validation
+	  */
+	public void setAD_Reference_ID (int AD_Reference_ID);
+
+	/** Get Reference.
+	  * System Reference and Validation
+	  */
+	public int getAD_Reference_ID();
+
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
+
+    /** Column name ColumnName */
+    public static final String COLUMNNAME_ColumnName = "ColumnName";
+
+	/** Set DB Column Name.
+	  * Name of the column in the database
+	  */
+	public void setColumnName (String ColumnName);
+
+	/** Get DB Column Name.
+	  * Name of the column in the database
+	  */
+	public String getColumnName();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -93,6 +121,15 @@ public interface I_WS_WebServiceFieldInput
 	  */
 	public int getCreatedBy();
 
+    /** Column name IdentifierLogic */
+    public static final String COLUMNNAME_IdentifierLogic = "IdentifierLogic";
+
+	/** Set Identifier Logic	  */
+	public void setIdentifierLogic (String IdentifierLogic);
+
+	/** Get Identifier Logic	  */
+	public String getIdentifierLogic();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -105,6 +142,32 @@ public interface I_WS_WebServiceFieldInput
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsIdentifier */
+    public static final String COLUMNNAME_IsIdentifier = "IsIdentifier";
+
+	/** Set Identifier.
+	  * This column is part of the record identifier
+	  */
+	public void setIsIdentifier (boolean IsIdentifier);
+
+	/** Get Identifier.
+	  * This column is part of the record identifier
+	  */
+	public boolean isIdentifier();
+
+    /** Column name IsNullIdentifier */
+    public static final String COLUMNNAME_IsNullIdentifier = "IsNullIdentifier";
+
+	/** Set Allow Null Value.
+	  * Should allow null value for identifiere field
+	  */
+	public void setIsNullIdentifier (boolean IsNullIdentifier);
+
+	/** Get Allow Null Value.
+	  * Should allow null value for identifiere field
+	  */
+	public boolean isNullIdentifier();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
