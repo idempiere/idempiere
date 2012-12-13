@@ -73,6 +73,7 @@ public class VBinary extends JButton
 	/** Column Name             */
 	private String	m_columnName;
 	/** WindowNo                */
+	@SuppressWarnings("unused")
 	private int     m_WindowNo;
 	/** Data					*/
 	private Object	m_data = null;

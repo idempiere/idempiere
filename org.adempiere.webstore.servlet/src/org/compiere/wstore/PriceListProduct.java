@@ -65,6 +65,7 @@ public class PriceListProduct
 	/**	Attribute Name				*/
 	public static final String		NAME = "PriceListProduct";
 	/**	Logging						*/
+	@SuppressWarnings("unused")
 	private CLogger			log = CLogger.getCLogger(getClass());
 
 	private int 			m_Product_ID;

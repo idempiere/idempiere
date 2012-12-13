@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.compiere.model.MBPGroup;
-import org.compiere.model.MLocation;
 import org.compiere.util.DB;
 
 import test.AdempiereTestCase;
@@ -14,7 +13,7 @@ import test.AdempiereTestCase;
 public class MBPGroupTest extends AdempiereTestCase {
 	
 	// Variables needed for importing/migrating business partners
-	private MLocation location = null;
+	//private MLocation location = null;
 	
 	private MBPGroup m_group = null;  //business partner
 	/*

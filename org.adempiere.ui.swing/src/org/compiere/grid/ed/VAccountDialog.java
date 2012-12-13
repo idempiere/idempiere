@@ -315,8 +315,6 @@ public final class VAccountDialog extends CDialog
 		m_gbc.weightx = 0;
 		m_gbc.weighty = 0;
 
-		int TabNo = 0;
-
 		//	Alias
 		if (s_AcctSchema.isHasAlias())
 		{

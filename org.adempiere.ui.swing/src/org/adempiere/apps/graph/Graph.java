@@ -110,6 +110,7 @@ public class Graph extends CPanel implements ChartMouseListener
 
 
 	/** Y Axis Target Line		*/
+	@SuppressWarnings("unused")
 	private double		m_Y_Target	= 0;
 	/** Y Axis Target Line Label */
 	private String		m_Y_TargetLabel = null;

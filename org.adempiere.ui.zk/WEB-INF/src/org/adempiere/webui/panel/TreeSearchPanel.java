@@ -71,7 +71,9 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 	private Tree tree;
 
 	private String eventToFire;
+	@SuppressWarnings("unused")
 	private int m_windowno = 0;
+	@SuppressWarnings("unused")
 	private int m_tabno = 0;
 	private Treeitem selectedItem;
 

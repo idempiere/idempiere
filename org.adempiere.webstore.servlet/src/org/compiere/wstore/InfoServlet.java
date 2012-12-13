@@ -102,6 +102,7 @@ public class InfoServlet  extends HttpServlet
 	//	WEnv.dump(session);
 	//	WEnv.dump(request);
 
+		@SuppressWarnings("unused")
 		boolean success = processParameter(request);
 
 		String url = "/info.jsp";
@@ -182,6 +183,7 @@ public class InfoServlet  extends HttpServlet
 	private void sendEMail (HttpServletRequest request, WebUser wu, 
 		String listName, boolean subscribe)
 	{
+		@SuppressWarnings("unused")
 		String msg = JSPEnv.sendEMail(request, wu, 
 			subscribe ? MMailMsg.MAILMSGTYPE_Subscribe : MMailMsg.MAILMSGTYPE_UnSubscribe,
 			new Object[]{listName, wu.getName(), listName});

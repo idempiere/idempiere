@@ -14,15 +14,13 @@ it will be useful, but WITHOUT ANY WARRANTY.
 */
 package test;
 import org.junit.Test;
-import org.zkoss.ztl.Element;
 import org.zkoss.ztl.JQuery;
 import org.zkoss.ztl.Tags;
 import org.zkoss.ztl.Widget;
-import org.zkoss.ztl.ZK;
 import org.zkoss.ztl.ZKClientTestCase;
-import org.zkoss.ztl.util.*;
+import org.zkoss.ztl.util.ConfigHelper;
+import org.zkoss.ztl.util.ZKSelenium;
 
-import org.openqa.selenium.*;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 
@@ -43,7 +41,6 @@ public class LoginTest extends ZKClientTestCase {
 				start(browser);
 				windowFocus();
 				windowMaximize();
-				String zscript = "";
 				Widget engine = new Widget(new StringBuffer("zk.Desktop._dt"));
 				
 				// remove all of unnecessary children

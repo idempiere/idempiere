@@ -38,11 +38,6 @@ import org.compiere.util.Msg;
  */
 public class Charge
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2478440763968206819L;
-
 	/**	Window No			*/
 	public int         m_WindowNo = 0;
 //	/**	FormFrame			*/

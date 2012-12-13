@@ -131,7 +131,7 @@ public abstract class GenericElement implements Element,Serializable
         What the modifier should be...optimization variable
         @serial start_modifier_defined start_modifier_defined
     */
-    private boolean start_modifier_defined = false;
+    //private boolean start_modifier_defined = false;
 
     /**
         What the modifier should be...optimization variable
@@ -161,7 +161,7 @@ public abstract class GenericElement implements Element,Serializable
         What the modifier should be...optimization variable
         @serial end_modifier_defined end_modifier_defined
     */
-    private boolean end_modifier_defined = false;
+    //private boolean end_modifier_defined = false;
 
     /**
         Our current tab level.

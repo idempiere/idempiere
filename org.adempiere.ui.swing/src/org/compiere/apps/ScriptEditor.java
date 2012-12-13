@@ -62,6 +62,7 @@ public class ScriptEditor
 		}
 		else
 		{
+			@SuppressWarnings("unused")
 			BeanShellEditor se = new BeanShellEditor (owner, header, scr, WindowNo);
 			return scr.getScript();
 		}

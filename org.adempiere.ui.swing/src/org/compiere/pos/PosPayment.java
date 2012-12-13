@@ -417,7 +417,7 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 		boolean cash = MPayment.TENDERTYPE_Cash.equals(tenderType);
 		boolean check = MPayment.TENDERTYPE_Check.equals(tenderType);
 		boolean creditcard = MPayment.TENDERTYPE_CreditCard.equals(tenderType);
-		boolean account = MPayment.TENDERTYPE_Account.equals(tenderType);
+		//boolean account = MPayment.TENDERTYPE_Account.equals(tenderType);
 
 		fTenderAmt.setVisible(cash);
 		fReturnAmt.setVisible(cash);

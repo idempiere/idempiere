@@ -155,9 +155,9 @@ public class TestConnection
 			start = System.currentTimeMillis();
 			while (rs.next())
 			{
-				int i = rs.getInt("AD_Client_ID");
-				String s = rs.getString("Name");
-				i += s.length();
+				//int i = rs.getInt("AD_Client_ID");
+				//String s = rs.getString("Name");
+				//i += s.length();
 				no++;
 			}
 			end = System.currentTimeMillis();
@@ -224,6 +224,7 @@ public class TestConnection
 			url = args[2];
 
 		System.out.println("");
+		@SuppressWarnings("unused")
 		TestConnection test = new TestConnection(url, uid, pwd);
 	}	//	main
 

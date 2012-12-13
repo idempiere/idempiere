@@ -110,6 +110,7 @@ public class RequestOrderRefTag extends TagSupport
 	 */
 	private option[] getOrders(int C_BPartner_ID)
 	{
+		@SuppressWarnings("unused")
 		Properties ctx = JSPEnv.getCtx((HttpServletRequest)pageContext.getRequest());
 		ArrayList<option> list = new ArrayList<option>();
 		//	Optional Element

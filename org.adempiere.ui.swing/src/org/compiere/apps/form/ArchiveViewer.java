@@ -65,12 +65,6 @@ import org.compiere.util.Msg;
 public class ArchiveViewer extends Archive
 	implements FormPanel, ActionListener, VetoableChangeListener
 {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 876677286190292132L;
-	
 	private CTabbedPane panel = new CTabbedPane();
 
 

@@ -54,6 +54,7 @@ public class GroovyEditor extends CDialog implements ActionListener
 	 * 
 	 */
 	private static final long serialVersionUID = 2941209813417292930L;
+	@SuppressWarnings("unused")
 	private Frame m_owner;
 
 	/**

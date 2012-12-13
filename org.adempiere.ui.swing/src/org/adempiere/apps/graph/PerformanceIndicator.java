@@ -93,14 +93,15 @@ public class PerformanceIndicator extends JPanel
 	/**	The Performance Name		*/
 	private String				m_text = null;
 	/** Performance Line			*/ 
+	@SuppressWarnings("unused")
 	private double				m_line = 0;
 	
 	/**	Height						*/
-	private static double		s_height = 45;
+	//private static double		s_height = 45;
 	/**	100% width					*/
 	private static double		s_width100 = 150;
 	/**	Max width					*/
-	private static double		s_widthMax = 250;
+	//private static double		s_widthMax = 250;
 	/** Integer Number Format		*/
 	private static DecimalFormat	s_format = DisplayType.getNumberFormat(DisplayType.Integer);
 
@@ -108,8 +109,8 @@ public class PerformanceIndicator extends JPanel
 	private CMenuItem 			mRefresh = new CMenuItem(Msg.getMsg(Env.getCtx(), "Refresh"), Env.getImageIcon("Refresh16.gif"));
         
         //Insert Pie Graph Kinamo (pelgrim)
-	private static Color				colorOK = Color.magenta;
-	private static Color				colorNotOK = Color.lightGray;
+	//private static Color				colorOK = Color.magenta;
+	//private static Color				colorNotOK = Color.lightGray;
 	private static Dimension			indicatordimension = new Dimension(170,120);
 	private static Dimension			paneldimension = new Dimension(180, 150);
 	ChartPanel chartPanel;
@@ -155,9 +156,7 @@ public class PerformanceIndicator extends JPanel
 			m_line = s_width100;
 		else						//	draw Performance Line
 			m_line = s_width100 * m_goal.getGoalPerformanceDouble();
-		
-
-        String title = m_text;        
+		      
         DefaultValueDataset data = new DefaultValueDataset((float)m_goal.getPercent());
         MeterPlot plot = new MeterPlot(data);
 

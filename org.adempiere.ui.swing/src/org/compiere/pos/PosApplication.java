@@ -52,6 +52,7 @@ public class PosApplication {
 			System.exit(1);		
 		MSession.get (Env.getCtx(), true);		//	Start Session
 		
+		@SuppressWarnings("unused")
 		int m_WindowNo = AEnv.createWindowNo(frame);
 		
 	//  Default Image

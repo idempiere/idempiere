@@ -51,6 +51,7 @@ public class AWindowListener extends WindowAdapter
 	}	//	AWindowListener
 
 	/**	The Window					*/
+	@SuppressWarnings("unused")
 	private Window 				m_window;
 	/** The Listener				*/
 	private WindowStateListener m_listener;

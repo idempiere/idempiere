@@ -212,6 +212,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	private MDDOrderLine[] 	m_lines = null;
 	
 	/** Force Creation of order		*/
+	@SuppressWarnings("unused")
 	private boolean			m_forceCreation = false;
 
 	/**
@@ -943,6 +944,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 */
 	public String completeIt()
 	{
+		@SuppressWarnings("unused")
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		
 		//	Just prepare

@@ -150,7 +150,6 @@ public class AdvertisementServlet extends HttpServlet
 			ad.setDescription(Description);
 			info.append("Description - ");
 		}
-		String ImageURL = null;
 		String AdText = WebUtil.getParameter (request, "AdText");
 		if (AdText != null && AdText.length() > 0 && !AdText.equals(ad.getAdText()))
 		{

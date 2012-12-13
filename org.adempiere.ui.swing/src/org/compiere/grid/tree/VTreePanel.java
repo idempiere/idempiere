@@ -335,7 +335,7 @@ public final class VTreePanel extends CPanel
 	private JXTaskPaneContainer bar = new JXTaskPaneContainer();
 	private java.util.List<JToolBar> toolbar;
 	private HashMap<Integer, JToolBar> toolbarMap;
-	private int toolBarCols=3;
+	//private int toolBarCols=3;
 	private CMenuItem mBarAdd = new CMenuItem();
 	private CMenuItem mBarRemove = new CMenuItem();
 	private BorderLayout southLayout = new BorderLayout();
@@ -345,10 +345,12 @@ public final class VTreePanel extends CPanel
 	private KeyListener keyListener = new VTreePanel_keyAdapter(this);
 
 	//
+	@SuppressWarnings("unused")
 	private int			m_WindowNo;
 	/** Tree ID                     */
 	private int			m_AD_Tree_ID = 0;
 	/** Table Name for TreeNode     */
+	@SuppressWarnings("unused")
 	private String      m_nodeTableName = null;
 	/** Tree is editable (can move nodes) - also not active shown   */
 	private boolean     m_editable;

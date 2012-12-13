@@ -94,6 +94,7 @@ public class IssueReportServlet extends HttpServlet
 	{
 		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		Properties ctx = JSPEnv.getCtx(request);
+		@SuppressWarnings("unused")
 		HttpSession session = request.getSession(true);
 	//	WEnv.dump(session);
 	//	WEnv.dump(request);

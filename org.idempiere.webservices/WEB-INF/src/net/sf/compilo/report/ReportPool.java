@@ -72,7 +72,8 @@ public class ReportPool
         return reportinfo;
     }
     
-    private synchronized void addReport(int AD_Process_ID, ReportInfo reportinfo, boolean refresh)
+    @SuppressWarnings("unused")
+	private synchronized void addReport(int AD_Process_ID, ReportInfo reportinfo, boolean refresh)
     {
         if(refresh)
         {

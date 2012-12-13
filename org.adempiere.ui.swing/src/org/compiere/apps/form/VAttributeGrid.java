@@ -125,6 +125,7 @@ public class VAttributeGrid extends CPanel
 	}	//	init
 
 	/**	Window No			*/
+	@SuppressWarnings("unused")
 	private int         	m_WindowNo = 0;
 	/**	FormFrame			*/
 	private FormFrame 		m_frame;

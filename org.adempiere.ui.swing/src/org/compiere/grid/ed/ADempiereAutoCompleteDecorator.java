@@ -91,7 +91,8 @@ public class ADempiereAutoCompleteDecorator extends AutoCompleteDecorator{
         // otherwise the last mark would have been retained which is quiet confusing
         textComponent.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
-                JTextComponent textComponent = (JTextComponent) e.getSource();
+                @SuppressWarnings("unused")
+				JTextComponent textComponent = (JTextComponent) e.getSource();
                 adaptor.markEntireText();
             }
         });

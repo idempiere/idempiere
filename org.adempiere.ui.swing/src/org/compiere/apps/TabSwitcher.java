@@ -40,6 +40,7 @@ import org.compiere.grid.GridController;
  */
 public class TabSwitcher extends FocusAdapter implements ActionListener, ListSelectionListener{
 	
+	@SuppressWarnings("unused")
 	private APanel panel;
 	private GridController gc;
 	

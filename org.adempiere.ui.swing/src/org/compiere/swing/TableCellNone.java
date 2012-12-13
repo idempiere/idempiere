@@ -29,6 +29,7 @@ import javax.swing.table.TableCellRenderer;
 public class TableCellNone implements TableCellEditor, TableCellRenderer {
 
 	private Object m_value;
+	@SuppressWarnings("unused")
 	private String m_columnName;
 	
 	public TableCellNone(String columnName) {

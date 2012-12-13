@@ -107,7 +107,8 @@ public class LocationServlet extends HttpServlet
         throws ServletException, IOException
     {
         log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
-        HttpSession session = request.getSession(true);
+        @SuppressWarnings("unused")
+		HttpSession session = request.getSession(true);
         Properties ctx = JSPEnv.getCtx(request);
         MLocation loc = new MLocation (ctx, 0, null);
         response.setHeader("Cache-Control", "no-cache");

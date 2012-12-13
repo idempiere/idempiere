@@ -343,7 +343,7 @@ class Worker extends Thread
 	 * 	@param doc html document
 	 * 	@param tag html tag
 	 */
-	private void dumpTags (HTMLDocument doc, HTML.Tag tag)
+	/*private void dumpTags (HTMLDocument doc, HTML.Tag tag)
 	{
 		System.out.println("Doc=" + doc.getBase() + ", Tag=" + tag);
 		HTMLDocument.Iterator it = doc.getIterator(tag);
@@ -353,6 +353,6 @@ class Worker extends Thread
 			System.out.println("~ " + as);
 			it.next();
 		}
-	}	//	printTags
+	}	//	printTags*/
 
 }   //  Worker

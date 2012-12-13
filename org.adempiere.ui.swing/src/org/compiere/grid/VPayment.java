@@ -1302,6 +1302,7 @@ public class VPayment extends CDialog
 		if (m_onlyRule)
 			return true;
 
+		@SuppressWarnings("unused")
 		String CCType = m_CCType;
 		//
 		int C_BankAccount_ID = 0;

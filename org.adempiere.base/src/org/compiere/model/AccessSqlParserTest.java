@@ -203,11 +203,11 @@ public class AccessSqlParserTest extends TestCase
 		assertEquals("AccessSqlParser[M_AttributeInstance|M_Product=p,M_ProductPrice=pr,M_AttributeSet=pa|1]", fixture.toString());
 	}
 	/** **/
-	public void testHinttech()
+	/*public void testHinttech()
 	{
 		String sql = "SELECT XX_HTC1_EMPLOYEE_V.C_BPartner_ID,NULL,XX_HTC1_EMPLOYEE_V.C_BPARTNER_NAME,XX_HTC1_EMPLOYEE_V.IsActive FROM XX_HTC1_EMPLOYEE_V WHERE XX_HTC1_EMPLOYEE_V.AD_User_ID IN (SELECT ur.AD_User_ID FROM AD_User_Roles ur INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID) WHERE r.Name like '%Field Manager%')";
 		AccessSqlParser fixture = new AccessSqlParser(sql);
-	}
+	}*/
 	
 	/**
 	 * <li>teo_sarca - [ 1652623 ] AccessSqlParser.getTableInfo(String) - tablename parsing bug

@@ -142,6 +142,7 @@ public class VBOMDrop extends CPanel
 	}	//	dispose
 
 	/**	Window No					*/
+	@SuppressWarnings("unused")
 	private int         m_WindowNo = 0;
 	/**	FormFrame					*/
 	private FormFrame 	m_frame;

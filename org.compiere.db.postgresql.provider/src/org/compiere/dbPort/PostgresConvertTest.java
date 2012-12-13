@@ -73,7 +73,8 @@ public class PostgresConvertTest
         try
         {
         	PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
-        	ResultSet rs = pstmt.executeQuery();
+        	@SuppressWarnings("unused")
+			ResultSet rs = pstmt.executeQuery();
         }
         catch(SQLException e) 
         {
@@ -130,6 +131,7 @@ public class PostgresConvertTest
 		log.fine("M_Product_PO - Updated=" + no);
 		*/
 		sql = new StringBuilder ("UPDATE I_Order SET M_Warehouse_ID=(SELECT M_Warehouse_ID FROM M_Warehouse w WHERE ROWNUM=1 AND I_Order.AD_Client_ID=w.AD_Client_ID AND I_Order.AD_Org_ID=w.AD_Org_ID) WHERE M_Warehouse_ID IS NULL AND I_IsImported<>'Y' AND AD_Client_ID=11");
+		@SuppressWarnings("unused")
 		int no = DB.executeUpdate(sql.toString(), getTrxName());
                 /*sql = new StringBuffer ("UPDATE I_Order o SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Org, ' WHERE (AD_Org_ID IS NULL OR AD_Org_ID=0 OR EXISTS (SELECT * FROM AD_Org oo WHERE o.AD_Org_ID=oo.AD_Org_ID AND (oo.IsSummary='Y' OR oo.IsActive='N'))) AND I_IsImported<>'Y'");
 		no = DB.executeUpdate(sql.toString(), getTrxName());

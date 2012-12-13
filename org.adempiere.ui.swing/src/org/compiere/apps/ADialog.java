@@ -409,6 +409,7 @@ public final class ADialog
 		CLogMgt.getInfoDetail(myMessage, Env.getCtx());
 		ModelValidationEngine.get().getInfoDetail(myMessage, Env.getCtx()); // teo_sarca - FR [ 1724662 ]
 
+		@SuppressWarnings("unused")
 		EMailDialog emd = new EMailDialog(owner,
 			Msg.getMsg(Env.getCtx(), "EMailSupport"),
 			from, to, "Support: " + subject, myMessage.toString(), null);
@@ -432,6 +433,7 @@ public final class ADialog
 		CLogMgt.getInfoDetail(myMessage, Env.getCtx());
 		ModelValidationEngine.get().getInfoDetail(myMessage, Env.getCtx()); // teo_sarca - FR [ 1724662 ]
 
+		@SuppressWarnings("unused")
 		EMailDialog emd = new EMailDialog(owner,
 			Msg.getMsg(Env.getCtx(), "EMailSupport"),
 			from, to, "Support: " + subject, myMessage.toString(), null);

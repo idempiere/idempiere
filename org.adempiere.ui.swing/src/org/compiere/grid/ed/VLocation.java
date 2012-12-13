@@ -187,6 +187,7 @@ public class VLocation extends JComponent
 	private CMenuItem 			mDelete;
 
 	/** The Grid Tab * */
+	@SuppressWarnings("unused")
 	private GridTab m_GridTab; // added for processCallout
 	/** The Grid Field * */
 	private GridField m_GridField; // added for processCallout

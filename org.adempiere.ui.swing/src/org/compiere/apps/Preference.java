@@ -695,6 +695,7 @@ public final class Preference extends CDialog
 	 */
 	private void cmd_errorEMail()
 	{
+		@SuppressWarnings("unused")
 		EMailDialog emd = new EMailDialog(this, 
 			"EMail Trace", 
 			MUser.get(Env.getCtx()), 

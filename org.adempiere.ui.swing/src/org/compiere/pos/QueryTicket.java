@@ -141,6 +141,7 @@ public class QueryTicket extends PosQuery
 		//	Center
 		m_table = new PosTable();
 		
+		@SuppressWarnings("unused")
 		String sql = m_table.prepareTable (s_layout, "C_Order", 
 				"C_POS_ID = " + p_pos.getC_POS_ID()
 				, false, "C_Order")

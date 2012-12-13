@@ -1294,7 +1294,7 @@ public final class AdempiereTabbedPaneUI extends MetalTabbedPaneUI {
 
     }
 
-
+    
     private boolean requestFocusForVisibleComponent() {
         Component visibleComponent = getVisibleComponent();
         if (visibleComponent.isFocusable()) {
@@ -2110,13 +2110,15 @@ public final class AdempiereTabbedPaneUI extends MetalTabbedPaneUI {
         protected static final Insets EAST_INSETS  = new Insets(0, 0, 0, 1);
 
         protected final JTabbedPane tabPane;
-        protected final int tabPlacement;
+        @SuppressWarnings("unused")
+		protected final int tabPlacement;
         protected Color shadowColor;
         protected Color darkShadow;
         protected Color selectColor;
         protected Color selectLight;
         protected Color selectHighlight;
-        protected Color lightHighlight;
+        @SuppressWarnings("unused")
+		protected Color lightHighlight;
         protected Color focus;
 
         private AbstractRenderer(JTabbedPane tabPane) {

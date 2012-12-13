@@ -142,6 +142,7 @@ public class CheckOutServlet extends HttpServlet
 		throws ServletException, IOException
 	{
 		log.info("Post from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		@SuppressWarnings("unused")
 		HttpSession session = request.getSession(false);
 	}	//	doPost
 

@@ -71,6 +71,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 	/** Indicator that Lookup has focus         */
 	private volatile boolean	m_haveFocus = false;
 	/** Indicator - inserting new value			*/
+	@SuppressWarnings("unused")
 	private volatile boolean	m_inserting = false;
 	/** Last Display							*/
 	private String				m_lastDisplay = "";

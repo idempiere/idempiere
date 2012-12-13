@@ -60,8 +60,7 @@ public class ContrastTheme extends DefaultMetalTheme
 	private final ColorUIResource secondary3
 		= new ColorUIResource (255, 255, 255);
 
-	private final ColorUIResource controlHighlight
-		= new ColorUIResource (102, 102, 102);
+	//private final ColorUIResource controlHighlight 	= new ColorUIResource (102, 102, 102);
 
 	protected ColorUIResource getPrimary1 ()
 	{
@@ -137,6 +136,7 @@ public class ContrastTheme extends DefaultMetalTheme
 	{
 		Border blackLineBorder = new BorderUIResource 
 			(new LineBorder(getBlack ()));
+		@SuppressWarnings("unused")
 		Border whiteLineBorder = new BorderUIResource(
 			new LineBorder(getWhite()));
 		//

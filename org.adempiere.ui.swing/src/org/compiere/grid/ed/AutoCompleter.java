@@ -37,8 +37,6 @@ import org.compiere.util.CLogger;
  */
 public abstract class AutoCompleter implements MouseListener
 { 
-
-	private static final long serialVersionUID = -5135462631871597277L;
 	private static final String AUTOCOMPLETER = "AUTOCOMPLETER"; //NOI18N
 	private static final int PopupDelayMillis = 500;
 

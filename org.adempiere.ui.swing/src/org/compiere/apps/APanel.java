@@ -317,6 +317,7 @@ public final class APanel extends CPanel
 	/** Private Lock Button	*/
 	public AppsAction		aLock;
 	//	Local (added to toolbar)
+	@SuppressWarnings("unused")
 	private AppsAction	    aReport, aEnd, aHome, aHelp, aProduct, aLogout,
 							aAccount, aCalculator, aCalendar, aEditor, aPreference, aScript,
 							aOnline, aMailSupport, aAbout, aPrintScr, aScrShot, aExit, aBPartner,
@@ -1203,8 +1204,8 @@ public final class APanel extends CPanel
 		//	update Change
 
 		boolean changed = e.isChanged() || e.isInserting();
-		int changedColumn = e.getChangedColumn();
-		boolean inserting = e.isInserting();
+		//int changedColumn = e.getChangedColumn();
+		//boolean inserting = e.isInserting();
 
 		if(e.getAD_Message() != null && e.getAD_Message().equals("Saved"))
 			changed = false;

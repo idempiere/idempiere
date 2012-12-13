@@ -123,7 +123,6 @@ public class Counter extends HttpServlet implements Runnable
 	 */
 	public void run()
 	{
-		long time = System.currentTimeMillis();
 		//	get Request
 		HttpServletRequest request = null;
 		if (m_requests.size() > 0)
@@ -134,6 +133,7 @@ public class Counter extends HttpServlet implements Runnable
 			return;
 		}
 
+		@SuppressWarnings("unused")
 		Properties ctx = JSPEnv.getCtx(request);
 		String ref = request.getHeader("referer");
 		if (ref == null || ref.length() == 0)

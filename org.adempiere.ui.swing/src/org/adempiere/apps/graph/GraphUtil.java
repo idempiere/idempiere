@@ -30,6 +30,7 @@ import org.compiere.util.CLogger;
 public class GraphUtil
 {
 	/**	Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger log = CLogger.getCLogger (GraphUtil.class);
 	
 	/**

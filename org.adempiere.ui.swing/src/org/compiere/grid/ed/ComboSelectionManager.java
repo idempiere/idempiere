@@ -52,9 +52,7 @@ public class ComboSelectionManager implements JComboBox.KeySelectionManager
 	{
 		log.fine("Key=" + key);
 		//
-		int currentSelection = -1;
-		Object selectedItem = model.getSelectedItem();
-
+		//Object selectedItem = model.getSelectedItem();
 
 		return 0;
 	}   //	selectionForKey

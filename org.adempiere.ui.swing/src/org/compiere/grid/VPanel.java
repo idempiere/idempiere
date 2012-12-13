@@ -120,6 +120,7 @@ public final class VPanel extends CTabbedPane
 	}	//	VPanel
 	
 	/** Orientation             */
+	@SuppressWarnings("unused")
 	private final boolean       m_leftToRight = Language.getLoginLanguage().isLeftToRight();
 	/** Previous Field Group Header     */
 	private String              m_oldFieldGroup = null;

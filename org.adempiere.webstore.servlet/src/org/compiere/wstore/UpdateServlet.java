@@ -109,7 +109,8 @@ public class UpdateServlet
         throws ServletException, IOException
     {
         log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
-        HttpSession session = request.getSession(true);
+        @SuppressWarnings("unused")
+		HttpSession session = request.getSession(true);
         // ignore GET
     }	//	doGet
 

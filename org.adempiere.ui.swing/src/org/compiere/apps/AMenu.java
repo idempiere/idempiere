@@ -220,6 +220,7 @@ public final class AMenu extends CFrame
 	private int 		m_AD_Role_ID;
 	
 	/** Center Tabbed Pane index: Menu			*/
+	@SuppressWarnings("unused")
 	private int 		m_tabMenu = 0;
 	/** Center Tabbed Pane index: Activities	*/
 	private int 		m_tabActivities = 1;

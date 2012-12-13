@@ -82,7 +82,7 @@ public class SubOrder extends PosSubPanel
 	private CButton 		f_history;
 	private	PosTextField		f_name;
 	private CButton 		f_bNew;
-	private CButton 		f_bSearch;
+	//private CButton 		f_bSearch;
 	private CComboBox		f_location;
 	private CComboBox		f_user;
 	private CButton 		f_process;
@@ -438,6 +438,7 @@ public class SubOrder extends PosSubPanel
 	/**
 	 * 	Fill Combos (Location, User)
 	 */
+	@SuppressWarnings("unused")
 	private void fillCombos()
 	{
 		Vector<KeyNamePair> locationVector = new Vector<KeyNamePair>();
