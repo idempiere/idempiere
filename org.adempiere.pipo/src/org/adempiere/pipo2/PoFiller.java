@@ -79,7 +79,7 @@ public class PoFiller{
 		Element e = element.properties.get(qName);
 		String value = e != null ? e.contents.toString() : null;
 
-		if (value.trim().length() == 0)
+		if (value!=null && value.trim().length() == 0)
 			value = null;
 		Timestamp ts = value != null ? Timestamp.valueOf(value) : null;
 
@@ -100,7 +100,7 @@ public class PoFiller{
 		Element e = element.properties.get(qName);
 		String value = e != null ? e.contents.toString() : null;
 
-		if (value.trim().length() == 0)
+		if (value!=null && value.trim().length() == 0)
 			value = null;
 		Integer i = value != null ? new Integer(value) : null;
 
@@ -121,7 +121,7 @@ public class PoFiller{
 		Element e = element.properties.get(qName);
 		String value = e != null ? e.contents.toString() : null;
 
-		if (value.trim().length() == 0)
+		if (value!=null && value.trim().length() == 0)
 			value = null;
 		BigDecimal bd = value != null ? new BigDecimal(value) : null;
 

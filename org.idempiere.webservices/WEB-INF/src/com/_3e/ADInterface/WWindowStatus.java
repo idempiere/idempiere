@@ -20,8 +20,13 @@ import org.compiere.model.MQuery;
 
 public class WWindowStatus 
 {
-	public class AD_WrongTabException extends Exception
+	public static class AD_WrongTabException extends Exception
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8949499217396844364L;
+
 		public AD_WrongTabException( String msg ) {
 			super(msg);
 		}

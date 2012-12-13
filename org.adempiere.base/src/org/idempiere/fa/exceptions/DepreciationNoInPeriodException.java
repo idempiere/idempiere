@@ -9,8 +9,12 @@ package org.idempiere.fa.exceptions;
  */
 public class DepreciationNoInPeriodException extends AssetException
 {
-	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6201871355182540721L;
+
 	public DepreciationNoInPeriodException(int A_Asset_ID, int Workfile_Period_ID, int DepExp_Period_ID)
 	{
 		super("Registration is not in balance (ID Asset="+A_Asset_ID

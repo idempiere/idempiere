@@ -79,7 +79,7 @@ public class Group extends org.zkoss.zul.Group {
 		m_rows.add(row);
 	}
 
-	public class GroupHeader extends Div implements EventListener<Event>
+	public static class GroupHeader extends Div implements EventListener<Event>
 	{
 		/**
 		 * 

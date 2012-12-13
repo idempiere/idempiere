@@ -43,7 +43,7 @@ import org.compiere.util.TimeUtil;
  *
  */
 public abstract class PaymentFormCash extends PaymentForm {
-	private final String PAYMENTRULE = MInvoice.PAYMENTRULE_Cash;
+	private static final String PAYMENTRULE = MInvoice.PAYMENTRULE_Cash;
 	
 	/** Start Payment */
 	public int 					m_C_Payment_ID = 0;

@@ -38,8 +38,11 @@ import org.compiere.util.TrxRunnable;
 
 public class VCreateFromDialog extends CDialog implements ActionListener, TableModelListener
 {
-	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8242250391030501785L;
 	private CreateFrom createFrom;
 	private int windowNo;
 	

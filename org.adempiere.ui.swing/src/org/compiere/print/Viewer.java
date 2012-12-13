@@ -41,7 +41,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -102,7 +101,6 @@ import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
-import org.compiere.util.TimeUtil;
 import org.compiere.util.ValueNamePair;
 
 /**

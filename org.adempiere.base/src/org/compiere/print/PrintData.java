@@ -639,11 +639,14 @@ public class PrintData implements Serializable
 			e.printStackTrace();
 		}
 		//	Root
-		Element root = document.createElement(PrintData.XML_TAG);
-		root.setAttribute(XML_ATTRIBUTE_NAME, getName());
-		root.setAttribute(XML_ATTRIBUTE_COUNT, String.valueOf(getRowCount()));
-		document.appendChild(root);
-		processXML (this, document, root);
+		if (document != null) {
+			Element root = document.createElement(PrintData.XML_TAG);
+			root.setAttribute(XML_ATTRIBUTE_NAME, getName());
+			root.setAttribute(XML_ATTRIBUTE_COUNT, String.valueOf(getRowCount()));
+			document.appendChild(root);
+			processXML (this, document, root);
+		}
+		
 		return document;
 	}	//	getDocument
 

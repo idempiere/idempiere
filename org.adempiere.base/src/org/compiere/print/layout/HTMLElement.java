@@ -33,6 +33,12 @@ import java.util.Properties;
 public class HTMLElement extends PrintElement
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7752468251586676726L;
+
+
+	/**
 	 * 	HTML String Constructor
 	 * 	@param html html code
 	 */

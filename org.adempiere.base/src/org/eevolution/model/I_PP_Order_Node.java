@@ -25,6 +25,7 @@ import org.compiere.util.KeyNamePair;
  *  @author iDempiere (generated) 
  *  @version Release 1.0a
  */
+@SuppressWarnings("unused")
 public interface I_PP_Order_Node 
 {
 

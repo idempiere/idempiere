@@ -11,7 +11,11 @@ import org.compiere.util.Util;
  */
 public class AssetStatusChangedException extends AssetException
 {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2015948851153849647L;
 
 	public AssetStatusChangedException()
 	{

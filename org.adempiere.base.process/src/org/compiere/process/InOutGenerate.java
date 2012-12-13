@@ -601,7 +601,7 @@ public class InOutGenerate extends SvrProcess
 	/**
 	 * 	InOutGenerate Parameter
 	 */
-	class SParameter
+	static class SParameter
 	{
 		/**
 		 * 	Parameter

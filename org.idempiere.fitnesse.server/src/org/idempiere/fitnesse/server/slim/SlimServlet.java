@@ -15,6 +15,11 @@ import org.idempiere.fitnesse.server.Runner;
  *
  */
 public class SlimServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4811874706328623672L;
+
 	@Override
 	public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
 		String portNumber = request.getParameter(SlimServerParameters.PORT);

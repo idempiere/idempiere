@@ -13,7 +13,6 @@
  *****************************************************************************/
 package test.functional;
 
-import org.compiere.model.MInvoice;
 import org.compiere.model.MPayment;
 import org.compiere.util.Env;
 

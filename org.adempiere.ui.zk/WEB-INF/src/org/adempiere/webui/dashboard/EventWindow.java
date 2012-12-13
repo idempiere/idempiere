@@ -37,8 +37,11 @@ import org.zkoss.zul.South;
  *
  */
 public class EventWindow extends Window implements EventListener<Event> {
-	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4758066526040260586L;
 	private DatetimeBox dtBeginDate, dtEndDate;
 	private Textbox txtContent, txtHeaderColor, txtContentColor;
 	private ConfirmPanel confirmPanel;

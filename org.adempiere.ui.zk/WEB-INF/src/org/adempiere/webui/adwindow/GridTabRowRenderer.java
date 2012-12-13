@@ -105,11 +105,11 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		WEditor editor = editors.get(gridField);
 		if (editor != null)  {
 			prepareFieldEditor(gridField, editor);
+			editor.addValueChangeListener(dataBinder);
+			gridField.removePropertyChangeListener(editor);
+			gridField.addPropertyChangeListener(editor);
+			editor.setValue(gridField.getValue());
 		}
-		editor.addValueChangeListener(dataBinder);
-		gridField.removePropertyChangeListener(editor);
-		gridField.addPropertyChangeListener(editor);
-		editor.setValue(gridField.getValue());
 		return editor;
 	}
 
@@ -305,7 +305,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 					else
 						child = parent;
 				}
-				Component component = (Component) div.getAttribute("display.component");
+				Component component = div!=null ? (Component) div.getAttribute("display.component") : null;
 				if (updateCellLabel) {
 					if (component instanceof Label) {
 						Label label = (Label)component;
@@ -344,21 +344,29 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	@Override
 	public void render(Row row, Object[] data, int index) throws Exception {
 		//don't render if not visible
-		if (gridPanel != null && !gridPanel.isVisible()) {
-			return;
+		int columnCount = 0;
+		GridField[] gridPanelFields = null;
+		GridField[] gridTabFields = null;
+		boolean isGridViewCustomized = false;
+		
+		if (gridPanel != null) {
+			if (!gridPanel.isVisible()) {
+				return;
+			}
+			else{
+				gridPanelFields = gridPanel.getFields();
+				columnCount = gridPanelFields.length;
+				gridTabFields = gridTab.getFields();
+				isGridViewCustomized = gridTabFields.length != gridPanelFields.length;
+			}	
 		}
-
+		
 		if (grid == null)
 			grid = (Grid) row.getParent().getParent();
 
 		if (rowListener == null)
 			rowListener = new RowListener((Grid)row.getParent().getParent());
-
-		GridField[] gridPanelFields = gridPanel.getFields();
-		int columnCount = gridPanelFields.length;
 		
-		GridField[] gridTabFields = gridTab.getFields();
-		boolean isGridViewCustomized = gridTabFields.length != gridPanelFields.length;
 		if (!isGridViewCustomized) {
 			for(int i = 0; i < gridTabFields.length; i++) {
 				if (gridPanelFields[i].getAD_Field_ID() != gridTabFields[i].getAD_Field_ID()) {
@@ -641,7 +649,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		this.gridPanel = gridPanel;
 	}
 
-	class RowListener implements EventListener<Event> {
+	static class RowListener implements EventListener<Event> {
 
 		private Grid _grid;
 

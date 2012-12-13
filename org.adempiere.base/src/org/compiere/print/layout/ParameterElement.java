@@ -31,6 +31,11 @@ import org.compiere.util.Msg;
 public class ParameterElement extends GridElement
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4702399095192668527L;
+
+	/**
 	 * 	Parameter Element.
 	 *  <pre>
 	 *  Parameter fromValue - toValue

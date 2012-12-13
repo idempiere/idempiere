@@ -21,7 +21,6 @@
 package org.adempiere.client;
 
 import org.adempiere.base.Service;
-import org.adempiere.base.ServiceQuery;
 import org.compiere.apps.form.FormPanel;
 
 /**

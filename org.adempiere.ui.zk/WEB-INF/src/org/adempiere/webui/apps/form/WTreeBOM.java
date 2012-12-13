@@ -540,6 +540,11 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 class mySimpleTreeNode extends DefaultTreeNode<Object>
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7430786399068849936L;
+
 	public mySimpleTreeNode(Object data, List<TreeNode<Object>> children) {
 		
 		super(data, children);

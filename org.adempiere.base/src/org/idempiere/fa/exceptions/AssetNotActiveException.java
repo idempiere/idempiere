@@ -9,7 +9,11 @@ package org.idempiere.fa.exceptions;
  */
 public class AssetNotActiveException extends AssetException
 {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -958395266586669844L;
 
 	public AssetNotActiveException(int A_Asset_ID)
 	{

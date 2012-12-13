@@ -389,7 +389,7 @@ public class AccessSqlParser
 	/**
 	 * 	Table Info VO
 	 */
-	public class TableInfo
+	public static class TableInfo
 	{
 		/**
 		 * 	Constructor

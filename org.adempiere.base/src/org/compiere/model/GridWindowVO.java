@@ -165,7 +165,7 @@ public class GridWindowVO implements Serializable
 		}
 		// Ensure ASP exceptions
 		MRole role = MRole.getDefault(ctx, false);
-		final Boolean windowAccess = role.getWindowAccess(vo.AD_Window_ID);
+		final Boolean windowAccess = vo!=null ? role.getWindowAccess(vo.AD_Window_ID) : null;
 		if (vo != null && windowAccess == null)
 			vo = null;		//	Not found
 		if (vo != null && windowAccess != null)

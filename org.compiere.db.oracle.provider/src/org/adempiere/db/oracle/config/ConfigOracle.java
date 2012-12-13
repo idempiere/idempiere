@@ -207,9 +207,10 @@ public class ConfigOracle implements IDatabaseConfig
 
 		log.fine(tnsnames);
 		StringBuffer sb = new StringBuffer();
+		FileReader fr = null;
 		try
 		{
-			FileReader fr = new FileReader (tnsfile);
+			fr = new FileReader (tnsfile);
 			int c;
 			while ((c = fr.read()) != -1)
 				sb.append((char)c);
@@ -219,6 +220,14 @@ public class ConfigOracle implements IDatabaseConfig
 			log.warning("Error Reading " + tnsnames);
 			ex.printStackTrace();
 			return null;
+		}
+		finally{
+			if (fr != null) {
+				try {
+					fr.close();
+				} catch (Exception e) {}
+				fr = null;
+			}
 		}
 		if (sb.length() == 0)
 			return null;
@@ -307,7 +316,7 @@ public class ConfigOracle implements IDatabaseConfig
 			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SERVER, "ErrorDatabaseServer",
 				pass, true, error));
 		log.info("OK: Database Server = " + databaseServer);
-		data.setProperty(ConfigurationData.ADEMPIERE_DB_SERVER, databaseServer.getHostName());
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_SERVER, databaseServer!=null ? databaseServer.getHostName() : null);
 		//store as lower case for better script level backward compatibility
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_TYPE, data.getDatabaseType());
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_PATH, data.getDatabaseType().toLowerCase());

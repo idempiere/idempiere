@@ -16,7 +16,6 @@ package test.functional;
 import org.compiere.model.MAttribute;
 import org.compiere.model.MAttributeInstance;
 import org.compiere.model.MAttributeValue;
-import org.compiere.model.MInvoice;
 import org.compiere.util.Env;
 
 import test.AdempiereTestCase;

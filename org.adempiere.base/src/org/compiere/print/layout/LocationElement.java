@@ -41,6 +41,11 @@ import org.compiere.model.MLocation;
 public class LocationElement extends GridElement
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6740297090803465288L;
+
+	/**
 	 * Constructor
 	 * @param ctx context
 	 * @param C_Location_ID location

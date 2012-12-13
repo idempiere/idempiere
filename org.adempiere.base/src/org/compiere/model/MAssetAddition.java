@@ -35,8 +35,11 @@ import org.idempiere.fa.util.POCacheLocal;
 public class MAssetAddition extends X_A_Asset_Addition
 	implements DocAction
 {
-	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5977180589101094202L;
 	/** Static Logger */
 	private static CLogger s_log = CLogger.getCLogger(MAssetAddition.class);
 
@@ -170,9 +173,9 @@ public class MAssetAddition extends X_A_Asset_Addition
 			asset.setA_Asset_Group_ID(product.getA_Asset_Group_ID());
 			MAttributeSetInstance asi = MAttributeSetInstance.create(Env.getCtx(), product, null);
 			asset.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
-		}
-		asset.setName(product.getName().concat(project.getName()));
-		asset.setValue(product.getName().concat(project.getName()));	
+			asset.setName(product.getName().concat(project.getName()));
+			asset.setValue(product.getName().concat(project.getName()));
+		}	
 		asset.saveEx();
 		asset.dump();
 		

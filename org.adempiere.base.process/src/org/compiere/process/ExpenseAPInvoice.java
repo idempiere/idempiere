@@ -142,7 +142,7 @@ public class ExpenseAPInvoice extends SvrProcess
 						.append(DisplayType.getDateFormat(DisplayType.Date).format(te.getDateReport()));  
 					invoice.setDescription(descr.toString());
 					if (!invoice.save())
-						new IllegalStateException("Cannot save Invoice");
+						throw new IllegalStateException("Cannot save Invoice");
 					old_BPartner_ID = bp.getC_BPartner_ID();
 				}
 				MTimeExpenseLine[] tel = te.getLines(false);
@@ -164,7 +164,7 @@ public class ExpenseAPInvoice extends SvrProcess
 					if (line.getC_Project_ID() != 0 && line.getC_Project_ID() != invoice.getC_Project_ID())
 						invoice.setC_Project_ID(line.getC_Project_ID());
 					if (!invoice.save())
-						new IllegalStateException("Cannot save Invoice");
+						throw new IllegalStateException("Cannot save Invoice");
 					
 					//	Create OrderLine
 					MInvoiceLine il = new MInvoiceLine (invoice);
@@ -184,7 +184,7 @@ public class ExpenseAPInvoice extends SvrProcess
 					il.setPrice(line.getPriceReimbursed());	//
 					il.setTax();
 					if (!il.save())
-						new IllegalStateException("Cannot save Invoice Line");
+						throw new IllegalStateException("Cannot save Invoice Line");
 					//	Update TEL
 					line.setC_InvoiceLine_ID(il.getC_InvoiceLine_ID());
 					line.saveEx();
@@ -221,7 +221,7 @@ public class ExpenseAPInvoice extends SvrProcess
 			
 		}
 		if (!invoice.save())
-			new IllegalStateException("Cannot save Invoice");
+			throw new IllegalStateException("Cannot save Invoice");
 		//
 		m_noInvoices++;
 		addLog(invoice.get_ID(), invoice.getDateInvoiced(), 

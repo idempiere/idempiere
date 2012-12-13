@@ -25,7 +25,6 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBankAccount;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
-import org.compiere.model.MPeriod;
 import org.compiere.util.Env;
 
 /**
@@ -68,7 +67,7 @@ public class Doc_BankStatement extends Doc
 	{
 		MBankStatement bs = (MBankStatement)getPO();
 		setDateDoc(bs.getStatementDate());
-		setDateAcct(bs.getStatementDate());	//	Overwritten on Line Level
+		setDateAcct(bs.getDateAcct());
 
 		m_C_BankAccount_ID = bs.getC_BankAccount_ID();
 		//	Amounts
@@ -102,13 +101,7 @@ public class Doc_BankStatement extends Doc
 		{
 			MBankStatementLine line = lines[i];
 			DocLine_Bank docLine = new DocLine_Bank(line, this);
-			//	Set Date Acct
-			if (i == 0)
-				setDateAcct(line.getDateAcct());
-			MPeriod period = MPeriod.get(getCtx(), line.getDateAcct(), line.getAD_Org_ID());
-			if (period != null && period.isOpen(DOCTYPE_BankStatement, line.getDateAcct()))
-				docLine.setC_Period_ID(period.getC_Period_ID());
-			//
+			
 			list.add(docLine);
 		}
 

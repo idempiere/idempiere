@@ -10,7 +10,11 @@ package org.idempiere.fa.exceptions;
  */
 public class AssetCheckDocumentException extends AssetException
 {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8096988198983528889L;
 
 	public AssetCheckDocumentException(String additionalMessage)
 	{

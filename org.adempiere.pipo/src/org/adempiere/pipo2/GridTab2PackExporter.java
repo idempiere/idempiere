@@ -103,7 +103,7 @@ public class GridTab2PackExporter implements IGridTabExporter {
 			}
 		}
 		try {
-			packOut.export(getPackoutDirectory(), file.getAbsolutePath(), packoutDocument, packoutItems, null);
+			packOut.export(getPackoutDirectory(), file!=null ? file.getAbsolutePath() : null , packoutDocument, packoutItems, null);
 		} catch (Exception e) {
 			throw new AdempiereException(e);
 		}

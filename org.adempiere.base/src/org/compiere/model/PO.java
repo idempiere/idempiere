@@ -313,6 +313,12 @@ public abstract class PO
 				return ((PO)cmp).get_ID() == get_ID();
 		return super.equals(cmp);
 	}	//	equals
+	
+	public int hashCode()
+	{
+	  assert false : "hashCode not designed";
+	  return 42; // any arbitrary constant will do
+	}
 
 	/**
 	 * 	Compare based on DocumentNo, Value, Name, Description

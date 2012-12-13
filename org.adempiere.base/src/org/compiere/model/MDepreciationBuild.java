@@ -10,6 +10,10 @@ import java.util.Properties;
  */
 public class MDepreciationBuild extends X_A_Depreciation_Build
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2075917470265913988L;
 	/** Standard Constructor */
 	public MDepreciationBuild (Properties ctx, int A_Depreciation_Build_ID, String trxName)
 	{

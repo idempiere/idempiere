@@ -38,7 +38,10 @@ import org.idempiere.fa.exceptions.AssetAlreadyDepreciatedException;
 public class MAssetTransfer extends X_A_Asset_Transfer
 implements DocAction
 {
-    private static final long serialVersionUID = 1L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2997284714883099922L;
 	/**	Just Prepared Flag			*/
 	private boolean		m_justPrepared = false;
     

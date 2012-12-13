@@ -14,7 +14,6 @@
 package test.functional;
 
 import org.compiere.model.MBOM;
-import org.compiere.model.MLocation;
 import org.compiere.model.MProductBOM;
 import org.compiere.util.Env;
 

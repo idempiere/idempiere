@@ -156,13 +156,21 @@ public class KeyStoreMgt
 			try
 			{
 				is = new FileInputStream (m_file);
+				m_keyStore.load(is, m_password);
 			}
 			catch (Exception e)
 			{
 				log.log(Level.SEVERE, "load", e);
 				return null;
 			}
-			m_keyStore.load(is, m_password);
+			finally{
+				if (is != null) {
+					try {
+						is.close();
+					} catch (Exception e2) {}
+					is = null;
+				}
+			}
 		}
 		else
 			return null;	//	does not exist

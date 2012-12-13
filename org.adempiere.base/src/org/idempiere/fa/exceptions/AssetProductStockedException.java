@@ -11,7 +11,11 @@ import org.compiere.model.MProduct;
  */
 public class AssetProductStockedException extends AssetException
 {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 229246069558704158L;
 
 	public AssetProductStockedException(MProduct product)
 	{

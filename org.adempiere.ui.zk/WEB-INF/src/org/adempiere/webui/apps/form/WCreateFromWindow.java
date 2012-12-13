@@ -39,8 +39,11 @@ import org.zkoss.zul.Separator;
 
 public class WCreateFromWindow extends Window implements EventListener<Event>, WTableModelListener, DialogEvents
 {
-	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3703236565441597403L;
 	private CreateFrom createFrom;
 	private int windowNo;
 	

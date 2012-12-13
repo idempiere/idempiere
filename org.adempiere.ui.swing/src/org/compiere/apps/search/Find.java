@@ -1410,7 +1410,7 @@ public final class Find extends CDialog
 	 * @author Karsten Thiemann, kthiemann@adempiere.org
 	 *
 	 */
-	private class SimpleTreeNode {
+	private static class SimpleTreeNode {
 
 		private int nodeId;
 
@@ -1728,7 +1728,7 @@ public final class Find extends CDialog
 		&& MColumn.isSuggestSelectionColumn(field.getColumnName(), true);
 	}
 	
-	private class ProxyRenderer implements TableCellRenderer
+	private static class ProxyRenderer implements TableCellRenderer
 	{
 		/**
 		 * Creates a Find.ProxyRenderer.

@@ -782,7 +782,7 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 	 * @author ET
 	 * @version $Id: OFXBankStatementHandler.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
 	 */
-	class StatementLine
+	static class StatementLine
 	{
 		protected String routingNo = null;
 		protected String bankAccountNo = null;

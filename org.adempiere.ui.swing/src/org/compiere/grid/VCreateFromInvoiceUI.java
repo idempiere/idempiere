@@ -45,7 +45,6 @@ import org.compiere.util.Msg;
 
 public class VCreateFromInvoiceUI extends CreateFromInvoice implements ActionListener, VetoableChangeListener
 {
-	private static final long serialVersionUID = 1L;
 	
 	private VCreateFromDialog dialog;
 

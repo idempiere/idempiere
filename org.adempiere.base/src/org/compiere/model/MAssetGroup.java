@@ -12,8 +12,11 @@ import org.compiere.util.DB;
  */
 public class MAssetGroup extends X_A_Asset_Group
 {
-	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -173157506404569463L;
 	/** Cache: ID -> MAssetGroup */
 	private static CCache<Integer, MAssetGroup> s_cache = new CCache<Integer, MAssetGroup>(Table_Name, 10, 0);
 	

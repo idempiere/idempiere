@@ -450,6 +450,8 @@ public class MLookupFactory
 				{
 					s_log.log(Level.INFO, "No Identifier records found: " + KeyColumn);
 				}
+				if (list == null)
+					list = new ArrayList<LookupDisplayColumn>();
 				list.add(new LookupDisplayColumn(KeyColumn, null, false, DisplayType.ID, 0));
 			}
 			// set isTranslated
@@ -699,6 +701,8 @@ public class MLookupFactory
 			{
 				s_log.log(Level.INFO, "No Identifier records found: " + ColumnName);
 			}
+			if (list == null)
+				list = new ArrayList<LookupDisplayColumn>();
 			list.add(new LookupDisplayColumn(KeyColumn, null, false, DisplayType.ID, 0));
 		}
 

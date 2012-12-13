@@ -347,8 +347,9 @@ public final class DB
             if (conn != null)
             {
                 conn.close();
+                success = true;
             }
-            success = (conn != null);
+            else success = false;
 		}
 		catch (Exception e)
 		{

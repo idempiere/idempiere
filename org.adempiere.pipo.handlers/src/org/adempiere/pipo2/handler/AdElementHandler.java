@@ -41,7 +41,7 @@ public class AdElementHandler extends AbstractElementHandler {
 
 	private List<Integer> processedElements = new ArrayList<Integer>();
 
-	private final String AD_ELEMENT = "AD_Element";
+	private static final String AD_ELEMENT = "AD_Element";
 
 
 	public void startElement(PIPOContext ctx, Element element)

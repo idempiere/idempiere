@@ -1,7 +1,6 @@
 package org.compiere.apps.wf;
 
 import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;

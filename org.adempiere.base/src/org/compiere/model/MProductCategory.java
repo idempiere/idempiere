@@ -276,7 +276,7 @@ public class MProductCategory extends X_M_Product_Category
 	 * @author Karsten Thiemann, kthiemann@adempiere.org
 	 *
 	 */
-	private class SimpleTreeNode {
+	private static class SimpleTreeNode {
 		/** id of the node */
 		private int nodeId;
 		/** id of the nodes parent */

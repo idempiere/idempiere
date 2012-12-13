@@ -1125,7 +1125,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 						if(subtotal == null)
 							subtotal = new Double(0);
 						if(amt == null )
-							subtotal = new Double(0);
+							amt = new Double(0);
 						total[col] = subtotal + amt;
 						
 					}		

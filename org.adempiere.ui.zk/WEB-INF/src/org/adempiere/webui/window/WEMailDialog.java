@@ -516,8 +516,6 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
         
 		if (source.equals(fUser)) {
 			// fUser			
-			if (value == null)
-				fTo.setText("");
 			if (value instanceof Integer)
 			{
 				int AD_User_ID = ((Integer)value).intValue();
@@ -526,8 +524,6 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			}
 		} else {
 			// fCcUser
-			if (value == null)
-				fCc.setText("");
 			if (value instanceof Integer)
 			{
 				int AD_User_ID = ((Integer)value).intValue();

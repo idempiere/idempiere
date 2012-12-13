@@ -15,8 +15,6 @@ package test.functional;
 
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
-import org.compiere.model.MPaySelection;
-import org.compiere.model.MPaySelectionLine;
 import org.compiere.util.Env;
 
 import test.AdempiereTestCase;

@@ -21,8 +21,11 @@ import org.idempiere.fa.exceptions.AssetNotActiveException;
 
 public class MDepreciationExp extends X_A_Depreciation_Exp
 {
-	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6731366890875525147L;
 	private static CLogger s_log = CLogger.getCLogger(MDepreciationExp.class);
 	private CLogger log = CLogger.getCLogger(this.getClass());
 	

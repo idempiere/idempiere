@@ -1,17 +1,8 @@
 //MBPartnerTest.java
 package test.functional;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.compiere.model.MBPGroup;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MLocation;
-import org.compiere.model.MProductPrice;
-import org.compiere.util.DB;
-import org.compiere.util.Env;
-
 import test.AdempiereTestCase;
 
 public class MBPartnerTest extends AdempiereTestCase {

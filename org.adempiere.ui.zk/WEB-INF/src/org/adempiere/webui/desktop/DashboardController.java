@@ -210,9 +210,10 @@ public class DashboardController implements EventListener<Event> {
 
 		    		URL url = getClass().getClassLoader().getResource("org/compiere/css/PAPanel.css");
 					InputStreamReader ins;
+					BufferedReader bufferedReader = null;
 					try {
 						ins = new InputStreamReader(url.openStream());
-						BufferedReader bufferedReader = new BufferedReader( ins );
+						bufferedReader = new BufferedReader( ins );
 						String cssLine;
 						result.append("<style type=\"text/css\">");
 						while ((cssLine = bufferedReader.readLine()) != null)
@@ -221,7 +222,14 @@ public class DashboardController implements EventListener<Event> {
 					} catch (Exception e1) {
 						logger.log(Level.SEVERE, e1.getLocalizedMessage(), e1);
 					}
-
+					finally{
+						if (bufferedReader != null) {
+							try {
+								bufferedReader.close();
+							} catch (Exception e) {}
+							bufferedReader = null;
+						}
+					}
 					result.append("</head><body><div class=\"content\">\n");
 
 //	            	if(description != null)
@@ -666,7 +674,7 @@ public class DashboardController implements EventListener<Event> {
 	private ReportEngine runReport(int AD_Process_ID, String parameters) {
    		MProcess process = MProcess.get(Env.getCtx(), AD_Process_ID);
 		if (!process.isReport() || process.getAD_ReportView_ID() == 0)
-			new IllegalArgumentException("Not a Report AD_Process_ID=" + process.getAD_Process_ID()
+			 throw new IllegalArgumentException("Not a Report AD_Process_ID=" + process.getAD_Process_ID()
 				+ " - " + process.getName());
 		//	Process
 		int AD_Table_ID = 0;
@@ -681,12 +689,12 @@ public class DashboardController implements EventListener<Event> {
 		pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
 		pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());		
 		if (!process.processIt(pi, null) && pi.getClassName() != null) 
-			new IllegalStateException("Process failed: (" + pi.getClassName() + ") " + pi.getSummary());
+			throw new IllegalStateException("Process failed: (" + pi.getClassName() + ") " + pi.getSummary());
 	
 		//	Report
 		ReportEngine re = ReportEngine.get(Env.getCtx(), pi);
 		if (re == null)
-			new IllegalStateException("Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
+			throw new IllegalStateException("Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
 				+ " - " + process.getName());
 		
 		return re;

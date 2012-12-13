@@ -83,7 +83,6 @@ public class ReplicationProcessor extends AdempiereServer {
 		m_client = MClient.get(mImportProcessor.getCtx(), mImportProcessor.getAD_Client_ID());
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void doWork() 
 	{

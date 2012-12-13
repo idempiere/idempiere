@@ -352,16 +352,19 @@ public class Secure implements SecureInterface
 				nsae.printStackTrace();
 			}
 		}
-		//	Reset MessageDigest object
-		m_md.reset();
-		//	Convert String to array of bytes
+        //	Convert String to array of bytes
 		byte[] input = value.getBytes();
-		//	feed this array of bytes to the MessageDigest object
-		m_md.update(input);
-		//	 Get the resulting bytes after the encryption process
-		byte[] output = m_md.digest();
-		m_md.reset();
-		//
+		byte[] output = null;
+		//	Reset MessageDigest object
+		if (m_md != null) {
+			m_md.reset();		
+			//	feed this array of bytes to the MessageDigest object
+			m_md.update(input);
+			//	 Get the resulting bytes after the encryption process
+			output = m_md.digest();
+			m_md.reset();
+			//
+		}
 		return convertToHexString(output);
 	}	//	getDigest
 

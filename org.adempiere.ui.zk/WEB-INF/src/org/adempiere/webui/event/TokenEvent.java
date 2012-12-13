@@ -23,6 +23,10 @@ import org.zkoss.zk.ui.event.Event;
  */
 public class TokenEvent extends Event {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7727018026113457776L;
 	/** on loading of user token **/
 	public final static String ON_USER_TOKEN = "onUserToken";
 	

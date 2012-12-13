@@ -164,6 +164,12 @@ public final class MSort implements Comparator<Object>, Serializable
 		}
 		return false;
 	}	//	equals
+	
+	public int hashCode()
+	{
+	  assert false : "hashCode not designed";
+	  return 42; // any arbitrary constant will do
+	}
 
 	/**
 	 * 	String Representation

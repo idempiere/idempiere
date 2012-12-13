@@ -17,6 +17,11 @@ import org.compiere.util.DB;
 public class MDepreciationConvention extends X_A_Depreciation_Convention
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2274629486216430723L;
+
+	/**
 	 * 	Default Constructor
 	 *	@param ctx context
 	 *	@param A_Depreciation_Convention_ID id

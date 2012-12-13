@@ -36,7 +36,6 @@ import java.net.URL;
 import java.util.Locale;
 
 import org.compiere.Adempiere;
-import org.compiere.AdempiereClient;
 
 /**
  *  Splash Screen.

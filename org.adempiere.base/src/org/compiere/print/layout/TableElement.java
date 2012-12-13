@@ -80,6 +80,12 @@ import org.compiere.util.ValueNamePair;
 public class TableElement extends PrintElement
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4185521888252077894L;
+
+
+	/**
 	 *	Constructor.
 	 *	Created in LayoutEngine.
 	 *  The rowCol.. maps are organized as follows - Point (row,col)
@@ -284,7 +290,7 @@ public class TableElement extends PrintElement
 		m_printRows = new SerializableMatrixImpl<ArrayList<Serializable>>("TableElementPrintRows");	//	reset
 
 		//	Max Column Width = 50% of available width (used if maxWidth not set)
-		float dynMxColumnWidth = m_firstPage.width / 2;
+		float dynMxColumnWidth = m_firstPage.width / (float)2;
 
 		//	Width calculation
 		int rows = m_data.getRowCount();

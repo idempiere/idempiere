@@ -44,7 +44,7 @@ public class StatusBar extends CPanel implements IStatusBar
 	/******************************************************************************
 	 *  Mouse Adapter for Status Bar (statusDB)
 	 */
-	class StatusBar_mouseAdapter extends java.awt.event.MouseAdapter
+	static class StatusBar_mouseAdapter extends java.awt.event.MouseAdapter
 	{
 		private StatusBar adaptee;
 

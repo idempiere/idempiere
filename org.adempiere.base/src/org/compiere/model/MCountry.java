@@ -90,7 +90,6 @@ public final class MCountry extends X_C_Country
 	 * 	@param ctx context
 	 *  @return MCountry Array
 	 */
-	@SuppressWarnings("unchecked")
 	public static MCountry[] getCountries(Properties ctx)
 	{
 		if (s_countries == null || s_countries.size() == 0)

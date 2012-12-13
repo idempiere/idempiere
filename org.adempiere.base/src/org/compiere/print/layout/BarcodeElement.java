@@ -42,6 +42,11 @@ import org.compiere.print.MPrintFormatItem;
 public class BarcodeElement extends PrintElement
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -935853466496345172L;
+
+	/**
 	 * 	Barcode Element Constructor
 	 *	@param code barcode data string
 	 *	@param item format item

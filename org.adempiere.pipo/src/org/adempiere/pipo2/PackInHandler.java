@@ -424,7 +424,7 @@ public class PackInHandler extends DefaultHandler {
 		}
 	}
 
-	class DeferEntry {
+	static class DeferEntry {
 		Element element;
 		boolean startElement = false;
 

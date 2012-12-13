@@ -48,7 +48,6 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 
     private String oldValue;
 
-    @SuppressWarnings("unused")
 	private boolean tableEditor = false;
 
     /**

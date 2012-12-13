@@ -9,7 +9,11 @@ package org.idempiere.fa.exceptions;
  */
 public class AssetNotSupportedException extends AssetException
 {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9182818872935345775L;
 
 	public AssetNotSupportedException (String funcName, String actualValue)
 	{

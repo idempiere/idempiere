@@ -189,8 +189,11 @@ public class ModelInterfaceGenerator
 		start.append("/** Generated Interface for ").append(tableName).append("\n")
 			 .append(" *  @author iDempiere (generated) \n")
 			 .append(" *  @version ").append(Adempiere.MAIN_VERSION).append(NL) //.append(" - ").append(s_run).append("\n")
-			 .append(" */\n")
-			 .append("public interface ").append(className).append(" {").append("\n")
+			 .append(" */\n");
+		if (!packageName.equals("org.compiere.model")) {
+			 start.append("@SuppressWarnings(\"unused\")\n");
+		}
+		start.append("public interface ").append(className).append(" {").append("\n")
 
 			 .append("    /** TableName=").append(tableName).append(" */\n")
 			 .append("    public static final String Table_Name = \"").append(tableName).append("\";\n")

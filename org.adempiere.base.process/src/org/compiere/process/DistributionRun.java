@@ -114,13 +114,13 @@ public class DistributionRun extends SvrProcess
 			}	
 			else if (name.equals("IsTest"))
 				p_IsTest = "Y".equals(para[i].getParameter());
-			else if (m_docType.getDocBaseType().equals(MDocType.DOCBASETYPE_DistributionOrder) & name.equals("M_Warehouse_ID"))
+			else if (m_docType.getDocBaseType().equals(MDocType.DOCBASETYPE_DistributionOrder) && name.equals("M_Warehouse_ID"))
 				p_M_Warehouse_ID=((BigDecimal)para[i].getParameter()).intValue();
-			else if (m_docType.getDocBaseType().equals(MDocType.DOCBASETYPE_DistributionOrder) & name.equals("ConsolidateDocument"))
+			else if (m_docType.getDocBaseType().equals(MDocType.DOCBASETYPE_DistributionOrder) && name.equals("ConsolidateDocument"))
 				p_ConsolidateDocument="Y".equals((String)para[i].getParameter());
-			else if (m_docType.getDocBaseType().equals(MDocType.DOCBASETYPE_DistributionOrder) & name.equals("M_DistributionList_ID"))
+			else if (m_docType.getDocBaseType().equals(MDocType.DOCBASETYPE_DistributionOrder) && name.equals("M_DistributionList_ID"))
 				p_M_DistributionList_ID=para[i].getParameterAsInt();
-			else if (m_docType.getDocBaseType().equals(MDocType.DOCBASETYPE_DistributionOrder) & name.equals("IsRequiredDRP"))
+			else if (m_docType.getDocBaseType().equals(MDocType.DOCBASETYPE_DistributionOrder) && name.equals("IsRequiredDRP"))
 				p_BasedInDamnd = "Y".equals((String)para[i].getParameter());
 			else
 				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);		
@@ -160,7 +160,7 @@ public class DistributionRun extends SvrProcess
 		if (p_DatePromised == null)
 			p_DatePromised = m_DateOrdered;
 		
-		if(m_docType.getDocBaseType().equals(MDocType.DOCBASETYPE_DistributionOrder)  & p_M_Warehouse_ID > 0)
+		if(m_docType.getDocBaseType().equals(MDocType.DOCBASETYPE_DistributionOrder) && p_M_Warehouse_ID > 0)
 		{
 			if(p_BasedInDamnd)
 			{

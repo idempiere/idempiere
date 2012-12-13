@@ -103,6 +103,12 @@ public class ALayoutConstraint implements Comparable<Object>
 			return compareTo(o) == 0;
 		return false;
 	}   //  equal
+	
+	public int hashCode() 
+	{
+	  assert false : "hashCode not designed";
+	  return 42; // any arbitrary constant will do
+	}
 
 	/**
 	 *  To String

@@ -37,6 +37,11 @@ import java.util.Properties;
 public class GridElement extends PrintElement
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1744788593309619751L;
+
+	/**
 	 *	Grid Element Constructor
 	 *  Call setData to initialize content
 	 *  @param rows max rows

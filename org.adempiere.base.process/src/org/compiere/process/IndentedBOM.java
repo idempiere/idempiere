@@ -185,7 +185,7 @@ public class IndentedBOM extends SvrProcess
 		return list;
 	}
 	
-	private class llCost {
+	private static class llCost {
 		BigDecimal currentCost = Env.ZERO;
 		BigDecimal futureCost = Env.ZERO;
 	}

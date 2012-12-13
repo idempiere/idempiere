@@ -23,6 +23,10 @@ import org.zkoss.zk.ui.event.Event;
  */
 public class ZoomEvent extends Event {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8857628145535148973L;
 	public final static String EVENT_NAME = "onZoom";
 
 	public ZoomEvent(Component target, Object data) {

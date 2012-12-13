@@ -23,6 +23,10 @@ import org.zkoss.zk.ui.event.Event;
  */
 public class DrillEvent extends Event {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4877800961258241047L;
 	public final static String ON_DRILL_DOWN = "onDrillDown";
 	public final static String ON_DRILL_ACROSS = "onDrillAcross";
 	

@@ -1221,7 +1221,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         }
     }
 
-    class ReportData {
+    static class ReportData {
         private String reportFilePath;
         private boolean directPrint;
 
@@ -1275,7 +1275,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         }
     }
 
-    class FileFilter implements FilenameFilter {
+    static class FileFilter implements FilenameFilter {
         private String reportStart;
         private File directory;
         private String extension;

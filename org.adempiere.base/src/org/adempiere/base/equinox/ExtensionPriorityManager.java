@@ -39,8 +39,10 @@ public class ExtensionPriorityManager {
 		URL url = location.getURL();
 		File file = new File(url.getPath(), "extensions-priorty.properties");
 		if (file.exists() && file.canRead()) {
+			FileInputStream fileInput = null;
 			try {
-				priorityMap.load(new FileInputStream(file));
+				fileInput = new FileInputStream(file);
+				priorityMap.load(fileInput);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -48,6 +50,15 @@ public class ExtensionPriorityManager {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			finally{
+				if (fileInput != null) {
+					try {
+						fileInput.close();
+					} catch (Exception e2) {}
+					fileInput = null;
+				}
+			}
+			
 		}
 	}
 

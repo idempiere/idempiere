@@ -446,7 +446,7 @@ public class AdempiereMonitor extends HttpServlet
 			fis.close();
 			//
 			time = System.currentTimeMillis() - time;
-			double speed = (fileLength/1024) / ((double)time/1000);
+			double speed = (fileLength/(double)1024) / (time/(double)1000);
 			log.info("length=" 
 				+ fileLength + " - " 
 				+ time + " ms - " 

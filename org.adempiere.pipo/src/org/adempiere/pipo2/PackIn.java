@@ -196,10 +196,10 @@ public class PackIn {
 		byte[] data = null;
 		File file = new File(m_packageDirectory+File.separator+"blobs"+File.separator, fileName);
 		FileInputStream fis = null;
-
+		BufferedInputStream bis = null;
 		try {
 			fis = new FileInputStream(file);
-			BufferedInputStream bis = new BufferedInputStream(fis);
+			bis = new BufferedInputStream(fis);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			while (true) {
 				int b = bis.read();
@@ -214,6 +214,12 @@ public class PackIn {
 				try {
 					fis.close();
 				} catch (IOException e) {}
+			}
+			if (bis != null) {
+				try {
+					bis.close();
+				} catch (Exception e) {}
+				bis = null;
 			}
 		}
 		return data;

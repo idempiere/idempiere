@@ -25,7 +25,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.ecs.xhtml.option;
 import org.apache.ecs.xhtml.select;
-import org.compiere.model.I_M_Product;
 import org.compiere.model.I_M_Product_Category;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;

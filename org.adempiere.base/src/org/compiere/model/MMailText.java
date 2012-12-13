@@ -379,7 +379,7 @@ public class MMailText extends X_R_MailText
 	/**
 	 *	MailText Translation VO
 	 */
-	class MMailTextTrl
+	static class MMailTextTrl
 	{
 		/** Language			*/
 		String		AD_Language = null;
