@@ -12,11 +12,11 @@ public class ChangeRoleTest extends AbstractTestCase {
 	public void testLogin() throws Exception {
 		login();	
 		
-		Thread.sleep(2000);
+		waitResponse();
 		
 		driver.findElement(Zk.jq("$changeRole")).click();
 		
-		Thread.sleep(1000);
+		waitResponse();
 		
 		// wait for home page
 		selectRole("GardenWorld", "GardenWorld User", "HQ");

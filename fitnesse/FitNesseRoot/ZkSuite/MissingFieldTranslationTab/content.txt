@@ -1,0 +1,27 @@
+!contents
+'''IDEMPIERE-369 Master Detail Improvement'''
+Bugs: Field translation tab not show
+
+!include -c ZkSystemAdminLogin
+'''Open Window, Tab & Field'''
+|''combobox''|$treeSearchCombo|''select item''|!-Window, Tab & Field-!|
+|''wait response''|
+|''click''|$findWindow_1 $simpleSearch $btnOk|
+
+|''wait response''|
+
+'''Edit Tab'''
+|''element exists''|$Window__Tab___Field_1 $Window $detailPane @tab[label="Tab"]|
+|''click''|$Window__Tab___Field_1 $Window $detailPane $BtnEdit|
+
+|''wait response''|
+
+'''Edit Field'''
+|''element exists''|$Window__Tab___Field_1 $Tab $detailPane @tab[label="Field"]|
+|''element exists''|$Window__Tab___Field_1 $Tab $detailPane @tab[label="Field Translation"]|
+|''click''|$Window__Tab___Field_1 $Tab $detailPane $BtnEdit|
+
+|''wait response''|
+
+'''Verify Field Translation Detail Tab Exists'''
+|''element exists''|$Window__Tab___Field_1 $Field $detailPane @tab[label="Field Translation"]|

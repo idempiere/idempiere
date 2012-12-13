@@ -1,35 +1,28 @@
 !contents
-
 !|fitlibrary.zk.ZkFixture|
 
 |''start spider with''|firefox|
-
 |''shutdown browser automatically''|false|
-
 |''get url''|http://localhost:8080/webui/index.zul|
 
+'''Login'''
 |''with''|$loginPanel $txtUserId|''set text''|!-GardenAdmin-!|
-
 |''with''|$loginPanel $txtPassword|''set text''|!-GardenAdmin-!|
-
 |''combobox''|$loginPanel $lstLanguage|''select item''|English|
-
 |''with''|$loginPanel $chkSelectRole|''select''|true|
-
 |''click''|$loginPanel $Ok|
 
-|checking timeout|2000|
+|''wait response''|
+
+'''Select Role'''
 |''element''|$rolePanel $lstClient|''exists''|
-
 |''element invisible''|$rolePanel $lstClient|
-
 |''combobox''|$rolePanel $lstRole|''select item''|!-GardenWorld Admin-!|
-
 |''combobox''|$rolePanel $lstOrganisation|''select item''|HQ|
-
 |''click''|$rolePanel $Ok|
 
-|checking timeout|3000|
-|element|$loginUserAndRole|exists|
+|''wait response''|
 
+'''Verify login user name and role'''
+|element|$loginUserAndRole|exists|
 |''text of''|$loginUserAndRole|is|!-GardenAdmin@GardenWorld.HQ/GardenWorld Admin-!|

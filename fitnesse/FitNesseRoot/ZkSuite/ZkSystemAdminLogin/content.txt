@@ -1,37 +1,28 @@
 !contents
-
 !|fitlibrary.zk.ZkFixture|
-
 |''start spider with''|firefox|
-
 |''shutdown browser automatically''|false|
-
 |''get url''|http://localhost:8080/webui/index.zul|
 
+'''Login'''
 |''with''|$loginPanel $txtUserId|''set text''|!-SuperUser-!|
-
 |''with''|$loginPanel $txtPassword|''set text''|!-System-!|
-
 |''combobox''|$loginPanel $lstLanguage|''select item''|English|
-
 |''with''|$loginPanel $chkSelectRole|''select''|true|
-
 |''click''|$loginPanel $Ok|
 
-|checking timeout|2000|
+|''wait response''|
+
+'''Select Role'''
 |''element''|$rolePanel $lstClient|''exists''|
-
 |''element visible''|$rolePanel $lstClient|
-
-|''combobox''|$rolePanel $lstClient|''select item''|!-GardenWorld-!|
-
-|''combobox''|$rolePanel $lstRole|''select item''|!-GardenWorld Admin-!|
-
-|''combobox''|$rolePanel $lstOrganisation|''select item''|HQ|
-
+|''combobox''|$rolePanel $lstClient|''select item''|!-System-!|
+|''combobox''|$rolePanel $lstRole|''select item''|!-System Administrator-!|
+|''combobox''|$rolePanel $lstOrganisation|''select item''|*|
 |''click''|$rolePanel $Ok|
 
-|checking timeout|3000|
-|element|$loginUserAndRole|exists|
+|''wait response''|
 
-|''text of''|$loginUserAndRole|is|!-SuperUser@GardenWorld.HQ/GardenWorld Admin-!|
+'''Verify login user and role'''
+|element|$loginUserAndRole|exists|
+|''text of''|$loginUserAndRole|is|!-SuperUser@System.*/System Administrator-!|

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.wf.WFPanel;
@@ -133,7 +134,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		final ADWindow adWindow = new ADWindow(Env.getCtx(), windowId, query);
 
 		final DesktopTabpanel tabPanel = new DesktopTabpanel();		
-		tabPanel.setId(adWindow.getTitle()+"_"+adWindow.getADWindowContent().getWindowNo());
+		String id = AdempiereIdGenerator.escapeId(adWindow.getTitle());
+		tabPanel.setId(id+"_"+adWindow.getADWindowContent().getWindowNo());
 		final Tab tab = windowContainer.addWindow(tabPanel, adWindow.getTitle(), true);
 		tab.setImage(IN_PROGRESS_IMAGE);
 		tab.setClosable(false);		

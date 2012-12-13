@@ -6,10 +6,7 @@
 Suites:
 IdempiereSuite
 AvgCostSuite
-
-Zk Examples:
-ZkSingleClientLogin
-ZkMultiClientLogin
+ZkSuite
 
 
 | '''To Learn More...'''|

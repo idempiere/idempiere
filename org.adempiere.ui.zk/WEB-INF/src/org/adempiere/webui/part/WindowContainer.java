@@ -55,6 +55,7 @@ public class WindowContainer extends AbstractUIPart
     {
         tabbox = new Tabbox();
         tabbox.setSclass("desktop-tabbox");
+        tabbox.setId("desktop_tabbox");
         
         Tabpanels tabpanels = new Tabpanels();
         tabpanels.setVflex("1");

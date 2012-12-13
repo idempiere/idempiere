@@ -61,14 +61,7 @@ public class AdempiereIdGenerator implements IdGenerator {
 		}
 		prefix = builder.toString();
 		
-		Pattern pattern = Pattern.compile("[^a-zA-Z_0-9]");
-		Matcher matcher = pattern.matcher(prefix);
-		StringBuffer sb = new StringBuffer();
-		while(matcher.find()) {
-			matcher.appendReplacement(sb, "_");
-		}
-		matcher.appendTail(sb);
-		prefix = sb.toString();
+		prefix = escapeId(prefix);
 		
 		if (desktop.getComponentByUuidIfAny(prefix) == null) { // look to avoid dups
 			return prefix;
@@ -90,6 +83,18 @@ public class AdempiereIdGenerator implements IdGenerator {
 		if (!prefix.endsWith("_"))
 			prefix = prefix + "_";
 		return prefix + i;
+	}
+
+	public static String escapeId(String prefix) {
+		Pattern pattern = Pattern.compile("[^a-zA-Z_0-9]");
+		Matcher matcher = pattern.matcher(prefix);
+		StringBuffer sb = new StringBuffer();
+		while(matcher.find()) {
+			matcher.appendReplacement(sb, "_");
+		}
+		matcher.appendTail(sb);
+		prefix = sb.toString();
+		return prefix;
 	}
 
 	@Override

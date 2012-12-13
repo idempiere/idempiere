@@ -26,6 +26,7 @@ package org.adempiere.webui.panel;
 import java.sql.Timestamp;
 import java.util.Properties;
 
+import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ComboItem;
 import org.adempiere.webui.component.Combobox;
@@ -314,7 +315,9 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
             for(int i = 0; i < m_clientKNPairs.length; i++)
             {
             	ComboItem ci = new ComboItem(m_clientKNPairs[i].getName(), m_clientKNPairs[i].getID());
-            	ci.setId(ci.getLabel());
+            	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
+            	if (ci.getFellowIfAny(id) == null)
+            		ci.setId(id);
             	lstClient.appendChild(ci);
                 if (m_clientKNPairs[i].getID().equals(initDefault))
                 	lstClient.setSelectedItem(ci);
@@ -360,10 +363,9 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 for (int i = 0; i < roleKNPairs.length; i++)
                 {
                 	ComboItem ci = new ComboItem(roleKNPairs[i].getName(), roleKNPairs[i].getID());
-                	if (lstRole.getFellowIfAny(ci.getLabel()) != null) {
-                		ci.setId(ci.getLabel()+"_"+i);
-                	} else {
-                		ci.setId(ci.getLabel());
+                	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
+                	if (lstRole.getFellowIfAny(id) == null) {
+                		ci.setId(id);
                 	}
                 	lstRole.appendChild(ci);
                     if (roleKNPairs[i].getID().equals(initDefault))
@@ -417,7 +419,9 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 for(int i = 0; i < orgKNPairs.length; i++)
                 {
                 	ComboItem ci = new ComboItem(orgKNPairs[i].getName(), orgKNPairs[i].getID());
-                	ci.setId(ci.getLabel());
+                	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
+                	if (ci.getFellowIfAny(id) == null)
+                		ci.setId(id);
                 	lstOrganisation.appendChild(ci);
                     if(orgKNPairs[i].getID().equals(initDefault))
                     	lstOrganisation.setSelectedItem(ci);

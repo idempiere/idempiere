@@ -24,6 +24,7 @@ import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -43,7 +44,7 @@ import org.zkoss.zul.Toolbar;
  * @author hengsin
  *
  */
-public class DetailPane extends Panel implements EventListener<Event> {
+public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 
 	public static final String ON_POST_SELECT_TAB_EVENT = "onPostSelectTab";
 
