@@ -609,7 +609,7 @@ UPDATE AD_Field SET XPosition=2,Updated=TO_DATE('2012-12-13 00:16:09','YYYY-MM-D
 
 -- Dec 13, 2012 4:27:02 PM IST
 -- IDEMPIERE-460 Adding support for composite service
-INSERT INTO WS_WebService (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Help,IsActive,WS_WebService_ID,Name,Updated,UpdatedBy,Value,WS_WebService_UU) VALUES (0,0,TO_DATE('2012-12-13 16:26:45','YYYY-MM-DD HH24:MI:SS'),100,'Composite service','Y',200001,'CompositeInderface',TO_DATE('2012-12-13 16:26:45','YYYY-MM-DD HH24:MI:SS'),100,'CompositeInderface','df6cc221-05a7-403f-8abb-bdf24344094a')
+INSERT INTO WS_WebService (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Help,IsActive,WS_WebService_ID,Name,Updated,UpdatedBy,Value,WS_WebService_UU) VALUES (0,0,TO_DATE('2012-12-13 16:26:45','YYYY-MM-DD HH24:MI:SS'),100,'Composite service','Y',200001,'CompositeInterface',TO_DATE('2012-12-13 16:26:45','YYYY-MM-DD HH24:MI:SS'),100,'CompositeInterface','df6cc221-05a7-403f-8abb-bdf24344094a')
 ;
 
 -- Dec 13, 2012 4:27:28 PM IST
