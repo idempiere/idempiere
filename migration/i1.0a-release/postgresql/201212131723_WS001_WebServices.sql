@@ -1536,5 +1536,5 @@ UPDATE AD_Field SET IsSameLine='N',Updated=TO_TIMESTAMP('2009-01-30 20:03:13','Y
 UPDATE AD_Tab SET AD_Column_ID=56765,Updated=TO_TIMESTAMP('2009-02-01 19:49:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=53190
 ;
 
-SELECT register_migration_script('WS001_WebServices.sql') FROM dual
+SELECT register_migration_script('201212131723_WS001_WebServices.sql') FROM dual
 ;

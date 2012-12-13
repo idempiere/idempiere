@@ -1,3 +1,5 @@
+-- Jan 30, 2009 7:13:26 PM COT
+-- Web Service Definition and Security
 
 INSERT INTO WS_WebService (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Description,Help,IsActive,Name,Updated,UpdatedBy,Value,WS_WebService_ID) VALUES (0,0,TO_TIMESTAMP('2009-01-30 19:17:43','YYYY-MM-DD HH24:MI:SS'),100,'Contributed by http://www.globalqss.com - implemented security','This web services are very generic - so it''s necessary to configure the security layer in the web services security window to make them work.  You can take a look to GardenWorld samples.','Y','Model Oriented Web Services',TO_TIMESTAMP('2009-01-30 19:17:43','YYYY-MM-DD HH24:MI:SS'),100,'ModelADService',50001)
 ;
@@ -28,5 +30,5 @@ INSERT INTO WS_WebServiceMethod (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Descri
 INSERT INTO WS_WebServiceMethod (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Description,IsActive,Name,Updated,UpdatedBy,Value,WS_WebService_ID,WS_WebServiceMethod_ID) VALUES (0,0,TO_TIMESTAMP('2009-01-30 19:22:50','YYYY-MM-DD HH24:MI:SS'),100,'Access records via conditions on columns - return data rows','Y','Query Data',TO_TIMESTAMP('2009-01-30 19:22:50','YYYY-MM-DD HH24:MI:SS'),100,'queryData',50001,50028)
 ;
 
-SELECT register_migration_script('WS002_WebServicesDefinition.sql') FROM dual
+SELECT register_migration_script('201212131724_WS002_WebServicesDefinition.sql') FROM dual
 ;
