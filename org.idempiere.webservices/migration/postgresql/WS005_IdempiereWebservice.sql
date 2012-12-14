@@ -615,3 +615,16 @@ UPDATE AD_Field SET ColumnSpan=2,Updated=TO_TIMESTAMP('2012-12-13 00:16:01','YYY
 UPDATE AD_Field SET XPosition=2,Updated=TO_TIMESTAMP('2012-12-13 00:16:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=56676
 ;
 
+-- Dec 13, 2012 4:27:02 PM IST
+-- IDEMPIERE-460 Adding support for composite service
+INSERT INTO WS_WebService (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Help,IsActive,WS_WebService_ID,Name,Updated,UpdatedBy,Value,WS_WebService_UU) VALUES (0,0,TO_TIMESTAMP('2012-12-13 16:26:45','YYYY-MM-DD HH24:MI:SS'),100,'Composite service','Y',200001,'CompositeInterface',TO_TIMESTAMP('2012-12-13 16:26:45','YYYY-MM-DD HH24:MI:SS'),100,'CompositeInterface','df6cc221-05a7-403f-8abb-bdf24344094a')
+;
+
+-- Dec 13, 2012 4:27:28 PM IST
+-- IDEMPIERE-460 Adding support for composite service
+INSERT INTO WS_WebServiceMethod (CreatedBy,AD_Client_ID,AD_Org_ID,Created,IsActive,WS_WebServiceMethod_ID,Name,Updated,UpdatedBy,Value,WS_WebService_ID,WS_WebServiceMethod_UU) VALUES (100,0,0,TO_TIMESTAMP('2012-12-13 16:27:27','YYYY-MM-DD HH24:MI:SS'),'Y',200001,'composite',TO_TIMESTAMP('2012-12-13 16:27:27','YYYY-MM-DD HH24:MI:SS'),100,'composite',200001,'a3a5ce29-792a-4e99-b0c9-68779fdc89e3')
+;
+
+
+SELECT register_migration_script('WS005_IdempiereWebservice.sql') FROM dual
+;
