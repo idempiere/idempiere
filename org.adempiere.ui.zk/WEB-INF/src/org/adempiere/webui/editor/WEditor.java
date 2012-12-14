@@ -108,8 +108,11 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         }
 
         this.setComponent(comp);
-		comp.setId(gridField.getColumnName()+(rowIndex >= 0 ? "_" + rowIndex : ""));
         this.gridField = gridField;
+        comp.setWidgetAttribute("columnName", gridField.getColumnName());
+        if (gridField.getGridTab() != null) {
+        	comp.setWidgetAttribute("qualifiedColumnName", gridField.getGridTab().getTableName()+"."+gridField.getColumnName());
+        }
         this.setMandatory(gridField.isMandatory(false));
         this.readOnly = gridField.isReadOnly();
         this.description = gridField.getDescription();
