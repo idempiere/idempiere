@@ -107,7 +107,8 @@ public class CompositeADTabbox extends AbstractADTabbox
 						public void onCallback(Boolean result) {							
 							if (result) {
 								onEditDetail(row);
-								adWindowPanel.onNew();
+								if (!adWindowPanel.getActiveGridTab().isNew())
+									adWindowPanel.onNew();
 							}
 						}
 					});
