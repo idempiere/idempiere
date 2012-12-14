@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Column;
@@ -199,6 +200,7 @@ DataStatusListener, IADTabpanel, IdSpace
         form.setHeight(null);
         form.setVflex(false);
         form.setSclass("grid-layout adwindow-form");
+        form.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "form");
         
         listPanel = new GridView();
         listPanel.getListbox().addEventListener(Events.ON_DOUBLE_CLICK, this);
@@ -406,6 +408,7 @@ DataStatusListener, IADTabpanel, IdSpace
         			editor.setADTabpanel(this);
         			field.addPropertyChangeListener(editor);
         			editors.add(editor);
+        			editor.getComponent().setId(field.getColumnName());
         			toolbarButtonEditors.add(editor);
         			        			
         			continue;
@@ -519,6 +522,8 @@ DataStatusListener, IADTabpanel, IdSpace
 
         			//stretch component to fill grid cell
         			editor.fillHorizontal();
+        			
+        			editor.getComponent().setId(field.getColumnName());
 
         			//setup editor context menu
         			WEditorPopupMenu popupMenu = editor.getPopupMenu();
@@ -540,6 +545,8 @@ DataStatusListener, IADTabpanel, IdSpace
         						popupMenu.addContextElement((XulElement) editor.getComponent());
         					}
         				}
+        				
+        				popupMenu.setId(field.getColumnName()+"-popup");
         			}
         		}
         	}

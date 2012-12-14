@@ -18,6 +18,11 @@ public class Widget extends By {
 		this.locator = locator;
 	}
 	
+	public Widget(WebElement element) {
+		String id = element.getAttribute("id");
+		locator = "#"+id;
+	}
+
 	@Override
 	public List<WebElement> findElements(SearchContext context) {
 		List<WebElement> list = new ArrayList<WebElement>();

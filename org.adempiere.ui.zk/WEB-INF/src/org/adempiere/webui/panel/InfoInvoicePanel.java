@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Datebox;
@@ -170,12 +171,21 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
 
         txtDocumentNo = new Textbox();
         txtDescription = new Textbox();
+        
+        txtDocumentNo.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "documentNo");
+        txtDescription.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "description");
 
         dateFrom = new Datebox();
         dateTo= new Datebox();
+        
+        dateFrom.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "dateFrom");
+        dateTo.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "dateTo");
 
         amountFrom = new NumberBox(false);
         amountTo = new NumberBox(false);
+        
+        amountFrom.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "amountFrom");
+        amountTo.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "amountTo");
 
         isPaid = new Checkbox();
         isPaid.setLabel(Msg.translate(Env.getCtx(), "IsPaid"));
@@ -189,6 +199,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
                 Env.getCtx(), "C_BPartner_ID"), "", false, false, true);
         editorBPartner.addValueChangeListener(this);
         editorBPartner.getComponent().setHflex("1");
+        editorBPartner.getComponent().setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "bpartnerLookup");
 
         MLookup lookupOrder = MLookupFactory.get(Env.getCtx(), p_WindowNo,
                 0, 4247, DisplayType.Search);
@@ -196,6 +207,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
                 Env.getCtx(), "C_Order_ID"), "", false, false, true);
         editorOrder.addValueChangeListener(this);
         editorOrder.getComponent().setHflex("1");
+        editorOrder.getComponent().setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "orderLookup");
     }
 
     private void init()

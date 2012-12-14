@@ -165,6 +165,7 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		dialogBody = new VerticalBox();
 		dialogBody.setHflex("1");
 		Div div = new Div();
+		div.setId("message");
 		message = new Html();
 		div.appendChild(message);
 		div.setStyle("max-height: 150pt; overflow: auto;");

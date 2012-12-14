@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.TableValueChangeEvent;
 import org.adempiere.webui.event.TableValueChangeListener;
@@ -194,6 +195,10 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 									  int rowIndex, int columnIndex)
 	{
 		ListCell listcell = new ListCell();
+		WTableColumn column = getColumn(columnIndex);
+		if (column != null && column.getHeaderValue() != null) {
+			listcell.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, column.getHeaderValue().toString());
+		}
 		boolean isCellEditable = table != null ? table.isCellEditable(rowIndex, columnIndex) : false;
 
         // TODO put this in factory method for generating cell renderers, which

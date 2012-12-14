@@ -305,6 +305,8 @@ public class ProcessParameterPanel extends Panel implements
 			m_mFields2.add(mField2);
 			// The Editor
 			WEditor editor2 = WebEditorFactory.getEditor(mField2, false);
+			//override attribute
+			editor2.getComponent().setWidgetAttribute("columnName", mField2.getColumnName()+"_To");
 			// New Field value to be updated to editor
 			mField2.addPropertyChangeListener(editor2);
 			editor2.dynamicDisplay();

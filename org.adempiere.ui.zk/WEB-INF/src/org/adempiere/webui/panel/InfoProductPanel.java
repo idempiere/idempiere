@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -266,15 +267,20 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		m_InfoPAttributeButton.addEventListener(Events.ON_CLICK,this);
 
 		fieldValue = new Textbox();
+		fieldValue.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "value");
 		fieldName = new Textbox();
+		fieldName.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "name");
 		fieldUPC = new Textbox();
+		fieldUPC.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "upc");
 		fieldSKU = new Textbox();
+		fieldSKU.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "sku");
 		pickPriceList = new Listbox();
 		pickPriceList.setRows(0);
 		pickPriceList.setMultiple(false);
 		pickPriceList.setMold("select");
 		pickPriceList.setHflex("1");
 		pickPriceList.addEventListener(Events.ON_SELECT, this);
+		pickPriceList.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "priceList");
 
 		// Elaine 2008/11/21
 		pickProductCategory = new Listbox();
@@ -283,6 +289,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		pickProductCategory.setMold("select");
 		pickProductCategory.setHflex("1");
 		pickProductCategory.addEventListener(Events.ON_SELECT, this);
+		pickProductCategory.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "productCategory");
 		//
 		pickAS = new Listbox();
 		pickAS.setRows(0);
@@ -290,6 +297,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		pickAS.setMold("select");
 		pickAS.setHflex("1");
 		pickAS.addEventListener(Events.ON_SELECT, this);
+		pickAS.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "attributeSet");
 
 		pickWarehouse = new Listbox();
 		pickWarehouse.setRows(0);
@@ -297,6 +305,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		pickWarehouse.setMold("select");
 		pickWarehouse.setHflex("1");
 		pickWarehouse.addEventListener(Events.ON_SELECT, this);
+		pickWarehouse.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "warehouse");
 
 		fieldVendor = new Textbox();		
 

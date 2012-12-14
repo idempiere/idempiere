@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Grid;
@@ -175,16 +176,22 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 		
 		fieldValue = new Textbox();
 		fieldValue.setMaxlength(40);
+		fieldValue.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "value");
 		fieldName = new Textbox();
 		fieldName.setMaxlength(40);
+		fieldName.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "name");
 		fieldContact = new Textbox();
 		fieldContact.setMaxlength(40);
+		fieldContact.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "contact");
 		fieldEMail = new Textbox();
 		fieldEMail.setMaxlength(40);
+		fieldEMail.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "email");
 		fieldPostal = new Textbox();
 		fieldPostal.setMaxlength(40);
-		fieldPhone = new Textbox();
+		fieldPostal.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "postal");
+		fieldPhone = new Textbox();		
 		fieldPhone.setMaxlength(40);
+		fieldPhone.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "phone");
 		
 		checkAND = new Checkbox();
 		checkAND.setLabel(Msg.getMsg(Env.getCtx(), "SearchAND"));
@@ -210,6 +217,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 		fieldPostal.setHflex("1");
 		
 		Grid grid = GridFactory.newGridLayout();
+		grid.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoParameterPanel");
 		
 		Rows rows = new Rows();
 		grid.appendChild(rows);

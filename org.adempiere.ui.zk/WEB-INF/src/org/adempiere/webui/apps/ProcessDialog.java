@@ -150,6 +150,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		message = new Html();
 		messageDiv.appendChild(message);
 		messageDiv.setStyle(MESSAGE_DIV_STYLE);
+		messageDiv.setId("message");
 		
 		north = new North();
 		north.appendChild(messageDiv);

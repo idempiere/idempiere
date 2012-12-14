@@ -11,7 +11,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -38,22 +37,33 @@ public class AbstractTestCase {
 		element.sendKeys(value);
 	}
 	
-	protected void select(String locator, String label) {
-		WebElement select = driver.findElement(Zk.jq(locator));
-		select(select, label);
+	protected void comboboxSelectItem(String locator, String label) {
+		Widget widget = new Widget(locator);
+		widget.execute(driver, "setValue('"+label+"')");
+		widget.execute(driver, "fireOnChange()");		
+		WebElement element = widget.$n(driver, "real");
+		element.click();
 	}
 
-	protected void select(WebElement select, String label) {
-		WebElement element = select.findElement(By.tagName("input"));
-		element.clear();
-		element.sendKeys(label);
-		waitResponse();
+	protected void comboboxSelectItem(WebElement select, String label) {
+		Widget widget = new Widget(select);
+		widget.execute(driver, "setValue('"+label+"')");
+		widget.execute(driver, "fireOnChange()");		
+		WebElement element = widget.$n(driver, "real");
 		element.click();
-		element.sendKeys(Keys.TAB);
 	}
 	
-	protected void clickCheckbox(String locator) {
-		driver.findElement(Zk.jq("$"+locator+" ~ input")).click();
+	protected void selectCheckbox(String locator, boolean select) {
+		final WebElement element = driver.findElement(Zk.jq("$"+locator+" ~ input"));
+		if (element.isSelected()) {
+			if (!select) {
+				element.click();
+			}
+		} else {
+			if (select) {
+				element.click();
+			}
+		}
 	}
 	
 	protected void clickButton(String locator) {
@@ -136,10 +146,10 @@ public class AbstractTestCase {
 		type("$loginPanel $txtPassword", "GardenAdmin");
 		
 		//select language
-		select("$loginPanel $lstLanguage", "English");
+		comboboxSelectItem("$loginPanel $lstLanguage", "English");
 
 		// check select role
-		clickCheckbox("$loginPanel $chkSelectRole");		
+		selectCheckbox("$loginPanel $chkSelectRole", true);		
 		// click ok button
 		clickButton("$loginPanel $Ok");		
 		
@@ -173,14 +183,14 @@ public class AbstractTestCase {
 		
 		// select client
 		if (lstClient != null && lstClient.isDisplayed()) {
-			select(lstClient, client);
+			comboboxSelectItem(lstClient, client);
 		}
 
 		// select role
-		select("$rolePanel $lstRole", role);
+		comboboxSelectItem("$rolePanel $lstRole", role);
 
 		// select organization
-		select("$rolePanel $lstOrganisation", org);
+		comboboxSelectItem("$rolePanel $lstOrganisation", org);
 
 		// click ok button
 		clickButton("$rolePanel $Ok");

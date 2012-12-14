@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -266,6 +267,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				scrollToSelectedRow();
 			}
 		});
+		
+		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infopanel");
 	}	//	InfoPanel
 
 	private void init()
@@ -311,6 +314,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
         contentPanel.setOddRowSclass(null);
         contentPanel.setSizedByContent(true);
+        contentPanel.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoListbox");
         
         this.setSclass("info-panel");
 	}  //  init

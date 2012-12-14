@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Menupopup;
@@ -151,6 +152,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		createPopup();
 		
 		toolbar.setStyle("background-image: none; background-color: transparent; border: none;");
+		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "breadcrumb");
 	}
 
 	public void setToolbarListener(ToolbarListener listener) {

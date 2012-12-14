@@ -14,6 +14,7 @@
 package org.adempiere.webui.adwindow;
 
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.SimpleTreeModel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.panel.TreeSearchPanel;
@@ -73,6 +74,7 @@ public class ADTreePanel extends Panel implements EventListener<Event>
     
     private void init()
     {
+    	setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "treepanel");
     	this.setWidth("100%");
     	this.setHeight("100%");
     	

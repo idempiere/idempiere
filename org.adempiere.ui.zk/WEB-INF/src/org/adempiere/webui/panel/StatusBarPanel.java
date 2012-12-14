@@ -17,6 +17,7 @@
 
 package org.adempiere.webui.panel;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Label;
@@ -88,6 +89,7 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
 
     private void init()
     {
+    	setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "statusBar");
         statusDB = new Label("  ");
         statusLine = new Label();
 

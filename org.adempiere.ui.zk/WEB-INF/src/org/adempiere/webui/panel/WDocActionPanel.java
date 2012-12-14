@@ -20,6 +20,7 @@ package org.adempiere.webui.panel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
@@ -224,11 +225,9 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 	private void initComponents()
 	{
 		lblDocAction = new Label();
-		lblDocAction.setId("lblDocAction");
 		lblDocAction.setValue(Msg.translate(Env.getCtx(), "DocAction"));
 
 		label = new Label();
-		label.setId("label");
 
 		lstDocAction  = new Listbox();
 		lstDocAction.setId("lstDocAction");
@@ -245,8 +244,8 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 	private void init()
 	{
 
+		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "documentAction");
 		Grid grid = GridFactory.newGridLayout();
-        grid.setId("grd");
         grid.setStyle("width: 390px; margin: auto;");
 
         Rows rows = new Rows();

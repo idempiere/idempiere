@@ -42,6 +42,7 @@ import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -62,7 +63,7 @@ import org.zkoss.zul.event.ZulEvents;
  * @author Low Heng Sin
  *
  */
-public class GridView extends Vbox implements EventListener<Event>
+public class GridView extends Vbox implements EventListener<Event>, IdSpace
 {
 	private static final int DEFAULT_DETAIL_PAGE_SIZE = 10;
 
@@ -131,6 +132,7 @@ public class GridView extends Vbox implements EventListener<Event>
 	public GridView(int windowNo)
 	{
 		this.windowNo = windowNo;
+		setId("gridView");
 		createListbox();
 
 		this.setHflex("1");
@@ -519,6 +521,7 @@ public class GridView extends Vbox implements EventListener<Event>
 			} else {
 				gridFooter.setVisible(true);
 			}
+			paging.setId("paging");
 		}
 		else
 		{

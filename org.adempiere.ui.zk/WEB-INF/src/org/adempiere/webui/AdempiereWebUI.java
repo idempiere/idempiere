@@ -90,6 +90,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	public static final String APP_NAME = "iDempiere";
 
     public static final String UID          = "1.0.0";
+    
+    public static final String WIDGET_INSTANCE_NAME = "instanceName";
 
     private WLogin             loginDesktop;
 

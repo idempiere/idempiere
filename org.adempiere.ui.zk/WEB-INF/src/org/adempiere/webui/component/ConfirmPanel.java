@@ -244,6 +244,7 @@ public final class ConfirmPanel extends Hbox
         this.appendChild(hboxBtnLeft);
         this.appendChild(hboxBtnRight);
         this.setSclass("confirm-panel");
+        setId("confirmPanel");
     }
 
     /**
