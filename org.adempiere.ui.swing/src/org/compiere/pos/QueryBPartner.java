@@ -165,6 +165,7 @@ public class QueryBPartner extends PosQuery
 		
 		//	Center
 		m_table = new PosTable();
+		@SuppressWarnings("unused")
 		String sql = m_table.prepareTable (s_layout, s_sqlFrom, 
 			s_sqlWhere, false, "RV_BPartner")
 			+ " ORDER BY Value";

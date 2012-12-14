@@ -105,6 +105,7 @@ public class BasketServlet extends HttpServlet
 	{
 		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr()
 			+ " - " + request.getRequestURL());
+		@SuppressWarnings("unused")
 		Properties ctx = JSPEnv.getCtx(request);
 		HttpSession session = request.getSession(true);
 		session.removeAttribute(WebSessionCtx.HDR_MESSAGE);

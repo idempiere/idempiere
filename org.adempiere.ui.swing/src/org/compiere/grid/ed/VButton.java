@@ -149,6 +149,7 @@ public final class VButton extends CButton
 	private String			m_text;
 	private boolean			m_mandatory;
 	private Object			m_value;
+	@SuppressWarnings("unused")
 	private ActionListener	m_actionListener;
 	/** List of Key/Name        */
 	private HashMap<String,String>	m_values = null;

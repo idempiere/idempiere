@@ -70,10 +70,12 @@ public final class FindCellEditor extends AbstractCellEditor
 	/** The Table Editor        */
 	private CEditor	        m_editor = null;
 	/** Table                   */
+	@SuppressWarnings("unused")
 	private JTable          m_table = null;
 	/** ClickCount              */
-	private static int      CLICK_TO_START = 1;
+	//private static int      CLICK_TO_START = 1;
 	/**	Logger			*/
+	@SuppressWarnings("unused")
 	private static CLogger log = CLogger.getCLogger(FindCellEditor.class);
 
 

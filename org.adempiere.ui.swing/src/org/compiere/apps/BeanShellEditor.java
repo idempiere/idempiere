@@ -64,6 +64,7 @@ public class BeanShellEditor extends CDialog implements ActionListener
 	 * 
 	 */
 	private static final long serialVersionUID = -5134274235147001140L;
+	@SuppressWarnings("unused")
 	private Frame m_owner;
 
 	/**

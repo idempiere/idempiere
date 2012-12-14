@@ -231,6 +231,7 @@ public class AReport implements ActionListener
 			ProcessInfo pi = new ProcessInfo ("", pf.getJasperProcess_ID(), pf.getAD_Table_ID(), Record_ID);
 			
 			//	Execute Process
+			@SuppressWarnings("unused")
 			ProcessCtl worker = ClientProcessCtrl.process(parent, WindowNo, pi, null);
 		}
 		else

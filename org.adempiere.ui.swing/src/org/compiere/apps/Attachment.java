@@ -545,14 +545,16 @@ public final class Attachment extends CDialog
             if (Env.isWindows())
             {
             //	Runtime.getRuntime().exec ("rundll32 url.dll,FileProtocolHandler " + url);
-                Process p = Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL \"" + tempFile + "\"");
+                @SuppressWarnings("unused")
+				Process p = Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL \"" + tempFile + "\"");
             //	p.waitFor();
                 return true;
             }
             else if (Env.isMac())
             {
             	String [] cmdArray = new String [] {"open", tempFile.getAbsolutePath()};
-            	Process p = Runtime.getRuntime ().exec (cmdArray);
+            	@SuppressWarnings("unused")
+				Process p = Runtime.getRuntime ().exec (cmdArray);
             //	p.waitFor();
                 return true;
             }

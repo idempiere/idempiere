@@ -154,6 +154,7 @@ public class QueryProduct extends PosQuery
 
 		//	Center
 		m_table = new PosTable();
+		@SuppressWarnings("unused")
 		String sql = m_table.prepareTable (s_layout, s_sqlFrom, 
 			s_sqlWhere, false, "RV_WarehousePrice")
 			+ " ORDER BY Margin, QtyAvailable";

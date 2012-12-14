@@ -142,7 +142,7 @@ public class AFocusTraversalPolicy extends LayoutFocusTraversalPolicy
 	 *  @param title
 	 *  @param c
 	 */
-	private void info (String title, Component c)
+	/*private void info (String title, Component c)
 	{
 		System.out.print (title);
 		if (c == null)
@@ -152,6 +152,6 @@ public class AFocusTraversalPolicy extends LayoutFocusTraversalPolicy
 			System.out.print (c.getClass().getName());
 			System.out.println (" - " + c.getName());
 		}
-	}   //  info
+	}   //  info*/
 
 }   //  AFocusTraversalPolicy

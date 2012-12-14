@@ -415,6 +415,7 @@ public class HTMLEditor extends CDialog
 
 		try
 		{
+			@SuppressWarnings("unused")
 			EditorKit kit = editorPane.getEditorKit();
 			OutputStreamWriter writer = new OutputStreamWriter
 				(new FileOutputStream (jc.getSelectedFile()));

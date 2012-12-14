@@ -116,7 +116,6 @@ public class VLine extends AbstractBorder
 		//	Header Text
 		g.setColor(m_color);
 		g.setFont(m_font);
-		int x = GAP;
 		if (!Language.getLoginLanguage().isLeftToRight())
 		{
 		}

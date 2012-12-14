@@ -63,7 +63,7 @@ public class SingleItem extends HttpServlet
 	}   //  destroy
 
 	//  Parameter Names
-	private static final String P_ITEM_NAME =			"item_name";
+	/*private static final String P_ITEM_NAME =			"item_name";
 	private static final String P_ITEM_NUMBER =			"item_number";
 	private static final String P_AMOUNT =				"amount";
 	private static final String P_QUANTITY =			"quantity";
@@ -71,7 +71,7 @@ public class SingleItem extends HttpServlet
 	private static final String P_RETURN_URL =			"return";
 	private static final String P_CANCEL_URL =			"cancel_return";
 	//
-	private static final String P_SUBMIT =				"SUBMIT";
+	private static final String P_SUBMIT =				"SUBMIT";*/
 
 	/*************************************************************************/
 

@@ -61,6 +61,7 @@ public class TestEJB
 		//
 		try
 		{
+			@SuppressWarnings("unused")
 			Status status = (Status)ic.lookup ("Status");
 			//
 		}

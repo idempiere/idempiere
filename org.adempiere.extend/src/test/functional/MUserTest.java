@@ -7,7 +7,6 @@ import java.sql.SQLException;
 
 import org.compiere.model.MBPGroup;
 import org.compiere.model.MBPartner;
-import org.compiere.model.MLocation;
 import org.compiere.model.MUser;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -17,7 +16,7 @@ import test.AdempiereTestCase;
 public class MUserTest extends AdempiereTestCase {
 	
 	// Variables needed for importing/migrating business partners
-	private MLocation location = null;
+	//private MLocation location = null;
 	
 	private MBPartner m_partner = null;  //business partner
 	private MUser m_contact = null; //business contact

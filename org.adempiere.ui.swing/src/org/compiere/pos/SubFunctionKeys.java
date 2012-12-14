@@ -46,8 +46,9 @@ public class SubFunctionKeys extends PosSubPanel implements PosKeyListener
 	}	//	PosSubFunctionKeys
 	
 	/**	Keys				*/
-	private MPOSKey[] 	m_keys;
+	//private MPOSKey[] 	m_keys;
 	/**	Logger			*/
+	@SuppressWarnings("unused")
 	private static CLogger log = CLogger.getCLogger(SubFunctionKeys.class);
 	
 	/**

@@ -53,11 +53,6 @@ import org.compiere.util.ValueNamePair;
 public class VTranslationDialog extends TranslationController
 	implements FormPanel, ActionListener
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5072470836657762574L;
-	
 	private CPanel panel = new CPanel();
 
 

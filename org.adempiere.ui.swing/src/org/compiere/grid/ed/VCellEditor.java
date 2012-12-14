@@ -76,7 +76,7 @@ public final class VCellEditor extends AbstractCellEditor
 	
 	/** Table                   */
 	private JTable          m_table = null;
-	private ActionListener buttonListener;
+	//private ActionListener buttonListener;
 	private ActionListener actionListener;
 	
 	/** ClickCount              */

@@ -64,6 +64,16 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE WS_WebServiceFieldInput ADD IdentifierLogic NVARCHAR2(2000) DEFAULT NULL 
 ;
 
+-- Dec 12, 2012 9:33:11 PM IST
+-- IDEMPIERE-460 Adding support for composite service
+UPDATE AD_Column SET EntityType='D',Updated=TO_DATE('2012-12-12 21:33:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=202042
+;
+
+-- Dec 12, 2012 9:33:22 PM IST
+-- IDEMPIERE-460 Adding support for composite service
+UPDATE AD_Column SET EntityType='D',Updated=TO_DATE('2012-12-12 21:33:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=202041
+;
+
 -- Dec 12, 2012 9:36:10 PM IST
 -- IDEMPIERE-460 Adding support for composite service
 INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,IsEncrypted,Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID,IsToolbarButton,IsAlwaysUpdateable) VALUES (0,'N','N',0,53166,202044,'D','N','N','N',0,'N',1,'N',20,'N',382,'N','Y','f0baaca8-7437-4a9d-a02d-26827b0b54b2','Y','IsIdentifier','This column is part of the record identifier','N','The Identifier checkbox indicates that this column is part of the identifier or key for this table.  ','Identifier','Y',100,TO_DATE('2012-12-12 21:36:09','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_DATE('2012-12-12 21:36:09','YYYY-MM-DD HH24:MI:SS'),100,0,'N','N')
@@ -113,7 +123,6 @@ ALTER TABLE WS_WebServiceFieldInput ADD IsNullIdentifier CHAR(1) DEFAULT 'N' CHE
 -- IDEMPIERE-460 Adding support for composite service
 ALTER TABLE WS_WebServiceFieldInput MODIFY IsIdentifier CHAR(1) DEFAULT 'N'
 ;
-
 
 
 
@@ -241,7 +250,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 -- IDEMPIERE-460 Adding support for composite service
 ALTER TABLE WS_WebServiceTypeAccess ADD WS_WebServiceTypeAccess_UU NVARCHAR2(36) DEFAULT NULL 
 ;
-
 
 
 
@@ -609,13 +617,13 @@ UPDATE AD_Field SET XPosition=2,Updated=TO_DATE('2012-12-13 00:16:09','YYYY-MM-D
 
 -- Dec 13, 2012 4:27:02 PM IST
 -- IDEMPIERE-460 Adding support for composite service
-INSERT INTO WS_WebService (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Help,IsActive,WS_WebService_ID,Name,Updated,UpdatedBy,Value,WS_WebService_UU) VALUES (0,0,TO_DATE('2012-12-13 16:26:45','YYYY-MM-DD HH24:MI:SS'),100,'Composite service','Y',200001,'CompositeInterface',TO_DATE('2012-12-13 16:26:45','YYYY-MM-DD HH24:MI:SS'),100,'CompositeInterface','df6cc221-05a7-403f-8abb-bdf24344094a')
+INSERT INTO WS_WebService (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Help,IsActive,WS_WebService_ID,Name,Updated,UpdatedBy,Value) VALUES (0,0,TO_DATE('2012-12-13 16:26:45','YYYY-MM-DD HH24:MI:SS'),100,'Composite service','Y',200001,'CompositeInterface',TO_DATE('2012-12-13 16:26:45','YYYY-MM-DD HH24:MI:SS'),100,'CompositeInterface')
 ;
 
 -- Dec 13, 2012 4:27:28 PM IST
 -- IDEMPIERE-460 Adding support for composite service
-INSERT INTO WS_WebServiceMethod (CreatedBy,AD_Client_ID,AD_Org_ID,Created,IsActive,WS_WebServiceMethod_ID,Name,Updated,UpdatedBy,Value,WS_WebService_ID,WS_WebServiceMethod_UU) VALUES (100,0,0,TO_DATE('2012-12-13 16:27:27','YYYY-MM-DD HH24:MI:SS'),'Y',200001,'composite',TO_DATE('2012-12-13 16:27:27','YYYY-MM-DD HH24:MI:SS'),100,'composite',200001,'a3a5ce29-792a-4e99-b0c9-68779fdc89e3')
+INSERT INTO WS_WebServiceMethod (CreatedBy,AD_Client_ID,AD_Org_ID,Created,IsActive,WS_WebServiceMethod_ID,Name,Updated,UpdatedBy,Value,WS_WebService_ID) VALUES (100,0,0,TO_DATE('2012-12-13 16:27:27','YYYY-MM-DD HH24:MI:SS'),'Y',200001,'composite',TO_DATE('2012-12-13 16:27:27','YYYY-MM-DD HH24:MI:SS'),100,'composite',200001)
 ;
 
-SELECT register_migration_script('WS005_IdempiereWebservice.sql') FROM dual
+SELECT register_migration_script('201212131727_WS005_IdempiereWebservice.sql') FROM dual
 ;

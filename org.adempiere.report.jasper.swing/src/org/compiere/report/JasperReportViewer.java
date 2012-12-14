@@ -34,8 +34,10 @@ public class JasperReportViewer extends JRViewer {
 	private static final long serialVersionUID = -7988455595896562947L;
 	
 	/**	Logger */
+	@SuppressWarnings("unused")
 	private static CLogger log = CLogger.getCLogger(JasperReportViewer.class);
 	
+	@SuppressWarnings("unused")
 	private JasperViewer jasperViewer;
 	private JasperPrint jasperPrint;
     private JComboBox comboBox;
@@ -145,6 +147,7 @@ class SendByEmailListener implements ActionListener {
 			log.log(Level.SEVERE, "", e);
 		}
 		
+		@SuppressWarnings("unused")
 		EMailDialog emd = new EMailDialog ((JFrame)jasperViewer,
 				Msg.getMsg(Env.getCtx(), "SendMail"),
 				from, to, subject, message, attachment);

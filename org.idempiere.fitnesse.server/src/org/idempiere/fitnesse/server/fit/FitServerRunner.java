@@ -4,7 +4,6 @@ import org.idempiere.fitnesse.server.Parameters;
 import org.idempiere.fitnesse.server.Runner;
 
 import fit.Counts;
-import fit.FitServer;
 import fitlibrary.suite.FitLibraryServer;
 
 /**

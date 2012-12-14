@@ -255,6 +255,7 @@ public class RequestServlet extends HttpServlet
 			source = null;
 		}
 
+		@SuppressWarnings("unused")
 		int AD_Client_ID = Env.getContextAsInt(ctx, "AD_Client_ID");
 		int R_RequestType_ID = WebUtil.getParameterAsInt(request, P_REQUESTTYPE_ID);
 		int C_Order_ID = WebUtil.getParameterAsInt(request, P_REF_ORDER_ID);

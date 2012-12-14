@@ -19,8 +19,8 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -133,8 +133,7 @@ public class MTemplate extends X_CM_Template
 			{
 				StringBuffer subTemplates = new StringBuffer ();
 				int pos = 0;
-				// JJ: if you don't use the value, could you use ArrayList ?
-				Hashtable<String, String> subTemplateNames = new Hashtable<String, String> ();
+				ArrayList<String> subTemplateNames = new ArrayList<String> ();
 				while (m_preBuildTemplate.indexOf ("<xsl:call-template", pos) >= 0)
 				{
 					String thisName = null;
@@ -154,14 +153,12 @@ public class MTemplate extends X_CM_Template
 						thisName = tempTemplate.substring (tempTemplate
 							.indexOf ("name=\"") + 6, tempTemplate.indexOf (
 							"\"", tempTemplate.indexOf ("name=\"") + 7));
-						if (!subTemplateNames.containsKey (thisName))
-							subTemplateNames.put (thisName, "0");
+						if (!subTemplateNames.contains(thisName))
+							subTemplateNames.add(thisName);
 					}
 				}
-				Enumeration<String> thisEnum = subTemplateNames.keys ();
-				while (thisEnum.hasMoreElements ())
+				for (String thisElement : subTemplateNames)
 				{
-					String thisElement = thisEnum.nextElement ().toString ();
 					int[] templateIDs = MTemplate.getAllIDs ("CM_Template",
 						"Value LIKE '" + thisElement
 							+ "' AND CM_WebProject_ID="

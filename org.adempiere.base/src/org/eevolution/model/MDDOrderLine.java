@@ -89,6 +89,7 @@ public class MDDOrderLine extends X_DD_OrderLine
 	}	//	getNotReserved
 	
 	/**	Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MDDOrderLine.class);
 	
 	/**************************************************************************

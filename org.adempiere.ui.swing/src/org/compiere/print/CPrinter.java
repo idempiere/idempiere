@@ -60,6 +60,7 @@ public class CPrinter extends CComboBox implements ActionListener
 
 	
 	/**	Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger log = CLogger.getCLogger (CPrinter.class);
 	
 	

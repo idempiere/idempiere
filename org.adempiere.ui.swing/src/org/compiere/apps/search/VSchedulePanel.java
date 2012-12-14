@@ -216,7 +216,6 @@ public class VSchedulePanel extends JComponent implements MouseListener
 			int xWidth = m_dayWidth / mas.getXMax();
 			int xStart = dayIndex * m_dayWidth;		//	start day slot
 			xStart += mas.getXPos() * xWidth;		//	offset
-			int xEnd = xStart + xWidth;
 
 			int yStart = m_timePanel.getSlotYStart(mas.getYStart());
 			int yEnd = m_timePanel.getSlotYEnd(mas.getYEnd());

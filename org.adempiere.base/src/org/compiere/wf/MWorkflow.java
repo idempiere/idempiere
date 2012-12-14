@@ -395,7 +395,7 @@ public class MWorkflow extends X_AD_Workflow
 	 * 	@param AD_WF_Node_ID start node id
 	 * 	@param AD_Client_ID for client
 	 */
-	private void addNodesDF (ArrayList<MWFNode> list, int AD_WF_Node_ID, int AD_Client_ID)
+	/*private void addNodesDF (ArrayList<MWFNode> list, int AD_WF_Node_ID, int AD_Client_ID)
 	{
 		MWFNode node = getNode (AD_WF_Node_ID);
 		if (node != null && !list.contains(node))
@@ -409,7 +409,7 @@ public class MWorkflow extends X_AD_Workflow
 					addNodesDF (list, nexts[i].getAD_WF_Next_ID(), AD_Client_ID);
 			}
 		}
-	}	//	addNodesDF
+	}	//	addNodesDF*/
 
 	/**
 	 * 	Add Nodes recursively (sibling first) to Ordered List

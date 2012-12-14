@@ -67,8 +67,10 @@ public class AApplet extends Applet
 		super.start ();
 		showStatus(Adempiere.getSummary());
 		//
+		@SuppressWarnings("unused")
 		Splash splash = Splash.getSplash();
 		Adempiere.startup(true);	//	needs to be here for UI
+		@SuppressWarnings("unused")
 		AMenu menu = new AMenu();
 	}	//	start
 	

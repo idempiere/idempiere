@@ -104,7 +104,6 @@ public class ImportInventoryMove extends SvrProcess
 	{
 		
 //		Delete Old Imported
-		StringBuffer sql = null;
 		if (m_DeleteOldImported)
 		{
 			int no = 0;

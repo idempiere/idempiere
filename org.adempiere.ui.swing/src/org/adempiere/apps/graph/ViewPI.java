@@ -100,6 +100,7 @@ implements FormPanel, ActionListener
 	}	//	dispose
 
 	/**	Window No					*/
+	@SuppressWarnings("unused")
 	private int         m_WindowNo = 0;
 	/**	FormFrame					*/
 	private FormFrame 	m_frame;
@@ -114,6 +115,7 @@ implements FormPanel, ActionListener
 	 */
 	private void initPanel()
 	{
+		@SuppressWarnings("unused")
 		BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
 		MGoal[] goals = MGoal.getGoals(Env.getCtx());
 		for (int i = 0; i < goals.length; i++)

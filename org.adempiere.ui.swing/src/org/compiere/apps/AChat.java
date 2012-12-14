@@ -96,11 +96,12 @@ public class AChat extends CDialog
 	}	//	Attachment
 
 	/**	Window No				*/
+	@SuppressWarnings("unused")
 	private int				m_WindowNo;
 	/** Attachment				*/
 	private MChat			m_chat;
 	/** Change					*/
-	private boolean			m_change = false;
+	//private boolean			m_change = false;
 	/**	Logger					*/
 	private static CLogger log = CLogger.getCLogger(AChat.class);
 

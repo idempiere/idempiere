@@ -710,7 +710,9 @@ public class CompiereTabbedPaneUI extends MetalTabbedPaneUI
 	{
 		int tabCount = tabPane.getTabCount();
 		int currentRun = getRunForTab( tabCount, tabIndex );
+		@SuppressWarnings("unused")
 		int lastIndex = lastTabInRun( tabCount, currentRun );
+		@SuppressWarnings("unused")
 		int firstIndex = tabRuns[ currentRun ];
 
 		g.translate( x, y );
@@ -767,7 +769,9 @@ public class CompiereTabbedPaneUI extends MetalTabbedPaneUI
 	{
 		int tabCount = tabPane.getTabCount();
 		int currentRun = getRunForTab( tabCount, tabIndex );
+		@SuppressWarnings("unused")
 		int lastIndex = lastTabInRun( tabCount, currentRun );
+		@SuppressWarnings("unused")
 		int firstIndex = tabRuns[ currentRun ];
 
 		g.translate( x, y );

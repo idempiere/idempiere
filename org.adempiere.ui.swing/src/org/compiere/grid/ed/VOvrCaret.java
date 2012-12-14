@@ -54,7 +54,6 @@ public class VOvrCaret extends DefaultCaret
 	 */
 	public void paint(Graphics g)
 	{
-		boolean dotLTR = true;			//	left-to-right
 		Position.Bias dotBias = Position.Bias.Forward;
 
 		//

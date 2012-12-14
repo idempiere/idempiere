@@ -106,10 +106,13 @@ public class VLocatorDialog extends CDialog
 	private int				m_only_Warehouse_ID = 0;
 	//
 	private int				m_M_Warehouse_ID;
+	@SuppressWarnings("unused")
 	private String			m_M_WarehouseName;
 	private String 			m_M_WarehouseValue;
 	private String 			m_Separator;
+	@SuppressWarnings("unused")
 	private int				m_AD_Client_ID;
+	@SuppressWarnings("unused")
 	private int				m_AD_Org_ID;
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(VLocatorDialog.class);

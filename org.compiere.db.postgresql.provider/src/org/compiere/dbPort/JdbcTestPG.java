@@ -83,13 +83,11 @@ Multiple PreCreated  Threads=10 	Yield=true 	ms= 9906 	each= 990
 //	private static final int        C_CACHE = 4;
 
 	//  Data
-	private static int              s_rType = 0;
-	private static final String[]   R_INFO = {
+	/*private static final String[]   R_INFO = {
 		"ResultSet            ",
 //		"Cached RowSet        ",
 //		"JDBC RowSet          "
-		};
-	private static final int        R_RESULTSET = 0;
+		};*/
 //	private static final int        R_CACHED_ROWSET = 1;
 //	private static final int        R_JDBC_ROWSET = 2;
 
@@ -218,12 +216,12 @@ Multiple PreCreated  Threads=10 	Yield=true 	ms= 9906 	each= 990
 			long startQuery = System.currentTimeMillis();
 			ResultSet rs = stmt.executeQuery (STATEMENT);
 
-			int i = 0;
+			//int i = 0;
 			long startRetrieve = System.currentTimeMillis();
 			while (rs.next())
 			{
 				rs.getString(1);
-				i++;
+				//i++;
 			}
 			long endRetrieve = System.currentTimeMillis();
 		//	System.out.println(i);

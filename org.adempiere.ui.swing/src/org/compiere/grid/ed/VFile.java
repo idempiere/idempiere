@@ -74,6 +74,7 @@ public class VFile extends JComponent
 			m_adaptee = adaptee;
 		}	//	VLookup_mouseAdapter
 
+		@SuppressWarnings("unused")
 		private VFile m_adaptee;
 
 		/**

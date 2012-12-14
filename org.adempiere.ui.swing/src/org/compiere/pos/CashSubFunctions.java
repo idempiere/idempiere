@@ -99,7 +99,9 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 	private CButton f_calculateDifference = null;
 
 	private CPanel 			panel;
+	@SuppressWarnings("unused")
 	private CScrollPane 	centerScroll;
+	@SuppressWarnings("unused")
 	private ConfirmPanel	confirm;
 	private Properties p_ctx;
 
@@ -455,6 +457,7 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 	 */
 	private void cmd_saveChange()
 	{
+		@SuppressWarnings("unused")
 		MCashBook cashBook = new MCashBook(p_ctx, p_pos.getC_CashBook_ID(), null);
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 

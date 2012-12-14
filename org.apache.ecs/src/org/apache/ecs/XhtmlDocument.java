@@ -544,7 +544,7 @@ public class XhtmlDocument implements Serializable,Cloneable
 
     {
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         if ( getCodeset() != null )
 
@@ -588,7 +588,7 @@ public class XhtmlDocument implements Serializable,Cloneable
 
     {
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         if (doctype != null)
 

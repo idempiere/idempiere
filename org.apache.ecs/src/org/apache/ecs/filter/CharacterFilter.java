@@ -115,7 +115,7 @@ public class CharacterFilter extends java.util.Hashtable<String, Object> impleme
         if ( to_process == null || to_process.length() == 0 )
             return "";
 
-        StringBuffer bs = new StringBuffer(to_process.length() + 50);
+        StringBuilder bs = new StringBuilder(to_process.length() + 50);
         StringCharacterIterator sci = new StringCharacterIterator(to_process);
         String tmp = null;
 

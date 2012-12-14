@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -48,10 +49,10 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.South;
 
 /**
  * Change History for field
@@ -204,7 +205,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		}
 		
 		//
-		Vector<String> columnNames = new Vector<String>();
+		ArrayList<String> columnNames = new ArrayList<String>();
 		columnNames.add(Msg.translate(Env.getCtx(), "NewValue"));
 		columnNames.add(Msg.translate(Env.getCtx(), "OldValue"));
 		columnNames.add(Msg.translate(Env.getCtx(), "UpdatedBy"));

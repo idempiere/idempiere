@@ -31,6 +31,7 @@ public class PosTextField extends JFormattedTextField implements MouseListener {
 	 * 
 	 */
 	private static final long serialVersionUID = -2453719110038264481L;
+	@SuppressWarnings("unused")
 	private DefaultFormatterFactory formatFactory = new DefaultFormatterFactory();
 	PosBasePanel pos = null;
 	int keyLayoutId = 0;

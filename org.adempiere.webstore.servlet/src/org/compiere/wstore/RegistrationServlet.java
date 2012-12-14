@@ -140,6 +140,7 @@ public class RegistrationServlet extends HttpServlet
 		if (startDate == null)
 			startDate = new Timestamp(System.currentTimeMillis());
 		boolean allowPublish = WebUtil.getParameterAsBoolean (request, "IsAllowPublish", "Y");
+		@SuppressWarnings("unused")
 		boolean registered = WebUtil.getParameterAsBoolean (request, "IsRegistered", "Y");
 		int Record_ID = WebUtil.getParameterAsInt(request, "Record_ID");
 		

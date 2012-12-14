@@ -270,6 +270,7 @@ public final class MDocDate extends PlainDocument implements CaretListener
 	/**
 	 *	Call Calendar Dialog
 	 */
+	@SuppressWarnings("unused")
 	private void startDateDialog()
 	{
 		log.config("");

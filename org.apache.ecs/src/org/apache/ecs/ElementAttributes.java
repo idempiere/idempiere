@@ -293,7 +293,7 @@ public abstract class ElementAttributes extends GenericElement implements Attrib
     */
     protected String createStartTag()
     {
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
 
         out.append(getStartTagChar());
 

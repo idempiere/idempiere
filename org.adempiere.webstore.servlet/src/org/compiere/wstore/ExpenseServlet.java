@@ -123,6 +123,7 @@ public class ExpenseServlet extends HttpServlet
 		HttpSession session = request.getSession(true);
 		session.removeAttribute(WebSessionCtx.HDR_MESSAGE);
 		//
+		@SuppressWarnings("unused")
 		Properties ctx = JSPEnv.getCtx(request);
 		WebUser wu = (WebUser)session.getAttribute(WebUser.NAME);
 		if (wu == null)

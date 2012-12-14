@@ -332,6 +332,7 @@ public class VAllocation extends Allocation
 		String msg = writeOff(row, col, isInvoice, paymentTable, invoiceTable, isAutoWriteOff);
 		
 		//render row
+		@SuppressWarnings("unused")
 		DefaultTableModel model = (DefaultTableModel) (isInvoice ? invoiceTable.getModel() : paymentTable.getModel());
 		//model.fireTableRowsUpdated(row, row);
 	    

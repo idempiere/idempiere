@@ -118,10 +118,11 @@ public class Waiting extends CDialog
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(Waiting.class);
 
+	@SuppressWarnings("unused")
 	private CPanel southPanel = new CPanel();
 	private CButton bDoNotWait = new CButton();
 	private CLabel infoLabel = new CLabel();
-	private FlowLayout southLayout = new FlowLayout();
+	//private FlowLayout southLayout = new FlowLayout();
 	private CPanel mainPanel = new CPanel();
 	private JProgressBar progressBar = new JProgressBar();
 

@@ -63,6 +63,7 @@ public class AdempiereTreeModel extends DefaultTreeModel {
 		Trx trx = Trx.get (Trx.createTrxName("AdempiereTreeModel"), true);
 		try
 		{
+			@SuppressWarnings("unused")
 			int no = 0;
 			for (int i = 0; i < from.getChildCount(); i++)
 			{

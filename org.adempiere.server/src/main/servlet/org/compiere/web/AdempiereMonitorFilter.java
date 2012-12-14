@@ -84,7 +84,6 @@ public class AdempiereMonitorFilter implements Filter
 	public void doFilter (ServletRequest request, ServletResponse response, FilterChain chain)
 		throws IOException, ServletException
 	{
-		boolean error = false;
 		String errorPage = "/error.html";
 		boolean pass = false;
 		try

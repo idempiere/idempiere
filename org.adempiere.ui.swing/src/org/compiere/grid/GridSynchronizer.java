@@ -28,6 +28,7 @@ import org.compiere.model.StateChangeListener;
  */
 public class GridSynchronizer implements PropertyChangeListener, StateChangeListener {
 
+	@SuppressWarnings("unused")
 	private GridController parent;
 	private GridController child;
 	private GridWindow window;

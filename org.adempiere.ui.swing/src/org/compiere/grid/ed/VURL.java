@@ -188,6 +188,7 @@ public class VURL extends JComponent
 	/**	Setting new value			*/
 	private volatile boolean	m_setting = false;
 	/**	Field in focus				*/
+	@SuppressWarnings("unused")
 	private volatile boolean	m_infocus = false;
 	/** Field Length				*/
 	private int					m_fieldLength;
@@ -416,6 +417,7 @@ public class VURL extends JComponent
 		{
 			try
 			{
+				@SuppressWarnings("unused")
 				URL url = new URL(urlString);
 				Env.startBrowser(urlString);
 				return;

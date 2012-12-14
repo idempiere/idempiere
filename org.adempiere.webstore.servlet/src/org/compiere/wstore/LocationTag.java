@@ -68,7 +68,7 @@ public class LocationTag extends TagSupport
 
 	//  CSS Classes
 	private static final String C_MANDATORY = "mandatory";
-	private static final String C_ERROR     = "error";
+	//private static final String C_ERROR     = "error";
 
 	/**
 	 * 	Set Country

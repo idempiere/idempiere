@@ -25,6 +25,7 @@ package org.compiere.process;
 public class InfoWindowValidate extends SvrProcess
 {
 	/**	Info Window			*/
+	@SuppressWarnings("unused")
 	private int p_AD_InfoWindow_ID = 0;
 	
 	/**

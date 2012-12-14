@@ -243,6 +243,7 @@ public class ADLookup {
 	 *  Example
 	 *	SELECT C_Payment_ID FROM C_Payment WHERE UPPER(DocumentNo) LIKE x OR ...
 	 */
+	@SuppressWarnings("unused")
 	private String getDirectAccessSQL (String text)
 	{
 		//Tutaj trzeba doda� dodatkowe pole dla odpowiednich typ�w wyszukiwania w selectach

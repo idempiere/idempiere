@@ -944,7 +944,7 @@ public class VLookup extends JComponent
 	 *
 	 *
 	 */
-	private String getExtraWhereClause (String text)
+	/*private String getExtraWhereClause (String text)
 	{
 		StringBuilder sql = new StringBuilder();
 		m_tableName = m_columnName.substring(0, m_columnName.length()-3);
@@ -963,7 +963,7 @@ public class VLookup extends JComponent
 				//.append(" OR p.UPC LIKE ").append(DB.TO_STRING(text)).append(")");
 		}
 				//	Predefined
-		/*
+		
 		if (sql.length() > 0)
 		{
 			String wc = getWhereClause();
@@ -974,10 +974,10 @@ public class VLookup extends JComponent
 			log.finest(m_columnName + " (predefined) " + sql.toString());
 			return MRole.getDefault().addAccessSQL(sql.toString(),
 				m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-		}*/
+		}
 
 		return sql.toString();
-	}
+	}*/
 	/**
 	 *	Check, if data returns unique entry, otherwise involve Info via Button
 	 */

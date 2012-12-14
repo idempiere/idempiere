@@ -2,7 +2,6 @@ package test.functional;
 
 import org.compiere.model.MColumn;
 import org.compiere.model.MInvoice;
-import org.compiere.model.MProduct;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_Reference;
 import org.compiere.util.Env;
@@ -12,10 +11,9 @@ import test.AdempiereTestCase;
 public class TrifonTest extends AdempiereTestCase {
 	
 	// Test: Specific variables
-	private MProduct product = null;
+	//private MProduct product = null;
 	
 	public void testMProductCreation() {
-		boolean singleCommit = true;
 		
 		MTable mTable = MTable.get(Env.getCtx(), MInvoice.Table_Name );
 		System.out.println("XML presentation... is: " + mTable.get_xmlDocument(false));

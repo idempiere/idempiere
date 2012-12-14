@@ -82,6 +82,7 @@ public class VSQLProcess extends CPanel
 	}	//	dispose
 
 	/**	Window No			*/
+	@SuppressWarnings("unused")
 	private int         	m_WindowNo = 0;
 	/**	FormFrame			*/
 	private FormFrame 		m_frame;
@@ -216,6 +217,7 @@ public class VSQLProcess extends CPanel
 		try
 		{
 			stmt = conn.createStatement(); 
+			@SuppressWarnings("unused")
 			boolean OK = stmt.execute(sql);
 			int count = stmt.getUpdateCount();
 			if (count == -1)

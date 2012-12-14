@@ -210,7 +210,7 @@ public class comment extends MultiPartElement implements Printable
 
 		setEndTagChar(' ');
 
-		StringBuffer out = new StringBuffer();
+		StringBuilder out = new StringBuilder();
 
 		out.append(getStartTagChar());
 
@@ -241,7 +241,7 @@ public class comment extends MultiPartElement implements Printable
 	protected String createEndTag()
 	{
 
-		StringBuffer out = new StringBuffer();
+		StringBuilder out = new StringBuilder();
 
 		setStartTagChar(' ');
 

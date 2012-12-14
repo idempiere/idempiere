@@ -122,14 +122,11 @@ public class ExportFormatGenerator extends SvrProcess
 		log.info("Table Name:"+table.getTableName());
 		MColumn[] cols = table.getColumns(true);
 		String unique = null;
-		boolean fieldname = false;
 		for(MColumn col : cols)
 		{
 			if(col.isIdentifier() && col.getSeqNo() == 1)
 			{	
 				unique = col.getColumnName();
-				if(unique.equals("Name"))
-					fieldname = true;
 				log.info("Unique Key"+unique);
 				break;
 			}

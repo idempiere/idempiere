@@ -55,7 +55,7 @@ public class StringFilter extends java.util.Hashtable<String, Object> implements
     public String process(String to_process)
     {   System.out.println("\nString to Process in StringFilter = "+to_process);
         String[] value = split(to_process);
-        StringBuffer new_value = new StringBuffer();
+        StringBuilder new_value = new StringBuilder();
         for(int x = 0; x < value.length; x++)
         {
             if(hasAttribute(value[x]))
@@ -113,7 +113,6 @@ public class StringFilter extends java.util.Hashtable<String, Object> implements
             return array;
         }
 
-        StringBuffer sb = new StringBuffer(to_split.length()+50);
         StringCharacterIterator sci = new StringCharacterIterator(to_split);
         int length = 0;
 

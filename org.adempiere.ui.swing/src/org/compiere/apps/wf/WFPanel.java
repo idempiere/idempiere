@@ -127,6 +127,7 @@ public class WFPanel extends CPanel
 	/**	Menu Link					*/
 	private AMenu		m_menu = null;
 	/**	Window No			*/
+	@SuppressWarnings("unused")
 	private int         m_WindowNo = 0;
 	/**	FormFrame			*/
 	private FormFrame 	m_frame;
@@ -325,8 +326,8 @@ public class WFPanel extends CPanel
 		List<Integer> added = new ArrayList<Integer>();
 		for (int i = 0; i < nodes.length; i++)
 		{
-			boolean rw = readWrite 		//	in editor mode & owned
-				&& (AD_Client_ID == nodes[i].getAD_Client_ID());
+			//boolean rw = readWrite 		//	in editor mode & owned
+			//	&& (AD_Client_ID == nodes[i].getAD_Client_ID());
 			if (!added.contains(nodes[i].getAD_WF_Node_ID()))
 				centerPanel.addNode(nodes[i]);			
 		}

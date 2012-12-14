@@ -58,6 +58,7 @@ public class AmtInWords_IN implements AmtInWords
   private static final long POWER_FIFTEEN = 1000000000000000L;
   
 	/**	Static Logger				*/
+	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (AmtInWords_IN.class);
 
 //-------------------------- STATIC METHODS --------------------------
