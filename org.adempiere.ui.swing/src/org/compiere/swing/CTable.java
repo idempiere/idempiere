@@ -378,8 +378,8 @@ public class CTable extends JTable
 		// teo_sarca: [ 1585369 ] CTable sorting is TOO LAZY
 		Collections.sort(model.getDataVector(), new Comparator<Object>() {
 			public int compare(Object o1, Object o2) {
-				Object item1 = ((Vector)o1).get(modelColumnIndex);
-				Object item2 = ((Vector)o2).get(modelColumnIndex);
+				Object item1 = ((Vector<Object>)o1).get(modelColumnIndex);
+				Object item2 = ((Vector<Object>)o2).get(modelColumnIndex);
 				return sort.compare(item1, item2);
 			}
 		});

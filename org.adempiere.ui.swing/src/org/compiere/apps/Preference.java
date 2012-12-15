@@ -669,8 +669,8 @@ public final class Preference extends CDialog
 	 */
 	private void cmd_displayErrors()
 	{
-		Vector data = CLogErrorBuffer.get(true).getLogData(bErrorsOnly.isSelected());
-		Vector columnNames = CLogErrorBuffer.get(true).getColumnNames(Env.getCtx());
+		Vector<Vector<Object>> data = CLogErrorBuffer.get(true).getLogData(bErrorsOnly.isSelected());
+		Vector<String> columnNames = CLogErrorBuffer.get(true).getColumnNames(Env.getCtx());
 		DefaultTableModel model = new DefaultTableModel(data, columnNames);
 		errorTable.setModel(model);
 		//

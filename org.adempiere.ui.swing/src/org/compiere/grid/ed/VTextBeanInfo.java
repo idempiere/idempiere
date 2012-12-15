@@ -31,7 +31,7 @@ import java.beans.SimpleBeanInfo;
 
 public class VTextBeanInfo extends SimpleBeanInfo
 {
-	private Class beanClass = VText.class;
+	private Class<?> beanClass = VText.class;
 	private String iconColor16x16Filename;
 	private String iconColor32x32Filename;
 	private String iconMono16x16Filename;
@@ -93,7 +93,7 @@ public class VTextBeanInfo extends SimpleBeanInfo
 	}
 	public BeanInfo[] getAdditionalBeanInfo()
 	{
-		Class superclass = beanClass.getSuperclass();
+		Class<?> superclass = beanClass.getSuperclass();
 		try
 		{
 			BeanInfo superBeanInfo = Introspector.getBeanInfo(superclass);

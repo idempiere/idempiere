@@ -310,7 +310,7 @@ public class HTMLEditor extends CDialog
 	 *	@param actions lookup
 	 *	@return menu
 	 */
-	private JMenu buildMenu(String name, HTMLEditor_MenuAction[] menuActions, Hashtable actions) 
+	private JMenu buildMenu(String name, HTMLEditor_MenuAction[] menuActions, Hashtable<Object,Action> actions) 
 	{
 		JMenu menu = new JMenu(name);
 		for (int i = 0; i < menuActions.length; i++) 

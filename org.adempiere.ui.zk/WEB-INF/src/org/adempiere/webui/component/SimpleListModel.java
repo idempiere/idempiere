@@ -45,8 +45,8 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 		this(new ArrayList<Object>());
 	}
 	
-	public SimpleListModel(List list) {
-		this.list = list;
+	public SimpleListModel(List<?> list) {
+		this.list = (List<Object>)list;
 	}
 	
 	public Object getElementAt(int index) {

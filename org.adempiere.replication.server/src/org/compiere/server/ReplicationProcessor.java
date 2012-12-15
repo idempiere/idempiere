@@ -114,7 +114,7 @@ public class ReplicationProcessor extends AdempiereServer {
 		    IImportProcessor importProcessor = null;
 		    try 
 		    {
-			Class clazz = Class.forName(javaClass);
+			Class<?> clazz = Class.forName(javaClass);
 			importProcessor = (IImportProcessor)clazz.newInstance();				
 			importProcessor.process(mImportProcessor.getCtx(), this, trxName );
 		    } 

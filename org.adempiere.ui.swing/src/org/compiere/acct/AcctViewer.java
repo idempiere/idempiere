@@ -602,7 +602,7 @@ public class AcctViewer extends CFrame
 				m_data.AD_Org_ID = kp.getKey();
 			para.append(", AD_Org_ID=").append(m_data.AD_Org_ID);
 			//
-			Iterator it = m_data.whereInfo.values().iterator();
+			Iterator<String> it = m_data.whereInfo.values().iterator();
 			while (it.hasNext())
 				para.append(", ").append(it.next());
 		}

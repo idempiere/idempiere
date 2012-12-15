@@ -67,8 +67,8 @@ public class ScreenShot
 			file.delete();
 
 		//	Get Writer
-		Iterator writers = ImageIO.getImageWritersByFormatName("jpg");
-		ImageWriter writer = (ImageWriter)writers.next();
+		Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+		ImageWriter writer = writers.next();
 		if (writer == null)
 		{
 			log.log(Level.SEVERE, "no ImageWriter");

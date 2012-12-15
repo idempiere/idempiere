@@ -337,7 +337,7 @@ public final class VButton extends CButton
 	 *	Return value/name
 	 *  @return HashMap with Value/Names
 	 */
-	public HashMap getValues()
+	public HashMap<String,String> getValues()
 	{
 		return m_values;
 	}	//	getValues

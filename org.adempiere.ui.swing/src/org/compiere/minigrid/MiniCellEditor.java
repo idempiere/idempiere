@@ -47,7 +47,7 @@ public class MiniCellEditor extends AbstractCellEditor implements TableCellEdito
 	 *  Default Constructor
 	 *  @param c Class
 	 */
-	public MiniCellEditor(Class c)
+	public MiniCellEditor(Class<?> c)
 	{
 		super();
 		//  Date

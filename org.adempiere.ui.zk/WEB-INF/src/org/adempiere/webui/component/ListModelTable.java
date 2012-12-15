@@ -51,7 +51,7 @@ public class ListModelTable extends ListModelList implements ListModelExt
 	/** The number of columns in the table. */
 	private int m_noColumns;
 
-	private ListModelExt sorter = null;
+	private ListModelExt<Object> sorter = null;
 
 	/**
 	 * Default constructor.
@@ -388,7 +388,7 @@ public class ListModelTable extends ListModelList implements ListModelExt
 		}
 	}
 
-	public void setSorter(ListModelExt lme)
+	public void setSorter(ListModelExt<Object> lme)
 	{
 		sorter = lme;
 	}

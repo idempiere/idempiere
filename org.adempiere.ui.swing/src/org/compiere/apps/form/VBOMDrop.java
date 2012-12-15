@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
@@ -464,17 +465,17 @@ public class VBOMDrop extends CPanel
 			if (source instanceof JRadioButton)
 			{
 				//	find Button Group
-				Iterator it = m_buttonGroups.values().iterator();
+				Iterator<ButtonGroup> it = m_buttonGroups.values().iterator();
 				while (it.hasNext())
 				{
-					ButtonGroup group = (ButtonGroup)it.next();
-					Enumeration en = group.getElements();
+					ButtonGroup group = it.next();
+					Enumeration<AbstractButton> en = group.getElements();
 					while (en.hasMoreElements())
 					{
 						//	We found the group
 						if (source == en.nextElement())
 						{
-							Enumeration info = group.getElements();
+							Enumeration<AbstractButton> info = group.getElements();
 							while (info.hasMoreElements())
 							{
 								Object infoObj = info.nextElement();

@@ -118,7 +118,7 @@ public class CComboBoxEditable extends JComboBox
 	 * @param items  an array of vectors to insert into the combo box
 	 * @see DefaultComboBoxModel
 	 */
-	public CComboBoxEditable(Vector items)
+	public CComboBoxEditable(Vector<Object> items)
 	{
 		super(items);
 		init();

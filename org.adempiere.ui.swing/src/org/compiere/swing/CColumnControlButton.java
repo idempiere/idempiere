@@ -703,7 +703,7 @@ public class CColumnControlButton extends JButton {
      * @return a list containing all additional actions to include into the popup.
      */
     protected List<Action> getAdditionalActions() {
-        List actionKeys = getColumnControlActionKeys();
+        List<Object> actionKeys = getColumnControlActionKeys();
         List<Action> actions = new ArrayList<Action>();
         for (Object key : actionKeys) {
           actions.add(table.getActionMap().get(key));
@@ -722,9 +722,9 @@ public class CColumnControlButton extends JButton {
      *   action should be included into the popup.
      */
     @SuppressWarnings("unchecked")
-    protected List getColumnControlActionKeys() {
+    protected List<Object> getColumnControlActionKeys() {
         Object[] allKeys = table.getActionMap().allKeys();
-        List columnKeys = new ArrayList();
+        List columnKeys = new ArrayList<Object>();
         for (int i = 0; i < allKeys.length; i++) {
             if (isColumnControlActionKey(allKeys[i])) {
                 columnKeys.add(allKeys[i]);

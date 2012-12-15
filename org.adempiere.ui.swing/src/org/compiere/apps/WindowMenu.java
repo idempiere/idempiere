@@ -194,7 +194,7 @@ public class WindowMenu extends JMenu {
 		Image image = bi.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 		
 		final JXTitledPanel box = new JXTitledPanel();
-		final Painter painter = box.getTitlePainter();
+		final Painter<?> painter = box.getTitlePainter();
 		box.setTitlePainter(null);
 		box.setFocusable(true);
 		box.setTitle(window.getTitle());

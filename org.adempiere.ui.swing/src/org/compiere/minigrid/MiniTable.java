@@ -326,7 +326,7 @@ public class MiniTable extends CTable implements IMiniTable
 	 *  @param c   class of column - determines renderere
 	 *  @param readOnly read only flag
 	 */
-	public void setColumnClass (int index, Class c, boolean readOnly)
+	public void setColumnClass (int index, Class<?> c, boolean readOnly)
 	{
 		setColumnClass(index, c, readOnly, null);
 	}   //  setColumnClass
@@ -341,7 +341,7 @@ public class MiniTable extends CTable implements IMiniTable
 	 *  @param readOnly read only flag
 	 *  @param header optional header value
 	 */
-	public void setColumnClass (int index, Class c, boolean readOnly, String header)
+	public void setColumnClass (int index, Class<?> c, boolean readOnly, String header)
 	{
 	//	log.config( "MiniTable.setColumnClass - " + index, c.getName() + ", r/o=" + readOnly);
 		TableColumn tc = getColumnModel().getColumn(index);
