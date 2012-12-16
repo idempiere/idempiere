@@ -455,7 +455,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			if (m_inventoryFrom == null)
 			{
 				MWarehouse wh = MWarehouse.get(getCtx(), loc.getM_Warehouse_ID());
-				m_inventoryFrom = new MInventory (wh);
+				m_inventoryFrom = new MInventory (wh, get_TrxName());
 				m_inventoryFrom.setDescription(Msg.translate(getCtx(), "M_MovementConfirm_ID") + " " + getDocumentNo());
 				if (!m_inventoryFrom.save(get_TrxName()))
 				{
@@ -497,7 +497,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			if (m_inventoryTo == null)
 			{
 				MWarehouse wh = MWarehouse.get(getCtx(), loc.getM_Warehouse_ID());
-				m_inventoryTo = new MInventory (wh);
+				m_inventoryTo = new MInventory (wh, get_TrxName());
 				m_inventoryTo.setDescription(Msg.translate(getCtx(), "M_MovementConfirm_ID") + " " + getDocumentNo());
 				if (!m_inventoryTo.save(get_TrxName()))
 				{

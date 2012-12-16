@@ -14,7 +14,6 @@
 package event.test;
 
 import org.adempiere.base.event.AbstractEventHandler;
-import org.adempiere.base.event.IEventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.base.event.LoginEventData;
 import org.compiere.model.I_C_BP_Group;

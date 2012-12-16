@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.adempiere.exceptions.AdempiereException;
+
 /**
  * @author hengsin
  *
@@ -73,7 +75,11 @@ public class ServerContextPropertiesWrapper extends Properties {
 	 */
 	@Override
 	public void save(OutputStream out, String comments) {
-		ServerContext.getCurrentInstance().save(out, comments);
+		try {
+			ServerContext.getCurrentInstance().store(out, comments);
+		} catch (IOException e) {
+			throw new AdempiereException(e);
+		}
 	}
 
 	/* (non-Javadoc)

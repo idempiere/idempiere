@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchemaElement;
@@ -79,10 +80,12 @@ public class CashFlow  extends SvrProcess {
 	 */
 	protected String doIt() throws Exception {
 		
-		p_dateFrom = new Timestamp(System.currentTimeMillis());
-		p_dateFrom.setHours(0);
-		p_dateFrom.setMinutes(0);
-		p_dateFrom.setSeconds(0);
+		Calendar dateFrom = Calendar.getInstance();
+		dateFrom.setTimeInMillis(System.currentTimeMillis());
+		dateFrom.set(Calendar.HOUR_OF_DAY, 0);
+		dateFrom.set(Calendar.MINUTE, 0);
+		dateFrom.set(Calendar.SECOND, 0);
+		p_dateFrom = new Timestamp(dateFrom.getTimeInMillis());
 		p_dateFrom.setNanos(0);
 		
 		log.info("Calculating initial balance");

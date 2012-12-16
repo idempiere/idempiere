@@ -415,7 +415,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		listbox.setModel(model);
 		listbox.setItemRenderer(renderer);
 		listbox.repaint();
-		listbox.setFixedLayout(true);
+		listbox.setSizedByContent(false);
 
 		return m_activities.length;
 	}	//	loadActivities

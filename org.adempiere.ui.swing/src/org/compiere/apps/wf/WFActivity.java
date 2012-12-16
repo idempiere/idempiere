@@ -674,7 +674,7 @@ public class WFActivity extends CPanel
 			//
 			log.info("Zoom to AD_Window_ID=" + AD_Window_ID 
 				+ " - " + query + " (IsSOTrx=" + IsSOTrx + ")");
-			AWindow frame = new AWindow();
+			AWindow frame = new AWindow(null);
 			if (!frame.initWindow(AD_Window_ID, query))
 				return;
 			AEnv.addToWindowManager(frame);
@@ -684,7 +684,7 @@ public class WFActivity extends CPanel
 		else if (MWFNode.ACTION_UserForm.equals(node.getAction()))
 		{
 			int AD_Form_ID = node.getAD_Form_ID();
-			FormFrame ff = new FormFrame();
+			FormFrame ff = new FormFrame(null);
 			ff.openForm(AD_Form_ID);
 			ff.pack();
 			AEnv.addToWindowManager(ff);

@@ -685,7 +685,7 @@ public class VPAttributeDialog extends CDialog
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		//
 		int AD_Window_ID = WINDOW_LOT;		//	Lot
-		AWindow frame = new AWindow();
+		AWindow frame = new AWindow(null);
 		if (frame.initWindow(AD_Window_ID, zoomQuery))
 		{
 			this.setVisible(false);

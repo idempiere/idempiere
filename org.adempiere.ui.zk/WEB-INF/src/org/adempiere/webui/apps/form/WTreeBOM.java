@@ -357,7 +357,7 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 			
 			SimpleTreeModel model = new SimpleTreeModel(parent);
 			m_tree.setPageSize(-1);
-			m_tree.setTreeitemRenderer(model);
+			m_tree.setItemRenderer(model);
 			m_tree.setModel(model);
 		}
 		else
@@ -386,7 +386,7 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 			SimpleTreeModel model = new SimpleTreeModel(parent);
 			
 			m_tree.setPageSize(-1);
-			m_tree.setTreeitemRenderer(model);
+			m_tree.setItemRenderer(model);
 			m_tree.setModel(model);
 		}
 		

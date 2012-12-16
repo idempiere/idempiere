@@ -651,7 +651,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	}
 
     private void addDoubleClickListener() {
-		Iterator<EventListener<? extends Event>> i = contentPanel.getListenerIterator(Events.ON_DOUBLE_CLICK);
+    	Iterator<EventListener<? extends Event>> i = contentPanel.getEventListeners(Events.ON_DOUBLE_CLICK).iterator();
 		while (i.hasNext()) {
 			if (i.next() == this)
 				return;

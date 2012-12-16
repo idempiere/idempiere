@@ -1412,7 +1412,7 @@ public class VLookup extends JComponent
 		//
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		//
-		AWindow frame = new AWindow();
+		AWindow frame = new AWindow(null);
 		if (!frame.initWindow(AD_Window_ID, zoomQuery))
 		{
 			setCursor(Cursor.getDefaultCursor());

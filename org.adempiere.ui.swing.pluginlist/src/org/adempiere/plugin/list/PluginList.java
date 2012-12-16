@@ -1,7 +1,6 @@
 package org.adempiere.plugin.list;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
@@ -13,7 +12,6 @@ import javax.swing.table.DefaultTableModel;
 
 import org.compiere.apps.form.FormFrame;
 import org.compiere.apps.form.FormPanel;
-import org.compiere.apps.form.VFileImport;
 import org.compiere.minigrid.MiniTable;
 import org.compiere.swing.CPanel;
 import org.compiere.util.CLogger;

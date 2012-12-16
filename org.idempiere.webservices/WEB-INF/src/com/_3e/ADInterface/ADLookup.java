@@ -89,7 +89,7 @@ public class ADLookup {
 	 
 	 try  {
 		 
-		PreparedStatement pstmt = DB.prepareStatement( info.getSQL() );
+		PreparedStatement pstmt = DB.prepareStatement( info.getSQL(), null );
 		info.setParameters( pstmt, false );
 		ResultSet rs = pstmt.executeQuery();
 		while (rs.next())
@@ -317,7 +317,7 @@ public class ADLookup {
 				PreparedStatement pstmt = null;
 				try
 				{
-					pstmt = DB.prepareStatement(query);
+					pstmt = DB.prepareStatement(query, null);
 					pstmt.setInt(1, AD_Reference_ID);
 					ResultSet rs = pstmt.executeQuery();
 					if (rs.next())
@@ -385,7 +385,7 @@ public class ADLookup {
 		PreparedStatement pstmt = null;
 		try
 		{
-			pstmt = DB.prepareStatement(query);
+			pstmt = DB.prepareStatement(query, null);
 			pstmt.setString(1, m_keyColumnName);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())

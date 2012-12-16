@@ -29,8 +29,8 @@ import org.compiere.apps.AMenu;
 public class SwingViewerProvider implements ReportViewerProvider {
 
 	public void openViewer(ReportEngine re) {
-		Viewer viewer = new Viewer(re);
 		JFrame top = AEnv.getWindow(0);
+		Viewer viewer = new Viewer(top.getGraphicsConfiguration(), re);
 		if (top instanceof AMenu)
 			((AMenu)top).getWindowManager().add(viewer);
 	}

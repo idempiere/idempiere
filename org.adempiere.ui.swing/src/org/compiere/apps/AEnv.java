@@ -668,7 +668,7 @@ public final class AEnv
 		}
 		
 		log.config(TableName + " - Record_ID=" + Record_ID + " (IsSOTrx=" + isSOTrx + ")");
-		AWindow frame = new AWindow();
+		AWindow frame = new AWindow(null);
 		if (!frame.initWindow(AD_Window_ID, MQuery.getEqualQuery(TableName + "_ID", Record_ID)))
 			return;
 		addToWindowManager(frame);
@@ -726,7 +726,7 @@ public final class AEnv
 		}
 		
 		log.config(query + " (IsSOTrx=" + isSOTrx + ")");
-		AWindow frame = new AWindow();
+		AWindow frame = new AWindow(null);
 		if (!frame.initWindow(AD_Window_ID, query))
 			return;
 		addToWindowManager(frame);
@@ -840,7 +840,7 @@ public final class AEnv
 			query.addRestriction("Record_ID", MQuery.EQUAL, Record_ID);
 		}
 		//
-		AWindow frame = new AWindow();
+		AWindow frame = new AWindow(null);
 		if (!frame.initWindow(s_workflow_Window_ID, query))
 			return;
 		addToWindowManager(frame);

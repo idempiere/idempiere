@@ -101,7 +101,7 @@ public class Doc_AssetAddition extends Doc
 		else if (MAssetAddition.A_SOURCETYPE_Manual.equals(assetAdd.getA_SourceType())
 				&& getC_Charge_ID() > 0) // backward compatibility: only if charge defined; if not fallback to product account 
 		{	
-			pAssetAcct = MCharge.getAccount(getC_Charge_ID(), as, null);
+			pAssetAcct = MCharge.getAccount(getC_Charge_ID(), as);
 			return pAssetAcct;
 		}	
 		else if (MAssetAddition.A_SOURCETYPE_Invoice.equals(assetAdd.getA_SourceType())

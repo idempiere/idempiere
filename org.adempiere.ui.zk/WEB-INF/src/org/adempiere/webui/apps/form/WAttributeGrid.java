@@ -115,7 +115,7 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 		
 		gridView.setWidth("100%");
 		gridView.setHeight("100%");
-		gridView.setFixedLayout(true);
+		gridView.setSizedByContent(false);
         
 		Rows rows = new Rows();
 		gridSelection.appendChild(rows);

@@ -560,7 +560,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 			return m_AD_User_ID;
 		if (getC_BPartner_ID() != 0)
 		{
-			MUser[] users = MUser.getOfBPartner(getCtx(), getC_BPartner_ID());
+			MUser[] users = MUser.getOfBPartner(getCtx(), getC_BPartner_ID(), get_TrxName());
 			if (users.length > 0)
 			{
 				m_AD_User_ID = users[0].getAD_User_ID();
