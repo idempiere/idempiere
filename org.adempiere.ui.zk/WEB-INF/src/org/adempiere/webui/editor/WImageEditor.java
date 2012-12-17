@@ -145,7 +145,17 @@ public class WImageEditor extends WEditor
 		getComponent().setContent(img);
     }
     
+	
     @Override
+	public String getDisplayTextForGridView(Object value) {
+		if (value == null) {
+			return "";
+		} else {
+			return "...";
+		}
+	}
+
+	@Override
     public String[] getEvents()
     {
         return LISTENER_EVENTS;

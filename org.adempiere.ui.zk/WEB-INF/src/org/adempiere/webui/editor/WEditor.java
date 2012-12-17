@@ -438,6 +438,11 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
      * @return display text
      */
     abstract public String getDisplay();
+    
+    public String getDisplayTextForGridView(Object value) {
+    	this.setValue(value);
+    	return getDisplay();
+    }
 
     /**
      *
