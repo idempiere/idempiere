@@ -73,8 +73,8 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 	    	String uuidColumn = PO.getUUIDColumnName(tableName);
 	    	String idColumn = tableName + "_ID";
     		MTable table = MTable.get(ctx.ctx, tableName);
-	    	if ((!element.properties.containsKey(uuidColumn) || element.properties.get(uuidColumn).contents == null || element.properties.get(uuidColumn).contents.toString().trim().length() > 0) 
-	    		&& (!element.properties.containsKey(idColumn) || element.properties.get(idColumn).contents == null || element.properties.get(idColumn).contents.toString().trim().length() > 0)) {
+	    	if ((!element.properties.containsKey(uuidColumn) || element.properties.get(uuidColumn).contents == null || element.properties.get(uuidColumn).contents.toString().trim().length() == 0) 
+	    		&& (!element.properties.containsKey(idColumn) || element.properties.get(idColumn).contents == null || element.properties.get(idColumn).contents.toString().trim().length() == 0)) {
 				POInfo info = POInfo.getPOInfo(ctx.ctx, table.getAD_Table_ID());
 				MColumn columns[] = table.getColumns(false);
 				StringBuilder whereClause = new StringBuilder();
