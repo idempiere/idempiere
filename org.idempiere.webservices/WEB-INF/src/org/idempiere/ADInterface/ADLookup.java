@@ -1,4 +1,4 @@
-package com._3e.ADInterface;
+package org.idempiere.adinterface;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -77,7 +77,7 @@ public class ADLookup {
 		return whereClause;
 	}
 	
-	private DataSet getResult( com._3e.ADInterface.ADInfo info, DataSet ds, int count, String mode ) 	{ 
+	private DataSet getResult( org.idempiere.adinterface.ADInfo info, DataSet ds, int count, String mode ) 	{ 
 	 if ("count".equals(mode) && count > 1) {
 		 DataRow dr = ds.addNewDataRow();
 		 DataField df = dr.addNewField();
