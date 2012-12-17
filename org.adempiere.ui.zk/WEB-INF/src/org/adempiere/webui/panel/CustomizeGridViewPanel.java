@@ -408,13 +408,11 @@ public class CustomizeGridViewPanel extends Panel
 	 */
 	void migrateValueWithinYesList (int endIndex, List<ListElement> selObjects)
 	{
-		int length = selObjects.size();
 		int iniIndex =0;
 		Arrays.sort(selObjects.toArray());	
 		ListElement endObject = (ListElement)yesModel.getElementAt(endIndex);
-
-		for (int i = 0; i < length; i++) {
-			iniIndex = yesModel.indexOf(selObjects.get(i));
+		for (ListElement selected : selObjects) {
+			iniIndex = yesModel.indexOf(selected);
 			ListElement selObject = (ListElement)yesModel.getElementAt(iniIndex);
 			yesModel.removeElement(selObject);
 			endIndex = yesModel.indexOf(endObject);
