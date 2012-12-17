@@ -76,7 +76,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	private int	m_WindowNo;
 
 	/** Attachment				*/
-	private MAttachment	m_attachment;
+	private MAttachment m_attachment = null;
 
 	/** Change					*/
 	private boolean m_change = false;
@@ -168,10 +168,10 @@ public class WAttachment extends Window implements EventListener<Event>
 
 		//	Create Model
 
-		if (AD_Attachment_ID == 0)
-			m_attachment = new MAttachment (Env.getCtx(), AD_Table_ID, Record_ID, trxName);
-		else
+		if (AD_Attachment_ID > 0)
 			m_attachment = new MAttachment (Env.getCtx(), AD_Attachment_ID, trxName);
+		else
+			m_attachment = new MAttachment (Env.getCtx(), AD_Table_ID, Record_ID, trxName);
 
 		loadAttachments();
 
@@ -483,7 +483,10 @@ public class WAttachment extends Window implements EventListener<Event>
 				}
 			}
 			else
+			{
 				m_attachment.delete(true);
+				m_attachment = null;
+			}
 
 			dispose();
 		}
@@ -614,6 +617,7 @@ public class WAttachment extends Window implements EventListener<Event>
 				if (result)
 				{
 					m_attachment.delete(true);
+					m_attachment = null;
 				}					
 			}
 		});			
