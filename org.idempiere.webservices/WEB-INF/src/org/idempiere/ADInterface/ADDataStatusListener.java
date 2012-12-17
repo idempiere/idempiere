@@ -1,4 +1,4 @@
-package com._3e.ADInterface;
+package org.idempiere.adinterface;
 
 import java.util.Properties;
 

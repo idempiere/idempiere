@@ -6,7 +6,7 @@
                http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"-->
   
   
-  <jaxws:endpoint id="ModelADService" address="/ModelADService" implementor="com._3e.ADInterface.ModelADServiceImpl">
+  <jaxws:endpoint id="ModelADService" address="/ModelADService" implementor="org.idempiere.adinterface.ModelADServiceImpl">
    <jaxws:dataBinding>
        <bean class="org.apache.cxf.xmlbeans.XmlBeansDataBinding" />
     </jaxws:dataBinding>
@@ -20,4 +20,4 @@
   </jaxws:endpoint>
  
 </beans>
-<!-- END SNIPPET: services -->
+

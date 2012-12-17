@@ -11,7 +11,7 @@
  * All parts are Copyright (C) 1999-2005 ComPiere, Inc.  All Rights Reserved.
  * Contributor(s): ______________________________________.
  *****************************************************************************/
-package com._3e.ADInterface;
+package org.idempiere.adinterface;
 
 /**
  *  Info Column Details

@@ -21,8 +21,8 @@ import javax.jws.WebService;
 import org.compiere.util.CLogger;
 import org.compiere.util.Trx;
 import org.idempiere.adInterface.x10.ADLoginRequest;
-import org.idempiere.adInterface.x10.CompositeModelRequest;
-import org.idempiere.adInterface.x10.CompositeModelRequestDocument;
+import org.idempiere.adInterface.x10.CompositeRequest;
+import org.idempiere.adInterface.x10.CompositeRequestDocument;
 import org.idempiere.adInterface.x10.CompositeResponse;
 import org.idempiere.adInterface.x10.CompositeResponses;
 import org.idempiere.adInterface.x10.CompositeResponsesDocument;
@@ -41,10 +41,10 @@ import org.idempiere.adInterface.x10.RunProcessResponseDocument;
 import org.idempiere.adInterface.x10.StandardResponse;
 import org.idempiere.adInterface.x10.StandardResponseDocument;
 import org.idempiere.adInterface.x10.WindowTabDataDocument;
+import org.idempiere.adinterface.CompiereService;
+import org.idempiere.adinterface.ModelADServiceImpl;
 import org.idempiere.webservices.AbstractService;
 
-import com._3e.ADInterface.CompiereService;
-import com._3e.ADInterface.ModelADServiceImpl;
 
 /**
  * Composite service interface for combining request and transaction management
@@ -52,11 +52,11 @@ import com._3e.ADInterface.ModelADServiceImpl;
  * @author Deepak Pansheriya
  * 
  */
-@WebService(endpointInterface = "com.bizidium.ws.CompositeService", serviceName = "compositeInterface")
+@WebService(endpointInterface = "com.bizidium.ws.CompositeService", serviceName = "compositeInterface" ,targetNamespace="http://idempiere.org/ADInterface/1_0")
 public class CompositeServiceImpl extends AbstractService implements CompositeService {
 	private static CLogger log = CLogger.getCLogger(CompositeServiceImpl.class);
 
-	private static String webServiceName = new String("biziInterface");
+	private static String webServiceName = new String("CompositeInterface");
 
 	public CompositeServiceImpl() {
 
@@ -64,14 +64,14 @@ public class CompositeServiceImpl extends AbstractService implements CompositeSe
 	}
 
 	
-	public CompositeResponsesDocument compositeCRUD(CompositeModelRequestDocument reqs) {
+	public CompositeResponsesDocument compositeOperation(CompositeRequestDocument reqs) {
 
 		CompiereService m_cs = getCompiereService();
 
 		CompositeResponsesDocument ret = CompositeResponsesDocument.Factory.newInstance();
 		CompositeResponses resps = ret.addNewCompositeResponses();
 
-		CompositeModelRequest req = reqs.getCompositeModelRequest();
+		CompositeRequest req = reqs.getCompositeRequest();
 		String serviceType = req.getServiceType();
 
 		ADLoginRequest reqlogin = req.getADLoginRequest();

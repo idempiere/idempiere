@@ -53,8 +53,8 @@ import org.idempiere.adInterface.x10.OutputField;
 import org.idempiere.adInterface.x10.OutputFields;
 import org.idempiere.adInterface.x10.StandardResponse;
 import org.idempiere.adInterface.x10.StandardResponseDocument;
+import org.idempiere.adinterface.CompiereService;
 
-import com._3e.ADInterface.CompiereService;
 
 
 /**
@@ -84,7 +84,7 @@ public class AbstractService {
 				&& m_cs.getM_AD_Warehouse_ID() == loginRequest.getWarehouseID() && loginRequest.getUser().equals(m_cs.getUser()))
 			return authenticate(webService, method, serviceType, m_cs); // already logged with same data
 
-		String ret =invokeLoginValidator(loginRequest, m_cs.getM_ctx(), null, IWSValidator.TIME_BEFORE_LOGIN);
+		String ret =invokeLoginValidator(loginRequest, m_cs.getM_ctx(), null, IWSValidator.TIMING_BEFORE_LOGIN);
 		if(ret!=null && ret.length()>0)
 			return ret;
 		
@@ -158,7 +158,7 @@ public class AbstractService {
 			return "Error logging in - no roles or user/pwd invalid for user " + loginRequest.getUser();
 		}
 
-		ret =invokeLoginValidator(loginRequest, m_cs.getM_ctx(), null, IWSValidator.TIME_AFTER_LOGIN);
+		ret =invokeLoginValidator(loginRequest, m_cs.getM_ctx(), null, IWSValidator.TIMING_AFTER_LOGIN);
 		if(ret!=null && ret.length()>0)
 			return ret;
 		
@@ -213,7 +213,7 @@ public class AbstractService {
 
 		req.setAttribute("MWebServiceType", m_webservicetype);
 
-		String ret=invokeLoginValidator(null, m_cs.getM_ctx(), m_webservicetype, IWSValidator.TIME_ON_AUTHENTICATION);
+		String ret=invokeLoginValidator(null, m_cs.getM_ctx(), m_webservicetype, IWSValidator.TIMING_ON_AUTHORIZATION);
 		if(ret!=null && ret.length()>0)
 			return ret;
 		
