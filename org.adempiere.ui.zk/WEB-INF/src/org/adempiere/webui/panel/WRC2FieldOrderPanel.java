@@ -15,8 +15,10 @@
 package org.adempiere.webui.panel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ListHead;
@@ -46,12 +48,12 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 	/**
 	 * 
 	 */
-	private Listbox sortList;
 	private Button bUp = new Button();
 	private Button bDown = new Button();
 	
 	private ArrayList<MPrintFormatItem> listColumns=new ArrayList<MPrintFormatItem>();
 	SimpleListModel sortModel;
+	private Listbox sortList;
 	
 	public WRC2FieldOrderPanel() {
 		super();	
@@ -59,13 +61,9 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 
 	public void setListColumns() {
 		listColumns = new ArrayList<MPrintFormatItem>();
-		if (m_pfi != null && m_pfi.length > 0) {
-			for (int i = 0; i < m_pfi.length; i++) {
-				if (m_pfi[i] != null && m_pfi[i].isPrinted()) {
-					listColumns.add(m_pfi[i]);			
-				}
-			}
-		}
+		for (MPrintFormatItem item : m_pfi)
+		    if(item!=null && item.isPrinted())
+		       listColumns.add(item);
 	}
 	
 	public void init()
@@ -100,37 +98,21 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 					ListItem targetItem = (ListItem) me.getTarget();
 					if (draggedItem.getListbox() == targetItem.getListbox() && draggedItem.getListbox() == sortList)
 					{
-						int draggedIndex = sortList.getIndexOfItem(draggedItem);
+						List<ListElement> selObjects = new ArrayList<ListElement>();
 						int targetIndex = sortList.getIndexOfItem(targetItem);
-						ListElement targetElement = (ListElement) sortModel.getElementAt(targetIndex);
-						ListElement draggedElement = (ListElement) sortModel.getElementAt(draggedIndex);
-						
-						int firstposition=0, secondposition=0;
-						MPrintFormatItem targetPFI = null;
-						MPrintFormatItem draggedPFI = null;
-						for(int j=0 ;j <m_pfi.length ;j++){
-							if(m_pfi[j].get_ID() == targetElement.getKey()){
-								targetPFI = m_pfi[j];
-								firstposition=j;
-							}
-							if(m_pfi[j].get_ID() == draggedElement.getKey()){
-								draggedPFI = m_pfi[j];
-								secondposition=j;
-							}
-						}
-						draggedPFI.setSeqNo(targetPFI.getSeqNo()-5);
-						
-						MPrintFormatItem fi=m_pfi[firstposition];
-						m_pfi[firstposition]=m_pfi[secondposition];
-						m_pfi[secondposition]=fi;
-						
-						sortModel.removeElement(draggedElement);
-						targetIndex = sortModel.indexOf(targetElement);
-						sortModel.add(targetIndex, draggedElement);
+		
+						if (!draggedItem.isSelected())
+							draggedItem.setSelected(true);
 
+						for (Object obj : sortList.getSelectedItems()) {
+							ListItem listItem = (ListItem) obj;
+							int index = sortList.getIndexOfItem(listItem);
+							ListElement selObject = (ListElement)sortModel.getElementAt(index);				
+							selObjects.add(selObject);						
+						}
+						migrateValueWithinYesList (targetIndex, selObjects);
 						wc.setIsChanged(true);
 						refresh();
-						sortList.setSelectedIndex(targetIndex);
 						if ( sortList.getSelectedItem() != null)
 						{
 							AuFocus focus = new AuFocus(sortList.getSelectedItem());
@@ -168,10 +150,36 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 		vbox.appendChild(bDown);
 		vbox.setWidth("50px");
 		vbox.setHflex("60");
-		//vbox.setParent(wind);
 		hlayout.appendChild(vbox);
 		this.appendChild(hlayout);
 
+	}
+	
+	/**
+	 * 	Move within Yes List with Drag Event and Multiple Choice
+	 *	@param event event
+	 */
+	void migrateValueWithinYesList (int endIndex, List<ListElement> selObjects)
+	{
+		int iniIndex =0;
+		Arrays.sort(selObjects.toArray());	
+		ListElement selObject= null;
+		ListElement endObject = (ListElement)sortModel.getElementAt(endIndex);
+		int targetPFISeq = 0;
+		MPrintFormatItem draggedPFI = null;
+		
+		for (ListElement selected : selObjects) {
+   		    iniIndex = sortModel.indexOf(selected);
+			selObject = (ListElement)sortModel.getElementAt(iniIndex);
+			draggedPFI =listColumns.get(iniIndex);
+			sortModel.removeElement(selObject);
+			listColumns.remove(draggedPFI);
+			endIndex = sortModel.indexOf(endObject);
+			targetPFISeq = listColumns.get(endIndex).getSeqNo();
+			listColumns.add(endIndex, draggedPFI);
+			sortModel.add(endIndex, selObject);
+			draggedPFI.setSeqNo(targetPFISeq - 5);
+		}	
 	}
 	
 	@Override
@@ -194,26 +202,15 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 		if (listColumns.size() > 0 && listColumns != null) {
 			int seq = 10;
 		    sortModel.removeAllElements();
-			for (int i=0; i<listColumns.size(); i++) {
-				MPrintFormatItem pfi = listColumns.get(i);
-				if (pfi != null) {
-					pfi.setSeqNo(seq);
-					for(int j=0 ;j<m_pfi.length;j++){
-						if(m_pfi[j].get_ID()== pfi.get_ID()){
-							m_pfi[j].setSeqNo(seq);
-						}
-					}
-					seq = seq + 10;
-				    int ID = pfi.get_ID();
-				    String name=pfi.getPrintName();
-				    if(name == null)
-				    	name=pfi.getName();
-				    ListElement element =new ListElement(ID, name, pfi.getSeqNo(), pfi.getAD_Client_ID(), pfi.getAD_Org_ID());
-				    sortModel.addElement(element);
-					KeyNamePair pair=new KeyNamePair(ID, name);
-					sortList.addItem(pair);
-				} 
-			}
+			for (MPrintFormatItem pfi : listColumns){
+				 pfi.setSeqNo(seq);
+				 m_pfi.get(m_pfi.indexOf(pfi)).setSeqNo(seq);
+			     String name= pfi.getPrintName()== null ? pfi.getName(): pfi.getPrintName() ;
+			     ListElement element =new ListElement(pfi.get_ID(), name, pfi.getSeqNo(), pfi.getAD_Client_ID(), pfi.getAD_Org_ID());
+			     sortModel.addElement(element);
+			     sortList.addItem(new KeyNamePair(m_pfi.get(m_pfi.indexOf(pfi)).get_ID(), name)); 
+				 seq = seq + 10;
+		   }  
 		}
 	}
 
@@ -236,9 +233,8 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 			return;
 		//
 		int[] indices = sortList.getSelectedIndices();
-		int firstposition=0, secondposition=0;
 		boolean change = false;
-		//
+		MPrintFormatItem orig = null;
 		Object source = event.getTarget();
 		if (source == bUp)
 		{
@@ -246,26 +242,19 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 				int index = indices[i];
 				if (index == 0)
 					break;
+
 				ListElement selObject = (ListElement) sortModel.getElementAt(index);
 				ListElement newObject = (ListElement)sortModel.getElementAt(index - 1);
-			    
 				sortModel.setElementAt(newObject, index);
 				sortModel.setElementAt(selObject, index - 1);
-				for(int j=0 ;j <m_pfi.length ;j++){
-					if(m_pfi[j].get_ID() == selObject.getKey()){
-						m_pfi[j].setSeqNo(m_pfi[j].getSeqNo()-10);
-						firstposition=j;
-					}
-					if(m_pfi[j].get_ID() == newObject.getKey()){
-						m_pfi[j].setSeqNo(m_pfi[j].getSeqNo()+10);
-						secondposition=j;
-					}
-				}
+				
+				listColumns.get(index).setSeqNo(listColumns.get(index).getSeqNo()-10);
+				orig = listColumns.get(index);
+				listColumns.get(index - 1).setSeqNo(listColumns.get(index - 1).getSeqNo()+10);
+				listColumns.set(index, listColumns.get(index-1));
+				listColumns.set(index-1 , orig);
 				indices[i] = index - 1;
 				change = true;
-				MPrintFormatItem fi=m_pfi[firstposition];
-				m_pfi[firstposition]=m_pfi[secondposition];
-				m_pfi[secondposition]=fi;
 			}
 		}	//	up
 
@@ -277,36 +266,24 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 					break;
 				ListElement selObject = (ListElement) sortModel.getElementAt(index);
 				ListElement newObject = (ListElement)sortModel.getElementAt(index + 1);
-				/*if (!selObject.isUpdateable() || !newObject.isUpdateable())
-					break;*/
+
 				sortModel.setElementAt(newObject, index);
 				sortModel.setElementAt(selObject, index + 1);
-				sortList.setSelectedIndex(index + 1);
-				for(int j=0 ;j <m_pfi.length ;j++){
-					if(m_pfi[j].get_ID() == selObject.getKey()){
-						m_pfi[j].setSeqNo(m_pfi[j].getSeqNo()+10);
-						firstposition=j;
-					}
-					if(m_pfi[j].get_ID() == newObject.getKey()){
-						m_pfi[j].setSeqNo(m_pfi[j].getSeqNo()-10);
-						secondposition=j;
-					}
-				}
+				//
+				listColumns.get(index).setSeqNo(listColumns.get(index).getSeqNo()+10);
+				orig = m_pfi.get(index);
+				listColumns.get(index + 1).setSeqNo(listColumns.get(index + 1).getSeqNo()-10);
+				listColumns.set(index, listColumns.get(index+1));
+				listColumns.set(index+1,orig);
 				indices[i] = index + 1;
 				change = true;
-				MPrintFormatItem fi=m_pfi[firstposition];
-				m_pfi[firstposition]=m_pfi[secondposition];
-				m_pfi[secondposition]=fi;
 			}
 		}	//	down
 
-		//
 		if (change) {
 			sortList.setSelectedIndices(indices);
-			int idx = sortList.getSelectedIndex();
 			refresh();
 			wc.setIsChanged(true);
-			sortList.setSelectedIndex(idx);
 			if ( sortList.getSelectedItem() != null)
 			{
 				AuFocus focus = new AuFocus(sortList.getSelectedItem());
