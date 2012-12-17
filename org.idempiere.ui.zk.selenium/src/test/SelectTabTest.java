@@ -26,7 +26,7 @@ public class SelectTabTest extends AbstractTestCase {
 		selectTab("$Product_1 $detailPane @tabbox", "Business Partner");
 		assertEquals("Business Partner", selectedTab("$Product_1 $detailPane @tabbox"));
 		
-		WebElement element = driver.findElement(Zk.jq("$Product_1 $Product @textbox[columnName=\"Name\"]"));
+		WebElement element = driver.findElement(Zk.jq("$Product_1 $Product @textbox[instanceName=\"M_Product0Name\"]"));
 		assertNotNull(element);
 	}
 }

@@ -22,6 +22,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Datebox;
@@ -109,9 +110,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
         this.setComponent(comp);
         this.gridField = gridField;
-        comp.setWidgetAttribute("columnName", gridField.getColumnName());
         if (gridField.getGridTab() != null) {
-        	comp.setWidgetAttribute("qualifiedColumnName", gridField.getGridTab().getTableName()+"."+gridField.getColumnName());
+        	comp.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, gridField.getGridTab().getTableName()+"0"+gridField.getColumnName());
+        } else {
+        	comp.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, gridField.getColumnName());
         }
         this.setMandatory(gridField.isMandatory(false));
         this.readOnly = gridField.isReadOnly();
