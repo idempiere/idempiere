@@ -18,7 +18,11 @@ public class FitServerServletInvoker extends ServletInvoker {
 		CommandLine commandLine = new CommandLine("url host port socketToken");
 		if (commandLine.parse(argv)) {
 			servletUrl = commandLine.getArgument("url");
-			fitnesseHostAddress = commandLine.getArgument("host");
+			String host = System.getProperty("FITNESSE_HOST");
+			if (host == null || host.trim().length() == 0)
+				fitnesseHostAddress = commandLine.getArgument("host");
+			else
+				fitnesseHostAddress = host;
 			fitnessePort = Integer.parseInt(commandLine.getArgument("port"));
 			socketToken = Integer.parseInt(commandLine.getArgument("socketToken"));
 		} else {
