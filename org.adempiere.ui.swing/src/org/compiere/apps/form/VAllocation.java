@@ -361,20 +361,14 @@ public class VAllocation extends Allocation
 		// Organization
 		if (name.equals("AD_Org_ID"))
 		{
-			if (value == null)
-				m_AD_Org_ID = 0;
-			else
-				m_AD_Org_ID = ((Integer) value).intValue();
+			m_AD_Org_ID = ((Integer) value).intValue();
 			
 			loadBPartner();
 		}
 //		Charge
 		else if (name.equals("C_Charge_ID") )
 		{
-			if ( value == null )
-				m_C_Charge_ID = 0;
-			else
-				m_C_Charge_ID = ((Integer) value).intValue();
+			m_C_Charge_ID = ((Integer) value).intValue();
 			
 			setAllocateButton();
 		}
