@@ -51,7 +51,7 @@ public class MEXPProcessor extends X_EXP_Processor {
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MEXPProcessor.class);
 	
-	private static MEXPProcessor processor= null;
+	private volatile static MEXPProcessor processor= null;
 	private X_EXP_ProcessorParameter[] parameters = null;
 	
 	public static MEXPProcessor get(Properties ctx, int EXP_Processor_ID, String trxName)

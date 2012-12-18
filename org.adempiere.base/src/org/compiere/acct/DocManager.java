@@ -66,7 +66,7 @@ public class DocManager {
 		return documentsTableName;
 	}
 
-	private static void fillDocumentsTableArrays() {
+	private synchronized static void fillDocumentsTableArrays() {
 		if (documentsTableID == null) {
 			String sql = "SELECT t.AD_Table_ID, t.TableName " +
 							"FROM AD_Table t, AD_Column c " +

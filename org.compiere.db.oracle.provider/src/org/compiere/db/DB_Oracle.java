@@ -164,7 +164,7 @@ public class DB_Oracle implements AdempiereDatabase
      *  @return Driver
      *  @throws SQLException
      */
-    public Driver getDriver() throws SQLException
+    public synchronized Driver getDriver() throws SQLException
     {
         if (s_driver == null)
         {

@@ -171,7 +171,7 @@ public class SwapFile
 		freeBlocks(segment.getOffsets());
 	}
 
-	private void verifyOpen() {
+	private synchronized void verifyOpen() {
 		if (randomAccessFile == null) {
 			throw new RuntimeException("Swap file not open for read write access");
 		}

@@ -116,7 +116,7 @@ public class CLogger extends Logger implements Serializable
     }	//	get
 
     /**	Default Logger			*/
-    private static CLogger	s_logger = null;
+    private volatile static CLogger	s_logger = null;
 
 
 	/**************************************************************************

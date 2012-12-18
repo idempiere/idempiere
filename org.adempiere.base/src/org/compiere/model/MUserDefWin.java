@@ -35,7 +35,7 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	 */
 	private static final long serialVersionUID = -5775251886672840324L;
 
-	private static List<MUserDefWin> m_fullList = null;
+	private volatile static List<MUserDefWin> m_fullList = null;
 
 	/**
 	 * 	Standard constructor.

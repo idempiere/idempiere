@@ -62,7 +62,7 @@ public class MSystem extends X_AD_System
 	 *	@param ctx context
 	 *	@return System
 	 */
-	public static MSystem get (Properties ctx)
+	public synchronized static MSystem get (Properties ctx)
 	{
 		if (s_system != null)
 			return s_system;

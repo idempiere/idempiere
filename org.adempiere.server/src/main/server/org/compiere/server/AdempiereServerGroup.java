@@ -38,7 +38,7 @@ public class AdempiereServerGroup extends ThreadGroup
 	}	//	get
 	
 	/** Group */
-	private static AdempiereServerGroup	s_group	= null;
+	private volatile static AdempiereServerGroup	s_group	= null;
 	
 	/**
 	 * 	AdempiereServerGroup

@@ -94,11 +94,11 @@ public class AdempiereMonitor extends HttpServlet
 	/**	Logger				*/
 	private static CLogger	log = CLogger.getCLogger(AdempiereMonitor.class);
 	/**	The Server			*/
-	private AdempiereServerMgr	m_serverMgr = null;
+	private static AdempiereServerMgr	m_serverMgr = null;
 	/** Message				*/
-	private p				m_message = null;
+	private static p				m_message = null;
 	
-	private ArrayList<File>	m_dirAccessList = null;
+	private volatile static ArrayList<File>	m_dirAccessList = null;
 	
 	/**
 	 * 	Get

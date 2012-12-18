@@ -38,7 +38,7 @@ import fitnesse.fixtures.TableFixture;
  *  @author Carlos Ruiz - globalqss
  */
 public class SetVariable extends TableFixture {
-	private static Instance adempiereInstance = null;
+	private volatile static Instance adempiereInstance = null;
 	
 	@Override
 	protected void doStaticTable(int rows) {

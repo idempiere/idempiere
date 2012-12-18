@@ -42,7 +42,7 @@ public class ProxyServlet extends HttpServlet implements Filter {
 		Activator.addProxyServlet(this);
 	}
 
-	public void destroy() {
+	public synchronized void destroy() {
 		Activator.removeProxyServlet(this);
 		proxyContext.destroy();
 		proxyContext = null;
@@ -56,7 +56,7 @@ public class ProxyServlet extends HttpServlet implements Filter {
 		process(req, resp, null);
 	}
 
-	protected void process(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) throws ServletException, IOException {
+	protected synchronized void process(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) throws ServletException, IOException {
 		proxyContext.initializeServletPath(req, filterChain);
 		String alias = HttpServletRequestAdaptor.getDispatchPathInfo(req, filterChain);
 		if (alias == null)

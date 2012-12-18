@@ -195,7 +195,7 @@ public class ArchiveEngine
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ArchiveEngine.class);
 	/** Singleton		*/
-	private static ArchiveEngine s_engine = null;
+	private volatile static ArchiveEngine s_engine = null;
 	
 	
 	/**************************************************************************
