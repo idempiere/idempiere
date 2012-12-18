@@ -82,6 +82,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Style;
+import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.West;
@@ -1051,10 +1052,10 @@ DataStatusListener, IADTabpanel, IdSpace
     private void deleteNode(int recordId) {
 		if (recordId <= 0) return;
 
-		SimpleTreeModel model = (SimpleTreeModel) treePanel.getTree().getModel();
+		SimpleTreeModel model = (SimpleTreeModel)(TreeModel<?>) treePanel.getTree().getModel();
 
 		if (treePanel.getTree().getSelectedItem() != null) {
-			DefaultTreeNode<Object> treeNode = (DefaultTreeNode<Object>) treePanel.getTree().getSelectedItem().getValue();
+			DefaultTreeNode<Object> treeNode =  treePanel.getTree().getSelectedItem().getValue();
 			MTreeNode data = (MTreeNode) treeNode.getData();
 			if (data.getNode_ID() == recordId) {
 				model.removeNode(treeNode);
@@ -1075,7 +1076,7 @@ DataStatusListener, IADTabpanel, IdSpace
 			boolean summary = gridTab.getValueAsBoolean("IsSummary");
 			String imageIndicator = (String)gridTab.getValue("Action");  //  Menu - Action
 			//
-			SimpleTreeModel model = (SimpleTreeModel) treePanel.getTree().getModel();
+			SimpleTreeModel model = (SimpleTreeModel)(TreeModel<?>) treePanel.getTree().getModel();
 			DefaultTreeNode<Object> treeNode = model.getRoot();
 			MTreeNode root = (MTreeNode) treeNode.getData();
 			MTreeNode node = new MTreeNode (gridTab.getRecord_ID(), 0, name, description,
@@ -1096,9 +1097,9 @@ DataStatusListener, IADTabpanel, IdSpace
 			treePanel.getTree().onInitRender();
 		}
 
-		SimpleTreeModel model = (SimpleTreeModel) treePanel.getTree().getModel();
+		SimpleTreeModel model = (SimpleTreeModel)(TreeModel<?>) treePanel.getTree().getModel();
 		if (treePanel.getTree().getSelectedItem() != null) {
-			DefaultTreeNode<Object> treeNode = (DefaultTreeNode<Object>) treePanel.getTree().getSelectedItem().getValue();
+			DefaultTreeNode<Object> treeNode = treePanel.getTree().getSelectedItem().getValue();
 			MTreeNode data = (MTreeNode) treeNode.getData();
 			if (data.getNode_ID() == recordId) {
 				int[] path = model.getPath(treeNode);

@@ -102,8 +102,8 @@ public abstract class AdempiereServer implements Runnable
 	/** Initial nap is seconds		*/
 	private int					m_initialNap = 0;
 
-	/**	Milliseconds to sleep - 10 Min default	*/
-	protected long				m_sleepMS = 600000;
+	/**	Milliseconds to sleep - 0 Sec default	*/
+	protected long				m_sleepMS = 0;
 	/** Sleeping					*/
 	private volatile boolean	m_sleeping = true;
 	/** Server start time					*/
@@ -178,6 +178,17 @@ public abstract class AdempiereServer implements Runnable
 	 */
 	public void run ()
 	{
+		final Thread currentThread = Thread.currentThread();
+		final String oldThreadName = currentThread.getName();
+		String newThreadName = getName();
+		boolean renamed = false;
+		if (!oldThreadName.equals(newThreadName)) {
+			try {
+				currentThread.setName(newThreadName);
+				renamed = true;
+			} catch (SecurityException e) {}
+		}
+
 		m_sleeping = false;
 		if (m_start == 0)
 			m_start = System.currentTimeMillis();
@@ -202,7 +213,7 @@ public abstract class AdempiereServer implements Runnable
 				lastRun = new Timestamp(p_startWork);
 			}
 		}
-		
+
 		m_nextWork = MSchedule.getNextRunMS(lastRun.getTime(),
 				p_model.getScheduleType(), p_model.getFrequencyType(),
 				p_model.getFrequency(), p_model.getCronPattern());
@@ -215,6 +226,11 @@ public abstract class AdempiereServer implements Runnable
 		p_model.setDateNextRun(new Timestamp(m_nextWork));
 		p_model.saveEx();
 		m_sleeping = true;
+		if (renamed) {
+			// Revert the name back if the current thread was renamed.
+			// We do not check the exception here because we know it works.
+			currentThread.setName(oldThreadName);
+		}		
 	}	//	run
 
 	/**
