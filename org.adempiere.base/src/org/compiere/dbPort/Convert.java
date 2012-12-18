@@ -432,7 +432,7 @@ public abstract class Convert
 	 */
 	public abstract boolean isOracle();
 
-	public static void logMigrationScript(String oraStatement, String pgStatement) {
+	public synchronized static void logMigrationScript(String oraStatement, String pgStatement) {
 		// Check AdempiereSys
 		// check property Log migration script
 		boolean logMigrationScript = false;

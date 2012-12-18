@@ -16,6 +16,7 @@ package org.adempiere.webui.apps.form;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -82,7 +83,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	private boolean				m_isCanExport;
 	
 	private ReportEngine m_reportEngine=null;
-	public MPrintFormatItem[] pfi ; 
+	public ArrayList<MPrintFormatItem> pfi ; 
 	
 	private Auxheader headerPanel=new Auxheader();
 	private Listbox comboReport = new Listbox();
@@ -140,7 +141,11 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		m_reportEngine = re;
 		m_isCanExport=MRole.getDefault().isCanExport();
-		pfi= m_reportEngine.getPrintFormat().getAllItems("IsPrinted DESC, NULLIF(SeqNo,0), Name");
+	    pfi = new ArrayList<MPrintFormatItem>() ;
+		for (MPrintFormatItem item :  m_reportEngine.getPrintFormat().getAllItems("IsPrinted DESC, NULLIF(SeqNo,0), Name")) {
+			pfi.add(item);	
+		}
+		
 		try
 		{
 			m_ctx = m_reportEngine.getCtx();
@@ -229,6 +234,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		tpsc3.setMPrintFormat(fm);
 		tpsc3.setPrintFormatItems(pfi);
+		tpsc3.setListsColumns(); 
 		tpsc3.init();	
 		tpsc3.refresh();
 		tpsc3.setWReportCustomization(this);
@@ -359,10 +365,12 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	}
 
 	private void onSave() {
-		for (int i=0; i < pfi.length ;i++){
-			pfi[i].saveEx();
-		}
-		setIsChanged(false);
+		
+	 for (MPrintFormatItem item : pfi)
+		 if (item.is_Changed())
+		     item.saveEx();
+	 
+	  setIsChanged(false);
 	}
 	
 	@Override
@@ -519,8 +527,10 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 	public void copyFormat(){
 		MPrintFormat newpf=MPrintFormat.copyToClient(m_ctx, m_reportEngine.getPrintFormat().get_ID() ,Env.getAD_Client_ID(m_ctx));
-		pfi = newpf.getAllItems("IsPrinted DESC, NULLIF(SeqNo,0), Name");
-
+			
+		for (MPrintFormatItem item : newpf.getAllItems("IsPrinted DESC, NULLIF(SeqNo,0), Name"))
+		     pfi.add(item);	
+			
 		tpdf1.setMPrintFormat(newpf);
 		tpdf1.setPrintFormatItems(pfi);
 		tpdf1.refresh();
@@ -532,6 +542,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		tpsc3.setMPrintFormat(newpf);
 		tpsc3.setPrintFormatItems(pfi);
+		tpfo2.setListColumns();	
 		tpsc3.refresh();
 
 		tpgc4.setMPrintFormat(newpf);

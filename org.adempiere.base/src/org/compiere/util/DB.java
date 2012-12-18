@@ -255,7 +255,7 @@ public final class DB
 	 *  Set connection
 	 *  @param cc connection
 	 */
-	public static void setDBTarget (CConnection cc)
+	public synchronized static void setDBTarget (CConnection cc)
 	{
 		if (cc == null)
 			throw new IllegalArgumentException("Connection is NULL");

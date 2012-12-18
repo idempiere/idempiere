@@ -14,8 +14,14 @@
 
 package org.adempiere.webui.panel;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Tabpanel;
+import org.compiere.model.GridField;
+import org.compiere.model.MField;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
 
@@ -25,9 +31,10 @@ public abstract class WRCTabPanel extends Tabpanel {
 	 */
 	private static final long serialVersionUID = -6858669581232541371L;
 
-	public MPrintFormatItem[] m_pfi;
+	public ArrayList<MPrintFormatItem> m_pfi;	
 	public MPrintFormat m_pf;
 	public WReportCustomization wc;
+	public Map<Integer, MPrintFormatItem> mapPFormatItem = new HashMap<Integer, MPrintFormatItem>();
 	
 	public abstract void refresh();
 	
@@ -35,14 +42,21 @@ public abstract class WRCTabPanel extends Tabpanel {
 	
 	public void setMPrintFormat(MPrintFormat pf) {
 		m_pf=pf;
+	    for (MPrintFormatItem item : m_pf.getAllItems() ){
+	    	 mapPFormatItem.put(item.get_ID(), item);	
+	    }
 	}
 	
-	public void setPrintFormatItems(MPrintFormatItem[] pfis) {
+	public void setPrintFormatItems(ArrayList<MPrintFormatItem> pfis) {
 		m_pfi = pfis;
 	}
 	
 	public void setWReportCustomization(WReportCustomization parent){
 		wc=parent;
 	}
-
+	
+	public MPrintFormatItem getPrintFormatItem(int AD_PrintFormatItem_ID) {
+		return 	mapPFormatItem.get(AD_PrintFormatItem_ID);
+	}
+	
 }

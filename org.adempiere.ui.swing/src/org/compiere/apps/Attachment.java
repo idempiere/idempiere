@@ -78,7 +78,7 @@ public final class Attachment extends CDialog
 		int AD_Table_ID, int Record_ID, String trxName)
 	{
 		super (frame, Msg.getMsg(Env.getCtx(), "Attachment"), true);
-		//	needs to be modal otherwise APanel does not recongize change.
+		//	needs to be modal otherwise APanel does not recognize change.
 		log.config("ID=" + AD_Attachment_ID
 			+ ", Table=" + AD_Table_ID + ", Record=" + Record_ID);
 		//
@@ -93,10 +93,10 @@ public final class Attachment extends CDialog
 			log.log(Level.SEVERE, "", ex);
 		}
 		//	Create Model
-		if (AD_Attachment_ID == 0)
-			m_attachment = new MAttachment (Env.getCtx(), AD_Table_ID, Record_ID, trxName);
-		else
+		if (AD_Attachment_ID > 0)
 			m_attachment = new MAttachment (Env.getCtx(), AD_Attachment_ID, trxName);
+		else
+			m_attachment = new MAttachment (Env.getCtx(), AD_Table_ID, Record_ID, trxName);
 		loadAttachments();
 		//
 		try
@@ -112,7 +112,7 @@ public final class Attachment extends CDialog
 	/**	Window No				*/
 	private int				m_WindowNo;
 	/** Attachment				*/
-	private MAttachment		m_attachment;
+	private MAttachment	 m_attachment = null;
 	/** Change					*/
 	private boolean			m_change = false;
 	/**	Logger			*/
@@ -380,7 +380,10 @@ public final class Attachment extends CDialog
 				}
 			}
 			else
+			{
 				m_attachment.delete(true);
+				m_attachment = null;
+			}
 			dispose();
 		}
 		//	Cancel
@@ -468,8 +471,10 @@ public final class Attachment extends CDialog
 	private void deleteAttachment()
 	{
 		log.info("");
-		if (ADialog.ask(m_WindowNo, this, "AttachmentDelete?"))
+		if (ADialog.ask(m_WindowNo, this, "AttachmentDelete?")) {
 			m_attachment.delete(true);
+			m_attachment = null;
+		}
 	}	//	deleteAttachment
 
 	/**

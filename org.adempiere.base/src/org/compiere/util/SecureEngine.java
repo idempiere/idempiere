@@ -217,7 +217,7 @@ public class SecureEngine
 	/** Test String					*/
 	private static final String	TEST = "This is a 0123456789 .,; -= Test!";
 	/** Secure Engine 				*/
-	private static SecureEngine	s_engine = null;	
+	private volatile static SecureEngine	s_engine = null;	
 	
 	/** The real Engine				*/
 	private	SecureInterface		implementation = null;

@@ -58,7 +58,7 @@ import fitnesse.fixtures.TableFixture;
  *  @author Carlos Ruiz - globalqss
  */
 public class RunProcess extends TableFixture {
-	private static Instance adempiereInstance = null;
+	private volatile static Instance adempiereInstance = null;
 	
 	private static CLogger	log = CLogger.getCLogger(RunProcess.class);
 

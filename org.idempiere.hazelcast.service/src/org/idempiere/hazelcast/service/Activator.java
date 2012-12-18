@@ -39,7 +39,7 @@ public class Activator implements BundleActivator {
 		return context;
 	}
 
-	private static HazelcastInstance hazelcastInstance;
+	private volatile static HazelcastInstance hazelcastInstance;
 	private static AtomicReference<Future<?>> futureRef = new AtomicReference<Future<?>>();
 
 	/*

@@ -123,7 +123,7 @@ public final class WAccountDialog extends Window
 	protected boolean			m_changed = false;
 
 	/** Accounting Schema           */
-	private static MAcctSchema	s_AcctSchema = null;
+	private volatile static MAcctSchema	s_AcctSchema = null;
 	/** MWindow for AccountCombination  */
 	private GridWindow             m_mWindow = null;
 	/** MTab for AccountCombination     */

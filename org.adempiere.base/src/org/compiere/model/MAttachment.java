@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.MimeType;
 
@@ -47,7 +48,7 @@ public class MAttachment extends X_AD_Attachment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8013716602070647299L;
+	private static final long serialVersionUID = -8261865873158774665L;
 
 	/**
 	 * 	Get Attachment (if there are more than one attachment it gets the first in no specific order)
@@ -94,9 +95,7 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	public MAttachment(Properties ctx, int AD_Table_ID, int Record_ID, String trxName)
 	{
-		this (ctx
-				, MAttachment.get(ctx, AD_Table_ID, Record_ID) == null ? 0 : MAttachment.get(ctx, AD_Table_ID, Record_ID).get_ID()
-				, trxName);
+		this (ctx, MAttachment.getID(AD_Table_ID, Record_ID) > 0 ? MAttachment.getID(AD_Table_ID, Record_ID) : 0, trxName);
 		if (get_ID() == 0) {
 			setAD_Table_ID (AD_Table_ID);
 			setRecord_ID (Record_ID);
@@ -596,6 +595,19 @@ public class MAttachment extends X_AD_Attachment
 		if (entry == null) return false;
 		entry.setData(data);
 		return true;
+	}
+
+	/**
+	 * IDEMPIERE-530
+	 * Get the attachment ID based on table_id and record_id
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @return AD_Attachment_ID 
+	 */
+	public static int getID(int Table_ID, int Record_ID) {
+		String sql="SELECT AD_Attachment_ID FROM AD_Attachment WHERE AD_Table_ID=? AND Record_ID=?";
+		int attachid = DB.getSQLValue(null, sql, Table_ID, Record_ID);
+		return attachid;
 	}
 
 }	//	MAttachment

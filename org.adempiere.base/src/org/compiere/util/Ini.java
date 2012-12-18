@@ -224,7 +224,7 @@ public final class Ini implements Serializable
 	};
 
 	/**	Container for Properties    */
-	private static Properties 		s_prop = new Properties();
+	private volatile static Properties 		s_prop = new Properties();
 
 	private static String s_propertyFileName = null;
 

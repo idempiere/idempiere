@@ -52,7 +52,7 @@ public class CCachedRowSet extends CachedRowSetImpl implements CachedRowSet
 	 *	@return Cached Row Set
 	 *	@throws SQLException
 	 */
-	public static CCachedRowSet get() throws SQLException
+	public synchronized static CCachedRowSet get() throws SQLException
 	{
 		CCachedRowSet crs = null;
 		//	only first time call

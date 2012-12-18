@@ -48,9 +48,9 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
 	@Override
 	public void refresh() {
 		orderfield = new ArrayList<MPrintFormatItem>();
-		for(int i=0 ; i < m_pfi.length ; i++){
-			if(m_pfi[i] != null && m_pfi[i].isOrderBy()  && m_pfi[i].isPrinted()){
-				orderfield.add(m_pfi[i]);
+		for(int i=0 ; i < m_pfi.size(); i++){
+			if(m_pfi.get(i) != null && m_pfi.get(i).isOrderBy()  && m_pfi.get(i).isPrinted()){
+				orderfield.add(m_pfi.get(i));
 			}
 		}
 		dynamicInit();
@@ -59,11 +59,8 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
 	@Override
 	public void updatePFI() {
 		for(int i=0 ; i<orderfield.size() ; i++){
-			for(int j=0 ;j<m_pfi.length ; j++){
-				if(orderfield.get(i).get_ID() == m_pfi[j].get_ID()){
-					m_pfi[j].setIsGroupBy(m_chkboxes[i].isChecked());
-				}
-			}
+			int j = m_pfi.indexOf(getPrintFormatItem(orderfield.get(i).get_ID()));
+			m_pfi.get(j).setIsGroupBy(m_chkboxes[i].isChecked());
 		}
 	}
 
@@ -102,7 +99,6 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
 	    	columns.appendChild(cols[i+1]);
 		}
 		grid.appendChild(columns);
-
 		this.appendChild(wind);
 		wind.appendChild(grid);
 	}

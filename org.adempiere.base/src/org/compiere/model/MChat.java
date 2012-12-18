@@ -44,8 +44,7 @@ public class MChat extends X_CM_Chat
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5053130533036069784L;
-
+	private static final long serialVersionUID = 9165439123618441913L;
 
 	/**
 	 * 	Get Chats Of Table - of client in context
@@ -242,5 +241,17 @@ public class MChat extends X_CM_Chat
 		return history;
 	}	//	getHistory
 	
+	/**
+	 * IDEMPIERE-530
+	 * Get the chat ID based on table_id and record_id
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @return CM_Chat_ID 
+	 */
+	public static int getID(int Table_ID, int Record_ID) {
+		String sql="SELECT CM_Chat_ID FROM CM_Chat WHERE AD_Table_ID=? AND Record_ID=?";
+		int chatID = DB.getSQLValueEx(null, sql, Table_ID, Record_ID);
+		return chatID;
+	}
 	
 }	//	MChat

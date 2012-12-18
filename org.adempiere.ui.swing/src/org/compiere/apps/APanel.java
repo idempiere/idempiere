@@ -2304,11 +2304,10 @@ public final class APanel extends CPanel
 			return;
 		}
 
-	//	Attachment va =
-		new Attachment (AEnv.getFrame(this), m_curWindowNo,
+		@SuppressWarnings("unused")
+		Attachment va = new Attachment (AEnv.getFrame(this), m_curWindowNo,
 			m_curTab.getAD_AttachmentID(), m_curTab.getAD_Table_ID(), record_ID, null);
 		//
-		m_curTab.loadAttachments();				//	reload
 		aAttachment.setPressed(m_curTab.hasAttachment());
 	}	//	attachment
 
@@ -2345,7 +2344,6 @@ public final class APanel extends CPanel
 			m_curTab.getCM_ChatID(), m_curTab.getAD_Table_ID(), record_ID,
 			description, null);
 		//
-		m_curTab.loadChats();				//	reload
 		aChat.setPressed(m_curTab.hasChat());
 	}	//	chat
 
@@ -2368,7 +2366,6 @@ public final class APanel extends CPanel
 		else
 		{
 			m_curTab.lock (Env.getCtx(), record_ID, aLock.getButton().isSelected());
-			m_curTab.loadAttachments();			//	reload
 		}
 		aLock.setPressed(m_curTab.isLocked());
 	}	//	lock

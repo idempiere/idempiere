@@ -84,9 +84,9 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 	@Override
 	public void refresh() {
 		DisplayItems = new ArrayList<MPrintFormatItem>();
-		for(int i=0 ; i<m_pfi.length ; i ++){
-			if(m_pfi[i] != null && m_pfi[i].isPrinted()){
-				DisplayItems.add(m_pfi[i]);
+		for(int i=0 ; i<m_pfi.size() ; i ++){
+			if(m_pfi.get(i) != null && m_pfi.get(i).isPrinted()){
+				DisplayItems.add(m_pfi.get(i));
 			}
 		}
 		dynamicInit();
@@ -95,17 +95,14 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 	@Override
 	public void updatePFI() {
 		for(int i=0 ;i<DisplayItems.size() ; i++){
-			for(int j=0 ; j<m_pfi.length ; j++){
-				if(DisplayItems.get(i).get_ID() == m_pfi[j].get_ID()){
-					m_pfi[j].setIsSummarized(m_chkSum[i].isChecked());
-					m_pfi[j].setIsCounted(m_chkCount[i].isChecked());
-					m_pfi[j].setIsMinCalc(m_chkMin[i].isChecked());
-					m_pfi[j].setIsMaxCalc(m_chkMax[i].isChecked());
-					m_pfi[j].setIsAveraged(m_chkMean[i].isChecked());
-					m_pfi[j].setIsVarianceCalc(m_chkVariance[i].isChecked());
-					m_pfi[j].setIsDeviationCalc(m_chkDesviation[i].isChecked());
-				}
-			}
+			int j = m_pfi.indexOf(getPrintFormatItem(DisplayItems.get(i).get_ID()));
+			m_pfi.get(j).setIsSummarized(m_chkSum[i].isChecked());
+			m_pfi.get(j).setIsCounted(m_chkCount[i].isChecked());
+			m_pfi.get(j).setIsMinCalc(m_chkMin[i].isChecked());
+			m_pfi.get(j).setIsMaxCalc(m_chkMax[i].isChecked());
+			m_pfi.get(j).setIsAveraged(m_chkMean[i].isChecked());
+			m_pfi.get(j).setIsVarianceCalc(m_chkVariance[i].isChecked());
+			m_pfi.get(j).setIsDeviationCalc(m_chkDesviation[i].isChecked());
 		}
 	}
 
