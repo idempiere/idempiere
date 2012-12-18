@@ -232,7 +232,8 @@ public final class Env
 	}
 
 	/**
-	 * Set Context
+	 * Replace the contents of the current session/process context.
+	 * Don't use this to setup a new session/process context, use ServerContext.setCurrentInstance instead.
 	 * @param ctx context
 	 */
 	public static void setCtx (Properties ctx)

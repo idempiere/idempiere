@@ -18,6 +18,7 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.RestletUtil;
+import org.adempiere.util.ServerContext;
 import org.compiere.interfaces.impl.ServerBean;
 import org.compiere.util.Env;
 import org.restlet.representation.Representation;
@@ -57,17 +58,14 @@ public class PostDocumentCommand extends ServerResource {
 		boolean force = (Boolean) entity.get("force");
 		
 		ServerBean bean = new ServerBean();
-		//back up properties
-		Properties backup = new Properties();
-		backup.putAll(Env.getCtx());
 		try
 		{
-			Env.setCtx(context);
+			ServerContext.setCurrentInstance(context);
 			msg = bean.postImmediate(context, AD_Client_ID, AD_Table_ID, Record_ID, force);
 		}
 		finally
 		{
-			Env.setCtx(backup);
+			ServerContext.dispose();
 		}
 		return msg;
 	}	
