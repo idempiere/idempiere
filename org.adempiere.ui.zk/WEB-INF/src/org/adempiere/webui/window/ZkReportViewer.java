@@ -316,10 +316,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		north.appendChild(toolBar);
 		
 		Center center = new Center();
-		center.setHflex("true");
-		center.setVflex("true");
 		layout.appendChild(center);
 		iframe = new Iframe();
+		iframe.setHflex("true");
+		iframe.setVflex("true");
 		iframe.setId("reportFrame");
 		center.appendChild(iframe);
 		

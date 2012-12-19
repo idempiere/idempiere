@@ -224,17 +224,17 @@ public final class WAccountDialog extends Window
 
 		North nRegion = new North();
 		nRegion.setParent(layout);
-		nRegion.setHflex("false");
-		nRegion.setVflex("false");
+		northPanel.setHflex("false");
+		northPanel.setVflex("false");
 		nRegion.appendChild(northPanel);
 		nRegion.setStyle("background-color: transparent; border: none");
 		northPanel.setStyle("background-color: transparent;");
 
 		Center cRegion = new Center();
 		cRegion.setParent(layout);
+		m_adTabPanel.setHflex("true");
+		m_adTabPanel.setVflex("true");
 		cRegion.appendChild(m_adTabPanel);
-		cRegion.setHflex("true");
-		cRegion.setVflex("true");
 
 		South sRegion = new South();
 		sRegion.setParent(layout);

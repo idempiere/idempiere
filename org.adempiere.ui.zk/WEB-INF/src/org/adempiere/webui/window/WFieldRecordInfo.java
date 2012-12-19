@@ -138,13 +138,12 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		
 		Center center = new Center();
 		center.setParent(layout);
-		center.setHflex("true");
-		center.setVflex("true");
 		if (showTable)
 		{
+			table.setHflex("true");
+			table.setVflex("true");
 			center.appendChild(table);
 			table.setWidth("100%");
-			table.setVflex(true);
 		}
 		//
 		South south = new South();

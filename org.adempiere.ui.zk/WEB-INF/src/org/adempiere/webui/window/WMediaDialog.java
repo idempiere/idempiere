@@ -171,8 +171,8 @@ public class WMediaDialog extends Window implements EventListener<Event>
 			
 		Center centerPane = new Center();
 		centerPane.setAutoscroll(true);
-		centerPane.setHflex("true");
-		centerPane.setVflex("true");
+		previewPanel.setHflex("true");
+		previewPanel.setVflex("true");
 		mainPanel.appendChild(centerPane);
 		centerPane.appendChild(previewPanel);
 		
