@@ -2,8 +2,6 @@ package org.idempiere.adinterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,7 +14,6 @@ import java.util.logging.Level;
 import net.sf.compilo.report.ReportProcessor;
 import net.sf.jasperreports.engine.JasperPrint;
 
-import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
 import org.compiere.model.MAllocationHdr;
@@ -48,7 +45,6 @@ import org.compiere.util.NamePair;
 import org.compiere.util.Trx;
 import org.compiere.wf.MWFProcess;
 import org.compiere.wf.MWorkflow;
-
 import org.idempiere.adInterface.x10.DataField;
 import org.idempiere.adInterface.x10.DataRow;
 import org.idempiere.adInterface.x10.GetProcessParamsDocument;
@@ -334,7 +330,7 @@ public class Process {
 				ReportEngine re=null;
 				if (!jasperreport) 
 					re = start(pi);
-						//ReportEngine.get(m_cs.getM_ctx(), pi);
+
 				if (re == null && !jasperreport)
 				{
 					//b��d: "Nie uda�o si� uruchomi� silnika raport�w (ReportEngine)", 
@@ -344,19 +340,14 @@ public class Process {
 					try
 					{
 						boolean ok = false;
-						File file;
 						String file_type = "pdf"; 
 						if (!jasperreport)
 						{
-							//file = File.createTempFile("WProcess", ".pdf");
-							//ok = re.createPDF(file);
 							MPrintFormat pf = re.getPrintFormat();
 							if (pf.isTableBased())
 							{
 								CharArrayWriter wr = new CharArrayWriter();
-								//file = File.createTempFile("WProcess", ".xls");
 								ok = ReportEngineEx.createEXCEL_HTML_wr( re, m_cs.getM_ctx(), wr, false, re.getPrintFormat().getLanguage() );
-								//ok = re.createXML( file );
 								file_type ="xls";
 								String data = wr.toString();
 								if (data!=null)
@@ -818,7 +809,6 @@ public class Process {
 	 */
 	static public ReportEngine startFinReport (ProcessInfo pi)
 	{
-		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 
 		//  Create Query from Parameters
 		String TableName = pi.getAD_Process_ID() == 202 ? "T_Report" : "T_ReportStatement";
@@ -1042,48 +1032,6 @@ public class Process {
 
 	}
 	
-	/*private static void ProcessDocAction(GridField field, int record_id, WWindowStatus ws)
-	throws IOException
-	{
-		//select sel = new select();
-		LookupValues lvs = LookupValues.Factory.newInstance(); //sel.setName("SetDocAction");
-		renderDocActionOptions(lvs, ws.curTab);
-		//frm.addElement(new input("hidden", "action", "DocAction"));
-		
-		//center.addElement( WebUtil.createClosePopupButton() );
-
-	}*/
-	
-	public void doPost() throws  IOException {
-		String column_name = "";//WebUtil.getParameter(request, "ColumnName");
-		String action = "";//WebUtil.getParameter(request, "action");
-	
-		WWindowStatus ws = null; //WWindowStatus.get(request);
-		
-		
-			String DA = "";  //WebUtil.getParameter(request, "SetDocAction"); 
-			ws.curTab.setValue("DocAction", DA);
-		
-			if (ws.curTab.needSave(true, false)) //slain - nie wyrzucaj bledu, jesli nie musiales zapisac
-				//if (! cmd_save(ws))
-				{
-				
-					//doc.addWindowCenter(false).addElement("B��d zapisu..." );
-					//return;
-				}
-	
-			GridField f = ws.curTab.getField( column_name );
-			int process_id = f.getAD_Process_ID();
-			int record_id = ws.curTab.getRecord_ID();
-			String qs = 
-				"AD_Process_ID="+Integer.toString(process_id) +"&"+
-				"AD_Record_ID="+Integer.toString(record_id);
-			
-			//RequestDispatcher disp = this.getServletContext().getRequestDispatcher("/WProcess?runas=get&"+qs);
-			//disp.forward(request, response);
-
-			return;
-	}   //  doPost
 
 	
 	

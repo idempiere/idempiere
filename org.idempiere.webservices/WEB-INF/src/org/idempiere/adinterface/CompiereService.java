@@ -121,14 +121,10 @@ public class CompiereService {
 		// These variables are needed for ADClient.exe
 		Language m_lang2 = Language.getLanguage("pl_PL");
 		
-		//dateFormat = DisplayType.getDateFormat(DisplayType.Date, m_lang2);
-		//dateTimeFormat = DisplayType.getDateFormat(DisplayType.DateTime, m_lang2);
 		
 		dateFormat = new SimpleDateFormat( datePattern );
 		dateTimeFormat = new SimpleDateFormat( datePattern );
 		
-		//dateTimeFormat = DisplayType.getDateFormat(DisplayType.DateTime, m_lang2);
-		//
 		amountFormat = DisplayType.getNumberFormat(DisplayType.Amount, m_lang2);
 		integerFormat = DisplayType.getNumberFormat(DisplayType.Integer, m_lang2);
 		numberFormat = DisplayType.getNumberFormat(DisplayType.Number, m_lang2);
@@ -148,48 +144,6 @@ public class CompiereService {
 	public boolean isLoggedIn() {
 		return LoggedIn;
 	}
-	
-	/*
-	public static Properties testLogin (boolean isClient)
-	{
-		//logger.entering("Env", "initTest");
-		Compiere.startupEnvironment(true);
-		//  Test Context
-		Properties ctx = Env.getCtx();
-		org.compiere.util.Login login = new org.compiere.util.Login(ctx);
-		KeyNamePair[] roles = login.getRoles("SuperUser", "System1969");
-		//  load role
-		if (roles != null && roles.length > 0)
-		{
-			int x = -1;
-			for (int i=0; i<roles.length; i++)
-			{
-				if (roles[i].getName().equalsIgnoreCase("Opony Admin"))
-					x= i;
-				log.info( roles[i].getName()); 
-			}
-			KeyNamePair[] clients = login.getClients (roles[x]);
-			//  load client
-			if (clients != null && clients.length > 0)
-			{
-				KeyNamePair[] orgs = login.getOrgs(clients[0]);
-				//  load org
-				if (orgs != null && orgs.length > 0)
-				{
-					KeyNamePair[] whs = login.getWarehouses(orgs[0]);
-					//
-					login.loadPreferences(orgs[0], null, null, null);
-				}
-			}
-		}
-		//
-		Env.setContext(ctx, "#Date", "2006-01-26");
-	//	logger.exiting("Env", "initTest");
-		return ctx;
-	}   //  testInit
-	 */
-	
-	
 	
 	/**
 	 *  Check Login information and set context.

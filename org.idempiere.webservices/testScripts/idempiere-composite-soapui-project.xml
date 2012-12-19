@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project name="idempiere-composite2" soapui-version="3.5.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="compositeInterfaceSoapBinding" type="wsdl" bindingName="{http://idempiere.org/ADInterface/1_0}compositeInterfaceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:9191/ADInterface/services/compositeInterface?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:9191/ADInterface/services/compositeInterface?wsdl"><con:part><con:url>http://localhost:9191/ADInterface/services/compositeInterface?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="compositeInterface" targetNamespace="http://idempiere.org/ADInterface/1_0" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://idempiere.org/ADInterface/1_0" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+    <xsd:schema elementFormDefault="qualified" targetNamespace="http://idempiere.org/ADInterface/1_0">
+      <xsd:element name="WindowTabData" type="tns:WindowTabData"/>
+      <xsd:complexType name="WindowTabData">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="DataSet" type="tns:DataSet"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="RowCount" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="Success" type="xsd:boolean"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="Error" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="ErrorInfo" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="Status" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="StatusError" type="xsd:boolean"/>
+        </xsd:sequence>
+        <xsd:attribute name="NumRows" type="xsd:int"/>
+        <xsd:attribute name="TotalRows" type="xsd:int"/>
+        <xsd:attribute name="StartRow" type="xsd:int"/>
+      </xsd:complexType>
+      <xsd:complexType name="DataSet">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="DataRow" type="tns:DataRow"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="DataRow">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="field" type="tns:DataField"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="DataField">
+        <xsd:sequence>
+          <xsd:element name="val" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="lookup" type="tns:LookupValues"/>
+        </xsd:sequence>
+        <xsd:attribute name="type" type="xsd:string" use="optional"/>
+        <xsd:attribute name="column" type="xsd:string"/>
+        <xsd:attribute name="lval" type="xsd:string" use="optional"/>
+        <xsd:attribute name="disp" type="xsd:boolean" use="optional"/>
+        <xsd:attribute name="edit" type="xsd:boolean" use="optional"/>
+        <xsd:attribute name="error" type="xsd:boolean" use="optional"/>
+        <xsd:attribute name="errorVal" type="xsd:string" use="optional"/>
+      </xsd:complexType>
+      <xsd:complexType name="LookupValues">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="lv" type="tns:LookupValue"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="LookupValue">
+        <xsd:sequence></xsd:sequence>
+        <xsd:attribute name="val" type="xsd:string"/>
+        <xsd:attribute name="key" type="xsd:string"/>
+      </xsd:complexType>
+      <xsd:element name="GetProcessParams" type="tns:GetProcessParams"/>
+      <xsd:element name="ProcessParams" type="tns:ProcessParams"/>
+      <xsd:element name="RunProcess" type="tns:RunProcess"/>
+      <xsd:element name="RunProcessResponse" type="tns:RunProcessResponse"/>
+      <xsd:complexType name="ProcessParams">
+        <xsd:sequence>
+          <xsd:element name="Params" type="tns:ProcessParamList"/>
+          <xsd:element name="Description" type="xsd:string"/>
+          <xsd:element name="Name" type="xsd:string"/>
+          <xsd:element name="Help" type="xsd:string"/>
+        </xsd:sequence>
+        <xsd:attribute name="AD_Process_ID" type="xsd:int"/>
+      </xsd:complexType>
+      <xsd:complexType name="GetProcessParams">
+        <xsd:sequence></xsd:sequence>
+        <xsd:attribute name="AD_Process_ID" type="xsd:int"/>
+        <xsd:attribute name="AD_Menu_ID" type="xsd:int"/>
+        <xsd:attribute name="AD_Record_ID" type="xsd:int"/>
+      </xsd:complexType>
+      <xsd:complexType name="RunProcess">
+        <xsd:sequence>
+          <xsd:element name="ParamValues" type="tns:DataRow"/>
+        </xsd:sequence>
+        <xsd:attribute name="AD_Process_ID" type="xsd:int"/>
+        <xsd:attribute name="AD_Menu_ID" type="xsd:int"/>
+        <xsd:attribute name="AD_Record_ID" type="xsd:int"/>
+        <xsd:attribute name="DocAction" type="xsd:string"/>
+      </xsd:complexType>
+      <xsd:complexType name="RunProcessResponse">
+        <xsd:sequence>
+          <xsd:element name="Error" type="xsd:string"/>
+          <xsd:element name="Summary" type="xsd:string"/>
+          <xsd:element name="LogInfo" type="xsd:string"/>
+          <xsd:element name="Data" type="xsd:hexBinary"/>
+        </xsd:sequence>
+        <xsd:attribute name="IsError" type="xsd:boolean"/>
+        <xsd:attribute name="IsReport" type="xsd:boolean"/>
+        <xsd:attribute name="ReportFormat" type="xsd:string"/>
+      </xsd:complexType>
+      <xsd:complexType name="ProcessParamList">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="Param" type="tns:ProcessParam"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ProcessParam">
+        <xsd:sequence>
+          <xsd:element name="Description" type="xsd:string"/>
+          <xsd:element name="Help" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="lookup" type="tns:LookupValues"/>
+        </xsd:sequence>
+        <xsd:attribute name="Name" type="xsd:string"/>
+        <xsd:attribute name="DefaultValue" type="xsd:string"/>
+        <xsd:attribute name="DefaultValue2" type="xsd:string"/>
+        <xsd:attribute name="IsMandatory" type="xsd:boolean"/>
+        <xsd:attribute name="IsRange" type="xsd:boolean"/>
+        <xsd:attribute name="FieldLength" type="xsd:int"/>
+        <xsd:attribute name="DisplayType" type="xsd:int"/>
+        <xsd:attribute name="ColumnName" type="xsd:string"/>
+      </xsd:complexType>
+      <!--int WindowNo, int AD_Window_ID, int AD_Menu_ID, int TabNo, int PrevTabNo, int PrevRecNo, boolean getData, int RowStart, int RowCount)-->
+      <xsd:element name="WindowTabDataReq" type="tns:WindowTabDataReq"/>
+      <xsd:complexType name="WindowTabDataReq">
+        <xsd:sequence>
+          <xsd:element name="FindCriteria" type="tns:DataRow"/>
+        </xsd:sequence>
+        <xsd:attribute name="WindowNo" type="xsd:int"/>
+        <xsd:attribute name="AD_Window_ID" type="xsd:int"/>
+        <xsd:attribute name="AD_Menu_ID" type="xsd:int"/>
+        <xsd:attribute name="TabNo" type="xsd:int"/>
+        <xsd:attribute name="PrevTabNo" type="xsd:int"/>
+        <xsd:attribute name="PrevRecNo" type="xsd:int"/>
+        <xsd:attribute name="getData" type="xsd:boolean"/>
+        <xsd:attribute name="RowStart" type="xsd:int"/>
+        <xsd:attribute name="RowCount" type="xsd:int"/>
+        <xsd:attribute name="fromZoom" type="xsd:boolean"/>
+        <xsd:attribute name="fromZoom_Window_ID" type="xsd:int"/>
+        <xsd:attribute name="fromZoom_Tab_ID" type="xsd:int"/>
+        <xsd:attribute name="fromZoom_Row_ID" type="xsd:int"/>
+        <xsd:attribute name="fromZoom_ColumnName" type="xsd:string"/>
+        <xsd:attribute name="fromZoom_ColumnValue" type="xsd:string"/>
+      </xsd:complexType>
+      <xsd:element name="ADMenu" type="tns:ADMenuItem"/>
+      <xsd:complexType name="ADMenuItemList">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="Item" type="tns:ADMenuItem"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ADMenuItem">
+        <xsd:sequence>
+          <xsd:element name="items" type="tns:ADMenuItemList"/>
+          <xsd:element name="description" type="xsd:string"/>
+          <xsd:element name="url" type="xsd:string"/>
+        </xsd:sequence>
+        <xsd:attribute name="AD_Menu_ID" type="xsd:int"/>
+        <xsd:attribute name="type" type="xsd:string"/>
+        <xsd:attribute name="name" type="xsd:string"/>
+      </xsd:complexType>
+      <xsd:element name="ADLoginRequest" type="tns:ADLoginRequest"/>
+      <xsd:element name="ADLoginResponse" type="tns:ADLoginResponse"/>
+      <xsd:complexType name="ADLoginRequest">
+        <xsd:sequence>
+          <xsd:element name="user" type="xsd:string"/>
+          <xsd:element name="pass" type="xsd:string"/>
+          <xsd:element name="lang" type="xsd:string"/>
+          <xsd:element name="ClientID" type="xsd:int"/>
+          <xsd:element name="RoleID" type="xsd:int"/>
+          <xsd:element name="OrgID" type="xsd:int"/>
+          <xsd:element name="WarehouseID" type="xsd:int"/>
+          <xsd:element name="stage" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ADLoginResponse">
+        <xsd:sequence>
+          <xsd:element name="status" type="xsd:int"/>
+          <xsd:element name="roles" type="tns:LookupValues"/>
+          <xsd:element name="langs" type="tns:LookupValues"/>
+          <xsd:element name="orgs" type="tns:LookupValues"/>
+          <xsd:element name="clients" type="tns:LookupValues"/>
+          <xsd:element name="warehouses" type="tns:LookupValues"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="Location">
+        <xsd:sequence>
+          <xsd:element name="C_Location_ID" type="xsd:int"/>
+          <xsd:element name="Name" type="xsd:string"/>
+          <xsd:element name="Address1" type="xsd:string"/>
+          <xsd:element name="Address2" type="xsd:string"/>
+          <xsd:element name="City" type="xsd:string"/>
+          <xsd:element name="PostalCode" type="xsd:string"/>
+          <xsd:element name="C_Country_ID" type="xsd:int"/>
+          <xsd:element name="C_Region_ID" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="Countries" type="tns:LookupValues"/>
+          <!--<xsd:element name="Regions" type="tns:LookupValues" minOccurs="0" maxOccurs="1" />-->
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="StandardResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="Error" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="Summary" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="LogInfo" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="Data" type="xsd:hexBinary"/>
+          <xsd:element minOccurs="0" name="outputFields" type="tns:outputFields"/>
+          <xsd:element minOccurs="0" name="RunProcessResponse" type="tns:RunProcessResponse"/>
+          <xsd:element minOccurs="0" name="WindowTabData" type="tns:WindowTabData"/>
+        </xsd:sequence>
+        <xsd:attribute name="IsError" type="xsd:boolean"/>
+        <xsd:attribute name="IsRolledBack" type="xsd:boolean"/>
+        <xsd:attribute name="RecordID" type="xsd:int"/>
+        <xsd:attribute name="ReportFormat" type="xsd:string" use="optional"/>
+      </xsd:complexType>
+      <xsd:complexType name="outputFields">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" name="outputField" type="tns:outputField"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="outputField">
+        <xsd:attribute name="column" type="xsd:string"/>
+        <xsd:attribute name="value" type="xsd:string"/>
+        <xsd:attribute name="Text" type="xsd:string"/>
+      </xsd:complexType>
+      <xsd:element name="Location" type="tns:Location"/>
+      <xsd:element name="StandardResponse" type="tns:StandardResponse"/>
+      <xsd:element name="DocAction" type="tns:DocAction"/>
+      <xsd:complexType name="DocAction">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="Action" type="tns:LookupValues"/>
+          <xsd:element name="Error" type="xsd:string"/>
+        </xsd:sequence>
+        <xsd:attribute name="IsError" type="xsd:boolean"/>
+        <xsd:attribute name="RecordID" type="xsd:int"/>
+      </xsd:complexType>
+      <xsd:element name="getLookupSearchDataReq" type="tns:getLookupSearchDataReq"/>
+      <xsd:complexType name="getLookupSearchDataReq">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="Params" type="tns:DataRow"/>
+        </xsd:sequence>
+        <xsd:attribute name="WindowNo" type="xsd:int"/>
+        <xsd:attribute name="TabNo" type="xsd:int"/>
+        <xsd:attribute name="RowNo" type="xsd:int"/>
+        <xsd:attribute name="ColumnName" type="xsd:string"/>
+      </xsd:complexType>
+      <!--Elements added for model web services-->
+      <xsd:element name="ModelSetDocActionRequest" type="tns:ModelSetDocActionRequest"/>
+      <xsd:complexType name="ModelSetDocAction">
+        <xsd:sequence>
+          <xsd:element name="serviceType" type="xsd:string"/>
+          <xsd:element name="tableName" type="xsd:string"/>
+          <xsd:element name="recordID" type="xsd:int"/>
+          <xsd:element minOccurs="0" name="recordIDVariable" type="xsd:string"/>
+          <xsd:element name="docAction" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ModelSetDocActionRequest">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="1" name="ModelSetDocAction" type="tns:ModelSetDocAction"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="ADLoginRequest" type="tns:ADLoginRequest"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ModelRunProcess" type="tns:ModelRunProcess"/>
+      <xsd:complexType name="ModelRunProcess">
+        <xsd:sequence>
+          <xsd:element name="serviceType" type="xsd:string"/>
+          <xsd:element name="ParamValues" type="tns:DataRow"/>
+        </xsd:sequence>
+        <xsd:attribute name="AD_Process_ID" type="xsd:int"/>
+        <xsd:attribute name="AD_Menu_ID" type="xsd:int"/>
+        <xsd:attribute name="AD_Record_ID" type="xsd:int"/>
+        <xsd:attribute name="DocAction" type="xsd:string"/>
+      </xsd:complexType>
+      <xsd:element name="ModelRunProcessRequest" type="tns:ModelRunProcessRequest"/>
+      <xsd:complexType name="ModelRunProcessRequest">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="1" name="ModelRunProcess" type="tns:ModelRunProcess"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="ADLoginRequest" type="tns:ADLoginRequest"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ModelGetListRequest" type="tns:ModelGetListRequest"/>
+      <xsd:complexType name="ModelGetList">
+        <xsd:sequence>
+          <xsd:element name="serviceType" type="xsd:string"/>
+          <xsd:element name="AD_Reference_ID" type="xsd:int"/>
+          <xsd:element name="Filter" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ModelGetListRequest">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="1" name="ModelGetList" type="tns:ModelGetList"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="ADLoginRequest" type="tns:ADLoginRequest"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ModelCRUDRequest" type="tns:ModelCRUDRequest"/>
+      <xsd:complexType name="ModelCRUD">
+        <xsd:sequence>
+          <xsd:element name="serviceType" type="xsd:string"/>
+          <xsd:element name="TableName" type="xsd:string"/>
+          <xsd:element name="RecordID" type="xsd:int"/>
+          <xsd:element minOccurs="0" name="recordIDVariable" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="Filter" type="xsd:string"/>
+          <xsd:element name="Action">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="Create"/>
+                <xsd:enumeration value="Read"/>
+                <xsd:enumeration value="Update"/>
+                <xsd:enumeration value="Delete"/>
+                <xsd:enumeration value="CreateUpdate"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element maxOccurs="1" minOccurs="0" name="DataRow" type="tns:DataRow"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ModelCRUDRequest">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="1" name="ModelCRUD" type="tns:ModelCRUD"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="ADLoginRequest" type="tns:ADLoginRequest"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="operations">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="1" name="operation" type="tns:operation"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="operation">
+        <xsd:sequence>
+          <xsd:element name="TargetPort">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="createData"/>
+                <xsd:enumeration value="readData"/>
+                <xsd:enumeration value="updateData"/>
+                <xsd:enumeration value="deleteData"/>
+                <xsd:enumeration value="runProcess"/>
+                <xsd:enumeration value="setDocAction"/>
+                <xsd:enumeration value="createUpdateData"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="ModelCRUD" type="tns:ModelCRUD"/>
+          <xsd:element minOccurs="0" name="ModelSetDocAction" type="tns:ModelSetDocAction"/>
+          <xsd:element minOccurs="0" name="ModelRunProcess" type="tns:ModelRunProcess"/>
+        </xsd:sequence>
+        <xsd:attribute default="false" name="preCommit" type="xsd:boolean"/>
+        <xsd:attribute default="false" name="postCommit" type="xsd:boolean"/>
+      </xsd:complexType>
+      <xsd:element name="CompositeRequest" type="tns:CompositeRequest"/>
+      <xsd:complexType name="CompositeRequest">
+        <xsd:sequence>
+          <xsd:element name="ADLoginRequest" type="tns:ADLoginRequest"/>
+          <xsd:element name="serviceType" type="xsd:string"/>
+          <xsd:element maxOccurs="unbounded" name="operations" type="tns:operations"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="CompositeResponses" type="tns:CompositeResponses"/>
+      <xsd:complexType name="CompositeResponses">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="CompositeResponse" type="tns:CompositeResponse"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="CompositeResponse">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="1" name="StandardResponse" type="tns:StandardResponse"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="compositeOperationResponse">
+    <wsdl:part element="tns:CompositeResponses" name="return"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="compositeOperation">
+    <wsdl:part element="tns:CompositeRequest" name="arg0"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="CompositeService">
+    <wsdl:operation name="compositeOperation">
+      <wsdl:input message="tns:compositeOperation" name="compositeOperation"></wsdl:input>
+      <wsdl:output message="tns:compositeOperationResponse" name="compositeOperationResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="compositeInterfaceSoapBinding" type="tns:CompositeService">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="compositeOperation">
+      <soap:operation soapAction="" style="rpc"/>
+      <wsdl:input name="compositeOperation">
+        <soap:body namespace="http://idempiere.org/ADInterface/1_0" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="compositeOperationResponse">
+        <soap:body namespace="http://idempiere.org/ADInterface/1_0" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="compositeInterface">
+    <wsdl:port binding="tns:compositeInterfaceSoapBinding" name="CompositeServiceImplPort">
+      <soap:address location="http://localhost:9191/ADInterface/services/compositeInterface"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:9191/ADInterface/services/compositeInterface</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="compositeOperation" bindingOperationName="compositeOperation" type="Request-Response" outputName="compositeOperationResponse" inputName="compositeOperation" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:9191/ADInterface/services/compositeInterface</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:_0="http://idempiere.org/ADInterface/1_0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <_0:compositeOperation>
+         <_0:CompositeRequest>
+            <_0:ADLoginRequest>
+               <_0:user>WebService</_0:user>
+		<_0:pass>WebService</_0:pass>
+		<_0:lang>en_US</_0:lang>
+		<_0:ClientID>11</_0:ClientID>
+		<_0:RoleID>50004</_0:RoleID>
+		<_0:OrgID>11</_0:OrgID>
+		<_0:WarehouseID>103</_0:WarehouseID>
+		<_0:stage>9</_0:stage>
+            </_0:ADLoginRequest>
+            <_0:serviceType>SyncOrder</_0:serviceType>
+            <_0:operations>
+               <_0:operation preCommit="false" postCommit="false">
+			<_0:TargetPort>createUpdateData</_0:TargetPort>
+				<_0:ModelCRUD>
+               				<_0:serviceType>CreateBPartner</_0:serviceType>
+              				 <_0:TableName>C_BPartner</_0:TableName>
+              				 <_0:RecordID>0</_0:RecordID>
+              				 <_0:Action>CreateUpdate</_0:Action>
+               				<_0:DataRow>
+		  				<_0:field column="Name">
+                      					<_0:val>Trek Global</_0:val>
+                  				</_0:field>
+		  				<_0:field column="email">
+                      					<_0:val>dpansheriya@trekglobal.com</_0:val>
+                  				</_0:field>
+		  				<_0:field column="TaxID">
+                      					<_0:val>830.085.359-4</_0:val>
+                  				</_0:field>
+		  				<_0:field column="IsVendor">
+                      					<_0:val>Y</_0:val>
+                  				</_0:field>
+		  				<_0:field column="IsCustomer">
+                      					<_0:val>N</_0:val>
+                  				</_0:field>
+		  				<_0:field column="IsTaxExempt">
+                      					<_0:val>N</_0:val>
+                  				</_0:field>
+		  				<_0:field column="C_BP_Group_ID">
+                      					<_0:val>104</_0:val>
+                  				</_0:field>
+               				</_0:DataRow>
+            			</_0:ModelCRUD>
+		</_0:operation>
+		<_0:operation preCommit="false" postCommit="false">
+			<_0:TargetPort>createUpdateData</_0:TargetPort>
+				<_0:ModelCRUD>
+               				<_0:serviceType>CreateUpdateUser</_0:serviceType>
+              				 <_0:TableName>AD_User</_0:TableName>
+              				 <_0:RecordID>0</_0:RecordID>
+              				 <_0:Action>CreateUpdate</_0:Action>
+               				<_0:DataRow>
+		  				<_0:field column="Name">
+                      					<_0:val>Deepak Pansheriya</_0:val>
+                  				</_0:field>
+		  				<_0:field column="EMail">
+                      					<_0:val>dpansheriya@trekglobal.com</_0:val>
+                  				</_0:field>
+		  				<_0:field column="C_BPartner_ID">
+                      					<_0:val>@C_BPartner.C_BPartner_ID</_0:val>
+                  				</_0:field>
+		  				<_0:field column="Phone">
+                      					<_0:val>9228785734</_0:val>
+                  				</_0:field>
+               				</_0:DataRow>
+            			</_0:ModelCRUD>
+		</_0:operation>
+		<_0:operation preCommit="false" postCommit="false">
+			<_0:TargetPort>createUpdateData</_0:TargetPort>
+				<_0:ModelCRUD>
+               				<_0:serviceType>CreateUpdateLocation1</_0:serviceType>
+              				 <_0:TableName>C_Location</_0:TableName>
+              				 <_0:RecordID>0</_0:RecordID>
+              				 <_0:Action>CreateUpdate</_0:Action>
+               				<_0:DataRow>
+		  				<_0:field column="C_Country_ID" lval="United States"/>
+		  				<_0:field column="Address1">
+                      					<_0:val>1625 Cowboy Chaps Place</_0:val>
+                  				</_0:field>
+						<_0:field column="Address2">
+                      					<_0:val></_0:val>
+                  				</_0:field>
+						<_0:field column="C_Region_ID" lval="NV"/>
+		  				<_0:field column="RegionName">
+                      					<_0:val>NV</_0:val>
+                  				</_0:field>
+						<_0:field column="Postal">
+                      					<_0:val>89002</_0:val>
+                  				</_0:field>
+						<_0:field column="City">
+                      					<_0:val>Henderson</_0:val>
+                  				</_0:field>
+               				</_0:DataRow>
+            			</_0:ModelCRUD>
+		</_0:operation>
+		<_0:operation preCommit="false" postCommit="false">
+			<_0:TargetPort>createUpdateData</_0:TargetPort>
+				<_0:ModelCRUD>
+               				<_0:serviceType>CreateUpdateBPLocation</_0:serviceType>
+              				 <_0:TableName>C_BPartner_Location</_0:TableName>
+              				 <_0:RecordID>0</_0:RecordID>
+              				 <_0:Action>CreateUpdate</_0:Action>
+               				<_0:DataRow>
+		  				<_0:field column="C_BPartner_ID">
+                      					<_0:val>@C_BPartner.C_BPartner_ID</_0:val>
+                  				</_0:field>
+		  				<_0:field column="C_Location_ID">
+                      					<_0:val>@C_Location.C_Location_ID</_0:val>
+                  				</_0:field>
+		  				<_0:field column="IsShipTo">
+                      					<_0:val>True</_0:val>
+                  				</_0:field>
+		  				<_0:field column="IsBillTo">
+                      					<_0:val>True</_0:val>
+                  				</_0:field>
+               				</_0:DataRow>
+            			</_0:ModelCRUD>
+		</_0:operation>
+		<_0:operation preCommit="false" postCommit="false">
+			<_0:TargetPort>createUpdateData</_0:TargetPort>
+				<_0:ModelCRUD>
+               				<_0:serviceType>CreateUpdateUser</_0:serviceType>
+              				 <_0:TableName>AD_User</_0:TableName>
+              				 <_0:RecordID>0</_0:RecordID>
+              				 <_0:Action>CreateUpdate</_0:Action>
+               				<_0:DataRow>
+		  				<_0:field column="EMail">
+                      					<_0:val>dpansheriya@trekglobal.com</_0:val>
+                  				</_0:field>
+		  				<_0:field column="C_BPartner_ID">
+                      					<_0:val>@C_BPartner.C_BPartner_ID</_0:val>
+                  				</_0:field>
+		  				<_0:field column="C_BPartner_Location_ID">
+                      					<_0:val>@C_BPartner_Location.C_BPartner_Location_ID</_0:val>
+                  				</_0:field>
+               				</_0:DataRow>
+            			</_0:ModelCRUD>
+		</_0:operation>
+        <_0:operation preCommit="false" postCommit="false">
+                  <_0:TargetPort>createUpdateData</_0:TargetPort>
+                  <_0:ModelCRUD>
+                     <_0:serviceType>createOrderRecord</_0:serviceType>
+		     <_0:TableName>C_Order</_0:TableName>
+		     <_0:RecordID>0</_0:RecordID>
+		     <_0:Action>CreateUpdate</_0:Action>
+                     <_0:DataRow>
+			<_0:field column="M_Warehouse_ID">
+				<_0:val>50001</_0:val>
+			</_0:field>
+			<_0:field column="DocumentNo">
+				<_0:val>DEEPTEST03</_0:val>
+			</_0:field>
+			<_0:field column="AD_User_ID">
+				<_0:val>@AD_User.AD_User_ID</_0:val>
+			</_0:field>
+			<_0:field column="C_BPartner_ID">
+				<_0:val>@C_BPartner.C_BPartner_ID</_0:val>
+			</_0:field>
+			<_0:field column="C_BPartner_Location_ID">
+				<_0:val>@C_BPartner_Location.C_BPartner_Location_ID</_0:val>
+			</_0:field>
+			<_0:field column="Bill_BPartner_ID">
+				<_0:val>@C_BPartner.C_BPartner_ID</_0:val>
+			</_0:field>
+			<_0:field column="Bill_Location_ID">
+				<_0:val>@C_BPartner_Location.C_BPartner_Location_ID</_0:val>
+			</_0:field>
+			<_0:field column="C_DocTypeTarget_ID">
+				<_0:val>132</_0:val>
+			</_0:field>
+							
+			<_0:field column="FreightCostRule" lval="Freight included"/>
+			<_0:field column="FreightAmt">
+				<_0:val>6</_0:val>
+			</_0:field>
+                     </_0:DataRow>
+                  </_0:ModelCRUD>
+               </_0:operation>
+		<_0:operation preCommit="true" postCommit="false">
+			<_0:TargetPort>createUpdateData</_0:TargetPort>
+				<_0:ModelCRUD>
+					<_0:serviceType>CreateOrderLine</_0:serviceType>
+					<_0:TableName>C_OrderLine</_0:TableName>
+					<_0:RecordID>0</_0:RecordID>
+					<_0:Action>CreateUpdate</_0:Action>
+					<_0:DataRow>
+						<_0:field column="AD_Org_ID">
+							<_0:val>11</_0:val>
+						</_0:field>
+						<_0:field column="AD_Client_ID">
+							<_0:val>11</_0:val>
+						</_0:field>
+
+						<_0:field column="C_Order_ID">
+							<_0:val>@C_Order.C_Order_ID</_0:val>
+						</_0:field>
+						<_0:field column="M_Product_ID">
+							<_0:val>140</_0:val>
+						</_0:field>
+						<_0:field column="QtyEntered">
+							<_0:val>1</_0:val>
+						</_0:field>
+						<_0:field column="QtyOrdered">
+							<_0:val>1</_0:val>
+						</_0:field>
+						<_0:field column="Line">
+							<_0:val>10</_0:val>
+						</_0:field>
+						<_0:field column="PriceEntered">
+							<_0:val>12</_0:val>
+						</_0:field>
+						<_0:field column="PriceActual">
+							<_0:val>13</_0:val>
+						</_0:field>
+					</_0:DataRow>
+				</_0:ModelCRUD>
+			</_0:operation>
+						
+			<_0:operation preCommit="false" postCommit="false">
+				<_0:TargetPort>createUpdateData</_0:TargetPort>
+					<_0:ModelCRUD>
+						<_0:serviceType>CreateOrderLine</_0:serviceType>
+						<_0:TableName>C_OrderLine</_0:TableName>
+						<_0:RecordID>0</_0:RecordID>
+						<_0:Action>CreateUpdate</_0:Action>
+						<_0:DataRow>
+							<_0:field column="C_Order_ID">
+								<_0:val>@C_Order.C_Order_ID</_0:val>
+							</_0:field>
+							<_0:field column="M_Product_ID">
+								<_0:val>123</_0:val>
+							</_0:field>
+							<_0:field column="QtyEntered">
+								<_0:val>2</_0:val>
+							</_0:field>
+							<_0:field column="QtyOrdered">
+								<_0:val>2</_0:val>
+							</_0:field>
+							<_0:field column="Line">
+								<_0:val>10</_0:val>
+							</_0:field>
+							<_0:field column="PriceEntered">
+								<_0:val>14</_0:val>
+							</_0:field>
+							<_0:field column="PriceActual">
+								<_0:val>15</_0:val>
+							</_0:field>
+						</_0:DataRow>
+					</_0:ModelCRUD>
+				</_0:operation>
+
+				<_0:operation preCommit="true" postCommit="true">
+					<_0:TargetPort>setDocAction</_0:TargetPort>
+					<_0:ModelSetDocAction>
+			                     <_0:serviceType>CompleteOrder</_0:serviceType>
+			                     <_0:tableName>C_Order</_0:tableName>
+			                     <_0:recordID>0</_0:recordID>
+			                     <_0:recordIDVariable>@C_Order.C_Order_ID</_0:recordIDVariable>
+			                     <_0:docAction>CO</_0:docAction>
+			                 </_0:ModelSetDocAction>
+				</_0:operation>
+            </_0:operations>
+         </_0:CompositeRequest>
+      </_0:compositeOperation>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://idempiere.org/ADInterface/1_0/CompositeService/compositeOperation"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/></con:soapui-project>

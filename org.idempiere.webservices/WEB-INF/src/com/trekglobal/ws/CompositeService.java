@@ -1,4 +1,4 @@
-package com.bizidium.ws;
+package com.trekglobal.ws;
 
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
