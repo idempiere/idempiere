@@ -11,7 +11,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package com.bizidium.ws;
+package com.trekglobal.ws;
 
 import java.util.ArrayList;
 import java.util.Properties;
@@ -52,7 +52,7 @@ import org.idempiere.webservices.AbstractService;
  * @author Deepak Pansheriya
  * 
  */
-@WebService(endpointInterface = "com.bizidium.ws.CompositeService", serviceName = "compositeInterface" ,targetNamespace="http://idempiere.org/ADInterface/1_0")
+@WebService(endpointInterface = "com.trekglobal.ws.CompositeService", serviceName = "compositeInterface" ,targetNamespace="http://idempiere.org/ADInterface/1_0")
 public class CompositeServiceImpl extends AbstractService implements CompositeService {
 	private static CLogger log = CLogger.getCLogger(CompositeServiceImpl.class);
 

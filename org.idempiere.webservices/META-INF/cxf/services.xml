@@ -12,7 +12,7 @@
     </jaxws:dataBinding>
   </jaxws:endpoint>
    
-  <jaxws:endpoint id="compositeInterface" address="/compositeInterface" implementor="com.bizidium.ws.CompositeServiceImpl" >
+  <jaxws:endpoint id="compositeInterface" address="/compositeInterface" implementor="com.trekglobal.ws.CompositeServiceImpl" >
    <jaxws:dataBinding>
        <bean class="org.apache.cxf.xmlbeans.XmlBeansDataBinding" >
        </bean>

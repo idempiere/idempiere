@@ -20,7 +20,6 @@ public class CompiereUtil {
 	{
 		if (s_initOK)
 		{
-			//log.info(context.getServletContextName());
 			return true;
 		}
 		
@@ -44,7 +43,6 @@ public class CompiereUtil {
 			return false;
 
 		//	Logging now initiated
-		//log.info(info.toString());
 		
 		//
 		Properties ctx = new Properties();
@@ -53,11 +51,6 @@ public class CompiereUtil {
 		@SuppressWarnings("unused")
 		MSystem system = MSystem.get(ctx);
 		
-		// Env.setContext( ctx, "#AD_Language", "pl_PL" );
-		//client.sendEMail(client.getRequestEMail(), 
-		//	"Server started: " + system.getName() 
-		//	,"ServerInfo: " + context.getServerInfo()
-		//);
 
 		return s_initOK;
 	}
