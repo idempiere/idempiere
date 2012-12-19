@@ -288,7 +288,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		center.appendChild(grid);
 		layout.appendChild(center);
 		center.setStyle("background-color: white; border: 0");
-		center.setFlex(true);
+		center.setHflex("true");
+		center.setVflex("true");		
 		
 		South south = new South();
 		Div southDiv = new Div();

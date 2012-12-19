@@ -138,7 +138,8 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		
 		Center center = new Center();
 		center.appendChild(messageTree);
-		center.setFlex(true);
+		center.setHflex("true");
+		center.setVflex("true");
 		center.setAutoscroll(true);
 		mainPanel.appendChild(center);
 		//

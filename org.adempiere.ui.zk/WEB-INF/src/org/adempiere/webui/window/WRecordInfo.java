@@ -154,7 +154,8 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		
 		Center center = new Center();
 		center.setParent(layout);
-		center.setFlex(true);
+		center.setHflex("true");
+		center.setVflex("true");
 		if (showTable)
 		{
 			North north = new North();
