@@ -125,7 +125,7 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 		row.appendChild(cbTable);
 		
 		Div div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(bExport);
 		
 		row = rows.newRow();

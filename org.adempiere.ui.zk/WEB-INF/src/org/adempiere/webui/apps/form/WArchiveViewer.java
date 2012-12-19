@@ -239,7 +239,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		rows.appendChild(row);
 		row.setSpans("1, 2");
 		Div div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(processLabel);
 		row.appendChild(div);
 		row.appendChild(processField);
@@ -249,7 +249,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		rows.appendChild(row);
 		row.setSpans("1, 2");
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(bPartnerLabel);
 		row.appendChild(div);
 		row.appendChild(bPartnerField.getComponent());
@@ -258,7 +258,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		rows.appendChild(row);
 		row.setSpans("1, 2");
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(tableLabel);
 		row.appendChild(div);
 		row.appendChild(tableField);
@@ -268,7 +268,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		rows.appendChild(row);
 		row.setSpans("1, 2");
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(nameQLabel);
 		row.appendChild(div);
 		row.appendChild(nameQField);
@@ -278,7 +278,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		rows.appendChild(row);
 		row.setSpans("1, 2");
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(descriptionQLabel);
 		row.appendChild(div);
 		row.appendChild(descriptionQField);
@@ -288,7 +288,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		rows.appendChild(row);
 		row.setSpans("1, 2");
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(helpQLabel);
 		row.appendChild(div);
 		row.appendChild(helpQField);
@@ -298,7 +298,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		rows.appendChild(row);
 		row.setSpans("1, 2");
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(createdByQLabel);
 		row.appendChild(div);
 		row.appendChild(createdByQField);
@@ -307,14 +307,14 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(createdQLabel);
 		row.appendChild(div);
 		row.appendChild(createdQFrom);
 		row.appendChild(createdQTo);
 		
 		div = new Div();
-		div.setAlign("center");
+		div.setStyle("text-align: center;");
 		div.appendChild(gridQuery);
 		
 		Tabpanel tabQueryPanel = new Tabpanel();
@@ -337,15 +337,15 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		rows.appendChild(row);
 		row.setSpans("1, 2, 1");
 		div = new Div();
-		div.setAlign("left");
+		div.setStyle("text-align: left;");
 		div.appendChild(bBack);
 		row.appendChild(div);
 		div = new Div();
-		div.setAlign("center");
+		div.setStyle("text-align: center;");
 		div.appendChild(positionInfo);
 		row.appendChild(div);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(bNext);
 		row.appendChild(div);
 
@@ -365,7 +365,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		rows.appendChild(row);
 		row.setSpans("4");
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(createdField);
 		row.appendChild(div);
 		
@@ -411,7 +411,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		rows.appendChild(row);
 		row.setSpans("4");
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(deleteArchive);
 		div.appendChild(bRefresh);
 		div.appendChild(updateArchive);		

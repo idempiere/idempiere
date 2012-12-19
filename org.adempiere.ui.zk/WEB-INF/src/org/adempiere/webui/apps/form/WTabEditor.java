@@ -301,7 +301,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
         			}
         			if (paintLabel) {
         				Div div = new Div();
-        				div.setAlign("right");
+        				div.setStyle("text-align: right;");
         				Label label = editor.getLabel();
         				div.appendChild(label);
         				if (label.getDecorator() != null)
@@ -322,7 +322,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
         		//display just a label if we are "heading only"
         		Label label = new Label(gridField.getHeader());
         		Div div = new Div();
-        		div.setAlign("center");
+        		div.setStyle("text-align: center;");
         		row.appendCellChild(createSpacer());
         		div.appendChild(label);
         		row.appendCellChild(div);
