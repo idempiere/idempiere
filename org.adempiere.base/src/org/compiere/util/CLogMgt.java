@@ -23,6 +23,7 @@ import java.net.InetAddress;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -35,9 +36,12 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import org.adempiere.base.Service;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
 import org.compiere.model.MClient;
+import org.idempiere.distributed.IClusterMember;
+import org.idempiere.distributed.IClusterService;
 
 
 /**
@@ -542,6 +546,24 @@ public class CLogMgt
 		//thread info
 		sb.append("Active Threads = " + Thread.activeCount());
 		//
+		//cluster info
+		if (Env.getAD_Client_ID(Env.getCtx()) == 0) {
+			IClusterService service = Service.locator().locate(IClusterService.class).getService();
+			if (service != null) {
+				IClusterMember local = service.getLocalMember();
+				Collection<IClusterMember> members = service.getMembers();				
+				if (!members.isEmpty())
+					sb.append(NL).append("Cluster Nodes:").append(NL);
+				for(IClusterMember member : members) {					
+					sb.append(member.toString());
+					if (local != null && member.getId().equals(local.getId())) {
+						sb.append(" *");
+					}
+					sb.append(NL);					
+				}
+			}
+		}
+		
 		return sb;
 	}   //  getInfo
 
