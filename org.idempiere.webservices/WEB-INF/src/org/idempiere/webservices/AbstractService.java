@@ -435,7 +435,7 @@ public class AbstractService {
 	 * @param m_webservicetype
 	 * @return
 	 */
-	protected Object convertToObj(String strValue,Class columnClass,String colName){
+	protected Object convertToObj(String strValue,Class<?> columnClass,String colName){
 		
 		Object value = null;
 
@@ -494,8 +494,8 @@ public class AbstractService {
 	 * @param displayType
 	 * @return
 	 */
-	protected Class getVariableType(String columnName,int displayType){
-		Class ColumnClass= null;
+	protected Class<?> getVariableType(String columnName,int displayType){
+		Class<?> ColumnClass= null;
 		if (columnName.equals("AD_Language") || columnName.equals("EntityType"))
 		{
 			ColumnClass = String.class;

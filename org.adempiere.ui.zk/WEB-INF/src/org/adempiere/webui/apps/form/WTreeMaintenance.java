@@ -51,6 +51,7 @@ import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Splitter;
 import org.zkoss.zul.Tree;
+import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.TreeNode;
 import org.zkoss.zul.Treeitem;
 
@@ -304,8 +305,8 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		log.info("Selected=" + selected);
 		if (selected != null)	//	allow add if not in tree
 		{
-			SimpleTreeModel tm = (SimpleTreeModel) centerTree.getModel();
-			DefaultTreeNode<?> stn = tm.find(tm.getRoot(), selected.id);
+			SimpleTreeModel tm = (SimpleTreeModel)(TreeModel<?>) centerTree.getModel();
+			DefaultTreeNode<Object> stn = tm.find(tm.getRoot(), selected.id);
 			if (stn != null) {
 				int[] path = tm.getPath(stn);
 				Treeitem ti = centerTree.renderItemByPath(path);
@@ -348,7 +349,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		log.info("Item=" + item);
 		if (item != null)
 		{
-			SimpleTreeModel model = (SimpleTreeModel) centerTree.getModel();
+			SimpleTreeModel model = (SimpleTreeModel)(TreeModel<?>) centerTree.getModel();
 			DefaultTreeNode<Object> stn = model.find(model.getRoot(), item.id);
 			if (stn != null) {
 				MTreeNode tNode = (MTreeNode) stn.getData();
@@ -377,7 +378,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		log.info("Item=" + item);
 		if (item != null)
 		{
-			SimpleTreeModel model = (SimpleTreeModel) centerTree.getModel();
+			SimpleTreeModel model = (SimpleTreeModel)(TreeModel<?>) centerTree.getModel();
 			DefaultTreeNode<Object> stn = model.find(model.getRoot(), item.id);
 			if (stn != null)
 				model.removeNode(stn);

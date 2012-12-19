@@ -953,7 +953,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	private void setValueAccordingToClass(PO po, POInfo poinfo, DataField field, int idxcol) {
 		CompiereService m_cs = getCompiereService();
 		// Evaluate the type of the column and assign a proper variable
-		Class columnClass = poinfo.getColumnClass(idxcol);
+		Class<?> columnClass = poinfo.getColumnClass(idxcol);
 		Object value = null;
 		String strValue = field.getVal();
 		String lookupValue = field.getLval();
@@ -1047,7 +1047,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				//Is ctx variable
 				if (fieldInput.getAD_Column_ID() == 0 && fieldInput.getColumnName() != null) { 
 					String varName = fieldInput.getColumnName();
-					Class columnClass = getVariableType(varName, fieldInput.getAD_Reference_ID());
+					Class<?> columnClass = getVariableType(varName, fieldInput.getAD_Reference_ID());
 					Object objVal = convertToObj(field.getVal(),columnClass,varName); 
 					requestCtx.put(varName, objVal);
 					

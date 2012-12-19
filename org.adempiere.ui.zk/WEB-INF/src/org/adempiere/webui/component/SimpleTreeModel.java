@@ -41,7 +41,7 @@ import org.zkoss.zul.event.TreeDataEvent;
  * @author Low Heng Sin
  *
  */
-public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements TreeitemRenderer<Object>, EventListener<Event> {
+public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> implements TreeitemRenderer<Object>, EventListener<Event> {
 
 	/**
 	 * 
@@ -174,7 +174,6 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel implements T
 		return (DefaultTreeNode<Object>) super.getRoot();
 	}
 
-	@Override
 	public DefaultTreeNode<Object> getChild(Object parent, int index) {
 		return (DefaultTreeNode<Object>) super.getChild((TreeNode<Object>)parent, index);
 	}
