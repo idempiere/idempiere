@@ -132,6 +132,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
         btnRecordInfo.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Who")));
         btnRecordInfo.addEventListener(Events.ON_CLICK, this);
         btnRecordInfo.setSclass("breadcrumb-record-info link");
+        btnRecordInfo.setId("recordInfo");
         toolbar.appendChild(btnRecordInfo);
         btnNext = createButton("Next", "Next", "Next");
         toolbar.appendChild(btnNext);

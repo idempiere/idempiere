@@ -33,6 +33,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.WArchive;
@@ -232,6 +233,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     {
         /** Initalise toolbar */
         toolbar = new ADWindowToolbar(getWindowNo());
+        toolbar.setId("windowToolbar");
         toolbar.addListener(this);
 
         statusBar = new StatusBar();
@@ -2374,6 +2376,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				{
 					Clients.showBusy(getComponent(), " ");
 					final WCreateFromWindow window = (WCreateFromWindow) cf.getWindow();
+					window.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(window.getTitle()));
 					window.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {							

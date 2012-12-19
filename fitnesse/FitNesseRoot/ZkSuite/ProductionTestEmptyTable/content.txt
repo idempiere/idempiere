@@ -1,0 +1,31 @@
+'''IDEMPIERE-520 Master/Detail bugs found using Production window'''
+
+!include -c ZkGardenAdminLogin
+
+!define windowId {$Production__Single_Product__1}
+
+|''open window''|!-Production (Single Product)-!|
+|''wait response''|
+|''element exists''|${windowId} $detailPane @tabbox|
+|''lookup''|${windowId} $Production $M_Product_ID|''search''|!-PatioSet-!|
+|''wait response''|
+|''with''|${windowId} $Production $ProductionQty @decimalbox|''set text''|!-1-!|
+|''window''|${windowId}|''click toolbar''|!-BtnSave-!|
+|''wait response''|
+|''window message''|${windowId}|is|!-Record saved-!|
+|''window''|${windowId}|''click detail toolbar''|!-BtnNew-!|
+|''wait response''|
+|''text of''|${windowId} $recordInfo|is|!-+*1/1-!|
+|''window''|${windowId}|''click toolbar''|!-BtnParentRecord-!|
+|''wait response''|
+|''window''|${windowId}|''click process button''|!-CreateFrom-!|
+|''wait response''|
+|''click''|${windowId} @window[title="Create Production"] $Ok|
+|''wait response''|
+|''window''|${windowId}|''click detail toolbar''|!-BtnEdit-!|
+|''wait response''|
+|''element visible''|${windowId} $detailPane @tab|
+|''window''|${windowId}|''next record''|
+|''wait response''|
+|''element invisible''|${windowId} $detailPane @tab|
+

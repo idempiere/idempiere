@@ -16,7 +16,7 @@ public class SelectTabTest extends AbstractTestCase {
 	public void testSelectTab() throws Exception {
 		login();			
 		waitResponse();
-		comboboxSelectItem("$treeSearchCombo", "Product");
+		openWindow("Product");
 		waitResponse();
 		clickButton("$findWindow_1 $simpleSearch $btnOk");
 		waitResponse();
