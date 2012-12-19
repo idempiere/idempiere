@@ -170,8 +170,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		rows.appendChild(row);
 		
 		row = new Row();
-		row.setSpans("1, 2");
-		row.appendChild(LayoutUtils.makeRightAlign(lDate));
+		row.appendCellChild(LayoutUtils.makeRightAlign(lDate), 1);
 		Div div = new Div();
 		div.setHflex("1");
 		div.appendChild(fDateFrom);
@@ -179,7 +178,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		div.appendChild(fTimeFrom);
 		fTimeFrom.setCols(10);
 		fTimeFrom.setStyle("margin-left: 1px");
-		row.appendChild(div);
+		row.appendCellChild(div, 2);
 		rows.appendChild(row);
 		
 		row = new Row();
@@ -189,29 +188,25 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		rows.appendChild(row);
 		
 		row = new Row();
-		row.setSpans("1, 2");
-		row.appendChild(LayoutUtils.makeRightAlign(lName));
-		row.appendChild(fName);
+		row.appendCellChild(LayoutUtils.makeRightAlign(lName), 1);
+		row.appendCellChild(fName, 2);
 		fName.setStyle("width: 100%");
 		rows.appendChild(row);
 		
 		row = new Row();
-		row.setSpans("1, 2");
-		row.appendChild(LayoutUtils.makeRightAlign(lDescription));
-		row.appendChild(fDescription);
+		row.appendCellChild(LayoutUtils.makeRightAlign(lDescription), 1);
+		row.appendCellChild(fDescription, 2);
 		fDescription.setMultiline(true);
 		fDescription.setRows(3);
 		fDescription.setStyle("width: 100%");
 		rows.appendChild(row);
 		
 		row = new Row();
-		row.setSpans("3");
-		row.appendChild(new Label(" "));
+		row.appendCellChild(new Label(" "), 3);
 		rows.appendChild(row);
 
 		row = new Row();
-		row.setSpans("3");
-		row.appendChild(confirmPanel);
+		row.appendCellChild(confirmPanel, 3);
 		rows.appendChild(row);
 		//
 	}	//	jbInit

@@ -122,42 +122,38 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 		
 		Row row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 2");
 		Div div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(attributeLabel1);
-		row.appendChild(div);
-		row.appendChild(attributeCombo1);
+		row.appendCellChild(div, 1);
+		row.appendCellChild(attributeCombo1, 2);
 		attributeCombo1.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 2");
 		div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(attributeLabel2);
-		row.appendChild(div);
-		row.appendChild(attributeCombo2);
+		row.appendCellChild(div, 1);
+		row.appendCellChild(attributeCombo2, 2);
 		attributeCombo2.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 2");
 		div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(labelPriceList);
-		row.appendChild(div);
-		row.appendChild(pickPriceList);
+		row.appendCellChild(div, 1);
+		row.appendCellChild(pickPriceList, 2);
 		pickPriceList.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 2");
 		div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(labelWarehouse);
-		row.appendChild(div);
-		row.appendChild(pickWarehouse);
+		row.appendCellChild(div, 1);
+		row.appendCellChild(pickWarehouse, 2);
 		pickWarehouse.setWidth("100%");
 		
 		div = new Div();

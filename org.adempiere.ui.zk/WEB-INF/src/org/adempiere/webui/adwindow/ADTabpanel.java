@@ -76,6 +76,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Div;
@@ -454,7 +455,10 @@ DataStatusListener, IADTabpanel, IdSpace
         		else
         		{
         			Group rowg = new Group(fieldGroup);
-        			rowg.setSpans(numColsS);
+        			Cell cell = new Cell();
+        			cell.setColspan(numCols);
+        			rowg.appendChild(cell);
+        			
     				allCollapsibleGroups.add(rowg);
         			if (X_AD_FieldGroup.FIELDGROUPTYPE_Tab.equals(field.getFieldGroupType()) || field.getIsCollapsedByDefault())
         			{

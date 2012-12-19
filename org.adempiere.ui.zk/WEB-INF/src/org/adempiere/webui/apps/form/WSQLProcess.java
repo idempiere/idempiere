@@ -118,8 +118,7 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
         m_txbResultField.setRows(noResultRows);
         m_txbResultField.setReadonly(true);
 
-        rwBottom.appendChild(m_txbResultField);
-        rwBottom.setSpans("3");
+        rwBottom.appendCellChild(m_txbResultField, 3);
         rwBottom.setAlign("center");
 
         rows.appendChild(rwBottom);

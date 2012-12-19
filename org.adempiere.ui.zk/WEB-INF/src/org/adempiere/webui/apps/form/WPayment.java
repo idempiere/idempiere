@@ -341,9 +341,8 @@ public class WPayment extends Window
 		row.appendChild(kOnline);
 		
 		row = rows.newRow();
-		row.setSpans("3,1");
-		row.appendChild(kStatus);
-		row.appendChild(new Space());
+		row.appendCellChild(kStatus, 3);
+		row.appendCellChild(new Space(), 1);
 		
 		//	DircetDebit/Credit
 		tPanel.appendChild(tPanelLayout);
@@ -379,9 +378,8 @@ public class WPayment extends Window
 		row.appendChild(tOnline);		
 		
 		row = rows.newRow();
-		row.setSpans("3,1");
-		row.appendChild(tStatus);
-		row.appendChild(new Space());
+		row.appendCellChild(tStatus, 3);
+		row.appendCellChild(new Space(), 1);
 						
 		// Cheque
 		sPanel.appendChild(sPanelLayout);
@@ -439,9 +437,8 @@ public class WPayment extends Window
 		row.appendChild(sOnline);
 		
 		row = rows.newRow();
-		row.setSpans("3,1");
-		row.appendChild(sStatus);
-		row.appendChild(new Space());
+		row.appendCellChild(sStatus, 3);
+		row.appendCellChild(new Space(), 1);
 		
 		// Cash
 		pPanel.appendChild(pPanelLayout);

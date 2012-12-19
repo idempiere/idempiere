@@ -244,8 +244,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("2");
-		row.appendChild(new Separator());
+		row.appendCellChild(new Separator(), 2);
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -258,8 +257,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("2");
-		row.appendChild(new Separator());
+		row.appendCellChild(new Separator(), 2);
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -272,8 +270,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("2");
-		row.appendChild(fMessage);
+		row.appendCellChild(fMessage, 2);
 		fMessage.setHflex("1");
 		fMessage.setRows(10);
 		

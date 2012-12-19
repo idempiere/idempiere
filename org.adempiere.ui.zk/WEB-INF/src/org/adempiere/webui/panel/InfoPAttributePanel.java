@@ -44,6 +44,7 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Textbox;
@@ -250,14 +251,18 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 				{
 					Row row = new Row();
 					rows.appendChild(row);
-					row.setSpans("2");
+					Cell cell = new Cell();
+					cell.setColspan(2);
+					row.appendCellChild(cell);
     				Label group = new Label(Msg.translate(Env.getCtx(), "IsInstanceAttribute")); 
     				row.appendChild(group);
     				rows.appendChild(row);
     				
     				row = new Row();
 					rows.appendChild(row);
-					row.setSpans("2");
+					cell = new Cell();
+					cell.setColspan(2);
+					row.appendCellChild(cell);
                     Separator separator = new Separator();
                     separator.setBar(true);
         			row.appendChild(separator);
@@ -352,14 +357,18 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 			if (isGuarantee || isSerial || isLot) {
 				Row row = new Row();
 				rows.appendChild(row);
-				row.setSpans("2");
+				Cell cell = new Cell();
+				cell.setColspan(2);
+				row.appendCellChild(cell);
 				Label group = new Label(Msg.translate(Env.getCtx(), "IsInstanceAttribute")); 
 				row.appendChild(group);
 				rows.appendChild(row);
 				
 				row = new Row();
 				rows.appendChild(row);
-				row.setSpans("2");
+				cell = new Cell();
+				cell.setColspan(2);
+				row.appendCellChild(cell);
                 Separator separator = new Separator();
                 separator.setBar(true);
     			row.appendChild(separator);

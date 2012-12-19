@@ -60,6 +60,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
@@ -426,8 +427,10 @@ public final class WAccountDialog extends Window
 		m_newRow = true;
 		Row row = new Row();
 		f_Description.setStyle("font-decoration: italic;");
-		row.appendChild(f_Description);
-		row.setSpans("4");
+		Cell cell = new Cell();
+		cell.setColspan(4);
+		cell.appendChild(f_Description);
+		row.appendChild(cell);
 		row.setStyle("background-color: transparent;");
 		m_rows.appendChild(row);
 

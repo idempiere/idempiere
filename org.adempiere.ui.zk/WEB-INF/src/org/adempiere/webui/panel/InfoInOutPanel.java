@@ -205,23 +205,21 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		row.appendChild(fIsSOTrx);
 
 		row = new Row();
-		row.setSpans("1, 1, 1, 2");
-		rows.appendChild(row);
-		row.appendChild(lDescription.rightAlign());
-		row.appendChild(fDescription);
-		row.appendChild(lDateFrom.rightAlign());
+		row.appendCellChild(lDescription.rightAlign(), 1);
+		row.appendCellChild(fDescription, 1);
+		row.appendCellChild(lDateFrom.rightAlign(), 1);
 		Hbox hbox = new Hbox();
 		hbox.appendChild(fDateFrom);
 		hbox.appendChild(lDateTo);
 		hbox.appendChild(fDateTo);
-		row.appendChild(hbox);
+		row.appendCellChild(hbox, 2);
+		rows.appendChild(row);
 
 		row = new Row();
-		row.setSpans("1, 1, 3");
+		row.appendCellChild(lPOReference.rightAlign(), 1);
+		row.appendCellChild(fPOReference, 1);
+		row.appendCellChild(new Label(), 3);
 		rows.appendChild(row);
-		row.appendChild(lPOReference.rightAlign());
-		row.appendChild(fPOReference);
-		row.appendChild(new Label());
 
 		layout = new Borderlayout();
         layout.setWidth("100%");

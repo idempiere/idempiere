@@ -310,10 +310,10 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
 
     	Row row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
         Label label = new Label(Msg.getMsg(Env.getCtx(), "ChargeNewAccount"));
         label.setStyle("font-weight: bold;");
-        row.appendChild(label);
+        row.appendCellChild(label, 3);
+       
 
     	row = new Row();
         rows.appendChild(row);
@@ -329,8 +329,7 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
 
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
+        row.appendCellChild(new Separator(), 3);
 
         return;
     }

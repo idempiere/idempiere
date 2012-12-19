@@ -231,77 +231,69 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		
 		Row row = new Row();
 		rows.appendChild(row);
-		row.setSpans("3");
 		row.setAlign("right");
-		row.appendChild(reportField);
+		row.appendCellChild(reportField, 3);
 
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 2");
 		Div div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(processLabel);
-		row.appendChild(div);
-		row.appendChild(processField);
+		row.appendCellChild(div, 1);
+		row.appendCellChild(processField, 2);
 		processField.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 2");
 		div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(bPartnerLabel);
-		row.appendChild(div);
-		row.appendChild(bPartnerField.getComponent());
+		row.appendCellChild(div, 1);
+		row.appendCellChild(bPartnerField.getComponent(), 2);
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 2");
 		div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(tableLabel);
-		row.appendChild(div);
-		row.appendChild(tableField);
+		row.appendCellChild(div, 1);
+		row.appendCellChild(tableField, 2);
 		tableField.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 2");
 		div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(nameQLabel);
-		row.appendChild(div);
-		row.appendChild(nameQField);
+		row.appendCellChild(div, 1);
+		row.appendCellChild(nameQField, 2);
 		nameQField.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 2");
 		div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(descriptionQLabel);
-		row.appendChild(div);
-		row.appendChild(descriptionQField);
+		row.appendCellChild(div, 1);
+		row.appendCellChild(descriptionQField, 2);
 		descriptionQField.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 2");
 		div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(helpQLabel);
-		row.appendChild(div);
-		row.appendChild(helpQField);
+		row.appendCellChild(div, 1);
+		row.appendCellChild(helpQField, 2);
 		helpQField.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 2");
 		div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(createdByQLabel);
-		row.appendChild(div);
-		row.appendChild(createdByQField);
+		row.appendCellChild(div, 1);
+		row.appendCellChild(createdByQField, 2);
 		createdByQField.setWidth("100%");
 		
 		row = new Row();
@@ -335,87 +327,76 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 2, 1");
 		div = new Div();
 		div.setStyle("text-align: left;");
 		div.appendChild(bBack);
-		row.appendChild(div);
+		row.appendCellChild(div, 1);
 		div = new Div();
 		div.setStyle("text-align: center;");
 		div.appendChild(positionInfo);
-		row.appendChild(div);
+		row.appendCellChild(div, 2);
 		div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(bNext);
-		row.appendChild(div);
+		row.appendCellChild(div, 1);
 
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(createdByLabel);
+		row.appendCellChild(createdByLabel, 4);
 		createdByLabel.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(createdByField);
+		row.appendCellChild(createdByField, 4);
 		createdByField.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("4");
 		div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(createdField);
-		row.appendChild(div);
+		row.appendCellChild(div, 4);
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(nameLabel);
+		row.appendCellChild(nameLabel, 4);
 		nameLabel.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(nameField);
+		row.appendCellChild(nameField, 4);
 		nameField.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(descriptionLabel);
+		row.appendCellChild(descriptionLabel, 4);
 		descriptionLabel.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(descriptionField);
+		row.appendCellChild(descriptionField, 4);
 		descriptionField.setRows(3);
 		descriptionField.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(helpLabel);
+		row.appendCellChild(helpLabel, 4);
 		helpLabel.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(helpField);
+		row.appendCellChild(helpField, 4);
 		helpField.setRows(3);
 		helpField.setWidth("100%");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("4");
 		div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(deleteArchive);
 		div.appendChild(bRefresh);
-		div.appendChild(updateArchive);		
-		row.appendChild(div);
+		div.appendChild(updateArchive);
+		row.appendCellChild(div, 4);
 				
 		createdByField.setReadonly(true);
 		createdField.getDatebox().setReadonly(true);

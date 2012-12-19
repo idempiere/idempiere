@@ -211,28 +211,26 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 		row.appendChild(isSoTrx);
 
 		row = new Row();
-		row.setSpans("1, 1, 1, 2");
-		rows.appendChild(row);
-		row.appendChild(lblDescription.rightAlign());
-		row.appendChild(txtDescription);
-		row.appendChild(lblDateOrdered.rightAlign());
+		row.appendCellChild(lblDescription.rightAlign(), 1);
+		row.appendCellChild(txtDescription, 1);
+		row.appendCellChild(lblDateOrdered.rightAlign(), 1);
 		Hbox hbox = new Hbox();
 		hbox.appendChild(dateFrom);
 		hbox.appendChild(new Label("-"));
 		hbox.appendChild(dateTo);
-		row.appendChild(hbox);
+		row.appendCellChild(hbox, 2);
+		rows.appendChild(row);
 
 		row = new Row();
-		row.setSpans("1, 1, 1, 2");
-		rows.appendChild(row);
-		row.appendChild(lblOrderRef.rightAlign());
-		row.appendChild(txtOrderRef);
-		row.appendChild(lblGrandTotal.rightAlign());
+		row.appendCellChild(lblOrderRef.rightAlign(), 1);
+		row.appendCellChild(txtOrderRef, 1);
+		row.appendCellChild(lblGrandTotal.rightAlign(), 1);
 		hbox = new Hbox();
 		hbox.appendChild(amountFrom);
 		hbox.appendChild(new Label("-"));
 		hbox.appendChild(amountTo);
-		row.appendChild(hbox);
+		row.appendCellChild(hbox, 2);
+		rows.appendChild(row);
 
 		layout = new Borderlayout();
         layout.setWidth("100%");

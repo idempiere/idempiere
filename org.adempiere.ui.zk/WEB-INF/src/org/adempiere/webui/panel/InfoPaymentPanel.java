@@ -212,24 +212,22 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		row.appendChild(fIsReceipt);
 
 		row = new Row();
-		row.setSpans("3, 2");
-		rows.appendChild(row);
-		row.appendChild(lDateFrom.rightAlign());
+		row.appendCellChild(lDateFrom.rightAlign(), 3);
 		Hbox hbox = new Hbox();
 		hbox.appendChild(fDateFrom);
 		hbox.appendChild(lDateTo);
 		hbox.appendChild(fDateTo);
-		row.appendChild(hbox);
+		row.appendCellChild(hbox, 2);
+		rows.appendChild(row);
 
 		row = new Row();
-		row.setSpans("3, 2");
-		rows.appendChild(row);
-		row.appendChild(lAmtFrom.rightAlign());
+		row.appendCellChild(lAmtFrom.rightAlign(), 3);
 		hbox = new Hbox();
 		hbox.appendChild(fAmtFrom);
 		hbox.appendChild(lAmtTo);
 		hbox.appendChild(fAmtTo);
-		row.appendChild(hbox);
+		row.appendCellChild(hbox, 2);
+		rows.appendChild(row);
 
 		layout = new Borderlayout();
         layout.setWidth("100%");
