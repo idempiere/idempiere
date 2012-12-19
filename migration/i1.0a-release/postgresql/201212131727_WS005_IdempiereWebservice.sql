@@ -254,7 +254,6 @@ ALTER TABLE WS_WebServiceTypeAccess ADD COLUMN WS_WebServiceTypeAccess_UU VARCHA
 
 
 
-
 -- Dec 12, 2012 11:49:01 PM IST
 -- IDEMPIERE-460 Adding support for composite service
 UPDATE AD_Column SET MandatoryLogic='@AD_Column_ID@=0',Updated=TO_TIMESTAMP('2012-12-12 23:49:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=202041

@@ -92,6 +92,7 @@ public class ADWindowContent extends AbstractADWindowContent
         toolbar.setWindowNo(getWindowNo());
         breadCrumb = new BreadCrumb(getWindowNo());
         breadCrumb.setToolbarListener(this);
+        breadCrumb.setId("breadCrumb");
         div.appendChild(breadCrumb);
 
         //status bar

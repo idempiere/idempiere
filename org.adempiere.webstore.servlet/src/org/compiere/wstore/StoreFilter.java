@@ -43,7 +43,7 @@ import org.compiere.util.WebEnv;
 public class StoreFilter implements javax.servlet.Filter
 {
 	/**	Logging								*/
-	private static CLogger		log = null;
+	private volatile static CLogger		log = null;
 
 	/**
 	 * 	Init

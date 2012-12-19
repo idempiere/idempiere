@@ -108,8 +108,10 @@ public abstract class SvrProcess implements ProcessCall
 		
 		boolean success = false;
 		
+		ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
 		try 
 		{
+			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 			m_ctx.put(PROCESS_INFO_CTX_KEY, m_pi);
 			if (processUI != null)
 				m_ctx.put(PROCESS_UI_CTX_KEY, processUI);
@@ -143,6 +145,8 @@ public abstract class SvrProcess implements ProcessCall
 			
 			// outside transaction processing [ teo_sarca, 1646891 ]
 			postProcess(!m_pi.isError());
+			
+			Thread.currentThread().setContextClassLoader(contextLoader);
 		}
 		
 		return !m_pi.isError();

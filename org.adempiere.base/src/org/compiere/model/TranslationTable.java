@@ -65,7 +65,7 @@ public class TranslationTable
 	 *	@param requery requery
 	 *	@return number of active Translations
 	 */
-	public static int getActiveLanguages (boolean requery)
+	public synchronized static int getActiveLanguages (boolean requery)
 	{
 		if (s_activeLanguages != null && !requery)
 			return s_activeLanguages.intValue();

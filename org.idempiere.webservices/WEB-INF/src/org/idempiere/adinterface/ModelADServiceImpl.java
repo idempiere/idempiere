@@ -27,7 +27,7 @@
 * - GlobalQSS (http://www.globalqss.com)                              *
 ***********************************************************************/
 
-package com._3e.ADInterface;
+package org.idempiere.adinterface;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -110,7 +110,7 @@ import org.idempiere.webservices.fault.IdempiereServiceFault;
  * @author kolec
  *
  */
-@WebService(endpointInterface="com._3e.ADInterface.ModelADService", serviceName="ModelADService",targetNamespace="http://3e.pl/ADInterface")
+@WebService(endpointInterface="org.idempiere.adinterface.ModelADService", serviceName="ModelADService",targetNamespace="http://idempiere.org/ADInterface/1_0")
 public class ModelADServiceImpl extends AbstractService implements ModelADService {
 
 	private static CLogger	log = CLogger.getCLogger(ModelADServiceImpl.class);
@@ -241,7 +241,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		requestCtx.put("DocAction", docAction);
 
 		// Fire Event
-		StandardResponseDocument retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIME_BEFORE_PARSE, po, null, trx, requestCtx,
+		StandardResponseDocument retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIMING_BEFORE_PARSE, po, null, trx, requestCtx,
 				resp, ret);
 		if (retResp != null)
 			return retResp;
@@ -256,7 +256,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		}
 
 		// Fire Event
-		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIME_BEFORE_SAVE, po, null, trx, requestCtx, resp, ret);
+		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIMING_BEFORE_SAVE, po, null, trx, requestCtx, resp, ret);
 		if (retResp != null)
 			return retResp;
 
@@ -266,7 +266,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 					"Cannot save after set docAction: " + CLogger.retrieveErrorString("no log message"));
 
 		// Fire Event
-		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIME_AFTER_SAVE, po, null, trx, requestCtx, resp, ret);
+		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIMING_AFTER_SAVE, po, null, trx, requestCtx, resp, ret);
 		if (retResp != null)
 			return retResp;
 
@@ -713,7 +713,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
     	Map<String,Object> requestCtx = getRequestCtx();
     	
     	DataField[] fields = dr.getFieldArray();
-    	StandardResponseDocument retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIME_BEFORE_PARSE, po, fields,trx,requestCtx, resp, ret);
+    	StandardResponseDocument retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIMING_BEFORE_PARSE, po, fields,trx,requestCtx, resp, ret);
 		if (retResp != null)
 			return retResp;
 		
@@ -721,19 +721,19 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
     	if(retResp!=null)
     		return retResp;
     	
-    	retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIME_AFTER_PARSE, po, fields,trx,requestCtx, resp, ret);
+    	retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIMING_AFTER_PARSE, po, fields,trx,requestCtx, resp, ret);
 		if (retResp != null)
 			return retResp;
     	
 
-    	retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIME_BEFORE_SAVE, po, fields,trx,requestCtx, resp, ret);
+    	retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIMING_BEFORE_SAVE, po, fields,trx,requestCtx, resp, ret);
 		if (retResp != null)
 			return retResp;
 		
     	if (!po.save())
     		return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
 
-    	retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIME_AFTER_SAVE, po, fields,trx,requestCtx, resp, ret);
+    	retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIMING_AFTER_SAVE, po, fields,trx,requestCtx, resp, ret);
 		if (retResp != null)
 			return retResp;
 		
@@ -808,7 +808,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		MWebServiceType m_webservicetype = getWebServiceType();
 		Map<String, Object> requestCtx = getRequestCtx();
 
-		StandardResponseDocument retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIME_BEFORE_PARSE, holderPo, fields, trx,
+		StandardResponseDocument retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIMING_BEFORE_PARSE, holderPo, fields, trx,
 				requestCtx, resp, ret);
 		if (retResp != null)
 			return retResp;
@@ -817,7 +817,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		if (retResp != null)
 			return retResp;
 
-		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIME_AFTER_PARSE, holderPo, fields, trx, requestCtx, resp, ret);
+		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIMING_AFTER_PARSE, holderPo, fields, trx, requestCtx, resp, ret);
 		if (retResp != null)
 			return retResp;
 
@@ -917,7 +917,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			}
 		}
 
-		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIME_BEFORE_SAVE, holderPo, fields, trx, requestCtx, resp, ret);
+		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIMING_BEFORE_SAVE, holderPo, fields, trx, requestCtx, resp, ret);
 		if (retResp != null)
 			return retResp;
 
@@ -925,7 +925,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			return rollbackAndSetError(trx, resp, ret, true,
 					"Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
 
-		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIME_AFTER_SAVE, holderPo, fields, trx, requestCtx, resp, ret);
+		retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIMING_AFTER_SAVE, holderPo, fields, trx, requestCtx, resp, ret);
 		if (retResp != null)
 			return retResp;
 
@@ -953,7 +953,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	private void setValueAccordingToClass(PO po, POInfo poinfo, DataField field, int idxcol) {
 		CompiereService m_cs = getCompiereService();
 		// Evaluate the type of the column and assign a proper variable
-		Class columnClass = poinfo.getColumnClass(idxcol);
+		Class<?> columnClass = poinfo.getColumnClass(idxcol);
 		Object value = null;
 		String strValue = field.getVal();
 		String lookupValue = field.getLval();
@@ -1047,7 +1047,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				//Is ctx variable
 				if (fieldInput.getAD_Column_ID() == 0 && fieldInput.getColumnName() != null) { 
 					String varName = fieldInput.getColumnName();
-					Class columnClass = getVariableType(varName, fieldInput.getAD_Reference_ID());
+					Class<?> columnClass = getVariableType(varName, fieldInput.getAD_Reference_ID());
 					Object objVal = convertToObj(field.getVal(),columnClass,varName); 
 					requestCtx.put(varName, objVal);
 					

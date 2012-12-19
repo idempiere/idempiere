@@ -18,6 +18,7 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.RestletUtil;
+import org.adempiere.util.ServerContext;
 import org.compiere.interfaces.impl.ServerBean;
 import org.compiere.model.MRole;
 import org.compiere.util.Env;
@@ -57,17 +58,14 @@ public class ExecuteTaskCommand extends ServerResource {
 		}
 		
 		ServerBean bean = new ServerBean();
-		//back up properties
-		Properties backup = new Properties();
-		backup.putAll(Env.getCtx());
 		try
 		{
-			Env.setCtx(context);
+			ServerContext.setCurrentInstance(context);
 			return bean.executeTask(context, AD_Task_ID);
 		}
 		finally
 		{
-			Env.setCtx(backup);
+			ServerContext.dispose();
 		}
 	}
 }

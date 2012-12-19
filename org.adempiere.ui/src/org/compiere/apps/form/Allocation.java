@@ -138,9 +138,11 @@ public class Allocation
 		sql = new StringBuilder( MRole.getDefault(Env.getCtx(), false).addAccessSQL( sql.toString(), "p", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO ) );
 		
 		log.fine("PaySQL=" + sql.toString());
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, m_C_Currency_ID);
 			pstmt.setTimestamp(2, (Timestamp)date);
 			pstmt.setInt(3, m_C_Currency_ID);
@@ -148,7 +150,7 @@ public class Allocation
 			pstmt.setInt(5, m_C_BPartner_ID);
 			if (!isMultiCurrency)
 				pstmt.setInt(6, m_C_Currency_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				Vector<Object> line = new Vector<Object>();
@@ -171,12 +173,14 @@ public class Allocation
 				//
 				data.add(line);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
 		}
 		
 		return data;
@@ -266,9 +270,11 @@ public class Allocation
 		// role security
 		sql = new StringBuilder( MRole.getDefault(Env.getCtx(), false).addAccessSQL( sql.toString(), "i", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO ) );
 		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, m_C_Currency_ID);
 			pstmt.setTimestamp(2, (Timestamp)date);
 			pstmt.setInt(3, m_C_Currency_ID);
@@ -278,7 +284,7 @@ public class Allocation
 			pstmt.setInt(7, m_C_BPartner_ID);
 			if (!isMultiCurrency)
 				pstmt.setInt(8, m_C_Currency_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				Vector<Object> line = new Vector<Object>();
@@ -309,12 +315,14 @@ public class Allocation
 				if (Env.ZERO.compareTo(open) != 0)
 					data.add(line);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
 		}
 		
 		return data;
@@ -441,6 +449,7 @@ public class Allocation
 					applied = applied.subtract(discount);
 					writeOff = Env.ZERO;  //  to be sure
 					overUnder = Env.ZERO;
+					totalDiff = Env.ZERO;
 
 					if (totalDiff.abs().compareTo(applied.abs()) < 0			// where less is available to allocate than open
 							&& totalDiff.signum() == applied.signum() )     	// and the available amount has the same sign
@@ -737,11 +746,12 @@ public class Allocation
 		//	Allocation Line
 			MAllocationLine aLine = new MAllocationLine (alloc, chargeAmt.negate(), 
 				Env.ZERO, Env.ZERO, Env.ZERO);
-			aLine.set_CustomColumn("C_Charge_ID", m_C_Charge_ID);
-			//aLine.set_CustomColumn("ChargeAmt", chargeAmt);
+			aLine.setC_Charge_ID(m_C_Charge_ID);
 			aLine.setC_BPartner_ID(m_C_BPartner_ID);
-			if (!aLine.save(trxName))
-				log.log(Level.SEVERE, "Allocation Line not saved - Charge=" + m_C_Charge_ID);
+			if (!aLine.save(trxName)) {
+				StringBuilder msg = new StringBuilder("Allocation Line not saved - Charge=").append(m_C_Charge_ID);
+				throw new AdempiereException(msg.toString());
+			}
 			unmatchedApplied = unmatchedApplied.add(chargeAmt);
 		}	
 		

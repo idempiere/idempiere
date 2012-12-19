@@ -18,6 +18,7 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.RestletUtil;
+import org.adempiere.util.ServerContext;
 import org.compiere.interfaces.impl.ServerBean;
 import org.compiere.util.Env;
 import org.restlet.representation.Representation;
@@ -53,17 +54,14 @@ public class ResetCacheCommand extends ServerResource {
 		String tableName = (String) entity.get("tableName");
 		
 		ServerBean bean = new ServerBean();
-		//back up properties
-		Properties backup = new Properties();
-		backup.putAll(Env.getCtx());
 		try
 		{
-			Env.setCtx(context);
+			ServerContext.setCurrentInstance(context);
 			return bean.cacheReset(context, tableName, Record_ID);
 		}
 		finally
 		{
-			Env.setCtx(backup);
+			ServerContext.dispose();
 		}
 	}
 }

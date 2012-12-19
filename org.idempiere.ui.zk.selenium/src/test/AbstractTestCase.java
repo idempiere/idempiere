@@ -53,6 +53,14 @@ public class AbstractTestCase {
 		element.click();
 	}
 	
+	protected void search(String locator, String label) {
+		Widget widget = new Widget(locator + " @textbox");
+		WebElement element = widget.findElement(driver);
+		element.click();
+		widget.execute(driver, "setValue('"+label+"')");
+		widget.execute(driver, "fireOnChange()");				
+	}
+	
 	protected void selectCheckbox(String locator, boolean select) {
 		final WebElement element = driver.findElement(Zk.jq("$"+locator+" ~ input"));
 		if (element.isSelected()) {
@@ -203,6 +211,36 @@ public class AbstractTestCase {
 		} catch (NoSuchElementException e) {
 			return false;
 		}
+	}
+
+	protected void openWindow(String label) {
+		comboboxSelectItem("$treeSearchCombo", label);
+	}
+
+	protected void clickProcessButton(String windowId, String btnId) {
+		clickButton("$"+windowId + " $windowToolbar $BtnProcess");		
+		waitResponse();
+		clickButton("@window[instanceName=\"processButtonPopup\"] $" + btnId);
+	}
+	
+	protected void clickToolbarButton(String windowId, String toolBarButtonId) {
+		clickButton("$" + windowId + " $windowToolbar $" + toolBarButtonId);
+	}
+	
+	protected void clickDetailToolbarButton(String windowId, String toolBarButtonId) {
+		clickButton("$" + windowId + " $detailPane $" + toolBarButtonId + ":visible");
+	}
+	
+	protected WebElement getWindowMessageLabel(String windowId) {
+		return driver.findElement(Zk.jq("$"+windowId +" $messages @label"));
+	}
+	
+	protected void nextRecord(String windowId) {
+		clickButton("$"+windowId+" $breadCrumb $Next");
+	}
+	
+	protected void previousRecord(String windowId) {
+		clickButton("$"+windowId+" $breadCrumb $Previous");
 	}
 	
 	@After

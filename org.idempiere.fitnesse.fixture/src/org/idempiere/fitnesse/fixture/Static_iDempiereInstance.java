@@ -32,7 +32,7 @@ package org.idempiere.fitnesse.fixture;
  *  @author Carlos Ruiz - globalqss
  */
 public class Static_iDempiereInstance {
-	private static Instance adempiereInstance;
+	private volatile static Instance adempiereInstance;
 
 	public static Instance getInstance() {
 		if (adempiereInstance == null) {

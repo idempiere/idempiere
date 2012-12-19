@@ -107,7 +107,7 @@ public class WebUser
 	}	//	get
 
 	/** Short term Cache for immediate re-query/post (hit rate 20%)	*/
-	private static WebUser	s_cache = null;
+	private volatile static WebUser	s_cache = null;
 
 	/*************************************************************************/
 

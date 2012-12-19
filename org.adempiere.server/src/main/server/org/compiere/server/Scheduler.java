@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.util.ServerContext;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MClient;
 import org.compiere.model.MNote;
@@ -106,8 +107,7 @@ public class Scheduler extends AdempiereServer
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat("yyyy-MM-dd"); 
 		Env.setContext(m_schedulerctx, "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
-		Properties currentctx = Env.getCtx();
-		Env.setCtx(m_schedulerctx);
+		ServerContext.setCurrentInstance(m_schedulerctx);
 
 		MProcess process = new MProcess(m_schedulerctx, m_model.getAD_Process_ID(), null);
 		try
@@ -129,8 +129,8 @@ public class Scheduler extends AdempiereServer
 				m_trx.close();
 		}
 		
-		// Restore system context
-		Env.setCtx(currentctx);
+		// clear thread local context
+		ServerContext.dispose();
 
 		//
 		int no = m_model.deleteLog();

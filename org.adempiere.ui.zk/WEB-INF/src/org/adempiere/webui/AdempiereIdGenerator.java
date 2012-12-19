@@ -45,6 +45,13 @@ public class AdempiereIdGenerator implements IdGenerator {
 		String prefix = comp.getId(); 
 					
 		if (prefix == null || prefix.length() == 0) {
+			String attribute = comp.getWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME);
+			if (attribute != null && attribute.length() > 0) {
+				prefix = getWidgetName(comp.getWidgetClass())+"0"+attribute;
+			}
+		}
+		
+		if (prefix == null || prefix.length() == 0) {
 			prefix = DEFAULT_ZK_COMP_PREFIX;
 		}
 		
@@ -54,8 +61,15 @@ public class AdempiereIdGenerator implements IdGenerator {
 			//only include id space owner to ease converting test case to use zk id selector instead of uuid
 			if (parent instanceof IdSpace) {
 				String id = parent.getId();
-				if (id != null && id.length() > 0)
-					builder.insert(0, id+"_");				
+				if (id != null && id.length() > 0) {
+					builder.insert(0, id+"_");		
+				} else {
+					String attribute = parent.getWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME);
+					if (attribute != null && attribute.length() > 0) {
+						id = getWidgetName(parent.getWidgetClass())+"0"+attribute;
+						builder.insert(0, id+"_");
+					}
+				}
 			}
 			parent = parent.getParent();
 		}
@@ -83,6 +97,11 @@ public class AdempiereIdGenerator implements IdGenerator {
 		if (!prefix.endsWith("_"))
 			prefix = prefix + "_";
 		return prefix + i;
+	}
+
+	private String getWidgetName(String widgetClass) {
+		String name = widgetClass.substring(widgetClass.lastIndexOf(".")+1);
+		return name.toLowerCase();
 	}
 
 	public static String escapeId(String prefix) {

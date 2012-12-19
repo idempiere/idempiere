@@ -50,7 +50,7 @@ public class HttpServiceImpl implements HttpService, ExtendedHttpService {
 		shutdown = true;
 	}
 
-	private void checkShutdown() {
+	private synchronized void checkShutdown() {
 		if (shutdown)
 			throw new IllegalStateException("Service instance is already shutdown"); //$NON-NLS-1$
 	}

@@ -90,7 +90,7 @@ public class AtmosphereServerPush implements ServerPush {
 						
 						synchronized (info) {
 							info.nActive = 1; //granted
-							info.notify();
+							info.notifyAll();
 						}
 						
 						try {
@@ -145,7 +145,7 @@ public class AtmosphereServerPush implements ServerPush {
 				_active = null;
 								
 				synchronized (_mutex) {
-					_mutex.notify();
+					_mutex.notifyAll();
 				}
 			}
 		}

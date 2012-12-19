@@ -1,4 +1,4 @@
-package com._3e.ADInterface;
+package org.idempiere.adinterface;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,6 +8,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
+import org.adempiere.util.ServerContext;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -113,7 +114,7 @@ public class CompiereService {
 	{
 		CompiereUtil.initWeb();
 		
-		Env.setCtx(m_ctx);
+		ServerContext.setCurrentInstance(m_ctx);
 		Env.setContext( m_ctx, "#AD_Language", "en_US" );
 		m_lang = Language.getLanguage("en_US");
 		

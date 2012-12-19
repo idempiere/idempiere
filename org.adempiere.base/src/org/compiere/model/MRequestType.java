@@ -196,7 +196,7 @@ public class MRequestType extends X_R_RequestType
 	 * 	Get Total No of requests of type
 	 *	@return no
 	 */
-	public int getTotalNo()
+	public synchronized int getTotalNo()
 	{
 		updateStatistics();
 		return m_totalNo;
@@ -206,7 +206,7 @@ public class MRequestType extends X_R_RequestType
 	 * 	Get Open No of requests of type
 	 *	@return no
 	 */
-	public int getOpenNo()
+	public synchronized int getOpenNo()
 	{
 		updateStatistics();
 		return m_openNo;
@@ -216,7 +216,7 @@ public class MRequestType extends X_R_RequestType
 	 * 	Get Closed in last 30 days of type
 	 *	@return no
 	 */
-	public int getClosed30No()
+	public synchronized int getClosed30No()
 	{
 		updateStatistics();
 		return m_closed30No;
@@ -226,7 +226,7 @@ public class MRequestType extends X_R_RequestType
 	 * 	Get New in the last 30 days of type
 	 *	@return no
 	 */
-	public int getNew30No()
+	public synchronized int getNew30No()
 	{
 		updateStatistics();
 		return m_new30No;

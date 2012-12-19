@@ -39,7 +39,7 @@ import fitnesse.fixtures.TableFixture;
  */
 public class Login extends TableFixture {
 	private static final String LANGUAGE_EN_US = "en_US";
-	private static Instance adempiereInstance = null;
+	private volatile static Instance adempiereInstance = null;
 	private String m_user;
 	private String m_password;
 	private String m_language;

@@ -40,7 +40,7 @@ public class ClusterServiceImpl implements IClusterService {
 		Set<Member> members = Activator.getHazelcastInstance().getCluster().getMembers();
 		Set<IClusterMember> clusterMembers = new HashSet<IClusterMember>();
 		for(Member member : members) {
-			clusterMembers.add(new ClusterMember(member.getUuid(), member.getInetSocketAddress().getAddress()));
+			clusterMembers.add(new ClusterMember(member.getUuid(), member.getInetSocketAddress().getAddress(), member.getInetSocketAddress().getPort()));
 		}
 		return clusterMembers;
 	}
@@ -51,7 +51,7 @@ public class ClusterServiceImpl implements IClusterService {
 	@Override
 	public IClusterMember getLocalMember() {
 		Member member = Activator.getHazelcastInstance().getCluster().getLocalMember();
-		return new ClusterMember(member.getUuid(), member.getInetSocketAddress().getAddress());
+		return new ClusterMember(member.getUuid(), member.getInetSocketAddress().getAddress(), member.getInetSocketAddress().getPort());
 	}
 
 	/* (non-Javadoc)

@@ -64,7 +64,7 @@ public class WebInfo
 	}	//	getGeneral
 
 	/**	General Info				*/
-	private static WebInfo		m_general = null;
+	private volatile static WebInfo		m_general = null;
 
 	/**
 	 * 	Constructor

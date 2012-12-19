@@ -55,7 +55,7 @@ public class DocWorkflowManager implements DocWorkflowMgr
 	}
 	
 	/**	Document Workflow Manager		*/
-	private static DocWorkflowManager	s_mgr = null;
+	private volatile static DocWorkflowManager	s_mgr = null;
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(DocWorkflowManager.class);
 	

@@ -48,7 +48,7 @@ public class CConnection implements Serializable, Cloneable
 	 */
 	private static final long serialVersionUID = -7893119456331485444L;
 	/** Connection      */
-	private static CConnection	s_cc = null;
+	private volatile static CConnection	s_cc = null;
 	/** Logger			*/
 	private static CLogger 		log = CLogger.getCLogger (CConnection.class);
 
@@ -86,7 +86,7 @@ public class CConnection implements Serializable, Cloneable
 	 *  @param apps_host optional apps host for new connections
 	 *  @return Connection Descriptor
 	 */
-	public static CConnection get (String apps_host)
+	public synchronized static CConnection get (String apps_host)
 	{
 		if (s_cc == null)
 		{
@@ -1418,7 +1418,7 @@ public class CConnection implements Serializable, Cloneable
 	 *  Get Last Exception of Apps Server Connection attempt
 	 *  @return Exception or null
 	 */
-	public Exception getAppsServerException ()
+	public synchronized Exception getAppsServerException ()
 	{
 		return m_appsException;
 	} 	//  getAppsServerException

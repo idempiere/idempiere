@@ -35,7 +35,7 @@ public class BridgeServlet extends HttpServlet {
 	private static HttpServlet servletDelegateInstance;
 	private HttpServlet delegate;
 	// true if current HttpServlet is an HTTP Filter and false otherwise.
-	private boolean delegateIsFilter;
+	private static boolean delegateIsFilter;
 	private int delegateReferenceCount;
 
 	/**
@@ -175,7 +175,7 @@ public class BridgeServlet extends HttpServlet {
 
 			try {
 				// cache the flag if  HttpServlet servlet delegate is an HTTP Filter.
-				instance.delegateIsFilter = (servletDelegate instanceof Filter);
+				BridgeServlet.delegateIsFilter = (servletDelegate instanceof Filter);
 				// initialize the servlet delegate.
 				servletDelegate.init(instance.getServletConfig());
 			} catch (ServletException e) {
@@ -207,7 +207,7 @@ public class BridgeServlet extends HttpServlet {
 
 			HttpServlet oldProxy = instance.delegate;
 			instance.delegate = null;
-			instance.delegateIsFilter = false;
+			BridgeServlet.delegateIsFilter = false;
 			while (instance.delegateReferenceCount != 0) {
 				try {
 					instance.wait();

@@ -31,11 +31,11 @@ Bundle-ClassPath: .,
  WEB-INF/lib/xmlbeans-2.5.0.jar,
  WEB-INF/lib/aopalliance-1.0.jar,
  WEB-INF/lib/commons-logging-1.1.1.jar,
- WEB-INF/lib/Idempiere-XMLSBean-1.0.jar
-Export-Package: com._3e.ADInterface,
- org.compiere.model,
+ WEB-INF/lib/idempiere-xmlbeans-1.0.jar
+Export-Package: org.compiere.model,
  org.idempiere.adInterface.x10,
  org.idempiere.adInterface.x10.impl,
+ org.idempiere.adinterface,
  org.idempiere.webservices,
  org.idempiere.webservices.fault
 Web-ContextPath: ADInterface

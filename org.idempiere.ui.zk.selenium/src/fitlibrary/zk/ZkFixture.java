@@ -98,6 +98,54 @@ public class ZkFixture extends SpiderFixture {
 		return (String) widget.eval(webDriver, "getSelectedTab().getLabel()");
 	}
 	
+	//--- Search (lookup) --
+	@SimpleAction(wiki = "|''<i>lookup</i>''|xpath, id or other locator|''<i>search</i>''|value|", tooltip = "Search lookup with value.")
+	public void lookupSearch(String locator, String value) {
+		Widget widget = new Widget(locator + " @textbox");
+		WebElement element = widget.findElement(webDriver);
+		element.click();
+		widget.execute(webDriver, "setValue('"+value+"')");
+		widget.execute(webDriver, "fireOnChange()");
+	}
+	
+	// ---- window ( tab ) ---
+	@SimpleAction(wiki = "|''<i>open window</i>''|menu label|", tooltip = "Open window with label.")
+	public void openWindow(String label) {
+		comboboxSelectItem("$treeSearchCombo", label);
+	}
+	
+	@SimpleAction(wiki = "|''<i>window</i>''|xpath, id or other locator|''<i>click process button</i>''|button id|", tooltip = "Click a window's process button.")
+	public void windowClickProcessButton(String windowLocator, String btnId) {
+		click(windowLocator + " $windowToolbar $BtnProcess");		
+		waitResponse();
+		click("@window[instanceName=\"processButtonPopup\"] $" + btnId);
+	}
+
+	@SimpleAction(wiki = "|''<i>window</i>''|xpath, id or other locator|''<i>click toolbar</i>''|value|", tooltip = "Click a window's toolbar button")
+	public void windowClickToolbar(String windowLocator, String toolbarButtonId) {
+		click(windowLocator + " $windowToolbar $" + toolbarButtonId);
+	}
+
+	@SimpleAction(wiki = "|''<i>window</i>''|xpath, id or other locator|''<i>click detail toolbar</i>''|value|", tooltip = "Click the detailpane's toolbar button")
+	public void windowClickDetailToolbar(String windowLocator, String toolbarButtonId) {
+		click(windowLocator + " $detailPane $" + toolbarButtonId + ":visible");
+	}
+
+	@SimpleAction(wiki = "|''<i>window message</i>''|xpath, id or other locator|", tooltip = "Current status message display for a window")
+	public String windowMessage(String windowLocator) {
+		return webDriver.findElement(Zk.jq(windowLocator +" $messages @label")).getText();
+	}
+
+	@SimpleAction(wiki = "|''<i>window</i>''|xpath, id or other locator|''<i>next record</i>''|value|", tooltip = "Navigate to next record.")
+	public void windowNextRecord(String windowLocator) {
+		click(windowLocator+" $breadCrumb $Next");
+	}
+	
+	@SimpleAction(wiki = "|''<i>window</i>''|xpath, id or other locator|''<i>previous record</i>''|value|", tooltip = "Navigate to previous record.")
+	public void windowPreviousRecord(String windowLocator) {
+		click(windowLocator+" $breadCrumb $Previous");
+	}
+	
 	// -------- Wait Ajax Response -----
 	@SimpleAction(wiki = "|''<i>wait response</i>''|", tooltip = "Wait for ajax response with default timeout value.")
 	public void waitResponse() {

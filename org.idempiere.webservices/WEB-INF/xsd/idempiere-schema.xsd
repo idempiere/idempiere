@@ -4,143 +4,6 @@
   xmlns:tns="http://idempiere.org/ADInterface/1_0"
   elementFormDefault="qualified">
 
-   <xsd:element name="Window" type="tns:Window"/>
-
-   <xsd:complexType name="Window">
-   	<xsd:sequence>
-   	   	<xsd:element name="Description" type="xsd:string"/>
-	   	<xsd:element name="Help" type="xsd:string"/>
-   		<xsd:element name="Tabs" type="tns:TabList" />
-   	</xsd:sequence>
-   	<xsd:attribute name="Name" type="xsd:string"/>
-   	<xsd:attribute name="IsSoTrx" type="xsd:boolean"/>
-   	<xsd:attribute name="WindowNo" type="xsd:int"/>
-   	<xsd:attribute name="AD_Table_ID" type="xsd:int"/>
-   	<xsd:attribute name="AD_Window_ID" type="xsd:int"/>	
-   	<xsd:attribute name="WindowType" type="xsd:int"/>	
-   	<xsd:attribute name="AD_Image_ID" type="xsd:int"/>
-   	<xsd:attribute name="AD_Color_ID" type="xsd:int"/>
-   	<xsd:attribute name="IsReadWrite" type="xsd:boolean"/>
-   	<xsd:attribute name="WinWidth" type="xsd:int"/>
-   	<xsd:attribute name="WinHeight" type="xsd:int"/>   	
-   	<xsd:attribute name="IsError" type="xsd:boolean"/>    		   	   	
-   	<xsd:attribute name="Error" type="xsd:string"/>    		   	   	
-   </xsd:complexType>
-
-
-   <xsd:complexType name="Tab">
-   	<xsd:sequence>
-   	   	<xsd:element name="Description" type="xsd:string"/>
-	   	<xsd:element name="Help" type="xsd:string"/>   	
-	   	<xsd:element name="ReadOnlyLogic" type="xsd:string"/>   	   	  	
-   		<xsd:element name="DisplayLogic" type="xsd:string"/>  	  	
-   		<xsd:element name="Fields" type="tns:FieldList"/>
-	   	<xsd:element name="CommitWarning" type="xsd:string"/>  	  	   	
-   		<xsd:element name="WhereClause" type="xsd:string"/>  	  	
-	   	<xsd:element name="OrderByClause" type="xsd:string"/>  	  	
-   	</xsd:sequence>
-   	<xsd:attribute name="Name" type="xsd:string"/>
-   	<xsd:attribute name="IsSoTrx" type="xsd:boolean"/>
-   	<xsd:attribute name="TabNo" type="xsd:int"/>
-   	<xsd:attribute name="WindowNo" type="xsd:int"/>   	
-   	<xsd:attribute name="AD_Table_ID" type="xsd:int"/>
-   	<xsd:attribute name="AD_Window_ID" type="xsd:int"/>
-   	<xsd:attribute name="AD_Tab_ID" type="xsd:int"/>
-   	<xsd:attribute name="IsSingleRow" type="xsd:boolean"/>
-   	<xsd:attribute name="IsReadOnly" type="xsd:boolean"/>
-   	<xsd:attribute name="IsInsertRecord" type="xsd:boolean"/>
-   	<xsd:attribute name="HasTree" type="xsd:boolean"/>
-   	<xsd:attribute name="IsView" type="xsd:boolean"/>   	
-  	<xsd:attribute name="AD_Column_ID" type="xsd:int"/>
-  	<xsd:attribute name="TableName" type="xsd:string"/>
-  	<xsd:attribute name="AccessLevel" type="xsd:string"/>  	
-   	<xsd:attribute name="IsSecurityEnabled" type="xsd:boolean"/>
-   	<xsd:attribute name="IsDeleteable" type="xsd:boolean"/>
-   	<xsd:attribute name="IsHighVolume" type="xsd:boolean"/>   	   	  	
-   	<xsd:attribute name="AD_Process_ID" type="xsd:int"/>
-   	<xsd:attribute name="TabLevel" type="xsd:int"/>
-   	<xsd:attribute name="AD_Image_ID" type="xsd:int"/>
-   	<xsd:attribute name="Included_Tab_ID" type="xsd:int"/>
-   	<xsd:attribute name="ReplicationType" type="xsd:string"/>
-   	<xsd:attribute name="IsSortTab" type="xsd:boolean"/>   	   	  	
-   	<xsd:attribute name="AD_ColumnSortOrder_ID" type="xsd:int"/>
-   	<xsd:attribute name="AD_ColumnSortYesNo_ID" type="xsd:int"/>
-   	<xsd:attribute name="onlyCurrentRows" type="xsd:boolean"/>   	   	  	
-   	<xsd:attribute name="onlyCurrentDays" type="xsd:int"/>   	
-   </xsd:complexType>
-
-   <xsd:complexType name="TabList">
-   	<xsd:sequence>
-   		<xsd:element name="Tab" type="tns:Tab" minOccurs="1" maxOccurs="unbounded" />
-   	</xsd:sequence>
-   </xsd:complexType>
-
-   <xsd:complexType name="FieldList">
-   	<xsd:sequence>
-   		<xsd:element name="Field" type="tns:Field" minOccurs="1" maxOccurs="unbounded" />
-   	</xsd:sequence>
-   </xsd:complexType>
-
-   <xsd:complexType name="Field">
-   	<xsd:sequence>
-   		<xsd:element name="Tab" type="tns:Tab"/>
-   		<xsd:element name="lookupInfo" type="tns:LookupInfo"/>
-   		<xsd:element name="Description" type="xsd:string"/>
-	   	<xsd:element name="Help" type="xsd:string"/>   	
-   		<xsd:element name="ColumnSQL" type="xsd:string"/>
-   	   	<xsd:element name="DisplayLogic" type="xsd:string"/>	   	
-	   	<xsd:element name="ReadOnlyLogic" type="xsd:string"/> 	
- 		<xsd:element name="lookup" type="tns:LookupValues" minOccurs="0" maxOccurs="1"/>
-   	</xsd:sequence>
-   	<xsd:attribute name="Name" type="xsd:string"/>
-   	<xsd:attribute name="WindowNo" type="xsd:int"/>
-   	<xsd:attribute name="TabNo" type="xsd:int"/>
-   	<xsd:attribute name="AD_Window_ID" type="xsd:int"/>
-   	<xsd:attribute name="tabReadOnly" type="xsd:boolean"/>
-   	<xsd:attribute name="isProcess" type="xsd:boolean"/>
-   	<xsd:attribute name="ColumnName" type="xsd:string"/>
-   	<xsd:attribute name="Header" type="xsd:string"/>  	
-   	<xsd:attribute name="displayType" type="xsd:int"/>
-   	<xsd:attribute name="AD_Column_ID" type="xsd:int"/>
-   	<xsd:attribute name="DisplayLength" type="xsd:int"/>   	
-   	<xsd:attribute name="IsSameLine" type="xsd:boolean"/>
-   	<xsd:attribute name="IsDisplayed" type="xsd:boolean"/>   	
-   	<xsd:attribute name="DefaultValue" type="xsd:string"/>	
-   	<xsd:attribute name="IsMandatory" type="xsd:boolean"/>
-   	<xsd:attribute name="IsReadOnly" type="xsd:boolean"/>
-   	<xsd:attribute name="IsUpdateable" type="xsd:boolean"/>
-   	<xsd:attribute name="IsAlwaysUpdateable" type="xsd:boolean"/>
-   	<xsd:attribute name="IsHeading" type="xsd:boolean"/>
-   	<xsd:attribute name="IsFieldOnly" type="xsd:boolean"/>
-   	<xsd:attribute name="IsEncryptedField" type="xsd:boolean"/>
-   	<xsd:attribute name="IsEncryptedColumn" type="xsd:boolean"/>
-   	<xsd:attribute name="IsSelectionColumn" type="xsd:boolean"/>
-   	<xsd:attribute name="SortNo" type="xsd:int"/>
-   	<xsd:attribute name="FieldLength" type="xsd:int"/>
-   	<xsd:attribute name="VFormat" type="xsd:string"/>	
-   	<xsd:attribute name="ValueMin" type="xsd:string"/>	
-   	<xsd:attribute name="ValueMax" type="xsd:string"/>	
-   	<xsd:attribute name="FieldGroup" type="xsd:string"/>	
-   	<xsd:attribute name="IsKey" type="xsd:boolean"/>
-   	<xsd:attribute name="IsParent" type="xsd:boolean"/>
-   	<xsd:attribute name="Callout" type="xsd:string"/>   	
-   	<xsd:attribute name="AD_Process_ID" type="xsd:int"/>
-   	<xsd:attribute name="ObscureType" type="xsd:string"/>
-   	<xsd:attribute name="ValidationCode" type="xsd:string"/>
-   	<xsd:attribute name="AD_Reference_Value_ID" type="xsd:int"/>
-   	<xsd:attribute name="isRange" type="xsd:boolean"/>
-   	<xsd:attribute name="DefaultValue2" type="xsd:string"/>
-   </xsd:complexType>
-
-   <xsd:complexType name="LookupInfo">
-   	<xsd:sequence>
-   		<!--  <xsd:element name="Tab" type="tns:Tab"/>   		
-   		<xsd:element name="lookupInfo" type="tns:LookupInfo"/>-->
-   		<xsd:element name="ZoomWindow" type="xsd:int"/>
-   		<xsd:element name="ZoomWindowPO" type="xsd:int"/>
-   	</xsd:sequence>
-   </xsd:complexType>
-
    <xsd:element name="WindowTabData" type="tns:WindowTabData"/>
 
    <xsd:complexType name="WindowTabData">
@@ -530,8 +393,8 @@
 		<xsd:attribute name="preCommit" type="xsd:boolean" default="false"></xsd:attribute>
 		<xsd:attribute name="postCommit" type="xsd:boolean" default="false"></xsd:attribute>
 	</xsd:complexType>
-	<xsd:element name="CompositeModelRequest" type="tns:CompositeModelRequest"></xsd:element>
-	<xsd:complexType name="CompositeModelRequest">
+	<xsd:element name="CompositeRequest" type="tns:CompositeRequest"></xsd:element>
+	<xsd:complexType name="CompositeRequest">
 		<xsd:sequence>
 			<xsd:element name="ADLoginRequest" type="tns:ADLoginRequest"></xsd:element>
 		     <xsd:element name="serviceType" type="xsd:string"/>

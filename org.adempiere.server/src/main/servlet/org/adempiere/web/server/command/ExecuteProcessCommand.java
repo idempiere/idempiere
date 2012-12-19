@@ -18,6 +18,7 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.RestletUtil;
+import org.adempiere.util.ServerContext;
 import org.compiere.interfaces.impl.ServerBean;
 import org.compiere.model.MRole;
 import org.compiere.process.ProcessInfo;
@@ -61,12 +62,9 @@ public class ExecuteProcessCommand extends ServerResource {
 		}
 		
 		ServerBean bean = new ServerBean();
-		//back up properties
-		Properties backup = new Properties();
-		backup.putAll(Env.getCtx());
 		try
 		{
-			Env.setCtx(context);
+			ServerContext.setCurrentInstance(context);
 			if (procedureName != null && procedureName.trim().length() > 0)
 				return bean.dbProcess(context, pi, procedureName);
 			else
@@ -74,7 +72,7 @@ public class ExecuteProcessCommand extends ServerResource {
 		}
 		finally
 		{
-			Env.setCtx(backup);
+			ServerContext.dispose();
 		}		
 	}
 

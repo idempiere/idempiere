@@ -16,6 +16,10 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
+import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
+import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_CURRENCY_ID;
+import static org.compiere.model.SystemIDs.COLUMN_C_PERIOD_AD_ORG_ID;
+
 import java.math.BigDecimal;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -47,18 +51,18 @@ import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.Allocation;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.TrxRunnable;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 
 /**
@@ -409,20 +413,14 @@ public class WAllocation extends Allocation
 		// Organization
 		if (name.equals("AD_Org_ID"))
 		{
-			if (value == null)
-				m_AD_Org_ID = 0;
-			else
-				m_AD_Org_ID = ((Integer) value).intValue();
+			m_AD_Org_ID = ((Integer) value).intValue();
 			
 			loadBPartner();
 		}
 		//		Charge
 		else if (name.equals("C_Charge_ID") )
 		{
-			if ( value == null )
-				m_C_Charge_ID = 0;
-			else
-				m_C_Charge_ID = ((Integer) value).intValue();
+			m_C_Charge_ID = ((Integer) value).intValue();
 			
 			setAllocateButton();
 		}
@@ -535,10 +533,21 @@ public class WAllocation extends Allocation
 			Env.setContext(Env.getCtx(), form.getWindowNo(), "AD_Org_ID", m_AD_Org_ID);
 		else
 			Env.setContext(Env.getCtx(), form.getWindowNo(), "AD_Org_ID", "");
-		Trx trx = Trx.get(Trx.createTrxName("AL"), true);
-		statusBar.setStatusLine(saveData(form.getWindowNo(), dateField.getValue(), paymentTable, invoiceTable, trx.getTrxName()));
-		trx.commit();
-		trx.close();
+		try
+		{
+			Trx.run(new TrxRunnable() 
+			{
+				public void run(String trxName)
+				{
+					statusBar.setStatusLine(saveData(form.getWindowNo(), dateField.getValue(), paymentTable, invoiceTable, trxName));
+				}
+			});
+		}
+		catch (Exception e)
+		{
+			FDialog.error(form.getWindowNo(), form, "Error", e.getLocalizedMessage());
+			return;
+		}
 	}   //  saveData
 	
 	/**

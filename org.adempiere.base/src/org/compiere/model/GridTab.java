@@ -28,7 +28,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -111,7 +110,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 336562925897569888L;
+	private static final long serialVersionUID = -1638364577972806113L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -163,10 +162,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	private String m_parentColumnName = "";
 	private String				m_extendedWhere;
-	/** Attachments         */
-	private HashMap<Integer,Integer>	m_Attachments = null;
-	/** Chats				*/
-	private HashMap<Integer,Integer>	m_Chats = null;
 	/** Locks		        */
 	private ArrayList<Integer>	m_Lock = null;
 
@@ -333,12 +328,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//
 		m_depOnField.clear();
 		m_depOnField = null;
-		if (m_Attachments != null)
-			m_Attachments.clear();
-		m_Attachments = null;
-		if (m_Chats != null)
-			m_Chats.clear();
-		m_Chats = null;
 		//
 		if (m_vo.isInitFields())
 			m_vo.getFields().clear();
@@ -2034,43 +2023,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	}   //  loadDependentInfo
 
-
-	/**************************************************************************
-	 *	Load Attachments for this table
-	 */
-	public void loadAttachments()
-	{
-		log.fine("#" + m_vo.TabNo);
-		if (!canHaveAttachment())
-			return;
-
-		String SQL = "SELECT AD_Attachment_ID, Record_ID FROM AD_Attachment "
-			+ "WHERE AD_Table_ID=?";
-		try
-		{
-			if (m_Attachments == null)
-				m_Attachments = new HashMap<Integer,Integer>();
-			else
-				m_Attachments.clear();
-			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
-			pstmt.setInt(1, m_vo.AD_Table_ID);
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next())
-			{
-				Integer key = new Integer(rs.getInt(2));
-				Integer value = new Integer(rs.getInt(1));
-				m_Attachments.put(key, value);
-			}
-			rs.close();
-			pstmt.close();
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, "loadAttachments", e);
-		}
-		log.config("#" + m_Attachments.size());
-	}	//	loadAttachment
-
 	/**
 	 *	Can this tab have Attachments?.
 	 *  <p>
@@ -2091,13 +2043,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public boolean hasAttachment()
 	{
-		if (m_Attachments == null)
-			loadAttachments();
-		if (m_Attachments == null || m_Attachments.isEmpty())
-			return false;
-		//
-		Integer key = new Integer(m_mTable.getKeyID (m_currentRow));
-		return m_Attachments.containsKey(key);
+		return getAD_AttachmentID() > 0;
 	}	//	hasAttachment
 
 	/**
@@ -2106,54 +2052,11 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public int getAD_AttachmentID()
 	{
-		if (m_Attachments == null)
-			loadAttachments();
-		if (m_Attachments.isEmpty())
-			return 0;
-		//
-		Integer key = new Integer(m_mTable.getKeyID (m_currentRow));
-		Integer value = (Integer)m_Attachments.get(key);
-		if (value == null)
-			return 0;
-		else
-			return value.intValue();
-	}	//	getAttachmentID
-
-	/**************************************************************************
-	 *	Load Chats for this table
-	 */
-	public void loadChats()
-	{
-		log.fine("#" + m_vo.TabNo);
 		if (!canHaveAttachment())
-			return;
-
-		String sql = "SELECT CM_Chat_ID, Record_ID FROM CM_Chat "
-			+ "WHERE AD_Table_ID=?";
-		try
-		{
-			if (m_Chats == null)
-				m_Chats = new HashMap<Integer,Integer>();
-			else
-				m_Chats.clear();
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, m_vo.AD_Table_ID);
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next())
-			{
-				Integer key = new Integer(rs.getInt(2));	//	Record_ID
-				Integer value = new Integer(rs.getInt(1));	//	CM_Chat_ID
-				m_Chats.put(key, value);
-			}
-			rs.close();
-			pstmt.close();
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		log.config("#" + m_Chats.size());
-	}	//	loadChats
+			return 0;
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MAttachment.getID(m_vo.AD_Table_ID, recordID);
+	}	//	getAttachmentID
 
 	/**
 	 *	Returns true, if current row has a Chat
@@ -2161,13 +2064,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public boolean hasChat()
 	{
-		if (m_Chats == null)
-			loadChats();
-		if (m_Chats == null || m_Chats.isEmpty())
-			return false;
-		//
-		Integer key = new Integer(m_mTable.getKeyID (m_currentRow));
-		return m_Chats.containsKey(key);
+		return getCM_ChatID() > 0;
 	}	//	hasChat
 
 	/**
@@ -2176,17 +2073,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public int getCM_ChatID()
 	{
-		if (m_Chats == null)
-			loadChats();
-		if (m_Chats.isEmpty())
+		if (!canHaveAttachment())
 			return 0;
-		//
-		Integer key = new Integer(m_mTable.getKeyID (m_currentRow));
-		Integer value = (Integer)m_Chats.get(key);
-		if (value == null)
-			return 0;
-		else
-			return value.intValue();
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MChat.getID(m_vo.AD_Table_ID, recordID);
 	}	//	getCM_ChatID
 
 

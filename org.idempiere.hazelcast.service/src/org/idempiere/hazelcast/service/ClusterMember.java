@@ -25,14 +25,16 @@ public class ClusterMember implements IClusterMember {
 
 	private String id;
 	private InetAddress address;
+	private int port;
 	
 	/**
 	 * @param id
 	 * @param address 
 	 */
-	public ClusterMember(String id, InetAddress address) {
+	public ClusterMember(String id, InetAddress address, int port) {
 		this.id = id;
 		this.address = address;
+		this.port = port;
 	}
 
 	/* (non-Javadoc)
@@ -51,4 +53,15 @@ public class ClusterMember implements IClusterMember {
 		return address;
 	}
 
+	@Override
+	public int getPort() {
+		return port;
+	}
+
+	@Override
+	public String toString() {
+		return getAddress().getHostAddress()+":"+getPort()+" "+id;
+	}
+	
+	 
 }

@@ -15,6 +15,7 @@
 package org.adempiere.webui.panel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hlayout;
+
 import org.zkoss.zul.Vbox;
 
 public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener<Event>
@@ -53,15 +55,13 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 	private Button bRemove = new Button();
 	private Button bUp = new Button();
 	private Button bDown = new Button();
-
-	public ArrayList<MPrintFormatItem> yesItems=new ArrayList<MPrintFormatItem>();
-	public ArrayList<MPrintFormatItem> noItems=new ArrayList<MPrintFormatItem>();
-
 	//
 	SimpleListModel noModel = new SimpleListModel();
 	SimpleListModel yesModel = new SimpleListModel();
 	Listbox noList = new Listbox();
 	Listbox yesList = new Listbox();
+	ArrayList<MPrintFormatItem> yesItems =new ArrayList<MPrintFormatItem>();
+	ArrayList<MPrintFormatItem> noItems =new ArrayList<MPrintFormatItem>();
 
 	public WRC3SortCriteriaPanel() {
 		super();
@@ -110,59 +110,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		noList.addOnDropListener(crossListMouseListener);
 		yesList.setItemDraggable(true);
 		noList.setItemDraggable(true);
-
-		EventListener<Event> yesListMouseMotionListener = new EventListener<Event>()
-		{
-			public void onEvent(Event event) throws Exception {
-				if (event instanceof DropEvent)
-				{
-					DropEvent me = (DropEvent) event;
-					ListItem startItem = (ListItem) me.getDragged();
-					ListItem endItem = (ListItem) me.getTarget();
-					if (startItem.getListbox() == endItem.getListbox() && startItem.getListbox() == yesList)
-					{
-						int startIndex = yesList.getIndexOfItem(startItem);
-						int endIndex = yesList.getIndexOfItem(endItem);
-						ListElement endElement = (ListElement) yesModel.getElementAt(endIndex);
-						ListElement startElement = (ListElement) yesModel.getElementAt(startIndex);
-						yesModel.removeElement(startElement);
-						endIndex = yesModel.indexOf(endElement);
-						yesModel.add(endIndex, startElement);
-						yesList.setSelectedIndex(endIndex);
-						
-						int firstposition=0, secondposition=0;
-						MPrintFormatItem targetPFI = null;
-						MPrintFormatItem draggedPFI = null;
-						for(int j=0 ;j <m_pfi.length ;j++){
-							if(m_pfi[j].get_ID() == endElement.getKey()){
-								targetPFI = m_pfi[j];
-								firstposition=j;
-							}
-							if(m_pfi[j].get_ID() == startElement.getKey()){
-								draggedPFI = m_pfi[j];
-								secondposition=j;
-							}
-						}
-						draggedPFI.setSeqNo(targetPFI.getSeqNo()-5);
-						
-						wc.setIsChanged(true);
-						updateYesList();
-						MPrintFormatItem fi=m_pfi[firstposition];
-						m_pfi[firstposition]=m_pfi[secondposition];
-						m_pfi[secondposition]=fi;
-						
-						if ( yesList.getSelectedItem() != null)
-						{
-							AuFocus focus = new AuFocus(yesList.getSelectedItem());
-							Clients.response(focus);
-						}
-						//setIsChanged(true);
-					}
-				}
-			}
-		};
-		yesList.addOnDropListener(yesListMouseMotionListener);
-
+		
 		ListHead listHead = new ListHead();
 		listHead.setParent(yesList);
 		ListHeader listHeader = new ListHeader();
@@ -219,69 +167,54 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 	public void onEvent(Event event) throws Exception {
 
 	}
-
-	@Override
-	public void refresh() {
+	
+	public void setListsColumns() {
 		yesItems =new ArrayList<MPrintFormatItem>();
 		noItems =new ArrayList<MPrintFormatItem>();
-		if (m_pfi.length > 0 && m_pfi != null ) {
-			int seq = 10;
-			for(int i=0 ; i < m_pfi.length ; i++ ){
-				if (m_pfi[i].isPrinted() && m_pfi[i] != null) {
-					if (m_pfi[i].isOrderBy()) {
-						m_pfi[i].setSortNo(seq);
-						seq=seq+10;
-						yesItems.add(m_pfi[i]);
-					} else{
-						noItems.add(m_pfi[i]);
-					}
-				}
-			}
+		for(int i=0 ; i< m_pfi.size();i++){
+		    MPrintFormatItem item  = m_pfi.get(i);
+		    if(item!=null && item.isPrinted()){
+		    	if(item.isOrderBy()){
+		    		yesItems.add(item);
+		    	}else{
+		    		noItems.add(item);
+		    	}
+		    }	
 		}
-
 		Collections.sort(yesItems, new Comparator<MPrintFormatItem>() {
 			@Override
 			public int compare(MPrintFormatItem o1, MPrintFormatItem o2) {
 				return o1.getSortNo()-o2.getSortNo();
 			}
 		});
-
+	}
+	
+	@Override
+	public void refresh() {		
+		
+		this.setListsColumns();
 		yesList.removeAllItems();
 		noList.removeAllItems();
 
 		if (yesItems.size() > 0 && yesItems != null) {
 			yesModel.removeAllElements();
-			for (int i=0 ; i < yesItems.size() ; i++) {
-				MPrintFormatItem pfi = yesItems.get(i);
-				if (pfi != null) {
-					int ID= pfi.get_ID();
-					String name =pfi.getPrintName();
-					if(name == null)		
-					   name=pfi.getName();
-					KeyNamePair pair =new KeyNamePair(ID, name);
-					yesList.addItem(pair);
-					ListElement element =new ListElement(pfi.get_ID(), pfi.getName(), pfi.getSortNo(), true, pfi.getAD_Client_ID(), pfi.getAD_Org_ID());
-					yesModel.addElement(element);
-				}
+			for (int i=0 ; i < yesItems.size() ; i++) {				 
+				 int ID= yesItems.get(i).get_ID();
+				 String name = yesItems.get(i).getPrintName()==null? yesItems.get(i).getName():yesItems.get(i).getPrintName();
+				 yesList.addItem(new KeyNamePair(ID, name));
+				 yesModel.addElement(new ListElement(ID, name, yesItems.get(i).getSortNo(), true, yesItems.get(i).getAD_Client_ID(), yesItems.get(i).getAD_Org_ID()));	
 			}
 		}
-
+		
 		if (noItems.size() > 0 && noItems != null) {
 			noModel.removeAllElements();
 			for (int i=0 ; i < noItems.size() ; i++) {
-				MPrintFormatItem pfi = noItems.get(i);
-				if (pfi != null) {
-					int ID= pfi.get_ID();
-					pfi.setSortNo(0);
-					pfi.setIsOrderBy(false);
-					String name =pfi.getPrintName();
-					if(name == null)		
-						   name=pfi.getName();
-					KeyNamePair pair =new KeyNamePair(ID, name);					
-					noList.addItem(pair);
-					ListElement element =new ListElement(pfi.get_ID(), pfi.getName(), pfi.getSortNo(), false, pfi.getAD_Client_ID(), pfi.getAD_Org_ID());
-					noModel.add(i,element);
-				}
+				 int ID= noItems.get(i).get_ID();
+				 String name = noItems.get(i).getPrintName()== null ? noItems.get(i).getName() : noItems.get(i).getPrintName();
+				 noItems.get(i).setSortNo(0);
+				 noItems.get(i).setIsOrderBy(false);
+				 noList.addItem(new KeyNamePair(ID, name));
+				 noModel.add(i,new ListElement(ID, name, noItems.get(i).getSortNo(), false, noItems.get(i).getAD_Client_ID(), noItems.get(i).getAD_Org_ID()));
 			}
 		}
 	}
@@ -302,45 +235,104 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		}
 		Listbox listFrom = (source == bAdd || source == noList) ? noList : yesList;
 		Listbox listTo =  (source == bAdd || source == noList) ? yesList : noList;
-		SimpleListModel lmFrom = (source == bAdd || source == noList) ?
-				noModel : yesModel;
-		SimpleListModel lmTo = (lmFrom == yesModel) ? noModel : yesModel;
+		
+		int endIndex = yesList.getIndexOfItem(listTo.getSelectedItem());	
+		//Listto is empty. 
+		if (endIndex<0 )
+			endIndex=0;
+		
+		migrateLists (listFrom,listTo,endIndex);
+	}	//	migrateValueAcrossLists
+	
+	void migrateLists (Listbox listFrom , Listbox listTo , int endIndex)
+	{
+		int index = 0; 
+		SimpleListModel lmFrom = (listFrom == yesList) ? yesModel:noModel;
+		SimpleListModel lmTo = (lmFrom == yesModel) ? noModel:yesModel;
 		Set<?> selectedItems = listFrom.getSelectedItems();
 		List<ListElement> selObjects = new ArrayList<ListElement>();
 		for (Object obj : selectedItems) {
 			ListItem listItem = (ListItem) obj;
-			int index = listFrom.getIndexOfItem(listItem);			
+			index = listFrom.getIndexOfItem(listItem);			
 			ListElement selObject = (ListElement)lmFrom.getElementAt(index);
 			selObjects.add(selObject);
 		}
+		index = 0;
+	    boolean reOrder = false; 
+		Arrays.sort(selObjects.toArray());	
 		for (ListElement selObject : selObjects)
 		{
 			if (selObject == null)
 				continue;
 
 			lmFrom.removeElement(selObject);
-			lmTo.addElement(selObject);
-			
-			for (int j=0 ; j<m_pfi.length ; j++) {
-				if (m_pfi[j].get_ID() == selObject.m_key) {
-					if (listFrom.equals(noList)) {
-						m_pfi[j].setIsOrderBy(true);
-					} else {
-						m_pfi[j].setIsOrderBy(false);
-					}
-				}
+			lmTo.add(endIndex, selObject);
+			index = m_pfi.indexOf(getPrintFormatItem(selObject.m_key));
+			if(listFrom.equals(noList)) {
+			  m_pfi.get(index).setIsOrderBy(true);
+			  reOrder =true;
+			}else{
+			  m_pfi.get(index).setIsOrderBy(false);
 			}
-			wc.setIsChanged(true);
 		}
-
+		if(reOrder){
+			int sortNo =10;
+			ArrayList<ListElement> pp = new ArrayList<ListElement>();
+			for(int i=0 ; i<lmTo.getSize(); i++) { 	
+				ListElement aux = (ListElement)lmTo.getElementAt(i);
+				aux.setSortNo(sortNo);
+				sortNo =+10;
+				pp.add(aux);
+			}
+			Collections.sort(pp, new Comparator<ListElement>() {
+				@Override
+				public int compare(ListElement o1, ListElement o2) {
+					return o1.getSortNo()-o2.getSortNo();
+				}
+			});
+			for(ListElement ele : pp) { 	
+				int auxIndex = m_pfi.indexOf(getPrintFormatItem(ele.m_key));
+				m_pfi.get(auxIndex).setSortNo(sortNo);
+				sortNo = sortNo + 10;
+			}
+		  wc.setIsChanged(true);
+		}
 		refresh();
 		if ( listTo.getSelectedItem() != null)
 		{
 			AuFocus focus = new AuFocus(listTo.getSelectedItem());
 			Clients.response(focus);
 		}
-
-	}	//	migrateValueAcrossLists
+	}
+	
+	/**
+	 * 	Move within Yes List with Drag Event and Multiple Choice
+	 *	@param event event
+	 */
+	void migrateValueWithinYesList (int endIndex, List<ListElement> selObjects)
+	{
+		int iniIndex =0;
+		Arrays.sort(selObjects.toArray());	
+		ListElement selObject= null;
+		ListElement endObject = (ListElement)yesModel.getElementAt(endIndex);
+		for (ListElement selected : selObjects) {
+   		    iniIndex = yesModel.indexOf(selected);
+			selObject = (ListElement)yesModel.getElementAt(iniIndex);
+			yesModel.removeElement(selObject);
+			endIndex = yesModel.indexOf(endObject);
+			yesModel.add(endIndex, selObject);			
+		}	
+		int sortNo = 10;
+	    int auxIndex =0;
+		yesList.removeAllItems();
+	    for(int i=0 ; i<yesModel.getSize(); i++) { 	
+			ListElement pp = (ListElement)yesModel.getElementAt(i);
+			auxIndex = m_pfi.indexOf(getPrintFormatItem(pp.m_key));
+			m_pfi.get(auxIndex).setSortNo(sortNo);
+			yesList.addItem(new KeyNamePair(pp.m_key, pp.getName()));
+			sortNo = sortNo + 10;
+		}
+	}
 	
 	/**
 	 * 	Move within Yes List
@@ -358,7 +350,8 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		int[] indices = yesList.getSelectedIndices();
 		//
 		boolean change = false;
-		//
+        int selectedPI = 0 , targetPI = 0;	
+		MPrintFormatItem orig = null;
 		Object source = event.getTarget();
 		if (source == bUp)
 		{
@@ -371,6 +364,18 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 				
 				yesModel.setElementAt(newObject, index);
 				yesModel.setElementAt(selObject, index - 1);
+				yesList.setSelectedIndex(index - 1);
+				
+				selectedPI = m_pfi.indexOf(getPrintFormatItem(selObject.m_key));
+				  targetPI = m_pfi.indexOf(getPrintFormatItem(newObject.m_key));
+				updateSortNo (selectedPI,targetPI);
+				
+				yesItems.get(index).setSortNo(yesItems.get(index).getSortNo()-10);
+				orig = yesItems.get(index);
+				yesItems.get(index - 1).setSeqNo(yesItems.get(index - 1).getSeqNo()+10);
+				yesItems.set(index, yesItems.get(index-1));
+				yesItems.set(index-1 , orig);
+		
 				indices[i] = index - 1;
 				change = true;
 			}
@@ -388,15 +393,30 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 				yesModel.setElementAt(newObject, index);
 				yesModel.setElementAt(selObject, index + 1);
 				yesList.setSelectedIndex(index + 1);
+				
+				selectedPI = m_pfi.indexOf(getPrintFormatItem(selObject.m_key));
+				  targetPI = m_pfi.indexOf(getPrintFormatItem(newObject.m_key));
+				updateSortNo (selectedPI,targetPI);
+				
+				yesItems.get(index).setSeqNo(yesItems.get(index).getSeqNo()+10);
+				orig = m_pfi.get(index);
+				yesItems.get(index + 1).setSeqNo(yesItems.get(index + 1).getSeqNo()-10);
+				yesItems.set(index, yesItems.get(index+1));
+				yesItems.set(index+1,orig);
+				
 				indices[i] = index + 1;
 				change = true;
 			}
 		}	//	down
 
 		//
-		if (change) {
-			yesList.setSelectedIndices(indices);
-			updateYesList();
+		if (change) {	
+			yesList.removeAllItems();
+			for(int i=0 ; i<yesModel.getSize(); i++) { 
+				ListElement pp = (ListElement)yesModel.getElementAt(i);
+				yesList.addItem(new KeyNamePair(pp.m_key, pp.getName()));
+			}
+			wc.setIsChanged(true);
 			if ( yesList.getSelectedItem() != null)
 			{
 				AuFocus focus = new AuFocus(yesList.getSelectedItem());
@@ -405,23 +425,15 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		}
 	}	//	migrateValueWithinYesList
 	
-	public void updateYesList(){
-		yesList.removeAllItems();
-		wc.setIsChanged(true);
-		int sortNo=10;
-		for(int i=0;i<yesModel.getSize();i++){		
-			ListElement obj=(ListElement) yesModel.getElementAt(i);
-			for(int j=0;j<m_pfi.length;j++){
-				if(m_pfi[j].get_ID() == obj.getKey()){
-					String name=obj.getName();
-					int ID=obj.getKey();
-					KeyNamePair pair=new KeyNamePair(ID, name);
-					yesList.addItem(pair);
-					m_pfi[j].setSortNo(sortNo);
-					sortNo=sortNo+10;
-				}
-			}
-		}
+	
+   /**	
+	*	@param int selIndexPI,int targetIndexPI
+	*/
+	private void updateSortNo(int selIndexPI,int targetIndexPI)
+	{
+		int selSortNo = m_pfi.get(selIndexPI).getSortNo();
+		m_pfi.get(selIndexPI).setSortNo(m_pfi.get(targetIndexPI).getSortNo());		
+		m_pfi.get(targetIndexPI).setSortNo(selSortNo);	
 	}
 
 	/**
@@ -520,45 +532,36 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		}
 
 		public void onEvent(Event event) throws Exception {
-			int endIndex=0;
 			if (event instanceof DropEvent)
 			{
+				int endIndex = 0;
 				DropEvent me = (DropEvent) event;
-
 				ListItem endItem = (ListItem) me.getTarget();
-				if (!(endItem.getListbox() == yesList))
-				{
-					return;		//	move within noList
-				}
-
 				ListItem startItem = (ListItem) me.getDragged();
-				if (startItem.getListbox() == endItem.getListbox())
+				
+				if (!startItem.isSelected())
+					startItem.setSelected(true);
+				
+				if (!(startItem.getListbox() == endItem.getListbox()))
 				{
-					return; //move within same list
-				}
-				int startIndex = noList.getIndexOfItem(startItem);
-				ListElement element = (ListElement) noModel.getElementAt(startIndex);
-				noModel.removeElement(element);
-				endIndex = yesList.getIndexOfItem(endItem);
-				yesModel.add(endIndex, element);
-				
-				for (int j=0 ; j<m_pfi.length ; j++) {
-					if (m_pfi[j].get_ID() == element.m_key) {
-						 m_pfi[j].setIsOrderBy(true);
-						 m_pfi[j].setSortNo(endIndex*10);
+					Listbox listFrom = (Listbox)startItem.getListbox();
+					Listbox listTo =  (Listbox)endItem.getListbox();
+					endIndex = yesList.getIndexOfItem(endItem);
+					migrateLists (listFrom,listTo,endIndex);
+				}else if (startItem.getListbox() == endItem.getListbox() && startItem.getListbox() == yesList)
+				{
+					List<ListElement> selObjects = new ArrayList<ListElement>();
+					endIndex = yesList.getIndexOfItem(endItem);	
+					for (Object obj : yesList.getSelectedItems()) {
+						ListItem listItem = (ListItem) obj;
+						int index = yesList.getIndexOfItem(listItem);
+						ListElement selObject = (ListElement)yesModel.getElementAt(index);				
+						selObjects.add(selObject);						
 					}
+					migrateValueWithinYesList (endIndex, selObjects);
 				}
-				wc.setIsChanged(true);
-			}
-
-			   refresh();
-				//
-				noList.clearSelection();
-				yesList.clearSelection();
-
-				yesList.setSelectedIndex(endIndex);
-				
-			}
-		}
+		 }
+	   }
+	 }
 	
 }

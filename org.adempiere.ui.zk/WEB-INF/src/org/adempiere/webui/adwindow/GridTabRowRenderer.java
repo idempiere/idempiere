@@ -12,17 +12,13 @@
  *****************************************************************************/
 package org.adempiere.webui.adwindow;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.adempiere.util.GridRowCtx;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.NumberBox;
@@ -40,7 +36,6 @@ import org.compiere.model.GridTab;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.NamePair;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
@@ -76,9 +71,9 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	private int windowNo;
 	private GridTabDataBinder dataBinder;
 	private Map<GridField, WEditor> editors = new LinkedHashMap<GridField, WEditor>();
+	private Map<GridField, WEditor> readOnlyEditors = new LinkedHashMap<GridField, WEditor>();
 	private Paging paging;
 
-	private Map<String, Map<Object, String>> lookupCache = null;
 	private RowListener rowListener;
 
 	private Grid grid = null;
@@ -157,68 +152,27 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		return checkBox;
 	}
 
-	private String getDisplayText(Object value, GridField gridField)
+	private String getDisplayText(Object value, GridField gridField, int rowIndex)
 	{
 		if (value == null)
 			return "";
 
+		if (rowIndex >= 0) {
+			GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
+			if (!gridField.isDisplayed(gridRowCtx, true)) {
+				return "";
+			}
+		}
+		
 		if (gridField.isEncryptedField())
 		{
 			return "********";
+		}		
+		else if (readOnlyEditors.get(gridField) != null) 
+		{
+			WEditor editor = readOnlyEditors.get(gridField);			
+			return editor.getDisplayTextForGridView(value);
 		}
-		else if (gridField.isLookup())
-    	{
-			if (lookupCache != null)
-			{
-				Map<Object, String> cache = lookupCache.get(gridField.getColumnName());
-				if (cache != null && cache.size() >0)
-				{
-					String text = cache.get(value);
-					if (text != null)
-					{
-						return text;
-					}
-				}
-			}
-			NamePair namepair = gridField.getLookup().get(value);
-			if (namepair != null)
-			{
-				String text = namepair.getName();
-				if (lookupCache != null)
-				{
-					Map<Object, String> cache = lookupCache.get(gridField.getColumnName());
-					if (cache == null)
-					{
-						cache = new HashMap<Object, String>();
-						lookupCache.put(gridField.getColumnName(), cache);
-					}
-					cache.put(value, text);
-				}
-				return text;
-			}
-			else
-				return "";
-    	}
-		else if (DisplayType.getClass(gridField.getDisplayType(), false).equals(Timestamp.class))
-    	{
-    		SimpleDateFormat dateFormat = DisplayType.getDateFormat(gridField.getDisplayType(), AEnv.getLanguage(Env.getCtx()));
-    		return dateFormat.format((Timestamp)value);
-    	}
-    	else if (DisplayType.isNumeric(gridField.getDisplayType()))
-    	{
-    		return DisplayType.getNumberFormat(gridField.getDisplayType(), AEnv.getLanguage(Env.getCtx())).format(value);
-    	}
-    	else if (DisplayType.Button == gridField.getDisplayType())
-    	{
-    		return "";
-    	}
-    	else if (DisplayType.Image == gridField.getDisplayType())
-    	{
-    		if (value == null || (Integer)value <= 0)
-    			return "";
-    		else
-    			return "...";
-    	}
     	else
     		return value.toString();
 	}
@@ -236,7 +190,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			editor.addActionListener(buttonListener);
 			component = editor.getComponent();
 		} else {
-			String text = getDisplayText(value, gridField);
+			String text = getDisplayText(value, gridField, rowIndex);
 
 			Label label = new Label();
 			setLabelText(text, label);
@@ -310,7 +264,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 					if (component instanceof Label) {
 						Label label = (Label)component;
 						label.getChildren().clear();
-						String text = getDisplayText(entry.getValue().getValue(), entry.getValue().getGridField());
+						String text = getDisplayText(entry.getValue().getValue(), entry.getValue().getGridField(), -1);
 						setLabelText(text, label);
 					} else if (component instanceof Checkbox) {
 						Checkbox checkBox = (Checkbox)component;
@@ -425,6 +379,11 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				if (editor instanceof WButtonEditor) {
 					((WButtonEditor)editor).addActionListener(buttonListener);
 				}
+				
+				//readonly for display text
+				WEditor readOnlyEditor = WebEditorFactory.getEditor(gridPanelFields[i], true);
+				readOnlyEditor.setReadWrite(false);
+				readOnlyEditors.put(gridPanelFields[i], readOnlyEditor);
 			}
 			
 			if (!gridPanelFields[i].isDisplayedGrid() || gridPanelFields[i].isToolbarButton()) {
@@ -583,21 +542,18 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 * @see RendererCtrl#doCatch(Throwable)
 	 */
 	public void doCatch(Throwable ex) throws Throwable {
-		lookupCache = null;
 	}
 
 	/**
 	 * @see RendererCtrl#doFinally()
 	 */
 	public void doFinally() {
-		lookupCache = null;
 	}
 
 	/**
 	 * @see RendererCtrl#doTry()
 	 */
 	public void doTry() {
-		lookupCache = new HashMap<String, Map<Object,String>>();
 	}
 
 	/**

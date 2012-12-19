@@ -27,7 +27,7 @@
 * - GlobalQSS (http://www.globalqss.com)                              *
 ***********************************************************************/
 
-package com._3e.ADInterface;
+package org.idempiere.adinterface;
 
 
 import javax.jws.WebService;
@@ -44,7 +44,7 @@ import org.idempiere.adInterface.x10.RunProcessResponseDocument;
 import org.idempiere.adInterface.x10.StandardResponseDocument;
 import org.idempiere.adInterface.x10.WindowTabDataDocument;
 
-@WebService(targetNamespace="http://3e.pl/ADInterface")
+@WebService(targetNamespace="http://idempiere.org/ADInterface/1_0")
 @SOAPBinding(style=Style.RPC,use=Use.LITERAL,parameterStyle=ParameterStyle.WRAPPED)
 public interface ModelADService {
 

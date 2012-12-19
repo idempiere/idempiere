@@ -186,7 +186,7 @@ public class MLocator extends X_M_Locator
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MLocator> s_cache; 
+	private volatile static CCache<Integer,MLocator> s_cache; 
 	 
 	/**	Logger						*/
 	private static CLogger		s_log = CLogger.getCLogger (MLocator.class);

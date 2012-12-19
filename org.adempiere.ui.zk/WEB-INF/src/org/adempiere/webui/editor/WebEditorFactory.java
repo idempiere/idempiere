@@ -47,7 +47,7 @@ public class WebEditorFactory
 
     public static WEditor getEditor(GridField gridField, boolean tableEditor)
     {
-    	return getEditor(null, gridField, tableEditor);
+    	return getEditor(gridField.getGridTab(), gridField, tableEditor);
     }
 
     public static WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor)

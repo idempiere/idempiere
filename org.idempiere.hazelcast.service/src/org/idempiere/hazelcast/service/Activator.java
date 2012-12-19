@@ -13,6 +13,10 @@
  *****************************************************************************/
 package org.idempiere.hazelcast.service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -24,6 +28,8 @@ import org.compiere.model.ServerStateChangeListener;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import com.hazelcast.config.Config;
+import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.core.*;
 
 /**
@@ -39,7 +45,7 @@ public class Activator implements BundleActivator {
 		return context;
 	}
 
-	private static HazelcastInstance hazelcastInstance;
+	private volatile static HazelcastInstance hazelcastInstance;
 	private static AtomicReference<Future<?>> futureRef = new AtomicReference<Future<?>>();
 
 	/*
@@ -68,6 +74,21 @@ public class Activator implements BundleActivator {
 		Future<?> future = executor.submit(new Runnable() {			
 			@Override
 			public void run() {
+				String dataArea = System.getProperty("osgi.install.area");
+				if (dataArea != null && dataArea.trim().length() > 0) {
+					try {
+						URL url = new URL(dataArea);
+						File file = new File(url.getPath(), "hazelcast.xml");
+						if (file.exists()) {
+							try {
+								Config config = new FileSystemXmlConfig(file);
+								hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+								return;
+							} catch (FileNotFoundException e) {}
+						} 
+					} catch (MalformedURLException e1) {
+					}
+				}
 				hazelcastInstance = Hazelcast.newHazelcastInstance(null);		
 			}
 		});
