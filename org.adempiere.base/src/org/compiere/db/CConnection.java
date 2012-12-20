@@ -32,7 +32,6 @@ import org.compiere.interfaces.Server;
 import org.compiere.interfaces.Status;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
-import org.compiere.util.ValueNamePair;
 
 /**
  *  Adempiere Connection Descriptor
@@ -44,33 +43,14 @@ import org.compiere.util.ValueNamePair;
 public class CConnection implements Serializable, Cloneable
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = -7893119456331485444L;
+	private static final long serialVersionUID = -858558852550858165L;
+
 	/** Connection      */
 	private volatile static CConnection	s_cc = null;
 	/** Logger			*/
 	private static CLogger 		log = CLogger.getCLogger (CConnection.class);
-
-	/** Connection profiles		*/
-	@Deprecated
-	public static ValueNamePair[] CONNECTIONProfiles = new ValueNamePair[]{
-		new ValueNamePair("L", "LAN")};
-
-	/** Connection Profile LAN			*/
-	@Deprecated
-	public static final String	PROFILE_LAN = "L";
-	/**
-	 * Connection Profile Terminal Server
-	 * @deprecated
-	 **/
-	public static final String	PROFILE_TERMINAL = "T";
-	/** Connection Profile VPM			*/
-	@Deprecated
-	public static final String	PROFILE_VPN = "V";
-	/** Connection Profile WAN			*/
-	@Deprecated
-	public static final String	PROFILE_WAN = "W";
 
 	/**
 	 *  Get/Set default client/server Connection
@@ -98,7 +78,6 @@ public class CConnection implements Serializable, Cloneable
 				if (apps_host != null && Adempiere.isWebStartClient())
 				{
 					cc = new CConnection(apps_host);
-					cc.setConnectionProfile(CConnection.PROFILE_LAN);
 					if (cc.testAppsServer() == null)
 					{
 						s_cc = cc;
@@ -552,77 +531,6 @@ public class CConnection implements Serializable, Cloneable
 	{
 		return false;
 	}	//	isRMIoverHTTP
-
-	/**
-	 * 	Set Connection Profile
-	 *	@param connectionProfile connection profile
-	 *  @deprecated
-	 */
-	public void setConnectionProfile (ValueNamePair connectionProfile)
-	{
-		if (connectionProfile != null)
-			setConnectionProfile(PROFILE_LAN);
-	}	//	setConnectionProfile
-
-	/**
-	 * 	Set Connection Profile
-	 *	@param connectionProfile connection profile
-	 *  @deprecated
-	 */
-	public void setConnectionProfile (String connectionProfile)
-	{
-	}	//	setConnectionProfile
-
-	/**
-	 * 	Get Connection Profile
-	 *	@return connection profile
-	 *  @deprecated
-	 */
-	public String getConnectionProfile ()
-	{
-		return PROFILE_LAN;
-	}	//	getConnectionProfile
-
-	/**
-	 * 	Get Connection Profile Text
-	 * 	@param connectionProfile
-	 *	@return connection profile text
-	 *  @deprecated
-	 */
-	public String getConnectionProfileText (String connectionProfile)
-	{
-		for (int i = 0; i < CONNECTIONProfiles.length; i++)
-		{
-			if (CONNECTIONProfiles[i].getValue().equals(connectionProfile))
-				return CONNECTIONProfiles[i].getName();
-		}
-		return CONNECTIONProfiles[0].getName();
-	}	//	getConnectionProfileText
-
-	/**
-	 * 	Get Connection Profile Text
-	 *	@return connection profile text
-	 *  @deprecated
-	 */
-	public String getConnectionProfileText ()
-	{
-		return getConnectionProfileText(getConnectionProfile());
-	}	//	getConnectionProfileText
-
-	/**
-	 * 	Get Connection Profile
-	 *	@return connection profile
-	 *  @deprecated
-	 */
-	public ValueNamePair getConnectionProfilePair ()
-	{
-		for (int i = 0; i < CONNECTIONProfiles.length; i++)
-		{
-			if (CONNECTIONProfiles[i].getValue().equals(getConnectionProfile()))
-				return CONNECTIONProfiles[i];
-		}
-		return CONNECTIONProfiles[0];
-	}	//	getConnectionProfilePair
 
 	/**
 	 *  Should objects be created on Server ?

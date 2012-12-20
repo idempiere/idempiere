@@ -49,7 +49,6 @@ import javax.swing.table.DefaultTableModel;
 
 import org.adempiere.plaf.AdempierePLAF;
 import org.adempiere.plaf.PLAFEditorPanel;
-import org.compiere.db.CConnection;
 import org.compiere.grid.ed.VDate;
 import org.compiere.minigrid.MiniTable;
 import org.compiere.model.MRole;
@@ -93,7 +92,7 @@ public final class Preference extends CDialog
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8923143271736597338L;
+	private static final long serialVersionUID = -4691368295400769754L;
 
 	/**
 	 *	Standard Constructor
@@ -165,8 +164,6 @@ public final class Preference extends CDialog
 	private CPrinter fPrinter = new CPrinter();
 	private CLabel lDate = new CLabel();
 	private VDate fDate = new VDate();
-	private CComboBox connectionProfile = new CComboBox(CConnection.CONNECTIONProfiles);
-	private CLabel connectionProfileLabel = new CLabel();
 	private CPanel errorPane = new CPanel();
 	private BorderLayout errorLayout = new BorderLayout();
 	private JScrollPane errorScrollPane = new JScrollPane();
@@ -239,7 +236,6 @@ public final class Preference extends CDialog
 		showAcct.setToolTipText(Msg.getMsg(Env.getCtx(), "ShowAcctTab", false));
 		showAdvanced.setText(Msg.getMsg(Env.getCtx(), "ShowAdvancedTab", true));
 		showAdvanced.setToolTipText(Msg.getMsg(Env.getCtx(), "ShowAdvancedTab", false));
-		connectionProfileLabel.setText(Msg.getElement(Env.getCtx(), "ConnectionProfile"));
 		cacheWindow.setText(Msg.getMsg(Env.getCtx(), "CacheWindow", true));
 		cacheWindow.setToolTipText(Msg.getMsg(Env.getCtx(), "CacheWindow", false));
 		lPrinter.setText(Msg.getMsg(Env.getCtx(), "Printer"));
@@ -288,10 +284,6 @@ public final class Preference extends CDialog
 		CPanel connPanel = new CPanel();
 		connPanel.setBorder(BorderFactory.createTitledBorder(Msg.getMsg(Env.getCtx(), "Connection")));
 		connPanel.setLayout(new GridBagLayout());
-		connPanel.add(connectionProfileLabel,    new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
-				,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 2, 2, 0), 0, 0));
-		connPanel.add(connectionProfile,    new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0
-			,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 2, 2, 0), 0, 0));
 		connPanel.add(validateConnectionOnStartup,    new GridBagConstraints(0, 1, 2, 1, 1.0, 0.0
 				,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 2, 2, 0), 0, 0));
 		customizePane.add(connPanel, new GridBagConstraints(0, 2, 1, 1, 1.0, 0.0
@@ -505,17 +497,6 @@ public final class Preference extends CDialog
 		showTrl.setSelected(Ini.isPropertyBool(Ini.P_SHOW_TRL));
 		showAdvanced.setSelected(Ini.isPropertyBool(Ini.P_SHOW_ADVANCED));
 		
-		//  Connection Profile
-		MUser user = MUser.get(Env.getCtx());
-		String cp = user.getConnectionProfile();
-		if (cp == null)
-			cp = MRole.getDefault().getConnectionProfile();
-		if (cp != null)
-		{
-			CConnection.get().setConnectionProfile(cp);
-			connectionProfile.setReadWrite(false);
-		}
-		connectionProfile.setSelectedItem(CConnection.get().getConnectionProfilePair());
 		cacheWindow.setSelected(Ini.isCacheWindow());
 		
 		//  Print Preview
@@ -594,14 +575,6 @@ public final class Preference extends CDialog
 		Ini.setProperty(Ini.P_SHOW_ADVANCED, (showAdvanced.isSelected()));
 		Env.setContext(Env.getCtx(), "#ShowAdvanced", (showAdvanced.isSelected()));
 		
-		//  ConnectionProfile
-		ValueNamePair ppNew = (ValueNamePair)connectionProfile.getSelectedItem();
-		String cpNew = ppNew.getValue();
-		String cpOld = CConnection.get().getConnectionProfile(); 
-		CConnection.get().setConnectionProfile(cpNew);
-		if (!cpNew.equals(cpOld)
-			&& (cpNew.equals(CConnection.PROFILE_WAN) || cpOld.equals(CConnection.PROFILE_WAN))) 
-			ADialog.info(0, this, "ConnectionProfileChange");
 		Ini.setProperty(Ini.P_CACHE_WINDOW, cacheWindow.isSelected());
 		
 		//  Print Preview

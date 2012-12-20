@@ -192,19 +192,6 @@ public interface I_AD_User
 	  */
 	public String getComments();
 
-    /** Column name ConnectionProfile */
-    public static final String COLUMNNAME_ConnectionProfile = "ConnectionProfile";
-
-	/** Set Connection Profile.
-	  * How a Java Client connects to the server(s)
-	  */
-	public void setConnectionProfile (String ConnectionProfile);
-
-	/** Get Connection Profile.
-	  * How a Java Client connects to the server(s)
-	  */
-	public String getConnectionProfile();
-
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
