@@ -17,4 +17,4 @@ goto START
 @Echo Starting Adempiere Client ...
 @Echo =======================================
 
-@"%JAVA%" -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -Dosgi.compatibility.bootdelegation=true -XX:MaxPermSize=192m -jar plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar -application org.adempiere.ui.swing.client
+@"%JAVA%" -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -Dosgi.compatibility.bootdelegation=true -XX:MaxPermSize=192m -jar plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.ui.swing.client

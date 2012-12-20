@@ -31,7 +31,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20121219L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -304,34 +304,6 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	public String getComments () 
 	{
 		return (String)get_Value(COLUMNNAME_Comments);
-	}
-
-	/** ConnectionProfile AD_Reference_ID=364 */
-	public static final int CONNECTIONPROFILE_AD_Reference_ID=364;
-	/** LAN = L */
-	public static final String CONNECTIONPROFILE_LAN = "L";
-	/** Terminal Server = T */
-	public static final String CONNECTIONPROFILE_TerminalServer = "T";
-	/** VPN = V */
-	public static final String CONNECTIONPROFILE_VPN = "V";
-	/** WAN = W */
-	public static final String CONNECTIONPROFILE_WAN = "W";
-	/** Set Connection Profile.
-		@param ConnectionProfile 
-		How a Java Client connects to the server(s)
-	  */
-	public void setConnectionProfile (String ConnectionProfile)
-	{
-
-		set_Value (COLUMNNAME_ConnectionProfile, ConnectionProfile);
-	}
-
-	/** Get Connection Profile.
-		@return How a Java Client connects to the server(s)
-	  */
-	public String getConnectionProfile () 
-	{
-		return (String)get_Value(COLUMNNAME_ConnectionProfile);
 	}
 
 	/** Set Date Account Locked.

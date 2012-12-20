@@ -80,6 +80,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
@@ -332,17 +333,17 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		row.appendChild(m_InfoPAttributeButton);
 
 		row = new Row();
-		row.setSpans("1, 1, 1, 1, 1, 1, 1, 2");
-		rows.appendChild(row);
-		row.appendChild(lblName.rightAlign());
-		row.appendChild(fieldName);
+		row.appendCellChild(lblName.rightAlign());
+		row.appendCellChild(fieldName);
 		fieldName.setHflex("1");
-		row.appendChild(lblSKU.rightAlign());
-		row.appendChild(fieldSKU);
+		row.appendCellChild(lblSKU.rightAlign());
+		row.appendCellChild(fieldSKU);
 		fieldSKU.setHflex("1");
-		row.appendChild(lblVendor.rightAlign());
-		row.appendChild(fieldVendor);
+		row.appendCellChild(lblVendor.rightAlign());
+		row.appendCellChild(fieldVendor);
+		rows.appendChild(row);
 		fieldVendor.setHflex("1");
+		
 		//
 
 		row = new Row();
@@ -357,7 +358,9 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(statusBar);
-		row.setSpans("6");
+		Cell cell = new Cell();
+		cell.setColspan(6);
+		row.appendCellChild(cell);
 		statusBar.setEastVisibility(false);
 		statusBar.setWidth("100%");
 

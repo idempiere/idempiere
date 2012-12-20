@@ -155,7 +155,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		Row row = new Row();
 		rows.appendChild(row);
 		Div div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lNode);
 		row.appendChild(div);
 		row.appendChild(fNode);
@@ -166,7 +166,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		rows.appendChild(row);
 		row.setValign("top");
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lDesctiption);
 		row.appendChild(div);
 		row.appendChild(fDescription);
@@ -177,7 +177,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lHelp);
 		row.appendChild(div);
 		row.appendChild(fHelp);
@@ -190,7 +190,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lHistory);
 		row.appendChild(div);
 		row.appendChild(fHistory);
@@ -199,7 +199,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lAnswer);
 		row.appendChild(div);
 		Hbox hbox = new Hbox();
@@ -214,7 +214,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lTextMsg);
 		row.appendChild(div);
 		row.appendChild(fTextMsg);
@@ -225,7 +225,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lForward);
 		row.appendChild(div);
 		hbox = new Hbox();

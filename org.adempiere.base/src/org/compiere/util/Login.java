@@ -157,9 +157,6 @@ public class Login
 	private static CLogger log = CLogger.getCLogger(Login.class);
 	/** Context				*/
 	private Properties 		m_ctx = null;
-	/** Connection Profile	*/
-	private String			m_connectionProfile = null;
-	
 	
 	/**
 	 *	(Test) Client Login.
@@ -409,18 +406,6 @@ public class Login
 					Ini.setProperty(Ini.P_UID, "");
 				if (Ini.isPropertyBool(Ini.P_STORE_PWD) && MSystem.isSwingRememberPasswordAllowed())
 					Ini.setProperty(Ini.P_PWD, app_pwd);
-				
-				m_connectionProfile = rs.getString(4);		//	User Based
-				if (m_connectionProfile != null)
-				{
-					CConnection cc = CConnection.get();
-					if (!cc.getConnectionProfile().equals(m_connectionProfile))
-					{
-						cc.setConnectionProfile(m_connectionProfile);
-						Ini.setProperty(Ini.P_CONNECTION, cc.toStringLong());
-						Ini.saveProperties(false);
-					}
-				}
 			}
            	
 			do	//	read all roles
@@ -507,20 +492,6 @@ public class Login
 			Ini.setProperty(Ini.P_ROLE, role.getName());
 			//	User Level
 			Env.setContext(m_ctx, "#User_Level", rs.getString(1));  	//	Format 'SCO'
-			
-			//	ConnectionProfile
-			CConnection cc = CConnection.get();
-			if (m_connectionProfile == null)			//	No User Based
-			{
-				m_connectionProfile = rs.getString(2);	//	Role Based
-				if (m_connectionProfile != null
-					&& !cc.getConnectionProfile().equals(m_connectionProfile))
-				{
-					cc.setConnectionProfile(m_connectionProfile);
-					Ini.setProperty(Ini.P_CONNECTION, cc.toStringLong());
-					Ini.saveProperties(false);
-				}
-			}
 			
 			//  load Clients
 			do
@@ -615,18 +586,6 @@ public class Login
 			Ini.setProperty(Ini.P_ROLE, rol.getName());
 			//	User Level
 			Env.setContext(m_ctx, "#User_Level", rs.getString(1));  	//	Format 'SCO'
-			//	ConnectionProfile
-			 CConnection cc = CConnection.get();
-			 if (m_connectionProfile == null)			//	No User Based
-			 {
-			    m_connectionProfile = rs.getString(2);	//	Role Based
-				if (m_connectionProfile != null && !cc.getConnectionProfile().equals(m_connectionProfile))
-				{
-				   cc.setConnectionProfile(m_connectionProfile);
-				   Ini.setProperty(Ini.P_CONNECTION, cc.toStringLong());
-				   Ini.saveProperties(false);
-				}
-			 }
 			//  load Orgs
 			
 			do{

@@ -240,7 +240,7 @@ public class CustomizeGridViewPanel extends Panel
 		south.setStyle("border: none; margin: none");
 		Panel southPanel = new Panel();
 		south.setHeight("35px");
-		southPanel.setAlign("Right"); 
+		south.setStyle("text-align: right;");
 		southPanel.setStyle("margin-top: 2px; margin-right: 4px");
 		@SuppressWarnings("unused")
 		String label = Msg.getMsg(Env.getCtx(), "save");

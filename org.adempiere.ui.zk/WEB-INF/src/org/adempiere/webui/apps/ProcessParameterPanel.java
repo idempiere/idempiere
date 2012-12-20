@@ -288,7 +288,7 @@ public class ProcessParameterPanel extends Panel implements
 		m_wEditors.add(editor); // add to Editors
 
     	Div div = new Div();
-        div.setAlign("right");
+        div.setStyle("text-align: right;");
         org.adempiere.webui.component.Label label = editor.getLabel();
         div.appendChild(label);
         if (label.getDecorator() != null)

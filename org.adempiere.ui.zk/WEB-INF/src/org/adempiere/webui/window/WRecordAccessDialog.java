@@ -208,11 +208,10 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("7");
 		Div div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(confirmPanel);
-		row.appendChild(div);
+		row.appendCellChild(div, 7);
 		
 		bUp.addEventListener(Events.ON_CLICK, this);
 		bDown.addEventListener(Events.ON_CLICK, this);

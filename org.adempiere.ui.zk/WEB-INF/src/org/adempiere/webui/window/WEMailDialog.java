@@ -206,7 +206,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		Row row = new Row();
 		rows.appendChild(row);
 		Div div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lFrom);
 		row.appendChild(div);
 		row.appendChild(fFrom);
@@ -215,7 +215,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lTo);
 		row.appendChild(div);
 		row.appendChild(fUser.getComponent());
@@ -230,7 +230,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lCc);
 		row.appendChild(div);
 		row.appendChild(fCcUser.getComponent());
@@ -244,13 +244,12 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("2");
-		row.appendChild(new Separator());
+		row.appendCellChild(new Separator(), 2);
 		
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lSubject);
 		row.appendChild(div);
 		row.appendChild(fSubject);
@@ -258,13 +257,12 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("2");
-		row.appendChild(new Separator());
+		row.appendCellChild(new Separator(), 2);
 		
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lAttachment);
 		row.appendChild(div);
 		row.appendChild(fAttachment);
@@ -272,8 +270,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("2");
-		row.appendChild(fMessage);
+		row.appendCellChild(fMessage, 2);
 		fMessage.setHflex("1");
 		fMessage.setRows(10);
 		
@@ -285,10 +282,11 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		layout.setStyle("background-color: white; position: absolute; margin:0; border:0; padding:0");
 		
 		Center center = new Center();
+		grid.setHflex("true");
+		grid.setVflex("true");		
 		center.appendChild(grid);
 		layout.appendChild(center);
 		center.setStyle("background-color: white; border: 0");
-		center.setFlex(true);
 		
 		South south = new South();
 		Div southDiv = new Div();

@@ -44,6 +44,7 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Textbox;
@@ -176,7 +177,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 			row	= new Row();
 			rows.appendChild(row);
 			div = new Div();
-			div.setAlign("right");
+			div.setStyle("text-align: right;");
 			div.appendChild(serNoLabel);
 			row.appendChild(div);
 			row.appendChild(serNoField.getComponent());
@@ -187,7 +188,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 			row = new Row();
 			rows.appendChild(row);
 			div = new Div();
-			div.setAlign("right");
+			div.setStyle("text-align: right;");
 			div.appendChild(lotLabel);
 			row.appendChild(div);
 			row.appendChild(lotField.getComponent());
@@ -196,7 +197,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 			row = new Row();
 			rows.appendChild(row);
 			div = new Div();
-			div.setAlign("right");
+			div.setStyle("text-align: right;");
 			div.appendChild(lotLabel2);
 			row.appendChild(div);
 			row.appendChild(lotSelection);
@@ -206,7 +207,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 			row = new Row();
 			rows.appendChild(row);
 			div = new Div();
-			div.setAlign("right");
+			div.setStyle("text-align: right;");
 			div.appendChild(guaranteeDateSelection);
 			row.appendChild(div);
 			row.appendChild(guaranteeDateField);
@@ -250,14 +251,18 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 				{
 					Row row = new Row();
 					rows.appendChild(row);
-					row.setSpans("2");
+					Cell cell = new Cell();
+					cell.setColspan(2);
+					row.appendCellChild(cell);
     				Label group = new Label(Msg.translate(Env.getCtx(), "IsInstanceAttribute")); 
     				row.appendChild(group);
     				rows.appendChild(row);
     				
     				row = new Row();
 					rows.appendChild(row);
-					row.setSpans("2");
+					cell = new Cell();
+					cell.setColspan(2);
+					row.appendCellChild(cell);
                     Separator separator = new Separator();
                     separator.setBar(true);
         			row.appendChild(separator);
@@ -275,7 +280,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 					label.setTooltiptext(description);
 				
 				Div div = new Div();
-				div.setAlign("right");
+				div.setStyle("text-align: right;");
 				div.appendChild(label);
 				row.appendChild(div);
 				
@@ -318,7 +323,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 					row = new Row();
 					rows.appendChild(row);
 					div = new Div();
-					div.setAlign("right");
+					div.setStyle("text-align: right;");
 					div.appendChild(new Label("-"));
 					row.appendChild(div);
 					row.appendChild(fieldTo);
@@ -352,14 +357,18 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 			if (isGuarantee || isSerial || isLot) {
 				Row row = new Row();
 				rows.appendChild(row);
-				row.setSpans("2");
+				Cell cell = new Cell();
+				cell.setColspan(2);
+				row.appendCellChild(cell);
 				Label group = new Label(Msg.translate(Env.getCtx(), "IsInstanceAttribute")); 
 				row.appendChild(group);
 				rows.appendChild(row);
 				
 				row = new Row();
 				rows.appendChild(row);
-				row.setSpans("2");
+				cell = new Cell();
+				cell.setColspan(2);
+				row.appendCellChild(cell);
                 Separator separator = new Separator();
                 separator.setBar(true);
     			row.appendChild(separator);

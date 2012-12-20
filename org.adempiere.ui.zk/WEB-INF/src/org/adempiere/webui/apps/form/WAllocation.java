@@ -194,12 +194,11 @@ public class WAllocation extends Allocation
 		row.appendChild(organizationPick.getComponent());
 		
 		row = rows.newRow();
-		row.appendChild(currencyLabel.rightAlign());
-		row.appendChild(currencyPick.getComponent());		
-		row.appendChild(multiCurrency);		
-		row.appendChild(new Space());
-		row.appendChild(new Space());
-		row.setSpans("1,1,2,1,1");
+		row.appendCellChild(currencyLabel.rightAlign(),1);
+		row.appendCellChild(currencyPick.getComponent(),1);		
+		row.appendCellChild(multiCurrency,2);		
+		row.appendCellChild(new Space(),1);
+		row.appendCellChild(new Space(),1);
 		
 		row = rows.newRow();
 		row.appendChild(new Space());

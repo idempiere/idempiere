@@ -213,11 +213,11 @@ public class InfoAssignmentPanel extends InfoPanel implements EventListener<Even
 		row.appendChild(fieldResourceType.getComponent());
 		row.appendChild(fieldResource.getComponent());
 		Div div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(fieldFrom);
 		row.appendChild(div);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(fieldTo);
 		row.appendChild(div);
 		row.appendChild(bNew);

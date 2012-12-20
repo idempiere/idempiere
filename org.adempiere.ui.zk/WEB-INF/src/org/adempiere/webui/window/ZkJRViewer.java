@@ -82,9 +82,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		north.appendChild(toolbar);
 
 		Center center = new Center();
-		center.setFlex(true);
 		layout.appendChild(center);
 		iframe = new Iframe();
+		iframe.setHflex("true");
+		iframe.setVflex("true");
 		iframe.setId("reportFrame");
 		iframe.setHeight("100%");
 		iframe.setWidth("100%");

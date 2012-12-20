@@ -154,9 +154,10 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		
 		Center center = new Center();
 		center.setParent(layout);
-		center.setFlex(true);
 		if (showTable)
 		{
+			table.setHflex("true");
+			table.setVflex("true");
 			North north = new North();
 			north.setParent(layout);
 			north.appendChild(div);
@@ -167,6 +168,8 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		}
 		else
 		{
+			div.setHflex("true");
+			div.setVflex("true");
 			center.appendChild(div);
 		}
 		//

@@ -188,7 +188,6 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
     	// set size in percentage per column leaving a MARGIN on right
     	Columns columns = new Columns();
     	form.appendChild(columns);
-		String numColsS=String.valueOf(numCols);
     	int equalWidth = 98 / numCols;
 
     	for (int h=0;h<numCols;h++){
@@ -244,7 +243,9 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
         		else
         		{
         			Group rowg = new Group(fieldGroup);
-        			rowg.setSpans(numColsS);
+        			Cell cell = new Cell();
+        			cell.setColspan(numCols);
+        			rowg.appendChild(cell);
         			if (X_AD_FieldGroup.FIELDGROUPTYPE_Tab.equals(gridField.getFieldGroupType()) || gridField.getIsCollapsedByDefault())
         			{
         				rowg.setOpen(false);
@@ -301,7 +302,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
         			}
         			if (paintLabel) {
         				Div div = new Div();
-        				div.setAlign("right");
+        				div.setStyle("text-align: right;");
         				Label label = editor.getLabel();
         				div.appendChild(label);
         				if (label.getDecorator() != null)
@@ -322,7 +323,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
         		//display just a label if we are "heading only"
         		Label label = new Label(gridField.getHeader());
         		Div div = new Div();
-        		div.setAlign("center");
+        		div.setStyle("text-align: center;");
         		row.appendCellChild(createSpacer());
         		div.appendChild(label);
         		row.appendCellChild(div);

@@ -236,10 +236,9 @@ public class WMatch extends Match
 		row.appendChild(new Space());
 		
 		row = rows.newRow();
-		row.setSpans("1,1,3");
-		row.appendChild(matchModeLabel.rightAlign());
-		row.appendChild(matchMode);
-		row.appendChild(new Space());
+		row.appendCellChild(matchModeLabel.rightAlign(), 1);
+		row.appendCellChild(matchMode, 1);
+		row.appendCellChild(new Space(), 3);
 		
 		row = rows.newRow();
 		row.appendChild(onlyVendorLabel.rightAlign());

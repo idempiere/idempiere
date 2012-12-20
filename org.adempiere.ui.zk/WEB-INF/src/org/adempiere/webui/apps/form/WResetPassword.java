@@ -96,8 +96,9 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 			Center center = new Center();
 			center.setStyle("border: none");
 			contentPane.appendChild(center);
+			gridPanel.setHflex("true");
+			gridPanel.setVflex("true");
 			center.appendChild(gridPanel);
-			center.setFlex(true);
 			South south = new South();
 			south.setStyle("border: none");
 			contentPane.appendChild(south);

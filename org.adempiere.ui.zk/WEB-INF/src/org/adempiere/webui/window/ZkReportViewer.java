@@ -316,9 +316,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		north.appendChild(toolBar);
 		
 		Center center = new Center();
-		center.setFlex(true);
 		layout.appendChild(center);
 		iframe = new Iframe();
+		iframe.setHflex("true");
+		iframe.setVflex("true");
 		iframe.setId("reportFrame");
 		center.appendChild(iframe);
 		
@@ -806,7 +807,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			
 			Hbox hb = new Hbox();
 			Div div = new Div();
-			div.setAlign("right");
+			div.setStyle("text-align: right;");
 			div.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
 			hb.appendChild(div);
 			hb.appendChild(cboType);

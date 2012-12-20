@@ -276,25 +276,23 @@ public class ValuePreference extends Window implements EventListener<Event>
 		rows.setParent(setLayout);
 		
 		Row row = new Row();
-		row.setSpans("1, 4, 1");
 		Div div = new Div();
 		div.setStyle("text-align: right");
 		div.appendChild(lAttribute);
-		row.appendChild(div);
-		row.appendChild(fAttribute);
+		row.appendCellChild(div, 1);
+		row.appendCellChild(fAttribute, 4);
 		fAttribute.setWidth("100%");
-		row.appendChild(lAttributeValue);
+		row.appendCellChild(lAttributeValue, 1);
 		rows.appendChild(row);
 		
 		row = new Row();
-		row.setSpans("1, 4, 1");
 		div = new Div();
 		div.setStyle("text-align: right");
 		div.appendChild(lValue);
-		row.appendChild(div);
-		row.appendChild(fValue);
+		row.appendCellChild(div, 1);
+		row.appendCellChild(fValue, 4);
 		fValue.setWidth("100%");
-		row.appendChild(lValueValue);
+		row.appendCellChild(lValueValue, 1);
 		rows.appendChild(row);
 		
 		row = new Row();
@@ -309,9 +307,8 @@ public class ValuePreference extends Window implements EventListener<Event>
 		rows.appendChild(row);
 		
 		row = new Row();
-		row.setSpans("1, 5");
-		row.appendChild(new Space());
-		row.appendChild(lExplanation);
+		row.appendCellChild(new Space(), 1);
+		row.appendCellChild(lExplanation, 5);
 		rows.appendChild(row);
 		
 		//
