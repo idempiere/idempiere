@@ -59,6 +59,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Caption;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Hbox;
@@ -470,7 +471,8 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		
 		Hbox boxQty = new Hbox();
 		boxQty.setWidth("100%");
-		boxQty.setWidths("10%, 40%, 50%");
+		Cell cell = new Cell();
+		cell.setWidth("10%");
 		
 		if (MProductBOM.BOMTYPE_StandardPart.equals(bomType))
 		{
@@ -481,7 +483,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 			cb.setEnabled(false);
 
 			m_selectionList.add(cb);
-			boxQty.appendChild(cb);
+			cell.appendChild(cb);
 		}
 		else if (MProductBOM.BOMTYPE_OptionalPart.equals(bomType))
 		{
@@ -493,7 +495,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 			cb.addEventListener(Events.ON_CHECK, this);
 			
 			m_selectionList.add(cb);
-			boxQty.appendChild(cb);
+			cell.appendChild(cb);
 		}
 		else	//	Alternative
 		{
@@ -519,8 +521,9 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 			}
 			b.addEventListener(Events.ON_CLICK, this);
 			m_selectionList.add(b);
-			boxQty.appendChild(b);
+			cell.appendChild(b);
 		}
+		boxQty.appendChild(cell);
 		
 		//	Add to List & display
 		m_productList.add (new Integer(M_Product_ID));
@@ -532,8 +535,14 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		Label label = new Label(name);
 		HtmlBasedComponent c = (HtmlBasedComponent) label.rightAlign();
 		c.setStyle(c.getStyle() + ";margin-right: 5px");
-		boxQty.appendChild(c);
-		boxQty.appendChild(qty);
+		cell = new Cell();
+		cell.setWidth("40%");
+		cell.appendChild(c);
+		boxQty.appendChild(cell);
+		cell = new Cell();
+		cell.setWidth("50%");
+		cell.appendChild(qty);
+		boxQty.appendChild(cell);
 
 		grpSelectProd.appendChild(boxQty);
 	}	//	addDisplay

@@ -56,6 +56,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
@@ -468,10 +469,13 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			
 			Hbox hbox = new Hbox();
 			hbox.setWidth("100%");
-			hbox.setWidths("30%, 70%");
 			hbox.setStyle("padding-bottom: 3px");
-			
-			hbox.appendChild(m_labels[i].rightAlign());
+			Cell cell = new Cell();
+			cell.setWidth("30%");
+			cell.appendChild(m_labels[i].rightAlign());
+			hbox.appendChild(cell);
+			cell = new Cell();
+			cell.setWidth("70%");
 			
 			int length = row.getEndNo() - row.getStartNo();
 			
@@ -483,7 +487,8 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			m_fields[i] = new Textbox();
 			m_fields[i].setStyle("margin-left: 2px");
 			
-			hbox.appendChild(m_fields[i]);
+			cell.appendChild(m_fields[i]);
+			hbox.appendChild(cell);
 			
 			previewPanel.appendChild(hbox);
 		}

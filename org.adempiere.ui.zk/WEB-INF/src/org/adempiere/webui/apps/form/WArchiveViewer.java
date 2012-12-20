@@ -62,6 +62,7 @@ import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
@@ -407,10 +408,15 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		Tabpanel tabViewPanel = new Tabpanel();
 		Hbox boxViewSeparator = new Hbox();
 		boxViewSeparator.setWidth("100%");
-		boxViewSeparator.setHeight("100%");	
-		boxViewSeparator.setWidths("70%, 30%");		
-		boxViewSeparator.appendChild(iframe);
-		boxViewSeparator.appendChild(gridView);
+		boxViewSeparator.setHeight("100%");			
+		Cell cell = new Cell();
+		cell.setWidth("70%");
+		cell.appendChild(iframe);
+		boxViewSeparator.appendChild(cell);
+		cell = new Cell();
+		cell.setWidth("30%");
+		cell.appendChild(gridView);
+		boxViewSeparator.appendChild(cell);
 		tabViewPanel.appendChild(boxViewSeparator);
 
 		tabs.appendChild(tabView);
