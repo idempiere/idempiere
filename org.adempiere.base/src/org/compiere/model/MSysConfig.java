@@ -19,12 +19,14 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 
 /**
  *	System Configuration
@@ -40,7 +42,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5434521728516112616L;
+	private static final long serialVersionUID = 2906768000936142606L;
 
 	public final static String PDF_FONT_DIR = "PDF_FONT_DIR";
 	public final static String TWOPACK_HANDLE_TRANSLATIONS = "2PACK_HANDLE_TRANSLATIONS";
@@ -515,18 +517,34 @@ public class MSysConfig extends X_AD_SysConfig
 
 		return defaultValue;
 	}
+
+	private static int lendate = DisplayType.DEFAULT_DATE_FORMAT.length();
+	private static int lentime = DisplayType.DEFAULT_TIME_FORMAT.length();
+	private static int lentimestamp = DisplayType.DEFAULT_TIMESTAMP_FORMAT.length();
+
 	/** convert a string to a timestamp */
 	static Timestamp convertStringToTimestamp(String text)
 	{
-		Timestamp dt = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		java.util.Date date = null;
+		SimpleDateFormat sdf = null;
+		int lentext = text.length();
+		if (lentext == lendate) {
+			sdf = DisplayType.getDateFormat_JDBC();
+		} else if (lentext == lentime) {
+			sdf = DisplayType.getTimeFormat_Default();
+		} else if (lentext == lentimestamp) {
+			sdf = DisplayType.getTimestampFormat_Default();
+		} else {
+			s_log.warning("Cannot convert to a valid timestamp (invalid length): " + text);
+		}
 
-		try {
-			date = sdf.parse(text);
-			dt = new Timestamp(date.getTime());
-		} catch (ParseException e) {
-			e.printStackTrace();
+		Timestamp dt = null;
+		if (sdf != null) {
+			try {
+				Date date = sdf.parse(text);
+				dt = new Timestamp(date.getTime());
+			} catch (ParseException e) {
+				s_log.warning("Cannot convert to a valid timestamp: " + text);
+			}
 		}
 		return dt;
 	}	
