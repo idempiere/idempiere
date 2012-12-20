@@ -6,11 +6,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import org.apache.commons.collections.keyvalue.MultiKey;
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
-import org.compiere.model.ProductCost;
-import org.compiere.model.Query;
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -21,8 +16,6 @@ import org.compiere.util.TimeUtil;
  */
 public class MAssetAcct extends X_A_Asset_Acct
 {
-	
-
 	/**
 	 * 
 	 */
@@ -47,8 +40,6 @@ public class MAssetAcct extends X_A_Asset_Acct
 	
 	/**		Static Cache: A_Asset_Acct_ID -> MAssetAcct					*/
 	private static CCache<Integer,MAssetAcct> s_cache = new CCache<Integer,MAssetAcct>(Table_Name, 5);
-	/**		Static Cache: Asset,PostingType,DateAcct -> MAssetAcct				*/
-	private static CCache<MultiKey,MAssetAcct> s_cacheAsset = new CCache<MultiKey,MAssetAcct>(Table_Name, Table_Name+"_Asset", 5, false);
 	
 	/**
 	 * Get Asset Accounting (from cache)
@@ -66,7 +57,7 @@ public class MAssetAcct extends X_A_Asset_Acct
 		acct = new MAssetAcct(ctx, A_Asset_Acct_ID, null);
 		if (acct.get_ID() > 0)
 		{
-			addToCache(acct, null);
+			addToCache(acct);
 		}
 		else
 		{
@@ -85,17 +76,6 @@ public class MAssetAcct extends X_A_Asset_Acct
 	 */
 	public static MAssetAcct forA_Asset_ID (Properties ctx, int A_Asset_ID, String postingType, Timestamp dateAcct, String trxName)
 	{
-		MultiKey key = new MultiKey(A_Asset_ID, postingType, dateAcct);
-		MAssetAcct acct = null;
-		if (trxName == null)
-		{
-			// do not use cache
-			//acct = s_cacheAsset.get(key);
-		}
-		if (acct != null)
-		{
-			return acct;
-		}
 		//
 		ArrayList<Object> params = new ArrayList<Object>();
 		StringBuilder whereClause = new StringBuilder(COLUMNNAME_A_Asset_ID+"=? AND "+COLUMNNAME_PostingType+"=?");
@@ -106,28 +86,24 @@ public class MAssetAcct extends X_A_Asset_Acct
 			whereClause.append(" AND " + COLUMNNAME_ValidFrom).append("<=?");
 			params.add(dateAcct);
 		}
-		acct = new Query(ctx, Table_Name, whereClause.toString(), trxName)
+		MAssetAcct acct = new Query(ctx, Table_Name, whereClause.toString(), trxName)
 								.setParameters(params)
 								.setOrderBy(COLUMNNAME_ValidFrom+" DESC NULLS LAST")
 								.first();
 		if (trxName == null)
 		{
-			addToCache(acct, key);
+			addToCache(acct);
 		}
 		return acct;
 	}
 	
-	private static void addToCache(MAssetAcct acct, MultiKey keyAsset)
+	private static void addToCache(MAssetAcct acct)
 	{
 		if (acct == null || acct.get_ID() <= 0)
 		{
 			return;
 		}
 		s_cache.put(acct.get_ID(), acct);
-		if (keyAsset != null)
-		{
-			s_cacheAsset.put(keyAsset, acct);
-		}
 	}
 	
 	/**
