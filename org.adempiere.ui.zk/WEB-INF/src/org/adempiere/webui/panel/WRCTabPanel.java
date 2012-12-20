@@ -20,8 +20,6 @@ import java.util.Map;
 
 import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Tabpanel;
-import org.compiere.model.GridField;
-import org.compiere.model.MField;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
 

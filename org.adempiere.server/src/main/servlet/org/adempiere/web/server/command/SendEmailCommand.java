@@ -21,7 +21,6 @@ import org.adempiere.util.RestletUtil;
 import org.adempiere.util.ServerContext;
 import org.compiere.interfaces.impl.ServerBean;
 import org.compiere.util.EMail;
-import org.compiere.util.Env;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Post;
