@@ -6,6 +6,10 @@
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
+<mapAttribute key="org.eclipse.debug.core.environmentVariables">
+<mapEntry key="ADEMPIERE_WEB_PORT" value="${ADEMPIERE_WEB_PORT}"/>
+<mapEntry key="fitnesse_home" value="${workspace_loc}/fitnesse"/>
+</mapAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="fitnesseMain.FitNesseMain"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-p 8089 -l log"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="fitnesse"/>

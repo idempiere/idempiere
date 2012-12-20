@@ -38,10 +38,12 @@ do
 	esac
 	shift
 done
+
+export fitnesse_home=`dirname $0`
+eval "export `grep ADEMPIERE_WEB_PORT $fitnesse_home/../idempiereEnv.properties`"
+
 jvm_args[${#jvm_args[*]}]="-jar"
 jvm_args[${#jvm_args[*]}]="fitnesse.jar"
 
 echo java ${jvm_args[*]} ${fitnesse_args[*]}
 java -Xmx100M ${jvm_args[*]} -p 8089 -l log ${fitnesse_args[*]}
-
-
