@@ -129,8 +129,8 @@ public class MEXPFormat extends X_EXP_Format {
 	{
 		String key = new String(value+version);
 		MEXPFormat retValue=null;
-		if(retValue!=null)
-			return retValue;
+		//if(retValue!=null)
+		//	return retValue;
 		
 		StringBuilder whereClause = new StringBuilder(X_EXP_Format.COLUMNNAME_Value).append("=?")
 		.append(" AND AD_Client_ID = ?")

@@ -68,8 +68,8 @@ public final class IniDialog extends JDialog implements ActionListener
 				log.warning("No license in resource ");
 				url = new URL("http://www.adempiere.org/license.htm");
 			}
-			if (url == null)
-				cmd_reject();
+			//if (url == null)
+				//cmd_reject();
 			//
 			licensePane.setPage(url);
 			AdempierePLAF.showCenterScreen(this);

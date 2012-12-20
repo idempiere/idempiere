@@ -136,7 +136,6 @@ public class AlertProcessor extends AdempiereServer
 		{
 			if (i > 0)
 				message.append(Env.NL);
-			String trxName = null;		//	assume r/o
 			
 			MAlertRule rule = rules[i];
 			if (!rule.isValid())
@@ -147,7 +146,7 @@ public class AlertProcessor extends AdempiereServer
 			String sql = rule.getPreProcessing();
 			if (sql != null && sql.length() > 0)
 			{
-				int no = DB.executeUpdate(sql, false, trxName);
+				int no = DB.executeUpdate(sql, false, null);
 				if (no == -1)
 				{
 					ValueNamePair error = CLogger.retrieveError();
@@ -166,9 +165,9 @@ public class AlertProcessor extends AdempiereServer
 			{
 				String text = null;
 				if (MSysConfig.getBooleanValue(MSysConfig.ALERT_SEND_ATTACHMENT_AS_XLS, true, Env.getAD_Client_ID(getCtx())))
-					text = getExcelReport(rule, sql, trxName, attachments);
+					text = getExcelReport(rule, sql, null, attachments);
 				else
-					text = getPlainTextReport(rule, sql, trxName, attachments);
+					text = getPlainTextReport(rule, sql, null, attachments);
 				if (text != null && text.length() > 0)
 				{
 					message.append(text);
@@ -189,7 +188,7 @@ public class AlertProcessor extends AdempiereServer
 			sql = rule.getPostProcessing();
 			if (sql != null && sql.length() > 0)
 			{
-				int no = DB.executeUpdate(sql, false, trxName);
+				int no = DB.executeUpdate(sql, false, null);
 				if (no == -1)
 				{
 					ValueNamePair error = CLogger.retrieveError();
@@ -201,17 +200,7 @@ public class AlertProcessor extends AdempiereServer
 					break;
 				}
 			}	//	Post
-			
-			/**	Trx				*/
-			if (trxName != null)
-			{
-				Trx trx = Trx.get(trxName, false);
-				if (trx != null)
-				{
-					trx.commit();
-					trx.close();
-				}
-			}
+
 		}	//	 for all rules
 		
 		//	Update header if error
@@ -361,7 +350,6 @@ public class AlertProcessor extends AdempiereServer
 	 * @param attachments (ignored)
 	 * @return list of rows & values
 	 * @throws Exception
-	 * @deprecated
 	 */
 	private String getPlainTextReport(MAlertRule rule, String sql, String trxName, Collection<File> attachments)
 	throws Exception

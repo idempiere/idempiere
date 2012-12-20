@@ -311,10 +311,14 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
 		{
 			Date f = fDateFrom.getValue();
-			Timestamp from = new Timestamp(f.getTime());
+			Timestamp from = null;
+			if (f != null)
+				from = new Timestamp(f.getTime());
 
 			Date t = fDateTo.getValue();
-			Timestamp to = new Timestamp(t.getTime());
+			Timestamp to = null;
+			if (t != null)
+				to = new Timestamp(t.getTime());
 
 			if (from == null && to != null)
 				sql.append(" AND TRUNC(i.MovementDate) <= ?");
@@ -359,10 +363,14 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
 		{
 			Date f = fDateFrom.getValue();
-			Timestamp from = new Timestamp(f.getTime());
+			Timestamp from = null;
+			if (f != null)
+				from = new Timestamp(f.getTime());
 
 			Date t = fDateTo.getValue();
-			Timestamp to = new Timestamp(t.getTime());
+			Timestamp to = null;
+			if (t != null)
+				to = new Timestamp(t.getTime());
 
 			log.fine("Date From=" + from + ", To=" + to);
 

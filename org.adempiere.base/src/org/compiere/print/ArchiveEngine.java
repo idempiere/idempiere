@@ -60,18 +60,18 @@ public class ArchiveEngine
 		//	Do we need to Archive ?
 		MClient client = MClient.get(layout.getCtx());
 		String aaClient = client.getAutoArchive();
-		String aaRole = null; 	//	role.getAutoArchive();	//	TODO
 		String aa = aaClient;
 		if (aa == null)
 			aa = MClient.AUTOARCHIVE_None;
+		/* String aaRole = null; 	//	role.getAutoArchive();	//	TODO
 		if (aaRole != null)
 		{
 			if (aaRole.equals(MClient.AUTOARCHIVE_AllReportsDocuments))
 				aa = aaRole;
 			else if (aaRole.equals(MClient.AUTOARCHIVE_Documents) && !aaClient.equals(MClient.AUTOARCHIVE_AllReportsDocuments))
 				aa = aaRole;
-		}
-		//	Mothing to Archive
+		}*/
+		//	Nothing to Archive
 		if (aa.equals(MClient.AUTOARCHIVE_None))
 			return null;
 		//	Archive External only
@@ -110,18 +110,18 @@ public class ArchiveEngine
 		//	Do we need to Archive ?
 		MClient client = MClient.get(Env.getCtx());
 		String aaClient = client.getAutoArchive();
-		String aaRole = null; 	//	role.getAutoArchive();	//	TODO
 		String aa = aaClient;
 		if (aa == null)
 			aa = MClient.AUTOARCHIVE_None;
+		/* String aaRole = null; 	//	role.getAutoArchive();	//	TODO
 		if (aaRole != null)
 		{
 			if (aaRole.equals(MClient.AUTOARCHIVE_AllReportsDocuments))
 				aa = aaRole;
 			else if (aaRole.equals(MClient.AUTOARCHIVE_Documents) && !aaClient.equals(MClient.AUTOARCHIVE_AllReportsDocuments))
 				aa = aaRole;
-		}
-		//	Mothing to Archive
+		}*/
+		//	Nothing to Archive
 		if (aa.equals(MClient.AUTOARCHIVE_None))
 			return;
 		//	Archive External only

@@ -45,6 +45,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -310,17 +311,15 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
 		{
+			Date f = fDateFrom.getValue();
 			Timestamp from = null;
-			if (fDateFrom.getValue() != null) {
-				Date f = fDateFrom.getValue();
+			if (f != null)
 				from = new Timestamp(f.getTime());
-			}
 
+			Date t = fDateTo.getValue();
 			Timestamp to = null;
-			if (fDateTo.getValue() != null) {
-				Date t = fDateTo.getValue();
+			if (t != null)
 				to = new Timestamp(t.getTime());
-			}
 
 			if (from == null && to != null)
 				sql.append(" AND TRUNC(p.DateTrx) <= ?");
@@ -332,8 +331,25 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 
 		if (!"".equals(fAmtFrom.getText()) || !"".equals(fAmtTo.getText()))
 		{
-			BigDecimal from = new BigDecimal(fAmtFrom.getValue());
-			BigDecimal to = new BigDecimal(fAmtTo.getValue());
+			String f = fAmtFrom.getValue();
+			BigDecimal from = null;
+			if (f != null) {
+				try {
+					from = new BigDecimal(fAmtFrom.getValue());
+				} catch (NumberFormatException e) {
+					fAmtFrom.setValue(null);
+				}
+			}
+
+			String t = fAmtTo.getValue();
+			BigDecimal to = null;
+			if (t != null) {
+				try {
+					to = new BigDecimal(fAmtTo.getValue());
+				} catch (NumberFormatException e) {
+					fAmtTo.setValue(null);
+				}
+			}
 
 			if (from == null && to != null)
 				sql.append(" AND p.PayAmt <= ?");
@@ -373,17 +389,15 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
 		{
+			Date f = fDateFrom.getValue();
 			Timestamp from = null;
-			if (fDateFrom.getValue() != null) {
-				Date f = fDateFrom.getValue();
+			if (f != null)
 				from = new Timestamp(f.getTime());
-			}
 
+			Date t = fDateTo.getValue();
 			Timestamp to = null;
-			if (fDateTo.getValue() != null) {
-				Date t = fDateTo.getValue();
+			if (t != null)
 				to = new Timestamp(t.getTime());
-			}
 
 			log.fine("Date From=" + from + ", To=" + to);
 
@@ -400,8 +414,26 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 
 		if (!"".equals(fAmtFrom.getText()) || !"".equals(fAmtTo.getText()))
 		{
-			BigDecimal from = new BigDecimal(fAmtFrom.getValue());
-			BigDecimal to = new BigDecimal(fAmtTo.getValue());
+			String f = fAmtFrom.getValue();
+			BigDecimal from = null;
+			if (f != null) {
+				try {
+					from = new BigDecimal(fAmtFrom.getValue());
+				} catch (NumberFormatException e) {
+					fAmtFrom.setValue(null);
+				}
+			}
+
+			String t = fAmtTo.getValue();
+			BigDecimal to = null;
+			if (t != null) {
+				try {
+					to = new BigDecimal(fAmtTo.getValue());
+				} catch (NumberFormatException e) {
+					fAmtTo.setValue(null);
+				}
+			}
+
 			log.fine("Amt From=" + from + ", To=" + to);
 
 			if (from == null && to != null)

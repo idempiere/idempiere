@@ -73,20 +73,20 @@ public class FCHtmlEditorKit extends HTMLEditorKit {
 				// state where it thinks that image was loaded.
 				// ImageView is calling getImage to get image for
 				// measurement and painting when image was loaded
-				if (false) {
+				/*if (false) {
 					return getClass().getClassLoader().
 					getResource("javax/swing/text/html/icons/image-delayed.gif");
-				} else {
-					String src = (String)elem.getAttributes().
-					getAttribute(HTML.Attribute.SRC);
-					//System.out.println("img load: " + src.substring(4));
-					URL url = getClass().getClassLoader().
-					getResource(src.substring(4));
-					if (url != null) {
-						// System.out.println("load image: " + url);
-						return url;
-					}
+				} else {*/
+				String src = (String)elem.getAttributes().
+						getAttribute(HTML.Attribute.SRC);
+				//System.out.println("img load: " + src.substring(4));
+				URL url = getClass().getClassLoader().
+						getResource(src.substring(4));
+				if (url != null) {
+					// System.out.println("load image: " + url);
+					return url;
 				}
+				//}
 				return null;
 			}
 			private static Image smileImage = null;

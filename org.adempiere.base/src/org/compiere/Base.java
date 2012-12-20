@@ -59,12 +59,12 @@ class Base
 		GridWindow w = new GridWindow(vo);
 		long endDef = System.currentTimeMillis();
 		System.out.println("Load Definition Time in ms = " + String.valueOf(endDef-startTime));
-		if (1==2)   //  optional step
+		/*if (1==2)   //  optional step
 		{
 			w.loadCompete();
 			long endDefComplete = System.currentTimeMillis();
 			System.out.println("Load Definition Complete Time in ms = " + String.valueOf(endDefComplete-startTime));
-		}
+		}*/
 		w.query();
 		long endData = System.currentTimeMillis();
 		System.out.println("Load Data Time in ms = " + String.valueOf(endData-startTime));

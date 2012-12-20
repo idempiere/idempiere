@@ -59,9 +59,9 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		if (checkExisting)
 		{
 			MMovementConfirm[] confirmations = move.getConfirmations(false);
-			for (int i = 0; i < confirmations.length; i++)
+			if (confirmations.length > 0)
 			{
-				MMovementConfirm confirm = confirmations[i];
+				MMovementConfirm confirm = confirmations[0];
 				return confirm;
 			}
 		}

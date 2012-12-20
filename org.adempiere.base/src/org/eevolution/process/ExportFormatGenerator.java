@@ -335,21 +335,16 @@ public class ExportFormatGenerator extends SvrProcess
 					tabledir = MTable.get(getCtx(), tableName);	
 					if(tabledir==null)
 						return 0;
-					//	throw new Exception ("Ilegal Table Name");
+					//	throw new Exception ("Illegal Table Name");
 					
 					formatLine.setValue(tabledir.getTableName()+"_Reference");
 					formatLine.setName("Referenced "+ tabledir.getTableName());
 					
 					//formatLine.setType(MEXPFormatLine.TYPE_XMLElement);	
-					if (tabledir!=null)
-					{
-							String format_value = createFormat(tabledir);
-							int embedded = ((MEXPFormat)m_formats.get(format_value)).getEXP_Format_ID();
-							formatLine.setType(MEXPFormatLine.TYPE_ReferencedEXPFormat);
-							formatLine.setEXP_EmbeddedFormat_ID(embedded);
-					}
-					else 
-					formatLine.setType(MEXPFormatLine.TYPE_XMLElement);	
+					String format_value = createFormat(tabledir);
+					int embedded = ((MEXPFormat)m_formats.get(format_value)).getEXP_Format_ID();
+					formatLine.setType(MEXPFormatLine.TYPE_ReferencedEXPFormat);
+					formatLine.setEXP_EmbeddedFormat_ID(embedded);
 				}
 				formatLine.setAD_Column_ID(col.getAD_Column_ID());
 				formatLine.saveEx();

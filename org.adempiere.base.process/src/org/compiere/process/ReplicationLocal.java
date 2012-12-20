@@ -559,8 +559,6 @@ public class ReplicationLocal extends SvrProcess
 			//
 			ResultSet rs = pstmt.executeQuery();
 			rowSet = CCachedRowSet.getRowSet(rs);
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception ex)
 		{
@@ -568,15 +566,10 @@ public class ReplicationLocal extends SvrProcess
 			throw new RuntimeException (ex);
 		}
 		//	Close Cursor
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
+			DB.close(pstmt);
 			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			s_log.log(Level.SEVERE, "close pstmt", e);
 		}
 			
 		return rowSet;

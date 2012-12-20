@@ -61,10 +61,10 @@ public final class OFXFileBankStatementLoader extends OFXBankStatementHandler im
 			{
 				return result;
 			}
-			if (m_stream == null)
-			{
-				return result;
-			}
+			//if (m_stream == null)
+			//{
+				//return result;
+			//}
 			result = attachInput(m_stream);
 			}
 		catch(Exception e)

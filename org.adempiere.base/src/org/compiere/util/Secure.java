@@ -152,7 +152,7 @@ public class Secure implements SecureInterface
 		{
 			cc = Cipher.getInstance("DES/ECB/PKCS5Padding");
 			//	Key
-			if (false)
+			/*if (false)
 			{
 				KeyGenerator keygen = KeyGenerator.getInstance("DES");
 				m_key = keygen.generateKey();
@@ -164,8 +164,8 @@ public class Secure implements SecureInterface
 					sb.append(key[i]).append(",");
 				log.info(sb.toString());
 			}
-			else
-				m_key = new javax.crypto.spec.SecretKeySpec
+			else*/
+			m_key = new javax.crypto.spec.SecretKeySpec
 					(new byte[] {100,25,28,-122,-26,94,-3,-26}, "DES");
 		}
 		catch (Exception ex)

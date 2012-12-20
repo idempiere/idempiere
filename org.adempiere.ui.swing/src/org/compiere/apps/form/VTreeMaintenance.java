@@ -244,9 +244,9 @@ public class VTreeMaintenance extends TreeMaintenance
 	public void propertyChange (PropertyChangeEvent e)
 	{
 		MTreeNode tn = (MTreeNode)e.getNewValue();
-		log.info(tn.toString());
 		if (tn == null)
 			return;
+		log.info(tn.toString());
 		ListModel model = centerList.getModel();
 		int size = model.getSize();
 		int index = -1;

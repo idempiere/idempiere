@@ -701,14 +701,14 @@ public final class AdempierePLAF
 		try
 		{
 			Method[] methods = startClass.getMethods();
-			for (int i = 0; i < methods.length; i++)
+			if (methods.length > 0)
 			{
-				if (Modifier.isStatic(methods[i].getModifiers()) && methods[i].getName().equals("main"))
+				if (Modifier.isStatic(methods[0].getModifiers()) && methods[0].getName().equals("main"))
 				{
 					String[] startArgs = new String[args.length-1];
 					for (int ii = 1; ii < args.length; ii++)
-						startArgs[ii-i] = args[ii];
-					methods[i].invoke(null, new Object[] {startArgs});
+						startArgs[ii] = args[ii];
+					methods[0].invoke(null, new Object[] {startArgs});
 				}
 				return;
 			}

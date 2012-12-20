@@ -183,14 +183,14 @@ public class DataElementHandler extends AbstractElementHandler {
 			}
 			
 			// for debug GenericPO.
-			if (false) {
+			/*if (false) {
 				POInfo poInfo = POInfo.getPOInfo(ctx, get_ID(ctx, "AD_Table", d_tablename), getTrxName(ctx));
 				if (poInfo == null)
 					log.info("poInfo is null.");
 				for (int i = 0; i < poInfo.getColumnCount(); i++) {
 					log.info(d_tablename+" column: "+poInfo.getColumnName(i));
 				}
-			}
+			}*/
 			// globalqss: set AD_Client_ID to the client setted in adempieredata
 			if (getClientId(ctx) > 0 && genericPO.getAD_Client_ID() != getClientId(ctx))
 				genericPO.set_ValueOfColumn("AD_Client_ID", getClientId(ctx));

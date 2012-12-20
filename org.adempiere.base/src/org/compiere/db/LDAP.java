@@ -69,8 +69,8 @@ public class LDAP
 			Attributes answer = ctx.getAttributes("");
 
 		    // Print the answer
-		    if (false)
-		    	dump (answer);
+		    //if (false)
+		    // dump (answer);
 		}
 		catch (AuthenticationException e)
 		{

@@ -50,9 +50,6 @@ public class MTemplate extends X_CM_Template
 	public static MTemplate get (Properties ctx, int CM_Template_ID, String trxName)
 	{
 		MTemplate retValue = new MTemplate (ctx, CM_Template_ID, trxName);
-		if (retValue != null)
-			return retValue;
-		retValue = new MTemplate (ctx, CM_Template_ID, null);
 		return retValue;
 	}	// get
 

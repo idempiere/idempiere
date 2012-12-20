@@ -355,10 +355,10 @@ public final class VPanel extends CTabbedPane
 				fieldMinWidth = field.getPreferredSize().width > fieldMinWidth ? field.getPreferredSize().width : fieldMinWidth;
 			}	
 			//	Link Label to Field
-			if (label != null)
-				label.setLabelFor(field);
-			else if (mField.isCreateMnemonic())
-				setMnemonic(editor, mField.getMnemonic());
+			//if (label != null)
+			label.setLabelFor(field);
+			//else if (mField.isCreateMnemonic())
+				//setMnemonic(editor, mField.getMnemonic());
 		}
 	}	//	addField
 

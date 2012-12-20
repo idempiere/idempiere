@@ -192,10 +192,10 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 		{
 			String s = st.nextToken().trim();
 			//  Ignore, if is it header line
-			if (s.startsWith("[") && s.endsWith("]"))
-				return "";
 			if (s == null)
 				s = "";
+			if (s.startsWith("[") && s.endsWith("]"))
+				return "";
 			//
 			if (i == 0)			//	A - Value
 				Value = s;
