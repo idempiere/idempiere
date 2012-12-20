@@ -45,6 +45,7 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 		this(new ArrayList<Object>());
 	}
 	
+	@SuppressWarnings("unchecked")
 	public SimpleListModel(List<?> list) {
 		this.list = (List<Object>)list;
 	}

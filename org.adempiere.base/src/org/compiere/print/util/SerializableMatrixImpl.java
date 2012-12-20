@@ -212,6 +212,7 @@ public class SerializableMatrixImpl<T extends Serializable> implements Serializa
 			byte[] data = swapFile.read(segment);
 			swapFile.free(segment);
 			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
+			@SuppressWarnings("unchecked")
 			ArrayList<List<T>> rows = (ArrayList<List<T>>) ois.readObject();
 			this.m_rows = rows;
 			currentPage = pages.get(index);

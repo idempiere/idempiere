@@ -42,6 +42,7 @@ public class Zk {
 				selector = "#"+id+" "+selector;
 				executor = (JavascriptExecutor) ((WrapsDriver)element).getWrappedDriver();
 			}
+			@SuppressWarnings("unchecked")
 			List<WebElement> list = (List<WebElement>) executor.executeScript("return jq('" + selector + "').get();");
 			return list;
 		}

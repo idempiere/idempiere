@@ -378,6 +378,7 @@ public class PrintUtil
 	 * 	Dump Stream Print Services
 	 * 	@param docFlavor flavor
 	 */
+	@SuppressWarnings("unchecked")
 	public static void dump (DocFlavor docFlavor)
 	{
 		System.out.println();

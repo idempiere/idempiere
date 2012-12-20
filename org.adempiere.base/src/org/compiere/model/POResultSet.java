@@ -78,6 +78,7 @@ public class POResultSet<T extends PO> {
 	 * @return PO or null if reach the end of resultset
 	 * @throws DBException
 	 */
+	@SuppressWarnings("unchecked")
 	public T next() throws DBException {
 		if (currentPO != null) {
 			T po = currentPO;

@@ -385,6 +385,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 	private void btnSwitchTimeZoneClicked() {
 		Map<?, ?> zone = calendars.getTimeZones();
 		if (!zone.isEmpty()) {
+			@SuppressWarnings("unchecked")
 			Map.Entry<TimeZone, String> me = (Map.Entry<TimeZone, String>) zone.entrySet().iterator().next();
 			calendars.removeTimeZone((TimeZone) me.getKey());
 			calendars.addTimeZone((String) me.getValue(), (TimeZone) me.getKey());

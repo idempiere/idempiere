@@ -61,6 +61,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 	/**
 	 * @param event
 	 */
+	@SuppressWarnings("unchecked")
 	public void onEvent(Event event) throws Exception {
 		if (event instanceof DropEvent) {
 			DropEvent de = (DropEvent) event;

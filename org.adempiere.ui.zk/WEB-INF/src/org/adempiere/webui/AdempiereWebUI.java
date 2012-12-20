@@ -127,7 +127,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         
         SessionManager.setSessionApplication(this);
         Session session = Executions.getCurrent().getDesktop().getSession();
-        Map<String, Object>map = (Map<String, Object>) session.removeAttribute(SAVED_CONTEXT);
+        @SuppressWarnings("unchecked")
+		Map<String, Object>map = (Map<String, Object>) session.removeAttribute(SAVED_CONTEXT);
         if (map != null && !map.isEmpty())
         {
         	onChangeRole(map);

@@ -3707,6 +3707,7 @@ public class GridTable extends AbstractTableModel
 
 	}
 	
+	@SuppressWarnings("unchecked")
 	private boolean	isValueChanged(Object oldValue, Object value)
 	{
 		if ( isNotNullAndIsEmpty(oldValue) ) {

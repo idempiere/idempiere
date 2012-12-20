@@ -126,6 +126,7 @@ public class CLogErrorBuffer extends Handler
 	{
 		checkContext();
 
+		@SuppressWarnings("unchecked")
 		LinkedList<LogRecord> m_logs = (LinkedList<LogRecord>) Env.getCtx().get(LOGS_KEY);
 		if (!isLoggable (record) || m_logs == null)
 			return;
@@ -141,7 +142,9 @@ public class CLogErrorBuffer extends Handler
 		//	We have an error
 		if (record.getLevel() == Level.SEVERE)
 		{
+			@SuppressWarnings("unchecked")
 			LinkedList<LogRecord> m_errors = (LinkedList<LogRecord>) Env.getCtx().get(ERRORS_KEY);
+			@SuppressWarnings("unchecked")
 			LinkedList<LogRecord[]>	m_history = (LinkedList<LogRecord[]>) Env.getCtx().get(HISTORY_KEY);
 			if (m_errors.size() >= ERROR_SIZE)
 			{
@@ -301,7 +304,9 @@ public class CLogErrorBuffer extends Handler
 	{
 		checkContext();
 
+		@SuppressWarnings("unchecked")
 		LinkedList<LogRecord> m_logs = (LinkedList<LogRecord>) Env.getCtx().get(LOGS_KEY);
+		@SuppressWarnings("unchecked")
 		LinkedList<LogRecord> m_errors = (LinkedList<LogRecord>) Env.getCtx().get(ERRORS_KEY);
 		LogRecord[] retValue = null;
 		if (errorsOnly)
@@ -331,8 +336,11 @@ public class CLogErrorBuffer extends Handler
 	{
 		checkContext();
 
+		@SuppressWarnings("unchecked")
 		LinkedList<LogRecord> m_logs = (LinkedList<LogRecord>) Env.getCtx().get(LOGS_KEY);
+		@SuppressWarnings("unchecked")
 		LinkedList<LogRecord> m_errors = (LinkedList<LogRecord>) Env.getCtx().get(ERRORS_KEY);
+		@SuppressWarnings("unchecked")
 		LinkedList<LogRecord[]>	m_history = (LinkedList<LogRecord[]>) Env.getCtx().get(HISTORY_KEY);
 		synchronized (m_errors)
 		{
@@ -362,6 +370,7 @@ public class CLogErrorBuffer extends Handler
 		//
 		if (errorsOnly)
 		{
+			@SuppressWarnings("unchecked")
 			LinkedList<LogRecord[]>	m_history = (LinkedList<LogRecord[]>) Env.getCtx().get(HISTORY_KEY);
 			for (int i = 0; i < m_history.size(); i++)
 			{
@@ -376,6 +385,7 @@ public class CLogErrorBuffer extends Handler
 		}
 		else
 		{
+			@SuppressWarnings("unchecked")
 			LinkedList<LogRecord> m_logs = (LinkedList<LogRecord>) Env.getCtx().get(LOGS_KEY);
 			for (int i = 0; i < m_logs.size(); i++)
 			{
@@ -419,8 +429,11 @@ public class CLogErrorBuffer extends Handler
 	{
 		checkContext();
 
+		@SuppressWarnings("unchecked")
 		LinkedList<LogRecord> m_logs = (LinkedList<LogRecord>) Env.getCtx().get(LOGS_KEY);
+		@SuppressWarnings("unchecked")
 		LinkedList<LogRecord> m_errors = (LinkedList<LogRecord>) Env.getCtx().get(ERRORS_KEY);
+		@SuppressWarnings("unchecked")
 		LinkedList<LogRecord[]>	m_history = (LinkedList<LogRecord[]>) Env.getCtx().get(HISTORY_KEY);
 		StringBuilder sb = new StringBuilder ("CLogErrorBuffer[");
 		sb.append("Errors=").append(m_errors.size())

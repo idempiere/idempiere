@@ -937,7 +937,8 @@ DataStatusListener, IADTabpanel, IdSpace
      * @param event
      * @see EventListener#onEvent(Event)
      */
-    public void onEvent(Event event)
+    @SuppressWarnings("unchecked")
+	public void onEvent(Event event)
     {
     	if (event.getTarget() == listPanel.getListbox())
     	{    		

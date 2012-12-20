@@ -69,6 +69,7 @@ public class ListModelTable extends ListModelList<Object> implements ListModelEx
 	 *
 	 * @param collection	The collection of objects with which to initialise the list
 	 */
+	@SuppressWarnings("unchecked")
 	public ListModelTable(Collection<?> collection)
 	{
 		super(collection);
@@ -117,6 +118,7 @@ public class ListModelTable extends ListModelList<Object> implements ListModelEx
 	 */
     private void ensureRowSize()
 	{
+		@SuppressWarnings("unchecked")
 		Iterator<List<Object>> rowIterator = (Iterator<List<Object>>)(Object)this.getInnerList().iterator();
 
         while (rowIterator.hasNext())
@@ -171,6 +173,7 @@ public class ListModelTable extends ListModelList<Object> implements ListModelEx
      * @param   columnIndex	the index of the column whose value is to be queried
      * @return The object stored at the specified position
      */
+	@SuppressWarnings("unchecked")
 	public Object getDataAt(int rowIndex, int columnIndex)
 	{
 		List<Object> modelRow;
@@ -199,6 +202,7 @@ public class ListModelTable extends ListModelList<Object> implements ListModelEx
      * @param row    	the index of the row whose value is to be set
      * @param col		the index of the column whose value is to be set
 	 */
+	@SuppressWarnings("unchecked")
 	public void setDataAt(Object aValue, int row, int col)
 	{
 		List<Object> vector;

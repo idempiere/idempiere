@@ -272,6 +272,7 @@ public class AbstractService {
 	protected Map<String, Object> getRequestCtx() {
 		HttpServletRequest req = (HttpServletRequest) ctx.getMessageContext().get(MessageContext.SERVLET_REQUEST);
 
+		@SuppressWarnings("unchecked")
 		Map<String,Object> reqCtx= (Map<String,Object>)req.getAttribute("RequestCtx");
 		if(reqCtx==null){
 			reqCtx = new HashMap<String, Object>();

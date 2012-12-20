@@ -86,6 +86,7 @@ public class POIterator<T extends PO> implements Iterator<T> {
 	 * @param index
 	 * @return PO or null if index is invalid
 	 */
+	@SuppressWarnings("unchecked")
 	public T get(int index) {
 		if (index <= (idList.size() - 1)) {
 			Object[] ids = idList.get(index);
