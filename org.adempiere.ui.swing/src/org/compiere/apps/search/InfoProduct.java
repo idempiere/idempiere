@@ -302,7 +302,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
         /** Where Clause						*/
         String s_sqlWhere = "Value = ?";
         m_sqlWarehouse = warehouseTbl.prepareTable(s_layoutWarehouse, s_sqlFrom, s_sqlWhere, false, "M_PRODUCT_STOCK_V");
-		m_sqlWarehouse += " Group By Warehouse, documentnote ";
+		m_sqlWarehouse += " GROUP BY Warehouse";
 		warehouseTbl.setRowSelectionAllowed(true);
 		warehouseTbl.setMultiSelection(false);
 		warehouseTbl.addMouseListener(this);
@@ -368,7 +368,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
         	list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceLimit"), "bomPriceLimit(pp.M_Product_ID, pp.M_PriceList_Version_ID) AS PriceLimit", Double.class));
         ColumnInfo[] s_layoutProductPrice = new ColumnInfo[list.size()];
         list.toArray(s_layoutProductPrice);
-        s_sqlFrom = "M_ProductPrice pp INNER JOIN M_PriceList_Version plv ON pp.M_PriceList_Version_ID = plv.M_PriceList_Version_ID";
+        s_sqlFrom = "M_ProductPrice pp INNER JOIN M_PriceList_Version plv ON (pp.M_PriceList_Version_ID = plv.M_PriceList_Version_ID)";
         s_sqlWhere = "pp.M_Product_ID = ? AND plv.IsActive = 'Y' AND pp.IsActive = 'Y'";
         m_sqlProductprice = productpriceTbl.prepareTable(s_layoutProductPrice, s_sqlFrom, s_sqlWhere, false, "pp") + " ORDER BY plv.ValidFrom DESC";
         productpriceTbl.setRowSelectionAllowed(false);
@@ -427,8 +427,6 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 	{
 		//int M_Product_ID = 0;
 		String sql = m_sqlWarehouse;
-		//Add description to the query
-		sql = sql.replace(" FROM", ", DocumentNote FROM");
 		log.finest(sql);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -450,27 +448,8 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 		}
 
 		m_M_Product_ID = getSelectedRowKey();
-		sql = "SELECT DocumentNote FROM M_Product WHERE M_Product_ID = ?;";
-		
-		try 
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, m_M_Product_ID);
-			fieldDescription.setText("");
-			rs = pstmt.executeQuery();
-			if(rs.next())
-				if(rs.getString("DocumentNote") != null)
-					fieldDescription.setText(rs.getString("DocumentNote"));
-		}
-		catch (Exception e)
-		{
-			log.log(Level.WARNING, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
+		sql = "SELECT DocumentNote FROM M_Product WHERE M_Product_ID=?";
+		fieldDescription.setText(DB.getSQLValueString(null, sql, m_M_Product_ID));
 		
 		sql = m_sqlSubstitute;
 		log.finest(sql);
@@ -480,7 +459,6 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 			pstmt.setInt(2, M_PriceList_Version_ID);
 			rs = pstmt.executeQuery();
 			substituteTbl.loadTable(rs);
-			rs.close();
 		} catch (Exception e) {
 			log.log(Level.WARNING, sql, e);
 		}
@@ -498,7 +476,6 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 			pstmt.setInt(2, M_PriceList_Version_ID);
 			rs = pstmt.executeQuery();
 			relatedTbl.loadTable(rs);
-			rs.close();
 		} catch (Exception e) {
 			log.log(Level.WARNING, sql, e);
 		}
@@ -517,7 +494,6 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 			pstmt.setInt(1, m_M_Product_ID);
 			rs = pstmt.executeQuery();
 			productpriceTbl.loadTable(rs);
-			rs.close();
 		} catch (Exception e) {
 			log.log(Level.WARNING, sql, e);
 		}
@@ -618,6 +594,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 				pickPriceList.addItem(kn);
 			}
 			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 
 			//	Warehouse
 			SQL = MRole.getDefault().addAccessSQL (
@@ -636,6 +613,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 				pickWarehouse.addItem(kn);
 			}
 			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 
 			//	Product Category
 			SQL = MRole.getDefault().addAccessSQL (
