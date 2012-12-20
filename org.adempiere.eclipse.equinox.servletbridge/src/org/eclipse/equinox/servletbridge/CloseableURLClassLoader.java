@@ -112,7 +112,7 @@ public class CloseableURLClassLoader extends URLClassLoader {
 			this.jarFile = new JarFile(file, verify);
 			this.manifest = jarFile.getManifest();
 			this.jarURLStreamHandler = new CloseableJarURLStreamHandler(jarFile);
-			this.jarFileURLPrefixString = file.toURL().toString() + BANG_SLASH;
+			this.jarFileURLPrefixString = file.toURI().toURL().toString() + BANG_SLASH;
 		}
 
 		public URL getURL(String name) {
