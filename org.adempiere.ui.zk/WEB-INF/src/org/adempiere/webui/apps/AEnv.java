@@ -595,7 +595,7 @@ public final class AEnv
     }
 
     /**
-     * @return true if user agent is internet explorer 7 or lower
+     * @return true if user agent is internet explorer
      */
     public static boolean isInternetExplorer()
     {
@@ -605,7 +605,11 @@ public final class AEnv
 
     	Object n = execution.getNativeRequest();
     	if (n instanceof ServletRequest) {
-    		return Servlets.isExplorer((ServletRequest) n);
+    		String browser = Servlets.getBrowser((ServletRequest) n);
+    		if (browser != null && browser.equals("ie"))
+    			return true;
+    		else
+    			return false;
     	}
     	return false;
     }
