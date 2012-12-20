@@ -437,8 +437,26 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString(1, (String)obj);
 			rs = pstmt.executeQuery();
-			fieldDescription.setText("");
 			warehouseTbl.loadTable(rs);
+		}
+		catch (Exception e)
+		{
+			log.log(Level.WARNING, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+
+		m_M_Product_ID = getSelectedRowKey();
+		sql = "SELECT DocumentNote FROM M_Product WHERE M_Product_ID = ?;";
+		
+		try 
+		{
+			pstmt = DB.prepareStatement(sql, null);
+			pstmt.setInt(1, m_M_Product_ID);
+			fieldDescription.setText("");
 			rs = pstmt.executeQuery();
 			if(rs.next())
 				if(rs.getString("DocumentNote") != null)
@@ -453,9 +471,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-
-		m_M_Product_ID = getSelectedRowKey();
-
+		
 		sql = m_sqlSubstitute;
 		log.finest(sql);
 		try {
