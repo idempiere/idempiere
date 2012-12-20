@@ -1035,10 +1035,15 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		}
 		if (!po.set_ValueOfColumnReturningBoolean(field.getColumn(), value))
 			throw new IdempiereServiceFault("Cannot set value of column " + field.getColumn(), new QName("setValueAccordingToClass"));
+		//Setting context for lookup resolution
+		Env.setContext(Env.getCtx(), 0, field.getColumn(), 	value==null ? null : value.toString());
 	}
 
 	public StandardResponseDocument scanFields(DataField[] fields,MWebServiceType m_webservicetype,PO po,POInfo poinfo,Trx trx,StandardResponse resp, StandardResponseDocument ret){
 		Map<String,Object> requestCtx = getRequestCtx();
+		
+		//Clear ctx
+		Env.clearWinContext(Env.getCtx(),0);
 		
 		for (DataField field : fields) {
 			// Implement lookup

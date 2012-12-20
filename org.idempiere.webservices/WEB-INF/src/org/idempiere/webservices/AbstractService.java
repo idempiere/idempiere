@@ -289,7 +289,7 @@ public class AbstractService {
 	protected void setOuputFields(StandardResponse resp,MWebServiceType m_webservicetype,PO po,POInfo poInfo){
 		String[] outCols = m_webservicetype.getOutputColumnNames(false);
 		if(outCols.length>0){
-			 OutputFields outputFields = resp.getOutputFields();
+			 OutputFields outputFields = resp.addNewOutputFields();
 			 if(outputFields==null)
 				 outputFields=resp.addNewOutputFields();
 			 
