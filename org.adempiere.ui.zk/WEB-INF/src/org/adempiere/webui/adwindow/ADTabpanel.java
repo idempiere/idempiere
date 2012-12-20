@@ -379,7 +379,6 @@ DataStatusListener, IADTabpanel, IdSpace
     	// set size in percentage per column leaving a MARGIN on right
     	Columns columns = new Columns();
     	form.appendChild(columns);
-		String numColsS=String.valueOf(numCols);
     	int equalWidth = 98 / numCols;
 
     	for (int h=0;h<numCols;h++){
