@@ -1571,6 +1571,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	findWindow.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
+					Clients.clearBusy(getComponent());
 					if (!findWindow.isCancel())
 			        {
 				        MQuery query = findWindow.getQuery();
@@ -1597,7 +1598,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			});
         }
         findWindow.setTitle(null);
-        LayoutUtils.openPopupWindow(toolbar, findWindow, "after_start");
+        getComponent().getParent().appendChild(findWindow);
+        Clients.showBusy(getComponent(), " ");
+        LayoutUtils.openOverlappedWindow(toolbar, findWindow, "after_start");
 	}
 
     /**
