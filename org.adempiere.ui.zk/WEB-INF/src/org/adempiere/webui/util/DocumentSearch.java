@@ -44,7 +44,7 @@ public class DocumentSearch extends AbstractDocumentSearch {
 	@Override
 	protected boolean openWindow(int windowId, MQuery query) {
 		query.setRecordCount(1);
-		SessionManager.getAppDesktop().showWindow(windowId, query);
+		SessionManager.getAppDesktop().openWindow(windowId, query, null);
 		return true;
 	}
 
