@@ -15,13 +15,13 @@ import javax.servlet.*;
 
 public class FilterConfigImpl implements FilterConfig {
 
-	private static final Dictionary EMPTY_PARAMS = new Hashtable(0);
+	private static final Dictionary<String, String> EMPTY_PARAMS = new Hashtable<String, String>(0);
 	private static final String FILTER_NAME = "filter-name"; //$NON-NLS-1$
 	private Filter filter;
-	private Dictionary initparams;
+	private Dictionary<String, String> initparams;
 	private ServletContext servletContext;
 
-	public FilterConfigImpl(Filter filter, Dictionary initparams, ServletContext servletContext) {
+	public FilterConfigImpl(Filter filter, Dictionary<String, String> initparams, ServletContext servletContext) {
 		this.filter = filter;
 		this.initparams = (initparams != null) ? initparams : EMPTY_PARAMS;
 		this.servletContext = servletContext;
@@ -46,7 +46,7 @@ public class FilterConfigImpl implements FilterConfig {
 		return (String) initparams.get(name);
 	}
 
-	public Enumeration getInitParameterNames() {
+	public Enumeration<String> getInitParameterNames() {
 		return initparams.keys();
 	}
 }

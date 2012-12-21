@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.osgi.service.http.HttpContext;
 
 //This class wraps the filter object registered in the HttpService.registerFilter call, to manage the context classloader when handleRequests are being asked.
-public class FilterRegistration extends Registration implements Comparable {
+public class FilterRegistration extends Registration implements Comparable<FilterRegistration> {
 
 	private static long nextSequenceNumber = 1L;
 
@@ -101,8 +101,7 @@ public class FilterRegistration extends Registration implements Comparable {
 		return dispatchPathInfo.endsWith(suffix) && dispatchPathInfo.length() > prefix.length() + suffix.length();
 	}
 
-	public int compareTo(Object other) {
-		FilterRegistration otherFilterRegistration = (FilterRegistration) other;
+	public int compareTo(FilterRegistration otherFilterRegistration) {
 		int priorityDifference = priority - otherFilterRegistration.priority;
 		if (priorityDifference != 0)
 			return -priorityDifference;

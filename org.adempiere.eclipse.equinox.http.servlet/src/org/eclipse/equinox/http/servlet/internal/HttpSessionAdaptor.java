@@ -35,7 +35,7 @@ public class HttpSessionAdaptor implements HttpSession {
 		return session.getAttribute(arg0);
 	}
 
-	public Enumeration getAttributeNames() {
+	public Enumeration<String> getAttributeNames() {
 		return session.getAttributeNames();
 	}
 

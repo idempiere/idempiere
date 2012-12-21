@@ -47,14 +47,15 @@ public class ServletContextAdaptor implements ServletContext {
 	 * implementation uses reflection to check for and then call the associated HttpContext.getResourcePaths(...)
 	 * method opportunistically. Null is returned if the method is not present or fails.
 	 */
-	public Set getResourcePaths(String name) {
+	@SuppressWarnings("unchecked")
+	public Set<String> getResourcePaths(String name) {
 		if (name == null || !name.startsWith("/")) //$NON-NLS-1$
 			return null;
 		try {
 			Method getResourcePathsMethod = httpContext.getClass().getMethod("getResourcePaths", new Class[] {String.class}); //$NON-NLS-1$
 			if (!getResourcePathsMethod.isAccessible())
 				getResourcePathsMethod.setAccessible(true);
-			return (Set) getResourcePathsMethod.invoke(httpContext, new Object[] {name});
+			return (Set<String>) getResourcePathsMethod.invoke(httpContext, new Object[] {name});
 		} catch (Exception e) {
 			// ignore
 		}
@@ -62,22 +63,22 @@ public class ServletContextAdaptor implements ServletContext {
 	}
 
 	public Object getAttribute(String attributeName) {
-		Dictionary attributes = proxyContext.getContextAttributes(httpContext);
+		Dictionary<String, Object> attributes = proxyContext.getContextAttributes(httpContext);
 		return attributes.get(attributeName);
 	}
 
-	public Enumeration getAttributeNames() {
-		Dictionary attributes = proxyContext.getContextAttributes(httpContext);
+	public Enumeration<String> getAttributeNames() {
+		Dictionary<String, Object> attributes = proxyContext.getContextAttributes(httpContext);
 		return attributes.keys();
 	}
 
 	public void setAttribute(String attributeName, Object attributeValue) {
-		Dictionary attributes = proxyContext.getContextAttributes(httpContext);
+		Dictionary<String, Object> attributes = proxyContext.getContextAttributes(httpContext);
 		attributes.put(attributeName, attributeValue);
 	}
 
 	public void removeAttribute(String attributeName) {
-		Dictionary attributes = proxyContext.getContextAttributes(httpContext);
+		Dictionary<String, Object> attributes = proxyContext.getContextAttributes(httpContext);
 		attributes.remove(attributeName);
 	}
 
@@ -88,7 +89,7 @@ public class ServletContextAdaptor implements ServletContext {
 
 	public URL getResource(final String name) {
 		try {
-			return (URL) AccessController.doPrivileged(new PrivilegedExceptionAction() {
+			return (URL) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
 				public Object run() throws Exception {
 					return httpContext.getResource(name);
 				}
@@ -119,7 +120,7 @@ public class ServletContextAdaptor implements ServletContext {
 		return servletContext.getInitParameter(arg0);
 	}
 
-	public Enumeration getInitParameterNames() {
+	public Enumeration<String> getInitParameterNames() {
 		return servletContext.getInitParameterNames();
 	}
 
@@ -157,12 +158,12 @@ public class ServletContextAdaptor implements ServletContext {
 	}
 
 	/**@deprecated*/
-	public Enumeration getServletNames() {
+	public Enumeration<String> getServletNames() {
 		return servletContext.getServletNames();
 	}
 
 	/**@deprecated*/
-	public Enumeration getServlets() {
+	public Enumeration<Servlet> getServlets() {
 		return servletContext.getServlets();
 	}
 
@@ -182,8 +183,8 @@ public class ServletContextAdaptor implements ServletContext {
 	// Added in Servlet 2.5
 	public String getContextPath() {
 		try {
-			Method getContextPathMethod = servletContext.getClass().getMethod("getContextPath", null); //$NON-NLS-1$
-			return (String) getContextPathMethod.invoke(servletContext, null) + proxyContext.getServletPath();
+			Method getContextPathMethod = servletContext.getClass().getMethod("getContextPath", (Class<?>[])null); //$NON-NLS-1$
+			return (String) getContextPathMethod.invoke(servletContext, (Object[])null) + proxyContext.getServletPath();
 		} catch (Exception e) {
 			// ignore
 		}
@@ -198,7 +199,7 @@ public class ServletContextAdaptor implements ServletContext {
 		return servletContext.addFilter(arg0, arg1);
 	}
 
-	public Dynamic addFilter(String arg0, Class arg1) {
+	public Dynamic addFilter(String arg0, Class<? extends Filter> arg1) {
 		return servletContext.addFilter(arg0, arg1);
 	}
 
@@ -210,7 +211,7 @@ public class ServletContextAdaptor implements ServletContext {
 		servletContext.addListener(arg0);
 	}
 
-	public void addListener(Class arg0) {
+	public void addListener(Class<? extends EventListener> arg0) {
 		servletContext.addListener(arg0);
 	}
 
@@ -225,23 +226,23 @@ public class ServletContextAdaptor implements ServletContext {
 	}
 
 	public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0,
-			Class arg1) {
+			Class<? extends Servlet> arg1) {
 		return servletContext.addServlet(arg0, arg1);
 	}
 
-	public Filter createFilter(Class arg0) throws ServletException {
+	public <T extends Filter> T createFilter(Class<T> arg0) throws ServletException {
 		return servletContext.createFilter(arg0);
 	}
 
-	public EventListener createListener(Class arg0) throws ServletException {
+	public <T extends EventListener> T createListener(Class<T> arg0) throws ServletException {
 		return servletContext.createListener(arg0);
 	}
 
-	public Servlet createServlet(Class arg0) throws ServletException {
+	public <T extends Servlet> T createServlet(Class<T> arg0) throws ServletException {
 		return servletContext.createServlet(arg0);
 	}
 
-	public void declareRoles(String[] arg0) {
+	public void declareRoles(String... arg0) {
 		servletContext.declareRoles(arg0);
 	}
 
@@ -249,7 +250,7 @@ public class ServletContextAdaptor implements ServletContext {
 		return servletContext.getClassLoader();
 	}
 
-	public Set getDefaultSessionTrackingModes() {
+	public Set<SessionTrackingMode> getDefaultSessionTrackingModes() {
 		return servletContext.getDefaultSessionTrackingModes();
 	}
 
@@ -261,7 +262,7 @@ public class ServletContextAdaptor implements ServletContext {
 		return servletContext.getEffectiveMinorVersion();
 	}
 
-	public Set getEffectiveSessionTrackingModes() {
+	public Set<SessionTrackingMode> getEffectiveSessionTrackingModes() {
 		return servletContext.getEffectiveSessionTrackingModes();
 	}
 
@@ -269,7 +270,7 @@ public class ServletContextAdaptor implements ServletContext {
 		return servletContext.getFilterRegistration(arg0);
 	}
 
-	public Map getFilterRegistrations() {
+	public Map<String, ? extends FilterRegistration> getFilterRegistrations() {
 		return servletContext.getFilterRegistrations();
 	}
 
@@ -281,7 +282,7 @@ public class ServletContextAdaptor implements ServletContext {
 		return servletContext.getServletRegistration(arg0);
 	}
 
-	public Map getServletRegistrations() {
+	public Map<String, ? extends ServletRegistration> getServletRegistrations() {
 		return servletContext.getServletRegistrations();
 	}
 
@@ -293,7 +294,7 @@ public class ServletContextAdaptor implements ServletContext {
 		return servletContext.setInitParameter(arg0, arg1);
 	}
 
-	public void setSessionTrackingModes(Set arg0) {
+	public void setSessionTrackingModes(Set<SessionTrackingMode> arg0) {
 		servletContext.setSessionTrackingModes(arg0);		
 	}
 }

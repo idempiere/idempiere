@@ -24,8 +24,8 @@ public class HttpServiceImpl implements HttpService, ExtendedHttpService {
 
 	private ProxyServlet proxy; //The proxy that does the dispatching of the incoming requests
 
-	private Set aliases = new HashSet(); //Aliases registered against this particular instance of the service
-	private Set filters = new HashSet(); //Filters registered against this particular instance of the service
+	private Set<String> aliases = new HashSet<String>(); //Aliases registered against this particular instance of the service
+	private Set<Filter> filters = new HashSet<Filter>(); //Filters registered against this particular instance of the service
 
 	private boolean shutdown = false; // We prevent use of this instance if HttpServiceFactory.ungetService has called unregisterAliases.
 
@@ -36,14 +36,14 @@ public class HttpServiceImpl implements HttpService, ExtendedHttpService {
 
 	//Clean up method
 	synchronized void shutdown() {
-		for (Iterator it = aliases.iterator(); it.hasNext();) {
-			String alias = (String) it.next();
+		for (Iterator<String> it = aliases.iterator(); it.hasNext();) {
+			String alias = it.next();
 			proxy.unregister(alias, false);
 		}
 		aliases.clear();
 
-		for (Iterator it = filters.iterator(); it.hasNext();) {
-			Filter filter = (Filter) it.next();
+		for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
+			Filter filter = it.next();
 			proxy.unregisterFilter(filter, false);
 		}
 		filters.clear();
@@ -58,6 +58,8 @@ public class HttpServiceImpl implements HttpService, ExtendedHttpService {
 	/**
 	 * @see HttpService#registerServlet(String, Servlet, Dictionary, HttpContext)
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
 	public synchronized void registerServlet(String alias, Servlet servlet, Dictionary initparams, HttpContext context) throws ServletException, NamespaceException {
 		checkShutdown();
 		if (context == null) {
@@ -99,7 +101,8 @@ public class HttpServiceImpl implements HttpService, ExtendedHttpService {
 		return new DefaultHttpContext(bundle);
 	}
 
-	public void registerFilter(String alias, Filter filter, Dictionary initparams, HttpContext context) throws ServletException {
+	@Override
+	public void registerFilter(String alias, Filter filter, Dictionary<String, String> initparams, HttpContext context) throws ServletException {
 		checkShutdown();
 		if (context == null) {
 			context = createDefaultHttpContext();

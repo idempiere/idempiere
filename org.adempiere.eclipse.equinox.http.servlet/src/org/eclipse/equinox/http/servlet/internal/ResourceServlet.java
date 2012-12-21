@@ -59,7 +59,7 @@ public class ResourceServlet extends HttpServlet {
 
 	private void writeResource(final HttpServletRequest req, final HttpServletResponse resp, final String resourcePath, final URL resourceURL) throws IOException {
 		try {
-			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+			AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
 
 				public Object run() throws Exception {
 					URLConnection connection = resourceURL.openConnection();

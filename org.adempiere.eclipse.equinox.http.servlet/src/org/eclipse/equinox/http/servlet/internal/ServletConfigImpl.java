@@ -16,13 +16,13 @@ import javax.servlet.*;
 
 public class ServletConfigImpl implements ServletConfig {
 
-	private static final Dictionary EMPTY_PARAMS = new Hashtable(0);
+	private static final Dictionary<String, String> EMPTY_PARAMS = new Hashtable<String, String>(0);
 	private static final String SERVLET_NAME = "servlet-name"; //$NON-NLS-1$
 	private Servlet servlet;
-	private Dictionary initparams;
+	private Dictionary<String, String> initparams;
 	private ServletContext servletContext;
 
-	public ServletConfigImpl(Servlet servlet, Dictionary initparams, ServletContext servletContext) {
+	public ServletConfigImpl(Servlet servlet, Dictionary<String, String> initparams, ServletContext servletContext) {
 		this.servlet = servlet;
 		this.initparams = (initparams != null) ? initparams : EMPTY_PARAMS;
 		this.servletContext = servletContext;
@@ -47,7 +47,7 @@ public class ServletConfigImpl implements ServletConfig {
 		return (String) initparams.get(name);
 	}
 
-	public Enumeration getInitParameterNames() {
+	public Enumeration<String> getInitParameterNames() {
 		return initparams.keys();
 	}
 }

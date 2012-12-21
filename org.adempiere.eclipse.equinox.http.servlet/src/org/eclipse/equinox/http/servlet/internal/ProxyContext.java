@@ -31,7 +31,7 @@ public class ProxyContext {
 	private static final String JAVAX_SERVLET_CONTEXT_TEMPDIR = "javax.servlet.context.tempdir"; //$NON-NLS-1$
 
 	private String servletPath;
-	private HashMap attributesMap = new HashMap();
+	private HashMap<HttpContext, ContextAttributes> attributesMap = new HashMap<HttpContext, ContextAttributes>();
 	File proxyContextTempDir;
 
 	public ProxyContext(ServletContext servletContext) {
@@ -62,7 +62,7 @@ public class ProxyContext {
 	}
 
 	synchronized void createContextAttributes(HttpContext httpContext) {
-		ContextAttributes attributes = (ContextAttributes) attributesMap.get(httpContext);
+		ContextAttributes attributes = attributesMap.get(httpContext);
 		if (attributes == null) {
 			attributes = new ContextAttributes(httpContext);
 			attributesMap.put(httpContext, attributes);
@@ -71,7 +71,7 @@ public class ProxyContext {
 	}
 
 	synchronized void destroyContextAttributes(HttpContext httpContext) {
-		ContextAttributes attributes = (ContextAttributes) attributesMap.get(httpContext);
+		ContextAttributes attributes = attributesMap.get(httpContext);
 		attributes.removeReference();
 		if (attributes.referenceCount() == 0) {
 			attributesMap.remove(httpContext);
@@ -79,8 +79,8 @@ public class ProxyContext {
 		}
 	}
 
-	synchronized Dictionary getContextAttributes(HttpContext httpContext) {
-		return (Dictionary) attributesMap.get(httpContext);
+	synchronized Dictionary<String, Object> getContextAttributes(HttpContext httpContext) {
+		return attributesMap.get(httpContext);
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class ProxyContext {
 		return directory.delete();
 	}
 
-	public class ContextAttributes extends Hashtable {
+	public class ContextAttributes extends Hashtable<String, Object> {
 		private static final long serialVersionUID = 1916670423277243587L;
 		private int referenceCount;
 

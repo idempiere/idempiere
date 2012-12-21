@@ -30,10 +30,10 @@ import org.osgi.service.http.NamespaceException;
 public class ProxyServlet extends HttpServlet implements Filter {
 
 	private static final long serialVersionUID = 4117456123807468871L;
-	private Map servletRegistrations = new HashMap(); //alias --> servlet registration
-	private Set registeredServlets = new HashSet(); //All the servlets objects that have been registered
+	private Map<String, ServletRegistration> servletRegistrations = new HashMap<String, ServletRegistration>(); //alias --> servlet registration
+	private Set<Servlet> registeredServlets = new HashSet<Servlet>(); //All the servlets objects that have been registered
 
-	private Map filterRegistrations = new HashMap(); //filter --> filter registration;
+	private Map<Filter, FilterRegistration> filterRegistrations = new HashMap<Filter, FilterRegistration>(); //filter --> filter registration;
 	private ProxyContext proxyContext;
 
 	public void init(ServletConfig config) throws ServletException {
@@ -106,7 +106,7 @@ public class ProxyServlet extends HttpServlet implements Filter {
 
 	private boolean processAlias(HttpServletRequest req, HttpServletResponse resp, String alias, String extensionAlias, FilterChain filterChain) throws ServletException, IOException {
 		ServletRegistration registration = null;
-		List matchingFilterRegistrations = Collections.EMPTY_LIST;
+		List<FilterRegistration> matchingFilterRegistrations = Collections.emptyList();
 		String dispatchPathInfo = HttpServletRequestAdaptor.getDispatchPathInfo(req, filterChain);
 		synchronized (this) {
 			if (extensionAlias == null)
@@ -123,9 +123,9 @@ public class ProxyServlet extends HttpServlet implements Filter {
 			if (registration != null) {
 				registration.addReference();
 				if (!filterRegistrations.isEmpty()) {
-					matchingFilterRegistrations = new ArrayList();
-					for (Iterator it = filterRegistrations.values().iterator(); it.hasNext();) {
-						FilterRegistration filterRegistration = (FilterRegistration) it.next();
+					matchingFilterRegistrations = new ArrayList<FilterRegistration>();
+					for (Iterator<FilterRegistration> it = filterRegistrations.values().iterator(); it.hasNext();) {
+						FilterRegistration filterRegistration = it.next();
 						if (filterRegistration.matches(dispatchPathInfo)) {
 							matchingFilterRegistrations.add(filterRegistration);
 							filterRegistration.addReference();
@@ -146,7 +146,7 @@ public class ProxyServlet extends HttpServlet implements Filter {
 				}
 			} finally {
 				registration.removeReference();
-				for (Iterator it = matchingFilterRegistrations.iterator(); it.hasNext();) {
+				for (Iterator<FilterRegistration> it = matchingFilterRegistrations.iterator(); it.hasNext();) {
 					FilterRegistration filterRegistration = (FilterRegistration) it.next();
 					filterRegistration.removeReference();
 				}
@@ -171,7 +171,7 @@ public class ProxyServlet extends HttpServlet implements Filter {
 	}
 
 	//Effective registration of the servlet as defined HttpService#registerServlet()
-	synchronized void registerServlet(String alias, Servlet servlet, Dictionary initparams, HttpContext httpContext) throws ServletException, NamespaceException {
+	synchronized void registerServlet(String alias, Servlet servlet, Dictionary<String, String> initparams, HttpContext httpContext) throws ServletException, NamespaceException {
 		checkAlias(alias);
 		if (servletRegistrations.containsKey(alias))
 			throw new NamespaceException("The alias '" + alias + "' is already in use."); //$NON-NLS-1$//$NON-NLS-2$
@@ -238,7 +238,7 @@ public class ProxyServlet extends HttpServlet implements Filter {
 		}
 	}
 
-	public synchronized void registerFilter(String alias, Filter filter, Dictionary initparams, HttpContext httpContext) throws ServletException {
+	public synchronized void registerFilter(String alias, Filter filter, Dictionary<String, String> initparams, HttpContext httpContext) throws ServletException {
 		checkAlias(alias);
 		if (filter == null)
 			throw new IllegalArgumentException("Filter cannot be null"); //$NON-NLS-1$
@@ -263,7 +263,7 @@ public class ProxyServlet extends HttpServlet implements Filter {
 		filterRegistrations.put(filter, registration);
 	}
 
-	private int findFilterPriority(Dictionary initparams) {
+	private int findFilterPriority(Dictionary<String, String> initparams) {
 		if (initparams == null)
 			return 0;
 		String filterPriority = (String) initparams.get("filter-priority"); //$NON-NLS-1$
@@ -303,7 +303,7 @@ public class ProxyServlet extends HttpServlet implements Filter {
 			return filterConfig.getInitParameter(arg0);
 		}
 
-		public Enumeration getInitParameterNames() {
+		public Enumeration<String> getInitParameterNames() {
 			return filterConfig.getInitParameterNames();
 		}
 

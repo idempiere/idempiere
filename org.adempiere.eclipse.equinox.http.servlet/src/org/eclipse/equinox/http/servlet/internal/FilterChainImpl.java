@@ -8,12 +8,12 @@ import javax.servlet.http.HttpServletResponse;
 
 public class FilterChainImpl implements FilterChain {
 
-	private List matchingFilterRegistrations;
+	private List<FilterRegistration> matchingFilterRegistrations;
 	private ServletRegistration registration;
 	private int filterIndex = 0;
 	private int filterCount;
 
-	public FilterChainImpl(List matchingFilterRegistrations, ServletRegistration registration) {
+	public FilterChainImpl(List<FilterRegistration> matchingFilterRegistrations, ServletRegistration registration) {
 		this.matchingFilterRegistrations = matchingFilterRegistrations;
 		this.registration = registration;
 		this.filterCount = matchingFilterRegistrations.size();

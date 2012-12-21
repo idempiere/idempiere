@@ -25,7 +25,7 @@ public class Activator implements BundleActivator {
 	private static final String[] HTTP_SERVICES_CLASSES = new String[] {HttpService.class.getName(), ExtendedHttpService.class.getName()};
 
 	private static BundleContext context;
-	private static Map serviceRegistrations = new HashMap();
+	private static Map<Object, ServiceRegistration<?>> serviceRegistrations = new HashMap<Object, ServiceRegistration<?>>();
 
 	public void start(BundleContext bundleContext) throws Exception {
 		startHttpServiceProxy(bundleContext);
@@ -39,7 +39,7 @@ public class Activator implements BundleActivator {
 		context = bundleContext;
 		Object[] proxyServlets = serviceRegistrations.keySet().toArray();
 		for (int i = 0; i < proxyServlets.length; ++i) {
-			ServiceRegistration registration = registerHttpService((ProxyServlet) proxyServlets[i]);
+			ServiceRegistration<?> registration = registerHttpService((ProxyServlet) proxyServlets[i]);
 			serviceRegistrations.put(proxyServlets[i], registration);
 		}
 	}
@@ -47,25 +47,25 @@ public class Activator implements BundleActivator {
 	private static synchronized void stopHttpServiceProxy(BundleContext bundleContext) {
 		Object[] proxyServlets = serviceRegistrations.keySet().toArray();
 		for (int i = 0; i < proxyServlets.length; ++i) {
-			ServiceRegistration registration = (ServiceRegistration) serviceRegistrations.put(proxyServlets[i], null);
+			ServiceRegistration<?> registration = serviceRegistrations.put(proxyServlets[i], null);
 			registration.unregister();
 		}
 		context = null;
 	}
 
 	static synchronized void addProxyServlet(ProxyServlet proxyServlet) {
-		ServiceRegistration registration = null;
+		ServiceRegistration<?> registration = null;
 		if (context != null)
 			registration = registerHttpService(proxyServlet);
 
 		serviceRegistrations.put(proxyServlet, registration);
 	}
 
-	private static ServiceRegistration registerHttpService(ProxyServlet proxyServlet) {
+	private static ServiceRegistration<?> registerHttpService(ProxyServlet proxyServlet) {
 		HttpServiceFactory factory = new HttpServiceFactory(proxyServlet);
-		Dictionary serviceProperties = new Hashtable(2);
+		Dictionary<String, String> serviceProperties = new Hashtable<String, String>(2);
 		ServletConfig config = proxyServlet.getServletConfig();
-		Enumeration initparameterNames = config.getInitParameterNames();
+		Enumeration<String> initparameterNames = config.getInitParameterNames();
 		while (initparameterNames.hasMoreElements()) {
 			String name = (String) initparameterNames.nextElement();
 			serviceProperties.put(name, config.getInitParameter(name));
@@ -81,7 +81,7 @@ public class Activator implements BundleActivator {
 	}
 
 	static synchronized void removeProxyServlet(ProxyServlet proxyServlet) {
-		ServiceRegistration registration = (ServiceRegistration) serviceRegistrations.remove(proxyServlet);
+		ServiceRegistration<?> registration = serviceRegistrations.remove(proxyServlet);
 		if (registration != null)
 			registration.unregister();
 	}

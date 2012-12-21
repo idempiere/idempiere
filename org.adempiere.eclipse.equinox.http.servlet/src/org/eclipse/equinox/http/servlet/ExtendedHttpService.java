@@ -24,7 +24,7 @@ public interface ExtendedHttpService extends HttpService {
 	 * @throws java.lang.IllegalArgumentException if any of the arguments are
 	 *            invalid
 	 */
-	public void registerFilter(String alias, Filter filter, Dictionary initparams, HttpContext context) throws ServletException, NamespaceException;
+	public void registerFilter(String alias, Filter filter, Dictionary<String, String> initparams, HttpContext context) throws ServletException, NamespaceException;
 
 	/**
 	 * Unregisters a previous filter registration done by the 

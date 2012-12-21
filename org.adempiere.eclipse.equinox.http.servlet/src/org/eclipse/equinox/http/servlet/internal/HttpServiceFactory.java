@@ -13,9 +13,10 @@
 package org.eclipse.equinox.http.servlet.internal;
 
 import org.osgi.framework.*;
+import org.osgi.service.http.HttpService;
 
 // Factory to create http services. This is because the service needs to be customized for each bundle in order to implement the default resource lookups.
-public class HttpServiceFactory implements ServiceFactory {
+public class HttpServiceFactory implements ServiceFactory<HttpService> {
 
 	private ProxyServlet proxy;
 
@@ -23,11 +24,11 @@ public class HttpServiceFactory implements ServiceFactory {
 		this.proxy = proxy;
 	}
 
-	public Object getService(Bundle bundle, ServiceRegistration registration) {
+	public HttpService getService(Bundle bundle, ServiceRegistration<HttpService> registration) {
 		return new HttpServiceImpl(bundle, proxy);
 	}
 
-	public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
+	public void ungetService(Bundle bundle, ServiceRegistration<HttpService> registration, HttpService service) {
 		((HttpServiceImpl) service).shutdown();
 
 	}
