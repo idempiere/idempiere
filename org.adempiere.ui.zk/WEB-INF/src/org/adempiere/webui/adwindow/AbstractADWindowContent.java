@@ -659,10 +659,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					}
 				});
 	        	findWindow.setTitle(null);
+	        	findWindow.setBorder("none");	
+	        	findWindow.setStyle("padding: 5px;");
 	        	getComponent().addEventListener("onInitialQuery", new EventListener<Event>() {
 					@Override
 					public void onEvent(Event event) throws Exception {
-						LayoutUtils.openPopupWindow(getComponent(), findWindow, "overlap");
+						getComponent().getParent().appendChild(findWindow);
+						LayoutUtils.openOverlappedWindow(getComponent(), findWindow, "overlap");
 					}
 				});
 	        	Events.echoEvent("onInitialQuery", getComponent(), null);
@@ -1559,6 +1562,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	            adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
 	            adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
 
+	        findWindow.setBorder("none");	
+        	findWindow.setStyle("padding: 5px;");	        
 	        if (!findWindow.initialize()) {
 	        	if (findWindow.getTotalRecords() == 0) {
 	        		FDialog.info(curWindowNo, getComponent(), "NoRecordsFound");

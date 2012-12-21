@@ -542,7 +542,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         winMain = new MultiTabPart();
         winMain.createPart(layout);
-        winMain.getComponent().setStyle("width: 100%; position: relative;");
+        winMain.getComponent().setStyle("width: 99%; position: relative; margin-left: auto; margin-right: auto; margin-top: 5px;");
         winMain.getComponent().setVflex("1");
         winMain.getComponent().addEventListener(Events.ON_SELECT, this);
         winAdvanced = new Window();
