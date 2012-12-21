@@ -38,6 +38,50 @@ Copyright (C) 2005 Potix Corporation. All Rights Reserved.
 	</function>
 
 	<function>
+		<name>getBuild</name>
+		<function-class>org.zkoss.zk.fn.ZkFns</function-class>
+		<function-signature>
+	java.lang.String getBuild()
+		</function-signature>
+		<description>
+	Returns the build identifier, such as 2007121316.
+		</description>
+	</function>
+
+	<function>
+		<name>getVersion</name>
+		<function-class>org.zkoss.zk.fn.ZkFns</function-class>
+		<function-signature>
+	java.lang.String getVersion()
+		</function-signature>
+		<description>
+	Returns the ZK version, such as "1.1.0" and "2.0.0".
+		</description>
+	</function>
+
+	<function>
+		<name>getEdition</name>
+		<function-class>org.zkoss.zk.fn.ZkFns</function-class>
+		<function-signature>
+	java.lang.String getEdition()
+		</function-signature>
+		<description>
+	Returns the edition, such as EE, PE and CE.
+		</description>
+	</function>
+
+	<function>
+		<name>encodeWithZK</name>
+		<function-class>org.zkoss.zk.fn.ZkFns</function-class>
+		<function-signature>
+	java.lang.String encodeWithZK(java.lang.String)
+		</function-signature>
+		<description>
+	Returns the string encoded with ZK
+		</description>
+	</function>
+
+	<function>
 		<name>outDeviceStyleSheets</name>
 		<function-class>org.zkoss.zk.fn.DspFns</function-class>
 		<function-signature>
