@@ -37,9 +37,9 @@ public class CloseableURLClassLoader extends URLClassLoader {
 	static final String JAR = "jar"; //$NON-NLS-1$
 
 	// @GuardedBy("loaders")
-	final ArrayList loaders = new ArrayList(); // package private to avoid synthetic access.
+	final ArrayList<CloseableJarFileLoader> loaders = new ArrayList<CloseableJarFileLoader>(); // package private to avoid synthetic access.
 	// @GuardedBy("loaders")
-	private final ArrayList loaderURLs = new ArrayList(); // note: protected by loaders
+	private final ArrayList<URL> loaderURLs = new ArrayList<URL>(); // note: protected by loaders
 	// @GuardedBy("loaders")
 	boolean closed = false; // note: protected by loaders, package private to avoid synthetic access.
 
@@ -187,7 +187,7 @@ public class CloseableURLClassLoader extends URLClassLoader {
 	}
 
 	private static URL[] excludeFileJarURLS(URL[] urls) {
-		ArrayList urlList = new ArrayList();
+		ArrayList<URL> urlList = new ArrayList<URL>();
 		for (int i = 0; i < urls.length; i++) {
 			if (!isFileJarURL(urls[i]))
 				urlList.add(urls[i]);
@@ -209,9 +209,9 @@ public class CloseableURLClassLoader extends URLClassLoader {
 	/* (non-Javadoc)
 	 * @see java.net.URLClassLoader#findClass(java.lang.String)
 	 */
-	protected Class findClass(final String name) throws ClassNotFoundException {
+	protected Class<?> findClass(final String name) throws ClassNotFoundException {
 		try {
-			Class clazz = (Class) AccessController.doPrivileged(new PrivilegedExceptionAction() {
+			Class<?> clazz = (Class<?>) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
 				public Object run() throws ClassNotFoundException {
 					String resourcePath = name.replace('.', '/') + DOT_CLASS;
 					CloseableJarFileLoader loader = null;
@@ -219,8 +219,8 @@ public class CloseableURLClassLoader extends URLClassLoader {
 					synchronized (loaders) {
 						if (closed)
 							return null;
-						for (Iterator iterator = loaders.iterator(); iterator.hasNext();) {
-							loader = (CloseableJarFileLoader) iterator.next();
+						for (Iterator<CloseableJarFileLoader> iterator = loaders.iterator(); iterator.hasNext();) {
+							loader =  iterator.next();
 							resourceURL = loader.getURL(resourcePath);
 							if (resourceURL != null)
 								break;
@@ -245,7 +245,7 @@ public class CloseableURLClassLoader extends URLClassLoader {
 	}
 
 	// package private to avoid synthetic access.
-	Class defineClass(String name, URL resourceURL, Manifest manifest) throws IOException {
+	Class<?> defineClass(String name, URL resourceURL, Manifest manifest) throws IOException {
 		JarURLConnection connection = (JarURLConnection) resourceURL.openConnection();
 		int lastDot = name.lastIndexOf('.');
 		if (lastDot != -1) {
@@ -298,13 +298,13 @@ public class CloseableURLClassLoader extends URLClassLoader {
 	 * @see java.net.URLClassLoader#findResource(java.lang.String)
 	 */
 	public URL findResource(final String name) {
-		URL url = (URL) AccessController.doPrivileged(new PrivilegedAction() {
+		URL url = (URL) AccessController.doPrivileged(new PrivilegedAction<Object>() {
 			public Object run() {
 				synchronized (loaders) {
 					if (closed)
 						return null;
-					for (Iterator iterator = loaders.iterator(); iterator.hasNext();) {
-						CloseableJarFileLoader loader = (CloseableJarFileLoader) iterator.next();
+					for (Iterator<CloseableJarFileLoader> iterator = loaders.iterator(); iterator.hasNext();) {
+						CloseableJarFileLoader loader =  iterator.next();
 						URL resourceURL = loader.getURL(name);
 						if (resourceURL != null)
 							return resourceURL;
@@ -321,15 +321,15 @@ public class CloseableURLClassLoader extends URLClassLoader {
 	/* (non-Javadoc)
 	 * @see java.net.URLClassLoader#findResources(java.lang.String)
 	 */
-	public Enumeration findResources(final String name) throws IOException {
-		final List resources = new ArrayList();
-		AccessController.doPrivileged(new PrivilegedAction() {
+	public Enumeration<URL> findResources(final String name) throws IOException {
+		final List<URL> resources = new ArrayList<URL>();
+		AccessController.doPrivileged(new PrivilegedAction<Object>() {
 			public Object run() {
 				synchronized (loaders) {
 					if (closed)
 						return null;
-					for (Iterator iterator = loaders.iterator(); iterator.hasNext();) {
-						CloseableJarFileLoader loader = (CloseableJarFileLoader) iterator.next();
+					for (Iterator<CloseableJarFileLoader> iterator = loaders.iterator(); iterator.hasNext();) {
+						CloseableJarFileLoader loader =  iterator.next();
 						URL resourceURL = loader.getURL(name);
 						if (resourceURL != null)
 							resources.add(resourceURL);
@@ -338,7 +338,7 @@ public class CloseableURLClassLoader extends URLClassLoader {
 				return null;
 			}
 		}, context);
-		Enumeration e = super.findResources(name);
+		Enumeration<URL> e = super.findResources(name);
 		while (e.hasMoreElements())
 			resources.add(e.nextElement());
 
@@ -353,8 +353,8 @@ public class CloseableURLClassLoader extends URLClassLoader {
 		synchronized (loaders) {
 			if (closed)
 				return;
-			for (Iterator iterator = loaders.iterator(); iterator.hasNext();) {
-				CloseableJarFileLoader loader = (CloseableJarFileLoader) iterator.next();
+			for (Iterator<CloseableJarFileLoader> iterator = loaders.iterator(); iterator.hasNext();) {
+				CloseableJarFileLoader loader = iterator.next();
 				loader.close();
 			}
 			closed = true;
@@ -381,7 +381,7 @@ public class CloseableURLClassLoader extends URLClassLoader {
 	 * @see java.net.URLClassLoader#getURLs()
 	 */
 	public URL[] getURLs() {
-		List result = new ArrayList();
+		List<URL> result = new ArrayList<URL>();
 		synchronized (loaders) {
 			result.addAll(loaderURLs);
 		}
