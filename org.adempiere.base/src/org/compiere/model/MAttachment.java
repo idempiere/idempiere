@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -335,7 +336,11 @@ public class MAttachment extends X_AD_Attachment
 		if (index >= 0 && index < m_items.size()) {
 			IAttachmentStore prov = provider.getAttachmentStore();
 			if (prov != null)
-				return prov.deleteEntry(this,provider,index);
+			{
+				if(prov.deleteEntry(this,provider,index))
+					return set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis()));
+				return false;
+			}
 			return false;
 		}
 		log.warning("Not deleted Index=" + index + " - Size=" + m_items.size());

@@ -111,6 +111,8 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String MAIL_SEND_BCC_TO_ADDRESS = "MAIL_SEND_BCC_TO_ADDRESS";
 	public static final String MAIL_SEND_BCC_TO_FROM = "MAIL_SEND_BCC_TO_FROM";
 	public static final String REAL_TIME_POS = "REAL_TIME_POS";
+	public static final String SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE = "SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE";
+	public static final String SHIPPING_SAVE_REQUEST_RESPONSE_LOG = "SHIPPING_SAVE_REQUEST_RESPONSE_LOG";
 
 	/**
 	 * 	Standard Constructor

@@ -19,7 +19,6 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Shipper
  *  @author iDempiere (generated) 
@@ -30,7 +29,7 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20121213L;
 
     /** Standard Constructor */
     public X_M_Shipper (Properties ctx, int M_Shipper_ID, String trxName)
@@ -39,7 +38,6 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
       /** if (M_Shipper_ID == 0)
         {
 			setM_Shipper_ID (0);
-			setName (null);
         } */
     }
 
@@ -99,23 +97,6 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
-	public void setDescription (String Description)
-	{
-		set_Value (COLUMNNAME_Description, Description);
-	}
-
-	/** Get Description.
-		@return Optional short description of the record
-	  */
-	public String getDescription () 
-	{
-		return (String)get_Value(COLUMNNAME_Description);
-	}
-
 	/** Set Shipper.
 		@param M_Shipper_ID 
 		Method or manner of product delivery
@@ -153,45 +134,53 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_Shipper_UU);
 	}
 
-	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
-	public void setName (String Name)
-	{
-		set_Value (COLUMNNAME_Name, Name);
-	}
-
-	/** Get Name.
-		@return Alphanumeric identifier of the entity
-	  */
-	public String getName () 
-	{
-		return (String)get_Value(COLUMNNAME_Name);
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair() 
+	public org.compiere.model.I_M_ShippingProcessor getM_ShippingProcessor() throws RuntimeException
     {
-        return new KeyNamePair(get_ID(), getName());
-    }
+		return (org.compiere.model.I_M_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessor.Table_Name)
+			.getPO(getM_ShippingProcessor_ID(), get_TrxName());	}
 
-	/** Set Tracking URL.
-		@param TrackingURL 
-		URL of the shipper to track shipments
-	  */
-	public void setTrackingURL (String TrackingURL)
+	/** Set Shipping Processor.
+		@param M_ShippingProcessor_ID Shipping Processor	  */
+	public void setM_ShippingProcessor_ID (int M_ShippingProcessor_ID)
 	{
-		set_Value (COLUMNNAME_TrackingURL, TrackingURL);
+		if (M_ShippingProcessor_ID < 1) 
+			set_Value (COLUMNNAME_M_ShippingProcessor_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_ShippingProcessor_ID, Integer.valueOf(M_ShippingProcessor_ID));
 	}
 
-	/** Get Tracking URL.
-		@return URL of the shipper to track shipments
-	  */
-	public String getTrackingURL () 
+	/** Get Shipping Processor.
+		@return Shipping Processor	  */
+	public int getM_ShippingProcessor_ID () 
 	{
-		return (String)get_Value(COLUMNNAME_TrackingURL);
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShippingProcessor_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_X_Shipper getX_Shipper() throws RuntimeException
+    {
+		return (org.compiere.model.I_X_Shipper)MTable.get(getCtx(), org.compiere.model.I_X_Shipper.Table_Name)
+			.getPO(getX_Shipper_ID(), get_TrxName());	}
+
+	/** Set Shipper.
+		@param X_Shipper_ID Shipper	  */
+	public void setX_Shipper_ID (int X_Shipper_ID)
+	{
+		if (X_Shipper_ID < 1) 
+			set_Value (COLUMNNAME_X_Shipper_ID, null);
+		else 
+			set_Value (COLUMNNAME_X_Shipper_ID, Integer.valueOf(X_Shipper_ID));
+	}
+
+	/** Get Shipper.
+		@return Shipper	  */
+	public int getX_Shipper_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_X_Shipper_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 }

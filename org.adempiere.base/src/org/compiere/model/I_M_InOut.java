@@ -180,19 +180,6 @@ public interface I_M_InOut
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
-    /** Column name ChargeAmt */
-    public static final String COLUMNNAME_ChargeAmt = "ChargeAmt";
-
-	/** Set Charge amount.
-	  * Charge Amount
-	  */
-	public void setChargeAmt (BigDecimal ChargeAmt);
-
-	/** Get Charge amount.
-	  * Charge Amount
-	  */
-	public BigDecimal getChargeAmt();
-
     /** Column name C_Invoice_ID */
     public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
 
@@ -237,6 +224,19 @@ public interface I_M_InOut
 	public int getC_Project_ID();
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
+
+    /** Column name ChargeAmt */
+    public static final String COLUMNNAME_ChargeAmt = "ChargeAmt";
+
+	/** Set Charge amount.
+	  * Charge Amount
+	  */
+	public void setChargeAmt (BigDecimal ChargeAmt);
+
+	/** Get Charge amount.
+	  * Charge Amount
+	  */
+	public BigDecimal getChargeAmt();
 
     /** Column name CreateConfirm */
     public static final String COLUMNNAME_CreateConfirm = "CreateConfirm";
@@ -460,6 +460,15 @@ public interface I_M_InOut
 
 	public org.compiere.model.I_AD_User getDropShip_User() throws RuntimeException;
 
+    /** Column name FOB */
+    public static final String COLUMNNAME_FOB = "FOB";
+
+	/** Set Freight Terms	  */
+	public void setFOB (String FOB);
+
+	/** Get Freight Terms	  */
+	public String getFOB();
+
     /** Column name FreightAmt */
     public static final String COLUMNNAME_FreightAmt = "FreightAmt";
 
@@ -472,6 +481,15 @@ public interface I_M_InOut
 	  * Freight Amount 
 	  */
 	public BigDecimal getFreightAmt();
+
+    /** Column name FreightCharges */
+    public static final String COLUMNNAME_FreightCharges = "FreightCharges";
+
+	/** Set Freight Charges	  */
+	public void setFreightCharges (String FreightCharges);
+
+	/** Get Freight Charges	  */
+	public String getFreightCharges();
 
     /** Column name FreightCostRule */
     public static final String COLUMNNAME_FreightCostRule = "FreightCostRule";
@@ -499,6 +517,15 @@ public interface I_M_InOut
 	  */
 	public String getGenerateTo();
 
+    /** Column name Insurance */
+    public static final String COLUMNNAME_Insurance = "Insurance";
+
+	/** Set Insurance	  */
+	public void setInsurance (String Insurance);
+
+	/** Get Insurance	  */
+	public String getInsurance();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -511,6 +538,15 @@ public interface I_M_InOut
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsAlternateReturnAddress */
+    public static final String COLUMNNAME_IsAlternateReturnAddress = "IsAlternateReturnAddress";
+
+	/** Set Alternate Return Address	  */
+	public void setIsAlternateReturnAddress (boolean IsAlternateReturnAddress);
+
+	/** Get Alternate Return Address	  */
+	public boolean isAlternateReturnAddress();
 
     /** Column name IsApproved */
     public static final String COLUMNNAME_IsApproved = "IsApproved";
@@ -612,32 +648,6 @@ public interface I_M_InOut
 	/** Get M_InOut_UU	  */
 	public String getM_InOut_UU();
 
-    /** Column name MovementDate */
-    public static final String COLUMNNAME_MovementDate = "MovementDate";
-
-	/** Set Movement Date.
-	  * Date a product was moved in or out of inventory
-	  */
-	public void setMovementDate (Timestamp MovementDate);
-
-	/** Get Movement Date.
-	  * Date a product was moved in or out of inventory
-	  */
-	public Timestamp getMovementDate();
-
-    /** Column name MovementType */
-    public static final String COLUMNNAME_MovementType = "MovementType";
-
-	/** Set Movement Type.
-	  * Method of moving the inventory
-	  */
-	public void setMovementType (String MovementType);
-
-	/** Get Movement Type.
-	  * Method of moving the inventory
-	  */
-	public String getMovementType();
-
     /** Column name M_RMA_ID */
     public static final String COLUMNNAME_M_RMA_ID = "M_RMA_ID";
 
@@ -682,6 +692,32 @@ public interface I_M_InOut
 	public int getM_Warehouse_ID();
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
+
+    /** Column name MovementDate */
+    public static final String COLUMNNAME_MovementDate = "MovementDate";
+
+	/** Set Movement Date.
+	  * Date a product was moved in or out of inventory
+	  */
+	public void setMovementDate (Timestamp MovementDate);
+
+	/** Get Movement Date.
+	  * Date a product was moved in or out of inventory
+	  */
+	public Timestamp getMovementDate();
+
+    /** Column name MovementType */
+    public static final String COLUMNNAME_MovementType = "MovementType";
+
+	/** Set Movement Type.
+	  * Method of moving the inventory
+	  */
+	public void setMovementType (String MovementType);
+
+	/** Get Movement Type.
+	  * Method of moving the inventory
+	  */
+	public String getMovementType();
 
     /** Column name NoPackages */
     public static final String COLUMNNAME_NoPackages = "NoPackages";
@@ -792,6 +828,39 @@ public interface I_M_InOut
 	/** Get Referenced Shipment	  */
 	public int getRef_InOut_ID();
 
+    /** Column name ReturnBPartner_ID */
+    public static final String COLUMNNAME_ReturnBPartner_ID = "ReturnBPartner_ID";
+
+	/** Set Return Partner	  */
+	public void setReturnBPartner_ID (int ReturnBPartner_ID);
+
+	/** Get Return Partner	  */
+	public int getReturnBPartner_ID();
+
+	public org.compiere.model.I_C_BPartner getReturnBPartner() throws RuntimeException;
+
+    /** Column name ReturnLocation_ID */
+    public static final String COLUMNNAME_ReturnLocation_ID = "ReturnLocation_ID";
+
+	/** Set Return Location	  */
+	public void setReturnLocation_ID (int ReturnLocation_ID);
+
+	/** Get Return Location	  */
+	public int getReturnLocation_ID();
+
+	public org.compiere.model.I_C_BPartner_Location getReturnLocation() throws RuntimeException;
+
+    /** Column name ReturnUser_ID */
+    public static final String COLUMNNAME_ReturnUser_ID = "ReturnUser_ID";
+
+	/** Set Return User/Contact	  */
+	public void setReturnUser_ID (int ReturnUser_ID);
+
+	/** Get Return User/Contact	  */
+	public int getReturnUser_ID();
+
+	public org.compiere.model.I_AD_User getReturnUser() throws RuntimeException;
+
     /** Column name Reversal_ID */
     public static final String COLUMNNAME_Reversal_ID = "Reversal_ID";
 
@@ -847,6 +916,15 @@ public interface I_M_InOut
 	  * Shipment Date/Time
 	  */
 	public Timestamp getShipDate();
+
+    /** Column name ShipperAccount */
+    public static final String COLUMNNAME_ShipperAccount = "ShipperAccount";
+
+	/** Set Shipper Account Number	  */
+	public void setShipperAccount (String ShipperAccount);
+
+	/** Get Shipper Account Number	  */
+	public String getShipperAccount();
 
     /** Column name TrackingNo */
     public static final String COLUMNNAME_TrackingNo = "TrackingNo";

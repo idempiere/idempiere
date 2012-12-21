@@ -29,7 +29,7 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121205L;
+	private static final long serialVersionUID = 20121217L;
 
     /** Standard Constructor */
     public X_AD_ClientInfo (Properties ctx, int AD_ClientInfo_ID, String trxName)
@@ -416,6 +416,31 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_C_Charge getC_ChargeFreight() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
+			.getPO(getC_ChargeFreight_ID(), get_TrxName());	}
+
+	/** Set Charge for Freight.
+		@param C_ChargeFreight_ID Charge for Freight	  */
+	public void setC_ChargeFreight_ID (int C_ChargeFreight_ID)
+	{
+		if (C_ChargeFreight_ID < 1) 
+			set_Value (COLUMNNAME_C_ChargeFreight_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_ChargeFreight_ID, Integer.valueOf(C_ChargeFreight_ID));
+	}
+
+	/** Get Charge for Freight.
+		@return Charge for Freight	  */
+	public int getC_ChargeFreight_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_ChargeFreight_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException
     {
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
@@ -662,8 +687,8 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 		return (org.compiere.model.I_AD_StorageProvider)MTable.get(getCtx(), org.compiere.model.I_AD_StorageProvider.Table_Name)
 			.getPO(getStorageArchive_ID(), get_TrxName());	}
 
-	/** Set StorageArchive_ID.
-		@param StorageArchive_ID StorageArchive_ID	  */
+	/** Set Archive Store.
+		@param StorageArchive_ID Archive Store	  */
 	public void setStorageArchive_ID (int StorageArchive_ID)
 	{
 		if (StorageArchive_ID < 1) 
@@ -672,8 +697,8 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 			set_Value (COLUMNNAME_StorageArchive_ID, Integer.valueOf(StorageArchive_ID));
 	}
 
-	/** Get StorageArchive_ID.
-		@return StorageArchive_ID	  */
+	/** Get Archive Store.
+		@return Archive Store	  */
 	public int getStorageArchive_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_StorageArchive_ID);

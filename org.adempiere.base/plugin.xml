@@ -15,6 +15,7 @@
    <extension-point id="org.adempiere.base.IGridTabImporter" name="Grid data import extension" schema="schema/org.adempiere.base.IGridTabImporter.exsd"/>
    <extension-point id="org.compiere.model.PaymentProcessor" name="Payment Processor" schema="schema/org.compiere.model.PaymentProcessor.exsd"/>
    <extension-point id="org.compiere.model.Callout" name="Callout" schema="schema/org.compiere.model.Callout.exsd"/>
+   <extension-point id="org.adempiere.model.IShipmentProcessor" name="Shipment Processor" schema="schema/org.adempiere.model.IShipmentProcessor.exsd"/>
    <extension
          id="org.adempiere.impexp.GridTabXlsExporter"
          name="Grid data excel exporter"

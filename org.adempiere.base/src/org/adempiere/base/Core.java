@@ -24,6 +24,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.model.IShipmentProcessor;
+import org.adempiere.model.MShipperFacade;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.ModelValidator;
@@ -143,6 +145,48 @@ public class Core {
 		//  Initialize
 		myProcessor.initialize(mbap, mp);
 		//
+		return myProcessor;
+	}
+	
+	public static IShipmentProcessor getShipmentProcessor(MShipperFacade sf) 
+	{
+		if (s_log.isLoggable(Level.FINE))
+			s_log.fine("create for " + sf);
+		
+		String className = sf.getShippingProcessorClass();
+		if (className == null || className.length() == 0) 
+		{
+			s_log.log(Level.SEVERE, "Shipment processor class not define for shipper " + sf);
+			return null;
+		}
+		
+		IShipmentProcessor myProcessor = Service.locator().locate(IShipmentProcessor.class, className, null).getService();
+		if (myProcessor == null) 
+		{
+			//fall back to dynamic java class loadup
+			try 
+			{
+				Class<?> ppClass = Class.forName(className);
+				if (ppClass != null)
+					myProcessor = (IShipmentProcessor) ppClass.newInstance();
+			} 
+			catch (Error e1) 
+			{   //  NoClassDefFound
+				s_log.log(Level.SEVERE, className + " - Error=" + e1.getMessage());
+				return null;
+			} 
+			catch (Exception e2) 
+			{
+				s_log.log(Level.SEVERE, className, e2);
+				return null;
+			}
+		}
+		if (myProcessor == null) 
+		{
+			s_log.log(Level.SEVERE, "Not found in service/extension registry and classpath");
+			return null;
+		}
+		
 		return myProcessor;
 	}
 }

@@ -20,6 +20,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.I_C_BankStatement;
 import org.compiere.model.I_C_Invoice;
 import org.compiere.model.I_M_InOut;
+import org.compiere.model.I_M_PackageMPS;
 import org.compiere.model.I_M_RMA;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -52,6 +53,8 @@ public class VCreateFromFactory
 		s_registeredClasses.put(I_C_BankStatement.Table_ID, VCreateFromStatementUI.class);
 		s_registeredClasses.put(I_M_InOut.Table_ID, VCreateFromShipmentUI.class);
 		s_registeredClasses.put(I_M_RMA.Table_ID, VCreateFromRMAUI.class);
+		
+		s_registeredClasses.put(I_M_PackageMPS.Table_ID, VCreateFromPackageShipmentUI.class);
 	}
 	
 	/**
@@ -62,7 +65,7 @@ public class VCreateFromFactory
 	public static ICreateFrom create (GridTab mTab)
 	{
 		//	dynamic init preparation
-		int AD_Table_ID = Env.getContextAsInt(Env.getCtx(), mTab.getWindowNo(), "BaseTable_ID");
+		int AD_Table_ID = Env.getContextAsInt(Env.getCtx(), mTab.getWindowNo(), mTab.getTabNo(), "_TabInfo_AD_Table_ID");
 
 		ICreateFrom retValue = null;
 		Class<? extends ICreateFrom> cl = s_registeredClasses.get(AD_Table_ID);
@@ -81,6 +84,24 @@ public class VCreateFromFactory
 		}
 		if (retValue == null)
 		{
+			AD_Table_ID = Env.getContextAsInt(Env.getCtx(), mTab.getWindowNo(), "BaseTable_ID");
+
+			retValue = null;
+			cl = s_registeredClasses.get(AD_Table_ID);
+			if (cl != null)
+			{
+				try
+				{
+					java.lang.reflect.Constructor<? extends ICreateFrom> ctor = cl.getConstructor(GridTab.class);
+					retValue = ctor.newInstance(mTab);
+				}
+				catch (Throwable e)
+				{
+					s_log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+					return null;
+				}
+			}
+			
 			s_log.info("Unsupported AD_Table_ID=" + AD_Table_ID);
 			return null;
 		}
