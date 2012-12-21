@@ -29,6 +29,7 @@ import org.compiere.model.MNote;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.idempiere.broadcast.IBroadcastMsgPopup;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -89,7 +90,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 	}
 	
 	private void init() {
-		setTitle("Message");
+		setTitle(Msg.getMsg(Env.getCtx(),"Message"));
 		Borderlayout layout = new Borderlayout();
 		this.appendChild(layout);
 		addEventListener("onFocus", this);
@@ -172,7 +173,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		acknowledged.setParent(rightCell);
 		acknowledged.setVisible(false);
 		//acknowledged.setHflex("6");
-		acknowledged.setLabel("Acknowledge");
+		acknowledged.setLabel(Msg.getMsg(Env.getCtx(),"Acknowledge"));
 		acknowledged.addEventListener("onClick", this);
 		
 	}
