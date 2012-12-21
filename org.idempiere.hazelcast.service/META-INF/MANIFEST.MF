@@ -29,3 +29,4 @@ Bundle-ClassPath: .,
  hazelcast-2.4.jar,
  hazelcast-cloud-2.4.jar
 Service-Component: OSGI-INF/clusterservice.xml, OSGI-INF/cacheservice.xml, OSGI-INF/messageservice.xml
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
