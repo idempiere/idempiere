@@ -73,7 +73,7 @@ public class BridgeFilter extends BridgeServlet implements Filter {
 			return filterConfig.getInitParameter(arg0);
 		}
 
-		public Enumeration getInitParameterNames() {
+		public Enumeration<String> getInitParameterNames() {
 			return filterConfig.getInitParameterNames();
 		}
 
