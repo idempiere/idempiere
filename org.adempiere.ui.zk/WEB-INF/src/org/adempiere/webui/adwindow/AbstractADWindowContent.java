@@ -46,6 +46,7 @@ import org.adempiere.webui.apps.form.WCreateFromFactory;
 import org.adempiere.webui.apps.form.WCreateFromWindow;
 import org.adempiere.webui.apps.form.WPayment;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.IProcessButton;
 import org.adempiere.webui.editor.WButtonEditor;
@@ -85,6 +86,7 @@ import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -154,8 +156,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     protected IADTabbox          	 adTabbox;
 
     private int                  curWindowNo;
-
-//    private GridTab              curTab;
 
     private boolean              m_onlyCurrentRows = true;
 
@@ -979,13 +979,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	}
     	else if (event.getTarget() instanceof ProcessModalDialog)
     	{
+    		Clients.clearBusy(getComponent());
     		ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
     		onModalClose(dialog.getProcessInfo());
     		String s = breadCrumb.getStatusLine(); 
     		boolean b = breadCrumb.getStatusError();
+    		ProcessInfoLog[] logs = breadCrumb.getPLogs();
     		onRefresh(true, false);
-    		breadCrumb.setStatusLine(s, b);
-    		Clients.clearBusy(getComponent());
+    		breadCrumb.setStatusLine(s, b, logs);       		
     	}
     	else if (ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT.equals(event.getName()))
     	{
@@ -2684,9 +2685,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 	}
 
-	private void updateUI(ProcessInfo pi) {
-				
-		
+	private void updateUI(ProcessInfo pi) {						
 		//	Timeout
 		if (pi.isTimeout())		//	set temporarily to R/O
 			Env.setContext(ctx, curWindowNo, "Processed", "Y");
@@ -2694,13 +2693,24 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		String summary = pi.getSummary();
 		if (summary != null && summary.indexOf('@') != -1)
 			pi.setSummary(Msg.parseTranslation(Env.getCtx(), summary));
-		breadCrumb.setStatusLine(pi.getSummary(), pi.isError());
-		//	Get Log Info
+
+		//		Get Log Info
 		ProcessInfoUtil.setLogFromDB(pi);
-		String logInfo = pi.getLogInfo();
-		if (logInfo.length() > 0)
-			FDialog.info(curWindowNo, this.getComponent(), Env.getHeader(ctx, curWindowNo),
-				pi.getTitle() + "<br>" + logInfo);				
+		ProcessInfoLog m_logs[] = pi.getLogs();
+		breadCrumb.setStatusLine(pi.getSummary(), pi.isError(),m_logs);
+		if (m_logs != null) {
+			ProcessInfoDialog dialog = new ProcessInfoDialog(AEnv.getDialogHeader(ctx, curWindowNo),Env.getHeader(ctx, curWindowNo), m_logs);
+			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					Clients.clearBusy(getComponent());
+				}
+			});
+			getComponent().getParent().appendChild(dialog);
+			Clients.showBusy(getComponent(), " ");
+			LayoutUtils.openOverlappedWindow(this.getComponent(),dialog,"middle_center");
+		}
+		
 	}
 
 	/**
