@@ -74,5 +74,35 @@ public class MShipper extends X_M_Shipper
 		List<MShipper> result = q.list();
 		return(result);
 	}
+	
+	public String getName()
+	{
+		return getX_Shipper().getName();
+	}
+	
+	public String getShippingServiceCode()
+	{
+		return getX_Shipper().getShippingServiceCode();
+	}
+	
+	public boolean isInternational()
+	{
+		return getX_Shipper().isInternational();
+	}
 
+	public boolean isResidential()
+	{
+		return getX_Shipper().isResidential();
+	}
+	
+	public boolean isSaturdayDelivery()
+	{
+		return getX_Shipper().isSaturdayDelivery();
+	}
+	
+	public String getTrackingURL()
+	{
+		return getX_Shipper().getTrackingURL();
+	}
+	
 }	//	MShipper

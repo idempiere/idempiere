@@ -247,21 +247,16 @@ public interface I_AD_ClientInfo
 
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException;
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
+    /** Column name C_ChargeFreight_ID */
+    public static final String COLUMNNAME_C_ChargeFreight_ID = "C_ChargeFreight_ID";
 
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
+	/** Set Charge for Freight	  */
+	public void setC_ChargeFreight_ID (int C_ChargeFreight_ID);
 
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+	/** Get Charge for Freight	  */
+	public int getC_ChargeFreight_ID();
 
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
+	public org.compiere.model.I_C_Charge getC_ChargeFreight() throws RuntimeException;
 
     /** Column name C_UOM_Length_ID */
     public static final String COLUMNNAME_C_UOM_Length_ID = "C_UOM_Length_ID";
@@ -322,6 +317,22 @@ public interface I_AD_ClientInfo
 	public int getC_UOM_Weight_ID();
 
 	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException;
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -403,10 +414,10 @@ public interface I_AD_ClientInfo
     /** Column name StorageArchive_ID */
     public static final String COLUMNNAME_StorageArchive_ID = "StorageArchive_ID";
 
-	/** Set StorageArchive_ID	  */
+	/** Set Archive Store	  */
 	public void setStorageArchive_ID (int StorageArchive_ID);
 
-	/** Get StorageArchive_ID	  */
+	/** Get Archive Store	  */
 	public int getStorageArchive_ID();
 
 	public org.compiere.model.I_AD_StorageProvider getStorageArchive() throws RuntimeException;

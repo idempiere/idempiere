@@ -93,19 +93,6 @@ public interface I_M_Shipper
 	  */
 	public int getCreatedBy();
 
-    /** Column name Description */
-    public static final String COLUMNNAME_Description = "Description";
-
-	/** Set Description.
-	  * Optional short description of the record
-	  */
-	public void setDescription (String Description);
-
-	/** Get Description.
-	  * Optional short description of the record
-	  */
-	public String getDescription();
-
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -141,31 +128,16 @@ public interface I_M_Shipper
 	/** Get M_Shipper_UU	  */
 	public String getM_Shipper_UU();
 
-    /** Column name Name */
-    public static final String COLUMNNAME_Name = "Name";
+    /** Column name M_ShippingProcessor_ID */
+    public static final String COLUMNNAME_M_ShippingProcessor_ID = "M_ShippingProcessor_ID";
 
-	/** Set Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public void setName (String Name);
+	/** Set Shipping Processor	  */
+	public void setM_ShippingProcessor_ID (int M_ShippingProcessor_ID);
 
-	/** Get Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public String getName();
+	/** Get Shipping Processor	  */
+	public int getM_ShippingProcessor_ID();
 
-    /** Column name TrackingURL */
-    public static final String COLUMNNAME_TrackingURL = "TrackingURL";
-
-	/** Set Tracking URL.
-	  * URL of the shipper to track shipments
-	  */
-	public void setTrackingURL (String TrackingURL);
-
-	/** Get Tracking URL.
-	  * URL of the shipper to track shipments
-	  */
-	public String getTrackingURL();
+	public org.compiere.model.I_M_ShippingProcessor getM_ShippingProcessor() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -182,4 +154,15 @@ public interface I_M_Shipper
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name X_Shipper_ID */
+    public static final String COLUMNNAME_X_Shipper_ID = "X_Shipper_ID";
+
+	/** Set Shipper	  */
+	public void setX_Shipper_ID (int X_Shipper_ID);
+
+	/** Get Shipper	  */
+	public int getX_Shipper_ID();
+
+	public org.compiere.model.I_X_Shipper getX_Shipper() throws RuntimeException;
 }

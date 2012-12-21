@@ -156,6 +156,32 @@ public interface I_M_PackageLine
 	/** Get M_PackageLine_UU	  */
 	public String getM_PackageLine_UU();
 
+    /** Column name M_PackageMPS_ID */
+    public static final String COLUMNNAME_M_PackageMPS_ID = "M_PackageMPS_ID";
+
+	/** Set Package MPS	  */
+	public void setM_PackageMPS_ID (int M_PackageMPS_ID);
+
+	/** Get Package MPS	  */
+	public int getM_PackageMPS_ID();
+
+	public org.compiere.model.I_M_PackageMPS getM_PackageMPS() throws RuntimeException;
+
+    /** Column name M_Product_ID */
+    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+
+	/** Set Product.
+	  * Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID);
+
+	/** Get Product.
+	  * Product, Service, Item
+	  */
+	public int getM_Product_ID();
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
     /** Column name Qty */
     public static final String COLUMNNAME_Qty = "Qty";
 

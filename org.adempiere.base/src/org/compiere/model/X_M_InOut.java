@@ -33,7 +33,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20121212L;
 
     /** Standard Constructor */
     public X_M_InOut (Properties ctx, int M_InOut_ID, String trxName)
@@ -57,6 +57,8 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 			setDocumentNo (null);
 			setFreightCostRule (null);
 // I
+			setIsAlternateReturnAddress (false);
+// N
 			setIsApproved (false);
 			setIsInDispute (false);
 			setIsInTransit (false);
@@ -64,10 +66,10 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 			setIsSOTrx (false);
 // @IsSOTrx@
 			setM_InOut_ID (0);
+			setM_Warehouse_ID (0);
 			setMovementDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
 			setMovementType (null);
-			setM_Warehouse_ID (0);
 			setPosted (false);
 			setPriorityRule (null);
 // 5
@@ -323,26 +325,6 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Charge amount.
-		@param ChargeAmt 
-		Charge Amount
-	  */
-	public void setChargeAmt (BigDecimal ChargeAmt)
-	{
-		set_Value (COLUMNNAME_ChargeAmt, ChargeAmt);
-	}
-
-	/** Get Charge amount.
-		@return Charge Amount
-	  */
-	public BigDecimal getChargeAmt () 
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ChargeAmt);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
     {
 		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
@@ -425,6 +407,26 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Charge amount.
+		@param ChargeAmt 
+		Charge Amount
+	  */
+	public void setChargeAmt (BigDecimal ChargeAmt)
+	{
+		set_Value (COLUMNNAME_ChargeAmt, ChargeAmt);
+	}
+
+	/** Get Charge amount.
+		@return Charge Amount
+	  */
+	public BigDecimal getChargeAmt () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ChargeAmt);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Create Confirm.
@@ -816,6 +818,55 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		return ii.intValue();
 	}
 
+	/** FOB AD_Reference_ID=200030 */
+	public static final int FOB_AD_Reference_ID=200030;
+	/** FOB Origin = A_DFOBO */
+	public static final String FOB_FOBOrigin = "A_DFOBO";
+	/** Ex Works = B_EXW */
+	public static final String FOB_ExWorks = "B_EXW";
+	/** CFR - Cost and Freight = CFR */
+	public static final String FOB_CFR_CostAndFreight = "CFR";
+	/** CIF - Cost, Insurance, and Freight (FedEx) = CIF */
+	public static final String FOB_CIF_CostInsuranceAndFreightFedEx = "CIF";
+	/** CIP - Carriage and Insurance Paid To (FedEx) = CIP */
+	public static final String FOB_CIP_CarriageAndInsurancePaidToFedEx = "CIP";
+	/** CPT - Carriage Paid To = CPT */
+	public static final String FOB_CPT_CarriagePaidTo = "CPT";
+	/** DAF - Delivered at Frontier = DAF */
+	public static final String FOB_DAF_DeliveredAtFrontier = "DAF";
+	/** DDP - Delivered Duty Paid (FedEx) = DDP */
+	public static final String FOB_DDP_DeliveredDutyPaidFedEx = "DDP";
+	/** DDU - Delivered Duty Unpaid (FedEx) = DDU */
+	public static final String FOB_DDU_DeliveredDutyUnpaidFedEx = "DDU";
+	/** DEQ - Delivered Ex Quay = DEQ */
+	public static final String FOB_DEQ_DeliveredExQuay = "DEQ";
+	/** DES - Delivered Ex Ship = DES */
+	public static final String FOB_DES_DeliveredExShip = "DES";
+	/** Domestic FOB Destination = DFOBD */
+	public static final String FOB_DomesticFOBDestination = "DFOBD";
+	/** EXW - Ex Works (FedEx) = EXW */
+	public static final String FOB_EXW_ExWorksFedEx = "EXW";
+	/** FAS - Free Alongside Ship = FAS */
+	public static final String FOB_FAS_FreeAlongsideShip = "FAS";
+	/** FCA - Free Carrier (FedEx) = FCA */
+	public static final String FOB_FCA_FreeCarrierFedEx = "FCA";
+	/** FOB - Free on Board (FedEx) = FOB */
+	public static final String FOB_FOB_FreeOnBoardFedEx = "FOB";
+	/** Set Freight Terms.
+		@param FOB Freight Terms	  */
+	public void setFOB (String FOB)
+	{
+
+		set_Value (COLUMNNAME_FOB, FOB);
+	}
+
+	/** Get Freight Terms.
+		@return Freight Terms	  */
+	public String getFOB () 
+	{
+		return (String)get_Value(COLUMNNAME_FOB);
+	}
+
 	/** Set Freight Amount.
 		@param FreightAmt 
 		Freight Amount 
@@ -834,6 +885,33 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** FreightCharges AD_Reference_ID=200028 */
+	public static final int FREIGHTCHARGES_AD_Reference_ID=200028;
+	/** Collect = A_Col */
+	public static final String FREIGHTCHARGES_Collect = "A_Col";
+	/** 3rd Party = B_3P */
+	public static final String FREIGHTCHARGES_3rdParty = "B_3P";
+	/** Consignee = C_Con */
+	public static final String FREIGHTCHARGES_Consignee = "C_Con";
+	/** Prepaid = D_PP */
+	public static final String FREIGHTCHARGES_Prepaid = "D_PP";
+	/** Prepaid and Bill = E_PPB */
+	public static final String FREIGHTCHARGES_PrepaidAndBill = "E_PPB";
+	/** Set Freight Charges.
+		@param FreightCharges Freight Charges	  */
+	public void setFreightCharges (String FreightCharges)
+	{
+
+		set_Value (COLUMNNAME_FreightCharges, FreightCharges);
+	}
+
+	/** Get Freight Charges.
+		@return Freight Charges	  */
+	public String getFreightCharges () 
+	{
+		return (String)get_Value(COLUMNNAME_FreightCharges);
 	}
 
 	/** FreightCostRule AD_Reference_ID=153 */
@@ -879,6 +957,48 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 	public String getGenerateTo () 
 	{
 		return (String)get_Value(COLUMNNAME_GenerateTo);
+	}
+
+	/** Insurance AD_Reference_ID=200029 */
+	public static final int INSURANCE_AD_Reference_ID=200029;
+	/** Insure = 1 */
+	public static final String INSURANCE_Insure = "1";
+	/** Do Not Insure = 2 */
+	public static final String INSURANCE_DoNotInsure = "2";
+	/** Set Insurance.
+		@param Insurance Insurance	  */
+	public void setInsurance (String Insurance)
+	{
+
+		set_Value (COLUMNNAME_Insurance, Insurance);
+	}
+
+	/** Get Insurance.
+		@return Insurance	  */
+	public String getInsurance () 
+	{
+		return (String)get_Value(COLUMNNAME_Insurance);
+	}
+
+	/** Set Alternate Return Address.
+		@param IsAlternateReturnAddress Alternate Return Address	  */
+	public void setIsAlternateReturnAddress (boolean IsAlternateReturnAddress)
+	{
+		set_Value (COLUMNNAME_IsAlternateReturnAddress, Boolean.valueOf(IsAlternateReturnAddress));
+	}
+
+	/** Get Alternate Return Address.
+		@return Alternate Return Address	  */
+	public boolean isAlternateReturnAddress () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsAlternateReturnAddress);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Approved.
@@ -1062,67 +1182,6 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_InOut_UU);
 	}
 
-	/** Set Movement Date.
-		@param MovementDate 
-		Date a product was moved in or out of inventory
-	  */
-	public void setMovementDate (Timestamp MovementDate)
-	{
-		set_Value (COLUMNNAME_MovementDate, MovementDate);
-	}
-
-	/** Get Movement Date.
-		@return Date a product was moved in or out of inventory
-	  */
-	public Timestamp getMovementDate () 
-	{
-		return (Timestamp)get_Value(COLUMNNAME_MovementDate);
-	}
-
-	/** MovementType AD_Reference_ID=189 */
-	public static final int MOVEMENTTYPE_AD_Reference_ID=189;
-	/** Customer Shipment = C- */
-	public static final String MOVEMENTTYPE_CustomerShipment = "C-";
-	/** Customer Returns = C+ */
-	public static final String MOVEMENTTYPE_CustomerReturns = "C+";
-	/** Vendor Receipts = V+ */
-	public static final String MOVEMENTTYPE_VendorReceipts = "V+";
-	/** Vendor Returns = V- */
-	public static final String MOVEMENTTYPE_VendorReturns = "V-";
-	/** Inventory Out = I- */
-	public static final String MOVEMENTTYPE_InventoryOut = "I-";
-	/** Inventory In = I+ */
-	public static final String MOVEMENTTYPE_InventoryIn = "I+";
-	/** Movement From = M- */
-	public static final String MOVEMENTTYPE_MovementFrom = "M-";
-	/** Movement To = M+ */
-	public static final String MOVEMENTTYPE_MovementTo = "M+";
-	/** Production + = P+ */
-	public static final String MOVEMENTTYPE_ProductionPlus = "P+";
-	/** Production - = P- */
-	public static final String MOVEMENTTYPE_Production_ = "P-";
-	/** Work Order + = W+ */
-	public static final String MOVEMENTTYPE_WorkOrderPlus = "W+";
-	/** Work Order - = W- */
-	public static final String MOVEMENTTYPE_WorkOrder_ = "W-";
-	/** Set Movement Type.
-		@param MovementType 
-		Method of moving the inventory
-	  */
-	public void setMovementType (String MovementType)
-	{
-
-		set_ValueNoCheck (COLUMNNAME_MovementType, MovementType);
-	}
-
-	/** Get Movement Type.
-		@return Method of moving the inventory
-	  */
-	public String getMovementType () 
-	{
-		return (String)get_Value(COLUMNNAME_MovementType);
-	}
-
 	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException
     {
 		return (org.compiere.model.I_M_RMA)MTable.get(getCtx(), org.compiere.model.I_M_RMA.Table_Name)
@@ -1205,6 +1264,67 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Movement Date.
+		@param MovementDate 
+		Date a product was moved in or out of inventory
+	  */
+	public void setMovementDate (Timestamp MovementDate)
+	{
+		set_Value (COLUMNNAME_MovementDate, MovementDate);
+	}
+
+	/** Get Movement Date.
+		@return Date a product was moved in or out of inventory
+	  */
+	public Timestamp getMovementDate () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_MovementDate);
+	}
+
+	/** MovementType AD_Reference_ID=189 */
+	public static final int MOVEMENTTYPE_AD_Reference_ID=189;
+	/** Customer Shipment = C- */
+	public static final String MOVEMENTTYPE_CustomerShipment = "C-";
+	/** Customer Returns = C+ */
+	public static final String MOVEMENTTYPE_CustomerReturns = "C+";
+	/** Vendor Receipts = V+ */
+	public static final String MOVEMENTTYPE_VendorReceipts = "V+";
+	/** Vendor Returns = V- */
+	public static final String MOVEMENTTYPE_VendorReturns = "V-";
+	/** Inventory Out = I- */
+	public static final String MOVEMENTTYPE_InventoryOut = "I-";
+	/** Inventory In = I+ */
+	public static final String MOVEMENTTYPE_InventoryIn = "I+";
+	/** Movement From = M- */
+	public static final String MOVEMENTTYPE_MovementFrom = "M-";
+	/** Movement To = M+ */
+	public static final String MOVEMENTTYPE_MovementTo = "M+";
+	/** Production + = P+ */
+	public static final String MOVEMENTTYPE_ProductionPlus = "P+";
+	/** Production - = P- */
+	public static final String MOVEMENTTYPE_Production_ = "P-";
+	/** Work Order + = W+ */
+	public static final String MOVEMENTTYPE_WorkOrderPlus = "W+";
+	/** Work Order - = W- */
+	public static final String MOVEMENTTYPE_WorkOrder_ = "W-";
+	/** Set Movement Type.
+		@param MovementType 
+		Method of moving the inventory
+	  */
+	public void setMovementType (String MovementType)
+	{
+
+		set_ValueNoCheck (COLUMNNAME_MovementType, MovementType);
+	}
+
+	/** Get Movement Type.
+		@return Method of moving the inventory
+	  */
+	public String getMovementType () 
+	{
+		return (String)get_Value(COLUMNNAME_MovementType);
 	}
 
 	/** Set No Packages.
@@ -1400,6 +1520,81 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_C_BPartner getReturnBPartner() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
+			.getPO(getReturnBPartner_ID(), get_TrxName());	}
+
+	/** Set Return Partner.
+		@param ReturnBPartner_ID Return Partner	  */
+	public void setReturnBPartner_ID (int ReturnBPartner_ID)
+	{
+		if (ReturnBPartner_ID < 1) 
+			set_Value (COLUMNNAME_ReturnBPartner_ID, null);
+		else 
+			set_Value (COLUMNNAME_ReturnBPartner_ID, Integer.valueOf(ReturnBPartner_ID));
+	}
+
+	/** Get Return Partner.
+		@return Return Partner	  */
+	public int getReturnBPartner_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ReturnBPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BPartner_Location getReturnLocation() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
+			.getPO(getReturnLocation_ID(), get_TrxName());	}
+
+	/** Set Return Location.
+		@param ReturnLocation_ID Return Location	  */
+	public void setReturnLocation_ID (int ReturnLocation_ID)
+	{
+		if (ReturnLocation_ID < 1) 
+			set_Value (COLUMNNAME_ReturnLocation_ID, null);
+		else 
+			set_Value (COLUMNNAME_ReturnLocation_ID, Integer.valueOf(ReturnLocation_ID));
+	}
+
+	/** Get Return Location.
+		@return Return Location	  */
+	public int getReturnLocation_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ReturnLocation_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_User getReturnUser() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+			.getPO(getReturnUser_ID(), get_TrxName());	}
+
+	/** Set Return User/Contact.
+		@param ReturnUser_ID Return User/Contact	  */
+	public void setReturnUser_ID (int ReturnUser_ID)
+	{
+		if (ReturnUser_ID < 1) 
+			set_Value (COLUMNNAME_ReturnUser_ID, null);
+		else 
+			set_Value (COLUMNNAME_ReturnUser_ID, Integer.valueOf(ReturnUser_ID));
+	}
+
+	/** Get Return User/Contact.
+		@return Return User/Contact	  */
+	public int getReturnUser_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ReturnUser_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_M_InOut getReversal() throws RuntimeException
     {
 		return (org.compiere.model.I_M_InOut)MTable.get(getCtx(), org.compiere.model.I_M_InOut.Table_Name)
@@ -1495,6 +1690,20 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 	public Timestamp getShipDate () 
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ShipDate);
+	}
+
+	/** Set Shipper Account Number.
+		@param ShipperAccount Shipper Account Number	  */
+	public void setShipperAccount (String ShipperAccount)
+	{
+		set_Value (COLUMNNAME_ShipperAccount, ShipperAccount);
+	}
+
+	/** Get Shipper Account Number.
+		@return Shipper Account Number	  */
+	public String getShipperAccount () 
+	{
+		return (String)get_Value(COLUMNNAME_ShipperAccount);
 	}
 
 	/** Set Tracking No.

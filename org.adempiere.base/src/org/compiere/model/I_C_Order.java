@@ -314,32 +314,6 @@ public interface I_C_Order
 
 	public org.compiere.model.I_C_DocType getC_DocTypeTarget() throws RuntimeException;
 
-    /** Column name ChargeAmt */
-    public static final String COLUMNNAME_ChargeAmt = "ChargeAmt";
-
-	/** Set Charge amount.
-	  * Charge Amount
-	  */
-	public void setChargeAmt (BigDecimal ChargeAmt);
-
-	/** Get Charge amount.
-	  * Charge Amount
-	  */
-	public BigDecimal getChargeAmt();
-
-    /** Column name CopyFrom */
-    public static final String COLUMNNAME_CopyFrom = "CopyFrom";
-
-	/** Set Copy From.
-	  * Copy From Record
-	  */
-	public void setCopyFrom (String CopyFrom);
-
-	/** Get Copy From.
-	  * Copy From Record
-	  */
-	public String getCopyFrom();
-
     /** Column name C_Order_ID */
     public static final String COLUMNNAME_C_Order_ID = "C_Order_ID";
 
@@ -353,6 +327,15 @@ public interface I_C_Order
 	  */
 	public int getC_Order_ID();
 
+    /** Column name C_Order_UU */
+    public static final String COLUMNNAME_C_Order_UU = "C_Order_UU";
+
+	/** Set C_Order_UU	  */
+	public void setC_Order_UU (String C_Order_UU);
+
+	/** Get C_Order_UU	  */
+	public String getC_Order_UU();
+
     /** Column name C_OrderSource_ID */
     public static final String COLUMNNAME_C_OrderSource_ID = "C_OrderSource_ID";
 
@@ -363,15 +346,6 @@ public interface I_C_Order
 	public int getC_OrderSource_ID();
 
 	public org.compiere.model.I_C_OrderSource getC_OrderSource() throws RuntimeException;
-
-    /** Column name C_Order_UU */
-    public static final String COLUMNNAME_C_Order_UU = "C_Order_UU";
-
-	/** Set C_Order_UU	  */
-	public void setC_Order_UU (String C_Order_UU);
-
-	/** Get C_Order_UU	  */
-	public String getC_Order_UU();
 
     /** Column name C_Payment_ID */
     public static final String COLUMNNAME_C_Payment_ID = "C_Payment_ID";
@@ -432,6 +406,32 @@ public interface I_C_Order
 	public int getC_Project_ID();
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
+
+    /** Column name ChargeAmt */
+    public static final String COLUMNNAME_ChargeAmt = "ChargeAmt";
+
+	/** Set Charge amount.
+	  * Charge Amount
+	  */
+	public void setChargeAmt (BigDecimal ChargeAmt);
+
+	/** Get Charge amount.
+	  * Charge Amount
+	  */
+	public BigDecimal getChargeAmt();
+
+    /** Column name CopyFrom */
+    public static final String COLUMNNAME_CopyFrom = "CopyFrom";
+
+	/** Set Copy From.
+	  * Copy From Record
+	  */
+	public void setCopyFrom (String CopyFrom);
+
+	/** Get Copy From.
+	  * Copy From Record
+	  */
+	public String getCopyFrom();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -1106,6 +1106,15 @@ public interface I_C_Order
 	  * Enable sending Document EMail
 	  */
 	public boolean isSendEMail();
+
+    /** Column name ShippingRateInquiry */
+    public static final String COLUMNNAME_ShippingRateInquiry = "ShippingRateInquiry";
+
+	/** Set Rate Inquiry	  */
+	public void setShippingRateInquiry (String ShippingRateInquiry);
+
+	/** Get Rate Inquiry	  */
+	public String getShippingRateInquiry();
 
     /** Column name TotalLines */
     public static final String COLUMNNAME_TotalLines = "TotalLines";

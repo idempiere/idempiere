@@ -34,6 +34,8 @@ public class PackageCreate extends SvrProcess
 	private int		p_M_Shipper_ID = 0;
 	/** Parent				*/
 	private int		p_M_InOut_ID = 0;
+	/** No of Packages 		*/
+	private int 	p_no_of_packages = 0;
 	
 
 	/**
@@ -51,6 +53,8 @@ public class PackageCreate extends SvrProcess
 				p_M_Shipper_ID = para[i].getParameterAsInt();
 			else if (name.equals("M_InOut_ID")) // BF [ 1754889 ] Create Package error
 				p_M_InOut_ID = para[i].getParameterAsInt();
+			else if (name.equals("NoOfPackages"))
+				p_no_of_packages = para[i].getParameterAsInt();
 			else
 				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
 		}
@@ -74,6 +78,7 @@ public class PackageCreate extends SvrProcess
 			throw new IllegalArgumentException("No Shipment");
 		if (p_M_Shipper_ID == 0)
 			throw new IllegalArgumentException("No Shipper");
+		
 		MInOut shipment = new MInOut (getCtx(), p_M_InOut_ID, null);
 		if (shipment.get_ID() != p_M_InOut_ID)
 			throw new IllegalArgumentException("Cannot find Shipment ID=" + p_M_InOut_ID);
@@ -82,9 +87,29 @@ public class PackageCreate extends SvrProcess
 			throw new IllegalArgumentException("Cannot find Shipper ID=" + p_M_InOut_ID);
 		//
 		
-		MPackage pack = MPackage.create (shipment, shipper, null);
+		if (p_no_of_packages == 0)
+			p_no_of_packages = shipment.getNoPackages();
+		if (p_no_of_packages <= 0)
+			throw new IllegalArgumentException("No of Packages should not be 0");
 		
-		return pack.getDocumentNo();
+		StringBuilder info = new StringBuilder();
+		if (p_no_of_packages == 1)
+		{
+			MPackage pack = MPackage.create (shipment, shipper, null);
+			info.append(pack.getDocumentNo());
+		}
+		else
+		{
+			for (int i = 0; i < p_no_of_packages; i++)
+			{
+				MPackage pack = MPackage.createPackage (shipment, shipper, null);
+				if (i != 0)
+					info.append(", ");
+				info.append(pack.getDocumentNo());
+			}
+		}
+		
+		return info.toString();
 	}	//	doIt
 	
 }	//	PackageCreate

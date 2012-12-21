@@ -1965,8 +1965,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		// auto delay capture authorization payment
 		if (isSOTrx() && !isReversal())
 		{
-			int[] ids = MPaymentTransaction.getAuthorizationPaymentTransactionIDs(getC_Order_ID(), getC_Invoice_ID(), get_TrxName());
-			
+			int[] ids = MPaymentTransaction.getAuthorizationPaymentTransactionIDs(getC_Order_ID(), getC_Invoice_ID(), get_TrxName());			
 			if (ids.length > 0)
 			{
 				ArrayList<MPaymentTransaction> ptList = new ArrayList<MPaymentTransaction>();
@@ -1974,12 +1973,17 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				for (int id : ids)
 				{
 					MPaymentTransaction pt = new MPaymentTransaction(Env.getCtx(), id, get_TrxName());
+					
+					
 					totalPayAmt = totalPayAmt.add(pt.getPayAmt());
 					ptList.add(pt);
 				}
 				
-				// automatically void authorization payment and create a new sales payment when invoiced amount is NOT equals to the authorized amount
-				if(getGrandTotal().compareTo(totalPayAmt) != 0)
+				// automatically void authorization payment and create a new sales payment when invoiced amount is NOT equals to the authorized amount (applied to CIM payment processor)
+				if(getGrandTotal().compareTo(totalPayAmt) != 0 && 
+						ptList.size() > 0 && 
+						ptList.get(0).getCustomerPaymentProfileID() != null && 
+						ptList.get(0).getCustomerPaymentProfileID().length() > 0)
 				{
 					// create a new sales payment
 					MPaymentTransaction newSalesPT = MPaymentTransaction.copyFrom(ptList.get(0), new Timestamp(System.currentTimeMillis()), MPayment.TRXTYPE_Sales, "", get_TrxName());

@@ -33,7 +33,7 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20121221L;
 
     /** Standard Constructor */
     public X_C_Order (Properties ctx, int C_Order_ID, String trxName)
@@ -605,43 +605,6 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Charge amount.
-		@param ChargeAmt 
-		Charge Amount
-	  */
-	public void setChargeAmt (BigDecimal ChargeAmt)
-	{
-		set_Value (COLUMNNAME_ChargeAmt, ChargeAmt);
-	}
-
-	/** Get Charge amount.
-		@return Charge Amount
-	  */
-	public BigDecimal getChargeAmt () 
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ChargeAmt);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** Set Copy From.
-		@param CopyFrom 
-		Copy From Record
-	  */
-	public void setCopyFrom (String CopyFrom)
-	{
-		set_Value (COLUMNNAME_CopyFrom, CopyFrom);
-	}
-
-	/** Get Copy From.
-		@return Copy From Record
-	  */
-	public String getCopyFrom () 
-	{
-		return (String)get_Value(COLUMNNAME_CopyFrom);
-	}
-
 	/** Set Order.
 		@param C_Order_ID 
 		Order
@@ -663,6 +626,20 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_Order_UU.
+		@param C_Order_UU C_Order_UU	  */
+	public void setC_Order_UU (String C_Order_UU)
+	{
+		set_Value (COLUMNNAME_C_Order_UU, C_Order_UU);
+	}
+
+	/** Get C_Order_UU.
+		@return C_Order_UU	  */
+	public String getC_Order_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_Order_UU);
 	}
 
 	public org.compiere.model.I_C_OrderSource getC_OrderSource() throws RuntimeException
@@ -688,20 +665,6 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set C_Order_UU.
-		@param C_Order_UU C_Order_UU	  */
-	public void setC_Order_UU (String C_Order_UU)
-	{
-		set_Value (COLUMNNAME_C_Order_UU, C_Order_UU);
-	}
-
-	/** Get C_Order_UU.
-		@return C_Order_UU	  */
-	public String getC_Order_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_C_Order_UU);
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
@@ -814,6 +777,43 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Charge amount.
+		@param ChargeAmt 
+		Charge Amount
+	  */
+	public void setChargeAmt (BigDecimal ChargeAmt)
+	{
+		set_Value (COLUMNNAME_ChargeAmt, ChargeAmt);
+	}
+
+	/** Get Charge amount.
+		@return Charge Amount
+	  */
+	public BigDecimal getChargeAmt () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ChargeAmt);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Copy From.
+		@param CopyFrom 
+		Copy From Record
+	  */
+	public void setCopyFrom (String CopyFrom)
+	{
+		set_Value (COLUMNNAME_CopyFrom, CopyFrom);
+	}
+
+	/** Get Copy From.
+		@return Copy From Record
+	  */
+	public String getCopyFrom () 
+	{
+		return (String)get_Value(COLUMNNAME_CopyFrom);
 	}
 
 	/** Set Account Date.
@@ -2030,6 +2030,20 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Rate Inquiry.
+		@param ShippingRateInquiry Rate Inquiry	  */
+	public void setShippingRateInquiry (String ShippingRateInquiry)
+	{
+		set_Value (COLUMNNAME_ShippingRateInquiry, ShippingRateInquiry);
+	}
+
+	/** Get Rate Inquiry.
+		@return Rate Inquiry	  */
+	public String getShippingRateInquiry () 
+	{
+		return (String)get_Value(COLUMNNAME_ShippingRateInquiry);
 	}
 
 	/** Set Total Lines.
