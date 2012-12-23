@@ -3,9 +3,6 @@ package org.idempiere.adinterface;
 import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Properties;
@@ -14,19 +11,10 @@ import java.util.logging.Level;
 import net.sf.compilo.report.ReportProcessor;
 import net.sf.jasperreports.engine.JasperPrint;
 
-import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
-import org.compiere.model.MAllocationHdr;
-import org.compiere.model.MBankStatement;
-import org.compiere.model.MInOut;
-import org.compiere.model.MInvoice;
-import org.compiere.model.MJournal;
-import org.compiere.model.MJournalBatch;
-import org.compiere.model.MOrder;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MPaySelectionCheck;
-import org.compiere.model.MPayment;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MQuery;
@@ -35,10 +23,8 @@ import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
-import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.NamePair;
@@ -48,7 +34,6 @@ import org.compiere.wf.MWorkflow;
 import org.idempiere.adInterface.x10.DataField;
 import org.idempiere.adInterface.x10.DataRow;
 import org.idempiere.adInterface.x10.GetProcessParamsDocument;
-import org.idempiere.adInterface.x10.LookupValue;
 import org.idempiere.adInterface.x10.LookupValues;
 import org.idempiere.adInterface.x10.ProcessParam;
 import org.idempiere.adInterface.x10.ProcessParamList;
@@ -487,11 +472,10 @@ public class Process {
 					{
 						java.util.Date d;
 						if (displayType == DisplayType.DateTime)
-							d = m_cs.dateFormat.parse(value.toString());
+							d = m_cs.dateTimeFormat.parse(value.toString());
 							
-						else    // TODO: datetime
+						else  
 							d = m_cs.dateFormat.parse(value.toString());
-							//d = m_cs.dateTimeFormat.parse(value.toString());
 						 
 						Timestamp ts = null;
 						ts = new Timestamp(d.getTime());
@@ -500,14 +484,13 @@ public class Process {
 						if (pPara.isRange())
 						{
 							if (displayType == DisplayType.DateTime)
-								d = m_cs.dateFormat.parse(valueString2); 
-								//d = m_cs.dateTimeFormat.parse(valueString2);
+								d = m_cs.dateTimeFormat.parse(valueString2); 
 							else
 							{
 								if (valueString2 == null || valueString2.length() == 0)
 									d = new java.util.Date();
 								else
-								d = m_cs.dateFormat.parse(valueString2); //TODO: datetime
+									d = m_cs.dateFormat.parse(valueString2);
 							}
 							
 							ts = new Timestamp(d.getTime());
@@ -661,13 +644,8 @@ public class Process {
 	
 	private static JasperPrint getJasperReportPrint(Properties ctx, ProcessInfo pi)
 	{
-	    boolean local = true;  // lokalnie czy zdalnie
-
         try
         {
-        	Env.setContext( ctx, "#AD_Language", "pl_PL" );
-        	Env.setContext( Env.getCtx(), "#AD_Language", "pl_PL" );
-
             JasperPrint jasperPrint;
             
             ReportProcessor rp = new ReportProcessor(ctx, pi);
@@ -828,211 +806,5 @@ public class Process {
 		ReportEngine re = new ReportEngine(Env.getCtx(), format, query, info);
 		//new Viewer(re);
 		return re;
-	}	//	startFinReport
-
-	
-	
-	
-
-	
-	private static void renderOption(LookupValues lvs, java.util.Hashtable<String,String> assoc, String idx)
-	{
-		Object ob = assoc.get(idx);
-		if(ob == null) return;
-		LookupValue lv = lvs.addNewLv();
-		lv.setKey(idx);// o.setValue(idx);
-		lv.setVal(ob.toString());		
-	}
-	
-	public static void renderDocActionOptions(LookupValues lvs, GridTab tab)
-	{
-		String sql;
-		java.util.Hashtable<String,String> h = new java.util.Hashtable<String,String>(); 
-		if (Env.isBaseLanguage(Env.getCtx(), "AD_Ref_List"))
-			sql = "SELECT Value, Name, Description FROM AD_Ref_List "
-				+ "WHERE AD_Reference_ID=135 ORDER BY Name";
-		else
-			sql = "SELECT l.Value, t.Name, t.Description "
-				+ "FROM AD_Ref_List l, AD_Ref_List_Trl t "
-				+ "WHERE l.AD_Ref_List_ID=t.AD_Ref_List_ID"
-				+ " AND t.AD_Language='" + Env.getAD_Language(Env.getCtx()) + "'"
-				+ " AND l.AD_Reference_ID=135 ORDER BY t.Name";
-		try
-		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next())
-			{
-				String value = rs.getString(1);
-				String name = rs.getString(2);
-				String description = rs.getString(3);
-				if (description == null)
-					description = "";
-				
-				h.put(value, name);
-			}
-			rs.close();
-			pstmt.close();
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-			return;
-		}
-		Object Processing = tab.getValue("Processing");
-		String DocStatus = (String)tab.getValue("DocStatus");
-		String DocAction = (String)tab.getValue("DocAction");
-		String OrderType = Env.getContext(Env.getCtx(), tab.getWindowNo(), "OrderType");
-		String IsSOTrx = Env.getContext(Env.getCtx(), tab.getWindowNo(), "IsSOTrx");
-		int m_AD_Table_ID = tab.getAD_Table_ID();
-
-//		Locked
-		if (Processing != null)
-		{
-			boolean locked = "Y".equals(Processing);
-			if (!locked && Processing instanceof Boolean)
-				locked = ((Boolean)Processing).booleanValue();
-			if (locked)
-				renderOption(lvs, h, DocumentEngine.ACTION_Unlock);
-		}
-
-		//	Approval required           ..  NA
-		if (DocStatus.equals(DocumentEngine.STATUS_NotApproved))
-		{
-			renderOption(lvs, h, DocumentEngine.ACTION_Prepare);
-			renderOption(lvs, h, DocumentEngine.ACTION_Void);
-		}
-		//	Draft/Invalid				..  DR/IN
-		else if (DocStatus.equals(DocumentEngine.STATUS_Drafted)
-			|| DocStatus.equals(DocumentEngine.STATUS_Invalid))
-		{
-			renderOption(lvs, h, DocumentEngine.ACTION_Complete);
-			renderOption(lvs, h, DocumentEngine.ACTION_Void);
-		//	options[index++] = DocumentEngine.ACTION_Prepare;
-		}
-		//	In Process                  ..  IP
-		else if (DocStatus.equals(DocumentEngine.STATUS_InProgress)
-			|| DocStatus.equals(DocumentEngine.STATUS_Approved))
-		{
-			renderOption(lvs, h, DocumentEngine.ACTION_Complete);
-			renderOption(lvs, h, DocumentEngine.ACTION_Void);
-		}
-		//	Complete                    ..  CO
-		else if (DocStatus.equals(DocumentEngine.STATUS_Completed))
-		{
-			renderOption(lvs, h, DocumentEngine.ACTION_Close);
-		}
-		//	Waiting Payment
-		else if (DocStatus.equals(DocumentEngine.STATUS_WaitingPayment)
-			|| DocStatus.equals(DocumentEngine.STATUS_WaitingConfirmation))
-		{
-			renderOption(lvs, h, DocumentEngine.ACTION_Void);
-			renderOption(lvs, h, DocumentEngine.ACTION_Prepare);
-		}
-		//	Closed, Voided, REversed    ..  CL/VO/RE
-		else if (DocStatus.equals(DocumentEngine.STATUS_Closed) 
-			|| DocStatus.equals(DocumentEngine.STATUS_Voided) 
-			|| DocStatus.equals(DocumentEngine.STATUS_Reversed))
-			return;
-
-		/********************
-		 *  Order
-		 */
-		if (m_AD_Table_ID == MOrder.Table_ID)
-		{
-			//	Draft                       ..  DR/IP/IN
-			if (DocStatus.equals(DocumentEngine.STATUS_Drafted)
-				|| DocStatus.equals(DocumentEngine.STATUS_InProgress)
-				|| DocStatus.equals(DocumentEngine.STATUS_Invalid))
-			{
-				renderOption(lvs, h, DocumentEngine.ACTION_Prepare);
-				//	Draft Sales Order Quote/Proposal - Process
-				if ("Y".equals(IsSOTrx)
-					&& ("OB".equals(OrderType) || "ON".equals(OrderType)))
-					DocAction = DocumentEngine.ACTION_Prepare;
-			}
-			//	Complete                    ..  CO
-			else if (DocStatus.equals(DocumentEngine.STATUS_Completed))
-			{
-				renderOption(lvs, h, DocumentEngine.ACTION_ReActivate);
-				renderOption(lvs, h, DocumentEngine.ACTION_Void);
-			}
-		}
-		/********************
-		 *  Shipment
-		 */
-		else if (m_AD_Table_ID == MInOut.Table_ID)
-		{
-			//	Complete                    ..  CO
-			if (DocStatus.equals(DocumentEngine.STATUS_Completed))
-			{
-				renderOption(lvs, h, DocumentEngine.ACTION_Reverse_Correct);
-				renderOption(lvs, h, DocumentEngine.ACTION_Void);
-			}
-		}
-		/********************
-		 *  Invoice
-		 */
-		else if (m_AD_Table_ID == MInvoice.Table_ID)
-		{
-			//	Complete                    ..  CO
-			if (DocStatus.equals(DocumentEngine.STATUS_Completed))
-			{
-				renderOption(lvs, h, DocumentEngine.ACTION_Reverse_Correct);
-				renderOption(lvs, h, DocumentEngine.ACTION_Void);
-			}
-		}
-		/********************
-		 *  Payment
-		 */
-		else if (m_AD_Table_ID == MPayment.Table_ID)
-		{
-			//	Complete                    ..  CO
-			if (DocStatus.equals(DocumentEngine.STATUS_Completed))
-			{
-				renderOption(lvs, h, DocumentEngine.ACTION_Reverse_Correct);
-				renderOption(lvs, h, DocumentEngine.ACTION_Void);
-			}
-		}
-		/********************
-		 *  GL Journal
-		 */
-		else if (m_AD_Table_ID == MJournal.Table_ID || m_AD_Table_ID == MJournalBatch.Table_ID)
-		{
-			//	Complete                    ..  CO
-			if (DocStatus.equals(DocumentEngine.STATUS_Completed))
-			{
-				renderOption(lvs, h, DocumentEngine.ACTION_Reverse_Correct);
-				renderOption(lvs, h, DocumentEngine.ACTION_Reverse_Accrual);
-			}
-		}
-		/********************
-		 *  Allocation
-		 */
-		else if (m_AD_Table_ID == MAllocationHdr.Table_ID)
-		{
-			//	Complete                    ..  CO
-			if (DocStatus.equals(DocumentEngine.STATUS_Completed))
-			{
-				renderOption(lvs, h, DocumentEngine.ACTION_Reverse_Correct);
-				renderOption(lvs, h, DocumentEngine.ACTION_Void);
-			}
-		}
-		/********************
-		 *  Bank Statement
-		 */
-		else if (m_AD_Table_ID == MBankStatement.Table_ID)
-		{
-			//	Complete                    ..  CO
-			if (DocStatus.equals(DocumentEngine.STATUS_Completed))
-			{
-				renderOption(lvs, h, DocumentEngine.ACTION_Void);
-			}
-		}
-
-	}
-	
-
-	
-	
+	}	//	startFinReport	
 }
