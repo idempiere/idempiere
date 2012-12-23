@@ -28,9 +28,9 @@ import java.util.Vector;
 import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.event.WTableModelListener;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.event.ListDataEvent;
+import org.zkoss.zul.ext.Sortable;
 
 /**
  * This is a ListModel to be used with Listbox.
@@ -40,7 +40,7 @@ import org.zkoss.zul.event.ListDataEvent;
  * @author Andrew Kimball
  *
  */
-public class ListModelTable extends ListModelList<Object> implements ListModelExt<Object>
+public class ListModelTable extends ListModelList<Object> implements Sortable<Object>
 {
 	/**
 	 * 
@@ -51,7 +51,7 @@ public class ListModelTable extends ListModelList<Object> implements ListModelEx
 	/** The number of columns in the table. */
 	private int m_noColumns;
 
-	private ListModelExt<Object> sorter = null;
+	private Sortable<Object> sorter = null;
 
 	/**
 	 * Default constructor.
@@ -392,7 +392,7 @@ public class ListModelTable extends ListModelList<Object> implements ListModelEx
 		}
 	}
 
-	public void setSorter(ListModelExt<Object> lme)
+	public void setSorter(Sortable<Object> lme)
 	{
 		sorter = lme;
 	}

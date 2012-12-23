@@ -68,12 +68,12 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.event.ZulEvents;
+import org.zkoss.zul.ext.Sortable;
 
 /**
  *	Search Information and return selection - Base Class.
@@ -85,7 +85,7 @@ import org.zkoss.zul.event.ZulEvents;
  * @author Elaine
  * @version	Info.java Adempiere Swing UI 3.4.1
  */
-public abstract class InfoPanel extends Window implements EventListener<Event>, WTableModelListener, ListModelExt<Object>
+public abstract class InfoPanel extends Window implements EventListener<Event>, WTableModelListener, Sortable<Object>
 {
 
 	/**

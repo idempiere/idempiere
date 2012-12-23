@@ -174,11 +174,6 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 		return (DefaultTreeNode<Object>) super.getRoot();
 	}
 
-	@SuppressWarnings("unchecked")
-	public DefaultTreeNode<Object> getChild(Object parent, int index) {
-		return (DefaultTreeNode<Object>) super.getChild((TreeNode<Object>)parent, index);
-	}
-
 	/**
 	 * @param treeNode
 	 */

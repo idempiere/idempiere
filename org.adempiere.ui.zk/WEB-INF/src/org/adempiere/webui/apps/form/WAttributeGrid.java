@@ -433,7 +433,6 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 		for (int rowIndex = 0; rowIndex < noOfRows; rowIndex++)
 		{
 			Row row = new Row();
-			row.setWidth("100%");
 			rows.appendChild(row);
 			
 			for (int colIndex = 0; colIndex < noOfCols; colIndex++)

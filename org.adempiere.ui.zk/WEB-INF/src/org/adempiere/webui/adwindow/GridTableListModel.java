@@ -23,16 +23,16 @@ import org.compiere.model.GridTable;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.AbstractListModel;
 import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.ListitemComparator;
 import org.zkoss.zul.event.ListDataEvent;
+import org.zkoss.zul.ext.Sortable;
 
 /**
  * 
  * @author Low Heng Sin
  *
  */
-public class GridTableListModel extends AbstractListModel<Object> implements TableModelListener, ListModelExt<Object> {
+public class GridTableListModel extends AbstractListModel<Object> implements TableModelListener, Sortable<Object> {
 	
 	/**
 	 * 
