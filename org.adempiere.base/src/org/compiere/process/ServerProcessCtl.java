@@ -11,7 +11,6 @@ import org.compiere.interfaces.Server;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MRule;
 import org.compiere.print.ServerReportCtl;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -24,8 +23,6 @@ public class ServerProcessCtl implements Runnable {
 	/**	Static Logger	*/
 	private static CLogger	log	= CLogger.getCLogger (ServerProcessCtl.class);
 	
-	/** Parent */
-	ASyncProcess m_parent;
 	/** Process Info */
 	ProcessInfo m_pi;
 	private Trx				m_trx;
@@ -33,13 +30,11 @@ public class ServerProcessCtl implements Runnable {
 	
 	/**************************************************************************
 	 *  Constructor
-	 *  @param parent Container & ASyncProcess
 	 *  @param pi Process info
 	 *  @param trx Transaction
 	 */
-	public ServerProcessCtl (ASyncProcess parent, ProcessInfo pi, Trx trx)
+	public ServerProcessCtl (ProcessInfo pi, Trx trx)
 	{
-		m_parent = parent;
 		m_pi = pi;
 		m_trx = trx;	//	handled correctly
 	}   //  ProcessCtl
@@ -57,12 +52,11 @@ public class ServerProcessCtl implements Runnable {
 	 *	Called from APanel.cmd_print, APanel.actionButton and
 	 *  VPaySelect.cmd_generate
 	 *
-	 *  @param parent ASyncProcess & Container
 	 *  @param pi ProcessInfo process info
 	 *  @param trx Transaction
 	 *  @return worker started ProcessCtl instance or null for workflow
 	 */
-	public static ServerProcessCtl process (ASyncProcess parent, ProcessInfo pi, Trx trx)
+	public static ServerProcessCtl process (ProcessInfo pi, Trx trx)
 	{
 		log.fine("ServerProcess - " + pi);
 
@@ -94,17 +88,9 @@ public class ServerProcessCtl implements Runnable {
 		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
 
 		//	execute
-		ServerProcessCtl worker = new ServerProcessCtl(parent, pi, trx);
-		if (parent != null)
-		{
-			//asynchrous
-			worker.start();
-		}
-		else
-		{
-			//synchrous
-			worker.run();
-		}
+		ServerProcessCtl worker = new ServerProcessCtl(pi, trx);
+		worker.run();
+		
 		return worker;
 	}	//	execute
 	
@@ -284,7 +270,7 @@ public class ServerProcessCtl implements Runnable {
 		{
 			m_pi.setReportingProcess(true);
 			//	Start Report	-----------------------------------------------
-			boolean ok = ServerReportCtl.start(m_parent, m_pi);
+			boolean ok = ServerReportCtl.start(m_pi);
 			m_pi.setSummary("Report", !ok);
 		}
 		/**********************************************************************

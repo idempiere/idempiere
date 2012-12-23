@@ -1291,7 +1291,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			pi.setRecord_ID ( getC_Invoice_ID() );
 			pi.setIsBatch(true);
 			
-			ServerProcessCtl.process(null, pi, null);
+			ServerProcessCtl.process(pi, null);
 			
 			return pi.getPDFReport();
 		}

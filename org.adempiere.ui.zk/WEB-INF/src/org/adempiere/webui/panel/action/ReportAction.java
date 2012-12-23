@@ -263,7 +263,7 @@ public class ReportAction implements EventListener<Event>
 				pi.setExport(true);
 				
 				winReport.onClose();
-				ServerProcessCtl.process(null, pi, null);
+				ServerProcessCtl.process(pi, null);
 				
 				try
 				{

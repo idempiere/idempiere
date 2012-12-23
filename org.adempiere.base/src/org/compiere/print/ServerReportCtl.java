@@ -11,7 +11,6 @@ import org.compiere.model.PrintInfo;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.ServerProcessCtl;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
@@ -104,9 +103,7 @@ public class ServerReportCtl {
 		
 		pi.setParameter(jasperPrintParams.toArray(new ProcessInfoParameter[]{}));
 		
-		ServerProcessCtl.process(null,		// Parent set to null for synchronous processing, see bugtracker 3010932  
-				   pi,
-				   null); 		
+		ServerProcessCtl.process(pi, null); 		
 		
 		boolean result = true;
 		return(result);
@@ -132,13 +129,10 @@ public class ServerReportCtl {
 	 *	Called from ProcessCtl.
 	 *	- Check special reports first, if not, create standard Report
 	 *
-	 *  @param parent The window which invoked the printing
-	 *  @param WindowNo The windows number which invoked the printing
 	 *  @param pi process info
-	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if created
 	 */
-	static public boolean start (ASyncProcess parent, ProcessInfo pi)
+	static public boolean start (ProcessInfo pi)
 	{
 
 		/**

@@ -221,7 +221,7 @@ public class Scheduler extends AdempiereServer
 							// ==============================
 							ProcessInfo jasperpi = new ProcessInfo ("", process.getAD_Process_ID());
 							jasperpi.setIsBatch(true);
-							ServerProcessCtl.process(null, jasperpi, null);
+							ServerProcessCtl.process(jasperpi, null);
 							report = jasperpi.getPDFReport();
 						}
 						else

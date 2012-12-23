@@ -632,7 +632,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			pi.setRecord_ID ( getM_InOut_ID() );
 			pi.setIsBatch(true);
 			
-			ServerProcessCtl.process(null, pi, null);
+			ServerProcessCtl.process(pi, null);
 			
 			return pi.getPDFReport();
 		}

@@ -299,7 +299,7 @@ public class MRfQResponse extends X_C_RfQResponse
 			pi.setRecord_ID ( getC_RfQResponse_ID() );
 			pi.setIsBatch(true);
 			
-			ServerProcessCtl.process(null, pi, null);
+			ServerProcessCtl.process(pi, null);
 			
 			return pi.getPDFReport();
 		}

@@ -628,7 +628,7 @@ public class MOrder extends X_C_Order implements DocAction
 			pi.setRecord_ID ( getC_Order_ID() );
 			pi.setIsBatch(true);
 			
-			ServerProcessCtl.process(null, pi, null);
+			ServerProcessCtl.process(pi, null);
 			
 			return pi.getPDFReport();
 		}
