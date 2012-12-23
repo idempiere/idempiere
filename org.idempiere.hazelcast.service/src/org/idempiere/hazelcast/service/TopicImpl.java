@@ -71,15 +71,15 @@ public class TopicImpl<E> implements ITopic<E> {
 		topic.publish(message); 
 	}
 
-	class TopicSubscriberAdapter<E> implements MessageListener<E> {
-		protected ITopicSubscriber<E> subscriber;
+	class TopicSubscriberAdapter<T> implements MessageListener<T> {
+		protected ITopicSubscriber<T> subscriber;
 
-		protected TopicSubscriberAdapter(ITopicSubscriber<E> subscriber) {
+		protected TopicSubscriberAdapter(ITopicSubscriber<T> subscriber) {
 			this.subscriber = subscriber;
 		}
 
 		@Override
-		public void onMessage(Message<E> message) {
+		public void onMessage(Message<T> message) {
 			subscriber.onMessage(message.getMessageObject());
 		}
 	}

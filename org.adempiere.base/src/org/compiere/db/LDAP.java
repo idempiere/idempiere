@@ -66,7 +66,7 @@ public class LDAP
 		//	DirContext ctx = new InitialDirContext(env);
 			
 			//	Test - Get the attributes
-			Attributes answer = ctx.getAttributes("");
+			ctx.getAttributes("");
 
 		    // Print the answer
 		    //if (false)
@@ -156,7 +156,8 @@ public class LDAP
 	 * 	Print Attributes to System.out
 	 *	@param attrs
 	 */
-	 private static void dump (Attributes attrs)
+	 @SuppressWarnings("unused")
+	private static void dump (Attributes attrs)
 	{
 		if (attrs == null)
 		{
