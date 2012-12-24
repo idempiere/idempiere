@@ -54,7 +54,6 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.MLookup;
-import org.compiere.model.MSysConfig;
 import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MTree;
@@ -70,6 +69,7 @@ import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -209,41 +209,29 @@ DataStatusListener, IADTabpanel, IdSpace
     }
     
     public void addDetails(Component component) {
-    	if (formContainer.isVisible()) {
-    		detailPane = component;
-    		if (formContainer instanceof Borderlayout) {
-    			if (isUseSplitViewForForm()) {    			
-	    			Borderlayout borderLayout = (Borderlayout) formContainer;
-	    			borderLayout.appendSouth(detailPane);
-	    			
-	    			borderLayout.getSouth().setCollapsible(true);
-	    			borderLayout.getSouth().setSplittable(true);
-	    			borderLayout.getSouth().setOpen(true);
-	    			borderLayout.getSouth().setSclass("adwindow-gridview-detail");
-    			} else {
-    				form.getParent().appendChild(detailPane);
-    			}
-    		} else {
-    			formContainer.appendChild(component);
-    		}
-    	} else {
-    		listPanel.addDetails(component);
-    	}
+		detailPane = component;
+		if (formContainer instanceof Borderlayout) {
+			Borderlayout borderLayout = (Borderlayout) formContainer;
+			borderLayout.appendSouth(detailPane);
+			
+			borderLayout.getSouth().setCollapsible(true);
+			borderLayout.getSouth().setSplittable(true);
+			borderLayout.getSouth().setOpen(true);
+			borderLayout.getSouth().setSclass("adwindow-gridview-detail");
+		} else {
+			formContainer.appendChild(component);
+		}
     }
     
     public Component removeDetails() {
     	Component details = null;
-    	if (listPanel.isVisible()) {
-    		details = listPanel.removeDetails();
-    	} else {
-    		if (detailPane != null) {
-    			if (detailPane.getParent() != null) {
-    				details = detailPane;
-    				detailPane.detach();
-    			}
-    			detailPane = null;
-    		}
-    	}
+		if (detailPane != null) {
+			if (detailPane.getParent() != null) {
+				details = detailPane;
+				detailPane.detach();
+			}
+			detailPane = null;
+		}
     	return details;
     }
 
@@ -308,6 +296,7 @@ DataStatusListener, IADTabpanel, IdSpace
 			div.setVflex("1");
 			div.setHflex("1");
 			div.setSclass("adtab-form");
+			div.setStyle("overflow-y: visible;");
 			layout.appendChild(center);
 
 			formContainer = layout;
@@ -319,48 +308,40 @@ DataStatusListener, IADTabpanel, IdSpace
 			Vlayout div = new Vlayout();
 			div.setSclass("adtab-form");
 			div.appendChild(form);
+			div.setStyle("overflow-y: visible;");
 			div.setVflex("1");
 			div.setWidth("100%");
 			
-			if (isUseSplitViewForForm()) {
-				StringBuilder cssContent = new StringBuilder();
-				cssContent.append(".adtab-form-borderlayout .z-south-colpsd:before { ");
-				cssContent.append("content: \"");
-				cssContent.append(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Detail")));
-				cssContent.append("\"; ");
-				cssContent.append("position: relative; font-size: 12px; font-weight: bold; ");
-				cssContent.append("top: 3px; ");
-				cssContent.append("left: 4px; ");
-				cssContent.append("z-index: -1; ");
-				cssContent.append("} ");
-				Style style = new Style();
-				style.setContent(cssContent.toString());
-				appendChild(style);
-				
-				Borderlayout layout = new Borderlayout();
-				layout.setParent(this);
-				layout.setSclass("adtab-form-borderlayout");
-							
-				Center center = new Center();
-				layout.appendChild(center);
-				center.appendChild(div);
-				formContainer = layout;
-			} else {			
-				this.appendChild(div);
-				formContainer = div;
-			}
+			StringBuilder cssContent = new StringBuilder();
+			cssContent.append(".adtab-form-borderlayout .z-south-colpsd:before { ");
+			cssContent.append("content: \"");
+			cssContent.append(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Detail")));
+			cssContent.append("\"; ");
+			cssContent.append("position: relative; font-size: 12px; font-weight: bold; ");
+			cssContent.append("top: 3px; ");
+			cssContent.append("left: 4px; ");
+			cssContent.append("z-index: -1; ");
+			cssContent.append("} ");
+			Style style = new Style();
+			style.setContent(cssContent.toString());
+			appendChild(style);
 			
+			Borderlayout layout = new Borderlayout();
+			layout.setParent(this);
+			layout.setSclass("adtab-form-borderlayout");
+						
+			Center center = new Center();
+			layout.appendChild(center);
+			center.appendChild(div);
+			formContainer = layout;			
 		}
-        this.appendChild(listPanel);
+
+		form.getParent().appendChild(listPanel);
         listPanel.setVisible(false);
         listPanel.setWindowNo(windowNo);
         listPanel.setADWindowPanel(winPanel);
 
     }
-
-    public static boolean isUseSplitViewForForm() {
-		return MSysConfig.getBooleanValue("ZK_AD_WINDOW_FORM_SPLITVIEW", true);
-	}
 
 	/**
      * Create UI components if not already created
@@ -642,8 +623,10 @@ DataStatusListener, IADTabpanel, IdSpace
             GridField changedField = gridTab.getField(col);
             String columnName = changedField.getColumnName();
             ArrayList<?> dependants = gridTab.getDependantFields(columnName);
-            logger.config("(" + gridTab.toString() + ") "
-                + columnName + " - Dependents=" + dependants.size());
+            if (logger.isLoggable(Level.CONFIG)) {
+            	logger.config("(" + gridTab.toString() + ") "
+            			+ columnName + " - Dependents=" + dependants.size());
+            }
             if (dependants.size() == 0 && changedField.getCallout().length() > 0)
             {
                 return;
@@ -651,7 +634,9 @@ DataStatusListener, IADTabpanel, IdSpace
         }
 
         boolean noData = gridTab.getRowCount() == 0;
-        logger.config(gridTab.toString() + " - Rows=" + gridTab.getRowCount());
+        if (logger.isLoggable(Level.CONFIG)) {
+        	logger.config(gridTab.toString() + " - Rows=" + gridTab.getRowCount());
+        }
         for (WEditor comp : editors)
         {
             GridField mField = comp.getGridField();
@@ -758,7 +743,9 @@ DataStatusListener, IADTabpanel, IdSpace
         }
 
         Events.sendEvent(this, new Event(ON_DYNAMIC_DISPLAY_EVENT, this));
-        logger.config(gridTab.toString() + " - fini - " + (col<=0 ? "complete" : "seletive"));
+        if (logger.isLoggable(Level.CONFIG)) {
+        	logger.config(gridTab.toString() + " - fini - " + (col<=0 ? "complete" : "seletive"));
+        }
     }   //  dynamicDisplay
 
     /**
@@ -978,7 +965,7 @@ DataStatusListener, IADTabpanel, IdSpace
 		}
 		if (row == -1)
 		{
-			if (nodeID > 0)
+			if (nodeID > 0 && logger.isLoggable(Level.WARNING))
 				logger.log(Level.WARNING, "Tab does not have ID with Node_ID=" + nodeID);
 			return;
 		}
@@ -997,7 +984,9 @@ DataStatusListener, IADTabpanel, IdSpace
     	if (Executions.getCurrent() == null) return;
 
         int col = e.getChangedColumn();
-        logger.config("(" + gridTab + ") Col=" + col + ": " + e.toString());
+        if (logger.isLoggable(Level.CONFIG)) {
+        	logger.config("(" + gridTab + ") Col=" + col + ": " + e.toString());
+        }
 
         //  Process Callout
         GridField mField = gridTab.getField(col);
@@ -1129,23 +1118,20 @@ DataStatusListener, IADTabpanel, IdSpace
 	 * Toggle between form and grid view
 	 */
 	public void switchRowPresentation() {
-		Component details = removeDetails();
-		if (formContainer.isVisible()) {
-			formContainer.setVisible(false);
+		if (form.isVisible()) {
+			form.setVisible(false);
+			((HtmlBasedComponent)form.getParent()).setStyle("");
 		} else {
-			formContainer.setVisible(true);
-	        formContainer.getParent().invalidate();
+			form.setVisible(true);
+			((HtmlBasedComponent)form.getParent()).setStyle("overflow-y: visible;");
 		}
-		listPanel.setVisible(!formContainer.isVisible());
+		listPanel.setVisible(!form.isVisible());
 		if (listPanel.isVisible()) {
 			listPanel.refresh(gridTab);
 			listPanel.scrollToCurrentRow();
 		} else {
 			listPanel.deactivate();
 		}
-		
-		if (details != null)
-			addDetails(details);
 		
 		Events.sendEvent(this, new Event(ON_SWITCH_VIEW_EVENT, this));
 	}
@@ -1229,15 +1215,13 @@ DataStatusListener, IADTabpanel, IdSpace
 	}
 
 	@Override
-	public void setDetailPaneMode(boolean detailPaneMode, boolean vflex) {
+	public void setDetailPaneMode(boolean detailPaneMode) {
 		this.detailPaneMode = detailPaneMode;
 		if (detailPaneMode) {
-			detailPane = null;
-			this.setVflex("true");
-		} else {
-			this.setVflex(Boolean.toString(vflex));
-		}
-		listPanel.setDetailPaneMode(detailPaneMode, vflex);
+			detailPane = null;		
+		} 
+		this.setVflex("true");
+		listPanel.setDetailPaneMode(detailPaneMode);
 	}
 	
 	/**

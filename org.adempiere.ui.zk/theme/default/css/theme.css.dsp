@@ -510,10 +510,6 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	overflow-y: visible;
 }
 
-.adwindow-detailpane-xsplit {
-	min-height: 200px;
-}
-
 .adwindow-detailpane-tabpanel {
 	background-color: #fff
 }
@@ -539,10 +535,6 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	width: 99%; 
 	margin: auto;
 	background-color: #E4E4E4;
-}
-
-.adwindow-detailpane-tabbox-xsplit .z-tabpanel {
-	min-height: 200px;
 }
 
 .adwindow-gridview-detail {
@@ -573,7 +565,6 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	border:none !important;
 	margin:0;
 	padding:0;
-	overflow-y: visible;
 }
 
 .adtab-grid {
@@ -583,6 +574,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .adtab-grid-south {
 	border: none;
+	height: 30px;
 }
 
 .adtab-grid-south .z-paging {

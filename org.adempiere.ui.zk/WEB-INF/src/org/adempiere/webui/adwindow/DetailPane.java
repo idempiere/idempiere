@@ -99,16 +99,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			}
 		});
 		tabbox.setSclass("adwindow-detailpane-tabbox");
-		if (!ADTabpanel.isUseSplitViewForForm()) {
-			LayoutUtils.addSclass("adwindow-detailpane-tabbox-xsplit", tabbox);
-		}
 		
 		createPopup();
 		
 		this.setSclass("adwindow-detailpane");
-		if (!ADTabpanel.isUseSplitViewForForm()) {
-			LayoutUtils.addSclass("adwindow-detailpane-xsplit", this);
-		}		
 		
 		addEventListener(LayoutUtils.ON_REDRAW_EVENT, this);
 		

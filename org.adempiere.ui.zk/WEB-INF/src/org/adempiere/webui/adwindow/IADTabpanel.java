@@ -122,7 +122,7 @@ public interface IADTabpanel extends Component, Evaluatee {
 	
 	public boolean isActive();
 
-	public void setDetailPaneMode(boolean detailMode, boolean vflex);
+	public void setDetailPaneMode(boolean detailMode);
 	
 	public boolean isDetailPaneMode();
 

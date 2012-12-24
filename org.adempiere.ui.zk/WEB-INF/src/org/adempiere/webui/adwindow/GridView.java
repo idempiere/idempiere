@@ -23,7 +23,6 @@ import javax.swing.table.AbstractTableModel;
 
 import org.adempiere.model.MTabCustomization;
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Grid;
@@ -47,14 +46,11 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Center;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Frozen;
-import org.zkoss.zul.North;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
-import org.zkoss.zul.Style;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.event.ZulEvents;
 
@@ -65,9 +61,11 @@ import org.zkoss.zul.event.ZulEvents;
  */
 public class GridView extends Vbox implements EventListener<Event>, IdSpace
 {
+	private static final String HEADER_GRID_STYLE = "border: none; margin:0; padding: 0;";
+
 	private static final int DEFAULT_DETAIL_PAGE_SIZE = 10;
 
-	private static final int DEFAULT_PAGE_SIZE = 50;
+	private static final int DEFAULT_PAGE_SIZE = 20;
 
 	/**
 	 * generated serial version ID
@@ -115,10 +113,6 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 
 	private Map<Integer, String> columnWidthMap;
 
-	private Component detail;
-
-	private Borderlayout borderLayout;
-
 	private boolean detailPaneMode;
 
 	public GridView()
@@ -141,87 +135,48 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 		gridFooter.setHflex("1");
 		gridFooter.setVflex("0");
 		
-		StringBuilder cssContent = new StringBuilder();
-		cssContent.append(".adwindow-gridview-borderlayout .z-south-colpsd:before { ");
-		cssContent.append("content: \"");
-		cssContent.append(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Detail")));
-		cssContent.append("\"; ");
-		cssContent.append("position: relative; font-size: 12px; font-weight: bold; ");
-		cssContent.append("top: 3px; ");
-		cssContent.append("left: 4px; ");
-		cssContent.append("z-index: -1; ");
-		cssContent.append("} ");
-		Style style = new Style();
-		style.setContent(cssContent.toString());
-		appendChild(style);
-		
-		borderLayout = new Borderlayout();
-		borderLayout.setSclass("adwindow-gridview-borderlayout");
-		appendChild(borderLayout);
-		Center center = new Center();
-		borderLayout.appendChild(center);
-		North north = new North();
-		north.setVflex("min");
-		borderLayout.appendChild(north);
-		
-		borderLayout.appendCenter(listbox);		
-		borderLayout.appendNorth(gridFooter);
-		
 		//default paging size
 		if (AEnv.isTablet())
 		{
 			//anything more than 20 is very slow on a tablet
-			pageSize = 20;
+			pageSize = 10;
 		}
 		else
 		{
-			pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 50);
+			pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, DEFAULT_PAGE_SIZE);
 		}
 		
 		//default true for better UI experience
 		modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_EDIT_MODELESS, true);
 		
+		appendChild(listbox);
+		appendChild(gridFooter);								
+		this.setVflex("true");
+		
+		setStyle(HEADER_GRID_STYLE);
+		gridFooter.setStyle(HEADER_GRID_STYLE);
+		setSpacing("2px");
 	}
 
 	protected void createListbox() {
 		listbox = new Grid();
 		listbox.setEmptyMessage(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "FindZeroRecords")));
-		listbox.addEventListener(ZulEvents.ON_AFTER_RENDER, this);
 		listbox.setSizedByContent(true);
 		listbox.setVflex("1");
 		listbox.setHflex("1");
 		listbox.setSclass("adtab-grid");
 	}
 	
-	public void setDetailPaneMode(boolean detailPaneMode, boolean vflex) {
+	public void setDetailPaneMode(boolean detailPaneMode) {
 		this.detailPaneMode = detailPaneMode;
-		if (detailPaneMode) {			
-			pageSize = DEFAULT_DETAIL_PAGE_SIZE;
-			updatePaging();
-			if (borderLayout.getParent() != null) {
-				listbox.detach();
-				gridFooter.detach();
-				borderLayout.detach();
-				appendChild(listbox);
-				appendChild(gridFooter);								
-			}
-			//false work for header form, true work for header grid
-			listbox.setVflex(vflex);
-			listbox.setSclass("");
-			this.setVflex(Boolean.toString(vflex));
+		pageSize =  detailPaneMode ? DEFAULT_DETAIL_PAGE_SIZE : MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 20);
+		updatePaging();
+		if (detailPaneMode) {
+			setStyle("");
+			gridFooter.setStyle("");
 		} else {
-			pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 50);
-			updatePaging();
-			if (borderLayout.getParent() == null) {
-				listbox.detach();
-				gridFooter.detach();
-				appendChild(borderLayout);
-				borderLayout.appendCenter(listbox);		
-				borderLayout.appendNorth(gridFooter);
-			}
-			listbox.setVflex("true");
-			listbox.setSclass("adtab-grid");
-			this.setVflex("true");
+			setStyle(HEADER_GRID_STYLE);
+			gridFooter.setStyle(HEADER_GRID_STYLE);
 		}
 	}
 
@@ -361,7 +316,6 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 				paging.setTotalSize(gridTab.getRowCount());
 			if (paging.getPageCount() > 1 && !gridFooter.isVisible()) {
 				gridFooter.setVisible(true);
-				borderLayout.invalidate();
 			}
 			int pgIndex = rowIndex >= 0 ? rowIndex % pageSize : 0;
 			int pgNo = rowIndex >= 0 ? (rowIndex - pgIndex) / pageSize : 0;
@@ -607,11 +561,6 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 				listModel.setPage(pgNo);
 				onSelectedRowChange(0);
 			}
-		}
-		else if (event.getName().equals(ZulEvents.ON_AFTER_RENDER))
-		{
-			//render all rows of active page to give smooth scrolling performance
-			listbox.renderAll();
 		}
 	}
 
@@ -888,26 +837,5 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 
 	public GridField[] getFields() {
 		return gridField;
-	}
-
-	public void addDetails(Component component) {
-		detail = component;
-		borderLayout.appendSouth(detail);
-		borderLayout.getSouth().setCollapsible(true);
-		borderLayout.getSouth().setSplittable(true);
-		borderLayout.getSouth().setOpen(true);
-		borderLayout.getSouth().setSclass("adwindow-gridview-detail");
-	}
-	
-	public Component removeDetails() {
-		Component details = null;
-		if (detail != null) {
-			if (detail.getParent() != null) { 
-				detail.detach();
-				details = detail;
-			}
-			detail = null;
-		}
-		return details;
 	}
 }

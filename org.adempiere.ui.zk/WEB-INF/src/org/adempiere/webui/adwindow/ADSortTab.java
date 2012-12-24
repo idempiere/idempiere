@@ -936,9 +936,9 @@ public class ADSortTab extends Panel implements IADTabpanel
 	}
 
 	@Override
-	public void setDetailPaneMode(boolean detailMode, boolean vflex) {
+	public void setDetailPaneMode(boolean detailMode) {
 		this.detailPaneMode = detailMode;
-		this.setVflex(Boolean.toString(vflex));
+		this.setVflex("true");
 	}
 	
 	public boolean isDetailPaneMode() {

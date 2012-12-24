@@ -45,16 +45,14 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.RendererCtrl;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.RowRendererExt;
 import org.zkoss.zul.impl.XulElement;
-import org.zkoss.zhtml.Label;
-import org.zkoss.zhtml.Text;
 
 /**
  * Row renderer for GridTab grid.
@@ -64,8 +62,12 @@ import org.zkoss.zhtml.Text;
  * 		<li>BF [ 2996608 ] GridPanel is not displaying time
  * 			https://sourceforge.net/tracker/?func=detail&aid=2996608&group_id=176962&atid=955896
  */
-public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt, RendererCtrl {
+public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt, RendererCtrl, EventListener<Event> {
 
+	private static final String CELL_DIV_STYLE = "border: none; height: 100%; cursor: pointer; ";
+	private static final String CELL_DIV_STYLE_ALIGN_CENTER = CELL_DIV_STYLE + "text-align:center; ";
+	private static final String CELL_DIV_STYLE_ALIGN_RIGHT = CELL_DIV_STYLE + "text-align:right; ";
+	
 	private static final int MAX_TEXT_LENGTH = 60;
 	private GridTab gridTab;
 	private int windowNo;
@@ -211,11 +213,9 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		// since 5.0.8, the org.zkoss.zhtml.Text is encoded by default
 //		if (display != null)
 //			display = XMLs.encodeText(display);
-		label.appendChild(new Text(display));
+		label.setValue(display);
 		if (text != null && text.length() > MAX_TEXT_LENGTH)
-			label.setDynamicProperty("title", text);
-		else
-			label.setDynamicProperty("title", "");
+			label.setTooltiptext(text);
 	}
 
 	/**
@@ -251,11 +251,11 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		for (Entry<GridField, WEditor> entry : editors.entrySet()) {
 			if (entry.getValue().getComponent().getParent() != null) {
 				Component child = entry.getValue().getComponent();
-				Div div = null;
+				Cell div = null;
 				while (div == null && child != null) {
 					Component parent = child.getParent();
-					if (parent instanceof Div && parent.getParent() instanceof Row)
-						div = (Div)parent;
+					if (parent instanceof Cell && parent.getParent() instanceof Row)
+						div = (Cell)parent;
 					else
 						child = parent;
 				}
@@ -355,16 +355,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 
 		Cell cell = new Cell();
 		cell.setWidth("10px");
-		cell.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				Cell cell = (Cell) event.getTarget();
-				if (cell.getSclass() != null && cell.getSclass().indexOf("row-indicator-seld") >= 0)
-					Events.sendEvent(gridPanel, new Event(DetailPane.ON_EDIT_EVENT, gridPanel));
-				else
-					Events.sendEvent(event.getTarget().getParent(), event);
-			}
-		});
+		cell.addEventListener(Events.ON_CLICK, this);
 		cell.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "EditRecord")));
 		
 		//TODO: checkbox for selection and batch action ( delete, export, complete, etc )
@@ -391,8 +382,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			}
 			colIndex ++;
 
-			Div div = new Div();
-			String divStyle = "border: none; height: 100%; cursor: pointer;";
+			Cell div = new Cell();
+			String divStyle = CELL_DIV_STYLE;
 			org.zkoss.zul.Column column = (org.zkoss.zul.Column) columns.getChildren().get(colIndex);
 			if (column.isVisible()) {
 				Component component = getDisplayComponent(rowIndex, currentValues[i], gridPanelFields[i]);
@@ -400,10 +391,10 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				div.setAttribute("display.component", component);
 
 				if (DisplayType.YesNo == gridPanelFields[i].getDisplayType() || DisplayType.Image == gridPanelFields[i].getDisplayType()) {
-					divStyle += "text-align:center; ";
+					divStyle = CELL_DIV_STYLE_ALIGN_CENTER;
 				}
 				else if (DisplayType.isNumeric(gridPanelFields[i].getDisplayType())) {
-					divStyle += "text-align:right; ";
+					divStyle = CELL_DIV_STYLE_ALIGN_RIGHT;
 				}
 			}
 			div.setStyle(divStyle);
@@ -412,14 +403,15 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			div.setAttribute("columnName", gridPanelFields[i].getColumnName());
 			div.addEventListener(Events.ON_CLICK, rowListener);
 			div.addEventListener(Events.ON_DOUBLE_CLICK, rowListener);
-			row.addEventListener(Events.ON_CLICK, rowListener);
-			row.setStyle("cursor:pointer");
+			row.addEventListener(Events.ON_CLICK, rowListener);			
 			row.appendChild(div);
 		}
 
 		if (rowIndex == gridTab.getCurrentRow()) {
 			setCurrentRow(row);
 		}
+		
+		row.setStyle("cursor:pointer");
 		row.addEventListener(Events.ON_OK, rowListener);
 	}
 
@@ -490,7 +482,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 
 				org.zkoss.zul.Column column = (org.zkoss.zul.Column) columns.getChildren().get(colIndex);
 				if (column.isVisible()) {
-					Div div = (Div) currentRow.getChildren().get(colIndex);
+					Cell div = (Cell) currentRow.getChildren().get(colIndex);
 					div.getChildren().clear();
 					WEditor editor = getEditorCell(gridPanelFields[i]);
 					div.appendChild(editor.getComponent());
@@ -662,5 +654,16 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				}
 			}
 		};
+	}
+
+	@Override
+	public void onEvent(Event event) throws Exception {
+		if (event.getTarget() instanceof Cell) {
+			Cell cell = (Cell) event.getTarget();
+			if (cell.getSclass() != null && cell.getSclass().indexOf("row-indicator-seld") >= 0)
+				Events.sendEvent(gridPanel, new Event(DetailPane.ON_EDIT_EVENT, gridPanel));
+			else
+				Events.sendEvent(event.getTarget().getParent(), event);
+		}
 	}
 }
