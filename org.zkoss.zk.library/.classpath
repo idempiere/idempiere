@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="lib/calendar.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/calendar.jar" sourcepath="lib/src/calendar-source.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/asm.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/cglib.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-el.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-fileupload.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-io.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/Filters.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gmapsz.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gmapsz.jar" sourcepath="lib/src/gmapsz-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jruby.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/js.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/json_simple.jar"/>
@@ -17,19 +17,19 @@
 	<classpathentry exported="true" kind="lib" path="lib/jython.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mvel.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ognl.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/timelinez.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/timeplotz.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/timelinez.jar" sourcepath="lib/src/timelinez-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/timeplotz.jar" sourcepath="lib/src/timeplotz-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/zcommon.jar" sourcepath="lib/src/zcommon-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/zhtml.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zhtml.jar" sourcepath="lib/src/zhtml-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/zk.jar" sourcepath="lib/src/zk-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/zkplus.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zkplus.jar" sourcepath="lib/src/zkplus-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/zul.jar" sourcepath="lib/src/zul-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/zweb.jar" sourcepath="lib/src/zweb-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry exported="true" kind="lib" path="lib/ckez.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/zel.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/zkbind.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ckez.jar" sourcepath="lib/src/ckez-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zel.jar" sourcepath="lib/src/zel-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/zkbind.jar" sourcepath="lib/src/zkbind-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
