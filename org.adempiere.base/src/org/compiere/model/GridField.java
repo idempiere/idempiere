@@ -72,7 +72,7 @@ import org.compiere.util.Evaluator;
  *  @version $Id: GridField.java,v 1.5 2006/07/30 00:51:02 jjanke Exp $
  */
 public class GridField 
-	implements Serializable, Evaluatee
+	implements Serializable, Evaluatee, Cloneable
 {
 
 
@@ -1987,5 +1987,17 @@ public class GridField
 	{
 		return m_vo.displayType == DisplayType.Button && m_vo.IsToolbarButton;
 	}
-	
+
+	public GridField clone(Properties ctx)  
+	{
+		try {
+			GridField field = (GridField) super.clone();
+			field.m_vo.ctx = ctx;
+			field.m_vo.lookupInfo = null;
+			return field;
+		} catch (CloneNotSupportedException e) {
+			throw new IllegalStateException(e.getLocalizedMessage(), e);
+		}
+		
+	}
 }   //  MField

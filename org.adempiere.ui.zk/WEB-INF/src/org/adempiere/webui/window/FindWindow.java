@@ -32,6 +32,7 @@ import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -199,6 +200,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	private static final String HISTORY_SEPARATOR = "<#>";
 	
 	private Combobox historyCombo = new Combobox();
+
+	private Properties m_findCtx;
 	
 
     /**
@@ -227,6 +230,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         m_minRecords = minRecords;
         m_isCancel = true;
         //
+        m_findCtx = new Properties(Env.getCtx());
         
         this.setBorder("normal");
         this.setShadow(false);
@@ -1613,16 +1617,27 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
         else
         {
-        	//lookupinfo is null for invisible field
-        	if (DisplayType.isLookup(field.getDisplayType()) && field.getLookup() == null) {
-        		field.loadLookupNoValidate();
+        	//reload lookupinfo for find window
+        	if (DisplayType.isLookup(field.getDisplayType()) ) 
+        	{
+        		GridField findField = (GridField) field.clone(m_findCtx);
+        		findField.loadLookupNoValidate();
+        		
+        		editor = WebEditorFactory.getEditor(findField, true);
+        		findField.addPropertyChangeListener(editor);
+        	} 
+        	else 
+        	{
+        		editor = WebEditorFactory.getEditor(field, true);
+        		field.addPropertyChangeListener(editor);
         	}
-            editor = WebEditorFactory.getEditor(field, true);            
         }
         if (editor == null)
+        {
             editor = new WStringEditor(field);
-
-        field.addPropertyChangeListener(editor);
+            field.addPropertyChangeListener(editor);
+        }
+        
         editor.addValueChangeListener(this);
         editor.setValue(null);
         editor.setReadWrite(enabled);
@@ -2079,6 +2094,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             Component component = editor.getComponent();
             ListCell listcell = (ListCell)component.getParent();
             listcell.setAttribute("value", evt.getNewValue());
+            if (evt.getNewValue() == null)
+            	Env.setContext(m_findCtx, m_targetWindowNo, editor.getColumnName(), "");
+            else if (evt.getNewValue() instanceof Boolean)
+            	Env.setContext(m_findCtx, m_targetWindowNo, editor.getColumnName(), (Boolean)evt.getNewValue());
+            else if (evt.getNewValue() instanceof Timestamp)
+            	Env.setContext(m_findCtx, m_targetWindowNo, editor.getColumnName(), (Timestamp)evt.getNewValue());
+            else
+            	Env.setContext(m_findCtx, m_targetWindowNo, editor.getColumnName(), evt.getNewValue().toString());
         }
     }
 
