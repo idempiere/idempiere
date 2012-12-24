@@ -1411,8 +1411,8 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Dec 6, 2012 2:37:35 PM SGT
 -- Ticket 1001758: FedEx & UPS
-ALTER TABLE M_Package ADD COLUMN DeliveryConfirmation CHAR(1) CHECK (DeliveryConfirmation IN ('Y','N')) NOT NULL
-;
+--ALTER TABLE M_Package ADD COLUMN DeliveryConfirmation CHAR(1) CHECK (DeliveryConfirmation IN ('Y','N')) NOT NULL
+--;
 
 -- Dec 6, 2012 2:37:45 PM SGT
 -- Ticket 1001758: FedEx & UPS
@@ -1536,8 +1536,8 @@ INSERT INTO AD_Ref_List_Trl (AD_Language,AD_Ref_List_ID, Description,Name, IsTra
 
 -- Dec 6, 2012 2:42:09 PM SGT
 -- Ticket 1001758: FedEx & UPS
-INSERT INTO AD_Ref_List (AD_Client_ID,AD_Ref_List_ID,AD_Reference_ID,EntityType,Name,AD_Ref_List_UU,Value,CreatedBy,Created,Updated,UpdatedBy,IsActive,AD_Org_ID) VALUES (0,200063,200024,'D','4.2 - Spontaneous Combustibles','43eb568c-5653-46c8-aada-1cb17e64b63d','4.2',100,TO_TIMESTAMP('2012-12-06 14:42:08','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2012-12-06 14:42:08','YYYY-MM-DD HH24:MI:SS'),100,'Y',0)
-;
+--INSERT INTO AD_Ref_List (AD_Client_ID,AD_Ref_List_ID,AD_Reference_ID,EntityType,Name,AD_Ref_List_UU,Value,CreatedBy,Created,Updated,UpdatedBy,IsActive,AD_Org_ID) VALUES (0,200063,200024,'D','4.2 - Spontaneous Combustibles','43eb568c-5653-46c8-aada-1cb17e64b63d','4.2',100,TO_TIMESTAMP('2012-12-06 14:42:08','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2012-12-06 14:42:08','YYYY-MM-DD HH24:MI:SS'),100,'Y',0)
+--;
 
 -- Dec 6, 2012 2:42:24 PM SGT
 -- Ticket 1001758: FedEx & UPS
@@ -2401,8 +2401,8 @@ ALTER TABLE M_Package ADD COLUMN RateInquiryMessage VARCHAR(2000) DEFAULT NULL
 
 -- Dec 6, 2012 3:22:46 PM SGT
 -- Ticket 1001758: FedEx & UPS
-INSERT INTO AD_Column (Version,IsSyncDatabase,IsEncrypted,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID,SeqNoSelection,IsToolbarButton,IsAlwaysUpdateable) VALUES (0,'N','N',664,201075,'D','N','N','N',0,'N',255,'N',10,'N',2427,'N','Y','6d6ff80f-e297-4c21-acb4-1acc58111772','Y','ReceivedInfo','Information of the receipt of the package (acknowledgement)','Info Received','Y',100,TO_TIMESTAMP('2012-12-06 15:22:45','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-12-06 15:22:45','YYYY-MM-DD HH24:MI:SS'),100,0,0,'N','N')
-;
+--INSERT INTO AD_Column (Version,IsSyncDatabase,IsEncrypted,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID,SeqNoSelection,IsToolbarButton,IsAlwaysUpdateable) VALUES (0,'N','N',664,201075,'D','N','N','N',0,'N',255,'N',10,'N',2427,'N','Y','6d6ff80f-e297-4c21-acb4-1acc58111772','Y','ReceivedInfo','Information of the receipt of the package (acknowledgement)','Info Received','Y',100,TO_TIMESTAMP('2012-12-06 15:22:45','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2012-12-06 15:22:45','YYYY-MM-DD HH24:MI:SS'),100,0,0,'N','N')
+--;
 
 -- Dec 6, 2012 3:23:29 PM SGT
 -- Ticket 1001758: FedEx & UPS
@@ -19723,8 +19723,8 @@ UPDATE AD_Table SET AD_Window_ID=142,Updated=TO_TIMESTAMP('2012-12-13 12:37:53',
 
 -- Dec 13, 2012 12:38:36 PM SGT
 -- Ticket 1001758: FedEx & UPS
-INSERT INTO AD_Window (Processing,WindowType,Help,IsSOTrx,IsDefault,IsBetaFunctionality,EntityType,Name,Description,AD_Window_ID,AD_Window_UU,Created,Updated,AD_Client_ID,AD_Org_ID,IsActive,UpdatedBy,CreatedBy) VALUES ('N','M','The Shipper Window defines the different shipping provides used by an Organization.  When a delivery method of Shipper is used on an Order a predefined Shipper must be selected.','Y','N','N','D','Shipper','Maintain Shippers',200027,'9c8b8f8e-024b-45f6-80a7-ec7c0342e498',TO_TIMESTAMP('2012-12-13 12:38:35','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2012-12-13 12:38:35','YYYY-MM-DD HH24:MI:SS'),0,0,'Y',100,100)
-;
+--INSERT INTO AD_Window (Processing,WindowType,Help,IsSOTrx,IsDefault,IsBetaFunctionality,EntityType,Name,Description,AD_Window_ID,AD_Window_UU,Created,Updated,AD_Client_ID,AD_Org_ID,IsActive,UpdatedBy,CreatedBy) VALUES ('N','M','The Shipper Window defines the different shipping provides used by an Organization.  When a delivery method of Shipper is used on an Order a predefined Shipper must be selected.','Y','N','N','D','Shipper','Maintain Shippers',200027,'9c8b8f8e-024b-45f6-80a7-ec7c0342e498',TO_TIMESTAMP('2012-12-13 12:38:35','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2012-12-13 12:38:35','YYYY-MM-DD HH24:MI:SS'),0,0,'Y',100,100)
+--;
 
 -- Dec 13, 2012 12:39:58 PM SGT
 -- Ticket 1001758: FedEx & UPS
@@ -21961,8 +21961,8 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Dec 13, 2012 1:01:47 PM SGT
 -- Ticket 1001758: FedEx & UPS
-ALTER TABLE M_Shipper ADD COLUMN X_Shipper_ID NUMERIC(10) NOT NULL
-;
+--ALTER TABLE M_Shipper ADD COLUMN X_Shipper_ID NUMERIC(10) NOT NULL
+--;
 
 -- Dec 13, 2012 1:01:58 PM SGT
 -- Ticket 1001758: FedEx & UPS
@@ -22091,13 +22091,13 @@ DELETE FROM AD_Column WHERE AD_Column_ID=201112
 
 -- Dec 13, 2012 1:04:58 PM SGT
 -- Ticket 1001758: FedEx & UPS
-DELETE FROM AD_Column_Trl WHERE AD_Column_ID=201114
-;
+--DELETE FROM AD_Column_Trl WHERE AD_Column_ID=201114
+--;
 
 -- Dec 13, 2012 1:04:58 PM SGT
 -- Ticket 1001758: FedEx & UPS
-DELETE FROM AD_Column WHERE AD_Column_ID=201114
-;
+--DELETE FROM AD_Column WHERE AD_Column_ID=201114
+--;
 
 -- Dec 13, 2012 1:05:01 PM SGT
 -- Ticket 1001758: FedEx & UPS
