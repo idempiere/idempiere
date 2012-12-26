@@ -460,7 +460,57 @@ public class ImportGLJournal extends SvrProcess
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Project=" + no);
+		
+		// tbayen: IDEMPIERE-539 Import GL Window does not allow Key Values for Activity, Campaign, Sales Region
+		//	Set Campaign
+		sql = new StringBuilder ("UPDATE I_GLJournal i ")
+			.append("SET C_Campaign_ID=(SELECT p.C_Campaign_ID FROM C_Campaign p")
+			.append(" WHERE p.Value=i.CampaignValue AND p.IsSummary='N' AND i.AD_Client_ID=p.AD_Client_ID) ")
+			.append("WHERE C_Campaign_ID IS NULL AND CampaignValue IS NOT NULL")
+			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		log.fine("Set Campaign from Value=" + no);
+		sql = new StringBuilder ("UPDATE I_GLJournal i ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Campaign, '")
+			.append("WHERE C_Campaign_ID IS NULL AND CampaignValue IS NOT NULL")
+			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+			log.warning ("Invalid Campaign=" + no);
 
+		//	Set Activity
+		sql = new StringBuilder ("UPDATE I_GLJournal i ")
+			.append("SET C_Activity_ID=(SELECT p.C_Activity_ID FROM C_Activity p")
+			.append(" WHERE p.Value=i.ActivityValue AND p.IsSummary='N' AND i.AD_Client_ID=p.AD_Client_ID) ")
+			.append("WHERE C_Activity_ID IS NULL AND ActivityValue IS NOT NULL")
+			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		log.fine("Set Activity from Value=" + no);
+		sql = new StringBuilder ("UPDATE I_GLJournal i ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Activity, '")
+			.append("WHERE C_Activity_ID IS NULL AND ActivityValue IS NOT NULL")
+			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+			log.warning ("Invalid Activity=" + no);
+
+		//	Set SalesRegion
+		sql = new StringBuilder ("UPDATE I_GLJournal i ")
+			.append("SET C_SalesRegion_ID=(SELECT p.C_SalesRegion_ID FROM C_SalesRegion p")
+			.append(" WHERE p.Value=i.SalesRegionValue AND p.IsSummary='N' AND i.AD_Client_ID=p.AD_Client_ID) ")
+			.append("WHERE C_SalesRegion_ID IS NULL AND SalesRegionValue IS NOT NULL")
+			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		log.fine("Set SalesRegion from Value=" + no);
+		sql = new StringBuilder ("UPDATE I_GLJournal i ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid SalesRegion, '")
+			.append("WHERE C_SalesRegion_ID IS NULL AND SalesRegionValue IS NOT NULL")
+			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+			log.warning ("Invalid SalesRegion=" + no);
+
+		
 		//	Set TrxOrg
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append("SET AD_OrgTrx_ID=(SELECT o.AD_Org_ID FROM AD_Org o")
