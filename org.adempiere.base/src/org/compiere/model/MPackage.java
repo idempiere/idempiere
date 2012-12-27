@@ -482,7 +482,7 @@ public class MPackage extends X_M_Package
 		st.setAction(action);
 		st.setAD_Client_ID(getAD_Client_ID());
 		st.setAD_Org_ID(getAD_Org_ID());
-		st.setAD_User_ID(ioOut.getAD_User_ID());
+		st.setAD_User_ID(ioOut.getAD_User_ID() > 0 ? ioOut.getAD_User_ID() : order.getAD_User_ID());
 		st.setBill_Location_ID(getC_BPartner_Location_ID());
 		st.setBoxCount(getBoxCount());
 		st.setC_BP_ShippingAcct_ID(getC_BP_ShippingAcct_ID());

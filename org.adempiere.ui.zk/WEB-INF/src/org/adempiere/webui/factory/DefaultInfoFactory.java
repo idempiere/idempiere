@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.factory;
 
+import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.panel.InfoAssetPanel;
 import org.adempiere.webui.panel.InfoAssignmentPanel;
 import org.adempiere.webui.panel.InfoBPartnerPanel;
@@ -40,6 +41,7 @@ public class DefaultInfoFactory implements IInfoFactory {
 			String value, boolean multiSelection, String whereClause, boolean lookup) {
 		InfoPanel info = null;
 
+		//TODO: info window for c_bpartner, m_product, c_invoice, a_asset, c_order, m_inout, c_payment and resource
         if (tableName.equals("C_BPartner"))
             info = new InfoBPartnerPanel (value,WindowNo, !Env.getContext(Env.getCtx(),"IsSOTrx").equals("N"),
                     multiSelection, whereClause, lookup);
@@ -68,10 +70,14 @@ public class DefaultInfoFactory implements IInfoFactory {
         else if (tableName.equals("S_ResourceAssigment"))
             info = new InfoAssignmentPanel (WindowNo, value,
                     multiSelection, whereClause, lookup);
-        else
-            info = new InfoGeneralPanel (value, WindowNo,
-                tableName, keyColumn,
-                multiSelection, whereClause, lookup);
+        else {
+//        	info = new InfoWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, lookup);
+//        	if (!((InfoWindow)info).loadedOK()) {
+	            info = new InfoGeneralPanel (value, WindowNo,
+	                tableName, keyColumn,
+	                multiSelection, whereClause, lookup);
+//        	}
+        }
         //
         return info;
 	}
@@ -87,6 +93,12 @@ public class DefaultInfoFactory implements IInfoFactory {
 			col = col.substring(col.indexOf('.')+1);
 		if (col.equals("M_Product_ID"))
 		{
+			//TODO: Product info window
+			/*
+			InfoWindow infoWindow = new InfoWindow(lookup.getWindowNo(), tableName, keyColumn, value, multiSelection, whereClause);
+			if (infoWindow.loadedOk())
+				return infoWindow;
+			*/
 			//	Reset
 			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_Product_ID", "0");
 			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_AttributeSetInstance_ID", "0");
@@ -103,6 +115,12 @@ public class DefaultInfoFactory implements IInfoFactory {
 		}
 		else if (col.equals("C_BPartner_ID"))
 		{
+			//TODO: BPartner info window
+			/*
+			InfoWindow infoWindow = new InfoWindow(lookup.getWindowNo(), tableName, keyColumn, multiSelection, whereClause);
+			if (infoWindow.isValid())
+				return infoWindow;
+			*/
 			boolean isSOTrx = true;     //  default
 
 			if (Env.getContext(Env.getCtx(), lookup.getWindowNo(), "IsSOTrx").equals("N"))

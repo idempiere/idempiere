@@ -192,6 +192,8 @@ public class MLookupInfo implements Serializable, Cloneable
 
 	public String InfoFactoryClass = null;
 
+	public String DisplayColumn;
+
 	/**
 	 * String representation
 	 * @return info

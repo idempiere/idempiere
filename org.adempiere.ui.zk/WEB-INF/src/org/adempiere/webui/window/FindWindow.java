@@ -611,7 +611,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				ynvo.lookupInfo = MLookupFactory.getLookupInfo (ynvo.ctx, ynvo.WindowNo, ynvo.AD_Column_ID, ynvo.displayType,
 						Env.getLanguage(ynvo.ctx), ynvo.ColumnName, ynvo.AD_Reference_Value_ID,
 						ynvo.IsParent, ynvo.ValidationCode);
-				ynvo.lookupInfo.InfoFactoryClass = ynvo.InfoFactoryClass;
 
 				GridField ynfield = new GridField(ynvo);
 
@@ -633,7 +632,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 					postedvo.lookupInfo = MLookupFactory.getLookupInfo (postedvo.ctx, postedvo.WindowNo, postedvo.AD_Column_ID, postedvo.displayType,
 							Env.getLanguage(postedvo.ctx), postedvo.ColumnName, postedvo.AD_Reference_Value_ID,
 							postedvo.IsParent, postedvo.ValidationCode);
-					postedvo.lookupInfo.InfoFactoryClass = postedvo.InfoFactoryClass;
 
 					GridField postedfield = new GridField(postedvo);
 

@@ -25,8 +25,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -38,6 +40,7 @@ import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.event.WTableModelEvent;
@@ -63,6 +66,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -93,7 +97,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	private static final long serialVersionUID = 325050327514511004L;
 	private final static int PAGE_SIZE = 100;
-
+	
+	protected Map<String, WEditor> editorMap = new HashMap<String, WEditor>();
+	
     public static InfoPanel create (int WindowNo,
             String tableName, String keyColumn, String value,
             boolean multiSelection, String whereClause)
@@ -464,12 +470,42 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			else if (c == Integer.class)
 		        value = new Integer(rs.getInt(colIndex));
 			else if (c == KeyNamePair.class)
+			{				
+				if (p_layout[col].isKeyPairCol())
+				{
+					String display = rs.getString(colIndex);
+					int key = rs.getInt(colIndex+1);
+	                value = new KeyNamePair(key, display);
+	
+					colOffset++;
+				}
+				else
+				{
+					int key = rs.getInt(colIndex);
+					WEditor editor = editorMap.get(p_layout[col].getColSQL());
+					if (editor != null)
+					{
+						editor.setValue(key);
+						value = new KeyNamePair(key, editor.getDisplayTextForGridView(key));
+					}					
+					else
+					{
+						value = new KeyNamePair(key, Integer.toString(key));
+					}
+				}
+			}
+			else if (c == ValueNamePair.class)
 			{
-				String display = rs.getString(colIndex);
-				int key = rs.getInt(colIndex+1);
-                value = new KeyNamePair(key, display);
-
-				colOffset++;
+				String key = rs.getString(colIndex);
+				WEditor editor = editorMap.get(p_layout[col].getColSQL());
+				if (editor != null)
+				{
+					value = new ValueNamePair(key, editor.getDisplayTextForGridView(key));
+				}					
+				else
+				{
+					value = new ValueNamePair(key, key);
+				}
 			}
 			else
 			{
@@ -1311,5 +1347,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 	public int getWindowNo() {
 		return p_WindowNo;
+	}
+	
+	public int getRowCount() {
+		return contentPanel.getRowCount();
+	}
+	
+	public Integer getFirstRowKey() {
+		return contentPanel.getFirstRowKey();
 	}
 }	//	Info

@@ -464,6 +464,7 @@ public class MLookupFactory
 			}
 		}
 
+		String lookupDisplayColumn = null;
 		//	Translated
 		if (IsTranslated && !Env.isBaseLanguage(language, TableName))
 		{
@@ -477,8 +478,10 @@ public class MLookupFactory
 			else {
 				if (showID) {
 					StringBuilder displayColumn = getDisplayColumn(language, TableName, list);
+					lookupDisplayColumn = displayColumn.toString();
 					realSQL.append(displayColumn);
 				} else {
+					lookupDisplayColumn = DisplayColumn;
 					realSQL.append("NVL(").append(TableName).append("_Trl.").append(DisplayColumn).append(",'-1')");
 				}
 			}
@@ -503,8 +506,10 @@ public class MLookupFactory
 			else {
 				if (showID) {
 					StringBuilder displayColumn = getDisplayColumn(language, TableName, list);
+					lookupDisplayColumn = displayColumn.toString();
 					realSQL.append(displayColumn);
 				} else {
+					lookupDisplayColumn = DisplayColumn;
 					realSQL.append("NVL(").append(TableName).append(".").append(DisplayColumn).append(",'-1')");
 				}
 			}
@@ -554,6 +559,7 @@ public class MLookupFactory
 		StringBuilder msginf = new StringBuilder().append(TableName).append(".").append(KeyColumn);
 		retValue = new MLookupInfo (realSQL.toString(), TableName,
 			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
+		retValue.DisplayColumn = lookupDisplayColumn;		
 		s_cacheRefTable.put(key.toString(), retValue.cloneIt());
 		return retValue;
 	}	//	getLookup_Table
@@ -750,6 +756,7 @@ public class MLookupFactory
 		StringBuilder msginf = new StringBuilder().append(TableName).append(".").append(KeyColumn);
 		MLookupInfo lInfo = new MLookupInfo(realSQL.toString(), TableName,
 			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
+		lInfo.DisplayColumn = displayColumn.toString();
 		s_cacheRefTable.put(cacheKey.toString(), lInfo.cloneIt());
 		return lInfo;
 	}	//	getLookup_TableDir

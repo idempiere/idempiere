@@ -66,8 +66,6 @@ public class GridFieldVO implements Serializable
 		return sql.toString();
 	}   //  getSQL
 
-	public String InfoFactoryClass = null;
-
 	/**
 	 *  Create Field Value Object
 	 *  @param ctx context
@@ -185,9 +183,6 @@ public class GridFieldVO implements Serializable
 				// Collapse Default State
 				else if (columnName.equalsIgnoreCase("IsCollapsedByDefault"))
 					vo.IsCollapsedByDefault = "Y".equals(rs.getString(i));
-				//Info Factory class
-				else if (columnName.equalsIgnoreCase("InfoFactoryClass"))
-					vo.InfoFactoryClass  = rs.getString(i);
 //				Feature Request FR [ 2003044 ]
 				else if (columnName.equalsIgnoreCase("IsAutocomplete"))
 					vo.IsAutocomplete  = "Y".equals(rs.getString(i));
@@ -639,8 +634,6 @@ public class GridFieldVO implements Serializable
 				IsParent, ValidationCode);
 			if (lookupInfo == null)
 				displayType = DisplayType.ID;
-			else
-				lookupInfo.InfoFactoryClass = this.InfoFactoryClass;
 		}
 		catch (Exception e)     //  Cannot create Lookup
 		{

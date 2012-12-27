@@ -47,7 +47,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -322,10 +321,11 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			actionButton(text);
 			return;
 		}
-		text = text.toUpperCase();
+//		text = text.toUpperCase();
 		log.config(getColumnName() + " - " + text);
 
 		//	Exact first
+		/*
 		PreparedStatement pstmt = null;
 		String finalSQL = Msg.parseTranslation(Env.getCtx(), getDirectAccessSQL(text));
 		int id = -3;
@@ -383,17 +383,31 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		catch (Exception e)
 		{
 		}
-
+		*/
+		
+		int id = -3;
+		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), false, getWhereClause());
+		if (ip != null && ip.loadedOK() && ip.getRowCount() == 1)
+		{
+			Integer key = ip.getFirstRowKey();
+			if (key != null && key.intValue() > 0)
+			{
+				id = key.intValue();
+			}
+		}
+		
 		//	No (unique) result
 		if (id <= 0)
 		{
-			if (id == -3)
-				log.fine(getColumnName() + " - Not Found - " + finalSQL);
-			else
-				log.fine(getColumnName() + " - Not Unique - " + finalSQL);
-
 			//m_value = null;	// force re-display
-			actionButton(getComponent().getText());
+			if (ip != null && ip.loadedOK()) 
+			{
+				showInfoPanel(ip);
+			}
+			else
+			{
+				actionButton(getComponent().getText());
+			}
 			return;
 		}
 		log.fine(getColumnName() + " - Unique ID=" + id);
@@ -512,6 +526,11 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			getDirectAccessSQL("*");
 
 		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, queryValue, false, whereClause);
+		showInfoPanel(ip);
+	}
+
+
+	protected void showInfoPanel(final InfoPanel ip) {
 		ip.setVisible(true);
 		ip.setStyle("border: 2px");
 		ip.setClosable(true);
@@ -566,6 +585,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		m_tableName = m_columnName.substring(0, m_columnName.length()-3);
 		m_keyColumnName = m_columnName;
 
+		//TODO: check info window definition
 		if (m_columnName.equals("M_Product_ID"))
 		{
 			//	Reset

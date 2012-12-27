@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.minigrid;
 
+import org.compiere.model.GridField;
+
 /**
  *  Info Column Details
  *
@@ -77,6 +79,7 @@ public class ColumnInfo
 	private boolean     m_readOnly;
 	private boolean     m_colorColumn;
 	private String      m_keyPairColSQL = "";
+	private GridField m_gridField;
 
 	/**
 	 * 	Get Col Class
@@ -190,5 +193,15 @@ public class ColumnInfo
 	public boolean isKeyPairCol()
 	{
 		return m_keyPairColSQL.length() > 0;
+	}
+	
+	public void setGridField(GridField gridField) 
+	{
+		m_gridField = gridField;
+	}
+	
+	public GridField getGridField()
+	{
+		return m_gridField;
 	}
 }   //  infoColumn

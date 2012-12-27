@@ -763,7 +763,33 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		return null;
 	}   //  getSelectedRowKey
 
+	public Integer getFirstRowKey()
+	{
+		if (m_layout == null)
+		{
+			throw new UnsupportedOperationException("Layout not defined");
+		}
+		
+		if (getRowCount() <= 0)
+		{
+			return null;
+		}
+		
+		Object data = getModel().getDataAt(0, m_keyColumnIndex);
 
+		if (data instanceof IDColumn)
+		{
+			data = ((IDColumn)data).getRecord_ID();
+		}
+		
+		if (data instanceof Integer)
+		{
+			return (Integer)data;
+		}
+		
+		return null;
+	}
+	
 	/**
      * Returns the index of the first selected row, -1 if no row is selected.
      *
