@@ -223,18 +223,6 @@ DataStatusListener, IADTabpanel, IdSpace
 		}
     }
     
-    public Component removeDetails() {
-    	Component details = null;
-		if (detailPane != null) {
-			if (detailPane.getParent() != null) {
-				details = detailPane;
-				detailPane.detach();
-			}
-			detailPane = null;
-		}
-    	return details;
-    }
-
     /**
      *
      * @param winPanel
@@ -1218,7 +1206,13 @@ DataStatusListener, IADTabpanel, IdSpace
 	public void setDetailPaneMode(boolean detailPaneMode) {
 		this.detailPaneMode = detailPaneMode;
 		if (detailPaneMode) {
-			detailPane = null;		
+			detailPane = null;
+			if (formContainer instanceof Borderlayout) {
+				Borderlayout borderLayout = (Borderlayout) formContainer;
+				if (borderLayout.getSouth() != null) {
+					borderLayout.getSouth().detach();
+				}
+			}
 		} 
 		this.setVflex("true");
 		listPanel.setDetailPaneMode(detailPaneMode);

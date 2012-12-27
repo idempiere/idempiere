@@ -209,7 +209,6 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				if (linkPopup != null  ) {
-					System.out.println(linkPopup.getPage());
 					if (linkPopup.getPage() != null && linkPopup.isVisible()) {
 						return;
 					}

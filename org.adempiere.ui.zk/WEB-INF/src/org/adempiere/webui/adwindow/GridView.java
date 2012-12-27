@@ -155,7 +155,6 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 		
 		setStyle(HEADER_GRID_STYLE);
 		gridFooter.setStyle(HEADER_GRID_STYLE);
-		setSpacing("2px");
 	}
 
 	protected void createListbox() {
@@ -171,13 +170,6 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 		this.detailPaneMode = detailPaneMode;
 		pageSize =  detailPaneMode ? DEFAULT_DETAIL_PAGE_SIZE : MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 20);
 		updatePaging();
-		if (detailPaneMode) {
-			setStyle("");
-			gridFooter.setStyle("");
-		} else {
-			setStyle(HEADER_GRID_STYLE);
-			gridFooter.setStyle(HEADER_GRID_STYLE);
-		}
 	}
 
 	public boolean isDetailPaneMode() {
@@ -371,18 +363,6 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 	public void clear()
 	{
 		this.getChildren().clear();
-	}
-
-	/**
-	 * toggle visibility
-	 * @param bool
-	 */
-	public void showGrid(boolean bool)
-	{
-		if (bool)
-			this.setVisible(true);
-		else
-			this.setVisible(false);
 	}
 
 	private void setupColumns()
