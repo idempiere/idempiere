@@ -386,6 +386,10 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		*/
 		
 		int id = -3;
+		
+		if (m_tableName == null)	//	sets table name & key column
+			getDirectAccessSQL("*");
+		
 		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), false, getWhereClause());
 		if (ip != null && ip.loadedOK() && ip.getRowCount() == 1)
 		{
