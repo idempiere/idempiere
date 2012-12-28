@@ -42,7 +42,6 @@ import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
@@ -134,7 +133,7 @@ public class ExportAction implements EventListener<Event>
 			confirmPanel.addActionListener(this);
 		}
 
-		Clients.showBusy(panel.getComponent(), " ");
+		Clients.showBusy(panel.getComponent().getParent(), " ");
 		panel.getComponent().getParent().appendChild(winExportFile);
 		LayoutUtils.openOverlappedWindow(panel.getComponent(), winExportFile, "middle_center");
 		winExportFile.addEventListener(DialogEvents.ON_WINDOW_CLOSE, this);
@@ -147,8 +146,8 @@ public class ExportAction implements EventListener<Event>
 		else if(event.getTarget().getId().equals(ConfirmPanel.A_OK))
 			exportFile();
 		else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
-			Clients.clearBusy(panel.getComponent());
-			Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, panel.getComponent()));
+			Clients.clearBusy(panel.getComponent().getParent());			
+			panel.getComponent().invalidate();
 		}
 	}
 

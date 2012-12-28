@@ -172,7 +172,7 @@ public class FileImportAction implements EventListener<Event>
 			confirmPanel.addActionListener(this);
 		}
 
-		Clients.showBusy(panel.getComponent(), " ");
+		Clients.showBusy(panel.getComponent().getParent(), " ");
 		panel.getComponent().getParent().appendChild(winImportFile);
 		LayoutUtils.openOverlappedWindow(panel.getComponent(), winImportFile, "middle_center");
 		winImportFile.addEventListener(DialogEvents.ON_WINDOW_CLOSE, this);
@@ -202,8 +202,8 @@ public class FileImportAction implements EventListener<Event>
 				return;
 			importFile();
 		} else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
-			Clients.clearBusy(panel.getComponent());
-			Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, panel.getComponent()));
+			Clients.clearBusy(panel.getComponent().getParent());
+			panel.getComponent().invalidate();
 		}
 	}
 

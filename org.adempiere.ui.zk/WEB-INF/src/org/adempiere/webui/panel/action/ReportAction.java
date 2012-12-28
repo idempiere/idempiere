@@ -57,6 +57,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -173,7 +174,7 @@ public class ReportAction implements EventListener<Event>
 			winReport.onClose();
 		else if(event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
 			winReport.setVisible(false);
-			Clients.showBusy(panel.getComponent(), null);
+			Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"));
 			Events.echoEvent("onValidate", winReport, null);
 		}
 		else if(event.getTarget() == cboPrintFormat)
@@ -189,7 +190,8 @@ public class ReportAction implements EventListener<Event>
 			cboExportType.setVisible(chkExport.isChecked());
 		else if (event.getName().equals("onValidate")) {
 			validate();
-			Clients.clearBusy(panel.getComponent());
+			Clients.clearBusy();
+			panel.getComponent().invalidate();
 		}
 	}
 	
@@ -298,8 +300,10 @@ public class ReportAction implements EventListener<Event>
 	
 	private void print(ReportEngine re)
 	{
-		winReport.onClose();
+		winReport.onClose();		
 		ReportCtl.preview(re);
+		Tabpanel tabPanel = (Tabpanel) panel.getComponent().getParent();
+		tabPanel.getLinkedTab().setSelected(true);
 	}
 	
 	private void export(ReportEngine re) 

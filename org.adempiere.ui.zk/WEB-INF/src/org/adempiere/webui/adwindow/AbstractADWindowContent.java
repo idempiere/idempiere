@@ -438,12 +438,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						GridTab pTab = gridWindow.getTab(entry.getKey());
 						Object[] value = entry.getValue();
 						MQuery pquery = new MQuery(pTab.getAD_Table_ID());
-						pquery.addRestriction((String)value[0], "=", value[1]);
+						pquery.addRestriction((String)value[0], "=", value[1]);						
 						pTab.setQuery(pquery);
 						IADTabpanel tp = adTabbox.findADTabpanel(pTab);
         				tp.createUI();
         				tp.query();
-					}
+        			}
 
 					MQuery targetQuery = new MQuery(gTab.getAD_Table_ID());
 					targetQuery.addRestriction(gTab.getLinkColumnName(), "=", parentId);
@@ -866,11 +866,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		win.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				Clients.clearBusy(getComponent());
+				Clients.clearBusy(getComponent().getParent());
+				getComponent().invalidate();
 			}
 		});
 		getComponent().getParent().appendChild(win);
-		Clients.showBusy(getComponent(), " ");
+		Clients.showBusy(getComponent().getParent(), " ");
 		LayoutUtils.openOverlappedWindow(getComponent(), win, "middle_center");
 	}
 
@@ -906,11 +907,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			public void onEvent(Event event) throws Exception {
 				toolbar.getButton("Chat").setPressed(adTabbox.getSelectedGridTab().hasChat());
 				focusToActivePanel();
-				Clients.clearBusy(getComponent());
+				Clients.clearBusy(getComponent().getParent());
+				getComponent().invalidate();
 			}
 		});
     	getComponent().getParent().appendChild(chat);
-    	Clients.showBusy(getComponent(), " ");
+    	Clients.showBusy(getComponent().getParent(), " ");
     	LayoutUtils.openOverlappedWindow(getComponent(), chat, "middle_center");
     	chat.showWindow();
     }
@@ -979,14 +981,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	}
     	else if (event.getTarget() instanceof ProcessModalDialog)
     	{
-    		Clients.clearBusy(getComponent());
+    		Clients.clearBusy(getComponent().getParent());
     		ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
     		onModalClose(dialog.getProcessInfo());
     		String s = breadCrumb.getStatusLine(); 
     		boolean b = breadCrumb.getStatusError();
     		ProcessInfoLog[] logs = breadCrumb.getPLogs();
     		onRefresh(true, false);
-    		breadCrumb.setStatusLine(s, b, logs);       		
+    		breadCrumb.setStatusLine(s, b, logs);       	
+    		getComponent().invalidate();
     	}
     	else if (ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT.equals(event.getName()))
     	{
@@ -1577,7 +1580,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	findWindow.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
-					Clients.clearBusy(getComponent());
+					Clients.clearBusy(getComponent().getParent());
+					getComponent().invalidate();
 					if (!findWindow.isCancel())
 			        {
 				        MQuery query = findWindow.getQuery();
@@ -1605,7 +1609,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         }
         findWindow.setTitle(null);
         getComponent().getParent().appendChild(findWindow);
-        Clients.showBusy(getComponent(), " ");
+        Clients.showBusy(getComponent().getParent(), " ");
         LayoutUtils.openOverlappedWindow(toolbar, findWindow, "after_start");
 	}
 
@@ -2050,11 +2054,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			@Override
 			public void onEvent(Event event) throws Exception {				
 				focusToActivePanel();
-				Clients.clearBusy(getComponent());
+				Clients.clearBusy(getComponent().getParent());
+				getComponent().invalidate();
 			}
 		});
 		getComponent().getParent().appendChild(messagePanel);
-		Clients.showBusy(getComponent(), " ");
+		Clients.showBusy(getComponent().getParent(), " ");
 		LayoutUtils.openOverlappedWindow(getComponent(), messagePanel, "middle_center");
 	}
 	//
@@ -2086,7 +2091,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					if (dialog.isValid()) {
 						dialog.setWidth("500px");
 						dialog.setBorder("normal");
-						Clients.showBusy(getComponent(), " ");
+						Clients.showBusy(getComponent().getParent(), " ");
 						getComponent().getParent().appendChild(dialog);
 						LayoutUtils.openOverlappedWindow(getComponent(), dialog, "middle_center");
 					}
@@ -2358,8 +2363,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				getComponent().getParent().appendChild(win);
 				win.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 					public void onEvent(Event event) throws Exception {
-						Clients.clearBusy(getComponent());						
-						if (!win.isStartProcess()) {
+						Clients.clearBusy(getComponent().getParent());
+						getComponent().invalidate();
+						if (!win.isStartProcess()) {							
 							return;
 						}
 						boolean startWOasking = true;
@@ -2367,7 +2373,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						executeButtonProcess(wButton, startWOasking, table_ID, recordIdParam, isProcessMandatory);
 					}
 				});
-				Clients.showBusy(getComponent(), " ");
+				Clients.showBusy(getComponent().getParent(), " ");
 				LayoutUtils.openOverlappedWindow(getComponent(), win, "middle_center");
 				return;
 			}
@@ -2383,7 +2389,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			{
 				if(cf.isInitOK())
 				{
-					Clients.showBusy(getComponent(), " ");
+					Clients.showBusy(getComponent().getParent(), " ");
 					final WCreateFromWindow window = (WCreateFromWindow) cf.getWindow();
 					window.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(window.getTitle()));
 					window.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
@@ -2392,7 +2398,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 							if (!window.isCancel()) {
 								onRefresh(true, false);
 							}
-							Clients.clearBusy(getComponent());
+							Clients.clearBusy(getComponent().getParent());
+							getComponent().invalidate();
 						}
 					});
 					getComponent().getParent().appendChild(window);
@@ -2538,11 +2545,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					@Override
 					public void onEvent(Event event) throws Exception {						
 						onRefresh(true, false);
-						Clients.clearBusy(getComponent());
+						Clients.clearBusy(getComponent().getParent());
+						getComponent().invalidate();
 					}
 				});
 				getComponent().getParent().appendChild(form);
-				Clients.showBusy(getComponent(), " ");
+				Clients.showBusy(getComponent().getParent(), " ");
 				LayoutUtils.openOverlappedWindow(getComponent(), form, "middle_center");
 			}
 			else {
@@ -2557,7 +2565,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			{
 				dialog.setWidth("500px");
 				dialog.setBorder("normal");
-				Clients.showBusy(getComponent(), " ");
+				Clients.showBusy(getComponent().getParent(), " ");
 				getComponent().getParent().appendChild(dialog);
 				LayoutUtils.openOverlappedWindow(getComponent(), dialog, "middle_center");
 			}
@@ -2703,11 +2711,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
-					Clients.clearBusy(getComponent());
+					Clients.clearBusy(getComponent().getParent());
+					getComponent().invalidate();
 				}
 			});
 			getComponent().getParent().appendChild(dialog);
-			Clients.showBusy(getComponent(), " ");
+			Clients.showBusy(getComponent().getParent(), " ");
 			LayoutUtils.openOverlappedWindow(this.getComponent(),dialog,"middle_center");
 		}
 		

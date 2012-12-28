@@ -367,7 +367,7 @@ public class InvoicePrint extends SvrProcess
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}
 		} else if (pdfList.size() > 0) {
-			Clients.clearBusy(null);
+			Clients.clearBusy();
 			try {
 				Window win = new SimplePDFViewer(this.getName(), new FileInputStream(pdfList.get(0)));
 				win.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
