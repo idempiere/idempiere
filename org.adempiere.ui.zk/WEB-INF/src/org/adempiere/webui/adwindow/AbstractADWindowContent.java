@@ -439,11 +439,20 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						Object[] value = entry.getValue();
 						MQuery pquery = new MQuery(pTab.getAD_Table_ID());
 						pquery.addRestriction((String)value[0], "=", value[1]);						
-						pTab.setQuery(pquery);
 						IADTabpanel tp = adTabbox.findADTabpanel(pTab);
         				tp.createUI();
-        				tp.query();
-        			}
+        				if (tp.getTabLevel() == 0)
+        				{
+        					pTab.setQuery(pquery);
+        					tp.query();
+        				}
+        				else 
+        				{
+        					tp.query();
+        					pTab.setQuery(pquery);
+        					tp.query();
+        				}        				
+					}
 
 					MQuery targetQuery = new MQuery(gTab.getAD_Table_ID());
 					targetQuery.addRestriction(gTab.getLinkColumnName(), "=", parentId);
