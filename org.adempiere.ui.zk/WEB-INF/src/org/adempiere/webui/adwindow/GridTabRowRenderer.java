@@ -45,6 +45,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Paging;
@@ -251,11 +252,11 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		for (Entry<GridField, WEditor> entry : editors.entrySet()) {
 			if (entry.getValue().getComponent().getParent() != null) {
 				Component child = entry.getValue().getComponent();
-				Cell div = null;
+				Div div = null;
 				while (div == null && child != null) {
 					Component parent = child.getParent();
-					if (parent instanceof Cell && parent.getParent() instanceof Row)
-						div = (Cell)parent;
+					if (parent instanceof Div && parent.getParent() instanceof Row)
+						div = (Div)parent;
 					else
 						child = parent;
 				}
@@ -382,7 +383,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			}
 			colIndex ++;
 
-			Cell div = new Cell();
+			Div div = new Div();
 			String divStyle = CELL_DIV_STYLE;
 			org.zkoss.zul.Column column = (org.zkoss.zul.Column) columns.getChildren().get(colIndex);
 			if (column.isVisible()) {
@@ -482,7 +483,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 
 				org.zkoss.zul.Column column = (org.zkoss.zul.Column) columns.getChildren().get(colIndex);
 				if (column.isVisible()) {
-					Cell div = (Cell) currentRow.getChildren().get(colIndex);
+					Div div = (Div) currentRow.getChildren().get(colIndex);
 					div.getChildren().clear();
 					WEditor editor = getEditorCell(gridPanelFields[i]);
 					div.appendChild(editor.getComponent());
