@@ -998,3 +998,11 @@ tbody.z-grid-empty-body td {
 	border-right: 5px dashed transparent;
 	border-bottom: 5px solid transparent;
 }
+
+.grid-combobox-editor {
+	width: 96% !important;
+}
+
+.grid-combobox-editor input {
+	width: 85% !important;
+}

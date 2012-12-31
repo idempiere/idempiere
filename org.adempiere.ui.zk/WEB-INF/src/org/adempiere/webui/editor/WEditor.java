@@ -23,6 +23,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Datebox;
@@ -42,6 +43,7 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Textbox;
@@ -489,7 +491,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         	//can't stretch bandbox & datebox
         	if (!(getComponent() instanceof Bandbox) &&
         		!(getComponent() instanceof Datebox)) {
-        		String width = tableEditor ? "98%" : "100%";
+        		String width = tableEditor ? "96%" : "100%";
         		if (getComponent() instanceof Button) {
         			if (!tableEditor) {
 	        			Button btn = (Button) getComponent();
@@ -507,10 +509,19 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         			image.setWidth("24px");
         			image.setHeight("24px");
         		} else {
-        			if (getComponent() instanceof InputElement) {
-        				((InputElement)getComponent()).setHflex("1");
+        			if (!tableEditor) {
+	        			if (getComponent() instanceof InputElement) {
+	        				((InputElement)getComponent()).setHflex("1");
+	        			} else {
+	        				((HtmlBasedComponent)getComponent()).setWidth(width);
+	        			}
         			} else {
-        				((HtmlBasedComponent)getComponent()).setWidth(width);
+        				if (getComponent() instanceof Combobox) {
+        					LayoutUtils.addSclass("grid-combobox-editor", (HtmlBasedComponent)getComponent());
+	        			} else {
+	        				((HtmlBasedComponent)getComponent()).setWidth(width);
+	        			}
+        					
         			}
         			
         			if (getComponent() instanceof Textbox && tableEditor) {
