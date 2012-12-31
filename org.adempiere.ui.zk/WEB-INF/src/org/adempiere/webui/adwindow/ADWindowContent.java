@@ -36,12 +36,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
-import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.Vlayout;
 
 /**
  *
@@ -58,9 +55,9 @@ public class ADWindowContent extends AbstractADWindowContent
     @SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(ADWindowContent.class);
 
-	private Borderlayout layout;
+    private Vlayout layout;
 
-	private Center contentArea;
+    private Div contentArea;
 
 	private Keylistener keyListener;	
 
@@ -71,7 +68,7 @@ public class ADWindowContent extends AbstractADWindowContent
 
    	protected Component doCreatePart(Component parent)
     {
-        layout = new Borderlayout();
+   		layout = new Vlayout();
         if (parent != null) {
 	        layout.setParent(parent);
 	        layout.setSclass("adwindow-layout");
@@ -80,14 +77,13 @@ public class ADWindowContent extends AbstractADWindowContent
         }
 
         //toolbar
-        North n = new North();
-        n.setParent(layout);
-        n.setCollapsible(false);
-        n.setSclass("adwindow-north");
+        Div north = new Div();
+        north.setParent(layout);        
+        north.setSclass("adwindow-north");
         Div div = new Div();
-        div.setHflex("1");
-        div.setVflex("1");
-        n.appendChild(div);
+        div.setStyle("height: 100%; width: 100%");
+        north.appendChild(div);
+        north.setVflex("0");
         toolbar.setParent(div);
         toolbar.setWindowNo(getWindowNo());
         breadCrumb = new BreadCrumb(getWindowNo());
@@ -96,18 +92,21 @@ public class ADWindowContent extends AbstractADWindowContent
         div.appendChild(breadCrumb);
 
         //status bar
-        South s = new South();
-        layout.appendChild(s);
-        s.setCollapsible(false);
-        s.setSclass("adwindow-south");
-        statusBar.setParent(s);
+        Div south = new Div();        
+        south.setSclass("adwindow-south");
+        south.setVflex("0");
+        statusBar.setParent(south);
         
         LayoutUtils.addSclass("adwindow-status", statusBar);
 
-        contentArea = new Center();
+        contentArea = new Div();
         contentArea.setParent(layout);
-        contentArea.setAutoscroll(true);
+        contentArea.setVflex("1");
+        contentArea.setHflex("1");
+        contentArea.setStyle("overflow: auto;");
         adTabbox.createPart(contentArea);
+        
+        layout.appendChild(south);
 
         if (parent instanceof Tabpanel) {
         	TabOnCloseHanlder handler = new TabOnCloseHanlder();
@@ -132,7 +131,7 @@ public class ADWindowContent extends AbstractADWindowContent
     	return composite;
     }
 
-	public Borderlayout getComponent() {
+	public Vlayout getComponent() {
 		return layout;
 	}
 

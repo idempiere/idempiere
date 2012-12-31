@@ -189,6 +189,7 @@ DataStatusListener, IADTabpanel, IdSpace
 				removeAttribute(ATTR_ON_ACTIVATE_POSTED);
 			}
 		});
+        addEventListener("onPostInit", this);
     }
 
     private void initComponents()
@@ -929,6 +930,11 @@ DataStatusListener, IADTabpanel, IdSpace
     	}
     	else if (WPaymentEditor.ON_SAVE_PAYMENT.equals(event.getName())) {
     		windowPanel.onSavePayment();
+    	}
+    	else if ("onPostInit".equals(event.getName())) {
+    		if (detailPane != null) {
+    			Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, detailPane));
+    		}
     	}
     }
 

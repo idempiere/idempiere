@@ -106,6 +106,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		
 		addEventListener(LayoutUtils.ON_REDRAW_EVENT, this);
 		
+		addEventListener("onPostInit", this);
+		
 		setId("detailPane");
 	}
 	
@@ -405,6 +407,13 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 				return;
 			}
 			LayoutUtils.redraw(this);
+		} else if (event.getName().equals("onPostInit")) {
+			IADTabpanel adtabpanel = getSelectedADTabpanel();
+			if (adtabpanel != null) {
+				GridView gridView = adtabpanel.getGridView();
+				if (gridView != null && gridView.getListbox() != null)
+					Clients.resize(gridView.getListbox());
+			}
 		}
 	}
 	

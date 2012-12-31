@@ -267,8 +267,15 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .menu-search-panel .z-comboitem-img { 
-	vertical-align:top; 
 	padding-bottom:4px; 
+}
+
+.z-comboitem-img { 
+	vertical-align:top; 
+}
+
+.z-combobox input {
+	vertical-align:top;
 }
 
 .menu-panel .z-toolbar-panel {
@@ -477,16 +484,18 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .adwindow-north {
+	height: 56px;
+	width: 100%;
+	padding: 0px;
+	margin: 0px;
 	border: none;
-	border-bottom: 1px solid #C5C5C5 !important;
 }
 
 .adwindow-south {
-	border-left: none;
-	border-right: none;
-}
-
-.adwindow-layout .z-south {
+	height: 20px;
+	width: 100%;
+	padding: 0px;
+	margin: 0px;
 	border-top: 1px solid #C5C5C5 !important;
 }
 
@@ -497,12 +506,15 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .adwindow-toolbar {
 	border: 0px;
+	height: 26px;
 }
 
 .adwindow-breadcrumb {
 	height: 30px;
 	background-color: #FFF;
+	padding: 0px;
 	padding-left: 5px;
+	border-bottom: 1px solid #C5C5C5 !important;
 }
 
 .adwindow-detailpane {
