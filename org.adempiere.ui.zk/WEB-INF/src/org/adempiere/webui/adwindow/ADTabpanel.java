@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Borderlayout;
@@ -931,7 +932,7 @@ DataStatusListener, IADTabpanel, IdSpace
     	else if (WPaymentEditor.ON_SAVE_PAYMENT.equals(event.getName())) {
     		windowPanel.onSavePayment();
     	}
-    	else if ("onPostInit".equals(event.getName())) {
+    	else if ("onPostInit".equals(event.getName())) {    		
     		if (detailPane != null) {
     			Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, detailPane));
     		}
@@ -985,7 +986,9 @@ DataStatusListener, IADTabpanel, IdSpace
         //  Process Callout
         GridField mField = gridTab.getField(col);
         if (mField != null
-            && (mField.getCallout().length() > 0 || gridTab.hasDependants(mField.getColumnName())))
+            && (mField.getCallout().length() > 0
+            		|| (Core.findCallout(gridTab.getTableName(), mField.getColumnName())).size()>0
+            		|| gridTab.hasDependants(mField.getColumnName())))
         {
             String msg = gridTab.processFieldChange(mField);     //  Dependencies & Callout
             if (msg.length() > 0)
