@@ -522,6 +522,14 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	overflow-y: visible;
 }
 
+.adwindow-detailpane-tabbox .z-tab-seld span.z-tab-text {
+	cursor: pointer;
+}
+
+.adwindow-detailpane-tabbox .z-tab-seld span.z-tab-text:hover {
+	text-decoration: underline;
+}
+
 .adwindow-detailpane-tabpanel {
 	background-color: #fff
 }

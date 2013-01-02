@@ -246,25 +246,30 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 						ctrl = ExecutionsCtrl.getCurrentCtrl();
 						((DesktopCtrl)Executions.getCurrent().getDesktop()).setVisualizer(vi);
 
-						//detach root component from old page
+						//detach root component from old page						
 						Page page = appDesktop.getComponent().getPage();
-						Collection<?> collection = page.getRoots();
-						Object[] objects = new Object[0];
-						objects = collection.toArray(objects);
-						for(Object obj : objects) {
-							try {
-								if (obj instanceof Component) {
-									((Component)obj).detach();
-									rootComponents.add((Component) obj);
+						if (page.getDesktop() != null) {
+							Collection<?> collection = page.getRoots();
+							Object[] objects = new Object[0];
+							objects = collection.toArray(objects);
+							for(Object obj : objects) {
+								try {
+									if (obj instanceof Component) {
+										((Component)obj).detach();
+										rootComponents.add((Component) obj);
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
 								}
-							} catch (Exception e) {
-//								e.printStackTrace();
 							}
+							appDesktop.getComponent().detach();
+							
+							DesktopCache desktopCache = ((SessionCtrl)currSess).getDesktopCache();
+							if (desktopCache != null)
+								desktopCache.removeDesktop(Executions.getCurrent().getDesktop());
+						} else {
+							appDesktop = null;
 						}
-						appDesktop.getComponent().detach();
-						DesktopCache desktopCache = ((SessionCtrl)currSess).getDesktopCache();
-						if (desktopCache != null)
-							desktopCache.removeDesktop(Executions.getCurrent().getDesktop());
 					} catch (Exception e) {
 						e.printStackTrace();
 						appDesktop = null;

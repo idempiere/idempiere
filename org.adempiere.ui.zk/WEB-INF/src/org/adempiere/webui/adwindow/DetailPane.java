@@ -46,6 +46,8 @@ import org.zkoss.zul.Toolbar;
  */
 public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 
+	private static final String TABBOX_ONSELECT_ATTRIBUTE = "detailpane.tabbox.onselect";
+
 	public static final String ON_POST_SELECT_TAB_EVENT = "onPostSelectTab";
 
 	private static final String STATUS_TEXT_ATTRIBUTE = "status.text";
@@ -95,7 +97,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				fireActivateDetailEvent();
-				Events.postEvent(new Event(ON_POST_SELECT_TAB_EVENT, DetailPane.this));				
+				Events.postEvent(new Event(ON_POST_SELECT_TAB_EVENT, DetailPane.this));			
+				Executions.getCurrent().setAttribute(TABBOX_ONSELECT_ATTRIBUTE, Boolean.TRUE);
 			}
 		});
 		tabbox.setSclass("adwindow-detailpane-tabbox");
@@ -104,10 +107,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		
 		this.setSclass("adwindow-detailpane");
 		
-		addEventListener(LayoutUtils.ON_REDRAW_EVENT, this);
-		
-		addEventListener("onPostInit", this);
-		
+		addEventListener(LayoutUtils.ON_REDRAW_EVENT, this);		
+				
 		setId("detailPane");
 	}
 	
@@ -154,12 +155,16 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			tab.setSclass("adwindow-detailpane-sub-tab");
 		}
 		
-		tab.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
+		tab.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				Tab tab = (Tab) event.getTarget();
 				if (!tab.isSelected()) 
 					return;
+				
+				if (Executions.getCurrent().getAttribute(TABBOX_ONSELECT_ATTRIBUTE) != null)
+					return;
+							
 				org.zkoss.zul.Tabpanel zkTabpanel = tab.getLinkedPanel();
 				IADTabpanel adtab = null;
 				for(Component c : zkTabpanel.getChildren()) {
@@ -169,7 +174,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 					}
 				}
 				if (adtab != null && adtab.isDetailPaneMode()) {
-					onEdit();
+					onEdit(false);
 				}
 			}
 		});
@@ -207,7 +212,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				onEdit();
+				onEdit(true);
 			}
 		});
 		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "EditRecord")));
@@ -259,7 +264,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 				public void onEvent(Event event) throws Exception {
 					GridView gridView = (GridView) event.getTarget();
 					if (gridView.isDetailPaneMode())
-						onEdit();
+						onEdit(true);
 				}				
 			});
 		}
@@ -407,14 +412,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 				return;
 			}
 			LayoutUtils.redraw(this);
-		} else if (event.getName().equals("onPostInit")) {
-			IADTabpanel adtabpanel = getSelectedADTabpanel();
-			if (adtabpanel != null) {
-				GridView gridView = adtabpanel.getGridView();
-				if (gridView != null && gridView.getListbox() != null)
-					Clients.resize(gridView.getListbox());
-			}
-		}
+		} 
 	}
 	
 	protected void createPopupContent(String status) {
@@ -518,8 +516,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         }
 	}
 
-	public void onEdit() throws Exception {
-		Event openEvent = new Event(ON_EDIT_EVENT, DetailPane.this);
+	public void onEdit(boolean formView) throws Exception {
+		Event openEvent = new Event(ON_EDIT_EVENT, DetailPane.this, Boolean.valueOf(formView));
 		eventListener.onEvent(openEvent);
 	}
 

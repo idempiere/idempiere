@@ -69,6 +69,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.IdSpace;
@@ -106,6 +107,8 @@ import org.zkoss.zul.impl.XulElement;
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
 DataStatusListener, IADTabpanel, IdSpace
 {
+	public static final String ON_POST_INIT_EVENT = "onPostInit";
+
 	public static final String ON_SWITCH_VIEW_EVENT = "onSwitchView";
 
 	public static final String ON_DYNAMIC_DISPLAY_EVENT = "onDynamicDisplay";
@@ -190,7 +193,7 @@ DataStatusListener, IADTabpanel, IdSpace
 				removeAttribute(ATTR_ON_ACTIVATE_POSTED);
 			}
 		});
-        addEventListener("onPostInit", this);
+        addEventListener(ON_POST_INIT_EVENT, this);
     }
 
     private void initComponents()
@@ -498,7 +501,10 @@ DataStatusListener, IADTabpanel, IdSpace
         			//stretch component to fill grid cell
         			editor.fillHorizontal();
         			
-        			editor.getComponent().setId(field.getColumnName());
+        			Component fellow = editor.getComponent().getFellowIfAny(field.getColumnName());
+        			if (fellow == null) {
+        				editor.getComponent().setId(field.getColumnName());
+        			}
 
         			//setup editor context menu
         			WEditorPopupMenu popupMenu = editor.getPopupMenu();
@@ -932,9 +938,14 @@ DataStatusListener, IADTabpanel, IdSpace
     	else if (WPaymentEditor.ON_SAVE_PAYMENT.equals(event.getName())) {
     		windowPanel.onSavePayment();
     	}
-    	else if ("onPostInit".equals(event.getName())) {    		
+    	else if (ON_POST_INIT_EVENT.equals(event.getName())) {    		
     		if (detailPane != null) {
-    			Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, detailPane));
+    			Desktop desktop = Executions.getCurrent().getDesktop();
+    			//for unknown reason, this is needed once per desktop to fixed the layout of the detailpane. 
+    			if (desktop.getAttribute("adtabpanel.detailpane.postinit.redraw") == null) {
+    				desktop.setAttribute("adtabpanel.detailpane.postinit.redraw", Boolean.TRUE);
+    				Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, detailPane));
+    			}
     		}
     	}
     }

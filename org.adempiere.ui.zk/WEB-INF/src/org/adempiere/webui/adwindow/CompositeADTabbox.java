@@ -87,11 +87,12 @@ public class CompositeADTabbox extends AbstractADTabbox
 					final int row = detailPane.getSelectedADTabpanel() != null 
 							? detailPane.getSelectedADTabpanel().getGridTab().getCurrentRow()
 							: 0;
+					final boolean formView = event.getData() != null ? (Boolean)event.getData() : true;
 					adWindowPanel.saveAndNavigate(new Callback<Boolean>() {
 						@Override
 						public void onCallback(Boolean result) {
 							if (result)
-								onEditDetail(row);
+								onEditDetail(row, formView);
 						}
 					});					
 				}
@@ -105,7 +106,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 						@Override
 						public void onCallback(Boolean result) {							
 							if (result) {
-								onEditDetail(row);
+								onEditDetail(row, true);
 								if (!adWindowPanel.getActiveGridTab().isNew())
 									adWindowPanel.onNew();
 							}
@@ -136,7 +137,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 		});    	
     }
 
-    protected void onEditDetail(int row) {
+    protected void onEditDetail(int row, boolean formView) {
 		int oldIndex = selectedIndex;
 		IADTabpanel selectedPanel = detailPane.getSelectedADTabpanel();
 		if (selectedPanel == null) return;
@@ -150,7 +151,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 		}
 
 		headerTab.setDetailPaneMode(false);
-		if (headerTab.isGridView()) {
+		if (formView && headerTab.isGridView()) {
 			headerTab.switchRowPresentation();
 		}
 		headerTab.getGridTab().setCurrentRow(row, true);
@@ -213,9 +214,6 @@ public class CompositeADTabbox extends AbstractADTabbox
 					if (b != null && b.booleanValue()) {
 						activateDetailADTabpanel();
 					}				
-					if (selectedIndex > 0 && tabPanel.isGridView()) {
-						tabPanel.switchRowPresentation();
-					}
 				} else {
 					onActivateDetail(tabPanel);
 				}
@@ -274,7 +272,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 				if (tabPanel == headerTab) {
 					adWindowPanel.onToggle();
 				} else {
-					detailPane.onEdit();
+					detailPane.onEdit(true);
 				}
 				
 			}
@@ -285,7 +283,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 				@Override
 				public void onEvent(Event event) throws Exception {
 					GridView gridView = (GridView) event.getTarget();
-					if (gridView.getParent() == headerTab) {
+					if (!gridView.isDetailPaneMode()) {
 						adWindowPanel.onToggle();
 					}
 				}				
@@ -549,7 +547,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 	public void onDetailRecord() {
 		if (detailPane != null && detailPane.getSelectedADTabpanel() != null) {
 			try {
-				detailPane.onEdit();
+				detailPane.onEdit(false);
 			} catch (Exception e) {}
 		}
 	}
