@@ -41,6 +41,7 @@ import javax.swing.event.EventListenerList;
 import org.adempiere.base.Core;
 import org.adempiere.base.IColumnCallout;
 import org.adempiere.base.Service;
+import org.adempiere.base.ServiceQuery;
 import org.adempiere.util.ContextRunnable;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
@@ -2798,7 +2799,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					{
 						String className = cmd.substring(0,methodStart);
 						//first, check matching extension id in extension registry
-						call = Service.locator().locate(Callout.class, className).getService();
+						call = Service.locator().locate(Callout.class, className, (ServiceQuery)null).getService();
 						if (call == null) {
 							//no match from extension registry, check java classpath
 							Class<?> cClass = Class.forName(className);
