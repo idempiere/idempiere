@@ -18,9 +18,12 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.util.Env;
+import org.compiere.util.Evaluatee;
+import org.compiere.util.Evaluator;
 
 /**
  * 	Info Window Column Model
@@ -91,4 +94,44 @@ public class MInfoColumn extends X_AD_InfoColumn
 		}
 		return true;
 	}
+
+	/**
+	 * @param ctx
+	 * @param windowNo
+	 * @return boolean
+	 */
+	public boolean isDisplayed(final Properties ctx, final int windowNo) {
+		if (!isDisplayed())
+			return false;
+		
+		if (getDisplayLogic() == null || getDisplayLogic().trim().length() == 0)
+			return true;
+		
+		Evaluatee evaluatee = new Evaluatee() {
+			public String get_ValueAsString(String variableName) {
+				return Env.getContext (ctx, windowNo, variableName, true);
+			}
+		};
+		
+		boolean retValue = Evaluator.evaluateLogic(evaluatee, getDisplayLogic());
+		if (log.isLoggable(Level.FINEST)) {
+			log.finest(getName() 
+					+ " (" + getDisplayLogic() + ") => " + retValue);
+		}
+		return retValue;
+	}
+
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		// Sync Terminology
+		if ((newRecord || is_ValueChanged ("AD_Element_ID")) 
+			&& getAD_Element_ID() != 0 && isCentrallyMaintained())
+		{
+			M_Element element = new M_Element (getCtx(), getAD_Element_ID (), get_TrxName());
+			setName (element.getName());
+		}
+		return true;
+	}
+	
+	
 }	//	MInfoColumn

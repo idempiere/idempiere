@@ -374,7 +374,7 @@ public class MLookupFactory
 			+ "cd.ColumnName AS DisplayColumn,rt.IsValueDisplayed,cd.IsTranslated,"	//	3..5
 			+ "rt.WhereClause,rt.OrderByClause,t.AD_Window_ID,t.PO_Window_ID, "		//	6..9
 			+ "t.AD_Table_ID, cd.ColumnSQL as DisplayColumnSQL, "					//	10..11
-			+ "rt.AD_Window_ID as RT_AD_Window_ID " // 12
+			+ "rt.AD_Window_ID as RT_AD_Window_ID, rt.AD_InfoWindow_ID as AD_InfoWindow_ID " // 12..13
 			+ "FROM AD_Ref_Table rt"
 			+ " INNER JOIN AD_Table t ON (rt.AD_Table_ID=t.AD_Table_ID)"
 			+ " INNER JOIN AD_Column ck ON (rt.AD_Key=ck.AD_Column_ID)"
@@ -389,6 +389,7 @@ public class MLookupFactory
 		int ZoomWindow = 0;
 		int ZoomWindowPO = 0;
 		int overrideZoomWindow = 0;
+		int infoWindowId = 0;
 		//int AD_Table_ID = 0;
 		boolean loaded = false;
 
@@ -413,6 +414,7 @@ public class MLookupFactory
 				//AD_Table_ID = rs.getInt(10);
 				displayColumnSQL = rs.getString(11);
 				overrideZoomWindow = rs.getInt(12);
+				infoWindowId = rs.getInt(13);
 				loaded = true;
 			}
 		}
@@ -560,6 +562,7 @@ public class MLookupFactory
 		retValue = new MLookupInfo (realSQL.toString(), TableName,
 			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
 		retValue.DisplayColumn = lookupDisplayColumn;		
+		retValue.InfoWindowId = infoWindowId;
 		s_cacheRefTable.put(key.toString(), retValue.cloneIt());
 		return retValue;
 	}	//	getLookup_Table

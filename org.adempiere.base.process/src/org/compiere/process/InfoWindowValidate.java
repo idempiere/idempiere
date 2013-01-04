@@ -16,6 +16,12 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.sql.PreparedStatement;
+
+import org.compiere.model.MInfoColumn;
+import org.compiere.model.MInfoWindow;
+import org.compiere.util.DB;
+
 /**
  * 	Validate Info Window SQL
  *	
@@ -25,7 +31,6 @@ package org.compiere.process;
 public class InfoWindowValidate extends SvrProcess
 {
 	/**	Info Window			*/
-	@SuppressWarnings("unused")
 	private int p_AD_InfoWindow_ID = 0;
 	
 	/**
@@ -44,7 +49,51 @@ public class InfoWindowValidate extends SvrProcess
 	protected String doIt ()
 		throws Exception
 	{
-		return null;
+		MInfoWindow infoWindow = new MInfoWindow(getCtx(), p_AD_InfoWindow_ID, (String)null);
+		StringBuilder builder = new StringBuilder("SELECT ");
+		if (infoWindow.isDistinct())
+			builder.append("DISTINCT ");
+		
+		MInfoColumn[] infoColumns = infoWindow.getInfoColumns();
+		if (infoColumns.length == 0) 
+			throw new Exception("NoColumns");
+		
+		for (int columnIndex = 0; columnIndex < infoColumns.length; columnIndex++) {
+			if (columnIndex > 0)
+            {
+                builder.append(", ");
+            }
+			builder.append(infoColumns[columnIndex].getSelectClause());
+		}
+		
+		builder.append( " FROM ").append(infoWindow.getFromClause());
+		if (infoWindow.getWhereClause() != null && infoWindow.getWhereClause().trim().length() > 0) {
+			builder.append(" WHERE ").append(infoWindow.getWhereClause());
+		}
+		
+		if (infoWindow.getOtherClause() != null && infoWindow.getOtherClause().trim().length() > 0) {
+			builder.append(" ").append(infoWindow.getOtherClause());
+		}
+		
+		while(builder.indexOf("@") >= 0) {
+			int start = builder.indexOf("@");
+			int end = builder.indexOf("@", start+1);
+			if (start >=0 && end > start) {
+				builder.replace(start, end+1, "0");
+			} else {
+				break;
+			}
+		}
+		
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = DB.prepareStatement(builder.toString(), get_TrxName());
+			pstmt.executeQuery();
+		} finally {
+			DB.close(pstmt);
+		}
+		
+		return "Ok";
 	}	//	doIt
 	
 }	//	InfoWindowValidate

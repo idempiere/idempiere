@@ -321,71 +321,10 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			actionButton(text);
 			return;
 		}
-//		text = text.toUpperCase();
-		log.config(getColumnName() + " - " + text);
+		if (log.isLoggable(Level.CONFIG))
+			log.config(getColumnName() + " - " + text);
 
-		//	Exact first
-		/*
-		PreparedStatement pstmt = null;
-		String finalSQL = Msg.parseTranslation(Env.getCtx(), getDirectAccessSQL(text));
-		int id = -3;
-
-		try
-		{
-			pstmt = DB.prepareStatement(finalSQL, null);
-			ResultSet rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				id = rs.getInt(1);		//	first
-				if (rs.next())
-					id = -1;			//	only if unique
-			}
-			rs.close();
-			pstmt.close();
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, finalSQL, e);
-			id = -2;
-		}
-
-		//	Try like
-		if (id == -3 && !text.endsWith("%"))
-		{
-			text += "%";
-			finalSQL = Msg.parseTranslation(Env.getCtx(), getDirectAccessSQL(text));
-
-			try
-			{
-				pstmt = DB.prepareStatement(finalSQL, null);
-				ResultSet rs = pstmt.executeQuery();
-				if (rs.next())
-				{
-					id = rs.getInt(1);		//	first
-					if (rs.next())
-						id = -1;			//	only if unique
-				}
-				rs.close();
-				pstmt.close();
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, finalSQL, e);
-				id = -2;
-			}
-		}
-
-		try
-		{
-			if (pstmt != null)
-				pstmt.close();
-		}
-		catch (Exception e)
-		{
-		}
-		*/
-		
-		int id = -3;
+		int id = -1;
 		
 		if (m_tableName == null)	//	sets table name & key column
 			getDirectAccessSQL("*");
@@ -414,7 +353,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			}
 			return;
 		}
-		log.fine(getColumnName() + " - Unique ID=" + id);
+		if (log.isLoggable(Level.FINE))
+			log.fine(getColumnName() + " - Unique ID=" + id);
 
 		actionCombo(new Integer(id));          //  data binding
 		//m_text.requestFocus();
@@ -423,8 +363,9 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 	private void actionCombo (Object value)
 	{
-		log.fine("Value=" + value);
-
+		if (log.isLoggable(Level.FINE))
+			log.fine("Value=" + value);
+		
 		ValueChangeEvent evt = new ValueChangeEvent(this, this.getColumnName(), getValue(), value);
 		// -> ADTabpanel - valuechange
 		fireValueChange(evt);
@@ -518,7 +459,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		//  Zoom / Validation
 		String whereClause = getWhereClause();
 
-		log.fine(lookup.getColumnName() + ", Zoom=" + lookup.getZoom() + " (" + whereClause + ")");
+		if (log.isLoggable(Level.FINE))
+			log.fine(lookup.getColumnName() + ", Zoom=" + lookup.getZoom() + " (" + whereClause + ")");
 
 		// boolean resetValue = false;	// Reset value so that is always treated as new entry
 
@@ -559,12 +501,14 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				}
 				else if (cancelled)
 				{
-					log.config(getColumnName() + " - Result = null (cancelled)");
+					if (log.isLoggable(Level.CONFIG))
+						log.config(getColumnName() + " - Result = null (cancelled)");
 					actionCombo(null);
 				}
 				else
 				{
-					log.config(getColumnName() + " - Result = null (not cancelled)");
+					if (log.isLoggable(Level.CONFIG))
+						log.config(getColumnName() + " - Result = null (not cancelled)");
 				}
 			}
 		});
@@ -654,7 +598,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			sql.append(" AND IsActive='Y'");
 			//	***
 
-			log.finest(m_columnName + " (predefined) " + sql.toString());
+			if (log.isLoggable(Level.FINEST))
+				log.finest(m_columnName + " (predefined) " + sql.toString());
 
 			return MRole.getDefault().addAccessSQL(sql.toString(),
 				m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
@@ -727,7 +672,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 					//	***
 
-					log.finest(m_columnName + " (Table) " + sql.toString());
+					if (log.isLoggable(Level.FINEST))
+						log.finest(m_columnName + " (Table) " + sql.toString());
 
 					return MRole.getDefault().addAccessSQL(sql.toString(),
 								m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
@@ -799,7 +745,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if (wc != null && wc.length() > 0)
 			retValue.append(" AND ").append(wc);
 		//	***
-		log.finest(m_columnName + " (TableDir) " + sql.toString());
+		if (log.isLoggable(Level.FINEST))
+			log.finest(m_columnName + " (TableDir) " + sql.toString());
 		return MRole.getDefault().addAccessSQL(retValue.toString(),
 					m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 	}
@@ -835,7 +782,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				log.severe(getColumnName() + " - Cannot Parse=" + whereClause);
 			else
 			{
-				log.fine(getColumnName() + " - Parsed: " + validated);
+				if (log.isLoggable(Level.FINE))
+					log.fine(getColumnName() + " - Parsed: " + validated);
 				return validated;
 			}
 		}

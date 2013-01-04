@@ -63,7 +63,7 @@ public class MInfoWindow extends X_AD_InfoWindow
 		MTable table = MTable.get(Env.getCtx(), tableName);
 		if (table != null) {
 			return query.setParameters(table.getAD_Table_ID())
-					.setOrderBy("AD_Client_ID Desc, AD_Org_ID Desc, AD_InfoWidnow_ID Desc")
+					.setOrderBy("AD_Client_ID Desc, AD_Org_ID Desc, IsDefault Desc, AD_InfoWindow_ID Desc")
 					.setOnlyActiveRecords(true)
 					.setApplyAccessFilter(true)
 					.first();
@@ -83,6 +83,14 @@ public class MInfoWindow extends X_AD_InfoWindow
 		}
 		return list.toArray(new MInfoColumn[0]);
 	}
+	
+	public MInfoColumn[] getInfoColumns() {
+		Query query = new Query(getCtx(), MTable.get(getCtx(), I_AD_InfoColumn.Table_ID), I_AD_InfoColumn.COLUMNNAME_AD_InfoWindow_ID+"=?", get_TrxName());
+		List<MInfoColumn> list = query.setParameters(getAD_InfoWindow_ID())
+				.setOrderBy(I_AD_InfoColumn.COLUMNNAME_SeqNo)
+				.list();
+		return list.toArray(new MInfoColumn[0]);
+	}
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
@@ -99,7 +107,28 @@ public class MInfoWindow extends X_AD_InfoWindow
 			return false;
 		}
 		
+		//only one default per table
+		if (newRecord || is_ValueChanged("IsDefault")) {
+			if (isDefault()) {				
+				if (newRecord) {
+					Query query = new Query(getCtx(), MTable.get(getCtx(), Table_ID), 
+							"AD_Table_ID=? AND IsDefault='Y' AND AD_Client_ID=?", get_TrxName());
+					List<MInfoWindow> list = query.setParameters(getAD_Table_ID(),getAD_Client_ID()).list();
+					for(MInfoWindow iw : list) {
+						iw.setIsDefault(false);
+						iw.saveEx();
+					}
+				} else {
+					Query query = new Query(getCtx(), MTable.get(getCtx(), Table_ID), 
+							"AD_InfoWindow_ID<>? AND AD_Table_ID=? AND IsDefault='Y' AND AD_Client_ID=?", get_TrxName());
+					List<MInfoWindow> list = query.setParameters(getAD_InfoWindow_ID(), getAD_Table_ID(), getAD_Client_ID()).list();
+					for(MInfoWindow iw : list) {
+						iw.setIsDefault(false);
+						iw.saveEx();
+					}
+				}
+			}
+		}
 		return true;
 	}
-	
 }	//	MInfoWindow

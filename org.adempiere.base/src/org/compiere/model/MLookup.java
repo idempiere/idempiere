@@ -342,6 +342,14 @@ public final class MLookup extends Lookup implements Serializable
 	}   //  hasInactive
 
 	/**
+	 * @return AD_InfoWindow_ID
+	 */
+	public int getAD_InfoWindow_ID()
+	{
+		return m_info.InfoWindowId;
+	}
+	
+	/**
 	 *	Return info as ArrayList containing Value/KeyNamePair
 	 *  @param onlyValidated only validated
 	 * 	@param loadParent get Data even for parent lookups
@@ -639,13 +647,6 @@ public final class MLookup extends Lookup implements Serializable
 		return false;
 	}
 	
-	@Override
-	public String getInfoFactoryClass() {
-		return m_info.InfoFactoryClass != null ? m_info.InfoFactoryClass : "";
-	}
-
-
-
 	/**************************************************************************
 	 *	MLookup Loader
 	 */

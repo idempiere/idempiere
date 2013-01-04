@@ -26,9 +26,9 @@ public interface IInfoFactory {
 
 	public InfoPanel create (int WindowNo,
             String tableName, String keyColumn, String value,
-            boolean multiSelection, String whereClause, boolean lookup);
+            boolean multiSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup);
 
 	public InfoPanel create (Lookup lookup, GridField field,
             String tableName, String keyColumn, String value,
-            boolean multiSelection, String whereClause);
+            boolean multiSelection, String whereClause, int AD_InfoWindow_ID);
 }

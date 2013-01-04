@@ -129,6 +129,49 @@ public interface I_AD_InfoColumn
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
+    /** Column name AD_Reference_Value_ID */
+    public static final String COLUMNNAME_AD_Reference_Value_ID = "AD_Reference_Value_ID";
+
+	/** Set Reference Key.
+	  * Required to specify, if data type is Table or List
+	  */
+	public void setAD_Reference_Value_ID (int AD_Reference_Value_ID);
+
+	/** Get Reference Key.
+	  * Required to specify, if data type is Table or List
+	  */
+	public int getAD_Reference_Value_ID();
+
+	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException;
+
+    /** Column name AD_Val_Rule_ID */
+    public static final String COLUMNNAME_AD_Val_Rule_ID = "AD_Val_Rule_ID";
+
+	/** Set Dynamic Validation.
+	  * Dynamic Validation Rule
+	  */
+	public void setAD_Val_Rule_ID (int AD_Val_Rule_ID);
+
+	/** Get Dynamic Validation.
+	  * Dynamic Validation Rule
+	  */
+	public int getAD_Val_Rule_ID();
+
+	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
+
+    /** Column name ColumnName */
+    public static final String COLUMNNAME_ColumnName = "ColumnName";
+
+	/** Set DB Column Name.
+	  * Name of the column in the database
+	  */
+	public void setColumnName (String ColumnName);
+
+	/** Get DB Column Name.
+	  * Name of the column in the database
+	  */
+	public String getColumnName();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -157,6 +200,19 @@ public interface I_AD_InfoColumn
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name DisplayLogic */
+    public static final String COLUMNNAME_DisplayLogic = "DisplayLogic";
+
+	/** Set Display Logic.
+	  * If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public void setDisplayLogic (String DisplayLogic);
+
+	/** Get Display Logic.
+	  * If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public String getDisplayLogic();
 
     /** Column name EntityType */
     public static final String COLUMNNAME_EntityType = "EntityType";
@@ -198,6 +254,19 @@ public interface I_AD_InfoColumn
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsCentrallyMaintained */
+    public static final String COLUMNNAME_IsCentrallyMaintained = "IsCentrallyMaintained";
+
+	/** Set Centrally maintained.
+	  * Information maintained in System Element table
+	  */
+	public void setIsCentrallyMaintained (boolean IsCentrallyMaintained);
+
+	/** Get Centrally maintained.
+	  * Information maintained in System Element table
+	  */
+	public boolean isCentrallyMaintained();
 
     /** Column name IsDisplayed */
     public static final String COLUMNNAME_IsDisplayed = "IsDisplayed";

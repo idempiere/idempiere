@@ -64,6 +64,21 @@ public interface I_AD_Ref_Table
 
 	public org.compiere.model.I_AD_Column getAD_Disp() throws RuntimeException;
 
+    /** Column name AD_InfoWindow_ID */
+    public static final String COLUMNNAME_AD_InfoWindow_ID = "AD_InfoWindow_ID";
+
+	/** Set Info Window.
+	  * Info and search/select Window
+	  */
+	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID);
+
+	/** Get Info Window.
+	  * Info and search/select Window
+	  */
+	public int getAD_InfoWindow_ID();
+
+	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
+
     /** Column name AD_Key */
     public static final String COLUMNNAME_AD_Key = "AD_Key";
 

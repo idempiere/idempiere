@@ -343,6 +343,9 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
             boolean multiSelection,
             String tableName,boolean addAccessSQL)
     {
+    	if (getListhead() != null)
+    		getListHead().detach();
+    	
         int columnIndex = 0;
         StringBuilder sql = new StringBuilder ("SELECT ");
         setLayout(layout);

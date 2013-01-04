@@ -504,13 +504,4 @@ public abstract class Lookup extends AbstractListModel
 		return m_loaded;
 	}
 	
-	/**
-	 * Get custom info factory class
-	 * @return info factory class name
-	 */
-	public String getInfoFactoryClass() 
-	{
-		return "";
-	}
-
 }	//	Lookup

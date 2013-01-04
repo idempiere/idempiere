@@ -19,6 +19,7 @@ import org.adempiere.base.Service;
 import org.adempiere.webui.panel.InfoPanel;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
+import org.compiere.model.MLookup;
 
 /**
  *
@@ -36,7 +37,7 @@ public class InfoManager
 		List<IInfoFactory> factoryList = Service.locator().list(IInfoFactory.class).getServices();
 		for(IInfoFactory factory : factoryList)
 		{
-			info = factory.create(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, lookup);
+			info = factory.create(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, 0, lookup);
 			if (info != null)
 				break;
 		}
@@ -49,10 +50,15 @@ public class InfoManager
 			String whereClause)
 	{
 		InfoPanel ip = null;
+		int AD_InfoWindow_ID = 0;
+		if (lookup instanceof MLookup)
+		{
+			AD_InfoWindow_ID  = ((MLookup)lookup).getAD_InfoWindow_ID();
+		}
 		List<IInfoFactory> factoryList = Service.locator().list(IInfoFactory.class).getServices();
 		for(IInfoFactory factory : factoryList)
 		{
-			ip = factory.create(lookup, field, tableName, keyColumn, queryValue, false, whereClause);
+			ip = factory.create(lookup, field, tableName, keyColumn, queryValue, false, whereClause, AD_InfoWindow_ID);
 			if (ip != null)
 				break;
 		}

@@ -251,7 +251,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		 String whereClause, boolean lookup)
 	{
 
-		log.info("WinNo=" + p_WindowNo + " " + whereClause);
+		if (log.isLoggable(Level.INFO))
+			log.info("WinNo=" + p_WindowNo + " " + whereClause);
 		p_WindowNo = WindowNo;
 		p_tableName = tableName;
 		p_keyColumn = keyColumn;
@@ -349,7 +350,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/** Layout of Grid          */
 	protected ColumnInfo[]     p_layout;
 	/** Main SQL Statement      */
-	private String              m_sqlMain;
+	protected String              m_sqlMain;
 	/** Count SQL Statement		*/
 	private String              m_sqlCount;
 	/** Order By Clause         */
@@ -626,6 +627,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         StringBuilder sql = new StringBuilder (m_sqlMain);
         if (dynWhere.length() > 0)
             sql.append(dynWhere);   //  includes first AND
+        
+        if (sql.toString().trim().endsWith("WHERE")) {
+        	int index = sql.lastIndexOf(" WHERE");
+        	sql.delete(index, sql.length());
+        }
         if (m_sqlUserOrder != null && m_sqlUserOrder.trim().length() > 0)
         	sql.append(m_sqlUserOrder);
         else
@@ -637,15 +643,18 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         {
         	dataSql = DB.getDatabase().addPagingSQL(dataSql, cacheStart, cacheEnd);
         }
-        log.finer(dataSql);
+        if (log.isLoggable(Level.FINER))
+        	log.finer(dataSql);
 		try
 		{
 			m_pstmt = DB.prepareStatement(dataSql, null);
 			setParameters (m_pstmt, false);	//	no count
-			log.fine("Start query - " + (System.currentTimeMillis()-startTime) + "ms");
+			if (log.isLoggable(Level.FINE))
+				log.fine("Start query - " + (System.currentTimeMillis()-startTime) + "ms");
 			m_pstmt.setFetchSize(100);
 			m_rs = m_pstmt.executeQuery();
-			log.fine("End query - " + (System.currentTimeMillis()-startTime) + "ms");
+			if (log.isLoggable(Level.FINE))
+				log.fine("End query - " + (System.currentTimeMillis()-startTime) + "ms");
 			//skips the row that we dont need if we can't use native db paging
 			if (end > start && m_useDatabasePaging && !DB.getDatabase().isPagingSupported())
 			{
@@ -723,9 +732,14 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			sql.append(dynWhere);   //  includes first AND
 
 		String countSql = Msg.parseTranslation(Env.getCtx(), sql.toString());	//	Variables
+		if (countSql.trim().endsWith("WHERE")) {
+			countSql = countSql.trim();
+			countSql = countSql.substring(0, countSql.length() - 5);
+		}
 		countSql = MRole.getDefault().addAccessSQL	(countSql, getTableName(),
 													MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
-		log.finer(countSql);
+		if (log.isLoggable(Level.FINER))
+			log.finer(countSql);
 		m_count = -1;
 
 		try
@@ -746,7 +760,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			m_count = -2;
 		}
 
-		log.fine("#" + m_count + " - " + (System.currentTimeMillis()-start) + "ms");
+		if (log.isLoggable(Level.FINE))
+			log.fine("#" + m_count + " - " + (System.currentTimeMillis()-start) + "ms");
 
 		return true;
 	}	//	testCount
@@ -761,7 +776,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (contentPanel == null)
 			return;
 
-		log.config( "OK=" + m_ok);
+		if (log.isLoggable(Level.CONFIG))
+			log.config( "OK=" + m_ok);
 
 		if (!m_ok)      //  did not press OK
 		{
@@ -783,7 +799,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				m_results.add(data);
 		}
 
-		log.config(getSelectedSQL());
+		if (log.isLoggable(Level.CONFIG))
+			log.config(getSelectedSQL());
 
 		//	Save Settings of detail info screens
 		saveSelectionDetail();
@@ -892,8 +909,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		Object[] keys = getSelectedKeys();
 		if (keys == null || keys.length == 0)
 		{
-			log.config("No Results - OK="
-				+ m_ok + ", Cancel=" + m_cancel);
+			if (log.isLoggable(Level.CONFIG))
+				log.config("No Results - OK="
+						+ m_ok + ", Cancel=" + m_cancel);
 			return "";
 		}
 		//
@@ -1253,7 +1271,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
      */
     public void dispose(boolean ok)
     {
-        log.config("OK=" + ok);
+    	if (log.isLoggable(Level.CONFIG))
+    		log.config("OK=" + ok);
         m_ok = ok;
 
         //  End Worker

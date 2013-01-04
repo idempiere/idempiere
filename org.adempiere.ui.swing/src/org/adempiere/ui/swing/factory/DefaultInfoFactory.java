@@ -14,14 +14,12 @@
 package org.adempiere.ui.swing.factory;
 
 import java.awt.Frame;
-import java.util.logging.Level;
 
 import org.compiere.apps.search.Info;
 import org.compiere.apps.search.InfoAsset;
 import org.compiere.apps.search.InfoAssignment;
 import org.compiere.apps.search.InfoBPartner;
 import org.compiere.apps.search.InfoCashLine;
-import org.compiere.apps.search.InfoFactory;
 import org.compiere.apps.search.InfoGeneral;
 import org.compiere.apps.search.InfoInOut;
 import org.compiere.apps.search.InfoInvoice;
@@ -45,6 +43,7 @@ import org.eevolution.model.I_PP_Product_BOMLine;
  */
 public class DefaultInfoFactory implements IInfoFactory {
 
+	@SuppressWarnings("unused")
 	private final static CLogger log = CLogger.getCLogger(DefaultInfoFactory.class);
 
 	@Override
@@ -56,20 +55,7 @@ public class DefaultInfoFactory implements IInfoFactory {
 		if (col.indexOf('.') != -1)
 			col = col.substring(col.indexOf('.')+1);
 		boolean multipleSelection = false;
-		String infoFactoryClass = lookup.getInfoFactoryClass();
-		if (infoFactoryClass != null && infoFactoryClass.trim().length() > 0)
-		{
-			try {
-				@SuppressWarnings("unchecked")
-				Class<InfoFactory> clazz = (Class<InfoFactory>)this.getClass().getClassLoader().loadClass(infoFactoryClass);
-				InfoFactory factory = clazz.newInstance();
-				info = factory.create (frame, true, lookup.getWindowNo(),
-					tableName, keyColumn, queryValue, false, whereClause);
-			} catch (Exception e) {
-				log.log(Level.SEVERE, "Failed to load custom InfoFactory - " + e.getLocalizedMessage(), e);
-			}
-		}
-		else if (col.equals("M_Product_ID"))
+		if (col.equals("M_Product_ID"))
 		{
 			int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), lookup.getWindowNo(), "M_Warehouse_ID");
 			int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), lookup.getWindowNo(), "M_PriceList_ID");

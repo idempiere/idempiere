@@ -69,5 +69,25 @@
          </run>
       </application>
    </extension>
+   <extension
+         id="org.adempiere.model.CalloutInfoWindow.element"
+         point="org.adempiere.base.IColumnCallout">
+      <callout
+            class="org.adempiere.model.CalloutInfoWindow"
+            columnName="AD_Element_ID"
+            priority="0"
+            tableName="AD_InfoColumn">
+      </callout>
+   </extension>
+   <extension
+         id="org.adempiere.model.CalloutInfoWindow.table"
+         point="org.adempiere.base.IColumnCallout">
+      <callout
+            class="org.adempiere.model.CalloutInfoWindow"
+            columnName="AD_Table_ID"
+            priority="0"
+            tableName="AD_InfoWindow">
+      </callout>
+   </extension>
 
 </plugin>
