@@ -1,3 +1,6 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
 -- Dec 6, 2012 11:55:59 AM SGT
 -- Ticket 1001758: FedEx & UPS
 INSERT INTO AD_Table (ImportTable,CopyColumnsFromTable,IsSecurityEnabled,AccessLevel,LoadSeq,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,AD_Table_UU,IsCentrallyMaintained,IsDeleteable,TableName,Name,AD_Client_ID,IsActive,AD_Org_ID,Updated,CreatedBy,UpdatedBy,Created) VALUES ('N','N','N','3',0,200039,'N','N','N','D','L','6dc03e6e-5b29-4c05-8779-c758cc9fd96f','Y','Y','M_ShippingProcessor','Shipping Processor',0,'Y',0,TO_DATE('2012-12-06 11:55:58','YYYY-MM-DD HH24:MI:SS'),100,100,TO_DATE('2012-12-06 11:55:58','YYYY-MM-DD HH24:MI:SS'))
@@ -22786,7 +22789,7 @@ UPDATE AD_Field SET IsSameLine='N', XPosition=1,Updated=TO_DATE('2012-12-13 13:2
 
 insert into x_shipper (ad_client_id, ad_org_id, created, createdby, isactive, updated, updatedby, x_shipper_id, 
 name, description, trackingurl) 
-select 0, 0, now(), 100, isactive, now(), 100, 
+select 0, 0, SYSDATE, 100, isactive, SYSDATE, 100, 
 nextidfunc((select ad_sequence_id from ad_sequence where name = 'X_Shipper'), 'Y'), 
 name, description, trackingurl
 from m_shipper 
@@ -22830,7 +22833,7 @@ alter table m_shipperpickuptypes drop column name;
 alter table m_shipperpickuptypes drop column value;
 
 ALTER TABLE m_shippingprocessor 
-ADD CONSTRAINT m_shippingprocessor_unique_columns 
+ADD CONSTRAINT m_shippingproc_unique_columns 
 UNIQUE (ad_client_id, ad_org_id, x_shippingprocessor_id);
 
 ALTER TABLE m_shipperlabels 
@@ -22838,11 +22841,11 @@ ADD CONSTRAINT m_shipperlabels_unique_columns
 UNIQUE (m_shipper_id, x_shipperlabels_id);
 
 ALTER TABLE m_shipperpackaging 
-ADD CONSTRAINT m_shipperpackaging_unique_columns 
+ADD CONSTRAINT m_shipperpack_unique_columns 
 UNIQUE (m_shipper_id, x_shipperpackaging_id);
 
 ALTER TABLE m_shipperpickuptypes 
-ADD CONSTRAINT m_shipperpickuptypes_unique_columns 
+ADD CONSTRAINT m_shipperpickt_unique_columns 
 UNIQUE (m_shipper_id, x_shipperpickuptypes_id);
 
 ALTER TABLE m_shipper 
@@ -22850,7 +22853,7 @@ ADD CONSTRAINT m_shipper_unique_columns
 UNIQUE (ad_client_id, ad_org_id, x_shipper_id);
 
 ALTER TABLE x_shippingprocessor 
-ADD CONSTRAINT x_shippingprocessor_unique_columns 
+ADD CONSTRAINT x_shippingproc_unique_columns 
 UNIQUE (ad_client_id, ad_org_id, name);
 
 ALTER TABLE x_shipper 
@@ -22862,11 +22865,11 @@ ADD CONSTRAINT x_shipperlabels_unique_columns
 UNIQUE (x_shipper_id, value);
 
 ALTER TABLE x_shipperpackaging 
-ADD CONSTRAINT x_shipperpackaging_unique_columns 
+ADD CONSTRAINT x_shipperpack_unique_columns 
 UNIQUE (x_shipper_id, value);
 
 ALTER TABLE x_shipperpickuptypes 
-ADD CONSTRAINT x_shipperpickuptypes_unique_columns 
+ADD CONSTRAINT x_shipperpickt_unique_columns 
 UNIQUE (x_shipper_id, value);
 
 -- Dec 13, 2012 5:41:16 PM SGT
@@ -25269,7 +25272,83 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Dec 14, 2012 12:46:01 PM SGT
 -- Ticket 1001758: FedEx & UPS
-CREATE TABLE M_ShippingTransaction (Action NVARCHAR2(2) NOT NULL, AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, BoxCount NUMBER(10) DEFAULT 1, C_BP_ShippingAcct_ID NUMBER(10) DEFAULT NULL , C_BPartner_Location_ID NUMBER(10) DEFAULT NULL , C_Currency_ID NUMBER(10) DEFAULT NULL , C_Order_ID NUMBER(10) DEFAULT NULL , C_UOM_Length_ID NUMBER(10) DEFAULT NULL , C_UOM_Weight_ID NUMBER(10) DEFAULT NULL , CashOnDelivery CHAR(1) DEFAULT 'N' CHECK (CashOnDelivery IN ('Y','N')) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, DateReceived DATE DEFAULT NULL , DeliveryConfirmation CHAR(1) DEFAULT 'N' CHECK (DeliveryConfirmation IN ('Y','N')) NOT NULL, DeliveryConfirmationType NVARCHAR2(30) DEFAULT NULL , Description NVARCHAR2(255) DEFAULT NULL , DotHazardClassOrDivision NVARCHAR2(30) DEFAULT NULL , DryIceWeight NUMBER DEFAULT NULL , DutiesShipperAccount NVARCHAR2(40) DEFAULT NULL , FOB NVARCHAR2(10) DEFAULT NULL , FreightCharges NVARCHAR2(10) DEFAULT NULL , HandlingCharge NUMBER DEFAULT NULL , Height NUMBER DEFAULT NULL , HoldAddress VARCHAR2(10) DEFAULT NULL , HomeDeliveryPremiumDate DATE DEFAULT NULL , HomeDeliveryPremiumPhone NVARCHAR2(30) DEFAULT NULL , HomeDeliveryPremiumType NVARCHAR2(30) DEFAULT NULL , Insurance CHAR(1) DEFAULT NULL , InsuredAmount NUMBER DEFAULT NULL , IsAccessible CHAR(1) DEFAULT 'N' CHECK (IsAccessible IN ('Y','N')) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsAddedHandling CHAR(1) DEFAULT 'N' CHECK (IsAddedHandling IN ('Y','N')) NOT NULL, IsCargoAircraftOnly CHAR(1) DEFAULT 'N' CHECK (IsCargoAircraftOnly IN ('Y','N')) NOT NULL, IsDryIce CHAR(1) DEFAULT 'N' CHECK (IsDryIce IN ('Y','N')) NOT NULL, IsDutiable CHAR(1) DEFAULT 'N' CHECK (IsDutiable IN ('Y','N')) NOT NULL, IsFutureDayShipment CHAR(1) DEFAULT 'N' CHECK (IsFutureDayShipment IN ('Y','N')) NOT NULL, IsHazMat CHAR(1) DEFAULT 'N' CHECK (IsHazMat IN ('Y','N')) NOT NULL, IsHoldAtLocation CHAR(1) DEFAULT 'N' CHECK (IsHoldAtLocation IN ('Y','N')) NOT NULL, IsIgnoreZipNotFound CHAR(1) DEFAULT 'N' CHECK (IsIgnoreZipNotFound IN ('Y','N')) NOT NULL, IsIgnoreZipStateNotMatch CHAR(1) DEFAULT 'N' CHECK (IsIgnoreZipStateNotMatch IN ('Y','N')) NOT NULL, IsResidential CHAR(1) DEFAULT 'Y' CHECK (IsResidential IN ('Y','N')) NOT NULL, IsSaturdayDelivery CHAR(1) DEFAULT 'N' CHECK (IsSaturdayDelivery IN ('Y','N')) NOT NULL, IsSaturdayPickup CHAR(1) DEFAULT 'N' CHECK (IsSaturdayPickup IN ('Y','N')) NOT NULL, IsVerbalConfirmation CHAR(1) DEFAULT 'N' CHECK (IsVerbalConfirmation IN ('Y','N')) NOT NULL, LatestPickupTime DATE DEFAULT NULL , Length NUMBER DEFAULT NULL , M_InOut_ID NUMBER(10) DEFAULT NULL , M_Package_ID NUMBER(10) DEFAULT NULL , M_Shipper_ID NUMBER(10) NOT NULL, M_ShipperLabels_ID NUMBER(10) DEFAULT NULL , M_ShipperPackaging_ID NUMBER(10) DEFAULT NULL , M_ShipperPickupTypes_ID NUMBER(10) DEFAULT NULL , M_ShippingProcessor_ID NUMBER(10) DEFAULT NULL , M_ShippingTransaction_ID NUMBER(10) NOT NULL, M_ShippingTransaction_UU NVARCHAR2(36) DEFAULT NULL , NotificationMessage NVARCHAR2(255) DEFAULT NULL , NotificationType NVARCHAR2(2) DEFAULT NULL , PaymentRule CHAR(1) DEFAULT NULL , Price NUMBER DEFAULT NULL , PriceActual NUMBER DEFAULT NULL , Processed CHAR(1) DEFAULT 'N' CHECK (Processed IN ('Y','N')) NOT NULL, RateInquiryMessage NVARCHAR2(2000) DEFAULT NULL , ReceivedInfo NVARCHAR2(255) DEFAULT NULL , ShipDate DATE DEFAULT NULL , ShipperAccount NVARCHAR2(40) DEFAULT NULL , ShippingRespMessage NVARCHAR2(2000) DEFAULT NULL , Surcharges NUMBER DEFAULT NULL , TrackingInfo NVARCHAR2(255) DEFAULT NULL , TrackingNo NVARCHAR2(255) DEFAULT NULL , Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, Weight NUMBER DEFAULT NULL , Width NUMBER DEFAULT NULL , CONSTRAINT M_ShippingTransaction_Key PRIMARY KEY (M_ShippingTransaction_ID))
+CREATE TABLE M_ShippingTransaction (
+Action NVARCHAR2(2) NOT NULL,
+AD_Client_ID NUMBER(10) NOT NULL,
+AD_Org_ID NUMBER(10) NOT NULL,
+BoxCount NUMBER(10) DEFAULT 1,
+C_BP_ShippingAcct_ID NUMBER(10) DEFAULT NULL ,
+C_BPartner_Location_ID NUMBER(10) DEFAULT NULL ,
+C_Currency_ID NUMBER(10) DEFAULT NULL ,
+C_Order_ID NUMBER(10) DEFAULT NULL ,
+C_UOM_Length_ID NUMBER(10) DEFAULT NULL ,
+C_UOM_Weight_ID NUMBER(10) DEFAULT NULL ,
+CashOnDelivery CHAR(1) DEFAULT 'N' CHECK (CashOnDelivery IN ('Y','N')) NOT NULL,
+Created DATE NOT NULL,
+CreatedBy NUMBER(10) NOT NULL,
+DateReceived DATE DEFAULT NULL ,
+DeliveryConfirmation CHAR(1) DEFAULT 'N' CHECK (DeliveryConfirmation IN ('Y','N')) NOT NULL,
+DeliveryConfirmationType NVARCHAR2(30) DEFAULT NULL ,
+Description NVARCHAR2(255) DEFAULT NULL ,
+DotHazardClassOrDivision NVARCHAR2(30) DEFAULT NULL ,
+DryIceWeight NUMBER DEFAULT NULL ,
+DutiesShipperAccount NVARCHAR2(40) DEFAULT NULL ,
+FOB NVARCHAR2(10) DEFAULT NULL ,
+FreightCharges NVARCHAR2(10) DEFAULT NULL ,
+HandlingCharge NUMBER DEFAULT NULL ,
+Height NUMBER DEFAULT NULL ,
+HoldAddress VARCHAR2(10) DEFAULT NULL ,
+HomeDeliveryPremiumDate DATE DEFAULT NULL ,
+HomeDeliveryPremiumPhone NVARCHAR2(30) DEFAULT NULL ,
+HomeDeliveryPremiumType NVARCHAR2(30) DEFAULT NULL ,
+Insurance CHAR(1) DEFAULT NULL ,
+InsuredAmount NUMBER DEFAULT NULL ,
+IsAccessible CHAR(1) DEFAULT 'N' CHECK (IsAccessible IN ('Y','N')) NOT NULL,
+IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL,
+IsAddedHandling CHAR(1) DEFAULT 'N' CHECK (IsAddedHandling IN ('Y','N')) NOT NULL,
+IsCargoAircraftOnly CHAR(1) DEFAULT 'N' CHECK (IsCargoAircraftOnly IN ('Y','N')) NOT NULL,
+IsDryIce CHAR(1) DEFAULT 'N' CHECK (IsDryIce IN ('Y','N')) NOT NULL,
+IsDutiable CHAR(1) DEFAULT 'N' CHECK (IsDutiable IN ('Y','N')) NOT NULL,
+IsFutureDayShipment CHAR(1) DEFAULT 'N' CHECK (IsFutureDayShipment IN ('Y','N')) NOT NULL,
+IsHazMat CHAR(1) DEFAULT 'N' CHECK (IsHazMat IN ('Y','N')) NOT NULL,
+IsHoldAtLocation CHAR(1) DEFAULT 'N' CHECK (IsHoldAtLocation IN ('Y','N')) NOT NULL,
+IsIgnoreZipNotFound CHAR(1) DEFAULT 'N' CHECK (IsIgnoreZipNotFound IN ('Y','N')) NOT NULL,
+IsIgnoreZipStateNotMatch CHAR(1) DEFAULT 'N' CHECK (IsIgnoreZipStateNotMatch IN ('Y','N')) NOT NULL,
+IsResidential CHAR(1) DEFAULT 'Y' CHECK (IsResidential IN ('Y','N')) NOT NULL,
+IsSaturdayDelivery CHAR(1) DEFAULT 'N' CHECK (IsSaturdayDelivery IN ('Y','N')) NOT NULL,
+IsSaturdayPickup CHAR(1) DEFAULT 'N' CHECK (IsSaturdayPickup IN ('Y','N')) NOT NULL,
+IsVerbalConfirmation CHAR(1) DEFAULT 'N' CHECK (IsVerbalConfirmation IN ('Y','N')) NOT NULL,
+LatestPickupTime DATE DEFAULT NULL ,
+Length NUMBER DEFAULT NULL ,
+M_InOut_ID NUMBER(10) DEFAULT NULL ,
+M_Package_ID NUMBER(10) DEFAULT NULL ,
+M_Shipper_ID NUMBER(10) NOT NULL,
+M_ShipperLabels_ID NUMBER(10) DEFAULT NULL ,
+M_ShipperPackaging_ID NUMBER(10) DEFAULT NULL ,
+M_ShipperPickupTypes_ID NUMBER(10) DEFAULT NULL ,
+M_ShippingProcessor_ID NUMBER(10) DEFAULT NULL ,
+M_ShippingTransaction_ID NUMBER(10) NOT NULL,
+M_ShippingTransaction_UU NVARCHAR2(36) DEFAULT NULL ,
+NotificationMessage NVARCHAR2(255) DEFAULT NULL ,
+NotificationType NVARCHAR2(2) DEFAULT NULL ,
+PaymentRule CHAR(1) DEFAULT NULL ,
+Price NUMBER DEFAULT NULL ,
+PriceActual NUMBER DEFAULT NULL ,
+Processed CHAR(1) DEFAULT 'N' CHECK (Processed IN ('Y','N')) NOT NULL,
+RateInquiryMessage NVARCHAR2(2000) DEFAULT NULL ,
+ReceivedInfo NVARCHAR2(255) DEFAULT NULL ,
+ShipDate DATE DEFAULT NULL ,
+ShipperAccount NVARCHAR2(40) DEFAULT NULL ,
+ShippingRespMessage NVARCHAR2(2000) DEFAULT NULL ,
+Surcharges NUMBER DEFAULT NULL ,
+TrackingInfo NVARCHAR2(255) DEFAULT NULL ,
+TrackingNo NVARCHAR2(255) DEFAULT NULL ,
+Updated DATE NOT NULL,
+UpdatedBy NUMBER(10) NOT NULL,
+Weight NUMBER DEFAULT NULL ,
+Width NUMBER DEFAULT NULL ,
+CONSTRAINT M_ShippingTransaction_Key PRIMARY KEY (M_ShippingTransaction_ID)
+)
 ;
 
 -- Dec 14, 2012 12:47:50 PM SGT

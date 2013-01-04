@@ -22830,7 +22830,7 @@ alter table m_shipperpickuptypes drop column name;
 alter table m_shipperpickuptypes drop column value;
 
 ALTER TABLE m_shippingprocessor 
-ADD CONSTRAINT m_shippingprocessor_unique_columns 
+ADD CONSTRAINT m_shippingproc_unique_columns 
 UNIQUE (ad_client_id, ad_org_id, x_shippingprocessor_id);
 
 ALTER TABLE m_shipperlabels 
@@ -22838,11 +22838,11 @@ ADD CONSTRAINT m_shipperlabels_unique_columns
 UNIQUE (m_shipper_id, x_shipperlabels_id);
 
 ALTER TABLE m_shipperpackaging 
-ADD CONSTRAINT m_shipperpackaging_unique_columns 
+ADD CONSTRAINT m_shipperpack_unique_columns 
 UNIQUE (m_shipper_id, x_shipperpackaging_id);
 
 ALTER TABLE m_shipperpickuptypes 
-ADD CONSTRAINT m_shipperpickuptypes_unique_columns 
+ADD CONSTRAINT m_shipperpickt_unique_columns 
 UNIQUE (m_shipper_id, x_shipperpickuptypes_id);
 
 ALTER TABLE m_shipper 
@@ -22850,7 +22850,7 @@ ADD CONSTRAINT m_shipper_unique_columns
 UNIQUE (ad_client_id, ad_org_id, x_shipper_id);
 
 ALTER TABLE x_shippingprocessor 
-ADD CONSTRAINT x_shippingprocessor_unique_columns 
+ADD CONSTRAINT x_shippingproc_unique_columns 
 UNIQUE (ad_client_id, ad_org_id, name);
 
 ALTER TABLE x_shipper 
@@ -22862,11 +22862,11 @@ ADD CONSTRAINT x_shipperlabels_unique_columns
 UNIQUE (x_shipper_id, value);
 
 ALTER TABLE x_shipperpackaging 
-ADD CONSTRAINT x_shipperpackaging_unique_columns 
+ADD CONSTRAINT x_shipperpack_unique_columns 
 UNIQUE (x_shipper_id, value);
 
 ALTER TABLE x_shipperpickuptypes 
-ADD CONSTRAINT x_shipperpickuptypes_unique_columns 
+ADD CONSTRAINT x_shipperpickt_unique_columns 
 UNIQUE (x_shipper_id, value);
 
 -- Dec 13, 2012 5:41:16 PM SGT
