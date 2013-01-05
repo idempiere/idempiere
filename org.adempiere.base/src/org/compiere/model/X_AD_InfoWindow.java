@@ -30,7 +30,7 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130104L;
+	private static final long serialVersionUID = 20130105L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName)
@@ -287,6 +287,23 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Sql ORDER BY.
+		@param OrderByClause 
+		Fully qualified ORDER BY clause
+	  */
+	public void setOrderByClause (String OrderByClause)
+	{
+		set_Value (COLUMNNAME_OrderByClause, OrderByClause);
+	}
+
+	/** Get Sql ORDER BY.
+		@return Fully qualified ORDER BY clause
+	  */
+	public String getOrderByClause () 
+	{
+		return (String)get_Value(COLUMNNAME_OrderByClause);
+	}
 
 	/** Set Other SQL Clause.
 		@param OtherClause 

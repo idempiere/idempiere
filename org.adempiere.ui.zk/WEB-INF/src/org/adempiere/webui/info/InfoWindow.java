@@ -33,10 +33,13 @@ import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
+import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
@@ -125,21 +128,30 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 
 	private void processQueryValue() {
 		//try first 2 only
-		for(int i = 0; i < editors.size() && i < 2; i++) {
-			WEditor editor = editors.get(i);
-			editor.setValue(queryValue);
+		String[] values = queryValue.split("[_]");
+		if (values.length == 2) {
+			for(int i = 0; i < values.length && i < editors.size(); i++) {
+				WEditor editor = editors.get(i);
+				editor.setValue(values[i]);
+			}
 			testCount();
-			if (m_count > 0) {
-				break;
-			} else {
-				editor.setValue(null);
+		} else {
+			for(int i = 0; i < editors.size() && i < 2; i++) {
+				WEditor editor = editors.get(i);
+				editor.setValue(queryValue);
+				testCount();
+				if (m_count > 0) {
+					break;
+				} else {
+					editor.setValue(null);
+				}
 			}
 		}
 		
 		if (m_count > 0) {
 			executeQuery();
 			renderItems();
-		} else if (editors.size() > 0) {
+		} else if (editors.size() > 0 && values.length != 2) {
 			editors.get(0).setValue(queryValue);
 		}
 	}
@@ -246,7 +258,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 		
 		columnInfos = list.toArray(new ColumnInfo[0]);
 		
-		prepareTable(columnInfos, infoWindow.getFromClause(), p_whereClause, infoWindow.getOtherClause());
+		prepareTable(columnInfos, infoWindow.getFromClause(), p_whereClause, infoWindow.getOrderByClause());		
 	}
 
 	private ColumnInfo createLookupColumnInfo(TableInfo[] tableInfos,
@@ -371,6 +383,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 		if (infoWindow.isDistinct()) {
 			m_sqlMain = m_sqlMain.substring("SELECT ".length());
 			m_sqlMain = "SELECT DISTINCT " + m_sqlMain;
+		}	
+		
+		if (m_sqlOrder != null && m_sqlOrder.indexOf("@") >= 0) {
+			String sql = Env.parseContext(infoContext, p_WindowNo, m_sqlOrder, false, false);
+			if (sql == null || sql.length() == 9) {
+				log.severe("Failed to parsed sql. sql=" + m_sqlOrder);
+			} else {
+				m_sqlOrder = sql;
+			}
 		}
 	}
 
@@ -540,6 +561,48 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
         	column++;
         }
     }   //  saveSelectionDetail
+    
+    @Override
+    protected String buildDataSQL(int start, int end) {
+		String dataSql;
+		String dynWhere = getSQLWhere();
+        StringBuilder sql = new StringBuilder (m_sqlMain);
+        if (dynWhere.length() > 0)
+            sql.append(dynWhere);   //  includes first AND
+        
+        if (sql.toString().trim().endsWith("WHERE")) {
+        	int index = sql.lastIndexOf(" WHERE");
+        	sql.delete(index, sql.length());
+        }
+        
+        dataSql = Msg.parseTranslation(Env.getCtx(), sql.toString());    //  Variables
+        dataSql = MRole.getDefault().addAccessSQL(dataSql, getTableName(),
+            MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
+        
+        if (infoWindow.getOtherClause() != null && infoWindow.getOtherClause().trim().length() > 0) {
+        	String otherClause = infoWindow.getOtherClause();
+        	if (otherClause.indexOf("@") >= 0) {
+        		String s = Env.parseContext(infoContext, p_WindowNo, otherClause, false, false);
+        		if (s.length() == 0) {
+        			log.severe("Failed to parse other clause. " + otherClause);
+        		} else {
+        			otherClause = s;
+        		}
+        	}
+        	dataSql = dataSql + " " + otherClause;
+        }
+        
+        if (m_sqlUserOrder != null && m_sqlUserOrder.trim().length() > 0)
+        	dataSql = dataSql + m_sqlUserOrder;
+        else
+        	dataSql = dataSql + m_sqlOrder;
+        
+        if (end > start && isUseDatabasePaging() && DB.getDatabase().isPagingSupported())
+        {
+        	dataSql = DB.getDatabase().addPagingSQL(dataSql, getCacheStart(), getCacheEnd());
+        }
+		return dataSql;
+	}
     
     @Override
     protected void executeQuery() {

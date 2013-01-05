@@ -221,6 +221,19 @@ public interface I_AD_InfoWindow
 	  */
 	public String getName();
 
+    /** Column name OrderByClause */
+    public static final String COLUMNNAME_OrderByClause = "OrderByClause";
+
+	/** Set Sql ORDER BY.
+	  * Fully qualified ORDER BY clause
+	  */
+	public void setOrderByClause (String OrderByClause);
+
+	/** Get Sql ORDER BY.
+	  * Fully qualified ORDER BY clause
+	  */
+	public String getOrderByClause();
+
     /** Column name OtherClause */
     public static final String COLUMNNAME_OtherClause = "OtherClause";
 
