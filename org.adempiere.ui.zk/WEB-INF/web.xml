@@ -16,6 +16,14 @@
         <param-name>org.atmosphere.cpr.AtmosphereHandler.contextRoot</param-name>
         <param-value>/zkau/comet</param-value>
       </init-param>
+      <init-param>
+    	<param-name>org.atmosphere.cpr.broadcasterCacheClass</param-name>
+    	<param-value>org.atmosphere.cache.HeaderBroadcasterCache</param-value>
+	  </init-param>
+	  <init-param>
+    	<param-name>org.atmosphere.cpr.AtmosphereInterceptor</param-name>
+    	<param-value>org.atmosphere.client.TrackMessageSizeInterceptor</param-value>
+ 	  </init-param>
       <load-on-startup>0</load-on-startup>
       <!-- Remove async-supported if you are not using Servlet 3.0 -->
       <async-supported>true</async-supported>
