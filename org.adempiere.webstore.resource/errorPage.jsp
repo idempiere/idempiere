@@ -23,6 +23,8 @@
 		out.println("<pre><font color=\"red\">");
 		out.println(cw.toString());
 		out.println("</font></pre>");
+		if (ex.equals(exception.getCause())) // prevent infinite loop
+			break;
 		ex = exception.getCause();
 	}
 %>
