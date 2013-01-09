@@ -46,6 +46,7 @@ public class ShipperCreateFrom extends SvrProcess
 			MShipperPackaging sp = new MShipperPackaging(getCtx(), 0, null);
 			sp.setM_Shipper_ID(m_shipper.getM_Shipper_ID());
 			sp.setX_ShipperPackaging_ID(xsp.getX_ShipperPackaging_ID());
+			sp.setName(xsp.getName());
 			sp.setIsDefault(xsp.isDefault());
 			sp.setWeight(xsp.getWeight());
 			sp.saveEx();				
@@ -69,6 +70,7 @@ public class ShipperCreateFrom extends SvrProcess
 			MShipperLabels sl = new MShipperLabels(getCtx(), 0, null);
 			sl.setM_Shipper_ID(m_shipper.getM_Shipper_ID());
 			sl.setX_ShipperLabels_ID(xsl.getX_ShipperLabels_ID());
+			sl.setName(xsl.getName());
 			sl.setIsDefault(xsl.isDefault());
 			sl.setLabelPrintMethod(xsl.getLabelPrintMethod());
 			sl.saveEx();				
@@ -92,9 +94,9 @@ public class ShipperCreateFrom extends SvrProcess
 			MShipperPickupTypes spt = new MShipperPickupTypes(getCtx(), 0, null);
 			spt.setM_Shipper_ID(m_shipper.getM_Shipper_ID());
 			spt.setX_ShipperPickupTypes_ID(xspt.getX_ShipperPickupTypes_ID());
+			spt.setName(xspt.getName());
 			spt.setIsDefault(xspt.isDefault());
 			spt.saveEx();				
 		}
 	}
-
 }

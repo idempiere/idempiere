@@ -29,7 +29,7 @@ public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121213L;
+	private static final long serialVersionUID = 20130109L;
 
     /** Standard Constructor */
     public X_M_ShippingProcessor (Properties ctx, int M_ShippingProcessor_ID, String trxName)
@@ -39,6 +39,7 @@ public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, 
         {
 			setConnectionPassword (null);
 			setM_ShippingProcessor_ID (0);
+			setName (null);
 			setUserID (null);
 			setX_ShippingProcessor_ID (0);
         } */
@@ -132,6 +133,23 @@ public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, 
 	public String getM_ShippingProcessor_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_M_ShippingProcessor_UU);
+	}
+
+	/** Set Name.
+		@param Name 
+		Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name)
+	{
+		set_Value (COLUMNNAME_Name, Name);
+	}
+
+	/** Get Name.
+		@return Alphanumeric identifier of the entity
+	  */
+	public String getName () 
+	{
+		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set User ID.

@@ -29,7 +29,7 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121213L;
+	private static final long serialVersionUID = 20130109L;
 
     /** Standard Constructor */
     public X_M_Shipper (Properties ctx, int M_Shipper_ID, String trxName)
@@ -38,6 +38,7 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
       /** if (M_Shipper_ID == 0)
         {
 			setM_Shipper_ID (0);
+			setName (null);
         } */
     }
 
@@ -95,6 +96,23 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Create lines from.
+		@param CreateFrom 
+		Process which will generate a new document lines based on an existing document
+	  */
+	public void setCreateFrom (String CreateFrom)
+	{
+		set_Value (COLUMNNAME_CreateFrom, CreateFrom);
+	}
+
+	/** Get Create lines from.
+		@return Process which will generate a new document lines based on an existing document
+	  */
+	public String getCreateFrom () 
+	{
+		return (String)get_Value(COLUMNNAME_CreateFrom);
 	}
 
 	/** Set Shipper.
@@ -157,6 +175,23 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Name.
+		@param Name 
+		Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name)
+	{
+		set_Value (COLUMNNAME_Name, Name);
+	}
+
+	/** Get Name.
+		@return Alphanumeric identifier of the entity
+	  */
+	public String getName () 
+	{
+		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	public org.compiere.model.I_X_Shipper getX_Shipper() throws RuntimeException

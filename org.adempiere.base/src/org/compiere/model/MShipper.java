@@ -75,11 +75,6 @@ public class MShipper extends X_M_Shipper
 		return(result);
 	}
 	
-	public String getName()
-	{
-		return getX_Shipper().getName();
-	}
-	
 	public String getShippingServiceCode()
 	{
 		return getX_Shipper().getShippingServiceCode();

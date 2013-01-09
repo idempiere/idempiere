@@ -31,7 +31,7 @@ public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121213L;
+	private static final long serialVersionUID = 20130109L;
 
     /** Standard Constructor */
     public X_M_ShipperPackaging (Properties ctx, int M_ShipperPackaging_ID, String trxName)
@@ -43,6 +43,7 @@ public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_
 // N
 			setM_Shipper_ID (0);
 			setM_ShipperPackaging_ID (0);
+			setName (null);
 			setX_ShipperPackaging_ID (0);
         } */
     }
@@ -159,6 +160,23 @@ public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_
 	public String getM_ShipperPackaging_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_M_ShipperPackaging_UU);
+	}
+
+	/** Set Name.
+		@param Name 
+		Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name)
+	{
+		set_Value (COLUMNNAME_Name, Name);
+	}
+
+	/** Get Name.
+		@return Alphanumeric identifier of the entity
+	  */
+	public String getName () 
+	{
+		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Weight.

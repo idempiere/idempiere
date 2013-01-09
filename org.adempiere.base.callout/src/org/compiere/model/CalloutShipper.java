@@ -31,6 +31,9 @@ public class CalloutShipper extends CalloutEngine
 		if (X_Shipper_ID == null || X_Shipper_ID.intValue() == 0)
 			return "";
 		
+		X_X_Shipper s = new X_X_Shipper(ctx, X_Shipper_ID, null);
+		mTab.setValue(MShipper.COLUMNNAME_Name, s.getName());
+		
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT sp.M_ShippingProcessor_ID ");
 		sb.append("FROM M_ShippingProcessor sp, X_ShippingProcessor xsp, X_Shipper xs ");
@@ -56,6 +59,7 @@ public class CalloutShipper extends CalloutEngine
 			return "";
 		
 		X_X_ShipperLabels sl = new X_X_ShipperLabels(ctx, X_ShipperLabels_ID, null);
+		mTab.setValue(MShipperLabels.COLUMNNAME_Name, sl.getName());
 		mTab.setValue(MShipperLabels.COLUMNNAME_LabelPrintMethod, sl.getLabelPrintMethod());
 		mTab.setValue(MShipperLabels.COLUMNNAME_IsDefault, sl.isDefault());
 		
@@ -69,6 +73,7 @@ public class CalloutShipper extends CalloutEngine
 			return "";
 		
 		X_X_ShipperPackaging sp = new X_X_ShipperPackaging(ctx, X_ShipperPackaging_ID, null);
+		mTab.setValue(MShipperPackaging.COLUMNNAME_Name, sp.getName());
 		mTab.setValue(MShipperPackaging.COLUMNNAME_IsDefault, sp.isDefault());
 		mTab.setValue(MShipperPackaging.COLUMNNAME_Weight, sp.getWeight());
 		
@@ -82,6 +87,7 @@ public class CalloutShipper extends CalloutEngine
 			return "";
 		
 		X_X_ShipperPickupTypes spt = new X_X_ShipperPickupTypes(ctx, X_ShipperPickupTypes_ID, null);
+		mTab.setValue(MShipperLabels.COLUMNNAME_Name, spt.getName());
 		mTab.setValue(MShipperLabels.COLUMNNAME_IsDefault, spt.isDefault());
 		
 		return null;

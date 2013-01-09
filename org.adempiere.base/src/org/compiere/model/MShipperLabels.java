@@ -27,11 +27,6 @@ public class MShipperLabels extends X_M_ShipperLabels
 		return getX_ShipperLabels().getValue();
 	}
 	
-	public String getName()
-	{
-		return getX_ShipperLabels().getName();
-	}
-	
 	public BigDecimal getHeight()
 	{
 		return getX_ShipperLabels().getHeight();
