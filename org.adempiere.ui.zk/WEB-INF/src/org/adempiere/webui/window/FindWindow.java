@@ -251,8 +251,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         m_query.addRestriction(m_whereExtended);
         //  Required for Column Validation
         Env.setContext(Env.getCtx(), m_targetWindowNo, "Find_Table_ID", m_AD_Table_ID);
-        //  Context for Advanced Search Grid is WINDOW_FIND
-        Env.setContext(Env.getCtx(), Env.WINDOW_FIND, "Find_Table_ID", m_AD_Table_ID);
         //
         initPanel();
         initFind();

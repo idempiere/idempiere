@@ -59,7 +59,7 @@ public class MInfoWindow extends X_AD_InfoWindow
 	}	//	MInfoWindow
 
 	public static MInfoWindow get(String tableName, String trxName) {
-		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_InfoWindow.Table_ID), I_AD_InfoWindow.COLUMNNAME_AD_Table_ID+"=?", null);
+		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_InfoWindow.Table_ID), I_AD_InfoWindow.COLUMNNAME_AD_Table_ID+"=? AND IsValid='Y' ", null);
 		MTable table = MTable.get(Env.getCtx(), tableName);
 		if (table != null) {
 			return query.setParameters(table.getAD_Table_ID())
@@ -131,4 +131,20 @@ public class MInfoWindow extends X_AD_InfoWindow
 		}
 		return true;
 	}
+
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (newRecord && success)	//	Add to all automatic roles
+		{
+			MRole[] roles = MRole.getOf(getCtx(), "IsManual='N'");
+			for (int i = 0; i < roles.length; i++)
+			{
+				MInfoWindowAccess wa = new MInfoWindowAccess(this, roles[i].getAD_Role_ID());
+				wa.saveEx();
+			}
+		}
+		return super.afterSave(newRecord, success);
+	}
+	
+	
 }	//	MInfoWindow

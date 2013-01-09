@@ -402,11 +402,11 @@ public class MTree extends MTree_Base
 			sourceTable = "m";
 			if (base)
 				sqlNode.append("SELECT m.AD_Menu_ID, m.Name,m.Description,m.IsSummary,m.Action, "
-					+ "m.AD_Window_ID, m.AD_Process_ID, m.AD_Form_ID, m.AD_Workflow_ID, m.AD_Task_ID, m.AD_Workbench_ID "
+					+ "m.AD_Window_ID, m.AD_Process_ID, m.AD_Form_ID, m.AD_Workflow_ID, m.AD_Task_ID, m.AD_InfoWindow_ID "
 					+ "FROM AD_Menu m");
 			else
 				sqlNode.append("SELECT m.AD_Menu_ID,  t.Name,t.Description,m.IsSummary,m.Action, "
-					+ "m.AD_Window_ID, m.AD_Process_ID, m.AD_Form_ID, m.AD_Workflow_ID, m.AD_Task_ID, m.AD_Workbench_ID "
+					+ "m.AD_Window_ID, m.AD_Process_ID, m.AD_Form_ID, m.AD_Workflow_ID, m.AD_Task_ID, m.AD_InfoWindow_ID "
 					+ "FROM AD_Menu m, AD_Menu_Trl t");
 			if (!base)
 				sqlNode.append(" WHERE m.AD_Menu_ID=t.AD_Menu_ID AND t.AD_Language='")
@@ -520,7 +520,7 @@ public class MTree extends MTree_Base
 					int AD_Form_ID = m_nodeRowSet.getInt(index++);
 					int AD_Workflow_ID = m_nodeRowSet.getInt(index++);
 					int AD_Task_ID = m_nodeRowSet.getInt(index++);
-					//int AD_Workbench_ID = m_nodeRowSet.getInt(index++);
+					int AD_InfoWindow_ID = m_nodeRowSet.getInt(index++);
 					//
 					MRole role = MRole.getDefault(getCtx(), false);
 					Boolean access = null;
@@ -548,8 +548,8 @@ public class MTree extends MTree_Base
 						access = role.getWorkflowAccess(AD_Workflow_ID);
 					else if (X_AD_Menu.ACTION_Task.equals(actionColor))
 						access = role.getTaskAccess(AD_Task_ID);
-				//	else if (X_AD_Menu.ACTION_Workbench.equals(action))
-				//		access = role.getWorkbenchAccess(AD_Window_ID);
+					else if (X_AD_Menu.ACTION_Info.equals(actionColor))
+						access = role.getInfoAccess(AD_InfoWindow_ID);
 				//	log.fine("getNodeDetail - " + name + " - " + actionColor + " - " + access);
 					//
 					if (access != null		//	rw or ro for Role 

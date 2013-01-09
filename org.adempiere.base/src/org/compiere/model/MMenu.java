@@ -124,13 +124,13 @@ public class MMenu extends X_AD_Menu
 			setAD_Form_ID(0);
 		if (getAD_Workflow_ID() != 0 && !action.equals(ACTION_WorkFlow))
 			setAD_Workflow_ID(0);
-		if (getAD_Workbench_ID() != 0 && !action.equals(ACTION_Workbench))
-			setAD_Workbench_ID(0);
 		if (getAD_Task_ID() != 0 && !action.equals(ACTION_Task))
 			setAD_Task_ID(0);
 		if (getAD_Process_ID() != 0 
 			&& !(action.equals(ACTION_Process) || action.equals(ACTION_Report)))
 			setAD_Process_ID(0);
+		if (getAD_InfoWindow_ID() != 0 && !action.equals(ACTION_Info))
+			setAD_InfoWindow_ID(0);
 		return true;
 	}	//	beforeSave
 	

@@ -151,8 +151,6 @@ public final class Find extends CDialog
 		m_query.addRestriction(Env.parseContext(Env.getCtx(), m_targetWindowNo, whereExtended, false));
 		//	Required for Column Validation
 		Env.setContext(Env.getCtx(), m_targetWindowNo, "Find_Table_ID", m_AD_Table_ID);
-		//  Context for Advanced Search Grid is WINDOW_FIND
-		Env.setContext(Env.getCtx(), Env.WINDOW_FIND, "Find_Table_ID", m_AD_Table_ID);
 		//
 		try
 		{

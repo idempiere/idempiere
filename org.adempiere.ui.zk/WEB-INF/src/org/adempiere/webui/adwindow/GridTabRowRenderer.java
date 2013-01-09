@@ -354,7 +354,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		}
 
 		Cell cell = new Cell();
-		cell.setWidth("10px");
+		cell.setWidth("15px");
 		cell.addEventListener(Events.ON_CLICK, this);
 		cell.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "EditRecord")));
 		

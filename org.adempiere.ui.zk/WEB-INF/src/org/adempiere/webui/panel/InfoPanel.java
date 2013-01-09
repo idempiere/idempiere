@@ -249,18 +249,21 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected InfoPanel (int WindowNo,
 		String tableName, String keyColumn,boolean multipleSelection,
 		 String whereClause, boolean lookup)
-	{
-
+	{		
+		if (WindowNo <= 0) {
+			p_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
+		} else {
+			p_WindowNo = WindowNo;
+		}
 		if (log.isLoggable(Level.INFO))
-			log.info("WinNo=" + p_WindowNo + " " + whereClause);
-		p_WindowNo = WindowNo;
+			log.info("WinNo=" + WindowNo + " " + whereClause);
 		p_tableName = tableName;
 		p_keyColumn = keyColumn;
         p_multipleSelection = multipleSelection;
         m_lookup = lookup;
 
 		if (whereClause == null || whereClause.indexOf('@') == -1)
-			p_whereClause = whereClause;
+			p_whereClause = whereClause == null ? "" : whereClause;
 		else
 		{
 			p_whereClause = Env.parseContext(Env.getCtx(), p_WindowNo, whereClause, false, false);
@@ -320,7 +323,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         this.addEventListener(Events.ON_OK, this);
 
         contentPanel.setOddRowSclass(null);
-        contentPanel.setSizedByContent(true);
+//        contentPanel.setSizedByContent(true);
         contentPanel.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoListbox");
         
         this.setSclass("info-panel");

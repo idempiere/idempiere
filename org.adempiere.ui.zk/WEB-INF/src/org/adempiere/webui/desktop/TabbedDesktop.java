@@ -25,8 +25,11 @@ import org.adempiere.webui.component.DesktopTabpanel;
 import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.panel.ADForm;
+import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.part.WindowContainer;
+import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.WTask;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTask;
@@ -102,6 +105,26 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 
 	/**
 	 *
+	 * @param infoId
+	 */
+	@Override
+	public void openInfo(int infoId) {
+		InfoPanel infoPanel = InfoManager.create(infoId);
+		
+		if (infoPanel != null) {
+			DesktopTabpanel tabPanel = new DesktopTabpanel();
+			infoPanel.setParent(tabPanel);
+			String title = infoPanel.getTitle();
+			infoPanel.setTitle(null);
+			preOpenNewTab();
+			windowContainer.addWindow(tabPanel, title, true);
+		} else {
+			FDialog.error(0, "NotValid");
+		}
+	}
+	
+	/**
+	 *
 	 * @param workflow_ID
 	 */
 	public void openWorkflow(int workflow_ID) {
@@ -113,7 +136,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		preOpenNewTab();
 		windowContainer.addWindow(tabPanel, p.getWorkflow().get_Translation(MWorkflow.COLUMNNAME_Name), true);
 	}
-
+	
 	/**
 	 *
 	 * @param <T>

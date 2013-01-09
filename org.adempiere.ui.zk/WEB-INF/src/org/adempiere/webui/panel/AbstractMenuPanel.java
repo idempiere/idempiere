@@ -224,6 +224,11 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 	link.setImage("/images/mWindow.png");
                 	treeitem.setAttribute("menu.type", "form");
                 }
+                else if (mChildNode.isInfo())
+                {
+                	link.setImage("/images/mWindow.png");
+                	treeitem.setAttribute("menu.type", "info");
+                }
                 else // Window
                 {
                 	link.setImage("/images/mWindow.png");

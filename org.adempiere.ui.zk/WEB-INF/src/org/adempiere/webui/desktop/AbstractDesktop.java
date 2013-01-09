@@ -75,6 +75,10 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
         {
         	openForm(menu.getAD_Form_ID());        	
         }
+        else if(menu.getAction().equals(MMenu.ACTION_Info))
+        {
+        	openInfo(menu.getAD_InfoWindow_ID());        	
+        }
         else if(menu.getAction().equals(MMenu.ACTION_WorkFlow))
         {
         	openWorkflow(menu.getAD_Workflow_ID());

@@ -50,6 +50,9 @@ public class InfoWindowValidate extends SvrProcess
 		throws Exception
 	{
 		MInfoWindow infoWindow = new MInfoWindow(getCtx(), p_AD_InfoWindow_ID, (String)null);
+		infoWindow.setIsValid(false);
+		infoWindow.saveEx();
+		
 		StringBuilder builder = new StringBuilder("SELECT ");
 		if (infoWindow.isDistinct())
 			builder.append("DISTINCT ");
@@ -75,6 +78,10 @@ public class InfoWindowValidate extends SvrProcess
 			builder.append(" ").append(infoWindow.getOtherClause());
 		}
 		
+		if (infoWindow.getOrderByClause() != null && infoWindow.getOrderByClause().trim().length() > 0) {
+			builder.append(" ORDER BY ").append(infoWindow.getOrderByClause());
+		}
+		
 		while(builder.indexOf("@") >= 0) {
 			int start = builder.indexOf("@");
 			int end = builder.indexOf("@", start+1);
@@ -92,6 +99,9 @@ public class InfoWindowValidate extends SvrProcess
 		} finally {
 			DB.close(pstmt);
 		}
+		
+		infoWindow.setIsValid(true);
+		infoWindow.saveEx();
 		
 		return "Ok";
 	}	//	doIt

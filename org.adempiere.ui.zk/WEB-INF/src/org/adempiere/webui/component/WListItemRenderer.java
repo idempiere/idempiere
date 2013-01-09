@@ -266,9 +266,9 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 						NumberBox numberbox = new NumberBox(false);
 						numberbox.setFormat(format);
 						numberbox.setValue(field);
-						numberbox.setWidth("100px");
+//						numberbox.setWidth("100px");
 						numberbox.setEnabled(true);
-						numberbox.setStyle("text-align:right; "
+						numberbox.setStyle("text-align:right; width: 96%; margin: auto; "
 										+ listcell.getStyle());
 						numberbox.addEventListener(Events.ON_CHANGE, this);
 						listcell.appendChild(numberbox);
@@ -276,7 +276,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 					else
 					{
 						listcell.setLabel(format.format(((Number)field).doubleValue()));
-						ZkCssHelper.appendStyle(listcell, "text-align:right");
+						ZkCssHelper.appendStyle(listcell, "width: 96%; margin: auto;text-align: right");
 					}
 				}
 			}
@@ -295,6 +295,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 				else
 				{
 					listcell.setLabel(dateFormat.format((Timestamp)field));
+					ZkCssHelper.appendStyle(listcell, "width: 96%; margin: auto");
 				}
 			}
 			else if (field instanceof String)
@@ -325,11 +326,13 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 						Textbox textbox = new Textbox();
 						textbox.setValue(field.toString());
 						textbox.addEventListener(Events.ON_CHANGE, this);
+						ZkCssHelper.appendStyle(textbox, "width: 96%; margin: auto");
 						listcell.appendChild(textbox);
 					}
 					else
 					{
 						listcell.setLabel(field.toString());
+						ZkCssHelper.appendStyle(listcell, "width: 96%; margin: auto");
 					}
 				}
 			}
@@ -347,6 +350,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 			{
 				listcell.setLabel(field.toString());
 				listcell.setValue(field.toString());
+				ZkCssHelper.appendStyle(listcell, "width: 96%; margin: auto");
 			}
 		}
 		else
@@ -438,7 +442,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
         	if (classType != null && classType.isAssignableFrom(IDColumn.class))
         	{
         		header = new ListHeader("");
-        		header.setWidth("20px");
+        		header.setWidth("30px");
         	}
         	else
         	{
@@ -464,7 +468,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	            	else if (classType.equals(IDColumn.class))
 	            	{
 	            		header.setSort("none");
-	            		if (width == 0)
+	            		if (width < 30)
 	            			width = 30;
 	            	}
 		            else if (width > 0 && width < 100 && (classType == null || !classType.isAssignableFrom(Boolean.class)))

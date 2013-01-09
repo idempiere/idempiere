@@ -102,6 +102,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			}
 		});
 		tabbox.setSclass("adwindow-detailpane-tabbox");
+		tabbox.setTabscroll(true);
+		tabbox.setWidth("100%");
 		
 		createPopup();
 		

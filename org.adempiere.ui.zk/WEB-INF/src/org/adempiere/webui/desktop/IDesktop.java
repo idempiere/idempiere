@@ -137,6 +137,13 @@ public interface IDesktop extends UIPart {
      * @return ADWindow
      */
 	public ADForm openForm(int formId);
+	
+	/**
+    *
+    * @param infoId
+    * @return ADWindow
+    */
+	public void openInfo(int infoId);
 
 	/**
 	 *

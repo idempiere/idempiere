@@ -2797,6 +2797,7 @@ public final class MRole extends X_AD_Role
 	}
 	
 	private int m_includedSeqNo = -1;
+	private HashMap<Integer, Boolean> m_infoAccess;
 	
 	/**
 	 * Merge permissions access 
@@ -2988,6 +2989,11 @@ public final class MRole extends X_AD_Role
 			getFormAccess(-1);
 			return m_formAccess;
 		}
+		else if ("m_infoAccess".equals(varname))
+		{
+			getInfoAccess(-1);
+			return m_infoAccess;
+		}
 		else
 		{
 			throw new IllegalArgumentException("varname not supported - "+varname);
@@ -3014,6 +3020,10 @@ public final class MRole extends X_AD_Role
 		else if ("m_formAccess".equals(varname))
 		{
 			m_formAccess = map;
+		}
+		else if ("m_infoAccess".equals(varname))
+		{
+			m_infoAccess = map;
 		}
 		else
 		{
@@ -3057,6 +3067,82 @@ public final class MRole extends X_AD_Role
 		//
 		whereClause.insert(0, roleColumnSQL+" IN (").append(")");
 		return whereClause.toString();
+	}
+
+	public Boolean getInfoAccess(int AD_InfoWindow_ID) {
+		if (m_infoAccess == null)
+		{
+			m_infoAccess = new HashMap<Integer,Boolean>(20);
+			// first get the info access from the included and substitute roles
+			mergeIncludedAccess("m_infoAccess"); 
+			// and now get the info access directly from this role			
+			String ASPFilter = "";
+			/*
+			MClient client = MClient.get(getCtx(), getAD_Client_ID());
+			if (client.isUseASP())
+				ASPFilter =
+					  "   AND (   AD_InfoWindow_ID IN ( "
+					// Just ASP subscribed forms for client "
+					+ "              SELECT f.AD_InfoWindow_ID "
+					+ "                FROM ASP_InfoWindow f, ASP_Level l, ASP_ClientLevel cl "
+					+ "               WHERE f.ASP_Level_ID = l.ASP_Level_ID "
+					+ "                 AND cl.AD_Client_ID = " + client.getAD_Client_ID()
+					+ "                 AND cl.ASP_Level_ID = l.ASP_Level_ID "
+					+ "                 AND f.IsActive = 'Y' "
+					+ "                 AND l.IsActive = 'Y' "
+					+ "                 AND cl.IsActive = 'Y' "
+					+ "                 AND f.ASP_Status = 'S') " // Show
+					+ "        OR AD_InfoWindow_ID IN ( "
+					// + show ASP exceptions for client
+					+ "              SELECT AD_InfoWindow_ID "
+					+ "                FROM ASP_ClientException ce "
+					+ "               WHERE ce.AD_Client_ID = " + client.getAD_Client_ID()
+					+ "                 AND ce.IsActive = 'Y' "
+					+ "                 AND ce.AD_InfoWindow_ID IS NOT NULL "
+					+ "                 AND ce.ASP_Status = 'S') " // Show
+					+ "       ) "
+					+ "   AND AD_InfoWindow_ID NOT IN ( "
+					// minus hide ASP exceptions for client
+					+ "          SELECT AD_InfoWindow_ID "
+					+ "            FROM ASP_ClientException ce "
+					+ "           WHERE ce.AD_Client_ID = " + client.getAD_Client_ID()
+					+ "             AND ce.IsActive = 'Y' "
+					+ "             AND ce.AD_InfoWindow_ID IS NOT NULL "
+					+ "             AND ce.ASP_Status = 'H')"; // Hide
+			*/
+			String sql = "SELECT AD_InfoWindow_ID, IsActive FROM AD_InfoWindow_Access WHERE AD_Role_ID=?" + ASPFilter;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			HashMap<Integer,Boolean> directAccess = new HashMap<Integer,Boolean>(100);
+			try
+			{
+				pstmt = DB.prepareStatement(sql, get_TrxName());
+				pstmt.setInt(1, getAD_Role_ID());
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					Integer infoId = new Integer(rs.getInt(1));
+					if ("N".equals(rs.getString(2))) {
+						// inactive info on direct access
+						if (m_infoAccess.containsKey(infoId)) {
+							m_infoAccess.remove(infoId);
+						}
+					} else {
+						directAccess.put(infoId, Boolean.TRUE);
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				log.log(Level.SEVERE, sql, e);
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+			}
+			setAccessMap("m_infoAccess", mergeAccess(getAccessMap("m_infoAccess"), directAccess, true));
+		}	//	reload
+		Boolean retValue = m_infoAccess.get(AD_InfoWindow_ID);
+		return retValue;
 	}
 
 }	//	MRole

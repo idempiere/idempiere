@@ -16,6 +16,7 @@ package org.adempiere.webui.factory;
 import java.util.List;
 
 import org.adempiere.base.Service;
+import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.panel.InfoPanel;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
@@ -64,4 +65,19 @@ public class InfoManager
 		}
 		return ip;
 	}
+	
+	public static InfoWindow create (int AD_InfoWindow_ID)
+    {
+        InfoWindow info = null;
+
+		List<IInfoFactory> factoryList = Service.locator().list(IInfoFactory.class).getServices();
+		for(IInfoFactory factory : factoryList)
+		{
+			info = factory.create(AD_InfoWindow_ID);
+			if (info != null)
+				break;
+		}
+        //
+        return info;
+    }
 }

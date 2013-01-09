@@ -12,6 +12,9 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
+import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -28,13 +31,13 @@ import org.compiere.model.AccessSqlParser;
 import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
-import org.compiere.model.MColumn;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.X_AD_InfoColumn;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -106,7 +109,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
 			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup) {
 		super(WindowNo, tableName, keyColumn, multipleSelection, whereClause,
-				lookup);
+				lookup);		
 		this.queryValue = queryValue;
 		this.AD_InfoWindow_ID = AD_InfoWindow_ID;
 		infoContext = new Properties(Env.getCtx());
@@ -159,9 +162,13 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 	private boolean loadInfoDefinition() {
 		if (AD_InfoWindow_ID > 0) {
 			infoWindow = new MInfoWindow(Env.getCtx(), AD_InfoWindow_ID, null);
-			String tableName = MTable.getTableName(Env.getCtx(), infoWindow.getAD_Table_ID());
-			if (!tableName.equalsIgnoreCase(p_tableName)) {
-				throw new IllegalArgumentException("AD_InfoWindow.TableName <> TableName argument. ("+tableName + " <> " + p_tableName+")");
+			if (!infoWindow.isValid()) {
+				infoWindow = null;
+			} else {
+				String tableName = MTable.getTableName(Env.getCtx(), infoWindow.getAD_Table_ID());
+				if (!tableName.equalsIgnoreCase(p_tableName)) {
+					throw new IllegalArgumentException("AD_InfoWindow.TableName <> TableName argument. ("+tableName + " <> " + p_tableName+")");
+				}
 			}
 		} else {
 			infoWindow = MInfoWindow.get(p_tableName, (String)null);			
@@ -313,27 +320,51 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 		}
 		for(WEditor editor : editors) {
 			if (editor.getGridField() != null && editor.getValue() != null && editor.getValue().toString().trim().length() > 0) {
+				MInfoColumn mInfoColumn = findInfoColumn(editor.getGridField());
+				if (mInfoColumn == null || mInfoColumn.getSelectClause().equals("0")) {
+					continue;
+				}
+				String columnName = mInfoColumn.getSelectClause();
 				if (builder.length() > 0) {
 					builder.append(" AND ");
 				} else if (p_whereClause != null && p_whereClause.trim().length() > 0) {
 					builder.append(" AND ");
-				}
-				String columnName = editor.getColumnName();
-				for(MInfoColumn infoColumn: infoColumns) {
-					if (columnName.equals(infoColumn.getColumnName())) {
-						columnName = infoColumn.getSelectClause();
+				}		
+				String columnClause = null;
+				if (mInfoColumn.getQueryFunction() != null && mInfoColumn.getQueryFunction().trim().length() > 0) {
+					String function = mInfoColumn.getQueryFunction();
+					if (function.indexOf("@") >= 0) {
+						String s = Env.parseContext(infoContext, p_WindowNo, function, false, false);
+						if (s.length() == 0) {
+							log.log(Level.SEVERE, "Failed to parse query function. " + function);
+						} else {
+							function = s;
+						}
 					}
-				}
-				if (isSearchLike(editor.getGridField())) {
-					builder.append("UPPER(")
-						   .append(columnName)
-						   .append(") LIKE ?");
+					if (function.indexOf("?") >= 0) {
+						columnClause = function.replaceFirst("[?]", columnName);
+					} else {
+						columnClause = function+"("+columnName+")";
+					}
 				} else {
-					builder.append(columnName).append("=?");
+					columnClause = columnName;
 				}
+				builder.append(columnClause)
+					   .append(" ")
+					   .append(mInfoColumn.getQueryOperator())
+					   .append(" ?");				
 			}
 		}		
 		return builder.toString();
+	}
+
+	private MInfoColumn findInfoColumn(GridField gridField) {
+		for(int i = 0; i < gridFields.size(); i++) {
+			if (gridFields.get(i) == gridField) {
+				return infoColumns[i];
+			}
+		}
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -343,14 +374,18 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 	protected void setParameters(PreparedStatement pstmt, boolean forCount)
 			throws SQLException {
 		int parameterIndex = 0;
-		for(WEditor editor : editors) {
-			Object value = editor.getValue();
-			if (value != null && value.toString().trim().length() > 0) {
+		for(WEditor editor : editors) {			
+			if (editor.getGridField() != null && editor.getValue() != null && editor.getValue().toString().trim().length() > 0) {
+				MInfoColumn mInfoColumn = findInfoColumn(editor.getGridField());
+				if (mInfoColumn == null || mInfoColumn.getSelectClause().equals("0")) {
+					continue;
+				}
+				Object value = editor.getValue();
 				parameterIndex++;
 				if (value instanceof Boolean) {					
 					pstmt.setString(parameterIndex, ((Boolean) value).booleanValue() ? "Y" : "N");
 				} else if (value instanceof String) {
-					if (isSearchLike(editor.getGridField())) {
+					if (mInfoColumn.getQueryOperator().equals(X_AD_InfoColumn.QUERYOPERATOR_Like)) {
 						StringBuilder valueStr = new StringBuilder(value.toString().toUpperCase());
 	                    if (!valueStr.toString().endsWith("%"))
 	                        valueStr.append("%");
@@ -424,6 +459,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
         South south = new South();
 		layout.appendChild(south);
 		renderFooter(south);		
+		
+		confirmPanel.getButton(ConfirmPanel.A_ZOOM).setVisible(hasZoom());
 	}
 
 	protected void renderFooter(South south) {		
@@ -451,8 +488,13 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 
 	protected void createParameterPanel() {
 		parameterGrid = GridFactory.newGridLayout();
-		parameterGrid.setInnerWidth("auto");
+//		parameterGrid.setInnerWidth("auto");
 		parameterGrid.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoParameterPanel");
+		parameterGrid.setStyle("width: 90%; margin: auto;");
+		Columns columns = new Columns();
+		parameterGrid.appendChild(columns);
+		for(int i = 0; i < 8; i++)
+			columns.appendChild(new Column());
 		
 		Rows rows = new Rows();
 		parameterGrid.appendChild(rows);
@@ -510,7 +552,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
         else
         {
         	panel = (Row) parameterGrid.getRows().getLastChild();
-        	if (panel.getChildren().size() >= 6)
+        	if (panel.getChildren().size() >= 8)
         	{
         		panel = new Row();
             	parameterGrid.getRows().appendChild(panel); 
@@ -610,10 +652,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
     	super.executeQuery();
     }
     
-    private boolean isSearchLike(GridField field)
-	{
-		return DisplayType.isText(field.getDisplayType())
-		&& MColumn.isSuggestSelectionColumn(field.getColumnName(), true);
+	@Override
+	protected boolean hasZoom() {
+		return !isLookup() && infoWindow != null && !infoWindow.getAD_Table().isView();
 	}
 
 	@Override
@@ -621,14 +662,19 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 		if (evt != null && evt.getSource() instanceof WEditor)
         {
             WEditor editor = (WEditor)evt.getSource();
-            if (evt.getNewValue() == null)
+            if (evt.getNewValue() == null) {
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), "");
-            else if (evt.getNewValue() instanceof Boolean)
+            	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), "");
+            } else if (evt.getNewValue() instanceof Boolean) {
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), (Boolean)evt.getNewValue());
-            else if (evt.getNewValue() instanceof Timestamp)
+            	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), (Boolean)evt.getNewValue());
+            } else if (evt.getNewValue() instanceof Timestamp) {
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), (Timestamp)evt.getNewValue());
-            else
+            	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO+"|"+editor.getColumnName(), (Timestamp)evt.getNewValue());
+            } else {
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), evt.getNewValue().toString());
+            	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), evt.getNewValue().toString());
+            }
             
             for(WEditor otherEditor : editors)
             {

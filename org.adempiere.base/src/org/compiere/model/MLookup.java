@@ -721,9 +721,9 @@ public final class MLookup extends Lookup implements Serializable
 			}
 			//
 			if (CLogMgt.isLevelFiner())
-				Env.setContext(m_info.ctx, Env.WINDOW_MLOOKUP, m_info.Column_ID, m_info.KeyColumn, sql.toString());
+				log.finer(m_info.Column_ID + ", " + m_info.KeyColumn + ": " + sql.toString());
 			if (CLogMgt.isLevelFinest())
-				log.fine(m_info.KeyColumn + ": " + sql);
+				log.finest(m_info.KeyColumn + ": " + sql);
 			
 			//	Reset
 			m_lookup.clear();

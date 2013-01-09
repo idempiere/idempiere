@@ -112,6 +112,8 @@ public final class MTreeNode extends DefaultMutableTreeNode
 	public static int		TYPE_USERCHOICE = 7;
 	/**	Action - 8			*/
 	public static int		TYPE_DOCACTION = 8;
+	/** Info - 9            */
+	public static int		TYPE_INFO = 9;
 
 	public static String[] 	PATHS = new String[]
 	{
@@ -405,6 +407,15 @@ public final class MTreeNode extends DefaultMutableTreeNode
 		return X_AD_Menu.ACTION_Task.equals(m_imageIndicator);
 	}	//	isTask
 
+	/**
+	 * 	Is Info
+	 *	@return true if Info
+	 */
+	public boolean isInfo()
+	{
+		return X_AD_Menu.ACTION_Info.equals(m_imageIndicator);
+	}	//	isTask
+	
 	/**
 	 * 	Get Color
 	 *	@return color or black if not set

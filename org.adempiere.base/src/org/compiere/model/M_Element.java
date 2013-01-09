@@ -249,6 +249,17 @@ public class M_Element extends X_AD_Element
 					.append(" AND IsCentrallyMaintained='Y'");
 				no += DB.executeUpdate(sql.toString(), get_TrxName());
 				log.fine("Parameters updated #" + no);
+				
+				// Info Column
+				sql = new StringBuilder("UPDATE AD_InfoColumn SET ColumnName=")
+					.append(DB.TO_STRING(getColumnName()))
+					.append(", Name=").append(DB.TO_STRING(getName()))
+					.append(", Description=").append(DB.TO_STRING(getDescription()))
+					.append(", Help=").append(DB.TO_STRING(getHelp()))
+					.append(" WHERE AD_Element_ID=").append(get_ID())
+					.append(" AND IsCentrallyMaintained='Y'");
+				no += DB.executeUpdate(sql.toString(), get_TrxName());
+				log.fine("Info Column updated #" + no);
 			}
 			
 			if (   is_ValueChanged(M_Element.COLUMNNAME_Name)

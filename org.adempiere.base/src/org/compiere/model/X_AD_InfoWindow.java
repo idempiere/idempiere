@@ -30,7 +30,7 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130105L;
+	private static final long serialVersionUID = 20130108L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName)
@@ -46,6 +46,8 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 			setIsDefault (false);
 // N
 			setIsDistinct (false);
+// N
+			setIsValid (false);
 // N
 			setName (null);
         } */
@@ -254,6 +256,30 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public boolean isDistinct () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsDistinct);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Valid.
+		@param IsValid 
+		Element is valid
+	  */
+	public void setIsValid (boolean IsValid)
+	{
+		set_Value (COLUMNNAME_IsValid, Boolean.valueOf(IsValid));
+	}
+
+	/** Get Valid.
+		@return Element is valid
+	  */
+	public boolean isValid () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsValid);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

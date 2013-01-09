@@ -208,6 +208,19 @@ public interface I_AD_InfoWindow
 	  */
 	public boolean isDistinct();
 
+    /** Column name IsValid */
+    public static final String COLUMNNAME_IsValid = "IsValid";
+
+	/** Set Valid.
+	  * Element is valid
+	  */
+	public void setIsValid (boolean IsValid);
+
+	/** Get Valid.
+	  * Element is valid
+	  */
+	public boolean isValid();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 

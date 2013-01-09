@@ -307,6 +307,32 @@ public interface I_AD_InfoColumn
 	  */
 	public String getName();
 
+    /** Column name QueryFunction */
+    public static final String COLUMNNAME_QueryFunction = "QueryFunction";
+
+	/** Set Query Function.
+	  * Database function for query
+	  */
+	public void setQueryFunction (String QueryFunction);
+
+	/** Get Query Function.
+	  * Database function for query
+	  */
+	public String getQueryFunction();
+
+    /** Column name QueryOperator */
+    public static final String COLUMNNAME_QueryOperator = "QueryOperator";
+
+	/** Set Query Operator.
+	  * Operator for database query
+	  */
+	public void setQueryOperator (String QueryOperator);
+
+	/** Get Query Operator.
+	  * Operator for database query
+	  */
+	public String getQueryOperator();
+
     /** Column name SelectClause */
     public static final String COLUMNNAME_SelectClause = "SelectClause";
 

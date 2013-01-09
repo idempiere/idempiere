@@ -202,15 +202,6 @@ public final class Env
 	 */
 	/** WindowNo for Main           */
 	public static final int     WINDOW_MAIN = 0;
-	/** WindowNo for Find           */
-	public static final int     WINDOW_FIND = 1110;
-	/** WinowNo for MLookup         */
-	public static final int	    WINDOW_MLOOKUP = 1111;
-	/** WindowNo for PrintCustomize */
-	public static final int     WINDOW_CUSTOMIZE = 1112;
-	/** WindowNo for PrintCustomize */
-	@Deprecated
-	public static final int     WINDOW_INFO = 1113;
 
 	/** Tab for Info                */
 	public static final int     TAB_INFO = 1113;
@@ -320,7 +311,7 @@ public final class Env
 	 */
 	public static void setContext (Properties ctx, String context, boolean value)
 	{
-		setContext (ctx, context, value ? "Y" : "N");
+		setContext (ctx, context, convert(value));
 	}	//	setContext
 
 	/**
@@ -334,7 +325,7 @@ public final class Env
 	{
 		if (ctx == null || context == null)
 			return;
-		if (WindowNo != WINDOW_FIND && WindowNo != WINDOW_MLOOKUP)
+		if (getLogger().isLoggable(Level.FINER))
 			getLogger().finer("Context("+WindowNo+") " + context + "==" + value);
 		//
 		if (value == null || value.equals(""))
@@ -357,7 +348,8 @@ public final class Env
 		if (value == null)
 		{
 			ctx.remove(WindowNo+"|"+context);
-			getLogger().finer("Context("+WindowNo+") " + context + "==" + value);
+			if (getLogger().isLoggable(Level.FINER))
+				getLogger().finer("Context("+WindowNo+") " + context + "==" + value);
 		}
 		else
 		{	//	JDBC Format	2005-05-09 00:00:00.0
@@ -371,10 +363,11 @@ public final class Env
 			//stringValue = stringValue.substring(0, stringValue.indexOf("."));
 			// KTU
 			ctx.setProperty(WindowNo+"|"+context, stringValue);
-			getLogger().finer("Context("+WindowNo+") " + context + "==" + stringValue);
+			if (getLogger().isLoggable(Level.FINER))
+				getLogger().finer("Context("+WindowNo+") " + context + "==" + stringValue);
 		}
 	}	//	setContext
-
+	
 	/**
 	 *	Set Context for Window to int Value
 	 *  @param ctx context
@@ -386,7 +379,7 @@ public final class Env
 	{
 		if (ctx == null || context == null)
 			return;
-		if (WindowNo != WINDOW_FIND && WindowNo != WINDOW_MLOOKUP)
+		if (getLogger().isLoggable(Level.FINER))
 			getLogger().finer("Context("+WindowNo+") " + context + "==" + value);
 		//
 		ctx.setProperty(WindowNo+"|"+context, String.valueOf(value));
@@ -401,9 +394,25 @@ public final class Env
 	 */
 	public static void setContext (Properties ctx, int WindowNo, String context, boolean value)
 	{
-		setContext (ctx, WindowNo, context, value ? "Y" : "N");
+		setContext (ctx, WindowNo, context, convert(value));
 	}	//	setContext
 
+	private static String convert(boolean value) {
+		return value ? "Y" : "N";
+	}
+
+	/**
+	 *	Set Context for Window to Y/N Value
+	 *  @param ctx context
+	 *  @param WindowNo window no
+	 *  @param context context key
+	 *  @param value context value
+	 */
+	public static void setContext (Properties ctx, int WindowNo, int TabNo, String context, boolean value)
+	{
+		setContext (ctx, WindowNo, TabNo, context, convert(value));
+	}	//	setContext
+	
 	/**
 	 *	Set Context for Window & Tab to Value
 	 *  @param ctx context
@@ -416,7 +425,7 @@ public final class Env
 	{
 		if (ctx == null || context == null)
 			return;
-		if (WindowNo != WINDOW_FIND && WindowNo != WINDOW_MLOOKUP)
+		if (getLogger().isLoggable(Level.FINEST))
 			getLogger().finest("Context("+WindowNo+","+TabNo+") " + context + "==" + value);
 		//
 		if (value == null)
@@ -437,7 +446,7 @@ public final class Env
 	{
 		if (ctx == null)
 			return;
-		ctx.setProperty("AutoCommit", autoCommit ? "Y" : "N");
+		ctx.setProperty("AutoCommit", convert(autoCommit));
 	}	//	setAutoCommit
 
 	/**
@@ -450,7 +459,7 @@ public final class Env
 	{
 		if (ctx == null)
 			return;
-		ctx.setProperty(WindowNo+"|AutoCommit", autoCommit ? "Y" : "N");
+		ctx.setProperty(WindowNo+"|AutoCommit", convert(autoCommit));
 	}	//	setAutoCommit
 
 	/**
@@ -462,7 +471,7 @@ public final class Env
 	{
 		if (ctx == null)
 			return;
-		ctx.setProperty("AutoNew", autoNew ? "Y" : "N");
+		ctx.setProperty("AutoNew", convert(autoNew));
 	}	//	setAutoNew
 
 	/**
@@ -475,7 +484,7 @@ public final class Env
 	{
 		if (ctx == null)
 			return;
-		ctx.setProperty(WindowNo+"|AutoNew", autoNew ? "Y" : "N");
+		ctx.setProperty(WindowNo+"|AutoNew", convert(autoNew));
 	}	//	setAutoNew
 
 
@@ -488,7 +497,7 @@ public final class Env
 	{
 		if (ctx == null)
 			return;
-		ctx.setProperty("IsSOTrx", isSOTrx ? "Y" : "N");
+		ctx.setProperty("IsSOTrx", convert(isSOTrx));
 	}	//	setSOTrx
 
 	/**

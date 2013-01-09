@@ -30,7 +30,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130101L;
+	private static final long serialVersionUID = 20130108L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -52,6 +52,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 			setName (null);
 			setSelectClause (null);
 			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_InfoColumn WHERE AD_InfoWindow_ID=@AD_InfoWindow_ID@
         } */
     }
 
@@ -444,6 +445,57 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Query Function.
+		@param QueryFunction 
+		Database function for query
+	  */
+	public void setQueryFunction (String QueryFunction)
+	{
+		set_Value (COLUMNNAME_QueryFunction, QueryFunction);
+	}
+
+	/** Get Query Function.
+		@return Database function for query
+	  */
+	public String getQueryFunction () 
+	{
+		return (String)get_Value(COLUMNNAME_QueryFunction);
+	}
+
+	/** QueryOperator AD_Reference_ID=200061 */
+	public static final int QUERYOPERATOR_AD_Reference_ID=200061;
+	/** Like = Like */
+	public static final String QUERYOPERATOR_Like = "Like";
+	/** = = = */
+	public static final String QUERYOPERATOR_Eq = "=";
+	/** > = > */
+	public static final String QUERYOPERATOR_Gt = ">";
+	/** >= = >= */
+	public static final String QUERYOPERATOR_GtEq = ">=";
+	/** < = < */
+	public static final String QUERYOPERATOR_Le = "<";
+	/** <= = <= */
+	public static final String QUERYOPERATOR_LeEq = "<=";
+	/** != = != */
+	public static final String QUERYOPERATOR_NotEq = "!=";
+	/** Set Query Operator.
+		@param QueryOperator 
+		Operator for database query
+	  */
+	public void setQueryOperator (String QueryOperator)
+	{
+
+		set_Value (COLUMNNAME_QueryOperator, QueryOperator);
+	}
+
+	/** Get Query Operator.
+		@return Operator for database query
+	  */
+	public String getQueryOperator () 
+	{
+		return (String)get_Value(COLUMNNAME_QueryOperator);
+	}
 
 	/** Set Sql SELECT.
 		@param SelectClause 

@@ -89,5 +89,15 @@
             tableName="AD_InfoWindow">
       </callout>
    </extension>
+   <extension
+         id="org.adempiere.model.CalloutInfoWindow.reference"
+         point="org.adempiere.base.IColumnCallout">
+      <callout
+            class="org.adempiere.model.CalloutInfoWindow"
+            columnName="AD_Reference_ID"
+            priority="0"
+            tableName="AD_InfoColumn">
+      </callout>
+   </extension>
 
 </plugin>

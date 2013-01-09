@@ -30,7 +30,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130107L;
 
     /** Standard Constructor */
     public X_AD_Menu (Properties ctx, int AD_Menu_ID, String trxName)
@@ -93,6 +93,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	public static final String ACTION_Form = "X";
 	/** Workbench = B */
 	public static final String ACTION_Workbench = "B";
+	/** Info = I */
+	public static final String ACTION_Info = "I";
 	/** Set Action.
 		@param Action 
 		Indicates the Action to be performed
@@ -134,6 +136,34 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	public int getAD_Form_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Form_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());	}
+
+	/** Set Info Window.
+		@param AD_InfoWindow_ID 
+		Info and search/select Window
+	  */
+	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID)
+	{
+		if (AD_InfoWindow_ID < 1) 
+			set_Value (COLUMNNAME_AD_InfoWindow_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_InfoWindow_ID, Integer.valueOf(AD_InfoWindow_ID));
+	}
+
+	/** Get Info Window.
+		@return Info and search/select Window
+	  */
+	public int getAD_InfoWindow_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoWindow_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -255,34 +285,6 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	public int getAD_Window_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_AD_Workbench getAD_Workbench() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workbench)MTable.get(getCtx(), org.compiere.model.I_AD_Workbench.Table_Name)
-			.getPO(getAD_Workbench_ID(), get_TrxName());	}
-
-	/** Set Workbench.
-		@param AD_Workbench_ID 
-		Collection of windows, reports
-	  */
-	public void setAD_Workbench_ID (int AD_Workbench_ID)
-	{
-		if (AD_Workbench_ID < 1) 
-			set_Value (COLUMNNAME_AD_Workbench_ID, null);
-		else 
-			set_Value (COLUMNNAME_AD_Workbench_ID, Integer.valueOf(AD_Workbench_ID));
-	}
-
-	/** Get Workbench.
-		@return Collection of windows, reports
-	  */
-	public int getAD_Workbench_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Workbench_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

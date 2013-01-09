@@ -77,6 +77,21 @@ public interface I_AD_Menu
 
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException;
 
+    /** Column name AD_InfoWindow_ID */
+    public static final String COLUMNNAME_AD_InfoWindow_ID = "AD_InfoWindow_ID";
+
+	/** Set Info Window.
+	  * Info and search/select Window
+	  */
+	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID);
+
+	/** Get Info Window.
+	  * Info and search/select Window
+	  */
+	public int getAD_InfoWindow_ID();
+
+	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
+
     /** Column name AD_Menu_ID */
     public static final String COLUMNNAME_AD_Menu_ID = "AD_Menu_ID";
 
@@ -156,21 +171,6 @@ public interface I_AD_Menu
 	public int getAD_Window_ID();
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
-
-    /** Column name AD_Workbench_ID */
-    public static final String COLUMNNAME_AD_Workbench_ID = "AD_Workbench_ID";
-
-	/** Set Workbench.
-	  * Collection of windows, reports
-	  */
-	public void setAD_Workbench_ID (int AD_Workbench_ID);
-
-	/** Get Workbench.
-	  * Collection of windows, reports
-	  */
-	public int getAD_Workbench_ID();
-
-	public org.compiere.model.I_AD_Workbench getAD_Workbench() throws RuntimeException;
 
     /** Column name AD_Workflow_ID */
     public static final String COLUMNNAME_AD_Workflow_ID = "AD_Workflow_ID";
