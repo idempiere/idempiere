@@ -1014,3 +1014,9 @@ tbody.z-grid-empty-body td {
 .grid-combobox-editor input {
 	width: 85% !important;
 }
+
+.z-group td.z-group-inner {
+	overflow: hidden !important;
+	border-bottom: 1px solid #CFCFCF !important;
+	border-top: 1px solid #CFCFCF !important;
+}

@@ -429,6 +429,7 @@ DataStatusListener, IADTabpanel, IdSpace
         		{
         			Group rowg = new Group(fieldGroup);
         			Cell cell = new Cell();
+        			cell.setSclass("z-group-inner");
         			cell.setColspan(numCols);
         			rowg.appendChild(cell);
         			
