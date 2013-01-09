@@ -434,6 +434,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 
 		
 		msgPopup = new Window();
+		msgPopup.setVisible(false);
 		msgPopup.setBorder(true);
 		msgPopup.setClosable(true);
 		msgPopup.setSizable(true);
