@@ -1,6 +1,6 @@
 -- Jan 9, 2013 3:45:58 PM SGT
 -- Ticket 1001758: FedEx & UPS
-UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2013-01-09 15:45:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=202144
+UPDATE AD_Column SET IsIdentifier='Y', IsSelectionColumn='Y', ColumnSQL=NULL,Updated=TO_DATE('2013-01-09 15:45:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=202144
 ;
 
 -- Jan 9, 2013 3:46:03 PM SGT
