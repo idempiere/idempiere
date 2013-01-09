@@ -1,3 +1,6 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
 -- Dec 27, 2012 4:09:41 PM MYT
 -- IDEMPIERE-325 Complete AD based info window ( AD_InfoWindow ) implementation
 UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2012-12-27 16:09:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=54358
@@ -98,9 +101,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+\@AD_Table_ID@=14 | @Language@!GERGER <br>
+\@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+\@Name@>J<br>
 Strings may be in single quotes (optional)','Display Logic','Y','Y',100,TO_DATE('2012-12-28 08:36:33','YYYY-MM-DD HH24:MI:SS'),0,100,0,208349,'N',0)
 ;
 
@@ -154,9 +157,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+\@AD_Table_ID@=14 | @Language@!GERGER <br>
+\@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+\@Name@>J<br>
 Strings may be in single quotes (optional)',0,TO_DATE('2012-12-31 23:52:44','YYYY-MM-DD HH24:MI:SS'),'N',180,'D',0,'If the Field is displayed, the result determines if the field is actually displayed','Y','N','538692f6-ff16-4157-ac9e-df7beca9eecb',100,TO_DATE('2012-12-31 23:52:44','YYYY-MM-DD HH24:MI:SS'),0,'Display Logic',100,'Y',1)
 ;
 
