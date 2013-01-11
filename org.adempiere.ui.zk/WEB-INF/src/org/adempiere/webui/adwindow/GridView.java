@@ -167,9 +167,11 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 	}
 	
 	public void setDetailPaneMode(boolean detailPaneMode) {
-		this.detailPaneMode = detailPaneMode;
-		pageSize =  detailPaneMode ? DEFAULT_DETAIL_PAGE_SIZE : MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 20);
-		updatePaging();
+		if (this.detailPaneMode != detailPaneMode) {
+			this.detailPaneMode = detailPaneMode;
+			pageSize =  detailPaneMode ? DEFAULT_DETAIL_PAGE_SIZE : MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 20);
+			updatePaging();
+		}
 	}
 
 	public boolean isDetailPaneMode() {

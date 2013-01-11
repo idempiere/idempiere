@@ -1399,7 +1399,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         }
         //
 
-        adTabbox.evaluate(e);
+        if (!detailTab) 
+        {
+        	adTabbox.evaluate(e);
+        }
 
         toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted());
         toolbar.enableReport(true);

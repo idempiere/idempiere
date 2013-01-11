@@ -537,8 +537,12 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		
 		Tab tab = (Tab) tabbox.getTabs().getChildren().get(i);
 		tab.setVisible(visible);
-		if (tab.getLinkedPanel() != null)
+		if (tab.isSelected()) {
+			tab.setSelected(false);
+		}
+		if (tab.getLinkedPanel() != null) {
 			tab.getLinkedPanel().setVisible(visible);
+		}
 	}
 	
 	public boolean isTabVisible(int i) {

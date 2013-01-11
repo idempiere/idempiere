@@ -318,11 +318,13 @@ public class CompositeADTabbox extends AbstractADTabbox
 
 	private void activateDetailADTabpanel() {
     	if (detailPane != null && detailPane.getParent() != null) {
-	    	IADTabpanel tabPanel = detailPane.getSelectedADTabpanel();	    	
-	    	tabPanel.activate(true);
-	    	if (!tabPanel.isGridView()) {
-	    		tabPanel.switchRowPresentation();	
-	    	}	    		    	
+	    	IADTabpanel tabPanel = detailPane.getSelectedADTabpanel();	    
+	    	if (tabPanel != null) {
+		    	tabPanel.activate(true);
+		    	if (!tabPanel.isGridView()) {
+		    		tabPanel.switchRowPresentation();	
+		    	}	    		    	
+	    	}
     	}
 	}
 
@@ -516,28 +518,29 @@ public class CompositeADTabbox extends AbstractADTabbox
 	        	}
 	        	
 	        	IADTabpanel detailTab = detailPane.getSelectedADTabpanel();
-	        	
-	        	//check data action
-        		String uuid = (String) execution.getAttribute(CompositeADTabbox.class.getName()+".dataAction");
-        		if (uuid != null && uuid.equals(detailTab.getUuid())) {
-        			//refresh current row
-        			detailTab.getGridTab().dataRefresh(false);
-        			//keep focus
-        			Clients.scrollIntoView(detailTab);
-        			
-        			return;	        				
-        		}
-	        	
-        		GridTab tab = detailTab.getGridTab();
-        		GridField[] fields = tab.getFields();
-        		for (GridField field : fields)
-        		{
-        			if (!parentColumnNames.contains(field.getColumnName()))
-        				Env.setContext(Env.getCtx(), field.getWindowNo(), field.getColumnName(), "");
-        		}
-        		detailTab.activate(true);
-        		detailTab.setDetailPaneMode(true);
-        		detailPane.setVflex("true");    
+	        	if (detailTab != null) {
+		        	//check data action
+	        		String uuid = (String) execution.getAttribute(CompositeADTabbox.class.getName()+".dataAction");
+	        		if (uuid != null && uuid.equals(detailTab.getUuid())) {
+	        			//refresh current row
+	        			detailTab.getGridTab().dataRefresh(false);
+	        			//keep focus
+	        			Clients.scrollIntoView(detailTab);
+	        			
+	        			return;	        				
+	        		}
+		        	
+	        		GridTab tab = detailTab.getGridTab();
+	        		GridField[] fields = tab.getFields();
+	        		for (GridField field : fields)
+	        		{
+	        			if (!parentColumnNames.contains(field.getColumnName()))
+	        				Env.setContext(Env.getCtx(), field.getWindowNo(), field.getColumnName(), "");
+	        		}
+	        		detailTab.activate(true);
+	        		detailTab.setDetailPaneMode(true);	        		    
+	        	}
+	        	detailPane.setVflex("true");
 			}
 		}
 		

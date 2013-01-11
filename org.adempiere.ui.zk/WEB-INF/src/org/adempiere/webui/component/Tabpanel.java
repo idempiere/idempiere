@@ -45,7 +45,19 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace
         return enabled;
     }
 
-    public void setEnabled(boolean enabled)
+    @Override
+	public boolean setVisible(boolean visible) {
+		// TODO Auto-generated method stub
+		return super.setVisible(visible);
+	}
+
+	@Override
+	protected void setVisibleDirectly(boolean visible) {
+		// TODO Auto-generated method stub
+		super.setVisibleDirectly(visible);
+	}
+
+	public void setEnabled(boolean enabled)
     {
         this.enabled = enabled;
     }

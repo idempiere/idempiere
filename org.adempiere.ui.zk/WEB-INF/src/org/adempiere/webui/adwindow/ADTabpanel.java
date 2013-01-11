@@ -1226,18 +1226,20 @@ DataStatusListener, IADTabpanel, IdSpace
 
 	@Override
 	public void setDetailPaneMode(boolean detailPaneMode) {
-		this.detailPaneMode = detailPaneMode;
-		if (detailPaneMode) {
-			detailPane = null;
-			if (formContainer instanceof Borderlayout) {
-				Borderlayout borderLayout = (Borderlayout) formContainer;
-				if (borderLayout.getSouth() != null) {
-					borderLayout.getSouth().detach();
+		if (this.detailPaneMode != detailPaneMode) {
+			this.detailPaneMode = detailPaneMode;
+			if (detailPaneMode) {
+				detailPane = null;
+				if (formContainer instanceof Borderlayout) {
+					Borderlayout borderLayout = (Borderlayout) formContainer;
+					if (borderLayout.getSouth() != null) {
+						borderLayout.getSouth().detach();
+					}
 				}
-			}
-		} 
-		this.setVflex("true");
-		listPanel.setDetailPaneMode(detailPaneMode);
+			} 
+			this.setVflex("true");
+			listPanel.setDetailPaneMode(detailPaneMode);
+		}
 	}
 	
 	/**
