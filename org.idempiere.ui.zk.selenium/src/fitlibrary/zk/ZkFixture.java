@@ -191,6 +191,11 @@ public class ZkFixture extends SpiderFixture {
 		}
 	}
 	
+	public void focus(String locator) {
+		Widget widget = new Widget(locator);
+		widget.execute(webDriver, "focus()");
+	}
+	
 	protected String getEval(String script) {
 		return String.valueOf(executeJavaScript("return ("+ script+");"));
 	}

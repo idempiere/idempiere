@@ -10,6 +10,10 @@
 		<id-generator-class>org.adempiere.webui.AdempiereIdGenerator</id-generator-class>
 	</system-config>
 
+	<listener>
+    	<listener-class>org.adempiere.webui.UiLifeCycleListener</listener-class>
+	</listener>
+
 	<!-- turn off uuid reuse for selenium testing -->
 	<library-property>
 		<name>org.zkoss.zk.ui.uuidRecycle.disabled</name>

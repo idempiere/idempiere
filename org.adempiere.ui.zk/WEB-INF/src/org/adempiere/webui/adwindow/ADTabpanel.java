@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Borderlayout;
@@ -247,7 +248,7 @@ DataStatusListener, IADTabpanel, IdSpace
 
         this.getChildren().clear();
         
-        setId(gridTab.getName());
+        setId(AdempiereIdGenerator.escapeId(gridTab.getName()));
 
         int AD_Tree_ID = 0;
 		if (gridTab.isTreeTab())
