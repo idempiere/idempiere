@@ -29,7 +29,7 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121213L;
+	private static final long serialVersionUID = 20130109L;
 
     /** Standard Constructor */
     public X_M_ShipperPickupTypes (Properties ctx, int M_ShipperPickupTypes_ID, String trxName)
@@ -41,6 +41,7 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 // N
 			setM_Shipper_ID (0);
 			setM_ShipperPickupTypes_ID (0);
+			setName (null);
 			setX_ShipperPickupTypes_ID (0);
         } */
     }
@@ -157,6 +158,23 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	public String getM_ShipperPickupTypes_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_M_ShipperPickupTypes_UU);
+	}
+
+	/** Set Name.
+		@param Name 
+		Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name)
+	{
+		set_Value (COLUMNNAME_Name, Name);
+	}
+
+	/** Get Name.
+		@return Alphanumeric identifier of the entity
+	  */
+	public String getName () 
+	{
+		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	public org.compiere.model.I_X_ShipperPickupTypes getX_ShipperPickupTypes() throws RuntimeException

@@ -29,7 +29,7 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121213L;
+	private static final long serialVersionUID = 20130109L;
 
     /** Standard Constructor */
     public X_M_ShipperLabels (Properties ctx, int M_ShipperLabels_ID, String trxName)
@@ -41,6 +41,7 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 // N
 			setM_Shipper_ID (0);
 			setM_ShipperLabels_ID (0);
+			setName (null);
 			setX_ShipperLabels_ID (0);
         } */
     }
@@ -180,6 +181,23 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 	public String getM_ShipperLabels_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_M_ShipperLabels_UU);
+	}
+
+	/** Set Name.
+		@param Name 
+		Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name)
+	{
+		set_Value (COLUMNNAME_Name, Name);
+	}
+
+	/** Get Name.
+		@return Alphanumeric identifier of the entity
+	  */
+	public String getName () 
+	{
+		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	public org.compiere.model.I_X_ShipperLabels getX_ShipperLabels() throws RuntimeException
