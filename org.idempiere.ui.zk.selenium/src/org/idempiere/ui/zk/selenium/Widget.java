@@ -54,4 +54,10 @@ public class Widget extends By {
 		JavascriptExecutor executor = (JavascriptExecutor) driver;
 		return executor.executeScript("return zk('"+locator+"').$()."+command+";");
 	}
+	
+	public static StringBuilder getWidgetLocatorScript(String locator) {
+		StringBuilder builder = new StringBuilder("zk('");
+		builder.append(locator).append("').$()");
+		return builder;
+	}
 }

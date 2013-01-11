@@ -49,18 +49,26 @@ public class ZkFixture extends SpiderFixture {
 	// --------- ComboBox ---------
 	public String comboboxSelectedValue(String locator) {
 		Widget widget = new Widget(locator);
-		return widget.$n(webDriver, "real").getAttribute("Value");
+		return (String) widget.eval(webDriver, "getValue()");
 	}
 
 	@SimpleAction(wiki = "|''<i>combobox</i>''|xpath, id or other locator|''<i>select item</i>''|label of item|", tooltip = "Changes the selected item in the given comboBox.")
 	public boolean comboboxSelectItem(String locator, String label) {
 		Widget widget = new Widget(locator);
-		widget.execute(webDriver, "setValue('"+label+"')");
-		widget.execute(webDriver, "fireOnChange()");		
-		WebElement element = widget.$n(webDriver, "real");
-		element.click();
+		widget.execute(webDriver, "open()");
 		waitResponse();
-		return label.equals(element.getAttribute("value"));
+		List<WebElement> list = webDriver.findElements(Zk.jq(locator + " @comboitem"));
+		if (list != null && list.size() > 0) {
+			for(WebElement element : list) {
+				if (element.getText().equals(label) || element.getText().trim().equals(label)) {
+					element.click();
+					waitResponse();
+					String selected = comboboxSelectedValue(locator);
+					return label.equals(selected);
+				}
+			}						
+		}
+		return false;		
 	}
 
 	@SimpleAction(wiki = "|''<i>combobox</i>''|xpath, id or other locator|''<i>select item at</i>''|index|", tooltip = "Changes the selected item to the nth one, in the given comboBox.")
@@ -77,7 +85,18 @@ public class ZkFixture extends SpiderFixture {
 		}
 		return false;
 	}
-
+	
+	public boolean comboboxSetText(String locator, String text) {
+		Widget widget = new Widget(locator);
+		widget.execute(webDriver, "setValue('"+text+"', true)");
+		widget.execute(webDriver, "fireOnChange()");		
+		WebElement element = widget.$n(webDriver, "real");
+		element.click();
+		waitResponse();
+		
+		return text.equals(comboboxSelectedValue(locator));		
+	}
+	
 	// ---- Tabbox ----
 	@SimpleAction(wiki = "|''<i>tabbox</i>''|xpath, id or other locator|''<i>select tab at</i>''|index|", tooltip = "Changes the selected tab to the nth one, in the given tabbox.")
 	public void tabboxSelectTabAt(String locator, int index) {
@@ -111,7 +130,7 @@ public class ZkFixture extends SpiderFixture {
 	// ---- window ( tab ) ---
 	@SimpleAction(wiki = "|''<i>open window</i>''|menu label|", tooltip = "Open window with label.")
 	public void openWindow(String label) {
-		comboboxSelectItem("$treeSearchCombo", label);
+		comboboxSetText("$treeSearchCombo", label);
 	}
 	
 	@SimpleAction(wiki = "|''<i>window</i>''|xpath, id or other locator|''<i>click process button</i>''|button id|", tooltip = "Click a window's process button.")
