@@ -34,6 +34,10 @@
          id="org.eclipse.gemini.web.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.idempiere.felix.webconsole"
+         version="0.0.0"/>
+
    <requires>
       <import feature="org.adempiere.base" version="1.0.0" match="compatible"/>
    </requires>
@@ -320,6 +324,13 @@
          download-size="0"
          install-size="0"
          version="1.4.5"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.cm"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

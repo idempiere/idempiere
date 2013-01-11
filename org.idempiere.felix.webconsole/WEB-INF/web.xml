@@ -3,26 +3,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
     version="2.4">
-	<icon>
-		<large-icon>/C32.gif</large-icon>
-	</icon>
-	<display-name>ADempiere Web Store</display-name>
+	<display-name>Web Console</display-name>
 	<description></description>
-	<!--Standard Parameters - if 0 use web store context -->
-	<context-param>
-		<param-name>#W_Store_ID</param-name>
-		<param-value>0</param-value>
-	</context-param>
-	<context-param>
-		<param-name>#AD_Client_ID</param-name>
-		<param-value>1000000</param-value>
-	</context-param>
 	<filter id="bridge">
 		<filter-name>equinoxBridgeFilter</filter-name>
 		<filter-class>org.eclipse.equinox.servletbridge.BridgeFilter</filter-class>
 		<init-param>
 			<param-name>HttpContext.ClassName</param-name>
-			<param-value>org.adempiere.webstore.DefaultHttpContext</param-value>
+			<param-value>org.apache.felix.webconsole.internal.servlet.OsgiManagerHttpContext</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
@@ -32,26 +20,10 @@
 	<!--
 		This is required if your application bundles expose JSPs.
 	-->
-
 	<filter-mapping>
 		<filter-name>equinoxBridgeFilter</filter-name>
 		<url-pattern>*.jsp</url-pattern>
 	</filter-mapping>
-
-	<!-- Force SSL connection for login and checkout -->
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>SSL pages</web-resource-name>
-			<url-pattern>/login.jsp</url-pattern>
-			<url-pattern>/loginServlet</url-pattern>
-			<url-pattern>/checkOutServlet</url-pattern>
-			<url-pattern>/orderServlet</url-pattern>
-		</web-resource-collection>
-
-		<user-data-constraint>
-			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
-		</user-data-constraint>
-	</security-constraint>
 
 	<session-config>
 		<session-timeout>30</session-timeout>
@@ -62,7 +34,4 @@
 	    <mime-type>text/css</mime-type>
   	</mime-mapping>
 
-	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
-	</welcome-file-list>
 </web-app>

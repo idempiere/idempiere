@@ -11,22 +11,14 @@
  *******************************************************************************/
 package org.eclipse.equinox.http.servletbridge.internal;
 
-import org.eclipse.equinox.http.servlet.HttpServiceServlet;
-import org.eclipse.equinox.servletbridge.BridgeServlet;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
-	private HttpServiceServlet httpServiceServlet;
-
 	public void start(BundleContext context) throws Exception {
-		httpServiceServlet = new HttpServiceServlet();
-		BridgeServlet.registerServletDelegate(httpServiceServlet);
 	}
 
 	public void stop(BundleContext context) throws Exception {
-		BridgeServlet.unregisterServletDelegate(httpServiceServlet);
-		httpServiceServlet = null;
 	}
 }

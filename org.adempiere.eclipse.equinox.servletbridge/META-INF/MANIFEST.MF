@@ -9,6 +9,7 @@ Eclipse-SourceReferences: scm:cvs:pserver:dev.eclipse.org:/cvsroot/rt:
  idge;tag=v20100503
 Bundle-Version: 1.2.0.v20100503
 Export-Package: org.eclipse.equinox.servletbridge;version="1.1.0"
-Import-Package: javax.servlet;version="2.3.0",javax.servlet.http;versi
- on="2.3.0"
+Import-Package: javax.servlet;version="2.3.0",
+ javax.servlet.http;version="2.3.0",
+ org.eclipse.equinox.http.servlet;version="1.1.0"
 Bundle-ManifestVersion: 2

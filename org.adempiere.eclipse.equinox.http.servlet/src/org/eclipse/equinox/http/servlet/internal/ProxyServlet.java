@@ -35,10 +35,14 @@ public class ProxyServlet extends HttpServlet implements Filter {
 
 	private Map<Filter, FilterRegistration> filterRegistrations = new HashMap<Filter, FilterRegistration>(); //filter --> filter registration;
 	private ProxyContext proxyContext;
+	private String httpContext;
 
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		proxyContext = new ProxyContext(config.getServletContext());
+		httpContext = config.getInitParameter("HttpContext.ClassName");
+		if (httpContext == null)
+			httpContext = DefaultHttpContext.class.getName();
 		Activator.addProxyServlet(this);
 	}
 
@@ -317,4 +321,7 @@ public class ProxyServlet extends HttpServlet implements Filter {
 
 	}
 
+	public String getHttpContext() {
+		return httpContext;
+	}
 }

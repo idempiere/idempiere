@@ -35,9 +35,9 @@
 
    <configurations>
       <plugin id="org.adempiere.base" autoStart="true" startLevel="4" />
-      <plugin id="org.adempiere.eclipse.equinox.http.servlet" autoStart="true" startLevel="0" />
-      <plugin id="org.adempiere.eclipse.equinox.http.servletbridge" autoStart="true" startLevel="0" />
-      <plugin id="org.adempiere.eclipse.equinox.servletbridge" autoStart="true" startLevel="0" />
+      <plugin id="org.adempiere.eclipse.equinox.http.servlet" autoStart="true" startLevel="4" />
+      <plugin id="org.adempiere.eclipse.equinox.http.servletbridge" autoStart="true" startLevel="4" />
+      <plugin id="org.adempiere.eclipse.equinox.servletbridge" autoStart="true" startLevel="4" />
       <plugin id="org.adempiere.install" autoStart="true" startLevel="4" />
       <plugin id="org.adempiere.replication.server" autoStart="true" startLevel="4" />
       <plugin id="org.adempiere.report.jasper.webapp" autoStart="true" startLevel="4" />
@@ -53,6 +53,8 @@
       <plugin id="org.eclipse.gemini.web.extender" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.gemini.web.tomcat" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="3" />
+      <plugin id="org.idempiere.felix.webconsole" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.felix.webconsole" autoStart="true" startLevel="0" />
       <plugin id="org.idempiere.hazelcast.service" autoStart="true" startLevel="0" />
       <plugin id="org.restlet" autoStart="true" startLevel="3" />
       <property name="org.eclipse.update.reconcile" value="false" />

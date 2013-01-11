@@ -17,6 +17,8 @@ import java.io.IOException;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.eclipse.equinox.http.servlet.HttpServiceServlet;
+
 /**
  * The BridgeServlet provides a means to bridge the servlet and OSGi
  * runtimes. This class has 3 main responsibilities:
@@ -31,12 +33,9 @@ public class BridgeServlet extends HttpServlet {
 	static final String INCLUDE_PATH_INFO_ATTRIBUTE = "javax.servlet.include.path_info"; //$NON-NLS-1$
 
 	private static final long serialVersionUID = 2825667412474494674L;
-	private static BridgeServlet instance;
-	private static HttpServlet servletDelegateInstance;
 	private HttpServlet delegate;
 	// true if current HttpServlet is an HTTP Filter and false otherwise.
-	private static boolean delegateIsFilter;
-	private int delegateReferenceCount;
+	private boolean delegateIsFilter;
 
 	/**
 	 * init() is called by the Servlet Container and used to instantiate the frameworkLauncher which MUST be an instance of FrameworkLauncher.
@@ -44,14 +43,17 @@ public class BridgeServlet extends HttpServlet {
 	 */
 	public void init() throws ServletException {
 		super.init();
-		setInstance(this);
+		initDelegate();
 	}
 
 	/**
 	 * destroy() is called by the Servlet Container and used to first stop and then destroy the framework.
 	 */
 	public void destroy() {
-		setInstance(null);
+		try {
+			initDelegate();
+		} catch (ServletException e) {
+		}
 		super.destroy();
 	}
 
@@ -94,7 +96,7 @@ public class BridgeServlet extends HttpServlet {
 			}
 		}
 
-		HttpServlet servletReference = acquireDelegateReference();
+		HttpServlet servletReference = delegate;
 		if (servletReference == null) {
 			// Cannot find the HttpServletService from OSGi registry services :
 			if (chain != null) {
@@ -106,14 +108,10 @@ public class BridgeServlet extends HttpServlet {
 				resp.sendError(HttpServletResponse.SC_NOT_FOUND, "BridgeServlet: " + req.getRequestURI()); //$NON-NLS-1$
 			}
 		} else {
-			try {
-				if (delegateIsFilter && chain != null) {
-					((Filter) servletReference).doFilter(req, resp, chain);
-				} else {
-					servletReference.service(req, resp);
-				}
-			} finally {
-				releaseDelegateReference();
+			if (delegateIsFilter && chain != null) {
+				((Filter) servletReference).doFilter(req, resp, chain);
+			} else {
+				servletReference.service(req, resp);
 			}
 		}
 	}
@@ -130,93 +128,10 @@ public class BridgeServlet extends HttpServlet {
 		return lastSegment.indexOf('.') != -1;
 	}
 
-	private static synchronized void setInstance(BridgeServlet servlet) {
-		if ((instance != null) && (servlet != null))
-			throw new IllegalStateException("instance already set"); //$NON-NLS-1$
-		instance = servlet;
-		if (instance == null)
-			servletDelegateInstance = null;
-		else if (servletDelegateInstance != null)
-			registerServletDelegate(servletDelegateInstance);
-	}
-
-	private synchronized void releaseDelegateReference() {
-		--delegateReferenceCount;
-		notifyAll();
-	}
-
-	private synchronized HttpServlet acquireDelegateReference() {
-		if (delegate != null)
-			++delegateReferenceCount;
-		return delegate;
-	}
-
-	/**
-	 * registerServletDelegate is the hook method called from inside the OSGi runtime to register
-	 * a servlet for which all future servlet calls will be delegated. If not null and no delegate
-	 * is currently registered, init(ServletConfig) will be called on the servletDelegate before
-	 * returning.
-	 * @param servletDelegate - the servlet to register for delegation
-	 */
-	public static synchronized void registerServletDelegate(HttpServlet servletDelegate) {
-		if (instance == null) {
-			servletDelegateInstance = servletDelegate;
-			return;
-		}
-
-		servletDelegateInstance = null;
-
-		if (servletDelegate == null)
-			throw new NullPointerException("cannot register a null servlet delegate"); //$NON-NLS-1$
-
-		synchronized (instance) {
-			if (instance.delegate != null)
-				throw new IllegalStateException("A Servlet Proxy is already registered"); //$NON-NLS-1$
-
-			try {
-				// cache the flag if  HttpServlet servlet delegate is an HTTP Filter.
-				BridgeServlet.delegateIsFilter = (servletDelegate instanceof Filter);
-				// initialize the servlet delegate.
-				servletDelegate.init(instance.getServletConfig());
-			} catch (ServletException e) {
-				instance.getServletContext().log("Error initializing servlet delegate", e); //$NON-NLS-1$
-				return;
-			}
-			instance.delegate = servletDelegate;
-		}
-	}
-
-	/**
-	 * unregisterServletDelegate is the hook method called from inside the OSGi runtime to unregister a delegate.
-	 * If the servletDelegate matches the current registered delegate destroy() is called on the servletDelegate.
-	 * destroy() will not be called until the delegate is finished servicing any previous requests.
-	 * @param servletDelegate - the servlet to unregister
-	 */
-	public static synchronized void unregisterServletDelegate(HttpServlet servletDelegate) {
-		if (instance == null) {
-			// shutdown already
-			return;
-		}
-
-		synchronized (instance) {
-			if (instance.delegate == null)
-				throw new IllegalStateException("No servlet delegate is registered"); //$NON-NLS-1$
-
-			if (instance.delegate != servletDelegate)
-				throw new IllegalStateException("Servlet delegate does not match registered servlet delegate"); //$NON-NLS-1$
-
-			HttpServlet oldProxy = instance.delegate;
-			instance.delegate = null;
-			BridgeServlet.delegateIsFilter = false;
-			while (instance.delegateReferenceCount != 0) {
-				try {
-					instance.wait();
-				} catch (InterruptedException e) {
-					// keep waiting for all requests to finish
-				}
-			}
-			oldProxy.destroy();
-		}
+	private void initDelegate() throws ServletException {
+		delegate = new HttpServiceServlet();
+		delegate.init(getServletConfig());
+		delegateIsFilter = (delegate instanceof Filter);
 	}
 
 	static class ExtensionMappingRequest extends HttpServletRequestWrapper {

@@ -3,100 +3,120 @@
 <plugin>
    <extension
          point="org.eclipse.equinox.http.registry.servlets">
-      <serviceSelector
-            filter="(bundleSymbolicName=org.adempiere.webstore)">
-      </serviceSelector>
       <servlet
             alias="/advertisementServlet"
-            class="org.compiere.wstore.AdvertisementServlet">
+            class="org.compiere.wstore.AdvertisementServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/assetServlet"
-            class="org.compiere.wstore.AssetServlet">
+            class="org.compiere.wstore.AssetServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/basketServlet"
-            class="org.compiere.wstore.BasketServlet">
+            class="org.compiere.wstore.BasketServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/checkOutServlet"
-            class="org.compiere.wstore.CheckOutServlet">
+            class="org.compiere.wstore.CheckOutServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/click"
-            class="org.compiere.wstore.Click">
+            class="org.compiere.wstore.Click"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/expenseServlet"
-            class="org.compiere.wstore.ExpenseServlet">
+            class="org.compiere.wstore.ExpenseServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/counter"
-            class="org.compiere.wstore.Counter">
+            class="org.compiere.wstore.Counter"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/infoServlet"
-            class="org.compiere.wstore.InfoServlet">
+            class="org.compiere.wstore.InfoServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/invoiceServlet"
-            class="org.compiere.wstore.InvoiceServlet">
+            class="org.compiere.wstore.InvoiceServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/locationServlet"
-            class="org.compiere.wstore.LocationServlet">
+            class="org.compiere.wstore.LocationServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/loginServlet"
-            class="org.compiere.wstore.LoginServlet">
+            class="org.compiere.wstore.LoginServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/noteServlet"
-            class="org.compiere.wstore.NoteServlet">
+            class="org.compiere.wstore.NoteServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/orderServlet"
-            class="org.compiere.wstore.OrderServlet">
+            class="org.compiere.wstore.OrderServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/paymentServlet"
-            class="org.compiere.wstore.PaymentServlet">
+            class="org.compiere.wstore.PaymentServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/productServlet"
-            class="org.compiere.wstore.ProductServlet">
+            class="org.compiere.wstore.ProductServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/registrationServlet"
-            class="org.compiere.wstore.RegistrationServlet">
+            class="org.compiere.wstore.RegistrationServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/requestServlet"
-            class="org.compiere.wstore.RequestServlet">
+            class="org.compiere.wstore.RequestServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/rfqServlet"
-            class="org.compiere.wstore.RfQServlet">
+            class="org.compiere.wstore.RfQServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/searchServlet"
-            class="org.compiere.wstore.SearchServlet">
+            class="org.compiere.wstore.SearchServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/updateServlet"
-            class="org.compiere.wstore.UpdateServlet">
+            class="org.compiere.wstore.UpdateServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/workflowServlet"
-            class="org.compiere.wstore.WorkflowServlet">
+            class="org.compiere.wstore.WorkflowServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/emailServlet"
-            class="org.compiere.wstore.EMailServlet">
+            class="org.compiere.wstore.EMailServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
       <servlet
             alias="/issueReportServlet"
-            class="org.compiere.wstore.IssueReportServlet">
+            class="org.compiere.wstore.IssueReportServlet"
+            httpcontextId="org.adempiere.webstore">
       </servlet>
    </extension>
 

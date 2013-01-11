@@ -13,7 +13,6 @@
 package org.eclipse.equinox.http.servlet.internal;
 
 import java.util.*;
-import javax.servlet.ServletConfig;
 import org.eclipse.equinox.http.servlet.ExtendedHttpService;
 import org.osgi.framework.*;
 import org.osgi.service.http.HttpService;
@@ -25,52 +24,22 @@ public class Activator implements BundleActivator {
 	private static final String[] HTTP_SERVICES_CLASSES = new String[] {HttpService.class.getName(), ExtendedHttpService.class.getName()};
 
 	private static BundleContext context;
-	private static Map<Object, ServiceRegistration<?>> serviceRegistrations = new HashMap<Object, ServiceRegistration<?>>();
+	private static ServiceRegistration<?> serviceRegistration;
 
 	public void start(BundleContext bundleContext) throws Exception {
-		startHttpServiceProxy(bundleContext);
+		context = bundleContext;
+		serviceRegistration = startHttpServiceProxy(bundleContext);		
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
 		stopHttpServiceProxy(bundleContext);
-	}
-
-	private static synchronized void startHttpServiceProxy(BundleContext bundleContext) {
-		context = bundleContext;
-		Object[] proxyServlets = serviceRegistrations.keySet().toArray();
-		for (int i = 0; i < proxyServlets.length; ++i) {
-			ServiceRegistration<?> registration = registerHttpService((ProxyServlet) proxyServlets[i]);
-			serviceRegistrations.put(proxyServlets[i], registration);
-		}
-	}
-
-	private static synchronized void stopHttpServiceProxy(BundleContext bundleContext) {
-		Object[] proxyServlets = serviceRegistrations.keySet().toArray();
-		for (int i = 0; i < proxyServlets.length; ++i) {
-			ServiceRegistration<?> registration = serviceRegistrations.put(proxyServlets[i], null);
-			registration.unregister();
-		}
 		context = null;
 	}
 
-	static synchronized void addProxyServlet(ProxyServlet proxyServlet) {
-		ServiceRegistration<?> registration = null;
-		if (context != null)
-			registration = registerHttpService(proxyServlet);
-
-		serviceRegistrations.put(proxyServlet, registration);
-	}
-
-	private static ServiceRegistration<?> registerHttpService(ProxyServlet proxyServlet) {
-		HttpServiceFactory factory = new HttpServiceFactory(proxyServlet);
+	private static synchronized ServiceRegistration<?> startHttpServiceProxy(BundleContext bundleContext) {
+		HttpServiceProxyFactory factory = new HttpServiceProxyFactory();
+		
 		Dictionary<String, String> serviceProperties = new Hashtable<String, String>(2);
-		ServletConfig config = proxyServlet.getServletConfig();
-		Enumeration<String> initparameterNames = config.getInitParameterNames();
-		while (initparameterNames.hasMoreElements()) {
-			String name = (String) initparameterNames.nextElement();
-			serviceProperties.put(name, config.getInitParameter(name));
-		}
-
 		if (serviceProperties.get(Constants.SERVICE_VENDOR) == null)
 			serviceProperties.put(Constants.SERVICE_VENDOR, DEFAULT_SERVICE_VENDOR);
 
@@ -79,10 +48,16 @@ public class Activator implements BundleActivator {
 
 		return context.registerService(HTTP_SERVICES_CLASSES, factory, serviceProperties);
 	}
+	
+	private static synchronized void stopHttpServiceProxy(BundleContext bundleContext) {
+		serviceRegistration.unregister();
+	}
 
+	static synchronized void addProxyServlet(ProxyServlet proxyServlet) {
+		HttpServiceProxyFactory.registerServletDelegate(proxyServlet.getHttpContext(), proxyServlet);
+	}
+//
 	static synchronized void removeProxyServlet(ProxyServlet proxyServlet) {
-		ServiceRegistration<?> registration = serviceRegistrations.remove(proxyServlet);
-		if (registration != null)
-			registration.unregister();
+		HttpServiceProxyFactory.unregisterServletDelegate(proxyServlet);
 	}
 }
