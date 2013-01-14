@@ -132,6 +132,25 @@ public final class LayoutUtils {
 		Clients.response("_openPopupWindow_", new AuScript(window, script.toString()));
 	}
 	
+	/**
+	 * open popup window relative to the ref component
+	 * @param ref
+	 * @param window
+	 * @param position
+	 */
+	public static void openEmbeddedWindow(Component ref, Window window, String position) {
+		StringBuilder script = new StringBuilder();
+		script.append("_idempiere_popup_window('#")
+			.append(ref.getUuid())
+			.append("','#")
+			.append(window.getUuid())
+			.append("','")
+			.append(position)
+			.append("');");
+		window.setVisible(true);
+		Clients.response("_openPopupWindow_", new AuScript(window, script.toString()));
+	}
+	
 	public static void redraw(AbstractComponent component) {
 		StringWriter writer = new StringWriter(1024);
 		try {

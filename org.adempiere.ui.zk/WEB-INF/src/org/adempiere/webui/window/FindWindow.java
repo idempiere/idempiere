@@ -96,6 +96,7 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.South;
+import org.zkoss.zul.Space;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Vlayout;
 
@@ -237,7 +238,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         this.setWidth("900px");
         this.setHeight("350px");
         this.setTitle(Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", "") + ": " + title);
-        this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
         this.setClosable(false);
         this.setSizable(true);  
         this.setMaximizable(true);
@@ -353,7 +353,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         
         column = new Column();
         column.setAlign("left");
-        column.setWidth("70%");
+        column.setWidth("50%");
+        columns.appendChild(column);
+        
+        column = new Column();
+        column.setWidth("20%");
         columns.appendChild(column);
         
         contentSimple.appendChild(columns);
@@ -420,7 +424,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         toolBar.appendChild(btnDelete);
         toolBar.setWidth("100%");
 
-        fQueryName.setStyle("margin-left: 3px; margin-right: 3px; position: relative; top: 5px;");
         fQueryName.addEventListener(Events.ON_SELECT, this);
 
         Hbox confirmPanel = new Hbox();
@@ -510,7 +513,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         btnSave.addEventListener(Events.ON_CLICK, this);
         btnSave.setDisabled(true);
         btnSave.setId("btnSave");
-//        LayoutUtils.addSclass("disableFilter", btnSave);
+        btnSave.setStyle("vertical-align: middle;");
 
         fQueryName = new Combobox();
         fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"QueryName"));
@@ -525,32 +528,34 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		fQueryName.addEventListener(Events.ON_SELECT, this);
 		
 		Label label = new Label(Msg.getMsg(Env.getCtx(), "SavedQuery"));
+		label.setStyle("vertical-align: middle;");
 		div.appendChild(label);
 		div.appendChild(fQueryName);
         div.appendChild(btnSave);
         
-        fQueryName.setStyle("margin-left: 3px; margin-right: 3px; position: relative;");
+        fQueryName.setStyle("margin-left: 3px; margin-right: 3px; position: relative; vertical-align: middle;");
         
         msgLabel = new Label("");
-        msgLabel.setStyle("margin-left: 10px; margin-right: 20px;");
+        msgLabel.setStyle("margin-left: 10px; margin-right: 20px; vertical-align: middle;");
         div.appendChild(msgLabel);
 
         // adding history combo
         prepareHistoryCombo();
         Label labelHistory = new Label(Msg.getMsg(Env.getCtx(), HISTORY_LABEL));
+        labelHistory.setStyle("vertical-align: middle;");
         div.appendChild(labelHistory);
         div.appendChild(historyCombo);
-        historyCombo.setStyle("margin-left: 3px; margin-right: 3px; position: relative;");
+        historyCombo.setStyle("margin-left: 3px; margin-right: 3px; position: relative; vertical-align: middle;");
 
         winMain = new MultiTabPart();
         winMain.createPart(layout);
-        winMain.getComponent().setStyle("width: 99%; position: relative; margin-left: auto; margin-right: auto; margin-top: 5px;");
+        winMain.getComponent().setStyle("position: relative; margin-left: auto; margin-right: auto; margin-top: 3px; margin-bottom: 3px;");
         winMain.getComponent().setVflex("1");
         winMain.getComponent().addEventListener(Events.ON_SELECT, this);
         winAdvanced = new Window();
         winLookupRecord = new Window();
         Tabpanel tabPanel = new Tabpanel();
-        tabPanel.setStyle("height: 100%; width: 100%");
+        tabPanel.setStyle("height: 100%; width: 99%; padding-right: 2px; margin: auto;");
         tabPanel.appendChild(winLookupRecord);
         tabPanel.setId("simpleSearch");
         winMain.addTab(tabPanel, Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", ""),false, true);
@@ -958,7 +963,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         //  Editor
         WEditor editor = null;
-        editor = WebEditorFactory.getEditor(mField, false);
+        //false will use hflex which is render 1 pixel too width on firefox
+        editor = WebEditorFactory.getEditor(mField, true);
         editor.setMandatory(false);
         editor.setReadWrite(true);
         editor.dynamicDisplay();
@@ -974,6 +980,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         Row panel = new Row();
         panel.appendChild(label);
         panel.appendChild(fieldEditor);
+        panel.appendChild(new Space());
 
         contentSimpleRows.appendChild(panel);
         m_sEditors.add(editor);

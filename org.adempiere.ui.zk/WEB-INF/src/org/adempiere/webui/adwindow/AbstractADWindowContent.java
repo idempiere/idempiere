@@ -667,15 +667,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			            	callback.onCallback(null);
 			            }
 					}
-				});
-	        	findWindow.setTitle(null);
-	        	findWindow.setBorder("none");	
-	        	findWindow.setStyle("padding: 5px;");
+				});	        	
+	        	setupEmbeddedFindwindow();
 	        	getComponent().addEventListener("onInitialQuery", new EventListener<Event>() {
 					@Override
 					public void onEvent(Event event) throws Exception {
 						getComponent().getParent().appendChild(findWindow);
-						LayoutUtils.openOverlappedWindow(getComponent(), findWindow, "overlap");
+						LayoutUtils.openEmbeddedWindow(getComponent(), findWindow, "overlap");
 					}
 				});
 	        	Events.echoEvent("onInitialQuery", getComponent(), null);
@@ -690,6 +688,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	callback.onCallback(query);
         }
     } // initialQuery
+
+	private void setupEmbeddedFindwindow() {
+		findWindow.setTitle(null);
+		findWindow.setBorder("none");	
+		findWindow.setStyle("position: absolute; border-bottom: 1px solid #c5c5c5; padding: 2px; background-color: #fff;");
+		findWindow.setWidth("100%");
+		findWindow.setZindex(1000);
+		findWindow.setContentStyle("background-color: #fff; width: 99%; margin: auto;");
+	}
 
     public String getTitle()
     {
@@ -1579,8 +1586,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	            adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
 	            adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
 
-	        findWindow.setBorder("none");	
-        	findWindow.setStyle("padding: 5px;");	        
+	        setupEmbeddedFindwindow();	        
 	        if (!findWindow.initialize()) {
 	        	if (findWindow.getTotalRecords() == 0) {
 	        		FDialog.info(curWindowNo, getComponent(), "NoRecordsFound");
@@ -1593,8 +1599,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	findWindow.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
-					Clients.clearBusy(getComponent().getParent());
-					getComponent().invalidate();
 					if (!findWindow.isCancel())
 			        {
 				        MQuery query = findWindow.getQuery();
@@ -1621,9 +1625,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			});
         }
         findWindow.setTitle(null);
-        getComponent().getParent().appendChild(findWindow);
-        Clients.showBusy(getComponent().getParent(), " ");
-        LayoutUtils.openOverlappedWindow(toolbar, findWindow, "after_start");
+        getComponent().getParent().insertBefore(findWindow, getComponent().getParent().getFirstChild());
+        LayoutUtils.openEmbeddedWindow(toolbar, findWindow, "after_start");
 	}
 
     /**
