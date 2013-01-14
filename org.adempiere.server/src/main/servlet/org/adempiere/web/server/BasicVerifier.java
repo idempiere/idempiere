@@ -35,7 +35,7 @@ public class BasicVerifier extends SecretVerifier {
 	 * @see org.restlet.security.SecretVerifier#verify(java.lang.String, char[])
 	 */
 	@Override
-	public boolean verify(String identity, char[] password)
+	public int verify(String identity, char[] password)
 			throws IllegalArgumentException {
 		//authenticate with session token
 		if (identity.startsWith("AD_Session_ID#"))
@@ -49,35 +49,35 @@ public class BasicVerifier extends SecretVerifier {
 			catch (Exception e)
 			{
 				log.log(Level.WARNING, "Invalid session token: " + identity);
-				return false;
+				return RESULT_INVALID;
 			}
 			MSession session = new MSession(Env.getCtx(), AD_Session_ID, null);
 			if (session.getAD_Session_ID() != AD_Session_ID)
 			{
 				log.log(Level.WARNING, "Session not exists in database: " + identity);
-				return false;
+				return RESULT_INVALID;
 			}
 			if (session.isProcessed())
 			{
 				log.log(Level.WARNING, "Session have logout: " + identity);
-				return false;
+				return RESULT_INVALID;
 			}
 			if (!session.isActive())
 			{
 				log.log(Level.WARNING, "Session isActive=false: " + identity);
-				return false;
+				return RESULT_INVALID;
 			}
 			if (!session.getWebSession().equals(new String(password)))
 			{
 				log.log(Level.WARNING, "Session token doesn't match. identity=" + identity + ", token="+new String(password));
 			}
-			return true;
+			return RESULT_VALID;
 		}
 		
 		//authenticate with userid+password
 		Login login = new Login(new Properties());
 		KeyNamePair[] roles = login.getRoles(identity, new String(password));
-		return (roles != null && roles.length > 0);
+		return (roles != null && roles.length > 0) ? RESULT_VALID : RESULT_INVALID;
 	}
 
 }

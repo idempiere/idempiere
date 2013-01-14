@@ -72,9 +72,10 @@
       <rm:property key="buckminster.mutable" value="false"/>
       <rm:uri format="http://maven.restlet.org"/>
       <maven:mappings>
-        <maven:entry artifactId="org.restlet" groupId="org.restlet.jee" name="org.restlet"/>
-        <maven:entry artifactId="org.restlet.ext.net" groupId="org.restlet.jee" name="org.restlet.ext.net"/>
-        <maven:entry artifactId="org.restlet.ext.servlet" groupId="org.restlet.jee" name="org.restlet.ext.servlet"/>
+        <maven:entry artifactId="org.restlet" groupId="org.restlet.osgi" name="org.restlet"/>
+        <maven:entry artifactId="org.restlet.ext.net" groupId="org.restlet.osgi" name="org.restlet.ext.net"/>
+        <maven:entry artifactId="org.restlet.ext.servlet" groupId="org.restlet.osgi" name="org.restlet.ext.servlet"/>
+        <maven:entry artifactId="org.restlet.ext.ssl" groupId="org.restlet.osgi" name="org.restlet.ext.ssl"/>
       </maven:mappings>
     </rm:provider>
   </rm:searchPath>

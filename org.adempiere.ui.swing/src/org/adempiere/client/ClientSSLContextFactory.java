@@ -22,7 +22,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-import org.restlet.engine.security.DefaultSslContextFactory;
+import org.restlet.ext.ssl.DefaultSslContextFactory;
 
 /**
  * Temporary workaround to support ssl connection to server with self signed certificate.
