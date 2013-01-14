@@ -351,7 +351,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
     	messageContainer.appendChild(image);
     	String labelText = buildLabelText(status);
     	if (error) {
-    		Clients.showNotification(buildNotificationText(status), "error", image, "overlap_start", 3500, true);
+    		Clients.showNotification(buildNotificationText(status), "error", findTabpanel(this), "top_left", 3500, true);
     	}
     	Label label = new Label(labelText);
     	messageContainer.appendChild(label);
@@ -580,5 +580,16 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         		btn.setDisabled(true);
         	}
 		}
+	}
+	
+	private Component findTabpanel(Component comp) {
+		Component parent = comp.getParent();
+		while (parent != null) {
+			if (parent instanceof Tabpanel)
+				return parent;
+			
+			parent = parent.getParent();
+		}
+		return null;
 	}
 }

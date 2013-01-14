@@ -957,7 +957,11 @@ tbody.z-grid-empty-body td {
 <%-- notification message --%>
 .z-notification .z-notification-cl, 
 .z-notification .z-notification-cnt {
-    width: 300px;
+    width: 400px;
+}
+
+.z-notification {
+	padding: 3px !important;
 }
 
 <%-- toolbar popup dialog --%>

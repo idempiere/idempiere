@@ -24,6 +24,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Menupopup;
+import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
@@ -387,7 +388,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
     	messageContainer.appendChild(image);
     	String labelText = buildLabelText(m_statusText);
     	if (error) {
-    		Clients.showNotification(buildNotificationText(m_statusText), "error", image, "overlap_start", 3500, true);
+    		Clients.showNotification(buildNotificationText(m_statusText), "error", findTabpanel(this), "top_left", 3500, true);
     	}
     	Label label = new Label(labelText);
     	messageContainer.appendChild(label);
@@ -429,7 +430,17 @@ public class BreadCrumb extends Div implements EventListener<Event> {
         
     }
     	
-    	
+	private Component findTabpanel(BreadCrumb breadCrumb) {
+		Component parent = breadCrumb.getParent();
+		while (parent != null) {
+			if (parent instanceof Tabpanel)
+				return parent;
+			
+			parent = parent.getParent();
+		}
+		return null;
+	}
+
 	private void doZoom(RecordLink link) {
 		int Record_ID = 0;
 		int AD_Table_ID = 0;
