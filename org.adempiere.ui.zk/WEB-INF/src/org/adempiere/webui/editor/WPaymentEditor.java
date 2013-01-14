@@ -15,6 +15,7 @@ package org.adempiere.webui.editor;
 
 import javax.swing.event.ListDataListener;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.form.WPaymentFormFactory;
@@ -296,6 +297,7 @@ public class WPaymentEditor extends WEditor implements ListDataListener {
     			{
     				final WPaymentFormWindow window = (WPaymentFormWindow) pf.getWindow();
     				
+    				window.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "paymentForm");
     				if (window.isInitOK())
     				{
 	    				window.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);

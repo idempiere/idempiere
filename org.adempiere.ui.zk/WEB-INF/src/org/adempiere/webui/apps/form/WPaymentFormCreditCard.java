@@ -102,20 +102,24 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		column.setWidth("60%");
 		
 		kAmountField.getComponent().setWidth("150px");
+		kAmountField.getComponent().setId("K_Ammount");
 		
 		Rows rows = kLayout.newRows();
 		Row row = rows.newRow();
 		row.appendChild(kTypeLabel.rightAlign());
 		row.appendChild(kTypeCombo);
 		kTypeCombo.addEventListener(Events.ON_SELECT, this);
+		kTypeCombo.setId("K_Type");
 		
 		row = rows.newRow();
 		row.appendChild(kNumberLabel.rightAlign());
 		row.appendChild(kNumberField);
+		kNumberField.setId("K_CreditCardNumber");
 		
 		row = rows.newRow();
 		row.appendChild(kExpLabel.rightAlign());
 		row.appendChild(kExpField);
+		kExpField.setId("K_Expires");
 		
 		row = rows.newRow();
 		row.appendChild(kAmountLabel.rightAlign());
@@ -125,13 +129,16 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		row = rows.newRow();
 		row.appendChild(kApprovalLabel.rightAlign());
 		row.appendChild(kApprovalField);
+		kApprovalField.setId("K_Approval");
 		
 		row = rows.newRow();
 		row.appendChild(new Space());
 		row.appendChild(kOnline);
+		kOnline.setId("K_Online");
 		
 		row = rows.newRow();
 		row.appendCellChild(kStatus, 2);
+		kStatus.setId("status");
 	}
 
 	@Override
