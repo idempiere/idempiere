@@ -210,6 +210,12 @@ html,body {
 	width: 80px;
 }
 
+.action-button .z-button-cm img, 
+.action-image-text-button .z-button-cm img {
+	height: 22px;
+	width: 22px;
+}
+
 <%-- desktop --%>
 div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	background-color: white;
