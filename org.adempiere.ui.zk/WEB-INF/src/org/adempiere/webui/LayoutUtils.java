@@ -25,6 +25,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.Window.Mode;
 
 /**
  * 
@@ -148,6 +149,7 @@ public final class LayoutUtils {
 			.append(position)
 			.append("');");
 		window.setVisible(true);
+		window.setMode(Mode.EMBEDDED);
 		Clients.response("_openPopupWindow_", new AuScript(window, script.toString()));
 	}
 	

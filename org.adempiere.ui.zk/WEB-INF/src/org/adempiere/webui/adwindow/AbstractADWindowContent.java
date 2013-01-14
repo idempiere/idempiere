@@ -802,6 +802,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	private FindWindow findWindow;
 
+	private Div maskDiv;
+
 	/**
 	 *	@see ToolbarListener#onLock()
 	 */
@@ -2375,11 +2377,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			}
 			else
 			{
-				final int recordIdParam = record_ID;
-				getComponent().getParent().appendChild(win);
+				final int recordIdParam = record_ID;				
 				win.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 					public void onEvent(Event event) throws Exception {
-						Clients.clearBusy(getComponent().getParent());
+						hideMaskDiv();
 						getComponent().invalidate();
 						if (!win.isStartProcess()) {							
 							return;
@@ -2389,8 +2390,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						executeButtonProcess(wButton, startWOasking, table_ID, recordIdParam, isProcessMandatory);
 					}
 				});
-				Clients.showBusy(getComponent().getParent(), " ");
-				LayoutUtils.openOverlappedWindow(getComponent(), win, "middle_center");
+				getComponent().getParent().appendChild(getMaskDiv());
+				getComponent().getParent().appendChild(win);
+				win.setContentStyle("background-color: #fff;"); 				
+				LayoutUtils.openEmbeddedWindow(getComponent(), win, "middle_center");
+				win.setSclass("embedded-dialog");
+				win.focus();
 				return;
 			}
 		} // DocAction
@@ -2499,6 +2504,21 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		executeButtonProcess(wButton, startWOasking, table_ID, record_ID,
 				isProcessMandatory);
 	} // actionButton
+
+	private Div getMaskDiv() {
+		if (maskDiv == null) {
+			maskDiv = new Div();
+			maskDiv.setStyle("position: absolute; width: 100%; height: 100%; border: none; margin: 0; background-color: #e4e4e4; " +
+				"padding: 0; z-index:999; opacity:0.6; top: 0px; left: 0px;");
+		}
+		return maskDiv;
+	}
+	
+	private void hideMaskDiv() {
+		if (maskDiv != null && maskDiv.getParent() != null) {
+			maskDiv.detach();
+		}
+	}
 
 	private void executeButtonProcess(final IProcessButton wButton,
 			final boolean startWOasking, final int table_ID, final int record_ID,

@@ -273,6 +273,8 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 	    this.setTitle(Msg.translate(Env.getCtx(), "DocAction"));
 	    this.setWidth("410px");
 	    this.setBorder("normal");
+	    this.setStyle("position: absolute");
+	    this.setZindex(1000);
 	    this.appendChild(grid);
 
 	}

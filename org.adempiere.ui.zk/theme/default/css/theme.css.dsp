@@ -1024,3 +1024,12 @@ tbody.z-grid-empty-body td {
 	border-bottom: 1px solid #CFCFCF !important;
 	border-top: 1px solid #CFCFCF !important;
 }
+
+.embedded-dialog {
+	background-color: #666;
+}
+
+.embedded-dialog .z-window-embedded-header {
+	color: #fff;
+	font-weight: bold;
+}
