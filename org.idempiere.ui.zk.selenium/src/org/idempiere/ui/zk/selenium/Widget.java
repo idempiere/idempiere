@@ -37,25 +37,36 @@ public class Widget extends By {
 
 	private WebElement findElement(WebDriver driver) {
 		JavascriptExecutor executor = (JavascriptExecutor) driver;
-		return (WebElement) executor.executeScript("return zk('"+locator+"').$().$n();");
+		StringBuilder builder = getWidgetLocatorScript(locator);
+		builder.insert(0, "return ").append(".$n();");
+		return (WebElement) executor.executeScript(builder.toString());
 	}
 	
 	public WebElement $n(WebDriver driver, String subName) {
 		JavascriptExecutor executor = (JavascriptExecutor) driver;
-		return (WebElement) executor.executeScript("return zk('"+locator+"').$().$n('"+subName+"');");
+		StringBuilder builder = getWidgetLocatorScript(locator);
+		builder.insert(0, "return ")
+			.append(".$n('").append(subName).append("');");
+		return (WebElement) executor.executeScript(builder.toString());
 	}
 
 	public void execute(WebDriver driver, String command) {
 		JavascriptExecutor executor = (JavascriptExecutor) driver;
-		executor.executeScript("zk('"+locator+"').$()."+command+";");
+		StringBuilder builder = getWidgetLocatorScript(locator);
+		builder.append(".").append(command).append(";");
+		executor.executeScript(builder.toString());
 	}
 
 	public Object eval(WebDriver driver, String command) {
 		JavascriptExecutor executor = (JavascriptExecutor) driver;
-		return executor.executeScript("return zk('"+locator+"').$()."+command+";");
+		StringBuilder builder = getWidgetLocatorScript(locator);
+		builder.insert(0, "return ");
+		builder.append(".").append(command).append(";");
+		return executor.executeScript(builder.toString());
 	}
 	
 	public static StringBuilder getWidgetLocatorScript(String locator) {
+		locator = locator.replace("'", "\\'");
 		StringBuilder builder = new StringBuilder("zk('");
 		builder.append(locator).append("').$()");
 		return builder;

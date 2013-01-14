@@ -34,6 +34,7 @@ public class Zk {
 		public List<WebElement> findElements(SearchContext context) {
 			JavascriptExecutor executor = null;
 			String selector = this.selector;
+			selector = selector.replace("'", "\\'");
 			if (context instanceof WebDriver) {
 				executor = (JavascriptExecutor) context;
 			} else {
