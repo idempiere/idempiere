@@ -594,15 +594,11 @@ public abstract class PO
 			log.log(Level.WARNING, "Index invalid - " + index);
 			return false;
 		}
-		Object newval = m_newValues[index];		
-		if (newval == Null.NULL)
-			newval = null;
-		Object oldval = m_oldValues[index];
-		if (newval == null && oldval == null)
+		if (m_newValues[index] == null)
 			return false;
-		if (newval == null)
+		if (m_newValues[index] == Null.NULL && m_oldValues[index] == null)
 			return false;
-		return !newval.equals(oldval);
+		return !m_newValues[index].equals(m_oldValues[index]);
 	}   //  is_ValueChanged
 
 	/**
