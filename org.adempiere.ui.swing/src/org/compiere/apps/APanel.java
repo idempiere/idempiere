@@ -17,6 +17,9 @@
  *****************************************************************************/
 package org.compiere.apps;
 
+import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_REDO;
+import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_UNDO;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -71,7 +74,6 @@ import org.compiere.grid.ICreateFrom;
 import org.compiere.grid.RecordAccessDialog;
 import org.compiere.grid.VCreateFromFactory;
 import org.compiere.grid.VOnlyCurrentDays;
-import org.compiere.grid.VPayment;
 import org.compiere.grid.VSortTab;
 import org.compiere.grid.VTabbedPane;
 import org.compiere.grid.ed.VButton;
@@ -92,7 +94,6 @@ import org.compiere.model.MRole;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MUser;
 import org.compiere.model.MWindow;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.print.AReport;
@@ -2524,23 +2525,8 @@ public final class APanel extends CPanel
 		}
 
 		boolean isProcessMandatory = false;
-
-		//	Pop up Payment Rules
-		if (col.equals("PaymentRule"))
-		{
-			VPayment vp = new VPayment(m_curWindowNo, m_curTab, vButton);
-			if (vp.isInitOK())		//	may not be allowed
-				vp.setVisible(true);
-			vp.dispose();
-			if (vp.needSave())
-			{
-				cmd_save(false);
-				cmd_refresh();
-			}
-		}	//	PaymentRule
-
 		//	Pop up Document Action (Workflow)
-		else if (col.equals("DocAction"))
+		if (col.equals("DocAction"))
 		{
 			isProcessMandatory = true;
 			VDocAction vda = new VDocAction(m_curWindowNo, m_curTab, vButton, record_ID);

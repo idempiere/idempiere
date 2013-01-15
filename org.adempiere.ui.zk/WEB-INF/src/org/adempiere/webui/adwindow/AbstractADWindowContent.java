@@ -44,12 +44,10 @@ import org.adempiere.webui.apps.BusyDialogTemplate;
 import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.form.WCreateFromFactory;
 import org.adempiere.webui.apps.form.WCreateFromWindow;
-import org.adempiere.webui.apps.form.WPayment;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.IProcessButton;
-import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
@@ -2336,38 +2334,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 
 		boolean isProcessMandatory = false;
-
-		//	Pop up Payment Rules
-		if (col.equals("PaymentRule"))
-		{
-			final WPayment vp = new WPayment(curWindowNo, adtabPanel.getGridTab(), (WButtonEditor) wButton);
-			if (vp.isInitOK())		//	may not be allowed
-			{
-				vp.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-				vp.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-					@Override
-					public void onEvent(Event event) throws Exception {
-						if (vp.needSave())
-						{
-							onSave(false, false, new Callback<Boolean>() {
-
-								@Override
-								public void onCallback(Boolean result) {
-									onRefresh(true, false);
-								}
-
-							});
-						}
-					}
-				});
-				AEnv.showWindow(vp);
-			}
-			return;
-		} // PaymentRule
-
 		//	Pop up Document Action (Workflow)
-
-		else if (col.equals("DocAction"))
+		if (col.equals("DocAction"))
 		{
 			final WDocActionPanel win = new WDocActionPanel(adtabPanel.getGridTab());
 			if (win.getNumberOfOptions() == 0)
