@@ -142,7 +142,7 @@ public class WUrlEditor extends WEditor implements ContextMenuListener
 		else if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
 		{
 			if (isShowPreference())
-				ValuePreference.start(getGridField(), getValue());
+				ValuePreference.start(getComponent(), getGridField(), getValue());
 		}
 	}
 

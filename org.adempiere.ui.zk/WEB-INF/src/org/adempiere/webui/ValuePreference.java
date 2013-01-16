@@ -19,6 +19,8 @@ package org.adempiere.webui;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -30,6 +32,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MRole;
@@ -39,10 +42,13 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Vbox;
@@ -67,9 +73,9 @@ public class ValuePreference extends Window implements EventListener<Event>
 	 *  @param aValue	value
 	 *  @return ValuePreference or null
 	 */
-	public static void start (GridField mField, Object aValue)
+	public static void start (Component ref, GridField mField, Object aValue)
 	{
-		start (mField, aValue, null);
+		start (ref, mField, aValue, null);
 	}   //  start
 
 	/**
@@ -79,7 +85,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	 *  @param aDisplayValue	display value
 	 *  @return ValuePreference or null
 	 */
-	public static void start (GridField mField, Object aValue, String aDisplayValue)
+	public static void start (Component ref, GridField mField, Object aValue, String aDisplayValue)
 	{
 		if (!mField.isEditable(false))
 		{
@@ -116,7 +122,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		ValuePreference vp = new ValuePreference (WindowNo,
 			AD_Client_ID, AD_Org_ID, AD_User_ID, AD_Window_ID,
 			Attribute, DisplayAttribute, Value, DisplayValue,
-			displayType, AD_Reference_ID);
+			displayType, AD_Reference_ID, ref);
 	}   //  create
 
 	/**
@@ -157,6 +163,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	//private static String ICON_URL = "images/VPreference16.png";
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ValuePreference.class);
+	private AbstractADWindowContent adwindowContent;
 	
 	/**
 	 *  Constructor
@@ -172,11 +179,12 @@ public class ValuePreference extends Window implements EventListener<Event>
 	 *  @param DisplayValue value display
 	 *  @param displayType display type
 	 *  @param AD_Reference_ID reference
+	 * @param ref 
 	 */
 	public ValuePreference (int WindowNo,
 		int AD_Client_ID, int AD_Org_ID, int AD_User_ID, int AD_Window_ID,
 		String Attribute, String DisplayAttribute, String Value, String DisplayValue,
-		int displayType, int AD_Reference_ID)
+		int displayType, int AD_Reference_ID, Component ref)
 	{
 		super();
 		this.setTitle(Msg.getMsg(Env.getCtx(), NAME) + " " + DisplayAttribute);
@@ -210,8 +218,28 @@ public class ValuePreference extends Window implements EventListener<Event>
 		} 
 		
 		this.setClosable(true);
-		AEnv.showCenterScreen(this);
+		adwindowContent = findADWindowContent(ref);
+		if (adwindowContent != null) {
+			adwindowContent.showBusyMask();
+			ZkCssHelper.appendStyle(this, "position: absolute;");
+			adwindowContent.getComponent().getParent().appendChild(this);
+			LayoutUtils.openOverlappedWindow(ref, this, "after_start");
+		} else {
+			AEnv.showCenterScreen(this);
+		}		
 	}   //  ValuePreference
+
+	private AbstractADWindowContent findADWindowContent(Component ref) {
+		Component parent = ref.getParent();
+		while(parent != null) {
+			if (parent.getAttribute(ADWindow.AD_WINDOW_ATTRIBUTE_KEY) != null) {
+				ADWindow adwindow = (ADWindow) parent.getAttribute(ADWindow.AD_WINDOW_ATTRIBUTE_KEY);
+				return adwindow.getADWindowContent();
+			}
+			parent = parent.getParent();
+		}
+		return null;
+	}
 
 	private Properties      m_ctx;
 	private int             m_WindowNo;
@@ -263,6 +291,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		cbWindow.setChecked(true);
 		// 
 		setPanel.appendChild(setLayout);
+		setPanel.setHflex("1");
 		fAttribute.setReadonly(true);
 		fValue.setReadonly(true);
 		
@@ -270,6 +299,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		box.setWidth("100%");
 		box.setHeight("100%");
 		box.setParent(this);
+		box.setHflex("1");
 		box.appendChild(setPanel);
 		
 		Rows rows = new Rows();
@@ -281,7 +311,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		div.appendChild(lAttribute);
 		row.appendCellChild(div, 1);
 		row.appendCellChild(fAttribute, 4);
-		fAttribute.setWidth("100%");
+		fAttribute.setWidth("96%");
 		row.appendCellChild(lAttributeValue, 1);
 		rows.appendChild(row);
 		
@@ -291,7 +321,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		div.appendChild(lValue);
 		row.appendCellChild(div, 1);
 		row.appendCellChild(fValue, 4);
-		fValue.setWidth("100%");
+		fValue.setWidth("96%");
 		row.appendCellChild(lValueValue, 1);
 		rows.appendChild(row);
 		
@@ -300,10 +330,13 @@ public class ValuePreference extends Window implements EventListener<Event>
 		div.setStyle("text-align: right");
 		div.appendChild(lSetFor);
 		row.appendChild(div);
-		row.appendChild(cbClient);
-		row.appendChild(cbOrg);
-		row.appendChild(cbUser);
-		row.appendChild(cbWindow);
+		Hlayout chlayout = new Hlayout();
+		chlayout.setSpacing("5px");		
+		chlayout.appendChild(cbClient);
+		chlayout.appendChild(cbOrg);
+		chlayout.appendChild(cbUser);
+		chlayout.appendChild(cbWindow);
+		row.appendCellChild(chlayout, 4);
 		rows.appendChild(row);
 		
 		row = new Row();
@@ -313,8 +346,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		
 		//
 		Separator separator = new Separator();
-		separator.setBar(true);
-		separator.setHeight("20px");
+		separator.setHeight("10px");
 		box.appendChild(separator);
 		box.appendChild(confirmPanel);
 		
@@ -322,6 +354,8 @@ public class ValuePreference extends Window implements EventListener<Event>
 		setLayout.makeNoStrip();
 		setLayout.setOddRowSclass("even");
 		
+		this.setWidth("500px");
+		this.setSizable(true);
 	}   //  jbInit
 
 	/**
@@ -533,5 +567,13 @@ public class ValuePreference extends Window implements EventListener<Event>
 
 	}   //  insert
 
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		if (adwindowContent != null) {
+			adwindowContent.hideBusyMask();
+		}
+	}
 
+	
 }   //  ValuePreference

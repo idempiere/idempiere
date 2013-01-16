@@ -302,7 +302,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 		else if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
 		{
 			if (isShowPreference())
-				ValuePreference.start (this.getGridField(), getValue());
+				ValuePreference.start (getComponent(), this.getGridField(), getValue());
 		}
 	}
 	

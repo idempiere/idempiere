@@ -80,20 +80,19 @@ public class NumberBox extends Div
 		decimalBox = new Decimalbox();
     	if (integral)
     		decimalBox.setScale(0);
-    	decimalBox.setStyle("display: inline;text-align:right");
+    	decimalBox.setStyle("display: inline-block;text-align:right");
     	decimalBox.setHflex("1");
     	hlayout.appendChild(decimalBox);
 		
 		btn = new Button();
         btn.setImage("/images/Calculator10.png");
 		btn.setTabindex(-1);
-		btn.setHflex("min");
+		btn.setHflex("0");
 		LayoutUtils.addSclass("editor-button", btn);
 		hlayout.appendChild(btn);
         
         popup = getCalculatorPopup();
         appendChild(popup);
-        LayoutUtils.addSclass("editor-button", btn);
         btn.setPopup(popup);
         btn.setStyle("text-align: center;");        
      

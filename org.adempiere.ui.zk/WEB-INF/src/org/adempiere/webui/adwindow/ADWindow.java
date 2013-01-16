@@ -37,7 +37,8 @@ import org.zkoss.zk.ui.Component;
  */
 public class ADWindow extends AbstractUIPart
 {
-    private ADWindowContent windowContent;
+    public static final String AD_WINDOW_ATTRIBUTE_KEY = "org.adempiere.webui.adwindow";
+	private ADWindowContent windowContent;
     private Properties ctx;
     private int adWindowId;
     private String _title;
@@ -104,7 +105,7 @@ public class ADWindow extends AbstractUIPart
     protected Component doCreatePart(Component parent) 
     {
     	windowPanelComponent = windowContent.createPart(parent);
-    	windowPanelComponent.setAttribute("ADWindow", this);
+    	windowPanelComponent.setAttribute(AD_WINDOW_ATTRIBUTE_KEY, this);
     	windowPanelComponent.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, windowNo);
     	if (windowContent.initPanel(query))
     	{

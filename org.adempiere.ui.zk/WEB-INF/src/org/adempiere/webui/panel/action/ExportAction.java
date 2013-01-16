@@ -24,6 +24,7 @@ import java.util.Set;
 import org.adempiere.base.IGridTabExporter;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.adwindow.IADTabbox;
@@ -42,7 +43,6 @@ import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
@@ -99,6 +99,7 @@ public class ExportAction implements EventListener<Event>
 			winExportFile.setClosable(true);
 			winExportFile.setBorder("normal");
 			winExportFile.setStyle("position:absolute");
+			winExportFile.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "exportAction");
 
 			cboType.setMold("select");
 
@@ -133,7 +134,7 @@ public class ExportAction implements EventListener<Event>
 			confirmPanel.addActionListener(this);
 		}
 
-		Clients.showBusy(panel.getComponent().getParent(), " ");
+		panel.showBusyMask();
 		panel.getComponent().getParent().appendChild(winExportFile);
 		LayoutUtils.openOverlappedWindow(panel.getComponent(), winExportFile, "middle_center");
 		winExportFile.addEventListener(DialogEvents.ON_WINDOW_CLOSE, this);
@@ -146,7 +147,7 @@ public class ExportAction implements EventListener<Event>
 		else if(event.getTarget().getId().equals(ConfirmPanel.A_OK))
 			exportFile();
 		else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
-			Clients.clearBusy(panel.getComponent().getParent());			
+			panel.hideBusyMask();			
 			panel.getComponent().invalidate();
 		}
 	}

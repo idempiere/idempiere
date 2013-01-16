@@ -206,7 +206,7 @@ public class WDateEditor extends WEditor implements ContextMenuListener
 		else if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()) && gridField != null)
 		{
 			if (isShowPreference())
-				ValuePreference.start (this.getGridField(), getValue());
+				ValuePreference.start (getComponent(), this.getGridField(), getValue());
 			return;
 		}
 	}

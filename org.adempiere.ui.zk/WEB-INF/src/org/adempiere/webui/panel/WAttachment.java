@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Label;
@@ -209,6 +210,7 @@ public class WAttachment extends Window implements EventListener<Event>
 
 	void staticInit() throws Exception
 	{
+		this.setAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "attachment");
 		this.setMaximizable(true);
 		this.setWidth("700px");
 		this.setHeight("600px");
@@ -243,17 +245,20 @@ public class WAttachment extends Window implements EventListener<Event>
 		northPanel.appendChild(div);
 
 		bSave.setEnabled(false);
+		bSave.setSclass("action-button");
 		bSave.setImage("/images/Export24.png");
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(), "AttachmentSave"));
 		bSave.addEventListener(Events.ON_CLICK, this);
 
 		bLoad.setImage("/images/Import24.png");
+		bLoad.setSclass("action-button");
 		bLoad.setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);
 		bLoad.setTooltiptext(Msg.getMsg(Env.getCtx(), "Load"));
 		bLoad.setUpload("true");
 		bLoad.addEventListener(Events.ON_UPLOAD, this);
 
 		bDelete.setImage("/images/Delete24.png");
+		bDelete.setSclass("action-button");
 		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
 		bDelete.addEventListener(Events.ON_CLICK, this);
 
@@ -274,15 +279,19 @@ public class WAttachment extends Window implements EventListener<Event>
 		southPane.setHeight("30px");
 
 		bCancel.setImage("/images/Cancel24.png");
+		bCancel.setSclass("action-button");
 		bCancel.addEventListener(Events.ON_CLICK, this);
 
 		bOk.setImage("/images/Ok24.png");
+		bOk.setSclass("action-button");
 		bOk.addEventListener(Events.ON_CLICK, this);
 
 		bDeleteAll.setImage("/images/Delete24.png");
+		bDeleteAll.setSclass("action-button");
 		bDeleteAll.addEventListener(Events.ON_CLICK, this);
 
 		bRefresh.setImage("/images/Refresh24.png");
+		bRefresh.setSclass("action-button");
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 
 		confirmPanel.appendChild(bDeleteAll);

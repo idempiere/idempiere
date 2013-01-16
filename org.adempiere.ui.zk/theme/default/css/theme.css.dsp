@@ -211,6 +211,7 @@ html,body {
 }
 
 .action-button .z-button-cm img, 
+.action-text-button .z-button-cm img,
 .action-image-text-button .z-button-cm img {
 	height: 22px;
 	width: 22px;
@@ -478,6 +479,10 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 <%-- adwindow and form --%>
+.adwindow-form > .z-grid-body {
+	background-color: #F9F9F9;
+}
+
 .adwindow-layout {
 	position:absolute; 
 	border: none;
@@ -513,6 +518,8 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 .adwindow-toolbar {
 	border: 0px;
 	height: 26px;
+	background-image: none;
+	background-color: #fff;
 }
 
 .adwindow-breadcrumb {
@@ -560,7 +567,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 .adwindow-detailpane-tabbox {
 	width: 99%; 
 	margin: auto;
-	background-color: #E4E4E4;
+	background-color: #D3D3D3;
 }
 
 .adwindow-gridview-detail {
@@ -612,6 +619,10 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	width: 100%; 
 	height: 100%; 
 	position: absolute;
+}
+
+.adtab-form-borderlayout .z-center {
+	background-color: #F9F9F9;
 }
 
 .row-indicator-seld {
@@ -753,7 +764,7 @@ span.z-tree-tee, span.z-tree-last {
 }
 
 .editor-box .editor-button {
-	width: 26px;
+	width: 32px;
 	padding: 0px;
 }
 
@@ -1032,10 +1043,105 @@ tbody.z-grid-empty-body td {
 }
 
 .embedded-dialog {
-	background-color: #666;
+	position: absolute;
 }
 
 .embedded-dialog .z-window-embedded-header {
 	color: #fff;
 	font-weight: bold;
+}
+
+.z-window-overlapped-cm,  .z-window-modal-cm, .z-window-highlighted-cm {
+	border: none;
+}
+
+.z-window-overlapped-tl, .z-window-popup-tl, .z-window-modal-tl, .z-window-highlighted-tl, .embedded-dialog .z-window-embedded-tl
+{
+	border-left: 1px solid #484848;
+	border-right: 1px solid #484848;
+	border-top: 1px solid #484848;
+	border-top-left-radius:8px;
+	border-top-right-radius:8px;
+	margin: 0px;
+}
+
+.z-window-overlapped-tr, .z-window-popup-tr, .z-window-modal-tr, .z-window-highlighted-tr, .embedded-dialog .z-window-embedded-tr
+{
+	display: none;
+}
+
+.z-window-overlapped-tl, .z-window-popup-tl, .z-window-modal-tl, .z-window-highlighted-tl, .embedded-dialog .z-window-embedded-tl,
+.z-window-overlapped-tr, .z-window-popup-tr, .z-window-modal-tr, .z-window-highlighted-tr, .embedded-dialog .z-window-embedded-tr,
+.z-window-overlapped-hm, .z-window-popup-hm, .z-window-modal-hm, .z-window-highlighted-hm, .embedded-dialog .z-window-embedded-hm,
+.z-window-overlapped-hl, .z-window-popup-hl, .z-window-modal-hl, .z-window-highlighted-hl, .embedded-dialog .z-window-embedded-hl,
+.z-window-overlapped-hr, .z-window-popup-hr, .z-window-modal-hr, .z-window-highlighted-hr, .embedded-dialog .z-window-embedded-hr
+{
+	background-color: #484848;
+}
+
+.z-window-overlapped-cl, .z-window-popup-cl, .z-window-modal-cl, .z-window-highlighted-cl, .embedded-dialog .z-window-embedded-cl
+{
+	padding-left: 1px;
+	border-left: 1px solid #c5c5c5;
+}
+
+.z-window-overlapped-cr, .z-window-popup-cr, .z-window-modal-cr, .z-window-highlighted-cr, .embedded-dialog .z-window-embedded-cr
+{
+	padding-right: 1px;
+	border-right: 1px solid #c5c5c5;
+}
+
+.z-window-overlapped-bl, .z-window-popup-bl, .z-window-modal-bl, .z-window-highlighted-bl, .embedded-dialog .z-window-embedded-bl
+{
+	border-bottom: 1px solid #c5c5c5;
+	border-left: 1px solid #c5c5c5;
+	border-right: 1px solid #c5c5c5;
+	background-color: #fff;
+	margin: 0px;
+	border-bottom-left-radius:8px;
+	border-bottom-right-radius:8px;
+}
+
+.z-window-overlapped-br, .z-window-popup-br, .z-window-modal-br, .z-window-highlighted-br, .embedded-dialog .z-window-embedded-br
+{
+	display: none;
+}
+
+.z-window-overlapped .z-window-overlapped-header,
+.z-window-popup .z-window-popup-header,
+.z-window-highlighted .z-window-modal-header,
+.z-window-highlighted .z-window-highlighted-header
+{
+	color: #fff;
+	font-weight: bold;
+}
+
+.z-window-overlapped-hl, .z-window-popup-hl, .z-window-modal-hl, .z-window-highlighted-hl, 
+.z-window-overlapped-hr, .z-window-popup-hr, .z-window-modal-hr, .z-window-highlighted-hr,
+.z-window-overlapped-hm, .z-window-popup-hm, .z-window-modal-hm, .z-window-highlighted-hm,
+.z-window-overlapped-cl, .z-window-popup-cl, .z-window-modal-cl, .z-window-highlighted-cl, 
+.z-window-overlapped-cr, .z-window-popup-cr, .z-window-modal-cr, .z-window-highlighted-cr,
+.z-window-overlapped-tl, .z-window-popup-tl, .z-window-modal-tl, .z-window-highlighted-tl, 
+.z-window-overlapped-tr, .z-window-popup-tr, .z-window-modal-tr, .z-window-highlighted-tr,
+.z-window-overlapped-bl, .z-window-popup-bl, .z-window-modal-bl, .z-window-highlighted-bl, 
+.z-window-overlapped-br, .z-window-popup-br, .z-window-modal-br, .z-window-highlighted-br
+{
+	background-image: none !important;
+}
+
+<%-- Splitter button --%>
+.z-east-splt-btn,
+.z-west-splt-btn,
+.z-north-splt-btn,
+.z-south-splt-btn {
+	filter: alpha(opacity=100);  <%-- IE --%>
+	opacity: 1.0;  <%-- Moz + FF --%>
+}
+
+.z-east-splt-btn-over,
+.z-west-splt-btn-over,
+.z-north-splt-btn-over,
+.z-south-splt-btn-over {
+	-webkit-filter: brightness(-30%);
+	filter: brightness(-30%);
 }

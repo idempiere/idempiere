@@ -230,7 +230,7 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 	 	if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
 		{
 			if (isShowPreference())
-				ValuePreference.start (this.getGridField(), getValue());
+				ValuePreference.start (getComponent(), this.getGridField(), getValue());
 			return;
 		}
 	 	else if (WEditorPopupMenu.CHANGE_LOG_EVENT.equals(evt.getContextEvent()))

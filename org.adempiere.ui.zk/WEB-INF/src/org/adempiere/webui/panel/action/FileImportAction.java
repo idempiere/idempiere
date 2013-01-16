@@ -27,6 +27,7 @@ import java.util.Set;
 import org.adempiere.base.IGridTabImporter;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.adwindow.IADTabbox;
@@ -51,7 +52,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
@@ -129,6 +129,7 @@ public class FileImportAction implements EventListener<Event>
 			winImportFile.setClosable(true);
 			winImportFile.setBorder("normal");
 			winImportFile.setStyle("position:absolute");
+			winImportFile.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "importAction");
 
 			cboType.setMold("select");
 
@@ -172,7 +173,7 @@ public class FileImportAction implements EventListener<Event>
 			confirmPanel.addActionListener(this);
 		}
 
-		Clients.showBusy(panel.getComponent().getParent(), " ");
+		panel.showBusyMask();
 		panel.getComponent().getParent().appendChild(winImportFile);
 		LayoutUtils.openOverlappedWindow(panel.getComponent(), winImportFile, "middle_center");
 		winImportFile.addEventListener(DialogEvents.ON_WINDOW_CLOSE, this);
@@ -202,7 +203,7 @@ public class FileImportAction implements EventListener<Event>
 				return;
 			importFile();
 		} else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
-			Clients.clearBusy(panel.getComponent().getParent());
+			panel.hideBusyMask();
 			panel.getComponent().invalidate();
 		}
 	}

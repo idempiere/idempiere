@@ -217,7 +217,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 		if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
 		{
 			if (isShowPreference())
-				ValuePreference.start (this.getGridField(), getValue());
+				ValuePreference.start (getComponent(), this.getGridField(), getValue());
 			return;
 		}
 		else if (WEditorPopupMenu.EDITOR_EVENT.equals(evt.getContextEvent()))
