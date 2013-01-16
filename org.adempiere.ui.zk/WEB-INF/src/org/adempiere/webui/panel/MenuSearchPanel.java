@@ -45,7 +45,6 @@ public class MenuSearchPanel extends AbstractMenuPanel
 	{
 		super.init();
         pnlSearch.initialise();
-        pnlSearch.cmbSearch.setDraggable("favourite");
         
         EventQueues.lookup(MenuTreeFilterPanel.MENU_TREE_FILTER_CHECKED_QUEUE, EventQueues.APPLICATION, true).subscribe(new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
