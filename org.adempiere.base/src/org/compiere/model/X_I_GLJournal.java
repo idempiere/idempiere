@@ -33,7 +33,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20121226L;
 
     /** Standard Constructor */
     public X_I_GLJournal (Properties ctx, int I_GLJournal_ID, String trxName)
@@ -134,6 +134,20 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 	public String getAcctSchemaName () 
 	{
 		return (String)get_Value(COLUMNNAME_AcctSchemaName);
+	}
+
+	/** Set Activity Value.
+		@param ActivityValue Activity Value	  */
+	public void setActivityValue (String ActivityValue)
+	{
+		set_Value (COLUMNNAME_ActivityValue, ActivityValue);
+	}
+
+	/** Get Activity Value.
+		@return Activity Value	  */
+	public String getActivityValue () 
+	{
+		return (String)get_Value(COLUMNNAME_ActivityValue);
 	}
 
 	/** Set Document Org.
@@ -367,6 +381,20 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set CampaignValue.
+		@param CampaignValue CampaignValue	  */
+	public void setCampaignValue (String CampaignValue)
+	{
+		set_Value (COLUMNNAME_CampaignValue, CampaignValue);
+	}
+
+	/** Get CampaignValue.
+		@return CampaignValue	  */
+	public String getCampaignValue () 
+	{
+		return (String)get_Value(COLUMNNAME_CampaignValue);
 	}
 
 	/** Set Category Name.
@@ -1344,6 +1372,23 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set Sales Region Value.
+		@param SalesRegionValue 
+		Key of the Sales Region
+	  */
+	public void setSalesRegionValue (String SalesRegionValue)
+	{
+		set_Value (COLUMNNAME_SalesRegionValue, SalesRegionValue);
+	}
+
+	/** Get Sales Region Value.
+		@return Key of the Sales Region
+	  */
+	public String getSalesRegionValue () 
+	{
+		return (String)get_Value(COLUMNNAME_SalesRegionValue);
 	}
 
 	/** Set SKU.

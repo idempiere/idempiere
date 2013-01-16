@@ -82,6 +82,15 @@ public interface I_I_GLJournal
 	  */
 	public String getAcctSchemaName();
 
+    /** Column name ActivityValue */
+    public static final String COLUMNNAME_ActivityValue = "ActivityValue";
+
+	/** Set Activity Value	  */
+	public void setActivityValue (String ActivityValue);
+
+	/** Get Activity Value	  */
+	public String getActivityValue();
+
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -249,6 +258,15 @@ public interface I_I_GLJournal
 	public int getC_Activity_ID();
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
+
+    /** Column name CampaignValue */
+    public static final String COLUMNNAME_CampaignValue = "CampaignValue";
+
+	/** Set CampaignValue	  */
+	public void setCampaignValue (String CampaignValue);
+
+	/** Get CampaignValue	  */
+	public String getCampaignValue();
 
     /** Column name CategoryName */
     public static final String COLUMNNAME_CategoryName = "CategoryName";
@@ -852,6 +870,19 @@ public interface I_I_GLJournal
 	  * Quantity
 	  */
 	public BigDecimal getQty();
+
+    /** Column name SalesRegionValue */
+    public static final String COLUMNNAME_SalesRegionValue = "SalesRegionValue";
+
+	/** Set Sales Region Value.
+	  * Key of the Sales Region
+	  */
+	public void setSalesRegionValue (String SalesRegionValue);
+
+	/** Get Sales Region Value.
+	  * Key of the Sales Region
+	  */
+	public String getSalesRegionValue();
 
     /** Column name SKU */
     public static final String COLUMNNAME_SKU = "SKU";

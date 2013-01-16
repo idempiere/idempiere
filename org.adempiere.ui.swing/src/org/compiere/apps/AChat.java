@@ -80,9 +80,9 @@ public class AChat extends CDialog
 		}
 		//	Create Model
 		if (CM_Chat_ID > 0)
-			m_chat = new MChat (Env.getCtx(), AD_Table_ID, Record_ID, Description, trxName);
-		else
 			m_chat = new MChat (Env.getCtx(), CM_Chat_ID, trxName);
+		else
+			m_chat = new MChat (Env.getCtx(), AD_Table_ID, Record_ID, Description, trxName);
 		loadChat();
 		//
 		try

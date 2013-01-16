@@ -99,14 +99,9 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		}
 		//	Create Model
 		if (CM_Chat_ID > 0)
+			m_chat = new MChat (Env.getCtx(), CM_Chat_ID, trxName);
+		else
 			m_chat = new MChat (Env.getCtx(), AD_Table_ID, Record_ID, Description, trxName);
-		else 
-		{
-			m_chat = new MChat (Env.getCtx(), 0, trxName);
-			m_chat.setDescription(Description);
-			m_chat.setAD_Table_ID(AD_Table_ID);
-			m_chat.setRecord_ID(Record_ID);
-		}
 		loadChat();
 		//
 	}	//	Attachment
@@ -170,7 +165,8 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		confirmPanel.setStyle("position:absolute; height:30px; width:99%; top:80px;");
 		confirmPanel.addActionListener(this);				
 
-		this.setStyle("position: relative; height: 600px; width: 500px;");
+		this.setHeight("600px");
+		this.setWidth("500px");
 		this.setMaximizable(true);
 		this.setSizable(true);
 		this.setBorder("normal");
