@@ -165,7 +165,8 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		confirmPanel.setStyle("position:absolute; height:30px; width:99%; top:80px;");
 		confirmPanel.addActionListener(this);				
 
-		this.setStyle("position: relative; height: 600px; width: 500px;");
+		this.setHeight("600px");
+		this.setWidth("500px");
 		this.setMaximizable(true);
 		this.setSizable(true);
 		this.setBorder("normal");
