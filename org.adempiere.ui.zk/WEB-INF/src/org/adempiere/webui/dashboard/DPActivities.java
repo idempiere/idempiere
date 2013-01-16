@@ -15,9 +15,12 @@ package org.adempiere.webui.dashboard;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.compiere.model.MRole;
@@ -29,6 +32,8 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Box;
 import org.zkoss.zul.Vbox;
@@ -221,27 +226,41 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
 	@Override
     public void refresh(ServerPushTemplate template)
 	{
-    	noOfNotice = getNoticeCount();
-    	noOfRequest = getRequestCount();
-    	noOfWorkflow = getWorkflowCount();
-    	noOfUnprocessed = getUnprocessedCount();
-
-    	template.executeAsync(this);
+		int notice = getNoticeCount();
+		int request = getRequestCount();
+		int workflow = getWorkflowCount();
+		int unprocessed = getUnprocessedCount();
+		if (noOfNotice != notice || noOfRequest != request 
+			|| noOfWorkflow != workflow || noOfUnprocessed != unprocessed )
+		{
+			noOfNotice = notice;
+			noOfRequest = request;
+			noOfWorkflow = workflow;
+			noOfUnprocessed = unprocessed;
+			template.executeAsync(this);
+		}
 	}
 
     @Override
 	public void updateUI() {
-    	//don't update if not visible
-    	Component c = this.getParent();
-    	while (c != null) {
-    		if (!c.isVisible())
-    			return;
-    		c = c.getParent();
-    	}
     	btnNotice.setLabel(labelN + " : " + noOfNotice);
 		btnRequest.setLabel(labelR + " : " + noOfRequest);
 		btnWorkflow.setLabel(labelW + " : " + noOfWorkflow);
 		if (isShowUnprocessed()) btnUnprocessed.setLabel(labelU + " : " + noOfUnprocessed);
+		
+		EventQueue<Event> queue = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, true);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("notice", noOfNotice);
+		map.put("request", noOfRequest);
+		map.put("workflow", noOfWorkflow);
+		map.put("unprocessed", noOfUnprocessed);
+		Event event = new Event(IDesktop.ON_ACTIVITIES_CHANGED_EVENT, null, map);
+		queue.publish(event);
+	}
+
+	@Override
+	public boolean isPooling() {
+		return true;
 	}
 
 	public void onEvent(Event event)

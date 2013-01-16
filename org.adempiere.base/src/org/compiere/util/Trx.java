@@ -19,9 +19,11 @@ package org.compiere.util;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -84,6 +86,8 @@ public class Trx
 	private static Map<String,Trx> 	s_cache = null;	//	create change listener
 	
 	private static Trx.TrxMonitor s_monitor = new Trx.TrxMonitor();
+	
+	private List<TrxEventListener> listeners = new ArrayList<TrxEventListener>();
 
 	public static void startTrxMonitor()
 	{
@@ -278,6 +282,7 @@ public class Trx
 				m_connection.rollback();
 				log.log(isLocalTrx(m_trxName) ? Level.FINE : Level.INFO, "**** " + m_trxName);
 				m_active = false;
+				fireAfterRollbackEvent(true);
 				return true;
 			}
 		}
@@ -287,12 +292,21 @@ public class Trx
 			if (throwException)
 			{
 				m_active = false;
+				fireAfterRollbackEvent(false);
 				throw e;
 			}
 		}		
 		m_active = false;
+		fireAfterRollbackEvent(false);
 		return false;
 	}	//	rollback
+	
+	private void fireAfterRollbackEvent(boolean success) {
+		TrxEventListener[] copies = listeners.toArray(new TrxEventListener[0]);
+		for(TrxEventListener l : copies) {
+			l.afterRollback(this, success);
+		}
+	}
 	
 	/**
 	 * Rollback 
@@ -347,6 +361,7 @@ public class Trx
 				m_connection.commit();
 				log.info ("**** " + m_trxName);
 				m_active = false;
+				fireAfterCommitEvent(true);
 				return true;
 			}
 		}
@@ -356,13 +371,22 @@ public class Trx
 			if (throwException) 
 			{
 				m_active = false;
+				fireAfterCommitEvent(false);
 				throw e;
 			}
 		}
 		m_active = false;
+		fireAfterCommitEvent(false);
 		return false;
 	}	//	commit
 	
+	private void fireAfterCommitEvent(boolean success) {
+		TrxEventListener[] copies = listeners.toArray(new TrxEventListener[0]);
+		for(TrxEventListener l : copies) {
+			l.afterCommit(this, success);
+		}
+	}
+
 	/**
 	 * Commit
 	 * @return true if success
@@ -417,9 +441,17 @@ public class Trx
 		}
 		m_connection = null;
 		m_active = false;
+		fireAfterCloseEvent();
 		log.config(m_trxName);
 		return true;
 	}	//	close
+	
+	private void fireAfterCloseEvent() {
+		TrxEventListener[] copies = listeners.toArray(new TrxEventListener[0]);
+		for(TrxEventListener l : copies) {
+			l.afterClose(this);
+		}
+	}
 	
 	/**
 	 * 
@@ -589,6 +621,18 @@ public class Trx
 		m_timeout = timeout;
 	}
 
+	/**
+	 * 
+	 * @param listener
+	 */
+	public void addTrxEventListener(TrxEventListener listener) {
+		listeners.add(listener);
+	}
+	
+	public boolean removeTrxEventListener(TrxEventListener listener) {
+		return listeners.remove(listener);
+	}
+	
 	static class TrxMonitor implements Runnable
 	{
 

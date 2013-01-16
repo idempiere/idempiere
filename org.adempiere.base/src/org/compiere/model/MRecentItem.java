@@ -16,15 +16,22 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
+import org.adempiere.base.Service;
+import org.adempiere.base.event.EventManager;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.distributed.IMessageService;
+import org.idempiere.distributed.ITopic;
+import org.osgi.service.event.Event;
 
 /**
  *	Recent Item model
@@ -33,6 +40,8 @@ import org.compiere.util.Env;
  */
 public class MRecentItem extends X_AD_RecentItem
 {
+	public static final String ON_RECENT_ITEM_CHANGED_TOPIC = "onRecentItemChanged";
+
 	/**
 	 * 
 	 */
@@ -166,6 +175,24 @@ public class MRecentItem extends X_AD_RecentItem
 		ri.setAD_Window_ID(AD_Window_ID);
 		ri.setAD_Tab_ID(AD_Tab_ID);
 		ri.saveEx();
+		publishChangedEvent(AD_User_ID);
+	}
+
+	private static void publishChangedEvent(int AD_User_ID) {
+		IMessageService service = Service.locator().locate(IMessageService.class).getService();
+		if (service != null) {
+			ITopic<Integer> topic = service.getTopic(ON_RECENT_ITEM_CHANGED_TOPIC);
+			topic.publish(AD_User_ID);
+		} else {
+			postOnChangedEvent(AD_User_ID);
+		}
+	}
+
+	public static void postOnChangedEvent(int AD_User_ID) {
+		Map<String, Integer> properties = new HashMap<String, Integer>();
+		properties.put("AD_User_ID", AD_User_ID);
+		Event event = new Event(ON_RECENT_ITEM_CHANGED_TOPIC, properties);
+		EventManager.getInstance().postEvent(event);
 	}
 
 	/*
@@ -178,6 +205,7 @@ public class MRecentItem extends X_AD_RecentItem
 		if (ri != null) {
 			DB.executeUpdateEx("UPDATE AD_RecentItem SET Updated=SYSDATE WHERE AD_RecentItem_ID=?", new Object[] {ri.getAD_RecentItem_ID()}, null);
 			deleteExtraRecentItems(ctx, AD_User_ID);
+			publishChangedEvent(AD_User_ID);
 		}
 	}
 

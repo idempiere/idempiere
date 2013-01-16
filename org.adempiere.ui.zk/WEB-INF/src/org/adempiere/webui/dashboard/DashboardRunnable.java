@@ -18,10 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import org.adempiere.util.ServerContext;
-import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.compiere.util.CLogger;
@@ -42,9 +40,9 @@ public class DashboardRunnable implements Runnable, Serializable
 
 	private Desktop desktop;
 	private List<DashboardPanel> dashboardPanels;
-	private IDesktop appDesktop;
 	private Locale locale;
 
+	@SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(DashboardRunnable.class);
 
 	/**
@@ -52,17 +50,15 @@ public class DashboardRunnable implements Runnable, Serializable
 	 * @param desktop zk desktop interface
 	 * @param appDesktop adempiere desktop interface
 	 */
-	public DashboardRunnable(Desktop desktop, IDesktop appDesktop) {
+	public DashboardRunnable(Desktop desktop) {
 		this.desktop = desktop;
-		this.appDesktop = appDesktop;
 
 		dashboardPanels = new ArrayList<DashboardPanel>();
 		locale = Locales.getCurrent();
 	}
 
-	public DashboardRunnable(DashboardRunnable tmp, Desktop desktop,
-			IDesktop appDesktop) {
-		this(desktop, appDesktop);
+	public DashboardRunnable(DashboardRunnable tmp, Desktop desktop) {
+		this(desktop);
 		this.dashboardPanels = tmp.dashboardPanels;
 	}
 
@@ -70,16 +66,17 @@ public class DashboardRunnable implements Runnable, Serializable
 	{		
 		Locales.setThreadLocal(locale);
 		try {
-			refreshDashboard();
+			refreshDashboard(true);
 		} catch (Exception e) {
-			logger.log(Level.INFO, e.getLocalizedMessage(), (e.getCause() != null ? e.getCause() : e));
+//			logger.log(Level.INFO, e.getLocalizedMessage(), (e.getCause() != null ? e.getCause() : e));
+			throw new RuntimeException(e);
 		}
 	}
 
 	/**
 	 * Refresh dashboard content
 	 */
-	public void refreshDashboard()
+	public void refreshDashboard(boolean pooling)
 	{
 
 		ServerPushTemplate template = new ServerPushTemplate(desktop);
@@ -102,12 +99,14 @@ public class DashboardRunnable implements Runnable, Serializable
 			{
 				ServerContext.setCurrentInstance(ctx);
 			}
+			
 	    	for(int i = 0; i < dashboardPanels.size(); i++)
 	    	{
+	    		if (pooling && !dashboardPanels.get(i).isPooling())
+	    			continue;
+	    		
 	    		dashboardPanels.get(i).refresh(template);
 	    	}
-
-    		appDesktop.onServerPush(template);
 		}
 		finally
 		{

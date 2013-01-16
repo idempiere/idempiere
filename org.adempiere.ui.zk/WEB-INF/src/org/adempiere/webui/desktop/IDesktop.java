@@ -20,7 +20,6 @@ import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.part.UIPart;
-import org.adempiere.webui.util.ServerPushTemplate;
 import org.compiere.model.MQuery;
 import org.compiere.util.WebDoc;
 import org.zkoss.zk.ui.Component;
@@ -34,6 +33,8 @@ import org.zkoss.zk.ui.Page;
 public interface IDesktop extends UIPart {
 
 	public static final String WINDOWNO_ATTRIBUTE = "desktop.windowno";
+	public static final String ACTIVITIES_EVENT_QUEUE = "ActivitiesEventQueue";
+	public static final String ON_ACTIVITIES_CHANGED_EVENT = "onActivitiesChanged";
 
 	/**
 	 *
@@ -193,12 +194,4 @@ public interface IDesktop extends UIPart {
 	 * User logout from desktop, do clean up
 	 */
 	public void logout();
-
-	/**
-	 * Invoke by the server push thread. If the desktop argument is not null, must activate desktop
-	 * before making update to UI. For performance reason, keep the activate of desktop as short
-	 * as possible.
-	 * @param template
-	 */
-	public void onServerPush(ServerPushTemplate template);
 }

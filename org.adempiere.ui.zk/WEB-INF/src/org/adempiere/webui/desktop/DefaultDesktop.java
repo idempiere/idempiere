@@ -18,6 +18,7 @@
 package org.adempiere.webui.desktop;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Properties;
 
 import org.adempiere.base.event.EventManager;
@@ -29,7 +30,6 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
-import org.adempiere.webui.dashboard.DPActivities;
 import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.event.ZKBroadCastManager;
 import org.adempiere.webui.panel.BroadcastMessageWindow;
@@ -57,6 +57,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
@@ -75,7 +77,7 @@ import org.zkoss.zul.West;
  * @version $Revision: 0.10 $
  * @author Deepak Pansheriya/Vivek - Adding support for message broadcasting
  */
-public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, IServerPushCallback,EventHandler,DesktopCleanup
+public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, EventHandler,DesktopCleanup
 {
 	/**
 	 * generated serial version ID
@@ -119,6 +121,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
     	//subscribing to broadcast event
     	bindEventManager();
     	ZKBroadCastManager.getBroadCastMgr();
+    	
+    	EventQueue<Event> queue = EventQueues.lookup(ACTIVITIES_EVENT_QUEUE, true);
+    	queue.subscribe(this);
     }
 
     protected Component doCreatePart(Component parent)
@@ -242,17 +247,35 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
             	}
             }
         }
+        else if (eventName.equals(ON_ACTIVITIES_CHANGED_EVENT))
+        {
+        	@SuppressWarnings("unchecked")
+			Map<String, Object> map = (Map<String, Object>) event.getData();
+        	Integer notice = (Integer) map.get("notice");
+        	Integer request = (Integer) map.get("request");
+        	Integer workflow = (Integer) map.get("workflow");
+        	Integer unprocessed = (Integer) map.get("unprocessed");
+        	boolean change = false;
+        	if (notice != null && notice.intValue() != noOfNotice) 
+        	{
+        		noOfNotice = notice.intValue(); change = true;
+        	}
+        	if (request != null && request.intValue() != noOfRequest) 
+        	{
+        		noOfRequest = request.intValue(); change = true;
+        	}		
+        	if (workflow != null && workflow.intValue() != noOfWorkflow) 
+        	{
+        		noOfWorkflow = workflow.intValue(); change = true;
+        	}
+        	if (unprocessed != null && unprocessed.intValue() != noOfUnprocessed) 
+        	{
+        		noOfUnprocessed = unprocessed.intValue(); change = true;
+        	}
+        	if (change)
+        		updateUI();
+        }
     }
-
-    public void onServerPush(ServerPushTemplate template)
-	{
-    	noOfNotice = DPActivities.getNoticeCount();
-    	noOfRequest = DPActivities.getRequestCount();
-    	noOfWorkflow = DPActivities.getWorkflowCount();
-    	noOfUnprocessed = DPActivities.getUnprocessedCount();
-
-    	template.executeAsync(this);
-	}
 
 	/**
 	 *
@@ -264,11 +287,11 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 			this.page = page;
 			
 			if (dashboardController != null) {
-				dashboardController.onSetPage(page, layout.getDesktop(), this);
+				dashboardController.onSetPage(page, layout.getDesktop());
 			}
 			
 			if (sideController != null) {
-				sideController.onSetPage(page, layout.getDesktop(), this);
+				sideController.onSetPage(page, layout.getDesktop());
 			}
 		}
 	}

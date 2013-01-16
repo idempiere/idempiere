@@ -14,7 +14,10 @@
 package org.adempiere.webui.dashboard;
 
 import java.util.List;
+import java.util.Properties;
 
+import org.adempiere.base.Service;
+import org.adempiere.base.event.EventManager;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.compiere.model.MQuery;
@@ -24,7 +27,12 @@ import org.compiere.model.MTable;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.distributed.IMessageService;
+import org.idempiere.distributed.ITopic;
+import org.idempiere.distributed.ITopicSubscriber;
+import org.osgi.service.event.EventHandler;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -42,7 +50,7 @@ import org.zkoss.zul.Vbox;
  * @author Carlos Ruiz / GlobalQSS
  * @date January 27, 2012
  */
-public class DPRecentItems extends DashboardPanel implements EventListener<Event> {
+public class DPRecentItems extends DashboardPanel implements EventListener<Event>, EventHandler {
 
 	private static final String AD_RECENT_ITEM_ID_ATTR = "AD_RecentItem_ID";
 
@@ -53,12 +61,24 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 
 	public static final String DELETE_RECENTITEMS_DROPPABLE = "deleteRecentItems";
 
+	private static TopicSubscriber topicSubscriber;
+
 	private Box bxRecentItems;
+
+	private int AD_User_ID;
+	
+	private Properties ctx;
+
+	private Desktop desktop;
 
 	public DPRecentItems()
 	{
 		super();
 
+		ctx = new Properties();
+		ctx.putAll(Env.getCtx());
+		AD_User_ID = Env.getAD_User_ID(ctx);
+		
 		Panel panel = new Panel();
 		this.appendChild(panel);
 
@@ -75,7 +95,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		Image imgr = new Image("/images/Refresh24.png");
 		recentItemsToolbar.appendChild(imgr);
 		imgr.setStyle("text-align: right; cursor: pointer;");
-		imgr.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
+		imgr.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Refresh")));
 		imgr.addEventListener(Events.ON_CLICK, this);
 		//
 
@@ -83,10 +103,22 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		recentItemsToolbar.appendChild(img);
 		img.setStyle("text-align: right;");
 		img.setDroppable(DELETE_RECENTITEMS_DROPPABLE);
-		img.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Delete")));
+		img.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Delete")));
 		img.addEventListener(Events.ON_DROP, this);
-		//
+		//				
+		EventManager.getInstance().register(MRecentItem.ON_RECENT_ITEM_CHANGED_TOPIC, this);
+		createTopicSubscriber();
+	}
 
+	private static synchronized void createTopicSubscriber() {
+		if (topicSubscriber == null) {
+			topicSubscriber = new TopicSubscriber();
+			IMessageService service = Service.locator().locate(IMessageService.class).getService();
+			if (service != null) {
+				ITopic<Integer> topic = service.getTopic(MRecentItem.ON_RECENT_ITEM_CHANGED_TOPIC);
+				topic.subscribe(topicSubscriber);
+			}
+		}
 	}
 
 	private void createRecentItemsPanel()
@@ -101,7 +133,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 	 */
     private void riDBremove(int AD_RecentItem_ID)
 	{
-    	MRecentItem ri = MRecentItem.get(Env.getCtx(), AD_RecentItem_ID);
+    	MRecentItem ri = MRecentItem.get(ctx, AD_RecentItem_ID);
     	ri.deleteEx(true);
 	}
 
@@ -144,8 +176,8 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 			}
 
 			if (AD_RecentItem_ID > 0) {
-				MRecentItem ri = MRecentItem.get(Env.getCtx(), AD_RecentItem_ID);
-				String TableName = MTable.getTableName(Env.getCtx(), ri.getAD_Table_ID());
+				MRecentItem ri = MRecentItem.get(ctx, AD_RecentItem_ID);
+				String TableName = MTable.getTableName(ctx, ri.getAD_Table_ID());
 				MQuery query = MQuery.getEqualQuery(TableName + "_ID", ri.getRecord_ID());
 
 				SessionManager.getAppDesktop().openWindow(ri.getAD_Window_ID(), query, null);
@@ -170,12 +202,11 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 			bxRecentItems.removeChild(comp);
 		}
 
-		int maxri = MSysConfig.getIntValue(MSysConfig.RecentItems_MaxShown, 10, Env.getAD_Client_ID(Env.getCtx()));
+		int maxri = MSysConfig.getIntValue(MSysConfig.RecentItems_MaxShown, 10, Env.getAD_Client_ID(ctx));
 		if (maxri <= 0)
 			return;
 
-		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
-		List<MRecentItem> ris = MRecentItem.getFromUser(Env.getCtx(), AD_User_ID);
+		List<MRecentItem> ris = MRecentItem.getFromUser(ctx, AD_User_ID);
 		int riShown = 0;
 		for (MRecentItem ri : ris) {
 			String label = ri.getLabel();
@@ -224,7 +255,33 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 	public void updateUI() {
 		refresh();
 		bxRecentItems.invalidate();
+		desktop = getDesktop();
 	}
 
-	
+	@Override
+	public void handleEvent(org.osgi.service.event.Event event) {
+		if (event.getTopic().equals(MRecentItem.ON_RECENT_ITEM_CHANGED_TOPIC) && event.getProperty("AD_User_ID") != null) {
+			Object property = event.getProperty("AD_User_ID");
+			if (property instanceof Number) {
+				int id = ((Number)property).intValue();
+				if (id == AD_User_ID) {
+					try {
+						if (desktop != null && desktop.isAlive()) {
+							ServerPushTemplate template = new ServerPushTemplate(desktop);
+							refresh(template);
+						}
+					} catch (Exception e) {
+						EventManager.getInstance().unregister(this);
+					}
+				}
+			}
+		}
+	}
+
+	static class TopicSubscriber implements ITopicSubscriber<Integer> {
+		@Override
+		public void onMessage(Integer message) {
+			MRecentItem.postOnChangedEvent(message);
+		}		
+	}
 }

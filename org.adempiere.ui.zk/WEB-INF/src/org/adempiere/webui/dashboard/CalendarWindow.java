@@ -30,6 +30,7 @@ import java.util.TimeZone;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.X_R_RequestType;
+import org.compiere.util.Env;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.encoders.EncoderUtil;
@@ -116,7 +117,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 		lbxRequestTypes.addEventListener(Events.ON_SELECT, this);
 		
 		lbxRequestTypes.appendItem("(Show All)", "0");
-		ArrayList<X_R_RequestType> types = DPCalendar.getRequestTypes();
+		ArrayList<X_R_RequestType> types = DPCalendar.getRequestTypes(Env.getCtx());
 		for(X_R_RequestType type : types)
 			lbxRequestTypes.appendItem(type.getName(), type.getR_RequestType_ID() + "");
 		lbxRequestTypes.setSelectedIndex(0);
@@ -215,7 +216,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 				int R_RequestType_ID = Integer.parseInt(li.getValue().toString());
 				
 				scm.clear();
-				ArrayList<ADCalendarEvent> events = DPCalendar.getEvents(R_RequestType_ID);
+				ArrayList<ADCalendarEvent> events = DPCalendar.getEvents(R_RequestType_ID, Env.getCtx());
 				for (ADCalendarEvent event : events)
 					scm.add(event);
 				calendars.setModel(scm);
@@ -341,7 +342,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 			lbxRequestTypes.removeItemAt(i);
 		
 		lbxRequestTypes.appendItem("(Show All)", "0");
-		ArrayList<X_R_RequestType> types = DPCalendar.getRequestTypes();
+		ArrayList<X_R_RequestType> types = DPCalendar.getRequestTypes(Env.getCtx());
 		for(X_R_RequestType requestType : types)
 		{
 			Listitem item = lbxRequestTypes.appendItem(requestType.getName(), requestType.getR_RequestType_ID() + "");
@@ -352,7 +353,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 			lbxRequestTypes.setSelectedIndex(0);
 		
 		scm.clear();
-		ArrayList<ADCalendarEvent> events = DPCalendar.getEvents(R_RequestType_ID);
+		ArrayList<ADCalendarEvent> events = DPCalendar.getEvents(R_RequestType_ID, Env.getCtx());
 		for (ADCalendarEvent event : events)
 			scm.add(event);
 		calendars.setModel(scm);
