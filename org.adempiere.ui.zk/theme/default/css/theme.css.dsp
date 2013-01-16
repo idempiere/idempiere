@@ -495,7 +495,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .adwindow-north {
-	height: 56px;
+	min-height: 56px;
 	width: 100%;
 	padding: 0px;
 	margin: 0px;
@@ -528,6 +528,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	padding: 0px;
 	padding-left: 5px;
 	border-bottom: 1px solid #C5C5C5 !important;
+	clear: both;
 }
 
 .adwindow-detailpane {
