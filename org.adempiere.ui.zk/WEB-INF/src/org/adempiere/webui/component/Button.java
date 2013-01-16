@@ -37,11 +37,13 @@ public class Button extends org.zkoss.zul.Button
     public Button()
     {
         super();
+        setAutodisable("self");
     }
     
     public Button(String label)
     {
         super(label);
+        setAutodisable("self");
     }
     
     public void setName(String name)

@@ -32,7 +32,9 @@ public class ToolBarButton extends org.zkoss.zul.Toolbarbutton
     
     private boolean pressed; // Elaine 2008/12/09
     
-    public ToolBarButton() {}
+    public ToolBarButton() {
+    	setAutodisable("self");
+    }
     
     @Override
 	public void setDisabled(boolean disabled) {    	
@@ -72,6 +74,7 @@ public class ToolBarButton extends org.zkoss.zul.Toolbarbutton
 	public ToolBarButton(String name) {
     	super();
     	this.name = name;
+    	setAutodisable("self");
     }
     
     public String getName() {
