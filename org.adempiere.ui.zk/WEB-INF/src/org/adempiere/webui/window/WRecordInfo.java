@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Listbox;
@@ -92,6 +93,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		this.setBorder("normal");
 		this.setSizable(true);
 		this.setClosable(true);
+		this.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "recordInfo");
 		
 		try
 		{

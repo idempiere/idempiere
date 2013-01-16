@@ -37,6 +37,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
@@ -240,8 +241,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         this.setTitle(Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", "") + ": " + title);
         this.setClosable(false);
         this.setSizable(true);  
-        this.setMaximizable(true);
+        this.setMaximizable(false);
         
+        this.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "findWindow");
         this.setId("findWindow_"+targetWindowNo);
     }
     

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -132,6 +133,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	 */
 	private void staticInit () throws Exception
 	{
+		this.setAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "chat");
 		this.appendChild(mainPanel);
 		mainPanel.setStyle("position:absolute; height:90%; width:95%; border: none; background-color: white;");
 		//
