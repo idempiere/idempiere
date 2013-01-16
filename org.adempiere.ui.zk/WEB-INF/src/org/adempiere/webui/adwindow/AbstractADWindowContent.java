@@ -93,6 +93,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.compiere.util.WebDoc;
 import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
@@ -1705,9 +1706,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     {
     	final boolean wasChanged = toolbar.isSaveEnable();
     	IADTabpanel dirtyTabpanel = adTabbox.getDirtyADTabpanel();
-    	final boolean newRecord = dirtyTabpanel != null ? (dirtyTabpanel.getGridTab().getRecord_ID() <= 0)
-    			: false;
-    	if (dirtyTabpanel != null && dirtyTabpanel instanceof ADSortTab)
+    	final boolean newRecord = dirtyTabpanel != null ? (dirtyTabpanel.getGridTab().getRecord_ID() <= 0) : false;
+    	if (dirtyTabpanel == null)
+			onSave0(onSaveEvent, onNavigationEvent, newRecord, wasChanged, callback);
+    	if (dirtyTabpanel instanceof ADSortTab)
     	{
     		ADSortTab sortTab = (ADSortTab) dirtyTabpanel;
     		sortTab.saveData();
@@ -1729,8 +1731,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	}
     	else
     	{
-    		if ((dirtyTabpanel != null && dirtyTabpanel.getGridTab().getCommitWarning() != null
-    			&& dirtyTabpanel.getGridTab().getCommitWarning().trim().length() > 0) ||
+    		if (!Util.isEmpty(dirtyTabpanel.getGridTab().getCommitWarning()) ||
     			(!Env.isAutoCommit(ctx, curWindowNo) && onNavigationEvent))
     		{
     			FDialog.ask(curWindowNo, this.getComponent(), "SaveChanges?", dirtyTabpanel.getGridTab().getCommitWarning(), new Callback<Boolean>() {
