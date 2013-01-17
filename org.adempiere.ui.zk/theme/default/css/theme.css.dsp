@@ -1052,23 +1052,24 @@ tbody.z-grid-empty-body td {
 	font-weight: bold;
 }
 
-.z-window-overlapped-cm,  .z-window-modal-cm, .z-window-highlighted-cm {
+.z-window-overlapped-cm,  .z-window-modal-cm, .z-window-highlighted-cm, .z-window-embedded-cm {
 	border: none;
 }
 
 .z-window-overlapped-tl, .z-window-popup-tl, .z-window-modal-tl, .z-window-highlighted-tl, .embedded-dialog .z-window-embedded-tl
 {
-	border-left: 1px solid #484848;
-	border-right: 1px solid #484848;
-	border-top: 1px solid #484848;
-	border-top-left-radius:8px;
-	border-top-right-radius:8px;
 	margin: 0px;
+	border-top: 1px solid #c5c5c5;
+	height: 0px;
 }
 
 .z-window-overlapped-tr, .z-window-popup-tr, .z-window-modal-tr, .z-window-highlighted-tr, .embedded-dialog .z-window-embedded-tr
 {
 	display: none;
+}
+
+.z-window-overlapped-hl, .z-window-popup-hl, .z-window-modal-hl, .z-window-highlighted-hl, .embedded-dialog .z-window-embedded-hl {
+	padding-top: 5px;
 }
 
 .z-window-overlapped-tl, .z-window-popup-tl, .z-window-modal-tl, .z-window-highlighted-tl, .embedded-dialog .z-window-embedded-tl,
@@ -1094,13 +1095,8 @@ tbody.z-grid-empty-body td {
 
 .z-window-overlapped-bl, .z-window-popup-bl, .z-window-modal-bl, .z-window-highlighted-bl, .embedded-dialog .z-window-embedded-bl
 {
-	border-bottom: 1px solid #c5c5c5;
-	border-left: 1px solid #c5c5c5;
-	border-right: 1px solid #c5c5c5;
-	background-color: #fff;
+	border-top: 1px solid #c5c5c5;
 	margin: 0px;
-	border-bottom-left-radius:8px;
-	border-bottom-right-radius:8px;
 }
 
 .z-window-overlapped-br, .z-window-popup-br, .z-window-modal-br, .z-window-highlighted-br, .embedded-dialog .z-window-embedded-br
