@@ -39,6 +39,7 @@ import org.compiere.model.MRole;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
 import org.zkoss.zk.au.out.AuFocus;
@@ -65,13 +66,14 @@ import org.zkoss.zul.event.ListDataEvent;
  *				<li> https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2826406&group_id=176962
  * Zk Port
  * @author Low Heng Sin
+ * @author Juan David Arboleda : Refactoring Yes and No List to work with multiple choice.
  */
 public class ADSortTab extends Panel implements IADTabpanel
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4461514427222034848L;
+	private static final long serialVersionUID = 1775234591903753429L;
 
 	/**
 	 *	Sort Tab Constructor
@@ -283,8 +285,8 @@ public class ADSortTab extends Panel implements IADTabpanel
 				migrateValueAcrossLists(event);
 			}
 		};
-		yesList.setSeltype("multiple");
-		noList.setSeltype("multiple");
+		yesModel.setMultiple(true);
+		noModel.setMultiple(true);
 
 		bAdd.setImage("images/Next24.png");
 		bAdd.addEventListener(Events.ON_CLICK, actionListener);
@@ -298,7 +300,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		yesList.setItemDraggable(true);
 		noList.setItemDraggable(true);
 
-		actionListener = new EventListener<Event>()
+		EventListener<Event> actionListener2 = new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception {
 				migrateValueWithinYesList(event);
@@ -306,40 +308,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 		};
 
 		bUp.setImage("images/Parent24.png");
-		bUp.addEventListener(Events.ON_CLICK, actionListener);
+		bUp.addEventListener(Events.ON_CLICK, actionListener2);
 
 		bDown.setImage("images/Detail24.png");
-		bDown.addEventListener(Events.ON_CLICK, actionListener);
-
-		EventListener<Event> yesListMouseMotionListener = new EventListener<Event>()
-		{
-			public void onEvent(Event event) throws Exception {
-				if (event instanceof DropEvent)
-				{
-					DropEvent me = (DropEvent) event;
-					ListItem startItem = (ListItem) me.getDragged();
-					ListItem endItem = (ListItem) me.getTarget();
-					if (startItem.getListbox() == endItem.getListbox() && startItem.getListbox() == yesList)
-					{
-						int startIndex = yesList.getIndexOfItem(startItem);
-						int endIndex = yesList.getIndexOfItem(endItem);
-						Object endElement = yesModel.getElementAt(endIndex);
-						Object element = yesModel.getElementAt(startIndex);
-						yesModel.removeElement(element);
-						endIndex = yesModel.indexOf(endElement);
-						yesModel.add(endIndex, element);
-						yesList.setSelectedIndex(endIndex);
-						if ( yesList.getSelectedItem() != null)
-						{
-							AuFocus focus = new AuFocus(yesList.getSelectedItem());
-							Clients.response(focus);
-						}
-						setIsChanged(true);
-					}
-				}
-			}
-		};
-		yesList.addOnDropListener(yesListMouseMotionListener);
+		bDown.addEventListener(Events.ON_CLICK, actionListener2);
 
 		ListHead listHead = new ListHead();
 		listHead.setParent(yesList);
@@ -465,7 +437,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 					yesModel.addElement(pp);
 				else
 					noModel.addElement(pp);
-				// If the one item from "Yes" list is readonly make entire tab readonly
+				// If one item from "Yes" list is readonly make entire tab readonly
 				if (isYes && !pp.isUpdateable()) {
 					isReadWrite = false;
 				}
@@ -522,40 +494,46 @@ public class ADSortTab extends Panel implements IADTabpanel
 		}
 		Listbox listFrom = (source == bAdd || source == noList) ? noList : yesList;
 		Listbox listTo =  (source == bAdd || source == noList) ? yesList : noList;
-		SimpleListModel lmFrom = (source == bAdd || source == noList) ?
-				noModel : yesModel;
-		SimpleListModel lmTo = (lmFrom == yesModel) ? noModel : yesModel;
+
+		int endIndex = yesList.getIndexOfItem(listTo.getSelectedItem());	
+		//Listto is empty. 
+		if (endIndex<0 )
+			endIndex=0;
+
+		migrateLists (listFrom,listTo,endIndex);
+	}	//	migrateValueAcrossLists
+
+	void migrateLists (Listbox listFrom , Listbox listTo , int endIndex)
+	{
+		int index = 0; 
+		SimpleListModel lmFrom = (listFrom == yesList) ? yesModel:noModel;
+		SimpleListModel lmTo = (lmFrom == yesModel) ? noModel:yesModel;
 		Set<?> selectedItems = listFrom.getSelectedItems();
 		List<ListElement> selObjects = new ArrayList<ListElement>();
 		for (Object obj : selectedItems) {
 			ListItem listItem = (ListItem) obj;
-			int index = listFrom.getIndexOfItem(listItem);
+			index = listFrom.getIndexOfItem(listItem);
 			ListElement selObject = (ListElement)lmFrom.getElementAt(index);
 			selObjects.add(selObject);
 		}
+		index = 0;
+		Arrays.sort(selObjects.toArray());	
 		for (ListElement selObject : selObjects)
 		{
 			if (selObject == null || !selObject.isUpdateable())
 				continue;
 
 			lmFrom.removeElement(selObject);
-			lmTo.addElement(selObject);
-
-			//  Enable explicit Save
-			setIsChanged(true);
+			lmTo.add(endIndex, selObject);
 		}
-
-		for (ListElement selObject : selObjects)
-		{
-			int index = lmTo.indexOf(selObject);
-			listTo.setSelectedIndex(index);
-		}
+		//  Enable explicit Save
+		setIsChanged(true);
 		if ( listTo.getSelectedItem() != null)
 		{
 			AuFocus focus = new AuFocus(listTo.getSelectedItem());
 			Clients.response(focus);
 		}
-	}	//	migrateValueAcrossLists
+	}
 
 	/**
 	 * 	Move within Yes List
@@ -621,6 +599,32 @@ public class ADSortTab extends Panel implements IADTabpanel
 			}
 		}
 	}	//	migrateValueWithinYesList
+
+
+	/**
+	 * 	Move within Yes List with Drag Event and Multiple Choice
+	 *	@param event event
+	 */
+	void migrateValueWithinYesList (int endIndex, List<ListElement> selObjects)
+	{
+		int iniIndex =0;
+		Arrays.sort(selObjects.toArray());	
+		ListElement selObject= null;
+		ListElement endObject = (ListElement)yesModel.getElementAt(endIndex);
+		for (ListElement selected : selObjects) {
+   		    iniIndex = yesModel.indexOf(selected);
+			selObject = (ListElement)yesModel.getElementAt(iniIndex);
+			yesModel.removeElement(selObject);
+			endIndex = yesModel.indexOf(endObject);
+			yesModel.add(endIndex, selObject);			
+		}	
+		yesList.removeAllItems();
+	    for(int i=0 ; i<yesModel.getSize(); i++) { 	
+			ListElement pp = (ListElement)yesModel.getElementAt(i);
+			yesList.addItem(new KeyNamePair(pp.m_key, pp.getName()));
+		}
+		setIsChanged(true);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.compiere.grid.APanelTab#registerAPanel(APanel)
@@ -808,32 +812,33 @@ public class ADSortTab extends Panel implements IADTabpanel
 		public void onEvent(Event event) throws Exception {
 			if (event instanceof DropEvent)
 			{
+				int endIndex = 0;
 				DropEvent me = (DropEvent) event;
-
 				ListItem endItem = (ListItem) me.getTarget();
-				if (!(endItem.getListbox() == yesList))
-				{
-					return;		//	move within noList
-				}
-
 				ListItem startItem = (ListItem) me.getDragged();
-				if (startItem.getListbox() == endItem.getListbox())
-				{
-					return; //move within same list
-				}
-				int startIndex = noList.getIndexOfItem(startItem);
-				Object element = noModel.getElementAt(startIndex);
-				noModel.removeElement(element);
-				int endIndex = yesList.getIndexOfItem(endItem);
-				yesModel.add(endIndex, element);
-				//
-				noList.clearSelection();
-				yesList.clearSelection();
 
-				yesList.setSelectedIndex(endIndex);
-				//
-				setIsChanged(true);
-			}
+				if (!startItem.isSelected())
+					startItem.setSelected(true);
+				
+				if (!(startItem.getListbox() == endItem.getListbox()))
+				{
+					Listbox listFrom = (Listbox)startItem.getListbox();
+					Listbox listTo =  (Listbox)endItem.getListbox();
+					endIndex = yesList.getIndexOfItem(endItem);
+					migrateLists (listFrom,listTo,endIndex);
+				} else if (startItem.getListbox() == endItem.getListbox() && startItem.getListbox() == yesList)
+				{
+					List<ListElement> selObjects = new ArrayList<ListElement>();
+					endIndex = yesList.getIndexOfItem(endItem);	
+					for (Object obj : yesList.getSelectedItems()) {
+						ListItem listItem = (ListItem) obj;
+						int index = yesList.getIndexOfItem(listItem);
+						ListElement selObject = (ListElement)yesModel.getElementAt(index);				
+						selObjects.add(selObject);						
+					}
+					migrateValueWithinYesList (endIndex, selObjects);
+			   }
+		   }
 		}
 	}
 
