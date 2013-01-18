@@ -1,6 +1,6 @@
 /******************************************************************************
- * Copyright (C) 2009 Low Heng Sin                                            *
- * Copyright (C) 2009 Idalica Corporation                                     *
+ * Copyright (C) 2013 Elaine Tan                                              *
+ * Copyright (C) 2013 Trek Global
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -13,23 +13,15 @@
  *****************************************************************************/
 package org.compiere.grid;
 
-import java.util.List;
-
-import org.adempiere.base.Service;
 import org.compiere.model.GridTab;
 
-public class VCreateFromFactory
-{
-	public static ICreateFrom create (GridTab mTab)
-	{
-		ICreateFrom createFrom = null;
-		List<ICreateFromFactory> factories = Service.locator().list(ICreateFromFactory.class).getServices();
-		for (ICreateFromFactory factory : factories) 
-		{
-			createFrom = factory.create(mTab);
-			if (createFrom != null)
-				break;
-		}
-		return createFrom;
-	}
+/**
+ * 
+ * @author Elaine
+ *
+ */
+public interface ICreateFromFactory {
+
+	public ICreateFrom create(GridTab mTab);
+	
 }

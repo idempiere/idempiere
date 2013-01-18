@@ -1,6 +1,6 @@
 /******************************************************************************
- * Copyright (C) 2009 Low Heng Sin                                            *
- * Copyright (C) 2009 Idalica Corporation                                     *
+ * Copyright (C) 2013 Elaine Tan                                              *
+ * Copyright (C) 2013 Trek Global
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -13,25 +13,36 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
-import java.util.List;
-
-import org.adempiere.base.Service;
 import org.compiere.grid.ICreateFrom;
 import org.compiere.grid.ICreateFromFactory;
 import org.compiere.model.GridTab;
+import org.compiere.model.I_C_BankStatement;
+import org.compiere.model.I_C_Invoice;
+import org.compiere.model.I_M_InOut;
+import org.compiere.model.I_M_PackageMPS;
+import org.compiere.model.I_M_RMA;
 
-public class WCreateFromFactory
-{
-	public static ICreateFrom create (GridTab mTab)
-	{
-		ICreateFrom createFrom = null;
-		List<ICreateFromFactory> factories = Service.locator().list(ICreateFromFactory.class).getServices();
-		for (ICreateFromFactory factory : factories) 
-		{
-			createFrom = factory.create(mTab);
-			if (createFrom != null)
-				break;
-		}
-		return createFrom;
+/**
+ * 
+ * @author Elaine
+ *
+ */
+public class DefaultCreateFromFactory implements ICreateFromFactory {
+
+	@Override
+	public ICreateFrom create(GridTab mTab) {
+		String tableName = mTab.getTableName();
+		if (tableName.equals(I_C_Invoice.Table_Name))
+			return new WCreateFromInvoiceUI(mTab);
+		else if (tableName.equals(I_C_BankStatement.Table_Name))
+			return new WCreateFromStatementUI(mTab);
+		else if (tableName.equals(I_M_InOut.Table_Name))
+			return new WCreateFromShipmentUI(mTab);
+		else if (tableName.equals(I_M_RMA.Table_Name))
+			return new WCreateFromRMAUI(mTab);
+		else if (tableName.equals(I_M_PackageMPS.Table_Name))
+			return new WCreateFromPackageShipmentUI(mTab);
+		return null;
 	}
+
 }
