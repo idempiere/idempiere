@@ -18,6 +18,7 @@
 package org.adempiere.webui.panel;
 
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.adempiere.webui.apps.AEnv;
@@ -31,13 +32,17 @@ import org.adempiere.webui.util.TreeUtils;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Tree;
@@ -125,16 +130,38 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         cmbSearch.setAutodrop(true);
        	cmbSearch.setId("treeSearchCombo");
       
-        cmbSearch.addEventListener(Events.ON_CHANGE, this);
-        cmbSearch.addEventListener(Events.ON_OK, this);        
+        cmbSearch.addEventListener(Events.ON_OK, this);
+        cmbSearch.addEventListener(Events.ON_SELECT, new EventListener<SelectEvent<Comboitem,Object>>() {
+			@Override
+			public void onEvent(SelectEvent<Comboitem, Object> event)
+					throws Exception {
+				Set<Comboitem> set = event.getSelectedItems();
+        		if (set.size() > 0) {
+        			Comboitem item = set.iterator().next();
+        			String script = "var combo=zk('#"+cmbSearch.getUuid()+"').$();";
+        			script = script + "var panel=zk('#"+TreeSearchPanel.this.getUuid()+"').$();";
+        			script = script + "var comboitem=zk('#"+item.getUuid()+"').$();console.log(comboitem);";
+        			script = script + "var popupheight=combo.getPopupNode_().offsetHeight;console.log(popupheight);";
+        			script = script + "var evt = new zk.Event(panel, 'onComboSelectEcho', [comboitem.uuid, popupheight], {toServer: true});";
+        			script = script + "zAu.send(evt);";
+        			AuScript response = new AuScript(script);
+        			Clients.response(response);
+        		}				
+			}
+		});
+        
+        addEventListener("onComboSelectEcho", this);
+        addEventListener("onPostSelectTreeitem", this);
         if (AEnv.isInternetExplorer())
         {
         	cmbSearch.setWidth("200px");
         }
 
         hLayout.appendChild(lblSearch);
-        hLayout.appendChild(cmbSearch);
+        hLayout.appendChild(cmbSearch);        
         this.appendChild(hLayout);
+        
+        addEventListener("onPostFireTreeEvent", this);
     }
 
     private void addTreeItem(Treeitem treeItem)
@@ -260,46 +287,91 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
      */
     public void onEvent(Event event)
     {
-        if (cmbSearch.equals(event.getTarget()) && ((event.getName().equals(Events.ON_CHANGE) || event.getName().equals(Events.ON_OK))))
+        if (cmbSearch.equals(event.getTarget()))
         {
-        	selectedItem = null;
-            String value = cmbSearch.getValue();
-
-            if (value != null && value.trim().length() > 0
-            		&& value.substring(0, 1).equals(PREFIX_DOCUMENT_SEARCH))
-            {
-            	DocumentSearch search = new DocumentSearch();
-            	if (search.openDocumentsByDocumentNo(value.substring(1)))
-    				cmbSearch.setText(null);
-            	return;
-            }
-
-            Object node = treeNodeItemMap.get(value);
-            Treeitem treeItem = null;
-            if (node == null) {
-            	return;
-            } else if (node instanceof Treeitem) {
-	            treeItem = (Treeitem) node;
-            } else {
-            	DefaultTreeNode<?> sNode = (DefaultTreeNode<?>) node;
-            	int[] path = tree.getModel().getPath(sNode);
-    			treeItem = tree.renderItemByPath(path);
-    			tree.setSelectedItem(treeItem);
-            }
-            if (treeItem != null)
-            {
-            	selectedItem = treeItem;
-                select(treeItem);
-                Clients.showBusy(Msg.getMsg(Env.getCtx(), "Loading"));
-                Events.echoEvent("onPostSelect", this, null);
-            }
+        	if (!cmbSearch.isEnabled())
+        		return;
+        	
+        	if (event.getName().equals(Events.ON_OK))
+        	{
+	        	selectedItem = null;
+	            String value = cmbSearch.getValue();
+	
+	            if (value != null && value.trim().length() > 0
+	            		&& value.substring(0, 1).equals(PREFIX_DOCUMENT_SEARCH))
+	            {
+	            	DocumentSearch search = new DocumentSearch();
+	            	if (search.openDocumentsByDocumentNo(value.substring(1)))
+	    				cmbSearch.setText(null);
+	            	return;
+	            }
+		            
+	            selectTreeitem(value);
+        	} 
+        } 
+        else if (event.getName().equals("onPostFireTreeEvent")) 
+        {
+        	cmbSearch.setEnabled(true);        	
+        	cmbSearch.clearLastSel();
+        }
+        else if (event.getName().equals("onComboSelectPostBack"))
+        {
+        	Object[] data = (Object[]) event.getData();
+        	String uuid = (String) data[0];
+        	int height = (Integer) data[1];
+        	if (height == 0) 
+        	{
+        		List<Component> childs = cmbSearch.getChildren();
+        		for(Component comp : childs)
+        		{
+        			if (comp.getUuid().equals(uuid))
+        			{
+        				Comboitem item = (Comboitem) comp;
+        				String value = item.getLabel();
+        				selectTreeitem(value);
+        			}
+        		}	        	
+        	}
+        	else
+        	{
+        		cmbSearch.clearLastSel();
+        	}
+        }
+        else if (event.getName().equals("onPostSelectTreeitem"))
+        {
+        	onPostSelectTreeitem();
         }
     }
 
-    /**
-     * don't call this directly, use internally for post selection event
-     */
-    public void onPostSelect() {
+	private void selectTreeitem(String value) {
+		if (Executions.getCurrent().getAttribute(getUuid()+".selectTreeitem") != null)
+			return;
+		
+		Object node = treeNodeItemMap.get(value);
+		Treeitem treeItem = null;
+		if (node == null) {
+			return;
+		} else if (node instanceof Treeitem) {
+		    treeItem = (Treeitem) node;
+		} else {
+			DefaultTreeNode<?> sNode = (DefaultTreeNode<?>) node;
+			int[] path = tree.getModel().getPath(sNode);
+			treeItem = tree.renderItemByPath(path);
+			tree.setSelectedItem(treeItem);
+		}
+		if (treeItem != null)
+		{
+			selectedItem = treeItem;
+			Executions.getCurrent().setAttribute(getUuid()+".selectTreeitem", Boolean.TRUE);
+		    cmbSearch.setEnabled(false);
+		    
+		    select(treeItem);		    
+		    Clients.showBusy(Msg.getMsg(Env.getCtx(), "Loading"));
+		    Events.echoEvent("onPostSelectTreeitem", this, null);
+		}
+	}
+
+    private void onPostSelectTreeitem() {
     	Clients.clearBusy();
     	Event event = null;
     	if (eventToFire.equals(Events.ON_CLICK))
@@ -316,6 +388,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
     	else
     		event = new Event(eventToFire, tree);
     	Events.postEvent(event);
+    	Events.echoEvent("onPostFireTreeEvent", this, null);
     }
 
 	public static void select(Treeitem selectedItem) {

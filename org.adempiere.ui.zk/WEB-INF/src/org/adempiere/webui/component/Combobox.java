@@ -20,7 +20,9 @@ package org.adempiere.webui.component;
 import java.util.List;
 
 import org.adempiere.webui.AdempiereIdGenerator;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.IdSpace;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Comboitem;
 
 /**
@@ -135,4 +137,12 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 		return super.getRealStyleFlags() & 0x0006;
 	}
 	*/
+    
+    //http://jira.idempiere.com/browse/IDEMPIERE-443
+    //undocumented api hack to ensure onSelect always fire for mouse selection
+    public void clearLastSel() {
+    	String script = "zk('#"+getUuid()+"').$()._lastsel='';";
+    	AuScript response = new AuScript(script);
+    	Clients.response(response);
+    }
 }
