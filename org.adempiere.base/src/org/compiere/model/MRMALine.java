@@ -277,6 +277,14 @@ public class MRMALine extends X_M_RMALine
             }
         }
         
+        // Get Line No
+		if (getLine() == 0)
+		{
+			String sql = "SELECT COALESCE(MAX(Line),0)+10 FROM M_RMALine WHERE M_RMA_ID=?";
+			int ii = DB.getSQLValue (get_TrxName(), sql, getM_RMA_ID());
+			setLine (ii);
+		}
+        
         this.setLineNetAmt(getTotalAmt());
         
         return true;
