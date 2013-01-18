@@ -61,6 +61,9 @@ import org.zkoss.zul.impl.LabelImageElement;
  */
 public class TreeSearchPanel extends Panel implements EventListener<Event>, TreeDataListener, IdSpace
 {
+	private static final String ON_COMBO_SELECT_ECHO_EVENT = "onComboSelectEcho";
+	private static final String ON_POST_SELECT_TREEITEM_EVENT = "onPostSelectTreeitem";
+	private static final String ON_POST_FIRE_TREE_EVENT = "onPostFireTreeEvent";
 	/**
 	 * 
 	 */
@@ -118,6 +121,13 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         init();
     }
 
+    private static final String onComboSelectEchoScript = "var combo=zk('@combo').$();"
+    		+ "var panel=zk('@this').$();"
+    		+ "var comboitem=zk('@item').$();"
+    		+ "var popupheight=combo.getPopupNode_().offsetHeight;"
+    		+ "var evt = new zk.Event(panel, 'onComboSelectEcho', [comboitem.uuid, popupheight], {toServer: true});"
+    		+ "zAu.send(evt);";
+	
     private void init()
     {
     	Hlayout hLayout = new Hlayout();
@@ -138,20 +148,17 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 				Set<Comboitem> set = event.getSelectedItems();
         		if (set.size() > 0) {
         			Comboitem item = set.iterator().next();
-        			String script = "var combo=zk('#"+cmbSearch.getUuid()+"').$();";
-        			script = script + "var panel=zk('#"+TreeSearchPanel.this.getUuid()+"').$();";
-        			script = script + "var comboitem=zk('#"+item.getUuid()+"').$();console.log(comboitem);";
-        			script = script + "var popupheight=combo.getPopupNode_().offsetHeight;console.log(popupheight);";
-        			script = script + "var evt = new zk.Event(panel, 'onComboSelectEcho', [comboitem.uuid, popupheight], {toServer: true});";
-        			script = script + "zAu.send(evt);";
+        			String script = onComboSelectEchoScript.replaceFirst("@combo", cmbSearch.getUuid())
+        				.replaceFirst("@this", TreeSearchPanel.this.getUuid())
+        				.replaceFirst("@item", item.getUuid());
         			AuScript response = new AuScript(script);
         			Clients.response(response);
         		}				
 			}
 		});
         
-        addEventListener("onComboSelectEcho", this);
-        addEventListener("onPostSelectTreeitem", this);
+        addEventListener(ON_COMBO_SELECT_ECHO_EVENT, this);
+        addEventListener(ON_POST_SELECT_TREEITEM_EVENT, this);
         if (AEnv.isInternetExplorer())
         {
         	cmbSearch.setWidth("200px");
@@ -161,7 +168,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         hLayout.appendChild(cmbSearch);        
         this.appendChild(hLayout);
         
-        addEventListener("onPostFireTreeEvent", this);
+        addEventListener(ON_POST_FIRE_TREE_EVENT, this);
     }
 
     private void addTreeItem(Treeitem treeItem)
@@ -309,12 +316,12 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 	            selectTreeitem(value);
         	} 
         } 
-        else if (event.getName().equals("onPostFireTreeEvent")) 
+        else if (event.getName().equals(ON_POST_FIRE_TREE_EVENT)) 
         {
         	cmbSearch.setEnabled(true);        	
         	cmbSearch.clearLastSel();
         }
-        else if (event.getName().equals("onComboSelectPostBack"))
+        else if (event.getName().equals(ON_COMBO_SELECT_ECHO_EVENT))
         {
         	Object[] data = (Object[]) event.getData();
         	String uuid = (String) data[0];
@@ -337,7 +344,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         		cmbSearch.clearLastSel();
         	}
         }
-        else if (event.getName().equals("onPostSelectTreeitem"))
+        else if (event.getName().equals(ON_POST_SELECT_TREEITEM_EVENT))
         {
         	onPostSelectTreeitem();
         }
@@ -367,7 +374,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 		    
 		    select(treeItem);		    
 		    Clients.showBusy(Msg.getMsg(Env.getCtx(), "Loading"));
-		    Events.echoEvent("onPostSelectTreeitem", this, null);
+		    Events.echoEvent(ON_POST_SELECT_TREEITEM_EVENT, this, null);
 		}
 	}
 
@@ -388,7 +395,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
     	else
     		event = new Event(eventToFire, tree);
     	Events.postEvent(event);
-    	Events.echoEvent("onPostFireTreeEvent", this, null);
+    	Events.echoEvent(ON_POST_FIRE_TREE_EVENT, this, null);
     }
 
 	public static void select(Treeitem selectedItem) {

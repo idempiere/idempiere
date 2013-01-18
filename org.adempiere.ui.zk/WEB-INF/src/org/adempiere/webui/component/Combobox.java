@@ -141,7 +141,7 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
     //http://jira.idempiere.com/browse/IDEMPIERE-443
     //undocumented api hack to ensure onSelect always fire for mouse selection
     public void clearLastSel() {
-    	String script = "zk('#"+getUuid()+"').$()._lastsel='';";
+    	String script = "zk('#"+getUuid()+"').$()._lastsel=null;";
     	AuScript response = new AuScript(script);
     	Clients.response(response);
     }
