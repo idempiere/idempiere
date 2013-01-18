@@ -1062,9 +1062,7 @@ tbody.z-grid-empty-body td {
 
 .z-window-overlapped-tl, .z-window-popup-tl, .z-window-modal-tl, .z-window-highlighted-tl, .embedded-dialog .z-window-embedded-tl
 {
-	margin: 0px;
-	border-top: 1px solid #c5c5c5;
-	height: 0px;
+	display: none;
 }
 
 .z-window-overlapped-tr, .z-window-popup-tr, .z-window-modal-tr, .z-window-highlighted-tr, .embedded-dialog .z-window-embedded-tr
@@ -1073,7 +1071,7 @@ tbody.z-grid-empty-body td {
 }
 
 .z-window-overlapped-hl, .z-window-popup-hl, .z-window-modal-hl, .z-window-highlighted-hl, .embedded-dialog .z-window-embedded-hl {
-	padding-top: 5px;
+	padding-top: 3px;
 }
 
 .z-window-overlapped-tl, .z-window-popup-tl, .z-window-modal-tl, .z-window-highlighted-tl, .embedded-dialog .z-window-embedded-tl,
@@ -1099,8 +1097,11 @@ tbody.z-grid-empty-body td {
 
 .z-window-overlapped-bl, .z-window-popup-bl, .z-window-modal-bl, .z-window-highlighted-bl, .embedded-dialog .z-window-embedded-bl
 {
-	border-top: 1px solid #c5c5c5;
+	border-left: 1px solid #c5c5c5;
+	border-right: 1px solid #c5c5c5;
+	background-color: #fff;
 	margin: 0px;
+	padding-bottom: 3px;
 }
 
 .z-window-overlapped-br, .z-window-popup-br, .z-window-modal-br, .z-window-highlighted-br, .embedded-dialog .z-window-embedded-br
@@ -1110,11 +1111,17 @@ tbody.z-grid-empty-body td {
 
 .z-window-overlapped .z-window-overlapped-header,
 .z-window-popup .z-window-popup-header,
-.z-window-highlighted .z-window-modal-header,
+.z-window-modal .z-window-modal-header,
 .z-window-highlighted .z-window-highlighted-header
 {
 	color: #fff;
 	font-weight: bold;
+}
+
+.z-window-overlapped, .z-window-popup, .z-window-modal, .z-window-highlighted
+{
+	border-top: 1px solid #c5c5c5;
+	border-bottom: 1px solid #c5c5c5;
 }
 
 .z-window-overlapped-hl, .z-window-popup-hl, .z-window-modal-hl, .z-window-highlighted-hl, .z-window-embedded-hl,
@@ -1128,6 +1135,11 @@ tbody.z-grid-empty-body td {
 .z-window-overlapped-br, .z-window-popup-br, .z-window-modal-br, .z-window-highlighted-br, .z-window-embedded-br
 {
 	background-image: none !important;
+}
+
+.z-window-modal-shadow, .z-window-overlapped-shadow, .z-window-popup-shadow, .z-window-embedded-shadow, .z-window-highlighted-shadow
+{
+	border-radius: 0px !important;
 }
 
 <%-- Splitter button --%>
