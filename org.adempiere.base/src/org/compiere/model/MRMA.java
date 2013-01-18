@@ -81,6 +81,8 @@ public class MRMA extends X_M_RMA implements DocAction
 
 	/** Lines					*/
 	private MRMALine[]		m_lines = null;
+	/**	Tax Lines					*/
+	private MRMATax[] 		m_taxes = null;
 	/** The Shipment			*/
 	private MInOut			m_inout = null;
 
@@ -105,6 +107,23 @@ public class MRMA extends X_M_RMA implements DocAction
 		list.toArray (m_lines);
 		return m_lines;
 	}	//	getLines
+	
+	/**
+	 * 	Get Taxes of RMA
+	 *	@param requery requery
+	 *	@return array of taxes
+	 */
+	public MRMATax[] getTaxes(boolean requery)
+	{
+		if (m_taxes != null && !requery)
+			return m_taxes;
+		//
+		List<MRMATax> list = new Query(getCtx(), I_M_RMATax.Table_Name, "M_RMA_ID=?", get_TrxName())
+									.setParameters(get_ID())
+									.list();
+		m_taxes = list.toArray(new MRMATax[list.size()]);
+		return m_taxes;
+	}
 
 	/**
 	 * 	Get Shipment
@@ -323,10 +342,20 @@ public class MRMA extends X_M_RMA implements DocAction
 		
 		for (MRMALine line : lines)
 		{
-			if (!line.checkQty()) {
-				m_processMsg = "@AmtReturned>Shipped@";
-				return DocAction.STATUS_Invalid;
+			if (line.getM_InOutLine_ID() != 0)
+			{
+				if (!line.checkQty()) 
+				{
+					m_processMsg = "@AmtReturned>Shipped@";
+					return DocAction.STATUS_Invalid;
+				}
 			}
+		}
+		
+		if (!calculateTaxTotal())
+		{
+			m_processMsg = "Error calculating tax";
+			return DocAction.STATUS_Invalid;
 		}
 
         // Updates Amount
@@ -339,6 +368,84 @@ public class MRMA extends X_M_RMA implements DocAction
 		m_justPrepared = true;
 		return DocAction.STATUS_InProgress;
 	}	//	prepareIt
+	
+	/**
+	 * 	Calculate Tax and Total
+	 * 	@return true if tax total calculated
+	 */
+	public boolean calculateTaxTotal()
+	{
+		log.fine("");
+		//	Delete Taxes
+		DB.executeUpdateEx("DELETE M_RMATax WHERE M_RMA_ID=" + getM_RMA_ID(), get_TrxName());
+		m_taxes = null;
+		
+		//	Lines
+		BigDecimal totalLines = Env.ZERO;
+		ArrayList<Integer> taxList = new ArrayList<Integer>();
+		MRMALine[] lines = getLines(false);
+		for (int i = 0; i < lines.length; i++)
+		{
+			MRMALine line = lines[i];
+			Integer taxID = new Integer(line.getC_Tax_ID());
+			if (!taxList.contains(taxID))
+			{
+				MRMATax oTax = MRMATax.get (line, getPrecision(), 
+					false, get_TrxName());	//	current Tax
+				oTax.setIsTaxIncluded(isTaxIncluded());
+				if (!oTax.calculateTaxFromLines())
+					return false;
+				if (!oTax.save(get_TrxName()))
+					return false;
+				taxList.add(taxID);
+			}
+			totalLines = totalLines.add(line.getLineNetAmt());
+		}
+		
+		//	Taxes
+		BigDecimal grandTotal = totalLines;
+		MRMATax[] taxes = getTaxes(true);
+		for (int i = 0; i < taxes.length; i++)
+		{
+			MRMATax oTax = taxes[i];
+			MTax tax = oTax.getTax();
+			if (tax.isSummary())
+			{
+				MTax[] cTaxes = tax.getChildTaxes(false);
+				for (int j = 0; j < cTaxes.length; j++)
+				{
+					MTax cTax = cTaxes[j];
+					BigDecimal taxAmt = cTax.calculateTax(oTax.getTaxBaseAmt(), isTaxIncluded(), getPrecision());
+					//
+					MRMATax newOTax = new MRMATax(getCtx(), 0, get_TrxName());
+					newOTax.setClientOrg(this);
+					newOTax.setM_RMA_ID(getM_RMA_ID());
+					newOTax.setC_Tax_ID(cTax.getC_Tax_ID());
+					newOTax.setPrecision(getPrecision());
+					newOTax.setIsTaxIncluded(isTaxIncluded());
+					newOTax.setTaxBaseAmt(oTax.getTaxBaseAmt());
+					newOTax.setTaxAmt(taxAmt);
+					if (!newOTax.save(get_TrxName()))
+						return false;
+					//
+					if (!isTaxIncluded())
+						grandTotal = grandTotal.add(taxAmt);
+				}
+				if (!oTax.delete(true, get_TrxName()))
+					return false;
+				if (!oTax.save(get_TrxName()))
+					return false;
+			}
+			else
+			{
+				if (!isTaxIncluded())
+					grandTotal = grandTotal.add(oTax.getTaxAmt());
+			}
+		}		
+		//
+		setAmt(grandTotal);
+		return true;
+	}
 
 	/**
 	 * 	Approve Document
@@ -654,6 +761,14 @@ public class MRMA extends X_M_RMA implements DocAction
 			return false;
 		}
 		
+		// update taxes
+		MRMATax[] taxes = getTaxes(true);
+		for (MRMATax tax : taxes )
+		{
+			if ( !(tax.calculateTaxFromLines() && tax.save()) )
+				return false;
+		}
+		
 		// After Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
 		if (m_processMsg != null)
@@ -743,6 +858,15 @@ public class MRMA extends X_M_RMA implements DocAction
 
 		return false;
 	}	//	reActivateIt
+	
+	/**
+	 * 	Get Currency Precision
+	 *	@return precision
+	 */
+	public int getPrecision()
+	{
+		return MCurrency.getStdPrecision(getCtx(), getC_Currency_ID());
+	}
 
     /**
      *  Set Processed.

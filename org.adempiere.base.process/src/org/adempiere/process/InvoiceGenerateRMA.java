@@ -164,7 +164,7 @@ public class InvoiceGenerateRMA extends SvrProcess
         
         for (MRMALine rmaLine : rmaLines)
         {
-            if (rmaLine.getM_InOutLine_ID() == 0)
+            if (rmaLine.getM_InOutLine_ID() == 0 && rmaLine.getC_Charge_ID() == 0)
             {
                 StringBuilder msgiste = new StringBuilder("No customer return line - RMA = ") 
                         .append(rma.getDocumentNo()).append(", Line = ").append(rmaLine.getLine());
