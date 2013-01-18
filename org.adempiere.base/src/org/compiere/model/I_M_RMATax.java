@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for M_RMALine
+/** Generated Interface for M_RMATax
  *  @author iDempiere (generated) 
  *  @version Release 1.0a
  */
-public interface I_M_RMALine 
+public interface I_M_RMATax 
 {
 
-    /** TableName=M_RMALine */
-    public static final String Table_Name = "M_RMALine";
+    /** TableName=M_RMATax */
+    public static final String Table_Name = "M_RMATax";
 
-    /** AD_Table_ID=660 */
-    public static final int Table_ID = 660;
+    /** AD_Table_ID=200055 */
+    public static final int Table_ID = 200055;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -61,34 +61,6 @@ public interface I_M_RMALine
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
-
-    /** Column name Amt */
-    public static final String COLUMNNAME_Amt = "Amt";
-
-	/** Set Amount.
-	  * Amount
-	  */
-	public void setAmt (BigDecimal Amt);
-
-	/** Get Amount.
-	  * Amount
-	  */
-	public BigDecimal getAmt();
-
-    /** Column name C_Charge_ID */
-    public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
-
-	/** Set Charge.
-	  * Additional document charges
-	  */
-	public void setC_Charge_ID (int C_Charge_ID);
-
-	/** Get Charge.
-	  * Additional document charges
-	  */
-	public int getC_Charge_ID();
-
-	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name C_Tax_ID */
     public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
@@ -121,19 +93,6 @@ public interface I_M_RMALine
 	  */
 	public int getCreatedBy();
 
-    /** Column name Description */
-    public static final String COLUMNNAME_Description = "Description";
-
-	/** Set Description.
-	  * Optional short description of the record
-	  */
-	public void setDescription (String Description);
-
-	/** Get Description.
-	  * Optional short description of the record
-	  */
-	public String getDescription();
-
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -147,46 +106,18 @@ public interface I_M_RMALine
 	  */
 	public boolean isActive();
 
-    /** Column name Line */
-    public static final String COLUMNNAME_Line = "Line";
+    /** Column name IsTaxIncluded */
+    public static final String COLUMNNAME_IsTaxIncluded = "IsTaxIncluded";
 
-	/** Set Line No.
-	  * Unique line for this document
+	/** Set Price includes Tax.
+	  * Tax is included in the price 
 	  */
-	public void setLine (int Line);
+	public void setIsTaxIncluded (boolean IsTaxIncluded);
 
-	/** Get Line No.
-	  * Unique line for this document
+	/** Get Price includes Tax.
+	  * Tax is included in the price 
 	  */
-	public int getLine();
-
-    /** Column name LineNetAmt */
-    public static final String COLUMNNAME_LineNetAmt = "LineNetAmt";
-
-	/** Set Line Amount.
-	  * Line Extended Amount (Quantity * Actual Price) without Freight and Charges
-	  */
-	public void setLineNetAmt (BigDecimal LineNetAmt);
-
-	/** Get Line Amount.
-	  * Line Extended Amount (Quantity * Actual Price) without Freight and Charges
-	  */
-	public BigDecimal getLineNetAmt();
-
-    /** Column name M_InOutLine_ID */
-    public static final String COLUMNNAME_M_InOutLine_ID = "M_InOutLine_ID";
-
-	/** Set Shipment/Receipt Line.
-	  * Line on Shipment or Receipt document
-	  */
-	public void setM_InOutLine_ID (int M_InOutLine_ID);
-
-	/** Get Shipment/Receipt Line.
-	  * Line on Shipment or Receipt document
-	  */
-	public int getM_InOutLine_ID();
-
-	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
+	public boolean isTaxIncluded();
 
     /** Column name M_RMA_ID */
     public static final String COLUMNNAME_M_RMA_ID = "M_RMA_ID";
@@ -203,27 +134,14 @@ public interface I_M_RMALine
 
 	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException;
 
-    /** Column name M_RMALine_ID */
-    public static final String COLUMNNAME_M_RMALine_ID = "M_RMALine_ID";
+    /** Column name M_RMATax_UU */
+    public static final String COLUMNNAME_M_RMATax_UU = "M_RMATax_UU";
 
-	/** Set RMA Line.
-	  * Return Material Authorization Line
-	  */
-	public void setM_RMALine_ID (int M_RMALine_ID);
+	/** Set M_RMATax_UU	  */
+	public void setM_RMATax_UU (String M_RMATax_UU);
 
-	/** Get RMA Line.
-	  * Return Material Authorization Line
-	  */
-	public int getM_RMALine_ID();
-
-    /** Column name M_RMALine_UU */
-    public static final String COLUMNNAME_M_RMALine_UU = "M_RMALine_UU";
-
-	/** Set M_RMALine_UU	  */
-	public void setM_RMALine_UU (String M_RMALine_UU);
-
-	/** Get M_RMALine_UU	  */
-	public String getM_RMALine_UU();
+	/** Get M_RMATax_UU	  */
+	public String getM_RMATax_UU();
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";
@@ -238,55 +156,31 @@ public interface I_M_RMALine
 	  */
 	public boolean isProcessed();
 
-    /** Column name Qty */
-    public static final String COLUMNNAME_Qty = "Qty";
+    /** Column name TaxAmt */
+    public static final String COLUMNNAME_TaxAmt = "TaxAmt";
 
-	/** Set Quantity.
-	  * Quantity
+	/** Set Tax Amount.
+	  * Tax Amount for a document
 	  */
-	public void setQty (BigDecimal Qty);
+	public void setTaxAmt (BigDecimal TaxAmt);
 
-	/** Get Quantity.
-	  * Quantity
+	/** Get Tax Amount.
+	  * Tax Amount for a document
 	  */
-	public BigDecimal getQty();
+	public BigDecimal getTaxAmt();
 
-    /** Column name QtyDelivered */
-    public static final String COLUMNNAME_QtyDelivered = "QtyDelivered";
+    /** Column name TaxBaseAmt */
+    public static final String COLUMNNAME_TaxBaseAmt = "TaxBaseAmt";
 
-	/** Set Delivered Quantity.
-	  * Delivered Quantity
+	/** Set Tax base Amount.
+	  * Base for calculating the tax amount
 	  */
-	public void setQtyDelivered (BigDecimal QtyDelivered);
+	public void setTaxBaseAmt (BigDecimal TaxBaseAmt);
 
-	/** Get Delivered Quantity.
-	  * Delivered Quantity
+	/** Get Tax base Amount.
+	  * Base for calculating the tax amount
 	  */
-	public BigDecimal getQtyDelivered();
-
-    /** Column name QtyInvoiced */
-    public static final String COLUMNNAME_QtyInvoiced = "QtyInvoiced";
-
-	/** Set Quantity Invoiced.
-	  * Invoiced Quantity
-	  */
-	public void setQtyInvoiced (BigDecimal QtyInvoiced);
-
-	/** Get Quantity Invoiced.
-	  * Invoiced Quantity
-	  */
-	public BigDecimal getQtyInvoiced();
-
-    /** Column name Ref_RMALine_ID */
-    public static final String COLUMNNAME_Ref_RMALine_ID = "Ref_RMALine_ID";
-
-	/** Set Referenced RMA Line	  */
-	public void setRef_RMALine_ID (int Ref_RMALine_ID);
-
-	/** Get Referenced RMA Line	  */
-	public int getRef_RMALine_ID();
-
-	public org.compiere.model.I_M_RMALine getRef_RMALine() throws RuntimeException;
+	public BigDecimal getTaxBaseAmt();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

@@ -184,17 +184,29 @@ public class InOutGenerateRMA extends SvrProcess
         MRMALine rmaLines[] = rma.getLines(true);
         for (MRMALine rmaLine : rmaLines)
         {
-            if (rmaLine.getM_InOutLine_ID() != 0)
+        	if (rmaLine.getM_InOutLine_ID() != 0 || rmaLine.getC_Charge_ID() != 0)
             {
                 MInOutLine shipLine = new MInOutLine(shipment);
                 shipLine.setM_RMALine_ID(rmaLine.get_ID());
                 shipLine.setLine(rmaLine.getLine());
                 shipLine.setDescription(rmaLine.getDescription());
-                shipLine.setM_Product_ID(rmaLine.getM_Product_ID());
-                shipLine.setM_AttributeSetInstance_ID(rmaLine.getM_AttributeSetInstance_ID());
+                
+                if (rmaLine.getC_Charge_ID() != 0)
+                {
+                	shipLine.setC_Charge_ID(rmaLine.getC_Charge_ID());
+                	shipLine.set_ValueNoCheck(MInOutLine.COLUMNNAME_M_Product_ID, null);
+                	shipLine.set_ValueNoCheck(MInOutLine.COLUMNNAME_M_AttributeSetInstance_ID, null);
+                	shipLine.set_ValueNoCheck(MInOutLine.COLUMNNAME_M_Locator_ID, null);
+                }
+                else
+                {
+                	shipLine.setM_Product_ID(rmaLine.getM_Product_ID());
+                    shipLine.setM_AttributeSetInstance_ID(rmaLine.getM_AttributeSetInstance_ID());
+                    shipLine.setM_Locator_ID(rmaLine.getM_Locator_ID());
+                }
+                
                 shipLine.setC_UOM_ID(rmaLine.getC_UOM_ID());
                 shipLine.setQty(rmaLine.getQty());
-                shipLine.setM_Locator_ID(rmaLine.getM_Locator_ID());
                 shipLine.setC_Project_ID(rmaLine.getC_Project_ID());
                 shipLine.setC_Campaign_ID(rmaLine.getC_Campaign_ID());
                 shipLine.setC_Activity_ID(rmaLine.getC_Activity_ID());
