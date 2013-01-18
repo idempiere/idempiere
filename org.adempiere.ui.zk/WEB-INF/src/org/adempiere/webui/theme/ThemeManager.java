@@ -15,6 +15,7 @@ package org.adempiere.webui.theme;
 
 import org.adempiere.webui.AdempiereWebUI;
 import org.compiere.model.MSysConfig;
+import org.compiere.util.Util;
 
 /**
  *
@@ -48,7 +49,8 @@ public final class ThemeManager {
 	 * @return name of active theme
 	 */
 	public static String getTheme() {
-		return MSysConfig.getValue(ITheme.ZK_THEME, ITheme.ZK_THEME_DEFAULT);
+		String theme = System.getProperty("ZK_THEME");
+		return Util.isEmpty(theme) ? MSysConfig.getValue(ITheme.ZK_THEME, ITheme.ZK_THEME_DEFAULT) : theme;
 	}
 
 	/**
