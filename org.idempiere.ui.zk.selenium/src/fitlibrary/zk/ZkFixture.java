@@ -60,7 +60,9 @@ public class ZkFixture extends SpiderFixture {
 		List<WebElement> list = webDriver.findElements(Zk.jq(locator + " @comboitem"));
 		if (list != null && list.size() > 0) {
 			for(WebElement element : list) {
-				if (element.getText().equals(label) || element.getText().trim().equals(label)) {
+				widget = new Widget("#"+element.getAttribute("id"));
+				String elementLabel = (String) widget.eval(webDriver, "getLabel()");
+				if (elementLabel.equals(label)) {
 					element.click();
 					waitResponse();
 					String selected = comboboxSelectedValue(locator);
@@ -129,8 +131,13 @@ public class ZkFixture extends SpiderFixture {
 	
 	// ---- window ( tab ) ---
 	@SimpleAction(wiki = "|''<i>open window</i>''|menu label|", tooltip = "Open window with label.")
-	public void openWindow(String label) {
-		comboboxSetText("$treeSearchCombo", label);
+	public void openWindow(String label) {		
+		Widget widget = new Widget("$treeSearchCombo");
+		String search = label.indexOf("&") > 0 ? label.substring(0, label.indexOf("&")) : label;
+		WebElement element = widget.$n(webDriver, "real");
+		element.sendKeys(search);
+		waitResponse();
+		comboboxSelectItem("$treeSearchCombo", label);		
 	}
 	
 	@SimpleAction(wiki = "|''<i>window</i>''|xpath, id or other locator|''<i>click process button</i>''|button id|", tooltip = "Click a window's process button.")
