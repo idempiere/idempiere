@@ -221,7 +221,6 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	private boolean isParameterPage = true;
 	private String initialMessage;
 	private BusyDialog progressWindow;
-	@SuppressWarnings("unused")
 	private Future<?> future;
 	private ProcessDialogRunnable processDialogRunnable;
 
@@ -356,6 +355,16 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	}
 	
 	private void onComplete() {
+		if (future != null) {
+			try {
+				future.get();
+			} catch (Exception e) {
+				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+				if (!m_pi.isError()) {
+					m_pi.setSummary(e.getLocalizedMessage(), true);
+				}
+			}
+		}
 		future = null;			
 		processDialogRunnable = null;
 		unlockUI(m_pi);

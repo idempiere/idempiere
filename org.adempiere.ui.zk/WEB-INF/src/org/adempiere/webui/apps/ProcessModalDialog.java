@@ -215,7 +215,6 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	private BusyDialog progressWindow;
 	private boolean isLocked = false;
 	private org.adempiere.webui.apps.ProcessModalDialog.ProcessDialogRunnable processDialogRunnable;
-	@SuppressWarnings("unused")
 	private Future<?> future;
 
 	/**
@@ -427,6 +426,16 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	}
 
 	private void onComplete() {
+		if (future != null) {
+			try {
+				future.get();
+			} catch (Exception e) {
+				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+				if (!m_pi.isError()) {
+					m_pi.setSummary(e.getLocalizedMessage(), true);
+				}
+			}
+		}
 		future = null;			
 		processDialogRunnable = null;
 		unlockUI(m_pi);
