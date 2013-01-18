@@ -35,7 +35,7 @@ public interface IGridTabImporter {
 	 * @param filestream
 	 * @param charset
 	 */
-	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset);
+	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset, String importMode);
 
 	/**
 	 * @return file extension

@@ -74,6 +74,7 @@ public class FileImportAction implements EventListener<Event>
 	private Listbox cboType = new Listbox();
 	private Button bFile = new Button();
 	private Listbox fCharset = new Listbox();
+	private Listbox fImportMode = new Listbox();
 	private InputStream m_file_istream = null;
 	
 	/**
@@ -108,6 +109,11 @@ public class FileImportAction implements EventListener<Event>
 		}
 		fCharset.addEventListener(Events.ON_SELECT, this);
 
+		fImportMode.appendItem("Insert","I");
+		fImportMode.appendItem("Update","U");
+		fImportMode.appendItem("Merge","M");
+		fImportMode.setSelectedIndex(0);
+		
 		importerMap = new HashMap<String, IGridTabImporter>();
 		extensionMap = new HashMap<String, String>();
 		List<IGridTabImporter> importerList = Service.locator().list(IGridTabImporter.class).getServices();
@@ -155,10 +161,27 @@ public class FileImportAction implements EventListener<Event>
 			vb.appendChild(hb);
 
 			hb = new Hbox();
+			Div div2 = new Div();
+			div2.setAlign("right");
+			div2.appendChild(new Label(Msg.getMsg(Env.getCtx(), "Charset", false)));
+			hb.appendChild(div2);
 			fCharset.setMold("select");
 			fCharset.setRows(0);
 			fCharset.setTooltiptext(Msg.getMsg(Env.getCtx(), "Charset", false));
 			hb.appendChild(fCharset);
+			fCharset.setWidth("100%");
+			vb.appendChild(hb);
+			
+			hb = new Hbox();
+			Div div3 = new Div();
+			div3.setAlign("right");
+			div3.appendChild(new Label(Msg.getMsg(Env.getCtx(), "import.mode", true)));
+			hb.appendChild(div3);
+			fImportMode.setMold("select");
+			fImportMode.setRows(0);
+			fImportMode.setTooltiptext(Msg.getMsg(Env.getCtx(), "import.mode", false));
+			hb.appendChild(fImportMode);
+			fImportMode.setWidth("100%");
 			vb.appendChild(hb);
 			
 			hb = new Hbox();
@@ -278,8 +301,13 @@ public class FileImportAction implements EventListener<Event>
 			if (listitem == null)
 				return;
 			charset = (Charset)listitem.getValue();
-
-			File outFile = importer.fileImport(panel.getActiveGridTab(), childs, m_file_istream, charset);
+			
+			ListItem importItem = fImportMode.getSelectedItem();
+			if (importItem == null)
+				return;
+			
+			String iMode = (String)importItem.getValue();
+			File outFile = importer.fileImport(panel.getActiveGridTab(), childs, m_file_istream, charset,iMode);
 			winImportFile.onClose();
 			winImportFile = null;
 
