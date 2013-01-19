@@ -225,6 +225,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 			final WTextEditorDialog dialog = new WTextEditorDialog(this.getColumnName(), getDisplay(),
 					isReadWrite(), gridField.getFieldLength());
 			dialog.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+			dialog.setSizable(true);
 			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {

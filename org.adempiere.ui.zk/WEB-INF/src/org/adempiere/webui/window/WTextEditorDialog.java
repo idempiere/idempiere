@@ -22,13 +22,14 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
-import org.zkforge.ckez.*;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Separator;
+
+import fi.jawsy.jawwa.zk.cleditor.Cleditor;
 
 /**
  * 
@@ -47,7 +48,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	private boolean cancelled;
 	private Tabbox tabbox;
 	private Textbox textBox;
-	private CKeditor editor;
+	private Cleditor editor;
 	private Label status;
 
 	/**
@@ -99,7 +100,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		tabPanel = new Tabpanel();
 		tabPanels.appendChild(tabPanel);
 		if (editable) {
-			editor = new CKeditor();
+			editor = new Cleditor();
 			tabPanel.appendChild(editor);
 			editor.setWidth("700px");
 			editor.setHeight("500px");
