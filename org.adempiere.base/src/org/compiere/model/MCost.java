@@ -476,6 +476,7 @@ public class MCost extends X_M_Cost
 		sql.append(" ORDER BY i.DateInvoiced DESC, il.Line DESC");
 		//
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql.toString(), product.get_TrxName());
@@ -485,26 +486,18 @@ public class MCost extends X_M_Cost
 				pstmt.setInt (3, AD_Org_ID);
 			else if (M_ASI_ID != 0)
 				pstmt.setInt(3, M_ASI_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				retValue = rs.getBigDecimal(1);
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql.toString(), e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
 
 		if (retValue != null)
@@ -653,11 +646,12 @@ public class MCost extends X_M_Cost
 			+ " AND EXISTS (SELECT * FROM M_CostDetail cd "
 				+ "WHERE p.M_Product_ID=cd.M_Product_ID AND Processed='N')";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, trxNameUsed);
 			pstmt.setInt (1, client.getAD_Client_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MProduct product = new MProduct (client.getCtx(), rs, trxNameUsed);
@@ -668,24 +662,16 @@ public class MCost extends X_M_Cost
 					s_log.info(product.getName() + " = " + cost);
 				}
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 			success = false;
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
 		//	Transaction
 		if (trx != null)
