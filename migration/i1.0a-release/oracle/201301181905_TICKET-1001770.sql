@@ -20,16 +20,21 @@ LEFT JOIN C_InvoiceLine il ON iol.M_InOutLine_ID = il.M_InOutLine_ID
 LEFT JOIN C_OrderLine ol ON iol.C_OrderLine_ID = ol.C_OrderLine_ID 
 WHERE rl.M_InOutLine_ID = iol.M_InOutLine_ID 
 )
-WHERE rl.M_InOutLine_ID IS NOT NULL;
+WHERE rl.M_InOutLine_ID IS NOT NULL
+;
 
 UPDATE M_RMALine rl SET C_Tax_ID = (
-SELECT t.C_Tax_ID 
+SELECT C_Tax_ID FROM (
+SELECT t.C_Tax_ID, t.AD_Client_ID
 FROM C_Tax t
-WHERE t.AD_Client_ID=rl.AD_Client_ID 
-AND t.IsActive = 'Y'
-AND t.IsTaxExempt = 'Y' 
+WHERE t.IsActive = 'Y'
+AND t.IsTaxExempt = 'Y'
 AND t.ValidFrom < getdate() ORDER BY IsDefault DESC)
-WHERE rl.M_InOutLine_ID IS NULL;-- Jan 18, 2013 4:59:37 PM SGT
+WHERE AD_Client_ID=rl.AD_Client_ID AND ROWNUM = 1)
+WHERE rl.M_InOutLine_ID IS NULL
+;
+
+-- Jan 18, 2013 4:59:37 PM SGT
 -- Ticket 1001770: RMA improvements
 UPDATE AD_Column SET IsMandatory='Y',Updated=TO_DATE('2013-01-18 16:59:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=208382
 ;
@@ -915,3 +920,4 @@ INSERT INTO AD_Field_Trl (AD_Language,AD_Field_ID, Help,Description,Name, IsTran
 
 SELECT register_migration_script('201301181905_TICKET-1001770.sql') FROM dual
 ;
+
