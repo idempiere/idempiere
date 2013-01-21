@@ -273,7 +273,7 @@ public abstract class CreateFromShipment extends CreateFrom
 			
 	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 	    StringBuilder sqlStmt = new StringBuilder();
-	    sqlStmt.append("SELECT rl.M_RMALine_ID, rl.line, rl.Qty - rl.QtyDelivered, iol.M_Product_ID, p.Name, uom.C_UOM_ID, COALESCE(uom.UOMSymbol,uom.Name) ");
+	    sqlStmt.append("SELECT rl.M_RMALine_ID, rl.line, rl.Qty - rl.QtyDelivered, p.M_Product_ID, COALESCE(p.Name, c.Name), uom.C_UOM_ID, COALESCE(uom.UOMSymbol,uom.Name) ");
 	    sqlStmt.append("FROM M_RMALine rl INNER JOIN M_InOutLine iol ON rl.M_InOutLine_ID=iol.M_InOutLine_ID ");
 	          
 	    if (Env.isBaseLanguage(Env.getCtx(), "C_UOM"))
@@ -286,9 +286,26 @@ public abstract class CreateFromShipment extends CreateFrom
 	        sqlStmt.append(Env.getAD_Language(Env.getCtx())).append("') ");
         }
 	    sqlStmt.append("LEFT OUTER JOIN M_Product p ON p.M_Product_ID=iol.M_Product_ID ");
+	    sqlStmt.append("LEFT OUTER JOIN C_Charge c ON c.C_Charge_ID=iol.C_Charge_ID ");
 	    sqlStmt.append("WHERE rl.M_RMA_ID=? ");
-	    sqlStmt.append("AND rl.M_INOUTLINE_ID IS NOT NULL");
+	    sqlStmt.append("AND rl.M_InOutLine_ID IS NOT NULL");
 	           
+	    sqlStmt.append(" UNION ");
+	    
+	    sqlStmt.append("SELECT rl.M_RMALine_ID, rl.line, rl.Qty - rl.QtyDelivered, p.M_Product_ID, p.Name, uom.C_UOM_ID, COALESCE(uom.UOMSymbol,uom.Name) ");
+	    sqlStmt.append("FROM M_RMALine rl INNER JOIN M_Product p ON p.M_Product_ID = rl.M_Product_ID ");
+	    if (Env.isBaseLanguage(Env.getCtx(), "C_UOM"))
+        {
+	        sqlStmt.append("LEFT OUTER JOIN C_UOM uom ON (uom.C_UOM_ID=p.C_UOM_ID) ");
+        }
+	    else
+        {
+	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=100 AND uom.AD_Language='");
+	        sqlStmt.append(Env.getAD_Language(Env.getCtx())).append("') ");
+        }
+	    sqlStmt.append("WHERE rl.M_RMA_ID=? ");
+	    sqlStmt.append("AND rl.M_Product_ID IS NOT NULL AND rl.M_InOutLine_ID IS NULL");
+	    
 	    sqlStmt.append(" UNION ");
 	            
 	    sqlStmt.append("SELECT rl.M_RMALine_ID, rl.line, rl.Qty - rl.QtyDelivered, 0, c.Name, uom.C_UOM_ID, COALESCE(uom.UOMSymbol,uom.Name) ");
@@ -303,7 +320,7 @@ public abstract class CreateFromShipment extends CreateFrom
 	        sqlStmt.append(Env.getAD_Language(Env.getCtx())).append("') ");
         }
 	    sqlStmt.append("WHERE rl.M_RMA_ID=? ");
-	    sqlStmt.append("AND rl.C_Charge_ID IS NOT NULL");
+	    sqlStmt.append("AND rl.C_Charge_ID IS NOT NULL AND rl.M_InOutLine_ID IS NULL");
 	         
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
@@ -312,6 +329,7 @@ public abstract class CreateFromShipment extends CreateFrom
 	        pstmt = DB.prepareStatement(sqlStmt.toString(), null);
 	        pstmt.setInt(1, M_RMA_ID);
 	        pstmt.setInt(2, M_RMA_ID);
+	        pstmt.setInt(3, M_RMA_ID);
 	        rs = pstmt.executeQuery();
 	               
 	        while (rs.next())

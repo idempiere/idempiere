@@ -17,6 +17,8 @@
 
 package org.adempiere.process;
 
+import org.compiere.model.MInOut;
+import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MRMA;
@@ -80,11 +82,13 @@ public class RMACreateOrder extends SvrProcess
             throw new IllegalStateException("Could not create order");
         }
         
-        MRMALine lines[] = rma.getLines(true);
-                
+    	MInOut originalShipment = rma.getShipment();
+    	MInvoice originalInvoice = rma.getOriginalInvoice();
+
+        MRMALine lines[] = rma.getLines(true);                
         for (MRMALine line : lines)
         {
-            if (line.getShipLine() != null && line.getShipLine().getC_OrderLine_ID() != 0)
+            if (line.getShipLine() != null && line.getShipLine().getC_OrderLine_ID() != 0 && line.getM_Product_ID() != 0)
             {
                 // Create order lines if the RMA Doc line has a shipment line 
                 MOrderLine orderLine = new MOrderLine(order);
@@ -107,6 +111,53 @@ public class RMACreateOrder extends SvrProcess
                 {
                     throw new IllegalStateException("Could not create Order Line");
                 }
+            }
+            else if (line.getM_Product_ID() != 0)
+            {
+            	if (originalInvoice != null)
+            	{
+                	MOrderLine orderLine = new MOrderLine(order);
+                	orderLine.setAD_Org_ID(line.getAD_Org_ID());
+                    orderLine.setM_Product_ID(line.getM_Product_ID());
+                    orderLine.setM_AttributeSetInstance_ID(line.getM_AttributeSetInstance_ID());
+                    orderLine.setC_UOM_ID(line.getC_UOM_ID());
+                    orderLine.setC_Tax_ID(line.getC_Tax_ID());
+                    orderLine.setM_Warehouse_ID(originalShipment.getM_Warehouse_ID());
+                    orderLine.setC_Currency_ID(originalInvoice.getC_Currency_ID());
+                    orderLine.setQty(line.getQty());
+                    orderLine.setC_Project_ID(line.getC_Project_ID());
+                    orderLine.setC_Activity_ID(line.getC_Activity_ID());
+                    orderLine.setC_Campaign_ID(line.getC_Campaign_ID());
+                    orderLine.setPrice();
+                    orderLine.setPrice(line.getAmt());       
+                    
+                    if (!orderLine.save())
+                    {
+                        throw new IllegalStateException("Could not create Order Line");
+                    }
+            	}
+            	else if (originalOrder != null)
+            	{
+            		MOrderLine orderLine = new MOrderLine(order);
+                	orderLine.setAD_Org_ID(line.getAD_Org_ID());
+                    orderLine.setM_Product_ID(line.getM_Product_ID());
+                    orderLine.setM_AttributeSetInstance_ID(line.getM_AttributeSetInstance_ID());
+                    orderLine.setC_UOM_ID(line.getC_UOM_ID());
+                    orderLine.setC_Tax_ID(line.getC_Tax_ID());
+                    orderLine.setM_Warehouse_ID(originalOrder.getM_Warehouse_ID());
+                    orderLine.setC_Currency_ID(originalOrder.getC_Currency_ID());
+                    orderLine.setQty(line.getQty());
+                    orderLine.setC_Project_ID(line.getC_Project_ID());
+                    orderLine.setC_Activity_ID(line.getC_Activity_ID());
+                    orderLine.setC_Campaign_ID(line.getC_Campaign_ID());
+                    orderLine.setPrice();
+                    orderLine.setPrice(line.getAmt());
+                    
+                    if (!orderLine.save())
+                    {
+                        throw new IllegalStateException("Could not create Order Line");
+                    }
+            	}
             }
         }
         

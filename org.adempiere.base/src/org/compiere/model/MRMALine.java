@@ -82,29 +82,17 @@ public class MRMALine extends X_M_RMALine
     private int precision = 0;
     private BigDecimal unitAmount = Env.ZERO;
     private BigDecimal originalQty = Env.ZERO;
+    private int taxId = 0;
     
     /**
      * Initialise parameters that are required
      */
     private void init()
     {
-        if (getC_Charge_ID() != 0)
-        {
-            // Retrieve tax Exempt
-            String sql = "SELECT C_Tax_ID FROM C_Tax WHERE AD_Client_ID=? AND IsActive='Y' "
-                + "AND IsTaxExempt='Y' AND ValidFrom < SYSDATE ORDER BY IsDefault DESC";
-            
-            // Set tax for charge as exempt        
-            setC_Tax_ID(DB.getSQLValueEx(null, sql, Env.getAD_Client_ID(getCtx())));
-            m_ioLine = null;
-        }
-        else
-        {
-            getShipLine();
-        }
+        getShipLine();
         
         if (m_ioLine != null)
-        {
+        {        	
             // Get pricing details (Based on invoice if found, on order otherwise)
             //   --> m_ioLine.isInvoiced just work for sales orders - so it doesn't work for purchases
             if (getInvoiceLineId() != 0)
@@ -113,7 +101,7 @@ public class MRMALine extends X_M_RMALine
                 precision = invoiceLine.getPrecision();
                 unitAmount = invoiceLine.getPriceEntered();
                 originalQty = invoiceLine.getQtyInvoiced();
-                setC_Tax_ID(invoiceLine.getC_Tax_ID());
+                taxId = invoiceLine.getC_Tax_ID();
             }
             else if (m_ioLine.getC_OrderLine_ID() != 0)
             {
@@ -121,7 +109,7 @@ public class MRMALine extends X_M_RMALine
                 precision = orderLine.getPrecision();
                 unitAmount = orderLine.getPriceEntered();
                 originalQty = orderLine.getQtyDelivered();
-                setC_Tax_ID(orderLine.getC_Tax_ID());
+                taxId = orderLine.getC_Tax_ID();
             }
             else
             {
@@ -132,6 +120,53 @@ public class MRMALine extends X_M_RMALine
         {
             MCharge charge = MCharge.get(this.getCtx(), getC_Charge_ID());
             unitAmount = charge.getChargeAmt();
+            
+            // Retrieve tax Exempt
+            String sql = "SELECT C_Tax_ID FROM C_Tax WHERE AD_Client_ID=? AND IsActive='Y' "
+                + "AND IsTaxExempt='Y' AND ValidFrom < SYSDATE ORDER BY IsDefault DESC";
+            
+            // Set tax for charge as exempt        
+            taxId = DB.getSQLValueEx(null, sql, Env.getAD_Client_ID(getCtx()));
+            m_ioLine = null;
+        }
+        else if (getM_Product_ID() != 0)
+        {
+        	MProductPricing pp = new MProductPricing (getM_Product_ID(), getParent().getC_BPartner_ID(), Env.ONE, getParent().isSOTrx());
+        	
+        	MInvoice invoice = getParent().getOriginalInvoice();
+        	if (invoice != null)
+        	{
+        		pp.setM_PriceList_ID(invoice.getM_PriceList_ID());
+        		pp.setPriceDate(invoice.getDateInvoiced());
+        		
+        		precision = invoice.getPrecision();
+        		taxId = Tax.get(getCtx(), getM_Product_ID(), getC_Charge_ID(), invoice.getDateInvoiced(), invoice.getDateInvoiced(),
+            			getAD_Org_ID(), getParent().getShipment().getM_Warehouse_ID(),
+            			invoice.getC_BPartner_Location_ID(),		//	should be bill to
+            			invoice.getC_BPartner_Location_ID(), getParent().isSOTrx());
+        	}
+        	else 
+        	{
+        		MOrder order = getParent().getOriginalOrder();
+        		if (order != null)
+        		{
+        			pp.setM_PriceList_ID(order.getM_PriceList_ID());
+        			pp.setPriceDate(order.getDateOrdered());
+        			
+        			precision = order.getPrecision();
+        			taxId = Tax.get(getCtx(), getM_Product_ID(), getC_Charge_ID(), order.getDateOrdered(), order.getDateOrdered(),
+                			getAD_Org_ID(), order.getM_Warehouse_ID(),
+                			order.getC_BPartner_Location_ID(),		//	should be bill to
+                			order.getC_BPartner_Location_ID(), getParent().isSOTrx());
+        		}
+            	else
+            		throw new IllegalStateException("No Invoice/Order found the Shipment/Receipt associated");
+        	}
+        	
+        	pp.calculatePrice();
+        	unitAmount = pp.getPriceStd();
+        	
+        	m_ioLine = null;
         }
     }
 	
@@ -162,7 +197,7 @@ public class MRMALine extends X_M_RMALine
 	 */
 	public MInOutLine getShipLine()
 	{
-		if ((m_ioLine == null || is_ValueChanged("M_InOutLine_ID")) && getM_InOutLine_ID() != 0)
+		if ((m_ioLine == null || is_ValueChanged(COLUMNNAME_M_InOutLine_ID)) && getM_InOutLine_ID() != 0)
 			m_ioLine = new MInOutLine (getCtx(), getM_InOutLine_ID(), get_TrxName());
 		return m_ioLine;
 	}	//	getShipLine
@@ -200,7 +235,8 @@ public class MRMALine extends X_M_RMALine
 		
 		//	juddm: Tax Exempt & Tax Included in Price List & not Document Level - Adjust Line Amount
 		//  http://sourceforge.net/tracker/index.php?func=detail&aid=1733602&group_id=176962&atid=879332
-		if (getParent().isTaxIncluded() && !documentLevel)	{
+		if (getParent().isTaxIncluded() && !documentLevel)	
+		{
 			BigDecimal taxStdAmt = Env.ZERO, taxThisAmt = Env.ZERO;
 			
 			MTax orderTax = getTax();
@@ -256,26 +292,28 @@ public class MRMALine extends X_M_RMALine
     @Override
     protected boolean beforeSave(boolean newRecord)
     {
-		if (newRecord && getParent().isComplete()) {
+		if (newRecord && getParent().isComplete()) 
+		{
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_RMA"));
 			return false;
 		}
-        if (getM_InOutLine_ID() == 0 && getC_Charge_ID() == 0)
+        if (getM_InOutLine_ID() == 0 && getC_Charge_ID() == 0 && getM_Product_ID() == 0)
         {
-            log.saveError("FillShipLineOrCharge", "");
+            log.saveError("FillShipLineOrProductOrCharge", "");
             return false;
         }
         
-        if (getM_InOutLine_ID() != 0 && getC_Charge_ID() != 0)
+        if (getM_Product_ID() != 0 && getC_Charge_ID() != 0)
         {
-            log.saveError("JustShipLineOrCharge", "");
+            log.saveError("JustProductOrCharge", "");
             return false;
         }
         
         init();
         if (m_ioLine != null)
         {
-        	if (! checkQty()) {
+        	if (! checkQty()) 
+        	{
                 log.saveError("AmtReturned>Shipped", "");
                 return false;
         	}
@@ -293,8 +331,17 @@ public class MRMALine extends X_M_RMALine
                 }
             }
         }
+        
+        // Set default amount and qty for product
+        if (this.getM_Product_ID() != 0 && this.getQty().doubleValue() <= 0)
+        {
+            if (getQty().signum() == 0)
+                this.setQty(Env.ONE);
+            if (getAmt().signum() == 0)
+                this.setAmt(getUnitAmt());        	
+        }
 
-        // Set default amount for charge and qty
+        // Set default amount and qty for charge
         if (this.getC_Charge_ID() != 0 && this.getQty().doubleValue() <= 0)
         {
             if (getQty().signum() == 0)
@@ -306,13 +353,17 @@ public class MRMALine extends X_M_RMALine
         // Set amount for products
         if (this.getM_InOutLine_ID() != 0)
         {
+        	this.setM_Product_ID(m_ioLine.getM_Product_ID());
+        	this.setC_Charge_ID(m_ioLine.getC_Charge_ID());
             this.setAmt(getUnitAmt());
             
             if (newRecord && getQty().signum() == 0)
-            {
                 this.setQty(originalQty);
-            }
         }
+        
+        // Set tax
+        if (this.getC_Tax_ID() == 0)
+        	this.setC_Tax_ID(taxId);
         
         // Get Line No
 		if (getLine() == 0)
@@ -327,11 +378,11 @@ public class MRMALine extends X_M_RMALine
         return true;
     }
     
-    public boolean checkQty() {
+    public boolean checkQty() 
+    {
         if (m_ioLine.getMovementQty().compareTo(getQty()) < 0)
-        {
         	return false;
-        }
+        
         BigDecimal totalQty = DB.getSQLValueBD(get_TrxName(), 
         		"SELECT SUM(Qty) FROM M_RMALine rl JOIN M_RMA r ON (r.M_RMA_ID = rl.M_RMA_ID) WHERE M_InOutLine_ID = ? AND M_RMALine_ID != ? AND r.Processed = 'Y' AND r.DocStatus IN ('CO','CL')", 
         		getM_InOutLine_ID(), getM_RMALine_ID());
@@ -339,23 +390,25 @@ public class MRMALine extends X_M_RMALine
         	totalQty = Env.ZERO;
         totalQty = totalQty.add(getQty());
         if (m_ioLine.getMovementQty().compareTo(totalQty) < 0)
-        {
         	return false;
-        }
         
 		return true;
 	}
     
-    private boolean updateOrderTax(boolean oldTax) {
+    private boolean updateOrderTax(boolean oldTax) 
+    {
 		MRMATax tax = MRMATax.get (this, getPrecision(), oldTax, get_TrxName());
-		if (tax != null) {
+		if (tax != null) 
+		{
 			if (!tax.calculateTaxFromLines())
 				return false;
-			if (tax.getTaxAmt().signum() != 0) {
+			if (tax.getTaxAmt().signum() != 0) 
+			{
 				if (!tax.save(get_TrxName()))
 					return false;
 			}
-			else {
+			else 
+			{
 				if (!tax.is_new() && !tax.delete(false, get_TrxName()))
 					return false;
 			}
@@ -383,10 +436,7 @@ public class MRMALine extends X_M_RMALine
     protected  boolean afterDelete(boolean success)
     {
         if (!success)
-        {
-            return success;
-        }
-        
+            return success;        
         return updateHeaderAmt();
     }
 
@@ -449,29 +499,14 @@ public class MRMALine extends X_M_RMALine
      */
     public int getC_UOM_ID()
     {
-        if (m_ioLine == null) // Charge
-        {
+        if (m_ioLine == null && getC_Charge_ID() != 0) // Charge
             return 100; // Each
+        else if (m_ioLine == null && getM_Product_ID() != 0)
+        {
+        	MProduct product = getProduct();
+        	return product.getC_UOM_ID();
         }
-        
         return m_ioLine.getC_UOM_ID();
-    }
-    
-    /**
-     * Get Product
-     * @return product if based on shipment line and 0 for charge based
-     */
-    public int getM_Product_ID()
-    {
-        if (getC_Charge_ID() != 0)
-        {
-            return 0;
-        }
-        if (m_ioLine == null)
-        {
-            return 0;
-        }
-        return m_ioLine.getM_Product_ID();
     }
     
     /**
@@ -514,9 +549,7 @@ public class MRMALine extends X_M_RMALine
     public int getC_Project_ID()
     {
         if (m_ioLine == null)
-        {
             return 0;
-        }
         return m_ioLine.getC_Project_ID();
     }
     
@@ -527,9 +560,7 @@ public class MRMALine extends X_M_RMALine
     public int getC_ProjectPhase_ID()
     {
         if (m_ioLine == null)
-        {
             return 0;
-        }
         return m_ioLine.getC_ProjectPhase_ID();
     }
     
@@ -540,9 +571,7 @@ public class MRMALine extends X_M_RMALine
     public int getC_ProjectTask_ID()
     {
         if (m_ioLine == null)
-        {
             return 0;
-        }
         return m_ioLine.getC_ProjectTask_ID();
     }
     
@@ -553,9 +582,7 @@ public class MRMALine extends X_M_RMALine
     public int getC_Activity_ID()
     {
         if (m_ioLine == null)
-        {
             return 0;
-        }
         return m_ioLine.getC_Activity_ID();
     }
     
@@ -566,9 +593,7 @@ public class MRMALine extends X_M_RMALine
     public int getC_Campaign_ID()
     {
         if (m_ioLine == null)
-        {
             return 0;
-        }
         return m_ioLine.getC_Campaign_ID();
     }
     
@@ -579,9 +604,7 @@ public class MRMALine extends X_M_RMALine
     public int getAD_OrgTrx_ID()
     {
         if (m_ioLine == null)
-        {
             return 0;
-        }
         return m_ioLine.getAD_OrgTrx_ID();
     }
     
@@ -592,9 +615,7 @@ public class MRMALine extends X_M_RMALine
     public int getUser1_ID()
     {
         if (m_ioLine == null)
-        {
             return 0;
-        }
         return m_ioLine.getUser1_ID();
     }
     
@@ -605,9 +626,7 @@ public class MRMALine extends X_M_RMALine
     public int getUser2_ID()
     {
         if (m_ioLine == null)
-        {
             return 0;
-        }
         return m_ioLine.getUser2_ID();
     }
     
@@ -618,9 +637,7 @@ public class MRMALine extends X_M_RMALine
     public int getM_AttributeSetInstance_ID()
     {
         if (m_ioLine == null)
-        {
             return 0;
-        }
         return m_ioLine.getM_AttributeSetInstance_ID();
     }
     
@@ -630,9 +647,14 @@ public class MRMALine extends X_M_RMALine
      */
     public int getM_Locator_ID()
     {
-        if (m_ioLine == null)
-        {
+        if (m_ioLine == null && getC_Charge_ID() != 0)
             return 0;
+        else if (m_ioLine == null && getM_Product_ID() != 0)
+        {
+        	MInOut shipment = getParent().getShipment();
+        	MWarehouse warehouse = new MWarehouse (getCtx(), shipment.getM_Warehouse_ID(), get_TrxName());
+        	MLocator locator = MLocator.getDefault(warehouse);
+        	return locator.getM_Locator_ID();
         }
         return m_ioLine.getM_Locator_ID();
     }

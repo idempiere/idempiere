@@ -352,14 +352,12 @@ public class MRMA extends X_M_RMA implements DocAction
 			}
 		}
 		
+        // Updates Amount
 		if (!calculateTaxTotal())
 		{
 			m_processMsg = "Error calculating tax";
 			return DocAction.STATUS_Invalid;
 		}
-
-        // Updates Amount
-		setAmt(getTotalAmount());
 
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 		if (m_processMsg != null)
@@ -897,32 +895,6 @@ public class MRMA extends X_M_RMA implements DocAction
         else
             setDescription(desc + " | " + description);
     }   //  addDescription
-
-    /**
-     * Get the total amount based on the lines
-     * @return Total Amount
-     */
-    public BigDecimal getTotalAmount()
-    {
-        MRMALine lines[] = this.getLines(true);
-
-        BigDecimal amt = Env.ZERO;
-
-        for (MRMALine line : lines)
-        {
-            amt = amt.add(line.getLineNetAmt());
-        }
-
-        return amt;
-    }
-
-    /**
-     * Updates the amount on the document
-     */
-    public void updateAmount()
-    {
-        setAmt(getTotalAmount());
-    }
 
 	/*************************************************************************
 	 * 	Get Summary

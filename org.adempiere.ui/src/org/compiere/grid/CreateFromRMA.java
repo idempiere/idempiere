@@ -70,12 +70,15 @@ public abstract class CreateFromRMA extends CreateFrom {
         StringBuilder sqlStmt = new StringBuilder();
         
         sqlStmt.append("SELECT iol.M_InOutLine_ID, iol.Line, "); 
-        sqlStmt.append("CASE WHEN iol.M_Product_ID IS NOT NULL THEN (Select p.Name from M_Product p where p.M_Product_ID = iol.M_Product_ID) END as ProductName, "); 
+        sqlStmt.append("COALESCE(p.Name, c.Name) AS ProductName, "); 
         sqlStmt.append("iol.QtyEntered, "); 
         sqlStmt.append("iol.movementQty, "); 
-        sqlStmt.append("CASE WHEN iol.M_AttributeSetInstance_ID IS NOT NULL THEN (SELECT SerNo FROM M_AttributeSetInstance asi where asi.M_AttributeSetInstance_ID=iol.M_AttributeSetInstance_ID) END as ASI ");
-        sqlStmt.append("from M_InOutLine iol where M_InOut_ID=? ");
-        sqlStmt.append("and iol.M_InOutLine_ID not in (select rmal.M_InOutLine_ID from M_RMALine rmal where rmal.M_RMA_ID=?)");
+        sqlStmt.append("CASE WHEN iol.M_AttributeSetInstance_ID IS NOT NULL THEN (SELECT SerNo FROM M_AttributeSetInstance asi WHERE asi.M_AttributeSetInstance_ID=iol.M_AttributeSetInstance_ID) END as ASI ");
+        sqlStmt.append("FROM M_InOutLine iol ");
+        sqlStmt.append("LEFT JOIN M_Product p ON p.M_Product_ID = iol.M_Product_ID ");
+        sqlStmt.append("LEFT JOIN C_Charge c ON c.C_Charge_ID = iol.C_Charge_ID ");
+        sqlStmt.append("WHERE M_InOut_ID=? ");
+        sqlStmt.append("AND iol.M_InOutLine_ID NOT IN (SELECT rmal.M_InOutLine_ID FROM M_RMALine rmal WHERE rmal.M_RMA_ID=?)");
         
         try
         {
