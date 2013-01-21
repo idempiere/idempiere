@@ -20,7 +20,6 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
-import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -28,6 +27,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.Vlayout;
 
 import fi.jawsy.jawwa.zk.cleditor.Cleditor;
 
@@ -70,9 +70,14 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	
 	private void init() {
 		setBorder("normal");
+		setHeight("450px");
+		setWidth("700px");
+		setStyle("position: absolute;");
 		
-		VerticalBox vbox = new VerticalBox();
+		Vlayout vbox = new Vlayout();
 		appendChild(vbox);
+		vbox.setWidth("100%");
+		vbox.setVflex("true");
 		
 		tabbox = new Tabbox();
 		vbox.appendChild(tabbox);
@@ -80,6 +85,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		tabbox.appendChild(tabs);
 		Tabpanels tabPanels = new Tabpanels();
 		tabbox.appendChild(tabPanels);
+		tabbox.setVflex("true");
+		tabbox.setHflex("true");
 		
 		Tab tab = new Tab("Text");
 		tabs.appendChild(tab);
@@ -90,8 +97,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		textBox.setCols(80);
 		textBox.setRows(30);
 		textBox.setEnabled(editable);
-		textBox.setWidth("700px");
-		textBox.setHeight("500px");
+		textBox.setVflex("true");
+		textBox.setHflex("true");
 		tabPanel.appendChild(textBox);
 		
 		tab = new Tab("HTML");
@@ -102,13 +109,13 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		if (editable) {
 			editor = new Cleditor();
 			tabPanel.appendChild(editor);
-			editor.setWidth("700px");
-			editor.setHeight("500px");
+			editor.setWidth("100%");
+			editor.setHeight("100%");
 			editor.setValue(text);
 		} else {
 			Div div = new Div();
-			div.setHeight("500px");
-			div.setWidth("700px");
+			div.setHeight("100%");
+			div.setWidth("100%");
 			div.setStyle("overflow: auto; border: 1px solid");
 			tabPanel.appendChild(div);
 			Html html = new Html();
