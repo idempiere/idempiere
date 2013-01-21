@@ -141,7 +141,7 @@ public class DashboardController implements EventListener<Event> {
         	dps = MDashboardPreference.getForSession(isShowInDashboard, AD_User_ID, AD_Role_ID); // based on user and role       	
         	noOfCols = MDashboardPreference.getForSessionColumnCount(isShowInDashboard, AD_User_ID, AD_Role_ID);
             
-        	int dashboardWidth = isShowInDashboard ? 98 : 99;
+        	int dashboardWidth = isShowInDashboard ? 95 : 100;
             width = noOfCols <= 0 ? dashboardWidth : dashboardWidth / noOfCols;
             int useWidth = 0; 
             for (final MDashboardPreference dp : dps)
