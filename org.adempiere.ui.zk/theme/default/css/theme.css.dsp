@@ -202,12 +202,12 @@ html,body {
 
 .action-text-button {
 	height: 30px;
-	width: 80px;
+	min-width: 80px;
 }
 
 .action-image-text-button {
 	height: 30px;
-	width: 80px;
+	min-width: 80px;
 }
 
 .action-button .z-button-cm img, 
