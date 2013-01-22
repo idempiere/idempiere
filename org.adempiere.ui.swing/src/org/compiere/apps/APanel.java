@@ -19,8 +19,12 @@ package org.compiere.apps;
 
 import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_REDO;
 import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_UNDO;
+import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTACTION;
+import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
+import static org.compiere.model.SystemIDs.REFERENCE_POSTED;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -33,6 +37,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,13 +53,17 @@ import java.util.logging.Level;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -63,6 +74,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.adempiere.ui.swing.factory.DefaultEditorFactory;
 import org.adempiere.util.Callback;
 import org.adempiere.util.IProcessUI;
 import org.compiere.apps.form.FormFrame;
@@ -78,6 +90,7 @@ import org.compiere.grid.VSortTab;
 import org.compiere.grid.VTabbedPane;
 import org.compiere.grid.ed.VButton;
 import org.compiere.grid.ed.VDocAction;
+import org.compiere.grid.ed.VEditor;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
@@ -87,10 +100,12 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.GridWorkbench;
 import org.compiere.model.Lookup;
+import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MUser;
 import org.compiere.model.MWindow;
@@ -104,9 +119,11 @@ import org.compiere.swing.CPanel;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.compiere.util.NamePair;
 import org.compiere.util.Util;
 
 /**
@@ -308,7 +325,8 @@ public final class APanel extends CPanel
 							aNew, aCopy, aDelete, aPrint, aPrintPreview,
 							aExport = null,
 							aRefresh, aHistory, aAttachment, aChat, aMulti, aFind,
-							aWorkflow, aZoomAcross, aRequest, aWinSize, aArchive;
+							aWorkflow, aZoomAcross, aRequest, aWinSize, aArchive,
+							aProcess;
 	/** Ignore Button		*/
 	public AppsAction		aIgnore;
 	/** Save Button			*/
@@ -482,6 +500,9 @@ public final class APanel extends CPanel
 		aOnline =	addAction("Online",			mHelp, 	null,	false);
 		aMailSupport = addAction("EMailSupport",	mHelp,	null,	false);
 		aAbout = 	addAction("About",			mHelp, 	null,	false);
+		
+		//
+		aProcess=addAction("Process",null,null,false);
 
 		/**
 		 *	ToolBar
@@ -495,6 +516,7 @@ public final class APanel extends CPanel
 		toolBar.add(aDeleteSelection.getButton());
 		toolBar.add(aSave.getButton());
 		toolBar.add(aSaveAndCreate.getButton());
+		toolBar.add(aProcess.getButton());
 		toolBar.addSeparator();
 		toolBar.add(aRefresh.getButton());      //  F5
 		toolBar.add(aFind.getButton());
@@ -1573,7 +1595,19 @@ public final class APanel extends CPanel
 			aRefresh.setEnabled(true);
 			aAttachment.setEnabled(true);
 			aChat.setEnabled(true);
+			
+			// IDEMPIERE-587 - Swing: Toolbar Button to start Process from button fields
+			// tbayen - 2013-01-22
+			GridField[] fields = m_curGC.getMTab().getFields();
+        	aProcess.setEnabled(false);
+			for(GridField field:fields){
+	        	if (field.isToolbarButton() && field.isDisplayed()){
+		        	aProcess.setEnabled(true);
+		        	break;
+	        	}
+	        }
 		}
+		
 		//
 		m_curWinTab.requestFocusInWindow();
 		setBusy(false, true);
@@ -1725,6 +1759,8 @@ public final class APanel extends CPanel
 				cmd_find();
 			else if (m_isPersonalLock && cmd.equals(aLock.getName()))
 				cmd_lock();
+			else if (cmd.equals(aProcess.getName()))
+				cmd_process();
 			//	View
 			else if (cmd.equals(aAttachment.getName()))
 				cmd_attachment();
@@ -2088,6 +2124,129 @@ public final class APanel extends CPanel
 		return retValue;
 	}
 
+	/**
+	 * opens a pulldown menu to start processes from "Button" type fields.
+	 */
+	// IDEMPIERE-587 - Swing: Toolbar Button to start Process from button fields
+	// tbayen - 2013-01-22
+	public void cmd_process() {
+		GridField[] fields = m_curGC.getMTab().getFields();
+		final ArrayList<GridField> processFields = new ArrayList<GridField>();
+		for (GridField field : fields) {
+			if (field.isToolbarButton() && field.isDisplayed()) {
+				processFields.add(field);
+			}
+		}
+		JPopupMenu popup = new JPopupMenu();
+		for (GridField field : processFields) {
+			if (field.isDisplayed(true)) {
+				ImageIcon icon = Env.getImageIcon2("Process16");
+				String text = field.getHeader();
+				Color color = null;
+				// preparing data like lookup tables
+				// code to find the text and icons to display is shameless
+				// stolen from org.compiere.grid.ed.VButton
+				MLookup m_lookup = null;
+				// Record_ID for Zoom Buttons (see
+				// http://www.adempiere.com/Entering_Data_-_Fields_and_Buttons#Button)
+				if (field.getColumnName().endsWith("_ID")
+						&& !field.getColumnName().equals("Record_ID")) {
+					m_lookup = MLookupFactory.get(Env.getCtx(),
+							field.getWindowNo(), 0, field.getAD_Column_ID(),
+							DisplayType.Search);
+				} else if (field.getAD_Reference_Value_ID() != 0) {
+					// Assuming List
+					m_lookup = MLookupFactory.get(Env.getCtx(),
+							field.getWindowNo(), 0, field.getAD_Column_ID(),
+							DisplayType.List);
+				}
+
+				// Special Buttons
+				int AD_Reference_ID = -1;
+				String columnName = field.getColumnName();
+				if (columnName.equals("PaymentRule")) {
+					AD_Reference_ID = REFERENCE_PAYMENTRULE;
+					color = Color.blue;
+					icon = Env.getImageIcon("Payment16.gif"); // 29*14
+				} else if (columnName.equals("DocAction")) {
+					AD_Reference_ID = REFERENCE_DOCUMENTACTION;
+					color = Color.blue;
+					icon = Env.getImageIcon("Process16.gif"); // 16*16
+				} else if (columnName.equals("CreateFrom")) {
+					icon = Env.getImageIcon("Copy16.gif"); // 16*16
+				} else if (columnName.equals("Record_ID")) {
+					icon = Env.getImageIcon("Zoom16.gif"); // 16*16
+					text = Msg.getMsg(Env.getCtx(), "ZoomDocument");
+				} else if (columnName.equals("Posted")) {
+					AD_Reference_ID = REFERENCE_POSTED;
+					color = Color.magenta;
+					icon = Env.getImageIcon("InfoAccount16.gif"); // 16*16
+				}
+
+				Map<String, String> values = null;
+				if (AD_Reference_ID > 0) {
+					values = new HashMap<String, String>();
+					String SQL;
+					if (Env.isBaseLanguage(Env.getCtx(), "AD_Ref_List"))
+						SQL = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=?";
+					else
+						SQL = "SELECT l.Value, t.Name FROM AD_Ref_List l, AD_Ref_List_Trl t "
+								+ "WHERE l.AD_Ref_List_ID=t.AD_Ref_List_ID"
+								+ " AND t.AD_Language='"
+								+ Env.getAD_Language(Env.getCtx())
+								+ "'"
+								+ " AND l.AD_Reference_ID=?";
+					try {
+						PreparedStatement pstmt = DB
+								.prepareStatement(SQL, null);
+						pstmt.setInt(1, AD_Reference_ID);
+						ResultSet rs = pstmt.executeQuery();
+						while (rs.next()) {
+							String value = rs.getString(1);
+							String name = rs.getString(2);
+							values.put(value, name);
+						}
+						rs.close();
+						pstmt.close();
+					} catch (SQLException e) {
+						log.log(Level.SEVERE, SQL, e);
+					}
+
+					// Nothing to show or Record_ID
+					if (field.getValue() == null
+							|| field.getColumnName().equals("Record_ID"))
+						;
+					else if (values != null)
+						text = (String) values.get(field.getValue());
+					else if (m_lookup != null) {
+						NamePair pp = m_lookup.get(field.getValue());
+						if (pp != null)
+							text = pp.getName();
+					}
+					// Display it
+				} // setValue
+
+				JMenuItem item = new JMenuItem(text, icon);
+				item.setForeground(color);
+				item.setName(field.getColumnName());
+				popup.add(item);
+				item.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JMenuItem menuItem = ((JMenuItem)e.getSource());
+						String columnName=menuItem.getName();
+						GridField callingField = m_curTab.getField(columnName);
+						//
+						setStatusLine(m_curTab.processCallout(callingField), true);
+						actionButtonCleanUp(menuItem.getName(), 
+								callingField.getAD_Process_ID(), callingField.getHeader());
+					}
+				});
+			}
+		}
+		popup.show(aProcess.getButton(), 0, aProcess.getButton().getHeight());
+	}
+	
 	/**
 	 *  Ignore
 	 */
@@ -2469,9 +2628,16 @@ public final class APanel extends CPanel
 	 *	Start Button Process
 	 *  @param vButton button
 	 */
-	private void actionButton (VButton vButton)
-	{
+	private void actionButton (VButton vButton){
 		log.info(vButton.toString());
+		String title = vButton.getDescription();
+		if (title == null || title.length() == 0)
+			title = vButton.getName();
+		actionButtonCleanUp(vButton.getColumnName(), vButton.getProcess_ID(), title);
+	}
+	
+	private void actionButtonCleanUp(String columnName, int processID, String title)
+	{
 
 		if (m_curTab.hasChangedCurrentTabAndParents()) {
 			String msg = CLogger.retrieveErrorString("Please ReQuery Window");
@@ -2481,7 +2647,7 @@ public final class APanel extends CPanel
 
 		boolean startWOasking = false;
 //		boolean batch = false;
-		String col = vButton.getColumnName();
+		String col = columnName;
 
 		//  Zoom
 		if (col.equals("Record_ID"))
@@ -2512,7 +2678,7 @@ public final class APanel extends CPanel
 			record_ID = Env.getContextAsInt (m_ctx, m_curWindowNo, "AD_Language_ID");
 		//	Record_ID - Change Log ID
 		if (record_ID == -1
-			&& (vButton.getProcess_ID() == PROCESS_AD_CHANGELOG_UNDO || vButton.getProcess_ID() == PROCESS_AD_CHANGELOG_REDO))
+			&& (processID == PROCESS_AD_CHANGELOG_UNDO || processID == PROCESS_AD_CHANGELOG_REDO))
 		{
 			Integer id = (Integer)m_curTab.getValue("AD_ChangeLog_ID");
 			record_ID = id.intValue();
@@ -2529,7 +2695,7 @@ public final class APanel extends CPanel
 		if (col.equals("DocAction"))
 		{
 			isProcessMandatory = true;
-			VDocAction vda = new VDocAction(m_curWindowNo, m_curTab, vButton, record_ID);
+			VDocAction vda = new VDocAction(m_curWindowNo, m_curTab, null, record_ID);
 			//	Something to select from?
 			if (vda.getNumberOfOptions() == 0)
 			{
@@ -2552,7 +2718,7 @@ public final class APanel extends CPanel
 		else if (col.equals("CreateFrom"))
 		{
 			// Run form only if the button has no process defined - teo_sarca [ 1974354 ]
-			if (vButton.getProcess_ID() <= 0)
+			if (processID <= 0)
 			{
 				ICreateFrom cf = VCreateFromFactory.create(m_curTab);
 				if(cf != null)
@@ -2628,8 +2794,8 @@ public final class APanel extends CPanel
 		 *  or invoke user form
 		 */
 
-		log.config("Process_ID=" + vButton.getProcess_ID() + ", Record_ID=" + record_ID);
-		if (vButton.getProcess_ID() == 0)
+		log.config("Process_ID=" + processID + ", Record_ID=" + record_ID);
+		if (processID == 0)
 		{
 			if (isProcessMandatory)
 			{
@@ -2643,7 +2809,7 @@ public final class APanel extends CPanel
 				return;
 
 		// call form
-		MProcess pr = new MProcess(m_ctx, vButton.getProcess_ID(), null);
+		MProcess pr = new MProcess(m_ctx, processID, null);
 		int form_ID = pr.getAD_Form_ID();
 		if (form_ID != 0 )
 		{
@@ -2653,10 +2819,7 @@ public final class APanel extends CPanel
 					return;
 
 			FormFrame ff = new FormFrame(getGraphicsConfiguration());
-			String title = vButton.getDescription();
-			if (title == null || title.length() == 0)
-				title = vButton.getName();
-			ProcessInfo pi = new ProcessInfo (title, vButton.getProcess_ID(), table_ID, record_ID);
+			ProcessInfo pi = new ProcessInfo (title, processID, table_ID, record_ID);
 			pi.setAD_User_ID (Env.getAD_User_ID(m_ctx));
 			pi.setAD_Client_ID (Env.getAD_Client_ID(m_ctx));
 			ff.setProcessInfo(pi);
@@ -2667,7 +2830,7 @@ public final class APanel extends CPanel
 		}
 		else {
 			ProcessModalDialog dialog = new ProcessModalDialog(m_ctx, AEnv.getWindow(m_curWindowNo), Env.getHeader(m_ctx, m_curWindowNo),
-					this, m_curWindowNo, vButton.getProcess_ID(), table_ID,
+					this, m_curWindowNo, processID, table_ID,
 					record_ID, startWOasking);
 			if (dialog.isValidDialog())
 			{

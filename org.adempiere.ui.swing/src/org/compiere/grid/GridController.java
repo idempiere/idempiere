@@ -370,6 +370,7 @@ public class GridController extends CPanel
 		{
 			vPanel.setBorder(BorderFactory.createLineBorder(AdempierePLAF.getPrimary2()));
 		}
+		vPane.getVerticalScrollBar().setUnitIncrement(16);  // IDEMPIERE-572 - tbayen 2013-01-20
 		vPane.getViewport().add(xPanel, null);
 		xPanel.add(vPanel, BorderLayout.CENTER);
 
@@ -414,7 +415,9 @@ public class GridController extends CPanel
 			for (int i = 0; i < size; i++)
 			{
 				GridField mField = m_mTab.getField(i);
-				if (mField.isDisplayed())
+				if (mField.isDisplayed() 
+						// IDEMPIERE-587 Swing: Toolbar Button to start Process from button fields
+						&& mField.getDisplayType()!=DisplayType.Button)
 				{
 					VEditor vEditor = VEditorFactory.getEditor(m_mTab, mField, false);
 					if (vEditor == null)
