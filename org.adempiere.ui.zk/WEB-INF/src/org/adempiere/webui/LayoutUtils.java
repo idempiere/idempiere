@@ -110,6 +110,7 @@ public final class LayoutUtils {
 			.append("');");
 		window.doPopup();
 		Clients.response("_openPopupWindow_", new AuScript(window, script.toString()));
+		window.focus();
 	}
 	
 	/**
