@@ -1118,7 +1118,7 @@ tbody.z-grid-empty-body td {
 	font-weight: bold;
 }
 
-.z-window-overlapped, .z-window-popup, .z-window-modal, .z-window-highlighted
+.z-window-overlapped, .z-window-modal, .z-window-highlighted
 {
 	border-top: 1px solid #c5c5c5;
 	border-bottom: 1px solid #c5c5c5;
