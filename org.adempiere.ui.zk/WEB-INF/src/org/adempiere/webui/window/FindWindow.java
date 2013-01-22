@@ -992,6 +992,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     
     public void onEvent(Event event) throws Exception
     {
+        m_createNew  = false;
         if (Events.ON_SELECT.equals(event.getName()))
         {
             if (event.getTarget() instanceof Listbox)
