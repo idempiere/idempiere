@@ -47,7 +47,12 @@ public abstract class CreateFromRMA extends CreateFrom {
 	public boolean dynInit() throws Exception 
 	{
 		log.config("");
-        setTitle("Customer RMA - Create Lines From");
+		
+		boolean isSOTrx = true;
+		String value = Env.getContext(Env.getCtx(), getGridTab().getWindowNo(), MRMA.COLUMNNAME_IsSOTrx);
+		if (value != null && value.equalsIgnoreCase("N"))
+			isSOTrx = false;
+        setTitle(isSOTrx ? "Customer" : "Vendor" + " RMA - Create Lines From");
 
 		return true;
 	}
