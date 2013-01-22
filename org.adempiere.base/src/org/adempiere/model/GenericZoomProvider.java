@@ -46,18 +46,20 @@ public class GenericZoomProvider implements IZoomProvider {
 				+ "FROM AD_Table t ";
 		boolean baseLanguage = Env.isBaseLanguage(Env.getCtx(), "AD_Window");
 		if (baseLanguage)
-			sql += "INNER JOIN AD_Window ws ON (t.AD_Window_ID=ws.AD_Window_ID)"
-					+ " LEFT OUTER JOIN AD_Window wp ON (t.PO_Window_ID=wp.AD_Window_ID) ";
+			sql += "JOIN AD_Window ws ON (t.AD_Window_ID=ws.AD_Window_ID AND ws.IsActive='Y')"
+					+ " LEFT OUTER JOIN AD_Window wp ON (t.PO_Window_ID=wp.AD_Window_ID AND wp.IsActive='Y') ";
 		else
-			sql += "INNER JOIN AD_Window_Trl ws ON (t.AD_Window_ID=ws.AD_Window_ID AND ws.AD_Language=?)"
-					+ " LEFT OUTER JOIN AD_Window_Trl wp ON (t.PO_Window_ID=wp.AD_Window_ID AND wp.AD_Language=?) ";
+			sql += "JOIN AD_Window_Trl ws ON (t.AD_Window_ID=ws.AD_Window_ID AND ws.AD_Language=?)"
+					+ " LEFT OUTER JOIN AD_Window_Trl wp ON (t.PO_Window_ID=wp.AD_Window_ID AND wp.AD_Language=?) "
+					+ " JOIN AD_Window wso ON (t.AD_Window_ID=wso.AD_Window_ID AND wso.IsActive='Y')"
+					+ " LEFT OUTER JOIN AD_Window wpo ON (t.PO_Window_ID=wpo.AD_Window_ID AND wpo.IsActive='Y') ";
 		// WARNING - HardCoded: first tab must have SeqNo = 10
 		sql += "JOIN AD_Tab tts ON (tts.AD_Window_ID=ws.AD_Window_ID AND tts.AD_Table_ID=t.AD_Table_ID AND tts.SeqNo=10)" // first tab so
 				+" LEFT OUTER JOIN AD_Tab ttp ON (ttp.AD_Window_ID=wp.AD_Window_ID AND ttp.AD_Table_ID=t.AD_Table_ID AND ttp.SeqNo=10)" // first tab po
 				+" WHERE t.TableName NOT LIKE 'I%'" // No Import
 				+ " AND t.AD_Table_ID IN "
 				+ "(SELECT AD_Table_ID FROM AD_Column "
-				+ "WHERE ColumnName=? AND IsKey='N' AND IsParent='N') " // #x
+				+ "WHERE ColumnName=? AND IsKey='N' AND IsParent='N' AND IsActive='Y' AND ColumnSQL IS NULL) " // #x
 				+ "ORDER BY 2";
 
 		final PreparedStatement pstmt = DB.prepareStatement(sql, null);
