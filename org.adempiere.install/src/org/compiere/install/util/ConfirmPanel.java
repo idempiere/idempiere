@@ -24,7 +24,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -49,8 +48,7 @@ public final class ConfirmPanel extends JPanel
 	 * 
 	 */
 	private static final long serialVersionUID = 6041019802043360966L;
-	private static ImageIcon ImagenCancel = new ImageIcon("/images/Cancel24.png");
-	private static ImageIcon ImagenOk = new ImageIcon("/images/Ok24.png");
+
 
 	/**
 	 *	Create OK Button with label text and F4 Shortcut
@@ -63,7 +61,6 @@ public final class ConfirmPanel extends JPanel
 		JButton button = (JButton)aa.getButton();
 		button.setMargin(s_insets);
 		button.setDefaultCapable(true);
-		button.setIcon(ImagenOk);
 		return button;
 	}	//	createOKButton
 
@@ -89,7 +86,6 @@ public final class ConfirmPanel extends JPanel
 		AppsAction aa = new AppsAction (A_CANCEL, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), text);
 		JButton button = (JButton)aa.getButton();
 		button.setMargin(s_insets);
-		button.setIcon(ImagenCancel);
 		return button;
 	}	//	createCancelButton
 
@@ -498,7 +494,6 @@ public final class ConfirmPanel extends JPanel
 		//
 		JPanel okCancel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		okCancel.setOpaque(false);
-		// Invert OK/Cancel IDEMPIERE-77
 		bOK = createOKButton(withText);
 		okCancel.add(bOK);
 		bCancel = createCancelButton(withText);
