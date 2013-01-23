@@ -19,8 +19,6 @@ package org.compiere.grid;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Event;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +27,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.KeyStroke;
 
 import net.miginfocom.layout.BoundSize;
 import net.miginfocom.layout.ComponentWrapper;
@@ -480,6 +477,7 @@ public final class VPanel extends CTabbedPane
 	 *	@param editor check box or button - other ignored
 	 *	@param predefinedMnemonic predefined Mnemonic
 	 */
+	/*
 	private void setMnemonic (VEditor editor, char predefinedMnemonic)
 	{
 		if (editor instanceof VCheckBox)
@@ -541,6 +539,7 @@ public final class VPanel extends CTabbedPane
 			}
 		}
 	}	//	setMnemonic
+	*/
 
 	/**
 	 * 	Get Mnemonic from text

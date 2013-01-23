@@ -22,6 +22,7 @@ import org.osgi.framework.BundleException;
 public class PluginList implements FormPanel, ActionListener {
 
 	private static CLogger log = CLogger.getCLogger(PluginList.class);
+	@SuppressWarnings("unused")
 	private int m_WindowNo;
 	private FormFrame m_frame;
 	private CPanel northPanel = new CPanel();
