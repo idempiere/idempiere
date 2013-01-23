@@ -147,7 +147,7 @@ public class AdempiereMonitorFilter implements Filter
 			MUser user = MUser.get(Env.getCtx(), name, password);
 			if (user == null)
 			{
-				log.warning ("User not found: '" + name + "/" + password + "'");
+				log.warning ("User not found: '" + name);
 				return false;
 			}
 			if (!user.isAdministrator())

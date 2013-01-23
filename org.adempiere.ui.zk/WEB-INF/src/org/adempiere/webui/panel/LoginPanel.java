@@ -528,7 +528,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         	if (loginErrMsg != null && loginErrMsg.length() > 0)
         		throw new WrongValueException(loginErrMsg);
         	else
-        		throw new WrongValueException("User Id or Password invalid!!!");
+        		throw new WrongValueException(Msg.getMsg(ctx,"FailedLogin", true));
         }
         else
         {
