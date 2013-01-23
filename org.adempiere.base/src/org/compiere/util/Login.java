@@ -1443,9 +1443,14 @@ public class Login
 				}
 				else if (MAX_LOGIN_ATTEMPT > 0)
 				{
-					// Invalid User ID or Password (Login Attempts: {0} / {1})
-					loginErrMsg = Msg.getMsg(m_ctx, "FailedLoginAttempt", new Object[] {count, MAX_LOGIN_ATTEMPT});
-					reachMaxAttempt = false;					
+					if (count == MAX_LOGIN_ATTEMPT -1){ 
+						// Invalid User ID or Password (Login Attempts: {0} / {1})
+						loginErrMsg = Msg.getMsg(m_ctx, "FailedLoginAttempt", new Object[] {count, MAX_LOGIN_ATTEMPT});
+						reachMaxAttempt = false;
+					}else{
+						loginErrMsg = Msg.getMsg(m_ctx,"FailedLogin", true);
+					}
+				
 				}
 				else
 				{
