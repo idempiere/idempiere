@@ -21,6 +21,7 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.zkforge.ckez.CKeditor;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -28,8 +29,6 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Vlayout;
-
-import fi.jawsy.jawwa.zk.cleditor.Cleditor;
 
 /**
  * 
@@ -48,8 +47,9 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	private boolean cancelled;
 	private Tabbox tabbox;
 	private Textbox textBox;
-	private Cleditor editor;
+	private CKeditor editor;
 	private Label status;
+	private Tab htmlTab;
 
 	/**
 	 * 
@@ -71,8 +71,9 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	private void init() {
 		setBorder("normal");
 		setHeight("450px");
-		setWidth("700px");
+		setWidth("800px");
 		setStyle("position: absolute;");
+		setSizable(false);
 		
 		Vlayout vbox = new Vlayout();
 		appendChild(vbox);
@@ -85,8 +86,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		tabbox.appendChild(tabs);
 		Tabpanels tabPanels = new Tabpanels();
 		tabbox.appendChild(tabPanels);
-		tabbox.setVflex("true");
-		tabbox.setHflex("true");
+		tabbox.setVflex("1");
+		tabbox.setHflex("1");
 		
 		Tab tab = new Tab("Text");
 		tabs.appendChild(tab);
@@ -97,21 +98,17 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		textBox.setCols(80);
 		textBox.setRows(30);
 		textBox.setEnabled(editable);
-		textBox.setVflex("true");
-		textBox.setHflex("true");
+		textBox.setHflex("1");
+		textBox.setVflex("1");
 		tabPanel.appendChild(textBox);
 		
-		tab = new Tab("HTML");
-		tabs.appendChild(tab);
+		htmlTab = new Tab("HTML");
+		tabs.appendChild(htmlTab);
 		
 		tabPanel = new Tabpanel();
 		tabPanels.appendChild(tabPanel);
 		if (editable) {
-			editor = new Cleditor();
-			tabPanel.appendChild(editor);
-			editor.setWidth("100%");
-			editor.setHeight("100%");
-			editor.setValue(text);
+			createEditor(tabPanel);
 		} else {
 			Div div = new Div();
 			div.setHeight("100%");
@@ -141,6 +138,16 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		}		
 		
 		tabbox.addEventListener(Events.ON_SELECT, this);
+	}
+
+	private void createEditor(org.zkoss.zul.Tabpanel tabPanel) {
+		editor = new CKeditor();
+		editor.setCustomConfigurationsPath("/js/ckeditor/config.js");
+		editor.setToolbar("MyToolbar");
+		tabPanel.appendChild(editor);
+		editor.setVflex("1");
+		editor.setWidth("100%");
+		editor.setValue(text);
 	}
 
 	/**
@@ -177,7 +184,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 			} else if (event.getTarget() == editor) {
 				updateStatus(editor.getValue().length());
 			}
-		}		
+		} 
 	}
 	
 	private void updateStatus(int newLength) {

@@ -25,7 +25,6 @@ import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.Textbox;
-import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
@@ -231,8 +230,6 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 			adwindowContent = findADWindowContent();
 			final WTextEditorDialog dialog = new WTextEditorDialog(this.getColumnName(), getDisplay(),
 					isReadWrite(), gridField.getFieldLength());
-			dialog.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-			dialog.setSizable(true);
 			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {

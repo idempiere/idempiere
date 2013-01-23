@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="lib/jawwa-zk-cleditor-0.4.1.jar" sourcepath="lib/src/jawwa-zk-cleditor-0.4.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ckez.jar" sourcepath="lib/src/ckez-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/calendar.jar" sourcepath="lib/src/calendar-source.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/asm.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/cglib.jar"/>
