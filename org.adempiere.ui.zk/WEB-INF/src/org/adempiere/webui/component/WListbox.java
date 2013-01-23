@@ -371,7 +371,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
             }
 
             //  add to model
-            addColumn(layout[columnIndex].getColHeader());
+            addColumn(layout[columnIndex].getColHeader(), layout[columnIndex].getColDescription());
 
             // set the colour column
             if (layout[columnIndex].isColorColumn())
@@ -429,16 +429,25 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		return;
 	}
 
-
+	/**
+	 * @param header
+	 */
+	@Override
+	public void addColumn (String header) 
+	{
+		addColumn(header, null);
+	}
+	
 	/**
 	 *  Add Table Column and specify the column header.
 	 *
 	 *  @param header	name of column header
+	 *  @param description
 	 */
-	public void addColumn (String header)
+	public void addColumn (String header, String description)
 	{
 		WListItemRenderer renderer = (WListItemRenderer)getItemRenderer();
-		renderer.addColumn(Util.cleanAmp(header));
+		renderer.addColumn(Util.cleanAmp(header), description);
 		getModel().addColumn();
 
 		return;

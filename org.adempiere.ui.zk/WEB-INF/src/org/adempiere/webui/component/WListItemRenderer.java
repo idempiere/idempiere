@@ -380,18 +380,28 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	}   //  updateColumn
 
 	/**
+	 * @param header
+	 */
+	public void addColumn(String header)
+	{
+		addColumn(header, null);
+	}
+	
+	/**
 	 *  Add Table Column.
 	 *  after adding a column, you need to set the column classes again
 	 *  (DefaultTableModel fires TableStructureChanged, which calls
 	 *  JTable.tableChanged .. createDefaultColumnsFromModel
 	 *  @param header The header text for the column
+	 *  @param description
 	 */
-	public void addColumn(String header)
+	public void addColumn(String header, String description)
 	{
 		WTableColumn tableColumn;
 
 		tableColumn = new WTableColumn();
 		tableColumn.setHeaderValue(Util.cleanAmp(header));
+		tableColumn.setTooltipText(description);
 		m_tableColumns.add(tableColumn);
 
 		return;
@@ -427,12 +437,13 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	 * is used to set the header text.
 	 *
 	 * @param headerValue	The object to use for generating the header text.
+	 * @param tooltipText
      * @param headerIndex   The column index of the header
 	 * @param classType
 	 * @return The generated ListHeader
 	 * @see #renderListHead(ListHead)
 	 */
-	private Component getListHeaderComponent(Object headerValue, int headerIndex, Class<?> classType)
+	private Component getListHeaderComponent(Object headerValue, String tooltipText, int headerIndex, Class<?> classType)
 	{
         ListHeader header = null;
 
@@ -450,6 +461,10 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	            Comparator<Object> dscComparator =  getColumnComparator(false, headerIndex);
 
 	            header = new ListHeader(headerText);
+	            if (!Util.isEmpty(tooltipText))
+	            {
+	            	header.setTooltiptext(tooltipText);
+	            }
 
 	            header.setSort("auto");
 	            header.setSortAscending(ascComparator);
@@ -471,7 +486,12 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	            		if (width < 30)
 	            			width = 30;
 	            	}
-		            else if (width > 0 && width < 100 && (classType == null || !classType.isAssignableFrom(Boolean.class)))
+	            	else if (classType.isAssignableFrom(Boolean.class))
+	            	{
+	            		if (width > 0 && width < 30)
+	            			width = 30;
+	            	}
+		            else if (width > 0 && width < 100)
 	            		width = 100;
 	            }
 	            else if (width > 0 && width < 100)
@@ -567,7 +587,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 		for (int columnIndex = 0; columnIndex < m_tableColumns.size(); columnIndex++)
         {
             column = m_tableColumns.get(columnIndex);
-			header = getListHeaderComponent(column.getHeaderValue(), columnIndex, column.getColumnClass());
+			header = getListHeaderComponent(column.getHeaderValue(), column.getTooltipText(), columnIndex, column.getColumnClass());
             head.appendChild(header);
 		}
 		head.setSizable(true);

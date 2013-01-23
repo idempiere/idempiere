@@ -880,6 +880,10 @@ div.simileAjax-bubble-container {
 	z-index: 2800 !important;
 }
 
+.info-panel .z-window-overlapped-bl, .info-panel .z-window-highlighted-bl {
+	background-color: #F4F4F4 !important;
+}
+
 .info-panel .z-grid {
 	border: none !important;
 }
@@ -896,7 +900,7 @@ div.simileAjax-bubble-container {
 .info-panel .z-south {
 	margin-top: 2px;
 	border-top: 1px solid #C5C5C5;
-	background-color: #D2E0EB;	
+	background-color: #F4F4F4; 
 }
 
 .info-panel .z-window-highlighted-cnt {
@@ -1120,8 +1124,8 @@ tbody.z-grid-empty-body td {
 
 .z-window-overlapped, .z-window-modal, .z-window-highlighted
 {
-	border-top: 1px solid #c5c5c5;
-	border-bottom: 1px solid #c5c5c5;
+	border-top: 1px solid #c5c5c5 !important;
+	border-bottom: 1px solid #c5c5c5 !important;
 }
 
 .z-window-overlapped-hl, .z-window-popup-hl, .z-window-modal-hl, .z-window-highlighted-hl, .z-window-embedded-hl,

@@ -11,12 +11,10 @@ import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.Borderlayout;
-import org.adempiere.webui.component.Label;
-import org.adempiere.webui.component.ListItem;
+import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.ListModelTable;
-import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabbox;
@@ -25,6 +23,10 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.WListbox;
+import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.panel.InfoPAttributeInstancePanel;
+import org.adempiere.webui.panel.InvoiceHistory;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.model.MDocType;
@@ -51,11 +53,6 @@ public class InfoProductWindow extends InfoWindow {
 	 */
 	private static final long serialVersionUID = 4939032152860189380L;
 
-	private Label lblWarehouse;
-	private Listbox pickWarehouse;
-	private Label lblPriceList;
-	private Listbox pickPriceList;
-	
 	private Tabbox tabbedPane;
 	private WListbox warehouseTbl;
     private String m_sqlWarehouse;
@@ -76,6 +73,11 @@ public class InfoProductWindow extends InfoWindow {
 	private int	m_M_AttributeSetInstance_ID;
 
 	private Borderlayout contentBorderLayout;
+	
+	/** Instance Button				*/
+	private Button	m_PAttributeButton;
+
+	protected int m_M_Locator_ID;
 	
 	/**
 	 * @param WindowNo
@@ -119,10 +121,24 @@ public class InfoProductWindow extends InfoWindow {
 	protected void createParameterPanel() {
 		super.createParameterPanel();
 		initParameters();
-		addSearchParameter(lblWarehouse, pickWarehouse);
 	}
 
-	
+	@Override
+	protected void renderWindow() {
+		super.renderWindow();
+		// Product Attribute Instance
+		m_PAttributeButton = confirmPanel.createButton(ConfirmPanel.A_PATTRIBUTE);
+		confirmPanel.addComponentsLeft(m_PAttributeButton);
+		m_PAttributeButton.setEnabled(false);
+		m_PAttributeButton.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				onPAttributeClick();
+			}
+		});
+		m_PAttributeButton.setVisible(true);
+	}
+
 	@Override
 	protected void renderContentPane(Center center) {
 		ColumnInfo[] s_layoutWarehouse = new ColumnInfo[]{
@@ -262,7 +278,6 @@ public class InfoProductWindow extends InfoWindow {
 		tabPanels.appendChild(desktopTabPanel);
 		//
 		int height = SessionManager.getAppDesktop().getClientInfo().desktopHeight * 90 / 100;
-//		int width = SessionManager.getAppDesktop().getClientInfo().desktopWidth * 80 / 100;
 		
 		contentBorderLayout = new Borderlayout();
 		contentBorderLayout.setWidth("100%");
@@ -293,15 +308,9 @@ public class InfoProductWindow extends InfoWindow {
 			public void onEvent(Event event) throws Exception {
 				int row = contentPanel.getSelectedRow();
 				if (row >= 0) {
-					int M_Warehouse_ID = 0;
-					ListItem listitem = pickWarehouse.getSelectedItem();
-					if (listitem != null)
-						M_Warehouse_ID = (Integer)listitem.getValue();
+					int M_Warehouse_ID = getSelectedWarehouseId();
 
-					int M_PriceList_Version_ID = 0;
-					listitem = pickPriceList.getSelectedItem();
-					if (listitem != null)
-						M_PriceList_Version_ID = (Integer)listitem.getValue();
+					int M_PriceList_Version_ID = getSelectedPriceListVersionId();
 
 					for(int i = 0; i < columnInfos.length; i++) {
 						if (columnInfos[i].getGridField() != null && columnInfos[i].getGridField().getColumnName().equals("Value")) {
@@ -309,80 +318,85 @@ public class InfoProductWindow extends InfoWindow {
 		        			contentBorderLayout.getSouth().setOpen(true);
 		        			break;
 						}
-					}        			
+					}
+					
+					Object value = contentPanel.getValueAt(row, findColumnIndex("IsInstanceAttribute"));
+					if (value != null && value.toString().equals("true")) {
+						m_PAttributeButton.setEnabled(true);
+					} else {
+						m_PAttributeButton.setEnabled(false);
+					}
 				}
 			}
 		});
 	}
 
-	private void initParameters() {
-		lblWarehouse = new Label();
-		lblWarehouse.setValue(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Warehouse")));
-		
-		pickWarehouse = new Listbox();
-		pickWarehouse.setMultiple(false);
-		pickWarehouse.setMold("select");
-		pickWarehouse.setHflex("1");
-		pickWarehouse.addEventListener(Events.ON_SELECT, new EventListener<Event>() {
+	private void onPAttributeClick() {
+		Integer productInteger = getSelectedRowKey();
+		String productName = (String)contentPanel.getValueAt(contentPanel.getSelectedRow(), findColumnIndex("Name"));
+
+		if (productInteger == null || productInteger.intValue() == 0)
+			return;
+
+		int M_Warehouse_ID = getSelectedWarehouseId();
+		if (M_Warehouse_ID <= 0)
+			return;
+
+		String title = getSelectedWarehouseLabel() + " - " + productName;
+		int C_BPartner_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_BPartner_ID");;
+		final InfoPAttributeInstancePanel pai = new InfoPAttributeInstancePanel(this, title,
+			M_Warehouse_ID, 0, productInteger.intValue(), C_BPartner_ID);
+		pai.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				ListItem item = InfoProductWindow.this.pickWarehouse.getSelectedItem();
-				if (item != null && item.getValue() != null) {
-					Env.setContext(infoContext, p_WindowNo, "Pick_Warehouse_ID", item.getValue().toString());
-				} else {
-					Env.setContext(infoContext, p_WindowNo, "Pick_Warehouse_ID", "0");
-				}
+				m_M_AttributeSetInstance_ID = pai.getM_AttributeSetInstance_ID();
+				m_M_Locator_ID = pai.getM_Locator_ID();
 			}
 		});
-		pickWarehouse.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "warehouse");
-		
-		// Warehouse
-		String sql = MRole.getDefault().addAccessSQL (
-			"SELECT M_Warehouse_ID, Value || ' - ' || Name AS ValueName "
-			+ "FROM M_Warehouse "
-			+ "WHERE IsActive='Y'",
-				"M_Warehouse", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO)
-			+ " ORDER BY Value";
-		pickWarehouse.appendItem("", new Integer(0));
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			pstmt = DB.prepareStatement(sql, null);
-			rs = pstmt.executeQuery();
-			while (rs.next())
-			{
-				pickWarehouse.appendItem(rs.getString("ValueName"), new Integer(rs.getInt("M_Warehouse_ID")));
+	}
+	
+	private String getSelectedWarehouseLabel() {
+		for(WEditor editor : editors) {
+			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_Warehouse_ID")) {
+				Number value = (Number) editor.getValue();
+				if (value != null)
+					return editor.getDisplay();
+				
+				break;
 			}
-		} catch (SQLException e) {
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		} finally {
-			DB.close(rs, pstmt);
 		}
-		
-		lblPriceList = new Label();
-		lblPriceList.setValue(Msg.getMsg(Env.getCtx(), "PriceListVersion"));
-		
-		pickPriceList = new Listbox();
-		pickPriceList.setMultiple(false);
-		pickPriceList.setMold("select");
-		pickPriceList.setHflex("1");
-		pickPriceList.addEventListener(Events.ON_SELECT, new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				ListItem item = InfoProductWindow.this.pickPriceList.getSelectedItem();
-				if (item != null && item.getValue() != null) {
-					Env.setContext(infoContext, p_WindowNo, "Pick_PriceList_ID", item.getValue().toString());
-				} else {
-					Env.setContext(infoContext, p_WindowNo, "Pick_PriceList_ID", "0");
-				}
+		return "";
+	}
+
+	protected int getSelectedPriceListVersionId() {
+		for(WEditor editor : editors) {
+			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_PriceList_Version_ID")) {
+				Number value = (Number) editor.getValue();
+				if (value != null)
+					return value.intValue();
+				
+				break;
 			}
-		});
-		pickPriceList.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "priceList");
-		addSearchParameter(lblPriceList, pickPriceList);
-		
+		}
+		return 0;
+	}
+
+	protected int getSelectedWarehouseId() {
+		for(WEditor editor : editors) {
+			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_Warehouse_ID")) {
+				Number value = (Number) editor.getValue();
+				if (value != null)
+					return value.intValue();
+				
+				break;
+			}
+		}
+		return 0;
+	}
+
+	private void initParameters() {		
 		int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_Warehouse_ID");
 		int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_PriceList_ID");
-		fillPickPriceList(M_PriceList_ID);		
 		
 		int M_PriceList_Version_ID = findPLV (M_PriceList_ID);
 		//	Set Warehouse
@@ -451,7 +465,6 @@ public class InfoProductWindow extends InfoWindow {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		Env.setContext(Env.getCtx(), p_WindowNo, "M_PriceList_Version_ID", retValue);
 		return retValue;
 	}	//	findPLV
 	
@@ -462,13 +475,11 @@ public class InfoProductWindow extends InfoWindow {
 	 */
 	private void setWarehouse(int M_Warehouse_ID)
 	{
-		for (int i = 0; i < pickWarehouse.getItemCount(); i++)
-		{
-			Integer key = (Integer) pickWarehouse.getItemAtIndex(i).getValue();
-			if (key == M_Warehouse_ID)
-			{
-				pickWarehouse.setSelectedIndex(i);
-				Env.setContext(infoContext, p_WindowNo, "Pick_Warehouse_ID", M_Warehouse_ID);
+		for(WEditor editor : editors) {
+			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_Warehouse_ID")) {
+				editor.setValue(M_Warehouse_ID);
+				Env.setContext(infoContext, p_WindowNo, "M_Warehouse_ID", M_Warehouse_ID);
+				Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, "M_Warehouse_ID", Integer.toString(M_Warehouse_ID));
 				return;
 			}
 		}
@@ -483,16 +494,16 @@ public class InfoProductWindow extends InfoWindow {
 	{
 		if (log.isLoggable(Level.CONFIG))
 			log.config("M_PriceList_Version_ID=" + M_PriceList_Version_ID);
-		for (int i = 0; i < pickPriceList.getItemCount(); i++)
-		{
-			Integer key = (Integer) pickPriceList.getItemAtIndex(i).getValue();
-			if (key == M_PriceList_Version_ID)
-			{
-				pickPriceList.setSelectedIndex(i);
-				Env.setContext(infoContext, "Pick_PriceList_Version_ID", M_PriceList_Version_ID);
+		
+		for(WEditor editor : editors) {
+			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_PriceList_Version_ID")) {
+				editor.setValue(M_PriceList_Version_ID);
+				Env.setContext(infoContext, p_WindowNo, "M_PriceList_Version_ID", M_PriceList_Version_ID);
+				Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, "M_PriceList_Version_ID", Integer.toString(M_PriceList_Version_ID));
 				return;
 			}
 		}
+		
 		if (log.isLoggable(Level.FINE))
 			log.fine("NOT found");
 	}	//	setPriceListVersion
@@ -751,49 +762,43 @@ public class InfoProductWindow extends InfoWindow {
 		//
 		m_tableAtp.autoSize();
 	}	//	initAtpTab
-	
-	/**
-	 *	Fill Picks with values
-	 *
-	 * @param M_PriceList_ID price list
-	 */
-	private void fillPickPriceList (int M_PriceList_ID)
-	{
-		//	Price List
-		String SQL = "SELECT M_PriceList_Version.M_PriceList_Version_ID,"
-			+ " M_PriceList_Version.Name || ' (' || c.Iso_Code || ')' AS ValueName "
-			+ "FROM M_PriceList_Version, M_PriceList pl, C_Currency c "
-			+ "WHERE M_PriceList_Version.M_PriceList_ID=pl.M_PriceList_ID"
-			+ " AND pl.C_Currency_ID=c.C_Currency_ID"
-			+ " AND M_PriceList_Version.IsActive='Y' AND pl.IsActive='Y'";
-		//	Same PL currency as original one
-		if (M_PriceList_ID != 0)
-			SQL += " AND EXISTS (SELECT * FROM M_PriceList xp WHERE xp.M_PriceList_ID=" + M_PriceList_ID
-				+ " AND pl.C_Currency_ID=xp.C_Currency_ID)";
-		//	Add Access & Order
-		SQL = MRole.getDefault().addAccessSQL (SQL, "M_PriceList_Version", true, false)	// fully qualidfied - RO
-			+ " ORDER BY M_PriceList_Version.Name";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
+
+	@Override
+	protected void showHistory() {
+		log.info("");
+		Integer M_Product_ID = getSelectedRowKey();
+		if (M_Product_ID == null)
+			return;
+		int M_Warehouse_ID = getSelectedWarehouseId();
+		int M_AttributeSetInstance_ID = m_M_AttributeSetInstance_ID;
+		if (m_M_AttributeSetInstance_ID < -1)	//	not selected
+			M_AttributeSetInstance_ID = 0;
+		//
+		InvoiceHistory ih = new InvoiceHistory (this, 0,
+			M_Product_ID.intValue(), M_Warehouse_ID, M_AttributeSetInstance_ID);
+		ih.setVisible(true);
+		ih = null;
+	}
+
+	@Override
+	protected boolean hasHistory() {
+		return true;
+	}
+
+	@Override
+	protected void saveSelectionDetail() {
+		super.saveSelectionDetail();
+		if (m_M_AttributeSetInstance_ID == -1)	//	not selected
 		{
-			pickPriceList.appendItem("",new Integer(0));
-			pstmt = DB.prepareStatement(SQL, null);
-			rs = pstmt.executeQuery();
-			while (rs.next())
-			{
-				pickPriceList.appendItem(rs.getString(2),new Integer(rs.getInt(1)));
-			}
+			Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "M_AttributeSetInstance_ID", "0");
+			Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "M_Locator_ID", "0");
 		}
-		catch (SQLException e)
+		else
 		{
-			log.log(Level.SEVERE, SQL, e);
-			setStatusLine(e.getLocalizedMessage(), true);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
+			Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "M_AttributeSetInstance_ID",
+				String.valueOf(m_M_AttributeSetInstance_ID));
+			Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "M_Locator_ID",
+				String.valueOf(m_M_Locator_ID));
 		}
 	}
 }

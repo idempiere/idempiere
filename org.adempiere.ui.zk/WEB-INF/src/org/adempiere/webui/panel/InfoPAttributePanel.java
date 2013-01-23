@@ -42,9 +42,9 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Textbox;
@@ -71,11 +71,15 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 	 * 	Called from InfoProduct,cmd_InfoPAttribute
 	 *	@param parent
 	 */
-	public InfoPAttributePanel(Window parent)
+	public InfoPAttributePanel(Object input)
 	{
 		super();
-		if (parent instanceof InfoProductPanel) {
-			p_M_AttributeSet_ID = ((InfoProductPanel)parent).getM_AttributeSet_ID();
+		if (input != null) {
+			if (input instanceof InfoProductPanel) {
+				p_M_AttributeSet_ID = ((InfoProductPanel)input).getM_AttributeSet_ID();
+			} else if (input instanceof Integer) {
+				p_M_AttributeSet_ID = (Integer)input;
+			}
 		}
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoPAttribute"));
 		this.setBorder("normal");
@@ -91,7 +95,10 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 		{
 			log.log(Level.SEVERE, "InfoPAttribute", e);
 		}
-		AEnv.showCenterWindow(parent, this);
+		if (input instanceof Window)
+			AEnv.showCenterWindow((Window)input, this);
+		else
+			AEnv.showWindow(this);
 	}	//	InfoPAttribute
 	
 	/**	Resulting Query			*/
@@ -251,22 +258,17 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 				{
 					Row row = new Row();
 					rows.appendChild(row);
-					Cell cell = new Cell();
-					cell.setColspan(2);
-					row.appendCellChild(cell);
-    				Label group = new Label(Msg.translate(Env.getCtx(), "IsInstanceAttribute")); 
-    				row.appendChild(group);
-    				rows.appendChild(row);
+					Div div = new Div();
+					div.setStyle("text-align: left;width: 100%");
+    				Label group = new Label(Msg.translate(Env.getCtx(), "IsInstanceAttribute"));
+    				div.appendChild(group);
+					row.appendCellChild(div, 2);
     				
     				row = new Row();
 					rows.appendChild(row);
-					cell = new Cell();
-					cell.setColspan(2);
-					row.appendCellChild(cell);
-                    Separator separator = new Separator();
+					Separator separator = new Separator();
                     separator.setBar(true);
-        			row.appendChild(separator);
-        			rows.appendChild(row);
+					row.appendCellChild(separator, 2);
         			
 					instanceLine = true;
 				}
@@ -284,14 +286,13 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 				div.appendChild(label);
 				row.appendChild(div);
 				
-				Component field = null;
+				HtmlBasedComponent field = null;
 				if (MAttribute.ATTRIBUTEVALUETYPE_List.equals(attributeValueType))
 				{
 					field = new Listbox();
 					((Listbox) field).setRows(0);
 					((Listbox) field).setMultiple(false);
 					((Listbox) field).setMold("select");
-					((Listbox) field).setWidth("150px");
 					KeyNamePair[] knp = getAttributeList(attribute_ID);
 					for(int i = 0; i < knp.length; i++)
 						((Listbox) field).appendItem(knp[i].getName(), knp[i]);
@@ -299,13 +300,13 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 				else if (MAttribute.ATTRIBUTEVALUETYPE_Number.equals(attributeValueType))
 				{
 					field = new WNumberEditor(name, false, false, true, DisplayType.Number, name).getComponent();
-					((NumberBox) field).setWidth("150px");
 				}
 				else
 				{
 					field = new WStringEditor(name, false, false, true, 10, 40, null, null).getComponent();
-					((Textbox) field).setWidth("150px");
 				}
+				
+				field.setWidth("96%");
 				row.appendChild(field);
 				//
 				field.setId(String.valueOf(attribute_ID));
@@ -357,22 +358,14 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 			if (isGuarantee || isSerial || isLot) {
 				Row row = new Row();
 				rows.appendChild(row);
-				Cell cell = new Cell();
-				cell.setColspan(2);
-				row.appendCellChild(cell);
-				Label group = new Label(Msg.translate(Env.getCtx(), "IsInstanceAttribute")); 
-				row.appendChild(group);
-				rows.appendChild(row);
+				Label group = new Label(Msg.translate(Env.getCtx(), "IsInstanceAttribute"));
+				row.appendCellChild(group, 2);
 				
 				row = new Row();
 				rows.appendChild(row);
-				cell = new Cell();
-				cell.setColspan(2);
-				row.appendCellChild(cell);
-                Separator separator = new Separator();
+				Separator separator = new Separator();
                 separator.setBar(true);
-    			row.appendChild(separator);
-    			rows.appendChild(row);
+				row.appendCellChild(separator, 2);
     			
 				instanceLine = true;
 			}

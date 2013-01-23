@@ -68,7 +68,7 @@ public class MInfoColumn extends X_AD_InfoColumn
 	public boolean isColumnAccess(TableInfo[] tableInfos)
 	{
 		int index = getSelectClause().indexOf(".");
-		if (index == getSelectClause().lastIndexOf("."))
+		if (index == getSelectClause().lastIndexOf(".") && index >= 0)
 		{
 			String synonym = getSelectClause().substring(0, index);
 			String column = getSelectClause().substring(index+1);

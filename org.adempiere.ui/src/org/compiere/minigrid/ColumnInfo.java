@@ -80,6 +80,8 @@ public class ColumnInfo
 	private boolean     m_colorColumn;
 	private String      m_keyPairColSQL = "";
 	private GridField m_gridField;
+	
+	private String colDescription;
 
 	/**
 	 * 	Get Col Class
@@ -203,5 +205,13 @@ public class ColumnInfo
 	public GridField getGridField()
 	{
 		return m_gridField;
+	}
+
+	public String getColDescription() {
+		return colDescription;
+	}
+
+	public void setColDescription(String colDescription) {
+		this.colDescription = colDescription;
 	}
 }   //  infoColumn

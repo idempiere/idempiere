@@ -71,7 +71,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 	private Borderlayout layout;
 	private Vbox southBody;
 	/** List of WEditors            */
-    private List<WEditor> editors;
+    protected List<WEditor> editors;
     protected Properties infoContext;
 
 	/** Max Length of Fields */
@@ -257,6 +257,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 				{
 					columnInfo = new ColumnInfo(infoColumn.getName(), infoColumn.getSelectClause(), DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
 				}
+				columnInfo.setColDescription(infoColumn.getDescription());
 				columnInfo.setGridField(gridFields.get(i));
 				list.add(columnInfo);				
 			}		
@@ -319,7 +320,17 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 			builder.append(tableInfos[0].getSynonym()).append(".IsActive='Y'");
 		}
 		for(WEditor editor : editors) {
-			if (editor.getGridField() != null && editor.getValue() != null && editor.getValue().toString().trim().length() > 0) {
+			if (editor instanceof IWhereClauseEditor) {
+				String whereClause = ((IWhereClauseEditor) editor).getWhereClause();
+				if (whereClause != null && whereClause.trim().length() > 0) {
+					if (builder.length() > 0) {
+						builder.append(" AND ");
+					} else if (p_whereClause != null && p_whereClause.trim().length() > 0) {
+						builder.append(" AND ");
+					}	
+					builder.append(whereClause);
+				}
+			} else if (editor.getGridField() != null && editor.getValue() != null && editor.getValue().toString().trim().length() > 0) {
 				MInfoColumn mInfoColumn = findInfoColumn(editor.getGridField());
 				if (mInfoColumn == null || mInfoColumn.getSelectClause().equals("0")) {
 					continue;
@@ -488,12 +499,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 
 	protected void createParameterPanel() {
 		parameterGrid = GridFactory.newGridLayout();
-//		parameterGrid.setInnerWidth("auto");
 		parameterGrid.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoParameterPanel");
 		parameterGrid.setStyle("width: 90%; margin: auto;");
 		Columns columns = new Columns();
 		parameterGrid.appendChild(columns);
-		for(int i = 0; i < 8; i++)
+		for(int i = 0; i < 6; i++)
 			columns.appendChild(new Column());
 		
 		Rows rows = new Rows();
@@ -521,12 +531,19 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 
         //  Editor
         WEditor editor = null;
-        editor = WebEditorFactory.getEditor(mField, false);
-        editor.setMandatory(false);
-        editor.setReadWrite(true);
-        editor.dynamicDisplay();
-        editor.addValueChangeListener(this);
-        editor.fillHorizontal();
+        if (mField.getDisplayType() == DisplayType.PAttribute) 
+        {
+        	editor = new WInfoPAttributeEditor(infoContext, p_WindowNo, mField);
+        }
+        else 
+        {
+	        editor = WebEditorFactory.getEditor(mField, false);
+	        editor.setMandatory(false);
+	        editor.setReadWrite(true);
+	        editor.dynamicDisplay();
+	        editor.addValueChangeListener(this);
+	        editor.fillHorizontal();
+        }
         Label label = editor.getLabel();
         Component fieldEditor = editor.getComponent();
 
@@ -552,7 +569,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
         else
         {
         	panel = (Row) parameterGrid.getRows().getLastChild();
-        	if (panel.getChildren().size() >= 8)
+        	if (panel.getChildren().size() >= 6)
         	{
         		panel = new Row();
             	parameterGrid.getRows().appendChild(panel); 
@@ -565,6 +582,16 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
         	panel.appendChild(new Space());
         }
         panel.appendChild(fieldEditor);
+	}
+	
+	protected int findColumnIndex(String columnName) {
+		for(int i = 0; i < columnInfos.length; i++) {
+			GridField field = columnInfos[i].getGridField();
+			if (field != null && field.getColumnName().equalsIgnoreCase(columnName)) {
+				return i;
+			}
+		}
+		return -1;
 	}
     
     /**
@@ -681,7 +708,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
             	if (otherEditor == editor) 
             		continue;
             	
-            	editor.dynamicDisplay();
+            	otherEditor.dynamicDisplay();
             }
         }
 		

@@ -42,6 +42,8 @@ public class WTableColumn
     protected Object		headerValue;
     
     protected Class<?> columnClass;
+    
+    protected String tooltipText;
 
     /** 
      *  Cover method, using a default width of 75 
@@ -271,5 +273,19 @@ public class WTableColumn
 	public void setColumnClass(Class<?> columnClass) 
 	{
 		this.columnClass = columnClass;
+	}
+
+	/**
+	 * @return tooltip text
+	 */
+	public String getTooltipText() {
+		return tooltipText;
+	}
+
+	/**
+	 * @param tooltipText
+	 */
+	public void setTooltipText(String tooltipText) {
+		this.tooltipText = tooltipText;
 	}
 }
