@@ -121,6 +121,18 @@ public class MRMALine extends X_M_RMALine
             MCharge charge = MCharge.get(this.getCtx(), getC_Charge_ID());
             unitAmount = charge.getChargeAmt();
             
+            MInvoice invoice = getParent().getOriginalInvoice();
+    		if (invoice != null) 
+    			precision = invoice.getPrecision();
+    		else 
+    		{
+    			MOrder order = getParent().getOriginalOrder();
+    			if (order != null) 
+    				precision = order.getPrecision();
+    			else
+    				throw new IllegalStateException("No Invoice/Order found the Shipment/Receipt associated");
+    		}
+            
             // Retrieve tax Exempt
             String sql = "SELECT C_Tax_ID FROM C_Tax WHERE AD_Client_ID=? AND IsActive='Y' "
                 + "AND IsTaxExempt='Y' AND ValidFrom < SYSDATE ORDER BY IsDefault DESC";
