@@ -73,19 +73,19 @@ public class WindowCopy extends SvrProcess
 		
 		int tabCount = 0;
 		int fieldCount = 0;
-		MTab[] oldTabs = from.getTabs(false, get_TrxName());
-		for (int i = 0; i < oldTabs.length; i++)
+		for (MTab oldTab : from.getTabs(false, get_TrxName()))
 		{
-			MTab oldTab = oldTabs[i];
+			if (! oldTab.isActive())
+				continue;
 			MTab newTab = new MTab (to, oldTab);
 			if (newTab.save())
 			{
 				tabCount++;
 				//	Copy Fields
-				MField[] oldFields = oldTab.getFields(false, get_TrxName());
-				for (int j = 0; j < oldFields.length; j++)
+				for (MField oldField : oldTab.getFields(false, get_TrxName()))
 				{
-					MField oldField = oldFields[j];
+					if (! oldField.isActive())
+						continue;
 					MField newField = new MField (newTab, oldField);
 					if (newField.save())
 						fieldCount++;
