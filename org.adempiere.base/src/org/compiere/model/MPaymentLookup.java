@@ -199,7 +199,7 @@ public class MPaymentLookup extends Lookup implements Serializable {
 	
 	@Override
 	public ArrayList<Object> getData(boolean mandatory, boolean onlyValidated,
-			boolean onlyActive, boolean temporary) {
+			boolean onlyActive, boolean temporary, boolean shortlist) { // IDEMPIERE 90
 		ArrayList<Object> list = new ArrayList<Object>();
 		
 		ValueNamePair[] values = getData();
@@ -220,7 +220,7 @@ public class MPaymentLookup extends Lookup implements Serializable {
 
 	@Override
 	public int refresh() {
-		fillComboBox(isMandatory(), true, true, false);
+		fillComboBox(isMandatory(), true, true, false, false); // IDEMPIERE 90
 		return super.getSize();
 	}
 }

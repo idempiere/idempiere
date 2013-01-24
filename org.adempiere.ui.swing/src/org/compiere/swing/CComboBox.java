@@ -984,4 +984,21 @@ public class CComboBox extends JComboBox
 		}
 	}   //   ReducibleKeyListener
 
+	// IDEMPIERE 90
+	/**	show only short list items or all ?	*/
+	private boolean m_ShortListSearch = false;
+
+	/**	set the editor to return only short list items */
+	public void setShortListSearch (boolean shortList)
+	{
+		m_ShortListSearch = shortList;
+	}   //  setShortListSearch
+
+	/**	does the search should return only short list items ? */
+	public boolean isShortListSearch()
+	{
+		return m_ShortListSearch;
+	}   //  isShortListSearch
+
+	// IDEMPIERE 90
 }   //  CComboBox

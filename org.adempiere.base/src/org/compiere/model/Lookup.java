@@ -76,6 +76,8 @@ public abstract class Lookup extends AbstractListModel
 	
 	private boolean					m_loaded;
 
+	private boolean					m_shortList;	// IDEMPIERE 90
+
 	/**
 	 * 	Get Display Type
 	 *	@return display type
@@ -259,7 +261,7 @@ public abstract class Lookup extends AbstractListModel
 	 *  @param temporary  save current values - restore via fillComboBox (true)
 	 */
 	public void fillComboBox (boolean mandatory, boolean onlyValidated, 
-		boolean onlyActive, boolean temporary)
+		boolean onlyActive, boolean temporary, boolean shortList) // IDEMPIERE 90
 	{
 		long startTime = System.currentTimeMillis();
 		m_loaded = false;
@@ -279,7 +281,7 @@ public abstract class Lookup extends AbstractListModel
 		p_data.clear();
 
 		//  may cause delay *** The Actual Work ***
-		p_data = getData (mandatory, onlyValidated, onlyActive, temporary);
+		p_data = getData (mandatory, onlyValidated, onlyActive, temporary, shortList); // IDEMPIERE 90
 		
 		//  Selected Object changed
 		if (obj != m_selectedObject)
@@ -335,7 +337,7 @@ public abstract class Lookup extends AbstractListModel
 			return;
 		}
 		if (p_data != null)
-			fillComboBox(isMandatory(), true, true, false);
+			fillComboBox(isMandatory(), true, true, false, false); // IDEMPIERE 90
 	}   //  fillComboBox
 
 	
@@ -363,7 +365,7 @@ public abstract class Lookup extends AbstractListModel
 	 *  @return ArrayList
 	 */
 	public abstract ArrayList<Object> getData (boolean mandatory, 
-		boolean onlyValidated, boolean onlyActive, boolean temporary);
+		boolean onlyValidated, boolean onlyActive, boolean temporary, boolean shortlist); // IDEMPIERE 90
 
 	/**
 	 *	Get underlying fully qualified Table.Column Name.
@@ -503,5 +505,16 @@ public abstract class Lookup extends AbstractListModel
 	{
 		return m_loaded;
 	}
-	
+
+	// IDEMPIERE 90
+	public void setShortList(boolean shortlist)
+	{
+		m_shortList = shortlist;
+	}
+
+	public boolean isShortList()
+	{
+		return m_shortList;
+	}
+	// IDEMPIERE 90
 }	//	Lookup

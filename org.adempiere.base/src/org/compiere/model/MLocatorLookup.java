@@ -414,7 +414,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	 * 	@param temporary force load for temporary display
 	 *  @return ArrayList of lookup values
 	 */
-	public ArrayList<Object> getData (boolean mandatory, boolean onlyValidated, boolean onlyActive, boolean temporary)
+	public ArrayList<Object> getData (boolean mandatory, boolean onlyValidated, boolean onlyActive, boolean temporary, boolean shortlist) // IDEMPIERE 90
 	{
 		//	create list
 		Collection<MLocator> collection = getData();

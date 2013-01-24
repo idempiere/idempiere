@@ -243,7 +243,7 @@ public class VLocatorDialog extends CDialog
 		log.fine("Warehouses=" + fWarehouse.getItemCount());
 
 		//	Load existing Locators
-		m_mLocator.fillComboBox(m_mandatory, true, true, false);
+		m_mLocator.fillComboBox(m_mandatory, true, true, false, false); // IDEMPIERE 90
 		log.fine(m_mLocator.toString());
 		fLocator.setModel(m_mLocator);
 		fLocator.setValue(m_M_Locator_ID);
