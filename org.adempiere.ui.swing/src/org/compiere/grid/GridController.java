@@ -417,7 +417,10 @@ public class GridController extends CPanel
 				GridField mField = m_mTab.getField(i);
 				if (mField.isDisplayed() 
 						// IDEMPIERE-587 Swing: Toolbar Button to start Process from button fields
-						&& mField.getDisplayType()!=DisplayType.Button)
+						&& !(
+							mField.getDisplayType()==DisplayType.Button 
+							&& mField.isToolbarButton())
+						)
 				{
 					VEditor vEditor = VEditorFactory.getEditor(m_mTab, mField, false);
 					if (vEditor == null)

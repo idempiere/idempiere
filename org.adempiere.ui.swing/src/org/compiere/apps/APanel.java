@@ -54,7 +54,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -73,8 +72,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
-import org.adempiere.ui.swing.factory.DefaultEditorFactory;
 import org.adempiere.util.Callback;
 import org.adempiere.util.IProcessUI;
 import org.compiere.apps.form.FormFrame;
@@ -90,7 +90,6 @@ import org.compiere.grid.VSortTab;
 import org.compiere.grid.VTabbedPane;
 import org.compiere.grid.ed.VButton;
 import org.compiere.grid.ed.VDocAction;
-import org.compiere.grid.ed.VEditor;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
@@ -105,7 +104,6 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
-import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MUser;
 import org.compiere.model.MWindow;
@@ -275,7 +273,7 @@ public final class APanel extends CPanel
 		//  Prepare GC
 		this.removeAll();
 	}	//	dispose
-
+	
 	/**
 	 * The Layout.
 	 */
@@ -1599,13 +1597,14 @@ public final class APanel extends CPanel
 			// IDEMPIERE-587 - Swing: Toolbar Button to start Process from button fields
 			// tbayen - 2013-01-22
 			GridField[] fields = m_curGC.getMTab().getFields();
-        	aProcess.setEnabled(false);
+			boolean processEnabled=false;
 			for(GridField field:fields){
 	        	if (field.isToolbarButton() && field.isDisplayed()){
-		        	aProcess.setEnabled(true);
+	        		processEnabled=true;
 		        	break;
 	        	}
 	        }
+        	aProcess.setEnabled(processEnabled);
 		}
 		
 		//
@@ -2124,12 +2123,16 @@ public final class APanel extends CPanel
 		return retValue;
 	}
 
+	private long m_popup_closingtime=0;
+
 	/**
 	 * opens a pulldown menu to start processes from "Button" type fields.
 	 */
 	// IDEMPIERE-587 - Swing: Toolbar Button to start Process from button fields
 	// tbayen - 2013-01-22
 	public void cmd_process() {
+		if(System.currentTimeMillis()-m_popup_closingtime<200)
+			return;  // closed through the same click - user has clicked to close the menu
 		GridField[] fields = m_curGC.getMTab().getFields();
 		final ArrayList<GridField> processFields = new ArrayList<GridField>();
 		for (GridField field : fields) {
@@ -2138,6 +2141,16 @@ public final class APanel extends CPanel
 			}
 		}
 		JPopupMenu popup = new JPopupMenu();
+		popup.addPopupMenuListener(new PopupMenuListener() {
+			@Override
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+				m_popup_closingtime=System.currentTimeMillis();
+			}
+			
+			@Override public void popupMenuWillBecomeVisible(PopupMenuEvent e) {}
+			@Override public void popupMenuCanceled(PopupMenuEvent e) {}
+		});
+
 		for (GridField field : processFields) {
 			if (field.isDisplayed(true)) {
 				ImageIcon icon = Env.getImageIcon2("Process16");
@@ -2244,7 +2257,7 @@ public final class APanel extends CPanel
 				});
 			}
 		}
-		popup.show(aProcess.getButton(), 0, aProcess.getButton().getHeight());
+		popup.show(aProcess.getButton(), -1, aProcess.getButton().getHeight());
 	}
 	
 	/**
