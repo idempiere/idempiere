@@ -370,6 +370,7 @@ public class GridController extends CPanel
 		{
 			vPanel.setBorder(BorderFactory.createLineBorder(AdempierePLAF.getPrimary2()));
 		}
+		vPane.getVerticalScrollBar().setUnitIncrement(16);  // IDEMPIERE-572 - tbayen 2013-01-20
 		vPane.getViewport().add(xPanel, null);
 		xPanel.add(vPanel, BorderLayout.CENTER);
 
