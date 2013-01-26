@@ -18,6 +18,7 @@ package org.compiere.swing;
 
 import java.awt.Color;
 import java.awt.Insets;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -30,12 +31,12 @@ import java.awt.im.InputMethodRequests;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
-import javax.swing.FocusManager;
 import javax.swing.InputMap;
 import javax.swing.InputVerifier;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.Document;
 
 import org.adempiere.plaf.AdempierePLAF;
@@ -59,9 +60,6 @@ public class CTextArea extends JScrollPane
 	
 	// IDEMPIERE-320
 	private static final String FIRE_CHANGE = "fire-change";
-	private static final String INSERT_BREAK = "insert-break";
-	private static final String TAB_PRESS = "tab-press";
-	private static final String SHIFT_TAB_PRESS = "shift-tab-press";
 
 	/**
 	 * Constructs a new TextArea.  A default model is set, the initial string
@@ -157,16 +155,31 @@ public class CTextArea extends JScrollPane
 		m_textArea.setWrapStyleWord(true);
 		//	Overwrite default Tab
 		m_textArea.firePropertyChange("editable", !isEditable(), isEditable());
-		
+
+	    // IDEMPIERE-573 - Swing text areas break user flow when cycling focus with tab key
+		// tbayen - 2013-01-20
+		// remove special treatment of TAB and Ctrl-TAB in JTextArea
+		m_textArea.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);
+		m_textArea.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
+		// Use Ctrl-TAB to insert tab character into text area.
+		KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK);
+		m_textArea.getInputMap().put(keyStroke, DefaultEditorKit.insertTabAction);
+
+		// IDEMPIERE-320 (see also comment at IDEMPIERE-573)
+		// Use Ctrl-ENTER oder Shift-ENTER to insert newline in text area.
+		// (independent from SWING_OVERRIDE_TEXT_AREA_BEHAVIOUR on or off 
+		// as a convenience for switching users)
+		keyStroke =KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,InputEvent.SHIFT_DOWN_MASK);
+		m_textArea.getInputMap().put(keyStroke, DefaultEditorKit.insertBreakAction);
+		keyStroke =KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,InputEvent.CTRL_DOWN_MASK);
+		m_textArea.getInputMap().put(keyStroke, DefaultEditorKit.insertBreakAction);
+
 		// IDEMPIERE-320
 		boolean taBehaviour = MSysConfig.getBooleanValue(MSysConfig.SWING_OVERRIDE_TEXT_AREA_BEHAVIOUR, false, Env.getAD_Client_ID(Env.getCtx()));
 		if (taBehaviour)
 		{
 			InputMap im = m_textArea.getInputMap();
-			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK), INSERT_BREAK);
 			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), FIRE_CHANGE);
-			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), TAB_PRESS);
-			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK), SHIFT_TAB_PRESS);
 			
 			ActionMap am = m_textArea.getActionMap();
 			am.put(FIRE_CHANGE, new AbstractAction() {
@@ -182,34 +195,6 @@ public class CTextArea extends JScrollPane
 					m_textArea.requestFocus();
 				}
 			});
-			
-			am.put(TAB_PRESS, new AbstractAction() {
-
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = -410878209760495750L;
-
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					FocusManager.getCurrentKeyboardFocusManager()
-						.focusNextComponent();
-				}
-			});
-			
-			am.put(SHIFT_TAB_PRESS, new AbstractAction() {
-
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 8279987397360805855L;
-
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					FocusManager.getCurrentKeyboardFocusManager()
-						.focusPreviousComponent();
-				}
-			});			
 		}
 	}   //  CTextArea
 
