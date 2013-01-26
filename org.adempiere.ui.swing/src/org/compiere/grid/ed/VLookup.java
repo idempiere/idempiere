@@ -40,6 +40,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
@@ -296,6 +297,15 @@ public class VLookup extends JComponent
 				m_buttonSL.setMargin(new Insets(0, 0, 0, 0));
 				m_buttonSL.setIcon(Env.getImageIcon("LockX16.gif"));
 				m_buttonSL.setToolTipText(Msg.getMsg(Env.getCtx(), "ShortListShortListItems"));
+				ActionMap am = m_combo.getActionMap();
+				am.put("shortlist", new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						actionShortList();
+					}
+				});
+				m_combo.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+					.put(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK), "shortlist");
 			}
 		}
 		//	IDEMPIERE 90
