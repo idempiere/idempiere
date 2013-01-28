@@ -488,6 +488,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	border: none;
 	width: 100%;
 	height: 100%;
+	background-color: #F9F9F9;
 }
 
 .adwindow-layout .z-center {
@@ -577,10 +578,12 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .adwindow-gridview-detail + .z-south-splt {
 	border-top: 1px solid #C5C5C5;
+	border-bottom: 1px solid #C5C5C5;
 }
 
 .adwindow-gridview-detail .z-south-body {
 	padding-top: 1px;
+	background-color: #D3D3D3;
 }
 
 .adwindow-gridview-borderlayout {
@@ -805,6 +808,12 @@ tr.z-group {
 
 .z-group-inner .z-group-cnt .z-label, .z-group-inner .z-group-cnt {
 	font-family: Helvetica,Arial,sans-serif;
+}
+
+.z-group td.z-group-inner {
+	overflow: hidden !important;
+	border-bottom: 1px solid #CFCFCF !important;
+	border-top: 1px solid #CFCFCF !important;
 }
 
 <%-- Tablet --%>
@@ -1041,12 +1050,6 @@ tbody.z-grid-empty-body td {
 
 .grid-combobox-editor input {
 	width: 85% !important;
-}
-
-.z-group td.z-group-inner {
-	overflow: hidden !important;
-	border-bottom: 1px solid #CFCFCF !important;
-	border-top: 1px solid #CFCFCF !important;
 }
 
 .embedded-dialog {

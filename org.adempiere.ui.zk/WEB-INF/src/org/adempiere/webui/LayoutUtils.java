@@ -74,6 +74,11 @@ public final class LayoutUtils {
 				|| ((" " + sclass + " ").indexOf(" " + cls + " ") > -1);
 	}	
 	
+	/**
+	 * 
+	 * @param label
+	 * @return wrapped label
+	 */
 	public static Component makeRightAlign(Label label) {
 		Div div = new Div();
 		div.setStyle("text-align: right");
@@ -154,6 +159,10 @@ public final class LayoutUtils {
 		Clients.response("_openPopupWindow_", new AuScript(window, script.toString()));
 	}
 	
+	/**
+	 * 
+	 * @param component
+	 */
 	public static void redraw(AbstractComponent component) {
 		StringWriter writer = new StringWriter(1024);
 		try {
@@ -162,5 +171,21 @@ public final class LayoutUtils {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		
+	}
+
+	/**
+	 * @param component
+	 * @return true if the component and all its parent are visible
+	 */
+	public static boolean isReallyVisible(Component component) {
+		if (!component.isVisible()) return false;
+		Component parent = component.getParent();
+		while (parent != null) {
+			if (!parent.isVisible())
+				return false;
+			
+			parent = parent.getParent();
+		}
+		return true;
 	}
 }

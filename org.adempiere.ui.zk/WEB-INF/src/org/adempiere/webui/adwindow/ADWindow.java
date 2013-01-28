@@ -51,11 +51,22 @@ public class ADWindow extends AbstractUIPart
 	
 	private static final CCache<Integer, AImage> imageCache = new CCache<Integer, AImage>(null, "WindowImageCache", 5, false);
     
+	/**
+	 * 
+	 * @param ctx
+	 * @param adWindowId
+	 */
     public ADWindow(Properties ctx, int adWindowId)
     {
        this(ctx, adWindowId, null);
     }
     
+    /**
+     * 
+     * @param ctx
+     * @param adWindowId
+     * @param query
+     */
     public ADWindow(Properties ctx, int adWindowId, MQuery query)
     {
     	 if(adWindowId <= 0)
@@ -75,11 +86,19 @@ public class ADWindow extends AbstractUIPart
         image = windowContent.getImage();
     }
     
+    /**
+     * 
+     * @return title of window
+     */
     public String getTitle()
     {
         return _title;
     }
     
+    /**
+     * 
+     * @return image for the country
+     */
     public MImage getMImage()
     {
     	return image;
@@ -118,6 +137,7 @@ public class ADWindow extends AbstractUIPart
     	}
     }
 
+    @Override
 	public Component getComponent() {
 		return windowPanelComponent;
 	}	
@@ -129,7 +149,28 @@ public class ADWindow extends AbstractUIPart
 		return windowContent;
 	}
 	
+	/**
+	 * 
+	 * @param windowNo
+	 * @return adwindow instance for windowNo ( if any )
+	 */
 	public static ADWindow get(int windowNo) {
 		return (ADWindow) SessionManager.getAppDesktop().findWindow(windowNo);
+	}
+	
+	/**
+	 * @param comp
+	 * @return adwindow instance if found, null otherwise
+	 */
+	public static ADWindow findADWindow(Component comp) {
+		Component parent = comp.getParent();
+		while(parent != null) {
+			if (parent.getAttribute(AD_WINDOW_ATTRIBUTE_KEY) != null) {
+				ADWindow adwindow = (ADWindow) parent.getAttribute(AD_WINDOW_ATTRIBUTE_KEY);
+				return adwindow;
+			}
+			parent = parent.getParent();
+		}
+		return null;
 	}
 }

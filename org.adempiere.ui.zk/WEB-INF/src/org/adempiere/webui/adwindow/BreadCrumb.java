@@ -28,6 +28,7 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.window.WRecordInfo;
 import org.compiere.model.DataStatusEvent;
@@ -37,6 +38,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zhtml.Text;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
@@ -61,6 +63,10 @@ import org.zkoss.zul.Space;
  *
  */
 public class BreadCrumb extends Div implements EventListener<Event> {
+
+	private static final String ON_MOUSE_OVER_ECHO_EVENT = "onMouseOverEcho";
+	
+	private static final String ON_MOUSE_OUT_ECHO_EVENT = "onMouseOutEcho";
 
 	private static final String INFO_INDICATOR_IMAGE = "/images/InfoIndicator16.png";
 
@@ -160,12 +166,24 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		
 		toolbar.setStyle("background-image: none; background-color: transparent; border: none;");
 		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "breadcrumb");
+		
+		this.addEventListener(ON_MOUSE_OUT_ECHO_EVENT, this);
 	}
 
+	/**
+	 * 
+	 * @param listener
+	 */
 	public void setToolbarListener(ToolbarListener listener) {
 		this.toolbarListener = listener;
 	}
 	
+	/**
+	 * 
+	 * @param label
+	 * @param id
+	 * @param clickable
+	 */
 	public void addPath(String label, String id, boolean clickable) {
 		if (clickable) {
 			BreadCrumbLink a = new BreadCrumbLink();
@@ -193,6 +211,10 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return list of parent links
+	 */
 	public List<BreadCrumbLink> getParentLinks() {
 		List<BreadCrumbLink> parents = new ArrayList<BreadCrumbLink>();
 		for(Component component : layout.getChildren()) {
@@ -202,20 +224,63 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		return parents;
 	}
 	
+	/**
+	 * add links to other tabs at the same level
+	 * @param links
+	 */
 	public void addLinks(LinkedHashMap<String, String> links) {
 		this.links = links;
 		final Label pathLabel = (Label) layout.getChildren().get(layout.getChildren().size()-2);
-		pathLabel.setStyle("cursor: pointer; font-weight: bold");
+		pathLabel.setStyle("cursor: pointer; font-weight: bold; padding-right: 10px;");
 		EventListener<Event> listener = new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				if (linkPopup != null  ) {
-					if (linkPopup.getPage() != null && linkPopup.isVisible()) {
-						return;
+				if (linkPopup != null && linkPopup.getPage() != null && linkPopup.isVisible()) {
+					if (event.getName().equals(Events.ON_MOUSE_OUT)) {
+						linkPopup.setAttribute(ON_MOUSE_OUT_ECHO_EVENT, Boolean.TRUE);
+						StringBuilder script = new StringBuilder("setTimeout(function(){var w=zk('#")
+							.append(BreadCrumb.this.getUuid()).append("').$();")
+							.append("var e=new zk.Event(w, '")
+							.append(ON_MOUSE_OUT_ECHO_EVENT)
+							.append("', null, {toServer:true});")
+							.append("zAu.send(e);},500)");
+						final AuScript response = new AuScript(script.toString());
+						Clients.response(response);
 					}
+					return;
 				}
 				
-				linkPopup = new Menupopup();
+				if (event.getName().equals(Events.ON_CLICK)) {
+					if (linkPopup != null && linkPopup.getPage() != null)
+						linkPopup.detach();
+					linkPopup = new Menupopup();
+					showLinksMenu(pathLabel);
+				} else if (event.getName().equals(Events.ON_MOUSE_OVER)) {
+					if (linkPopup == null || !linkPopup.isVisible()) {
+						if (linkPopup != null && linkPopup.getPage() != null)
+							linkPopup.detach();
+						linkPopup = new Menupopup();
+						StringBuilder script = new StringBuilder("setTimeout(function(){var w=zk('#")
+							.append(event.getTarget().getUuid()).append("').$();")
+							.append("var e=new zk.Event(w, '")
+							.append(ON_MOUSE_OVER_ECHO_EVENT)
+							.append("', null, {toServer:true});")
+							.append("zAu.send(e);},500)");
+						AuScript response = new AuScript(script.toString());
+						Clients.response(response);
+					}
+				} else if (event.getName().equals(Events.ON_MOUSE_OUT)) {
+					if (linkPopup != null && linkPopup.getPage() == null) {
+						linkPopup = null;
+					} 
+				} else if (event.getName().equals(ON_MOUSE_OVER_ECHO_EVENT)) {
+					if (linkPopup != null && linkPopup.getPage() == null) {
+						showLinksMenu(pathLabel);
+					}
+				}
+			}
+
+			private void showLinksMenu(final Label pathLabel) {
 				for(Map.Entry<String, String>entry : BreadCrumb.this.links.entrySet()) {
 					final Menuitem item = new Menuitem();
 					item.setLabel(entry.getValue());
@@ -223,12 +288,41 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 					item.addEventListener(Events.ON_CLICK, BreadCrumb.this);
 					linkPopup.appendChild(item);
 				}
+				
+				StringBuilder script = new StringBuilder("setTimeout(function(){var w=zk('#")
+					.append(BreadCrumb.this.getUuid()).append("').$();")
+					.append("var e=new zk.Event(w, '")
+					.append(ON_MOUSE_OUT_ECHO_EVENT)
+					.append("', null, {toServer:true});")
+					.append("zAu.send(e);},500)");
+				final AuScript response = new AuScript(script.toString());
+				linkPopup.addEventListener(Events.ON_MOUSE_OUT, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						if (linkPopup != null) {							
+							linkPopup.setAttribute(ON_MOUSE_OUT_ECHO_EVENT, Boolean.TRUE);
+							Clients.response(response);
+						}
+					}
+				});
+				linkPopup.addEventListener(Events.ON_MOUSE_OVER, new EventListener<Event>() {
+
+					@Override
+					public void onEvent(Event event) throws Exception {
+						if (linkPopup != null && linkPopup.isVisible()) {
+							linkPopup.removeAttribute(ON_MOUSE_OUT_ECHO_EVENT);
+						}						
+					}					
+				});
 				linkPopup.setPage(pathLabel.getPage());
-				linkPopup.open(pathLabel);
+				linkPopup.open(pathLabel);								
 			}
 		};
 		pathLabel.addEventListener(Events.ON_CLICK, listener);
 		pathLabel.addEventListener(Events.ON_MOUSE_OVER, listener);
+		pathLabel.addEventListener(Events.ON_MOUSE_OUT, listener);
+		pathLabel.addEventListener(ON_MOUSE_OVER_ECHO_EVENT, listener);
+		ZkCssHelper.appendStyle(pathLabel, "background: transparent url('images/downarrow.png') no-repeat right center");
 	}
 
 	@Override
@@ -241,10 +335,9 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 
 			String title = Msg.getMsg(Env.getCtx(), "Who") + m_text;
 			new WRecordInfo (title, m_dse);
-		}else if(event.getTarget() instanceof RecordLink){
+		} else if(event.getTarget() instanceof RecordLink){
 			doZoom((RecordLink)event.getTarget());
- 		}
-		else if (event.getTarget().getParent() == messageContainer) {
+ 		} else if (event.getTarget().getParent() == messageContainer) {
 			showPopup();
 		} else if (event.getTarget() == btnFirst) {
 			if (toolbarListener != null)
@@ -258,23 +351,42 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		} else if (event.getTarget() == btnLast) {
 			if (toolbarListener != null)
 				toolbarListener.onLast();
+		} else if (event.getName().equals(ON_MOUSE_OUT_ECHO_EVENT)) {
+			if (linkPopup != null && linkPopup.getPage() != null && linkPopup.isVisible()
+				&& linkPopup.getAttribute(ON_MOUSE_OUT_ECHO_EVENT) != null) {
+				linkPopup.detach();
+				linkPopup = null;
+			}
 		} else {
 			Events.sendEvent(this, event);
 		}
 	}
 
+	/**
+	 * remove all links
+	 */
 	public void reset() {
-		layout.getChildren().clear();
-		layout.appendChild(toolbarContainer);
-		this.links = null;
+		if (layout.getChildren().size() == 0 || layout.getChildren().size() > 1) {
+			layout.getChildren().clear();
+			layout.appendChild(toolbarContainer);
+			this.links = null;
+		}
 	}
 
+	/**
+	 * enable/disable first record and previous record toolbar button 
+	 * @param enabled
+	 */
     public void enableFirstNavigation(boolean enabled)
     {
         this.btnFirst.setDisabled(!enabled);
         this.btnPrevious.setDisabled(!enabled);
     }
 
+    /**
+     * enable or disable the next record and last record toolbar button
+     * @param enabled
+     */
     public void enableLastNavigation(boolean enabled)
     {
         this.btnLast.setDisabled(!enabled);
@@ -505,7 +617,6 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		msgPopup.setContentStyle("overflow: auto");
         msgPopup.setWidth("500px");
         msgPopup.appendChild(msgPopupCnt);
-//        msgPopup.setPage(SessionManager.getAppDesktop().getComponent().getPage());
         msgPopup.setShadow(true);
         msgPopupCaption = new Caption();
         msgPopup.appendChild(msgPopupCaption);        
@@ -524,10 +635,17 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 			linkPopup.detach();
 	}
 
+	/**
+	 * 
+	 * @param visible
+	 */
 	public void setNavigationToolbarVisibility(boolean visible) {
 		toolbarContainer.setVisible(visible);
 	}
 
+	/**
+	 * @return true if there are one or more parent link
+	 */
 	public boolean hasParentLink() {
 		for(Component c : layout.getChildren()) {
 			if (c instanceof BreadCrumbLink) {
@@ -537,6 +655,10 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @return process logs
+	 */
 	public ProcessInfoLog[] getPLogs() {
 		return pInfoLogs;
 	}

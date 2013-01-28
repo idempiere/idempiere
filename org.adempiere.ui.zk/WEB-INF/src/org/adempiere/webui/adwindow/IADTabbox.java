@@ -109,25 +109,72 @@ public interface IADTabbox extends UIPart {
 	 */
 	public void setADWindowPanel(AbstractADWindowContent abstractADWindowPanel);
 
+	/**
+	 * drill down to the current selected adtabpanel
+	 */
 	public void onDetailRecord();
 
+	/**
+	 * @return true if current header tab is a sort tab
+	 */
 	public boolean isSortTab();
 
+	/**
+	 * @param rowChange
+	 * @param onlyRealChange
+	 * @return true if there are changes pending to be save
+	 */
 	public boolean needSave(boolean rowChange, boolean onlyRealChange);
 
+	/**
+	 * ignore all pending changes
+	 */
 	public void dataIgnore();
 
+	/**
+	 * @return selected header grid tab
+	 */
 	public GridTab getSelectedGridTab();
 
+	/**
+	 * 
+	 * @param onSaveEvent
+	 * @return true if save is successfull
+	 */
 	public boolean dataSave(boolean onSaveEvent);
 
+	/**
+	 * 
+	 * @param status
+	 * @param error
+	 */
 	public void setDetailPaneStatusMessage(String status, boolean error);
 
+	/**
+	 * @return the currently selected detail adtabpanel
+	 */
 	IADTabpanel getSelectedDetailADTabpanel();
 
+	/**
+	 * @return dirty adtabpanel that need save ( if any )
+	 */
 	IADTabpanel getDirtyADTabpanel();
 
+	/**
+	 * 
+	 * @param changed
+	 * @param readOnly
+	 */
 	public void updateDetailPaneToolbar(boolean changed, boolean readOnly);
 
-	public void setDetailpaneSelection(int tabIndex, int currentRow);
+	/**
+	 * @param tabIndex
+	 * @param currentRow
+	 */
+	public void setDetailPaneSelectedTab(int tabIndex, int currentRow);
+
+	/**
+	 * @return true if all the tabs of detail pane have been linked up with adtabpanel
+	 */
+	boolean isDetailPaneLoaded();
 }

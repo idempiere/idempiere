@@ -140,7 +140,9 @@ import org.zkoss.zul.Window.Mode;
 public abstract class AbstractADWindowContent extends AbstractUIPart implements ToolbarListener,
         EventListener<Event>, DataStatusListener, ActionListener
 {
-    private static final CLogger logger;
+    private static final String ON_DEFER_SET_DETAILPANE_SELECTION_EVENT = "onDeferSetDetailpaneSelection";
+
+	private static final CLogger logger;
 
     static
     {
@@ -213,6 +215,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
         Component comp = super.createPart(parent);
         comp.addEventListener(LayoutUtils.ON_REDRAW_EVENT, this);
+        comp.addEventListener(ON_DEFER_SET_DETAILPANE_SELECTION_EVENT, this);
         return comp;
     }
 
@@ -976,7 +979,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        if (eventData != null && eventData instanceof Object[] && ((Object[])eventData).length == 2)
 	        {
 	        	Object[] indexes = (Object[]) eventData;
-	        	int newTabIndex = (Integer)indexes[1];
+	        	final int newTabIndex = (Integer)indexes[1];
 
 	        	final int originalTabIndex = adTabbox.getSelectedIndex();
 	        	final int originalTabRow = adTabbox.getSelectedGridTab().getCurrentRow();
@@ -986,7 +989,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					public void onCallback(Boolean result) {
 						if (result)
 						{
-			            	adTabbox.setDetailpaneSelection(originalTabIndex, originalTabRow);
+							if (newTabIndex < originalTabIndex)
+							{
+								if (adTabbox.isDetailPaneLoaded())
+									adTabbox.setDetailPaneSelectedTab(originalTabIndex, originalTabRow);
+								else {
+									Events.echoEvent(new Event(ON_DEFER_SET_DETAILPANE_SELECTION_EVENT, getComponent(), new Integer[]{originalTabIndex, originalTabRow}));
+								}
+							}
 			            }
 			            else
 			            {
@@ -1026,6 +1036,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     			return;
     		}
     		LayoutUtils.redraw((AbstractComponent) getComponent());
+    	}
+    	else if (event.getName().equals(ON_DEFER_SET_DETAILPANE_SELECTION_EVENT)) {
+    		Integer[] data = (Integer[]) event.getData();
+    		adTabbox.setDetailPaneSelectedTab(data[0], data[1]);
     	}
     }
 
@@ -1099,10 +1113,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		IADTabpanel newTabpanel = adTabbox.getSelectedTabpanel();
 
-		boolean activated = newTabpanel.isActive();
+		boolean activated = newTabpanel.isActivated();
 		if (oldTabpanel != null)
 			oldTabpanel.activate(false);
-		if (activated)
+		if (!activated)
 			newTabpanel.activate(true);
 
 		back = (newTabIndex < oldTabIndex);

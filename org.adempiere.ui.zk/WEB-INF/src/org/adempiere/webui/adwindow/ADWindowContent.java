@@ -75,6 +75,7 @@ public class ADWindowContent extends AbstractADWindowContent
         } else {
         	layout.setPage(page);
         }
+        layout.setSpacing("0px");
 
         //toolbar
         Div north = new Div();

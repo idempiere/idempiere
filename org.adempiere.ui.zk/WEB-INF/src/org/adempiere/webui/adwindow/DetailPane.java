@@ -114,15 +114,25 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		setId("detailPane");
 	}
 	
+	/**
+	 * @return selected tab index
+	 */
 	public int getSelectedIndex() {
 		return tabbox.getSelectedIndex();
 	}
 	
+	/**
+	 * set selected tab index 
+	 * @param curTabIndex
+	 */
 	public void setSelectedIndex(int curTabIndex) {
 		tabbox.setSelectedIndex(curTabIndex);
 		prevSelectedIndex = curTabIndex;
 	}
 	
+	/**
+	 * @return number of tabs
+	 */
 	public int getTabcount() {
 		int count = 0;
 		Tabs tabs = tabbox.getTabs();
@@ -131,18 +141,64 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		return count;
 	}
 	
+	/**
+	 * undo last tab selection
+	 */
 	public void undoLastTabSelection() {
 		tabbox.setSelectedIndex(prevSelectedIndex);
 	}
 
+	/**
+	 * redraw tabbox
+	 */
 	public void refresh() {
 		tabbox.invalidate();
 	}
 	
+	/**
+	 * replace of add
+	 * @param index
+	 * @param tabPanel
+	 * @param tabLabel
+	 */
+	public void setADTabpanel(int index, IADTabpanel tabPanel, ADTabLabel tabLabel) {
+		if (index < getTabcount()) {
+			tabbox.getTabpanel(index).appendChild(tabPanel);
+		} else {
+			addADTabpanel(tabPanel, tabLabel);
+		}
+	}
+	
+	/**
+	 * replace or add
+	 * @param index
+	 * @param tabPanel
+	 * @param tabLabel
+	 * @param enabled
+	 */
+	public void setADTabpanel(int index, IADTabpanel tabPanel, ADTabLabel tabLabel, boolean enabled) {
+		if (index < getTabcount()) {
+			tabbox.getTabpanel(index).appendChild(tabPanel);
+		} else {
+			addADTabpanel(tabPanel, tabLabel, enabled);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param tabPanel
+	 * @param tabLabel
+	 */
 	public void addADTabpanel(IADTabpanel tabPanel, ADTabLabel tabLabel) {
 		addADTabpanel(tabPanel, tabLabel, true);
 	}
 	
+	/**
+	 * 
+	 * @param tabPanel
+	 * @param tabLabel
+	 * @param enabled
+	 */
 	public void addADTabpanel(IADTabpanel tabPanel, ADTabLabel tabLabel, boolean enabled) {
 		Tabs tabs = tabbox.getTabs();
 		if (tabs == null) {
@@ -280,10 +336,17 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		LayoutUtils.openPopupWindow(button, popup, "after_start");		
 	}
 
+	/**
+	 * 
+	 * @param listener
+	 */
 	public void setEventListener(EventListener<Event> listener) {
 		eventListener = listener;
 	}
 
+	/**
+	 * remove all tabs and tabpanels
+	 */
 	public void reset() {
 		if (tabbox.getTabs() != null) {
 			tabbox.getTabs().getChildren().clear();
@@ -294,6 +357,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			
 	}
 
+	/**
+	 * @param index
+	 * @return adtabpanel at index
+	 */
 	public IADTabpanel getADTabpanel(int index) {
 		if (index < 0 || index >= tabbox.getTabpanels().getChildren().size())
 			return null;
@@ -306,6 +373,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @return selected adtabpanel
+	 */
 	public IADTabpanel getSelectedADTabpanel() {
 		org.zkoss.zul.Tabpanel selectedPanel = tabbox.getSelectedPanel();
 		if (selectedPanel != null) {
@@ -317,6 +388,11 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param status
+	 * @param error
+	 */
 	public void setStatusMessage(String status, boolean error) {		
 		IADTabpanel tabPanel = getSelectedADTabpanel();
 		if (tabPanel == null) return;
@@ -404,7 +480,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			createPopupContent(status);
 			showPopup(error, messageContainer);
 		} else if (event.getName().equals(ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT)) {
-			updateProcessToolbar();
+			if (LayoutUtils.isReallyVisible(this))
+				updateProcessToolbar();
 		} else if (event.getName().equals(LayoutUtils.ON_REDRAW_EVENT)) {
 			ExecutionCtrl ctrl = (ExecutionCtrl) Executions.getCurrent();
 			Event evt = ctrl.getNextEvent();
@@ -463,6 +540,11 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		tabbox.setVflex(flex);
 	}
 
+	/**
+	 * update toolbar button state 
+	 * @param changed
+	 * @param readOnly
+	 */
 	public void updateToolbar(boolean changed, boolean readOnly) {
 		int index = getSelectedIndex();
 		if (index < 0 || index >= getTabcount()) return;
@@ -503,6 +585,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		Toolbar toolbar = (Toolbar) tabpanel.getFirstChild();
 		
 		IADTabpanel adtab = getADTabpanel(index);
+		if (adtab == null) return;
 		
         for(Component c : toolbar.getChildren()) {
         	if (c instanceof ToolBarButton) {
@@ -519,11 +602,19 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         }
 	}
 
+	/**
+	 * Edit current record
+	 * @param formView
+	 * @throws Exception
+	 */
 	public void onEdit(boolean formView) throws Exception {
 		Event openEvent = new Event(ON_EDIT_EVENT, DetailPane.this, Boolean.valueOf(formView));
 		eventListener.onEvent(openEvent);
 	}
 
+	/**
+	 * fire the on activate detail event
+	 */
 	public void fireActivateDetailEvent() {
 		int index = tabbox.getSelectedIndex();
 		IADTabpanel tabPanel = (IADTabpanel) tabbox.getTabpanel(index).getChildren().get(1);
@@ -531,11 +622,15 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		Events.sendEvent(activateEvent);
 	}
 
-	public void setTabVisibility(int i, boolean visible) {
-		if (i < 0 || tabbox.getTabs() == null || i >= tabbox.getTabs().getChildren().size())
+	/**
+	 * @param tabIndex
+	 * @param visible
+	 */
+	public void setTabVisibility(int tabIndex, boolean visible) {
+		if (tabIndex < 0 || tabbox.getTabs() == null || tabIndex >= tabbox.getTabs().getChildren().size())
 			return;
 		
-		Tab tab = (Tab) tabbox.getTabs().getChildren().get(i);
+		Tab tab = (Tab) tabbox.getTabs().getChildren().get(tabIndex);
 		tab.setVisible(visible);
 		if (tab.isSelected()) {
 			tab.setSelected(false);
@@ -545,29 +640,46 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		}
 	}
 	
-	public boolean isTabVisible(int i) {
-		if (i < 0 || tabbox.getTabs() == null || i >= tabbox.getTabs().getChildren().size())
+	/**
+	 * 
+	 * @param tabIndex
+	 * @return true if tab at tabIndex is visible
+	 */
+	public boolean isTabVisible(int tabIndex) {
+		if (tabIndex < 0 || tabbox.getTabs() == null || tabIndex >= tabbox.getTabs().getChildren().size())
 			return false;
 		
-		return tabbox.getTabs().getChildren().get(i).isVisible();
+		return tabbox.getTabs().getChildren().get(tabIndex).isVisible();
 	}
 	
-	public boolean isTabEnabled(int i) {
-		if (i < 0 || tabbox.getTabs() == null || i >= tabbox.getTabs().getChildren().size())
+	/**
+	 * @param tabIndex
+	 * @return true if tab at tabIndex is enable
+	 */
+	public boolean isTabEnabled(int tabIndex) {
+		if (tabIndex < 0 || tabbox.getTabs() == null || tabIndex >= tabbox.getTabs().getChildren().size())
 			return false;
 		
-		Tab tab = (Tab) tabbox.getTabs().getChildren().get(i);
+		Tab tab = (Tab) tabbox.getTabs().getChildren().get(tabIndex);
 		return !tab.isDisabled();
 	}
 	
-	public void setTabEnabled(int i, boolean enabled) {
-		if (i < 0 || tabbox.getTabs() == null || i >= tabbox.getTabs().getChildren().size())
+	/**
+	 * 
+	 * @param tabIndex
+	 * @param enabled
+	 */
+	public void setTabEnabled(int tabIndex, boolean enabled) {
+		if (tabIndex < 0 || tabbox.getTabs() == null || tabIndex >= tabbox.getTabs().getChildren().size())
 			return;
 		
-		Tab tab = (Tab) tabbox.getTabs().getChildren().get(i);
+		Tab tab = (Tab) tabbox.getTabs().getChildren().get(tabIndex);
 		tab.setDisabled(!enabled);
 	}
 	
+	/**
+	 * disable toolbar
+	 */
 	public void disableToolbar() {
 		int index = getSelectedIndex();
 		if (index < 0 || index >= getTabcount()) return;
