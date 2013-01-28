@@ -772,6 +772,8 @@ span.z-tree-tee, span.z-tree-last {
 .editor-box .editor-button img {
 	vertical-align: middle;
 	text-align: center;
+	width: 10px;
+	height: 10px;
 }
 
 .editor-box .editor-button-column {

@@ -3,6 +3,8 @@
  */
 package org.adempiere.webui.info;
 
+import org.adempiere.webui.panel.InvoiceHistory;
+
 /**
  * @author hengsin
  *
@@ -49,4 +51,30 @@ public class InfoBPartnerWindow extends InfoWindow {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 *	Has History
+	 *  @return true
+	 */
+	@Override
+	protected boolean hasHistory()
+	{
+		return true;
+	}	//	hasHistory
+	
+	// Elaine 2008/12/16
+	/**************************************************************************
+	 *	Show History
+	 */
+	@Override
+	protected void showHistory()
+	{
+		log.info("");
+		Integer C_BPartner_ID = getSelectedRowKey();
+		if (C_BPartner_ID == null)
+			return;
+		InvoiceHistory ih = new InvoiceHistory (this, C_BPartner_ID.intValue(), 
+			0, 0, 0);
+		ih.setVisible(true);
+		ih = null;
+	}	//	showHistory
 }
