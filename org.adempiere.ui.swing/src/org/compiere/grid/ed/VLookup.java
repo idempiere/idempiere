@@ -40,6 +40,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
@@ -64,6 +65,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.MTable;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CMenuItem;
 import org.compiere.swing.CTextField;
@@ -272,12 +274,48 @@ public class VLookup extends JComponent
 		else
 			m_button.setIcon(Env.getImageIcon("PickOpen10.gif"));
 
+		//	IDEMPIERE 90
+		boolean isShortListAvailable = false;	// Short List available for this lookup
+		if (m_lookup != null && (m_lookup.getDisplayType() == DisplayType.TableDir || m_lookup.getDisplayType() == DisplayType.Table))			// only for Table & TableDir
+		{
+			String tableName_temp = m_lookup.getColumnName();	// Returns AD_Org.AD_Org_ID
+			int posPoint = tableName_temp.indexOf(".");
+			String tableName = tableName_temp.substring(0, posPoint);
+			int table_id = MTable.getTable_ID(tableName);	// now we got the ad_table_id
+
+			String sql = "SELECT COUNT(*) FROM AD_Column WHERE ColumnName = 'IsShortList' AND IsActive='Y' AND AD_Table_ID = " + table_id;
+			isShortListAvailable = DB.getSQLValue(null, sql) == 1;	// if the table has an active IsShortList column, we could use the restrict search !
+
+			if (isShortListAvailable)
+			{
+				setComboShortList(true);
+				m_lookup.setShortList(true);
+
+				m_buttonSL.addActionListener(this);
+				m_buttonSL.addMouseListener(mouseAdapter);
+				m_buttonSL.setFocusable(false);   //  don't focus when tabbing
+				m_buttonSL.setMargin(new Insets(0, 0, 0, 0));
+				m_buttonSL.setIcon(Env.getImageIcon("LockX16.gif"));
+				m_buttonSL.setToolTipText(Msg.getMsg(Env.getCtx(), "ShortListShortListItems"));
+				ActionMap am = m_combo.getActionMap();
+				am.put("shortlist", new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						actionShortList();
+					}
+				});
+				m_combo.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+					.put(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK), "shortlist");
+			}
+		}
+		//	IDEMPIERE 90
+
 		//	*** VComboBox	***
 		if (m_lookup != null && m_lookup.getDisplayType() != DisplayType.Search)	//	No Search
 		{
 			//  Don't have to fill up combobox if it is readonly
 			if (!isReadOnly && isUpdateable)
-				m_lookup.fillComboBox (isMandatory(), true, true, false);
+				m_lookup.fillComboBox (isMandatory(), true, true, false, isShortListAvailable); // IDEMPIERE 90
 			m_combo.setModel(m_lookup);
 			//
 			// AutoCompletion.enable(m_combo);
@@ -342,6 +380,7 @@ public class VLookup extends JComponent
 		m_button = null;
 		m_lookup = null;
 		m_mField = null;
+		m_buttonSL = null;	// IDEMPIERE 90
 		//
 		m_combo.getEditor().getEditorComponent().removeFocusListener(this);
 		m_combo.getEditor().getEditorComponent().removeMouseListener(mouseAdapter);
@@ -394,6 +433,11 @@ public class VLookup extends JComponent
 	// Mouse Listener
 	private VLookup_mouseAdapter mouseAdapter;
 
+	/** ShortList button IDEMPIERE 90 */
+	private CButton				m_buttonSL = new CButton();
+
+	/** All items or only those of the short list ?*/
+	boolean onlyShortListItems = false;
 
 	//	Field for Value Preference
 	private GridField              m_mField = null;
@@ -417,11 +461,13 @@ public class VLookup extends JComponent
 			m_text.setBorder(null);
 			Dimension bSize = new Dimension(size.height, size.height);
 			m_button.setPreferredSize (bSize);
+			m_buttonSL.setPreferredSize (bSize);	// IDEMPIERE 90
 		}
 
 		//	What to show
 		this.remove(m_combo);
 		this.remove(m_button);
+		this.remove(m_buttonSL);	// IDEMPIERE 90
 		this.remove(m_text);
 		//
 		if (!isReadWrite())									//	r/o - show text only
@@ -437,6 +483,9 @@ public class VLookup extends JComponent
 			this.setBorder(null);
 			this.add(m_combo, BorderLayout.CENTER);
 			m_comboActive = true;
+			// IDEMPIERE 90
+			if (isComboShortList())	
+				this.add(m_buttonSL, BorderLayout.EAST);	// add a button for short list items <-> all items
 		}
 		else 												//	Search or unstable - show text & button
 		{
@@ -761,6 +810,8 @@ public class VLookup extends JComponent
 			actionBPartner(false);
 		else if (e.getSource() == m_location)
 			actionLocation();
+		else if (e.getSource() == m_buttonSL)	// IDEMPIERE 90
+			actionShortList();
 	}	//	actionPerformed
 
 	/**
@@ -1463,7 +1514,7 @@ public class VLookup extends JComponent
 		else
 		{
 			m_lookup.refresh();
-			m_lookup.fillComboBox(isMandatory(), true, true, false);
+			m_lookup.fillComboBox(isMandatory(), true, true, false, isComboShortList()); // IDEMPIERE 90
 			m_combo.setSelectedItem(obj);
 			//m_combo.revalidate();
 		}
@@ -1501,7 +1552,7 @@ public class VLookup extends JComponent
 			+ " - Start    Count=" + m_combo.getItemCount() + ", Selected=" + obj);
 	//	log.fine( "VLookupHash=" + this.hashCode());
 		boolean popupVisible = m_combo.isPopupVisible();
-		m_lookup.fillComboBox(isMandatory(), true, true, false);     //  only validated & active
+		m_lookup.fillComboBox(isMandatory(), true, true, false, isComboShortList());     //  only validated & active + IDEMPIERE 90
 		if (popupVisible)
 		{
 			//refresh
@@ -1525,6 +1576,7 @@ public class VLookup extends JComponent
 	{
 		if (e.isTemporary()
 			|| m_lookup == null
+			|| !m_buttonSL.isEnabled()	// IDEMPIERE 90 
 			|| !m_button.isEnabled() )	//	set by actionButton
 			return;
 		//	Text Lost focus
@@ -1642,5 +1694,36 @@ public class VLookup extends JComponent
 		m_stopediting = stopediting;
 	}
 
+	// IDEMPIERE 90
+	private void actionShortList ()
+	{
+		if (onlyShortListItems)
+		{
+			onlyShortListItems = false;	
+			m_lookup.setShortList(true);
+			refresh();
+			m_lookup.fillComboBox(isMandatory(), true, true, false, isComboShortList());
+			m_buttonSL.setIcon(Env.getImageIcon("LockX16.gif"));
+			m_buttonSL.setToolTipText(Msg.getMsg(Env.getCtx(), "ShortListOnlyShortListItems"));
+		}else{
+			onlyShortListItems = true;
+			m_lookup.setShortList(false);
+			m_buttonSL.setIcon(Env.getImageIcon("Lock16.gif"));
+			m_buttonSL.setToolTipText(Msg.getMsg(Env.getCtx(), "ShortListAllItems"));
+		}
+
+		actionRefresh();
+	}	//	actionShortList
+
+	public void setComboShortList (boolean shortList)
+	{
+		m_combo.setShortListSearch(shortList);
+	}	//	setComboShortList
+
+	public boolean isComboShortList()
+	{
+		return m_combo.isShortListSearch();
+	}	//	isComboShortList
+	// IDEMPIERE 90
 
 }	//	VLookup

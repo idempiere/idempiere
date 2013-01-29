@@ -328,7 +328,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 
 		//	Load existing Locators
 		
-		m_mLocator.fillComboBox(m_mandatory, true, true, false);
+		m_mLocator.fillComboBox(m_mandatory, true, true, false, false); // IDEMPIERE 90
 		
 		log.fine(m_mLocator.toString());
 		

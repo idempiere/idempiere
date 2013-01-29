@@ -168,7 +168,7 @@ public class MPAttributeLookup extends Lookup
 	 * 	@param temporary force load for temporary display
 	 *  @return null
 	 */
-	public ArrayList<Object> getData (boolean mandatory, boolean onlyValidated, boolean onlyActive, boolean temporary)
+	public ArrayList<Object> getData (boolean mandatory, boolean onlyValidated, boolean onlyActive, boolean temporary, boolean shortlist) // IDEMPIERE 90
 	{
 		log.log(Level.SEVERE, "Not implemented");
 		return null;
