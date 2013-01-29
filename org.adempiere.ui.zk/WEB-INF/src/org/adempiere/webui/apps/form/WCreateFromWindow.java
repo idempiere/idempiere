@@ -192,7 +192,7 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		}
 		setStatusLine(count, null);
 		
-		createFrom.info();
+		createFrom.info(dataTable, statusBar);
 	}
 	
 	public void setStatusLine(int selectedRowCount, String text) 

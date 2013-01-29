@@ -21,27 +21,41 @@ import org.compiere.model.I_C_Invoice;
 import org.compiere.model.I_M_InOut;
 import org.compiere.model.I_M_PackageMPS;
 import org.compiere.model.I_M_RMA;
+import org.compiere.model.I_X_DepositBatch;
 
 /**
  * 
  * @author Elaine
  *
  */
-public class DefaultCreateFromFactory implements ICreateFromFactory {
+public class DefaultCreateFromFactory implements ICreateFromFactory 
+{
 
 	@Override
-	public ICreateFrom create(GridTab mTab) {
+	public ICreateFrom create(GridTab mTab, String columnName) 
+	{
 		String tableName = mTab.getTableName();
-		if (tableName.equals(I_C_Invoice.Table_Name))
-			return new WCreateFromInvoiceUI(mTab);
-		else if (tableName.equals(I_C_BankStatement.Table_Name))
-			return new WCreateFromStatementUI(mTab);
-		else if (tableName.equals(I_M_InOut.Table_Name))
-			return new WCreateFromShipmentUI(mTab);
-		else if (tableName.equals(I_M_RMA.Table_Name))
-			return new WCreateFromRMAUI(mTab);
-		else if (tableName.equals(I_M_PackageMPS.Table_Name))
-			return new WCreateFromPackageShipmentUI(mTab);
+		if (columnName.equals("CreateFrom"))
+		{
+			if (tableName.equals(I_C_Invoice.Table_Name))
+				return new WCreateFromInvoiceUI(mTab);
+			else if (tableName.equals(I_C_BankStatement.Table_Name))
+//				return new WCreateFromStatementUI(mTab);
+				return new WCreateFromStatementBatchUI(mTab);
+			else if (tableName.equals(I_M_InOut.Table_Name))
+				return new WCreateFromShipmentUI(mTab);
+			else if (tableName.equals(I_M_RMA.Table_Name))
+				return new WCreateFromRMAUI(mTab);
+			else if (tableName.equals(I_M_PackageMPS.Table_Name))
+				return new WCreateFromPackageShipmentUI(mTab);
+			else if (tableName.equals(I_X_DepositBatch.Table_Name))
+				return new WCreateFromDepositBatchUI(mTab);
+		}
+		else if (columnName.equalsIgnoreCase("X_CreateFromBatch"))
+		{
+			if (tableName.equals(I_C_BankStatement.Table_Name))
+				return new WCreateFromBatchStatementUI(mTab);
+		}
 		return null;
 	}
 

@@ -395,4 +395,13 @@ public interface I_C_BankStatement
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name X_CreateFromBatch */
+    public static final String COLUMNNAME_X_CreateFromBatch = "X_CreateFromBatch";
+
+	/** Set Create From Batch	  */
+	public void setX_CreateFromBatch (String X_CreateFromBatch);
+
+	/** Get Create From Batch	  */
+	public String getX_CreateFromBatch();
 }

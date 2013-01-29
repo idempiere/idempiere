@@ -18,9 +18,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.compiere.apps.IStatusBar;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccount;
@@ -28,6 +30,7 @@ import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MPayment;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -257,9 +260,22 @@ public abstract class CreateFromStatement extends CreateFrom
 		return data;
 	}
 	
-	public void info()
+	public void info(IMiniTable miniTable, IStatusBar statusBar)
 	{
-		
+		DecimalFormat format = DisplayType.getNumberFormat(DisplayType.Amount);
+
+		BigDecimal total = new BigDecimal(0.0);
+		int rows = miniTable.getRowCount();
+		int count = 0;
+		for(int i = 0; i < rows; i++)
+		{
+			if(((Boolean) miniTable.getValueAt(i, 0)).booleanValue())
+			{
+				total = total.add((BigDecimal) miniTable.getValueAt(i, 4));
+				count++;
+			}
+		}
+		statusBar.setStatusLine(String.valueOf(count) + " - " + Msg.getMsg(Env.getCtx(), "Sum") + "  " + format.format(total));
 	}
 	
 	protected void configureMiniTable (IMiniTable miniTable)

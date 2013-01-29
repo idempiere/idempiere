@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.compiere.apps.IStatusBar;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.GridTab;
 import org.compiere.model.MOrder;
@@ -54,7 +55,7 @@ public abstract class CreateFrom implements ICreateFrom
 
 	public abstract boolean dynInit() throws Exception;
 
-	public abstract void info();
+	public abstract void info(IMiniTable miniTable, IStatusBar statusBar);
 
 	public abstract boolean save(IMiniTable miniTable, String trxName);
 
