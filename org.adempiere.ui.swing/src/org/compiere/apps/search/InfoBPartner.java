@@ -176,7 +176,7 @@ public class InfoBPartner extends Info
 		fieldPhone.setBackground(AdempierePLAF.getInfoBackground());
 		fieldPhone.addActionListener(this);
 
-		checkAND.setText(Msg.getMsg(Env.getCtx(), "SearchAND"));
+		checkAND.setText(Msg.getMsg(Env.getCtx(), "SearchAND", true));
 		checkAND.setToolTipText(Msg.getMsg(Env.getCtx(), "SearchANDInfo"));
 		checkAND.setSelected(true);
 		checkAND.addActionListener(this);

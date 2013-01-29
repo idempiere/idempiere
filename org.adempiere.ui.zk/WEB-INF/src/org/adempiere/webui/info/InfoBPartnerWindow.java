@@ -3,7 +3,10 @@
  */
 package org.adempiere.webui.info;
 
+import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.panel.InvoiceHistory;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * @author hengsin
@@ -30,7 +33,6 @@ public class InfoBPartnerWindow extends InfoWindow {
 			int AD_InfoWindow_ID) {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
 				whereClause, AD_InfoWindow_ID);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -48,7 +50,6 @@ public class InfoBPartnerWindow extends InfoWindow {
 			int AD_InfoWindow_ID, boolean lookup) {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
 				whereClause, AD_InfoWindow_ID, lookup);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -77,4 +78,27 @@ public class InfoBPartnerWindow extends InfoWindow {
 		ih.setVisible(true);
 		ih = null;
 	}	//	showHistory
+
+	@Override
+	protected void createParameterPanel() {
+		super.createParameterPanel();
+		String isSOTrx = Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx");
+		if (!Util.isEmpty(isSOTrx)) {
+			if ("Y".equals(isSOTrx)) {
+				for (WEditor editor : editors) {
+					if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("IsCustomer")) {
+						editor.setValue("Y");
+						break;
+					}
+				}
+			} else if ("N".equals(isSOTrx)) {
+				for (WEditor editor : editors) {
+					if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("IsVendor")) {
+						editor.setValue("Y");
+						break;
+					}
+				}
+			}
+		}
+	}
 }
