@@ -640,7 +640,9 @@ public class CComboBox extends JComboBox
 		public void contentsChanged(ListDataEvent lde)
 		{
 			updateDataModel();
-			updateModel(false);
+		    // IDEMPIERE-574 - Swing AutoReducible ComboBox not reduced when used with cursor keys
+			// tbayen 2013-01-20
+			updateModel(isAutoReducible());
 
 			if (isPopupVisible())
 			{

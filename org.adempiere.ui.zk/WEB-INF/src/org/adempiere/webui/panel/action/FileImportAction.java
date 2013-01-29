@@ -162,7 +162,7 @@ public class FileImportAction implements EventListener<Event>
 
 			hb = new Hbox();
 			Div div2 = new Div();
-			div2.setAlign("right");
+			div2.setStyle("text-align: right;");
 			div2.appendChild(new Label(Msg.getMsg(Env.getCtx(), "Charset", false)));
 			hb.appendChild(div2);
 			fCharset.setMold("select");
@@ -174,7 +174,7 @@ public class FileImportAction implements EventListener<Event>
 			
 			hb = new Hbox();
 			Div div3 = new Div();
-			div3.setAlign("right");
+			div3.setStyle("text-align: right;");
 			div3.appendChild(new Label(Msg.getMsg(Env.getCtx(), "import.mode", true)));
 			hb.appendChild(div3);
 			fImportMode.setMold("select");

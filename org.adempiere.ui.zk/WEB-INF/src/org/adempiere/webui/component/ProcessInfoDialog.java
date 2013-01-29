@@ -17,6 +17,8 @@ package org.adempiere.webui.component;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.compiere.process.ProcessInfoLog;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -83,7 +85,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 					recordLink.addEventListener(Events.ON_CLICK, this);
 					pnlMessage.appendChild(recordLink);
 				} else {
-					Text recordText = new Text(m_logs[loopCtr].getP_Msg());
+					Text recordText = new Text(Msg.parseTranslation(Env.getCtx(), m_logs[loopCtr].getP_Msg()));
 					pnlMessage.appendChild(recordText);
 				}
 				pnlMessage.appendChild(new Separator("horizontal"));

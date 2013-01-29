@@ -35,6 +35,7 @@ import org.adempiere.webui.event.ActionListener;
 import org.compiere.model.GridField;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -187,6 +188,11 @@ public class WButtonEditor extends WEditor implements IProcessButton
         {
             ;
         }
+        else if (super.getColumnName().equals("DocAction")
+        		&& !MSysConfig.getBooleanValue(MSysConfig.DOCACTIONBUTTON_SHOWACTIONNAME, false, Env.getAD_Client_ID(Env.getCtx())))
+        {
+            text = Msg.getElement(Env.getCtx(), "DocAction");
+        }
         else if (m_values != null)
         {
             text = (String)m_values.get(value);
@@ -237,11 +243,13 @@ public class WButtonEditor extends WEditor implements IProcessButton
                 + " AND t.AD_Language='" + Env.getAD_Language(Env.getCtx()) + "'"
                 + " AND l.AD_Reference_ID=?";
 
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
         try
         {
-            PreparedStatement pstmt = DB.prepareStatement(SQL, null);
+            pstmt = DB.prepareStatement(SQL, null);
             pstmt.setInt(1, AD_Reference_ID);
-            ResultSet rs = pstmt.executeQuery();
+            rs = pstmt.executeQuery();
            
             while (rs.next())
             {
@@ -251,12 +259,14 @@ public class WButtonEditor extends WEditor implements IProcessButton
             }
            
             
-            rs.close();
-            pstmt.close();
         }
         catch (SQLException e)
         {
             logger.log(Level.SEVERE, SQL, e);
+        }
+        finally
+        {
+        	DB.close(rs, pstmt);
         }
        
     }   //  readReference

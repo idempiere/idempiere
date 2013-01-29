@@ -33,6 +33,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.panel.ADForm;
@@ -482,9 +483,16 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	}
 
 	private void zoom() {
-		if(m_node != null)
-			AEnv.zoom(m_node.getAD_Window_ID(), null);
-
+		if (m_node != null) {
+			if (MWFNode.ACTION_UserWindow.equals(m_node.getAction())) {
+				AEnv.zoom(m_node.getAD_Window_ID(), null);
+			} else if (MWFNode.ACTION_UserForm.equals(m_node.getAction())) {
+				int AD_Form_ID = m_node.getAD_Form_ID();
+				ADForm form = ADForm.openForm(AD_Form_ID);
+				form.setAttribute(Window.MODE_KEY, form.getWindowMode());
+				AEnv.showWindow(form);
+			}
+		}
 	}
 
 	private void repaintTree() {
