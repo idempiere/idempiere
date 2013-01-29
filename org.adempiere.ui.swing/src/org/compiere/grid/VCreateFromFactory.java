@@ -20,13 +20,13 @@ import org.compiere.model.GridTab;
 
 public class VCreateFromFactory
 {
-	public static ICreateFrom create (GridTab mTab)
+	public static ICreateFrom create (GridTab mTab, String columnName)
 	{
 		ICreateFrom createFrom = null;
 		List<ICreateFromFactory> factories = Service.locator().list(ICreateFromFactory.class).getServices();
 		for (ICreateFromFactory factory : factories) 
 		{
-			createFrom = factory.create(mTab);
+			createFrom = factory.create(mTab, columnName);
 			if (createFrom != null)
 				break;
 		}

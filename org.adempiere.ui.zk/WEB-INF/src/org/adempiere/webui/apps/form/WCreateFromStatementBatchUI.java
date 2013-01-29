@@ -1,6 +1,6 @@
 /******************************************************************************
- * Copyright (C) 2009 Low Heng Sin                                            *
- * Copyright (C) 2009 Idalica Corporation                                     *
+ * Copyright (C) 2013 Elaine Tan                                              *
+ * Copyright (C) 2013 Trek Global
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,6 +21,8 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
@@ -36,9 +38,8 @@ import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.window.FDialog;
-import org.compiere.grid.CreateFromStatement;
+import org.compiere.grid.CreateFromStatementBatch;
 import org.compiere.model.GridTab;
-import org.compiere.model.MBankAccount;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
@@ -55,11 +56,16 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Hbox;
 
-public class WCreateFromStatementUI extends CreateFromStatement implements EventListener<Event>
+/**
+ * 
+ * @author Elaine
+ *
+ */
+public class WCreateFromStatementBatchUI extends CreateFromStatementBatch implements EventListener<Event>
 {
 	private WCreateFromWindow window;
 	
-	public WCreateFromStatementUI(GridTab tab) 
+	public WCreateFromStatementBatchUI(GridTab tab) 
 	{
 		super(tab);
 		log.info(getGridTab().toString());
@@ -88,7 +94,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 
 	/**	Logger			*/
 	private CLogger log = CLogger.getCLogger(getClass());
-	
+
 	protected Label bankAccountLabel = new Label();
 	protected WTableDirEditor bankAccountField;
 	
@@ -164,8 +170,6 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		
 		Timestamp date = Env.getContextAsDate(Env.getCtx(), p_WindowNo, MBankStatement.COLUMNNAME_StatementDate);
 		dateToField.setValue(date);
-	
-		bankAccount = new MBankAccount(Env.getCtx(), C_BankAccount_ID, null);
 		
 		loadBankAccount();
 		
@@ -187,7 +191,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
     	amtToField.getComponent().setTooltiptext(Msg.translate(Env.getCtx(), "AmtTo"));
     	
     	Borderlayout parameterLayout = new Borderlayout();
-		parameterLayout.setHeight("110px");
+    	parameterLayout.setHeight("130px");
 		parameterLayout.setWidth("100%");
     	Panel parameterPanel = window.getParameterPanel();
 		parameterPanel.appendChild(parameterLayout);
@@ -199,6 +203,21 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		Center center = new Center();
 		parameterLayout.appendChild(center);
 		center.appendChild(parameterBankPanel);
+		
+		Columns columns = new Columns();
+		parameterBankLayout.appendChild(columns);
+		Column column = new Column();
+		columns.appendChild(column);		
+		column = new Column();
+		column.setWidth("15%");
+		columns.appendChild(column);
+		column.setWidth("35%");
+		column = new Column();
+		column.setWidth("15%");
+		columns.appendChild(column);
+		column = new Column();
+		column.setWidth("35%");
+		columns.appendChild(column);
 		
 		Rows rows = (Rows) parameterBankLayout.newRows();
 		Row row = rows.newRow();
@@ -253,9 +272,10 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	
 	protected void loadBankAccount()
 	{
-		loadTableOIS(getBankData(documentNoField.getValue().toString(), bPartnerLookup.getValue(), dateFromField.getValue(), dateToField.getValue(),
-				amtFromField.getValue(), amtToField.getValue(), documentTypeField.getValue(), tenderTypeField.getValue(), 
-				authorizationField.getValue().toString()));
+		loadTableOIS(getBankAccountData(bankAccountField.getValue(), bPartnerLookup.getValue(), 
+				documentNoField.getValue().toString(), dateFromField.getValue(), dateToField.getValue(),
+				amtFromField.getValue(), amtToField.getValue(), 
+				documentTypeField.getValue(), tenderTypeField.getValue(), authorizationField.getValue().toString()));
 	}
 	
 	protected void loadTableOIS (Vector<?> data)
@@ -284,7 +304,8 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	}
 
 	@Override
-	public Object getWindow() {
+	public Object getWindow() 
+	{
 		return window;
 	}
 }

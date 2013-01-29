@@ -1,6 +1,6 @@
 /******************************************************************************
- * Copyright (C) 2009 Low Heng Sin                                            *
- * Copyright (C) 2009 Idalica Corporation                                     *
+ * Copyright (C) 2013 Elaine Tan                                              *
+ * Copyright (C) 2013 Trek Global
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -37,7 +37,6 @@ import org.compiere.grid.ed.VLookup;
 import org.compiere.grid.ed.VNumber;
 import org.compiere.grid.ed.VString;
 import org.compiere.model.GridTab;
-import org.compiere.model.MBankAccount;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
@@ -52,11 +51,16 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
-public class VCreateFromStatementUI extends CreateFromStatement implements ActionListener
+/**
+ * 
+ * @author Elaine
+ *
+ */
+public class VCreateFromStatementBatchUI extends CreateFromStatementBatch implements ActionListener
 {
 	private VCreateFromDialog dialog;
 
-	public VCreateFromStatementUI(GridTab mTab)
+	public VCreateFromStatementBatchUI(GridTab mTab)
 	{
 		super(mTab);
 		log.info(getGridTab().toString());
@@ -149,6 +153,7 @@ public class VCreateFromStatementUI extends CreateFromStatement implements Actio
 		//  Set Default
 		int C_BankAccount_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_BankAccount_ID");
 		bankAccountField.setValue(new Integer(C_BankAccount_ID));
+		bankAccountField.addActionListener(this);
 		//  initial Loading
 		authorizationField = new VString ("authorization", false, false, true, 10, 30, null, null);
 		authorizationField.addActionListener(this);
@@ -164,11 +169,16 @@ public class VCreateFromStatementUI extends CreateFromStatement implements Actio
 		bPartnerLookup = new VLookup("C_BPartner_ID", false, false, true,
 				MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, 3499, DisplayType.Search));
 		BPartner_idLabel.setLabelFor(bPartnerLookup);
+		bPartnerLookup.addActionListener(this);
 		
 		Timestamp date = Env.getContextAsDate(Env.getCtx(), p_WindowNo, MBankStatement.COLUMNNAME_StatementDate);
 		dateToField.setValue(date);
-	
-		bankAccount = new MBankAccount(Env.getCtx(), C_BankAccount_ID, null);
+		
+		documentNoField.addActionListener(this);
+		dateFromField.addActionListener(this);
+		dateToField.addActionListener(this);
+		amtFromField.addActionListener(this);
+		amtToField.addActionListener(this);
 		
 		loadBankAccount();
 		
@@ -277,7 +287,7 @@ public class VCreateFromStatementUI extends CreateFromStatement implements Actio
 	{
 		log.config("Action=" + e.getActionCommand());
 //		Object source = e.getSource();
-		if ( e.getActionCommand().equals(ConfirmPanel.A_REFRESH) )
+		if(e.getActionCommand().equals(ConfirmPanel.A_REFRESH))
 		{
 			Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
 			loadBankAccount();
@@ -288,9 +298,10 @@ public class VCreateFromStatementUI extends CreateFromStatement implements Actio
 	
 	protected void loadBankAccount()
 	{
-		loadTableOIS(getBankData(documentNoField.getText(), bPartnerLookup.getValue(), dateFromField.getValue(), dateToField.getValue(),
-				amtFromField.getValue(), amtToField.getValue(), documentTypeField.getValue(), tenderTypeField.getValue(), 
-				authorizationField.getText()));
+		loadTableOIS(getBankAccountData(bankAccountField.getValue(), bPartnerLookup.getValue(), 
+				documentNoField.getText(), dateFromField.getValue(), dateToField.getValue(),
+				amtFromField.getValue(), amtToField.getValue(), 
+				documentTypeField.getValue(), tenderTypeField.getValue(), authorizationField.getText()));
 	}
 	
 	protected void loadTableOIS (Vector<?> data)
@@ -317,7 +328,8 @@ public class VCreateFromStatementUI extends CreateFromStatement implements Actio
 	}
 
 	@Override
-	public Object getWindow() {
+	public Object getWindow() 
+	{
 		return dialog;
 	}
 }
