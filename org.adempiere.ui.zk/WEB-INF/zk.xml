@@ -99,4 +99,9 @@
 		</name>
 		<value>11px</value>
 	</library-property>	
+	<!-- turn off borderlayout animation -->	
+	<library-property>
+    	<name>org.zkoss.zul.borderlayout.animation.disabed</name>
+    	<value>true</value>
+	</library-property>
 </zk>

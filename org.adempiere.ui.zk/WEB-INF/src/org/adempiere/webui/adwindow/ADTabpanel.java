@@ -230,7 +230,7 @@ DataStatusListener, IADTabpanel, IdSpace
 		if (south == null) {			
 			south = new South();
 			borderLayout.appendChild(south);
-			south.setWidgetOverride("doClick_", "function (evt){this.$doClick_(evt);" +
+			south.setWidgetOverride("doClick_", "function (evt){this.$supers('doClick_', arguments);" +
 					"var target = evt.domTarget;if (!target.id) target = target.parentNode;" +
 					"if(this.$n('colled') == target) {" +
 					"var se = new zk.Event(this, 'onSlide', null, {toServer: true}); zAu.send(se); } }");
