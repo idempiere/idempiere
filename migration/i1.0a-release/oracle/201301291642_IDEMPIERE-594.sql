@@ -323,6 +323,12 @@ UPDATE AD_Field SET DisplayLogic='@IsCustomer@=Y',Updated=TO_DATE('2013-01-29 16
 UPDATE AD_Field SET DisplayLogic='@IsCustomer@=Y',Updated=TO_DATE('2013-01-29 16:39:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=9600
 ;
 
+update ad_field set isactive='N' where ad_tab_id in (223,224,225)
+;
+
+update ad_tab set isactive='N' where ad_tab_id in (223,224,225)
+;
+
 SELECT register_migration_script('201301291642_IDEMPIERE-594.sql') FROM dual
 ;
 
