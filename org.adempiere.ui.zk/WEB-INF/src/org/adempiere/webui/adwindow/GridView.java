@@ -820,4 +820,11 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 	public GridField[] getFields() {
 		return gridField;
 	}
+	
+	public void editCurrentRow() {
+		if (!renderer.isEditing()) {
+			renderer.editCurrentRow();
+			renderer.setFocusToEditor();
+		}
+	}
 }

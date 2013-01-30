@@ -108,9 +108,16 @@ public class CompositeADTabbox extends AbstractADTabbox
 						@Override
 						public void onCallback(Boolean result) {							
 							if (result) {
-								onEditDetail(row, true);
-								if (!adWindowPanel.getActiveGridTab().isNew())
-									adWindowPanel.onNew();
+								if (getSelectedDetailADTabpanel().getGridTab().isSingleRow()) {
+									onEditDetail(row, true);
+									if (!adWindowPanel.getActiveGridTab().isNew())
+										adWindowPanel.onNew();
+								} else {
+									if (!getSelectedDetailADTabpanel().getGridTab().isNew()) {
+										getSelectedDetailADTabpanel().getGridTab().dataNew(false);
+										getSelectedDetailADTabpanel().getGridView().editCurrentRow();
+									}
+								}
 							}
 						}
 					});

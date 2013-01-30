@@ -232,7 +232,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 					}
 				}
 				if (adtab != null && adtab.isDetailPaneMode()) {
-					onEdit(false);
+					onEdit(adtab.getGridTab().isSingleRow());
 				}
 			}
 		});

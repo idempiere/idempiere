@@ -1526,6 +1526,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			            toolbar.enableIgnore(true);
 			            toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted());
 			            toolbar.enableReport(true);
+			            if (adTabbox.getSelectedGridTab().isSingleRow()) 
+			            {
+			            	if (adTabbox.getSelectedTabpanel().isGridView())
+			            	{
+			            		adTabbox.getSelectedTabpanel().switchRowPresentation();
+			            	}
+			            }
+			            
+			            if (adTabbox.getSelectedTabpanel().isGridView())
+			            {
+			            	adTabbox.getSelectedTabpanel().getGridView().editCurrentRow();
+			            }
 			        }
 			        else
 			        {
