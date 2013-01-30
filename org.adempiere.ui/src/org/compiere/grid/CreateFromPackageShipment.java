@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.compiere.apps.IStatusBar;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.GridTab;
 import org.compiere.model.MInOut;
@@ -94,7 +95,7 @@ public abstract class CreateFromPackageShipment extends CreateFrom
 		return data;
 	}
 	
-	public void info()
+	public void info(IMiniTable miniTable, IStatusBar statusBar)
 	{
 
 	}

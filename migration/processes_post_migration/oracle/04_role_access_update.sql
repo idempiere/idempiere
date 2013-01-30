@@ -65,7 +65,7 @@ BEGIN
          || r.ad_role_id
          || ','||r.ad_client_id||','||r.ad_org_id||',''Y'', Current_Timestamp,0, Current_Timestamp,0,''Y'',generate_uuid() FROM AD_WorkFlow w LEFT JOIN AD_WorkFlow_Access wa ON (wa.AD_Role_ID='
 	 || r.ad_role_id
-	 || ' AND w.AD_WorkFlow_ID = wa.AD_WorkFlow_ID) WHERE wa.AD_WorkFlow_ID IS NULL AND AccessLevel IN '
+	 || ' AND w.AD_WorkFlow_ID = wa.AD_WorkFlow_ID) WHERE w.AD_Client_ID IN (0,'||r.ad_client_id||') AND wa.AD_WorkFlow_ID IS NULL AND AccessLevel IN '
          || roleaccesslevel;
 
       -- DBMS_OUTPUT.PUT_LINE (sqlins);

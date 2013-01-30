@@ -196,7 +196,7 @@ public class VCreateFromDialog extends CDialog implements ActionListener, TableM
 		}
 		setStatusLine(count, null);
 		
-		createFrom.info();
+		createFrom.info(dataTable, statusBar);
 	}
 	
 	public void setStatusLine(int selectedRowCount, String text) 

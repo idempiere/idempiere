@@ -114,6 +114,12 @@ public class InfoProductWindow extends InfoWindow {
 	@Override
 	protected String getSQLWhere() {
 		StringBuilder where = new StringBuilder(super.getSQLWhere());
+		if (getSelectedWarehouseId() > 0) {
+			if (where.length() > 0) {
+				where.append(" AND ");
+			}
+			where.append("p.IsSummary='N' ");
+		}
 		return where.toString();
 	}
 
@@ -800,5 +806,15 @@ public class InfoProductWindow extends InfoWindow {
 			Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "M_Locator_ID",
 				String.valueOf(m_M_Locator_ID));
 		}
+	}
+
+	@Override
+	protected void prepareTable(ColumnInfo[] layout, String from, String where,
+			String orderBy) {
+		if (getSelectedWarehouseId() > 0)
+		{
+			orderBy = "QtyAvailable DESC";
+		}
+		super.prepareTable(layout, from, where, orderBy);
 	}
 }

@@ -47,6 +47,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -67,12 +69,15 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	private String 				columnName;
     private Object              value;
     private InfoPanel			infoPanel = null;
+	private String imageUrl;
 
 	private static CLogger log = CLogger.getCLogger(WSearchEditor.class);
 
+	private static final String IN_PROGRESS_IMAGE = "~./zk/img/progress3.gif";
+	
 	public WSearchEditor (GridField gridField)
 	{
-		super(new Searchbox(), gridField);
+		super(new CustomSearchBox(), gridField);
 
 		lookup = gridField.getLookup();
 
@@ -150,21 +155,22 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	{
 
 		columnName = this.getColumnName();
+		imageUrl = "/images/PickOpen10.png";
 		if (columnName.equals("C_BPartner_ID"))
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), true, true, false, lookup);
-			getComponent().setButtonImage("/images/BPartner10.png");
+			imageUrl = "/images/BPartner10.png";
 		}
 		else if (columnName.equals("M_Product_ID"))
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, lookup);
-			getComponent().setButtonImage("/images/Product10.png");
+			imageUrl = "/images/Product10.png";
 		}
 		else
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, lookup);
-			getComponent().setButtonImage("/images/PickOpen10.png");
 		}
+		getComponent().getButton().setImage(imageUrl);
 
 		addChangeLogMenu(popupMenu);
 
@@ -319,6 +325,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if (text == null || text.length() == 0 || text.equals("%"))
 		{
 			actionButton(text);
+			resetButtonState();
 			return;
 		}
 		if (log.isLoggable(Level.CONFIG))
@@ -351,14 +358,23 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			{
 				actionButton(getComponent().getText());
 			}
+			resetButtonState();
 			return;
 		}
 		if (log.isLoggable(Level.FINE))
 			log.fine(getColumnName() + " - Unique ID=" + id);
 
 		actionCombo(new Integer(id));          //  data binding
-		//m_text.requestFocus();
+		
+		resetButtonState();
 	}	//	actionText
+
+
+	private void resetButtonState() {
+		getComponent().getButton().setEnabled(true);
+		getComponent().getButton().setImage(imageUrl);
+		getComponent().invalidate();
+	}
 
 
 	private void actionCombo (Object value)
@@ -533,7 +549,6 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		m_tableName = m_columnName.substring(0, m_columnName.length()-3);
 		m_keyColumnName = m_columnName;
 
-		//TODO: check info window definition
 		if (m_columnName.equals("M_Product_ID"))
 		{
 			//	Reset
@@ -848,5 +863,25 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			log.log(Level.SEVERE, "", e);
 		}
 		return null;
+	}
+	
+	static class CustomSearchBox extends Searchbox {
+
+		/**
+		 * generated serial id
+		 */
+		private static final long serialVersionUID = 7490301044763375829L;
+
+		@Override
+		public void onPageAttached(Page newpage, Page oldpage) {
+			super.onPageAttached(newpage, oldpage);
+			if (newpage != null) {
+				String w = "var btn=jq('#'+this.parent.uuid+' @button').zk.$();";
+				getTextbox().setWidgetListener("onChange", "try{"+w+"btn.setImage(\""
+						+ Executions.getCurrent().encodeURL(IN_PROGRESS_IMAGE)+"\");"
+						+ "btn.setDisabled(true, {adbs: false, skip: false});}catch(err){}");
+			}
+		}
+		
 	}
 }

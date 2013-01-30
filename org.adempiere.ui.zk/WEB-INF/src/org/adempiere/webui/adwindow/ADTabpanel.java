@@ -55,11 +55,15 @@ import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
+import org.compiere.model.I_AD_Preference;
 import org.compiere.model.MLookup;
+import org.compiere.model.MPreference;
+import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
+import org.compiere.model.Query;
 import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.util.CLogger;
@@ -70,13 +74,13 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Cell;
@@ -84,6 +88,7 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Style;
 import org.zkoss.zul.TreeModel;
@@ -108,6 +113,8 @@ import org.zkoss.zul.impl.XulElement;
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
 DataStatusListener, IADTabpanel, IdSpace
 {
+	private static final String ON_SAVE_OPEN_PREFERENCE_EVENT = "onSaveOpenPreference";
+
 	public static final String ON_POST_INIT_EVENT = "onPostInit";
 
 	public static final String ON_SWITCH_VIEW_EVENT = "onSwitchView";
@@ -159,17 +166,17 @@ DataStatusListener, IADTabpanel, IdSpace
 
 	List<Group> allCollapsibleGroups = new ArrayList<Group>();
 
-	private Component formContainer = null;
+	private Borderlayout formContainer = null;
 
 	private ADTreePanel treePanel = null;
 
 	private GridTabDataBinder dataBinder;
 
-	private boolean active = false;
+	private boolean activated = false;
 
 	private Group currentGroup;
 
-	private Component detailPane;
+	private DetailPane detailPane;
 
 	private boolean detailPaneMode;
 
@@ -195,6 +202,7 @@ DataStatusListener, IADTabpanel, IdSpace
 			}
 		});
         addEventListener(ON_POST_INIT_EVENT, this);
+        addEventListener(ON_SAVE_OPEN_PREFERENCE_EVENT, this);
     }
 
     private void initComponents()
@@ -214,19 +222,32 @@ DataStatusListener, IADTabpanel, IdSpace
         listPanel.getListbox().addEventListener(Events.ON_DOUBLE_CLICK, this);
     }
     
-    public void addDetails(Component component) {
+    public void setDetailPane(DetailPane component) {
 		detailPane = component;
-		if (formContainer instanceof Borderlayout) {
-			Borderlayout borderLayout = (Borderlayout) formContainer;
-			borderLayout.appendSouth(detailPane);
-			
-			borderLayout.getSouth().setCollapsible(true);
-			borderLayout.getSouth().setSplittable(true);
-			borderLayout.getSouth().setOpen(true);
-			borderLayout.getSouth().setSclass("adwindow-gridview-detail");
-		} else {
-			formContainer.appendChild(component);
-		}
+
+		Borderlayout borderLayout = (Borderlayout) formContainer;
+		South south = borderLayout.getSouth();
+		if (south == null) {			
+			south = new South();
+			borderLayout.appendChild(south);
+			south.setWidgetOverride("doClick_", "function (evt){this.$supers('doClick_', arguments);" +
+					"var target = evt.domTarget;if (!target.id) target = target.parentNode;" +
+					"if(this.$n('colled') == target) {" +
+					"var se = new zk.Event(this, 'onSlide', null, {toServer: true}); zAu.send(se); } }");
+			south.addEventListener(Events.ON_OPEN, this);
+			south.addEventListener("onSlide", this);
+		} 
+		south.appendChild(component);
+		
+		south.setVisible(true);
+		south.setCollapsible(true);
+		south.setSplittable(true);
+		south.setOpen(isOpenDetailPane());
+		south.setSclass("adwindow-gridview-detail");
+    }
+    
+    public DetailPane getDetailPane() {
+    	return detailPane;
     }
     
     /**
@@ -291,6 +312,7 @@ DataStatusListener, IADTabpanel, IdSpace
 			div.setHflex("1");
 			div.setSclass("adtab-form");
 			div.setStyle("overflow-y: visible;");
+			div.setSpacing("0px");
 			layout.appendChild(center);
 
 			formContainer = layout;
@@ -305,6 +327,7 @@ DataStatusListener, IADTabpanel, IdSpace
 			div.setStyle("overflow-y: visible;");
 			div.setVflex("1");
 			div.setWidth("100%");
+			div.setSpacing("0px");
 			
 			StringBuilder cssContent = new StringBuilder();
 			cssContent.append(".adtab-form-borderlayout .z-south-colpsd:before { ");
@@ -867,7 +890,7 @@ DataStatusListener, IADTabpanel, IdSpace
 	    	setAttribute(ATTR_ON_ACTIVATE_POSTED, Boolean.TRUE);
     	}
     	
-    	active = activate;
+    	activated = activate;
         if (listPanel.isVisible()) {
         	if (activate)
         		listPanel.activate(gridTab);
@@ -940,18 +963,72 @@ DataStatusListener, IADTabpanel, IdSpace
     	else if (WPaymentEditor.ON_SAVE_PAYMENT.equals(event.getName())) {
     		windowPanel.onSavePayment();
     	}
-    	else if (ON_POST_INIT_EVENT.equals(event.getName())) {    		
+    	else if (ON_POST_INIT_EVENT.equals(event.getName())) {
+    		if (isDetailVisible() && detailPane.getSelectedADTabpanel() != null) {
+    			detailPane.getSelectedADTabpanel().activate(true);
+    		}
+    	}
+    	else if (event.getTarget() instanceof South) {
     		if (detailPane != null) {
-    			Desktop desktop = Executions.getCurrent().getDesktop();
-    			//for unknown reason, this is needed once per desktop to fixed the layout of the detailpane. 
-    			if (desktop.getAttribute("adtabpanel.detailpane.postinit.redraw") == null) {
-    				desktop.setAttribute("adtabpanel.detailpane.postinit.redraw", Boolean.TRUE);
-    				Events.postEvent(new Event(LayoutUtils.ON_REDRAW_EVENT, detailPane));
+    			boolean openEvent = event instanceof OpenEvent; 
+    			if (openEvent) {
+    				Events.echoEvent(ON_SAVE_OPEN_PREFERENCE_EVENT, this, ((OpenEvent)event).isOpen());
+    				if (!((OpenEvent)event).isOpen()) {
+    					return;
+    				}
     			}
+    			if (detailPane.getParent() == null) {
+    				formContainer.appendSouth(detailPane);
+    			}
+    			IADTabpanel tabPanel = detailPane.getSelectedADTabpanel();	    
+    	    	if (tabPanel != null) {
+    	    		if (!tabPanel.isActivated()) {
+    	    			tabPanel.activate(true);
+    	    		}
+    		    	if (!tabPanel.isGridView()) {
+    		    		tabPanel.switchRowPresentation();	
+    		    	}	    		    	
+    	    	}
+    		}
+    	}
+    	else if (event.getName().equals(ON_SAVE_OPEN_PREFERENCE_EVENT)) {
+    		Boolean value = (Boolean) event.getData();
+    		int windowId = getGridTab().getAD_Window_ID();
+    		int adTabId = getGridTab().getAD_Tab_ID();
+    		if (windowId > 0 && adTabId > 0) {
+    			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), "AD_Window_ID=? AND Attribute=?", null);
+    			MPreference preference = query.setOnlyActiveRecords(true)
+    										  .setApplyAccessFilter(true)
+    										  .setParameters(windowId, adTabId+"|DetailPane.IsOpen")
+    										  .first();
+    			if (preference != null && preference.getAD_Preference_ID() > 0) {
+    				preference.setValue(value ? "Y" : "N");
+    			} else {
+    				preference = new MPreference(Env.getCtx(), 0, null);
+    				preference.setAD_Window_ID(windowId);
+    				preference.setAttribute(adTabId+"|DetailPane.IsOpen");
+    				preference.setValue(value ? "Y" : "N");
+    			}
+    			preference.save();
+    			//update current context
+    			Env.getCtx().setProperty("P"+windowId+"|"+adTabId+"|DetailPane.IsOpen", value ? "Y" : "N");
     		}
     	}
     }
 
+    private boolean isOpenDetailPane() {
+    	boolean open = true;
+    	int windowId = getGridTab().getAD_Window_ID();
+		int adTabId = getGridTab().getAD_Tab_ID();
+		if (windowId > 0 && adTabId > 0) {
+			String preference = Env.getPreference(Env.getCtx(), windowId, adTabId+"|DetailPane.IsOpen", false);
+			if (preference != null && preference.trim().length() > 0) {
+				open = "Y".equals(preference);
+			}
+		}
+    	return open;
+    }
+    
     private void navigateTo(DefaultTreeNode<MTreeNode> value) {
     	MTreeNode treeNode = value.getData();
     	//  We Have a TreeNode
@@ -1177,6 +1254,10 @@ DataStatusListener, IADTabpanel, IdSpace
 			listPanel.focus();
 	}
 
+	/**
+	 * 
+	 * @param columnName
+	 */
 	public void setFocusToField(String columnName) {
 		if (formContainer.isVisible()) {
 			boolean found = false;
@@ -1220,25 +1301,40 @@ DataStatusListener, IADTabpanel, IdSpace
 		return listPanel;
 	}
 	
-	public boolean isActive() {
-		return active;
+	@Override
+	public boolean isActivated() {
+		return activated;
 	}
-
+	
 	@Override
 	public void setDetailPaneMode(boolean detailPaneMode) {
 		if (this.detailPaneMode != detailPaneMode) {
 			this.detailPaneMode = detailPaneMode;
 			if (detailPaneMode) {
-				detailPane = null;
-				if (formContainer instanceof Borderlayout) {
-					Borderlayout borderLayout = (Borderlayout) formContainer;
-					if (borderLayout.getSouth() != null) {
-						borderLayout.getSouth().detach();
-					}
-				}
-			} 
+				detachDetailPane();
+			} else {
+				attachDetailPane();
+			}
 			this.setVflex("true");
 			listPanel.setDetailPaneMode(detailPaneMode);
+		}		
+	}
+
+	private void attachDetailPane() {
+		if (formContainer.getSouth() != null) {
+			formContainer.getSouth().setVisible(true);
+			if (formContainer.getSouth().isOpen() && detailPane != null && detailPane.getParent() == null) {
+				formContainer.appendSouth(detailPane);
+			}
+		}
+	}
+
+	private void detachDetailPane() {
+		if (formContainer.getSouth() != null) {
+			formContainer.getSouth().setVisible(false);
+			if (detailPane != null && detailPane.getParent() != null) {
+				detailPane.detach();
+			}
 		}
 	}
 	
@@ -1286,6 +1382,47 @@ DataStatusListener, IADTabpanel, IdSpace
 	@Override
 	public int getTabNo() {
 		return tabNo;
+	}
+
+	/**
+	 * activate current selected detail tab if it is visible
+	 */
+	public void activateDetailIfVisible() {
+		if (isDetailVisible()) {
+			IADTabpanel tabPanel = detailPane.getSelectedADTabpanel();	    
+	    	if (tabPanel != null && !tabPanel.isActivated()) {
+		    	tabPanel.activate(true);
+		    	if (!tabPanel.isGridView()) {
+		    		tabPanel.switchRowPresentation();	
+		    	}	    		    	
+	    	}
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * @return true if the detailpane is visible
+	 */
+	public boolean isDetailVisible() {
+		if (formContainer.getSouth() == null || !formContainer.getSouth().isVisible()
+			|| !formContainer.getSouth().isOpen()) {
+			return false;
+		}
+		
+		return detailPane != null;
+	}
+	
+	/**
+	 * 
+	 * @return true if have one or more detail tabs
+	 */
+	public boolean hasDetailTabs() {
+		if (formContainer.getSouth() == null || !formContainer.getSouth().isVisible()) {
+			return false;
+		}
+		
+		return detailPane != null && detailPane.getTabcount() > 0;
 	}
 }
 

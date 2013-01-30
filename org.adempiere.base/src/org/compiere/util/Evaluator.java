@@ -156,9 +156,20 @@ public class Evaluator
 		String first = st.nextToken().trim();					//	get '@tag@'
 		String firstEval = first.trim();
 		if (first.indexOf('@') != -1)		//	variable
-		{
+		{			
 			first = first.replace ('@', ' ').trim (); 			//	strip 'tag'
+			// IDEMPIERE-194 Handling null context variable
+			String defaultValue = "";
+			int idx = first.indexOf(":");	//	or clause
+			if (idx  >=  0) 
+			{
+				defaultValue = first.substring(idx+1, first.length());
+				first = first.substring(0, idx);
+			}
 			firstEval = source.get_ValueAsString (first);		//	replace with it's value
+			if (Util.isEmpty(firstEval) && !Util.isEmpty(defaultValue)) {
+				firstEval = defaultValue;
+			}
 		}
 		firstEval = firstEval.replace('\'', ' ').replace('"', ' ').trim();	//	strip ' and "
 

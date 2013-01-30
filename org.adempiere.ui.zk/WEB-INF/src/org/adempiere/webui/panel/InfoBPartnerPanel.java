@@ -194,7 +194,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 		fieldPhone.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "phone");
 		
 		checkAND = new Checkbox();
-		checkAND.setLabel(Msg.getMsg(Env.getCtx(), "SearchAND"));
+		checkAND.setLabel(Msg.getMsg(Env.getCtx(), "SearchAND", true));
 		checkAND.setChecked(true);
 		checkAND.addEventListener(Events.ON_CHECK, this);
 		checkCustomer = new Checkbox();

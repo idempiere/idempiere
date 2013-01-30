@@ -120,19 +120,64 @@ public interface IADTabpanel extends Component, Evaluatee {
 	 */
 	public boolean isGridView();
 	
-	public boolean isActive();
+	/**
+	 * @return true if the panel have been activated
+	 */
+	public boolean isActivated();
 
+	/**
+	 * 
+	 * @param detailMode
+	 */
 	public void setDetailPaneMode(boolean detailMode);
 	
+	/**
+	 * 
+	 * @return true if the panel is in detailpane node
+	 */
 	public boolean isDetailPaneMode();
 
+	/**
+	 * 
+	 * @return gridview instance
+	 */
 	public abstract GridView getGridView();	
 	
+	/**
+	 * 
+	 * @param rowChange
+	 * @param onlyRealChange
+	 * @return true if there are pending changes 
+	 */
 	public boolean needSave(boolean rowChange, boolean onlyRealChange);
 
+	/**
+	 * @param onSaveEvent
+	 * @return true if the save operation completed successfully
+	 */
 	public boolean dataSave(boolean onSaveEvent);
 	
+	/**
+	 * 
+	 * @param tabNo
+	 */
 	public void setTabNo(int tabNo);
 	
-	public int getTabNo();	
+	/**
+	 * 
+	 * @return tab no ( ad_tab.tabno )
+	 */
+	public int getTabNo();
+	
+	/**
+	 * 
+	 * @param detailPane
+	 */
+	public void setDetailPane(DetailPane detailPane);
+	
+	/**
+	 * 
+	 * @return detailpane
+	 */
+	public DetailPane getDetailPane();
 }

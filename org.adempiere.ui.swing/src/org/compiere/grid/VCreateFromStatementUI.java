@@ -13,6 +13,8 @@
  *****************************************************************************/
 package org.compiere.grid;
 
+import static org.compiere.model.SystemIDs.COLUMN_C_BANKSTATEMENT_C_BANKACCOUNT_ID;
+
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.GridBagConstraints;
@@ -20,9 +22,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -43,7 +43,6 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
@@ -55,7 +54,6 @@ import org.compiere.util.Msg;
 
 public class VCreateFromStatementUI extends CreateFromStatement implements ActionListener
 {
-	
 	private VCreateFromDialog dialog;
 
 	public VCreateFromStatementUI(GridTab mTab)
@@ -307,27 +305,6 @@ public class VCreateFromStatementUI extends CreateFromStatement implements Actio
 		
 		configureMiniTable(dialog.getMiniTable());
 	}
-	
-	/**
-	 *  List total amount
-	 */
-	public void info()
-	{
-		DecimalFormat format = DisplayType.getNumberFormat(DisplayType.Amount);
-
-		BigDecimal total = new BigDecimal(0.0);
-		int rows = dialog.getMiniTable().getRowCount();
-		int count = 0;
-		for (int i = 0; i < rows; i++)
-		{
-			if (((Boolean)dialog.getMiniTable().getValueAt(i, 0)).booleanValue())
-			{
-				total = total.add((BigDecimal)dialog.getMiniTable().getValueAt(i, 4));
-				count++;
-			}
-		}
-		dialog.setStatusLine(count, Msg.getMsg(Env.getCtx(), "Sum") + "  " + format.format(total));
-	}   //  infoStatement
 	
 	public void showWindow()
 	{

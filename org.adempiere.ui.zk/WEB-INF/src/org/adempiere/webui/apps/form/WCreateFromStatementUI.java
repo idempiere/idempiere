@@ -13,9 +13,9 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
-import java.math.BigDecimal;
+import static org.compiere.model.SystemIDs.COLUMN_C_BANKSTATEMENT_C_BANKACCOUNT_ID;
+
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -44,7 +44,6 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -273,27 +272,6 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		
 		configureMiniTable(window.getWListbox());
 	}
-	
-	/**
-	 *  List total amount
-	 */
-	public void info()
-	{
-		DecimalFormat format = DisplayType.getNumberFormat(DisplayType.Amount);
-
-		BigDecimal total = new BigDecimal(0.0);
-		int rows = window.getWListbox().getRowCount();
-		int count = 0;
-		for (int i = 0; i < rows; i++)
-		{
-			if (((Boolean)window.getWListbox().getValueAt(i, 0)).booleanValue())
-			{
-				total = total.add((BigDecimal)window.getWListbox().getValueAt(i, 4));
-				count++;
-			}
-		}
-		window.setStatusLine(count, Msg.getMsg(Env.getCtx(), "Sum") + "  " + format.format(total));
-	}   //  infoStatement
 	
 	public void showWindow()
 	{

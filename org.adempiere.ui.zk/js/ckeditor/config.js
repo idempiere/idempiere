@@ -1,12 +1,17 @@
 CKEDITOR.editorConfig = function(config) {
     config.resize_enabled = false;
     config.toolbar = 'MyToolbar';
-    config.toolbar_MyToolbar = [
-            [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript',
-                    'Superscript', 'TextColor', 'BGColor', '-', 'Cut', 'Copy',
-                    'Paste', 'Link', 'Unlink' ],
-            [ 'Undo', 'Redo', '-', 'JustifyLeft', 'JustifyCenter',
-                    'JustifyRight', 'JustifyBlock' ],
-            [ 'Table', 'Smiley', 'SpecialChar', 'PageBreak',
-                    'Styles', 'Format', 'Font', 'FontSize', 'Maximize'] ];
+    config.toolbar_MyToolbar =
+[
+	{ name: 'styles', items : [ 'Styles','Format','Font','FontSize' ] },
+	{ name: 'colors', items : [ 'TextColor','BGColor' ] },
+	{ name: 'tools', items : [ 'Maximize', '-','About' ] },
+	{ name: 'clipboard', items : [ 'Undo','Redo' ] },
+	{ name: 'editing', items : [ 'Find','Replace','-','SelectAll' ] },
+	'/',
+	{ name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+	{ name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock' ] },
+	{ name: 'links', items : [ 'Link','Unlink' ] },
+	{ name: 'insert', items : [ 'Image','Table','HorizontalRule','SpecialChar' ] }
+];
 };

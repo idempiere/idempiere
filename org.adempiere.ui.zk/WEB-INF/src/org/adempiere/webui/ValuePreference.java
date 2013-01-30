@@ -229,16 +229,9 @@ public class ValuePreference extends Window implements EventListener<Event>
 		}		
 	}   //  ValuePreference
 
-	private AbstractADWindowContent findADWindowContent(Component ref) {
-		Component parent = ref.getParent();
-		while(parent != null) {
-			if (parent.getAttribute(ADWindow.AD_WINDOW_ATTRIBUTE_KEY) != null) {
-				ADWindow adwindow = (ADWindow) parent.getAttribute(ADWindow.AD_WINDOW_ATTRIBUTE_KEY);
-				return adwindow.getADWindowContent();
-			}
-			parent = parent.getParent();
-		}
-		return null;
+	private AbstractADWindowContent findADWindowContent(Component comp) {
+		ADWindow adwindow = ADWindow.findADWindow(comp);
+		return adwindow != null ? adwindow.getADWindowContent() : null;
 	}
 
 	private Properties      m_ctx;

@@ -3690,6 +3690,8 @@ public class GridTable extends AbstractTableModel
 			{
 				tabNo--;				
 				currentLevel = Env.getContextAsInt(m_ctx, m_WindowNo, tabNo, GridTab.CTX_TabLevel);
+				if (tabNo == 0)
+					break;
 			}
 		return tabNo;
 	}

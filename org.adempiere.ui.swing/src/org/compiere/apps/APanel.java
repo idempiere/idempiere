@@ -2549,12 +2549,12 @@ public final class APanel extends CPanel
 		}	//	DocAction
 
 		//  Pop up Create From
-		else if (col.equals("CreateFrom"))
+		else if (col.equals("CreateFrom") || col.equals("X_CreateFromBatch"))
 		{
 			// Run form only if the button has no process defined - teo_sarca [ 1974354 ]
 			if (vButton.getProcess_ID() <= 0)
 			{
-				ICreateFrom cf = VCreateFromFactory.create(m_curTab);
+				ICreateFrom cf = VCreateFromFactory.create(m_curTab, col);
 				if(cf != null)
 				{
 					if(cf.isInitOK())

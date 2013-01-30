@@ -464,7 +464,7 @@ public final class MRole extends X_AD_Role
 			+ "FROM AD_WorkFlow w LEFT JOIN AD_WorkFlow_Access wa ON "
 			+ "(wa.AD_Role_ID=" + getAD_Role_ID()
 			+ " AND w.AD_WorkFlow_ID = wa.AD_WorkFlow_ID) "
-			+ "WHERE wa.AD_WorkFlow_ID IS NULL AND AccessLevel IN ";
+			+ "WHERE w.AD_Client_ID IN (0," + getAD_Client_ID() + ") AND wa.AD_WorkFlow_ID IS NULL AND AccessLevel IN ";
 
 		String sqlDocAction = "INSERT INTO AD_Document_Action_Access "
 			+ "(AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"

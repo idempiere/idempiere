@@ -936,7 +936,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	}
 
 	@Override
-	public boolean isActive() {
+	public boolean isActivated() {
 		return active;
 	}
 
@@ -978,6 +978,15 @@ public class ADSortTab extends Panel implements IADTabpanel
 	@Override
 	public int getTabNo() {
 		return tabNo;
+	}
+
+	@Override
+	public void setDetailPane(DetailPane detailPane) {
+	}
+
+	@Override
+	public DetailPane getDetailPane() {
+		return null;
 	}
 }	//ADSortTab
 

@@ -742,7 +742,10 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		editorName.setValue(field.getName());
 		editorSeqNo.setValue(field.getSeqNo());
 		editorIsDisplayed.setValue(field.isDisplayed());
-		editorAD_FieldGroup_ID.setValue(field.getAD_FieldGroup_ID());
+		if (field.getAD_FieldGroup_ID() > 0)
+			editorAD_FieldGroup_ID.setValue(field.getAD_FieldGroup_ID());
+		else
+			editorAD_FieldGroup_ID.setValue(null);
 		editorXPosition.setValue(field.getXPosition());
 		editorColumnSpan.setValue(field.getColumnSpan());
 		editorNumLines.setValue(field.getNumLines());
@@ -750,7 +753,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		GridField gridField = getGridField(field);
     	String fieldGroup = "";
     	String fieldGroupType = "";
-    	if (field.getAD_FieldGroup() != null) {
+    	if (field.getAD_FieldGroup_ID() > 0) {
     		fieldGroup = field.getAD_FieldGroup().getName();
     		fieldGroupType = field.getAD_FieldGroup().getFieldGroupType();
     	}

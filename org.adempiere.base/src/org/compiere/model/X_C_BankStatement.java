@@ -33,7 +33,7 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121212L;
+	private static final long serialVersionUID = 20130123L;
 
     /** Standard Constructor */
     public X_C_BankStatement (Properties ctx, int C_BankStatement_ID, String trxName)
@@ -601,5 +601,19 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set Create From Batch.
+		@param X_CreateFromBatch Create From Batch	  */
+	public void setX_CreateFromBatch (String X_CreateFromBatch)
+	{
+		set_Value (COLUMNNAME_X_CreateFromBatch, X_CreateFromBatch);
+	}
+
+	/** Get Create From Batch.
+		@return Create From Batch	  */
+	public String getX_CreateFromBatch () 
+	{
+		return (String)get_Value(COLUMNNAME_X_CreateFromBatch);
 	}
 }
