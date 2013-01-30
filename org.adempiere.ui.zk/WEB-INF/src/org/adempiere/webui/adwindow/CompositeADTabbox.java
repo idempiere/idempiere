@@ -610,7 +610,10 @@ public class CompositeADTabbox extends AbstractADTabbox
 	public void onDetailRecord() {
 		if (headerTab.getDetailPane() != null && getSelectedDetailADTabpanel() != null) {
 			try {
-				headerTab.getDetailPane().onEdit(false);
+				if (!getSelectedDetailADTabpanel().isActivated()) {
+					onActivateDetail(getSelectedDetailADTabpanel());
+				}
+				headerTab.getDetailPane().onEdit(getSelectedDetailADTabpanel().getGridTab().isSingleRow());
 			} catch (Exception e) {
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}

@@ -1096,8 +1096,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					callback.onCallback(true);
 				}
 			}   //  there is a change
-			else
+			else {
+				// just in case
+				adTabbox.dataIgnore();
 				callback.onCallback(true);
+			}
 		}
 		else
 			callback.onCallback(true);
@@ -1224,7 +1227,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	if (!detailTab)
     	{
 	        String dbInfo = e.getMessage();
-    		logger.info(dbInfo);
+	        if (logger.isLoggable(Level.INFO))
+	        	logger.info(dbInfo);
 	        if (adTabbox.getSelectedGridTab() != null && adTabbox.getSelectedGridTab().isQueryActive())
 	            dbInfo = "[ " + dbInfo + " ]";
 	        breadCrumb.setStatusDB(dbInfo, e);
@@ -1435,7 +1439,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         toolbar.enableReport(true);
         toolbar.enableExport(!adTabbox.getSelectedGridTab().isSortTab());
         toolbar.enableFileImport(!changed && !adTabbox.getSelectedGridTab().isSortTab() && adTabbox.getSelectedGridTab().isInsertRecord());
-
+        
+        toolbar.enableTabNavigation(breadCrumb.hasParentLink(), adTabbox.getSelectedDetailADTabpanel() != null);
+        
         //Deepak-Enabling customize button IDEMPIERE-364
         if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
         	toolbar.enableCustomize(((ADTabpanel)adTabbox.getSelectedTabpanel()).isGridView());
@@ -1680,7 +1686,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        adTabbox.dataIgnore();
 	        toolbar.enableIgnore(false);
 	        if (newrecod) {
-	        	onRefresh(true);
+	        	onRefresh(true, false);
 	        } else if (dirtyTabpanel != null) {
 	        	dirtyTabpanel.getGridTab().dataRefresh(true);	// update statusbar & toolbar
 	        	dirtyTabpanel.dynamicDisplay(0);
@@ -1689,6 +1695,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	}
     	if (dirtyTabpanel != null)
     		focusToTabpanel(dirtyTabpanel);
+    	
+    	updateToolbar();
     }
 
     /**
