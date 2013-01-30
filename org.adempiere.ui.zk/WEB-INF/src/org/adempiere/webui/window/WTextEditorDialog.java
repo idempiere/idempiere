@@ -22,9 +22,11 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.zkforge.ckez.CKeditor;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Separator;
@@ -150,6 +152,11 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		editor.setValue(text);
 	}
 
+	public void onEditorCallback(Event event) {
+		text = (String) event.getData();
+		detach();
+	}
+	
 	/**
 	 * @param event
 	 */
@@ -159,12 +166,16 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 			detach();
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
 			if (editable) {
-				if (tabbox.getSelectedIndex() == 0)
+				if (tabbox.getSelectedIndex() == 0) {
 					text = textBox.getText();
-				else
-					text = editor.getValue();
-			}
-			detach();
+					detach();
+				} else {
+					String script = "var w=zk('#"+editor.getUuid()+"').$();var d=w.getEditor().getData();var t=zk('#" +
+							this.getUuid()+"').$();var e=new zk.Event(t,'onEditorCallback',d,{toServer:true});zAu.send(e);";
+					Clients.response(new AuScript(script));
+				}
+					
+			}			
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_RESET)) {
 			textBox.setText(text);
 			editor.setValue(text);
