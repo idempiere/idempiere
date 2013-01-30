@@ -1,3 +1,6 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
 -- Jan 23, 2013 5:43:13 PM SGT
 -- Ticket #1001569: Move receipts into batch from QS to Idempiere
 INSERT INTO AD_Table (ImportTable,CopyColumnsFromTable,IsSecurityEnabled,AccessLevel,LoadSeq,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,AD_Table_UU,IsCentrallyMaintained,IsDeleteable,TableName,Name,AD_Client_ID,IsActive,AD_Org_ID,Updated,CreatedBy,UpdatedBy,Created) VALUES ('N','N','N','3',0,200056,'N','N','N','D','L','4428e636-52c0-40c7-bfa3-d637dbac1642','Y','Y','X_DepositBatch','Receipts into Batch',0,'Y',0,TO_DATE('2013-01-23 17:43:11','YYYY-MM-DD HH24:MI:SS'),100,100,TO_DATE('2013-01-23 17:43:11','YYYY-MM-DD HH24:MI:SS'))
