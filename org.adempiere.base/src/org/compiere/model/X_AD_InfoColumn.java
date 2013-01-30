@@ -30,7 +30,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130108L;
+	private static final long serialVersionUID = 20130130L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -48,6 +48,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 // Y
 			setIsDisplayed (true);
 // Y
+			setIsIdentifier (false);
+// N
 			setIsQueryCriteria (false);
 			setName (null);
 			setSelectClause (null);
@@ -397,6 +399,30 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 		return false;
 	}
 
+	/** Set Identifier.
+		@param IsIdentifier 
+		This column is part of the record identifier
+	  */
+	public void setIsIdentifier (boolean IsIdentifier)
+	{
+		set_Value (COLUMNNAME_IsIdentifier, Boolean.valueOf(IsIdentifier));
+	}
+
+	/** Get Identifier.
+		@return This column is part of the record identifier
+	  */
+	public boolean isIdentifier () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsIdentifier);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Query Criteria.
 		@param IsQueryCriteria 
 		The column is also used as a query criteria
@@ -529,6 +555,26 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public int getSeqNo () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Selection Column Sequence.
+		@param SeqNoSelection 
+		Selection Column Sequence
+	  */
+	public void setSeqNoSelection (int SeqNoSelection)
+	{
+		set_Value (COLUMNNAME_SeqNoSelection, Integer.valueOf(SeqNoSelection));
+	}
+
+	/** Get Selection Column Sequence.
+		@return Selection Column Sequence
+	  */
+	public int getSeqNoSelection () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNoSelection);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

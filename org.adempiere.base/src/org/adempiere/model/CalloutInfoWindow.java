@@ -137,6 +137,7 @@ public class CalloutInfoWindow implements IColumnCallout {
 							infoColumn.setAD_Val_Rule_ID(col.getAD_Val_Rule_ID());
 							if ((col.isSelectionColumn() || col.isIdentifier()) && !col.isKey()) {								
 								infoColumn.setIsQueryCriteria(true);
+								infoColumn.setIsIdentifier(col.isIdentifier());
 								setQueryOption(infoColumn.getAD_Reference_ID(), infoColumn);
 							}
 							break;

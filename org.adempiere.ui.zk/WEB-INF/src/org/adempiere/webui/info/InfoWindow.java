@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.TreeMap;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
@@ -73,6 +74,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 	private Vbox southBody;
 	/** List of WEditors            */
     protected List<WEditor> editors;
+    protected List<WEditor> identifiers;
     protected Properties infoContext;
 
 	/** Max Length of Fields */
@@ -133,30 +135,34 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 
 	private void processQueryValue() {
 		//try first 2 only
-		String[] values = queryValue.split("[_]");
-		if (values.length == 2) {
-			for(int i = 0; i < values.length && i < editors.size(); i++) {
-				WEditor editor = editors.get(i);
-				editor.setValue(values[i]);
-			}
+		for(int i = 0; i < identifiers.size() && i < 2; i++) {
+			WEditor editor = identifiers.get(i);
+			editor.setValue(queryValue);
 			testCount();
-		} else {
-			for(int i = 0; i < editors.size() && i < 2; i++) {
-				WEditor editor = editors.get(i);
-				editor.setValue(queryValue);
-				testCount();
-				if (m_count > 0) {
-					break;
-				} else {
-					editor.setValue(null);
-				}
+			if (m_count > 0) {
+				break;
+			} else {
+				editor.setValue(null);
 			}
+		}
+		
+		boolean splitValue = false;
+		if (m_count <= 0) {			
+			String[] values = queryValue.split("[_]");
+			if (values.length == 2 && identifiers.size() == 2) {
+				splitValue = true;
+				for(int i = 0; i < values.length && i < identifiers.size(); i++) {
+					WEditor editor = identifiers.get(i);
+					editor.setValue(values[i]);
+				}
+				testCount();
+			} 
 		}
 		
 		if (m_count > 0) {
 			executeQuery();
 			renderItems();
-		} else if (editors.size() > 0 && values.length != 2) {
+		} else if (!splitValue) {
 			editors.get(0).setValue(queryValue);
 		}
 	}
@@ -339,6 +345,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 					continue;
 				}
 				String columnName = mInfoColumn.getSelectClause();
+				int asIndex = columnName.toUpperCase().lastIndexOf(" AS ");
+				if (asIndex > 0) {
+					columnName = columnName.substring(0, asIndex);
+				}
 				if (builder.length() > 0) {
 					builder.append(checkAND.isChecked() ? " AND " : " OR ");
 				} else if (p_whereClause != null && p_whereClause.trim().length() > 0) {
@@ -520,10 +530,25 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 		parameterGrid.appendChild(rows);
 		
 		editors = new ArrayList<WEditor>();
+		identifiers = new ArrayList<WEditor>();
+		TreeMap<Integer, List<Object[]>> tree = new TreeMap<Integer, List<Object[]>>();
 		for (int i = 0; i < infoColumns.length; i++)
 		{
-			if (infoColumns[i].isQueryCriteria())
-				addSelectionColumn(gridFields.get(i));
+			if (infoColumns[i].isQueryCriteria()) {
+				List<Object[]> list = tree.get(infoColumns[i].getSeqNoSelection());
+				if (list == null) {
+					list = new ArrayList<Object[]>();
+					tree.put(infoColumns[i].getSeqNoSelection(), list);
+				}
+				list.add(new Object[]{infoColumns[i], gridFields.get(i)});				
+			}
+		}
+		
+		for (Integer i : tree.keySet()) {
+			List<Object[]> list = tree.get(i);
+			for(Object[] value : list) {
+				addSelectionColumn((MInfoColumn)value[0], (GridField)value[1]);
+			}
 		}
 		
 		if (checkAND == null) {
@@ -558,9 +583,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 	
 	/**
      *  Add Selection Column to first Tab
+	 * @param infoColumn 
      *  @param mField field
     **/
-    protected void addSelectionColumn(GridField mField)
+    protected void addSelectionColumn(MInfoColumn infoColumn, GridField mField)
     {
         int displayLength = mField.getDisplayLength();
         if (displayLength <= 0 || displayLength > FIELDLENGTH)
@@ -590,10 +616,22 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
         if (displayLength > 0)      //  set it back
             mField.setDisplayLength(displayLength);
         //
+        if (label != null) {
+        	if (infoColumn.getQueryOperator().equals(X_AD_InfoColumn.QUERYOPERATOR_Gt) ||
+        		infoColumn.getQueryOperator().equals(X_AD_InfoColumn.QUERYOPERATOR_GtEq) ||
+        		infoColumn.getQueryOperator().equals(X_AD_InfoColumn.QUERYOPERATOR_Le) ||
+        		infoColumn.getQueryOperator().equals(X_AD_InfoColumn.QUERYOPERATOR_LeEq) ||
+        		infoColumn.getQueryOperator().equals(X_AD_InfoColumn.QUERYOPERATOR_NotEq )) {
+        		label.setValue(label.getValue() + " " + infoColumn.getQueryOperator());
+        	}
+        }
 
         addSearchParameter(label, fieldEditor);
         
         editors.add(editor);
+        if (infoColumn.isIdentifier()) {
+        	identifiers.add(editor);
+        }
 
         fieldEditor.addEventListener(Events.ON_OK,this);
     }   // addSelectionColumn
@@ -665,9 +703,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
         if (row == -1)
             return;
 
-        int column = 0;
+        int column = -1;
         for(ColumnInfo columnInfo : columnInfos) 
-        {        	
+        {   
+        	column++;
         	GridField field = columnInfo.getGridField();
         	if (field == null) continue;
         	
@@ -686,8 +725,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
         	{
         		Object value = contentPanel.getValueAt(row, column);
         		Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, field.getColumnName(), value == null ? "" : value.toString());
-        	}
-        	column++;
+        	}        	
         }
     }   //  saveSelectionDetail
     

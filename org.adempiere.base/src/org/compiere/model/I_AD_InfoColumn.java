@@ -281,6 +281,19 @@ public interface I_AD_InfoColumn
 	  */
 	public boolean isDisplayed();
 
+    /** Column name IsIdentifier */
+    public static final String COLUMNNAME_IsIdentifier = "IsIdentifier";
+
+	/** Set Identifier.
+	  * This column is part of the record identifier
+	  */
+	public void setIsIdentifier (boolean IsIdentifier);
+
+	/** Get Identifier.
+	  * This column is part of the record identifier
+	  */
+	public boolean isIdentifier();
+
     /** Column name IsQueryCriteria */
     public static final String COLUMNNAME_IsQueryCriteria = "IsQueryCriteria";
 
@@ -360,6 +373,19 @@ public interface I_AD_InfoColumn
  lowest number comes first
 	  */
 	public int getSeqNo();
+
+    /** Column name SeqNoSelection */
+    public static final String COLUMNNAME_SeqNoSelection = "SeqNoSelection";
+
+	/** Set Selection Column Sequence.
+	  * Selection Column Sequence
+	  */
+	public void setSeqNoSelection (int SeqNoSelection);
+
+	/** Get Selection Column Sequence.
+	  * Selection Column Sequence
+	  */
+	public int getSeqNoSelection();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
