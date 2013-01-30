@@ -1065,7 +1065,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					}
 				}
 			};
-			saveAndNavigate(command);
+			Object value = Executions.getCurrent().getAttribute(CompositeADTabbox.AD_TABBOX_ON_EDIT_DETAIL_ATTRIBUTE);
+			if (value != null && value == adTabbox.getSelectedDetailADTabpanel()
+				&& adTabbox.getDirtyADTabpanel() == adTabbox.getSelectedDetailADTabpanel()) {
+				command.onCallback(true);
+			} else {
+				saveAndNavigate(command);
+			}
 		}
 
 	}
@@ -1138,17 +1144,16 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			}
 		}
 
-//		if (!activated)
-//		{
-			if (!back)
-			{
-			    newTabpanel.query();
-			}
-			else
-			{
-			    newTabpanel.refresh();
-			}
-//		}
+		if (!back)
+		{
+			Object value = Executions.getCurrent().removeAttribute(CompositeADTabbox.AD_TABBOX_ON_EDIT_DETAIL_ATTRIBUTE);
+			if (value != newTabpanel)
+				newTabpanel.query();
+		}
+		else
+		{
+		    newTabpanel.refresh();
+		}
 
 		if (adTabbox.getSelectedTabpanel() instanceof ADSortTab)
 		{
@@ -1536,7 +1541,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			            
 			            if (adTabbox.getSelectedTabpanel().isGridView())
 			            {
-			            	adTabbox.getSelectedTabpanel().getGridView().editCurrentRow();
+			            	adTabbox.getSelectedTabpanel().getGridView().onEditCurrentRow();
 			            }
 			        }
 			        else

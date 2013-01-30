@@ -35,6 +35,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluator;
 import org.compiere.util.Msg;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
@@ -55,6 +56,8 @@ import org.zkoss.zul.Vlayout;
  */
 public class CompositeADTabbox extends AbstractADTabbox
 {
+	public static final String AD_TABBOX_ON_EDIT_DETAIL_ATTRIBUTE = "ADTabbox.onEditDetail";
+
 	private static final String ON_POST_TAB_SELECTION_CHANGED_EVENT = "onPostTabSelectionChanged";
 
 	public static final String ON_SELECTION_CHANGED_EVENT = "onSelectionChanged";
@@ -90,13 +93,19 @@ public class CompositeADTabbox extends AbstractADTabbox
 							? getSelectedDetailADTabpanel().getGridTab().getCurrentRow()
 							: 0;
 					final boolean formView = event.getData() != null ? (Boolean)event.getData() : true;
-					adWindowPanel.saveAndNavigate(new Callback<Boolean>() {
-						@Override
-						public void onCallback(Boolean result) {
-							if (result)
-								onEditDetail(row, formView);
-						}
-					});					
+					if (getSelectedDetailADTabpanel() != null && 
+						((getSelectedDetailADTabpanel() == getDirtyADTabpanel()) ||
+						(getDirtyADTabpanel() == null && getSelectedDetailADTabpanel().getGridTab().isNew()))) {
+						onEditDetail(row, formView);
+					} else {												
+						adWindowPanel.saveAndNavigate(new Callback<Boolean>() {
+							@Override
+							public void onCallback(Boolean result) {
+								if (result)
+									onEditDetail(row, formView);
+							}
+						});					
+					}
 				}
 				else if (DetailPane.ON_NEW_EVENT.equals(event.getName())) {
 					if (headerTab.getGridTab().isNew()) return;
@@ -114,8 +123,16 @@ public class CompositeADTabbox extends AbstractADTabbox
 										adWindowPanel.onNew();
 								} else {
 									if (!getSelectedDetailADTabpanel().getGridTab().isNew()) {
-										getSelectedDetailADTabpanel().getGridTab().dataNew(false);
-										getSelectedDetailADTabpanel().getGridView().editCurrentRow();
+										getSelectedDetailADTabpanel().getGridTab().dataNew(false);										
+										if (!((ADTabpanel)headerTab).isDetailVisible()) {
+											String uuid = headerTab.getDetailPane().getParent().getUuid();
+											String vid = getSelectedDetailADTabpanel().getGridView().getUuid();
+											String script = "setTimeout(function(){zk('#"+uuid+"').$().setOpen(true);setTimeout(function(){var v=zk('#" + vid
+													+ "').$();var e=new zk.Event(v,'onEditCurrentRow',null,{toServer:true});zAu.send(e);},200);},200)";
+											Clients.response(new AuScript(script));
+										} else {
+											getSelectedDetailADTabpanel().getGridView().onEditCurrentRow();
+										}
 									}
 								}
 							}
@@ -149,11 +166,13 @@ public class CompositeADTabbox extends AbstractADTabbox
     }
     
     protected void onEditDetail(int row, boolean formView) {
+    	
 		int oldIndex = selectedIndex;
 		IADTabpanel selectedPanel = getSelectedDetailADTabpanel();
 		if (selectedPanel == null) return;
 		int newIndex = selectedPanel.getTabNo();
 		
+		Executions.getCurrent().setAttribute(AD_TABBOX_ON_EDIT_DETAIL_ATTRIBUTE, selectedPanel);
 		Event selectionChanged = new Event(ON_SELECTION_CHANGED_EVENT, layout, new Object[]{oldIndex, newIndex});
 		try {
 			selectionListener.onEvent(selectionChanged);
@@ -165,7 +184,15 @@ public class CompositeADTabbox extends AbstractADTabbox
 		if (formView && headerTab.isGridView()) {
 			headerTab.switchRowPresentation();
 		}
+
 		headerTab.getGridTab().setCurrentRow(row, true);
+		if (headerTab.isGridView()) {
+			if (headerTab.getGridTab().isNew() || headerTab.needSave(true, false)) {
+				headerTab.getGridView().onEditCurrentRow();
+			}
+		} else {
+			((HtmlBasedComponent)headerTab).focus();
+		}
 	}
     
     protected Component doCreatePart(Component parent)

@@ -1311,16 +1311,16 @@ DataStatusListener, IADTabpanel, IdSpace
 		if (this.detailPaneMode != detailPaneMode) {
 			this.detailPaneMode = detailPaneMode;
 			if (detailPaneMode) {
-				hideDetail();
+				detachDetailPane();
 			} else {
-				showDetail();
+				attachDetailPane();
 			}
 			this.setVflex("true");
 			listPanel.setDetailPaneMode(detailPaneMode);
 		}		
 	}
 
-	private void showDetail() {
+	private void attachDetailPane() {
 		if (formContainer.getSouth() != null) {
 			formContainer.getSouth().setVisible(true);
 			if (formContainer.getSouth().isOpen() && detailPane != null && detailPane.getParent() == null) {
@@ -1329,7 +1329,7 @@ DataStatusListener, IADTabpanel, IdSpace
 		}
 	}
 
-	private void hideDetail() {
+	private void detachDetailPane() {
 		if (formContainer.getSouth() != null) {
 			formContainer.getSouth().setVisible(false);
 			if (detailPane != null && detailPane.getParent() != null) {
