@@ -70,6 +70,9 @@ public class InOutCreateConfirm extends SvrProcess
 		if (confirm == null)
 			throw new Exception ("Cannot create Confirmation for " + shipment.getDocumentNo());
 		//
+		
+		addLog(confirm.getM_InOutConfirm_ID(), null, null, confirm.getDocumentNo(), confirm.get_Table_ID(), confirm.getM_InOutConfirm_ID());
+
 		return confirm.getDocumentNo();
 	}	//	doIt
 	

@@ -98,6 +98,8 @@ public class DashboardController implements EventListener<Event> {
 	private DashboardRunnable dashboardRunnable;
 	private ScheduledFuture<?> dashboardFuture;
 	
+	private final static int DEFAULT_DASHBOARD_WIDTH = 95;
+	
 	public DashboardController() {
 		dashboardLayout = new Anchorlayout();
         dashboardLayout.setSclass("dashboard-layout");
@@ -141,9 +143,9 @@ public class DashboardController implements EventListener<Event> {
         	dps = MDashboardPreference.getForSession(isShowInDashboard, AD_User_ID, AD_Role_ID); // based on user and role       	
         	noOfCols = MDashboardPreference.getForSessionColumnCount(isShowInDashboard, AD_User_ID, AD_Role_ID);
             
-        	int dashboardWidth = isShowInDashboard ? 95 : 100;
+        	int dashboardWidth = isShowInDashboard ? DEFAULT_DASHBOARD_WIDTH : 100;
             width = noOfCols <= 0 ? dashboardWidth : dashboardWidth / noOfCols;
-            int useWidth = 0; 
+            int extraWidth = 100 - (noOfCols <= 0 ? dashboardWidth : width * noOfCols) - (100 - dashboardWidth - 1);
             for (final MDashboardPreference dp : dps)
 			{            	            	
             	MDashboardContent dc = new MDashboardContent(dp.getCtx(), dp.getPA_DashboardContent_ID(), dp.get_TrxName());
@@ -151,19 +153,12 @@ public class DashboardController implements EventListener<Event> {
 	        	int columnNo = dp.getColumnNo();
 	        	if(dashboardColumnLayout == null || currentColumnNo != columnNo)
 	        	{
-	        		int anchorWidth = width;
-	            	if (columnNo == noOfCols) {
-	            		anchorWidth = 100 - useWidth;
-	            	} else {
-	            		useWidth = useWidth + width;
-	            	}
-	            	
 	        		dashboardColumnLayout = new Vlayout();
 	        		dashboardColumnLayout.setAttribute("ColumnNo", columnNo);
 	        		dashboardColumnLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
 	        		dashboardColumnLayout.setAttribute("IsAdditionalColumn", false);
 	        		Anchorchildren dashboardColumn = new Anchorchildren();
-	        		dashboardColumn.setAnchor(anchorWidth + "%" + " 100%");
+	        		dashboardColumn.setAnchor(width + "%" + " 100%");
 	        		dashboardColumn.setDroppable("true");
 	        		dashboardColumn.addEventListener(Events.ON_DROP, this);
 	        		dashboardColumn.appendChild(dashboardColumnLayout);
@@ -381,9 +376,9 @@ public class DashboardController implements EventListener<Event> {
             	dashboardColumnLayout = new Vlayout();
         		dashboardColumnLayout.setAttribute("ColumnNo", "0");
         		dashboardColumnLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
-        		dashboardColumnLayout.setAttribute("IsAdditionalColumn", false);
+        		dashboardColumnLayout.setAttribute("IsAdditionalColumn", true);
         		Anchorchildren dashboardColumn = new Anchorchildren();
-        		dashboardColumn.setAnchor((width-2) + "%" + " 100%");
+        		dashboardColumn.setAnchor((width-5) + "%" + " 100%");
         		dashboardColumn.setDroppable("true");
         		dashboardColumn.addEventListener(Events.ON_DROP, this);
         		dashboardColumn.appendChild(dashboardColumnLayout);
@@ -400,7 +395,7 @@ public class DashboardController implements EventListener<Event> {
         		dashboardColumnLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
         		dashboardColumnLayout.setAttribute("IsAdditionalColumn", true);
         		Anchorchildren dashboardColumn = new Anchorchildren();
-        		dashboardColumn.setAnchor("1% 100%");
+        		dashboardColumn.setAnchor(extraWidth + "% 100%");
         		dashboardColumn.setDroppable("true");
         		dashboardColumn.addEventListener(Events.ON_DROP, this);
         		dashboardColumn.appendChild(dashboardColumnLayout);
@@ -593,10 +588,12 @@ public class DashboardController implements EventListener<Event> {
 							layout.setAttribute("IsAdditionalColumn", false);
 							
 							int noOfCols = columnList.size(); 
-							int width = noOfCols <= 0 ? 100 : (100-1) / noOfCols;
+				        	int dashboardWidth = DEFAULT_DASHBOARD_WIDTH;
+				            int width = noOfCols <= 0 ? dashboardWidth : dashboardWidth / noOfCols;
+				            int extraWidth = 100 - (noOfCols <= 0 ? dashboardWidth : width * noOfCols) - (100 - dashboardWidth - 1);
 							
 							for (Anchorchildren column : columnList)
-								column.setAnchor((width-2) + "%" + " 100%");
+								column.setAnchor(width + "%" + " 100%");
 
 							// additional column
 							Vlayout dashboardColumnLayout = new Vlayout();
@@ -604,7 +601,7 @@ public class DashboardController implements EventListener<Event> {
 			        		dashboardColumnLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
 			        		dashboardColumnLayout.setAttribute("IsAdditionalColumn", true);
 			        		Anchorchildren dashboardColumn = new Anchorchildren();
-			        		dashboardColumn.setAnchor("1% 100%");
+			        		dashboardColumn.setAnchor(extraWidth + "% 100%");
 			        		dashboardColumn.setDroppable("true");
 			        		dashboardColumn.addEventListener(Events.ON_DROP, this);
 			        		dashboardColumn.appendChild(dashboardColumnLayout);

@@ -92,6 +92,8 @@ public class InvoiceCreateInOut extends SvrProcess
 		}
 		if (m_inout == null)
 			throw new InvoiceFullyMatchedException();
+		
+		addLog(m_inout.getM_InOut_ID(), m_inout.getMovementDate(), null, m_inout.getDocumentNo(), m_inout.get_Table_ID(), m_inout.getM_InOut_ID());
 		//
 		return m_inout.getDocumentNo();
 	}	//	doIt

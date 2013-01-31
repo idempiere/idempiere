@@ -19,7 +19,6 @@ import java.sql.Timestamp;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
@@ -37,9 +36,10 @@ import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
+import org.adempiere.webui.panel.ADForm;
+import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.window.FDialog;
-import org.compiere.grid.CreateFromBatchStatement;
-import org.compiere.model.GridTab;
+import org.compiere.apps.form.StatementCreateFromBatch;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
@@ -61,32 +61,28 @@ import org.zkoss.zul.Hbox;
  * @author Elaine
  *
  */
-public class WCreateFromBatchStatementUI extends CreateFromBatchStatement implements EventListener<Event>
+public class WStatementCreateFromBatch extends StatementCreateFromBatch implements IFormController, EventListener<Event>
 {
-	private WCreateFromWindow window;
+	private WCreateFromForm form;
 	
-	public WCreateFromBatchStatementUI(GridTab tab) 
+	public WStatementCreateFromBatch()
 	{
-		super(tab);
-		log.info(getGridTab().toString());
-		
-		window = new WCreateFromWindow(this, getGridTab().getWindowNo());
-		
-		p_WindowNo = getGridTab().getWindowNo();
-
+		form = new WCreateFromForm(this);
+		p_WindowNo = form.getWindowNo();		
+	}
+	
+	public void initForm()
+	{
 		try
 		{
 			if (!dynInit())
 				return;
 			zkInit();
-			setInitOK(true);
 		}
 		catch(Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
-			setInitOK(false);
 		}
-		AEnv.showWindow(window);
 	}
 	
 	/** Window No               */
@@ -130,22 +126,22 @@ public class WCreateFromBatchStatementUI extends CreateFromBatchStatement implem
 	 */
 	public boolean dynInit() throws Exception
 	{
-		log.config("");
-		
 		super.dynInit();
 		
+		log.config("");
+		
 		//Refresh button
-		Button refreshButton = window.getConfirmPanel().createButton(ConfirmPanel.A_REFRESH);
+		Button refreshButton = form.getConfirmPanel().createButton(ConfirmPanel.A_REFRESH);
 		refreshButton.addEventListener(Events.ON_CLICK, this);
-		window.getConfirmPanel().addButton(refreshButton);
-				
-		if (getGridTab().getValue("C_BankStatement_ID") == null)
+		form.getConfirmPanel().addButton(refreshButton);
+		
+		if (form.getGridTab() != null && form.getGridTab().getValue("C_BankStatement_ID") == null)
 		{
-			FDialog.error(0, window, "SaveErrorRowNotFound");
+			FDialog.error(0, form, "SaveErrorRowNotFound");
 			return false;
 		}
 		
-		window.setTitle(getTitle());
+		form.setTitle(getTitle());
 		
 		int AD_Column_ID = COLUMN_C_BANKSTATEMENT_C_BANKACCOUNT_ID;        //  C_BankStatement.C_BankAccount_ID
 		MLookup lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, AD_Column_ID, DisplayType.TableDir);
@@ -171,7 +167,7 @@ public class WCreateFromBatchStatementUI extends CreateFromBatchStatement implem
 		Timestamp date = Env.getContextAsDate(Env.getCtx(), p_WindowNo, MBankStatement.COLUMNNAME_StatementDate);
 		dateToField.setValue(date);
 		
-		loadBankAccount();
+		form.postQueryEvent();
 		
 		return true;
 	}   //  dynInit
@@ -193,7 +189,7 @@ public class WCreateFromBatchStatementUI extends CreateFromBatchStatement implem
     	Borderlayout parameterLayout = new Borderlayout();
     	parameterLayout.setHeight("130px");
 		parameterLayout.setWidth("100%");
-    	Panel parameterPanel = window.getParameterPanel();
+    	Panel parameterPanel = form.getParameterPanel();
 		parameterPanel.appendChild(parameterLayout);
 		
 		Grid parameterBankLayout = GridFactory.newGridLayout();
@@ -263,48 +259,39 @@ public class WCreateFromBatchStatementUI extends CreateFromBatchStatement implem
 	public void onEvent(Event e) throws Exception
 	{
 		log.config("Action=" + e.getTarget().getId());
-		if(e.getTarget().equals(window.getConfirmPanel().getButton(ConfirmPanel.A_REFRESH)))
+		if(e.getTarget().equals(form.getConfirmPanel().getButton(ConfirmPanel.A_REFRESH)))
 		{
-			loadBankAccount();
-			window.tableChanged(null);
+			form.postQueryEvent();
+			form.tableChanged(null);
 		}
 	}
 	
-	protected void loadBankAccount()
+	public void executeQuery()
 	{
 		loadTableOIS(getBankAccountData(bankAccountField.getValue(), bPartnerLookup.getValue(), 
 				documentNoField.getValue().toString(), dateFromField.getValue(), dateToField.getValue(),
 				amtFromField.getValue(), amtToField.getValue(), 
-				documentTypeField.getValue(), tenderTypeField.getValue(), authorizationField.getValue().toString()));
+				documentTypeField.getValue(), tenderTypeField.getValue(), authorizationField.getValue().toString(),
+				form.getGridTab()));
 	}
 	
 	protected void loadTableOIS (Vector<?> data)
 	{
-		window.getWListbox().clear();
+		form.getWListbox().clear();
 		
 		//  Remove previous listeners
-		window.getWListbox().getModel().removeTableModelListener(window);
+		form.getWListbox().getModel().removeTableModelListener(form);
 		//  Set Model
 		ListModelTable model = new ListModelTable(data);
-		model.addTableModelListener(window);
-		window.getWListbox().setData(model, getOISColumnNames());
+		model.addTableModelListener(form);
+		form.getWListbox().setData(model, getOISColumnNames());
 		//
 		
-		configureMiniTable(window.getWListbox());
+		configureMiniTable(form.getWListbox());
 	}
 	
-	public void showWindow()
+	public ADForm getForm() 
 	{
-		window.setVisible(true);
-	}
-	
-	public void closeWindow()
-	{
-		window.dispose();
-	}
-
-	@Override
-	public Object getWindow() {
-		return window;
+		return form;
 	}
 }

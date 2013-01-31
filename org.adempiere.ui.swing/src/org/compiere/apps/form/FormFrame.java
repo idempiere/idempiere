@@ -39,6 +39,7 @@ import org.compiere.apps.AGlassPane;
 import org.compiere.apps.AMenu;
 import org.compiere.apps.Help;
 import org.compiere.apps.WindowMenu;
+import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.model.MUser;
 import org.compiere.process.ProcessInfo;
@@ -252,6 +253,11 @@ public class FormFrame extends CFrame
 	 */
 	public boolean openForm (int AD_Form_ID)
 	{
+		return openForm(AD_Form_ID, null);
+	}
+	
+	public boolean openForm (int AD_Form_ID, GridTab gridTab)
+	{
 		Properties ctx = Env.getCtx();
 		//
 		String name = null;
@@ -296,7 +302,7 @@ public class FormFrame extends CFrame
 		if (className == null)
 			return false;
 		//
-		return openForm(AD_Form_ID, className, name);
+		return openForm(AD_Form_ID, className, name, gridTab);
 	}	//	openForm
 
 	/**
@@ -308,10 +314,16 @@ public class FormFrame extends CFrame
 	 */
 	protected boolean openForm (int AD_Form_ID, String className, String name)
 	{
+		return openForm(AD_Form_ID, className, name, null);
+	}
+	
+	protected boolean openForm (int AD_Form_ID, String className, String name, GridTab gridTab)
+	{
 		log.info("AD_Form_ID=" + AD_Form_ID + " - Class=" + className);
 		Properties ctx = Env.getCtx();
 		Env.setContext(ctx, m_WindowNo, "WindowName", name);
 		setTitle(Env.getHeader(ctx, m_WindowNo));
+		this.gridTab = gridTab;
 
 		try
 		{
@@ -481,5 +493,11 @@ public class FormFrame extends CFrame
 	{
 		return menuBar;
 	}
-
+	
+	private GridTab gridTab;
+	
+	public GridTab getGridTab()
+	{
+		return gridTab;
+	}
 }	//	FormFrame

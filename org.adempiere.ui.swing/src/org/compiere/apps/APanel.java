@@ -2549,12 +2549,12 @@ public final class APanel extends CPanel
 		}	//	DocAction
 
 		//  Pop up Create From
-		else if (col.equals("CreateFrom") || col.equals("X_CreateFromBatch"))
+		else if (col.equals("CreateFrom"))
 		{
 			// Run form only if the button has no process defined - teo_sarca [ 1974354 ]
 			if (vButton.getProcess_ID() <= 0)
 			{
-				ICreateFrom cf = VCreateFromFactory.create(m_curTab, col);
+				ICreateFrom cf = VCreateFromFactory.create(m_curTab);
 				if(cf != null)
 				{
 					if(cf.isInitOK())
@@ -2660,7 +2660,7 @@ public final class APanel extends CPanel
 			pi.setAD_User_ID (Env.getAD_User_ID(m_ctx));
 			pi.setAD_Client_ID (Env.getAD_Client_ID(m_ctx));
 			ff.setProcessInfo(pi);
-			ff.openForm(form_ID);
+			ff.openForm(form_ID, m_curTab);
 			ff.pack();
 			AEnv.showCenterScreen(ff);
 			return;

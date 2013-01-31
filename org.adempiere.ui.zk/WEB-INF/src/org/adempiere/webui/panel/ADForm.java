@@ -24,6 +24,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ADClassNameMap;
+import org.compiere.model.GridTab;
 import org.compiere.model.MForm;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -46,7 +47,7 @@ public abstract class ADForm extends Window implements EventListener<Event>
 	private static final long serialVersionUID = -5183711788893823434L;
 	/** The class' logging enabler */
     protected static final CLogger logger;
-
+    
     static
     {
         logger = CLogger.getCLogger(ADForm.class);
@@ -287,6 +288,11 @@ public abstract class ADForm extends Window implements EventListener<Event>
 	 */
 	public static ADForm openForm (int adFormID)
 	{
+		return openForm(adFormID, null);
+	}
+	
+	public static ADForm openForm (int adFormID, GridTab gridTab)
+	{
 		Object obj = null;
 		ADForm form;
 		String webClassName = "";
@@ -337,6 +343,7 @@ public abstract class ADForm extends Window implements EventListener<Event>
         		if (obj instanceof ADForm)
         		{
     				form = (ADForm)obj;
+    				form.gridTab = gridTab;
     				form.init(adFormID, name);
     				return form;
         		}
@@ -344,6 +351,7 @@ public abstract class ADForm extends Window implements EventListener<Event>
         		{
         			IFormController customForm = (IFormController)obj;
         			form = customForm.getForm();
+    				form.gridTab = gridTab;
         			form.setICustomForm(customForm);
         			form.init(adFormID, name);
         			return form;
@@ -404,5 +412,12 @@ public abstract class ADForm extends Window implements EventListener<Event>
 	 */
 	public Mode getWindowMode() {
 		return Mode.EMBEDDED;
+	}
+	
+	private GridTab gridTab;
+	
+	public GridTab getGridTab()
+	{
+		return gridTab;
 	}
 }

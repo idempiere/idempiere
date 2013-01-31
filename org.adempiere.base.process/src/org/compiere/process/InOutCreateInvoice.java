@@ -146,6 +146,8 @@ public class InOutCreateInvoice extends SvrProcess
 			invoice.saveEx();
 		}
 		
+		addLog(invoice.getC_Invoice_ID(), invoice.getDateInvoiced(), invoice.getGrandTotal(), invoice.getDocumentNo(), invoice.get_Table_ID(), invoice.getC_Invoice_ID());
+		
 		return invoice.getDocumentNo();
 	}	//	InOutCreateInvoice
 	
