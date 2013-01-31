@@ -48,7 +48,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	public boolean dynInit() throws Exception
 	{
 		log.config("");
-		setTitle(Msg.getElement(Env.getCtx(), "C_BankStatement_ID") + " .. " + Msg.translate(Env.getCtx(), "CreateFromBatch"));
+		setTitle(Msg.getElement(Env.getCtx(), "C_BankStatement_ID") + " .. " + Msg.getElement(Env.getCtx(), "X_CreateFromBatch"));
 		
 		return true;
 	}
