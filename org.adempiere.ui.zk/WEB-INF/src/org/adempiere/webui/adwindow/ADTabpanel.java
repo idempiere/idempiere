@@ -44,6 +44,7 @@ import org.adempiere.webui.editor.IZoomableEditor;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
+import org.adempiere.webui.editor.WImageEditor;
 import org.adempiere.webui.editor.WPaymentEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ContextMenuListener;
@@ -923,7 +924,8 @@ DataStatusListener, IADTabpanel, IdSpace
 			}
 
 			if (toFocus == null) {
-				if (editor.isVisible() && editor.isReadWrite() && editor.getComponent().getParent() != null) {
+				if (editor.isVisible() && editor.isReadWrite() && editor.getComponent().getParent() != null
+					&& !(editor instanceof WImageEditor)) {
 					toFocus = editor;
 				}
 			}

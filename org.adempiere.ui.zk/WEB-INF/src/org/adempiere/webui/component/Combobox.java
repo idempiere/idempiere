@@ -41,6 +41,15 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 	public void setEnabled(boolean enabled)
     {
         this.setDisabled(!enabled);
+        if (!enabled) {
+        	//ensure list is close and not on focus
+        	if (this.getPage() != null) 
+        	{
+        		String script = "var w=zk('#"+getUuid()+"').$(); if (w){w.close();var j=jq('#" 
+        				+getUuid()+" :focus');if(j.get(0)){j.blur();}}";
+        		Clients.response(new AuScript(script));
+        	}
+        }
     }
     
     public Comboitem appendItem(String label) 

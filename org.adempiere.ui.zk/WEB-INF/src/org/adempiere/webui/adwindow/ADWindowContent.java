@@ -30,8 +30,8 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.util.CLogger;
-import org.zkforge.keylistener.Keylistener;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -59,8 +59,6 @@ public class ADWindowContent extends AbstractADWindowContent
 
     private Div contentArea;
 
-	private Keylistener keyListener;	
-
     public ADWindowContent(Properties ctx, int windowNo, int adWindowId)
     {
         super(ctx, windowNo, adWindowId);
@@ -68,7 +66,7 @@ public class ADWindowContent extends AbstractADWindowContent
 
    	protected Component doCreatePart(Component parent)
     {
-   		layout = new Vlayout();
+   		layout = new ADWindowVlayout(this);
         if (parent != null) {
 	        layout.setParent(parent);
 	        layout.setSclass("adwindow-layout");
@@ -114,14 +112,7 @@ public class ADWindowContent extends AbstractADWindowContent
         	((Tabpanel)parent).setOnCloseHandler(handler);
         }
 
-    	if (keyListener != null)
-    		keyListener.detach();
-    	keyListener = new Keylistener();
-    	statusBar.appendChild(keyListener);
-    	keyListener.setCtrlKeys("#f1#f2#f3#f4#f5#f6#f7#f8#f9#f10#f11#f12^f^i^n^s^d@#left@#right@#up@#down@#pgup@#pgdn@p^p@z@x#enter");
-    	keyListener.addEventListener(Events.ON_CTRL_KEY, toolbar);
-    	keyListener.addEventListener(Events.ON_CTRL_KEY, this);
-    	keyListener.setAutoBlur(false);
+        SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
         
         return layout;
     }
@@ -167,5 +158,26 @@ public class ADWindowContent extends AbstractADWindowContent
 					SessionManager.getAppDesktop().unregisterWindow(getWindowNo());
 			}
 		}
-	}	
+	}
+	
+	static class ADWindowVlayout extends Vlayout {
+		/**
+		 * generated serial id
+		 */
+		private static final long serialVersionUID = 6104341168705201721L;
+		private ADWindowContent content;
+
+		protected ADWindowVlayout(ADWindowContent content) {
+			super();
+			this.content = content;
+		}
+
+		@Override
+		public void onPageDetached(Page page) {
+			super.onPageDetached(page);
+			try {
+				SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, content);
+			} catch (Exception e){}
+		}
+	}
 }

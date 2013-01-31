@@ -140,7 +140,9 @@ import org.zkoss.zul.Window.Mode;
 public abstract class AbstractADWindowContent extends AbstractUIPart implements ToolbarListener,
         EventListener<Event>, DataStatusListener, ActionListener
 {
-    private static final String ON_DEFER_SET_DETAILPANE_SELECTION_EVENT = "onDeferSetDetailpaneSelection";
+    private static final String ON_FOCUS_DEFER_EVENT = "onFocusDefer";
+
+	private static final String ON_DEFER_SET_DETAILPANE_SELECTION_EVENT = "onDeferSetDetailpaneSelection";
 
 	private static final CLogger logger;
 
@@ -216,6 +218,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         Component comp = super.createPart(parent);
         comp.addEventListener(LayoutUtils.ON_REDRAW_EVENT, this);
         comp.addEventListener(ON_DEFER_SET_DETAILPANE_SELECTION_EVENT, this);
+        comp.addEventListener(ON_FOCUS_DEFER_EVENT, this);
         return comp;
     }
 
@@ -265,7 +268,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
     private void focusToTabpanel(IADTabpanel adTabPanel ) {
 		if (adTabPanel != null && adTabPanel instanceof HtmlBasedComponent) {
-			((HtmlBasedComponent)adTabPanel).focus();
+			Events.echoEvent(ON_FOCUS_DEFER_EVENT, getComponent(), (HtmlBasedComponent)adTabPanel);
 		}
 	}
 
@@ -1041,6 +1044,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		Integer[] data = (Integer[]) event.getData();
     		adTabbox.setDetailPaneSelectedTab(data[0], data[1]);
     	}
+    	else if (event.getName().equals(ON_FOCUS_DEFER_EVENT)) {
+    		HtmlBasedComponent comp = (HtmlBasedComponent) event.getData();
+    		comp.focus();
+    	}    		
     }
 
 	private void setActiveTab(final int newTabIndex, final Callback<Boolean> callback) {
@@ -1695,6 +1702,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	}
     	if (dirtyTabpanel != null)
     		focusToTabpanel(dirtyTabpanel);
+    	else
+    		focusToActivePanel();
     	
     	updateToolbar();
     }

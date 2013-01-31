@@ -54,7 +54,7 @@ zkforge.KeyListener = zk.$extends(zul.Widget, {
 	keyDown: function(evt) {
 		if (!evt) evt = window.event;
 
-		var keycode = evt.keyCode, zkcode; //zkcode used to search z.ctkeys
+		var keycode = evt.keyCode, zkcode=''; //zkcode used to search z.ctkeys
 		switch (keycode) {
 			case 13: //ENTER
 				zkcode = 'K';
@@ -95,19 +95,12 @@ zkforge.KeyListener = zk.$extends(zul.Widget, {
 				this.tabIndex = 0;
 			}
 
+			evt.preventDefault();
+			evt.stopImmediatePropagation();
+			evt.stop();
+			
 			zAu.send(new zk.Event(zk.Widget.$(this), 'onCtrlKey', {keyCode: keycode, ctrlKey: evt.ctrlKey, shiftKey: evt.shiftKey, altKey: evt.altKey}, {toServer: true}));
 			
-			// Do not send request directly, otherwise onChange events won't be fired correctly in IE
-			//setTimeout(function () {
-			//	zAu.send(new zk.Event(zk.Widget.$(this), 'onCtrlKey', {keyCode: keycode, ctrlKey: evt.ctrlKey, shiftKey: evt.shiftKey, altKey: evt.altKey}, {toServer: true}), 38);
-			//}, 10);
-
-			evt.stop();
-
-			// Special handling for IE that Event.stop doesn't support
-			if (document.all && window.event && !evt.preventDefault) {
-				evt.keyCode = 0;
-			}
 			return false;
 		}
 		return true;

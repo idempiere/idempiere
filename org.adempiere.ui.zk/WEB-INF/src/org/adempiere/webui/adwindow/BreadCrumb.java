@@ -30,6 +30,7 @@ import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.ToolbarListener;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.WRecordInfo;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.MRole;
@@ -136,8 +137,10 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		ToolBar toolbar = new ToolBar();
 		toolbarContainer.appendChild(toolbar);		
 		btnFirst = createButton("First", "First", "First");
+		btnFirst.setTooltiptext(btnFirst.getTooltiptext()+"    Alt+Home");
 		toolbar.appendChild(btnFirst);
         btnPrevious = createButton("Previous", "Previous", "Previous");
+        btnPrevious.setTooltiptext(btnPrevious.getTooltiptext()+"    Alt+Left");
         toolbar.appendChild(btnPrevious);
         btnRecordInfo = new ToolBarButton();
         btnRecordInfo.setLabel("");
@@ -147,8 +150,10 @@ public class BreadCrumb extends Div implements EventListener<Event> {
         btnRecordInfo.setId("recordInfo");
         toolbar.appendChild(btnRecordInfo);
         btnNext = createButton("Next", "Next", "Next");
+        btnNext.setTooltiptext(btnNext.getTooltiptext()+"    Alt+Right");
         toolbar.appendChild(btnNext);
         btnLast = createButton("Last", "Last", "Last");
+        btnLast.setTooltiptext(btnLast.getTooltiptext()+"    Alt+End");
         toolbar.appendChild(btnLast);
         
         messageContainer = new Hbox();
@@ -356,6 +361,29 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 				&& linkPopup.getAttribute(ON_MOUSE_OUT_ECHO_EVENT) != null) {
 				linkPopup.detach();
 				linkPopup = null;
+			}
+		} else if (event.getName().equals(Events.ON_CTRL_KEY)) {
+			if (!LayoutUtils.isReallyVisible(this)) return;
+			
+			KeyEvent keyEvent = (KeyEvent) event;
+			if (keyEvent.isAltKey()) {
+				if (keyEvent.getKeyCode() == KeyEvent.LEFT) {
+					if (toolbarListener != null) {
+						toolbarListener.onPrevious();
+					}
+				} else if (keyEvent.getKeyCode() == KeyEvent.RIGHT) {
+					if (toolbarListener != null) {
+						toolbarListener.onNext();
+					}
+				} else if (keyEvent.getKeyCode() == KeyEvent.HOME) {
+					if (toolbarListener != null) {
+						toolbarListener.onFirst();
+					}
+				} else if (keyEvent.getKeyCode() == KeyEvent.END) {
+					if (toolbarListener != null) {
+						toolbarListener.onLast();
+					}
+				}
 			}
 		} else {
 			Events.sendEvent(this, event);
@@ -633,6 +661,10 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		super.onPageDetached(page);
 		if (linkPopup != null)
 			linkPopup.detach();
+		
+		try {
+			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+		} catch (Exception e){}
 	}
 
 	/**
@@ -663,6 +695,14 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		return pInfoLogs;
 	}
 
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		if (newpage != null) {
+			SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+		}
+	}
+	
 	class RecordLink extends A {
 		private static final long serialVersionUID = 3793489614175751401L;
 		

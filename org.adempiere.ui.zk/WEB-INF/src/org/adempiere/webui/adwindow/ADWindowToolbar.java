@@ -44,6 +44,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -139,27 +140,41 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     	LayoutUtils.addSclass("adwindow-toolbar", this);
 
         btnIgnore = createButton("Ignore", "Ignore", "Ignore");
+        btnIgnore.setTooltiptext(btnIgnore.getTooltiptext()+ "    Alt+Z");
         addSeparator();
         btnHelp = createButton("Help", "Help","Help");
+        btnHelp.setTooltiptext(btnHelp.getTooltiptext()+ "    Alt+H");
         btnNew = createButton("New", "New", "New");
+        btnNew.setTooltiptext(btnNew.getTooltiptext()+ "    Alt+N");
         btnCopy = createButton("Copy", "Copy", "Copy");
+        btnCopy.setTooltiptext(btnCopy.getTooltiptext()+ "    Alt+C");
         btnDelete = createButton("Delete", "Delete", "Delete");
+        btnDelete.setTooltiptext(btnDelete.getTooltiptext()+ "    Alt+D");
         btnDeleteSelection = createButton("DeleteSelection", "DeleteSelection", "DeleteSelection");
         btnSave = createButton("Save", "Save", "Save");
+        btnSave.setTooltiptext(btnSave.getTooltiptext()+ "    Alt+S");
         btnSaveAndCreate = createButton("SaveCreate", "SaveCreate", "SaveCreate");
+        btnSaveAndCreate.setTooltiptext(btnSaveAndCreate.getTooltiptext()+ "    Alt+A");
         addSeparator();
         btnRefresh = createButton("Refresh", "Refresh", "Refresh");
+        btnRefresh.setTooltiptext(btnRefresh.getTooltiptext()+ "    Alt+E");
         btnFind = createButton("Find", "Find", "Find");
+        btnFind.setTooltiptext(btnFind.getTooltiptext()+ "    Alt+F");
         btnAttachment = createButton("Attachment", "Attachment", "Attachment");
         btnChat = createButton("Chat", "Chat", "Chat");
         btnGridToggle = createButton("Toggle", "Multi", "Multi");
+        btnGridToggle.setTooltiptext(btnGridToggle.getTooltiptext()+ "    Alt+T");
         addSeparator();
         btnParentRecord = createButton("ParentRecord", "Parent", "Parent");
+        btnParentRecord.setTooltiptext(btnParentRecord.getTooltiptext()+ "   Alt+Up");
         btnDetailRecord = createButton("DetailRecord", "Detail", "Detail");
+        btnDetailRecord.setTooltiptext(btnDetailRecord.getTooltiptext()+ "   Alt+Down");
         addSeparator();
         btnReport = createButton("Report", "Report", "Report");
+        btnReport.setTooltiptext(btnReport.getTooltiptext()+ "    Alt+R");
         btnArchive = createButton("Archive", "Archive", "Archive");
         btnPrint = createButton("Print", "Print", "Print");
+        btnPrint.setTooltiptext(btnPrint.getTooltiptext()+ "    Alt+P");
         addSeparator();
         btnLock = createButton("Lock", "Lock", "Lock"); // Elaine 2008/12/04
 		btnLock.setVisible(isPersonalLock);
@@ -174,6 +189,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btnCustomize.setDisabled(false);
 
         btnProcess= createButton("Process", "Process", "Process");
+        btnProcess.setTooltiptext(btnProcess.getTooltiptext()+ "    Alt+O");
         btnProcess.setDisabled(false);
 
 
@@ -255,29 +271,21 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
     private void configureKeyMap()
     {
-		keyMap.put(KeyEvent.F1, btnHelp);
-		keyMap.put(KeyEvent.F2, btnNew);
-		keyMap.put(KeyEvent.F3, btnDelete);
-		keyMap.put(KeyEvent.F4, btnSave);
-		keyMap.put(KeyEvent.F5, btnRefresh);
-		keyMap.put(KeyEvent.F6, btnFind);
-		keyMap.put(KeyEvent.F7, btnAttachment);
-		keyMap.put(KeyEvent.F8, btnGridToggle);
-		keyMap.put(KeyEvent.F11, btnReport);
-		keyMap.put(KeyEvent.F12, btnPrint);
-
-		altKeyMap.put(KeyEvent.LEFT, btnParentRecord);
-		altKeyMap.put(KeyEvent.RIGHT, btnDetailRecord);
-		altKeyMap.put(VK_P, btnReport);
+		altKeyMap.put(VK_H, btnHelp);
+		altKeyMap.put(VK_N, btnNew);
+		altKeyMap.put(VK_D, btnDelete);
+		altKeyMap.put(VK_S, btnSave);
+		altKeyMap.put(VK_A, btnSaveAndCreate);
+		altKeyMap.put(VK_C, btnCopy);
+		altKeyMap.put(VK_E, btnRefresh);
+		altKeyMap.put(VK_T, btnGridToggle);
+		altKeyMap.put(KeyEvent.UP, btnParentRecord);
+		altKeyMap.put(KeyEvent.DOWN, btnDetailRecord);
+		altKeyMap.put(VK_F, btnFind);
 		altKeyMap.put(VK_Z, btnIgnore);
-
-		ctrlKeyMap.put(VK_I, btnProductInfo);
-		ctrlKeyMap.put(VK_P, btnPrint);
-		ctrlKeyMap.put(VK_N, btnNew);
-		ctrlKeyMap.put(VK_S, btnSave);
-		ctrlKeyMap.put(VK_Q, btnSaveAndCreate);
-		ctrlKeyMap.put(VK_D, btnDelete);
-		ctrlKeyMap.put(VK_F, btnFind);
+		altKeyMap.put(VK_R, btnReport);		
+		altKeyMap.put(VK_P, btnPrint);
+		altKeyMap.put(VK_O, btnProcess);
 	}
 
 	protected void addSeparator()
@@ -311,7 +319,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         } else if (eventName.equals(Events.ON_CTRL_KEY))
         {
         	KeyEvent keyEvent = (KeyEvent) event;
-        	if (isRealVisible()) {
+        	if (LayoutUtils.isReallyVisible(this)) {
 	        	//filter same key event that is too close
 	        	//firefox fire key event twice when grid is visible
 	        	long time = System.currentTimeMillis();
@@ -498,18 +506,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		}
 	}
 
-	private boolean isRealVisible() {
-		if (!isVisible())
-			return false;
-		Component parent = this.getParent();
-		while (parent != null) {
-			if (!parent.isVisible())
-				return false;
-			parent = parent.getParent();
-		}
-		return true;
-	}
-
 	/**
 	 *
 	 * @param visible
@@ -647,6 +643,22 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void dynamicDisplay() {
 		for(ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons) {
 			toolbarCustomBtn.dynamicDisplay();
+		}
+	}
+
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		try {
+			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+		} catch (Exception e) {}
+	}
+
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		if (newpage != null) {
+			SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
 		}
 	}
 }

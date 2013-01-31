@@ -48,6 +48,7 @@ import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.zkforge.keylistener.Keylistener;
 import org.zkoss.web.Attributes;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.ui.Component;
@@ -102,6 +103,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	private String langSession;
 
 	private UserPreference userPreference;
+
+	private Keylistener keyListener;
 
 	private static final CLogger logger = CLogger.getCLogger(AdempiereWebUI.class);
 
@@ -336,6 +339,19 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		{
 			BrowserToken.remove();
 		}
+		
+		keyListener = new Keylistener();
+		keyListener.setPage(this.getPage());
+		keyListener.setCtrlKeys("@a@c@d@e@f@h@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter");
+		keyListener.setAutoBlur(false);
+    }
+    
+    /**
+     * @return key listener
+     */
+    @Override
+	public Keylistener getKeylistener() {
+    	return keyListener;
     }
 
     private void createDesktop()
@@ -376,6 +392,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 	protected Session logout0() {
 		Session session = Executions.getCurrent().getDesktop().getSession();
+		
+		if (keyListener != null) {
+			keyListener.detach();
+			keyListener = null;
+		}
 		
 		//stop background thread
 		if (appDesktop != null)
