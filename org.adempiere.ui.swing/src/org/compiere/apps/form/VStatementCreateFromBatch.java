@@ -11,7 +11,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.compiere.grid;
+package org.compiere.apps.form;
 
 import static org.compiere.model.SystemIDs.COLUMN_C_BANKSTATEMENT_C_BANKACCOUNT_ID;
 
@@ -30,13 +30,11 @@ import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
 
 import org.compiere.apps.ADialog;
-import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.grid.ed.VDate;
 import org.compiere.grid.ed.VLookup;
 import org.compiere.grid.ed.VNumber;
 import org.compiere.grid.ed.VString;
-import org.compiere.model.GridTab;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
@@ -56,41 +54,40 @@ import org.compiere.util.Msg;
  * @author Elaine
  *
  */
-public class VCreateFromStatementBatchUI extends CreateFromStatementBatch implements ActionListener
+public class VStatementCreateFromBatch extends StatementCreateFromBatch implements ActionListener, FormPanel
 {
-	private VCreateFromDialog dialog;
-
-	public VCreateFromStatementBatchUI(GridTab mTab)
+	private VCreateFromForm form;
+	private FormFrame 		m_frame;
+	
+	public void init (int WindowNo, FormFrame frame)
 	{
-		super(mTab);
-		log.info(getGridTab().toString());
-		
-		dialog = new VCreateFromDialog(this, getGridTab().getWindowNo(), true);
-		
-		p_WindowNo = getGridTab().getWindowNo();
-
+		form = new VCreateFromForm(this, frame);
+		p_WindowNo = WindowNo;
+		m_frame = frame;
+		initForm();
+	}
+	
+	@Override
+	public void initForm() 
+	{		
 		try
 		{
 			if (!dynInit())
 				return;
 			jbInit();
-
-			setInitOK(true);
 		}
 		catch(Exception e)
 		{
-			log.log(Level.SEVERE, "", e);
-			setInitOK(false);
+			log.log(Level.SEVERE, "init", e);
 		}
-		AEnv.positionCenterWindow(AEnv.getWindow(p_WindowNo), dialog);
-	}   //  VCreateFrom
+	}
 	
 	/** Window No               */
 	private int p_WindowNo;
 
 	/**	Logger			*/
 	private CLogger log = CLogger.getCLogger(getClass());
-	
+
 	private JLabel bankAccountLabel = new JLabel();
 	protected VLookup bankAccountField;
 	
@@ -127,25 +124,25 @@ public class VCreateFromStatementBatchUI extends CreateFromStatementBatch implem
 	 */
 	public boolean dynInit() throws Exception
 	{
-		log.config("");
-		
 		super.dynInit();
+		
+		log.config("");
 		
 		//Refresh button
 		CButton refreshButton = ConfirmPanel.createRefreshButton(false);
 		refreshButton.setMargin(new Insets (1, 10, 0, 10));
 		refreshButton.setDefaultCapable(true);
 		refreshButton.addActionListener(this);
-		dialog.getConfirmPanel().addButton(refreshButton);
-		dialog.getRootPane().setDefaultButton(refreshButton);
+		form.getConfirmPanel().addButton(refreshButton);
+//		form.getRootPane().setDefaultButton(refreshButton);
 				
-		if (getGridTab().getValue("C_BankStatement_ID") == null)
+		if (m_frame.getGridTab() != null && m_frame.getGridTab().getValue("C_BankStatement_ID") == null)
 		{
-			ADialog.error(0, dialog, "SaveErrorRowNotFound");
+			ADialog.error(0, form, "SaveErrorRowNotFound");
 			return false;
 		}
 		
-		dialog.setTitle(getTitle());
+		m_frame.setTitle(getTitle());
 
 		int AD_Column_ID = COLUMN_C_BANKSTATEMENT_C_BANKACCOUNT_ID;        //  C_BankStatement.C_BankAccount_ID
 		MLookup lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, AD_Column_ID, DisplayType.TableDir);
@@ -180,7 +177,7 @@ public class VCreateFromStatementBatchUI extends CreateFromStatementBatch implem
 		amtFromField.addActionListener(this);
 		amtToField.addActionListener(this);
 		
-		loadBankAccount();
+		executeQuery();
 		
 		return true;
 	}   //  dynInit
@@ -217,7 +214,7 @@ public class VCreateFromStatementBatchUI extends CreateFromStatementBatch implem
     	amtToLabel.setLabelFor(amtToField);
     	amtToField.setToolTipText(Msg.translate(Env.getCtx(), "AmtTo"));
     	
-    	CPanel parameterPanel = dialog.getParameterPanel();
+    	CPanel parameterPanel = form.getParameterPanel();
     	parameterPanel.setLayout(new BorderLayout());
     	
     	CPanel parameterBankPanel = new CPanel();
@@ -290,46 +287,38 @@ public class VCreateFromStatementBatchUI extends CreateFromStatementBatch implem
 		if(e.getActionCommand().equals(ConfirmPanel.A_REFRESH))
 		{
 			Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-			loadBankAccount();
-			dialog.tableChanged(null);
+			executeQuery();
+			form.tableChanged(null);
 			Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 		}
 	}   //  actionPerformed
 	
-	protected void loadBankAccount()
+	public void executeQuery()
 	{
 		loadTableOIS(getBankAccountData(bankAccountField.getValue(), bPartnerLookup.getValue(), 
 				documentNoField.getText(), dateFromField.getValue(), dateToField.getValue(),
 				amtFromField.getValue(), amtToField.getValue(), 
-				documentTypeField.getValue(), tenderTypeField.getValue(), authorizationField.getText()));
+				documentTypeField.getValue(), tenderTypeField.getValue(), authorizationField.getText(), 
+				m_frame.getGridTab()));
 	}
 	
 	protected void loadTableOIS (Vector<?> data)
 	{
 		//  Remove previous listeners
-		dialog.getMiniTable().getModel().removeTableModelListener(dialog);
+		form.getMiniTable().getModel().removeTableModelListener(form);
 		//  Set Model
 		DefaultTableModel model = new DefaultTableModel(data, getOISColumnNames());
-		model.addTableModelListener(dialog);
-		dialog.getMiniTable().setModel(model);
+		model.addTableModelListener(form);
+		form.getMiniTable().setModel(model);
 		// 
 		
-		configureMiniTable(dialog.getMiniTable());
+		configureMiniTable(form.getMiniTable());
 	}
 	
-	public void showWindow()
+	public void dispose()
 	{
-		dialog.setVisible(true);
-	}
-	
-	public void closeWindow()
-	{
-		dialog.dispose();
-	}
-
-	@Override
-	public Object getWindow() 
-	{
-		return dialog;
+		if (m_frame != null)
+			m_frame.dispose();
+		m_frame = null;
 	}
 }

@@ -22,6 +22,6 @@ import org.compiere.model.GridTab;
  */
 public interface ICreateFromFactory {
 
-	public ICreateFrom create(GridTab mTab, String columnName);
+	public ICreateFrom create(GridTab mTab);
 	
 }

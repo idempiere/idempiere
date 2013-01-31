@@ -22,13 +22,13 @@ import org.compiere.model.GridTab;
 
 public class WCreateFromFactory
 {
-	public static ICreateFrom create (GridTab mTab, String columnName)
+	public static ICreateFrom create (GridTab mTab)
 	{
 		ICreateFrom createFrom = null;
 		List<ICreateFromFactory> factories = Service.locator().list(ICreateFromFactory.class).getServices();
 		for (ICreateFromFactory factory : factories) 
 		{
-			createFrom = factory.create(mTab, columnName);
+			createFrom = factory.create(mTab);
 			if (createFrom != null)
 				break;
 		}

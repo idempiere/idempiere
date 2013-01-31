@@ -11,41 +11,40 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.compiere.grid;
+package org.compiere.apps.form;
 
+import org.compiere.apps.IStatusBar;
+import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.GridTab;
-import org.compiere.model.I_C_BankStatement;
-import org.compiere.model.I_C_Invoice;
-import org.compiere.model.I_M_InOut;
-import org.compiere.model.I_M_PackageMPS;
-import org.compiere.model.I_M_RMA;
-import org.compiere.model.I_X_DepositBatch;
+import org.compiere.util.CLogger;
 
 /**
  * 
  * @author Elaine
  *
  */
-public class DefaultCreateFromFactory implements ICreateFromFactory 
+public abstract class CreateFromForm
 {
+	/**	Logger			*/
+	protected CLogger log = CLogger.getCLogger(getClass());
 
-	@Override
-	public ICreateFrom create(GridTab mTab) 
-	{
-		String tableName = mTab.getTableName();
-		if (tableName.equals(I_C_Invoice.Table_Name))
-			return new VCreateFromInvoiceUI(mTab);
-		else if (tableName.equals(I_C_BankStatement.Table_Name))
-			return new VCreateFromStatementUI(mTab);
-		else if (tableName.equals(I_M_InOut.Table_Name))
-			return new VCreateFromShipmentUI(mTab);
-		else if (tableName.equals(I_M_RMA.Table_Name))
-			return new VCreateFromRMAUI(mTab);
-		else if (tableName.equals(I_M_PackageMPS.Table_Name))
-			return new VCreateFromPackageShipmentUI(mTab);
-		else if (tableName.equals(I_X_DepositBatch.Table_Name))
-			return new VCreateFromDepositBatchUI(mTab);
-		return null;
+	private String title;
+	
+	public abstract void initForm();
+
+	public abstract boolean dynInit() throws Exception;
+
+	public abstract void info(IMiniTable miniTable, IStatusBar statusBar);
+
+	public abstract boolean save(IMiniTable miniTable, String trxName, GridTab gridTab);
+
+	public String getTitle() {
+		return title;
 	}
 
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
+	public abstract void executeQuery();
 }

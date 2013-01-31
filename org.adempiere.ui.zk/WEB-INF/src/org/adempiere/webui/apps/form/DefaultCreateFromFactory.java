@@ -32,30 +32,21 @@ public class DefaultCreateFromFactory implements ICreateFromFactory
 {
 
 	@Override
-	public ICreateFrom create(GridTab mTab, String columnName) 
+	public ICreateFrom create(GridTab mTab) 
 	{
 		String tableName = mTab.getTableName();
-		if (columnName.equals("CreateFrom"))
-		{
-			if (tableName.equals(I_C_Invoice.Table_Name))
-				return new WCreateFromInvoiceUI(mTab);
-			else if (tableName.equals(I_C_BankStatement.Table_Name))
-//				return new WCreateFromStatementUI(mTab);
-				return new WCreateFromStatementBatchUI(mTab);
-			else if (tableName.equals(I_M_InOut.Table_Name))
-				return new WCreateFromShipmentUI(mTab);
-			else if (tableName.equals(I_M_RMA.Table_Name))
-				return new WCreateFromRMAUI(mTab);
-			else if (tableName.equals(I_M_PackageMPS.Table_Name))
-				return new WCreateFromPackageShipmentUI(mTab);
-			else if (tableName.equals(I_X_DepositBatch.Table_Name))
-				return new WCreateFromDepositBatchUI(mTab);
-		}
-		else if (columnName.equalsIgnoreCase("X_CreateFromBatch"))
-		{
-			if (tableName.equals(I_C_BankStatement.Table_Name))
-				return new WCreateFromBatchStatementUI(mTab);
-		}
+		if (tableName.equals(I_C_Invoice.Table_Name))
+			return new WCreateFromInvoiceUI(mTab);
+		else if (tableName.equals(I_C_BankStatement.Table_Name))
+			return new WCreateFromStatementUI(mTab);
+		else if (tableName.equals(I_M_InOut.Table_Name))
+			return new WCreateFromShipmentUI(mTab);
+		else if (tableName.equals(I_M_RMA.Table_Name))
+			return new WCreateFromRMAUI(mTab);
+		else if (tableName.equals(I_M_PackageMPS.Table_Name))
+			return new WCreateFromPackageShipmentUI(mTab);
+		else if (tableName.equals(I_X_DepositBatch.Table_Name))
+			return new WCreateFromDepositBatchUI(mTab);
 		return null;
 	}
 
