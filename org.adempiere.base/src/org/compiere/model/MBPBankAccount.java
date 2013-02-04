@@ -180,9 +180,20 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 		//	maintain routing on bank level
 		if (isACH() && getBank() != null)
 			setRoutingNo(null);
-		//		
+		//
+		if (getCreditCardNumber() != null)
+		{
+			String encrpytedCCNo = PaymentUtil.encrpytCreditCard(getCreditCardNumber());
+			if (!encrpytedCCNo.equals(getCreditCardNumber()))
+				setCreditCardNumber(encrpytedCCNo);
+		}
+		
 		if (getCreditCardVV() != null)
-			setCreditCardVV(PaymentUtil.encrpytCvv(getCreditCardVV()));
+		{
+			String encrpytedCvv = PaymentUtil.encrpytCvv(getCreditCardVV());
+			if (!encrpytedCvv.equals(getCreditCardVV()))
+				setCreditCardVV(encrpytedCvv);
+		}
 		
 		return true;
 	}	//	beforeSave
