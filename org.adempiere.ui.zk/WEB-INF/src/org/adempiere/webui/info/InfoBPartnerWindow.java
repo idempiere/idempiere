@@ -83,6 +83,10 @@ public class InfoBPartnerWindow extends InfoWindow {
 	protected void createParameterPanel() {
 		super.createParameterPanel();
 		String isSOTrx = Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx");
+		if (!isLookup() && Util.isEmpty(isSOTrx)) {
+			isSOTrx = "Y";
+		}
+		
 		if (!Util.isEmpty(isSOTrx)) {
 			if ("Y".equals(isSOTrx)) {
 				for (WEditor editor : editors) {

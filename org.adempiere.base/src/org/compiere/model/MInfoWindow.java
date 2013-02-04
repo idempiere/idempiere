@@ -94,16 +94,10 @@ public class MInfoWindow extends X_AD_InfoWindow
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-		String tableName = getAD_Table().getTableName();
 		AccessSqlParser parser = new AccessSqlParser("SELECT * FROM " + getFromClause());
 		TableInfo[] tableInfos = parser.getTableInfo(0);
 		if (tableInfos == null || tableInfos.length == 0) {
 			log.saveError("ParseFromClauseError", "Failed to parse from clause");
-			return false;
-		}
-		
-		if (!tableInfos[0].getTableName().equalsIgnoreCase(tableName)) {
-			log.saveError("TableNameDifferent", "Table name is different between from clause and info window definition.");
 			return false;
 		}
 		

@@ -443,7 +443,11 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     
     public String getDisplayTextForGridView(Object value) {
     	this.setValue(value);
-    	return getDisplay();
+    	String s = getDisplay();
+    	if ("<0>".equals(s)) {
+    		s = "";
+    	}
+    	return s;
     }
 
     /**

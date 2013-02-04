@@ -3,6 +3,10 @@
  */
 package org.adempiere.webui.info;
 
+import org.adempiere.webui.editor.WEditor;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
+
 /**
  * @author hengsin
  *
@@ -28,7 +32,6 @@ public class InfoInvoiceWindow extends InfoWindow {
 			int AD_InfoWindow_ID) {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
 				whereClause, AD_InfoWindow_ID);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -46,7 +49,24 @@ public class InfoInvoiceWindow extends InfoWindow {
 			int AD_InfoWindow_ID, boolean lookup) {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
 				whereClause, AD_InfoWindow_ID, lookup);
-		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	protected void createParameterPanel() {
+		super.createParameterPanel();
+		String isSOTrx = Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx");
+		if (!isLookup() && Util.isEmpty(isSOTrx)) {
+			isSOTrx = "Y";
+		}
+		
+		if (!Util.isEmpty(isSOTrx)) {
+			for (WEditor editor : editors) {
+				if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("IsSOTrx")) {
+					editor.setValue(isSOTrx);
+					break;
+				}
+			}
+		}
 	}
 
 }

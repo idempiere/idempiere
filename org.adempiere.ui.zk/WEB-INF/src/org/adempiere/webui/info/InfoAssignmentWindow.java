@@ -28,7 +28,6 @@ public class InfoAssignmentWindow extends InfoWindow {
 			String whereClause, int AD_InfoWindow_ID) {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
 				whereClause, AD_InfoWindow_ID);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -46,7 +45,6 @@ public class InfoAssignmentWindow extends InfoWindow {
 			String whereClause, int AD_InfoWindow_ID, boolean lookup) {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
 				whereClause, AD_InfoWindow_ID, lookup);
-		// TODO Auto-generated constructor stub
 	}
 
 }
