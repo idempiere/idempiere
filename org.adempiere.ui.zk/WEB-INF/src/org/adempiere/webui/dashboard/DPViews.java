@@ -15,6 +15,7 @@ package org.adempiere.webui.dashboard;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.window.InfoSchedule;
 import org.compiere.model.MRole;
@@ -188,7 +189,9 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
         		}
         		else if (actionCommand.equals("InfoSchedule") && AEnv.canAccessInfo("SCHEDULE"))
         		{
-        			new InfoSchedule(null, false);
+        			InfoSchedule is = new InfoSchedule(null, false);
+        			is.setAttribute(Window.MODE_KEY, Mode.EMBEDDED);
+        			AEnv.showWindow(is);
         		}
         		else if (actionCommand.equals("InfoOrder") && AEnv.canAccessInfo("ORDER"))
         		{

@@ -16,27 +16,39 @@
  *****************************************************************************/
 package org.adempiere.webui.panel;
 
-import java.text.DateFormat;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.logging.Level;
 
-import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.ToolBarButton;
-import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.component.Window;
+import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.InfoSchedule;
-import org.adempiere.webui.window.WAssignmentDialog;
-import org.compiere.model.MResourceAssignment;
+import org.compiere.model.MAssignmentSlot;
+import org.compiere.model.ScheduleUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
-import org.zkforge.timeline.Bandinfo;
-import org.zkforge.timeline.Timeline;
-import org.zkforge.timeline.event.BandScrollEvent;
+import org.compiere.util.Util;
+import org.zkoss.calendar.Calendars;
+import org.zkoss.calendar.event.CalendarsEvent;
+import org.zkoss.calendar.impl.SimpleCalendarEvent;
+import org.zkoss.calendar.impl.SimpleCalendarModel;
+import org.zkoss.util.Locales;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.MouseEvent;
+import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.North;
+import org.zkoss.zul.South;
 
 /**
  *	Visual and Control Part of Schedule.
@@ -48,13 +60,14 @@ import org.zkoss.zk.ui.event.MouseEvent;
  *  Zk Port
  *  @author Low Heng Sin
  */
-public class WSchedule extends Panel implements EventListener<Event>
+public class WSchedule extends Window implements EventListener<Event>
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7714179510197450419L;
 
+	@SuppressWarnings("unused")
 	private InfoSchedule infoSchedule;
 
 	/**
@@ -79,19 +92,36 @@ public class WSchedule extends Panel implements EventListener<Event>
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(WSchedule.class);
 
-	Timeline timeLine;
-	private Bandinfo hourBand;
-	private Bandinfo dayBand;
 
 	private ToolBarButton button;
-
-	private Bandinfo mthBand;
 
 	@SuppressWarnings("unused")
 	private Date m_center;
 
-	private MResourceAssignment _assignmentDialogResult;
+	private Component calendarContainer;
 
+	private Calendars calendars;
+	private SimpleCalendarModel scm;
+
+	private Button btnCurrentDate;
+	private Label lblDate;
+
+	private int S_Resource_ID;
+
+	private Component divArrowLeft;
+
+	private Component divArrowRight;
+
+	private Component divTabDay;
+
+	private Component divTabWeek;
+
+	private Component divTabWeekdays;
+
+	private Component divTabMonth;
+
+	private Borderlayout borderlayout;
+	
 	/**
 	 * 	Static init
 	 *  <pre>
@@ -104,56 +134,70 @@ public class WSchedule extends Panel implements EventListener<Event>
 	{
 		this.getChildren().clear();
 				
-		timeLine = new Timeline();
-		timeLine.setHeight("400px");
-		timeLine.setWidth("100%");
-		timeLine.setId("resoureSchedule");
+		calendarContainer = Executions.createComponents("calendar.zul", this, null);
 		
-		this.appendChild(timeLine);		
+		borderlayout = (Borderlayout) calendarContainer.getFellow("main");
+		borderlayout.setStyle("position: absolute; width: 98%; margin: auto;");
+		borderlayout.setHeight("100%");
+		if (borderlayout.getSouth() != null) {
+			borderlayout.getSouth().detach();
+		}
+
+		Component tmp = calendarContainer.getFellow("btnSwitchTimeZone");
+		if (tmp != null)
+			tmp.detach();
+		tmp = calendarContainer.getFellow("btnRefresh");
+		if (tmp != null)
+			tmp.detach();
+		tmp = calendarContainer.getFellow("lbxRequestTypes");
+		if (tmp != null)
+			tmp.getParent().detach();
+		tmp = calendarContainer.getFellow("FDOW");
+		if (tmp != null)
+			tmp.detach();
 		
-		initBandInfo();
+		calendars = (Calendars) calendarContainer.getFellow("cal");
+		TimeZone timezone = SessionManager.getAppDesktop().getClientInfo().timeZone;
+		calendars.addTimeZone(timezone.getID(), timezone);
+		
+		calendars.addEventListener(CalendarsEvent.ON_EVENT_CREATE, this);
+		calendars.addEventListener(CalendarsEvent.ON_EVENT_EDIT, this);
+		calendars.addEventListener(CalendarsEvent.ON_EVENT_UPDATE, this);
+		
+		this.appendChild(calendarContainer);		
+		
+		btnCurrentDate = (Button) calendarContainer.getFellow("btnCurrentDate");
+		btnCurrentDate.addEventListener(Events.ON_CLICK, this);
+		
+		lblDate = (Label) calendarContainer.getFellow("lblDate");
+		lblDate.addEventListener(Events.ON_CREATE, this);
+		
+		divArrowLeft = calendarContainer.getFellow("divArrowLeft");
+		divArrowLeft.addEventListener("onMoveDate", this);
+		
+		divArrowRight = calendarContainer.getFellow("divArrowRight");
+		divArrowRight.addEventListener("onMoveDate", this);
+		
+		divTabDay = calendarContainer.getFellow("divTabDay");
+		divTabDay.addEventListener("onUpdateView", this);
+		
+		divTabWeek = calendarContainer.getFellow("divTabWeek");
+		divTabWeek.addEventListener("onUpdateView", this);
+		
+		divTabWeekdays = calendarContainer.getFellow("divTabWeekdays");
+		divTabWeekdays.addEventListener("onUpdateView", this);
+		
+		divTabMonth = calendarContainer.getFellow("divTabMonth");
+		divTabMonth.addEventListener("onUpdateView", this);
 		
 		button = new ToolBarButton();
 		button.setLabel("Edit");
 		button.setStyle("visibility: hidden; height: 0px; width: 0px");
 		button.addEventListener(Events.ON_CLICK, this);
 		this.appendChild(button);
+		
+		divTabClicked(7);
 	}	//	jbInit
-
-	private void initBandInfo() {
-		if (hourBand != null)
-			hourBand.detach();		
-		hourBand = new Bandinfo();
-		timeLine.appendChild(hourBand);
-		hourBand.setIntervalUnit("hour");
-		hourBand.setWidth("40%");
-		hourBand.setIntervalPixels(40);
-		hourBand.setTimeZone(SessionManager.getAppDesktop().getClientInfo().timeZone);
-		hourBand.setId("WScheduleHourBand");
-		
-		if (dayBand != null)
-			dayBand.detach();
-		dayBand = new Bandinfo();
-		timeLine.appendChild(dayBand);
-		dayBand.setIntervalUnit("day");
-		dayBand.setWidth("35%");
-		dayBand.setIntervalPixels(100);
-		dayBand.setSyncWith(hourBand.getId());		
-		dayBand.setTimeZone(SessionManager.getAppDesktop().getClientInfo().timeZone);
-		// listening band scroll event
-		dayBand.addEventListener("onBandScroll", this);
-		dayBand.setId("WScheduleDayBand");
-		
-		if (mthBand != null)
-			mthBand.detach();
-		mthBand = new Bandinfo();
-		timeLine.appendChild(mthBand);
-		mthBand.setIntervalUnit("month");
-		mthBand.setWidth("25%");
-		mthBand.setIntervalPixels(150);
-		mthBand.setSyncWith(dayBand.getId());		
-		mthBand.setTimeZone(SessionManager.getAppDesktop().getClientInfo().timeZone);
-	}
 
 	/**
 	 * 	Recreate View
@@ -162,56 +206,130 @@ public class WSchedule extends Panel implements EventListener<Event>
 	 */
 	public void recreate (int S_Resource_ID, Date date)
 	{
-		hourBand.setDate(date);
-		// Elaine 2008/12/12
-		dayBand.setDate(date);
-		mthBand.setDate(date);
-//		if (m_center == null || date.getTime() != m_center.getTime())
-//			hourBand.scrollToCenter(date);
-		//
-				
-		String feedUrl = "timeline?S_Resource_ID=" + S_Resource_ID + "&date=" + DateFormat.getInstance().format(date)
-			+ "&uuid=" + button.getUuid() + "&tlid=" + timeLine.getUuid();
-		hourBand.setEventSourceUrl(feedUrl);
-		dayBand.setEventSourceUrl(feedUrl);
+		this.S_Resource_ID = S_Resource_ID;
+		calendars.setCurrentDate(date);
+		
+		updateModel();
 	}	//	recreate
 
-	public void onAssignmentCallback() {
-		if (_assignmentDialogResult != null)
-			infoSchedule.mAssignmentCallback(_assignmentDialogResult);
-		_assignmentDialogResult = null;
+	private void updateModel() {
+		ScheduleUtil m_model = new ScheduleUtil (Env.getCtx());
+		
+		//		Calculate Start Day
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(calendars.getCurrentDate());
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		Timestamp startDate = new Timestamp(cal.getTimeInMillis());
+		//	Calculate End Date
+		cal.add(Calendar.MONTH, 1);
+		Timestamp endDate = new Timestamp (cal.getTimeInMillis());
+		
+		scm = new SimpleCalendarModel();
+		if (S_Resource_ID > 0) {
+			MAssignmentSlot[] list = m_model.getAssignmentSlots (S_Resource_ID, startDate, endDate, null, true, null);
+			
+			for(MAssignmentSlot mas : list) {
+				SimpleCalendarEvent event = new SimpleCalendarEvent();
+				event.setBeginDate(mas.getStartTime());
+				event.setEndDate(mas.getEndTime());
+				event.setTitle(mas.getName());
+				event.setContent(mas.getDescription());
+				event.setHeaderColor('#'+ZkCssHelper.createHexColorString(mas.getColor(true)));
+				event.setContentColor('#'+ZkCssHelper.createHexColorString(mas.getColor(true)));
+				if (!mas.isAssignment() || mas.getMAssignment().isConfirmed())
+					event.setLocked(true);
+				scm.add(event);
+			}
+		}
+		
+		calendars.setModel(scm);
+	}
+	
+	public SimpleCalendarModel getModel() {
+		return scm;
 	}
 	
 	public void onEvent(Event event) throws Exception {
-		if (event instanceof MouseEvent) {
-			MouseEvent me = (MouseEvent) event;
-			if (me.getX() > 0) {
-				MResourceAssignment assignment = new MResourceAssignment(Env.getCtx(), me.getX(), null);
-				final WAssignmentDialog assignmentDialog = new WAssignmentDialog(assignment, false, infoSchedule.isCreateNew());
-				assignmentDialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-					@Override
-					public void onEvent(Event event) throws Exception {
-						if (!assignmentDialog.isCancelled()) {
-							_assignmentDialogResult =  assignmentDialog.getMResourceAssignment();
-							Events.echoEvent("onAssignmentCallback", WSchedule.this, null);				
-						}						
-					}
-				});	
-				assignmentDialog.setTitle(null);
-				LayoutUtils.openPopupWindow(this, assignmentDialog, "at_pointer");
-				Events.postEvent(new Event(Events.ON_CLICK, assignmentDialog.getDateFrom()));
+		String type = event.getName();
+		if (type.equals(Events.ON_CLICK)) {
+			if (event.getTarget() == btnCurrentDate) {
+				btnCurrentDateClicked();
 			}
-		} else if (event instanceof BandScrollEvent){
-			BandScrollEvent e = (BandScrollEvent) event;
-			@SuppressWarnings("unused")
-			Date end = e.getMax();
-			@SuppressWarnings("unused")
-			Date start = e.getMin();
-			Date mid = e.getCenter();
-			if (mid != null) {
-				m_center = mid;
-				infoSchedule.dateCallback(mid);
+		} else if (type.equals(Events.ON_CREATE)) {
+			if (event.getTarget() == lblDate)
+				updateDateLabel();
+		} else if (type.equals("onMoveDate")) {
+			if (event.getTarget() == divArrowLeft)
+				divArrowClicked(false);
+			else if (event.getTarget() == divArrowRight)
+				divArrowClicked(true);
+		} else if (type.equals("onUpdateView")) {
+			String text = String.valueOf(event.getData());
+			int days = "Day".equals(text) ? 1: "5 Days".equals(text) ? 5: "Week".equals(text) ? 7: 0;
+			divTabClicked(days);
+		} else {
+			Events.sendEvent(this, event);
+		}
+	}
+	
+	private void btnCurrentDateClicked() {
+		calendars.setCurrentDate(Calendar.getInstance(calendars.getDefaultTimeZone()).getTime());
+		updateDateLabel();
+	}
+	
+	private void updateDateLabel() {
+		Date b = calendars.getBeginDate();
+		Date e = calendars.getEndDate();
+		SimpleDateFormat sdfV = new SimpleDateFormat("yyyy/MMM/dd", Locales.getCurrent());
+		sdfV.setTimeZone(calendars.getDefaultTimeZone());
+		lblDate.setValue(sdfV.format(b) + " - " + sdfV.format(e));
+	}
+	
+	private void divArrowClicked(boolean isNext) {
+		if (isNext)
+			calendars.nextPage();
+		else
+			calendars.previousPage();
+		updateDateLabel();
+		updateModel();
+	}
+	
+	private void divTabClicked(int days) {		
+		if (days > 0) {
+			calendars.setMold("default");
+			calendars.setDays(days);
+		} else {
+			calendars.setMold("month");
+		}
+		updateDateLabel();
+	}
+
+	public void addNorthPane(Component pane) {
+		if (borderlayout != null) {
+			if (borderlayout.getNorth() != null) {
+				borderlayout.getNorth().detach();
 			}
+			North north = new North();
+			north.appendChild(pane);
+			borderlayout.appendChild(north);
+		}
+	}
+	
+	public void addSouthPane(Component pane, String height) {
+		if (borderlayout != null) {
+			if (borderlayout.getSouth() != null) {
+				borderlayout.getSouth().detach();
+			}
+			South south = new South();
+			south.appendChild(pane);
+			if (!Util.isEmpty(height)) {
+				south.setHeight(height);
+			}
+			borderlayout.appendChild(south);
 		}
 	}
 }	//	WSchedule

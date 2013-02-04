@@ -114,6 +114,25 @@ public class TimeUtil
 		cal.set(Calendar.MILLISECOND, 0);
 		return new Timestamp (cal.getTimeInMillis());
 	}	//	getNextDay
+	
+	/**
+	 * 	Get earliest time of next day
+	 *  @param day day
+	 *  @return next day with 00:00
+	 */
+	static public Timestamp getPreviousDay (Timestamp day)
+	{
+		if (day == null)
+			day = new Timestamp(System.currentTimeMillis());
+		GregorianCalendar cal = new GregorianCalendar(Language.getLoginLanguage().getLocale());
+		cal.setTimeInMillis(day.getTime());
+		cal.add(Calendar.DAY_OF_YEAR, -1);	//	previous
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return new Timestamp (cal.getTimeInMillis());
+	}	//	getNextDay
 
 	/**
 	 * 	Get last date in month

@@ -159,8 +159,10 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 				vad.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 					@Override
 					public void onEvent(Event event) throws Exception {
-						MResourceAssignment ma = vad.getMResourceAssignment();
-						processNewValue(oldValue, ma);	
+						if (!vad.isCancelled()) {
+							MResourceAssignment ma = vad.getMResourceAssignment();
+							processNewValue(oldValue, ma);	
+						}
 					}
 				});
 				vad.setTitle(null);
@@ -169,13 +171,14 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 			//	Start InfoSchedule directly
 			else
 			{
-				@SuppressWarnings("unused")
 				final InfoSchedule is = new InfoSchedule(ma, true, new Callback<MResourceAssignment>() {
 					@Override
 					public void onCallback(MResourceAssignment ma) {
 						processNewValue(oldValue, ma);						
 					}
 				});			
+				AEnv.showWindow(is);
+				is.focus();
 			}			
 		}
 	}

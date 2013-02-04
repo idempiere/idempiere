@@ -96,7 +96,7 @@ public class DefaultInfoFactory implements IInfoFactory {
         } else if (tableName.equals("C_CashLine")) {
         	info = new InfoCashLinePanel (WindowNo, value,
                     multiSelection, whereClause, lookup);
-        } else if (tableName.equals("S_ResourceAssigment")) {
+        } else if (tableName.equals("S_ResourceAssignment")) {
         	info = new InfoAssignmentWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup);
 	    	if (!info.loadedOK()) {
 	            info = new InfoAssignmentPanel (WindowNo, value,

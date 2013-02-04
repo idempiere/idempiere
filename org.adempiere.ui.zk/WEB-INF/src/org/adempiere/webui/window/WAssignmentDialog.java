@@ -30,6 +30,7 @@ import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Datebox;
@@ -135,7 +136,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 	private Datebox fDateFrom = new Datebox();
 	private Timebox fTimeFrom = new Timebox();
 	private Label lQty = new Label(Msg.translate(Env.getCtx(), "Qty"));
-	private NumberBox fQty = new NumberBox(true);
+	private NumberBox fQty = new NumberBox(false);
 	private Label lUOM = new Label();
 	private Label lName = new Label(Msg.translate(Env.getCtx(), "Name"));
 	private Label lDescription = new Label(Msg.translate(Env.getCtx(), "Description"));
@@ -143,7 +144,8 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 	private Textbox fDescription = new Textbox();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true, false, false, false, false, true /*, true*/);
 	private Button delete = confirmPanel.createButton("Delete");
-	private boolean m_cancel = false;
+	private boolean m_cancel = true;
+	private boolean m_zoom;
 
 	/**
 	 * 	Static Init
@@ -376,6 +378,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		//	Zoom - InfoResource
 		else if (e.getTarget().getId().equals("Zoom"))
 		{
+			m_zoom = true;
 			setVisible(false);
 			Events.echoEvent("onShowSchedule", this, null);
 		}
@@ -402,6 +405,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		//	OK - Save
 		else if (e.getTarget().getId().equals("Ok"))
 		{
+			m_cancel = false;
 			if (cmd_save())
 				detach();
 		}		
@@ -409,22 +413,21 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 
 	public void onShowSchedule() 
 	{
-		@SuppressWarnings("unused")
-		InfoSchedule is = new InfoSchedule (m_mAssignment, true, new Callback<MResourceAssignment>() {			
+		InfoSchedule is = new InfoSchedule (m_mAssignment, true, this, new Callback<MResourceAssignment>() {			
 			@Override
 			public void onCallback(MResourceAssignment result) {
+				m_zoom = false;
 				if (result != null)
 				{
 					m_mAssignment = result;
-				//	setDisplay();
-					detach();
+					setDisplay();
 				}	
-				else
-				{
-					setVisible(true);
-				}
+				setVisible(true);
+				WAssignmentDialog.this.focus();
 			}
 		});
+		AEnv.showWindow(is);
+		is.focus();
 	}
 	
 	private void getDateAndTimeFrom(Calendar date) {
@@ -444,4 +447,17 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 	public Datebox getDateFrom() {
 		return fDateFrom;
 	}
+
+	@Override
+	public boolean setVisible(boolean visible) {		
+		boolean b = super.setVisible(visible);
+		if (!m_zoom && b && !visible) {
+			if (getModeType() == Mode.POPUP) {
+				this.detach();
+			}
+		}
+		return b;
+	}
+	
+	
 }	//	VAssignmentDialog

@@ -46,6 +46,7 @@ import org.adempiere.webui.apps.form.WCreateFromFactory;
 import org.adempiere.webui.apps.form.WCreateFromWindow;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
@@ -810,7 +811,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	private FindWindow findWindow;
 
-	private Div maskDiv;
+	private Div mask;
 
 	/**
 	 *	@see ToolbarListener#onLock()
@@ -2527,23 +2528,21 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				isProcessMandatory);
 	} // actionButton
 
-	private Div getMaskDiv() {
-		if (maskDiv == null) {
-			maskDiv = new Div();
-			maskDiv.setStyle("position: absolute; width: 100%; height: 100%; border: none; margin: 0; background-color: #e4e4e4; " +
-				"padding: 0; z-index:999; opacity:0.6; top: 0px; left: 0px;");
+	private Div getMask() {
+		if (mask == null) {
+			mask = new Mask();
 		}
-		return maskDiv;
+		return mask;
 	}
 	
 	public void hideBusyMask() {
-		if (maskDiv != null && maskDiv.getParent() != null) {
-			maskDiv.detach();
+		if (mask != null && mask.getParent() != null) {
+			mask.detach();
 		}
 	}
 	
 	public void showBusyMask() {
-		getComponent().getParent().appendChild(getMaskDiv());
+		getComponent().getParent().appendChild(getMask());
 	}
 
 	private void executeButtonProcess(final IProcessButton wButton,

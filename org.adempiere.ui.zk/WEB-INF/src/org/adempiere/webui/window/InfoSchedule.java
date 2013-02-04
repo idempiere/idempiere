@@ -21,27 +21,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
-import org.adempiere.webui.component.DatetimeBox;
-import org.adempiere.webui.component.Grid;
-import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
-import org.adempiere.webui.component.Row;
-import org.adempiere.webui.component.Rows;
+import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.DialogEvents;
-import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.panel.WSchedule;
 import org.compiere.model.MAssignmentSlot;
 import org.compiere.model.MResourceAssignment;
@@ -53,12 +45,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.zkoss.calendar.event.CalendarsEvent;
+import org.zkoss.calendar.impl.SimpleCalendarEvent;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Space;
 import org.zkoss.zul.Vbox;
 
 
@@ -83,6 +79,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	 */
 	private static final long serialVersionUID = -5948901371276429661L;
 	private Callback<MResourceAssignment> m_callback;
+	private Component m_parent;
 
 	/**
 	 *  Constructor
@@ -94,29 +91,34 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		this(mAssignment, createNew, (Callback<MResourceAssignment>)null);
 	}
 	
+	public InfoSchedule (MResourceAssignment mAssignment, boolean createNew, Callback<MResourceAssignment> callback)
+	{
+		this(mAssignment, createNew, (Component)null, callback);
+	}
+	
 	/**
 	 *  Constructor
 	 *  @param mAssignment optional assignment
 	 *  @param createNew if true, allows to create new assignments
 	 *  @param listener
 	 */
-	public InfoSchedule (MResourceAssignment mAssignment, boolean createNew, Callback<MResourceAssignment> callback)
+	public InfoSchedule (MResourceAssignment mAssignment, boolean createNew, Component parent, Callback<MResourceAssignment> callback)
 	{
 		super();
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoSchedule"));
 		if (createNew)
 		{
-			setAttribute(Window.MODE_KEY, Window.MODE_POPUP);
-			this.setWidth("600px");
+			setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+			this.setWidth("700px");
+			this.setHeight("600px");
+			this.setSizable(true);
 		}
 		else
 		{
-			setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 			this.setWidth("100%");
 			this.setHeight("100%");
 		}
 		
-//		this.setHeight("600px");
 		this.setClosable(true);
 		this.setBorder("normal");
 		this.setStyle("position: absolute");
@@ -131,11 +133,16 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			m_dateFrom = new Timestamp(System.currentTimeMillis());
 		m_createNew = createNew;
 		m_callback = callback;
+		m_parent = parent;
 		if (callback != null) {
 			this.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
-					m_callback.onCallback(getMResourceAssignment());
+					if (!m_cancel) {
+						m_callback.onCallback(getMResourceAssignment());
+					} else {
+						m_callback.onCallback(null);
+					}
 				}
 			});
 		}
@@ -148,7 +155,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		{
 			log.log(Level.SEVERE, "InfoSchedule", ex);
 		}
-		AEnv.showWindow(this);
+//		AEnv.showWindow(this);
 		displayCalendar();
 	}	//	InfoSchedule
 
@@ -172,21 +179,18 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	private static CLogger log = CLogger.getCLogger(InfoSchedule.class);
 
 	private Vbox mainLayout = new Vbox();
-	private Grid parameterPanel = GridFactory.newGridLayout();
+	private Hlayout parameterPanel = new Hlayout();
 	private Label labelResourceType = new Label();
 	private Listbox fieldResourceType = new Listbox();
 	private Label labelResource = new Label();
 	private Listbox fieldResource = new Listbox();
-	// Elaine 2008/12/12
-	private Button bPrevious = new Button();
-	private Label labelDate = new Label();
-	private DatetimeBox fieldDate = new DatetimeBox();
-	private Button bNext = new Button();
 	//
 	private WSchedule schedulePane = new WSchedule(this);
-	private StatusBarPanel statusBar = new StatusBarPanel();
 	private ConfirmPanel confirmPanel = null;
-	private Button btnNew;
+	private WAssignmentDialog vad;
+	
+	private boolean m_cancel = false;
+	private Mask mask;
 
 	/**
 	 * 	Static Layout
@@ -200,54 +204,36 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		
 		labelResourceType.setValue(Msg.translate(Env.getCtx(), "S_ResourceType_ID"));
 		labelResource.setValue(Msg.translate(Env.getCtx(), "S_Resource_ID"));
-		labelDate.setValue(Msg.translate(Env.getCtx(), "Date"));
 		
-		// Elaine 2008/12/12
-		bPrevious.setLabel("<");
-		bNext.setLabel(">");
-		//
-		
-		mainLayout.appendChild(parameterPanel);
-		
-		Rows rows = new Rows();
-		rows.setParent(parameterPanel);
-		Row row = new Row();
-		rows.appendChild(row);
-		
-		row.appendChild(labelResourceType);
-		row.appendChild(fieldResourceType);				
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.appendChild(labelResource);
-		row.appendChild(fieldResource);
-		
-		// Elaine 2008/12/12
-		row = new Row();
-		rows.appendChild(row);		
-		row.appendChild(labelDate);
-		Hbox hbox = new Hbox();
-		hbox.appendChild(bPrevious);
-		hbox.appendChild(fieldDate);
-		hbox.appendChild(bNext);
-		row.appendChild(hbox);
-		//
+		parameterPanel.setValign("middle");
+		parameterPanel.appendChild(labelResourceType);
+		parameterPanel.appendChild(fieldResourceType);
+		parameterPanel.appendChild(new Space());
+		parameterPanel.appendChild(labelResource);
+		parameterPanel.appendChild(fieldResource);
 		
 		mainLayout.appendChild(schedulePane);
-		
-		schedulePane.setWidth("100%");
-		schedulePane.setHeight("400px");
-		Div div = new Div();
+		schedulePane.addNorthPane(parameterPanel);
+				
 		if (m_createNew) 
 		{
+			Div div = new Div();
 			confirmPanel = new ConfirmPanel(true);
-			div.appendChild(confirmPanel);
+			div.appendChild(confirmPanel);			
+			schedulePane.addSouthPane(div, "80px");
+			
+			schedulePane.addEventListener(CalendarsEvent.ON_EVENT_CREATE, this);
+			schedulePane.addEventListener(CalendarsEvent.ON_EVENT_EDIT, this);
+			schedulePane.addEventListener(CalendarsEvent.ON_EVENT_UPDATE, this);
+		} 
+		else 
+		{
+			schedulePane.addEventListener(CalendarsEvent.ON_EVENT_EDIT, this);
+			schedulePane.addEventListener(CalendarsEvent.ON_EVENT_UPDATE, this);
 		}
-		div.appendChild(statusBar);
-		mainLayout.appendChild(div);
 		
 		fieldResourceType.setMold("select");
-		fieldResource.setMold("select");
+		fieldResource.setMold("select");				
 	}	//	jbInit
 
 	/**
@@ -262,25 +248,9 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		fieldResourceType.addEventListener(Events.ON_SELECT, this);
 		fieldResource.addEventListener(Events.ON_SELECT, this);
 
-		//	Date - Elaine 2008/12/12
-		fieldDate.setValue(m_dateFrom);
-		fieldDate.getDatebox().addEventListener(Events.ON_BLUR, this);
-		fieldDate.getTimebox().addEventListener(Events.ON_BLUR, this);
-//		fieldDate.addEventListener(Events.ON_BLUR, this);
-		bPrevious.addEventListener(Events.ON_CLICK, this);
-		bNext.addEventListener(Events.ON_CLICK, this);
-		//
-		
 		//		
 		if (createNew) {
 			confirmPanel.addActionListener(Events.ON_CLICK, this);
-			btnNew = new Button();
-	        btnNew.setName("btnNew");
-	        btnNew.setId("New");
-	        btnNew.setImage("/images/New24.png");
-	        
-			confirmPanel.addComponentsLeft(btnNew);			
-			btnNew.addEventListener(Events.ON_CLICK, this);
 		}		
 	}	//	dynInit
 
@@ -415,10 +385,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		int S_Resource_ID = pp.getKey();
 		m_mAssignment.setS_Resource_ID(S_Resource_ID);
 
-		// Elaine 2008/12/12
-		Date date = fieldDate.getValue();
+		Date date = m_dateFrom;
 		if (date == null) date = new Timestamp(System.currentTimeMillis());
-//		Date date = m_dateFrom;
 		//
 
 		//	Set Info
@@ -442,12 +410,19 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	 * 	Callback.
 	 * 	Called from WSchedule after WAssignmentDialog finished
 	 * 	@param assignment New/Changed Assignment
+	 * @param b 
 	 */
-	public void mAssignmentCallback (MResourceAssignment assignment)
+	public void mAssignmentCallback (MResourceAssignment assignment, boolean createNew, boolean cancelled)
 	{
-		m_mAssignment = assignment;
-		if (m_createNew)
-			dispose();
+		hideBusyMask();
+		if (!cancelled) 
+		{
+			m_mAssignment = assignment;		
+			if (createNew)
+				dispose();
+			else
+				displayCalendar();
+		}
 		else
 			displayCalendar();
 	}	//	mAssignmentCallback
@@ -465,57 +440,26 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		if (m_loading)
 			return;
 
-		if (event.getTarget().getId().equals("Ok"))
+		if (event.getTarget().getId().equals("Ok")) {
+			m_cancel = false;
 			dispose();
-		else if (event.getTarget().getId().equals("Cancel"))
+		} else if (event.getTarget().getId().equals("Cancel")) {
+			m_cancel = true;
 			dispose();
 		//
-		else if (event.getTarget() == fieldResourceType)
+		} else if (event.getTarget() == fieldResourceType)
 		{
 			fillResource();
 			displayCalendar();
 		}
-		// Elaine 2008/12/12
-		else if (event.getTarget()== fieldResource 
-				|| event.getTarget() == fieldDate.getDatebox() 
-				|| event.getTarget() == fieldDate.getTimebox())
-			displayCalendar();
 		//
-		else if (event.getTarget() == bPrevious)
-			adjustDate(-1);
-		else if (event.getTarget() == bNext)
-			adjustDate(+1);
-		//
-		else if (event.getTarget().getId().equals("New"))
-			doAdd();
+		else if (event instanceof CalendarsEvent)
+			doEdit((CalendarsEvent)event);
 		//
 		
 	}
 	
-	// Elaine 2008/12/12
-	/**
-	 * 	Adjust Date
-	 * 	@param diff difference
-	 */
-	private void adjustDate (int diff)
-	{
-		Date date = fieldDate.getValue();
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.setTime(date);
-		
-//		if (timePane.getSelectedIndex() == 0)
-			cal.add(java.util.Calendar.DAY_OF_YEAR, diff);
-//		else if (timePane.getSelectedIndex() == 1)
-//			cal.add(java.util.Calendar.WEEK_OF_YEAR, diff);
-//		else
-//			cal.add(java.util.Calendar.MONTH, diff);
-		//
-		fieldDate.setValue(new Timestamp(cal.getTimeInMillis()));
-		displayCalendar ();
-	}	//	adjustDate
-	//
-
-	private void doAdd() {
+	private void doEdit(CalendarsEvent event) {
 		ListItem listItem = fieldResource.getSelectedItem();
 		if (listItem == null)
 			return;
@@ -524,50 +468,35 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		int S_Resource_ID = pp.getKey();
 		
 		ScheduleUtil schedule = new ScheduleUtil (Env.getCtx());
-		Timestamp start = m_dateFrom;
-		java.sql.Date startDate = new java.sql.Date(start.getTime());
-		Calendar cal = new GregorianCalendar();
-		cal.setTimeInMillis(startDate.getTime());
-		start = new Timestamp(startDate.getTime());
-		start = new Timestamp(cal.getTimeInMillis());
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		start = new Timestamp(cal.getTimeInMillis());
-		cal.add(Calendar.DAY_OF_MONTH, 1);
-		Timestamp end = new Timestamp(cal.getTimeInMillis());
-		MAssignmentSlot[] mas = schedule.getAssignmentSlots(S_Resource_ID, start, end, null, true, null);
-		MAssignmentSlot[] mts = schedule.getDayTimeSlots ();
+		Timestamp start = new Timestamp(event.getBeginDate() != null ? event.getBeginDate().getTime() : event.getCalendarEvent().getBeginDate().getTime());
+		Timestamp end =new Timestamp(event.getEndDate() != null ? event.getEndDate().getTime() : event.getCalendarEvent().getEndDate().getTime());
+		double hours = (end.getTime() - start.getTime())/ 1000d / 60d / 60d;
 		
+		MAssignmentSlot[] mas = schedule.getAssignmentSlots(S_Resource_ID, TimeUtil.getPreviousDay(start), TimeUtil.getNextDay(end), null, true, null);
 		MAssignmentSlot slot = null;
-		for (int i = 0; i < mts.length; i++) {
-			slot = mts[i];
-			for(int j = 0; j < mas.length; j++) {
-				if (mts[i].getStartTime().getTime() == mas[j].getStartTime().getTime()) {
-					slot = null;
+		for(int i = 0; i < mas.length; i++) {
+			if (mas[i].getStartTime().getTime() == start.getTime()) {
+				slot = mas[i];
+				break;
+			}
+			if (mas[i].getEndTime() != null) {
+				if (start.getTime() > mas[i].getStartTime().getTime()
+					&& start.getTime() < mas[i].getEndTime().getTime()) {
+					slot = mas[i];
+					break;
+				} else if (end.getTime() > mas[i].getStartTime().getTime()
+						&& end.getTime() < mas[i].getEndTime().getTime()) {
+					slot = mas[i];
+					break;
+				} else if (start.getTime() < mas[i].getStartTime().getTime()
+					&& end.getTime() >= mas[i].getEndTime().getTime()) {
+					slot = mas[i];
 					break;
 				}
-				if (mas[j].getEndTime() != null) {
-					if (mts[i].getStartTime().getTime() > mas[j].getStartTime().getTime()
-						&& mts[i].getStartTime().getTime() < mas[j].getEndTime().getTime()) {
-						slot = null;
-						break;
-					} else if (mts[i].getEndTime().getTime() > mas[j].getStartTime().getTime()
-							&& mts[i].getEndTime().getTime() < mas[j].getEndTime().getTime()) {
-						slot = null;
-						break;
-					} else if (mts[i].getStartTime().getTime() < mas[j].getStartTime().getTime()
-						&& mts[i].getEndTime().getTime() >= mas[j].getEndTime().getTime()) {
-						slot = null;
-						break;
-					}
-				}
 			}
-			if (slot != null) 
-				break;
 		}
-		if (slot != null) {
+
+		if (slot == null) {
 			MResourceAssignment ma;
 			if (m_mAssignment == null)
 				ma = new MResourceAssignment(Env.getCtx(), 0, null);
@@ -575,19 +504,88 @@ public class InfoSchedule extends Window implements EventListener<Event>
 				ma = m_mAssignment;
 			ma.setS_Resource_ID(S_Resource_ID);
 			
-			ma.setAssignDateFrom(TimeUtil.getDayTime(start, slot.getStartTime()));
-			ma.setQty(new BigDecimal(1));
-			final WAssignmentDialog vad =  new WAssignmentDialog (ma, false, m_createNew);
-			vad.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-				@Override
-				public void onEvent(Event event) throws Exception {
-					mAssignmentCallback(vad.getMResourceAssignment());
+			ma.setAssignDateFrom(start);
+			ma.setQty(new BigDecimal(hours));
+			if (m_parent == null || m_callback == null) {
+				final boolean createNew = true;
+				if (vad != null && vad.getPage() != null)
+					vad.detach();
+				
+				vad =  new WAssignmentDialog (ma, false, createNew);
+				if (event.getBeginDate() != null && event.getEndDate() != null) {
+					SimpleCalendarEvent newEvent = new SimpleCalendarEvent();
+					newEvent.setBeginDate(event.getBeginDate());
+					newEvent.setEndDate(event.getEndDate());
+					if (event.getCalendarEvent() != null) {
+						newEvent.setContent(event.getCalendarEvent().getContent());
+						newEvent.setContentColor(event.getCalendarEvent().getContentColor());
+						newEvent.setHeaderColor(event.getCalendarEvent().getHeaderColor());
+						newEvent.setTitle(event.getCalendarEvent().getTitle());						
+						schedulePane.getModel().remove(event.getCalendarEvent());
+					}
+					schedulePane.getModel().add(newEvent);
 				}
-			});					
-			vad.setTitle(null);
-			LayoutUtils.openPopupWindow(btnNew, vad, "before_start");
+				vad.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						mAssignmentCallback(vad.getMResourceAssignment(), createNew, vad.isCancelled());
+					}
+				});					
+				vad.setTitle(null);
+				ZkCssHelper.appendStyle(vad, "position: absolute");
+				showBusyMask();
+				this.appendChild(vad);
+				LayoutUtils.openOverlappedWindow(this, vad, "middle_center");
+				vad.focus();
+			} else {
+				m_cancel = false;
+				m_mAssignment = ma;
+				dispose();
+			}
 		} else {
-			FDialog.error(0, this, "No available time slot for the selected day.");
+			if (!slot.isAssignment())
+				FDialog.error(0, this, "No available time slot for the selected day.");
+			
+			MResourceAssignment ma = slot.getMAssignment();
+			ma.setAssignDateFrom(start);
+			ma.setQty(new BigDecimal(hours));
+			
+			if (m_parent == null || m_callback == null) {
+				if (event.getBeginDate() != null && event.getEndDate() != null) {
+					SimpleCalendarEvent newEvent = new SimpleCalendarEvent();
+					newEvent.setBeginDate(event.getBeginDate());
+					newEvent.setEndDate(event.getEndDate());
+					if (event.getCalendarEvent() != null) {
+						newEvent.setContent(event.getCalendarEvent().getContent());
+						newEvent.setContentColor(event.getCalendarEvent().getContentColor());
+						newEvent.setHeaderColor(event.getCalendarEvent().getHeaderColor());
+						newEvent.setTitle(event.getCalendarEvent().getTitle());
+						schedulePane.getModel().remove(event.getCalendarEvent());
+					}
+					schedulePane.getModel().add(newEvent);
+				}
+				
+				final boolean createNew = false;
+				if (vad != null && vad.getPage() != null)
+					vad.detach();
+				vad =  new WAssignmentDialog (ma, false, createNew);
+				vad.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						mAssignmentCallback(vad.getMResourceAssignment(), createNew, vad.isCancelled());
+					}
+				});					
+				vad.setTitle(null);
+				ZkCssHelper.appendStyle(vad, "position: absolute");
+				showBusyMask();
+				this.appendChild(vad);
+				LayoutUtils.openOverlappedWindow(this, vad, "middle_center");
+				vad.focus();
+			} else {
+				m_cancel = false;
+				m_mAssignment = ma;
+				dispose();
+			}
 		}
 	}
 
@@ -601,7 +599,6 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	 */
 	public void dateCallback(Date date) {
 		m_dateFrom = new Timestamp(date.getTime());
-		fieldDate.setValue(m_dateFrom); // Elaine 2008/12/15
 	}
 
 	/* (non-Javadoc)
@@ -614,8 +611,24 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			displayCalendar();
 		}
 	}
-	
 
+	private Div getMask() {
+		if (mask == null) {
+			mask = new Mask();
+		}
+		return mask;
+	}
+	
+	protected void showBusyMask() {
+		appendChild(getMask());
+	}
+	
+	protected void hideBusyMask() {
+		if (mask != null && mask.getParent() != null) {
+			mask.detach();
+		}
+	}
+	
 	/**
 SELECT o.DocumentNo, ol.Line, ol.Description
 FROM C_OrderLine ol, C_Order o
