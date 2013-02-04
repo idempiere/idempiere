@@ -223,7 +223,6 @@ public class CompiereService {
 		m_Lang = Lang;
 		m_User = MUser.getNameOfUser(m_AD_User_ID);
 		
-		Env.setCtx(m_ctx);
 		Env.setContext( m_ctx, "#AD_Language", Lang);
 		m_lang = Language.getLanguage(Lang);
 		Env.verifyLanguage( getM_ctx(), m_lang );
