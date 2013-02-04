@@ -121,6 +121,8 @@ public class WSchedule extends Window implements EventListener<Event>
 	private Component divTabMonth;
 
 	private Borderlayout borderlayout;
+
+	private Component btnRefresh;
 	
 	/**
 	 * 	Static init
@@ -145,10 +147,7 @@ public class WSchedule extends Window implements EventListener<Event>
 
 		Component tmp = calendarContainer.getFellow("btnSwitchTimeZone");
 		if (tmp != null)
-			tmp.detach();
-		tmp = calendarContainer.getFellow("btnRefresh");
-		if (tmp != null)
-			tmp.detach();
+			tmp.detach();		
 		tmp = calendarContainer.getFellow("lbxRequestTypes");
 		if (tmp != null)
 			tmp.getParent().detach();
@@ -168,6 +167,9 @@ public class WSchedule extends Window implements EventListener<Event>
 		
 		btnCurrentDate = (Button) calendarContainer.getFellow("btnCurrentDate");
 		btnCurrentDate.addEventListener(Events.ON_CLICK, this);
+		
+		btnRefresh = calendarContainer.getFellow("btnRefresh");
+		btnRefresh.addEventListener(Events.ON_CLICK, this);
 		
 		lblDate = (Label) calendarContainer.getFellow("lblDate");
 		lblDate.addEventListener(Events.ON_CREATE, this);
@@ -258,6 +260,8 @@ public class WSchedule extends Window implements EventListener<Event>
 		if (type.equals(Events.ON_CLICK)) {
 			if (event.getTarget() == btnCurrentDate) {
 				btnCurrentDateClicked();
+			} else if (event.getTarget() == btnRefresh) {
+				updateModel();
 			}
 		} else if (type.equals(Events.ON_CREATE)) {
 			if (event.getTarget() == lblDate)
@@ -330,6 +334,13 @@ public class WSchedule extends Window implements EventListener<Event>
 				south.setHeight(height);
 			}
 			borderlayout.appendChild(south);
+		}
+	}
+	
+	public void removeRefreshButton() {
+		if (btnRefresh != null) {
+			btnRefresh.detach();
+			btnRefresh = null;
 		}
 	}
 }	//	WSchedule

@@ -155,7 +155,6 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		{
 			log.log(Level.SEVERE, "InfoSchedule", ex);
 		}
-//		AEnv.showWindow(this);
 		displayCalendar();
 	}	//	InfoSchedule
 
@@ -225,6 +224,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			schedulePane.addEventListener(CalendarsEvent.ON_EVENT_CREATE, this);
 			schedulePane.addEventListener(CalendarsEvent.ON_EVENT_EDIT, this);
 			schedulePane.addEventListener(CalendarsEvent.ON_EVENT_UPDATE, this);
+			schedulePane.removeRefreshButton();
 		} 
 		else 
 		{
