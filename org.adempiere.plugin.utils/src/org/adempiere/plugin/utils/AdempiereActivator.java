@@ -48,19 +48,43 @@ public class AdempiereActivator implements BundleActivator {
 	private void installPackage() {
 		String trxName = Trx.createTrxName();
 		try {
-			String where = "Name=? AND PK_Version=?";
+			
+			// e.g. 1.0.0.qualifier, check only the "1.0.0" part
+			String version = getVersion();
+			if (version != null)
+			{
+				int count = 0;
+				int index = -1;
+				for(int i = 0; i < version.length(); i++)
+				{
+					if(version.charAt(i) == '.')
+						count++;
+					
+					if (count == 3)
+					{
+						index = i;
+						break;
+					}
+				}
+				
+				if (index == -1)
+					index = version.length();
+				version = version.substring(0,  index);
+			}
+			
+			String where = "Name=? AND PK_Version LIKE ?";
 			Query q = new Query(Env.getCtx(), X_AD_Package_Imp.Table_Name,
 					where.toString(), trxName);
-			q.setParameters(new Object[] { getName(), getVersion() });
+			q.setParameters(new Object[] { getName(), version + "%" });
 			X_AD_Package_Imp pkg = q.first();
 			if (pkg == null) {
 				packIn(trxName);
 				install();
 				if (logger.isLoggable(Level.INFO))
-					logger.info(getName() + " " + getVersion() + " installed.");
+					logger.info(getName() + " " + version + " installed.");
 			} else {
 				if (logger.isLoggable(Level.INFO))
-					logger.info(getName() + " " + getVersion() + " was installed: "
+					logger.info(getName() + " " + version + " was installed: "
 						+ pkg.getCreated());
 			}
 			Trx.get(trxName, false).commit();
