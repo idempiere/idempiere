@@ -1075,7 +1075,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			};
 			Object value = Executions.getCurrent().getAttribute(CompositeADTabbox.AD_TABBOX_ON_EDIT_DETAIL_ATTRIBUTE);
 			if (value != null && value == adTabbox.getSelectedDetailADTabpanel()
-				&& adTabbox.getDirtyADTabpanel() == adTabbox.getSelectedDetailADTabpanel()) {
+				&& (adTabbox.getDirtyADTabpanel() == adTabbox.getSelectedDetailADTabpanel() 
+				    || (adTabbox.getDirtyADTabpanel() == null 
+				        && adTabbox.getSelectedDetailADTabpanel().getGridTab().isNew()))) {
 				command.onCallback(true);
 			} else {
 				saveAndNavigate(command);
