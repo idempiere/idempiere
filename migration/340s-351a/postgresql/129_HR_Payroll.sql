@@ -1,12 +1,12 @@
 -- Mar 23, 2008 8:42:23 PM CST
 -- Human Resource & Payroll
-INSERT INTO AD_EntityType (AD_Client_ID,AD_EntityType_ID,AD_Org_ID,Created,CreatedBy,Description,EntityType,Help,IsActive,ModelPackage,Name,Processing,Updated,UpdatedBy,Version) VALUES (0,50005,0,TO_TIMESTAMP('2008-03-23 20:42:22','YYYY-MM-DD HH24:MI:SS'),100,'Libero Human Resource & Payroll','EE02','Project
-http://www.adempiere.com/wiki/index.php/Sponsored_Development:_Libero_HR_%26_Payroll
-Overview
-http://www.adempiere.com/wiki/images/3/32/Payroll.pdf
-
-Sponsored Development www.e-evolution.com','Y','org.eevolution.model','e-Evolution Libero Human Resource & Payroll','N',TO_TIMESTAMP('2008-03-23 20:42:22','YYYY-MM-DD HH24:MI:SS'),100,'1.00')
-;
+-- INSERT INTO AD_EntityType (AD_Client_ID,AD_EntityType_ID,AD_Org_ID,Created,CreatedBy,Description,EntityType,Help,IsActive,ModelPackage,Name,Processing,Updated,UpdatedBy,Version) VALUES (0,50005,0,TO_TIMESTAMP('2008-03-23 20:42:22','YYYY-MM-DD HH24:MI:SS'),100,'Libero Human Resource & Payroll','EE02','Project
+-- http://www.adempiere.com/wiki/index.php/Sponsored_Development:_Libero_HR_%26_Payroll
+-- Overview
+-- http://www.adempiere.com/wiki/images/3/32/Payroll.pdf
+-- 
+-- Sponsored Development www.e-evolution.com','Y','org.eevolution.model','e-Evolution Libero Human Resource & Payroll','N',TO_TIMESTAMP('2008-03-23 20:42:22','YYYY-MM-DD HH24:MI:SS'),100,'1.00')
+-- ;
 
 -- Mar 23, 2008 8:44:14 PM CST
 -- Human Resource & Payroll
