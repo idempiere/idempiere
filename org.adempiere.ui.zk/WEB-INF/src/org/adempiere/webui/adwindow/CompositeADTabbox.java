@@ -386,6 +386,9 @@ public class CompositeADTabbox extends AbstractADTabbox
     				if (selected == i) continue;
     				if (headerTab.getDetailPane().isTabVisible(i)) {
     					headerTab.getDetailPane().setSelectedIndex(i);
+    					if (headerTab instanceof ADTabpanel) {
+    						((ADTabpanel) headerTab).activateDetailIfVisible();
+    					}
     					break;
     				}
     			}
