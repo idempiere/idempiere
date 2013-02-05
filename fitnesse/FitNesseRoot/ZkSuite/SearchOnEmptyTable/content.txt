@@ -1,0 +1,14 @@
+http://jira.idempiere.com/browse/IDEMPIERE-529
+
+!include -c .ZkSuite.ZkGardenAdminLogin
+
+!define windowId {$Activity__ABC__1}
+
+Open Activity (ABC) window
+|''open window''|!-Activity (ABC)-!|
+|''wait response''                   |
+
+|''window''        |${windowId}|''click toolbar''|!-BtnFind-!|
+|''click''|$MessageBox_Activity__ABC_ $btnOk|
+|''window''        |${windowId}|''click toolbar''|!-BtnIgnore-!|
+|''attribute''|class|''of''|${windowId} $BtnSave|is|!-toolbar-button  disableFilter z-toolbarbutton z-toolbarbutton-disd-!|
