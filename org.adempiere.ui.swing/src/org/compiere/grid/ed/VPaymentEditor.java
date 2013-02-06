@@ -104,7 +104,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 		{
 			//  Don't have to fill up combobox if it is readonly
 			if (!isReadOnly && isUpdateable)
-				m_lookup.fillComboBox (isMandatory(), true, true, false);
+				m_lookup.fillComboBox (isMandatory(), true, true, false, false); // IDEMPIERE 90
 			m_combo.setModel(m_lookup);
 			//
 			// AutoCompletion.enable(m_combo);
@@ -472,7 +472,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 			+ " - Start    Count=" + m_combo.getItemCount() + ", Selected=" + obj);
 	//	log.fine( "VLookupHash=" + this.hashCode());
 		boolean popupVisible = m_combo.isPopupVisible();
-		m_lookup.fillComboBox(isMandatory(), true, true, false);     //  only validated & active
+		m_lookup.fillComboBox(isMandatory(), true, true, false, false);     //  only validated & active + IDEMPIERE 90
 		if (popupVisible)
 		{
 			//refresh
