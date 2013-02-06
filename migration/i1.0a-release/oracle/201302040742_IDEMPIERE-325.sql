@@ -1,3 +1,6 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
 -- Feb 1, 2013 6:50:59 AM MYT
 -- IDEMPIERE-325 Complete AD based info window ( AD_InfoWindow ) implementation
 INSERT INTO AD_InfoWindow (Processing,FromClause,AD_InfoWindow_UU,AD_InfoWindow_ID,AD_Table_ID,EntityType,Name,AD_Client_ID,AD_Org_ID,Created,Updated,UpdatedBy,CreatedBy,IsActive,WhereClause,IsDefault,IsDistinct,OrderByClause,IsValid) VALUES ('N','C_Invoice_v i','2fa03895-f3d2-441f-bcba-5e7854260e53',200003,318,'D','Invoice Info',0,0,TO_DATE('2013-02-01 06:50:57','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2013-02-01 06:50:57','YYYY-MM-DD HH24:MI:SS'),100,100,'Y',NULL,'Y','N','2,3,4,5','N')

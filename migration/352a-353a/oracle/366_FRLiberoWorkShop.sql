@@ -8927,114 +8927,9 @@ DELETE FROM PP_MRP WHERE OrderType = 'MOP' AND DocStatus='CL' AND AD_Client_ID=1
 DELETE FROM PP_MRP WHERE OrderType = 'POR' AND DocStatus='CL' AND AD_Client_ID = 11 AND AD_Org_ID=50001 AND M_Warehouse_ID=50002 AND S_Resource_ID=50000
 ;
 
--- Sep 25, 2008 6:02:05 PM CDT
--- Manufacturing Demo
-DELETE FROM PP_Order_Node WHERE PP_Order_Node_ID=1000000
-;
-
--- Sep 25, 2008 6:02:05 PM CDT
--- Manufacturing Demo
-DELETE FROM PP_Order_Workflow WHERE PP_Order_Workflow_ID=1000000
-;
-
--- Sep 25, 2008 6:02:06 PM CDT
--- Manufacturing Demo
-DELETE FROM PP_Order_BOMLine WHERE PP_Order_BOMLine_ID=1000000
-;
-
--- Sep 25, 2008 6:02:06 PM CDT
--- Manufacturing Demo
-DELETE FROM PP_Order_BOMLine WHERE PP_Order_BOMLine_ID=1000001
-;
-
--- Sep 25, 2008 6:02:06 PM CDT
--- Manufacturing Demo
-DELETE FROM PP_Order_BOM WHERE PP_Order_BOM_ID=1000000
-;
-
--- Sep 25, 2008 6:02:06 PM CDT
--- Manufacturing Demo
-DELETE FROM PP_MRP WHERE PP_Order_ID = 1000000 AND AD_Client_ID = 11
-;
-
--- Sep 25, 2008 6:02:06 PM CDT
--- Manufacturing Demo
-DELETE FROM PP_Order WHERE PP_Order_ID=1000000
-;
-
--- Sep 25, 2008 6:02:06 PM CDT
--- Manufacturing Demo
-DELETE FROM PP_Order_Node WHERE PP_Order_Node_ID=1000001
-;
-
--- Sep 25, 2008 6:02:07 PM CDT
--- Manufacturing Demo
-DELETE FROM PP_Order_Workflow WHERE PP_Order_Workflow_ID=1000001
-;
-
--- Sep 25, 2008 6:02:07 PM CDT
--- Manufacturing Demo
-DELETE FROM PP_Order_BOMLine WHERE PP_Order_BOMLine_ID=1000002
-;
-
--- Sep 25, 2008 6:02:07 PM CDT
--- Manufacturing Demo
-DELETE FROM PP_Order_BOMLine WHERE PP_Order_BOMLine_ID=1000003
-;
-
--- Sep 25, 2008 6:02:07 PM CDT
--- Manufacturing Demo
-DELETE FROM PP_Order_BOM WHERE PP_Order_BOM_ID=1000001
-;
-
--- Sep 25, 2008 6:02:07 PM CDT
--- Manufacturing Demo
-DELETE FROM PP_MRP WHERE PP_Order_ID = 1000001 AND AD_Client_ID = 11
-;
-
--- Sep 25, 2008 6:02:07 PM CDT
--- Manufacturing Demo
-DELETE FROM PP_Order WHERE PP_Order_ID=1000001
-;
-
 -- Sep 25, 2008 6:02:07 PM CDT
 -- Manufacturing Demo
 UPDATE PP_MRP SET IsAvailable ='Y' WHERE TypeMRP = 'S'  AND AD_Client_ID = 11 AND AD_Org_ID=50001 AND M_Warehouse_ID=50002
-;
-
--- Sep 25, 2008 6:02:17 PM CDT
--- Manufacturing Demo
-INSERT INTO AD_Note (AD_Client_ID,AD_Message_ID,AD_Note_ID,AD_Org_ID,AD_Table_ID,Created,CreatedBy,IsActive,Processed,Processing,Record_ID,Reference,TextMsg,Updated,UpdatedBy) VALUES (11,53013,50000,50006,53043,TO_DATE('2008-09-25 18:02:07','YYYY-MM-DD HH24:MI:SS'),100,'Y','N','N',1001224,'Fertilizer#50 Fertilizer #50','Expedite 
-
-Indicates that a scheduled supply order is due after is needed and should be rescheduled to an earlier date or demand rescheduled to a later date.',TO_DATE('2008-09-25 18:02:07','YYYY-MM-DD HH24:MI:SS'),100)
-;
-
--- Sep 25, 2008 6:02:18 PM CDT
--- Manufacturing Demo
-INSERT INTO AD_Note (AD_Client_ID,AD_Message_ID,AD_Note_ID,AD_Org_ID,AD_Table_ID,Created,CreatedBy,IsActive,Processed,Processing,Record_ID,Reference,TextMsg,Updated,UpdatedBy) VALUES (11,53013,50001,50006,53043,TO_DATE('2008-09-25 18:02:17','YYYY-MM-DD HH24:MI:SS'),100,'Y','N','N',1001234,'Fertilizer#50 Fertilizer #50','Expedite 
-
-Indicates that a scheduled supply order is due after is needed and should be rescheduled to an earlier date or demand rescheduled to a later date.',TO_DATE('2008-09-25 18:02:17','YYYY-MM-DD HH24:MI:SS'),100)
-;
-
--- Sep 25, 2008 6:02:19 PM CDT
--- Manufacturing Demo
-INSERT INTO AD_Note (AD_Client_ID,AD_Message_ID,AD_Note_ID,AD_Org_ID,AD_Table_ID,Created,CreatedBy,IsActive,Processed,Processing,Record_ID,Reference,TextMsg,Updated,UpdatedBy) VALUES (11,53013,50002,50006,53043,TO_DATE('2008-09-25 18:02:18','YYYY-MM-DD HH24:MI:SS'),100,'Y','N','N',1001228,'Fertilizer#50 Fertilizer #50','Expedite 
-
-Indicates that a scheduled supply order is due after is needed and should be rescheduled to an earlier date or demand rescheduled to a later date.',TO_DATE('2008-09-25 18:02:18','YYYY-MM-DD HH24:MI:SS'),100)
-;
-
--- Sep 25, 2008 6:02:21 PM CDT
--- Manufacturing Demo
-INSERT INTO AD_Note (AD_Client_ID,AD_Message_ID,AD_Note_ID,AD_Org_ID,AD_Table_ID,Created,CreatedBy,IsActive,Processed,Processing,Record_ID,Reference,TextMsg,Updated,UpdatedBy) VALUES (11,53013,50003,50006,53043,TO_DATE('2008-09-25 18:02:19','YYYY-MM-DD HH24:MI:SS'),100,'Y','N','N',1001230,'Fertilizer#50 Fertilizer #50','Expedite 
-
-Indicates that a scheduled supply order is due after is needed and should be rescheduled to an earlier date or demand rescheduled to a later date.',TO_DATE('2008-09-25 18:02:19','YYYY-MM-DD HH24:MI:SS'),100)
-;
-
--- Sep 25, 2008 6:02:22 PM CDT
--- Manufacturing Demo
-INSERT INTO AD_Note (AD_Client_ID,AD_Message_ID,AD_Note_ID,AD_Org_ID,AD_Table_ID,Created,CreatedBy,IsActive,Processed,Processing,Record_ID,Reference,TextMsg,Updated,UpdatedBy) VALUES (11,53013,50004,50006,53043,TO_DATE('2008-09-25 18:02:21','YYYY-MM-DD HH24:MI:SS'),100,'Y','N','N',1001232,'Fertilizer#50 Fertilizer #50','Expedite 
-
-Indicates that a scheduled supply order is due after is needed and should be rescheduled to an earlier date or demand rescheduled to a later date.',TO_DATE('2008-09-25 18:02:21','YYYY-MM-DD HH24:MI:SS'),100)
 ;
 
 -- Sep 25, 2008 6:02:23 PM CDT
@@ -9087,27 +8982,6 @@ UPDATE PP_Order_Workflow SET PP_Order_Node_ID=50000,Updated=TO_DATE('2008-09-25 
 INSERT INTO PP_MRP (AD_Client_ID,AD_Org_ID,Created,CreatedBy,DateFinishSchedule,DateOrdered,DatePromised,DateSimulation,DateStartSchedule,DocStatus,IsActive,M_Product_ID,M_Warehouse_ID,Name,OrderType,PP_MRP_ID,PP_Order_ID,Qty,S_Resource_ID,TypeMRP,Updated,UpdatedBy,Value) VALUES (11,50006,TO_DATE('2008-09-25 18:02:35','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2008-08-16 00:00:00','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2008-09-25 18:02:02','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2008-08-17 00:00:00','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2008-09-25 18:02:35','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2008-08-16 00:00:00','YYYY-MM-DD HH24:MI:SS'),'DR','Y',136,50002,'8000','MOP',50063,50000,100.000000000000,50000,'S',TO_DATE('2008-09-25 18:02:35','YYYY-MM-DD HH24:MI:SS'),100,'50047')
 ;
 
--- Sep 25, 2008 6:02:36 PM CDT
--- Manufacturing Demo
-INSERT INTO AD_Note (AD_Client_ID,AD_Message_ID,AD_Note_ID,AD_Org_ID,AD_Table_ID,Created,CreatedBy,IsActive,Processed,Processing,Record_ID,Reference,TextMsg,Updated,UpdatedBy) VALUES (11,53013,50005,50006,53043,TO_DATE('2008-09-25 18:02:36','YYYY-MM-DD HH24:MI:SS'),100,'Y','N','N',1001226,'Fertilizer#50 Fertilizer #50','Expedite 
-
-Indicates that a scheduled supply order is due after is needed and should be rescheduled to an earlier date or demand rescheduled to a later date.',TO_DATE('2008-09-25 18:02:36','YYYY-MM-DD HH24:MI:SS'),100)
-;
-
--- Sep 25, 2008 6:02:37 PM CDT
--- Manufacturing Demo
-INSERT INTO AD_Note (AD_Client_ID,AD_Message_ID,AD_Note_ID,AD_Org_ID,AD_Table_ID,Created,CreatedBy,IsActive,Processed,Processing,Record_ID,Reference,TextMsg,Updated,UpdatedBy) VALUES (11,53013,50006,50006,53043,TO_DATE('2008-09-25 18:02:36','YYYY-MM-DD HH24:MI:SS'),100,'Y','N','N',1001236,'Fertilizer#70 Fertilizer #70','Expedite 
-
-Indicates that a scheduled supply order is due after is needed and should be rescheduled to an earlier date or demand rescheduled to a later date.',TO_DATE('2008-09-25 18:02:36','YYYY-MM-DD HH24:MI:SS'),100)
-;
-
--- Sep 25, 2008 6:02:38 PM CDT
--- Manufacturing Demo
-INSERT INTO AD_Note (AD_Client_ID,AD_Message_ID,AD_Note_ID,AD_Org_ID,AD_Table_ID,Created,CreatedBy,IsActive,Processed,Processing,Record_ID,Reference,TextMsg,Updated,UpdatedBy) VALUES (11,53013,50007,50006,53043,TO_DATE('2008-09-25 18:02:37','YYYY-MM-DD HH24:MI:SS'),100,'Y','N','N',1001238,'Fertilizer#70 Fertilizer #70','Expedite 
-
-Indicates that a scheduled supply order is due after is needed and should be rescheduled to an earlier date or demand rescheduled to a later date.',TO_DATE('2008-09-25 18:02:37','YYYY-MM-DD HH24:MI:SS'),100)
-;
-
 -- Sep 25, 2008 6:02:39 PM CDT
 -- Manufacturing Demo
 INSERT INTO PP_Order (AD_Client_ID,AD_Org_ID,AD_Workflow_ID,C_DocTypeTarget_ID,C_DocType_ID,C_UOM_ID,Created,CreatedBy,DateFinishSchedule,DateOrdered,DatePromised,DateStartSchedule,DocAction,DocStatus,DocumentNo,IsActive,IsApproved,IsPrinted,IsSOTrx,IsSelected,Line,M_Product_ID,M_Warehouse_ID,PP_Order_ID,PP_Product_BOM_ID,Planner_ID,Posted,PriorityRule,Processed,Processing,QtyBatchSize,QtyBatchs,QtyDelivered,QtyEntered,QtyOrdered,QtyReject,QtyScrap,S_Resource_ID,ScheduleType,Updated,UpdatedBy,Yield) VALUES (11,50006,50017,50002,50002,100,TO_DATE('2008-09-25 18:02:38','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2008-08-17 00:00:00','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2008-09-25 18:02:02','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2008-08-17 00:00:00','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2008-08-16 00:00:00','YYYY-MM-DD HH24:MI:SS'),'CO','DR','8001','Y','N','N','N','N',10,50007,50002,50001,50005,101,'N','5','N','N',100.000000000000,1,0,100.000000000000,100.000000000000,0,0,50000,'D',TO_DATE('2008-09-25 18:02:38','YYYY-MM-DD HH24:MI:SS'),100,0)
@@ -9156,13 +9030,6 @@ UPDATE PP_Order_Workflow SET PP_Order_Node_ID=50001,Updated=TO_DATE('2008-09-25 
 -- Sep 25, 2008 6:02:47 PM CDT
 -- Manufacturing Demo
 INSERT INTO PP_MRP (AD_Client_ID,AD_Org_ID,Created,CreatedBy,DateFinishSchedule,DateOrdered,DatePromised,DateSimulation,DateStartSchedule,DocStatus,IsActive,M_Product_ID,M_Warehouse_ID,Name,OrderType,PP_MRP_ID,PP_Order_ID,Qty,S_Resource_ID,TypeMRP,Updated,UpdatedBy,Value) VALUES (11,50006,TO_DATE('2008-09-25 18:02:46','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2008-08-16 00:00:00','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2008-09-25 18:02:02','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2008-08-17 00:00:00','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2008-09-25 18:02:46','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2008-08-16 00:00:00','YYYY-MM-DD HH24:MI:SS'),'DR','Y',50007,50002,'8001','MOP',50066,50001,100.000000000000,50000,'S',TO_DATE('2008-09-25 18:02:46','YYYY-MM-DD HH24:MI:SS'),100,'50050')
-;
-
--- Sep 25, 2008 6:02:48 PM CDT
--- Manufacturing Demo
-INSERT INTO AD_Note (AD_Client_ID,AD_Message_ID,AD_Note_ID,AD_Org_ID,AD_Table_ID,Created,CreatedBy,IsActive,Processed,Processing,Record_ID,Reference,TextMsg,Updated,UpdatedBy) VALUES (11,53013,50008,50006,53043,TO_DATE('2008-09-25 18:02:47','YYYY-MM-DD HH24:MI:SS'),100,'Y','N','N',1001240,'Fertilizer#70 Fertilizer #70','Expedite 
-
-Indicates that a scheduled supply order is due after is needed and should be rescheduled to an earlier date or demand rescheduled to a later date.',TO_DATE('2008-09-25 18:02:47','YYYY-MM-DD HH24:MI:SS'),100)
 ;
 
 

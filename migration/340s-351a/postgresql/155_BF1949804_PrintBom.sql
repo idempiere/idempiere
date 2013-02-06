@@ -18,16 +18,6 @@ CREATE VIEW "rv_pp_product_bomline" ("seqno", "levelno", "levels", "ad_client_id
  LEFT JOIN pp_product_bomline bl ON t.pp_product_bomline_id = bl.pp_product_bomline_id 
  ORDER BY t.seqno;
 
--- May 12, 2008 1:58:58 PM EST
--- BF1949804 Broken Report - MultiLevel BOM & Formula Detail
-DELETE FROM AD_Element_Trl WHERE AD_Element_ID=1000003
-;
-
--- May 12, 2008 1:58:58 PM EST
--- BF1949804 Broken Report - MultiLevel BOM & Formula Detail
-DELETE FROM AD_Element WHERE AD_Element_ID=1000003
-;
-
 -- May 12, 2008 2:01:04 PM EST
 -- BF1949804 Broken Report - MultiLevel BOM & Formula Detail
 INSERT INTO AD_Element (AD_Client_ID,AD_Element_ID,AD_Org_ID,ColumnName,Created,CreatedBy,Description,EntityType,Help,IsActive,Name,PrintName,Updated,UpdatedBy) VALUES (0,53466,0,'Implotion',TO_TIMESTAMP('2008-05-12 14:01:03','YYYY-MM-DD HH24:MI:SS'),100,'Implosion of a Bill of Materials refers to finding all the BOM''''s in which a component is used.','EE01','Commonly called a Where-Used report.','Y','Implotion','Implosion',TO_TIMESTAMP('2008-05-12 14:01:03','YYYY-MM-DD HH24:MI:SS'),100)

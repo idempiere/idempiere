@@ -1,12 +1,12 @@
 -- 18.12.2008 16:48:43 EET
 -- FR [ 2445409 ] Translate Info MRP
-INSERT INTO AD_Element (AD_Client_ID,AD_Element_ID,AD_Org_ID,ColumnName,Created,CreatedBy,EntityType,IsActive,Name,PrintName,Updated,UpdatedBy) VALUES (0,53717,0,'QtyGrossReq',TO_TIMESTAMP('2008-12-18 16:48:41','YYYY-MM-DD HH24:MI:SS'),0,'EE01','Y','Gross Requirements Qty','Gross Req.',TO_TIMESTAMP('2008-12-18 16:48:41','YYYY-MM-DD HH24:MI:SS'),0)
-;
+-- INSERT INTO AD_Element (AD_Client_ID,AD_Element_ID,AD_Org_ID,ColumnName,Created,CreatedBy,EntityType,IsActive,Name,PrintName,Updated,UpdatedBy) VALUES (0,53717,0,'QtyGrossReq',TO_TIMESTAMP('2008-12-18 16:48:41','YYYY-MM-DD HH24:MI:SS'),0,'EE01','Y','Gross Requirements Qty','Gross Req.',TO_TIMESTAMP('2008-12-18 16:48:41','YYYY-MM-DD HH24:MI:SS'),0)
+-- ;
 
 -- 18.12.2008 16:48:43 EET
 -- FR [ 2445409 ] Translate Info MRP
-INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Description,Help,Name,PO_Description,PO_Help,PO_Name,PO_PrintName,PrintName, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Element_ID, t.Description,t.Help,t.Name,t.PO_Description,t.PO_Help,t.PO_Name,t.PO_PrintName,t.PrintName, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Element t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Element_ID=53717 AND EXISTS (SELECT * FROM AD_Element_Trl tt WHERE tt.AD_Language!=l.AD_Language OR tt.AD_Element_ID!=t.AD_Element_ID)
-;
+-- INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Description,Help,Name,PO_Description,PO_Help,PO_Name,PO_PrintName,PrintName, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy) SELECT l.AD_Language,t.AD_Element_ID, t.Description,t.Help,t.Name,t.PO_Description,t.PO_Help,t.PO_Name,t.PO_PrintName,t.PrintName, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, AD_Element t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Element_ID=53717 AND EXISTS (SELECT * FROM AD_Element_Trl tt WHERE tt.AD_Language!=l.AD_Language OR tt.AD_Element_ID!=t.AD_Element_ID)
+-- ;
 
 -- 18.12.2008 16:50:31 EET
 -- FR [ 2445409 ] Translate Info MRP
