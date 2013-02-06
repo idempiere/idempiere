@@ -682,8 +682,6 @@ public class WebUser
 		    {
 		      String sql = "SELECT * FROM AD_User "
 			   + "WHERE COALESCE(LDAPUser, Name)=? "  // #1
-			   + " AND ((Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='N') " // #2 
-			   +    "OR (Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='Y'))" // #3
 			   + " AND IsActive='Y' " // #4
 		     ;
 		     PreparedStatement pstmt = null;
@@ -692,14 +690,17 @@ public class WebUser
 		     {
 		    	 pstmt = DB.prepareStatement (sql, null);
 		    	 pstmt.setString (1, m_bpc.getName());
-			     pstmt.setString (2, password);
-			     pstmt.setString (3, SecureEngine.encrypt(password));
 			     rs = pstmt.executeQuery ();
 			     if (rs.next ())
 			     {
-				    retValue = true;
-				    if (rs.next())
-				       log.warning ("More then one user with Name/Password = " + m_bpc.getName());
+			    	do 
+			    	{
+			    		MUser user = new MUser(Env.getCtx(), rs, null);
+			    		if (user.getPassword() != null && user.getPassword().equals(password)) {
+			    			retValue = true;
+			    			break;
+			    		}
+			    	} while (rs.next());			    	
 			     }
 			    else
 				     log.fine("No record");

@@ -3020,8 +3020,9 @@ public abstract class PO
 	{
 		if (xx == null)
 			return null;
-		if (index != -1 && p_info.isEncrypted(index))
-			return SecureEngine.encrypt(xx);
+		if (index != -1 && p_info.isEncrypted(index)) {
+			return SecureEngine.encrypt(xx, getAD_Client_ID());
+		}
 		return xx;
 	}	//	encrypt
 
@@ -3035,8 +3036,9 @@ public abstract class PO
 	{
 		if (yy == null)
 			return null;
-		if (index != -1 && p_info.isEncrypted(index))
-			return SecureEngine.decrypt(yy);
+		if (index != -1 && p_info.isEncrypted(index)) {
+			return SecureEngine.decrypt(yy, getAD_Client_ID());
+		}
 		return yy;
 	}	//	decrypt
 

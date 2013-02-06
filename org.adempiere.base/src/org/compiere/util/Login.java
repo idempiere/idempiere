@@ -304,19 +304,12 @@ public class Login
 			if ( user.authenticateHash(app_pwd) )
 			{
 				authenticated = true;
-				app_pwd = null;
 			}
 		} 
 		else{
-			StringBuffer sql = new StringBuffer("SELECT AD_User.AD_User_ID,")
-			.append(" AD_User.ConnectionProfile ")
-			.append(" FROM AD_User ");
+			StringBuffer sql = new StringBuffer("SELECT AD_User.AD_User_ID ").append(" FROM AD_User ");
 			sql.append(" WHERE ").append(userNameCol).append("=?");
 			sql.append(" AND AD_User.IsActive='Y'").append(" AND EXISTS (SELECT * FROM AD_Client c WHERE AD_User.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
-
-			if (app_pwd != null)
-				sql.append(" AND ((AD_User.Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='N') " 
-						+     "OR (AD_User.Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='Y'))");	//  #2/3
 
 			PreparedStatement pstmt1=null;
 			ResultSet rs1=null;
@@ -324,15 +317,14 @@ public class Login
 			try{
 				pstmt1 = DB.prepareStatement(sql.toString(), null);
 				pstmt1.setString(1, app_user);
-				if (app_pwd != null)
-				{
-					pstmt1.setString(2, app_pwd);
-					pstmt1.setString(3, SecureEngine.encrypt(app_pwd));
-				}
 				rs1 = pstmt1.executeQuery(); 
 
 				while(rs1.next()){
-					authenticated=true;
+					MUser user = new MUser(m_ctx, rs1.getInt(1), null);
+					if (user.getPassword() != null && user.getPassword().equals(app_pwd)) {
+						authenticated=true;
+					}
+					
 				}
 
 			}catch (Exception ex) {
@@ -349,19 +341,14 @@ public class Login
 		}
 
 		if(authenticated){	
-			StringBuffer sql = new StringBuffer("SELECT AD_User.AD_User_ID, r.AD_Role_ID,r.Name,")
-			.append(" AD_User.ConnectionProfile ")
-			.append("FROM AD_User ")
+			StringBuffer sql = new StringBuffer("SELECT AD_User.AD_User_ID, r.AD_Role_ID,r.Name")
+			.append(" FROM AD_User ")
 			.append(" INNER JOIN AD_User_Roles ur ON (AD_User.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
 			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");
 
 			sql.append("WHERE ").append(userNameCol).append("=?");		//	#1
 
 			sql.append(" AND AD_User.IsActive='Y'").append(" AND EXISTS (SELECT * FROM AD_Client c WHERE AD_User.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
-
-			/* if (app_pwd != null && !hash_password)
-				 sql.append(" AND ((AD_User.Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='N') " 
-				    	+     "OR (AD_User.Password=? AND (SELECT IsEncrypted FROM AD_Column WHERE AD_Column_ID=417)='Y'))");	//  #2/3*/
 
 			sql.append(" ORDER BY r.Name");
 
@@ -372,11 +359,6 @@ public class Login
 				pstmt = DB.prepareStatement(sql.toString(), null);
 				pstmt.setString(1, app_user);
 
-				/*if (app_pwd != null && !hash_password)
-			{
-				pstmt.setString(2, app_pwd);
-				pstmt.setString(3, SecureEngine.encrypt(app_pwd));
-			}*/
 				//	execute a query
 				rs = pstmt.executeQuery();
 
@@ -414,12 +396,15 @@ public class Login
 
 				do	//	read all roles
 				{
-					int AD_Role_ID = rs.getInt(2);
-					if (AD_Role_ID == 0)
-						Env.setContext(m_ctx, "#SysAdmin", "Y");
-					String Name = rs.getString(3);
-					KeyNamePair p = new KeyNamePair(AD_Role_ID, Name);
-					list.add(p);
+					MUser user = new MUser(m_ctx, rs.getInt(1), null);
+					if (user.getPassword() != null && user.getPassword().equals(app_pwd)) { 
+						int AD_Role_ID = rs.getInt(2);
+						if (AD_Role_ID == 0)
+							Env.setContext(m_ctx, "#SysAdmin", "Y");
+						String Name = rs.getString(3);
+						KeyNamePair p = new KeyNamePair(AD_Role_ID, Name);
+						list.add(p);
+					}
 				}
 				while (rs.next());
 				//
@@ -440,6 +425,7 @@ public class Login
 			{
 				DB.close(rs, pstmt);
 				rs = null; pstmt = null;
+				app_pwd = null;
 			}
 		}
 		//long ms = System.currentTimeMillis () - start;
@@ -1333,7 +1319,7 @@ public class Login
 				valid = user.authenticateHash(app_pwd);
 			} else {
 				// password not hashed
-				valid = user.getPassword().equals(app_pwd);
+				valid = user.getPassword() != null && user.getPassword().equals(app_pwd);
 			}
 			if (valid ) {			
 				if (user.isLocked())

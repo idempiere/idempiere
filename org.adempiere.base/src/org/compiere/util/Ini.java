@@ -515,7 +515,7 @@ public final class Ini implements Serializable
 		else if (!isClient())
 			result = s_prop.getProperty (key, SecureInterface.CLEARVALUE_START + defaultValue + SecureInterface.CLEARVALUE_END);
 		else
-			result = s_prop.getProperty (key, SecureEngine.encrypt(defaultValue));
+			result = s_prop.getProperty (key, SecureEngine.encrypt(defaultValue, 0));
 		s_prop.setProperty (key, result);
 		return result;
 	}	//	checkProperty
@@ -577,7 +577,7 @@ public final class Ini implements Serializable
 				s_prop.setProperty(key, "");
 			else
 			{
-				String eValue = SecureEngine.encrypt(value);
+				String eValue = SecureEngine.encrypt(value, 0);
 				if (eValue == null)
 					s_prop.setProperty(key, "");
 				else
@@ -619,7 +619,7 @@ public final class Ini implements Serializable
 		if (retStr == null || retStr.length() == 0)
 			return "";
 		//
-		String value = SecureEngine.decrypt(retStr);
+		String value = SecureEngine.decrypt(retStr, 0);
 	//	getLogger().finer(key + "=" + value);
 		if (value == null)
 			return "";

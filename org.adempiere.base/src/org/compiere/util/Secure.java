@@ -26,7 +26,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
+
+import org.adempiere.base.Core;
+import org.adempiere.base.IKeyStore;
 
 /**
  * Security Services.
@@ -128,14 +130,11 @@ public class Secure implements SecureInterface
 	{
 		initCipher();
 	}	//	Secure
-
-	/** Adempiere Cipher				*/
-	private Cipher 			m_cipher = null;
-	/** Adempiere Key				*/
-	private SecretKey 		m_key = null;
+	
 	/** Message Digest				*/
 	private MessageDigest	m_md = null;
 
+	private IKeyStore m_keyStore = null;
 	/**	Logger						*/
 	private static Logger	log	= Logger.getLogger (Secure.class.getName());
 
@@ -144,34 +143,10 @@ public class Secure implements SecureInterface
 	 */
 	private synchronized void initCipher()
 	{
-		if (m_cipher != null)
-			return;
-		Cipher cc = null;
-		try
-		{
-			cc = Cipher.getInstance("DES/ECB/PKCS5Padding");
-			//	Key
-			/*if (false)
-			{
-				KeyGenerator keygen = KeyGenerator.getInstance("DES");
-				m_key = keygen.generateKey();
-				byte[] key = m_key.getEncoded();
-				StringBuffer sb = new StringBuffer ("Key ")
-					.append(m_key.getAlgorithm())
-					.append("(").append(key.length).append(")= ");
-				for (int i = 0; i < key.length; i++)
-					sb.append(key[i]).append(",");
-				log.info(sb.toString());
-			}
-			else*/
-			m_key = new javax.crypto.spec.SecretKeySpec
-					(new byte[] {100,25,28,-122,-26,94,-3,-26}, "DES");
+		if(m_keyStore==null){
+			m_keyStore = getKeyStore();
 		}
-		catch (Exception ex)
-		{
-			log.log(Level.SEVERE, "", ex);
-		}
-		m_cipher = cc;
+		
 	}	//	initCipher
 
 	
@@ -179,35 +154,35 @@ public class Secure implements SecureInterface
 	/**
 	 *	Encryption.
 	 *  @param value clear value
+	 *  @param AD_Client_ID
 	 *  @return encrypted String
 	 */
-	public String encrypt (String value)
-	{
+	public String encrypt (String value,int AD_Client_ID)
+ {
 		String clearText = value;
 		if (clearText == null)
 			clearText = "";
-		//	Init
-		if (m_cipher == null)
+		// Init
+		if (m_keyStore == null)
 			initCipher();
-		//	Encrypt
-		if (m_cipher != null)
-		{
-			try
-			{
-				m_cipher.init(Cipher.ENCRYPT_MODE, m_key);
-				byte[] encBytes = m_cipher.doFinal(clearText.getBytes("UTF8"));
-				String encString = convertToHexString(encBytes);
-				// globalqss - [ 1577737 ] Security Breach - show database password
-				// log.log (Level.ALL, value + " => " + encString);
-				return encString;
-			}
-			catch (Exception ex)
-			{
-				// log.log(Level.INFO, value, ex);
-				log.log(Level.INFO, "Problem encrypting string", ex);
-			}
+
+		// Encrypt
+		try {
+			Cipher cipher = Cipher.getInstance(m_keyStore.getAlgorithm());
+
+			cipher.init(Cipher.ENCRYPT_MODE, m_keyStore.getKey(AD_Client_ID));
+			byte[] encBytes = cipher.doFinal(clearText.getBytes("UTF8"));
+
+			String encString = convertToHexString(encBytes);
+			// globalqss - [ 1577737 ] Security Breach - show database password
+			// log.log (Level.ALL, value + " => " + encString);
+			return encString;
+		} catch (Exception ex) {
+			// log.log(Level.INFO, value, ex);
+			log.log(Level.INFO, "Problem encrypting string", ex);
 		}
-		//	Fallback
+
+		// Fallback
 		return CLEARVALUE_START + value + CLEARVALUE_END;
 	}	//	encrypt
 
@@ -215,9 +190,10 @@ public class Secure implements SecureInterface
 	 *	Decryption.
 	 * 	The methods must recognize clear text values
 	 *  @param value encrypted value
+	 *  @param AD_Client_ID
 	 *  @return decrypted String
 	 */
-	public String decrypt (String value)
+	public String decrypt (String value,int AD_Client_ID)
 	{
 		if (value == null || value.length() == 0)
 			return value;
@@ -238,17 +214,18 @@ public class Secure implements SecureInterface
 			return value;
 		}
 		//	Init
-		if (m_cipher == null)
+		if (m_keyStore == null)
 			initCipher();
 
 		//	Encrypt
-		if (m_cipher != null && value != null && value.length() > 0)
+		if (value != null && value.length() > 0)
 		{
 			try
 			{
-				AlgorithmParameters ap = m_cipher.getParameters();
-				m_cipher.init(Cipher.DECRYPT_MODE, m_key, ap);
-				byte[] out = m_cipher.doFinal(data);
+				Cipher cipher = Cipher.getInstance(m_keyStore.getAlgorithm());
+				AlgorithmParameters ap = cipher.getParameters();
+				cipher.init(Cipher.DECRYPT_MODE, m_keyStore.getKey(AD_Client_ID), ap);
+				byte[] out = cipher.doFinal(data);
 				String retValue = new String(out, "UTF8");
 				// globalqss - [ 1577737 ] Security Breach - show database password
 				// log.log (Level.ALL, value + " => " + retValue);
@@ -267,9 +244,10 @@ public class Secure implements SecureInterface
 	 *	Encryption.
 	 * 	The methods must recognize clear text values
 	 *  @param value clear value
+	 *  @param ad_client_id
 	 *  @return encrypted String
 	 */
-	public Integer encrypt (Integer value)
+	public Integer encrypt (Integer value,int ad_client_id)
 	{
 		return value;
 	}	//	encrypt
@@ -280,7 +258,7 @@ public class Secure implements SecureInterface
 	 *  @param value encrypted value
 	 *  @return decrypted String
 	 */
-	public Integer decrypt (Integer value)
+	public Integer decrypt (Integer value,int ad_client_id)
 	{
 		return value;
 	}	//	decrypt
@@ -289,9 +267,10 @@ public class Secure implements SecureInterface
 	 *	Encryption.
 	 * 	The methods must recognize clear text values
 	 *  @param value clear value
+	 *  @param ad_client_id
 	 *  @return encrypted String
 	 */
-	public BigDecimal encrypt (BigDecimal value)
+	public BigDecimal encrypt (BigDecimal value,int ad_client_id)
 	{
 		return value;
 	}	//	encrypt
@@ -302,7 +281,7 @@ public class Secure implements SecureInterface
 	 *  @param value encrypted value
 	 *  @return decrypted String
 	 */
-	public BigDecimal decrypt (BigDecimal value)
+	public BigDecimal decrypt (BigDecimal value,int ad_client_id)
 	{
 		return value;
 	}	//	decrypt
@@ -311,9 +290,10 @@ public class Secure implements SecureInterface
 	 *	Encryption.
 	 * 	The methods must recognize clear text values
 	 *  @param value clear value
+	 *  @param ad_client_id
 	 *  @return encrypted String
 	 */
-	public Timestamp encrypt (Timestamp value)
+	public Timestamp encrypt (Timestamp value,int ad_client_id)
 	{
 		return value;
 	}	//	encrypt
@@ -324,7 +304,7 @@ public class Secure implements SecureInterface
 	 *  @param value encrypted value
 	 *  @return decrypted String
 	 */
-	public Timestamp decrypt (Timestamp value)
+	public Timestamp decrypt (Timestamp value,int ad_client_id)
 	{
 		return value;
 	}	//	decrypt
@@ -412,9 +392,20 @@ public class Secure implements SecureInterface
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("Secure[");
-		sb.append(m_cipher)
+		sb.append(m_keyStore.getAlgorithm())
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
 	
+	/**
+	 * 
+	 * @return keystore
+	 */
+	public IKeyStore getKeyStore(){
+		IKeyStore keyStore = Core.getKeyStore();
+		if(keyStore==null)
+			keyStore = new DefaultKeyStore();
+		
+		return keyStore;
+	}
 }   //  Secure

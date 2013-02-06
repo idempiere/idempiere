@@ -117,7 +117,7 @@ public class ColumnEncryption extends SvrProcess {
 		if (column.isKey() || column.isParent() || column.isStandardColumn()
 				|| column.isVirtualColumn() || column.isIdentifier()
 				|| column.isTranslated() || DisplayType.isLookup(dt)
-				|| DisplayType.isLOB(dt)
+				|| DisplayType.isLOB(dt) || DisplayType.isDate(dt) || DisplayType.isNumeric(dt)				
 				|| "DocumentNo".equalsIgnoreCase(column.getColumnName())
 				|| "Value".equalsIgnoreCase(column.getColumnName())
 				|| "Name".equalsIgnoreCase(column.getColumnName())) {
@@ -126,7 +126,7 @@ public class ColumnEncryption extends SvrProcess {
 				column.saveEx();
 			}
 			StringBuilder msgreturn = new StringBuilder().append(columnName).append(": cannot be encrypted");
-			return msgreturn.toString();
+			throw new Exception(msgreturn.toString());
 		}
 
 		// Start
@@ -137,10 +137,10 @@ public class ColumnEncryption extends SvrProcess {
 
 		// Test Value
 		if (p_TestValue != null && p_TestValue.length() > 0) {
-			String encString = SecureEngine.encrypt(p_TestValue);
+			String encString = SecureEngine.encrypt(p_TestValue, 0);
 			msglog = new StringBuilder("Encrypted Test Value=").append(encString);
 			addLog(0, null, null, msglog.toString());
-			String clearString = SecureEngine.decrypt(encString);
+			String clearString = SecureEngine.decrypt(encString, 0);
 			if (p_TestValue.equals(clearString)){
 				msglog = new StringBuilder("Decrypted=").append(clearString)
 						.append(" (same as test value)");
@@ -181,7 +181,7 @@ public class ColumnEncryption extends SvrProcess {
 				.append("Test=").append(testClear.toString()).append(" (").append(p_MaxLength).append(")");
 			log.config(msglog.toString());
 			//
-			String encString = SecureEngine.encrypt(testClear.toString());
+			String encString = SecureEngine.encrypt(testClear.toString(), 0);
 			int encLength = encString.length();
 			msglog = new StringBuilder("Test Max Length=").append(testClear.length())
 					.append(" -> ").append(encLength);
@@ -224,7 +224,7 @@ public class ColumnEncryption extends SvrProcess {
 			// Check if the encryption exceeds the current length.
 			int oldLength = column.getFieldLength();
 			int newLength = encryptedColumnLength(oldLength);
-			if (newLength > oldLength)
+			if (newLength > oldLength) {
 				if (changeFieldLength(columnID, columnName, newLength,
 						tableName) == -1) {
 					log.warning("EncryptError [ChangeFieldLength]: "
@@ -232,6 +232,7 @@ public class ColumnEncryption extends SvrProcess {
 							+ newLength);
 					throw new Exception();
 				}
+			}
 
 			// Encrypt column contents.
 			if (encryptColumnContents(columnName, column.getAD_Table_ID()) == -1) {
@@ -295,7 +296,7 @@ public class ColumnEncryption extends SvrProcess {
 		StringBuilder idColumnName = new StringBuilder(tableName).append("_ID");
 
 		StringBuilder selectSql = new StringBuilder();
-		selectSql.append("SELECT ").append(idColumnName).append(",").append(columnName);
+		selectSql.append("SELECT ").append(idColumnName).append(",").append(columnName).append(",AD_Client_ID");
 		selectSql.append(" FROM ").append(tableName);
 		selectSql.append(" ORDER BY ").append(idColumnName);
 
@@ -306,31 +307,35 @@ public class ColumnEncryption extends SvrProcess {
 
 		PreparedStatement selectStmt = null;
 		PreparedStatement updateStmt = null;
-
-		selectStmt = m_conn.prepareStatement(selectSql.toString(),
-				ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-		updateStmt = m_conn.prepareStatement(updateSql.toString());
-
-		ResultSet rs = selectStmt.executeQuery();
-
-		for (recordsEncrypted = 0; rs.next(); ++recordsEncrypted) {
-			// Get the row id and column value
-			int id = rs.getInt(1);
-			String value = rs.getString(2);
-			// Encrypt the value
-			value = SecureEngine.encrypt(value);
-			// Update the row
-			updateStmt.setString(1, value);
-			updateStmt.setInt(2, id);
-			if (updateStmt.executeUpdate() != 1) {
-				log.warning("EncryptError: Table=" + tableName + ", ID=" + id);
-				throw new Exception();
+		ResultSet rs = null;
+		
+		try {
+			selectStmt = m_conn.prepareStatement(selectSql.toString(),
+					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+			updateStmt = m_conn.prepareStatement(updateSql.toString());
+	
+			rs = selectStmt.executeQuery();
+	
+			for (recordsEncrypted = 0; rs.next(); ++recordsEncrypted) {
+				// Get the row id and column value
+				int id = rs.getInt(1);
+				String value = rs.getString(2);
+				int AD_Client_ID = rs.getInt(3);
+				// Encrypt the value
+				value = SecureEngine.encrypt(value, AD_Client_ID);
+				// Update the row
+				updateStmt.setString(1, value);
+				updateStmt.setInt(2, id);
+				if (updateStmt.executeUpdate() != 1) {
+					log.severe("EncryptError: Table=" + tableName + ", ID=" + id);
+					throw new Exception();
+				}
 			}
+		} finally {
+			DB.close(rs);
+			DB.close(selectStmt);
+			DB.close(updateStmt);
 		}
-
-		rs.close();
-		selectStmt.close();
-		updateStmt.close();
 
 		return recordsEncrypted;
 	} // encryptColumnContents
@@ -348,7 +353,7 @@ public class ColumnEncryption extends SvrProcess {
 		for (int i = 0; i < colLength; i++) {
 			str.append("1");
 		}		
-		str = new StringBuilder().append(SecureEngine.encrypt(str.toString()));
+		str = new StringBuilder().append(SecureEngine.encrypt(str.toString(), 0));
 		return str.length();
 	} // encryptedColumnLength
 
@@ -387,33 +392,35 @@ public class ColumnEncryption extends SvrProcess {
 		updateSql.append(" WHERE AD_Column_ID=").append(columnID);
 
 		PreparedStatement selectStmt = null;
-
-		selectStmt = m_conn.prepareStatement(selectSql.toString(),
-				ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-
-		selectStmt.setInt(1, columnID);
-		ResultSet rs = selectStmt.executeQuery();
-
-		if (rs.next()) {
-			// Change the column size physically.
-			if (DB.executeUpdate(alterSql.toString(), false, m_trx
-							.getTrxName()) == -1) {
-				log.warning("EncryptError [ChangeFieldLength]: ColumnID="
-						+ columnID + ", NewLength=" + length);
-				throw new Exception();
+		ResultSet rs = null;
+		
+		try {
+			selectStmt = m_conn.prepareStatement(selectSql.toString(),
+					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+	
+			selectStmt.setInt(1, columnID);
+			rs = selectStmt.executeQuery();
+	
+			if (rs.next()) {
+				// Change the column size physically.
+				if (DB.executeUpdate(alterSql.toString(), false, m_trx
+								.getTrxName()) == -1) {
+					log.severe("EncryptError [ChangeFieldLength]: ColumnID="
+							+ columnID + ", NewLength=" + length);
+					throw new Exception();
+				}
+	
+				// Change the column size in AD.
+				if (DB.executeUpdate(updateSql.toString(), false, m_trx
+						.getTrxName()) == -1) {
+					log.severe("EncryptError [ChangeFieldLength]: ColumnID="
+							+ columnID + ", NewLength=" + length);
+					throw new Exception();
+				}
 			}
-
-			// Change the column size in AD.
-			if (DB.executeUpdate(updateSql.toString(), false, m_trx
-					.getTrxName()) == -1) {
-				log.warning("EncryptError [ChangeFieldLength]: ColumnID="
-						+ columnID + ", NewLength=" + length);
-				throw new Exception();
-			}
+		} finally {
+			DB.close(rs, selectStmt);
 		}
-
-		rs.close();
-		selectStmt.close();
 
 		// Update number of rows effected.
 		rowsEffected++;

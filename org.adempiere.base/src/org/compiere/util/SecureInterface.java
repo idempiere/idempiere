@@ -52,64 +52,71 @@ public interface SecureInterface
 	/**
 	 *	Encryption.
 	 *  @param value clear value
+	 *  @param AD_Client_ID
 	 *  @return encrypted String
 	 */
-	public String encrypt (String value);
+	public String encrypt (String value,int AD_Client_ID);
 
 	/**
 	 *	Decryption.
 	 *  @param value encrypted value
 	 *  @return decrypted String
 	 */
-	public String decrypt (String value);
+	public String decrypt (String value,int AD_Client_ID);
 
 	/**
 	 *	Encryption.
 	 * 	The methods must recognize clear text values
 	 *  @param value clear value
+	 *  @param AD_Client_ID
 	 *  @return encrypted String
 	 */
-	public Integer encrypt (Integer value);
+	public Integer encrypt (Integer value,int AD_Client_ID);
 
 	/**
 	 *	Decryption.
 	 * 	The methods must recognize clear text values
 	 *  @param value encrypted value
+	 *  @param AD_Client_ID
 	 *  @return decrypted String
 	 */
-	public Integer decrypt (Integer value);
+	public Integer decrypt (Integer value,int AD_Client_ID);
 	
 	/**
 	 *	Encryption.
 	 * 	The methods must recognize clear text values
 	 *  @param value clear value
+	 *  @param AD_Client_ID
 	 *  @return encrypted String
 	 */
-	public BigDecimal encrypt (BigDecimal value);
+	public BigDecimal encrypt (BigDecimal value,int AD_Client_ID);
 
 	/**
 	 *	Decryption.
 	 * 	The methods must recognize clear text values
 	 *  @param value encrypted value
+	 *  @param AD_Client_ID
 	 *  @return decrypted String
 	 */
-	public BigDecimal decrypt (BigDecimal value);
+	public BigDecimal decrypt (BigDecimal value,int AD_Client_ID);
 
 	/**
 	 *	Encryption.
 	 * 	The methods must recognize clear text values
 	 *  @param value clear value
+	 *  @param AD_Client_ID
 	 *  @return encrypted String
 	 */
-	public Timestamp encrypt (Timestamp value);
+	public Timestamp encrypt (Timestamp value,int AD_Client_ID);
 
 	/**
 	 *	Decryption.
 	 * 	The methods must recognize clear text values
 	 *  @param value encrypted value
+	 *  @param AD_Client_ID
 	 *  @return decrypted String
 	 */
-	public Timestamp decrypt (Timestamp value);
+	public Timestamp decrypt (Timestamp value,int AD_Client_ID);
 	
 	
 	/**

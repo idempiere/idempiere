@@ -1814,7 +1814,7 @@ public class GridTable extends AbstractTableModel
 								else
 									iii = new Integer(dd.toString());
 								if (encrypted)
-									iii = (Integer)encrypt(iii);
+									iii = (Integer)encrypt(iii, getAD_Client_ID());
 								if (manualUpdate)
 									createUpdateSql (columnName, String.valueOf (iii));
 								else
@@ -1834,7 +1834,7 @@ public class GridTable extends AbstractTableModel
 						{
 							BigDecimal bd = (BigDecimal)rowData[col];
 							if (encrypted)
-								bd = (BigDecimal)encrypt(bd);
+								bd = (BigDecimal)encrypt(bd, getAD_Client_ID());
 							if (manualUpdate)
 								createUpdateSql (columnName, bd.toString ());
 							else
@@ -1846,7 +1846,7 @@ public class GridTable extends AbstractTableModel
 						{
 							Timestamp ts = (Timestamp)rowData[col];
 							if (encrypted)
-								ts = (Timestamp)encrypt(ts);
+								ts = (Timestamp)encrypt(ts, getAD_Client_ID());
 							if (manualUpdate)
 								createUpdateSql (columnName, DB.TO_DATE (ts, false));
 							else
@@ -1884,7 +1884,7 @@ public class GridTable extends AbstractTableModel
 						{
 							String str = rowData[col].toString ();
 							if (encrypted)
-								str = (String)encrypt(str);
+								str = (String)encrypt(str, getAD_Client_ID());
 							if (manualUpdate)
 								createUpdateSql (columnName, DB.TO_STRING (str));
 							else
@@ -3121,7 +3121,7 @@ public class GridTable extends AbstractTableModel
 				{
 					String str = rs.getString(j+1);
 					if (field.isEncryptedColumn())
-						str = (String)decrypt(str);
+						str = (String)decrypt(str, getAD_Client_ID());
 					rowData[j] = new Boolean ("Y".equals(str));	//	Boolean
 				}
 				//	LOB
@@ -3152,7 +3152,7 @@ public class GridTable extends AbstractTableModel
 					rowData[j] = rs.getString(j+1);				//	String
 				//	Encrypted
 				if (field.isEncryptedColumn() && displayType != DisplayType.YesNo)
-					rowData[j] = decrypt(rowData[j]);
+					rowData[j] = decrypt(rowData[j], getAD_Client_ID());
 			}
 		}
 		catch (SQLException e)
@@ -3167,11 +3167,11 @@ public class GridTable extends AbstractTableModel
 	 *	@param xx clear data 
 	 *	@return encrypted value
 	 */
-	private Object encrypt (Object xx)
+	private Object encrypt (Object xx, int AD_Client_ID)
 	{
 		if (xx == null)
 			return null;
-		return SecureEngine.encrypt(xx);
+		return SecureEngine.encrypt(xx, AD_Client_ID);
 	}	//	encrypt
 	
 	/**
@@ -3179,12 +3179,22 @@ public class GridTable extends AbstractTableModel
 	 *	@param yy encrypted data
 	 *	@return clear data
 	 */
-	private Object decrypt (Object yy)
+	private Object decrypt (Object yy, int AD_Client_ID)
 	{
 		if (yy == null)
 			return null;
-		return SecureEngine.decrypt(yy);
+		return SecureEngine.decrypt(yy, AD_Client_ID);
 	}	//	decrypt
+	
+	private int getAD_Client_ID() 
+	{
+		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
+		GridField field = getField("AD_Client_ID");
+		if (field != null && field.getValue() != null) {
+			AD_Client_ID = ((Number)field.getValue()).intValue();
+		}
+		return AD_Client_ID;
+	}
 	
 	/**************************************************************************
 	 *	Remove Data Status Listener

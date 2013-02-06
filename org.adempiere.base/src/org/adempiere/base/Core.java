@@ -105,6 +105,14 @@ public class Core {
 	}
 
 	/**
+	 * 
+	 * @return keystore
+	 */
+	public static IKeyStore getKeyStore(){
+		return Service.locator().locate(IKeyStore.class).getService();
+	}
+	
+	/**
 	 *  Get payment processor instance
 	 * 	@param mbap payment processor model
 	 * 	@param mp payment model

@@ -106,9 +106,10 @@ public class SecureEngine
 	 *	Encryption.
 	 * 	The methods must recognize clear text values
 	 *  @param value clear value
+	 *  @param AD_Client_ID
 	 *  @return encrypted String
 	 */
-	public static String encrypt (String value)
+	public static String encrypt (String value,int AD_Client_ID)
 	{
 		if (value == null || value.length() == 0)
 			return value;
@@ -119,19 +120,21 @@ public class SecureEngine
 		if (inQuotes)
 			value = value.substring(1, value.length()-1);
 		//
-		String retValue = s_engine.implementation.encrypt(value);
+		String retValue = s_engine.implementation.encrypt(value,AD_Client_ID);
 		if (inQuotes)
 			return "'" + retValue + "'";
 		return retValue;
 	}	//	encrypt
 
+	
 	/**
 	 *	Decryption.
 	 * 	The methods must recognize clear text values
 	 *  @param value encrypted value
+	 *  @param AD_Client_ID
 	 *  @return decrypted String
 	 */
-	public static String decrypt (String value)
+	public static String decrypt (String value, int AD_Client_ID)
 	{
 		if (value == null)
 			return null;
@@ -144,22 +147,23 @@ public class SecureEngine
 		if (value.startsWith(SecureInterface.CLEARVALUE_START) && value.endsWith(SecureInterface.CLEARVALUE_END))
 			retValue = value.substring(SecureInterface.CLEARVALUE_START.length(), value.length()-SecureInterface.CLEARVALUE_END.length());
 		else
-			retValue = s_engine.implementation.decrypt(value);
+			retValue = s_engine.implementation.decrypt(value,AD_Client_ID);
 		if (inQuotes)
 			return "'" + retValue + "'";
 		return retValue;
 	}	//	decrypt
-
+	
 	/**
 	 *	Encryption.
 	 * 	The methods must recognize clear values
 	 *  @param value clear value
+	 *  @param AD_Client_ID
 	 *  @return encrypted String
 	 */
-	public static Object encrypt (Object value)
+	public static Object encrypt (Object value, int AD_Client_ID)
 	{
 		if (value instanceof String)
-			return encrypt((String) value);
+			return encrypt((String) value, AD_Client_ID);
 		return value;
 	}	//	encrypt
 
@@ -169,10 +173,10 @@ public class SecureEngine
 	 *  @param value encrypted value
 	 *  @return decrypted String
 	 */
-	public static Object decrypt (Object value)
+	public static Object decrypt (Object value, int AD_Client_ID)
 	{
 		if (value instanceof String)
-			return decrypt((String) value);
+			return decrypt((String) value, AD_Client_ID);
 		return value;
 	}	//	decrypt
 	
@@ -204,8 +208,8 @@ public class SecureEngine
 			System.exit(10);
 		}
 		//	See if it works
-		String testE = implementation.encrypt(TEST);
-		String testC = implementation.decrypt(testE);
+		String testE = implementation.encrypt(TEST,0);
+		String testC = implementation.decrypt(testE,0);
 		if (!testC.equals(TEST))
 			throw new IllegalStateException(realClass 
 				+ ": " + TEST
@@ -269,10 +273,10 @@ public class SecureEngine
 		log.info("Decrypt null =" + test(decrypt(null), null));
 		log.info("Decrypt test =" + test(decrypt("test"), "test"));
 		**/
-		log.info("Decrypt {test} =" + test(decrypt("af2309f390afed74"), "test"));
-		log.info("Decrypt ~{test}~ =" + test(decrypt(SecureInterface.ENCRYPTEDVALUE_START + "af2309f390afed74" + SecureInterface.ENCRYPTEDVALUE_END), "test"));
+		log.info("Decrypt {test} =" + test(decrypt("af2309f390afed74", 0), "test"));
+		log.info("Decrypt ~{test}~ =" + test(decrypt(SecureInterface.ENCRYPTEDVALUE_START + "af2309f390afed74" + SecureInterface.ENCRYPTEDVALUE_END, 0), "test"));
 		
-		log.info("Encrypt test =" + test(encrypt("test"), "af2309f390afed74"));
+		log.info("Encrypt test =" + test(encrypt("test", 0), "af2309f390afed74"));
 		
 		
 		

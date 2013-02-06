@@ -1697,7 +1697,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 GridField field = getTargetMField(ColumnName);
                 // add encryption here if the field is encrypted.
                 if (field.isEncryptedColumn()) {
-                	value = SecureEngine.encrypt(value);
+                	value = SecureEngine.encrypt(value, Env.getAD_Client_ID(Env.getCtx()));
                 }
                 
                 boolean isProductCategoryField = isProductCategoryField(field.getAD_Column_ID());
