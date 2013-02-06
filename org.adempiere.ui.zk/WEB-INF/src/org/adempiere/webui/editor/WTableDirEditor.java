@@ -38,7 +38,6 @@ import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MLocation;
 import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -173,11 +172,8 @@ ContextMenuListener, IZoomableEditor
         		String tableName_temp = lookup.getColumnName();	// Returns AD_Org.AD_Org_ID
         		int posPoint = tableName_temp.indexOf(".");
         		String tableName = tableName_temp.substring(0, posPoint);
-        		int table_id = MTable.getTable_ID(tableName);	// now we got the ad_table_id
-
-        		String sql = "SELECT COUNT(*) FROM AD_Column WHERE ColumnName = 'IsShortList' AND IsActive='Y' AND AD_Table_ID = " + table_id;
-        		isShortListAvailable = DB.getSQLValue(null, sql) == 1;	// if the table has an active isShortList column, we could use the restrict search !
-
+    			MTable table = MTable.get(Env.getCtx(), tableName);
+    			isShortListAvailable = (table.getColumnIndex("IsShortList") >= 0);
         		if (isShortListAvailable)
         		{
         			onlyShortListItems=true;

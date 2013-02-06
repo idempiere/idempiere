@@ -281,11 +281,8 @@ public class VLookup extends JComponent
 			String tableName_temp = m_lookup.getColumnName();	// Returns AD_Org.AD_Org_ID
 			int posPoint = tableName_temp.indexOf(".");
 			String tableName = tableName_temp.substring(0, posPoint);
-			int table_id = MTable.getTable_ID(tableName);	// now we got the ad_table_id
-
-			String sql = "SELECT COUNT(*) FROM AD_Column WHERE ColumnName = 'IsShortList' AND IsActive='Y' AND AD_Table_ID = " + table_id;
-			isShortListAvailable = DB.getSQLValue(null, sql) == 1;	// if the table has an active IsShortList column, we could use the restrict search !
-
+			MTable table = MTable.get(Env.getCtx(), tableName);
+			isShortListAvailable = (table.getColumnIndex("IsShortList") >= 0);
 			if (isShortListAvailable)
 			{
 				setComboShortList(true);
