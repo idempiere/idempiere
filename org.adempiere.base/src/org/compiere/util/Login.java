@@ -1201,7 +1201,7 @@ public class Login
 	public KeyNamePair[] getClients(String app_user, String app_pwd) {
 		log.info("User=" + app_user);
 
-		if (app_user == null)
+		if (Util.isEmpty(app_user))
 		{
 			log.warning("No Apps User");
 			return null;
