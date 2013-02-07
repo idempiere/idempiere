@@ -52,7 +52,9 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 		
 		sqlB = new StringBuffer ("SELECT count(*) FROM AD_Role_OrgAccess WHERE AD_Role_ID=? and AD_Org_ID=?");		
 		int count = DB.getSQLValue(getTrxName(ctx),sqlB.toString(),roleid,orgid);
+		@SuppressWarnings("unused")
 		int AD_Backup_ID = -1;
+		@SuppressWarnings("unused")
 		String Object_Status = null;
 		if (count>0){		   	
 			Object_Status = "Update";			

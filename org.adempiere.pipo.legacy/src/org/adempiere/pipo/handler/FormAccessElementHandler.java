@@ -54,7 +54,9 @@ public class FormAccessElementHandler extends AbstractElementHandler {
 		
 		sqlB = new StringBuffer ("SELECT count(*) FROM AD_Form_Access WHERE AD_Role_ID=? and AD_Form_ID=?");		
 		int count = DB.getSQLValue(getTrxName(ctx),sqlB.toString(),roleid,formid);
+		@SuppressWarnings("unused")
 		String Object_Status = null;
+		@SuppressWarnings("unused")
 		int AD_Backup_ID = -1;
 		if (count>0){		   	
 			Object_Status = "Update";			

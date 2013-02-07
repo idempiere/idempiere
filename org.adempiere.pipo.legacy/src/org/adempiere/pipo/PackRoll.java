@@ -60,6 +60,7 @@ import org.compiere.util.Env;
 public class PackRoll extends SvrProcess {
 	/** Package from Record */
 	private int m_AD_Package_Imp_ID = 0;
+	@SuppressWarnings("unused")
 	private String m_Processing = null;
 	StringBuffer sql = null;
 	StringBuffer sqlB = null;
@@ -96,6 +97,7 @@ public class PackRoll extends SvrProcess {
 		sqlB = new StringBuffer("UPDATE AD_Package_Imp "
 				+ "SET PK_Status = 'Uninstalling' "
 				+ "WHERE AD_Package_Imp_ID = " + m_AD_Package_Imp_ID);
+		@SuppressWarnings("unused")
 		int no = DB.executeUpdate(sqlB.toString(), get_TrxName());
 
 		log.info("Starting Package Reversal");
