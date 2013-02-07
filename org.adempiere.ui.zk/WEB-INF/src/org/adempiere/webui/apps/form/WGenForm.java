@@ -243,7 +243,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	 *	Action Listener
 	 *  @param e event
 	 */
-	public void onEvent(Event e)
+	public void onEvent(Event e) throws Exception
 	{
 		log.info("Cmd=" + e.getTarget().getId());
 		//
@@ -261,6 +261,10 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 			int index = tabbedPane.getSelectedIndex();
 			genForm.setSelectionActive(index == 0);
 			return;
+		}
+		else
+		{
+			super.onEvent(e);
 		}
 		
 		genForm.validate();

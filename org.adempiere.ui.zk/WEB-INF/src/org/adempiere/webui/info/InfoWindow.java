@@ -26,6 +26,7 @@ import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.panel.InfoPanel;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.AccessSqlParser;
@@ -47,6 +48,9 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
@@ -63,7 +67,7 @@ import org.zkoss.zul.Vbox;
  * @author hengsin
  *
  */
-public class InfoWindow extends InfoPanel implements ValueChangeListener {
+public class InfoWindow extends InfoPanel implements ValueChangeListener, EventListener<Event> {
 
 	/**
 	 * generated serial id
@@ -129,7 +133,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 			{
 				prepareTable();
 				processQueryValue();
-			}
+			}			
 		}
 	}
 
@@ -204,6 +208,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
 					vo.ValidationCode = infoColumn.getAD_Val_Rule().getCode();
 				}
 				vo.DisplayLogic = infoColumn.getDisplayLogic() != null ? infoColumn.getDisplayLogic() : "";
+				vo.Description = infoColumn.getDescription() != null ? infoColumn.getDescription() : "";
+				vo.Help = infoColumn.getHelp() != null ? infoColumn.getHelp() : "";
 				GridField gridField = new GridField(vo);
 				gridFields.add(gridField);
 			}
@@ -633,7 +639,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
         	identifiers.add(editor);
         }
 
-        fieldEditor.addEventListener(Events.ON_OK,this);
+        fieldEditor.addEventListener(Events.ON_OK, this);		
     }   // addSelectionColumn
 
 	protected void addSearchParameter(Label label, Component fieldEditor) {
@@ -812,5 +818,45 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener {
             evalDisplayLogic();
         }
 		
+	}
+	
+	public void onEvent(Event event)
+    {
+		if (event.getName().equals(Events.ON_FOCUS)) {
+    		for (WEditor editor : editors)
+    		{
+    			if (editor.isComponentOfEditor(event.getTarget()))
+    			{
+        			SessionManager.getAppDesktop().updateHelpTooltip(editor.getGridField());
+        			return;
+    			}
+    		}
+    	}
+    	else if (event.getName().equals(Events.ON_BLUR)) {
+    		for (WEditor editor : editors)
+    		{
+    			if (editor.isComponentOfEditor(event.getTarget()))
+    			{
+        			SessionManager.getAppDesktop().updateHelpTooltip(null);
+        			return;
+    			}
+    		}
+    	}
+    	else
+    	{
+    		super.onEvent(event);
+    	}
+    }
+	
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		if (newpage != null) {
+			for (WEditor editor : editors)
+			{
+				editor.getComponent().addEventListener(Events.ON_FOCUS, this);
+				editor.getComponent().addEventListener(Events.ON_BLUR, this);
+			}
+		}
 	}
 }

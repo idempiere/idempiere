@@ -318,6 +318,10 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			SessionManager.getAppDesktop().closeActiveWindow();
 			return;			
 		}
+		else
+		{
+			super.onEvent(e);
+		}
 		
 		if (m_data != null && m_data.size()	> 0					//	file loaded
 			&& m_format != null && m_format.getRowCount() > 0)	//	format loaded

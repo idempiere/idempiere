@@ -667,6 +667,10 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		}
 		else if (confirmPanel.getButton("Cancel").equals(e.getTarget()))
 			SessionManager.getAppDesktop().closeActiveWindow();
+		else
+		{
+			super.onEvent(e);
+		}
 			
 		//	Enable OK
 		boolean OK = m_product != null;

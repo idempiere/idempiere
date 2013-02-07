@@ -443,4 +443,9 @@ public class NumberBox extends Div
 	{
 		return decimalBox;
 	}
+	
+	public Button getButton()
+	{
+		return btn;
+	}
 }

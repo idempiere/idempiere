@@ -35,10 +35,13 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.WSchedule;
+import org.adempiere.webui.part.WindowContainer;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MAssignmentSlot;
 import org.compiere.model.MResourceAssignment;
 import org.compiere.model.MRole;
 import org.compiere.model.ScheduleUtil;
+import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -156,6 +159,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			log.log(Level.SEVERE, "InfoSchedule", ex);
 		}
 		displayCalendar();
+		addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 	}	//	InfoSchedule
 
 	/**
@@ -456,7 +460,10 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		else if (event instanceof CalendarsEvent)
 			doEdit((CalendarsEvent)event);
 		//
-		
+		else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT))
+    	{
+			SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, 0);
+    	}
 	}
 	
 	private void doEdit(CalendarsEvent event) {
@@ -609,6 +616,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		super.onPageAttached(newpage, oldpage);
 		if (newpage != null) {
 			displayCalendar();
+			SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, 0);
 		}
 	}
 

@@ -80,7 +80,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
@@ -357,10 +356,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 
 		row = new Row();
 		rows.appendChild(row);
-		row.appendChild(statusBar);
-		Cell cell = new Cell();
-		cell.setColspan(6);
-		row.appendCellChild(cell);
+		row.appendCellChild(statusBar, 6);
 		statusBar.setEastVisibility(false);
 		statusBar.setWidth("100%");
 

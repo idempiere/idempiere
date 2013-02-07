@@ -26,12 +26,14 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.Adempiere;
+import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
@@ -124,7 +126,6 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	 */
 	public ProcessDialog (int AD_Process_ID, boolean isSOTrx)
 	{
-		
 		log.info("Process=" + AD_Process_ID );
 		m_ctx = Env.getCtx();
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
@@ -135,6 +136,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		{
 			initComponents();
 			init();
+			addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 		}
 		catch(Exception ex)
 		{
@@ -403,6 +405,8 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 			onStatusUpdate(event);
 		} else if (event.getName().equals(ON_COMPLETE)) {
 			onComplete();			
+		} else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT)) {
+    		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Process, m_AD_Process_ID);
 		}
 		
 	}

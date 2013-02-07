@@ -19,9 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
+import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.wf.MWFNode;
@@ -60,6 +62,7 @@ public class WFPanel extends Borderlayout implements EventListener<Event>
 		try
 		{
 			jbInit();
+			addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 		}
 		catch(Exception e)
 		{
@@ -269,6 +272,8 @@ public class WFPanel extends Borderlayout implements EventListener<Event>
 				}
 			}
 		}
+		else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT))
+    		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Workflow, m_wf.getAD_Workflow_ID());
 	}
 
 	private void start(MWFNode wfn) {

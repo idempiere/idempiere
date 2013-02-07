@@ -28,12 +28,15 @@ import org.adempiere.model.MBroadcastMessage;
 import org.adempiere.util.ServerContext;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
+import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.event.ZKBroadCastManager;
+import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.BroadcastMessageWindow;
 import org.adempiere.webui.panel.HeaderPanel;
+import org.adempiere.webui.panel.HelpController;
 import org.adempiere.webui.panel.TimeoutPanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
@@ -41,6 +44,8 @@ import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.UserPreference;
 import org.compiere.Adempiere;
+import org.compiere.model.GridField;
+import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -65,6 +70,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.East;
 import org.zkoss.zul.North;
 import org.zkoss.zul.West;
 
@@ -77,7 +83,7 @@ import org.zkoss.zul.West;
  * @version $Revision: 0.10 $
  * @author Deepak Pansheriya/Vivek - Adding support for message broadcasting
  */
-public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, EventHandler,DesktopCleanup
+public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, EventHandler, DesktopCleanup
 {
 	/**
 	 * generated serial version ID
@@ -109,12 +115,15 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	
 	private Desktop m_desktop = null;
 	private TimeoutPanel panel = null; 
+	
+	private HelpController helpController;
 
     public DefaultDesktop()
     {
     	super();
     	dashboardController = new DashboardController();
     	sideController = new DashboardController();
+    	helpController = new HelpController();
     	
     	m_desktop = AEnv.getDesktop();
     	m_desktop.addListener(this);
@@ -146,7 +155,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         n.setCollapsible(false);
         n.setSclass("desktop-north");
         pnlHead.setParent(n);
-
+        
         West w = new West();
         w.setId("desktop-left-column");
         layout.appendChild(w);
@@ -168,6 +177,27 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         w.setOpen(!menuCollapsed);
         
         sideController.render(w, this, false);
+        
+        East e = new East();
+        e.setId("desktop-right-column");
+        layout.appendChild(e);
+        e.setSclass("desktop-right-column");
+        e.setCollapsible(true);
+        e.setSplittable(true);
+        e.setHflex("1");
+        e.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				OpenEvent oe = (OpenEvent) event;
+				UserPreference pref = SessionManager.getSessionApplication().getUserPreference();
+				pref.setProperty(UserPreference.P_HELP_COLLAPSED, !oe.isOpen());
+				pref.savePreference();
+			}
+		});
+        boolean helpCollapsed= pref.isPropertyBool(UserPreference.P_HELP_COLLAPSED);
+        e.setOpen(!helpCollapsed);
+        
+        helpController.render(e, this);
 
         windowArea = new Center();
         windowArea.setParent(layout);
@@ -220,7 +250,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	private void renderHomeTab()
 	{
-		
 		homeTab.getChildren().clear();		
 
 		//register as 0
@@ -435,6 +464,47 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	@Override
 	public void cleanup(Desktop desktop) throws Exception {
 		unbindEventManager();
-		
+	}
+
+	@Override
+	public void updateHelpContext(String ctxType, int recordId) {
+		helpController.renderCtxHelp(ctxType, recordId);
+	}
+
+	@Override
+	public void updateHelpTooltip(GridField gridField) {
+		helpController.renderToolTip(gridField);
+	}
+
+	@Override
+	public ProcessDialog openProcessDialog(int processId, boolean soTrx) {
+		ProcessDialog pd = super.openProcessDialog(processId, soTrx);
+		updateHelpContext(X_AD_CtxHelp.CTXTYPE_Process, processId);
+		return pd;
+	}
+
+	@Override
+	public ADForm openForm(int formId) {
+		ADForm form = super.openForm(formId);
+		updateHelpContext(X_AD_CtxHelp.CTXTYPE_Form, formId);
+		return form;
+	}
+
+	@Override
+	public void openInfo(int infoId) {
+		super.openInfo(infoId);
+		updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoId);
+	}
+
+	@Override
+	public void openWorkflow(int workflow_ID) {
+		super.openWorkflow(workflow_ID);
+		updateHelpContext(X_AD_CtxHelp.CTXTYPE_Workflow, workflow_ID);
+	}
+
+	@Override
+	public void openTask(int taskId) {
+		super.openTask(taskId);
+		updateHelpContext(X_AD_CtxHelp.CTXTYPE_Task, taskId);
 	}
 }

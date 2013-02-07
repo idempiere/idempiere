@@ -13,15 +13,23 @@
 
 package org.adempiere.webui.part;
 
+import org.adempiere.webui.apps.ProcessDialog;
+import org.adempiere.webui.apps.wf.WFPanel;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
+import org.adempiere.webui.panel.ADForm;
+import org.adempiere.webui.panel.InfoPanel;
+import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.window.WTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Anchorlayout;
+import org.zkoss.zul.Vlayout;
 
 /**
  * 
@@ -30,6 +38,8 @@ import org.zkoss.zk.ui.event.Events;
  */
 public class WindowContainer extends AbstractUIPart 
 {
+	public static final String ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT = "onWindowContainerSelectionChanged";
+	
 	private static final int MAX_TITLE_LENGTH = 30;
     
     private Tabbox           tabbox;
@@ -128,6 +138,13 @@ public class WindowContainer extends AbstractUIPart
 					ITabOnSelectHandler handler = (ITabOnSelectHandler) component.getAttribute(ITabOnSelectHandler.ATTRIBUTE_KEY);
 					handler.onSelect();
 				}
+				
+				if (component instanceof Vlayout || component instanceof ADForm || component instanceof ProcessDialog
+						|| component instanceof InfoPanel || component instanceof Anchorlayout 
+						|| component instanceof WFPanel || component instanceof WTask)
+					Events.sendEvent(new Event(ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, component));
+				else
+					SessionManager.getAppDesktop().updateHelpContext("", 0);
 			}
 		});
 

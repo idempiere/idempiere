@@ -282,11 +282,16 @@ public class WWFActivity extends ADForm implements EventListener<Event>
     		}
     		else if (comp == fAnswerButton)
     			cmd_button();
-        } else if (Events.ON_SELECT.equals(eventName) && comp == listbox)
+        } 
+        else if (Events.ON_SELECT.equals(eventName) && comp == listbox)
         {
         	m_index = listbox.getSelectedIndex();
         	if (m_index >= 0)
     			display(m_index);
+        }
+        else
+        {
+    		super.onEvent(event);
         }
 	}
 

@@ -163,6 +163,10 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 			dataTable.setModel(model);
 			info();
 		}
+		else
+		{
+			super.onEvent(e);
+		}
 	}
 
 	public void tableChanged (WTableModelEvent e)

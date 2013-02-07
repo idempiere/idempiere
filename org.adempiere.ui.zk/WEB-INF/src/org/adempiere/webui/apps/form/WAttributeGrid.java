@@ -304,7 +304,7 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 		}
 	}	//	fillPicks
 
-	public void onEvent(Event e)
+	public void onEvent(Event e) throws Exception
 	{
 		if (e.getTarget() instanceof Tab)
 		{
@@ -322,6 +322,10 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 		}
 		else if (e.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
 			onClose();
+		else
+		{
+			super.onEvent(e);
+		}
 	}	//	actionPerformed
 	
 	private void gridOK()
