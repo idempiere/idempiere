@@ -57,9 +57,11 @@ public class DefaultKeyStore implements IKeyStore {
 	public DefaultKeyStore(){
 		File file = new File(Ini.getAdempiereHome(), IDEMPIERE_KEYSTORE_PROPERTIES);
 		if (file.exists()) {
+			FileInputStream is = null;
 			try{
+				is = new FileInputStream(file);
 				Properties p = new Properties();
-				p.load(new FileInputStream(file));
+				p.load(is);
 				String s = p.getProperty("password");
 				String a = p.getProperty("algorithm");
 				if (!Util.isEmpty(s) && !Util.isEmpty(a)) {
@@ -80,6 +82,11 @@ public class DefaultKeyStore implements IKeyStore {
 				log.log(Level.SEVERE, "", ex);
 				password = null;
 				createLegacyKey();
+			} finally {
+				try {
+					if (is != null)
+						is.close();
+				} catch (Exception e) {}
 			}
 		} else {
 			createLegacyKey();
@@ -92,7 +99,7 @@ public class DefaultKeyStore implements IKeyStore {
 	}
 	
 	@Override
-	public SecretKey getKey(int AD_Client_ID) {
+	public synchronized SecretKey getKey(int AD_Client_ID) {
 		if (password != null) {
 			try {
 				PasswordProtection protParam = new PasswordProtection(password);
