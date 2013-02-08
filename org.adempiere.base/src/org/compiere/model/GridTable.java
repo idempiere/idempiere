@@ -1002,7 +1002,7 @@ public class GridTable extends AbstractTableModel
 			return null;
 		}
 
-		waitLoadm_sort(row);
+		waitLoadingForRow(row);
 
 		//	empty buffer
 		if (row >= m_sort.size())
@@ -1022,10 +1022,11 @@ public class GridTable extends AbstractTableModel
 		return rowData[col];
 	}	//	getValueAt
 
-	private void waitLoadm_sort(int row) {
+	public void waitLoadingForRow(int row) {
 		//	need to wait for data read into buffer
 		int loops = 0;
-		while (row >= m_sort.size() && m_loaderFuture != null && !m_loaderFuture.isDone() && loops < 15)
+		//wait for 30 seconds
+		while (row >= m_sort.size() && m_loaderFuture != null && !m_loaderFuture.isDone() && loops < 60)
 		{
 			log.fine("Waiting for loader row=" + row + ", size=" + m_sort.size());
 			try
@@ -1036,6 +1037,9 @@ public class GridTable extends AbstractTableModel
 			{}
 			loops++;
 		}
+		if (row >= m_sort.size()) {
+			throw new IllegalStateException("Timeout loading row " + (row+1));
+		}
 	}
 
 	private Object[] getDataAtRow(int row)
@@ -1045,7 +1049,7 @@ public class GridTable extends AbstractTableModel
 
 	private Object[] getDataAtRow(int row, boolean fetchIfNotFound)
 	{
-		waitLoadm_sort(row);
+		waitLoadingForRow(row);
 		MSort sort = (MSort)m_sort.get(row);
 		Object[] rowData = null;
 		if (m_virtual)
