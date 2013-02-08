@@ -73,6 +73,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
         init();
         // add listener on 'ENTER' key for the login window
         addEventListener(Events.ON_OK,this);
+        setWidgetListener("onOK", "zAu.cmd0.showBusy(null)");
     }
 
     private void init()
@@ -135,11 +136,13 @@ public class LoginWindow extends FWindow implements EventListener<Event>
            {
                rolePanel.validateRoles();
            }
-
-           LoginPanel loginPanel = (LoginPanel)this.getFellowIfAny("loginPanel");
-           if (loginPanel != null)
+           else 
            {
-               loginPanel.validateLogin();
+	           LoginPanel loginPanel = (LoginPanel)this.getFellowIfAny("loginPanel");
+	           if (loginPanel != null)
+	           {
+	               loginPanel.validateLogin();
+	           }
            }
        }
     }

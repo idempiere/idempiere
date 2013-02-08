@@ -243,6 +243,8 @@ public class LoginPanel extends Window implements EventListener<Event>
     	div.setSclass(ITheme.LOGIN_BOX_FOOTER_CLASS);
         ConfirmPanel pnlButtons = new ConfirmPanel(false, false, false, false, false, false, true);
         pnlButtons.addActionListener(this);
+        Button okBtn = pnlButtons.getButton(ConfirmPanel.A_OK);
+        okBtn.setWidgetListener("onClick", "zAu.cmd0.showBusy(null)");
 
         Button helpButton = pnlButtons.createButton(ConfirmPanel.A_HELP);
 		helpButton.addEventListener(Events.ON_CLICK, this);
