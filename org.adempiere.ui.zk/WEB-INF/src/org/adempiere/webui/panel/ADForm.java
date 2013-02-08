@@ -22,10 +22,12 @@ import java.util.logging.Level;
 import org.adempiere.webui.Extensions;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.exception.ApplicationException;
+import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ADClassNameMap;
 import org.compiere.model.GridTab;
 import org.compiere.model.MForm;
+import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -112,6 +114,8 @@ public abstract class ADForm extends Window implements EventListener<Event>
         m_name = name;
 
         initForm();
+        
+        addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
     }
 
     abstract protected void initForm();
@@ -376,9 +380,11 @@ public abstract class ADForm extends Window implements EventListener<Event>
     /**
      *
      */
-	public void onEvent(Event arg0) throws Exception
+	public void onEvent(Event event) throws Exception
     {
-
+		if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT)) {
+    		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Form, getAdFormId());
+		}
     }
 
 	/**

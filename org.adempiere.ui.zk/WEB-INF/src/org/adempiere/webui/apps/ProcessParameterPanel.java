@@ -35,6 +35,7 @@ import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.IProcessParameter;
 import org.compiere.model.GridField;
@@ -47,6 +48,9 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
@@ -60,7 +64,7 @@ import org.zkoss.zul.Label;
  * @version 2006-12-01
  */
 public class ProcessParameterPanel extends Panel implements
-		ValueChangeListener, IProcessParameter {
+		ValueChangeListener, IProcessParameter, EventListener<Event> {
 	/**
 	 * 
 	 */
@@ -268,7 +272,9 @@ public class ProcessParameterPanel extends Panel implements
 		Row row = new Row();
 
 		// The Editor
-		WEditor editor = WebEditorFactory.getEditor(mField, false);
+		WEditor editor = WebEditorFactory.getEditor(mField, false);		
+		editor.getComponent().addEventListener(Events.ON_FOCUS, this);
+		editor.getComponent().addEventListener(Events.ON_BLUR, this);		
 		editor.addValueChangeListener(this);
 		editor.dynamicDisplay();
 		// MField => VEditor - New Field value to be updated to editor
@@ -307,6 +313,8 @@ public class ProcessParameterPanel extends Panel implements
 			WEditor editor2 = WebEditorFactory.getEditor(mField2, false);
 			//override attribute
 			editor2.getComponent().setWidgetAttribute("columnName", mField2.getColumnName()+"_To");
+			editor2.getComponent().addEventListener(Events.ON_FOCUS, this);
+			editor2.getComponent().addEventListener(Events.ON_BLUR, this);
 			// New Field value to be updated to editor
 			mField2.addPropertyChangeListener(editor2);
 			editor2.dynamicDisplay();
@@ -491,6 +499,48 @@ public class ProcessParameterPanel extends Panel implements
 		}
 		processNewValue(evt.getNewValue(), evt.getPropertyName());
 	}
+	
+	@Override
+	public void onEvent(Event event) throws Exception {
+		if (event.getName().equals(Events.ON_FOCUS)) {
+    		for (WEditor editor : m_wEditors)
+    		{
+    			if (editor.isComponentOfEditor(event.getTarget()))
+    			{
+        			SessionManager.getAppDesktop().updateHelpTooltip(editor.getGridField());
+        			return;
+    			}
+    		}
+    		
+    		for (WEditor editor : m_wEditors2)
+    		{
+    			if (editor != null && editor.getComponent() != null && editor.isComponentOfEditor(event.getTarget()))
+    			{
+        			SessionManager.getAppDesktop().updateHelpTooltip(editor.getGridField());
+        			return;
+    			}
+    		}
+    	}
+    	else if (event.getName().equals(Events.ON_BLUR)) {
+    		for (WEditor editor : m_wEditors)
+    		{
+    			if (editor.isComponentOfEditor(event.getTarget()))
+    			{
+        			SessionManager.getAppDesktop().updateHelpTooltip(null);
+        			return;
+    			}
+    		}
+    		
+    		for (WEditor editor : m_wEditors2)
+    		{
+    			if (editor != null && editor.getComponent() != null && editor.isComponentOfEditor(event.getTarget()))
+    			{
+        			SessionManager.getAppDesktop().updateHelpTooltip(null);
+        			return;
+    			}
+    		}
+    	}
+	}
 
 	/**
 	 *  Evaluate Dependencies
@@ -603,5 +653,6 @@ public class ProcessParameterPanel extends Panel implements
 	public void setProcessInfo(ProcessInfo processInfo) {
 		m_processInfo = processInfo;
 	}
+
 } // ProcessParameterPanel
 

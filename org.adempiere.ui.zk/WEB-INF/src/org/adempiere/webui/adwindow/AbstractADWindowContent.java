@@ -85,6 +85,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
+import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
@@ -364,6 +365,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
         toolbar.updateToolbarAccess(adWindowId);
         updateToolbar();
+        
+        SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Tab, adTabbox.getSelectedGridTab().getAD_Tab_ID());
 
         return true;
     }
@@ -1010,6 +1013,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 					}
 				});
+	            
+	            SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Tab, adTabbox.getSelectedGridTab().getAD_Tab_ID());
 	        }
     	}
     	else if (event.getTarget() instanceof ProcessModalDialog)

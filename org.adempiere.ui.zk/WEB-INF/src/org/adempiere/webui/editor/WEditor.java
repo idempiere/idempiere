@@ -27,7 +27,11 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Datebox;
+import org.adempiere.webui.component.DatetimeBox;
+import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Label;
+import org.adempiere.webui.component.NumberBox;
+import org.adempiere.webui.component.Paymentbox;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.window.WFieldRecordInfo;
@@ -600,6 +604,44 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		editor.setAttribute("EVENT", WEditorPopupMenu.EDITOR_EVENT);
 		editor.addEventListener(Events.ON_CLICK, popupMenu);
 		popupMenu.appendChild(editor);
+	}
+	
+	public boolean isComponentOfEditor(Component comp) {
+		if (comp == getComponent())
+			return true;
+		if (getComponent() instanceof EditorBox)
+		{
+			EditorBox component = (EditorBox) getComponent();
+			if (comp == component.getTextbox())
+				return true;
+			if (comp == component.getButton())
+				return true;
+		}
+		else if (getComponent() instanceof DatetimeBox)
+		{
+			DatetimeBox component = (DatetimeBox) getComponent();
+			if (comp == component.getDatebox())
+				return true;
+			if (comp == component.getTimebox())
+				return true;
+		}
+		else if (getComponent() instanceof NumberBox)
+		{
+			NumberBox component = (NumberBox) getComponent();
+			if (comp == component.getDecimalbox())
+				return true;
+			if (comp == component.getButton())
+				return true;
+		}
+		else if (getComponent() instanceof Paymentbox)
+		{
+			Paymentbox component = (Paymentbox) getComponent();
+			if (comp == component.getCombobox())
+				return true;
+			if (comp == component.getButton())
+				return true;
+		}		
+		return false;
 	}
 
 	private static final String STYLE_ZOOMABLE_LABEL = "cursor: pointer; text-decoration: underline;";

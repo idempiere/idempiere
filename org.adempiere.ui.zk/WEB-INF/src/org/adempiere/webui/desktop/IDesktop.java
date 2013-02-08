@@ -20,6 +20,7 @@ import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.part.UIPart;
+import org.compiere.model.GridField;
 import org.compiere.model.MQuery;
 import org.compiere.util.WebDoc;
 import org.zkoss.zk.ui.Component;
@@ -194,4 +195,8 @@ public interface IDesktop extends UIPart {
 	 * User logout from desktop, do clean up
 	 */
 	public void logout();
+	
+	public void updateHelpContext(String ctxType, int recordId);
+	
+	public void updateHelpTooltip(GridField gridField);
 }

@@ -28,7 +28,9 @@ import java.util.Properties;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
+import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
+import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
@@ -114,6 +116,8 @@ public class ADWindowContent extends AbstractADWindowContent
 
         SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
         
+        layout.addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
+        
         return layout;
     }
 
@@ -143,7 +147,11 @@ public class ADWindowContent extends AbstractADWindowContent
     				}
     			}
     		}
-    	} else {
+    	}
+    	else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT)) {
+    		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Tab, adTabbox.getSelectedGridTab().getAD_Tab_ID());
+    	}
+    	else {
     		super.onEvent(event);
     	}
     }

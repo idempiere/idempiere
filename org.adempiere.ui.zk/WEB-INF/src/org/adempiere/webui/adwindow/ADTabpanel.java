@@ -48,6 +48,7 @@ import org.adempiere.webui.editor.WImageEditor;
 import org.adempiere.webui.editor.WPaymentEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ContextMenuListener;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.GridTabDataBinder;
 import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.window.FDialog;
@@ -499,6 +500,9 @@ DataStatusListener, IADTabpanel, IdSpace
 
         		if (editor != null) // Not heading
         		{
+        			editor.getComponent().addEventListener(Events.ON_FOCUS, this);
+        			editor.getComponent().addEventListener(Events.ON_BLUR, this);
+        			
         			editor.setGridTab(this.getGridTab());
         			field.addPropertyChangeListener(editor);
         			editors.add(editor);
@@ -1014,6 +1018,26 @@ DataStatusListener, IADTabpanel, IdSpace
     			preference.save();
     			//update current context
     			Env.getCtx().setProperty("P"+windowId+"|"+adTabId+"|DetailPane.IsOpen", value ? "Y" : "N");
+    		}
+    	}
+    	else if (event.getName().equals(Events.ON_FOCUS)) {
+    		for (WEditor editor : editors)
+    		{
+    			if (editor.isComponentOfEditor(event.getTarget()))
+    			{
+        			SessionManager.getAppDesktop().updateHelpTooltip(editor.getGridField());
+        			return;
+    			}
+    		}
+    	}
+    	else if (event.getName().equals(Events.ON_BLUR)) {
+    		for (WEditor editor : editors)
+    		{
+    			if (editor.isComponentOfEditor(event.getTarget()))
+    			{
+        			SessionManager.getAppDesktop().updateHelpTooltip(null);
+        			return;
+    			}
     		}
     	}
     }

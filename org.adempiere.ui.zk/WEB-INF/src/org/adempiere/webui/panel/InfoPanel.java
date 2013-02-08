@@ -47,6 +47,7 @@ import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.part.ITabOnSelectHandler;
+import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
@@ -59,8 +60,10 @@ import org.compiere.model.I_C_Payment;
 import org.compiere.model.I_M_InOut;
 import org.compiere.model.I_M_Product;
 import org.compiere.model.I_S_ResourceAssignment;
+import org.compiere.model.MInfoWindow;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -68,6 +71,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuEcho;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -279,6 +283,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		});
 		
 		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infopanel");
+		
+        infoWindow = MInfoWindow.get(p_keyColumn.replace("_ID", ""), null);
+		addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 	}	//	InfoPanel
 
 	private void init()
@@ -367,6 +374,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private int					m_SO_Window_ID = -1;
 	/**	PO Zoom Window						*/
 	private int					m_PO_Window_ID = -1;
+	
+	private MInfoWindow infoWindow;
 
 	/**	Logger			*/
 	protected CLogger log = CLogger.getCLogger(getClass());
@@ -1164,6 +1173,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             else if (event.getName().equals(Events.ON_CHANGE))
             {
             }
+            else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT))
+        	{
+        		if (infoWindow != null)
+    				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID());
+    			else
+    				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, 0);
+        	}
             //default
             else
             {
@@ -1409,6 +1425,17 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	
 	protected boolean isUseDatabasePaging() {
 		return m_useDatabasePaging;
+	}
+	
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		if (newpage != null) {
+			if (infoWindow != null)
+				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID());
+			else
+				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, 0);
+		}
 	}
 }	//	Info
 

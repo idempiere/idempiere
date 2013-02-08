@@ -21,9 +21,11 @@ import java.util.logging.Level;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.OSTask;
 import org.compiere.model.MTask;
+import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -88,6 +90,8 @@ public class WTask extends Window implements EventListener<Event>
 				info.setContent("Executing on Server ...");
 			else
 				info.setContent("Executing locally ...");
+			
+			addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 
 			SessionManager.getAppDesktop().showWindow(this);
 
@@ -197,6 +201,8 @@ public class WTask extends Window implements EventListener<Event>
 	{
 		if (taskThread != null && taskThread.isAlive())
 			taskThread.interrupt();
+		else if (e.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT))
+    		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Task, m_task.getAD_Task_ID());
 
 		SessionManager.getAppDesktop().closeActiveWindow();
 	}   //  actionPerformed
