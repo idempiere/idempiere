@@ -120,11 +120,6 @@ begin
 end;
 $$ language plpgsql;
 
-/*
-create table t_alter_column
-( tablename name, columnname name, datatype name, nullclause varchar(10), defaultclause varchar(200));
+SELECT register_migration_script('201302081954_IDEMPIERE-621_altercolumn.sql') FROM dual
+;
 
-create rule alter_column_rule as on insert to t_alter_column
-do instead select altercolumn(new.tablename, new.columnname, new.datatype, new.nullclause,
-new.defaultclause);
-*/
