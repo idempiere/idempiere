@@ -103,7 +103,6 @@ public final class MLookup extends Lookup implements Serializable
 	/**	Indicator for Null			*/
 	private static Integer 		MINUS_ONE = new Integer(-1);
 
-
 	/** The Lookup Info Value Object        */
 	private MLookupInfo         m_info = null;
 
@@ -122,7 +121,14 @@ public final class MLookup extends Lookup implements Serializable
 	private boolean             m_refreshing = false;
 	/** Next Read for Parent			*/
 	private long				m_nextRead = 0;
-	
+
+	/** Not in short List item Marker Start       IDEMPIERE 90 */
+	public static final String  SHORTLIST_S = "*";
+	/** Not in short List item Marker End         IDEMPIERE 90 */
+	public static final String  SHORTLIST_E = "*";
+
+	private boolean 		    m_hasShortListItems = false;	// IDEMPIERE 90
+
 	/**
 	 *  Dispose
 	 */
@@ -391,9 +397,10 @@ public final class MLookup extends Lookup implements Serializable
 	 *  @param onlyValidated only validated
 	 *  @param onlyActive only active
 	 * 	@param temporary force load for temporary display
+	 *  @param isshortlist
 	 *  @return list
 	 */
-	public ArrayList<Object> getData (boolean mandatory, boolean onlyValidated, boolean onlyActive, boolean temporary)
+	public ArrayList<Object> getData (boolean mandatory, boolean onlyValidated, boolean onlyActive, boolean temporary, boolean shortlist) // idempiere 90
 	{
 		//	create list
 		ArrayList<Object> list = getData (onlyValidated, true);
@@ -413,6 +420,23 @@ public final class MLookup extends Lookup implements Serializable
 				}
 			}
 		}
+
+		// Remove non short list items IDEMPIERE 90
+		if (shortlist && m_hasShortListItems)
+		{
+			//  list from the back
+			for (int i = list.size(); i > 0; i--)
+			{
+				Object o = list.get(i-1);
+				if (o != null)
+				{
+					String s = o.toString();
+					if (s.startsWith(SHORTLIST_S) && s.endsWith(SHORTLIST_E))
+						list.remove(i-1);
+				}
+			}
+		}
+		// End Remove non short list items IDEMPIERE 90
 
 		//	Add Optional (empty) selection
 		if (!mandatory)
@@ -597,7 +621,7 @@ public final class MLookup extends Lookup implements Serializable
 		m_refreshing = true;
 		//force refresh
 		m_lookup.clear();
-		fillComboBox(isMandatory(), true, true, false);
+		fillComboBox(isMandatory(), true, true, false, isShortList()); // idempiere 90
 		m_refreshing = false;
 		return m_lookup.size();
 	}	//	refresh
@@ -676,6 +700,17 @@ public final class MLookup extends Lookup implements Serializable
 			if (Ini.isClient())
 				MLookupCache.loadStart (m_info);
 			StringBuilder sql = new StringBuilder().append(m_info.Query);
+
+			// IDEMPIERE 90
+			if (isShortList())
+			{
+				// Adding ", IsShortList" to the sql SELECT clause
+				int posFirstPoint = sql.indexOf(".");
+				String tableName = sql.substring(7, posFirstPoint);
+				int posFirstFrom = sql.indexOf(tableName+".IsActive FROM "+tableName) + tableName.length() + 9 ; // 9 = .IsActive
+				String ClauseFromWhereOrder = sql.substring(posFirstFrom, sql.length());
+				sql = new StringBuilder(sql.substring(0, posFirstFrom)  + ", " + tableName + ".IsShortList" + ClauseFromWhereOrder);				
+			} // IDEMPIERE 90
 
 			//	not validated
 			if (!m_info.IsValidated)
@@ -768,6 +803,17 @@ public final class MLookup extends Lookup implements Serializable
 						name = new StringBuilder(INACTIVE_S).append(name).append(INACTIVE_E);
 						m_hasInactive = true;
 					}
+					// IDEMPIERE 90
+					if (isShortList())
+					{
+						boolean isShortListItem = rs.getString(5).equals("Y");
+						if (!isShortListItem)
+						{
+							name = new StringBuilder(SHORTLIST_S).append(name).append(SHORTLIST_S);
+							m_hasShortListItems = true;
+						}
+					}	
+					// IDEMPIERE 90
 					if (isNumber)
 					{
 						int key = rs.getInt(1);

@@ -532,12 +532,9 @@ public class Login
 		//
 		String sql = " SELECT DISTINCT r.UserLevel, r.ConnectionProfile,o.AD_Org_ID,o.Name,o.IsSummary "
 				+" FROM AD_Org o"
-				+" INNER JOIN AD_Role_OrgAccess ra ON (ra.AD_Org_ID=o.AD_Org_ID)" 
-				+" INNER JOIN AD_Role r on (ra.AD_Role_ID=r.AD_Role_ID) "
-				+" INNER JOIN AD_Client c on (ra.AD_Client_ID=c.AD_Client_ID)"
-				+" WHERE r.AD_Role_ID=?"
-				+" AND c.AD_Client_ID=?"
-				+" AND o.IsActive='Y' "
+				+" INNER JOIN AD_Role r on (r.AD_Role_ID=?)"
+				+" INNER JOIN AD_Client c on (c.AD_Client_ID=?)"
+				+" WHERE o.IsActive='Y' "
 				+" AND o.IsSummary='N'"
 				+" AND (r.IsAccessAllOrgs='Y'" 
 				+" OR (r.IsUseUserOrgAccess='N' AND o.AD_Org_ID IN (SELECT AD_Org_ID FROM AD_Role_OrgAccess ra" 
@@ -1204,7 +1201,7 @@ public class Login
 	public KeyNamePair[] getClients(String app_user, String app_pwd) {
 		log.info("User=" + app_user);
 
-		if (app_user == null)
+		if (Util.isEmpty(app_user))
 		{
 			log.warning("No Apps User");
 			return null;

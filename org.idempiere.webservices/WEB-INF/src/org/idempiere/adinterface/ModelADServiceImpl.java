@@ -966,7 +966,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			}
 			if (lookup.getSize() == 0)
 				lookup.refresh();
-			Object[] list = lookup.getData(true, true, true, false).toArray();
+			Object[] list = lookup.getData(true, true, true, false,false).toArray(); // IDEMPIERE 90
 
 			for (Object pair : list) {
 				if (pair instanceof KeyNamePair) {

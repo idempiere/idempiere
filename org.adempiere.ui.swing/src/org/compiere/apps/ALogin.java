@@ -924,12 +924,11 @@ public final class ALogin extends CDialog
 		{
 			clientCombo.setSelectedIndex(0);
 			clientCombo.setVisible(false);
-			clientCombo.setVisible(false);
 			clientLabel.setVisible(false);
 		}
 		else
 		{
-			clientCombo.setVisible(true);
+			clientLabel.setVisible(true);
 			clientCombo.setVisible(true);
 		}
 
@@ -973,6 +972,10 @@ public final class ALogin extends CDialog
 		}
 		//
 		KeyNamePair[] roles = m_login.getRoles(userTextField.getText(), client);
+		// Make role Combo visible
+		roleCombo.setVisible(true);
+		roleLabel.setVisible(true);
+		
 		//  delete existing rol/org items
 		if (roleCombo.getItemCount() > 0)
 			roleCombo.removeAllItems();
@@ -1004,7 +1007,6 @@ public final class ALogin extends CDialog
 		if(roleCombo.getItemCount()==1 && ! MSysConfig.getBooleanValue(MSysConfig.ALogin_ShowOneRole, true))
 		{
 			roleCombo.setSelectedIndex(0);
-			roleCombo.setVisible(false);
 			roleCombo.setVisible(false);
 			roleLabel.setVisible(false);
 			

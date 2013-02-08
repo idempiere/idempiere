@@ -100,6 +100,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		setClientOrg(account);
 		setC_BankAccount_ID(account.getC_BankAccount_ID());
 		setStatementDate(new Timestamp(System.currentTimeMillis()));
+		setDateAcct(new Timestamp(System.currentTimeMillis()));
 		setBeginningBalance(account.getCurrentBalance());
 		setName(getStatementDate().toString());
 		setIsManual(isManual);

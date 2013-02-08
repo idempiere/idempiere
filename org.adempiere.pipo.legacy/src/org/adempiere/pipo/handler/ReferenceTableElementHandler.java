@@ -42,7 +42,9 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 	public void startElement(Properties ctx, Element element)
 			throws SAXException {
 		String elementValue = element.getElementValue();
+		@SuppressWarnings("unused")
 		int AD_Backup_ID = -1;
+		@SuppressWarnings("unused")
 		String Object_Status = null;
 
 		log.info(elementValue);

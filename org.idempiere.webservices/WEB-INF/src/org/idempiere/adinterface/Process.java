@@ -137,7 +137,7 @@ public class Process {
 					LookupValues lvs = p.addNewLookup();
 					Lookup lookup = para.getLookup();	
 					try {
-					ADLookup.fillLookupValues( lvs, lookup, para.isMandatory(), false /*isReadOnly*/ );
+					ADLookup.fillLookupValues( lvs, lookup, para.isMandatory(), false /*isReadOnly*/, false ); // IDEMPIERE 90
 					} catch (Exception ex) {
 						System.out.println("getProcessParams exception: " +ex.getMessage());
 						ex.printStackTrace();

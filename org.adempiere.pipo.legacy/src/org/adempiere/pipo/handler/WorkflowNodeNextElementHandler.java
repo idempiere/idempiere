@@ -24,7 +24,6 @@ import org.adempiere.pipo.AbstractElementHandler;
 import org.adempiere.pipo.Element;
 import org.adempiere.pipo.PackOut;
 import org.adempiere.pipo.exception.POSaveFailedException;
-import org.compiere.model.X_AD_WF_NextCondition;
 import org.compiere.model.X_AD_WF_NodeNext;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -187,6 +186,7 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 		return atts;
 	}
 	
+	/*
 	private AttributesImpl createWorkflowNodeNextConditionBinding(
 			AttributesImpl atts, X_AD_WF_NextCondition m_WF_NodeNextCondition) {
 		String sql = null;
@@ -271,4 +271,5 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 
 		return atts;
 	}
+	*/
 }

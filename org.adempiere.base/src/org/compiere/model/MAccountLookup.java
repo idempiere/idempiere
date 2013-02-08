@@ -173,7 +173,7 @@ public final class MAccountLookup extends Lookup implements Serializable
 	 *  @return ArrayList with KeyNamePair
 	 */
 	public ArrayList<Object> getData (boolean mandatory, boolean onlyValidated, 
-		boolean onlyActive, boolean temporary)
+		boolean onlyActive, boolean temporary, boolean isshortlist) // IDEMPIERE 90
 	{
 		ArrayList<Object> list = new ArrayList<Object>();
 		if (!mandatory)

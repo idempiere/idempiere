@@ -528,7 +528,10 @@ public class TableElement extends PrintElement
 			if (col != dataCol)
 			{
 				m_columnWidths.add(new Float(0.0));		//	for the data column
-				Float origWidth = (Float)m_columnWidths.get(col);
+				Float origWidth=null;
+				try{
+					origWidth = (Float)m_columnWidths.get(col);
+				}catch(IndexOutOfBoundsException e){}
 				if (origWidth == null)
 					log.log(Level.SEVERE, "Column " + dataCol + " below " + col + " - no value for orig width");
 				else

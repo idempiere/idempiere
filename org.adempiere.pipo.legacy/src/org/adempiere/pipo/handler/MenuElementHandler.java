@@ -108,7 +108,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 			m_Menu.setAD_Task_ID(id);
 		}
 		
-		name = atts.getValue("ADWorkbenchNameID");
+		/*name = atts.getValue("ADWorkbenchNameID");
 		if (name != null && name.trim().length() > 0) {
 			int id = get_IDWithColumn(ctx, "AD_Workbench", "Name", name);
 			if (id <= 0) {
@@ -116,7 +116,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 				return;
 			}
 			m_Menu.setAD_Workbench_ID(id);
-		}
+		}*/
 		
 		name = atts.getValue("ADWorkflowNameID");
 		if (name != null && name.trim().length() > 0) {
@@ -319,12 +319,12 @@ public class MenuElementHandler extends AbstractElementHandler {
 			atts.addAttribute("", "", "ADTaskNameID", "CDATA", name);
 		} else
 			atts.addAttribute("", "", "ADTaskNameID", "CDATA", "");
-		if (m_Menu.getAD_Workbench_ID() > 0) {
+		/*if (m_Menu.getAD_Workbench_ID() > 0) {
 			sql = "SELECT Name FROM AD_Workbench WHERE AD_Workbench_ID=?";
 			name = DB.getSQLValueString(null, sql, m_Menu.getAD_Workbench_ID());
 			atts.addAttribute("", "", "ADWorkbenchNameID", "CDATA", name);
 		} else
-			atts.addAttribute("", "", "ADWorkbenchNameID", "CDATA", "");
+			atts.addAttribute("", "", "ADWorkbenchNameID", "CDATA", "");*/
 		if (m_Menu.getAD_Workflow_ID() > 0) {
 			sql = "SELECT Name FROM AD_Workflow WHERE AD_Workflow_ID=?";
 			name = DB.getSQLValueString(null, sql, m_Menu.getAD_Workflow_ID());

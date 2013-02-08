@@ -40,6 +40,7 @@ public class DistFileElementHandler extends AbstractElementHandler {
 
 	public void startElement(Properties ctx, Element element) throws SAXException {
 		String elementValue = element.getElementValue();
+		@SuppressWarnings("unused")
 		int AD_Backup_ID = -1;
 		String Object_Status = null;
 		Attributes atts = element.attributes;

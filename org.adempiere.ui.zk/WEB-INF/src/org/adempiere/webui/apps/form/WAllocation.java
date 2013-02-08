@@ -183,30 +183,33 @@ public class WAllocation extends Allocation
 		Rows rows = null;
 		Row row = null;
 		
-		parameterLayout.setWidth("800px");
+		parameterLayout.setWidth("80%");
 		rows = parameterLayout.newRows();
 		row = rows.newRow();
-		row.appendChild(bpartnerLabel.rightAlign());
-		row.appendChild(bpartnerSearch.getComponent());
-		row.appendChild(dateLabel.rightAlign());
-		row.appendChild(dateField.getComponent());
-		row.appendChild(organizationLabel.rightAlign());
-		row.appendChild(organizationPick.getComponent());
+		row.appendCellChild(bpartnerLabel.rightAlign());
+		bpartnerSearch.getComponent().setHflex("true");
+		row.appendCellChild(bpartnerSearch.getComponent(),1);
+		row.appendCellChild(dateLabel.rightAlign());
+		row.appendCellChild(dateField.getComponent());
+		row.appendCellChild(organizationLabel.rightAlign());
+		organizationPick.getComponent().setHflex("true");
+		row.appendCellChild(organizationPick.getComponent(),1);
 		
 		row = rows.newRow();
 		row.appendCellChild(currencyLabel.rightAlign(),1);
+		currencyPick.getComponent().setHflex("true");
 		row.appendCellChild(currencyPick.getComponent(),1);		
 		row.appendCellChild(multiCurrency,2);		
 		row.appendCellChild(new Space(),1);
 		row.appendCellChild(new Space(),1);
 		
 		row = rows.newRow();
-		row.appendChild(new Space());
-		row.appendChild(autoWriteOff);
-		row.appendChild(new Space());
-		row.appendChild(new Space());
-		row.appendChild(new Space());
-		row.appendChild(new Space());
+		row.appendCellChild(new Space());
+		row.appendCellChild(autoWriteOff);
+		row.appendCellChild(new Space());
+		row.appendCellChild(new Space());
+		row.appendCellChild(new Space());
+		row.appendCellChild(new Space());
 		
 		South south = new South();
 		south.setStyle("border: none");
@@ -217,14 +220,15 @@ public class WAllocation extends Allocation
 		allocationLayout.setWidth("600px");
 		rows = allocationLayout.newRows();
 		row = rows.newRow();
-		row.appendChild(differenceLabel.rightAlign());
-		row.appendChild(allocCurrencyLabel.rightAlign());
-		row.appendChild(differenceField);
-		row.appendChild(new Space());
-		row.appendChild(chargeLabel.rightAlign());
-		row.appendChild(chargePick.getComponent());
-		row.appendChild(new Space());
-		row.appendChild(allocateButton);
+		row.appendCellChild(differenceLabel.rightAlign());
+		row.appendCellChild(allocCurrencyLabel.rightAlign());
+		differenceField.setHflex("true");
+		row.appendCellChild(differenceField);
+		row.appendCellChild(chargeLabel.rightAlign());
+		chargePick.getComponent().setHflex("true");
+		row.appendCellChild(chargePick.getComponent(),2);
+		allocateButton.setHflex("true");
+		row.appendCellChild(allocateButton);
 		
 		paymentPanel.appendChild(paymentLayout);
 		paymentPanel.setWidth("100%");

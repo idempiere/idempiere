@@ -54,7 +54,9 @@ public class ProcessAccessElementHandler extends AbstractElementHandler {
 		
 		sqlB = new StringBuffer ("SELECT count(*) FROM AD_Process_Access WHERE AD_Role_ID=? and AD_Process_ID=?");		
 		int count = DB.getSQLValue(getTrxName(ctx),sqlB.toString(),roleid,processid);
+		@SuppressWarnings("unused")
 		int AD_Backup_ID = -1;
+		@SuppressWarnings("unused")
 		String Object_Status = null;
 		
 		if (count>0){		   	

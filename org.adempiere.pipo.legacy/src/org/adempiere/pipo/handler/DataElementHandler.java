@@ -36,7 +36,6 @@ import org.adempiere.pipo.IDFinder;
 import org.adempiere.pipo.exception.POSaveFailedException;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
-import org.compiere.model.POInfo;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -200,13 +199,13 @@ public class DataElementHandler extends AbstractElementHandler {
 				genericPO.set_ValueOfColumn("Name", d_rowname);
 				// Set defaults.
 				//TODO: get defaults from configuration
-				HashMap defaults = new HashMap();
-				HashMap thisDefault = (HashMap)defaults.get(d_tablename);
+				HashMap<Object, Object> defaults = new HashMap<Object, Object>();
+				HashMap<?, ?> thisDefault = (HashMap<?, ?>)defaults.get(d_tablename);
 				if (thisDefault != null) {
-					Iterator iter = thisDefault.values().iterator();
-					ArrayList thisValue = null;
+					Iterator<?> iter = thisDefault.values().iterator();
+					ArrayList<?> thisValue = null;
 					while (iter.hasNext()) {
-						thisValue = (ArrayList)iter.next();
+						thisValue = (ArrayList<?>)iter.next();
 						if (((String)(thisValue.get(2))).equals("String"))
 							genericPO.set_ValueOfColumn((String)thisValue.get(0), (String)thisValue.get(1));
 						else if (((String)(thisValue.get(2))).equals("Integer"))

@@ -250,7 +250,7 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 		// Payment type selection
 		int AD_Column_ID = COLUMN_C_PAYMENT_V_TENDERTYPE; //C_Payment_v.TenderType
 		MLookup lookup = MLookupFactory.get(Env.getCtx(), 0, 0, AD_Column_ID, DisplayType.List);
-		ArrayList<Object> types = lookup.getData(true, false, true, true);
+		ArrayList<Object> types = lookup.getData(true, false, true, true, false); // IDEMPIERE 90
 		
 		DefaultComboBoxModel typeModel = new DefaultComboBoxModel(types.toArray()); 
 		tenderTypePick.setModel(typeModel);

@@ -45,6 +45,7 @@ public class CodeSnipitElementHandler extends AbstractElementHandler {
 
 	public void startElement(Properties ctx, Element element) throws SAXException {
 		String elementValue = element.getElementValue();
+		@SuppressWarnings("unused")
 		int AD_Backup_ID = -1;
 		String Object_Status = null;
 		log.info(elementValue);
@@ -61,6 +62,7 @@ public class CodeSnipitElementHandler extends AbstractElementHandler {
 			int idDetail=0;
 			InputStream source;  // Stream for reading from the source file.
 			OutputStream copy;   // Stream for writing the copy.
+			@SuppressWarnings("unused")
 			File currentDirectory = new File(".");
 			
 			String packagePath=null;       

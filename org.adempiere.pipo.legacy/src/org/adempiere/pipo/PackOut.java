@@ -170,6 +170,7 @@ public class PackOut extends SvrProcess
 					packagedir += File.separator;
 				packagename = packagedir + rs1.getString(X_AD_Package_Exp.COLUMNNAME_Name);
 				includesdir = rs1.getString(X_AD_Package_Exp.COLUMNNAME_Name) + File.separator +"**";
+				@SuppressWarnings("unused")
 				boolean success = (new File(packagename+File.separator+"doc"+File.separator)).mkdirs();
 				String file_document = packagename+File.separator+"doc"+File.separator+rs1.getString(X_AD_Package_Exp.COLUMNNAME_Name)+"Doc.xml";		
 				packageDocStream = new FileOutputStream (file_document, false);		
@@ -457,6 +458,7 @@ public class PackOut extends SvrProcess
 		File destGZipFile = new File(packagename+".tar.gz");
 		
 		//delete the old packages if necessary
+		@SuppressWarnings("unused")
 		boolean success = destZipFile.delete();
 		success = destTarFile.delete();
 		success = destGZipFile.delete();

@@ -36,6 +36,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MLocation;
+import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -47,6 +48,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Menuitem;
 
 /**
  *
@@ -69,7 +71,10 @@ ContextMenuListener, IZoomableEditor
     
     private Lookup  lookup;
     private Object oldValue;
-       
+
+    public static final String SHORT_LIST_EVENT = "SHORT_LIST";	// IDEMPIERE 90
+    protected boolean onlyShortListItems;	// IDEMPIERE 90
+
     public WTableDirEditor(GridField gridField)
     {
         super(new Combobox(), gridField);
@@ -159,6 +164,34 @@ ContextMenuListener, IZoomableEditor
             	popupMenu = new WEditorPopupMenu(zoom, true, isShowPreference(), false, false, false, lookup);
     		}
         	addChangeLogMenu(popupMenu);
+
+        	//	IDEMPIERE 90
+        	boolean isShortListAvailable = false;	// Short List available for this lookup
+        	if (lookup != null && (lookup.getDisplayType() == DisplayType.TableDir || lookup.getDisplayType() == DisplayType.Table))	// only for Table & TableDir
+        	{
+        		String tableName_temp = lookup.getColumnName();	// Returns AD_Org.AD_Org_ID
+        		int posPoint = tableName_temp.indexOf(".");
+        		String tableName = tableName_temp.substring(0, posPoint);
+    			MTable table = MTable.get(Env.getCtx(), tableName);
+    			isShortListAvailable = (table.getColumnIndex("IsShortList") >= 0);
+        		if (isShortListAvailable)
+        		{
+        			onlyShortListItems=true;
+        			lookup.setShortList(true);
+        			getLabel().setText(">" + getGridField().getHeader() + "<");
+        			actionRefresh();
+
+        			// add in popup menu
+        			Menuitem searchMode;
+        			searchMode = new Menuitem();
+        			searchMode.setAttribute(WEditorPopupMenu.EVENT_ATTRIBUTE, SHORT_LIST_EVENT);
+        			searchMode.setLabel(Msg.getMsg(Env.getCtx(), "ShortListSwitchSearchMode"));
+        			searchMode.setImage("/images/Lock16.png");
+        			searchMode.addEventListener(Events.ON_CLICK, popupMenu);
+        			popupMenu.appendChild(searchMode);
+        		}
+        	}
+        	//	IDEMPIERE 90
         }
     }
 
@@ -493,6 +526,25 @@ ContextMenuListener, IZoomableEditor
 		{
 			actionLocation();
 		}
+		// IDEMPIERE 90
+		else if (SHORT_LIST_EVENT.equals(evt.getContextEvent()))
+		{
+			String champ = getGridField().getHeader();
+
+			if(onlyShortListItems)
+			{
+				onlyShortListItems=false;
+				lookup.setShortList(false);
+				actionRefresh();			
+				getLabel().setText(champ);
+			}else{
+				onlyShortListItems=true;
+				lookup.setShortList(true);
+				actionRefresh();
+				getLabel().setText(">" + champ + "<");
+			}
+		}
+		// IDEMPIERE 90
 	}
 	
 	public  void propertyChange(PropertyChangeEvent evt)

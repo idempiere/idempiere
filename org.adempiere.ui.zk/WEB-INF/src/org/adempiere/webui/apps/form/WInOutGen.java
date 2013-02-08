@@ -99,21 +99,25 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 		lBPartner.setText(Msg.translate(Env.getCtx(), "C_BPartner_ID"));
 
 		Row row = form.getParameterPanel().newRows().newRow();
-		row.appendChild(lWarehouse.rightAlign());
-		row.appendChild(fWarehouse.getComponent());
-		row.appendChild(new Space());
-		row.appendChild(lBPartner.rightAlign());
-		row.appendChild(fBPartner.getComponent());
-		row.appendChild(new Space());
+		row.appendCellChild(lWarehouse.rightAlign());
+		fWarehouse.getComponent().setHflex("true");
+		row.appendCellChild(fWarehouse.getComponent());
+		row.appendCellChild(new Space());
+		row.appendCellChild(lBPartner.rightAlign());
+		fBPartner.getComponent().setHflex("true");
+		row.appendCellChild(fBPartner.getComponent());
+		row.appendCellChild(new Space());
 
 		row = new Row();
 		form.getParameterPanel().getRows().appendChild(row);
-		row.appendChild(lDocType.rightAlign());
-		row.appendChild(cmbDocType);
-		row.appendChild(new Space());
-		row.appendChild(lDocAction.rightAlign());
-		row.appendChild(docAction.getComponent());
-		row.appendChild(new Space());
+		row.appendCellChild(lDocType.rightAlign());
+		cmbDocType.setHflex("true");
+		row.appendCellChild(cmbDocType);
+		row.appendCellChild(new Space());
+		row.appendCellChild(lDocAction.rightAlign());
+		docAction.getComponent().setHflex("true");
+		row.appendCellChild(docAction.getComponent());
+		row.appendCellChild(new Space());
 	}	//	jbInit
 
 	/**

@@ -991,7 +991,7 @@ public class MBPartner extends X_C_BPartner
 			StringBuilder msgacc = new StringBuilder("p.C_BP_Group_ID=").append(getC_BP_Group_ID());
 			insert_Accounting("C_BP_Customer_Acct", "C_BP_Group_Acct", msgacc.toString());
 			insert_Accounting("C_BP_Vendor_Acct", "C_BP_Group_Acct",msgacc.toString());
-			insert_Accounting("C_BP_Employee_Acct", "C_AcctSchema_Default", null);
+			// insert_Accounting("C_BP_Employee_Acct", "C_AcctSchema_Default", null);
 		}
 
 		//	Value/Name change
