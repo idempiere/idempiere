@@ -21,11 +21,10 @@ import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-import org.adempiere.webui.AdempiereWebUI;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.component.ZkCssHelper;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -40,7 +39,6 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
 
@@ -102,14 +100,6 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		catch (Exception ex)
 		{
 			log.log(Level.SEVERE, "", ex);
-		}
-		
-		try
-		{
-			AEnv.showWindow(this);
-		}
-		catch (Exception e)
-		{
 		}		
 	} // WAttachment
 
@@ -132,7 +122,7 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	void staticInit() throws Exception
 	{
 		this.setWidth("500px");
-		this.setHeight("600px");
+		this.setHeight("500px");
 		this.setClosable(true);
 		this.setBorder("normal");
 		this.appendChild(mainPanel);
@@ -159,13 +149,15 @@ public class WMediaDialog extends Window implements EventListener<Event>
 
 		bLoad.setImage("/images/Import24.png");
 		bLoad.setTooltiptext(Msg.getMsg(Env.getCtx(), "Load"));
-		bLoad.addEventListener(Events.ON_CLICK, this);
+		bLoad.addEventListener(Events.ON_UPLOAD, this);
+		bLoad.setUpload("true");
 
 		bDelete.setImage("/images/Delete24.png");
 		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
 		bDelete.addEventListener(Events.ON_CLICK, this);
 
 		previewPanel.appendChild(preview);
+		ZkCssHelper.appendStyle(previewPanel, "margin-top: 10px; margin-bottom: 10px;");
 		preview.setHeight("100%");
 		preview.setWidth("100%");
 			
@@ -188,9 +180,7 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		bCancel.addEventListener(Events.ON_CLICK, this);
 		
 		confirmPanel.appendChild(bOk);
-		confirmPanel.appendChild(bCancel);
-		
-		addEventListener(Events.ON_UPLOAD, this);
+		confirmPanel.appendChild(bCancel);		
 	}
 	
 	/**
@@ -301,11 +291,6 @@ public class WMediaDialog extends Window implements EventListener<Event>
 			displayData();
 		}
 		
-		//	Load Attachment
-		
-		else if (e.getTarget() == bLoad)
-			loadFile();
-		
 		//	Open Attachment
 		
 		else if (e.getTarget() == bSave)
@@ -319,17 +304,6 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		}
 	}	//	onEvent
 	
-	/**************************************************************************
-	 *	Load file 
-	 */
-	
-	private void loadFile()
-	{
-		Media media = Fileupload.get();
-		if (AdempiereWebUI.isEventThreadEnabled())
-			processUploadMedia(media);
-	}	//	getFileName
-
 	private void processUploadMedia(Media media) {
 		if (media == null)
 			return;
