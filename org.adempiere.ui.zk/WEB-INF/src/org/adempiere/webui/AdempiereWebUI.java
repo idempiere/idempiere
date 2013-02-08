@@ -51,6 +51,7 @@ import org.compiere.util.Language;
 import org.zkforge.keylistener.Keylistener;
 import org.zkoss.web.Attributes;
 import org.zkoss.web.servlet.Servlets;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
@@ -67,6 +68,7 @@ import org.zkoss.zk.ui.sys.ExecutionCtrl;
 import org.zkoss.zk.ui.sys.ExecutionsCtrl;
 import org.zkoss.zk.ui.sys.SessionCtrl;
 import org.zkoss.zk.ui.sys.Visualizer;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Window;
 
 /**
@@ -344,6 +346,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		keyListener.setPage(this.getPage());
 		keyListener.setCtrlKeys("@a@c@d@e@f@h@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter");
 		keyListener.setAutoBlur(false);
+		
+		Clients.response(new AuScript("zAu.cmd0.clearBusy()"));
     }
     
     /**

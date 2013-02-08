@@ -142,20 +142,24 @@ public class WTrxMaterial extends TrxMaterial
 		
 		Rows rows = parameterLayout.newRows();
 		Row row = rows.newRow();
-		row.appendChild(orgLabel.rightAlign());
-		row.appendChild(orgField.getComponent());
-		row.appendChild(mtypeLabel.rightAlign());
-		row.appendChild(mtypeField.getComponent());
-		row.appendChild(dateFLabel.rightAlign());
-		row.appendChild(dateFField.getComponent());
+		row.appendCellChild(orgLabel.rightAlign());
+		orgField.getComponent().setHflex("true");
+		row.appendCellChild(orgField.getComponent());
+		row.appendCellChild(mtypeLabel.rightAlign());
+		mtypeField.getComponent().setHflex("true");
+		row.appendCellChild(mtypeField.getComponent());
+		row.appendCellChild(dateFLabel.rightAlign());
+		row.appendCellChild(dateFField.getComponent());
 
 		row = rows.newRow();
-		row.appendChild(locatorLabel.rightAlign());
-		row.appendChild(locatorField.getComponent());
-		row.appendChild(productLabel.rightAlign());
-		row.appendChild(productField.getComponent());
-		row.appendChild(dateTLabel.rightAlign());
-		row.appendChild(dateTField.getComponent());
+		row.appendCellChild(locatorLabel.rightAlign());
+		locatorField.getComponent().setHflex("true");
+		row.appendCellChild(locatorField.getComponent());
+		row.appendCellChild(productLabel.rightAlign());
+		productField.getComponent().setHflex("true");
+		row.appendCellChild(productField.getComponent());
+		row.appendCellChild(dateTLabel.rightAlign());
+		row.appendCellChild(dateTField.getComponent());
 		//
 		southPanel.appendChild(confirmPanel);
 		southPanel.appendChild(new Separator());

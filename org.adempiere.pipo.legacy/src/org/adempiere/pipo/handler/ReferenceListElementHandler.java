@@ -47,6 +47,7 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 				element.skip = true;
 				return;
 			}
+			@SuppressWarnings("unused")
 			String name = atts.getValue("Name");
 			String value = atts.getValue("Value");
 			int AD_Reference_ID = 0;

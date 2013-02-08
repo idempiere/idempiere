@@ -62,7 +62,9 @@ public class UserRoleElementHandler extends AbstractElementHandler {
 		sqlB = new StringBuffer ("SELECT count(*) FROM AD_User_Roles WHERE AD_User_ID = ? and AD_Role_ID = ?");		
 		int count = DB.getSQLValue(getTrxName(ctx),sqlB.toString(),userid,roleid);
 		
+		@SuppressWarnings("unused")
 		int AD_Backup_ID = -1;
+		@SuppressWarnings("unused")
 		String Object_Status = null;
 		if (count>0){
 			//AD_Backup_ID = copyRecord("AD_Role",m_Role);

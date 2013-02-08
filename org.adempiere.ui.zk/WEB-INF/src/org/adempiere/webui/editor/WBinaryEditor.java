@@ -14,12 +14,18 @@
 package org.adempiere.webui.editor;
 
 
+import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.adwindow.ADWindowContent;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WMediaDialog;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
@@ -34,6 +40,8 @@ public class WBinaryEditor extends WEditor
     
     private boolean         m_mandatory;
     private Object          m_data;
+
+	private ADWindow adwindow;
    
     public WBinaryEditor(GridField gridField)
     {
@@ -124,20 +132,40 @@ public class WBinaryEditor extends WEditor
 	{
 		if (Events.ON_CLICK.equals(event.getName()))
 		{
-			WMediaDialog dialog = new WMediaDialog(gridField.getHeader(), m_data);
-			if (!dialog.isCancel() && dialog.isChange())
-			{
-				Object oldValue = m_data;
-				Object newValue = dialog.getData();
-				if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
-		    	    return;
-		    	}
-		        if (oldValue == null && newValue == null) {
-		        	return;
-		        }
-		        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
-		        super.fireValueChange(changeEvent);
-				setValue(newValue);
+			final WMediaDialog dialog = new WMediaDialog(gridField.getHeader(), m_data);
+			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event event) throws Exception {
+					if (adwindow != null) 
+					{
+						adwindow.getADWindowContent().hideBusyMask();
+						adwindow = null;
+					}
+					if (!dialog.isCancel() && dialog.isChange())
+					{
+						Object oldValue = m_data;
+						Object newValue = dialog.getData();
+						if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
+				    	    return;
+				    	}
+				        if (oldValue == null && newValue == null) {
+				        	return;
+				        }
+				        ValueChangeEvent changeEvent = new ValueChangeEvent(WBinaryEditor.this, getColumnName(), oldValue, newValue);
+				        fireValueChange(changeEvent);
+						setValue(newValue);
+					}
+				}				
+			});			
+			adwindow = ADWindow.findADWindow(getComponent());
+			if (adwindow != null) {
+				ADWindowContent content = adwindow.getADWindowContent();
+				content.showBusyMask();
+				content.getComponent().getParent().appendChild(dialog);
+				LayoutUtils.openOverlappedWindow(content.getComponent().getParent(), dialog, "middle_center");
+			} else {
+				AEnv.showWindow(dialog);
 			}
 		}
 	}

@@ -2392,6 +2392,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			newRow = 0;
 			log.fine("Set to first Row");
 		}
+		
+		m_mTable.waitLoadingForRow(newRow);
 		return newRow;
 	}   //  verifyRow
 

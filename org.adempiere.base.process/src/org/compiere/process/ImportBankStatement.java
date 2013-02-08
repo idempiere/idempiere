@@ -433,13 +433,16 @@ public class ImportBankStatement extends SvrProcess
 					statement.setEndingBalance(Env.ZERO);
 					
 					//	Copy statement data
-					if (imp.getName() != null)
-					{
+					if (imp.getName() != null) {
 						statement.setName(imp.getName());
 					}
-					if (imp.getStatementDate() != null)
-					{
+					if (imp.getStatementDate() != null) {
 						statement.setStatementDate(imp.getStatementDate());
+					}
+					if (imp.getDateAcct() != null) {
+						statement.setDateAcct(imp.getDateAcct());
+					} else {
+						statement.setDateAcct(statement.getStatementDate());
 					}
 					statement.setDescription(imp.getDescription());
 					statement.setEftStatementReference(imp.getEftStatementReference());
@@ -460,7 +463,7 @@ public class ImportBankStatement extends SvrProcess
 				line.setReferenceNo(imp.getReferenceNo());
 				line.setDescription(imp.getLineDescription());
 				line.setStatementLineDate(imp.getStatementLineDate());
-				line.setDateAcct(imp.getStatementLineDate());
+				// line.setDateAcct(imp.getStatementLineDate()); // set on beforeSave
 				line.setValutaDate(imp.getValutaDate());
 				line.setIsReversal(imp.isReversal());
 				line.setC_Currency_ID(imp.getC_Currency_ID());

@@ -125,7 +125,7 @@ public class XLookup extends Lookup
 	 * 	@return list of data
 	 */
 	public ArrayList<Object> getData (boolean mandatory, 
-		boolean onlyValidated, boolean onlyActive, boolean temporary)
+		boolean onlyValidated, boolean onlyActive, boolean temporary, boolean shortlist) // IDEMPIERE 90
 	{
 		ArrayList<Object> list = new ArrayList<Object>(p_data);
 		

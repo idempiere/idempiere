@@ -19,12 +19,12 @@ public class ADLookup {
 	protected static CLogger	log = CLogger.getCLogger(ADLookup.class);	
 	
 	
-	public static void fillLookupValues( LookupValues lvs, Lookup lookup, boolean isMandatory, boolean isReadOnly  )
+	public static void fillLookupValues( LookupValues lvs, Lookup lookup, boolean isMandatory, boolean isReadOnly, boolean isShortList) // IDEMPIERE 90
     {		
     	    	
 		if(lookup.getSize() == 0)
 			lookup.refresh();
-		Object[] list = lookup.getData(isMandatory, true, !isReadOnly, false).toArray();										
+		Object[] list = lookup.getData(isMandatory, true, !isReadOnly, false, isShortList).toArray();	 // IDEMPIERE 90									
 		
 		for (int i=0; i<list.length; i++)
 		{

@@ -61,7 +61,9 @@ public class WindowAccessElementHandler extends AbstractElementHandler {
 		
 		sqlB = new StringBuffer ("SELECT count(*) FROM AD_Window_Access WHERE AD_Role_ID=? and AD_Window_ID=?");		
 		int count = DB.getSQLValue(getTrxName(ctx),sqlB.toString(),roleid,windowid);
+		@SuppressWarnings("unused")
 		int AD_Backup_ID = -1;
+		@SuppressWarnings("unused")
 		String Object_Status = null;
 		if (count>0){		   	
 			Object_Status = "Update";			

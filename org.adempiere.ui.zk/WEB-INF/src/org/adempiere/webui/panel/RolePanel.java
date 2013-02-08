@@ -51,6 +51,7 @@ import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuFocus;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Deferrable;
 import org.zkoss.zk.ui.event.Event;
@@ -136,6 +137,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 
     private void init()
     {
+    	Clients.response(new AuScript("zAu.cmd0.clearBusy()"));
     	Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
     	Label label = new Label("Login");
@@ -225,6 +227,9 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	div.setSclass(ITheme.LOGIN_BOX_FOOTER_CLASS);
         ConfirmPanel pnlButtons = new ConfirmPanel(true, false, false, false, false, false, true);
         pnlButtons.addActionListener(this);
+        Button okBtn = pnlButtons.getButton(ConfirmPanel.A_OK);
+        okBtn.setWidgetListener("onClick", "zAu.cmd0.showBusy(null)");
+        
         LayoutUtils.addSclass(ITheme.LOGIN_BOX_FOOTER_PANEL_CLASS, pnlButtons);
         pnlButtons.setWidth(null);
         pnlButtons.getButton(ConfirmPanel.A_OK).setSclass(ITheme.LOGIN_BUTTON_CLASS);

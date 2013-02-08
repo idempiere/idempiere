@@ -20,8 +20,10 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -53,7 +55,7 @@ public class MTable extends X_AD_Table
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8264472455498363565L;
+	private static final long serialVersionUID = -8904670462021706436L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -211,6 +213,10 @@ public class MTable extends X_AD_Table
 
 	/**	Columns				*/
 	private MColumn[]	m_columns = null;
+	/** column name to index map **/
+	private Map<String, Integer> m_columnNameMap;
+	/** ad_column_id to index map **/
+	private Map<Integer, Integer> m_columnIdMap;
 
 	/**
 	 * 	Get Columns
@@ -221,6 +227,8 @@ public class MTable extends X_AD_Table
 	{
 		if (m_columns != null && !requery)
 			return m_columns;
+		m_columnNameMap = new HashMap<String, Integer>();
+		m_columnIdMap = new HashMap<Integer, Integer>();
 		String sql = "SELECT * FROM AD_Column WHERE AD_Table_ID=? ORDER BY ColumnName";
 		ArrayList<MColumn> list = new ArrayList<MColumn>();
 		PreparedStatement pstmt = null;
@@ -229,8 +237,12 @@ public class MTable extends X_AD_Table
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getAD_Table_ID());
 			ResultSet rs = pstmt.executeQuery ();
-			while (rs.next ())
-				list.add (new MColumn (getCtx(), rs, get_TrxName()));
+			while (rs.next ()) {
+				MColumn column = new MColumn (getCtx(), rs, get_TrxName());
+				list.add (column);
+				m_columnNameMap.put(column.getColumnName().toUpperCase(), list.size() - 1);
+				m_columnIdMap.put(column.getAD_Column_ID(), list.size() - 1);
+			}
 			rs.close ();
 			pstmt.close ();
 			pstmt = null;
@@ -274,6 +286,38 @@ public class MTable extends X_AD_Table
 		return null;
 	}	//	getColumn
 
+	/**
+	 *  Get Column Index
+	 *  @param ColumnName column name
+	 *  @return index of column with ColumnName or -1 if not found
+	 */
+	public int getColumnIndex (String ColumnName)
+	{
+		if (m_columns == null)
+			getColumns(false);
+		Integer i = m_columnNameMap.get(ColumnName.toUpperCase());
+		if (i != null)
+			return i.intValue();
+		
+		return -1;
+	}   //  getColumnIndex
+
+	/**
+	 *  Get Column Index
+	 *  @param AD_Column_ID column
+	 *  @return index of column with ColumnName or -1 if not found
+	 */
+	public int getColumnIndex (int AD_Column_ID)
+	{
+		if (m_columns == null)
+			getColumns(false);
+		Integer i = m_columnIdMap.get(AD_Column_ID);
+		if (i != null)
+			return i.intValue();
+		
+		return -1;
+	}   //  getColumnIndex
+	
 	/**
 	 * 	Table has a single Key
 	 *	@return true if table has single key column

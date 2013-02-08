@@ -96,8 +96,6 @@ zkforge.KeyListener = zk.$extends(zul.Widget, {
 			}
 
 			evt.preventDefault();
-			evt.stopImmediatePropagation();
-			evt.stop();
 			
 			zAu.send(new zk.Event(zk.Widget.$(this), 'onCtrlKey', {keyCode: keycode, ctrlKey: evt.ctrlKey, shiftKey: evt.shiftKey, altKey: evt.altKey}, {toServer: true}));
 			

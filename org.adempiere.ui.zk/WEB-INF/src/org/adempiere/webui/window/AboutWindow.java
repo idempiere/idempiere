@@ -229,12 +229,12 @@ public class AboutWindow extends Window implements EventListener<Event> {
 				levelListBox.setEnabled(true);
 				levelListBox.setTooltiptext("Set trace level. Warning: this will effect all session not just the current session");
 				levelLabel.setTooltiptext("Set trace level. Warning: this will effect all session not just the current session");
-				btnAdempiereLog = new Button("Adempiere Log");
-				btnAdempiereLog.setTooltiptext("Download adempiere log file from server");
+				btnAdempiereLog = new Button("iDempiere Log");
+				btnAdempiereLog.setTooltiptext("Download iDempiere log file from server");
 				btnAdempiereLog.addEventListener(Events.ON_CLICK, this);
 
-				btnServerLog = new Button("JBoss Log");
-				btnServerLog.setTooltiptext("Download JBoss console log file from server");
+				btnServerLog = new Button("Server Log");
+				btnServerLog.setTooltiptext("Download iDempiere server log file");
 				btnServerLog.addEventListener(Events.ON_CLICK, this);
 
 				hbox.appendChild(new Space());

@@ -407,16 +407,16 @@ public final class AEnv
 
 	} // 	canAccessInfo
 
-    public static void actionRefresh(Lookup lookup, Object value, boolean mandatory)
+    public static void actionRefresh(Lookup lookup, Object value, boolean mandatory, boolean shortList) // IDEMPIERE 90
     {
         if (lookup == null)
             return;
 
         lookup.refresh();
         if (lookup.isValidated())
-            lookup.fillComboBox(mandatory, false, false, false);
+            lookup.fillComboBox(mandatory, false, false, false, shortList); // IDEMPIERE 90
         else
-            lookup.fillComboBox(mandatory, true, false, false);
+            lookup.fillComboBox(mandatory, true, false, false, shortList); // IDEMPIERE 90
     }
     /**
      *

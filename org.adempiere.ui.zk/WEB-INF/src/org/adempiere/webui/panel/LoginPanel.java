@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.util.LogAuthFailure;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
@@ -99,6 +100,8 @@ public class LoginPanel extends Window implements EventListener<Event>
 	 * 
 	 */
 	private static final long serialVersionUID = -3181808670168474967L;
+
+	private static LogAuthFailure logAuthFailure = new LogAuthFailure();
 
 	private static final String ON_LOAD_TOKEN = "onLoadToken";
     private static CLogger logger = CLogger.getCLogger(LoginPanel.class);
@@ -240,6 +243,8 @@ public class LoginPanel extends Window implements EventListener<Event>
     	div.setSclass(ITheme.LOGIN_BOX_FOOTER_CLASS);
         ConfirmPanel pnlButtons = new ConfirmPanel(false, false, false, false, false, false, true);
         pnlButtons.addActionListener(this);
+        Button okBtn = pnlButtons.getButton(ConfirmPanel.A_OK);
+        okBtn.setWidgetListener("onClick", "zAu.cmd0.showBusy(null)");
 
         Button helpButton = pnlButtons.createButton(ConfirmPanel.A_HELP);
 		helpButton.addEventListener(Events.ON_CLICK, this);
@@ -522,13 +527,21 @@ public class LoginPanel extends Window implements EventListener<Event>
         Session currSess = Executions.getCurrent().getDesktop().getSession();
         
         KeyNamePair clientsKNPairs[] = login.getClients(userId, userPassword);
+        
         if (clientsKNPairs == null || clientsKNPairs.length == 0)
         {
         	String loginErrMsg = login.getLoginErrMsg();
-        	if (loginErrMsg != null && loginErrMsg.length() > 0)
-        		throw new WrongValueException(loginErrMsg);
-        	else
-        		throw new WrongValueException(Msg.getMsg(ctx,"FailedLogin", true));
+        	if (Util.isEmpty(loginErrMsg))
+        		loginErrMsg = Msg.getMsg(ctx,"FailedLogin", true);
+
+        	// IDEMPIERE-617
+            String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
+            if (x_Forward_IP == null) {
+            	 x_Forward_IP = currSess.getRemoteAddr();
+            }
+        	logAuthFailure.log(x_Forward_IP, "/webui", userId, loginErrMsg);
+
+       		throw new WrongValueException(loginErrMsg);
         }
         else
         {

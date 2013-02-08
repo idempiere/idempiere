@@ -15,11 +15,13 @@ import test.AdempiereTestCase;
 public class PackOutTest extends AdempiereTestCase {
 	
 	// Test: Specific variables
+	@SuppressWarnings("unused")
 	private MLocation location = null;
 	
 
 	public void testPackOut() {
 		PackOut m_PackOut = new PackOut();
+		@SuppressWarnings("unused")
 		PackInHandler m_PackInHandler = new PackInHandler();
 		Trx m_trx = Trx.get(getTrxName(), true);
 		int m_ad_process_id = IDFinder.get_IDWithColumn("ad_process", "Name", "PackOut", getAD_Client_ID(), getTrxName());
@@ -70,6 +72,7 @@ public class PackOutTest extends AdempiereTestCase {
 		saveResult = m_PackDetail.save();
 		assertTrue("X_AD_Package_Exp_Detail.save()", saveResult);		
 
+		@SuppressWarnings("unused")
 		int m_ad_record_id = IDFinder.get_IDWithColumn("ad_package_exp", "Name", "test2packJunit", getAD_Client_ID(), getTrxName());
 
 		ProcessInfo m_ProcessInfo =  new ProcessInfo("PackOut", m_ad_process_id, m_ad_table_id, m_MPackageExp.get_ID());

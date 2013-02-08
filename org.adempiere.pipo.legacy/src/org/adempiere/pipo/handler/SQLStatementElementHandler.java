@@ -37,7 +37,9 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 
 	public void startElement(Properties ctx, Element element) throws SAXException {
 		String elementValue = element.getElementValue();
+		@SuppressWarnings("unused")
 		int AD_Backup_ID = -1;
+		@SuppressWarnings("unused")
 		String Object_Status = null;
 
 		log.info(elementValue);
@@ -49,6 +51,7 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 		PreparedStatement pstmt = DB.prepareStatement(sql, getTrxName(ctx));	    
 		try {
 			if(DBType.equals("ALL")) {
+				@SuppressWarnings("unused")
 				int n = pstmt.executeUpdate();				
 				log.info("Executed SQL Statement: "+ atts.getValue("statement"));
 			}
@@ -69,6 +72,7 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 				Connection m_con = DB.getConnectionRW(true);
 				try {
 					Statement stmt = m_con.createStatement();
+					@SuppressWarnings("unused")
 					int n = stmt.executeUpdate (atts.getValue("statement"));
 					log.info("Executed SQL Statement for PostgreSQL: "+ atts.getValue("statement"));
 					// Postgres needs to commit DDL statements
