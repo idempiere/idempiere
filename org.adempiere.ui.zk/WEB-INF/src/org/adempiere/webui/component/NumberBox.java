@@ -24,9 +24,7 @@ import java.text.ParseException;
 import org.adempiere.webui.LayoutUtils;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Decimalbox;
@@ -90,20 +88,9 @@ public class NumberBox extends Div
         btn.setImage("/images/Calculator10.png");
 		btn.setTabindex(-1);
 		btn.setHflex("0");
-		btn.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				if (btn.getPopup() != null) {
-					String uid = btn.getPopup();
-					if (uid.startsWith("uuid("))
-						uid = uid.substring(5, uid.length()-1);
-					HtmlBasedComponent comp = (HtmlBasedComponent) btn.getDesktop().getComponentByUuidIfAny(uid);
-					if (comp != null) {						
-						comp.focus();
-					}
-				}				
-			}
-		});
+		btn.setWidgetListener("onClick", "try{var id=this.getPopup(); zk.Widget.$(id.substring(5, id.length - 1)).focus_(100);" +
+				"} catch(error) {}");
+
 		LayoutUtils.addSclass("editor-button", btn);
 		hlayout.appendChild(btn);
         
