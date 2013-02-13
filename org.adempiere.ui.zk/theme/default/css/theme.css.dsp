@@ -807,8 +807,12 @@ tr.z-group {
 	background-image: url(../images/group_bg.gif) !important;
 }
 
-.z-group-inner .z-group-cnt .z-label, .z-group-inner .z-group-cnt {
+.z-group-header .z-label {
 	font-family: Helvetica,Arial,sans-serif;
+	color: #333;
+	width: auto;
+	font-weight: bold;
+	font-size: 11px;
 }
 
 .z-group td.z-group-inner {

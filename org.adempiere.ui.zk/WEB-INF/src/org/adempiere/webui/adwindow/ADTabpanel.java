@@ -454,10 +454,10 @@ DataStatusListener, IADTabpanel, IdSpace
         		else
         		{
         			Group rowg = new Group(fieldGroup);
-        			Cell cell = new Cell();
+        			Cell cell = (Cell) rowg.getFirstChild();
         			cell.setSclass("z-group-inner");
-        			cell.setColspan(numCols);
-        			rowg.appendChild(cell);
+        			cell.setColspan(numCols+1);
+//        			rowg.appendChild(cell);
         			
     				allCollapsibleGroups.add(rowg);
         			if (X_AD_FieldGroup.FIELDGROUPTYPE_Tab.equals(field.getFieldGroupType()) || field.getIsCollapsedByDefault())

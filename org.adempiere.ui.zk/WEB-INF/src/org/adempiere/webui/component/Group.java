@@ -8,7 +8,7 @@ import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Div;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
@@ -43,6 +43,7 @@ public class Group extends org.zkoss.zul.Group {
 		return cell != null && cell instanceof GroupHeader ? ((GroupHeader)cell).getTitle() : null;
 	}
 
+	@Override
 	public void setLabel(String label) {
 		autoFirstCell().setTitle(label);
 	}	
@@ -79,7 +80,7 @@ public class Group extends org.zkoss.zul.Group {
 		m_rows.add(row);
 	}
 
-	public static class GroupHeader extends Div implements EventListener<Event>
+	public static class GroupHeader extends Cell implements EventListener<Event>
 	{
 		/**
 		 * 
@@ -101,7 +102,7 @@ public class Group extends org.zkoss.zul.Group {
 		
 		private void init()
 		{
-			setZclass("z-group-cnt");
+			setZclass("z-group-header");
 			
 			img = new Image();
 			img.setZclass("z-group-img");
@@ -109,6 +110,8 @@ public class Group extends org.zkoss.zul.Group {
 			img.addEventListener(Events.ON_CLICK, this);
 			
 			lbl = new Label();
+			lbl.setStyle("cursor: pointer");
+			lbl.addEventListener(Events.ON_CLICK, this);
 			appendChild(lbl);
 		}
 		
@@ -135,10 +138,10 @@ public class Group extends org.zkoss.zul.Group {
 		{
 			if (e.getName().equals(Events.ON_CLICK))
 			{
-				if (e.getTarget() == img)
-				{
+//				if (e.getTarget() == img)
+//				{
 					((Group) getParent()).setOpen(!isOpen());
-				}
+//				}
 			}
 		}
 	}
