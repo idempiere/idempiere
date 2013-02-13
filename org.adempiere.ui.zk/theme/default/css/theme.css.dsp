@@ -363,36 +363,26 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 <%-- dashlet --%>
-.desktop-home-tabpanel .z-panel-tl, .desktop-home-tabpanel .z-panel-tr, 
-.desktop-home-tabpanel .z-panel-hr, .desktop-home-tabpanel .z-panel-hl, 
-.desktop-home-tabpanel .z-panel-hm {
-	background-image: none; background-color: #FFFFFF;
+.z-panel-tl, .z-panel-tr, 
+.z-panel-hr, .z-panel-hl, 
+.z-panel-hm {
+	background-image: none; background-color: #E4E4E4;
 }
 
-.desktop-home-tabpanel .z-panel-hl {
+.z-panel-hl {
 	padding-bottom: 1px;
 	border-bottom: 2px solid #008BB6;
 }
 
-.desktop-home-tabpanel .z-panel-hl .z-panel-header {
+.z-panel-hl .z-panel-header {
 	padding: 0 0 2px 0;
 	color: #333; font-weight: bold;
 }	
 
-.desktop-left-column .z-panel-tl, .desktop-left-column .z-panel-tr, 
-.desktop-left-column .z-panel-hr, .desktop-left-column .z-panel-hl, 
-.desktop-left-column .z-panel-hm {
-	background-image: none; background-color: #E4E4E4;
-}
-
-.desktop-left-column .z-panel-hl {
-	padding-bottom: 1px;
-	border-bottom: 2px solid #008BB6;
-}
-
-.desktop-left-column .z-panel-hl .z-panel-header {
-	padding: 0 0 2px 0;
-	color: #333; font-weight: bold;
+.desktop-home-tabpanel .z-panel-tl, .desktop-home-tabpanel .z-panel-tr, 
+.desktop-home-tabpanel .z-panel-hr, .desktop-home-tabpanel .z-panel-hl, 
+.desktop-home-tabpanel .z-panel-hm {
+	background-color: #FFFFFF;
 }
 
 .menu-panel {
