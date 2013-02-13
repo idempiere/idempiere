@@ -6,7 +6,7 @@ Copyright (C) 2009 Idalica Corporation
 <zk>
 
 <div style="background-color: #E5E5E5; margin: 5px;"
-	if="${desktop.execution.localName == &quot;ip-10-8-0-1.ec2.internal&quot;}">
+	if="${desktop.execution.serverName == &quot;ip-10-8-0-1.ec2.internal&quot;}">
 	<hbox align="center">
 		<toolbarbutton
 			href="http://www.idalica.com" image="http://www.testadempiere.com/images/Idalica_Logo-grey-sm.png" target="_blank"/>
@@ -15,7 +15,7 @@ Copyright (C) 2009 Idalica Corporation
 	</hbox>
 </div>
 <div style="background-color: #E5E5E5; margin: 5px;"
-	if="${desktop.execution.localName.startsWith(&quot;demo.&quot;)}">
+	if="${desktop.execution.serverName.startsWith(&quot;demo.&quot;)}">
 	<hbox align="center">
 		<toolbarbutton
 			href="http://www.idempiere.org" image="http://www.idempiere.org/_/rsrc/1341897488671/config/customLogo.gif?revision=2" target="_blank"/>
@@ -23,7 +23,7 @@ Copyright (C) 2009 Idalica Corporation
 			style="font-family:Arial,sans-serif; color:#578BB8; font-size:1.5em; font-weight: bold;" />
 	</hbox>
 </div>
-<div style="height: 90px" if="${desktop.execution.localName != &quot;ip-10-8-0-1.ec2.internal&quot; and ! desktop.execution.localName.startsWith(&quot;demo.&quot;)}">
+<div style="height: 90px" if="${desktop.execution.serverName != &quot;ip-10-8-0-1.ec2.internal&quot; and ! desktop.execution.serverName.startsWith(&quot;demo.&quot;)}">
 	<space/>
 </div>
 
