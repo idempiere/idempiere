@@ -2284,8 +2284,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public int getCurrentRow()
 	{
-		if (m_currentRow != verifyRow(m_currentRow))
-			setCurrentRow(m_mTable.getRowCount()-1, true);
 		return m_currentRow;
 	}   //  getCurrentRow
 
