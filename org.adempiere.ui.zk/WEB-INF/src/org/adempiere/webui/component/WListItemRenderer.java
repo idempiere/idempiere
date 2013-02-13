@@ -268,7 +268,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 						numberbox.setValue(field);
 //						numberbox.setWidth("100px");
 						numberbox.setEnabled(true);
-						numberbox.setStyle("text-align:right; width: 96%; margin: auto; "
+						numberbox.setStyle("text-align:right; width: 96%;"
 										+ listcell.getStyle());
 						numberbox.addEventListener(Events.ON_CHANGE, this);
 						listcell.appendChild(numberbox);
@@ -276,7 +276,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 					else
 					{
 						listcell.setLabel(format.format(((Number)field).doubleValue()));
-						ZkCssHelper.appendStyle(listcell, "width: 96%; margin: auto;text-align: right");
+						ZkCssHelper.appendStyle(listcell, "width: 96%; text-align: right");
 					}
 				}
 			}
@@ -326,13 +326,13 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 						Textbox textbox = new Textbox();
 						textbox.setValue(field.toString());
 						textbox.addEventListener(Events.ON_CHANGE, this);
-						ZkCssHelper.appendStyle(textbox, "width: 96%; margin: auto");
+						ZkCssHelper.appendStyle(textbox, "width: 96%;");
 						listcell.appendChild(textbox);
 					}
 					else
 					{
 						listcell.setLabel(field.toString());
-						ZkCssHelper.appendStyle(listcell, "width: 96%; margin: auto");
+						ZkCssHelper.appendStyle(listcell, "width: 96%;");
 					}
 				}
 			}
@@ -350,7 +350,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 			{
 				listcell.setLabel(field.toString());
 				listcell.setValue(field.toString());
-				ZkCssHelper.appendStyle(listcell, "width: 96%; margin: auto");
+				ZkCssHelper.appendStyle(listcell, "width: 96%;");
 			}
 		}
 		else
@@ -497,7 +497,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	            else if (width > 0 && width < 100)
 	            	width = 100;
 
-	            header.setWidth(width + "px");
+	            header.setStyle("min-width: " + width + "px");
         	}
             m_headers.add(header);
         }
