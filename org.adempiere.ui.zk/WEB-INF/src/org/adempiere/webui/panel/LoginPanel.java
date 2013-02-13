@@ -99,7 +99,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3181808670168474967L;
+	private static final long serialVersionUID = -9091534075824025355L;
 
 	private static LogAuthFailure logAuthFailure = new LogAuthFailure();
 
@@ -117,6 +117,7 @@ public class LoginPanel extends Window implements EventListener<Event>
     private Checkbox chkRememberMe;
     private Checkbox chkSelectRole;
     private ToolBarButton btnResetPassword;
+    private ConfirmPanel pnlButtons; 
     boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 
     public LoginPanel(Properties ctx, LoginWindow loginWindow)
@@ -241,7 +242,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 
     	div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_FOOTER_CLASS);
-        ConfirmPanel pnlButtons = new ConfirmPanel(false, false, false, false, false, false, true);
+        pnlButtons = new ConfirmPanel(false, false, false, false, false, false, true);
         pnlButtons.addActionListener(this);
         Button okBtn = pnlButtons.getButton(ConfirmPanel.A_OK);
         okBtn.setWidgetListener("onClick", "zAu.cmd0.showBusy(null)");
@@ -303,6 +304,19 @@ public class LoginPanel extends Window implements EventListener<Event>
 				}
 			}
 		});
+
+        // Make the default language the language of client System
+        String defaultLanguage = MClient.get(ctx, 0).getAD_Language();
+        for(int i = 0; i < lstLanguage.getItemCount(); i++)
+        {
+        	Comboitem li = lstLanguage.getItemAtIndex(i);
+        	if (li.getValue().equals(defaultLanguage))
+        	{
+        		lstLanguage.setSelectedIndex(i);
+        		languageChanged(li.getLabel());
+        		break;
+        	}
+        }
     }
 
     private void initComponents()
@@ -362,19 +376,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         
         btnResetPassword = new ToolBarButton(Msg.getMsg(Language.getBaseAD_Language(), "ForgotMyPassword"));
         btnResetPassword.setId("btnResetPassword");
-
-        // Make the default language the language of client System
-        String defaultLanguage = MClient.get(ctx, 0).getAD_Language();
-        for(int i = 0; i < lstLanguage.getItemCount(); i++)
-        {
-        	Comboitem li = lstLanguage.getItemAtIndex(i);
-        	if (li.getValue().equals(defaultLanguage))
-        	{
-        		lstLanguage.setSelectedIndex(i);
-        		languageChanged(li.getLabel());
-        		break;
-        	}
-        }
    }
 
     public void onEvent(Event event)
@@ -423,7 +424,11 @@ public class LoginPanel extends Window implements EventListener<Event>
     }
 
 	private void openLoginHelp() {
-		String helpURL = MSysConfig.getValue("LOGIN_HELP_URL", 	"http://wiki.idempiere.org/wiki/Login_Help");
+		String langName = (String) lstLanguage.getSelectedItem().getValue();
+		langName = langName.substring(0, 2);
+		String helpURL = MSysConfig.getValue("LOGIN_HELP_URL", 	"http://wiki.idempiere.org/{lang}/Login_Help");
+		if (helpURL.contains("{lang}"))
+			helpURL = Util.replace(helpURL, "{lang}", langName);
 		try {
 			Executions.getCurrent().sendRedirect(helpURL, "_blank");
 		}
@@ -484,6 +489,8 @@ public class LoginPanel extends Window implements EventListener<Event>
     	chkRememberMe.setLabel(Msg.getMsg(language, "RememberMe"));
     	chkSelectRole.setLabel(Msg.getMsg(language, "SelectRole"));
     	btnResetPassword.setLabel(Msg.getMsg(language, "ForgotMyPassword"));
+    	pnlButtons.getButton(ConfirmPanel.A_OK).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_OK)));
+    	pnlButtons.getButton(ConfirmPanel.A_HELP).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_HELP)));
     }
 
 	private Language findLanguage(String langName) {

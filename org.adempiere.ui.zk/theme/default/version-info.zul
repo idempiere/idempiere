@@ -55,7 +55,7 @@ Copyright (C) 2009 Idalica Corporation
 		<tr>
 			<td align="right">Host</td>
 			<td>:</td>
-			<td aligh="left">${desktop.execution.localName}</td>
+			<td aligh="left">${desktop.execution.serverName}</td>
 		</tr>
 	</table>
 </div>
