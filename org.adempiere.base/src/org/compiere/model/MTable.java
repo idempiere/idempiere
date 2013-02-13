@@ -104,30 +104,23 @@ public class MTable extends X_AD_Table
 		MTable retValue = null;
 		String sql = "SELECT * FROM AD_Table WHERE UPPER(TableName)=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setString(1, tableName.toUpperCase());
-			ResultSet rs = pstmt.executeQuery ();
-			if (rs.next ())
+			rs = pstmt.executeQuery ();
+			if (rs.next())
 				retValue = new MTable (ctx, rs, null);
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
 
 		if (retValue != null)
@@ -229,37 +222,30 @@ public class MTable extends X_AD_Table
 			return m_columns;
 		m_columnNameMap = new HashMap<String, Integer>();
 		m_columnIdMap = new HashMap<Integer, Integer>();
-		String sql = "SELECT * FROM AD_Column WHERE AD_Table_ID=? ORDER BY ColumnName";
+		String sql = "SELECT * FROM AD_Column WHERE AD_Table_ID=? AND IsActive='Y' ORDER BY ColumnName";
 		ArrayList<MColumn> list = new ArrayList<MColumn>();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getAD_Table_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ()) {
 				MColumn column = new MColumn (getCtx(), rs, get_TrxName());
 				list.add (column);
 				m_columnNameMap.put(column.getColumnName().toUpperCase(), list.size() - 1);
 				m_columnIdMap.put(column.getAD_Column_ID(), list.size() - 1);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
 		//
 		m_columns = new MColumn[list.size ()];
@@ -476,6 +462,7 @@ public class MTable extends X_AD_Table
 		finally
 		{
 			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
 
 		return po;
@@ -581,20 +568,25 @@ public class MTable extends X_AD_Table
 	public static int getTable_ID(String tableName) {
 		int retValue = 0;
 		String SQL = "SELECT AD_Table_ID FROM AD_Table WHERE tablename = ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
+			pstmt = DB.prepareStatement(SQL, null);
 			pstmt.setString(1, tableName);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				retValue = rs.getInt(1);
-			rs.close();
-			pstmt.close();
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, SQL, e);
 			retValue = -1;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
 		return retValue;
 	}

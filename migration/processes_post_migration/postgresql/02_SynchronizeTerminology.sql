@@ -349,8 +349,7 @@ ORDER BY UPPER (columnname), columnname;
 UPDATE AD_PROCESS_PARA
    SET columnname = (SELECT e.columnname
                        FROM AD_ELEMENT e
-                      -- WHERE UPPER (e.columnname) = UPPER (AD_PROCESS_PARA.columnname))
-                      WHERE e.columnname = AD_PROCESS_PARA.columnname) -- Temporary patch Fixed Assets are broking it
+                      WHERE UPPER (e.columnname) = UPPER (AD_PROCESS_PARA.columnname))
  WHERE AD_PROCESS_PARA.iscentrallymaintained = 'Y'
    AND AD_PROCESS_PARA.isactive = 'Y'
    AND EXISTS (
