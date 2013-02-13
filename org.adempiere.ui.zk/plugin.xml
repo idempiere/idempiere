@@ -2,7 +2,5 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="org.adempiere.webui.Form" name="Web Form" schema="schema/org.adempiere.webui.Form.exsd"/>
-   <extension-point id="org.adempiere.webui.factory.IInfoFactory" name="Info Factory extension" schema="schema/org.adempiere.webui.factory.IInfoFactory.exsd"/>
-   <extension-point id="org.adempiere.webui.factory.IEditorFactory" name="Field editor factory" schema="schema/org.adempiere.webui.factory.IEditorFactory.exsd"/>
 
 </plugin>

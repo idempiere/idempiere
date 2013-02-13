@@ -3,8 +3,8 @@
  */
 package org.adempiere.pipo2;
 
-import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
+import org.adempiere.base.equinox.EquinoxExtensionLocator;
 
 /**
  * @author hengsin
@@ -12,12 +12,11 @@ import org.adempiere.base.ServiceQuery;
  */
 public class OSGiHandlerRegistry implements IHandlerRegistry {
 
-	private final static String SERVICE_ID = "org.adempiere.pipo.Handlers";
+	private final static String EXTENSION_POINT_ID = "org.adempiere.pipo.Handlers";
 	/**
 	 * 
 	 */
 	public OSGiHandlerRegistry() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
@@ -36,11 +35,11 @@ public class OSGiHandlerRegistry implements IHandlerRegistry {
 		
 		ServiceQuery query = new ServiceQuery();
 		query.put("id", id);
-		handler = Service.locator().locate(ElementHandler.class, SERVICE_ID, null, query).getService();
+		handler = EquinoxExtensionLocator.instance().locate(ElementHandler.class, EXTENSION_POINT_ID, null, query).getExtension();
 		if (handler == null) {
 			id = TABLE_GENERIC_HANDLER;
 			query.put("id", id);
-			handler = Service.locator().locate(ElementHandler.class, SERVICE_ID, null, query).getService();
+			handler = EquinoxExtensionLocator.instance().locate(ElementHandler.class, EXTENSION_POINT_ID, null, query).getExtension();
 		}
 		return handler;
 	}
@@ -53,7 +52,7 @@ public class OSGiHandlerRegistry implements IHandlerRegistry {
 		ElementHandler handler = null;
 		ServiceQuery query = new ServiceQuery();
 		query.put("id", name);
-		handler = Service.locator().locate(ElementHandler.class, SERVICE_ID, null, query).getService();
+		handler = EquinoxExtensionLocator.instance().locate(ElementHandler.class, EXTENSION_POINT_ID, null, query).getExtension();
 		return handler;
 	}
 }

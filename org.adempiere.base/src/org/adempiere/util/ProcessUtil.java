@@ -157,52 +157,8 @@ public final class ProcessUtil {
 		process = Core.getProcess(className);
 
 		if (process == null) {
-			//Get Class
-			Class<?> processClass = null;
-			//use context classloader if available
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			if (classLoader != null)
-			{
-				try
-				{
-					processClass = classLoader.loadClass(className);
-				}
-				catch (ClassNotFoundException ex)
-				{
-					log.log(Level.FINE, className, ex);
-				}
-			}
-			if (processClass == null)
-			{
-				classLoader = ProcessUtil.class.getClassLoader();
-				try
-				{
-					processClass = classLoader.loadClass(className);
-				}
-				catch (ClassNotFoundException ex)
-				{
-					log.log(Level.WARNING, className, ex);
-					pi.setSummary ("ClassNotFound", true);
-					return false;
-				}
-			}
-
-			if (processClass == null) {
-				pi.setSummary("No Instance for " + pi.getClassName(), true);
-				return false;
-			}
-
-			//Get Process
-			try
-			{
-				process = (ProcessCall)processClass.newInstance();
-			}
-			catch (Exception ex)
-			{
-				log.log(Level.WARNING, "Instance for " + className, ex);
-				pi.setSummary ("InstanceError", true);
-				return false;
-			}
+			pi.setSummary("Failed to create new process instance for " + className, true);
+			return false;
 		}
 
 		boolean success = false;

@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.adempiere.base;
 
+import org.adempiere.base.ds.DynamicServiceLocator;
+
 /**
  * This is a very simple factory for service locators
  * 
@@ -24,7 +26,7 @@ package org.adempiere.base;
  */
 public class Service {
 
-	private static IServiceLocator theLocator = new DelegatingServiceLocator();
+	private static IServiceLocator theLocator = new DynamicServiceLocator();
 
 	/**
 	 * 

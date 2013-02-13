@@ -46,14 +46,6 @@ public class DynamicServiceLocator implements IServiceLocator {
 	}
 
 	/**
-	 * @see org.adempiere.base.IServiceLocator#locate(java.lang.Class, java.lang.String)
-	 */
-	@Override
-	public <T> IServiceHolder<T> locate(Class<T> type, String serviceType) {
-		return locate(type);
-	}
-
-	/**
 	 * @see org.adempiere.base.IServiceLocator#locate(java.lang.Class, org.adempiere.base.ServiceQuery)
 	 */
 	@Override
@@ -81,15 +73,6 @@ public class DynamicServiceLocator implements IServiceLocator {
 	}
 
 	/**
-	 * @see org.adempiere.base.IServiceLocator#locate(java.lang.Class, java.lang.String, java.lang.String, org.adempiere.base.ServiceQuery)
-	 */
-	@Override
-	public <T> IServiceHolder<T> locate(Class<T> type, String serviceType, String serviceId,
-			ServiceQuery query) {
-		return locate(type, serviceId, query);
-	}
-
-	/**
 	 * @see org.adempiere.base.IServiceLocator#list(java.lang.Class)
 	 */
 	@Override
@@ -98,14 +81,6 @@ public class DynamicServiceLocator implements IServiceLocator {
 		ServiceTracker<T, T> tracker = BaseActivator.getServiceTracker(type, filter);
 		
 		return new DynamicServiceHolder<T>(tracker);
-	}
-
-	/**
-	 * @see org.adempiere.base.IServiceLocator#list(java.lang.Class, java.lang.String)
-	 */
-	@Override
-	public <T> IServicesHolder<T> list(Class<T> type, String serviceType) {
-		return list(type);
 	}
 
 	/**
@@ -132,15 +107,6 @@ public class DynamicServiceLocator implements IServiceLocator {
 		Filter filter = filter(type, serviceId, query);
 		ServiceTracker<T, T> tracker = BaseActivator.getServiceTracker(type, filter);
 		return new DynamicServiceHolder<T>(tracker);
-	}
-
-	/**
-	 * @see org.adempiere.base.IServiceLocator#list(java.lang.Class, java.lang.String, java.lang.String, org.adempiere.base.ServiceQuery)
-	 */
-	@Override
-	public <T> IServicesHolder<T> list(Class<T> type, String serviceType,
-			String serviceId, ServiceQuery query) {
-		return list(type, serviceId, query);
 	}
 
 	private Filter filter(Class<?> type, String serviceId, ServiceQuery query) {

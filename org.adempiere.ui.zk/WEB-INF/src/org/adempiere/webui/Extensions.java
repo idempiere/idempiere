@@ -20,8 +20,11 @@
  *****************************************************************************/
 package org.adempiere.webui;
 
+import java.util.List;
+
 import org.adempiere.base.Service;
-import org.adempiere.webui.panel.IFormController;
+import org.adempiere.webui.factory.IFormFactory;
+import org.adempiere.webui.panel.ADForm;
 
 /**
  *
@@ -33,10 +36,18 @@ public class Extensions {
 
 	/**
 	 *
-	 * @param extensionId
-	 * @return IFormController instance or null if extensionId not found
+	 * @param formId Java class name or equinox extension Id
+	 * @return IFormController instance or null if formId not found
 	 */
-	public static IFormController getForm(String extensionId) {
-		return Service.locator().locate(IFormController.class, "org.adempiere.webui.Form", extensionId, null).getService();
+	public static ADForm getForm(String formId) {
+		List<IFormFactory> factories = Service.locator().list(IFormFactory.class).getServices();
+		if (factories != null) {
+			for(IFormFactory factory : factories) {
+				ADForm form = factory.newFormInstance(formId);
+				if (form != null)
+					return form;
+			}
+		}
+		return null;
 	}
 }

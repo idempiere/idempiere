@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="org.adempiere.base.IResourceFinder" name="ResourceFinder" schema="schema/org.adempiere.base.IResourceFinder.exsd"/>
    <extension-point id="org.adempiere.base.IColumnCallout" name="Callout" schema="schema/org.adempiere.base.Callout.exsd"/>
-   <extension-point id="org.adempiere.base.IDictionaryService" name="DictionaryService" schema="schema/org.adempiere.base.IDictionaryService.exsd"/>
    <extension-point id="org.adempiere.base.Process" name="Process" schema="schema/org.adempiere.base.Process.exsd"/>
    <extension-point id="org.adempiere.base.ModelValidator" name="Model Validator" schema="schema/org.adempiere.base.ModelValidator.exsd"/>
-   <extension-point id="org.compiere.db.AdempiereDatabase" name="Adempiere Database Interface" schema="schema/org.compiere.db.AdempiereDatabase.exsd"/>
-   <extension-point id="org.compiere.interfaces.Server" name="Server Interface" schema="schema/org.compiere.interfaces.Server.exsd"/>
-   <extension-point id="org.compiere.interfaces.Status" name="Status interface" schema="schema/org.compiere.interfaces.Status.exsd"/>
-   <extension-point id="org.adempiere.base.IModelFactory" name="Model Factory" schema="schema/org.adempiere.base.IModelFactory.exsd"/>
-   <extension-point id="org.adempiere.base.IDocFactory" name="Financial Document Factory" schema="schema/org.adempiere.base.IDocFactory.exsd"/>
    <extension-point id="org.adempiere.base.IGridTabExporter" name="Grid data export extension" schema="schema/org.adempiere.base.IGridTabExporter.exsd"/>
    <extension-point id="org.adempiere.base.IGridTabImporter" name="Grid data import extension" schema="schema/org.adempiere.base.IGridTabImporter.exsd"/>
    <extension-point id="org.compiere.model.PaymentProcessor" name="Payment Processor" schema="schema/org.compiere.model.PaymentProcessor.exsd"/>

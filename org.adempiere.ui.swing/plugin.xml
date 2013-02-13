@@ -2,16 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="org.adempiere.apps.Form" name="Form" schema="schema/org.adempiere.apps.Form.exsd"/>
-   <extension-point id="org.adempiere.ui.swing.factory.IInfoFactory" name="Info Factory extension" schema="schema/org.adempiere.ui.swing.factory.IInfoFactory.exsd"/>
-   <extension-point id="org.adempiere.ui.swing.factory.IEditorFactory" name="Field editor factory" schema="schema/org.adempiere.ui.swing.factory.IEditorFactory.exsd"/>
-   <extension
-         id="RF"
-         name="RF"
-         point="org.adempiere.base.IResourceFinder">
-      <finder
-            class="org.compiere.util.ResourceFinder">
-      </finder>
-   </extension>
    <extension
          id="org.adempiere.ui.swing.client"
          name="Adempiere Swing Client"
@@ -19,12 +9,6 @@
          <application>
          	<run class="org.adempiere.client.Application" />
 		 </application>
-   </extension>
-   <extension
-         point="org.compiere.print.ReportViewerProvider">
-      <provider
-            class="org.compiere.print.SwingViewerProvider">
-      </provider>
    </extension>
    <extension
          id="client_product"
@@ -37,24 +21,6 @@
                value="Adempiere Swing Client">
          </property>
       </product>
-   </extension>
-   <extension
-         id="org.adempiere.ui.swing.factory.DefaultInfoFactory"
-         name="Default Info Factory"
-         point="org.adempiere.ui.swing.factory.IInfoFactory">
-      <factory
-            class="org.adempiere.ui.swing.factory.DefaultInfoFactory"
-            priority="0">
-      </factory>
-   </extension>
-   <extension
-         id="org.adempiere.ui.swing.factory.DefaultEditorFactory"
-         name="Default field editor factory"
-    	 point="org.adempiere.ui.swing.factory.IEditorFactory">
-      <factory
-            class="org.adempiere.ui.swing.factory.DefaultEditorFactory"
-            priority="0">
-      </factory>
    </extension>
 
 </plugin>

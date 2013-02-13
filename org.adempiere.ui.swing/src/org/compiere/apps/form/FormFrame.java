@@ -330,8 +330,6 @@ public class FormFrame extends CFrame
 			// Create instance w/o parameters
 			// Try equinox extension then java classpath
 			m_panel = Client.getFormPanel(className);
-			if (m_panel == null)
-				m_panel = (FormPanel)Class.forName(className).newInstance();
 		}
 		catch (Exception e)
 		{

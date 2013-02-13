@@ -58,4 +58,4 @@ Bundle-Activator: org.adempiere.webui.WebUIActivator
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.zkoss.zk.library
 Web-ContextPath: webui
-Service-Component: OSGI-INF/reportviewerprovider.xml, OSGI-INF/defaultinfofactory.xml, OSGI-INF/defaulteditorfactory.xml, OSGI-INF/jrviewerprovider.xml, OSGI-INF/resourcefinder.xml, OSGI-INF/defaultpaymentformfactory.xml, OSGI-INF/processfactory.xml, OSGI-INF/defaultprintshippinglabel.xml, OSGI-INF/defaultcreatefromfactory.xml
+Service-Component: OSGI-INF/reportviewerprovider.xml, OSGI-INF/defaultinfofactory.xml, OSGI-INF/defaulteditorfactory.xml, OSGI-INF/jrviewerprovider.xml, OSGI-INF/resourcefinder.xml, OSGI-INF/defaultpaymentformfactory.xml, OSGI-INF/processfactory.xml, OSGI-INF/defaultprintshippinglabel.xml, OSGI-INF/defaultcreatefromfactory.xml, OSGI-INF/defaultformfactory.xml

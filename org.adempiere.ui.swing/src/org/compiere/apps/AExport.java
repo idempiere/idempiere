@@ -28,7 +28,7 @@ import java.util.logging.Level;
 import javax.swing.JFileChooser;
 
 import org.adempiere.base.IGridTabExporter;
-import org.adempiere.base.Service;
+import org.adempiere.base.equinox.EquinoxExtensionLocator;
 import org.compiere.grid.GridController;
 import org.compiere.grid.VTabbedPane;
 import org.compiere.model.GridTab;
@@ -55,7 +55,7 @@ public class AExport
 		//
 		exporterMap = new HashMap<String, IGridTabExporter>();
 		extensionMap = new HashMap<String, String>();
-		List<IGridTabExporter> exporterList = Service.locator().list(IGridTabExporter.class).getServices();
+		List<IGridTabExporter> exporterList = EquinoxExtensionLocator.instance().list(IGridTabExporter.class).getExtensions();
 		for(IGridTabExporter exporter : exporterList)
 		{
 			String extension = exporter.getFileExtension();

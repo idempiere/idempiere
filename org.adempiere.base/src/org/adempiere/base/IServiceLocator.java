@@ -21,7 +21,7 @@ package org.adempiere.base;
  * This is the central authority for adempiere service definition,
  * because each service defined has to be looked up via this interface.
  * 
- * A service in adempiere is an implementation for the registered interface, expose through osgi service registry or equinox extension registry
+ * A service in adempiere is an implementation for the registered interface, expose through osgi service registry
  * 
  * @author viola
  *
@@ -37,15 +37,6 @@ public interface IServiceLocator {
 	/**
 	 * 
 	 * @param type
-	 * @param serviceType equinox extension point id, ignore by osgi service locator
-	 * type.getName
-	 * @return holder for dynamic service
-	 */
-	<T> IServiceHolder<T> locate(Class<T> type, String serviceType);
-	
-	/**
-	 * 
-	 * @param type
 	 * @param query
 	 * @return
 	 */
@@ -54,21 +45,11 @@ public interface IServiceLocator {
 	/**
 	 * 
 	 * @param type
-	 * @param serviceId component name or extension id
+	 * @param componentName service component name
 	 * @param query
 	 * @return holder for dynamic service
 	 */
-	<T> IServiceHolder<T> locate(Class<T> type, String serviceId, ServiceQuery query);
-	
-	/**
-	 * 
-	 * @param type
-	 * @param serviceType equinox extension point id, ignore by osgi service locator
-	 * @param serviceId component name or extension id
-	 * @param query
-	 * @return holder for dynamic service
-	 */
-	<T> IServiceHolder<T> locate(Class<T> type, String serviceType, String serviceId, ServiceQuery query);
+	<T> IServiceHolder<T> locate(Class<T> type, String componentName, ServiceQuery query);
 	
 	/**
 	 * 
@@ -76,14 +57,6 @@ public interface IServiceLocator {
 	 * @return holder for list of dynamic service
 	 */
 	<T> IServicesHolder<T> list(Class<T> type);
-	
-	/**
-	 * 
-	 * @param type
-	 * @param serviceType equinox extension point id, ignore by osgi service locator
-	 * @return holder for list of dynamic service
-	 */
-	<T> IServicesHolder<T> list(Class<T> type, String serviceType);
 	
 	/**
 	 * 
@@ -96,19 +69,9 @@ public interface IServiceLocator {
 	/**
 	 * 
 	 * @param type
-	 * @param serviceId component name or extension id
+	 * @param componentName osgi service component name
 	 * @param query
 	 * @return holder for list of dynamic service
 	 */
-	<T> IServicesHolder<T> list(Class<T> type, String serviceId, ServiceQuery query);
-	
-	/**
-	 * 
-	 * @param type
-	 * @param serviceType equinox extension point id, ignore by osgi service locator
-	 * @param serviceId component name or extension id
-	 * @param query
-	 * @return holder for list of dynamic service
-	 */
-	<T> IServicesHolder<T> list(Class<T> type, String serviceType, String serviceId, ServiceQuery query);
+	<T> IServicesHolder<T> list(Class<T> type, String componentName, ServiceQuery query);	
 }

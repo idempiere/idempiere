@@ -21,6 +21,7 @@
 package org.adempiere.base;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -70,38 +71,54 @@ public class Core {
 	 * @return list of callout register for tableName.columnName
 	 */
 	public static List<IColumnCallout> findCallout(String tableName, String columnName) {
-		ServiceQuery query = new ServiceQuery();
-		query.put("tableName", tableName);
-		query.put("columnName", columnName);
-
-		return Service.locator().list(IColumnCallout.class, query).getServices();
+		List<IColumnCallout> list = new ArrayList<IColumnCallout>();
+		List<IColumnCalloutFactory> factories = Service.locator().list(IColumnCalloutFactory.class).getServices();
+		if (factories != null) {
+			for(IColumnCalloutFactory factory : factories) {
+				IColumnCallout[] callouts = factory.getColumnCallouts(tableName, columnName);
+				if (callouts != null && callouts.length > 0) {
+					for(IColumnCallout callout : callouts) {
+						list.add(callout);
+					}
+				}
+			}
+		}
+		return list;
 	}
 
 	/**
 	 *
-	 * @param serviceId
-	 * @return ProcessCall instance or null if serviceId not found
+	 * @param processId Java class name or equinox extension id
+	 * @return ProcessCall instance or null if processId not found
 	 */
-	public static ProcessCall getProcess(String serviceId) {
-		ProcessCall process = null;
+	public static ProcessCall getProcess(String processId) {
 		List<IProcessFactory> factories = Service.locator().list(IProcessFactory.class).getServices();
 		if (factories != null && !factories.isEmpty()) {
 			for(IProcessFactory factory : factories) {
-				process = factory.newProcessInstance(serviceId);
+				ProcessCall process = factory.newProcessInstance(processId);
 				if (process != null)
 					return process;
 			}
 		}
-		return Service.locator().locate(ProcessCall.class, "org.adempiere.base.Process", serviceId, null).getService();		
+		return null; 		
 	}
 
 	/**
 	 *
-	 * @param serviceId
-	 * @return ModelValidator instance of null if serviceId not found
+	 * @param validatorId Java class name or equinox extension Id
+	 * @return ModelValidator instance of null if validatorId not found
 	 */
-	public static ModelValidator getModelValidator(String serviceId) {
-		return Service.locator().locate(ModelValidator.class, "org.adempiere.base.ModelValidator", serviceId, null).getService();
+	public static ModelValidator getModelValidator(String validatorId) {
+		List<IModelValidatorFactory> factoryList = Service.locator().list(IModelValidatorFactory.class).getServices();
+		if (factoryList != null) {
+			for(IModelValidatorFactory factory : factoryList) {
+				ModelValidator validator = factory.newModelValidatorInstance(validatorId);
+				if (validator != null)
+					return validator;
+			}
+		}
+		
+		return null;
 	}
 
 	/**
@@ -130,21 +147,18 @@ public class Core {
 		}
 		//
 		PaymentProcessor myProcessor = null;
-		myProcessor = Service.locator().locate(PaymentProcessor.class, className, null).getService();
-		if (myProcessor == null) {
-			//fall back to dynamic java class loadup
-			try {
-				Class<?> ppClass = Class.forName(className);
-				if (ppClass != null)
-					myProcessor = (PaymentProcessor)ppClass.newInstance();
-			} catch (Error e1) {   //  NoClassDefFound
-				s_log.log(Level.SEVERE, className + " - Error=" + e1.getMessage());
-				return null;
-			} catch (Exception e2) {
-				s_log.log(Level.SEVERE, className, e2);
-				return null;
+		
+		List<IPaymentProcessorFactory> factoryList = Service.locator().list(IPaymentProcessorFactory.class).getServices();
+		if (factoryList != null) {
+			for(IPaymentProcessorFactory factory : factoryList) {
+				PaymentProcessor processor = factory.newPaymentProcessorInstance(className);
+				if (processor != null) {
+					myProcessor = processor;
+					break;
+				}
 			}
 		}
+		
 		if (myProcessor == null) {
 			s_log.log(Level.SEVERE, "Not found in service/extension registry and classpath");
 			return null;
@@ -156,6 +170,11 @@ public class Core {
 		return myProcessor;
 	}
 	
+	/**
+	 * 
+	 * @param sf
+	 * @return shipment process instance or null if not found
+	 */
 	public static IShipmentProcessor getShipmentProcessor(MShipperFacade sf) 
 	{
 		if (s_log.isLoggable(Level.FINE))
@@ -168,33 +187,16 @@ public class Core {
 			return null;
 		}
 		
-		IShipmentProcessor myProcessor = Service.locator().locate(IShipmentProcessor.class, className, null).getService();
-		if (myProcessor == null) 
-		{
-			//fall back to dynamic java class loadup
-			try 
-			{
-				Class<?> ppClass = Class.forName(className);
-				if (ppClass != null)
-					myProcessor = (IShipmentProcessor) ppClass.newInstance();
-			} 
-			catch (Error e1) 
-			{   //  NoClassDefFound
-				s_log.log(Level.SEVERE, className + " - Error=" + e1.getMessage());
-				return null;
-			} 
-			catch (Exception e2) 
-			{
-				s_log.log(Level.SEVERE, className, e2);
-				return null;
-			}
-		}
-		if (myProcessor == null) 
-		{
-			s_log.log(Level.SEVERE, "Not found in service/extension registry and classpath");
+		List<IShipmentProcessorFactory> factoryList = Service.locator().list(IShipmentProcessorFactory.class).getServices();
+		if (factoryList == null) 
 			return null;
+		for (IShipmentProcessorFactory factory : factoryList)
+		{
+			IShipmentProcessor processor = factory.newShipmentProcessorInstance(className);
+			if (processor != null)
+				return processor;
 		}
 		
-		return myProcessor;
+		return null;
 	}
 }

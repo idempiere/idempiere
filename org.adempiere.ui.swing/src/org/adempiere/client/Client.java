@@ -20,7 +20,10 @@
  *****************************************************************************/
 package org.adempiere.client;
 
+import java.util.List;
+
 import org.adempiere.base.Service;
+import org.adempiere.ui.swing.factory.IFormFactory;
 import org.compiere.apps.form.FormPanel;
 
 /**
@@ -31,12 +34,19 @@ import org.compiere.apps.form.FormPanel;
 public class Client {
 
 	/**
-	 *
-	 * @param extensionId
-	 * @return
+	 * @param formId
+	 * @return new form instance
 	 */
-	public static FormPanel getFormPanel(String extensionId) {
-		return Service.locator().locate(FormPanel.class, "org.adempiere.apps.Form", extensionId, null).getService();
+	public static FormPanel getFormPanel(String formId) {
+		List<IFormFactory> factories = Service.locator().list(IFormFactory.class).getServices();
+		if (factories != null) {
+			for(IFormFactory factory : factories) {
+				FormPanel form = factory.newFormInstance(formId);
+				if (form != null)
+					return form;
+			}
+		}
+		return null;
 	}
 
 }

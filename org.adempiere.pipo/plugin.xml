@@ -3,12 +3,6 @@
 <plugin>
    <extension-point id="org.adempiere.pipo.Handlers" name="Element Handlers" schema="schema/org.adempiere.pipo.Handlers.exsd"/>
    <extension
-         point="org.adempiere.base.IDictionaryService">
-      <client
-            class="org.adempiere.pipo.srv.PipoDictionaryService">
-      </client>
-   </extension>
-   <extension
          id="org.adempiere.pipo2.GridTab2PackExporter"
          name="2Pack Exporter"
          point="org.adempiere.base.IGridTabExporter">

@@ -14,3 +14,4 @@ Export-Package: org.adempiere.pipo.srv,
  org.adempiere.pipo2,
  org.adempiere.pipo2.exception
 Require-Bundle: org.adempiere.base;bundle-version="1.0.0"
+Service-Component: OSGI-INF/dictionaryservice.xml

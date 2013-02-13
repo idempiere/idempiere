@@ -44,7 +44,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import org.adempiere.base.Service;
+import org.adempiere.base.equinox.EquinoxExtensionLocator;
 import org.adempiere.install.IDBConfigMonitor;
 import org.adempiere.install.IDatabaseConfig;
 import org.compiere.Adempiere;
@@ -79,7 +79,7 @@ public class ConfigurationData
 
 	private void initDatabaseConfig()
 	{
-		List<IDatabaseConfig> configList = Service.locator().list(IDatabaseConfig.class).getServices();
+		List<IDatabaseConfig> configList = EquinoxExtensionLocator.instance().list(IDatabaseConfig.class).getExtensions();
 		m_databaseConfig = new IDatabaseConfig[configList.size()];
 		DBTYPE = new String[m_databaseConfig.length];
 		for(int i = 0; i < configList.size(); i++)

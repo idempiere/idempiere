@@ -30,8 +30,8 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
-import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
+import org.adempiere.base.equinox.EquinoxExtensionLocator;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.Lookup;
 import org.compiere.model.MWebService;
@@ -526,7 +526,7 @@ public class AbstractService {
 		ServiceQuery query = new ServiceQuery();
 		query.put("WSType",serviceType);
 		
-		return Service.locator().list(IWSValidator.class, query).getServices();
+		return EquinoxExtensionLocator.instance().list(IWSValidator.class, query).getExtensions();
 	}
 	
 	/**

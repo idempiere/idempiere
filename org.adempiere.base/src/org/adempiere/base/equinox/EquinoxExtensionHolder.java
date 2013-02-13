@@ -11,54 +11,37 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.base;
+package org.adempiere.base.equinox;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author hengsin
  *
  */
-public class DelegatingServiceHolder<T> implements IServiceHolder<T>,
-		IServicesHolder<T> {
+public class EquinoxExtensionHolder<T> {
 
-	private List<IServiceHolder<T>> serviceHolder = new ArrayList<IServiceHolder<T>>();
-	private List<IServicesHolder<T>> servicesHolder = new ArrayList<IServicesHolder<T>>();
-	
+	private ExtensionList<T> extensionList;
+
 	/**
-	 * 
+	 * @param list
 	 */
-	public DelegatingServiceHolder() {
-	}
-	
-	public void addServiceHolder(IServiceHolder<T> holder) {
-		serviceHolder.add(holder);
+	public EquinoxExtensionHolder(ExtensionList<T> list) {
+		extensionList = list;
 	}
 
-	public void addServicesHolder(IServicesHolder<T> holder) {
-		servicesHolder.add(holder);
-	}
-	
-	@Override
-	public List<T> getServices() {
-		List<T> list = new ArrayList<T>();
-		for(IServicesHolder<T> holder : servicesHolder) {
-			List<T> t = holder.getServices();
-			if (t != null && !t.isEmpty())
-				list.addAll(t);
-		}
-		return list;
+	/**
+	 * @return new extension instance
+	 */
+	public T getExtension() {
+		return extensionList.first();
 	}
 
-	@Override
-	public T getService() {
-		T t = null;
-		for(IServiceHolder<T> holder : serviceHolder) {
-			t = holder.getService();
-			if (t != null) break;
-		}
-		return t;
+	/**
+	 * @return list of matching extensions
+	 */
+	public List<T> getExtensions() {
+		return extensionList.asList();
 	}
 
 }

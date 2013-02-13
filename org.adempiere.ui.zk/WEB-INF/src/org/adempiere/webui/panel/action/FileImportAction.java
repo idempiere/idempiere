@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.adempiere.base.IGridTabImporter;
-import org.adempiere.base.Service;
+import org.adempiere.base.equinox.EquinoxExtensionLocator;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
@@ -116,7 +116,7 @@ public class FileImportAction implements EventListener<Event>
 		
 		importerMap = new HashMap<String, IGridTabImporter>();
 		extensionMap = new HashMap<String, String>();
-		List<IGridTabImporter> importerList = Service.locator().list(IGridTabImporter.class).getServices();
+		List<IGridTabImporter> importerList = EquinoxExtensionLocator.instance().list(IGridTabImporter.class).getExtensions();
 		for(IGridTabImporter importer : importerList)
 		{
 			String extension = importer.getFileExtension();

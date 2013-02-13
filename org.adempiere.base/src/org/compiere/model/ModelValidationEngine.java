@@ -155,22 +155,24 @@ public class ModelValidationEngine
 		{
 			//
 			ModelValidator validator = null;
-			//always query equinox extension first
 			validator = Core.getModelValidator(className);
 
 			if (validator == null)
 			{
-				Class<?> clazz = Class.forName(className);
-				validator = (ModelValidator)clazz.newInstance();
+				missingModelValidationMessage = missingModelValidationMessage +
+						 (client != null ? (" on client " + client.getName()) : " global") + '\n';
 			}
-			initialize(validator, client);
+			else
+			{
+				initialize(validator, client);
+			}
 		}
 		catch (Exception e)
 		{
 			//logging to db will try to init ModelValidationEngine again!
 			e.printStackTrace();
 			missingModelValidationMessage = missingModelValidationMessage + e.toString() +
-			 (client != null ? (" on client " + client.getName()) : " global") + '\n';
+					 (client != null ? (" on client " + client.getName()) : " global") + '\n';
 		}
 	}
 
