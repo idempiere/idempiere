@@ -541,6 +541,7 @@ public class LoginPanel extends Window implements EventListener<Event>
             }
         	logAuthFailure.log(x_Forward_IP, "/webui", userId, loginErrMsg);
 
+        	Clients.clearBusy();
        		throw new WrongValueException(loginErrMsg);
         }
         else
