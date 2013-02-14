@@ -70,7 +70,7 @@ public class ImportInventory extends SvrProcess
 	/**	Organization for which Costing record must be updated	*/
 	private int				p_AD_OrgTrx_ID = 0;
 	/**	Document Action					*/
-	private String			m_docAction = MInventory.DOCACTION_Prepare;
+	private String			m_docAction = null;
 	
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -322,10 +322,12 @@ public class ImportInventory extends SvrProcess
 		sql = new StringBuilder ("SELECT * FROM I_Inventory ")
 			.append("WHERE I_IsImported='N'").append (clientCheck)
 			.append(" ORDER BY M_Warehouse_ID, TRUNC(MovementDate), I_Inventory_ID");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement (sql.toString (), get_TrxName());
-			ResultSet rs = pstmt.executeQuery ();
+			pstmt = DB.prepareStatement (sql.toString (), get_TrxName());
+			rs = pstmt.executeQuery ();
 			//
 			int x_M_Warehouse_ID = -1;
 			int x_C_DocType_ID = -1;
@@ -343,6 +345,16 @@ public class ImportInventory extends SvrProcess
 					|| !MovementDate.equals(x_MovementDate)
 					|| isInternalUse != x_isInternalUse)
 				{
+					if (inventory != null) {
+						if (m_docAction != null && m_docAction.length() > 0) {
+							if (!inventory.processIt(m_docAction)) {
+								log.warning("Inventory Process Failed: " + inventory + " - " + inventory.getProcessMsg());
+								throw new IllegalStateException("Inventory Process Failed: " + inventory + " - " + inventory.getProcessMsg());
+
+							}
+							inventory.saveEx();
+						}
+					}
 					inventory = new MInventory (getCtx(), 0, get_TrxName());
 					if (imp.getC_DocType_ID() > 0)
 						inventory.setC_DocType_ID(imp.getC_DocType_ID());
@@ -361,14 +373,6 @@ public class ImportInventory extends SvrProcess
 					x_MovementDate = MovementDate;
 					x_isInternalUse = isInternalUse;
 					noInsert++;
-				}
-				else if (inventory != null){
-					if (!inventory.processIt(m_docAction)) {
-						log.warning("Inventory Process Failed: " + inventory + " - " + inventory.getProcessMsg());
-						throw new IllegalStateException("Inventory Process Failed: " + inventory + " - " + inventory.getProcessMsg());
-						
-					}
-					inventory.saveEx();
 				}
 				MProduct product = MProduct.get(getCtx(), imp.getM_Product_ID());
 				//	Line
@@ -434,12 +438,25 @@ public class ImportInventory extends SvrProcess
 					}
 				}
 			}
-			rs.close();
-			pstmt.close();
+			if (inventory != null) {
+				if (m_docAction != null && m_docAction.length() > 0) {
+					if (!inventory.processIt(m_docAction)) {
+						log.warning("Inventory Process Failed: " + inventory + " - " + inventory.getProcessMsg());
+						throw new IllegalStateException("Inventory Process Failed: " + inventory + " - " + inventory.getProcessMsg());
+
+					}
+					inventory.saveEx();
+				}
+			}
 		}
 		catch (Exception e)
 		{
 			throw new AdempiereException(e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
 
 		//	Set Error to indicator to not imported
