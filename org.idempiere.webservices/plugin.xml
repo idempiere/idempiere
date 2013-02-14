@@ -2,5 +2,5 @@
 <?eclipse version="3.0"?>
 <plugin
 >
-   <extension-point id="IWSValidator" name="WebserviceValidator" schema="schema/IWSValidator.exsd"/>
+   <extension-point id="org.idempiere.webservices.IWSValidator" name="WebserviceValidator" schema="schema/IWSValidator.exsd"/>
 </plugin>
