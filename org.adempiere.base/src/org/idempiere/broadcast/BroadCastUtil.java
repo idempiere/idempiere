@@ -13,8 +13,9 @@
  *****************************************************************************/
 package org.idempiere.broadcast;
 
-import org.adempiere.base.IServiceHolder;
-import org.adempiere.base.Service;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
 import org.idempiere.distributed.ITopicSubscriber;
@@ -29,35 +30,68 @@ public class BroadCastUtil {
 	public static final int EVENT_SESSION_TIMEOUT =3;
 	public static final int EVENT_SESSION_ONNODE_TIMEOUT=4;
 	
-	public static void subscribe(ITopicSubscriber<BroadCastMsg> subscriber){
-		
-		IServiceHolder<IMessageService> holder = Service.locator().locate(IMessageService.class);
-		IMessageService service = holder.getService();
+	private final static List<ITopicSubscriber<BroadCastMsg>> subscribers = new ArrayList<ITopicSubscriber<BroadCastMsg>>();
+	private static IMessageService service = null;
+	
+	/**
+	 * 
+	 * @param subscriber
+	 */
+	public static synchronized void subscribe(ITopicSubscriber<BroadCastMsg> subscriber){		
+		subscribers.add(subscriber);
 		if (service != null) {
 			ITopic<BroadCastMsg> topic= service.getTopic(TOPIC_BROADCAST_MESSAGE);
 			topic.subscribe(subscriber);
-		}
+		}		
 	}
 	
-	public static void unSubscribe(ITopicSubscriber<BroadCastMsg> subscriber){
-		
-		IServiceHolder<IMessageService> holder = Service.locator().locate(IMessageService.class);
-		IMessageService service = holder.getService();
+	/**
+	 * 
+	 * @param subscriber
+	 */
+	public static synchronized void unSubscribe(ITopicSubscriber<BroadCastMsg> subscriber){		
+		subscribers.remove(subscriber);
 		if (service != null) {
 			ITopic<BroadCastMsg> topic= service.getTopic(TOPIC_BROADCAST_MESSAGE);
 			topic.unsubscribe(subscriber);
 		}
 	}
 	
-	public static boolean publish(BroadCastMsg msg){
-		
-		IServiceHolder<IMessageService> holder = Service.locator().locate(IMessageService.class);
-		IMessageService service = holder.getService();
+	/**
+	 * 
+	 * @param msg
+	 * @return true if publish successfully
+	 */
+	public static synchronized boolean publish(BroadCastMsg msg){		
 		if (service != null) {
 			ITopic<BroadCastMsg> topic= service.getTopic(TOPIC_BROADCAST_MESSAGE);
 			topic.publish(msg);
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * 
+	 * @param messageService
+	 */
+	public void bindMessageService(IMessageService messageService) {
+		synchronized (BroadCastUtil.class) {
+			service = messageService;
+			for (ITopicSubscriber<BroadCastMsg> subscriber : subscribers) {
+				ITopic<BroadCastMsg> topic= service.getTopic(TOPIC_BROADCAST_MESSAGE);
+				topic.subscribe(subscriber);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param messageService
+	 */
+	public void unbindMessageService(IMessageService messageService) {
+		synchronized (BroadCastUtil.class) {
+			service = null;
+		}
 	}
 }

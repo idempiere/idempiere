@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.adempiere.base.broadcast.util">
+   <implementation class="org.idempiere.broadcast.BroadCastUtil"/>
+   <reference bind="bindMessageService" cardinality="1..1" interface="org.idempiere.distributed.IMessageService" name="IMessageService" policy="dynamic" unbind="unbindMessageService"/>
+</scr:component>

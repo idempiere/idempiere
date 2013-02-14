@@ -26,15 +26,9 @@ import org.idempiere.distributed.ITopicSubscriber;
  */
 public class ZKBroadCastManager implements ITopicSubscriber<BroadCastMsg>{
 
-	private static ZKBroadCastManager broadCastMgr = null;
+	private final static ZKBroadCastManager broadCastMgr = new ZKBroadCastManager();
 	
-	public static ZKBroadCastManager getBroadCastMgr()  {
-		
-		synchronized (ZKBroadCastManager.class) {
-			if(broadCastMgr==null)
-				broadCastMgr= new ZKBroadCastManager();
-			
-		}
+	public static ZKBroadCastManager getBroadCastMgr()  {		
 		return broadCastMgr;
 	}
 	
