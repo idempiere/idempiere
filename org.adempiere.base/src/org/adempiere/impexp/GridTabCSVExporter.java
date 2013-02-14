@@ -32,6 +32,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
 import org.compiere.model.MColumn;
+import org.compiere.model.MQuery;
 import org.compiere.model.MRefList;
 import org.compiere.model.MTable;
 import org.compiere.util.DB;
@@ -39,6 +40,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.jfree.util.Log;
 import org.supercsv.cellprocessor.FmtBool;
 import org.supercsv.cellprocessor.FmtDate;
 import org.supercsv.cellprocessor.FmtNumber;
@@ -51,6 +53,7 @@ import org.supercsv.prefs.CsvPreference;
 /**
  * CSV Exporter for GridTab
  * @author Carlos Ruiz
+ * @author Juan David Arboleda 
  */
 public class GridTabCSVExporter implements IGridTabExporter
 {
@@ -58,18 +61,25 @@ public class GridTabCSVExporter implements IGridTabExporter
 	public void export(GridTab gridTab, List<GridTab> childs, boolean currentRowOnly, File file) {
 
 		ICsvMapWriter mapWriter = null;
+		Map<GridTab,GridField[]> tabMapDetails = new HashMap<GridTab, GridField[]>();
+		MTable table= null;
+		MTable tableDetail = null;
 		try {
 			mapWriter = new CsvMapWriter(new FileWriter(file), CsvPreference.STANDARD_PREFERENCE);
+			String IsValidTab = IsValidTabToExport(gridTab);
+			if (IsValidTab!=null){
+				Log.info(IsValidTab);
+				return;
+			}
 			GridTable gt = gridTab.getTableModel();
 			GridField[] gridFields = getFields(gridTab);
 			List<String> headArray = new ArrayList<String>();
-			List<String> colsArray = new ArrayList<String>();
 			List<CellProcessor> procArray = new ArrayList<CellProcessor>();
-			MTable table = MTable.get(Env.getCtx(), gridTab.getTableName());
+			table = MTable.get(Env.getCtx(), gridTab.getTableName());
+			//master tab
 			for (int idxfld = 0; idxfld < gridFields.length; idxfld++) {
 				GridField field = gridFields[idxfld];
-				colsArray.add(field.getColumnName());
-				MColumn column = MColumn.get(Env.getCtx(), field.getAD_Column_ID());
+				MColumn column = MColumn.get(Env.getCtx(), field.getAD_Column_ID());		
 				String headName = resolveColumnName(table, column);
 				headArray.add(headName);
 				if (DisplayType.Date == column.getAD_Reference_ID()) {
@@ -87,7 +97,46 @@ public class GridTabCSVExporter implements IGridTabExporter
 				} else { // lookups and text
 					procArray.add(null);
 				}
+			}	
+			//Details up to tab level 1 
+			if(childs.size() > 0){				
+			  for(GridTab detail: childs){
+				 
+				 if (detail.getTabLevel()>1) 
+					 continue;
+				 
+				 IsValidTab = IsValidTabToExport(detail);
+				 if (IsValidTab!=null){
+					 Log.info(IsValidTab);
+					 continue;
+				 }	
+				 tableDetail = MTable.get(Env.getCtx(), detail.getTableName());	 
+				 gridFields = getFields(detail);
+				 for(GridField field : gridFields){
+					 MColumn columnDetail  = MColumn.get(Env.getCtx(), field.getAD_Column_ID());
+					 String  headNameDetail =detail.getTableName()+">"+resolveColumnName(tableDetail, columnDetail);
+					 headArray.add(headNameDetail); 
+					 if (DisplayType.Date == columnDetail.getAD_Reference_ID()) {
+						 procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_DATE_FORMAT)));
+					 } else if (DisplayType.DateTime == columnDetail.getAD_Reference_ID()) {
+						 procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_TIMESTAMP_FORMAT)));
+					 } else if (DisplayType.Time == columnDetail.getAD_Reference_ID()) {
+						 procArray.add(new Optional(new FmtDate("DisplayType.DEFAULT_TIME_FORMAT")));
+					 } else if (DisplayType.Integer == columnDetail.getAD_Reference_ID() || DisplayType.isNumeric(columnDetail.getAD_Reference_ID())) {
+						 DecimalFormat nf = DisplayType.getNumberFormat(columnDetail.getAD_Reference_ID());
+						 nf.setGroupingUsed(false);
+						 procArray.add(new Optional(new FmtNumber(nf)));
+					 } else if (DisplayType.YesNo == columnDetail.getAD_Reference_ID()) {
+						 procArray.add(new Optional(new FmtBool("Y", "N")));
+					 } else { // lookups and text
+						 procArray.add(null);
+					 }
+				} 
+			    tabMapDetails.put(detail,gridFields); 
 			}
+				gridFields = null;
+		   }
+				
 			// the header elements are used to map the bean values to each column (names must match)
 			String[] header = headArray.toArray(new String[headArray.size()]);
 			CellProcessor[] processors = procArray.toArray(new CellProcessor[procArray.size()]);
@@ -104,14 +153,42 @@ public class GridTabCSVExporter implements IGridTabExporter
 			}
 			for (int idxrow = start; idxrow < end; idxrow++) {
 				Map<String, Object> row = new HashMap<String, Object>();
-				for (int idxfld = 0; idxfld < header.length; idxfld++) {
-					GridField field = gridFields[idxfld];
+				int idxfld = 0;	
+				int index =0;
+				int rowDetail=0;  
+
+				for(GridField field : getFields(gridTab)){   
 					MColumn column = MColumn.get(Env.getCtx(), field.getAD_Column_ID());
 					String headName = header[idxfld];
 					Object value = resolveValue(gridTab, table, column, idxrow, headName);
 					row.put(headName, value);
-				}
-				mapWriter.write(row, header, processors);
+					idxfld++;
+					index++;
+				} 
+				
+				while(true){		 
+					  if(childs.size()>0){
+						 Map<String, Object> tmpRow = resolveMasterDetailRow(rowDetail,tabMapDetails,headArray,index,gridTab.getKeyID(idxrow), gridTab.getKeyColumnName()); 					  
+						 if(tmpRow!= null){   							
+						   for(Map.Entry<String, Object> details : tmpRow.entrySet()) {	
+							   String detailColumn = details.getKey();
+							   Object value =details.getValue();
+							   row.put(detailColumn , value);
+						   }
+						   rowDetail++;
+						   mapWriter.write(row, header, processors);
+						}else{
+						   break;
+						}
+					 }else{
+						break;
+					 }
+			    }  	
+				
+				if(rowDetail==0)
+				    mapWriter.write(row, header, processors);
+				
+				idxfld=0;
 			}
 		} catch (IOException e) {
 			throw new AdempiereException(e);
@@ -126,7 +203,61 @@ public class GridTabCSVExporter implements IGridTabExporter
 		}
 		
 	}
-
+	
+	//add constraints to not allow certain tabs 
+	private String IsValidTabToExport(GridTab gridTab){
+	    String result=null;
+	    		
+		if(gridTab.isReadOnly())
+		   result = Msg.getMsg(Env.getCtx(),"FieldIsReadOnly", new Object[] {gridTab.getName()});
+		
+		if(gridTab.getTableName().endsWith("_Acct"))
+		   result = "Accounting Tab cannot be exported "+ gridTab.getName();
+		
+		return result;
+	}
+	
+	private Map<String, Object> resolveMasterDetailRow(int currentDetRow,Map<GridTab,GridField[]> tabMapDetails,List<String>headArray,int idxfld,int record_Id,String keyColumnParent){
+		Map<String, Object> row = new HashMap<String, Object>();
+		Object value = null;
+		boolean hasDetails = false;
+		
+		if (currentDetRow > 0 )
+		   for(int j =0;j<idxfld;j++)
+			   row.put(headArray.get(j), null);	
+		
+		for(Map.Entry<GridTab, GridField[]> childTabDetail : tabMapDetails.entrySet()) {		
+		    GridTab childTab = childTabDetail.getKey();
+		    String  whereCla = getWhereClause (childTab ,record_Id ,keyColumnParent);
+		    childTab.getTableModel().dataRequery(whereCla, false, 0);
+		    if (childTab.getRowCount() > 0) {
+			    for(GridField field : childTabDetail.getValue()){
+				    MColumn column = MColumn.get(Env.getCtx(), field.getAD_Column_ID());
+					MTable tableDetail = MTable.get(Env.getCtx(), childTab.getTableName());
+				    String headName = headArray.get(headArray.indexOf(childTab.getTableName()+">"+resolveColumnName(tableDetail,column))); 
+				    value = resolveValue(childTab, MTable.get(Env.getCtx(),childTab.getTableName()), column, currentDetRow, headName.substring(headName.indexOf(">")+ 1,headName.length()));
+				    row.put(headName, value);	 
+				    if (value!=null)
+				    	hasDetails = true;
+				    
+			    }	    	
+		    }
+		}
+		if (hasDetails)
+			return row;
+		else
+		    return null;
+	}
+	
+	public String getWhereClause (GridTab childTab, int record_Id , String keyColumnParent){
+		String whereClau = null; 
+		String linkColumn = childTab.getLinkColumnName();
+		if (keyColumnParent.equals(linkColumn)){
+	    	 whereClau= linkColumn+MQuery.EQUAL+record_Id;
+		}
+	    return whereClau; 
+	}
+	
 	private Object resolveValue(GridTab gridTab, MTable table, MColumn column, int i, String headName) {
 		Object value = null;
 		if (headName.indexOf("[") >= 0 && headName.endsWith("]")) {
@@ -210,9 +341,12 @@ public class GridTabCSVExporter implements IGridTabExporter
 				int AD_Field_ID = Integer.parseInt(fieldIdStr);
 				for (GridField gridField : tmpFields) 
 				{
+					if(gridField.isVirtualColumn() || gridField.isEncrypted() || gridField.isEncryptedColumn())
+						continue;
+					
 					if (gridField.getAD_Field_ID() == AD_Field_ID) 
 					{
-						if (!gridField.isReadOnly() && gridField.isDisplayedGrid())
+						if (!gridField.isReadOnly() && gridField.isDisplayedGrid() && !(DisplayType.Button == MColumn.get(Env.getCtx(),gridField.getAD_Column_ID()).getAD_Reference_ID()))
 							fieldList.add(gridField);
 						
 						break;
@@ -228,6 +362,10 @@ public class GridTabCSVExporter implements IGridTabExporter
 			for (GridField field:tmpFields)
 			{
 				if ("AD_Client_ID".equals(field.getColumnName()))
+					continue;
+				if (DisplayType.Button == MColumn.get(Env.getCtx(),field.getAD_Column_ID()).getAD_Reference_ID())
+					continue;
+				if (field.isVirtualColumn() || field.isEncrypted() || field.isEncryptedColumn())
 					continue;
 				if (field.isParentValue() || (!field.isReadOnly() && field.isDisplayedGrid()))
 					gridFieldList.add(field);
