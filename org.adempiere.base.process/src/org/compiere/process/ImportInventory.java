@@ -69,6 +69,8 @@ public class ImportInventory extends SvrProcess
 	private int				p_M_CostElement_ID = 0;
 	/**	Organization for which Costing record must be updated	*/
 	private int				p_AD_OrgTrx_ID = 0;
+	/**	Document Action					*/
+	private String			m_docAction = MInventory.DOCACTION_Prepare;
 	
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -101,6 +103,8 @@ public class ImportInventory extends SvrProcess
 				p_M_CostElement_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else if (name.equals("AD_OrgTrx_ID"))
 				p_AD_OrgTrx_ID = ((BigDecimal)para[i].getParameter()).intValue();
+			else if (name.equals("DocAction"))
+				m_docAction = (String)para[i].getParameter();
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
@@ -357,6 +361,14 @@ public class ImportInventory extends SvrProcess
 					x_MovementDate = MovementDate;
 					x_isInternalUse = isInternalUse;
 					noInsert++;
+				}
+				else if (inventory != null){
+					if (!inventory.processIt(m_docAction)) {
+						log.warning("Inventory Process Failed: " + inventory + " - " + inventory.getProcessMsg());
+						throw new IllegalStateException("Inventory Process Failed: " + inventory + " - " + inventory.getProcessMsg());
+						
+					}
+					inventory.saveEx();
 				}
 				MProduct product = MProduct.get(getCtx(), imp.getM_Product_ID());
 				//	Line
