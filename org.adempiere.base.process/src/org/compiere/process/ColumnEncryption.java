@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.util.AdempiereUserError;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.SecureEngine;
@@ -71,6 +72,8 @@ public class ColumnEncryption extends SvrProcess {
 	 * connection.
 	 */
 	private Connection m_conn;
+
+	private int count;
 	
 	/**
 	 * Prepare - e.g., get Parameters.
@@ -102,9 +105,11 @@ public class ColumnEncryption extends SvrProcess {
 	 * @throws Exception
 	 */
 	protected String doIt() throws Exception {
-		log.info("AD_Column_ID=" + p_AD_Column_ID + ", IsEncrypted="
-				+ p_IsEncrypted + ", ChangeSetting=" + p_ChangeSetting
-				+ ", MaxLength=" + p_MaxLength);
+		if (log.isLoggable(Level.INFO)) {
+			log.info("AD_Column_ID=" + p_AD_Column_ID + ", IsEncrypted="
+					+ p_IsEncrypted + ", ChangeSetting=" + p_ChangeSetting
+					+ ", MaxLength=" + p_MaxLength);
+		}
 		MColumn column = new MColumn(getCtx(), p_AD_Column_ID, get_TrxName());
 		if (column.get_ID() == 0 || column.get_ID() != p_AD_Column_ID)
 			throw new AdempiereUserError("@NotFound@ @AD_Column_ID@ - "
@@ -136,7 +141,7 @@ public class ColumnEncryption extends SvrProcess {
 		boolean error = false;
 
 		// Test Value
-		if (p_TestValue != null && p_TestValue.length() > 0) {
+		if (p_IsEncrypted && p_TestValue != null && p_TestValue.length() > 0) {
 			String encString = SecureEngine.encrypt(p_TestValue, 0);
 			msglog = new StringBuilder("Encrypted Test Value=").append(encString);
 			addLog(0, null, null, msglog.toString());
@@ -171,7 +176,7 @@ public class ColumnEncryption extends SvrProcess {
 		}
 
 		// Length Test
-		if (p_MaxLength != 0) {
+		if (p_IsEncrypted && p_MaxLength != 0) {
 			StringBuilder testClear = new StringBuilder(); 
 			testClear.append("1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 			while (testClear.length() < p_MaxLength)
@@ -200,19 +205,14 @@ public class ColumnEncryption extends SvrProcess {
 			}
 		}
 
+		count = 0;
 		// If only user chooses both encrypt the contents and override current
 		// settings resize the physical column and encrypt all its contents.
-		if (p_IsEncrypted && p_ChangeSetting) {
-			// If the column has already been encrypted, show a warning message
-			// and exit.
-			if (column.isEncrypted()) {
-				log.severe("EncryptError: Column already encrypted.");
-				throw new Exception();
-			}
+		if (p_ChangeSetting && column.isEncrypted() != p_IsEncrypted) {
 			// Init the transaction and setup the connection.
 			m_trx = Trx.get(get_TrxName(), true);
 			if ((m_conn = m_trx.getConnection()) == null) {
-				log.warning("EncryptError: No connections available");
+				log.warning("No connections available");
 				throw new Exception();
 			}
 			m_conn.setAutoCommit(false);
@@ -221,48 +221,58 @@ public class ColumnEncryption extends SvrProcess {
 			MTable table = MTable.get(getCtx(), column.getAD_Table_ID());
 			String tableName = table.getTableName();
 
-			// Check if the encryption exceeds the current length.
-			int oldLength = column.getFieldLength();
-			int newLength = encryptedColumnLength(oldLength);
-			if (newLength > oldLength) {
-				if (changeFieldLength(columnID, columnName, newLength,
-						tableName) == -1) {
-					log.warning("EncryptError [ChangeFieldLength]: "
-							+ "ColumnID=" + columnID + ", NewLength="
-							+ newLength);
+			if (p_IsEncrypted) {
+				// Check if the encryption exceeds the current length.
+				int oldLength = column.getFieldLength();
+				int newLength = encryptedColumnLength(oldLength);
+				if (newLength > oldLength) {
+					if (changeFieldLength(columnID, columnName, newLength,
+							tableName) == -1) {
+						log.warning("EncryptError [ChangeFieldLength]: "
+								+ "ColumnID=" + columnID + ", NewLength="
+								+ newLength);
+						throw new Exception();
+					}
+				}
+
+				// Encrypt column contents.
+				count = encryptColumnContents(columnName, column.getAD_Table_ID()); 
+				if (count == -1) {
+					log.warning("EncryptError: No records encrypted.");
+					throw new Exception();
+				}
+			} else {
+				// Decrypt column contents.
+				count = decryptColumnContents(columnName, column.getAD_Table_ID()); 
+				if (count == -1) {
+					log.warning("DecryptError: No records decrypted.");
 					throw new Exception();
 				}
 			}
-
-			// Encrypt column contents.
-			if (encryptColumnContents(columnName, column.getAD_Table_ID()) == -1) {
-				log.warning("EncryptError: No records encrypted.");
-				throw new Exception();
-			}
 			
-			if (p_IsEncrypted != column.isEncrypted()) {
-				if (error || !p_ChangeSetting){
-					msglog = new StringBuilder("Encryption NOT changed - Encryption=")
+			if (error || !p_ChangeSetting){
+				msglog = new StringBuilder("Encryption NOT changed - Encryption=")
+						.append(column.isEncrypted());
+				addLog(0, null, null, msglog.toString());
+			} else {
+				column.setIsEncrypted(p_IsEncrypted);
+				if (column.save()){
+					addLog(0, null, null, "#" + (p_IsEncrypted ? "Encrypted=" : "Decrypted=") +count);
+					msglog = new StringBuilder("Encryption CHANGED - Encryption=")
 							.append(column.isEncrypted());
 					addLog(0, null, null, msglog.toString());
-				}
-				else {
-					column.setIsEncrypted(p_IsEncrypted);
-					if (column.save()){
-						msglog = new StringBuilder("Encryption CHANGED - Encryption=")
-								.append(column.isEncrypted());
-						addLog(0, null, null, msglog.toString());
-					}	
-					else
-						addLog(0, null, null, "Save Error");
-				}
+				} else
+					addLog(0, null, null, "Save Error");
 			}
+		} else {
+			addLog(0, null, null, "Can't perform " + (p_IsEncrypted ? "encryption. " : "decryption. ") + "Column is " + (p_IsEncrypted ? "already Encrypted." : " not Encrypted."));
 		}
 		
 		StringBuilder msgreturn = new StringBuilder("Encryption=").append(column.isEncrypted());
 		return msgreturn.toString();
 	} // doIt
 
+	
 	/**
 	 * Encrypt all the contents of a database column.
 	 * 
@@ -340,6 +350,83 @@ public class ColumnEncryption extends SvrProcess {
 		return recordsEncrypted;
 	} // encryptColumnContents
 
+	/**
+	 * Decrypt all the contents of a database column.
+	 * 
+	 * @param columnName
+	 *            The ID of the column to be encrypted.
+	 * @param tableID
+	 *            The ID of the table which owns the column.
+	 * @return The number of rows effected or -1 in case of errors.
+	 * @throws Exception
+	 */
+	private int decryptColumnContents(String columnName, int tableID)
+			throws Exception {
+		// Find the table name
+		String tableName = MTable.getTableName(getCtx(), tableID);
+
+		return decryptColumnContents(columnName, tableName);
+	} // decryptColumnContents
+
+	/**
+	 * Decrypt all the contents of a database column.
+	 * 
+	 * @param columnName
+	 *            The ID of the column to be encrypted.
+	 * @param tableName
+	 *            The name of the table which owns the column.
+	 * @return The number of rows effected or -1 in case of errors.
+	 */
+	private int decryptColumnContents(String columnName, String tableName)
+			throws Exception {
+		int recordsDecrypted = 0;
+		StringBuilder idColumnName = new StringBuilder(tableName).append("_ID");
+
+		StringBuilder selectSql = new StringBuilder();
+		selectSql.append("SELECT ").append(idColumnName).append(",").append(columnName).append(",AD_Client_ID");
+		selectSql.append(" FROM ").append(tableName);
+		selectSql.append(" ORDER BY ").append(idColumnName);
+
+		StringBuilder updateSql = new StringBuilder();
+		updateSql.append("UPDATE ").append(tableName);
+		updateSql.append(" SET ").append(columnName).append("=?");
+		updateSql.append(" WHERE ").append(idColumnName).append("=?");
+
+		PreparedStatement selectStmt = null;
+		PreparedStatement updateStmt = null;
+		ResultSet rs = null;
+		
+		try {
+			selectStmt = m_conn.prepareStatement(selectSql.toString(),
+					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+			updateStmt = m_conn.prepareStatement(updateSql.toString());
+	
+			rs = selectStmt.executeQuery();
+	
+			for (recordsDecrypted = 0; rs.next(); ++recordsDecrypted) {
+				// Get the row id and column value
+				int id = rs.getInt(1);
+				String value = rs.getString(2);
+				int AD_Client_ID = rs.getInt(3);
+				// Encrypt the value
+				value = SecureEngine.decrypt(value, AD_Client_ID);
+				// Update the row
+				updateStmt.setString(1, value);
+				updateStmt.setInt(2, id);
+				if (updateStmt.executeUpdate() != 1) {
+					log.severe("DecryptError: Table=" + tableName + ", ID=" + id);
+					throw new Exception();
+				}
+			}
+		} finally {
+			DB.close(rs);
+			DB.close(selectStmt);
+			DB.close(updateStmt);
+		}
+
+		return recordsDecrypted;
+	} // decryptColumnContents
+	
 	/**
 	 * Determines the length of the encrypted column.
 	 * 
@@ -427,5 +514,13 @@ public class ColumnEncryption extends SvrProcess {
 
 		return rowsEffected;
 	} // changeFieldLength
+
+	@Override
+	protected void postProcess(boolean success) {
+		//must reset cache after encryption or decryption
+		if (count > 0 && success) {
+			CacheMgt.get().reset();
+		}
+	}
 
 } // EncryptionTest
