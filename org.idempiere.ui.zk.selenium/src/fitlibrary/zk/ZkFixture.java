@@ -47,6 +47,7 @@ public class ZkFixture extends SpiderFixture {
 	}
 
 	// --------- ComboBox ---------
+	@SimpleAction(wiki =  "|''<i>combobox</i>''|zk locator|''<i>selected value</i>''|", tooltip = "Return current selected value")
 	public String comboboxSelectedValue(String locator) {
 		Widget widget = new Widget(locator);
 		return (String) widget.eval(webDriver, "getValue()");
@@ -88,6 +89,7 @@ public class ZkFixture extends SpiderFixture {
 		return false;
 	}
 	
+	@SimpleAction(wiki= "|''<i>combobox</i>''|zk locator|''<i>set text</i>''|text|", tooltip = "Enter text into combobox and fire onChange event")
 	public boolean comboboxSetText(String locator, String text) {
 		Widget widget = new Widget(locator);
 		widget.execute(webDriver, "setValue('"+text+"', true)");
@@ -199,13 +201,22 @@ public class ZkFixture extends SpiderFixture {
 		}
 	}
 	
+	@SimpleAction(wiki="|''<i>focus</i>''|xpath, id or other locator|", tooltip= "Set focus to a zk widget")
 	public void focus(String locator) {
 		Widget widget = new Widget(locator);
-		widget.execute(webDriver, "focus()");
+		widget.execute(webDriver, "focus_(100)");
 	}
 	
-	protected String getEval(String script) {
-		return String.valueOf(executeJavaScript("return ("+ script+");"));
+	@SimpleAction(wiki = "|''<i>with widget</i>''|zk locator|''<i>execute</i>''|command|", tooltip = "Execute zk widget command")
+	public void withWidgetExecute(String locator, String command) {
+		Widget widget = new Widget(locator);
+		widget.execute(webDriver, command);
+	}
+	
+	@SimpleAction(wiki = "|''<i>with widget</i>''|zk locator|''<i>eval</i>''|command|", tooltip = "Execute zk widget command and return the result")
+	public Object withWidgetEval(String locator, String command) {
+		Widget widget = new Widget(locator);
+		return widget.eval(webDriver, command);
 	}
 	
 	/**
@@ -214,12 +225,19 @@ public class ZkFixture extends SpiderFixture {
      * and schedulers. The thread does not lose ownership of any monitors.
      * @param millis the length of time to sleep in milliseconds.
      */
-	protected void sleep(long millis) {
+	@SimpleAction(wiki = "|''<i>sleep</i>''|millisecond|", tooltip = "sleep")
+	public void sleep(long millis) {
 		try {
 			Thread.sleep(millis);
 		} catch (InterruptedException e) {
 		}
 	}
+	
+	protected String getEval(String script) {
+		return String.valueOf(executeJavaScript("return ("+ script+");"));
+	}
+	
+	
 	
 	class ZkFinder implements Finder {
 

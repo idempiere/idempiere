@@ -53,6 +53,7 @@ public class Widget extends By {
 	public void execute(WebDriver driver, String command) {
 		JavascriptExecutor executor = (JavascriptExecutor) driver;
 		StringBuilder builder = getWidgetLocatorScript(locator);
+		command = command.replace("'", "\\'");
 		builder.append(".").append(command).append(";");
 		executor.executeScript(builder.toString());
 	}
@@ -60,6 +61,7 @@ public class Widget extends By {
 	public Object eval(WebDriver driver, String command) {
 		JavascriptExecutor executor = (JavascriptExecutor) driver;
 		StringBuilder builder = getWidgetLocatorScript(locator);
+		command = command.replace("'", "\\'");
 		builder.insert(0, "return ");
 		builder.append(".").append(command).append(";");
 		return executor.executeScript(builder.toString());

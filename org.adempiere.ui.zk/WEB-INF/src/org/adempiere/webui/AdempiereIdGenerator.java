@@ -58,7 +58,14 @@ public class AdempiereIdGenerator implements IdGenerator {
 					.append("=\'").append(attribute).append("']");
 			}
 		} else {
-			locatorBuilder.append("$").append(prefix);
+			if (prefix.indexOf(" ") > 0) {
+				String widgetName = getWidgetName(comp.getWidgetClass());
+				locatorBuilder.append("@")
+					.append(widgetName).append("[id")
+					.append("=\'").append(prefix).append("']");
+			} else {
+				locatorBuilder.append("$").append(prefix);
+			}
 		}
 		
 		if (prefix == null || prefix.length() == 0) {
@@ -74,7 +81,12 @@ public class AdempiereIdGenerator implements IdGenerator {
 				String id = parent.getId();
 				if (id != null && id.length() > 0) {
 					builder.insert(0, id+"_");		
-					locatorBuilder.insert(0, "$"+id+" ");
+					if (id.indexOf(" ") > 0) {
+						String widgetName = getWidgetName(parent.getWidgetClass());
+						locatorBuilder.insert(0, "@"+widgetName+"[id=\'"+id+"\'] ");
+					} else {
+						locatorBuilder.insert(0, "$"+id+" ");
+					}
 				} else {
 					String attribute = parent.getWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME);
 					if (attribute != null && attribute.length() > 0) {
@@ -162,7 +174,14 @@ public class AdempiereIdGenerator implements IdGenerator {
 					.append("=\'").append(attribute).append("']");
 			}
 		} else {
-			locatorBuilder.append("$").append(prefix);
+			if (prefix.indexOf(" ") > 0) {
+				String widgetName = getWidgetName(comp.getWidgetClass());
+				locatorBuilder.append("@")
+					.append(widgetName).append("[id")
+					.append("=\'").append(prefix).append("']");
+			} else {
+				locatorBuilder.append("$").append(prefix);
+			}
 		}
 		
 		if (prefix == null || prefix.length() == 0) {
@@ -175,7 +194,12 @@ public class AdempiereIdGenerator implements IdGenerator {
 			if (parent instanceof IdSpace) {
 				String id = parent.getId();
 				if (id != null && id.length() > 0) {
-					locatorBuilder.insert(0, "$"+id+" ");
+					if (id.indexOf(" ") > 0) {
+						String widgetName = getWidgetName(parent.getWidgetClass());
+						locatorBuilder.insert(0, "@"+widgetName+"[id=\'"+id+"\'] ");
+					} else {
+						locatorBuilder.insert(0, "$"+id+" ");
+					}
 				} else {
 					String attribute = parent.getWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME);
 					if (attribute != null && attribute.length() > 0) {
