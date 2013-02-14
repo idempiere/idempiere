@@ -233,6 +233,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		String autoNew = userPreference.getProperty(UserPreference.P_AUTO_NEW);
 		Env.setAutoNew(ctx, "true".equalsIgnoreCase(autoNew) || "y".equalsIgnoreCase(autoNew));
 
+		keyListener = new Keylistener();
+		keyListener.setPage(this.getPage());
+		keyListener.setCtrlKeys("@a@c@d@e@f@h@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter");
+		keyListener.setAutoBlur(false);
+		
 		IDesktop d = (IDesktop) currSess.getAttribute(APPLICATION_DESKTOP_KEY);
 		if (d != null && d instanceof IDesktop)
 		{
@@ -254,14 +259,12 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 						//detach root component from old page						
 						Page page = appDesktop.getComponent().getPage();
 						if (page.getDesktop() != null) {
-							Collection<?> collection = page.getRoots();
-							Object[] objects = new Object[0];
-							objects = collection.toArray(objects);
-							for(Object obj : objects) {
+							Collection<Component> collection = page.getRoots();
+							for(Component comp : collection) {
 								try {
-									if (obj instanceof Component) {
-										((Component)obj).detach();
-										rootComponents.add((Component) obj);
+									comp.detach();
+									if (!(comp instanceof Keylistener) && !(comp instanceof AdempiereWebUI)) {
+										rootComponents.add(comp);
 									}
 								} catch (Exception e) {
 									e.printStackTrace();
@@ -306,7 +309,14 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 					}
 				} catch (Throwable t) {
 					//restore fail
+					t.printStackTrace();					
 					appDesktop = null;
+					Collection<Component> roots = this.getPage().getRoots();
+					for(Component comp : roots) {
+						if (!(comp instanceof Keylistener) && !(comp instanceof AdempiereWebUI)) {
+							comp.detach();
+						}
+					}
 				}
 
 			}
@@ -341,11 +351,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		{
 			BrowserToken.remove();
 		}
-		
-		keyListener = new Keylistener();
-		keyListener.setPage(this.getPage());
-		keyListener.setCtrlKeys("@a@c@d@e@f@h@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter");
-		keyListener.setAutoBlur(false);
 		
 		Clients.response(new AuScript("zAu.cmd0.clearBusy()"));
     }
