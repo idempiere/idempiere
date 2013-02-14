@@ -617,7 +617,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		String countSql = Msg.parseTranslation(Env.getCtx(), sqlMain.toString());	//	Variables
 		countSql = MRole.getDefault().addAccessSQL	(countSql, getTableName(),
 													MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
-		String sqlCount = "SELECT COUNT(*) FROM (" + countSql + ") AS ProductInfo";
+		String sqlCount = "SELECT COUNT(*) FROM (" + countSql + ") ProductInfo";
 		
 		log.finer(sqlCount);
 		m_count = -1;
