@@ -4,6 +4,7 @@
 package org.adempiere.webui.info;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -385,7 +386,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					   .append(" ?");				
 			}
 		}		
-		System.out.println(builder.toString());
 		return builder.toString();
 	}
 
@@ -448,7 +448,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		if (infoWindow.isDistinct()) {
 			m_sqlMain = m_sqlMain.substring("SELECT ".length());
-			m_sqlMain = "SELECT DISTINCT " + m_sqlMain;
+			m_sqlMain = "SELECT DISTINCT " + m_sqlMain;			
 		}	
 		
 		if (m_sqlOrder != null && m_sqlOrder.indexOf("@") >= 0) {
@@ -504,6 +504,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		southBody.appendChild(statusBar);
 	}
 
+	protected void insertPagingComponent() {
+		southBody.insertBefore(paging, southBody.getFirstChild());
+		layout.invalidate();
+	}
+	
 	protected void renderContentPane(Center center) {				
 		Div div = new Div();
 		div.setStyle("width :100%; height: 100%");
@@ -859,4 +864,59 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 		}
 	}
+	
+	/**
+	 * 	Test Row Count
+	 *	@return true if display
+	 */
+	protected boolean testCount()
+	{
+		long start = System.currentTimeMillis();
+		String dynWhere = getSQLWhere();
+		StringBuilder sql = new StringBuilder (m_sqlMain);
+
+		if (dynWhere.length() > 0)
+			sql.append(dynWhere);   //  includes first AND
+
+		String countSql = Msg.parseTranslation(Env.getCtx(), sql.toString());	//	Variables
+		if (countSql.trim().endsWith("WHERE")) {
+			countSql = countSql.trim();
+			countSql = countSql.substring(0, countSql.length() - 5);
+		}
+		countSql = MRole.getDefault().addAccessSQL	(countSql, getTableName(),
+													MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
+		
+		countSql = "SELECT COUNT(*) FROM ( " + countSql + " ) a";			
+		
+		if (log.isLoggable(Level.FINER))
+			log.finer(countSql);
+		m_count = -1;
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(countSql, null);
+			setParameters (pstmt, true);
+			rs = pstmt.executeQuery();
+
+			if (rs.next())
+				m_count = rs.getInt(1);
+
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, countSql, e);
+			m_count = -2;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+		}
+
+		if (log.isLoggable(Level.FINE))
+			log.fine("#" + m_count + " - " + (System.currentTimeMillis()-start) + "ms");
+
+		return true;
+	}	//	testCount
 }

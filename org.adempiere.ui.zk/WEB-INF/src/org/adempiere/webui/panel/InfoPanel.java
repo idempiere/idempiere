@@ -362,7 +362,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/** Main SQL Statement      */
 	protected String              m_sqlMain;
 	/** Count SQL Statement		*/
-	private String              m_sqlCount;
+	protected String              m_sqlCount;
 	/** Order By Clause         */
 	protected String              m_sqlOrder;
 	protected String              m_sqlUserOrder;
@@ -432,7 +432,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		m_sqlCount = "SELECT COUNT(*) FROM " + from + " WHERE " + where;
 		//
 		m_sqlOrder = "";
-		m_sqlUserOrder = "";
+//		m_sqlUserOrder = "";
 		if (orderBy != null && orderBy.length() > 0)
 			m_sqlOrder = " ORDER BY " + orderBy;
 	}   //  prepareTable
@@ -686,7 +686,19 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		{
 			end = cacheEnd-1;
 		}
-		return line.subList(start, end+1);
+		
+		if (end == -1) 
+		{
+			return line;
+		}
+		else
+		{
+			int fromIndex = start-getCacheStart()+1;
+			int toIndex = end-getCacheStart()+2;
+			if (toIndex > line.size()) 
+				toIndex = line.size();
+			return line.subList(fromIndex, toIndex);
+		}
 	}
 
 	protected String buildDataSQL(int start, int end) {
@@ -1215,6 +1227,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     				header.setSortDirection("natural");
     			}
     		}
+    		m_sqlUserOrder="";
         	executeQuery();
             renderItems();
         }
