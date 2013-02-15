@@ -23,6 +23,7 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
@@ -610,6 +611,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         if (mField.getDisplayType() == DisplayType.PAttribute) 
         {
         	editor = new WInfoPAttributeEditor(infoContext, p_WindowNo, mField);
+	        editor.setReadWrite(true);
         }
         else 
         {
@@ -798,6 +800,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if (evt != null && evt.getSource() instanceof WEditor)
         {
             WEditor editor = (WEditor)evt.getSource();
+            boolean asiChanged = false;
             if (evt.getNewValue() == null) {
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), "");
             	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), "");
@@ -811,11 +814,16 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), evt.getNewValue().toString());
             	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), evt.getNewValue().toString());
             }
+            // if attribute set changed (from any value to any value) clear the attribute set instance m_pAttributeWhere
+            if (editor instanceof WTableDirEditor && editor.getColumnName().equals("M_AttributeSet_ID"))
+            	asiChanged = true;
             
             for(WEditor otherEditor : editors)
             {
             	if (otherEditor == editor) 
             		continue;
+            	if (asiChanged && otherEditor instanceof WInfoPAttributeEditor)
+            		((WInfoPAttributeEditor)otherEditor).clearWhereClause();
             	
             	otherEditor.dynamicDisplay();
             }
