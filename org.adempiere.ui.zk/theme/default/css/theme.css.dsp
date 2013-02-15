@@ -290,7 +290,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .desktop-left-column {
-	width: 300px;
+	width: 200px;
 	border: none;
 	background-color: #E4E4E4;
 	padding-top: 4px; 
@@ -366,12 +366,24 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 .z-panel-tl, .z-panel-tr, 
 .z-panel-hr, .z-panel-hl, 
 .z-panel-hm {
-	background-image: none; background-color: #E4E4E4;
+	background-image: none; background-color: #FFFFFF;
+}
+
+.z-panel {
+	border: 1px solid #c5c5c5;
+}
+
+.z-panel-noborder {
+	border: none !important;
+}
+
+.z-panelchildren {
+	border: none;
 }
 
 .z-panel-hl {
 	padding-bottom: 1px;
-	border-bottom: 2px solid #008BB6;
+	border-bottom: 1px solid #008BB6;
 }
 
 .z-panel-hl .z-panel-header {
