@@ -83,36 +83,40 @@ public class Doc_Production extends Doc
 		String sqlPL = "SELECT * FROM M_ProductionLine pl "
 				+ "WHERE pl.M_Production_ID=? "
 				+ "ORDER BY pl.Line";
-
+		PreparedStatement pstmtPL = null;
+		ResultSet rsPL = null;
 		try
-		{
-			
-					PreparedStatement pstmtPL = DB.prepareStatement(sqlPL, getTrxName());
-					pstmtPL.setInt(1,get_ID());
-					ResultSet rsPL = pstmtPL.executeQuery();
-					while (rsPL.next())
-					{
-						X_M_ProductionLine line = new X_M_ProductionLine(getCtx(), rsPL, getTrxName());
-						if (line.getMovementQty().signum() == 0)
-						{
-							log.info("LineQty=0 - " + line);
-							continue;
-						}
-						DocLine docLine = new DocLine (line, this);
-						docLine.setQty (line.getMovementQty(), false);
-						//	Identify finished BOM Product
-						docLine.setProductionBOM(line.getM_Product_ID() == prod.getM_Product_ID());
-						//
-						log.fine(docLine.toString());
-						list.add (docLine);
-					}
-					rsPL.close();
-					pstmtPL.close();
-				}
-				catch (Exception ee)
+		{			
+			pstmtPL = DB.prepareStatement(sqlPL, getTrxName());
+			pstmtPL.setInt(1,get_ID());
+			rsPL = pstmtPL.executeQuery();
+			while (rsPL.next())
+			{
+				X_M_ProductionLine line = new X_M_ProductionLine(getCtx(), rsPL, getTrxName());
+				if (line.getMovementQty().signum() == 0)
 				{
-					log.log(Level.SEVERE, sqlPL, ee);
+					log.info("LineQty=0 - " + line);
+					continue;
 				}
+				DocLine docLine = new DocLine (line, this);
+				docLine.setQty (line.getMovementQty(), false);
+				//	Identify finished BOM Product
+				docLine.setProductionBOM(line.getM_Product_ID() == prod.getM_Product_ID());
+				//
+				log.fine(docLine.toString());
+				list.add (docLine);
+			}
+		}
+		catch (Exception ee)
+		{
+			log.log(Level.SEVERE, sqlPL, ee);
+		}
+		finally
+		{
+			DB.close(rsPL, pstmtPL);
+			rsPL = null;
+			pstmtPL = null;
+		}
 			
 		DocLine[] dl = new DocLine[list.size()];
 		list.toArray(dl);

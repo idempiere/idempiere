@@ -92,10 +92,12 @@ public class PaySelect
 			+ " AND EXISTS (SELECT * FROM C_BankAccountDoc d WHERE d.C_BankAccount_ID=ba.C_BankAccount_ID AND d.IsActive='Y' ) "
 			+ "ORDER BY 2",
 			"b", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RW);
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				boolean transfers = false;
@@ -104,12 +106,16 @@ public class PaySelect
 					rs.getBigDecimal(5), transfers);
 				data.add(bi);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return data;
@@ -131,22 +137,27 @@ public class PaySelect
 			  + " AND (i.IsSOTrx='N' OR (i.IsSOTrx='Y' AND i.PaymentRule='D'))"
 			  + " AND i.IsPaid<>'Y') "
 			+ "ORDER BY 2";
-
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				pp = new KeyNamePair(rs.getInt(1), rs.getString(2));
 				data.add(pp);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return data;
@@ -157,6 +168,8 @@ public class PaySelect
 		ArrayList<KeyNamePair> data = new ArrayList<KeyNamePair>();
 		String sql = null;
 		/**Document type**/
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			sql = MRole.getDefault().addAccessSQL(
@@ -165,21 +178,25 @@ public class PaySelect
 
 			KeyNamePair dt = new KeyNamePair(0, "");
 			data.add(dt);
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_AD_Client_ID);		//	Client
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 
 			while (rs.next())
 			{
 				dt = new KeyNamePair(rs.getInt(1), rs.getString(2));
 				data.add(dt);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return data;
@@ -256,23 +273,29 @@ public class PaySelect
 			+ " AND " + info.KeyColumn
 			+ " IN (SELECT PaymentRule FROM C_BankAccountDoc WHERE C_BankAccount_ID=?) "
 			+ info.Query.substring(info.Query.indexOf(" ORDER BY"));
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, bi.C_BankAccount_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			ValueNamePair vp = null;
 			while (rs.next())
 			{
 				vp = new ValueNamePair(rs.getString(2), rs.getString(3));   //  returns also not active
 				data.add(vp);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		return data;
 	}
@@ -313,10 +336,12 @@ public class PaySelect
 
 		log.finest(sql + " - C_Currency_ID=" + bi.C_Currency_ID + ", C_BPartner_ID=" + C_BPartner_ID + ", C_doctype_id=" + c_doctype_id  );
 		//  Get Open Invoices
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			int index = 1;
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setTimestamp(index++, payDate);		//	DiscountAmt
 			pstmt.setInt(index++, bi.C_Currency_ID);	//	DueAmt
 			pstmt.setTimestamp(index++, payDate);
@@ -332,14 +357,18 @@ public class PaySelect
 			if (c_doctype_id  != 0)                    //Document type
 				pstmt.setInt(index++, c_doctype_id );
 			//
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			miniTable.loadTable(rs);
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 	}   //  loadTableInfo
 

@@ -373,35 +373,29 @@ public final class VAccount extends JComponent
 		//
 		int C_ValidCombination_ID = 0;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, C_AcctSchema_ID);
 			pstmt.setString(2, text.toUpperCase());
 			pstmt.setString(3, text.toUpperCase());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				C_ValidCombination_ID = rs.getInt(1);
 				if (rs.next())		//	only one
 					C_ValidCombination_ID = 0;
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//	We have a Value

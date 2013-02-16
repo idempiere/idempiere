@@ -114,10 +114,12 @@ public abstract class PaymentFormCash extends PaymentForm {
 			+ " INNER JOIN C_Bank b ON (ba.C_Bank_ID=b.C_Bank_ID) "
 			+ "WHERE b.IsActive='Y'",
 			"ba", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(SQL, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				int key = rs.getInt(1);
@@ -129,12 +131,16 @@ public abstract class PaymentFormCash extends PaymentForm {
 				if (selectedBankAccount == null && rs.getString(3).equals("Y"))    //  Default
 					selectedBankAccount = pp;
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException ept)
 		{
 			log.log(Level.SEVERE, SQL, ept);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return list;
@@ -151,10 +157,12 @@ public abstract class PaymentFormCash extends PaymentForm {
 		String SQL = MRole.getDefault().addAccessSQL(
 			"SELECT C_CashBook_ID, Name, AD_Org_ID FROM C_CashBook WHERE IsActive='Y'",
 			"C_CashBook", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(SQL, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				int key = rs.getInt(1);
@@ -166,12 +174,16 @@ public abstract class PaymentFormCash extends PaymentForm {
 				if (selectedCashBook == null && key == m_AD_Org_ID)       //  Default Org
 					selectedCashBook = pp;
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException epc)
 		{
 			log.log(Level.SEVERE, SQL, epc);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		if (selectedCashBook != null)

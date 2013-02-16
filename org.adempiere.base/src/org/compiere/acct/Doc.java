@@ -845,20 +845,26 @@ public abstract class Doc
 		{
 			String sql = "SELECT GL_Category_ID FROM C_DocType "
 					+ "WHERE AD_Client_ID=? AND DocBaseType=?";
+			PreparedStatement pstmt = null;
+			ResultSet rsDT = null;
 			try
 			{
-				PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
+				pstmt = DB.prepareStatement(sql.toString(), null);
 				pstmt.setInt(1, getAD_Client_ID());
 				pstmt.setString(2, m_DocumentType);
-				ResultSet rsDT = pstmt.executeQuery();
+				rsDT = pstmt.executeQuery();
 				if (rsDT.next())
 					m_GL_Category_ID = rsDT.getInt(1);
-				rsDT.close();
-				pstmt.close();
 			}
 			catch (SQLException e)
 			{
 				log.log(Level.SEVERE, sql, e);
+			}
+			finally
+			{
+				DB.close(rsDT, pstmt);
+				rsDT = null;
+				pstmt = null;
 			}
 		}
 
@@ -868,20 +874,26 @@ public abstract class Doc
 			String sql = "SELECT GL_Category_ID FROM GL_Category "
 				+ "WHERE AD_Client_ID=? "
 				+ "ORDER BY IsDefault DESC";
+			PreparedStatement pstmt = null;
+			ResultSet rsDT = null;
 			try
 			{
-				PreparedStatement pstmt = DB.prepareStatement(sql, null);
+				pstmt = DB.prepareStatement(sql, null);
 				pstmt.setInt(1, getAD_Client_ID());
-				ResultSet rsDT = pstmt.executeQuery();
+				rsDT = pstmt.executeQuery();
 				if (rsDT.next())
 					m_GL_Category_ID = rsDT.getInt(1);
-				rsDT.close();
-				pstmt.close();
 			}
 			catch (SQLException e)
 			{
 				log.log(Level.SEVERE, sql, e);
 			}
+			finally
+			{
+				DB.close(rsDT, pstmt);
+				rsDT = null;
+				pstmt = null;
+			}			
 		}
 		//
 		if (m_GL_Category_ID == 0)

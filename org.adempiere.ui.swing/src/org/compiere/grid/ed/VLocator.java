@@ -463,6 +463,7 @@ public class VLocator extends JComponent
 		//
 		int M_Locator_ID = 0;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(finalSql, null);
@@ -474,30 +475,25 @@ public class VLocator extends JComponent
 				pstmt.setInt(index++, only_Product_ID);
 				pstmt.setInt(index++, only_Product_ID);
 			}
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				M_Locator_ID = rs.getInt(1);
 				if (rs.next())
 					M_Locator_ID = 0;	//	more than one
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (SQLException ex)
 		{
 			log.log(Level.SEVERE, finalSql, ex);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
+		
 		if (M_Locator_ID == 0)
 			return false;
 

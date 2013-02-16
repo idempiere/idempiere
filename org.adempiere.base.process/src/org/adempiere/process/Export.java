@@ -182,10 +182,7 @@ public class Export extends SvrProcess
 			}
 			
 		} finally {
-			try {
-				if (rs != null) rs.close();
-				if (pstmt != null) pstmt.close();
-			} catch (SQLException ex) {/*ignored*/}
+			DB.close(rs, pstmt);
 			rs = null;
 			pstmt = null;
 		}
@@ -378,10 +375,7 @@ public class Export extends SvrProcess
 					}
 					
 				} finally {
-					try {
-						if (rsEmbedded != null) rsEmbedded.close();
-						if (pstmt != null) pstmt.close();
-					} catch (SQLException ex) {  }
+					DB.close(rsEmbedded, pstmt);
 					rsEmbedded = null;
 					pstmt = null;
 				}

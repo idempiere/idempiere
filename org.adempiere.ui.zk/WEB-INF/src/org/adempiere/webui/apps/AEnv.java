@@ -156,23 +156,30 @@ public final class AEnv
 		int AD_Window_ID = 0;
 		int PO_Window_ID = 0;
 		String sql = "SELECT TableName, AD_Window_ID, PO_Window_ID FROM AD_Table WHERE AD_Table_ID=?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Table_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				TableName = rs.getString(1);
 				AD_Window_ID = rs.getInt(2);
 				PO_Window_ID = rs.getInt(3);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		//  Nothing to Zoom to
 		if (TableName == null || AD_Window_ID == 0)
@@ -496,22 +503,28 @@ public final class AEnv
 		int AD_Window_ID = 0;
 		int PO_Window_ID = 0;
 		String sql = "SELECT AD_Window_ID, PO_Window_ID FROM AD_Table WHERE TableName=?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString(1, TableName);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				AD_Window_ID = rs.getInt(1);
 				PO_Window_ID = rs.getInt(2);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		//  Nothing to Zoom to
 		if (AD_Window_ID == 0)

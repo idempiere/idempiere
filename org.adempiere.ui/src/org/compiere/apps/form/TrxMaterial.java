@@ -173,19 +173,25 @@ public class TrxMaterial {
 
 		//  Get Parent ID
 		int parentID = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
+			pstmt = DB.prepareStatement(SQL, null);
 			pstmt.setInt(1, lineID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				parentID = rs.getInt(1);
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, SQL, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		query = MQuery.getEqualQuery(ColumnName, parentID);
 		log.config("AD_Window_ID=" + AD_Window_ID + " - " + query);

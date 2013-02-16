@@ -2209,20 +2209,24 @@ public final class APanel extends CPanel
 								+ Env.getAD_Language(Env.getCtx())
 								+ "'"
 								+ " AND l.AD_Reference_ID=?";
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
 					try {
-						PreparedStatement pstmt = DB
-								.prepareStatement(SQL, null);
+						pstmt = DB.prepareStatement(SQL, null);
 						pstmt.setInt(1, AD_Reference_ID);
-						ResultSet rs = pstmt.executeQuery();
+						rs = pstmt.executeQuery();
 						while (rs.next()) {
 							String value = rs.getString(1);
 							String name = rs.getString(2);
 							values.put(value, name);
 						}
-						rs.close();
-						pstmt.close();
 					} catch (SQLException e) {
 						log.log(Level.SEVERE, SQL, e);
+					}
+					finally{
+						DB.close(rs, pstmt);
+						rs = null;
+						pstmt = null;
 					}
 
 					// Nothing to show or Record_ID

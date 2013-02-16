@@ -65,23 +65,29 @@ public class PayPrint {
 		String sql = "SELECT C_PaySelection_ID, Name || ' - ' || TotalAmt FROM C_PaySelection "
 			+ "WHERE AD_Client_ID=? AND Processed='Y' AND IsActive='Y'"
 			+ "ORDER BY PayDate DESC";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Client_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			//
 			while (rs.next())
 			{
 				KeyNamePair pp = new KeyNamePair(rs.getInt(1), rs.getString(2));
 				data.add(pp);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return data;
@@ -105,11 +111,13 @@ public class PayPrint {
 			+ " INNER JOIN C_Bank b ON (ba.C_Bank_ID=b.C_Bank_ID)"
 			+ " INNER JOIN C_Currency c ON (ba.C_Currency_ID=c.C_Currency_ID) "
 			+ "WHERE ps.C_PaySelection_ID=? AND ps.Processed='Y' AND ba.IsActive='Y'";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, C_PaySelection_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				m_C_BankAccount_ID = rs.getInt(1);
@@ -127,12 +135,16 @@ public class PayPrint {
 				m_PaymentExportClass = null;
 				log.log(Level.SEVERE, "No active BankAccount for C_PaySelection_ID=" + C_PaySelection_ID);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 	}   //  loadPaySelectInfo
 
@@ -151,23 +163,29 @@ public class PayPrint {
 			+ " AND " + info.KeyColumn
 			+ " IN (SELECT PaymentRule FROM C_PaySelectionCheck WHERE C_PaySelection_ID=?) "
 			+ info.Query.substring(info.Query.indexOf(" ORDER BY"));
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, C_PaySelection_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			//
 			while (rs.next())
 			{
 				ValueNamePair pp = new ValueNamePair(rs.getString(2), rs.getString(3));
 				data.add(pp);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		if (data.size() == 0)
@@ -191,20 +209,26 @@ public class PayPrint {
 		String sql = "SELECT COUNT(*) "
 			+ "FROM C_PaySelectionCheck "
 			+ "WHERE C_PaySelection_ID=?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, C_PaySelection_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			//
 			if (rs.next())
 				noPayments = String.valueOf(rs.getInt(1));
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		//  DocumentNo
@@ -213,10 +237,10 @@ public class PayPrint {
 			+ "WHERE C_BankAccount_ID=? AND PaymentRule=? AND IsActive='Y'";
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_C_BankAccount_ID);
 			pstmt.setString(2, PaymentRule);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			//
 			if (rs.next())
 				documentNo = new Integer(rs.getInt(1));
@@ -226,12 +250,16 @@ public class PayPrint {
 					+ m_C_BankAccount_ID + " AND PaymentRule=" + PaymentRule);
 				msg = "VPayPrintNoDoc";
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return msg;

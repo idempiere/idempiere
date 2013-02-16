@@ -89,11 +89,13 @@ public class CalloutUser extends CalloutEngine
 				+ " LEFT OUTER JOIN AD_User c ON (p.C_BPartner_ID=c.C_BPartner_ID) "
 				+ "WHERE p.C_BPartner_ID=? AND p.IsActive='Y'";		//	#1
 
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, C_BPartner_ID.intValue());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			//
 			if (rs.next())
 			{
@@ -125,13 +127,17 @@ public class CalloutUser extends CalloutEngine
 				else
 					mTab.setValue("AD_User_ID", new Integer(contID));
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
 			return e.getLocalizedMessage();
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		return "";
@@ -160,19 +166,25 @@ public class CalloutUser extends CalloutEngine
 		//
 		String retValue = value;
 		String SQL = "SELECT FRIE_Name(?) FROM DUAL";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
+			pstmt = DB.prepareStatement(SQL, null);
 			pstmt.setString(1, value);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
-				retValue = rs.getString(1);
-			rs.close();
-			pstmt.close();
+				retValue = rs.getString(1);		
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, SQL, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		return retValue;
 	}	//	Frie_Name
@@ -191,19 +203,25 @@ public class CalloutUser extends CalloutEngine
 		//
 		String retValue = value;
 		String SQL = "SELECT FRIE_Value(FRIE_Name(?)) FROM DUAL";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
+			pstmt = DB.prepareStatement(SQL, null);
 			pstmt.setString(1, value);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				retValue = rs.getString(1);
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, SQL, e);
+		}
+		finally
+		{
+			DB.close(rs,pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		return retValue;
 	}	//	Frie_Value

@@ -385,11 +385,13 @@ public class VLocatorDialog extends CDialog
 		//
 		String SQL = "SELECT M_Warehouse_ID, Value, Name, Separator, AD_Client_ID, AD_Org_ID "
 			+ "FROM M_Warehouse WHERE M_Warehouse_ID=?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
+			pstmt = DB.prepareStatement(SQL, null);
 			pstmt.setInt(1, M_Warehouse_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				m_M_Warehouse_ID = rs.getInt(1);
@@ -399,12 +401,16 @@ public class VLocatorDialog extends CDialog
 				m_AD_Client_ID = rs.getInt(5);
 				m_AD_Org_ID = rs.getInt(6);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, SQL, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 	}	//	getWarehouseInfo
 

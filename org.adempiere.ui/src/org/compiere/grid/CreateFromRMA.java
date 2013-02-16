@@ -86,12 +86,14 @@ public abstract class CreateFromRMA extends CreateFrom {
         sqlStmt.append("WHERE M_InOut_ID=? ");
         sqlStmt.append("AND iol.M_InOutLine_ID NOT IN (SELECT rmal.M_InOutLine_ID FROM M_RMALine rmal WHERE rmal.M_RMA_ID=?)");
         
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
         try
         {
-            PreparedStatement pstmt = DB.prepareStatement(sqlStmt.toString(), null);
+            pstmt = DB.prepareStatement(sqlStmt.toString(), null);
             pstmt.setInt(1, M_InOut_ID);
             pstmt.setInt(2, M_RMA_ID);
-            ResultSet rs = pstmt.executeQuery();
+            rs = pstmt.executeQuery();
             while (rs.next())
             {
                 Vector<Object> line = new Vector<Object>(7);
@@ -111,12 +113,16 @@ public abstract class CreateFromRMA extends CreateFrom {
                 
                 data.add(line);
             }
-            rs.close();
-            pstmt.close();
         }
         catch (SQLException e)
         {
             log.log(Level.SEVERE, sqlStmt.toString(), e);
+        }
+        finally
+        {
+        	DB.close(rs, pstmt);
+        	rs = null;
+        	pstmt = null;
         }
         
         return data;

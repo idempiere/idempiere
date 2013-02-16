@@ -268,19 +268,25 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		if (m_mAssignment.getS_Resource_ID() != 0)
 		{
 			String sql = "SELECT S_ResourceType_ID FROM S_Resource WHERE S_Resource_ID=?";
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try
 			{
-				PreparedStatement pstmt = DB.prepareStatement(sql, null);
+				pstmt = DB.prepareStatement(sql, null);
 				pstmt.setInt(1, m_mAssignment.getS_Resource_ID());
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				if (rs.next())
 					S_ResourceType_ID = rs.getInt(1);
-				rs.close();
-				pstmt.close();
 			}
 			catch (SQLException e)
 			{
 				log.log(Level.SEVERE, sql, e);
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
 			}
 		}
 
@@ -289,10 +295,12 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			"SELECT S_ResourceType_ID, Name FROM S_ResourceType WHERE IsActive='Y' ORDER BY 2",
 			"S_ResourceType", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 		KeyNamePair defaultValue = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				KeyNamePair pp = new KeyNamePair(rs.getInt(1), rs.getString(2));
@@ -300,12 +308,16 @@ public class InfoSchedule extends Window implements EventListener<Event>
 					defaultValue = pp;
 				fieldResourceType.appendItem(pp.getName(), pp.getKey());
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		if (defaultValue != null) {
 			int cnt = fieldResourceType.getItemCount();
@@ -340,11 +352,13 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		m_loading = true;
 		fieldResource.getChildren().clear();
 		String sql = "SELECT S_Resource_ID, Name FROM S_Resource WHERE S_ResourceType_ID=? ORDER BY 2";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, S_ResourceType_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				pp = new KeyNamePair(rs.getInt(1), rs.getString(2));
@@ -352,12 +366,16 @@ public class InfoSchedule extends Window implements EventListener<Event>
 					defaultValue = pp;
 				fieldResource.appendItem(pp.getName(), pp.getKey());
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs,pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		if (defaultValue != null) {
 			int cnt = fieldResource.getItemCount();

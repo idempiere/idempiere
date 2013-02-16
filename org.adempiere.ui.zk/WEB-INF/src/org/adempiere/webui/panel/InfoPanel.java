@@ -773,22 +773,27 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			log.finer(countSql);
 		m_count = -1;
 
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(countSql, null);
+			pstmt = DB.prepareStatement(countSql, null);
 			setParameters (pstmt, true);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 
 			if (rs.next())
 				m_count = rs.getInt(1);
-
-			rs.close();
-			pstmt.close();
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, countSql, e);
 			m_count = -2;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		if (log.isLoggable(Level.FINE))
@@ -1079,32 +1084,26 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		//
 		String sql = "SELECT AD_Window_ID, PO_Window_ID FROM AD_Table WHERE TableName=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString(1, tableName);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				m_SO_Window_ID = rs.getInt(1);
 				m_PO_Window_ID = rs.getInt(2);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//

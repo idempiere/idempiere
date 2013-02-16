@@ -55,10 +55,12 @@ public abstract class PaymentFormOnCredit extends PaymentForm {
 		String SQL = MRole.getDefault().addAccessSQL(
 			"SELECT C_PaymentTerm_ID, Name FROM C_PaymentTerm WHERE IsActive='Y' ORDER BY Name",
 			"C_PaymentTerm", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(SQL, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				int key = rs.getInt(1);
@@ -68,12 +70,16 @@ public abstract class PaymentFormOnCredit extends PaymentForm {
 				if (pp.getKey() == m_C_PaymentTerm_ID)
 					selectedPaymentTerm = pp;
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException ept)
 		{
 			log.log(Level.SEVERE, SQL, ept);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return list;

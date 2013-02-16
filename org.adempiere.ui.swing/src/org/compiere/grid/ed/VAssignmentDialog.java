@@ -348,10 +348,12 @@ public class VAssignmentDialog extends CDialog
 				+ "FROM S_Resource r, S_ResourceType rt, C_UOM uom "
 				+ "WHERE r.S_ResourceType_ID=rt.S_ResourceType_ID AND rt.C_UOM_ID=uom.C_UOM_ID",
 				"r", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try
 			{
-				PreparedStatement pstmt = DB.prepareStatement(sql, null);
-				ResultSet rs = pstmt.executeQuery();
+				pstmt = DB.prepareStatement(sql, null);
+				rs = pstmt.executeQuery();
 				while (rs.next())
 				{
 					StringBuilder sb = new StringBuilder (rs.getString(2));
@@ -363,12 +365,16 @@ public class VAssignmentDialog extends CDialog
 					KeyNamePair value = new KeyNamePair (rs.getInt(4), rs.getString(5).trim());
 					m_lookup.put(key, value);
 				}
-				rs.close();
-				pstmt.close();
 			}
 			catch (SQLException e)
 			{
 				log.log(Level.SEVERE, sql, e);
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
 			}
 		}
 		//	Convert to Array
