@@ -46,6 +46,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Frozen;
@@ -632,11 +633,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 				Component c = (Component) o;
 				if (!c.isVisible())
 					continue;
-				c = c.getFirstChild();
-				if (c == null)
-					continue;
-				if (c.getNextSibling() != null) {
-					cmp = c.getNextSibling();
+				if (c instanceof Cell) {
+					cmp = c;
 					break;
 				}
 			}

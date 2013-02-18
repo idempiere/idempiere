@@ -255,7 +255,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 					return;
 				
 				IADTabpanel tabPanel = (IADTabpanel) event.getTarget();
-				if (tabPanel != headerTab) {
+				if (tabPanel != headerTab && headerTab.getDetailPane() != null) {
 					if (b != null && b.booleanValue()) {
 						onActivateDetail(tabPanel);
 					}
