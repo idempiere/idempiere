@@ -29,6 +29,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -2117,7 +2118,10 @@ public class GridTable extends AbstractTableModel
 					|| (oldValue != null && oldValue.equals (dbValue))
 					//	Target == DB (changed by trigger to new value already)
 					|| (value == null && dbValue == null)
-					|| (value != null && value.equals (dbValue)) )
+					|| (value != null && value.equals (dbValue)) 
+					|| ((oldValue != null && dbValue != null && oldValue.getClass().equals(byte[].class) && dbValue.getClass().equals(byte[].class)) && Arrays.equals((byte[])oldValue, (byte[])dbValue))
+					|| ((value != null && dbValue != null && value.getClass().equals(byte[].class) && dbValue.getClass().equals(byte[].class)) && Arrays.equals((byte[])oldValue, (byte[])dbValue)) 
+						)
 				{
 					po.set_ValueNoCheck (columnName, value);
 				}
@@ -2133,8 +2137,8 @@ public class GridTable extends AbstractTableModel
 							+ (value==null ? "" : "(" + value.getClass().getName() + ")");
 				//	CLogMgt.setLevel(Level.FINEST);
 				//	po.dump();
-					fireDataStatusEEvent("SaveErrorDataChanged", msg, true);
 					dataRefresh(m_rowChanged);
+					fireDataStatusEEvent("SaveErrorDataChanged", msg, true);
 					return SAVE_ERROR;
 				}
 			}	//	Data changed
