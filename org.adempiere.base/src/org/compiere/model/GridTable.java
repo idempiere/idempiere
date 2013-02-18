@@ -1327,8 +1327,9 @@ public class GridTable extends AbstractTableModel
 	 */
 	public boolean needSave(int newRow, boolean onlyRealChange)
 	{
-		log.fine("Row=" + newRow +
-			", Changed=" + m_rowChanged + "/" + m_changed);  //  m_rowChanged set in setValueAt
+		if (log.isLoggable(Level.FINE))
+			log.fine("Row=" + newRow +
+					", Changed=" + m_rowChanged + "/" + m_changed);  //  m_rowChanged set in setValueAt
 		//  nothing done
 		if (!m_changed && m_rowChanged == -1)
 			return false;
