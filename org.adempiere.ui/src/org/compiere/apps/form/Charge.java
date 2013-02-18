@@ -72,11 +72,13 @@ public class Charge
 			+ " AND IsSummary='N'"
 			+ " AND C_Element_ID=? "
 			+ "ORDER BY 2";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_C_Element_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				Vector<Object> line = new Vector<Object>(4);
@@ -88,12 +90,16 @@ public class Charge
 				line.add(new Boolean(isExpenseType));   //  3-Expense
 				data.add(line);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return data;
@@ -110,22 +116,27 @@ public class Charge
         String sql = "SELECT C_Element_ID "
             + "FROM C_AcctSchema_Element "
             + "WHERE ElementType='AC' AND C_AcctSchema_ID=?";
-
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
         try
         {
-            PreparedStatement pstmt = DB.prepareStatement(sql, null);
+            pstmt = DB.prepareStatement(sql, null);
             pstmt.setInt(1, m_C_AcctSchema_ID);
-            ResultSet rs = pstmt.executeQuery();
+            rs = pstmt.executeQuery();
             if (rs.next())
             {
             	m_C_Element_ID = rs.getInt(1);
             }
-            rs.close();
-            pstmt.close();
         }
         catch (SQLException exception)
         {
             log.log(Level.SEVERE, sql, exception);
+        }
+        finally
+        {
+        	DB.close(rs, pstmt);
+            rs = null;
+            pstmt = null;
         }
     }
 	
@@ -165,19 +176,25 @@ public class Charge
 		String sql = "SELECT C_TaxCategory_ID FROM C_TaxCategory "
 			+ "WHERE IsDefault='Y' AND AD_Client_ID=?";
 		m_C_TaxCategory_ID = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_AD_Client_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				m_C_TaxCategory_ID = rs.getInt(1);
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 	}   //  dynInit
 	

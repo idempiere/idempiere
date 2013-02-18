@@ -265,8 +265,6 @@ public class InfoGeneral extends Info
 					tableName = rs.getString(3);
 				}
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{

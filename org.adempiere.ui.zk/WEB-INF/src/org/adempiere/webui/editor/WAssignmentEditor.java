@@ -113,10 +113,11 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 				+ " AND r.S_ResourceType_ID=rt.S_ResourceType_ID"
 				+ " and rt.C_UOM_ID=uom.C_UOM_ID", null);
 		//
+		ResultSet rs = null;
 		try
 		{
 			m_pstmt.setInt(1, S_ResourceAssignment_ID);
-			ResultSet rs = m_pstmt.executeQuery();
+			rs = m_pstmt.executeQuery();
 			if (rs.next())
 			{
 				StringBuilder sb = new StringBuilder(rs.getString(1));
@@ -127,11 +128,14 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 			}
 			else
 				getComponent().setText("<" + S_ResourceAssignment_ID + ">");
-			rs.close();
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
+		}
+		finally
+		{
+			DB.close(rs);
 		}
 
 	}

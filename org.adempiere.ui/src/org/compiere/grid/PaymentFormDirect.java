@@ -82,11 +82,13 @@ public abstract class PaymentFormDirect extends PaymentForm {
 			+ " LEFT OUTER JOIN C_Bank b ON (a.C_Bank_ID=b.C_Bank_ID) "
 			+ "WHERE C_BPartner_ID=?"
 			+ "AND a.IsActive='Y' AND a.IsACH='Y'";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
+			pstmt = DB.prepareStatement(SQL, null);
 			pstmt.setInt(1, m_C_BPartner_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				int key = rs.getInt(1);
@@ -94,12 +96,16 @@ public abstract class PaymentFormDirect extends PaymentForm {
 				KeyNamePair pp = new KeyNamePair(key, name);
 				list.add(pp);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException eac)
 		{
 			log.log(Level.SEVERE, SQL, eac);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return list;

@@ -233,22 +233,28 @@ public class ProcessParameter extends CDialog
 
 		//	Create Fields
 		boolean hasFields = false;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_processInfo.getAD_Process_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				hasFields = true;
 				createField (rs);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch(SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		//	both vectors the same?

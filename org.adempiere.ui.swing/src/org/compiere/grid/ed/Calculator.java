@@ -576,10 +576,12 @@ public final class Calculator extends CDialog
 		String sql = "SELECT C_Currency_ID, ISO_Code FROM C_Currency "
 			+ "WHERE IsActive='Y' ORDER BY 2";
 		KeyNamePair defaultValue = null;
+		Statement stmt = null;
+		ResultSet rs = null;
 		try
 		{
-			Statement stmt = DB.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
+			stmt = DB.createStatement();
+			rs = stmt.executeQuery(sql);
 			while (rs.next())
 			{
 				int id = rs.getInt("C_Currency_ID");
@@ -591,12 +593,16 @@ public final class Calculator extends CDialog
 				if (id == C_Currency_ID)
 					defaultValue = p;
 			}
-			rs.close();
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, "Calculator.loadCurrency", e);
+		}
+		finally
+		{
+			DB.close(rs, stmt);
+			rs = null;
+			stmt = null;
 		}
 
 		//	Set Defaults

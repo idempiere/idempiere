@@ -304,24 +304,27 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		String SQL = MRole.getDefault().addAccessSQL(
 			sql, "M_Warehouse", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO)
 			+ " ORDER BY 2";
-		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
-			ResultSet rs = pstmt.executeQuery();
-			
+			pstmt = DB.prepareStatement(SQL, null);
+			rs = pstmt.executeQuery();			
 			while (rs.next())
 			{
 				KeyNamePair key = new KeyNamePair(rs.getInt(1), rs.getString(2));
 				lstWarehouse.appendItem(key.getName(), key);
 			}
-			
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, SQL, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		log.fine("Warehouses=" + lstWarehouse.getItemCount());
@@ -442,12 +445,13 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 
 		String SQL = "SELECT M_Warehouse_ID, Value, Name, Separator, AD_Client_ID, AD_Org_ID "
 			+ "FROM M_Warehouse WHERE M_Warehouse_ID=?";
-		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
+			pstmt = DB.prepareStatement(SQL, null);
 			pstmt.setInt(1, M_Warehouse_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 		
 			if (rs.next())
 			{
@@ -458,12 +462,16 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 				m_AD_Client_ID = rs.getInt(5);
 				m_AD_Org_ID = rs.getInt(6);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, SQL, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 	} // getWarehouseInfo
 

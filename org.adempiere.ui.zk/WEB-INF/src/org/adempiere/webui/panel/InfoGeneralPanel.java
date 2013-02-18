@@ -269,11 +269,13 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		int AD_Table_ID = 0;
 		String tableName = null;
 
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString(1, p_tableName);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 
 			while (rs.next())
 			{
@@ -291,13 +293,17 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 					tableName = rs.getString(3);
 				}
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
 			return false;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		//	Miminum check
@@ -340,9 +346,9 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Table_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				String columnName = rs.getString(1);
@@ -399,13 +405,17 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 				else
 					log.finest("Not Added Column=" + columnName);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
 			return false;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		if (list.size() == 0)

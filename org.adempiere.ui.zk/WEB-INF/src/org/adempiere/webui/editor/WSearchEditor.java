@@ -709,12 +709,12 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		m_keyColumnName = m_columnName;
 		sql = new StringBuffer();
 		PreparedStatement pstmt = null;
-
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(query, null);
 			pstmt.setString(1, m_keyColumnName);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 
 			while (rs.next())
 			{
@@ -724,25 +724,17 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				m_tableName = rs.getString(1);
 				sql.append("UPPER(").append(rs.getString(2)).append(") LIKE ").append(DB.TO_STRING(text));
 			}
-
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (SQLException ex)
 		{
 			log.log(Level.SEVERE, query, ex);
 		}
-
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
 		//
 		if (sql.length() == 0)
 		{

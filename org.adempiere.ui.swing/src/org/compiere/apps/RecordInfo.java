@@ -209,33 +209,27 @@ public class RecordInfo extends CDialog
 			+ "WHERE AD_Table_ID=? AND Record_ID=? "
 			+ "ORDER BY Updated DESC";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, dse.AD_Table_ID);
 			pstmt.setInt (2, Record_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				addLine (rs.getInt(1), rs.getTimestamp(2), rs.getInt(3),
 					rs.getString(4), rs.getString(5));
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		

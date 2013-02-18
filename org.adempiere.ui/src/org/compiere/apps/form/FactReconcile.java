@@ -122,9 +122,11 @@ public class FactReconcile {
 		
 		log.fine("SQL=" + sql.toString());
 		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			int i = 1;
 			pstmt.setInt(i++, m_AD_Client_ID);
 			
@@ -149,7 +151,7 @@ public class FactReconcile {
 			if(m_DateAcct2!=null)
 				pstmt.setTimestamp(i++,	m_DateAcct2);
 			
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				Vector<Object> line = new Vector<Object>();
@@ -170,12 +172,16 @@ public class FactReconcile {
 				//
 				data.add(line);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return data;
@@ -254,20 +260,26 @@ public class FactReconcile {
 			+ "WHERE ase.ElementType='AC' AND ase.AD_Client_ID=" + m_AD_Client_ID + ") "
 			+ "ORDER BY 2";
 		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				vector.add(new KeyNamePair(rs.getInt(1), rs.getString(2)));
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return vector;

@@ -109,6 +109,10 @@ public class WInfoPAttributeEditor extends WEditor implements IWhereClauseEditor
 		return m_pAttributeWhere;
 	}
 
+	public void clearWhereClause() {
+		m_pAttributeWhere = null;
+	}
+
 	/**
 	 * 	Query per Product Attribute.
 	 *  <code>
@@ -138,7 +142,7 @@ public class WInfoPAttributeEditor extends WEditor implements IWhereClauseEditor
 
 	@Override
 	public void dynamicDisplay() {
-		int attributeSetId = Env.getContextAsInt(ctx, windowNo, Env.TAB_INFO, "M_AttributeSet_ID");
-		setReadWrite(attributeSetId > 0);
+		// int attributeSetId = Env.getContextAsInt(ctx, windowNo, Env.TAB_INFO, "M_AttributeSet_ID");
+		// setReadWrite(attributeSetId > 0);
 	}
 }

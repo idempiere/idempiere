@@ -123,31 +123,25 @@ public class RecordAccessDialog extends CDialog
 		sql = "SELECT * FROM AD_Record_Access "
 			+ "WHERE AD_Table_ID=? AND Record_ID=? AND AD_Client_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_AD_Table_ID);
 			pstmt.setInt(2, m_Record_ID);
 			pstmt.setInt(3, Env.getAD_Client_ID(Env.getCtx()));
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				m_recordAccesss.add(new MRecordAccess(Env.getCtx(), rs, null));
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		log.fine("#" + m_recordAccesss.size());

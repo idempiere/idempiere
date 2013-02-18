@@ -112,7 +112,7 @@ public class Merge
 			+ ") AND c.ColumnSQL IS NULL "
 			+ "ORDER BY t.LoadSeq DESC";
 		PreparedStatement pstmt = null;
-		
+		ResultSet rs = null;
 		try
 		{
 			
@@ -121,7 +121,7 @@ public class Merge
 			pstmt = DB.prepareStatement(sql, Trx.createTrxName());
 			pstmt.setString(1, ColumnName);
 			pstmt.setString(2, ColumnName);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				String tName = rs.getString(1);
@@ -135,9 +135,6 @@ public class Merge
 						m_totalCount += count;
 				}
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 			//
 			log.config("Success=" + success
 				+ " - " + ColumnName + " - From=" + from_ID + ",To=" + to_ID);
@@ -173,17 +170,13 @@ public class Merge
 			log.log(Level.SEVERE, ColumnName, ex);
 			success = false;
 		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
 		//	Cleanup
-		try
-		{
-			if (pstmt != null)
-				pstmt.close();
-
-		}
-		catch (Exception ex)
-		{
-		}
-		pstmt = null;
 		return success;
 	}	//	merge
 

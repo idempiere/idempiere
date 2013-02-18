@@ -353,11 +353,13 @@ public class CreateAdempiere
 		
 		StringBuilder sb = new StringBuilder("CREATE TABLE ");
 		sb.append(tableName).append(" (");
+		ResultSet sourceColumns = null;
+		ResultSet sourcePK = null;
 		try
 		{
 			//	Columns
 			boolean first = true;
-			ResultSet sourceColumns = md.getColumns(catalog, schema, table, null);
+			sourceColumns = md.getColumns(catalog, schema, table, null);
 			while (sourceColumns.next())
 			{
 				sb.append(first ? "" : ", ");
@@ -431,10 +433,9 @@ public class CreateAdempiere
 
 
 			}	//	for all columns
-			sourceColumns.close();
 
 			//	Primary Key
-			ResultSet sourcePK = md.getPrimaryKeys(catalog, schema, table);
+			sourcePK = md.getPrimaryKeys(catalog, schema, table);
 			//	TABLE_CAT=null, TABLE_SCHEM=REFERENCE, TABLE_NAME=A_ASSET, COLUMN_NAME=A_ASSET_ID, KEY_SEQ=1, PK_NAME=A_ASSET_KEY
 			first = true;
 			boolean hasPK = false;
@@ -451,7 +452,6 @@ public class CreateAdempiere
 			}
 			if (hasPK)	//	close constraint
 				sb.append(")");	// USING INDEX TABLESPACE INDX
-			sourcePK.close();
 			//
 			sb.append(")");	//	close create table
 		}
@@ -459,6 +459,13 @@ public class CreateAdempiere
 		{
 			log.log(Level.SEVERE, "createTable", ex);
 			return false;
+		}
+		finally
+		{
+			DB.close(sourceColumns);
+			DB.close(sourcePK);
+			sourceColumns = null;
+			sourcePK = null;
 		}
 
 		//	Execute Create Table

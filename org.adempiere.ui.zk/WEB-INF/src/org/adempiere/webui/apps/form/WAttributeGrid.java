@@ -266,18 +266,20 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 		//	Add Access & Order
 		sql = MRole.getDefault().addAccessSQL (sql, "M_PriceList_Version", true, false)	// fully qualidfied - RO 
 			+ " ORDER BY M_PriceList_Version.Name";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pickPriceList.appendItem("", 0);
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				KeyNamePair kn = new KeyNamePair (rs.getInt(1), rs.getString(2));
 				pickPriceList.appendItem(kn.getName(), kn.getKey());
 			}
-			rs.close();
-			pstmt.close();
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 
 			//	Warehouse
 			sql = "SELECT M_Warehouse_ID, Value || ' - ' || Name AS ValueName "
@@ -295,12 +297,15 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 					(rs.getInt("M_Warehouse_ID"), rs.getString("ValueName"));
 				pickWarehouse.appendItem(kn.getName(), kn.getKey());
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
 	}	//	fillPicks
 
@@ -522,36 +527,30 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 		sql = MRole.getDefault().addAccessSQL(sql, "M_Product", 
 			MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 		PreparedStatement pstmt = null;
+		ResultSet rs = null ;
 		int noProducts = 0;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MProduct product = new MProduct(Env.getCtx(), rs, null);
 				addProduct (element, product);
 				noProducts++;
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
-		catch (Exception e)
-		{
-			pstmt = null;
-		}
-		
+				
 		int mode = modeCombo.getSelectedIndex();
 		//	No Products
 		if (noProducts == 0 && mode == MODE_VIEW)

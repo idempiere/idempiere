@@ -65,11 +65,13 @@ public abstract class CreateFromPackageShipment extends CreateFrom
         sqlStmt.append("FROM M_PACKAGELINES_AVAIL_V ");
         sqlStmt.append("WHERE M_InOut_ID = ? ");
         
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
         try
         {
-            PreparedStatement pstmt = DB.prepareStatement(sqlStmt.toString(), null);
+            pstmt = DB.prepareStatement(sqlStmt.toString(), null);
             pstmt.setInt(1, M_InOut_ID);           
-            ResultSet rs = pstmt.executeQuery();
+            rs = pstmt.executeQuery();
             while (rs.next())
             {
             	Vector<Object> line = new Vector<Object>(6);
@@ -84,12 +86,16 @@ public abstract class CreateFromPackageShipment extends CreateFrom
                 
                 data.add(line);
             }
-            rs.close();
-            pstmt.close();
         }
         catch (SQLException e)
         {
             log.log(Level.SEVERE, sqlStmt.toString(), e);
+        }
+        finally
+        {
+        	DB.close(rs, pstmt);
+        	rs = null;
+        	pstmt = null;
         }
 
 		return data;

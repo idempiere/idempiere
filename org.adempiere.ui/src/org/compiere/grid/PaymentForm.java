@@ -176,22 +176,28 @@ public abstract class PaymentForm implements IPaymentForm {
 		String SQL = "SELECT C_Currency_ID, ISO_Code FROM C_Currency "
 			+ "WHERE (IsEMUMember='Y' AND EMUEntryDate<SysDate) OR IsEuro='Y' "
 			+ "ORDER BY 2";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(SQL, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				int id = rs.getInt(1);
 				String name = rs.getString(2);
 				s_Currencies.put(new Integer(id), new KeyNamePair(id, name));
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, SQL, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 	}	//	loadCurrencies
 	
@@ -211,20 +217,27 @@ public abstract class PaymentForm implements IPaymentForm {
 		int retValue = 0;
 		String sql = "SELECT C_Invoice_ID FROM C_Invoice WHERE C_Order_ID=? "
 			+ "ORDER BY C_Invoice_ID DESC";     //  last invoice
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, C_Order_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				retValue = rs.getInt(1);
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
+		
 		return retValue;
 	}   //  getInvoiceID
 	

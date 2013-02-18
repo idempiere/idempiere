@@ -1861,18 +1861,24 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         //  Execute Qusery
         m_total = 999999;
+        Statement stmt = null;
+        ResultSet rs = null;
         try
         {
-            Statement stmt = DB.createStatement();
-            ResultSet rs = stmt.executeQuery(finalSQL);
+            stmt = DB.createStatement();
+            rs = stmt.executeQuery(finalSQL);
             if (rs.next())
                 m_total = rs.getInt(1);
-            rs.close();
-            stmt.close();
         }
         catch (SQLException e)
         {
             log.log(Level.SEVERE, finalSQL, e);
+        }
+        finally
+        {
+        	DB.close(rs, stmt);
+        	rs = null;
+        	stmt = null;
         }
         MRole role = MRole.getDefault();
         //  No Records
@@ -1920,9 +1926,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         StringBuilder retString = new StringBuilder(" M_Product_Category_ID IN (");
         String sql = " SELECT M_Product_Category_ID, M_Product_Category_Parent_ID FROM M_Product_Category";
         final Vector<SimpleTreeNode> categories = new Vector<SimpleTreeNode>(100);
+        Statement stmt = null;
+        ResultSet rs = null;
         try {
-            Statement stmt = DB.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            stmt = DB.createStatement();
+            rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 if(rs.getInt(1)==productCategoryId) {
                     subTreeRootParentId = rs.getInt(2);
@@ -1931,14 +1939,17 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             }
             retString.append(getSubCategoriesString(productCategoryId, categories, subTreeRootParentId))
             		 .append(") ");
-            rs.close();
-            stmt.close();
         } catch (SQLException e) {
             log.log(Level.SEVERE, sql, e);
             retString = new StringBuilder();
         } catch (AdempiereSystemError e) {
             log.log(Level.SEVERE, sql, e);
             retString = new StringBuilder();
+        }
+        finally{
+        	DB.close(rs,stmt);
+        	rs = null;
+        	stmt = null;
         }
         return retString.toString();
 

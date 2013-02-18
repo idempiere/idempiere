@@ -155,9 +155,6 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 				if (rs.next())		//	only one
 					C_ValidCombination_ID = 0;
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{

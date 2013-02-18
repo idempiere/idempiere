@@ -195,10 +195,12 @@ class AcctViewerData
 			+ "WHERE EXISTS (SELECT * FROM AD_Column c"
 			+ " WHERE t.AD_Table_ID=c.AD_Table_ID AND c.ColumnName='Posted')"
 			+ " AND IsView='N'";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				int id = rs.getInt(1);
@@ -211,12 +213,16 @@ class AcctViewerData
 				if (id == AD_Table_ID)
 					select = pp;
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		if (select != null)
 			cb.setSelectedItem(select);
@@ -232,19 +238,25 @@ class AcctViewerData
 		KeyNamePair pp = new KeyNamePair(0, "");
 		cb.addItem(pp);
 		String sql = "SELECT AD_Org_ID, Name FROM AD_Org WHERE AD_Client_ID=? ORDER BY Value";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Client_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				cb.addItem(new KeyNamePair(rs.getInt(1), rs.getString(2)));
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs,pstmt);
+			rs = null;
+			pstmt = null;
 		}
 	}   //  fillOrg
 
@@ -264,18 +276,24 @@ class AcctViewerData
 		sql.append(MLookupFactory.getLookup_TableDirEmbed(language, columnName, "avd"))
 			.append(") FROM ").append(tableName).append(" avd WHERE avd.").append(selectSQL);
 		String retValue = "<" + selectSQL + ">";
+		Statement stmt = null;
+		ResultSet rs = null;
 		try
 		{
-			Statement stmt = DB.createStatement();
-			ResultSet rs = stmt.executeQuery(sql.toString());
+			stmt = DB.createStatement();
+			rs = stmt.executeQuery(sql.toString());
 			if (rs.next())
 				retValue = rs.getString(1);
-			rs.close();
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
+		}
+		finally
+		{
+			DB.close(rs, stmt);
+			rs = null;
+			stmt = null;
 		}
 		return retValue;
 	}   //  getButtonText

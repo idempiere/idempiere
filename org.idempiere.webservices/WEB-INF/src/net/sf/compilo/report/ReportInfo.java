@@ -210,8 +210,6 @@ public class ReportInfo
                hasError = true;
                log.saveError("Error", "The Report File not exists");
            }
-           rs.close();
-           pstmt.close();
         }
         catch (SQLException e)
         {
@@ -231,12 +229,9 @@ public class ReportInfo
         }
         finally
         {
-            try
-            {
-                if(rs != null) rs.close();
-                if(pstmt != null) pstmt.close();
-            }
-            catch(Exception ex){}
+            DB.close(rs, pstmt);
+            rs = null;
+            pstmt = null;
         }        
         log.info("Get ReportDefinition-" + this.toString());
     }
