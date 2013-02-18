@@ -509,7 +509,7 @@ DataStatusListener, IADTabpanel, IdSpace
         			editorComps.add(editor.getComponent());
         			if (paintLabel) {
         				Div div = new Div();
-        				div.setStyle("text-align: right;");
+        				div.setSclass("form-label");
         				Label label = editor.getLabel();
         				div.appendChild(label);
         				if (label.getDecorator() != null)
@@ -566,7 +566,7 @@ DataStatusListener, IADTabpanel, IdSpace
         		//display just a label if we are "heading only"
         		Label label = new Label(field.getHeader());
         		Div div = new Div();
-        		div.setStyle("text-align: center;");
+        		div.setSclass("form-label-heading");
         		row.appendCellChild(createSpacer());
         		div.appendChild(label);
         		row.appendCellChild(div);

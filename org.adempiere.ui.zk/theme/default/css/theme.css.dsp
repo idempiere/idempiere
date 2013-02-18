@@ -662,6 +662,16 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	background-image: none !important; 
 }
 
+.form-label 
+{
+	text-align: right;
+}
+
+.form-label-heading
+{
+	text-align: center;
+}
+
 <%-- status bar --%>
 .status {
 	width: 100%;
