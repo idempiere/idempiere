@@ -255,7 +255,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		//register as 0
         registerWindow(homeTab);
         
-		dashboardController.render(homeTab, this, true);		
+		dashboardController.render(homeTab, this, true);
+		
+		Clients.response(new AuScript("$('.slimScroll .z-anchorlayout-body').slimScroll({height: '100%',railVisible: true, alwaysVisible: false});"));				
 	}
 
 	public void onEvent(Event event)

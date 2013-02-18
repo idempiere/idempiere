@@ -39,7 +39,9 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	<javascript src="/js/token.js" charset="UTF-8"/>
 	<javascript src="/js/window.js" charset="UTF-8"/>
 	<javascript src="/js/jquery-patch.js" charset="UTF-8"/>
-	
+	<javascript src="/js/jquery.slimscroll.min.js" charset="UTF-8"/>
+	<javascript src="/js/jquery-ui-1.10.1.min.js" charset="UTF-8"/>
+
 	<javascript package="jawwa.atmosphere" merge="false" />
 	
 </language>

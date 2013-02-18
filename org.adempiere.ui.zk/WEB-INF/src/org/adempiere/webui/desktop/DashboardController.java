@@ -78,7 +78,6 @@ import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Separator;
-import org.zkoss.zul.Style;
 import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Vlayout;
@@ -116,12 +115,9 @@ public class DashboardController implements EventListener<Event> {
 	}
 	
 	public void render(Component parent, IDesktop desktopImpl, boolean isShowInDashboard) {
-		Style style = new Style();
-		//, .z-anchorchildren
-		style.setContent(".z-anchorlayout-body { overflow:auto } .z-anchorchildren { overflow:visible } ");
-		style.setPage(parent.getPage());
-				
         parent.appendChild(dashboardLayout);
+        dashboardLayout.setSclass("slimScroll");
+        
 
         if (!dashboardLayout.getDesktop().isServerPushEnabled())
         	dashboardLayout.getDesktop().enableServerPush(true);

@@ -57,7 +57,7 @@ public class HelpController
 	public HelpController()
     {
 		dashboardLayout = new Anchorlayout();
-        dashboardLayout.setSclass("dashboard-layout");
+        dashboardLayout.setSclass("dashboard-layout slimScroll");
         dashboardLayout.setVflex("1");
         dashboardLayout.setHflex("1");
     }
