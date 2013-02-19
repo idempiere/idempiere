@@ -78,11 +78,12 @@ public class DocumentTypeVerify extends SvrProcess
 			+ " AND rl.IsActive='Y' AND NOT EXISTS "
 			+ " (SELECT * FROM C_DocType dt WHERE dt.AD_Client_ID=? AND rl.Value=dt.DocBaseType)";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, AD_Client_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				String name = rs.getString(2);
@@ -104,22 +105,15 @@ public class DocumentTypeVerify extends SvrProcess
 						s_log.warning("Not created: " + name);
 				}
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 	}	//	createDocumentTypes
@@ -160,12 +154,13 @@ public class DocumentTypeVerify extends SvrProcess
 			+ " (SELECT * FROM C_PeriodControl pc "
 				+ "WHERE pc.C_Period_ID=p.C_Period_ID AND pc.DocBaseType=dt.DocBaseType)";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		int counter = 0;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, AD_Client_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				int Client_ID = rs.getInt(1);
@@ -184,22 +179,15 @@ public class DocumentTypeVerify extends SvrProcess
 				else
 					s_log.warning("Not saved: " + pc);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		if (sp != null)

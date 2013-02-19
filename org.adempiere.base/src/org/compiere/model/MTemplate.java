@@ -278,17 +278,19 @@ public class MTemplate extends X_CM_Template
 		int[] AdCats = null;
 		String sql = "SELECT count(*) FROM CM_Template_AD_Cat WHERE CM_Template_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			int numberAdCats = 0;
 			pstmt = DB.prepareStatement (sql, get_TrxName ());
 			pstmt.setInt (1, get_ID ());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 			{
 				numberAdCats = rs.getInt (1);
 			}
-			rs.close ();
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 			AdCats = new int[numberAdCats];
 			int i = 0;
 			sql = "SELECT CM_Ad_Cat_ID FROM CM_Template_AD_Cat WHERE CM_Template_ID=?";
@@ -300,23 +302,16 @@ public class MTemplate extends X_CM_Template
 				AdCats[i] = rs.getInt (1);
 				i++;
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (SQLException ex)
 		{
 			log.log (Level.SEVERE, sql, ex);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
 		if (AdCats != null && AdCats.length > 0)
 		{
 			MAd[] returnAds = new MAd[AdCats.length];

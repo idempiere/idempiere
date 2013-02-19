@@ -128,12 +128,13 @@ public class OrderBatchProcess extends SvrProcess
 		int counter = 0;
 		int errCounter = 0;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
 			pstmt.setInt(1, p_C_DocTypeTarget_ID);
 			pstmt.setString(2, p_DocStatus);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				if (process(new MOrder(getCtx(),rs, get_TrxName())))
@@ -141,22 +142,15 @@ public class OrderBatchProcess extends SvrProcess
 				else
 					errCounter++;
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		StringBuilder msgreturn = new StringBuilder("@Updated@=").append(counter).append(", @Errors@=").append(errCounter);

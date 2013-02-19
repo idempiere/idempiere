@@ -1184,12 +1184,13 @@ public class DocumentEngine implements DocAction
 				+ "WHERE l.AD_Ref_List_ID=t.AD_Ref_List_ID"
 				+ " AND t.AD_Language='" + Env.getAD_Language(Env.getCtx()) + "'"
 				+ " AND l.AD_Reference_ID=? ORDER BY t.Name";
-
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, DocAction.AD_REFERENCE_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				String value = rs.getString(1);
@@ -1202,12 +1203,16 @@ public class DocumentEngine implements DocAction
 				v_name.add(name);
 				v_description.add(description);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 	}
 

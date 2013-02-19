@@ -227,13 +227,16 @@ public class ReplicationLocal extends SvrProcess
 		{
 			while (rowset.next())
 				mergeDataTable (rowset.getInt(1), rowset.getString(3), rowset.getInt(4));
-			rowset.close();
-			rowset = null;
 		}
 		catch (SQLException ex)
 		{
 			log.log(Level.SEVERE, "mergeData", ex);
 			m_replicated = false;
+		}
+		finally
+		{
+			DB.close(rowset);
+			rowset = null;
 		}
 	}	//	mergeData
 
@@ -318,9 +321,9 @@ public class ReplicationLocal extends SvrProcess
 			rLog.setIsReplicated(replicated);
 			if (result != null)
 				rLog.setP_Msg("< " + result.toString());
-			sourceRS.close();
+			DB.close(sourceRS);
 			sourceRS = null;
-			targetRS.close();
+			DB.close(targetRS);
 			targetRS = null;
 		}
 		rLog.saveEx();
@@ -336,6 +339,7 @@ public class ReplicationLocal extends SvrProcess
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			//	Get Keys
@@ -344,14 +348,14 @@ public class ReplicationLocal extends SvrProcess
 				+ " AND IsKey='Y'";
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, AD_Table_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(rs.getString(1));
-			rs.close();
-
 			//	no keys - search for parents
 			if (list.size() == 0)
 			{
+				DB.close(rs);
+				rs = null;
 				sql = "SELECT ColumnName FROM AD_Column "
 					+ "WHERE AD_Table_ID=?"
 					+ " AND IsParent='Y'";
@@ -360,22 +364,17 @@ public class ReplicationLocal extends SvrProcess
 				rs = pstmt.executeQuery();
 				while (rs.next())
 					list.add(rs.getString(1));
-				rs.close();
 			}
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "getKeyColumns", e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		//	Convert to Array
@@ -406,12 +405,16 @@ public class ReplicationLocal extends SvrProcess
 		{
 			while (rowset.next())
 				sendUpdatesTable (rowset.getInt(1), rowset.getString(3), rowset.getInt(4));
-			rowset.close();
 		}
 		catch (SQLException ex)
 		{
 			log.log(Level.SEVERE, "sendUpdates", ex);
 			m_replicated = false;
+		}
+		finally
+		{
+			DB.close(rowset);
+			rowset = null;
 		}
 	}	//	sendUpdates
 
@@ -534,6 +537,7 @@ public class ReplicationLocal extends SvrProcess
 		Connection conn = DB.getConnectionRO();
 		PreparedStatement pstmt = null;
 		RowSet rowSet = null;
+		ResultSet rs = null;
 		//
 		try
 		{
@@ -557,7 +561,7 @@ public class ReplicationLocal extends SvrProcess
 				}
 			}
 			//
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			rowSet = CCachedRowSet.getRowSet(rs);
 		}
 		catch (Exception ex)
@@ -568,8 +572,8 @@ public class ReplicationLocal extends SvrProcess
 		//	Close Cursor
 		finally
 		{
-			DB.close(pstmt);
-			pstmt = null;
+			DB.close(rs,pstmt);
+			rs = null;pstmt = null;
 		}
 			
 		return rowSet;

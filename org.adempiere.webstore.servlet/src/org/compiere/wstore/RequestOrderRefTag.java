@@ -123,11 +123,12 @@ public class RequestOrderRefTag extends TagSupport
 			+ "WHERE C_BPartner_ID=? "
 			+ "ORDER BY CreatedBy DESC";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, C_BPartner_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				o = new option (rs.getString(1));
@@ -137,9 +138,6 @@ public class RequestOrderRefTag extends TagSupport
 				o.addElement(Util.maskHTML(display));
 				list.add(o);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
@@ -147,16 +145,10 @@ public class RequestOrderRefTag extends TagSupport
 		}
 		finally
 		{
-			try
-			{
-				if (pstmt != null)
-					pstmt.close ();
-			}
-			catch (Exception e)
-			{}
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
-
 		//	Return to Array and return
 		option options[] = new option [list.size()];
 		list.toArray(options);

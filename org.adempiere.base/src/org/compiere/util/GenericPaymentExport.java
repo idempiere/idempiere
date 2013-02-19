@@ -194,11 +194,13 @@ public class GenericPaymentExport implements PaymentExport
 			+ " AND a.C_Region_ID=r.C_Region_ID(+)"
 			+ " AND a.C_Country_ID=cc.C_Country_ID "
 			+ "ORDER BY l.IsBillTo DESC";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, C_BPartner_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			//
 			if (rs.next())
 			{
@@ -233,12 +235,16 @@ public class GenericPaymentExport implements PaymentExport
 				if (bp[BP_REFNO] == null)
 					bp[BP_REFNO] = "";
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		return bp;
 	}   //  getBPartnerInfo

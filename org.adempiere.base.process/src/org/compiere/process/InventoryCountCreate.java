@@ -200,6 +200,7 @@ public class InventoryCountCreate extends SvrProcess
 		//
 		int count = 0;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
@@ -213,7 +214,7 @@ public class InventoryCountCreate extends SvrProcess
 				pstmt.setString(index++, p_ProductValue.toUpperCase());
 			if (!p_DeleteOld)
 				pstmt.setInt(index++, p_M_Inventory_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				int M_Product_ID = rs.getInt(1);
@@ -235,22 +236,15 @@ public class InventoryCountCreate extends SvrProcess
 						M_AttributeSetInstance_ID, QtyOnHand, M_AttributeSet_ID);
 		        }
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		
@@ -354,17 +348,28 @@ public class InventoryCountCreate extends SvrProcess
 		StringBuilder retString = new StringBuilder();
 		String sql = " SELECT M_Product_Category_ID, M_Product_Category_Parent_ID FROM M_Product_Category";
 		final Vector<SimpleTreeNode> categories = new Vector<SimpleTreeNode>(100);
-		Statement stmt = DB.createStatement();
-		ResultSet rs = stmt.executeQuery(sql);
-		while (rs.next()) {
-			if(rs.getInt(1)==productCategoryId) {
-				subTreeRootParentId = rs.getInt(2);
+		Statement stmt = null;
+		ResultSet rs = null;
+		try 
+		{
+			stmt = DB.createStatement();
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				if(rs.getInt(1)==productCategoryId) {
+					subTreeRootParentId = rs.getInt(2);
+				}
+				categories.add(new SimpleTreeNode(rs.getInt(1), rs.getInt(2)));
 			}
-			categories.add(new SimpleTreeNode(rs.getInt(1), rs.getInt(2)));
+			retString.append(getSubCategoriesString(productCategoryId, categories, subTreeRootParentId));	
+		} catch (SQLException e) 
+		{
+			throw e;
 		}
-		retString.append(getSubCategoriesString(productCategoryId, categories, subTreeRootParentId));
-		rs.close();
-		stmt.close();
+		finally
+		{			
+			DB.close(rs, stmt);
+			rs = null;stmt = null;
+		}
 		return retString.toString();
 	}
 

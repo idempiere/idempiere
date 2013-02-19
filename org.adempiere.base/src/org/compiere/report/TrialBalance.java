@@ -245,19 +245,17 @@ public class TrialBalance extends SvrProcess
 
 		String sql = "SELECT StartDate, EndDate FROM C_Period WHERE C_Period_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, p_C_Period_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				p_DateAcct_From = rs.getTimestamp(1);
 				p_DateAcct_To = rs.getTimestamp(2);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
@@ -265,13 +263,8 @@ public class TrialBalance extends SvrProcess
 		}
 		finally
 		{
-			try
-			{
-				if (pstmt != null)
-					pstmt.close ();
-			}
-			catch (Exception e)
-			{}
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 	}	//	setDateAcct

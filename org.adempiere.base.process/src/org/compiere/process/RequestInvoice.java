@@ -116,6 +116,7 @@ public class RequestInvoice extends SvrProcess
 			.append("ORDER BY C_BPartner_ID");
 		
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
@@ -127,7 +128,7 @@ public class RequestInvoice extends SvrProcess
 				pstmt.setInt (index++, p_R_Category_ID);
 			if (p_C_BPartner_ID != 0)
 				pstmt.setInt (index++, p_C_BPartner_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			int oldC_BPartner_ID = 0;
 			while (rs.next ())
 			{
@@ -145,22 +146,15 @@ public class RequestInvoice extends SvrProcess
 			}
 			invoiceDone();
 			//
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log (Level.SEVERE, sql.toString(), e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//	R_Category_ID

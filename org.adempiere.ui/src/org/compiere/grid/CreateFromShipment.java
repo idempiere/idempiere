@@ -98,24 +98,20 @@ public abstract class CreateFromShipment extends CreateFrom
 			+ "AND rl.M_InOutLine_ID IS NOT NULL)";
 
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try {
 			pstmt = DB.prepareStatement(sqlStmt, null);
 			pstmt.setInt(1, C_BPartner_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				list.add(new KeyNamePair(rs.getInt(1), rs.getString(2)));
 			}
-			rs.close();
 		} catch (SQLException e) {
 			log.log(Level.SEVERE, sqlStmt.toString(), e);
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (Exception ex) {
-					log.severe("Could not close prepared statement");
-				}
-			}
+		} finally{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		return list;

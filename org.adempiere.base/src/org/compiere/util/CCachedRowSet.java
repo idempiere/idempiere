@@ -101,14 +101,26 @@ public class CCachedRowSet extends CachedRowSetImpl implements CachedRowSet
 	{
 		if (db.getName().equals(Database.DB_ORACLE))
 		{
-			Statement stmt = conn.createStatement
-				(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			ResultSet rs = stmt.executeQuery(sql);
-			CachedRowSetImpl crs = new CachedRowSetImpl();
-			crs.populate(rs);
-			rs.close();
-			stmt.close();
-			return crs;
+			Statement stmt = null;
+			ResultSet rs = null;
+			try 
+			{
+				stmt = conn.createStatement
+						(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				rs = stmt.executeQuery(sql);
+				CachedRowSetImpl crs = new CachedRowSetImpl();
+				crs.populate(rs);
+				return crs;
+			} catch (SQLException e) 
+			{
+				throw e;
+			}
+			finally
+			{				
+				DB.close(rs, stmt);
+				rs = null;
+				stmt = null;
+			}
 		}
 		CachedRowSet crs = get();
 		crs.setConcurrency(ResultSet.CONCUR_READ_ONLY);

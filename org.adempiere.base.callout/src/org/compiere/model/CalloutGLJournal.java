@@ -90,9 +90,6 @@ public class CalloutGLJournal extends CalloutEngine
 				rs = pstmt.executeQuery();
 				if (rs.next())
 					C_Period_ID = rs.getInt(1);
-				rs.close();
-				pstmt.close();
-				pstmt = null;
 			}
 			catch (SQLException e)
 			{
@@ -102,6 +99,8 @@ public class CalloutGLJournal extends CalloutEngine
 			finally
 			{
 				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
 			}
 			if (C_Period_ID != 0)
 				mTab.setValue("C_Period_ID", new Integer(C_Period_ID));

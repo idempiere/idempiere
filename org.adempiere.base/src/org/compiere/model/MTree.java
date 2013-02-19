@@ -167,20 +167,26 @@ public class MTree extends MTree_Base
 		String sql = "SELECT AD_Tree_ID, Name FROM AD_Tree "
 			+ "WHERE AD_Client_ID=? AND TreeType=? AND IsActive='Y' AND IsAllNodes='Y' "
 			+ "ORDER BY IsDefault DESC, AD_Tree_ID";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Client_ID);
 			pstmt.setString(2, TreeType);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				AD_Tree_ID = rs.getInt(1);
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		return AD_Tree_ID;
@@ -225,18 +231,20 @@ public class MTree extends MTree_Base
 		}
 		log.finest(sql.toString());
 		//  The Node Loop
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			// load Node details - addToTree -> getNodeDetail
 			getNodeDetails(); 
 			//
-			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
+			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
 			int idx = 1;
 			if (AD_User_ID != -1 && getTreeType().equals(TREETYPE_Menu))	// IDEMPIERE 329 - nmicoud
 				pstmt.setInt(idx++, AD_User_ID);
 			pstmt.setInt(idx++, getAD_Tree_ID());
 			//	Get Tree & Bar
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			m_root = new MTreeNode (0, 0, getName(), getDescription(), 0, true, null, false, null);
 			while (rs.next())
 			{
@@ -250,8 +258,6 @@ public class MTree extends MTree_Base
 				else
 					addToTree (node_ID, parent_ID, seqNo, onBar);	//	calls getNodeDetail
 			}
-			rs.close();
-			pstmt.close();
 			//
 			//closing the rowset will also close connection for oracle rowset implementation
 			//m_nodeRowSet.close();
@@ -263,6 +269,12 @@ public class MTree extends MTree_Base
 			log.log(Level.SEVERE, sql.toString(), e);
 			m_nodeRowSet = null;
 			m_nodeIdMap = null;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 			
 		//  Done with loading - add remainder from buffer

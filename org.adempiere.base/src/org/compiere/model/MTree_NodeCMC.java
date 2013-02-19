@@ -51,31 +51,25 @@ public class MTree_NodeCMC extends X_AD_TreeNodeCMC
 		ArrayList<MTree_NodeCMC> list = new ArrayList<MTree_NodeCMC>();
 		String sql = "SELECT * FROM AD_TreeNodeCMC WHERE AD_Tree_ID=? ORDER BY Node_ID";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, trxName);
 			pstmt.setInt (1, AD_Tree_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				list.add (new MTree_NodeCMC (ctx, rs, trxName));
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		MTree_NodeCMC[] retValue = new MTree_NodeCMC[list.size ()];
@@ -95,30 +89,24 @@ public class MTree_NodeCMC extends X_AD_TreeNodeCMC
 		MTree_NodeCMC retValue = null;
 		String sql = "SELECT * FROM AD_TreeNodeCMC WHERE AD_Tree_ID=? AND Node_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, tree.get_TrxName());
 			pstmt.setInt (1, tree.getAD_Tree_ID());
 			pstmt.setInt (2, Node_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				retValue = new MTree_NodeCMC (tree.getCtx(), rs, tree.get_TrxName());
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, "get", e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		return retValue;

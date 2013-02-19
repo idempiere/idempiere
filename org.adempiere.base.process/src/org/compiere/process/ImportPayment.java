@@ -413,11 +413,12 @@ public class ImportPayment extends SvrProcess
 			
 		MBankAccount account = null;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		int noInsert = 0;
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 				
 			while (rs.next())
 			{ 
@@ -512,17 +513,16 @@ public class ImportPayment extends SvrProcess
 				}
 				
 			}
-			
-			//	Close database connection
-			rs.close();
-			pstmt.close();
-			rs = null;
-			pstmt = null;
-
 		}
 		catch(Exception e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		//	Set Error to indicator to not imported

@@ -329,11 +329,12 @@ public class ImportBankStatement extends SvrProcess
 		PreparedStatement pupdt = DB.prepareStatement(updateSql.toString(), get_TrxName());
 		
 		PreparedStatement pstmtDuplicates = null;
+		ResultSet rs = null;
 		no = 0;
 		try
 		{
 			pstmtDuplicates = DB.prepareStatement(sql.toString(), get_TrxName());
-			ResultSet rs = pstmtDuplicates.executeQuery();
+			rs = pstmtDuplicates.executeQuery();
 			while (rs.next())
 			{
 				StringBuilder info = new StringBuilder("Line_ID=").append(rs.getInt(2))		//	l.C_BankStatementLine_ID
@@ -343,17 +344,17 @@ public class ImportBankStatement extends SvrProcess
 				pupdt.executeUpdate();
 				no++;
 			}
-			rs.close();
-			pstmtDuplicates.close();
-			pupdt.close();
-			
-			rs = null;
-			pstmtDuplicates = null;
-			pupdt = null;
 		}
 		catch(Exception e)
 		{
 			log.log(Level.SEVERE, "DetectDuplicates " + e.getMessage());
+		}
+		finally
+		{
+			DB.close(rs, pstmtDuplicates);
+			rs = null;pstmtDuplicates = null;
+			DB.close(pupdt);
+			pupdt = null;
 		}
 		if (no != 0)
 			log.info("Duplicates=" + no);
@@ -374,7 +375,7 @@ public class ImportBankStatement extends SvrProcess
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 				
 			while (rs.next())
 			{ 
@@ -508,17 +509,16 @@ public class ImportBankStatement extends SvrProcess
 				line = null;
 				
 			}
-			
-			//	Close database connection
-			rs.close();
-			pstmt.close();
-			rs = null;
-			pstmt = null;
-
 		}
 		catch(Exception e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		//	Set Error to indicator to not imported

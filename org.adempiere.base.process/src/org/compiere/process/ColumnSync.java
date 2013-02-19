@@ -81,6 +81,7 @@ public class ColumnSync extends SvrProcess
 		
 		//	Find Column in Database
 		Connection conn = null;
+		ResultSet rs = null;
 		try {
 			conn = DB.getConnectionRO();
 			DatabaseMetaData md = conn.getMetaData();
@@ -98,7 +99,7 @@ public class ColumnSync extends SvrProcess
 			int noColumns = 0;
 			String sql = null;
 			//
-			ResultSet rs = md.getColumns(catalog, schema, tableName, null);
+			rs = md.getColumns(catalog, schema, tableName, null);
 			while (rs.next())
 			{
 				noColumns++;
@@ -111,7 +112,7 @@ public class ColumnSync extends SvrProcess
 				sql = column.getSQLModify(table, column.isMandatory() != notNull);
 				break;
 			}
-			rs.close();
+			DB.close(rs);
 			rs = null;
 		
 			//	No Table
@@ -149,6 +150,8 @@ public class ColumnSync extends SvrProcess
 			}
 			return sql;
 		} finally {
+			DB.close(rs);
+			rs = null;
 			if (conn != null) {
 				try {
 					conn.close();

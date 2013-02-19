@@ -71,29 +71,23 @@ public class MWebProjectDomain extends X_CM_WebProject_Domain
 		MWebProjectDomain thisWebProjectDomain = null;
 		String sql = "SELECT * FROM CM_WebProject_Domain WHERE lower(FQDN) LIKE ? ORDER by CM_WebProject_Domain_ID DESC";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setString(1, ServerName);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				thisWebProjectDomain = (new MWebProjectDomain(ctx, rs, trxName));
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		return thisWebProjectDomain;

@@ -588,10 +588,11 @@ public class ImportGLJournal extends SvrProcess
 			.append("FROM I_GLJournal ")
 			.append("WHERE I_IsImported='N'").append (clientCheck);
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 			{
 				BigDecimal source = rs.getBigDecimal(1);
@@ -608,23 +609,17 @@ public class ImportGLJournal extends SvrProcess
 				if (acct != null)
 					addLog (0, null, acct, "@AmtAcctDr@ - @AmtAcctCr@");
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (SQLException ex)
 		{
 			log.log(Level.SEVERE, sql.toString(), ex);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
 
 		// globalqss (moved the commit here to save the error messages)
 		commitEx();
@@ -669,7 +664,7 @@ public class ImportGLJournal extends SvrProcess
 		try
 		{
 			pstmt = DB.prepareStatement (sql.toString (), get_TrxName());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			//
 			while (rs.next())
 			{
@@ -831,23 +826,18 @@ public class ImportGLJournal extends SvrProcess
 						noInsertLine++;
 				}
 			}	//	while records
-			rs.close();
-			pstmt.close();
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
 		}
 		//	clean up
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
 
 		//	Set Error to indicator to not imported
 		sql = new StringBuilder ("UPDATE I_GLJournal ")

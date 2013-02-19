@@ -130,10 +130,11 @@ public class TreeMaintenance extends SvrProcess
 		//
 		boolean ok = true;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				int Node_ID = rs.getInt(1);
@@ -157,23 +158,16 @@ public class TreeMaintenance extends SvrProcess
 						log.log(Level.SEVERE, "Could not add to " + tree + " Node_ID=" + Node_ID);
 				}
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "verifyTree", e);
 			ok = false;
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		StringBuilder msglog = new StringBuilder().append(tree.getName()).append(" Inserted");

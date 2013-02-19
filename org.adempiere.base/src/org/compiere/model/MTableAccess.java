@@ -118,29 +118,23 @@ public class MTableAccess extends X_AD_Table_Access
 		{
 			String sql = "SELECT TableName FROM AD_Table WHERE AD_Table_ID=?";
 			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try
 			{
 				pstmt = DB.prepareStatement(sql, get_TrxName());
 				pstmt.setInt(1, getAD_Table_ID());
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				if (rs.next())
 					m_tableName = rs.getString(1);
-				rs.close();
-				pstmt.close();
-				pstmt = null;
 			}
 			catch (Exception e)
 			{
 				log.log(Level.SEVERE, "getTableName", e);
 			}
-			try
+			finally
 			{
-				if (pstmt != null)
-					pstmt.close();
-				pstmt = null;
-			}
-			catch (Exception e)
-			{
+				DB.close(rs, pstmt);
+				rs = null;
 				pstmt = null;
 			}
 			//	Get Clear Text

@@ -167,11 +167,12 @@ public class SendMailText extends SvrProcess
 			+ " AND u.EMail IS NOT NULL"
 			+ " AND ci.R_InterestArea_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, m_R_InterestArea_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				Boolean ok = sendIndividualMail (rs.getString(1), rs.getInt(3), unsubscribe);
@@ -182,24 +183,18 @@ public class SendMailText extends SvrProcess
 				else
 					m_errors++;
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (SQLException ex)
 		{
 			log.log(Level.SEVERE, sql, ex);
 		}
 		//	Clean Up
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
 		m_ia = null;
 	}	//	sendInterestArea
 	
@@ -217,11 +212,12 @@ public class SendMailText extends SvrProcess
 			+ " AND u.EMail IS NOT NULL"
 			+ " AND bp.C_BP_Group_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, m_C_BP_Group_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				Boolean ok = sendIndividualMail (rs.getString(1), rs.getInt(3), null);
@@ -232,24 +228,18 @@ public class SendMailText extends SvrProcess
 				else
 					m_errors++;
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (SQLException ex)
 		{
 			log.log(Level.SEVERE, sql, ex);
 		}
 		//	Clean Up
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
 	}	//	sendBPGroup
 	
 	/**

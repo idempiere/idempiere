@@ -88,23 +88,29 @@ public class CalloutRequest extends CalloutEngine
 		Integer R_StandardResponse_ID = (Integer)value;
 		String sql = "SELECT Name, ResponseText FROM R_StandardResponse "
 			+ "WHERE R_StandardResponse_ID=?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, R_StandardResponse_ID.intValue());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				String txt = rs.getString(2);
 				txt = Env.parseContext(ctx, WindowNo, txt, false, true);
 				mTab.setValue("Result", txt);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		return "";
 	}   //  copyResponse

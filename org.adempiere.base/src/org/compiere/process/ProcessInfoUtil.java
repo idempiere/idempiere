@@ -54,15 +54,16 @@ public class ProcessInfoUtil
 		String sql = "SELECT Result, ErrorMsg FROM AD_PInstance "
 			+ "WHERE AD_PInstance_ID=?"
 			+ " AND Result IS NOT NULL";
-
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement (sql, 
+			pstmt = DB.prepareStatement (sql, 
 				ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, null);
 			for (int noTry = 0; noTry < noRetry; noTry++)
 			{
 				pstmt.setInt(1, pi.getAD_PInstance_ID());
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				if (rs.next())
 				{
 					//	we have a result
@@ -76,16 +77,14 @@ public class ProcessInfoUtil
 						pi.setSummary(Msg.getMsg(Env.getCtx(), "Failure"), true);
 					}
 					String Message = rs.getString(2);
-					rs.close();
-					pstmt.close();
 					//
 					if (Message != null)
 						pi.addSummary ("  (" +  Msg.parseTranslation(Env.getCtx(), Message)  + ")");
 				//	s_log.fine("setSummaryFromDB - " + Message);
 					return;
 				}
-
-				rs.close();
+				DB.close(rs);
+				rs = null;
 				//	sleep
 				try
 				{
@@ -97,13 +96,17 @@ public class ProcessInfoUtil
 					s_log.log(Level.SEVERE, "Sleep Thread", ie);
 				}
 			}
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
 			pi.setSummary (e.getLocalizedMessage(), true);
 			return;
+		}
+		finally
+		{
+			DB.close(rs,pstmt);
+			rs = null;pstmt = null;
 		}
 		pi.setSummary (Msg.getMsg(Env.getCtx(), "Timeout"), true);
 	}	//	setSummaryFromDB
@@ -119,22 +122,27 @@ public class ProcessInfoUtil
 			+ "FROM AD_PInstance_Log "
 			+ "WHERE AD_PInstance_ID=? "
 			+ "ORDER BY Log_ID";
-
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, pi.getAD_PInstance_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next()){
 				// int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, AD_Table_ID, Record_ID
 				pi.addLog (rs.getInt(1), rs.getInt(2), rs.getTimestamp(3), rs.getBigDecimal(4), rs.getString(5), rs.getInt(6), rs.getInt(7));
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			s_log.log(Level.SEVERE, "setLogFromDB", e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 	}	//	getLogFromDB
 
@@ -207,11 +215,13 @@ public class ProcessInfoUtil
 			+ " INNER JOIN AD_PInstance i ON (p.AD_PInstance_ID=i.AD_PInstance_ID) "
 			+ "WHERE p.AD_PInstance_ID=? "
 			+ "ORDER BY p.SeqNo";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, pi.getAD_PInstance_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				String ParameterName = rs.getString(1);
@@ -241,12 +251,16 @@ public class ProcessInfoUtil
 				if (pi.getAD_User_ID() == null)
 					pi.setAD_User_ID(rs.getInt(12));
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		//
 		ProcessInfoParameter[] pars = new ProcessInfoParameter[list.size()];
