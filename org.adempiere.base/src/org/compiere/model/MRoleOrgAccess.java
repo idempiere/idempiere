@@ -84,29 +84,23 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 	{
 		ArrayList<MRoleOrgAccess> list = new ArrayList<MRoleOrgAccess>();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, id);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add (new MRoleOrgAccess(ctx, rs, null));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, "get", e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		MRoleOrgAccess[] retValue = new MRoleOrgAccess[list.size ()];
@@ -233,32 +227,26 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 				+ "FROM AD_Client c INNER JOIN AD_Org o ON (c.AD_Client_ID=o.AD_Client_ID) "
 				+ "WHERE o.AD_Org_ID=?";
 			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try
 			{
 				pstmt = DB.prepareStatement(sql, null);
 				pstmt.setInt(1, getAD_Org_ID());
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				if (rs.next())
 				{
 					m_clientName = rs.getString(1);
 					m_orgName = rs.getString(2);
 				}
-				rs.close();
-				pstmt.close();
-				pstmt = null;
 			}
 			catch (Exception e)
 			{
 				log.log(Level.SEVERE, "getClientName", e);
 			}
-			try
+			finally
 			{
-				if (pstmt != null)
-					pstmt.close();
-				pstmt = null;
-			}
-			catch (Exception e)
-			{
+				DB.close(rs, pstmt);
+				rs = null;
 				pstmt = null;
 			}
 		}

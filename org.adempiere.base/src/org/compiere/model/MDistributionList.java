@@ -73,11 +73,12 @@ public class MDistributionList extends X_M_DistributionList
 		//
 		String sql = "SELECT * FROM M_DistributionListLine WHERE M_DistributionList_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getM_DistributionList_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MDistributionListLine line = new MDistributionListLine(getCtx(), rs, get_TrxName());
@@ -86,22 +87,15 @@ public class MDistributionList extends X_M_DistributionList
 				if (ratio != null)
 					ratioTotal = ratioTotal.add(ratio);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "getLines", e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//	Update Ratio

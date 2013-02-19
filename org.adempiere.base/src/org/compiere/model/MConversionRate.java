@@ -226,6 +226,7 @@ public class MConversionRate extends X_C_Conversion_Rate
 			+ "ORDER BY AD_Client_ID DESC, AD_Org_ID DESC, ValidFrom DESC";
 		BigDecimal retValue = null;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
@@ -235,27 +236,20 @@ public class MConversionRate extends X_C_Conversion_Rate
 			pstmt.setTimestamp(4, ConvDate);
 			pstmt.setInt(5, AD_Client_ID);
 			pstmt.setInt(6, AD_Org_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				retValue = rs.getBigDecimal(1);
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, "getRate", e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
-		}			
+		}		
 		if (retValue == null)
 			s_log.info ("getRate - not found - CurFrom=" + CurFrom_ID 
 			  + ", CurTo=" + CurTo_ID

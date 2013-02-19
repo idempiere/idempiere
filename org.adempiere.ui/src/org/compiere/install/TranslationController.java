@@ -46,21 +46,27 @@ public class TranslationController
 			+ "FROM AD_Client "
 			+ "WHERE IsActive='Y' "
 			+ "ORDER BY AD_Client_ID";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				KeyNamePair kp = new KeyNamePair (rs.getInt(2), rs.getString(1));
 				list.add(kp);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return list;
@@ -75,21 +81,27 @@ public class TranslationController
 			+ "FROM AD_Language "
 			+ "WHERE IsActive='Y' AND (IsSystemLanguage='Y' OR IsBaseLanguage='Y')"
 			+ "ORDER BY Name";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				ValueNamePair vp = new ValueNamePair (rs.getString(2), rs.getString(1));
 				list.add(vp);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return list;
@@ -105,21 +117,27 @@ public class TranslationController
 			+ "FROM AD_Table "
 			+ "WHERE TableName LIKE '%_Trl' AND TableName<>'AD_Column_Trl' "
 			+ "ORDER BY Name";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				ValueNamePair vp = new ValueNamePair (rs.getString(2), rs.getString(1));
 				list.add(vp);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return list;

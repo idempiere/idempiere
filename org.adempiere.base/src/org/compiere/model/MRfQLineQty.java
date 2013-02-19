@@ -127,12 +127,13 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	{
 		ArrayList<MRfQResponseLineQty> list = new ArrayList<MRfQResponseLineQty>();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String sql = "SELECT * FROM C_RfQResponseLineQty WHERE C_RfQLineQty_ID=? AND IsActive='Y'";
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getC_RfQLineQty_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MRfQResponseLineQty qty = new MRfQResponseLineQty(getCtx(), rs, get_TrxName());
@@ -141,22 +142,15 @@ public class MRfQLineQty extends X_C_RfQLineQty
 				else
 					list.add (qty);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		MRfQResponseLineQty[] retValue = new MRfQResponseLineQty[list.size ()];

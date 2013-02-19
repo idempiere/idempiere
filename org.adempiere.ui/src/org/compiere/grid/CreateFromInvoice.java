@@ -102,22 +102,28 @@ public abstract class CreateFromInvoice extends CreateFrom
 				+ "HAVING (sl.MovementQty<>SUM(mi.Qty) AND mi.M_InOutLine_ID IS NOT NULL)"
 				+ " OR mi.M_InOutLine_ID IS NULL) "
 			+ "ORDER BY s.MovementDate");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, C_BPartner_ID);
 			pstmt.setInt(2, C_BPartner_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				list.add(new KeyNamePair(rs.getInt(1), rs.getString(2)));
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		return list;
@@ -201,12 +207,13 @@ public abstract class CreateFromInvoice extends CreateFrom
 				+ "l.C_UOM_ID, COALESCE(uom.UOMSymbol, uom.Name), "
 				+ "l.M_Product_ID, p.Name, po.VendorProductNo, l.M_InOutLine_ID, l.Line, l.C_OrderLine_ID ")
 			.append("ORDER BY l.Line");
-
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, M_InOut_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				Vector<Object> line = new Vector<Object>(7);
@@ -230,12 +237,16 @@ public abstract class CreateFromInvoice extends CreateFrom
 				line.add(null);                     	//  7-RMA
 				data.add(line);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		return data;
@@ -310,7 +321,6 @@ public abstract class CreateFromInvoice extends CreateFrom
 	            line.add(pp);   //7-RMA
 	            data.add(line);
             }
-	        rs.close();
 	    }
 	    catch (Exception ex)
 	    {

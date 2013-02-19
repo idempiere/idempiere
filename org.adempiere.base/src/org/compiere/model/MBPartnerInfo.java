@@ -100,6 +100,7 @@ public class MBPartnerInfo extends X_RV_BPartner
 			"RV_BPartner", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 		ArrayList<MBPartnerInfo> list = new ArrayList<MBPartnerInfo>();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(finalSQL, null);
@@ -116,25 +117,18 @@ public class MBPartnerInfo extends X_RV_BPartner
 				pstmt.setString(index++, Phone);
 			if (City != null)
 				pstmt.setString(index++, City);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new MBPartnerInfo (ctx, rs, null));
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, "find - " + finalSQL, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//	Return

@@ -1112,9 +1112,6 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			{
 				retValue = rs.getBigDecimal(1);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (SQLException e)
 		{

@@ -118,22 +118,28 @@ public final class ImpFormat
 		String sql = "SELECT t.TableName,c.ColumnName "
 				+ "FROM AD_Table t INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID AND c.IsKey='Y') "
 				+ "WHERE t.AD_Table_ID=?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Table_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				m_tableName = rs.getString(1);
 				m_tablePK = rs.getString(2);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, "ImpFormat.setTable", e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		if (m_tableName == null || m_tablePK == null)
 			log.log(Level.SEVERE, "Data not found for AD_Table_ID=" + AD_Table_ID);
@@ -269,11 +275,13 @@ public final class ImpFormat
 		ImpFormat retValue = null;
 		String sql = "SELECT * FROM AD_ImpFormat WHERE Name=?";
 		int ID = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString (1, name);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				retValue = new ImpFormat (name, rs.getInt("AD_Table_ID"), rs.getString("FormatType"));
@@ -282,13 +290,17 @@ public final class ImpFormat
 					retValue.setSeparatorChar(rs.getString(I_AD_ImpFormat.COLUMNNAME_SeparatorChar));
 				}
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
 			return null;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		loadRows (retValue, ID);
 		return retValue;
@@ -306,11 +318,13 @@ public final class ImpFormat
 					+ "FROM AD_ImpFormat_Row f,AD_Column c "
 					+ "WHERE f.AD_ImpFormat_ID=? AND f.AD_Column_ID=c.AD_Column_ID AND f.IsActive='Y'"
 					+ "ORDER BY f.SeqNo";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt (1, ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				ImpFormatRow row = new ImpFormatRow (rs.getInt(1),
@@ -322,12 +336,16 @@ public final class ImpFormat
 				//
 				format.addRow (row);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 	}	//	loadLines
 
@@ -560,28 +578,33 @@ public final class ImpFormat
 		sql.append(find).append(")");
 		int count = 0;
 		int ID = 0;
-		try
+		if (find.length() > 0)
 		{
-			if (find.length() > 0)
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
 			{
-				PreparedStatement pstmt = DB.prepareStatement(sql.toString(), trxName);
-				ResultSet rs = pstmt.executeQuery();
+				pstmt = DB.prepareStatement(sql.toString(), trxName);
+				rs = pstmt.executeQuery();
 				if (rs.next())
 				{
 					count = rs.getInt(1);
 					if (count == 1)
 						ID = rs.getInt(2);
 				}
-				rs.close();
-				pstmt.close();
+			}
+			catch (SQLException e)
+			{
+				log.log(Level.SEVERE, sql.toString(), e);
+				return false;
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
 			}
 		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql.toString(), e);
-			return false;
-		}
-
 
 		//	Insert Basic Record -----------------------------------------------
 		if (ID == 0)

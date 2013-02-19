@@ -196,18 +196,20 @@ public class VAttributeGrid extends CPanel
 		//	Add Access & Order
 		sql = MRole.getDefault().addAccessSQL (sql, "M_PriceList_Version", true, false)	// fully qualidfied - RO 
 			+ " ORDER BY M_PriceList_Version.Name";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pickPriceList.addItem(new KeyNamePair (0, ""));
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				KeyNamePair kn = new KeyNamePair (rs.getInt(1), rs.getString(2));
 				pickPriceList.addItem(kn);
 			}
-			rs.close();
-			pstmt.close();
+			DB.close(rs, pstmt);
+			rs = null;pstmt = null;
 
 			//	Warehouse
 			sql = "SELECT M_Warehouse_ID, Value || ' - ' || Name AS ValueName "
@@ -225,12 +227,16 @@ public class VAttributeGrid extends CPanel
 					(rs.getInt("M_Warehouse_ID"), rs.getString("ValueName"));
 				pickWarehouse.addItem(kn);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 	}	//	fillPicks
 
@@ -430,33 +436,27 @@ public class VAttributeGrid extends CPanel
 		sql = MRole.getDefault().addAccessSQL(sql, "M_Product", 
 			MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		int noProducts = 0;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MProduct product = new MProduct(Env.getCtx(), rs, null);
 				addProduct (element, product);
 				noProducts++;
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		

@@ -112,11 +112,13 @@ public class GridWorkbench implements Serializable
 				+ " AND w.AD_Workbench_ID=t.AD_Workbench_ID"
 				+ " AND t.AD_Language='" + Env.getAD_Language(m_ctx) + "'"
 				+ " AND w.AD_Column_ID=c.AD_Column_ID";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Workbench_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				Name = rs.getString(1);
@@ -135,12 +137,16 @@ public class GridWorkbench implements Serializable
 			}
 			else
 				AD_Workbench_ID = 0;
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		if (AD_Workbench_ID == 0)
@@ -268,11 +274,13 @@ public class GridWorkbench implements Serializable
 			+ "FROM AD_WorkbenchWindow "
 			+ "WHERE AD_Workbench_ID=? AND IsActive='Y'"
 			+ "ORDER BY SeqNo";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Workbench_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				int AD_Window_ID = rs.getInt(1);
@@ -289,13 +297,17 @@ public class GridWorkbench implements Serializable
 				else if (AD_Task_ID > 0)
 					m_windows.add (new WBWindow(TYPE_TASK, AD_Task_ID));
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
 			return false;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		return true;
 	}   //  initWorkbenchWindows

@@ -70,11 +70,12 @@ public class MGLCategory extends X_GL_Category
 		String sql = "SELECT * FROM GL_Category "
 			+ "WHERE AD_Client_ID=? AND IsDefault='Y'";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, Env.getAD_Client_ID(ctx));
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MGLCategory temp = new MGLCategory (ctx, rs, null);
@@ -86,22 +87,15 @@ public class MGLCategory extends X_GL_Category
 				if (retValue == null)
 					retValue = temp;
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		return retValue;

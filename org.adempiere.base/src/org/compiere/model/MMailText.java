@@ -339,13 +339,14 @@ public class MMailText extends X_R_MailText
 	{
 		MMailTextTrl trl = null;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String sql = "SELECT * FROM R_MailText_Trl WHERE R_MailText_ID=? AND AD_Language=?";
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, getR_MailText_ID());
 			pstmt.setString(2, AD_Language);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next())
 			{
 				trl = new MMailTextTrl();
@@ -355,24 +356,18 @@ public class MMailText extends X_R_MailText
 				trl.MailText2 = rs.getString("MailText2");
 				trl.MailText3 = rs.getString("MailText3");
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
-		catch (Exception e)
-		{
-			pstmt = null;
-		}
+
 		return trl;
 	}	//	getTranslation
 	

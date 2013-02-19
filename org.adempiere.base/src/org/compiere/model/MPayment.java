@@ -2283,8 +2283,6 @@ public final class MPayment extends X_C_Payment
 				if (alloc.get_ID() == 0 && !alloc.save(get_TrxName()))
 				{
 					log.log(Level.SEVERE, "Could not create Allocation Hdr");
-					rs.close();
-					pstmt.close();
 					return false;
 				}
 				MAllocationLine aLine = null;

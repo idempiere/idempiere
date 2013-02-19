@@ -49,31 +49,25 @@ public class MLandedCost extends X_C_LandedCost
 		ArrayList<MLandedCost> list = new ArrayList<MLandedCost> ();
 		String sql = "SELECT * FROM C_LandedCost WHERE C_InvoiceLine_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, il.get_TrxName());
 			pstmt.setInt (1, il.getC_InvoiceLine_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				list.add (new MLandedCost (il.getCtx(), rs, il.get_TrxName()));
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//

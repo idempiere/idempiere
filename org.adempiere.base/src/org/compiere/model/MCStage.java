@@ -48,33 +48,27 @@ public class MCStage extends X_CM_CStage
 	public static MCStage[] getStages (MWebProject project)
 	{
 		ArrayList<MCStage> list = new ArrayList<MCStage>();
-		PreparedStatement pstmt = null;
 		String sql = "SELECT * FROM CM_CStage WHERE CM_WebProject_ID=? ORDER BY CM_CStage_ID";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, project.get_TrxName());
 			pstmt.setInt (1, project.getCM_WebProject_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				list.add (new MCStage (project.getCtx(), rs, project.get_TrxName()));
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		MCStage[] retValue = new MCStage[list.size ()];

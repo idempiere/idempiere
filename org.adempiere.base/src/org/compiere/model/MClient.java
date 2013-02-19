@@ -303,10 +303,12 @@ public class MClient extends X_AD_Client
 			AD_Tree_Campaign_ID=0, AD_Tree_Activity_ID=0;
 
 		boolean success = false;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement stmt = DB.prepareStatement(sql.toString(), get_TrxName());
-			ResultSet rs = stmt.executeQuery();
+			stmt = DB.prepareStatement(sql.toString(), get_TrxName());
+			rs = stmt.executeQuery();
 			MTree_Base tree = null;
 			while (rs.next())
 			{
@@ -374,13 +376,17 @@ public class MClient extends X_AD_Client
 					break;
 				}
 			}
-			rs.close();
-			stmt.close();
 		}
 		catch (SQLException e1)
 		{
 			log.log(Level.SEVERE, "Trees", e1);
 			success = false;
+		}
+		finally
+		{
+			DB.close(rs, stmt);
+			rs = null;
+			stmt = null;
 		}
 
 		if (!success)

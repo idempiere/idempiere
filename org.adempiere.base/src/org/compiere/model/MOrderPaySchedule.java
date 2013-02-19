@@ -63,6 +63,7 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 		//
 		ArrayList<MOrderPaySchedule> list = new ArrayList<MOrderPaySchedule>();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, trxName);
@@ -70,27 +71,20 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 				pstmt.setInt(1, C_Order_ID);
 			else
 				pstmt.setInt(1, C_OrderPaySchedule_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				list.add (new MOrderPaySchedule(ctx, rs, trxName));
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, "getOrderPaySchedule", e); 
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		

@@ -54,29 +54,23 @@ public class MMessage extends X_AD_Message
 		{
 			String sql = "SELECT * FROM AD_Message WHERE Value=?";
 			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try
 			{
 				pstmt = DB.prepareStatement(sql, null);
 				pstmt.setString(1, Value);
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				if (rs.next())
 					retValue = new MMessage (ctx, rs, null);
-				rs.close();
-				pstmt.close();
-				pstmt = null;
 			}
 			catch (Exception e)
 			{
 				s_log.log(Level.SEVERE, "get", e);
 			}
-			try
+			finally
 			{
-				if (pstmt != null)
-					pstmt.close();
-				pstmt = null;
-			}
-			catch (Exception e)
-			{
+				DB.close(rs, pstmt);
+				rs = null;
 				pstmt = null;
 			}
 			if (retValue != null)

@@ -71,37 +71,31 @@ public class MBPGroup extends X_C_BP_Group
 		if (retValue != null)
 			return retValue;
 		
-		PreparedStatement pstmt = null;
 		String sql = "SELECT * FROM C_BP_Group g "
 			+ "WHERE IsDefault='Y' AND AD_Client_ID=? "
 			+ "ORDER BY IsActive DESC";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, AD_Client_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 			{
 				retValue = new MBPGroup (ctx, rs, null);
 				if (retValue.get_ID () != 0)
 					s_cacheDefault.put (key, retValue);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		if (retValue == null)
@@ -119,6 +113,7 @@ public class MBPGroup extends X_C_BP_Group
 	{
 		MBPGroup retValue = null;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String sql = "SELECT * FROM C_BP_Group g "
 			+ "WHERE EXISTS (SELECT * FROM C_BPartner p "
 				+ "WHERE p.C_BPartner_ID=? AND p.C_BP_Group_ID=g.C_BP_Group_ID)";
@@ -126,7 +121,7 @@ public class MBPGroup extends X_C_BP_Group
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, C_BPartner_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 			{
 				retValue = new MBPGroup (ctx, rs, null);
@@ -134,22 +129,15 @@ public class MBPGroup extends X_C_BP_Group
 				if (retValue.get_ID () != 0)
 					s_cache.put (key, retValue);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		

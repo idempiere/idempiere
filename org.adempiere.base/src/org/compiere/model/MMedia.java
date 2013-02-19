@@ -50,32 +50,26 @@ public class MMedia extends X_CM_Media
 	{
 		ArrayList<MMedia> list = new ArrayList<MMedia>();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String sql = "SELECT * FROM CM_Media WHERE CM_WebProject_ID=? ORDER BY CM_Media_ID";
 		try
 		{
 			pstmt = DB.prepareStatement (sql, project.get_TrxName());
 			pstmt.setInt (1, project.getCM_WebProject_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				list.add (new MMedia (project.getCtx(), rs, project.get_TrxName()));
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		MMedia[] retValue = new MMedia[list.size ()];

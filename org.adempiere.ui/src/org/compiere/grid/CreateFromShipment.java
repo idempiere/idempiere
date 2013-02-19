@@ -159,13 +159,17 @@ public abstract class CreateFromShipment extends CreateFrom
 			{
 				list.add(new KeyNamePair(rs.getInt(1), rs.getString(2)));
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
+		}finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
+
 		return list;
 	}
 	

@@ -46,11 +46,13 @@ public class MLookupInfo implements Serializable, Cloneable
 		int retValue = 0;
 		String sql = "SELECT AD_Reference_ID,Name,ValidationType,IsActive "
 			+ "FROM AD_Reference WHERE Name LIKE ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString(1, referenceName);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			//
 			int i = 0;
 			int id = 0;
@@ -69,12 +71,16 @@ public class MLookupInfo implements Serializable, Cloneable
 						"AD_Reference Name=").append(refName).append(", ID=").append(id).append(", Type=").append(validationType).append(", Active=").append(isActive);
 				CLogger.get().config(msgconf.toString());
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			CLogger.get().log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		return retValue;
 	}   //  getAD_Reference_ID
@@ -92,11 +98,13 @@ public class MLookupInfo implements Serializable, Cloneable
 		String sql = "SELECT c.AD_Column_ID,c.ColumnName,t.TableName "
 			+ "FROM AD_Column c, AD_Table t "
 			+ "WHERE c.ColumnName LIKE ? AND c.AD_Table_ID=t.AD_Table_ID";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString(1, columnName);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			//
 			int i = 0;
 			int id = 0;
@@ -112,12 +120,16 @@ public class MLookupInfo implements Serializable, Cloneable
 				StringBuilder msgconf = new StringBuilder("Name=").append(colName).append(", ID=").append(id).append(", Table=").append(tabName);
 				CLogger.get().config(msgconf.toString());
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			CLogger.get().log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		return retValue;
 	}   //  getAD_Column_ID

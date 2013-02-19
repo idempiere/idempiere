@@ -726,16 +726,14 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				+ " LEFT OUTER JOIN C_Charge C ON (il.C_Charge_ID=c.C_Charge_ID) "
 				+ "WHERE C_InvoiceLine_ID=?";
 			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try
 			{
 				pstmt = DB.prepareStatement(sql, get_TrxName());
 				pstmt.setInt(1, getC_InvoiceLine_ID());
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				if (rs.next())
 					m_name = rs.getString(1);
-				rs.close();
-				pstmt.close();
-				pstmt = null;
 				if (m_name == null)
 					m_name = "??";
 			}
@@ -745,13 +743,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			}
 			finally
 			{
-				try
-				{
-					if (pstmt != null)
-						pstmt.close ();
-				}
-				catch (Exception e)
-				{}
+				DB.close(rs, pstmt);
+				rs = null;
 				pstmt = null;
 			}
 		}
@@ -1238,19 +1231,17 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		if (whereClause != null)
 			sql += whereClause;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getC_InvoiceLine_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				MLandedCost lc = new MLandedCost(getCtx(), rs, get_TrxName());
 				list.add(lc);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
@@ -1258,13 +1249,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		}
 		finally
 		{
-			try
-			{
-				if (pstmt != null)
-					pstmt.close ();
-			}
-			catch (Exception e)
-			{}
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 

@@ -58,10 +58,11 @@ public class MProductDownload extends X_M_ProductDownload
 			+ "FROM M_Product "
 			+ "WHERE DownloadURL IS NOT NULL";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				int AD_Client_ID = rs.getInt(1);
@@ -86,22 +87,15 @@ public class MProductDownload extends X_M_ProductDownload
 				else
 					s_log.warning("Product Download not created M_Product_ID=" + M_Product_ID);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		s_log.info("#" + count);

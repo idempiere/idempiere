@@ -118,9 +118,6 @@ public class MCashPlan extends X_C_CashPlan
 				MCashPlanLine il = new MCashPlanLine(getCtx(), rs, get_TrxName());
 				list.add(il);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{

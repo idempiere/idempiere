@@ -101,20 +101,26 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		MLocation loc = null;
 		String sql = "SELECT * FROM C_Location l "
 			+ "WHERE C_Location_ID IN (SELECT C_Location_ID FROM C_BPartner_Location WHERE C_BPartner_Location_ID=?)";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, trxName);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, C_BPartner_Location_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				loc = new MLocation (ctx, rs, trxName);
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			s_log.log(Level.SEVERE, sql + " - " + C_BPartner_Location_ID, e);
 			loc = null;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		return loc;
 	}	//	getBPLocation

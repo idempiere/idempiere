@@ -82,6 +82,7 @@ public class MOrderLine extends X_C_OrderLine
 			sql += " AND M_AttributeSetInstance_ID=?";
 		
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
@@ -90,25 +91,18 @@ public class MOrderLine extends X_C_OrderLine
 			pstmt.setInt (3, excludeC_OrderLine_ID);
 			if (M_AttributeSetInstance_ID != 0)
 				pstmt.setInt (4, M_AttributeSetInstance_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				retValue = rs.getBigDecimal(1);
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		if (retValue == null)

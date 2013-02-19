@@ -238,10 +238,11 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 		//	Execute
 		StringBuilder where = new StringBuilder();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (finalSQL, null);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				int id = rs.getInt(1);
@@ -249,22 +250,15 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 					where.append(",");
 				where.append(id);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log (Level.SEVERE, finalSQL, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		if (where.length() == 0)

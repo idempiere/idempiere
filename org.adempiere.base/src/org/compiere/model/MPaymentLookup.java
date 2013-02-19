@@ -142,9 +142,6 @@ public class MPaymentLookup extends Lookup implements Serializable {
 			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new ValueNamePair(rs.getString(1), rs.getString(2)));
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (SQLException e)
 		{

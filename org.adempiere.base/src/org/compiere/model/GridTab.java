@@ -794,20 +794,26 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			+ " INNER JOIN AD_Column cc ON (r.AD_Key=cc.AD_Column_ID) "
 			+ "WHERE c.AD_Reference_ID IN (18,30)" 	//	Table/Search
 			+ " AND c.ColumnName=?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString(1, colName);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				refColName = rs.getString(1);
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, "(ref) - Column=" + colName, e);
 			return query.getWhereClause();
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		//	Reference Column found
 		if (refColName != null)
@@ -834,21 +840,24 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			+ " WHERE cc.AD_Table_ID=t.AD_Table_ID AND cc.ColumnName=?)";	//	#2 Tab Key Column
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString(1, colName);
 			pstmt.setString(2, tabKeyColumn);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				tableName = rs.getString(1);
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, "Column=" + colName + ", Key=" + tabKeyColumn, e);
 			return null;
 		}
-
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
 		//	Special Reference Handling
 		if (tabKeyColumn.equals("AD_Reference_ID"))
 		{
@@ -1290,19 +1299,25 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			else
 			{
 				String SQL = "SELECT ColumnName FROM AD_Column WHERE AD_Column_ID=?";
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
 				try
 				{
-					PreparedStatement pstmt = DB.prepareStatement(SQL, null);
+					pstmt = DB.prepareStatement(SQL, null);
 					pstmt.setInt(1, m_vo.AD_Column_ID);		//	Parent Link Column
-					ResultSet rs = pstmt.executeQuery();
+					rs = pstmt.executeQuery();
 					if (rs.next())
 						m_linkColumnName = rs.getString(1);
-					rs.close();
-					pstmt.close();
 				}
 				catch (SQLException e)
 				{
 					log.log(Level.SEVERE, "", e);
+				}
+				finally
+				{
+					DB.close(rs, pstmt);
+					rs = null;
+					pstmt = null;
 				}
 				log.fine("AD_Column_ID=" + m_vo.AD_Column_ID + " - " + m_linkColumnName);
 			}
@@ -1759,11 +1774,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				+ "FROM C_InvoiceBatchLine "
 				+ "WHERE C_InvoiceBatch_ID=? AND IsActive='Y'";
 			//
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try
 			{
-				PreparedStatement pstmt = DB.prepareStatement(sql, null);
+				pstmt = DB.prepareStatement(sql, null);
 				pstmt.setInt(1, Record_ID);
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				if (rs.next())
 				{
 					//	{0} - Number of lines
@@ -1777,12 +1794,16 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					arguments[2] = total;
 					filled = true;
 				}
-				rs.close();
-				pstmt.close();
 			}
 			catch (SQLException e)
 			{
 				log.log(Level.SEVERE, m_vo.TableName + "\nSQL=" + sql, e);
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
 			}
 			if (filled)
 				return mf.format (arguments);
@@ -2095,27 +2116,33 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			+ "FROM AD_Private_Access "
 			+ "WHERE AD_User_ID=? AND AD_Table_ID=? AND IsActive='Y' "
 			+ "ORDER BY Record_ID";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			if (m_Lock == null)
 				m_Lock = new ArrayList<Integer>();
 			else
 				m_Lock.clear();
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_User_ID);
 			pstmt.setInt(2, m_vo.AD_Table_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				Integer key = new Integer(rs.getInt(1));
 				m_Lock.add(key);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		log.fine("#" + m_Lock.size());
 	}	//	loadLooks

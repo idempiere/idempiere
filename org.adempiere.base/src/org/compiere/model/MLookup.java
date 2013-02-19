@@ -485,15 +485,17 @@ public final class MLookup extends Lookup implements Serializable
 		log.finer(m_info.KeyColumn + ": " + key 
 				+ ", SaveInCache=" + saveInCache + ",Local=" + cacheLocal);
 		boolean isNumber = m_info.KeyColumn.endsWith("_ID");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			//	SELECT Key, Value, Name FROM ...
-			PreparedStatement pstmt = DB.prepareStatement(m_info.QueryDirect, null);
+			pstmt = DB.prepareStatement(m_info.QueryDirect, null);
 			if (isNumber)
 				pstmt.setInt(1, Integer.parseInt(key.toString()));
 			else
 				pstmt.setString(1, key.toString());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				String name = rs.getString(3);
@@ -523,8 +525,6 @@ public final class MLookup extends Lookup implements Serializable
 				directValue = null;
 			}
 
-			rs.close();
-			pstmt.close();
 			if (CLogMgt.isLevelFinest())
 				log.finest(m_info.KeyColumn + ": " + directValue + " - " + m_info);
 		}
@@ -532,6 +532,12 @@ public final class MLookup extends Lookup implements Serializable
 		{
 			log.log(Level.SEVERE, m_info.KeyColumn + ": SQL=" + m_info.QueryDirect + "; Key=" + key, e);
 			directValue = null;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		//	Cache Local if not added to R/W cache
 		if (cacheLocal  && !saveInCache && directValue != null)

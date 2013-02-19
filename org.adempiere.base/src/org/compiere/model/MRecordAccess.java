@@ -97,11 +97,12 @@ public class MRecordAccess extends X_AD_Record_Access
 			+ "FROM AD_Column "
 			+ "WHERE AD_Table_ID=? AND IsKey='Y' AND IsActive='Y'";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, getAD_Table_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				String s = rs.getString(1);
@@ -110,22 +111,15 @@ public class MRecordAccess extends X_AD_Record_Access
 				else
 					log.log(Level.SEVERE, "More than one key = " + s);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		if (m_keyColumnName == null)
@@ -251,31 +245,25 @@ public class MRecordAccess extends X_AD_Record_Access
 		{
 			String sql = "SELECT TableName FROM AD_Table WHERE AD_Table_ID=?";
 			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try
 			{
 				pstmt = DB.prepareStatement(sql, null);
 				pstmt.setInt(1, getAD_Table_ID());
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				if (rs.next())
 				{
 					m_tableName = rs.getString(1);
 				}
-				rs.close();
-				pstmt.close();
-				pstmt = null;
 			}
 			catch (Exception e)
 			{
 				log.log(Level.SEVERE, sql, e);
 			}
-			try
+			finally
 			{
-				if (pstmt != null)
-					pstmt.close();
-				pstmt = null;
-			}
-			catch (Exception e)
-			{
+				DB.close(rs, pstmt);
+				rs = null;
 				pstmt = null;
 			}
 			//	Get Clear Text

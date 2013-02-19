@@ -94,22 +94,28 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 			sql.append(" AND bap.AcceptCORPORATE='Y'");
 		sql.append(" ORDER BY ba.IsDefault DESC ");
 		//
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), trxName);
+			pstmt = DB.prepareStatement(sql.toString(), trxName);
 			pstmt.setInt(1, AD_Client_ID);
 			pstmt.setInt(2, C_Currency_ID);
 			pstmt.setBigDecimal(3, Amt);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new MBankAccountProcessor (ctx, rs, trxName));
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			s_log.log(Level.SEVERE, "find - " + sql, e);
 			return null;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		//
 		if (list.size() == 0)

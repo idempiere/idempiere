@@ -80,10 +80,11 @@ public class MClientShare extends X_AD_ClientShare
 			String sql = "SELECT AD_Client_ID, AD_Table_ID, ShareType "
 				+ "FROM AD_ClientShare WHERE ShareType<>'x' AND IsActive='Y'";
 			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try
 			{
 				pstmt = DB.prepareStatement (sql, null);
-				ResultSet rs = pstmt.executeQuery ();
+				rs = pstmt.executeQuery ();
 				while (rs.next ())
 				{
 					int Client_ID = rs.getInt(1);
@@ -95,22 +96,15 @@ public class MClientShare extends X_AD_ClientShare
 					else if (ShareType.equals(SHARETYPE_OrgNotShared))
 						s_shares.put(key.toString(), Boolean.FALSE);
 				}
-				rs.close ();
-				pstmt.close ();
-				pstmt = null;
 			}
 			catch (Exception e)
 			{
 				s_log.log (Level.SEVERE, sql, e);
 			}
-			try
+			finally
 			{
-				if (pstmt != null)
-					pstmt.close ();
-				pstmt = null;
-			}
-			catch (Exception e)
-			{
+				DB.close(rs, pstmt);
+				rs = null;
 				pstmt = null;
 			}
 			if (s_shares.isEmpty())		//	put in something
@@ -249,11 +243,12 @@ public class MClientShare extends X_AD_ClientShare
 				+ " AND c.ColumnName IN (SELECT ColumnName FROM AD_Column cc "
 					+ "WHERE cc.IsKey='Y' AND cc.AD_Table_ID=?))";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, getAD_Table_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				//int AD_Table_ID = rs.getInt(1);
@@ -262,22 +257,15 @@ public class MClientShare extends X_AD_ClientShare
 					info.append(", ");
 				info.append(TableName);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		log.info(info.toString());

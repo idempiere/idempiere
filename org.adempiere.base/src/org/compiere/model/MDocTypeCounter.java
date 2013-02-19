@@ -99,11 +99,12 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 		MDocTypeCounter temp = null;
 		String sql = "SELECT * FROM C_DocTypeCounter WHERE C_DocType_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, C_DocType_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next () && retValue == null)
 			{
 				retValue = new MDocTypeCounter (ctx, rs, null);
@@ -113,22 +114,15 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 					retValue = null;
 				}
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, "getCounterDocType", e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		if (retValue != null)	//	valid
