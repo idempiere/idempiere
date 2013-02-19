@@ -152,12 +152,14 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		if (bPartnerField != null)
 			row.appendChild(bPartnerField.getComponent());
 		row.appendChild(orderLabel.rightAlign());
+		orderField.setHflex("1");
 		row.appendChild(orderField);
 		
 		row = rows.newRow();
 		row.appendChild(new Space());
 		row.appendChild(new Space());
 		row.appendChild(shipmentLabel.rightAlign());
+		shipmentField.setHflex("1");
 		row.appendChild(shipmentField);				
         
         // Add RMA document selection to panel
@@ -165,6 +167,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		row.appendChild(new Space());
 		row.appendChild(new Space());
         row.appendChild(rmaLabel.rightAlign());
+        rmaField.setHflex("1");
         row.appendChild(rmaField);
 	}
 
