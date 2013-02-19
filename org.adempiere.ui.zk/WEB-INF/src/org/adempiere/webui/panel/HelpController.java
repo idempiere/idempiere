@@ -16,8 +16,6 @@ package org.adempiere.webui.panel;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -30,6 +28,12 @@ import org.compiere.model.MTab;
 import org.compiere.model.MTask;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.model.X_AD_CtxHelpMsg;
+import org.compiere.model.X_AD_Form;
+import org.compiere.model.X_AD_InfoWindow;
+import org.compiere.model.X_AD_Process;
+import org.compiere.model.X_AD_Tab;
+import org.compiere.model.X_AD_Task;
+import org.compiere.model.X_AD_Workflow;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -144,12 +148,9 @@ public class HelpController
     	StringBuilder sb = new StringBuilder();
     	sb.append("<html>\n<body>\n<div class=\"content\">\n");
     	    	
-    	String[] ctxHelpMsgList = getCtxHelpMsgList(ctxType, recordId);
-    	if (ctxHelpMsgList.length > 0)
-    	{
-	    	for (String ctxHelpMsg : ctxHelpMsgList)
-	    		sb.append(stripHtml(ctxHelpMsg, false) + "<br>\n");
-    	}
+    	String ctxHelpMsg = getCtxHelpMsgList(ctxType, recordId);
+    	if (ctxHelpMsg.length() > 0)
+	    	sb.append(stripHtml(ctxHelpMsg, false) + "<br>\n");
     	else
     	{
         	sb.append("<i>(" + Msg.getMsg(Env.getCtx(), "NotAvailable") + ")</i>");
@@ -267,36 +268,74 @@ public class HelpController
     	Properties ctx = Env.getCtx();
     	
     	StringBuilder sql = new StringBuilder();
-    	sql.append("SELECT AD_CtxHelp_ID ");
-    	sql.append("FROM AD_CtxHelp ");
-    	sql.append("WHERE IsActive = 'Y' ");
-    	sql.append("AND AD_Client_ID IN (0, ?) ");
-    	sql.append("AND AD_Org_ID IN (0, ?) ");
-    	sql.append("AND CtxType = ? ");
-    	
+    	sql.append("SELECT t.");
     	if (ctxType == X_AD_CtxHelp.CTXTYPE_Tab)
-    		sql.append("AND " + X_AD_CtxHelp.COLUMNNAME_AD_Tab_ID + " = ? ");
+    		sql.append(X_AD_Tab.COLUMNNAME_AD_CtxHelp_ID);
     	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Process)
-    		sql.append("AND " + X_AD_CtxHelp.COLUMNNAME_AD_Process_ID + " = ? ");
+    		sql.append(X_AD_Process.COLUMNNAME_AD_CtxHelp_ID);
     	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Form)
-    		sql.append("AND " + X_AD_CtxHelp.COLUMNNAME_AD_Form_ID + " = ? ");
+    		sql.append(X_AD_Form.COLUMNNAME_AD_CtxHelp_ID);
     	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Info)
-    		sql.append("AND " + X_AD_CtxHelp.COLUMNNAME_AD_InfoWindow_ID + " = ? ");
+    		sql.append(X_AD_InfoWindow.COLUMNNAME_AD_CtxHelp_ID);
     	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Workflow)
-    		sql.append("AND " + X_AD_CtxHelp.COLUMNNAME_AD_Workflow_ID + " = ? ");
+    		sql.append(X_AD_Workflow.COLUMNNAME_AD_CtxHelp_ID);
     	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Task)
-    		sql.append("AND " + X_AD_CtxHelp.COLUMNNAME_AD_Task_ID + " = ? ");
+    		sql.append(X_AD_Task.COLUMNNAME_AD_CtxHelp_ID);
     	else
-    		sql.append("AND 0 = ? ");
+    		sql.append(X_AD_CtxHelp.COLUMNNAME_AD_CtxHelp_ID);
     	
-    	sql.append("ORDER BY AD_Client_ID DESC, AD_Org_ID DESC");
+    	sql.append(" FROM ");
+    	if (ctxType == X_AD_CtxHelp.CTXTYPE_Tab)
+    		sql.append(X_AD_Tab.Table_Name);
+    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Process)
+    		sql.append(X_AD_Process.Table_Name);
+    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Form)
+    		sql.append(X_AD_Form.Table_Name);
+    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Info)
+    		sql.append(X_AD_InfoWindow.Table_Name);
+    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Workflow)
+    		sql.append(X_AD_Workflow.Table_Name);
+    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Task)
+    		sql.append(X_AD_Task.Table_Name);
+    	else
+    		sql.append(X_AD_CtxHelp.Table_Name);
+    	sql.append(" t, AD_CtxHelp h ");
     	
-    	return DB.getSQLValue(null, sql.toString(), Env.getAD_Client_ID(ctx), Env.getAD_Org_ID(ctx), ctxType, recordId);
+    	sql.append("WHERE t.AD_CtxHelp_ID = h.AD_CtxHelp_ID ");
+    	sql.append("AND t.IsActive = 'Y' ");
+    	sql.append("AND h.IsActive = 'Y' ");
+    	sql.append("AND h.AD_Client_ID IN (0, ?) ");
+    	sql.append("AND h.AD_Org_ID IN (0, ?) ");
+    	
+    	if (ctxType == X_AD_CtxHelp.CTXTYPE_Home)
+    		sql.append("AND h." + X_AD_CtxHelp.COLUMNNAME_CtxType);    		
+    	else
+    	{
+	    	sql.append("AND t.");
+	    	if (ctxType == X_AD_CtxHelp.CTXTYPE_Tab)
+	    		sql.append(X_AD_Tab.COLUMNNAME_AD_Tab_ID);
+	    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Process)
+	    		sql.append(X_AD_Process.COLUMNNAME_AD_Process_ID);
+	    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Form)
+	    		sql.append(X_AD_Form.COLUMNNAME_AD_Form_ID);
+	    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Info)
+	    		sql.append(X_AD_InfoWindow.COLUMNNAME_AD_InfoWindow_ID);
+	    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Workflow)
+	    		sql.append(X_AD_Workflow.COLUMNNAME_AD_Workflow_ID);
+	    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Task)
+	    		sql.append(X_AD_Task.COLUMNNAME_AD_Task_ID);
+	    	else
+	    		sql.append("0");
+    	}
+    	sql.append(" = ? ");
+    	sql.append("ORDER BY h.AD_Client_ID DESC, h.AD_Org_ID DESC, h.AD_CtxHelp_ID DESC");    	
+    	return DB.getSQLValue(null, sql.toString(), Env.getAD_Client_ID(ctx), Env.getAD_Org_ID(ctx), ctxType == X_AD_CtxHelp.CTXTYPE_Home ? ctxType : recordId);
     }
     
-    private String[] getCtxHelpMsgList(String ctxType, int recordId)
+    private String getCtxHelpMsgList(String ctxType, int recordId)
 	{
-    	List<String> list = new ArrayList<String>();
+    	Properties ctx = Env.getCtx();
+    	
     	int AD_CtxHelp_ID = getCtxHelpID(ctxType, recordId);
     	if (AD_CtxHelp_ID > 0)
     	{
@@ -306,8 +345,10 @@ public class HelpController
         		sql.append("SELECT MsgText ");    		
             	sql.append("FROM AD_CtxHelpMsg ");
             	sql.append("WHERE IsActive = 'Y' ");
+            	sql.append("AND AD_Client_ID IN (0, ?) ");
+            	sql.append("AND AD_Org_ID IN (0, ?) ");
             	sql.append("AND AD_CtxHelp_ID = ? ");
-            	sql.append("ORDER BY Line ");
+            	sql.append("ORDER BY AD_Client_ID DESC, AD_Org_ID DESC, AD_CtxHelpMsg_ID DESC");
         	}
         	else
         	{
@@ -315,8 +356,10 @@ public class HelpController
             	sql.append("FROM AD_CtxHelpMsg m ");
             	sql.append("LEFT JOIN AD_CtxHelpMsg_Trl mt ON (mt.AD_CtxHelpMsg_ID = m.AD_CtxHelpMsg_ID AND mt.AD_Language = ?) ");
             	sql.append("WHERE mt.IsActive = 'Y' ");
+            	sql.append("AND m.AD_Client_ID IN (0, ?) ");
+            	sql.append("AND m.AD_Org_ID IN (0, ?) ");
             	sql.append("AND m.AD_CtxHelp_ID = ? ");
-            	sql.append("ORDER BY m.Line ");
+            	sql.append("ORDER BY m.AD_Client_ID DESC, m.AD_Org_ID DESC, m.AD_CtxHelpMsg_ID DESC");
         	}
         	
         	PreparedStatement pstmt = null;
@@ -328,12 +371,12 @@ public class HelpController
     			int count = 1;
             	if (!Env.isBaseLanguage(Env.getCtx(), X_AD_CtxHelpMsg.Table_Name))
             		pstmt.setString(count++, Env.getAD_Language(Env.getCtx()));
+            	pstmt.setInt(count++, Env.getAD_Client_ID(ctx));
+            	pstmt.setInt(count++, Env.getAD_Org_ID(ctx));
     			pstmt.setInt(count++, AD_CtxHelp_ID);
     			rs = pstmt.executeQuery();
-    			while (rs.next())
-    			{
-    				list.add(rs.getString("MsgText"));
-    			}
+    			if (rs.next())
+    				return rs.getString(X_AD_CtxHelpMsg.COLUMNNAME_MsgText);
     		}
     		catch (Exception e)
     		{
@@ -345,6 +388,6 @@ public class HelpController
     		}
     	}
     	
-    	return list.toArray(new String[list.size()]);
+    	return "";
 	}
 }

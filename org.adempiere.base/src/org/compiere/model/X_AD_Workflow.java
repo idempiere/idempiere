@@ -33,7 +33,7 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130219L;
 
     /** Standard Constructor */
     public X_AD_Workflow (Properties ctx, int AD_Workflow_ID, String trxName)
@@ -122,6 +122,31 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 	public String getAccessLevel () 
 	{
 		return (String)get_Value(COLUMNNAME_AccessLevel);
+	}
+
+	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_Name)
+			.getPO(getAD_CtxHelp_ID(), get_TrxName());	}
+
+	/** Set Context Help.
+		@param AD_CtxHelp_ID Context Help	  */
+	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID)
+	{
+		if (AD_CtxHelp_ID < 1) 
+			set_Value (COLUMNNAME_AD_CtxHelp_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_CtxHelp_ID, Integer.valueOf(AD_CtxHelp_ID));
+	}
+
+	/** Get Context Help.
+		@return Context Help	  */
+	public int getAD_CtxHelp_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_CtxHelp_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
@@ -231,6 +256,20 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set AD_Workflow_UU.
+		@param AD_Workflow_UU AD_Workflow_UU	  */
+	public void setAD_Workflow_UU (String AD_Workflow_UU)
+	{
+		set_Value (COLUMNNAME_AD_Workflow_UU, AD_Workflow_UU);
+	}
+
+	/** Get AD_Workflow_UU.
+		@return AD_Workflow_UU	  */
+	public String getAD_Workflow_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Workflow_UU);
+	}
+
 	public org.compiere.model.I_AD_WorkflowProcessor getAD_WorkflowProcessor() throws RuntimeException
     {
 		return (org.compiere.model.I_AD_WorkflowProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_WorkflowProcessor.Table_Name)
@@ -257,20 +296,6 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set AD_Workflow_UU.
-		@param AD_Workflow_UU AD_Workflow_UU	  */
-	public void setAD_Workflow_UU (String AD_Workflow_UU)
-	{
-		set_Value (COLUMNNAME_AD_Workflow_UU, AD_Workflow_UU);
-	}
-
-	/** Get AD_Workflow_UU.
-		@return AD_Workflow_UU	  */
-	public String getAD_Workflow_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_AD_Workflow_UU);
 	}
 
 	/** Set Author.
@@ -718,26 +743,6 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Setup Time.
-		@param SetupTime 
-		Setup time before starting Production
-	  */
-	public void setSetupTime (int SetupTime)
-	{
-		set_Value (COLUMNNAME_SetupTime, Integer.valueOf(SetupTime));
-	}
-
-	/** Get Setup Time.
-		@return Setup time before starting Production
-	  */
-	public int getSetupTime () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_SetupTime);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
     {
 		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_Name)
@@ -761,6 +766,26 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 	public int getS_Resource_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_Resource_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Setup Time.
+		@param SetupTime 
+		Setup time before starting Production
+	  */
+	public void setSetupTime (int SetupTime)
+	{
+		set_Value (COLUMNNAME_SetupTime, Integer.valueOf(SetupTime));
+	}
+
+	/** Get Setup Time.
+		@return Setup time before starting Production
+	  */
+	public int getSetupTime () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SetupTime);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

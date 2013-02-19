@@ -120,19 +120,6 @@ public interface I_AD_CtxHelpMsg
 	  */
 	public boolean isActive();
 
-    /** Column name Line */
-    public static final String COLUMNNAME_Line = "Line";
-
-	/** Set Line No.
-	  * Unique line for this document
-	  */
-	public void setLine (int Line);
-
-	/** Get Line No.
-	  * Unique line for this document
-	  */
-	public int getLine();
-
     /** Column name MsgText */
     public static final String COLUMNNAME_MsgText = "MsgText";
 

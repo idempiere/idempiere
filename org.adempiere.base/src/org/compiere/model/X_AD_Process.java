@@ -30,7 +30,7 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130219L;
 
     /** Standard Constructor */
     public X_AD_Process (Properties ctx, int AD_Process_ID, String trxName)
@@ -108,6 +108,31 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	public String getAccessLevel () 
 	{
 		return (String)get_Value(COLUMNNAME_AccessLevel);
+	}
+
+	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_Name)
+			.getPO(getAD_CtxHelp_ID(), get_TrxName());	}
+
+	/** Set Context Help.
+		@param AD_CtxHelp_ID Context Help	  */
+	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID)
+	{
+		if (AD_CtxHelp_ID < 1) 
+			set_Value (COLUMNNAME_AD_CtxHelp_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_CtxHelp_ID, Integer.valueOf(AD_CtxHelp_ID));
+	}
+
+	/** Get Context Help.
+		@return Context Help	  */
+	public int getAD_CtxHelp_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_CtxHelp_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
