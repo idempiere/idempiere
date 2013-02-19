@@ -14,7 +14,7 @@
 package com.trekglobal.ws;
 
 import java.util.ArrayList;
-import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.jws.WebService;
 
@@ -26,8 +26,6 @@ import org.idempiere.adInterface.x10.CompositeRequestDocument;
 import org.idempiere.adInterface.x10.CompositeResponse;
 import org.idempiere.adInterface.x10.CompositeResponses;
 import org.idempiere.adInterface.x10.CompositeResponsesDocument;
-import org.idempiere.adInterface.x10.DataField;
-import org.idempiere.adInterface.x10.ModelCRUD;
 import org.idempiere.adInterface.x10.ModelCRUDRequest;
 import org.idempiere.adInterface.x10.ModelCRUDRequestDocument;
 import org.idempiere.adInterface.x10.ModelRunProcessRequest;
@@ -41,7 +39,6 @@ import org.idempiere.adInterface.x10.RunProcessResponseDocument;
 import org.idempiere.adInterface.x10.StandardResponse;
 import org.idempiere.adInterface.x10.StandardResponseDocument;
 import org.idempiere.adInterface.x10.WindowTabDataDocument;
-import org.idempiere.adinterface.CompiereService;
 import org.idempiere.adinterface.ModelADServiceImpl;
 import org.idempiere.webservices.AbstractService;
 
@@ -59,60 +56,71 @@ public class CompositeServiceImpl extends AbstractService implements CompositeSe
 	private static String webServiceName = new String("CompositeInterface");
 
 	public CompositeServiceImpl() {
-
-		log.info("Creating session object BiziInterface");
+		if (log.isLoggable(Level.INFO))
+			log.info("Creating session object compositeInterface");
 	}
 
-	
+	/**
+	 * @see CompositeService#compositeOperation(CompositeRequestDocument)
+	 */
+	@Override
 	public CompositeResponsesDocument compositeOperation(CompositeRequestDocument reqs) {
-
-		CompiereService m_cs = getCompiereService();
-
-		CompositeResponsesDocument ret = CompositeResponsesDocument.Factory.newInstance();
-		CompositeResponses resps = ret.addNewCompositeResponses();
-
-		CompositeRequest req = reqs.getCompositeRequest();
-		String serviceType = req.getServiceType();
-
-		ADLoginRequest reqlogin = req.getADLoginRequest();
-		String err = login(reqlogin, webServiceName, "composite", serviceType);
-		if (err != null && err.length() > 0) {
-			CompositeResponse resp = resps.addNewCompositeResponse();
-			StandardResponse stdResp = resp.addNewStandardResponse();
-			stdResp.setError(err);
-			stdResp.setIsError(true);
-			return ret;
-		}
-
-		ModelADServiceImpl modelADService = new ModelADServiceImpl(ctx);
-
-		String trxName = m_cs.getM_trx_name();
-		trxName = Trx.createTrxName("ws_biziInterface");
-
-		Trx trx = Trx.get(trxName, true);
-
-		modelADService.setLocalTrxName(trxName);
-
-		Operations operationsArr[] = req.getOperationsArray();
-
-		for (Operations operations : operationsArr) {
-			Operation operationArr[] = operations.getOperationArray();
-			if (operationArr.length > 0) {
-				CompositeResponse compResp = resps.addNewCompositeResponse();
-				ArrayList<StandardResponse> respAggregator = new ArrayList<StandardResponse>();
-				boolean isSuccess = performOperations(trx, operationArr, modelADService, compResp, respAggregator, reqlogin);
-
-				// Committing after each operation set
-				if (isSuccess) {
-					commitTrx(trx, compResp, respAggregator, "Cannot commit at end of process", false);
-				}
-
+		boolean connected = getCompiereService().isConnected();
+		
+		try {
+			if (!connected)
+				getCompiereService().connect();
+			
+			CompositeResponsesDocument ret = CompositeResponsesDocument.Factory.newInstance();
+			CompositeResponses resps = ret.addNewCompositeResponses();
+	
+			CompositeRequest req = reqs.getCompositeRequest();
+			String serviceType = req.getServiceType();
+	
+			ADLoginRequest reqlogin = req.getADLoginRequest();
+			String err = login(reqlogin, webServiceName, "composite", serviceType);
+			if (err != null && err.length() > 0) {
+				CompositeResponse resp = resps.addNewCompositeResponse();
+				StandardResponse stdResp = resp.addNewStandardResponse();
+				stdResp.setError(err);
+				stdResp.setIsError(true);
+				return ret;
 			}
+	
+			ModelADServiceImpl modelADService = new ModelADServiceImpl(ctx);
+	
+			String trxName = Trx.createTrxName(webServiceName);
+	
+			Trx trx = Trx.get(trxName, true);
+	
+			try {
+				modelADService.setLocalTrxName(trxName);
+		
+				Operations operationsArr[] = req.getOperationsArray();
+		
+				for (Operations operations : operationsArr) {
+					Operation operationArr[] = operations.getOperationArray();
+					if (operationArr.length > 0) {
+						CompositeResponse compResp = resps.addNewCompositeResponse();
+						ArrayList<StandardResponse> respAggregator = new ArrayList<StandardResponse>();
+						boolean isSuccess = performOperations(trx, operationArr, modelADService, compResp, respAggregator, reqlogin);
+		
+						// Committing after each operation set
+						if (isSuccess) {
+							commitTrx(trx, compResp, respAggregator, "Cannot commit at end of process", false);
+						}
+		
+					}
+				}
+			} finally {
+				trx.close();
+			}
+	
+			return ret;
+		} finally {
+			if (!connected)
+				getCompiereService().disconnect();
 		}
-
-		trx.close();
-
-		return ret;
 	}
 
 	/**
@@ -260,6 +268,12 @@ public class CompositeServiceImpl extends AbstractService implements CompositeSe
 		return wrapperDoc;
 	}
 
+	/**
+	 * 
+	 * @param ctx
+	 * @param crud
+	 */
+	/*
 	public void resolveContextCRUD(Properties ctx, ModelCRUD crud) {
 		DataField fields[] = crud.getDataRow().getFieldArray();
 		for (DataField field : fields) {
@@ -271,7 +285,7 @@ public class CompositeServiceImpl extends AbstractService implements CompositeSe
 				field.setVal(val);
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Rollback and set error on response

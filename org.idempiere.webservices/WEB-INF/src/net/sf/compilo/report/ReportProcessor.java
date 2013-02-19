@@ -41,6 +41,7 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Ini;
 import org.compiere.util.Language;
 
 /**
@@ -52,17 +53,12 @@ import org.compiere.util.Language;
  */
 public class ReportProcessor
 {
-	public static final String REPORT_PATH__fix = "c:/compiere/compiere-all/reports";
-	
 	public static File REPORT_HOME = null;
 	private static CLogger log = CLogger.getCLogger(ReportProcessor.class);
 	
     static
     {
-        String reportPath = REPORT_PATH__fix;// "c:/compiere/compiere-all/reports";//System.getProperty("REPORT_HOME");
-		if (reportPath == null || reportPath.length() == 0)
-			reportPath = System.getProperty("COMPIERE_HOME")+ System.getProperty("file.separator")+ "reports";
-		//System.setProperty("jasper.reports.compiler.class", "net.sf.jasperreports.engine.design.JRCompiler");
+        String reportPath = Ini.getAdempiereHome();
 		String classpath = 	Thread.currentThread().getContextClassLoader().getResource("net/sf/jasperreports/engine").toString();	
 		System.setProperty("jasper.reports.compile.temp", reportPath);
 		System.setProperty("jasper.reports.compile.class.path", classpath.split("file:/")[1].split("!")[0]);
@@ -101,25 +97,21 @@ public class ReportProcessor
             addProcessParameters( m_AD_PInstance_ID, m_Param);
             m_Param.put("RECORD_ID", new Integer( m_Record_ID));
 	    // Marco LOMBARDO: REPORT_HOME used to express subreports path.
-            m_Param.put("REPORT_HOME", REPORT_PATH__fix ); //System.getProperty("REPORT_HOME"));
+            m_Param.put("REPORT_HOME", REPORT_HOME);
         // End Marco LOMBARDO.
             Language currLang = Env.getLanguage(Env.getCtx());
             m_Param.put("CURRENT_LANG", currLang.getAD_Language());
 
-	    java.sql.Connection conn = DB.getConnectionRO();
-	    m_Param.put("REPORT_CONNECTION", conn );  //DB_CONN
-	    m_Param.put("DB_CONN", conn );
-	    System.out.println(  "REPORT_CONNECTION = "+conn.toString() );
-	    log.saveError("REPORT_CONNECTION = "+conn.toString(), "");
-	    //System.out.println(  "REPORT_HOME = "+System.getProperty("REPORT_HOME") );
+		    java.sql.Connection conn = DB.getConnectionRO();
+		    m_Param.put("REPORT_CONNECTION", conn );  //DB_CONN
+		    m_Param.put("DB_CONN", conn );
         
 			// fill report
+		    compiereDataSource ds = null;
             try
             {
-                compiereDataSource ds = CompiereDataSourceFactory.createDataSource(m_ctx, reportInfo, m_pi, m_Param);
-            	//compiereDataSource ds = new compiereDataSource (m_ctx, reportInfo.getJasperReport());
+                ds = CompiereDataSourceFactory.createDataSource(m_ctx, reportInfo, m_pi, m_Param);
             	m_jasperPrint = JasperFillManager.fillReport( reportInfo.getJasperReport(), m_Param, ds);
-            	ds.close();
             	
             	log.finest("ReportProcessor.fillReport");
             }
@@ -131,6 +123,11 @@ public class ReportProcessor
             catch (Exception e)
             {
             	e.printStackTrace();
+            }
+            finally 
+            {
+            	if (ds != null)
+            		ds.close();
             }
         }
 		else

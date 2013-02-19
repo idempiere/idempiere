@@ -25,7 +25,6 @@ import java.util.Properties;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
@@ -64,6 +63,7 @@ import org.idempiere.adinterface.CompiereService;
  */
 public class AbstractService {
 
+	private static final String COMPIERE_SERVICE = "CompiereService";
 	@Resource
 	protected WebServiceContext ctx;
 
@@ -79,16 +79,16 @@ public class AbstractService {
 
 		CompiereService m_cs = getCompiereService();
 
-		if (m_cs.isLoggedIn() && m_cs.getM_AD_Client_ID() == loginRequest.getClientID() && loginRequest.getClientID() == Env.getAD_Client_ID(Env.getCtx())
-				&& m_cs.getM_AD_Org_ID() == loginRequest.getOrgID() && m_cs.getM_AD_Role_ID() == loginRequest.getRoleID()
-				&& m_cs.getM_AD_Warehouse_ID() == loginRequest.getWarehouseID() && loginRequest.getUser().equals(m_cs.getUser()))
+		if (m_cs.isLoggedIn() && m_cs.getAD_Client_ID() == loginRequest.getClientID() && loginRequest.getClientID() == Env.getAD_Client_ID(Env.getCtx())
+				&& m_cs.getAD_Org_ID() == loginRequest.getOrgID() && m_cs.getAD_Role_ID() == loginRequest.getRoleID()
+				&& m_cs.getM_Warehouse_ID() == loginRequest.getWarehouseID() && loginRequest.getUser().equals(m_cs.getUserName()))
 			return authenticate(webService, method, serviceType, m_cs); // already logged with same data
 
-		String ret =invokeLoginValidator(loginRequest, m_cs.getM_ctx(), null, IWSValidator.TIMING_BEFORE_LOGIN);
+		String ret =invokeLoginValidator(loginRequest, m_cs.getCtx(), null, IWSValidator.TIMING_BEFORE_LOGIN);
 		if(ret!=null && ret.length()>0)
 			return ret;
 		
-		Login login = new Login(m_cs.getM_ctx());
+		Login login = new Login(m_cs.getCtx());
 		KeyNamePair[] roles = login.getRoles(loginRequest.getUser(), loginRequest.getPass());
 		if (roles != null) {
 			boolean okrole = false;
@@ -112,7 +112,7 @@ public class AbstractService {
 			if (!okclient)
 				return "Error logging in - client not allowed for this role";
 
-			m_cs.getM_ctx().setProperty("#AD_Client_ID", "" + loginRequest.getClientID());
+			m_cs.getCtx().setProperty("#AD_Client_ID", "" + loginRequest.getClientID());
 
 			KeyNamePair[] orgs = login.getOrgs(new KeyNamePair(loginRequest.getRoleID(), ""));
 
@@ -146,7 +146,7 @@ public class AbstractService {
 			if (error != null && error.length() > 0)
 				return error;
 
-			int AD_User_ID = Env.getAD_User_ID(m_cs.getM_ctx());
+			int AD_User_ID = Env.getAD_User_ID(m_cs.getCtx());
 
 			
 			if (!m_cs.login(AD_User_ID, loginRequest.getRoleID(), loginRequest.getClientID(), loginRequest.getOrgID(), loginRequest.getWarehouseID(), loginRequest.getLang()))
@@ -158,7 +158,7 @@ public class AbstractService {
 			return "Error logging in - no roles or user/pwd invalid for user " + loginRequest.getUser();
 		}
 
-		ret =invokeLoginValidator(loginRequest, m_cs.getM_ctx(), null, IWSValidator.TIMING_AFTER_LOGIN);
+		ret =invokeLoginValidator(loginRequest, m_cs.getCtx(), null, IWSValidator.TIMING_AFTER_LOGIN);
 		if(ret!=null && ret.length()>0)
 			return ret;
 		
@@ -177,7 +177,7 @@ public class AbstractService {
 
 		HttpServletRequest req = (HttpServletRequest) ctx.getMessageContext().get(MessageContext.SERVLET_REQUEST);
 		
-		MWebService m_webservice = MWebService.get(m_cs.getM_ctx(), webServiceValue);
+		MWebService m_webservice = MWebService.get(m_cs.getCtx(), webServiceValue);
 		if (m_webservice == null || !m_webservice.isActive())
 			return "Web Service " + webServiceValue + " not registered";
 
@@ -192,13 +192,13 @@ public class AbstractService {
 		ResultSet rs = null;
 		try {
 			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, m_cs.getM_AD_Client_ID());
+			pstmt.setInt(1, m_cs.getAD_Client_ID());
 			pstmt.setInt(2, m_webservice.getWS_WebService_ID());
 			pstmt.setInt(3, m_webservicemethod.getWS_WebServiceMethod_ID());
 			pstmt.setString(4, serviceTypeValue);
 			rs = pstmt.executeQuery();
 			if (rs.next())
-				m_webservicetype = new MWebServiceType(m_cs.getM_ctx(), rs, null);
+				m_webservicetype = new MWebServiceType(m_cs.getCtx(), rs, null);
 		} catch (Exception e) {
 			throw new IdempiereServiceFault(e.getClass().toString() + " " + e.getMessage() + " sql=" + sql, e.getCause(), new QName(
 					"authenticate"));
@@ -213,7 +213,7 @@ public class AbstractService {
 
 		req.setAttribute("MWebServiceType", m_webservicetype);
 
-		String ret=invokeLoginValidator(null, m_cs.getM_ctx(), m_webservicetype, IWSValidator.TIMING_ON_AUTHORIZATION);
+		String ret=invokeLoginValidator(null, m_cs.getCtx(), m_webservicetype, IWSValidator.TIMING_ON_AUTHORIZATION);
 		if(ret!=null && ret.length()>0)
 			return ret;
 		
@@ -240,16 +240,14 @@ public class AbstractService {
 
 	/**
 	 * 
-	 * @return Compiere Service object for current session
+	 * @return Compiere Service object for current request
 	 */
 	protected CompiereService getCompiereService() {
 		HttpServletRequest req = (HttpServletRequest) ctx.getMessageContext().get(MessageContext.SERVLET_REQUEST);
-		HttpSession session = req.getSession();
-		CompiereService m_cs = (CompiereService) session.getAttribute("CompiereServiceBean");
+		CompiereService m_cs = (CompiereService) req.getAttribute(COMPIERE_SERVICE);
 		if (m_cs == null) {
 			m_cs = new CompiereService();
-			m_cs.connect();
-			session.setAttribute("CompiereServiceBean", m_cs);
+			req.setAttribute(COMPIERE_SERVICE, m_cs);
 		}
 		return m_cs;
 	}
@@ -394,10 +392,10 @@ public class AbstractService {
 		if (indDot == -1) {
 			if (varName.charAt(0) == '#') {
 				varName = varName.substring(1);
-				val = getCompiereService().getM_ctx().getProperty(varName);
+				val = getCompiereService().getCtx().getProperty(varName);
 			} else {
 				// If there is no table name, then it should be
-				// premitive data type
+				// primitive data type
 				if (po != null && poInfo.getColumnIndex(varName)!=-1)
 					val = po.get_Value(varName);
 

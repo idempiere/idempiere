@@ -40,7 +40,7 @@ public class FileFilter implements FilenameFilter
         public FileFilter(String reportStart, File directory, String[] extension)
         {
         	this.reportStart = reportStart;
-           this.directory = directory;
+            this.directory = directory;
             this.extension = extension;
         }
 

@@ -46,6 +46,6 @@ public class CompiereDataSourceFactory
 	    if(ri.getReportViewID() > 0)
 	        return new ReportViewDataSource(ctx, pi, params);
 	    
-	  return new DBDataSource(ctx, ri, params);
+	    return new DBDataSource(ctx, ri, params);
 	}
 }

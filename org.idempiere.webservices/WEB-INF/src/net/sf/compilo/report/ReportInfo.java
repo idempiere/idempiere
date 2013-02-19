@@ -150,10 +150,6 @@ public class ReportInfo
         JasperReport res = null;
         try
         {
-	    String compiere_home = (String)System.getProperty("COMPIERE_HOME");
-//		compiere_home = "C:/compiere/acompiere2/";
-  	    //log.info( "compiere_home = "+compiere_home);
-   	    System.setProperty("jasper.reports.compile.class.path", compiere_home+"/lib/reporttools.jar;"+compiere_home+"/lib/Compiere.jar");
             JasperCompileManager.compileReportToFile( reportFile.getAbsolutePath(), jasperFile.getAbsolutePath());
             jasperFile.setLastModified( reportFile.lastModified());
             res = (JasperReport)JRLoader.loadObjectFromFile(jasperFile.getAbsolutePath());
@@ -235,49 +231,6 @@ public class ReportInfo
         }        
         log.info("Get ReportDefinition-" + this.toString());
     }
-    /*
-    private void getResource()
-    {
-//      Resources
-        File[] resources = 
-        	reportInfo.getReportFile().getParentFile().listFiles( 
-        			new FileFilter( jasperName, reportInfo.getReportFile().getParentFile(), ".properties"));
-        File resFile = null;
-        // try baseName + "_" + language
-        for( int i=0; i<resources.length; i++)
-        {
-        	if ( resources[i].getName().equals( jasperName+currLang.getLocale().getLanguage()+".properties"))
-        	{
-            	resFile=resources[i];
-                break;
-            }
-        }
-        if (resFile==null)
-        {
-        	// try baseName only
-            for( int i=0; i<resources.length; i++)
-            {
-            	if ( resources[i].getName().equals( jasperName+".properties"))
-            	{
-                	resFile=resources[i];
-                    break;
-                 }
-            }
-        }
-        if (resFile!=null)
-        {
-        	try
-        	{
-            	PropertyResourceBundle res = new PropertyResourceBundle( new FileInputStream(resFile));
-                m_Param.put("RESOURCE", res);
-            }
-            catch (IOException e)
-            {}
-        }
-    }
-    */
-    
-    
     
     protected boolean isDirty()
     {

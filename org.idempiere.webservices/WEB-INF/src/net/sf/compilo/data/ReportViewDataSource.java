@@ -76,7 +76,7 @@ public class ReportViewDataSource extends compiereDataSource
     public Object getFieldValue(JRField field) throws JRException
     {
         PrintDataElement pde = (PrintDataElement)m_printData.getNode(field.getName());
-         if(pde == null || pde.isNull())
+        if(pde == null || pde.isNull())
             return null;
             
         if(pde.isDate())

@@ -66,10 +66,10 @@ public class Process {
 		MProcess process  = null;
 		
 		if (AD_Menu_ID>0 && AD_Process_ID==0 )
-			process = MProcess.getFromMenu( cs.getM_ctx(), AD_Menu_ID);			
+			process = MProcess.getFromMenu( cs.getCtx(), AD_Menu_ID);			
 		else
 		if (AD_Menu_ID==0 && AD_Process_ID>0 )
-			process = new MProcess( cs.getM_ctx(), AD_Process_ID, null);
+			process = new MProcess( cs.getCtx(), AD_Process_ID, null);
 
 		if (process != null)
 		{
@@ -101,7 +101,7 @@ public class Process {
 						if (para.getDefaultValue().indexOf( "@#Date@")>=0) {
 							//Object t = Env.getContextAsDate( cs.getM_ctx(), "#Date" );
 							//String t = Env.getContext( cs.getM_ctx(), "#Date" );
-							String t= cs.dateFormat.format( Env.getContextAsDate( cs.getM_ctx(), "#Date") );	
+							String t= cs.dateFormat.format( Env.getContextAsDate( cs.getCtx(), "#Date") );	
 							
 							p.setDefaultValue( t ); //cs.dateFormat.format( t ));
 						}
@@ -125,7 +125,7 @@ public class Process {
 						if (para.getDefaultValue2().indexOf( "@#Date@")>=0) {
 							//Object t = Env.getContextAsDate( cs.getM_ctx(), "#Date" );
 							//String t = Env.getContext( cs.getM_ctx(), "#Date" );
-							String t= cs.dateFormat.format( Env.getContextAsDate( cs.getM_ctx(), "#Date") );
+							String t= cs.dateFormat.format( Env.getContextAsDate( cs.getCtx(), "#Date") );
 							p.setDefaultValue2( t ); //cs.dateFormat.format( t ) );
 						}							
 					}
@@ -165,7 +165,7 @@ public class Process {
 		int m_record_id = rp.getADRecordID();
 	  	//WebSessionCtx wsc = WebSessionCtx.get (request);
 	  	
-		MProcess process = MProcess.get (m_cs.getM_ctx() , AD_Process_ID);
+		MProcess process = MProcess.get (m_cs.getCtx() , AD_Process_ID);
 		//	need to check if Role can access
 		if (process == null)
 		{
@@ -183,13 +183,13 @@ public class Process {
 			// Requirements
 			// - the process must be a workflow document
 			if (process.getAD_Workflow_ID() > 0) {
-				MWorkflow wf = MWorkflow.get(m_cs.getM_ctx(), process.getAD_Workflow_ID());
+				MWorkflow wf = MWorkflow.get(m_cs.getCtx(), process.getAD_Workflow_ID());
 				if (wf.getWorkflowType().equals(MWorkflow.WORKFLOWTYPE_DocumentProcess)) {
 					// - get the table associated with the workflow document
 					// - set DocAction in such table
 			    	
 			    	// get the PO for the tablename and record ID
-			    	MTable table = MTable.get(m_cs.getM_ctx(), wf.getAD_Table_ID());
+			    	MTable table = MTable.get(m_cs.getCtx(), wf.getAD_Table_ID());
 			    	if (table != null) {
 				    	PO po = table.getPO(m_record_id, null);
 				    	if (po != null) {
@@ -222,8 +222,8 @@ public class Process {
 		}
 		//
 		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID());
-		pi.setAD_User_ID(Env.getAD_User_ID(m_cs.getM_ctx()));
-		pi.setAD_Client_ID(Env.getAD_Client_ID(m_cs.getM_ctx()));
+		pi.setAD_User_ID(Env.getAD_User_ID(m_cs.getCtx()));
+		pi.setAD_Client_ID(Env.getAD_Client_ID(m_cs.getCtx()));
 		pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
 		if (m_record_id >0)
 			pi.setRecord_ID( m_record_id  );
@@ -332,7 +332,7 @@ public class Process {
 							if (pf.isTableBased())
 							{
 								CharArrayWriter wr = new CharArrayWriter();
-								ok = ReportEngineEx.createEXCEL_HTML_wr( re, m_cs.getM_ctx(), wr, false, re.getPrintFormat().getLanguage() );
+								ok = ReportEngineEx.createEXCEL_HTML_wr( re, m_cs.getCtx(), wr, false, re.getPrintFormat().getLanguage() );
 								file_type ="xls";
 								String data = wr.toString();
 								if (data!=null)
@@ -351,7 +351,7 @@ public class Process {
 						}
 						else
 						{
-							JasperPrint jp = getJasperReportPrint( m_cs.getM_ctx(), pi);
+							JasperPrint jp = getJasperReportPrint( m_cs.getCtx(), pi);
 							//file = File.createTempFile("WProcess", ".pdf");
 							ByteArrayOutputStream wr = new ByteArrayOutputStream();
 							net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jp, wr); 
@@ -368,7 +368,7 @@ public class Process {
 							//file.getAbsolutePath()
 							
 							//	Marker that Process is OK
-							m_cs.getM_ctx().put("AD_PInstance_ID=" + pInstance.getAD_PInstance_ID(), "ok");
+							m_cs.getCtx().put("AD_PInstance_ID=" + pInstance.getAD_PInstance_ID(), "ok");
 						}
 						else
 						{

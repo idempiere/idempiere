@@ -13,5 +13,10 @@ import org.idempiere.adInterface.x10.CompositeResponsesDocument;
 @SOAPBinding(style=Style.RPC,use=Use.LITERAL,parameterStyle=ParameterStyle.WRAPPED)
 public interface CompositeService {
 
+	/**
+	 * 
+	 * @param reqs
+	 * @return CompositeResponsesDocument 
+	 */
 	public CompositeResponsesDocument compositeOperation(CompositeRequestDocument reqs);
 }
