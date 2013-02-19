@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.idempiere.fitrecorder.FitRecorder"
+         name="FitRecorder"
+         point="org.adempiere.base.ModelValidator">
+      <listener
+            class="org.idempiere.fitrecorder.FitRecorder"
+            priority="0">
+      </listener>
+   </extension>
+</plugin>
