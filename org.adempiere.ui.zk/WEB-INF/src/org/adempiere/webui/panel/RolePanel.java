@@ -565,20 +565,21 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
             warehouseKNPair = new KeyNamePair(warehouseId, lstItemWarehouse.getLabel());
         }
 
-        String msg = login.validateLogin(orgKNPair);
-		if (msg != null && msg.length() > 0)
-		{
-			throw new WrongValueException(msg);
-		}
-
 		Timestamp date = (Timestamp)lstDate.getValue();
 
-		msg = login.loadPreferences(orgKNPair, warehouseKNPair, date, null);
+		String msg = login.loadPreferences(orgKNPair, warehouseKNPair, date, null);
 
         if(!(msg == null || msg.length() == 0))
         {
         	throw new WrongValueException(msg);
         }
+
+        msg = login.validateLogin(orgKNPair);
+		if (msg != null && msg.length() > 0)
+		{
+			throw new WrongValueException(msg);
+		}
+
         wndLogin.loginCompleted();
 
         // Elaine 2009/02/06 save preference to AD_Preference

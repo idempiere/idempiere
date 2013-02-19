@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<idempiere Name="org.idempiere.fitrecorder" Version="1.0" idempiereVersion="" DataBaseVersion="" Description="FitRecorder model validator" Author="" AuthorEmail="" CreatedDate="2013-02-18 14:04:15.072" UpdatedDate="2013-02-18 14:57:03.815" PackOutVersion="100" Client="0-SYSTEM-System">
+    <AD_ModelValidator type="table">
+        <AD_Client_ID>0</AD_Client_ID>
+        <AD_Org_ID>0</AD_Org_ID>
+        <SeqNo>0</SeqNo>
+        <Help>Fitnesse Recorder - see output on /tmp/fit_test_*.txt - enable this model validator to record fitnesse actions - disable to stop recording</Help>
+        <ModelValidationClass>org.idempiere.fitrecorder.FitRecorder</ModelValidationClass>
+        <EntityType>U</EntityType>
+        <Description>Fitnesse Recorder</Description>
+        <Name>FitRecorder</Name>
+        <AD_ModelValidator_UU>cbe0799e-bbe4-46cd-a2c9-433ecb969325</AD_ModelValidator_UU>
+        <IsActive>true</IsActive>
+    </AD_ModelValidator>
+    <SQLStatement type="custom">
+        <DBType>ALL</DBType>
+        <statement><![CDATA[UPDATE AD_ModelValidator SET IsActive='N' WHERE AD_ModelValidator_UU='cbe0799e-bbe4-46cd-a2c9-433ecb969325']]></statement>
+    </SQLStatement>
+</idempiere>
