@@ -67,36 +67,6 @@ public interface I_AD_CtxHelp
 	/** Get AD_CtxHelp_UU	  */
 	public String getAD_CtxHelp_UU();
 
-    /** Column name AD_Form_ID */
-    public static final String COLUMNNAME_AD_Form_ID = "AD_Form_ID";
-
-	/** Set Special Form.
-	  * Special Form
-	  */
-	public void setAD_Form_ID (int AD_Form_ID);
-
-	/** Get Special Form.
-	  * Special Form
-	  */
-	public int getAD_Form_ID();
-
-	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException;
-
-    /** Column name AD_InfoWindow_ID */
-    public static final String COLUMNNAME_AD_InfoWindow_ID = "AD_InfoWindow_ID";
-
-	/** Set Info Window.
-	  * Info and search/select Window
-	  */
-	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID);
-
-	/** Get Info Window.
-	  * Info and search/select Window
-	  */
-	public int getAD_InfoWindow_ID();
-
-	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
-
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
@@ -109,66 +79,6 @@ public interface I_AD_CtxHelp
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
-
-    /** Column name AD_Process_ID */
-    public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
-
-	/** Set Process.
-	  * Process or Report
-	  */
-	public void setAD_Process_ID (int AD_Process_ID);
-
-	/** Get Process.
-	  * Process or Report
-	  */
-	public int getAD_Process_ID();
-
-	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
-
-    /** Column name AD_Tab_ID */
-    public static final String COLUMNNAME_AD_Tab_ID = "AD_Tab_ID";
-
-	/** Set Tab.
-	  * Tab within a Window
-	  */
-	public void setAD_Tab_ID (int AD_Tab_ID);
-
-	/** Get Tab.
-	  * Tab within a Window
-	  */
-	public int getAD_Tab_ID();
-
-	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
-
-    /** Column name AD_Task_ID */
-    public static final String COLUMNNAME_AD_Task_ID = "AD_Task_ID";
-
-	/** Set OS Task.
-	  * Operation System Task
-	  */
-	public void setAD_Task_ID (int AD_Task_ID);
-
-	/** Get OS Task.
-	  * Operation System Task
-	  */
-	public int getAD_Task_ID();
-
-	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException;
-
-    /** Column name AD_Workflow_ID */
-    public static final String COLUMNNAME_AD_Workflow_ID = "AD_Workflow_ID";
-
-	/** Set Workflow.
-	  * Workflow or combination of tasks
-	  */
-	public void setAD_Workflow_ID (int AD_Workflow_ID);
-
-	/** Get Workflow.
-	  * Workflow or combination of tasks
-	  */
-	public int getAD_Workflow_ID();
-
-	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -189,10 +99,14 @@ public interface I_AD_CtxHelp
     /** Column name CtxType */
     public static final String COLUMNNAME_CtxType = "CtxType";
 
-	/** Set Content Type	  */
+	/** Set Context Type.
+	  * Type of Context Help
+	  */
 	public void setCtxType (String CtxType);
 
-	/** Get Content Type	  */
+	/** Get Context Type.
+	  * Type of Context Help
+	  */
 	public String getCtxType();
 
     /** Column name Description */

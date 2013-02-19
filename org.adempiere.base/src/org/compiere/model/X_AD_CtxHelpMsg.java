@@ -29,7 +29,7 @@ public class X_AD_CtxHelpMsg extends PO implements I_AD_CtxHelpMsg, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130207L;
+	private static final long serialVersionUID = 20130219L;
 
     /** Standard Constructor */
     public X_AD_CtxHelpMsg (Properties ctx, int AD_CtxHelpMsg_ID, String trxName)
@@ -39,8 +39,6 @@ public class X_AD_CtxHelpMsg extends PO implements I_AD_CtxHelpMsg, I_Persistent
         {
 			setAD_CtxHelp_ID (0);
 			setAD_CtxHelpMsg_ID (0);
-			setLine (0);
-// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM AD_CtxHelpMsg WHERE AD_CtxHelp_ID=@AD_CtxHelp_ID@
 			setMsgText (null);
         } */
     }
@@ -130,26 +128,6 @@ public class X_AD_CtxHelpMsg extends PO implements I_AD_CtxHelpMsg, I_Persistent
 	public String getAD_CtxHelpMsg_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_AD_CtxHelpMsg_UU);
-	}
-
-	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
-	public void setLine (int Line)
-	{
-		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
-	}
-
-	/** Get Line No.
-		@return Unique line for this document
-	  */
-	public int getLine () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Message Text.

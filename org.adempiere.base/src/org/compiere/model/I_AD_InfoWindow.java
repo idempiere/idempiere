@@ -49,6 +49,17 @@ public interface I_AD_InfoWindow
 	  */
 	public int getAD_Client_ID();
 
+    /** Column name AD_CtxHelp_ID */
+    public static final String COLUMNNAME_AD_CtxHelp_ID = "AD_CtxHelp_ID";
+
+	/** Set Context Help	  */
+	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID);
+
+	/** Get Context Help	  */
+	public int getAD_CtxHelp_ID();
+
+	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException;
+
     /** Column name AD_InfoWindow_ID */
     public static final String COLUMNNAME_AD_InfoWindow_ID = "AD_InfoWindow_ID";
 
