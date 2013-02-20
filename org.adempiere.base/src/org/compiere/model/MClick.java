@@ -52,31 +52,25 @@ public class MClick extends X_W_Click
 		ArrayList<MClick> list = new ArrayList<MClick> ();
 		String sql = "SELECT * FROM W_Click WHERE AD_Client_ID=? AND Processed = 'N'";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, Env.getAD_Client_ID(ctx));
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				list.add (new MClick (ctx, rs, null));
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//
@@ -199,12 +193,13 @@ public class MClick extends X_W_Click
 		int W_ClickCount_ID = 0;
 		int exactW_ClickCount_ID = 0;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			StringBuilder msgstr = new StringBuilder("%").append(url).append("%");
 			pstmt.setString(1, msgstr.toString());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				W_ClickCount_ID = rs.getInt(1);
@@ -214,23 +209,17 @@ public class MClick extends X_W_Click
 					break;
 				}
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (SQLException ex)
 		{
 			log.log(Level.SEVERE, sql, ex);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
 		//	Set Click Count
 		if (exactW_ClickCount_ID != 0)
 			W_ClickCount_ID = exactW_ClickCount_ID;

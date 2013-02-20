@@ -193,6 +193,7 @@ public class CostUpdate extends SvrProcess
 			sql += " AND M_Product_Category_ID=?"; 
 		int counter = 0;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
@@ -202,28 +203,21 @@ public class CostUpdate extends SvrProcess
 			pstmt.setInt (4, as.getAD_Client_ID());
 			if (p_M_Product_Category_ID != 0)
 				pstmt.setInt (5, p_M_Product_Category_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				if (createNew (new MProduct (getCtx(), rs, null), as))
 					counter++;
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		log.info("#" + counter);
@@ -256,13 +250,14 @@ public class CostUpdate extends SvrProcess
 			sql += " AND EXISTS (SELECT * FROM M_Product p "
 				+ "WHERE c.M_Product_ID=p.M_Product_ID AND p.M_Product_Category_ID=?)";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, m_ce.getM_CostElement_ID());
 			if (p_M_Product_Category_ID != 0)
 				pstmt.setInt (2, p_M_Product_Category_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MCost cost = new MCost (getCtx(), rs, get_TrxName());
@@ -277,22 +272,15 @@ public class CostUpdate extends SvrProcess
 					}
 				}
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		log.info("#" + counter);
@@ -502,32 +490,26 @@ public class CostUpdate extends SvrProcess
 			+ "FROM M_ProductPrice "
 			+ "WHERE M_Product_ID=? AND M_PriceList_Version_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, cost.getM_Product_ID());
 			pstmt.setInt (2, p_M_PriceList_Version_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 			{
 				retValue = rs.getBigDecimal(1);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		return retValue;

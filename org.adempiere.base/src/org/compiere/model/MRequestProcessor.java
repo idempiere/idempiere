@@ -51,28 +51,22 @@ public class MRequestProcessor extends X_R_RequestProcessor
 		ArrayList<MRequestProcessor> list = new ArrayList<MRequestProcessor>();
 		String sql = "SELECT * FROM R_RequestProcessor WHERE IsActive='Y'";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add (new MRequestProcessor (ctx, rs, null));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		MRequestProcessor[] retValue = new MRequestProcessor[list.size ()];
@@ -146,29 +140,23 @@ public class MRequestProcessor extends X_R_RequestProcessor
 		String sql = "SELECT * FROM R_RequestProcessor_Route WHERE R_RequestProcessor_ID=? ORDER BY SeqNo";
 		ArrayList<MRequestProcessorRoute> list = new ArrayList<MRequestProcessorRoute>();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getR_RequestProcessor_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add (new MRequestProcessorRoute (getCtx(), rs, get_TrxName()));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//
@@ -189,29 +177,23 @@ public class MRequestProcessor extends X_R_RequestProcessor
 			+ "WHERE R_RequestProcessor_ID=? " 
 			+ "ORDER BY Created DESC";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getR_RequestProcessor_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add (new MRequestProcessorLog (getCtx(), rs, get_TrxName()));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		MRequestProcessorLog[] retValue = new MRequestProcessorLog[list.size ()];

@@ -81,17 +81,19 @@ public class CalloutAsset extends CalloutEngine {
 		{
 		Integer A_Depreciation_Table_Header_ID = (Integer)value;
 			
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try
 			{
-				if (A_Depreciation_Table_Header_ID != null){
+			  if (A_Depreciation_Table_Header_ID != null){
 				String SQL = "SELECT A_Term "
 					+ "FROM A_Depreciation_Table_Header "
 					+ "WHERE A_Depreciation_Table_Header_ID='"
 					+A_Depreciation_Table_Header_ID
 					+"'";
 				
-				PreparedStatement pstmt = DB.prepareStatement(SQL, null);				// arhipac: compatibility
-				ResultSet rs = pstmt.executeQuery();
+				pstmt = DB.prepareStatement(SQL, null);				// arhipac: compatibility
+				rs = pstmt.executeQuery();
 				if (rs.next())
 				{
 //					Charges - Set Context
@@ -99,14 +101,18 @@ public class CalloutAsset extends CalloutEngine {
 						mTab.setValue ("A_DEPRECIATION_MANUAL_PERIOD", rs.getString("A_Term"));
 		
 				}
-				rs.close();
-				pstmt.close();
-				}
+			  }
 			}
 			catch (SQLException e)
 			{
 				log.info("PeriodType "+ e);
 				return e.getLocalizedMessage();
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
 			}
 			return "";
 		}	//	Period Type
@@ -131,6 +137,8 @@ public class CalloutAsset extends CalloutEngine {
 		{
 		Object A_Depreciation_ID = value;
 			
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try
 			{
 				String SQL = "SELECT DepreciationType "
@@ -138,8 +146,8 @@ public class CalloutAsset extends CalloutEngine {
 					+ "WHERE A_Depreciation_ID="
 					+ A_Depreciation_ID;
 				
-				PreparedStatement pstmt = DB.prepareStatement(SQL, null);				// arhipac: compatibility
-				ResultSet rs = pstmt.executeQuery();
+				pstmt = DB.prepareStatement(SQL, null);				// arhipac: compatibility
+				rs = pstmt.executeQuery();
 				if (rs.next())
 				{
 //					Charges - Set Context
@@ -160,13 +168,17 @@ public class CalloutAsset extends CalloutEngine {
 						mTab.setValue ("A_Depreciation_Table_Header_ID", null);
 					}	
 				}
-				rs.close();
-				pstmt.close();
 			}
 			catch (SQLException e)
 			{
 				log.info("PeriodType "+ e);
 				return e.getLocalizedMessage();
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
 			}
 			return "";
 		}	//	Period Type	

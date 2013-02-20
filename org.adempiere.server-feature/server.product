@@ -3,6 +3,7 @@
 
 <product name="iDempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.server_product" application="org.adempiere.server.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -14,6 +15,7 @@
 
    <windowImages/>
 
+
    <launcher name="idempiere">
       <solaris/>
       <win useIco="false">
@@ -21,8 +23,10 @@
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
    </plugins>
@@ -31,6 +35,7 @@
       <feature id="org.adempiere.base" version="1.0.0.qualifier"/>
       <feature id="org.adempiere.server" version="1.0.0.qualifier"/>
       <feature id="org.idempiere.hazelcast.service" version="1.0.0.qualifier"/>
+      <feature id="org.adempiere.pipo" version="1.0.0.qualifier"/>
    </features>
 
    <configurations>
@@ -39,11 +44,14 @@
       <plugin id="org.adempiere.eclipse.equinox.http.servletbridge" autoStart="true" startLevel="4" />
       <plugin id="org.adempiere.eclipse.equinox.servletbridge" autoStart="true" startLevel="4" />
       <plugin id="org.adempiere.install" autoStart="true" startLevel="4" />
+      <plugin id="org.adempiere.pipo" autoStart="true" startLevel="0" />
+      <plugin id="org.adempiere.pipo.handlers" autoStart="true" startLevel="0" />
       <plugin id="org.adempiere.replication.server" autoStart="true" startLevel="4" />
       <plugin id="org.adempiere.report.jasper.webapp" autoStart="true" startLevel="4" />
       <plugin id="org.adempiere.server" autoStart="true" startLevel="4" />
       <plugin id="org.adempiere.ui.zk" autoStart="true" startLevel="4" />
       <plugin id="org.adempiere.webstore" autoStart="true" startLevel="4" />
+      <plugin id="org.apache.felix.webconsole" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="3" />
@@ -54,7 +62,6 @@
       <plugin id="org.eclipse.gemini.web.tomcat" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="3" />
       <plugin id="org.idempiere.felix.webconsole" autoStart="true" startLevel="0" />
-      <plugin id="org.apache.felix.webconsole" autoStart="true" startLevel="0" />
       <plugin id="org.idempiere.hazelcast.service" autoStart="true" startLevel="0" />
       <plugin id="org.restlet" autoStart="true" startLevel="3" />
       <property name="org.eclipse.update.reconcile" value="false" />

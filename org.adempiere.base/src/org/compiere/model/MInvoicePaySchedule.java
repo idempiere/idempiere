@@ -63,6 +63,7 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 		//
 		ArrayList<MInvoicePaySchedule> list = new ArrayList<MInvoicePaySchedule>();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), trxName);
@@ -70,27 +71,20 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 				pstmt.setInt(1, C_Invoice_ID);
 			else
 				pstmt.setInt(1, C_InvoicePaySchedule_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				list.add (new MInvoicePaySchedule(ctx, rs, trxName));
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, "getInvoicePaySchedule", e); 
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		

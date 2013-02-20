@@ -63,6 +63,7 @@ public class MCostQueue extends X_M_CostQueue
 			+ " AND M_CostType_ID=? AND C_AcctSchema_ID=?"
 			+ " AND M_CostElement_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, trxName);
@@ -73,25 +74,18 @@ public class MCostQueue extends X_M_CostQueue
 			pstmt.setInt (5, as.getM_CostType_ID());
 			pstmt.setInt (6, as.getC_AcctSchema_ID());
 			pstmt.setInt (7, M_CostElement_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				costQ = new MCostQueue (product.getCtx(), rs, trxName); 
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//	New
@@ -127,6 +121,7 @@ public class MCostQueue extends X_M_CostQueue
 		if (!ce.isFifo())
 			sql.append("DESC");
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql.toString(), trxName);
@@ -138,25 +133,18 @@ public class MCostQueue extends X_M_CostQueue
 			pstmt.setInt (6, ce.getM_CostElement_ID());
 			if (M_ASI_ID != 0)
 				pstmt.setInt (7, M_ASI_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add(new MCostQueue (product.getCtx(), rs, trxName)); 
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql.toString(), e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		MCostQueue[] costQ = new MCostQueue[list.size()];

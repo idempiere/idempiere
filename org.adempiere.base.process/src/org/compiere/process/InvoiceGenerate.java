@@ -191,9 +191,10 @@ public class InvoiceGenerate extends SvrProcess
 	 */
 	private String generate (PreparedStatement pstmt)
 	{
+		ResultSet rs = null;
 		try
 		{
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MOrder order = new MOrder (getCtx(), rs, get_TrxName());
@@ -320,22 +321,15 @@ public class InvoiceGenerate extends SvrProcess
 					}
 				}	//	complete Order
 			}	//	for all orders
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		completeInvoice();

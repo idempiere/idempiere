@@ -54,31 +54,25 @@ public class MInterestArea extends X_R_InterestArea
 		ArrayList<MInterestArea> list = new ArrayList<MInterestArea>();
 		String sql = "SELECT * FROM R_InterestArea WHERE IsActive='Y'";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MInterestArea ia = new MInterestArea (ctx, rs, null);
 				list.add (ia);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		MInterestArea[] retValue = new MInterestArea[list.size ()];

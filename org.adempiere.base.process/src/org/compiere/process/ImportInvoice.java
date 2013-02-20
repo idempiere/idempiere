@@ -483,10 +483,12 @@ public class ImportInvoice extends SvrProcess
 		//	Go through Invoice Records w/o C_BPartner_ID
 		sql = new StringBuilder ("SELECT * FROM I_Invoice ")
 			  .append("WHERE I_IsImported='N' AND C_BPartner_ID IS NULL").append (clientCheck);
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery ();
+			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				X_I_Invoice imp = new X_I_Invoice (getCtx(), rs, get_TrxName());
@@ -593,13 +595,17 @@ public class ImportInvoice extends SvrProcess
 				}
 				imp.save ();
 			}	//	for all new BPartners
-			rs.close ();
-			pstmt.close ();
 			//
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, "CreateBP", e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		sql = new StringBuilder ("UPDATE I_Invoice ")
 			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No BPartner, ' ")
@@ -622,8 +628,8 @@ public class ImportInvoice extends SvrProcess
 			.append(" ORDER BY C_BPartner_ID, C_BPartner_Location_ID, I_Invoice_ID");
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery ();
+			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
+			rs = pstmt.executeQuery ();
 			//	Group Change
 			int oldC_BPartner_ID = 0;
 			int oldC_BPartner_Location_ID = 0;
@@ -751,12 +757,16 @@ public class ImportInvoice extends SvrProcess
 				}
 				invoice.saveEx();
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "CreateInvoice", e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		//	Set Error to indicator to not imported

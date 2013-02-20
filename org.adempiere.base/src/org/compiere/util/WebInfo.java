@@ -476,9 +476,6 @@ public class WebInfo
 			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add (new MRequestType (m_ctx, rs, null));
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{

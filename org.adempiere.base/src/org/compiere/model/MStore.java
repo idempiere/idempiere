@@ -81,30 +81,24 @@ public class MStore extends X_W_Store
 
 		//	Search by context
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String sql = "SELECT * FROM W_Store WHERE WebContext=?";
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setString(1, contextPath);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				wstore = new MStore (ctx, rs, null);
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//	Try client
@@ -115,29 +109,22 @@ public class MStore extends X_W_Store
 			{
 				pstmt = DB.prepareStatement (sql, null);
 				pstmt.setInt (1, Env.getAD_Client_ID(ctx));
-				ResultSet rs = pstmt.executeQuery ();
+				rs = pstmt.executeQuery ();
 				if (rs.next ())
 				{
 					wstore = new MStore (ctx, rs, null);
 					s_log.warning("Context " + contextPath 
 						+ " Not found - Found via AD_Client_ID=" + Env.getAD_Client_ID(ctx));
 				}
-				rs.close ();
-				pstmt.close ();
-				pstmt = null;
 			}
 			catch (Exception e)
 			{
 				s_log.log (Level.SEVERE, sql, e);
 			}
-			try
+			finally
 			{
-				if (pstmt != null)
-					pstmt.close ();
-				pstmt = null;
-			}
-			catch (Exception e)
-			{
+				DB.close(rs, pstmt);
+				rs = null;
 				pstmt = null;
 			}
 		}
@@ -161,29 +148,23 @@ public class MStore extends X_W_Store
 		ArrayList<MStore> list = new ArrayList<MStore>();
 		String sql = "SELECT * FROM W_Store WHERE AD_Client_ID=? AND IsActive='Y'";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, client.get_TrxName());
 			pstmt.setInt (1, client.getAD_Client_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add (new MStore (client.getCtx(), rs, client.get_TrxName()));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//
@@ -469,29 +450,23 @@ public class MStore extends X_W_Store
 		//
 		String sql = "SELECT * FROM W_MailMsg WHERE W_Store_ID=? ORDER BY MailMsgType";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getW_Store_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add (new MMailMsg (getCtx(), rs, get_TrxName()));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//

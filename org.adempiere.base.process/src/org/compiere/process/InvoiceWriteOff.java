@@ -170,32 +170,26 @@ public class InvoiceWriteOff extends SvrProcess
 		//
 		int counter = 0;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				if (writeOff(rs.getInt(1), rs.getString(2), rs.getTimestamp(3),
 					rs.getInt(4), rs.getBigDecimal(6)))
 					counter++;
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		} 
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		} 
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//	final

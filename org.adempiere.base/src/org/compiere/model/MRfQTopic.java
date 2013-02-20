@@ -70,29 +70,23 @@ public class MRfQTopic extends X_C_RfQ_Topic
 		String sql = "SELECT * FROM C_RfQ_TopicSubscriber "
 			+ "WHERE C_RfQ_Topic_ID=? AND IsActive='Y'";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getC_RfQ_Topic_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add (new MRfQTopicSubscriber (getCtx(), rs, get_TrxName()));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "getSubscribers", e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		

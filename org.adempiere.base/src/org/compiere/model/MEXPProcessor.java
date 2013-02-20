@@ -84,27 +84,24 @@ public class MEXPProcessor extends X_EXP_Processor {
 			.append(" AND IsActive = ?")  // # 2
 			//.append(" ORDER BY ").append(X_EXP_ProcessorParameter.COLUMNNAME_)
 		;
-		PreparedStatement pstmt = null;
 		X_EXP_ProcessorParameter processorParameter = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try {
 			pstmt = DB.prepareStatement (sql.toString(), trxName);
 			pstmt.setInt(1, getEXP_Processor_ID());
 			pstmt.setString(2, "Y");
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while ( rs.next() ) {
 				processorParameter = new X_EXP_ProcessorParameter (getCtx(), rs, trxName);
 				resultList.add(processorParameter);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		} catch (SQLException e) {
 			s_log.log(Level.SEVERE, sql.toString(), e);
-		} finally {
-			try	{
-				if (pstmt != null) pstmt.close ();
-				pstmt = null;
-			} catch (Exception e) {	pstmt = null; }
+		} finally{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		X_EXP_ProcessorParameter[] result = (X_EXP_ProcessorParameter[])resultList.toArray( new X_EXP_ProcessorParameter[0]);
 		parameters = result;

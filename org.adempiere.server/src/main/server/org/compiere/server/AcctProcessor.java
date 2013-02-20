@@ -202,7 +202,6 @@ public class AcctProcessor extends AdempiereServer
 					if (!ok)
 						countError[i]++;
 				}
-				rs.close();
 			}
 			catch (Exception e)
 			{
@@ -211,6 +210,8 @@ public class AcctProcessor extends AdempiereServer
 			finally
 			{
 				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
 			}
 
 		} // for tableID

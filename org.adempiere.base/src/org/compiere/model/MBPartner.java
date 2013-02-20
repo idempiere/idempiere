@@ -150,29 +150,23 @@ public class MBPartner extends X_C_BPartner
 			+ " INNER JOIN C_Order o ON (ol.C_Order_ID=o.C_Order_ID) "
 			+ "WHERE o.IsSOTrx='Y' AND Bill_BPartner_ID=?";			
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, C_BPartner_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				retValue = rs.getBigDecimal(1);
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		return retValue;
@@ -314,11 +308,12 @@ public class MBPartner extends X_C_BPartner
 		String sql = "SELECT * FROM C_BPartner "
 			+ "WHERE C_BPartner_ID IN (SELECT C_BPartnerCashTrx_ID FROM AD_ClientInfo WHERE AD_Client_ID=?)";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Client_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				success = load (rs);
 			else
@@ -327,9 +322,6 @@ public class MBPartner extends X_C_BPartner
 				success = false;
 				log.severe ("None found");
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
@@ -337,13 +329,8 @@ public class MBPartner extends X_C_BPartner
 		}
 		finally
 		{
-			try
-			{
-				if (pstmt != null)
-					pstmt.close ();
-			}
-			catch (Exception e)
-			{}
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		setStandardDefaults();
@@ -492,16 +479,14 @@ public class MBPartner extends X_C_BPartner
 		ArrayList<MBPBankAccount> list = new ArrayList<MBPBankAccount>();
 		String sql = "SELECT * FROM C_BP_BankAccount WHERE C_BPartner_ID=? AND IsActive='Y'";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getC_BPartner_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new MBPBankAccount (getCtx(), rs, get_TrxName()));
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
@@ -509,13 +494,8 @@ public class MBPartner extends X_C_BPartner
 		}
 		finally
 		{
-			try
-			{
-				if (pstmt != null)
-					pstmt.close ();
-			}
-			catch (Exception e)
-			{}
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 
@@ -689,32 +669,26 @@ public class MBPartner extends X_C_BPartner
 			+ "FROM C_BPartner bp "
 			+ "WHERE C_BPartner_ID=?";		
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getC_BPartner_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 			{
 				SO_CreditUsed = rs.getBigDecimal(1);
 				TotalOpenBalance = rs.getBigDecimal(2);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//
@@ -739,29 +713,23 @@ public class MBPartner extends X_C_BPartner
 			+ "FROM C_BPartner bp "
 			+ "WHERE C_BPartner_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getC_BPartner_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				ActualLifeTimeValue = rs.getBigDecimal(1);
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		if (ActualLifeTimeValue != null)

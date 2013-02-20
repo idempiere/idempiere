@@ -204,29 +204,23 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 		if (onlyInvoices)
 			sql.append(" AND C_Invoice_ID IS NOT NULL");
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
 			pstmt.setInt(1, get_ID ());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new MDunningRunLine(getCtx(), rs, get_TrxName()));
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql.toString(), e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 
@@ -245,34 +239,28 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 		boolean retValue = false;
 		String sql = "SELECT COUNT(*) FROM C_DunningRunLine WHERE C_DunningRunEntry_ID=? AND C_Invoice_ID IS NOT NULL";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, get_ID ());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				if (rs.getInt(1) > 0) 
 					retValue = true;
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
-		catch (Exception e)
-		{
-			pstmt = null;
-	}
 		return retValue;
 	}	//	hasInvoices
 

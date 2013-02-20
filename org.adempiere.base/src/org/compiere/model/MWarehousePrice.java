@@ -95,6 +95,7 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 			+ " - " + finalSQL);
 		ArrayList<MWarehousePrice> list = new ArrayList<MWarehousePrice>();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(finalSQL, trxName);
@@ -109,27 +110,20 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 				pstmt.setString(index++, UPC);
 			if (SKU != null && SKU.length() > 0)
 				pstmt.setString(index++, SKU);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new MWarehousePrice(ctx, rs, trxName));
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, finalSQL, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
-		}
+		} 
 		//
 		s_log.fine("find - #" + list.size());
 		MWarehousePrice[] retValue = new MWarehousePrice[list.size()];
@@ -191,31 +185,25 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 		String sql = "SELECT * FROM RV_WarehousePrice "
 			+ "WHERE M_Product_ID=? AND M_PriceList_Version_ID=? AND M_Warehouse_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, trxName);
 			pstmt.setInt (1, product.getM_Product_ID());
 			pstmt.setInt(2, M_PriceList_Version_ID);
 			pstmt.setInt(3, M_Warehouse_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				retValue = new MWarehousePrice(product.getCtx(), rs, trxName);
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		return retValue;

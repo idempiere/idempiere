@@ -133,33 +133,27 @@ public class MDunningRun extends X_C_DunningRun
 		String sql = "SELECT * FROM C_DunningRunEntry WHERE C_DunningRun_ID=? ORDER BY C_DunningLevel_ID, C_DunningRunEntry_ID";
 		ArrayList<MDunningRunEntry> list = new ArrayList<MDunningRunEntry>();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getC_DunningRun_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MDunningRunEntry thisEntry = new MDunningRunEntry(getCtx(), rs, get_TrxName());
 				if (!(onlyInvoices && thisEntry.hasInvoices()))
 				list.add (new MDunningRunEntry(getCtx(), rs, get_TrxName()));
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		m_entries = new MDunningRunEntry[list.size ()];

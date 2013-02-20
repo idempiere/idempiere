@@ -103,13 +103,14 @@ public class WorkflowProcessor extends AdempiereServer
 				+ " AND wfn.Action='Z'"		//	sleeping
 				+ " AND (wf.AD_WorkflowProcessor_ID IS NULL OR wf.AD_WorkflowProcessor_ID=?))";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		int count = 0;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, m_model.getAD_Client_ID());
 			pstmt.setInt (2, m_model.getAD_WorkflowProcessor_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MWFActivity activity = new MWFActivity (getCtx(), rs, null);
@@ -117,7 +118,6 @@ public class WorkflowProcessor extends AdempiereServer
 				// saves and calls MWFProcess.checkActivities();
 				count++;
 			}
-			rs.close ();
 		}
 		catch (Exception e)
 		{
@@ -125,7 +125,9 @@ public class WorkflowProcessor extends AdempiereServer
 		}
 		finally
 		{
-			DB.close(pstmt);
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		m_summary.append("Wakeup #").append(count).append (" - ");
 	}	//	wakeup
@@ -144,12 +146,13 @@ public class WorkflowProcessor extends AdempiereServer
 				+ "WHERE a.AD_WF_Node_ID=wfn.AD_WF_Node_ID AND wf.AD_WorkflowProcessor_ID=?"
 				+ " AND wfn.DynPriorityUnit IS NOT NULL AND wfn.DynPriorityChange IS NOT NULL)";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		int count = 0;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt(1, m_model.getAD_WorkflowProcessor_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MWFActivity activity = new MWFActivity (getCtx(), rs, null);
@@ -162,7 +165,6 @@ public class WorkflowProcessor extends AdempiereServer
 				activity.saveEx();
 				count++;
 			}
-			rs.close ();
 		}
 		catch (Exception e)
 		{
@@ -170,7 +172,9 @@ public class WorkflowProcessor extends AdempiereServer
 		}
 		finally
 		{
-			DB.close(pstmt);
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		m_summary.append("DynPriority #").append(count).append (" - ");		    
@@ -200,12 +204,13 @@ public class WorkflowProcessor extends AdempiereServer
 			int count = 0;
 			int countEMails = 0;
 			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try
 			{
 				pstmt = DB.prepareStatement(sql, null);
 				pstmt.setInt (1, m_model.getAlertOverPriority());
 				pstmt.setInt (2, m_model.getAD_WorkflowProcessor_ID());
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				while (rs.next())
 				{
 					MWFActivity activity = new MWFActivity (getCtx(), rs, null);
@@ -216,8 +221,6 @@ public class WorkflowProcessor extends AdempiereServer
 					activity.saveEx();
 					count++;
 				}
-				rs.close();
-				pstmt.close();
 			}
 			catch (SQLException e)
 			{
@@ -225,7 +228,9 @@ public class WorkflowProcessor extends AdempiereServer
 			}
 			finally
 			{
-				DB.close(pstmt);
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
 			}
 			m_summary.append("OverPriority #").append(count);
 			if (countEMails > 0)
@@ -250,13 +255,14 @@ public class WorkflowProcessor extends AdempiereServer
 				+ " AND wfn.Action<>'Z'"	//	not sleeping
 				+ " AND (wf.AD_WorkflowProcessor_ID IS NULL OR wf.AD_WorkflowProcessor_ID=?))";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		int count = 0;
 		int countEMails = 0;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt(1, m_model.getAD_WorkflowProcessor_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MWFActivity activity = new MWFActivity (getCtx(), rs, null);
@@ -267,7 +273,6 @@ public class WorkflowProcessor extends AdempiereServer
 				activity.saveEx();
 				count++;
 			}
-			rs.close ();
 		}
 		catch (Exception e)
 		{
@@ -275,7 +280,9 @@ public class WorkflowProcessor extends AdempiereServer
 		}
 		finally
 		{
-			DB.close(pstmt);
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		m_summary.append("EndWaitTime #").append(count);
@@ -306,7 +313,7 @@ public class WorkflowProcessor extends AdempiereServer
 			{
 				pstmt = DB.prepareStatement(sql, null);
 				pstmt.setInt (1, m_model.getAD_WorkflowProcessor_ID());
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				while (rs.next())
 				{
 					MWFActivity activity = new MWFActivity (getCtx(), rs, null);
@@ -317,8 +324,6 @@ public class WorkflowProcessor extends AdempiereServer
 					activity.saveEx();
 					count++;
 				}
-				rs.close();
-				pstmt.close();
 			}
 			catch (SQLException e)
 			{
@@ -326,7 +331,9 @@ public class WorkflowProcessor extends AdempiereServer
 			}
 			finally
 			{
-				DB.close(pstmt);
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
 			}
 			m_summary.append("Inactivity #").append(count);
 			if (countEMails > 0)

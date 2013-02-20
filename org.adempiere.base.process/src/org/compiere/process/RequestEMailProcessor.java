@@ -352,16 +352,25 @@ public class RequestEMailProcessor extends SvrProcess
 			 + "and documentno = ? "
 			 + "and startdate = ?";
 		PreparedStatement pstmtdup = null;
+		ResultSet rsdup = null;
+		try 
+		{
 			pstmtdup = DB.prepareStatement (sqldup, null);
 			pstmtdup.setInt(1, getAD_Client_ID());
 			pstmtdup.setString(2, hdrs[0].substring(0,30));
 			pstmtdup.setTimestamp(3, new Timestamp(msg.getSentDate().getTime()));
-			ResultSet rsdup = pstmtdup.executeQuery ();
+			rsdup = pstmtdup.executeQuery ();
 			if (rsdup.next ())
 				retValuedup = rsdup.getInt(1);
-			rsdup.close ();
-			pstmtdup.close ();
-			pstmtdup = null;
+		} catch (SQLException e) 
+		{
+			throw e;
+		}
+		finally
+		{
+			DB.close (rsdup,pstmtdup);
+			rsdup = null;pstmtdup = null;
+		}
 		if (retValuedup > 0) {
 			log.info("request already existed for msg -> " + hdrs[0]);
 			return true;
@@ -390,6 +399,9 @@ public class RequestEMailProcessor extends SvrProcess
 			 + "           ) "
 			 + "       ) ";
 		PreparedStatement pstmtupd = null;
+		ResultSet rsupd = null;
+		try 
+		{
 			pstmtupd = DB.prepareStatement (sqlupd, null);
 			pstmtupd.setInt(1, getAD_Client_ID());
 			pstmtupd.setString(2, fromAddress);
@@ -398,12 +410,19 @@ public class RequestEMailProcessor extends SvrProcess
 			pstmtupd.setString(5, msg.getSubject());
 			pstmtupd.setString(6, fromAddress);
 			pstmtupd.setString(7, msg.getSubject());
-			ResultSet rsupd = pstmtupd.executeQuery ();
+			rsupd = pstmtupd.executeQuery ();
 			if (rsupd.next ())
 				request_upd = rsupd.getInt(1);
-			rsupd.close ();
-			pstmtupd.close ();
-			pstmtupd = null;
+		} 
+		catch (SQLException e) 
+		{
+			throw e;
+		}
+		finally
+		{
+			DB.close(rsupd,pstmtupd);
+			rsupd = null;pstmtupd = null;
+		}
 		if (request_upd > 0) {
 			log.info("msg -> " + hdrs[0] + " is an answer for req " + request_upd);
 			return updateRequest(request_upd, msg);
@@ -443,15 +462,25 @@ public class RequestEMailProcessor extends SvrProcess
 				+ " WHERE UPPER (email) = UPPER (?) "
 				+ "   AND ad_client_id = ?";
 			PreparedStatement pstmtu = null;
+			ResultSet rsu = null;
+			try 
+			{
 				pstmtu = DB.prepareStatement (sqlu, null);
 				pstmtu.setString(1, fromAddress);
 				pstmtu.setInt(2, getAD_Client_ID());
-				ResultSet rsu = pstmtu.executeQuery ();
+				rsu = pstmtu.executeQuery ();
 				if (rsu.next ())
 					retValueu = rsu.getInt(1);
-				rsu.close ();
-				pstmtu.close ();
-				pstmtu = null;
+			}
+			catch(SQLException e)
+			{
+				throw e;
+			}
+			finally
+			{
+				DB.close (rsu,pstmtu);
+				rsu = null;pstmtu = null;
+			}
 			if (retValueu > 0) {
 				req.setAD_User_ID(retValueu);
 			} else {

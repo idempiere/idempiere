@@ -117,34 +117,29 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 		//
 		String sql = "SELECT * FROM S_TimeExpenseLine WHERE S_TimeExpense_ID=? ORDER BY Line";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getS_TimeExpense_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MTimeExpenseLine te = new MTimeExpenseLine(getCtx(), rs, get_TrxName());
 				te.setC_Currency_Report_ID(C_Currency_ID);
 				list.add(te);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (SQLException ex)
 		{
 			log.log(Level.SEVERE, "getLines", ex);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
 		//
 		m_lines = new MTimeExpenseLine[list.size()];
 		list.toArray(m_lines);
@@ -176,30 +171,25 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 		String sql = "SELECT M_Locator_ID FROM M_Locator "
 			+ "WHERE M_Warehouse_ID=? AND IsActive='Y' ORDER BY IsDefault DESC, Created";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, getM_Warehouse_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				m_M_Locator_ID = rs.getInt(1);
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (SQLException ex)
 		{
 			log.log(Level.SEVERE, "getM_Locator_ID", ex);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
 		//
 		return m_M_Locator_ID;
 	}	//	getM_Locator_ID

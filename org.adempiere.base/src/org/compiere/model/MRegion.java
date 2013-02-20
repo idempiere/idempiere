@@ -57,10 +57,12 @@ public final class MRegion extends X_C_Region
 	{
 		s_regions = new CCache<String,MRegion>(Table_Name, 100);
 		String sql = "SELECT * FROM C_Region WHERE IsActive='Y'";
+		Statement stmt = null;
+		ResultSet rs = null;
 		try
 		{
-			Statement stmt = DB.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
+			stmt = DB.createStatement();
+			rs = stmt.executeQuery(sql);
 			while(rs.next())
 			{
 				MRegion r = new MRegion (ctx, rs, null);
@@ -68,12 +70,16 @@ public final class MRegion extends X_C_Region
 				if (r.isDefault())
 					s_default = r;
 			}
-			rs.close();
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, stmt);
+			rs = null;
+			stmt = null;
 		}
 		s_log.fine(s_regions.size() + " - default=" + s_default);
 	}	//	loadAllRegions

@@ -63,29 +63,23 @@ public class MUserOrgAccess extends X_AD_User_OrgAccess
 	{
 		ArrayList<MUserOrgAccess> list = new ArrayList<MUserOrgAccess>();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, id);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add (new MUserOrgAccess(ctx, rs, null));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		MUserOrgAccess[] retValue = new MUserOrgAccess[list.size ()];
@@ -190,32 +184,26 @@ public class MUserOrgAccess extends X_AD_User_OrgAccess
 				+ "FROM AD_Client c INNER JOIN AD_Org o ON (c.AD_Client_ID=o.AD_Client_ID) "
 				+ "WHERE o.AD_Org_ID=?";
 			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try
 			{
 				pstmt = DB.prepareStatement(sql, null);
 				pstmt.setInt(1, getAD_Org_ID());
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				if (rs.next())
 				{
 					m_clientName = rs.getString(1);
 					m_orgName = rs.getString(2);
 				}
-				rs.close();
-				pstmt.close();
-				pstmt = null;
 			}
 			catch (Exception e)
 			{
 				log.log(Level.SEVERE, sql, e);
 			}
-			try
+			finally
 			{
-				if (pstmt != null)
-					pstmt.close();
-				pstmt = null;
-			}
-			catch (Exception e)
-			{
+				DB.close(rs, pstmt);
+				rs = null;
 				pstmt = null;
 			}
 		}

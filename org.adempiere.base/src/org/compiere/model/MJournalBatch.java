@@ -195,30 +195,25 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		ArrayList<MJournal> list = new ArrayList<MJournal>();
 		String sql = "SELECT * FROM GL_Journal WHERE GL_JournalBatch_ID=? ORDER BY DocumentNo";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getGL_JournalBatch_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new MJournal (getCtx(), rs, get_TrxName()));
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (SQLException ex)
 		{
 			log.log(Level.SEVERE, sql, ex);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
 		//
 		MJournal[] retValue = new MJournal[list.size()];
 		list.toArray(retValue);

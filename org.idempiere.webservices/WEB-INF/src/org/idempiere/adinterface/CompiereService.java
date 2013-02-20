@@ -223,14 +223,14 @@ public class CompiereService {
 			rs = pstmt.executeQuery();
 			if (rs.next())
 				loginInfo = rs.getString(1);
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 		} finally {
 			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		//  not verified

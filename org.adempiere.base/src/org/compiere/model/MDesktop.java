@@ -85,11 +85,13 @@ public class MDesktop
 				.append("WHERE w.AD_Desktop_ID=? AND w.IsActive='Y'")
 				.append(" AND w.AD_Desktop_ID=t.AD_Desktop_ID")
 				.append(" AND t.AD_Language='").append(Env.getAD_Language(m_ctx)).append("'");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, AD_Desktop_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				Name = rs.getString(1);
@@ -107,12 +109,16 @@ public class MDesktop
 			}
 			else
 				AD_Desktop_ID = 0;
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		if (AD_Desktop_ID == 0)
@@ -207,23 +213,29 @@ public class MDesktop
 			+ "FROM AD_DesktopWorkbench "
 			+ "WHERE AD_Desktop_ID=? AND IsActive='Y' "
 			+ "ORDER BY SeqNo";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Desktop_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				int AD_Workbench_ID = rs.getInt(1);
 				m_workbenches.add (new Integer(AD_Workbench_ID));
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, "MWorkbench.initDesktopWorkbenches", e);
 			return false;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		return true;
 	}   //  initDesktopWorkbenches

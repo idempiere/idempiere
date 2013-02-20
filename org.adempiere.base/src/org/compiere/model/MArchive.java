@@ -52,29 +52,25 @@ public class MArchive extends X_AD_Archive {
 	 */
 	public static MArchive[] get(Properties ctx, String whereClause) {
 		ArrayList<MArchive> list = new ArrayList<MArchive>();
-		PreparedStatement pstmt = null;
 		StringBuilder sql = new StringBuilder("SELECT * FROM AD_Archive WHERE AD_Client_ID=?");
 		if (whereClause != null && whereClause.length() > 0)
 			sql.append(whereClause);
 		sql.append(" ORDER BY Created");
-
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try {
 			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, Env.getAD_Client_ID(ctx));
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new MArchive(ctx, rs, null));
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		} catch (Exception e) {
 			s_log.log(Level.SEVERE, sql.toString(), e);
 		}
-		try {
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		} catch (Exception e) {
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		if (list.size() == 0)
@@ -206,23 +202,20 @@ public class MArchive extends X_AD_Archive {
 		String name = "?";
 		String sql = "SELECT Name FROM AD_User WHERE AD_User_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try {
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, getCreatedBy());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				name = rs.getString(1);
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		} catch (Exception e) {
 			log.log(Level.SEVERE, sql, e);
 		}
-		try {
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		} catch (Exception e) {
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		return name;

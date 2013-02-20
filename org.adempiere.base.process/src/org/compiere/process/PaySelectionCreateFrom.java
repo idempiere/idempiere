@@ -184,6 +184,7 @@ public class PaySelectionCreateFrom extends SvrProcess
 		int lines = 0;
 		int C_CurrencyTo_ID = psel.getC_Currency_ID();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
@@ -207,7 +208,7 @@ public class PaySelectionCreateFrom extends SvrProcess
 			else if (p_C_BP_Group_ID != 0)
 				pstmt.setInt (index++, p_C_BP_Group_ID);
 			//
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				int C_Invoice_ID = rs.getInt(1);
@@ -228,22 +229,15 @@ public class PaySelectionCreateFrom extends SvrProcess
 					throw new IllegalStateException ("Cannot save MPaySelectionLine");
 				}
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		StringBuilder msgreturn = new StringBuilder("@C_PaySelectionLine_ID@  - #").append(lines);

@@ -168,6 +168,8 @@ public class Translation
 		String[] trlColumns = getTrlColumns (Base_Table);
 		//
 		StringBuffer sql = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -214,10 +216,10 @@ public class Translation
 				sql.append(haveWhere ? " AND " : " WHERE ").append("o.AD_Client_ID=").append(AD_Client_ID);
 			sql.append(" ORDER BY t.").append(keyColumn);
 			//
-			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			if (!isBaseLanguage)
 				pstmt.setString(1, AD_Language);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			int rows = 0;
 			while (rs.next())
 			{
@@ -245,8 +247,6 @@ public class Translation
 				root.appendChild(row);
 				rows++;
 			}
-			rs.close();
-			pstmt.close();
 			log.info("Records=" + rows 
 				+ ", DTD=" + document.getDoctype()
 				+ " - " + Trl_Table);
@@ -275,6 +275,12 @@ public class Translation
 			log.log(Level.SEVERE, "", e);
 			return e.toString();
 		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
 
 		return "";
 	}	//	exportTrl
@@ -291,19 +297,25 @@ public class Translation
 		String sql = "SELECT TableName FROM AD_Table t"
 			+ " INNER JOIN AD_Column c ON (c.AD_Table_ID=t.AD_Table_ID AND c.ColumnName='IsCentrallyMaintained') "
 			+ "WHERE t.TableName=? AND c.IsActive='Y'";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString(1, Base_Table);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				m_IsCentrallyMaintained = true;
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		sql = "SELECT ColumnName "
@@ -316,22 +328,26 @@ public class Translation
 		ArrayList<String> list = new ArrayList<String>();
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString(1, Base_Table + "_Trl");
 			pstmt.setString(2, PO.getUUIDColumnName(Base_Table + "_Trl"));
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				String s = rs.getString(1);
 			//	System.out.println(s); 
 				list.add(s);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		//	Convert to Array
@@ -354,20 +370,26 @@ public class Translation
 			+ "FROM AD_Language "
 			+ "WHERE AD_Language=?";
 		MLanguage language = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setString(1, AD_Language);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				language = new MLanguage (m_ctx, rs, null);
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
 			return e.toString();
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		//	No AD_Language Record
@@ -408,18 +430,24 @@ public class Translation
 			+ "WHERE TableName LIKE '%_Trl' "
 			+ "ORDER BY Name";
 		ArrayList<String> trlTables = new ArrayList<String>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				trlTables.add(rs.getString(2));
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		for (int i = 0; i < trlTables.size(); i++)

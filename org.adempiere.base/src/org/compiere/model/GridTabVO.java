@@ -285,11 +285,13 @@ public class GridTabVO implements Evaluatee, Serializable
 		mTabVO.Fields = new ArrayList<GridFieldVO>();
 
 		String sql = GridFieldVO.getSQL(mTabVO.ctx);
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, mTabVO.AD_Tab_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				GridFieldVO voF = GridFieldVO.create (mTabVO.ctx, 
@@ -299,16 +301,18 @@ public class GridTabVO implements Evaluatee, Serializable
 				if (voF != null)
 					mTabVO.Fields.add(voF);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (Exception e)
 		{
 			CLogger.get().log(Level.SEVERE, "", e);
 			return false;
 		}
-		
-		
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}		
 		
 		mTabVO.initFields = true;
 		

@@ -96,33 +96,27 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		String sql = "SELECT * FROM C_PaySchedule WHERE C_PaymentTerm_ID=? AND IsActive='Y' ORDER BY NetDays";
 		ArrayList<MPaySchedule> list = new ArrayList<MPaySchedule>();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getC_PaymentTerm_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				MPaySchedule ps = new MPaySchedule(getCtx(), rs, get_TrxName());
 				ps.setParent(this);
 				list.add (ps);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "getSchedule", e); 
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		

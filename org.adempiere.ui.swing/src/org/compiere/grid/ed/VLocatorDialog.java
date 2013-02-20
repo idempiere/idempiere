@@ -227,18 +227,24 @@ public class VLocatorDialog extends CDialog
 		String SQL = MRole.getDefault().addAccessSQL(
 			sql, "M_Warehouse", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO)
 			+ " ORDER BY 2";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(SQL, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(SQL, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				fWarehouse.addItem(new KeyNamePair(rs.getInt(1), rs.getString(2)));
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, SQL, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		log.fine("Warehouses=" + fWarehouse.getItemCount());
 

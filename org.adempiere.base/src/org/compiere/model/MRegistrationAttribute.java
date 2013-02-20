@@ -55,11 +55,12 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 			+ "ORDER BY SeqNo";
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Client_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				MRegistrationAttribute value = new MRegistrationAttribute(ctx, rs, null);
@@ -67,22 +68,15 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 				s_cache.put(key, value);
 				list.add(value);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//

@@ -209,9 +209,10 @@ public class InOutGenerate extends SvrProcess
 	private String generate (PreparedStatement pstmt)
 	{
 
+		ResultSet rs = null;
 		try
 		{
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())		//	Order
 			{
 				MOrder order = new MOrder (getCtx(), rs, get_TrxName());
@@ -391,22 +392,15 @@ public class InOutGenerate extends SvrProcess
 				}
 				m_line += 1000;
 			}	//	while order
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, m_sql.toString(), e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		completeShipment();

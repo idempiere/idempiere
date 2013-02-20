@@ -61,9 +61,6 @@ public class MProduction extends X_M_Production {
 			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add( new MProductionLine( getCtx(), rs.getInt(1), get_TrxName() ) );	
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (SQLException ex)
 		{
@@ -72,6 +69,8 @@ public class MProduction extends X_M_Production {
 		finally
 		{
 			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		MProductionLine[] retValue = new MProductionLine[list.size()];

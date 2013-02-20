@@ -110,19 +110,25 @@ public class M_Product_BOM_Check extends SvrProcess
         	
     		//	Get count remaining on t_selection
     		int countno = 0;
+    		PreparedStatement pstmt = null;
+    		ResultSet rs = null;
     		try
     		{
     			StringBuilder dbpst = new StringBuilder("SELECT COUNT(*) FROM T_Selection WHERE AD_PInstance_ID=").append(m_AD_PInstance_ID);
-    			PreparedStatement pstmt = DB.prepareStatement(dbpst.toString(), get_TrxName());
-    			ResultSet rs = pstmt.executeQuery();
+    			pstmt = DB.prepareStatement(dbpst.toString(), get_TrxName());
+    			rs = pstmt.executeQuery();
     			if (rs.next())
     				countno = rs.getInt(1);
-    			rs.close();
-    			pstmt.close();
     		}
     		catch (SQLException e)
     		{
     			throw new Exception ("count t_selection", e);
+    		}
+    		finally
+    		{
+    			DB.close(rs, pstmt);
+    			rs = null;
+    			pstmt = null;
     		}
     		log.fine("Count T_Selection =" + countno);
     		

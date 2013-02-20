@@ -51,6 +51,8 @@ public class SynchronizeTerminology extends SvrProcess
 	{
 		//TODO Error handling
 		String sql = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try {
 			int no;
 			Trx trx = Trx.get(get_TrxName(), false);
@@ -60,8 +62,8 @@ public class SynchronizeTerminology extends SvrProcess
 				+"(SELECT 1 FROM AD_ELEMENT e "
 				+" WHERE UPPER(c.ColumnName)=UPPER(e.ColumnName))"
 				+" AND c.isActive = 'Y'";
-			PreparedStatement pstmt = DB.prepareStatement(sql, get_TrxName());
-			ResultSet rs = pstmt.executeQuery ();
+			pstmt = DB.prepareStatement(sql, get_TrxName());
+			rs = pstmt.executeQuery ();
 			while (rs.next()){
 				String columnName = rs.getString(1);
 				String name = rs.getString(2);
@@ -74,8 +76,8 @@ public class SynchronizeTerminology extends SvrProcess
 				elem.setPrintName(name);
 				elem.saveEx();
 			}
-			pstmt.close();
-			rs.close();
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 			trx.commit(true);
 			// Create Elements for Process Parameters which are centrally maintained
 			/* IDEMPIERE 109 - this create unwanted Element
@@ -843,6 +845,12 @@ public class SynchronizeTerminology extends SvrProcess
 		} catch (Exception e) {
 			log.log (Level.SEVERE, "@Failed@: "+e.getLocalizedMessage(), e);
 			throw e;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		return "@OK@";

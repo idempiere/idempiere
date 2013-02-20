@@ -14,9 +14,12 @@
 
 package org.adempiere.webui.component;
 
+import java.text.SimpleDateFormat;
+
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.compiere.process.ProcessInfoLog;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zhtml.Text;
@@ -72,20 +75,35 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		pnlMessage.appendChild(sep);
 
 		for (int loopCtr = 0; loopCtr < m_logs.length; loopCtr++) {
-			if (m_logs[loopCtr].getP_Msg() != null) {
+			ProcessInfoLog log = m_logs[loopCtr];
+			if (log.getP_Msg() != null || log.getP_Date() != null || log.getP_Number() != null) {
+				SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.DateTime);
+				StringBuffer sb = new StringBuffer ();
+				//
+				if (log.getP_Date() != null)
+					sb.append(dateFormat.format(log.getP_Date()))
+						.append(" \t");
+				//
+				if (log.getP_Number() != null)
+					sb.append(log.getP_Number())
+						.append(" \t");
+				//
+				if (log.getP_Msg() != null)
+					sb.append(Msg.parseTranslation(Env.getCtx(), log.getP_Msg()));
+				//
 
-				if (m_logs[loopCtr].getAD_Table_ID() > 0
-						&& m_logs[loopCtr].getRecord_ID() > 0) {
+				if (log.getAD_Table_ID() > 0
+						&& log.getRecord_ID() > 0) {
 					A recordLink = new A();
-					recordLink.setLabel(m_logs[loopCtr].getP_Msg());
+					recordLink.setLabel(sb.toString());
 					recordLink.setAttribute("Record_ID",
-							String.valueOf(m_logs[loopCtr].getRecord_ID()));
+							String.valueOf(log.getRecord_ID()));
 					recordLink.setAttribute("AD_Table_ID",
-							String.valueOf(m_logs[loopCtr].getAD_Table_ID()));
+							String.valueOf(log.getAD_Table_ID()));
 					recordLink.addEventListener(Events.ON_CLICK, this);
 					pnlMessage.appendChild(recordLink);
 				} else {
-					Text recordText = new Text(Msg.parseTranslation(Env.getCtx(), m_logs[loopCtr].getP_Msg()));
+					Text recordText = new Text(sb.toString());
 					pnlMessage.appendChild(recordText);
 				}
 				pnlMessage.appendChild(new Separator("horizontal"));

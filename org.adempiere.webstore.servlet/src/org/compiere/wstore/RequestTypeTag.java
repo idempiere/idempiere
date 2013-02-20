@@ -93,20 +93,18 @@ public class RequestTypeTag extends TagSupport
 			+ "WHERE AD_Client_ID=? AND IsActive='Y' AND IsSelfService='Y' "
 			+ "ORDER BY IsDefault DESC, Name";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Client_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				option o = new option (rs.getString(1));
 				o.addElement(Util.maskHTML(rs.getString(2)));
 				list.add(o);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
@@ -114,13 +112,8 @@ public class RequestTypeTag extends TagSupport
 		}
 		finally
 		{
-			try
-			{
-				if (pstmt != null)
-					pstmt.close ();
-			}
-			catch (Exception e)
-			{}
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 

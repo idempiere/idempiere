@@ -113,10 +113,12 @@ public final class MCountry extends X_C_Country
 		//
 		s_countries = new CCache<String,MCountry>(Table_Name, 250);
 		String sql = "SELECT * FROM C_Country WHERE IsActive='Y'";
+		Statement stmt = null;
+		ResultSet rs = null;
 		try
 		{
-			Statement stmt = DB.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
+			stmt = DB.createStatement();
+			rs = stmt.executeQuery(sql);
 			while(rs.next())
 			{
 				MCountry c = new MCountry (ctx, rs, null);
@@ -127,12 +129,16 @@ public final class MCountry extends X_C_Country
 				if (c.getC_Country_ID() == COUNTRY_US)		//	USA
 					usa = c;
 			}
-			rs.close();
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, stmt);
+			rs = null;
+			stmt = null;
 		}
 		if (s_default == null)
 			s_default = usa;

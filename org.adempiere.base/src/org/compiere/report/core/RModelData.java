@@ -123,10 +123,12 @@ public class RModelData
 		//  FillData
 		int index = 0;      //  rowset index
 		m_rows.clear();
+		Statement stmt = null;
+		ResultSet rs = null;
 		try
 		{
-			Statement stmt = DB.createStatement();
-			ResultSet rs = stmt.executeQuery(finalSQL);
+			stmt = DB.createStatement();
+			rs = stmt.executeQuery(finalSQL);
 			while (rs.next())
 			{
 				ArrayList<Object> row = new ArrayList<Object>(size);
@@ -163,8 +165,6 @@ public class RModelData
 				}
 				m_rows.add(row);
 			}
-			rs.close();
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -173,6 +173,12 @@ public class RModelData
 			else
 				log.log(Level.SEVERE, "Index=" + index + "," + rc, e);
 			e.printStackTrace();
+		}
+		finally
+		{
+			DB.close(rs, stmt);
+			rs = null;
+			stmt = null;
 		}
 		process();
 	}   //  query

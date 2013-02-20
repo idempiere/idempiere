@@ -380,13 +380,15 @@ public class Viewer extends CFrame
 				+ "WHERE c.AD_Table_ID=? AND c.IsKey='Y'"
 				+ " AND et.AD_Language=? "
 				+ "ORDER BY 3";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_reportEngine.getPrintFormat().getAD_Table_ID());
 			if (trl)
 				pstmt.setString(2, Env.getAD_Language(Env.getCtx()));
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				String tableName = rs.getString(2);
@@ -396,12 +398,16 @@ public class Viewer extends CFrame
 					name += "/" + poName;
 				comboDrill.addItem(new ValueNamePair (tableName, name));
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		if (comboDrill.getItemCount() == 1)
 		{
@@ -434,11 +440,13 @@ public class Viewer extends CFrame
 				+ "ORDER BY Name",
 			"AD_PrintFormat", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 		int AD_Table_ID = m_reportEngine.getPrintFormat().getAD_Table_ID();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Table_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				KeyNamePair pp = new KeyNamePair(rs.getInt(1), rs.getString(2));
@@ -446,12 +454,16 @@ public class Viewer extends CFrame
 				if (rs.getInt(1) == AD_PrintFormat_ID)
 					selectValue = pp;
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		// IDEMPIERE-297 - Check for Table Access and Window Access for New Report
 		if (   MRole.getDefault().isTableAccess(MPrintFormat.Table_ID, false) 
@@ -1151,11 +1163,13 @@ public class Viewer extends CFrame
 		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Tab"))
 			sql = "SELECT Name, TableName FROM AD_Tab_vt WHERE AD_Tab_ID=?"
 				+ " AND AD_Language='" + Env.getAD_Language(Env.getCtx()) + "' " + ASPFilter;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Tab_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			//
 			if (rs.next())
 			{
@@ -1163,12 +1177,16 @@ public class Viewer extends CFrame
 				tableName = rs.getString(2);
 			}
 			//
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		GridField[] findFields = null;
@@ -1250,18 +1268,24 @@ public class Viewer extends CFrame
 		ArrayList<ValueNamePair> list = new ArrayList<ValueNamePair>();
 		ValueNamePair pp = null;
 		String sql = "SELECT Name, AD_Language FROM AD_Language WHERE IsSystemLanguage='Y' ORDER BY 1";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new ValueNamePair (rs.getString(2), rs.getString(1)));
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		if (list.size() == 0)
 		{

@@ -133,14 +133,16 @@ public class ScheduleUtil
 		  + " AND DateTo >= ?"						//	#2	start
 		  + " AND DateFrom <= ?"					//	#3	end
 		  + " AND IsActive='Y'";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 	//		log.fine( sql, "ID=" + S_Resource_ID + ", Start=" + m_startDate + ", End=" + m_endDate);
-			PreparedStatement pstmt = DB.prepareStatement(sql, trxName);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, m_S_Resource_ID);
 			pstmt.setTimestamp(2, m_startDate);
 			pstmt.setTimestamp(3, m_endDate);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				ma = new MAssignmentSlot (TimeUtil.getDay(rs.getTimestamp(2)),
@@ -153,8 +155,6 @@ public class ScheduleUtil
 				else
 					list.add(ma);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -163,6 +163,13 @@ public class ScheduleUtil
 				Msg.getMsg (m_ctx, "ResourceUnAvailable"), e.toString(),
 				MAssignmentSlot.STATUS_UnAvailable);
 		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
+		
 		if (ma != null && !getAll)
 			return new MAssignmentSlot[] {ma};
 
@@ -180,10 +187,10 @@ public class ScheduleUtil
 			Timestamp startDay = TimeUtil.getDay(m_startDate);
 			Timestamp endDay = TimeUtil.getDay(m_endDate);
 	//		log.fine( sql, "Start=" + startDay + ", End=" + endDay);
-			PreparedStatement pstmt = DB.prepareStatement(sql, trxName);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setTimestamp(1, startDay);
 			pstmt.setTimestamp(2, endDay);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				Timestamp date = rs.getTimestamp(2);
@@ -194,8 +201,6 @@ public class ScheduleUtil
 				log.finer("- NonBusinessDay " + ma);
 				list.add(ma);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -203,6 +208,12 @@ public class ScheduleUtil
 			ma = new MAssignmentSlot (EARLIEST, LATEST,
 				Msg.getMsg(m_ctx, "NonBusinessDay"), e.toString(),
 				MAssignmentSlot.STATUS_NonBusinessDay);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		if (ma != null && !getAll)
 			return new MAssignmentSlot[] {ma};
@@ -217,9 +228,9 @@ public class ScheduleUtil
 			+ "WHERE S_ResourceType_ID=?";
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, trxName);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, m_S_ResourceType_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				m_typeName = rs.getString(1);
@@ -259,8 +270,6 @@ public class ScheduleUtil
 				}	//	DaySlot
 
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -268,6 +277,12 @@ public class ScheduleUtil
 			ma = new MAssignmentSlot (EARLIEST, LATEST,
 				Msg.getMsg(m_ctx, "ResourceNotInSlotDay"), e.toString(),
 				MAssignmentSlot.STATUS_NonBusinessDay);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		if (ma != null && !getAll)
 			return new MAssignmentSlot[] {ma};
@@ -281,11 +296,11 @@ public class ScheduleUtil
 			+ " AND IsActive='Y'";
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, trxName);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, m_S_Resource_ID);
 			pstmt.setTimestamp(2, m_startDate);
 			pstmt.setTimestamp(3, m_endDate);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				MResourceAssignment mAssignment = 
@@ -295,8 +310,6 @@ public class ScheduleUtil
 					break;
 				list.add(ma);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -304,6 +317,12 @@ public class ScheduleUtil
 			ma = new MAssignmentSlot (EARLIEST, LATEST,
 				Msg.translate(m_ctx, "S_R"), e.toString(),
 				MAssignmentSlot.STATUS_NotConfirmed);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		if (ma != null && !getAll)
 			return new MAssignmentSlot[] {ma};
@@ -578,11 +597,13 @@ public class ScheduleUtil
 			+ " AND r.S_ResourceType_ID=rt.S_ResourceType_ID",
 			"r", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 		//
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, S_Resource_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				if (!"Y".equals(rs.getString(1)))					//	Active
@@ -597,13 +618,17 @@ public class ScheduleUtil
 			}
 			else
 				m_isAvailable = false;
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
 			m_isAvailable = false;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		m_S_Resource_ID = S_Resource_ID;
 	}	//	getBaseInfo

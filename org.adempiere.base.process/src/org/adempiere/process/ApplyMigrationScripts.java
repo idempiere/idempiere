@@ -44,67 +44,73 @@ import org.compiere.util.DB;
 public class ApplyMigrationScripts extends SvrProcess {
 
 	/** Logger */
-	private static CLogger log = CLogger
-			.getCLogger(ApplyMigrationScripts.class);
+	private static CLogger log = CLogger.getCLogger(ApplyMigrationScripts.class);
 
 	@Override
 	protected String doIt() throws Exception {
-		// TODO Auto-generated method stub
 		log.info("Applying migrations scripts");
 		StringBuilder sql = new StringBuilder()
 			.append("select ad_migrationscript_id, script, name from ad_migrationscript where isApply = 'Y' and status = 'IP' order by name, created");
-		PreparedStatement pstmt = DB.prepareStatement(sql.toString(), this.get_TrxName());
-		ResultSet rs = pstmt.executeQuery();
-		while (rs.next()) {
-			byte[] scriptArray = rs.getBytes(2);
-			int seqID = rs.getInt(1);
-			boolean execOk = true;
-			try {
-				StringBuilder tmpSql = new StringBuilder(new String(scriptArray));
-
-				if (tmpSql.length() > 0) {
-					log.info("Executing script " + rs.getString(3));
-					execOk = executeScript(tmpSql.toString(), rs.getString(3));
-					System.out.println();
-				}
-			} catch (SQLException e) {
-				execOk = false;
-				e.printStackTrace();
-				StringBuilder msglog = new StringBuilder("Script: ").append(rs.getString(3)).append(" - ").append(e.getMessage());
-				log.saveError("Error", msglog.toString());
-				log.severe(e.getMessage());
-			} finally {
-				sql = new StringBuilder("UPDATE ad_migrationscript SET status = ? , isApply = 'N' WHERE ad_migrationscript_id = ? ");
-				pstmt = DB.prepareStatement(sql.toString(), this.get_TrxName());
-				if (execOk) {
-					pstmt.setString(1, "CO");
-					pstmt.setInt(2, seqID);
-				} else {
-					pstmt.setString(1, "ER");
-					pstmt.setInt(2, seqID);
-				}
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = DB.prepareStatement(sql.toString(), this.get_TrxName());
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				byte[] scriptArray = rs.getBytes(2);
+				int seqID = rs.getInt(1);
+				boolean execOk = true;
 				try {
-					pstmt.executeUpdate();
-					if (!execOk) {
-						pstmt.close();
-						return null;
+					StringBuilder tmpSql = new StringBuilder(new String(scriptArray));
+
+					if (tmpSql.length() > 0) {
+						log.info("Executing script " + rs.getString(3));
+						execOk = executeScript(tmpSql.toString(), rs.getString(3));
+						System.out.println();
 					}
 				} catch (SQLException e) {
+					execOk = false;
 					e.printStackTrace();
 					StringBuilder msglog = new StringBuilder("Script: ").append(rs.getString(3)).append(" - ").append(e.getMessage());
 					log.saveError("Error", msglog.toString());
 					log.severe(e.getMessage());
+				} finally {
+					sql = new StringBuilder("UPDATE ad_migrationscript SET status = ? , isApply = 'N' WHERE ad_migrationscript_id = ? ");
+					PreparedStatement pstmtu = DB.prepareStatement(sql.toString(), this.get_TrxName());
+					if (execOk) {
+						pstmtu.setString(1, "CO");
+						pstmtu.setInt(2, seqID);
+					} else {
+						pstmtu.setString(1, "ER");
+						pstmtu.setInt(2, seqID);
+					}
+					try {
+						pstmtu.executeUpdate();
+						if (!execOk) {
+							return null;
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+						StringBuilder msglog = new StringBuilder("Script: ").append(rs.getString(3)).append(" - ").append(e.getMessage());
+						log.saveError("Error", msglog.toString());
+						log.severe(e.getMessage());
+					} finally {
+						DB.close(pstmtu);
+						pstmtu = null;
+					}
 				}
 			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
 		}
-		rs.close();
-		pstmt.close();
 		return null;
 	}
 
 	@Override
 	protected void prepare() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -156,7 +162,8 @@ public class ApplyMigrationScripts extends SvrProcess {
 						log.saveError("Error", msglog.toString());
 						log.severe(e.getMessage());
 					} finally {
-						if (stmt != null)stmt.close();
+						DB.close(stmt);
+						stmt = null;
 						if(execOk)
 							conn.commit();
 						else

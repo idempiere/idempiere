@@ -248,12 +248,8 @@ public class ColumnElementHandler extends AbstractElementHandler {
 					// No existing column
 					sql = column.getSQLAdd(table);
 				}
-				rsc.close();
-				rsc = null;
 			}
 
-			rst.close();
-			rst = null;
 			//execute modify or add if needed
 			if (sql != null && sql.trim().length() > 0) {
 				log.info(sql);
@@ -277,22 +273,15 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			trx.commit(true);
 		} catch (SQLException e) {
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			if (rsc != null) {
-				try {
-					rsc.close();
-				} catch (SQLException e1) {
-				}
-				rsc = null;
-			}
-			if (rst != null) {
-				try {
-					rst.close();
-				} catch (SQLException e1) {
-				}
-				rst = null;
-			}
 			trx.rollback();
 			return 0;
+		}
+		finally
+		{
+			DB.close(rsc);
+			rsc = null;
+			DB.close(rst);
+			rst = null;
 		}
 
 		return 1;

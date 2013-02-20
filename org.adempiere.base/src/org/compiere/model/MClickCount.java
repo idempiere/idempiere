@@ -114,11 +114,12 @@ public class MClickCount extends X_W_ClickCount
 			.append("GROUP BY TRUNC(Created, '").append(DateFormat).append("')");
 		//
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, getW_ClickCount_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				String value = m_dateFormat.format(rs.getTimestamp(1));
@@ -126,23 +127,17 @@ public class MClickCount extends X_W_ClickCount
 				ValueNamePair pp = new ValueNamePair (value, name);
 				list.add(pp);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (SQLException ex)
 		{
 			log.log(Level.SEVERE, sql.toString(), ex);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
 		//
 		ValueNamePair[] retValue = new ValueNamePair[list.size()];
 		list.toArray(retValue);

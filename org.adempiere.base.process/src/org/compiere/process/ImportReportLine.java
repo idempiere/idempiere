@@ -265,6 +265,9 @@ public class ImportReportLine extends SvrProcess
 			.append("FROM I_ReportLine ")
 			.append("WHERE I_IsImported='N' AND PA_ReportLine_ID IS NULL")
 			.append(" AND I_IsImported='N'").append(clientCheck);
+		PreparedStatement pstmt_insertLine = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			//	Insert ReportLine
@@ -283,10 +286,10 @@ public class ImportReportLine extends SvrProcess
 			.append("WHERE PA_ReportLineSet_ID=? AND Name=? ")		//	#2..3
 			//jz + clientCheck, get_TrxName());
 			.append(clientCheck).append(")");
-			PreparedStatement pstmt_insertLine = DB.prepareStatement(dbpst.toString(), get_TrxName());
+			pstmt_insertLine = DB.prepareStatement(dbpst.toString(), get_TrxName());
 
-			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				int PA_ReportLineSet_ID = rs.getInt(1);
@@ -311,14 +314,17 @@ public class ImportReportLine extends SvrProcess
 					continue;
 				}
 			}
-			rs.close();
-			pstmt.close();
-			//
-			pstmt_insertLine.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, "Create ReportLine", e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;pstmt = null;
+			DB.close(pstmt_insertLine);
+			pstmt_insertLine = null;
 		}
 
 		//	Set PA_ReportLine_ID (for newly created)
@@ -356,6 +362,9 @@ public class ImportReportLine extends SvrProcess
 			.append("WHERE PA_ReportLine_ID IS NOT NULL")
 			.append(" AND I_IsImported='N'").append(clientCheck);
 		
+		PreparedStatement pstmt_insertSource = null; 
+		PreparedStatement pstmt_deleteSource = null;
+		PreparedStatement pstmt_setImported = null;
 		try
 		{
 			//	Insert ReportSource
@@ -370,7 +379,7 @@ public class ImportReportLine extends SvrProcess
 					.append("WHERE I_ReportLine_ID=?")
 					.append(" AND I_IsImported='N'")
 					.append(clientCheck);
-			PreparedStatement pstmt_insertSource = DB.prepareStatement(dbpst.toString(), get_TrxName());
+			pstmt_insertSource = DB.prepareStatement(dbpst.toString(), get_TrxName());
 
 			//	Update ReportSource
 			//jz 
@@ -391,17 +400,17 @@ public class ImportReportLine extends SvrProcess
 					.append("WHERE C_ElementValue_ID IS NULL") 
 					.append(" AND PA_ReportSource_ID=?")
 					.append(clientCheck);
-			PreparedStatement pstmt_deleteSource = DB.prepareStatement(dbpst.toString(), get_TrxName());
+			pstmt_deleteSource = DB.prepareStatement(dbpst.toString(), get_TrxName());
 			//End afalcone 22/02/2007 - F.R. [ 1642250 ] Import ReportLine / Very Slow Reports
 			
 			//	Set Imported = Y
-			PreparedStatement pstmt_setImported = DB.prepareStatement
+			pstmt_setImported = DB.prepareStatement
 				("UPDATE I_ReportLine SET I_IsImported='Y',"
 				+ " PA_ReportSource_ID=?, "
 				+ " Updated=SysDate, Processed='Y' WHERE I_ReportLine_ID=?", get_TrxName());
 
-			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				int I_ReportLine_ID = rs.getInt(1);
@@ -461,7 +470,11 @@ public class ImportReportLine extends SvrProcess
 						DB.executeUpdate(sql.toString(), get_TrxName());
 						continue;
 					}
-					pstmt_updateSource.close();
+					finally
+					{
+						DB.close(pstmt_updateSource);
+						pstmt_updateSource = null;
+					}
 				}	//	update source
 
 				//	Set Imported to Y
@@ -481,16 +494,18 @@ public class ImportReportLine extends SvrProcess
 
 				commitEx();
 			}
-			rs.close();
-			pstmt.close();
-			//
-			pstmt_insertSource.close();
-			//jz pstmt_updateSource.close();
-			pstmt_setImported.close();
-			//
 		}
 		catch (SQLException e)
 		{
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;pstmt = null;
+			DB.close(pstmt_insertSource);
+			pstmt_insertSource = null;
+			DB.close(pstmt_setImported);
+			pstmt_setImported = null;
 		}
 
 		//	Set Error to indicator to not imported

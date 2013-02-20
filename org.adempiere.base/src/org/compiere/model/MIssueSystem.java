@@ -47,31 +47,25 @@ public class MIssueSystem extends X_R_IssueSystem
 		if (issue.getDBAddress() == null)
 			return null;
 		MIssueSystem system = null;
-		PreparedStatement pstmt = null;
 		String sql = "SELECT * FROM R_IssueSystem WHERE DBAddress=?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setString (1, issue.getDBAddress());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				system = new MIssueSystem(issue.getCtx(), rs, null);
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//	New

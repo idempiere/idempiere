@@ -78,30 +78,25 @@ public class MProjectTypePhase extends X_C_Phase
 		ArrayList<MProjectTypeTask> list = new ArrayList<MProjectTypeTask>();
 		String sql = "SELECT * FROM C_Task WHERE C_Phase_ID=? ORDER BY SeqNo";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getC_Phase_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new MProjectTypeTask (getCtx(), rs, get_TrxName()));
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (SQLException ex)
 		{
 			log.log(Level.SEVERE, sql, ex);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
-		catch (SQLException ex1)
-		{
-		}
-		pstmt = null;
 		//
 		MProjectTypeTask[] retValue = new MProjectTypeTask[list.size()];
 		list.toArray(retValue);

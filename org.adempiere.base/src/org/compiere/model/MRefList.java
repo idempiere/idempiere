@@ -155,9 +155,6 @@ public class MRefList extends X_AD_Ref_List
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				retValue = rs.getString(1);
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (SQLException ex)
 		{
@@ -213,9 +210,6 @@ public class MRefList extends X_AD_Ref_List
 			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new ValueNamePair(rs.getString(1), rs.getString(2)));
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (SQLException e)
 		{

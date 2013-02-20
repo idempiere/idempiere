@@ -152,18 +152,16 @@ public class MPInstance extends X_AD_PInstance
 		m_log.clear();
 		String sql = "SELECT * FROM AD_PInstance_Log WHERE AD_PInstance_ID=? ORDER BY Log_ID";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, getAD_PInstance_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				m_log.add(new MPInstanceLog(rs));
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
@@ -171,16 +169,10 @@ public class MPInstance extends X_AD_PInstance
 		}
 		finally
 		{
-			try
-			{
-				if (pstmt != null)
-					pstmt.close ();
-			}
-			catch (Exception e)
-			{}
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
-
 		MPInstanceLog[] retValue = new MPInstanceLog[m_log.size()];
 		m_log.toArray(retValue);
 		return retValue;

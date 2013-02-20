@@ -102,6 +102,7 @@ public class RequestProcessor extends AdempiereServer
 		if (m_model.getR_RequestType_ID() != 0)
 			sql += " AND R_RequestType_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		int count = 0;
 		int countEMails = 0;
 		try
@@ -110,7 +111,7 @@ public class RequestProcessor extends AdempiereServer
 			pstmt.setInt (1, m_model.getAD_Client_ID());
 			if (m_model.getR_RequestType_ID() != 0)
 				pstmt.setInt(2, m_model.getR_RequestType_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MRequest request = new MRequest (getCtx(), rs, null);
@@ -129,7 +130,6 @@ public class RequestProcessor extends AdempiereServer
 					count++;
 				}
 			}
-			rs.close ();
 		}
 		catch (Exception e)
 		{
@@ -137,7 +137,9 @@ public class RequestProcessor extends AdempiereServer
 		}
 		finally
 		{
-			DB.close(pstmt);
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		m_summary.append("New Due #").append(count);
 		if (countEMails > 0)
@@ -164,7 +166,7 @@ public class RequestProcessor extends AdempiereServer
 			pstmt.setInt (1, m_model.getAD_Client_ID());
 			if (m_model.getR_RequestType_ID() != 0)
 				pstmt.setInt(2, m_model.getR_RequestType_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MRequest request = new MRequest (getCtx(), rs, null);
@@ -184,7 +186,6 @@ public class RequestProcessor extends AdempiereServer
 					count++;
 				}
 			}
-			rs.close ();
 		}
 		catch (Exception e)
 		{
@@ -192,7 +193,9 @@ public class RequestProcessor extends AdempiereServer
 		}
 		finally
 		{
-			DB.close(pstmt);
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		m_summary.append("New Overdue #").append(count);
 		if (countEMails > 0)
@@ -223,7 +226,7 @@ public class RequestProcessor extends AdempiereServer
 				pstmt.setInt(1, m_model.getAD_Client_ID());
 				if (m_model.getR_RequestType_ID() != 0)
 					pstmt.setInt(2, m_model.getR_RequestType_ID());
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				while (rs.next())
 				{
 					MRequest request = new MRequest (getCtx(), rs, null);
@@ -241,7 +244,6 @@ public class RequestProcessor extends AdempiereServer
 					request.saveEx();
 					count++;
 				}
-				rs.close();
 			}
 			catch (SQLException e)
 			{
@@ -249,7 +251,9 @@ public class RequestProcessor extends AdempiereServer
 			}
 			finally
 			{
-				DB.close(pstmt);
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
 			}
 			m_summary.append("Alerts #").append(count);
 			if (countEMails > 0)
@@ -278,14 +282,13 @@ public class RequestProcessor extends AdempiereServer
 				pstmt.setInt(1, m_model.getAD_Client_ID());
 				if (m_model.getR_RequestType_ID() != 0)
 					pstmt.setInt(2, m_model.getR_RequestType_ID());
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				while (rs.next())
 				{
 					MRequest request = new MRequest (getCtx(), rs, null);
 					if (escalate(request))
 						count++;
 				}
-				rs.close();
 			}
 			catch (SQLException e)
 			{
@@ -293,7 +296,9 @@ public class RequestProcessor extends AdempiereServer
 			}
 			finally
 			{
-				DB.close(pstmt);
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
 			}
 			m_summary.append("Escalated #").append(count).append(" - ");
 		}	//	Esacalate
@@ -322,7 +327,7 @@ public class RequestProcessor extends AdempiereServer
 				pstmt.setInt(1, m_model.getAD_Client_ID());
 				if (m_model.getR_RequestType_ID() != 0)
 					pstmt.setInt(2, m_model.getR_RequestType_ID());
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				while (rs.next())
 				{
 					MRequest request = new MRequest (getCtx(), rs, null);
@@ -339,7 +344,6 @@ public class RequestProcessor extends AdempiereServer
 						count++;
 					}
 				}
-				rs.close();
 			}
 			catch (SQLException e)
 			{
@@ -347,7 +351,9 @@ public class RequestProcessor extends AdempiereServer
 			}
 			finally
 			{
-				DB.close(pstmt);
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
 			}
 			m_summary.append("Inactivity #").append(count);
 			if (countEMails > 0)
@@ -430,12 +436,13 @@ public class RequestProcessor extends AdempiereServer
 			+ ") "
 			+ "ORDER BY R_Status_ID";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		MStatus status = null;
 		MStatus next = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MRequest r = new MRequest(getCtx(), rs, null);
@@ -456,7 +463,6 @@ public class RequestProcessor extends AdempiereServer
 				if (r.save())
 					count++;
 			}
-			rs.close ();
 		}
 		catch (Exception e)
 		{
@@ -464,7 +470,9 @@ public class RequestProcessor extends AdempiereServer
 		}
 		finally
 		{
-			DB.close(pstmt);
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		m_summary.append("Status Timeout #").append(count)
@@ -492,10 +500,11 @@ public class RequestProcessor extends AdempiereServer
 		int failure = 0;
 		//
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MRequest r = new MRequest (getCtx(), rs, null);
@@ -512,7 +521,6 @@ public class RequestProcessor extends AdempiereServer
 				else
 					failure++;
 			}
-			rs.close ();
 		}
 		catch (Exception e)
 		{
@@ -520,7 +528,9 @@ public class RequestProcessor extends AdempiereServer
 		}
 		finally
 		{
-			DB.close(pstmt);
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 
 		m_summary.append("Auto Change Request #").append(count);
@@ -555,13 +565,14 @@ public class RequestProcessor extends AdempiereServer
 		if (m_model.getR_RequestType_ID() != 0)
 			sql += " AND R_RequestType_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_model.getAD_Client_ID());
 			if (m_model.getR_RequestType_ID() != 0)
 				pstmt.setInt(2, m_model.getR_RequestType_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				MRequest request = new MRequest (ctx, rs, null);
@@ -577,7 +588,6 @@ public class RequestProcessor extends AdempiereServer
 				else
 					notFound++;
 			}
-			rs.close();
 		}
 		catch (SQLException ex)
 		{
@@ -585,9 +595,10 @@ public class RequestProcessor extends AdempiereServer
 		}
 		finally
 		{
-			DB.close(pstmt);
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
-		pstmt = null;
 		//
 		if (changed == 0 && notFound == 0)
 			m_summary.append("No unallocated Requests");

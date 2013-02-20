@@ -84,16 +84,14 @@ public class MReportLine extends X_PA_ReportLine
 		ArrayList<MReportSource> list = new ArrayList<MReportSource>();
 		String sql = "SELECT * FROM PA_ReportSource WHERE PA_ReportLine_ID=? AND IsActive='Y'";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getPA_ReportLine_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new MReportSource (getCtx(), rs, null));
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
@@ -101,13 +99,8 @@ public class MReportLine extends X_PA_ReportLine
 		}
 		finally
 		{
-			try
-			{
-				if (pstmt != null)
-					pstmt.close ();
-			}
-			catch (Exception e)
-			{}
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//

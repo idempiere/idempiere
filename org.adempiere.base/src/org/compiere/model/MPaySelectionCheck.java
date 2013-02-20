@@ -57,11 +57,12 @@ public final class MPaySelectionCheck extends X_C_PaySelectionCheck
 		String sql = "SELECT * FROM C_PaySelectionCheck WHERE C_Payment_ID=?";
 		int count = 0;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, trxName);
 			pstmt.setInt (1, C_Payment_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MPaySelectionCheck psc = new MPaySelectionCheck (ctx, rs, trxName);
@@ -71,22 +72,15 @@ public final class MPaySelectionCheck extends X_C_PaySelectionCheck
 					retValue = psc;
 				count++;
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e); 
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		if (count > 1)
@@ -215,12 +209,14 @@ public final class MPaySelectionCheck extends X_C_PaySelectionCheck
 		int docNo = startDocumentNo;
 		String sql = "SELECT * FROM C_PaySelectionCheck "
 			+ "WHERE C_PaySelection_ID=? AND PaymentRule=?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, trxName);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, C_PaySelection_ID);
 			pstmt.setString(2, PaymentRule);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				MPaySelectionCheck check = new MPaySelectionCheck (Env.getCtx(), rs, trxName);
@@ -229,14 +225,17 @@ public final class MPaySelectionCheck extends X_C_PaySelectionCheck
 				check.saveEx(); 
 				list.add(check);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
 		}
-
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
 		//  convert to Array
 		MPaySelectionCheck[] retValue = new MPaySelectionCheck[list.size()];
 		list.toArray(retValue);
@@ -543,29 +542,23 @@ public final class MPaySelectionCheck extends X_C_PaySelectionCheck
 		ArrayList<MPaySelectionLine> list = new ArrayList<MPaySelectionLine>();
 		String sql = "SELECT * FROM C_PaySelectionLine WHERE C_PaySelectionCheck_ID=? ORDER BY Line";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getC_PaySelectionCheck_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add (new MPaySelectionLine(getCtx(), rs, get_TrxName()));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//

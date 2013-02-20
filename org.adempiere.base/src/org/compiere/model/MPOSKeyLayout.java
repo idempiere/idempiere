@@ -97,29 +97,23 @@ public class MPOSKeyLayout extends X_C_POSKeyLayout
 		ArrayList<MPOSKey> list = new ArrayList<MPOSKey>();
 		String sql = "SELECT * FROM C_POSKey WHERE C_POSKeyLayout_ID=? AND IsActive = 'Y' ORDER BY SeqNo";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getC_POSKeyLayout_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add(new MPOSKey(getCtx(), rs, get_TrxName()));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		

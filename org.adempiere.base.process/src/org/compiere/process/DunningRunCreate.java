@@ -203,6 +203,7 @@ public class DunningRunCreate extends SvrProcess
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
 		ResultSet rs = null;
+		ResultSet rs2 = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
@@ -255,13 +256,14 @@ public class DunningRunCreate extends SvrProcess
 				//	SubQuery
 				pstmt2.setInt (1, m_run.get_ID ());
 				pstmt2.setInt (2, C_Invoice_ID);
-				ResultSet rs2 = pstmt2.executeQuery ();
+				rs2 = pstmt2.executeQuery ();
 				if (rs2.next())
 				{
 					TimesDunned = rs2.getInt(1);
 					DaysAfterLast = rs2.getInt(2);
 				}
-				rs2.close();
+				DB.close(rs2);
+				rs2 = null;
 				//	SubQuery
 				
 				// Ensure that Daysbetween Dunning is enforced
@@ -298,7 +300,8 @@ public class DunningRunCreate extends SvrProcess
 		finally
 		{
 			DB.close(rs, pstmt);
-			rs = null; pstmt = null; pstmt2 = null;
+			DB.close(rs2, pstmt2);
+			rs = null; pstmt = null; rs2 = null; pstmt2 = null;
 		}
 		return count;
 	}	//	addInvoices

@@ -2698,15 +2698,22 @@ public class MOrder extends X_C_Order implements DocAction
 		List<MOrderLine> result = new Vector<MOrderLine>();
 		Properties ctx = Env.getCtx();
 		MOrderLine line;
-		PreparedStatement ps = conn.prepareStatement(OrderLinesToAllocate);
-		ps.setInt(1, productId);
-		ResultSet rs = ps.executeQuery();
-		while(rs.next()) {
-			line = new MOrderLine(ctx, rs, trxName);
-			result.add(line);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(OrderLinesToAllocate);
+			ps.setInt(1, productId);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				line = new MOrderLine(ctx, rs, trxName);
+				result.add(line);
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			DB.close(rs, ps);
+			rs = null; ps = null;
 		}
-		rs.close();
-		ps.close();
 		return(result);
 	}
 	
@@ -2735,23 +2742,28 @@ public class MOrder extends X_C_Order implements DocAction
 					   "(QtyOrdered-QtyDelivered)>0 AND (QtyOrdered-QtyDelivered)>C_OrderLine.QtyAllocated)" + 
 					   "group by M_Product_ID " + 
 					   "order by M_Product_ID";
-
-		PreparedStatement ps = conn.prepareStatement(query1);
-		ps.setInt(1, WarehouseID);
-		ps.setInt(2, WarehouseID);
-		ResultSet rs = ps.executeQuery();
-		
-		while(rs.next()) {
-			si = new StockInfo();
-			si.productId = rs.getInt(1);
-			si.qtyOnHand = rs.getBigDecimal(2);
-			si.qtyReserved = rs.getBigDecimal(3);
-			si.qtyAvailable = si.qtyOnHand.subtract(si.qtyReserved);
-			si.qtyAllocated = rs.getBigDecimal(4);
-			result.add(si);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(query1);
+			ps.setInt(1, WarehouseID);
+			ps.setInt(2, WarehouseID);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				si = new StockInfo();
+				si.productId = rs.getInt(1);
+				si.qtyOnHand = rs.getBigDecimal(2);
+				si.qtyReserved = rs.getBigDecimal(3);
+				si.qtyAvailable = si.qtyOnHand.subtract(si.qtyReserved);
+				si.qtyAllocated = rs.getBigDecimal(4);
+				result.add(si);
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			DB.close(rs, ps);
+			rs = null; ps = null;
 		}
-		rs.close();
-		ps.close();
 		return(result);
 	}
 	

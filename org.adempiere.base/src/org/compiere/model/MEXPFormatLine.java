@@ -78,25 +78,22 @@ public class MEXPFormatLine extends X_EXP_FormatLine {
 		.append(" AND ").append(X_EXP_Format.COLUMNNAME_EXP_Format_ID).append(" = ?")
 	;
 	PreparedStatement pstmt = null;
+	ResultSet rs = null;
 	try {
 		pstmt = DB.prepareStatement (sql.toString(), trxName);
 		pstmt.setString(1, value);
 		pstmt.setInt(2, EXP_Format_ID);
-		ResultSet rs = pstmt.executeQuery ();
+		rs = pstmt.executeQuery ();
 		if ( rs.next() ) {
 			result = new MEXPFormatLine (ctx, rs, trxName);
 		}
-		rs.close ();
-		pstmt.close ();
-		pstmt = null;
 	} catch (SQLException e) {
 		s_log.log(Level.SEVERE, sql.toString(), e);
 		throw e;
-	} finally {
-		try	{
-			if (pstmt != null) pstmt.close ();
-			pstmt = null;
-		} catch (Exception e) {	pstmt = null; }
+	} finally{
+		DB.close(rs, pstmt);
+		rs = null;
+		pstmt = null;
 	}
 	
 	return result;

@@ -53,29 +53,23 @@ public class MLandedCostAllocation extends X_C_LandedCostAllocation
 		ArrayList<MLandedCostAllocation> list = new ArrayList<MLandedCostAllocation>();
 		String sql = "SELECT * FROM C_LandedCostAllocation WHERE C_InvoiceLine_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, trxName);
 			pstmt.setInt (1, C_InvoiceLine_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add (new MLandedCostAllocation (ctx, rs, trxName));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		MLandedCostAllocation[] retValue = new MLandedCostAllocation[list.size ()];

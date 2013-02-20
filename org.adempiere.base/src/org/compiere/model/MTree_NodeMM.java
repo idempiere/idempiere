@@ -48,30 +48,24 @@ public class MTree_NodeMM extends X_AD_TreeNodeMM
 		MTree_NodeMM retValue = null;
 		String sql = "SELECT * FROM AD_TreeNodeMM WHERE AD_Tree_ID=? AND Node_ID=?";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, tree.get_TrxName());
 			pstmt.setInt (1, tree.getAD_Tree_ID());
 			pstmt.setInt (2, Node_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				retValue = new MTree_NodeMM (tree.getCtx(), rs, tree.get_TrxName());
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, "get", e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		return retValue;

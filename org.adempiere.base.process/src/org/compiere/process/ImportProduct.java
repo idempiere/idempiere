@@ -385,19 +385,25 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 
 		//	Get Default Tax Category
 		int C_TaxCategory_ID = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			StringBuilder dbpst = new StringBuilder("SELECT C_TaxCategory_ID FROM C_TaxCategory WHERE IsDefault='Y'").append(clientCheck);
-			PreparedStatement pstmt = DB.prepareStatement(dbpst.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(dbpst.toString(), get_TrxName());
+			rs = pstmt.executeQuery();
 			if (rs.next())
 				C_TaxCategory_ID = rs.getInt(1);
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			throw new Exception ("TaxCategory", e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		log.fine("C_TaxCategory_ID=" + C_TaxCategory_ID);
 
@@ -415,6 +421,8 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 		log.fine("start inserting/updating ...");
 		sql = new StringBuilder ("SELECT * FROM I_Product WHERE I_IsImported='N'")
 			.append(clientCheck);
+		PreparedStatement pstmt_setImported = null;
+		PreparedStatement pstmt_insertProductPO = null;
 		try
 		{
 			/*	Insert Product from Import
@@ -468,7 +476,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 				(sqlt, get_TrxName());
 */
 			//	Insert Product from Import
-			PreparedStatement pstmt_insertProductPO = DB.prepareStatement
+			pstmt_insertProductPO = DB.prepareStatement
 				("INSERT INTO M_Product_PO (M_Product_ID,C_BPartner_ID, "
 				+ "AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"
 				+ "IsCurrentVendor,C_UOM_ID,C_Currency_ID,UPC,"
@@ -487,13 +495,13 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 				+ "WHERE I_Product_ID=?", get_TrxName());
 
 			//	Set Imported = Y
-			PreparedStatement pstmt_setImported = DB.prepareStatement
+			pstmt_setImported = DB.prepareStatement
 				("UPDATE I_Product SET I_IsImported='Y', M_Product_ID=?, "
 				+ "Updated=SysDate, Processed='Y' WHERE I_Product_ID=?", get_TrxName());
 
 			//
-			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery();
+			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				X_I_Product imp = new X_I_Product(getCtx(), rs, get_TrxName());
@@ -558,7 +566,11 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 						DB.executeUpdate(sql0.toString(), get_TrxName());
 						continue;
 					}
-					pstmt_updateProduct.close();
+					finally
+					{
+						DB.close(pstmt_updateProduct);
+						pstmt_updateProduct = null;	
+					}					
 				}
 
 				//	Do we have PO Info
@@ -604,7 +616,11 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 							DB.executeUpdate(sql0.toString(), get_TrxName());
 							continue;
 						}
-						pstmt_updateProductPO.close();
+						finally
+						{
+							DB.close(pstmt_updateProductPO);
+							pstmt_updateProductPO = null;
+						}
 					}
 					if (no == 0)		//	Insert PO
 					{
@@ -657,19 +673,18 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 				//
 				commitEx();
 			}	//	for all I_Product
-			rs.close();
-			pstmt.close();
-
-			//
-			//	pstmt_insertProduct.close();
-			// pstmt_updateProduct.close();
-			pstmt_insertProductPO.close();
-			// pstmt_updateProductPO.close();
-			pstmt_setImported.close();
-			//
 		}
 		catch (SQLException e)
 		{
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;pstmt = null;
+			DB.close(pstmt_insertProductPO);
+			pstmt_insertProductPO = null;
+			DB.close(pstmt_setImported);
+			pstmt_setImported = null;
 		}
 
 		//	Set Error to indicator to not imported

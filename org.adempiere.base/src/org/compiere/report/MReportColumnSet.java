@@ -66,16 +66,14 @@ public class MReportColumnSet extends X_PA_ReportColumnSet
 		ArrayList<MReportColumn> list = new ArrayList<MReportColumn>();
 		String sql = "SELECT * FROM PA_ReportColumn WHERE PA_ReportColumnSet_ID=? AND IsActive='Y' ORDER BY SeqNo";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getPA_ReportColumnSet_ID());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new MReportColumn (getCtx(), rs, null));
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
@@ -83,13 +81,8 @@ public class MReportColumnSet extends X_PA_ReportColumnSet
 		}
 		finally
 		{
-			try
-			{
-				if (pstmt != null)
-					pstmt.close ();
-			}
-			catch (Exception e)
-			{}
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//

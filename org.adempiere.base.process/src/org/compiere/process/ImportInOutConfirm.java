@@ -139,6 +139,7 @@ public class ImportInOutConfirm extends SvrProcess
 		/*********************************************************************/
 		
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		sql = new StringBuilder ("SELECT * FROM I_InOutLineConfirm ")
 			.append("WHERE I_IsImported='N'").append (clientCheck)
 			.append(" ORDER BY I_InOutLineConfirm_ID");
@@ -146,7 +147,7 @@ public class ImportInOutConfirm extends SvrProcess
 		try
 		{
 			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				X_I_InOutLineConfirm importLine = new X_I_InOutLineConfirm (getCtx(), rs, get_TrxName());
@@ -176,22 +177,15 @@ public class ImportInOutConfirm extends SvrProcess
 					}
 				}
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		StringBuilder msgreturn = new StringBuilder("@Updated@ #").append(no);

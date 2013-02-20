@@ -58,29 +58,23 @@ public class MDistributionRunDetail extends X_T_DistributionRunDetail
 		else
 			sql.append("ORDER BY M_DistributionRunLine_ID");
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql.toString(), trxName);
 			pstmt.setInt (1, M_DistributionRun_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add(new MDistributionRunDetail(ctx, rs, trxName));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql.toString(), e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		MDistributionRunDetail[] retValue = new MDistributionRunDetail[list.size()];

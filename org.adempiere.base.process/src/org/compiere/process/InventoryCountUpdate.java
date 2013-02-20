@@ -136,11 +136,12 @@ public class InventoryCountUpdate extends SvrProcess
 		//
 		String sql = "SELECT * FROM M_InventoryLine WHERE M_Inventory_ID=? AND M_AttributeSetInstance_ID=0";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, p_M_Inventory_ID);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				MInventoryLine il = new MInventoryLine (getCtx(), rs, get_TrxName());
@@ -168,22 +169,15 @@ public class InventoryCountUpdate extends SvrProcess
 				if (il.save())
 					no++;
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		//

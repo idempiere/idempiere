@@ -581,20 +581,26 @@ public class GridField
 			}
 			else
 			{
+				PreparedStatement stmt = null;
+				ResultSet rs = null;
 				try
 				{
-					PreparedStatement stmt = DB.prepareStatement(sql, null);
-					ResultSet rs = stmt.executeQuery();
+					stmt = DB.prepareStatement(sql, null);
+					rs = stmt.executeQuery();
 					if (rs.next())
 						defStr = rs.getString(1);
 					else
 						log.log(Level.WARNING, "(" + m_vo.ColumnName + ") - no Result: " + sql);
-					rs.close();
-					stmt.close();
 				}
 				catch (SQLException e)
 				{
 					log.log(Level.WARNING, "(" + m_vo.ColumnName + ") " + sql, e);
+				}
+				finally
+				{
+					DB.close(rs, stmt);
+					rs = null;
+					stmt = null;
 				}
 			}
 			if (defStr != null && defStr.length() > 0)
@@ -1721,33 +1727,27 @@ public class GridField
 		
 		String sql = GridFieldVO.getSQL(ctx);
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Tab_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				GridFieldVO vo = GridFieldVO.create(ctx, WindowNo, TabNo, 
 					AD_Window_ID, AD_Tab_ID, readOnly, rs);
 				listVO.add(vo);
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		

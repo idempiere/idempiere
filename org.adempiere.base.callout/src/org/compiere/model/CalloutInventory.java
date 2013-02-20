@@ -155,15 +155,16 @@ public class CalloutInventory extends CalloutEngine
 			sql = "SELECT SUM(QtyOnHand) FROM M_StorageOnHand "
 			+ "WHERE M_Product_ID=?"	//	1
 			+ " AND M_Locator_ID=?";	//	2
-		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, M_Product_ID);
 			pstmt.setInt(2, M_Locator_ID);
 			if (M_AttributeSetInstance_ID != 0)
 				pstmt.setInt(3, M_AttributeSetInstance_ID);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				bd = rs.getBigDecimal(1);
@@ -174,14 +175,19 @@ public class CalloutInventory extends CalloutEngine
 				// for example when the locator has never stored a particular product.
 				return new BigDecimal(0);
 			}
-			rs.close();
-			pstmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
 			throw new Exception(e.getLocalizedMessage());
 		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
+
 		return new BigDecimal(0);
 	}
 	

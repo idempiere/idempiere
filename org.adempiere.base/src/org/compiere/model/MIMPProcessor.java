@@ -96,29 +96,23 @@ public class MIMPProcessor
 			+ "WHERE " + X_IMP_Processor.COLUMNNAME_IMP_Processor_ID + "=? " // # 1 
 			+ "ORDER BY Created DESC";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getIMP_Processor_ID());
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add (new MIMPProcessorLog (getCtx(), rs, get_TrxName()));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		MIMPProcessorLog[] retValue = new MIMPProcessorLog[list.size ()];
@@ -156,26 +150,23 @@ public class MIMPProcessor
 			//.append(" ORDER BY ").append(X_EXP_ProcessorParameter.COLUMNNAME_)
 		;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		X_IMP_ProcessorParameter processorParameter = null;
 		try {
 			pstmt = DB.prepareStatement (sql.toString(), trxName);
 			pstmt.setInt(1, getIMP_Processor_ID());
 			pstmt.setString(2, "Y");
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while ( rs.next() ) {
 				processorParameter = new X_IMP_ProcessorParameter (getCtx(), rs, trxName);
 				resultList.add(processorParameter);
 			}
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
 		} catch (SQLException e) {
 			s_log.log(Level.SEVERE, sql.toString(), e);
-		} finally {
-			try	{
-				if (pstmt != null) pstmt.close ();
-				pstmt = null;
-			} catch (Exception e) {	pstmt = null; }
+		} finally{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		X_IMP_ProcessorParameter[] result = (X_IMP_ProcessorParameter[])resultList.toArray( new X_IMP_ProcessorParameter[0]);
 		return result;
@@ -186,28 +177,23 @@ public class MIMPProcessor
 		ArrayList<MIMPProcessor> list = new ArrayList<MIMPProcessor>();
 		String sql = "SELECT * FROM "+X_IMP_Processor.Table_Name+" WHERE IsActive='Y'";
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
-			ResultSet rs = pstmt.executeQuery ();
+			rs = pstmt.executeQuery ();
 			while (rs.next ())
 				list.add (new MIMPProcessor (ctx, rs, null));
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
+
 		}
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 		

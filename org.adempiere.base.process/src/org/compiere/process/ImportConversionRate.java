@@ -236,10 +236,11 @@ public class ImportConversionRate extends SvrProcess
 			.append("WHERE I_IsImported='N'").append (clientCheck)
 			.append(" ORDER BY C_Currency_ID, C_Currency_ID_To, ValidFrom");
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				X_I_Conversion_Rate imp = new X_I_Conversion_Rate (getCtx(), rs, get_TrxName());
@@ -270,22 +271,15 @@ public class ImportConversionRate extends SvrProcess
 					}
 				}
 			}
-			rs.close();
-			pstmt.close();
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
 		}
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
+			DB.close(rs, pstmt);
+			rs = null;
 			pstmt = null;
 		}
 
