@@ -24,7 +24,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CCache;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -211,7 +210,6 @@ public class MLookupFactory
 		//	Variables in SQL WHERE
 		if (info.Query.indexOf('@') != -1)
 		{
-		//	String newSQL = Env.parseContext(ctx, WindowNo, info.Query, false);
 			String newSQL = Env.parseContext(ctx, 0, info.Query, false);	//	only global
 			if (newSQL.length() == 0)
 			{
@@ -219,26 +217,23 @@ public class MLookupFactory
 				return null;
 			}
 			info.Query = newSQL;
-			s_log.fine("getLookupInfo, newSQL ="+newSQL); //jz
+			if (s_log.isLoggable(Level.FINE))
+				s_log.fine("getLookupInfo, newSQL ="+newSQL); //jz
 		}
 
 		//	Direct Query - NO Validation/Security
-		int posOrder = info.Query.lastIndexOf(" ORDER BY ");
-		boolean hasWhere = info.Query.lastIndexOf(" WHERE ") != -1;
-		if (hasWhere)	//	might be for a select sub-query
+		if (info.QueryDirect.indexOf('@') != -1)
 		{
-			//	SELECT (SELECT .. FROM .. WHERE ..) FROM ..
-			//	SELECT .. FROM .. WHERE EXISTS (SELECT .. FROM .. WHERE ..)
-			AccessSqlParser asp = new AccessSqlParser(info.Query);
-			String mainQuery = asp.getMainSql();
-			hasWhere = mainQuery.indexOf(" WHERE ") != -1;
+			String newSQL = Env.parseContext(ctx, 0, info.QueryDirect, false);	//	only global
+			if (newSQL.length() == 0)
+			{
+				s_log.severe ("SQL parse error: " + info.QueryDirect);
+				return null;
+			}
+			info.QueryDirect = newSQL;
+			if (s_log.isLoggable(Level.FINE))
+				s_log.fine("getLookupInfo, newSQL ="+newSQL); //jz
 		}
-		if (posOrder == -1)
-			info.QueryDirect = info.Query
-				+ (hasWhere ? " AND " : " WHERE ") + info.KeyColumn + "=?";
-		else
-			info.QueryDirect = info.Query.substring(0, posOrder)
-				+ (hasWhere ? " AND " : " WHERE ") + info.KeyColumn + "=?";
 
 		//	Validation
 		//String local_validationCode = "";
@@ -366,7 +361,8 @@ public class MLookupFactory
 		MLookupInfo retValue = (MLookupInfo)s_cacheRefTable.get(key.toString());
 		if (retValue != null)
 		{
-			s_log.finest("Cache: " + retValue);
+			if (s_log.isLoggable(Level.FINEST))
+				s_log.finest("Cache: " + retValue);
 			return retValue.cloneIt();
 		}
 		//
@@ -519,6 +515,8 @@ public class MLookupFactory
 			realSQL.append(" FROM ").append(TableName);
 		}
 
+		String directQuery = realSQL.toString() + " WHERE " + KeyColumn + "=?";
+		
 		//	add WHERE clause
 		MQuery zoomQuery = null;
 		if (WhereClause != null && WhereClause.length() > 0)
@@ -552,7 +550,8 @@ public class MLookupFactory
 		else
 			realSQL.append(" ORDER BY 3");
 
-		s_log.finest("AD_Reference_Value_ID=" + AD_Reference_Value_ID + " - " + realSQL);
+		if (s_log.isLoggable(Level.FINEST))
+			s_log.finest("AD_Reference_Value_ID=" + AD_Reference_Value_ID + " - " + realSQL);
 		if (overrideZoomWindow > 0)
 		{
 			ZoomWindow = overrideZoomWindow;
@@ -563,6 +562,7 @@ public class MLookupFactory
 			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
 		retValue.DisplayColumn = lookupDisplayColumn;		
 		retValue.InfoWindowId = infoWindowId;
+		retValue.QueryDirect = directQuery;
 		s_cacheRefTable.put(key.toString(), retValue.cloneIt());
 		return retValue;
 	}	//	getLookup_Table
@@ -749,17 +749,20 @@ public class MLookupFactory
 		{
 			realSQL.append(" FROM ").append(TableName);
 		}
+		
+		String directQuery = realSQL.toString() + " WHERE " + KeyColumn + "=?";
 
 		//	Order by Display
 		realSQL.append(" ORDER BY 3");
 		MQuery zoomQuery = null;	//	corrected in VLookup
 
-		if (CLogMgt.isLevelFinest())
+		if (s_log.isLoggable(Level.FINE))
 			s_log.fine("ColumnName=" + ColumnName + " - " + realSQL);
 		StringBuilder msginf = new StringBuilder().append(TableName).append(".").append(KeyColumn);
 		MLookupInfo lInfo = new MLookupInfo(realSQL.toString(), TableName,
 			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
 		lInfo.DisplayColumn = displayColumn.toString();
+		lInfo.QueryDirect = directQuery;
 		s_cacheRefTable.put(cacheKey.toString(), lInfo.cloneIt());
 		return lInfo;
 	}	//	getLookup_TableDir
