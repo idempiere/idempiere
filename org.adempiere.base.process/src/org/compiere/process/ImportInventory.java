@@ -227,6 +227,15 @@ public class ImportInventory extends SvrProcess
 		if (no != 0)
 			log.warning ("No Location=" + no);
 
+		sql = new StringBuilder ("UPDATE I_Inventory ")
+		.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Location not Match with Org, ' ")
+		.append("WHERE AD_Org_ID <> (SELECT AD_Org_ID FROM M_Locator WHERE M_Locator_ID = ").append(p_M_Locator_ID)
+		.append(" AND I_IsImported<>'Y'").append (clientCheck).append(" )");
+		no = DB.executeUpdate (sql.toString (), get_TrxName());
+		if (no != 0)
+		log.warning ("Location not Match with Org=" + no);
+		
+		
 
 		//	Set M_Warehouse_ID
 		sql = new StringBuilder ("UPDATE I_Inventory i ")
