@@ -652,12 +652,20 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	background-color: #F9F9F9;
 }
 
-.row-indicator-seld {
-	background-color: #666 !important;
-	background-image: none !important;  
+.z-grid tbody tr.highlight td.z-cell { 
+	background-color: #FFFFCC !important;
+	background-image: none !important;
 }
 
-.row-indicator {
+.z-grid tbody tr.highlight td.row-indicator-seld {
+	background-color: transparent !important;
+	background-image: url(${c:encodeURL('/images/EditRecord16.png')}) !important;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 16px 16px;  
+}
+
+.z-grid tbody tr.highlight td.row-indicator {
 	background-color: transparent !important;
 	background-image: none !important; 
 }
@@ -1211,3 +1219,5 @@ tbody.z-grid-empty-body td {
 	font-size: 11px;
 	font-weight: normal;
 }
+
+.

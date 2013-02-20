@@ -38,6 +38,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
@@ -354,7 +355,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		}
 
 		Cell cell = new Cell();
-		cell.setWidth("15px");
+		cell.setWidth("18px");
 		cell.addEventListener(Events.ON_CLICK, this);
 		cell.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "EditRecord")));
 		
@@ -443,6 +444,9 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				stopEditing(false);
 			}
 		}
+		
+		String script = "jq('#"+row.getUuid()+"').addClass('highlight').siblings().removeClass('highlight')";
+		Clients.response(new AuScript(script));
 	}
 
 	/**
