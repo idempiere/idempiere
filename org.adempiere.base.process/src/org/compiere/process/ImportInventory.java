@@ -227,16 +227,6 @@ public class ImportInventory extends SvrProcess
 		if (no != 0)
 			log.warning ("No Location=" + no);
 
-		sql = new StringBuilder ("UPDATE I_Inventory ")
-		.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Location not Match with Org, ' ")
-		.append("WHERE AD_Org_ID <> (SELECT AD_Org_ID FROM M_Locator WHERE M_Locator_ID = ").append(p_M_Locator_ID)
-		.append(" AND I_IsImported<>'Y'").append (clientCheck).append(" )");
-		no = DB.executeUpdate (sql.toString (), get_TrxName());
-		if (no != 0)
-		log.warning ("Location not Match with Org=" + no);
-		
-		
-
 		//	Set M_Warehouse_ID
 		sql = new StringBuilder ("UPDATE I_Inventory i ")
 			.append("SET M_Warehouse_ID=(SELECT M_Warehouse_ID FROM M_Locator l WHERE i.M_Locator_ID=l.M_Locator_ID) ")
@@ -252,6 +242,14 @@ public class ImportInventory extends SvrProcess
 		if (no != 0)
 			log.warning ("No Warehouse=" + no);
 
+		// IDEMPIERE-590 do not allow locator/wh from different org
+		sql = new StringBuilder ("UPDATE I_Inventory ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Locator not from Org, ' ")
+			.append("WHERE AD_Org_ID <> (SELECT AD_Org_ID FROM M_Warehouse WHERE M_Warehouse_ID = I_Inventory.M_Warehouse_ID")
+			.append(" AND I_IsImported<>'Y'").append (clientCheck).append(" )");
+		no = DB.executeUpdate (sql.toString (), get_TrxName());
+		if (no != 0)
+			log.warning ("Locator not from Org=" + no);
 
 		//	Product
 		sql = new StringBuilder ("UPDATE I_Inventory i ")
