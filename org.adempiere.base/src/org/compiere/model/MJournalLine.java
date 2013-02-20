@@ -398,9 +398,7 @@ public class MJournalLine extends X_GL_JournalLine
 						|| is_ValueChanged("C_Campaign_ID")
 						|| is_ValueChanged("C_Activity_ID")
 						|| is_ValueChanged("User1_ID")
-						|| is_ValueChanged("User2_ID")
-						|| is_ValueChanged("UserElement1_ID")
-						|| is_ValueChanged("UserElement2_ID"))))
+						|| is_ValueChanged("User2_ID"))))
 		{
 			MJournal gl = new MJournal(getCtx(), getGL_Journal_ID(), get_TrxName());
 
@@ -429,6 +427,10 @@ public class MJournalLine extends X_GL_JournalLine
 					errorFields += "@" + COLUMNNAME_C_Project_ID + "@, ";
 				if (MAcctSchemaElement.ELEMENTTYPE_SalesRegion.equals(et) && getC_SalesRegion_ID() == 0)
 					errorFields += "@" + COLUMNNAME_C_SalesRegion_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_UserList1.equals(et) && getUser1_ID() == 0)
+					errorFields += "@" + COLUMNNAME_User1_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_UserList2.equals(et) && getUser2_ID() == 0)
+					errorFields += "@" + COLUMNNAME_User2_ID + "@, ";
 			}
 			if (errorFields.length() > 0)
 			{
@@ -439,7 +441,7 @@ public class MJournalLine extends X_GL_JournalLine
 			MAccount acct = MAccount.get(getCtx(), getAD_Client_ID(), getAD_Org_ID(), gl.getC_AcctSchema_ID(), getAccount_ID(),
 					getC_SubAcct_ID(), getM_Product_ID(), getC_BPartner_ID(), getAD_OrgTrx_ID(), getC_LocFrom_ID(),
 					getC_LocTo_ID(), getC_SalesRegion_ID(), getC_Project_ID(), getC_Campaign_ID(), 
-					getC_Activity_ID(), getUser1_ID(), getUser2_ID(), getUserElement1_ID(), getUserElement2_ID());
+					getC_Activity_ID(), getUser1_ID(), getUser2_ID(), 0, 0);
 
 			if (acct != null)
 			{
@@ -474,8 +476,6 @@ public class MJournalLine extends X_GL_JournalLine
 			setC_Activity_ID(combi.getC_Activity_ID() > 0 ? combi.getC_Activity_ID() : 0);
 			setUser1_ID(combi.getUser1_ID() > 0 ? combi.getUser1_ID() : 0);
 			setUser2_ID(combi.getUser2_ID() > 0 ? combi.getUser2_ID() : 0);
-			setUserElement1_ID(combi.getUserElement1_ID() > 0 ? combi.getUserElement1_ID() : 0);
-			setUserElement2_ID(combi.getUserElement2_ID() > 0 ? combi.getUserElement2_ID() : 0);
 		}		
 	}	// fillDimensionsFromCombination
 	
