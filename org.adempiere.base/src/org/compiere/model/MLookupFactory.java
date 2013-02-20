@@ -515,7 +515,7 @@ public class MLookupFactory
 			realSQL.append(" FROM ").append(TableName);
 		}
 
-		String directQuery = realSQL.toString() + " WHERE " + KeyColumn + "=?";
+		String directQuery = realSQL.toString() + " WHERE " + TableName + "." + KeyColumn + "=?";
 		
 		//	add WHERE clause
 		MQuery zoomQuery = null;
@@ -750,7 +750,7 @@ public class MLookupFactory
 			realSQL.append(" FROM ").append(TableName);
 		}
 		
-		String directQuery = realSQL.toString() + " WHERE " + KeyColumn + "=?";
+		String directQuery = realSQL.toString() + " WHERE " + TableName + "." + KeyColumn + "=?";
 
 		//	Order by Display
 		realSQL.append(" ORDER BY 3");
