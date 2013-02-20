@@ -475,6 +475,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 		renderer = new GridTabRowRenderer(gridTab, windowNo);
 		renderer.setGridPanel(this);
 		renderer.setADWindowPanel(windowPanel);
+		if (pageSize > 0 && paging != null)
+			renderer.setPaging(paging);
 
 		listbox.setRowRenderer(renderer);
 		listbox.setModel(listModel);
