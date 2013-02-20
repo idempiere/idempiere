@@ -87,8 +87,9 @@ public class WZoomAcross
 			final Menuitem menuItem = new Menuitem(Msg.getMsg(Env.getCtx(), "NoZoomTarget"));
 			m_popup.appendChild(menuItem);  // Added
 		}
+		m_popup.setStyle("overflow: auto;max-height: 80%;");
 		m_popup.setPage(invoker.getPage());
-		m_popup.open(invoker);
+		m_popup.open(invoker, "after_start");
 	}
 
 	private Menupopup 	m_popup = new Menupopup(); //"ZoomMenu"
