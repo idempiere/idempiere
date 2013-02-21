@@ -28,18 +28,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.graph.WGraph;
 import org.adempiere.webui.apps.graph.WPerformanceDetail;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.dashboard.DashboardRunnable;
-import org.adempiere.webui.event.DrillEvent;
-import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.Adempiere;
 import org.compiere.model.I_AD_Menu;
@@ -50,10 +46,7 @@ import org.compiere.model.MMenu;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
-import org.compiere.model.MQuery;
-import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
-import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
@@ -268,30 +261,6 @@ public class DashboardController implements EventListener<Event> {
 					{
 						String processParameters = dc.getProcessParameters();
 						embedReport(content, AD_Process_ID, processParameters);
-						content.addEventListener("onZoom", new EventListener<Event>() {
-							public void onEvent(Event event) throws Exception {
-								if (event instanceof ZoomEvent) 
-								{
-									ZoomEvent ze = (ZoomEvent) event;
-									if (ze.getData() != null && ze.getData() instanceof MQuery) {
-										AEnv.zoom((MQuery) ze.getData());
-									}
-								}
-							}
-			            });
-						
-						content.addEventListener(DrillEvent.ON_DRILL_DOWN, new EventListener<Event>() {
-							public void onEvent(Event event) throws Exception {
-								if (event instanceof DrillEvent)
-								{
-									DrillEvent de = (DrillEvent) event;
-									if (de.getData() != null && de.getData() instanceof MQuery) {
-										MQuery query = (MQuery) de.getData();
-										executeDrill(query);
-									}
-								}
-							}
-			            });
 						
 						Toolbar toolbar = new Toolbar();
 						content.appendChild(toolbar);
@@ -706,7 +675,8 @@ public class DashboardController implements EventListener<Event> {
 		Iframe iframe = new Iframe();
 		iframe.setSclass("dashboard-report-iframe");
 		File file = File.createTempFile(re.getName(), ".html");		
-		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(Executions.getCurrent().getContextPath(), "rp", parent.getUuid()));
+		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(Executions.getCurrent().getContextPath(), "rp", 
+				SessionManager.getAppDesktop().getComponent().getUuid()));
 		AMedia media = new AMedia(re.getName(), "html", "text/html", file, false);
 		iframe.setContent(media);
 		parent.appendChild(iframe);
@@ -717,22 +687,6 @@ public class DashboardController implements EventListener<Event> {
    		new ZkReportViewerProvider().openViewer(re);
    	}
 
-   	/**
-	 * 	Execute Drill to Query
-	 * 	@param query query
-	 */
-   	public void executeDrill (MQuery query)
-	{
-		int AD_Table_ID = MTable.getTable_ID(query.getTableName());
-		if (!MRole.getDefault().isCanReport(AD_Table_ID))
-		{
-			FDialog.error(0, dashboardLayout.getParent(), "AccessCannotReport", query.getTableName());
-			return;
-		}
-		if (AD_Table_ID != 0)
-			new WReport(AD_Table_ID, query);		
-	}	//	executeDrill
-	
 	private void fillParameter(MPInstance pInstance, String parameters) {		
 		if (parameters != null && parameters.trim().length() > 0) {
 			Map<String, String> paramMap = new HashMap<String, String>();

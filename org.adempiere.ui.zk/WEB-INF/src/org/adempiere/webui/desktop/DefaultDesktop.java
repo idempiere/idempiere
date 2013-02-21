@@ -29,10 +29,13 @@ import org.adempiere.util.ServerContext;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessDialog;
+import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.event.DrillEvent;
 import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.event.ZKBroadCastManager;
+import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.BroadcastMessageWindow;
 import org.adempiere.webui.panel.HeaderPanel;
@@ -43,8 +46,12 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.UserPreference;
+import org.adempiere.webui.window.FDialog;
 import org.compiere.Adempiere;
 import org.compiere.model.GridField;
+import org.compiere.model.MQuery;
+import org.compiere.model.MRole;
+import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -149,6 +156,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         }
         else
         	layout.setPage(page);
+        
+        layout.addEventListener("onZoom", this);
+        layout.addEventListener(DrillEvent.ON_DRILL_DOWN, this);
 
         North n = new North();
         layout.appendChild(n);
@@ -306,8 +316,42 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	if (change)
         		updateUI();
         }
+        else if (event instanceof ZoomEvent) 
+		{
+        	Clients.clearBusy();
+			ZoomEvent ze = (ZoomEvent) event;
+			if (ze.getData() != null && ze.getData() instanceof MQuery) {
+				AEnv.zoom((MQuery) ze.getData());
+			}
+		}
+		
+        else if (event instanceof DrillEvent)
+		{
+        	Clients.clearBusy();
+			DrillEvent de = (DrillEvent) event;
+			if (de.getData() != null && de.getData() instanceof MQuery) {
+				MQuery query = (MQuery) de.getData();
+				executeDrill(query);
+			}
+		}
     }
 
+	/**
+	 * 	Execute Drill to Query
+	 * 	@param query query
+	 */
+   	private void executeDrill (MQuery query)
+	{
+		int AD_Table_ID = MTable.getTable_ID(query.getTableName());
+		if (!MRole.getDefault().isCanReport(AD_Table_ID))
+		{
+			FDialog.error(0, null, "AccessCannotReport", query.getTableName());
+			return;
+		}
+		if (AD_Table_ID != 0)
+			new WReport(AD_Table_ID, query);		
+	}	//	executeDrill
+   	
 	/**
 	 *
 	 * @param page

@@ -76,10 +76,12 @@ import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.ext.render.DynamicMedia;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
@@ -190,20 +192,31 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			this.onClose();
 		}
 		m_isCanExport = MRole.getDefault().isCanExport(m_AD_Table_ID);
-		try
-		{
-			m_ctx = m_reportEngine.getCtx();
-			init();
-			dynInit();
-			
-			if (!ArchiveEngine.isValid(m_reportEngine.getLayout()))
-				log.warning("Cannot archive Document");
-		}
-		catch(Exception e)
-		{
-			log.log(Level.SEVERE, "", e);
-			FDialog.error(m_WindowNo, this, "LoadError", e.getLocalizedMessage());
-			this.onClose();
+		
+		setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report") + ": " + m_reportEngine.getName() + "  " + Env.getHeader(Env.getCtx(), 0)));
+	}
+	
+	
+
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		if (newpage != null) {
+			try
+			{
+				m_ctx = m_reportEngine.getCtx();
+				init();
+				dynInit();
+				
+				if (!ArchiveEngine.isValid(m_reportEngine.getLayout()))
+					log.warning("Cannot archive Document");
+			}
+			catch(Exception e)
+			{
+				log.log(Level.SEVERE, "", e);
+				FDialog.error(m_WindowNo, this, "LoadError", e.getLocalizedMessage());
+				this.onClose();
+			}
 		}
 	}
 
@@ -351,6 +364,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			
 			public void onEvent(Event event) throws Exception {
 				if (event instanceof ZoomEvent) {
+					Clients.clearBusy();
 					ZoomEvent ze = (ZoomEvent) event;
 					if (ze.getData() != null && ze.getData() instanceof MQuery) {
 						AEnv.zoom((MQuery) ze.getData());
@@ -364,6 +378,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			
 			public void onEvent(Event event) throws Exception {
 				if (event instanceof DrillEvent) {
+					Clients.clearBusy();
 					DrillEvent de = (DrillEvent) event;
 					if (de.getData() != null && de.getData() instanceof MQuery) {
 						MQuery query = (MQuery) de.getData();
@@ -383,6 +398,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			
 			public void onEvent(Event event) throws Exception {
 				if (event instanceof DrillEvent) {
+					Clients.clearBusy();
 					DrillEvent de = (DrillEvent) event;
 					if (de.getData() != null && de.getData() instanceof MQuery) {
 						MQuery query = (MQuery) de.getData();
