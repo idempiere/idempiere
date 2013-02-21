@@ -309,14 +309,20 @@ public class MLookupFactory
 				.append(" ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
 					.append(language.getAD_Language()).append("')");
 		realSQL.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_Value_ID);
+		
+		String directSql = realSQL.toString() + " AND AD_Ref_List.Value=?";
+				
 		realSQL.append(AspFilter.toString());
 		if ("Y".equals(byValue))
 			realSQL.append(" ORDER BY 2");
 		else
 			realSQL.append(" ORDER BY 3"); // sort by name/translated name - teo_sarca, [ 1672820 ]
 		//
-		return new MLookupInfo(realSQL.toString(), "AD_Ref_List", "AD_Ref_List.Value",
+		MLookupInfo info = new MLookupInfo(realSQL.toString(), "AD_Ref_List", "AD_Ref_List.Value",
 			101,101, MQuery.getEqualQuery("AD_Reference_ID", AD_Reference_Value_ID));	//	Zoom Window+Query
+		info.QueryDirect = directSql;
+		
+		return info;
 	}	//	getLookup_List
 
 	/**
