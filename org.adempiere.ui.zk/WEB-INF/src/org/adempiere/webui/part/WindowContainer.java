@@ -24,6 +24,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.WTask;
+import org.compiere.model.X_AD_CtxHelp;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -144,7 +145,7 @@ public class WindowContainer extends AbstractUIPart
 						|| component instanceof WFPanel || component instanceof WTask)
 					Events.sendEvent(new Event(ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, component));
 				else
-					SessionManager.getAppDesktop().updateHelpContext("", 0);
+					SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
 			}
 		});
 
