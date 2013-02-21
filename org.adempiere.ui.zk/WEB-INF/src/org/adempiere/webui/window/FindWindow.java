@@ -1789,15 +1789,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         log.config("");
 
         //  Find SQL
-        if (m_pstmt != null)
-        {
-            try {
-                m_pstmt.close();
-            } catch (SQLException e)    {}
-        }
+        DB.close(m_pstmt);
         m_pstmt = null;
-
-
+        
         //  TargetFields
         if (m_targetFields != null)
             m_targetFields.clear();

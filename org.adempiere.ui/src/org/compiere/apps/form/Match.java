@@ -372,16 +372,22 @@ public class Match
 			m_sql.toString(), "hdr", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO)
 			+ m_groupBy;
 		log.finest(sql);
+		Statement stmt = null;
+		ResultSet rs = null;
 		try
 		{
-			Statement stmt = DB.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
+			stmt = DB.createStatement();
+			rs = stmt.executeQuery(sql);
 			table.loadTable(rs);
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs,stmt);
+			rs = null;stmt = null;
 		}
 	}   //  tableLoad
 

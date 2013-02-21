@@ -225,7 +225,6 @@ public class PaySelectionCreateFrom extends SvrProcess
 					PayAmt, PayAmt.subtract(DiscountAmt), DiscountAmt);
 				if (!pselLine.save())
 				{
-					pstmt.close();
 					throw new IllegalStateException ("Cannot save MPaySelectionLine");
 				}
 			}

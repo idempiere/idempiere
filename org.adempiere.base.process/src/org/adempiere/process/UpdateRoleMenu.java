@@ -80,11 +80,12 @@ public class UpdateRoleMenu extends SvrProcess
 		String sqlStmt = "SELECT U_WebMenu_ID, IsActive FROM U_WebMenu";
 		
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		
 		try
 		{
 			pstmt = DB.prepareStatement(sqlStmt, get_TrxName());
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			
 			while (rs.next())
 			{
@@ -101,17 +102,9 @@ public class UpdateRoleMenu extends SvrProcess
 		}
 		finally
 		{
-			if (pstmt != null)
-			{
-				try
-				{
-					pstmt.close();
-				}
-				catch (Exception ex)
-				{
-					log.log(Level.SEVERE, "Could not close prepared statement");
-				}
-			}
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
 		return "Role updated successfully";

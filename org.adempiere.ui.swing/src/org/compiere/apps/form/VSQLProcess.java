@@ -232,26 +232,21 @@ public class VSQLProcess extends CPanel
 			log.log(Level.SEVERE, "process statement: " + sql + " - " + e.toString());
 			result.append("===> ").append(e.toString());
 		}
+		finally
+		{
+			DB.close(stmt);
+			stmt = null;
+			try
+			{
+				conn.close();
+			}
+			catch (SQLException e2)
+			{
+				log.log(Level.SEVERE, "processStatement - close connection", e2);
+			}
+			conn = null;
+		}	
 		
-		//	Clean up
-		try
-		{
-			stmt.close();
-		}
-		catch (SQLException e1)
-		{
-			log.log(Level.SEVERE, "processStatement - close statement", e1);
-		}
-		stmt = null;
-		try
-		{
-			conn.close();
-		}
-		catch (SQLException e2)
-		{
-			log.log(Level.SEVERE, "processStatement - close connection", e2);
-		}
-		conn = null;
 		//
 		result.append(Env.NL);
 		return result.toString();

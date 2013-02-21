@@ -177,14 +177,15 @@ public class MSequence extends X_AD_Sequence
 							// get ID from http site
 							retValue = getNextOfficialID_HTTP(TableName);
 							if (retValue > 0) {
-								PreparedStatement updateSQL;
-								updateSQL = conn.prepareStatement("UPDATE AD_Sequence SET CurrentNextSys = ? + 1 WHERE AD_Sequence_ID = ?");
+								PreparedStatement updateSQL = null;
 								try {
+									updateSQL = conn.prepareStatement("UPDATE AD_Sequence SET CurrentNextSys = ? + 1 WHERE AD_Sequence_ID = ?");
 									updateSQL.setInt(1, retValue);
 									updateSQL.setInt(2, AD_Sequence_ID);
 									updateSQL.executeUpdate();
 								} finally {
-									updateSQL.close();
+									DB.close(updateSQL);
+									updateSQL = null;
 								}
 							}
 							gotFromHTTP = true;
@@ -206,14 +207,15 @@ public class MSequence extends X_AD_Sequence
 							// get ID from http site
 							retValue = getNextProjectID_HTTP(TableName);
 							if (retValue > 0) {
-								PreparedStatement updateSQL;
-								updateSQL = conn.prepareStatement("UPDATE AD_Sequence SET CurrentNext = GREATEST(CurrentNext, ? + 1) WHERE AD_Sequence_ID = ?");
+								PreparedStatement updateSQL = null;
 								try {
+									updateSQL = conn.prepareStatement("UPDATE AD_Sequence SET CurrentNext = GREATEST(CurrentNext, ? + 1) WHERE AD_Sequence_ID = ?");
 									updateSQL.setInt(1, retValue);
 									updateSQL.setInt(2, AD_Sequence_ID);
 									updateSQL.executeUpdate();
 								} finally {
-									updateSQL.close();
+									DB.close(updateSQL);
+									updateSQL = null;
 								}
 							}
 							gotFromHTTP = true;
@@ -222,23 +224,25 @@ public class MSequence extends X_AD_Sequence
 					}
 
 					if (! gotFromHTTP) {
-						PreparedStatement updateSQL;
-						int incrementNo = rs.getInt(3);
-						if (adempiereSys) {
-							updateSQL = conn
-									.prepareStatement("UPDATE AD_Sequence SET CurrentNextSys = CurrentNextSys + ? WHERE AD_Sequence_ID = ?");
-							retValue = rs.getInt(2);
-						} else {
-							updateSQL = conn
-									.prepareStatement("UPDATE AD_Sequence SET CurrentNext = CurrentNext + ? WHERE AD_Sequence_ID = ?");
-							retValue = rs.getInt(1);
-						}
-						try {
+						PreparedStatement updateSQL = null;
+						try 
+						{
+							int incrementNo = rs.getInt(3);
+							if (adempiereSys) {
+								updateSQL = conn
+										.prepareStatement("UPDATE AD_Sequence SET CurrentNextSys = CurrentNextSys + ? WHERE AD_Sequence_ID = ?");
+								retValue = rs.getInt(2);
+							} else {
+								updateSQL = conn
+										.prepareStatement("UPDATE AD_Sequence SET CurrentNext = CurrentNext + ? WHERE AD_Sequence_ID = ?");
+								retValue = rs.getInt(1);
+							}
 							updateSQL.setInt(1, incrementNo);
 							updateSQL.setInt(2, AD_Sequence_ID);
 							updateSQL.executeUpdate();
 						} finally {
-							updateSQL.close();
+							DB.close(updateSQL);
+							updateSQL = null;
 						}
 					}
 
@@ -263,14 +267,10 @@ public class MSequence extends X_AD_Sequence
 			finally
 			{
 				DB.close(rs, pstmt);
-				pstmt = null;
-				rs = null;
-				if (timeoutStatement != null){
-					try {
-						timeoutStatement.close();
-					}catch(Exception e){}
-					timeoutStatement = null;
-				}
+				pstmt = null;rs = null;
+				DB.close(timeoutStatement);
+				timeoutStatement = null;
+				
 				if (conn != null)
 				{
 					try {
@@ -478,6 +478,7 @@ public class MSequence extends X_AD_Sequence
 				finally
 				{
 					DB.close(updateSQL);
+					updateSQL = null;
 				}
 			}
 			else
@@ -516,13 +517,12 @@ public class MSequence extends X_AD_Sequence
 		finally
 		{
 			DB.close(rs, pstmt);
+			pstmt = null;rs = null;
+			DB.close(timeoutStatement);
+			timeoutStatement = null;
 			//	Finish
 			try
 			{
-				if (timeoutStatement != null) {
-					timeoutStatement.close();
-					timeoutStatement = null;
-				}
 				if (trx == null && conn != null) {
 					conn.close();
 					conn = null;

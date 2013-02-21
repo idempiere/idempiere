@@ -831,10 +831,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	public static void dumpLocks(Connection conn)
 	{
 		Statement stmt = null;
+		ResultSet rs = null;
 		try {
 			String sql = "select pg_class.relname,pg_locks.* from pg_class,pg_locks where pg_class.relfilenode=pg_locks.relation order by 1";
 			stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
+			rs = stmt.executeQuery(sql);
 			int cnt = rs.getMetaData().getColumnCount();
 			System.out.println();
 			while (rs.next())
@@ -852,10 +853,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		} catch (Exception e) {
 
 		} finally {
-			try{
-				if (stmt != null)
-					stmt.close();
-			} catch (Exception e) {}
+			DB.close(rs,stmt);
+			rs = null;stmt = null;
 		}
 	}
 
@@ -964,13 +963,24 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		finally
 		{
 			if (rs != null)
-				rs.getStatement().close();
+				DB.close(rs.getStatement());
 			DB.close(rs);
+			rs = null;
 		}
 		
-		Statement timeoutStatement = conn.createStatement();
-		String sql = "SET " + (autoCommit ? "SESSION" : "LOCAL") + " statement_timeout TO " + ( timeOut > 0 ? Integer.toString(timeOut * 1000) : " DEFAULT ");
-		timeoutStatement.execute(sql);
+		Statement timeoutStatement = null;
+		try
+		{
+			timeoutStatement = conn.createStatement();
+			String sql = "SET " + (autoCommit ? "SESSION" : "LOCAL") + " statement_timeout TO " + ( timeOut > 0 ? Integer.toString(timeOut * 1000) : " DEFAULT ");
+			timeoutStatement.execute(sql);
+		}
+		finally
+		{
+			DB.close(timeoutStatement);
+			timeoutStatement = null;
+		}
+		
 		if (log.isLoggable(Level.FINEST))
 		{
 			log.finest("Set statement timeout to " + timeOut);
@@ -1035,6 +1045,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 					if(stmt!=null)setStatementTimeout(stmt.getConnection(), currentTimeout);
 				} catch (SQLException e) {}
 				DB.close(rs, stmt);
+				rs = null;stmt = null;
 			}			
 		}
 		return false;

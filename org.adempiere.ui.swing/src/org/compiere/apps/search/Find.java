@@ -779,14 +779,7 @@ public final class Find extends CDialog
 	public void dispose()
 	{
 		log.config("");
-
-		//  Find SQL
-		if (m_pstmt != null)
-		{
-			try {
-				m_pstmt.close();
-			} catch (SQLException e)	{}
-		}
+		DB.close(m_pstmt);
 		m_pstmt = null;
 
 		// Remove action listener from custom fields - teo_sarca [ 1709292 ]

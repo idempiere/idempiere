@@ -4,6 +4,7 @@ import org.compiere.model.MAssetAddition;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
 import org.compiere.process.SvrProcess;
+import org.compiere.util.DB;
 
 
 /**
@@ -21,11 +22,11 @@ public class A_Asset_Addition_ProcessAll extends SvrProcess
 		//
 		String whereClause = "AD_Client_ID=? AND IsActive=?"
 								+" AND "+MAssetAddition.COLUMNNAME_Processed+"=?";
-		POResultSet<MAssetAddition>
-		rs = new Query(getCtx(), MAssetAddition.Table_Name, whereClause, get_TrxName())
-				.setParameters(new Object[]{getAD_Client_ID(), "N", "N"})
-				.scroll();
+		POResultSet<MAssetAddition>	rs = null;
 		try {
+			rs = new Query(getCtx(), MAssetAddition.Table_Name, whereClause, get_TrxName())
+			.setParameters(new Object[]{getAD_Client_ID(), "N", "N"})
+			.scroll();
 			while (rs.hasNext()) {
 				MAssetAddition a = rs.next();
 				boolean ret = a.processIt(MAssetAddition.DOCACTION_Complete);
@@ -36,7 +37,7 @@ public class A_Asset_Addition_ProcessAll extends SvrProcess
 			}
 		}
 		finally {
-			rs.close(); rs = null;
+			DB.close(rs); rs = null;
 		}
 		//
 		return "OK/Error: "+cnt_ok+"/"+cnt_err;
