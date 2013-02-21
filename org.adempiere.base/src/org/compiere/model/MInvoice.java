@@ -1191,7 +1191,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		finally {
 			DB.close(rs);
 		}
-		s_log.config("#" + counter);
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("#" + counter);
 		/**/
 	}	//	setIsPaid
 

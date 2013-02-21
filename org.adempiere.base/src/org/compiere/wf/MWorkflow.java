@@ -121,7 +121,7 @@ public class MWorkflow extends X_AD_Workflow
 				list.toArray(wfs);
 				s_cacheDocValue.put (oldKey, wfs);
 			}
-			s_log.config("#" + s_cacheDocValue.size());
+			if (s_log.isLoggable(Level.CONFIG)) s_log.config("#" + s_cacheDocValue.size());
 		}
 		//	Look for Entry
 		MWorkflow[] retValue = (MWorkflow[])s_cacheDocValue.get(key);

@@ -872,7 +872,7 @@ public final class MPayment extends X_C_Payment
 			rs = null;
 			pstmt = null;
 		}
-		s_log.config("#" + counter);
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("#" + counter);
 	}	//	setIsAllocated
 
 	/**************************************************************************

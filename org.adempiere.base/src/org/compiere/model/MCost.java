@@ -725,7 +725,7 @@ public class MCost extends X_M_Cost
 						if (cost.is_new())
 						{
 							if (cost.save())
-								s_log.config("Std.Cost for " + product.getName()
+								if (s_log.isLoggable(Level.CONFIG)) s_log.config("Std.Cost for " + product.getName()
 									+ " - " + as.getName());
 							else
 								s_log.warning("Not created: Std.Cost for " + product.getName()
@@ -743,7 +743,7 @@ public class MCost extends X_M_Cost
 							if (cost.is_new())
 							{
 								if (cost.save())
-									s_log.config("Std.Cost for " + product.getName()
+									if (s_log.isLoggable(Level.CONFIG)) s_log.config("Std.Cost for " + product.getName()
 										+ " - " + o.getName()
 										+ " - " + as.getName());
 								else
