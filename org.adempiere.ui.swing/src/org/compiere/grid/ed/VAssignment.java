@@ -188,8 +188,8 @@ public class VAssignment extends JComponent
 	{
 		try
 		{
-			if (m_pstmt != null)
-				m_pstmt.close();
+			DB.close(m_pstmt);
+			m_pstmt = null;
 		}
 		catch (Exception e)
 		{

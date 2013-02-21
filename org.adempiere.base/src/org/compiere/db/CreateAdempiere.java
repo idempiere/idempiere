@@ -749,9 +749,6 @@ public class CreateAdempiere
 				log.finest("# " + no);
 			}
 			//
-			stmt.close();
-			stmt = null;
-			//
 			if (batch)
 				conn.commit();
 			//
@@ -774,17 +771,11 @@ public class CreateAdempiere
 			msg += "\n=>" + cmd;
 			log.log(Level.SEVERE, msg);
 		}
-		//	Error clean up
-		try
+		finally
 		{
-			if (stmt != null)
-				stmt.close();
+			DB.close(stmt);
+			stmt = null;
 		}
-		catch (SQLException e1)
-		{
-			log.log(Level.SEVERE, "close statement", e1);
-		}
-		stmt = null;
 		return false;
 	}	//	execureCommands
 

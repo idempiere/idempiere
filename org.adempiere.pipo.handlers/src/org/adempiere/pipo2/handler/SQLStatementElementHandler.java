@@ -78,8 +78,8 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 					int n = stmt.executeUpdate (sql);
 					log.info("Executed SQL Statement for PostgreSQL: "+ getStringValue(element,"statement") + " ReturnValue="+n);
 				} finally {
-					if (stmt != null)
-						stmt.close();
+					DB.close(stmt);
+					stmt = null;
 				}
 			}
 			
@@ -105,6 +105,7 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 			logImportDetail (ctx, impDetail, 0, "SQLStatement",1,"Execute");
 		} finally {
 			DB.close(pstmt);
+			pstmt = null;
 		}
 	}
 

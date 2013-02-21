@@ -228,14 +228,9 @@ public class DBDataSource extends compiereDataSource
      */
     public void close()
     {
-        try
-        {
-            if(m_resultSet != null)
-                m_resultSet.close();
-            
-            if(m_pstmt != null)
-                m_pstmt.close();
-        }
-        catch (Exception e){}
+        DB.close(m_resultSet);
+        m_resultSet = null;
+        DB.close(m_pstmt);
+        m_pstmt = null;
     }
 }

@@ -97,16 +97,11 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention
 				cs.setInt(6, Period);
 				cs.execute();						
 				retValue = cs.getBigDecimal(1);
-				cs.close();
 			} catch (Exception e) {
 				log.log(Level.SEVERE, sql, e);
 			}
 			finally {
-				try {
-					if (cs != null) cs.close();
-				} catch (SQLException e) {
-					log.log(Level.FINEST, "Error", e);
-				}
+				DB.close(cs);
 				cs = null;
 			}
 		}

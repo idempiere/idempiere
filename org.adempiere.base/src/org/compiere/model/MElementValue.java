@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
@@ -223,16 +224,18 @@ public class MElementValue extends X_C_ElementValue
 			//
 			// Check Valid Combinations - teo_sarca FR [ 1883533 ]
 			String whereClause = MAccount.COLUMNNAME_Account_ID+"=?";
-			POResultSet<MAccount> rs = new Query(getCtx(), I_C_ValidCombination.Table_Name, whereClause, get_TrxName())
-					.setParameters(get_ID())
-					.scroll();
+			POResultSet<MAccount> rs = null;
 			try {
+				rs = new Query(getCtx(), I_C_ValidCombination.Table_Name, whereClause, get_TrxName())
+				.setParameters(get_ID())
+				.scroll();
 				while(rs.hasNext()) {
 					rs.next().deleteEx(true);
 				}
 			}
 			finally {
-				rs.close();
+				DB.close(rs);
+				rs = null;
 			}
 		}
 		return true;

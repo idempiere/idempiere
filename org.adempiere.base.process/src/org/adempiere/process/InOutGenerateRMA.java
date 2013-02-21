@@ -97,13 +97,13 @@ public class InOutGenerateRMA extends SvrProcess
             + "AND T_Selection.AD_PInstance_ID=? ";
         
         PreparedStatement pstmt = null;
-        
+        ResultSet rs = null;
         try
         {
             pstmt = DB.prepareStatement(sql, get_TrxName());
             pstmt.setInt(1, Env.getAD_Client_ID(getCtx()));
             pstmt.setInt(2, getAD_PInstance_ID());
-            ResultSet rs = pstmt.executeQuery();
+            rs = pstmt.executeQuery();
             
             while (rs.next())
             {
@@ -116,14 +116,8 @@ public class InOutGenerateRMA extends SvrProcess
         }
         finally
         {
-            try
-            {
-                pstmt.close();
-            }
-            catch (Exception ex)
-            {
-                log.log(Level.SEVERE, "Could not close prepared statement");
-            }
+            DB.close(rs,pstmt);
+            rs = null;pstmt = null;
         }
         
         StringBuilder msgreturn = new StringBuilder("@Created@ = ").append(m_created);

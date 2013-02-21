@@ -85,21 +85,23 @@ public class PrepareMigrationScripts extends SvrProcess {
 							.append(fileName.get(i))
 							.append("]. Finding out if the script has or hasn't been applied yet...");
 			log.fine(msglog.toString());
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			try {
 				// First of all, check if the script hasn't been applied yet...
 				String checkScript = "select ad_migrationscript_id from ad_migrationscript where name = ?";
-				PreparedStatement pstmt = DB.prepareStatement(checkScript, this
+				pstmt = DB.prepareStatement(checkScript, this
 						.get_TrxName());
 				pstmt.setString(1, fileName.get(i));
-				ResultSet rs = pstmt.executeQuery();
+				rs = pstmt.executeQuery();
 				if (rs.next()) {
 					msglog = new StringBuilder("Script ").append(fileName.get(i))
 							.append(" already in the database");
 					log.warning(msglog.toString());
-					pstmt.close();
 					continue;
 				}
-				pstmt.close();
+				DB.close(pstmt);
+				pstmt = null;
 				// first use a Scanner to get each line
 				Scanner scanner = new Scanner(dirList[i]);
 				StringBuilder body = new StringBuilder();
@@ -213,7 +215,8 @@ public class PrepareMigrationScripts extends SvrProcess {
 				pstmt.setTimestamp(15, ts);
 				pstmt.setTimestamp(16, ts);
 				int result = pstmt.executeUpdate();
-				pstmt.close();
+				DB.close(pstmt);
+				pstmt = null;
 				if (result > 0)
 					log.info("Header inserted. Now inserting the script body");
 				else {
@@ -227,7 +230,8 @@ public class PrepareMigrationScripts extends SvrProcess {
 				pstmt.setBytes(1, body.toString().getBytes());
 				pstmt.setInt(2, seqID);
 				result = pstmt.executeUpdate();
-				pstmt.close();
+				DB.close(pstmt);
+				pstmt = null;
 				if (result > 0)
 					log.info("Script Body inserted.");
 				else {
@@ -245,6 +249,13 @@ public class PrepareMigrationScripts extends SvrProcess {
 			} catch (Exception ex) {
 				log.severe(ex.getMessage());
 			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
+			}
+			
 		}
 		return "Sucess";
 	}

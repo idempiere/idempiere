@@ -1056,6 +1056,7 @@ public final class DB
 			}
 			//  Always close cursor
 			close(cs);
+			cs = null;
 		}
 		return no;
 	}	//	executeUpdate
@@ -1121,9 +1122,8 @@ public final class DB
 							}
 							finally
 							{
-								if (rs != null)
-									rs.getStatement().close();
-								DB.close(rs);
+								close(rs.getStatement());
+								close(rs);rs = null;
 							}
 						}
 						timeoutStatement = conn.createStatement();
@@ -1134,12 +1134,8 @@ public final class DB
 						}
 					} catch (SQLException e) {}
 					finally{
-						if (timeoutStatement != null) {
-							try {
-								timeoutStatement.close();
-							} catch (Exception e) {}
-							timeoutStatement = null;
-						}
+						DB.close(timeoutStatement);
+						timeoutStatement = null;
 					}
 				}
 				else
@@ -1193,15 +1189,12 @@ public final class DB
 				} catch (SQLException e) {
 				}
 				finally{
-					if (timeoutStatement != null) {
-						try {
-							timeoutStatement.close();
-						} catch (Exception e) {}
+						close(timeoutStatement);
 						timeoutStatement = null;
-					}
 				}
 			}
-			DB.close(cs);
+			close(cs);
+			cs = null;
 		}
 		return no;
 	}

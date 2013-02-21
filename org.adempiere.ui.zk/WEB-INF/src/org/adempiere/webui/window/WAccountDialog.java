@@ -956,16 +956,21 @@ public final class WAccountDialog extends Window
 				sql.append("'").append(f_Alias.getValue()).append("'");
 			sql.append(" WHERE C_ValidCombination_ID=").append(IDvalue);
 			int i = 0;
+			PreparedStatement stmt = null;
 			try
 			{
-				java.sql.PreparedStatement stmt = DB.prepareStatement(sql.toString(),
+				stmt = DB.prepareStatement(sql.toString(),
 						ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE, null);
 				i = stmt.executeUpdate();
-				stmt.close();
 			}
 			catch (SQLException e)
 			{
 				log.log(Level.SEVERE, sql.toString(), e);
+			}
+			finally
+			{
+				DB.close(stmt);
+				stmt = null;
 			}
 			if (i == 0)
 				FDialog.error(m_WindowNo, this, "AccountNotUpdated");

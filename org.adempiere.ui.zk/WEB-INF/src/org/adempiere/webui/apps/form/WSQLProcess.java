@@ -238,26 +238,20 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
 			log.log(Level.SEVERE, "process statement: " + sql + " - " + exception);
 			result.append("===> ").append(exception);
 		}
-		
-		//	Clean up
-		try
+		finally
 		{
-			stmt.close();
-		}
-		catch (SQLException e1)
-		{
-			log.log(Level.SEVERE, "processStatement - close statement", e1);
-		}
-		stmt = null;
-		try
-		{
-			conn.close();
-		}
-		catch (SQLException e2)
-		{
-			log.log(Level.SEVERE, "processStatement - close connection", e2);
-		}
-		conn = null;
+			DB.close(stmt);
+			stmt = null;
+			try
+			{
+				conn.close();
+			}
+			catch (SQLException e2)
+			{
+				log.log(Level.SEVERE, "processStatement - close connection", e2);
+			}
+			conn = null;
+		}		
 		//
 		result.append(Env.NL);
 		return result.toString();

@@ -178,7 +178,6 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 				cs.setInt(6, A_Asset_Acct_ID);
 				cs.execute();						
 				retValue = cs.getBigDecimal(1);
-				cs.close();
 			}
 			catch (SQLException e)
 			{
