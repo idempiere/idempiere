@@ -58,7 +58,7 @@ public class Evaluator
 			}
 			String variable = logic.substring(first+1, second-1);
 			String eval = source.get_ValueAsString (variable);
-			s_log.finest(variable + "=" + eval);
+			if (s_log.isLoggable(Level.FINEST)) s_log.finest(variable + "=" + eval);
 			if (eval == null || eval.length() == 0)
 				return false;
 			//	
@@ -195,9 +195,8 @@ public class Evaluator
 		//	Logical Comparison
 		boolean result = evaluateLogicTuple (firstEval, operand, secondEval);
 		//
-		if (CLogMgt.isLevelFinest())
-			s_log.finest(logic 
-				+ " => \"" + firstEval + "\" " + operand + " \"" + secondEval + "\" => " + result);
+		if (s_log.isLoggable(Level.FINEST)) s_log.finest(logic 
+			+ " => \"" + firstEval + "\" " + operand + " \"" + secondEval + "\" => " + result);
 		//
 		return result;
 	}	//	evaluateLogicTuple

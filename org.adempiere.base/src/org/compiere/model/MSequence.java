@@ -154,12 +154,11 @@ public class MSequence extends X_AD_Sequence
 					pstmt.setQueryTimeout(QUERY_TIME_OUT);
 				}
 				rs = pstmt.executeQuery();
-				if (CLogMgt.isLevelFinest())
-					s_log.finest("AC=" + conn.getAutoCommit() + ", RO=" + conn.isReadOnly()
-						+ " - Isolation=" + conn.getTransactionIsolation() + "(" + Connection.TRANSACTION_READ_COMMITTED
-						+ ") - RSType=" + pstmt.getResultSetType() + "(" + ResultSet.TYPE_SCROLL_SENSITIVE
-						+ "), RSConcur=" + pstmt.getResultSetConcurrency() + "(" + ResultSet.CONCUR_UPDATABLE
-						+ ")");
+				if (s_log.isLoggable(Level.FINEST)) s_log.finest("AC=" + conn.getAutoCommit() + ", RO=" + conn.isReadOnly()
+					+ " - Isolation=" + conn.getTransactionIsolation() + "(" + Connection.TRANSACTION_READ_COMMITTED
+					+ ") - RSType=" + pstmt.getResultSetType() + "(" + ResultSet.TYPE_SCROLL_SENSITIVE
+					+ "), RSConcur=" + pstmt.getResultSetConcurrency() + "(" + ResultSet.CONCUR_UPDATABLE
+					+ ")");
 				if (rs.next())
 				{
 
@@ -283,7 +282,7 @@ public class MSequence extends X_AD_Sequence
 		}
 
 
-		//s_log.finest (retValue + " - Table=" + TableName + " [" + trx + "]");
+		//if (s_log.isLoggable(Level.FINEST)) s_log.finest (retValue + " - Table=" + TableName + " [" + trx + "]");
 		return retValue;
 	}	//	getNextID
 
