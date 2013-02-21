@@ -138,57 +138,67 @@ public class TableCreateColumns extends SvrProcess
 	{
 		// globalqss 2005-10-25
 		// ResultSet rs = md.getTables(catalog, schema, null, null);
-		ResultSet rs;
-		if (DB.isPostgreSQL())
-			rs = md.getTables(catalog, schema, null, new String [] {"TABLE", "VIEW"});
-		else
-			rs = md.getTables(catalog, schema, null, null);
-		// end globalqss 2005-10-25
-		while (rs.next())
-		{
-			String tableName = rs.getString("TABLE_NAME");
-			String tableType = rs.getString("TABLE_TYPE");
-			
-			//	Try to find
-			MTable table = MTable.get(getCtx(), tableName);
-			//	Create new ?
-			if (table == null)
-			{
-				String tn = tableName.toUpperCase();
-				if (tn.startsWith("T_SELECTION")	//	temp table
-					|| tn.endsWith("_VT")			//	print trl views
-					|| tn.endsWith("_V")			//	views
-					|| tn.endsWith("_V1")			//	views
-					|| tn.startsWith("A_A")			//	asset tables not yet
-					|| tn.startsWith("A_D")			//	asset tables not yet
-					|| tn.indexOf('$') != -1		//	oracle system tables
-					|| tn.indexOf("EXPLAIN") != -1	//	explain plan
-					)
-				{
-					log.fine("Ignored: " + tableName + " - " + tableType);
-					continue;
-				}
-				//
-				log.info(tableName + " - " + tableType);
-				
-				//	Create New
-				table = new MTable(getCtx(), 0, get_TrxName());
-				table.setEntityType (p_EntityType);
-				table.setName (tableName);
-				table.setTableName (tableName);
-				table.setIsView("VIEW".equals(tableType));
-				if (!table.save())
-					continue;
-			}
-			//	Check Columns
-			if (DB.isOracle())
-				tableName = tableName.toUpperCase();
-			// globalqss 2005-10-24
+		ResultSet rs = null;
+		ResultSet rsC = null;
+		try {
 			if (DB.isPostgreSQL())
-			    tableName = tableName.toLowerCase();
-			// end globalqss 2005-10-24
-			ResultSet rsC = md.getColumns(catalog, schema, tableName, null);
-			addTableColumn(rsC, table);
+				rs = md.getTables(catalog, schema, null, new String [] {"TABLE", "VIEW"});
+			else
+				rs = md.getTables(catalog, schema, null, null);
+			// end globalqss 2005-10-25
+			while (rs.next())
+			{
+				String tableName = rs.getString("TABLE_NAME");
+				String tableType = rs.getString("TABLE_TYPE");
+				
+				//	Try to find
+				MTable table = MTable.get(getCtx(), tableName);
+				//	Create new ?
+				if (table == null)
+				{
+					String tn = tableName.toUpperCase();
+					if (tn.startsWith("T_SELECTION")	//	temp table
+						|| tn.endsWith("_VT")			//	print trl views
+						|| tn.endsWith("_V")			//	views
+						|| tn.endsWith("_V1")			//	views
+						|| tn.startsWith("A_A")			//	asset tables not yet
+						|| tn.startsWith("A_D")			//	asset tables not yet
+						|| tn.indexOf('$') != -1		//	oracle system tables
+						|| tn.indexOf("EXPLAIN") != -1	//	explain plan
+						)
+					{
+						log.fine("Ignored: " + tableName + " - " + tableType);
+						continue;
+					}
+					//
+					log.info(tableName + " - " + tableType);
+					
+					//	Create New
+					table = new MTable(getCtx(), 0, get_TrxName());
+					table.setEntityType (p_EntityType);
+					table.setName (tableName);
+					table.setTableName (tableName);
+					table.setIsView("VIEW".equals(tableType));
+					if (!table.save())
+						continue;
+				}
+				//	Check Columns
+				if (DB.isOracle())
+					tableName = tableName.toUpperCase();
+				// globalqss 2005-10-24
+				if (DB.isPostgreSQL())
+				    tableName = tableName.toLowerCase();
+				// end globalqss 2005-10-24
+				rsC = md.getColumns(catalog, schema, tableName, null);
+				addTableColumn(rsC, table);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			DB.close(rs);
+			rs = null;
+			DB.close(rsC);
+			rsC = null;
 		}
 	}	//	addTable
 	
