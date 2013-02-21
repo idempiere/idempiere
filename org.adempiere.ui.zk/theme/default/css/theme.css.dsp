@@ -1213,7 +1213,7 @@ tbody.z-grid-empty-body td {
 	filter: brightness(-30%);
 }
 
-.content
+.help-content
 {
 	padding: 5px;
 	font-size: 11px;

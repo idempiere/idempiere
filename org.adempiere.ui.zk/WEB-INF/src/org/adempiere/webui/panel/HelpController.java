@@ -113,7 +113,7 @@ public class HelpController
     public void renderToolTip(GridField field)
     {
     	StringBuilder sb = new StringBuilder();
-    	sb.append("<html>\n<body>\n<div class=\"content\">\n");
+    	sb.append("<html>\n<body>\n<div class=\"help-content\">\n");
     	
     	if (field != null)
     	{
@@ -155,7 +155,7 @@ public class HelpController
     	pnlContextHelp.setTitle(ctxType.equals(X_AD_CtxHelp.CTXTYPE_Home) ? Msg.getMsg(Env.getCtx(), "GettingStarted") : Msg.getMsg(Env.getCtx(), "HowTo"));
     		
     	StringBuilder sb = new StringBuilder();
-    	sb.append("<html>\n<body>\n<div class=\"content\">\n");
+    	sb.append("<html>\n<body>\n<div class=\"help-content\">\n");
     	    	
     	String ctxHelpMsg = getCtxHelpMsgList(ctxType, recordId);
     	if (ctxHelpMsg.length() > 0)
