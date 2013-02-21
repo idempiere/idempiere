@@ -140,6 +140,15 @@ public class HelpController
     
     public void renderCtxHelp(String ctxType, int recordId)
     {
+    	if (ctxType != X_AD_CtxHelp.CTXTYPE_Home && ctxType != X_AD_CtxHelp.CTXTYPE_Tab && 
+    			ctxType != X_AD_CtxHelp.CTXTYPE_Process && ctxType != X_AD_CtxHelp.CTXTYPE_Form && 
+    			ctxType != X_AD_CtxHelp.CTXTYPE_Info && ctxType != X_AD_CtxHelp.CTXTYPE_Workflow && 
+    			ctxType != X_AD_CtxHelp.CTXTYPE_Task)
+    		ctxType = X_AD_CtxHelp.CTXTYPE_Home;
+    			
+    	if (recordId == 0)
+    		ctxType = X_AD_CtxHelp.CTXTYPE_Home;
+    	
     	pnlToolTip.setVisible(ctxType.equals(X_AD_CtxHelp.CTXTYPE_Tab) || 
     			ctxType.equals(X_AD_CtxHelp.CTXTYPE_Process) || 
     			ctxType.equals(X_AD_CtxHelp.CTXTYPE_Info));
@@ -309,7 +318,9 @@ public class HelpController
     	
     	if (ctxType == X_AD_CtxHelp.CTXTYPE_Home)
     		sql.append("AND h." + X_AD_CtxHelp.COLUMNNAME_CtxType);    		
-    	else
+    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Tab || ctxType == X_AD_CtxHelp.CTXTYPE_Process ||
+    			ctxType == X_AD_CtxHelp.CTXTYPE_Form || ctxType == X_AD_CtxHelp.CTXTYPE_Info ||
+    			ctxType == X_AD_CtxHelp.CTXTYPE_Workflow || ctxType == X_AD_CtxHelp.CTXTYPE_Task)
     	{
 	    	sql.append("AND t.");
 	    	if (ctxType == X_AD_CtxHelp.CTXTYPE_Tab)
@@ -324,9 +335,9 @@ public class HelpController
 	    		sql.append(X_AD_Workflow.COLUMNNAME_AD_Workflow_ID);
 	    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Task)
 	    		sql.append(X_AD_Task.COLUMNNAME_AD_Task_ID);
-	    	else
-	    		sql.append("0");
     	}
+    	else
+    		sql.append("1");
     	sql.append(" = ? ");
     	sql.append("ORDER BY h.AD_Client_ID DESC, h.AD_Org_ID DESC, h.AD_CtxHelp_ID DESC");    	
     	return DB.getSQLValue(null, sql.toString(), Env.getAD_Client_ID(ctx), Env.getAD_Org_ID(ctx), ctxType == X_AD_CtxHelp.CTXTYPE_Home ? ctxType : recordId);

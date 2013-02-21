@@ -1189,7 +1189,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         		if (infoWindow != null)
     				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID());
     			else
-    				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, 0);
+    				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
         	}
             //default
             else
@@ -1446,7 +1446,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			if (infoWindow != null)
 				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID());
 			else
-				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, 0);
+				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
 		}
 	}
 }	//	Info
