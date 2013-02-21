@@ -225,9 +225,11 @@ public class WSchedule extends Window implements EventListener<Event>
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 		cal.set(Calendar.DAY_OF_MONTH, 1);
+		cal.add(Calendar.DAY_OF_MONTH, -7);
 		Timestamp startDate = new Timestamp(cal.getTimeInMillis());
 		//	Calculate End Date
 		cal.add(Calendar.MONTH, 1);
+		cal.add(Calendar.DAY_OF_MONTH, 14);
 		Timestamp endDate = new Timestamp (cal.getTimeInMillis());
 		
 		scm = new SimpleCalendarModel();
@@ -236,10 +238,26 @@ public class WSchedule extends Window implements EventListener<Event>
 			
 			for(MAssignmentSlot mas : list) {
 				SimpleCalendarEvent event = new SimpleCalendarEvent();
-				event.setBeginDate(mas.getStartTime());
-				event.setEndDate(mas.getEndTime());
+				Timestamp startTime = mas.getStartTime();
+				Timestamp endTime = mas.getEndTime();
+				Calendar calStart = Calendar.getInstance();
+				calStart.setTime(startTime);
+				Calendar calEnd = Calendar.getInstance();
+				calEnd.setTime(endTime);
+				
+				calStart.add(Calendar.DAY_OF_MONTH, 1);
+				if (calStart.get(Calendar.YEAR) == calEnd.get(Calendar.YEAR) && calStart.get(Calendar.MONTH) == calEnd.get(Calendar.MONTH)
+					&& calStart.get(Calendar.DAY_OF_MONTH) == calEnd.get(Calendar.DAY_OF_MONTH)) {
+					if (calEnd.get(Calendar.HOUR_OF_DAY) == 0 && calEnd.get(Calendar.MINUTE) == 0) {
+						calEnd.add(Calendar.DAY_OF_MONTH, -1);
+						calEnd.set(Calendar.HOUR_OF_DAY, 23);
+					}
+				}
+				
+				event.setBeginDate(startTime);
+				event.setEndDate(calEnd.getTime());
 				event.setTitle(mas.getName());
-				event.setContent(mas.getDescription());
+				event.setContent(mas.getDescription() != null ? mas.getDescription() : mas.getName());
 				event.setHeaderColor('#'+ZkCssHelper.createHexColorString(mas.getColor(true)));
 				event.setContentColor('#'+ZkCssHelper.createHexColorString(mas.getColor(true)));
 				if (!mas.isAssignment() || mas.getMAssignment().isConfirmed())
@@ -283,6 +301,7 @@ public class WSchedule extends Window implements EventListener<Event>
 	private void btnCurrentDateClicked() {
 		calendars.setCurrentDate(Calendar.getInstance(calendars.getDefaultTimeZone()).getTime());
 		updateDateLabel();
+		updateModel();
 	}
 	
 	private void updateDateLabel() {
@@ -310,6 +329,7 @@ public class WSchedule extends Window implements EventListener<Event>
 			calendars.setMold("month");
 		}
 		updateDateLabel();
+		updateModel();
 	}
 
 	public void addNorthPane(Component pane) {

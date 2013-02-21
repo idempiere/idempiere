@@ -562,8 +562,10 @@ public class InfoSchedule extends Window implements EventListener<Event>
 				dispose();
 			}
 		} else {
-			if (!slot.isAssignment())
+			if (!slot.isAssignment()) {
 				FDialog.error(0, this, "No available time slot for the selected day.");
+				return;
+			}
 			
 			MResourceAssignment ma = slot.getMAssignment();
 			ma.setAssignDateFrom(start);
