@@ -149,8 +149,7 @@ public abstract class ADForm extends Window implements EventListener<Event>
     	}
     	else
     	{
-    		if (logger.isLoggable(Level.INFO))
-    			logger.info("AD_Form_ID=" + adFormID + " - Class=" + formName);
+    		if (logger.isLoggable(Level.INFO)) logger.info("AD_Form_ID=" + adFormID + " - Class=" + formName);
 
     		form = Extensions.getForm(formName);
     		if (form != null)

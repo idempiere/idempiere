@@ -98,7 +98,7 @@ public class AZoomAcross
 				windowID)) {
 
 			if (zoomInfo.query.getRecordCount() == 0) {
-				logger.fine("No target records for destination "
+				if (logger.isLoggable(Level.FINE)) logger.fine("No target records for destination "
 						+ zoomInfo.destinationDisplay);
 				continue;
 			}
@@ -116,7 +116,7 @@ public class AZoomAcross
 		final int AD_Window_ID = zoomInfo.windowId;
 		final MQuery query = zoomInfo.query;
 		
-		logger.info("AD_Window_ID=" + AD_Window_ID 
+		if (logger.isLoggable(Level.INFO)) logger.info("AD_Window_ID=" + AD_Window_ID 
 			+ " - " + query); 
 		
 		AWindow frame = new AWindow(null);

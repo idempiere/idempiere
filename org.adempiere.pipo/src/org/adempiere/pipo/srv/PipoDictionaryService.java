@@ -35,7 +35,7 @@ public class PipoDictionaryService implements IDictionaryService {
 			X_AD_Package_Imp_Proc adPackageImp = new X_AD_Package_Imp_Proc(Env.getCtx(),
 					0, trxName);
 			File zipFilepath = packageFile;
-			logger.info("zipFilepath->" + zipFilepath);
+			if (logger.isLoggable(Level.INFO)) logger.info("zipFilepath->" + zipFilepath);
 			String parentDir = Zipper.getParentDir(zipFilepath);
 			File targetDir = new File(System.getProperty("java.io.tmpdir"));
 			Zipper.unpackFile(zipFilepath, targetDir);
@@ -43,7 +43,7 @@ public class PipoDictionaryService implements IDictionaryService {
 			String dict_file = targetDir + File.separator + parentDir + File.separator
 					+ "dict" + File.separator + "PackOut.xml";
 
-			logger.info("dict file->" + dict_file);
+			if (logger.isLoggable(Level.INFO)) logger.info("dict file->" + dict_file);
 
 			// call XML Handler
 			String msg = packIn.importXML(dict_file, Env.getCtx(), trxName);
@@ -54,7 +54,7 @@ public class PipoDictionaryService implements IDictionaryService {
 			adPackageImp.saveEx();
 			
 			Trx.get(trxName, false).commit();
-			logger.info("commit " + trxName);
+			if (logger.isLoggable(Level.INFO)) logger.info("commit " + trxName);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "importXML:", e);
 			throw e;

@@ -25,12 +25,10 @@ public class AdempiereActivator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		this.context = context;
-		if (logger.isLoggable(Level.INFO))
-			logger.info(getName() + " " + getVersion() + " starting...");
+		if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + getVersion() + " starting...");
 		installPackage();
 		start();
-		if (logger.isLoggable(Level.INFO))
-			logger.info(getName() + " " + getVersion() + " ready.");
+		if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + getVersion() + " ready.");
 	}
 
 	public String getName() {
@@ -80,11 +78,9 @@ public class AdempiereActivator implements BundleActivator {
 			if (pkg == null) {
 				packIn(trxName);
 				install();
-				if (logger.isLoggable(Level.INFO))
-					logger.info(getName() + " " + version + " installed.");
+				if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + version + " installed.");
 			} else {
-				if (logger.isLoggable(Level.INFO))
-					logger.info(getName() + " " + version + " was installed: "
+				if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + version + " was installed: "
 						+ pkg.getCreated());
 			}
 			Trx.get(trxName, false).commit();
@@ -136,7 +132,7 @@ public class AdempiereActivator implements BundleActivator {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		stop();
-		logger.info(context.getBundle().getSymbolicName() + " "
+		if (logger.isLoggable(Level.INFO)) logger.info(context.getBundle().getSymbolicName() + " "
 				+ context.getBundle().getHeaders().get("Bundle-Version")
 				+ " stopped.");
 	}

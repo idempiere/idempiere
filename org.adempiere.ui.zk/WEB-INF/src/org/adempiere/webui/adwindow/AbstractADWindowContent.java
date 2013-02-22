@@ -877,7 +877,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     public void onAttachment()
     {
 		int record_ID = adTabbox.getSelectedGridTab().getRecord_ID();
-		logger.info("Record_ID=" + record_ID);
+		if (logger.isLoggable(Level.INFO)) logger.info("Record_ID=" + record_ID);
 
 		if (record_ID == -1)	//	No Key
 		{
@@ -910,7 +910,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     public void onChat()
     {
     	int recordId = adTabbox.getSelectedGridTab().getRecord_ID();
-    	logger.info("Record_ID=" + recordId);
+    	if (logger.isLoggable(Level.INFO)) logger.info("Record_ID=" + recordId);
 
 		if (recordId== -1)	//	No Key
 		{
@@ -1244,8 +1244,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	if (!detailTab)
     	{
 	        String dbInfo = e.getMessage();
-	        if (logger.isLoggable(Level.INFO))
-	        	logger.info(dbInfo);
+	        if (logger.isLoggable(Level.INFO)) logger.info(dbInfo);
 	        if (adTabbox.getSelectedGridTab() != null && adTabbox.getSelectedGridTab().isQueryActive())
 	            dbInfo = "[ " + dbInfo + " ]";
 	        breadCrumb.setStatusDB(dbInfo, e);
@@ -2086,7 +2085,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 								{
 									Listitem li = iter.next();
 									if(li != null)
-										logger.fine((String) li.getValue());
+										if (logger.isLoggable(Level.FINE)) logger.fine((String) li.getValue());
 								}
 							}
 
@@ -2325,7 +2324,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			return;
 		}
 
-		logger.info(wButton.toString());
+		if (logger.isLoggable(Level.INFO)) logger.info(wButton.toString());
 
 		final String col = wButton.getColumnName();
 

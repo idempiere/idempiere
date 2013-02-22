@@ -95,7 +95,7 @@ public class ZoomInfoFactory {
 
 			if (alreadySeen.add(zoomInfo.destinationDisplay)) {
 				
-				logger.fine("Adding zoomInfo " + zoomInfo);
+				if (logger.isLoggable(Level.FINE)) logger.fine("Adding zoomInfo " + zoomInfo);
 				result.add(zoomInfo);
 			}
 		}
@@ -107,13 +107,13 @@ public class ZoomInfoFactory {
 
 			if (alreadySeen.add(zoomInfo.destinationDisplay)) {
 
-				logger.fine("Adding zoomInfo " + zoomInfo + " from "
+				if (logger.isLoggable(Level.FINE)) logger.fine("Adding zoomInfo " + zoomInfo + " from "
 						+ GenericZoomProvider.class.getSimpleName());
 				result.add(zoomInfo);
 
 			} else {
 
-				logger.fine("Skipping zoomInfo " + zoomInfo + " from "
+				if (logger.isLoggable(Level.FINE)) logger.fine("Skipping zoomInfo " + zoomInfo + " from "
 						+ GenericZoomProvider.class.getSimpleName()
 						+ " because there is already one for destination '"
 						+ zoomInfo.destinationDisplay + "'");
