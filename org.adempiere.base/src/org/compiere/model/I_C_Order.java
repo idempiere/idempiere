@@ -789,6 +789,15 @@ public interface I_C_Order
 	  */
 	public boolean isPrinted();
 
+    /** Column name IsPriviledgedRate */
+    public static final String COLUMNNAME_IsPriviledgedRate = "IsPriviledgedRate";
+
+	/** Set Priviledged Rate	  */
+	public void setIsPriviledgedRate (boolean IsPriviledgedRate);
+
+	/** Get Priviledged Rate	  */
+	public boolean isPriviledgedRate();
+
     /** Column name IsSelected */
     public static final String COLUMNNAME_IsSelected = "IsSelected";
 

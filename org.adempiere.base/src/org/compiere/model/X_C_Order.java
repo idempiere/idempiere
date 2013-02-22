@@ -33,7 +33,7 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121221L;
+	private static final long serialVersionUID = 20130222L;
 
     /** Standard Constructor */
     public X_C_Order (Properties ctx, int C_Order_ID, String trxName)
@@ -82,6 +82,8 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 			setIsPayScheduleValid (false);
 // N
 			setIsPrinted (false);
+			setIsPriviledgedRate (false);
+// N
 			setIsSelected (false);
 			setIsSelfService (false);
 			setIsSOTrx (false);
@@ -1436,6 +1438,27 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	public boolean isPrinted () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Priviledged Rate.
+		@param IsPriviledgedRate Priviledged Rate	  */
+	public void setIsPriviledgedRate (boolean IsPriviledgedRate)
+	{
+		set_Value (COLUMNNAME_IsPriviledgedRate, Boolean.valueOf(IsPriviledgedRate));
+	}
+
+	/** Get Priviledged Rate.
+		@return Priviledged Rate	  */
+	public boolean isPriviledgedRate () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsPriviledgedRate);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 
