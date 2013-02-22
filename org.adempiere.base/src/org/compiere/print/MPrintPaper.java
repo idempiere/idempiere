@@ -18,6 +18,7 @@ package org.compiere.print;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.print.attribute.EnumSyntax;
 import javax.print.attribute.Size2DSyntax;
@@ -52,8 +53,7 @@ public class MPrintPaper extends X_AD_PrintPaper
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8284757169766494111L;
-
+	private static final long serialVersionUID = -3609557177958141344L;
 
 	/**
 	 * 	Get Paper
@@ -70,7 +70,7 @@ public class MPrintPaper extends X_AD_PrintPaper
 			s_papers.put(key, pp);
 		}
 		else
-			s_log.config("AD_PrintPaper_ID=" + AD_PrintPaper_ID);
+			if (s_log.isLoggable(Level.CONFIG)) s_log.config("AD_PrintPaper_ID=" + AD_PrintPaper_ID);
 		return pp;
 	}	//	get
 

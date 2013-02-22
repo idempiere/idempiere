@@ -1,3 +1,6 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
 -- Feb 19, 2013 3:37:23 PM SGT
 -- Ticket #1002211: Create Help pane for Bizidium
 INSERT INTO AD_Column (Version,IsSyncDatabase,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID,SeqNoSelection,IsToolbarButton,IsAlwaysUpdateable,IsEncrypted) VALUES (0,'N',106,208589,'D','N','N','N',0,'N',10,'N',19,'N',202212,'N','Y','2866e75e-6021-4e27-9f48-bc3ab9d219a3','Y','AD_CtxHelp_ID','Context Help','Y',100,TO_DATE('2013-02-19 15:37:21','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_DATE('2013-02-19 15:37:21','YYYY-MM-DD HH24:MI:SS'),100,0,0,'N','N','N')

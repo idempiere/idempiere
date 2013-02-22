@@ -88,7 +88,7 @@ public class DocumentTypeVerify extends SvrProcess
 			{
 				String name = rs.getString(2);
 				String value = rs.getString(1);
-				s_log.config(name + "=" + value);
+				if (s_log.isLoggable(Level.CONFIG)) s_log.config(name + "=" + value);
 				MDocType dt = new MDocType (ctx, value, name, trxName);
 				if (dt.save())
 				{
@@ -166,7 +166,7 @@ public class DocumentTypeVerify extends SvrProcess
 				int Client_ID = rs.getInt(1);
 				int C_Period_ID = rs.getInt(2);
 				String DocBaseType = rs.getString(3);
-				s_log.config("AD_Client_ID=" + Client_ID 
+				if (s_log.isLoggable(Level.CONFIG)) s_log.config("AD_Client_ID=" + Client_ID 
 					+ ", C_Period_ID=" + C_Period_ID + ", DocBaseType=" + DocBaseType);
 				//
 				MPeriodControl pc = new MPeriodControl (ctx, Client_ID, 

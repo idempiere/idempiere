@@ -80,7 +80,7 @@ public class MCostDetail extends X_M_CostDetail
 			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
 		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (no != 0)
-			s_log.config("Deleted #" + no);
+			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
 		MCostDetail cd = get (as.getCtx(), "C_OrderLine_ID=?", 
 			C_OrderLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
@@ -113,7 +113,7 @@ public class MCostDetail extends X_M_CostDetail
 		{
 			ok = cd.process();
 		}
-		s_log.config("(" + ok + ") " + cd);
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("(" + ok + ") " + cd);
 		return ok;
 	}	//	createOrder
 
@@ -147,7 +147,7 @@ public class MCostDetail extends X_M_CostDetail
 			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
 		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (no != 0)
-			s_log.config("Deleted #" + no);
+			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
 		MCostDetail cd = get (as.getCtx(), "C_InvoiceLine_ID=?", 
 			C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
@@ -180,7 +180,7 @@ public class MCostDetail extends X_M_CostDetail
 		{
 			ok = cd.process();
 		}
-		s_log.config("(" + ok + ") " + cd);
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("(" + ok + ") " + cd);
 		return ok;
 	}	//	createInvoice
 	
@@ -214,7 +214,7 @@ public class MCostDetail extends X_M_CostDetail
 			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
 		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (no != 0)
-			s_log.config("Deleted #" + no);
+			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
 		MCostDetail cd = get (as.getCtx(), "M_InOutLine_ID=?", 
 			M_InOutLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
@@ -248,7 +248,7 @@ public class MCostDetail extends X_M_CostDetail
 		{
 			ok = cd.process();
 		}
-		s_log.config("(" + ok + ") " + cd);
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("(" + ok + ") " + cd);
 		return ok;
 	}	//	createShipment
 
@@ -281,7 +281,7 @@ public class MCostDetail extends X_M_CostDetail
 			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
 		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (no != 0)
-			s_log.config("Deleted #" + no);
+			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
 		MCostDetail cd = get (as.getCtx(), "M_InventoryLine_ID=?", 
 			M_InventoryLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
@@ -314,7 +314,7 @@ public class MCostDetail extends X_M_CostDetail
 		{
 			ok = cd.process();
 		}
-		s_log.config("(" + ok + ") " + cd);
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("(" + ok + ") " + cd);
 		return ok;
 	}	//	createInventory
 	
@@ -349,7 +349,7 @@ public class MCostDetail extends X_M_CostDetail
 			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
 		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (no != 0)
-			s_log.config("Deleted #" + no);
+			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
 		StringBuilder msget = new StringBuilder( "M_MovementLine_ID=? AND IsSOTrx=") 
 				.append((from ? "'Y'" : "'N'"));
 		MCostDetail cd = get (as.getCtx(),msget.toString(), 
@@ -385,7 +385,7 @@ public class MCostDetail extends X_M_CostDetail
 		{
 			ok = cd.process();
 		}
-		s_log.config("(" + ok + ") " + cd);
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("(" + ok + ") " + cd);
 		return ok;
 	}	//	createMovement
 
@@ -418,7 +418,7 @@ public class MCostDetail extends X_M_CostDetail
 			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
 		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (no != 0)
-			s_log.config("Deleted #" + no);
+			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
 		MCostDetail cd = get (as.getCtx(), "M_ProductionLine_ID=?", 
 			M_ProductionLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
@@ -451,7 +451,7 @@ public class MCostDetail extends X_M_CostDetail
 		{
 			ok = cd.process();
 		}
-		s_log.config("(" + ok + ") " + cd);
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("(" + ok + ") " + cd);
 		return ok;
 	}	//	createProduction
 	
@@ -547,7 +547,7 @@ public class MCostDetail extends X_M_CostDetail
 			else
 				counterError++;
 		}
-		s_log.config("OK=" + counterOK + ", Errors=" + counterError);
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("OK=" + counterOK + ", Errors=" + counterError);
 		return counterError == 0;
 	}	//	processProduct
 	

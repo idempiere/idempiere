@@ -259,7 +259,7 @@ public class MCostQueue extends X_M_CostQueue
 				lastPrice = queue.getCurrentCostPrice();
 				BigDecimal costBatch = lastPrice.multiply(remainingQty);
 				cost = cost.add(costBatch);
-				s_log.config("ASI=" + queue.getM_AttributeSetInstance_ID()
+				if (s_log.isLoggable(Level.CONFIG)) s_log.config("ASI=" + queue.getM_AttributeSetInstance_ID()
 					+ " - Cost=" + lastPrice + " * Qty=" + remainingQty + "(!) = " + costBatch);
 				return cost;
 			}
@@ -281,7 +281,7 @@ public class MCostQueue extends X_M_CostQueue
 				//	Done
 				if (remainingQty.signum() == 0)
 				{
-					s_log.config("Cost=" + cost);
+					if (s_log.isLoggable(Level.CONFIG)) s_log.config("Cost=" + cost);
 					return cost;
 				}
 				if (firstPrice == null)
@@ -303,7 +303,7 @@ public class MCostQueue extends X_M_CostQueue
 		BigDecimal costBatch = lastPrice.multiply(remainingQty);
 		s_log.fine("RemainingQty=" + remainingQty + " * LastPrice=" + lastPrice + " = " + costBatch);
 		cost = cost.add(costBatch);
-		s_log.config("Cost=" + cost);
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("Cost=" + cost);
 		return cost;
 	}	//	getCosts
 	

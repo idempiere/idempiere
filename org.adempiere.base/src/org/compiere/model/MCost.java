@@ -172,7 +172,7 @@ public class MCost extends X_M_Cost
 				String cm = rs.getString(3);
 				percent = rs.getBigDecimal(4);
 				//M_CostElement_ID = rs.getInt(5);
-				s_log.finest("CurrentCostPrice=" + currentCostPrice
+				if (s_log.isLoggable(Level.FINEST)) s_log.finest("CurrentCostPrice=" + currentCostPrice
 					+ ", CurrentCostPriceLL=" + currentCostPriceLL
 					+ ", CostElementType=" + costElementType
 					+ ", CostingMethod=" + cm
@@ -205,7 +205,7 @@ public class MCost extends X_M_Cost
 		}
 
 		if (count > 1)	//	Print summary
-			s_log.finest("MaterialCost=" + materialCostEach
+			if (s_log.isLoggable(Level.FINEST)) s_log.finest("MaterialCost=" + materialCostEach
 				+ ", OtherCosts=" + otherCostEach
 				+ ", Percentage=" + percentage);
 
@@ -725,7 +725,7 @@ public class MCost extends X_M_Cost
 						if (cost.is_new())
 						{
 							if (cost.save())
-								s_log.config("Std.Cost for " + product.getName()
+								if (s_log.isLoggable(Level.CONFIG)) s_log.config("Std.Cost for " + product.getName()
 									+ " - " + as.getName());
 							else
 								s_log.warning("Not created: Std.Cost for " + product.getName()
@@ -743,7 +743,7 @@ public class MCost extends X_M_Cost
 							if (cost.is_new())
 							{
 								if (cost.save())
-									s_log.config("Std.Cost for " + product.getName()
+									if (s_log.isLoggable(Level.CONFIG)) s_log.config("Std.Cost for " + product.getName()
 										+ " - " + o.getName()
 										+ " - " + as.getName());
 								else

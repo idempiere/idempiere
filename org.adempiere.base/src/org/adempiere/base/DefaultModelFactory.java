@@ -222,7 +222,7 @@ public class DefaultModelFactory implements IModelFactory {
 				String classTableName = clazz.getField("Table_Name").get(null).toString();
 				if (!tableName.equals(classTableName))
 				{
-					s_log.finest("Invalid class for table: " + className+" (tableName="+tableName+", classTableName="+classTableName+")");
+					if (s_log.isLoggable(Level.FINEST)) s_log.finest("Invalid class for table: " + className+" (tableName="+tableName+", classTableName="+classTableName+")");
 					return null;
 				}
 			}
@@ -241,7 +241,7 @@ public class DefaultModelFactory implements IModelFactory {
 		catch (Exception e)
 		{
 		}
-		s_log.finest("Not found: " + className);
+		if (s_log.isLoggable(Level.FINEST)) s_log.finest("Not found: " + className);
 		return null;
 	}	//	getPOclass
 

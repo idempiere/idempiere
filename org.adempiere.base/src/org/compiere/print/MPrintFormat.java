@@ -623,7 +623,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 			if (pfi != null)
 			{
 				printFormatItemList.add (pfi);
-				s_log.finest("Tab: " + pfi);
+				if (s_log.isLoggable(Level.FINEST)) s_log.finest("Tab: " + pfi);
 			}
 		}
 		
@@ -844,7 +844,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 				if (pfi != null)
 				{
 					list.add (pfi);
-					s_log.finest("Tab: " + pfi);
+					if (s_log.isLoggable(Level.FINEST)) s_log.finest("Tab: " + pfi);
 				}
 			}
 		}
@@ -878,7 +878,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 					if (pfi != null)
 					{
 						list.add (pfi);
-						s_log.finest("Table: " + pfi);
+						if (s_log.isLoggable(Level.FINEST)) s_log.finest("Table: " + pfi);
 					}
 				}
 			}
@@ -962,7 +962,7 @@ public class MPrintFormat extends X_AD_PrintFormat
             	break;
             counter += no;
         }	//	for
-        s_log.finest("#" + counter);
+        if (s_log.isLoggable(Level.FINEST)) s_log.finest("#" + counter);
     }	//	copyTranslationItems
 
 
