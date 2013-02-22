@@ -2520,10 +2520,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 							String error = AEnv.postImmediate (curWindowNo, Env.getAD_Client_ID(ctx),
 								tableIdRef, recordIdRef, force);
 
+							onRefresh(true, false);
+
 							if (error != null)
 								breadCrumb.setStatusLine(error, true);
-
-							onRefresh(true, false);
 						}
 					}
 				});
