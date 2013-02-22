@@ -1992,7 +1992,8 @@ public class GridField
 	{
 		try {
 			GridField field = (GridField) super.clone();
-			field.m_vo.ctx = ctx;
+			field.m_vo = field.m_vo.clone(ctx, field.m_vo.WindowNo, field.m_vo.TabNo, 
+					field.m_vo.AD_Window_ID, field.m_vo.AD_Tab_ID, field.m_vo.tabReadOnly);
 			field.m_vo.lookupInfo = null;
 			return field;
 		} catch (CloneNotSupportedException e) {
