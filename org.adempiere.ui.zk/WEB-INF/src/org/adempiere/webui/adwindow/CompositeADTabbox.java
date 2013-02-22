@@ -369,14 +369,15 @@ public class CompositeADTabbox extends AbstractADTabbox
 	protected void updateTabState() {
     	if (isDetailPaneLoaded())
     	{
+    		boolean hasChanges = false;
     		for(int i = 0; i < headerTab.getDetailPane().getTabcount(); i++)
     		{
     			IADTabpanel adtab = headerTab.getDetailPane().getADTabpanel(i);
     			if (adtab.getDisplayLogic() != null && adtab.getDisplayLogic().trim().length() > 0) {
-    				if (!Evaluator.evaluateLogic(headerTab, adtab.getDisplayLogic())) {
-    					headerTab.getDetailPane().setTabVisibility(i, false);
-    				} else {
-    					headerTab.getDetailPane().setTabVisibility(i, true);
+    				boolean visible = Evaluator.evaluateLogic(headerTab, adtab.getDisplayLogic()); 
+    				if (headerTab.getDetailPane().isTabVisible(i) != visible) {    					
+    					headerTab.getDetailPane().setTabVisibility(i, visible);
+    					hasChanges = true;
     				}
     			}
     		}
@@ -392,7 +393,10 @@ public class CompositeADTabbox extends AbstractADTabbox
     					break;
     				}
     			}
+    			hasChanges = true;
     		}
+    		if (hasChanges)
+    			headerTab.getDetailPane().invalidate();
     	}
 	}
 
@@ -528,6 +532,12 @@ public class CompositeADTabbox extends AbstractADTabbox
 			
 			tabLabel = tabLabelList.get(i);
 			if (tabLabel.tabLevel == headerTab.getTabLevel()) {
+				IADTabpanel adtab = tabPanelList.get(i);
+    			if (adtab.getDisplayLogic() != null && adtab.getDisplayLogic().trim().length() > 0) {
+    				if (!Evaluator.evaluateLogic(headerTab, adtab.getDisplayLogic())) {
+    					continue;
+    				}
+    			}
 				links.put(Integer.toString(i), tabLabel.label);
 			} else if (tabLabel.tabLevel < headerTab.getTabLevel()) {
 				break;
