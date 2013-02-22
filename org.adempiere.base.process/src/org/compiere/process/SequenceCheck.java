@@ -147,7 +147,7 @@ public class SequenceCheck extends SvrProcess
 				sp.addLog(0, null, null,msglog.toString());
 			}	
 			else
-				s_log.fine("Sync #" + no);
+				if (s_log.isLoggable(Level.FINE)) s_log.fine("Sync #" + no);
 		}
 		if (no >= 0)
 			return;
@@ -239,7 +239,7 @@ public class SequenceCheck extends SvrProcess
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		s_log.fine("#" + counter);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("#" + counter);
 	}	//	checkTableID
 
 	

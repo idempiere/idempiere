@@ -1238,7 +1238,7 @@ public abstract class PO
 	 */
 	public static void copyValues (PO from, PO to)
 	{
-		s_log.fine("From ID=" + from.get_ID() + " - To ID=" + to.get_ID());
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("From ID=" + from.get_ID() + " - To ID=" + to.get_ID());
 		//	Different Classes
 		if (from.getClass() != to.getClass())
 		{

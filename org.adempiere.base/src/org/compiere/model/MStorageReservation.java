@@ -75,10 +75,10 @@ public class MStorageReservation extends X_M_StorageReservation {
 			rs = null; pstmt = null;
 		}
 		if (retValue == null)
-			s_log.fine("Not Found - M_Warehouse_ID=" + M_Warehouse_ID 
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("Not Found - M_Warehouse_ID=" + M_Warehouse_ID 
 				+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID + ", IsSOTrx=" + isSOTrx);
 		else
-			s_log.fine("M_Warehouse_ID=" + M_Warehouse_ID 
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("M_Warehouse_ID=" + M_Warehouse_ID 
 				+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID + ", IsSOTrx=" + isSOTrx);
 		return retValue;
 	}	//	get
@@ -257,7 +257,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 		storage.setQty (storage.getQty().add(diffQty));
 		if (s_log.isLoggable(Level.FINE)) {
 			StringBuilder diffText = new StringBuilder("(Qty=").append(diffQty).append(") -> ").append(storage.toString());
-			s_log.fine(diffText.toString());
+			if (s_log.isLoggable(Level.FINE)) s_log.fine(diffText.toString());
 		}
 		return storage.save (trxName);
 	}	//	add
@@ -289,7 +289,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 		//
 		retValue = new MStorageReservation (warehouse, M_Product_ID, M_AttributeSetInstance_ID, isSOTrx);
 		retValue.saveEx(trxName);
-		s_log.fine("New " + retValue);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("New " + retValue);
 		return retValue;
 	}	//	getCreate
 

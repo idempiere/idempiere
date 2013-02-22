@@ -101,7 +101,7 @@ public class MOrderTax extends X_C_OrderTax
 		{
 			retValue.setPrecision(precision);
 			retValue.set_TrxName(trxName);
-			s_log.fine("(old=" + oldTax + ") " + retValue);
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("(old=" + oldTax + ") " + retValue);
 			return retValue;
 		}
 		// If the old tax was required and there is no MOrderTax for that
@@ -119,7 +119,7 @@ public class MOrderTax extends X_C_OrderTax
 		retValue.setC_Tax_ID(line.getC_Tax_ID());
 		retValue.setPrecision(precision);
 		retValue.setIsTaxIncluded(line.isTaxIncluded());
-		s_log.fine("(new) " + retValue);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("(new) " + retValue);
 		return retValue;
 	}	//	get
 	

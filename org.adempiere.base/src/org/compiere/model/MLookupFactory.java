@@ -217,8 +217,7 @@ public class MLookupFactory
 				return null;
 			}
 			info.Query = newSQL;
-			if (s_log.isLoggable(Level.FINE))
-				s_log.fine("getLookupInfo, newSQL ="+newSQL); //jz
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("getLookupInfo, newSQL ="+newSQL); //jz
 		}
 
 		//	Direct Query - NO Validation/Security
@@ -231,8 +230,7 @@ public class MLookupFactory
 				return null;
 			}
 			info.QueryDirect = newSQL;
-			if (s_log.isLoggable(Level.FINE))
-				s_log.fine("getLookupInfo, newSQL ="+newSQL); //jz
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("getLookupInfo, newSQL ="+newSQL); //jz
 		}
 
 		//	Validation
@@ -760,8 +758,7 @@ public class MLookupFactory
 		realSQL.append(" ORDER BY 3");
 		MQuery zoomQuery = null;	//	corrected in VLookup
 
-		if (s_log.isLoggable(Level.FINE))
-			s_log.fine("ColumnName=" + ColumnName + " - " + realSQL);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("ColumnName=" + ColumnName + " - " + realSQL);
 		StringBuilder msginf = new StringBuilder().append(TableName).append(".").append(KeyColumn);
 		MLookupInfo lInfo = new MLookupInfo(realSQL.toString(), TableName,
 			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);

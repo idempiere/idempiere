@@ -139,7 +139,7 @@ public class MQuery implements Serializable
 				String Name = rs.getString(10);
 				boolean isRange = "Y".equals(rs.getString(11));
 				//
-				s_log.fine(ParameterName + " S=" + P_String + "-" + P_String_To
+				if (s_log.isLoggable(Level.FINE)) s_log.fine(ParameterName + " S=" + P_String + "-" + P_String_To
 					+ ", N=" + P_Number + "-" + P_Number_To + ", D=" + P_Date + "-" + P_Date_To
 					+ "; Name=" + Name + ", Info=" + Info + "-" + Info_To + ", Range=" + isRange);
 				//

@@ -202,7 +202,7 @@ public final class MPaySelectionCheck extends X_C_PaySelectionCheck
 	static public MPaySelectionCheck[] get (int C_PaySelection_ID,
 		String PaymentRule, int startDocumentNo, String trxName)
 	{
-		s_log.fine("C_PaySelection_ID=" + C_PaySelection_ID
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("C_PaySelection_ID=" + C_PaySelection_ID
 			+ ", PaymentRule=" +  PaymentRule + ", startDocumentNo=" + startDocumentNo);
 		ArrayList<MPaySelectionCheck> list = new ArrayList<MPaySelectionCheck>();
 
@@ -300,11 +300,11 @@ public final class MPaySelectionCheck extends X_C_PaySelectionCheck
 				}
 				//	Link to Invoice
 				MPaySelectionLine[] psls = check.getPaySelectionLines(false);
-				s_log.fine("confirmPrint - " + check + " (#SelectionLines=" + psls.length + ")");
+				if (s_log.isLoggable(Level.FINE)) s_log.fine("confirmPrint - " + check + " (#SelectionLines=" + psls.length + ")");
 				if (check.getQty() == 1 && psls != null && psls.length == 1)
 				{
 					MPaySelectionLine psl = psls[0];
-					s_log.fine("Map to Invoice " + psl);
+					if (s_log.isLoggable(Level.FINE)) s_log.fine("Map to Invoice " + psl);
 					//
 					payment.setC_Invoice_ID (psl.getC_Invoice_ID());
 					payment.setDiscountAmt (psl.getDiscountAmt());
@@ -352,7 +352,7 @@ public final class MPaySelectionCheck extends X_C_PaySelectionCheck
 				s_log.log(Level.SEVERE, "Check not saved: " + check);
 		}	//	all checks
 
-		s_log.fine("Last Document No = " + lastDocumentNo);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("Last Document No = " + lastDocumentNo);
 		return lastDocumentNo;
 	}	//	confirmPrint
 

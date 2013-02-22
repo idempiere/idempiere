@@ -15,6 +15,7 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.model.MRefList;
 import org.compiere.model.PO;
@@ -103,7 +104,7 @@ public class MAssetChange extends X_A_Asset_Change
 	}
 	
 	public static MAssetChange create(Properties ctx, String changeType, PO[] pos, boolean save, String trxName) {
-		s_log.fine("Entering: changeType=" + changeType);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("Entering: changeType=" + changeType);
 		if (pos == null || pos.length == 0) {
 			s_log.fine("Entering/Leaving: POs is empty");
 			return null;
@@ -117,7 +118,7 @@ public class MAssetChange extends X_A_Asset_Change
 			change.saveEx();
 		}
 		//
-		s_log.fine("Leaving: change=" + change);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("Leaving: change=" + change);
 		return change;
 	}
 	

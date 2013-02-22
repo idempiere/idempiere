@@ -6,8 +6,8 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.idempiere.exceptions.NoCurrencyConversionException;
@@ -97,7 +97,7 @@ public final class MConversionRateUtil
 		if (AmtName != null)
 			model.set_AttrValue(AmtName, amt);
 		// Return amt
-		if (CLogMgt.isLevelFine())	s_log.fine("amt=" + sourceAmt + " * " + rate + "=" + amt + ", scale=" + stdPrecision);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("amt=" + sourceAmt + " * " + rate + "=" + amt + ", scale=" + stdPrecision);
 		return amt;
 	}	//	convert
 }

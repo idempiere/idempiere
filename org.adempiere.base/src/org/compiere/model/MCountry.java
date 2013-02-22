@@ -142,7 +142,7 @@ public final class MCountry extends X_C_Country
 		}
 		if (s_default == null)
 			s_default = usa;
-		s_log.fine("#" + s_countries.size() 
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("#" + s_countries.size() 
 			+ " - Default=" + s_default);
 	}	//	loadAllCountries
 

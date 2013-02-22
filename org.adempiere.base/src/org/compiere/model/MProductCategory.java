@@ -101,7 +101,7 @@ public class MProductCategory extends X_M_Product_Category
 			//	TODO: LRU logic  
 			s_products.put(product, category);
 			//
-			s_log.fine("M_Product_ID=" + M_Product_ID + "(" + category
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("M_Product_ID=" + M_Product_ID + "(" + category
 				+ ") in M_Product_Category_ID=" + M_Product_Category_ID
 				+ " - " + (category.intValue() == M_Product_Category_ID));
 			return category.intValue() == M_Product_Category_ID;

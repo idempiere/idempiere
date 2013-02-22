@@ -296,7 +296,7 @@ public class MCost extends X_M_Cost
 			throw new IllegalArgumentException("Unknown Costing Method = " + costingMethod);
 		if (retValue != null && retValue.signum() > 0)
 		{
-			s_log.fine(product.getName() + ", CostingMethod=" + costingMethod + " - " + retValue);
+			if (s_log.isLoggable(Level.FINE)) s_log.fine(product.getName() + ", CostingMethod=" + costingMethod + " - " + retValue);
 			return retValue;
 		}
 
@@ -306,7 +306,7 @@ public class MCost extends X_M_Cost
 			retValue = getPOPrice(product, C_OrderLine_ID, as.getC_Currency_ID());
 			if (retValue != null && retValue.signum() > 0)
 			{
-				s_log.fine(product.getName() + ", PO - " + retValue);
+				if (s_log.isLoggable(Level.FINE)) s_log.fine(product.getName() + ", PO - " + retValue);
 				return retValue;
 			}
 		}
@@ -318,7 +318,7 @@ public class MCost extends X_M_Cost
 			MCost cost = get(product, M_ASI_ID, as, Org_ID, ce.getM_CostElement_ID(), product.get_TrxName());
 			if (cost != null && cost.getCurrentCostPrice().signum() > 0)
 			{
-				s_log.fine(product.getName() + ", Standard - " + cost);
+				if (s_log.isLoggable(Level.FINE)) s_log.fine(product.getName() + ", Standard - " + cost);
 				return cost.getCurrentCostPrice();
 			}
 		}
@@ -334,7 +334,7 @@ public class MCost extends X_M_Cost
 				retValue = getLastPOPrice(product, M_ASI_ID, 0, as.getC_Currency_ID());
 			if (retValue != null && retValue.signum() > 0)
 			{
-				s_log.fine(product.getName() + ", LastPO = " + retValue);
+				if (s_log.isLoggable(Level.FINE)) s_log.fine(product.getName() + ", LastPO = " + retValue);
 				return retValue;
 			}
 		}
@@ -346,7 +346,7 @@ public class MCost extends X_M_Cost
 				retValue = getLastInvoicePrice(product, M_ASI_ID, 0, as.getC_Currency_ID());
 			if (retValue != null && retValue.signum() != 0)
 			{
-				s_log.fine(product.getName() + ", LastInv = " + retValue);
+				if (s_log.isLoggable(Level.FINE)) s_log.fine(product.getName() + ", LastInv = " + retValue);
 				return retValue;
 			}
 		}
@@ -362,7 +362,7 @@ public class MCost extends X_M_Cost
 				retValue = getLastInvoicePrice(product, M_ASI_ID, 0, as.getC_Currency_ID());
 			if (retValue != null && retValue.signum() > 0)
 			{
-				s_log.fine(product.getName() + ", LastInv = " + retValue);
+				if (s_log.isLoggable(Level.FINE)) s_log.fine(product.getName() + ", LastInv = " + retValue);
 				return retValue;
 			}
 		}
@@ -374,7 +374,7 @@ public class MCost extends X_M_Cost
 				retValue = getLastPOPrice(product, M_ASI_ID, 0, as.getC_Currency_ID());
 			if (retValue != null && retValue.signum() > 0)
 			{
-				s_log.fine(product.getName() + ", LastPO = " + retValue);
+				if (s_log.isLoggable(Level.FINE)) s_log.fine(product.getName() + ", LastPO = " + retValue);
 				return retValue;
 			}
 		}
@@ -402,7 +402,7 @@ public class MCost extends X_M_Cost
 				if (price != null && price.signum() != 0)
 				{
 					retValue = price;
-					s_log.fine(product.getName() + ", Product_PO = " + retValue);
+					if (s_log.isLoggable(Level.FINE)) s_log.fine(product.getName() + ", Product_PO = " + retValue);
 					return retValue;
 				}
 			}
@@ -415,7 +415,7 @@ public class MCost extends X_M_Cost
 			retValue = price;
 		}
 
-		s_log.fine(product.getName() + " = " + retValue);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine(product.getName() + " = " + retValue);
 		return retValue;
 	}	//	getSeedCosts
 

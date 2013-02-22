@@ -108,7 +108,7 @@ public class MOrderLine extends X_C_OrderLine
 		if (retValue == null)
 			s_log.fine("-");
 		else
-			s_log.fine(retValue.toString());
+			if (s_log.isLoggable(Level.FINE)) s_log.fine(retValue.toString());
 		return retValue;
 	}	//	getNotReserved
 	

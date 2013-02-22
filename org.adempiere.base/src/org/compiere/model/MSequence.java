@@ -449,7 +449,7 @@ public class MSequence extends X_AD_Sequence
 			//		+ " - Type=" + pstmt.getResultSetType() + " - Concur=" + pstmt.getResultSetConcurrency());
 			if (rs.next())
 			{
-				s_log.fine("AD_Sequence_ID="+AD_Sequence_ID);
+				if (s_log.isLoggable(Level.FINE)) s_log.fine("AD_Sequence_ID="+AD_Sequence_ID);
 
 				PreparedStatement updateSQL = null;
 				try
@@ -656,7 +656,7 @@ public class MSequence extends X_AD_Sequence
 			while (rs.next())
 			{
 				String tableName = rs.getString(1);
-				s_log.fine("Add: " + tableName);
+				if (s_log.isLoggable(Level.FINE)) s_log.fine("Add: " + tableName);
 				MSequence seq = new MSequence (ctx, AD_Client_ID, tableName, trxName);
 				if (seq.save())
 					counter++;

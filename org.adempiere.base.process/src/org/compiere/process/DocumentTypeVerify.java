@@ -174,7 +174,7 @@ public class DocumentTypeVerify extends SvrProcess
 				if (pc.save())
 				{
 					counter++;
-					s_log.fine(pc.toString());
+					if (s_log.isLoggable(Level.FINE)) s_log.fine(pc.toString());
 				}
 				else
 					s_log.warning("Not saved: " + pc);
