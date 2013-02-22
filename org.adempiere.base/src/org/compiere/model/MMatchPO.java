@@ -1111,7 +1111,7 @@ public class MMatchPO extends X_M_MatchPO
 		if (errors == 0 && success == 0)
 			;
 		else
-			s_log.info("Success #" + success + " - Error #" + errors);
+			if (s_log.isLoggable(Level.INFO)) s_log.info("Success #" + success + " - Error #" + errors);
 	}	//	consolidate
 	
 	//AZ Goodwill

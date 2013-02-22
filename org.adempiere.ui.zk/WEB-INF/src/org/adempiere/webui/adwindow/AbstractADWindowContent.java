@@ -2559,7 +2559,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		 *  Start Process ----
 		 */
 
-		logger.config("Process_ID=" + wButton.getProcess_ID() + ", Record_ID=" + record_ID);
+		if (logger.isLoggable(Level.CONFIG)) logger.config("Process_ID=" + wButton.getProcess_ID() + ", Record_ID=" + record_ID);
 
 		if (wButton.getProcess_ID() == 0)
 		{

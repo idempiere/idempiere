@@ -119,7 +119,7 @@ public final class MRole extends X_AD_Role
 	 */
 	public static MRole get (Properties ctx, int AD_Role_ID, int AD_User_ID, boolean reload)
 	{
-		s_log.info("AD_Role_ID=" + AD_Role_ID + ", AD_User_ID=" + AD_User_ID + ", reload=" + reload);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("AD_Role_ID=" + AD_Role_ID + ", AD_User_ID=" + AD_User_ID + ", reload=" + reload);
 		String key = AD_Role_ID + "_" + AD_User_ID;
 		MRole role = (MRole)s_roles.get (key);
 		if (role == null || reload)
@@ -133,7 +133,7 @@ public final class MRole extends X_AD_Role
 			}
 			role.setAD_User_ID(AD_User_ID);
 			role.loadAccess(reload);
-			s_log.info(role.toString());
+			if (s_log.isLoggable(Level.INFO)) s_log.info(role.toString());
 		}
 		return role;
 	}	//	get
@@ -2538,7 +2538,7 @@ public final class MRole extends X_AD_Role
 				pstmt1.setInt(1, getAD_Role_ID());
 				pstmt1.setString(2, doc.getDocBaseType());
 
-				s_log.info(sql1 + " : " + getAD_Role_ID() + " "
+				if (s_log.isLoggable(Level.INFO)) s_log.info(sql1 + " : " + getAD_Role_ID() + " "
 						+ doc.getDocBaseType());
 				rs1 = pstmt1.executeQuery();
 
@@ -2563,7 +2563,7 @@ public final class MRole extends X_AD_Role
 
 			pstmt = DB.prepareStatement(sql, null);
 			DB.setParameters(pstmt, params);
-			s_log.info(sql + " : " );
+			if (s_log.isLoggable(Level.INFO)) s_log.info(sql + " : " );
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				String op = rs.getString(1);
@@ -2619,7 +2619,7 @@ public final class MRole extends X_AD_Role
 			}
 		}
 		
-		s_log.info("Include "+role);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("Include "+role);
 		
 		if(role.isActive()){
 			this.m_includedRoles.add(role);

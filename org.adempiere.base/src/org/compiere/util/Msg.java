@@ -158,7 +158,7 @@ public final class Msg
 			s_log.log(Level.SEVERE, "Too few (" + msg.size() + ") Records found for " + AD_Language);
 			return null;
 		}
-		s_log.info("Records=" + msg.size() + " - " + AD_Language);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("Records=" + msg.size() + " - " + AD_Language);
 		return msg;
 	}	//	initMsg
 
@@ -259,8 +259,7 @@ public final class Msg
 		//
 		if (retStr == null || retStr.length() == 0)
 		{
-			if (s_log.isLoggable(Level.INFO))
-				s_log.info("NOT found: " + AD_Message);
+			if (s_log.isLoggable(Level.INFO)) s_log.info("NOT found: " + AD_Message);
 			return AD_Message;
 		}
 

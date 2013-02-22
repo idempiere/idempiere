@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -100,7 +101,7 @@ public class MCostElement extends X_M_CostElement
 		if (list.size() > 0)
 			retValue = list.get(0);
 		if (list.size() > 1)
-			s_log.info("More then one Material Cost Element for CostingMethod=" + CostingMethod);
+			if (s_log.isLoggable(Level.INFO)) s_log.info("More then one Material Cost Element for CostingMethod=" + CostingMethod);
 		return retValue;
 	}	//	getMaterialCostElement
 	

@@ -4,6 +4,7 @@
 package org.idempiere.fa.process;
 
 import java.lang.reflect.Field;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.process.ProcessInfoParameter;
@@ -85,7 +86,7 @@ public abstract class SvrProcess2 extends SvrProcess
 				//
 				if (!isSet)
 				{
-					s_log.info("Parameter not set - "+parameterName);
+					if (s_log.isLoggable(Level.INFO)) s_log.info("Parameter not set - "+parameterName);
 				}
 			} // for Field
 		}

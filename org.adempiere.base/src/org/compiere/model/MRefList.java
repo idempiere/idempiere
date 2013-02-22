@@ -170,7 +170,7 @@ public class MRefList extends X_AD_Ref_List
 		if (retValue == null)
 		{
 			retValue = "";
-			s_log.info("getListDescription - Not found " + key);
+			if (s_log.isLoggable(Level.INFO)) s_log.info("getListDescription - Not found " + key);
 		}
 		s_cache.put(key, retValue);
 		//

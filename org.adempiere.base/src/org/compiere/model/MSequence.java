@@ -678,7 +678,7 @@ public class MSequence extends X_AD_Sequence
 			rs = null;
 			pstmt = null;
 		}
-		s_log.info ("AD_Client_ID=" + AD_Client_ID
+		if (s_log.isLoggable(Level.INFO)) s_log.info ("AD_Client_ID=" + AD_Client_ID
 			+ " - created #" + counter
 			+ " - success=" + success);
 		return success;

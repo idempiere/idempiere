@@ -434,7 +434,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		}
 		if (retValue == null)
 		{
-			s_log.info ("NOT found - FromUOM=" + C_UOM_From_ID + ", ToUOM=" + C_UOM_To_ID);
+			if (s_log.isLoggable(Level.INFO)) s_log.info ("NOT found - FromUOM=" + C_UOM_From_ID + ", ToUOM=" + C_UOM_To_ID);
 			return null;
 		}
 			

@@ -185,7 +185,7 @@ public class MStore extends X_W_Store
 			Collection<?> cc = s_cache.values();
 			Object[] oo = cc.toArray();
 			for (int i = 0; i < oo.length; i++)
-				s_log.info(i + ": " + oo[i]);
+				if (s_log.isLoggable(Level.INFO)) s_log.info(i + ": " + oo[i]);
 			MStore[] retValue = new MStore[oo.length];
 			for (int i = 0; i < oo.length; i++)
 				retValue[i] = (MStore)oo[i];

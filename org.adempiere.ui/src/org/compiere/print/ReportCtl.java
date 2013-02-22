@@ -111,7 +111,7 @@ public class ReportCtl
 	 */
 	static public boolean start (IProcessUI parent, int WindowNo, ProcessInfo pi)
 	{
-		s_log.info("start - " + pi);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("start - " + pi);
 
 		/**
 		 *	Order Print

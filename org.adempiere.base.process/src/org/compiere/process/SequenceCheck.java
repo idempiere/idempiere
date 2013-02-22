@@ -194,7 +194,7 @@ public class SequenceCheck extends SvrProcess
 		if (IDRangeEnd <= 0)
 			IDRangeEnd = DB.getSQLValue(null,
 				"SELECT MIN(IDRangeStart)-1 FROM AD_Replication");
-		s_log.info("IDRangeEnd = " + IDRangeEnd);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("IDRangeEnd = " + IDRangeEnd);
 		//
 		String sql = "SELECT * FROM AD_Sequence "
 			+ "WHERE IsTableID='Y' "

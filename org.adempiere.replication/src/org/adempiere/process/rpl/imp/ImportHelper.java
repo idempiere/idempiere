@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -565,10 +566,10 @@ public class ImportHelper {
 								.setParameters(value)
 								.firstOnly();
 		
-		s_log.info("Client_Value =[" + value + "]");
+		if (s_log.isLoggable(Level.INFO)) s_log.info("Client_Value =[" + value + "]");
 		if(result != null)
 		{
-			s_log.info("AD_Client_ID = " + result.getAD_Client_ID());
+			if (s_log.isLoggable(Level.INFO)) s_log.info("AD_Client_ID = " + result.getAD_Client_ID());
 		}
 		
 		return result;

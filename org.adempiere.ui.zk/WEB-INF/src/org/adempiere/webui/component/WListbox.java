@@ -646,7 +646,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		// repaint the table
 		this.repaint();
 
-		logger.config("Row(rs)=" + getRowCount());
+		if (logger.isLoggable(Level.CONFIG)) logger.config("Row(rs)=" + getRowCount());
 
 		return;
 	}	//	loadTable
@@ -725,7 +725,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		// repaint the table
 		this.repaint();
 
-		logger.config("Row(array)=" + getRowCount());
+		if (logger.isLoggable(Level.CONFIG)) logger.config("Row(array)=" + getRowCount());
 
 		return;
 	}	//	loadTable

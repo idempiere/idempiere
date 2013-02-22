@@ -98,7 +98,7 @@ public class MProductDownload extends X_M_ProductDownload
 			rs = null;
 			pstmt = null;
 		}
-		s_log.info("#" + count);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("#" + count);
 	}	//	migrateDownloads
 	
 	/**	Logger	*/

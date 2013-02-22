@@ -659,7 +659,7 @@ public class MCost extends X_M_Cost
 				{
 					BigDecimal cost = getCurrentCost(product, 0, ass[i], 0,
 						null, Env.ONE, 0, false, trxNameUsed);		//	create non-zero costs
-					s_log.info(product.getName() + " = " + cost);
+					if (s_log.isLoggable(Level.INFO)) s_log.info(product.getName() + " = " + cost);
 				}
 			}
 		}

@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
@@ -60,7 +61,7 @@ public class AZoomAcross
 
 	public AZoomAcross(JComponent invoker, PO po, final int windowID) {
 		
-		logger.config("PO=" + po+", WindowID="+windowID);
+		if (logger.isLoggable(Level.CONFIG)) logger.config("PO=" + po+", WindowID="+windowID);
 		
 		mkZoomTargets(po, windowID);
 				

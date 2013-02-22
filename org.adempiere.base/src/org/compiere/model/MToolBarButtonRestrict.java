@@ -92,8 +92,7 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	 **/
 	public static int[] getOfWindow(Properties ctx, int AD_Role_ID, int AD_Window_ID, boolean reportViewer, String trxName)
 	{		
-		if (s_log.isLoggable(Level.INFO))
-			s_log.info("sql="+GET_OF_WINDOW_SQL);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("sql="+GET_OF_WINDOW_SQL);
 		
 		int[] ids = DB.getIDsEx(trxName, GET_OF_WINDOW_SQL, Env.getAD_Client_ID(ctx), AD_Role_ID, AD_Window_ID, reportViewer ? "R" : "W");
 
@@ -109,8 +108,7 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	 **/
 	public static int[] getOfReport(Properties ctx, int AD_Role_ID, int AD_Process_ID, String trxName)
 	{		
-		if (s_log.isLoggable(Level.INFO))
-			s_log.info("sql="+GET_OF_REPORT_SQL);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("sql="+GET_OF_REPORT_SQL);
 		
 		int[] ids = DB.getIDsEx(trxName, GET_OF_REPORT_SQL, Env.getAD_Client_ID(ctx), AD_Role_ID, AD_Process_ID, "R");
 
@@ -120,8 +118,7 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	/** Returns a list of restrictions to be applied according to the role for ad_tab toolbar buttons **/
 	public static int[] getOfTab(Properties ctx, int AD_Role_ID, int AD_Tab_ID, String trxName)
 	{
-		if (s_log.isLoggable(Level.INFO))
-			s_log.info("sql="+GET_OF_TAB_SQL);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("sql="+GET_OF_TAB_SQL);
 		
 		int[] ids = DB.getIDsEx(trxName, GET_OF_TAB_SQL, Env.getAD_Client_ID(ctx), AD_Role_ID, AD_Tab_ID);
 

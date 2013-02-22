@@ -179,7 +179,7 @@ public class MPeriod extends X_C_Period
 			rs = null; pstmt = null;
 		}
 		if (retValue == null)
-			s_log.info("No Standard Period for " + DateAcct 
+			if (s_log.isLoggable(Level.INFO)) s_log.info("No Standard Period for " + DateAcct 
 				+ " (AD_Client_ID=" + AD_Client_ID + ")");
 		return retValue;
 	}

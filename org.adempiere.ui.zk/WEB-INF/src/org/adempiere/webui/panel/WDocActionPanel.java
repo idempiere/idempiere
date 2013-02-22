@@ -19,6 +19,7 @@ package org.adempiere.webui.panel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -319,7 +320,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 	{
 		int index = getSelectedIndex();
 		//	Save Selection
-		logger.config("DocAction=" + s_value[index]);
+		if (logger.isLoggable(Level.CONFIG)) logger.config("DocAction=" + s_value[index]);
 		gridTab.setValue("DocAction", s_value[index]);
 	}	//	save
 
