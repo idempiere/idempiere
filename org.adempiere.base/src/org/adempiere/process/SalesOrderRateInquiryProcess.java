@@ -1,12 +1,27 @@
+/******************************************************************************
+ * Copyright (C) 2013 Elaine Tan                                              *
+ * Copyright (C) 2013 Trek Global
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *****************************************************************************/
 package org.adempiere.process;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.FillMandatoryException;
+import org.adempiere.model.ShippingPackage;
 import org.adempiere.util.ShippingUtil;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MOrder;
@@ -25,6 +40,11 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.Trx;
 
+/**
+ * 
+ * @author Elaine
+ *
+ */
 public class SalesOrderRateInquiryProcess extends SvrProcess 
 {
 	private boolean p_IsPriviledgedRate = false;
@@ -85,7 +105,7 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 		MShippingTransaction st = null;
 		try
 		{			
-			st = createShippingTransaction(m_order, MShippingTransaction.ACTION_RateInquiry, get_TrxName());
+			st = createShippingTransaction(getCtx(), m_order, MShippingTransaction.ACTION_RateInquiry, p_IsPriviledgedRate, get_TrxName());
 			ok = st.processOnline();
 		}
 		catch (Exception e)
@@ -112,23 +132,41 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 				}
 			}
 			
-			if (freightLine == null)
+			if (m_order.getFreightCostRule().equals(MOrder.FREIGHTCOSTRULE_FreightIncluded))
 			{
-				freightLine = new MOrderLine(m_order);
-			
-				if (ci.getC_ChargeFreight_ID() > 0)
-					freightLine.setC_Charge_ID(ci.getC_ChargeFreight_ID());
-				else if (ci.getM_ProductFreight_ID() > 0)
-					freightLine.setM_Product_ID(ci.getM_ProductFreight_ID());
-				else
-					throw new AdempiereException("Product or Charge for Freight is not defined at Client window > Client Info tab");
+				if (freightLine != null)
+				{
+					boolean deleted = freightLine.delete(false);
+					if (!deleted)
+					{
+						freightLine.setC_BPartner_Location_ID(m_order.getC_BPartner_Location_ID());
+						freightLine.setM_Shipper_ID(m_order.getM_Shipper_ID());
+						freightLine.setQty(BigDecimal.ONE);
+						freightLine.setPrice(BigDecimal.ZERO);
+						freightLine.saveEx();
+					}
+				}
 			}
-			
-			freightLine.setC_BPartner_Location_ID(m_order.getC_BPartner_Location_ID());
-			freightLine.setM_Shipper_ID(m_order.getM_Shipper_ID());
-			freightLine.setQty(BigDecimal.ONE);
-			freightLine.setPrice(st.getPrice());
-			freightLine.saveEx();
+			else if (m_order.getFreightCostRule().equals(MOrder.FREIGHTCOSTRULE_Calculated))
+			{			
+				if (freightLine == null)
+				{
+					freightLine = new MOrderLine(m_order);
+				
+					if (ci.getC_ChargeFreight_ID() > 0)
+						freightLine.setC_Charge_ID(ci.getC_ChargeFreight_ID());
+					else if (ci.getM_ProductFreight_ID() > 0)
+						freightLine.setM_Product_ID(ci.getM_ProductFreight_ID());
+					else
+						throw new AdempiereException("Product or Charge for Freight is not defined at Client window > Client Info tab");
+				}
+				
+				freightLine.setC_BPartner_Location_ID(m_order.getC_BPartner_Location_ID());
+				freightLine.setM_Shipper_ID(m_order.getM_Shipper_ID());
+				freightLine.setQty(BigDecimal.ONE);
+				freightLine.setPrice(st.getPrice());
+				freightLine.saveEx();
+			}
 		}
 		else
 		{
@@ -143,22 +181,22 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 		return st.getShippingRespMessage();
 	}
 	
-	private MShippingTransaction createShippingTransaction(MOrder m_order, String action, String trxName)
+	public static MShippingTransaction createShippingTransaction(Properties ctx, MOrder m_order, String action, boolean isPriviledgedRate, String trxName)
 	{
-		MShipper shipper = new MShipper(getCtx(), m_order.getM_Shipper_ID(), get_TrxName());
+		MShipper shipper = new MShipper(ctx, m_order.getM_Shipper_ID(), trxName);
 		String whereClause = "M_Shipper_ID = " + shipper.getM_Shipper_ID() + " AND IsDefault='Y' AND IsActive='Y'";
 		int M_ShipperLabels_ID = 0;
-		int[] ids = MShipperLabels.getAllIDs(MShipperLabels.Table_Name, whereClause, get_TrxName());
+		int[] ids = MShipperLabels.getAllIDs(MShipperLabels.Table_Name, whereClause, trxName);
 		if (ids.length > 0)
 			M_ShipperLabels_ID = ids[0];
 
 		int M_ShipperPackaging_ID = 0;
-		ids = MShipperPackaging.getAllIDs(MShipperPackaging.Table_Name, whereClause, get_TrxName());
+		ids = MShipperPackaging.getAllIDs(MShipperPackaging.Table_Name, whereClause, trxName);
 		if (ids.length > 0)
 			M_ShipperPackaging_ID = ids[0];
 
 		int M_ShipperPickupTypes_ID = 0;
-		ids = MShipperPickupTypes.getAllIDs(MShipperPickupTypes.Table_Name, whereClause, get_TrxName());
+		ids = MShipperPickupTypes.getAllIDs(MShipperPickupTypes.Table_Name, whereClause, trxName);
 		if (ids.length > 0)
 			M_ShipperPickupTypes_ID = ids[0];
 		
@@ -166,8 +204,8 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 		String DutiesShipperAccount = ShippingUtil.getSenderDutiesShipperAccount(shipper.getM_Shipper_ID(), shipper.getAD_Org_ID());
 		
 		// 1 kg = 2.20462 lb
-		MClientInfo ci = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
-		MUOM uom = new MUOM(getCtx(), ci.getC_UOM_Weight_ID(), null);
+		MClientInfo ci = MClientInfo.get(ctx, m_order.getAD_Client_ID(), trxName);
+		MUOM uom = new MUOM(ctx, ci.getC_UOM_Weight_ID(), null);
 		String unit = uom.getX12DE355();
 		boolean isPound = false;
 		if (unit != null)
@@ -177,7 +215,7 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 				isPound = true;
 		}
 		
-		MShipperPackaging sp = new MShipperPackaging(getCtx(), M_ShipperPackaging_ID, get_TrxName());
+		MShipperPackaging sp = new MShipperPackaging(ctx, M_ShipperPackaging_ID, trxName);
 		BigDecimal WeightPerPackage = sp.getWeight().multiply(isPound ? new BigDecimal(2.20462) : BigDecimal.ONE);
 		
 		if (WeightPerPackage == null || WeightPerPackage.compareTo(BigDecimal.ZERO) == 0)
@@ -205,7 +243,7 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 			}
 			else if (ol.getM_Product_ID() > 0)
 			{
-				MProduct product = new MProduct(getCtx(), ol.getM_Product_ID(), get_TrxName());
+				MProduct product = new MProduct(ctx, ol.getM_Product_ID(), trxName);
 				
 				BigDecimal weight = product.getWeight();
 				if (weight == null || weight.compareTo(BigDecimal.ZERO) == 0)
@@ -267,7 +305,7 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 		
 		int BoxCount = packages.size();
 		
-		MShippingTransaction st = new MShippingTransaction(getCtx(), 0, trxName);
+		MShippingTransaction st = new MShippingTransaction(ctx, 0, trxName);
 		st.setAction(action);
 //		st.setAD_Client_ID(m_order.getAD_Client_ID());
 		st.setAD_Org_ID(m_order.getAD_Org_ID());
@@ -315,7 +353,7 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 //		st.setIsHoldAtLocation(isHoldAtLocation());
 //		st.setIsIgnoreZipNotFound(isIgnoreZipNotFound());
 //		st.setIsIgnoreZipStateNotMatch(isIgnoreZipStateNotMatch());
-		st.setIsPriviledgedRate(p_IsPriviledgedRate);
+		st.setIsPriviledgedRate(isPriviledgedRate);
 		st.setIsResidential(shipper.isResidential());
 		st.setIsSaturdayDelivery(shipper.isSaturdayDelivery());
 //		st.setIsSaturdayPickup(isSaturdayPickup());
@@ -378,54 +416,5 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 		}
 		
 		return st;
-	}
-	
-	class ShippingPackage
-	{
-		private BigDecimal weight;
-		private BigDecimal height;
-		private BigDecimal length;
-		private BigDecimal width;
-		private ArrayList<MProduct> products;
-		
-		public BigDecimal getWeight() {
-			return weight;
-		}
-		
-		public void setWeight(BigDecimal weight) {
-			this.weight = weight;
-		}
-		
-		public BigDecimal getHeight() {
-			return height;
-		}
-		
-		public void setHeight(BigDecimal height) {
-			this.height = height;
-		}
-		
-		public BigDecimal getLength() {
-			return length;
-		}
-		
-		public void setLength(BigDecimal length) {
-			this.length = length;
-		}
-		
-		public BigDecimal getWidth() {
-			return width;
-		}
-		
-		public void setWidth(BigDecimal width) {
-			this.width = width;
-		}
-		
-		public ArrayList<MProduct> getProducts() {
-			return products;
-		}
-		
-		public void setProducts(ArrayList<MProduct> products) {
-			this.products = products;
-		}
 	}
 }

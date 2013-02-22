@@ -34,6 +34,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoBillToAddressException;
 import org.adempiere.exceptions.BPartnerNoShipToAddressException;
 import org.adempiere.exceptions.FillMandatoryException;
+import org.adempiere.process.SalesOrderRateInquiryProcess;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
@@ -43,6 +44,7 @@ import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
@@ -1231,6 +1233,18 @@ public class MOrder extends X_C_Order implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 		
+		if (isSOTrx() && getDeliveryViaRule().equals(DELIVERYVIARULE_Shipper))
+		{
+			if (getM_Shipper_ID() == 0)
+			{
+				m_processMsg = "@FillMandatory@" + Msg.getElement(getCtx(), COLUMNNAME_M_Shipper_ID);
+				return DocAction.STATUS_Invalid;
+			}
+			
+			if (!calculateFreightCharge())
+				return DocAction.STATUS_Invalid;
+		}
+
 		//	Lines
 		MOrderLine[] lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);
 		if (lines.length == 0)
@@ -1238,7 +1252,7 @@ public class MOrder extends X_C_Order implements DocAction
 			m_processMsg = "@NoLines@";
 			return DocAction.STATUS_Invalid;
 		}
-		
+				
 		// Bug 1564431
 		if (getDeliveryRule() != null && getDeliveryRule().equals(MOrder.DELIVERYRULE_CompleteOrder)) 
 		{
@@ -1395,6 +1409,148 @@ public class MOrder extends X_C_Order implements DocAction
 	//		setDocAction(DOCACTION_Complete);
 		return DocAction.STATUS_InProgress;
 	}	//	prepareIt
+	
+	private boolean calculateFreightCharge()
+	{
+		MClientInfo ci = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
+		if (ci.getC_ChargeFreight_ID() == 0 && ci.getM_ProductFreight_ID() == 0)
+		{
+			m_processMsg = "Product or Charge for Freight is not defined at Client window > Client Info tab";
+			return false;
+		}
+		
+		MOrderLine[] ols = getLines(false, MOrderLine.COLUMNNAME_Line);
+		if (ols.length == 0)
+		{
+			m_processMsg = "@NoLines@";
+			return false;
+		}
+		
+		MOrderLine freightLine = null;
+		for (MOrderLine ol : ols)
+		{
+			if ((ol.getM_Product_ID() > 0 && ol.getM_Product_ID() == ci.getM_ProductFreight_ID()) ||
+					(ol.getC_Charge_ID() > 0 && ol.getC_Charge_ID() == ci.getC_ChargeFreight_ID()))
+			{
+				freightLine = ol;
+				break;
+			}
+		}
+		
+		if (getFreightCostRule().equals(FREIGHTCOSTRULE_FreightIncluded))
+		{
+			if (freightLine != null)
+			{
+				boolean deleted = freightLine.delete(false);
+				if (!deleted)
+				{
+					freightLine.setC_BPartner_Location_ID(getC_BPartner_Location_ID());
+					freightLine.setM_Shipper_ID(getM_Shipper_ID());
+					freightLine.setQty(BigDecimal.ONE);
+					freightLine.setPrice(BigDecimal.ZERO);
+					freightLine.saveEx();
+				}
+			}
+		}
+		else if (getFreightCostRule().equals(FREIGHTCOSTRULE_FixPrice))
+		{
+			if (freightLine == null)
+			{
+				freightLine = new MOrderLine(this);
+			
+				if (ci.getC_ChargeFreight_ID() > 0)
+					freightLine.setC_Charge_ID(ci.getC_ChargeFreight_ID());
+				else if (ci.getM_ProductFreight_ID() > 0)
+					freightLine.setM_Product_ID(ci.getM_ProductFreight_ID());
+				else
+					throw new AdempiereException("Product or Charge for Freight is not defined at Client window > Client Info tab");
+			}
+			
+			freightLine.setC_BPartner_Location_ID(getC_BPartner_Location_ID());
+			freightLine.setM_Shipper_ID(getM_Shipper_ID());
+			freightLine.setQty(BigDecimal.ONE);
+			freightLine.setPrice(getFreightAmt());
+			freightLine.saveEx();
+		}
+		else if (getFreightCostRule().equals(FREIGHTCOSTRULE_Calculated))
+		{
+			if (ci.getC_UOM_Weight_ID() == 0)
+			{
+				m_processMsg = "UOM for Weight is not defined at Client window > Client Info tab";
+				return false;
+			}
+			if (ci.getC_UOM_Length_ID() == 0)
+			{
+				m_processMsg = "UOM for Length is not defined at Client window > Client Info ta";
+				return false;
+			}
+			
+			for (MOrderLine ol : ols)
+			{
+				if ((ol.getM_Product_ID() > 0 && ol.getM_Product_ID() == ci.getM_ProductFreight_ID()) ||
+						(ol.getC_Charge_ID() > 0 && ol.getC_Charge_ID() == ci.getC_ChargeFreight_ID()))
+					continue;
+				else if (ol.getM_Product_ID() > 0)
+				{
+					MProduct product = new MProduct(getCtx(), ol.getM_Product_ID(), get_TrxName());
+					
+					BigDecimal weight = product.getWeight();
+					if (weight == null || weight.compareTo(BigDecimal.ZERO) == 0)
+					{
+						m_processMsg = "No weight defined for product " + product.toString();
+						return false;
+					}
+				}
+			}
+			
+			Trx trx = Trx.get(Trx.createTrxName("spt-"), true);
+			boolean ok = false;
+			MShippingTransaction st = null;
+			try
+			{			
+				st = SalesOrderRateInquiryProcess.createShippingTransaction(getCtx(), this, MShippingTransaction.ACTION_RateInquiry, isPriviledgedRate(), get_TrxName());
+				ok = st.processOnline();
+			}
+			catch (Exception e)
+			{
+				log.log(Level.SEVERE, "processOnline", e);
+			}
+			
+			if (trx != null)
+			{
+				trx.commit();
+				trx.close();
+			}
+			
+			if (ok)
+			{
+				if (freightLine == null)
+				{
+					freightLine = new MOrderLine(this);
+				
+					if (ci.getC_ChargeFreight_ID() > 0)
+						freightLine.setC_Charge_ID(ci.getC_ChargeFreight_ID());
+					else if (ci.getM_ProductFreight_ID() > 0)
+						freightLine.setM_Product_ID(ci.getM_ProductFreight_ID());
+					else
+						throw new AdempiereException("Product or Charge for Freight is not defined at Client window > Client Info tab");
+				}
+				
+				freightLine.setC_BPartner_Location_ID(getC_BPartner_Location_ID());
+				freightLine.setM_Shipper_ID(getM_Shipper_ID());
+				freightLine.setQty(BigDecimal.ONE);
+				freightLine.setPrice(st.getPrice());
+				freightLine.saveEx();
+			}
+			else
+			{
+				m_processMsg = st.getErrorMessage();
+				return false;
+			}
+		}
+		
+		return true;
+	}
 	
 	/**
 	 * 	Explode non stocked BOM.
