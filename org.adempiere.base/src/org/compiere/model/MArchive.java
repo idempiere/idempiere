@@ -76,7 +76,7 @@ public class MArchive extends X_AD_Archive {
 		if (list.size() == 0)
 			s_log.fine(sql.toString());
 		else
-			s_log.finer(sql.toString());
+			if (s_log.isLoggable(Level.FINER)) s_log.finer(sql.toString());
 		//
 		MArchive[] retValue = new MArchive[list.size()];
 		list.toArray(retValue);

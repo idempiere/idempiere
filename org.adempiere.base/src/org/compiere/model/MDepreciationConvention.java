@@ -2,7 +2,6 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 

@@ -28,10 +28,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -120,7 +120,7 @@ public class SetGetUtil
 	{
 		for (SetGetModel model : models)
 		{
-			if(CLogMgt.isLevelFinest()) s_log.finest("Model: " + model);
+			if (s_log.isLoggable(Level.FINEST)) s_log.finest("Model: " + model);
 			if (rs.next())
 			{
 				if (columnNames == null)
@@ -149,12 +149,12 @@ public class SetGetUtil
 					}
 					//
 					ok = model.set_AttrValue(columnName, obj);
-					if (CLogMgt.isLevelFinest()) s_log.finest("columnName=" + columnName + ", value=[" + obj + "][" + (obj != null ? obj.getClass().getName() : "null") + "], ok=" + ok);
+					if (s_log.isLoggable(Level.FINEST)) s_log.finest("columnName=" + columnName + ", value=[" + obj + "][" + (obj != null ? obj.getClass().getName() : "null") + "], ok=" + ok);
 				}
 			}
 			else
 			{
-				s_log.finest("@NoResult@");
+				if (s_log.isLoggable(Level.FINEST)) s_log.finest("@NoResult@");
 				break;
 			}
 		}
@@ -234,7 +234,7 @@ public class SetGetUtil
 								String[] includeFields, String[] excludeFields,
 								boolean trackOnlyChanges)
 	{
-		if (CLogMgt.isLevelFinest())
+		if (s_log.isLoggable(Level.FINEST)) 
 		{
 			s_log.finest("Entering: From=" + from+ " - To=" + to);
 //			s_log.finest("includeFields=" + ARHIPAC.toString(includeFields));
@@ -243,7 +243,7 @@ public class SetGetUtil
 		//
 		if (to == null || from == null)
 		{
-			if (CLogMgt.isLevelFinest())
+			if (s_log.isLoggable(Level.FINEST))
 			{
 				s_log.finest("Leaving: to == null || from == null");
 				Thread.dumpStack();
@@ -308,19 +308,19 @@ public class SetGetUtil
 			//-
 			if (isExcluded)
 			{
-				if (CLogMgt.isLevelFinest()) s_log.finest("Field " + colName + " [SKIP:excluded]");
+				if (s_log.isLoggable(Level.FINEST)) s_log.finest("Field " + colName + " [SKIP:excluded]");
 				continue;
 			}
 
 			int idx_to = to.get_ColumnIndex(colName);
 			if (idx_to < 0)
 			{
-				if (CLogMgt.isLevelFinest()) s_log.finest("Field " + colName + " [SKIP:idx_to < 0]");
+				if (s_log.isLoggable(Level.FINEST)) s_log.finest("Field " + colName + " [SKIP:idx_to < 0]");
 				continue;
 			}
 			if (to.p_info.isVirtualColumn(idx_to) || to.p_info.isKey(idx_to))
 			{ // KeyColumn
-				if (CLogMgt.isLevelFinest()) s_log.finest("Field " + colName + " [SKIP:virtual or key]");
+				if (s_log.isLoggable(Level.FINEST)) s_log.finest("Field " + colName + " [SKIP:virtual or key]");
 				continue;
 			}
 
@@ -331,10 +331,10 @@ public class SetGetUtil
 			{
 				copiedFields++;
 			}
-			if (CLogMgt.isLevelFinest()) s_log.finest("Field " + colName + "=[" + value + "], idx=" + idx_from + "->" + idx_to);
+			if (s_log.isLoggable(Level.FINEST)) s_log.finest("Field " + colName + "=[" + value + "], idx=" + idx_from + "->" + idx_to);
 		}
 		//
-		if (CLogMgt.isLevelFinest()) s_log.finest("Leaving: to=" + to);
+		if (s_log.isLoggable(Level.FINEST)) s_log.finest("Leaving: to=" + to);
 		return copiedFields;
 	}	//	copyValues
 

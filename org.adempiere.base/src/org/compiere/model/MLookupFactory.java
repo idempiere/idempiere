@@ -367,8 +367,7 @@ public class MLookupFactory
 		MLookupInfo retValue = (MLookupInfo)s_cacheRefTable.get(key.toString());
 		if (retValue != null)
 		{
-			if (s_log.isLoggable(Level.FINEST))
-				s_log.finest("Cache: " + retValue);
+			if (s_log.isLoggable(Level.FINEST)) s_log.finest("Cache: " + retValue);
 			return retValue.cloneIt();
 		}
 		//
@@ -556,8 +555,7 @@ public class MLookupFactory
 		else
 			realSQL.append(" ORDER BY 3");
 
-		if (s_log.isLoggable(Level.FINEST))
-			s_log.finest("AD_Reference_Value_ID=" + AD_Reference_Value_ID + " - " + realSQL);
+		if (s_log.isLoggable(Level.FINEST)) s_log.finest("AD_Reference_Value_ID=" + AD_Reference_Value_ID + " - " + realSQL);
 		if (overrideZoomWindow > 0)
 		{
 			ZoomWindow = overrideZoomWindow;

@@ -548,7 +548,7 @@ public class MSequence extends X_AD_Sequence
 		if (suffix != null && suffix.length() > 0)
 			doc.append(Env.parseVariable(suffix, po, trxName, false));
 		String documentNo = doc.toString();
-		s_log.finer (documentNo + " (" + incrementNo + ")"
+		if (s_log.isLoggable(Level.FINER)) s_log.finer (documentNo + " (" + incrementNo + ")"
 				+ " - Sequence=" + AD_Sequence_ID + " [" + trx + "]");
 		return documentNo;
 	}
@@ -596,7 +596,7 @@ public class MSequence extends X_AD_Sequence
 		MDocType dt = MDocType.get (Env.getCtx(), C_DocType_ID);	//	wrong for SERVER, but r/o
 		if (dt != null && !dt.isDocNoControlled())
 		{
-			s_log.finer("DocType_ID=" + C_DocType_ID + " Not DocNo controlled");
+			if (s_log.isLoggable(Level.FINER)) s_log.finer("DocType_ID=" + C_DocType_ID + " Not DocNo controlled");
 			return null;
 		}
 		if (definite && ! dt.isOverwriteSeqOnComplete()) {

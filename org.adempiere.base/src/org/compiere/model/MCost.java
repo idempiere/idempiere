@@ -221,7 +221,7 @@ public class MCost extends X_M_Cost
 		//	Standard costs - just Material Costs
 		if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 		{
-			s_log.finer("MaterialCosts = " + materialCost);
+			if (s_log.isLoggable(Level.FINER)) s_log.finer("MaterialCosts = " + materialCost);
 			return materialCost;
 		}
 		if (MCostElement.COSTINGMETHOD_Fifo.equals(costingMethod)
@@ -240,7 +240,7 @@ public class MCost extends X_M_Cost
 		if (costs.signum() == 0)
 			return null;
 
-		s_log.finer("Sum Costs = " + costs);
+		if (s_log.isLoggable(Level.FINER)) s_log.finer("Sum Costs = " + costs);
 		int precision = as.getCostingPrecision();
 		if (percentage.signum() == 0)	//	no percentages
 		{
@@ -254,7 +254,7 @@ public class MCost extends X_M_Cost
 		costs = costs.add(percentCost);
 		if (costs.scale() > precision)
 			costs = costs.setScale(precision, BigDecimal.ROUND_HALF_UP);
-		s_log.finer("Sum Costs = " + costs + " (Add=" + percentCost + ")");
+		if (s_log.isLoggable(Level.FINER)) s_log.finer("Sum Costs = " + costs + " (Add=" + percentCost + ")");
 		return costs;
 	}	//	getCurrentCost
 
@@ -502,7 +502,7 @@ public class MCost extends X_M_Cost
 
 		if (retValue != null)
 		{
-			s_log.finer(product.getName() + " = " + retValue);
+			if (s_log.isLoggable(Level.FINER)) s_log.finer(product.getName() + " = " + retValue);
 			return retValue;
 		}
 		return null;
@@ -565,7 +565,7 @@ public class MCost extends X_M_Cost
 
 		if (retValue != null)
 		{
-			s_log.finer(product.getName() + " = " + retValue);
+			if (s_log.isLoggable(Level.FINER)) s_log.finer(product.getName() + " = " + retValue);
 			return retValue;
 		}
 		return null;
@@ -617,7 +617,7 @@ public class MCost extends X_M_Cost
 
 		if (retValue != null)
 		{
-			s_log.finer(product.getName() + " = " + retValue);
+			if (s_log.isLoggable(Level.FINER)) s_log.finer(product.getName() + " = " + retValue);
 			return retValue;
 		}
 		return null;
@@ -864,7 +864,7 @@ public class MCost extends X_M_Cost
 				BigDecimal matchQty = rs.getBigDecimal(2);
 				if (matchQty == null)
 				{
-					s_log.finer("Movement=" + movementQty + ", StockQty=" + newStockQty);
+					if (s_log.isLoggable(Level.FINER)) s_log.finer("Movement=" + movementQty + ", StockQty=" + newStockQty);
 					continue;
 				}
 				//	Assumption: everything is matched
@@ -884,7 +884,7 @@ public class MCost extends X_M_Cost
 				BigDecimal newAmt = averageCurrent.add(averageIncrease);
 				newAmt = newAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
 				newAverageAmt = newAmt.divide(newStockQty, as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
-				s_log.finer("Movement=" + movementQty + ", StockQty=" + newStockQty
+				if (s_log.isLoggable(Level.FINER)) s_log.finer("Movement=" + movementQty + ", StockQty=" + newStockQty
 					+ ", Match=" + matchQty + ", Cost=" + cost + ", NewAvg=" + newAverageAmt);
 			}
 		}
@@ -900,7 +900,7 @@ public class MCost extends X_M_Cost
 		//
 		if (newAverageAmt != null && newAverageAmt.signum() != 0)
 		{
-			s_log.finer(product.getName() + " = " + newAverageAmt);
+			if (s_log.isLoggable(Level.FINER)) s_log.finer(product.getName() + " = " + newAverageAmt);
 			return newAverageAmt;
 		}
 		return null;
@@ -958,7 +958,7 @@ public class MCost extends X_M_Cost
 				BigDecimal matchQty = rs.getBigDecimal(2);
 				if (matchQty == null)
 				{
-					s_log.finer("Movement=" + movementQty + ", StockQty=" + newStockQty);
+					if (s_log.isLoggable(Level.FINER)) s_log.finer("Movement=" + movementQty + ", StockQty=" + newStockQty);
 					continue;
 				}
 				//	Assumption: everything is matched
@@ -980,7 +980,7 @@ public class MCost extends X_M_Cost
 				BigDecimal newAmt = averageCurrent.add(averageIncrease);
 				newAmt = newAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
 				newAverageAmt = newAmt.divide(newStockQty, as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
-				s_log.finer("Movement=" + movementQty + ", StockQty=" + newStockQty
+				if (s_log.isLoggable(Level.FINER)) s_log.finer("Movement=" + movementQty + ", StockQty=" + newStockQty
 					+ ", Match=" + matchQty + ", Cost=" + cost + ", NewAvg=" + newAverageAmt);
 			}
 		}
@@ -996,7 +996,7 @@ public class MCost extends X_M_Cost
 		//
 		if (newAverageAmt != null && newAverageAmt.signum() != 0)
 		{
-			s_log.finer(product.getName() + " = " + newAverageAmt);
+			if (s_log.isLoggable(Level.FINER)) s_log.finer(product.getName() + " = " + newAverageAmt);
 			return newAverageAmt;
 		}
 		return null;
@@ -1082,7 +1082,7 @@ public class MCost extends X_M_Cost
 						QtyCost pp = new QtyCost (movementQty, Env.ZERO);
 						fifo.add(pp);
 					}
-					s_log.finer("Movement=" + movementQty + ", Size=" + fifo.size());
+					if (s_log.isLoggable(Level.FINER)) s_log.finer("Movement=" + movementQty + ", Size=" + fifo.size());
 					continue;
 				}
 				//	Assumption: everything is matched
@@ -1117,7 +1117,7 @@ public class MCost extends X_M_Cost
 					QtyCost pp = new QtyCost (movementQty, cost);
 					fifo.add(pp);
 				}
-				s_log.finer("Movement=" + movementQty + ", Size=" + fifo.size());
+				if (s_log.isLoggable(Level.FINER)) s_log.finer("Movement=" + movementQty + ", Size=" + fifo.size());
 			}
 		}
 		catch (SQLException e)
@@ -1135,7 +1135,7 @@ public class MCost extends X_M_Cost
 			return null;
 		}
 		QtyCost pp = (QtyCost)fifo.get(0);
-		s_log.finer(product.getName() + " = " + pp.Cost);
+		if (s_log.isLoggable(Level.FINER)) s_log.finer(product.getName() + " = " + pp.Cost);
 		return pp.Cost;
 	}	//	calculateFiFo
 
@@ -1220,7 +1220,7 @@ public class MCost extends X_M_Cost
 						QtyCost pp = new QtyCost (movementQty, Env.ZERO);
 						lifo.add(pp);
 					}
-					s_log.finer("Movement=" + movementQty + ", Size=" + lifo.size());
+					if (s_log.isLoggable(Level.FINER)) s_log.finer("Movement=" + movementQty + ", Size=" + lifo.size());
 					continue;
 				}
 				//	Assumption: everything is matched
@@ -1236,7 +1236,7 @@ public class MCost extends X_M_Cost
 				//
 				QtyCost pp = new QtyCost (movementQty, cost);
 				lifo.add(pp);
-				s_log.finer("Movement=" + movementQty + ", Size=" + lifo.size());
+				if (s_log.isLoggable(Level.FINER)) s_log.finer("Movement=" + movementQty + ", Size=" + lifo.size());
 			}
 		}
 		catch (SQLException e)
@@ -1254,7 +1254,7 @@ public class MCost extends X_M_Cost
 			return null;
 		}
 		QtyCost pp = (QtyCost)lifo.get(lifo.size()-1);
-		s_log.finer(product.getName() + " = " + pp.Cost);
+		if (s_log.isLoggable(Level.FINER)) s_log.finer(product.getName() + " = " + pp.Cost);
 		return pp.Cost;
 	}	//	calculateLiFo
 
