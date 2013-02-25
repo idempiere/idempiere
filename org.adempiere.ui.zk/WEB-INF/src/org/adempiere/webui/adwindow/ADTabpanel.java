@@ -649,10 +649,8 @@ DataStatusListener, IADTabpanel, IdSpace
             GridField changedField = gridTab.getField(col);
             String columnName = changedField.getColumnName();
             ArrayList<?> dependants = gridTab.getDependantFields(columnName);
-            if (logger.isLoggable(Level.CONFIG)) {
-            	logger.config("(" + gridTab.toString() + ") "
+            if (logger.isLoggable(Level.CONFIG)) logger.config("(" + gridTab.toString() + ") "
             			+ columnName + " - Dependents=" + dependants.size());
-            }
             if (dependants.size() == 0 && changedField.getCallout().length() > 0)
             {
                 return;
@@ -660,9 +658,8 @@ DataStatusListener, IADTabpanel, IdSpace
         }
 
         boolean noData = gridTab.getRowCount() == 0;
-        if (logger.isLoggable(Level.CONFIG)) {
-        	logger.config(gridTab.toString() + " - Rows=" + gridTab.getRowCount());
-        }
+        if (logger.isLoggable(Level.CONFIG)) logger.config(gridTab.toString() + " - Rows=" + gridTab.getRowCount());
+
         for (WEditor comp : editors)
         {
             GridField mField = comp.getGridField();
@@ -769,9 +766,7 @@ DataStatusListener, IADTabpanel, IdSpace
         }
 
         Events.sendEvent(this, new Event(ON_DYNAMIC_DISPLAY_EVENT, this));
-        if (logger.isLoggable(Level.CONFIG)) {
-        	logger.config(gridTab.toString() + " - fini - " + (col<=0 ? "complete" : "seletive"));
-        }
+        if (logger.isLoggable(Level.CONFIG)) logger.config(gridTab.toString() + " - fini - " + (col<=0 ? "complete" : "seletive"));
     }   //  dynamicDisplay
 
     /**
@@ -1095,9 +1090,7 @@ DataStatusListener, IADTabpanel, IdSpace
     	if (Executions.getCurrent() == null) return;
 
         int col = e.getChangedColumn();
-        if (logger.isLoggable(Level.CONFIG)) {
-        	logger.config("(" + gridTab + ") Col=" + col + ": " + e.toString());
-        }
+        if (logger.isLoggable(Level.CONFIG)) logger.config("(" + gridTab + ") Col=" + col + ": " + e.toString());
 
         //  Process Callout
         GridField mField = gridTab.getField(col);

@@ -13,6 +13,7 @@
 package org.adempiere.webui.util;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.editor.WEditor;
@@ -62,23 +63,23 @@ public class GridTabDataBinder implements ValueChangeListener {
             	{
             		if(!gridField.isEditable(true))
             		{
-            			logger.config("(" + gridTab.toString() + ") " + e.getPropertyName());
+            			if (logger.isLoggable(Level.CONFIG)) logger.config("(" + gridTab.toString() + ") " + e.getPropertyName());
             			return;
             		}
             	}
             	else if(!editor.isReadWrite())
             	{
-            		logger.config("(" + gridTab.toString() + ") " + e.getPropertyName());
+            		if (logger.isLoggable(Level.CONFIG)) logger.config("(" + gridTab.toString() + ") " + e.getPropertyName());
             		return;            		
             	}
             }
             else
             {
-                logger.config("(" + gridTab.toString() + ") " + e.getPropertyName());
+                if (logger.isLoggable(Level.CONFIG)) logger.config("(" + gridTab.toString() + ") " + e.getPropertyName());
                 return;
             }
         }   //  processed
-        logger.config("(" + gridTab.toString() + ") "
+        if (logger.isLoggable(Level.CONFIG)) logger.config("(" + gridTab.toString() + ") "
             + e.getPropertyName() + "=" + e.getNewValue() + " (" + e.getOldValue() + ") "
             + (e.getOldValue() == null ? "" : e.getOldValue().getClass().getName()));
         

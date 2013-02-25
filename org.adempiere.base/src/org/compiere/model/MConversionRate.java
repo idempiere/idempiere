@@ -251,7 +251,7 @@ public class MConversionRate extends X_C_Conversion_Rate
 			pstmt = null;
 		}		
 		if (retValue == null)
-			s_log.info ("getRate - not found - CurFrom=" + CurFrom_ID 
+			if (s_log.isLoggable(Level.INFO)) s_log.info ("getRate - not found - CurFrom=" + CurFrom_ID 
 			  + ", CurTo=" + CurTo_ID
 			  + ", " + ConvDate 
 			  + ", Type=" + ConversionType_ID + (ConversionType_ID==C_ConversionType_ID ? "" : "->" + C_ConversionType_ID) 

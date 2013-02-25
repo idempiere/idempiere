@@ -556,7 +556,7 @@ public class Doc_Order extends Doc
 					if (!tax.isZeroTax())
 					{
 						BigDecimal LineNetAmtTax = tax.calculateTax(LineNetAmt, true, precision);
-						s_log.fine("LineNetAmt=" + LineNetAmt + " - Tax=" + LineNetAmtTax);
+						if (s_log.isLoggable(Level.FINE)) s_log.fine("LineNetAmt=" + LineNetAmt + " - Tax=" + LineNetAmtTax);
 						LineNetAmt = LineNetAmt.subtract(LineNetAmtTax);
 						BigDecimal PriceListTax = tax.calculateTax(PriceList, true, precision);
 						PriceList = PriceList.subtract(PriceListTax);
@@ -697,7 +697,7 @@ public class Doc_Order extends Doc
 					if (!tax.isZeroTax())
 					{
 						BigDecimal LineNetAmtTax = tax.calculateTax(LineNetAmt, true, precision);
-						s_log.fine("LineNetAmt=" + LineNetAmt + " - Tax=" + LineNetAmtTax);
+						if (s_log.isLoggable(Level.FINE)) s_log.fine("LineNetAmt=" + LineNetAmt + " - Tax=" + LineNetAmtTax);
 						LineNetAmt = LineNetAmt.subtract(LineNetAmtTax);
 						BigDecimal PriceListTax = tax.calculateTax(PriceList, true, precision);
 						PriceList = PriceList.subtract(PriceListTax);

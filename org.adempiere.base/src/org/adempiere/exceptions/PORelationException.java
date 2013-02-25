@@ -13,6 +13,8 @@
  *****************************************************************************/
 package org.adempiere.exceptions;
 
+import java.util.logging.Level;
+
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
@@ -68,7 +70,7 @@ public class PORelationException extends AdempiereException {
 
 	public static void throwWrongKeyColumnCount(final PO po) {
 
-		logger.fine("Invoked with po " + po);
+		if (logger.isLoggable(Level.FINE)) logger.fine("Invoked with po " + po);
 
 		final Object[] msgParams = new Object[] { po.toString(),
 				po.get_KeyColumns().length };

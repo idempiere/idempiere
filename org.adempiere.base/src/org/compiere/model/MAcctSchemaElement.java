@@ -60,7 +60,7 @@ public final class MAcctSchemaElement extends X_C_AcctSchema_Element
 		if (retValue != null)
 			return retValue;
 
-		s_log.fine("C_AcctSchema_ID=" + as.getC_AcctSchema_ID());
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("C_AcctSchema_ID=" + as.getC_AcctSchema_ID());
 		ArrayList<MAcctSchemaElement> list = new ArrayList<MAcctSchemaElement>();
 		
 		final String whereClause = "C_AcctSchema_ID=? AND IsActive=?";
@@ -71,7 +71,7 @@ public final class MAcctSchemaElement extends X_C_AcctSchema_Element
 		
 		for(MAcctSchemaElement ase : elements)
 		{
-			s_log.fine(" - " + ase);
+			if (s_log.isLoggable(Level.FINE)) s_log.fine(" - " + ase);
 			if (ase.isMandatory() && ase.getDefaultValue() == 0)
 				s_log.log(Level.SEVERE, "No default value for " + ase.getName());
 			list.add(ase);

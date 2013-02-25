@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -62,10 +63,10 @@ public class MContactInterest extends X_R_ContactInterest
 		{
 			retValue = new MContactInterest (ctx, R_InterestArea_ID, AD_User_ID, 
 				isActive, trxName);
-			s_log.fine("NOT found - " + retValue);
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("NOT found - " + retValue);
 		}
 		else
-			s_log.fine("Found - " + retValue);
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("Found - " + retValue);
 		return retValue;
 	}	//	get
 

@@ -227,7 +227,7 @@ public class MAccount extends X_C_ValidCombination
 			s_log.log(Level.SEVERE, "Could not create new account - " + info);
 			return null;
 		}
-		s_log.fine("New: " + newAccount);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("New: " + newAccount);
 		return newAccount;
 	}	//	get
 	
@@ -330,7 +330,7 @@ public class MAccount extends X_C_ValidCombination
 			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElement2) && setValue)
 				vc.setUserElement2_ID(defaultValue);
 		}
-		s_log.fine("Client_ID="
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("Client_ID="
 			+ vc.getAD_Client_ID() + ", Org_ID=" + vc.getAD_Org_ID()
 			+ " - AcctSchema_ID=" + vc.getC_AcctSchema_ID() + ", Account_ID=" + vc.getAccount_ID());
 		return vc;

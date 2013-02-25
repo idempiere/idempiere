@@ -61,11 +61,11 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 		//	Load Instance if not 0
 		if (M_AttributeSetInstance_ID != 0)
 		{
-			s_log.fine("From M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("From M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
 			return new MAttributeSetInstance (ctx, M_AttributeSetInstance_ID, null);
 		}
 		//	Get new from Product
-		s_log.fine("From M_Product_ID=" + M_Product_ID);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("From M_Product_ID=" + M_Product_ID);
 		if (M_Product_ID == 0)
 			return null;
 		String sql = "SELECT M_AttributeSet_ID, M_AttributeSetInstance_ID "

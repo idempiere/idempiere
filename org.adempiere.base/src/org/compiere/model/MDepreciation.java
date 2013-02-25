@@ -3,6 +3,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.compiere.model.Query;
@@ -372,7 +373,7 @@ public class MDepreciation extends X_A_Depreciation
 				amt_sl = amt_r.divide(new BigDecimal(A_RemainingLife_Year), getPrecision(), RoundingMode.HALF_UP);
 				// logging
 				if (CLogMgt.isLevelFinest()) {
-					s_log.fine("amt_r=" + amt_r + ", amt_ad1=amt_r*coef_ad1=" + amt_ad1 + ", amt_sl=amt_r/A_RemainingLife_Year=" + amt_sl + ", A_Current_Year=" + A_Current_Year + ", A_RemainingLife_Year=" + A_RemainingLife_Year);
+					if (s_log.isLoggable(Level.FINE)) s_log.fine("amt_r=" + amt_r + ", amt_ad1=amt_r*coef_ad1=" + amt_ad1 + ", amt_sl=amt_r/A_RemainingLife_Year=" + amt_sl + ", A_Current_Year=" + A_Current_Year + ", A_RemainingLife_Year=" + A_RemainingLife_Year);
 				}
 				
 				/** If the first year or if the value depreciation value depreciation degressive more linear ... */
@@ -382,7 +383,7 @@ public class MDepreciation extends X_A_Depreciation
 				else {
 					amtPerYear = amt_sl;
 					is_SL = true;
-					s_log.fine("*** PASS IT ON linear amt_sl= " + amt_sl + " ***");
+					if (s_log.isLoggable(Level.FINE)) s_log.fine("*** PASS IT ON linear amt_sl= " + amt_sl + " ***");
 				}
 			}
 			else {
@@ -391,9 +392,9 @@ public class MDepreciation extends X_A_Depreciation
 			}
 		
 			amt_r = amt_r.subtract(amtPerYear);
-			if (CLogMgt.isLevelFinest()) s_log.fine("year=" + curr_year + ", amtPerYear=" + amtPerYear + ", amt_r=" + amt_r); //logging
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("year=" + curr_year + ", amtPerYear=" + amtPerYear + ", amt_r=" + amt_r); //logging
 		}
-		if (CLogMgt.isLevelFinest()) s_log.fine("amt_r=" + amt_r + ", amtPerYear=" + amtPerYear); //logging
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("amt_r=" + amt_r + ", amtPerYear=" + amtPerYear); //logging
 		
 		/** Damping value for the current month */
 		BigDecimal assetExp = getPeriodExp(A_Current_Period, amtPerYear);

@@ -147,7 +147,7 @@ public class SequenceCheck extends SvrProcess
 				sp.addLog(0, null, null,msglog.toString());
 			}	
 			else
-				s_log.fine("Sync #" + no);
+				if (s_log.isLoggable(Level.FINE)) s_log.fine("Sync #" + no);
 		}
 		if (no >= 0)
 			return;
@@ -194,7 +194,7 @@ public class SequenceCheck extends SvrProcess
 		if (IDRangeEnd <= 0)
 			IDRangeEnd = DB.getSQLValue(null,
 				"SELECT MIN(IDRangeStart)-1 FROM AD_Replication");
-		s_log.info("IDRangeEnd = " + IDRangeEnd);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("IDRangeEnd = " + IDRangeEnd);
 		//
 		String sql = "SELECT * FROM AD_Sequence "
 			+ "WHERE IsTableID='Y' "
@@ -239,7 +239,7 @@ public class SequenceCheck extends SvrProcess
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		s_log.fine("#" + counter);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("#" + counter);
 	}	//	checkTableID
 
 	

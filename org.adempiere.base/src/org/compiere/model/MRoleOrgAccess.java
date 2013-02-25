@@ -126,7 +126,7 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 					counter++;
 			}
 		}
-		s_log.info(org + " - created #" + counter);
+		if (s_log.isLoggable(Level.INFO)) s_log.info(org + " - created #" + counter);
 		return counter != 0;
 	}	//	createForOrg
 	

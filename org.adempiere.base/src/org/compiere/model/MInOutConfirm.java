@@ -70,7 +70,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 				MInOutConfirm confirm = confirmations[i];
 				if (confirm.getConfirmType().equals(confirmType))
 				{
-					s_log.info("create - existing: " + confirm);
+					if (s_log.isLoggable(Level.INFO)) s_log.info("create - existing: " + confirm);
 					return confirm;
 				}
 			}
@@ -86,7 +86,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			cLine.setInOutLine(sLine);
 			cLine.saveEx();
 		}
-		s_log.info("New: " + confirm);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("New: " + confirm);
 		return confirm;
 	}	//	MInOutConfirm
 	

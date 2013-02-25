@@ -71,7 +71,7 @@ public class DocumentTypeVerify extends SvrProcess
 	public static void createDocumentTypes(Properties ctx, int AD_Client_ID, 
 		SvrProcess sp, String trxName)
 	{
-		s_log.info("AD_Client_ID=" + AD_Client_ID);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("AD_Client_ID=" + AD_Client_ID);
 		String sql = "SELECT rl.Value, rl.Name "
 			+ "FROM AD_Ref_List rl "
 			+ "WHERE rl.AD_Reference_ID=183"
@@ -129,7 +129,7 @@ public class DocumentTypeVerify extends SvrProcess
 	public static void createPeriodControls(Properties ctx, int AD_Client_ID, 
 		SvrProcess sp, String trxName)
 	{
-		s_log.info("AD_Client_ID=" + AD_Client_ID);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("AD_Client_ID=" + AD_Client_ID);
 
 		//	Delete Duplicates
 		String sql = "DELETE C_PeriodControl pc1 "
@@ -143,7 +143,7 @@ public class DocumentTypeVerify extends SvrProcess
 				+ "FROM C_PeriodControl pc3 "
 				+ "GROUP BY C_Period_ID, DocBaseType)";
 		int no = DB.executeUpdate(sql, false, trxName);
-		s_log.info("Duplicates deleted #" + no);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("Duplicates deleted #" + no);
 		
 		//	Insert Missing
 		sql = "SELECT DISTINCT p.AD_Client_ID, p.C_Period_ID, dt.DocBaseType "
@@ -174,7 +174,7 @@ public class DocumentTypeVerify extends SvrProcess
 				if (pc.save())
 				{
 					counter++;
-					s_log.fine(pc.toString());
+					if (s_log.isLoggable(Level.FINE)) s_log.fine(pc.toString());
 				}
 				else
 					s_log.warning("Not saved: " + pc);
@@ -192,7 +192,7 @@ public class DocumentTypeVerify extends SvrProcess
 		}
 		if (sp != null)
 			sp.addLog (0, null, new BigDecimal(counter), "@C_PeriodControl_ID@ @Created@");
-		s_log.info("Inserted #" + counter);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("Inserted #" + counter);
 	}	//	createPeriodControls
 
 }	//	DocumentTypeVerify

@@ -90,7 +90,7 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 		//
 		String finalSQL = MRole.getDefault().addAccessSQL(sql.toString(), 
 			"RV_WarehousePrice", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-		s_log.fine("find - M_PriceList_Version_ID=" + M_PriceList_Version_ID 
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("find - M_PriceList_Version_ID=" + M_PriceList_Version_ID 
 			+ ", M_Warehouse_ID=" + M_Warehouse_ID
 			+ " - " + finalSQL);
 		ArrayList<MWarehousePrice> list = new ArrayList<MWarehousePrice>();
@@ -125,7 +125,7 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 			pstmt = null;
 		} 
 		//
-		s_log.fine("find - #" + list.size());
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("find - #" + list.size());
 		MWarehousePrice[] retValue = new MWarehousePrice[list.size()];
 		list.toArray(retValue);
 		return retValue;

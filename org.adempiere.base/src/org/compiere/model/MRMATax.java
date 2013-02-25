@@ -96,7 +96,7 @@ public class MRMATax extends X_M_RMATax
 		{
 			retValue.setPrecision(precision);
 			retValue.set_TrxName(trxName);
-			s_log.fine("(old=" + oldTax + ") " + retValue);
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("(old=" + oldTax + ") " + retValue);
 			return retValue;
 		}
 		// If the old tax was required and there is no MOrderTax for that
@@ -114,7 +114,7 @@ public class MRMATax extends X_M_RMATax
 		retValue.setC_Tax_ID(line.getC_Tax_ID());
 		retValue.setPrecision(precision);
 		retValue.setIsTaxIncluded(line.getParent().isTaxIncluded());
-		s_log.fine("(new) " + retValue);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("(new) " + retValue);
 		return retValue;
 	}
     

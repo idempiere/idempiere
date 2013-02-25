@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -74,7 +75,7 @@ public class MAttribute extends X_M_Attribute
 
 		MAttribute[] retValue = new MAttribute[list.size ()];
 		list.toArray (retValue);
-		s_log.fine("AD_Client_ID=" + AD_Client_ID + " - #" + list.size());
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("AD_Client_ID=" + AD_Client_ID + " - #" + list.size());
 		return retValue;
 	}	//	getOfClient
 	

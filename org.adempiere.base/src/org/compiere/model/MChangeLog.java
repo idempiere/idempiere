@@ -90,7 +90,7 @@ public class MChangeLog extends X_AD_ChangeLog
 			Integer id = (Integer)list.get(i);
 			s_changeLog[i] = id.intValue();
 		}
-		s_log.info("#" + s_changeLog.length);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("#" + s_changeLog.length);
 	}	//	fillChangeLog
 
 	/**	Change Log				*/

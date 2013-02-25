@@ -19,6 +19,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
@@ -445,7 +446,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 				user.saveEx();
 
 				if (sendEmail(user, newPassword))
-		    		logger.fine(user.getEMail());
+		    		if (logger.isLoggable(Level.FINE)) logger.fine(user.getEMail());
 				else
 				{
 					if (errorMsg.length() > 0)

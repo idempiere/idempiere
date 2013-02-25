@@ -449,7 +449,7 @@ public class MSequence extends X_AD_Sequence
 			//		+ " - Type=" + pstmt.getResultSetType() + " - Concur=" + pstmt.getResultSetConcurrency());
 			if (rs.next())
 			{
-				s_log.fine("AD_Sequence_ID="+AD_Sequence_ID);
+				if (s_log.isLoggable(Level.FINE)) s_log.fine("AD_Sequence_ID="+AD_Sequence_ID);
 
 				PreparedStatement updateSQL = null;
 				try
@@ -548,7 +548,7 @@ public class MSequence extends X_AD_Sequence
 		if (suffix != null && suffix.length() > 0)
 			doc.append(Env.parseVariable(suffix, po, trxName, false));
 		String documentNo = doc.toString();
-		s_log.finer (documentNo + " (" + incrementNo + ")"
+		if (s_log.isLoggable(Level.FINER)) s_log.finer (documentNo + " (" + incrementNo + ")"
 				+ " - Sequence=" + AD_Sequence_ID + " [" + trx + "]");
 		return documentNo;
 	}
@@ -596,7 +596,7 @@ public class MSequence extends X_AD_Sequence
 		MDocType dt = MDocType.get (Env.getCtx(), C_DocType_ID);	//	wrong for SERVER, but r/o
 		if (dt != null && !dt.isDocNoControlled())
 		{
-			s_log.finer("DocType_ID=" + C_DocType_ID + " Not DocNo controlled");
+			if (s_log.isLoggable(Level.FINER)) s_log.finer("DocType_ID=" + C_DocType_ID + " Not DocNo controlled");
 			return null;
 		}
 		if (definite && ! dt.isOverwriteSeqOnComplete()) {
@@ -656,7 +656,7 @@ public class MSequence extends X_AD_Sequence
 			while (rs.next())
 			{
 				String tableName = rs.getString(1);
-				s_log.fine("Add: " + tableName);
+				if (s_log.isLoggable(Level.FINE)) s_log.fine("Add: " + tableName);
 				MSequence seq = new MSequence (ctx, AD_Client_ID, tableName, trxName);
 				if (seq.save())
 					counter++;
@@ -678,7 +678,7 @@ public class MSequence extends X_AD_Sequence
 			rs = null;
 			pstmt = null;
 		}
-		s_log.info ("AD_Client_ID=" + AD_Client_ID
+		if (s_log.isLoggable(Level.INFO)) s_log.info ("AD_Client_ID=" + AD_Client_ID
 			+ " - created #" + counter
 			+ " - success=" + success);
 		return success;

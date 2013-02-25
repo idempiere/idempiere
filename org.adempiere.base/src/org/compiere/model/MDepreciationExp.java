@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.model.MDocType;
 import org.compiere.model.MPeriod;
@@ -94,7 +95,7 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 		//
 		depexp.updateFrom(assetwk);
 		//
-		s_log.fine("depexp=" + depexp);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("depexp=" + depexp);
 		return depexp;
 	}
 	

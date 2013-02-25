@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.PORelationException;
@@ -143,7 +144,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 
 			final List<MRelationType> result = evalResultSet(po, windowId, rs);
 
-			logger.info("There are " + result.size() + " matching types for "
+			if (logger.isLoggable(Level.INFO)) logger.info("There are " + result.size() + " matching types for "
 					+ po);
 
 			return result;
@@ -294,7 +295,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 				parsedWhere, po.get_TrxName()).first();
 		final boolean match = result != null;
 
-		logger.fine("whereClause='" + parsedWhere + "' matches po='" + po
+		if (logger.isLoggable(Level.FINE)) logger.fine("whereClause='" + parsedWhere + "' matches po='" + po
 				+ "':" + match);
 		return match;
 	}
@@ -328,7 +329,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 		final String parsedWhere = Env.parseContext(privateCtx, -1, where,
 				false);
 
-		logger.fine("whereClause='" + where + "'; parsedWhere='" + parsedWhere
+		if (logger.isLoggable(Level.FINE)) logger.fine("whereClause='" + where + "'; parsedWhere='" + parsedWhere
 				+ "'");
 
 		return parsedWhere;

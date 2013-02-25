@@ -656,7 +656,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		int AD_Table_ID, int AD_PrintFormat_ID)
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
-		s_log.info ("AD_Table_ID=" + AD_Table_ID + " - AD_Client_ID=" + AD_Client_ID);
+		if (s_log.isLoggable(Level.INFO)) s_log.info ("AD_Table_ID=" + AD_Table_ID + " - AD_Client_ID=" + AD_Client_ID);
 
 		MPrintFormat pf = new MPrintFormat(ctx, AD_PrintFormat_ID, null);
 		pf.setAD_Table_ID (AD_Table_ID);
@@ -739,7 +739,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	static public MPrintFormat createFromReportView (Properties ctx, int AD_ReportView_ID, String ReportName)
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
-		s_log.info ("AD_ReportView_ID=" + AD_ReportView_ID + " - AD_Client_ID=" + AD_Client_ID + " - " + ReportName);
+		if (s_log.isLoggable(Level.INFO)) s_log.info ("AD_ReportView_ID=" + AD_ReportView_ID + " - AD_Client_ID=" + AD_Client_ID + " - " + ReportName);
 
 		MPrintFormat pf = new MPrintFormat(ctx, 0, null);
 		pf.setAD_ReportView_ID (AD_ReportView_ID);
@@ -895,7 +895,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		//
 		MPrintFormatItem[] retValue = new MPrintFormatItem[list.size()];
 		list.toArray(retValue);
-		s_log.info(format + " - #" + retValue.length);
+		if (s_log.isLoggable(Level.INFO)) s_log.info(format + " - #" + retValue.length);
 		return retValue;
 	}	//	createItems
 
@@ -907,7 +907,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	 */
 	static private MPrintFormatItem[] copyItems (MPrintFormat fromFormat, MPrintFormat toFormat)
 	{
-		s_log.info("From=" + fromFormat);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("From=" + fromFormat);
 		ArrayList<MPrintFormatItem> list = new ArrayList<MPrintFormatItem>();
 
 		MPrintFormatItem[] items = fromFormat.getItemsNotIn(toFormat.get_ID());
@@ -1003,7 +1003,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	private static MPrintFormat copy (Properties ctx, int from_AD_PrintFormat_ID,
 		int to_AD_PrintFormat_ID, int to_Client_ID)
 	{
-		s_log.info ("From AD_PrintFormat_ID=" + from_AD_PrintFormat_ID
+		if (s_log.isLoggable(Level.INFO)) s_log.info ("From AD_PrintFormat_ID=" + from_AD_PrintFormat_ID
 			+ ", To AD_PrintFormat_ID=" + to_AD_PrintFormat_ID
 			+ ", To Client_ID=" + to_Client_ID);
 		if (from_AD_PrintFormat_ID == 0)

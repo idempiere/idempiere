@@ -136,8 +136,7 @@ public class Core {
 	 *  @return initialized PaymentProcessor or null
 	 */
 	public static PaymentProcessor getPaymentProcessor(MBankAccountProcessor mbap, PaymentInterface mp) {
-		if (s_log.isLoggable(Level.FINE))
-			s_log.fine("create for " + mbap);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("create for " + mbap);
 		
 		MPaymentProcessor mpp = new MPaymentProcessor(mbap.getCtx(), mbap.getC_PaymentProcessor_ID(), mbap.get_TrxName());
 		String className = mpp.getPayProcessorClass();
@@ -177,8 +176,7 @@ public class Core {
 	 */
 	public static IShipmentProcessor getShipmentProcessor(MShipperFacade sf) 
 	{
-		if (s_log.isLoggable(Level.FINE))
-			s_log.fine("create for " + sf);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("create for " + sf);
 		
 		String className = sf.getShippingProcessorClass();
 		if (className == null || className.length() == 0) 

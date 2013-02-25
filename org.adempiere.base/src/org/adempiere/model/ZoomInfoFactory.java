@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.compiere.model.MQuery;
 import org.compiere.model.PO;
@@ -83,7 +84,7 @@ public class ZoomInfoFactory {
 	public static List<ZoomInfoFactory.ZoomInfo> retrieveZoomInfos(final PO po,
 			final int windowID) {
 
-		logger.config("PO=" + po + " - AD_Window_ID=" + windowID);
+		if (logger.isLoggable(Level.CONFIG)) logger.config("PO=" + po + " - AD_Window_ID=" + windowID);
 
 		final List<ZoomInfoFactory.ZoomInfo> result = new ArrayList<ZoomInfoFactory.ZoomInfo>();
 
@@ -94,7 +95,7 @@ public class ZoomInfoFactory {
 
 			if (alreadySeen.add(zoomInfo.destinationDisplay)) {
 				
-				logger.fine("Adding zoomInfo " + zoomInfo);
+				if (logger.isLoggable(Level.FINE)) logger.fine("Adding zoomInfo " + zoomInfo);
 				result.add(zoomInfo);
 			}
 		}
@@ -106,13 +107,13 @@ public class ZoomInfoFactory {
 
 			if (alreadySeen.add(zoomInfo.destinationDisplay)) {
 
-				logger.fine("Adding zoomInfo " + zoomInfo + " from "
+				if (logger.isLoggable(Level.FINE)) logger.fine("Adding zoomInfo " + zoomInfo + " from "
 						+ GenericZoomProvider.class.getSimpleName());
 				result.add(zoomInfo);
 
 			} else {
 
-				logger.fine("Skipping zoomInfo " + zoomInfo + " from "
+				if (logger.isLoggable(Level.FINE)) logger.fine("Skipping zoomInfo " + zoomInfo + " from "
 						+ GenericZoomProvider.class.getSimpleName()
 						+ " because there is already one for destination '"
 						+ zoomInfo.destinationDisplay + "'");

@@ -18,6 +18,7 @@
 package org.adempiere.webui.window;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
@@ -119,7 +120,7 @@ public class FDialog
     	Properties ctx = Env.getCtx();
     	StringBuffer out = null;
 
-    	logger.info(adMessage + " - " + message);
+    	if (logger.isLoggable(Level.INFO)) logger.info(adMessage + " - " + message);
 
     	out = constructMessage(adMessage, message);
     	
@@ -216,7 +217,7 @@ public class FDialog
     	Properties ctx = Env.getCtx();
 		StringBuffer out = new StringBuffer();
 
-		logger.info(adMessage + " - " + message);
+		if (logger.isLoggable(Level.INFO)) logger.info(adMessage + " - " + message);
 
 		if (CLogMgt.isLevelFinest())
 		{
@@ -347,7 +348,7 @@ public class FDialog
         
         StringBuffer out = new StringBuffer();
 
-        logger.info(adMessage + " - " + message);
+        if (logger.isLoggable(Level.INFO)) logger.info(adMessage + " - " + message);
 
         if (CLogMgt.isLevelFinest())
         {

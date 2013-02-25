@@ -6,13 +6,13 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProjectClose;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -35,11 +35,11 @@ import org.idempiere.fa.util.POCacheLocal;
 public class MAssetAddition extends X_A_Asset_Addition
 	implements DocAction
 {
-	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5977180589101094202L;
+
 	/** Static Logger */
 	private static CLogger s_log = CLogger.getCLogger(MAssetAddition.class);
 
@@ -386,7 +386,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 			
 		}
 		
-		if(CLogMgt.isLevelFine()) s_log.fine("Entering: model=" + model + ", M_MatchInv_ID=" + M_MatchInv_ID + ", newRecord=" + newRecord + ", trxName=" + trxName);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("Entering: model=" + model + ", M_MatchInv_ID=" + M_MatchInv_ID + ", newRecord=" + newRecord + ", trxName=" + trxName);
 		
 		final String qMatchInv_select = "SELECT"
 				+ "  C_Invoice_ID"
@@ -435,7 +435,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		*/
 		SetGetUtil.updateColumns(model, null, query, trxName);
 		
-		if(CLogMgt.isLevelFine()) s_log.fine("Leaving: RETURN TRUE");
+		s_log.fine("Leaving: RETURN TRUE");
 		return true;
 	}
 	

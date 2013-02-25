@@ -232,7 +232,7 @@ public class DefaultModelFactory implements IModelFactory {
 			{
 				if (superClazz == PO.class)
 				{
-					s_log.fine("Use: " + className);
+					if (s_log.isLoggable(Level.FINE)) s_log.fine("Use: " + className);
 					return clazz;
 				}
 				superClazz = superClazz.getSuperclass();

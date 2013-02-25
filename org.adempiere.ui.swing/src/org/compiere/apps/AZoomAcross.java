@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
@@ -60,7 +61,7 @@ public class AZoomAcross
 
 	public AZoomAcross(JComponent invoker, PO po, final int windowID) {
 		
-		logger.config("PO=" + po+", WindowID="+windowID);
+		if (logger.isLoggable(Level.CONFIG)) logger.config("PO=" + po+", WindowID="+windowID);
 		
 		mkZoomTargets(po, windowID);
 				
@@ -97,7 +98,7 @@ public class AZoomAcross
 				windowID)) {
 
 			if (zoomInfo.query.getRecordCount() == 0) {
-				logger.fine("No target records for destination "
+				if (logger.isLoggable(Level.FINE)) logger.fine("No target records for destination "
 						+ zoomInfo.destinationDisplay);
 				continue;
 			}
@@ -115,7 +116,7 @@ public class AZoomAcross
 		final int AD_Window_ID = zoomInfo.windowId;
 		final MQuery query = zoomInfo.query;
 		
-		logger.info("AD_Window_ID=" + AD_Window_ID 
+		if (logger.isLoggable(Level.INFO)) logger.info("AD_Window_ID=" + AD_Window_ID 
 			+ " - " + query); 
 		
 		AWindow frame = new AWindow(null);

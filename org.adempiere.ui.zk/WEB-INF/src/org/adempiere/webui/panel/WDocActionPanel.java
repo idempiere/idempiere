@@ -19,6 +19,7 @@ package org.adempiere.webui.panel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -110,7 +111,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 			return;
 		}
 
-		logger.fine("DocStatus=" + DocStatus
+		if (logger.isLoggable(Level.FINE)) logger.fine("DocStatus=" + DocStatus
 			+ ", DocAction=" + DocAction + ", OrderType=" + OrderType
 			+ ", IsSOTrx=" + IsSOTrx + ", Processing=" + Processing
 			+ ", AD_Table_ID=" +gridTab.getAD_Table_ID() + ", Record_ID=" + gridTab.getRecord_ID());
@@ -163,7 +164,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		if(doctypeId==null || doctypeId.intValue()==0){
 			doctypeId = (Integer)gridTab.getValue("C_DocTypeTarget_ID");
 		}
-		logger.fine("get doctype: " + doctypeId);
+		if (logger.isLoggable(Level.FINE)) logger.fine("get doctype: " + doctypeId);
 		if (doctypeId != null) {
 			index = DocumentEngine.checkActionAccess(Env.getAD_Client_ID(Env.getCtx()),
 					Env.getAD_Role_ID(Env.getCtx()),
@@ -319,7 +320,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 	{
 		int index = getSelectedIndex();
 		//	Save Selection
-		logger.config("DocAction=" + s_value[index]);
+		if (logger.isLoggable(Level.CONFIG)) logger.config("DocAction=" + s_value[index]);
 		gridTab.setValue("DocAction", s_value[index]);
 	}	//	save
 

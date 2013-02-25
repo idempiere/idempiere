@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+
 import static org.compiere.model.SystemIDs.*;
 
 import org.compiere.util.CLogger;
@@ -44,7 +46,7 @@ public class MEntityType extends X_AD_EntityType
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8906219523978497906L;
+	private static final long serialVersionUID = 4670009709141738924L;
 
 	/**
 	 * 	Get Entity Types
@@ -61,7 +63,7 @@ public class MEntityType extends X_AD_EntityType
 		.list();
 		s_entityTypes = new MEntityType[list.size()];
 		list.toArray(s_entityTypes);
-		s_log.finer("# " + s_entityTypes.length);
+		if (s_log.isLoggable(Level.FINER)) s_log.finer("# " + s_entityTypes.length);
 		return s_entityTypes;
 	}	//	getEntityTypes
 	
@@ -99,7 +101,7 @@ public class MEntityType extends X_AD_EntityType
 			list.add(s);
 			retValue[i] = s;
 		}
-		s_log.finer(list.toString());
+		if (s_log.isLoggable(Level.FINER)) s_log.finer(list.toString());
 		return retValue;
 	}	//	getEntityTypeStrings
 
@@ -130,7 +132,7 @@ public class MEntityType extends X_AD_EntityType
 		}
 		String[] retValue = new String[list.size()];
 		list.toArray(retValue);
-		s_log.finer(list.toString());
+		if (s_log.isLoggable(Level.FINER)) s_log.finer(list.toString());
 		return retValue;
 	}	//	getClathpaths
 
@@ -162,7 +164,7 @@ public class MEntityType extends X_AD_EntityType
 		}
 		String[] retValue = new String[list.size()];
 		list.toArray(retValue);
-		s_log.finer(list.toString());
+		if (s_log.isLoggable(Level.FINER)) s_log.finer(list.toString());
 		return retValue;
 	}	//	getModelPackages
 	

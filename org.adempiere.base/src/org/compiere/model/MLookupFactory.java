@@ -217,8 +217,7 @@ public class MLookupFactory
 				return null;
 			}
 			info.Query = newSQL;
-			if (s_log.isLoggable(Level.FINE))
-				s_log.fine("getLookupInfo, newSQL ="+newSQL); //jz
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("getLookupInfo, newSQL ="+newSQL); //jz
 		}
 
 		//	Direct Query - NO Validation/Security
@@ -231,8 +230,7 @@ public class MLookupFactory
 				return null;
 			}
 			info.QueryDirect = newSQL;
-			if (s_log.isLoggable(Level.FINE))
-				s_log.fine("getLookupInfo, newSQL ="+newSQL); //jz
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("getLookupInfo, newSQL ="+newSQL); //jz
 		}
 
 		//	Validation
@@ -367,8 +365,7 @@ public class MLookupFactory
 		MLookupInfo retValue = (MLookupInfo)s_cacheRefTable.get(key.toString());
 		if (retValue != null)
 		{
-			if (s_log.isLoggable(Level.FINEST))
-				s_log.finest("Cache: " + retValue);
+			if (s_log.isLoggable(Level.FINEST)) s_log.finest("Cache: " + retValue);
 			return retValue.cloneIt();
 		}
 		//
@@ -556,8 +553,7 @@ public class MLookupFactory
 		else
 			realSQL.append(" ORDER BY 3");
 
-		if (s_log.isLoggable(Level.FINEST))
-			s_log.finest("AD_Reference_Value_ID=" + AD_Reference_Value_ID + " - " + realSQL);
+		if (s_log.isLoggable(Level.FINEST)) s_log.finest("AD_Reference_Value_ID=" + AD_Reference_Value_ID + " - " + realSQL);
 		if (overrideZoomWindow > 0)
 		{
 			ZoomWindow = overrideZoomWindow;
@@ -762,8 +758,7 @@ public class MLookupFactory
 		realSQL.append(" ORDER BY 3");
 		MQuery zoomQuery = null;	//	corrected in VLookup
 
-		if (s_log.isLoggable(Level.FINE))
-			s_log.fine("ColumnName=" + ColumnName + " - " + realSQL);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("ColumnName=" + ColumnName + " - " + realSQL);
 		StringBuilder msginf = new StringBuilder().append(TableName).append(".").append(KeyColumn);
 		MLookupInfo lInfo = new MLookupInfo(realSQL.toString(), TableName,
 			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);

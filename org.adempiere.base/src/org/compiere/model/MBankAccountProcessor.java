@@ -122,7 +122,7 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 			s_log.warning("find - not found - AD_Client_ID=" + AD_Client_ID
 				+ ", C_Currency_ID=" + C_Currency_ID + ", Amt=" + Amt);
 		else
-			s_log.fine("find - #" + list.size() + " - AD_Client_ID=" + AD_Client_ID
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("find - #" + list.size() + " - AD_Client_ID=" + AD_Client_ID
 				+ ", C_Currency_ID=" + C_Currency_ID + ", Amt=" + Amt);
 		MBankAccountProcessor[] retValue = new MBankAccountProcessor[list.size()];
 		list.toArray(retValue);

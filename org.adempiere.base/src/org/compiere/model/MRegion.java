@@ -81,7 +81,7 @@ public final class MRegion extends X_C_Region
 			rs = null;
 			stmt = null;
 		}
-		s_log.fine(s_regions.size() + " - default=" + s_default);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine(s_regions.size() + " - default=" + s_default);
 	}	//	loadAllRegions
 
 	/**

@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -115,7 +116,7 @@ public class MLookupCache
 			lookupTarget.put(cacheKey, cacheData);
 		}
 
-		s_log.fine("#" + lookupTarget.size());
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("#" + lookupTarget.size());
 		return true;
 	}   //  loadFromCache
 
@@ -141,7 +142,7 @@ public class MLookupCache
 		for (int i = 0; i < toDelete.size(); i++)
 			s_loadedLookups.remove(toDelete.get(i));
 		int endNo = s_loadedLookups.size();
-		s_log.fine("WindowNo=" + WindowNo
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("WindowNo=" + WindowNo
 			+ " - " + startNo + " -> " + endNo);
 	}	//	cacheReset
 

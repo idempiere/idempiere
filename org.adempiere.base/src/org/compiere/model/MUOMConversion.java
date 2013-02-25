@@ -434,7 +434,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		}
 		if (retValue == null)
 		{
-			s_log.info ("NOT found - FromUOM=" + C_UOM_From_ID + ", ToUOM=" + C_UOM_To_ID);
+			if (s_log.isLoggable(Level.INFO)) s_log.info ("NOT found - FromUOM=" + C_UOM_From_ID + ", ToUOM=" + C_UOM_To_ID);
 			return null;
 		}
 			
@@ -533,7 +533,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		if (qtyPrice == null || qtyPrice.compareTo(Env.ZERO)==0 
 			|| C_UOM_To_ID == 0|| M_Product_ID == 0)
 		{
-			s_log.fine("No Conversion - QtyPrice=" + qtyPrice);
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("No Conversion - QtyPrice=" + qtyPrice);
 			return qtyPrice;
 		}
 		
@@ -547,7 +547,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 				return uom.round(retValue.multiply(qtyPrice), true);
 			return retValue.multiply(qtyPrice);
 		}
-		s_log.fine("No Rate M_Product_ID=" + M_Product_ID);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("No Rate M_Product_ID=" + M_Product_ID);
 		return null;
 	}	//	convertProductFrom
 
@@ -613,7 +613,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		result = new MUOMConversion[list.size ()];
 		list.toArray (result);
 		s_conversionProduct.put(key, result);
-		s_log.fine("getProductConversions - M_Product_ID=" + M_Product_ID + " #" + result.length);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("getProductConversions - M_Product_ID=" + M_Product_ID + " #" + result.length);
 		return result;
 	}	//	getProductConversions
 
