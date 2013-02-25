@@ -211,9 +211,11 @@ ContextMenuListener, IZoomableEditor
     }
 
 	private void createCacheListener() {
-		String columnName = lookup.getColumnName();
-		String tableName = columnName.substring(0, columnName.indexOf("."));
-		tableCacheListener = new CCacheListener(tableName, this);
+		if (lookup != null) {
+			String columnName = lookup.getColumnName();
+			String tableName = columnName.substring(0, columnName.indexOf("."));
+			tableCacheListener = new CCacheListener(tableName, this);
+		}
 	}
 
     @Override
