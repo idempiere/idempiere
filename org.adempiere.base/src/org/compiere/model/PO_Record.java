@@ -110,7 +110,7 @@ public class PO_Record
 					.append(" WHERE AD_Table_ID=? AND Record_ID=?");
 				int no = DB.executeUpdate(sql.toString(), params, false, trxName);
 				if (no > 0)
-					log.config(s_cascadeNames[i] + " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
+					if (log.isLoggable(Level.CONFIG)) log.config(s_cascadeNames[i] + " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
 				else if (no < 0)
 				{
 					log.severe(s_cascadeNames[i] + " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
@@ -137,7 +137,7 @@ public class PO_Record
 						.append(s_parentNames[j]).append("_ID=?)");
 					int no = DB.executeUpdate(sql.toString(), params, false, trxName);
 					if (no > 0)
-						log.config(s_cascadeNames[i] + " " + s_parentNames[j]  
+						if (log.isLoggable(Level.CONFIG)) log.config(s_cascadeNames[i] + " " + s_parentNames[j]  
 		                   + " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
 					else if (no < 0)
 					{
@@ -230,7 +230,7 @@ public class PO_Record
 				.append(TableName).append("_ID FROM ").append(TableName).append(")");
 			int no = DB.executeUpdate(sql.toString(), null);
 			if (no > 0)
-				log.config(s_cascadeNames[i] + " (" + AD_Table_ID + "/" + TableName 
+				if (log.isLoggable(Level.CONFIG)) log.config(s_cascadeNames[i] + " (" + AD_Table_ID + "/" + TableName 
 					+ ") Invalid #" + no);
 		}
 	}	//	validate

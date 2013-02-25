@@ -225,7 +225,7 @@ public class Match
 	protected IMiniTable cmd_searchTo(IMiniTable xMatchedTable, IMiniTable xMatchedToTable, String displayString, int matchToType, boolean sameBPartner, boolean sameProduct, boolean sameQty, boolean matched)
 	{
 		int row = xMatchedTable.getSelectedRow();
-		log.config("Row=" + row);
+		if (log.isLoggable(Level.CONFIG)) log.config("Row=" + row);
 
 		//  ** Create SQL **
 		//String displayString = (String)matchTo.getSelectedItem();
@@ -273,7 +273,7 @@ public class Match
 	protected void tableInit (int display, int matchToType, boolean matched)
 	{
 		//boolean matched = matchMode.getSelectedIndex() == MODE_MATCHED;
-		log.config("Display=" + m_matchOptions[display]
+		if (log.isLoggable(Level.CONFIG)) log.config("Display=" + m_matchOptions[display]
 			+ ", MatchTo=" + m_matchOptions[matchToType]
 			+ ", Matched=" + matched);
 

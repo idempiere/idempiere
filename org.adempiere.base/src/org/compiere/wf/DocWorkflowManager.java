@@ -128,7 +128,7 @@ public class DocWorkflowManager implements DocWorkflowMgr
 			//
 			if (wf.start(pi, document.get_TrxName()) != null)
 			{
-				log.config(wf.getName());
+				if (log.isLoggable(Level.CONFIG)) log.config(wf.getName());
 				m_noStarted++;
 				started = true;
 			}

@@ -138,7 +138,7 @@ public class BOMValidate extends SvrProcess
 		m_product = product;
 	
 		//	Check Old Product BOM Structure
-		log.config(m_product.getName());
+		if (log.isLoggable(Level.CONFIG)) log.config(m_product.getName());
 		m_products = new ArrayList<MProduct>();
 		if (!validateOldProduct (m_product))
 		{

@@ -267,7 +267,7 @@ public abstract class PaymentFormCash extends PaymentForm {
 		if (negateAmt)
 			payAmount = m_Amount.negate();
 		// Info
-		log.config("C_Order_ID=" + C_Order_ID + ", C_Invoice_ID=" + C_Invoice_ID + ", NegateAmt=" + negateAmt);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_Order_ID=" + C_Order_ID + ", C_Invoice_ID=" + C_Invoice_ID + ", NegateAmt=" + negateAmt);
 		
 		/***********************
 		 *  CashBook
@@ -298,7 +298,7 @@ public abstract class PaymentFormCash extends PaymentForm {
 					&& (newC_CashBook_ID != m_C_CashBook_ID 
 						|| !TimeUtil.isSameDay(m_cashLine.getStatementDate(), newDateAcct)))
 				{
-					log.config("Changed CashBook/Date: " + m_C_CashBook_ID + "->" + newC_CashBook_ID);
+					if (log.isLoggable(Level.CONFIG)) log.config("Changed CashBook/Date: " + m_C_CashBook_ID + "->" + newC_CashBook_ID);
 					MCashLine reverse = m_cashLine.createReversal();
 					reverse.saveEx();
 					m_cashLine = null;

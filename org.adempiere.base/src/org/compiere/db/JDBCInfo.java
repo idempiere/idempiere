@@ -45,12 +45,15 @@ public class JDBCInfo
 	{
 		m_md = conn.getMetaData(); 
 		log.info(m_md.getDatabaseProductName());
-		log.config(m_md.getDatabaseProductVersion());
+		if (log.isLoggable(Level.CONFIG)) log.config(m_md.getDatabaseProductVersion());
 	//	log.config(m_md.getDatabaseMajorVersion() + "/" + m_md.getDatabaseMinorVersion());
 		//
 		log.info(m_md.getDriverName());
-		log.config(m_md.getDriverVersion());
-		log.config(m_md.getDriverMajorVersion() + "/" + m_md.getDriverMinorVersion());
+		if (log.isLoggable(Level.CONFIG)){
+			log.config(m_md.getDriverVersion());
+			log.config(m_md.getDriverMajorVersion() + "/" + m_md.getDriverMinorVersion());
+		}
+		
 		//
 	//	log.info("JDBC = " + m_md.getJDBCMajorVersion() + "/" + m_md.getJDBCMinorVersion());
 	}   //  JDBCInfo

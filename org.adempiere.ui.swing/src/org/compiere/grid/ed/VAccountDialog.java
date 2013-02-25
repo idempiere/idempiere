@@ -118,7 +118,7 @@ public final class VAccountDialog extends CDialog
 		MAccountLookup mAccount, int C_AcctSchema_ID)
 	{
 		super (frame, title, true);
-		log.config("C_AcctSchema_ID=" + C_AcctSchema_ID 
+		if (log.isLoggable(Level.CONFIG)) log.config("C_AcctSchema_ID=" + C_AcctSchema_ID 
 			+ ", C_ValidCombination_ID=" + mAccount.C_ValidCombination_ID);
 		m_mAccount = mAccount;
 		m_C_AcctSchema_ID = C_AcctSchema_ID;
@@ -268,7 +268,7 @@ public final class VAccountDialog extends CDialog
 		//	Get AcctSchema Info
 		if (s_AcctSchema == null || s_AcctSchema.getC_AcctSchema_ID() != m_C_AcctSchema_ID)
 			s_AcctSchema = new MAcctSchema (Env.getCtx(), m_C_AcctSchema_ID, null);
-		log.config(s_AcctSchema.toString()
+		if (log.isLoggable(Level.CONFIG)) log.config(s_AcctSchema.toString()
 			+ ", #" + s_AcctSchema.getAcctSchemaElements().length);
 		Env.setContext(Env.getCtx(), m_WindowNo, "C_AcctSchema_ID", m_C_AcctSchema_ID);
 
@@ -614,7 +614,7 @@ public final class VAccountDialog extends CDialog
 			int row = m_gridController.getTable().getSelectedRow();
 			if (row >= 0)
 				m_C_ValidCombination_ID = ((Integer)m_mTab.getValue(row, "C_ValidCombination_ID")).intValue();
-			log.config("(" + row + ") - " + m_C_ValidCombination_ID);
+			if (log.isLoggable(Level.CONFIG)) log.config("(" + row + ") - " + m_C_ValidCombination_ID);
 		}
 	}	//	saveSelection
 
@@ -652,7 +652,7 @@ public final class VAccountDialog extends CDialog
 	 */
 	public void dataStatusChanged (DataStatusEvent e)
 	{
-		log.config(e.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(e.toString());
 		String info = (String)m_mTab.getValue("Description");
 		f_Description.setText (info);
 		//
@@ -1123,7 +1123,7 @@ public final class VAccountDialog extends CDialog
 	 */
 	public Integer getValue()
 	{
-		log.config("C_ValidCombination_ID=" + m_C_ValidCombination_ID + ", Changed=" + m_changed);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_ValidCombination_ID=" + m_C_ValidCombination_ID + ", Changed=" + m_changed);
 		if (!m_changed || m_C_ValidCombination_ID == 0)
 			return null;
 		return new Integer(m_C_ValidCombination_ID);

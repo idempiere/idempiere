@@ -361,7 +361,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	 */
 	public void valueChange (ValueChangeEvent e)
 	{
-		log.config(e.getPropertyName() + "=" + e.getNewValue());
+		if (log.isLoggable(Level.CONFIG)) log.config(e.getPropertyName() + "=" + e.getNewValue());
 
 		//  BPartner - load Order/Invoice/Shipment
 		if (e.getPropertyName().equals("C_BPartner_ID"))
@@ -397,7 +397,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	 */
 	private void initBPInvoiceDetails(int C_BPartner_ID)
 	{
-		log.config("C_BPartner_ID" + C_BPartner_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_BPartner_ID" + C_BPartner_ID);
 
 		//  load Shipments (Receipts) - Completed, Closed
 		invoiceField.removeActionListener(this);
@@ -422,7 +422,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	 */
 	protected void initBPOrderDetails (int C_BPartner_ID, boolean forInvoice)
 	{
-		log.config("C_BPartner_ID=" + C_BPartner_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_BPartner_ID=" + C_BPartner_ID);
 		KeyNamePair pp = new KeyNamePair(0,"");
 		//  load PO Orders - Closed, Completed
 		orderField.removeActionListener(this);

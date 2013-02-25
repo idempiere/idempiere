@@ -195,7 +195,7 @@ public final class AEnv
 				AD_Window_ID = PO_Window_ID;
 		}
 
-		log.config(TableName + " - Record_ID=" + Record_ID + " (IsSOTrx=" + isSOTrx + ")");
+		if (log.isLoggable(Level.CONFIG)) log.config(TableName + " - Record_ID=" + Record_ID + " (IsSOTrx=" + isSOTrx + ")");
 		zoom(AD_Window_ID, MQuery.getEqualQuery(TableName + "_ID", Record_ID));
 	}	//	zoom
 
@@ -266,7 +266,7 @@ public final class AEnv
 	public static GridWindowVO getMWindowVO (int WindowNo, int AD_Window_ID, int AD_Menu_ID)
 	{
 
-		log.config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
 		GridWindowVO mWindowVO = null;
 		String sessionID = Env.getContext(Env.getCtx(), "#AD_Session_ID");
 		if (AD_Window_ID != 0 && Ini.isCacheWindow())	//	try cache
@@ -363,7 +363,7 @@ public final class AEnv
 	public static void cacheReset (String tableName, int Record_ID)
 	{
 
-		log.config("TableName=" + tableName + ", Record_ID=" + Record_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("TableName=" + tableName + ", Record_ID=" + Record_ID);
 
 		CacheMgt.get().reset(tableName, Record_ID);
 	}   //  cacheReset
@@ -539,7 +539,7 @@ public final class AEnv
 				AD_Window_ID = PO_Window_ID;
 		}
 
-		log.config(query + " (IsSOTrx=" + isSOTrx + ")");
+		if (log.isLoggable(Level.CONFIG)) log.config(query + " (IsSOTrx=" + isSOTrx + ")");
 
 		zoom(AD_Window_ID, query);
 	}

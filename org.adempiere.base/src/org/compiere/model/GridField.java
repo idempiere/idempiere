@@ -161,7 +161,7 @@ public class GridField
 	{
 		if (!isLookup())
 			return;
-		log.config("(" + m_vo.ColumnName + ")");
+		if (log.isLoggable(Level.CONFIG)) log.config("(" + m_vo.ColumnName + ")");
 
 		if (DisplayType.isLookup(m_vo.displayType) && m_vo.IsDisplayed)
 		{
@@ -1259,7 +1259,7 @@ public class GridField
 			else 
 				m_parentValue = Boolean.valueOf(m_vo.ColumnName.equals(LinkColumnName));
 			if (m_parentValue)
-				log.config(m_parentValue
+				if (log.isLoggable(Level.CONFIG)) log.config(m_parentValue
 					+ " - Link(" + LinkColumnName + ", W=" + m_vo.WindowNo + ",T=" + m_vo.TabNo
 					+ ") = " + m_vo.ColumnName);
 			else
@@ -1780,7 +1780,7 @@ public class GridField
 					if (m_vo.ColumnName.equals(linkColumn))
 					{
 						result = true;
-						log.config(result
+						if (log.isLoggable(Level.CONFIG)) log.config(result
 								+ " - Link(" + linkColumn + ", W=" + m_vo.WindowNo + ",T=" + m_vo.TabNo
 								+ ") = " + m_vo.ColumnName);
 					}

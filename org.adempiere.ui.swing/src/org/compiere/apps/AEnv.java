@@ -673,7 +673,7 @@ public final class AEnv
 				AD_Window_ID = PO_Window_ID;
 		}
 		
-		log.config(TableName + " - Record_ID=" + Record_ID + " (IsSOTrx=" + isSOTrx + ")");
+		if (log.isLoggable(Level.CONFIG)) log.config(TableName + " - Record_ID=" + Record_ID + " (IsSOTrx=" + isSOTrx + ")");
 		AWindow frame = new AWindow(null);
 		if (!frame.initWindow(AD_Window_ID, MQuery.getEqualQuery(TableName + "_ID", Record_ID)))
 			return;
@@ -737,7 +737,7 @@ public final class AEnv
 				AD_Window_ID = PO_Window_ID;
 		}
 		
-		log.config(query + " (IsSOTrx=" + isSOTrx + ")");
+		if (log.isLoggable(Level.CONFIG)) log.config(query + " (IsSOTrx=" + isSOTrx + ")");
 		AWindow frame = new AWindow(null);
 		if (!frame.initWindow(AD_Window_ID, query))
 			return;
@@ -817,7 +817,7 @@ public final class AEnv
 				if (MRole.getDefault().isTableAccess (AD_Table_ID, true))	//	RO
 					s_workflow = Boolean.TRUE;
 				else
-					log.config(s_workflow.toString());
+					if (log.isLoggable(Level.CONFIG)) log.config(s_workflow.toString());
 			}
 			//	Get Window
 			if (s_workflow.booleanValue())
@@ -827,7 +827,7 @@ public final class AEnv
 				if (s_workflow_Window_ID == 0)
 					s_workflow_Window_ID = 297;	//	fallback HARDCODED
 				//	s_workflow = Boolean.FALSE;
-				log.config(s_workflow + ", Window=" + s_workflow_Window_ID);
+				if (log.isLoggable(Level.CONFIG)) log.config(s_workflow + ", Window=" + s_workflow_Window_ID);
 			}
 		}
 		return s_workflow.booleanValue();
@@ -902,7 +902,7 @@ public final class AEnv
 		try
 		{
 			s_serverTries++;
-			log.config("try #" + s_serverTries);
+			if (log.isLoggable(Level.CONFIG)) log.config("try #" + s_serverTries);
 			ok = CConnection.get().isAppsServerOK(true);
 			if (ok)
 				s_serverTries = 0;
@@ -939,7 +939,7 @@ public final class AEnv
 	public static String postImmediate (int WindowNo, int AD_Client_ID, 
 		int AD_Table_ID, int Record_ID, boolean force)
 	{
-		log.config("Window=" + WindowNo 
+		if (log.isLoggable(Level.CONFIG)) log.config("Window=" + WindowNo 
 			+ ", AD_Table_ID=" + AD_Table_ID + "/" + Record_ID
 			+ ", Force=" + force);
 
@@ -955,7 +955,7 @@ public final class AEnv
 	 */
 	public static void cacheReset (String tableName, int Record_ID)
 	{
-		log.config("TableName=" + tableName + ", Record_ID=" + Record_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("TableName=" + tableName + ", Record_ID=" + Record_ID);
 
 		//  try to get from Server when enabled
 		if (isServerActive())

@@ -269,7 +269,7 @@ public class WebUser
 		if (m_loc == null)
 			m_loc = new MLocation (m_ctx, 0, null);
 		//
-		log.config(m_bp + " - " + m_bpc);
+		if (log.isLoggable(Level.CONFIG)) log.config(m_bp + " - " + m_bpc);
 	}	//	load
 
 	/**

@@ -38,7 +38,7 @@ public class WArchive implements EventListener<Event>
 	 */
 	public WArchive (Component invoker, int AD_Table_ID, int Record_ID)
 	{
-		log.config("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
 		m_AD_Table_ID = AD_Table_ID;
 		m_Record_ID = Record_ID;
 		getArchives(invoker);

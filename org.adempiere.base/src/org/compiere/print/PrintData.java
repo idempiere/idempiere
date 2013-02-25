@@ -575,7 +575,7 @@ public class PrintData implements Serializable
 		if (pd.getColumnInfo() != null)
 		{
 			for (int i = 0; i < pd.getColumnInfo().length; i++)
-				log.config(i + ": " + pd.getColumnInfo()[i]);
+				if (log.isLoggable(Level.CONFIG)) log.config(i + ": " + pd.getColumnInfo()[i]);
 		}
 	}	//	dump
 
@@ -610,10 +610,10 @@ public class PrintData implements Serializable
 			}
 			else if (obj instanceof PrintDataElement)
 			{
-				log.config(((PrintDataElement)obj).toStringX());
+				if (log.isLoggable(Level.CONFIG)) log.config(((PrintDataElement)obj).toStringX());
 			}
 			else
-				log.config("- INVALID: " + obj);
+				if (log.isLoggable(Level.CONFIG)) log.config("- INVALID: " + obj);
 		}
 	}	//	dumpRow
 
@@ -752,7 +752,7 @@ public class PrintData implements Serializable
 	 */
 	public static PrintData parseXML (Properties ctx, File input)
 	{
-		log.config(input.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(input.toString());
 		PrintData pd = null;
 		try
 		{

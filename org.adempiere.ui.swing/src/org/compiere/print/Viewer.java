@@ -1019,7 +1019,7 @@ public class Viewer extends CFrame
 			return;
 		}
 		ext = ext.substring(ext.lastIndexOf('.')+1).toLowerCase();
-		log.config( "File=" + outFile.getPath() + "; Type=" + ext);
+		if (log.isLoggable(Level.CONFIG)) log.config( "File=" + outFile.getPath() + "; Type=" + ext);
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		try {
@@ -1306,7 +1306,7 @@ public class Viewer extends CFrame
 		pp = (ValueNamePair)list.get(choice);
 		String AD_Language = pp.getValue();
 		int AD_PrintFormat_ID = m_reportEngine.getPrintFormat().get_ID();
-		log.config(AD_Language + " - AD_PrintFormat_ID=" + AD_PrintFormat_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config(AD_Language + " - AD_PrintFormat_ID=" + AD_PrintFormat_ID);
 		StringBuilder sb = new StringBuilder();
 		//	English
 		if (Language.isBaseLanguage (AD_Language))
@@ -1336,7 +1336,7 @@ public class Viewer extends CFrame
 				  " AND e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=pfi.AD_Column_ID)");
 		}
 		int count = DB.executeUpdate(sb.toString(), null);
-		log.config("Count=" + count);
+		if (log.isLoggable(Level.CONFIG)) log.config("Count=" + count);
 		//
 		m_reportEngine.setPrintFormat(MPrintFormat.get (Env.getCtx(), AD_PrintFormat_ID, true));
 		revalidate();

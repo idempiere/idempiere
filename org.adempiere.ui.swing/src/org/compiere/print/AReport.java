@@ -75,7 +75,7 @@ public class AReport implements ActionListener
 	 */
 	public AReport (int AD_Table_ID, JComponent invoker, MQuery	query, IProcessUI parent, int WindowNo)
 	{
-		log.config("AD_Table_ID=" + AD_Table_ID + " " + query);
+		if (log.isLoggable(Level.CONFIG)) log.config("AD_Table_ID=" + AD_Table_ID + " " + query);
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
 		{
 			ADialog.error(0, invoker, "AccessCannotReport", query.getTableName());
@@ -102,7 +102,7 @@ public class AReport implements ActionListener
 	 */
 	public AReport (int AD_Table_ID, JComponent invoker, MQuery	query, IProcessUI parent, int WindowNo, String whereExtended)
 	{
-		log.config("AD_Table_ID=" + AD_Table_ID + " " + query);
+		if (log.isLoggable(Level.CONFIG)) log.config("AD_Table_ID=" + AD_Table_ID + " " + query);
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
 		{
 			ADialog.error(0, invoker, "AccessCannotReport", query.getTableName());

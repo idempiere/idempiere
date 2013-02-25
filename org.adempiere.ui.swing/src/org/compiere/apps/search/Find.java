@@ -570,7 +570,7 @@ public final class Find extends CDialog
 	 */
 	private void addSelectionColumn (GridField mField)
 	{
-		log.config(mField.getHeader());
+		if (log.isLoggable(Level.CONFIG)) log.config(mField.getHeader());
 		int displayLength = mField.getDisplayLength();
 		if (displayLength > FIELDLENGTH)
 			mField.setDisplayLength(FIELDLENGTH);
@@ -845,7 +845,7 @@ public final class Find extends CDialog
 			
 			if (columnName != null)
 			{
-				log.config("Column: " + columnName);
+				if (log.isLoggable(Level.CONFIG)) log.config("Column: " + columnName);
 		    	int referenceType = -1;
 	    		MTable table = MTable.get(Env.getCtx(), m_tableName);
 	    		MColumn col = table.getColumn(columnName);
@@ -1606,7 +1606,7 @@ public final class Find extends CDialog
 	 */
 	private int getNoOfRecords (MQuery query, boolean alertZeroRecords)
 	{
-		log.config("" + query);
+		if (log.isLoggable(Level.CONFIG)) log.config("" + query);
 		StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ");
 		sql.append(m_tableName);
 		boolean hasWhere = false;
@@ -1660,7 +1660,7 @@ public final class Find extends CDialog
 			m_total = 0; // return 0 if more then allowed - teo_sarca [ 1708717 ]
 		}
 		else
-			log.config("#" + m_total);
+			if (log.isLoggable(Level.CONFIG)) log.config("#" + m_total);
 		//
 		if (query != null)
 			statusBar.setStatusToolTip (query.getWhereClause());
@@ -1684,7 +1684,7 @@ public final class Find extends CDialog
 	 */
 	public void dataStatusChanged (DataStatusEvent e)
 	{
-		log.config(e.getMessage());
+		if (log.isLoggable(Level.CONFIG)) log.config(e.getMessage());
 		//	Action control
 		boolean changed = e.isChanged();
 		bIgnore.setEnabled(changed);

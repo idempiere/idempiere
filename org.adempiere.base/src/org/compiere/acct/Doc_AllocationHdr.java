@@ -587,7 +587,7 @@ public class Doc_AllocationHdr extends Doc
 		double percent = invoice.getGrandTotal().doubleValue() / allocationSource.doubleValue();
 		if (percent > 0.99 && percent < 1.01)
 			percent = 1.0;
-		log.config("Multiplier=" + percent + " - GrandTotal=" + invoice.getGrandTotal()
+		if (log.isLoggable(Level.CONFIG)) log.config("Multiplier=" + percent + " - GrandTotal=" + invoice.getGrandTotal()
 			+ " - Allocation Source=" + allocationSource);
 
 		//	Get Invoice Postings
@@ -595,7 +595,7 @@ public class Doc_AllocationHdr extends Doc
 			MInvoice.Table_ID, invoice.getC_Invoice_ID(), getTrxName());
 		docInvoice.loadDocumentDetails();
 		allocationAccounted = docInvoice.createFactCash(as, fact, new BigDecimal(percent));
-		log.config("Allocation Accounted=" + allocationAccounted);
+		if (log.isLoggable(Level.CONFIG)) log.config("Allocation Accounted=" + allocationAccounted);
 
 		//	Cash Based Commitment Release
 		if (as.isCreatePOCommitment() && !invoice.isSOTrx())

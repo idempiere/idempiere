@@ -189,7 +189,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		super();
 		this.setTitle(Msg.getMsg(Env.getCtx(), NAME) + " " + DisplayAttribute);
 		
-		log.config("WindowNo=" + WindowNo
+		if (log.isLoggable(Level.CONFIG)) log.config("WindowNo=" + WindowNo
 			+ ", Client_ID=" + AD_Client_ID + ", Org_ID=" + AD_Org_ID + ", User_ID=" + AD_User_ID + ", Window_ID=" + AD_Window_ID
 			+ ",  Attribute=" + Attribute + "/" + DisplayAttribute + ",  Value=" + Value + "/" + DisplayValue
 			+ ",  DisplayType=" + displayType + ", Reference_ID=" + AD_Reference_ID);

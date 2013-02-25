@@ -578,8 +578,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
 			X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(m_ctx, ToolBarButton_ID, null);
 			String restrictName = BTNPREFIX + tbt.getComponentName();
-			if (log.isLoggable(Level.CONFIG))
-				log.config("tbt="+tbt.getAD_ToolBarButton_ID() + " / " + restrictName);
+			if (log.isLoggable(Level.CONFIG)) log.config("tbt="+tbt.getAD_ToolBarButton_ID() + " / " + restrictName);
 
 			for (Component p = this.getFirstChild(); p != null; p = p.getNextSibling()) {
 				if (p instanceof ToolBarButton) {

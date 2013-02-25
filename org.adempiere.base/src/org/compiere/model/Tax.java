@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.TaxCriteriaNotFoundException;
@@ -482,7 +483,7 @@ public class Tax
 		{
 			log.info("get(Detail) - Category=" + C_TaxCategory_ID 
 				+ ", SOTrx=" + IsSOTrx);
-			log.config("get(Detail) - BillFrom=" + billFromC_Location_ID 
+			if (log.isLoggable(Level.CONFIG)) log.config("get(Detail) - BillFrom=" + billFromC_Location_ID 
 				+ ", BillTo=" + billToC_Location_ID + ", BillDate=" + billDate);
 		}
 

@@ -189,7 +189,7 @@ public class PayPrint {
 		}
 		
 		if (data.size() == 0)
-			log.config("PaySel=" + C_PaySelection_ID + ", BAcct=" + m_C_BankAccount_ID + " - " + sql);
+			if (log.isLoggable(Level.CONFIG)) log.config("PaySel=" + C_PaySelection_ID + ", BAcct=" + m_C_BankAccount_ID + " - " + sql);
 		
 		return data;
 	}   //  loadPaymentRule

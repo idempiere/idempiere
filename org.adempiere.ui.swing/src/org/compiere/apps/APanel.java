@@ -1509,7 +1509,7 @@ public final class APanel extends CPanel
 				if (!m_curTab.isReadOnly()
 					&& (Env.isAutoNew(m_ctx, m_curWindowNo) || m_curTab.isQueryNewRecord()))
 				{
-					log.config("No record - New - AutoNew=" + Env.isAutoNew(m_ctx, m_curWindowNo)
+					if (log.isLoggable(Level.CONFIG)) log.config("No record - New - AutoNew=" + Env.isAutoNew(m_ctx, m_curWindowNo)
 						+ " - QueryNew=" + m_curTab.isQueryNewRecord());
 					m_curTab.dataNew(false);
 				}
@@ -1904,7 +1904,7 @@ public final class APanel extends CPanel
 	 */
 	private void cmd_new (boolean copy)
 	{
-		log.config("copy=" + copy);
+		if (log.isLoggable(Level.CONFIG)) log.config("copy=" + copy);
 		if (!m_curTab.isInsertRecord())
 		{
 			log.warning("Insert Record disabled for Tab");
@@ -2066,7 +2066,7 @@ public final class APanel extends CPanel
 	{
 		if (m_curAPanelTab != null)
 			manualCmd = false;
-		log.config("Manual=" + manualCmd);
+		if (log.isLoggable(Level.CONFIG)) log.config("Manual=" + manualCmd);
 		m_errorDisplayed = false;
 		m_curGC.stopEditor(true);
 		m_curGC.acceptEditorChanges();
@@ -2575,7 +2575,7 @@ public final class APanel extends CPanel
 				MRole role = MRole.getDefault();
 				int maxRows = role.getMaxQueryRecords();
 				//
-				log.config("OnlyCurrent=" + m_onlyCurrentRows
+				if (log.isLoggable(Level.CONFIG)) log.config("OnlyCurrent=" + m_onlyCurrentRows
 					+ ", Days=" + m_onlyCurrentDays
 					+ ", MaxRows=" + maxRows);
 				m_curGC.query(m_onlyCurrentRows, m_onlyCurrentDays, maxRows );   //  autoSize
@@ -2811,7 +2811,7 @@ public final class APanel extends CPanel
 		 *  or invoke user form
 		 */
 
-		log.config("Process_ID=" + processID + ", Record_ID=" + record_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("Process_ID=" + processID + ", Record_ID=" + record_ID);
 		if (processID == 0)
 		{
 			if (isProcessMandatory)
@@ -3097,7 +3097,7 @@ public final class APanel extends CPanel
 
 			X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(m_ctx, ToolBarButton_ID, null);
 			String restrictName = tbt.getComponentName();
-			log.config("tbt="+tbt.getAD_ToolBarButton_ID() + " / " + restrictName);
+			if (log.isLoggable(Level.CONFIG)) log.config("tbt="+tbt.getAD_ToolBarButton_ID() + " / " + restrictName);
 			boolean found=false;
 
 			// remove from ToolBar

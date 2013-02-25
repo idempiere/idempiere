@@ -16,6 +16,7 @@ package org.adempiere.webui.apps.form;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
@@ -276,7 +277,7 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 			dataOK = false;
 		}
 		//
-		log.config("OK=" + dataOK);
+		if (log.isLoggable(Level.CONFIG)) log.config("OK=" + dataOK);
 		return dataOK;
 	}	
 

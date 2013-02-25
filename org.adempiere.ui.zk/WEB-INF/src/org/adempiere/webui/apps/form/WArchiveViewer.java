@@ -482,7 +482,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	private void updateQDisplay()
 	{
 		boolean reports = reportField.isChecked();
-		log.config("Reports=" + reports);
+		if (log.isLoggable(Level.CONFIG)) log.config("Reports=" + reports);
 
 		//	Show
 		processLabel.setVisible(reports);
@@ -624,7 +624,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	
 	public void query (boolean isReport, int AD_Table_ID, int Record_ID)
 	{
-		log.config("Report=" + isReport + ", AD_Table_ID=" + AD_Table_ID + ",Record_ID=" + Record_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("Report=" + isReport + ", AD_Table_ID=" + AD_Table_ID + ",Record_ID=" + Record_ID);
 		reportField.setChecked(isReport);
 		m_AD_Table_ID = AD_Table_ID;
 		m_Record_ID = Record_ID;

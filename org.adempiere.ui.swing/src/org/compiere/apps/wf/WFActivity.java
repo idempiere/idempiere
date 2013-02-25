@@ -648,7 +648,7 @@ public class WFActivity extends CPanel
 	 */
 	private void cmd_zoom()
 	{
-		log.config("Activity=" + m_activity);
+		if (log.isLoggable(Level.CONFIG)) log.config("Activity=" + m_activity);
 		if (m_activity == null)
 			return;
 		AEnv.zoom(m_activity.getAD_Table_ID(), m_activity.getRecord_ID());
@@ -659,7 +659,7 @@ public class WFActivity extends CPanel
 	 */
 	private void cmd_button()
 	{
-		log.config("Activity=" + m_activity);
+		if (log.isLoggable(Level.CONFIG)) log.config("Activity=" + m_activity);
 		if (m_activity == null)
 			return;
 		//
@@ -705,7 +705,7 @@ public class WFActivity extends CPanel
 	 */
 	private void cmd_OK()
 	{
-		log.config("Activity=" + m_activity);
+		if (log.isLoggable(Level.CONFIG)) log.config("Activity=" + m_activity);
 		if (m_activity == null)
 			return;
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
@@ -721,7 +721,7 @@ public class WFActivity extends CPanel
 		
 		if (forward != null)
 		{
-			log.config("Forward to " + forward);
+			if (log.isLoggable(Level.CONFIG)) log.config("Forward to " + forward);
 			int fw = ((Integer)forward).intValue();
 			if (fw == AD_User_ID || fw == 0)
 			{
@@ -759,7 +759,7 @@ public class WFActivity extends CPanel
 				return;
 			}
 			//
-			log.config("Answer=" + value + " - " + textMsg);
+			if (log.isLoggable(Level.CONFIG)) log.config("Answer=" + value + " - " + textMsg);
 			try
 			{
 				m_activity.setUserChoice(AD_User_ID, value, dt, textMsg);
@@ -776,7 +776,7 @@ public class WFActivity extends CPanel
 		//	User Action
 		else
 		{
-			log.config("Action=" + node.getAction() + " - " + textMsg);
+			if (log.isLoggable(Level.CONFIG)) log.config("Action=" + node.getAction() + " - " + textMsg);
 			try
 			{
 				// ensure activity is ran within a transaction

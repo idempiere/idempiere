@@ -20,6 +20,7 @@ import java.awt.Component;
 import java.awt.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.logging.Level;
 
 import javax.swing.Action;
 import javax.swing.table.TableModel;
@@ -100,13 +101,13 @@ public final class VTable extends CTable
 			int selRow = getSelectedRow();
 			if (row == selRow)
 				return;
-			log.config(GridTab.PROPERTY + "=" + row + " from " + selRow);
+			if (log.isLoggable(Level.CONFIG)) log.config(GridTab.PROPERTY + "=" + row + " from " + selRow);
 			setRowSelectionInterval(row,row);
 			setColumnSelectionInterval(0, 0);
 		    Rectangle cellRect = getCellRect(row, 0, false);
 		    if (cellRect != null)
 		    	scrollRectToVisible(cellRect);
-			log.config(GridTab.PROPERTY + "=" + row + " from " + selRow);
+			if (log.isLoggable(Level.CONFIG)) log.config(GridTab.PROPERTY + "=" + row + " from " + selRow);
 		}
 	}   //  propertyChange
 
@@ -152,7 +153,7 @@ public final class VTable extends CTable
 
 		p_lastSortIndex = modelColumnIndex;
 		//
-		log.config("#" + modelColumnIndex
+		if (log.isLoggable(Level.CONFIG)) log.config("#" + modelColumnIndex
 			+ " - rows=" + rows + ", asc=" + p_asc);
 
 		((GridTable)model).sort(modelColumnIndex, p_asc);

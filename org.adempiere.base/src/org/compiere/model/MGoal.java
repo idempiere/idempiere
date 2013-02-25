@@ -369,7 +369,7 @@ public class MGoal extends X_PA_Goal
 	 */
 	public boolean updateGoal(boolean force)
 	{
-		log.config("Force=" + force);
+		if (log.isLoggable(Level.CONFIG)) log.config("Force=" + force);
 		MMeasure measure = MMeasure.get(getCtx(), getPA_Measure_ID());
 		if (force 
 			|| getDateLastRun() == null

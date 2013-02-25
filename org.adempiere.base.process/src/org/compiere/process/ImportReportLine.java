@@ -131,7 +131,7 @@ public class ImportReportLine extends SvrProcess
 			.append("WHERE PA_ReportLineSet_ID IS NULL")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Invalid ReportLineSet=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid ReportLineSet=" + no);
 
 		//	Ignore if there is no Report Line Name or ID
 		sql = new StringBuilder ("UPDATE I_ReportLine ")
@@ -139,7 +139,7 @@ public class ImportReportLine extends SvrProcess
 			.append("WHERE PA_ReportLine_ID IS NULL AND Name IS NULL")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Invalid LineName=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid LineName=" + no);
 
 		//	Validate ElementValue
 		sql = new StringBuilder ("UPDATE I_ReportLine i ")
@@ -156,7 +156,7 @@ public class ImportReportLine extends SvrProcess
 			.append("WHERE C_ElementValue_ID IS NULL AND LineType<>'C'") // MReportLine.LINETYPE_Calculation
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Invalid AccountType=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid AccountType=" + no);
 
 		//	Set SeqNo
 		sql = new StringBuilder ("UPDATE I_ReportLine ")
@@ -211,7 +211,7 @@ public class ImportReportLine extends SvrProcess
 			.append("WHERE CalculationType IS NOT NULL AND CalculationType NOT IN ('A','P','R','S')")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Invalid CalculationType=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid CalculationType=" + no);
 
 		//	Convert Optional Amount Type to PAAmount Type and PAPeriodType
 		sql = new StringBuilder ("UPDATE I_ReportLine ")
@@ -219,7 +219,7 @@ public class ImportReportLine extends SvrProcess
 			.append("WHERE AmountType IS NOT NULL AND (PAAmountType IS NULL OR PAPeriodType IS NULL) ")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Converted AmountType=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Converted AmountType=" + no);
 		
 		//		Validate Optional Amount Type -
 		sql = new StringBuilder ("UPDATE I_ReportLine ")
@@ -227,7 +227,7 @@ public class ImportReportLine extends SvrProcess
 			.append("WHERE PAAmountType IS NOT NULL AND UPPER(AmountType) NOT IN ('B','C','D','Q','S','R')")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Invalid AmountType=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid AmountType=" + no);
 		
 		//		Validate Optional Period Type -
 		sql = new StringBuilder ("UPDATE I_ReportLine ")
@@ -235,7 +235,7 @@ public class ImportReportLine extends SvrProcess
 			.append("WHERE PAPeriodType IS NOT NULL AND UPPER(AmountType) NOT IN ('P','Y','T','N')")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Invalid PeriodType=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid PeriodType=" + no);
 
 		//	Validate Optional Posting Type - A B E S R
 		sql = new StringBuilder ("UPDATE I_ReportLine ")
@@ -243,7 +243,7 @@ public class ImportReportLine extends SvrProcess
 			.append("WHERE PostingType IS NOT NULL AND PostingType NOT IN ('A','B','E','S','R')")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Invalid PostingType=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid PostingType=" + no);
 
 		//	Set PA_ReportLine_ID
 		sql = new StringBuilder ("UPDATE I_ReportLine i ")
@@ -349,7 +349,7 @@ public class ImportReportLine extends SvrProcess
 			.append(" WHERE i.Name=iii.Name AND i.PA_ReportLineSet_ID=iii.PA_ReportLineSet_ID AND i.I_IsImported='N'))")
 			.append(clientCheck);
 		noUpdateLine = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Update PA_ReportLine=" + noUpdateLine);
+		if (log.isLoggable(Level.CONFIG)) log.config("Update PA_ReportLine=" + noUpdateLine);
 
 
 		//	-------------------------------------------------------------------

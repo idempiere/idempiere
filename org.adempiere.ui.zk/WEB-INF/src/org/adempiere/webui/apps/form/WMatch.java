@@ -454,7 +454,7 @@ public class WMatch extends Match
 	private void cmd_searchTo()
 	{
 		int row = xMatchedTable.getSelectedRow();
-		log.config("Row=" + row);
+		if (log.isLoggable(Level.CONFIG)) log.config("Row=" + row);
 
 		double qty = 0.0;
 		if (row < 0)
@@ -498,7 +498,7 @@ public class WMatch extends Match
 	{
 		if (e.getColumn() != 0)
 			return;
-		log.config("Row=" + e.getFirstRow() + "-" + e.getLastRow() + ", Col=" + e.getColumn()
+		if (log.isLoggable(Level.CONFIG)) log.config("Row=" + e.getFirstRow() + "-" + e.getLastRow() + ", Col=" + e.getColumn()
 			+ ", Type=" + e.getType());
 
 		//  Matched From

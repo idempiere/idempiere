@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 /**
  *  Color Persistent Object Model
@@ -68,7 +69,7 @@ public class MColor extends X_AD_Color
 	 */
 	protected Object loadSpecial (ResultSet rs, int index) throws SQLException
 	{
-		log.config(p_info.getColumnName(index));
+		if (log.isLoggable(Level.CONFIG)) log.config(p_info.getColumnName(index));
 		if (index == get_ColumnIndex("ColorType"))
 			return rs.getString(index+1);
 		return null;

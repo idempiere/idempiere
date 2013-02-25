@@ -312,7 +312,7 @@ public class VFileImport extends CPanel
 		if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
 			return;
 		m_file = chooser.getSelectedFile();
-		log.config(m_file.getName());
+		if (log.isLoggable(Level.CONFIG)) log.config(m_file.getName());
 		bFile.setText(m_file.getName());
 		cmd_reloadFile();
 	}
@@ -361,7 +361,7 @@ public class VFileImport extends CPanel
 		info.setText(Msg.getMsg(Env.getCtx(), "Records") + "=" + m_data.size()
 			+ ", " + Msg.getMsg(Env.getCtx(), "Length") + "=" + length + "   ");
 		setCursor (Cursor.getDefaultCursor());
-		log.config("Records=" + m_data.size() 
+		if (log.isLoggable(Level.CONFIG)) log.config("Records=" + m_data.size() 
 			+ ", Length=" + length);
 	}	//	cmd_loadFile
 
@@ -451,7 +451,7 @@ public class VFileImport extends CPanel
 			ADialog.error(m_WindowNo, this, "FileImportNoFormat");
 			return;
 		}
-		log.config(m_format.getName());
+		if (log.isLoggable(Level.CONFIG)) log.config(m_format.getName());
 
 		//	For all rows - update/insert DB table
 		int row = 0;

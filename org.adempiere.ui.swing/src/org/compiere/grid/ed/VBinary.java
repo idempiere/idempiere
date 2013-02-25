@@ -87,7 +87,7 @@ public class VBinary extends JButton
 	 */
 	public void setValue(Object value)
 	{
-		log.config("=" + value);
+		if (log.isLoggable(Level.CONFIG)) log.config("=" + value);
 		m_data = value;
 		if (m_data == null)
 			setText("-");
@@ -229,7 +229,7 @@ public class VBinary extends JButton
 				os.write(buffer);
 				os.flush();
 				os.close();
-				log.config("Save to " + file + " #" + buffer.length);
+				if (log.isLoggable(Level.CONFIG)) log.config("Save to " + file + " #" + buffer.length);
 			}
 			else	//	load
 			{
@@ -242,7 +242,7 @@ public class VBinary extends JButton
 				is.close();
 				byte[] data = os.toByteArray();
 				m_data = data;
-				log.config("Load from " + file + " #" + data.length);
+				if (log.isLoggable(Level.CONFIG)) log.config("Load from " + file + " #" + data.length);
 				os.close();
 			}
 		}

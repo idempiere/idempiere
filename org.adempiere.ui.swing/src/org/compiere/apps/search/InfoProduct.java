@@ -670,7 +670,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 	 */
 	private void setPriceListVersion(int M_PriceList_Version_ID)
 	{
-		log.config("M_PriceList_Version_ID=" + M_PriceList_Version_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("M_PriceList_Version_ID=" + M_PriceList_Version_ID);
 		for (int i = 0; i < pickPriceList.getItemCount(); i++)
 		{
 			KeyNamePair kn = (KeyNamePair)pickPriceList.getItemAt(i);
@@ -706,7 +706,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 		if (priceDate == null)
 			priceDate = new Timestamp(System.currentTimeMillis());
 		//
-		log.config("M_PriceList_ID=" + M_PriceList_ID + " - " + priceDate);
+		if (log.isLoggable(Level.CONFIG)) log.config("M_PriceList_ID=" + M_PriceList_ID + " - " + priceDate);
 		int retValue = 0;
 		String sql = "SELECT plv.M_PriceList_Version_ID, plv.ValidFrom "
 			+ "FROM M_PriceList pl, M_PriceList_Version plv "

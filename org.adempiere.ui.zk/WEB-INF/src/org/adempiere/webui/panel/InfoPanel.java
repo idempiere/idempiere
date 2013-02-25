@@ -812,8 +812,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (contentPanel == null)
 			return;
 
-		if (log.isLoggable(Level.CONFIG))
-			log.config( "OK=" + m_ok);
+		if (log.isLoggable(Level.CONFIG)) log.config( "OK=" + m_ok);
 
 		if (!m_ok)      //  did not press OK
 		{
@@ -835,8 +834,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				m_results.add(data);
 		}
 
-		if (log.isLoggable(Level.CONFIG))
-			log.config(getSelectedSQL());
+		if (log.isLoggable(Level.CONFIG)) log.config(getSelectedSQL());
 
 		//	Save Settings of detail info screens
 		saveSelectionDetail();
@@ -945,8 +943,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		Object[] keys = getSelectedKeys();
 		if (keys == null || keys.length == 0)
 		{
-			if (log.isLoggable(Level.CONFIG))
-				log.config("No Results - OK="
+			if (log.isLoggable(Level.CONFIG)) log.config("No Results - OK="
 						+ m_ok + ", Cancel=" + m_cancel);
 			return "";
 		}
@@ -1309,8 +1306,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
      */
     public void dispose(boolean ok)
     {
-    	if (log.isLoggable(Level.CONFIG))
-    		log.config("OK=" + ok);
+    	if (log.isLoggable(Level.CONFIG)) log.config("OK=" + ok);
         m_ok = ok;
 
         //  End Worker

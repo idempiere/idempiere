@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -122,7 +123,7 @@ public class WebSessionCtx implements Serializable
 			String key = (String)en.nextElement();
 			String value = sc.getInitParameter(key);
 			ctx.setProperty(key, value);
-			log.config (key + "=" + value); 
+			if (log.isLoggable(Level.CONFIG)) log.config (key + "=" + value); 
 		}
 
 		setWStore (request.getContextPath());
@@ -157,7 +158,7 @@ public class WebSessionCtx implements Serializable
 			String key = (String)en.nextElement();
 			String value = sc.getInitParameter(key);
 			ctx.setProperty(key, value);
-			log.config (key + "=" + value); 
+			if (log.isLoggable(Level.CONFIG)) log.config (key + "=" + value); 
 		}
 
 		setWStore (W_Store_ID);

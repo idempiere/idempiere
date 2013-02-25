@@ -956,7 +956,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     **/
     public void addSelectionColumn(GridField mField)
     {
-        log.config(mField.getHeader());
+        if (log.isLoggable(Level.CONFIG)) log.config(mField.getHeader());
         int displayLength = mField.getDisplayLength();
         if (displayLength <= 0 || displayLength > FIELDLENGTH)
             mField.setDisplayLength(FIELDLENGTH);
@@ -1830,7 +1830,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     **/
     private int getNoOfRecords (MQuery query, boolean alertZeroRecords)
     {
-        log.config("" + query);
+        if (log.isLoggable(Level.CONFIG)) log.config("" + query);
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ");
         sql.append(m_tableName);
         boolean hasWhere = false;
@@ -1886,7 +1886,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             m_total = 0; // return 0 if more then allowed - teo_sarca [ 1708717 ]
         }
         else
-            log.config("#" + m_total);
+            if (log.isLoggable(Level.CONFIG)) log.config("#" + m_total);
         //
         /*if (query != null)
             statusBar.setStatusToolTip (query.getWhereClause());*/

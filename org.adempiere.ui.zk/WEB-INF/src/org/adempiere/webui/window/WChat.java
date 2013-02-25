@@ -84,7 +84,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	{
 		super();
 		setTitle(Msg.getMsg(Env.getCtx(), "Chat") + " " + Description);
-		log.config("ID=" + CM_Chat_ID
+		if (log.isLoggable(Level.CONFIG)) log.config("ID=" + CM_Chat_ID
 			+ ", Table=" + AD_Table_ID + ", Record=" + Record_ID);
 		//
 		m_WindowNo = WindowNo;

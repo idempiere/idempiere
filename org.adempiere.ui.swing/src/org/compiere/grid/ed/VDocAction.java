@@ -418,7 +418,7 @@ public class VDocAction extends CDialog
 			return false;
 
 		//	Save Selection
-		log.config("DocAction=" + s_value[index]);
+		if (log.isLoggable(Level.CONFIG)) log.config("DocAction=" + s_value[index]);
 		m_mTab.setValue("DocAction", s_value[index]);
 		return true;
 	}	//	save

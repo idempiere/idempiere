@@ -192,7 +192,7 @@ public final class VTreePanel extends CPanel
 	{
 		super();
 		toolbar = new ArrayList<JToolBar>();
-		log.config("Bar=" + hasBar + ", Editable=" + editable);
+		if (log.isLoggable(Level.CONFIG)) log.config("Bar=" + hasBar + ", Editable=" + editable);
 		m_WindowNo = WindowNo;
 		m_hasBar = hasBar;
 		m_editable = editable;
@@ -243,7 +243,7 @@ public final class VTreePanel extends CPanel
 	 */
 	public boolean initTree (int AD_Tree_ID)
 	{
-		log.config("AD_Tree_ID=" + AD_Tree_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("AD_Tree_ID=" + AD_Tree_ID);
 		//
 		m_AD_Tree_ID = AD_Tree_ID;
 
@@ -253,7 +253,7 @@ public final class VTreePanel extends CPanel
 		m_root.setName(Msg.getMsg(Env.getCtx(), vTree.getName() ) ); // translate name of menu.
 		// m_root.setName(Msg.getMsg(Env.getCtx(), "Menu") ); // @Trifon; this is the hardcoded way.
 
-		log.config("root=" + m_root);
+		if (log.isLoggable(Level.CONFIG)) log.config("root=" + m_root);
 		m_nodeTableName = vTree.getNodeTableName();
 		treeModel = new AdempiereTreeModel(m_root, true);
 		treeModel.setMTree(vTree);
@@ -649,7 +649,7 @@ public final class VTreePanel extends CPanel
 	 */
 	public boolean setSelectedNode (int nodeID)
 	{
-		log.config("ID=" + nodeID);
+		if (log.isLoggable(Level.CONFIG)) log.config("ID=" + nodeID);
 		if (nodeID != -1)				//	new is -1
 			return selectID(nodeID, true);     //  show selection
 		return false;
@@ -665,14 +665,14 @@ public final class VTreePanel extends CPanel
 	{
 		if (m_root == null)
 			return false;
-		log.config("NodeID=" + nodeID 
+		if (log.isLoggable(Level.CONFIG)) log.config("NodeID=" + nodeID 
 			+ ", Show=" + show + ", root=" + m_root);
 		//  try to find the node
 		MTreeNode node = m_root.findNode (nodeID);
 		if (node != null)
 		{
 			TreePath treePath = new TreePath(node.getPath());
-			log.config("Node=" + node 
+			if (log.isLoggable(Level.CONFIG)) log.config("Node=" + node 
 				+ ", Path=" + treePath.toString());
 			tree.setSelectionPath(treePath);
 			if (show)
@@ -693,7 +693,7 @@ public final class VTreePanel extends CPanel
 	 */
 	private void setSelectedNode (MTreeNode nd)
 	{
-		log.config("Node = " + nd);
+		if (log.isLoggable(Level.CONFIG)) log.config("Node = " + nd);
 		m_selectedNode = nd;
 		//
 		firePropertyChange(NODE_SELECTION, null, nd);
@@ -713,7 +713,7 @@ public final class VTreePanel extends CPanel
 	public void nodeChanged (boolean save, int keyID,
 		String name, String description, boolean isSummary, String imageIndicator)
 	{
-		log.config("Save=" + save + ", KeyID=" + keyID
+		if (log.isLoggable(Level.CONFIG)) log.config("Save=" + save + ", KeyID=" + keyID
 			+ ", Name=" + name + ", Description=" + description 
 			+ ", IsSummary=" + isSummary + ", ImageInd=" + imageIndicator
 			+ ", root=" + m_root);

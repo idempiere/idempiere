@@ -247,7 +247,7 @@ public class InOutGen extends GenForm
 
 		if (results.size() == 0)
 			return;
-		log.config("Selected #" + results.size());
+		if (log.isLoggable(Level.CONFIG)) log.config("Selected #" + results.size());
 		setSelection(results);
 	}	//	saveSelection
 

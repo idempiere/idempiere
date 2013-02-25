@@ -90,7 +90,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	 */
 	public String parseFile (File file)
 	{
-		log.config(file.getAbsolutePath());
+		if (log.isLoggable(Level.CONFIG)) log.config(file.getAbsolutePath());
 		String line = null;
 		try
 		{
@@ -142,7 +142,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	@SuppressWarnings("unchecked")
 	public String parseLine (String line, int lineNo) throws Exception
 	{
-		log.config(lineNo+" : "+line);
+		if (log.isLoggable(Level.CONFIG)) log.config(lineNo+" : "+line);
 
 		if (line.trim().length()==0) {
 			log.log(Level.WARNING, "Line "+lineNo+" is empty, ignored. ");

@@ -32,6 +32,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
@@ -428,7 +429,7 @@ public class CompiereUtils
 			}
 			if (image != null)
 			{
-				log.config("Image type : " + image.getType());
+				if (log.isLoggable(Level.CONFIG)) log.config("Image type : " + image.getType());
 				if (image.getWidth() <= 0 || image.getHeight() <= 0)
 				{
 					log.severe("URL: " + url + " =0");

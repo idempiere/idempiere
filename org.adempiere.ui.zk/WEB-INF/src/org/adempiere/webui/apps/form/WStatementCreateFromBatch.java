@@ -258,7 +258,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	 */
 	public void onEvent(Event e) throws Exception
 	{
-		log.config("Action=" + e.getTarget().getId());
+		if (log.isLoggable(Level.CONFIG)) log.config("Action=" + e.getTarget().getId());
 		if(e.getTarget().equals(form.getConfirmPanel().getButton(ConfirmPanel.A_REFRESH)))
 		{
 			form.postQueryEvent();

@@ -82,7 +82,7 @@ public class RfQCreatePO extends SvrProcess
 		
 		//	Complete 
 		MRfQResponse[] responses = rfq.getResponses(true, true);
-		log.config("#Responses=" + responses.length);
+		if (log.isLoggable(Level.CONFIG)) log.config("#Responses=" + responses.length);
 		if (responses.length == 0)
 			throw new IllegalArgumentException("No completed RfQ Responses found");
 		
@@ -94,7 +94,7 @@ public class RfQCreatePO extends SvrProcess
 				continue;
 			//
 			MBPartner bp = new MBPartner(getCtx(), response.getC_BPartner_ID(), get_TrxName());
-			log.config("Winner=" + bp);
+			if (log.isLoggable(Level.CONFIG)) log.config("Winner=" + bp);
 			MOrder order = new MOrder (getCtx(), 0, get_TrxName());
 			order.setIsSOTrx(false);
 			if (p_C_DocType_ID != 0)
@@ -163,7 +163,7 @@ public class RfQCreatePO extends SvrProcess
 					bp = new MBPartner(getCtx(), response.getC_BPartner_ID(), get_TrxName());
 					order = null;
 				}
-				log.config("Line=" + line + ", Winner=" + bp);
+				if (log.isLoggable(Level.CONFIG)) log.config("Line=" + line + ", Winner=" + bp);
 				//	New Order
 				if (order == null)
 				{

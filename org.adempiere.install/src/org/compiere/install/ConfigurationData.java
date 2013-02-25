@@ -652,7 +652,7 @@ public class ConfigurationData
 			props.put("mail.store.protocol", "imaps");
 		}
 
-		log.config("Connecting to " + mailServer.getHostName());
+		if (log.isLoggable(Level.CONFIG)) log.config("Connecting to " + mailServer.getHostName());
 		//
 		Session session = null;
 		Store store = null;
@@ -661,10 +661,10 @@ public class ConfigurationData
 			EMailAuthenticator auth = new EMailAuthenticator (mailUser, mailPassword);
 			session = Session.getDefaultInstance(props, auth);
 			session.setDebug (CLogMgt.isLevelFinest());
-			log.config("Session=" + session);
+			if (log.isLoggable(Level.CONFIG)) log.config("Session=" + session);
 			//	Connect to Store
 			store = session.getStore(isGmail ? "imaps" : "imap");
-			log.config("Store=" + store);
+			if (log.isLoggable(Level.CONFIG)) log.config("Store=" + store);
 		}
 		catch (NoSuchProviderException nsp)
 		{

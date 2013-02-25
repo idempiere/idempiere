@@ -396,7 +396,7 @@ public class VPAttribute extends JComponent
 		}
 		int M_Locator_ID = -1;
 
-		log.config("M_Product_ID=" + M_Product_ID + "/" + M_ProductBOM_ID
+		if (log.isLoggable(Level.CONFIG)) log.config("M_Product_ID=" + M_Product_ID + "/" + M_ProductBOM_ID
 			+ ",M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID
 			+ ", AD_Column_ID=" + m_AD_Column_ID);
 		

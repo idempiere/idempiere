@@ -272,7 +272,7 @@ public final class DB
 
 		s_cc.setDataSource();
 
-		log.config(s_cc + " - DS=" + s_cc.isDataSource());
+		if (log.isLoggable(Level.CONFIG)) log.config(s_cc + " - DS=" + s_cc.isDataSource());
 	//	Trace.printStack();
 	}   //  setDBTarget
 

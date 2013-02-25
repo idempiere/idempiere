@@ -146,7 +146,7 @@ public class MReportLine extends X_PA_ReportLine
 				ColumnName = col;
 			else if (!ColumnName.equals(col))
 			{
-				log.config("More than one: " + ColumnName + " - " + col);
+				if (log.isLoggable(Level.CONFIG)) log.config("More than one: " + ColumnName + " - " + col);
 				return null;
 			}
 		}

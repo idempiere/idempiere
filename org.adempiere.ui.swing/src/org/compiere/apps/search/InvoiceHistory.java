@@ -77,7 +77,7 @@ public class InvoiceHistory extends CDialog
 		int C_BPartner_ID, int M_Product_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID)
 	{
 		super(frame, Msg.getMsg(Env.getCtx(), "PriceHistory"), true);
-		log.config("C_BPartner_ID=" + C_BPartner_ID
+		if (log.isLoggable(Level.CONFIG)) log.config("C_BPartner_ID=" + C_BPartner_ID
 			+ ", M_Product_ID=" + M_Product_ID
 			+ ", M_Warehouse_ID=" + M_Warehouse_ID
 			+ ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);

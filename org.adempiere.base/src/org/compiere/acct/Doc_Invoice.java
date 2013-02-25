@@ -871,7 +871,7 @@ public class Doc_Invoice extends Doc
 			// end AZ
 		}
 
-		log.config("Created #" + lcas.length);
+		if (log.isLoggable(Level.CONFIG)) log.config("Created #" + lcas.length);
 		return true;
 	}	//	landedCosts
 

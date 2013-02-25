@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.event.WindowEvent;
+import java.util.logging.Level;
 
 import org.compiere.model.MQuery;
 import org.compiere.swing.CFrame;
@@ -130,7 +131,7 @@ public class AWindow extends CFrame
 	{
 		if (busy == m_glassPane.isVisible())
 			return;
-		log.config(getName() + " - " + busy);
+		if (log.isLoggable(Level.CONFIG)) log.config(getName() + " - " + busy);
 		m_glassPane.setMessage(null);
 		m_glassPane.setVisible(busy);
 		if (busy)

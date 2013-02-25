@@ -187,7 +187,7 @@ public abstract class CreateFromShipment extends CreateFrom
 		 *  ShipmentLine    - 7
 		 *  InvoiceLine     - 8
 		 */
-		log.config("C_Order_ID=" + C_Order_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_Order_ID=" + C_Order_ID);
 		p_order = new MOrder (Env.getCtx(), C_Order_ID, null);      //  save
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
@@ -552,7 +552,7 @@ public abstract class CreateFromShipment extends CreateFrom
 		// Get Shipment
 		int M_InOut_ID = ((Integer) getGridTab().getValue("M_InOut_ID")).intValue();
 		MInOut inout = new MInOut(Env.getCtx(), M_InOut_ID, trxName);
-		log.config(inout + ", C_Locator_ID=" + M_Locator_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config(inout + ", C_Locator_ID=" + M_Locator_ID);
 
 		// Lines
 		for (int i = 0; i < miniTable.getRowCount(); i++)

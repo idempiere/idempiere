@@ -86,7 +86,7 @@ public class RequestTypeTag extends TagSupport
 		if (AD_Client_ID == 0)
 			log.log(Level.SEVERE, "AD_Client_ID not found");
 		else
-			log.config("AD_Client_ID=" + AD_Client_ID);
+			if (log.isLoggable(Level.CONFIG)) log.config("AD_Client_ID=" + AD_Client_ID);
 		ArrayList<option> list = new ArrayList<option>();
 		//
 		String sql = "SELECT R_RequestType_ID, Name FROM R_RequestType "

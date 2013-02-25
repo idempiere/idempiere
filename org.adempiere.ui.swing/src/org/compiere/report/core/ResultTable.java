@@ -96,7 +96,7 @@ public class ResultTable extends JTable implements MouseListener
 	 */
 	public void setModel (RModel reportModel)
 	{
-		log.config(reportModel.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(reportModel.toString());
 		m_model = reportModel;
 		super.setModel(new ResultTableModel(reportModel));
 		//
@@ -244,7 +244,7 @@ public class ResultTable extends JTable implements MouseListener
 
 		m_lastSortIndex = modelColumnIndex;
 		//
-		log.config("#" + modelColumnIndex
+		if (log.isLoggable(Level.CONFIG)) log.config("#" + modelColumnIndex
 			+ " - rows=" + rows + ", asc=" + m_asc);
 		ResultTableModel model = (ResultTableModel)getModel();
 

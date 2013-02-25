@@ -17,6 +17,7 @@
 package org.compiere.interfaces.impl;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.util.ProcessUtil;
 import org.compiere.acct.Doc;
@@ -116,7 +117,7 @@ public class ServerBean implements Server
 	 */
 	public int cacheReset (Properties ctx, String tableName, int Record_ID)
 	{
-		log.config(tableName + " - " + Record_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config(tableName + " - " + Record_ID);
 		return CacheMgt.get().reset(tableName, Record_ID);
 	}	//	cacheReset
 	

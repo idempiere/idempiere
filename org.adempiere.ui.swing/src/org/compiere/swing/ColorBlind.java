@@ -17,6 +17,7 @@
 package org.compiere.swing;
 
 import java.awt.Color;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.plaf.ColorUIResource;
@@ -89,7 +90,7 @@ public class ColorBlind
 		else
 			s_colorType = 0;
 		if (s_colorType != 0)
-			log.config(COLORBLIND_TYPE[colorType]);
+			if (log.isLoggable(Level.CONFIG)) log.config(COLORBLIND_TYPE[colorType]);
 	}   //  setColorType
 
 	/**

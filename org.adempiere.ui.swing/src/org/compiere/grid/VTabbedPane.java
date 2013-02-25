@@ -18,6 +18,7 @@ package org.compiere.grid;
 
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import javax.swing.Icon;
 import javax.swing.JTabbedPane;
@@ -339,7 +340,7 @@ public class VTabbedPane extends CTabbedPane
 			
 		if (process)
 		{
-			log.config(columnName == null ? "" : columnName);
+			if (log.isLoggable(Level.CONFIG)) log.config(columnName == null ? "" : columnName);
 			for (int i = 0; i < components.size(); i++)
 			{
 				Component c = components.get(i);

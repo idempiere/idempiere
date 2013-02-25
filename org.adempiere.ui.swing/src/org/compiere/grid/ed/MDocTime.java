@@ -80,7 +80,7 @@ public final class MDocTime extends PlainDocument
 			//	is it a digit ?
 			if (!Character.isDigit(string.charAt(0)))
 			{
-				log.config("No Digit=" + string);
+				if (log.isLoggable(Level.CONFIG)) log.config("No Digit=" + string);
 				return;
 			}
 
@@ -100,24 +100,24 @@ public final class MDocTime extends PlainDocument
 			}
 			if (i < 0)
 			{
-				log.config("Invalid value: " + i);
+				if (log.isLoggable(Level.CONFIG)) log.config("Invalid value: " + i);
 				return;
 			}
 			//	Minutes
 			if (!m_isHour && i > 59)
 			{
-				log.config("Invalid minute value: " + i);
+				if (log.isLoggable(Level.CONFIG)) log.config("Invalid minute value: " + i);
 				return;
 			}
 			//	Hour
 			if (m_isHour && m_is12Hour && i > 12)
 			{
-				log.config("Invalid 12 hour value: " + i);
+				if (log.isLoggable(Level.CONFIG)) log.config("Invalid 12 hour value: " + i);
 				return;
 			}
 			if (m_isHour && !m_is12Hour && i > 24)
 			{
-				log.config("Invalid 24 hour value: " + i);
+				if (log.isLoggable(Level.CONFIG)) log.config("Invalid 24 hour value: " + i);
 				return;
 			}
 			//

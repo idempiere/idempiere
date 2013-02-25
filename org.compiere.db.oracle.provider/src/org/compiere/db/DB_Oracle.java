@@ -785,7 +785,7 @@ public class DB_Oracle implements AdempiereDatabase
      */
     public void close()
     {
-        log.config(toString());
+        if (log.isLoggable(Level.CONFIG)) log.config(toString());
         if (m_ds != null)
         {
             try

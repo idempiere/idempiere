@@ -18,6 +18,7 @@ package org.adempiere.webui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.adempiere.model.ZoomInfoFactory;
 import org.adempiere.webui.apps.AEnv;
@@ -64,7 +65,7 @@ public class WZoomAcross
 
 	public WZoomAcross(Component invoker, PO po, final int windowID) {
 		
-		log.config("PO=" + po+", WindowID="+windowID);
+		if (log.isLoggable(Level.CONFIG)) log.config("PO=" + po+", WindowID="+windowID);
 		
 		mkZoomTargets(po, windowID);
 				

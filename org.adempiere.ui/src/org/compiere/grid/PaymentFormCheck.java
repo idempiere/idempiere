@@ -215,7 +215,7 @@ public abstract class PaymentFormCheck extends PaymentForm {
 		if (negateAmt)
 			payAmount = m_Amount.negate();
 		// Info
-		log.config("C_Order_ID=" + C_Order_ID + ", C_Invoice_ID=" + C_Invoice_ID + ", NegateAmt=" + negateAmt);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_Order_ID=" + C_Order_ID + ", C_Invoice_ID=" + C_Invoice_ID + ", NegateAmt=" + negateAmt);
 		
 		/***********************
 		 *  Payments

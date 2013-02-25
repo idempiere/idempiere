@@ -19,6 +19,7 @@ package org.compiere.util;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -214,7 +215,7 @@ public class SecureEngine
 			throw new IllegalStateException(realClass 
 				+ ": " + TEST
 				+ "->" + testE + "->" + testC);
-		log.config (realClass + " initialized - " + implementation);
+		if (log.isLoggable(Level.CONFIG)) log.config (realClass + " initialized - " + implementation);
 	}	//	SecureEngine
 
 	

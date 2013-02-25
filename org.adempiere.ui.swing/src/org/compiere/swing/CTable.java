@@ -331,7 +331,7 @@ public class CTable extends JTable
 			p_asc = !p_asc;
 		p_lastSortIndex = modelColumnIndex;
 		//
-		log.config("#" + modelColumnIndex + " - rows=" + rows + ", asc=" + p_asc);
+		if (log.isLoggable(Level.CONFIG)) log.config("#" + modelColumnIndex + " - rows=" + rows + ", asc=" + p_asc);
 
 		//  Selection
 		Object selected = null;

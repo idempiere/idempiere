@@ -290,7 +290,7 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 	 */
 	private void setSelectedNode (mySimpleTreeNode nd) throws Exception
 	{
-		log.config("Node = " + nd);
+		if (log.isLoggable(Level.CONFIG)) log.config("Node = " + nd);
 		m_selectedNode = nd;
 		if(m_selectedNode == null)
 			return;

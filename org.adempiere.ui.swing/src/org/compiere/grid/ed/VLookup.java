@@ -756,7 +756,7 @@ public class VLookup extends JComponent
 	{
 		if (m_settingValue || m_settingFocus || m_stopediting)
 			return;
-		log.config(m_columnName + " - " + e.getActionCommand() + ", ComboValue=" + m_combo.getSelectedItem());
+		if (log.isLoggable(Level.CONFIG)) log.config(m_columnName + " - " + e.getActionCommand() + ", ComboValue=" + m_combo.getSelectedItem());
 	//	log.fine("Hash=" + this.hashCode());
 
 		//  Preference
@@ -926,7 +926,7 @@ public class VLookup extends JComponent
 		//  Result
 		if (result != null && result.length > 0)
 		{
-			log.config(m_columnName + " - Result = " + result.toString() + " (" + result.getClass().getName() + ")");
+			if (log.isLoggable(Level.CONFIG)) log.config(m_columnName + " - Result = " + result.toString() + " (" + result.getClass().getName() + ")");
 			//  make sure that value is in cache
 			m_lookup.getDirect(result[0], false, true);
 			if (info.isResetValue())
@@ -940,12 +940,12 @@ public class VLookup extends JComponent
 		}
 		else if (cancelled)
 		{
-			log.config(m_columnName + " - Result = null (cancelled)");
+			if (log.isLoggable(Level.CONFIG)) log.config(m_columnName + " - Result = null (cancelled)");
 			actionCombo(null);
 		}
 		else
 		{
-			log.config(m_columnName + " - Result = null (not cancelled)");
+			if (log.isLoggable(Level.CONFIG)) log.config(m_columnName + " - Result = null (not cancelled)");
 			setValue(m_value);      //  to re-display value
 		}
 		//
@@ -1045,7 +1045,7 @@ public class VLookup extends JComponent
 			return;
 		}
 		text = text.toUpperCase();
-		log.config(m_columnName + " - " + text);
+		if (log.isLoggable(Level.CONFIG)) log.config(m_columnName + " - " + text);
 
 		//	Exact first
 		PreparedStatement pstmt = null;
@@ -1545,7 +1545,7 @@ public class VLookup extends JComponent
 		m_settingFocus = true;  //  prevents actionPerformed
 		//
 		Object obj = m_lookup.getSelectedItem();
-		log.config(m_columnName
+		if (log.isLoggable(Level.CONFIG)) log.config(m_columnName
 			+ " - Start    Count=" + m_combo.getItemCount() + ", Selected=" + obj);
 	//	log.fine( "VLookupHash=" + this.hashCode());
 		boolean popupVisible = m_combo.isPopupVisible();
@@ -1556,11 +1556,11 @@ public class VLookup extends JComponent
 			m_combo.hidePopup();
 			m_combo.showPopup();
 		}
-		log.config(m_columnName
+		if (log.isLoggable(Level.CONFIG)) log.config(m_columnName
 			+ " - Update   Count=" + m_combo.getItemCount() + ", Selected=" + m_lookup.getSelectedItem());
 		m_lookup.setSelectedItem(obj);
-		log.config(m_columnName
-			+ " - Selected Count=" + m_combo.getItemCount() + ", Selected=" + m_lookup.getSelectedItem());
+		if (log.isLoggable(Level.CONFIG)) log.config(m_columnName
+				+ " - Selected Count=" + m_combo.getItemCount() + ", Selected=" + m_lookup.getSelectedItem());
 		//
 		m_settingFocus = false;
 	}	//	focusGained
@@ -1580,7 +1580,7 @@ public class VLookup extends JComponent
 		if (e.getSource() == m_text)
 		{
 			String text = m_text.getText();
-			log.config(m_columnName + " (Text) " + m_columnName + " = " + m_value + " - " + text);
+			if (log.isLoggable(Level.CONFIG)) log.config(m_columnName + " (Text) " + m_columnName + " = " + m_value + " - " + text);
 			m_haveFocus = false;
 			//	Skip if empty
 			if ((m_value == null
@@ -1603,7 +1603,7 @@ public class VLookup extends JComponent
 		//
 		m_settingFocus = true;  //  prevents actionPerformed
 		//
-		log.config(m_columnName + " = " + m_combo.getSelectedItem());
+		if (log.isLoggable(Level.CONFIG)) log.config(m_columnName + " = " + m_combo.getSelectedItem());
 		Object obj = m_combo.getSelectedItem();
 		/*
 		//	set original model

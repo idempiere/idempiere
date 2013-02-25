@@ -231,7 +231,7 @@ public class Charge
         MCharge charge;
         MAccount account;
 
-        log.config(name + " - ");
+        if (log.isLoggable(Level.CONFIG)) log.config(name + " - ");
         // Charge
         charge = new MCharge(Env.getCtx(), 0, null);
         charge.setName(name);

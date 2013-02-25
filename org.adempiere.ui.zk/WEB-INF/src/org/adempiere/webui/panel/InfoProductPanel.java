@@ -889,7 +889,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 	 */
 	private void setPriceListVersion(int M_PriceList_Version_ID)
 	{
-		log.config("M_PriceList_Version_ID=" + M_PriceList_Version_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("M_PriceList_Version_ID=" + M_PriceList_Version_ID);
 		for (int i = 0; i < pickPriceList.getItemCount(); i++)
 		{
 			Integer key = (Integer) pickPriceList.getItemAtIndex(i).getValue();
@@ -925,7 +925,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		if (priceDate == null)
 			priceDate = new Timestamp(System.currentTimeMillis());
 		//
-		log.config("M_PriceList_ID=" + M_PriceList_ID + " - " + priceDate);
+		if (log.isLoggable(Level.CONFIG)) log.config("M_PriceList_ID=" + M_PriceList_ID + " - " + priceDate);
 		int retValue = 0;
 		String sql = "SELECT plv.M_PriceList_Version_ID, plv.ValidFrom "
 			+ "FROM M_PriceList pl, M_PriceList_Version plv "

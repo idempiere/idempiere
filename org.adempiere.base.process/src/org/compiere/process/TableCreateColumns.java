@@ -233,7 +233,7 @@ public class TableCreateColumns extends SvrProcess
 			int size = rs.getInt ("COLUMN_SIZE");
 			int digits = rs.getInt ("DECIMAL_DIGITS");
 			//
-			log.config (columnName + " - DataType=" + dataType + " " + typeName
+			if (log.isLoggable(Level.CONFIG)) log.config (columnName + " - DataType=" + dataType + " " + typeName
 				+ ", Nullable=" + nullable + ", Size=" + size + ", Digits="
 				+ digits);
 			//

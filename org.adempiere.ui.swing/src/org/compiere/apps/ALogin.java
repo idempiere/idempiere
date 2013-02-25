@@ -959,7 +959,7 @@ public final class ALogin extends CDialog
 		KeyNamePair client = (KeyNamePair)clientCombo.getSelectedItem();
 		if (client == null || m_comboActive)
 			return;
-		log.config(": " + client);
+		if (log.isLoggable(Level.CONFIG)) log.config(": " + client);
 		m_comboActive = true;
 		// @Trifon - Set Proper "#AD_Client_ID", #AD_User_ID and "#SalesRep_ID"  
 		// https://sourceforge.net/tracker/?func=detail&aid=2957215&group_id=176962&atid=879332
@@ -1025,7 +1025,7 @@ public final class ALogin extends CDialog
 		KeyNamePair rol = (KeyNamePair)roleCombo.getSelectedItem();
 		if (rol == null || m_comboActive)
 			return;
-		log.config(": " + rol);
+		if (log.isLoggable(Level.CONFIG)) log.config(": " + rol);
 		m_comboActive = true;
 		
 		if( Env.getContextAsInt(m_ctx, "#AD_Client_ID") > 0 ) 
@@ -1086,7 +1086,7 @@ public final class ALogin extends CDialog
 		KeyNamePair org = (KeyNamePair)orgCombo.getSelectedItem();
 		if (org == null || m_comboActive)
 			return;
-		log.config(": " + org);
+		if (log.isLoggable(Level.CONFIG)) log.config(": " + org);
 		m_comboActive = true;
 		//
 		KeyNamePair[] whs = m_login.getWarehouses(org);
@@ -1127,7 +1127,7 @@ public final class ALogin extends CDialog
 			String version = AEnv.getServerVersion();
 			if (Adempiere.DATE_VERSION.equals(version))
 			{
-				log.config("Server = Client - " + version);
+				if (log.isLoggable(Level.CONFIG)) log.config("Server = Client - " + version);
 				retValue = true;
 			}
 			else if (version != null)

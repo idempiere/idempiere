@@ -631,7 +631,7 @@ public class AcctViewer extends CFrame
 		bQuery.setEnabled(false);
 		statusLine.setText(" " + Msg.getMsg(Env.getCtx(), "Processing"));
 
-		log.config(para.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(para.toString());
 		Thread.yield();
 
 		//  Switch to Result pane
@@ -674,7 +674,7 @@ public class AcctViewer extends CFrame
 	{
 		ValueNamePair vp = (ValueNamePair)selTable.getSelectedItem();
 		m_data.AD_Table_ID = ((Integer)m_data.tableInfo.get(vp.getValue())).intValue();
-		log.config(vp.getValue() + " = " + m_data.AD_Table_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config(vp.getValue() + " = " + m_data.AD_Table_ID);
 		//  Reset Record
 		m_data.Record_ID = 0;
 		selRecord.setText("");
@@ -761,7 +761,7 @@ public class AcctViewer extends CFrame
 		}
 
 		//  Save for query
-		log.config(keyColumn + " - " + key);
+		if (log.isLoggable(Level.CONFIG)) log.config(keyColumn + " - " + key);
 		if (button == selRecord)                            //  Record_ID
 			m_data.Record_ID = key.intValue();
 		else

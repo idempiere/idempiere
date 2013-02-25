@@ -1395,7 +1395,7 @@ public class GridTable extends AbstractTableModel
 		//	no need - not changed - row not positioned - no Value changed
 		if (m_rowChanged == -1)
 		{
-			log.config("NoNeed - Changed=" + m_changed + ", Row=" + m_rowChanged);
+			if (log.isLoggable(Level.CONFIG)) log.config("NoNeed - Changed=" + m_changed + ", Row=" + m_rowChanged);
 		//	return SAVE_ERROR;
 			if (!manualCmd)
 				return SAVE_OK;
@@ -3444,7 +3444,7 @@ public class GridTable extends AbstractTableModel
 		 */
 		private void close()
 		{
-		//	log.config( "MTable Loader.close");
+		//log.config( "MTable Loader.close");
 			DB.close(m_rs, m_pstmt);
 			m_rs = null;
 			m_pstmt = null;

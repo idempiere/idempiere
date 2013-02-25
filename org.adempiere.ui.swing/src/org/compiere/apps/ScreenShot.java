@@ -62,7 +62,7 @@ public class ScreenShot
 		File file = getJPGFile (window);
 		if (file == null)
 			return false;
-		log.config("File=" + file);
+		if (log.isLoggable(Level.CONFIG)) log.config("File=" + file);
 		if (file.exists())
 			file.delete();
 

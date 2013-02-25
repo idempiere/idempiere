@@ -57,7 +57,7 @@ public abstract class CreateFromPackageShipment extends CreateFrom
 	
 	protected Vector<Vector<Object>> getShipmentData(int M_InOut_ID)
 	{
-		log.config("M_InOut_ID=" + M_InOut_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("M_InOut_ID=" + M_InOut_ID);
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		StringBuilder sqlStmt = new StringBuilder();

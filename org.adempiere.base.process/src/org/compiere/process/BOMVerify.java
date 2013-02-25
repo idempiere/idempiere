@@ -148,7 +148,7 @@ public class BOMVerify extends SvrProcess
 		
 	
 		//	Check Old Product BOM Structure
-		log.config(product.getName());
+		if (log.isLoggable(Level.CONFIG)) log.config(product.getName());
 		
 		
 		foundproducts.add(product);

@@ -145,7 +145,7 @@ implements ImportProcess
 				.append("WHERE C_BP_Group_ID IS NULL")
 				.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.config("Invalid Group=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid Group=" + no);
 
 		//	Set Country
 		/**
@@ -171,7 +171,7 @@ implements ImportProcess
 				.append("WHERE C_Country_ID IS NULL AND (City IS NOT NULL OR Address1 IS NOT NULL)")
 				.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.config("Invalid Country=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid Country=" + no);
 
 		//	Set Region
 		sql = new StringBuilder ("UPDATE I_BPartner i ")
@@ -199,7 +199,7 @@ implements ImportProcess
 				.append(" WHERE c.C_Country_ID=i.C_Country_ID AND c.HasRegion='Y')")
 				.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.config("Invalid Region=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid Region=" + no);
 
 		//	Set Greeting
 		sql = new StringBuilder ("UPDATE I_BPartner i ")
@@ -215,7 +215,7 @@ implements ImportProcess
 				.append("WHERE C_Greeting_ID IS NULL AND BPContactGreeting IS NOT NULL")
 				.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.config("Invalid Greeting=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid Greeting=" + no);
 
 		//	Existing User ?
 		sql = new StringBuilder ("UPDATE I_BPartner i ")
@@ -276,7 +276,7 @@ implements ImportProcess
 				.append("WHERE Value IS NULL ")
 				.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.config("Value is mandatory=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Value is mandatory=" + no);
 		
 		ModelValidationEngine.get().fireImportValidate(this, null, null, ImportValidator.TIMING_AFTER_VALIDATE);
 

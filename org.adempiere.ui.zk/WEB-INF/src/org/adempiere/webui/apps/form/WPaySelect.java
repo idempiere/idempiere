@@ -278,7 +278,7 @@ public class WPaySelect extends PaySelect
 	{
 		Timestamp payDate = (Timestamp)fieldPayDate.getValue();
 		miniTable.setColorCompare(payDate);
-		log.config("PayDate=" + payDate);
+		if (log.isLoggable(Level.CONFIG)) log.config("PayDate=" + payDate);
 		
 		BankInfo bi = (BankInfo)fieldBankAccount.getSelectedItem().getValue();
 		

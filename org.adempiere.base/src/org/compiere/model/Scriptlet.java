@@ -147,7 +147,7 @@ public class Scriptlet
 		try
 		{
 			m_result = i.get (m_variable);
-			log.config("Result (" + m_result.getClass().getName() + ") " + m_result);
+			if (log.isLoggable(Level.CONFIG)) log.config("Result (" + m_result.getClass().getName() + ") " + m_result);
 		}
 		catch (Exception e)
 		{

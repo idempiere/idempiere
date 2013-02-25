@@ -264,7 +264,7 @@ public class GridController extends CPanel
 	 */
 	public void dispose()
 	{
-		log.config( "(" + m_mTab.toString() + ")");
+		if (log.isLoggable(Level.CONFIG)) log.config( "(" + m_mTab.toString() + ")");
 		//  clear info
 		stopEditor(false);
 		if (m_mTab.isLoadComplete())
@@ -357,7 +357,7 @@ public class GridController extends CPanel
 	public boolean initGrid (GridTab mTab, boolean onlyMultiRow,
 		int WindowNo, APanel aPanel, GridWindow mWindow, boolean lazy)
 	{
-		log.config( "(" + mTab.toString() + ")");
+		if (log.isLoggable(Level.CONFIG)) log.config( "(" + mTab.toString() + ")");
 		m_mTab = mTab;
 		m_WindowNo = WindowNo;
 		m_onlyMultiRow = onlyMultiRow;
@@ -654,7 +654,7 @@ public class GridController extends CPanel
 					treeName = "AD_TreeCMM_ID";
 			}
 			int AD_Tree_ID = Env.getContextAsInt (Env.getCtx(), m_WindowNo, treeName, true);
-			log.config(keyColumnName + " -> " + treeName + " = " + AD_Tree_ID);
+			if (log.isLoggable(Level.CONFIG)) log.config(keyColumnName + " -> " + treeName + " = " + AD_Tree_ID);
 			if (AD_Tree_ID == 0)
 				AD_Tree_ID = MTree.getDefaultAD_Tree_ID (
 					Env.getAD_Client_ID(Env.getCtx()), m_mTab.getKeyColumnName());
@@ -824,7 +824,7 @@ public class GridController extends CPanel
 	//	if (e.getChangedColumn() == 0)
 	//		return;
 		int col = e.getChangedColumn();
-		log.config("(" + m_mTab + ") Col=" + col + ": " + e.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config("(" + m_mTab + ") Col=" + col + ": " + e.toString());
 
 		//  Process Callout
 		GridField mField = m_mTab.getField(col);
@@ -855,7 +855,7 @@ public class GridController extends CPanel
 	//	vTable.stopEditor(graphPanel);
 		int rowTable = vTable.getSelectedRow();
 		int rowCurrent = m_mTab.getCurrentRow();
-		log.config("(" + m_mTab.toString() + ") Row in Table=" + rowTable + ", in Model=" + rowCurrent);
+		if (log.isLoggable(Level.CONFIG)) log.config("(" + m_mTab.toString() + ") Row in Table=" + rowTable + ", in Model=" + rowCurrent);
 		/* BT [ 1972495 ] Multirow Automatic New Record loses context
 		// FR [ 1757088 ]
 		if(rowCurrent + 1 == vTable.getRowCount() && !isSingleRow() && Env.isAutoNew(Env.getCtx()) && m_mTab.getRecord_ID() != -1)
@@ -910,7 +910,7 @@ public class GridController extends CPanel
 		Object value = e.getNewValue();
 		if (value == null)
 			return;
-		log.config(e.getPropertyName() + "=" + value
+		if (log.isLoggable(Level.CONFIG)) log.config(e.getPropertyName() + "=" + value
 			+ " - " + value.getClass().toString());
 		if (!(value instanceof MTreeNode))
 			return;
@@ -985,7 +985,7 @@ public class GridController extends CPanel
 			GridField changedField = m_mTab.getField(col);
 			String columnName = changedField.getColumnName();
 			ArrayList<GridField> dependants = m_mTab.getDependantFields(columnName);
-			log.config("(" + m_mTab.toString() + ") "
+			if (log.isLoggable(Level.CONFIG)) log.config("(" + m_mTab.toString() + ") "
 				+ columnName + " - Dependents=" + dependants.size());
 			//	No Dependents and no Callout - Set just Background
 			if (dependants.size() == 0 && changedField.getCallout().length() > 0)
@@ -1011,7 +1011,7 @@ public class GridController extends CPanel
 
 		//  complete single row re-display
 		boolean noData = m_mTab.getRowCount() == 0;
-		log.config(m_mTab.toString() + " - Rows=" + m_mTab.getRowCount());
+		if (log.isLoggable(Level.CONFIG)) log.config(m_mTab.toString() + " - Rows=" + m_mTab.getRowCount());
 		//  All Components in vPanel (Single Row)
 
 		Set<String> hiddens = new HashSet<String>();
@@ -1107,7 +1107,7 @@ public class GridController extends CPanel
 
 		//
 
-		log.config(m_mTab.toString() + " - fini - "
+		if (log.isLoggable(Level.CONFIG)) log.config(m_mTab.toString() + " - fini - "
 				+ (col <= 0 ? "complete" : "seletive"));
 	}   //  dynamicDisplay
 
@@ -1199,17 +1199,17 @@ public class GridController extends CPanel
 			{
 				if (!((VEditor)source).isReadWrite())
 				{
-					log.config("(" + m_mTab.toString() + ") " + e.getPropertyName());
+					if (log.isLoggable(Level.CONFIG)) log.config("(" + m_mTab.toString() + ") " + e.getPropertyName());
 					return;
 				}
 			}
 			else
 			{
-				log.config("(" + m_mTab.toString() + ") " + e.getPropertyName());
+				if (log.isLoggable(Level.CONFIG)) log.config("(" + m_mTab.toString() + ") " + e.getPropertyName());
 				return;
 			}
 		}	//	processed
-		log.config("(" + m_mTab.toString() + ") "
+		if (log.isLoggable(Level.CONFIG)) log.config("(" + m_mTab.toString() + ") "
 			+ e.getPropertyName() + "=" + e.getNewValue() + " (" + e.getOldValue() + ") "
 			+ (e.getOldValue() == null ? "" : e.getOldValue().getClass().getName()));
 
@@ -1369,7 +1369,7 @@ public class GridController extends CPanel
 	 */
 	public void stopEditor (boolean saveValue)
 	{
-		log.config("(" + m_mTab.toString() + ") TableEditing=" + vTable.isEditing());
+		if (log.isLoggable(Level.CONFIG)) log.config("(" + m_mTab.toString() + ") TableEditing=" + vTable.isEditing());
 
 		//  MultiRow - remove editors
 		vTable.stopEditor(saveValue);

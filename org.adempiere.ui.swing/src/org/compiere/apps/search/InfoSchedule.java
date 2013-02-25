@@ -318,7 +318,7 @@ public class InfoSchedule extends CDialog
 		m_mAssignment.setS_Resource_ID(S_Resource_ID);
 		Timestamp date = fieldDate.getTimestamp();
 		int index = timePane.getSelectedIndex();
-		log.config("Index=" + index + ", ID=" + S_Resource_ID + " - " + date);
+		if (log.isLoggable(Level.CONFIG)) log.config("Index=" + index + ", ID=" + S_Resource_ID + " - " + date);
 
 		//	Set Info
 		m_loading = true;

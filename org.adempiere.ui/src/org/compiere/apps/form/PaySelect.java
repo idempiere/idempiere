@@ -431,7 +431,7 @@ public class PaySelect
 			m_ps = null;
 			return Msg.translate(Env.getCtx(), "C_PaySelection_ID");
 		}
-		log.config(m_ps.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(m_ps.toString());
 
 		//  Create Lines
 		int rows = miniTable.getRowCount();

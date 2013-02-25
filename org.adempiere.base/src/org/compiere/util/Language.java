@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.print.attribute.standard.MediaSize;
@@ -421,7 +422,7 @@ public class Language implements Serializable
 		if (language != null)
 		{
 			Env.setContext(Env.getCtx(), Env.LANGUAGE, language.getAD_Language());
-			log.config(language.toString());
+			if (log.isLoggable(Level.CONFIG)) log.config(language.toString());
 		}
 	}   //  setLanguage
 
@@ -504,7 +505,7 @@ public class Language implements Serializable
 		if (AD_Language != null)
 		{
 			m_AD_Language = AD_Language;
-			log.config(toString());
+			if (log.isLoggable(Level.CONFIG)) log.config(toString());
 		}
 	}   //  getAD_Language
 

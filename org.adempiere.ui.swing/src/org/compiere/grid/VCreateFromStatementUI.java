@@ -285,7 +285,7 @@ public class VCreateFromStatementUI extends CreateFromStatement implements Actio
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		log.config("Action=" + e.getActionCommand());
+		if (log.isLoggable(Level.CONFIG)) log.config("Action=" + e.getActionCommand());
 //		Object source = e.getSource();
 		if(e.getActionCommand().equals(ConfirmPanel.A_REFRESH))
 		{

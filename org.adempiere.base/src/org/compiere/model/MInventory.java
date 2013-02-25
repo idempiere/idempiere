@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
@@ -575,7 +576,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	{
 		int no = MInventoryLineMA.deleteInventoryLineMA(line.getM_InventoryLine_ID(), get_TrxName());
 		if (no > 0)
-			log.config("Delete old #" + no);
+			if (log.isLoggable(Level.CONFIG)) log.config("Delete old #" + no);
 
 		//	Check Line
 		boolean needSave = false;

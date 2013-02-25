@@ -546,7 +546,7 @@ public final class VNumber extends JComponent
 	 */
 	public void actionPerformed (ActionEvent e)
 	{
-		log.config(e.getActionCommand());
+		if (log.isLoggable(Level.CONFIG)) log.config(e.getActionCommand());
 		if (ValuePreference.NAME.equals(e.getActionCommand()))
 		{
 			if (MRole.getDefault().isShowPreference() && !m_mField.isEncrypted() && !m_mField.isEncryptedColumn())
@@ -716,7 +716,7 @@ public final class VNumber extends JComponent
 	public static String startCalculator(Container jc, String value,
 		DecimalFormat format, int displayType, String title, char operator)
 	{
-		log.config("Value=" + value);
+		if (log.isLoggable(Level.CONFIG)) log.config("Value=" + value);
 		BigDecimal startValue = new BigDecimal(0.0);
 		try
 		{
@@ -740,7 +740,7 @@ public final class VNumber extends JComponent
 			calc.handleInput(operator);
 		AEnv.showCenterWindow(frame, calc);
 		BigDecimal result = calc.getNumber();
-		log.config( "Result=" + result);
+		if (log.isLoggable(Level.CONFIG)) log.config( "Result=" + result);
 		//
 		calc = null;
 		if (result != null)

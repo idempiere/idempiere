@@ -868,7 +868,7 @@ public class CConnection implements Serializable, Cloneable
 		if (isDataSource())
 			m_info[1] += " - via DataSource";
 		m_info[1] = m_info[1].replace ('\n', ' ');
-		log.config(m_info[0] + " - " + m_info[1]);
+		if (log.isLoggable(Level.CONFIG)) log.config(m_info[0] + " - " + m_info[1]);
 	}
 
 	/*************************************************************************
@@ -1354,7 +1354,7 @@ public class CConnection implements Serializable, Cloneable
 		if (getFwHost() == null || getFwHost().length () == 0)
 			setViaFirewall (false);
 		m_version = svr.getDateVersion ();
-		log.config("Server=" + getDbHost() + ", DB=" + getDbName());
+		if (log.isLoggable(Level.CONFIG)) log.config("Server=" + getDbHost() + ", DB=" + getDbName());
 	} 	//  update Info
 
 	/**

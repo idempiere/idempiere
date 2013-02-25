@@ -14,6 +14,8 @@
 package org.adempiere.webui.editor;
 
 
+import java.util.logging.Level;
+
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.ADWindowContent;
@@ -99,7 +101,7 @@ public class WBinaryEditor extends WEditor
 	@Override
     public void setValue(Object value)
     {
-    	log.config("=" + value);
+    	if (log.isLoggable(Level.CONFIG)) log.config("=" + value);
 		m_data = value;
 		if (m_data == null)
 			getComponent().setLabel("-");

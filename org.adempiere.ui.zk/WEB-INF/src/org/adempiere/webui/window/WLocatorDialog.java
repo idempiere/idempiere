@@ -552,7 +552,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 			lstLocator.setSelectedIndex(lstLocator.getItemCount() - 1);
 		} // createNew
 
-		log.config("M_Locator_ID=" + m_M_Locator_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("M_Locator_ID=" + m_M_Locator_ID);
 	} // actionOK
 
 	/**

@@ -547,7 +547,7 @@ public class MiniTable extends CTable implements IMiniTable
 		if(getShowTotals())
 			addTotals(m_layout);
 		autoSize();
-		log.config("Row(rs)=" + getRowCount());
+		if (log.isLoggable(Level.CONFIG)) log.config("Row(rs)=" + getRowCount());
 		
 		
 	}	//	loadTable
@@ -589,7 +589,7 @@ public class MiniTable extends CTable implements IMiniTable
 		if(getShowTotals())
 			addTotals(m_layout);
 		autoSize();
-		log.config("Row(array)=" + getRowCount());
+		if (log.isLoggable(Level.CONFIG)) log.config("Row(array)=" + getRowCount());
 	}	//	loadTable
 	
 	

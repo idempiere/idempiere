@@ -89,7 +89,7 @@ public class Allocation
 	 */
 	public void checkBPartner()
 	{		
-		log.config("BPartner=" + m_C_BPartner_ID + ", Cur=" + m_C_Currency_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("BPartner=" + m_C_BPartner_ID + ", Cur=" + m_C_Currency_ID);
 		//  Need to have both values
 		if (m_C_BPartner_ID == 0 || m_C_Currency_ID == 0)
 			return;
@@ -393,7 +393,7 @@ public class Allocation
 			return msg;
 		m_calculating = true;
 		
-		log.config("Row=" + row 
+		if (log.isLoggable(Level.CONFIG)) log.config("Row=" + row 
 			+ ", Col=" + col + ", InvoiceTable=" + isInvoice);
         
 		//  Payments
@@ -615,7 +615,7 @@ public class Allocation
 			throw new AdempiereException("@Org0NotAllowed@");
 		}
 		//
-		log.config("Client=" + AD_Client_ID + ", Org=" + AD_Org_ID
+		if (log.isLoggable(Level.CONFIG)) log.config("Client=" + AD_Client_ID + ", Org=" + AD_Org_ID
 			+ ", BPartner=" + C_BPartner_ID + ", Date=" + DateTrx);
 
 		//  Payment - Loop and add them to paymentList/amountList
@@ -642,7 +642,7 @@ public class Allocation
 					+ " - PaymentAmt=" + PaymentAmt); // + " * " + Multiplier + " = " + PaymentAmtAbs);
 			}
 		}
-		log.config("Number of Payments=" + paymentList.size() + " - Total=" + paymentAppliedAmt);
+		if (log.isLoggable(Level.CONFIG)) log.config("Number of Payments=" + paymentList.size() + " - Total=" + paymentAppliedAmt);
 
 		//  Invoices - Loop and generate allocations
 		int iRows = invoice.getRowCount();
@@ -670,7 +670,7 @@ public class Allocation
 				BigDecimal OverUnderAmt = ((BigDecimal)invoice.getValueAt(i, i_open))
 					.subtract(AppliedAmt).subtract(DiscountAmt).subtract(WriteOffAmt);
 				
-				log.config("Invoice #" + i + " - AppliedAmt=" + AppliedAmt);// + " -> " + AppliedAbs);
+				if (log.isLoggable(Level.CONFIG)) log.config("Invoice #" + i + " - AppliedAmt=" + AppliedAmt);// + " -> " + AppliedAbs);
 				//  loop through all payments until invoice applied
 				
 				for (int j = 0; j < paymentList.size() && AppliedAmt.signum() != 0; j++)
@@ -679,7 +679,7 @@ public class Allocation
 					BigDecimal PaymentAmt = (BigDecimal)amountList.get(j);
 					if (PaymentAmt.signum() == AppliedAmt.signum())	// only match same sign (otherwise appliedAmt increases)
 					{												// and not zero (appliedAmt was checked earlier)
-						log.config(".. with payment #" + j + ", Amt=" + PaymentAmt);
+						if (log.isLoggable(Level.CONFIG)) log.config(".. with payment #" + j + ", Amt=" + PaymentAmt);
 						
 						BigDecimal amount = AppliedAmt;
 						if (amount.abs().compareTo(PaymentAmt.abs()) > 0)  // if there's more open on the invoice
@@ -782,9 +782,9 @@ public class Allocation
 					sql = "UPDATE C_Invoice SET IsPaid='Y' "
 						+ "WHERE C_Invoice_ID=" + C_Invoice_ID;
 					int no = DB.executeUpdate(sql, trxName);
-					log.config("Invoice #" + i + " is paid - updated=" + no);
+					if (log.isLoggable(Level.CONFIG)) log.config("Invoice #" + i + " is paid - updated=" + no);
 				} else
-					log.config("Invoice #" + i + " is not paid - " + open);
+					if (log.isLoggable(Level.CONFIG)) log.config("Invoice #" + i + " is not paid - " + open);
 			}
 		}
 		//  Test/Set Payment is fully allocated
@@ -794,7 +794,7 @@ public class Allocation
 			MPayment pay = new MPayment (Env.getCtx(), C_Payment_ID, trxName);
 			if (pay.testAllocation())
 				pay.saveEx();
-			log.config("Payment #" + i + (pay.isAllocated() ? " not" : " is") 
+			if (log.isLoggable(Level.CONFIG)) log.config("Payment #" + i + (pay.isAllocated() ? " not" : " is") 
 					+ " fully allocated");
 		}
 		paymentList.clear();

@@ -83,7 +83,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	 */
 	public ADSortTab(int WindowNo, GridTab gridTab)
 	{
-		log.config("SortOrder=" + gridTab.getAD_ColumnSortOrder_ID() + ", SortYesNo=" + gridTab.getAD_ColumnSortYesNo_ID());
+		if (log.isLoggable(Level.CONFIG)) log.config("SortOrder=" + gridTab.getAD_ColumnSortOrder_ID() + ", SortYesNo=" + gridTab.getAD_ColumnSortYesNo_ID());
 		m_WindowNo = WindowNo;
 		this.gridTab = gridTab;
 

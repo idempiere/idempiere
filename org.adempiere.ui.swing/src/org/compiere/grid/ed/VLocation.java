@@ -352,7 +352,7 @@ public class VLocation extends JComponent
 		if (e.getSource() == mDelete)
 			m_value = null;        //  create new
 		//
-		log.config( "actionPerformed - " + m_value);
+		if (log.isLoggable(Level.CONFIG)) log.config( "actionPerformed - " + m_value);
 		VLocationDialog ld = new VLocationDialog(AEnv.getFrame(this),
 			Msg.getMsg(Env.getCtx(), "Location"), m_value, m_GridField);
 		ld.setVisible(true);

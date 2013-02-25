@@ -137,7 +137,7 @@ public class VCreateFromRMAUI extends CreateFromRMA implements VetoableChangeLis
 	 */
 	public void vetoableChange (PropertyChangeEvent e)
 	{
-		log.config(e.getPropertyName() + "=" + e.getNewValue());
+		if (log.isLoggable(Level.CONFIG)) log.config(e.getPropertyName() + "=" + e.getNewValue());
 
 		//  BPartner - load Order/Invoice/Shipment
 		if (e.getPropertyName().equals("C_BPartner_ID"))

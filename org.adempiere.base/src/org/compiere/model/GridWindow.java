@@ -82,7 +82,7 @@ public class GridWindow implements Serializable
 	 */
 	public static GridWindow get (Properties ctx, int WindowNo, int AD_Window_ID, boolean virtual)
 	{
-		log.config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
 		GridWindowVO mWindowVO = GridWindowVO.create (Env.getCtx(), WindowNo, AD_Window_ID);
 		if (mWindowVO == null)
 			return null;

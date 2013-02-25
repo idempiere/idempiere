@@ -115,7 +115,7 @@ public class VColor extends CButton
 	 */
 	public void setValue (Object value)
 	{
-		log.config("Value=" + value);
+		if (log.isLoggable(Level.CONFIG)) log.config("Value=" + value);
 		m_value = value;
 		m_cc = getAdempiereColor();
 

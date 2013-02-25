@@ -392,7 +392,7 @@ public class ChangeLogProcess extends SvrProcess
 					.append (" WHERE EntityType IN ('D','C'))");
 				int no = DB.executeUpdate(update.toString(), get_TrxName());
 				StringBuilder msglog = new StringBuilder().append(table.getTableName()).append(" = ").append(no);
-				log.config(msglog.toString());
+				if (log.isLoggable(Level.CONFIG)) log.config(msglog.toString());
 				updateNo += no;
 				
 			}

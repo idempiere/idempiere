@@ -552,7 +552,7 @@ public class CreateAdempiere
 			rs = null; pstmt = null;
 		}
 		long elapsed = System.currentTimeMillis() - start;
-		log.config("Inserted=" + count + " - Errors=" + errors 
+		if (log.isLoggable(Level.CONFIG)) log.config("Inserted=" + count + " - Errors=" + errors 
 			+ " - " + elapsed + " ms");
 		return success;
 	}	//	createTableData

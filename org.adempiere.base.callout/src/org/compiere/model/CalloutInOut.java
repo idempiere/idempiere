@@ -361,7 +361,7 @@ public class CalloutInOut extends CalloutEngine
 					Env.setContext(ctx, WindowNo, 0, "M_Locator_ID", null);
 				else
 				{
-					log.config("M_Locator_ID=" + ii);
+					if (log.isLoggable(Level.CONFIG)) log.config("M_Locator_ID=" + ii);
 					Env.setContext(ctx, WindowNo, "M_Locator_ID", ii.intValue());
 				}
 			}

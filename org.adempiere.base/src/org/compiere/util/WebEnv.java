@@ -303,8 +303,8 @@ public class WebEnv
 	 */
 	public static void dump (ServletConfig config)
 	{
-		log.config("ServletConfig " + config.getServletName());
-		log.config("- Context=" + config.getServletContext());
+		if (log.isLoggable(Level.CONFIG))log.config("ServletConfig " + config.getServletName());
+		if (log.isLoggable(Level.CONFIG))log.config("- Context=" + config.getServletContext());
 		if (!CLogMgt.isLevelFiner())
 			return;
 		boolean first = true;
@@ -326,8 +326,8 @@ public class WebEnv
 	 */
 	public static void dump (ServletContext ctx)
 	{
-		log.config("ServletContext " + ctx.getServletContextName());
-		log.config("- ServerInfo=" + ctx.getServerInfo());
+		if (log.isLoggable(Level.CONFIG)) log.config("ServletContext " + ctx.getServletContextName());
+		if (log.isLoggable(Level.CONFIG)) log.config("- ServerInfo=" + ctx.getServerInfo());
 		if (!CLogMgt.isLevelFiner())
 			return;
 		boolean first = true;
@@ -360,8 +360,8 @@ public class WebEnv
 	 */
 	public static void dump (HttpSession session)
 	{
-		log.config("Session " + session.getId());
-		log.config("- Created=" + new Timestamp(session.getCreationTime()));
+		if (log.isLoggable(Level.CONFIG))log.config("Session " + session.getId());
+		if (log.isLoggable(Level.CONFIG))log.config("- Created=" + new Timestamp(session.getCreationTime()));
 		if (!CLogMgt.isLevelFiner())
 			return;
 		boolean first = true;
@@ -383,7 +383,7 @@ public class WebEnv
 	 */
 	public static void dump (HttpServletRequest request)
 	{
-		log.config("Request " + request.getProtocol() + " " + request.getMethod());
+		if (log.isLoggable(Level.CONFIG)) log.config("Request " + request.getProtocol() + " " + request.getMethod());
 		if (!CLogMgt.isLevelFiner())
 			return;
 		log.finer("- Server="  + request.getServerName() + ", Port=" + request.getServerPort());

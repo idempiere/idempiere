@@ -79,7 +79,7 @@ public final class Attachment extends CDialog
 	{
 		super (frame, Msg.getMsg(Env.getCtx(), "Attachment"), true);
 		//	needs to be modal otherwise APanel does not recognize change.
-		log.config("ID=" + AD_Attachment_ID
+		if (log.isLoggable(Level.CONFIG)) log.config("ID=" + AD_Attachment_ID
 			+ ", Table=" + AD_Table_ID + ", Record=" + Record_ID);
 		//
 		m_WindowNo = WindowNo;
@@ -260,7 +260,7 @@ public final class Attachment extends CDialog
 	private void displayData (int index)
 	{
 		MAttachmentEntry entry = m_attachment.getEntry(index); 
-		log.config("Index=" + index + " - " + entry);
+		if (log.isLoggable(Level.CONFIG)) log.config("Index=" + index + " - " + entry);
 		
 		//	Reset UI
 		gifPanel.setImage(null);
@@ -281,7 +281,7 @@ public final class Attachment extends CDialog
 			bOpen.setEnabled(true);
 			bSave.setEnabled(true);
 			bDelete.setEnabled(true);
-			log.config(entry.toStringX());
+			if (log.isLoggable(Level.CONFIG)) log.config(entry.toStringX());
 			//
 			info.setText(entry.toStringX());
 			if (entry.isPDF() && pdfViewer != null)
@@ -329,7 +329,7 @@ public final class Attachment extends CDialog
 			graphPanel.add(info, BorderLayout.CENTER);
 		}
 
-		log.config("Size=" + size);
+		if (log.isLoggable(Level.CONFIG)) log.config("Size=" + size);
 	//	graphPanel.setPreferredSize(size);
 	//	centerPane.setDividerLocation(size.width+30);
 	//	size.width += 100;
@@ -509,7 +509,7 @@ public final class Attachment extends CDialog
 
 		String fileName = getFileName(index);
 		String ext = fileName.substring (fileName.lastIndexOf('.'));
-		log.config( "Ext=" + ext);
+		if (log.isLoggable(Level.CONFIG)) log.config( "Ext=" + ext);
 
 		JFileChooser chooser = new JFileChooser();
 		chooser.setDialogType(JFileChooser.SAVE_DIALOG);
@@ -524,7 +524,7 @@ public final class Attachment extends CDialog
 		if (saveFile == null)
 			return;
 
-		log.config("Save to " + saveFile.getAbsolutePath());
+		if (log.isLoggable(Level.CONFIG)) log.config("Save to " + saveFile.getAbsolutePath());
 		m_attachment.getEntryFile(index, saveFile);
 	}	//	saveAttachmentToFile
 

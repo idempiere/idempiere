@@ -188,7 +188,7 @@ public class ValuePreference extends CDialog
 		int displayType, int AD_Reference_ID)
 	{
 		super(frame, Msg.getMsg(Env.getCtx(), NAME) + " " + DisplayAttribute, true);
-		log.config("WindowNo=" + WindowNo
+		if (log.isLoggable(Level.CONFIG)) log.config("WindowNo=" + WindowNo
 			+ ", Client_ID=" + AD_Client_ID + ", Org_ID=" + AD_Org_ID + ", User_ID=" + AD_User_ID + ", Window_ID=" + AD_Window_ID
 			+ ",  Attribute=" + Attribute + "/" + DisplayAttribute + ",  Value=" + Value + "/" + DisplayValue
 			+ ",  DisplayType=" + displayType + ", Reference_ID=" + AD_Reference_ID);

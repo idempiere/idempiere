@@ -23,6 +23,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import org.compiere.model.MQuery;
 import org.compiere.print.layout.LayoutEngine;
@@ -311,7 +312,7 @@ public class View extends CPanel
 		);
 		Page page = (Page)m_layout.getPages().get(pageNo-1);
 		//
-		log.config("Relative=" + relativePoint + ", " + page);
+		if (log.isLoggable(Level.CONFIG)) log.config("Relative=" + relativePoint + ", " + page);
 	//	log.config("AbsolutePoint=" + absolutePoint + ", PageNo=" + pageNo + ", pageRectangle=" + pageRectangle);
 		MQuery retValue = page.getDrillDown (relativePoint);
 		if (retValue == null)
@@ -334,7 +335,7 @@ public class View extends CPanel
 		);
 		Page page = (Page)m_layout.getPages().get(pageNo-1);
 		//
-		log.config("Relative=" + relativePoint + ", " + page);
+		if (log.isLoggable(Level.CONFIG)) log.config("Relative=" + relativePoint + ", " + page);
 	//	log.config("AbsolutePoint=" + absolutePoint + ", PageNo=" + pageNo + ", pageRectangle=" + pageRectangle);
 		return page.getDrillAcross (relativePoint);
 	}	//	getDrillAcross

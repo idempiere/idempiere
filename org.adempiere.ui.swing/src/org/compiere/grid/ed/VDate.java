@@ -526,7 +526,7 @@ public class VDate extends JComponent
 	public static Timestamp startCalendar(Container jc, Timestamp value,
 		SimpleDateFormat format, int displayType, String title)
 	{
-		log.config("Date=" + value);
+		if (log.isLoggable(Level.CONFIG)) log.config("Date=" + value);
 
 		//	Find frame
 		Frame frame = AEnv.getFrame(jc);
@@ -534,7 +534,7 @@ public class VDate extends JComponent
 		Calendar cal = new Calendar(frame, title, value, displayType);
 		AEnv.showCenterWindow(frame, cal);
 		Timestamp result = cal.getTimestamp();
-		log.config( "Result=" + result);
+		if (log.isLoggable(Level.CONFIG)) log.config( "Result=" + result);
 		if (result == null)
 			result = value;		//	original
 		else if (result.compareTo(new Timestamp(-1))==0)

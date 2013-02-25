@@ -267,7 +267,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		for(ListItem item : items)
 			model.addElement(item);
 		
-		log.config("#" + model.getSize());
+		if (log.isLoggable(Level.CONFIG)) log.config("#" + model.getSize());
 		centerList.setItemRenderer(model);
 		centerList.setModel(model);
 		

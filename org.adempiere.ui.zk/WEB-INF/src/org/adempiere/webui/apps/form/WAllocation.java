@@ -409,7 +409,7 @@ public class WAllocation extends Allocation
 	{
 		String name = e.getPropertyName();
 		Object value = e.getNewValue();
-		log.config(name + "=" + value);
+		if (log.isLoggable(Level.CONFIG)) log.config(name + "=" + value);
 		if (value == null)
 			return;
 		

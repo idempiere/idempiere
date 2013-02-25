@@ -107,7 +107,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		this.setHeight("600px");
 		this.setSizable(true);
 		
-		log.config("M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID 
+		if (log.isLoggable(Level.CONFIG)) log.config("M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID 
 			+ ", M_Product_ID=" + M_Product_ID
 			+ ", C_BPartner_ID=" + C_BPartner_ID
 			+ ", ProductW=" + productWindow + ", Column=" + AD_Column_ID);
@@ -850,7 +850,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	private void cmd_newEdit()
 	{
 		boolean rw = cbNewEdit.isChecked();
-		log.config("R/W=" + rw + " " + m_masi);
+		if (log.isLoggable(Level.CONFIG)) log.config("R/W=" + rw + " " + m_masi);
 		//
 		fieldLotString.setReadonly(!(rw && m_masi.getM_Lot_ID()==0));
 		if (fieldLot != null)

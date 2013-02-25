@@ -100,7 +100,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		this.setTitle(Msg.getMsg(Env.getCtx(), "VAssignmentDialog"));
 		this.setBorder("normal");
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-		log.config(mAssignment.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(mAssignment.toString());
 		m_mAssignment = mAssignment;
 		try
 		{

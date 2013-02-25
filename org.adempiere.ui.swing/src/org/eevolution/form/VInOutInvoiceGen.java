@@ -516,7 +516,7 @@ public class VInOutInvoiceGen extends CPanel
 
 		if (results.size() == 0)
 			return;
-		log.config("Selected #" + results.size());
+		if (log.isLoggable(Level.CONFIG)) log.config("Selected #" + results.size());
 		selection = results;
 		
 	}	//	saveSelection
@@ -660,7 +660,7 @@ public class VInOutInvoiceGen extends CPanel
 		int[] ids = pi.getIDs();
 		if (ids == null || ids.length == 0)
 			return;
-		log.config("PrintItems=" + ids.length);
+		if (log.isLoggable(Level.CONFIG)) log.config("PrintItems=" + ids.length);
 
 		confirmPanelGen.getOKButton().setEnabled(false);
 		//	OK to print shipments

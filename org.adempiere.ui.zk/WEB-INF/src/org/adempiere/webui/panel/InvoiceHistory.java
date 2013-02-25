@@ -74,7 +74,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 	{
 		super();
 		setTitle(Msg.getMsg(Env.getCtx(), "PriceHistory"));
-		log.config("C_BPartner_ID=" + C_BPartner_ID
+		if (log.isLoggable(Level.CONFIG)) log.config("C_BPartner_ID=" + C_BPartner_ID
 			+ ", M_Product_ID=" + M_Product_ID
 			+ ", M_Warehouse_ID=" + M_Warehouse_ID
 			+ ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);

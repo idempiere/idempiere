@@ -125,7 +125,7 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 		//  fixed values
 		int X_DepositBatch_ID = ((Integer) getGridTab().getValue("X_DepositBatch_ID")).intValue();
 		MDepositBatch db = new MDepositBatch(Env.getCtx(), X_DepositBatch_ID, null);
-		log.config(db.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(db.toString());
 
 		//  Lines
 		for(int i = 0; i < miniTable.getRowCount(); i++)

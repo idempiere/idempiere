@@ -541,7 +541,7 @@ public class PrintUtil
 	 */
 	public static void setupPrintForm (int AD_Client_ID)
 	{
-		log.config("AD_Client_ID=" + AD_Client_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("AD_Client_ID=" + AD_Client_ID);
 		Properties ctx = Env.getCtx();
 		CLogMgt.enable(false);
 		//

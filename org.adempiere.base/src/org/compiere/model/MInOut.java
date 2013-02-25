@@ -1814,7 +1814,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	{
 		int no = MInOutLineMA.deleteInOutLineMA(line.getM_InOutLine_ID(), get_TrxName());
 		if (no > 0)
-			log.config("Delete old #" + no);
+			if (log.isLoggable(Level.CONFIG)) log.config("Delete old #" + no);
 
 		//	Incoming Trx
 		String MovementType = getMovementType();
@@ -1861,7 +1861,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					asi = MAttributeSetInstance.create(getCtx(), product, get_TrxName());
 				}
 				line.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
-				log.config("New ASI=" + line);
+				if (log.isLoggable(Level.CONFIG)) log.config("New ASI=" + line);
 				needSave = true;
 			}
 			// Create consume the Attribute Set Instance using policy FIFO/LIFO

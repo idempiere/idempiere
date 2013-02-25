@@ -28,6 +28,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
+import java.util.logging.Level;
 
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
@@ -254,7 +255,7 @@ public class VMemo extends CTextArea
 	 */
 	public void focusGained (FocusEvent e)
 	{
-		log.config(e.paramString());
+		if (log.isLoggable(Level.CONFIG)) log.config(e.paramString());
 		if (e.getSource() instanceof VMemo)
 			requestFocus();
 		else

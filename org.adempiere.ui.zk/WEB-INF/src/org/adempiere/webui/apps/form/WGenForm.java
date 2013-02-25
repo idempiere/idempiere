@@ -355,7 +355,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		int[] ids = genForm.getProcessInfo().getIDs();
 		if (ids == null || ids.length == 0)
 			return;
-		log.config("PrintItems=" + ids.length);
+		if (log.isLoggable(Level.CONFIG)) log.config("PrintItems=" + ids.length);
 		
 		m_ids = ids;
 		Clients.response(new AuEcho(this, "onAfterProcess", null));

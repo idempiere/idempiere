@@ -150,7 +150,7 @@ public abstract class CreateFrom implements ICreateFrom
 		 *  ShipmentLine    - 6
 		 *  InvoiceLine     - 7
 		 */
-		log.config("C_Order_ID=" + C_Order_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_Order_ID=" + C_Order_ID);
 		p_order = new MOrder (Env.getCtx(), C_Order_ID, null);
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();

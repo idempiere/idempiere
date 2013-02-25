@@ -15,6 +15,8 @@ package org.adempiere.webui.editor;
 
 
 
+import java.util.logging.Level;
+
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.PAttributebox;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -164,7 +166,7 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 			M_ProductBOM_ID = Env.getContextAsInt (Env.getCtx (), m_WindowNo, "M_ProductBOM_ID");
 		}
 
-		log.config("M_Product_ID=" + M_Product_ID + "/" + M_ProductBOM_ID
+		if (log.isLoggable(Level.CONFIG)) log.config("M_Product_ID=" + M_Product_ID + "/" + M_ProductBOM_ID
 			+ ",M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID
 			+ ", AD_Column_ID=" + gridField.getAD_Column_ID());
 

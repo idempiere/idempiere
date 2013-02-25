@@ -262,7 +262,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 			error = new StringBuilder("@NotFound@ O=").append(o);
 			ldapUser.setErrorString(error.toString());
 			m_error++;
-			log.config (error.toString());
+			if (log.isLoggable(Level.CONFIG)) log.config (error.toString());
 			return ldapUser;
 		}
 		//	Optional Interest Area
@@ -275,7 +275,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 				error = new StringBuilder("@NotFound@ OU=").append(ou);
 				ldapUser.setErrorString(error.toString());
 				m_error++;
-				log.config (error.toString());
+				if (log.isLoggable(Level.CONFIG)) log.config (error.toString());
 				return ldapUser;
 			}
 		}

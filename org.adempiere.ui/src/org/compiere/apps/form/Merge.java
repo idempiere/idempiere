@@ -91,7 +91,7 @@ public class Merge
 	public boolean merge (String ColumnName, int from_ID, int to_ID)
 	{
 		String TableName = ColumnName.substring(0, ColumnName.length()-3);
-		log.config(ColumnName
+		if (log.isLoggable(Level.CONFIG)) log.config(ColumnName
 			+ " - From=" + from_ID + ",To=" + to_ID);
 
 		boolean success = true;
@@ -136,7 +136,7 @@ public class Merge
 				}
 			}
 			//
-			log.config("Success=" + success
+			if (log.isLoggable(Level.CONFIG)) log.config("Success=" + success
 				+ " - " + ColumnName + " - From=" + from_ID + ",To=" + to_ID);
 			if (success)
 			{
@@ -150,7 +150,7 @@ public class Merge
 					m_errorLog.append(Env.NL).append("DELETE ").append(TableName)
 					.append(" - ");
 				    success = false;
-					log.config(m_errorLog.toString());
+					if (log.isLoggable(Level.CONFIG)) log.config(m_errorLog.toString());
 					m_trx.rollback();
 					return false;
 				}
@@ -224,7 +224,7 @@ public class Merge
 				.append(delete ? "DELETE " : "UPDATE ")
 				.append(TableName).append(" - ")
 				.append(" - ").append(sql);
-			log.config(m_errorLog.toString());
+			if (log.isLoggable(Level.CONFIG)) log.config(m_errorLog.toString());
 			m_trx.rollback();
 		
 		}

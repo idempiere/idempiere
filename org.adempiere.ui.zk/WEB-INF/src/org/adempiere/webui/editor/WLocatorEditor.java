@@ -218,7 +218,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 			int only_Warehouse_ID = getOnly_Warehouse_ID();
 			int only_Product_ID = getOnly_Product_ID();
 			
-			log.config("Only Warehouse_ID=" + only_Warehouse_ID	+ ", Product_ID=" + only_Product_ID);
+			if (log.isLoggable(Level.CONFIG)) log.config("Only Warehouse_ID=" + only_Warehouse_ID	+ ", Product_ID=" + only_Product_ID);
 	
 			//	Text Entry ok
 			

@@ -72,7 +72,7 @@ public class ARequest implements ActionListener
 		int C_BPartner_ID)
 	{
 		super ();
-		log.config("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
 		m_AD_Table_ID = AD_Table_ID;
 		m_Record_ID = Record_ID;
 		m_C_BPartner_ID = C_BPartner_ID;

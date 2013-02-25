@@ -65,7 +65,7 @@ public class AChat extends CDialog
 	{
 		super (frame, Msg.getMsg(Env.getCtx(), "Chat") + " " + Description, true);
 		//	needs to be modal otherwise APanel does not recongize change.
-		log.config("ID=" + CM_Chat_ID
+		if (log.isLoggable(Level.CONFIG)) log.config("ID=" + CM_Chat_ID
 			+ ", Table=" + AD_Table_ID + ", Record=" + Record_ID);
 		//
 		m_WindowNo = WindowNo;

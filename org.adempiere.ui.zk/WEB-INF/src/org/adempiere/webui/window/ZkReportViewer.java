@@ -1182,8 +1182,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				continue;
 			
 			String restrictName = tbt.getComponentName();
-			if (log.isLoggable(Level.CONFIG))
-				log.config("tbt="+tbt.getAD_ToolBarButton_ID() + " / " + restrictName);
+			if (log.isLoggable(Level.CONFIG)) log.config("tbt="+tbt.getAD_ToolBarButton_ID() + " / " + restrictName);
 
 			for (Component p = this.toolBar.getFirstChild(); p != null; p = p.getNextSibling()) {
 				if (p instanceof Toolbarbutton) {

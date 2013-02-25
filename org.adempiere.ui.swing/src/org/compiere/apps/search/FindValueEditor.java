@@ -18,6 +18,7 @@ package org.compiere.apps.search;
 
 import java.awt.Component;
 import java.util.EventObject;
+import java.util.logging.Level;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JTable;
@@ -81,7 +82,7 @@ public final class FindValueEditor extends AbstractCellEditor implements TableCe
 		if (m_editor == null)
 			return null;
 		Object obj = m_editor.getValue();		//	returns Integer, BidDecimal, String
-		log.config("Obj=" + obj);
+		if (log.isLoggable(Level.CONFIG)) log.config("Obj=" + obj);
 		return obj;
 		/**
 		if (obj == null)
@@ -114,7 +115,7 @@ public final class FindValueEditor extends AbstractCellEditor implements TableCe
 			m_between = true;
 
 		boolean enabled = !m_valueToColumn || (m_valueToColumn && m_between); 
-		log.config("(" + value + ") - Enabled=" + enabled);
+		if (log.isLoggable(Level.CONFIG)) log.config("(" + value + ") - Enabled=" + enabled);
 
 		if ( enabled )
 		{

@@ -92,7 +92,7 @@ public class VAssignmentDialog extends CDialog
 		boolean allowZoom, boolean allowDelete)
 	{
 		super (frame, Msg.getMsg(Env.getCtx(), "VAssignmentDialog"), true);
-		log.config(mAssignment.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(mAssignment.toString());
 		m_mAssignment = mAssignment;
 		m_frame = frame;
 		try

@@ -6,6 +6,7 @@ import java.awt.SystemColor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.plaf.ColorUIResource;
@@ -75,7 +76,7 @@ public final class ThemeUtils {
 		}
 		catch (Exception e)
 		{
-			log.config(information + " - cannot parse: " + e.toString());
+			if (log.isLoggable(Level.CONFIG)) log.config(information + " - cannot parse: " + e.toString());
 		}
 		return stdColor;
 	}   //  parseColor
@@ -114,7 +115,7 @@ public final class ThemeUtils {
 		}
 		catch (Exception e)
 		{
-			log.config(information + " - cannot parse: " + e.toString());
+			if (log.isLoggable(Level.CONFIG)) log.config(information + " - cannot parse: " + e.toString());
 		}
 		return stdFont;
 	}   //  parseFont
@@ -147,7 +148,7 @@ public final class ThemeUtils {
 	 */
 	public static void save (Properties properties, MetalTheme theme)
 	{
-		log.config(CompiereColor.getDefaultBackground().toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(CompiereColor.getDefaultBackground().toString());
 		//
 		properties.setProperty(P_Primary1, getColorAsString(theme.getPrimaryControlDarkShadow()));
 		properties.setProperty(P_Primary2, getColorAsString(theme.getPrimaryControlShadow()));

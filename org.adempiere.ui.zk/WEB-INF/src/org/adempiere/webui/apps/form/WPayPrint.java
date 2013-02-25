@@ -533,7 +533,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		//  get data
 		int startDocumentNo = ((Number)fDocumentNo.getValue()).intValue();
 
-		log.config("C_PaySelection_ID=" + m_C_PaySelection_ID + ", PaymentRule=" +  PaymentRule + ", DocumentNo=" + startDocumentNo);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_PaySelection_ID=" + m_C_PaySelection_ID + ", PaymentRule=" +  PaymentRule + ", DocumentNo=" + startDocumentNo);
 		//
 		//	get Slecetions
 		m_checks = MPaySelectionCheck.get(m_C_PaySelection_ID, PaymentRule, startDocumentNo, null);
@@ -562,7 +562,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	public void valueChange(ValueChangeEvent e) {
 		String name = e.getPropertyName();
 		Object value = e.getNewValue();
-		log.config(name + "=" + value);
+		if (log.isLoggable(Level.CONFIG)) log.config(name + "=" + value);
 		if (value == null)
 			return;
 		

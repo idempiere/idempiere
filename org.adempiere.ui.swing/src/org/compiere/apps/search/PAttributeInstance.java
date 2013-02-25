@@ -195,7 +195,7 @@ public class PAttributeInstance extends CDialog
 	 */
 	private void dynInit(int C_BPartner_ID)
 	{
-		log.config("C_BPartner_ID=" + C_BPartner_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_BPartner_ID=" + C_BPartner_ID);
 		if (C_BPartner_ID != 0)
 		{
 			int ShelfLifeMinPct = 0;
@@ -233,12 +233,12 @@ public class PAttributeInstance extends CDialog
 			if (ShelfLifeMinPct > 0)
 			{
 				m_sqlMinLife = " AND COALESCE(TRUNC(((daysbetween(asi.GuaranteeDate, SYSDATE))/p.GuaranteeDays)*100),0)>=" + ShelfLifeMinPct;
-				log.config( "PAttributeInstance.dynInit - ShelfLifeMinPct=" + ShelfLifeMinPct);
+				if (log.isLoggable(Level.CONFIG)) log.config( "PAttributeInstance.dynInit - ShelfLifeMinPct=" + ShelfLifeMinPct);
 			}
 			if (ShelfLifeMinDays > 0)
 			{
 				m_sqlMinLife += " AND COALESCE((daysbetween(asi.GuaranteeDate, SYSDATE)),0)>=" + ShelfLifeMinDays;
-				log.config( "PAttributeInstance.dynInit - ShelfLifeMinDays=" + ShelfLifeMinDays);
+				if (log.isLoggable(Level.CONFIG)) log.config( "PAttributeInstance.dynInit - ShelfLifeMinDays=" + ShelfLifeMinDays);
 			}
 		}	//	BPartner != 0
 

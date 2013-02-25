@@ -146,7 +146,7 @@ public class ImportAccount extends SvrProcess
 			.append("WHERE C_Element_ID IS NULL")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Invalid Element=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid Element=" + no);
 
 		//	No Name, Value
 		sql = new StringBuilder ("UPDATE I_ElementValue ")
@@ -154,7 +154,7 @@ public class ImportAccount extends SvrProcess
 			.append("WHERE (Value IS NULL OR Name IS NULL)")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Invalid Name=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid Name=" + no);
 
 		
 		//	Set Column
@@ -173,7 +173,7 @@ public class ImportAccount extends SvrProcess
 			.append(" AND UPPER(Default_Account)<>'DEFAULT_ACCT'")		//	ignore default account
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Invalid Column=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid Column=" + no);
 
 		//	Set Post* Defaults (ignore errors)
 		String[] yColumns = new String[] {"PostActual", "PostBudget", "PostStatistical", "PostEncumbrance"};
@@ -217,7 +217,7 @@ public class ImportAccount extends SvrProcess
 			.append("WHERE AccountType NOT IN ('A','E','L','M','O','R')")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Invalid AccountType=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid AccountType=" + no);
 
 		//	Check Account Sign (N) C B
 		sql = new StringBuilder ("UPDATE I_ElementValue ")
@@ -232,7 +232,7 @@ public class ImportAccount extends SvrProcess
 			.append("WHERE AccountSign NOT IN ('N','C','D')")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Invalid AccountSign=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid AccountSign=" + no);
 
 		//	No Value
 		sql = new StringBuilder ("UPDATE I_ElementValue ")
@@ -240,7 +240,7 @@ public class ImportAccount extends SvrProcess
 			.append("WHERE (Value IS NULL OR Value='')")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Invalid Key=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Invalid Key=" + no);
 
 		//	****	Update ElementValue from existing
 		sql = new StringBuilder ("UPDATE I_ElementValue i ")
@@ -356,7 +356,7 @@ public class ImportAccount extends SvrProcess
 			.append("WHERE ParentElementValue_ID IS NULL AND ParentValue IS NOT NULL")
 			.append(" AND I_IsImported='Y' AND Processed='N'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.config("Not Found Parent ElementValue=" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("Not Found Parent ElementValue=" + no);
 		//
 		sql = new StringBuilder ("SELECT i.ParentElementValue_ID, i.I_ElementValue_ID,")
 			.append(" e.AD_Tree_ID, i.C_ElementValue_ID, i.Value||'-'||i.Name AS Info ")
@@ -449,7 +449,7 @@ public class ImportAccount extends SvrProcess
 	 */
 	private void updateDefaults (String clientCheck)
 	{
-		log.config("CreateNewCombination=" + m_createNewCombination);
+		if (log.isLoggable(Level.CONFIG)) log.config("CreateNewCombination=" + m_createNewCombination);
 
 		//	****	Update Defaults
 		StringBuilder sql = new StringBuilder ("SELECT C_AcctSchema_ID FROM C_AcctSchema_Element ")
@@ -496,7 +496,7 @@ public class ImportAccount extends SvrProcess
 	 */
 	private void updateDefaultAccounts (int C_AcctSchema_ID)
 	{
-		log.config("C_AcctSchema_ID=" + C_AcctSchema_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_AcctSchema_ID=" + C_AcctSchema_ID);
 
 		MAcctSchema as = new MAcctSchema (getCtx(), C_AcctSchema_ID, get_TrxName());
 		if (as.getAcctSchemaElement("AC").getC_Element_ID() != m_C_Element_ID)

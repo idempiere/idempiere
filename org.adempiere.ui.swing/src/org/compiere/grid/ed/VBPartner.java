@@ -287,7 +287,7 @@ public final class VBPartner extends CDialog implements ActionListener
 	 */
 	public boolean loadBPartner (int C_BPartner_ID)
 	{
-		log.config("C_BPartner_ID=" + C_BPartner_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_BPartner_ID=" + C_BPartner_ID);
 		//  New bpartner
 		if (C_BPartner_ID == 0)
 		{

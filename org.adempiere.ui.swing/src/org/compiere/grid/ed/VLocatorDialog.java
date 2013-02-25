@@ -475,7 +475,7 @@ public class VLocatorDialog extends CDialog
 			fLocator.setSelectedItem(loc);
 		}	//	createNew
 		//
-		log.config("M_Locator_ID=" + m_M_Locator_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("M_Locator_ID=" + m_M_Locator_ID);
 	}	//	actionOK
 
 	/**

@@ -150,7 +150,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	{
 		super();
 
-		log.config("ID=" + AD_Attachment_ID + ", Table=" + AD_Table_ID + ", Record=" + Record_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("ID=" + AD_Attachment_ID + ", Table=" + AD_Table_ID + ", Record=" + Record_ID);
 
 		m_WindowNo = WindowNo;
 		if (eventListener != null) 
@@ -412,10 +412,10 @@ public class WAttachment extends Window implements EventListener<Event>
 	 */
 	public void displaySelected() {
 		MAttachmentEntry entry = m_attachment.getEntry(displayIndex);
-		log.config("Index=" + displayIndex + " - " + entry);
+		if (log.isLoggable(Level.CONFIG)) log.config("Index=" + displayIndex + " - " + entry);
 		if (entry != null && entry.getData() != null)
 		{
-			log.config(entry.toStringX());
+			if (log.isLoggable(Level.CONFIG)) log.config(entry.toStringX());
 
 			try
 			{

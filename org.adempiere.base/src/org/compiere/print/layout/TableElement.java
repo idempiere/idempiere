@@ -1189,7 +1189,7 @@ public class TableElement extends PrintElement
 		int pageXindex = getPageXIndex(pageIndex);
 		int pageYindex = getPageYIndex(pageIndex);
 		if (DEBUG_PRINT)
-			log.config("Page=" + pageNo + " [x=" + pageXindex + ", y=" + pageYindex + "]");
+			if (log.isLoggable(Level.CONFIG)) log.config("Page=" + pageNo + " [x=" + pageXindex + ", y=" + pageYindex + "]");
 		//
 		int firstColumn = ((Integer)m_firstColumnOnPage.get(pageXindex)).intValue();
 		int nextPageColumn = m_columnHeader.length;		// no of cols

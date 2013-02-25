@@ -135,7 +135,7 @@ public class TransactionXRef extends SvrProcess
 		//
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine(sql.toString());
-		log.config("#" + no);
+		if (log.isLoggable(Level.CONFIG)) log.config("#" + no);
 		
 		//	Multi-Level
 		

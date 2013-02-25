@@ -14,6 +14,7 @@
 package org.adempiere.webui.apps.form;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
@@ -153,7 +154,7 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 			dataOK = false;
 		}
 		//
-		log.config("OK=" + dataOK);
+		if (log.isLoggable(Level.CONFIG)) log.config("OK=" + dataOK);
 		return dataOK;
 	}
 

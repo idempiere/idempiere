@@ -102,7 +102,7 @@ public class ScheduleUtil
 		Timestamp start_Date, Timestamp end_Date,
 		BigDecimal qty, boolean getAll, String trxName)
 	{
-		log.config(start_Date.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(start_Date.toString());
 		if (m_S_Resource_ID != S_Resource_ID)
 			getBaseInfo (S_Resource_ID);
 		//
@@ -804,7 +804,7 @@ public class ScheduleUtil
 		@SuppressWarnings("unused")
 		MUOM uom = MUOM.get (m_ctx, m_C_UOM_ID);
 		int minutes = MUOMConversion.convertToMinutes (m_ctx, m_C_UOM_ID, Env.ONE);
-		log.config("Minutes=" + minutes);
+		if (log.isLoggable(Level.CONFIG)) log.config("Minutes=" + minutes);
 		//
 		if (minutes > 0 && minutes < 60*24)
 		{

@@ -579,7 +579,7 @@ public abstract class Info extends CDialog
 		if (p_table == null)
 			return;
 
-		log.config( "OK=" + m_ok);
+		if (log.isLoggable(Level.CONFIG)) log.config( "OK=" + m_ok);
 		if (!m_ok)      //  did not press OK
 		{
 			m_results.clear();
@@ -599,7 +599,7 @@ public abstract class Info extends CDialog
 			if (data != null)
 				m_results.add(data);
 		}
-		log.config(getSelectedSQL());
+		if (log.isLoggable(Level.CONFIG)) log.config(getSelectedSQL());
 
 		//	Save Settings of detail info screens
 		saveSelectionDetail();
@@ -726,7 +726,7 @@ public abstract class Info extends CDialog
 		Object[] keys = getSelectedKeys();
 		if (keys == null || keys.length == 0)
 		{
-			log.config("No Results - OK="
+			if (log.isLoggable(Level.CONFIG)) log.config("No Results - OK="
 				+ m_ok + ", Cancel=" + m_cancel);
 			return "";
 		}
@@ -859,7 +859,7 @@ public abstract class Info extends CDialog
 	 */
 	public void dispose(boolean ok)
 	{
-		log.config("OK=" + ok);
+		if (log.isLoggable(Level.CONFIG)) log.config("OK=" + ok);
 		m_ok = ok;
 
 		//  End Worker
@@ -868,7 +868,7 @@ public abstract class Info extends CDialog
 			//  worker continues, but it does not block UI
 			if (m_worker.isAlive())
 				m_worker.interrupt();
-			log.config("Worker alive=" + m_worker.isAlive());
+			if (log.isLoggable(Level.CONFIG)) log.config("Worker alive=" + m_worker.isAlive());
 		}
 		m_worker = null;
 		//

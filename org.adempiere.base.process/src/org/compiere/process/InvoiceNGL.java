@@ -174,7 +174,7 @@ public class InvoiceNGL extends SvrProcess
 			.append("WHERE AD_PInstance_ID=").append(getAD_PInstance_ID());
 		int noT = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (noT > 0)
-			log.config("Difference #" + noT);
+			if (log.isLoggable(Level.CONFIG)) log.config("Difference #" + noT);
 		
 		//	Percentage
 		sql = new StringBuilder("UPDATE T_InvoiceGL SET Percent = 100 ")
@@ -196,7 +196,7 @@ public class InvoiceNGL extends SvrProcess
 			.append("WHERE Percent <> 100 AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
-			log.config("Partial Calc #" + no);
+			if (log.isLoggable(Level.CONFIG)) log.config("Partial Calc #" + no);
 		
 		//	Create Document
 		String info = "";

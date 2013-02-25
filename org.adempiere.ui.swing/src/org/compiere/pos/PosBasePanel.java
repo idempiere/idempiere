@@ -145,7 +145,7 @@ public class PosBasePanel extends CPanel
 		{
 			log.log(Level.SEVERE, "init", e);
 		}
-		log.config( "PosPanel.init - " + getPreferredSize());
+		if (log.isLoggable(Level.CONFIG)) log.config( "PosPanel.init - " + getPreferredSize());
 		
 		if ( p_pos.getAutoLogoutDelay() > 0 && logoutTimer == null )
 		{

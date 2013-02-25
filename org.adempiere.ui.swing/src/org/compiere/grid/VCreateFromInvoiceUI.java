@@ -181,12 +181,12 @@ public class VCreateFromInvoiceUI extends CreateFromInvoice implements ActionLis
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		log.config("Action=" + e.getActionCommand());
+		if (log.isLoggable(Level.CONFIG)) log.config("Action=" + e.getActionCommand());
 		
 		if (m_actionActive)
 			return;
 		m_actionActive = true;
-		log.config("Action=" + e.getActionCommand());
+		if (log.isLoggable(Level.CONFIG)) log.config("Action=" + e.getActionCommand());
 		//  Order
 		if (e.getSource().equals(orderField))
 		{
@@ -232,7 +232,7 @@ public class VCreateFromInvoiceUI extends CreateFromInvoice implements ActionLis
 	 */
 	public void vetoableChange (PropertyChangeEvent e)
 	{
-		log.config(e.getPropertyName() + "=" + e.getNewValue());
+		if (log.isLoggable(Level.CONFIG)) log.config(e.getPropertyName() + "=" + e.getNewValue());
 
 		//  BPartner - load Order/Invoice/Shipment
 		if (e.getPropertyName().equals("C_BPartner_ID"))
@@ -269,7 +269,7 @@ public class VCreateFromInvoiceUI extends CreateFromInvoice implements ActionLis
 	 */
 	protected void initBPOrderDetails (int C_BPartner_ID, boolean forInvoice)
 	{
-		log.config("C_BPartner_ID=" + C_BPartner_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_BPartner_ID=" + C_BPartner_ID);
 		KeyNamePair pp = new KeyNamePair(0,"");
 		//  load PO Orders - Closed, Completed
 		orderField.removeActionListener(this);
@@ -299,7 +299,7 @@ public class VCreateFromInvoiceUI extends CreateFromInvoice implements ActionLis
 	 */
 	private void initBPShipmentDetails(int C_BPartner_ID)
 	{
-		log.config("C_BPartner_ID" + C_BPartner_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_BPartner_ID" + C_BPartner_ID);
 
 		//  load Shipments (Receipts) - Completed, Closed
 		shipmentField.removeActionListener(this);

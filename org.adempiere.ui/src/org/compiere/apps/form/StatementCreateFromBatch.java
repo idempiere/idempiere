@@ -177,7 +177,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 			Object DateFrom, Object DateTo, Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode, 
 			GridTab gridTab)
 	{
-		log.config ("C_BankAccount_ID=" + BankAccount);
+		if (log.isLoggable(Level.CONFIG)) log.config ("C_BankAccount_ID=" + BankAccount);
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		StringBuilder sql = new StringBuilder();
@@ -248,7 +248,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		//  fixed values
 		int C_BankStatement_ID = ((Integer) gridTab.getValue("C_BankStatement_ID")).intValue();
 		MBankStatement bs = new MBankStatement (Env.getCtx(), C_BankStatement_ID, null);
-		log.config(bs.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(bs.toString());
 
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT p.DateTrx,p.C_Payment_ID,p.DocumentNo, p.C_Currency_ID,c.ISO_Code, p.PayAmt,");

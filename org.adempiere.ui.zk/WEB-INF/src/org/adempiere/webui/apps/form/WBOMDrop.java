@@ -368,7 +368,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	
 	private void createMainPanel ()
 	{
-		log.config(": " + m_product);
+		if (log.isLoggable(Level.CONFIG)) log.config(": " + m_product);
 		this.getChildren().clear();
 		//this.invalidate();
 		//this.setBorder(null);
@@ -553,7 +553,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	 */
 	public void onEvent (Event e) throws Exception
 	{
-		log.config(e.getName());
+		if (log.isLoggable(Level.CONFIG)) log.config(e.getName());
 		
 		Object source = e.getTarget();
 
@@ -797,7 +797,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	
 	private boolean cmd_saveOrder (int C_Order_ID)
 	{
-		log.config("C_Order_ID=" + C_Order_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_Order_ID=" + C_Order_ID);
 		MOrder order = new MOrder (Env.getCtx(), C_Order_ID, null);
 		
 		if (order.get_ID() == 0)
@@ -829,7 +829,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		}	//	for all bom lines
 		
 		FDialog.info(-1, this, order.getDocumentInfo() + " " + Msg.translate(Env.getCtx(), "Inserted") + "=" + lineCount);
-		log.config("#" + lineCount);
+		if (log.isLoggable(Level.CONFIG)) log.config("#" + lineCount);
 		return true;
 	}	//	cmd_saveOrder
 
@@ -841,7 +841,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	
 	private boolean cmd_saveInvoice (int C_Invoice_ID)
 	{
-		log.config("C_Invoice_ID=" + C_Invoice_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_Invoice_ID=" + C_Invoice_ID);
 		MInvoice invoice = new MInvoice (Env.getCtx(), C_Invoice_ID, null);
 		if (invoice.get_ID() == 0)
 		{
@@ -871,7 +871,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		}	//	for all bom lines
 		
 		FDialog.info(-1, this, invoice.getDocumentInfo() +  " " + Msg.translate(Env.getCtx(), "Inserted") + "=" + lineCount);
-		log.config("#" + lineCount);
+		if (log.isLoggable(Level.CONFIG)) log.config("#" + lineCount);
 		return true;
 	}	//	cmd_saveInvoice
 
@@ -882,7 +882,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	 */
 	private boolean cmd_saveProject (int C_Project_ID)
 	{
-		log.config("C_Project_ID=" + C_Project_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_Project_ID=" + C_Project_ID);
 		MProject project = new MProject (Env.getCtx(), C_Project_ID, null);
 		if (project.get_ID() == 0)
 		{
@@ -911,7 +911,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		}	//	for all bom lines
 		
 		FDialog.info(-1, this, project.getName() + " " + Msg.translate(Env.getCtx(), "Inserted") + "=" + lineCount);
-		log.config("#" + lineCount);
+		if (log.isLoggable(Level.CONFIG)) log.config("#" + lineCount);
 		return true;
 	}	//	cmd_saveProject
 }

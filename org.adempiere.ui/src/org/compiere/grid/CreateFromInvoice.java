@@ -168,7 +168,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 	 */
 	protected Vector<Vector<Object>> getShipmentData(int M_InOut_ID)
 	{
-		log.config("M_InOut_ID=" + M_InOut_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("M_InOut_ID=" + M_InOut_ID);
 		MInOut inout = new MInOut(Env.getCtx(), M_InOut_ID, null);
 		p_order = null;
 		if (inout.getC_Order_ID() != 0)
@@ -362,7 +362,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 		//  Invoice
 		int C_Invoice_ID = ((Integer)getGridTab().getValue("C_Invoice_ID")).intValue();
 		MInvoice invoice = new MInvoice (Env.getCtx(), C_Invoice_ID, trxName);
-		log.config(invoice.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(invoice.toString());
 
 		if (p_order != null)
 		{

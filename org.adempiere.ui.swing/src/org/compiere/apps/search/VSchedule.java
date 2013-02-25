@@ -134,7 +134,7 @@ public class VSchedule extends CPanel
 		cal.add(m_type, 1);
 		m_endDate = new Timestamp (cal.getTimeInMillis());
 		//
-		log.config("(" + m_type + ") Resource_ID=" + S_Resource_ID + ": " + m_startDate + "->" + m_endDate);
+		if (log.isLoggable(Level.CONFIG)) log.config("(" + m_type + ") Resource_ID=" + S_Resource_ID + ": " + m_startDate + "->" + m_endDate);
 		//	Create Slots
 		MAssignmentSlot[] mas = m_model.getAssignmentSlots (S_Resource_ID, m_startDate, m_endDate, null, true, null);
 		MAssignmentSlot[] mts = m_model.getDayTimeSlots ();

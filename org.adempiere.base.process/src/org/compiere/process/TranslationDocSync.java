@@ -116,7 +116,7 @@ public class TranslationDocSync extends SvrProcess
 		String baseTable = table.getTableName();
 		baseTable = baseTable.substring(0, baseTable.length()-4);
 		
-		log.config(baseTable + ": " + sql);
+		if (log.isLoggable(Level.CONFIG)) log.config(baseTable + ": " + sql);
 		String columnNames = sql.toString();
 		
 		sql = new StringBuilder();

@@ -132,7 +132,7 @@ public class VPAttributeDialog extends CDialog
 		boolean productWindow, int AD_Column_ID, int WindowNo)
 	{
 		super (frame, Msg.translate(Env.getCtx(), "M_AttributeSetInstance_ID") , true);
-		log.config("M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID 
+		if (log.isLoggable(Level.CONFIG)) log.config("M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID 
 			+ ", M_Product_ID=" + M_Product_ID
 			+ ", C_BPartner_ID=" + C_BPartner_ID
 			+ ", ProductW=" + productWindow + ", Column=" + AD_Column_ID);
@@ -652,7 +652,7 @@ public class VPAttributeDialog extends CDialog
 	private void cmd_newEdit()
 	{
 		boolean rw = cbNewEdit.isSelected();
-		log.config("R/W=" + rw + " " + m_masi);
+		if (log.isLoggable(Level.CONFIG)) log.config("R/W=" + rw + " " + m_masi);
 		//
 		fieldLotString.setEditable(rw && m_masi.getM_Lot_ID()==0);
 		if (fieldLot != null)

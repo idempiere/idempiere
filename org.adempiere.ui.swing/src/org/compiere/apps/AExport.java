@@ -95,7 +95,7 @@ public class AExport
 			return;
 		}
 		ext = ext.substring(ext.lastIndexOf('.')+1).toLowerCase();
-		log.config( "File=" + outFile.getPath() + "; Type=" + ext);
+		if (log.isLoggable(Level.CONFIG)) log.config( "File=" + outFile.getPath() + "; Type=" + ext);
 
 		parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		this.parent = parent;

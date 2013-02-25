@@ -19,6 +19,7 @@ package org.compiere.report.core;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 
@@ -222,7 +223,7 @@ public class RModel implements Serializable
 	 */
 	public void setGroup (int col)
 	{
-		log.config( "RModel.setGroup col=" + col);
+		if (log.isLoggable(Level.CONFIG)) log.config( "RModel.setGroup col=" + col);
 		if (col < 0 || col >= m_data.cols.size())
 			return;
 		Integer ii = new Integer(col);
@@ -258,7 +259,7 @@ public class RModel implements Serializable
 	 */
 	public void setFunction (int col, String function)
 	{
-		log.config( "RModel.setFunction col=" + col + " - " + function);
+		if (log.isLoggable(Level.CONFIG)) log.config( "RModel.setFunction col=" + col + " - " + function);
 		if (col < 0 || col >= m_data.cols.size())
 			return;
 		m_data.functions.put(new Integer(col), function);

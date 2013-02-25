@@ -350,7 +350,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 	public void actionPerformed(ActionEvent e) {
 		if (m_settingValue || m_settingFocus || m_stopediting)
 			return;
-		log.config(m_columnName + " - " + e.getActionCommand() + ", ComboValue=" + m_combo.getSelectedItem());
+		if (log.isLoggable(Level.CONFIG)) log.config(m_columnName + " - " + e.getActionCommand() + ", ComboValue=" + m_combo.getSelectedItem());
 
 		//  Combo Selection
 		if (e.getSource() == m_combo)
@@ -468,7 +468,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 		m_settingFocus = true;  //  prevents actionPerformed
 		//
 		Object obj = m_lookup.getSelectedItem();
-		log.config(m_columnName
+		if (log.isLoggable(Level.CONFIG)) log.config(m_columnName
 			+ " - Start    Count=" + m_combo.getItemCount() + ", Selected=" + obj);
 	//	log.fine( "VLookupHash=" + this.hashCode());
 		boolean popupVisible = m_combo.isPopupVisible();
@@ -479,10 +479,10 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 			m_combo.hidePopup();
 			m_combo.showPopup();
 		}
-		log.config(m_columnName
+		if (log.isLoggable(Level.CONFIG))log.config(m_columnName
 			+ " - Update   Count=" + m_combo.getItemCount() + ", Selected=" + m_lookup.getSelectedItem());
 		m_lookup.setSelectedItem(obj);
-		log.config(m_columnName
+		if (log.isLoggable(Level.CONFIG))log.config(m_columnName
 			+ " - Selected Count=" + m_combo.getItemCount() + ", Selected=" + m_lookup.getSelectedItem());
 		//
 		m_settingFocus = false;
@@ -506,7 +506,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 		//
 		m_settingFocus = true;  //  prevents actionPerformed
 		//
-		log.config(m_columnName + " = " + m_combo.getSelectedItem());
+		if (log.isLoggable(Level.CONFIG)) log.config(m_columnName + " = " + m_combo.getSelectedItem());
 		Object obj = m_combo.getSelectedItem();
 		/*
 		//	set original model

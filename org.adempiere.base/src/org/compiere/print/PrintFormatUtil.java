@@ -97,7 +97,7 @@ public class PrintFormatUtil
 	 */
 	public int addMissingColumns (MPrintFormat pf)
 	{
-		log.config(pf.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(pf.toString());
 		String sql = "SELECT c.AD_Column_ID, c.ColumnName "
 			+ "FROM AD_Column c "
 			+ "WHERE NOT EXISTS "

@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
@@ -1162,7 +1163,7 @@ public class MRequest extends X_R_Request
 				
 				if (X_AD_User.NOTIFICATIONTYPE_None.equals(NotificationType))
 				{
-					log.config("Opt out: " + Name);
+					if (log.isLoggable(Level.CONFIG)) log.config("Opt out: " + Name);
 					continue;
 				}
 				if ((X_AD_User.NOTIFICATIONTYPE_EMail.equals(NotificationType)
@@ -1173,14 +1174,14 @@ public class MRequest extends X_R_Request
 						NotificationType = X_AD_User.NOTIFICATIONTYPE_Notice;
 					else
 					{
-						log.config("No EMail: " + Name);
+						if (log.isLoggable(Level.CONFIG)) log.config("No EMail: " + Name);
 						continue;
 					}
 				}
 				if (X_AD_User.NOTIFICATIONTYPE_Notice.equals(NotificationType)
 					&& AD_Role_ID >= 0)
 				{
-					log.config("No internal User: " + Name);
+					if (log.isLoggable(Level.CONFIG)) log.config("No internal User: " + Name);
 					continue;
 				}
 

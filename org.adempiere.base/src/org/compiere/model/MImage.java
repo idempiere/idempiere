@@ -284,7 +284,7 @@ public class MImage extends X_AD_Image
 		}
 		catch (Exception e)
 		{
-			log.config (e.toString());
+			if (log.isLoggable(Level.CONFIG)) log.config (e.toString());
 		}
 		return data;
 	}	//	getData

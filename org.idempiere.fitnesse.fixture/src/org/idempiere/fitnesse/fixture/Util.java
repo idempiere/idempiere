@@ -106,7 +106,7 @@ public class Util {
 			String sqlcmd = Env.parseContext(ctx, windowNo, lowerContextTableColumn(cell_value.substring(5)), false, false);
 			String newval = DB.getSQLValueStringEx(null, sqlcmd);
 			parse.addToBody("<hr/>" + newval);
-			log.config("Cell value " + cell_value + " evaluated to " + newval);
+			if (log.isLoggable(Level.CONFIG)) log.config("Cell value " + cell_value + " evaluated to " + newval);
 			return newval;
 		} else if (cell_value.toLowerCase().startsWith("@ref=")) {
 			int pos_opsqb = cell_value.indexOf("[");
@@ -121,7 +121,7 @@ public class Util {
 			String columnname = cell_value.substring(pos_clsqb+2);
 			String newval = DB.getSQLValueStringEx(null, "SELECT " + columnname + " FROM " + tablename + " WHERE " + whereParsed);
 			parse.addToBody("<hr/>" + newval);
-			log.config("Cell value " + cell_value + " evaluated to " + newval);
+			if (log.isLoggable(Level.CONFIG)) log.config("Cell value " + cell_value + " evaluated to " + newval);
 			return newval;
 		} else if (cell_value.startsWith("@") && cell_value.endsWith("@")) {
 			int posdot = cell_value.indexOf(".");
@@ -132,7 +132,7 @@ public class Util {
 			if (newval == null)
 				return cell_value;
 			parse.addToBody("<hr/>" + newval);
-			log.config("Cell value " + cell_value + " evaluated to " + newval);
+			if (log.isLoggable(Level.CONFIG)) log.config("Cell value " + cell_value + " evaluated to " + newval);
 			return newval;
 		} else if ((cell_value.toLowerCase().startsWith("@random_number(") || cell_value.toLowerCase().startsWith("@random_string("))
 				&& cell_value.endsWith(")")) {
@@ -192,7 +192,7 @@ public class Util {
 			if (newval == null)
 				return cell_value;
 			parse.addToBody("<hr/>" + newval);
-			log.config("Cell value " + cell_value + " evaluated to " + newval);
+			if (log.isLoggable(Level.CONFIG)) log.config("Cell value " + cell_value + " evaluated to " + newval);
 			return newval;
 		} else if (cell_value.startsWith("\\@")) {
 			cell_value = cell_value.substring(1);

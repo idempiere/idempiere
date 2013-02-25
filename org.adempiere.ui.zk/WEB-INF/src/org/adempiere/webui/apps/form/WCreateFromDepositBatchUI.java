@@ -264,7 +264,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 	 */
 	public void onEvent(Event e) throws Exception
 	{
-		log.config("Action=" + e.getTarget().getId());
+		if (log.isLoggable(Level.CONFIG)) log.config("Action=" + e.getTarget().getId());
 		if(e.getTarget().equals(window.getConfirmPanel().getButton(ConfirmPanel.A_REFRESH)))
 		{
 			loadBankAccount();

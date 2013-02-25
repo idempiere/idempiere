@@ -361,7 +361,7 @@ public final class ImpFormat
 	public String[] parseLine (String line, boolean withLabel, boolean trace, boolean ignoreEmpty)
 	{
 		if (trace)
-			log.config("" + line);
+			if (log.isLoggable(Level.CONFIG)) log.config("" + line);
 
 		ArrayList<String> list = new ArrayList<String>();
 		//	for all columns

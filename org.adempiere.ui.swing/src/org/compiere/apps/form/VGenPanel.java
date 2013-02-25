@@ -281,7 +281,7 @@ public class VGenPanel extends CPanel implements ActionListener, ChangeListener,
 		int[] ids = pi.getIDs();
 		if (ids == null || ids.length == 0)
 			return;
-		log.config("PrintItems=" + ids.length);
+		if (log.isLoggable(Level.CONFIG)) log.config("PrintItems=" + ids.length);
 
 		confirmPanelGen.getOKButton().setEnabled(false);
 		//	OK to print

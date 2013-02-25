@@ -270,7 +270,7 @@ public class VPaySelect extends PaySelect implements FormPanel, ActionListener, 
 	{
 		Timestamp payDate = (Timestamp)fieldPayDate.getValue();
 		miniTable.setColorCompare(payDate);
-		log.config("PayDate=" + payDate);
+		if (log.isLoggable(Level.CONFIG)) log.config("PayDate=" + payDate);
 		
 		BankInfo bi = (BankInfo)fieldBankAccount.getSelectedItem();
 		

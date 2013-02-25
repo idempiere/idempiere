@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Level;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
@@ -55,7 +56,7 @@ public final class Fact
 		// Fix [ 1884676 ] Fact not setting transaction
 		m_trxName = document.getTrxName();
 		//
-		log.config(toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(toString());
 	}	//	Fact
 
 

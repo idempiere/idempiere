@@ -470,7 +470,7 @@ public class CLogMgt
 			String key = pp[i].toString();
 			String value = p.getProperty(key);
 			if (logIt)
-				log.config(key + "=" + value);
+				if (log.isLoggable(Level.CONFIG)) log.config(key + "=" + value);
 			else
 				System.out.println("  " + key + " = " + value);
 		}

@@ -367,8 +367,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			resetButtonState();
 			return;
 		}
-		if (log.isLoggable(Level.CONFIG))
-			log.config(getColumnName() + " - " + text);
+		if (log.isLoggable(Level.CONFIG)) log.config(getColumnName() + " - " + text);
 
 		int id = -1;
 		
@@ -556,14 +555,12 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				}
 				else if (cancelled)
 				{
-					if (log.isLoggable(Level.CONFIG))
-						log.config(getColumnName() + " - Result = null (cancelled)");
+					if (log.isLoggable(Level.CONFIG)) log.config(getColumnName() + " - Result = null (cancelled)");
 					actionCombo(null);
 				}
 				else
 				{
-					if (log.isLoggable(Level.CONFIG))
-						log.config(getColumnName() + " - Result = null (not cancelled)");
+					if (log.isLoggable(Level.CONFIG)) log.config(getColumnName() + " - Result = null (not cancelled)");
 				}
 			}
 		});

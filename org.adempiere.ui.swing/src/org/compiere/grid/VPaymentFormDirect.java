@@ -19,6 +19,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.ADialog;
@@ -124,7 +125,7 @@ public abstract class VPaymentFormDirect extends PaymentFormDirect implements Ac
 			dataOK = false;
 		}
 		//
-		log.config("OK=" + dataOK);
+		if (log.isLoggable(Level.CONFIG)) log.config("OK=" + dataOK);
 		return dataOK;
 	}
 

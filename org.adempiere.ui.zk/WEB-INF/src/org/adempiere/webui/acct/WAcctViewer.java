@@ -1009,7 +1009,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		bQuery.setEnabled(false);
 		statusLine.setValue(" " + Msg.getMsg(Env.getCtx(), "Processing"));
 
-		log.config(para.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(para.toString());
 
 		//  Switch to Result pane
 
@@ -1139,7 +1139,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			return;
 
 		m_data.AD_Table_ID = ((Integer)m_data.tableInfo.get(vp.getValue())).intValue();
-		log.config(vp.getValue() + " = " + m_data.AD_Table_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config(vp.getValue() + " = " + m_data.AD_Table_ID);
 
 		//  Reset Record
 
@@ -1241,7 +1241,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 				//  Save for query
 
-				log.config(keyColumn + " - " + key);
+				if (log.isLoggable(Level.CONFIG)) log.config(keyColumn + " - " + key);
 				if (button == selRecord)                            //  Record_ID
 					m_data.Record_ID = key.intValue();
 				else

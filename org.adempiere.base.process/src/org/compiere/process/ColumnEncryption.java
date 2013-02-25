@@ -184,7 +184,7 @@ public class ColumnEncryption extends SvrProcess {
 			testClear.delete(p_MaxLength,testClear.length());
 			msglog = new StringBuilder()
 				.append("Test=").append(testClear.toString()).append(" (").append(p_MaxLength).append(")");
-			log.config(msglog.toString());
+			if (log.isLoggable(Level.CONFIG)) log.config(msglog.toString());
 			//
 			String encString = SecureEngine.encrypt(testClear.toString(), 0);
 			int encLength = encString.length();

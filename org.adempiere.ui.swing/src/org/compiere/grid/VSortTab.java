@@ -91,7 +91,7 @@ public class VSortTab extends CPanel implements APanelTab
 	 */
 	public VSortTab(int WindowNo, int AD_Table_ID, int AD_ColumnSortOrder_ID, int AD_ColumnSortYesNo_ID)
 	{
-		log.config("SortOrder=" + AD_ColumnSortOrder_ID + ", SortYesNo=" + AD_ColumnSortYesNo_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("SortOrder=" + AD_ColumnSortOrder_ID + ", SortYesNo=" + AD_ColumnSortYesNo_ID);
 		m_WindowNo = WindowNo;
 
 		try

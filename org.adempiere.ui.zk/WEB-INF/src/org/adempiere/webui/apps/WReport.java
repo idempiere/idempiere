@@ -88,7 +88,7 @@ public class WReport implements EventListener<Event> {
 	public WReport (int AD_Table_ID, MQuery	query, Component parent, 
 			int WindowNo, String whereExtended)
 	{
-		log.config("AD_Table_ID=" + AD_Table_ID + " " + query);
+		if (log.isLoggable(Level.CONFIG)) log.config("AD_Table_ID=" + AD_Table_ID + " " + query);
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
 		{
 			FDialog.error(0, "AccessCannotReport", query.getTableName());

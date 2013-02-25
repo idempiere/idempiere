@@ -299,7 +299,7 @@ public class VBOMDrop extends CPanel
 	 */
 	private void createMainPanel ()
 	{
-		log.config(": " + m_product);
+		if (log.isLoggable(Level.CONFIG)) log.config(": " + m_product);
 		this.removeAll();
 		this.setPreferredSize(null);
 		this.invalidate();
@@ -453,7 +453,7 @@ public class VBOMDrop extends CPanel
 	 */
 	public void actionPerformed (ActionEvent e)
 	{
-		log.config(e.getActionCommand());
+		if (log.isLoggable(Level.CONFIG)) log.config(e.getActionCommand());
 		
 		Object source = e.getSource();
 
@@ -623,7 +623,7 @@ public class VBOMDrop extends CPanel
 	 */
 	private boolean cmd_saveOrder (int C_Order_ID)
 	{
-		log.config("C_Order_ID=" + C_Order_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_Order_ID=" + C_Order_ID);
 		MOrder order = new MOrder (Env.getCtx(), C_Order_ID, null);
 		if (order.get_ID() == 0)
 		{
@@ -652,7 +652,7 @@ public class VBOMDrop extends CPanel
 			}	//	line selected
 		}	//	for all bom lines
 		
-		log.config("#" + lineCount);
+		if (log.isLoggable(Level.CONFIG)) log.config("#" + lineCount);
 		return true;
 	}	//	cmd_saveOrder
 
@@ -663,7 +663,7 @@ public class VBOMDrop extends CPanel
 	 */
 	private boolean cmd_saveInvoice (int C_Invoice_ID)
 	{
-		log.config("C_Invoice_ID=" + C_Invoice_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_Invoice_ID=" + C_Invoice_ID);
 		MInvoice invoice = new MInvoice (Env.getCtx(), C_Invoice_ID, null);
 		if (invoice.get_ID() == 0)
 		{
@@ -692,7 +692,7 @@ public class VBOMDrop extends CPanel
 			}	//	line selected
 		}	//	for all bom lines
 		
-		log.config("#" + lineCount);
+		if (log.isLoggable(Level.CONFIG)) log.config("#" + lineCount);
 		return true;
 	}	//	cmd_saveInvoice
 
@@ -703,7 +703,7 @@ public class VBOMDrop extends CPanel
 	 */
 	private boolean cmd_saveProject (int C_Project_ID)
 	{
-		log.config("C_Project_ID=" + C_Project_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_Project_ID=" + C_Project_ID);
 		MProject project = new MProject (Env.getCtx(), C_Project_ID, null);
 		if (project.get_ID() == 0)
 		{
@@ -731,7 +731,7 @@ public class VBOMDrop extends CPanel
 			}	//	line selected
 		}	//	for all bom lines
 		
-		log.config("#" + lineCount);
+		if (log.isLoggable(Level.CONFIG)) log.config("#" + lineCount);
 		return true;
 	}	//	cmd_saveProject
 

@@ -19,6 +19,7 @@ package org.adempiere.webui.editor;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.ValuePreference;
@@ -163,7 +164,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
         //
         if ("onClick".equals(event.getName()))
         {
-            log.config( "actionPerformed - " + m_value);
+            if (log.isLoggable(Level.CONFIG)) log.config( "actionPerformed - " + m_value);
             final WLocationDialog ld = new WLocationDialog(Msg.getMsg(Env.getCtx(), "Location"), m_value, gridField);
             ld.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 

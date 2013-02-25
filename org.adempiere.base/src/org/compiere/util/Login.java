@@ -631,7 +631,7 @@ public class Login
 		//	Do we look for trees?
 		if (role.getAD_Tree_Org_ID() == 0)
 		{
-			log.config("Summary Org=" + Summary_Name + "(" + Summary_Org_ID + ") - No Org Tree: " + role);
+			if (log.isLoggable(Level.CONFIG)) log.config("Summary Org=" + Summary_Name + "(" + Summary_Org_ID + ") - No Org Tree: " + role);
 			return;
 		}
 		//	Summary Org - Get Dependents

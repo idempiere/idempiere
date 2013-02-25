@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
@@ -472,7 +473,7 @@ public final class AdempierePLAF
 	{
 		if (plaf == null)
 			return;
-		log.config(plaf	+ (theme == null ? "" : (" - " + theme)));
+		if (log.isLoggable(Level.CONFIG)) log.config(plaf	+ (theme == null ? "" : (" - " + theme)));
 
 		//	  Look & Feel
 		Class<?> lafClass = null;
@@ -533,7 +534,7 @@ public final class AdempierePLAF
 		{
 			log.severe(e.getMessage());
 		}
-		log.config(plaf + " - " + theme);
+		if (log.isLoggable(Level.CONFIG)) log.config(plaf + " - " + theme);
 	//	printPLAFDefaults();
 	}   //  setPLAF
 

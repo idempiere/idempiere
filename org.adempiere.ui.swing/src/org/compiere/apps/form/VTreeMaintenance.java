@@ -210,7 +210,7 @@ public class VTreeMaintenance extends TreeMaintenance
 			model.addElement(item);
 		
 		//	List
-		log.config("#" + model.getSize());
+		if (log.isLoggable(Level.CONFIG)) log.config("#" + model.getSize());
 		centerList.setModel(model);
 		//	Tree
 		centerTree.initTree(m_tree.getAD_Tree_ID());

@@ -189,7 +189,7 @@ public class KeyStoreMgt
 	 */
 	public Certificate getCertificate (String alias) throws Exception
 	{
-		log.config("Alias=" + alias);
+		if (log.isLoggable(Level.CONFIG)) log.config("Alias=" + alias);
 		
 		Date date = m_keyStore.getCreationDate(alias);
 		if (date == null)	//	no certificate

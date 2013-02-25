@@ -112,7 +112,7 @@ public class AGlassPane extends JPanel implements MouseListener, ActionListener
 	 */
 	public void setBusyTimer (int time)
 	{
-		log.config("Time=" + time);
+		if (log.isLoggable(Level.CONFIG)) log.config("Time=" + time);
 		//  should we display a progress bar?
 		if (time < 2 )
 		{

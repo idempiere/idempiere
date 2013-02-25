@@ -194,7 +194,7 @@ public class TrxMaterial {
 			pstmt = null;
 		}
 		query = MQuery.getEqualQuery(ColumnName, parentID);
-		log.config("AD_Window_ID=" + AD_Window_ID + " - " + query);
+		if (log.isLoggable(Level.CONFIG)) log.config("AD_Window_ID=" + AD_Window_ID + " - " + query);
 		if (parentID == 0)
 			log.log(Level.SEVERE, "No ParentValue - " + SQL + " - " + lineID);
 	}   //  zoom

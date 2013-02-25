@@ -248,7 +248,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 			quickPOs.add(po);
 		}
 
-		log.config("Record_ID=" + Record_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("Record_ID=" + Record_ID);
 
 		//  New record
 		if (Record_ID == 0)

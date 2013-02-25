@@ -366,7 +366,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			}
 		}
 		
-		log.config(media.getName());
+		if (log.isLoggable(Level.CONFIG)) log.config(media.getName());
 		bFile.setLabel(media.getName());
 	
 		cmd_reloadFile();
@@ -437,7 +437,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		
 		//setCursor (Cursor.getDefaultCursor());
 		StringBuilder msglog = new StringBuilder("Records=").append(m_data.size()).append(", Length=").append(length);
-		log.config(msglog.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(msglog.toString());
 	}	//	cmd_loadFile
 
 	/**
@@ -557,7 +557,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			return;
 		}
 		
-		log.config(m_format.getName());
+		if (log.isLoggable(Level.CONFIG)) log.config(m_format.getName());
 
 		//	For all rows - update/insert DB table
 		

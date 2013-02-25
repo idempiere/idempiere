@@ -130,7 +130,7 @@ public class CostUpdate extends SvrProcess
 		m_ce = MCostElement.getMaterialCostElement(client, MAcctSchema.COSTINGMETHOD_StandardCosting);
 		if (m_ce.get_ID() == 0)
 			throw new AdempiereUserError ("@NotFound@ @M_CostElement_ID@ (StdCost)");
-		log.config(m_ce.toString());
+		if (log.isLoggable(Level.CONFIG)) log.config(m_ce.toString());
 		m_ass = MAcctSchema.getClientAcctSchema(getCtx(), client.getAD_Client_ID());
 		for (int i = 0; i < m_ass.length; i++)
 			createNew(m_ass[i]);
