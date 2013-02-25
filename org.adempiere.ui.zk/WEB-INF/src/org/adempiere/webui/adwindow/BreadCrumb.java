@@ -460,6 +460,8 @@ public class BreadCrumb extends Div implements EventListener<Event> {
         }
         else
         {
+        	if (text.indexOf("-1/0") >= 0)
+        		text = text.replace("-1/0", "0/0");
         	btnRecordInfo.setLabel(text);
         }
 

@@ -26,7 +26,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.ValuePreference;
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Searchbox;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -34,19 +36,24 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.grid.WQuickEntry;
 import org.adempiere.webui.panel.InfoPanel;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
+import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
@@ -270,13 +277,45 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 	public void actionZoom()
 	{
-	   	AEnv.actionZoom(lookup, getValue());
+		if (getValue() == null || Util.isEmpty(getValue().toString())) 
+    	{
+    		onNewRecord();
+    	}
+    	else
+    	{
+    		AEnv.actionZoom(lookup, getValue());
+    	}
 	}
     private void actionZoom(Object value)
     {
         AEnv.actionZoom(lookup, value);
     }
 
+    private void onNewRecord() {
+    	try
+        {
+    		MQuery query = new MQuery("");
+    		query.addRestriction("1=2");
+			query.setRecordCount(0);
+
+			SessionManager.getAppDesktop().openWindow(lookup.getZoom(query), query, new Callback<ADWindow>() {				
+				@Override
+				public void onCallback(ADWindow result) {
+					if(result == null)
+						return;
+		    					
+					GridTab tab = result.getADWindowContent().getActiveGridTab();
+					tab.dataNew(false);					
+				}
+			});			
+        }
+        catch (Exception e)
+        {
+            throw new ApplicationException(e.getMessage(), e);
+        }
+		
+	}
+    
 	public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.REQUERY_EVENT.equals(evt.getContextEvent()))

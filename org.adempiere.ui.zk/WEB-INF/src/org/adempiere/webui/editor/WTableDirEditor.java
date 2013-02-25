@@ -22,20 +22,26 @@ import java.beans.PropertyChangeEvent;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.ValuePreference;
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.grid.WQuickEntry;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocationDialog;
 import org.compiere.model.GridField;
+import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MLocation;
+import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -149,7 +155,7 @@ ContextMenuListener, IZoomableEditor
             //no need to refresh readonly lookup
             if (isReadWrite())
             	lookup.refresh();
-            refreshList();
+            refreshList();            
         }
         
         if (gridField != null) 
@@ -422,7 +428,39 @@ ContextMenuListener, IZoomableEditor
 	 */
     public void actionZoom()
 	{
-    	AEnv.actionZoom(lookup, getValue());
+    	if (getValue() == null) 
+    	{
+    		onNewRecord();
+    	}
+    	else
+    	{
+    		AEnv.actionZoom(lookup, getValue());
+    	}
+	}
+    
+    private void onNewRecord() {
+    	try
+        {
+    		MQuery query = new MQuery("");
+    		query.addRestriction("1=2");
+			query.setRecordCount(0);
+
+			SessionManager.getAppDesktop().openWindow(lookup.getZoom(query), query, new Callback<ADWindow>() {				
+				@Override
+				public void onCallback(ADWindow result) {
+					if(result == null)
+						return;
+		    					
+					GridTab tab = result.getADWindowContent().getActiveGridTab();
+					tab.dataNew(false);					
+				}
+			});			
+        }
+        catch (Exception e)
+        {
+            throw new ApplicationException(e.getMessage(), e);
+        }
+		
 	}
     
 	/**
