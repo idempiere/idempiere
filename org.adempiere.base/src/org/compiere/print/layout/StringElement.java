@@ -29,6 +29,7 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.text.CharacterIterator;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import org.compiere.model.MQuery;
@@ -65,7 +66,7 @@ public class StringElement extends PrintElement
 	public StringElement (String inText, Font font, Paint paint, NamePair ID, boolean translateText)
 	{
 		super();
-		log.finest("Text=" + inText + ", ID=" + ID + ", Translate=" + translateText);
+		if (log.isLoggable(Level.FINEST)) log.finest("Text=" + inText + ", ID=" + ID + ", Translate=" + translateText);
 		m_font = font;
 		m_paint = paint;
 		if (translateText)
@@ -88,7 +89,7 @@ public class StringElement extends PrintElement
 			m_string_paper[i] = new AttributedString(line);
 			if (line.length() == 0)
 				continue;
-			log.finest(" - line=" + i + " - " + line);
+			if (log.isLoggable(Level.FINEST)) log.finest(" - line=" + i + " - " + line);
 			m_string_paper[i].addAttribute(TextAttribute.FONT, font);
 			m_string_paper[i].addAttribute(TextAttribute.FOREGROUND, paint);
 			if (m_ID != null && i == 0)		//	first line only - create special Attributed String
@@ -131,7 +132,7 @@ public class StringElement extends PrintElement
 	public StringElement (Object content, Font font, Paint paint, NamePair ID, String label, String labelSuffix)
 	{
 		super();
-		log.finest("Label=" + label + "|" + labelSuffix
+		if (log.isLoggable(Level.FINEST)) log.finest("Label=" + label + "|" + labelSuffix
 				+ ", Content=" + content + ", ID=" + ID);
 		m_font = font;
 		m_paint = paint;
@@ -163,7 +164,7 @@ public class StringElement extends PrintElement
 			m_string_paper[i] = new AttributedString(line);
 			if (line.length() == 0)
 				continue;
-			log.finest(" - line=" + i + " - " + line);
+			if (log.isLoggable(Level.FINEST)) log.finest(" - line=" + i + " - " + line);
 			m_string_paper[i].addAttribute(TextAttribute.FONT, font);
 			m_string_paper[i].addAttribute(TextAttribute.FOREGROUND, paint);
 			if (m_ID != null && i == 0)		//	first line only - create special Attributed String

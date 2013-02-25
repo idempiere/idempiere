@@ -187,7 +187,7 @@ public class VTableExcelAdapter
 						}
 						value = fixString(value);
 						sb.append(value).append("\t");
-						if(CLogMgt.isLevelFinest()) log.finest("col=" + col + ", row=" + row + ": key=" + key + " => value=" + value + ", " + field + ", " + lookup);
+						if (log.isLoggable(Level.FINEST)) log.finest("col=" + col + ", row=" + row + ": key=" + key + " => value=" + value + ", " + field + ", " + lookup);
 					}
 					sb.append(Env.NL);
 				}

@@ -1390,7 +1390,7 @@ public class GridController extends CPanel
 	public void mouseClicked(MouseEvent e)
 	{
 		if (CLogMgt.isLevelFinest())
-			log.finest("" + this + " - " + e);
+			if (log.isLoggable(Level.FINEST)) log.finest("" + this + " - " + e);
 	}
 	/**
 	 * 	Mouse Pressed
@@ -1398,8 +1398,7 @@ public class GridController extends CPanel
 	 */
 	public void mousePressed(MouseEvent e)
 	{
-		if (CLogMgt.isLevelFinest())
-			log.finest("" + this + " - " + e);
+		if (log.isLoggable(Level.FINEST)) log.finest("" + this + " - " + e);
 	}
 	/**
 	 * 	Mouse Released
@@ -1407,8 +1406,7 @@ public class GridController extends CPanel
 	 */
 	public void mouseReleased(MouseEvent e)
 	{
-		if (CLogMgt.isLevelFinest())
-			log.finest("" + this + " - " + e);
+		if (log.isLoggable(Level.FINEST)) log.finest("" + this + " - " + e);
 	}
 	/**
 	 * 	Mouse Entered
@@ -1416,8 +1414,7 @@ public class GridController extends CPanel
 	 */
 	public void mouseEntered(MouseEvent e)
 	{
-		if (CLogMgt.isLevelFinest())
-			log.finest("" + this + " - " + e);
+		if (log.isLoggable(Level.FINEST)) log.finest("" + this + " - " + e);
 	}
 	/**
 	 * 	Mouse Exited
@@ -1425,8 +1422,7 @@ public class GridController extends CPanel
 	 */
 	public void mouseExited(MouseEvent e)
 	{
-		if (CLogMgt.isLevelFinest())
-			log.finest("" + this + " - " + e);
+		if (log.isLoggable(Level.FINEST)) log.finest("" + this + " - " + e);
 	}
 
 	/**

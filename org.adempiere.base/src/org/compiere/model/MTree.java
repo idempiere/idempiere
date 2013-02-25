@@ -229,7 +229,7 @@ public class MTree extends MTree_Base
 			sql.append(" ORDER BY COALESCE(tn.Parent_ID, -1), tn.SeqNo");
 			sql = new StringBuffer(MRole.getDefault().addAccessSQL(sql.toString(), "st", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO));	// SQL_RO for Org_ID = 0
 		}
-		log.finest(sql.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
 		//  The Node Loop
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -280,7 +280,7 @@ public class MTree extends MTree_Base
 		//  Done with loading - add remainder from buffer
 		if (m_buffer.size() != 0)
 		{
-			log.finest("clearing buffer - Adding to: " + m_root);
+			if (log.isLoggable(Level.FINEST)) log.finest("clearing buffer - Adding to: " + m_root);
 			for (int i = 0; i < m_buffer.size(); i++)
 			{
 				MTreeNode node = (MTreeNode)m_buffer.get(i);

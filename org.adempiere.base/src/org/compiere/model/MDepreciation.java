@@ -220,7 +220,7 @@ public class MDepreciation extends X_A_Depreciation
 		int lifePeriods = assetwk.getUseLifeMonths(assetwk.isFiscal());
 		boolean ok = (offset <= A_Current_Period);
 		
-		if(CLogMgt.isLevelFinest()) log.finest("A_Current_Period=" + A_Current_Period + ", lifePeriods=" + lifePeriods + " (offset=" + offset + ") ==> OK=" + ok);
+		if (log.isLoggable(Level.FINEST)) log.finest("A_Current_Period=" + A_Current_Period + ", lifePeriods=" + lifePeriods + " (offset=" + offset + ") ==> OK=" + ok);
 		return ok;
 	}	//	canInvoke
 
@@ -258,10 +258,7 @@ public class MDepreciation extends X_A_Depreciation
 			amtPerPeriod = remainingAmt.divide(remainingPeriods, getPrecision(), RoundingMode.HALF_UP);
 		}
 		
-		if(CLogMgt.isLevelFinest())
-		{
-			log.finest("currentPeriod=" + A_Current_Period + ", remainingAmt=" + remainingAmt + ", remainingPeriods=" + remainingPeriods + " => amtPerPeriod=" + amtPerPeriod);
-		}
+		if (log.isLoggable(Level.FINEST)) log.finest("currentPeriod=" + A_Current_Period + ", remainingAmt=" + remainingAmt + ", remainingPeriods=" + remainingPeriods + " => amtPerPeriod=" + amtPerPeriod);
 		
 		return amtPerPeriod;
 	}

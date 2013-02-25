@@ -525,8 +525,7 @@ public final class MLookup extends Lookup implements Serializable
 				directValue = null;
 			}
 
-			if (CLogMgt.isLevelFinest())
-				log.finest(m_info.KeyColumn + ": " + directValue + " - " + m_info);
+			if (log.isLoggable(Level.FINEST)) log.finest(m_info.KeyColumn + ": " + directValue + " - " + m_info);
 		}
 		catch (Exception e)
 		{
@@ -764,7 +763,7 @@ public final class MLookup extends Lookup implements Serializable
 			if (CLogMgt.isLevelFiner())
 				log.finer(m_info.Column_ID + ", " + m_info.KeyColumn + ": " + sql.toString());
 			if (CLogMgt.isLevelFinest())
-				log.finest(m_info.KeyColumn + ": " + sql);
+				if (log.isLoggable(Level.FINEST)) log.finest(m_info.KeyColumn + ": " + sql);
 			
 			//	Reset
 			m_lookup.clear();

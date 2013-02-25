@@ -31,7 +31,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -694,7 +693,7 @@ public class Query
 			MRole role = MRole.getDefault(this.ctx, false);
 			sql = role.addAccessSQL(sql, table.getTableName(), applyAccessFilterFullyQualified, applyAccessFilterRW);
 		}
-		if (CLogMgt.isLevelFinest()) log.finest("TableName = "+table.getTableName()+"... SQL = " +sql); //red1  - to assist in debugging SQL
+		if (log.isLoggable(Level.FINEST)) log.finest("TableName = "+table.getTableName()+"... SQL = " +sql); //red1  - to assist in debugging SQL
 		return sql;
 	}
 	
@@ -706,21 +705,18 @@ public class Query
 		if (this.onlyActiveRecords)
 		{
 			DB.setParameter(pstmt, i++, true);
-			if (log.isLoggable(Level.FINEST))
-				log.finest("Parameter IsActive = Y");
+			if (log.isLoggable(Level.FINEST)) log.finest("Parameter IsActive = Y");
 		}
 		if (this.onlyClient_ID)
 		{
 			int AD_Client_ID = Env.getAD_Client_ID(ctx);
 			DB.setParameter(pstmt, i++, AD_Client_ID);
-			if (log.isLoggable(Level.FINEST))
-				log.finest("Parameter AD_Client_ID = "+AD_Client_ID);
+			if (log.isLoggable(Level.FINEST)) log.finest("Parameter AD_Client_ID = "+AD_Client_ID);
 		}
 		if (this.onlySelection_ID > 0)
 		{
 			DB.setParameter(pstmt, i++, this.onlySelection_ID);
-			if (log.isLoggable(Level.FINEST))
-				log.finest("Parameter Selection AD_PInstance_ID = "+this.onlySelection_ID);
+			if (log.isLoggable(Level.FINEST)) log.finest("Parameter Selection AD_PInstance_ID = "+this.onlySelection_ID);
 		}
 		return pstmt.executeQuery();
 	}

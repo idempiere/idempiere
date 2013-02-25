@@ -1142,7 +1142,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				log.warning ("Not allowed in TabNo=" + m_vo.TabNo + " -> Processed=" + processed);
 				return false;
 			}
-			log.finest("Processed=" + processed);
+			if (log.isLoggable(Level.FINEST)) log.finest("Processed=" + processed);
 		}
 
 		//hengsin, don't create new when parent is empty
@@ -1516,7 +1516,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 		//  ** dynamic content **  uses get_ValueAsString
 		boolean retValue = Evaluator.evaluateLogic(this, m_vo.ReadOnlyLogic);
-		log.finest(m_vo.Name
+		if (log.isLoggable(Level.FINEST)) log.finest(m_vo.Name
 			+ " (" + m_vo.ReadOnlyLogic + ") => " + retValue);
 		return retValue;
 	}	//	isReadOnly

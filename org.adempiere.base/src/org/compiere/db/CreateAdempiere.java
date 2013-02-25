@@ -746,7 +746,7 @@ public class CreateAdempiere
 				writeLog(cmd);
 				log.finer(cmd);
 				int no = stmt.executeUpdate(cmd);
-				log.finest("# " + no);
+				if (log.isLoggable(Level.FINEST)) log.finest("# " + no);
 			}
 			//
 			if (batch)

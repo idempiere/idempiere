@@ -522,7 +522,7 @@ public final class ImpFormat
 		String[] nodes = parseLine (line, true, false, true);	//	with label, no trace, ignore empty
 		if (nodes.length == 0)
 		{
-			log.finest("Nothing parsed from: " + line);
+			if (log.isLoggable(Level.FINEST)) log.finest("Nothing parsed from: " + line);
 			return false;
 		}
 	//	log.config( "ImpFormat.updateDB - listSize=" + nodes.length);

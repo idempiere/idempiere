@@ -317,7 +317,7 @@ public class FinStatement extends SvrProcess
 		//
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
 		log.fine("#" + no + " (Account_ID=" + p_Account_ID + ")");
-		log.finest(sb.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(sb.toString());
 	}	//	createBalanceLine
 
 	/**
@@ -339,7 +339,7 @@ public class FinStatement extends SvrProcess
 		//
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
 		log.fine("#" + no);
-		log.finest(sb.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(sb.toString());
 
 		//	Set Name,Description
 		String sql_select;
@@ -365,7 +365,7 @@ public class FinStatement extends SvrProcess
 		//
 	   no = DB.executeUpdate(sb.toString(), get_TrxName());
 	   log.fine("Name #" + no);
-	   log.finest("Name - " + sb);
+	   if (log.isLoggable(Level.FINEST)) log.finest("Name - " + sb);
 
 	}	//	createDetailLines
 

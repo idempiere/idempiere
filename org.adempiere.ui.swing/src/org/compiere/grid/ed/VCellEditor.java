@@ -23,6 +23,7 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.VetoableChangeListener;
 import java.util.EventObject;
+import java.util.logging.Level;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
@@ -134,7 +135,7 @@ public final class VCellEditor extends AbstractCellEditor
 	 */
 	public Component getTableCellEditorComponent (JTable table, Object value, boolean isSelected, int row, int col)
 	{
-		log.finest(m_mField.getColumnName() + ": Value=" + value + ", row=" + row + ", col=" + col);
+		if (log.isLoggable(Level.FINEST)) log.finest(m_mField.getColumnName() + ": Value=" + value + ", row=" + row + ", col=" + col);
 		if (row >= 0)
 			table.setRowSelectionInterval(row,row);     //  force moving to new row
 		if (m_editor == null ) 
@@ -179,7 +180,7 @@ public final class VCellEditor extends AbstractCellEditor
 	 */
 	public boolean shouldSelectCell(EventObject e)
 	{
-		log.finest(m_mField.getColumnName());
+		if (log.isLoggable(Level.FINEST)) log.finest(m_mField.getColumnName());
 		return true;
 	}	//	shouldSelectCell
 
@@ -189,7 +190,7 @@ public final class VCellEditor extends AbstractCellEditor
 	 */
 	public Object getCellEditorValue()
 	{
-		log.finest(m_mField.getColumnName() + ": " + m_editor.getValue());
+		if (log.isLoggable(Level.FINEST)) log.finest(m_mField.getColumnName() + ": " + m_editor.getValue());
 		return m_editor.getValue();
 	}	//	getCellEditorValue
 

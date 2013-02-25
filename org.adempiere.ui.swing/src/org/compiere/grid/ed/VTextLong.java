@@ -29,6 +29,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
+import java.util.logging.Level;
 
 import javax.swing.JFrame;
 import javax.swing.JPopupMenu;
@@ -197,7 +198,7 @@ public class VTextLong extends CTextPane
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		log.finest( "VTestLong.actionPerformed - " + e.getActionCommand());
+		if (log.isLoggable(Level.FINEST)) log.finest( "VTestLong.actionPerformed - " + e.getActionCommand());
 		if (e.getSource() == menuEditor)
 		{
 			menuEditor.setEnabled(false);

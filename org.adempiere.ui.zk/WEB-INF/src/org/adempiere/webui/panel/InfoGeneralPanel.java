@@ -313,7 +313,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			return false;
 		}
 
-		log.finest("Table " + tableName + ", ID=" + AD_Table_ID
+		if (log.isLoggable(Level.FINEST)) log.finest("Table " + tableName + ", ID=" + AD_Table_ID
 			+ ", QueryColumns #" + m_queryColumns.size());
 
 		//	Only 4 Query Columns
@@ -400,10 +400,10 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 				if (colClass != null)
 				{
 					list.add(new ColumnInfo(Msg.translate(Env.getCtx(), columnName), colSql.toString(), colClass));
-					log.finest("Added Column=" + columnName);
+					if (log.isLoggable(Level.FINEST)) log.finest("Added Column=" + columnName);
 				}
 				else
-					log.finest("Not Added Column=" + columnName);
+					if (log.isLoggable(Level.FINEST)) log.finest("Not Added Column=" + columnName);
 			}
 		}
 		catch (SQLException e)
@@ -425,7 +425,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			return false;
 		}
 
-		log.finest("InfoColumns #" + list.size());
+		if (log.isLoggable(Level.FINEST)) log.finest("InfoColumns #" + list.size());
 
 		//  Convert ArrayList to Array
 		m_generalLayout = new ColumnInfo[list.size()];

@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -200,8 +201,10 @@ public class ExportHelper {
 		for (PO po : records)
 		{
 				log.info("Client = " + client.toString());
-				log.finest("po.getAD_Org_ID() = " + po.getAD_Org_ID());
-				log.finest("po.get_TrxName() = " + po.get_TrxName());
+				if (log.isLoggable(Level.FINEST)){
+					log.finest("po.getAD_Org_ID() = " + po.getAD_Org_ID());
+					log.finest("po.get_TrxName() = " + po.get_TrxName());
+				}				
 				if (po.get_TrxName() == null || po.get_TrxName().equals("")) {
 					po.set_TrxName("exportRecord");
 				}

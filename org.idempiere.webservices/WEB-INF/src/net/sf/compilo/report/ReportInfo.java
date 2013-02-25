@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -80,7 +81,7 @@ public class ReportInfo
 	
     protected File processReport(String reportFile) 
     {
-        log.finest("ReportInfo.processReport - " + reportFile);
+        if (log.isLoggable(Level.FINEST)) log.finest("ReportInfo.processReport - " + reportFile);
         File JasperDesignFile = new File(reportFile);
         String JasperReportFile = reportFile.replaceAll(".jrxml", ".jasper").replaceAll(".xml", ".jasper");
         File jasperFile = new File(JasperReportFile);
@@ -126,7 +127,7 @@ public class ReportInfo
             File[] subreports = JasperDesignFile.getParentFile().listFiles( new FileFilter( JasperReportFile.replaceAll(".jasper","")+"Subreport", JasperDesignFile.getParentFile(), extension));
             for( int i=0; i<subreports.length; i++)
             {
-            	log.finest("The subreport file @ " + subreports[i].getAbsolutePath());
+            	if (log.isLoggable(Level.FINEST)) log.finest("The subreport file @ " + subreports[i].getAbsolutePath());
                 File sub = processReport(subreports[i].getAbsolutePath());
                 String subName = sub.getName();
                 int pos = sub.getName().indexOf('.');
@@ -250,7 +251,7 @@ public class ReportInfo
 	         File[] subreports = reportDesighFile.getParentFile().listFiles( new FileFilter( reportFile.replaceAll(".jasper","")+"Subreport", reportDesighFile.getParentFile(), extension));
 	         for( int i=0; i<subreports.length; i++)
 	         {
-	         	log.finest("The subreport file @ " + subreports[i].getAbsolutePath());
+	         	if (log.isLoggable(Level.FINEST)) log.finest("The subreport file @ " + subreports[i].getAbsolutePath());
 	         	if(isDirty(subreports[i].getAbsolutePath()))
 	         	    return true;
 	         }

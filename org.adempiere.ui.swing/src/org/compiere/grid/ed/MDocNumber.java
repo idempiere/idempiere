@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
+import java.util.logging.Level;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -105,7 +106,7 @@ public final class MDocNumber extends PlainDocument
 	public void insertString(int origOffset, String string, AttributeSet attr)
 		throws BadLocationException
 	{
-		log.finest("Offset=" + origOffset + " String=" + string + " Length=" + string.length());
+		if (log.isLoggable(Level.FINEST)) log.finest("Offset=" + origOffset + " String=" + string + " Length=" + string.length());
 		if (origOffset < 0 || string == null)
 			throw new IllegalArgumentException("Invalid argument");
 
@@ -264,7 +265,7 @@ public final class MDocNumber extends PlainDocument
 	public void remove (int origOffset, int length)
 		throws BadLocationException
 	{
-		log.finest("Offset=" + origOffset + " Length=" + length);
+		if (log.isLoggable(Level.FINEST)) log.finest("Offset=" + origOffset + " Length=" + length);
 		if (origOffset < 0 || length < 0)
 			throw new IllegalArgumentException("MDocNumber.remove - invalid argument");
 

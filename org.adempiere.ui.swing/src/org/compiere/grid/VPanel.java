@@ -22,6 +22,7 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -461,7 +462,7 @@ public final class VPanel extends CTabbedPane
 			label.setText(text);
 			label.setSavedMnemonic(predefinedMnemonic);
 			m_fields.add(label);
-			log.finest(predefinedMnemonic + " - " + label.getName());
+			if (log.isLoggable(Level.FINEST)) log.finest(predefinedMnemonic + " - " + label.getName());
 		}
 		else
 		{
@@ -491,7 +492,7 @@ public final class VPanel extends CTabbedPane
 				cb.setText(text);
 				cb.setSavedMnemonic(predefinedMnemonic);
 				m_fields.add(cb);
-				log.finest(predefinedMnemonic + " - " + cb.getName());
+				if (log.isLoggable(Level.FINEST)) log.finest(predefinedMnemonic + " - " + cb.getName());
 			}
 			else
 			{
@@ -513,7 +514,7 @@ public final class VPanel extends CTabbedPane
 				b.setText(text);
 				b.setSavedMnemonic(predefinedMnemonic);
 				m_fields.add(b);
-				log.finest(predefinedMnemonic + " - " + b.getName());
+				if (log.isLoggable(Level.FINEST)) log.finest(predefinedMnemonic + " - " + b.getName());
 			}
 			else if (b.getColumnName().equals("DocAction"))
 			{
@@ -585,13 +586,13 @@ public final class VPanel extends CTabbedPane
 			//	Nothing found
 			if (mnemonic == 0)
 			{
-				log.finest("None for: " + oText);
+				if (log.isLoggable(Level.FINEST)) log.finest("None for: " + oText);
 				return 0;	//	 if first char would be returned, the first occurrence is invalid.
 			}
 		}
 		m_mnemonics.add(mnemonic);
 		m_fields.add(source);
-		log.finest(mnemonic + " - " + source.getName());
+		if (log.isLoggable(Level.FINEST)) log.finest(mnemonic + " - " + source.getName());
 		return mnemonic;
 	}	//	getMnemonic
 	

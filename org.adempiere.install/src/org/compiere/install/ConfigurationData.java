@@ -809,7 +809,7 @@ public class ConfigurationData
 		p_properties.setProperty("ADEMPIERE_DATE_VERSION", Adempiere.DATE_VERSION);
 		p_properties.setProperty("ADEMPIERE_DB_VERSION", Adempiere.DB_VERSION);
 
-		log.finest(p_properties.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(p_properties.toString());
 
 		//	Before we save, load Ini
 		Ini.setClient(false);

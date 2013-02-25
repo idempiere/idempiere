@@ -335,7 +335,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 					"UPDATE GL_JournalLine SET "+MJournalLine.COLUMNNAME_DateAcct+"=? WHERE GL_Journal_ID=?",
 					new Object[]{getDateAcct(), getGL_Journal_ID()},
 					false, get_TrxName());
-			log.finest("Updated GL_JournalLine.DateAcct #" + no);
+			if (log.isLoggable(Level.FINEST)) log.finest("Updated GL_JournalLine.DateAcct #" + no);
 		}
 		return true;
 	}	//	beforeSave

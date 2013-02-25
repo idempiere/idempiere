@@ -114,10 +114,8 @@ public class MInfoColumn extends X_AD_InfoColumn
 		};
 		
 		boolean retValue = Evaluator.evaluateLogic(evaluatee, getDisplayLogic());
-		if (log.isLoggable(Level.FINEST)) {
-			log.finest(getName() 
+		if (log.isLoggable(Level.FINEST)) log.finest(getName() 
 					+ " (" + getDisplayLogic() + ") => " + retValue);
-		}
 		return retValue;
 	}
 

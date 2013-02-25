@@ -629,16 +629,14 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		if (isYspaceFor(m_maxHeightSinceNewLine[m_area]))
 		{
 			m_position[m_area].setLocation(xPos, m_position[m_area].y + m_maxHeightSinceNewLine[m_area]);
-			if (log.isLoggable(Level.FINEST))
-				log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+			if (log.isLoggable(Level.FINEST)) log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 		}
 		else if (m_area == AREA_CONTENT)
 		{
-			log.finest("Not enough Y space "
+			if (log.isLoggable(Level.FINEST)) log.finest("Not enough Y space "
 				+ m_lastHeight[m_area] + " - remaining " + getYspace() + " - Area=" + m_area);
 			newPage(true, false);
-			if (log.isLoggable(Level.FINEST))
-				log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+			if (log.isLoggable(Level.FINEST)) log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 		}
 		else	//	footer/header
 		{
@@ -777,8 +775,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		else if (m_area == AREA_FOOTER)
 			part = m_footer;
 		m_position[m_area].setLocation(part.x + p.getX(), part.y + p.getY());
-		if (log.isLoggable(Level.FINEST))
-			log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+		if (log.isLoggable(Level.FINEST)) log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 	}	//	setPosition
 
 	/**
@@ -807,8 +804,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	protected void setX (float x)
 	{
 		m_position[m_area].x = x;
-		if (log.isLoggable(Level.FINEST))
-			log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+		if (log.isLoggable(Level.FINEST)) log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 	}	//	setX
 
 	/**
@@ -820,8 +816,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		if (xOffset == 0f)
 			return;
 		m_position[m_area].x += xOffset;
-		if (log.isLoggable(Level.FINEST))
-			log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+		if (log.isLoggable(Level.FINEST)) log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 	}	//	addX
 
 	/**
@@ -840,8 +835,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	protected void setY (int y)
 	{
 		m_position[m_area].y = y;
-		if (log.isLoggable(Level.FINEST))
-			log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+		if (log.isLoggable(Level.FINEST)) log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 	}	//	setY
 
 	/**
@@ -855,16 +849,14 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		if (isYspaceFor(yOffset))
 		{
 			m_position[m_area].y += yOffset;
-			if (log.isLoggable(Level.FINEST))
-				log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+			if (log.isLoggable(Level.FINEST)) log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 		}
 		else if (m_area == AREA_CONTENT)
 		{
-			log.finest("Not enough Y space "
+			if (log.isLoggable(Level.FINEST)) log.finest("Not enough Y space "
 				+ m_lastHeight[m_area] + " - remaining " + getYspace() + " - Area=" + m_area);
 			newPage(true, true);
-			if (log.isLoggable(Level.FINEST))
-				log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
+			if (log.isLoggable(Level.FINEST)) log.finest("Page=" + m_pageNo + " [" + m_area + "] " + m_position[m_area].x + "/" + m_position[m_area].y);
 		}
 		else
 		{
@@ -1164,15 +1156,13 @@ public class LayoutEngine implements Pageable, Printable, Doc
 				{
 					if (!isXspaceFor(m_lastWidth[m_area]))
 					{
-						if (log.isLoggable(Level.FINEST))
-							log.finest("Not enough X space for "
+						if (log.isLoggable(Level.FINEST)) log.finest("Not enough X space for "
 								+ m_lastWidth[m_area] + " - remaining " + getXspace() + " - Area=" + m_area);
 						newLine ();
 					}
 					if (m_area == AREA_CONTENT && !isYspaceFor(m_lastHeight[m_area]))
 					{
-						if (log.isLoggable(Level.FINEST))
-							log.finest("Not enough Y space "
+						if (log.isLoggable(Level.FINEST)) log.finest("Not enough Y space "
 								+ m_lastHeight[m_area] + " - remaining " + getYspace() + " - Area=" + m_area);
 						newPage (true, true);
 					}
@@ -1284,15 +1274,13 @@ public class LayoutEngine implements Pageable, Printable, Doc
 
 		if (!isXspaceFor(m_lastWidth[m_area]))
 		{
-			if (log.isLoggable(Level.FINEST))
-				log.finest("Not enough X space for "
+			if (log.isLoggable(Level.FINEST)) log.finest("Not enough X space for "
 					+ m_lastWidth[m_area] + " - remaining " + getXspace() + " - Area=" + m_area);
 			newLine ();
 		}
 		if (m_area == AREA_CONTENT && !isYspaceFor(m_lastHeight[m_area]))
 		{
-			if (log.isLoggable(Level.FINEST))
-				log.finest("Not enough Y space "
+			if (log.isLoggable(Level.FINEST)) log.finest("Not enough Y space "
 					+ m_lastHeight[m_area] + " - remaining " + getYspace() + " - Area=" + m_area);
 			newPage (true, false);
 		}

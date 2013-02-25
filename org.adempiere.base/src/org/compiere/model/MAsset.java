@@ -6,10 +6,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.compiere.util.CLogMgt;
 import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
@@ -504,7 +504,7 @@ public class MAsset extends X_A_Asset
 	public void changeStatus(String newStatus, Timestamp date)
 	{
 		String status = getA_Asset_Status();
-		if (CLogMgt.isLevelFinest()) log.finest("Entering: " + status + "->" + newStatus + ", date=" + date);
+		if (log.isLoggable(Level.FINEST)) log.finest("Entering: " + status + "->" + newStatus + ", date=" + date);
 		
 		//
 		// If date is null, use context #Date

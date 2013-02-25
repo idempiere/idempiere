@@ -305,12 +305,12 @@ public class ImportReportLine extends SvrProcess
 					pstmt_insertLine.setString(3, Name);
 					//
 					no = pstmt_insertLine.executeUpdate();
-					log.finest("Insert ReportLine = " + no + ", PA_ReportLine_ID=" + PA_ReportLine_ID);
+					if (log.isLoggable(Level.FINEST)) log.finest("Insert ReportLine = " + no + ", PA_ReportLine_ID=" + PA_ReportLine_ID);
 					noInsertLine++;
 				}
 				catch (Exception ex)
 				{
-					log.finest(ex.toString());
+					if (log.isLoggable(Level.FINEST)) log.finest(ex.toString());
 					continue;
 				}
 			}
@@ -427,12 +427,12 @@ public class ImportReportLine extends SvrProcess
 						pstmt_insertSource.setInt(2, I_ReportLine_ID);
 						//
 						no = pstmt_insertSource.executeUpdate();
-						log.finest("Insert ReportSource = " + no + ", I_ReportLine_ID=" + I_ReportLine_ID + ", PA_ReportSource_ID=" + PA_ReportSource_ID);
+						if (log.isLoggable(Level.FINEST)) log.finest("Insert ReportSource = " + no + ", I_ReportLine_ID=" + I_ReportLine_ID + ", PA_ReportSource_ID=" + PA_ReportSource_ID);
 						noInsertSource++;
 					}
 					catch (Exception ex)
 					{
-						log.finest("Insert ReportSource - " + ex.toString());
+						if (log.isLoggable(Level.FINEST)) log.finest("Insert ReportSource - " + ex.toString());
 						sql = new StringBuilder ("UPDATE I_ReportLine i ")
 							.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Insert ElementSource: " + ex.toString()))
 							.append("WHERE I_ReportLine_ID=").append(I_ReportLine_ID);
@@ -458,12 +458,12 @@ public class ImportReportLine extends SvrProcess
 					{
 						no = pstmt_updateSource.executeUpdate();
 						//no = DB.executeUpdate(sqlt, get_TrxName());
-						log.finest("Update ReportSource = " + no + ", I_ReportLine_ID=" + I_ReportLine_ID + ", PA_ReportSource_ID=" + PA_ReportSource_ID);
+						if (log.isLoggable(Level.FINEST)) log.finest("Update ReportSource = " + no + ", I_ReportLine_ID=" + I_ReportLine_ID + ", PA_ReportSource_ID=" + PA_ReportSource_ID);
 						noUpdateSource++;
 					}
 					catch (SQLException ex)
 					{
-						log.finest( "Update ReportSource - " + ex.toString());
+						if (log.isLoggable(Level.FINEST)) log.finest( "Update ReportSource - " + ex.toString());
 						sql = new StringBuilder ("UPDATE I_ReportLine i ")
 							.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Update ElementSource: " + ex.toString()))
 							.append("WHERE I_ReportLine_ID=").append(I_ReportLine_ID);
@@ -489,7 +489,7 @@ public class ImportReportLine extends SvrProcess
 				// Delete report sources with null account
 				pstmt_deleteSource.setInt(1, PA_ReportSource_ID);
 				no = pstmt_deleteSource.executeUpdate();
-				log.finest("Delete ReportSource with Null Account= " + no + ", I_ReportLine_ID=" + I_ReportLine_ID + ", PA_ReportSource_ID=" + PA_ReportSource_ID);
+				if (log.isLoggable(Level.FINEST)) log.finest("Delete ReportSource with Null Account= " + no + ", I_ReportLine_ID=" + I_ReportLine_ID + ", PA_ReportSource_ID=" + PA_ReportSource_ID);
 				// End afalcone 22/02/2007 - F.R. [ 1642250 ] Import ReportLine / Very Slow Reports
 
 				commitEx();

@@ -222,7 +222,7 @@ public class ReplenishReport extends SvrProcess
 		if (p_C_BPartner_ID != 0)
 			sql.append(" AND po.C_BPartner_ID=").append(p_C_BPartner_ID);
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.finest(sql.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
 		log.fine("Insert (1) #" + no);
 		
 		if (p_C_BPartner_ID == 0)

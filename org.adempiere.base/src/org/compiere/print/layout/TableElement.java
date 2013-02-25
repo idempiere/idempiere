@@ -308,7 +308,7 @@ public class TableElement extends PrintElement
 			if (m_additionalLines.containsKey(new Integer(dataCol)))
 			{
 				col = ((Integer)m_additionalLines.get(new Integer(dataCol))).intValue();
-				log.finest("DataColumn=" + dataCol + ", BelowColumn=" + col);
+				if (log.isLoggable(Level.FINEST)) log.finest("DataColumn=" + dataCol + ", BelowColumn=" + col);
 			}
 			float colWidth = 0;
 			for (int row = 0; row < rows; row++)
@@ -538,14 +538,14 @@ public class TableElement extends PrintElement
 				{
 					if (origWidth.compareTo(new Float(colWidth)) >= 0)
 					{
-						log.finest("Same Width - Col=" + col 
+						if (log.isLoggable(Level.FINEST)) log.finest("Same Width - Col=" + col 
 								+ " - OrigWidth=" + origWidth + " - Width=" + colWidth + " - Total=" + p_width);
 					}
 					else
 					{
 						m_columnWidths.set(col, new Float(colWidth));
 						p_width += (colWidth - origWidth.floatValue());
-						log.finest("New Width - Col=" + col 
+						if (log.isLoggable(Level.FINEST)) log.finest("New Width - Col=" + col 
 								+ " - OrigWidth=" + origWidth + " - Width=" + colWidth + " - Total=" + p_width);
 					}
 				}
@@ -555,7 +555,7 @@ public class TableElement extends PrintElement
 			{
 				m_columnWidths.add(new Float(colWidth));
 				p_width += colWidth;
-				log.finest("Width - Col=" + dataCol 
+				if (log.isLoggable(Level.FINEST)) log.finest("Width - Col=" + dataCol 
 						+ " - Width=" + colWidth + " - Total=" + p_width);
 			}
 		}	//	for all columns
@@ -595,7 +595,7 @@ public class TableElement extends PrintElement
 		//	One Page on Y | Axis
 		if (m_firstPage.height >= p_height && m_pageBreak.size() == 0)
 		{
-			log.finest("Page Y=1 - PageHeight=" + m_firstPage.height + " - TableHeight=" + p_height);
+			if (log.isLoggable(Level.FINEST)) log.finest("Page Y=1 - PageHeight=" + m_firstPage.height + " - TableHeight=" + p_height);
 			m_firstRowOnPage.add(new Integer(0));	//	Y
 			m_pageHeight.add(new Float(p_height));	//	Y index only
 		}
@@ -623,7 +623,7 @@ public class TableElement extends PrintElement
 				{
 					if (availableHeight > 40 && rowHeight > 40)
 					{
-						log.finest("- Split (leave on current) Row=" + dataRow 
+						if (log.isLoggable(Level.FINEST)) log.finest("- Split (leave on current) Row=" + dataRow 
 							+ " - Available=" + availableHeight + ", RowHeight=" + rowHeight);
 					//	if (splitRow (dataRow))
 					//		addlRows += 1;
@@ -638,10 +638,10 @@ public class TableElement extends PrintElement
 					if (!firstPage)
 					{
 						m_pageHeight.add(new Float(usedHeight));	//	Y index only
-						log.finest("Page Y=" + m_pageHeight.size()
+						if (log.isLoggable(Level.FINEST)) log.finest("Page Y=" + m_pageHeight.size()
 								+ " - PageHeight=" + usedHeight);
 					}
-					log.finest("Page Y=" + m_firstRowOnPage.size() 
+					if (log.isLoggable(Level.FINEST)) log.finest("Page Y=" + m_firstRowOnPage.size() 
 						+ " - Row=" + dataRow + " - force=" + isPageBreak(dataRow));
 					firstPage = false;
 					//
@@ -652,23 +652,23 @@ public class TableElement extends PrintElement
 				usedHeight += rowHeight;
 				if (availableHeight < 0)
 				{
-					log.finest("- Split (move to next) Row=" + dataRow 
+					if (log.isLoggable(Level.FINEST)) log.finest("- Split (move to next) Row=" + dataRow 
 						+ " - Available=" + availableHeight + ", RowHeight=" + rowHeight);
 					
 				}
-				log.finest("Page Y=" + m_pageHeight.size() 
+				if (log.isLoggable(Level.FINEST)) log.finest("Page Y=" + m_pageHeight.size() 
 					+ ", Row=" + dataRow + ",AddlRows=" + addlRows + ", Height=" + rowHeight 
 					+ " - Available=" + availableHeight + ", Used=" + usedHeight);
 			}	//	for all rows
 			m_pageHeight.add(new Float(usedHeight));			//	Y index only
-			log.finest("Page Y=" + m_pageHeight.size()
+			if (log.isLoggable(Level.FINEST)) log.finest("Page Y=" + m_pageHeight.size()
 					+ " - PageHeight=" + usedHeight);
 		}	//	multiple Y | pages
 
 		//	One page on - X Axis
 		if (m_firstPage.width >= p_width)
 		{
-			log.finest("Page X=1 - PageWidth=" + m_firstPage.width 
+			if (log.isLoggable(Level.FINEST)) log.finest("Page X=1 - PageWidth=" + m_firstPage.width 
 					+ " - TableWidth=" + p_width);
 			m_firstColumnOnPage.add(new Integer(0));	//	X
 			//
@@ -689,7 +689,7 @@ public class TableElement extends PrintElement
 						distributeColumns (availableWidth, lastStart, col);
 					//
 					m_firstColumnOnPage.add(new Integer(col));	//	X
-					log.finest("Page X=" + m_firstColumnOnPage.size()
+					if (log.isLoggable(Level.FINEST)) log.finest("Page X=" + m_firstColumnOnPage.size()
 							+ " - Col=" + col);
 					lastStart = col;
 					availableWidth = m_firstPage.width; 		//	Width is the same on all pages
@@ -722,7 +722,7 @@ public class TableElement extends PrintElement
 	 */
 	private void distributeColumns (int availableWidth, int fromCol, int toCol)
 	{
-		log.finest("Available=" + availableWidth + ", Columns " + fromCol + "->" + toCol);
+		if (log.isLoggable(Level.FINEST)) log.finest("Available=" + availableWidth + ", Columns " + fromCol + "->" + toCol);
 		int start = fromCol;
 		if (fromCol == 0 && m_repeatedColumns > 0)
 			start = m_repeatedColumns;
@@ -734,7 +734,7 @@ public class TableElement extends PrintElement
 		//	distribute proportionally (does not increase zero width columns)
 		for (int x = 0; remainingWidth > 0 && x < 5; x++)	//	max 4 iterations
 		{
-			log.finest("TotalWidth=" + totalWidth + ", Remaining=" + remainingWidth);
+			if (log.isLoggable(Level.FINEST)) log.finest("TotalWidth=" + totalWidth + ", Remaining=" + remainingWidth);
 			for (int col = start; col < toCol && remainingWidth != 0; col++)
 			{
 				int columnWidth = ((Float)m_columnWidths.get(col)).intValue();
@@ -751,7 +751,7 @@ public class TableElement extends PrintElement
 						m_columnWidths.set(col, new Float(columnWidth+additionalPart));
 						remainingWidth -= additionalPart;
 					}
-					log.finest("  col=" + col + " - From " + columnWidth + " to " + m_columnWidths.get(col));
+					if (log.isLoggable(Level.FINEST)) log.finest("  col=" + col + " - From " + columnWidth + " to " + m_columnWidths.get(col));
 				}
 			}
 		}
@@ -762,7 +762,7 @@ public class TableElement extends PrintElement
 			if (columnWidth > 0)
 			{
 				m_columnWidths.set(c, new Float(columnWidth+remainingWidth));
-				log.finest("Final col=" + c + " - From " + columnWidth + " to " + m_columnWidths.get(c));
+				if (log.isLoggable(Level.FINEST)) log.finest("Final col=" + c + " - From " + columnWidth + " to " + m_columnWidths.get(c));
 				remainingWidth = 0;
 			}
 		}
@@ -1201,7 +1201,7 @@ public class TableElement extends PrintElement
 		if (pageYindex+1 < m_firstRowOnPage.size())
 			nextPageRow = ((Integer)m_firstRowOnPage.get(pageYindex+1)).intValue();
 		if (DEBUG_PRINT)
-			log.finest("Col=" + firstColumn + "-" + (nextPageColumn-1)
+			if (log.isLoggable(Level.FINEST)) log.finest("Col=" + firstColumn + "-" + (nextPageColumn-1)
 				+ ", Row=" + firstRow + "-" + (nextPageRow-1));
 
 		//	Top Left
@@ -1211,7 +1211,7 @@ public class TableElement extends PrintElement
 		startX += pageXindex == 0 ? m_firstPage.x : m_nextPages.x;
 		startY += pageYindex == 0 ? m_firstPage.y : m_nextPages.y;
 		if (DEBUG_PRINT)
-			log.finest("PageStart=" + pageStart + ", StartTable x=" + startX + ", y=" + startY);
+			if (log.isLoggable(Level.FINEST)) log.finest("PageStart=" + pageStart + ", StartTable x=" + startX + ", y=" + startY);
 
 		//	paint first fixed volumns
 		boolean firstColumnPrint = true;

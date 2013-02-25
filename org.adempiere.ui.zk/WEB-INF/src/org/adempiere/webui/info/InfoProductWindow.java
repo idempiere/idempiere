@@ -519,8 +519,7 @@ public class InfoProductWindow extends InfoWindow {
 	{
 		//int M_Product_ID = 0;
 		String sql = m_sqlWarehouse;
-		if (log.isLoggable(Level.FINEST))
-			log.finest(sql);
+		if (log.isLoggable(Level.FINEST)) log.finest(sql);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -545,8 +544,7 @@ public class InfoProductWindow extends InfoWindow {
 		fieldDescription.setText(DB.getSQLValueString(null, sql, m_M_Product_ID));
 
 		sql = m_sqlSubstitute;
-		if (log.isLoggable(Level.FINEST))
-			log.finest(sql);
+		if (log.isLoggable(Level.FINEST)) log.finest(sql);
 		try {
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_M_Product_ID);
@@ -563,8 +561,7 @@ public class InfoProductWindow extends InfoWindow {
 		}
 
 		sql = m_sqlRelated;
-		if (log.isLoggable(Level.FINEST))
-			log.finest(sql);
+		if (log.isLoggable(Level.FINEST)) log.finest(sql);
 		try {
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_M_Product_ID);
@@ -583,8 +580,7 @@ public class InfoProductWindow extends InfoWindow {
 		
 		//IDEMPIERE-337
 		sql = m_sqlProductprice;
-		if (log.isLoggable(Level.FINEST))
-			log.finest(sql);
+		if (log.isLoggable(Level.FINEST)) log.finest(sql);
 		try {
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_M_Product_ID);

@@ -28,6 +28,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
+import java.util.logging.Level;
 
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
@@ -248,7 +249,7 @@ public final class VString extends CTextField
 	 */
 	public void keyReleased(KeyEvent e)
 	{
-		log.finest("Key=" + e.getKeyCode() + " - " + e.getKeyChar()
+		if (log.isLoggable(Level.FINEST)) log.finest("Key=" + e.getKeyCode() + " - " + e.getKeyChar()
 			+ " -> " + getText());
 		//  ESC
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE)

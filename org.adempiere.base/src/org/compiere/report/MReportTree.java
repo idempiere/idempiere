@@ -233,7 +233,7 @@ public class MReportTree
 		String ColumnName = MAcctSchemaElement.getColumnName(m_ElementType);
 		//
 		MTreeNode node = m_tree.getRoot().findNode(ID);
-		log.finest("Root=" + node);
+		if (log.isLoggable(Level.FINEST)) log.finest("Root=" + node);
 		//
 		StringBuffer result = null;
 		if (node != null && node.isSummary ())
@@ -254,10 +254,10 @@ public class MReportTree
 					sb.append (ColumnName);
 					sb.append ('=');
 					sb.append (nn.getNode_ID ());
-					log.finest ("- " + nn);
+					if (log.isLoggable(Level.FINEST)) log.finest ("- " + nn);
 				}
 				else
-					log.finest ("- skipped parent (" + nn + ")");
+					if (log.isLoggable(Level.FINEST)) log.finest ("- skipped parent (" + nn + ")");
 			}
 			result = new StringBuffer (" ( ");
 			result.append (sb);
@@ -266,7 +266,7 @@ public class MReportTree
 		else	//	not found or not summary 
 			result = new StringBuffer (ColumnName).append("=").append(ID);
 		//
-		log.finest(result.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(result.toString());
 		return result.toString();
 	}	//	getWhereClause
 
@@ -281,7 +281,7 @@ public class MReportTree
 		ArrayList<Integer> list = new ArrayList<Integer>(); 
 		//
 		MTreeNode node = m_tree.getRoot().findNode(ID);
-		log.finest("Root=" + node);
+		if (log.isLoggable(Level.FINEST)) log.finest("Root=" + node);
 		//
 		if (node != null && node.isSummary())
 		{
@@ -292,10 +292,10 @@ public class MReportTree
 				if (!nn.isSummary())
 				{
 					list.add(new Integer(nn.getNode_ID()));
-					log.finest("- " + nn);
+					if (log.isLoggable(Level.FINEST)) log.finest("- " + nn);
 				}
 				else
-					log.finest("- skipped parent (" + nn + ")");
+					if (log.isLoggable(Level.FINEST)) log.finest("- skipped parent (" + nn + ")");
 			}
 		}
 		else	//	not found or not summary 

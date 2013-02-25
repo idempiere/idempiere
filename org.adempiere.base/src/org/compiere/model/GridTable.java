@@ -1210,7 +1210,7 @@ public class GridTable extends AbstractTableModel
 				|| m_rowCount == 0	//  no rows
 				|| row >= m_rowCount )     //invalid row
 		{
-			log.finest("r=" + row + " c=" + col + " - R/O=" + m_readOnly + ", Rows=" + m_rowCount + " - Ignored");
+			if (log.isLoggable(Level.FINEST)) log.finest("r=" + row + " c=" + col + " - R/O=" + m_readOnly + ", Rows=" + m_rowCount + " - Ignored");
 			return;
 		}
 
@@ -1220,7 +1220,7 @@ public class GridTable extends AbstractTableModel
 		Object oldValue = getValueAt(row, col);
 		if (!force && !isValueChanged(oldValue, value) )
 		{
-			log.finest("r=" + row + " c=" + col + " - New=" + value + "==Old=" + oldValue + " - Ignored");
+			if (log.isLoggable(Level.FINEST)) log.finest("r=" + row + " c=" + col + " - New=" + value + "==Old=" + oldValue + " - Ignored");
 			return;
 		}
 
@@ -2312,7 +2312,7 @@ public class GridTable extends AbstractTableModel
 	{
 		m_createSqlColumn.add(columnName);
 		m_createSqlValue.add(value);
-		log.finest("#" + m_createSqlColumn.size()
+		if (log.isLoggable(Level.FINEST)) log.finest("#" + m_createSqlColumn.size()
 				+ " - " + columnName + "=" + value);
 	}	//	createUpdateSQL
 

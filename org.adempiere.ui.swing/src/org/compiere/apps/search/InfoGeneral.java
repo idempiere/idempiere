@@ -281,7 +281,7 @@ public class InfoGeneral extends Info
 			log.log(Level.SEVERE, "No query columns found");
 			return false;
 		}
-		log.finest("Table " + tableName + ", ID=" + AD_Table_ID
+		if (log.isLoggable(Level.FINEST)) log.finest("Table " + tableName + ", ID=" + AD_Table_ID
 			+ ", QueryColumns #" + m_queryColumns.size());
 		//	Only 4 Query Columns
 		while (m_queryColumns.size() > 4) {
@@ -368,10 +368,10 @@ public class InfoGeneral extends Info
 				if (colClass != null)
 				{
 					list.add(new Info_Column(Msg.translate(Env.getCtx(), columnName), colSql.toString(), colClass));
-					log.finest("Added Column=" + columnName);
+					if (log.isLoggable(Level.FINEST)) log.finest("Added Column=" + columnName);
 				}
 				else
-					log.finest("Not Added Column=" + columnName);
+					if (log.isLoggable(Level.FINEST)) log.finest("Not Added Column=" + columnName);
 			}
 		}
 		catch (SQLException e)
@@ -389,7 +389,7 @@ public class InfoGeneral extends Info
 			log.log(Level.SEVERE, "No Info for AD_Table_ID=" + AD_Table_ID + " - " + sql);
 			return false;
 		}
-		log.finest("InfoColumns #" + list.size());
+		if (log.isLoggable(Level.FINEST)) log.finest("InfoColumns #" + list.size());
 
 		//  Convert ArrayList to Array
 		m_generalLayout = new Info_Column[list.size()];

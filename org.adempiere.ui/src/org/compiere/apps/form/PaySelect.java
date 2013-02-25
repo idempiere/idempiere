@@ -334,7 +334,7 @@ public class PaySelect
 			sql += " AND i.c_doctype_id =?";
 		sql += " ORDER BY 2,3";
 
-		log.finest(sql + " - C_Currency_ID=" + bi.C_Currency_ID + ", C_BPartner_ID=" + C_BPartner_ID + ", C_doctype_id=" + c_doctype_id  );
+		if (log.isLoggable(Level.FINEST)) log.finest(sql + " - C_Currency_ID=" + bi.C_Currency_ID + ", C_BPartner_ID=" + C_BPartner_ID + ", C_doctype_id=" + c_doctype_id  );
 		//  Get Open Invoices
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

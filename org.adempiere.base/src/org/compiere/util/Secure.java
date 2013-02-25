@@ -117,7 +117,7 @@ public class Secure implements SecureInterface
 		}
 		catch (Exception e)
 		{
-			log.finest(hexString + " - " + e.getLocalizedMessage());
+			if (log.isLoggable(Level.FINEST)) log.finest(hexString + " - " + e.getLocalizedMessage());
 		}
 		return null;
 	}   //  convertToHexString

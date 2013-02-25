@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.grid.ed;
 
+import java.util.logging.Level;
+
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.AttributeSet;
@@ -156,13 +158,13 @@ public final class MDocString extends PlainDocument implements CaretListener
 		//	We have no Format or inserted not manually (assuming correct Format)
 		if (m_VFormat.length() == 0 || string.length() != 1)
 		{
-			log.finest("Offset=" + offset + " String=" + string);
+			if (log.isLoggable(Level.FINEST)) log.finest("Offset=" + offset + " String=" + string);
 			super.insertString(offset, string, attr);
 			return;
 		}
 
 		/**	Formating required **/
-		log.finest("Offset=" + offset
+		if (log.isLoggable(Level.FINEST)) log.finest("Offset=" + offset
 			+ ", String=" + string + ", MaxLength=" + m_maxLength 
 			+ ", Format=" + m_VFormat + ", Mask=" + m_mask
 			+ ", Text=" + getText() + ", Length=" + getText().length());
@@ -304,7 +306,7 @@ public final class MDocString extends PlainDocument implements CaretListener
 		//	No format or non manual entry
 		if (m_VFormat.length() == 0 || length != 1)
 		{
-			log.finest("Offset=" + offset + " Length=" + length);
+			if (log.isLoggable(Level.FINEST)) log.finest("Offset=" + offset + " Length=" + length);
 			super.remove(offset, length);
 			return;
 		}

@@ -88,7 +88,7 @@ public class MReportColumnSet extends X_PA_ReportColumnSet
 		//
 		m_columns = new MReportColumn[list.size()];
 		list.toArray(m_columns);
-		log.finest("ID=" + getPA_ReportColumnSet_ID() 
+		if (log.isLoggable(Level.FINEST)) log.finest("ID=" + getPA_ReportColumnSet_ID() 
 			+ " - Size=" + list.size());
 	}	//	loadColumns
 

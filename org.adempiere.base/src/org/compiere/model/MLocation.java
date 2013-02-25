@@ -521,7 +521,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 			outStr.append(" ").append(super.getRegionName());
 
 		String retValue = Util.replace(outStr.toString(), "\\n", "\n");
-		log.finest("parseCRP - " + c.getDisplaySequence() + " -> " +  retValue);
+		if (log.isLoggable(Level.FINEST)) log.finest("parseCRP - " + c.getDisplaySequence() + " -> " +  retValue);
 		return retValue;
 	}	//	parseContext
 

@@ -24,6 +24,7 @@ import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import org.adempiere.install.DBConfigStatus;
@@ -251,7 +252,7 @@ public class ConfigOracle implements IDatabaseConfig
 		for (int i = 0; i < lines.length; i++)
 		{
 			String line = lines[i].trim();
-			log.finest(i + ": " + line);
+			if (log.isLoggable(Level.FINEST)) log.finest(i + ": " + line);
 			if (tns)	//	get TNS Name
 			{
 				if (line.length() > 0

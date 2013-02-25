@@ -32,6 +32,7 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.net.URL;
+import java.util.logging.Level;
 
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
@@ -334,7 +335,7 @@ public class VURL extends JComponent
 	 */
 	public void keyReleased(KeyEvent e)
 	{
-		log.finest("Key=" + e.getKeyCode() + " - " + e.getKeyChar()
+		if (log.isLoggable(Level.FINEST)) log.finest("Key=" + e.getKeyCode() + " - " + e.getKeyChar()
 			+ " -> " + getText());
 		//  ESC
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE)

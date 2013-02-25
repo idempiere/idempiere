@@ -293,7 +293,7 @@ public class MSession extends X_AD_Session
 		else
 			return null;
 		//
-		log.finest("AD_ChangeLog_ID=" + AD_ChangeLog_ID
+		if (log.isLoggable(Level.FINEST)) log.finest("AD_ChangeLog_ID=" + AD_ChangeLog_ID
 				+ ", AD_Session_ID=" + getAD_Session_ID()
 				+ ", AD_Table_ID=" + AD_Table_ID + ", AD_Column_ID=" + AD_Column_ID
 				+ ": " + OldValue + " -> " + NewValue);

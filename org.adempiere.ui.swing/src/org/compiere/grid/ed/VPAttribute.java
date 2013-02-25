@@ -447,7 +447,7 @@ public class VPAttribute extends JComponent
 		//	Set Value
 		if (changed)
 		{
-			log.finest("Changed M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
+			if (log.isLoggable(Level.FINEST)) log.finest("Changed M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
 			m_value = new Object();				//	force re-query display
 			if (M_AttributeSetInstance_ID == 0)
 				setValue(null);
@@ -456,7 +456,7 @@ public class VPAttribute extends JComponent
 			// Change Locator
 			if (m_GridTab != null && M_Locator_ID > 0)
 			{
-				log.finest("Change M_Locator_ID="+M_Locator_ID);
+				if (log.isLoggable(Level.FINEST)) log.finest("Change M_Locator_ID="+M_Locator_ID);
 				m_GridTab.setValue("M_Locator_ID", M_Locator_ID);
 			}
 			//

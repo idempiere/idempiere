@@ -103,7 +103,7 @@ public final class MDocDate extends PlainDocument implements CaretListener
 	public void insertString (int offset, String string, AttributeSet attr)
 		throws BadLocationException
 	{
-		log.finest("Offset=" + offset + ",String=" + string + ",Attr=" + attr
+		if (log.isLoggable(Level.FINEST)) log.finest("Offset=" + offset + ",String=" + string + ",Attr=" + attr
 			+ ",OldText=" + getText() + ",OldLength=" + getText().length());
 
 		//	manual entry
@@ -181,7 +181,7 @@ public final class MDocDate extends PlainDocument implements CaretListener
 	public void remove (int offset, int length)
 		throws BadLocationException
 	{
-		log.finest("Offset=" + offset + ",Length=" + length);
+		if (log.isLoggable(Level.FINEST)) log.finest("Offset=" + offset + ",Length=" + length);
 
 		//	begin of string
 		if (offset == 0 || length == 0)
@@ -212,7 +212,7 @@ public final class MDocDate extends PlainDocument implements CaretListener
 	 */
 	public void caretUpdate(CaretEvent e)
 	{
-		log.finest("Dot=" + e.getDot() + ",Last=" + m_lastDot
+		if (log.isLoggable(Level.FINEST)) log.finest("Dot=" + e.getDot() + ",Last=" + m_lastDot
 			+ ", Mark=" + e.getMark());
 		//	Selection
 		if (e.getDot() != e.getMark())

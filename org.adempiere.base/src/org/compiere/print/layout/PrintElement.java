@@ -30,7 +30,6 @@ import java.util.logging.Level;
 
 import org.compiere.model.MQuery;
 import org.compiere.print.MPrintFormatItem;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 
 /**
@@ -277,8 +276,7 @@ public abstract class PrintElement implements ImageObserver, Serializable
 	{
 		//	copied from java.awt.component
 		m_imageNotLoaded = (infoflags & (ALLBITS|ABORT)) == 0;
-		if (CLogMgt.isLevelFinest())
-			log.finest("Flags=" + infoflags
+		if (log.isLoggable(Level.FINEST)) log.finest("Flags=" + infoflags
 				+ ", x=" + x + ", y=" + y + ", width=" + width + ", height=" + height 
 				+ " - NotLoaded=" + m_imageNotLoaded);
 		return m_imageNotLoaded;

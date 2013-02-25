@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 
@@ -262,7 +263,7 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 		{
 			Object k = m_keys.get(i);
 			Object v = m_values.get(i);
-			log.finest(k==null ? "null" : k.toString() + "=" + v==null ? "null" : v.toString());
+			if (log.isLoggable(Level.FINEST)) log.finest(k==null ? "null" : k.toString() + "=" + v==null ? "null" : v.toString());
 		}
 	}   //  printToLog
 

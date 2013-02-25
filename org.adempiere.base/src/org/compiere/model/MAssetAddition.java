@@ -249,7 +249,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	private MAssetAddition (MProject project)
 	{
 		this(project.getCtx(), 0, project.get_TrxName());
-		log.finest("Entering: Project=" + project);
+		if (log.isLoggable(Level.FINEST)) log.finest("Entering: Project=" + project);
 		setAD_Org_ID(project.getAD_Org_ID());
 		setPostingType(POSTINGTYPE_Actual);
 		setA_SourceType(A_SOURCETYPE_Project);
@@ -292,7 +292,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	private MAssetAddition (MIFixedAsset ifa)
 	{
 		this(ifa.getCtx(), 0, ifa.get_TrxName());
-		log.finest("Entering: ifa=" + ifa);
+		if (log.isLoggable(Level.FINEST)) log.finest("Entering: ifa=" + ifa);
 		setAD_Org_ID(ifa.getAD_Org_ID());
 		setPostingType(POSTINGTYPE_Actual);
 		setA_SourceType(A_SOURCETYPE_Imported);

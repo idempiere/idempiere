@@ -306,7 +306,7 @@ public class ServerProcessCtl implements Runnable {
 				if (server != null)
 				{	//	See ServerBean
 					m_pi = server.workflow (Env.getRemoteCallCtx(Env.getCtx()), m_pi, AD_Workflow_ID);
-					log.finest("server => " + m_pi);
+					if (log.isLoggable(Level.FINEST)) log.finest("server => " + m_pi);
 					started = true;
 				}
 			}
@@ -360,7 +360,7 @@ public class ServerProcessCtl implements Runnable {
 				{	
 					//	See ServerBean
 					m_pi = server.process (Env.getRemoteCallCtx(Env.getCtx()), m_pi);
-					log.finest("server => " + m_pi);
+					if (log.isLoggable(Level.FINEST)) log.finest("server => " + m_pi);
 					started = true;		
 				}
 			}
@@ -421,7 +421,7 @@ public class ServerProcessCtl implements Runnable {
 				if (server != null)
 				{	//	See ServerBean
 					m_pi = server.dbProcess(Env.getRemoteCallCtx(Env.getCtx()), m_pi, ProcedureName);
-					log.finest("server => " + m_pi);
+					if (log.isLoggable(Level.FINEST)) log.finest("server => " + m_pi);
 					started = true;		
 				}
 			}

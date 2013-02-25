@@ -273,7 +273,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 			//  lookup found nothing too
 			if (notFound)
 			{
-				log.finest(m_columnName + "=" + value + ": Not found - " + m_lastDisplay);
+				if (log.isLoggable(Level.FINEST)) log.finest(m_columnName + "=" + value + ": Not found - " + m_lastDisplay);
 				//  we may have a new value
 				m_lookup.refresh();
 				m_combo.setValue (value);

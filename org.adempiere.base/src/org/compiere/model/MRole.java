@@ -1982,7 +1982,7 @@ public final class MRole extends X_AD_Role
 			if (recordWhere.length() > 0)
 			{
 				retSQL.append(" AND ").append(recordWhere);
-				log.finest("Record access - " + recordWhere);
+				if (log.isLoggable(Level.FINEST)) log.finest("Record access - " + recordWhere);
 			}
 		}	//	for all table info
 		
@@ -2042,7 +2042,7 @@ public final class MRole extends X_AD_Role
 		retSQL.append(getDependentAccess(whereColumnName, includes, excludes));
 		//
 		retSQL.append(orderBy);
-		log.finest(retSQL.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(retSQL.toString());
 		return retSQL.toString();
 	}	//	addAccessSQL
 
@@ -2092,7 +2092,7 @@ public final class MRole extends X_AD_Role
 			}
 			where.append("))");
 		}
-		log.finest(where.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(where.toString());
 		return where.toString();
 	}	//	getDependentAccess
 	

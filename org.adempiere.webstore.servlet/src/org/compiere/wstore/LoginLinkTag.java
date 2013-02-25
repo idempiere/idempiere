@@ -17,6 +17,7 @@
 package org.compiere.wstore;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -115,13 +116,13 @@ public class LoginLinkTag extends TagSupport
 		WebUser wu = (WebUser)pageContext.getSession().getAttribute (WebUser.NAME);
 		if (wu != null)
 		{
-			log.finest("(" + address + ") - SessionContext: " + wu);
+			if (log.isLoggable(Level.FINEST)) log.finest("(" + address + ") - SessionContext: " + wu);
 		}
 		else
 		{
 			wu = (WebUser)pageContext.getAttribute(WebUser.NAME);
 			if (wu != null)
-				log.finest ("(" + address + ") - Context: " + wu);
+				if (log.isLoggable(Level.FINEST)) log.finest ("(" + address + ") - Context: " + wu);
 		}
 		if (wu != null)
 			return wu;

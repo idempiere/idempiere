@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import javax.swing.text.JTextComponent;
 
@@ -173,7 +174,7 @@ public class CityAutoCompleter extends AutoCompleter
 	private void setCity(CityVO vo)
 	{
 		m_city = vo;
-		log.finest("C_City_ID="+m_city);
+		if (log.isLoggable(Level.FINEST)) log.finest("C_City_ID="+m_city);
 		if (m_city == null) {
 			textBox.setBackground(new Color(230, 230, 255));
 		} else {

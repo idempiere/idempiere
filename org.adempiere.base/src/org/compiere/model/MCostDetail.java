@@ -905,7 +905,7 @@ public class MCostDetail extends X_M_CostDetail
 						cost.setCurrentCostPrice(MCost.getSeedCosts(product, M_ASI_ID, 
 								as, Org_ID, ce.getCostingMethod(), getC_OrderLine_ID()));
 					}
-					log.finest("PO - Standard - CurrentCostPrice(seed)="+cost.getCurrentCostPrice()+", price="+price);
+					if (log.isLoggable(Level.FINEST)) log.finest("PO - Standard - CurrentCostPrice(seed)="+cost.getCurrentCostPrice()+", price="+price);
 				}
 				cost.add(amt, qty);
 				log.finer("PO - Standard - " + cost);
@@ -976,7 +976,7 @@ public class MCostDetail extends X_M_CostDetail
 					{
 						cost.setCurrentCostPrice(MCost.getSeedCosts(product, M_ASI_ID, 
 								as, Org_ID, ce.getCostingMethod(), getC_OrderLine_ID()));
-						log.finest("Inv - Standard - CurrentCostPrice(seed)="+cost.getCurrentCostPrice()+", price="+price);
+						if (log.isLoggable(Level.FINEST)) log.finest("Inv - Standard - CurrentCostPrice(seed)="+cost.getCurrentCostPrice()+", price="+price);
 					}
 					cost.add(amt, qty);
 				}				
@@ -1124,7 +1124,7 @@ public class MCostDetail extends X_M_CostDetail
 						&& cost.is_new())
 					{
 						cost.setCurrentCostPrice(price);
-						log.finest("QtyAdjust - Standard - CurrentCostPrice="+price);
+						if (log.isLoggable(Level.FINEST)) log.finest("QtyAdjust - Standard - CurrentCostPrice="+price);
 					}
 				}
 				else

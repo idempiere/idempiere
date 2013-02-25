@@ -14,6 +14,7 @@
 package org.compiere.apps.form;
 
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
 import org.compiere.model.MArchive;
 import org.compiere.model.MBPartner;
@@ -210,7 +211,7 @@ public class Archive {
 			+ "WHERE wa.AD_Role_ID=").append(role.getAD_Role_ID())
 			.append(" OR ").append(role.getIncludedRolesWhereClause("wa.AD_Role_ID", null))
 			.append("))");
-		log.finest(sql.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
 		//metas: Bugfix zu included_Role ende
 		//
 		m_archives = MArchive.get(Env.getCtx(), sql.toString());

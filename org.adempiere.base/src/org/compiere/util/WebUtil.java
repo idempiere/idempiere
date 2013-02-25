@@ -318,7 +318,7 @@ public final class WebUtil
 		}
 		log.finest(parameter + "=" + data + " -> " + retValue + " == " + debug);
 		**/
-		log.finest(parameter + "=" + data + " -> " + retValue);
+		if (log.isLoggable(Level.FINEST)) log.finest(parameter + "=" + data + " -> " + retValue);
 		return retValue;
 	}   //  getParameter
 

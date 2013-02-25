@@ -106,7 +106,7 @@ public class MReportLine extends X_PA_ReportLine
 		//
 		m_sources = new MReportSource[list.size()];
 		list.toArray(m_sources);
-		log.finest("ID=" + getPA_ReportLine_ID()
+		if (log.isLoggable(Level.FINEST)) log.finest("ID=" + getPA_ReportLine_ID()
 			+ " - Size=" + list.size());
 	}	//	loadSources
 

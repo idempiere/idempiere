@@ -167,7 +167,7 @@ public class Aging extends SvrProcess
 		
 		sql.append(" ORDER BY oi.C_BPartner_ID, oi.C_Currency_ID, oi.C_Invoice_ID");
 		
-		log.finest(sql.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
 		String finalSql = MRole.getDefault(getCtx(), false).addAccessSQL(
 			sql.toString(), "oi", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);	
 		log.finer(finalSql);

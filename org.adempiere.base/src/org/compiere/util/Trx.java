@@ -203,7 +203,7 @@ public class Trx
 		if (conn == null)
 			return;
 		m_connection = conn;
-		log.finest("Connection=" + conn);
+		if (log.isLoggable(Level.FINEST)) log.finest("Connection=" + conn);
 		try
 		{
 			m_connection.setAutoCommit(false);

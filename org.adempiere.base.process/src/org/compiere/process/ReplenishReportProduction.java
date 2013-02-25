@@ -236,7 +236,7 @@ public class ReplenishReportProduction extends SvrProcess
 		if ( isKanban != null )
 			sql.append(" AND p.IsKanban = '").append(isKanban).append("' ");
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.finest(sql.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
 		log.fine("Insert (1) #" + no);
 		
 		if (p_C_BPartner_ID == 0)

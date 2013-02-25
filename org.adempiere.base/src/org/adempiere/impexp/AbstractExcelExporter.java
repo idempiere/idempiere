@@ -216,7 +216,7 @@ public abstract class AbstractExcelExporter
 			format = new StringBuffer(f).append(";[RED]-").append(f);
 		}
 		//
-		if (CLogMgt.isLevelFinest()) log.finest("NumberFormat: "+format);
+		if (log.isLoggable(Level.FINEST)) log.finest("NumberFormat: "+format);
 		return format.toString();
 
 	}

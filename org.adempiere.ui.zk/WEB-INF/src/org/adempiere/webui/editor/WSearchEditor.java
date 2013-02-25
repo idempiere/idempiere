@@ -649,8 +649,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			sql.append(" AND IsActive='Y'");
 			//	***
 
-			if (log.isLoggable(Level.FINEST))
-				log.finest(m_columnName + " (predefined) " + sql.toString());
+			if (log.isLoggable(Level.FINEST)) log.finest(m_columnName + " (predefined) " + sql.toString());
 
 			return MRole.getDefault().addAccessSQL(sql.toString(),
 				m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
@@ -723,8 +722,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 					//	***
 
-					if (log.isLoggable(Level.FINEST))
-						log.finest(m_columnName + " (Table) " + sql.toString());
+					if (log.isLoggable(Level.FINEST)) log.finest(m_columnName + " (Table) " + sql.toString());
 
 					return MRole.getDefault().addAccessSQL(sql.toString(),
 								m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
@@ -788,8 +786,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if (wc != null && wc.length() > 0)
 			retValue.append(" AND ").append(wc);
 		//	***
-		if (log.isLoggable(Level.FINEST))
-			log.finest(m_columnName + " (TableDir) " + sql.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(m_columnName + " (TableDir) " + sql.toString());
 		return MRole.getDefault().addAccessSQL(retValue.toString(),
 					m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 	}

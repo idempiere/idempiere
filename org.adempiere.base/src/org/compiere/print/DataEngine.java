@@ -229,8 +229,7 @@ public class DataEngine
 		ArrayList<String> orderColumns = new ArrayList<String>(orderAD_Column_IDs.length);
 		for (int i = 0; i < orderAD_Column_IDs.length; i++)
 		{
-			if (log.isLoggable(Level.FINEST))
-				log.finest("Order AD_Column_ID=" + orderAD_Column_IDs[i]);
+			if (log.isLoggable(Level.FINEST)) log.finest("Order AD_Column_ID=" + orderAD_Column_IDs[i]);
 			orderColumns.add("");		//	initial value overwritten with fully qualified name
 		}
 
@@ -627,8 +626,7 @@ public class DataEngine
 		if (columns.size() == 0)
 		{
 			log.log(Level.SEVERE, "No Colums - Delete Report Format " + reportName + " and start again");
-			if (log.isLoggable(Level.FINEST))
-				log.finest("No Colums - SQL=" + sql + " - ID=" + format.get_ID());
+			if (log.isLoggable(Level.FINEST)) log.finest("No Colums - SQL=" + sql + " - ID=" + format.get_ID());
 			return null;
 		}
 

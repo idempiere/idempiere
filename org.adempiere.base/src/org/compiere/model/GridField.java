@@ -339,7 +339,7 @@ public class GridField
 		if (checkContext && m_vo.MandatoryLogic.length() > 0)
 		{
 			boolean retValue = Evaluator.evaluateLogic(this, m_vo.MandatoryLogic);
-			log.finest(m_vo.ColumnName + " Mandatory(" + m_vo.MandatoryLogic + ") => Mandatory-" + retValue);
+			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " Mandatory(" + m_vo.MandatoryLogic + ") => Mandatory-" + retValue);
 			if (retValue)
 				return true;
 		}
@@ -373,7 +373,7 @@ public class GridField
 		if (checkContext && m_vo.ReadOnlyLogic.length() > 0)
 		{
 			boolean retValue = !Evaluator.evaluateLogic(this, m_vo.ReadOnlyLogic);
-			log.finest(m_vo.ColumnName + " R/O(" + m_vo.ReadOnlyLogic + ") => R/W-" + retValue);
+			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " R/O(" + m_vo.ReadOnlyLogic + ") => R/W-" + retValue);
 			if (!retValue)
 				return false;
 		}
@@ -423,21 +423,21 @@ public class GridField
 		//  Tab or field is R/O
 		if (m_vo.tabReadOnly || m_vo.IsReadOnly)
 		{
-			log.finest(m_vo.ColumnName + " NO - TabRO=" + m_vo.tabReadOnly + ", FieldRO=" + m_vo.IsReadOnly);
+			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " NO - TabRO=" + m_vo.tabReadOnly + ", FieldRO=" + m_vo.IsReadOnly);
 			return false;
 		}
 
 		//	Not Updateable - only editable if new updateable row
 		if (!m_vo.IsUpdateable && !m_inserting)
 		{
-			log.finest(m_vo.ColumnName + " NO - FieldUpdateable=" + m_vo.IsUpdateable);
+			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " NO - FieldUpdateable=" + m_vo.IsUpdateable);
 			return false;
 		}
 
 		//	Field is the Link Column of the tab
 		if (m_vo.ColumnName.equals(Env.getContext(ctx, m_vo.WindowNo, m_vo.TabNo, GridTab.CTX_LinkColumnName)))
 		{
-			log.finest(m_vo.ColumnName + " NO - LinkColumn");
+			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " NO - LinkColumn");
 			return false;
 		}
 
@@ -464,7 +464,7 @@ public class GridField
 		if (checkContext && m_vo.ReadOnlyLogic.length() > 0)
 		{
 			boolean retValue = !Evaluator.evaluateLogic(this, m_vo.ReadOnlyLogic);
-			log.finest(m_vo.ColumnName + " R/O(" + m_vo.ReadOnlyLogic + ") => R/W-" + retValue);
+			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " R/O(" + m_vo.ReadOnlyLogic + ") => R/W-" + retValue);
 			if (!retValue)
 				return false;
 		}
@@ -794,7 +794,7 @@ public class GridField
 			// need to re-set invalid values - OK BPartner in PO Line - not OK SalesRep in Invoice
 			if (m_lookup.getDirect(m_value, false, true) == null)
 			{
-				log.finest(m_vo.ColumnName + " Serach not valid - set to null");
+				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " Serach not valid - set to null");
 				setValue(null, m_inserting);
 				m_error = true;
 				return false;
@@ -811,7 +811,7 @@ public class GridField
 		if (isKey() || isParentValue())		//	parents/ket are not validated
 			return true;	
 			
-		log.finest(m_vo.ColumnName + " - set to null");
+		if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " - set to null");
 		setValue(null, m_inserting);
 		m_error = true;
 		return false;
@@ -852,7 +852,7 @@ public class GridField
 				}
 			};
 			boolean retValue = Evaluator.evaluateLogic(evaluatee, m_vo.DisplayLogic);
-			log.finest(m_vo.ColumnName 
+			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName 
 				+ " (" + m_vo.DisplayLogic + ") => " + retValue);
 			return retValue;
 		}
@@ -1804,8 +1804,7 @@ public class GridField
 	private final void backupValue() {
 		if (!m_isBackupValue) {
 			m_backupValue = get_ValueAsString(m_vo.ColumnName);
-			if (CLogMgt.isLevelFinest())
-				log.finest("Backup " + m_vo.WindowNo + "|" + m_vo.ColumnName + "=" + m_backupValue);
+			if (log.isLoggable(Level.FINEST)) log.finest("Backup " + m_vo.WindowNo + "|" + m_vo.ColumnName + "=" + m_backupValue);
 			m_isBackupValue = true;
 		}
 	}
@@ -1818,14 +1817,12 @@ public class GridField
 		if (m_isBackupValue) {
 			if (isParentTabField())
 			{
-				if (CLogMgt.isLevelFinest())
-					log.finest("Restore " + m_vo.WindowNo + "|" + m_vo.TabNo + "|" + m_vo.ColumnName + "=" + m_backupValue);
+				if (log.isLoggable(Level.FINEST)) log.finest("Restore " + m_vo.WindowNo + "|" + m_vo.TabNo + "|" + m_vo.ColumnName + "=" + m_backupValue);
 				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName, m_backupValue);
 			}
 			else
 			{
-				if (CLogMgt.isLevelFinest())
-					log.finest("Restore " + m_vo.WindowNo + "|" + m_vo.ColumnName + "=" + m_backupValue);
+				if (log.isLoggable(Level.FINEST)) log.finest("Restore " + m_vo.WindowNo + "|" + m_vo.ColumnName + "=" + m_backupValue);
 				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.ColumnName, m_backupValue);
 			}
 		}

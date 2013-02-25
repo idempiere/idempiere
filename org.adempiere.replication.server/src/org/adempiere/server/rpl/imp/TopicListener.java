@@ -31,6 +31,7 @@
 package org.adempiere.server.rpl.imp;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
@@ -190,14 +191,14 @@ public class TopicListener implements MessageListener {
 	
 	public void run() throws JMSException {
 		ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory( url );
-		log.finest("ActiveMQConnectionFactory = " + factory);
+		if (log.isLoggable(Level.FINEST)) log.finest("ActiveMQConnectionFactory = " + factory);
 		
 		if (userName !=null && password !=null) {
 			conn = factory.createConnection(userName, password);
 		} else {
 			conn = factory.createConnection();
 		}
-		log.finest("conn = " + conn );
+		if (log.isLoggable(Level.FINEST)) log.finest("conn = " + conn );
 		
 		if (conn.getClientID()==null)
 		{
@@ -233,13 +234,14 @@ public class TopicListener implements MessageListener {
 		
 		
 		session = conn.createSession(true, Session.AUTO_ACKNOWLEDGE); // TODO - could be parameter
-		log.finest("session = " + session );
-		
-		log.finest("topicName = " + topicName );
-		log.finest("subscriptionName = " + subscriptionName);
+		if (log.isLoggable(Level.FINEST)){
+			log.finest("session = " + session );
+			log.finest("topicName = " + topicName );
+			log.finest("subscriptionName = " + subscriptionName);
+		}
 		
 		topic = session.createTopic( topicName );
-		log.finest("topic = " + topic );
+		if (log.isLoggable(Level.FINEST)) log.finest("topic = " + topic );
 		
 		MessageConsumer consumer = null;
 		if (isDurableSubscription) {
@@ -250,7 +252,7 @@ public class TopicListener implements MessageListener {
 			consumer = session.createConsumer( topic );	
 		}
 		
-		log.finest("consumer = " + consumer );
+		if (log.isLoggable(Level.FINEST)) log.finest("consumer = " + consumer );
 		
 		consumer.setMessageListener( this );
 
@@ -264,7 +266,7 @@ public class TopicListener implements MessageListener {
 			;
 			pLog.setReference( logReference.toString() );
 			boolean resultSave = pLog.save();
-			log.finest("Result Save = " + resultSave);
+			if (log.isLoggable(Level.FINEST)) log.finest("Result Save = " + resultSave);
 		}
 		
 	}
@@ -279,7 +281,7 @@ public class TopicListener implements MessageListener {
 				TextMessage txtMessage = (TextMessage) message;
 				
 				String text = txtMessage.getText();
-				log.finest("Received message: \n" + text );
+				if (log.isLoggable(Level.FINEST)) log.finest("Received message: \n" + text );
 
 				Document documentToBeImported = XMLHelper.createDocumentFromString( text );
 				StringBuffer result = new StringBuffer();
@@ -308,7 +310,7 @@ public class TopicListener implements MessageListener {
 			} 
 			catch (Exception e) 
 			{
-				log.finest("Rollback = " + e.toString());
+				if (log.isLoggable(Level.FINEST)) log.finest("Rollback = " + e.toString());
 				try 
 				{
 					session.rollback();

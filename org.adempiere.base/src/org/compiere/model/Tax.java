@@ -496,7 +496,7 @@ public class Tax
 		for (int i = 0; i < taxes.length; i++)
 		{
 			MTax tax = taxes[i];
-			log.finest(tax.toString());
+			if (log.isLoggable(Level.FINEST)) log.finest(tax.toString());
 			//
 			if (tax.getC_TaxCategory_ID() != C_TaxCategory_ID
 				|| !tax.isActive() 
@@ -507,15 +507,15 @@ public class Tax
 			if (!IsSOTrx && MTax.SOPOTYPE_SalesTax.equals(tax.getSOPOType()))
 				continue;
 			
-			log.finest("From Country - " + (tax.getC_Country_ID() == lFrom.getC_Country_ID() 
+			if (log.isLoggable(Level.FINEST)) log.finest("From Country - " + (tax.getC_Country_ID() == lFrom.getC_Country_ID() 
 				|| tax.getC_Country_ID() == 0));
-			log.finest("From Region - " + (tax.getC_Region_ID() == lFrom.getC_Region_ID() 
+			if (log.isLoggable(Level.FINEST)) log.finest("From Region - " + (tax.getC_Region_ID() == lFrom.getC_Region_ID() 
 				|| tax.getC_Region_ID() == 0));
-			log.finest("To Country - " + (tax.getTo_Country_ID() == lTo.getC_Country_ID() 
+			if (log.isLoggable(Level.FINEST)) log.finest("To Country - " + (tax.getTo_Country_ID() == lTo.getC_Country_ID() 
 				|| tax.getTo_Country_ID() == 0));
-			log.finest("To Region - " + (tax.getTo_Region_ID() == lTo.getC_Region_ID() 
+			if (log.isLoggable(Level.FINEST)) log.finest("To Region - " + (tax.getTo_Region_ID() == lTo.getC_Region_ID() 
 				|| tax.getTo_Region_ID() == 0));
-			log.finest("Date valid - " + (!tax.getValidFrom().after(billDate)));
+			if (log.isLoggable(Level.FINEST)) log.finest("Date valid - " + (!tax.getValidFrom().after(billDate)));
 			
 				//	From Country
 			if ((tax.getC_Country_ID() == lFrom.getC_Country_ID() 

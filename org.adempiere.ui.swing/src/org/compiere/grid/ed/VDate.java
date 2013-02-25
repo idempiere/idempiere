@@ -329,7 +329,7 @@ public class VDate extends JComponent
 	 */
 	public void setValue (Object value)
 	{
-		log.finest("Value=" + value);
+		if (log.isLoggable(Level.FINEST)) log.finest("Value=" + value);
 		m_oldText = "";
 		if (value == null)
 			;
@@ -471,7 +471,7 @@ public class VDate extends JComponent
 	 */
 	public void keyReleased(KeyEvent e)
 	{
-		log.finest("Key=" + e.getKeyCode() + " - " + e.getKeyChar() 
+		if (log.isLoggable(Level.FINEST)) log.finest("Key=" + e.getKeyCode() + " - " + e.getKeyChar() 
 			+ " -> " + m_text.getText());
 		//  ESC
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE)

@@ -90,7 +90,7 @@ public class MReportLineSet extends X_PA_ReportLineSet
 		//
 		m_lines = new MReportLine[list.size()];
 		list.toArray(m_lines);
-		log.finest("ID=" + getPA_ReportLineSet_ID()
+		if (log.isLoggable(Level.FINEST)) log.finest("ID=" + getPA_ReportLineSet_ID()
 			+ " - Size=" + list.size());
 	}	//	loadColumns
 

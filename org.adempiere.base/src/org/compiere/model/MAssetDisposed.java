@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
@@ -50,7 +51,7 @@ implements DocAction
 	
 	private MAssetDisposed (MInvoiceLine invLine) {
 		this(invLine.getCtx(),0,invLine.get_TrxName());
-		log.finest("Entering: Project=" + invLine);
+		if (log.isLoggable(Level.FINEST)) log.finest("Entering: Project=" + invLine);
 		setAD_Org_ID(invLine.getAD_Org_ID());
 		setPostingType(POSTINGTYPE_Actual);
 		setDateDoc(invLine.getC_Invoice().getDateInvoiced());

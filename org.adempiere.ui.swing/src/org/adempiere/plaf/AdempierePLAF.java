@@ -376,10 +376,10 @@ public final class AdempierePLAF
 			if (lfInfo[i].getName().equals(org.adempiere.plaf.AdempiereLookAndFeel.NAME))
 			{
 				s_defaultPLAF = vp;
-				log.finest(vp.getName() + " (default)");
+				if (log.isLoggable(Level.FINEST)) log.finest(vp.getName() + " (default)");
 			}
 			else
-				log.finest(vp.getName());
+				if (log.isLoggable(Level.FINEST)) log.finest(vp.getName());
 		}
 		s_looks = new ValueNamePair[plafList.size()];
 		plafList.toArray(s_looks);

@@ -470,7 +470,7 @@ public class FinReport extends SvrProcess
 			
 			//	Parameter Where
 			select.append(m_parameterWhere);
-			log.finest("Line=" + line + ",Col=" + line + ": " + select);
+			if (log.isLoggable(Level.FINEST)) log.finest("Line=" + line + ",Col=" + line + ": " + select);
 
 			//	Update SET portion
 			if (update.length() > 0)
@@ -478,7 +478,7 @@ public class FinReport extends SvrProcess
 			update.append("Col_").append(col)
 				.append(" = (").append(select).append(")");
 			//
-			log.finest(info.toString());
+			if (log.isLoggable(Level.FINEST)) log.finest(info.toString());
 		}
 		//	Update Line Values
 		if (update.length() > 0)
@@ -490,7 +490,7 @@ public class FinReport extends SvrProcess
 			int no = DB.executeUpdate(update.toString(), get_TrxName());
 			if (no != 1)
 				log.log(Level.SEVERE, "#=" + no + " for " + update);
-			log.finest(update.toString());
+			if (log.isLoggable(Level.FINEST)) log.finest(update.toString());
 		}
 	}	//	insertLine
 
@@ -553,7 +553,7 @@ public class FinReport extends SvrProcess
 				else
 				{
 					log.fine("(+) Line=" + line + " - " + m_lines[line]);
-					log.finest ("(+) " + sb.toString ());
+					if (log.isLoggable(Level.FINEST)) log.finest ("(+) " + sb.toString ());
 				}
 			}
 			else	//	No Add (subtract, percent)
@@ -629,7 +629,7 @@ public class FinReport extends SvrProcess
 				else
 				{
 					log.fine("(x) Line=" + line + " - " + m_lines[line]);
-					log.finest (sb.toString());
+					if (log.isLoggable(Level.FINEST)) log.finest (sb.toString());
 				}
 			}
 		}	//	for all lines
@@ -705,7 +705,7 @@ public class FinReport extends SvrProcess
 			else
 			{
 				log.fine("Col=" + col + " - " + m_columns[col]);
-				log.finest (sb.toString ());
+				if (log.isLoggable(Level.FINEST)) log.finest (sb.toString ());
 			}
 		} 	//	for all columns
 
@@ -719,7 +719,7 @@ public class FinReport extends SvrProcess
 	 */
 	private String getLineIDs (int fromID, int toID)
 	{
-		log.finest("From=" + fromID + " To=" + toID);
+		if (log.isLoggable(Level.FINEST)) log.finest("From=" + fromID + " To=" + toID);
 		int firstPA_ReportLine_ID = 0;
 		int lastPA_ReportLine_ID = 0;
 		
@@ -745,7 +745,7 @@ public class FinReport extends SvrProcess
 		for (int line = 0; line < m_lines.length; line++)
 		{
 			int PA_ReportLine_ID = m_lines[line].getPA_ReportLine_ID();
-			log.finest("Add=" + addToList 
+			if (log.isLoggable(Level.FINEST)) log.finest("Add=" + addToList 
 				+ " ID=" + PA_ReportLine_ID + " - " + m_lines[line]);
 			if (addToList)
 			{
@@ -1114,7 +1114,7 @@ public class FinReport extends SvrProcess
 //		}
 
 		int no = DB.executeUpdate(insert.toString(), get_TrxName());
-		log.finest("Trx #=" + no + " - " + insert);
+		if (log.isLoggable(Level.FINEST)) log.finest("Trx #=" + no + " - " + insert);
 		if (no == 0)
 			return;
 	}	//	insertLineTrx

@@ -639,7 +639,7 @@ public class VLookup extends JComponent
 			//  lookup found nothing too
 			if (notFound)
 			{
-				log.finest(m_columnName + "=" + value + ": Not found - " + m_lastDisplay);
+				if (log.isLoggable(Level.FINEST)) log.finest(m_columnName + "=" + value + ": Not found - " + m_lastDisplay);
 				//  we may have a new value
 				m_lookup.refresh();
 				m_combo.setValue (value);
@@ -1019,7 +1019,7 @@ public class VLookup extends JComponent
 				sql.append(" AND ").append(wc);
 			sql.append(" AND IsActive='Y'");
 			//	***
-			log.finest(m_columnName + " (predefined) " + sql.toString());
+			if (log.isLoggable(Level.FINEST)) log.finest(m_columnName + " (predefined) " + sql.toString());
 			return MRole.getDefault().addAccessSQL(sql.toString(),
 				m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 		}
@@ -1199,7 +1199,7 @@ public class VLookup extends JComponent
 				sql.append(" AND ").append(wc);
 			sql.append(" AND IsActive='Y'");
 			//	***
-			log.finest(m_columnName + " (predefined) " + sql.toString());
+			if (log.isLoggable(Level.FINEST)) log.finest(m_columnName + " (predefined) " + sql.toString());
 			return MRole.getDefault().addAccessSQL(sql.toString(),
 				m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 		}
@@ -1252,7 +1252,7 @@ public class VLookup extends JComponent
 					if (wc != null && wc.length() > 0)
 						sql.append(" AND ").append(wc);
 					//	***
-					log.finest(m_columnName + " (Table) " + sql.toString());
+					if (log.isLoggable(Level.FINEST)) log.finest(m_columnName + " (Table) " + sql.toString());
 					return MRole.getDefault().addAccessSQL(sql.toString(),
 								m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 				}
@@ -1307,7 +1307,7 @@ public class VLookup extends JComponent
 		if (wc != null && wc.length() > 0)
 			retValue.append(" AND ").append(wc);
 		//	***
-		log.finest(m_columnName + " (TableDir) " + sql.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(m_columnName + " (TableDir) " + sql.toString());
 		return MRole.getDefault().addAccessSQL(retValue.toString(),
 					m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 	}	//	getDirectAccessSQL

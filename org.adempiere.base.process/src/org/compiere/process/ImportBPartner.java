@@ -336,7 +336,7 @@ implements ImportProcess
 						{
 							impBP.setC_BPartner_ID(bp.getC_BPartner_ID());
 							msglog = new StringBuilder("Insert BPartner - ").append(bp.getC_BPartner_ID());
-							log.finest(msglog.toString());
+							if (log.isLoggable(Level.FINEST)) log.finest(msglog.toString());
 							noInsert++;
 						}
 						else
@@ -377,7 +377,7 @@ implements ImportProcess
 						if (bp.save())
 						{
 							msglog = new StringBuilder("Update BPartner - ").append(bp.getC_BPartner_ID());
-							log.finest(msglog.toString());
+							if (log.isLoggable(Level.FINEST)) log.finest(msglog.toString());
 							noUpdate++;
 						}
 						else
@@ -430,7 +430,7 @@ implements ImportProcess
 							location.setPostal_Add(impBP.getPostal_Add());
 							if (location.save()){
 								msglog = new StringBuilder("Insert Location - ").append(location.getC_Location_ID());
-								log.finest(msglog.toString());
+								if (log.isLoggable(Level.FINEST)) log.finest(msglog.toString());
 							}	
 							else
 							{
@@ -453,7 +453,7 @@ implements ImportProcess
 							if (bpl.save())
 							{
 								msglog = new StringBuilder("Insert BP Location - ").append(bpl.getC_BPartner_Location_ID());
-								log.finest(msglog.toString());
+								if (log.isLoggable(Level.FINEST)) log.finest(msglog.toString());
 								impBP.setC_BPartner_Location_ID(bpl.getC_BPartner_Location_ID());
 							}
 							else
@@ -518,7 +518,7 @@ implements ImportProcess
 					if (user.save())
 					{
 						msglog = new StringBuilder("Update BP Contact - ").append(user.getAD_User_ID());
-						log.finest(msglog.toString());
+						if (log.isLoggable(Level.FINEST)) log.finest(msglog.toString());
 					}
 					else
 					{
@@ -556,7 +556,7 @@ implements ImportProcess
 						if (user.save())
 						{
 							msglog = new StringBuilder("Insert BP Contact - ").append(user.getAD_User_ID());
-							log.finest(msglog.toString());
+							if (log.isLoggable(Level.FINEST)) log.finest(msglog.toString());
 							impBP.setAD_User_ID(user.getAD_User_ID());
 						}
 						else

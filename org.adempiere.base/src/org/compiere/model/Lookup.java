@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import javax.swing.AbstractListModel;
 import javax.swing.MutableComboBoxModel;
@@ -286,7 +287,7 @@ public abstract class Lookup extends AbstractListModel
 		//  Selected Object changed
 		if (obj != m_selectedObject)
 		{
-			log.finest(getColumnName() + ": SelectedValue Changed=" + obj + "->" + m_selectedObject);
+			if (log.isLoggable(Level.FINEST)) log.finest(getColumnName() + ": SelectedValue Changed=" + obj + "->" + m_selectedObject);
 			obj = m_selectedObject;
 		}
 

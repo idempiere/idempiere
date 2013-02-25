@@ -835,8 +835,7 @@ public abstract class PO
 							+ value + " - Reference_ID=" + p_info.getColumn(index).AD_Reference_Value_ID + validValues.toString());
 				}
 			}
-			if (CLogMgt.isLevelFinest())
-				log.finest(ColumnName + " = " + m_newValues[index] + " (OldValue="+m_oldValues[index]+")");
+			if (log.isLoggable(Level.FINEST)) log.finest(ColumnName + " = " + m_newValues[index] + " (OldValue="+m_oldValues[index]+")");
 		}
 		set_Keys (ColumnName, m_newValues[index]);
 
@@ -940,7 +939,7 @@ public abstract class PO
 				}
 			}
 		}
-		log.finest(ColumnName + " = " + m_newValues[index]
+		if (log.isLoggable(Level.FINEST)) log.finest(ColumnName + " = " + m_newValues[index]
 				+ " (" + (m_newValues[index]==null ? "-" : m_newValues[index].getClass().getName()) + ")");
 		set_Keys (ColumnName, m_newValues[index]);
 
@@ -1276,7 +1275,7 @@ public abstract class PO
 	 */
 	protected void load (int ID, String trxName)
 	{
-		log.finest("ID=" + ID);
+		if (log.isLoggable(Level.FINEST)) log.finest("ID=" + ID);
 		if (ID > 0)
 		{
 			setKeyInfo();
@@ -1317,8 +1316,7 @@ public abstract class PO
 
 		//
 	//	int index = -1;
-		if (CLogMgt.isLevelFinest())
-			log.finest(get_WhereClause(true));
+		if (log.isLoggable(Level.FINEST)) log.finest(get_WhereClause(true));
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -1571,7 +1569,7 @@ public abstract class PO
 	 */
 	protected Object loadSpecial (ResultSet rs, int index) throws SQLException
 	{
-		log.finest("(NOP) - " + p_info.getColumnName(index));
+		if (log.isLoggable(Level.FINEST)) log.finest("(NOP) - " + p_info.getColumnName(index));
 		return null;
 	}   //  loadSpecial
 
@@ -1649,7 +1647,7 @@ public abstract class PO
 					m_IDs = new Object[] {I_ZERO};
 				else
 					m_IDs = new Object[] {ii};
-				log.finest("(PK) " + ColumnName + "=" + ii);
+				if (log.isLoggable(Level.FINEST)) log.finest("(PK) " + ColumnName + "=" + ii);
 				}
 				else
 				{
@@ -1658,7 +1656,7 @@ public abstract class PO
 						m_IDs = new Object[] {null};
 					else
 						m_IDs = new Object[] {oo};
-					log.finest("(PK) " + ColumnName + "=" + oo);
+					if (log.isLoggable(Level.FINEST)) log.finest("(PK) " + ColumnName + "=" + oo);
 				}
 				return;
 			}
@@ -1696,7 +1694,7 @@ public abstract class PO
 			}
 			else
 				m_IDs[i] = get_Value(m_KeyColumns[i]);
-			log.finest("(FK) " + m_KeyColumns[i] + "=" + m_IDs[i]);
+			if (log.isLoggable(Level.FINEST)) log.finest("(FK) " + m_KeyColumns[i] + "=" + m_IDs[i]);
 		}
 	}	//	setKeyInfo
 
@@ -2602,7 +2600,7 @@ public abstract class PO
 			sql.append(" WHERE ").append(where);
 			/** @todo status locking goes here */
 
-			log.finest(sql.toString());
+			if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
 			int no = 0;
 			if (isUseTimeoutForUpdate())
 				no = withValues ? DB.executeUpdateEx(sql.toString(), m_trxName, QUERY_TIME_OUT)
@@ -3895,13 +3893,13 @@ public abstract class PO
 		StringBuilder sb = new StringBuilder(" ").append(index);
 		if (index < 0 || index >= get_ColumnCount())
 		{
-			log.finest(sb.append(": invalid").toString());
+			if (log.isLoggable(Level.FINEST)) log.finest(sb.append(": invalid").toString());
 			return;
 		}
 		sb.append(": ").append(get_ColumnName(index))
 			.append(" = ").append(m_oldValues[index])
 			.append(" (").append(m_newValues[index]).append(")");
-		log.finest(sb.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(sb.toString());
 	}   //  dump
 
 
@@ -4037,7 +4035,7 @@ public abstract class PO
 	 */
 	private void lobAdd (Object value, int index, int displayType)
 	{
-		log.finest("Value=" + value);
+		if (log.isLoggable(Level.FINEST)) log.finest("Value=" + value);
 		PO_LOB lob = new PO_LOB (p_info.getTableName(), get_ColumnName(index),
 			get_WhereClause(true), displayType, value);
 		if (m_lobInfo == null)
