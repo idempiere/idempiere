@@ -624,10 +624,10 @@ public final class ImpFormat
 				log.log(Level.SEVERE, "Insert records=" + no + "; SQL=" + sql.toString());
 				return false;
 			}
-			log.finer("New ID=" + ID + " " + find);
+			if (log.isLoggable(Level.FINER)) log.finer("New ID=" + ID + " " + find);
 		}
 		else
-			log.finer("Old ID=" + ID + " " + find);
+			if (log.isLoggable(Level.FINER)) log.finer("Old ID=" + ID + " " + find);
 
 		//	Update Info -------------------------------------------------------
 		sql = new StringBuilder ("UPDATE ")

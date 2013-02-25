@@ -759,7 +759,7 @@ public abstract class PO
 				throw new IllegalArgumentException (ColumnName + " is mandatory.");
 			}
 			m_newValues[index] = Null.NULL;          //  correct
-			log.finer(ColumnName + " = null");
+			if (log.isLoggable(Level.FINER)) log.finer(ColumnName + " = null");
 		}
 		else
 		{

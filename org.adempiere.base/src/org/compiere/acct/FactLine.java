@@ -777,7 +777,7 @@ public final class FactLine extends X_Fact_Acct
 				if (rs.next())
 				{
 					setAD_Org_ID (rs.getInt(1));
-					log.finer("AD_Org_ID=" + super.getAD_Org_ID() + " (1 from M_Locator_ID=" + getM_Locator_ID() + ")");
+					if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + super.getAD_Org_ID() + " (1 from M_Locator_ID=" + getM_Locator_ID() + ")");
 				}
 				else
 					log.log(Level.SEVERE, "AD_Org_ID - Did not find M_Locator_ID=" + getM_Locator_ID());
@@ -796,7 +796,7 @@ public final class FactLine extends X_Fact_Acct
 		if (m_docLine != null && super.getAD_Org_ID() == 0)
 		{
 			setAD_Org_ID (m_docLine.getAD_Org_ID());
-			log.finer("AD_Org_ID=" + super.getAD_Org_ID() + " (2 from DocumentLine)");
+			if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + super.getAD_Org_ID() + " (2 from DocumentLine)");
 		}
 		//	Prio 3 - get from doc - if not GL
 		if (m_doc != null && super.getAD_Org_ID() == 0)
@@ -804,12 +804,12 @@ public final class FactLine extends X_Fact_Acct
 			if (Doc.DOCTYPE_GLJournal.equals (m_doc.getDocumentType()))
 			{
 				setAD_Org_ID (m_acct.getAD_Org_ID()); //	inter-company GL
-				log.finer("AD_Org_ID=" + super.getAD_Org_ID() + " (3 from Acct)");
+				if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + super.getAD_Org_ID() + " (3 from Acct)");
 			}
 			else
 			{
 				setAD_Org_ID (m_doc.getAD_Org_ID());
-				log.finer("AD_Org_ID=" + super.getAD_Org_ID() + " (3 from Document)");
+				if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + super.getAD_Org_ID() + " (3 from Document)");
 			}
 		}
 		//	Prio 4 - get from account - if not GL
@@ -818,12 +818,12 @@ public final class FactLine extends X_Fact_Acct
 			if (Doc.DOCTYPE_GLJournal.equals (m_doc.getDocumentType()))
 			{
 				setAD_Org_ID (m_doc.getAD_Org_ID());
-				log.finer("AD_Org_ID=" + super.getAD_Org_ID() + " (4 from Document)");
+				if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + super.getAD_Org_ID() + " (4 from Document)");
 			}
 			else
 			{
 				setAD_Org_ID (m_acct.getAD_Org_ID());
-				log.finer("AD_Org_ID=" + super.getAD_Org_ID() + " (4 from Acct)");
+				if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + super.getAD_Org_ID() + " (4 from Acct)");
 			}
 		}
 		return super.getAD_Org_ID();

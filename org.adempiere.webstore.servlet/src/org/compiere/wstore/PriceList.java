@@ -113,7 +113,7 @@ public class PriceList
 	private PriceList (Properties ctx, int AD_Client_ID, int M_PriceList_ID, 
 		String searchString, int M_Product_Category_ID, boolean allRecords)
 	{
-		log.finer("AD_Client_ID=" + AD_Client_ID + ", M_PriceList_ID=" + M_PriceList_ID
+		if (log.isLoggable(Level.FINER)) log.finer("AD_Client_ID=" + AD_Client_ID + ", M_PriceList_ID=" + M_PriceList_ID
 				+ ", Search=" + searchString + ",M_Product_Category_ID=" + M_Product_Category_ID
 				+ ", All=" + allRecords);
 		m_ctx = ctx;
@@ -256,7 +256,7 @@ public class PriceList
 	private void loadProducts (String searchString, int M_Product_Category_ID, boolean allRecords)
 	{
 		//	Set Search String
-		log.finer("loadProducts - M_PriceList_Version_ID=" + m_PriceList_Version_ID
+		if (log.isLoggable(Level.FINER)) log.finer("loadProducts - M_PriceList_Version_ID=" + m_PriceList_Version_ID
 				+ ", Search=" + searchString + ", M_Product_Category_ID=" + M_Product_Category_ID);
 		m_searchInfo = "";
 		if (searchString != null)

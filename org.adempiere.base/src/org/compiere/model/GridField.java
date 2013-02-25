@@ -301,7 +301,7 @@ public class GridField
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < list.size(); i++)
 				sb.append(list.get(i)).append(" ");
-			log.finer("(" + m_vo.ColumnName + ") " + sb.toString());
+			if (log.isLoggable(Level.FINER)) log.finer("(" + m_vo.ColumnName + ") " + sb.toString());
 		}
 		return list;
 	}   //  getDependentOn

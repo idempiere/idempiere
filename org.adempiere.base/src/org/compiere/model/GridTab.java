@@ -466,7 +466,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < list.size(); i++)
 				sb.append(list.get(i)).append(" ");
-			log.finer("(" + m_vo.Name + ") " + sb.toString());
+			if (log.isLoggable(Level.FINER)) log.finer("(" + m_vo.Name + ") " + sb.toString());
 		}
 		return list;
 	}   //  getDependentOn

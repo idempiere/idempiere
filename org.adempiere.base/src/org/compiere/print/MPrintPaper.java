@@ -155,7 +155,7 @@ public class MPrintPaper extends X_AD_PrintPaper
 				if (name.equalsIgnoreCase(nameCode))
 				{
 					nameMedia = (MediaSizeName)msn.getEnumValueTable()[i];
-					log.finer("Name=" + nameMedia);
+					if (log.isLoggable(Level.FINER)) log.finer("Name=" + nameMedia);
 					break;
 				}
 			}

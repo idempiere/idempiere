@@ -876,7 +876,7 @@ public class MCostDetail extends X_M_CostDetail
 			if (ce.isAveragePO())
 			{
 				cost.setWeightedAverage(amt, qty);
-				log.finer("PO - AveragePO - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("PO - AveragePO - " + cost);
 			}
 			else if (ce.isLastPOPrice())
 			{
@@ -891,7 +891,7 @@ public class MCostDetail extends X_M_CostDetail
 					}
 				}
 				cost.add(amt, qty);
-				log.finer("PO - LastPO - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("PO - LastPO - " + cost);
 			}
 			else if (ce.isStandardCosting())
 			{								
@@ -908,16 +908,16 @@ public class MCostDetail extends X_M_CostDetail
 					if (log.isLoggable(Level.FINEST)) log.finest("PO - Standard - CurrentCostPrice(seed)="+cost.getCurrentCostPrice()+", price="+price);
 				}
 				cost.add(amt, qty);
-				log.finer("PO - Standard - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("PO - Standard - " + cost);
 			}
 			else if (ce.isUserDefined())
 			{
 				//	Interface
-				log.finer("PO - UserDef - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("PO - UserDef - " + cost);
 			}
 			else if (!ce.isCostingMethod())
 			{
-				log.finer("PO - " + ce + " - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("PO - " + ce + " - " + cost);
 			}
 		//	else
 		//		log.warning("PO - " + ce + " - " + cost);
@@ -931,7 +931,7 @@ public class MCostDetail extends X_M_CostDetail
 			if (ce.isAverageInvoice())
 			{
 				cost.setWeightedAverage(amt, qty);
-				log.finer("Inv - AverageInv - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("Inv - AverageInv - " + cost);
 			}
 			else if (ce.isFifo()
 				|| ce.isLifo())
@@ -947,7 +947,7 @@ public class MCostDetail extends X_M_CostDetail
 				if (cQueue != null && cQueue.length > 0)
 					cost.setCurrentCostPrice(cQueue[0].getCurrentCostPrice());
 				cost.add(amt, qty);
-				log.finer("Inv - FiFo/LiFo - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("Inv - FiFo/LiFo - " + cost);
 			}
 			else if (ce.isLastInvoice())
 			{
@@ -962,7 +962,7 @@ public class MCostDetail extends X_M_CostDetail
 					}
 				}
 				cost.add(amt, qty);
-				log.finer("Inv - LastInv - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("Inv - LastInv - " + cost);
 			}
 			else if (ce.isStandardCosting())
 			{
@@ -980,13 +980,13 @@ public class MCostDetail extends X_M_CostDetail
 					}
 					cost.add(amt, qty);
 				}				
-				log.finer("Inv - Standard - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("Inv - Standard - " + cost);
 			}
 			else if (ce.isUserDefined())
 			{
 				//	Interface
 				cost.add(amt, qty);
-				log.finer("Inv - UserDef - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("Inv - UserDef - " + cost);
 			}
 			else if (!ce.isCostingMethod())		//	Cost Adjustments
 			{
@@ -1031,7 +1031,7 @@ public class MCostDetail extends X_M_CostDetail
 					cost.add(amt, qty);
 				}
 				// end AZ
-				log.finer("Inv - Landed Costs - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("Inv - Landed Costs - " + cost);
 			}
 		//	else
 		//		log.warning("Inv - " + ce + " - " + cost);
@@ -1061,7 +1061,7 @@ public class MCostDetail extends X_M_CostDetail
 				}
 				else
 					cost.setCurrentQty(cost.getCurrentQty().add(qty));
-				log.finer("QtyAdjust - AverageInv - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - AverageInv - " + cost);
 			}
 			else if (ce.isAveragePO())
 			{
@@ -1077,7 +1077,7 @@ public class MCostDetail extends X_M_CostDetail
 				}
 				else
 					cost.setCurrentQty(cost.getCurrentQty().add(qty));
-				log.finer("QtyAdjust - AveragePO - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - AveragePO - " + cost);
 			}
 			else if (ce.isFifo() || ce.isLifo())
 			{
@@ -1101,17 +1101,17 @@ public class MCostDetail extends X_M_CostDetail
 				if (cQueue != null && cQueue.length > 0)
 					cost.setCurrentCostPrice(cQueue[0].getCurrentCostPrice());
 				cost.setCurrentQty(cost.getCurrentQty().add(qty));
-				log.finer("QtyAdjust - FiFo/Lifo - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - FiFo/Lifo - " + cost);
 			}
 			else if (ce.isLastInvoice())
 			{
 				cost.setCurrentQty(cost.getCurrentQty().add(qty));
-				log.finer("QtyAdjust - LastInv - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - LastInv - " + cost);
 			}
 			else if (ce.isLastPOPrice())
 			{
 				cost.setCurrentQty(cost.getCurrentQty().add(qty));
-				log.finer("QtyAdjust - LastPO - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - LastPO - " + cost);
 			}
 			else if (ce.isStandardCosting())
 			{
@@ -1131,7 +1131,7 @@ public class MCostDetail extends X_M_CostDetail
 				{
 					cost.setCurrentQty(cost.getCurrentQty().add(qty));
 				}
-				log.finer("QtyAdjust - Standard - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - Standard - " + cost);
 			}
 			else if (ce.isUserDefined())
 			{
@@ -1140,12 +1140,12 @@ public class MCostDetail extends X_M_CostDetail
 					cost.add(amt, qty);
 				else
 					cost.setCurrentQty(cost.getCurrentQty().add(qty));
-				log.finer("QtyAdjust - UserDef - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - UserDef - " + cost);
 			}
 			else if (!ce.isCostingMethod())
 			{
 			//	Should not happen
-				log.finer("QtyAdjust - ?none? - " + cost);
+				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - ?none? - " + cost);
 			}
 			else
 				log.warning("QtyAdjust - " + ce + " - " + cost);

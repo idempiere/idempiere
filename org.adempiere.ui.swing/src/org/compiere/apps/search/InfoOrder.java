@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.ALayout;
@@ -288,7 +289,7 @@ public class InfoOrder extends Info
 		}
 		sql.append(" AND o.IsSOTrx=?");
 
-		log.finer(sql.toString());
+		if (log.isLoggable(Level.FINER)) log.finer(sql.toString());
 		return sql.toString();
 	}	//	getSQLWhere
 

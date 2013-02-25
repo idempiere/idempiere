@@ -198,7 +198,7 @@ public class ScheduleUtil
 					TimeUtil.getNextDay(date),	//	user entered date need to convert to not including end time
 					Msg.getMsg(m_ctx, "NonBusinessDay"), rs.getString(1),
 					MAssignmentSlot.STATUS_NonBusinessDay);
-				log.finer("- NonBusinessDay " + ma);
+				if (log.isLoggable(Level.FINER)) log.finer("- NonBusinessDay " + ma);
 				list.add(ma);
 			}
 		}

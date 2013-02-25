@@ -96,7 +96,7 @@ public class Doc_InOut extends Doc
 				|| line.getM_Product_ID() == 0
 				|| line.getMovementQty().signum() == 0)
 			{
-				log.finer("Ignored: " + line);
+				if (log.isLoggable(Level.FINER)) log.finer("Ignored: " + line);
 				continue;
 			}
 

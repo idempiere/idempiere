@@ -244,9 +244,9 @@ public class MDiscountSchema extends X_M_DiscountSchema
 		getBreaks(false);
 		BigDecimal Amt = Price.multiply(Qty);
 		if (isQuantityBased())
-			log.finer("Qty=" + Qty + ",M_Product_ID=" + M_Product_ID + ",M_Product_Category_ID=" + M_Product_Category_ID);
+			if (log.isLoggable(Level.FINER)) log.finer("Qty=" + Qty + ",M_Product_ID=" + M_Product_ID + ",M_Product_Category_ID=" + M_Product_Category_ID);
 		else
-			log.finer("Amt=" + Amt + ",M_Product_ID=" + M_Product_ID + ",M_Product_Category_ID=" + M_Product_Category_ID);
+			if (log.isLoggable(Level.FINER)) log.finer("Amt=" + Amt + ",M_Product_ID=" + M_Product_ID + ",M_Product_Category_ID=" + M_Product_Category_ID);
 		for (int i = 0; i < m_breaks.length; i++)
 		{
 			MDiscountSchemaBreak br = m_breaks[i];
@@ -257,19 +257,19 @@ public class MDiscountSchema extends X_M_DiscountSchema
 			{
 				if (!br.applies(Qty, M_Product_ID, M_Product_Category_ID))
 				{
-					log.finer("No: " + br);
+					if (log.isLoggable(Level.FINER)) log.finer("No: " + br);
 					continue;
 				}
-				log.finer("Yes: " + br);
+				if (log.isLoggable(Level.FINER)) log.finer("Yes: " + br);
 			}
 			else
 			{
 				if (!br.applies(Amt, M_Product_ID, M_Product_Category_ID))
 				{
-					log.finer("No: " + br);
+					if (log.isLoggable(Level.FINER)) log.finer("No: " + br);
 					continue;
 				}
-				log.finer("Yes: " + br);
+				if (log.isLoggable(Level.FINER)) log.finer("Yes: " + br);
 			}
 			
 			//	Line applies

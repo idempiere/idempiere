@@ -1112,7 +1112,7 @@ public class MRequest extends X_R_Request
 			message.append("\n----------\n").append(getResult());
 		message.append(getMailTrailer(null));
 		File pdf = createPDF();
-		log.finer(message.toString());
+		if (log.isLoggable(Level.FINER)) log.finer(message.toString());
 		
 		//	Prepare sending Notice/Mail
 		MClient client = MClient.get(getCtx());

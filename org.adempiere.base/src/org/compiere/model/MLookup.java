@@ -204,7 +204,7 @@ public final class MLookup extends Lookup implements Serializable
 		//	Not found and waiting for loader
 		if (m_loaderFuture != null && !m_loaderFuture.isDone())
 		{
-			log.finer((m_info.KeyColumn==null ? "ID="+m_info.Column_ID : m_info.KeyColumn) + ": waiting for Loader");
+			if (log.isLoggable(Level.FINER)) log.finer((m_info.KeyColumn==null ? "ID="+m_info.Column_ID : m_info.KeyColumn) + ": waiting for Loader");
 			loadComplete();
 			//	is most current
 			retValue = (NamePair)m_lookup.get(key);
@@ -482,7 +482,7 @@ public final class MLookup extends Lookup implements Serializable
 			if (directValue != null)
 				return directValue;
 		}
-		log.finer(m_info.KeyColumn + ": " + key 
+		if (log.isLoggable(Level.FINER)) log.finer(m_info.KeyColumn + ": " + key 
 				+ ", SaveInCache=" + saveInCache + ",Local=" + cacheLocal);
 		boolean isNumber = m_info.KeyColumn.endsWith("_ID");
 		PreparedStatement pstmt = null;
@@ -761,7 +761,7 @@ public final class MLookup extends Lookup implements Serializable
 			}
 			//
 			if (CLogMgt.isLevelFiner())
-				log.finer(m_info.Column_ID + ", " + m_info.KeyColumn + ": " + sql.toString());
+				if (log.isLoggable(Level.FINER)) log.finer(m_info.Column_ID + ", " + m_info.KeyColumn + ": " + sql.toString());
 			if (CLogMgt.isLevelFinest())
 				if (log.isLoggable(Level.FINEST)) log.finest(m_info.KeyColumn + ": " + sql);
 			
@@ -843,7 +843,7 @@ public final class MLookup extends Lookup implements Serializable
 				DB.close(rs, pstmt);
 			}
 			int size = m_lookup.size();
-			log.finer(m_info.KeyColumn
+			if (log.isLoggable(Level.FINER)) log.finer(m_info.KeyColumn
 					+ " (" + m_info.Column_ID + "):"
 				//	+ " ID=" + m_info.AD_Column_ID + " " +
 					+ " - Loader complete #" + size + " - all=" + m_allLoaded

@@ -523,7 +523,7 @@ public class ConfigOracle implements IDatabaseConfig
 		{
 			log.warning(ex.toString());
 		}
-		log.finer(sbOut.toString());
+		if (log.isLoggable(Level.FINER)) log.finer(sbOut.toString());
 		if (sbErr.length() > 0)
 			log.warning(sbErr.toString());
 		return result == 0;

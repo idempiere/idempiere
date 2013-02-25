@@ -654,7 +654,7 @@ public class Language implements Serializable
 	{
 		SimpleDateFormat retValue = (SimpleDateFormat)DateFormat.getDateTimeInstance
 			(DateFormat.MEDIUM, DateFormat.LONG, m_locale);
-	//	log.finer("Pattern=" + retValue.toLocalizedPattern() + ", Loc=" + retValue.toLocalizedPattern());
+	//	if (log.isLoggable(Level.FINER)) log.finer("Pattern=" + retValue.toLocalizedPattern() + ", Loc=" + retValue.toLocalizedPattern());
 		return retValue;
 	}	//	getDateTimeFormat
 

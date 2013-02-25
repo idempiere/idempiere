@@ -256,7 +256,7 @@ public final class Fact
 		BigDecimal balance = getSourceBalance();
 		boolean retValue = balance.signum() == 0;
 		if (retValue)
-			log.finer(toString());
+			if (log.isLoggable(Level.FINER)) log.finer(toString());
 		else
 			log.warning ("NO - Diff=" + balance + " - " + toString());
 		return retValue;
@@ -290,7 +290,7 @@ public final class Fact
 		if (!m_acctSchema.isSuspenseBalancing() || m_doc.isMultiCurrency())
 			return null;
 		BigDecimal diff = getSourceBalance();
-		log.finer("Diff=" + diff);
+		if (log.isLoggable(Level.FINER)) log.finer("Diff=" + diff);
 
 		//  new line
 		FactLine line = new FactLine (m_doc.getCtx(), m_doc.get_Table_ID(), 
@@ -376,10 +376,10 @@ public final class Fact
 				}
 			}
 			map.clear();
-			log.finer("(" + segmentType + ") - " + toString());
+			if (log.isLoggable(Level.FINER)) log.finer("(" + segmentType + ") - " + toString());
 			return true;
 		}
-		log.finer("(" + segmentType + ") (not checked) - " + toString());
+		if (log.isLoggable(Level.FINER)) log.finer("(" + segmentType + ") (not checked) - " + toString());
 		return true;
 	}   //  isSegmentBalanced
 
@@ -501,7 +501,7 @@ public final class Fact
 		BigDecimal balance = getAcctBalance();
 		boolean retValue = balance.signum() == 0;
 		if (retValue)
-			log.finer(toString());
+			if (log.isLoggable(Level.FINER)) log.finer(toString());
 		else
 			log.warning("NO - Diff=" + balance + " - " + toString());
 		return retValue;

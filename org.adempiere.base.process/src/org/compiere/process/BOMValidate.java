@@ -191,7 +191,7 @@ public class BOMValidate extends SvrProcess
 			MProductBOM productsBOM = productsBOMs[i];
 			MProduct pp = new MProduct(getCtx(), productsBOM.getM_ProductBOM_ID(), get_TrxName());
 			if (!pp.isBOM())
-				log.finer(pp.getName());
+				if (log.isLoggable(Level.FINER)) log.finer(pp.getName());
 			else if (!validateOldProduct(pp))
 				return false;
 		}

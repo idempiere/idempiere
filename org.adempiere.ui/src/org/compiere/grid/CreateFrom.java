@@ -179,7 +179,7 @@ public abstract class CreateFrom implements ICreateFrom
 				+ "l.M_Product_ID,COALESCE(p.Name,c.Name), l.Line,l.C_OrderLine_ID "
 			+ "ORDER BY l.Line");
 		//
-		log.finer(sql.toString());
+		if (log.isLoggable(Level.FINER)) log.finer(sql.toString());
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

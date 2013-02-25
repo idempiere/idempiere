@@ -1270,7 +1270,7 @@ public class TableElement extends PrintElement
 		float netHeight = rowHeight - (4*m_tFormat.getLineStroke().floatValue()) + (2*V_GAP);
 
 		if (DEBUG_PRINT)
-			log.finer("#" + col + " - x=" + curX + ", y=" + curY
+			if (log.isLoggable(Level.FINER)) log.finer("#" + col + " - x=" + curX + ", y=" + curY
 				+ ", width=" + colWidth + "/" + netWidth + ", HeaderHeight=" + rowHeight + "/" + netHeight);
 		String alignment = m_columnJustification[col];
 

@@ -307,7 +307,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	           }
 	           source.close();
 	           target.close();
-	           log.finer("Successfully copied " + byteCount + " bytes.");
+	           if (log.isLoggable(Level.FINER)) log.finer("Successfully copied " + byteCount + " bytes.");
 	        }
 	        catch (Exception e) {
 	           log.log(Level.SEVERE, e.getLocalizedMessage(), e);

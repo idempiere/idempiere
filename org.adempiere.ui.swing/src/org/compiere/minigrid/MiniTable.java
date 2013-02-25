@@ -192,7 +192,7 @@ public class MiniTable extends CTable implements IMiniTable
 			tc.setPreferredWidth(width);
 		//	log.fine( "width=" + width);
 		}	//	for all columns
-		log.finer("Cols=" + size + " - " + (System.currentTimeMillis()-start) + "ms");
+		if (log.isLoggable(Level.FINER)) log.finer("Cols=" + size + " - " + (System.currentTimeMillis()-start) + "ms");
 	}	//	autoSize
 
 

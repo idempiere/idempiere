@@ -554,7 +554,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 					try
 					{
 						no = pstmt_updateProduct.executeUpdate();
-						log.finer("Update Product = " + no);
+						if (log.isLoggable(Level.FINER)) log.finer("Update Product = " + no);
 						noUpdate++;
 					}
 					catch (SQLException ex)
@@ -602,7 +602,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 						try
 						{
 							no = pstmt_updateProductPO.executeUpdate();
-							log.finer("Update Product_PO = " + no);
+							if (log.isLoggable(Level.FINER)) log.finer("Update Product_PO = " + no);
 							noUpdatePO++;
 						}
 						catch (SQLException ex)
@@ -630,7 +630,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 						try
 						{
 							no = pstmt_insertProductPO.executeUpdate();
-							log.finer("Insert Product_PO = " + no);
+							if (log.isLoggable(Level.FINER)) log.finer("Insert Product_PO = " + no);
 							noInsertPO++;
 						}
 						catch (SQLException ex)

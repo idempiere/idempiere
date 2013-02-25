@@ -316,7 +316,7 @@ public class WebEnv
 			first = false;
 			String key = e.nextElement();
 			Object value = config.getInitParameter(key);
-			log.finer("- " + key + " = " + value);
+			if (log.isLoggable(Level.FINER)) log.finer("- " + key + " = " + value);
 		}
 	}	//	dump (ServletConfig)
 
@@ -339,7 +339,7 @@ public class WebEnv
 			first = false;
 			String key = e.nextElement();
 			Object value = ctx.getInitParameter(key);
-			log.finer("- " + key + " = " + value);
+			if (log.isLoggable(Level.FINER)) log.finer("- " + key + " = " + value);
 		}
 		first = true;
 		e = ctx.getAttributeNames();
@@ -350,7 +350,7 @@ public class WebEnv
 			first = false;
 			String key = e.nextElement();
 			Object value = ctx.getAttribute(key);
-			log.finer("- " + key + " = " + value);
+			if (log.isLoggable(Level.FINER)) log.finer("- " + key + " = " + value);
 		}
 	}	//	dump
 
@@ -373,7 +373,7 @@ public class WebEnv
 			first = false;
 			String key = e.nextElement();
 			Object value = session.getAttribute(key);
-			log.finer("- " + key + " = " + value);
+			if (log.isLoggable(Level.FINER)) log.finer("- " + key + " = " + value);
 		}
 	}	//	dump (session)
 
@@ -384,7 +384,7 @@ public class WebEnv
 	public static void dump (HttpServletRequest request)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Request " + request.getProtocol() + " " + request.getMethod());
-		if (!CLogMgt.isLevelFiner())
+		if (!log.isLoggable(Level.FINER))
 			return;
 		log.finer("- Server="  + request.getServerName() + ", Port=" + request.getServerPort());
 		log.finer("- ContextPath=" + request.getContextPath()

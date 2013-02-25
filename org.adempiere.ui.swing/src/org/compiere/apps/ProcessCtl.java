@@ -17,6 +17,7 @@
 package org.compiere.apps;
 
 import java.awt.Container;
+import java.util.logging.Level;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -284,7 +285,7 @@ public class ProcessCtl extends AbstractProcessCtl
 						m_waiting = null;
 						
 						String summary = pi.getSummary();
-						log.finer("unlock - " + summary);
+						if (log.isLoggable(Level.FINER)) log.finer("unlock - " + summary);
 						if (summary != null && summary.indexOf('@') != -1)
 							pi.setSummary(Msg.parseTranslation(Env.getCtx(), summary));
 						parent.unlockUI(pi);

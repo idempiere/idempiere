@@ -227,10 +227,10 @@ public class AcctProcessor extends AdempiereServer
 				if (countError[i] > 0)
 					m_summary.append("(Errors=").append(countError[i]).append(")");
 				m_summary.append(" - ");
-				log.finer(getName() + ": " + m_summary.toString());
+				if (log.isLoggable(Level.FINER)) log.finer(getName() + ": " + m_summary.toString());
 			}
 			else
-				log.finer(getName() + ": " + TableName + " - no work");
+				if (log.isLoggable(Level.FINER)) log.finer(getName() + ": " + TableName + " - no work");
 		}
 
 	}	//	postSession

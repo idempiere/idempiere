@@ -605,8 +605,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 			m_position[AREA_CONTENT].setLocation(m_content.x, m_content.y);
 		m_position[AREA_FOOTER].setLocation(m_footer.x, m_footer.y);
 		m_maxHeightSinceNewLine = new float[] {0f, 0f, 0f};
-		if (log.isLoggable(Level.FINE))
-			log.finer("Page=" + m_pageNo);
+		if (log.isLoggable(Level.FINER)) log.finer("Page=" + m_pageNo);
 		return m_pageNo;
 	}	//	newPage
 

@@ -59,7 +59,7 @@ public class MigrateData
 		int no = DB.getSQLValue(null, sql);
 		if (no > 0)
 		{
-			log.finer("No Need - Downloads #" + no);
+			if (log.isLoggable(Level.FINER)) log.finer("No Need - Downloads #" + no);
 			return;
 		}
 		//

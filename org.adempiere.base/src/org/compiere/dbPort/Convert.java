@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -123,7 +124,7 @@ public abstract class Convert
 				if (statement.length() == 0)
 				{
 					if (m_verbose)
-						log.finer("Skipping empty (" + i + ")");
+						if (log.isLoggable(Level.FINER)) log.finer("Skipping empty (" + i + ")");
 				}
 				else
 				{

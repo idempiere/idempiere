@@ -166,7 +166,7 @@ public class InvoiceWriteOff extends SvrProcess
 					.append(DB.TO_DATE(p_DateInvoiced_To, true));
 		}
 		sql.append(" AND IsPaid='N' ORDER BY C_Currency_ID, C_BPartner_ID, DateInvoiced");
-		log.finer(sql.toString());
+		if (log.isLoggable(Level.FINER)) log.finer(sql.toString());
 		//
 		int counter = 0;
 		PreparedStatement pstmt = null;

@@ -34,6 +34,7 @@ import java.text.AttributedString;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
 
 import javax.swing.JComponent;
 
@@ -355,7 +356,7 @@ public class VSchedulePanel extends JComponent implements MouseListener
 		if (e.getClickCount() < 2)
 			return;
 
-		log.finer(e.toString());
+		if (log.isLoggable(Level.FINER)) log.finer(e.toString());
 		Rectangle hitRect = new Rectangle (e.getX()-1, e.getY()-1, 3, 3);
 
 		//	Day

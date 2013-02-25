@@ -107,7 +107,7 @@ public class TreeMaintenance extends SvrProcess
 		if (C_Element_ID > 0)
 			sql.append(" AND C_Element_ID=").append(C_Element_ID);
 		sql.append(")");
-		log.finer(sql.toString());
+		if (log.isLoggable(Level.FINER)) log.finer(sql.toString());
 		//
 		int deletes = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog(0,null, new BigDecimal(deletes), tree.getName()+ " Deleted");
@@ -126,7 +126,7 @@ public class TreeMaintenance extends SvrProcess
 		sql.append(" AND ").append(sourceTableKey)
 			.append("  NOT IN (SELECT Node_ID FROM ").append(nodeTableName)
 			.append(" WHERE AD_Tree_ID=").append(tree.getAD_Tree_ID()).append(")");
-		log.finer(sql.toString());
+		if (log.isLoggable(Level.FINER)) log.finer(sql.toString());
 		//
 		boolean ok = true;
 		PreparedStatement pstmt = null;

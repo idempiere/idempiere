@@ -225,7 +225,7 @@ public final class VCellEditor extends AbstractCellEditor
 	 */
 	public void actionPerformed (ActionEvent e)
 	{
-		log.finer(m_mField.getColumnName() + ": Value=" + m_editor.getValue());
+		if (log.isLoggable(Level.FINER)) log.finer(m_mField.getColumnName() + ": Value=" + m_editor.getValue());
 		if (e.getSource() == m_editor && actionListener != null)
 			actionListener.actionPerformed(e);
 	}   //  actionPerformed
