@@ -394,5 +394,8 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		V removed = cache.remove(recordId);
 		return removed != null ? 1 : 0;
 	}
-	
+
+	@Override
+	public void newRecord(int record_ID) {
+	}
 }	//	CCache

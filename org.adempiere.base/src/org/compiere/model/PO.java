@@ -2255,6 +2255,9 @@ public abstract class PO
 		m_createNew = false;
 		if (!newRecord)
 			CacheMgt.get().reset(p_info.getTableName());
+		else if (get_ID() > 0)
+			CacheMgt.get().newRecord(p_info.getTableName(), get_ID());
+		
 		return success;
 	}	//	saveFinish
 

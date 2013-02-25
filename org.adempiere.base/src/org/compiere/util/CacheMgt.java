@@ -160,6 +160,24 @@ public class CacheMgt
 	}
 	
 	/**
+	 * do a cluster wide cache reset for tableName with recordId key
+	 * @param tableName
+	 * @param recordId record id for the cache entries to delete. pass -1 if you don't want to delete 
+	 * cache entries by record id   
+	 * @return number of deleted cache entries
+	 */
+	private void clusterNewRecord(String tableName, int recordId) {
+		IServiceHolder<IClusterService> holder = Service.locator().locate(IClusterService.class);
+		IClusterService service = holder.getService();
+		if (service != null) {			
+			CacheNewRecordCallable callable = new CacheNewRecordCallable(tableName, recordId);
+			service.execute(callable, service.getMembers());
+		} else {
+			localNewRecord(tableName, recordId);
+		}
+	}
+	
+	/**
 	 * do a cluster wide cache reset 
 	 * @return number of deleted cache entries
 	 */
@@ -249,6 +267,36 @@ public class CacheMgt
 	}
 	
 	/**
+	 * 	Reset local Cache
+	 * 	@param tableName table name
+	 * 	@param Record_ID record if applicable or 0 for all
+	 * 	@return number of deleted cache entries
+	 */
+	protected void localNewRecord (String tableName, int Record_ID)
+	{
+		if (tableName == null)
+			return;
+		
+		if (!m_tableNames.contains(tableName))
+			return;
+		//
+		for (int i = 0; i < m_instances.size(); i++)
+		{
+			CacheInterface stored = (CacheInterface)m_instances.get(i);
+			if (stored != null && stored instanceof CCache)
+			{
+				CCache<?, ?> cc = (CCache<?, ?>)stored;
+				if (cc.getTableName() != null && cc.getTableName().startsWith(tableName))		//	reset lines/dependent too
+				{
+					{
+						stored.newRecord(Record_ID);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
 	 * 	Total Cached Elements
 	 *	@return count
 	 */
@@ -298,4 +346,8 @@ public class CacheMgt
 			.append("]");
 		return sb.toString ();
 	}	//	toString	
+
+	public void newRecord(String tableName, int recordId) {
+		clusterNewRecord(tableName, recordId);
+	}
 }	//	CCache

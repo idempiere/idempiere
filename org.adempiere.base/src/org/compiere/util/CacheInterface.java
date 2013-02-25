@@ -41,6 +41,12 @@ public interface CacheInterface
 	 *	@return number of items
 	 */
 	public int size();
+
+	/**
+	 * New record created notification 
+	 * @param record_ID
+	 */
+	public void newRecord(int record_ID);
 	
 	
 }	//	CacheInterface

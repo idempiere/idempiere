@@ -118,6 +118,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         this.gridField = gridField;
         if (gridField.getGridTab() != null) {
         	comp.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, gridField.getGridTab().getTableName()+"0"+gridField.getColumnName());
+        	this.gridTab = gridField.getGridTab();
         } else {
         	comp.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, gridField.getColumnName());
         }
