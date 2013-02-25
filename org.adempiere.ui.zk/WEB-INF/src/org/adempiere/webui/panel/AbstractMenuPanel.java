@@ -255,11 +255,11 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
         String eventName = event.getName();
         if (eventName.equals(Events.ON_CLICK))
         {
-        	doOnClick(comp);
+        	doOnClick(comp, event.getData());
         }
     }
     
-    private void doOnClick(Component comp) {
+    private void doOnClick(Component comp, Object eventData) {
     	boolean newRecord = false;
 		if (comp instanceof A) {
 			comp = comp.getParent().getParent();
@@ -267,6 +267,8 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 		if (comp instanceof Toolbarbutton) {
 			comp = comp.getParent().getParent();
 			newRecord = true;
+		} else if (eventData != null && eventData instanceof Boolean) {
+			newRecord = (Boolean)eventData;
 		}
 		if (comp instanceof Treerow) 
 		{

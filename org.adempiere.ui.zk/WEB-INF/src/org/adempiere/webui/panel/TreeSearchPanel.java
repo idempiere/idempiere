@@ -63,27 +63,28 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 {
 	private static final String ON_COMBO_SELECT_ECHO_EVENT = "onComboSelectEcho";
 	private static final String ON_POST_SELECT_TREEITEM_EVENT = "onPostSelectTreeitem";
-	private static final String ON_POST_FIRE_TREE_EVENT = "onPostFireTreeEvent";
+	protected static final String ON_POST_FIRE_TREE_EVENT = "onPostFireTreeEvent";
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3478451169922775667L;
-	private TreeMap<String, Object> treeNodeItemMap = new TreeMap<String, Object>();
-    private String[] treeValues;
-    private String[] treeDescription;
-    private String[] treeImages;
+	protected TreeMap<String, Object> treeNodeItemMap = new TreeMap<String, Object>();
+    protected String[] treeValues;
+    protected String[] treeDescription;
+    protected String[] treeImages;
 
     private Label lblSearch;
     protected AutoComplete cmbSearch;
 
-	private Tree tree;
+	protected Tree tree;
 
-	private String eventToFire;
+	protected String eventToFire;
 	@SuppressWarnings("unused")
 	private int m_windowno = 0;
 	@SuppressWarnings("unused")
 	private int m_tabno = 0;
 	private Treeitem selectedItem;
+	protected Hlayout layout;
 
 	private static final String PREFIX_DOCUMENT_SEARCH = "/";
 
@@ -128,10 +129,10 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
     		+ "var evt = new zk.Event(panel, 'onComboSelectEcho', [comboitem.uuid, popupheight], {toServer: true});"
     		+ "zAu.send(evt);";
 	
-    private void init()
+    protected void init()
     {
-    	Hlayout hLayout = new Hlayout();
-    	hLayout.setValign("middle");
+    	layout = new Hlayout();
+    	layout.setValign("middle");
         lblSearch = new Label();
         lblSearch.setValue(Msg.getMsg(Env.getCtx(),"TreeSearch").replaceAll("&", "") + ":");
         lblSearch.setTooltiptext(Msg.getMsg(Env.getCtx(),"TreeSearchText"));
@@ -164,20 +165,20 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         	cmbSearch.setWidth("200px");
         }
 
-        hLayout.appendChild(lblSearch);
-        hLayout.appendChild(cmbSearch);        
-        this.appendChild(hLayout);
+        layout.appendChild(lblSearch);
+        layout.appendChild(cmbSearch);        
+        this.appendChild(layout);
         
         addEventListener(ON_POST_FIRE_TREE_EVENT, this);
     }
 
-    private void addTreeItem(Treeitem treeItem)
+    protected void addTreeItem(Treeitem treeItem)
     {
         String key = getLabel(treeItem);
         treeNodeItemMap.put(key, treeItem);
     }
 
-    private void addTreeItem(DefaultTreeNode<?> node) {
+    protected void addTreeItem(DefaultTreeNode<?> node) {
     	Object data = node.getData();
     	if (data instanceof MTreeNode) {
     		MTreeNode mNode = (MTreeNode) data;
@@ -250,7 +251,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         cmbSearch.setImages(treeImages);
 	}
 
-	private boolean isFolder(Treeitem treeItem) {
+	protected boolean isFolder(Treeitem treeItem) {
 		List<Component> list = treeItem.getChildren();
 		for (Component c : list) {
 			if (c instanceof Treechildren && ((Treechildren)c).getChildren().size() > 1) {
@@ -260,7 +261,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 		return false;
 	}
 
-	private String getLabel(Treeitem treeItem) {
+	protected String getLabel(Treeitem treeItem) {
 		String label = treeItem.getLabel();
         if (label == null || label.trim().length() == 0) 
         {
@@ -274,7 +275,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         return label;
 	}
 	
-	private String getImage(Treeitem treeItem) {
+	protected String getImage(Treeitem treeItem) {
 		String image = treeItem.getImage();
         if (image == null || image.trim().length() == 0) 
         {
@@ -378,7 +379,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 		}
 	}
 
-    private void onPostSelectTreeitem() {
+    protected void onPostSelectTreeitem() {
     	Clients.clearBusy();
     	Event event = null;
     	if (eventToFire.equals(Events.ON_CLICK))

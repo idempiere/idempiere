@@ -117,7 +117,7 @@ public class AutoComplete extends Combobox
 	/** 
 	 * Refresh comboitem based on the specified value.
 	*/	
-	private void refresh(String val) 
+	public void refresh(String val) 
 	{
 		if (comboItems == null || val == null) {
 			super.getChildren().clear();

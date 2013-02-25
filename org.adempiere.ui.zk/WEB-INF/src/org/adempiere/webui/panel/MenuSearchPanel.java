@@ -34,7 +34,7 @@ public class MenuSearchPanel extends AbstractMenuPanel
 	 */
 	private static final long serialVersionUID = 5308522340852904168L;
 	
-	private TreeSearchPanel pnlSearch;
+	private MenuTreeSearchPanel pnlSearch;
     
     public MenuSearchPanel(Component parent)
     {
@@ -74,7 +74,7 @@ public class MenuSearchPanel extends AbstractMenuPanel
         toolbar.setMold("panel");
         this.appendChild(toolbar);
         
-        pnlSearch = new TreeSearchPanel(getMenuTree());
+        pnlSearch = new MenuTreeSearchPanel(getMenuTree());
         pnlSearch.setSclass("menu-search-panel");
         toolbar.appendChild(pnlSearch);
     }

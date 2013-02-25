@@ -1220,4 +1220,24 @@ tbody.z-grid-empty-body td {
 	font-weight: normal;
 }
 
-.
+.menu-search-toggle-box {
+	display: inline-block;
+	border: 1px solid #ababab;			
+}
+
+.menu-search-toggle-box .z-toolbarbutton-over {
+	border: none;
+}
+
+.menu-search-toggle-off {
+	margin:0px; 
+	padding: 1px 4px 1px 4px;
+}
+
+.menu-search-toggle-on {
+	background: #999999;
+	-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) inset;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) inset;
+	margin:0px;
+	padding: 1px 4px 1px 4px;
+}
