@@ -1258,12 +1258,14 @@ public class GridField
 				m_parentValue = Boolean.FALSE; // teo_sarca, [ 1673886 ]
 			else 
 				m_parentValue = Boolean.valueOf(m_vo.ColumnName.equals(LinkColumnName));
-			if (m_parentValue)
+			if (m_parentValue) {
 				if (log.isLoggable(Level.CONFIG)) log.config(m_parentValue
 					+ " - Link(" + LinkColumnName + ", W=" + m_vo.WindowNo + ",T=" + m_vo.TabNo
 					+ ") = " + m_vo.ColumnName);
-			else
+			}
+			else {
 				m_parentValue = Boolean.valueOf(isIndirectParentValue());
+			}
 		}
 		return m_parentValue.booleanValue();
 	}	//	isParentValue
