@@ -915,10 +915,11 @@ public abstract class Doc
 			return true;
 		//
 		boolean retValue = getBalance().signum() == 0;
-		if (retValue)
+		if (retValue) {
 			if (log.isLoggable(Level.FINE)) log.fine("Yes " + toString());
-		else
+		} else {
 			log.warning("NO - " + toString());
+		}
 		return retValue;
 	}	//	isBalanced
 
@@ -1032,10 +1033,11 @@ public abstract class Doc
 	{
 		setPeriod();
 		boolean open = m_C_Period_ID > 0;
-		if (open)
+		if (open) {
 			if (log.isLoggable(Level.FINE)) log.fine("Yes - " + toString());
-		else
+		} else {
 			log.warning("NO - " + toString());
+		}
 		return open;
 	}	//	isPeriodOpen
 

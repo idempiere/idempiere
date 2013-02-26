@@ -221,10 +221,11 @@ public class MTemplate extends X_CM_Template
 					getAD_Tree_ID ()).append (",").append (get_ID ()).append (
 					", 0, 999)");
 			int no = DB.executeUpdate (sb.toString (), get_TrxName ());
-			if (no > 0)
+			if (no > 0) {
 				if (log.isLoggable(Level.FINE)) log.fine ("#" + no + " - TreeType=CMT");
-			else
+			} else {
 				log.warning ("#" + no + " - TreeType=CMT");
+			}
 			return no > 0;
 		}
 		if (!newRecord)
@@ -262,10 +263,11 @@ public class MTemplate extends X_CM_Template
 			.append (" WHERE Node_ID=").append (get_IDOld ()).append (
 				" AND AD_Tree_ID=").append (getAD_Tree_ID ());
 		int no = DB.executeUpdate (sb.toString (), get_TrxName ());
-		if (no > 0)
+		if (no > 0) {
 			if (log.isLoggable(Level.FINE)) log.fine ("#" + no + " - TreeType=CMT");
-		else
+		} else {
 			log.warning ("#" + no + " - TreeType=CMT");
+		}
 		return no > 0;
 	}	// afterDelete
 

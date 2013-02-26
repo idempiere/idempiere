@@ -1254,10 +1254,9 @@ public abstract class Info extends CDialog
 			setCursor(Cursor.getDefaultCursor());
 			setStatusLine(Integer.toString(no) + " " + Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
 			setStatusDB(Integer.toString(no));
-			if (no == 0)
+			if (no == 0) {
 				if (log.isLoggable(Level.FINE)) log.fine(dataSql);
-			else
-			{
+			} else {
 				p_table.getSelectionModel().setSelectionInterval(0, 0);
 				p_table.requestFocus();
 			}

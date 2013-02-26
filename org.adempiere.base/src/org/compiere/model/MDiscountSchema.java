@@ -243,10 +243,11 @@ public class MDiscountSchema extends X_M_DiscountSchema
 		//	Price Breaks
 		getBreaks(false);
 		BigDecimal Amt = Price.multiply(Qty);
-		if (isQuantityBased())
+		if (isQuantityBased()) {
 			if (log.isLoggable(Level.FINER)) log.finer("Qty=" + Qty + ",M_Product_ID=" + M_Product_ID + ",M_Product_Category_ID=" + M_Product_Category_ID);
-		else
+		} else {
 			if (log.isLoggable(Level.FINER)) log.finer("Amt=" + Amt + ",M_Product_ID=" + M_Product_ID + ",M_Product_Category_ID=" + M_Product_Category_ID);
+		}
 		for (int i = 0; i < m_breaks.length; i++)
 		{
 			MDiscountSchemaBreak br = m_breaks[i];

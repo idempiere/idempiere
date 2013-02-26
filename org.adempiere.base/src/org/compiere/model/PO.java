@@ -2565,10 +2565,11 @@ public abstract class PO
 		//	Something changed
 		if (changes)
 		{
-			if (m_trxName == null)
+			if (m_trxName == null) {
 				if (log.isLoggable(Level.FINE)) log.fine(p_info.getTableName() + "." + where);
-			else
+			} else {
 				if (log.isLoggable(Level.FINE)) log.fine("[" + m_trxName + "] - " + p_info.getTableName() + "." + where);
+			}
 			if (!updated)	//	Updated not explicitly set
 			{
 				Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -2674,10 +2675,11 @@ public abstract class PO
 				set_ValueNoCheck(p_info.getColumnName(uuidIndex), uuid.toString());
 			}
 		}
-		if (m_trxName == null)
+		if (m_trxName == null) {
 			if (log.isLoggable(Level.FINE)) log.fine(p_info.getTableName() + " - " + get_WhereClause(true));
-		else
+		} else {
 			if (log.isLoggable(Level.FINE)) log.fine("[" + m_trxName + "] - " + p_info.getTableName() + " - " + get_WhereClause(true));
+		}
 
 		//	Set new DocumentNo
 		String columnName = "DocumentNo";
@@ -3572,11 +3574,12 @@ public abstract class PO
 			.append(get_TableName()).append("_ID=").append(get_ID()).append(")");
 		//
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
-		if (no > 0)
+		if (no > 0) {
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no);
-		else
+		} else {
 			log.warning("#" + no
-				+ " - Table=" + acctTable + " from " + acctBaseTable);
+					+ " - Table=" + acctTable + " from " + acctBaseTable);
+		}
 
 		//fall back to the slow java client update code
 		if (uuidColumnId > 0 && !uuidFunction) {
@@ -3651,10 +3654,11 @@ public abstract class PO
 		sb.append(" AND NOT EXISTS (SELECT * FROM " + MTree_Base.getNodeTableName(treeType) + " e "
 				+ "WHERE e.AD_Tree_ID=t.AD_Tree_ID AND Node_ID=").append(get_ID()).append(")");
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
-		if (no > 0)
+		if (no > 0) {
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=" + treeType);
-		else
+		} else {
 			log.warning("#" + no + " - TreeType=" + treeType);
+		}
 
 		if (uuidColumnId > 0 && !uuidFunction )
 		{
@@ -3681,10 +3685,11 @@ public abstract class PO
 				+ "WHERE t.AD_Tree_ID=n.AD_Tree_ID AND t.TreeType='")
 			.append(treeType).append("')");
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
-		if (no > 0)
+		if (no > 0) {
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=" + treeType);
-		else
+		} else {
 			log.warning("#" + no + " - TreeType=" + treeType);
+		}
 		return no > 0;
 	}	//	delete_Tree
 
@@ -3743,10 +3748,11 @@ public abstract class PO
 				success = DB.executeUpdateEx(sql, trxName, QUERY_TIME_OUT) == 1;
 			else
 				success = DB.executeUpdate(sql, trxName) == 1;
-			if (success)
+			if (success) {
 				if (log.isLoggable(Level.FINE)) log.fine("success" + (trxName == null ? "" : "[" + trxName + "]"));
-			else
+			} else {
 				log.log(Level.WARNING, "failed" + (trxName == null ? "" : " [" + trxName + "]"));
+			}
 			return success;
 		}
 		return true;

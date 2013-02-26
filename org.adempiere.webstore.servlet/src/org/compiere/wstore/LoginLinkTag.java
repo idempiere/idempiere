@@ -129,10 +129,9 @@ public class LoginLinkTag extends TagSupport
 
 		//	Check Cookie
 		String cookieUser = JSPEnv.getCookieWebUser ((HttpServletRequest)pageContext.getRequest());
-		if (cookieUser == null || cookieUser.trim().length() == 0)
+		if (cookieUser == null || cookieUser.trim().length() == 0) {
 			if (log.isLoggable(Level.FINER)) log.finer ("(" + address + ") - no cookie");
-		else
-		{
+		} else {
 			//	Try to Load
 			wu = WebUser.get (ctx, cookieUser);
 			if (log.isLoggable(Level.FINER)) log.finer ("(" + address + ") - Cookie: " + wu);

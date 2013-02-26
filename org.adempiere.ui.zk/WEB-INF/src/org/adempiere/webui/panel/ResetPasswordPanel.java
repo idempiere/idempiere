@@ -445,10 +445,9 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 				user.setIsExpired(true);
 				user.saveEx();
 
-				if (sendEmail(user, newPassword))
+				if (sendEmail(user, newPassword)) {
 		    		if (logger.isLoggable(Level.FINE)) logger.fine(user.getEMail());
-				else
-				{
+				} else {
 					if (errorMsg.length() > 0)
 						errorMsg += ", ";
 					errorMsg += user.getEMail();

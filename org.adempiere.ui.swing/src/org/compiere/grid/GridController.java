@@ -78,7 +78,6 @@ import org.compiere.swing.CPanel;
 import org.compiere.swing.CScrollPane;
 import org.compiere.swing.CollapsiblePanel;
 import org.compiere.swing.TableCellNone;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -1389,8 +1388,7 @@ public class GridController extends CPanel
 	 */
 	public void mouseClicked(MouseEvent e)
 	{
-		if (CLogMgt.isLevelFinest())
-			if (log.isLoggable(Level.FINEST)) log.finest("" + this + " - " + e);
+		if (log.isLoggable(Level.FINEST)) log.finest("" + this + " - " + e);
 	}
 	/**
 	 * 	Mouse Pressed

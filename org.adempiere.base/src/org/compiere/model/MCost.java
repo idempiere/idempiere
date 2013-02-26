@@ -724,12 +724,13 @@ public class MCost extends X_M_Cost
 							as, 0, ce.getM_CostElement_ID(), product.get_TrxName());
 						if (cost.is_new())
 						{
-							if (cost.save())
+							if (cost.save()) {
 								if (s_log.isLoggable(Level.CONFIG)) s_log.config("Std.Cost for " + product.getName()
 									+ " - " + as.getName());
-							else
+							} else {
 								s_log.warning("Not created: Std.Cost for " + product.getName()
-									+ " - " + as.getName());
+										+ " - " + as.getName());
+							}
 						}
 					}
 				else if (MAcctSchema.COSTINGLEVEL_Organization.equals(cl))
@@ -742,14 +743,15 @@ public class MCost extends X_M_Cost
 								as, o.getAD_Org_ID(), ce.getM_CostElement_ID(), product.get_TrxName());
 							if (cost.is_new())
 							{
-								if (cost.save())
+								if (cost.save()) {
 									if (s_log.isLoggable(Level.CONFIG)) s_log.config("Std.Cost for " + product.getName()
 										+ " - " + o.getName()
 										+ " - " + as.getName());
-								else
+								} else {
 									s_log.warning("Not created: Std.Cost for " + product.getName()
-										+ " - " + o.getName()
-										+ " - " + as.getName());
+											+ " - " + o.getName()
+											+ " - " + as.getName());
+								}
 						}
 					}	//	for all orgs
 				}

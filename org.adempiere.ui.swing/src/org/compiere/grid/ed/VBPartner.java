@@ -420,10 +420,11 @@ public final class VBPartner extends CDialog implements ActionListener
 			m_partner.setC_Greeting_ID(p.getKey());
 		else
 			m_partner.setC_Greeting_ID(0);
-		if (m_partner.save())
+		if (m_partner.save()) {
 			if (log.isLoggable(Level.FINE)) log.fine("C_BPartner_ID=" + m_partner.getC_BPartner_ID());
-		else
+		} else {
 			ADialog.error(m_WindowNo, this, "BPartnerNotSaved");
+		}
 		
 		//	***** Business Partner - Location *****
 		if (m_pLocation == null)
@@ -433,10 +434,11 @@ public final class VBPartner extends CDialog implements ActionListener
 		m_pLocation.setPhone(fPhone.getText());
 		m_pLocation.setPhone2(fPhone2.getText());
 		m_pLocation.setFax(fFax.getText());
-		if (m_pLocation.save())
+		if (m_pLocation.save()) {
 			if (log.isLoggable(Level.FINE)) log.fine("C_BPartner_Location_ID=" + m_pLocation.getC_BPartner_Location_ID());
-		else
+		} else {
 			ADialog.error(m_WindowNo, this, "BPartnerNotSaved", Msg.translate(Env.getCtx(), "C_BPartner_Location_ID"));
+		}
 			
 		//	***** Business Partner - User *****
 		String contact = fContact.getText();
@@ -459,10 +461,11 @@ public final class VBPartner extends CDialog implements ActionListener
 			m_user.setPhone(fPhone.getText());
 			m_user.setPhone2(fPhone2.getText());
 			m_user.setFax(fFax.getText());
-			if (m_user.save())
+			if (m_user.save()) {
 				if (log.isLoggable(Level.FINE)) log.fine("AD_User_ID=" + m_user.getAD_User_ID());
-			else
+			} else {
 				ADialog.error(m_WindowNo, this, "BPartnerNotSaved", Msg.translate(Env.getCtx(), "AD_User_ID"));
+			}
 		}
 		return true;
 	}	//	actionSave

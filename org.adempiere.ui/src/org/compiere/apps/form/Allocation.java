@@ -778,13 +778,14 @@ public class Allocation
 				String sql = "SELECT invoiceOpen(C_Invoice_ID, 0) "
 					+ "FROM C_Invoice WHERE C_Invoice_ID=?";
 				BigDecimal open = DB.getSQLValueBD(trxName, sql, C_Invoice_ID);
-				if (open != null && open.signum() == 0)	{
+				if (open != null && open.signum() == 0)	 {
 					sql = "UPDATE C_Invoice SET IsPaid='Y' "
 						+ "WHERE C_Invoice_ID=" + C_Invoice_ID;
 					int no = DB.executeUpdate(sql, trxName);
 					if (log.isLoggable(Level.CONFIG)) log.config("Invoice #" + i + " is paid - updated=" + no);
-				} else
+				} else {
 					if (log.isLoggable(Level.CONFIG)) log.config("Invoice #" + i + " is not paid - " + open);
+				}
 			}
 		}
 		//  Test/Set Payment is fully allocated

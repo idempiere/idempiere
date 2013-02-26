@@ -3407,8 +3407,7 @@ public class GridTable extends AbstractTableModel
 				rows = maxRows;
 			}
 					
-			if (log.isLoggable(Level.FINE))
-				if (log.isLoggable(Level.FINE)) log.fine(info.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(info.toString());
 			
 			return rows;
 		}	//	open

@@ -1103,10 +1103,11 @@ public class VLookup extends JComponent
 		//	No (unique) result
 		if (id <= 0)
 		{
-			if (id == -3)
+			if (id == -3) {
 				if (log.isLoggable(Level.FINE)) log.fine(m_columnName + " - Not Found - " + finalSQL);
-			else
+			} else {
 				if (log.isLoggable(Level.FINE)) log.fine(m_columnName + " - Not Unique - " + finalSQL);
+			}
 			m_value = null;	// force re-display
 			actionButton(m_text.getText());
 			return;

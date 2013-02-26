@@ -449,10 +449,11 @@ public class VPAttributeDialog extends CDialog
 						break;
 					}
 				}
-				if (found)
+				if (found) {
 					if (log.isLoggable(Level.FINE)) log.fine("Attribute=" + attribute.getName() + " #" + values.length + " - found: " + instance);
-				else
+				} else {
 					log.warning("Attribute=" + attribute.getName() + " #" + values.length + " - NOT found: " + instance);
+				}
 			}	//	setComboBox
 			else
 				if (log.isLoggable(Level.FINE)) log.fine("Attribute=" + attribute.getName() + " #" + values.length + " no instance");

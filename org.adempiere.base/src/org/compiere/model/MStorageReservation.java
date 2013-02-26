@@ -74,12 +74,13 @@ public class MStorageReservation extends X_M_StorageReservation {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		if (retValue == null)
+		if (retValue == null) {
 			if (s_log.isLoggable(Level.FINE)) s_log.fine("Not Found - M_Warehouse_ID=" + M_Warehouse_ID 
-				+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID + ", IsSOTrx=" + isSOTrx);
-		else
+					+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID + ", IsSOTrx=" + isSOTrx);
+		} else {
 			if (s_log.isLoggable(Level.FINE)) s_log.fine("M_Warehouse_ID=" + M_Warehouse_ID 
-				+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID + ", IsSOTrx=" + isSOTrx);
+					+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID + ", IsSOTrx=" + isSOTrx);
+		}
 		return retValue;
 	}	//	get
 
@@ -257,7 +258,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 		storage.setQty (storage.getQty().add(diffQty));
 		if (s_log.isLoggable(Level.FINE)) {
 			StringBuilder diffText = new StringBuilder("(Qty=").append(diffQty).append(") -> ").append(storage.toString());
-			if (s_log.isLoggable(Level.FINE)) s_log.fine(diffText.toString());
+			s_log.fine(diffText.toString());
 		}
 		return storage.save (trxName);
 	}	//	add

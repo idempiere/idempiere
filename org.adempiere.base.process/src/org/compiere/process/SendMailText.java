@@ -283,10 +283,11 @@ public class SendMailText extends SvrProcess
 		boolean OK = EMail.SENT_OK.equals(email.send());
 		new MUserMail(m_MailText, AD_User_ID, email).saveEx();
 		//
-		if (OK)
+		if (OK) {
 			if (log.isLoggable(Level.FINE)) log.fine(to.getEMail());
-		else
+		} else {
 			log.warning("FAILURE - " + to.getEMail());
+		}
 		StringBuilder msglog = new StringBuilder((OK ? "@OK@" : "@ERROR@")).append(" - ").append(to.getEMail());
 		addLog(0, null, null, msglog.toString());
 		return new Boolean(OK);

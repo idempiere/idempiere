@@ -298,10 +298,11 @@ public class MPInstance extends X_AD_PInstance
 				seconds = 1;
 			String updsql = "UPDATE AD_Process SET Statistic_Count=Statistic_Count+1, Statistic_Seconds=Statistic_Seconds+? WHERE AD_Process_ID=?";
 			int no = DB.executeUpdate(updsql, new Object[] {seconds, getAD_Process_ID()}, true, null); // out of trx
-			if (no == 1)
+			if (no == 1) {
 				if (log.isLoggable(Level.FINE)) log.fine("afterSave - Process Statistics updated Sec=" + seconds);
-			else
+			} else {
 				log.warning("afterSave - Process Statistics not updated");
+			}
 		}
 		return success;
 	}	//	afterSave

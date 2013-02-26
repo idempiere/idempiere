@@ -469,10 +469,11 @@ public class CLogMgt
 		{
 			String key = pp[i].toString();
 			String value = p.getProperty(key);
-			if (logIt)
+			if (logIt) {
 				if (log.isLoggable(Level.CONFIG)) log.config(key + "=" + value);
-			else
+			} else {
 				System.out.println("  " + key + " = " + value);
+			}
 		}
 	}   //  printProperties
 
