@@ -92,7 +92,7 @@ public final class MLocationLookup extends Lookup
 	 */
 	public boolean containsKey (Object key)
 	{
-		return getLocation(key, null) == null;
+		return getLocation(key, null) != null;
 	}   //  containsKey
 
 	
