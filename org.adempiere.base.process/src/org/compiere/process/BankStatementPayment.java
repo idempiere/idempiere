@@ -83,7 +83,7 @@ public class BankStatementPayment extends SvrProcess
 	{
 		if (ibs == null || ibs.getC_Payment_ID() != 0)
 			return "--";
-		log.fine(ibs.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(ibs.toString());
 		if (ibs.getC_Invoice_ID() == 0 && ibs.getC_BPartner_ID() == 0)
 			throw new AdempiereUserError ("@NotFound@ @C_Invoice_ID@ / @C_BPartner_ID@");
 		if (ibs.getC_BankAccount_ID() == 0)
@@ -117,7 +117,7 @@ public class BankStatementPayment extends SvrProcess
 	{
 		if (bsl == null || bsl.getC_Payment_ID() != 0)
 			return "--";
-		log.fine(bsl.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(bsl.toString());
 		if (bsl.getC_Invoice_ID() == 0 && bsl.getC_BPartner_ID() == 0)
 			throw new AdempiereUserError ("@NotFound@ @C_Invoice_ID@ / @C_BPartner_ID@");
 		//

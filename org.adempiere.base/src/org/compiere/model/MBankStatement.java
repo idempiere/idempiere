@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
@@ -170,7 +171,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			.append("' WHERE C_BankStatement_ID=").append(getC_BankStatement_ID());
 		int noLine = DB.executeUpdate(sql.toString(), get_TrxName());
 		m_lines = null;
-		log.fine("setProcessed - " + processed + " - Lines=" + noLine);
+		if (log.isLoggable(Level.FINE)) log.fine("setProcessed - " + processed + " - Lines=" + noLine);
 	}	//	setProcessed
 
 	/**

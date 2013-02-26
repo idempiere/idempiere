@@ -142,7 +142,7 @@ public class Task extends Thread
 			try
 			{
 				if (m_child != null)
-					log.fine("run - ExitValue=" + m_child.exitValue());
+					if (log.isLoggable(Level.FINE)) log.fine("run - ExitValue=" + m_child.exitValue());
 			}
 			catch (Exception e) {}
 			log.config("done");

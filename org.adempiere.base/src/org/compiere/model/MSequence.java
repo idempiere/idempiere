@@ -961,7 +961,7 @@ public class MSequence extends X_AD_Sequence
 				changeMsg += " - " +getName() + " Sys " + currentNextSysValue + " -> " + maxTableSysID;	
 		}
 		if (info != null)
-			log.fine(getName() + " - " + info);
+			if (log.isLoggable(Level.FINE)) log.fine(getName() + " - " + info);
 		
 		return changeMsg;
 	}	//	validate

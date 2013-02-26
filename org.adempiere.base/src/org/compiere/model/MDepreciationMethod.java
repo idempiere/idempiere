@@ -5,6 +5,7 @@ import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.Query;
@@ -145,7 +146,7 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 		String depreciationType = getDepreciationType();
 		BigDecimal retValue = null;
 		
-		if(CLogMgt.isLevelFine())
+		if (log.isLoggable(Level.FINE)) 
 			log.fine("Entering: DepreciationMethodType=" + depreciationType 
 						+ ", A_Asset_ID=" + A_Asset_ID + ", A_Asset_Adjustment=" + A_Asset_Adjustment
 						+ ", A_PeriodNo=" + A_PeriodNo + ", PostingType=" + PostingType + ", A_Asset_Acct_ID=" + A_Asset_Acct_ID
@@ -195,7 +196,7 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 			retValue = BigDecimal.ZERO;
 		}
 		//
-		if(CLogMgt.isLevelFine()) log.fine("Leaving: retValue=" + retValue);
+		if(CLogMgt.isLevelFine()) if (log.isLoggable(Level.FINE)) log.fine("Leaving: retValue=" + retValue);
 		return retValue;
 	}
 
@@ -218,7 +219,7 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 		}
 		BigDecimal periodAdjustment = A_Asset_Adjustment.divide(remainingPeriods, getPrecision(), RoundingMode.HALF_UP);
 		
-		if(CLogMgt.isLevelFine()) {
+		if (log.isLoggable(Level.FINE)) {
 			log.fine("A_Asset_Adjustment=" + A_Asset_Adjustment + ", remainingPeriods=" + remainingPeriods + " => periodAdjustment=" + periodAdjustment);
 		}
 		return periodAdjustment;
@@ -241,7 +242,7 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 		
 		BigDecimal periodAdjustment = A_Asset_Adjustment.divide(remainingPeriods, getPrecision(), RoundingMode.HALF_UP);
 		
-		if(CLogMgt.isLevelFine()) {
+		if (log.isLoggable(Level.FINE)) {
 			log.fine("A_Asset_Adjustment=" + A_Asset_Adjustment + ", remainingPeriods=" + remainingPeriods + " => periodAdjustment=" + periodAdjustment);
 		}
 		return periodAdjustment;

@@ -1300,7 +1300,7 @@ public final class APanel extends CPanel
 	 */
 	public void setStatusLine (String text, boolean error)
 	{
-		log.fine(text);
+		if (log.isLoggable(Level.FINE)) log.fine(text);
 		statusBar.setStatusLine(text, error);
 	}	//	setStatusLine
 
@@ -2033,7 +2033,7 @@ public final class APanel extends CPanel
 			Object[] selectedValues = list.getSelectedValues();
 			for (int i = 0; i < selectedValues.length; i++)
 			{
-				log.fine(selectedValues[i].toString());
+				if (log.isLoggable(Level.FINE)) log.fine(selectedValues[i].toString());
 			}
 			int[] indices = list.getSelectedIndices();
 			Arrays.sort(indices);

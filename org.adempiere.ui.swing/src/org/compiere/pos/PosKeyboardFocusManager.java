@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.LinkedList;
+import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 
@@ -74,7 +75,7 @@ public class PosKeyboardFocusManager extends DefaultKeyboardFocusManager
 	public void start() {
 		//	Unqueue time - 200 ms
 		int delay = 200;
-		log.fine("PosKeyboardFocusManager.start - " + delay); 
+		if (log.isLoggable(Level.FINE)) log.fine("PosKeyboardFocusManager.start - " + delay); 
 		if (m_timer == null)
 			m_timer = new javax.swing.Timer(delay, this);
 		if (!m_timer.isRunning())
@@ -85,7 +86,7 @@ public class PosKeyboardFocusManager extends DefaultKeyboardFocusManager
 	 * Stop Timer
 	 */
 	public void stop() {
-		log.fine("PosKeyboardFocusManager.stop - " + m_timer); 
+		if (log.isLoggable(Level.FINE)) log.fine("PosKeyboardFocusManager.stop - " + m_timer); 
 
 		if (m_timer != null)
 			m_timer.stop();

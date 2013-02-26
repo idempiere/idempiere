@@ -113,7 +113,7 @@ implements DocAction
 			id = get_IDOld();
 		}
 		int no = DB.executeUpdateEx(sql, new Object[]{id}, get_TrxName());
-		log.fine("Updated #" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Updated #" + no);
 	}
 	
 	private void selectLines()
@@ -130,7 +130,7 @@ implements DocAction
 		;
 		Timestamp dateAcct = TimeUtil.trunc(getDateAcct(), TimeUtil.TRUNC_MONTH);
 		int no = DB.executeUpdateEx(sql, new Object[]{get_ID(), dateAcct, getAD_Client_ID(), getAD_Org_ID()}, get_TrxName());
-		log.fine("Updated #" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Updated #" + no);
 	}
 	
 	/**

@@ -17,6 +17,7 @@
 package org.compiere.wstore;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -69,7 +70,7 @@ public class ProductCategoryListTag extends TagSupport
 		select sel = new select (name, options);
 		sel.setID("ID_" + name);
 
-		log.fine("AD_Client_ID=" + AD_Client_ID + ", #=" + options.length);
+		if (log.isLoggable(Level.FINE)) log.fine("AD_Client_ID=" + AD_Client_ID + ", #=" + options.length);
 
 		//	Assemble
 		HtmlCode html = new HtmlCode();

@@ -311,7 +311,7 @@ public class Scheduler extends AdempiereServer
 					if (paraDesc != null && paraDesc.trim().length() > 0)
 						iPara.setInfo(sPara.getDescription());
 					String variable = sPara.getParameterDefault();
-					log.fine(sPara.getColumnName() + " = " + variable);
+					if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " = " + variable);
 					//	Value - Constant/Variable
 					Object value = variable;
 					if (variable == null
@@ -349,7 +349,7 @@ public class Scheduler extends AdempiereServer
 					//	No Value
 					if (value == null)
 					{
-						log.fine(sPara.getColumnName() + " - empty");
+						if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " - empty");
 						break;
 					}
 
@@ -367,7 +367,7 @@ public class Scheduler extends AdempiereServer
 							else
 								bd = new BigDecimal (value.toString());
 							iPara.setP_Number(bd);
-							log.fine(sPara.getColumnName()
+							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + bd + "=)");
 						}
 						else if (DisplayType.isDate(sPara.getDisplayType()))
@@ -378,13 +378,13 @@ public class Scheduler extends AdempiereServer
 							else
 								ts = Timestamp.valueOf(value.toString());
 							iPara.setP_Date(ts);
-							log.fine(sPara.getColumnName()
+							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + ts + "=)");
 						}
 						else
 						{
 							iPara.setP_String(value.toString());
-							log.fine(sPara.getColumnName()
+							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable
 								+ " (=" + value + "=) " + value.getClass().getName());
 						}

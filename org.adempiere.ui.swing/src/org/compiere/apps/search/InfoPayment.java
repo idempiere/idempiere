@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.ALayout;
@@ -284,7 +285,7 @@ public class InfoPayment extends Info
 		}
 		sql.append(" AND p.IsReceipt=?");
 
-		log.fine(sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
 		return sql.toString();
 	}	//	getSQLWhere
 
@@ -305,14 +306,14 @@ public class InfoPayment extends Info
 		{
 			Integer bp = (Integer)fBPartner_ID.getValue();
 			pstmt.setInt(index++, bp.intValue());
-			log.fine("BPartner=" + bp);
+			if (log.isLoggable(Level.FINE)) log.fine("BPartner=" + bp);
 		}
 		//
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
 		{
 			Timestamp from = (Timestamp)fDateFrom.getValue();
 			Timestamp to = (Timestamp)fDateTo.getValue();
-			log.fine("Date From=" + from + ", To=" + to);
+			if (log.isLoggable(Level.FINE)) log.fine("Date From=" + from + ", To=" + to);
 			if (from == null && to != null)
 				pstmt.setTimestamp(index++, to);
 			else if (from != null && to == null)
@@ -328,7 +329,7 @@ public class InfoPayment extends Info
 		{
 			BigDecimal from = (BigDecimal)fAmtFrom.getValue();
 			BigDecimal to = (BigDecimal)fAmtTo.getValue();
-			log.fine("Amt From=" + from + ", To=" + to);
+			if (log.isLoggable(Level.FINE)) log.fine("Amt From=" + from + ", To=" + to);
 			if (from == null && to != null)
 				pstmt.setBigDecimal(index++, to);
 			else if (from != null && to == null)
@@ -352,7 +353,7 @@ public class InfoPayment extends Info
 		String s = f.getText().toUpperCase();
 		if (!s.endsWith("%"))
 			s += "%";
-		log.fine( "String=" + s);
+		if (log.isLoggable(Level.FINE)) log.fine( "String=" + s);
 		return s;
 	}   //  getSQLText
 

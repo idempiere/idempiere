@@ -162,7 +162,7 @@ public class OrderPOCreate extends SvrProcess
 			rs = null; pstmt = null;
 		}
 		if (counter == 0)
-			log.fine(sql.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
 		StringBuilder msgreturn = new StringBuilder("@Created@ ").append(counter);
 		return msgreturn.toString();
 	}	//	doIt

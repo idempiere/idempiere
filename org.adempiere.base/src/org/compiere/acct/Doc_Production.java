@@ -66,7 +66,7 @@ public class Doc_Production extends Doc
 		setDateAcct(prod.getMovementDate());
 		//	Contained Objects
 		p_lines = loadLines(prod);
-		log.fine("Lines=" + p_lines.length);
+		if (log.isLoggable(Level.FINE)) log.fine("Lines=" + p_lines.length);
 		return null;
 	}   //  loadDocumentDetails
 
@@ -103,7 +103,7 @@ public class Doc_Production extends Doc
 				//	Identify finished BOM Product
 				docLine.setProductionBOM(line.getM_Product_ID() == prod.getM_Product_ID());
 				//
-				log.fine(docLine.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
 				list.add (docLine);
 			}
 		}

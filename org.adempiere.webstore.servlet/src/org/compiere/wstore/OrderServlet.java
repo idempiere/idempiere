@@ -18,6 +18,7 @@ package org.compiere.wstore;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -257,7 +258,7 @@ public class OrderServlet extends HttpServlet
 		if (C_Order_ID == 0)
 			return null;
 
-		log.fine("C_Order_ID=" + C_Order_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("C_Order_ID=" + C_Order_ID);
 		return new MOrder (ctx, C_Order_ID, null);
 	}	//	getOrder
 	
@@ -285,7 +286,7 @@ public class OrderServlet extends HttpServlet
 		}
 
 		//	We have a Order No & DocAction
-		log.fine("DocAction=" + DocAction);
+		if (log.isLoggable(Level.FINE)) log.fine("DocAction=" + DocAction);
 		if (!MOrder.DOCACTION_Void.equals(DocAction))
 		{
 			//	Do not complete Prepayment

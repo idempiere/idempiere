@@ -145,7 +145,7 @@ public class EMailProcessor
 		//
 		m_session = Session.getDefaultInstance(props, auth);
 		m_session.setDebug(CLogMgt.isLevelFinest());
-		log.fine("getSession - " + m_session);
+		if (log.isLoggable(Level.FINE)) log.fine("getSession - " + m_session);
 		return m_session;
 	}	//	getSession
 	
@@ -167,7 +167,7 @@ public class EMailProcessor
 		//	Connect
 		m_store.connect();
 		//
-		log.fine("getStore - " + m_store);
+		if (log.isLoggable(Level.FINE)) log.fine("getStore - " + m_store);
 		return m_store;
 	}	//	getStore
 
@@ -189,7 +189,7 @@ public class EMailProcessor
 		if (!inbox.exists())
 			throw new IllegalStateException("No Inbox");
 		inbox.open(Folder.READ_WRITE);
-		log.fine("processInBox - " + inbox.getName() 
+		if (log.isLoggable(Level.FINE)) log.fine("processInBox - " + inbox.getName() 
 			+ "; Messages Total=" + inbox.getMessageCount()
 			+ "; New=" + inbox.getNewMessageCount());
 		

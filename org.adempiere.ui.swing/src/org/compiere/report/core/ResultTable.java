@@ -142,7 +142,7 @@ public class ResultTable extends JTable implements MouseListener
 	public void tableChanged(TableModelEvent e)
 	{
 		super.tableChanged(e);
-		log.fine("Type=" + e.getType());
+		if (log.isLoggable(Level.FINE)) log.fine("Type=" + e.getType());
 	}   //  tableChanged
 
 	/*************************************************************************/
@@ -154,7 +154,7 @@ public class ResultTable extends JTable implements MouseListener
 	public void mouseClicked(MouseEvent e)
 	{
 		int col = getColumnModel().getColumnIndexAtX(e.getX());
-		log.fine("Column " + col + " = " + getColumnModel().getColumn(col).getHeaderValue()
+		if (log.isLoggable(Level.FINE)) log.fine("Column " + col + " = " + getColumnModel().getColumn(col).getHeaderValue()
 			+ ", Table r=" + this.getSelectedRow() + " c=" + this.getSelectedColumn());
 
 		//  clicked Cell

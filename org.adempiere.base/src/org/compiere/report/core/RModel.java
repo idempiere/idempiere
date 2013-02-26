@@ -170,7 +170,7 @@ public class RModel implements Serializable
 		//	log.fine( "Column " + i + " " + rc.getColSQL() + " ? " + columnName);
 			if (rc.getColSQL().startsWith(columnName))
 			{
-				log.fine( "Column " + i + " " + rc.getColSQL() + " = " + columnName);
+				if (log.isLoggable(Level.FINE)) log.fine( "Column " + i + " " + rc.getColSQL() + " = " + columnName);
 				return i;
 			}
 		}

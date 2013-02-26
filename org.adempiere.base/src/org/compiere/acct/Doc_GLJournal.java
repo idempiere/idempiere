@@ -65,7 +65,7 @@ public class Doc_GLJournal extends Doc
 
 		//	Contained Objects
 		p_lines = loadLines(journal);
-		log.fine("Lines=" + p_lines.length);
+		if (log.isLoggable(Level.FINE)) log.fine("Lines=" + p_lines.length);
 		return null;
 	}   //  loadDocumentDetails
 
@@ -117,7 +117,7 @@ public class Doc_GLJournal extends Doc
 		}
 		sb.append("]");
 		//
-		log.fine(toString() + " Balance=" + retValue + sb.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(toString() + " Balance=" + retValue + sb.toString());
 		return retValue;
 	}   //  getBalance
 

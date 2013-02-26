@@ -198,7 +198,7 @@ public class VSchedulePanel extends JComponent implements MouseListener
 	public void setAssignmentSlots (MAssignmentSlot[] mass, int S_Resource_ID,
 		Timestamp startDate, Timestamp endDate)
 	{
-		log.fine("S_Resource_ID=" + S_Resource_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("S_Resource_ID=" + S_Resource_ID);
 		m_S_Resource_ID = S_Resource_ID;
 		m_noDays = TimeUtil.getDaysBetween (startDate, endDate);
 		m_startDate = startDate;

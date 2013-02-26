@@ -826,7 +826,7 @@ public final class MPayment extends X_C_Payment
 		boolean change = test != isAllocated();
 		if (change)
 			setIsAllocated(test);
-		log.fine("Allocated=" + test 
+		if (log.isLoggable(Level.FINE)) log.fine("Allocated=" + test 
 			+ " (" + alloc + "=" + total + ")");
 		return change;
 	}	//	testAllocation
@@ -1002,7 +1002,7 @@ public final class MPayment extends X_C_Payment
 			//
 			ValueNamePair[] retValue = new ValueNamePair[map.size ()];
 			map.values ().toArray (retValue);
-			log.fine("getCreditCards - #" + retValue.length + " - Processors=" + m_mBankAccountProcessors.length);
+			if (log.isLoggable(Level.FINE)) log.fine("getCreditCards - #" + retValue.length + " - Processors=" + m_mBankAccountProcessors.length);
 			return retValue;
 		}
 		catch (Exception ex)
@@ -1297,7 +1297,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public void setBP_BankAccount (MBPBankAccount ba)
 	{
-		log.fine("" + ba);
+		if (log.isLoggable(Level.FINE)) log.fine("" + ba);
 		if (ba == null)
 			return;
 		setC_BPartner_ID(ba.getC_BPartner_ID());
@@ -1358,7 +1358,7 @@ public final class MPayment extends X_C_Payment
 		ba.setR_AvsZip(getR_AvsZip());
 		//
 		boolean ok = ba.save(get_TrxName());
-		log.fine("saveToBP_BankAccount - " + ba);
+		if (log.isLoggable(Level.FINE)) log.fine("saveToBP_BankAccount - " + ba);
 		return ok;
 	}	//	setBP_BankAccount
 
@@ -2065,7 +2065,7 @@ public final class MPayment extends X_C_Payment
 		MDocTypeCounter counterDT = MDocTypeCounter.getCounterDocType(getCtx(), getC_DocType_ID());
 		if (counterDT != null)
 		{
-			log.fine(counterDT.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(counterDT.toString());
 			if (!counterDT.isCreateCounter() || !counterDT.isValid())
 				return null;
 			C_DocTypeTarget_ID = counterDT.getCounter_C_DocType_ID();
@@ -2073,7 +2073,7 @@ public final class MPayment extends X_C_Payment
 		else	//	indirect
 		{
 			C_DocTypeTarget_ID = MDocTypeCounter.getCounterDocType_ID(getCtx(), getC_DocType_ID());
-			log.fine("Indirect C_DocTypeTarget_ID=" + C_DocTypeTarget_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("Indirect C_DocTypeTarget_ID=" + C_DocTypeTarget_ID);
 			if (C_DocTypeTarget_ID <= 0)
 				return null;
 		}
@@ -2113,7 +2113,7 @@ public final class MPayment extends X_C_Payment
 		counter.setUser1_ID(getUser1_ID());
 		counter.setUser2_ID(getUser2_ID());
 		counter.saveEx(get_TrxName());
-		log.fine(counter.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(counter.toString());
 		setRef_Payment_ID(counter.getC_Payment_ID());
 		
 		//	Document Action
@@ -2313,7 +2313,7 @@ public final class MPayment extends X_C_Payment
 		boolean ok = true;
 		if (alloc.get_ID() == 0)
 		{
-			log.fine("No Allocation created - C_Payment_ID=" 
+			if (log.isLoggable(Level.FINE)) log.fine("No Allocation created - C_Payment_ID=" 
 				+ getC_Payment_ID());
 			ok = false;
 		}
@@ -2344,7 +2344,7 @@ public final class MPayment extends X_C_Payment
 		//	De-Allocate all 
 		MAllocationHdr[] allocations = MAllocationHdr.getOfPayment(getCtx(), 
 			getC_Payment_ID(), get_TrxName());
-		log.fine("#" + allocations.length);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + allocations.length);
 		for (int i = 0; i < allocations.length; i++)
 		{
 			allocations[i].set_TrxName(get_TrxName());
@@ -2373,7 +2373,7 @@ public final class MPayment extends X_C_Payment
 				+ " AND C_Payment_ID=" + getC_Payment_ID();
 			int no = DB.executeUpdate(sql, get_TrxName());
 			if (no != 0)
-				log.fine("Unlink Invoice #" + no);
+				if (log.isLoggable(Level.FINE)) log.fine("Unlink Invoice #" + no);
 			//	Order
 			sql = "UPDATE C_Order o "
 				+ "SET C_Payment_ID = NULL "
@@ -2382,7 +2382,7 @@ public final class MPayment extends X_C_Payment
 				+ " AND C_Payment_ID=" + getC_Payment_ID();
 			no = DB.executeUpdate(sql, get_TrxName());
 			if (no != 0)
-				log.fine("Unlink Order #" + no);
+				if (log.isLoggable(Level.FINE)) log.fine("Unlink Order #" + no);
 		}
 		//
 		setC_Invoice_ID(0);

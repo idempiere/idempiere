@@ -140,7 +140,7 @@ public class AlertProcessor extends AdempiereServer
 			MAlertRule rule = rules[i];
 			if (!rule.isValid())
 				continue;
-			log.fine("" + rule);
+			if (log.isLoggable(Level.FINE)) log.fine("" + rule);
 			
 			//	Pre
 			String sql = rule.getPreProcessing();

@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
@@ -252,7 +253,7 @@ public class MPriceList extends X_M_PriceList
 		if (m_plv == null)
 			log.warning("None found M_PriceList_ID=" + getM_PriceList_ID() + " - " + valid);
 		else
-			log.fine(m_plv.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(m_plv.toString());
 		return m_plv;
 	}	//	getPriceListVersion
 

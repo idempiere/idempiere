@@ -82,7 +82,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	 */
 	public void dispose()
 	{
-		log.fine("C_Locator_ID=" + C_Locator_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("C_Locator_ID=" + C_Locator_ID);
 		if (m_loader != null)
 		{
 			while (m_loader.isAlive())
@@ -379,7 +379,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 				DB.close(rs, pstmt);
 				rs = null; pstmt = null;
 			}
-			log.fine("Complete #" + m_lookup.size());
+			if (log.isLoggable(Level.FINE)) log.fine("Complete #" + m_lookup.size());
 			if (m_lookup.size() == 0)
 				log.finer(finalSql);
 		}	//	run

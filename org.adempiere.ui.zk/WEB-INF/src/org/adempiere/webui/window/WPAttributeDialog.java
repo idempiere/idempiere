@@ -298,7 +298,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			row.appendChild(bNewRecord);
 			row.appendChild(new Space());
 			MAttribute[] attributes = as.getMAttributes (false);
-			log.fine ("Product Attributes=" + attributes.length);
+			if (log.isLoggable(Level.FINE)) log.fine ("Product Attributes=" + attributes.length);
 			for (int i = 0; i < attributes.length; i++)
 				addAttributeLine (rows, attributes[i], true, false);
 			if (m_M_AttributeSetInstance_ID > 0)
@@ -333,7 +333,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			
 			//	All Attributes
 			MAttribute[] attributes = as.getMAttributes (true);
-			log.fine ("Instance Attributes=" + attributes.length);
+			if (log.isLoggable(Level.FINE)) log.fine ("Instance Attributes=" + attributes.length);
 			for (int i = 0; i < attributes.length; i++)
 				addAttributeLine (rows, attributes[i], false, false);
 		}
@@ -498,7 +498,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	 */
 	private void addAttributeLine (Rows rows, MAttribute attribute, boolean product, boolean readOnly)
 	{
-		log.fine(attribute + ", Product=" + product + ", R/O=" + readOnly);
+		if (log.isLoggable(Level.FINE)) log.fine(attribute + ", Product=" + product + ", R/O=" + readOnly);
 		
 		m_row++;
 		Label label = new Label (attribute.getName());
@@ -600,12 +600,12 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 				}
 			}
 			if (found)
-				log.fine("Attribute=" + attribute.getName() + " #" + values.length + " - found: " + instance);
+				if (log.isLoggable(Level.FINE)) log.fine("Attribute=" + attribute.getName() + " #" + values.length + " - found: " + instance);
 			else
 				log.warning("Attribute=" + attribute.getName() + " #" + values.length + " - NOT found: " + instance);
 		}	//	setComboBox
 		else
-			log.fine("Attribute=" + attribute.getName() + " #" + values.length + " no instance");
+			if (log.isLoggable(Level.FINE)) log.fine("Attribute=" + attribute.getName() + " #" + values.length + " no instance");
 	}
 
 	/**
@@ -717,7 +717,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			// Get Attribute Set
 			MAttributeSet as = m_masi.getMAttributeSet();
 			MAttribute[] attributes = as.getMAttributes (false);
-			log.fine ("Product Attributes=" + attributes.length);
+			if (log.isLoggable(Level.FINE)) log.fine ("Product Attributes=" + attributes.length);
 			for (int i = 0; i < attributes.length; i++)
 				updateAttributeEditor(attributes[i], i);
 			
@@ -914,7 +914,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		String mandatory = "";
 		if (!m_productWindow && as.isLot())
 		{
-			log.fine("Lot=" + fieldLotString.getText ());
+			if (log.isLoggable(Level.FINE)) log.fine("Lot=" + fieldLotString.getText ());
 			String text = fieldLotString.getText();
 			m_masi.setLot (text);
 			if (as.isLotMandatory() && (text == null || text.length() == 0))
@@ -923,7 +923,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		}	//	Lot
 		if (!m_productWindow && as.isSerNo())
 		{
-			log.fine("SerNo=" + fieldSerNo.getText());
+			if (log.isLoggable(Level.FINE)) log.fine("SerNo=" + fieldSerNo.getText());
 			String text = fieldSerNo.getText();
 			m_masi.setSerNo(text);
 			if (as.isSerNoMandatory() && (text == null || text.length() == 0))
@@ -932,7 +932,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		}	//	SerNo
 		if (!m_productWindow && as.isGuaranteeDate())
 		{
-			log.fine("GuaranteeDate=" + fieldGuaranteeDate.getValue());
+			if (log.isLoggable(Level.FINE)) log.fine("GuaranteeDate=" + fieldGuaranteeDate.getValue());
 			Date gDate = fieldGuaranteeDate.getValue();
 			Timestamp ts = gDate != null ? new Timestamp(gDate.getTime()) : null;
 			m_masi.setGuaranteeDate(ts);
@@ -959,7 +959,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 				Listbox editor = (Listbox)m_editors.get(i);
 				ListItem item = editor.getSelectedItem();
 				MAttributeValue value = item != null ? (MAttributeValue)item.getValue() : null;
-				log.fine(attributes[i].getName() + "=" + value);
+				if (log.isLoggable(Level.FINE)) log.fine(attributes[i].getName() + "=" + value);
 				if (attributes[i].isMandatory() && value == null)
 					mandatory += " - " + attributes[i].getName();
 				attributes[i].setMAttributeInstance(m_M_AttributeSetInstance_ID, value);
@@ -968,7 +968,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			{
 				NumberBox editor = (NumberBox)m_editors.get(i);
 				BigDecimal value = editor.getValue();
-				log.fine(attributes[i].getName() + "=" + value);
+				if (log.isLoggable(Level.FINE)) log.fine(attributes[i].getName() + "=" + value);
 				if (attributes[i].isMandatory() && value == null)
 					mandatory += " - " + attributes[i].getName();
 				//setMAttributeInstance doesn't work without decimal point
@@ -980,7 +980,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			{
 				Textbox editor = (Textbox)m_editors.get(i);
 				String value = editor.getText();
-				log.fine(attributes[i].getName() + "=" + value);
+				if (log.isLoggable(Level.FINE)) log.fine(attributes[i].getName() + "=" + value);
 				if (attributes[i].isMandatory() && (value == null || value.length() == 0))
 					mandatory += " - " + attributes[i].getName();
 				attributes[i].setMAttributeInstance(m_M_AttributeSetInstance_ID, value);

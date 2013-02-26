@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.List;
+import java.util.logging.Level;
+
 import org.compiere.util.CCache;
 import org.compiere.util.Msg;
 
@@ -150,7 +152,7 @@ public class MPOS extends X_C_POS
 				m_template = MBPartner.getBPartnerCashTrx (getCtx(), getAD_Client_ID());
 			else
 				m_template = new MBPartner(getCtx(), getC_BPartnerCashTrx_ID(), get_TrxName());
-			log.fine("getBPartner - " + m_template);
+			if (log.isLoggable(Level.FINE)) log.fine("getBPartner - " + m_template);
 		}
 		return m_template;
 	}	//	getBPartner

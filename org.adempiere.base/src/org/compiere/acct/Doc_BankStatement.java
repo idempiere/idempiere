@@ -19,6 +19,7 @@ package org.compiere.acct;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
@@ -79,7 +80,7 @@ public class Doc_BankStatement extends Doc
 
 		//	Contained Objects
 		p_lines = loadLines(bs);
-		log.fine("Lines=" + p_lines.length);
+		if (log.isLoggable(Level.FINE)) log.fine("Lines=" + p_lines.length);
 		return null;
 	}   //  loadDocumentDetails
 
@@ -132,7 +133,7 @@ public class Doc_BankStatement extends Doc
 		}
 		sb.append("]");
 		//
-		log.fine(toString() + " Balance=" + retValue + sb.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(toString() + " Balance=" + retValue + sb.toString());
 		return retValue;
 	}   //  getBalance
 

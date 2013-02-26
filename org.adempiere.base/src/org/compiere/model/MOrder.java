@@ -394,7 +394,7 @@ public class MOrder extends X_C_Order implements DocAction
 			log.severe ("Not found for AD_Client_ID=" + getAD_Client_ID () + ", SubType=" + DocSubTypeSO_x);
 		else
 		{
-			log.fine("(SO) - " + DocSubTypeSO_x);
+			if (log.isLoggable(Level.FINE)) log.fine("(SO) - " + DocSubTypeSO_x);
 			setC_DocTypeTarget_ID (C_DocType_ID);
 			setIsSOTrx(true);
 		}
@@ -421,7 +421,7 @@ public class MOrder extends X_C_Order implements DocAction
 			log.severe ("No POO found for AD_Client_ID=" + getAD_Client_ID ());
 		else
 		{
-			log.fine("(PO) - " + C_DocType_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("(PO) - " + C_DocType_ID);
 			setC_DocTypeTarget_ID (C_DocType_ID);
 		}
 	}	//	setC_DocTypeTarget_ID
@@ -876,7 +876,7 @@ public class MOrder extends X_C_Order implements DocAction
 		int noTax = DB.executeUpdateEx("UPDATE C_OrderTax " + set, get_TrxName());
 		m_lines = null;
 		m_taxes = null;
-		log.fine("setProcessed - " + processed + " - Lines=" + noLine + ", Tax=" + noTax);
+		if (log.isLoggable(Level.FINE)) log.fine("setProcessed - " + processed + " - Lines=" + noLine + ", Tax=" + noTax);
 	}	//	setProcessed
 	
 	
@@ -889,7 +889,7 @@ public class MOrder extends X_C_Order implements DocAction
 	{
 		MOrderPaySchedule[] schedule = MOrderPaySchedule.getOrderPaySchedule
 			(getCtx(), getC_Order_ID(), 0, get_TrxName());
-		log.fine("#" + schedule.length);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + schedule.length);
 		if (schedule.length == 0)
 		{
 			setIsPayScheduleValid(false);
@@ -1094,7 +1094,7 @@ public class MOrder extends X_C_Order implements DocAction
 					+ "FROM C_Order o WHERE i.C_Order_ID=o.C_Order_ID) "
 				+ "WHERE DocStatus NOT IN ('RE','CL') AND C_Order_ID=" + getC_Order_ID();
 			int no = DB.executeUpdateEx(sql, get_TrxName());
-			log.fine("Description -> #" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Description -> #" + no);
 		}
 
 		//	Propagate Changes of Payment Info to existing (not reversed/closed) invoices
@@ -1109,7 +1109,7 @@ public class MOrder extends X_C_Order implements DocAction
 				+ "WHERE DocStatus NOT IN ('RE','CL') AND C_Order_ID=" + getC_Order_ID();
 			//	Don't touch Closed/Reversed entries
 			int no = DB.executeUpdate(sql, get_TrxName());
-			log.fine("Payment -> #" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Payment -> #" + no);
 		}
 	      
 		//	Propagate Changes of Date Account to existing (not completed/reversed/closed) invoices
@@ -1122,7 +1122,7 @@ public class MOrder extends X_C_Order implements DocAction
 				+ "WHERE DocStatus NOT IN ('CO','RE','CL') AND Processed='N' AND C_Order_ID=" + getC_Order_ID();
 			//	Don't touch Completed/Closed/Reversed entries
 			int no = DB.executeUpdate(sql, get_TrxName());
-			log.fine("DateAcct -> #" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("DateAcct -> #" + no);
 		}
 	      
 		//	Sync Lines
@@ -1577,7 +1577,7 @@ public class MOrder extends X_C_Order implements DocAction
 			{
 				MOrderLine line = lines[i];
 				MProduct product = MProduct.get (getCtx(), line.getM_Product_ID());
-				log.fine(product.getName());
+				if (log.isLoggable(Level.FINE)) log.fine(product.getName());
 				//	New Lines
 				int lineNo = line.getLine ();
 				//find default BOM with valid dates and to this product
@@ -1673,7 +1673,7 @@ public class MOrder extends X_C_Order implements DocAction
 			) // || isDropShip() )
 			binding = false;
 		boolean isSOTrx = isSOTrx();
-		log.fine("Binding=" + binding + " - IsSOTrx=" + isSOTrx);
+		if (log.isLoggable(Level.FINE)) log.fine("Binding=" + binding + " - IsSOTrx=" + isSOTrx);
 		//	Force same WH for all but SO/PO
 		int header_M_Warehouse_ID = getM_Warehouse_ID();
 		if (MDocType.DOCSUBTYPESO_StandardOrder.equals(dt.getDocSubTypeSO())
@@ -1711,7 +1711,7 @@ public class MOrder extends X_C_Order implements DocAction
 				continue;
 			}
 			
-			log.fine("Line=" + line.getLine() 
+			if (log.isLoggable(Level.FINE)) log.fine("Line=" + line.getLine() 
 				+ " - Target=" + target + ",Difference=" + difference
 				+ " - Ordered=" + line.getQtyOrdered() 
 				+ ",Reserved=" + line.getQtyReserved() + ",Delivered=" + line.getQtyDelivered());
@@ -1833,7 +1833,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (getC_PaymentTerm_ID() == 0)
 			return false;
 		MPaymentTerm pt = new MPaymentTerm(getCtx(), getC_PaymentTerm_ID(), null);
-		log.fine(pt.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(pt.toString());
 
 		int numSchema = pt.getSchedule(false).length;
 		
@@ -2335,7 +2335,7 @@ public class MOrder extends X_C_Order implements DocAction
 		MDocTypeCounter counterDT = MDocTypeCounter.getCounterDocType(getCtx(), getC_DocType_ID());
 		if (counterDT != null)
 		{
-			log.fine(counterDT.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(counterDT.toString());
 			if (!counterDT.isCreateCounter() || !counterDT.isValid())
 				return null;
 			C_DocTypeTarget_ID = counterDT.getCounter_C_DocType_ID();
@@ -2343,7 +2343,7 @@ public class MOrder extends X_C_Order implements DocAction
 		else	//	indirect
 		{
 			C_DocTypeTarget_ID = MDocTypeCounter.getCounterDocType_ID(getCtx(), getC_DocType_ID());
-			log.fine("Indirect C_DocTypeTarget_ID=" + C_DocTypeTarget_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("Indirect C_DocTypeTarget_ID=" + C_DocTypeTarget_ID);
 			if (C_DocTypeTarget_ID <= 0)
 				return null;
 		}
@@ -2370,7 +2370,7 @@ public class MOrder extends X_C_Order implements DocAction
 			counterLine.setTax();
 			counterLine.saveEx(get_TrxName());
 		}
-		log.fine(counter.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(counter.toString());
 		
 		//	Document Action
 		if (counterDT != null)

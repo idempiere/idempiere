@@ -124,7 +124,7 @@ public class PrintFormatUtil
 				String ColumnName = rs.getString(2);
 				MPrintFormatItem pfi = MPrintFormatItem.createFromColumn (pf, AD_Column_ID, 0);
 				if (pfi.get_ID() != 0)
-					log.fine("#" + ++counter + " - added " + ColumnName);
+					if (log.isLoggable(Level.FINE)) log.fine("#" + ++counter + " - added " + ColumnName);
 				else
 					log.warning("Not added: " + ColumnName);
 			}
@@ -139,7 +139,7 @@ public class PrintFormatUtil
 			rs = null; pstmt = null;
 		}
 		if (counter == 0)
-			log.fine("None"
+			if (log.isLoggable(Level.FINE)) log.fine("None"
 				/**
 				+ " - " + sql 
 				+ " - AD_PrintFormat_ID=" + pf.getAD_PrintFormat_ID()
@@ -147,7 +147,7 @@ public class PrintFormatUtil
 				*/
 				);
 		else
-			log.fine("Added=" + counter);
+			if (log.isLoggable(Level.FINE)) log.fine("Added=" + counter);
 		return counter;
 	}	//	addMissingColumns
 

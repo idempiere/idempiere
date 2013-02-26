@@ -170,7 +170,7 @@ public class InvoiceServlet extends HttpServlet
 		MInvoice invoice = new MInvoice (ctx, C_Invoice_ID, null);
 		if (invoice.getC_Invoice_ID() != C_Invoice_ID)
 		{
-			log.fine("Invoice not found - ID=" + C_Invoice_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("Invoice not found - ID=" + C_Invoice_ID);
 			return "Invoice not found";
 		}
 		//	Get WebUser & Compare with invoice
@@ -230,7 +230,7 @@ public class InvoiceServlet extends HttpServlet
 			response.setBufferSize(bufferSize);
 			response.setContentLength(fileLength);
 			//
-			log.fine(file.getAbsolutePath() + ", length=" + fileLength);
+			if (log.isLoggable(Level.FINE)) log.fine(file.getAbsolutePath() + ", length=" + fileLength);
 			long time = System.currentTimeMillis();		//	timer start
 			//
 			FileInputStream in = new FileInputStream (file);
@@ -253,7 +253,7 @@ public class InvoiceServlet extends HttpServlet
 			in.close();
 			time = System.currentTimeMillis() - time;
 			double speed = (totalSize/1024) / ((double)time/1000);
-			log.fine("Length=" 
+			if (log.isLoggable(Level.FINE)) log.fine("Length=" 
 				+ totalSize + " - " 
 				+ time + " ms - " 
 				+ speed + " kB/sec");

@@ -18,6 +18,7 @@ package org.compiere.acct;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
@@ -978,7 +979,7 @@ public class DocLine
 				String sql = "SELECT COALESCE(C_SalesRegion_ID,0) FROM C_BPartner_Location WHERE C_BPartner_Location_ID=?";
 				m_C_SalesRegion_ID = DB.getSQLValue (null,
 					sql, getC_BPartner_Location_ID());
-				log.fine("C_SalesRegion_ID=" + m_C_SalesRegion_ID + " (from BPL)" );
+				if (log.isLoggable(Level.FINE)) log.fine("C_SalesRegion_ID=" + m_C_SalesRegion_ID + " (from BPL)" );
 				if (m_C_SalesRegion_ID == 0)
 					m_C_SalesRegion_ID = -2;	//	don't try again
 			}

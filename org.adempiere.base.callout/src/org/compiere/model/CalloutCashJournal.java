@@ -140,7 +140,7 @@ public class CalloutCashJournal extends CalloutEngine
 		BigDecimal DiscountAmt = (BigDecimal)mTab.getValue("DiscountAmt");
 		BigDecimal WriteOffAmt = (BigDecimal)mTab.getValue("WriteOffAmt");
 		String colName = mField.getColumnName();
-		log.fine(colName + " - Invoice=" + InvTotalAmt
+		if (log.isLoggable(Level.FINE)) log.fine(colName + " - Invoice=" + InvTotalAmt
 			+ " - Amount=" + PayAmt + ", Discount=" + DiscountAmt + ", WriteOff=" + WriteOffAmt);
 
 		//  Amount - calculate write off

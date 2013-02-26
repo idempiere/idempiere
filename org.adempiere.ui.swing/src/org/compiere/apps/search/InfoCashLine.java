@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.ALayout;
@@ -300,7 +301,7 @@ public class InfoCashLine extends Info
 			sql.append(" AND cl.").append(MCashLine.COLUMNNAME_C_Charge_ID).append("=?");
 		}
 
-		log.fine(sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
 		return sql.toString();
 	}	//	getSQLWhere
 
@@ -321,21 +322,21 @@ public class InfoCashLine extends Info
 		{
 			Integer cb = (Integer)fCashBook_ID.getValue();
 			pstmt.setInt(index++, cb.intValue());
-			log.fine("CashBook=" + cb);
+			if (log.isLoggable(Level.FINE)) log.fine("CashBook=" + cb);
 		}
 		//
 		if (fInvoice_ID.getValue() != null)
 		{
 			Integer i = (Integer)fInvoice_ID.getValue();
 			pstmt.setInt(index++, i.intValue());
-			log.fine("Invoice=" + i);
+			if (log.isLoggable(Level.FINE)) log.fine("Invoice=" + i);
 		}
 		//
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
 		{
 			Timestamp from = (Timestamp)fDateFrom.getValue();
 			Timestamp to = (Timestamp)fDateTo.getValue();
-			log.fine("Date From=" + from + ", To=" + to);
+			if (log.isLoggable(Level.FINE)) log.fine("Date From=" + from + ", To=" + to);
 			if (from == null && to != null)
 				pstmt.setTimestamp(index++, to);
 			else if (from != null && to == null)
@@ -358,7 +359,7 @@ public class InfoCashLine extends Info
 				if (to != null)
 					to = to.abs();
 			}
-			log.fine("Amt From=" + from + ", To=" + to + ", Absolute=" + cbAbsolute.isSelected());
+			if (log.isLoggable(Level.FINE)) log.fine("Amt From=" + from + ", To=" + to + ", Absolute=" + cbAbsolute.isSelected());
 			if (from == null && to != null)
 				pstmt.setBigDecimal(index++, to);
 			else if (from != null && to == null)
@@ -377,7 +378,7 @@ public class InfoCashLine extends Info
 		if (fCharge_ID.getValue() != null) {
 			Integer i = (Integer)fCharge_ID.getValue();
 			pstmt.setInt(index++, i.intValue());
-			log.fine("Charge=" + i);
+			if (log.isLoggable(Level.FINE)) log.fine("Charge=" + i);
 		}
 	}   //  setParameters
 
@@ -391,7 +392,7 @@ public class InfoCashLine extends Info
 		String s = f.getText().toUpperCase();
 		if (!s.endsWith("%"))
 			s += "%";
-		log.fine( "String=" + s);
+		if (log.isLoggable(Level.FINE)) log.fine( "String=" + s);
 		return s;
 	}   //  getSQLText
 }   //  InfoCashLine

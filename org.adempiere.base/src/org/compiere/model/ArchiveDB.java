@@ -41,7 +41,7 @@ public class ArchiveDB implements IArchiveStore {
 		if (deflatedData == null)
 			return null;
 		//
-		log.fine("ZipSize=" + deflatedData.length);
+		if (log.isLoggable(Level.FINE)) log.fine("ZipSize=" + deflatedData.length);
 		if (deflatedData.length == 0)
 			return null;
 
@@ -61,7 +61,7 @@ public class ArchiveDB implements IArchiveStore {
 				}
 				//
 				inflatedData = out.toByteArray();
-				log.fine("Size=" + inflatedData.length + " - zip=" + entry.getCompressedSize()
+				if (log.isLoggable(Level.FINE)) log.fine("Size=" + inflatedData.length + " - zip=" + entry.getCompressedSize()
 						+ "(" + entry.getSize() + ") "
 						+ (entry.getCompressedSize() * 100 / entry.getSize()) + "%");
 			}
@@ -93,13 +93,13 @@ public class ArchiveDB implements IArchiveStore {
 			zip.putNextEntry(entry);
 			zip.write(inflatedData, 0, inflatedData.length);
 			zip.closeEntry();
-			log.fine(entry.getCompressedSize() + " (" + entry.getSize() + ") "
+			if (log.isLoggable(Level.FINE)) log.fine(entry.getCompressedSize() + " (" + entry.getSize() + ") "
 					+ (entry.getCompressedSize() * 100 / entry.getSize()) + "%");
 			//
 			// zip.finish();
 			zip.close();
 			deflatedData = out.toByteArray();
-			log.fine("Length=" + inflatedData.length);
+			if (log.isLoggable(Level.FINE)) log.fine("Length=" + inflatedData.length);
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "saveLOBData", e);
 			deflatedData = null;

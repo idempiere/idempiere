@@ -199,7 +199,7 @@ public class DunningPrint extends SvrProcess
 				if (re != null) {
 					File attachment = re.getPDF(File.createTempFile("Dunning", ".pdf"));
 					StringBuilder msglog = new StringBuilder().append(to.toString()).append(" - ").append(attachment);
-					log.fine(msglog.toString());
+					if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 					email.addAttachment(attachment);
 				}
 				//

@@ -433,7 +433,7 @@ PrintServiceAttributeSet - length=1
 queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		**/
 		if (log.isLoggable(Level.FINE))
-			log.fine("attributeUpdate - " + psae);
+			if (log.isLoggable(Level.FINE)) log.fine("attributeUpdate - " + psae);
 	//	PrintUtil.dump (psae.getAttributes());
 	}	//	attributeUpdate
 
@@ -981,7 +981,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		}
 			
 		if (log.isLoggable(Level.FINE))
-			log.fine(uri.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(uri.toString());
 
 		try
 		{
@@ -1614,7 +1614,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			rs = null; pstmt = null;
 		}
 		if (log.isLoggable(Level.FINE))
-			log.fine("Order => " + what[0] + " ID=" + what[1]);
+			if (log.isLoggable(Level.FINE)) log.fine("Order => " + what[0] + " ID=" + what[1]);
 		return what;
 	}	//	getDocumentWhat
 

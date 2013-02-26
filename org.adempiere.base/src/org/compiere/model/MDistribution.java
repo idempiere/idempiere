@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
@@ -382,7 +383,7 @@ public class MDistribution extends X_GL_Distribution
 			for (int i = 0; i < m_lines.length; i++)
 			{
 				if (m_lines[i].isActive())
-					log.fine("distribute = Amt=" + m_lines[i].getAmt() + " - " + m_lines[i].getAccount());
+					if (log.isLoggable(Level.FINE)) log.fine("distribute = Amt=" + m_lines[i].getAmt() + " - " + m_lines[i].getAccount());
 			}
 		}
 	}	//	distribute

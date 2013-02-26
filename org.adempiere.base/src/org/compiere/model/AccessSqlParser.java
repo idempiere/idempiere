@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 
 /**
@@ -117,8 +116,7 @@ public class AccessSqlParser
 			m_tableInfo.add(info);
 		}
 		//
-		if (CLogMgt.isLevelFinest())
-			log.fine(toString());
+		if (log.isLoggable(Level.FINE)) log.fine(toString());
 		return m_tableInfo.size() > 0;
 	}	//	parse
 

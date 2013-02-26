@@ -82,7 +82,7 @@ public class RfQResponseRank extends SvrProcess
 		
 		//	Get Completed, Active Responses
 		MRfQResponse[] responses = rfq.getResponses (true, true);
-		log.fine("doIt - #Responses=" + responses.length);
+		if (log.isLoggable(Level.FINE)) log.fine("doIt - #Responses=" + responses.length);
 		if (responses.length == 0)
 			throw new IllegalArgumentException("No completed RfQ Responses found");
 		if (responses.length == 1)
@@ -120,7 +120,7 @@ public class RfQResponseRank extends SvrProcess
 			MRfQLine rfqLine = rfqLines[i];
 			if (!rfqLine.isActive())
 				continue;
-			log.fine("rankLines - " + rfqLine);
+			if (log.isLoggable(Level.FINE)) log.fine("rankLines - " + rfqLine);
 			MRfQLineQty[] rfqQtys = rfqLine.getQtys();
 			for (int j = 0; j < rfqQtys.length; j++)
 			{
@@ -128,7 +128,7 @@ public class RfQResponseRank extends SvrProcess
 				MRfQLineQty rfqQty = rfqQtys[j];
 				if (!rfqQty.isActive() || !rfqQty.isRfQQty())
 					continue;
-				log.fine("rankLines Qty - " + rfqQty);
+				if (log.isLoggable(Level.FINE)) log.fine("rankLines Qty - " + rfqQty);
 				MRfQResponseLineQty[] respQtys = rfqQty.getResponseQtys(false);
 				for (int kk = 0; kk < respQtys.length; kk++)
 				{
@@ -138,14 +138,14 @@ public class RfQResponseRank extends SvrProcess
 					{
 						respQty.setRanking(999);
 						respQty.saveEx();
-						log.fine("  - ignored: " + respQty);
+						if (log.isLoggable(Level.FINE)) log.fine("  - ignored: " + respQty);
 					}
 				}	//	for all respones line qtys
 				
 				//	Rank RfQ Line Qtys
 				respQtys = rfqQty.getResponseQtys(false);
 				if (respQtys.length == 0)
-					log.fine("  - No Qtys with valid Amounts");
+					if (log.isLoggable(Level.FINE)) log.fine("  - No Qtys with valid Amounts");
 				else
 				{
 					Arrays.sort(respQtys, respQtys[0]);
@@ -164,7 +164,7 @@ public class RfQResponseRank extends SvrProcess
 						{
 							qty.setRanking(999);
 							qty.saveEx();
-							log.fine("  - Rank 999: " + qty);
+							if (log.isLoggable(Level.FINE)) log.fine("  - Rank 999: " + qty);
 							continue;
 						}
 						
@@ -174,7 +174,7 @@ public class RfQResponseRank extends SvrProcess
 							lastAmt = qty.getNetAmt();
 						}
 						qty.setRanking(lastRank);
-						log.fine("  - Rank " + lastRank + ": " + qty);
+						if (log.isLoggable(Level.FINE)) log.fine("  - Rank " + lastRank + ": " + qty);
 						qty.saveEx();
 						//	
 						if (rank == 0)	//	Update RfQ
@@ -224,7 +224,7 @@ public class RfQResponseRank extends SvrProcess
 			}
 			response.setRanking(ranking);
 			response.saveEx();
-			log.fine("- Response Ranking " + ranking + ": " + response);
+			if (log.isLoggable(Level.FINE)) log.fine("- Response Ranking " + ranking + ": " + response);
 			if (!rfq.isQuoteSelectedLines())	//	no total selected winner if not all lines
 			{
 				if (winner == null && ranking > 0)
@@ -239,7 +239,7 @@ public class RfQResponseRank extends SvrProcess
 		{
 			winner.setIsSelectedWinner(true);
 			winner.saveEx();
-			log.fine("- Response Winner: " + winner);
+			if (log.isLoggable(Level.FINE)) log.fine("- Response Winner: " + winner);
 		}
 	}	//	rankLines
 
@@ -272,7 +272,7 @@ public class RfQResponseRank extends SvrProcess
 					response.setIsSelectedWinner(false);
 			}
 			response.saveEx();
-			log.fine("rankResponse - " + response);
+			if (log.isLoggable(Level.FINE)) log.fine("rankResponse - " + response);
 		}
 	}	//	rankResponses
 	

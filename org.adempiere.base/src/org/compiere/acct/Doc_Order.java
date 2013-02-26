@@ -121,7 +121,7 @@ public class Doc_Order extends Doc
 				if (!tax.isZeroTax())
 				{
 					BigDecimal LineNetAmtTax = tax.calculateTax(LineNetAmt, true, getStdPrecision());
-					log.fine("LineNetAmt=" + LineNetAmt + " - Tax=" + LineNetAmtTax);
+					if (log.isLoggable(Level.FINE)) log.fine("LineNetAmt=" + LineNetAmt + " - Tax=" + LineNetAmtTax);
 					LineNetAmt = LineNetAmt.subtract(LineNetAmtTax);
 					for (int t = 0; t < m_taxes.length; t++)
 					{
@@ -311,11 +311,11 @@ public class Doc_Order extends Doc
 		if (retValue.signum() != 0		//	Sum of Cost(vs. Price) in lines may not add up
 			&& getDocumentType().equals(DOCTYPE_POrder))	//	PO
 		{
-			log.fine(toString() + " Balance=" + retValue + sb.toString() + " (ignored)");
+			if (log.isLoggable(Level.FINE)) log.fine(toString() + " Balance=" + retValue + sb.toString() + " (ignored)");
 			retValue = Env.ZERO;
 		}
 		else
-			log.fine(toString() + " Balance=" + retValue + sb.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(toString() + " Balance=" + retValue + sb.toString());
 		return retValue;
 	}   //  getBalance
 
@@ -486,7 +486,7 @@ public class Doc_Order extends Doc
 			.append(" AND po.M_Product_ID=ol.M_Product_ID AND po.C_BPartner_ID=o.C_BPartner_ID")
 			.append(" AND o.C_Order_ID=").append(get_ID()).append(")");
 		int no = DB.executeUpdate(sql.toString(), getTrxName());
-		log.fine("Updated=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Updated=" + no);
 	}	//	updateProductPO
 
 

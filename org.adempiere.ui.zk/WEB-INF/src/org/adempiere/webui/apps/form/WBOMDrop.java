@@ -422,7 +422,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 			grpSelectProd.appendChild(new Separator());
 		}
 		
-		log.fine("#" + bomLines.length);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + bomLines.length);
 	}	//	addBOMLines
 
 	/**
@@ -434,7 +434,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	
 	private void addBOMLine (MProductBOM line, BigDecimal qty)
 	{
-		log.fine(line.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(line.toString());
 		String bomType = line.getBOMType();
 		
 		if (bomType == null)
@@ -465,7 +465,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	private void addDisplay (int parentM_Product_ID,
 		int M_Product_ID, String bomType, String name, BigDecimal lineQty)
 	{
-		log.fine("M_Product_ID=" + M_Product_ID + ",Type=" + bomType + ",Name=" + name + ",Qty=" + lineQty);
+		if (log.isLoggable(Level.FINE)) log.fine("M_Product_ID=" + M_Product_ID + ",Type=" + bomType + ",Name=" + name + ",Qty=" + lineQty);
 		
 		boolean selected = true;
 		
@@ -507,7 +507,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 			
 			if (group == null)
 			{
-				log.fine("ButtonGroup=" + groupName);
+				if (log.isLoggable(Level.FINE)) log.fine("ButtonGroup=" + groupName);
 				group = new Radiogroup();
 				m_buttonGroups.put(groupName, group);
 				group.appendChild(b);

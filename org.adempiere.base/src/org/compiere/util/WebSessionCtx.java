@@ -134,7 +134,7 @@ public class WebSessionCtx implements Serializable
 		//	Make Context directly availabe to jsp's
 		session.setAttribute("ctx", ctx);
 		//
-		log.fine("#" + ctx.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + ctx.size());
 	}	//	WebSessionCtx
 
 	/**************************************************************************
@@ -169,7 +169,7 @@ public class WebSessionCtx implements Serializable
 		//	Make Context directly availabe to jsp's
 		session.setAttribute("ctx", ctx);
 		//
-		log.fine("#" + ctx.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + ctx.size());
 	}	//	WebSessionCtx
 
 	/**	Sessition Attribute Name			*/

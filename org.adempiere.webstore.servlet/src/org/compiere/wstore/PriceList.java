@@ -328,7 +328,7 @@ public class PriceList
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("load #" + m_prices.size() + ", Search=" + m_searchInfo);
+		if (log.isLoggable(Level.FINE)) log.fine("load #" + m_prices.size() + ", Search=" + m_searchInfo);
 	}	//	load
 
 

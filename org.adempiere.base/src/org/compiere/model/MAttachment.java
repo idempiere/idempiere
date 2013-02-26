@@ -215,7 +215,7 @@ public class MAttachment extends X_AD_Attachment
 				+ ", Exists=" + file.exists() + ", Directory=" + file.isDirectory());
 			return false;
 		}
-		log.fine("addEntry - " + file);
+		if (log.isLoggable(Level.FINE)) log.fine("addEntry - " + file);
 		//
 		String name = file.getName();
 		byte[] data = null;
@@ -291,7 +291,7 @@ public class MAttachment extends X_AD_Attachment
 		if (!replaced) {
 			 retValue = m_items.add(item);
 		}
-		log.fine(item.toStringX());
+		if (log.isLoggable(Level.FINE)) log.fine(item.toStringX());
 		setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
 		return retValue || replaced;
 	}	//	addEntry
@@ -565,7 +565,7 @@ public class MAttachment extends X_AD_Attachment
 				+ ", Exists=" + file.exists() + ", Directory=" + file.isDirectory());
 			return false;
 		}
-		log.fine("updateEntry - " + file);
+		if (log.isLoggable(Level.FINE)) log.fine("updateEntry - " + file);
 		//
 		byte[] data = null;
 		try

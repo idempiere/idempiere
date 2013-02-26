@@ -206,7 +206,7 @@ public class FinStatement extends SvrProcess
 		setDateAcct();
 		sb.append(" - DateAcct ").append(p_DateAcct_From).append("-").append(p_DateAcct_To);
 		sb.append(" - Where=").append(m_parameterWhere);
-		log.fine(sb.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(sb.toString());
 	}	//	prepare
 
 	/**
@@ -280,7 +280,7 @@ public class FinStatement extends SvrProcess
 		else
 			getProcessInfo().setSerializableObject(MPrintFormat.get (getCtx(), AD_PrintFormat_ID, false));
 
-		log.fine((System.currentTimeMillis() - m_start) + " ms");
+		if (log.isLoggable(Level.FINE)) log.fine((System.currentTimeMillis() - m_start) + " ms");
 		return "";
 	}	//	doIt
 
@@ -316,7 +316,7 @@ public class FinStatement extends SvrProcess
 		}
 		//
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
-		log.fine("#" + no + " (Account_ID=" + p_Account_ID + ")");
+		if (log.isLoggable(Level.FINE)) log.fine("#" + no + " (Account_ID=" + p_Account_ID + ")");
 		if (log.isLoggable(Level.FINEST)) log.finest(sb.toString());
 	}	//	createBalanceLine
 
@@ -338,7 +338,7 @@ public class FinStatement extends SvrProcess
 			.append(" AND ").append(DB.TO_DATE(p_DateAcct_To));
 		//
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
-		log.fine("#" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 		if (log.isLoggable(Level.FINEST)) log.finest(sb.toString());
 
 		//	Set Name,Description
@@ -364,7 +364,7 @@ public class FinStatement extends SvrProcess
 			+ "WHERE Fact_Acct_ID <> 0 AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		//
 	   no = DB.executeUpdate(sb.toString(), get_TrxName());
-	   log.fine("Name #" + no);
+	   if (log.isLoggable(Level.FINE)) log.fine("Name #" + no);
 	   if (log.isLoggable(Level.FINEST)) log.finest("Name - " + sb);
 
 	}	//	createDetailLines

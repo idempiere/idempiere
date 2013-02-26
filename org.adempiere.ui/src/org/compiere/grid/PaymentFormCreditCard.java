@@ -14,6 +14,7 @@
 package org.compiere.grid;
 
 import java.math.BigDecimal;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.PaymentUtil;
@@ -232,11 +233,11 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		 */
 		if (!PAYMENTRULE.equals(m_PaymentRule))
 		{
-			log.fine("Changed PaymentRule: " + m_PaymentRule + " -> " + PAYMENTRULE);
+			if (log.isLoggable(Level.FINE)) log.fine("Changed PaymentRule: " + m_PaymentRule + " -> " + PAYMENTRULE);
 			//  We had a change in Payment type (e.g. Check to CC)
 			if (payTypes.indexOf(m_PaymentRule) != -1 && payTypes.indexOf(PAYMENTRULE) != -1 && m_mPaymentOriginal != null)
 			{
-				log.fine("Old Payment(1) - " + m_mPaymentOriginal);
+				if (log.isLoggable(Level.FINE)) log.fine("Old Payment(1) - " + m_mPaymentOriginal);
 				m_mPaymentOriginal.setDocAction(DocAction.ACTION_Reverse_Correct);
 				boolean ok = m_mPaymentOriginal.processIt(DocAction.ACTION_Reverse_Correct);
 				m_mPaymentOriginal.saveEx();
@@ -252,7 +253,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 			//	We had a Payment and something else (e.g. Check to Cash)
 			else if (payTypes.indexOf(m_PaymentRule) != -1 && payTypes.indexOf(PAYMENTRULE) == -1)
 			{
-				log.fine("Old Payment(2) - " + m_mPaymentOriginal);
+				if (log.isLoggable(Level.FINE)) log.fine("Old Payment(2) - " + m_mPaymentOriginal);
 				if (m_mPaymentOriginal != null)
 				{
 					m_mPaymentOriginal.setDocAction(DocAction.ACTION_Reverse_Correct);
@@ -260,7 +261,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 					m_mPaymentOriginal.saveEx();
 					if (ok)        //  Cancel Payment
 					{
-						log.fine("PaymentCancelled " + m_mPayment.getDocumentNo ());
+						if (log.isLoggable(Level.FINE)) log.fine("PaymentCancelled " + m_mPayment.getDocumentNo ());
 						getGridTab().getTableModel().dataSave(true);
 						m_mPayment.resetNew();
 						m_mPayment.setAmount(m_C_Currency_ID, m_Amount);
@@ -303,7 +304,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		/***********************
 		 *  Payments
 		 */
-		log.fine("Payment - " + PAYMENTRULE);
+		if (log.isLoggable(Level.FINE)) log.fine("Payment - " + PAYMENTRULE);
 		//  Set Amount
 		m_mPayment.setAmount(m_C_Currency_ID, payAmount);
 		m_mPayment.setCreditCard(MPayment.TRXTYPE_Sales, newCCType, newCCNumber, "", newCCExp);
@@ -370,7 +371,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		}
 		else
 		{
-			log.fine("NotDraft " + m_mPayment);
+			if (log.isLoggable(Level.FINE)) log.fine("NotDraft " + m_mPayment);
 			m_mPayment.setCreditCardNumber(PaymentUtil.encrpytCreditCard(m_mPayment.getCreditCardNumber()));
 			m_mPayment.setCreditCardVV(PaymentUtil.encrpytCvv(m_mPayment.getCreditCardVV()));
 			m_mPayment.saveEx();

@@ -229,7 +229,7 @@ public class MReportTree
 	 */	
 	public String getWhereClause (int ID)
 	{
-		log.fine("(" + m_ElementType + ") ID=" + ID);
+		if (log.isLoggable(Level.FINE)) log.fine("(" + m_ElementType + ") ID=" + ID);
 		String ColumnName = MAcctSchemaElement.getColumnName(m_ElementType);
 		//
 		MTreeNode node = m_tree.getRoot().findNode(ID);
@@ -277,7 +277,7 @@ public class MReportTree
 	 */	
 	public Integer[] getChildIDs (int ID)
 	{
-		log.fine("(" + m_ElementType + ") ID=" + ID);
+		if (log.isLoggable(Level.FINE)) log.fine("(" + m_ElementType + ") ID=" + ID);
 		ArrayList<Integer> list = new ArrayList<Integer>(); 
 		//
 		MTreeNode node = m_tree.getRoot().findNode(ID);

@@ -135,7 +135,7 @@ public class MInvoiceBatch extends X_C_InvoiceBatch
 			.append("' WHERE C_InvoiceBatch_ID=").append(getC_InvoiceBatch_ID());
 		int noLine = DB.executeUpdate("UPDATE C_InvoiceBatchLine " + set, get_TrxName());
 		m_lines = null;
-		log.fine(processed + " - Lines=" + noLine);
+		if (log.isLoggable(Level.FINE)) log.fine(processed + " - Lines=" + noLine);
 	}	//	setProcessed
 	
 }	//	MInvoiceBatch

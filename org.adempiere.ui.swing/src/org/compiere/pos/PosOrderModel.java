@@ -16,6 +16,7 @@ package org.compiere.pos;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBankAccountProcessor;
@@ -419,7 +420,7 @@ public class PosOrderModel extends MOrder {
 			//
 			ValueNamePair[] retValue = new ValueNamePair[map.size ()];
 			map.values ().toArray (retValue);
-			log.fine("getCreditCards - #" + retValue.length + " - Processors=" + m_mBankAccountProcessors.length);
+			if (log.isLoggable(Level.FINE)) log.fine("getCreditCards - #" + retValue.length + " - Processors=" + m_mBankAccountProcessors.length);
 			return retValue;
 		}
 		catch (Exception ex)

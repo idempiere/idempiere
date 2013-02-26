@@ -188,7 +188,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			.append(" AND M_Product_ID IS NULL")	//	set category only if product not found 
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Category Default Value=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Category Default Value=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_Product i ")
 			.append("SET M_Product_Category_ID=(SELECT M_Product_Category_ID FROM M_Product_Category c")
@@ -210,7 +210,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 				.append(" AND I_IsImported='N'").append(clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (no != 0)
-				log.fine(strFieldsToCopy[i] + " - default from existing Product=" + no);
+				if (log.isLoggable(Level.FINE)) log.fine(strFieldsToCopy[i] + " - default from existing Product=" + no);
 		}
 		String[] numFields = new String[] {"C_UOM_ID","M_Product_Category_ID",
 			"Volume","Weight","ShelfWidth","ShelfHeight","ShelfDepth","UnitsPerPallet"};
@@ -224,7 +224,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 				.append(" AND I_IsImported='N'").append(clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (no != 0)
-				log.fine(numFields[i] + " default from existing Product=" + no);
+				if (log.isLoggable(Level.FINE)) log.fine(numFields[i] + " default from existing Product=" + no);
 		}
 
 		//	Copy From Product_PO if Import does not have value
@@ -242,7 +242,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 				.append(" AND I_IsImported='N'").append(clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (no != 0)
-				log.fine(strFieldsPO[i] + " default from existing Product PO=" + no);
+				if (log.isLoggable(Level.FINE)) log.fine(strFieldsPO[i] + " default from existing Product PO=" + no);
 		}
 		String[] numFieldsPO = new String[] {"C_UOM_ID","C_Currency_ID",
 			"PriceList","PricePO","RoyaltyAmt",
@@ -258,7 +258,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 				.append(" AND I_IsImported='N'").append(clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (no != 0)
-				log.fine(numFieldsPO[i] + " default from existing Product PO=" + no);
+				if (log.isLoggable(Level.FINE)) log.fine(numFieldsPO[i] + " default from existing Product PO=" + no);
 		}
 
 		//	Invalid Category
@@ -278,7 +278,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			.append("WHERE X12DE355 IS NULL AND C_UOM_ID IS NULL")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set UOM Default=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set UOM Default=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_Product i ")
 			.append("SET C_UOM_ID = (SELECT C_UOM_ID FROM C_UOM u WHERE u.X12DE355=i.X12DE355 AND u.AD_Client_ID IN (0,i.AD_Client_ID)) ")
@@ -305,7 +305,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			.append("WHERE C_Currency_ID IS NULL AND ISO_Code IS NULL")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Currency Default=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Currency Default=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_Product i ")
 			.append("SET C_Currency_ID=(SELECT C_Currency_ID FROM C_Currency c")
@@ -405,7 +405,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			rs = null;
 			pstmt = null;
 		}
-		log.fine("C_TaxCategory_ID=" + C_TaxCategory_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("C_TaxCategory_ID=" + C_TaxCategory_ID);
 
 		ModelValidationEngine.get().fireImportValidate(this, null, null, ImportValidator.TIMING_AFTER_VALIDATE);
 
@@ -509,7 +509,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 				int M_Product_ID = imp.getM_Product_ID();
 				int C_BPartner_ID = imp.getC_BPartner_ID();
 				boolean newProduct = M_Product_ID == 0;
-				log.fine("I_Product_ID=" + I_Product_ID + ", M_Product_ID=" + M_Product_ID 
+				if (log.isLoggable(Level.FINE)) log.fine("I_Product_ID=" + I_Product_ID + ", M_Product_ID=" + M_Product_ID 
 					+ ", C_BPartner_ID=" + C_BPartner_ID);
 
 				//	Product

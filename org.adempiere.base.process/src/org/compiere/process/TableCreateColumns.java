@@ -167,7 +167,7 @@ public class TableCreateColumns extends SvrProcess
 						|| tn.indexOf("EXPLAIN") != -1	//	explain plan
 						)
 					{
-						log.fine("Ignored: " + tableName + " - " + tableType);
+						if (log.isLoggable(Level.FINE)) log.fine("Ignored: " + tableName + " - " + tableType);
 						continue;
 					}
 					//

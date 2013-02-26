@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
@@ -283,7 +284,7 @@ public class MDocType extends X_C_DocType
 				.append(")");
 			
 			int docact = DB.executeUpdate(sqlDocAction.toString(), get_TrxName());
-			log.fine("AD_Document_Action_Access=" + docact);
+			if (log.isLoggable(Level.FINE)) log.fine("AD_Document_Action_Access=" + docact);
 		}
 		return success;
 	}	//	afterSave
@@ -298,7 +299,7 @@ public class MDocType extends X_C_DocType
 		// delete access records
 		StringBuilder msgdb = new StringBuilder("DELETE FROM AD_Document_Action_Access WHERE C_DocType_ID=").append(get_ID());
 		int docactDel = DB.executeUpdate(msgdb.toString(), get_TrxName());
-		log.fine("Delete AD_Document_Action_Access=" + docactDel + " for C_DocType_ID: " + get_ID());
+		if (log.isLoggable(Level.FINE)) log.fine("Delete AD_Document_Action_Access=" + docactDel + " for C_DocType_ID: " + get_ID());
 		return docactDel >= 0;
 	}   //  beforeDelete
 

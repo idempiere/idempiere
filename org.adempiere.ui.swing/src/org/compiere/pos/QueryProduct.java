@@ -18,6 +18,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.util.logging.Level;
 
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
@@ -275,7 +276,7 @@ public class QueryProduct extends PosQuery
 			}
 		}
 		f_ok.setEnabled(enabled);
-		log.fine("M_Product_ID=" + m_M_Product_ID + " - " + m_ProductName + " - " + m_Price); 
+		if (log.isLoggable(Level.FINE)) log.fine("M_Product_ID=" + m_M_Product_ID + " - " + m_ProductName + " - " + m_Price); 
 	}	//	enableButtons
 
 
@@ -286,7 +287,7 @@ public class QueryProduct extends PosQuery
 	 */
 	protected void close()
 	{
-		log.fine("M_Product_ID=" + m_M_Product_ID); 
+		if (log.isLoggable(Level.FINE)) log.fine("M_Product_ID=" + m_M_Product_ID); 
 		
 		if (m_M_Product_ID > 0)
 		{

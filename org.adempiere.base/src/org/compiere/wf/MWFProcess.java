@@ -339,7 +339,7 @@ public class MWFProcess extends X_AD_WF_Process
 	 */
 	private boolean startNext (MWFActivity last, MWFActivity[] activities, PO lastPO, String trxName)
 	{
-		log.fine("Last=" + last);
+		if (log.isLoggable(Level.FINE)) log.fine("Last=" + last);
 		//	transitions from the last processed node
 		MWFNodeNext[] transitions = getWorkflow().getNodeNexts(
 			last.getAD_WF_Node_ID(), last.getPO_AD_Client_ID());
@@ -488,7 +488,7 @@ public class MWFProcess extends X_AD_WF_Process
 			return false;
 		}
 		int AD_WF_Node_ID = getWorkflow().getAD_WF_Node_ID();
-		log.fine("AD_WF_Node_ID=" + AD_WF_Node_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("AD_WF_Node_ID=" + AD_WF_Node_ID);
 		setWFState(WFSTATE_Running);
 		try
 		{

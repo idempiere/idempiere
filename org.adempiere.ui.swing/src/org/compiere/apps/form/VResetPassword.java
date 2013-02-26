@@ -234,13 +234,13 @@ public class VResetPassword implements FormPanel, ActionListener, VetoableChange
 		String p_NewEMailUserPW = txtNewEMailUserPW.getText();
 				
 		MUser user = MUser.get(Env.getCtx(), p_AD_User_ID);		
-		log.fine("User=" + user);
+		if (log.isLoggable(Level.FINE)) log.fine("User=" + user);
 				
 		//	Do we need a password ?
 		if (Util.isEmpty(p_OldPassword))		//	Password required
 		{
 			MUser operator = MUser.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
-			log.fine("Operator=" + operator);
+			if (log.isLoggable(Level.FINE)) log.fine("Operator=" + operator);
 			
 			if (p_AD_User_ID == 0			//	change of System
 					|| p_AD_User_ID == 100		//	change of SuperUser

@@ -76,7 +76,7 @@ public class Doc_InOut extends Doc
 		m_DocStatus = inout.getDocStatus();
 		//	Contained Objects
 		p_lines = loadLines(inout);
-		log.fine("Lines=" + p_lines.length);
+		if (log.isLoggable(Level.FINE)) log.fine("Lines=" + p_lines.length);
 		return null;
 	}   //  loadDocumentDetails
 
@@ -110,7 +110,7 @@ public class Doc_InOut extends Doc
 			int PP_Cost_Collector_ID = DB.getSQLValueEx(getTrxName(), sql, new Object[]{line.getC_OrderLine_ID()});
 			docLine.setPP_Cost_Collector_ID(PP_Cost_Collector_ID);
 			//
-			log.fine(docLine.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
 			list.add (docLine);
 		}
 
@@ -410,7 +410,7 @@ public class Doc_InOut extends Doc
 									{
 										int stdPrecision = MCurrency.getStdPrecision(getCtx(), C_Currency_ID);
 										BigDecimal costTax = tax.calculateTax(costs, true, stdPrecision);
-										log.fine("Costs=" + costs + " - Tax=" + costTax);
+										if (log.isLoggable(Level.FINE)) log.fine("Costs=" + costs + " - Tax=" + costTax);
 										costs = costs.subtract(costTax);
 									}
 								}	//	correct included Tax

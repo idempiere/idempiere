@@ -473,7 +473,7 @@ public final class WAccountDialog extends Window
 	 */
 	private void addLine (GridField field, WEditor editor, boolean mandatory)
 	{
-		log.fine("Field=" + field);
+		if (log.isLoggable(Level.FINE)) log.fine("Field=" + field);
 		Label label = editor.getLabel();
 		editor.setReadWrite(true);
 		editor.setMandatory(mandatory);
@@ -508,7 +508,7 @@ public final class WAccountDialog extends Window
 	 */
 	private void loadInfo (int C_ValidCombination_ID, int C_AcctSchema_ID)
 	{
-		log.fine("C_ValidCombination_ID=" + C_ValidCombination_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("C_ValidCombination_ID=" + C_ValidCombination_ID);
 		String sql = "SELECT * FROM C_ValidCombination WHERE C_ValidCombination_ID=? AND C_AcctSchema_ID=?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -912,7 +912,7 @@ public final class WAccountDialog extends Window
 		 *	Check if already exists
 		 */
 		sql.append("AD_Client_ID=? AND C_AcctSchema_ID=?");
-		log.fine("Check = " + sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine("Check = " + sql.toString());
 		int IDvalue = 0;
 		String Alias = null;
 		PreparedStatement pstmt = null;
@@ -940,7 +940,7 @@ public final class WAccountDialog extends Window
 			rs = null;
 			pstmt = null;
 		}
-		log.fine("ID=" + IDvalue + ", Alias=" + Alias);
+		if (log.isLoggable(Level.FINE)) log.fine("ID=" + IDvalue + ", Alias=" + Alias);
 
 		if (Alias == null)
 			Alias = "";

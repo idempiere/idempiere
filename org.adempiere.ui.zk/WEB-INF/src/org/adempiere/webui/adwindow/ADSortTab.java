@@ -192,32 +192,32 @@ public class ADSortTab extends Panel implements IADTabpanel
 				//	Sort Column
 				if (AD_ColumnSortOrder_ID == rs.getInt(2))
 				{
-					log.fine("Sort=" + rs.getString(1) + "." + rs.getString(3));
+					if (log.isLoggable(Level.FINE)) log.fine("Sort=" + rs.getString(1) + "." + rs.getString(3));
 					m_ColumnSortName = rs.getString(3);
 					yesLabel.setValue(rs.getString(4));
 				}
 				//	Optional YesNo
 				else if (AD_ColumnSortYesNo_ID == rs.getInt(2))
 				{
-					log.fine("YesNo=" + rs.getString(1) + "." + rs.getString(3));
+					if (log.isLoggable(Level.FINE)) log.fine("YesNo=" + rs.getString(1) + "." + rs.getString(3));
 					m_ColumnYesNoName = rs.getString(3);
 				}
 				//	Parent2
 				else if (rs.getString(5).equals("Y"))
 				{
-					log.fine("Parent=" + rs.getString(1) + "." + rs.getString(3));
+					if (log.isLoggable(Level.FINE)) log.fine("Parent=" + rs.getString(1) + "." + rs.getString(3));
 					m_ParentColumnName = rs.getString(3);
 				}
 				//	KeyColumn
 				else if (rs.getString(6).equals("Y"))
 				{
-					log.fine("Key=" + rs.getString(1) + "." + rs.getString(3));
+					if (log.isLoggable(Level.FINE)) log.fine("Key=" + rs.getString(1) + "." + rs.getString(3));
 					m_KeyColumnName = rs.getString(3);
 				}
 				//	Identifier
 				else if (rs.getString(7).equals("Y"))
 				{
-					log.fine("Identifier=" + rs.getString(1) + "." + rs.getString(3));
+					if (log.isLoggable(Level.FINE)) log.fine("Identifier=" + rs.getString(1) + "." + rs.getString(3));
 					boolean isTranslated = trl && "Y".equals(rs.getString(8));
 					if (identifierSql.length() > 0)
 						identifierSql.append(",");
@@ -228,7 +228,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 						m_IdentifierTranslated = true;
 				}
 				else
-					log.fine("??NotUsed??=" + rs.getString(1) + "." + rs.getString(3));
+					if (log.isLoggable(Level.FINE)) log.fine("??NotUsed??=" + rs.getString(1) + "." + rs.getString(3));
 			}
 		}
 		catch (SQLException e)
@@ -403,7 +403,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		if(m_ParentColumnName != null)
 		{	
 			ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, m_ParentColumnName);
-			log.fine(sql.toString() + " - ID=" + ID);
+			if (log.isLoggable(Level.FINE)) log.fine(sql.toString() + " - ID=" + ID);
 		}	
 		else
 		{

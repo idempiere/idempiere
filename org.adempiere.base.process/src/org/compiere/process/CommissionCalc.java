@@ -241,7 +241,7 @@ public class CommissionCalc extends SvrProcess
 			if (!m_com.isListDetails())
 				sql.append(" GROUP BY h.C_Currency_ID");
 			//
-			log.fine("Line=" + lines[i].getLine() + " - " + sql);
+			if (log.isLoggable(Level.FINE)) log.fine("Line=" + lines[i].getLine() + " - " + sql);
 			//
 			createDetail(sql.toString(), comAmt);
 			comAmt.calculateCommission();
@@ -319,7 +319,7 @@ public class CommissionCalc extends SvrProcess
 			cal.add(Calendar.DAY_OF_YEAR, -1); 
 			m_EndDate = new Timestamp (cal.getTimeInMillis());
 		}
-		log.fine("setStartEndDate = " + p_StartDate + " - " + m_EndDate);
+		if (log.isLoggable(Level.FINE)) log.fine("setStartEndDate = " + p_StartDate + " - " + m_EndDate);
 		
 		/**
 		String sd = DB.TO_DATE(p_StartDate, true);

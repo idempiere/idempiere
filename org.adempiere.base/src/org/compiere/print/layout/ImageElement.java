@@ -136,7 +136,7 @@ public class ImageElement extends PrintElement
 	{
 		m_image = image;
 		if (m_image != null)
-			log.fine("Image=" + image);
+			if (log.isLoggable(Level.FINE)) log.fine("Image=" + image);
 		else
 			log.log(Level.WARNING, "Image is NULL");
 	}	//	ImageElement
@@ -152,7 +152,7 @@ public class ImageElement extends PrintElement
 		{
 			m_image = Toolkit.getDefaultToolkit().createImage(imageURL);
 			if (m_image != null)
-				log.fine("URL=" + imageURL);
+				if (log.isLoggable(Level.FINE)) log.fine("URL=" + imageURL);
 			else
 				log.log(Level.WARNING, "Not loaded - URL=" + imageURL);
 		}
@@ -170,7 +170,7 @@ public class ImageElement extends PrintElement
 		{
 			m_image = Toolkit.getDefaultToolkit().createImage(imageURL);
 			if (m_image != null)
-				log.fine("URL=" + imageURL);
+				if (log.isLoggable(Level.FINE)) log.fine("URL=" + imageURL);
 			else
 				log.log(Level.WARNING, "Not loaded - URL=" + imageURL);
 		}
@@ -255,7 +255,7 @@ public class ImageElement extends PrintElement
 		if (imageData != null)
 			m_image = Toolkit.getDefaultToolkit().createImage(imageData);
 		if (m_image != null)
-			log.fine(mimage.toString() 
+			if (log.isLoggable(Level.FINE)) log.fine(mimage.toString() 
 				+ " - Size=" + imageData.length);
 		else
 			log.log(Level.WARNING, mimage.toString()
@@ -285,7 +285,7 @@ public class ImageElement extends PrintElement
 		if (imageData != null)
 			m_image = Toolkit.getDefaultToolkit().createImage(imageData);
 		if (m_image != null)
-			log.fine(attachment.getEntryName(0) 
+			if (log.isLoggable(Level.FINE)) log.fine(attachment.getEntryName(0) 
 				+ " - Size=" + imageData.length);
 		else
 			log.log(Level.WARNING, attachment.getEntryName(0)

@@ -765,7 +765,7 @@ public class MAccount extends X_C_ValidCombination
 		super.setDescription(descr.toString());
 		if (fullyQualified != isFullyQualified())
 			setIsFullyQualified(fullyQualified);
-		log.fine("Combination=" + getCombination() 
+		if (log.isLoggable(Level.FINE)) log.fine("Combination=" + getCombination() 
 			+ " - " + getDescription()
 			+ " - FullyQualified=" + fullyQualified);
 	}	//	setValueDescription

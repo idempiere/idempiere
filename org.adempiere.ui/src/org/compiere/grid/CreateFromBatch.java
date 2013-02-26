@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import org.compiere.apps.IStatusBar;
 import org.compiere.minigrid.IMiniTable;
@@ -84,7 +85,7 @@ public abstract class CreateFromBatch extends CreateFrom
 				sql.append(" AND TRUNC(p.DateTrx) BETWEEN ? AND ?");
 		}
 
-		log.fine(sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
 		return sql.toString();
 	}
 	
@@ -121,7 +122,7 @@ public abstract class CreateFromBatch extends CreateFrom
 		{
 			BigDecimal from = (BigDecimal) AmtFrom;
 			BigDecimal to = (BigDecimal) AmtTo;
-			log.fine("Amt From=" + from + ", To=" + to);
+			if (log.isLoggable(Level.FINE)) log.fine("Amt From=" + from + ", To=" + to);
 			if(from == null && to != null)
 				pstmt.setBigDecimal(index++, to);
 			else if(from != null && to == null)
@@ -137,7 +138,7 @@ public abstract class CreateFromBatch extends CreateFrom
 		{
 			Timestamp from = (Timestamp) DateFrom;
 			Timestamp to = (Timestamp) DateTo;
-			log.fine("Date From=" + from + ", To=" + to);
+			if (log.isLoggable(Level.FINE)) log.fine("Date From=" + from + ", To=" + to);
 			if(from == null && to != null)
 				pstmt.setTimestamp(index++, to);
 			else if(from != null && to == null)
@@ -155,7 +156,7 @@ public abstract class CreateFromBatch extends CreateFrom
 		String s = text.toUpperCase();
 		if(!s.endsWith("%"))
 			s += "%";
-		log.fine( "String=" + s);
+		if (log.isLoggable(Level.FINE)) log.fine( "String=" + s);
 		return s;
 	}
 	

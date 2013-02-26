@@ -102,7 +102,7 @@ public class ImportConversionRate extends SvrProcess
 			sql = new StringBuilder ("DELETE I_Conversion_Rate ")
 				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
-			log.fine("Delete Old Impored =" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Impored =" + no);
 		}
 
 		//	Set Client, Org, Location, IsActive, Created/Updated
@@ -146,7 +146,7 @@ public class ImportConversionRate extends SvrProcess
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
-			log.fine("Set ConversionType =" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set ConversionType =" + no);
 		sql = new StringBuilder ("UPDATE I_Conversion_Rate i ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid ConversionType, ' ")
 			.append("WHERE (C_ConversionType_ID IS NULL")
@@ -166,7 +166,7 @@ public class ImportConversionRate extends SvrProcess
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
-			log.fine("Set Currency =" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set Currency =" + no);
 		sql = new StringBuilder ("UPDATE I_Conversion_Rate i ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Currency, ' ")
 			.append("WHERE (C_Currency_ID IS NULL")
@@ -186,7 +186,7 @@ public class ImportConversionRate extends SvrProcess
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
-			log.fine("Set Currency To =" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set Currency To =" + no);
 		sql = new StringBuilder ("UPDATE I_Conversion_Rate i ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Currency To, ' ")
 			.append("WHERE (C_Currency_ID_To IS NULL")
@@ -205,14 +205,14 @@ public class ImportConversionRate extends SvrProcess
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
-			log.fine("Set MultiplyRate =" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set MultiplyRate =" + no);
 		sql = new StringBuilder ("UPDATE I_Conversion_Rate i ")
 			.append("SET DivideRate = 1 / MultiplyRate ")
 			.append("WHERE (DivideRate IS NULL OR DivideRate = 0) AND MultiplyRate IS NOT NULL AND MultiplyRate<>0")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
-			log.fine("Set DivideRate =" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set DivideRate =" + no);
 		sql = new StringBuilder ("UPDATE I_Conversion_Rate i ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Rates, ' ")
 			.append("WHERE (MultiplyRate IS NULL OR MultiplyRate = 0 OR DivideRate IS NULL OR DivideRate = 0)")

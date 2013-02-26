@@ -537,7 +537,7 @@ public class MPeriod extends X_C_Period
 			log.warning(getName() + " - Period Control not found for " + DocBaseType);
 			return false;
 		}
-		log.fine(getName() + ": " + DocBaseType);
+		if (log.isLoggable(Level.FINE)) log.fine(getName() + ": " + DocBaseType);
 		return pc.isOpen();
 	}	//	isOpen
 
@@ -630,7 +630,7 @@ public class MPeriod extends X_C_Period
 					count++;
 				baseTypes.add (DocBaseType);
 			}
-			log.fine("PeriodControl #" + count);
+			if (log.isLoggable(Level.FINE)) log.fine("PeriodControl #" + count);
 		}
 		return success;
 	}	//	afterSave

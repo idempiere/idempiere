@@ -58,7 +58,7 @@ public class ServerProcessCtl implements Runnable {
 	 */
 	public static ServerProcessCtl process (ProcessInfo pi, Trx trx)
 	{
-		log.fine("ServerProcess - " + pi);
+		if (log.isLoggable(Level.FINE)) log.fine("ServerProcess - " + pi);
 
 		MPInstance instance = null; 
 		try 
@@ -118,7 +118,7 @@ public class ServerProcessCtl implements Runnable {
 	 */
 	public void run ()
 	{
-		log.fine("AD_PInstance_ID=" + m_pi.getAD_PInstance_ID()
+		if (log.isLoggable(Level.FINE)) log.fine("AD_PInstance_ID=" + m_pi.getAD_PInstance_ID()
 			+ ", Record_ID=" + m_pi.getRecord_ID());
 
 		//	Get Process Information: Name, Procedure Name, ClassName, IsReport, IsDirectPrint
@@ -296,7 +296,7 @@ public class ServerProcessCtl implements Runnable {
 	 */
 	protected boolean startWorkflow (int AD_Workflow_ID)
 	{
-		log.fine(AD_Workflow_ID + " - " + m_pi);
+		if (log.isLoggable(Level.FINE)) log.fine(AD_Workflow_ID + " - " + m_pi);
 		boolean started = false;
 		if (m_IsServerProcess)
 		{
@@ -338,7 +338,7 @@ public class ServerProcessCtl implements Runnable {
 	 */
 	protected boolean startProcess ()
 	{
-		log.fine(m_pi.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(m_pi.toString());
 		boolean started = false;
 		
 		//hengsin, bug [ 1633995 ]
@@ -411,7 +411,7 @@ public class ServerProcessCtl implements Runnable {
 	protected boolean startDBProcess (String ProcedureName)
 	{
 		//  execute on this thread/connection
-		log.fine(ProcedureName + "(" + m_pi.getAD_PInstance_ID() + ")");
+		if (log.isLoggable(Level.FINE)) log.fine(ProcedureName + "(" + m_pi.getAD_PInstance_ID() + ")");
 		boolean started = false;
 		if (m_IsServerProcess)
 		{

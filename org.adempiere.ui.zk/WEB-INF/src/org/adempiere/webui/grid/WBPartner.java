@@ -437,7 +437,7 @@ public class WBPartner extends Window implements EventListener<Event>, ValueChan
 			m_partner.setC_Greeting_ID(0);
 		
 		if (m_partner.save())
-			log.fine("C_BPartner_ID=" + m_partner.getC_BPartner_ID());
+			if (log.isLoggable(Level.FINE)) log.fine("C_BPartner_ID=" + m_partner.getC_BPartner_ID());
 		else {
 			FDialog.error(m_WindowNo, this, "BPartnerNotSaved");
 			m_partner = null;
@@ -456,7 +456,7 @@ public class WBPartner extends Window implements EventListener<Event>, ValueChan
 		m_pLocation.setFax(fFax.getText());
 		
 		if (m_pLocation.save())
-			log.fine("C_BPartner_Location_ID=" + m_pLocation.getC_BPartner_Location_ID());
+			if (log.isLoggable(Level.FINE)) log.fine("C_BPartner_Location_ID=" + m_pLocation.getC_BPartner_Location_ID());
 		else
 			FDialog.error(m_WindowNo, this, "BPartnerNotSaved", Msg.translate(Env.getCtx(), "C_BPartner_Location_ID"));
 			
@@ -490,7 +490,7 @@ public class WBPartner extends Window implements EventListener<Event>, ValueChan
 			m_user.setFax(fFax.getText());
 			
 			if (m_user.save())
-				log.fine("AD_User_ID=" + m_user.getAD_User_ID());
+				if (log.isLoggable(Level.FINE)) log.fine("AD_User_ID=" + m_user.getAD_User_ID());
 			else
 				FDialog.error(m_WindowNo, this, "BPartnerNotSaved", Msg.translate(Env.getCtx(), "AD_User_ID"));
 		}

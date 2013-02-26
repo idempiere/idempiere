@@ -158,7 +158,7 @@ public class FactAcctReset extends SvrProcess
 		int invalid = DB.executeUpdate(sql, get_TrxName());
 		//
 		if (unlocked + invalid != 0)
-			log.fine(TableName + " - Unlocked=" + unlocked + " - Invalid=" + invalid);
+			if (log.isLoggable(Level.FINE)) log.fine(TableName + " - Unlocked=" + unlocked + " - Invalid=" + invalid);
 		m_countReset += unlocked + invalid; 
 	}	//	reset
 

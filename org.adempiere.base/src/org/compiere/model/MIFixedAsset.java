@@ -5,12 +5,12 @@ import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.model.MClient;
 import org.compiere.model.MProduct;
 import org.compiere.model.MUOM;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -74,7 +74,7 @@ public class MIFixedAsset extends X_I_FixedAsset
 			whereClause.append(" AND AD_Client_ID=").append(getAD_Client_ID());
 			String sql = "SELECT M_Product_ID FROM M_Product WHERE " + whereClause.toString();
 			M_Product_ID = DB.getSQLValueEx(trxName, sql);
-			log.fine("M_Product_ID=" + M_Product_ID + " -- sql=" + sql);
+			if (log.isLoggable(Level.FINE)) log.fine("M_Product_ID=" + M_Product_ID + " -- sql=" + sql);
 		}
 		
 		MProduct prod = null;
@@ -123,7 +123,7 @@ public class MIFixedAsset extends X_I_FixedAsset
 			int precision = getStdPrecision();
 			BigDecimal newAmt = amt.setScale(getStdPrecision(), RoundingMode.HALF_UP);
 			set_Value(idx, newAmt);
-			if(CLogMgt.isLevelFine()) log.fine(getInventoryNo() + ": " + get_ColumnName(idx) + "=" + amt + "->" + newAmt + " (precision=" + precision + ")");
+			if (log.isLoggable(Level.FINE)) log.fine(getInventoryNo() + ": " + get_ColumnName(idx) + "=" + amt + "->" + newAmt + " (precision=" + precision + ")");
 		//~ } catch (Exception e) {}
 	}
 	
@@ -135,7 +135,7 @@ public class MIFixedAsset extends X_I_FixedAsset
 			if (name == null)
 				return;
 			String newName = name.trim().replaceAll("[ ]+", " ");
-			if(CLogMgt.isLevelFine()) log.fine(getInventoryNo() + ": " + get_ColumnName(idx) + "=[" + name + "]->[" + newName + "]");
+			if (log.isLoggable(Level.FINE)) log.fine(getInventoryNo() + ": " + get_ColumnName(idx) + "=[" + name + "]->[" + newName + "]");
 			set_Value(idx, newName);
 		//~ } catch (Exception e) {}
 	}
@@ -177,7 +177,7 @@ public class MIFixedAsset extends X_I_FixedAsset
 			
 			// Create/Set Product
 			MProduct product = getCreateProduct();
-			log.fine("product=" + product);
+			if (log.isLoggable(Level.FINE)) log.fine("product=" + product);
 			if (getM_Product_ID() <= 0) {
 				throw new FillMandatoryException(COLUMNNAME_M_Product_ID);
 			}

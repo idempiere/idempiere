@@ -206,7 +206,7 @@ public class Tax
 			shipToC_Location_ID = temp;
 		}
 		//
-		log.fine("getCharge - C_TaxCategory_ID=" + C_TaxCategory_ID
+		if (log.isLoggable(Level.FINE)) log.fine("getCharge - C_TaxCategory_ID=" + C_TaxCategory_ID
 		  + ", billFromC_Location_ID=" + billFromC_Location_ID
 		  + ", billToC_Location_ID=" + billToC_Location_ID
 		  + ", shipFromC_Location_ID=" + shipFromC_Location_ID
@@ -297,7 +297,7 @@ public class Tax
 			//
 			if (found && "Y".equals(IsTaxExempt))
 			{
-				log.fine("getProduct - Business Partner is Tax exempt");
+				if (log.isLoggable(Level.FINE)) log.fine("getProduct - Business Partner is Tax exempt");
 				return getExemptTax(ctx, AD_Org_ID);
 			}
 			else if (found)
@@ -311,7 +311,7 @@ public class Tax
 					shipFromC_Location_ID = shipToC_Location_ID;
 					shipToC_Location_ID = temp;
 				}
-				log.fine("getProduct - C_TaxCategory_ID=" + C_TaxCategory_ID
+				if (log.isLoggable(Level.FINE)) log.fine("getProduct - C_TaxCategory_ID=" + C_TaxCategory_ID
 					+ ", billFromC_Location_ID=" + billFromC_Location_ID
 					+ ", billToC_Location_ID=" + billToC_Location_ID
 					+ ", shipFromC_Location_ID=" + shipFromC_Location_ID
@@ -334,7 +334,7 @@ public class Tax
 			{
 				throw new TaxCriteriaNotFoundException(variable, M_Product_ID);
 			}
-			log.fine("getProduct - C_TaxCategory_ID=" + C_TaxCategory_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("getProduct - C_TaxCategory_ID=" + C_TaxCategory_ID);
 
 		//	AD_Org_ID					->	billFromC_Location_ID
 			variable = "AD_Org_ID";
@@ -379,9 +379,11 @@ public class Tax
 				billFromC_Location_ID = billToC_Location_ID;
 				billToC_Location_ID = temp;
 			}
-			log.fine("getProduct - billFromC_Location_ID = " + billFromC_Location_ID);
-			log.fine("getProduct - billToC_Location_ID = " + billToC_Location_ID);
-
+			if (log.isLoggable(Level.FINE)){
+				log.fine("getProduct - billFromC_Location_ID = " + billFromC_Location_ID);
+				log.fine("getProduct - billToC_Location_ID = " + billToC_Location_ID);
+			}
+			
 			//-----------------------------------------------------------------
 
 		//	M_Warehouse_ID				->	shipFromC_Location_ID
@@ -411,8 +413,8 @@ public class Tax
 				shipFromC_Location_ID = shipToC_Location_ID;
 				shipToC_Location_ID = temp;
 			}
-			log.fine("getProduct - shipFromC_Location_ID = " + shipFromC_Location_ID);
-			log.fine("getProduct - shipToC_Location_ID = " + shipToC_Location_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("getProduct - shipFromC_Location_ID = " + shipFromC_Location_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("getProduct - shipToC_Location_ID = " + shipToC_Location_ID);
 		}
 		catch (SQLException e)
 		{
@@ -444,7 +446,7 @@ public class Tax
 			+ "WHERE t.IsTaxExempt='Y' AND o.AD_Org_ID=? "
 			+ "ORDER BY t.Rate DESC";
 		int C_Tax_ID = DB.getSQLValueEx(null, sql, AD_Org_ID);
-		log.fine("getExemptTax - TaxExempt=Y - C_Tax_ID=" + C_Tax_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("getExemptTax - TaxExempt=Y - C_Tax_ID=" + C_Tax_ID);
 		if (C_Tax_ID <= 0)
 		{
 			throw new TaxNoExemptFoundException(AD_Org_ID);
@@ -565,7 +567,7 @@ public class Tax
 				continue;
 			if (!IsSOTrx && MTax.SOPOTYPE_SalesTax.equals(tax.getSOPOType()))
 				continue;
-			log.fine("get (default) - " + tax);
+			if (log.isLoggable(Level.FINE)) log.fine("get (default) - " + tax);
 			return tax.getC_Tax_ID();
 		}	//	for all taxes
 		

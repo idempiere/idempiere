@@ -213,7 +213,7 @@ public class MRegistration extends X_A_Registration
 			if (regValue.save())
 				count++;
 		}
-		log.fine("loadAttributeValues - #" + count + " (of " + attributes.length + ")");
+		if (log.isLoggable(Level.FINE)) log.fine("loadAttributeValues - #" + count + " (of " + attributes.length + ")");
 		return count;
 	}	//	loadAttrubuteValues
 
@@ -244,7 +244,7 @@ public class MRegistration extends X_A_Registration
 			if (regValue.save())
 				count++;
 		}
-		log.fine("updateAttributeValues - #" + count + " (of " + regValues.length + ")");
+		if (log.isLoggable(Level.FINE)) log.fine("updateAttributeValues - #" + count + " (of " + regValues.length + ")");
 		return count;
 	}	//	updateAttrubuteValues
 

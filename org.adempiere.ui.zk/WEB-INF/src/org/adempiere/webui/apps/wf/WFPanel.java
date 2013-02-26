@@ -150,7 +150,7 @@ public class WFPanel extends Borderlayout implements EventListener<Event>
 	 */
 	public void load (int AD_Workflow_ID)
 	{
-		log.fine("AD_Workflow_ID=" + AD_Workflow_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("AD_Workflow_ID=" + AD_Workflow_ID);
 		if (AD_Workflow_ID == 0)
 			return;
 		//	Get Workflow

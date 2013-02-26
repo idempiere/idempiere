@@ -237,7 +237,7 @@ public class MWorkflow extends X_AD_Workflow
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("Translated=" + m_translated);
+		if (log.isLoggable(Level.FINE)) log.fine("Translated=" + m_translated);
 	}	//	loadTrl
 
 	/**
@@ -249,7 +249,7 @@ public class MWorkflow extends X_AD_Workflow
 			.setParameters(new Object[]{get_ID()})
 			.setOnlyActiveRecords(true)
 			.list();
-		log.fine("#" + m_nodes.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_nodes.size());
 	}	//	loadNodes
 
 	
@@ -614,7 +614,7 @@ public class MWorkflow extends X_AD_Workflow
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
-		log.fine("Success=" + success);
+		if (log.isLoggable(Level.FINE)) log.fine("Success=" + success);
 		if (!success)
 		{
 			return false;

@@ -449,7 +449,7 @@ public final class MSetup
 		}
 
 		int C_ElementValue_ID = m_nap.getC_ElementValue_ID("DEFAULT_ACCT");
-		log.fine("C_ElementValue_ID=" + C_ElementValue_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("C_ElementValue_ID=" + C_ElementValue_ID);
 
 		/**
 		 *  Create AccountingSchema

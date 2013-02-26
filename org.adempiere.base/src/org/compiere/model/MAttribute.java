@@ -251,7 +251,7 @@ public class MAttribute extends X_M_Attribute
 					.append("WHERE mas.M_AttributeSet_ID=mau.M_AttributeSet_ID")
 					.append(" AND mau.M_Attribute_ID=").append(getM_Attribute_ID()).append(")");
 			int no = DB.executeUpdate(sql.toString(), get_TrxName());
-			log.fine("AttributeSet Instance set #" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("AttributeSet Instance set #" + no);
 		}
 		return success;
 	}	//	afterSave

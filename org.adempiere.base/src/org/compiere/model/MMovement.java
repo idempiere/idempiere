@@ -222,7 +222,7 @@ public class MMovement extends X_M_Movement implements DocAction
 		final String sql = "UPDATE M_MovementLine SET Processed=? WHERE M_Movement_ID=?";
 		int noLine = DB.executeUpdateEx(sql, new Object[]{processed, get_ID()}, get_TrxName());
 		m_lines = null;
-		log.fine("Processed=" + processed + " - Lines=" + noLine);
+		if (log.isLoggable(Level.FINE)) log.fine("Processed=" + processed + " - Lines=" + noLine);
 	}	//	setProcessed
 	
 	
@@ -570,7 +570,7 @@ public class MMovement extends X_M_Movement implements DocAction
 							qtyToDeliver);
 					ma.saveEx();		
 					qtyToDeliver = Env.ZERO;
-					log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);		
+					if (log.isLoggable(Level.FINE)) log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);		
 				}
 				else
 				{	
@@ -579,7 +579,7 @@ public class MMovement extends X_M_Movement implements DocAction
 								storage.getQtyOnHand());
 					ma.saveEx();	
 					qtyToDeliver = qtyToDeliver.subtract(storage.getQtyOnHand());
-					log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);		
+					if (log.isLoggable(Level.FINE)) log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);		
 				}
 				if (qtyToDeliver.signum() == 0)
 					break;
@@ -593,7 +593,7 @@ public class MMovement extends X_M_Movement implements DocAction
 				int M_AttributeSetInstance_ID = asi.getM_AttributeSetInstance_ID();
 				MMovementLineMA ma = new MMovementLineMA (line, M_AttributeSetInstance_ID , qtyToDeliver);
 				ma.saveEx();
-				log.fine("##: " + ma);
+				if (log.isLoggable(Level.FINE)) log.fine("##: " + ma);
 			}
 		}	//	attributeSetInstance
 		

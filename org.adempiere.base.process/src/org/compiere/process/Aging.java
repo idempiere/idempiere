@@ -221,7 +221,7 @@ public class Aging extends SvrProcess
 					if (aging != null)
 					{
 						aging.saveEx();
-						log.fine("#" + ++counter + " - " + aging);
+						if (log.isLoggable(Level.FINE)) log.fine("#" + ++counter + " - " + aging);
 					}
 					aging = new MAging (getCtx(), AD_PInstance_ID, p_StatementDate, 
 						C_BPartner_ID, C_Currency_ID, 
@@ -239,7 +239,7 @@ public class Aging extends SvrProcess
 			{
 				aging.saveEx();
 				counter++;
-				log.fine("#" + counter + " - " + aging);
+				if (log.isLoggable(Level.FINE)) log.fine("#" + counter + " - " + aging);
 			}
 		}
 		catch (SQLException e)

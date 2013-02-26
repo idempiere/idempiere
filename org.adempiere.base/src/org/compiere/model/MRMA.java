@@ -564,7 +564,7 @@ public class MRMA extends X_M_RMA implements DocAction
 		MDocTypeCounter counterDT = MDocTypeCounter.getCounterDocType(getCtx(), getC_DocType_ID());
 		if (counterDT != null)
 		{
-			log.fine(counterDT.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(counterDT.toString());
 			if (!counterDT.isCreateCounter() || !counterDT.isValid())
 				return null;
 			C_DocTypeTarget_ID = counterDT.getCounter_C_DocType_ID();
@@ -572,7 +572,7 @@ public class MRMA extends X_M_RMA implements DocAction
 		else	//	indirect
 		{
 			C_DocTypeTarget_ID = MDocTypeCounter.getCounterDocType_ID(getCtx(), getC_DocType_ID());
-			log.fine("Indirect C_DocTypeTarget_ID=" + C_DocTypeTarget_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("Indirect C_DocTypeTarget_ID=" + C_DocTypeTarget_ID);
 			if (C_DocTypeTarget_ID <= 0)
 				return null;
 		}
@@ -595,7 +595,7 @@ public class MRMA extends X_M_RMA implements DocAction
 			counterLine.saveEx(get_TrxName());
 		}
 
-		log.fine(counter.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(counter.toString());
 
 		//	Document Action
 		if (counterDT != null)
@@ -880,7 +880,7 @@ public class MRMA extends X_M_RMA implements DocAction
         		new Object[]{processed, get_ID()},
         		get_TrxName());
         m_lines = null;
-        log.fine("setProcessed - " + processed + " - Lines=" + noLine);
+        if (log.isLoggable(Level.FINE)) log.fine("setProcessed - " + processed + " - Lines=" + noLine);
     }   //  setProcessed
 
     /**

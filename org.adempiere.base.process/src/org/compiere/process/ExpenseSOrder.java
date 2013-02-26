@@ -257,7 +257,7 @@ public class ExpenseSOrder extends SvrProcess
 		//	Update TimeExpense Line
 		tel.setC_OrderLine_ID(ol.getC_OrderLine_ID());
 		if (tel.save())
-			log.fine("Updated " + tel + " with C_OrderLine_ID");
+			if (log.isLoggable(Level.FINE)) log.fine("Updated " + tel + " with C_OrderLine_ID");
 		else
 			log.log(Level.SEVERE, "Not Updated " + tel + " with C_OrderLine_ID");
 			

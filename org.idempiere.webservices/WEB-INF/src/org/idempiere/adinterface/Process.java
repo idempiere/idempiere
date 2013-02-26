@@ -428,7 +428,7 @@ public class Process {
 				if (ob!=null)
 				valueString2 = ob.toString(); 
 			}
-			log.fine("fillParameter - " + key + " = " + valueString);
+			if (log.isLoggable(Level.FINE)) log.fine("fillParameter - " + key + " = " + valueString);
 			Object value = valueString;
 			if (valueString != null && valueString.length() == 0)
 				value = null;
@@ -458,7 +458,7 @@ public class Process {
 						else
 							bd = new BigDecimal (value.toString());
 						iPara.setP_Number(bd);
-						log.fine("fillParameter - " + key
+						if (log.isLoggable(Level.FINE)) log.fine("fillParameter - " + key
 								+ " = " + valueString + " (=" + bd + "=)");
 						
 						if (pPara.isRange())
@@ -498,7 +498,7 @@ public class Process {
 						}
 
 						
-						log.fine("fillParameter - " + key
+						if (log.isLoggable(Level.FINE)) log.fine("fillParameter - " + key
 							+ " = " + valueString + " (=" + ts + "=)");
 					}
 					else if (DisplayType.YesNo == pPara.getAD_Reference_ID())

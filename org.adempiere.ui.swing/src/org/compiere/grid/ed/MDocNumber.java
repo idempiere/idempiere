@@ -210,7 +210,7 @@ public final class MDocNumber extends PlainDocument
 			}
 			else
 			{
-				log.fine("Input=" + c + " (" + (int)c + ")");
+				if (log.isLoggable(Level.FINE)) log.fine("Input=" + c + " (" + (int)c + ")");
 
 				if (c == m_percentSign && offset > 0 ) {
 					// don't convert integers to percent. 1% = 0?

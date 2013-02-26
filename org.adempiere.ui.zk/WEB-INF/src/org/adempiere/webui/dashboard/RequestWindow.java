@@ -14,6 +14,7 @@
 package org.adempiere.webui.dashboard;
 
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Column;
@@ -290,7 +291,7 @@ public class RequestWindow extends Window implements EventListener<Event> {
 			
 			if (request.save())
 			{
-				log.fine("R_Request_ID=" + request.getR_Request_ID());
+				if (log.isLoggable(Level.FINE)) log.fine("R_Request_ID=" + request.getR_Request_ID());
 				Events.postEvent("onRefresh", parent, null);
 //				Events.echoEvent("onRefresh", parent, null);
 			}

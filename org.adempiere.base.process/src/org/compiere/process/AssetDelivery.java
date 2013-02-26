@@ -235,7 +235,7 @@ public class AssetDelivery extends SvrProcess
 	 */
 	private String deliverIt (int A_Asset_ID)
 	{
-		log.fine("A_Asset_ID=" + A_Asset_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("A_Asset_ID=" + A_Asset_ID);
 		long start = System.currentTimeMillis();
 		//
 		MAsset asset = new MAsset (getCtx(), A_Asset_ID, get_TrxName());
@@ -297,7 +297,7 @@ public class AssetDelivery extends SvrProcess
 		ad.saveEx();
 		asset.saveEx();
 		//
-		log.fine((System.currentTimeMillis()-start) + " ms");
+		if (log.isLoggable(Level.FINE)) log.fine((System.currentTimeMillis()-start) + " ms");
 		//	success
 		StringBuilder msgreturn = new StringBuilder().append(user.getEMail()).append(" - ").append(asset.getVersionNo());
 		return msgreturn.toString();

@@ -59,7 +59,7 @@ public class AllocationReset extends SvrProcess
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
 		{
-			log.fine("prepare - " + para[i]);
+			if (log.isLoggable(Level.FINE)) log.fine("prepare - " + para[i]);
 			String name = para[i].getParameterName();
 			if (para[i].getParameter() == null && para[i].getParameter_To() == null)
 				;
@@ -183,7 +183,7 @@ public class AllocationReset extends SvrProcess
 		boolean success = false;
 		if (hdr.delete(true, m_trx.getTrxName()))
 		{
-			log.fine(hdr.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(hdr.toString());
 			success = true;
 		}
 		if (success)

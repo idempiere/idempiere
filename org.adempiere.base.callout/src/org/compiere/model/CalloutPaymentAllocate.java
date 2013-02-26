@@ -156,7 +156,7 @@ public class CalloutPaymentAllocate extends CalloutEngine
 		BigDecimal WriteOffAmt = (BigDecimal)mTab.getValue("WriteOffAmt");
 		BigDecimal OverUnderAmt = (BigDecimal)mTab.getValue("OverUnderAmt");
 		BigDecimal InvoiceAmt = (BigDecimal)mTab.getValue("InvoiceAmt");
-		log.fine("Amt=" + Amount + ", Discount=" + DiscountAmt
+		if (log.isLoggable(Level.FINE)) log.fine("Amt=" + Amount + ", Discount=" + DiscountAmt
 			+ ", WriteOff=" + WriteOffAmt + ", OverUnder=" + OverUnderAmt
 			+ ", Invoice=" + InvoiceAmt);
 

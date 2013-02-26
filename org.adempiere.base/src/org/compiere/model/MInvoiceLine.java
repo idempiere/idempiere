@@ -352,7 +352,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		if (getM_Product_ID() == 0 || isDescription())
 			return;
 		//
-		log.fine("M_PriceList_ID=" + M_PriceList_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("M_PriceList_ID=" + M_PriceList_ID);
 		m_productPricing = new MProductPricing (getM_Product_ID(),
 			C_BPartner_ID, getQtyInvoiced(), m_IsSOTrx);
 		m_productPricing.setM_PriceList_ID(M_PriceList_ID);
@@ -482,15 +482,15 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			if (stdTax != null)
 			{
 				
-				log.fine("stdTax rate is " + stdTax.getRate());
-				log.fine("invoiceTax rate is " + invoiceTax.getRate());
+				if (log.isLoggable(Level.FINE)) log.fine("stdTax rate is " + stdTax.getRate());
+				if (log.isLoggable(Level.FINE)) log.fine("invoiceTax rate is " + invoiceTax.getRate());
 				
 				taxThisAmt = taxThisAmt.add(invoiceTax.calculateTax(bd, isTaxIncluded(), getPrecision()));
 				taxStdAmt = taxStdAmt.add(stdTax.calculateTax(bd, isTaxIncluded(), getPrecision()));
 				
 				bd = bd.subtract(taxStdAmt).add(taxThisAmt);
 				
-				log.fine("Price List includes Tax and Tax Changed on Invoice Line: New Tax Amt: " 
+				if (log.isLoggable(Level.FINE)) log.fine("Price List includes Tax and Tax Changed on Invoice Line: New Tax Amt: " 
 						+ taxThisAmt + " Standard Tax Amt: " + taxStdAmt + " Line Net Amt: " + bd);	
 			}
 		}
@@ -816,7 +816,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		log.fine("New=" + newRecord);
+		if (log.isLoggable(Level.FINE)) log.fine("New=" + newRecord);
 		if (newRecord && getParent().isComplete()) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_InvoiceLine"));
 			return false;

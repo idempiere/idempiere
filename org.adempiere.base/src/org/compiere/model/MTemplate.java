@@ -222,7 +222,7 @@ public class MTemplate extends X_CM_Template
 					", 0, 999)");
 			int no = DB.executeUpdate (sb.toString (), get_TrxName ());
 			if (no > 0)
-				log.fine ("#" + no + " - TreeType=CMT");
+				if (log.isLoggable(Level.FINE)) log.fine ("#" + no + " - TreeType=CMT");
 			else
 				log.warning ("#" + no + " - TreeType=CMT");
 			return no > 0;
@@ -263,7 +263,7 @@ public class MTemplate extends X_CM_Template
 				" AND AD_Tree_ID=").append (getAD_Tree_ID ());
 		int no = DB.executeUpdate (sb.toString (), get_TrxName ());
 		if (no > 0)
-			log.fine ("#" + no + " - TreeType=CMT");
+			if (log.isLoggable(Level.FINE)) log.fine ("#" + no + " - TreeType=CMT");
 		else
 			log.warning ("#" + no + " - TreeType=CMT");
 		return no > 0;

@@ -863,7 +863,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		int noTax = DB.executeUpdate(msgdb.toString(), get_TrxName());
 		m_lines = null;
 		m_taxes = null;
-		log.fine(processed + " - Lines=" + noLine + ", Tax=" + noTax);
+		if (log.isLoggable(Level.FINE)) log.fine(processed + " - Lines=" + noLine + ", Tax=" + noTax);
 	}	//	setProcessed
 
 	/**
@@ -874,7 +874,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	{
 		MInvoicePaySchedule[] schedule = MInvoicePaySchedule.getInvoicePaySchedule
 			(getCtx(), getC_Invoice_ID(), 0, get_TrxName());
-		log.fine("#" + schedule.length);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + schedule.length);
 		if (schedule.length == 0)
 		{
 			setIsPayScheduleValid(false);
@@ -1066,7 +1066,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					.append(" FROM C_Invoice o WHERE ol.C_Invoice_ID=o.C_Invoice_ID) ")
 				.append("WHERE C_Invoice_ID=").append(getC_Invoice_ID());
 			int no = DB.executeUpdate(sql.toString(), get_TrxName());
-			log.fine("Lines -> #" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Lines -> #" + no);
 		}
 		return true;
 	}	//	afterSave
@@ -1148,7 +1148,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			change = test != isPaid();
 			if (change)
 				setIsPaid(test);
-			log.fine("Paid=" + test
+			if (log.isLoggable(Level.FINE)) log.fine("Paid=" + test
 					+ " (" + alloc + "=" + total + ")");
 		}
 
@@ -1493,7 +1493,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			{
 				MInvoiceLine line = lines[i];
 				MProduct product = MProduct.get (getCtx(), line.getM_Product_ID());
-				log.fine(product.getName());
+				if (log.isLoggable(Level.FINE)) log.fine(product.getName());
 				//	New Lines
 				int lineNo = line.getLine ();
 
@@ -1646,7 +1646,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		if (getC_PaymentTerm_ID() == 0)
 			return false;
 		MPaymentTerm pt = new MPaymentTerm(getCtx(), getC_PaymentTerm_ID(), null);
-		log.fine(pt.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(pt.toString());
 		
 		int numSchema = pt.getSchedule(false).length;
 		
@@ -1893,7 +1893,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			else
 				newCreditAmt = newCreditAmt.add(invAmt);
 			//
-			log.fine("GrandTotal=" + getGrandTotal(true) + "(" + invAmt
+			if (log.isLoggable(Level.FINE)) log.fine("GrandTotal=" + getGrandTotal(true) + "(" + invAmt
 				+ ") BP Life=" + bp.getActualLifeTimeValue() + "->" + newLifeAmt
 				+ ", Credit=" + bp.getSO_CreditUsed() + "->" + newCreditAmt
 				+ ", Balance=" + bp.getTotalOpenBalance(false) + " -> " + newBalance);
@@ -1903,7 +1903,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		else
 		{
 			newBalance = newBalance.subtract(invAmt);
-			log.fine("GrandTotal=" + getGrandTotal(true) + "(" + invAmt
+			if (log.isLoggable(Level.FINE)) log.fine("GrandTotal=" + getGrandTotal(true) + "(" + invAmt
 				+ ") Balance=" + bp.getTotalOpenBalance(false) + " -> " + newBalance);
 		}
 		bp.setTotalOpenBalance(newBalance);
@@ -1948,7 +1948,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				newAmt = amt;
 			else
 				newAmt = newAmt.add(amt);
-			log.fine("GrandTotal=" + getGrandTotal(true) + "(" + amt
+			if (log.isLoggable(Level.FINE)) log.fine("GrandTotal=" + getGrandTotal(true) + "(" + amt
 				+ ") Project " + project.getName()
 				+ " - Invoiced=" + project.getInvoicedAmt() + "->" + newAmt);
 			project.setInvoicedAmt(newAmt);
@@ -2106,7 +2106,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		MDocTypeCounter counterDT = MDocTypeCounter.getCounterDocType(getCtx(), getC_DocType_ID());
 		if (counterDT != null)
 		{
-			log.fine(counterDT.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(counterDT.toString());
 			if (!counterDT.isCreateCounter() || !counterDT.isValid())
 				return null;
 			C_DocTypeTarget_ID = counterDT.getCounter_C_DocType_ID();
@@ -2114,7 +2114,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		else	//	indirect
 		{
 			C_DocTypeTarget_ID = MDocTypeCounter.getCounterDocType_ID(getCtx(), getC_DocType_ID());
-			log.fine("Indirect C_DocTypeTarget_ID=" + C_DocTypeTarget_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("Indirect C_DocTypeTarget_ID=" + C_DocTypeTarget_ID);
 			if (C_DocTypeTarget_ID <= 0)
 				return null;
 		}
@@ -2144,7 +2144,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			counterLine.saveEx(get_TrxName());
 		}
 
-		log.fine(counter.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(counter.toString());
 
 		//	Document Action
 		if (counterDT != null)

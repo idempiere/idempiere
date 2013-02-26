@@ -409,7 +409,7 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 					//  if the lookup is dynamic (i.e. contains this columnName as variable)
 					if (mLookup.getValidation().indexOf("@"+columnName+"@") != -1)
 					{
-						log.fine(columnName + " changed - "
+						if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
 							+ field.getColumnName() + " set to null");
 						//  invalidate current selection
 						field.setValue(null, true);
@@ -632,7 +632,7 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 					para.setInfo_To (editor2.getDisplay());
 				//
 				para.saveEx();
-				log.fine(para.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(para.toString());
 			}	//	for every parameter
 
 			return true;

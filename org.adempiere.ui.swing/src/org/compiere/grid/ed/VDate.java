@@ -395,7 +395,7 @@ public class VDate extends JComponent
 		}
 		catch (ParseException pe)
 		{
-			log.fine(pe.getMessage());
+			if (log.isLoggable(Level.FINE)) log.fine(pe.getMessage());
 		}
 		return ts;
 	}	//	getValue

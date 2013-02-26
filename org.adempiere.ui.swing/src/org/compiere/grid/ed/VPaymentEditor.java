@@ -235,7 +235,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 
 	@Override
 	public void setValue(Object value) {
-		log.fine(m_columnName + "=" + value);
+		if (log.isLoggable(Level.FINE)) log.fine(m_columnName + "=" + value);
 		m_settingValue = true;		//	disable actions
 		m_value = value;
 
@@ -284,7 +284,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 			{
 				m_value = null;
 				actionCombo (null);             //  data binding
-				log.fine(m_columnName + "=" + value + ": Not found");
+				if (log.isLoggable(Level.FINE)) log.fine(m_columnName + "=" + value + ": Not found");
 			}
 			//  we have lookup
 			else if (m_combo.getSelectedItem() == null)
@@ -292,7 +292,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 				NamePair pp = m_lookup.get(value);
 				if (pp != null)
 				{
-					log.fine(m_columnName + " added to combo - " + pp);
+					if (log.isLoggable(Level.FINE)) log.fine(m_columnName + " added to combo - " + pp);
 					//  Add to Combo
 					m_combo.addItem (pp);
 					m_combo.setValue (value);
@@ -381,7 +381,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 	
 	private void actionCombo (Object value)
 	{
-		log.fine("Value=" + value);
+		if (log.isLoggable(Level.FINE)) log.fine("Value=" + value);
 		try
 		{
 			// -> GridController.vetoableChange
@@ -408,7 +408,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 		if (!updated)
 		{
 			//  happens if VLookup is used outside of APanel/GridController (no property listener)
-			log.fine(m_columnName + " - Value explicitly set - new=" + updatedValue + ", old=" + m_value);
+			if (log.isLoggable(Level.FINE)) log.fine(m_columnName + " - Value explicitly set - new=" + updatedValue + ", old=" + m_value);
 
 			// phib: the following check causes the update to fail on jre > 1.6.0_13
 			// commenting out as it does not appear to be necessary
@@ -520,7 +520,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 			//	original model may not have item
 			if (!m_combo.getSelectedItem().equals(obj))
 			{
-				log.fine(m_columnName + " - added to combo - " + obj);
+				if (log.isLoggable(Level.FINE)) log.fine(m_columnName + " - added to combo - " + obj);
 				m_combo.addItem(obj);
 				m_combo.setSelectedItem(obj);
 			}

@@ -123,13 +123,13 @@ public class InventoryCountCreate extends SvrProcess
 				.append("(SELECT * FROM M_InventoryLine l WHERE l.M_InventoryLine_ID=ma.M_InventoryLine_ID")
 				.append(" AND Processed='N' AND M_Inventory_ID=").append(p_M_Inventory_ID).append(")");
 			int no1 = DB.executeUpdate(sql1.toString(), get_TrxName());
-			log.fine("doIt - Deleted MA #" + no1);
+			if (log.isLoggable(Level.FINE)) log.fine("doIt - Deleted MA #" + no1);
 			//End of Added Line
 			
 			StringBuilder sql = new StringBuilder("DELETE M_InventoryLine WHERE Processed='N' ")
 				.append("AND M_Inventory_ID=").append(p_M_Inventory_ID);
 			int no = DB.executeUpdate(sql.toString(), get_TrxName());
-			log.fine("doIt - Deleted #" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("doIt - Deleted #" + no);
 		}
 		
 		//	Create Null Storage records
@@ -156,7 +156,7 @@ public class InventoryCountCreate extends SvrProcess
 					.append("WHERE sl.M_Warehouse_ID=l.M_Warehouse_ID")
 						.append(" AND s.M_Product_ID=p.M_Product_ID)");
 			int no = DB.executeUpdate(sql.toString(), get_TrxName());
-			log.fine("'0' Inserted #" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("'0' Inserted #" + no);
 		}
 		
 		StringBuilder sql = new StringBuilder("SELECT s.M_Product_ID, s.M_Locator_ID, s.M_AttributeSetInstance_ID,");
@@ -394,7 +394,7 @@ public class InventoryCountCreate extends SvrProcess
 				ret.append(",");
 			}
 		}
-		log.fine(ret.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(ret.toString());
 		StringBuilder msgreturn = new StringBuilder(ret).append(productCategoryId);
 		return msgreturn.toString();
 	}

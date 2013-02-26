@@ -6,7 +6,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CCache;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.DB;
 
 /**	Convention for the first year of depreciation (ex. FMCON, FYCON ...)
@@ -74,8 +73,7 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention
 		String conventionType = getConventionType();
 		BigDecimal retValue = null;
 	
-		if(CLogMgt.isLevelFine())
-			log.fine("Entering: ConventionType=" + conventionType	
+		if (log.isLoggable(Level.FINE)) log.fine("Entering: ConventionType=" + conventionType	
 						+ "A_Asset_ID=" + A_Asset_ID + ", PostingType=" + PostingType + ", A_Asset_Acct_ID=" + A_Asset_Acct_ID
 						+ ", Flag=" + Flag + ", Period=" + Period
 			);
@@ -109,7 +107,7 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention
 			retValue = BigDecimal.ZERO;
 		}
 		//
-		if(CLogMgt.isLevelFine()) log.fine("Leaving: retValue=" + retValue);
+		if (log.isLoggable(Level.FINE)) log.fine("Leaving: retValue=" + retValue);
 		return retValue;
 	}
 

@@ -107,7 +107,7 @@ public final class VCellEditor extends AbstractCellEditor
 	{
 		if (!m_mField.isEditable (true))	//	row data is in context
 			return false;
-		log.fine(m_mField.getHeader());		//	event may be null if CellEdit
+		if (log.isLoggable(Level.FINE)) log.fine(m_mField.getHeader());		//	event may be null if CellEdit
 		//	not enough mouse clicks
 		if (anEvent instanceof MouseEvent 
 			&& ((MouseEvent)anEvent).getClickCount() < CLICK_TO_START)
@@ -204,7 +204,7 @@ public final class VCellEditor extends AbstractCellEditor
 	{
 		if (m_table == null)
 			return;
-		log.fine(e.getPropertyName() + "=" + e.getNewValue());
+		if (log.isLoggable(Level.FINE)) log.fine(e.getPropertyName() + "=" + e.getNewValue());
 		//
 		((GridTable)m_table.getModel()).setChanged(true);
 	}   //  vetoableChange

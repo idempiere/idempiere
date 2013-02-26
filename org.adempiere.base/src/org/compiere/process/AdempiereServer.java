@@ -224,7 +224,7 @@ public abstract class AdempiereServer extends Thread
 
 			try
 			{
-				log.fine("sleeping ... " + m_sleepSeconds);
+				if (log.isLoggable(Level.FINE)) log.fine("sleeping ... " + m_sleepSeconds);
 				sleep (m_sleepSeconds*1000);
 			}
 			catch (InterruptedException e1)

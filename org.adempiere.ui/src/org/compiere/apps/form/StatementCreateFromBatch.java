@@ -98,7 +98,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 				sql.append(" AND TRUNC(p.DateTrx) BETWEEN ? AND ?");
 		}
 
-		log.fine(sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
 		return sql.toString();
 	}
 	
@@ -135,7 +135,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		{
 			BigDecimal from = (BigDecimal) AmtFrom;
 			BigDecimal to = (BigDecimal) AmtTo;
-			log.fine("Amt From=" + from + ", To=" + to);
+			if (log.isLoggable(Level.FINE)) log.fine("Amt From=" + from + ", To=" + to);
 			if(from == null && to != null)
 				pstmt.setBigDecimal(index++, to);
 			else if(from != null && to == null)
@@ -151,7 +151,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		{
 			Timestamp from = (Timestamp) DateFrom;
 			Timestamp to = (Timestamp) DateTo;
-			log.fine("Date From=" + from + ", To=" + to);
+			if (log.isLoggable(Level.FINE)) log.fine("Date From=" + from + ", To=" + to);
 			if(from == null && to != null)
 				pstmt.setTimestamp(index++, to);
 			else if(from != null && to == null)
@@ -169,7 +169,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		String s = text.toUpperCase();
 		if(!s.endsWith("%"))
 			s += "%";
-		log.fine( "String=" + s);
+		if (log.isLoggable(Level.FINE)) log.fine( "String=" + s);
 		return s;
 	}
 	
@@ -282,7 +282,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 				pp = (KeyNamePair) miniTable.getValueAt(i, 5);               //  5- C_BankAccount_ID
 				int C_BankAccount_ID = pp.getKey();
 
-				log.fine("Deposit Batch Date=" + trxDate + ", Batch=" + X_DepositBatch_ID 
+				if (log.isLoggable(Level.FINE)) log.fine("Deposit Batch Date=" + trxDate + ", Batch=" + X_DepositBatch_ID 
 						+" , Bank Account" + C_BankAccount_ID);
 
 				PreparedStatement pstmt = null;
@@ -300,7 +300,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 						int C_Currency_ID = rs.getInt(4);
 						BigDecimal TrxAmt = rs.getBigDecimal(6); //  PayAmt
 						
-						log.fine("Line Date=" + trxDate + ", Payment=" + C_Payment_ID + ", Currency=" + C_Currency_ID + ", Amt=" + TrxAmt);
+						if (log.isLoggable(Level.FINE)) log.fine("Line Date=" + trxDate + ", Payment=" + C_Payment_ID + ", Currency=" + C_Currency_ID + ", Amt=" + TrxAmt);
 						//	
 						MBankStatementLine bsl = new MBankStatementLine (bs);
 						bsl.setStatementLineDate(trxDate);

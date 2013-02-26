@@ -18,6 +18,7 @@ package org.compiere.wstore;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -184,7 +185,7 @@ public class LoginServlet extends HttpServlet
 			url += "?SalesRep_ID=" + salesRep;
 		//
 		//String mode = WebUtil.getParameter (request, "Mode");
-		log.fine("- targeting url=" + url); // + " - mode=" + mode);
+		if (log.isLoggable(Level.FINE)) log.fine("- targeting url=" + url); // + " - mode=" + mode);
 
 		//	Web User
 		WebUser wu = WebUser.get(request);

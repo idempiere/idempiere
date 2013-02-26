@@ -89,7 +89,7 @@ public class CalloutAssignment extends CalloutEngine
 			rs = null; pstmt = null;
 		}
 
-		log.fine("S_ResourceAssignment_ID=" + S_ResourceAssignment_ID + " - M_Product_ID=" + M_Product_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("S_ResourceAssignment_ID=" + S_ResourceAssignment_ID + " - M_Product_ID=" + M_Product_ID);
 		if (M_Product_ID != 0)
 		{
 			mTab.setValue ("M_Product_ID", new Integer (M_Product_ID));

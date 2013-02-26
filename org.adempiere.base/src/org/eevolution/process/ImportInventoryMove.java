@@ -112,7 +112,7 @@ public class ImportInventoryMove extends SvrProcess
 			    move.deleteEx(true);
 			    no++;
 			}
-			log.fine("Delete Old Impored =" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Impored =" + no);
 		}
 		
 		fillIDValues();		

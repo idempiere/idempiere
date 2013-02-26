@@ -152,7 +152,7 @@ public class RequestOrderRefTag extends TagSupport
 		//	Return to Array and return
 		option options[] = new option [list.size()];
 		list.toArray(options);
-		log.fine("#" + options.length);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + options.length);
 		return options;
 	}	//	getOptions
 

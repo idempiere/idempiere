@@ -298,7 +298,7 @@ public class CalloutInvoiceBatch extends CalloutEngine
 			C_Charge_ID = ((Integer)value).intValue();
 		else
 			C_Charge_ID = Env.getContextAsInt(ctx, WindowNo, "C_Charge_ID");
-		log.fine("C_Charge_ID=" + C_Charge_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("C_Charge_ID=" + C_Charge_ID);
 		if (C_Charge_ID == 0)
 			return amt (ctx, WindowNo, mTab, mField, value);	//
 
@@ -306,19 +306,19 @@ public class CalloutInvoiceBatch extends CalloutEngine
 		int C_BPartner_Location_ID = Env.getContextAsInt(ctx, WindowNo, "C_BPartner_Location_ID");
 		if (C_BPartner_Location_ID == 0)
 			return amt (ctx, WindowNo, mTab, mField, value);	//
-		log.fine("BP_Location=" + C_BPartner_Location_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("BP_Location=" + C_BPartner_Location_ID);
 
 		//	Dates
 		Timestamp billDate = Env.getContextAsDate(ctx, WindowNo, "DateInvoiced");
-		log.fine("Bill Date=" + billDate);
+		if (log.isLoggable(Level.FINE)) log.fine("Bill Date=" + billDate);
 		Timestamp shipDate = billDate;
-		log.fine("Ship Date=" + shipDate);
+		if (log.isLoggable(Level.FINE)) log.fine("Ship Date=" + shipDate);
 
 		int AD_Org_ID = Env.getContextAsInt(ctx, WindowNo, "AD_Org_ID");
-		log.fine("Org=" + AD_Org_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("Org=" + AD_Org_ID);
 
 		int M_Warehouse_ID = Env.getContextAsInt(ctx, "#M_Warehouse_ID");
-		log.fine("Warehouse=" + M_Warehouse_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("Warehouse=" + M_Warehouse_ID);
 
 		//
 		int C_Tax_ID = Tax.get(ctx, 0, C_Charge_ID, billDate, shipDate,
@@ -356,7 +356,7 @@ public class CalloutInvoiceBatch extends CalloutEngine
 		//	get values
 		BigDecimal QtyEntered = (BigDecimal)mTab.getValue("QtyEntered");
 		BigDecimal PriceEntered = (BigDecimal)mTab.getValue("PriceEntered");
-		log.fine("QtyEntered=" + QtyEntered + ", PriceEntered=" + PriceEntered);
+		if (log.isLoggable(Level.FINE)) log.fine("QtyEntered=" + QtyEntered + ", PriceEntered=" + PriceEntered);
 		if (QtyEntered == null)
 			QtyEntered = Env.ZERO;
 		if (PriceEntered == null)

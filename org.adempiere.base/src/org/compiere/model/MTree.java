@@ -320,7 +320,7 @@ public class MTree extends MTree_Base
 			trimTree();
 //		diagPrintTree();
 		if (CLogMgt.isLevelFinest() || m_root.getChildCount() == 0)
-			log.fine("ChildCount=" + m_root.getChildCount());
+			if (log.isLoggable(Level.FINE)) log.fine("ChildCount=" + m_root.getChildCount());
 	}   //  loadNodes
 
 	/**

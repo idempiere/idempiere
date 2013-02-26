@@ -137,11 +137,11 @@ public final class Fact
 		{
 			if (docLine == null || docLine.getQty() == null || docLine.getQty().signum() == 0)
 			{
-				log.fine("Both amounts & qty = 0/Null - " + docLine		
+				if (log.isLoggable(Level.FINE)) log.fine("Both amounts & qty = 0/Null - " + docLine		
 					+ " - " + toString());			
 				return null;
 			}
-			log.fine("Both amounts = 0/Null, Qty=" + docLine.getQty() + " - " + docLine		
+			if (log.isLoggable(Level.FINE)) log.fine("Both amounts = 0/Null, Qty=" + docLine.getQty() + " - " + docLine		
 				+ " - " + toString());			
 		}
 		//  Convert
@@ -151,7 +151,7 @@ public final class Fact
 			&& (docLine.getAmtAcctDr() != null || docLine.getAmtAcctCr() != null))
 			line.setAmtAcct(docLine.getAmtAcctDr(), docLine.getAmtAcctCr());
 		//
-		log.fine(line.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(line.toString());
 		add(line);
 		return line;
 	}	//	createLine
@@ -310,7 +310,7 @@ public final class Fact
 		//  Convert
 		line.convert();
 		//
-		log.fine(line.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(line.toString());
 		m_lines.add(line);
 		return line;
 	}   //  balancingSource
@@ -412,7 +412,7 @@ public final class Fact
 		if (m_lines.size() == 0)
 			return;
 
-		log.fine ("(" + elementType + ") - " + toString());
+		if (log.isLoggable(Level.FINE)) log.fine ("(" + elementType + ") - " + toString());
 
 		//  Org
 		if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_Organization))
@@ -481,7 +481,7 @@ public final class Fact
 					line.setAD_Org_ID(key.intValue());
 					//
 					m_lines.add(line);
-					log.fine("(" + elementType + ") - " + line);
+					if (log.isLoggable(Level.FINE)) log.fine("(" + elementType + ") - " + line);
 				}
 			}
 			map.clear();
@@ -536,7 +536,7 @@ public final class Fact
 	public FactLine balanceAccounting()
 	{
 		BigDecimal diff = getAcctBalance();		//	DR-CR
-		log.fine("Balance=" + diff 
+		if (log.isLoggable(Level.FINE)) log.fine("Balance=" + diff 
 			+ ", CurrBal=" + m_acctSchema.isCurrencyBalancing() 
 			+ " - " + toString());
 		FactLine line = null;
@@ -598,7 +598,7 @@ public final class Fact
 					drAmt = difference.negate();
 			}
 			line.setAmtAcct(drAmt, crAmt);
-			log.fine(line.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(line.toString());
 			m_lines.add(line);
 		}
 		else	//  Adjust biggest (Balance Sheet) line amount
@@ -611,9 +611,9 @@ public final class Fact
 				log.severe ("No Line found");
 			else
 			{
-				log.fine("Adjusting Amt=" + diff + "; Line=" + line);
+				if (log.isLoggable(Level.FINE)) log.fine("Adjusting Amt=" + diff + "; Line=" + line);
 				line.currencyCorrect(diff);
-				log.fine(line.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(line.toString());
 			}
 		}   //  correct biggest amount
 

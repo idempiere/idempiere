@@ -284,7 +284,7 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 			.append("' WHERE C_AllocationHdr_ID=").append(getC_AllocationHdr_ID());
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		m_lines = null;
-		log.fine(processed + " - #" + no);
+		if (log.isLoggable(Level.FINE)) log.fine(processed + " - #" + no);
 	}	//	setProcessed
 	
 	
@@ -849,7 +849,7 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 			bp.setTotalOpenBalance();		//	recalculates from scratch
 		//	bp.setSOCreditStatus();			//	called automatically
 			if (bp.save())
-				log.fine(bp.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(bp.toString());
 			else
 				log.log(Level.SEVERE, "BP not updated - " + bp);
 		}

@@ -115,7 +115,7 @@ public class StatementProxy implements InvocationHandler {
 				}
 				if (logOperation != null) {
 					logSql = logSql.substring(0, logSql.indexOf(' '));
-					log.fine((DisplayType.getDateFormat(DisplayType.DateTime)).format(new Date(System.currentTimeMillis()))+","+logOperation+","+logSql+","+(p_vo.getTrxName() != null ? p_vo.getTrxName() : "")+" (begin)");
+					if (log.isLoggable(Level.FINE)) log.fine((DisplayType.getDateFormat(DisplayType.DateTime)).format(new Date(System.currentTimeMillis()))+","+logOperation+","+logSql+","+(p_vo.getTrxName() != null ? p_vo.getTrxName() : "")+" (begin)");
 				}
 			}
 		}

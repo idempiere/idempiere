@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MColumn;
@@ -183,7 +184,7 @@ public class MWFNode extends X_AD_WF_Node
 		{
 			next.setFromSplitAnd(splitAnd);
 		}
-		log.fine("#" + m_next.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_next.size());
 	}	//	loadNext
 
 	/**
@@ -221,7 +222,7 @@ public class MWFNode extends X_AD_WF_Node
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("Trl=" + m_translated);
+		if (log.isLoggable(Level.FINE)) log.fine("Trl=" + m_translated);
 	}	//	loadTrl
 
 	/**

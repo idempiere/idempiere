@@ -202,7 +202,7 @@ public class AdempiereServerMgr
 			}
 		}
 		
-		log.fine("#" + noServers);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + noServers);
 		return startAll();
 	}	//	startEnvironment
 
@@ -265,7 +265,7 @@ public class AdempiereServerMgr
 				noStopped++;
 			}
 		}
-		log.fine("Running=" + noRunning + ", Stopped=" + noStopped);
+		if (log.isLoggable(Level.FINE)) log.fine("Running=" + noRunning + ", Stopped=" + noStopped);
 		return noStopped == 0;
 	}	//	startAll
 
@@ -370,7 +370,7 @@ public class AdempiereServerMgr
 				noRunning++;
 			}
 		}
-		log.fine("Running=" + noRunning + ", Stopped=" + noStopped);
+		if (log.isLoggable(Level.FINE)) log.fine("Running=" + noRunning + ", Stopped=" + noStopped);
 		AdempiereServerGroup.get().dump();
 		return noRunning == 0;
 	}	//	stopAll

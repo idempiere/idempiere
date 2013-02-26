@@ -111,7 +111,7 @@ public class ReplicationRemote extends SvrProcess
 				//int AD_Table_ID = rs.getInt(1);
 				String ReplicationType = rs.getString(2);
 				String TableName = rs.getString(3);
-				log.fine("setupRemote - " + TableName + " - " + ReplicationType);
+				if (log.isLoggable(Level.FINE)) log.fine("setupRemote - " + TableName + " - " + ReplicationType);
 				if (!data.Test.booleanValue())
 					setupRemoteAD_Table(TableName, ReplicationType);
 			}
@@ -237,7 +237,7 @@ public class ReplicationRemote extends SvrProcess
 			RowSet targetRS = ReplicationLocal.getRowSet(data.Sql, null);
 			Object result = doIt (ReplicationLocal.START, "sync", new Object[]	//	Merge
 				{data.TableName, data.KeyColumns, sourceRS, targetRS, data.Test, Boolean.TRUE});
-			log.fine("receiveUpdateFromCentral - " + data.TableName + " - " + result);
+			if (log.isLoggable(Level.FINE)) log.fine("receiveUpdateFromCentral - " + data.TableName + " - " + result);
 			pi.setSerializableObject(null);
 			boolean replicated = ReplicationLocal.isReplicated(result);
 			if (!replicated)
@@ -280,7 +280,7 @@ public class ReplicationRemote extends SvrProcess
 			RowSet targetRS = ReplicationLocal.getRowSet(data.Sql, null);
 			Object result = doIt (ReplicationLocal.START, "sync", new Object[]	//	Sync
 				{data.TableName, data.KeyColumns, sourceRS, targetRS, data.Test, Boolean.FALSE});
-			log.fine("receiveUpdateFromCentral - " + data.TableName + " - " + result);
+			if (log.isLoggable(Level.FINE)) log.fine("receiveUpdateFromCentral - " + data.TableName + " - " + result);
 			pi.setSerializableObject(null);
 			boolean replicated = ReplicationLocal.isReplicated(result);
 			if (!replicated)

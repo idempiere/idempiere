@@ -162,7 +162,7 @@ public class MPrintPaper extends X_AD_PrintPaper
 			if (nameMedia != null)
 			{
 				m_mediaSize = MediaSize.getMediaSizeForName(nameMedia);
-				log.fine("Name->Size=" + m_mediaSize);
+				if (log.isLoggable(Level.FINE)) log.fine("Name->Size=" + m_mediaSize);
 			}
 		}
 		//	Create New Media Size
@@ -173,7 +173,7 @@ public class MPrintPaper extends X_AD_PrintPaper
 			if (x > 0 && y > 0)
 			{
 				m_mediaSize = new MediaSize(x, y, getUnitsInt(), MediaSizeName.A);
-				log.fine("Size=" + m_mediaSize);
+				if (log.isLoggable(Level.FINE)) log.fine("Size=" + m_mediaSize);
 			}
 		}
 		//	Fallback
@@ -191,7 +191,7 @@ public class MPrintPaper extends X_AD_PrintPaper
 		m_mediaSize = Language.getLoginLanguage().getMediaSize();
 		if (m_mediaSize == null)
 			m_mediaSize = MediaSize.ISO.A4;
-		log.fine("Size=" + m_mediaSize);
+		if (log.isLoggable(Level.FINE)) log.fine("Size=" + m_mediaSize);
 		return m_mediaSize;
 	}	//	getMediaSizeDefault
 

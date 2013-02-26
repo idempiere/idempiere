@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
@@ -357,7 +358,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		{
 			Integer bp = (Integer)fBPartner_ID.getValue();
 			pstmt.setInt(index++, bp.intValue());
-			log.fine("BPartner=" + bp);
+			if (log.isLoggable(Level.FINE)) log.fine("BPartner=" + bp);
 		}
 
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
@@ -372,7 +373,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 			if (t != null)
 				to = new Timestamp(t.getTime());
 
-			log.fine("Date From=" + from + ", To=" + to);
+			if (log.isLoggable(Level.FINE)) log.fine("Date From=" + from + ", To=" + to);
 
 			if (from == null && to != null)
 				pstmt.setTimestamp(index++, to);
@@ -400,7 +401,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		if (!s.endsWith("%"))
 			s += "%";
 
-		log.fine( "String=" + s);
+		if (log.isLoggable(Level.FINE)) log.fine( "String=" + s);
 		return s;
 	} // getSQLText
 

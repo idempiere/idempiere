@@ -274,7 +274,7 @@ public class GridField
 		if (m_lookup == null || m_lookup.getValidation().length() == 0)
 			return true;
 		//
-		log.fine("(" + m_vo.ColumnName + ")");
+		if (log.isLoggable(Level.FINE)) log.fine("(" + m_vo.ColumnName + ")");
 		m_lookup.refresh();
 		return m_lookup.isValidated();
 	}   //  refreshLookup
@@ -539,13 +539,13 @@ public class GridField
 			&& (m_vo.DefaultValue == null || m_vo.DefaultValue.length() == 0))
 		{
 			String parent = Env.getContext(m_vo.ctx, m_vo.WindowNo, m_vo.ColumnName);
-			log.fine("[Parent] " + m_vo.ColumnName + "=" + parent);
+			if (log.isLoggable(Level.FINE)) log.fine("[Parent] " + m_vo.ColumnName + "=" + parent);
 			return createDefault(parent);
 		}
 		//	Always Active
 		if (m_vo.ColumnName.equals("IsActive"))
 		{
-			log.fine("[IsActive] " + m_vo.ColumnName + "=Y");
+			if (log.isLoggable(Level.FINE)) log.fine("[IsActive] " + m_vo.ColumnName + "=Y");
 			return "Y";
 		}
 		
@@ -553,14 +553,14 @@ public class GridField
 		if (X_AD_Table.ACCESSLEVEL_SystemOnly.equals(Env.getContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, GridTab.CTX_AccessLevel))
 			&& (m_vo.ColumnName.equals("AD_Client_ID") || m_vo.ColumnName.equals("AD_Org_ID")))
 		{
-			log.fine("[SystemAccess] " + m_vo.ColumnName + "=0");
+			if (log.isLoggable(Level.FINE)) log.fine("[SystemAccess] " + m_vo.ColumnName + "=0");
 			return new Integer(0);
 		}
 		//	Set Org to System, if Client access
 		else if (X_AD_Table.ACCESSLEVEL_SystemPlusClient.equals(Env.getContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, GridTab.CTX_AccessLevel))
 			&& m_vo.ColumnName.equals("AD_Org_ID"))
 		{
-			log.fine("[ClientAccess] " + m_vo.ColumnName + "=0");
+			if (log.isLoggable(Level.FINE)) log.fine("[ClientAccess] " + m_vo.ColumnName + "=0");
 			return new Integer(0);
 		}
 
@@ -605,7 +605,7 @@ public class GridField
 			}
 			if (defStr != null && defStr.length() > 0)
 			{
-				log.fine("[SQL] " + m_vo.ColumnName + "=" + defStr);
+				if (log.isLoggable(Level.FINE)) log.fine("[SQL] " + m_vo.ColumnName + "=" + defStr);
 				return createDefault(defStr);
 			}
 		}	//	SQL Statement
@@ -630,7 +630,7 @@ public class GridField
 
 				if (!defStr.equals(""))
 				{
-					log.fine("[DefaultValue] " + m_vo.ColumnName + "=" + defStr);
+					if (log.isLoggable(Level.FINE)) log.fine("[DefaultValue] " + m_vo.ColumnName + "=" + defStr);
 					return createDefault(defStr);
 				 }
 			}	//	while more Tokens
@@ -642,7 +642,7 @@ public class GridField
 		defStr = Env.getPreference (m_vo.ctx, m_vo.AD_Window_ID, m_vo.ColumnName, false);
 		if (!defStr.equals(""))
 		{
-			log.fine("[UserPreference] " + m_vo.ColumnName + "=" + defStr);
+			if (log.isLoggable(Level.FINE)) log.fine("[UserPreference] " + m_vo.ColumnName + "=" + defStr);
 			return createDefault(defStr);
 		}
 
@@ -652,7 +652,7 @@ public class GridField
 		defStr = Env.getPreference (m_vo.ctx, m_vo.AD_Window_ID, m_vo.ColumnName, true);
 		if (!defStr.equals(""))
 		{
-			log.fine("[SystemPreference] " + m_vo.ColumnName + "=" + defStr);
+			if (log.isLoggable(Level.FINE)) log.fine("[SystemPreference] " + m_vo.ColumnName + "=" + defStr);
 			return createDefault(defStr);
 		}
 
@@ -663,13 +663,13 @@ public class GridField
 		//	Button to N
 		if (m_vo.displayType == DisplayType.Button && !m_vo.ColumnName.endsWith("_ID"))
 		{
-			log.fine("[Button=N] " + m_vo.ColumnName);
+			if (log.isLoggable(Level.FINE)) log.fine("[Button=N] " + m_vo.ColumnName);
 			return "N";
 		}
 		//	CheckBoxes default to No
 		if (m_vo.displayType == DisplayType.YesNo)
 		{
-			log.fine("[YesNo=N] " + m_vo.ColumnName);
+			if (log.isLoggable(Level.FINE)) log.fine("[YesNo=N] " + m_vo.ColumnName);
 			return "N";
 		}
 		//  lookups with one value
@@ -680,20 +680,20 @@ public class GridField
 		//  IDs remain null
 		if (m_vo.ColumnName.endsWith("_ID"))
 		{
-			log.fine("[ID=null] "  + m_vo.ColumnName);
+			if (log.isLoggable(Level.FINE)) log.fine("[ID=null] "  + m_vo.ColumnName);
 			return null;
 		}
 		//  actual Numbers default to zero
 		if (DisplayType.isNumeric(m_vo.displayType))
 		{
-			log.fine("[Number=0] " + m_vo.ColumnName);
+			if (log.isLoggable(Level.FINE)) log.fine("[Number=0] " + m_vo.ColumnName);
 			return createDefault("0");
 		}
 
 		/**
 		 *  No resolution
 		 */
-		log.fine("[NONE] " + m_vo.ColumnName);
+		if (log.isLoggable(Level.FINE)) log.fine("[NONE] " + m_vo.ColumnName);
 		return null;
 	}	//	getDefault
 

@@ -327,7 +327,7 @@ public abstract class PrintElement implements ImageObserver, Serializable
 			return false;
 		}
 		if (count > 0)
-			log.fine((System.currentTimeMillis()-start) + "ms - #" + count);
+			if (log.isLoggable(Level.FINE)) log.fine((System.currentTimeMillis()-start) + "ms - #" + count);
 		return true;
 	}	//	waitForLoad
 

@@ -561,7 +561,7 @@ public abstract class Info extends CDialog
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + no + " - " + (System.currentTimeMillis()-start) + "ms");
+		if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - " + (System.currentTimeMillis()-start) + "ms");
 		//Armen: add role checking (Patch #1694788 )
 		MRole role = MRole.getDefault();
 		if (role.isQueryMax(no))
@@ -1189,9 +1189,9 @@ public abstract class Info extends CDialog
 			{
 				m_pstmt = DB.prepareStatement(dataSql, null);
 				setParameters (m_pstmt, false);	//	no count
-				log.fine("Start query - " + (System.currentTimeMillis()-start) + "ms");
+				if (log.isLoggable(Level.FINE)) log.fine("Start query - " + (System.currentTimeMillis()-start) + "ms");
 				m_rs = m_pstmt.executeQuery();
-				log.fine("End query - " + (System.currentTimeMillis()-start) + "ms");
+				if (log.isLoggable(Level.FINE)) log.fine("End query - " + (System.currentTimeMillis()-start) + "ms");
 				while (m_rs.next())
 				{
 					if (this.isInterrupted()) {
@@ -1234,7 +1234,7 @@ public abstract class Info extends CDialog
 							data = m_rs.getString(colIndex);
 						//  store
 						p_table.setValueAt(data, row, col);
-					//	log.fine( "r=" + row + ", c=" + col + " " + m_layout[col].getColHeader(),
+					//	if (log.isLoggable(Level.FINE)) log.fine( "r=" + row + ", c=" + col + " " + m_layout[col].getColHeader(),
 					//  	"data=" + data.toString() + " " + data.getClass().getName() + " * " + m_table.getCellRenderer(row, col));
 					}
 				}
@@ -1246,7 +1246,7 @@ public abstract class Info extends CDialog
 			close();
 			//
 			int no = p_table.getRowCount();
-			log.fine("#" + no + " - " + (System.currentTimeMillis()-start) + "ms");
+			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - " + (System.currentTimeMillis()-start) + "ms");
 			if(p_table.getShowTotals())
 				p_table.addTotals(p_layout);
 			p_table.autoSize();
@@ -1255,7 +1255,7 @@ public abstract class Info extends CDialog
 			setStatusLine(Integer.toString(no) + " " + Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
 			setStatusDB(Integer.toString(no));
 			if (no == 0)
-				log.fine(dataSql);
+				if (log.isLoggable(Level.FINE)) log.fine(dataSql);
 			else
 			{
 				p_table.getSelectionModel().setSelectionInterval(0, 0);

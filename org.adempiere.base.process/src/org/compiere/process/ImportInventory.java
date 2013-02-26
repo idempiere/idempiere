@@ -149,7 +149,7 @@ public class ImportInventory extends SvrProcess
 			sql = new StringBuilder ("DELETE I_Inventory ")
 				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate (sql.toString (), get_TrxName());
-			log.fine("Delete Old Imported=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Imported=" + no);
 		}
 
 		//	Set Client, Org, Location, IsActive, Created/Updated
@@ -186,7 +186,7 @@ public class ImportInventory extends SvrProcess
 			.append("WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set DocType=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set DocType=" + no);
 		sql = new StringBuilder ("UPDATE I_Inventory i ")
 				.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid DocType, ' ")
 			    .append("WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL")
@@ -202,14 +202,14 @@ public class ImportInventory extends SvrProcess
 			.append("WHERE M_Locator_ID IS NULL AND LocatorValue IS NOT NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
-		log.fine("Set Locator from Value =" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Locator from Value =" + no);
 		sql = new StringBuilder ("UPDATE I_Inventory i ")
 			.append("SET M_Locator_ID=(SELECT MAX(M_Locator_ID) FROM M_Locator l")
 			.append(" WHERE i.X=l.X AND i.Y=l.Y AND i.Z=l.Z AND i.AD_Client_ID=l.AD_Client_ID) ")
 			.append("WHERE M_Locator_ID IS NULL AND X IS NOT NULL AND Y IS NOT NULL AND Z IS NOT NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
-		log.fine("Set Locator from X,Y,Z =" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Locator from X,Y,Z =" + no);
 		if (p_M_Locator_ID != 0)
 		{
 			sql = new StringBuilder ("UPDATE I_Inventory ")
@@ -217,7 +217,7 @@ public class ImportInventory extends SvrProcess
 				.append (" WHERE M_Locator_ID IS NULL")
 				.append(" AND I_IsImported<>'Y'").append (clientCheck);
 			no = DB.executeUpdate (sql.toString (), get_TrxName());
-			log.fine("Set Locator from Parameter=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set Locator from Parameter=" + no);
 		}
 		sql = new StringBuilder ("UPDATE I_Inventory ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Location, ' ")
@@ -233,7 +233,7 @@ public class ImportInventory extends SvrProcess
 			.append("WHERE M_Locator_ID IS NOT NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
-		log.fine("Set Warehouse from Locator =" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Warehouse from Locator =" + no);
 		sql = new StringBuilder ("UPDATE I_Inventory ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Warehouse, ' ")
 			.append("WHERE M_Warehouse_ID IS NULL")
@@ -258,14 +258,14 @@ public class ImportInventory extends SvrProcess
 			  .append("WHERE M_Product_ID IS NULL AND Value IS NOT NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
-		log.fine("Set Product from Value=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Product from Value=" + no);
 		sql = new StringBuilder ("UPDATE I_Inventory i ")
 				  .append("SET M_Product_ID=(SELECT MAX(M_Product_ID) FROM M_Product p")
 				  .append(" WHERE i.UPC=p.UPC AND i.AD_Client_ID=p.AD_Client_ID) ")
 				  .append("WHERE M_Product_ID IS NULL AND UPC IS NOT NULL")
 				  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 			no = DB.executeUpdate (sql.toString (), get_TrxName());
-		log.fine("Set Product from UPC=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Product from UPC=" + no);
 		sql = new StringBuilder ("UPDATE I_Inventory ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Product, ' ")
 			.append("WHERE M_Product_ID IS NULL")
@@ -280,7 +280,7 @@ public class ImportInventory extends SvrProcess
 			  .append(" WHERE o.ChargeName=p.Name AND o.AD_Client_ID=p.AD_Client_ID) ")
 			  .append("WHERE C_Charge_ID IS NULL AND ChargeName IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Charge=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Charge=" + no);
 		sql = new StringBuilder ("UPDATE I_Inventory ")
 				  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Charge, ' ")
 				  .append("WHERE C_Charge_ID IS NULL AND (ChargeName IS NOT NULL)")

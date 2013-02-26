@@ -12,6 +12,8 @@
  *****************************************************************************/
 package org.adempiere.webui.component;
 
+import java.util.logging.Level;
+
 import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MTree;
@@ -65,7 +67,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 	public void onEvent(Event event) throws Exception {
 		if (event instanceof DropEvent) {
 			DropEvent de = (DropEvent) event;
-			log.fine("Source=" + de.getDragged() + " Target=" + de.getTarget());
+			if (log.isLoggable(Level.FINE)) log.fine("Source=" + de.getDragged() + " Target=" + de.getTarget());
 			if (de.getDragged() != de.getTarget()) {
 				Treeitem src = (Treeitem) ((Treerow) de.getDragged()).getParent();
 				Treeitem target = (Treeitem) ((Treerow) de.getTarget()).getParent();
@@ -172,7 +174,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 					.append(", Updated=SysDate")
 					.append(" WHERE AD_Tree_ID=").append(mTree.getAD_Tree_ID())
 					.append(" AND Node_ID=").append(md.getNode_ID());
-				log.fine(sql.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
 				no = DB.executeUpdate(sql.toString(),trx.getTrxName());
 			}
 			if (oldParent != newParent) 
@@ -189,7 +191,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 						.append(", Updated=SysDate")
 						.append(" WHERE AD_Tree_ID=").append(mTree.getAD_Tree_ID())
 						.append(" AND Node_ID=").append(md.getNode_ID());
-					log.fine(sql.toString());
+					if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
 					no = DB.executeUpdate(sql.toString(),trx.getTrxName());
 				}
 			}

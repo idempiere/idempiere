@@ -335,7 +335,7 @@ public class VBOMDrop extends CPanel
 		MPPProductBOMLine[] bomLines = bom.getLines(true);
 		for (int i = 0; i < bomLines.length; i++)
 			addBOMLine (bomLines[i], qty);
-		log.fine("#" + bomLines.length);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + bomLines.length);
 	}
 	
 	/**
@@ -346,7 +346,7 @@ public class VBOMDrop extends CPanel
 	 */
 	private void addBOMLine (MPPProductBOMLine line, BigDecimal qty)
 	{
-		log.fine(line.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(line.toString());
 		String bomType = line.getComponentType();
 		if (bomType == null)
 			bomType = MPPProductBOMLine.COMPONENTTYPE_Component;
@@ -374,7 +374,7 @@ public class VBOMDrop extends CPanel
 	private void addDisplay (int parentM_Product_ID,
 		int M_Product_ID, String bomType, String name, String feature , BigDecimal lineQty)
 	{
-		log.fine("M_Product_ID=" + M_Product_ID + ",Type=" + bomType + ",Name=" + name + ",feature=" + feature + ",Qty=" + lineQty);
+		if (log.isLoggable(Level.FINE)) log.fine("M_Product_ID=" + M_Product_ID + ",Type=" + bomType + ",Name=" + name + ",feature=" + feature + ",Qty=" + lineQty);
 		//
 		boolean selected = true;
 		if (MPPProductBOMLine.COMPONENTTYPE_Component.equals(bomType))
@@ -405,7 +405,7 @@ public class VBOMDrop extends CPanel
 			ButtonGroup group = (ButtonGroup)m_buttonGroups.get(groupName);
 			if (group == null)
 			{
-				log.fine("ButtonGroup=" + groupName);
+				if (log.isLoggable(Level.FINE)) log.fine("ButtonGroup=" + groupName);
 				group = new ButtonGroup();
 				m_buttonGroups.put(groupName, group);
 				group.add(b);

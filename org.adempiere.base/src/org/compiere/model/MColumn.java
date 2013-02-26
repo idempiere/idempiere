@@ -319,7 +319,7 @@ public class MColumn extends X_AD_Column
 					.append(" WHERE AD_Column_ID=").append(get_ID())
 					.append(" AND IsCentrallyMaintained='Y'");
 				int no = DB.executeUpdate(sql.toString(), get_TrxName());
-				log.fine("afterSave - Fields updated #" + no);
+				if (log.isLoggable(Level.FINE)) log.fine("afterSave - Fields updated #" + no);
 			}
 		}
 		return success;

@@ -67,7 +67,7 @@ public final class MLookup extends Lookup implements Serializable
 	{
 		super(info.DisplayType, info.WindowNo);
 		m_info = info;
-		log.fine(m_info.KeyColumn);
+		if (log.isLoggable(Level.FINE)) log.fine(m_info.KeyColumn);
 
 		//  load into local lookup, if already cached
 		if (Ini.isClient()) 
@@ -135,7 +135,7 @@ public final class MLookup extends Lookup implements Serializable
 	public void dispose()
 	{
 		if (m_info != null)
-			log.fine(m_info.KeyColumn + ": dispose");
+			if (log.isLoggable(Level.FINE)) log.fine(m_info.KeyColumn + ": dispose");
 		if (m_loaderFuture != null && !m_loaderFuture.isDone())
 			m_loaderFuture.cancel(true);
 		m_loader = null;
@@ -365,7 +365,7 @@ public final class MLookup extends Lookup implements Serializable
 	{
 		if (m_loaderFuture != null && !m_loaderFuture.isDone())
 		{
-			log.fine((m_info.KeyColumn==null ? "ID="+m_info.Column_ID : m_info.KeyColumn) 
+			if (log.isLoggable(Level.FINE)) log.fine((m_info.KeyColumn==null ? "ID="+m_info.Column_ID : m_info.KeyColumn) 
 				+ ": waiting for Loader");
 			loadComplete();
 		}
@@ -385,7 +385,7 @@ public final class MLookup extends Lookup implements Serializable
 		if (!validated && onlyValidated)
 		{
 			loadData (loadParent);
-			log.fine(m_info.KeyColumn + ": Validated - #" + m_lookup.size());
+			if (log.isLoggable(Level.FINE)) log.fine(m_info.KeyColumn + ": Validated - #" + m_lookup.size());
 		}
 
 		return new ArrayList<Object>(m_lookup.values());
@@ -644,12 +644,12 @@ public final class MLookup extends Lookup implements Serializable
 		if (m_info.DisplayType == DisplayType.Search 
 			|| m_info.IsCreadedUpdatedBy)
 			return 0;
-		log.fine(m_info.KeyColumn + ": start");
+		if (log.isLoggable(Level.FINE)) log.fine(m_info.KeyColumn + ": start");
 		
 		m_loader = new MLoader();
 		m_loaderFuture = Adempiere.getThreadPoolExecutor().submit(m_loader);
 		loadComplete();
-		log.fine(m_info.KeyColumn + ": #" + m_lookup.size());
+		if (log.isLoggable(Level.FINE)) log.fine(m_info.KeyColumn + ": #" + m_lookup.size());
 		
 		return m_lookup.size();
 	}	//	refresh
@@ -724,7 +724,7 @@ public final class MLookup extends Lookup implements Serializable
 				m_info.parsedValidationCode = validation;
 				if (validation.length() == 0 && m_info.ValidationCode.length() > 0)
 				{
-					log.fine(m_info.KeyColumn + ": Loader NOT Validated: " + m_info.ValidationCode);
+					if (log.isLoggable(Level.FINE)) log.fine(m_info.KeyColumn + ": Loader NOT Validated: " + m_info.ValidationCode);
 					// Bug 1843862 - Lookups not working on Report Viewer window
 					// globalqss - when called from Viewer window ignore error about not parseable context variables
 					// there is no context in report viewer windows
@@ -736,7 +736,7 @@ public final class MLookup extends Lookup implements Serializable
 				}
 				else
 				{					
-					log.fine(m_info.KeyColumn + ": Loader Validated: " + validation);
+					if (log.isLoggable(Level.FINE)) log.fine(m_info.KeyColumn + ": Loader Validated: " + validation);
 					int posFrom = sql.lastIndexOf(" FROM ");
 					boolean hasWhere = sql.indexOf(" WHERE ", posFrom) != -1;
 					//
@@ -750,7 +750,7 @@ public final class MLookup extends Lookup implements Serializable
 						sql.append((hasWhere ? " AND " : " WHERE ")) 
 							.append(validation);
 					if (CLogMgt.isLevelFinest())
-						log.fine(m_info.KeyColumn + ": Validation=" + validation);
+						if (log.isLoggable(Level.FINE)) log.fine(m_info.KeyColumn + ": Validation=" + validation);
 				}
 			}
 			//	check
@@ -831,7 +831,7 @@ public final class MLookup extends Lookup implements Serializable
 						ValueNamePair p = new ValueNamePair(value, name.toString());
 						m_lookup.put(value, p);
 					}
-				//	log.fine( m_info.KeyColumn + ": " + name);
+				//	if (log.isLoggable(Level.FINE)) log.fine( m_info.KeyColumn + ": " + name);
 				}
 			}
 			catch (SQLException e)

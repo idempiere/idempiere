@@ -88,7 +88,7 @@ public class Doc_Invoice extends Doc
 		//	Contained Objects
 		m_taxes = loadTaxes();
 		p_lines = loadLines(invoice);
-		log.fine("Lines=" + p_lines.length + ", Taxes=" + m_taxes.length);
+		if (log.isLoggable(Level.FINE)) log.fine("Lines=" + p_lines.length + ", Taxes=" + m_taxes.length);
 		return null;
 	}   //  loadDocumentDetails
 
@@ -121,7 +121,7 @@ public class Doc_Invoice extends Doc
 				//
 				DocTax taxLine = new DocTax(C_Tax_ID, name, rate,
 					taxBaseAmt, amount, salesTax);
-				log.fine(taxLine.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(taxLine.toString());
 				list.add(taxLine);
 			}
 		}
@@ -173,7 +173,7 @@ public class Doc_Invoice extends Doc
 				if (!tax.isZeroTax())
 				{
 					BigDecimal LineNetAmtTax = tax.calculateTax(LineNetAmt, true, getStdPrecision());
-					log.fine("LineNetAmt=" + LineNetAmt + " - Tax=" + LineNetAmtTax);
+					if (log.isLoggable(Level.FINE)) log.fine("LineNetAmt=" + LineNetAmt + " - Tax=" + LineNetAmtTax);
 					LineNetAmt = LineNetAmt.subtract(LineNetAmtTax);
 					for (int t = 0; t < m_taxes.length; t++)
 					{
@@ -194,7 +194,7 @@ public class Doc_Invoice extends Doc
 			else
 				m_allLinesItem = false;
 			//
-			log.fine(docLine.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
 			list.add(docLine);
 		}
 
@@ -266,7 +266,7 @@ public class Doc_Invoice extends Doc
 		}
 		sb.append("]");
 		//
-		log.fine(toString() + " Balance=" + retValue + sb.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(toString() + " Balance=" + retValue + sb.toString());
 		return retValue;
 	}   //  getBalance
 
@@ -914,7 +914,7 @@ public class Doc_Invoice extends Doc
 			.append(" AND po.M_Product_ID=il.M_Product_ID AND po.C_BPartner_ID=i.C_BPartner_ID")
 			.append(" AND i.C_Invoice_ID=").append(get_ID()).append(")");
 		int no = DB.executeUpdate(sql.toString(), getTrxName());
-		log.fine("Updated=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Updated=" + no);
 	}	//	updateProductPO
 
 }   //  Doc_Invoice

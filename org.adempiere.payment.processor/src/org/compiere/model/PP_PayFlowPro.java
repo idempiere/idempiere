@@ -83,7 +83,7 @@ public final class PP_PayFlowPro extends PaymentProcessor
 	 */
 	public boolean processCC () throws IllegalArgumentException
 	{
-		log.fine(p_mbap.getHostAddress() + " " + p_mbap.getHostPort() + ", Timeout=" + getTimeout()
+		if (log.isLoggable(Level.FINE)) log.fine(p_mbap.getHostAddress() + " " + p_mbap.getHostPort() + ", Timeout=" + getTimeout()
 			+ "; Proxy=" + p_mbap.getProxyAddress() + " " + p_mbap.getProxyPort() + " " + p_mbap.getProxyLogon() + " " + p_mbap.getProxyPassword());
 		//
 		StringBuilder param = new StringBuilder();
@@ -155,7 +155,7 @@ public final class PP_PayFlowPro extends PaymentProcessor
 			.append("&VENDOR=").append(p_mbap.getVendorID())
 			.append("&USER=").append(p_mbap.getUserID())
 			.append("&PWD=").append(p_mbap.getPassword());
-		log.fine("-> " + param.toString());
+		if (log.isLoggable(Level.FINE)) log.fine("-> " + param.toString());
 
 		// Call the PayFlowPro client.
 		int rc = m_pp.CreateContext (p_mbap.getHostAddress(), p_mbap.getHostPort(), getTimeout(),
@@ -164,7 +164,7 @@ public final class PP_PayFlowPro extends PaymentProcessor
 		m_pp.DestroyContext();
 		//
 		long ms = System.currentTimeMillis() - start;
-		log.fine("<- " + ms + "ms - " + rc + " - " + response);
+		if (log.isLoggable(Level.FINE)) log.fine("<- " + ms + "ms - " + rc + " - " + response);
 		p_mp.setR_Result("");
 		p_mp.setR_Info(response);		//	complete info
 

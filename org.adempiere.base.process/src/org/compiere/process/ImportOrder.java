@@ -100,7 +100,7 @@ public class ImportOrder extends SvrProcess
 			sql = new StringBuilder ("DELETE I_Order ")
 				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
-			log.fine("Delete Old Impored =" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Impored =" + no);
 		}
 
 		//	Set Client, Org, IsActive, Created/Updated
@@ -133,20 +133,20 @@ public class ImportOrder extends SvrProcess
 			  .append(" AND d.DocBaseType='POO' AND o.AD_Client_ID=d.AD_Client_ID) ")
 			  .append("WHERE C_DocType_ID IS NULL AND IsSOTrx='N' AND DocTypeName IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set PO DocType=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set PO DocType=" + no);
 		sql = new StringBuilder ("UPDATE I_Order o ")	//	SO Document Type Name
 			  .append("SET C_DocType_ID=(SELECT C_DocType_ID FROM C_DocType d WHERE d.Name=o.DocTypeName")
 			  .append(" AND d.DocBaseType='SOO' AND o.AD_Client_ID=d.AD_Client_ID) ")
 			  .append("WHERE C_DocType_ID IS NULL AND IsSOTrx='Y' AND DocTypeName IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set SO DocType=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set SO DocType=" + no);
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET C_DocType_ID=(SELECT C_DocType_ID FROM C_DocType d WHERE d.Name=o.DocTypeName")
 			  .append(" AND d.DocBaseType IN ('SOO','POO') AND o.AD_Client_ID=d.AD_Client_ID) ")
 			//+ "WHERE C_DocType_ID IS NULL AND IsSOTrx IS NULL AND DocTypeName IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
 			  .append("WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set DocType=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set DocType=" + no);
 		sql = new StringBuilder ("UPDATE I_Order ")	//	Error Invalid Doc Type Name
 			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid DocTypeName, ' ")
 			  .append("WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL")
@@ -160,19 +160,19 @@ public class ImportOrder extends SvrProcess
 			  .append(" AND d.DocBaseType='POO' AND o.AD_Client_ID=d.AD_Client_ID) ")
 			  .append("WHERE C_DocType_ID IS NULL AND IsSOTrx='N' AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set PO Default DocType=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set PO Default DocType=" + no);
 		sql = new StringBuilder ("UPDATE I_Order o ")	//	Default SO
 			  .append("SET C_DocType_ID=(SELECT MAX(C_DocType_ID) FROM C_DocType d WHERE d.IsDefault='Y'")
 			  .append(" AND d.DocBaseType='SOO' AND o.AD_Client_ID=d.AD_Client_ID) ")
 			  .append("WHERE C_DocType_ID IS NULL AND IsSOTrx='Y' AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set SO Default DocType=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set SO Default DocType=" + no);
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET C_DocType_ID=(SELECT MAX(C_DocType_ID) FROM C_DocType d WHERE d.IsDefault='Y'")
 			  .append(" AND d.DocBaseType IN('SOO','POO') AND o.AD_Client_ID=d.AD_Client_ID) ")
 			  .append("WHERE C_DocType_ID IS NULL AND IsSOTrx IS NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Default DocType=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Default DocType=" + no);
 		sql = new StringBuilder ("UPDATE I_Order ")	// No DocType
 			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No DocType, ' ")
 			  .append("WHERE C_DocType_ID IS NULL")
@@ -187,13 +187,13 @@ public class ImportOrder extends SvrProcess
 			  .append(" AND C_DocType_ID IS NOT NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set IsSOTrx=Y=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set IsSOTrx=Y=" + no);
 		sql = new StringBuilder ("UPDATE I_Order o SET IsSOTrx='N' ")
 			  .append("WHERE EXISTS (SELECT * FROM C_DocType d WHERE o.C_DocType_ID=d.C_DocType_ID AND d.DocBaseType='POO' AND o.AD_Client_ID=d.AD_Client_ID)")
 			  .append(" AND C_DocType_ID IS NOT NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set IsSOTrx=N=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set IsSOTrx=N=" + no);
 
 		//	Price List
 		sql = new StringBuilder ("UPDATE I_Order o ")
@@ -201,25 +201,25 @@ public class ImportOrder extends SvrProcess
 			  .append(" AND p.C_Currency_ID=o.C_Currency_ID AND p.IsSOPriceList=o.IsSOTrx AND o.AD_Client_ID=p.AD_Client_ID) ")
 			  .append("WHERE M_PriceList_ID IS NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Default Currency PriceList=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Default Currency PriceList=" + no);
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET M_PriceList_ID=(SELECT MAX(M_PriceList_ID) FROM M_PriceList p WHERE p.IsDefault='Y'")
 			  .append(" AND p.IsSOPriceList=o.IsSOTrx AND o.AD_Client_ID=p.AD_Client_ID) ")
 			  .append("WHERE M_PriceList_ID IS NULL AND C_Currency_ID IS NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Default PriceList=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Default PriceList=" + no);
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET M_PriceList_ID=(SELECT MAX(M_PriceList_ID) FROM M_PriceList p ")
 			  .append(" WHERE p.C_Currency_ID=o.C_Currency_ID AND p.IsSOPriceList=o.IsSOTrx AND o.AD_Client_ID=p.AD_Client_ID) ")
 			  .append("WHERE M_PriceList_ID IS NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Currency PriceList=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Currency PriceList=" + no);
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET M_PriceList_ID=(SELECT MAX(M_PriceList_ID) FROM M_PriceList p ")
 			  .append(" WHERE p.IsSOPriceList=o.IsSOTrx AND o.AD_Client_ID=p.AD_Client_ID) ")
 			  .append("WHERE M_PriceList_ID IS NULL AND C_Currency_ID IS NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set PriceList=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set PriceList=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_Order ")
 			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No PriceList, ' ")
@@ -235,7 +235,7 @@ public class ImportOrder extends SvrProcess
 			  .append(" WHERE o.C_OrderSourceValue=p.Value AND o.AD_Client_ID=p.AD_Client_ID) ")
 			  .append("WHERE C_OrderSource_ID IS NULL AND C_OrderSourceValue IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Order Source=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Order Source=" + no);
 		// Set proper error message
 		sql = new StringBuilder ("UPDATE I_Order ")
 			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Not Found Order Source, ' ")
@@ -250,13 +250,13 @@ public class ImportOrder extends SvrProcess
 			  .append(" WHERE o.PaymentTermValue=p.Value AND o.AD_Client_ID=p.AD_Client_ID) ")
 			  .append("WHERE C_PaymentTerm_ID IS NULL AND PaymentTermValue IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set PaymentTerm=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set PaymentTerm=" + no);
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET C_PaymentTerm_ID=(SELECT MAX(C_PaymentTerm_ID) FROM C_PaymentTerm p")
 			  .append(" WHERE p.IsDefault='Y' AND o.AD_Client_ID=p.AD_Client_ID) ")
 			  .append("WHERE C_PaymentTerm_ID IS NULL AND o.PaymentTermValue IS NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Default PaymentTerm=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Default PaymentTerm=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_Order ")
 			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No PaymentTerm, ' ")
@@ -273,7 +273,7 @@ public class ImportOrder extends SvrProcess
 			  .append("WHERE M_Warehouse_ID IS NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());	//	Warehouse for Org
 		if (no != 0)
-			log.fine("Set Warehouse=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set Warehouse=" + no);
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET M_Warehouse_ID=(SELECT M_Warehouse_ID FROM M_Warehouse w")
 			  .append(" WHERE o.AD_Client_ID=w.AD_Client_ID) ")
@@ -282,7 +282,7 @@ public class ImportOrder extends SvrProcess
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Set Only Client Warehouse=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set Only Client Warehouse=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_Order ")
 			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Warehouse, ' ")
@@ -299,7 +299,7 @@ public class ImportOrder extends SvrProcess
 			  .append("WHERE C_BPartner_ID IS NULL AND EMail IS NOT NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set BP from EMail=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set BP from EMail=" + no);
 		//	BP from ContactName
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET (C_BPartner_ID,AD_User_ID)=(SELECT C_BPartner_ID,AD_User_ID FROM AD_User u")
@@ -308,7 +308,7 @@ public class ImportOrder extends SvrProcess
 			  .append(" AND EXISTS (SELECT Name FROM AD_User u WHERE o.ContactName=u.Name AND o.AD_Client_ID=u.AD_Client_ID AND u.C_BPartner_ID IS NOT NULL GROUP BY Name HAVING COUNT(*)=1)")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set BP from ContactName=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set BP from ContactName=" + no);
 		//	BP from Value
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET C_BPartner_ID=(SELECT MAX(C_BPartner_ID) FROM C_BPartner bp")
@@ -316,7 +316,7 @@ public class ImportOrder extends SvrProcess
 			  .append("WHERE C_BPartner_ID IS NULL AND BPartnerValue IS NOT NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set BP from Value=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set BP from Value=" + no);
 		//	Default BP
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET C_BPartner_ID=(SELECT C_BPartnerCashTrx_ID FROM AD_ClientInfo c")
@@ -324,7 +324,7 @@ public class ImportOrder extends SvrProcess
 			  .append("WHERE C_BPartner_ID IS NULL AND BPartnerValue IS NULL AND Name IS NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Default BP=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Default BP=" + no);
 
 		//	Existing Location ? Exact Match
 		sql = new StringBuilder ("UPDATE I_Order o ")
@@ -337,7 +337,7 @@ public class ImportOrder extends SvrProcess
 			  .append("WHERE C_BPartner_ID IS NOT NULL AND C_BPartner_Location_ID IS NULL")
 			  .append(" AND I_IsImported='N'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Found Location=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Found Location=" + no);
 		//	Set Bill Location from BPartner
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET BillTo_ID=(SELECT MAX(C_BPartner_Location_ID) FROM C_BPartner_Location l")
@@ -347,7 +347,7 @@ public class ImportOrder extends SvrProcess
 			  .append("WHERE C_BPartner_ID IS NOT NULL AND BillTo_ID IS NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set BP BillTo from BP=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set BP BillTo from BP=" + no);
 		//	Set Location from BPartner
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET C_BPartner_Location_ID=(SELECT MAX(C_BPartner_Location_ID) FROM C_BPartner_Location l")
@@ -357,7 +357,7 @@ public class ImportOrder extends SvrProcess
 			  .append("WHERE C_BPartner_ID IS NOT NULL AND C_BPartner_Location_ID IS NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set BP Location from BP=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set BP Location from BP=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_Order ")
 			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No BP Location, ' ")
@@ -383,7 +383,7 @@ public class ImportOrder extends SvrProcess
 			  .append("WHERE C_BPartner_ID IS NULL AND C_Country_ID IS NULL AND CountryCode IS NOT NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Country=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Country=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_Order ")
 			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Country, ' ")
@@ -401,7 +401,7 @@ public class ImportOrder extends SvrProcess
 			  .append("WHERE C_BPartner_ID IS NULL AND C_Region_ID IS NULL AND RegionName IS NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Region Default=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Region Default=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("Set C_Region_ID=(SELECT C_Region_ID FROM C_Region r")
@@ -410,7 +410,7 @@ public class ImportOrder extends SvrProcess
 			  .append("WHERE C_BPartner_ID IS NULL AND C_Region_ID IS NULL AND RegionName IS NOT NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Region=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Region=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Region, ' ")
@@ -429,21 +429,21 @@ public class ImportOrder extends SvrProcess
 			  .append("WHERE M_Product_ID IS NULL AND ProductValue IS NOT NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Product from Value=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Product from Value=" + no);
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET M_Product_ID=(SELECT MAX(M_Product_ID) FROM M_Product p")
 			  .append(" WHERE o.UPC=p.UPC AND o.AD_Client_ID=p.AD_Client_ID) ")
 			  .append("WHERE M_Product_ID IS NULL AND UPC IS NOT NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Product from UPC=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Product from UPC=" + no);
 		sql = new StringBuilder ("UPDATE I_Order o ")
 			  .append("SET M_Product_ID=(SELECT MAX(M_Product_ID) FROM M_Product p")
 			  .append(" WHERE o.SKU=p.SKU AND o.AD_Client_ID=p.AD_Client_ID) ")
 			  .append("WHERE M_Product_ID IS NULL AND SKU IS NOT NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Product fom SKU=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Product fom SKU=" + no);
 		sql = new StringBuilder ("UPDATE I_Order ")
 			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Product, ' ")
 			  .append("WHERE M_Product_ID IS NULL AND (ProductValue IS NOT NULL OR UPC IS NOT NULL OR SKU IS NOT NULL)")
@@ -458,7 +458,7 @@ public class ImportOrder extends SvrProcess
 			  .append(" WHERE o.ChargeName=c.Name AND o.AD_Client_ID=c.AD_Client_ID) ")
 			  .append("WHERE C_Charge_ID IS NULL AND ChargeName IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Charge=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Charge=" + no);
 		sql = new StringBuilder ("UPDATE I_Order ")
 				  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Charge, ' ")
 				  .append("WHERE C_Charge_ID IS NULL AND (ChargeName IS NOT NULL)")
@@ -483,7 +483,7 @@ public class ImportOrder extends SvrProcess
 			  .append("WHERE C_Tax_ID IS NULL AND TaxIndicator IS NOT NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Tax=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Tax=" + no);
 		sql = new StringBuilder ("UPDATE I_Order ")
 			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Tax, ' ")
 			  .append("WHERE C_Tax_ID IS NULL AND TaxIndicator IS NOT NULL")

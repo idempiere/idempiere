@@ -191,7 +191,7 @@ public class Merge
 	 */
 	public int mergeTable (String TableName, String ColumnName, int from_ID, int to_ID)
 	{
-		log.fine(TableName + "." + ColumnName + " - From=" + from_ID + ",To=" + to_ID);
+		if (log.isLoggable(Level.FINE)) log.fine(TableName + "." + ColumnName + " - From=" + from_ID + ",To=" + to_ID);
 		String sql = "UPDATE " + TableName
 			+ " SET " + ColumnName + "=" + to_ID
 			+ " WHERE " + ColumnName + "=" + from_ID;
@@ -228,7 +228,7 @@ public class Merge
 			m_trx.rollback();
 		
 		}
-		log.fine(count
+		if (log.isLoggable(Level.FINE)) log.fine(count
 				+ (delete ? " -Delete- " : " -Update- ") + TableName);
 		
 		
