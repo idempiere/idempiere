@@ -438,17 +438,18 @@ public class ProcessParameterPanel extends Panel implements
 
 			// Date
 			if (result instanceof Timestamp || result2 instanceof Timestamp) {
-				para.setP_Date((Timestamp) result);
-				if (editor2 != null && result2 != null)
+				if (result instanceof Timestamp)
+					para.setP_Date((Timestamp) result);
+				if (editor2 != null && result2 != null && result2 instanceof Timestamp)
 					para.setP_Date_To((Timestamp) result2);
 			}
 			// Integer
 			else if (result instanceof Integer || result2 instanceof Integer) {
-				if (result != null) {
+				if (result != null && result instanceof Integer) {
 					Integer ii = (Integer) result;
 					para.setP_Number(ii.intValue());
 				}
-				if (editor2 != null && result2 != null) {
+				if (editor2 != null && result2 != null && result2 instanceof Integer) {
 					Integer ii = (Integer) result2;
 					para.setP_Number_To(ii.intValue());
 				}
@@ -456,8 +457,9 @@ public class ProcessParameterPanel extends Panel implements
 			// BigDecimal
 			else if (result instanceof BigDecimal
 					|| result2 instanceof BigDecimal) {
-				para.setP_Number((BigDecimal) result);
-				if (editor2 != null && result2 != null)
+				if (result instanceof BigDecimal)
+					para.setP_Number((BigDecimal) result);
+				if (editor2 != null && result2 != null && result2 instanceof BigDecimal)
 					para.setP_Number_To((BigDecimal) result2);
 			}
 			// Boolean
