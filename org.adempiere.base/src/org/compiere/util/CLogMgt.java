@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -25,8 +27,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -52,15 +56,43 @@ import org.idempiere.distributed.IClusterService;
  */
 public class CLogMgt
 {
+	private static final CLogConsole CONSOLE_HANDLER = new CLogConsole();
+	private static final CLogErrorBuffer ERROR_BUFFER_HANDLER = new CLogErrorBuffer();
+	private static CLogFile fileHandler;
+	
+	private static final Map<String, Level> levelMap = new HashMap<String, Level>();
+	
+	private final static PropertyChangeListener listener = new PropertyChangeListener() {			
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName() == null) {
+				reInit();
+			}
+		}
+	};	
+	
+	
+	private static synchronized void reInit() {
+		CLogMgt.initialize(Ini.isClient());
+		if (!levelMap.isEmpty()) {
+			for(String key : levelMap.keySet()) {
+				setLevel(key, levelMap.get(key));
+			}
+		}
+		if (fileHandler != null) {
+			fileHandler.reopen();
+		}
+	}
+	
 	/**
 	 * 	Initialize Logging
 	 * 	@param isClient client
 	 */
-	public static void initialize(boolean isClient)
+	public static synchronized void initialize(boolean isClient)
 	{
+		LogManager mgr = LogManager.getLogManager();
 		if (isClient)
-		{
-			LogManager mgr = LogManager.getLogManager();
+		{			
 			try
 			{	//	Load Logging config from org.compiere.util.*properties
 				String fileName = "logClient.properties";
@@ -147,21 +179,22 @@ public class CLogMgt
 		}
 		//	Check Loggers
 		if (!handlerNames.contains(CLogErrorBuffer.class.getName()))
-			addHandler(new CLogErrorBuffer());
+			addHandler(ERROR_BUFFER_HANDLER);
 		if (isClient && !handlerNames.contains(CLogConsole.class.getName()))
-			addHandler(new CLogConsole());
+			addHandler(CONSOLE_HANDLER);
 		if (!handlerNames.contains(CLogFile.class.getName()))
 		{
-			Handler fh = new CLogFile(null, true, isClient);
-			addHandler(fh);
+			if (fileHandler == null)
+				fileHandler = new CLogFile(null, true, isClient);
+			
+			addHandler(fileHandler);
 		}
 
 		setFormatter(CLogFormatter.get());
 		setFilter(CLogFilter.get());
-	//	setLevel(s_currentLevel);
-	//	setLoggerLevel(Level.ALL, null);
-		//
-	//	System.out.println("Handlers=" + s_handlers.size() + ", Level=" + s_currentLevel);
+	
+		mgr.removePropertyChangeListener(listener);
+		mgr.addPropertyChangeListener(listener);
 	}	//	initialize
 
 
@@ -267,7 +300,7 @@ public class CLogMgt
 	 * 	Set Level for all handlers
 	 *	@param level log level
 	 */
-	public static void setLevel (String loggerName, Level level)
+	public static synchronized void setLevel (String loggerName, Level level)
 	{
 		if (level == null)
 			return;
@@ -293,6 +326,9 @@ public class CLogMgt
 				logger.setUseParentHandlers(true);
 			}
 		}
+		String key = loggerName == null ? "" : loggerName;
+		if (!levelMap.containsKey(key))
+			levelMap.put(key, level);
 	}	//	setHandlerLevel
 
 	/**

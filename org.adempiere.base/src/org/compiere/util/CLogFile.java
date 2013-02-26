@@ -61,6 +61,7 @@ public class CLogFile extends Handler
     private String		m_fileNameDate = "";
     /** Record Counter			*/
     private int			m_records = 0;
+	private File m_previousFile;
 
 	/**
 	 * 	Initialize
@@ -202,6 +203,25 @@ public class CLogFile extends Handler
 		initialize(m_idempiereHome, true, Ini.isClient());
 	}	//	rotateLog
 
+	public void reopen()
+	{
+		if (m_previousFile != null && m_previousFile.exists() && m_file == null && m_writer == null) 
+		{
+			try
+			{
+				m_file = m_previousFile;
+				m_writer = new FileWriter (m_file, true);
+				m_records = 0;
+			}
+			catch (Exception ex)
+			{
+				reportError ("writer", ex, ErrorManager.OPEN_FAILURE);
+				m_writer = null;
+				m_file = null;
+			}
+		}
+	}
+	
 	/**
 	 * 	Get File Name
 	 *	@return file name
@@ -337,7 +357,8 @@ public class CLogFile extends Handler
 			reportError ("close", ex, ErrorManager.CLOSE_FAILURE);
 		}
 		m_writer = null;
-		m_file = null;
+		m_previousFile = m_file;
+		m_file = null;		
 	}	//	close
 
 	/**
