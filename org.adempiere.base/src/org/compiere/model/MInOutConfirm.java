@@ -488,7 +488,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 				continue;
 			//
 			MInOutLine oldLine = confirmLine.getLine();
-			log.fine("Qty=" + differenceQty + ", Old=" + oldLine);
+			if (log.isLoggable(Level.FINE)) log.fine("Qty=" + differenceQty + ", Old=" + oldLine);
 			//
 			// Create Header
 			if (split == null)

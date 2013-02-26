@@ -475,7 +475,7 @@ public class WFActivity extends CPanel
 		selTable.autoSize(false);
 		display(null);
 
-		log.fine("#" + selTable.getModel().getRowCount() 
+		if (log.isLoggable(Level.FINE)) log.fine("#" + selTable.getModel().getRowCount() 
 			+ "(" + (System.currentTimeMillis()-start) + "ms)");
 		return selTable.getModel().getRowCount(); 
 	}	//	loadActivities
@@ -506,7 +506,7 @@ public class WFActivity extends CPanel
 	 */
 	public void display(IDColumn id)
 	{
-		log.fine("ID=" + id);
+		if (log.isLoggable(Level.FINE)) log.fine("ID=" + id);
 		m_activity = resetDisplay(id);
 		//
 		if (m_menu != null)

@@ -153,7 +153,7 @@ public class MDepreciation extends X_A_Depreciation
 		
 		if(CLogMgt.isLevelFinest())
 		{
-			log.fine("Entering: DepreciationType=" + depreciationType 
+			if (log.isLoggable(Level.FINE)) log.fine("Entering: DepreciationType=" + depreciationType 
 						+ ", assetwk=" + assetwk+ ", assetacct=" + assetAcct 
 						+ ", A_Current_Period=" + A_Current_Period //+ " (offset=" + offset + ")"
 						+ ", Accum_Dep=" + Accum_Dep
@@ -195,7 +195,7 @@ public class MDepreciation extends X_A_Depreciation
 		}
 		retValue = retValue.setScale(getPrecision(), RoundingMode.HALF_UP);
 		//
-		if(CLogMgt.isLevelFinest()) log.fine("Leaving: retValue=" + retValue);
+		if (log.isLoggable(Level.FINE)) log.fine("Leaving: retValue=" + retValue);
 		return retValue;
 	}	//	invoke
 
@@ -296,9 +296,7 @@ public class MDepreciation extends X_A_Depreciation
 			BigDecimal remainingPeriods = new BigDecimal(wk.getRemainingPeriods(A_Current_Period));
 			assetExp = remainingAmt.divide(remainingPeriods, getPrecision(), RoundingMode.HALF_UP);
 			// logging
-			if (CLogMgt.isLevelFinest()) {
-				log.fine("remainingAmt=" + remainingAmt + ", remainingPeriods=" + remainingPeriods+ " => assetExp=" + assetExp);
-			}
+			if (log.isLoggable(Level.FINE)) log.fine("remainingAmt=" + remainingAmt + ", remainingPeriods=" + remainingPeriods+ " => assetExp=" + assetExp);
 		}
 		
 		return assetExp;
@@ -345,7 +343,7 @@ public class MDepreciation extends X_A_Depreciation
 		//~ BigDecimal DUR = BD_100.multiply(
 		
 		// logging
-		if (CLogMgt.isLevelFinest()) {
+		if (log.isLoggable(Level.FINE))  {
 			log.fine("assetAmt=" + assetAmt + ", A_Life_Period=" + A_Life_Period);
 			log.fine("A_Current_Year=" + A_Current_Year + ", A_Life_Year=" + A_Life_Year);
 			//log.fine("coef_K=" + coef_K + ", coef_sl=" + coef_sl + ", coef_ad1=" + coef_ad1); //commented out by @win
@@ -397,7 +395,7 @@ public class MDepreciation extends X_A_Depreciation
 		BigDecimal assetExp = getPeriodExp(A_Current_Period, amtPerYear);
 		
 		/** Depreciation refund */
-		if (CLogMgt.isLevelFinest()) log.fine("assetExp=" + assetExp);
+		if (log.isLoggable(Level.FINE)) log.fine("assetExp=" + assetExp);
 		return assetExp;
 	}
 	
@@ -455,10 +453,7 @@ public class MDepreciation extends X_A_Depreciation
 			assetExp = assetExp.add(adj).setScale(getPrecision(), RoundingMode.HALF_UP);
 		}
 		
-		if (CLogMgt.isLevelFinest())
-		{
-			log.fine("amtPerYear=" + amtPerYear + ", amtPerMonth=" + amtPerMonth + ", adj=" + adj + " => assetExp=" + assetExp);
-		}
+		if (log.isLoggable(Level.FINE)) log.fine("amtPerYear=" + amtPerYear + ", amtPerMonth=" + amtPerMonth + ", adj=" + adj + " => assetExp=" + assetExp);
 		return assetExp;
 	}
 

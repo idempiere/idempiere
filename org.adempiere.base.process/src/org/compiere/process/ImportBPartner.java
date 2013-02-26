@@ -103,7 +103,7 @@ implements ImportProcess
 			sql = new StringBuilder ("DELETE I_BPartner ")
 					.append("WHERE I_IsImported='Y'").append(clientCheck);
 			no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-			log.fine("Delete Old Impored =" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Impored =" + no);
 		}
 
 		//	Set Client, Org, IsActive, Created/Updated
@@ -119,7 +119,7 @@ implements ImportProcess
 						.append(" I_IsImported = 'N' ")
 						.append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Reset=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Reset=" + no);
 
 		ModelValidationEngine.get().fireImportValidate(this, null, null, ImportValidator.TIMING_BEFORE_VALIDATE);
 		
@@ -130,7 +130,7 @@ implements ImportProcess
 		sql.append("WHERE GroupValue IS NULL AND C_BP_Group_ID IS NULL")
 				.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Set Group Default=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Group Default=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_BPartner i ")
 				.append("SET C_BP_Group_ID=(SELECT C_BP_Group_ID FROM C_BP_Group g")
@@ -138,7 +138,7 @@ implements ImportProcess
 				.append("WHERE C_BP_Group_ID IS NULL")
 				.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Set Group=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Group=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_BPartner ")
 				.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Group, ' ")
@@ -164,7 +164,7 @@ implements ImportProcess
 				.append("WHERE C_Country_ID IS NULL")
 				.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Set Country=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Country=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_BPartner ")
 				.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Country, ' ")
@@ -181,7 +181,7 @@ implements ImportProcess
 		sql.append("WHERE RegionName IS NULL AND C_Region_ID IS NULL")
 				.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Set Region Default=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Region Default=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_BPartner i ")
 				.append("Set C_Region_ID=(SELECT C_Region_ID FROM C_Region r")
@@ -190,7 +190,7 @@ implements ImportProcess
 				.append("WHERE C_Region_ID IS NULL")
 				.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Set Region=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Region=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_BPartner i ")
 				.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Region, ' ")
@@ -208,7 +208,7 @@ implements ImportProcess
 				.append("WHERE C_Greeting_ID IS NULL AND BPContactGreeting IS NOT NULL")
 				.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Set Greeting=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Greeting=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_BPartner i ")
 				.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Greeting, ' ")
@@ -224,7 +224,7 @@ implements ImportProcess
 				.append("WHERE i.EMail=u.EMail AND u.AD_Client_ID=i.AD_Client_ID) ")
 				.append("WHERE i.EMail IS NOT NULL AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Found EMail User=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Found EMail User=" + no);
 
 		//	Existing BPartner ? Match Value
 		sql = new StringBuilder ("UPDATE I_BPartner i ")
@@ -233,7 +233,7 @@ implements ImportProcess
 				.append("WHERE C_BPartner_ID IS NULL AND Value IS NOT NULL")
 				.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Found BPartner=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Found BPartner=" + no);
 
 		//	Existing Contact ? Match Name
 		sql = new StringBuilder ("UPDATE I_BPartner i ")
@@ -242,7 +242,7 @@ implements ImportProcess
 				.append("WHERE C_BPartner_ID IS NOT NULL AND AD_User_ID IS NULL AND ContactName IS NOT NULL")
 				.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Found Contact=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Found Contact=" + no);
 
 //		Existing Location ? Exact Match
 		sql = new StringBuilder ("UPDATE I_BPartner i ")
@@ -259,7 +259,7 @@ implements ImportProcess
 				.append("WHERE C_BPartner_ID IS NOT NULL AND C_BPartner_Location_ID IS NULL")
 				.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Found Location=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Found Location=" + no);
 
 		//	Interest Area
 		sql = new StringBuilder ("UPDATE I_BPartner i ") 
@@ -268,7 +268,7 @@ implements ImportProcess
 				.append("WHERE R_InterestArea_ID IS NULL AND InterestAreaName IS NOT NULL")
 				.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Set Interest Area=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Interest Area=" + no);
 
 		// Value is mandatory error
 		sql = new StringBuilder ("UPDATE I_BPartner ")
@@ -318,7 +318,7 @@ implements ImportProcess
 						.append(", C_BPartner_ID=").append(impBP.getC_BPartner_ID())
 						.append(", C_BPartner_Location_ID=").append(impBP.getC_BPartner_Location_ID())
 						.append(", AD_User_ID=").append(impBP.getAD_User_ID());
-				log.fine(msglog.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 
 
 				if ( ! New_BPValue.equals(Old_BPValue)) {

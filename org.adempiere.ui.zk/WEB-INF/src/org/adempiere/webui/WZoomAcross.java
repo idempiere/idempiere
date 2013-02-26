@@ -105,7 +105,7 @@ public class WZoomAcross
 				windowID)) {
 
 			if (zoomInfo.query.getRecordCount() == 0) {
-				log.fine("No target records for destination "
+				if (log.isLoggable(Level.FINE)) log.fine("No target records for destination "
 						+ zoomInfo.destinationDisplay);
 				continue;
 			}

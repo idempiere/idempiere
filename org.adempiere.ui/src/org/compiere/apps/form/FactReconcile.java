@@ -120,7 +120,7 @@ public class FactReconcile {
 		
 		sql.append(" ORDER BY 1,5,3,6");
 		
-		log.fine("SQL=" + sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine("SQL=" + sql.toString());
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

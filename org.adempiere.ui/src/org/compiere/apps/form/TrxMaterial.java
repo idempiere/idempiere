@@ -125,7 +125,7 @@ public class TrxMaterial {
 		int lineID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "M_InOutLine_ID");
 		if (lineID != 0)
 		{
-			log.fine("M_InOutLine_ID=" + lineID);
+			if (log.isLoggable(Level.FINE)) log.fine("M_InOutLine_ID=" + lineID);
 			if (Env.getContext(Env.getCtx(), m_WindowNo, "MovementType").startsWith("C"))
 				AD_Window_ID = WINDOW_SHIPMENT_CUSTOMER;     //  Customer
 			else
@@ -138,7 +138,7 @@ public class TrxMaterial {
 			lineID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "M_InventoryLine_ID");
 			if (lineID != 0)
 			{
-				log.fine("M_InventoryLine_ID=" + lineID);
+				if (log.isLoggable(Level.FINE)) log.fine("M_InventoryLine_ID=" + lineID);
 				AD_Window_ID = WINDOW_PHYSICALINVENTORY;
 				ColumnName = "M_Inventory_ID";
 				SQL = "SELECT M_Inventory_ID FROM M_InventoryLine WHERE M_InventoryLine_ID=?";
@@ -148,7 +148,7 @@ public class TrxMaterial {
 				lineID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "M_MovementLine_ID");
 				if (lineID != 0)
 				{
-					log.fine("M_MovementLine_ID=" + lineID);
+					if (log.isLoggable(Level.FINE)) log.fine("M_MovementLine_ID=" + lineID);
 					AD_Window_ID = WINDOW_INVENTORYMOVE;
 					ColumnName = "M_Movement_ID";
 					SQL = "SELECT M_Movement_ID FROM M_MovementLine WHERE M_MovementLine_ID=?";
@@ -158,13 +158,13 @@ public class TrxMaterial {
 					lineID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "M_ProductionLine_ID");
 					if (lineID != 0)
 					{
-						log.fine("M_ProductionLine_ID=" + lineID);
+						if (log.isLoggable(Level.FINE)) log.fine("M_ProductionLine_ID=" + lineID);
 						AD_Window_ID = WINDOW_PRODUCTION;
 						ColumnName = "M_Production_ID";
 						SQL = "SELECT M_Production_ID FROM M_ProductionLine WHERE M_ProductionLine_ID=?";
 					}
 					else
-						log.fine("Not found WindowNo=" + m_WindowNo);
+						if (log.isLoggable(Level.FINE)) log.fine("Not found WindowNo=" + m_WindowNo);
 				}
 			}
 		}

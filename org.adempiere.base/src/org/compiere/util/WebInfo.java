@@ -258,7 +258,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getOrders
 
@@ -299,7 +299,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("C_Order_ID=" + m_id + " - " + retValue);
+		if (log.isLoggable(Level.FINE)) log.fine("C_Order_ID=" + m_id + " - " + retValue);
 		return retValue;
 	}	//	getOrder
 
@@ -342,7 +342,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getShipments
 
@@ -414,7 +414,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("Own=" + own +" #" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("Own=" + own +" #" + list.size());
 		return list;
 	}	//	getRequests
 
@@ -452,7 +452,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("R_Request_ID=" + m_id + " - " + retValue);
+		if (log.isLoggable(Level.FINE)) log.fine("R_Request_ID=" + m_id + " - " + retValue);
 		return retValue;
 	}	//	getRequest
 
@@ -486,7 +486,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getRequestTypes
 
@@ -518,7 +518,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("R_RequestType_ID=" + m_id + " - " + retValue);
+		if (log.isLoggable(Level.FINE)) log.fine("R_RequestType_ID=" + m_id + " - " + retValue);
 		return retValue;
 	}	//	getRequestType
 	
@@ -561,7 +561,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getInvoices
 
@@ -603,7 +603,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("C_Invoice_ID=" + m_id + " - " + retValue);
+		if (log.isLoggable(Level.FINE)) log.fine("C_Invoice_ID=" + m_id + " - " + retValue);
 		return retValue;
 	}	//	getInvoice
 
@@ -644,7 +644,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getPayments
 
@@ -689,7 +689,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getAssets
 
@@ -730,7 +730,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getInterests
 
@@ -762,7 +762,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getAdvertisement
 
@@ -793,7 +793,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getAllAds
 
@@ -832,7 +832,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getCommissionedInvoices
 
@@ -867,7 +867,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getCommissionRuns
 
@@ -902,7 +902,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getNotes
 
@@ -937,7 +937,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("AD_Note_ID=" + m_id + " - " + retValue);
+		if (log.isLoggable(Level.FINE)) log.fine("AD_Note_ID=" + m_id + " - " + retValue);
 		return retValue;
 	}	//	getNote
 
@@ -972,7 +972,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getActivities
 
@@ -1007,7 +1007,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("AD_WF_Activity_ID=" + m_id + " - " + retValue);
+		if (log.isLoggable(Level.FINE)) log.fine("AD_WF_Activity_ID=" + m_id + " - " + retValue);
 		return retValue;
 	}	//	getActivity
 
@@ -1042,7 +1042,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getExpenses
 
@@ -1078,7 +1078,7 @@ public class WebInfo
 		}
 		if (retValue == null)
 			retValue = new MTimeExpense (m_ctx, 0, null);
-		log.fine("S_TimeExpense_ID=" + m_id + " - " + retValue);
+		if (log.isLoggable(Level.FINE)) log.fine("S_TimeExpense_ID=" + m_id + " - " + retValue);
 		return retValue;
 	}	//	getExpense
 
@@ -1113,7 +1113,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getRegistrations
 
@@ -1150,7 +1150,7 @@ public class WebInfo
 		//	new registration
 		if (retValue == null)
 			retValue = new MRegistration (m_ctx, 0, null);
-		log.fine("A_Registration_ID=" + m_id + " - " + retValue);
+		if (log.isLoggable(Level.FINE)) log.fine("A_Registration_ID=" + m_id + " - " + retValue);
 		return retValue;
 	}	//	getRegistration
 
@@ -1193,7 +1193,7 @@ public class WebInfo
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + list.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + list.size());
 		return list;
 	}	//	getRfQs
 
@@ -1245,7 +1245,7 @@ public class WebInfo
 			}
 		}
 		//
-		log.fine("C_RfQResponse_ID=" + m_id + " - " + retValue);
+		if (log.isLoggable(Level.FINE)) log.fine("C_RfQResponse_ID=" + m_id + " - " + retValue);
 		return retValue;
 	}	//	getRfQResponse
 	

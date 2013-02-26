@@ -333,7 +333,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 			}
 		}
 		confirmPanel.getButton("Ok").setEnabled(enabled);
-		log.fine("M_AttributeSetInstance_ID=" + m_M_AttributeSetInstance_ID 
+		if (log.isLoggable(Level.FINE)) log.fine("M_AttributeSetInstance_ID=" + m_M_AttributeSetInstance_ID 
 			+ " - " + m_M_AttributeSetInstanceName
 			+ "; M_Locator_ID=" + m_M_Locator_ID);
 	}	//	enableButtons

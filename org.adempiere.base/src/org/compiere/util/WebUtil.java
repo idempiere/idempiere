@@ -380,7 +380,7 @@ public final class WebUtil
 		}
 		catch (Exception e)
 		{
-			log.fine(parameter + "=" + data + " - " + e);
+			if (log.isLoggable(Level.FINE)) log.fine(parameter + "=" + data + " - " + e);
 		}
 		return Env.ZERO;
 	}   //  getParameterAsBD
@@ -652,7 +652,7 @@ public final class WebUtil
 		if (out.checkError())
 			log.log(Level.SEVERE, "Error writing");
 		out.close();
-		log.fine(forwardURL + " - " + title);
+		if (log.isLoggable(Level.FINE)) log.fine(forwardURL + " - " + title);
 	}	//	createForwardPage
 
 
@@ -930,7 +930,7 @@ public final class WebUtil
 		}
 		if (realIndex < 0)
 		{
-			log.fine("No Attachment Entry for Index=" 
+			if (log.isLoggable(Level.FINE)) log.fine("No Attachment Entry for Index=" 
 				+ attachmentIndex + " - " + attachment);
 			return "Attachment Entry not found";
 		}
@@ -938,7 +938,7 @@ public final class WebUtil
 		MAttachmentEntry entry = entries[realIndex];
 		if (entry.getData() == null)
 		{
-			log.fine("Empty Attachment Entry for Index=" 
+			if (log.isLoggable(Level.FINE)) log.fine("Empty Attachment Entry for Index=" 
 				+ attachmentIndex + " - " + attachment);
 			return "Attachment Entry empty";
 		}
@@ -953,7 +953,7 @@ public final class WebUtil
 			response.setBufferSize(bufferSize);
 			response.setContentLength(fileLength);
 			//
-			log.fine(entry.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(entry.toString());
 			long time = System.currentTimeMillis();		//	timer start
 			//
 			ServletOutputStream out = response.getOutputStream ();
@@ -1001,7 +1001,7 @@ public final class WebUtil
 			response.setBufferSize(bufferSize);
 			response.setContentLength(fileLength);
 			//
-			log.fine(file.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(file.toString());
 			long time = System.currentTimeMillis();		//	timer start
 			//	Get Data
 			FileInputStream in = new FileInputStream(file);

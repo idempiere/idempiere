@@ -19,6 +19,7 @@ package org.compiere.acct;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCostDetail;
@@ -69,7 +70,7 @@ public class Doc_Movement extends Doc
 		m_DocStatus = move.getDocStatus();
 		//	Contained Objects
 		p_lines = loadLines(move);
-		log.fine("Lines=" + p_lines.length);
+		if (log.isLoggable(Level.FINE)) log.fine("Lines=" + p_lines.length);
 		return null;
 	}   //  loadDocumentDetails
 
@@ -88,7 +89,7 @@ public class Doc_Movement extends Doc
 			DocLine docLine = new DocLine (line, this);
 			docLine.setQty(line.getMovementQty(), false);
 			docLine.setReversalLine_ID(line.getReversalLine_ID());
-			log.fine(docLine.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
 			list.add (docLine);
 		}
 

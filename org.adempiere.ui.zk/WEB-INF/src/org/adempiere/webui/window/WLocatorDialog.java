@@ -327,13 +327,13 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 			pstmt = null;
 		}
 
-		log.fine("Warehouses=" + lstWarehouse.getItemCount());
+		if (log.isLoggable(Level.FINE)) log.fine("Warehouses=" + lstWarehouse.getItemCount());
 
 		//	Load existing Locators
 		
 		m_mLocator.fillComboBox(m_mandatory, true, true, false, false); // IDEMPIERE 90
 		
-		log.fine(m_mLocator.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(m_mLocator.toString());
 		
 		for (int i = 0; i < m_mLocator.getSize(); i++)
 		{

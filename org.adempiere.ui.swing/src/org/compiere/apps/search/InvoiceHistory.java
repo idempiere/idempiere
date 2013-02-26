@@ -261,7 +261,7 @@ public class InvoiceHistory extends CDialog
 	 */
 	private Vector<Vector<Object>> fillTable (String sql, int parameter)
 	{
-		log.fine(sql + "; Parameter=" + parameter);
+		if (log.isLoggable(Level.FINE)) log.fine(sql + "; Parameter=" + parameter);
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -306,7 +306,7 @@ public class InvoiceHistory extends CDialog
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + data.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + data.size());
 		return data;
 	}	//	fillTable
 
@@ -316,7 +316,7 @@ public class InvoiceHistory extends CDialog
 	 */
 	private void fillLabel (String sql, int parameter)
 	{
-		log.fine(sql + "; Parameter=" + parameter);
+		if (log.isLoggable(Level.FINE)) log.fine(sql + "; Parameter=" + parameter);
 		String retValue = DB.getSQLValueString(null, sql, parameter);
 		if (retValue != null)
 			label.setText(retValue);
@@ -521,7 +521,7 @@ public class InvoiceHistory extends CDialog
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("#" + data.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + data.size());
 
 		//  Table
 		m_modelUnconfirmed = new DefaultTableModel(data, columnNames); 

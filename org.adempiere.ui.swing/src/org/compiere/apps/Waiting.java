@@ -86,7 +86,7 @@ public class Waiting extends CDialog
 	 */
 	private void init (String text, boolean canNotWait, int timer)
 	{
-		log.fine(text + " - Sec=" + timer);
+		if (log.isLoggable(Level.FINE)) log.fine(text + " - Sec=" + timer);
 		//  don't show if 1 sec average
 		if (timer == 1)
 			return;

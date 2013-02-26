@@ -68,7 +68,7 @@ public class Doc_Cash extends Doc
 
 		//	Contained Objects
 		p_lines = loadLines(cash, cb);
-		log.fine("Lines=" + p_lines.length);
+		if (log.isLoggable(Level.FINE)) log.fine("Lines=" + p_lines.length);
 		return null;
 	}   //  loadDocumentDetails
 
@@ -117,7 +117,7 @@ public class Doc_Cash extends Doc
 		}
 		sb.append("]");
 		//
-		log.fine(toString() + " Balance=" + retValue + sb.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(toString() + " Balance=" + retValue + sb.toString());
 	//	return retValue;
 		return Env.ZERO;    //  Lines are balanced
 	}   //  getBalance

@@ -308,7 +308,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 		//
 		String dtBT = dt.getDocBaseType();
 		String c_dtBT = c_dt.getDocBaseType();
-		log.fine(dtBT + " -> " + c_dtBT);
+		if (log.isLoggable(Level.FINE)) log.fine(dtBT + " -> " + c_dtBT);
 
 		//	SO / PO
 		if ((MDocType.DOCBASETYPE_SalesOrder.equals(dtBT) && MDocType.DOCBASETYPE_PurchaseOrder.equals(c_dtBT))

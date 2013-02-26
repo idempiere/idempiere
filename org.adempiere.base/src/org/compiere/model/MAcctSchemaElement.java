@@ -512,7 +512,7 @@ public final class MAcctSchemaElement extends X_C_AcctSchema_Element
 			.append(" WHERE ").append(element).append(" IS NULL AND C_AcctSchema_ID=").append(getC_AcctSchema_ID());
 		int noF = DB.executeUpdate(sql.toString(), get_TrxName());
 		//
-		log.fine("ValidCombination=" + noC + ", Fact=" + noF);
+		if (log.isLoggable(Level.FINE)) log.fine("ValidCombination=" + noC + ", Fact=" + noF);
 	}	//	updateData
 	
 	@Override

@@ -124,7 +124,7 @@ public class MContactInterest extends X_R_ContactInterest
 	{
 		if (OptOutDate == null)
 			OptOutDate = new Timestamp(System.currentTimeMillis());
-		log.fine("" + OptOutDate);
+		if (log.isLoggable(Level.FINE)) log.fine("" + OptOutDate);
 		super.setOptOutDate(OptOutDate);
 		setIsActive(false);
 	}	//	setOptOutDate
@@ -156,7 +156,7 @@ public class MContactInterest extends X_R_ContactInterest
 	{
 		if (SubscribeDate == null)
 			SubscribeDate = new Timestamp(System.currentTimeMillis());
-		log.fine("" + SubscribeDate);
+		if (log.isLoggable(Level.FINE)) log.fine("" + SubscribeDate);
 		super.setSubscribeDate(SubscribeDate);
 		super.setOptOutDate(null);
 		setIsActive(true);

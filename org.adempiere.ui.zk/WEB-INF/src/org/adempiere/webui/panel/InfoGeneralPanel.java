@@ -463,7 +463,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		String s = f.getText().toUpperCase();
 		if (!s.endsWith("%"))
 			s += "%";
-		log.fine( "String=" + s);
+		if (log.isLoggable(Level.FINE)) log.fine( "String=" + s);
 		return s;
 	}   //  getSQLText
 

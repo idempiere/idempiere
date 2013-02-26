@@ -308,7 +308,7 @@ public final class ProcessUtil {
 	public static MWFProcess startWorkFlow(Properties ctx, ProcessInfo pi, int AD_Workflow_ID) {
 		MWorkflow wf = MWorkflow.get (ctx, AD_Workflow_ID);
 		MWFProcess wfProcess = wf.start(pi, pi.getTransactionName());
-		log.fine(pi.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(pi.toString());
 		return wfProcess;
 	}
 

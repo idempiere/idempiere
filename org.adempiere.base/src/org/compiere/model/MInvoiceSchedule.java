@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.TimeUtil;
@@ -113,7 +114,7 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule
 			if (cutoff.after(today))
 				cutoff.add(Calendar.DAY_OF_YEAR, -7);
 			Timestamp cutoffDate = new Timestamp (cutoff.getTimeInMillis());
-			log.fine("canInvoice - Date=" + xDate + " > Cutoff=" + cutoffDate 
+			if (log.isLoggable(Level.FINE)) log.fine("canInvoice - Date=" + xDate + " > Cutoff=" + cutoffDate 
 				+ " - " + xDate.after(cutoffDate));
 			if (xDate.after(cutoffDate))
 				return false;
@@ -123,7 +124,7 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule
 			if (invoice.after(today))
 				invoice.add(Calendar.DAY_OF_YEAR, -7);
 			Timestamp invoiceDate = new Timestamp (invoice.getTimeInMillis());
-			log.fine("canInvoice - Date=" + xDate + " > Invoice=" + invoiceDate 
+			if (log.isLoggable(Level.FINE)) log.fine("canInvoice - Date=" + xDate + " > Invoice=" + invoiceDate 
 				+ " - " + xDate.after(invoiceDate));
 			if (xDate.after(invoiceDate))
 				return false;
@@ -141,7 +142,7 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule
 				if (cutoff.after(today))
 					cutoff.add(Calendar.MONTH, -1);
 				Timestamp cutoffDate = new Timestamp (cutoff.getTimeInMillis());
-				log.fine("canInvoice - Date=" + xDate + " > Cutoff=" + cutoffDate 
+				if (log.isLoggable(Level.FINE)) log.fine("canInvoice - Date=" + xDate + " > Cutoff=" + cutoffDate 
 					+ " - " + xDate.after(cutoffDate));
 				if (xDate.after(cutoffDate))
 					return false;
@@ -151,7 +152,7 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule
 			if (invoice.after(today))
 				invoice.add(Calendar.MONTH, -1);
 			Timestamp invoiceDate = new Timestamp (invoice.getTimeInMillis());
-			log.fine("canInvoice - Date=" + xDate + " > Invoice=" + invoiceDate 
+			if (log.isLoggable(Level.FINE)) log.fine("canInvoice - Date=" + xDate + " > Invoice=" + invoiceDate 
 				+ " - " + xDate.after(invoiceDate));
 			if (xDate.after(invoiceDate))
 				return false;

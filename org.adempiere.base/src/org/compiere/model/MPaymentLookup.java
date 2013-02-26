@@ -187,7 +187,7 @@ public class MPaymentLookup extends Lookup implements Serializable {
 				log.severe(getColumnName() + " - Cannot Parse=" + whereClause);
 			else
 			{
-				log.fine(getColumnName() + " - Parsed: " + validated);
+				if (log.isLoggable(Level.FINE)) log.fine(getColumnName() + " - Parsed: " + validated);
 				return validated;
 			}
 		}

@@ -21,6 +21,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import javax.swing.Icon;
 import javax.swing.SwingConstants;
@@ -124,7 +125,7 @@ public class PosKeyPanel extends CPanel implements ActionListener {
 		
 		int buttons = 0;
 		
-		log.fine( "PosSubFunctionKeys.init - NoKeys=" + noKeys 
+		if (log.isLoggable(Level.FINE)) log.fine( "PosSubFunctionKeys.init - NoKeys=" + noKeys 
 			+ ", Cols=" + cols);
 		//	Content
 		CPanel content = new CPanel (new MigLayout("fill, wrap " + Math.max(cols, 3)));
@@ -157,7 +158,7 @@ public class PosKeyPanel extends CPanel implements ActionListener {
 			
 			buttonHTML.append(key.getName());
 			buttonHTML.append("</p></html>");
-			log.fine( "#" + map.size() + " - " + keyColor); 
+			if (log.isLoggable(Level.FINE)) log.fine( "#" + map.size() + " - " + keyColor); 
 			CButton button = new CButton(buttonHTML.toString());
 			button.setBackground(keyColor);
 			button.setFont(keyFont);

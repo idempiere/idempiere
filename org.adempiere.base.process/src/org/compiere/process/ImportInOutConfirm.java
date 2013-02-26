@@ -80,7 +80,7 @@ public class ImportInOutConfirm extends SvrProcess
 			sql = new StringBuilder ("DELETE I_InOutLineConfirm ")
 				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
-			log.fine("Delete Old Impored =" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Impored =" + no);
 		}
 
 		//	Set IsActive, Created/Updated
@@ -102,7 +102,7 @@ public class ImportInOutConfirm extends SvrProcess
 			.append("WHERE (AD_Client_ID IS NULL OR AD_Client_ID=0)")
 			.append(" AND I_IsImported<>'Y'");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Client from Value=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Client from Value=" + no);
 
 		//	Error Confirmation Line
 		sql = new StringBuilder ("UPDATE I_InOutLineConfirm i ")

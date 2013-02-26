@@ -17,8 +17,8 @@
 package org.compiere.install;
 
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Language;
@@ -92,7 +92,7 @@ public class TranslationHandler extends DefaultHandler
 			if (!m_isBaseLanguage)
 				m_updateSQL += "_Trl";
 			m_updateSQL += " SET ";
-			log.fine("AD_Language=" + m_AD_Language + ", Base=" + m_isBaseLanguage + ", TableName=" + m_TableName);
+			if (log.isLoggable(Level.FINE)) log.fine("AD_Language=" + m_AD_Language + ", Base=" + m_isBaseLanguage + ", TableName=" + m_TableName);
 		}
 		else if (qName.equals(Translation.XML_ROW_TAG))
 		{
@@ -167,8 +167,7 @@ public class TranslationHandler extends DefaultHandler
 			int no = DB.executeUpdate(m_sql.toString(), null);
 			if (no == 1)
 			{
-				if (CLogMgt.isLevelFinest())
-					log.fine(m_sql.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(m_sql.toString());
 				m_updateCount++;
 			}
 			else if (no == 0)

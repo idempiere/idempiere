@@ -191,7 +191,7 @@ public class PP_Optimal extends PaymentProcessor
 	public boolean processCC ()
 		throws IllegalArgumentException
 	{
-		log.fine(p_mbap.getHostAddress() + ":" + p_mbap.getHostPort() + ", Timeout=" + getTimeout()
+		if (log.isLoggable(Level.FINE)) log.fine(p_mbap.getHostAddress() + ":" + p_mbap.getHostPort() + ", Timeout=" + getTimeout()
 			+ "; Proxy=" + p_mbap.getProxyAddress() + ":" + p_mbap.getProxyPort() + " " + p_mbap.getProxyLogon() + " " + p_mbap.getProxyPassword());
 		setEncoded(true);
 
@@ -236,7 +236,7 @@ public class PP_Optimal extends PaymentProcessor
 		
 		try
 		{
-			log.fine("-> " + param.toString());
+			if (log.isLoggable(Level.FINE)) log.fine("-> " + param.toString());
 			Properties prop = getConnectPostProperties(urlString, param.toString());
 			m_ok = prop != null;
 			//	authCode=, authTime=1132330817, subErrorString=Card has expired: 04/04, errCode=91, clientVersion=1.1, status=E, subError=0, actionCode=CP, errString=Invalid Payment Information. Please verify request parameters.
@@ -268,7 +268,7 @@ public class PP_Optimal extends PaymentProcessor
 				@SuppressWarnings("unused")
 				String cvdInfo = prop.getProperty(CVD_INFO);
 				
-				log.fine("<- Status=" + status + ", AuthCode=" + authCode + ", Error=" + errString);
+				if (log.isLoggable(Level.FINE)) log.fine("<- Status=" + status + ", AuthCode=" + authCode + ", Error=" + errString);
 			}
 			if (!m_ok)
 				log.warning("<- " + prop);

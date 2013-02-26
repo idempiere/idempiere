@@ -192,7 +192,7 @@ public class VColor extends CButton
 	private CompiereColor getAdempiereColor()
 	{
 		Integer AD_Color_ID = (Integer)m_mTab.getValue("AD_Color_ID");
-		log.fine("AD_Color_ID=" + AD_Color_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("AD_Color_ID=" + AD_Color_ID);
 		CompiereColor cc = null;
 
 		//  Color Type
@@ -236,7 +236,7 @@ public class VColor extends CButton
 		else
 			return null;
 
-		log.fine("AdempiereColor=" + cc);
+		if (log.isLoggable(Level.FINE)) log.fine("AdempiereColor=" + cc);
 		return cc;
 	}   //  getAdempiereColor
 

@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -444,7 +445,7 @@ public class MContainer extends X_CM_Container
 					", 0, 999)");
 			int no = DB.executeUpdate (sb.toString (), get_TrxName ());
 			if (no > 0)
-				log.fine ("#" + no + " - TreeType=CMC");
+				if (log.isLoggable(Level.FINE)) log.fine ("#" + no + " - TreeType=CMC");
 			else
 				log.warning ("#" + no + " - TreeType=CMC");
 			return no > 0;
@@ -488,7 +489,7 @@ public class MContainer extends X_CM_Container
 				" AND AD_Tree_ID=").append (getAD_Tree_ID ());
 		int no = DB.executeUpdate (sb.toString (), get_TrxName ());
 		if (no > 0)
-			log.fine ("#" + no + " - TreeType=CMC");
+			if (log.isLoggable(Level.FINE)) log.fine ("#" + no + " - TreeType=CMC");
 		else
 			log.warning ("#" + no + " - TreeType=CMC");
 		return no > 0;
@@ -511,7 +512,7 @@ public class MContainer extends X_CM_Container
 		int no = DB.executeUpdate (sb.toString (), get_TrxName ());
 		// If 0 than there is nothing to delete which is okay.
 		if (no > 0)
-			log.fine ("#" + no + " - TreeType=CMC");
+			if (log.isLoggable(Level.FINE)) log.fine ("#" + no + " - TreeType=CMC");
 		else
 			log.warning ("#" + no + " - TreeType=CMC");
 		return true;

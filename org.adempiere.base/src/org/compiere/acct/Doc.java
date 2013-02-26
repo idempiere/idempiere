@@ -916,7 +916,7 @@ public abstract class Doc
 		//
 		boolean retValue = getBalance().signum() == 0;
 		if (retValue)
-			log.fine("Yes " + toString());
+			if (log.isLoggable(Level.FINE)) log.fine("Yes " + toString());
 		else
 			log.warning("NO - " + toString());
 		return retValue;
@@ -932,7 +932,7 @@ public abstract class Doc
 		//  No Currency in document
 		if (getC_Currency_ID() == NO_CURRENCY)
 		{
-			log.fine("(none) - " + toString());
+			if (log.isLoggable(Level.FINE)) log.fine("(none) - " + toString());
 			return true;
 		}
 		// Journal from a different acct schema
@@ -954,7 +954,7 @@ public abstract class Doc
 		//  just one and the same
 		if (set.size() == 1 && acctSchema.getC_Currency_ID() == getC_Currency_ID())
 		{
-			log.fine("(same) Cur=" + getC_Currency_ID() + " - " + toString());
+			if (log.isLoggable(Level.FINE)) log.fine("(same) Cur=" + getC_Currency_ID() + " - " + toString());
 			return true;
 		}
 
@@ -975,11 +975,11 @@ public abstract class Doc
 						+ " - " + toString());
 				}
 				else
-					log.fine("From C_Currency_ID=" + C_Currency_ID);
+					if (log.isLoggable(Level.FINE)) log.fine("From C_Currency_ID=" + C_Currency_ID);
 			}
 		}
 
-		log.fine("Convertible=" + convertible + ", AcctSchema C_Currency_ID=" + acctSchema.getC_Currency_ID() + " - " + toString());
+		if (log.isLoggable(Level.FINE)) log.fine("Convertible=" + convertible + ", AcctSchema C_Currency_ID=" + acctSchema.getC_Currency_ID() + " - " + toString());
 		return convertible;
 	}	//	isConvertible
 
@@ -1009,7 +1009,7 @@ public abstract class Doc
 		else
 			m_C_Period_ID = -1;
 		//
-		log.fine(	// + AD_Client_ID + " - "
+		if (log.isLoggable(Level.FINE)) log.fine(	// + AD_Client_ID + " - "
 			getDateAcct() + " - " + getDocumentType() + " => " + m_C_Period_ID);
 	}   //  setC_Period_ID
 
@@ -1033,7 +1033,7 @@ public abstract class Doc
 		setPeriod();
 		boolean open = m_C_Period_ID > 0;
 		if (open)
-			log.fine("Yes - " + toString());
+			if (log.isLoggable(Level.FINE)) log.fine("Yes - " + toString());
 		else
 			log.warning("NO - " + toString());
 		return open;

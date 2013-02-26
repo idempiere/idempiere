@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.server;
 
+import java.util.logging.Level;
+
 import org.compiere.util.CLogger;
 
 /**
@@ -79,12 +81,12 @@ public class AdempiereServerGroup extends ThreadGroup
 	 */
 	public void dump ()
 	{
-		log.fine(getName() + (isDestroyed() ? " (destroyed)" : ""));
-		log.fine("- Parent=" + getParent());
+		if (log.isLoggable(Level.FINE)) log.fine(getName() + (isDestroyed() ? " (destroyed)" : ""));
+		if (log.isLoggable(Level.FINE)) log.fine("- Parent=" + getParent());
 		Thread[] list = new Thread[activeCount()];
-		log.fine("- Count=" + enumerate(list, true));
+		if (log.isLoggable(Level.FINE)) log.fine("- Count=" + enumerate(list, true));
 		for (int i = 0; i < list.length; i++)
-			log.fine("-- " + list[i]);
+			if (log.isLoggable(Level.FINE)) log.fine("-- " + list[i]);
 	}	//	dump
 
 }	//	AdempiereServerGroup

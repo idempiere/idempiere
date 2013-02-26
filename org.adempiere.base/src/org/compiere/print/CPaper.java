@@ -21,6 +21,7 @@ import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.PrinterJob;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.print.attribute.Attribute;
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -145,7 +146,7 @@ public class CPaper extends Paper
 		double height = m_mediaSize.getY (MediaSize.INCH) * 72;
 		//	Set Size
 		setSize (width, height);
-		log.fine(mediaSize.getMediaSizeName() + ": " + m_mediaSize + " - Landscape=" + m_landscape);
+		if (log.isLoggable(Level.FINE)) log.fine(mediaSize.getMediaSizeName() + ": " + m_mediaSize + " - Landscape=" + m_landscape);
 	}	//	setMediaSize
 
 	/**
@@ -183,7 +184,7 @@ public class CPaper extends Paper
 		final double height = y * mult;
 		//	Set Size
 		setSize (width, height);
-		log.fine("Width & Height" + ": " + x + "/" + y  + " - Landscape=" + m_landscape);
+		if (log.isLoggable(Level.FINE)) log.fine("Width & Height" + ": " + x + "/" + y  + " - Landscape=" + m_landscape);
 	}	//	setMediaSize
 	//End Of AA Goodwill
 
@@ -228,7 +229,7 @@ public class CPaper extends Paper
 	public void setMediaPrintableArea (MediaPrintableArea area)
 	{
 		int inch = MediaPrintableArea.INCH;
-		log.fine(area.toString(inch, "\""));
+		if (log.isLoggable(Level.FINE)) log.fine(area.toString(inch, "\""));
 		setImageableArea(area.getX(inch)*72, area.getY(inch)*72,
 			area.getWidth(inch)*72, area.getHeight(inch)*72);
 	}	//	setMediaPrintableArea

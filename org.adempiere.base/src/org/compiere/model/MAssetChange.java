@@ -19,7 +19,6 @@ import java.util.logging.Level;
 
 import org.compiere.model.MRefList;
 import org.compiere.model.PO;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 
 /**
@@ -123,7 +122,7 @@ public class MAssetChange extends X_A_Asset_Change
 	}
 	
 	public void addChanges(PO po) {
-		if(CLogMgt.isLevelFine()) log.fine("Entering: po=" + po);
+		if (log.isLoggable(Level.FINE)) log.fine("Entering: po=" + po);
 		if (po == null) {
 			return;
 		}
@@ -145,7 +144,7 @@ public class MAssetChange extends X_A_Asset_Change
 		}
 		*/
 		//
-		if(CLogMgt.isLevelFine()) log.fine("Leaving: po=" + po);
+		if (log.isLoggable(Level.FINE)) log.fine("Leaving: po=" + po);
 	}
 	/** ARHIPAC: TEO: END ------------------------------------------------------------------ */
 }	//	MAssetChange

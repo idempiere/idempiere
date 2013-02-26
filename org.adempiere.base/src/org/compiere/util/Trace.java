@@ -17,6 +17,7 @@
 package org.compiere.util;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 /**
  *  Trace Information
@@ -112,7 +113,7 @@ public class Trace
 				|| (adempiereOnly && elements[i].getClassName().startsWith("org.compiere"))
 				)
 			{
-				log.fine(i + ": " + elements[i]);
+				if (log.isLoggable(Level.FINE)) log.fine(i + ": " + elements[i]);
 				if (first9only && ++counter > 8)
 					break;
 			}

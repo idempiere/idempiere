@@ -67,7 +67,7 @@ public class ProcessCtl extends AbstractProcessCtl
 	 */
 	public static ProcessCtl process (IProcessUI parent, int WindowNo, ProcessInfo pi, Trx trx)
 	{
-		log.fine("WindowNo=" + WindowNo + " - " + pi);
+		if (log.isLoggable(Level.FINE)) log.fine("WindowNo=" + WindowNo + " - " + pi);
 
 		MPInstance instance = null; 
 		try 
@@ -145,7 +145,7 @@ public class ProcessCtl extends AbstractProcessCtl
 	 */
 	public static ProcessCtl process(IProcessUI parent, int WindowNo, IProcessParameter parameter, ProcessInfo pi, Trx trx)
 	{
-		log.fine("WindowNo=" + WindowNo + " - " + pi);
+		if (log.isLoggable(Level.FINE)) log.fine("WindowNo=" + WindowNo + " - " + pi);
 
 		MPInstance instance = null; 
 		try 

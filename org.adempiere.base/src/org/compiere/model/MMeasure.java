@@ -475,7 +475,7 @@ public class MMeasure extends X_PA_Measure
 			if (ManualActual == null)
 			{
 				ManualActual = Env.ZERO;
-				log.fine("No Value = " + sql);
+				if (log.isLoggable(Level.FINE)) log.fine("No Value = " + sql);
 			}
 			goal.setMeasureActual(ManualActual);
 			goal.saveEx(get_TrxName());
@@ -529,7 +529,7 @@ public class MMeasure extends X_PA_Measure
 			if (ManualActual == null)
 			{
 				ManualActual = Env.ZERO;
-				log.fine("No Value = " + sql);
+				if (log.isLoggable(Level.FINE)) log.fine("No Value = " + sql);
 			}
 			goal.setMeasureActual(ManualActual);
 			goal.saveEx(get_TrxName());
@@ -572,7 +572,7 @@ public class MMeasure extends X_PA_Measure
 			if (ManualActual == null)
 			{
 				ManualActual = Env.ZERO;
-				log.fine("No Value = " + sql);
+				if (log.isLoggable(Level.FINE)) log.fine("No Value = " + sql);
 			}
 			goal.setMeasureActual(ManualActual);
 			goal.saveEx(get_TrxName());

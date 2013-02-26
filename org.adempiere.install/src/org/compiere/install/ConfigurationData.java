@@ -729,7 +729,7 @@ public class ConfigurationData
 		}
 		catch (Exception ex)
 		{
-			log.fine("Not used=" + url);	//	ok
+			if (log.isLoggable(Level.FINE)) log.fine("Not used=" + url);	//	ok
 			return false;
 		}
 		return true;
@@ -746,7 +746,7 @@ public class ConfigurationData
 		try
 		{
 			ServerSocket ss = new ServerSocket (port);
-			log.fine(ss.getInetAddress() + ":" + ss.getLocalPort() + " - created");
+			if (log.isLoggable(Level.FINE)) log.fine(ss.getInetAddress() + ":" + ss.getLocalPort() + " - created");
 			ss.close();
 		}
 		catch (Exception ex)
@@ -778,13 +778,13 @@ public class ConfigurationData
 			if (shouldBeUsed)
 				log.warning("Open Socket " + host + ":" + port + " - " + e.getMessage());
 			else
-				log.fine(host + ":" + port + " - " + e.getMessage());
+				if (log.isLoggable(Level.FINE)) log.fine(host + ":" + port + " - " + e.getMessage());
 			return false;
 		}
 		if (!shouldBeUsed)
 			log.warning("Open Socket " + host + ":" + port + " - " + pingSocket);
 
-		log.fine(host + ":" + port + " - " + pingSocket);
+		if (log.isLoggable(Level.FINE)) log.fine(host + ":" + port + " - " + pingSocket);
 		//	success
 		try
 		{

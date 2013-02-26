@@ -190,7 +190,7 @@ public class MProductPricing
 				m_enforcePriceLimit = "Y".equals(rs.getString(8));
 				m_isTaxIncluded = "Y".equals(rs.getString(9));
 				//
-				log.fine("M_PriceList_Version_ID=" + m_M_PriceList_Version_ID + " - " + m_PriceStd);
+				if (log.isLoggable(Level.FINE)) log.fine("M_PriceList_Version_ID=" + m_M_PriceList_Version_ID + " - " + m_PriceStd);
 				m_calculated = true;
 			}
 		}
@@ -313,7 +313,7 @@ public class MProductPricing
 					m_M_Product_Category_ID = rs.getInt(7);
 					m_enforcePriceLimit = "Y".equals(rs.getString(8));
 					//
-					log.fine("M_PriceList_ID=" + m_M_PriceList_ID 
+					if (log.isLoggable(Level.FINE)) log.fine("M_PriceList_ID=" + m_M_PriceList_ID 
 						+ "(" + plDate + ")" + " - " + m_PriceStd);
 					m_calculated = true;
 					break;
@@ -395,7 +395,7 @@ public class MProductPricing
 					m_enforcePriceLimit = "Y".equals(rs.getString(8));
 					m_isTaxIncluded = "Y".equals(rs.getString(9));
 					//
-					log.fine("M_PriceList_ID=" + m_M_PriceList_ID 
+					if (log.isLoggable(Level.FINE)) log.fine("M_PriceList_ID=" + m_M_PriceList_ID 
 						+ "(" + plDate + ")" + " - " + m_PriceStd);
 					m_calculated = true;
 					break;
@@ -473,7 +473,7 @@ public class MProductPricing
 				m_enforcePriceLimit = "Y".equals(rs.getString(8));
 				m_isTaxIncluded = "Y".equals(rs.getString(9));
 				//
-				log.fine("M_PriceList_Version_ID=" + m_M_PriceList_Version_ID + " - " + m_PriceStd);
+				if (log.isLoggable(Level.FINE)) log.fine("M_PriceList_Version_ID=" + m_M_PriceList_Version_ID + " - " + m_PriceStd);
 				m_calculated = true;
 			}
 		}
@@ -600,7 +600,7 @@ public class MProductPricing
 					m_M_Product_Category_ID = rs.getInt(7);
 					m_enforcePriceLimit = "Y".equals(rs.getString(8));
 					//
-					log.fine("M_PriceList_ID=" + m_M_PriceList_ID 
+					if (log.isLoggable(Level.FINE)) log.fine("M_PriceList_ID=" + m_M_PriceList_ID 
 						+ "(" + plDate + ")" + " - " + m_PriceStd);
 					m_calculated = true;
 					break;
@@ -686,7 +686,7 @@ public class MProductPricing
 					m_enforcePriceLimit = "Y".equals(rs.getString(8));
 					m_isTaxIncluded = "Y".equals(rs.getString(9));
 					//
-					log.fine("M_PriceList_ID=" + m_M_PriceList_ID 
+					if (log.isLoggable(Level.FINE)) log.fine("M_PriceList_ID=" + m_M_PriceList_ID 
 						+ "(" + plDate + ")" + " - " + m_PriceStd);
 					m_calculated = true;
 					break;

@@ -285,7 +285,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 			.append((processed ? "Y" : "N"))
 			.append("' WHERE GL_Journal_ID=").append(getGL_Journal_ID());
 		int noLine = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine(processed + " - Lines=" + noLine);
+		if (log.isLoggable(Level.FINE)) log.fine(processed + " - Lines=" + noLine);
 	}	//	setProcessed
 
 	

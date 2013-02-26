@@ -832,7 +832,7 @@ public final class VTreePanel extends CPanel
 			while (enTop.hasMoreElements()) {
 				MTreeNode ndTop = (MTreeNode)enTop.nextElement();
 				if(ndTop.getNode_ID()==topParentId){
-					log.fine("add new category: " + ndTop);
+					if (log.isLoggable(Level.FINE)) log.fine("add new category: " + ndTop);
 					parent = new JToolBar(JToolBar.VERTICAL);
 
 					toolbarMap.put(ndTop.getNode_ID(), parent);
@@ -857,7 +857,7 @@ public final class VTreePanel extends CPanel
 				}
 			}
 		} else {
-			log.fine("parent found: " + parent);
+			if (log.isLoggable(Level.FINE)) log.fine("parent found: " + parent);
 		}
 		return parent;
 	}

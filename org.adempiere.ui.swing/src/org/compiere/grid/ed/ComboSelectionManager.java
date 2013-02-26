@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.grid.ed;
 
+import java.util.logging.Level;
+
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 
@@ -50,7 +52,7 @@ public class ComboSelectionManager implements JComboBox.KeySelectionManager
 	 */
 	public int selectionForKey (char key, ComboBoxModel model)
 	{
-		log.fine("Key=" + key);
+		if (log.isLoggable(Level.FINE)) log.fine("Key=" + key);
 		//
 		//Object selectedItem = model.getSelectedItem();
 

@@ -134,7 +134,7 @@ public abstract class CreateFromStatement extends CreateFromBatch
 				int C_Currency_ID = pp.getKey();
 				BigDecimal TrxAmt = (BigDecimal) miniTable.getValueAt(i, 5); //  5- Conv Amt
 
-				log.fine("Line Date=" + trxDate
+				if (log.isLoggable(Level.FINE)) log.fine("Line Date=" + trxDate
 					+ ", Payment=" + C_Payment_ID + ", Currency=" + C_Currency_ID + ", Amt=" + TrxAmt);
 				//	
 				MBankStatementLine bsl = new MBankStatementLine (bs);

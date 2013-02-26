@@ -428,7 +428,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 				}
 				QtyEntered = QtyEntered.setScale(precision, BigDecimal.ROUND_HALF_DOWN);
 				//
-				log.fine("Line QtyEntered=" + QtyEntered
+				if (log.isLoggable(Level.FINE)) log.fine("Line QtyEntered=" + QtyEntered
 					+ ", Product_ID=" + M_Product_ID
 					+ ", OrderLine_ID=" + C_OrderLine_ID + ", InOutLine_ID=" + M_InOutLine_ID);
 
@@ -468,7 +468,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 					String whereClause = "EXISTS (SELECT 1 FROM M_InOut io WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID AND io.DocStatus IN ('CO','CL'))";
 					MInOutLine[] lines = MInOutLine.getOfOrderLine(Env.getCtx(),
 						C_OrderLine_ID, whereClause, trxName);
-					log.fine ("Receipt Lines with OrderLine = #" + lines.length);
+					if (log.isLoggable(Level.FINE)) log.fine ("Receipt Lines with OrderLine = #" + lines.length);
 					if (lines.length > 0)
 					{
 						for (int j = 0; j < lines.length; j++)
@@ -492,7 +492,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 				{
 					String whereClause = "EXISTS (SELECT 1 FROM M_InOut io WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID AND io.DocStatus IN ('CO','CL'))";
 					MInOutLine[] lines = MInOutLine.getOfRMALine(Env.getCtx(), M_RMALine_ID, whereClause, null);
-					log.fine ("Receipt Lines with RMALine = #" + lines.length);
+					if (log.isLoggable(Level.FINE)) log.fine ("Receipt Lines with RMALine = #" + lines.length);
 					if (lines.length > 0)
 					{
 						for (int j = 0; j < lines.length; j++)

@@ -242,7 +242,7 @@ public class CalloutPayment extends CalloutEngine
 		int C_Invoice_ID = Env.getContextAsInt (ctx, WindowNo, "C_Invoice_ID");
 		int C_Order_ID = Env.getContextAsInt (ctx, WindowNo, "C_Order_ID");
 		int C_DocType_ID = Env.getContextAsInt (ctx, WindowNo, "C_DocType_ID");
-		log.fine ("Payment_DocType - C_Invoice_ID=" + C_Invoice_ID
+		if (log.isLoggable(Level.FINE)) log.fine ("Payment_DocType - C_Invoice_ID=" + C_Invoice_ID
 			+ ", C_DocType_ID=" + C_DocType_ID);
 		MDocType dt = null;
 		if (C_DocType_ID != 0)
@@ -359,14 +359,14 @@ public class CalloutPayment extends CalloutEngine
 				pstmt = null;
 			}
 		} // get Invoice Info
-		log.fine ("Open=" + InvoiceOpenAmt + ", C_Invoice_ID=" + C_Invoice_ID
+		if (log.isLoggable(Level.FINE)) log.fine ("Open=" + InvoiceOpenAmt + ", C_Invoice_ID=" + C_Invoice_ID
 			+ ", C_Currency_ID=" + C_Currency_Invoice_ID);
 		// Get Info from Tab
 		BigDecimal PayAmt = (BigDecimal)mTab.getValue ("PayAmt");
 		BigDecimal DiscountAmt = (BigDecimal)mTab.getValue ("DiscountAmt");
 		BigDecimal WriteOffAmt = (BigDecimal)mTab.getValue ("WriteOffAmt");
 		BigDecimal OverUnderAmt = (BigDecimal)mTab.getValue ("OverUnderAmt");
-		log.fine ("Pay=" + PayAmt + ", Discount=" + DiscountAmt + ", WriteOff="
+		if (log.isLoggable(Level.FINE)) log.fine ("Pay=" + PayAmt + ", Discount=" + DiscountAmt + ", WriteOff="
 			+ WriteOffAmt + ", OverUnderAmt=" + OverUnderAmt);
 		// Get Currency Info
 		int C_Currency_ID = ((Integer)mTab.getValue ("C_Currency_ID"))
@@ -385,7 +385,7 @@ public class CalloutPayment extends CalloutEngine
 			|| colName.equals ("C_Currency_ID")
 			|| colName.equals ("C_ConversionType_ID"))
 		{
-			log.fine ("InvCurrency=" + C_Currency_Invoice_ID + ", PayCurrency="
+			if (log.isLoggable(Level.FINE)) log.fine ("InvCurrency=" + C_Currency_Invoice_ID + ", PayCurrency="
 				+ C_Currency_ID + ", Date=" + ConvDate + ", Type="
 				+ C_ConversionType_ID);
 			CurrencyRate = MConversionRate.getRate (C_Currency_Invoice_ID,
@@ -402,7 +402,7 @@ public class CalloutPayment extends CalloutEngine
 			//
 			InvoiceOpenAmt = InvoiceOpenAmt.multiply (CurrencyRate).setScale (
 				currency.getStdPrecision (), BigDecimal.ROUND_HALF_UP);
-			log.fine ("Rate=" + CurrencyRate + ", InvoiceOpenAmt="
+			if (log.isLoggable(Level.FINE)) log.fine ("Rate=" + CurrencyRate + ", InvoiceOpenAmt="
 				+ InvoiceOpenAmt);
 		}
 		// Currency Changed - convert all

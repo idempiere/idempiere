@@ -122,7 +122,7 @@ public class ScheduleUtil
 		m_endDate = end_Date;
 		if (m_endDate == null)
 			m_endDate = MUOMConversion.getEndDate(m_ctx, m_startDate, m_C_UOM_ID, qty);
-		log.fine( "- EndDate=" + m_endDate);
+		if (log.isLoggable(Level.FINE)) log.fine( "- EndDate=" + m_endDate);
 
 
 		//	Resource Unavailability -------------------------------------------

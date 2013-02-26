@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.logging.Level;
 
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Datebox;
@@ -366,7 +367,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 			}
 		}
 
-		log.fine(sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
 		return sql.toString();
 	} // getSQLWhere
 
@@ -392,14 +393,14 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 		{
 			Integer cb = (Integer)fCashBook_ID.getValue();
 			pstmt.setInt(index++, cb.intValue());
-			log.fine("CashBook=" + cb);
+			if (log.isLoggable(Level.FINE)) log.fine("CashBook=" + cb);
 		}
 
 		if (fInvoice_ID.getValue() != null)
 		{
 			Integer i = (Integer)fInvoice_ID.getValue();
 			pstmt.setInt(index++, i.intValue());
-			log.fine("Invoice=" + i);
+			if (log.isLoggable(Level.FINE)) log.fine("Invoice=" + i);
 		}
 
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
@@ -414,7 +415,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 			if (t != null)
 				to = new Timestamp(t.getTime());
 
-			log.fine("Date From=" + from + ", To=" + to);
+			if (log.isLoggable(Level.FINE)) log.fine("Date From=" + from + ", To=" + to);
 
 			if (from == null && to != null)
 				pstmt.setTimestamp(index++, to);
@@ -440,7 +441,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 					to = to.abs();
 			}
 
-			log.fine("Amt From=" + from + ", To=" + to + ", Absolute=" + cbAbsolute.isChecked());
+			if (log.isLoggable(Level.FINE)) log.fine("Amt From=" + from + ", To=" + to + ", Absolute=" + cbAbsolute.isChecked());
 
 			if (from == null && to != null)
 				pstmt.setBigDecimal(index++, to);
@@ -472,7 +473,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 		if (!s.endsWith("%"))
 			s += "%";
 
-		log.fine( "String=" + s);
+		if (log.isLoggable(Level.FINE)) log.fine( "String=" + s);
 
 		return s;
 	} // getSQLText

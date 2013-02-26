@@ -454,7 +454,7 @@ public class PaySelect
 				{
 					return Msg.translate(Env.getCtx(), "C_PaySelectionLine_ID");
 				}
-				log.fine("C_Invoice_ID=" + C_Invoice_ID + ", PayAmt=" + PayAmt);
+				if (log.isLoggable(Level.FINE)) log.fine("C_Invoice_ID=" + C_Invoice_ID + ", PayAmt=" + PayAmt);
 			}
 		}   //  for all rows in table
 		

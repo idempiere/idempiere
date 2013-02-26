@@ -173,7 +173,7 @@ public class MDistributionRunDetail extends X_T_DistributionRunDetail
 		}
 		else
 			setQty(qty.add(diff));
-		log.fine("Qty=" + qty + ", Min=" + getMinQty() 
+		if (log.isLoggable(Level.FINE)) log.fine("Qty=" + qty + ", Min=" + getMinQty() 
 			+ ", Max=" + max + ", Diff=" + diff + ", newQty=" + getQty() 
 			+ ", Remaining=" + remaining);
 		return remaining;

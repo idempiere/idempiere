@@ -178,7 +178,7 @@ public class MSchedule extends X_AD_Schedule
 			}
 		} catch (PatternSyntaxException e) {
 			// TODO: handle exception
-			log.fine("Error: " + e.getLocalizedMessage());
+			if (log.isLoggable(Level.FINE)) log.fine("Error: " + e.getLocalizedMessage());
 		}
 		return IsIp;
 	}

@@ -375,7 +375,7 @@ public class AllocationAuto extends SvrProcess
 				.add(payment.getOverUnderAmt());
 			if (!payment.isReceipt())
 				availableAmt = availableAmt.negate();
-			log.fine("Available=" + availableAmt);
+			if (log.isLoggable(Level.FINE)) log.fine("Available=" + availableAmt);
 			//
 			if (payment.getC_Invoice_ID() != 0)
 			{
@@ -392,7 +392,7 @@ public class AllocationAuto extends SvrProcess
 							BigDecimal openAmt = invoice.getOpenAmt(true, null);
 							if (!invoice.isSOTrx())
 								openAmt = openAmt.negate();
-							log.fine(invoice + ", Open=" + openAmt);
+							if (log.isLoggable(Level.FINE)) log.fine(invoice + ", Open=" + openAmt);
 							//	With Discount, etc.
 							if (availableAmt.compareTo(openAmt) == 0)
 							{
@@ -432,7 +432,7 @@ public class AllocationAuto extends SvrProcess
 							.subtract(line.getDifferenceAmt()).subtract(overUnder);
 						if (!invoice.isSOTrx())
 							invoiceAmt = invoiceAmt.negate();
-						log.fine(invoice + ", Invoice=" + invoiceAmt);
+						if (log.isLoggable(Level.FINE)) log.fine(invoice + ", Invoice=" + invoiceAmt);
 						totalInvoice = totalInvoice.add(invoiceAmt);
 					}
 					else	//	Multi-Currency
@@ -478,7 +478,7 @@ public class AllocationAuto extends SvrProcess
 				.add(payment.getOverUnderAmt());
 			if (!payment.isReceipt())
 				availableAmt = availableAmt.negate();
-			log.fine("Available=" + availableAmt);
+			if (log.isLoggable(Level.FINE)) log.fine("Available=" + availableAmt);
 			for (int i = 0; i < m_invoices.length; i++)
 			{
 				MInvoice invoice = m_invoices[i];
@@ -491,7 +491,7 @@ public class AllocationAuto extends SvrProcess
 					if (!invoice.isSOTrx())
 						openAmt = openAmt.negate();
 					BigDecimal difference = availableAmt.subtract(openAmt).abs();
-					log.fine(invoice + ", Open=" + openAmt + " - Difference=" + difference);
+					if (log.isLoggable(Level.FINE)) log.fine(invoice + ", Open=" + openAmt + " - Difference=" + difference);
 					if (difference.signum() == 0)
 					{
 						Timestamp dateAcct = payment.getDateAcct();
@@ -657,7 +657,7 @@ public class AllocationAuto extends SvrProcess
 			availableAmt = availableAmt.subtract(allocatedAmt);
 			if (!payment.isReceipt())
 				availableAmt = availableAmt.negate();
-			log.fine("Available=" + availableAmt);
+			if (log.isLoggable(Level.FINE)) log.fine("Available=" + availableAmt);
 			if (dateAcct == null || payment.getDateAcct().after(dateAcct))
 				dateAcct = payment.getDateAcct();
 			totalPayments = totalPayments.add(availableAmt); 
@@ -672,11 +672,11 @@ public class AllocationAuto extends SvrProcess
 			if (invoice.getC_Currency_ID() != C_Currency_ID)
 				continue;
 			BigDecimal openAmt = invoice.getOpenAmt(true, null);
-			log.fine("" + invoice);
+			if (log.isLoggable(Level.FINE)) log.fine("" + invoice);
 			if (!invoice.isSOTrx())
 				openAmt = openAmt.negate();
 			//	Foreign currency
-			log.fine("Open=" + openAmt);
+			if (log.isLoggable(Level.FINE)) log.fine("Open=" + openAmt);
 			if (dateAcct == null || invoice.getDateAcct().after(dateAcct))
 				dateAcct = invoice.getDateAcct();
 			totalInvoices = totalInvoices.add(openAmt);
@@ -685,7 +685,7 @@ public class AllocationAuto extends SvrProcess
 		//	must be either AP or AR balance
 		if (totalInvoices.signum() != totalPayments.signum())
 		{
-			log.fine("Signum - Invoices=" + totalInvoices.signum() 
+			if (log.isLoggable(Level.FINE)) log.fine("Signum - Invoices=" + totalInvoices.signum() 
 				+ " <> Payments=" + totalPayments.signum()); 
 			return 0;
 		}
@@ -727,7 +727,7 @@ public class AllocationAuto extends SvrProcess
 				availableAmt = availableAmt.subtract(diff);
 				allocatedPayments = allocatedPayments.subtract(diff);
 			}
-			log.fine("Payment Allocated=" + availableAmt);
+			if (log.isLoggable(Level.FINE)) log.fine("Payment Allocated=" + availableAmt);
 			if (!createAllocation(C_Currency_ID, "BP Oldest (" + difference.abs() + ")", 
 				dateAcct, availableAmt, null, null, null, 
 				payment.getC_BPartner_ID(), payment.getC_Payment_ID(), 0, payment.getAD_Org_ID()))
@@ -759,7 +759,7 @@ public class AllocationAuto extends SvrProcess
 			}
 			if (openAmt.signum() == 0)
 				break;
-			log.fine("Invoice Allocated=" + openAmt);
+			if (log.isLoggable(Level.FINE)) log.fine("Invoice Allocated=" + openAmt);
 			if (!createAllocation(C_Currency_ID, "BP Oldest (" + difference.abs() + ")", 
 				dateAcct, openAmt, null, null, null, 
 				invoice.getC_BPartner_ID(), 0, invoice.getC_Invoice_ID(), invoice.getAD_Org_ID()))

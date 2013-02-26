@@ -336,7 +336,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			mainPanel.getRows().getChildren().clear();
 
 		MCountry country = m_location.getCountry();
-		log.fine(country.getName() + ", Region=" + country.isHasRegion() + " " + country.getCaptureSequence()
+		if (log.isLoggable(Level.FINE)) log.fine(country.getName() + ", Region=" + country.isHasRegion() + " " + country.getCaptureSequence()
 				+ ", C_Location_ID=" + m_location.getC_Location_ID());
 		//  new Country
 		if (m_location.getC_Country_ID() != s_oldCountry_ID)

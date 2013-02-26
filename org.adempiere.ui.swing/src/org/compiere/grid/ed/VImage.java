@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
+import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -102,7 +103,7 @@ public class VImage extends JButton
 		if (m_mImage == null || newValue != m_mImage.get_ID())
 			m_mImage = MImage.get (Env.getCtx(), newValue);
 		//
-		log.fine(m_mImage.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(m_mImage.toString());
 		super.setText(null);
 		
 		if (m_mImage.getImage()==null)

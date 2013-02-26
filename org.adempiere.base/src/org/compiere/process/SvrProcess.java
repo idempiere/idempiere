@@ -501,7 +501,7 @@ public abstract class SvrProcess implements ProcessCall
 	 */
 	private void lock()
 	{
-		log.fine("AD_PInstance_ID=" + m_pi.getAD_PInstance_ID());
+		if (log.isLoggable(Level.FINE)) log.fine("AD_PInstance_ID=" + m_pi.getAD_PInstance_ID());
 		try 
 		{
 			DB.executeUpdate("UPDATE AD_PInstance SET IsProcessing='Y' WHERE AD_PInstance_ID=" 
@@ -530,7 +530,7 @@ public abstract class SvrProcess implements ProcessCall
 			mpi.setResult(!m_pi.isError());
 			mpi.setErrorMsg(m_pi.getSummary());
 			mpi.saveEx();
-			log.fine(mpi.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(mpi.toString());
 			
 			ProcessInfoUtil.saveLogToDB(m_pi);
 		} 

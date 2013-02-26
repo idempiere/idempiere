@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 
 import org.adempiere.base.IServiceHolder;
 import org.adempiere.base.Service;
@@ -221,12 +222,12 @@ public class CacheMgt
 			CacheInterface stored = (CacheInterface)m_instances.get(i);
 			if (stored != null && stored.size() > 0)
 			{
-				log.fine(stored.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(stored.toString());
 				total += stored.reset();
 				counter++;
 			}
 		}
-		log.fine("#" + counter + " (" + total + ")");
+		if (log.isLoggable(Level.FINE)) log.fine("#" + counter + " (" + total + ")");
 		return total;
 	}
 	
@@ -254,14 +255,14 @@ public class CacheMgt
 				if (cc.getTableName() != null && cc.getTableName().startsWith(tableName))		//	reset lines/dependent too
 				{
 					{
-						log.fine("(all) - " + stored);
+						if (log.isLoggable(Level.FINE)) log.fine("(all) - " + stored);
 						total += stored.reset(Record_ID);
 						counter++;
 					}
 				}
 			}
 		}
-		log.fine(tableName + ": #" + counter + " (" + total + ")");
+		if (log.isLoggable(Level.FINE)) log.fine(tableName + ": #" + counter + " (" + total + ")");
 
 		return total;
 	}
@@ -308,7 +309,7 @@ public class CacheMgt
 			CacheInterface stored = (CacheInterface)m_instances.get(i);
 			if (stored != null && stored.size() > 0)
 			{
-				log.fine(stored.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(stored.toString());
 				if (stored instanceof CCache)
 					total += ((CCache<?, ?>)stored).sizeNoExpire();
 				else

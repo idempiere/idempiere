@@ -144,7 +144,7 @@ public class ReplenishReport extends SvrProcess
 							.append("WHERE Level_Max < Level_Min");
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Corrected Max_Level=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Corrected Max_Level=" + no);
 		
 		//	Minimum Order should be 1
 		sql = new StringBuilder("UPDATE M_Product_PO")
@@ -152,7 +152,7 @@ public class ReplenishReport extends SvrProcess
 			.append("WHERE Order_Min IS NULL OR Order_Min < 1");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Corrected Order Min=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Corrected Order Min=" + no);
 		
 		//	Pack should be 1
 		sql = new StringBuilder("UPDATE M_Product_PO")
@@ -160,7 +160,7 @@ public class ReplenishReport extends SvrProcess
 			.append("WHERE Order_Pack IS NULL OR Order_Pack < 1");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Corrected Order Pack=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Corrected Order Pack=" + no);
 
 		//	Set Current Vendor where only one vendor
 		
@@ -173,7 +173,7 @@ public class ReplenishReport extends SvrProcess
 				.append("HAVING COUNT(*) = 1)");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Corrected CurrentVendor(Y)=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Corrected CurrentVendor(Y)=" + no);
 
 		//	More then one current vendor
 		sql = new StringBuilder("UPDATE M_Product_PO p")
@@ -185,13 +185,13 @@ public class ReplenishReport extends SvrProcess
 				.append("HAVING COUNT(*) > 1)");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Corrected CurrentVendor(N)=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Corrected CurrentVendor(N)=" + no);
 		
 		//	Just to be sure
 		sql = new StringBuilder("DELETE T_Replenish WHERE AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Delete Existing Temp=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Delete Existing Temp=" + no);
 	}	//	prepareTable
 
 	/**
@@ -223,7 +223,7 @@ public class ReplenishReport extends SvrProcess
 			sql.append(" AND po.C_BPartner_ID=").append(p_C_BPartner_ID);
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
-		log.fine("Insert (1) #" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Insert (1) #" + no);
 		
 		if (p_C_BPartner_ID == 0)
 		{
@@ -246,7 +246,7 @@ public class ReplenishReport extends SvrProcess
 					sql.append("WHERE r.M_Product_ID=t.M_Product_ID");
 					sql.append(" AND AD_PInstance_ID=").append(getAD_PInstance_ID()).append(")");
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
-			log.fine("Insert (BP) #" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Insert (BP) #" + no);
 		}
 		sql = new StringBuilder("UPDATE T_Replenish t SET ");
 			sql.append("QtyOnHand = (SELECT COALESCE(SUM(QtyOnHand),0) FROM M_StorageOnHand s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID");
@@ -260,7 +260,7 @@ public class ReplenishReport extends SvrProcess
 		sql.append(" WHERE AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Update #" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Update #" + no);
 
 		//	Delete inactive products and replenishments
 		sql = new StringBuilder("DELETE T_Replenish r ");
@@ -272,7 +272,7 @@ public class ReplenishReport extends SvrProcess
 			sql.append(" AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Delete Inactive=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Delete Inactive=" + no);
 	 
 		//	Ensure Data consistency
 		sql = new StringBuilder("UPDATE T_Replenish SET QtyOnHand = 0 WHERE QtyOnHand IS NULL");
@@ -292,7 +292,7 @@ public class ReplenishReport extends SvrProcess
 			sql.append(" AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Update Type-1=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Update Type-1=" + no);
 		//
 		//	X_M_Replenish.REPLENISHTYPE_MaintainMaximumLevel
 		sql = new StringBuilder("UPDATE T_Replenish");
@@ -301,7 +301,7 @@ public class ReplenishReport extends SvrProcess
 			sql.append(" AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Update Type-2=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Update Type-2=" + no);
 	
 
 		//	Minimum Order Quantity
@@ -312,7 +312,7 @@ public class ReplenishReport extends SvrProcess
 			sql.append(" AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Set MinOrderQty=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set MinOrderQty=" + no);
 
 		//	Even dividable by Pack
 		sql = new StringBuilder("UPDATE T_Replenish");
@@ -322,7 +322,7 @@ public class ReplenishReport extends SvrProcess
 			sql.append(" AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Set OrderPackQty=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set OrderPackQty=" + no);
 		
 		//	Source from other warehouse
 		if (wh.getM_WarehouseSource_ID() != 0)
@@ -332,7 +332,7 @@ public class ReplenishReport extends SvrProcess
 				sql.append(" WHERE AD_PInstance_ID=").append(getAD_PInstance_ID());
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (no != 0)
-				log.fine("Set Source Warehouse=" + no);
+				if (log.isLoggable(Level.FINE)) log.fine("Set Source Warehouse=" + no);
 		}
 		//	Check Source Warehouse
 		sql = new StringBuilder("UPDATE T_Replenish");
@@ -341,7 +341,7 @@ public class ReplenishReport extends SvrProcess
 			sql.append(" AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Set same Source Warehouse=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set same Source Warehouse=" + no);
 		
 		//	Custom Replenishment
 		String className = wh.getReplenishmentClass();
@@ -388,7 +388,7 @@ public class ReplenishReport extends SvrProcess
 		    sql.append(" AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Delete No QtyToOrder=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Delete No QtyToOrder=" + no);
 	}	//	fillTable
 
 	/**
@@ -424,7 +424,7 @@ public class ReplenishReport extends SvrProcess
 				order.setM_Warehouse_ID(wh.getM_Warehouse_ID());
 				if (!order.save())
 					return;
-				log.fine(order.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(order.toString());
 				noOrders++;
 				info.append(" - "); 
 				info.append(order.getDocumentNo());
@@ -468,7 +468,7 @@ public class ReplenishReport extends SvrProcess
 				requisition.setM_Warehouse_ID(wh.getM_Warehouse_ID());
 				if (!requisition.save())
 					return;
-				log.fine(requisition.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(requisition.toString());
 				noReqs++;
 				info.append(" - "); 
 				info.append(requisition.getDocumentNo());
@@ -525,7 +525,7 @@ public class ReplenishReport extends SvrProcess
 				move.setAD_Org_ID(whSource.getAD_Org_ID());
 				if (!move.save())
 					return;
-				log.fine(move.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(move.toString());
 				noMoves++;
 				info.append(" - ").append(move.getDocumentNo());
 			}
@@ -648,7 +648,7 @@ public class ReplenishReport extends SvrProcess
 				
 				if (!order.save())
 					return;
-				log.fine(order.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(order.toString());
 				noMoves++;
 				info.append(" - ").append(order.getDocumentNo());
 			}

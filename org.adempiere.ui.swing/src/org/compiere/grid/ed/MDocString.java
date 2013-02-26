@@ -206,7 +206,7 @@ public final class MDocString extends PlainDocument implements CaretListener
 		//	Conversion
 		char c = string.charAt(0);
 		char cmd = m_VFormat.charAt(offset);
-		log.fine( "char=" + c + ", cmd=" + cmd);
+		if (log.isLoggable(Level.FINE)) log.fine( "char=" + c + ", cmd=" + cmd);
 		switch (cmd)
 		{
 			case 'c':		//	c	any Letter or Digits or space

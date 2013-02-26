@@ -20,6 +20,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.Properties;
+import java.util.logging.Level;
 
 /**
  *	HTML Form Print ELement.
@@ -46,7 +47,7 @@ public class HTMLElement extends PrintElement
 	{
 		if (html == null || html.equals(""))
 			throw new IllegalArgumentException("HTMLElement is null");
-		log.fine("Length=" + html.length()); 
+		if (log.isLoggable(Level.FINE)) log.fine("Length=" + html.length()); 
 		//	Create View
 		m_renderer = HTMLRenderer.get(html);
 	}	//	HTMLElement

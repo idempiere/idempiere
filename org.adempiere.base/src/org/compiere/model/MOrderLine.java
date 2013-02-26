@@ -295,7 +295,7 @@ public class MOrderLine extends X_C_OrderLine
 		if (getM_Product_ID() == 0)
 			return;
 		//
-		log.fine(toString() + " - M_PriceList_ID=" + M_PriceList_ID);
+		if (log.isLoggable(Level.FINE)) log.fine(toString() + " - M_PriceList_ID=" + M_PriceList_ID);
 		getProductPricing (M_PriceList_ID);
 		setPriceActual (m_productPrice.getPriceStd());
 		setPriceList (m_productPrice.getPriceList());
@@ -384,15 +384,17 @@ public class MOrderLine extends X_C_OrderLine
 
 			if (stdTax != null)
 			{
-				log.fine("stdTax rate is " + stdTax.getRate());
-				log.fine("orderTax rate is " + orderTax.getRate());
-				
+				if (log.isLoggable(Level.FINE)){
+					log.fine("stdTax rate is " + stdTax.getRate());
+					log.fine("orderTax rate is " + orderTax.getRate());
+				}
+								
 				taxThisAmt = taxThisAmt.add(orderTax.calculateTax(bd, isTaxIncluded(), getPrecision()));
 				taxStdAmt = taxStdAmt.add(stdTax.calculateTax(bd, isTaxIncluded(), getPrecision()));
 				
 				bd = bd.subtract(taxStdAmt).add(taxThisAmt);
 				
-				log.fine("Price List includes Tax and Tax Changed on Order Line: New Tax Amt: " 
+				if (log.isLoggable(Level.FINE)) log.fine("Price List includes Tax and Tax Changed on Order Line: New Tax Amt: " 
 						+ taxThisAmt + " Standard Tax Amt: " + taxStdAmt + " Line Net Amt: " + bd);	
 			}
 			

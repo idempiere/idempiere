@@ -24,6 +24,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -47,7 +48,7 @@ public class LogAuthFailure  {
 			file = new FileOutputStream(fileName, true);
 			writer = new BufferedWriter(new OutputStreamWriter(file, "UTF8"));
 		} catch (IOException e) {
-			log.fine(e.getMessage());
+			if (log.isLoggable(Level.FINE)) log.fine(e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -70,7 +71,7 @@ public class LogAuthFailure  {
 			writer.append("\n");
 			writer.flush();
 		} catch (Exception e) {
-			log.fine(e.getMessage());
+			if (log.isLoggable(Level.FINE)) log.fine(e.getMessage());
 		}
 	}
 

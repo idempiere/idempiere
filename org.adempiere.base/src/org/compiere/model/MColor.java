@@ -87,7 +87,7 @@ public class MColor extends X_AD_Color
 	{
 		String colName = p_info.getColumnName(index);
 		String colValue = value == null ? "null" : value.getClass().toString();
-		log.fine(colName + "=" + colValue);
+		if (log.isLoggable(Level.FINE)) log.fine(colName + "=" + colValue);
 		if (value == null)
 			return "NULL";
 		return value.toString();

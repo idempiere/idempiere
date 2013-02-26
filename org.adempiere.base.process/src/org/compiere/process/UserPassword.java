@@ -82,7 +82,7 @@ public class UserPassword extends SvrProcess
 		MUser user = MUser.get(getCtx(), p_AD_User_ID);
 		user.load(get_TrxName());
 		MUser operator = MUser.get(getCtx(), getAD_User_ID());
-		log.fine("User=" + user + ", Operator=" + operator);
+		if (log.isLoggable(Level.FINE)) log.fine("User=" + user + ", Operator=" + operator);
 		
 		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 		

@@ -116,7 +116,7 @@ public abstract class Lookup extends AbstractListModel
 			else
 			{
 				m_selectedObject = null;
-				log.fine(getColumnName() + ": setSelectedItem - Set to NULL");
+				if (log.isLoggable(Level.FINE)) log.fine(getColumnName() + ": setSelectedItem - Set to NULL");
 			}
 		//	if (m_worker == null || !m_worker.isAlive())
 			fireContentsChanged(this, -1, -1);
@@ -304,10 +304,10 @@ public abstract class Lookup extends AbstractListModel
 		m_loaded = true; 
 		fireContentsChanged(this, 0, p_data.size());
 		if (p_data.size() == 0)
-			log.fine(getColumnName() + ": #0 - ms=" 
+			if (log.isLoggable(Level.FINE)) log.fine(getColumnName() + ": #0 - ms=" 
 				+ String.valueOf(System.currentTimeMillis()-startTime));
 		else
-			log.fine(getColumnName() + ": #" + p_data.size() + " - ms=" 
+			if (log.isLoggable(Level.FINE)) log.fine(getColumnName() + ": #" + p_data.size() + " - ms=" 
 				+ String.valueOf(System.currentTimeMillis()-startTime));
 		
 		

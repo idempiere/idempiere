@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.wstore;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -74,7 +75,7 @@ public class CheckOutLinkTag extends TagSupport
 	//	log.fine("WebBasket=" + wb);
 		if (wb != null && wb.getLineCount() > 0)
 		{
-			log.fine("WebBasket exists");
+			if (log.isLoggable(Level.FINE)) log.fine("WebBasket exists");
 			//
 			JspWriter out = pageContext.getOut();
 			HtmlCode html = new HtmlCode();

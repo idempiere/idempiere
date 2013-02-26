@@ -200,7 +200,7 @@ public class Editor extends CDialog
 		if (e.getActionCommand().equals(ConfirmPanel.A_OK))
 		{
 			m_text = textArea.getText();
-			log.fine("OK - length=" + m_text.length());
+			if (log.isLoggable(Level.FINE)) log.fine("OK - length=" + m_text.length());
 			dispose();
 		}
 		else if (e.getActionCommand().equals(ConfirmPanel.A_CANCEL))

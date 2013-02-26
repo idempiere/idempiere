@@ -209,7 +209,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 			+ "' WHERE S_TimeExpense_ID=" + getS_TimeExpense_ID();
 		int noLine = DB.executeUpdate(sql, get_TrxName());
 		m_lines = null;
-		log.fine(processed + " - Lines=" + noLine);
+		if (log.isLoggable(Level.FINE)) log.fine(processed + " - Lines=" + noLine);
 	}	//	setProcessed
 	
 	/**

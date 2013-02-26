@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -272,15 +273,17 @@ public class MRMALine extends X_M_RMALine
 
 			if (stdTax != null)
 			{
-				log.fine("stdTax rate is " + stdTax.getRate());
-				log.fine("orderTax rate is " + orderTax.getRate());
+				if (log.isLoggable(Level.FINE)){
+					log.fine("stdTax rate is " + stdTax.getRate());
+					log.fine("orderTax rate is " + orderTax.getRate());
+				}				
 				
 				taxThisAmt = taxThisAmt.add(orderTax.calculateTax(bd, getParent().isTaxIncluded(), getPrecision()));
 				taxStdAmt = taxStdAmt.add(stdTax.calculateTax(bd, getParent().isTaxIncluded(), getPrecision()));
 				
 				bd = bd.subtract(taxStdAmt).add(taxThisAmt);
 				
-				log.fine("Price List includes Tax and Tax Changed on Order Line: New Tax Amt: " 
+				if (log.isLoggable(Level.FINE)) log.fine("Price List includes Tax and Tax Changed on Order Line: New Tax Amt: " 
 						+ taxThisAmt + " Standard Tax Amt: " + taxStdAmt + " Line Net Amt: " + bd);	
 			}
 			

@@ -67,13 +67,13 @@ public class AttachmentFileSystem implements IAttachmentStore {
 			document.setXmlStandalone(true);
 			// create xml entries
 			for (int i = 0; i < attach.m_items.size(); i++) {
-				log.fine(attach.m_items.get(i).toString());
+				if (log.isLoggable(Level.FINE)) log.fine(attach.m_items.get(i).toString());
 				File entryFile = attach.m_items.get(i).getFile();
 				final String path = entryFile.getAbsolutePath();
 				// if local file - copy to central attachment folder
-				log.fine(path + " - " + attachmentPathRoot);
+				if (log.isLoggable(Level.FINE)) log.fine(path + " - " + attachmentPathRoot);
 				if (!path.startsWith(attachmentPathRoot)) {
-					log.fine("move file: " + path);
+					if (log.isLoggable(Level.FINE)) log.fine("move file: " + path);
 					FileChannel in = null;
 					FileChannel out = null;
 					try {
@@ -130,7 +130,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 			final Transformer xformer = TransformerFactory.newInstance().newTransformer();
 			xformer.transform(source, result);
 			final byte[] xmlData = bos.toByteArray();
-			log.fine(bos.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(bos.toString());
 			attach.setBinaryData(xmlData);
 			attach.setTitle(MAttachment.XML);
 			return true;
@@ -155,7 +155,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 		byte[] data = attach.getBinaryData();
 		if (data == null)
 			return true;
-		log.fine("TextFileSize=" + data.length);
+		if (log.isLoggable(Level.FINE)) log.fine("TextFileSize=" + data.length);
 		if (data.length == 0)
 			return true;
 
@@ -175,9 +175,9 @@ public class AttachmentFileSystem implements IAttachmentStore {
 					attach.m_items = null;
 					return false;
 				}
-				log.fine("name: " + nameNode.getNodeValue());
+				if (log.isLoggable(Level.FINE)) log.fine("name: " + nameNode.getNodeValue());
 				String filePath = fileNode.getNodeValue();
-				log.fine("filePath: " + filePath);
+				if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
 				if(filePath!=null){
 					filePath = filePath.replaceFirst(attach.ATTACHMENT_FOLDER_PLACEHOLDER, attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"));
 					//just to be shure...
@@ -188,7 +188,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 					filePath = filePath.replaceAll("/", replaceSeparator);
 					filePath = filePath.replaceAll("\\\\", replaceSeparator);
 				}
-				log.fine("filePath: " + filePath);
+				if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
 				final File file = new File(filePath);
 				if (file.exists()) {
 					// read files into byte[]
@@ -273,7 +273,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 		//remove files
 		final MAttachmentEntry entry = attach.m_items.get(index);
 		final File file = entry.getFile();
-		log.fine("delete: " + file.getAbsolutePath());
+		if (log.isLoggable(Level.FINE)) log.fine("delete: " + file.getAbsolutePath());
 		if (file != null && file.exists()) {
 			if (!file.delete()) {
 				log.warning("unable to delete " + file.getAbsolutePath());

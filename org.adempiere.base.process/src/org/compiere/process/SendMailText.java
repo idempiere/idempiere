@@ -116,7 +116,7 @@ public class SendMailText extends SvrProcess
 			if (m_from.getAD_User_ID() == 0)
 				throw new Exception ("No found @AD_User_ID@=" + m_AD_User_ID);
 		}
-		log.fine("From " + m_from);
+		if (log.isLoggable(Level.FINE)) log.fine("From " + m_from);
 		long start = System.currentTimeMillis();
 		
 		if (m_R_InterestArea_ID > 0)
@@ -284,7 +284,7 @@ public class SendMailText extends SvrProcess
 		new MUserMail(m_MailText, AD_User_ID, email).saveEx();
 		//
 		if (OK)
-			log.fine(to.getEMail());
+			if (log.isLoggable(Level.FINE)) log.fine(to.getEMail());
 		else
 			log.warning("FAILURE - " + to.getEMail());
 		StringBuilder msglog = new StringBuilder((OK ? "@OK@" : "@ERROR@")).append(" - ").append(to.getEMail());

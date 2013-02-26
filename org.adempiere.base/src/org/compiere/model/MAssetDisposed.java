@@ -192,7 +192,7 @@ implements DocAction
 		
 		//loading asset
 		MAsset asset = getAsset();
-		log.fine("asset=" + asset);
+		if (log.isLoggable(Level.FINE)) log.fine("asset=" + asset);
 
 		// Activation
 		if(!isDisposal())

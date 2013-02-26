@@ -247,12 +247,12 @@ public class PrintUtil
 			{
 				Attribute[] atts = prats.toArray();
 				for (int i = 0; i < atts.length; i++)
-					log.fine(atts[i].getName() + "=" + atts[i]);
+					if (log.isLoggable(Level.FINE)) log.fine(atts[i].getName() + "=" + atts[i]);
 			}
 			//
 			if (waitForIt)
 			{
-				log.fine("(wait) " + job.getPrintService());
+				if (log.isLoggable(Level.FINE)) log.fine("(wait) " + job.getPrintService());
 				try
 				{
 					job.print(prats);
@@ -269,7 +269,7 @@ public class PrintUtil
 				{
 					public void run()
 					{
-						log.fine("print: " + job.getPrintService());
+						if (log.isLoggable(Level.FINE)) log.fine("print: " + job.getPrintService());
 						try
 						{
 							job.print(prats);

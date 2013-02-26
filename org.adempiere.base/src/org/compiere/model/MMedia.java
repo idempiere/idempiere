@@ -165,7 +165,7 @@ public class MMedia extends X_CM_Media
 				.append(", 0, 999)");
 			int no = DB.executeUpdate(sb.toString(), get_TrxName());
 			if (no > 0)
-				log.fine("#" + no + " - TreeType=CMM");
+				if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=CMM");
 			else
 				log.warning("#" + no + " - TreeType=CMM");
 			return no > 0;
@@ -188,7 +188,7 @@ public class MMedia extends X_CM_Media
 			.append(" AND AD_Tree_ID=").append(getAD_Tree_ID());
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
 		if (no > 0)
-			log.fine("#" + no + " - TreeType=CMM");
+			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=CMM");
 		else
 			log.warning("#" + no + " - TreeType=CMM");
 		return no > 0;

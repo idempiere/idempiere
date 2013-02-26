@@ -596,7 +596,7 @@ public class VLookup extends JComponent
 	 */
 	public void setValue (Object value)
 	{
-		log.fine(m_columnName + "=" + value);
+		if (log.isLoggable(Level.FINE)) log.fine(m_columnName + "=" + value);
 		m_settingValue = true;		//	disable actions
 		m_value = value;
 
@@ -652,7 +652,7 @@ public class VLookup extends JComponent
 			{
 				m_value = null;
 				actionCombo (null);             //  data binding
-				log.fine(m_columnName + "=" + value + ": Not found");
+				if (log.isLoggable(Level.FINE)) log.fine(m_columnName + "=" + value + ": Not found");
 			}
 			//  we have lookup
 			else if (m_combo.getSelectedItem() == null)
@@ -660,7 +660,7 @@ public class VLookup extends JComponent
 				NamePair pp = m_lookup.get(value);
 				if (pp != null)
 				{
-					log.fine(m_columnName + " added to combo - " + pp);
+					if (log.isLoggable(Level.FINE)) log.fine(m_columnName + " added to combo - " + pp);
 					//  Add to Combo
 					m_combo.addItem (pp);
 					m_combo.setValue (value);
@@ -837,7 +837,7 @@ public class VLookup extends JComponent
 	 */
 	private void actionCombo (Object value)
 	{
-		log.fine("Value=" + value);
+		if (log.isLoggable(Level.FINE)) log.fine("Value=" + value);
 		try
 		{
 			// -> GridController.vetoableChange
@@ -864,7 +864,7 @@ public class VLookup extends JComponent
 		if (!updated)
 		{
 			//  happens if VLookup is used outside of APanel/GridController (no property listener)
-			log.fine(m_columnName + " - Value explicitly set - new=" + updatedValue + ", old=" + m_value);
+			if (log.isLoggable(Level.FINE)) log.fine(m_columnName + " - Value explicitly set - new=" + updatedValue + ", old=" + m_value);
 
 			// phib: the following check causes the update to fail on jre > 1.6.0_13
 			// commenting out as it does not appear to be necessary
@@ -901,7 +901,7 @@ public class VLookup extends JComponent
 		//  Zoom / Validation
 		String whereClause = getWhereClause();
 		//
-		log.fine(m_lookup.getColumnName()
+		if (log.isLoggable(Level.FINE)) log.fine(m_lookup.getColumnName()
 			+ ", Zoom=" + m_lookup.getZoom()
 			+ " (" + whereClause + ")");
 		//
@@ -980,7 +980,7 @@ public class VLookup extends JComponent
 				log.severe(m_columnName + " - Cannot Parse=" + whereClause);
 			else
 			{
-				log.fine(m_columnName + " - Parsed: " + validated);
+				if (log.isLoggable(Level.FINE)) log.fine(m_columnName + " - Parsed: " + validated);
 				return validated;
 			}
 		}
@@ -1104,14 +1104,14 @@ public class VLookup extends JComponent
 		if (id <= 0)
 		{
 			if (id == -3)
-				log.fine(m_columnName + " - Not Found - " + finalSQL);
+				if (log.isLoggable(Level.FINE)) log.fine(m_columnName + " - Not Found - " + finalSQL);
 			else
-				log.fine(m_columnName + " - Not Unique - " + finalSQL);
+				if (log.isLoggable(Level.FINE)) log.fine(m_columnName + " - Not Unique - " + finalSQL);
 			m_value = null;	// force re-display
 			actionButton(m_text.getText());
 			return;
 		}
-		log.fine(m_columnName + " - Unique ID=" + id);
+		if (log.isLoggable(Level.FINE)) log.fine(m_columnName + " - Unique ID=" + id);
 		m_value = null;     //  forces re-display if value is unchanged but text updated and still unique
 		resetTabInfo();
 		actionCombo (new Integer(id));          //  data binding
@@ -1617,7 +1617,7 @@ public class VLookup extends JComponent
 			//	original model may not have item
 			if (!m_combo.getSelectedItem().equals(obj))
 			{
-				log.fine(m_columnName + " - added to combo - " + obj);
+				if (log.isLoggable(Level.FINE)) log.fine(m_columnName + " - added to combo - " + obj);
 				m_combo.addItem(obj);
 				m_combo.setSelectedItem(obj);
 			}

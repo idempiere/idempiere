@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.AEnv;
@@ -350,7 +351,7 @@ public class InfoBPartner extends Info
 			if (!value.endsWith("%"))
 				value += "%";
 			pstmt.setString(index++, value);
-			log.fine("Value: " + value);
+			if (log.isLoggable(Level.FINE)) log.fine("Value: " + value);
 		}
 		//	=> Name
 		String name = fieldName.getText().toUpperCase();
@@ -359,7 +360,7 @@ public class InfoBPartner extends Info
 			if (!name.endsWith("%"))
 				name += "%";
 			pstmt.setString(index++, name);
-			log.fine("Name: " + name);
+			if (log.isLoggable(Level.FINE)) log.fine("Name: " + name);
 		}
 		//	=> Contact
 		String contact = fieldContact.getText().toUpperCase();
@@ -368,7 +369,7 @@ public class InfoBPartner extends Info
 			if (!contact.endsWith("%"))
 				contact += "%";
 			pstmt.setString(index++, contact);
-			log.fine("Contact: " + contact);
+			if (log.isLoggable(Level.FINE)) log.fine("Contact: " + contact);
 		}
 		//	=> EMail
 		String email = fieldEMail.getText().toUpperCase();
@@ -377,7 +378,7 @@ public class InfoBPartner extends Info
 			if (!email.endsWith("%"))
 				email += "%";
 			pstmt.setString(index++, email);
-			log.fine("EMail: " + email);
+			if (log.isLoggable(Level.FINE)) log.fine("EMail: " + email);
 		}
 		//	=> Phone
 		String phone = fieldPhone.getText().toUpperCase();
@@ -386,7 +387,7 @@ public class InfoBPartner extends Info
 			if (!phone.endsWith("%"))
 				phone += "%";
 			pstmt.setString(index++, phone);
-			log.fine("Phone: " + phone);
+			if (log.isLoggable(Level.FINE)) log.fine("Phone: " + phone);
 		}
 		//	=> Postal
 		String postal = fieldPostal.getText().toUpperCase();
@@ -395,7 +396,7 @@ public class InfoBPartner extends Info
 			if (!postal.endsWith("%"))
 				postal += "%";
 			pstmt.setString(index++, postal);
-			log.fine("Postal: " + postal);
+			if (log.isLoggable(Level.FINE)) log.fine("Postal: " + postal);
 		}
 	}   //  setParameters
 

@@ -109,12 +109,12 @@ public class DocWorkflowManager implements DocWorkflowMgr
 			boolean sql = logic.startsWith("SQL=");
 			if (sql && !testStart(wf, document))
 			{
-				log.fine("SQL Logic evaluated to false (" + logic + ")");
+				if (log.isLoggable(Level.FINE)) log.fine("SQL Logic evaluated to false (" + logic + ")");
 				continue;
 			}
 			if (!sql && !Evaluator.evaluateLogic(document, logic))
 			{
-				log.fine("Logic evaluated to false (" + logic + ")");
+				if (log.isLoggable(Level.FINE)) log.fine("Logic evaluated to false (" + logic + ")");
 				continue;
 			}
 		

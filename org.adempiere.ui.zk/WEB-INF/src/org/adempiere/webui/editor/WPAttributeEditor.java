@@ -103,7 +103,7 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 		if (value.equals(m_value))
 			return;
 		//	new value
-		log.fine("Value=" + value);
+		if (log.isLoggable(Level.FINE)) log.fine("Value=" + value);
 		m_value = value;
 		getComponent().setText(m_mPAttribute.getDisplay(value));	//	loads value
 	}

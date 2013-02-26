@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -226,7 +227,7 @@ public class M_Element extends X_AD_Element
 					.append(", Help=").append(DB.TO_STRING(getHelp()))
 					.append(" WHERE AD_Element_ID=").append(get_ID());
 				no = DB.executeUpdate(sql.toString(), get_TrxName());
-				log.fine("afterSave - Columns updated #" + no);
+				if (log.isLoggable(Level.FINE)) log.fine("afterSave - Columns updated #" + no);
 
 				//	Parameter 
 				sql = new StringBuilder("UPDATE AD_Process_Para SET ColumnName=")
@@ -248,7 +249,7 @@ public class M_Element extends X_AD_Element
 					.append(" WHERE AD_Element_ID=").append(get_ID())
 					.append(" AND IsCentrallyMaintained='Y'");
 				no += DB.executeUpdate(sql.toString(), get_TrxName());
-				log.fine("Parameters updated #" + no);
+				if (log.isLoggable(Level.FINE)) log.fine("Parameters updated #" + no);
 				
 				// Info Column
 				sql = new StringBuilder("UPDATE AD_InfoColumn SET ColumnName=")
@@ -259,7 +260,7 @@ public class M_Element extends X_AD_Element
 					.append(" WHERE AD_Element_ID=").append(get_ID())
 					.append(" AND IsCentrallyMaintained='Y'");
 				no += DB.executeUpdate(sql.toString(), get_TrxName());
-				log.fine("Info Column updated #" + no);
+				if (log.isLoggable(Level.FINE)) log.fine("Info Column updated #" + no);
 			}
 			
 			if (   is_ValueChanged(M_Element.COLUMNNAME_Name)
@@ -275,7 +276,7 @@ public class M_Element extends X_AD_Element
 					.append(get_ID())
 					.append(") AND IsCentrallyMaintained='Y'");
 				no = DB.executeUpdate(sql.toString(), get_TrxName());
-				log.fine("Fields updated #" + no);
+				if (log.isLoggable(Level.FINE)) log.fine("Fields updated #" + no);
 				
 				// Info Column - update Name, Description, Help - doesn't have IsCentrallyMaintained currently
 				// no = DB.executeUpdate(sql.toString(), get_TrxName());
@@ -294,7 +295,7 @@ public class M_Element extends X_AD_Element
 						.append("WHERE c.AD_Column_ID=pi.AD_Column_ID AND c.AD_Element_ID=")
 						.append(get_ID()).append(")");
 				no = DB.executeUpdate(sql.toString(), get_TrxName());
-				log.fine("PrintFormatItem updated #" + no);
+				if (log.isLoggable(Level.FINE)) log.fine("PrintFormatItem updated #" + no);
 			}
 			
 		}

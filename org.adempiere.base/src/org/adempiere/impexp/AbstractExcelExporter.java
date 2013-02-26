@@ -35,7 +35,6 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.compiere.Adempiere;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -457,7 +456,7 @@ public abstract class AbstractExcelExporter
 		
 		//
 		// Workbook Info
-		if (CLogMgt.isLevelFine()) {
+		if (log.isLoggable(Level.FINE)) {
 			log.fine("Sheets #"+m_sheetCount);
 			log.fine("Styles used #"+m_styles.size());
 		}

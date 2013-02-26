@@ -120,7 +120,7 @@ public class MAsset extends X_A_Asset
 		}
 		MBPartner bp = new MBPartner(getCtx(), invoiceLine.getC_Invoice().getC_BPartner_ID(), null);
 		name += bp.getName()+"-"+invoiceLine.getC_Invoice().getDocumentNo();
-		log.fine("name=" + name);
+		if (log.isLoggable(Level.FINE)) log.fine("name=" + name);
 		setValue(name);
 		setName(name);
 		setDescription(invoiceLine.getDescription());
@@ -379,7 +379,7 @@ public class MAsset extends X_A_Asset
 			int A_Asset_ID = getA_Asset_ID();
 			setA_Parent_Asset_ID(A_Asset_ID);
 			DB.executeUpdateEx("UPDATE A_Asset SET A_Parent_Asset_ID=A_Asset_ID WHERE A_Asset_ID=" + A_Asset_ID, get_TrxName());
-			log.fine("A_Parent_Asset_ID=" + getA_Parent_Asset_ID());
+			if (log.isLoggable(Level.FINE)) log.fine("A_Parent_Asset_ID=" + getA_Parent_Asset_ID());
 		}
 		
 		//
@@ -390,7 +390,7 @@ public class MAsset extends X_A_Asset
 			invNo = "" + get_ID();
 			setInventoryNo(invNo);
 			DB.executeUpdateEx("UPDATE A_Asset SET InventoryNo=" + DB.TO_STRING(invNo) + " WHERE A_Asset_ID=" + getA_Asset_ID(), get_TrxName());
-			log.fine("InventoryNo=" + getInventoryNo());
+			if (log.isLoggable(Level.FINE)) log.fine("InventoryNo=" + getInventoryNo());
 		}
 		
 		

@@ -105,7 +105,7 @@ public class PO_LOB implements Serializable
 				.append(" SET ").append(m_columnName)
 				.append("=null WHERE ").append(m_whereClause);
 			int no = DB.executeUpdate(sql.toString(), trxName);
-			log.fine("save [" + trxName + "] #" + no + " - no data - set to null - " + m_value);
+			if (log.isLoggable(Level.FINE)) log.fine("save [" + trxName + "] #" + no + " - no data - set to null - " + m_value);
 			if (no == 0)
 				log.warning("[" + trxName + "] - not updated - " + sql);
 			return true;
@@ -117,7 +117,7 @@ public class PO_LOB implements Serializable
 			.append("=? WHERE ").append(m_whereClause);
 		//
 		
-		log.fine("[" + trxName + "] - Local - " + m_value);
+		if (log.isLoggable(Level.FINE)) log.fine("[" + trxName + "] - Local - " + m_value);
 		//	Connection
 		Trx trx = null;
 		if (trxName != null)

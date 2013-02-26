@@ -1958,7 +1958,7 @@ public abstract class PO
 		boolean newRecord = is_new();	//	save locally as load resets
 		if (!newRecord && !is_Changed())
 		{
-			log.fine("Nothing changed - " + p_info.getTableName());
+			if (log.isLoggable(Level.FINE)) log.fine("Nothing changed - " + p_info.getTableName());
 			return true;
 		}
 
@@ -2566,9 +2566,9 @@ public abstract class PO
 		if (changes)
 		{
 			if (m_trxName == null)
-				log.fine(p_info.getTableName() + "." + where);
+				if (log.isLoggable(Level.FINE)) log.fine(p_info.getTableName() + "." + where);
 			else
-				log.fine("[" + m_trxName + "] - " + p_info.getTableName() + "." + where);
+				if (log.isLoggable(Level.FINE)) log.fine("[" + m_trxName + "] - " + p_info.getTableName() + "." + where);
 			if (!updated)	//	Updated not explicitly set
 			{
 				Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -2675,9 +2675,9 @@ public abstract class PO
 			}
 		}
 		if (m_trxName == null)
-			log.fine(p_info.getTableName() + " - " + get_WhereClause(true));
+			if (log.isLoggable(Level.FINE)) log.fine(p_info.getTableName() + " - " + get_WhereClause(true));
 		else
-			log.fine("[" + m_trxName + "] - " + p_info.getTableName() + " - " + get_WhereClause(true));
+			if (log.isLoggable(Level.FINE)) log.fine("[" + m_trxName + "] - " + p_info.getTableName() + " - " + get_WhereClause(true));
 
 		//	Set new DocumentNo
 		String columnName = "DocumentNo";
@@ -3193,7 +3193,7 @@ public abstract class PO
 					if (m_trxName == null)
 						log.fine("complete");
 					else
-						log.fine("[" + m_trxName + "] - complete");
+						if (log.isLoggable(Level.FINE)) log.fine("[" + m_trxName + "] - complete");
 					m_attachment = null;
 				}
 			}
@@ -3400,7 +3400,7 @@ public abstract class PO
 			MColumn column = new MColumn(getCtx(), uuidColumnId, get_TrxName());
 			UUIDGenerator.updateUUID(column, get_TrxName());
 		}
-		log.fine("#" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 		return no > 0;
 	}	//	insertTranslations
 
@@ -3467,7 +3467,7 @@ public abstract class PO
 		sql.append(" WHERE ")
 			.append(keyColumn).append("=").append(get_ID());
 		int no = DB.executeUpdate(sql.toString(), m_trxName);
-		log.fine("#" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 		return no >= 0;
 	}	//	updateTranslations
 
@@ -3491,7 +3491,7 @@ public abstract class PO
 			.append(tableName).append("_Trl WHERE ")
 			.append(keyColumn).append("=").append(get_ID());
 		int no = DB.executeUpdate(sql.toString(), trxName);
-		log.fine("#" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 		return no >= 0;
 	}	//	deleteTranslations
 
@@ -3573,7 +3573,7 @@ public abstract class PO
 		//
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
 		if (no > 0)
-			log.fine("#" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 		else
 			log.warning("#" + no
 				+ " - Table=" + acctTable + " from " + acctBaseTable);
@@ -3652,7 +3652,7 @@ public abstract class PO
 				+ "WHERE e.AD_Tree_ID=t.AD_Tree_ID AND Node_ID=").append(get_ID()).append(")");
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
 		if (no > 0)
-			log.fine("#" + no + " - TreeType=" + treeType);
+			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=" + treeType);
 		else
 			log.warning("#" + no + " - TreeType=" + treeType);
 
@@ -3682,7 +3682,7 @@ public abstract class PO
 			.append(treeType).append("')");
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
 		if (no > 0)
-			log.fine("#" + no + " - TreeType=" + treeType);
+			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=" + treeType);
 		else
 			log.warning("#" + no + " - TreeType=" + treeType);
 		return no > 0;
@@ -3744,7 +3744,7 @@ public abstract class PO
 			else
 				success = DB.executeUpdate(sql, trxName) == 1;
 			if (success)
-				log.fine("success" + (trxName == null ? "" : "[" + trxName + "]"));
+				if (log.isLoggable(Level.FINE)) log.fine("success" + (trxName == null ? "" : "[" + trxName + "]"));
 			else
 				log.log(Level.WARNING, "failed" + (trxName == null ? "" : " [" + trxName + "]"));
 			return success;
@@ -3824,7 +3824,7 @@ public abstract class PO
 		{
 			if (m_attachment.getEntryName(i).endsWith(extension))
 			{
-				log.fine("#" + i + ": " + m_attachment.getEntryName(i));
+				if (log.isLoggable(Level.FINE)) log.fine("#" + i + ": " + m_attachment.getEntryName(i));
 				return true;
 			}
 		}
@@ -3845,7 +3845,7 @@ public abstract class PO
 		{
 			if (m_attachment.getEntryName(i).endsWith(extension))
 			{
-				log.fine("#" + i + ": " + m_attachment.getEntryName(i));
+				if (log.isLoggable(Level.FINE)) log.fine("#" + i + ": " + m_attachment.getEntryName(i));
 				return m_attachment.getEntryData(i);
 			}
 		}
@@ -3977,7 +3977,7 @@ public abstract class PO
 	 */
 	private Object get_LOB (Object value)
 	{
-		log.fine("Value=" + value);
+		if (log.isLoggable(Level.FINE)) log.fine("Value=" + value);
 		if (value == null)
 			return null;
 		//

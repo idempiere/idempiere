@@ -319,7 +319,7 @@ public class MLanguage extends X_AD_Language
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		int no = TranslationTable.getActiveLanguages(true);
-		log.fine("Active Languages=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Active Languages=" + no);
 		return true;
 	}	//	afterSave
 
@@ -368,7 +368,7 @@ public class MLanguage extends X_AD_Language
 	{
 		StringBuilder sql = new StringBuilder("DELETE  FROM  ").append(tableName).append(" WHERE AD_Language=?");
 		int no = DB.executeUpdateEx(sql.toString(), new Object[]{getAD_Language()}, get_TrxName());
-		log.fine(tableName + " #" + no);
+		if (log.isLoggable(Level.FINE)) log.fine(tableName + " #" + no);
 		return no;
 	}	//	deleteTable
 
@@ -442,7 +442,7 @@ public class MLanguage extends X_AD_Language
 			UUIDGenerator.updateUUID(column, get_TrxName());
 		//
 		StringBuilder msglog = new StringBuilder().append(tableName).append(" #").append(no);
-		log.fine(msglog.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 		return no;
 	}	//	addTable
 

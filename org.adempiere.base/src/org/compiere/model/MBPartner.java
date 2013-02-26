@@ -244,7 +244,7 @@ public class MBPartner extends X_C_BPartner
 			setShareOfCustomer(0);
 			setSalesVolume(0);
 		}
-		log.fine(toString());
+		if (log.isLoggable(Level.FINE)) log.fine(toString());
 	}	//	MBPartner
 
 	/**

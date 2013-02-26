@@ -226,9 +226,9 @@ public abstract class PaymentFormCash extends PaymentForm {
 		 */
 		if (!PAYMENTRULE.equals(m_PaymentRule))
 		{
-			log.fine("Changed PaymentRule: " + m_PaymentRule + " -> " + PAYMENTRULE);
+			if (log.isLoggable(Level.FINE)) log.fine("Changed PaymentRule: " + m_PaymentRule + " -> " + PAYMENTRULE);
 			//  We had a CashBook Entry
-			log.fine("Old Cash - " + m_cashLine);
+			if (log.isLoggable(Level.FINE)) log.fine("Old Cash - " + m_cashLine);
 			if (m_cashLine != null)
 			{
 				MCashLine cl = m_cashLine.createReversal();
@@ -365,7 +365,7 @@ public abstract class PaymentFormCash extends PaymentForm {
 		 */
 		if (m_Cash_As_Payment)
 		{
-			log.fine("Payment - " + PAYMENTRULE);
+			if (log.isLoggable(Level.FINE)) log.fine("Payment - " + PAYMENTRULE);
 			//  Set Amount
 			m_mPayment.setAmount(m_C_Currency_ID, payAmount);
 			// Get changes to cash amount
@@ -396,7 +396,7 @@ public abstract class PaymentFormCash extends PaymentForm {
 				}
 			}
 			else
-				log.fine("NotDraft " + m_mPayment);
+				if (log.isLoggable(Level.FINE)) log.fine("NotDraft " + m_mPayment);
 		}
 		
 		/**********************

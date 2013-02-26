@@ -108,7 +108,7 @@ public class FactReconciliation extends SvrProcess
 		rs = null; pstmt = null;
 	}
 	
-		log.fine((System.currentTimeMillis() - m_start) + " ms");
+		if (log.isLoggable(Level.FINE)) log.fine((System.currentTimeMillis() - m_start) + " ms");
 		return "";
 	}	//	doIt
 

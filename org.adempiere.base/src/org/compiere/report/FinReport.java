@@ -32,7 +32,6 @@ import org.compiere.print.MPrintFormatItem;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereUserError;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -287,7 +286,7 @@ public class FinReport extends SvrProcess
 			+ "WHERE IsActive='Y' AND PA_ReportLineSet_ID=").append(PA_ReportLineSet_ID);
 
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Report Lines = " + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Report Lines = " + no);
 
 		//	** Get Data	** Segment Values
 		m_columns = m_report.getColumnSet().getColumns();
@@ -318,7 +317,7 @@ public class FinReport extends SvrProcess
 		else
 			getProcessInfo().setSerializableObject(getPrintFormat());
 
-		log.fine((System.currentTimeMillis() - m_start) + " ms");
+		if (log.isLoggable(Level.FINE)) log.fine((System.currentTimeMillis() - m_start) + " ms");
 		return "";
 	}	//	doIt
 
@@ -509,7 +508,7 @@ public class FinReport extends SvrProcess
 			int oper_1 = m_lines[line].getOper_1_ID();
 			int oper_2 = m_lines[line].getOper_2_ID();
 
-			log.fine("Line " + line + " = #" + oper_1 + " " 
+			if (log.isLoggable(Level.FINE)) log.fine("Line " + line + " = #" + oper_1 + " " 
 				+ m_lines[line].getCalculationType() + " #" + oper_2);
 
 			//	Adding
@@ -552,7 +551,7 @@ public class FinReport extends SvrProcess
 					log.log(Level.SEVERE, "(+) #=" + no + " for " + m_lines[line] + " - " + sb.toString());
 				else
 				{
-					log.fine("(+) Line=" + line + " - " + m_lines[line]);
+					if (log.isLoggable(Level.FINE)) log.fine("(+) Line=" + line + " - " + m_lines[line]);
 					if (log.isLoggable(Level.FINEST)) log.finest ("(+) " + sb.toString ());
 				}
 			}
@@ -628,7 +627,7 @@ public class FinReport extends SvrProcess
 					log.severe ("(x) #=" + no + " for " + m_lines[line] + " - " + sb.toString ());
 				else
 				{
-					log.fine("(x) Line=" + line + " - " + m_lines[line]);
+					if (log.isLoggable(Level.FINE)) log.fine("(x) Line=" + line + " - " + m_lines[line]);
 					if (log.isLoggable(Level.FINEST)) log.finest (sb.toString());
 				}
 			}
@@ -659,12 +658,12 @@ public class FinReport extends SvrProcess
 				log.log(Level.SEVERE, "Column Index for Operator 2 not found - " + m_columns[col]);
 				continue;
 			}
-			log.fine("Column " + col + " = #" + ii_1 + " " 
+			if (log.isLoggable(Level.FINE)) log.fine("Column " + col + " = #" + ii_1 + " " 
 				+ m_columns[col].getCalculationType() + " #" + ii_2);
 			//	Reverse Range
 			if (ii_1 > ii_2 && m_columns[col].isCalculationTypeRange())
 			{
-				log.fine("Swap operands from " + ii_1 + " op " + ii_2);
+				if (log.isLoggable(Level.FINE)) log.fine("Swap operands from " + ii_1 + " op " + ii_2);
 				int temp = ii_1;
 				ii_1 = ii_2;
 				ii_2 = temp;
@@ -704,7 +703,7 @@ public class FinReport extends SvrProcess
 					+ " - " + sb.toString());
 			else
 			{
-				log.fine("Col=" + col + " - " + m_columns[col]);
+				if (log.isLoggable(Level.FINE)) log.fine("Col=" + col + " - " + m_columns[col]);
 				if (log.isLoggable(Level.FINEST)) log.finest (sb.toString ());
 			}
 		} 	//	for all columns
@@ -851,7 +850,7 @@ public class FinReport extends SvrProcess
 			.append(" AND Col_0 IS NULL AND Col_1 IS NULL AND Col_2 IS NULL AND Col_3 IS NULL AND Col_4 IS NULL AND Col_5 IS NULL AND Col_6 IS NULL AND Col_7 IS NULL AND Col_8 IS NULL AND Col_9 IS NULL")
 			.append(" AND Col_10 IS NULL AND Col_11 IS NULL AND Col_12 IS NULL AND Col_13 IS NULL AND Col_14 IS NULL AND Col_15 IS NULL AND Col_16 IS NULL AND Col_17 IS NULL AND Col_18 IS NULL AND Col_19 IS NULL AND Col_20 IS NULL"); 
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Deleted empty #=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Deleted empty #=" + no);
 		
 		//	Set SeqNo
 		sql = new StringBuffer ("UPDATE T_Report r1 "
@@ -861,7 +860,7 @@ public class FinReport extends SvrProcess
 				+ " AND r2.Record_ID=0 AND r2.Fact_Acct_ID=0)"
 			+ "WHERE SeqNo IS NULL");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("SeqNo #=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("SeqNo #=" + no);
 
 		if (!m_report.isListTrx())
 			return;
@@ -878,8 +877,7 @@ public class FinReport extends SvrProcess
 			+ "WHERE Fact_Acct_ID <> 0 AND AD_PInstance_ID=")
 			.append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		if (CLogMgt.isLevelFinest())
-			log.fine("Trx Name #=" + no + " - " + sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine("Trx Name #=" + no + " - " + sql.toString());
 	}	//	insertLineDetail
 
 	/**
@@ -898,7 +896,7 @@ public class FinReport extends SvrProcess
 		String variable = m_lines[line].getSourceColumnName();
 		if (variable == null)
 			return;
-		log.fine("Variable=" + variable);
+		if (log.isLoggable(Level.FINE)) log.fine("Variable=" + variable);
 
 		//	Insert
 		StringBuffer insert = new StringBuffer("INSERT INTO T_Report "
@@ -1020,8 +1018,7 @@ public class FinReport extends SvrProcess
 			.append(" GROUP BY ").append(variable);
 
 		int no = DB.executeUpdate(insert.toString(), get_TrxName());
-		if (CLogMgt.isLevelFinest())
-			log.fine("Source #=" + no + " - " + insert);
+		if (log.isLoggable(Level.FINE)) log.fine("Source #=" + no + " - " + insert);
 		if (no == 0)
 			return;
 
@@ -1033,8 +1030,7 @@ public class FinReport extends SvrProcess
 			.append(" AND PA_ReportLine_ID=").append(m_lines[line].getPA_ReportLine_ID())
 			.append(" AND Fact_Acct_ID=0");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		if (CLogMgt.isLevelFinest())
-			log.fine("Name #=" + no + " - " + sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine("Name #=" + no + " - " + sql.toString());
 
 		if (m_report.isListTrx())
 			insertLineTrx (line, variable);
@@ -1134,7 +1130,7 @@ public class FinReport extends SvrProcess
 					+ " AND PA_ReportLine_ID=" + m_lines[line].getPA_ReportLine_ID();
 				int no = DB.executeUpdate(sql, get_TrxName());
 				if (no > 0)
-					log.fine(m_lines[line].getName() + " - #" + no);
+					if (log.isLoggable(Level.FINE)) log.fine(m_lines[line].getName() + " - #" + no);
 			}
 		}	//	for all lines
 	}	//	deleteUnprintedLines
@@ -1160,7 +1156,7 @@ public class FinReport extends SvrProcess
 					+  " WHERE AD_PInstance_ID=" + getAD_PInstance_ID();
 				int no = DB.executeUpdate(sql, get_TrxName());
 				if (no > 0)
-					log.fine(m_columns[column].getName() + " - #" + no);
+					if (log.isLoggable(Level.FINE)) log.fine(m_columns[column].getName() + " - #" + no);
 			}
 		}
 		
@@ -1200,7 +1196,7 @@ public class FinReport extends SvrProcess
 		else if (!m_report.getDescription().equals(pf.getDescription()))
 			pf.setDescription(m_report.getDescription());
 		pf.saveEx();
-		log.fine(pf + " - #" + pf.getItemCount());
+		if (log.isLoggable(Level.FINE)) log.fine(pf + " - #" + pf.getItemCount());
 
 		//	Print Format Item Sync
 		int count = pf.getItemCount();
@@ -1309,7 +1305,7 @@ public class FinReport extends SvrProcess
 					pfi.setSortNo(0);
 			}
 			pfi.saveEx();
-			log.fine(pfi.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(pfi.toString());
 		}
 		//	set translated to original
 		pf.setTranslation();

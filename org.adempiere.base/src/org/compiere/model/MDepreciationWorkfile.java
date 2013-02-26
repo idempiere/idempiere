@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.apache.commons.collections.keyvalue.MultiKey;
 import org.compiere.util.CCache;
@@ -351,7 +352,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		Timestamp lastActionDate = getLastActionDate();
 		boolean isDepr = !date.after(lastActionDate);		// date <= lastActionDate
 		
-		log.fine("LastActionDate=" + lastActionDate + ", GivenDate=" + date + " => isDepreciated=" + isDepr);
+		if (log.isLoggable(Level.FINE)) log.fine("LastActionDate=" + lastActionDate + ", GivenDate=" + date + " => isDepreciated=" + isDepr);
 		return isDepr;
 	}
 	
@@ -425,7 +426,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		setA_Asset_Cost(newCost);
 		setA_QTY_Current(newQty);
 		
-		if(CLogMgt.isLevelFine()) log.fine("adjustCost(" + deltaAmt + ", " + deltaQty + ", reset=" + reset + ") => amt=" + getA_Asset_Cost() + ", qty=" + getA_QTY_Current());
+		if (log.isLoggable(Level.FINE)) log.fine("adjustCost(" + deltaAmt + ", " + deltaQty + ", reset=" + reset + ") => amt=" + getA_Asset_Cost() + ", qty=" + getA_QTY_Current());
 	}
 	
 	/**
@@ -455,12 +456,12 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	 */
 	public void adjustUseLife(int deltaUseLifeYears, int deltaUseLifeYears_F, boolean reset)
 	{
-		if(CLogMgt.isLevelFine()) log.fine("Entering: deltaUseLifeYears=" + deltaUseLifeYears + ", deltaUseLifeYears_F=" + deltaUseLifeYears_F);
+		if (log.isLoggable(Level.FINE)) log.fine("Entering: deltaUseLifeYears=" + deltaUseLifeYears + ", deltaUseLifeYears_F=" + deltaUseLifeYears_F);
 		//
 		UseLifeImpl.get(this, false).adjustUseLifeYears(deltaUseLifeYears, reset);
 		UseLifeImpl.get(this, true).adjustUseLifeYears(deltaUseLifeYears_F, reset);
 		//
-		if(CLogMgt.isLevelFine()) log.fine("Leaving");
+		if (log.isLoggable(Level.FINE)) log.fine("Leaving");
 	}
 	
 	/**	*/
@@ -549,7 +550,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		setA_Current_Period(new_period);
 		setDateAcct(new_date);
 		//
-		if(CLogMgt.isLevelFine()) log.fine("(A_Current_Period, DateAcct)=(" + old_period + ", " + old_date + ")->(" + new_period + ", " + new_date + ")");
+		if (log.isLoggable(Level.FINE)) log.fine("(A_Current_Period, DateAcct)=(" + old_period + ", " + old_date + ")->(" + new_period + ", " + new_date + ")");
 	}
 	
 	/**
@@ -669,7 +670,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 													exp_C, exp_F,
 													accumDep_C, accumDep_F,
 													help, get_TrxName());
-			if(CLogMgt.isLevelFine())
+			if (log.isLoggable(Level.FINE)) 
 			{
 				String info = "" + cnt + ": period=" + currentPeriod + "/" + lifePeriods_C + "|" + lifePeriods_F
 					+ ", exp=" + exp_C + "|" + exp_F + ", accumDep=" + accumDep_C + "|" + accumDep_F
@@ -678,7 +679,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 				sb.append(info + Env.NL);
 			}
 		} // for
-		log.fine(sb.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(sb.toString());
 		
 		m_buildDepreciation = false;
 	}	//	buildDepreciation
@@ -703,7 +704,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		;
 		Object[] params = new Object[]{false, A_Current_Period, getA_Asset_ID(), getPostingType()};
 		int no = DB.executeUpdateEx(sql, params, trxName);
-		log.fine("sql=" + sql + "\nDeleted #" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("sql=" + sql + "\nDeleted #" + no);
 	}	//	truncDepreciation
 	
 	/**

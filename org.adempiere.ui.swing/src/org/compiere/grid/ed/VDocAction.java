@@ -203,7 +203,7 @@ public class VDocAction extends CDialog
 			return;
 		}
 
-		log.fine("DocStatus=" + DocStatus 
+		if (log.isLoggable(Level.FINE)) log.fine("DocStatus=" + DocStatus 
 			+ ", DocAction=" + DocAction + ", OrderType=" + OrderType 
 			+ ", IsSOTrx=" + IsSOTrx + ", Processing=" + Processing 
 			+ ", AD_Table_ID=" + m_AD_Table_ID + ", Record_ID=" + Record_ID);
@@ -245,7 +245,7 @@ public class VDocAction extends CDialog
 		if(doctypeId==null || doctypeId.intValue()==0){
 			doctypeId = (Integer)m_mTab.getValue("C_DocTypeTarget_ID");
 		}
-		log.fine("get doctype: " + doctypeId);
+		if (log.isLoggable(Level.FINE)) log.fine("get doctype: " + doctypeId);
 		if (doctypeId != null) {
 			index = DocumentEngine.checkActionAccess(Env.getAD_Client_ID(Env.getCtx()),
 					Env.getAD_Role_ID(Env.getCtx()), 

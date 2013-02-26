@@ -176,7 +176,7 @@ public class AssetServlet extends HttpServlet
 		MAsset asset = new MAsset(ctx, A_Asset_ID, null);
 		if (asset.getA_Asset_ID() != A_Asset_ID)
 		{
-			log.fine("Asset not found - ID=" + A_Asset_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("Asset not found - ID=" + A_Asset_ID);
 			return "Asset not found";
 		}
 		//	Get WebUser & Compare with invoice
@@ -215,7 +215,7 @@ public class AssetServlet extends HttpServlet
 				}
 			}
 		}
-		log.fine(dl_name + " - " + dl_url);
+		if (log.isLoggable(Level.FINE)) log.fine(dl_name + " - " + dl_url);
 		if (dl_name == null || dl_url == null || in == null)
 			return "@NotFound@ @A_Asset_ID@: " + pd;
 
@@ -257,7 +257,7 @@ public class AssetServlet extends HttpServlet
 			int bufferSize = 2048; //	2k Buffer
 			response.setBufferSize(bufferSize);
 			//
-			log.fine(in + ", available=" + in.available());
+			if (log.isLoggable(Level.FINE)) log.fine(in + ", available=" + in.available());
 			long time = System.currentTimeMillis();
 			
 			//	Zip Output Stream

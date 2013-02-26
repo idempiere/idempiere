@@ -132,7 +132,7 @@ public class WImageEditor extends WEditor
 		if (m_mImage == null || newValue != m_mImage.get_ID())
 			m_mImage = MImage.get (Env.getCtx(), newValue);
 		//
-		log.fine(m_mImage.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(m_mImage.toString());
 		AImage img = null;
 		byte[] data = m_mImage.getData();
 		if (data != null && data.length > 0) {

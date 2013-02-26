@@ -110,7 +110,7 @@ public class WebProjectDeploy extends SvrProcess
 			{
 				String name = container.getName();
 				if (container.delete(true))
-					log.fine("Deleted: " + name);
+					if (log.isLoggable(Level.FINE)) log.fine("Deleted: " + name);
 				else	//	e.g. was referenced
 				{
 					log.warning("Failed Delete: " + name);

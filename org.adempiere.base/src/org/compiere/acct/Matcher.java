@@ -132,7 +132,7 @@ public class Matcher
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine("Matcher.match - Client_ID=" + m_AD_Client_ID
+		if (log.isLoggable(Level.FINE)) log.fine("Matcher.match - Client_ID=" + m_AD_Client_ID
 			+ ", Records created=" + counter);
 		return counter;
 	}	//	match
@@ -152,7 +152,7 @@ public class Matcher
 		int M_InOutLine_ID, int C_InvoiceLine_ID,
 		int M_Product_ID, Timestamp DateTrx, BigDecimal Qty)
 	{
-		log.fine("InvLine=" + C_InvoiceLine_ID + ",Rec=" + M_InOutLine_ID + ", Qty=" + Qty + ", " + DateTrx);
+		if (log.isLoggable(Level.FINE)) log.fine("InvLine=" + C_InvoiceLine_ID + ",Rec=" + M_InOutLine_ID + ", Qty=" + Qty + ", " + DateTrx);
 		
 	//	MMatchInv inv = new MMatchInv ();
 		int M_MatchInv_ID = DB.getNextID (AD_Client_ID, "M_MatchInv", m_trxName);

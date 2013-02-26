@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.UUID;
 
 import org.adempiere.base.IGridTabImporter;
@@ -195,7 +196,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 						StringBuilder lineError = new StringBuilder();
 						String headName = set.getKey();
 						Object value = set.getValue();
-						log.fine("Setting " + headName + " to " + value);
+						if (log.isLoggable(Level.FINE)) log.fine("Setting " + headName + " to " + value);
 
 						String columnName = headName;
 						

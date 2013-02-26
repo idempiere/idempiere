@@ -1690,7 +1690,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             {
                 String ColumnName = wed.getColumnName();
                 StringBuilder msglog = new StringBuilder(ColumnName).append("=").append(value);
-                log.fine(msglog.toString());
+                if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 
                 // globalqss - Carlos Ruiz - 20060711
                 // fix a bug with virtualColumn + isSelectionColumn not yielding results
@@ -1969,7 +1969,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 ret.append(getSubCategoriesString(node.getNodeId(), categories, loopIndicatorId)).append(",");
             }
         }
-        log.fine(ret.toString());
+        if (log.isLoggable(Level.FINE)) log.fine(ret.toString());
         StringBuilder msgreturn = new StringBuilder(ret.toString()).append(productCategoryId);
         return msgreturn.toString();
 

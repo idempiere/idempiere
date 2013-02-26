@@ -421,7 +421,7 @@ public final class VBPartner extends CDialog implements ActionListener
 		else
 			m_partner.setC_Greeting_ID(0);
 		if (m_partner.save())
-			log.fine("C_BPartner_ID=" + m_partner.getC_BPartner_ID());
+			if (log.isLoggable(Level.FINE)) log.fine("C_BPartner_ID=" + m_partner.getC_BPartner_ID());
 		else
 			ADialog.error(m_WindowNo, this, "BPartnerNotSaved");
 		
@@ -434,7 +434,7 @@ public final class VBPartner extends CDialog implements ActionListener
 		m_pLocation.setPhone2(fPhone2.getText());
 		m_pLocation.setFax(fFax.getText());
 		if (m_pLocation.save())
-			log.fine("C_BPartner_Location_ID=" + m_pLocation.getC_BPartner_Location_ID());
+			if (log.isLoggable(Level.FINE)) log.fine("C_BPartner_Location_ID=" + m_pLocation.getC_BPartner_Location_ID());
 		else
 			ADialog.error(m_WindowNo, this, "BPartnerNotSaved", Msg.translate(Env.getCtx(), "C_BPartner_Location_ID"));
 			
@@ -460,7 +460,7 @@ public final class VBPartner extends CDialog implements ActionListener
 			m_user.setPhone2(fPhone2.getText());
 			m_user.setFax(fFax.getText());
 			if (m_user.save())
-				log.fine("AD_User_ID=" + m_user.getAD_User_ID());
+				if (log.isLoggable(Level.FINE)) log.fine("AD_User_ID=" + m_user.getAD_User_ID());
 			else
 				ADialog.error(m_WindowNo, this, "BPartnerNotSaved", Msg.translate(Env.getCtx(), "AD_User_ID"));
 		}

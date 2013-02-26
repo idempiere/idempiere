@@ -129,7 +129,7 @@ public class Doc_MatchPO extends Doc
 			|| getQty().signum() == 0
 			|| m_M_InOutLine_ID == 0)	//  No posting if not matched to Shipment
 		{
-			log.fine("No Product/Qty - M_Product_ID=" + getM_Product_ID()
+			if (log.isLoggable(Level.FINE)) log.fine("No Product/Qty - M_Product_ID=" + getM_Product_ID()
 				+ ",Qty=" + getQty());
 			return facts;
 		}
@@ -311,7 +311,7 @@ public class Doc_MatchPO extends Doc
 					{
 						int stdPrecision = MCurrency.getStdPrecision(getCtx(), m_oLine.getC_Currency_ID());
 						BigDecimal costTax = tax.calculateTax(poCost, true, stdPrecision);
-						log.fine("Costs=" + poCost + " - Tax=" + costTax);
+						if (log.isLoggable(Level.FINE)) log.fine("Costs=" + poCost + " - Tax=" + costTax);
 						poCost = poCost.subtract(costTax);
 					}
 				}	//	correct included Tax

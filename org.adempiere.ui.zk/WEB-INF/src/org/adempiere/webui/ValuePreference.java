@@ -484,7 +484,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 			sql.append(" AND AD_Window_ID IS NULL");
 		sql.append(" AND Attribute='").append(m_Attribute).append("'");
 		//
-		log.fine( sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine( sql.toString());
 		int no = DB.executeUpdate(sql.toString(), null);
 		if (no > 0)
 			Env.setContext(m_ctx, getContextKey(), (String)null);
@@ -548,7 +548,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		//
 		sql.append(DB.TO_STRING(m_Attribute)).append(",").append(DB.TO_STRING(m_Value)).append(")");
 		//
-		log.fine( sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine( sql.toString());
 		no = DB.executeUpdate(sql.toString(), null);
 		if (no == 1)
 		{

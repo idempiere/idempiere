@@ -397,7 +397,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		m_activities = new MWFActivity[list.size ()];
 		list.toArray (m_activities);
 		//
-		log.fine("#" + m_activities.length
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_activities.length
 			+ "(" + (System.currentTimeMillis()-start) + "ms)");
 		m_index = 0;
 
@@ -488,7 +488,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	 */
 	public void display (int index)
 	{
-		log.fine("Index=" + index);
+		if (log.isLoggable(Level.FINE)) log.fine("Index=" + index);
 		//
 		m_activity = resetDisplay(index);
 		//	Nothing to show

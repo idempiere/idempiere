@@ -227,7 +227,7 @@ public final class DB
 			.append(", RequestUserPW=").append(DB.TO_STRING(mailPassword))
 			.append(", IsSMTPAuthorization='Y' WHERE AD_Client_ID=0");
 		int no = DB.executeUpdate(sql.toString(), null);
-		log.fine("Client #"+no);
+		if (log.isLoggable(Level.FINE)) log.fine("Client #"+no);
 		//
 		sql = new StringBuffer("UPDATE AD_User SET ")
 			.append(" EMail=").append(DB.TO_STRING(adminEMail))
@@ -235,7 +235,7 @@ public final class DB
 			.append(", EMailUserPW=").append(DB.TO_STRING(mailPassword))
 			.append(" WHERE AD_User_ID IN (0,100)");
 		no = DB.executeUpdate(sql.toString(), null);
-		log.fine("User #"+no);
+		if (log.isLoggable(Level.FINE)) log.fine("User #"+no);
 		//
 		try
 		{
@@ -1219,7 +1219,7 @@ public final class DB
 		String statements[] = sql.split(SQLSTATEMENT_SEPARATOR);
 		for (int i = 0; i < statements.length; i++)
 		{
-			log.fine(statements[i]);
+			if (log.isLoggable(Level.FINE)) log.fine(statements[i]);
 			no += executeUpdate(statements[i], null, ignoreError, trxName);
 		}
 
@@ -1354,7 +1354,7 @@ public final class DB
     		if (rs.next())
     			retValue = rs.getInt(1);
     		else
-    			log.fine("No Value " + sql);
+    			if (log.isLoggable(Level.FINE)) log.fine("No Value " + sql);
     	}
     	catch (SQLException e)
     	{
@@ -1435,7 +1435,7 @@ public final class DB
     		if (rs.next())
     			retValue = rs.getString(1);
     		else
-    			log.fine("No Value " + sql);
+    			if (log.isLoggable(Level.FINE)) log.fine("No Value " + sql);
     	}
     	catch (SQLException e)
     	{
@@ -1516,7 +1516,7 @@ public final class DB
     		if (rs.next())
     			retValue = rs.getBigDecimal(1);
     		else
-    			log.fine("No Value " + sql);
+    			if (log.isLoggable(Level.FINE)) log.fine("No Value " + sql);
     	}
     	catch (SQLException e)
     	{
@@ -1599,7 +1599,7 @@ public final class DB
     		if (rs.next())
     			retValue = rs.getTimestamp(1);
     		else
-    			log.fine("No Value " + sql);
+    			if (log.isLoggable(Level.FINE)) log.fine("No Value " + sql);
     	}
     	catch (SQLException e)
     	{
@@ -1982,7 +1982,7 @@ public final class DB
 			C_DocType_ID = Env.getContextAsInt(ctx, WindowNo + "|C_DocType_ID");
 		if (C_DocType_ID == 0)
 		{
-			log.fine("Window=" + WindowNo
+			if (log.isLoggable(Level.FINE)) log.fine("Window=" + WindowNo
 				+ " - Target=" + Env.getContextAsInt(ctx, WindowNo + "|C_DocTypeTarget_ID") + "/" + Env.getContextAsInt(ctx, WindowNo, "C_DocTypeTarget_ID")
 				+ " - Actual=" + Env.getContextAsInt(ctx, WindowNo + "|C_DocType_ID") + "/" + Env.getContextAsInt(ctx, WindowNo, "C_DocType_ID"));
 			return getDocumentNo (AD_Client_ID, TableName, trxName);
