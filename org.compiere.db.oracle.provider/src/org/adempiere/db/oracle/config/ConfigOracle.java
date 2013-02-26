@@ -463,7 +463,7 @@ public class ConfigOracle implements IDatabaseConfig
 	 */
 	private boolean testJDBC (String url, String uid, String pwd)
 	{
-		log.fine("Url=" + url + ", UID=" + uid);
+		if (log.isLoggable(Level.FINE)) log.fine("Url=" + url + ", UID=" + uid);
 		try
 		{
 			DriverManager.registerDriver(Database.getDatabase(Database.DB_ORACLE).getDriver());

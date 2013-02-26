@@ -153,7 +153,7 @@ public class RfQServlet extends HttpServlet
 		MRfQ doc = new MRfQ (ctx, C_RfQ_ID, null);
 		if (doc.getC_RfQ_ID() != C_RfQ_ID)
 		{
-			log.fine("streamAttachment - RfQ not found - ID=" + C_RfQ_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("streamAttachment - RfQ not found - ID=" + C_RfQ_ID);
 			return "RfQ not found";
 		}
 
@@ -173,7 +173,7 @@ public class RfQServlet extends HttpServlet
 			response.setBufferSize(bufferSize);
 			response.setContentLength(fileLength);
 			//
-			log.fine("streamAttachment - length=" + fileLength);
+			if (log.isLoggable(Level.FINE)) log.fine("streamAttachment - length=" + fileLength);
 			long time = System.currentTimeMillis();		//	timer start
 			//
 			ServletOutputStream out = response.getOutputStream ();
@@ -183,7 +183,7 @@ public class RfQServlet extends HttpServlet
 			//
 			time = System.currentTimeMillis() - time;
 			double speed = (fileLength/(double)1024) / (time/(double)1000);
-			log.fine("streamInvoice - length=" 
+			if (log.isLoggable(Level.FINE)) log.fine("streamInvoice - length=" 
 				+ fileLength + " - " 
 				+ time + " ms - " 
 				+ speed + " kB/sec");
@@ -257,7 +257,7 @@ public class RfQServlet extends HttpServlet
 	 */
 	private String updateResponse (HttpServletRequest request, MRfQResponse rfqResponse)
 	{
-		log.fine("updateResponse - " + rfqResponse);
+		if (log.isLoggable(Level.FINE)) log.fine("updateResponse - " + rfqResponse);
 		String saveError = "RfQ NOT updated";
 		String msg = "RfQ updated";
 		//	RfQ Response
@@ -311,7 +311,7 @@ public class RfQServlet extends HttpServlet
 					return saveError;
 			}
 		}
-		log.fine("complete - " + rfqResponse);
+		if (log.isLoggable(Level.FINE)) log.fine("complete - " + rfqResponse);
 		return msg;
 	}	//	updateResponse
 

@@ -149,7 +149,7 @@ public class InfoServlet  extends HttpServlet
 		//	contact = -1
 		int AD_User_ID = WebUtil.getParameterAsInt(request, "contact");
 		//
-		log.fine("Subscribe=" + subscribe
+		if (log.isLoggable(Level.FINE)) log.fine("Subscribe=" + subscribe
 			+ ",R_InterestArea_ID=" + R_InterestArea_ID
 			+ ",AD_User_ID=" + AD_User_ID);
 		if (R_InterestArea_ID == 0 || AD_User_ID == 0)

@@ -239,7 +239,7 @@ public class WFPanel extends CPanel
 		m_WindowNo = WindowNo;
 		m_frame = frame;
 		//
-		log.fine("WindowNo=" + WindowNo);
+		if (log.isLoggable(Level.FINE)) log.fine("WindowNo=" + WindowNo);
 		try
 		{
 			loadPanel();
@@ -310,7 +310,7 @@ public class WFPanel extends CPanel
 	 */
 	public void load (int AD_Workflow_ID, boolean readWrite)
 	{
-		log.fine("RW=" + readWrite + " - AD_Workflow_ID=" + AD_Workflow_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("RW=" + readWrite + " - AD_Workflow_ID=" + AD_Workflow_ID);
 		if (AD_Workflow_ID == 0)
 			return;
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
@@ -412,7 +412,7 @@ public class WFPanel extends CPanel
 	 */
 	public void start (MWFNode node)
 	{
-		log.fine("Node=" + node);
+		if (log.isLoggable(Level.FINE)) log.fine("Node=" + node);
 		//	Info Text
 		StringBuilder msg = new StringBuilder("<HTML>");
 		msg.append("<H2>").append(node.getName(true)).append("</H2>");

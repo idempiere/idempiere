@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.logging.Level;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Checkbox;
@@ -360,7 +361,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 
 		sql.append(" AND p.IsReceipt=?");
 
-		log.fine(sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
 		return sql.toString();
 	} // getSQLWhere
 
@@ -383,7 +384,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		{
 			Integer bp = (Integer)fBPartner_ID.getValue();
 			pstmt.setInt(index++, bp.intValue());
-			log.fine("BPartner=" + bp);
+			if (log.isLoggable(Level.FINE)) log.fine("BPartner=" + bp);
 		}
 
 		if (fDateFrom.getValue() != null || fDateTo.getValue() != null)
@@ -398,7 +399,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 			if (t != null)
 				to = new Timestamp(t.getTime());
 
-			log.fine("Date From=" + from + ", To=" + to);
+			if (log.isLoggable(Level.FINE)) log.fine("Date From=" + from + ", To=" + to);
 
 			if (from == null && to != null)
 				pstmt.setTimestamp(index++, to);
@@ -433,7 +434,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 				}
 			}
 
-			log.fine("Amt From=" + from + ", To=" + to);
+			if (log.isLoggable(Level.FINE)) log.fine("Amt From=" + from + ", To=" + to);
 
 			if (from == null && to != null)
 				pstmt.setBigDecimal(index++, to);
@@ -462,7 +463,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		if (!s.endsWith("%"))
 			s += "%";
 
-		log.fine( "String=" + s);
+		if (log.isLoggable(Level.FINE)) log.fine( "String=" + s);
 
 		return s;
 	} // getSQLText

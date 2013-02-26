@@ -810,7 +810,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			.append("' WHERE M_InOut_ID=").append(getM_InOut_ID());
 		int noLine = DB.executeUpdate(sql.toString(), get_TrxName());
 		m_lines = null;
-		log.fine(processed + " - Lines=" + noLine);
+		if (log.isLoggable(Level.FINE)) log.fine(processed + " - Lines=" + noLine);
 	}	//	setProcessed
 
 	/**
@@ -841,7 +841,7 @@ public class MInOut extends X_M_InOut implements DocAction
 				+ getAD_Client_ID() + " - " + DocBaseType);
 		else
 		{
-			log.fine("DocBaseType=" + DocBaseType + " - C_DocType_ID=" + C_DocType_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("DocBaseType=" + DocBaseType + " - C_DocType_ID=" + C_DocType_ID);
 			setC_DocType_ID (C_DocType_ID);
 			boolean isSOTrx = MDocType.DOCBASETYPE_MaterialDelivery.equals(DocBaseType);
 			setIsSOTrx (isSOTrx);
@@ -921,7 +921,7 @@ public class MInOut extends X_M_InOut implements DocAction
 				{
 					if (!confirm.isProcessed())		//	wait intil done
 					{
-						log.fine("Unprocessed: " + confirm);
+						if (log.isLoggable(Level.FINE)) log.fine("Unprocessed: " + confirm);
 						return;
 					}
 					havePick = true;
@@ -1055,7 +1055,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					.append(" FROM M_InOut o WHERE ol.M_InOut_ID=o.M_InOut_ID) ")
 				.append("WHERE M_InOut_ID=").append(getC_Order_ID());
 			int no = DB.executeUpdate(sql.toString(), get_TrxName());
-			log.fine("Lines -> #" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Lines -> #" + no);
 		}
 		return true;
 	}	//	afterSave
@@ -1291,7 +1291,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			if (sLine.getC_OrderLine_ID() != 0)
 			{
 				oLine = new MOrderLine (getCtx(), sLine.getC_OrderLine_ID(), get_TrxName());
-				log.fine("OrderLine - Reserved=" + oLine.getQtyReserved()
+				if (log.isLoggable(Level.FINE)) log.fine("OrderLine - Reserved=" + oLine.getQtyReserved()
 					+ ", Delivered=" + oLine.getQtyDelivered());
 				if (isSOTrx())
 					QtySO = sLine.getMovementQty();
@@ -1527,7 +1527,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					return DocAction.STATUS_Invalid;
 				}
 				else
-					log.fine("OrderLine -> Reserved=" + oLine.getQtyReserved()
+					if (log.isLoggable(Level.FINE)) log.fine("OrderLine -> Reserved=" + oLine.getQtyReserved()
 						+ ", Delivered=" + oLine.getQtyReserved());
 			}
             //  Update RMA Line Qty Delivered
@@ -1779,7 +1779,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			}
 		}
 
-		log.fine(dropShipment.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(dropShipment.toString());
 
 		dropShipment.setDocAction(DocAction.ACTION_Complete);
 		// added AdempiereException by Zuhri
@@ -1889,7 +1889,7 @@ public class MInOut extends X_M_InOut implements DocAction
 								storage.getQtyOnHand());
 						ma.saveEx();
 						qtyToDeliver = qtyToDeliver.subtract(storage.getQtyOnHand());
-						log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);
+						if (log.isLoggable(Level.FINE)) log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);
 					}
 
 					if (qtyToDeliver.signum() == 0)
@@ -1903,7 +1903,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					int M_AttributeSetInstance_ID = asi.getM_AttributeSetInstance_ID();
 					MInOutLineMA ma = new MInOutLineMA (line, M_AttributeSetInstance_ID, qtyToDeliver);
 					ma.saveEx();
-					log.fine("##: " + ma);
+					if (log.isLoggable(Level.FINE)) log.fine("##: " + ma);
 				}
 			}	//	outgoing Trx
 		}	//	attributeSetInstance
@@ -1945,7 +1945,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		MDocTypeCounter counterDT = MDocTypeCounter.getCounterDocType(getCtx(), getC_DocType_ID());
 		if (counterDT != null)
 		{
-			log.fine(counterDT.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(counterDT.toString());
 			if (!counterDT.isCreateCounter() || !counterDT.isValid())
 				return null;
 			C_DocTypeTarget_ID = counterDT.getCounter_C_DocType_ID();
@@ -1953,7 +1953,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		else	//	indirect
 		{
 			C_DocTypeTarget_ID = MDocTypeCounter.getCounterDocType_ID(getCtx(), getC_DocType_ID());
-			log.fine("Indirect C_DocTypeTarget_ID=" + C_DocTypeTarget_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("Indirect C_DocTypeTarget_ID=" + C_DocTypeTarget_ID);
 			if (C_DocTypeTarget_ID <= 0)
 				return null;
 		}
@@ -1996,7 +1996,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			counterLine.saveEx(get_TrxName());
 		}
 
-		log.fine(counter.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(counter.toString());
 
 		//	Document Action
 		if (counterDT != null)

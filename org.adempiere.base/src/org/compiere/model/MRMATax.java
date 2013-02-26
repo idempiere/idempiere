@@ -240,7 +240,7 @@ public class MRMATax extends X_M_RMATax
 			setTaxBaseAmt (taxBaseAmt.subtract(taxAmt));
 		else
 			setTaxBaseAmt (taxBaseAmt);
-		log.fine(toString());
+		if (log.isLoggable(Level.FINE)) log.fine(toString());
 		return true;
 	}	//	calculateTaxFromLines
 

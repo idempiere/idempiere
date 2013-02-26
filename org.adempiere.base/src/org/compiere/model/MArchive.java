@@ -265,7 +265,7 @@ public class MArchive extends X_AD_Archive {
 		if (data == null || data.length == 0)
 			return false;
 		//
-		log.fine(toString());
+		if (log.isLoggable(Level.FINE)) log.fine(toString());
 		return true;
 	} // beforeSave
 	

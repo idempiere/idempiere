@@ -272,7 +272,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public boolean initTab (boolean async)
 	{
-		log.fine("#" + m_vo.TabNo + " - Async=" + async + " - Where=" + m_vo.WhereClause);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - Async=" + async + " - Where=" + m_vo.WhereClause);
 		if (isLoadComplete()) return true;
 
 		if (m_loaderFuture != null && m_loaderFuture.isDone())
@@ -318,7 +318,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	protected void dispose()
 	{
-		log.fine("#" + m_vo.TabNo);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo);
 		m_OrderBys = null;
 		//
 		m_parents.clear();
@@ -352,7 +352,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	private boolean loadFields()
 	{
-		log.fine("#" + m_vo.TabNo);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo);
 
 		if (m_vo.getFields() == null)
 			return false;
@@ -616,7 +616,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 		Env.clearTabContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo);
 		
-		log.fine("#" + m_vo.TabNo
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo
 			+ " - Only Current Rows=" + onlyCurrentRows
 			+ ", Days=" + onlyCurrentDays + ", Detail=" + isDetail());
 		//	is it same query?
@@ -730,7 +730,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		/**
 		 *	Query
 		 */
-		log.fine("#" + m_vo.TabNo + " - " + where);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - " + where);
 		if (m_mTable.isOpen())
 		{
 			if (refresh)
@@ -761,20 +761,20 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//	Check: only one restriction
 		if (query.getRestrictionCount() != 1)
 		{
-			log.fine("Ignored(More than 1 Restriction): " + query);
+			if (log.isLoggable(Level.FINE)) log.fine("Ignored(More than 1 Restriction): " + query);
 			return query.getWhereClause();
 		}
 
 		String colName = query.getColumnName(0);
 		if (colName == null)
 		{
-			log.fine("Ignored(No Column): " + query);
+			if (log.isLoggable(Level.FINE)) log.fine("Ignored(No Column): " + query);
 			return query.getWhereClause();
 		}
 		//	a '(' in the name = function - don't try to resolve
 		if (colName.indexOf('(') != -1)
 		{
-			log.fine("Ignored(Function): " + colName);
+			if (log.isLoggable(Level.FINE)) log.fine("Ignored(Function): " + colName);
 			return query.getWhereClause();
 		}
 		//	OK - Query is valid
@@ -782,7 +782,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//	Simple Query.
 		if (getField(colName) != null)
 		{
-			log.fine("Field Found: " + colName);
+			if (log.isLoggable(Level.FINE)) log.fine("Field Found: " + colName);
 			return query.getWhereClause();
 		}
 
@@ -821,7 +821,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			query.setColumnName(0, refColName);
 			if (getField(refColName) != null)
 			{
-				log.fine("Column " + colName + " replaced with " + refColName);
+				if (log.isLoggable(Level.FINE)) log.fine("Column " + colName + " replaced with " + refColName);
 				return query.getWhereClause();
 			}
 			colName = refColName;
@@ -885,7 +885,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			.append(tableName).append(" xx WHERE ")
 			.append(query.getWhereClause(true))
 			.append(")");
-		log.fine(result.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(result.toString());
 		return result.toString();
 	}	//	validateQuery
 
@@ -913,7 +913,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public void dataRefreshAll (boolean fireEvent, boolean retainedCurrentRow)
 	{
-		log.fine("#" + m_vo.TabNo);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo);
 		/** @todo does not work with alpha key */
 		int keyNo = m_mTable.getKeyID(m_currentRow);
 		m_mTable.dataRefreshAll(fireEvent, retainedCurrentRow ? m_currentRow : -1);
@@ -971,7 +971,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public void dataRefresh (int row, boolean fireEvent)
 	{
-		log.fine("#" + m_vo.TabNo + " - row=" + row);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - row=" + row);
 		m_mTable.dataRefresh(row, fireEvent);
 		setCurrentRow(row, fireEvent);
 		if (fireEvent)
@@ -986,7 +986,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public boolean dataSave(boolean manualCmd)
 	{
-		log.fine("#" + m_vo.TabNo + " - row=" + m_currentRow);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - row=" + m_currentRow);
 		try
 		{
 			if (hasChangedCurrentTabAndParents())
@@ -1104,7 +1104,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public void dataIgnore()
 	{
-		log.fine("#" + m_vo.TabNo);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo);
 		if (m_mTable.isInserting()) 
 		{
 			m_currentRow--;
@@ -1113,7 +1113,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		setCurrentRow(m_currentRow, false);    //  re-load data
 
 		fireStateChangeEvent(new StateChangeEvent(this, StateChangeEvent.DATA_IGNORE));
-		log.fine("#" + m_vo.TabNo + "- fini");
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + "- fini");
 	}   //  dataIgnore
 
 
@@ -1125,7 +1125,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public boolean dataNew (boolean copy)
 	{
-		log.fine("#" + m_vo.TabNo);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo);
 		if (!isInsertRecord())
 		{
 			log.warning ("Inset Not allowed in TabNo=" + m_vo.TabNo);
@@ -1182,7 +1182,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public boolean dataDelete()
 	{
-		log.fine("#" + m_vo.TabNo + " - row=" + m_currentRow);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - row=" + m_currentRow);
 		boolean retValue = m_mTable.dataDelete(m_currentRow);
 		setCurrentRow(m_currentRow, true);
 		fireStateChangeEvent(new StateChangeEvent(this, StateChangeEvent.DATA_DELETE));
@@ -1319,7 +1319,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					rs = null;
 					pstmt = null;
 				}
-				log.fine("AD_Column_ID=" + m_vo.AD_Column_ID + " - " + m_linkColumnName);
+				if (log.isLoggable(Level.FINE)) log.fine("AD_Column_ID=" + m_vo.AD_Column_ID + " - " + m_linkColumnName);
 			}
 		}
 		Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, CTX_LinkColumnName, m_linkColumnName);
@@ -1418,7 +1418,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	/*private int getTreeID()
 	{
-		log.fine(m_vo.TableName);
+		if (log.isLoggable(Level.FINE)) log.fine(m_vo.TableName);
 		String SQL = "SELECT * FROM AD_ClientInfo WHERE AD_Client="
 			+ Env.getContext(m_vo.ctx, m_vo.WindowNo, "AD_Client_ID")
 			+ " ORDER BY AD_Org DESC";
@@ -1747,7 +1747,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (m_vo.TableName.startsWith("C_InvoiceBatch"))
 		{
 			int Record_ID = Env.getContextAsInt(m_vo.ctx, m_vo.WindowNo, "C_InvoiceBatch_ID");
-			log.fine(m_vo.TableName + " - " + Record_ID);
+			if (log.isLoggable(Level.FINE)) log.fine(m_vo.TableName + " - " + Record_ID);
 			MessageFormat mf = null;
 			try
 			{
@@ -1836,7 +1836,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			}
 			sql.append("GROUP BY o.C_Currency_ID, c.ISO_Code, o.TotalLines, o.GrandTotal, o.DateAcct, o.AD_Client_ID, o.AD_Org_ID");
 
-			log.fine(m_vo.TableName + " - " + Record_ID);
+			if (log.isLoggable(Level.FINE)) log.fine(m_vo.TableName + " - " + Record_ID);
 			MessageFormat mf = null;
 			try
 			{
@@ -1907,7 +1907,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		else if (m_vo.TableName.startsWith("S_TimeExpense") && m_vo.TabNo == 0)
 		{
 			int Record_ID = Env.getContextAsInt(m_vo.ctx, m_vo.WindowNo, "S_TimeExpense_ID");
-			log.fine(m_vo.TableName + " - " + Record_ID);
+			if (log.isLoggable(Level.FINE)) log.fine(m_vo.TableName + " - " + Record_ID);
 			MessageFormat mf = null;
 			try
 			{
@@ -2108,7 +2108,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public void loadLocks()
 	{
 		int AD_User_ID = Env.getContextAsInt(Env.getCtx(), "#AD_User_ID");
-		log.fine("#" + m_vo.TabNo + " - AD_User_ID=" + AD_User_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - AD_User_ID=" + AD_User_ID);
 		if (!canHaveAttachment())
 			return;
 
@@ -2144,7 +2144,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			rs = null;
 			pstmt = null;
 		}
-		log.fine("#" + m_Lock.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_Lock.size());
 	}	//	loadLooks
 
 	/**
@@ -2173,7 +2173,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public void lock (Properties ctx, int Record_ID, boolean lock)
 	{
 		int AD_User_ID = Env.getContextAsInt(ctx, "#AD_User_ID");
-		log.fine("Lock=" + lock + ", AD_User_ID=" + AD_User_ID
+		if (log.isLoggable(Level.FINE)) log.fine("Lock=" + lock + ", AD_User_ID=" + AD_User_ID
 			+ ", AD_Table_ID=" + m_vo.AD_Table_ID + ", Record_ID=" + Record_ID);
 		MPrivateAccess access = MPrivateAccess.get (ctx, AD_User_ID, m_vo.AD_Table_ID, Record_ID);
 		if (access == null)
@@ -2194,7 +2194,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public void dataStatusChanged (DataStatusEvent e)
 	{
-		log.fine("#" + m_vo.TabNo + " - " + e.toString());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - " + e.toString());
 		int oldCurrentRow = e.getCurrentRow();
 		m_DataStatusEvent = e;          //  save it
 		//  when sorted set current row to 0
@@ -2233,7 +2233,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		DataStatusListener[] listeners = m_listenerList.getListeners(DataStatusListener.class);
 		if (listeners.length == 0)
 			return;
-		log.fine(e.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(e.toString());
 		//  WHO Info
 		if (e.getCurrentRow() >= 0)
 		{
@@ -2410,7 +2410,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (newRow >= rows)
 		{
 			newRow = rows-1;
-			log.fine("Set to max Row: " + newRow);
+			if (log.isLoggable(Level.FINE)) log.fine("Set to max Row: " + newRow);
 		}
 		else if (newRow < 0)
 		{
@@ -2433,7 +2433,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		int oldCurrentRow = m_currentRow;
 		m_currentRow = verifyRow (newCurrentRow);
-		log.fine("Row=" + m_currentRow + " - fire=" + fireEvents);
+		if (log.isLoggable(Level.FINE)) log.fine("Row=" + m_currentRow + " - fire=" + fireEvents);
 
 		//  Update Field Values
 		int size = m_mTable.getColumnCount();
@@ -2592,7 +2592,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (field == null)
 			return "NoField";
 
-		log.fine(field.getColumnName() + "=" + value + " - Row=" + m_currentRow);
+		if (log.isLoggable(Level.FINE)) log.fine(field.getColumnName() + "=" + value + " - Row=" + m_currentRow);
 
 		if (DisplayType.isID(field.getDisplayType()) && value instanceof Integer && ((Integer)value).intValue() < 0)
 			value = null;
@@ -2662,7 +2662,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				//  if the lookup is dynamic (i.e. contains this columnName as variable)
 				if (mLookup.getValidation().indexOf("@"+columnName+"@") != -1)
 				{
-					log.fine(columnName + " changed - "
+					if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
 						+ dependentField.getColumnName() + " set to null");
 					//  invalidate current selection
 					setValue(dependentField, null);
@@ -2754,7 +2754,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (callout.length() == 0)
 			return "";
 
-		log.fine(field.getColumnName() + "=" + value
+		if (log.isLoggable(Level.FINE)) log.fine(field.getColumnName() + "=" + value
 			+ " (" + callout + ") - old=" + oldValue);
 
 		StringTokenizer st = new StringTokenizer(callout, ";,", false);
@@ -3023,7 +3023,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 * @param ascending sorting modus
 	 */
 	public void switchRows(int from, int to, int sortColumn, boolean ascending) {
-		log.fine(from + " - " + to + " - " + sortColumn + " - " + ascending);
+		if (log.isLoggable(Level.FINE)) log.fine(from + " - " + to + " - " + sortColumn + " - " + ascending);
 		// nothing to do
 		if (from == to) {
 			log.finest("nothing to do - from == to");

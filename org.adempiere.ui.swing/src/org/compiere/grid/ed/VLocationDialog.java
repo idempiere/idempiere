@@ -262,7 +262,7 @@ public class VLocationDialog extends CDialog
 	private void initLocation()
 	{
 		MCountry country = m_location.getCountry();
-		log.fine(country.getName() + ", Region=" + country.isHasRegion() + " " + country.getCaptureSequence()
+		if (log.isLoggable(Level.FINE)) log.fine(country.getName() + ", Region=" + country.isHasRegion() + " " + country.getCaptureSequence()
 			+ ", C_Location_ID=" + m_location.getC_Location_ID());
 		//	new Country
 		if (country.getC_Country_ID() != s_oldCountry_ID)
@@ -679,7 +679,7 @@ public class VLocationDialog extends CDialog
 		
 		// remove any spaces from the postcode and convert to upper case
 		postcode = postcode.replaceAll(" ", "").toUpperCase();
-		log.fine("Looking up postcode: " + postcode);
+		if (log.isLoggable(Level.FINE)) log.fine("Looking up postcode: " + postcode);
 		
 		// Lookup postcode on server.
 		pcLookup.setServerUrl(country.getLookupUrl());
@@ -773,7 +773,7 @@ public class VLocationDialog extends CDialog
  							{
 								// found Region
 								fRegion.setSelectedItem(regions[i]);	
-								log.fine("Found region: " + regions[i].getName());
+								if (log.isLoggable(Level.FINE)) log.fine("Found region: " + regions[i].getName());
 								found = true;
  							}
 						}
@@ -783,7 +783,7 @@ public class VLocationDialog extends CDialog
 							MRegion region = new MRegion(country, values.getRegion());
 							if (region.save())
  							{
-								log.fine("Added new region from web service: " + values.getRegion());
+								if (log.isLoggable(Level.FINE)) log.fine("Added new region from web service: " + values.getRegion());
 								//reload regions to combo box
 								fRegion = new CComboBoxEditable(MRegion.getRegions(Env.getCtx(), country.getC_Country_ID()));
 								// select region

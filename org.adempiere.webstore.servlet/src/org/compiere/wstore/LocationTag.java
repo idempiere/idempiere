@@ -260,7 +260,7 @@ public class LocationTag extends TagSupport
 
 
 		
-		log.fine("C_Country_ID=" + C_Country_ID + ", C_Region_ID=" + C_Region_ID
+		if (log.isLoggable(Level.FINE)) log.fine("C_Country_ID=" + C_Country_ID + ", C_Region_ID=" + C_Region_ID
 			+ ", RegionName=" + regionName + ", City=" + city + ", Postal=" + postal);
 
 		JspWriter out = pageContext.getOut();

@@ -280,7 +280,7 @@ public class ReplicationLocal extends SvrProcess
 		data.CentralData = getRowSet(data.Sql, null);
 		if (data.CentralData == null)
 		{
-			log.fine("mergeDataTable - CentralData is Null - " + TableName);
+			if (log.isLoggable(Level.FINE)) log.fine("mergeDataTable - CentralData is Null - " + TableName);
 			m_replicated = false;
 			return false;
 		}
@@ -312,7 +312,7 @@ public class ReplicationLocal extends SvrProcess
 				{data.TableName, data.KeyColumns, sourceRS, targetRS, m_test, Boolean.TRUE});
 			boolean replicated = isReplicated(result);
 			if (replicated)
-				log.fine("mergeDataTable -> " + TableName + " - " + result);
+				if (log.isLoggable(Level.FINE)) log.fine("mergeDataTable -> " + TableName + " - " + result);
 			else
 			{
 				m_replicated = false;
@@ -458,7 +458,7 @@ public class ReplicationLocal extends SvrProcess
 		data.CentralData = getRowSet(data.Sql, null);
 		if (data.CentralData == null)
 		{
-			log.fine("sendUpdatesTable - Null - " + TableName);
+			if (log.isLoggable(Level.FINE)) log.fine("sendUpdatesTable - Null - " + TableName);
 			m_replicated = false;
 			return false;
 		}
@@ -471,17 +471,17 @@ public class ReplicationLocal extends SvrProcess
 		}
 		catch (SQLException ex)
 		{
-			log.fine("RowCheck  " + ex);
+			if (log.isLoggable(Level.FINE)) log.fine("RowCheck  " + ex);
 			m_replicated = false;
 			return false;
 		}
 		if (rows == 0)
 		{
-			log.fine("No Rows - " + TableName);
+			if (log.isLoggable(Level.FINE)) log.fine("No Rows - " + TableName);
 			return true;
 		}
 		else
-			log.fine(TableName + " #" + rows);
+			if (log.isLoggable(Level.FINE)) log.fine(TableName + " #" + rows);
 
 		//	Process Info
 		ProcessInfo pi = new ProcessInfo("SendUpdates", 0);

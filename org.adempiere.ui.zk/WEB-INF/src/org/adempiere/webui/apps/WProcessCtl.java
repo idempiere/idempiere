@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.adempiere.webui.apps;
 
+import java.util.logging.Level;
+
 import org.adempiere.util.IProcessUI;
 import org.adempiere.webui.component.Window;
 import org.compiere.apps.AbstractProcessCtl;
@@ -54,7 +56,7 @@ public class WProcessCtl extends AbstractProcessCtl {
 	 */
 	public static void process (int WindowNo, ProcessInfo pi, Trx trx)
 	{
-		log.fine("WindowNo=" + WindowNo + " - " + pi);
+		if (log.isLoggable(Level.FINE)) log.fine("WindowNo=" + WindowNo + " - " + pi);
 
 		MPInstance instance = null; 
 		try 
@@ -112,7 +114,7 @@ public class WProcessCtl extends AbstractProcessCtl {
 	 */
 	public static void process(IProcessUI aProcessUI, int WindowNo, IProcessParameter parameter, ProcessInfo pi, Trx trx)
 	{
-		log.fine("WindowNo=" + WindowNo + " - " + pi);
+		if (log.isLoggable(Level.FINE)) log.fine("WindowNo=" + WindowNo + " - " + pi);
 
 		MPInstance instance = null; 
 		try 

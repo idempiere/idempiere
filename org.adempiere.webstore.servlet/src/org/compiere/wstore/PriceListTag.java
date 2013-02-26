@@ -17,6 +17,7 @@
 package org.compiere.wstore;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -92,7 +93,7 @@ public class PriceListTag extends TagSupport
 			int PriceList_ID = wu.getM_PriceList_ID();
 			if (PriceList_ID != 0)
 			{
-				log.fine("- using BP PriceList_ID=" + PriceList_ID);
+				if (log.isLoggable(Level.FINE)) log.fine("- using BP PriceList_ID=" + PriceList_ID);
 				M_PriceList_ID = PriceList_ID;
 			}
 		}
@@ -111,7 +112,7 @@ public class PriceListTag extends TagSupport
 		//	Set Price List
 		HttpSession session = pageContext.getSession();
 		session.setAttribute (PriceList.NAME, m_priceList);
-		log.fine("PL=" + m_priceList);
+		if (log.isLoggable(Level.FINE)) log.fine("PL=" + m_priceList);
 
 		//	Set Locale from Price List
 		String AD_Language = m_priceList.getAD_Language();

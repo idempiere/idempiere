@@ -269,7 +269,7 @@ public class InvoiceGenerate extends SvrProcess
 						//	Complete Order
 						if (completeOrder && !fullyDelivered)
 						{
-							log.fine("Failed CompleteOrder - " + oLine);
+							if (log.isLoggable(Level.FINE)) log.fine("Failed CompleteOrder - " + oLine);
 							addLog(0, null, null,"Failed CompleteOrder - " + oLine,oLine.get_Table_ID(),oLine.getC_OrderLine_ID()); // Elaine 2008/11/25
 							completeOrder = false;
 							break;
@@ -277,7 +277,7 @@ public class InvoiceGenerate extends SvrProcess
 						//	Immediate
 						else if (MOrder.INVOICERULE_Immediate.equals(order.getInvoiceRule()))
 						{
-							log.fine("Immediate - ToInvoice=" + toInvoice + " - " + oLine);
+							if (log.isLoggable(Level.FINE)) log.fine("Immediate - ToInvoice=" + toInvoice + " - " + oLine);
 							BigDecimal qtyEntered = toInvoice;
 							//	Correct UOM for QtyEntered
 							if (oLine.getQtyEntered().compareTo(oLine.getQtyOrdered()) != 0)
@@ -288,7 +288,7 @@ public class InvoiceGenerate extends SvrProcess
 						}
 						else
 						{
-							log.fine("Failed: " + order.getInvoiceRule() 
+							if (log.isLoggable(Level.FINE)) log.fine("Failed: " + order.getInvoiceRule() 
 								+ " - ToInvoice=" + toInvoice + " - " + oLine);
 							addLog(0, null, null,"Failed: " + order.getInvoiceRule() 
 								+ " - ToInvoice=" + toInvoice + " - " + oLine,oLine.get_Table_ID(),oLine.getC_OrderLine_ID());
@@ -363,7 +363,7 @@ public class InvoiceGenerate extends SvrProcess
 		line.setLine(m_line + orderLine.getLine());
 		if (!line.save())
 			throw new IllegalStateException("Could not create Invoice Line (o)");
-		log.fine(line.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(line.toString());
 	}	//	createLine
 
 	/**
@@ -436,7 +436,7 @@ public class InvoiceGenerate extends SvrProcess
 		if (!sLine.save())
 			throw new IllegalStateException("Could not update Shipment Line");
 		
-		log.fine(line.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(line.toString());
 	}	//	createLine
 
 	

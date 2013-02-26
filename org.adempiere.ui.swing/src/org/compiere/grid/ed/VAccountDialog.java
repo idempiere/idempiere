@@ -476,7 +476,7 @@ public final class VAccountDialog extends CDialog
 	 */
 	private void addLine (GridField field, VEditor editor, boolean mandatory)
 	{
-		log.fine("Field=" + field);
+		if (log.isLoggable(Level.FINE)) log.fine("Field=" + field);
 		JLabel label = VEditorFactory.getLabel(field);
 		label.setLabelFor((Component)editor);
 		editor.setReadWrite(true);
@@ -517,7 +517,7 @@ public final class VAccountDialog extends CDialog
 	 */
 	private void loadInfo (int C_ValidCombination_ID, int C_AcctSchema_ID)
 	{
-		log.fine("C_ValidCombination_ID=" + C_ValidCombination_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("C_ValidCombination_ID=" + C_ValidCombination_ID);
 		String sql = "SELECT * FROM C_ValidCombination WHERE C_ValidCombination_ID=? AND C_AcctSchema_ID=?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -923,7 +923,7 @@ public final class VAccountDialog extends CDialog
 		 *	Check if already exists
 		 */
 		sql.append("AD_Client_ID=? AND C_AcctSchema_ID=?");
-		log.fine("Check = " + sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine("Check = " + sql.toString());
 		int IDvalue = 0;
 		String Alias = null;
 		PreparedStatement pstmt = null;
@@ -952,7 +952,7 @@ public final class VAccountDialog extends CDialog
 			pstmt = null;
 		}
 		
-		log.fine("ID=" + IDvalue + ", Alias=" + Alias);
+		if (log.isLoggable(Level.FINE)) log.fine("ID=" + IDvalue + ", Alias=" + Alias);
 
 		if (Alias == null)
 			Alias = "";

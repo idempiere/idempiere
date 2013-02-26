@@ -29,6 +29,7 @@
 package org.compiere.server;
 
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
 import org.adempiere.server.rpl.IImportProcessor;
 import org.compiere.model.AdempiereProcessor;
@@ -102,13 +103,13 @@ public class ReplicationProcessor extends AdempiereServer {
 		    {
 //				trxName = "ImportProcessor-" + System.currentTimeMillis();
 		    }
-		    log.fine("trxName = " + trxName);
-		    log.fine("ImportProcessor = " + mImportProcessor);
+		    if (log.isLoggable(Level.FINE)) log.fine("trxName = " + trxName);
+		    if (log.isLoggable(Level.FINE)) log.fine("ImportProcessor = " + mImportProcessor);
 		    
 		    int IMP_ProcessorType_ID = 0;
 		    IMP_ProcessorType_ID = mImportProcessor.getIMP_Processor_Type_ID();
 		    X_IMP_Processor_Type impProcessor_Type = new X_IMP_Processor_Type(mImportProcessor.getCtx(), IMP_ProcessorType_ID, trxName );
-		    log.fine("impProcessor_Type = " + impProcessor_Type); // TODO --- REMOVE
+		    if (log.isLoggable(Level.FINE)) log.fine("impProcessor_Type = " + impProcessor_Type); // TODO --- REMOVE
 		    
 		    String javaClass = impProcessor_Type.getJavaClass();
 		    IImportProcessor importProcessor = null;
@@ -121,7 +122,7 @@ public class ReplicationProcessor extends AdempiereServer {
 		    catch (Exception e) 
 		    {
 				isProcessRunning = false;
-				log.fine("ReplicationProcessor caught an exception !!!" );
+				if (log.isLoggable(Level.FINE)) log.fine("ReplicationProcessor caught an exception !!!" );
 				e.printStackTrace();
 				log.severe(e.getMessage());
 				MIMPProcessorLog pLog = new MIMPProcessorLog(mImportProcessor, e.getMessage() );

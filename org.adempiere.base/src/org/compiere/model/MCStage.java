@@ -211,7 +211,7 @@ public class MCStage extends X_CM_CStage
 				.append(", 0, 999)");
 			int no = DB.executeUpdate(sb.toString(), get_TrxName());
 			if (no > 0)
-				log.fine("#" + no + " - TreeType=CMS");
+				if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=CMS");
 			else
 				log.warning("#" + no + " - TreeType=CMS");
 			return no > 0;
@@ -236,7 +236,7 @@ public class MCStage extends X_CM_CStage
 			.append(" AND AD_Tree_ID=").append(getAD_Tree_ID());
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
 		if (no > 0)
-			log.fine("#" + no + " - TreeType=CMS");
+			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=CMS");
 		else
 			log.warning("#" + no + " - TreeType=CMS");
 		return no > 0;

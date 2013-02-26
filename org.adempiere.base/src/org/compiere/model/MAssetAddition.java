@@ -268,7 +268,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		if (dateAcct != null)
 		{
 			dateAcct = UseLifeImpl.getDateAcct(dateAcct, 1);
-			log.fine("DateAcct=" + dateAcct);
+			if (log.isLoggable(Level.FINE)) log.fine("DateAcct=" + dateAcct);
 			setDateAcct(dateAcct);
 		}
 		setC_Project(project);
@@ -319,7 +319,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		if (dateAcct != null)
 		{
 			//dateAcct = UseLifeImpl.getDateAcct(dateAcct, 1); //commented by @win -- i don't see why i should add 1 month
-			log.fine("DateAcct=" + dateAcct);
+			if (log.isLoggable(Level.FINE)) log.fine("DateAcct=" + dateAcct);
 			setDateAcct(dateAcct);
 		}
 		setI_FixedAsset(ifa);
@@ -478,7 +478,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		{
 			String str = Env.getContext(getCtx(), "#IsCanApproveOwnDoc");
 			boolean isApproved = "Y".equals(str); //ARHIPAC.toBoolean(str, false);
-			log.fine("#IsCanApproveOwnDoc=" + str + "=" + isApproved);
+			if (log.isLoggable(Level.FINE)) log.fine("#IsCanApproveOwnDoc=" + str + "=" + isApproved);
 			setIsApproved(isApproved);
 		}
 	}
@@ -650,7 +650,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		
 		//loading asset
 		MAsset asset = getA_Asset(!m_justPrepared); // requery if not just prepared
-		log.fine("asset=" + asset);
+		if (log.isLoggable(Level.FINE)) log.fine("asset=" + asset);
 
 		//
 		// Get/Create Asset Workfile:
@@ -660,7 +660,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		{
 			assetwk = new MDepreciationWorkfile(asset, getPostingType(), null);
 		}
-		log.fine("workfile: " + assetwk);
+		if (log.isLoggable(Level.FINE)) log.fine("workfile: " + assetwk);
 		//
 		// Can not upgrade a previous period
 		/* 

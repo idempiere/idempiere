@@ -19,6 +19,7 @@ package org.compiere.acct;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
@@ -131,7 +132,7 @@ public class Doc_MatchInv extends Doc
 			|| getQty().signum() == 0
 			|| m_receiptLine.getMovementQty().signum() == 0)	//	Qty = 0
 		{
-			log.fine("No Product/Qty - M_Product_ID=" + getM_Product_ID()
+			if (log.isLoggable(Level.FINE)) log.fine("No Product/Qty - M_Product_ID=" + getM_Product_ID()
 				+ ",Qty=" + getQty() + ",InOutQty=" + m_receiptLine.getMovementQty());
 			return facts;
 		}
@@ -178,7 +179,7 @@ public class Doc_MatchInv extends Doc
 			p_Error = "Mat.Receipt not posted yet";
 			return null;
 		}
-		log.fine("CR - Amt(" + temp + "->" + dr.getAcctBalance()
+		if (log.isLoggable(Level.FINE)) log.fine("CR - Amt(" + temp + "->" + dr.getAcctBalance()
 			+ ") - " + dr.toString());
 
 		//  InventoryClearing               CR
@@ -201,7 +202,7 @@ public class Doc_MatchInv extends Doc
 				as.getC_Currency_ID(), null, LineNetAmt);		//	updated below
 			if (cr == null)
 			{
-				log.fine("Line Net Amt=0 - M_Product_ID=" + getM_Product_ID()
+				if (log.isLoggable(Level.FINE)) log.fine("Line Net Amt=0 - M_Product_ID=" + getM_Product_ID()
 					+ ",Qty=" + getQty() + ",InOutQty=" + m_receiptLine.getMovementQty());
 
 				//  Invoice Price Variance
@@ -222,7 +223,7 @@ public class Doc_MatchInv extends Doc
 					pv.setUser1_ID(m_invoiceLine.getUser1_ID());
 					pv.setUser2_ID(m_invoiceLine.getUser2_ID());
 				}
-				log.fine("IPV=" + ipv + "; Balance=" + fact.getSourceBalance());
+				if (log.isLoggable(Level.FINE)) log.fine("IPV=" + ipv + "; Balance=" + fact.getSourceBalance());
 				facts.add(fact);
 				return facts;
 			}
@@ -235,7 +236,7 @@ public class Doc_MatchInv extends Doc
 				p_Error = "Invoice not posted yet";
 				return null;
 			}
-			log.fine("DR - Amt(" + temp + "->" + cr.getAcctBalance()
+			if (log.isLoggable(Level.FINE)) log.fine("DR - Amt(" + temp + "->" + cr.getAcctBalance()
 				+ ") - " + cr.toString());
 		}
 		else	//	Cash Acct
@@ -303,7 +304,7 @@ public class Doc_MatchInv extends Doc
 			pv.setUser1_ID(m_invoiceLine.getUser1_ID());
 			pv.setUser2_ID(m_invoiceLine.getUser2_ID());
 		}
-		log.fine("IPV=" + ipv + "; Balance=" + fact.getSourceBalance());
+		if (log.isLoggable(Level.FINE)) log.fine("IPV=" + ipv + "; Balance=" + fact.getSourceBalance());
 
 		String error = createMatchInvCostDetail(as);
 		if (error != null && error.trim().length() > 0)

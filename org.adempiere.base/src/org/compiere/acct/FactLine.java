@@ -653,7 +653,7 @@ public final class FactLine extends X_Fact_Acct
 		boolean negative = deltaAmount.compareTo(Env.ZERO) < 0;
 		boolean adjustDr = getAmtAcctDr().abs().compareTo(getAmtAcctCr().abs()) > 0;
 
-		log.fine(deltaAmount.toString()
+		if (log.isLoggable(Level.FINE)) log.fine(deltaAmount.toString()
 			+ "; Old-AcctDr=" + getAmtAcctDr() + ",AcctCr=" + getAmtAcctCr()
 			+ "; Negative=" + negative + "; AdjustDr=" + adjustDr);
 
@@ -668,7 +668,7 @@ public final class FactLine extends X_Fact_Acct
 			else
 				setAmtAcctCr (getAmtAcctCr().add(deltaAmount));
 
-		log.fine("New-AcctDr=" + getAmtAcctDr() + ",AcctCr=" + getAmtAcctCr());
+		if (log.isLoggable(Level.FINE)) log.fine("New-AcctDr=" + getAmtAcctDr() + ",AcctCr=" + getAmtAcctCr());
 	}	//	currencyCorrect
 
 	/**
@@ -859,7 +859,7 @@ public final class FactLine extends X_Fact_Acct
 				if (super.getC_SalesRegion_ID() != 0)		//	save in VO
 				{
 					m_doc.setBP_C_SalesRegion_ID(super.getC_SalesRegion_ID());
-					log.fine("C_SalesRegion_ID=" + super.getC_SalesRegion_ID() + " (from BPL)" );
+					if (log.isLoggable(Level.FINE)) log.fine("C_SalesRegion_ID=" + super.getC_SalesRegion_ID() + " (from BPL)" );
 				}
 				else	//	From Sales Rep of Document -> Sales Region
 				{
@@ -869,7 +869,7 @@ public final class FactLine extends X_Fact_Acct
 					if (super.getC_SalesRegion_ID() != 0)		//	save in VO
 					{
 						m_doc.setBP_C_SalesRegion_ID(super.getC_SalesRegion_ID());
-						log.fine("C_SalesRegion_ID=" + super.getC_SalesRegion_ID() + " (from SR)" );
+						if (log.isLoggable(Level.FINE)) log.fine("C_SalesRegion_ID=" + super.getC_SalesRegion_ID() + " (from SR)" );
 					}
 					else
 						m_doc.setBP_C_SalesRegion_ID(-2);	//	don't try again
@@ -896,7 +896,7 @@ public final class FactLine extends X_Fact_Acct
 	{
 		if (newRecord)
 		{
-			log.fine(toString());
+			if (log.isLoggable(Level.FINE)) log.fine(toString());
 			//
 			getAD_Org_ID();
 			getC_SalesRegion_ID();
@@ -985,7 +985,7 @@ public final class FactLine extends X_Fact_Acct
 		int	C_Campaign_ID, int C_Activity_ID, 
 		int User1_ID, int User2_ID, int UserElement1_ID, int UserElement2_ID)
 	{
-		log.fine("From Accout_ID=" + Account_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("From Accout_ID=" + Account_ID);
 		//  get VC for P_Revenue (from Product)
 		MAccount revenue = MAccount.get(getCtx(),
 			AD_Client_ID, AD_Org_ID, getC_AcctSchema_ID(), Account_ID, C_SubAcct_ID,
@@ -1050,7 +1050,7 @@ public final class FactLine extends X_Fact_Acct
 			log.severe ("Plan NOT created");
 			return Account_ID;
 		}
-		log.fine("From Acctount_ID=" + Account_ID + " to " + new_Account_ID
+		if (log.isLoggable(Level.FINE)) log.fine("From Acctount_ID=" + Account_ID + " to " + new_Account_ID
 			+ " - Plan from UnearnedRevenue_Acct=" + UnearnedRevenue_Acct + " to Revenue_Acct=" + P_Revenue_Acct);
 		return new_Account_ID;
 	}   //  createRevenueRecognition
@@ -1114,7 +1114,7 @@ public final class FactLine extends X_Fact_Acct
 				//  end Bayu Sistematika
 				//
 				success = true;
-				log.fine(new StringBuilder("(Table=").append(AD_Table_ID)
+				if (log.isLoggable(Level.FINE)) log.fine(new StringBuilder("(Table=").append(AD_Table_ID)
 					.append(",Record_ID=").append(Record_ID)
 					.append(",Line=").append(Record_ID)
 					.append(", Account=").append(m_acct)

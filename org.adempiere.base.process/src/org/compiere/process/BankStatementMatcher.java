@@ -88,7 +88,7 @@ public class BankStatementMatcher extends SvrProcess
 		if (m_matchers == null || ibs == null || ibs.getC_Payment_ID() != 0)
 			return "--";
 			
-		log.fine("" + ibs);
+		if (log.isLoggable(Level.FINE)) log.fine("" + ibs);
 		BankStatementMatchInfo info = null;
 		for (int i = 0; i < m_matchers.length; i++)
 		{
@@ -122,7 +122,7 @@ public class BankStatementMatcher extends SvrProcess
 		if (m_matchers == null || bsl == null || bsl.getC_Payment_ID() != 0)
 			return "--";
 			
-		log.fine("match - " + bsl);
+		if (log.isLoggable(Level.FINE)) log.fine("match - " + bsl);
 		BankStatementMatchInfo info = null;
 		for (int i = 0; i < m_matchers.length; i++)
 		{
@@ -154,7 +154,7 @@ public class BankStatementMatcher extends SvrProcess
 	{
 		if (m_matchers == null || bs == null)
 			return "--";
-		log.fine("match - " + bs);
+		if (log.isLoggable(Level.FINE)) log.fine("match - " + bs);
 		int count = 0;
 		MBankStatementLine[] lines = bs.getLines(false);
 		for (int i = 0; i < lines.length; i++)

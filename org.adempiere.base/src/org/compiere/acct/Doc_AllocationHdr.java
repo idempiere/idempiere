@@ -109,7 +109,7 @@ public class Doc_AllocationHdr extends Doc
 				docLine.setC_ConversionType_ID(C_ConversionType_ID);
 			}
 			//
-			log.fine(docLine.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
 			list.add (docLine);
 		}
 
@@ -749,7 +749,7 @@ public class Doc_AllocationHdr extends Doc
 		//
 		StringBuilder description = new StringBuilder("Invoice=(").append(invoice.getC_Currency_ID()).append(")").append(invoiceSource).append("/").append(invoiceAccounted)
 			.append(" - Allocation=(").append(getC_Currency_ID()).append(")").append(allocationSource).append("/").append(allocationAccounted);
-		log.fine(description.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(description.toString());
 		//	Allocation not Invoice Currency
 		if (getC_Currency_ID() != invoice.getC_Currency_ID())
 		{
@@ -761,7 +761,7 @@ public class Doc_AllocationHdr extends Doc
 				return "Gain/Loss - No Conversion from Allocation->Invoice";
 			StringBuilder d2 = new StringBuilder("Allocation=(").append(getC_Currency_ID()).append(")").append(allocationSource)
 				.append("->(").append(invoice.getC_Currency_ID()).append(")").append(allocationSourceNew);
-			log.fine(d2.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(d2.toString());
 			description.append(" - ").append(d2);
 			allocationSource = allocationSourceNew;
 		}
@@ -772,7 +772,7 @@ public class Doc_AllocationHdr extends Doc
 		{
 			acctDifference = invoiceAccounted.subtract(allocationAccounted);	//	gain is negative
 			StringBuilder d2 = new StringBuilder("(full) = ").append(acctDifference);
-			log.fine(d2.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(d2.toString());
 			description.append(" - ").append(d2);
 		}
 		else	//	partial or MC
@@ -791,7 +791,7 @@ public class Doc_AllocationHdr extends Doc
 			if (acctDifference.scale() > precision)
 				acctDifference = acctDifference.setScale(precision, BigDecimal.ROUND_HALF_UP);
 			StringBuilder d2 = new StringBuilder("(partial) = ").append(acctDifference).append(" - Multiplier=").append(multiplier);
-			log.fine(d2.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(d2.toString());
 			description.append(" - ").append(d2);
 		}
 
@@ -1092,7 +1092,7 @@ class Doc_AllocationTax
 	 */
 	private BigDecimal calcAmount (BigDecimal tax, BigDecimal total, BigDecimal amt, int precision)
 	{
-		log.fine("Amt=" + amt + " - Total=" + total + ", Tax=" + tax);
+		if (log.isLoggable(Level.FINE)) log.fine("Amt=" + amt + " - Total=" + total + ", Tax=" + tax);
 		if (tax.signum() == 0
 			|| total.signum() == 0
 			|| amt.signum() == 0)
@@ -1102,7 +1102,7 @@ class Doc_AllocationTax
 		BigDecimal retValue = multiplier.multiply(amt);
 		if (retValue.scale() > precision)
 			retValue = retValue.setScale(precision, BigDecimal.ROUND_HALF_UP);
-		log.fine(retValue + " (Mult=" + multiplier + "(Prec=" + precision + ")");
+		if (log.isLoggable(Level.FINE)) log.fine(retValue + " (Mult=" + multiplier + "(Prec=" + precision + ")");
 		return retValue;
 	}	//	calcAmount
 

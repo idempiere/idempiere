@@ -18,6 +18,7 @@ package org.compiere.wstore;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -157,14 +158,14 @@ public class WorkflowServlet extends HttpServlet
 		MWFActivity doc = new MWFActivity (ctx, AD_WF_Activity_ID, null);
 		if (doc.get_ID() != AD_WF_Activity_ID)
 		{
-			log.fine("streamAttachment - Activity not found - ID=" + AD_WF_Activity_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("streamAttachment - Activity not found - ID=" + AD_WF_Activity_ID);
 			return "Activity not found";
 		}
 		
 		MAttachment attachment = doc.getAttachment(false);
 		if (attachment == null)
 		{
-			log.fine("streamAttachment - No Attachment for AD_WF_Activity_ID=" + AD_WF_Activity_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("streamAttachment - No Attachment for AD_WF_Activity_ID=" + AD_WF_Activity_ID);
 			return "Notice Attachment not found";
 		}
 
@@ -222,10 +223,10 @@ public class WorkflowServlet extends HttpServlet
 			boolean isApproved = WebUtil.getParameterAsBoolean (request, "IsApproved");
 			boolean isRejected = WebUtil.getParameterAsBoolean (request, "IsApproved");
 			String textMsg = WebUtil.getParameter (request, "textMsg");
-			log.fine("doPost - TextMsg=" + textMsg);
+			if (log.isLoggable(Level.FINE)) log.fine("doPost - TextMsg=" + textMsg);
 			//
 			MWFActivity act = new MWFActivity (ctx, AD_WF_Activity_ID, null);
-			log.fine("doPost - " + act);
+			if (log.isLoggable(Level.FINE)) log.fine("doPost - " + act);
 			
 			if (AD_WF_Activity_ID == 0 || act == null || act.getAD_WF_Activity_ID() != AD_WF_Activity_ID)
 				session.setAttribute(WebSessionCtx.HDR_MESSAGE, "Activity not found");

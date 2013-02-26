@@ -439,7 +439,7 @@ public class CalloutInvoice extends CalloutEngine
 			C_Charge_ID = ((Integer)value).intValue();
 		else
 			C_Charge_ID = Env.getContextAsInt(ctx, WindowNo, "C_Charge_ID");
-		log.fine("Product=" + M_Product_ID + ", C_Charge_ID=" + C_Charge_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("Product=" + M_Product_ID + ", C_Charge_ID=" + C_Charge_ID);
 		if (M_Product_ID == 0 && C_Charge_ID == 0)
 			return amt (ctx, WindowNo, mTab, mField, value);	//
 
@@ -447,21 +447,21 @@ public class CalloutInvoice extends CalloutEngine
 		int shipC_BPartner_Location_ID = Env.getContextAsInt(ctx, WindowNo, "C_BPartner_Location_ID");
 		if (shipC_BPartner_Location_ID == 0)
 			return amt (ctx, WindowNo, mTab, mField, value);	//
-		log.fine("Ship BP_Location=" + shipC_BPartner_Location_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("Ship BP_Location=" + shipC_BPartner_Location_ID);
 		int billC_BPartner_Location_ID = shipC_BPartner_Location_ID;
-		log.fine("Bill BP_Location=" + billC_BPartner_Location_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("Bill BP_Location=" + billC_BPartner_Location_ID);
 
 		//	Dates
 		Timestamp billDate = Env.getContextAsDate(ctx, WindowNo, "DateInvoiced");
-		log.fine("Bill Date=" + billDate);
+		if (log.isLoggable(Level.FINE)) log.fine("Bill Date=" + billDate);
 		Timestamp shipDate = billDate;
-		log.fine("Ship Date=" + shipDate);
+		if (log.isLoggable(Level.FINE)) log.fine("Ship Date=" + shipDate);
 
 		int AD_Org_ID = Env.getContextAsInt(ctx, WindowNo, "AD_Org_ID");
-		log.fine("Org=" + AD_Org_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("Org=" + AD_Org_ID);
 
 		int M_Warehouse_ID = Env.getContextAsInt(ctx, "#M_Warehouse_ID");
-		log.fine("Warehouse=" + M_Warehouse_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("Warehouse=" + M_Warehouse_ID);
 
 		//
 		int C_Tax_ID = Tax.get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate,
@@ -503,15 +503,17 @@ public class CalloutInvoice extends CalloutEngine
 		//	get values
 		QtyEntered = (BigDecimal)mTab.getValue("QtyEntered");
 		QtyInvoiced = (BigDecimal)mTab.getValue("QtyInvoiced");
-		log.fine("QtyEntered=" + QtyEntered + ", Invoiced=" + QtyInvoiced + ", UOM=" + C_UOM_To_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("QtyEntered=" + QtyEntered + ", Invoiced=" + QtyInvoiced + ", UOM=" + C_UOM_To_ID);
 		//
 		PriceEntered = (BigDecimal)mTab.getValue("PriceEntered");
 		PriceActual = (BigDecimal)mTab.getValue("PriceActual");
 	//	Discount = (BigDecimal)mTab.getValue("Discount");
 		PriceLimit = (BigDecimal)mTab.getValue("PriceLimit");
 		PriceList = (BigDecimal)mTab.getValue("PriceList");
-		log.fine("PriceList=" + PriceList + ", Limit=" + PriceLimit + ", Precision=" + StdPrecision);
-		log.fine("PriceEntered=" + PriceEntered + ", Actual=" + PriceActual);// + ", Discount=" + Discount);
+		if (log.isLoggable(Level.FINE)){
+			log.fine("PriceList=" + PriceList + ", Limit=" + PriceLimit + ", Precision=" + StdPrecision);
+			log.fine("PriceEntered=" + PriceEntered + ", Actual=" + PriceActual);// + ", Discount=" + Discount);
+		}		
 
 		//		No Product
 		if ( M_Product_ID == 0 )
@@ -555,7 +557,7 @@ public class CalloutInvoice extends CalloutEngine
 			if (PriceEntered == null)
 				PriceEntered = pp.getPriceStd();
 			//
-			log.fine("amt - QtyChanged -> PriceActual=" + pp.getPriceStd() 
+			if (log.isLoggable(Level.FINE)) log.fine("amt - QtyChanged -> PriceActual=" + pp.getPriceStd() 
 				+ ", PriceEntered=" + PriceEntered + ", Discount=" + pp.getDiscount());
 			PriceActual = pp.getPriceStd();
 			mTab.setValue("PriceActual", pp.getPriceStd());
@@ -571,7 +573,7 @@ public class CalloutInvoice extends CalloutEngine
 			if (PriceEntered == null)
 				PriceEntered = PriceActual;
 			//
-			log.fine("amt - PriceActual=" + PriceActual 
+			if (log.isLoggable(Level.FINE)) log.fine("amt - PriceActual=" + PriceActual 
 				+ " -> PriceEntered=" + PriceEntered);
 			mTab.setValue("PriceEntered", PriceEntered);
 		}
@@ -583,7 +585,7 @@ public class CalloutInvoice extends CalloutEngine
 			if (PriceActual == null)
 				PriceActual = PriceEntered;
 			//
-			log.fine("amt - PriceEntered=" + PriceEntered 
+			if (log.isLoggable(Level.FINE)) log.fine("amt - PriceEntered=" + PriceEntered 
 				+ " -> PriceActual=" + PriceActual);
 			mTab.setValue("PriceActual", PriceActual);
 		}
@@ -629,7 +631,7 @@ public class CalloutInvoice extends CalloutEngine
 				C_UOM_To_ID, PriceLimit);
 			if (PriceEntered == null)
 				PriceEntered = PriceLimit;
-			log.fine("amt =(under) PriceEntered=" + PriceEntered + ", Actual" + PriceLimit);
+			if (log.isLoggable(Level.FINE)) log.fine("amt =(under) PriceEntered=" + PriceEntered + ", Actual" + PriceLimit);
 			mTab.setValue ("PriceActual", PriceLimit);
 			mTab.setValue ("PriceEntered", PriceEntered);
 			mTab.fireDataStatusEEvent ("UnderLimitPrice", "", false);
@@ -735,7 +737,7 @@ public class CalloutInvoice extends CalloutEngine
 			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
 			if (QtyEntered.compareTo(QtyEntered1) != 0)
 			{
-				log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID 
+				if (log.isLoggable(Level.FINE)) log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID 
 					+ "; QtyEntered=" + QtyEntered + "->" + QtyEntered1);  
 				QtyEntered = QtyEntered1;
 				mTab.setValue("QtyEntered", QtyEntered);
@@ -750,7 +752,7 @@ public class CalloutInvoice extends CalloutEngine
 				C_UOM_To_ID, PriceActual);
 			if (PriceEntered == null)
 				PriceEntered = PriceActual; 
-			log.fine("qty - UOM=" + C_UOM_To_ID 
+			if (log.isLoggable(Level.FINE)) log.fine("qty - UOM=" + C_UOM_To_ID 
 				+ ", QtyEntered/PriceActual=" + QtyEntered + "/" + PriceActual
 				+ " -> " + conversion 
 				+ " QtyInvoiced/PriceEntered=" + QtyInvoiced + "/" + PriceEntered);
@@ -766,7 +768,7 @@ public class CalloutInvoice extends CalloutEngine
 			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
 			if (QtyEntered.compareTo(QtyEntered1) != 0)
 			{
-				log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID 
+				if (log.isLoggable(Level.FINE)) log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID 
 					+ "; QtyEntered=" + QtyEntered + "->" + QtyEntered1);  
 				QtyEntered = QtyEntered1;
 				mTab.setValue("QtyEntered", QtyEntered);
@@ -776,7 +778,7 @@ public class CalloutInvoice extends CalloutEngine
 			if (QtyInvoiced == null)
 				QtyInvoiced = QtyEntered;
 			boolean conversion = QtyEntered.compareTo(QtyInvoiced) != 0;
-			log.fine("qty - UOM=" + C_UOM_To_ID 
+			if (log.isLoggable(Level.FINE)) log.fine("qty - UOM=" + C_UOM_To_ID 
 				+ ", QtyEntered=" + QtyEntered
 				+ " -> " + conversion 
 				+ " QtyInvoiced=" + QtyInvoiced);
@@ -792,7 +794,7 @@ public class CalloutInvoice extends CalloutEngine
 			BigDecimal QtyInvoiced1 = QtyInvoiced.setScale(precision, BigDecimal.ROUND_HALF_UP);
 			if (QtyInvoiced.compareTo(QtyInvoiced1) != 0)
 			{
-				log.fine("Corrected QtyInvoiced Scale "
+				if (log.isLoggable(Level.FINE)) log.fine("Corrected QtyInvoiced Scale "
 					+ QtyInvoiced + "->" + QtyInvoiced1);  
 				QtyInvoiced = QtyInvoiced1;
 				mTab.setValue("QtyInvoiced", QtyInvoiced);
@@ -802,7 +804,7 @@ public class CalloutInvoice extends CalloutEngine
 			if (QtyEntered == null)
 				QtyEntered = QtyInvoiced;
 			boolean conversion = QtyInvoiced.compareTo(QtyEntered) != 0;
-			log.fine("qty - UOM=" + C_UOM_To_ID 
+			if (log.isLoggable(Level.FINE)) log.fine("qty - UOM=" + C_UOM_To_ID 
 				+ ", QtyInvoiced=" + QtyInvoiced
 				+ " -> " + conversion 
 				+ " QtyEntered=" + QtyEntered);

@@ -79,7 +79,7 @@ public final class PP_PayFlowPro4 extends PaymentProcessor
 	 */
 	public boolean processCC () throws IllegalArgumentException
 	{
-		log.fine(p_mbap.getHostAddress() + " " + p_mbap.getHostPort() + ", Timeout=" + getTimeout()
+		if (log.isLoggable(Level.FINE)) log.fine(p_mbap.getHostAddress() + " " + p_mbap.getHostPort() + ", Timeout=" + getTimeout()
 			+ "; Proxy=" + p_mbap.getProxyAddress() + " " + p_mbap.getProxyPort() + " " + p_mbap.getProxyLogon() + " " + p_mbap.getProxyPassword());
 
 		if ( p_mbap.getC_Currency_ID() != 0 && p_mbap.getC_Currency_ID() != p_mp.getC_Currency_ID() )

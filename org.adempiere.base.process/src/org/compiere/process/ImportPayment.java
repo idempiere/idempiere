@@ -102,7 +102,7 @@ public class ImportPayment extends SvrProcess
 			sql = new StringBuilder ("DELETE I_Payment ")
 				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
-			log.fine("Delete Old Impored =" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Impored =" + no);
 		}
 
 		//	Set Client, Org, IsActive, Created/Updated
@@ -272,7 +272,7 @@ public class ImportPayment extends SvrProcess
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Set Invoice from DocumentNo=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set Invoice from DocumentNo=" + no);
 		
 		//	BPartner
 		sql = new StringBuilder ("UPDATE I_Payment i ")
@@ -282,7 +282,7 @@ public class ImportPayment extends SvrProcess
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Set BP from Value=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set BP from Value=" + no);
 		
 		sql = new StringBuilder ("UPDATE I_Payment i ")
 			  .append("SET C_BPartner_ID=(SELECT MAX(C_BPartner_ID) FROM C_Invoice ii")
@@ -291,7 +291,7 @@ public class ImportPayment extends SvrProcess
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Set BP from Invoice=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set BP from Invoice=" + no);
 		
 		sql = new StringBuilder ("UPDATE I_Payment ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No BPartner,' ")
@@ -388,7 +388,7 @@ public class ImportPayment extends SvrProcess
 			  .append("WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("Set DocType=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Set DocType=" + no);
 		sql = new StringBuilder ("UPDATE I_Payment ")
 			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid DocTypeName, ' ")
 			  .append("WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL")

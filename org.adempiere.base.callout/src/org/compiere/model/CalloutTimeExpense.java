@@ -189,7 +189,7 @@ public class CalloutTimeExpense extends CalloutEngine
 		int C_Currency_To_ID = Env.getContextAsInt(ctx, "$C_Currency_ID");
 		Timestamp DateExpense = Env.getContextAsDate(ctx, WindowNo, "DateExpense");
 		//
-		log.fine("Amt=" + ExpenseAmt + ", C_Currency_ID=" + C_Currency_From_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("Amt=" + ExpenseAmt + ", C_Currency_ID=" + C_Currency_From_ID);
 		//	Converted Amount = Unit price
 		BigDecimal ConvertedAmt = ExpenseAmt;
 		//	convert if required
@@ -202,7 +202,7 @@ public class CalloutTimeExpense extends CalloutEngine
 				DateExpense, 0, AD_Client_ID, AD_Org_ID);
 		}
 		mTab.setValue("ConvertedAmt", ConvertedAmt);
-		log.fine("= ConvertedAmt=" + ConvertedAmt);
+		if (log.isLoggable(Level.FINE)) log.fine("= ConvertedAmt=" + ConvertedAmt);
 
 		return "";
 	}	//	Expense_Amount

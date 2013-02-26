@@ -904,7 +904,7 @@ public final class Find extends CDialog
 	 */
 	private void parseUserQuery(MUserQuery userQuery) {
 		String code = userQuery.getCode();
-		log.fine("Parse user query: " + code);
+		if (log.isLoggable(Level.FINE)) log.fine("Parse user query: " + code);
 		String[] segments = code.split(Pattern.quote(SEGMENT_SEPARATOR),-1);
 		advancedTable.stopEditor(true);
 		DefaultTableModel model = (DefaultTableModel)advancedTable.getModel();
@@ -1047,7 +1047,7 @@ public final class Find extends CDialog
 			{
 				String ColumnName = ((Component)ved).getName ();
 				msglog = new StringBuilder().append(ColumnName).append("=").append(value);
-				log.fine(msglog.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 				
 				// globalqss - Carlos Ruiz - 20060711
 				// fix a bug with virtualColumn + isSelectionColumn not yielding results
@@ -1389,7 +1389,7 @@ public final class Find extends CDialog
 				ret.append(getSubCategoriesString(node.getNodeId(), categories, loopIndicatorId)).append(",");
 			}
 		}
-		log.fine(ret.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(ret.toString());
 		StringBuilder msgreturn = new StringBuilder(ret.toString()).append(productCategoryId);
 		return msgreturn.toString();
 	}

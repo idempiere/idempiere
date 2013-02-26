@@ -298,7 +298,7 @@ public abstract class PaymentProcessor
 			log.log(Level.SEVERE, result, e);
 		}
 		long ms = System.currentTimeMillis() - start;
-		log.fine(ms + "ms - " + prop.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(ms + "ms - " + prop.toString());
 		return prop;
 	}	//	connectPost
 
@@ -319,7 +319,7 @@ public abstract class PaymentProcessor
 			connection.setDoOutput(true);
 			connection.setUseCaches(false);
 			connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-			log.fine(connection.getURL().toString());
+			if (log.isLoggable(Level.FINE)) log.fine(connection.getURL().toString());
 
 			// POST the parameter
 			DataOutputStream out = new DataOutputStream (connection.getOutputStream());

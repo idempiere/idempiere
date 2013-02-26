@@ -129,7 +129,7 @@ public class ExportHelper {
 		MEXPFormat exportFormat = null;
 		//exportFormat = new MFormat(po.getCtx(), EXP_Format_ID, po.get_TrxName());
 		exportFormat = MEXPFormat.getFormatByAD_Client_IDAD_Table_IDAndVersion(po.getCtx(), m_AD_Client_ID, po.get_Table_ID(), version, po.get_TrxName());
-		log.fine("exportFormat = " + exportFormat);
+		if (log.isLoggable(Level.FINE)) log.fine("exportFormat = " + exportFormat);
 		if (exportFormat == null || exportFormat.getEXP_Format_ID() == 0) {
 			// Fall back to System Client
 			MClient systemClient = MClient.get (po.getCtx(), 0);
@@ -160,7 +160,7 @@ public class ExportHelper {
 
 		MEXPProcessor mExportProcessor = null;
 		mExportProcessor = new MEXPProcessor (po.getCtx(), m_rplStrategy.getEXP_Processor_ID(), po.get_TrxName() );
-		log.fine("ExportProcessor = " + mExportProcessor);
+		if (log.isLoggable(Level.FINE)) log.fine("ExportProcessor = " + mExportProcessor);
 		int EXP_ProcessorType_ID = 0;
 		EXP_ProcessorType_ID = mExportProcessor.getEXP_Processor_Type_ID();
 		MEXPProcessorType expProcessor_Type = new MEXPProcessorType(po.getCtx(), EXP_ProcessorType_ID, po.get_TrxName() );

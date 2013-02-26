@@ -19,6 +19,7 @@ package org.compiere.wstore;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -113,12 +114,12 @@ public class Click  extends HttpServlet
 		if (!response.isCommitted ())
 		response.sendRedirect(url);
 		response.flushBuffer();
-		log.fine("redirect - " + url);
+		if (log.isLoggable(Level.FINE)) log.fine("redirect - " + url);
 		
 		//	Save Click
 		saveClick(request, url);
 		//
-		log.fine(url + " - " + (System.currentTimeMillis()-time) + "ms");
+		if (log.isLoggable(Level.FINE)) log.fine(url + " - " + (System.currentTimeMillis()-time) + "ms");
 	}	//	doGet
 
 	/**

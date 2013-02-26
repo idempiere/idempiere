@@ -350,7 +350,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 			+ "WHERE AD_PrintFormatItem_ID IN"
 			+ " (SELECT AD_PrintFormatItem_ID FROM AD_PrintFormatItem WHERE AD_PrintFormat_ID=").append(get_ID()).append(")");
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
-		log.fine("setTranslation #" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("setTranslation #" + no);
 	}	//	setTranslation
 
 

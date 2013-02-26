@@ -594,7 +594,7 @@ public abstract class CreateFromShipment extends CreateFrom
 				}
 				QtyEntered = QtyEntered.setScale(precision, BigDecimal.ROUND_HALF_DOWN);
 				//
-				log.fine("Line QtyEntered=" + QtyEntered
+				if (log.isLoggable(Level.FINE)) log.fine("Line QtyEntered=" + QtyEntered
 						+ ", Product=" + M_Product_ID 
 						+ ", OrderLine=" + C_OrderLine_ID + ", InvoiceLine=" + C_InvoiceLine_ID);
 

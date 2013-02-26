@@ -31,6 +31,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.model.Lookup;
 import org.compiere.model.MPInstance;
@@ -275,7 +276,7 @@ public class RunProcess extends TableFixture {
 				if (ob!=null)
 					valueString2 = ob.toString(); 
 			}
-			log.fine("fillParameter - " + key + " = " + valueString);
+			if (log.isLoggable(Level.FINE)) log.fine("fillParameter - " + key + " = " + valueString);
 			Object value = valueString;
 			if (valueString != null && valueString.length() == 0)
 				value = null;
@@ -305,7 +306,7 @@ public class RunProcess extends TableFixture {
 						else
 							bd = new BigDecimal (value.toString());
 						iPara.setP_Number(bd);
-						log.fine("fillParameter - " + key
+						if (log.isLoggable(Level.FINE)) log.fine("fillParameter - " + key
 								+ " = " + valueString + " (=" + bd + "=)");
 
 						if (pPara.isRange())
@@ -347,7 +348,7 @@ public class RunProcess extends TableFixture {
 						}
 
 
-						log.fine("fillParameter - " + key
+						if (log.isLoggable(Level.FINE)) log.fine("fillParameter - " + key
 								+ " = " + valueString + " (=" + ts + "=)");
 					}
 					else if (DisplayType.YesNo == pPara.getAD_Reference_ID())

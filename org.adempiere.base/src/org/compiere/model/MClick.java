@@ -153,7 +153,7 @@ public class MClick extends X_W_Click
 		//	remove everything after /
 		if (slash != -1)
 			url = url.substring(0, slash);
-		log.fine(exactURL + " -> " + url);
+		if (log.isLoggable(Level.FINE)) log.fine(exactURL + " -> " + url);
 		int W_ClickCount_ID = search (url, exactURL);
 		//	try minumum
 		if (W_ClickCount_ID == 0)
@@ -166,7 +166,7 @@ public class MClick extends X_W_Click
 				lastDot = url.lastIndexOf('.');
 				firstDot = url.indexOf('.');
 			}
-			log.fine(exactURL + " -> " + url);
+			if (log.isLoggable(Level.FINE)) log.fine(exactURL + " -> " + url);
 			W_ClickCount_ID = search (url, exactURL);
 		}
 		//	Not found

@@ -183,7 +183,7 @@ public class WebUser
 			if (rs.next())
 			{
 				m_bpc = new MUser (m_ctx, rs, null);
-				log.fine("Found BPC=" + m_bpc);
+				if (log.isLoggable(Level.FINE)) log.fine("Found BPC=" + m_bpc);
 			}
 		}
 		catch (Exception e)
@@ -217,7 +217,7 @@ public class WebUser
 		if (m_bpc != null)
 		{
 			m_bp = new MBPartner (m_ctx, m_bpc.getC_BPartner_ID (), null);
-			log.fine("Found BP=" + m_bp);
+			if (log.isLoggable(Level.FINE)) log.fine("Found BP=" + m_bp);
 		}
 		else
 			m_bp = null;
@@ -227,7 +227,7 @@ public class WebUser
 			if (m_bpc.getC_BPartner_Location_ID() != 0)
 			{
 				m_bpl = new MBPartnerLocation (m_ctx, m_bpc.getC_BPartner_Location_ID (), null);
-				log.fine("Found BPL=" + m_bpl);
+				if (log.isLoggable(Level.FINE)) log.fine("Found BPL=" + m_bpl);
 			}
 			else
 			{
@@ -235,13 +235,13 @@ public class WebUser
 				if (bpls != null && bpls.length > 0)
 				{
 					m_bpl = bpls[0];
-					log.fine("Found BPL=" + m_bpl);
+					if (log.isLoggable(Level.FINE)) log.fine("Found BPL=" + m_bpl);
 				}
 			}
 			if (m_bpl != null)
 			{
 				m_loc = MLocation.get (m_ctx, m_bpl.getC_Location_ID(), null);
-				log.fine("Found LOC=" + m_loc);
+				if (log.isLoggable(Level.FINE)) log.fine("Found LOC=" + m_loc);
 			}
 			else
 				m_loc = null;
@@ -295,7 +295,7 @@ public class WebUser
 			if (rs.next())
 			{
 				m_bpc = new MUser (m_ctx, rs, null);
-				log.fine("= found BPC=" + m_bpc);
+				if (log.isLoggable(Level.FINE)) log.fine("= found BPC=" + m_bpc);
 			}
 		}
 		catch (Exception e)
@@ -316,7 +316,7 @@ public class WebUser
 		if (m_bpc != null)
 		{
 			m_bp = new MBPartner (m_ctx, m_bpc.getC_BPartner_ID (), null);
-			log.fine("= Found BP=" + m_bp);
+			if (log.isLoggable(Level.FINE)) log.fine("= Found BP=" + m_bp);
 		}
 		else
 			m_bp = null;
@@ -326,7 +326,7 @@ public class WebUser
 			if (m_bpc.getC_BPartner_Location_ID() != 0)
 			{
 				m_bpl = new MBPartnerLocation (m_ctx, m_bpc.getC_BPartner_Location_ID (), null);
-				log.fine("= Found BPL=" + m_bpl);
+				if (log.isLoggable(Level.FINE)) log.fine("= Found BPL=" + m_bpl);
 			}
 			else
 			{
@@ -334,13 +334,13 @@ public class WebUser
 				if (bpls != null && bpls.length > 0)
 				{
 					m_bpl = bpls[0];
-					log.fine("= Found BPL=" + m_bpl);
+					if (log.isLoggable(Level.FINE)) log.fine("= Found BPL=" + m_bpl);
 				}
 			}
 			if (m_bpl != null)
 			{
 				m_loc = MLocation.get (m_ctx, m_bpl.getC_Location_ID(), null);
-				log.fine("= Found LOC=" + m_loc);
+				if (log.isLoggable(Level.FINE)) log.fine("= Found LOC=" + m_loc);
 			}
 			else
 				m_loc = null;
@@ -392,14 +392,14 @@ public class WebUser
 	{
 		if (m_bpc == null || !WebUtil.exists(getEmail()))
 		{
-			log.fine(getEmail() + ", bpc=" + m_bpc);
+			if (log.isLoggable(Level.FINE)) log.fine(getEmail() + ", bpc=" + m_bpc);
 			return false;
 		}
 		//
 		boolean ok = m_bpc.getAD_User_ID() != 0
 			&& m_bpc.isEMailValid();
 		if (!ok)
-			log.fine(getEmail()
+			if (log.isLoggable(Level.FINE)) log.fine(getEmail()
 				+ ", ID=" + m_bpc.getAD_User_ID()
 				+ ", Online=" + m_bpc.isOnline()
 				+ ", EMailValid=" + m_bpc.isEMailValid());
@@ -460,7 +460,7 @@ public class WebUser
 					if (rs.next())
 					{
 						m_bp = new MBPartner (m_ctx, m_bpc.getC_BPartner_ID (), null);
-						log.fine("BP loaded =" + m_bp);
+						if (log.isLoggable(Level.FINE)) log.fine("BP loaded =" + m_bp);
 					}
   			}
 				catch (Exception e)
@@ -479,7 +479,7 @@ public class WebUser
 				m_bp.setName (m_bpc.getName());
 			if (m_bp.getValue() == null || m_bp.getValue().length() == 0)
 				m_bp.setValue(m_bpc.getEMail());
-			log.fine("BP=" + m_bp);
+			if (log.isLoggable(Level.FINE)) log.fine("BP=" + m_bp);
 			if (!m_bp.save ())
 			{
 				m_saveErrorMessage = "Could not save Business Partner";
@@ -487,7 +487,7 @@ public class WebUser
 			}
 
 			//	save Location			***************************************
-			log.fine("LOC=" + m_loc);
+			if (log.isLoggable(Level.FINE)) log.fine("LOC=" + m_loc);
 			m_loc.save ();
 
 			//	save BP Location		***************************************
@@ -495,7 +495,7 @@ public class WebUser
 				m_bpl.setC_BPartner_ID (m_bp.getC_BPartner_ID());
 			if (m_bpl.getC_Location_ID () != m_loc.getC_Location_ID())
 				m_bpl.setC_Location_ID (m_loc.getC_Location_ID());
-			log.fine("BPL=" + m_bpl);
+			if (log.isLoggable(Level.FINE)) log.fine("BPL=" + m_bpl);
 			if (!m_bpl.save ())
 			{
 				m_saveErrorMessage = "Could not save Location";
@@ -507,7 +507,7 @@ public class WebUser
 				m_bpc.setC_BPartner_ID (m_bp.getC_BPartner_ID());
 			if (m_bpc.getC_BPartner_Location_ID () != m_bpl.getC_BPartner_Location_ID ())
 				m_bpc.setC_BPartner_Location_ID (m_bpl.getC_BPartner_Location_ID ());
-			log.fine("BPC=" + m_bpc);
+			if (log.isLoggable(Level.FINE)) log.fine("BPC=" + m_bpc);
 			if (!m_bpc.save ())
 			{
 				m_saveErrorMessage = "Could not save Contact";
@@ -752,7 +752,7 @@ public class WebUser
 		}
 		m_loggedIn=m_loggedIn && retValue;
 		setPasswordOK (m_loggedIn, password);
-		log.fine("success=" + m_loggedIn);
+		if (log.isLoggable(Level.FINE)) log.fine("success=" + m_loggedIn);
 		if (m_loggedIn)
 			Env.setContext(m_ctx, "#AD_User_ID", getAD_User_ID());
 		return m_loggedIn;

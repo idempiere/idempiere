@@ -633,7 +633,7 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener, Focus
 	 */
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		log.fine( "PosSubProduct.setM_Product_ID=" + M_Product_ID);
+		if (log.isLoggable(Level.FINE)) log.fine( "PosSubProduct.setM_Product_ID=" + M_Product_ID);
 		if (M_Product_ID <= 0)
 			m_product = null;
 		else
@@ -706,7 +706,7 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener, Focus
 		if ( lineId <= 0 )
 			return;
 	
-		log.fine("SubCurrentLine - loading line " + lineId);
+		if (log.isLoggable(Level.FINE)) log.fine("SubCurrentLine - loading line " + lineId);
 		MOrderLine ol = new MOrderLine(p_ctx, lineId, null);
 		if ( ol != null )
 		{

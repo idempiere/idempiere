@@ -1,6 +1,7 @@
 package org.compiere.apps;
 
 import java.awt.Container;
+import java.util.logging.Level;
 
 import org.adempiere.util.IProcessUI;
 import org.compiere.model.MPInstance;
@@ -36,7 +37,7 @@ public class ClientProcessCtrl {
 	 */
 	public static ProcessCtl process (IProcessUI parent, int WindowNo, ProcessInfo pi, Trx trx)
 	{
-		log.fine("WindowNo=" + WindowNo + " - " + pi);
+		if (log.isLoggable(Level.FINE)) log.fine("WindowNo=" + WindowNo + " - " + pi);
 
 		MPInstance instance = null; 
 		try 

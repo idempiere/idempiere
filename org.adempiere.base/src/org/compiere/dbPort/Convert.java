@@ -148,7 +148,7 @@ public abstract class Convert
 							}
 						}
 						if (m_verbose)
-							log.fine("- ok " + no);
+							if (log.isLoggable(Level.FINE)) log.fine("- ok " + no);
 					}
 					catch (SQLException ex)
 					{

@@ -239,7 +239,7 @@ public class WebLogin
 			else
 			{
 				m_forward = getLogin_RelURL ();
-				log.fine("- PasswordMessage=" + m_wu.getPasswordMessage());
+				if (log.isLoggable(Level.FINE)) log.fine("- PasswordMessage=" + m_wu.getPasswordMessage());
 			}
 			// If no session exists or is not loaded, load or create it
 			if (m_session==null) 
@@ -285,7 +285,7 @@ public class WebLogin
 					}
 					//
 					if (passwordChange)
-						log.fine("- update Pwd " + m_email + ", Old=" + m_password + ", DB=" + m_wu.getPassword() + ", New=" + passwordNew);
+						if (log.isLoggable(Level.FINE)) log.fine("- update Pwd " + m_email + ", Old=" + m_password + ", DB=" + m_wu.getPassword() + ", New=" + passwordNew);
 					if (WebUtil.updateFields(m_request, m_wu, passwordChange))
 					{
 						if (passwordChange)
@@ -306,7 +306,7 @@ public class WebLogin
 			}
 			else	//	new
 			{
-				log.fine("** new " + m_email + "/" + m_password);
+				if (log.isLoggable(Level.FINE)) log.fine("** new " + m_email + "/" + m_password);
 				m_wu.setEmail (m_email);
 				m_wu.setPassword (m_password);
 				if (WebUtil.updateFields (m_request, m_wu, true))
@@ -326,7 +326,7 @@ public class WebLogin
 				}
 				else
 				{
-					log.fine("- failed - " + m_wu.getSaveErrorMessage() + " - " + m_wu.getPasswordMessage());
+					if (log.isLoggable(Level.FINE)) log.fine("- failed - " + m_wu.getSaveErrorMessage() + " - " + m_wu.getPasswordMessage());
 					m_forward = getLogin_RelURL ();
 				}
 			}	//	new

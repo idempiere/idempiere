@@ -241,7 +241,7 @@ public class MProjectPhase extends X_C_ProjectPhase
 			if (toTask.save())
 				count++;
 		}
-		log.fine("#" + count + " - " + fromPhase);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + count + " - " + fromPhase);
 		if (fromTasks.length != count)
 			log.log(Level.SEVERE, "Count difference - TypePhase=" + fromTasks.length + " <> Saved=" + count);
 

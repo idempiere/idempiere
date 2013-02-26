@@ -140,7 +140,7 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 				BigDecimal TrxAmt = (BigDecimal) miniTable.getValueAt(i, 4); //  4-PayAmt
 			//	BigDecimal StmtAmt = (BigDecimal) miniTable.getValueAt(i, 5);//  5-Conv Amt
 				//
-				log.fine("Line Date=" + trxDate + ", Payment=" + C_Payment_ID + ", Currency=" + C_Currency_ID + ", Amt=" + TrxAmt);
+				if (log.isLoggable(Level.FINE)) log.fine("Line Date=" + trxDate + ", Payment=" + C_Payment_ID + ", Currency=" + C_Currency_ID + ", Amt=" + TrxAmt);
 				//	
 				MDepositBatchLine dbl = new MDepositBatchLine(db);
 				//	dbl.setStatementLineDate(trxDate);

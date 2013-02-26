@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import org.compiere.model.MColumn;
 import org.compiere.model.MQuery;
@@ -67,7 +68,7 @@ public abstract class AbstractDocumentSearch {
 		StringBuilder msglog = new StringBuilder();
 				
 		msglog.append("Search started with String: ").append(searchString);
-		log.fine(msglog.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 
 		// Check if / how many transaction-codes are used
 		if (! Util.isEmpty(searchString)) {
@@ -104,12 +105,12 @@ public abstract class AbstractDocumentSearch {
 						msglog = new StringBuilder("Search with Transaction: '");
 						msglog.append(codeList.get(i)).append("' for: '")
 							  .append(search.toString()).append("'");								
-					log.fine(msglog.toString());
+					if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 					getID(codeList.get(i), search.toString());
 				}
 			} else {
 				msglog = new StringBuilder("Search without Transaction: ").append(search.toString());
-				log.fine(msglog.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 				getID(null, search.toString());
 			}
 		} else {
@@ -195,7 +196,7 @@ public abstract class AbstractDocumentSearch {
 				}
 				if (pstmtSO != null) {
 					msglog = new StringBuilder("SQL Sales: ").append(sqlSO.toString());
-					log.fine(msglog.toString());
+					if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 					rsSO = pstmtSO.executeQuery();
 					Vector<Integer> idSO = new Vector<Integer>();
 					while (rsSO.next()) {
@@ -204,7 +205,7 @@ public abstract class AbstractDocumentSearch {
 					if (role.getWindowAccess(msd.getAD_Window_ID()) != null) {
 						msglog = new StringBuilder("Open Window: ").append(msd.getAD_Window_ID()).append(" / Table: ")
 									.append(table.getTableName()).append(" / Number of Results: ").append(idSO.size());
-						log.fine(msglog.toString());
+						if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 
 						if (idSO.size() == 0 && (searchString == null || searchString.trim().length() == 0)) {
 							// No search string - open the window with new record
@@ -218,7 +219,7 @@ public abstract class AbstractDocumentSearch {
 				}
 				if (pstmtPO != null) {
 					msglog = new StringBuilder("SQL Purchase: ").append(sqlPO);
-					log.fine(msglog.toString());
+					if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 					rsPO = pstmtPO.executeQuery();
 					Vector<Integer> idPO = new Vector<Integer>();
 					while (rsPO.next()) {
@@ -227,7 +228,7 @@ public abstract class AbstractDocumentSearch {
 					if (role.getWindowAccess(msd.getPO_Window_ID()) != null) {
 						msglog = new StringBuilder("Open Window: ").append(msd.getPO_Window_ID()).append(" / Table: ")
 								.append(table.getTableName()).append(" / Number of Results: ").append(idPO.size());						
-						log.fine(msglog.toString());
+						if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 						openWindow(idPO, table.getTableName(), msd.getPO_Window_ID());
 					} else {
 						log.warning("Role is not allowed to view this window");
@@ -287,7 +288,7 @@ public abstract class AbstractDocumentSearch {
 
 		final MQuery query = new MQuery(tableName);
 		if (whereString != null) {
-			log.fine(whereString.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(whereString.toString());
 			query.addRestriction(whereString.toString());
 		}
 		final boolean ok = openWindow(windowId, query);

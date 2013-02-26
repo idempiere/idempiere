@@ -120,7 +120,7 @@ public class BasketServlet extends HttpServlet
 		if (SalesRep_ID != 0)
 		{
 			wb.setSalesRep_ID(SalesRep_ID);
-			log.fine("SalesRep_ID=" + SalesRep_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("SalesRep_ID=" + SalesRep_ID);
 		}
 
 		//	Get Price List
@@ -130,7 +130,7 @@ public class BasketServlet extends HttpServlet
 			log.fine("No Price List in session");
 			pl = (PriceList)request.getAttribute(PriceList.NAME);
 		}
-		log.fine("PL=" + pl);
+		if (log.isLoggable(Level.FINE)) log.fine("PL=" + pl);
 
 		//	Do we delete?	Delete_x
 		deleteLine (request, wb);
@@ -179,14 +179,14 @@ public class BasketServlet extends HttpServlet
 					try
 					{
 						M_Product_ID = Integer.parseInt (parameter.substring (4));
-						log.fine("Found Parameter=" + parameter + " -> " + M_Product_ID);
+						if (log.isLoggable(Level.FINE)) log.fine("Found Parameter=" + parameter + " -> " + M_Product_ID);
 						if (!WebUtil.exists(sQuantity))
 							sQuantity = WebUtil.getParameter (request, "Qty_" + M_Product_ID);
 						if (!WebUtil.exists(sPrice))
 							sPrice = WebUtil.getParameter (request, "Price_" + M_Product_ID);
 						if (!WebUtil.exists(Name))
 							Name = WebUtil.getParameter (request, "Name_" + M_Product_ID);
-						log.fine("Found Parameters " + Name + ",Qty=" + sQuantity + ",Price=" + sPrice);
+						if (log.isLoggable(Level.FINE)) log.fine("Found Parameters " + Name + ",Qty=" + sQuantity + ",Price=" + sPrice);
 					}
 					catch (Exception ex)
 					{
@@ -222,7 +222,7 @@ public class BasketServlet extends HttpServlet
 			{
 				Price = plp.getPrice ();
 				Name = plp.getName ();
-				log.fine("Found in PL = " + Name + " - " + Price);
+				if (log.isLoggable(Level.FINE)) log.fine("Found in PL = " + Name + " - " + Price);
 			}
 		}
 		/**	if not found inPL and exists as parameter
@@ -248,7 +248,7 @@ public class BasketServlet extends HttpServlet
 			{
 				Price = plp.getPrice ();
 				Name = plp.getName ();
-				log.fine("Found in complete PL = " + Name + " - " + Price);
+				if (log.isLoggable(Level.FINE)) log.fine("Found in complete PL = " + Name + " - " + Price);
 			}
 		}
 
@@ -256,7 +256,7 @@ public class BasketServlet extends HttpServlet
 		if (Price != null)
 		{
 			WebBasketLine wbl = wb.add (M_Product_ID, Name, Qty, Price);
-			log.fine(wbl.toString());			
+			if (log.isLoggable(Level.FINE)) log.fine(wbl.toString());			
 		}
 		else	//	Price not found
 			log.warning ("Product Price not found - M_Product_ID=" + M_Product_ID
@@ -291,7 +291,7 @@ public class BasketServlet extends HttpServlet
 				try
 				{
 					int line = Integer.parseInt (parameter.substring (7));
-					log.fine("Delete parameter=" + parameter + " -> " + line);
+					if (log.isLoggable(Level.FINE)) log.fine("Delete parameter=" + parameter + " -> " + line);
 					wb.delete(line);
 				}
 				catch (NumberFormatException ex)

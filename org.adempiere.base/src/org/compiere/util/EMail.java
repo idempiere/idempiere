@@ -325,7 +325,7 @@ public final class EMail implements Serializable
 		//	log.fine("transport connected");
 			Transport.send(m_msg);
 		//	t.sendMessage(msg, msg.getAllRecipients());
-			log.fine("Success - MessageID=" + m_msg.getMessageID());
+			if (log.isLoggable(Level.FINE)) log.fine("Success - MessageID=" + m_msg.getMessageID());
 		}
 		catch (MessagingException me)
 		{
@@ -462,7 +462,7 @@ public final class EMail implements Serializable
 		{
 			Enumeration<?> e = m_msg.getAllHeaderLines ();
 			while (e.hasMoreElements ())
-				log.fine("- " + e.nextElement ());
+				if (log.isLoggable(Level.FINE)) log.fine("- " + e.nextElement ());
 		}
 		catch (MessagingException ex)
 		{
@@ -924,7 +924,7 @@ public final class EMail implements Serializable
 				m_msg.setDataHandler (new DataHandler
 					(new ByteArrayDataSource (m_messageHTML, charSetName, "text/html")));
 			//
-			log.fine("(simple) " + getSubject());
+			if (log.isLoggable(Level.FINE)) log.fine("(simple) " + getSubject());
 		}
 		else	//	Multi part message	***************************************
 		{
@@ -940,7 +940,7 @@ public final class EMail implements Serializable
 			// Create Multipart and its parts to it
 			Multipart mp = new MimeMultipart();
 			mp.addBodyPart(mbp_1);
-			log.fine("(multi) " + getSubject() + " - " + mbp_1);
+			if (log.isLoggable(Level.FINE)) log.fine("(multi) " + getSubject() + " - " + mbp_1);
 
 			//	for all attachments
 			for (int i = 0; i < m_attachments.size(); i++)
@@ -974,7 +974,7 @@ public final class EMail implements Serializable
 				MimeBodyPart mbp_2 = new MimeBodyPart();
 				mbp_2.setDataHandler(new DataHandler(ds));
 				mbp_2.setFileName(ds.getName());
-				log.fine("Added Attachment " + ds.getName() + " - " + mbp_2);
+				if (log.isLoggable(Level.FINE)) log.fine("Added Attachment " + ds.getName() + " - " + mbp_2);
 				mp.addBodyPart(mbp_2);
 			}
 

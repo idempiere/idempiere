@@ -75,7 +75,7 @@ public class Doc_ProjectIssue extends Doc
 		//	Pseudo Line Check
 		if (m_line.getM_Product_ID() == 0)
 			log.warning(m_line.toString() + " - No Product");
-		log.fine(m_line.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(m_line.toString());
 		return null;
 	}   //  loadDocumentDetails
 
@@ -189,7 +189,7 @@ public class Doc_ProjectIssue extends Doc
 			if (rs.next())
 			{
 				retValue = rs.getBigDecimal(1);
-				log.fine("POCost = " + retValue);
+				if (log.isLoggable(Level.FINE)) log.fine("POCost = " + retValue);
 			}
 			else
 				log.warning("Not found for M_InOutLine_ID=" + m_issue.getM_InOutLine_ID());
@@ -232,7 +232,7 @@ public class Doc_ProjectIssue extends Doc
 				retValue = rs.getBigDecimal(1);
 				qty = rs.getBigDecimal(2);
 				retValue = retValue.multiply(qty);
-				log.fine("ExpLineCost = " + retValue);
+				if (log.isLoggable(Level.FINE)) log.fine("ExpLineCost = " + retValue);
 			}
 			else
 				log.warning("Not found for S_TimeExpenseLine_ID=" + m_issue.getS_TimeExpenseLine_ID());

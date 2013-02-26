@@ -19,6 +19,7 @@ package org.compiere.wstore;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -286,7 +287,7 @@ public class PaymentServlet  extends HttpServlet
 			}
 			else
 			{
-				log.fine(payment.getErrorMessage());
+				if (log.isLoggable(Level.FINE)) log.fine(payment.getErrorMessage());
 				String errMsg = payment.getErrorMessage();
 				payment.save ();
 				payment.setErrorMessage(errMsg);

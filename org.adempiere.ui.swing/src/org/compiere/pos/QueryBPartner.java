@@ -17,6 +17,7 @@ package org.compiere.pos;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
 
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
@@ -260,7 +261,7 @@ public class QueryBPartner extends PosQuery
 			}
 		}
 		f_ok.setEnabled(enabled);
-		log.fine("C_BPartner_ID=" + m_C_BPartner_ID); 
+		if (log.isLoggable(Level.FINE)) log.fine("C_BPartner_ID=" + m_C_BPartner_ID); 
 	}	//	enableButtons
 
 	/**
@@ -269,7 +270,7 @@ public class QueryBPartner extends PosQuery
 	 */
 	protected void close()
 	{
-		log.fine("C_BPartner_ID=" + m_C_BPartner_ID); 
+		if (log.isLoggable(Level.FINE)) log.fine("C_BPartner_ID=" + m_C_BPartner_ID); 
 		
 		if (m_C_BPartner_ID > 0)
 		{

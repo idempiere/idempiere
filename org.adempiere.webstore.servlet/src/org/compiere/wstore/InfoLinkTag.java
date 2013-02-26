@@ -17,6 +17,7 @@
 package org.compiere.wstore;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -105,7 +106,7 @@ public class InfoLinkTag extends TagSupport
 		}
 		else
 		{
-			if (CLogMgt.isLevelFiner())
+			if (log.isLoggable(Level.FINE)) 
 				log.fine("No WebUser");
 			if (session.getAttribute(WebInfo.NAME) == null)
 				session.setAttribute (WebInfo.NAME, WebInfo.getGeneral());

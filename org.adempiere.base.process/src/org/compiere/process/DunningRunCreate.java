@@ -234,12 +234,12 @@ public class DunningRunCreate extends SvrProcess
 				
 				StringBuilder msglog = new StringBuilder()
 					.append("DaysAfterDue: ").append(DaysAfterDue.intValue()).append(" isShowAllDue: ").append(level.isShowAllDue());
-				log.fine(msglog.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 				msglog = new StringBuilder()
 					.append("C_Invoice_ID - DaysDue - GrandTotal: ").append(C_Invoice_ID).append(" - ").append(DaysDue).append(" - ").append(GrandTotal);
-				log.fine(msglog.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 				msglog = new StringBuilder("C_InvoicePaySchedule_ID: ").append(C_InvoicePaySchedule_ID);
-				log.fine(msglog.toString());
+				if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 				//
 				// Check for Dispute
 				if (!p_IncludeInDispute && IsInDispute)

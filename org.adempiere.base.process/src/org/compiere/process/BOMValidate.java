@@ -183,7 +183,7 @@ public class BOMValidate extends SvrProcess
 			return false;
 		}
 		m_products.add(product);
-		log.fine(product.getName());
+		if (log.isLoggable(Level.FINE)) log.fine(product.getName());
 		//
 		MProductBOM[] productsBOMs = MProductBOM.getBOMLines(product);
 		for (int i = 0; i < productsBOMs.length; i++)
@@ -242,7 +242,7 @@ public class BOMValidate extends SvrProcess
 			return false;
 		}
 		m_products.add(product);
-		log.fine(product.getName());
+		if (log.isLoggable(Level.FINE)) log.fine(product.getName());
 		//
 		MBOM bom = boms[0];
 		MBOMProduct[] BOMproducts = MBOMProduct.getOfBOM(bom);

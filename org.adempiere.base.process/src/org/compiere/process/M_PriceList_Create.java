@@ -108,7 +108,7 @@ public class M_PriceList_Create extends SvrProcess {
 					"Update The PriceList to zero of M_Product_PO WHERE	PriceList IS NULL",
 					sqlupd.toString());
 		totu += cntu;
-		log.fine("Updated " + cntu);
+		if (log.isLoggable(Level.FINE)) log.fine("Updated " + cntu);
 
 		sqlupd = new StringBuilder("UPDATE M_Product_PO  SET PriceLastPO = 0  ");
 					   sqlupd.append(" WHERE	PriceLastPO IS NULL ");
@@ -119,7 +119,7 @@ public class M_PriceList_Create extends SvrProcess {
 					"Update  The PriceListPO to zero of  M_Product_PO WHERE	PriceLastPO IS NULL",
 					sqlupd.toString());
 		totu += cntu;
-		log.fine("Updated " + cntu);
+		if (log.isLoggable(Level.FINE)) log.fine("Updated " + cntu);
 
 		sqlupd = new StringBuilder("UPDATE M_Product_PO  SET     PricePO = PriceLastPO ");
 						sqlupd.append(" WHERE	(PricePO IS NULL OR PricePO = 0) AND PriceLastPO <> 0 ");
@@ -130,7 +130,7 @@ public class M_PriceList_Create extends SvrProcess {
 					"Update  The PricePO to PriceLastPO of  M_Product_PO WHERE	(PricePO IS NULL OR PricePO = 0) AND PriceLastPO <> 0 ",
 					sqlupd.toString());
 		totu += cntu;
-		log.fine("Updated " + cntu);
+		if (log.isLoggable(Level.FINE)) log.fine("Updated " + cntu);
 
 		sqlupd = new StringBuilder("UPDATE M_Product_PO  SET     PricePO = 0  ");
 						sqlupd.append(" WHERE	PricePO IS NULL ");
@@ -141,7 +141,7 @@ public class M_PriceList_Create extends SvrProcess {
 					"Update  The PricePO to Zero of  M_Product_PO WHERE	PricePO IS NULL",
 					sqlupd.toString());
 		totu += cntu;
-		log.fine("Updated " + cntu);
+		if (log.isLoggable(Level.FINE)) log.fine("Updated " + cntu);
 		//
 		//  Set default current vendor
 		//
@@ -155,7 +155,7 @@ public class M_PriceList_Create extends SvrProcess {
 		if (cntu == -1)
 			raiseError("Update  IsCurrentVendor to Y of  M_Product_PO ", sqlupd.toString());
 		totu += cntu;
-		log.fine("Updated " + cntu);
+		if (log.isLoggable(Level.FINE)) log.fine("Updated " + cntu);
 
 		// let the commit for SvrProcess
 		// DB.commit(true, get_TrxName());
@@ -206,7 +206,7 @@ public class M_PriceList_Create extends SvrProcess {
 								"Update  IsCurrentVendor to N of  M_Product_PO for a M_Product_ID and C_BPartner_ID ingresed",
 								sqlupd.toString());
 					totu += cntu;
-					log.fine("Updated " + cntu);
+					if (log.isLoggable(Level.FINE)) log.fine("Updated " + cntu);
 				}
 			}
 		} catch (SQLException e) {
@@ -232,7 +232,7 @@ public class M_PriceList_Create extends SvrProcess {
 				raiseError(" DELETE	M_ProductPrice ", sqldel.toString());
 			totd += cntd;
 			message = new StringBuilder("@Deleted@=").append(cntd).append(" - ");
-			log.fine("Deleted " + cntd);
+			if (log.isLoggable(Level.FINE)) log.fine("Deleted " + cntd);
 		}
 		//
 		// Get PriceList Info
@@ -284,7 +284,7 @@ public class M_PriceList_Create extends SvrProcess {
 					if (cntd == -1)
 						raiseError(" DELETE	T_Selection ", sqldel.toString());
 					totd += cntd;
-					log.fine("Deleted " + cntd);
+					if (log.isLoggable(Level.FINE)) log.fine("Deleted " + cntd);
 					//
 					//Create Selection in temporary table
 					//
@@ -332,7 +332,7 @@ public class M_PriceList_Create extends SvrProcess {
 						if (cnti == -1)
 							raiseError(" INSERT INTO T_Selection ", sqlins.toString());
 						toti += cnti;
-						log.fine("Inserted " + cnti);
+						if (log.isLoggable(Level.FINE)) log.fine("Inserted " + cnti);
 
 					} else {
 						//
@@ -382,7 +382,7 @@ public class M_PriceList_Create extends SvrProcess {
 									" INSERT INTO T_Selection from existing PriceList",
 									sqlins.toString());
 						toti += cnti;
-						log.fine("Inserted " + cnti);
+						if (log.isLoggable(Level.FINE)) log.fine("Inserted " + cnti);
 
 					}
 
@@ -405,7 +405,7 @@ public class M_PriceList_Create extends SvrProcess {
 							raiseError(" DELETE	M_ProductPrice ", sqldel.toString());
 						totd += cntd;
 						message.append(", @Deleted@=").append(cntd);
-						log.fine("Deleted " + cntd);
+						if (log.isLoggable(Level.FINE)) log.fine("Deleted " + cntd);
 					}
 
 					//
@@ -499,7 +499,7 @@ public class M_PriceList_Create extends SvrProcess {
 									" INSERT INTO T_Selection from existing PriceList",
 									sqlins.toString());
 						toti += cnti;
-						log.fine("Inserted " + cnti);
+						if (log.isLoggable(Level.FINE)) log.fine("Inserted " + cnti);
 					} else {
 						//
 						//Copy and Convert from other PriceList_Version
@@ -572,7 +572,7 @@ public class M_PriceList_Create extends SvrProcess {
 									" INSERT INTO T_Selection from existing PriceList",
 									sqlins.toString());
 						toti += cnti;
-						log.fine("Inserted " + cnti);
+						if (log.isLoggable(Level.FINE)) log.fine("Inserted " + cnti);
 
 					}
 					message.append(", @Inserted@=").append(cnti);
@@ -612,7 +612,7 @@ public class M_PriceList_Create extends SvrProcess {
 					if (cntu == -1)
 						raiseError("Update  M_ProductPrice ", sqlupd.toString());
 					totu += cntu;
-					log.fine("Updated " + cntu);
+					if (log.isLoggable(Level.FINE)) log.fine("Updated " + cntu);
 
 					//
 					//Rounding	(AD_Reference_ID=155)
@@ -665,7 +665,7 @@ public class M_PriceList_Create extends SvrProcess {
 					if (cntu == -1)
 						raiseError("Update  M_ProductPrice ", sqlupd.toString());
 					totu += cntu;
-					log.fine("Updated " + cntu);
+					if (log.isLoggable(Level.FINE)) log.fine("Updated " + cntu);
 
 					message.append(", @Updated@=").append(cntu);
 					//
@@ -691,7 +691,7 @@ public class M_PriceList_Create extends SvrProcess {
 					if (cntu == -1)
 						raiseError("Update  M_ProductPrice ", sqlupd.toString());
 					totu += cntu;
-					log.fine("Updated " + cntu);
+					if (log.isLoggable(Level.FINE)) log.fine("Updated " + cntu);
 
 					v_NextNo = v_NextNo + 1;
 					addLog(0, null, null, message.toString());
@@ -705,7 +705,7 @@ public class M_PriceList_Create extends SvrProcess {
 				if (cntd == -1)
 					raiseError(" DELETE	T_Selection ", sqldel.toString());
 				totd += cntd;
-				log.fine("Deleted " + cntd);
+				if (log.isLoggable(Level.FINE)) log.fine("Deleted " + cntd);
 				
 				//
 				//commit;
@@ -797,7 +797,7 @@ public class M_PriceList_Create extends SvrProcess {
 				ret.append(",");
 			}
 		}
-		log.fine(ret.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(ret.toString());
 		return ret.toString() + productCategoryId;
 	}
 

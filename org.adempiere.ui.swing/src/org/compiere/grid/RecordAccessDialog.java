@@ -144,7 +144,7 @@ public class RecordAccessDialog extends CDialog
 			rs = null;
 			pstmt = null;
 		}
-		log.fine("#" + m_recordAccesss.size());
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_recordAccesss.size());
 		setLine(0, false);
 	}	//	dynInit
 
@@ -188,7 +188,7 @@ public class RecordAccessDialog extends CDialog
 	 */
 	private void setLine (int rowDelta, boolean newRecord)
 	{
-		log.fine("delta=" + rowDelta + ", new=" + newRecord
+		if (log.isLoggable(Level.FINE)) log.fine("delta=" + rowDelta + ", new=" + newRecord
 			+ " - currentRow=" + m_currentRow + ", size=" + m_recordAccesss.size());
 		int maxIndex = 0;
 		//	nothing defined
@@ -265,7 +265,7 @@ public class RecordAccessDialog extends CDialog
 		{
 			roleField.setSelectedItem(selection);
 			m_currentData = ra;
-			log.fine("" + ra);
+			if (log.isLoggable(Level.FINE)) log.fine("" + ra);
 		}
 		else
 			m_currentData = null;
@@ -325,7 +325,7 @@ public class RecordAccessDialog extends CDialog
 		m_currentData.setIsDependentEntities(isDependentEntities);
 		boolean success = m_currentData.save();
 		//
-		log.fine("Success=" + success);
+		if (log.isLoggable(Level.FINE)) log.fine("Success=" + success);
 		return success;
 	}	//	cmd_save
 
@@ -343,7 +343,7 @@ public class RecordAccessDialog extends CDialog
 			success = m_currentData.delete(true);
 			m_currentData = null;
 			m_recordAccesss.remove(m_currentRow);
-			log.fine("Success=" + success);
+			if (log.isLoggable(Level.FINE)) log.fine("Success=" + success);
 		}
 		return success;
 	}	//	cmd_delete

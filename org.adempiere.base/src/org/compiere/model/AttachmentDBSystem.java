@@ -41,7 +41,7 @@ public class AttachmentDBSystem implements IAttachmentStore
 			byte[] data = attach.getBinaryData();
 			if (data == null)
 				return true;
-			log.fine("ZipSize=" + data.length);
+			if (log.isLoggable(Level.FINE)) log.fine("ZipSize=" + data.length);
 			if (data.length == 0)
 				return true;
 
@@ -70,7 +70,7 @@ public class AttachmentDBSystem implements IAttachmentStore
 					}
 					//
 					byte[] dataEntry = out.toByteArray();
-					log.fine(name 
+					if (log.isLoggable(Level.FINE)) log.fine(name 
 						+ " - size=" + dataEntry.length + " - zip="
 						+ entry.getCompressedSize() + "(" + entry.getSize() + ") "
 						+ (entry.getCompressedSize()*100/entry.getSize())+ "%");
@@ -113,14 +113,14 @@ public class AttachmentDBSystem implements IAttachmentStore
 				byte[] data = item.getData();
 				zip.write (data, 0, data.length);
 				zip.closeEntry();
-				log.fine(entry.getName() + " - "
+				if (log.isLoggable(Level.FINE)) log.fine(entry.getName() + " - "
 					+ entry.getCompressedSize() + " (" + entry.getSize() + ") "
 					+ (entry.getCompressedSize()*100/entry.getSize())+ "%");
 			}
 		//	zip.finish();
 			zip.close();
 			byte[] zipData = out.toByteArray();
-			log.fine("Length=" +  zipData.length);
+			if (log.isLoggable(Level.FINE)) log.fine("Length=" +  zipData.length);
 			attach.setBinaryData(zipData);
 			attach.setTitle(MAttachment.ZIP);
 			return true;

@@ -175,7 +175,7 @@ public class TableElement extends PrintElement
 				Integer nextRow = (Integer)m_pageBreak.get(i+1);
 				if ((row.intValue()+1) == nextRow.intValue())
 				{
-					log.fine("- removing PageBreak row=" + row);
+					if (log.isLoggable(Level.FINE)) log.fine("- removing PageBreak row=" + row);
 					m_pageBreak.remove(i);
 					row = nextRow;
 				}
@@ -591,7 +591,7 @@ public class TableElement extends PrintElement
 
 		//	Page Layout	*******************************************************
 
-		log.fine("FirstPage=" + m_firstPage + ", NextPages=" + m_nextPages);
+		if (log.isLoggable(Level.FINE)) log.fine("FirstPage=" + m_firstPage + ", NextPages=" + m_nextPages);
 		//	One Page on Y | Axis
 		if (m_firstPage.height >= p_height && m_pageBreak.size() == 0)
 		{
@@ -707,7 +707,7 @@ public class TableElement extends PrintElement
 			}	//	for acc columns
 		}	//	multiple - X pages
 
-		log.fine("Pages=" + getPageCount() 
+		if (log.isLoggable(Level.FINE)) log.fine("Pages=" + getPageCount() 
 			+ " X=" + m_firstColumnOnPage.size() + "/Y=" + m_firstRowOnPage.size()
 			+ " - Width=" + p_width + ", Height=" + p_height);
 		return true;
@@ -792,12 +792,12 @@ public class TableElement extends PrintElement
 	public void setHeightToLastPage()
 	{
 		int lastLayoutPage = getPageCount() + m_pageNoStart - 1;
-		log.fine("PageCount - Table=" + getPageCount()
+		if (log.isLoggable(Level.FINE)) log.fine("PageCount - Table=" + getPageCount()
 			+ "(Start=" + m_pageNoStart
 			+ ") Layout=" + lastLayoutPage
 			+ " - Old Height=" + p_height);
 		p_height = getHeight(lastLayoutPage);
-		log.fine("New Height=" + p_height);
+		if (log.isLoggable(Level.FINE)) log.fine("New Height=" + p_height);
 	}	//	setHeightToLastPage
 
 	
@@ -895,14 +895,14 @@ public class TableElement extends PrintElement
 	{
 		int pageIndex = getPageIndex(pageNo);
 		int pageYindex = getPageYIndex(pageIndex);
-		log.fine("Page=" + pageNo + " - PageIndex=" + pageIndex 
+		if (log.isLoggable(Level.FINE)) log.fine("Page=" + pageNo + " - PageIndex=" + pageIndex 
 			+ ", PageYindex=" +  pageYindex);
 		float pageHeight = ((Float)m_pageHeight.get(pageYindex)).floatValue();
 		float pageHeightPrevious = 0f;
 		if (pageYindex > 0)
 			pageHeightPrevious = ((Float)m_pageHeight.get(pageYindex-1)).floatValue();
 		float retValue = pageHeight - pageHeightPrevious;
-		log.fine("Page=" + pageNo + " - PageIndex=" + pageIndex + ", PageYindex=" +  pageYindex + ", Height=" + String.valueOf(retValue));
+		if (log.isLoggable(Level.FINE)) log.fine("Page=" + pageNo + " - PageIndex=" + pageIndex + ", PageYindex=" +  pageYindex + ", Height=" + String.valueOf(retValue));
 		return retValue;
 	}	//	getHeight
 
@@ -1046,7 +1046,7 @@ public class TableElement extends PrintElement
 		int col = getCol (relativePoint.x, pageNo);
 		if (col == -1)
 			return null;
-		log.fine("Row=" + row + ", Col=" + col + ", PageNo=" + pageNo);
+		if (log.isLoggable(Level.FINE)) log.fine("Row=" + row + ", Col=" + col + ", PageNo=" + pageNo);
 		//
 		NamePair pp = (NamePair)m_rowColDrillDown.get(new Point(row,col));
 		if (pp == null)
@@ -1075,7 +1075,7 @@ public class TableElement extends PrintElement
 		int row = getRow (relativePoint.y, pageNo);
 		if (row == -1)
 			return null;
-		log.fine("Row=" + row  + ", PageNo=" + pageNo);
+		if (log.isLoggable(Level.FINE)) log.fine("Row=" + row  + ", PageNo=" + pageNo);
 		//
 		if (m_pk[row] == null)	//	FunctionRows
 			return null;
@@ -1507,7 +1507,7 @@ public class TableElement extends PrintElement
 					{
 						String str = printItems[index].toString();
 						if (DEBUG_PRINT)
-							log.fine("row=" + row + ",col=" + col + " - " + str + " 8Bit=" + Util.is8Bit(str));
+							if (log.isLoggable(Level.FINE)) log.fine("row=" + row + ",col=" + col + " - " + str + " 8Bit=" + Util.is8Bit(str));
 						if (str.length() > 0)
 						{
 							usedHeight = 0;
@@ -1567,7 +1567,7 @@ public class TableElement extends PrintElement
 										else
 											layout.draw(g2D, penX, penY);										//	-> text
 										if (DEBUG_PRINT)
-											log.fine("row=" + row + ",col=" + col + " - " + str + " - x=" + penX + ",y=" + penY);
+											if (log.isLoggable(Level.FINE)) log.fine("row=" + row + ",col=" + col + " - " + str + " - x=" + penX + ",y=" + penY);
 										penY += layout.getDescent() + layout.getLeading();
 										usedHeight += lineHeight;
 										//

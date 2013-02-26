@@ -681,7 +681,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 				+ " AND EXISTS (SELECT * FROM AD_Client "
 					+ "WHERE AD_Client_ID=trl.AD_Client_ID AND IsMultiLingualDocument='Y')";
 			int no = DB.executeUpdate(sql, get_TrxName());
-			log.fine("translations updated #" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("translations updated #" + no);
 		}
 
 		return success;

@@ -4,10 +4,10 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.model.Query;
 import org.compiere.util.CCache;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.fa.feature.UseLifeImpl;
@@ -151,9 +151,7 @@ public class MAssetClass extends X_A_Asset_Class
 			A_Life_Period_Max = getA_Life_Period_2004();
 		}
 		// logging:
-		if (CLogMgt.isLevelFine()) {
-			log.fine("serviceDate=" + serviceDate + ", A_Life_Period_Min=" + A_Life_Period_Min + ", A_Life_Period_Max=" + A_Life_Period_Max + ", A_Life_Period=" + A_Life_Period);
-		}
+		if (log.isLoggable(Level.FINE)) log.fine("serviceDate=" + serviceDate + ", A_Life_Period_Min=" + A_Life_Period_Min + ", A_Life_Period_Max=" + A_Life_Period_Max + ", A_Life_Period=" + A_Life_Period);
 		
 		
 		if (A_Life_Period < A_Life_Period_Min || A_Life_Period > A_Life_Period_Max) {
@@ -161,7 +159,7 @@ public class MAssetClass extends X_A_Asset_Class
 			if (saveError) {
 				log.saveError("Error", errmsg);
 			}
-			if(CLogMgt.isLevelFine()) {
+			if (log.isLoggable(Level.FINE))  {
 				log.fine("Leaving: " + errmsg);
 				Thread.dumpStack();
 			}
@@ -175,7 +173,7 @@ public class MAssetClass extends X_A_Asset_Class
 	/** Validate UseLifeImpl model 
 	 */
 	public boolean validate(UseLifeImpl asset) {
-		if(CLogMgt.isLevelFine()) log.fine("Entering: UseLifeImpl=" + asset);
+		if (log.isLoggable(Level.FINE)) log.fine("Entering: UseLifeImpl=" + asset);
 		
 		if (!asset.isFiscal()) {
 			log.fine("Leaving: fiscal=false [RETURN TRUE]");
@@ -190,7 +188,7 @@ public class MAssetClass extends X_A_Asset_Class
 		String errmsg = validate(true, A_Life_Period, serviceDate);
 		boolean ok = (errmsg == null || errmsg.length() == 0);
 		
-		log.fine("Leaving: ok=" + ok);
+		if (log.isLoggable(Level.FINE)) log.fine("Leaving: ok=" + ok);
 		return ok;
 	}
 

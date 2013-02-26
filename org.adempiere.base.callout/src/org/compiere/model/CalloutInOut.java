@@ -530,10 +530,10 @@ public class CalloutInOut extends CalloutEngine
 			if (M_Warehouse_ID == loc.getM_Warehouse_ID())
 				mTab.setValue("M_Locator_ID", new Integer (product.getM_Locator_ID()));
 			else
-				log.fine("No Locator for M_Product_ID=" + M_Product_ID + " and M_Warehouse_ID=" + M_Warehouse_ID);
+				if (log.isLoggable(Level.FINE)) log.fine("No Locator for M_Product_ID=" + M_Product_ID + " and M_Warehouse_ID=" + M_Warehouse_ID);
 		}
 		else
-			log.fine("No Locator for M_Product_ID=" + M_Product_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("No Locator for M_Product_ID=" + M_Product_ID);
 		return "";
 	}	//	product
 
@@ -571,7 +571,7 @@ public class CalloutInOut extends CalloutEngine
 			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
 			if (QtyEntered.compareTo(QtyEntered1) != 0)
 			{
-				log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID
+				if (log.isLoggable(Level.FINE)) log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID
 					+ "; QtyEntered=" + QtyEntered + "->" + QtyEntered1);
 				QtyEntered = QtyEntered1;
 				mTab.setValue("QtyEntered", QtyEntered);
@@ -581,7 +581,7 @@ public class CalloutInOut extends CalloutEngine
 			if (MovementQty == null)
 				MovementQty = QtyEntered;
 			boolean conversion = QtyEntered.compareTo(MovementQty) != 0;
-			log.fine("UOM=" + C_UOM_To_ID
+			if (log.isLoggable(Level.FINE)) log.fine("UOM=" + C_UOM_To_ID
 				+ ", QtyEntered=" + QtyEntered
 				+ " -> " + conversion
 				+ " MovementQty=" + MovementQty);
@@ -602,7 +602,7 @@ public class CalloutInOut extends CalloutEngine
 			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
 			if (QtyEntered.compareTo(QtyEntered1) != 0)
 			{
-				log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID
+				if (log.isLoggable(Level.FINE)) log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID
 					+ "; QtyEntered=" + QtyEntered + "->" + QtyEntered1);
 				QtyEntered = QtyEntered1;
 				mTab.setValue("QtyEntered", QtyEntered);
@@ -612,7 +612,7 @@ public class CalloutInOut extends CalloutEngine
 			if (MovementQty == null)
 				MovementQty = QtyEntered;
 			boolean conversion = QtyEntered.compareTo(MovementQty) != 0;
-			log.fine("UOM=" + C_UOM_To_ID
+			if (log.isLoggable(Level.FINE)) log.fine("UOM=" + C_UOM_To_ID
 				+ ", QtyEntered=" + QtyEntered
 				+ " -> " + conversion
 				+ " MovementQty=" + MovementQty);
@@ -628,7 +628,7 @@ public class CalloutInOut extends CalloutEngine
 			BigDecimal MovementQty1 = MovementQty.setScale(precision, BigDecimal.ROUND_HALF_UP);
 			if (MovementQty.compareTo(MovementQty1) != 0)
 			{
-				log.fine("Corrected MovementQty "
+				if (log.isLoggable(Level.FINE)) log.fine("Corrected MovementQty "
 					+ MovementQty + "->" + MovementQty1);
 				MovementQty = MovementQty1;
 				mTab.setValue("MovementQty", MovementQty);
@@ -638,7 +638,7 @@ public class CalloutInOut extends CalloutEngine
 			if (QtyEntered == null)
 				QtyEntered = MovementQty;
 			boolean conversion = MovementQty.compareTo(QtyEntered) != 0;
-			log.fine("UOM=" + C_UOM_To_ID
+			if (log.isLoggable(Level.FINE)) log.fine("UOM=" + C_UOM_To_ID
 				+ ", MovementQty=" + MovementQty
 				+ " -> " + conversion
 				+ " QtyEntered=" + QtyEntered);
@@ -669,7 +669,7 @@ public class CalloutInOut extends CalloutEngine
 		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, "M_Product_ID");
 		int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
 		int M_Locator_ID = Env.getContextAsInt(ctx, WindowNo, "M_Locator_ID");
-		log.fine("M_Product_ID=" + M_Product_ID
+		if (log.isLoggable(Level.FINE)) log.fine("M_Product_ID=" + M_Product_ID
 			+ ", M_ASI_ID=" + M_ASI_ID
 			+ " - M_Warehouse_ID=" + M_Warehouse_ID
 			+ ", M_Locator_ID=" + M_Locator_ID);
@@ -680,7 +680,7 @@ public class CalloutInOut extends CalloutEngine
 			int selectedM_Locator_ID = Env.getContextAsInt(Env.getCtx(), WindowNo, Env.TAB_INFO, "M_Locator_ID");
 			if (selectedM_Locator_ID != 0)
 			{
-				log.fine("Selected M_Locator_ID=" + selectedM_Locator_ID);
+				if (log.isLoggable(Level.FINE)) log.fine("Selected M_Locator_ID=" + selectedM_Locator_ID);
 				mTab.setValue("M_Locator_ID", new Integer (selectedM_Locator_ID));
 			}
 		}

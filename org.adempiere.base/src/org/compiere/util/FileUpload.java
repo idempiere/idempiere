@@ -155,7 +155,7 @@ public class FileUpload
 		String contentType = request.getContentType();
 		int index = contentType.lastIndexOf('=');
 		String boundary = contentType.substring(index+1);
-		log.fine(formDataLength + " - " + boundary);
+		if (log.isLoggable(Level.FINE)) log.fine(formDataLength + " - " + boundary);
 		int sizeKB = formDataLength/1024; 
 		if (sizeKB > MAX_KB)					//	250k
 		{
@@ -187,7 +187,7 @@ public class FileUpload
 		if (index < 1)
 			return "No File Name";
 		m_fileName = m_fileName.substring(0, index);
-		log.fine("upload - " + m_fileName); 
+		if (log.isLoggable(Level.FINE)) log.fine("upload - " + m_fileName); 
 			
 			
 		//	Content:
@@ -207,7 +207,7 @@ public class FileUpload
 		int posEnd = m_requestDataString.indexOf(boundary, posStart)-4;
 		int length = posEnd-posStart;
 		//
-		log.fine("uploadFile - Start=" + posStart + ", End=" + posEnd + ", Length=" + length);
+		if (log.isLoggable(Level.FINE)) log.fine("uploadFile - Start=" + posStart + ", End=" + posEnd + ", Length=" + length);
 
 		//	Final copy
 		m_data = new byte[length]; 
@@ -250,7 +250,7 @@ public class FileUpload
 			log.warning("getParameter Not found - " + parameterName);
 			return null;
 		}
-		log.fine("getParameter = " + parameterName + "=" + retValue);
+		if (log.isLoggable(Level.FINE)) log.fine("getParameter = " + parameterName + "=" + retValue);
 		return retValue;
 	}	//	getMultiPartParameter
 

@@ -20,6 +20,7 @@ package org.adempiere.webui.panel;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Grid;
@@ -324,7 +325,7 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 				value += "%";
 		
 			pstmt.setString(index++, value);
-			log.fine("Value: " + value);
+			if (log.isLoggable(Level.FINE)) log.fine("Value: " + value);
 		}
 		
 		//	=> Name
@@ -337,7 +338,7 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 				name += "%";
 		
 			pstmt.setString(index++, name);
-			log.fine("Name: " + name);
+			if (log.isLoggable(Level.FINE)) log.fine("Name: " + name);
 		}
 	} // setParameters
 

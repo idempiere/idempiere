@@ -281,7 +281,7 @@ public class ColorBlind
 	//  System.out.println("Red: " + red * 255.0 + " Green: " + green * 255.0 + " Blue: " + blue * 255.0);
 
 		Color retValue = new Color((float)red, (float)green, (float)blue);
-		log.fine("Color " + color.getRed() + "-" + color.getGreen() + "-" + color.getBlue()
+		if (log.isLoggable(Level.FINE)) log.fine("Color " + color.getRed() + "-" + color.getGreen() + "-" + color.getBlue()
 			+ " -> " + retValue.getRed() + "-" + retValue.getGreen() + "-" + retValue.getBlue() + " <- " + COLORBLIND_TYPE[colorType]);
 
 		return retValue;

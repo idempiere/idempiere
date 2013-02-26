@@ -210,7 +210,7 @@ public class InvoicePrint extends SvrProcess
 			}
 		}
 		sql.append(" ORDER BY i.C_Invoice_ID, pf.AD_Org_ID DESC");	//	more than 1 PF record
-		log.fine(sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
 
 		MPrintFormat format = null;
 		int old_AD_PrintFormat_ID = -1;
@@ -313,7 +313,7 @@ public class InvoicePrint extends SvrProcess
 					if (!Ini.isClient())
 						invoice = new File(MInvoice.getPDFFileName(documentDir, C_Invoice_ID));
 					File attachment = re.getPDF(invoice);
-					log.fine(to + " - " + attachment);
+					if (log.isLoggable(Level.FINE)) log.fine(to + " - " + attachment);
 					email.addAttachment(attachment);
 					//
 					String msg = email.send();

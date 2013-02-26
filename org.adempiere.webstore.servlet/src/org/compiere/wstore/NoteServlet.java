@@ -18,6 +18,7 @@ package org.compiere.wstore;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -156,14 +157,14 @@ public class NoteServlet extends HttpServlet
 		MNote doc = new MNote (ctx, AD_Note_ID, null);
 		if (doc.getAD_Note_ID() != AD_Note_ID)
 		{
-			log.fine("Note not found - ID=" + AD_Note_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("Note not found - ID=" + AD_Note_ID);
 			return "Notice not found";
 		}
 		
 		MAttachment attachment = doc.getAttachment(false);
 		if (attachment == null)
 		{
-			log.fine("No Attachment for AD_Note_ID=" + AD_Note_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("No Attachment for AD_Note_ID=" + AD_Note_ID);
 			return "Notice Attachment not found";
 		}
 		
@@ -221,7 +222,7 @@ public class NoteServlet extends HttpServlet
 			{
 				note.setProcessed(true);
 				note.saveEx();
-				log.fine("doPost - " + note);
+				if (log.isLoggable(Level.FINE)) log.fine("doPost - " + note);
 			}
 		}
 		

@@ -251,7 +251,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		{
 			ips = new MInvoicePaySchedule (invoice, m_schedule[i]);
 			ips.save(invoice.get_TrxName());
-			log.fine(ips.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(ips.toString());
 			remainder = remainder.subtract(ips.getDueAmt());
 		}	//	for all schedules
 		//	Remainder - update last
@@ -259,7 +259,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		{
 			ips.setDueAmt(ips.getDueAmt().add(remainder));
 			ips.save(invoice.get_TrxName());
-			log.fine("Remainder=" + remainder + " - " + ips);
+			if (log.isLoggable(Level.FINE)) log.fine("Remainder=" + remainder + " - " + ips);
 		}
 		
 		//	updateInvoice
@@ -277,7 +277,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	{
 		String sql = "DELETE C_InvoicePaySchedule WHERE C_Invoice_ID=" + C_Invoice_ID;
 		int no = DB.executeUpdate(sql, trxName);
-		log.fine("C_Invoice_ID=" + C_Invoice_ID + " - #" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("C_Invoice_ID=" + C_Invoice_ID + " - #" + no);
 	}	//	deleteInvoicePaySchedule
 
 	
@@ -356,7 +356,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		{
 			ops = new MOrderPaySchedule (order, m_schedule[i]);
 			ops.save(order.get_TrxName());
-			log.fine(ops.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(ops.toString());
 			remainder = remainder.subtract(ops.getDueAmt());
 		}	//	for all schedules
 		//	Remainder - update last
@@ -364,7 +364,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		{
 			ops.setDueAmt(ops.getDueAmt().add(remainder));
 			ops.save(order.get_TrxName());
-			log.fine("Remainder=" + remainder + " - " + ops);
+			if (log.isLoggable(Level.FINE)) log.fine("Remainder=" + remainder + " - " + ops);
 		}
 		
 		//	updateOrder
@@ -382,7 +382,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	{
 		String sql = "DELETE C_OrderPaySchedule WHERE C_Order_ID=" + C_Order_ID;
 		int no = DB.executeUpdate(sql, trxName);
-		log.fine("C_Order_ID=" + C_Order_ID + " - #" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("C_Order_ID=" + C_Order_ID + " - #" + no);
 	}	//	deleteOrderPaySchedule
 
 	

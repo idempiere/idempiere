@@ -151,7 +151,7 @@ public class KeyStoreMgt
 		//	Load Existing
 		if (m_file.exists())
 		{
-			log.fine(m_file.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(m_file.toString());
 			InputStream is = null;
 			try
 			{
@@ -175,7 +175,7 @@ public class KeyStoreMgt
 		else
 			return null;	//	does not exist
 		//
-		log.fine("Provider=" + m_keyStore.getProvider()
+		if (log.isLoggable(Level.FINE)) log.fine("Provider=" + m_keyStore.getProvider()
 				+ " - Type=" + m_keyStore.getType());
 		//
 		return m_keyStore;
@@ -194,19 +194,19 @@ public class KeyStoreMgt
 		Date date = m_keyStore.getCreationDate(alias);
 		if (date == null)	//	no certificate
 			return null;
-		log.fine("Created=" + date);
+		if (log.isLoggable(Level.FINE)) log.fine("Created=" + date);
 		//
 		Key key = m_keyStore.getKey(alias, m_password);
 		if (CLogMgt.isLevelFinest())
 			log.info("Key=" + key);				//	Multiple lines
 		else
-			log.fine(key.getAlgorithm());
+			if (log.isLoggable(Level.FINE)) log.fine(key.getAlgorithm());
 		//
 		Certificate cert = m_keyStore.getCertificate(alias);
 		if (CLogMgt.isLevelFinest())
 			log.info("Certificate = " + cert);	//	Multiple lines
 		else
-			log.fine(cert.getType());
+			if (log.isLoggable(Level.FINE)) log.fine(cert.getType());
 		
 	//	log.fine("Certificate - Type=" + cert.getType()
 	//			+ " - PublicKey=" + cert.getPublicKey());

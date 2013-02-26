@@ -130,7 +130,7 @@ public class M_Product_BOM_Check extends SvrProcess
     			rs = null;
     			pstmt = null;
     		}
-    		log.fine("Count T_Selection =" + countno);
+    		if (log.isLoggable(Level.FINE)) log.fine("Count T_Selection =" + countno);
     		
     		if (countno == 0)
     			break;

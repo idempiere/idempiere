@@ -197,7 +197,7 @@ public class MReportColumn extends X_PA_ReportColumn
 
 		if (ID == 0)
 		{
-			log.fine("No Restrictions - No ID for EntityType=" + et);
+			if (log.isLoggable(Level.FINE)) log.fine("No Restrictions - No ID for EntityType=" + et);
 			return "";
 		}
 		

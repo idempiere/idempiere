@@ -189,7 +189,7 @@ public class RModelData
 	 */
 	private void process()
 	{
-		log.fine("Start Rows=" + m_rows.size());
+		if (log.isLoggable(Level.FINE)) log.fine("Start Rows=" + m_rows.size());
 
 		//  Row level Funcions
 		//  would come here
@@ -203,7 +203,7 @@ public class RModelData
 		{
 			groupBys[i] = groups.get(i).intValue();
 			groupBysValue[i] = INITVALUE;
-			log.fine("GroupBy level=" + i + " col=" + groupBys[i]);
+			if (log.isLoggable(Level.FINE)) log.fine("GroupBy level=" + i + " col=" + groupBys[i]);
 		}
 		//  Add additional row to force group change
 		if (gSize > 0)
@@ -225,12 +225,12 @@ public class RModelData
 			Object key = it.next();
 			funcCols[index] = ((Integer)key).intValue();
 			funcFuns[index] = functions.get(key).toString();
-			log.fine("Function " + funcFuns[index] + " col=" + funcCols[index]);
+			if (log.isLoggable(Level.FINE)) log.fine("Function " + funcFuns[index] + " col=" + funcCols[index]);
 			index++;
 		}
 		BigDecimal[][] funcVals = new BigDecimal [fSize][gSize+1];
 		int totalIndex = gSize;  //  place for overall total
-		log.fine("FunctionValues = [ " + fSize + " * " + (gSize+1) + " ]");
+		if (log.isLoggable(Level.FINE)) log.fine("FunctionValues = [ " + fSize + " * " + (gSize+1) + " ]");
 		for (int f = 0; f < fSize; f++)
 			for (int g = 0; g < gSize+1; g++)
 				funcVals[f][g] = Env.ZERO;
@@ -353,7 +353,7 @@ public class RModelData
 			m_groupRows.add(new Integer(rows.size())); //  group row indicator
 			rows.add(newRow);
 		}
-		log.fine("End Rows=" + rows.size());
+		if (log.isLoggable(Level.FINE)) log.fine("End Rows=" + rows.size());
 		m_rows.clear();
 	}   //  process
 

@@ -180,7 +180,7 @@ public class OrgOwnership extends SvrProcess
 		else
 			set.append(" WHERE M_Product_ID=").append(p_M_Product_ID);
 		set.append(" AND AD_Client_ID=").append(getAD_Client_ID()).append(" AND AD_Org_ID<>").append(p_AD_Org_ID);
-		log.fine("productOwnership - " + set);
+		if (log.isLoggable(Level.FINE)) log.fine("productOwnership - " + set);
 		
 		//	Product
 		StringBuilder sql = new StringBuilder("UPDATE M_Product x ").append(set);
@@ -225,7 +225,7 @@ public class OrgOwnership extends SvrProcess
 		else
 			set.append(" WHERE C_BPartner_ID=").append(p_C_BPartner_ID);
 		set.append(" AND AD_Client_ID=").append(getAD_Client_ID()).append(" AND AD_Org_ID<>").append(p_AD_Org_ID);
-		log.fine("bPartnerOwnership - " + set.toString());
+		if (log.isLoggable(Level.FINE)) log.fine("bPartnerOwnership - " + set.toString());
 
 		//	BPartner
 		StringBuilder sql = new StringBuilder("UPDATE C_BPartner x ").append(set);
@@ -274,31 +274,31 @@ public class OrgOwnership extends SvrProcess
 		StringBuilder sql = new StringBuilder("UPDATE R_ContactInterest ").append(set);
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("generalOwnership - R_ContactInterest=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("generalOwnership - R_ContactInterest=" + no);
 
 		//	AD_User_Roles
 		sql = new StringBuilder("UPDATE AD_User_Roles ").append(set);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("generalOwnership - AD_User_Roles=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("generalOwnership - AD_User_Roles=" + no);
 		
 		//	C_BPartner_Product
 		sql = new StringBuilder("UPDATE C_BPartner_Product ").append(set);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("generalOwnership - C_BPartner_Product=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("generalOwnership - C_BPartner_Product=" + no);
 
 		//	Withholding
 		sql = new StringBuilder("UPDATE C_BP_Withholding x ").append(set);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("generalOwnership - C_BP_Withholding=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("generalOwnership - C_BP_Withholding=" + no);
 
 		//	Replenish
 		sql = new StringBuilder("UPDATE M_Replenish ").append(set);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.fine("generalOwnership - M_Replenish=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("generalOwnership - M_Replenish=" + no);
 	
 	}	//	generalOwnership
 

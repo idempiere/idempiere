@@ -393,7 +393,7 @@ public class MProject extends X_C_Project
 				taskCount += toPhase.copyTasksFrom(typePhases[i]);
 			}
 		}
-		log.fine("#" + count + "/" + taskCount 
+		if (log.isLoggable(Level.FINE)) log.fine("#" + count + "/" + taskCount 
 			+ " - " + type);
 		if (typePhases.length != count)
 			log.log(Level.SEVERE, "Count difference - Type=" + typePhases.length + " <> Saved=" + count);

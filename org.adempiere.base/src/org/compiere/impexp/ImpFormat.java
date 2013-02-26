@@ -414,7 +414,7 @@ public final class ImpFormat
 				list.add(entry.toString());
 			//
 			if (trace)
-				log.fine(info + "=>" + entry.toString() + " (Length=" + info.length() + ")");
+				if (log.isLoggable(Level.FINE)) log.fine(info + "=>" + entry.toString() + " (Length=" + info.length() + ")");
 		}	//	for all columns
 
 		String[] retValue = new String[list.size()];

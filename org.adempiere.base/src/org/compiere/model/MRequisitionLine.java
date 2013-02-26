@@ -231,7 +231,7 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		if (getM_Product_ID() == 0)
 			return;
 		//
-		log.fine("M_PriceList_ID=" + M_PriceList_ID);
+		if (log.isLoggable(Level.FINE)) log.fine("M_PriceList_ID=" + M_PriceList_ID);
 		boolean isSOTrx = false;
 		MProductPricing pp = new MProductPricing (getM_Product_ID(), 
 			getC_BPartner_ID(), getQty(), isSOTrx);

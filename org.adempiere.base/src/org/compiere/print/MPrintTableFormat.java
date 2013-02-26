@@ -640,7 +640,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 			}
 			if (m_image != null)
 			{
-				log.fine(attachment.getEntryName(0) + " - Size=" + imageData.length);
+				if (log.isLoggable(Level.FINE)) log.fine(attachment.getEntryName(0) + " - Size=" + imageData.length);
 			}
 			else
 			{

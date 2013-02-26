@@ -127,7 +127,7 @@ public class RegisterSystem extends SvrProcess
 				.append("&NumInvoice=").append(URLEncoder.encode(String.valueOf(
 					DB.getSQLValue(null, "SELECT Count(*) FROM C_Invoice")), enc));
 		}
-		log.fine(urlString.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(urlString.toString());
 		
 		//	Send it
 		URL url = new URL (urlString.toString());

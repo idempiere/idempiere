@@ -247,7 +247,7 @@ public class MOrderTax extends X_C_OrderTax
 			setTaxBaseAmt (taxBaseAmt.subtract(taxAmt));
 		else
 			setTaxBaseAmt (taxBaseAmt);
-		log.fine(toString());
+		if (log.isLoggable(Level.FINE)) log.fine(toString());
 		return true;
 	}	//	calculateTaxFromLines
 

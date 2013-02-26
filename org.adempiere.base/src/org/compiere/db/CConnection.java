@@ -98,7 +98,7 @@ public class CConnection implements Serializable, Cloneable
 				s_cc = new CConnection (null);
 				s_cc.setAttributes (attributes);
 			}
-			log.fine(s_cc.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(s_cc.toString());
 		}
 
 		return s_cc;

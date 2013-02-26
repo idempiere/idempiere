@@ -83,7 +83,7 @@ public class Match
 	 */
 	protected Vector<String> cmd_matchFrom(String selection)
 	{
-	//	log.fine( "VMatch.cmd_matchFrom");
+	//	if (log.isLoggable(Level.FINE)) log.fine( "VMatch.cmd_matchFrom");
 		//String selection = (String)matchFrom.getSelectedItem();
 		Vector<String> vector = new Vector<String>(2);
 		if (selection.equals(m_matchOptions[MATCH_INVOICE]))
@@ -240,7 +240,7 @@ public class Match
 		KeyNamePair BPartner = (KeyNamePair)xMatchedTable.getValueAt(row, I_BPartner);
 		//KeyNamePair Org = (KeyNamePair)xMatchedTable.getValueAt(row, I_Org); //JAVIER
 		KeyNamePair Product = (KeyNamePair)xMatchedTable.getValueAt(row, I_Product);
-		log.fine("BPartner=" + BPartner + " - Product=" + Product);
+		if (log.isLoggable(Level.FINE)) log.fine("BPartner=" + BPartner + " - Product=" + Product);
 		//
 		if (sameBPartner)
 			m_sql.append(" AND hdr.C_BPartner_ID=").append(BPartner.getKey());
@@ -405,7 +405,7 @@ public class Match
 	{
 		if (qty.compareTo(Env.ZERO) == 0)
 			return true;
-		log.fine("IsInvoice=" + invoice
+		if (log.isLoggable(Level.FINE)) log.fine("IsInvoice=" + invoice
 			+ ", M_InOutLine_ID=" + M_InOutLine_ID + ", Line_ID=" + Line_ID
 			+ ", Qty=" + qty);
 		//

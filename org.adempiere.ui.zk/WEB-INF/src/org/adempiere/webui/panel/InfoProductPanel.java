@@ -644,7 +644,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 			rs = null; pstmt = null;
 		}
 
-		log.fine("#" + m_count + " - " + (System.currentTimeMillis()-start) + "ms");
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_count + " - " + (System.currentTimeMillis()-start) + "ms");
 
 		return true;
 	}
@@ -1050,7 +1050,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 					pstmt.setInt(index++, M_Warehouse_ID);
 			}
 		}
-		log.fine("M_Warehouse_ID=" + M_Warehouse_ID + " (" + (index-1) + "*)");
+		if (log.isLoggable(Level.FINE)) log.fine("M_Warehouse_ID=" + M_Warehouse_ID + " (" + (index-1) + "*)");
 
 		//  => PriceList
 		int M_PriceList_Version_ID = 0;
@@ -1060,20 +1060,20 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		if (M_PriceList_Version_ID != 0)
 		{
 			pstmt.setInt(index++, M_PriceList_Version_ID);
-			log.fine("M_PriceList_Version_ID=" + M_PriceList_Version_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("M_PriceList_Version_ID=" + M_PriceList_Version_ID);
 		}
 		// Elaine 2008/11/29
 		//  => Product Category
 		int M_Product_Category_ID = getM_Product_Category_ID();
 		if (M_Product_Category_ID > 0) {
 			pstmt.setInt(index++, M_Product_Category_ID);
-			log.fine("M_Product_Category_ID=" + M_Product_Category_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("M_Product_Category_ID=" + M_Product_Category_ID);
 		}
 		//
 		int M_AttributeSet_ID = getM_AttributeSet_ID();
 		if (M_AttributeSet_ID > 0) {
 			pstmt.setInt(index++, M_AttributeSet_ID);
-			log.fine("M_AttributeSet_ID=" + M_AttributeSet_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("M_AttributeSet_ID=" + M_AttributeSet_ID);
 		}
 		//	Rest of Parameter in Query for Attribute Search
 		if (m_pAttributeWhere != null)
@@ -1086,7 +1086,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 			if (!value.endsWith("%"))
 				value += "%";
 			pstmt.setString(index++, value);
-			log.fine("Value: " + value);
+			if (log.isLoggable(Level.FINE)) log.fine("Value: " + value);
 		}
 
 		//  => Name
@@ -1096,7 +1096,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 			if (!name.endsWith("%"))
 				name += "%";
 			pstmt.setString(index++, name);
-			log.fine("Name: " + name);
+			if (log.isLoggable(Level.FINE)) log.fine("Name: " + name);
 		}
 
 		//  => UPC
@@ -1106,7 +1106,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 			if (!upc.endsWith("%"))
 				upc += "%";
 			pstmt.setString(index++, upc);
-			log.fine("UPC: " + upc);
+			if (log.isLoggable(Level.FINE)) log.fine("UPC: " + upc);
 		}
 
 		//  => SKU
@@ -1116,7 +1116,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 			if (!sku.endsWith("%"))
 				sku += "%";
 			pstmt.setString(index++, sku);
-			log.fine("SKU: " + sku);
+			if (log.isLoggable(Level.FINE)) log.fine("SKU: " + sku);
 		}
 
 		//  => Vendor
@@ -1126,7 +1126,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 			if (!vendor.endsWith("%"))
 				vendor += "%";
 			pstmt.setString(index++, vendor);
-			log.fine("Vendor: " + vendor);
+			if (log.isLoggable(Level.FINE)) log.fine("Vendor: " + vendor);
 		}
 	}   //  setParameters
 

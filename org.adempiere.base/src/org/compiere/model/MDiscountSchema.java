@@ -191,7 +191,7 @@ public class MDiscountSchema extends X_M_DiscountSchema
 		int M_Product_ID, int M_Product_Category_ID,  
 		BigDecimal BPartnerFlatDiscount)
 	{
-		log.fine("Price=" + Price + ",Qty=" + Qty);
+		if (log.isLoggable(Level.FINE)) log.fine("Price=" + Price + ",Qty=" + Qty);
 		if (Price == null || Env.ZERO.compareTo(Price) == 0)
 			return Price;
 		//
@@ -205,7 +205,7 @@ public class MDiscountSchema extends X_M_DiscountSchema
 		BigDecimal multiplier = (onehundred).subtract(discount);
 		multiplier = multiplier.divide(onehundred, 6, BigDecimal.ROUND_HALF_UP);
 		BigDecimal newPrice = Price.multiply(multiplier);
-		log.fine("=>" + newPrice);
+		if (log.isLoggable(Level.FINE)) log.fine("=>" + newPrice);
 		return newPrice;
 	}	//	calculatePrice
 
@@ -278,7 +278,7 @@ public class MDiscountSchema extends X_M_DiscountSchema
 				discount = BPartnerFlatDiscount;
 			else
 				discount = br.getBreakDiscount();
-			log.fine("Discount=>" + discount);
+			if (log.isLoggable(Level.FINE)) log.fine("Discount=>" + discount);
 			return discount;
 		}	//	for all breaks
 		

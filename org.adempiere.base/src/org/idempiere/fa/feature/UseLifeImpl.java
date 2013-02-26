@@ -5,6 +5,7 @@ package org.idempiere.fa.feature;
 
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -13,7 +14,6 @@ import org.compiere.model.MAssetGroup;
 import org.compiere.model.PO;
 import org.compiere.model.SetGetModel;
 import org.compiere.model.SetGetUtil;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
@@ -114,10 +114,10 @@ public class UseLifeImpl
 	 *	@param	value	use life months
 	 */
 	public void setUseLifeMonths(int value) {
-		if(CLogMgt.isLevelFine()) log.fine("Entering: value=" + value + ", " + this);
+		if (log.isLoggable(Level.FINE)) log.fine("Entering: value=" + value + ", " + this);
 		m_obj.set_AttrValue(getFieldName(FIELD_UseLifeMonths, fiscal), Integer.valueOf(value));
 		m_obj.set_AttrValue(getFieldName(FIELD_UseLifeYears, fiscal), Integer.valueOf(value/12));
-		if(CLogMgt.isLevelFine()) log.fine("Leaving: value=" + value + ", " + this);
+		if (log.isLoggable(Level.FINE)) log.fine("Leaving: value=" + value + ", " + this);
 	}
 	
 	/**
@@ -135,10 +135,10 @@ public class UseLifeImpl
 	 *	@param value		use life years
 	 */
 	public void setUseLifeYears(int value) {
-		if(CLogMgt.isLevelFine()) log.fine("Entering: value=" + value + ", " + this);
+		if (log.isLoggable(Level.FINE)) log.fine("Entering: value=" + value + ", " + this);
 		m_obj.set_AttrValue(getFieldName(FIELD_UseLifeYears, fiscal), Integer.valueOf(value));
 		m_obj.set_AttrValue(getFieldName(FIELD_UseLifeMonths, fiscal), Integer.valueOf(value*12));
-		if(CLogMgt.isLevelFine()) log.fine("Leaving: value=" + value + ", " + this);
+		if (log.isLoggable(Level.FINE)) log.fine("Leaving: value=" + value + ", " + this);
 	}
 	
 	/**
@@ -162,8 +162,7 @@ public class UseLifeImpl
 		int uselife = (reset ? 0 : getUseLifeYears());
 		int new_uselife = uselife + deltaUseLifeYears;
 		setUseLifeYears(new_uselife);
-		if(CLogMgt.isLevelFine()) 
-			log.fine("UseLifeYears=" + uselife + ", delta=" + deltaUseLifeYears + " => new UseLifeYears=" + new_uselife + " (isFiscal=" + isFiscal() + ")");
+		if (log.isLoggable(Level.FINE)) log.fine("UseLifeYears=" + uselife + ", delta=" + deltaUseLifeYears + " => new UseLifeYears=" + new_uselife + " (isFiscal=" + isFiscal() + ")");
 	}
 	
 	/**
@@ -219,7 +218,7 @@ public class UseLifeImpl
 	
 	/**	Validates and corrects errors in model */
 	public boolean validate(boolean saveError) {
-		if(CLogMgt.isLevelFine()) log.fine("Entering: " + this);
+		if (log.isLoggable(Level.FINE)) log.fine("Entering: " + this);
 		
 		int useLifeYears = 0;
 		int useLifeMonths = 0;
@@ -250,12 +249,12 @@ public class UseLifeImpl
 		/* commented by @win
 		MAssetClass assetClass = MAssetClass.get(getCtx(), A_Asset_Class_ID);
 		if (assetClass != null && !assetClass.validate(this)) {
-			log.fine("Leaving [RETURN FALSE]");
+			if (log.isLoggable(Level.FINE)) log.fine("Leaving [RETURN FALSE]");
 			return false;
 		}
 		*/ //end comment by @win
 		
-		log.fine("Leaving [RETURN TRUE]");
+		if (log.isLoggable(Level.FINE)) log.fine("Leaving [RETURN TRUE]");
 		return true;
 	}
 	
@@ -315,7 +314,7 @@ public class UseLifeImpl
 			}
 			/* commented out by @win
 			String errmsg = assetClass.validate(false, UseLifeMonths, AssetServiceDate);
-			if(CLogMgt.isLevelFine()) log.fine("assetClass=" + assetClass + ", UseLifeMonths=" + UseLifeMonths + ", AssetServiceDate=" + AssetServiceDate + ", errmsg=" + errmsg);
+			if(CLogMgt.isLevelFine()) if (log.isLoggable(Level.FINE)) log.fine("assetClass=" + assetClass + ", UseLifeMonths=" + UseLifeMonths + ", AssetServiceDate=" + AssetServiceDate + ", errmsg=" + errmsg);
 			return errmsg;
 			*/ // end comment by @win
 			return NO_ERROR; //added by @win
@@ -396,12 +395,12 @@ public class UseLifeImpl
 			String errmsg = NO_ERROR;
 			int A_Asset_Class_ID = -1;
 			String columnName = mField.getColumnName();
-			if(CLogMgt.isLevelFine()) log.fine("Entering: columnName: " + columnName + ", value=" + value);
+			if(CLogMgt.isLevelFine()) if (log.isLoggable(Level.FINE)) log.fine("Entering: columnName: " + columnName + ", value=" + value);
 			
 			if (value != null && value instanceof Number) {
 				A_Asset_Class_ID = ((Number)value).intValue();
 			}
-			if(CLogMgt.isLevelFine()) log.fine("A_Asset_Class_ID=" + A_Asset_Class_ID);
+			if(CLogMgt.isLevelFine()) if (log.isLoggable(Level.FINE)) log.fine("A_Asset_Class_ID=" + A_Asset_Class_ID);
 			
 			if (A_Asset_Class_ID > 0) {
 				MAssetClass assetClass = MAssetClass.get(ctx, A_Asset_Class_ID);
@@ -414,10 +413,10 @@ public class UseLifeImpl
 				else {
 					errmsg = assetClass.validate(false, UseLifeMonths, AssetServiceDate);
 				}
-				if(CLogMgt.isLevelFine()) log.fine("assetClass=" + assetClass + ", UseLifeMonths=" + UseLifeMonths + ", AssetServiceDate=" + AssetServiceDate + ", errmsg=" + errmsg);
+				if(CLogMgt.isLevelFine()) if (log.isLoggable(Level.FINE)) log.fine("assetClass=" + assetClass + ", UseLifeMonths=" + UseLifeMonths + ", AssetServiceDate=" + AssetServiceDate + ", errmsg=" + errmsg);
 			}
 			
-			if(CLogMgt.isLevelFine()) log.fine("Leaving: errmsg=" + errmsg);
+			if(CLogMgt.isLevelFine()) if (log.isLoggable(Level.FINE)) log.fine("Leaving: errmsg=" + errmsg);
 			return errmsg;
 		}
 		*/ // end commented by @win

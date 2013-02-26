@@ -19,6 +19,7 @@ package org.compiere.wf;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_WF_NextCondition;
@@ -111,7 +112,7 @@ public class MWFNextCondition extends X_AD_WF_NextCondition
 		else
 			result = compareString(valueObj, value1, value2);
 		//
-		log.fine(resultStr + " -> " + result 
+		if (log.isLoggable(Level.FINE)) log.fine(resultStr + " -> " + result 
 			+ (m_numeric ? " (#)" : " ($)"));
 		return result;
 	}	//	evaluate
@@ -166,7 +167,7 @@ public class MWFNextCondition extends X_AD_WF_NextCondition
 		}
 		catch (Exception e)
 		{
-			log.fine("compareNumber - valueObj=" + valueObj + " - " + e.toString());
+			if (log.isLoggable(Level.FINE)) log.fine("compareNumber - valueObj=" + valueObj + " - " + e.toString());
 			return compareString(valueObj, value1, value2);
 		}
 		try
@@ -175,7 +176,7 @@ public class MWFNextCondition extends X_AD_WF_NextCondition
 		}
 		catch (Exception e)
 		{
-			log.fine("compareNumber - value1=" + value1 + " - " + e.toString());
+			if (log.isLoggable(Level.FINE)) log.fine("compareNumber - value1=" + value1 + " - " + e.toString());
 			return compareString(valueObj, value1, value2);
 		}
 		
@@ -210,7 +211,7 @@ public class MWFNextCondition extends X_AD_WF_NextCondition
 			}
 			catch (Exception e)
 			{
-				log.fine("compareNumber - value2=" + value2 + " - " + e.toString());
+				if (log.isLoggable(Level.FINE)) log.fine("compareNumber - value2=" + value2 + " - " + e.toString());
 				return false;
 			}
 		}

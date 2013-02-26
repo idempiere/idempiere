@@ -88,7 +88,7 @@ public class ImportFixedAsset extends SvrProcess
 			sql = new StringBuffer ("DELETE "+X_I_FixedAsset.Table_Name
 				  + " WHERE I_IsImported='Y'").append (sqlCheck);
 			no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-			log.fine("Delete Old Imported =" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Imported =" + no);
 		}
 		
 		//	Set Client, Org, IsActive, Created/Updated
@@ -131,7 +131,7 @@ public class ImportFixedAsset extends SvrProcess
 			  + "WHERE A_Asset_Group_ID IS NULL AND A_Asset_Group_Value IS NOT NULL"
 			  + " AND I_IsImported<>'Y'").append (sqlCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Asset Group from Value=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Asset Group from Value=" + no);
 		
 		// Check if Asset Group Have Asset Group Acct Record
 		sql = new StringBuffer ("UPDATE "+MIFixedAsset.Table_Name+" ifa "
@@ -161,7 +161,7 @@ public class ImportFixedAsset extends SvrProcess
 			  + "WHERE C_BPartnerSR_ID IS NULL AND BPartner_Value IS NOT NULL"
 			  + " AND I_IsImported<>'Y'").append (sqlCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set BP from Value=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set BP from Value=" + no);
 		
 		// City From Value
 		sql = new StringBuffer ("UPDATE "+MIFixedAsset.Table_Name+" ifa "
@@ -170,7 +170,7 @@ public class ImportFixedAsset extends SvrProcess
 			  + "WHERE C_City_ID IS NULL AND C_City_Value IS NOT NULL"
 			  + " AND I_IsImported<>'Y'").append (sqlCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set City from Value=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set City from Value=" + no);
 		
 		// Product 
 		sql = new StringBuffer ("UPDATE "+MIFixedAsset.Table_Name+" ifa "
@@ -179,7 +179,7 @@ public class ImportFixedAsset extends SvrProcess
 			  + "WHERE M_Product_ID IS NULL AND ProductValue IS NOT NULL"
 			  + " AND I_IsImported<>'Y'").append (sqlCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Product from Value=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Product from Value=" + no);
 		
 		sql = new StringBuffer ("UPDATE "+MIFixedAsset.Table_Name+" ifa "
 			  + "SET I_IsImported='N', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Product, ' "
@@ -208,7 +208,7 @@ public class ImportFixedAsset extends SvrProcess
 			  + "WHERE M_Locator_ID IS NULL AND LocatorValue IS NOT NULL"
 			  + " AND I_IsImported<>'Y'").append (sqlCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Locator from Value=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Set Locator from Value=" + no);
 				
 		//-- New BPartner ---------------------------------------------------
 

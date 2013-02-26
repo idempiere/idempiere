@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.Env;
 
@@ -62,7 +63,7 @@ public class CalloutProject extends CalloutEngine
 		if (PlannedAmt.scale() > StdPrecision)
 			PlannedAmt = PlannedAmt.setScale(StdPrecision, BigDecimal.ROUND_HALF_UP);
 		//
-		log.fine("PlannedQty=" + PlannedQty + " * PlannedPrice=" + PlannedPrice + " -> PlannedAmt=" + PlannedAmt + " (Precision=" + StdPrecision+ ")");
+		if (log.isLoggable(Level.FINE)) log.fine("PlannedQty=" + PlannedQty + " * PlannedPrice=" + PlannedPrice + " -> PlannedAmt=" + PlannedAmt + " (Precision=" + StdPrecision+ ")");
 		mTab.setValue("PlannedAmt", PlannedAmt);
 		return "";
 	}	//	planned

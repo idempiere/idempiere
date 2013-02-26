@@ -25,6 +25,7 @@ import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFormattedTextField;
@@ -408,7 +409,7 @@ public class SubOrder extends PosSubPanel
 	 */
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		log.fine( "PosSubCustomer.setC_BPartner_ID=" + C_BPartner_ID);
+		if (log.isLoggable(Level.FINE)) log.fine( "PosSubCustomer.setC_BPartner_ID=" + C_BPartner_ID);
 		if (C_BPartner_ID == 0)
 			m_bpartner = null;
 		else

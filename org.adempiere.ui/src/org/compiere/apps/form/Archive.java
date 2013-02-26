@@ -193,7 +193,7 @@ public class Archive {
 		if (createdTo != null)
 			sql.append(" AND Created<").append(DB.TO_DATE(TimeUtil.addDays(createdTo,1), true));
 		
-		log.fine(sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
 		
 		//metas: Bugfix zu included_Role
 		//	Process Access

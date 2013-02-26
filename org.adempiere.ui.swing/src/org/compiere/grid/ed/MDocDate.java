@@ -241,7 +241,7 @@ public final class MDocDate extends PlainDocument implements CaretListener
 		else if (e.getDot() == m_mask.length()-1)	//	last
 			newDot = e.getDot() - 1;
 		//
-		log.fine("OnFixedChar=" + m_mask.charAt(e.getDot())
+		if (log.isLoggable(Level.FINE)) log.fine("OnFixedChar=" + m_mask.charAt(e.getDot())
 			+ ", newDot=" + newDot + ", last=" + m_lastDot);
 		//
 		m_lastDot = e.getDot();

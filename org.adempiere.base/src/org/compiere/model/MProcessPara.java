@@ -144,7 +144,7 @@ public class MProcessPara extends X_AD_Process_Para
 	{
 		if (!isLookup())
 			return;
-		log.fine("(" + getColumnName() + ")");
+		if (log.isLoggable(Level.FINE)) log.fine("(" + getColumnName() + ")");
 		int displayType = getAD_Reference_ID();
 		if (DisplayType.isLookup(displayType))
 		{

@@ -278,7 +278,7 @@ public class VPAttributeDialog extends CDialog
 		if (m_productWindow)
 		{
 			MAttribute[] attributes = as.getMAttributes (false);
-			log.fine ("Product Attributes=" + attributes.length);
+			if (log.isLoggable(Level.FINE)) log.fine ("Product Attributes=" + attributes.length);
 			for (int i = 0; i < attributes.length; i++)
 				addAttributeLine (attributes[i], true, !m_productWindow);
 		}
@@ -296,7 +296,7 @@ public class VPAttributeDialog extends CDialog
 			centerPanel.add(bSelect, null);
 			//	All Attributes
 			MAttribute[] attributes = as.getMAttributes (true);
-			log.fine ("Instance Attributes=" + attributes.length);
+			if (log.isLoggable(Level.FINE)) log.fine ("Instance Attributes=" + attributes.length);
 			for (int i = 0; i < attributes.length; i++)
 				addAttributeLine (attributes[i], false, false);
 		}
@@ -424,7 +424,7 @@ public class VPAttributeDialog extends CDialog
 	 */
 	private void addAttributeLine (MAttribute attribute, boolean product, boolean readOnly)
 	{
-		log.fine(attribute + ", Product=" + product + ", R/O=" + readOnly);
+		if (log.isLoggable(Level.FINE)) log.fine(attribute + ", Product=" + product + ", R/O=" + readOnly);
 		CLabel label = new CLabel (attribute.getName());
 		if (product)
 			label.setFont(new Font(label.getFont().getFontName(), Font.BOLD, label.getFont().getSize()));
@@ -450,12 +450,12 @@ public class VPAttributeDialog extends CDialog
 					}
 				}
 				if (found)
-					log.fine("Attribute=" + attribute.getName() + " #" + values.length + " - found: " + instance);
+					if (log.isLoggable(Level.FINE)) log.fine("Attribute=" + attribute.getName() + " #" + values.length + " - found: " + instance);
 				else
 					log.warning("Attribute=" + attribute.getName() + " #" + values.length + " - NOT found: " + instance);
 			}	//	setComboBox
 			else
-				log.fine("Attribute=" + attribute.getName() + " #" + values.length + " no instance");
+				if (log.isLoggable(Level.FINE)) log.fine("Attribute=" + attribute.getName() + " #" + values.length + " no instance");
 			label.setLabelFor(editor);
 			centerPanel.add(editor, null);
 			if (readOnly)
@@ -715,7 +715,7 @@ public class VPAttributeDialog extends CDialog
 		String mandatory = "";
 		if (!m_productWindow && as.isLot())
 		{
-			log.fine("Lot=" + fieldLotString.getText ());
+			if (log.isLoggable(Level.FINE)) log.fine("Lot=" + fieldLotString.getText ());
 			String text = fieldLotString.getText();
 			m_masi.setLot (text);
 			if (as.isLotMandatory() && (text == null || text.length() == 0))
@@ -724,7 +724,7 @@ public class VPAttributeDialog extends CDialog
 		}	//	Lot
 		if (!m_productWindow && as.isSerNo())
 		{
-			log.fine("SerNo=" + fieldSerNo.getText());
+			if (log.isLoggable(Level.FINE)) log.fine("SerNo=" + fieldSerNo.getText());
 			String text = fieldSerNo.getText();
 			m_masi.setSerNo(text);
 			if (as.isSerNoMandatory() && (text == null || text.length() == 0))
@@ -733,7 +733,7 @@ public class VPAttributeDialog extends CDialog
 		}	//	SerNo
 		if (!m_productWindow && as.isGuaranteeDate())
 		{
-			log.fine("GuaranteeDate=" + fieldGuaranteeDate.getValue());
+			if (log.isLoggable(Level.FINE)) log.fine("GuaranteeDate=" + fieldGuaranteeDate.getValue());
 			Timestamp ts = (Timestamp)fieldGuaranteeDate.getValue();
 			m_masi.setGuaranteeDate(ts);
 			if (as.isGuaranteeDateMandatory() && ts == null)
@@ -758,7 +758,7 @@ public class VPAttributeDialog extends CDialog
 			{
 				CComboBox editor = (CComboBox)m_editors.get(i);
 				MAttributeValue value = (MAttributeValue)editor.getSelectedItem();
-				log.fine(attributes[i].getName() + "=" + value);
+				if (log.isLoggable(Level.FINE)) log.fine(attributes[i].getName() + "=" + value);
 				if (attributes[i].isMandatory() && value == null)
 					mandatory += " - " + attributes[i].getName();
 				attributes[i].setMAttributeInstance(m_M_AttributeSetInstance_ID, value);
@@ -767,7 +767,7 @@ public class VPAttributeDialog extends CDialog
 			{
 				VNumber editor = (VNumber)m_editors.get(i);
 				BigDecimal value = (BigDecimal)editor.getValue();
-				log.fine(attributes[i].getName() + "=" + value);
+				if (log.isLoggable(Level.FINE)) log.fine(attributes[i].getName() + "=" + value);
 				if (attributes[i].isMandatory() && value == null)
 					mandatory += " - " + attributes[i].getName();
 				attributes[i].setMAttributeInstance(m_M_AttributeSetInstance_ID, value);
@@ -776,7 +776,7 @@ public class VPAttributeDialog extends CDialog
 			{
 				VString editor = (VString)m_editors.get(i);
 				String value = editor.getText();
-				log.fine(attributes[i].getName() + "=" + value);
+				if (log.isLoggable(Level.FINE)) log.fine(attributes[i].getName() + "=" + value);
 				if (attributes[i].isMandatory() && (value == null || value.length() == 0))
 					mandatory += " - " + attributes[i].getName();
 				attributes[i].setMAttributeInstance(m_M_AttributeSetInstance_ID, value);

@@ -20,6 +20,7 @@ import java.awt.Frame;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.apps.AEnv;
@@ -238,7 +239,7 @@ public class InfoAsset extends Info
 			if (!value.endsWith("%"))
 				value += "%";
 			pstmt.setString(index++, value);
-			log.fine("Value: " + value);
+			if (log.isLoggable(Level.FINE)) log.fine("Value: " + value);
 		}
 		//	=> Name
 		String name = fieldName.getText().toUpperCase();
@@ -247,7 +248,7 @@ public class InfoAsset extends Info
 			if (!name.endsWith("%"))
 				name += "%";
 			pstmt.setString(index++, name);
-			log.fine("Name: " + name);
+			if (log.isLoggable(Level.FINE)) log.fine("Name: " + name);
 		}
 	}	//	setParameters
 

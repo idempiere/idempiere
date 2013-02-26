@@ -571,7 +571,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 			+ "' WHERE DD_Order_ID=" + getDD_Order_ID();
 		int noLine = DB.executeUpdate("UPDATE DD_OrderLine " + set, get_TrxName());
 		m_lines = null;
-		log.fine("setProcessed - " + processed + " - Lines=" + noLine);
+		if (log.isLoggable(Level.FINE)) log.fine("setProcessed - " + processed + " - Lines=" + noLine);
 	}	//	setProcessed
 	
 	
@@ -665,7 +665,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 					+ "FROM DD_Order o WHERE i.DD_Order_ID=o.DD_Order_ID) "
 				+ "WHERE DocStatus NOT IN ('RE','CL') AND DD_Order_ID=" + getDD_Order_ID();
 			int no = DB.executeUpdate(sql, get_TrxName());
-			log.fine("Description -> #" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Description -> #" + no);
 		}		
 	      
 		//	Sync Lines
@@ -692,7 +692,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 		    	{
 		    	    line.set_ValueOfColumn(columnName, get_Value(columnName));
 		    	    line.saveEx();
-		    	    log.fine(columnName + " Lines -> #" + get_Value(columnName));
+		    	    if (log.isLoggable(Level.FINE)) log.fine(columnName + " Lines -> #" + get_Value(columnName));
 		    	}		    	
 		}		
 	}	//	afterSaveSync
@@ -866,7 +866,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 				continue;
 			}
 			
-			log.fine("Line=" + line.getLine() 
+			if (log.isLoggable(Level.FINE)) log.fine("Line=" + line.getLine() 
 				+ " - Ordered=" + line.getQtyOrdered() 
 				+ ",Reserved=" + line.getQtyReserved() + ",Delivered=" + line.getQtyDelivered());
 

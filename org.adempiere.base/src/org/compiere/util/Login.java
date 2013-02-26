@@ -410,7 +410,7 @@ public class Login
 				//
 				retValue = new KeyNamePair[list.size()];
 				list.toArray(retValue);
-				log.fine("User=" + app_user + " - roles #" + retValue.length);
+				if (log.isLoggable(Level.FINE)) log.fine("User=" + app_user + " - roles #" + retValue.length);
 
 			}
 
@@ -493,7 +493,7 @@ public class Login
 			//
 			retValue = new KeyNamePair[list.size()];
 			list.toArray(retValue);
-			log.fine("Role: " + role.toStringX() + " - clients #" + retValue.length);
+			if (log.isLoggable(Level.FINE)) log.fine("Role: " + role.toStringX() + " - clients #" + retValue.length);
 		}
 		catch (SQLException ex)
 		{
@@ -589,7 +589,7 @@ public class Login
 			retValue = new KeyNamePair[list.size()];
 			list.toArray(retValue);
 			
-			log.fine("Client: " + AD_Client_ID +", AD_Role_ID=" + rol.getName()+", AD_User_ID=" + AD_User_ID+" - orgs #" + retValue.length);
+			if (log.isLoggable(Level.FINE)) log.fine("Client: " + AD_Client_ID +", AD_Role_ID=" + rol.getName()+", AD_User_ID=" + AD_User_ID+" - orgs #" + retValue.length);
 		 }
 		catch (SQLException ex)
 		{
@@ -723,7 +723,7 @@ public class Login
 			//
 			retValue = new KeyNamePair[list.size()];
 			list.toArray(retValue);
-			log.fine("Org: " + org.toStringX()
+			if (log.isLoggable(Level.FINE)) log.fine("Org: " + org.toStringX()
 				+ " - warehouses #" + retValue.length);
 		}
 		catch (SQLException ex)
@@ -1388,7 +1388,7 @@ public class Login
 			}
 			retValue = new KeyNamePair[clientList.size()];
 			clientList.toArray(retValue);
-			log.fine("User=" + app_user + " - roles #" + retValue.length);
+			if (log.isLoggable(Level.FINE)) log.fine("User=" + app_user + " - roles #" + retValue.length);
 			
 			for (MUser user : users) 
 			{
@@ -1510,7 +1510,7 @@ public class Login
 			//
 			retValue = new KeyNamePair[rolesList.size()];
 			rolesList.toArray(retValue);
-			log.fine("Role: " + client.toStringX() + " - clients #" + retValue.length);
+			if (log.isLoggable(Level.FINE)) log.fine("Role: " + client.toStringX() + " - clients #" + retValue.length);
 		}
 		catch (SQLException ex)
 		{

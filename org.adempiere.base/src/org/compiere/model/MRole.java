@@ -546,7 +546,7 @@ public final class MRole extends X_AD_Role
 		int docactDel = DB.executeUpdate("DELETE FROM AD_Document_Action_Access" + whereDel, get_TrxName());
 		
 
-		log.fine("AD_Window_Access=" + winDel
+		if (log.isLoggable(Level.FINE)) log.fine("AD_Window_Access=" + winDel
 			+ ", AD_Process_Access=" + procDel
 			+ ", AD_Form_Access=" + formDel
 			+ ", AD_Workflow_Access=" + wfDel
@@ -702,7 +702,7 @@ public final class MRole extends X_AD_Role
 		
 		m_orgAccess = new OrgAccess[list.size()];
 		list.toArray(m_orgAccess); 
-		log.fine("#" + m_orgAccess.length + (reload ? " - reload" : "")); 
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_orgAccess.length + (reload ? " - reload" : "")); 
 		if (Ini.isClient())
 		{
 			StringBuilder sb = new StringBuilder();
@@ -859,7 +859,7 @@ public final class MRole extends X_AD_Role
 		}
 		m_tableAccess = new MTableAccess[list.size()];
 		list.toArray(m_tableAccess); 
-		log.fine("#" + m_tableAccess.length); 
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_tableAccess.length); 
 	}	//	loadTableAccess
 
 	/**
@@ -909,7 +909,7 @@ public final class MRole extends X_AD_Role
 		{
 			DB.close(rs, pstmt);
 		}
-		log.fine("#" + m_tableAccessLevel.size()); 
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_tableAccessLevel.size()); 
 	}	//	loadTableAccessLevel
 
 	/**
@@ -960,7 +960,7 @@ public final class MRole extends X_AD_Role
 		}
 		m_columnAccess = new MColumnAccess[list.size()];
 		list.toArray(m_columnAccess); 
-		log.fine("#" + m_columnAccess.length); 
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_columnAccess.length); 
 	}	//	loadColumnAccess
 	
 	/**
@@ -1002,7 +1002,7 @@ public final class MRole extends X_AD_Role
 		list.toArray(m_recordAccess);
 		m_recordDependentAccess = new MRecordAccess[dependent.size()];
 		dependent.toArray(m_recordDependentAccess);
-		log.fine("#" + m_recordAccess.length + " - Dependent #" + m_recordDependentAccess.length); 
+		if (log.isLoggable(Level.FINE)) log.fine("#" + m_recordAccess.length + " - Dependent #" + m_recordDependentAccess.length); 
 	}	//	loadRecordAccess
 
 
@@ -1191,7 +1191,7 @@ public final class MRole extends X_AD_Role
 				if (m_tableAccess[i].getAD_Table_ID() == AD_Table_ID)
 				{
 					canReport = m_tableAccess[i].isCanReport();
-					log.fine("Exclude " + AD_Table_ID + " - " + canReport);
+					if (log.isLoggable(Level.FINE)) log.fine("Exclude " + AD_Table_ID + " - " + canReport);
 					return canReport;
 				}
 			}
@@ -1201,12 +1201,12 @@ public final class MRole extends X_AD_Role
 				if (m_tableAccess[i].getAD_Table_ID() == AD_Table_ID)
 				{
 					canReport = m_tableAccess[i].isCanReport();
-					log.fine("Include " + AD_Table_ID + " - " + canReport);
+					if (log.isLoggable(Level.FINE)) log.fine("Include " + AD_Table_ID + " - " + canReport);
 					return canReport;
 				}
 			}
 		}	//	for all Table Access
-		log.fine(AD_Table_ID + " - " + canReport);
+		if (log.isLoggable(Level.FINE)) log.fine(AD_Table_ID + " - " + canReport);
 		return canReport;
 	}	//	isCanReport
 	
@@ -1235,18 +1235,18 @@ public final class MRole extends X_AD_Role
 			if (m_tableAccess[i].isExclude())		//	Exclude
 			{
 				canExport = m_tableAccess[i].isCanExport();
-				log.fine("Exclude " + AD_Table_ID + " - " + canExport);
+				if (log.isLoggable(Level.FINE)) log.fine("Exclude " + AD_Table_ID + " - " + canExport);
 				return canExport;
 			}
 			else									//	Include
 			{
 				canExport = false;
 				canExport = m_tableAccess[i].isCanExport();
-				log.fine("Include " + AD_Table_ID + " - " + canExport);
+				if (log.isLoggable(Level.FINE)) log.fine("Include " + AD_Table_ID + " - " + canExport);
 				return canExport;
 			}
 		}	//	for all Table Access
-		log.fine(AD_Table_ID + " - " + canExport);
+		if (log.isLoggable(Level.FINE)) log.fine(AD_Table_ID + " - " + canExport);
 		return canExport;
 	}	//	isCanExport
 
@@ -1277,7 +1277,7 @@ public final class MRole extends X_AD_Role
 						hasAccess = m_tableAccess[i].isReadOnly();
 					else
 						hasAccess = false;
-					log.fine("Exclude AD_Table_ID=" + AD_Table_ID 
+					if (log.isLoggable(Level.FINE)) log.fine("Exclude AD_Table_ID=" + AD_Table_ID 
 						+ " (ro="  + ro + ",TableAccessRO=" + m_tableAccess[i].isReadOnly() + ") = " + hasAccess);
 					return hasAccess;
 				}
@@ -1293,14 +1293,14 @@ public final class MRole extends X_AD_Role
 						hasAccess = !m_tableAccess[i].isReadOnly();
 					else
 						hasAccess = true;
-					log.fine("Include AD_Table_ID=" + AD_Table_ID 
+					if (log.isLoggable(Level.FINE)) log.fine("Include AD_Table_ID=" + AD_Table_ID 
 						+ " (ro="  + ro + ",TableAccessRO=" + m_tableAccess[i].isReadOnly() + ") = " + hasAccess);
 					return hasAccess;
 				}
 			}
 		}	//	for all Table Access
 		if (!hasAccess)
-			log.fine("AD_Table_ID=" + AD_Table_ID 
+			if (log.isLoggable(Level.FINE)) log.fine("AD_Table_ID=" + AD_Table_ID 
 				+ "(ro="  + ro + ") = " + hasAccess);
 		return hasAccess;
 	}	//	isTableAccess
@@ -1323,7 +1323,7 @@ public final class MRole extends X_AD_Role
 		String roleAccessLevel = (String)m_tableAccessLevel.get(new Integer(AD_Table_ID));
 		if (roleAccessLevel == null)
 		{
-			log.fine("NO - No AccessLevel - AD_Table_ID=" + AD_Table_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("NO - No AccessLevel - AD_Table_ID=" + AD_Table_ID);
 			return false;
 		}
 		//	Access to all User Levels
@@ -1344,7 +1344,7 @@ public final class MRole extends X_AD_Role
 			&& (roleAccessLevel.equals(X_AD_Table.ACCESSLEVEL_Organization) 
 				|| roleAccessLevel.equals(X_AD_Table.ACCESSLEVEL_ClientPlusOrganization)))
 			return true;
-		log.fine("NO - AD_Table_ID=" + AD_Table_ID 
+		if (log.isLoggable(Level.FINE)) log.fine("NO - AD_Table_ID=" + AD_Table_ID 
 			+ ", UserLevel=" + userLevel + ", AccessLevel=" + roleAccessLevel);
 		return false;
 	}	//	isTableAccessLevel
@@ -1378,7 +1378,7 @@ public final class MRole extends X_AD_Role
 					else
 						retValue = false;
 					if (!retValue)
-						log.fine("Exclude AD_Table_ID=" + AD_Table_ID + ", AD_Column_ID=" + AD_Column_ID 
+						if (log.isLoggable(Level.FINE)) log.fine("Exclude AD_Table_ID=" + AD_Table_ID + ", AD_Column_ID=" + AD_Column_ID 
 							+ " (ro="  + ro + ",ColumnAccessRO=" + m_columnAccess[i].isReadOnly() + ") = " + retValue);
 					return retValue;
 				}
@@ -1397,7 +1397,7 @@ public final class MRole extends X_AD_Role
 						else
 							retValue = true;
 						if (!retValue)
-							log.fine("Include AD_Table_ID=" + AD_Table_ID + ", AD_Column_ID=" + AD_Column_ID 
+							if (log.isLoggable(Level.FINE)) log.fine("Include AD_Table_ID=" + AD_Table_ID + ", AD_Column_ID=" + AD_Column_ID 
 								+ " (ro="  + ro + ",ColumnAccessRO=" + m_columnAccess[i].isReadOnly() + ") = " + retValue);
 						return retValue;
 					}
@@ -1405,7 +1405,7 @@ public final class MRole extends X_AD_Role
 			}	//	include
 		}	//	for all Table Access
 		if (!retValue)
-			log.fine("AD_Table_ID=" + AD_Table_ID + ", AD_Column_ID=" + AD_Column_ID 
+			if (log.isLoggable(Level.FINE)) log.fine("AD_Table_ID=" + AD_Table_ID + ", AD_Column_ID=" + AD_Column_ID 
 				+ " (ro="  + ro + ") = " + retValue);
 		return retValue;
 	}	//	isColumnAccess
@@ -1538,10 +1538,10 @@ public final class MRole extends X_AD_Role
 			}
 			//
 			setAccessMap("m_windowAccess", mergeAccess(getAccessMap("m_windowAccess"), directAccess, true));
-			log.fine("#" + m_windowAccess.size());
+			if (log.isLoggable(Level.FINE)) log.fine("#" + m_windowAccess.size());
 		}	//	reload
 		Boolean retValue = m_windowAccess.get(AD_Window_ID);
-		log.fine("getWindowAccess - AD_Window_ID=" + AD_Window_ID + " - " + retValue);
+		if (log.isLoggable(Level.FINE)) log.fine("getWindowAccess - AD_Window_ID=" + AD_Window_ID + " - " + retValue);
 		return retValue;
 	}	//	getWindowAccess
 
@@ -1955,7 +1955,7 @@ public final class MRole extends X_AD_Role
 			if (AD_Table_ID != 0 && !isTableAccess(AD_Table_ID, !rw))
 			{
 				retSQL.append(" AND 1=3");	//	prevent access at all
-				log.fine("No access to AD_Table_ID=" + AD_Table_ID 
+				if (log.isLoggable(Level.FINE)) log.fine("No access to AD_Table_ID=" + AD_Table_ID 
 					+ " - " + TableName + " - " + retSQL);
 				break;	//	no need to check further 
 			}
@@ -2030,12 +2030,12 @@ public final class MRole extends X_AD_Role
 			if (m_recordDependentAccess[i].isExclude())
 			{
 				excludes.add(m_recordDependentAccess[i].getRecord_ID());
-				log.fine("Exclude " + columnName + " - " + m_recordDependentAccess[i]);
+				if (log.isLoggable(Level.FINE)) log.fine("Exclude " + columnName + " - " + m_recordDependentAccess[i]);
 			}
 			else if (!rw || !m_recordDependentAccess[i].isReadOnly())
 			{
 				includes.add(m_recordDependentAccess[i].getRecord_ID());
-				log.fine("Include " + columnName + " - " + m_recordDependentAccess[i]);
+				if (log.isLoggable(Level.FINE)) log.fine("Include " + columnName + " - " + m_recordDependentAccess[i]);
 			}
 			whereColumnName = getDependentRecordWhereColumn (mainSql, columnName);
 		}	//	for all dependent records

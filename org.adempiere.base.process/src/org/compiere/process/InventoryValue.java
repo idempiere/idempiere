@@ -17,6 +17,7 @@
 package org.compiere.process;
 
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
@@ -112,7 +113,7 @@ public class InventoryValue extends SvrProcess
 			.append(" INNER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID AND ce.CostingMethod='S' AND ce.CostElementType='M') ")
 			.append("WHERE w.M_Warehouse_ID=").append(p_M_Warehouse_ID);
 		int noInsertStd = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Inserted Std=" + noInsertStd);
+		if (log.isLoggable(Level.FINE)) log.fine("Inserted Std=" + noInsertStd);
 		if (noInsertStd == 0)
 			return "No Standard Costs found";
 
@@ -138,7 +139,7 @@ public class InventoryValue extends SvrProcess
 					.append(" AND iv.M_Product_ID=c.M_Product_ID")
 					.append(" AND iv.M_AttributeSetInstance_ID=c.M_AttributeSetInstance_ID)");
 			noInsertCost = DB.executeUpdateEx(sql.toString(), get_TrxName());
-			log.fine("Inserted Cost=" + noInsertCost);
+			if (log.isLoggable(Level.FINE)) log.fine("Inserted Cost=" + noInsertCost);
 			//	Update Std Cost Records
 			sql = new StringBuilder ("UPDATE T_InventoryValue iv ")
 				.append("SET (Cost, M_CostElement_ID)=")
@@ -156,7 +157,7 @@ public class InventoryValue extends SvrProcess
 					.append("WHERE ivv.AD_PInstance_ID=").append(getAD_PInstance_ID())
 					.append(" AND ivv.M_CostElement_ID IS NULL)");
 			int noUpdatedCost = DB.executeUpdateEx(sql.toString(), get_TrxName());
-			log.fine("Updated Cost=" + noUpdatedCost);
+			if (log.isLoggable(Level.FINE)) log.fine("Updated Cost=" + noUpdatedCost);
 		}		
 		if ((noInsertStd+noInsertCost) == 0)
 			return "No Costs found";
@@ -171,7 +172,7 @@ public class InventoryValue extends SvrProcess
 			.append("C_Currency_ID=").append(p_C_Currency_ID)
 			.append(" WHERE AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Constants=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Constants=" + no);
 
 		//  Get current QtyOnHand with ASI
 		sql = new StringBuilder ("UPDATE T_InventoryValue iv SET QtyOnHand = ")
@@ -183,7 +184,7 @@ public class InventoryValue extends SvrProcess
 			.append("WHERE AD_PInstance_ID=").append(getAD_PInstance_ID())
 			.append(" AND iv.M_AttributeSetInstance_ID<>0");
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("QtHand with ASI=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("QtHand with ASI=" + no);
 		//  Get current QtyOnHand without ASI
 		sql = new StringBuilder ("UPDATE T_InventoryValue iv SET QtyOnHand = ")
 				.append("(SELECT SUM(QtyOnHand) FROM M_StorageOnHand s")
@@ -193,7 +194,7 @@ public class InventoryValue extends SvrProcess
 			.append("WHERE iv.AD_PInstance_ID=").append(getAD_PInstance_ID())
 			.append(" AND iv.M_AttributeSetInstance_ID=0");
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("QtHand w/o ASI=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("QtHand w/o ASI=" + no);
 		
 		//  Adjust for Valuation Date
 		sql = new StringBuilder("UPDATE T_InventoryValue iv ")
@@ -208,7 +209,7 @@ public class InventoryValue extends SvrProcess
 			.append("WHERE iv.M_AttributeSetInstance_ID<>0" )
 			.append(" AND iv.AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Update with ASI=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Update with ASI=" + no);
 		//
 		sql = new StringBuilder("UPDATE T_InventoryValue iv ")
 			.append("SET QtyOnHand=")
@@ -222,13 +223,13 @@ public class InventoryValue extends SvrProcess
 			.append("AND iv.AD_PInstance_ID=").append(getAD_PInstance_ID());
 
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Update w/o ASI=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Update w/o ASI=" + no);
 		
 		//  Delete Records w/o OnHand Qty
 		sql = new StringBuilder("DELETE T_InventoryValue ")
 			.append("WHERE (QtyOnHand=0 OR QtyOnHand IS NULL) AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		int noQty = DB.executeUpdateEx (sql.toString(), get_TrxName());
-		log.fine("NoQty Deleted=" + noQty);
+		if (log.isLoggable(Level.FINE)) log.fine("NoQty Deleted=" + noQty);
 
 		//  Update Prices
 		sql = new StringBuilder("UPDATE T_InventoryValue iv ")
@@ -273,7 +274,7 @@ public class InventoryValue extends SvrProcess
 					.append("FROM C_AcctSchema acs WHERE acs.C_AcctSchema_ID=").append(as.getC_AcctSchema_ID()).append(") ")
 				.append("WHERE iv.AD_PInstance_ID=").append(getAD_PInstance_ID());
 			no = DB.executeUpdateEx (sql.toString(), get_TrxName());
-			log.fine("Converted=" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Converted=" + no);
 		}
 		
 		//  Update Values
@@ -287,7 +288,7 @@ public class InventoryValue extends SvrProcess
 				.append("WHERE AD_PInstance_ID=").append(getAD_PInstance_ID()
 				);
 		no = DB.executeUpdateEx(dbeux.toString(), get_TrxName());
-		log.fine("Calculation=" + no);
+		if (log.isLoggable(Level.FINE)) log.fine("Calculation=" + no);
 		//
 		return msg;
 	}   //  doIt

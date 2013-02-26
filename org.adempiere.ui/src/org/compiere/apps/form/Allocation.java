@@ -137,7 +137,7 @@ public class Allocation
 		// role security
 		sql = new StringBuilder( MRole.getDefault(Env.getCtx(), false).addAccessSQL( sql.toString(), "p", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO ) );
 		
-		log.fine("PaySQL=" + sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine("PaySQL=" + sql.toString());
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -265,7 +265,7 @@ public class Allocation
 		if (m_AD_Org_ID != 0 ) 
 			sql.append(" AND i.AD_Org_ID=" + m_AD_Org_ID);
 		sql.append(" ORDER BY i.DateInvoiced, i.DocumentNo");
-		log.fine("InvSQL=" + sql.toString());
+		if (log.isLoggable(Level.FINE)) log.fine("InvSQL=" + sql.toString());
 		
 		// role security
 		sql = new StringBuilder( MRole.getDefault(Env.getCtx(), false).addAccessSQL( sql.toString(), "i", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO ) );
@@ -561,7 +561,7 @@ public class Allocation
 				BigDecimal bd = (BigDecimal)payment.getValueAt(i, i_payment);
 				totalPay = totalPay.add(bd);  //  Applied Pay
 				m_noPayments++;
-				log.fine("Payment_" + i + " = " + bd + " - Total=" + totalPay);
+				if (log.isLoggable(Level.FINE)) log.fine("Payment_" + i + " = " + bd + " - Total=" + totalPay);
 			}
 		}
 		return String.valueOf(m_noPayments) + " - "
@@ -585,7 +585,7 @@ public class Allocation
 				BigDecimal bd = (BigDecimal)invoice.getValueAt(i, i_applied);
 				totalInv = totalInv.add(bd);  //  Applied Inv
 				m_noInvoices++;
-				log.fine("Invoice_" + i + " = " + bd + " - Total=" + totalPay);
+				if (log.isLoggable(Level.FINE)) log.fine("Invoice_" + i + " = " + bd + " - Total=" + totalPay);
 			}
 		}
 		return String.valueOf(m_noInvoices) + " - "
@@ -638,7 +638,7 @@ public class Allocation
 				//
 				paymentAppliedAmt = paymentAppliedAmt.add(PaymentAmt);
 				//
-				log.fine("C_Payment_ID=" + C_Payment_ID 
+				if (log.isLoggable(Level.FINE)) log.fine("C_Payment_ID=" + C_Payment_ID 
 					+ " - PaymentAmt=" + PaymentAmt); // + " * " + Multiplier + " = " + PaymentAmtAbs);
 			}
 		}
@@ -698,7 +698,7 @@ public class Allocation
 						//  subtract amount from Payment/Invoice
 						AppliedAmt = AppliedAmt.subtract(amount);
 						PaymentAmt = PaymentAmt.subtract(amount);
-						log.fine("Allocation Amount=" + amount + " - Remaining  Applied=" + AppliedAmt + ", Payment=" + PaymentAmt);
+						if (log.isLoggable(Level.FINE)) log.fine("Allocation Amount=" + amount + " - Remaining  Applied=" + AppliedAmt + ", Payment=" + PaymentAmt);
 						amountList.set(j, PaymentAmt);  //  update
 					}	//	for all applied amounts
 				}	//	loop through payments for invoice
@@ -714,7 +714,7 @@ public class Allocation
 					aLine.setDocInfo(C_BPartner_ID, C_Order_ID, C_Invoice_ID);
 					aLine.setPaymentInfo(C_Payment_ID, C_CashLine_ID);
 					aLine.saveEx();
-					log.fine("Allocation Amount=" + AppliedAmt);
+					if (log.isLoggable(Level.FINE)) log.fine("Allocation Amount=" + AppliedAmt);
 					unmatchedApplied = unmatchedApplied.add(AppliedAmt);
 				}
 			}   //  invoice selected
@@ -726,7 +726,7 @@ public class Allocation
 			if ( payAmt.signum() == 0 )
 					continue;
 			int C_Payment_ID = ((Integer)paymentList.get(i)).intValue();
-			log.fine("Payment=" + C_Payment_ID  
+			if (log.isLoggable(Level.FINE)) log.fine("Payment=" + C_Payment_ID  
 					+ ", Amount=" + payAmt);
 
 			//	Allocation Line

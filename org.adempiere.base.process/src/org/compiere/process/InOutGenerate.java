@@ -224,7 +224,7 @@ public class InOutGenerate extends SvrProcess
 					&& (m_shipment.getC_BPartner_Location_ID() != order.getC_BPartner_Location_ID()
 						|| m_shipment.getM_Shipper_ID() != order.getM_Shipper_ID() )))
 					completeShipment();
-				log.fine("check: " + order + " - DeliveryRule=" + order.getDeliveryRule());
+				if (log.isLoggable(Level.FINE)) log.fine("check: " + order + " - DeliveryRule=" + order.getDeliveryRule());
 				//
 				Timestamp minGuaranteeDate = m_movementDate;
 				boolean completeOrder = MOrder.DELIVERYRULE_CompleteOrder.equals(order.getDeliveryRule());
@@ -251,7 +251,7 @@ public class InOutGenerate extends SvrProcess
 					MOrderLine line = lines[i];
 					if (line.getM_Warehouse_ID() != p_M_Warehouse_ID)
 						continue;
-					log.fine("check: " + line);
+					if (log.isLoggable(Level.FINE)) log.fine("check: " + line);
 					BigDecimal onHand = Env.ZERO;
 					BigDecimal toDeliver = line.getQtyOrdered()
 						.subtract(line.getQtyDelivered());
@@ -284,7 +284,7 @@ public class InOutGenerate extends SvrProcess
 						}
 						//	Adjust On Hand
 						onHand = onHand.subtract(unconfirmedShippedQty);
-						log.fine(logInfo.toString());
+						if (log.isLoggable(Level.FINE)) log.fine(logInfo.toString());
 					}
 					
 					//	Comments & lines w/o product & services
@@ -315,7 +315,7 @@ public class InOutGenerate extends SvrProcess
 					//	Complete Order
 					if (completeOrder && !fullLine)
 					{
-						log.fine("Failed CompleteOrder - OnHand=" + onHand 
+						if (log.isLoggable(Level.FINE)) log.fine("Failed CompleteOrder - OnHand=" + onHand 
 							+ " (Unconfirmed=" + unconfirmedShippedQty
 							+ "), ToDeliver=" + toDeliver + " - " + line);
 						completeOrder = false;
@@ -324,7 +324,7 @@ public class InOutGenerate extends SvrProcess
 					//	Complete Line
 					else if (fullLine && MOrder.DELIVERYRULE_CompleteLine.equals(order.getDeliveryRule()))
 					{
-						log.fine("CompleteLine - OnHand=" + onHand 
+						if (log.isLoggable(Level.FINE)) log.fine("CompleteLine - OnHand=" + onHand 
 							+ " (Unconfirmed=" + unconfirmedShippedQty
 							+ ", ToDeliver=" + toDeliver + " - " + line);
 						//	
@@ -338,7 +338,7 @@ public class InOutGenerate extends SvrProcess
 						BigDecimal deliver = toDeliver;
 						if (deliver.compareTo(onHand) > 0)
 							deliver = onHand;
-						log.fine("Available - OnHand=" + onHand 
+						if (log.isLoggable(Level.FINE)) log.fine("Available - OnHand=" + onHand 
 							+ " (Unconfirmed=" + unconfirmedShippedQty
 							+ "), ToDeliver=" + toDeliver 
 							+ ", Delivering=" + deliver + " - " + line);
@@ -349,7 +349,7 @@ public class InOutGenerate extends SvrProcess
 					else if (MOrder.DELIVERYRULE_Force.equals(order.getDeliveryRule()))
 					{
 						BigDecimal deliver = toDeliver;
-						log.fine("Force - OnHand=" + onHand 
+						if (log.isLoggable(Level.FINE)) log.fine("Force - OnHand=" + onHand 
 							+ " (Unconfirmed=" + unconfirmedShippedQty
 							+ "), ToDeliver=" + toDeliver 
 							+ ", Delivering=" + deliver + " - " + line);
@@ -358,11 +358,11 @@ public class InOutGenerate extends SvrProcess
 					}
 					//	Manual
 					else if (MOrder.DELIVERYRULE_Manual.equals(order.getDeliveryRule()))
-						log.fine("Manual - OnHand=" + onHand 
+						if (log.isLoggable(Level.FINE)) log.fine("Manual - OnHand=" + onHand 
 							+ " (Unconfirmed=" + unconfirmedShippedQty
 							+ ") - " + line);
 					else
-						log.fine("Failed: " + order.getDeliveryRule() + " - OnHand=" + onHand 
+						if (log.isLoggable(Level.FINE)) log.fine("Failed: " + order.getDeliveryRule() + " - OnHand=" + onHand 
 							+ " (Unconfirmed=" + unconfirmedShippedQty
 							+ "), ToDeliver=" + toDeliver + " - " + line);
 				}	//	for all order lines
@@ -450,7 +450,7 @@ public class InOutGenerate extends SvrProcess
 			line.setLine(m_line + orderLine.getLine());
 			if (!line.save())
 				throw new IllegalStateException("Could not create Shipment Line");
-			log.fine(line.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(line.toString());
 			return;
 		}
 		
@@ -506,7 +506,7 @@ public class InOutGenerate extends SvrProcess
 			line.setLine(m_line + orderLine.getLine());
 			if (!line.save())
 				throw new IllegalStateException("Could not create Shipment Line");
-			log.fine("ToDeliver=" + qty + "/" + deliver + " - " + line);
+			if (log.isLoggable(Level.FINE)) log.fine("ToDeliver=" + qty + "/" + deliver + " - " + line);
 			toDeliver = toDeliver.subtract(deliver);
 			//      Temp adjustment, actual update happen in MInOut.completeIt
 			storage.setQtyOnHand(storage.getQtyOnHand().subtract(deliver));

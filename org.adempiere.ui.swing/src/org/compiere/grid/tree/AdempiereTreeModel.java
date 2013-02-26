@@ -88,7 +88,7 @@ public class AdempiereTreeModel extends DefaultTreeModel {
 						.append(", Updated=SysDate")
 						.append(" WHERE AD_Tree_ID=").append(AD_Tree_ID)
 						.append(" AND Node_ID=").append(nd.getNode_ID());
-					log.fine(sql.toString());
+					if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
 					no = DB.executeUpdate(sql.toString(),trx.getTrxName());
 				}
 			trx.commit(true);

@@ -67,7 +67,7 @@ public class CalloutPaySelection extends CalloutEngine
 		BigDecimal PayAmt = (BigDecimal)mTab.getValue("PayAmt");
 		BigDecimal DiscountAmt = (BigDecimal)mTab.getValue("DiscountAmt");
 		BigDecimal DifferenceAmt = OpenAmt.subtract(PayAmt).subtract(DiscountAmt);
-		log.fine(" - OpenAmt=" + OpenAmt + " - PayAmt=" + PayAmt
+		if (log.isLoggable(Level.FINE)) log.fine(" - OpenAmt=" + OpenAmt + " - PayAmt=" + PayAmt
 			+ ", Discount=" + DiscountAmt + ", Difference=" + DifferenceAmt);
 		
 		mTab.setValue("DifferenceAmt", DifferenceAmt);
@@ -133,7 +133,7 @@ public class CalloutPaySelection extends CalloutEngine
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.fine(" - OpenAmt=" + OpenAmt + " (Invoice=" + C_Invoice_ID + ",BankAcct=" + C_BankAccount_ID + ")");
+		if (log.isLoggable(Level.FINE)) log.fine(" - OpenAmt=" + OpenAmt + " (Invoice=" + C_Invoice_ID + ",BankAcct=" + C_BankAccount_ID + ")");
 		mTab.setValue("OpenAmt", OpenAmt);
 		mTab.setValue("PayAmt", OpenAmt.subtract(DiscountAmt));
 		mTab.setValue("DiscountAmt", DiscountAmt);

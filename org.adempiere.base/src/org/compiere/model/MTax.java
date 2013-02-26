@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
@@ -271,7 +272,7 @@ public class MTax extends X_C_Tax
 			tax = amount.subtract(base);
 		}
 		BigDecimal finalTax = tax.setScale(scale, BigDecimal.ROUND_HALF_UP);
-		log.fine("calculateTax " + amount 
+		if (log.isLoggable(Level.FINE)) log.fine("calculateTax " + amount 
 			+ " (incl=" + taxIncluded + ",mult=" + multiplier + ",scale=" + scale 
 			+ ") = " + finalTax + " [" + tax + "]");
 		return finalTax;

@@ -175,14 +175,14 @@ public class RequestServlet extends HttpServlet
 		MRequest doc = new MRequest (ctx, R_Request_ID, null);
 		if (doc.getR_Request_ID() != R_Request_ID)
 		{
-			log.fine("Request not found - R_Request_ID=" + R_Request_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("Request not found - R_Request_ID=" + R_Request_ID);
 			return "Request not found";
 		}
 		
 		MAttachment attachment = doc.getAttachment(false);
 		if (attachment == null)
 		{
-			log.fine("No Attachment for R_Request_ID=" + R_Request_ID);
+			if (log.isLoggable(Level.FINE)) log.fine("No Attachment for R_Request_ID=" + R_Request_ID);
 			return "Request Attachment not found";
 		}
 		
@@ -246,7 +246,7 @@ public class RequestServlet extends HttpServlet
 		String source = WebUtil.getParameter (request, P_SOURCE);
 		String info = WebUtil.getParameter (request, P_INFO);
 		String forwardTo = WebUtil.getParameter (request, P_FORWARDTO);
-		log.fine("Referer=" + requestRef + ", Source=" + source + ", ForwardTo=" + forwardTo);
+		if (log.isLoggable(Level.FINE)) log.fine("Referer=" + requestRef + ", Source=" + source + ", ForwardTo=" + forwardTo);
 		if (requestURL == null)
 			requestURL = "";
 		if (requestURL.equals(requestRef))      //  if URL and Referrer are the same, get source
@@ -409,7 +409,7 @@ public class RequestServlet extends HttpServlet
 			return;
 		}
 		String fileName = upload.getFileName();
-		log.fine("R_Request_ID=" + R_Request_ID + " - " + fileName); 
+		if (log.isLoggable(Level.FINE)) log.fine("R_Request_ID=" + R_Request_ID + " - " + fileName); 
 		
 		//	Add Attachment
 		MAttachment attachment = req.createAttachment();
@@ -423,7 +423,7 @@ public class RequestServlet extends HttpServlet
 		}
 		else
 			WebUtil.createForwardPage(response, "File Upload Error - Please try again", "requests.jsp", 10);
-		log.fine(attachment.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(attachment.toString());
 	}	//	uploadFile
 
 	

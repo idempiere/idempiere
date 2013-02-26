@@ -17,6 +17,7 @@
 package org.compiere.wstore;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -65,7 +66,7 @@ public class MessageTag  extends TagSupport
 		{
 			Properties ctx = JSPEnv.getCtx((HttpServletRequest)pageContext.getRequest());
 			String msg = Msg.translate(ctx, m_txt);
-			log.fine(m_txt + "->" + msg);
+			if (log.isLoggable(Level.FINE)) log.fine(m_txt + "->" + msg);
 			//
 			try
 			{

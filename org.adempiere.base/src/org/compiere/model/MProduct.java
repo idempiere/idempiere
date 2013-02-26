@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CCache;
@@ -693,7 +694,7 @@ public class MProduct extends X_M_Product
 			//	+ " AND GuaranteeDate > SysDate"
 				+ "  AND M_Product_ID=" + getM_Product_ID();
 			int no = DB.executeUpdate(sql, get_TrxName());
-			log.fine("Asset Description updated #" + no);
+			if (log.isLoggable(Level.FINE)) log.fine("Asset Description updated #" + no);
 		}
 		
 		//	New - Acct, Tree, Old Costing

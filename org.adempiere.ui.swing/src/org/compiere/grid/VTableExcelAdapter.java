@@ -109,7 +109,7 @@ public class VTableExcelAdapter
 	{
 		// Only GridTable model is supported
 		if (!(table.getModel() instanceof GridTable)) {
-			if(CLogMgt.isLevelFine()) log.fine("Not supported - " + table.getModel());
+			if (log.isLoggable(Level.FINE)) log.fine("Not supported - " + table.getModel());
 			return;
 		}
 

@@ -85,7 +85,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 					return null;
 				}
 				String filePath = fileNode.getNodeValue();
-				log.fine("filePath: " + filePath);
+				if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
 				if(filePath!=null){
 					filePath = filePath.replaceFirst(ARCHIVE_FOLDER_PLACEHOLDER, archivePathRoot.replaceAll("\\\\","\\\\\\\\"));
 					//just to be shure...
@@ -96,7 +96,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 					filePath = filePath.replaceAll("/", replaceSeparator);
 					filePath = filePath.replaceAll("\\\\", replaceSeparator);
 				}
-				log.fine("filePath: " + filePath);
+				if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
 				final File file = new File(filePath);
 				if (file.exists()) {
 					// read files into byte[]
@@ -196,7 +196,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 			final Transformer xformer = TransformerFactory.newInstance().newTransformer();
 			xformer.transform(source, result);
 			final byte[] xmlData = bos.toByteArray();
-			log.fine(bos.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(bos.toString());
 			//store xml in db
 			archive.setByteData(xmlData);
 

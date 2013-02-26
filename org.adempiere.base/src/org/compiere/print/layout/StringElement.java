@@ -375,7 +375,7 @@ public class StringElement extends PrintElement
 	{
 		if (m_ID != null && getBounds().contains(relativePoint))
 		{
-			log.fine(toString());
+			if (log.isLoggable(Level.FINE)) log.fine(toString());
 			String columnName = MQuery.getZoomColumnName(m_ID.getName());
 			String tableName = MQuery.getZoomTableName(columnName);
 			Object code = m_ID.getID();

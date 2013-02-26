@@ -532,7 +532,7 @@ public class ProcessParameter extends CDialog
 				para.setInfo_To (editor2.getDisplay());
 			//
 			para.saveEx();
-			log.fine(para.toString());
+			if (log.isLoggable(Level.FINE)) log.fine(para.toString());
 		}	//	for every parameter
 
 		return true;

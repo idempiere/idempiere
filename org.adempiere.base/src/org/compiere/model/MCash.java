@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
@@ -771,7 +772,7 @@ public class MCash extends X_C_Cash implements DocAction
 			.append("' WHERE C_Cash_ID=").append(getC_Cash_ID());
 		int noLine = DB.executeUpdate (sql.toString(), get_TrxName());
 		m_lines = null;
-		log.fine(processed + " - Lines=" + noLine);
+		if (log.isLoggable(Level.FINE)) log.fine(processed + " - Lines=" + noLine);
 	}	//	setProcessed
 	
 	/**

@@ -19,6 +19,7 @@ package org.compiere.wstore;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.model.MCurrency;
 import org.compiere.model.MInvoice;
@@ -77,7 +78,7 @@ public class WebOrder
 	private boolean createOrder (WebUser wu, WebBasket wb)
 	{
 		m_order = new MOrder (m_ctx, 0, null);
-		log.fine("AD_Client_ID=" + m_order.getAD_Client_ID()
+		if (log.isLoggable(Level.FINE)) log.fine("AD_Client_ID=" + m_order.getAD_Client_ID()
 			+ ",AD_Org_ID=" + m_order.getAD_Org_ID() + " - " + m_order);
 		//
 		m_order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Prepay);
@@ -98,7 +99,7 @@ public class WebOrder
 		m_order.setSendEMail(true);
 		m_order.setDocAction(MOrder.DOCACTION_Prepare);
 		m_order.saveEx();
-		log.fine("ID=" + m_order.getC_Order_ID()
+		if (log.isLoggable(Level.FINE)) log.fine("ID=" + m_order.getC_Order_ID()
 			+ ", DocNo=" + m_order.getDocumentNo());
 
 		ArrayList<WebBasketLine> lines = wb.getLines();

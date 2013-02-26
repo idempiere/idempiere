@@ -558,7 +558,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		log.fine("New=" + newRecord);
+		if (log.isLoggable(Level.FINE)) log.fine("New=" + newRecord);
 		
 		if (getAD_Client_ID() != 0 || getAD_Org_ID() != 0) {
 			

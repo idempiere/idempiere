@@ -106,7 +106,7 @@ public abstract class AbstractProcessCtl implements Runnable
 	 */
 	public void run ()
 	{
-		log.fine("AD_PInstance_ID=" + m_pi.getAD_PInstance_ID()
+		if (log.isLoggable(Level.FINE)) log.fine("AD_PInstance_ID=" + m_pi.getAD_PInstance_ID()
 			+ ", Record_ID=" + m_pi.getRecord_ID());
 
 		//  Lock
@@ -294,7 +294,7 @@ public abstract class AbstractProcessCtl implements Runnable
 			ProcessInfoUtil.setSummaryFromDB(m_pi);
 			unlock();
 		}			//	*** Process submission ***
-	//	log.fine(Log.l3_Util, "ProcessCtl.run - done");
+	//	if (log.isLoggable(Level.FINE)) log.fine(Log.l3_Util, "ProcessCtl.run - done");
 	}   //  run
 
 	protected abstract void updateProgressWindowTimerEstimate(int estSeconds);
@@ -345,7 +345,7 @@ public abstract class AbstractProcessCtl implements Runnable
 	 */
 	private boolean startWorkflow (int AD_Workflow_ID)
 	{
-		log.fine(AD_Workflow_ID + " - " + m_pi);
+		if (log.isLoggable(Level.FINE)) log.fine(AD_Workflow_ID + " - " + m_pi);
 		boolean started = false;
 		if (m_IsServerProcess)
 		{
@@ -387,7 +387,7 @@ public abstract class AbstractProcessCtl implements Runnable
 	 */
 	private boolean startProcess ()
 	{
-		log.fine(m_pi.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(m_pi.toString());
 		boolean started = false;
 		
 		//hengsin, bug [ 1633995 ]
@@ -460,7 +460,7 @@ public abstract class AbstractProcessCtl implements Runnable
 	private boolean startDBProcess (String ProcedureName)
 	{
 		//  execute on this thread/connection
-		log.fine(ProcedureName + "(" + m_pi.getAD_PInstance_ID() + ")");
+		if (log.isLoggable(Level.FINE)) log.fine(ProcedureName + "(" + m_pi.getAD_PInstance_ID() + ")");
 		boolean started = false;
 		if (m_IsServerProcess)
 		{
@@ -513,7 +513,7 @@ public abstract class AbstractProcessCtl implements Runnable
 		{
 			return ProcessUtil.startDatabaseProcedure(m_pi, ProcedureName, m_trx);
 		}
-	//	log.fine(Log.l4_Data, "ProcessCtl.startProcess - done");
+	//	if (log.isLoggable(Level.FINE)) log.fine(Log.l4_Data, "ProcessCtl.startProcess - done");
 		return true;
 	}   //  startDBProcess
 

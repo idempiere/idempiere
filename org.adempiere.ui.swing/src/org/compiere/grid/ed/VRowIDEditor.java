@@ -19,6 +19,7 @@ package org.compiere.grid.ed;
 import java.awt.Component;
 import java.awt.Insets;
 import java.util.EventObject;
+import java.util.logging.Level;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JCheckBox;
@@ -88,7 +89,7 @@ public class VRowIDEditor extends AbstractCellEditor implements TableCellEditor
 	public Component getTableCellEditorComponent(JTable table, 
 		Object value, boolean isSelected, int row, int col)
 	{
-		log.fine("Value=" + value + ", row=" + row + ", col=" + col);
+		if (log.isLoggable(Level.FINE)) log.fine("Value=" + value + ", row=" + row + ", col=" + col);
 		m_rid = (Object[])value;
 		if (m_rid == null || m_rid[1] == null)
 			m_cb.setSelected(false);
@@ -113,7 +114,7 @@ public class VRowIDEditor extends AbstractCellEditor implements TableCellEditor
 	 */
 	public Object getCellEditorValue()
 	{
-		log.fine("" + m_cb.isSelected());
+		if (log.isLoggable(Level.FINE)) log.fine("" + m_cb.isSelected());
 		if (m_rid == null)
 			return null;
 		m_rid[1] = new Boolean (m_cb.isSelected());

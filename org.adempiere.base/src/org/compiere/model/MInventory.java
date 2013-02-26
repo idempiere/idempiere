@@ -276,7 +276,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		final String sql = "UPDATE M_InventoryLine SET Processed=? WHERE M_Inventory_ID=?";
 		int noLine = DB.executeUpdateEx(sql, new Object[]{processed, getM_Inventory_ID()}, get_TrxName());
 		m_lines = null;
-		log.fine("Processed=" + processed + " - Lines=" + noLine);
+		if (log.isLoggable(Level.FINE)) log.fine("Processed=" + processed + " - Lines=" + noLine);
 	}	//	setProcessed
 
 	
@@ -438,7 +438,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 						MInventoryLineMA ma = mas[j];
 						BigDecimal QtyMA = ma.getMovementQty();
 						BigDecimal QtyNew = QtyMA.add(qtyDiff);
-						log.fine("Diff=" + qtyDiff 
+						if (log.isLoggable(Level.FINE)) log.fine("Diff=" + qtyDiff 
 								+ " - Instance OnHand=" + QtyMA + "->" + QtyNew);
 
 						if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
@@ -622,7 +622,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 								qtyToDeliver);
 						ma.saveEx();		
 						qtyToDeliver = Env.ZERO;
-						log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);		
+						if (log.isLoggable(Level.FINE)) log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);		
 					}
 					else
 					{	
@@ -631,7 +631,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 								storage.getQtyOnHand());
 						ma.saveEx();	
 						qtyToDeliver = qtyToDeliver.subtract(storage.getQtyOnHand());
-						log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);		
+						if (log.isLoggable(Level.FINE)) log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);		
 					}
 					if (qtyToDeliver.signum() == 0)
 						break;
@@ -646,7 +646,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 					MInventoryLineMA ma = new MInventoryLineMA (line, M_AttributeSetInstance_ID , qtyToDeliver);
 
 					ma.saveEx();
-					log.fine("##: " + ma);
+					if (log.isLoggable(Level.FINE)) log.fine("##: " + ma);
 				}
 			}	//	outgoing Trx
 
