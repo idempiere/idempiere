@@ -30,6 +30,7 @@ import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluator;
+import org.compiere.util.Util;
 
 /**
  *
@@ -244,6 +245,9 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
                     	int zeroValid = (MTable.isZeroIDTable(oldTabpanel.getTableName()) ? 1 : 0);
                         if (oldTabpanel.getRecord_ID() + zeroValid <= 0)
                            	canJump = false;
+    					// IDEMPIERE-651 Allow navigating to a detail when parent doesn't have ID
+    					if (! canJump && Util.isEmpty(oldTabpanel.getGridTab().getKeyColumnName()))
+    						canJump = true;
                     }
                 }
             }

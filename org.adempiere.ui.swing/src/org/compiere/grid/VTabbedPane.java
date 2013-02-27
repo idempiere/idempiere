@@ -33,6 +33,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluator;
 import org.compiere.util.Language;
+import org.compiere.util.Util;
 
 /**
  *  Tabbed Pane - either Workbench or Window Tab
@@ -283,6 +284,9 @@ public class VTabbedPane extends CTabbedPane
 					GridController rightGC = null;
 					//boolean canJump = true;
 					boolean canJump = oldGC.getMTab().getRecord_ID()+zeroValid <=0 ? false : true;	// IDEMPIERE 382
+					// IDEMPIERE-651 Allow navigating to a detail when parent doesn't have ID
+					if (! canJump && Util.isEmpty(oldGC.getMTab().getKeyColumnName()))
+						canJump = true;
 					int currentLevel = newGC.getTabLevel();
 					for (int i = index-1; i >=0; i--)
 					{
