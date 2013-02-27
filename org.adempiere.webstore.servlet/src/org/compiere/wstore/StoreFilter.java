@@ -97,10 +97,11 @@ public class StoreFilter implements javax.servlet.Filter
 				enc = request.getCharacterEncoding();
 				if (enc == null)
 					request.setCharacterEncoding(WebEnv.ENCODING);
-				if (enc == null)
+				if (enc == null) {
 					if (log.isLoggable(Level.FINER)) log.finer("Checked=" + uri);
-				else
+				} else {
 					if (log.isLoggable(Level.FINER)) log.finer("Checked=" + uri + " - Enc=" + enc);
+				}
 			}
 			catch (Exception e)
 			{

@@ -256,10 +256,11 @@ public class ExpenseSOrder extends SvrProcess
 		}
 		//	Update TimeExpense Line
 		tel.setC_OrderLine_ID(ol.getC_OrderLine_ID());
-		if (tel.save())
+		if (tel.save()) {
 			if (log.isLoggable(Level.FINE)) log.fine("Updated " + tel + " with C_OrderLine_ID");
-		else
+		} else {
 			log.log(Level.SEVERE, "Not Updated " + tel + " with C_OrderLine_ID");
+		}
 			
 	}	//	processLine
 	

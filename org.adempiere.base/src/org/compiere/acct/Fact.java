@@ -255,10 +255,11 @@ public final class Fact
 			return true;
 		BigDecimal balance = getSourceBalance();
 		boolean retValue = balance.signum() == 0;
-		if (retValue)
+		if (retValue) {
 			if (log.isLoggable(Level.FINER)) log.finer(toString());
-		else
+		} else {
 			log.warning ("NO - Diff=" + balance + " - " + toString());
+		}
 		return retValue;
 	}	//	isSourceBalanced
 
@@ -500,10 +501,11 @@ public final class Fact
 			return true;
 		BigDecimal balance = getAcctBalance();
 		boolean retValue = balance.signum() == 0;
-		if (retValue)
+		if (retValue) {
 			if (log.isLoggable(Level.FINER)) log.finer(toString());
-		else
+		} else {
 			log.warning("NO - Diff=" + balance + " - " + toString());
+		}
 		return retValue;
 	}	//	isAcctBalanced
 

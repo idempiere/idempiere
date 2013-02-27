@@ -159,10 +159,9 @@ public class BOMVerify extends SvrProcess
 		{
 			MProductBOM productsBOM = productsBOMs[i];
 			MProduct pp = new MProduct(getCtx(), productsBOM.getM_ProductBOM_ID(), get_TrxName());
-			if (!pp.isBOM())
+			if (!pp.isBOM()) {
 				if (log.isLoggable(Level.FINER)) log.finer(pp.getName());
-			else 
-			{
+			} else {
 				if (validproducts.contains(pp))
 				{
 					//Do nothing, no need to recheck

@@ -357,14 +357,15 @@ public class InOutGenerate extends SvrProcess
 						createLine (order, line, deliver, storages, true);
 					}
 					//	Manual
-					else if (MOrder.DELIVERYRULE_Manual.equals(order.getDeliveryRule()))
+					else if (MOrder.DELIVERYRULE_Manual.equals(order.getDeliveryRule())) {
 						if (log.isLoggable(Level.FINE)) log.fine("Manual - OnHand=" + onHand 
 							+ " (Unconfirmed=" + unconfirmedShippedQty
 							+ ") - " + line);
-					else
+					} else {
 						if (log.isLoggable(Level.FINE)) log.fine("Failed: " + order.getDeliveryRule() + " - OnHand=" + onHand 
-							+ " (Unconfirmed=" + unconfirmedShippedQty
-							+ "), ToDeliver=" + toDeliver + " - " + line);
+								+ " (Unconfirmed=" + unconfirmedShippedQty
+								+ "), ToDeliver=" + toDeliver + " - " + line);
+					}
 				}	//	for all order lines
 				
 				//	Complete Order successful

@@ -210,10 +210,11 @@ public class MCStage extends X_CM_CStage
 				.append(getAD_Tree_ID()).append(",").append(get_ID())
 				.append(", 0, 999)");
 			int no = DB.executeUpdate(sb.toString(), get_TrxName());
-			if (no > 0)
+			if (no > 0) {
 				if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=CMS");
-			else
+			} else {
 				log.warning("#" + no + " - TreeType=CMS");
+			}
 			return no > 0;
 		}
 		/*if (success) {
@@ -235,10 +236,11 @@ public class MCStage extends X_CM_CStage
 			.append(" WHERE Node_ID=").append(get_IDOld())
 			.append(" AND AD_Tree_ID=").append(getAD_Tree_ID());
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
-		if (no > 0)
+		if (no > 0) {
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=CMS");
-		else
+		} else {
 			log.warning("#" + no + " - TreeType=CMS");
+		}
 		return no > 0;
 	}	//	afterDelete
 	

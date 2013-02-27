@@ -311,10 +311,9 @@ public class ReplicationLocal extends SvrProcess
 			Object result = doIt (START, "sync", new Object[]	//	Merge
 				{data.TableName, data.KeyColumns, sourceRS, targetRS, m_test, Boolean.TRUE});
 			boolean replicated = isReplicated(result);
-			if (replicated)
+			if (replicated) {
 				if (log.isLoggable(Level.FINE)) log.fine("mergeDataTable -> " + TableName + " - " + result);
-			else
-			{
+			} else {
 				m_replicated = false;
 				log.severe ("mergeDataTable -> " + TableName + " - " + result);
 			}

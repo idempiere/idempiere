@@ -409,11 +409,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		height = m_footerHeight;
 		m_footer.setBounds (x, y, w, height);
 
-		if (log.isLoggable(Level.FINE))
-		{
-			if (log.isLoggable(Level.FINE)) log.fine("Paper=" + m_paper + ",HeaderHeight=" + m_headerHeight + ",FooterHeight=" + m_footerHeight
+		if (log.isLoggable(Level.FINE)) log.fine("Paper=" + m_paper + ",HeaderHeight=" + m_headerHeight + ",FooterHeight=" + m_footerHeight
 					+ " => Header=" + m_header + ",Contents=" + m_content + ",Footer=" + m_footer);
-		}
 	}	//	calculatePageSize
 
 	/**

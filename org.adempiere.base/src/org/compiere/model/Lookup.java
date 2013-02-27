@@ -303,13 +303,13 @@ public abstract class Lookup extends AbstractListModel
 		
 		m_loaded = true; 
 		fireContentsChanged(this, 0, p_data.size());
-		if (p_data.size() == 0)
+		if (p_data.size() == 0) {
 			if (log.isLoggable(Level.FINE)) log.fine(getColumnName() + ": #0 - ms=" 
 				+ String.valueOf(System.currentTimeMillis()-startTime));
-		else
+		} else {
 			if (log.isLoggable(Level.FINE)) log.fine(getColumnName() + ": #" + p_data.size() + " - ms=" 
 				+ String.valueOf(System.currentTimeMillis()-startTime));
-		
+		}
 		
 	}   //  fillComboBox
 

@@ -848,10 +848,11 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 			MBPartner bp = new MBPartner(getCtx(), C_BPartner_ID, get_TrxName());
 			bp.setTotalOpenBalance();		//	recalculates from scratch
 		//	bp.setSOCreditStatus();			//	called automatically
-			if (bp.save())
+			if (bp.save()) {
 				if (log.isLoggable(Level.FINE)) log.fine(bp.toString());
-			else
+			} else {
 				log.log(Level.SEVERE, "BP not updated - " + bp);
+			}
 		}
 	}	//	updateBP
 

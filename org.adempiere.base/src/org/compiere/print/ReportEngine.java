@@ -432,8 +432,7 @@ PrintEvent on Win32 Printer : \\MAIN\HP LaserJet 5L
 PrintServiceAttributeSet - length=1
 queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		**/
-		if (log.isLoggable(Level.FINE))
-			if (log.isLoggable(Level.FINE)) log.fine("attributeUpdate - " + psae);
+		if (log.isLoggable(Level.FINE)) log.fine("attributeUpdate - " + psae);
 	//	PrintUtil.dump (psae.getAttributes());
 	}	//	attributeUpdate
 
@@ -980,8 +979,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			return false;
 		}
 			
-		if (log.isLoggable(Level.FINE))
-			if (log.isLoggable(Level.FINE)) log.fine(uri.toString());
+		if (log.isLoggable(Level.FINE)) log.fine(uri.toString());
 
 		try
 		{
@@ -1613,8 +1611,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		if (log.isLoggable(Level.FINE))
-			if (log.isLoggable(Level.FINE)) log.fine("Order => " + what[0] + " ID=" + what[1]);
+		if (log.isLoggable(Level.FINE)) log.fine("Order => " + what[0] + " ID=" + what[1]);
 		return what;
 	}	//	getDocumentWhat
 

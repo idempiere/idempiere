@@ -66,12 +66,13 @@ public class MStorageOnHand extends X_M_StorageOnHand
 									.setParameters(M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID)
 									.first(); 
 		
-		if (retValue == null)
+		if (retValue == null) {
 			if (s_log.isLoggable(Level.FINE)) s_log.fine("Not Found - M_Locator_ID=" + M_Locator_ID 
-				+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
-		else
+					+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
+		} else {
 			if (s_log.isLoggable(Level.FINE)) s_log.fine("M_Locator_ID=" + M_Locator_ID 
-				+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
+					+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
+		}
 		return retValue;
 	}	//	get
 
@@ -380,7 +381,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		storage.setQtyOnHand (storage.getQtyOnHand().add (diffQtyOnHand));
 		if (s_log.isLoggable(Level.FINE)) {
 			StringBuilder diffText = new StringBuilder("(OnHand=").append(diffQtyOnHand).append(") -> ").append(storage.toString());
-			if (s_log.isLoggable(Level.FINE)) s_log.fine(diffText.toString());
+			s_log.fine(diffText.toString());
 		}
 		return storage.save (trxName);
 	}	//	add

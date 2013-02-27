@@ -135,10 +135,11 @@ public class ImageElement extends PrintElement
 	public ImageElement(Image image)
 	{
 		m_image = image;
-		if (m_image != null)
+		if (m_image != null) {
 			if (log.isLoggable(Level.FINE)) log.fine("Image=" + image);
-		else
+		} else {
 			log.log(Level.WARNING, "Image is NULL");
+		}
 	}	//	ImageElement
 
 	/**
@@ -151,10 +152,11 @@ public class ImageElement extends PrintElement
 		if (imageURL != null)
 		{
 			m_image = Toolkit.getDefaultToolkit().createImage(imageURL);
-			if (m_image != null)
+			if (m_image != null) {
 				if (log.isLoggable(Level.FINE)) log.fine("URL=" + imageURL);
-			else
+			} else {
 				log.log(Level.WARNING, "Not loaded - URL=" + imageURL);
+			}
 		}
 		else
 			log.log(Level.WARNING, "Invalid URL=" + imageURLstring);
@@ -169,10 +171,11 @@ public class ImageElement extends PrintElement
 		if (imageURL != null)
 		{
 			m_image = Toolkit.getDefaultToolkit().createImage(imageURL);
-			if (m_image != null)
+			if (m_image != null) {
 				if (log.isLoggable(Level.FINE)) log.fine("URL=" + imageURL);
-			else
+			} else {
 				log.log(Level.WARNING, "Not loaded - URL=" + imageURL);
+			}
 		}
 		else
 			log.severe ("ImageURL is NULL");
@@ -254,12 +257,13 @@ public class ImageElement extends PrintElement
 		byte[] imageData = mimage.getData();
 		if (imageData != null)
 			m_image = Toolkit.getDefaultToolkit().createImage(imageData);
-		if (m_image != null)
+		if (m_image != null) {
 			if (log.isLoggable(Level.FINE)) log.fine(mimage.toString() 
 				+ " - Size=" + imageData.length);
-		else
+		} else {
 			log.log(Level.WARNING, mimage.toString()
-				+ " - not loaded (must be gif or jpg) - record_ID=" + record_ID);
+					+ " - not loaded (must be gif or jpg) - record_ID=" + record_ID);
+		}
 	}	//	loadFromDB
 
 	
@@ -284,12 +288,13 @@ public class ImageElement extends PrintElement
 		byte[] imageData = attachment.getEntryData(0);
 		if (imageData != null)
 			m_image = Toolkit.getDefaultToolkit().createImage(imageData);
-		if (m_image != null)
+		if (m_image != null) {
 			if (log.isLoggable(Level.FINE)) log.fine(attachment.getEntryName(0) 
 				+ " - Size=" + imageData.length);
-		else
+		} else {
 			log.log(Level.WARNING, attachment.getEntryName(0)
-				+ " - not loaded (must be gif or jpg) - AD_PrintFormatItem_ID=" + AD_PrintFormatItem_ID);
+					+ " - not loaded (must be gif or jpg) - AD_PrintFormatItem_ID=" + AD_PrintFormatItem_ID);
+		}
 	}	//	loadAttachment
 
 	/**************************************************************************

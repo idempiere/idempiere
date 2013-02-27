@@ -144,10 +144,9 @@ public class RfQResponseRank extends SvrProcess
 				
 				//	Rank RfQ Line Qtys
 				respQtys = rfqQty.getResponseQtys(false);
-				if (respQtys.length == 0)
+				if (respQtys.length == 0) {
 					if (log.isLoggable(Level.FINE)) log.fine("  - No Qtys with valid Amounts");
-				else
-				{
+				} else {
 					Arrays.sort(respQtys, respQtys[0]);
 					int lastRank = 1;		//	multiple rank #1
 					BigDecimal lastAmt = Env.ZERO;
