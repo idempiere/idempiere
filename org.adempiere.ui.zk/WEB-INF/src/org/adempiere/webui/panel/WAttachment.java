@@ -115,7 +115,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		autoPreviewList.add("image/jpeg");
 		autoPreviewList.add("image/png");
 		autoPreviewList.add("image/gif");
-		autoPreviewList.add("text/plan");
+		autoPreviewList.add("text/plain");
 		autoPreviewList.add("application/pdf");
 	}
 

@@ -18,11 +18,18 @@
 package org.adempiere.webui.window;
 
 import java.beans.PropertyVetoException;
-import java.io.File;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
-import org.adempiere.webui.apps.AEnv;
+import javax.activation.DataSource;
+
+import org.adempiere.webui.component.AttachmentItem;
+import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -35,24 +42,28 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
-import org.adempiere.webui.panel.StatusBarPanel;
 import org.compiere.model.Lookup;
 import org.compiere.model.MClient;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
+import org.compiere.util.ByteArrayDataSource;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
+import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Center;
-import org.zkoss.zul.South;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Separator;
+import org.zkoss.zul.Vlayout;
 
 /**
  *	EMail Dialog
@@ -77,7 +88,6 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 
 	/**
 	 * 	EMail Dialog
-	 *	@param owner calling window
 	 *	@param title title
 	 *	@param from from
 	 *	@param to to 
@@ -85,16 +95,17 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 *	@param message message
 	 *	@param attachment optional attachment
 	 */
-	public WEMailDialog (Window owner, String title, MUser from, String to, 
-		String subject, String message, File attachment)
+	public WEMailDialog (String title, MUser from, String to, 
+		String subject, String message, DataSource attachment)
 	{
 		super();
         this.setTitle(title);
-		this.setWidth("500px");
+		this.setWidth("550px");
 		this.setHeight("600px");
 		this.setClosable(true);
+		this.setMaximizable(true);
 		this.setBorder("normal");
-        this.setStyle("position:absolute");
+        this.setStyle("position:absolute; margin: 0; padding: 0;");
 		        
 		commonInit(from, to, subject, message, attachment);				
 	}	//	EmailDialog
@@ -108,7 +119,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 *	@param attachment optional attachment
 	 */
 	private void commonInit (MUser from, String to, 
-		String subject, String message, File attachment)
+		String subject, String message, DataSource attachment)
 	{
 		m_client = MClient.get(Env.getCtx());
 		try
@@ -124,7 +135,6 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			fUser.addValueChangeListener(this);
 			fCcUser = new WSearchEditor(lookup, "AD_User_ID", "", false, false, true);
 			fCcUser.addValueChangeListener(this);
-			jbInit();
 		}
 		catch(Exception ex)
 		{
@@ -133,7 +143,6 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		set(from, to, subject, message);
 		setAttachment(attachment);
 		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-		AEnv.showWindow(this);
 	}	//	commonInit
 
 
@@ -151,7 +160,10 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	private String  m_subject;
 	private String  m_message;
 	/**	File to be optionally attached	*/
-	private File	m_attachFile;
+	private DataSource	m_attachment;
+	
+	private List<DataSource> attachments = new ArrayList<DataSource>();
+	
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(WEMailDialog.class);
 
@@ -166,15 +178,24 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	private Label lCc = new Label();
 	private Label lSubject = new Label();
 	private Label lAttachment = new Label();
-	private Textbox fAttachment = new Textbox();//40);
 	private Textbox fMessage = new Textbox();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
-	private StatusBarPanel statusBar = new StatusBarPanel();
+		
+	private Div attachmentBox;
+
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		try {
+			render();
+		} catch (Exception e) {
+		}
+	}
 
 	/**
 	 *	Static Init
 	 */
-	void jbInit() throws Exception
+	protected void render() throws Exception
 	{
 		lFrom.setValue(Msg.getMsg(Env.getCtx(), "From") + ":");
 		lTo.setValue(Msg.getMsg(Env.getCtx(), "To") + ":");
@@ -182,13 +203,11 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		lSubject.setValue(Msg.getMsg(Env.getCtx(), "Subject") + ":");
 		lAttachment.setValue(Msg.getMsg(Env.getCtx(), "Attachment") + ":");
 		fFrom.setReadonly(true);
-		statusBar.setStatusDB(null);
 		//
 				
 		Grid grid = new Grid();
 		grid.setWidth("100%");
-		grid.setHeight("100%");
-        grid.setStyle("margin:0; padding:0; position: absolute; align: center; valign: center; border:0");
+        grid.setStyle("margin:0; padding:0; align: center; valign: center; border:0");
         grid.makeNoStrip();
         
         Columns columns = new Columns();
@@ -241,11 +260,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		row.appendChild(new Label(""));
 		row.appendChild(fCc);
 		fCc.setHflex("1");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.appendCellChild(new Separator(), 2);
-		
+				
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
@@ -257,16 +272,27 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.appendCellChild(new Separator(), 2);
-		
-		row = new Row();
-		rows.appendChild(row);
 		div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(lAttachment);
-		row.appendChild(div);
-		row.appendChild(fAttachment);
-		fAttachment.setHflex("1");
+		Cell cell = new Cell();
+		cell.appendChild(lAttachment);
+		cell.setValign("top");
+		cell.setAlign("right");
+		row.appendChild(cell);
+		
+		attachmentBox = new Div();
+		attachmentBox.setHflex("1");
+		attachmentBox.setVflex("1");
+		row.appendChild(attachmentBox);
+		for (DataSource ds : attachments) {
+			boolean removable = true;
+			if (ds == m_attachment) {
+				removable = false;
+			}
+			AttachmentItem item  = new AttachmentItem(ds, attachments, removable);
+			attachmentBox.appendChild(item);
+		}
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -276,29 +302,28 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		confirmPanel.addActionListener(this);
 		
-		Borderlayout layout = new Borderlayout();
-		layout.setWidth("95%");
-		layout.setHeight("92%");
-		layout.setStyle("background-color: white; position: absolute; margin:0; border:0; padding:0");
+		Vlayout vlayout = new Vlayout();
+		vlayout.setStyle("width: 99%; margin: auto; height: 100%;");
 		
-		Center center = new Center();
-		grid.setHflex("true");
-		grid.setVflex("true");		
-		center.appendChild(grid);
-		layout.appendChild(center);
-		center.setStyle("background-color: white; border: 0");
+		grid.setVflex("1");		
+		vlayout.appendChild(grid);
 		
-		South south = new South();
 		Div southDiv = new Div();
-		south.appendChild(southDiv);
-		layout.appendChild(south);
-		south.setStyle("background-color: white; border: 0");
+		
+		Button btn = new Button();
+		btn.setImage("/images/Attachment24.png");
+		btn.setUpload("true");
+		btn.addEventListener(Events.ON_UPLOAD, this);
+		btn.setTooltiptext(Msg.getMsg(Env.getCtx(), "Attachment"));
+		confirmPanel.addComponentsLeft(btn);
+		confirmPanel.getButton(ConfirmPanel.A_OK).setWidgetListener("onClick", "zAu.cmd0.showBusy(null)");
 		
 		southDiv.appendChild(confirmPanel);
-		southDiv.appendChild(statusBar);
+		southDiv.setVflex("min");
+		vlayout.appendChild(southDiv);
 		
-		this.appendChild(layout);		
-	}	//	jbInit
+		this.appendChild(vlayout);		
+	}	//	render
 
 	/**
 	 *	Set all properties
@@ -310,8 +335,6 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		setTo(to);
 		setSubject(subject);
 		setMessage(message);
-		//
-		statusBar.setStatusLine(m_client.getSMTPHost());
 	}	//	set
 
 	/**
@@ -360,8 +383,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			|| !newFrom.isEMailValid() 
 			|| !newFrom.isCanSendEMail())
 		{
-//			confirmPanel.getOKButton().setEnabled(false);
-			fFrom.setText("**Invalid**");
+			fFrom.setText("");
 		}
 		else
 			fFrom.setText(m_from.getEMail());
@@ -415,29 +437,19 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	/**
 	 *  Set Attachment
 	 */
-	public void setAttachment (File attachment)
+	public void setAttachment (DataSource attachment)
 	{
-		m_attachFile = attachment;
-		if (attachment == null)
-		{
-			lAttachment.setVisible(false);
-			fAttachment.setVisible(false);
-		}
-		else
-		{
-			lAttachment.setVisible(true);
-			fAttachment.setVisible(true);
-			fAttachment.setText(attachment.getName());
-			fAttachment.setReadonly(true);
-		}
+		m_attachment = attachment;
+		if (attachment != null)
+			attachments.add(attachment);
 	}	//	setAttachment
 
 	/**
 	 *  Get Attachment
 	 */
-	public File getAttachment()
+	public DataSource getAttachment()
 	{
-		return m_attachFile;
+		return m_attachment;
 	}	//	getAttachment
 
 	/**************************************************************************
@@ -446,14 +458,15 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	public void onEvent(Event event) throws Exception {		
 		if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
 			onClose();
-		
-		if (getTo() == null || getTo().length() == 0)
-		{
-			return;
-		}
+				
 		//	Send
-		if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
+		else if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
 		{
+			Clients.clearBusy();
+			if (getTo() == null || getTo().length() == 0)
+			{
+				return;
+			}
 
 			StringTokenizer st = new StringTokenizer(getTo(), " ,;", false);
 			String to = st.nextToken();
@@ -472,8 +485,11 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
                         email.addCc(cc);
 				}
 				//	Attachment
-				if (m_attachFile != null && m_attachFile.exists())
-					email.addAttachment(m_attachFile);
+				for(DataSource ds : attachments)
+				{
+					email.addAttachment(ds);
+				}
+				
 				status = email.send();
 				//
 				if (m_user != null)
@@ -488,14 +504,61 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			}
 			else
 				FDialog.error(0, this, "MessageNotSent", status);
-			//
-//			confirmPanel.getOKButton().setEnabled(false);
-//			setCursor(Cursor.getDefaultCursor());
 		}
-		else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
-			onClose();
+		else if (event instanceof UploadEvent)
+		{
+			UploadEvent ue = (UploadEvent) event;
+			Media media = ue.getMedia();
+			if (media != null) 
+			{
+				byte[] data = getMediaData(media);
+				ByteArrayDataSource dataSource = new ByteArrayDataSource(data, media.getContentType());
+				dataSource.setName(media.getName());
+				attachments.add(dataSource);
+				AttachmentItem item = new AttachmentItem(dataSource, attachments, true);
+				attachmentBox.appendChild(item);
+			    getFirstChild().invalidate();
+			}
+		}
 	}
 
+	private byte[] getMediaData(Media media) {
+		byte[] bytes = null;
+		
+		try {			
+			if (media.inMemory()) {
+				bytes = media.isBinary() ? media.getByteData() : media.getStringData().getBytes(getCharset(media.getContentType()));
+			} else {
+				
+				InputStream is = media.getStreamData();
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				byte[] buf = new byte[ 1000 ];
+				int byteread = 0;
+				 
+				while (( byteread=is.read(buf) )!=-1)
+					baos.write(buf,0,byteread);
+				
+				bytes = baos.toByteArray();
+			}
+		} catch (IOException e) {
+			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			throw new IllegalStateException(e.getLocalizedMessage());
+		}
+
+		return bytes;
+	}
+	
+	private String getCharset(String contentType) {
+		if (contentType != null) {
+			int j = contentType.indexOf("charset=");
+			if (j >= 0) {
+				String cs = contentType.substring(j + 8).trim();
+				if (cs.length() > 0) return cs;
+			}
+		}
+		return "UTF-8";
+	}
+	
 	/**
 	 * 	Vetoable Change - User selected 
 	 *	@param evt
@@ -518,7 +581,14 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			{
 				int AD_User_ID = ((Integer)value).intValue();
 				m_user = MUser.get(Env.getCtx(), AD_User_ID);
-				fTo.setValue(m_user.getEMail());
+				if (Util.isEmpty(m_user.getEMail())) 
+				{
+					FDialog.error(0, Msg.getMsg(Env.getCtx(), "UserNoEmailAddress"));
+				} 
+				else 
+				{
+					addTo(m_user.getEMail(), true);
+				}
 			}
 		} else {
 			// fCcUser
@@ -526,11 +596,41 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			{
 				int AD_User_ID = ((Integer)value).intValue();
 				m_ccuser = MUser.get(Env.getCtx(), AD_User_ID);
-				fCc.setValue(m_ccuser.getEMail());
+				if (Util.isEmpty(m_ccuser.getEMail())) 
+				{
+					FDialog.error(0, Msg.getMsg(Env.getCtx(), "UserNoEmailAddress"));
+				}
+				else
+				{
+					addCC(m_ccuser.getEMail(), true);
+				}
 			}
 		}
 
         return;
 	}
-
+	
+	public void addTo(String email, boolean first) {
+		if (Util.isEmpty(email))
+			return;
+		
+		String to = fTo.getValue();
+		if (!Util.isEmpty(to)) {
+			fTo.setValue(first ? email+","+to : to+","+email);
+		} else {
+			fTo.setValue(email);
+		}
+	}
+	
+	public void addCC(String email, boolean first) {
+		if (Util.isEmpty(email))
+			return;
+		
+		String to = fCc.getValue();
+		if (!Util.isEmpty(to)) {
+			fCc.setValue(first ? email+","+to : to+","+email);
+		} else {
+			fCc.setValue(email);
+		}
+	}
 }	//	VEMailDialog

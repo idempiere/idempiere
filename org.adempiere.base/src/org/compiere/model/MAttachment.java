@@ -52,16 +52,29 @@ public class MAttachment extends X_AD_Attachment
 	private static final long serialVersionUID = -8261865873158774665L;
 
 	/**
+	 * 
+	 * @param ctx
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @return attachment or null
+	 */
+	public static MAttachment get (Properties ctx, int AD_Table_ID, int Record_ID)
+	{
+		return get(ctx, AD_Table_ID, Record_ID, (String)null);
+	}
+	
+	/**
 	 * 	Get Attachment (if there are more than one attachment it gets the first in no specific order)
 	 *	@param ctx context
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
+	 *  @param trxName
 	 *	@return attachment or null
 	 */
-	public static MAttachment get (Properties ctx, int AD_Table_ID, int Record_ID)
+	public static MAttachment get (Properties ctx, int AD_Table_ID, int Record_ID, String trxName)
 	{
 		final String whereClause = I_AD_Attachment.COLUMNNAME_AD_Table_ID+"=? AND "+I_AD_Attachment.COLUMNNAME_Record_ID+"=?";
-		MAttachment retValue = new Query(ctx,I_AD_Attachment.Table_Name,whereClause, null)
+		MAttachment retValue = new Query(ctx,I_AD_Attachment.Table_Name,whereClause, trxName)
 		.setParameters(AD_Table_ID, Record_ID)
 		.first();
 		return retValue;

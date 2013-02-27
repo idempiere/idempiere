@@ -436,10 +436,14 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			ClientInfoEvent c = (ClientInfoEvent)event;
 			clientInfo = new ClientInfo();
 			clientInfo.colorDepth = c.getColorDepth();
+			clientInfo.screenHeight = c.getScreenHeight();
+			clientInfo.screenWidth = c.getScreenWidth();
+			clientInfo.devicePixelRatio = c.getDevicePixelRatio();
 			clientInfo.desktopHeight = c.getDesktopHeight();
 			clientInfo.desktopWidth = c.getDesktopWidth();
 			clientInfo.desktopXOffset = c.getDesktopXOffset();
 			clientInfo.desktopYOffset = c.getDesktopYOffset();
+			clientInfo.orientation = c.getOrientation();
 			clientInfo.timeZone = c.getTimeZone();
 			if (appDesktop != null)
 				appDesktop.setClientInfo(clientInfo);

@@ -21,9 +21,11 @@ import java.util.Properties;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Label;
+import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Messagebox;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.FeedbackManager;
 import org.adempiere.webui.window.WPreference;
 import org.compiere.model.MClient;
 import org.compiere.model.MOrg;
@@ -35,6 +37,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Vbox;
 
@@ -56,9 +59,12 @@ public class UserPanel extends Vbox implements EventListener<Event>
     private ToolBarButton logout = new ToolBarButton();
     private ToolBarButton changeRole = new ToolBarButton();
     private ToolBarButton preference = new ToolBarButton();
+    private ToolBarButton feedback = new ToolBarButton();
 
     private Label lblUserNameValue = new Label();
 	private WPreference preferencePopup;
+	
+	private Menupopup feedbackMenu;
 
     public UserPanel()
     {
@@ -87,6 +93,18 @@ public class UserPanel extends Vbox implements EventListener<Event>
     	vbox.appendChild(hbox);
     	hbox.setAlign("center");
 
+    	feedback.setLabel(Msg.getMsg(Env.getCtx(), "Feedback"));
+    	feedback.setId("feedback");
+    	feedback.addEventListener(Events.ON_CLICK, this);
+    	LayoutUtils.addSclass("desktop-header-font", feedback);
+    	LayoutUtils.addSclass("link", feedback);
+    	feedback.setParent(hbox);    	
+
+    	Separator sep = new Separator("vertical");
+    	sep.setBar(true);
+    	sep.setHeight("13px");
+    	sep.setParent(hbox);
+    	
     	preference.setLabel(Msg.getMsg(Env.getCtx(), "Preference"));
     	preference.setId("preference");
     	preference.addEventListener(Events.ON_CLICK, this);
@@ -94,7 +112,7 @@ public class UserPanel extends Vbox implements EventListener<Event>
     	LayoutUtils.addSclass("link", preference);
     	preference.setParent(hbox);    	
 
-    	Separator sep = new Separator("vertical");
+    	sep = new Separator("vertical");
     	sep.setBar(true);
     	sep.setHeight("13px");
     	sep.setParent(hbox);
@@ -117,6 +135,16 @@ public class UserPanel extends Vbox implements EventListener<Event>
     	LayoutUtils.addSclass("desktop-header-font", logout);
     	LayoutUtils.addSclass("link", logout);
     	logout.setParent(hbox);
+    	
+    	feedbackMenu = new Menupopup();
+    	Menuitem mi = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestNew"));
+    	mi.setId("CreateRequest");
+    	feedbackMenu.appendChild(mi);
+    	mi.addEventListener(Events.ON_CLICK, this);
+    	mi = new Menuitem(Msg.getMsg(Env.getCtx(), "EMailSupport"));
+    	mi.setId("EmailSupport");
+    	mi.addEventListener(Events.ON_CLICK, this);
+    	feedbackMenu.appendChild(mi);
     }
 
     private String getUserName()
@@ -179,6 +207,26 @@ public class UserPanel extends Vbox implements EventListener<Event>
 			preferencePopup = new WPreference();
 			preferencePopup.setPage(this.getPage());
 			preferencePopup.open(preference, "after_start");
+		}
+		else if (feedback == event.getTarget())
+		{
+			if (feedbackMenu.getPage() == null)
+			{
+				this.appendChild(feedbackMenu);
+			}
+			feedbackMenu.open(feedback, "after_start");
+		}
+		else if (event.getTarget() instanceof Menuitem)
+		{
+			Menuitem mi = (Menuitem) event.getTarget();
+			if ("CreateRequest".equals(mi.getId())) 
+			{
+				FeedbackManager.createNewRequest();
+			}
+			else if ("EmailSupport".equals(mi.getId()))
+			{
+				FeedbackManager.emailSupport(false);
+			}
 		}
 
 	}

@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import javax.activation.FileDataSource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -775,9 +776,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			log.log(Level.SEVERE, "", e);
 		}
 
-		new WEMailDialog (this,
-			Msg.getMsg(Env.getCtx(), "SendMail"),
-			from, to, subject, message, attachment);		
+		WEMailDialog dialog = new WEMailDialog (Msg.getMsg(Env.getCtx(), "SendMail"),
+			from, to, subject, message, new FileDataSource(attachment));
+		AEnv.showWindow(dialog);
 	}	//	cmd_sendMail
 
 	/**

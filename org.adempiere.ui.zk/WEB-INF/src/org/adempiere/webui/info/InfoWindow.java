@@ -483,6 +483,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         else
         	contentPanel.setStyle("width: 99%; margin: 0px auto;");
         contentPanel.setVflex(true);
+        contentPanel.setSizedByContent(true);
         
         North north = new North();
         layout.appendChild(north);

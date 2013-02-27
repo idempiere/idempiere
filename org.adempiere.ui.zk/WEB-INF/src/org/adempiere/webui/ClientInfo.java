@@ -37,7 +37,42 @@ public class ClientInfo implements Serializable {
 	public int desktopYOffset;
 	public int screenHeight;
 	public int screenWidth;
+	public String orientation;
 	public TimeZone timeZone;
 	public String userAgent;
 	public boolean tablet;
+	public double devicePixelRatio;
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("User Agent: ")
+			.append(userAgent)
+			.append("\r\n")
+			.append("Time Zone: ")
+			.append(timeZone.getID())
+			.append("\r\n")
+			.append("Screen Size: ")
+			.append(screenWidth)
+			.append(" x ")
+			.append(screenHeight)
+			.append("\r\n")
+			.append("Browser Desktop Size: ")
+			.append(desktopWidth)
+			.append(" x ")
+			.append(desktopHeight)
+			.append("\r\n")
+			.append("Orientation: ")
+			.append(orientation)
+			.append("\r\n")
+			.append("Color Depth: ")
+			.append(colorDepth)
+			.append("\r\n")
+			.append("Pixel Ratio: ")
+			.append(devicePixelRatio);
+		
+		return builder.toString();
+	}
+	
+	
 }

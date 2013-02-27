@@ -36,6 +36,7 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.FeedbackManager;
 import org.compiere.Adempiere;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogErrorBuffer;
@@ -550,13 +551,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	 */
 	private void cmd_errorEMail()
 	{
-		new WEMailDialog(this,
-			"EMail Trace",
-			MUser.get(Env.getCtx()),
-			"",			//	to
-			"Adempiere Trace Info",
-			CLogErrorBuffer.get(true).getErrorInfo(Env.getCtx(), bErrorsOnly.isSelected()),
-			null);
-
+		this.detach();
+		FeedbackManager.emailSupport(bErrorsOnly.isSelected());
 	}	//	cmd_errorEMail
 }

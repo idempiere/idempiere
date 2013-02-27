@@ -169,6 +169,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
         else
         	contentPanel.setStyle("width: 99%; margin: 0px auto;");
         contentPanel.setVflex(true);
+        contentPanel.setSizedByContent(true);
 		div.setStyle("width :100%; height: 100%");
 		center.appendChild(div);
 		div.setVflex("1");
