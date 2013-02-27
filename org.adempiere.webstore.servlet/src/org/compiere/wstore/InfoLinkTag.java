@@ -29,7 +29,6 @@ import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.br;
 import org.apache.ecs.xhtml.hr;
 import org.compiere.model.MStore;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.HtmlCode;
 import org.compiere.util.WebInfo;
