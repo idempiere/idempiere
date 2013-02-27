@@ -538,6 +538,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     **/
     public void validateRoles()
     {
+    	Clients.clearBusy();
     	Comboitem lstItemRole = lstRole.getSelectedItem();
     	Comboitem lstItemClient = lstClient.getSelectedItem();
     	Comboitem lstItemOrg = lstOrganisation.getSelectedItem();
