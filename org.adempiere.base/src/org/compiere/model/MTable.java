@@ -619,6 +619,7 @@ public class MTable extends X_AD_Table
 	 */
 	public static boolean isZeroIDTable(String tablename) {
 		return (tablename.equals("AD_Org") ||
+				tablename.equals("AD_Client") || // IDEMPIERE-668
 				tablename.equals("AD_ReportView") ||
 				tablename.equals("AD_Role") ||
 				tablename.equals("AD_System") ||
