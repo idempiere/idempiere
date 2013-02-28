@@ -521,8 +521,10 @@ public class GLJournalGenerate extends SvrProcess
 			j.saveEx();
 		}
 		
-		StringBuilder msg = new StringBuilder(Msg.parseTranslation(getCtx(), "@Created@ @GL_Journal_ID@=")).append(j.getDocumentNo());
-		addLog(j.get_ID(), null, null, msg.toString(), MJournal.Table_ID, j.get_ID());
+		if (j != null) {
+			StringBuilder msg = new StringBuilder(Msg.parseTranslation(getCtx(), "@Created@ @GL_Journal_ID@=")).append(j.getDocumentNo());
+			addLog(j.get_ID(), null, null, msg.toString(), MJournal.Table_ID, j.get_ID());
+		}
 
 		return "@OK@";
 	}	//	doIt
