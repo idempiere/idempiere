@@ -176,6 +176,10 @@
             class="org.adempiere.pipo2.handler.GenericPOElementHandler"
             id="table.genericHandler">
       </handler>
+      <handler
+            class="org.adempiere.pipo2.handler.ModelValidatorElementHandler"
+            id="AD_ModelValidator">
+      </handler>
    </extension>
 
 </plugin>
