@@ -235,7 +235,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 		keyListener = new Keylistener();
 		keyListener.setPage(this.getPage());
-		keyListener.setCtrlKeys("@a@c@d@e@f@h@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter");
+		keyListener.setCtrlKeys("@a@c@d@e@f@h@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter^u@u");
 		keyListener.setAutoBlur(false);
 		
 		IDesktop d = (IDesktop) currSess.getAttribute(APPLICATION_DESKTOP_KEY);

@@ -283,16 +283,16 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 				byte[] data = getMediaData(media);
 				ByteArrayDataSource dataSource = new ByteArrayDataSource(data, media.getContentType());
 				dataSource.setName(media.getName());
-				addAttachment(dataSource, true);
-			    getFirstChild().invalidate();
+				addAttachment(dataSource, true);			    
 			}
 		}
 	}
 
-	private void addAttachment(DataSource dataSource, boolean removable) {
+	public void addAttachment(DataSource dataSource, boolean removable) {
 		attachments.add(dataSource);
 		AttachmentItem item = new AttachmentItem(dataSource, attachments, removable);
 		attachmentBox.appendChild(item);
+		getFirstChild().invalidate();
 	}
 	
 	private byte[] getMediaData(Media media) {

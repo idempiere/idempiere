@@ -514,12 +514,20 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				byte[] data = getMediaData(media);
 				ByteArrayDataSource dataSource = new ByteArrayDataSource(data, media.getContentType());
 				dataSource.setName(media.getName());
-				attachments.add(dataSource);
-				AttachmentItem item = new AttachmentItem(dataSource, attachments, true);
-				attachmentBox.appendChild(item);
-			    getFirstChild().invalidate();
+				addAttachment(dataSource, true);
 			}
 		}
+	}
+
+	/**
+	 * @param dataSource
+	 * @param removeable
+	 */
+	public void addAttachment(DataSource dataSource, boolean removeable) {
+		attachments.add(dataSource);
+		AttachmentItem item = new AttachmentItem(dataSource, attachments, removeable);
+		attachmentBox.appendChild(item);
+		getFirstChild().invalidate();
 	}
 
 	private byte[] getMediaData(Media media) {

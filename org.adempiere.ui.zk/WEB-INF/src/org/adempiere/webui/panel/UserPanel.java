@@ -36,6 +36,7 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Separator;
@@ -145,6 +146,9 @@ public class UserPanel extends Vbox implements EventListener<Event>
     	mi.setId("EmailSupport");
     	mi.addEventListener(Events.ON_CLICK, this);
     	feedbackMenu.appendChild(mi);
+    	
+    	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+    	addEventListener("onEmailSupport", this);
     }
 
     private String getUserName()
@@ -226,6 +230,22 @@ public class UserPanel extends Vbox implements EventListener<Event>
 			else if ("EmailSupport".equals(mi.getId()))
 			{
 				FeedbackManager.emailSupport(false);
+			}
+		}
+		else if (event instanceof KeyEvent)
+		{
+			//alt+u for email, ctrl+u for request
+			KeyEvent ke = (KeyEvent) event;
+			if (ke.getKeyCode() == 0x55)
+			{
+				if (ke.isAltKey())
+				{
+					FeedbackManager.emailSupport(false);
+				}
+				else if (ke.isCtrlKey())
+				{
+					FeedbackManager.createNewRequest();
+				}
 			}
 		}
 
