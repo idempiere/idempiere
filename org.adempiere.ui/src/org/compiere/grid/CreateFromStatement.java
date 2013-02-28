@@ -41,7 +41,7 @@ public abstract class CreateFromStatement extends CreateFromBatch
 	public CreateFromStatement(GridTab mTab) 
 	{
 		super(mTab);
-		log.info(mTab.toString());
+		if (log.isLoggable(Level.INFO)) log.info(mTab.toString());
 	}
 
 	public boolean dynInit() throws Exception

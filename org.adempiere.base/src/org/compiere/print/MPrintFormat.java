@@ -389,12 +389,12 @@ public class MPrintFormat extends X_AD_PrintFormat
 	{
 		if (language == null || language.isBaseLanguage())
 		{
-			log.info("Ignored - " + language);
+			if (log.isLoggable(Level.INFO)) log.info("Ignored - " + language);
 			m_translationViewLanguage = null;
 		}
 		else
 		{
-			log.info("Language=" + language.getAD_Language());
+			if (log.isLoggable(Level.INFO)) log.info("Language=" + language.getAD_Language());
 			m_translationViewLanguage = language.getAD_Language();
 			m_language = language;
 		}

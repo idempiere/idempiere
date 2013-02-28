@@ -114,7 +114,7 @@ public class ProjectIssue extends SvrProcess
 		if (!(MProject.PROJECTCATEGORY_WorkOrderJob.equals(m_project.getProjectCategory())
 			|| MProject.PROJECTCATEGORY_AssetProject.equals(m_project.getProjectCategory())))
 			throw new IllegalArgumentException("Project not Work Order or Asset =" + m_project.getProjectCategory());
-		log.info(m_project.toString());
+		if (log.isLoggable(Level.INFO)) log.info(m_project.toString());
 		//
 		if (m_M_InOut_ID != 0)
 			return issueReceipt();
@@ -137,7 +137,7 @@ public class ProjectIssue extends SvrProcess
 		if (inOut.isSOTrx() || !inOut.isProcessed()
 			|| !(MInOut.DOCSTATUS_Completed.equals(inOut.getDocStatus()) || MInOut.DOCSTATUS_Closed.equals(inOut.getDocStatus())))
 			throw new IllegalArgumentException ("Receipt not valid - " + inOut);
-		log.info(inOut.toString());
+		if (log.isLoggable(Level.INFO)) log.info(inOut.toString());
 		//	Set Project of Receipt
 		if (inOut.getC_Project_ID() == 0)
 		{

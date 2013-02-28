@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.Adempiere;
 import org.compiere.util.Env;
@@ -106,7 +107,7 @@ public class MTest extends X_Test
 	 */
 	protected boolean afterDelete (boolean success)
 	{
-		log.info("*** Success=" + success);
+		if (log.isLoggable(Level.INFO)) log.info("*** Success=" + success);
 		return success;
 	}
 	
@@ -117,7 +118,7 @@ public class MTest extends X_Test
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		log.info("New=" + newRecord + " ***");
+		if (log.isLoggable(Level.INFO)) log.info("New=" + newRecord + " ***");
 		return true;
 	}
 	
@@ -129,7 +130,7 @@ public class MTest extends X_Test
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
-		log.info("New=" + newRecord + ", Success=" + success + " ***");
+		if (log.isLoggable(Level.INFO)) log.info("New=" + newRecord + ", Success=" + success + " ***");
 		return success;
 	}	//	afterSave
 

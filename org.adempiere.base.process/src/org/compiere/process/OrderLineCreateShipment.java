@@ -70,7 +70,7 @@ public class OrderLineCreateShipment extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("C_OrderLine_ID=" + p_C_OrderLine_ID );
+		if (log.isLoggable(Level.INFO)) log.info("C_OrderLine_ID=" + p_C_OrderLine_ID );
 		if (p_C_OrderLine_ID == 0)
 			throw new IllegalArgumentException("No OrderLine");
 		//

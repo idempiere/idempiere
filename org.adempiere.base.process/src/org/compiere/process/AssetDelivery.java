@@ -179,7 +179,7 @@ public class AssetDelivery extends SvrProcess
 			rs = null; stmt = null;
 		}
 		
-		log.info("Count=" + count + ", Errors=" + errors + ", Reminder=" + reminders
+		if (log.isLoggable(Level.INFO)) log.info("Count=" + count + ", Errors=" + errors + ", Reminder=" + reminders
 			+ " - " + (System.currentTimeMillis()-start) + "ms");
 		StringBuilder msgreturn = new StringBuilder("@Sent@=").append(count).append(" - @Errors@=").append(errors);
 		return msgreturn.toString();

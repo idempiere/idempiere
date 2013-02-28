@@ -303,7 +303,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 			{
 				if (value instanceof Integer && m_lookup.getDisplayType() != DisplayType.ID) // for IDs is ok to be out of the list
 				{
-					log.info(m_columnName + "=" + value + ": not in Lookup - set to NULL");
+					if (log.isLoggable(Level.INFO)) log.info(m_columnName + "=" + value + ": not in Lookup - set to NULL");
 					actionCombo (null);             //  data binding (calls setValue again)
 					m_value = null;
 				}
@@ -363,7 +363,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 				//  don't allow selection of inactive
 				if (s.startsWith(MLookup.INACTIVE_S) && s.endsWith(MLookup.INACTIVE_E))
 				{
-					log.info(m_columnName + " - selection inactive set to NULL");
+					if (log.isLoggable(Level.INFO)) log.info(m_columnName + " - selection inactive set to NULL");
 					value = null;
 				}
 			}

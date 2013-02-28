@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -47,7 +48,7 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 		String elementValue = element.getElementValue();
 		String action = null;
 
-		log.info(elementValue + " " + getStringValue(element, "Name"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + getStringValue(element, "Name"));
 
 		String entitytype = getStringValue(element, "EntityType");
 		String name = getStringValue(element, "Name");
@@ -144,7 +145,7 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 		}
 		catch(Exception e)
 		{
-			log.info(e.toString());
+			if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		}
 		document.endElement("", "", I_AD_FieldGroup.Table_Name);
 	}

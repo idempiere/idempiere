@@ -1084,7 +1084,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public boolean unlockIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setProcessing(false);
 		return true;
 	}	//	unlockIt
@@ -1095,7 +1095,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public boolean invalidateIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setDocAction(DOCACTION_Prepare);
 		return true;
 	}	//	invalidateIt
@@ -1106,7 +1106,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public String prepareIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -1214,7 +1214,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public boolean  approveIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setIsApproved(true);
 		return true;
 	}	//	approveIt
@@ -1225,7 +1225,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public boolean rejectIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setIsApproved(false);
 		return true;
 	}	//	rejectIt
@@ -1268,7 +1268,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		//	Implicit Approval
 		if (!isApproved())
 			approveIt();
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		StringBuilder info = new StringBuilder();
 
 		//	For all lines
@@ -1308,7 +1308,7 @@ public class MInOut extends X_M_InOut implements DocAction
                 rmaLine = new MRMALine(getCtx(), sLine.getM_RMALine_ID(), get_TrxName());
             }
 
-			log.info("Line=" + sLine.getLine() + " - Qty=" + sLine.getMovementQty());
+			if (log.isLoggable(Level.INFO)) log.info("Line=" + sLine.getLine() + " - Qty=" + sLine.getMovementQty());
 
 			//	Stock Movement - Counterpart MOrder.reserveStock
 			if (product != null
@@ -1938,7 +1938,7 @@ public class MInOut extends X_M_InOut implements DocAction
 
 		MBPartner counterBP = new MBPartner (getCtx(), counterC_BPartner_ID, null);
 		MOrgInfo counterOrgInfo = MOrgInfo.get(getCtx(), counterAD_Org_ID, get_TrxName());
-		log.info("Counter BP=" + counterBP.getName());
+		if (log.isLoggable(Level.INFO)) log.info("Counter BP=" + counterBP.getName());
 
 		//	Document Type
 		int C_DocTypeTarget_ID = 0;
@@ -2020,7 +2020,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public boolean voidIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
@@ -2082,7 +2082,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public boolean closeIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before Close
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
@@ -2104,7 +2104,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public boolean reverseCorrectIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
@@ -2285,7 +2285,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public boolean reverseAccrualIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)
@@ -2313,7 +2313,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public boolean reActivateIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)

@@ -234,7 +234,7 @@ public class Secure implements SecureInterface
 			catch (Exception ex)
 			{
 				// log.info("Failed: " + value + " - " + ex.toString());
-				log.info("Failed decrypting " + ex.toString());
+				if (log.isLoggable(Level.INFO)) log.info("Failed decrypting " + ex.toString());
 			}
 		}
 		return null;

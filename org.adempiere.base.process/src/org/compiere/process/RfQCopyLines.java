@@ -63,7 +63,7 @@ public class RfQCopyLines extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("doIt - From_RfQ_ID=" + p_From_RfQ_ID + ", To_RfQ_ID=" + p_To_RfQ_ID);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - From_RfQ_ID=" + p_From_RfQ_ID + ", To_RfQ_ID=" + p_To_RfQ_ID);
 		//
 		MRfQ to = new MRfQ (getCtx(), p_To_RfQ_ID, get_TrxName());
 		if (to.get_ID() == 0)

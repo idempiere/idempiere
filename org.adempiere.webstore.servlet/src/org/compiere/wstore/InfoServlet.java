@@ -96,7 +96,7 @@ public class InfoServlet  extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		HttpSession session = request.getSession(true);
 		session.removeAttribute(WebSessionCtx.HDR_MESSAGE);
 	//	WEnv.dump(session);
@@ -106,7 +106,7 @@ public class InfoServlet  extends HttpServlet
 		boolean success = processParameter(request);
 
 		String url = "/info.jsp";
-		log.info ("Forward to " + url);
+		if (log.isLoggable(Level.INFO)) log.info ("Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 		dispatcher.forward (request, response);
 	}   //  doGet
@@ -122,7 +122,7 @@ public class InfoServlet  extends HttpServlet
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		doGet (request, response);
 	}   //  doPost
 

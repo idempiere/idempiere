@@ -2277,7 +2277,7 @@ public final class MRole extends X_AD_Role
 				"Required=" + TableLevel + "("
 				+ getTableLevelString(Env.getAD_Language(ctx), TableLevel)
 				+ ") != UserLevel=" + userLevel);
-		log.info (toString());
+		if (log.isLoggable(Level.INFO)) log.info (toString());
 		return retValue;
 	}	//	canView
 

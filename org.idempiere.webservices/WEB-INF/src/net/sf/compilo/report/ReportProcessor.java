@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import net.sf.compilo.data.CompiereDataSourceFactory;
 import net.sf.compilo.data.compiereDataSource;
@@ -68,7 +69,7 @@ public class ReportProcessor
 		if(!REPORT_HOME.exists())
 		    log.saveError("The Report_Home not exists", REPORT_HOME.getAbsolutePath());
 		
-		log.info("Set REPORT_HOME to " + REPORT_HOME.getAbsolutePath());
+		if (log.isLoggable(Level.INFO)) log.info("Set REPORT_HOME to " + REPORT_HOME.getAbsolutePath());
     }
         
 	public ReportProcessor (Properties ctx, ProcessInfo pi)

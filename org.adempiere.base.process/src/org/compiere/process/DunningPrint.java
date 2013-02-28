@@ -89,7 +89,7 @@ public class DunningPrint extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("C_DunningRun_ID=" + p_C_DunningRun_ID + ",R_MailText_ID=" + p_R_MailText_ID 
+		if (log.isLoggable(Level.INFO)) log.info("C_DunningRun_ID=" + p_C_DunningRun_ID + ",R_MailText_ID=" + p_R_MailText_ID 
 			+ ", EmailPDF=" + p_EMailPDF + ",IsOnlyIfBPBalance=" + p_IsOnlyIfBPBalance 
 			+ ",PrintUnprocessedOnly=" + p_PrintUnprocessedOnly);
 		

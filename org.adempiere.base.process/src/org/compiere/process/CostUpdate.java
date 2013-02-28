@@ -101,7 +101,7 @@ public class CostUpdate extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("M_Product_Category_ID=" + p_M_Product_Category_ID
+		if (log.isLoggable(Level.INFO)) log.info("M_Product_Category_ID=" + p_M_Product_Category_ID
 			+ ", Future=" + p_SetFutureCostTo
 			+ ", Standard=" + p_SetStandardCostTo
 			+ "; M_PriceList_Version_ID=" + p_M_PriceList_Version_ID);
@@ -220,7 +220,7 @@ public class CostUpdate extends SvrProcess
 			rs = null;
 			pstmt = null;
 		}
-		log.info("#" + counter);
+		if (log.isLoggable(Level.INFO)) log.info("#" + counter);
 		addLog(0, null, new BigDecimal(counter), "Created for " + as.getName());
 	}	//	createNew
 	
@@ -283,7 +283,7 @@ public class CostUpdate extends SvrProcess
 			rs = null;
 			pstmt = null;
 		}
-		log.info("#" + counter);
+		if (log.isLoggable(Level.INFO)) log.info("#" + counter);
 		addLog(0, null, new BigDecimal(counter), "@Updated@");
 		return counter;
 	}	//	update

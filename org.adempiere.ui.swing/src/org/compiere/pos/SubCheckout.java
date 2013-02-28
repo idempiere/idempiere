@@ -19,6 +19,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
 
 import javax.swing.border.TitledBorder;
 
@@ -199,7 +200,7 @@ public class SubCheckout extends PosSubPanel implements ActionListener
 		String action = e.getActionCommand();		
 		if (action == null || action.length() == 0)
 			return;
-		log.info( "PosSubCheckout - actionPerformed: " + action);
+		if (log.isLoggable(Level.INFO)) log.info( "PosSubCheckout - actionPerformed: " + action);
 		
 
 		if (action.equals("Summary"))

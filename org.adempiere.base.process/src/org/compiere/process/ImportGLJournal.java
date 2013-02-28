@@ -96,7 +96,7 @@ public class ImportGLJournal extends SvrProcess
 	protected String doIt() throws java.lang.Exception
 	{
 		StringBuilder msglog = new StringBuilder("IsValidateOnly=").append(m_IsValidateOnly).append(", IsImportOnlyNoErrors=").append(m_IsImportOnlyNoErrors);
-		log.info(msglog.toString());
+		if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 		StringBuilder sql = null;
 		int no = 0;
 		StringBuilder clientCheck = new StringBuilder(" AND AD_Client_ID=").append(m_AD_Client_ID);
@@ -123,7 +123,7 @@ public class ImportGLJournal extends SvrProcess
 			.append(" I_IsImported = 'N' ")
 			.append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info ("Reset=" + no);
+		if (log.isLoggable(Level.INFO)) log.info ("Reset=" + no);
 
 		//	Set Client from Name
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
@@ -598,9 +598,9 @@ public class ImportGLJournal extends SvrProcess
 				BigDecimal source = rs.getBigDecimal(1);
 				BigDecimal acct = rs.getBigDecimal(2);
 				if (source != null && source.signum() == 0
-					&& acct != null && acct.signum() == 0)
-					log.info ("Import Balance = 0");
-				else{
+					&& acct != null && acct.signum() == 0) {
+					if (log.isLoggable(Level.INFO)) log.info ("Import Balance = 0");
+				} else {
 					msglog = new StringBuilder("Balance Source=").append(source).append(", Acct=").append(acct);
 					log.warning(msglog.toString());
 				}	
@@ -638,7 +638,7 @@ public class ImportGLJournal extends SvrProcess
 			return msgreturn.toString();
 		}	
 		msglog = new StringBuilder("Validation Errors=").append(errors);
-		log.info(msglog.toString());
+		if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 		// moved commit above to save error messages
 		// commit();
 		

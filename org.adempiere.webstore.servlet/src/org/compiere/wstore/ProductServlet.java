@@ -18,6 +18,7 @@ package org.compiere.wstore;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -93,7 +94,7 @@ public class ProductServlet  extends HttpServlet
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 
 		Properties ctx = JSPEnv.getCtx(request);
 		HttpSession session = request.getSession(true);
@@ -117,7 +118,7 @@ public class ProductServlet  extends HttpServlet
 
 		//	Forward
 		String url = "/index.jsp";
-		log.info ("Forward to " + url);
+		if (log.isLoggable(Level.INFO)) log.info ("Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 		dispatcher.forward (request, response);
 	}   //  doPost
@@ -136,7 +137,7 @@ public class ProductServlet  extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		doPost (request, response);
 	}   //  doGet
 

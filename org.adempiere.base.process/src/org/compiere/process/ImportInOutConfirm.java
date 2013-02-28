@@ -69,7 +69,7 @@ public class ImportInOutConfirm extends SvrProcess
 	protected String doIt () throws Exception
 	{
 		StringBuilder msglog = new StringBuilder("I_InOutLineConfirm_ID=").append(p_I_InOutLineConfirm_ID);
-		log.info(msglog.toString());
+		if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 		StringBuilder sql = null;
 		int no = 0;
 		StringBuilder clientCheck = new StringBuilder(" AND AD_Client_ID=").append(p_AD_Client_ID);
@@ -94,7 +94,7 @@ public class ImportInOutConfirm extends SvrProcess
 			.append(" I_IsImported = 'N' ")
 			.append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info ("Reset=" + no);
+		if (log.isLoggable(Level.INFO)) log.info ("Reset=" + no);
 
 		//	Set Client from Name
 		sql = new StringBuilder ("UPDATE I_InOutLineConfirm i ")

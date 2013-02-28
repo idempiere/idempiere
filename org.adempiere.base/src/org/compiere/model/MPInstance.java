@@ -222,7 +222,7 @@ public class MPInstance extends X_AD_PInstance
 	{
 		if (Record_ID < 0)
 		{
-			log.info("Set to 0 from " + Record_ID);
+			if (log.isLoggable(Level.INFO)) log.info("Set to 0 from " + Record_ID);
 			Record_ID = 0;
 		}
 		set_ValueNoCheck ("Record_ID", new Integer(Record_ID));
@@ -250,10 +250,12 @@ public class MPInstance extends X_AD_PInstance
 	 */
 	public void log()
 	{
-		log.info(toString());
-		MPInstanceLog[] pil = getLog();
-		for (int i = 0; i < pil.length; i++)
-			log.info(i + "=" + pil[i]);
+		if (log.isLoggable(Level.INFO)) {
+			log.info(toString());
+			MPInstanceLog[] pil = getLog();
+			for (int i = 0; i < pil.length; i++)
+				log.info(i + "=" + pil[i]);
+		}
 	}	//	log
 
 	/** Result OK = 1			*/

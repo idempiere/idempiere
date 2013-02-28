@@ -79,7 +79,7 @@ public class RoleAccessUpdate extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("AD_Client_ID=" + p_AD_Client_ID + ", AD_Role_ID=" + p_AD_Role_ID);
+		if (log.isLoggable(Level.INFO)) log.info("AD_Client_ID=" + p_AD_Client_ID + ", AD_Role_ID=" + p_AD_Role_ID);
 		//
 		if (p_AD_Role_ID > 0)
 			updateRole (new MRole (getCtx(), p_AD_Role_ID, get_TrxName()));

@@ -68,7 +68,7 @@ public class ColumnSync extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("C_Column_ID=" + p_AD_Column_ID);
+		if (log.isLoggable(Level.INFO)) log.info("C_Column_ID=" + p_AD_Column_ID);
 		if (p_AD_Column_ID == 0)
 			throw new AdempiereUserError("@No@ @AD_Column_ID@");
 		MColumn column = new MColumn (getCtx(), p_AD_Column_ID, get_TrxName());

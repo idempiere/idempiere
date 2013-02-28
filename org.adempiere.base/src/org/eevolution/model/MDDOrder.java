@@ -749,7 +749,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 */
 	public boolean unlockIt()
 	{
-		log.info("unlockIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
 		setProcessing(false);
 		return true;
 	}	//	unlockIt
@@ -760,7 +760,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 */
 	public boolean invalidateIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setDocAction(DOCACTION_Prepare);
 		return true;
 	}	//	invalidateIt
@@ -772,7 +772,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 */
 	public String prepareIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -914,7 +914,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 */
 	public boolean  approveIt()
 	{
-		log.info("approveIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("approveIt - " + toString());
 		setIsApproved(true);
 		return true;
 	}	//	approveIt
@@ -925,7 +925,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 */
 	public boolean rejectIt()
 	{
-		log.info("rejectIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("rejectIt - " + toString());
 		setIsApproved(false);
 		return true;
 	}	//	rejectIt
@@ -963,7 +963,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 		if (!isApproved())
 			approveIt();
 		getLines(true,null);
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		StringBuilder info = new StringBuilder();		
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
@@ -989,7 +989,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 */
 	public boolean voidIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
@@ -1030,7 +1030,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 		if (!isSOTrx())
 			return true;
 		
-		log.info("createReversals");
+		if (log.isLoggable(Level.INFO)) log.info("createReversals");
 		StringBuffer info = new StringBuffer();
 		
 		//	Reverse All *Shipments*
@@ -1111,7 +1111,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 */
 	public boolean closeIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before Close
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
@@ -1149,7 +1149,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 */
 	public boolean reverseCorrectIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
@@ -1169,7 +1169,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 */
 	public boolean reverseAccrualIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)
@@ -1189,7 +1189,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 */
 	public boolean reActivateIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)

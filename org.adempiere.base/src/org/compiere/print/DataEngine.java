@@ -215,7 +215,7 @@ public class DataEngine
 		String reportName, String tableName)
 	{
 		m_startTime = System.currentTimeMillis();
-		log.info(reportName + " - " + m_language.getAD_Language());
+		if (log.isLoggable(Level.INFO)) log.info(reportName + " - " + m_language.getAD_Language());
 		if (log.isLoggable(Level.FINE))
 		{
 			log.fine("TableName=" + tableName + ", Query=" + query);
@@ -1114,7 +1114,7 @@ public class DataEngine
 				log.warning("NO Rows - ms=" + (System.currentTimeMillis()-m_startTime)); 
 		}
 		else
-			log.info("Rows=" + pd.getRowCount()
+			if (log.isLoggable(Level.INFO)) log.info("Rows=" + pd.getRowCount()
 				+ " - ms=" + (System.currentTimeMillis()-m_startTime));
 	}	//	loadPrintData
 

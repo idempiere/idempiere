@@ -53,7 +53,7 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 		int AD_Backup_ID = -1;
 		String Object_Status = null;
 		Attributes atts = element.attributes;
-		log.info(elementValue + " " + atts.getValue("ADReportviewnameID"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + atts.getValue("ADReportviewnameID"));
 		//String entitytype = atts.getValue("EntityType");
 		String name = atts.getValue("ADReportviewnameID");
 

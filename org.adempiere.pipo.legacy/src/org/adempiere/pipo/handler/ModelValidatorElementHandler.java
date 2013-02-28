@@ -18,6 +18,7 @@ package org.adempiere.pipo.handler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -49,7 +50,7 @@ public class ModelValidatorElementHandler extends AbstractElementHandler
 	{
 		String elementValue = element.getElementValue();
 		Attributes atts = element.attributes;
-		log.info(elementValue+" "+atts.getValue(I_AD_ModelValidator.COLUMNNAME_Name));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue+" "+atts.getValue(I_AD_ModelValidator.COLUMNNAME_Name));
 		String entitytype = atts.getValue(I_AD_ModelValidator.COLUMNNAME_EntityType);
 		if (isProcessElement(ctx, entitytype))
 		{

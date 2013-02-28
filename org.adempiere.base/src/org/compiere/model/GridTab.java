@@ -871,7 +871,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//	e.g. Column=UPPER(Name), Key=AD_Element_ID, Query=UPPER(AD_Element.Name) LIKE '%CUSTOMER%'
 		if (tableName == null)
 		{
-			log.info ("Not successfull - Column="
+			if (log.isLoggable(Level.INFO)) log.info ("Not successfull - Column="
 				+ colName + ", Key=" + tabKeyColumn
 				+ ", Query=" + query);
 			return query.getWhereClause();
@@ -2345,7 +2345,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//  nothing to do
 		if (targetRow == m_currentRow)
 			return m_currentRow;
-		log.info ("Row=" + targetRow);
+		if (log.isLoggable(Level.INFO)) log.info ("Row=" + targetRow);
 
 		//  Row range check
 		int newRow = verifyRow(targetRow);
@@ -2382,7 +2382,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public int navigateCurrent()
 	{
-		log.info("Row=" + m_currentRow);
+		if (log.isLoggable(Level.INFO)) log.info("Row=" + m_currentRow);
 		return setCurrentRow(m_currentRow, true);
 	}   //  navigateCurrent
 

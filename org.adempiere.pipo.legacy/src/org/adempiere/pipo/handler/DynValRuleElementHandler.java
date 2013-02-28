@@ -44,7 +44,7 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 	public void startElement(Properties ctx, Element element) throws SAXException {
 		String elementValue = element.getElementValue();
 		Attributes atts = element.attributes;
-		log.info(elementValue+" "+atts.getValue("Name"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue+" "+atts.getValue("Name"));
 		String entitytype = atts.getValue("EntityType");
 		if (isProcessElement(ctx, entitytype)) {
 			String name = atts.getValue("Name");

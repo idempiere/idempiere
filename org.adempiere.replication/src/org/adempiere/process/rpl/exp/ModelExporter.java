@@ -106,7 +106,7 @@ public class ModelExporter extends SvrProcess {
 			+ "ExportFile.xml";
 			p_FileName = fileNameOr;
 		}		
-		log.info(sb.toString());
+		if (log.isLoggable(Level.INFO)) log.info(sb.toString());
 	}
 
 	/**

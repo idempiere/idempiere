@@ -135,7 +135,7 @@ public class DistributionRun extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("M_DistributionRun_ID=" + p_M_DistributionRun_ID 
+		if (log.isLoggable(Level.INFO)) log.info("M_DistributionRun_ID=" + p_M_DistributionRun_ID 
 			+ ", C_DocType_ID=" + p_C_DocType_ID
 			+ ", DatePromised=" + p_DatePromised
 			+ ", Test=" + p_IsTest);
@@ -331,7 +331,7 @@ public class DistributionRun extends SvrProcess
 			if (allocationEqTotal && !runLine.isActualAllocationEqTotal())
 				allocationEqTotal = false;
 		}	//	for all run lines
-		log.info("=" + allocationEqTotal);
+		if (log.isLoggable(Level.INFO)) log.info("=" + allocationEqTotal);
 		return allocationEqTotal;
 	}	//	isAllocationEqTotal
 
@@ -446,9 +446,9 @@ public class DistributionRun extends SvrProcess
 		if (!counter || runBPartner == null || runBPartner.get_ID() != runC_BPartner_ID)
 			counter = false;
 		if (counter)
-			log.info("RunBP=" + runBPartner
+			if (log.isLoggable(Level.INFO)) log.info("RunBP=" + runBPartner
 				+ " - " + m_docType);
-		log.info("Single=" + m_run.isCreateSingleOrder()
+		if (log.isLoggable(Level.INFO)) log.info("Single=" + m_run.isCreateSingleOrder()
 			+ " - " + m_docType + ",SO=" + m_docType.isSOTrx());
 		if (log.isLoggable(Level.FINE)) log.fine("Counter=" + counter 
 			+ ",C_BPartner_ID=" + runC_BPartner_ID + "," + runBPartner);
@@ -638,12 +638,14 @@ public class DistributionRun extends SvrProcess
 					MProduct product = MProduct.get(getCtx(), record.getM_Product_ID());					
 					BigDecimal ration = record.getRatio();
 					BigDecimal totalration = getQtyDemand(record.getM_Product_ID());
-					log.info("Value:" + product.getValue());
-					log.info("Product:" + product.getName());
-					log.info("Qty To Deliver:" + record.getRatio());
-					log.info("Qty Target:" + record.getMinQty());
-					log.info("Qty Total Available:" + drl.getTotalQty());
-					log.info("Qty Total Demand:" +  totalration);			
+					if (log.isLoggable(Level.INFO)){
+						log.info("Value:" + product.getValue());
+						log.info("Product:" + product.getName());
+						log.info("Qty To Deliver:" + record.getRatio());
+						log.info("Qty Target:" + record.getMinQty());
+						log.info("Qty Total Available:" + drl.getTotalQty());
+						log.info("Qty Total Demand:" +  totalration);
+					}			
 					BigDecimal factor = ration.divide(totalration, 12 , BigDecimal.ROUND_HALF_UP);
 					record.setQty(drl.getTotalQty().multiply(factor));
 					record.saveEx();
@@ -844,9 +846,9 @@ public class DistributionRun extends SvrProcess
 		if (!counter || runBPartner == null || runBPartner.get_ID() != runC_BPartner_ID)
 			counter = false;
 		if (counter)
-			log.info("RunBP=" + runBPartner
+			if (log.isLoggable(Level.INFO)) log.info("RunBP=" + runBPartner
 				+ " - " + m_docType);
-		log.info("Single=" + m_run.isCreateSingleOrder()
+		if (log.isLoggable(Level.INFO)) log.info("Single=" + m_run.isCreateSingleOrder()
 			+ " - " + m_docType + ",SO=" + m_docType.isSOTrx());
 		if (log.isLoggable(Level.FINE)) log.fine("Counter=" + counter 
 			+ ",C_BPartner_ID=" + runC_BPartner_ID + "," + runBPartner);

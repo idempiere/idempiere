@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.util.logging.Level;
+
 import org.compiere.model.MIssue;
 import org.compiere.model.MSystem;
 import org.compiere.util.AdempiereSystemError;
@@ -46,7 +48,7 @@ public class IssueReport extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("AD_Issue_ID=" + m_AD_Issue_ID);
+		if (log.isLoggable(Level.INFO)) log.info("AD_Issue_ID=" + m_AD_Issue_ID);
 		if (!MSystem.get(getCtx()).isAutoErrorReport())
 			return "NOT reported - Enable Error Reporting in Window System";
 		//

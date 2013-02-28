@@ -70,11 +70,11 @@ public class DataElementHandler extends AbstractElementHandler {
 			if (atts.getValue("clientname") != null) {
 				int AD_Client_ID = IDFinder.get_ID("AD_Client", atts.getValue("clientname"), getClientId(ctx), getTrxName(ctx));
 				Env.setContext(ctx, "AD_Client_ID", AD_Client_ID);
-				log.info("adempieredata: client set to "+AD_Client_ID+" "+atts.getValue("clientname"));
+				if (log.isLoggable(Level.INFO)) log.info("adempieredata: client set to "+AD_Client_ID+" "+atts.getValue("clientname"));
 			}
 		}
 		else if (elementValue.equals("dtable")) {
-			log.info(elementValue+" "+atts.getValue("name"));
+			if (log.isLoggable(Level.INFO)) log.info(elementValue+" "+atts.getValue("name"));
 			d_tablename = atts.getValue("name");
 		}
 		// row element, adempieredata
@@ -99,7 +99,7 @@ public class DataElementHandler extends AbstractElementHandler {
 		public void startElement(Properties ctx, Element element) throws SAXException {
 			String elementValue = element.getElementValue();
 			Attributes atts = element.attributes;
-			log.info(elementValue+" "+atts.getValue("name"));
+			if (log.isLoggable(Level.INFO)) log.info(elementValue+" "+atts.getValue("name"));
 			MTable table = MTable.get(ctx, d_tablename);
 			
 			String d_rowname = atts.getValue("name");
@@ -195,7 +195,7 @@ public class DataElementHandler extends AbstractElementHandler {
 				genericPO.set_ValueOfColumn("AD_Client_ID", getClientId(ctx));
 			// if new. TODO: no defaults for keyXname.
 			if (d_rowname != null && !d_rowname.equals("") && ((Integer)(genericPO.get_Value(d_tablename+"_ID"))).intValue() == 0) {
-				log.info("new genericPO, table: "+d_tablename+" name:"+d_rowname);
+				if (log.isLoggable(Level.INFO)) log.info("new genericPO, table: "+d_tablename+" name:"+d_rowname);
 				genericPO.set_ValueOfColumn("Name", d_rowname);
 				// Set defaults.
 				//TODO: get defaults from configuration
@@ -241,7 +241,7 @@ public class DataElementHandler extends AbstractElementHandler {
 		public void startElement(Properties ctx, Element element) throws SAXException {
 			String elementValue = element.getElementValue();
 			Attributes atts = element.attributes;
-			log.info(elementValue+" "+atts.getValue("name"));
+			if (log.isLoggable(Level.INFO)) log.info(elementValue+" "+atts.getValue("name"));
 			String columnName = atts.getValue("name");	    	
 			int tableid = get_IDWithColumn(ctx, "AD_Table", "TableName", d_tablename);
 			int id =get_IDWithMasterAndColumn (ctx,"AD_Column", "ColumnName", columnName, "AD_Table", tableid);

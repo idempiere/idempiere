@@ -124,14 +124,13 @@ public class LdapMessage
 			
 			//
 			//	Payload
-			if (m_protocolOp == BIND_REQUEST)
+			if (m_protocolOp == BIND_REQUEST) {
 				handleBind();
-			else if (m_protocolOp == UNBIND_REQUEST)
-				log.info("#" + msgId + ": unbind");
-			else if (m_protocolOp == SEARCH_REQUEST)
+			} else if (m_protocolOp == UNBIND_REQUEST) {
+				if (log.isLoggable(Level.INFO)) log.info("#" + msgId + ": unbind");
+			} else if (m_protocolOp == SEARCH_REQUEST) {
 				handleSearch();
-			else  // Only supoort BIND, UNBIND and SEARCH
-			{
+			} else { // Only supoort BIND, UNBIND and SEARCH
 				result.setErrorNo(LdapResult.LDAP_PROTOCOL_ERROR);
 				result.setErrorString(": Unsupported Request");
 				log.warning("#" + msgId + ": Unknown Op + " + m_protocolOp);
@@ -203,7 +202,7 @@ public class LdapMessage
 			{
 				result.setErrorNo(LdapResult.LDAP_PROTOCOL_ERROR);
 				result.setErrorString("Unsupported LDAP version");
-				log.info("#" + msgId + ": unsupported LDAP version - " + version);
+				if (log.isLoggable(Level.INFO)) log.info("#" + msgId + ": unsupported LDAP version - " + version);
 				return;
 			}
 	
@@ -215,7 +214,7 @@ public class LdapMessage
 			if (auth != SIMPLE_AUTHENTICATION)  // 0x80 - simple authentication
 			{
 				result.setErrorNo(LdapResult.LDAP_AUTH_METHOD_NOT_SUPPORTED);
-				log.info("#" + msgId + ": unsupported authentication method - " + auth);
+				if (log.isLoggable(Level.INFO)) log.info("#" + msgId + ": unsupported authentication method - " + auth);
 				return;
 			}
 			
@@ -228,13 +227,13 @@ public class LdapMessage
 				{
 					result.setErrorNo(LdapResult.LDAP_NO_SUCH_OBJECT);
 					result.setErrorString(": \"cn\" not defined");
-					log.info("#" + msgId + ": \"cn\" not defined");
+					if (log.isLoggable(Level.INFO)) log.info("#" + msgId + ": \"cn\" not defined");
 					return;
 				}
 			}
 
 			// Log the information 
-			log.info("#" + msgId + ": bind - version=" + version + ", userId=" + userId);
+			if (log.isLoggable(Level.INFO)) log.info("#" + msgId + ": bind - version=" + version + ", userId=" + userId);
 		}
 		catch (Exception ex)
 		{

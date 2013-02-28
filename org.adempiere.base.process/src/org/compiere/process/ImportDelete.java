@@ -59,7 +59,7 @@ public class ImportDelete extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		StringBuilder msglog = new StringBuilder("AD_Table_ID=").append(p_AD_Table_ID);
-		log.info(msglog.toString());
+		if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 		//	get Table Info
 		MTable table = new MTable (getCtx(), p_AD_Table_ID, get_TrxName());
 		if (table.get_ID() == 0){

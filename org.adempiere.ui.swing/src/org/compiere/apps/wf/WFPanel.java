@@ -113,7 +113,7 @@ public class WFPanel extends CPanel
 		m_readWrite = (menu == null);
 		m_WF_whereClause = wfWhereClause;
 		m_WF_Window_ID = wfWindow_ID;
-		log.info("RW=" + m_readWrite);
+		if (log.isLoggable(Level.INFO)) log.info("RW=" + m_readWrite);
 		try
 		{
 			jbInit();

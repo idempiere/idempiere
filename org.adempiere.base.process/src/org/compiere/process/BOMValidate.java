@@ -78,10 +78,10 @@ public class BOMValidate extends SvrProcess
 	{
 		if (p_M_Product_ID != 0)
 		{
-			log.info("M_Product_ID=" + p_M_Product_ID);
+			if (log.isLoggable(Level.INFO)) log.info("M_Product_ID=" + p_M_Product_ID);
 			return validateProduct(new MProduct(getCtx(), p_M_Product_ID, get_TrxName()));
 		}
-		log.info("M_Product_Category_ID=" + p_M_Product_Category_ID
+		if (log.isLoggable(Level.INFO)) log.info("M_Product_Category_ID=" + p_M_Product_Category_ID
 			+ ", IsReValidate=" + p_IsReValidate);
 		//
 		int counter = 0;

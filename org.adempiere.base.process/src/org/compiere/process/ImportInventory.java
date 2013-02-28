@@ -119,7 +119,7 @@ public class ImportInventory extends SvrProcess
 	protected String doIt() throws java.lang.Exception
 	{
 		StringBuilder msglog = new StringBuilder("M_Locator_ID=").append(p_M_Locator_ID).append(",MovementDate=").append(p_MovementDate);
-		log.info(msglog.toString());
+		if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 		
 		if (p_UpdateCosting) {
 			if (p_C_AcctSchema_ID <= 0) {
@@ -168,7 +168,7 @@ public class ImportInventory extends SvrProcess
 			  .append(" I_IsImported = 'N' ")
 			  .append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
-		log.info ("Reset=" + no);
+		if (log.isLoggable(Level.INFO)) log.info ("Reset=" + no);
 
 		sql = new StringBuilder ("UPDATE I_Inventory o ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Org, '")

@@ -17,6 +17,7 @@
 package org.compiere.install;
 
 import java.net.InetAddress;
+import java.util.logging.Level;
 
 
 /**
@@ -74,7 +75,7 @@ public class ConfigAppServer extends Config
 				pass, true, error);
 		if (!pass)
 			return error;
-		log.info("OK: AppsServer = " + appsServer);
+		if (log.isLoggable(Level.INFO)) log.info("OK: AppsServer = " + appsServer);
 		setProperty(ConfigurationData.ADEMPIERE_APPS_SERVER, appsServer.getHostName());
 
 		//	Web Port
@@ -87,7 +88,7 @@ public class ConfigAppServer extends Config
 				pass, true, error);
 		if (!pass)
 			return error;
-		log.info("OK: Web Port = " + WebPort);
+		if (log.isLoggable(Level.INFO)) log.info("OK: Web Port = " + WebPort);
 		setProperty(ConfigurationData.ADEMPIERE_WEB_PORT, String.valueOf(WebPort));
 
 		//	SSL Port
@@ -100,7 +101,7 @@ public class ConfigAppServer extends Config
 				pass, true, error);
 		if (!pass)
 			return error;
-		log.info("OK: SSL Port = " + sslPort);
+		if (log.isLoggable(Level.INFO)) log.info("OK: SSL Port = " + sslPort);
 		setProperty(ConfigurationData.ADEMPIERE_SSL_PORT, String.valueOf(sslPort));
 		//
 		return null;

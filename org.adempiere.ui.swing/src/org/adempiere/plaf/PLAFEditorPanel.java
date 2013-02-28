@@ -26,6 +26,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
 import java.awt.image.BufferedImage;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -354,7 +355,7 @@ public class PLAFEditorPanel extends CPanel {
 				themeList.setSelectedValue(theme, true);
 		}
 		m_setting = false;
-		log.info(lookFeel + " - " + metalTheme);
+		if (log.isLoggable(Level.INFO)) log.info(lookFeel + " - " + metalTheme);
 	}   //  setLFSelection
 	
 	/**

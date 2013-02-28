@@ -222,7 +222,7 @@ public class PosKeyPanel extends CPanel implements ActionListener {
 		String action = e.getActionCommand();
 		if (action == null || action.length() == 0 || keymap == null)
 			return;
-		log.info( "PosSubFunctionKeys - actionPerformed: " + action);
+		if (log.isLoggable(Level.INFO)) log.info( "PosSubFunctionKeys - actionPerformed: " + action);
 		HashMap<Integer, MPOSKey> currentKeymap = keymap.get(currentLayout);
 		
 		try

@@ -241,10 +241,9 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 				m_mPaymentOriginal.setDocAction(DocAction.ACTION_Reverse_Correct);
 				boolean ok = m_mPaymentOriginal.processIt(DocAction.ACTION_Reverse_Correct);
 				m_mPaymentOriginal.saveEx();
-				if (ok)
-					log.info( "Payment Cancelled - " + m_mPaymentOriginal);
-				else
-				{
+				if (ok) {
+					if (log.isLoggable(Level.INFO)) log.info( "Payment Cancelled - " + m_mPaymentOriginal);
+				} else {
 					processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCancelled") + " " + m_mPaymentOriginal.getDocumentNo();
 					throw new AdempiereException(processMsg);
 				}

@@ -245,7 +245,7 @@ public class SubOrder extends PosSubPanel
 		String action = e.getActionCommand();
 		if (action == null || action.length() == 0)
 			return;
-		log.info( "PosSubCustomer - actionPerformed: " + action);
+		if (log.isLoggable(Level.INFO)) log.info( "PosSubCustomer - actionPerformed: " + action);
 		//	New
 		if (action.equals("New"))
 		{
@@ -333,7 +333,7 @@ public class SubOrder extends PosSubPanel
 	{
 		if (e.isTemporary())
 			return;
-		log.info(e.toString());
+		if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		findBPartner();
 	}	//	focusLost
 

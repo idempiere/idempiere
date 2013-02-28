@@ -168,7 +168,7 @@ public class InitialClientSetup extends SvrProcess
 								.append(", IsUseSalesRegionDimension=").append(p_IsUseSalesRegionDimension)
 								.append(", CoAFile=").append(p_CoAFile);
 		
-		log.info(msglog.toString());
+		if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 
 		// Validations
 
@@ -199,7 +199,7 @@ public class InitialClientSetup extends SvrProcess
 			MCity city = MCity.get(getCtx(), p_C_City_ID);
 			if (! city.getName().equals(p_CityName)) {
 				msglog = new StringBuilder("City name changed from ").append(p_CityName).append(" to ").append(city.getName());
-				log.info(msglog.toString());
+				if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 				p_CityName = city.getName();
 			}
 		}

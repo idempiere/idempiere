@@ -73,7 +73,7 @@ public class PrepareMigrationScripts extends SvrProcess {
 		dirList = dir.listFiles(filter);
 
 		StringBuilder msglog = new StringBuilder("Searching for SQL files in the ").append(dir).append(" directory");
-		log.info(msglog.toString());
+		if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 
 		StringBuilder msg = new StringBuilder();
 

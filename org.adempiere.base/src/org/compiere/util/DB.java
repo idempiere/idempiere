@@ -572,7 +572,7 @@ public final class DB
             rs= null;
             pstmt = null;
         }
-        log.info("DB_Version=" + version);
+        if (log.isLoggable(Level.INFO)) log.info("DB_Version=" + version);
         //  Identical DB version
         if (Adempiere.DB_VERSION.equals(version))
             return true;
@@ -632,8 +632,10 @@ public final class DB
             rs= null;
             pstmt = null;
         }
-        log.info("Build DB=" + buildDatabase);
-        log.info("Build Cl=" + buildClient);
+        if (log.isLoggable(Level.INFO)){
+        	log.info("Build DB=" + buildDatabase);
+        	log.info("Build Cl=" + buildClient);
+        }
         //  Identical DB version
         if (buildClient.equals(buildDatabase))
             return true;

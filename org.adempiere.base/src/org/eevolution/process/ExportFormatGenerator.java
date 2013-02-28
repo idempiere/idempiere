@@ -119,7 +119,7 @@ public class ExportFormatGenerator extends SvrProcess
 
 	private String createFormat(MTable table) throws Exception 
 	{		
-		log.info("Table Name:"+table.getTableName());
+		if (log.isLoggable(Level.INFO)) log.info("Table Name:"+table.getTableName());
 		MColumn[] cols = table.getColumns(true);
 		String unique = null;
 		for(MColumn col : cols)
@@ -127,7 +127,7 @@ public class ExportFormatGenerator extends SvrProcess
 			if(col.isIdentifier() && col.getSeqNo() == 1)
 			{	
 				unique = col.getColumnName();
-				log.info("Unique Key"+unique);
+				if (log.isLoggable(Level.INFO)) log.info("Unique Key"+unique);
 				break;
 			}
 		}
@@ -138,7 +138,7 @@ public class ExportFormatGenerator extends SvrProcess
 		MEXPFormat format = null;
 		//String formatValue = table.getTableName()+"_"+unique;
 		String formatValue = table.getTableName();
-		log.info("Export Format Value:"+formatValue);
+		if (log.isLoggable(Level.INFO)) log.info("Export Format Value:"+formatValue);
 		format = (MEXPFormat) m_formats.get(formatValue);
 		if (format != null)
 			return format.getValue();
@@ -265,7 +265,7 @@ public class ExportFormatGenerator extends SvrProcess
 									embededformatLine.saveEx();	
 							}
 						}
-						log.info("Export Format Line:"+formatLine.getName());
+						if (log.isLoggable(Level.INFO)) log.info("Export Format Line:"+formatLine.getName());
 						return formatLine.getEXP_FormatLine_ID();					
 					}
 					else
@@ -324,11 +324,11 @@ public class ExportFormatGenerator extends SvrProcess
 				{
 
 					String tableName = col.getColumnName().substring(0, col.getColumnName().lastIndexOf("_ID"));
-					log.info("Table Name:"+tableName);
+					if (log.isLoggable(Level.INFO)) log.info("Table Name:"+tableName);
 				
 					if(tableName==null)
 					{	
-						log.info("Table Name: null");
+						if (log.isLoggable(Level.INFO)) log.info("Table Name: null");
 						return 0;
 					}
 					
@@ -348,7 +348,7 @@ public class ExportFormatGenerator extends SvrProcess
 				}
 				formatLine.setAD_Column_ID(col.getAD_Column_ID());
 				formatLine.saveEx();
-				log.info("Export Format Line:"+formatLine.getName());
+				if (log.isLoggable(Level.INFO)) log.info("Export Format Line:"+formatLine.getName());
 				return formatLine.getEXP_FormatLine_ID();		
 		  }
 }	//	Generate Export Format

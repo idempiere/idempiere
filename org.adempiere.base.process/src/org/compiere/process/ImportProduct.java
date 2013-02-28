@@ -112,7 +112,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			sql = new StringBuilder ("DELETE I_Product ")
 				.append("WHERE I_IsImported='Y'").append(clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
-			log.info("Delete Old Imported =" + no);
+			if (log.isLoggable(Level.INFO)) log.info("Delete Old Imported =" + no);
 		}
 
 		//	Set Client, Org, IaActive, Created/Updated, 	ProductType
@@ -129,7 +129,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			.append(" I_IsImported = 'N' ")
 			.append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("Reset=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("Reset=" + no);
 
 		ModelValidationEngine.get().fireImportValidate(this, null, null, ImportValidator.TIMING_BEFORE_VALIDATE);
 		
@@ -140,7 +140,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			.append("WHERE C_BPartner_ID IS NULL")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("BPartner=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("BPartner=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_Product ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid BPartner,' ")
@@ -159,7 +159,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			.append("WHERE M_Product_ID IS NULL")
 			.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("Product Existing UPC=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("Product Existing UPC=" + no);
 
 		//	Value
 		sql = new StringBuilder ("UPDATE I_Product i ")
@@ -168,7 +168,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			.append("WHERE M_Product_ID IS NULL")
 			.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("Product Existing Value=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("Product Existing Value=" + no);
 
 		//	BP ProdNo
 		sql = new StringBuilder ("UPDATE I_Product i ")
@@ -178,7 +178,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			.append("WHERE M_Product_ID IS NULL")
 			.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("Product Existing Vendor ProductNo=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("Product Existing Vendor ProductNo=" + no);
 
 		//	Set Product Category
 		sql = new StringBuilder ("UPDATE I_Product ")
@@ -196,7 +196,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			.append("WHERE ProductCategory_Value IS NOT NULL AND M_Product_Category_ID IS NULL")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("Set Category=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("Set Category=" + no);
 
 		
 		//	Copy From Product if Import does not have value
@@ -285,7 +285,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			.append("WHERE C_UOM_ID IS NULL")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("Set UOM=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("Set UOM=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_Product ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid UOM, ' ")
@@ -313,7 +313,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			.append("WHERE C_Currency_ID IS NULL")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("doIt- Set Currency=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("doIt- Set Currency=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_Product ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Currency,' ")
@@ -370,7 +370,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			.append("WHERE C_BPartner_ID IS NOT NULL AND VendorProductNo IS NULL")
 			.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("VendorProductNo Set to Value=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("VendorProductNo Set to Value=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_Product i ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=VendorProductNo not unique,' ")

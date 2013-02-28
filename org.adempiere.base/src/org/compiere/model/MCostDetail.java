@@ -798,7 +798,7 @@ public class MCostDetail extends X_M_CostDetail
 			setProcessed(true);
 			ok = save();
 		}
-		log.info(ok + " - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info(ok + " - " + toString());
 		return ok;
 	}	//	process
 	

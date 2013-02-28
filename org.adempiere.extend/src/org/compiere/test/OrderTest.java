@@ -124,7 +124,7 @@ public class OrderTest implements Runnable
 			trx.commit();
 			trx.close();
 			//
-			log.info(order.toString());
+			if (log.isLoggable(Level.INFO)) log.info(order.toString());
 		}
 		time = System.currentTimeMillis() - time;
 		log.warning("#" + m_no + ", Errors=" + m_errors

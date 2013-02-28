@@ -28,6 +28,7 @@ import java.io.OutputStream;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -100,7 +101,7 @@ public class CodeSnippetElementHandler extends AbstractElementHandler {
 				targetDirectoryModified = fullDirectory.replace(slash2,slash1);
 
 			File file = new File(targetDirectoryModified+sourceName);
-			log.info(targetDirectoryModified+sourceName);
+			if (log.isLoggable(Level.INFO)) log.info(targetDirectoryModified+sourceName);
 			//TODO: derived force from user parameter
 			boolean force = true;
 			//	check to see if overwrites are allowed
@@ -112,13 +113,13 @@ public class CodeSnippetElementHandler extends AbstractElementHandler {
 				//backup file to package directory
 				else {
 					action = "Update";
-					log.info("Target Backup:"+targetDirectoryModified+sourceName);
+					if (log.isLoggable(Level.INFO)) log.info("Target Backup:"+targetDirectoryModified+sourceName);
 					source = OpenInputfile(targetDirectoryModified+sourceName);
 					SimpleDateFormat formatter_file = new SimpleDateFormat("yyMMddHHmmssSSSSZ");
 					Date today = new Date();
 					fileDate = formatter_file.format(today);
 					copy = OpenOutputfile(packagePath+File.separator+"backup"+File.separator+fileDate+"_"+sourceName);
-					log.info("Source Backup:"+packagePath+File.separator+"backup"+File.separator+fileDate+"_"+sourceName);
+					if (log.isLoggable(Level.INFO)) log.info("Source Backup:"+packagePath+File.separator+"backup"+File.separator+fileDate+"_"+sourceName);
 					copyFile (source,copy);
 					log.info("Backup Complete");
 				}
@@ -132,14 +133,14 @@ public class CodeSnippetElementHandler extends AbstractElementHandler {
 				try {
 					logImportDetail (ctx, impDetail, 1, sourceName, 0, action);
 				} catch (SAXException e) {
-					log.info ("setfile:"+e);
+					if (log.isLoggable(Level.INFO)) log.info ("setfile:"+e);
 				}
 			}
 			else{
 				try {
 					logImportDetail (ctx, impDetail, 0, sourceName, 0, action);
 				} catch (SAXException e) {
-					log.info ("setfile:"+e);
+					if (log.isLoggable(Level.INFO)) log.info ("setfile:"+e);
 				}
 			}
 

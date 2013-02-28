@@ -110,7 +110,7 @@ public final class AMenu extends CFrame
 	public AMenu ()
 	{
 		super();
-		log.info("CodeBase=" + Adempiere.getCodeBase());		
+		if (log.isLoggable(Level.INFO)) log.info("CodeBase=" + Adempiere.getCodeBase());		
 		Splash splash = Splash.getSplash();
 		//
 		m_WindowNo = AEnv.createWindowNo(this);
@@ -598,7 +598,7 @@ public final class AMenu extends CFrame
 	{
 		
 		MTreeNode nd = (MTreeNode)e.getNewValue();
-		log.info(nd.getNode_ID() + " - " + nd.toString());
+		if (log.isLoggable(Level.INFO)) log.info(nd.getNode_ID() + " - " + nd.toString());
 
 		//	ignore summary items & when loading
 		if (m_startingItem || nd.isSummary())

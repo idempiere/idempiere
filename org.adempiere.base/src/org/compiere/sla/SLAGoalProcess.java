@@ -62,7 +62,7 @@ public class SLAGoalProcess extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info ("PA_SLA_Goal_ID=" + p_PA_SLA_Goal_ID);
+		if (log.isLoggable(Level.INFO)) log.info ("PA_SLA_Goal_ID=" + p_PA_SLA_Goal_ID);
 		MSLAGoal goal = new MSLAGoal(getCtx(), p_PA_SLA_Goal_ID, get_TrxName());
 		if (goal.get_ID() == 0)
 			throw new AdempiereUserError("@PA_SLA_Goal_ID@ " + p_PA_SLA_Goal_ID);

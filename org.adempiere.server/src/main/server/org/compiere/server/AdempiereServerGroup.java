@@ -50,7 +50,7 @@ public class AdempiereServerGroup extends ThreadGroup
 		super ("AdempiereServers");
 		setDaemon(true);
 		setMaxPriority(Thread.MAX_PRIORITY);
-		log.info(getName() + " - Parent=" + getParent());
+		if (log.isLoggable(Level.INFO)) log.info(getName() + " - Parent=" + getParent());
 	}	//	AdempiereServerGroup
 
 	/**	Logger			*/
@@ -63,7 +63,7 @@ public class AdempiereServerGroup extends ThreadGroup
 	 */
 	public void uncaughtException (Thread t, Throwable e)
 	{
-		log.info ("uncaughtException = " + e.toString());
+		if (log.isLoggable(Level.INFO)) log.info ("uncaughtException = " + e.toString());
 		super.uncaughtException (t, e);
 	}	//	uncaughtException
 	

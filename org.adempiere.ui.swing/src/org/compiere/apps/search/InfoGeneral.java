@@ -95,7 +95,7 @@ public class InfoGeneral extends Info
 		boolean multiSelection, String whereClause, boolean lookup)
 	{
 		super (frame, modal, WindowNo, tableName, keyColumn, multiSelection, whereClause, lookup);
-		log.info(tableName + " - " + keyColumn + " - " + whereClause);
+		if (log.isLoggable(Level.INFO)) log.info(tableName + " - " + keyColumn + " - " + whereClause);
 		setTitle(Msg.getMsg(Env.getCtx(), "Info"));
 		//
 		statInit();

@@ -101,7 +101,7 @@ public class AcctViewer extends CFrame
 	public AcctViewer(int AD_Client_ID, int AD_Table_ID, int Record_ID)
 	{
 		super (Msg.getMsg(Env.getCtx(), "AcctViewer"));
-		log.info("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
+		if (log.isLoggable(Level.INFO)) log.info("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		m_data = new AcctViewerData (Env.getCtx(), AEnv.createWindowNo(this), 
 			AD_Client_ID, AD_Table_ID);
@@ -457,7 +457,7 @@ public class AcctViewer extends CFrame
 	 */
 	public void stateChanged(ChangeEvent e)
 	{
-	//	log.info( "AcctViewer.stateChanged");
+	//	if (log.isLoggable(Level.INFO)) log.info( "AcctViewer.stateChanged");
 		boolean visible = m_data.documentQuery && tabbedPane.getSelectedIndex() == 1;
 		bRePost.setVisible(visible);
 		bExport.setVisible(tabbedPane.getSelectedIndex() == 1);
@@ -503,7 +503,7 @@ public class AcctViewer extends CFrame
 			return;
 		m_data.C_AcctSchema_ID = kp.getKey();
 		m_data.ASchema = MAcctSchema.get(Env.getCtx(), m_data.C_AcctSchema_ID);
-		log.info(m_data.ASchema.toString());
+		if (log.isLoggable(Level.INFO)) log.info(m_data.ASchema.toString());
 		//
 		//  Sort Options
 		sortBy1.removeAllItems();

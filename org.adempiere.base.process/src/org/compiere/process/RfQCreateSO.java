@@ -79,7 +79,7 @@ public class RfQCreateSO extends SvrProcess
 		MRfQ rfq = new MRfQ (getCtx(), p_C_RfQ_ID, get_TrxName());
 		if (rfq.get_ID() == 0)
 			throw new IllegalArgumentException("No RfQ found");
-		log.info("doIt - " + rfq);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - " + rfq);
 		
 		if (rfq.getC_BPartner_ID() == 0 || rfq.getC_BPartner_Location_ID() == 0)
 			throw new Exception ("No Business Partner/Location");

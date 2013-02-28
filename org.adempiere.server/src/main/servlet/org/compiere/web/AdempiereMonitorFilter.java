@@ -155,7 +155,7 @@ public class AdempiereMonitorFilter implements Filter
 				log.warning ("Not a Sys Admin = " + name);
 				return false;
 			}
-			log.info ("Name=" + name);
+			if (log.isLoggable(Level.INFO)) log.info ("Name=" + name);
 			return true;
 		}
 		catch (Exception e)

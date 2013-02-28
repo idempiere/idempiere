@@ -104,7 +104,7 @@ public class ImportFixedAsset extends SvrProcess
 			  + " I_IsImported = 'N' "
 			  + "WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info ("Reset=" + no);
+		if (log.isLoggable(Level.INFO)) log.info ("Reset=" + no);
 		
 		// Check if Org is Null or 0
 		sql = new StringBuffer ("UPDATE "+MIFixedAsset.Table_Name+" ifa "

@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -44,7 +45,7 @@ public class DistFileElementHandler extends AbstractElementHandler {
 		int AD_Backup_ID = -1;
 		String Object_Status = null;
 		Attributes atts = element.attributes;
-		log.info(elementValue+" "+atts.getValue("name"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue+" "+atts.getValue("name"));
 		
 		String releaseNumber = atts.getValue("ReleaseNo");
 		//log.info(atts.getValue("ReleaseNo"));
@@ -108,13 +109,13 @@ public class DistFileElementHandler extends AbstractElementHandler {
 			//backup file to package directory
 			else if (file.exists() && force == true) {
 				Object_Status = "Update";			
-				log.info("Target Backup:"+fullTargetPath+fileName);
+				if (log.isLoggable(Level.INFO)) log.info("Target Backup:"+fullTargetPath+fileName);
 				inputStream = OpenInputfile(fullTargetPath+fileName);
 				SimpleDateFormat formatter_file = new SimpleDateFormat("yyMMddHHmmssSSSSZ");	    	
 				Date today = new Date();
 				fileDate = formatter_file.format(today);
 				outputStream = OpenOutputfile(packagePath+File.separator+"backup"+File.separator+fileDate+"_"+fileName);
-				log.info("Source Backup:"+packagePath+File.separator+"backup"+File.separator+fileDate+"_"+fileName);
+				if (log.isLoggable(Level.INFO)) log.info("Source Backup:"+packagePath+File.separator+"backup"+File.separator+fileDate+"_"+fileName);
 				copyFile (inputStream, outputStream);
 				log.info("Backup Complete");
 			}		
@@ -144,14 +145,14 @@ public class DistFileElementHandler extends AbstractElementHandler {
 				try {				
 					idDetail = record_log (ctx, 1, fileName,"file", 0,0, Object_Status,fileName,0);
 				} catch (SAXException e) {
-					log.info ("setfile:"+e);
+					if (log.isLoggable(Level.INFO)) log.info ("setfile:"+e);
 				}           		        		
 			}
 			else{
 				try {
 					idDetail = record_log (ctx, 0, fileName,"file", 0,0, Object_Status,fileName,0);
 				} catch (SAXException e) {
-					log.info ("setfile:"+e);
+					if (log.isLoggable(Level.INFO)) log.info ("setfile:"+e);
 				}
 			}
 			//Record in transaction file 

@@ -195,7 +195,7 @@ public class QueryProduct extends PosQuery
 	 */
 	public void actionPerformed (ActionEvent e)
 	{
-		log.info(e.getActionCommand());
+		if (log.isLoggable(Level.INFO)) log.info(e.getActionCommand());
 		if ("Refresh".equals(e.getActionCommand())
 			|| e.getSource() == f_value || e.getSource() == f_upc
 			|| e.getSource() == f_name || e.getSource() == f_sku)

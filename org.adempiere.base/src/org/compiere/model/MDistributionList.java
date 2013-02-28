@@ -101,7 +101,7 @@ public class MDistributionList extends X_M_DistributionList
 		//	Update Ratio
 		if (ratioTotal.compareTo(getRatioTotal()) != 0)
 		{
-			log.info("getLines - Set RatioTotal from " + getRatioTotal() + " to " + ratioTotal);
+			if (log.isLoggable(Level.INFO)) log.info("getLines - Set RatioTotal from " + getRatioTotal() + " to " + ratioTotal);
 			setRatioTotal(ratioTotal);
 			saveEx();
 		}

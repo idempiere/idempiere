@@ -157,7 +157,7 @@ public class ReportInfo
         }
         catch (JRException e)
         {
-            log.info("ReportInfo.compileReport- "+ e);
+            if (log.isLoggable(Level.INFO)) log.info("ReportInfo.compileReport- "+ e);
             this.errorMsg.add("ReportInfo.compileReport- " + e.getMessage());
             this.hasError = true;           
         }
@@ -230,7 +230,7 @@ public class ReportInfo
             rs = null;
             pstmt = null;
         }        
-        log.info("Get ReportDefinition-" + this.toString());
+        if (log.isLoggable(Level.INFO)) log.info("Get ReportDefinition-" + this.toString());
     }
     
     protected boolean isDirty()

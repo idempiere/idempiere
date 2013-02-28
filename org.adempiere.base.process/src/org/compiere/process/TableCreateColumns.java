@@ -85,7 +85,7 @@ public class TableCreateColumns extends SvrProcess
 	{
 		if (p_AD_Table_ID == 0)
 			throw new AdempiereSystemError("@NotFound@ @AD_Table_ID@ " + p_AD_Table_ID);
-		log.info("EntityType=" + p_EntityType
+		if (log.isLoggable(Level.INFO)) log.info("EntityType=" + p_EntityType
 			+ ", AllTables=" + p_AllTables
 			+ ", AD_Table_ID=" + p_AD_Table_ID);
 		//
@@ -105,7 +105,7 @@ public class TableCreateColumns extends SvrProcess
 				MTable table = new MTable (getCtx(), p_AD_Table_ID, get_TrxName());
 				if (table == null || table.get_ID() == 0)
 					throw new AdempiereSystemError("@NotFound@ @AD_Table_ID@ " + p_AD_Table_ID);
-				log.info(table.getTableName() + ", EntityType=" + p_EntityType);
+				if (log.isLoggable(Level.INFO)) log.info(table.getTableName() + ", EntityType=" + p_EntityType);
 				String tableName = table.getTableName();
 				if (DB.isOracle())
 					tableName = tableName.toUpperCase();
@@ -171,7 +171,7 @@ public class TableCreateColumns extends SvrProcess
 						continue;
 					}
 					//
-					log.info(tableName + " - " + tableType);
+					if (log.isLoggable(Level.INFO)) log.info(tableName + " - " + tableType);
 					
 					//	Create New
 					table = new MTable(getCtx(), 0, get_TrxName());

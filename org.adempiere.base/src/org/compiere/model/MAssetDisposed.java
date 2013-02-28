@@ -153,7 +153,7 @@ implements DocAction
 	
 	public boolean approveIt()
 	{
-		log.info("approveIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("approveIt - " + toString());
 		setIsApproved(true);
 		return true;
 	}	//	approveIt
@@ -161,7 +161,7 @@ implements DocAction
 	
 	public boolean rejectIt()
 	{
-		log.info("rejectIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("rejectIt - " + toString());
 		setIsApproved(false);
 		return true;
 	}	//	rejectIt
@@ -187,7 +187,7 @@ implements DocAction
 		//	Implicit Approval
 		if (!isApproved())
 			approveIt();
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		//
 		
 		//loading asset

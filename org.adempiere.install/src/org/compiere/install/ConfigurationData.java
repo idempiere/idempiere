@@ -235,7 +235,7 @@ public class ConfigurationData
 			{
 				log.warning(e.toString());
 			}
-			log.info(env.toString());
+			if (log.isLoggable(Level.INFO)) log.info(env.toString());
 			if (p_properties.size() > 5)
 				envLoaded = true;
 
@@ -440,7 +440,7 @@ public class ConfigurationData
 					pass, true, error);
 		if (!pass)
 			return error;
-		log.info("OK: AdempiereHome = " + m_adempiereHome);
+		if (log.isLoggable(Level.INFO)) log.info("OK: AdempiereHome = " + m_adempiereHome);
 		p_properties.setProperty(IDEMPIERE_HOME, m_adempiereHome.getAbsolutePath());
 		System.setProperty(IDEMPIERE_HOME, m_adempiereHome.getAbsolutePath());
 
@@ -478,7 +478,7 @@ public class ConfigurationData
 					pass, true, error);
 		if (!pass)
 			return error;
-		log.info("OK: KeyStore = " + fileName);
+		if (log.isLoggable(Level.INFO)) log.info("OK: KeyStore = " + fileName);
 		return null;
 	}	//	testAdempiere
 
@@ -551,7 +551,7 @@ public class ConfigurationData
 					pass, false, error);
 		if (pass)
 		{
-			log.info("OK: EMail = " + adminEMail);
+			if (log.isLoggable(Level.INFO)) log.info("OK: EMail = " + adminEMail);
 			p_properties.setProperty(ADEMPIERE_ADMIN_EMAIL, adminEMail.toString());
 			p_properties.setProperty(ADEMPIERE_MAIL_USER, mailUser);
 			p_properties.setProperty(ADEMPIERE_MAIL_PASSWORD, mailPassword);
@@ -623,7 +623,7 @@ public class ConfigurationData
 			email.createAuthenticator (mailUser, mailPassword);
 			if (EMail.SENT_OK.equals (email.send ()))
 			{
-				log.info("OK: Send Test Email to " + adminEMail);
+				if (log.isLoggable(Level.INFO)) log.info("OK: Send Test Email to " + adminEMail);
 			}
 			else
 			{
@@ -682,7 +682,7 @@ public class ConfigurationData
 			log.config("Store - connected");
 			Folder folder = store.getDefaultFolder();
 			Folder inbox = folder.getFolder("INBOX");
-			log.info("OK: Mail Connect to " + inbox.getFullName() + " #Msg=" + inbox.getMessageCount());
+			if (log.isLoggable(Level.INFO)) log.info("OK: Mail Connect to " + inbox.getFullName() + " #Msg=" + inbox.getMessageCount());
 			//
 			store.close();
 		}

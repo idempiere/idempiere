@@ -64,7 +64,7 @@ public class RfQClose extends SvrProcess
 		MRfQ rfq = new MRfQ (getCtx(), p_C_RfQ_ID, get_TrxName());
 		if (rfq.get_ID() == 0)
 			throw new IllegalArgumentException("No RfQ found");
-		log.info("doIt - " + rfq);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - " + rfq);
 		//
 		rfq.setProcessed(true);
 		rfq.saveEx();

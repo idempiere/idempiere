@@ -18,6 +18,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.util.ServerContext;
 import org.compiere.model.MUser;
@@ -292,7 +293,7 @@ public class CompiereService {
 		
 		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat( dateFormatOnlyForCtx ); 
 		Env.setContext( getCtx(), "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
-		log.info(" #Date = "+ Env.getContextAsDate( getCtx(), "#Date"));
+		if (log.isLoggable(Level.INFO)) log.info(" #Date = "+ Env.getContextAsDate( getCtx(), "#Date"));
 
 		Env.setContext( getCtx(), "#M_Warehouse_ID", M_Warehouse_ID );
 		Env.setContext(m_ctx, Env.LANGUAGE, m_language.getAD_Language());

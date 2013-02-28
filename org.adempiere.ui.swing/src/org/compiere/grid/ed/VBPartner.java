@@ -77,7 +77,7 @@ public final class VBPartner extends CDialog implements ActionListener
 		m_readOnly = !MRole.getDefault().canUpdate(
 			Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()), 
 			MBPartner.Table_ID, 0, false);
-		log.info("R/O=" + m_readOnly);
+		if (log.isLoggable(Level.INFO)) log.info("R/O=" + m_readOnly);
 		try
 		{
 			jbInit();

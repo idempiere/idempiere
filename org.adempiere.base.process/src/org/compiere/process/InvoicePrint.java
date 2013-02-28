@@ -108,7 +108,7 @@ public class InvoicePrint extends SvrProcess
 		//	Need to have Template
 		if (p_EMailPDF && p_R_MailText_ID == 0)
 			throw new AdempiereUserError ("@NotFound@: @R_MailText_ID@");
-		log.info ("C_BPartner_ID=" + m_C_BPartner_ID
+		if (log.isLoggable(Level.INFO)) log.info ("C_BPartner_ID=" + m_C_BPartner_ID
 			+ ", C_Invoice_ID=" + m_C_Invoice_ID
 			+ ", EmailPDF=" + p_EMailPDF + ",R_MailText_ID=" + p_R_MailText_ID
 			+ ", DateInvoiced=" + m_dateInvoiced_From + "-" + m_dateInvoiced_To

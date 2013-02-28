@@ -57,10 +57,10 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
 			if (DBType.equals("ALL")) {
 				int n = pstmt.executeUpdate();
-				log.info("Executed SQL Statement: "+ getStringValue(element, "statement") + " ReturnValue="+n);
+				if (log.isLoggable(Level.INFO)) log.info("Executed SQL Statement: "+ getStringValue(element, "statement") + " ReturnValue="+n);
 			} else if (DB.isOracle() == true && DBType.equals("Oracle")) {
 				int n = pstmt.executeUpdate();
-				log.info("Executed SQL Statement for Oracle: "+ getStringValue(element, "statement") + " ReturnValue="+n);
+				if (log.isLoggable(Level.INFO)) log.info("Executed SQL Statement for Oracle: "+ getStringValue(element, "statement") + " ReturnValue="+n);
 			} else if (DB.isPostgreSQL()
 					 && (   DBType.equals("Postgres")
 						 || DBType.equals("PostgreSQL")  // backward compatibility with old packages developed by hand
@@ -76,7 +76,7 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 				try {
 					stmt = pstmt.getConnection().createStatement();
 					int n = stmt.executeUpdate (sql);
-					log.info("Executed SQL Statement for PostgreSQL: "+ getStringValue(element,"statement") + " ReturnValue="+n);
+					if (log.isLoggable(Level.INFO)) log.info("Executed SQL Statement for PostgreSQL: "+ getStringValue(element,"statement") + " ReturnValue="+n);
 				} finally {
 					DB.close(stmt);
 					stmt = null;

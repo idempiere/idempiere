@@ -19,6 +19,7 @@ package org.adempiere.pipo.handler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -42,7 +43,7 @@ public class TaskElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		String elementValue = element.getElementValue();
 		Attributes atts = element.attributes;
-		log.info(elementValue + " " + atts.getValue("ADTaskNameID"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + atts.getValue("ADTaskNameID"));
 		String entitytype = atts.getValue("EntityType");
 		if (isProcessElement(ctx, entitytype)) {
 			String name = atts.getValue("ADTaskNameID");

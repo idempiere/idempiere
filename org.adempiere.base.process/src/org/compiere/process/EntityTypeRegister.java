@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.util.logging.Level;
+
 import org.compiere.model.MEntityType;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.AdempiereUserError;
@@ -47,7 +49,7 @@ public class EntityTypeRegister extends SvrProcess
 	protected String doIt ()
 		throws Exception
 	{
-		log.info("AD_EntityType_ID=" + p_AD_EntityType_ID);
+		if (log.isLoggable(Level.INFO)) log.info("AD_EntityType_ID=" + p_AD_EntityType_ID);
 		MEntityType et = new MEntityType(getCtx(), p_AD_EntityType_ID, get_TrxName());
 		if (et.isSystemMaintained())
 			throw new AdempiereUserError("You cannot register a System maintained entity");

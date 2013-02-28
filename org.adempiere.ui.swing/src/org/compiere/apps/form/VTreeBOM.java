@@ -228,7 +228,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener, TreeS
 	{
 		m_WindowNo = WindowNo;
 		m_frame = frame;
-		log.info( "VTreeBOM.init - WinNo=" + m_WindowNo);
+		if (log.isLoggable(Level.INFO)) log.info( "VTreeBOM.init - WinNo=" + m_WindowNo);
 		try
 		{
 			preInit();

@@ -107,7 +107,7 @@ public class RegistrationServlet extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		if (!processSystemRegistration(request, response))
 		{
 			log.info("Forward to registration.jsp");
@@ -132,7 +132,7 @@ public class RegistrationServlet extends HttpServlet
 		//	Not a System registration
 		if ((name == null || name.length() == 0)&& (userName == null || userName.length() == 0) && (password == null || password.length() == 0))
 			return false;
-		log.info ("Name=" + name + ", User=" + userName);
+		if (log.isLoggable(Level.INFO)) log.info ("Name=" + name + ", User=" + userName);
 		//	Registration Info
 		String description = WebUtil.getParameter (request, "Description");
 		boolean inProduction = WebUtil.getParameterAsBoolean(request, "IsInProduction", "Y");
@@ -241,7 +241,7 @@ public class RegistrationServlet extends HttpServlet
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 
 		//  Get Session attributes
 		HttpSession session = request.getSession(true);

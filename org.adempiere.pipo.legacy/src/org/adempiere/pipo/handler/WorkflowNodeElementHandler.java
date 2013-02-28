@@ -19,6 +19,7 @@ package org.adempiere.pipo.handler;
 
 import java.math.BigDecimal;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -39,9 +40,9 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		Attributes atts = element.attributes;
 		String elementValue = element.getElementValue();
-		log.info(elementValue + " " + atts.getValue("Name"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + atts.getValue("Name"));
 		String entitytype = atts.getValue("EntityType");
-		log.info("entitytype " + atts.getValue("EntityType"));
+		if (log.isLoggable(Level.INFO)) log.info("entitytype " + atts.getValue("EntityType"));
 
 		if (isProcessElement(ctx, entitytype)) {
 			if (element.parent != null && element.parent.skip) {

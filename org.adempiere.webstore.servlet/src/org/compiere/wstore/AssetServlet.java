@@ -106,7 +106,7 @@ public class AssetServlet extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("Get from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("Get from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		Properties ctx = JSPEnv.getCtx(request);
 		HttpSession session = request.getSession(false);
 		//
@@ -133,7 +133,7 @@ public class AssetServlet extends HttpServlet
 				return;
 		}
 
-		log.info ("Forward to " + url);
+		if (log.isLoggable(Level.INFO)) log.info ("Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 		dispatcher.forward (request, response);
 	}	//	doGet

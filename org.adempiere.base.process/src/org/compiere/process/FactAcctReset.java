@@ -101,7 +101,7 @@ public class FactAcctReset extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("AD_Client_ID=" + p_AD_Client_ID 
+		if (log.isLoggable(Level.INFO)) log.info("AD_Client_ID=" + p_AD_Client_ID 
 			+ ", AD_Table_ID=" + p_AD_Table_ID + ", DeletePosting=" + p_DeletePosting);
 		//	List of Tables with Accounting Consequences
 		String sql = "SELECT AD_Table_ID, TableName "
@@ -178,12 +178,12 @@ public class FactAcctReset extends SvrProcess
 			Timestamp temp = TimeUtil.addDays(today, - as.getPeriod_OpenHistory());
 			if ( p_DateAcct_From == null || p_DateAcct_From.before(temp) ) {
 				p_DateAcct_From = temp;
-				log.info("DateAcct From set to: " + p_DateAcct_From);
+				if (log.isLoggable(Level.INFO)) log.info("DateAcct From set to: " + p_DateAcct_From);
 			}
 			temp = TimeUtil.addDays(today, as.getPeriod_OpenFuture());
 			if ( p_DateAcct_To == null || p_DateAcct_To.after(temp) ) {
 				p_DateAcct_To = temp;
-				log.info("DateAcct To set to: " + p_DateAcct_To);
+				if (log.isLoggable(Level.INFO)) log.info("DateAcct To set to: " + p_DateAcct_To);
 			}
 		}
 
@@ -292,7 +292,7 @@ public class FactAcctReset extends SvrProcess
 		
 		int deleted = DB.executeUpdate(sql2, get_TrxName());
 		//
-		log.info(TableName + "(" + AD_Table_ID + ") - Reset=" + reset + " - Deleted=" + deleted);
+		if (log.isLoggable(Level.INFO)) log.info(TableName + "(" + AD_Table_ID + ") - Reset=" + reset + " - Deleted=" + deleted);
 		String s = TableName + " - Reset=" + reset + " - Deleted=" + deleted;
 		addLog(s);
 		//

@@ -53,7 +53,7 @@ public class PaymentTermValidate extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info ("C_PaymentTerm_ID=" + getRecord_ID());
+		if (log.isLoggable(Level.INFO)) log.info ("C_PaymentTerm_ID=" + getRecord_ID());
 		MPaymentTerm pt = new MPaymentTerm (getCtx(), getRecord_ID(), get_TrxName());
 		String msg = pt.validate();
 		pt.saveEx();

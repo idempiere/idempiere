@@ -114,11 +114,11 @@ public class PackIn {
 	 * @return status message
 	 */
 	public String importXML(String fileName, Properties ctx, String trxName) throws Exception {
-		log.info("importXML:" + fileName);
+		if (log.isLoggable(Level.INFO)) log.info("importXML:" + fileName);
 		File in = new File(fileName);
 		if (!in.exists()) {
 			String msg = "File does not exist: " + fileName;
-			log.info("importXML:" + msg);
+			if (log.isLoggable(Level.INFO)) log.info("importXML:" + msg);
 			return msg;
 		}
 		try {

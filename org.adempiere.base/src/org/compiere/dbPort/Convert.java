@@ -128,10 +128,11 @@ public abstract class Convert
 				}
 				else
 				{
-					if (m_verbose)
-						log.info("Executing (" + i + ") <<" + statement + ">>");
-					else
-						log.info("Executing " + i);
+					if (m_verbose) {
+						if (log.isLoggable(Level.INFO)) log.info("Executing (" + i + ") <<" + statement + ">>");
+					} else {
+						if (log.isLoggable(Level.INFO)) log.info("Executing " + i);
+					}
 					try
 					{
 						m_stmt.clearWarnings();
@@ -139,12 +140,13 @@ public abstract class Convert
 						SQLWarning warn = m_stmt.getWarnings();
 						if (warn != null)
 						{
-							if (m_verbose)
-								log.info("- " + warn);
-							else
-							{
-								log.info("Executing (" + i + ") <<" + statement + ">>");
-								log.info("- " + warn);
+							if (m_verbose) {
+								if (log.isLoggable(Level.INFO)) log.info("- " + warn);
+							} else {
+								if (log.isLoggable(Level.INFO)) {
+									log.info("Executing (" + i + ") <<" + statement + ">>");
+									log.info("- " + warn);
+								}
 							}
 						}
 						if (m_verbose)
@@ -159,8 +161,8 @@ public abstract class Convert
 							m_exception = ex;
 						}
 						if (!m_verbose)
-							log.info("Executing (" + i + ") <<" + statement + ">>");
-						log.info("Error executing " + i + "/" + sql.length + " = " + ex);
+							if (log.isLoggable(Level.INFO)) log.info("Executing (" + i + ") <<" + statement + ">>");
+						if (log.isLoggable(Level.INFO)) log.info("Error executing " + i + "/" + sql.length + " = " + ex);
 					}
 				}
 			}   //  for all statements
@@ -169,8 +171,8 @@ public abstract class Convert
 		{
 			m_exception = e;
 			if (!m_verbose)
-				log.info("Executing (" + i + ") <<" + statement + ">>");
-			log.info("Error executing " + i + "/" + sql.length + " = " + e);
+				if (log.isLoggable(Level.INFO)) log.info("Executing (" + i + ") <<" + statement + ">>");
+			if (log.isLoggable(Level.INFO)) log.info("Error executing " + i + "/" + sql.length + " = " + e);
 			return false;
 		}
 		return ok;
@@ -212,7 +214,7 @@ public abstract class Convert
 			//  line.separator
 			sb.append(sql[i]).append("\n/\n");
 			if (m_verbose)
-				log.info("Statement " + i + ": " + sql[i]);
+				if (log.isLoggable(Level.INFO)) log.info("Statement " + i + ": " + sql[i]);
 		}
 		return sb.toString();
 	}   //  convertAll

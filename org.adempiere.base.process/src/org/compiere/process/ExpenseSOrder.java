@@ -172,7 +172,7 @@ public class ExpenseSOrder extends SvrProcess
 	{
 		if (m_order == null)
 		{
-			log.info("New Order for " + bp + ", Project=" + tel.getC_Project_ID());
+			if (log.isLoggable(Level.INFO)) log.info("New Order for " + bp + ", Project=" + tel.getC_Project_ID());
 			m_order = new MOrder (getCtx(), 0, get_TrxName());
 			m_order.setAD_Org_ID(tel.getAD_Org_ID());
 			m_order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_OnCredit);

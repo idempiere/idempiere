@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -202,8 +203,8 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 					psNCondition = DB.prepareStatement(sql, getTrxName(ctx));
 					nodeNConditionrs = psNCondition.executeQuery();
 					while (nodeNConditionrs.next()) {
-					   ad_wf_nodenextcondition_id= nodeNConditionrs.getInt("AD_WF_NextCondition_ID");
-					   log.info("ad_wf_nodenextcondition_id: "+ String.valueOf(ad_wf_nodenextcondition_id));
+						ad_wf_nodenextcondition_id= nodeNConditionrs.getInt("AD_WF_NextCondition_ID");
+						if (log.isLoggable(Level.INFO)) log.info("ad_wf_nodenextcondition_id: "+ String.valueOf(ad_wf_nodenextcondition_id));
 						createNodeNextCondition(ctx, document, ad_wf_nodenextcondition_id);
 					}
 				}

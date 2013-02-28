@@ -95,7 +95,7 @@ public class OrderPOCreate extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("DateOrdered=" + p_DateOrdered_From + " - " + p_DateOrdered_To 
+		if (log.isLoggable(Level.INFO)) log.info("DateOrdered=" + p_DateOrdered_From + " - " + p_DateOrdered_To 
 			+ " - C_BPartner_ID=" + p_C_BPartner_ID + " - Vendor_ID=" + p_Vendor_ID
 			+ " - IsDropShip=" + p_IsDropShip + " - C_Order_ID=" + p_C_Order_ID);
 		if (p_C_Order_ID == 0
@@ -175,7 +175,7 @@ public class OrderPOCreate extends SvrProcess
 	 */
 	private int createPOFromSO (MOrder so) throws Exception
 	{
-		log.info(so.toString());
+		if (log.isLoggable(Level.INFO)) log.info(so.toString());
 		MOrderLine[] soLines = so.getLines(true, null);
 		if (soLines == null || soLines.length == 0)
 		{

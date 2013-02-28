@@ -285,7 +285,7 @@ public class Language implements Serializable
 			Locale locale = new Locale(language, country);
 			StringBuilder msglog = new StringBuilder()
 					.append("Adding Language=").append(language).append(", Country=").append(country).append(", Locale=").append(locale);			
-			log.info (msglog.toString());
+			if (log.isLoggable(Level.INFO)) log.info (msglog.toString());
 			Language ll = new Language (lang, lang, locale);
 			//	Add to Languages
 			ArrayList<Language> list = new ArrayList<Language>(Arrays.asList(s_languages));

@@ -95,7 +95,7 @@ public class DunningRunCreate extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("C_DunningRun_ID=" + p_C_DunningRun_ID
+		if (log.isLoggable(Level.INFO)) log.info("C_DunningRun_ID=" + p_C_DunningRun_ID
 			+ ", Dispute=" + p_IncludeInDispute
 			+ ", C_BP_Group_ID=" + p_C_BP_Group_ID
 			+ ", C_BPartner_ID=" + p_C_BPartner_ID);
@@ -168,7 +168,7 @@ public class DunningRunCreate extends SvrProcess
 			sql.append(" AND i.C_Currency_ID=").append(p_C_Currency_ID);
 		if ( p_AD_Org_ID != 0 )
 			sql.append(" AND i.AD_Org_ID=").append(p_AD_Org_ID);
-	//	log.info(sql);
+	//	if (log.isLoggable(Level.INFO)) log.info(sql);
 		
 		String sql2= "";
 		

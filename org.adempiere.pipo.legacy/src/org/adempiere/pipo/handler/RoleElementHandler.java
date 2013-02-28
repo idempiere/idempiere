@@ -62,7 +62,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		String elementValue = element.getElementValue();
 		Attributes atts = element.attributes;
-		log.info(elementValue + " " + atts.getValue("Name"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + atts.getValue("Name"));
 
 		String name = atts.getValue("Name");
 

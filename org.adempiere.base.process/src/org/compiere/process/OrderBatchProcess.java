@@ -88,7 +88,7 @@ public class OrderBatchProcess extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("C_DocTypeTarget_ID=" + p_C_DocTypeTarget_ID + ", DocStatus=" + p_DocStatus
+		if (log.isLoggable(Level.INFO)) log.info("C_DocTypeTarget_ID=" + p_C_DocTypeTarget_ID + ", DocStatus=" + p_DocStatus
 			+ ", IsSelfService=" + p_IsSelfService + ", C_BPartner_ID=" + p_C_BPartner_ID
 			+ ", DateOrdered=" + p_DateOrdered_From + "->" + p_DateOrdered_To
 			+ ", DocAction=" + p_DocAction + ", IsDelivered=" + p_IsDelivered
@@ -164,7 +164,7 @@ public class OrderBatchProcess extends SvrProcess
 	 */
 	private boolean process (MOrder order)
 	{
-		log.info(order.toString());
+		if (log.isLoggable(Level.INFO)) log.info(order.toString());
 		//
 		order.setDocAction(p_DocAction);
 		if (order.processIt(p_DocAction))

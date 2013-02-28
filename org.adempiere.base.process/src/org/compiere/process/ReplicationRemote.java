@@ -65,7 +65,7 @@ public class ReplicationRemote extends SvrProcess
 	public String doIt() throws Exception
 	{
 		ProcessInfo pi = getProcessInfo();
-		log.info("doIt - " + pi.getTitle());
+		if (log.isLoggable(Level.INFO)) log.info("doIt - " + pi.getTitle());
 		if (pi.getSerializableObject() instanceof RemoteSetupVO)
 			return setupRemote();
 		else if (pi.getSerializableObject() instanceof RemoteMergeDataVO)
@@ -89,7 +89,7 @@ public class ReplicationRemote extends SvrProcess
 	{
 		ProcessInfo pi = getProcessInfo();
 		RemoteSetupVO data = (RemoteSetupVO)pi.getSerializableObject();
-		log.info("setupRemote Start (" + pi + ") " + data);
+		if (log.isLoggable(Level.INFO)) log.info("setupRemote Start (" + pi + ") " + data);
 
 		RowSet rs = data.ReplicationTable;
 		try
@@ -127,7 +127,7 @@ public class ReplicationRemote extends SvrProcess
 			throw new Exception("setupRemote - Init Error - " + result);
 		pi.setSerializableObject(null);
 		pi.addLog(0,0, m_startDate, null, null);
-		log.info("setupRemote End (" + pi + ") " + data);
+		if (log.isLoggable(Level.INFO)) log.info("setupRemote End (" + pi + ") " + data);
 		return "Remote SetupRemote OK";
 	}	//	setupRemote
 
@@ -227,7 +227,7 @@ public class ReplicationRemote extends SvrProcess
 	{
 		ProcessInfo pi = getProcessInfo();
 		RemoteMergeDataVO data = (RemoteMergeDataVO)pi.getSerializableObject();
-		log.info("mergeDataWithCentral Start (" + pi + ") " + data);
+		if (log.isLoggable(Level.INFO)) log.info("mergeDataWithCentral Start (" + pi + ") " + data);
 		//	Merge Data from Central
 		RowSet sourceRS = data.CentralData;
 		if (sourceRS == null)
@@ -252,7 +252,7 @@ public class ReplicationRemote extends SvrProcess
 		RowSet rowset = ReplicationLocal.getRowSet(data.Sql, null);
 		//	Result
 		pi.setSerializableObject((Serializable)rowset);
-		log.info("mergeDataWithCentral End (" + pi + ") " + data);
+		if (log.isLoggable(Level.INFO)) log.info("mergeDataWithCentral End (" + pi + ") " + data);
 		return "Remote MergeDataWithCentral - " + data.TableName;
 	}	//	sendNewDataToCentral
 
@@ -267,7 +267,7 @@ public class ReplicationRemote extends SvrProcess
 	{
 		ProcessInfo pi = getProcessInfo();
 		RemoteUpdateVO data = (RemoteUpdateVO)pi.getSerializableObject();
-		log.info("receiveUpdateFromCentral Start (" + pi + ") - " + data);
+		if (log.isLoggable(Level.INFO)) log.info("receiveUpdateFromCentral Start (" + pi + ") - " + data);
 		//
 		RowSet sourceRS = data.CentralData;
 		if (sourceRS == null)
@@ -292,7 +292,7 @@ public class ReplicationRemote extends SvrProcess
 		}
 		//
 		pi.setSerializableObject(null);
-		log.info("receiveUpdateFromCentral End (" + pi + ") - " + data);
+		if (log.isLoggable(Level.INFO)) log.info("receiveUpdateFromCentral End (" + pi + ") - " + data);
 		return "Remote Receive Update from Central OK";
 	}	//	receiveUpdateFromCentral
 

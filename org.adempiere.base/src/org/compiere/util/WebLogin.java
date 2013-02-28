@@ -218,7 +218,7 @@ public class WebLogin
 		//	Login
 		else if ("Login".equals(m_mode))
 		{
-			log.info("** login " + m_email + "/" + m_password);
+			if (log.isLoggable(Level.INFO)) log.info("** login " + m_email + "/" + m_password);
 			//	add Cookie
 			WebUtil.addCookieWebUser(m_request, m_response, m_email, COOKIE_NAME);
 
@@ -260,7 +260,7 @@ public class WebLogin
 		//	Submit - update/new Contact
 		else if ("Submit".equals(m_mode))
 		{
-			log.info("** submit " + m_email + "/" + m_password + " - AddrConf=" + m_addressConfirm);
+			if (log.isLoggable(Level.INFO)) log.info("** submit " + m_email + "/" + m_password + " - AddrConf=" + m_addressConfirm);
 			//	we have a record for address update
 			if (m_wu != null && m_wu.isLoggedIn() && m_addressConfirm)	//	address update
 				;
@@ -439,7 +439,7 @@ public class WebLogin
     			return false;
     		}
 
-    		log.info(m_forward + " - " + m_wu.toString());
+    		if (log.isLoggable(Level.INFO)) log.info(m_forward + " - " + m_wu.toString());
 
     		String cmd = WebUtil.getParameter(m_request, "ReSend");
     		if (cmd != null && cmd.length() > 1)
@@ -457,7 +457,7 @@ public class WebLogin
     			return false;
     		}
 
-    		log.info(m_forward + " - " + m_wu.toString());
+    		if (log.isLoggable(Level.INFO)) log.info(m_forward + " - " + m_wu.toString());
 
     		MBPBankAccount thisBPBankAccount = m_wu.getBankAccount (true);
     		// As this sets bankaccountach 

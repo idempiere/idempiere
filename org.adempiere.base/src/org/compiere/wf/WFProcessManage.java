@@ -71,7 +71,7 @@ public class WFProcessManage extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		MWFProcess process = new MWFProcess (getCtx(), p_AD_WF_Process_ID, get_TrxName());
-		log.info("doIt - " + process);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - " + process);
 		
 		MUser user = MUser.get(getCtx(), getAD_User_ID());
 		//	Abort

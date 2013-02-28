@@ -250,7 +250,7 @@ public class AdempiereServerMgr
 			{
 				if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
 				{
-					log.info("Alive: " + server);
+					if (log.isLoggable(Level.INFO)) log.info("Alive: " + server);
 					noRunning++;
 				}
 				else
@@ -292,7 +292,7 @@ public class AdempiereServerMgr
 			log.log(Level.SEVERE, "Server=" + serverID, e);
 			return false;
 		}
-		log.info(server.toString());
+		if (log.isLoggable(Level.INFO)) log.info(server.toString());
 		return (server.scheduleFuture != null && !server.scheduleFuture.isDone());
 	}	//	startIt
 	
@@ -360,7 +360,7 @@ public class AdempiereServerMgr
 				}
 				else
 				{
-					log.info ("Stopped: " + server);
+					if (log.isLoggable(Level.INFO)) log.info ("Stopped: " + server);
 					noStopped++;
 				}
 			}
@@ -398,7 +398,7 @@ public class AdempiereServerMgr
 			log.log(Level.SEVERE, "stop", e);
 			return false;
 		}
-		log.info(server.toString());
+		if (log.isLoggable(Level.INFO)) log.info(server.toString());
 		return (server.scheduleFuture == null || server.scheduleFuture.isDone());
 	}	//	stop
 

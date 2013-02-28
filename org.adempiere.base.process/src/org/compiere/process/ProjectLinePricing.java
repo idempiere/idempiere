@@ -62,7 +62,7 @@ public class ProjectLinePricing extends SvrProcess
 		if (m_C_ProjectLine_ID == 0)
 			throw new IllegalArgumentException("No Project Line");
 		MProjectLine projectLine = new MProjectLine (getCtx(), m_C_ProjectLine_ID, get_TrxName());
-		log.info("doIt - " + projectLine);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - " + projectLine);
 		if (projectLine.getM_Product_ID() == 0)
 			throw new IllegalArgumentException("No Product");
 		//

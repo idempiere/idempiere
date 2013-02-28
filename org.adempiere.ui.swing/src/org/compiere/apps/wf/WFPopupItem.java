@@ -1,5 +1,7 @@
 package org.compiere.apps.wf;
 
+import java.util.logging.Level;
+
 import javax.swing.JMenuItem;
 
 import org.compiere.util.CLogger;
@@ -61,20 +63,20 @@ public class WFPopupItem extends JMenuItem {
 			MWFNodeNext newLine = new MWFNodeNext(m_node, m_AD_WF_NodeTo_ID);
 			newLine.setClientOrg(AD_Client_ID, 0);
 			newLine.saveEx();
-			log.info("Add Line to " + m_node + " -> " + newLine);
+			if (log.isLoggable(Level.INFO)) log.info("Add Line to " + m_node + " -> " + newLine);
 			wfp.load(m_AD_Workflow_ID, true);
 		}
 		//	Delete Node
 		else if (m_node != null && m_AD_WF_NodeTo_ID == -1)
 		{
-			log.info("Delete Node: " + m_node);
+			if (log.isLoggable(Level.INFO)) log.info("Delete Node: " + m_node);
 			m_node.delete(false);
 			wfp.load(m_AD_Workflow_ID, true);
 		}
 		//	Delete Line
 		else if (m_line != null)
 		{
-			log.info("Delete Line: " + m_line);
+			if (log.isLoggable(Level.INFO)) log.info("Delete Line: " + m_line);
 			m_line.delete(false);
 			wfp.load(m_AD_Workflow_ID, true);
 		}

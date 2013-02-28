@@ -24,6 +24,7 @@ package net.sf.compilo.report;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 
@@ -88,7 +89,7 @@ public class ReportPool
             	if (it.hasNext())
             	{
             		Integer key = it.next();
-            		log.info("Remove " + key + " from the report pool");
+            		if (log.isLoggable(Level.INFO)) log.info("Remove " + key + " from the report pool");
             		pool.remove(key);
             	}
             	size--;
@@ -97,7 +98,7 @@ public class ReportPool
             pool.put(new Integer(AD_Process_ID), reportinfo);
             size++;            
         }
-        log.info("Load " + reportinfo + " into Report Pool" + " Size=" + size);
+        if (log.isLoggable(Level.INFO)) log.info("Load " + reportinfo + " into Report Pool" + " Size=" + size);
     }
 
 }

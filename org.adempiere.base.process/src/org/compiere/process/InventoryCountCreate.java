@@ -105,7 +105,7 @@ public class InventoryCountCreate extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("M_Inventory_ID=" + p_M_Inventory_ID
+		if (log.isLoggable(Level.INFO)) log.info("M_Inventory_ID=" + p_M_Inventory_ID
 			+ ", M_Locator_ID=" + p_M_Locator_ID + ", LocatorValue=" + p_LocatorValue
 			+ ", ProductValue=" + p_ProductValue 
 			+ ", M_Product_Category_ID=" + p_M_Product_Category_ID
@@ -255,7 +255,7 @@ public class InventoryCountCreate extends SvrProcess
 				.append("SET QtyCount=0 ")
 				.append("WHERE M_Inventory_ID=").append(p_M_Inventory_ID);
 			int no = DB.executeUpdate(sql1.toString(), get_TrxName());
-			log.info("Set Cont to Zero=" + no);
+			if (log.isLoggable(Level.INFO)) log.info("Set Cont to Zero=" + no);
 		}
 		
 		//

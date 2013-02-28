@@ -319,7 +319,7 @@ public class FormFrame extends CFrame
 	
 	protected boolean openForm (int AD_Form_ID, String className, String name, GridTab gridTab)
 	{
-		log.info("AD_Form_ID=" + AD_Form_ID + " - Class=" + className);
+		if (log.isLoggable(Level.INFO)) log.info("AD_Form_ID=" + AD_Form_ID + " - Class=" + className);
 		Properties ctx = Env.getCtx();
 		Env.setContext(ctx, m_WindowNo, "WindowName", name);
 		setTitle(Env.getHeader(ctx, m_WindowNo));
@@ -389,7 +389,7 @@ public class FormFrame extends CFrame
 	{
 		if (busy == m_glassPane.isVisible())
 			return;
-		log.info("Busy=" + busy);
+		if (log.isLoggable(Level.INFO)) log.info("Busy=" + busy);
 		if (busy)
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		else

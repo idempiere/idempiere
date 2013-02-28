@@ -71,7 +71,7 @@ public class CopyOrder extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("C_Order_ID=" + p_C_Order_ID 
+		if (log.isLoggable(Level.INFO)) log.info("C_Order_ID=" + p_C_Order_ID 
 			+ ", C_DocType_ID=" + p_C_DocType_ID 
 			+ ", CloseDocument=" + p_IsCloseDocument);
 		if (p_C_Order_ID == 0)

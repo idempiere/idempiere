@@ -115,14 +115,14 @@ public class ImportHelper {
 		String AD_Client_Value = null;
 
 		AD_Client_Value = rootElement.getAttribute("AD_Client_Value");
-		log.info("AD_Client_Value = " + AD_Client_Value);
+		if (log.isLoggable(Level.INFO)) log.info("AD_Client_Value = " + AD_Client_Value);
 		if (AD_Client_Value == null || Util.isEmpty(AD_Client_Value)) 
 		{
 			throw new Exception(Msg.getMsg(ctx, "XMLClientValueMandatory"));
 		}
 		String version = null;
 		version = rootElement.getAttribute("Version");
-		log.info("Version = " + version);
+		if (log.isLoggable(Level.INFO)) log.info("Version = " + version);
 		if (version == null || Util.isEmpty(version)) 
 		{
 			throw new Exception(Msg.getMsg(ctx, "XMLVersionAttributeMandatory"));
@@ -138,11 +138,11 @@ public class ImportHelper {
 		{
 			throw new Exception(Msg.getMsg(ctx, "XMLClientNotFound"));
 		}
-		log.info(client.toString());
+		if (log.isLoggable(Level.INFO)) log.info(client.toString());
 
 		String EXP_Format_Value = null;
 		EXP_Format_Value = rootElement.getNodeName();
-		log.info("EXP_Format_Value = " + EXP_Format_Value);
+		if (log.isLoggable(Level.INFO)) log.info("EXP_Format_Value = " + EXP_Format_Value);
 
 		MEXPFormat expFormat = null;
 		expFormat = MEXPFormat.getFormatByValueAD_Client_IDAndVersion(ctx, EXP_Format_Value, client.getAD_Client_ID(), version, trxName);
@@ -156,19 +156,19 @@ public class ImportHelper {
 			{
 				throw new Exception(Msg.getMsg(ctx, "XMLClientNotFound"));
 			}
-			log.info(systemClient.toString());
+			if (log.isLoggable(Level.INFO)) log.info(systemClient.toString());
 			expFormat = MEXPFormat.getFormatByValueAD_Client_IDAndVersion(ctx, EXP_Format_Value, systemClient.getAD_Client_ID(), version, trxName);
 		}
 		if (expFormat == null || expFormat.getEXP_Format_ID() == 0) 
 		{
 			throw new Exception(Msg.getMsg(ctx, "EXPFormatNotFound"));
 		}
-		log.info("expFormat = " + expFormat.toString());
+		if (log.isLoggable(Level.INFO)) log.info("expFormat = " + expFormat.toString());
 		isChanged = false;
 		PO po = importElement(ctx, result, rootElement, expFormat, ReplicationType, trxName);
 		if(!po.is_Changed() && !isChanged)
 		{
-		    log.info("Object not changed = " + po.toString());
+		    if (log.isLoggable(Level.INFO)) log.info("Object not changed = " + po.toString());
 		    return;
 		}
 		
@@ -226,7 +226,7 @@ public class ImportHelper {
 				   DocAction document = (DocAction)po;
 				   String action = document.getDocAction();
 				   String status = document.getDocStatus();
-				   log.info("Document:"+document.toString() + " DocStauts:" + status + " DocAction:"+action);
+				   if (log.isLoggable(Level.INFO)) log.info("Document:"+document.toString() + " DocStauts:" + status + " DocAction:"+action);
 				   
 				   if(ModelValidator.TIMING_AFTER_REVERSECORRECT==ReplicationEvent)
 				   {   
@@ -242,7 +242,7 @@ public class ImportHelper {
 				   {	
 					   if(!document.processIt(action))
 					   {    
-					       log.info("PO.toString() = can not " + po.get_Value("DocAction"));
+					       if (log.isLoggable(Level.INFO)) log.info("PO.toString() = can not " + po.get_Value("DocAction"));
 					   }
 					   po.saveEx();
 				   }
@@ -282,7 +282,7 @@ public class ImportHelper {
 			}
 		}
 			
-		log.info("PO.toString() = " + po.toString());
+		if (log.isLoggable(Level.INFO)) log.info("PO.toString() = " + po.toString());
 
 		if (po.get_KeyColumns().length < 1) 
 		{
@@ -300,7 +300,7 @@ public class ImportHelper {
 		for (MEXPFormatLine formatLine : formatLines) 
 		{
 			log.info("=================== Beginnig of Format Line ===============================");
-			log.info("formatLine: [" + formatLine.toString() + "]");			
+			if (log.isLoggable(Level.INFO)) log.info("formatLine: [" + formatLine.toString() + "]");			
 			//Get the value
 			Object value = getValueFromFormat(formatLine,po,rootElement,result,ReplicationType);
 			if (value == null || value.toString().equals(""))
@@ -331,7 +331,7 @@ public class ImportHelper {
 		{
 			// XML Element
 			value = XMLHelper.getString(line.getValue(), rootElement);
-			log.info("value=[" + value + "]");
+			if (log.isLoggable(Level.INFO)) log.info("value=[" + value + "]");
 			
 		} 
 		else if (MEXPFormatLine.TYPE_ReferencedEXPFormat.equals(line.getType())) 
@@ -339,29 +339,29 @@ public class ImportHelper {
 			// Referenced Export Format
 			//get from cache
 			MEXPFormat referencedExpFormat = MEXPFormat.get(ctx, line.getEXP_EmbeddedFormat_ID(), po.get_TrxName());
-			log.info("referencedExpFormat = " + referencedExpFormat);
+			if (log.isLoggable(Level.INFO)) log.info("referencedExpFormat = " + referencedExpFormat);
 
 			int refRecord_ID = 0;
 			// Find Record_ID by ???Value??? In fact by Columns set as Part Of Unique Index in Export Format!
 			String xPath = null;
 			xPath = "" + line.getValue() + ""; 
 			
-			log.info("Seach for XML Element = " + xPath);
+			if (log.isLoggable(Level.INFO)) log.info("Seach for XML Element = " + xPath);
 			Element referencedNode = XMLHelper.getElement(xPath, rootElement);
 			
-			log.info("referencedNode = " + referencedNode);
+			if (log.isLoggable(Level.INFO)) log.info("referencedNode = " + referencedNode);
 			if(referencedNode!=null)
 			{
 				refRecord_ID = getID(ctx, referencedExpFormat, referencedNode, line.getValue(), po.get_TrxName());
-				log.info("refRecord_ID = " + refRecord_ID);
+				if (log.isLoggable(Level.INFO)) log.info("refRecord_ID = " + refRecord_ID);
 				value = new Integer(refRecord_ID);
 			}
 			else
 			{
-				log.info("NULL VALUE FOR " + xPath.toString());
+				if (log.isLoggable(Level.INFO)) log.info("NULL VALUE FOR " + xPath.toString());
 				value=null;
 			}
-			log.info("value=[" + value + "]");
+			if (log.isLoggable(Level.INFO)) log.info("value=[" + value + "]");
 		} 
 		else if (MEXPFormatLine.TYPE_EmbeddedEXPFormat.equals(line.getType())) 
 		{
@@ -379,22 +379,22 @@ public class ImportHelper {
 			// Embedded Export Format It is used for Parent-Son records like Order&OrderLine
 			//get from cache
 			MEXPFormat referencedExpFormat = MEXPFormat.get(ctx, line.getEXP_EmbeddedFormat_ID(), po.get_TrxName());
-			log.info("embeddedExpFormat = " + referencedExpFormat);
+			if (log.isLoggable(Level.INFO)) log.info("embeddedExpFormat = " + referencedExpFormat);
 
 			NodeList nodeList = XMLHelper.getNodeList("/"+rootElement.getNodeName() + "/" + line.getValue(), rootElement);
 			for (int j = 0; j < nodeList.getLength(); j++) 
 			{
 				Element referencedElement = (Element)nodeList.item(j);
-				log.info("EmbeddedEXPFormat - referencedElement.getNodeName = " + referencedElement.getNodeName());
+				if (log.isLoggable(Level.INFO)) log.info("EmbeddedEXPFormat - referencedElement.getNodeName = " + referencedElement.getNodeName());
 				
 				PO embeddedPo = null;
 				// Import embedded PO
 				log.info("=== BEGIN RECURSION CALL ===");
 				embeddedPo = importElement(ctx, result, referencedElement, referencedExpFormat,ReplicationType, po.get_TrxName());
-				log.info("embeddedPo = " + embeddedPo);
+				if (log.isLoggable(Level.INFO)) log.info("embeddedPo = " + embeddedPo);
 				if(!embeddedPo.is_Changed())
 				{
-				    log.info("Object not changed = " + po.toString());
+				    if (log.isLoggable(Level.INFO)) log.info("Object not changed = " + po.toString());
 				    continue;
 				}
 				else
@@ -411,7 +411,7 @@ public class ImportHelper {
 		{
 			// XML Attribute
 			value = XMLHelper.getString("@" + line.getValue(), rootElement);
-			log.info("value=[" + value + "]");
+			if (log.isLoggable(Level.INFO)) log.info("value=[" + value + "]");
 		} 
 		else 
 		{
@@ -433,7 +433,7 @@ public class ImportHelper {
 	private void setReplicaValues(Object value,MEXPFormatLine line,PO po,StringBuffer result)throws Exception
 	{
 		MColumn column = MColumn.get(ctx, line.getAD_Column_ID());
-		log.info("column=[" + column + "]");
+		if (log.isLoggable(Level.INFO)) log.info("column=[" + column + "]");
 		
 		if (value !=null)
 		{
@@ -457,12 +457,12 @@ public class ImportHelper {
 				{
 					clazz = String.class;
 				}	
-				log.info("clazz = " + clazz.getName());
+				if (log.isLoggable(Level.INFO)) log.info("clazz = " + clazz.getName());
 				
 				// Handle Date and Time
 				value = handleDateTime(value, column, line);
 				
-				log.info("formatLinesType = " + line.getType());
+				if (log.isLoggable(Level.INFO)) log.info("formatLinesType = " + line.getType());
 				
 				if (MEXPFormatLine.TYPE_EmbeddedEXPFormat.equals( line.getType() ) )  
 				{
@@ -475,7 +475,7 @@ public class ImportHelper {
 					{
 						// 
 						po.set_ValueOfColumn(line.getAD_Column_ID(), value);
-						log.info("Set value of column ["+column.getColumnName()+"]=["+value+"]");
+						if (log.isLoggable(Level.INFO)) log.info("Set value of column ["+column.getColumnName()+"]=["+value+"]");
 					} 
 					else if (  DisplayType.isID(column.getAD_Reference_ID())
 							|| DisplayType.Integer	==	column.getAD_Reference_ID()
@@ -491,11 +491,11 @@ public class ImportHelper {
 							value=null;
 						}
 						
-						log.info("About to set int value of column ["+column.getColumnName()+"]=["+value+"]");
+						if (log.isLoggable(Level.INFO)) log.info("About to set int value of column ["+column.getColumnName()+"]=["+value+"]");
 						
 						po.set_ValueOfColumn(line.getAD_Column_ID(), value);
 						
-						log.info("Set int value of column ["+column.getColumnName()+"]=["+value+"]");
+						if (log.isLoggable(Level.INFO)) log.info("Set int value of column ["+column.getColumnName()+"]=["+value+"]");
 						
 					} 
 					else if ( DisplayType.isNumeric(column.getAD_Reference_ID())	
@@ -512,11 +512,11 @@ public class ImportHelper {
 						}
 						//value = new Double( doubleValue );
 						
-						log.info("About to set BigDecimal value of column ["+column.getColumnName()+"]=["+value+"]");
+						if (log.isLoggable(Level.INFO)) log.info("About to set BigDecimal value of column ["+column.getColumnName()+"]=["+value+"]");
 						
 						po.set_ValueOfColumn(line.getAD_Column_ID(), value);
 						
-						log.info("Set BigDecimal value of column ["+column.getColumnName()+"]=["+value+"]");
+						if (log.isLoggable(Level.INFO)) log.info("Set BigDecimal value of column ["+column.getColumnName()+"]=["+value+"]");
 					} 
 					else if(DisplayType.YesNo == column.getAD_Reference_ID())
 					{
@@ -530,7 +530,7 @@ public class ImportHelper {
 					{
 						//
 						try {
-								log.info("About to set value of column ["+column.getColumnName()+"]=["+value+"]");
+								if (log.isLoggable(Level.INFO)) log.info("About to set value of column ["+column.getColumnName()+"]=["+value+"]");
 								
 								if(clazz == Boolean.class)
 								{
@@ -542,7 +542,7 @@ public class ImportHelper {
 									po.set_ValueOfColumn(line.getAD_Column_ID(), clazz.cast(value));
 								}
 								
-								log.info("Set value of column ["+column.getColumnName()+"]=["+value+"]");
+								if (log.isLoggable(Level.INFO)) log.info("Set value of column ["+column.getColumnName()+"]=["+value+"]");
 							} 
 							catch (ClassCastException ex) 
 							{
@@ -593,13 +593,15 @@ public class ImportHelper {
 			throw new IllegalArgumentException("expFormat, rootNode and RootnodeName can't be null!");
 		}
 		
-		log.info("expFormat = " + expFormat);
-		log.info("rootNode.getNodeName() = " + rootElement.getNodeName());
-		log.info("rootNodeName = " + rootNodeName);
+		if (log.isLoggable(Level.INFO)) {
+			log.info("expFormat = " + expFormat);
+			log.info("rootNode.getNodeName() = " + rootElement.getNodeName());
+			log.info("rootNodeName = " + rootNodeName);
+		}
 
 		if (rootElement.getParentNode() != null) 
 		{
-			log.info("rootNode.ParentName = " + rootElement.getParentNode().getNodeName());	
+			if (log.isLoggable(Level.INFO)) log.info("rootNode.ParentName = " + rootElement.getParentNode().getNodeName());	
 		}
 		
 		// Get list with all Unique columns!
@@ -618,7 +620,7 @@ public class ImportHelper {
 		for (MEXPFormatLine uniqueFormatLine : uniqueFormatLines) 
 		{
 			MColumn column = MColumn.get(ctx, uniqueFormatLine.getAD_Column_ID());
-			log.info("column = ["+column+"]");
+			if (log.isLoggable(Level.INFO)) log.info("column = ["+column+"]");
 			String valuecol=column.getColumnName();
 			
 			formatLines = formatLines + "|"+ valuecol;
@@ -629,28 +631,28 @@ public class ImportHelper {
 				String xPath = null;
 				xPath = ""+ uniqueFormatLine.getValue();
 				cols[col] = XMLHelper.getString(xPath, rootElement);
-				log.info("values[" + col + "]=" +  cols[col]);
+				if (log.isLoggable(Level.INFO)) log.info("values[" + col + "]=" +  cols[col]);
 				
 			} 
 			else if (MEXPFormatLine.TYPE_ReferencedEXPFormat.equals(uniqueFormatLine.getType())) 
 			{
 				// Referenced Export Format
-				log.info("referencedExpFormat.EXP_EmbeddedFormat_ID = " + uniqueFormatLine.getEXP_EmbeddedFormat_ID());
+				if (log.isLoggable(Level.INFO)) log.info("referencedExpFormat.EXP_EmbeddedFormat_ID = " + uniqueFormatLine.getEXP_EmbeddedFormat_ID());
 				//get from cache
 				MEXPFormat referencedExpFormat = MEXPFormat.get(ctx, uniqueFormatLine.getEXP_EmbeddedFormat_ID(), trxName);
-				log.info("referencedExpFormat = " + referencedExpFormat);
+				if (log.isLoggable(Level.INFO)) log.info("referencedExpFormat = " + referencedExpFormat);
 				
 				int record_ID = 0;
 				// Find Record_ID by ???Value??? In fact by Columns set as Part Of Unique Index in Export Format!
 				Element referencedNode = ((Element) rootElement.getElementsByTagName(uniqueFormatLine.getValue()).item(0));
-				log.info("referencedNode = " + referencedNode);
+				if (log.isLoggable(Level.INFO)) log.info("referencedNode = " + referencedNode);
 				if (referencedNode == null) 
 				{					
 					throw new IllegalArgumentException("referencedNode can't be found!");
 				}
 				record_ID = getID(ctx, referencedExpFormat, referencedNode, uniqueFormatLine.getValue(), trxName);
 
-				log.info("record_ID = " + record_ID);
+				if (log.isLoggable(Level.INFO)) log.info("record_ID = " + record_ID);
 				
 				cols[col] = new Integer(record_ID);
 			} 
@@ -754,7 +756,7 @@ public class ImportHelper {
 			record_id = po.get_ID();
 		}
 		
-		log.info("record_id = " + record_id);
+		if (log.isLoggable(Level.INFO)) log.info("record_id = " + record_id);
 		
 		return record_id;
 	}
@@ -773,7 +775,7 @@ public class ImportHelper {
 				{
 					m_customDateFormat = new SimpleDateFormat( formatLine.getDateFormat() ); // "MM/dd/yyyy"; MM/dd/yyyy hh:mm:ss
 					result = new Timestamp(m_customDateFormat.parse(valueString).getTime());
-					log.info("Custom Date Format; Parsed value = " + result.toString());
+					if (log.isLoggable(Level.INFO)) log.info("Custom Date Format; Parsed value = " + result.toString());
 				} 
 				else 
 				{
@@ -800,7 +802,7 @@ public class ImportHelper {
 				{
 					m_customDateFormat = new SimpleDateFormat( formatLine.getDateFormat() ); // "MM/dd/yyyy"
 					result = new Timestamp(m_customDateFormat.parse(valueString).getTime());
-					log.info("Custom Date Format; Parsed value = " + result.toString());
+					if (log.isLoggable(Level.INFO)) log.info("Custom Date Format; Parsed value = " + result.toString());
 				} 
 				else 
 				{

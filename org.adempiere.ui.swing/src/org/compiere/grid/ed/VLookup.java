@@ -671,7 +671,7 @@ public class VLookup extends JComponent
 			{
 				if (value instanceof Integer && m_lookup.getDisplayType() != DisplayType.ID) // for IDs is ok to be out of the list
 				{
-					log.info(m_columnName + "=" + value + ": not in Lookup - set to NULL");
+					if (log.isLoggable(Level.INFO)) log.info(m_columnName + "=" + value + ": not in Lookup - set to NULL");
 					actionCombo (null);             //  data binding (calls setValue again)
 					m_value = null;
 				}
@@ -783,7 +783,7 @@ public class VLookup extends JComponent
 				//  don't allow selection of inactive
 				if (s.startsWith(MLookup.INACTIVE_S) && s.endsWith(MLookup.INACTIVE_E))
 				{
-					log.info(m_columnName + " - selection inactive set to NULL");
+					if (log.isLoggable(Level.INFO)) log.info(m_columnName + " - selection inactive set to NULL");
 					value = null;
 				}
 			}
@@ -1456,7 +1456,7 @@ public class VLookup extends JComponent
 
 		int	AD_Window_ID = m_lookup.getZoom(zoomQuery);
 		//
-		log.info(m_columnName + " - AD_Window_ID=" + AD_Window_ID
+		if (log.isLoggable(Level.INFO)) log.info(m_columnName + " - AD_Window_ID=" + AD_Window_ID
 			+ " - Query=" + zoomQuery + " - Value=" + value);
 		//
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -1498,7 +1498,7 @@ public class VLookup extends JComponent
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		//
 		Object obj = m_combo.getSelectedItem();
-		log.info(m_columnName + " #" + m_lookup.getSize() + ", Selected=" + obj);
+		if (log.isLoggable(Level.INFO)) log.info(m_columnName + " #" + m_lookup.getSize() + ", Selected=" + obj);
 		//no need to refresh readonly lookup, just remove direct cache
 		if (!isReadWrite())
 		{
@@ -1518,7 +1518,7 @@ public class VLookup extends JComponent
 		}
 		//
 		setCursor(Cursor.getDefaultCursor());
-		log.info(m_columnName + " #" + m_lookup.getSize() + ", Selected=" + m_combo.getSelectedItem());
+		if (log.isLoggable(Level.INFO)) log.info(m_columnName + " #" + m_lookup.getSize() + ", Selected=" + m_combo.getSelectedItem());
 	}	//	actionRefresh
 
 

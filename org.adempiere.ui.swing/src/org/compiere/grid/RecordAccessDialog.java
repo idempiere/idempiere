@@ -68,7 +68,7 @@ public class RecordAccessDialog extends CDialog
 	public RecordAccessDialog(JFrame owner, int AD_Table_ID, int Record_ID)
 	{
 		super(owner, Msg.translate(Env.getCtx(), "RecordAccessDialog"));
-		log.info("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
+		if (log.isLoggable(Level.INFO)) log.info("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
 		m_AD_Table_ID = AD_Table_ID;
 		m_Record_ID = Record_ID;
 		try

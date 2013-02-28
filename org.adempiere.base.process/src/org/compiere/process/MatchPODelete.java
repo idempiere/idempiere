@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.util.logging.Level;
+
 import org.compiere.model.MMatchPO;
 import org.compiere.model.MOrderLine;
 import org.compiere.util.AdempiereUserError;
@@ -50,7 +52,7 @@ public class MatchPODelete extends SvrProcess
 	 */
 	protected String doIt()	throws Exception
 	{
-		log.info ("M_MatchPO_ID=" + p_M_MatchPO_ID);
+		if (log.isLoggable(Level.INFO)) log.info ("M_MatchPO_ID=" + p_M_MatchPO_ID);
 		MMatchPO po = new MMatchPO (getCtx(), p_M_MatchPO_ID, get_TrxName());
 		if (po.get_ID() == 0)
 			throw new AdempiereUserError("@NotFound@ @M_MatchPO_ID@ " + p_M_MatchPO_ID);

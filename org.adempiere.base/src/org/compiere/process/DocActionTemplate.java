@@ -19,6 +19,7 @@ package org.compiere.process;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.model.MDocType;
 import org.compiere.model.ModelValidationEngine;
@@ -126,7 +127,7 @@ public class DocActionTemplate extends PO implements DocAction
 	 */
 	public boolean unlockIt()
 	{
-		log.info("unlockIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
 	//	setProcessing(false);
 		return true;
 	}	//	unlockIt
@@ -137,7 +138,7 @@ public class DocActionTemplate extends PO implements DocAction
 	 */
 	public boolean invalidateIt()
 	{
-		log.info("invalidateIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("invalidateIt - " + toString());
 	//	setDocAction(DOCACTION_Prepare);
 		return true;
 	}	//	invalidateIt
@@ -148,7 +149,7 @@ public class DocActionTemplate extends PO implements DocAction
 	 */
 	public String prepareIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -184,7 +185,7 @@ public class DocActionTemplate extends PO implements DocAction
 	 */
 	public boolean  approveIt()
 	{
-		log.info("approveIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("approveIt - " + toString());
 	//	setIsApproved(true);
 		return true;
 	}	//	approveIt
@@ -195,7 +196,7 @@ public class DocActionTemplate extends PO implements DocAction
 	 */
 	public boolean rejectIt()
 	{
-		log.info("rejectIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("rejectIt - " + toString());
 	//	setIsApproved(false);
 		return true;
 	}	//	rejectIt
@@ -221,7 +222,7 @@ public class DocActionTemplate extends PO implements DocAction
 		//	Implicit Approval
 	//	if (!isApproved())
 			approveIt();
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		//
 		
 		//	User Validation
@@ -268,7 +269,7 @@ public class DocActionTemplate extends PO implements DocAction
 	 */
 	public boolean voidIt()
 	{
-		log.info("voidIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("voidIt - " + toString());
 		return closeIt();
 	}	//	voidIt
 	
@@ -279,7 +280,7 @@ public class DocActionTemplate extends PO implements DocAction
 	 */
 	public boolean closeIt()
 	{
-		log.info("closeIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("closeIt - " + toString());
 
 		//	Close Not delivered Qty
 	//	setDocAction(DOCACTION_None);
@@ -292,7 +293,7 @@ public class DocActionTemplate extends PO implements DocAction
 	 */
 	public boolean reverseCorrectIt()
 	{
-		log.info("reverseCorrectIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("reverseCorrectIt - " + toString());
 		return false;
 	}	//	reverseCorrectionIt
 	
@@ -302,7 +303,7 @@ public class DocActionTemplate extends PO implements DocAction
 	 */
 	public boolean reverseAccrualIt()
 	{
-		log.info("reverseAccrualIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("reverseAccrualIt - " + toString());
 		return false;
 	}	//	reverseAccrualIt
 	
@@ -312,7 +313,7 @@ public class DocActionTemplate extends PO implements DocAction
 	 */
 	public boolean reActivateIt()
 	{
-		log.info("reActivateIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("reActivateIt - " + toString());
 	//	setProcessed(false);
 		if (reverseCorrectIt())
 			return true;

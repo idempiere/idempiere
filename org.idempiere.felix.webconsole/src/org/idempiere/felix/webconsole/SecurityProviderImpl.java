@@ -3,6 +3,8 @@
  */
 package org.idempiere.felix.webconsole;
 
+import java.util.logging.Level;
+
 import org.apache.felix.webconsole.WebConsoleSecurityProvider;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
@@ -33,7 +35,7 @@ public class SecurityProviderImpl implements WebConsoleSecurityProvider {
 			log.warning ("Not a Sys Admin = " + username);
 			return null;
 		}
-		log.info ("Name=" + username);
+		if (log.isLoggable(Level.INFO)) log.info ("Name=" + username);
 		return Boolean.TRUE;
 	}
 

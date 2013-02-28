@@ -63,7 +63,7 @@ public class SLAMeasureProcess extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info ("PA_SLA_Measure_ID=" + p_PA_SLA_Measure_ID);
+		if (log.isLoggable(Level.INFO)) log.info ("PA_SLA_Measure_ID=" + p_PA_SLA_Measure_ID);
 		MSLAMeasure measure = new MSLAMeasure (getCtx(), p_PA_SLA_Measure_ID, get_TrxName());
 		if (measure.get_ID() == 0)
 			throw new AdempiereUserError("@PA_SLA_Measure_ID@ " + p_PA_SLA_Measure_ID);

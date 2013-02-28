@@ -73,7 +73,7 @@ public class InOutCreateInvoice extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("M_InOut_ID=" + p_M_InOut_ID 
+		if (log.isLoggable(Level.INFO)) log.info("M_InOut_ID=" + p_M_InOut_ID 
 			+ ", M_PriceList_ID=" + p_M_PriceList_ID
 			+ ", InvoiceDocumentNo=" + p_InvoiceDocumentNo);
 		if (p_M_InOut_ID == 0)

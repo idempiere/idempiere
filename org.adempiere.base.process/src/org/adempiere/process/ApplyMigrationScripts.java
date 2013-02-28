@@ -36,6 +36,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
 
 import org.compiere.process.SvrProcess;
 import org.compiere.util.CLogger;
@@ -64,7 +65,7 @@ public class ApplyMigrationScripts extends SvrProcess {
 					StringBuilder tmpSql = new StringBuilder(new String(scriptArray));
 
 					if (tmpSql.length() > 0) {
-						log.info("Executing script " + rs.getString(3));
+						if (log.isLoggable(Level.INFO)) log.info("Executing script " + rs.getString(3));
 						execOk = executeScript(tmpSql.toString(), rs.getString(3));
 						System.out.println();
 					}

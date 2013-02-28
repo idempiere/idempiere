@@ -199,7 +199,7 @@ public class RecordInfo extends CDialog
 		if (dse.Record_ID instanceof Integer)
 			Record_ID = ((Integer)dse.Record_ID).intValue();
 		else
-			log.info("dynInit - Invalid Record_ID=" + dse.Record_ID);
+			if (log.isLoggable(Level.INFO)) log.info("dynInit - Invalid Record_ID=" + dse.Record_ID);
 		if (Record_ID == 0)
 			return false;
 		

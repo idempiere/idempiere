@@ -179,7 +179,7 @@ public class AdempiereMonitor extends HttpServlet
 		if (serverID == null || serverID.length() == 0)
 			return false;
 		
-		log.info ("ServerID=" + serverID);
+		if (log.isLoggable(Level.INFO)) log.info ("ServerID=" + serverID);
 		ServerWrapper server = m_serverMgr.getServer(serverID);
 		if (server == null || server.getServer() == null)
 		{
@@ -250,7 +250,7 @@ public class AdempiereMonitor extends HttpServlet
 		if (serverID == null || serverID.length() == 0)
 			return false;
 		
-		log.info ("ServerID=" + serverID);
+		if (log.isLoggable(Level.INFO)) log.info ("ServerID=" + serverID);
 		ServerWrapper server = m_serverMgr.getServer(serverID);
 		if (server == null || server.getServer() == null)
 		{
@@ -274,7 +274,7 @@ public class AdempiereMonitor extends HttpServlet
 		String action = WebUtil.getParameter (request, "Action");
 		if (action == null || action.length() == 0)
 			return;
-		log.info ("Action=" + action);
+		if (log.isLoggable(Level.INFO)) log.info ("Action=" + action);
 		try
 		{
 			boolean start = action.startsWith("Start");
@@ -346,7 +346,7 @@ public class AdempiereMonitor extends HttpServlet
 		String traceLevel = WebUtil.getParameter (request, "TraceLevel");
 		if (traceLevel != null && traceLevel.length() > 0)
 		{
-			log.info ("New Level: " + traceLevel);
+			if (log.isLoggable(Level.INFO)) log.info ("New Level: " + traceLevel);
 			CLogMgt.setLevel(traceLevel);
 			Ini.setProperty(Ini.P_TRACELEVEL, traceLevel);
 			Ini.saveProperties(false);
@@ -356,7 +356,7 @@ public class AdempiereMonitor extends HttpServlet
 		if (traceCmd == null || traceCmd.length() == 0)
 			return false;
 		
-		log.info ("Command: " + traceCmd);
+		if (log.isLoggable(Level.INFO)) log.info ("Command: " + traceCmd);
 		CLogFile fileHandler = CLogFile.get (false, null, false);
 		//
 		if (traceCmd.equals("ROTATE"))
@@ -424,7 +424,7 @@ public class AdempiereMonitor extends HttpServlet
 		}
 		
 		//	Stream Log
-		log.info ("Streaming: " + traceCmd);
+		if (log.isLoggable(Level.INFO)) log.info ("Streaming: " + traceCmd);
 		try
 		{
 			long time = System.currentTimeMillis();		//	timer start
@@ -447,7 +447,7 @@ public class AdempiereMonitor extends HttpServlet
 			//
 			time = System.currentTimeMillis() - time;
 			double speed = (fileLength/(double)1024) / (time/(double)1000);
-			log.info("length=" 
+			if (log.isLoggable(Level.INFO)) log.info("length=" 
 				+ fileLength + " - " 
 				+ time + " ms - " 
 				+ speed + " kB/sec");
@@ -493,7 +493,7 @@ public class AdempiereMonitor extends HttpServlet
 		
 	//	log.info ("Test EMail: " + AD_Client_ID);
 		MClient client = MClient.get(new Properties(), AD_Client_ID);
-		log.info ("Test: " + client);
+		if (log.isLoggable(Level.INFO)) log.info ("Test: " + client);
 		
 		m_message = new p();
 		m_message.addElement(client.getName() + ": " + client.testEMail());

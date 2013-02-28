@@ -19,6 +19,7 @@ package org.adempiere.pipo.handler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -48,7 +49,7 @@ public class AdElementHandler extends AbstractElementHandler {
 		String Object_Status = null;
 
 		Attributes atts = element.attributes;
-		log.info(elementValue + " " + atts.getValue("ColumnName"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + atts.getValue("ColumnName"));
 
 		String entitytype = atts.getValue("EntityType");
 		String ColumnName = atts.getValue("ColumnName");

@@ -17,6 +17,7 @@
 package org.adempiere.pipo.handler;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -37,7 +38,7 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 	public void startElement(Properties ctx, Element element) throws SAXException {
 		Attributes atts = element.attributes;
 		String entitytype = atts.getValue("EntityType");
-		log.info("entitytype "+atts.getValue("EntityType"));
+		if (log.isLoggable(Level.INFO)) log.info("entitytype "+atts.getValue("EntityType"));
 
 		if (isProcessElement(ctx, entitytype)) {
 			if (element.parent != null && element.parent.skip) {

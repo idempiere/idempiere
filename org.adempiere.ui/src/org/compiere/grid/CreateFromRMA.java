@@ -41,7 +41,7 @@ public abstract class CreateFromRMA extends CreateFrom {
 	public CreateFromRMA(GridTab mTab)
 	{
 		super(mTab);
-		log.info(mTab.toString());
+		if (log.isLoggable(Level.INFO)) log.info(mTab.toString());
 	}
 	
 	@Override

@@ -103,7 +103,7 @@ public class InvoiceServlet extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 
 		String url = "/invoices.jsp";
 		//
@@ -126,7 +126,7 @@ public class InvoiceServlet extends HttpServlet
 				info.setMessage(msg);
 		}
 
-		log.info ("Forward to " + url);
+		if (log.isLoggable(Level.INFO)) log.info ("Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 		dispatcher.forward (request, response);
 	}	//	doGet
@@ -142,7 +142,7 @@ public class InvoiceServlet extends HttpServlet
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		doGet (request, response);
 	}	//	doPost
 
@@ -200,12 +200,11 @@ public class InvoiceServlet extends HttpServlet
 		//	Check if Invoice already created
 		String fileName = invoice.getPDFFileName (dirName);
 		File file = new File(fileName);
-		if (file.exists() && file.isFile() && file.length() > MIN_SIZE)	
-			log.info("Existing: " + file  
-				+ " - " + new Timestamp(file.lastModified()));
-		else
-		{
-			log.info("New: " + fileName);
+		if (file.exists() && file.isFile() && file.length() > MIN_SIZE) {	
+			if (log.isLoggable(Level.INFO)) log.info("Existing: " + file  
+					+ " - " + new Timestamp(file.lastModified()));
+		} else {
+			if (log.isLoggable(Level.INFO)) log.info("New: " + fileName);
 			file = invoice.createPDF (file);
 			if (file != null)
 			{

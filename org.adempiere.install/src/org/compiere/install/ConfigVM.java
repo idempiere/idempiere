@@ -17,6 +17,7 @@
 package org.compiere.install;
 
 import java.io.File;
+import java.util.logging.Level;
 
 import org.compiere.util.CLogMgt;
 
@@ -69,7 +70,7 @@ public class ConfigVM extends Config
 		if (CLogMgt.isLevelFinest())
 			CLogMgt.printProperties(System.getProperties(), "System", true);
 		//
-		log.info("OK: JavaHome=" + javaHome.getAbsolutePath());
+		if (log.isLoggable(Level.INFO)) log.info("OK: JavaHome=" + javaHome.getAbsolutePath());
 		setProperty(ConfigurationData.JAVA_HOME, javaHome.getAbsolutePath());
 		System.setProperty(ConfigurationData.JAVA_HOME, javaHome.getAbsolutePath());
 
@@ -82,7 +83,7 @@ public class ConfigVM extends Config
 		if (!pass && thisJV.indexOf(VERSION2) != -1)
 			pass = true;
 		if (pass)
-		  log.info("OK: Version=" + thisJV);
+		  if (log.isLoggable(Level.INFO)) log.info("OK: Version=" + thisJV);
 
 		error = "Wrong Java Version: Should be " + VERSION + " and above.";
 		if (getPanel() != null)

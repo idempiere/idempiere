@@ -95,7 +95,7 @@ public class PaySelectionCreateFrom extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info ("C_PaySelection_ID=" + p_C_PaySelection_ID
+		if (log.isLoggable(Level.INFO)) log.info ("C_PaySelection_ID=" + p_C_PaySelection_ID
 			+ ", OnlyDiscount=" + p_OnlyDiscount + ", OnlyDue=" + p_OnlyDue
 			+ ", IncludeInDispute=" + p_IncludeInDispute
 			+ ", MatchRequirement=" + p_MatchRequirement

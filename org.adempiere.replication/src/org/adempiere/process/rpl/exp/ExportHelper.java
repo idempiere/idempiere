@@ -108,17 +108,18 @@ public class ExportHelper {
 	public String exportRecord (PO po, Integer ReplicationMode , String ReplicationType, Integer ReplicationEvent) throws Exception
 	{
 		MClient client = MClient.get (po.getCtx(), m_AD_Client_ID);
-		log.info("Client = " + client.toString());
+		if (log.isLoggable(Level.INFO)) {
+			log.info("Client = " + client.toString());
+			log.info("po.getAD_Org_ID() = " + po.getAD_Org_ID());
+			log.info("po.get_TrxName() = " + po.get_TrxName());
+		}
 
-		log.info("po.getAD_Org_ID() = " + po.getAD_Org_ID());
-
-		log.info("po.get_TrxName() = " + po.get_TrxName());
 		if (po.get_TrxName() == null || po.get_TrxName().equals("")) {
 			po.set_TrxName("exportRecord");
 		}
 
 
-		log.info("Table = " + po.get_TableName());
+		if (log.isLoggable(Level.INFO)) log.info("Table = " + po.get_TableName());
 
 		if (po.get_KeyColumns().length < 1) {
 			throw new Exception(Msg.getMsg (po.getCtx(), "ExportNoneColumnKeyNotSupported"));//TODO: Create Mesagge.
@@ -133,7 +134,7 @@ public class ExportHelper {
 		if (exportFormat == null || exportFormat.getEXP_Format_ID() == 0) {
 			// Fall back to System Client
 			MClient systemClient = MClient.get (po.getCtx(), 0);
-			log.info(systemClient.toString());
+			if (log.isLoggable(Level.INFO)) log.info(systemClient.toString());
 			exportFormat = MEXPFormat.getFormatByAD_Client_IDAD_Table_IDAndVersion(po.getCtx(), 0, po.get_Table_ID(), version, po.get_TrxName());
 
 			if (exportFormat == null || exportFormat.getEXP_Format_ID() == 0) {
@@ -192,7 +193,7 @@ public class ExportHelper {
 	{
 		MClient client = MClient.get (exportFormat.getCtx(), m_AD_Client_ID);
 		MTable table = MTable.get(exportFormat.getCtx(), exportFormat.getAD_Table_ID());
-		log.info("Table = " + table);
+		if (log.isLoggable(Level.INFO)) log.info("Table = " + table);
 
 		Collection<PO> records = new Query(exportFormat.getCtx(),table.getTableName(), exportFormat.getWhereClause(), exportFormat.get_TrxName())
 		.setOnlyActiveRecords(true)
@@ -200,7 +201,7 @@ public class ExportHelper {
 
 		for (PO po : records)
 		{
-				log.info("Client = " + client.toString());
+				if (log.isLoggable(Level.INFO)) log.info("Client = " + client.toString());
 				if (log.isLoggable(Level.FINEST)){
 					log.finest("po.getAD_Org_ID() = " + po.getAD_Org_ID());
 					log.finest("po.get_TrxName() = " + po.get_TrxName());
@@ -253,7 +254,7 @@ public class ExportHelper {
 				// process single XML Attribute
 				// Create new element
 				Element newElement = outDocument.createElement(formatLine.getValue());
-				log.info("Format Line Seach key: "+ formatLine.getValue());
+				if (log.isLoggable(Level.INFO)) log.info("Format Line Seach key: "+ formatLine.getValue());
 				if (formatLine.getAD_Column_ID() == 0) {
 					throw new Exception(Msg.getMsg (masterPO.getCtx(), "EXPColumnMandatory"));
 				}
@@ -300,7 +301,7 @@ public class ExportHelper {
 						}
 					}
 				}
-				log.info("EXP Field - column=["+column.getColumnName()+"]; value=" + value);
+				if (log.isLoggable(Level.INFO)) log.info("EXP Field - column=["+column.getColumnName()+"]; value=" + value);
 				if (valueString != null && !"".equals(valueString) && !"null".equals(valueString)) {
 					Text newText = outDocument.createTextNode(valueString);
 					newElement.appendChild(newText);
@@ -360,7 +361,7 @@ public class ExportHelper {
 						}
 					}
 				}*/
-				log.info("EXP Field - column=["+column.getColumnName()+"]; value=" + value);
+				if (log.isLoggable(Level.INFO)) log.info("EXP Field - column=["+column.getColumnName()+"]; value=" + value);
 				if (valueString != null && !"".equals(valueString) && !"null".equals(valueString)) {
 					rootElement.setAttribute(formatLine.getValue(), valueString);
 					elementHasValue = true;
@@ -378,7 +379,7 @@ public class ExportHelper {
 				MEXPFormat embeddedFormat = MEXPFormat.get(masterPO.getCtx(), embeddedFormat_ID, masterPO.get_TrxName());
 
 				MTable tableEmbedded = MTable.get(masterPO.getCtx(), embeddedFormat.getAD_Table_ID());
-				log.info("Table Embedded = " + tableEmbedded);
+				if (log.isLoggable(Level.INFO)) log.info("Table Embedded = " + tableEmbedded);
 
 				final StringBuilder whereClause = new StringBuilder(masterPO.get_KeyColumns()[0] +"=?");
 
@@ -414,7 +415,7 @@ public class ExportHelper {
 				MEXPFormat embeddedFormat =  MEXPFormat.get(masterPO.getCtx(), embeddedFormat_ID, masterPO.get_TrxName());
 
 				MTable tableEmbedded = MTable.get(masterPO.getCtx(), embeddedFormat.getAD_Table_ID());
-				log.info("Table Embedded = " + tableEmbedded);
+				if (log.isLoggable(Level.INFO)) log.info("Table Embedded = " + tableEmbedded);
 
 				final StringBuilder whereClause = new StringBuilder(tableEmbedded.getTableName() + "_ID =?");
 				if (embeddedFormat.getWhereClause() != null & !"".equals(embeddedFormat.getWhereClause()))

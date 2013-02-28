@@ -292,7 +292,7 @@ public abstract class Info extends CDialog
 		boolean multiSelection, String whereClause, boolean lookup)
 	{
 		super (frame, modal);
-		log.info("WinNo=" + p_WindowNo + " " + whereClause);
+		if (log.isLoggable(Level.INFO)) log.info("WinNo=" + p_WindowNo + " " + whereClause);
 		p_WindowNo = WindowNo;
 		p_tableName = tableName;
 		p_keyColumn = keyColumn;

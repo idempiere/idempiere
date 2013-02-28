@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -102,7 +103,7 @@ public class PrintPaperElementHandler extends AbstractElementHandler
 		final int id = get_IDWithColumn(ctx, getTableName(), getIdentifierColumnName(), strIdentifier);
 		final PO po = getCreatePO(ctx, id, getTrxName(ctx));
 		final String keyColumnName = getKeyColumnName();
-		log.info(elementValue+" "+strIdentifier+"["+id+"]");
+		if (log.isLoggable(Level.INFO)) log.info(elementValue+" "+strIdentifier+"["+id+"]");
 
 		if (id <= 0 && keyColumnName != null && getIntValue(atts, keyColumnName, 0) <= PackOut.MAX_OFFICIAL_ID)
 		{

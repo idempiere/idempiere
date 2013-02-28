@@ -75,7 +75,7 @@ public class VMatch extends Match
 	{
 		m_WindowNo = WindowNo;
 		m_frame = frame;
-		log.info("WinNo=" + m_WindowNo
+		if (log.isLoggable(Level.INFO)) log.info("WinNo=" + m_WindowNo
 			+ " - AD_Client_ID=" + m_AD_Client_ID + ", AD_Org_ID=" + m_AD_Org_ID + ", By=" + m_by);
 		Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", "N");
 

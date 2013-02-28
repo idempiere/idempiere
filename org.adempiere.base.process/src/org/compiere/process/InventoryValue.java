@@ -84,7 +84,7 @@ public class InventoryValue extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("M_Warehouse_ID=" + p_M_Warehouse_ID
+		if (log.isLoggable(Level.INFO)) log.info("M_Warehouse_ID=" + p_M_Warehouse_ID
 			+ ",C_Currency_ID=" + p_C_Currency_ID
 			+ ",DateValue=" + p_DateValue
 			+ ",M_PriceList_Version_ID=" + p_M_PriceList_Version_ID

@@ -144,7 +144,7 @@ public class RequisitionPOCreate extends SvrProcess
 		//	Specific
 		if (p_M_Requisition_ID != 0)
 		{
-			log.info("M_Requisition_ID=" + p_M_Requisition_ID);
+			if (log.isLoggable(Level.INFO)) log.info("M_Requisition_ID=" + p_M_Requisition_ID);
 			MRequisition req = new MRequisition(getCtx(), p_M_Requisition_ID, get_TrxName());
 			if (!MRequisition.DOCSTATUS_Completed.equals(req.getDocStatus()))
 			{
@@ -163,7 +163,7 @@ public class RequisitionPOCreate extends SvrProcess
 		}	//	single Requisition
 		
 		//	
-		log.info("AD_Org_ID=" + p_AD_Org_ID
+		if (log.isLoggable(Level.INFO)) log.info("AD_Org_ID=" + p_AD_Org_ID
 			+ ", M_Warehouse_ID=" + p_M_Warehouse_ID
 			+ ", DateDoc=" + p_DateDoc_From + "/" + p_DateDoc_To
 			+ ", DateRequired=" + p_DateRequired_From + "/" + p_DateRequired_To
@@ -443,7 +443,7 @@ public class RequisitionPOCreate extends SvrProcess
 		
 		if (!isGenerateForVendor(C_BPartner_ID))
 		{
-			log.info("Skip for partner "+C_BPartner_ID);
+			if (log.isLoggable(Level.INFO)) log.info("Skip for partner "+C_BPartner_ID);
 			return;
 		}
 

@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
@@ -168,7 +169,7 @@ public class QueryTicket extends PosQuery
 	@Override
 	public void actionPerformed (ActionEvent e)
 	{
-		log.info("PosQueryProduct.actionPerformed - " + e.getActionCommand());
+		if (log.isLoggable(Level.INFO)) log.info("PosQueryProduct.actionPerformed - " + e.getActionCommand());
 		if ("Refresh".equals(e.getActionCommand())
 			|| e.getSource() == f_processed || e.getSource() == f_documentno
 			|| e.getSource() == f_date)
@@ -281,7 +282,7 @@ public class QueryTicket extends PosQuery
 		
 		f_ok.setEnabled(enabled);
 		
-		log.info("ID=" + m_c_order_id); 
+		if (log.isLoggable(Level.INFO)) log.info("ID=" + m_c_order_id); 
 	}	//	enableButtons
 
 	/**
@@ -291,7 +292,7 @@ public class QueryTicket extends PosQuery
 	@Override
 	protected void close()
 	{
-		log.info("C_Order_ID=" + m_c_order_id); 
+		if (log.isLoggable(Level.INFO)) log.info("C_Order_ID=" + m_c_order_id); 
 		
 		if (m_c_order_id > 0)
 		{

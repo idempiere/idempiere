@@ -59,7 +59,7 @@ public class RequestReOpen extends SvrProcess
 	protected String doIt () throws Exception
 	{
 		MRequest request = new MRequest (getCtx(), p_R_Request_ID, get_TrxName());
-		log.info(request.toString());
+		if (log.isLoggable(Level.INFO)) log.info(request.toString());
 		if (request.get_ID() == 0)
 			throw new AdempiereUserError("@NotFound@ @R_Request_ID@ " + p_R_Request_ID);
 		

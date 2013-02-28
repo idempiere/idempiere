@@ -252,7 +252,7 @@ public final class APanel extends CPanel
 		for (int i = 0; i < m_mWorkbench.getWindowCount(); i++)
 		{
 			m_curWindowNo = m_mWorkbench.getWindowNo(i);
-			log.info("#" + m_curWindowNo);
+			if (log.isLoggable(Level.INFO)) log.info("#" + m_curWindowNo);
 			Env.setAutoCommit(m_ctx, m_curWindowNo, false);
 			m_mWorkbench.dispose(i);
 			Env.clearWinContext(m_ctx, m_curWindowNo);
@@ -675,7 +675,7 @@ public final class APanel extends CPanel
 	 */
 	public boolean initPanel (int AD_Workbench_ID, int AD_Window_ID, MQuery query)
 	{
-		log.info("WB=" + AD_Workbench_ID + ", Win=" + AD_Window_ID + ", Query=" + query);
+		if (log.isLoggable(Level.INFO)) log.info("WB=" + AD_Workbench_ID + ", Win=" + AD_Window_ID + ", Query=" + query);
 		this.setName("APanel" + AD_Window_ID);
 
 		//  Single Window
@@ -931,7 +931,7 @@ public final class APanel extends CPanel
 		}
 
 		Dimension size = getPreferredSize();
-		log.info( "fini - " + size);
+		if (log.isLoggable(Level.INFO)) log.info( "fini - " + size);
 		m_curWinTab.requestFocusInWindow();
 		return true;
 	}	//	initPanel
@@ -1169,7 +1169,7 @@ public final class APanel extends CPanel
 	{
 		if (m_disposing)
 			return;
-		log.info(e.getMessage());
+		if (log.isLoggable(Level.INFO)) log.info(e.getMessage());
 		String dbInfo = e.getMessage();
 		if (m_curTab != null && m_curTab.isQueryActive())
 			dbInfo = "[ " + dbInfo + " ]";
@@ -1345,7 +1345,7 @@ public final class APanel extends CPanel
 	{
 		if (m_disposing)
 			return;
-		log.info(e.toString());
+		if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		setBusy(true, true);
 
 		VTabbedPane tp = (VTabbedPane)e.getSource();
@@ -1360,7 +1360,7 @@ public final class APanel extends CPanel
 			int WBIndex = tabPanel.getSelectedIndex();
 			m_curWindowNo = m_mWorkbench.getWindowNo(WBIndex);
 			//  Window Change
-			log.info("curWin=" + m_curWindowNo + " - Win=" + tp);
+			if (log.isLoggable(Level.INFO)) log.info("curWin=" + m_curWindowNo + " - Win=" + tp);
 			if (tp.getSelectedComponent() instanceof JTabbedPane)
 				m_curWinTab = (JTabbedPane)tp.getSelectedComponent();
 			else
@@ -1379,7 +1379,7 @@ public final class APanel extends CPanel
 		else
 		{
 			//  Just a Tab Change
-			log.info("Tab=" + tp);
+			if (log.isLoggable(Level.INFO)) log.info("Tab=" + tp);
 			m_curWinTab = tp;
 			int tpIndex = m_curWinTab.getSelectedIndex();
 			//	detect no tab change
@@ -1696,7 +1696,7 @@ public final class APanel extends CPanel
 	 */
 	public void actionPerformed (ActionEvent e)
 	{
-		log.info(e.getActionCommand() + " - " + e.getModifiers());
+		if (log.isLoggable(Level.INFO)) log.info(e.getActionCommand() + " - " + e.getModifiers());
 		//	+ " - " + new Timestamp(e.getWhen()) + " " + isUILocked());
 		if (m_disposing || isUILocked())
 			return;
@@ -2348,7 +2348,7 @@ public final class APanel extends CPanel
 	private void cmd_zoomAcross()
 	{
 		int record_ID = m_curTab.getRecord_ID();
-		log.info("ID=" + record_ID);
+		if (log.isLoggable(Level.INFO)) log.info("ID=" + record_ID);
 		if (record_ID <= 0)
 			return;
 
@@ -2378,7 +2378,7 @@ public final class APanel extends CPanel
 	private void cmd_request()
 	{
 		int record_ID = m_curTab.getRecord_ID();
-		log.info("ID=" + record_ID);
+		if (log.isLoggable(Level.INFO)) log.info("ID=" + record_ID);
 		if (record_ID <= 0)
 			return;
 
@@ -2396,7 +2396,7 @@ public final class APanel extends CPanel
 	private void cmd_archive()
 	{
 		int record_ID = m_curTab.getRecord_ID();
-		log.info("ID=" + record_ID);
+		if (log.isLoggable(Level.INFO)) log.info("ID=" + record_ID);
 		if (record_ID <= 0)
 			return;
 
@@ -2419,7 +2419,7 @@ public final class APanel extends CPanel
 	{
 		//	Get process defined for this tab
 		int AD_Process_ID = m_curTab.getAD_Process_ID();
-		log.info("ID=" + AD_Process_ID);
+		if (log.isLoggable(Level.INFO)) log.info("ID=" + AD_Process_ID);
 
 		//	No report defined
 		if (AD_Process_ID == 0)
@@ -2474,7 +2474,7 @@ public final class APanel extends CPanel
 	private void cmd_attachment()
 	{
 		int record_ID = m_curTab.getRecord_ID();
-		log.info("Record_ID=" + record_ID);
+		if (log.isLoggable(Level.INFO)) log.info("Record_ID=" + record_ID);
 		if (record_ID == -1)	//	No Key
 		{
 			aAttachment.setEnabled(false);
@@ -2494,7 +2494,7 @@ public final class APanel extends CPanel
 	private void cmd_chat()
 	{
 		int record_ID = m_curTab.getRecord_ID();
-		log.info("Record_ID=" + record_ID);
+		if (log.isLoggable(Level.INFO)) log.info("Record_ID=" + record_ID);
 		if (record_ID == -1)	//	No Key
 		{
 			aChat.setEnabled(false);
@@ -2529,7 +2529,7 @@ public final class APanel extends CPanel
 	 */
 	private void cmd_lock()
 	{
-		log.info("Modifiers=" + m_lastModifiers);
+		if (log.isLoggable(Level.INFO)) log.info("Modifiers=" + m_lastModifiers);
 		if (!m_isPersonalLock)
 			return;
 		int record_ID = m_curTab.getRecord_ID();
@@ -2552,7 +2552,7 @@ public final class APanel extends CPanel
 	 */
 	private void cmd_history()
 	{
-		log.info("");
+		if (log.isLoggable(Level.INFO)) log.info("");
 		if (m_mWorkbench.getMWindow(getWindowIndex()).isTransaction())
 		{
 			if (m_curTab.needSave(true, true) && !cmd_save(false))
@@ -2646,7 +2646,7 @@ public final class APanel extends CPanel
 	 *  @param vButton button
 	 */
 	private void actionButton (VButton vButton){
-		log.info(vButton.toString());
+		if (log.isLoggable(Level.INFO)) log.info(vButton.toString());
 		String title = vButton.getDescription();
 		if (title == null || title.length() == 0)
 			title = vButton.getName();
@@ -3089,7 +3089,7 @@ public final class APanel extends CPanel
 		int ToolBarButton_ID = 0;
 
 		int[] restrictionList = MToolBarButtonRestrict.getOfWindow(m_ctx, MRole.getDefault().getAD_Role_ID(), m_window.getAD_Window_ID(), false, null);
-		log.info("restrictionList="+restrictionList.toString());
+		if (log.isLoggable(Level.INFO)) log.info("restrictionList="+restrictionList.toString());
 
 		for (int i = 0; i < restrictionList.length; i++)
 		{

@@ -99,11 +99,11 @@ public class DistributionCreate extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("M_DistributionList_ID=" + p_M_DistributionList_ID 
+		if (log.isLoggable(Level.INFO)) log.info("M_DistributionList_ID=" + p_M_DistributionList_ID 
 			+ ", M_Product_ID=" + p_M_Product_ID + ", Qty=" + p_Qty
 			+ ", Test=" + p_IsTest);
 		if (p_IsCreateSingleOrder)
-			log.info("SingleOrder=" + p_IsCreateSingleOrder
+			if (log.isLoggable(Level.INFO)) log.info("SingleOrder=" + p_IsCreateSingleOrder
 				+ ", BPartner_ID=" + p_Bill_BPartner_ID 
 				+ ", Location_ID=" + p_Bill_Location_ID);
 		//

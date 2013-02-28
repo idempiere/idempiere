@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.wf;
 
+import java.util.logging.Level;
+
 import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.Msg;
@@ -47,7 +49,7 @@ public class WorkflowValidate extends SvrProcess
 	protected String doIt () throws Exception
 	{
 		MWorkflow wf = MWorkflow.get (getCtx(), p_AD_Worlflow_ID);
-		log.info("WF=" + wf);
+		if (log.isLoggable(Level.INFO)) log.info("WF=" + wf);
 		
 		String msg = wf.validate();
 		wf.saveEx();

@@ -219,8 +219,7 @@ public abstract class AdempiereServer implements Runnable
 				p_model.getFrequency(), p_model.getCronPattern());
 
 		m_sleepMS = m_nextWork - now;
-		if (log.isLoggable(Level.INFO))
-			log.info(" Next run: " + new Timestamp(m_nextWork) + " sleep " + m_sleepMS);
+		if (log.isLoggable(Level.INFO)) log.info(" Next run: " + new Timestamp(m_nextWork) + " sleep " + m_sleepMS);
 		//
 		p_model.setDateLastRun(lastRun);
 		p_model.setDateNextRun(new Timestamp(m_nextWork));

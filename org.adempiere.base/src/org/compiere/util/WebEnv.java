@@ -111,7 +111,7 @@ public class WebEnv
 	{
 		if (s_initOK)
 		{
-			log.info(config.getServletName());
+			if (log.isLoggable(Level.INFO)) log.info(config.getServletName());
 			return true;
 		}
 
@@ -129,7 +129,7 @@ public class WebEnv
 		boolean retValue = initWeb (config.getServletContext());
 
 		//	Logging now initiated
-		log.info(info.toString());
+		if (log.isLoggable(Level.INFO)) log.info(info.toString());
 		return retValue;
 	}   //  initWeb
 
@@ -143,7 +143,7 @@ public class WebEnv
 	{
 		if (s_initOK)
 		{
-			log.info(context.getServletContextName());
+			if (log.isLoggable(Level.INFO)) log.info(context.getServletContextName());
 			return true;
 		}
 
@@ -177,7 +177,7 @@ public class WebEnv
 			return false;
 
 		//	Logging now initiated
-		log.info(info.toString());
+		if (log.isLoggable(Level.INFO)) log.info(info.toString());
 		//
 		Properties ctx = new Properties();
 		MClient client = MClient.get(ctx, 0);

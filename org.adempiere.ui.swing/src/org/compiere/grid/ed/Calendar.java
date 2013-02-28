@@ -95,7 +95,7 @@ public class Calendar extends CDialog
 	public Calendar (Frame frame, String title, Timestamp startTS, int displayType)
 	{
 		super (frame, title, true);
-		log.info(startTS==null ? "null" : startTS.toString() + " - DT=" + displayType);
+		if (log.isLoggable(Level.INFO)) log.info(startTS==null ? "null" : startTS.toString() + " - DT=" + displayType);
 		m_displayType = displayType;
 		//
 		try

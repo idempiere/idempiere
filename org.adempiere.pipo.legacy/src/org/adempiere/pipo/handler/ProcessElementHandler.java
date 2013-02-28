@@ -49,7 +49,7 @@ public class ProcessElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		String elementValue = element.getElementValue();
 		Attributes atts = element.attributes;
-		log.info(elementValue + " " + atts.getValue("Name"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + atts.getValue("Name"));
 		int id = 0;
 		String entitytype = atts.getValue("EntityType");
 		if (isProcessElement(ctx, entitytype)) {

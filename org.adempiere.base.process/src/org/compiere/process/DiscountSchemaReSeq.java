@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.util.logging.Level;
+
 import org.compiere.model.MDiscountSchema;
 import org.compiere.util.AdempiereUserError;
 
@@ -46,7 +48,7 @@ public class DiscountSchemaReSeq extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("M_DiscountSchema_ID=" + p_M_DiscountSchema_ID);
+		if (log.isLoggable(Level.INFO)) log.info("M_DiscountSchema_ID=" + p_M_DiscountSchema_ID);
 		if (p_M_DiscountSchema_ID == 0)
 			throw new AdempiereUserError("@M_DiscountSchema_ID@ = 0");
 		MDiscountSchema ds = new MDiscountSchema(getCtx(), p_M_DiscountSchema_ID, get_TrxName());

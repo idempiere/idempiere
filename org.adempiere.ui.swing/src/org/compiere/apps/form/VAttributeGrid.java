@@ -337,7 +337,7 @@ public class VAttributeGrid extends CPanel
 		if (xValues != null)
 		{
 			cols = xValues.length + 1;
-			log.info("X - " + m_attributes[indexAttr1-1].getName() + " #" + xValues.length);
+			if (log.isLoggable(Level.INFO)) log.info("X - " + m_attributes[indexAttr1-1].getName() + " #" + xValues.length);
 		}
 		
 		//	y dimension
@@ -348,7 +348,7 @@ public class VAttributeGrid extends CPanel
 		if (yValues != null)
 		{
 			rows = yValues.length + 1;
-			log.info("Y - " + m_attributes[indexAttr2-1].getName() + " #" + yValues.length);
+			if (log.isLoggable(Level.INFO)) log.info("Y - " + m_attributes[indexAttr2-1].getName() + " #" + yValues.length);
 		}
 		
 		//
@@ -357,7 +357,7 @@ public class VAttributeGrid extends CPanel
 		gridPanel.add(modePanel, BorderLayout.NORTH);
 		gridPanel.add(new CScrollPane(grid), BorderLayout.CENTER);
 		//
-		log.info("Rows=" + rows + " - Cols=" + cols);
+		if (log.isLoggable(Level.INFO)) log.info("Rows=" + rows + " - Cols=" + cols);
 		for (int row = 0; row < rows; row++)
 		{
 			for (int col = 0; col < cols; col++)

@@ -80,7 +80,7 @@ public class WebProjectDeploy extends SvrProcess
 	{
 		org.compiere.cm.CacheHandler thisHandler = new org.compiere.cm.CacheHandler(org.compiere.cm.CacheHandler.convertJNPURLToCacheURL(getCtx().getProperty("java.naming.provider.url")), log, getCtx(), get_TrxName());
 		
-		log.info("CM_WebProject_ID=" + p_CM_WebProject_ID);
+		if (log.isLoggable(Level.INFO)) log.info("CM_WebProject_ID=" + p_CM_WebProject_ID);
 		m_project = new MWebProject(getCtx(), p_CM_WebProject_ID, get_TrxName());
 		if (m_project.get_ID() != p_CM_WebProject_ID)
 			throw new AdempiereUserError("@NotFound@ @CM_WebProject_ID@ " + p_CM_WebProject_ID);

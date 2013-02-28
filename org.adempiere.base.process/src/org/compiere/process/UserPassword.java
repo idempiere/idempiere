@@ -77,7 +77,7 @@ public class UserPassword extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info ("AD_User_ID=" + p_AD_User_ID + " from " + getAD_User_ID());
+		if (log.isLoggable(Level.INFO)) log.info ("AD_User_ID=" + p_AD_User_ID + " from " + getAD_User_ID());
 		
 		MUser user = MUser.get(getCtx(), p_AD_User_ID);
 		user.load(get_TrxName());

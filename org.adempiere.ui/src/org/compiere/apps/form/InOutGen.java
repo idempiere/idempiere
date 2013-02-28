@@ -258,7 +258,7 @@ public class InOutGen extends GenForm
 	public String generate(IStatusBar statusBar, KeyNamePair docTypeKNPair, String docActionSelected)
 	{
 		String info = "";
-		log.info("M_Warehouse_ID=" + m_M_Warehouse_ID);
+		if (log.isLoggable(Level.INFO)) log.info("M_Warehouse_ID=" + m_M_Warehouse_ID);
 		String trxName = Trx.createTrxName("IOG");	
 		Trx trx = Trx.get(trxName, true);	//trx needs to be committed too
 		

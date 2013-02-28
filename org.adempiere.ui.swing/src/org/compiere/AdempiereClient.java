@@ -71,7 +71,7 @@ public final class AdempiereClient
 		//	Init Log
 		log = CLogger.getCLogger(AdempiereClient.class);
 		//	Greeting
-		log.info(Adempiere.getSummaryAscii());
+		if (log.isLoggable(Level.INFO)) log.info(Adempiere.getSummaryAscii());
 	//	log.info(getAdempiereHome() + " - " + getJavaInfo() + " - " + getOSInfo());
 
 		//  Load System environment

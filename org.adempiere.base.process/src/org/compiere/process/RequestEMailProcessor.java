@@ -133,7 +133,7 @@ public class RequestEMailProcessor extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("doIt - IMAPHost=" + p_IMAPHost +
+		if (log.isLoggable(Level.INFO)) log.info("doIt - IMAPHost=" + p_IMAPHost +
 				       " IMAPUser=" + p_IMAPUser  +
 				       // " IMAPPwd=" + p_IMAPPwd +
 				       " RequestFolder=" + p_RequestFolder +
@@ -276,8 +276,8 @@ public class RequestEMailProcessor extends SvrProcess
 						msg.setFlag(Flags.Flag.ANSWERED, true);
 						requestFolder.appendMessages(new Message[]{msg});
 						// log movement
-						log.info("message " + hdrs[0] + " moved to " + p_RequestFolder + " folder");
-						log.info("message info: Sent -> " + msg.getSentDate() + " From -> " + msg.getFrom()[0].toString());
+						if (log.isLoggable(Level.INFO)) log.info("message " + hdrs[0] + " moved to " + p_RequestFolder + " folder");
+						if (log.isLoggable(Level.INFO)) log.info("message info: Sent -> " + msg.getSentDate() + " From -> " + msg.getFrom()[0].toString());
 						// Delete in InBox
 						msg.setFlag(Flags.Flag.DELETED, true);
 						@SuppressWarnings("unused")
@@ -286,7 +286,7 @@ public class RequestEMailProcessor extends SvrProcess
 						noRequest++;
 					}
 				} catch (Exception e) {
-					log.info("message " + hdrs[0] + " threw error");
+					if (log.isLoggable(Level.INFO)) log.info("message " + hdrs[0] + " threw error");
 					e.printStackTrace();
 				}
 			}
@@ -313,7 +313,7 @@ public class RequestEMailProcessor extends SvrProcess
 			noProcessed++;
 		}
 		
-		log.info("processInBox - Total=" + noProcessed + 
+		if (log.isLoggable(Level.INFO)) log.info("processInBox - Total=" + noProcessed + 
 				" - Requests=" + noRequest + 
 				" - Errors=" + noError);
 		//	Fini
@@ -338,7 +338,7 @@ public class RequestEMailProcessor extends SvrProcess
 		// Carlos Ruiz <c_ruiz@myrealbox.com>
 		if (from[0].toString().indexOf('<')!= -1 && from[0].toString().indexOf('>')!= -1) {
 			fromAddress = from[0].toString().substring(from[0].toString().indexOf('<')+1, from[0].toString().indexOf('>'));
-			log.info("fromAddress stripped: "+fromAddress);
+			if (log.isLoggable(Level.INFO)) log.info("fromAddress stripped: "+fromAddress);
 		} else {
 			fromAddress = from[0].toString(); 
 		}
@@ -372,7 +372,7 @@ public class RequestEMailProcessor extends SvrProcess
 			rsdup = null;pstmtdup = null;
 		}
 		if (retValuedup > 0) {
-			log.info("request already existed for msg -> " + hdrs[0]);
+			if (log.isLoggable(Level.INFO)) log.info("request already existed for msg -> " + hdrs[0]);
 			return true;
 		}
 		
@@ -424,7 +424,7 @@ public class RequestEMailProcessor extends SvrProcess
 			rsupd = null;pstmtupd = null;
 		}
 		if (request_upd > 0) {
-			log.info("msg -> " + hdrs[0] + " is an answer for req " + request_upd);
+			if (log.isLoggable(Level.INFO)) log.info("msg -> " + hdrs[0] + " is an answer for req " + request_upd);
 			return updateRequest(request_upd, msg);
 		}
 		
@@ -514,7 +514,7 @@ public class RequestEMailProcessor extends SvrProcess
 		}
 		
 		if (req.save(get_TrxName())) {
-			log.info("created request " + req.getR_Request_ID() + " from msg -> " + hdrs[0]);
+			if (log.isLoggable(Level.INFO)) log.info("created request " + req.getR_Request_ID() + " from msg -> " + hdrs[0]);
 			
 
 			// get simple attachments and attach to request

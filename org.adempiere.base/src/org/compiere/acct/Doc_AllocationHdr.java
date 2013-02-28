@@ -846,7 +846,7 @@ public class Doc_AllocationHdr extends Doc
 		DocLine_Allocation line,
 		MAccount DiscountAccount, MAccount WriteOffAccoint, boolean isSOTrx)
 	{
-		log.info (line.toString());
+		if (log.isLoggable(Level.INFO)) log.info (line.toString());
 		BigDecimal discount = Env.ZERO;
 		if (as.isTaxCorrectionDiscount())
 			discount = line.getDiscountAmt();
@@ -978,7 +978,7 @@ class Doc_AllocationTax
 		}
 
 		MFactAcct factAcct = (MFactAcct)m_facts.get(m_totalIndex);
-		log.info ("Total Invoice = " + total + " - " +  factAcct);
+		if (log.isLoggable(Level.INFO)) log.info ("Total Invoice = " + total + " - " +  factAcct);
 		int precision = as.getStdPrecision();
 		for (int i = 0; i < m_facts.size(); i++)
 		{
@@ -987,7 +987,7 @@ class Doc_AllocationTax
 				continue;
 
 			factAcct = (MFactAcct)m_facts.get(i);
-			log.info (i + ": " + factAcct);
+			if (log.isLoggable(Level.INFO)) log.info (i + ": " + factAcct);
 
 			//	Create Tax Account
 			MAccount taxAcct = factAcct.getMAccount();

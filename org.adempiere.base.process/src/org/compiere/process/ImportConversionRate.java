@@ -89,7 +89,7 @@ public class ImportConversionRate extends SvrProcess
 				.append(",C_ConversionType_ID=").append(p_C_ConversionType_ID)
 				.append(",ValidFrom=").append(p_ValidFrom)
 				.append(",CreateReciprocalRate=").append(p_CreateReciprocalRate);
-		log.info(msglog.toString());
+		if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 		//
 		StringBuilder sql = null;
 		int no = 0;
@@ -126,7 +126,7 @@ public class ImportConversionRate extends SvrProcess
 			.append(" I_IsImported = 'N' ")
 			.append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info ("Reset =" + no);
+		if (log.isLoggable(Level.INFO)) log.info ("Reset =" + no);
 
 		//	Org
 		sql = new StringBuilder ("UPDATE I_Conversion_Rate o ")

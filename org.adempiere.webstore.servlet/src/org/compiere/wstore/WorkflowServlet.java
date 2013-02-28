@@ -103,7 +103,7 @@ public class WorkflowServlet extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("doGet from " + request.getRemoteHost() + " - " + request.getRemoteAddr() + " - forward to notes.jsp");
+		if (log.isLoggable(Level.INFO)) log.info("doGet from " + request.getRemoteHost() + " - " + request.getRemoteAddr() + " - forward to notes.jsp");
 		String url = "/notes.jsp";
 		//
 		HttpSession session = request.getSession(false);
@@ -125,7 +125,7 @@ public class WorkflowServlet extends HttpServlet
 				info.setMessage(msg);
 		}
 
-		log.info ("doGet - Forward to " + url);
+		if (log.isLoggable(Level.INFO)) log.info ("doGet - Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 		dispatcher.forward (request, response);
 	}   //  doGet
@@ -151,7 +151,7 @@ public class WorkflowServlet extends HttpServlet
 			log.fine("streamAttachment - no index)");
 			return "No Request Attachment index";
 		}
-		log.info("streamAttachment - AD_WF_Activity_ID=" + AD_WF_Activity_ID + " / " + attachmentIndex);
+		if (log.isLoggable(Level.INFO)) log.info("streamAttachment - AD_WF_Activity_ID=" + AD_WF_Activity_ID + " / " + attachmentIndex);
 
 		//	Get Note
 		Properties ctx = JSPEnv.getCtx(request);
@@ -196,7 +196,7 @@ public class WorkflowServlet extends HttpServlet
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("doPost from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("doPost from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		String url = "/notes.jsp";
 		//
 	//	Log.setTraceLevel(9);
@@ -257,7 +257,7 @@ public class WorkflowServlet extends HttpServlet
 			}
 		}
 		
-		log.info ("doGet - Forward to " + url);
+		if (log.isLoggable(Level.INFO)) log.info ("doGet - Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 		dispatcher.forward (request, response);
 	}   //  doPost

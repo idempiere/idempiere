@@ -451,10 +451,9 @@ public abstract class Doc
 			sql.append(" AND (Processing='N' OR Processing IS NULL)");
 		if (!repost)
 			sql.append(" AND Posted='N'");
-		if (DB.executeUpdate(sql.toString(), trxName) == 1)
-			log.info("Locked: " + get_TableName() + "_ID=" + get_ID());
-		else
-		{
+		if (DB.executeUpdate(sql.toString(), trxName) == 1) {
+			if (log.isLoggable(Level.INFO)) log.info("Locked: " + get_TableName() + "_ID=" + get_ID());
+		} else {
 			log.log(Level.SEVERE, "Resubmit - Cannot lock " + get_TableName() + "_ID="
 				+ get_ID() + ", Force=" + force + ",RePost=" + repost);
 			if (!p_po.isActive())
@@ -611,7 +610,7 @@ public abstract class Doc
 			.append(" AND C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
 		int no = DB.executeUpdate(sql.toString(), getTrxName());
 		if (no != 0)
-			log.info("deleted=" + no);
+			if (log.isLoggable(Level.INFO)) log.info("deleted=" + no);
 		return no;
 	}	//	deleteAcct
 
@@ -699,7 +698,7 @@ public abstract class Doc
 	 */
 	private final String postCommit (String status)
 	{
-		log.info("Sta=" + status + " DT=" + getDocumentType()
+		if (log.isLoggable(Level.INFO)) log.info("Sta=" + status + " DT=" + getDocumentType()
 			+ " ID=" +  p_po.get_ID());
 		p_Status = status;
 

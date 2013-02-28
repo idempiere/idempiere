@@ -71,14 +71,14 @@ public class StorageCleanup extends SvrProcess
 			+ "WHERE QtyOnHand = 0"
 			+ " AND Created < SysDate-3";
 		int no = DB.executeUpdate(sql, get_TrxName());
-		log.info("Delete Empty #" + no);
+		if (log.isLoggable(Level.INFO)) log.info("Delete Empty #" + no);
 
 		//	Clean up empty Reservation Storage
 		sql = "DELETE FROM M_StorageReservation "
 			+ "WHERE Qty = 0"
 			+ " AND Created < SysDate-3";
 		no = DB.executeUpdate(sql, get_TrxName());
-		log.info("Delete Empty #" + no);
+		if (log.isLoggable(Level.INFO)) log.info("Delete Empty #" + no);
 
 		//
 		sql = "SELECT * "
@@ -134,7 +134,7 @@ public class StorageCleanup extends SvrProcess
 	 */
 	private int move (MStorageOnHand target)
 	{
-		log.info(target.toString());
+		if (log.isLoggable(Level.INFO)) log.info(target.toString());
 		BigDecimal qty = target.getQtyOnHand().negate();
 
 		//	Create Movement

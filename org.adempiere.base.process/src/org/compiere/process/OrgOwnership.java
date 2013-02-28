@@ -79,7 +79,7 @@ public class OrgOwnership extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info ("doIt - AD_Org_ID=" + p_AD_Org_ID);
+		if (log.isLoggable(Level.INFO)) log.info ("doIt - AD_Org_ID=" + p_AD_Org_ID);
 		if (p_AD_Org_ID < 0)
 			throw new IllegalArgumentException ("OrgOwnership - invalid AD_Org_ID=" + p_AD_Org_ID);
 			
@@ -104,7 +104,7 @@ public class OrgOwnership extends SvrProcess
 	 */
 	private String warehouseOwnership ()
 	{
-		log.info ("warehouseOwnership - M_Warehouse_ID=" + p_M_Warehouse_ID);
+		if (log.isLoggable(Level.INFO)) log.info ("warehouseOwnership - M_Warehouse_ID=" + p_M_Warehouse_ID);
 		if (p_AD_Org_ID == 0)
 			throw new IllegalArgumentException ("Warehouse - Org cannot be * (0)");
 
@@ -169,7 +169,7 @@ public class OrgOwnership extends SvrProcess
 	 */
 	private String productOwnership ()
 	{
-		log.info ("productOwnership - M_Product_Category_ID=" + p_M_Product_Category_ID
+		if (log.isLoggable(Level.INFO)) log.info ("productOwnership - M_Product_Category_ID=" + p_M_Product_Category_ID
 			+ ", M_Product_ID=" + p_M_Product_ID);
 			
 		StringBuilder set = new StringBuilder(" SET AD_Org_ID=").append(p_AD_Org_ID);
@@ -216,7 +216,7 @@ public class OrgOwnership extends SvrProcess
 	 */
 	private String bPartnerOwnership ()
 	{
-		log.info ("bPartnerOwnership - C_BP_Group_ID=" + p_C_BP_Group_ID
+		if (log.isLoggable(Level.INFO)) log.info ("bPartnerOwnership - C_BP_Group_ID=" + p_C_BP_Group_ID
 			+ ", C_BPartner_ID=" + p_C_BPartner_ID);
 			
 		StringBuilder set = new StringBuilder(" SET AD_Org_ID=").append(p_AD_Org_ID);

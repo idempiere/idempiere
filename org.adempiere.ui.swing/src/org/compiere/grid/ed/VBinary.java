@@ -193,7 +193,7 @@ public class VBinary extends JButton
 	 */
 	public void propertyChange(PropertyChangeEvent evt)
 	{
-		log.info(evt.toString());
+		if (log.isLoggable(Level.INFO)) log.info(evt.toString());
 		if (evt.getPropertyName().equals(org.compiere.model.GridField.PROPERTY))
 			setValue(evt.getNewValue());
 	}   //  propertyChange
@@ -219,7 +219,7 @@ public class VBinary extends JButton
 		if (file == null)
 			return;
 		//
-		log.info(file.toString());
+		if (log.isLoggable(Level.INFO)) log.info(file.toString());
 		try
 		{
 			if (save)

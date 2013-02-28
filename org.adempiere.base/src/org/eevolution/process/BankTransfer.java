@@ -93,7 +93,7 @@ public class BankTransfer extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("From Bank="+p_From_C_BankAccount_ID+" - To Bank="+p_To_C_BankAccount_ID
+		if (log.isLoggable(Level.INFO)) log.info("From Bank="+p_From_C_BankAccount_ID+" - To Bank="+p_To_C_BankAccount_ID
 				+ " - C_BPartner_ID="+p_C_BPartner_ID+"- C_Charge_ID= "+p_C_Charge_ID+" - Amount="+p_Amount+" - DocumentNo="+p_DocumentNo
 				+ " - Description="+p_Description+ " - Statement Date="+p_StatementDate+
 				" - Date Account="+p_DateAcct);

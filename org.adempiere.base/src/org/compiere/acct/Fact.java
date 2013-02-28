@@ -118,7 +118,7 @@ public final class Fact
 		//  Data Check
 		if (account == null)
 		{
-			log.info("No account for " + docLine 
+			if (log.isLoggable(Level.INFO)) log.info("No account for " + docLine 
 				+ ": Amt=" + debitAmt + "/" + creditAmt 
 				+ " - " + toString());			
 			return null;
@@ -442,7 +442,7 @@ public final class Fact
 			{
 				Integer key = keys.next();
 				Balance difference = map.get(key);
-				log.info (elementType + "=" + key + ", " + difference);
+				if (log.isLoggable(Level.INFO)) log.info (elementType + "=" + key + ", " + difference);
 				//
 				if (!difference.isZeroBalance())
 				{
@@ -717,7 +717,7 @@ public final class Fact
 			if (distribution.isCreateReversal()) {
 				//	Add Reversal
 				FactLine reversal = dLine.reverse(distribution.getName());
-				log.info("Reversal=" + reversal);
+				if (log.isLoggable(Level.INFO)) log.info("Reversal=" + reversal);
 				newLines.add(reversal);		//	saved in postCommit
 			} else {
 				// delete the line being distributed
@@ -781,7 +781,7 @@ public final class Fact
 					description += " - " + dl.getDescription();
 				factLine.addDescription(description);
 				//
-				log.info(factLine.toString());
+				if (log.isLoggable(Level.INFO)) log.info(factLine.toString());
 				newLines.add(factLine);
 			}
 		}	//	for all lines

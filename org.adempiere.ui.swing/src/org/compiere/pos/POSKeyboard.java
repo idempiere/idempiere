@@ -159,7 +159,7 @@ public class POSKeyboard extends CDialog implements ActionListener, PosKeyListen
 			}
 			dispose();
 		}
-		log.info( "PosSubBasicKeys - actionPerformed: " + action);
+		if (log.isLoggable(Level.INFO)) log.info( "PosSubBasicKeys - actionPerformed: " + action);
 
 	}	//	actionPerformed
 

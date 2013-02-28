@@ -61,7 +61,7 @@ public class CopyImportFormat extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("doIt = From=" + from_AD_ImpFormat_ID + " To=" + to_AD_ImpFormat_ID);
+		if (log.isLoggable(Level.INFO)) log.info("doIt = From=" + from_AD_ImpFormat_ID + " To=" + to_AD_ImpFormat_ID);
 		MImpFormat from = new MImpFormat (getCtx(), from_AD_ImpFormat_ID, get_TrxName());
 		if (from.getAD_ImpFormat_ID() != from_AD_ImpFormat_ID)
 			throw new Exception ("From Format not found - " + from_AD_ImpFormat_ID);

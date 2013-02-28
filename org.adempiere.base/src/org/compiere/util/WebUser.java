@@ -164,7 +164,7 @@ public class WebUser
 	 */
 	private void load (String email, String password)
 	{
-		log.info(email + " - AD_Client_ID=" + m_AD_Client_ID);
+		if (log.isLoggable(Level.INFO)) log.info(email + " - AD_Client_ID=" + m_AD_Client_ID);
 		String sql = "SELECT * "
 			+ "FROM AD_User "
 			+ "WHERE AD_Client_ID=?"
@@ -278,7 +278,7 @@ public class WebUser
 	 */
 	private void load (int AD_User_ID)
 	{
-		log.info("ID=" + AD_User_ID + ", AD_Client_ID=" + m_AD_Client_ID);
+		if (log.isLoggable(Level.INFO)) log.info("ID=" + AD_User_ID + ", AD_Client_ID=" + m_AD_Client_ID);
 		String sql = "SELECT * "
 			+ "FROM AD_User "
 			+ "WHERE AD_Client_ID=?"
@@ -368,7 +368,7 @@ public class WebUser
 		if (m_loc == null)
 			m_loc = new MLocation (m_ctx, 0, null);
 		//
-		log.info("= " + m_bp + " - " + m_bpc);
+		if (log.isLoggable(Level.INFO)) log.info("= " + m_bp + " - " + m_bpc);
 		
 	}	//	load
 
@@ -442,7 +442,7 @@ public class WebUser
 	public boolean save()
 	{
 		m_saveErrorMessage = null;
-		log.info("BP.Value=" + m_bp.getValue() + ", Name=" + m_bp.getName());
+		if (log.isLoggable(Level.INFO)) log.info("BP.Value=" + m_bp.getValue() + ", Name=" + m_bp.getName());
 		try
 		{
 			//	check if BPartner exists	***********************************

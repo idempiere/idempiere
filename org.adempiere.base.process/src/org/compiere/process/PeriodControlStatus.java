@@ -58,7 +58,7 @@ public class PeriodControlStatus extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info ("C_PeriodControl_ID=" + p_C_PeriodControl_ID);
+		if (log.isLoggable(Level.INFO)) log.info ("C_PeriodControl_ID=" + p_C_PeriodControl_ID);
 		MPeriodControl pc = new MPeriodControl (getCtx(), p_C_PeriodControl_ID, get_TrxName());
 		if (pc.get_ID() == 0)
 			throw new AdempiereUserError("@NotFound@  @C_PeriodControl_ID@=" + p_C_PeriodControl_ID);

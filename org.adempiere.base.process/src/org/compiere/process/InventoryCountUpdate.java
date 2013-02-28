@@ -69,7 +69,7 @@ public class InventoryCountUpdate extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("M_Inventory_ID=" + p_M_Inventory_ID);
+		if (log.isLoggable(Level.INFO)) log.info("M_Inventory_ID=" + p_M_Inventory_ID);
 		MInventory inventory = new MInventory (getCtx(), p_M_Inventory_ID, get_TrxName());
 		if (inventory.get_ID() == 0)
 			throw new AdempiereSystemError ("Not found: M_Inventory_ID=" + p_M_Inventory_ID);
@@ -84,10 +84,10 @@ public class InventoryCountUpdate extends SvrProcess
 				.append(" GROUP BY M_Product_ID, M_Locator_ID, M_AttributeSetInstance_ID ")
 				.append("HAVING COUNT(*) > 1)");
 		int multiple = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("Multiple=" + multiple);
+		if (log.isLoggable(Level.INFO)) log.info("Multiple=" + multiple);
 
 		int delMA = MInventoryLineMA.deleteInventoryMA(p_M_Inventory_ID, get_TrxName());
-		log.info("DeletedMA=" + delMA);
+		if (log.isLoggable(Level.INFO)) log.info("DeletedMA=" + delMA);
 
 		//	ASI
 		sql = new StringBuilder("UPDATE M_InventoryLine l ")
@@ -103,7 +103,7 @@ public class InventoryCountUpdate extends SvrProcess
 				.append("WHERE s.M_Product_ID=l.M_Product_ID AND s.M_Locator_ID=l.M_Locator_ID")
 				.append(" AND s.M_AttributeSetInstance_ID=l.M_AttributeSetInstance_ID)");
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("Update with ASI=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("Update with ASI=" + no);
 
 		//	No ASI
 		int noMA = updateWithMA();
@@ -115,7 +115,7 @@ public class InventoryCountUpdate extends SvrProcess
 				.append("SET QtyCount=0 ")
 				.append("WHERE M_Inventory_ID=").append(p_M_Inventory_ID);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
-			log.info("Set Count to Zero=" + no);
+			if (log.isLoggable(Level.INFO)) log.info("Set Count to Zero=" + no);
 		}
 		
 		if (multiple > 0){
@@ -181,7 +181,7 @@ public class InventoryCountUpdate extends SvrProcess
 			pstmt = null;
 		}
 		//
-		log.info("#" + no);
+		if (log.isLoggable(Level.INFO)) log.info("#" + no);
 		return no;
 	}	//	updateWithMA
 	

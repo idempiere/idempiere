@@ -54,7 +54,7 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 		int AD_Backup_ID = -1;
 		String Object_Status = null;
 		Attributes atts = element.attributes;
-		log.info(elementValue + " " + atts.getValue("Name"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + atts.getValue("Name"));
 
 		String name = atts.getValue("Name");
 		int id = get_IDWithColumn(ctx, "AD_PrintFormat", "Name", name);

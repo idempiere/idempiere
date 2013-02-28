@@ -19,6 +19,7 @@ package org.adempiere.pipo2;
 
 import java.io.File;
 import java.sql.Timestamp;
+import java.util.logging.Level;
 
 import org.compiere.Adempiere;
 import org.compiere.model.MAttachment;
@@ -103,7 +104,7 @@ public class PackInProcess extends SvrProcess {
 				
 		// Unzip package
 		File zipFilepath = entry.getFile();
-		log.info("zipFilepath->" + zipFilepath);
+		if (log.isLoggable(Level.INFO)) log.info("zipFilepath->" + zipFilepath);
 		String parentDir = Zipper.getParentDir(zipFilepath);
 		Zipper.unpackFile(zipFilepath, targetDir);
 
@@ -111,7 +112,7 @@ public class PackInProcess extends SvrProcess {
 				+ "packin" + File.separator + parentDir + File.separator
 				+ "dict" + File.separator + "PackOut.xml";
 
-		log.info("dict file->" + dict_file);
+		if (log.isLoggable(Level.INFO)) log.info("dict file->" + dict_file);
 
 		if (adPackageImp.isAD_Override_Dict() == true)
 			m_UpdateDictionary = true;

@@ -65,7 +65,7 @@ public class TreeMaintenance extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("AD_Tree_ID=" + m_AD_Tree_ID);
+		if (log.isLoggable(Level.INFO)) log.info("AD_Tree_ID=" + m_AD_Tree_ID);
 		if (m_AD_Tree_ID == 0)
 			throw new IllegalArgumentException("Tree_ID = 0");
 		MTree tree = new MTree (getCtx(), m_AD_Tree_ID, get_TrxName());	

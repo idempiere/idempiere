@@ -104,7 +104,7 @@ public class ReplenishReport extends SvrProcess
 				.append(", C_BPartner_ID=").append(p_C_BPartner_ID) 
 				.append(" - ReplenishmentCreate=").append(p_ReplenishmentCreate)
 				.append(", C_DocType_ID=").append(p_C_DocType_ID);
-		log.info(msglog.toString());
+		if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 		if (p_ReplenishmentCreate != null && p_C_DocType_ID == 0)
 			throw new AdempiereUserError("@FillMandatory@ @C_DocType_ID@");
 		
@@ -436,7 +436,7 @@ public class ReplenishReport extends SvrProcess
 			line.saveEx();
 		}
 		m_info = new StringBuffer("#").append(noOrders).append(info.toString());
-		log.info(m_info.toString());
+		if (log.isLoggable(Level.INFO)) log.info(m_info.toString());
 	}	//	createPO
 	
 	/**
@@ -482,7 +482,7 @@ public class ReplenishReport extends SvrProcess
 			line.saveEx();
 		}
 		m_info = new StringBuffer("#").append(noReqs).append(info.toString());
-		log.info(m_info.toString());
+		if (log.isLoggable(Level.INFO)) log.info(m_info.toString());
 	}	//	createRequisition
 
 	/**
@@ -572,7 +572,7 @@ public class ReplenishReport extends SvrProcess
 		else
 		{
 			m_info = new StringBuffer("#") .append(noMoves).append(info);
-			log.info(m_info.toString());
+			if (log.isLoggable(Level.INFO)) log.info(m_info.toString());
 		}
 	}	//	Create Inventory Movements
 	
@@ -720,7 +720,7 @@ public class ReplenishReport extends SvrProcess
 		else
 		{
 			m_info = new StringBuffer("#").append(noMoves).append(info);
-			log.info(m_info.toString());
+			if (log.isLoggable(Level.INFO)) log.info(m_info.toString());
 		}
 	}	//	create Distribution Order
 

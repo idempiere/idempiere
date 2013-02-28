@@ -103,7 +103,7 @@ public class PaymentServlet  extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("Get from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("Get from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		Properties ctx = JSPEnv.getCtx(request);
 		HttpSession session = request.getSession(true);
 		session.removeAttribute(WebSessionCtx.HDR_MESSAGE);
@@ -115,9 +115,9 @@ public class PaymentServlet  extends HttpServlet
 		MPayment p = (MPayment)session.getAttribute (ATTR_PAYMENT);
 		if (wu == null)
 		{
-			log.info ("No User");
+			if (log.isLoggable(Level.INFO)) log.info ("No User");
 			String url = "/index.jsp";
-			log.info ("Forward to " + url);
+			if (log.isLoggable(Level.INFO)) log.info ("Forward to " + url);
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 			dispatcher.forward (request, response);
 		}
@@ -128,7 +128,7 @@ public class PaymentServlet  extends HttpServlet
 		String amtParam = WebUtil.getParameter (request, "Amt");
 		if (amtParam == null || amtParam.length() == 0)
 		{
-			log.info ("No Payment Amount (" + amtParam + ")");
+			if (log.isLoggable(Level.INFO)) log.info ("No Payment Amount (" + amtParam + ")");
 			doPost (request, response);
 			return;
 		}
@@ -165,7 +165,7 @@ public class PaymentServlet  extends HttpServlet
 		//	Need to be positive amount
 		if (amt == null || amt.compareTo(Env.ZERO) < 0)
 		{
-			log.info("No valid Payment Amount (" + amtParam + ") - " + amt);
+			if (log.isLoggable(Level.INFO)) log.info("No valid Payment Amount (" + amtParam + ") - " + amt);
 			doPost (request, response);
 			return;
 		}
@@ -181,7 +181,7 @@ public class PaymentServlet  extends HttpServlet
 		{
 			log.warning("Parsing C_Invoice_ID=" + invoiceParam + " - " + ex.toString());
 		}
-		log.info("Amt=" + amt + ", C_Invoice_ID=" + C_Invoice_ID);
+		if (log.isLoggable(Level.INFO)) log.info("Amt=" + amt + ", C_Invoice_ID=" + C_Invoice_ID);
 
 		//	Create New Payment for Amt & optional Invoice
 		//	see OrderServlet.createPayment
@@ -204,7 +204,7 @@ public class PaymentServlet  extends HttpServlet
 		session.setAttribute (ATTR_PAYMENT, p);
 
 		String url = "/paymentInfo.jsp";
-		log.info ("Forward to " + url);
+		if (log.isLoggable(Level.INFO)) log.info ("Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 		dispatcher.forward (request, response);
 	}   //  doGet
@@ -221,7 +221,7 @@ public class PaymentServlet  extends HttpServlet
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("Post from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("Post from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		Properties ctx = JSPEnv.getCtx(request);
 		HttpSession session = request.getSession(true);
 	//	WEnv.dump(session);
@@ -240,7 +240,7 @@ public class PaymentServlet  extends HttpServlet
 		else
 			url = "/paymentInfo.jsp";
 
-		log.info ("Forward to " + url);
+		if (log.isLoggable(Level.INFO)) log.info ("Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 		dispatcher.forward (request, response);
 	}   //  doPost

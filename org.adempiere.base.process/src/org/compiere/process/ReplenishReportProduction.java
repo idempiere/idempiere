@@ -109,7 +109,7 @@ public class ReplenishReportProduction extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{				
-		log.info("M_Warehouse_ID=" + p_M_Warehouse_ID 
+		if (log.isLoggable(Level.INFO)) log.info("M_Warehouse_ID=" + p_M_Warehouse_ID 
 				+ ", C_BPartner_ID=" + p_C_BPartner_ID 
 				+" - ReplenishmentCreate=" + p_ReplenishmentCreate
 				+ ", C_DocType_ID=" + p_C_DocType_ID);
@@ -471,7 +471,7 @@ public class ReplenishReportProduction extends SvrProcess
 			line.saveEx();
 		}
 		m_info = new StringBuffer("#").append(noOrders).append(info.toString());
-		log.info(m_info.toString());
+		if (log.isLoggable(Level.INFO)) log.info(m_info.toString());
 	}	//	createPO
 	
 	/**
@@ -517,7 +517,7 @@ public class ReplenishReportProduction extends SvrProcess
 			line.saveEx();
 		}
 		m_info = new StringBuffer("#").append(noReqs).append(info.toString());
-		log.info(m_info.toString());
+		if (log.isLoggable(Level.INFO)) log.info(m_info.toString());
 	}	//	createRequisition
 
 	/**
@@ -608,7 +608,7 @@ public class ReplenishReportProduction extends SvrProcess
 		else
 		{
 			m_info = new StringBuffer("#").append(noMoves).append(info.toString());
-			log.info(m_info.toString());
+			if (log.isLoggable(Level.INFO)) log.info(m_info.toString());
 		}
 	}	//	Create Inventory Movements
 	
@@ -756,7 +756,7 @@ public class ReplenishReportProduction extends SvrProcess
 		else
 		{
 			m_info = new StringBuffer("#").append(noMoves).append(info.toString());
-			log.info(m_info.toString());
+			if (log.isLoggable(Level.INFO)) log.info(m_info.toString());
 		}
 	}	//	create Distribution Order
 	/**
@@ -822,7 +822,7 @@ public class ReplenishReportProduction extends SvrProcess
 
 		}
 		m_info = new StringBuffer("#").append(noProds).append(info.toString());
-		log.info(m_info.toString());
+		if (log.isLoggable(Level.INFO)) log.info(m_info.toString());
 	}	//	createRequisition
 
 	/**

@@ -64,7 +64,7 @@ public class NoteDelete extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("doIt - AD_User_ID=" + p_AD_User_ID);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - AD_User_ID=" + p_AD_User_ID);
 		
 		StringBuilder sql = new StringBuilder("DELETE FROM AD_Note WHERE AD_BroadcastMessage_ID IS NULL AND AD_Client_ID=").append(getAD_Client_ID());
 		if (p_AD_User_ID > 0)

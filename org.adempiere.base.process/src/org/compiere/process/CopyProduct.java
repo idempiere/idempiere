@@ -47,7 +47,7 @@ public class CopyProduct extends SvrProcess {
 	protected String doIt() throws Exception {
 
 		int toMProductID = getRecord_ID();
-		log.info("From M_Product_ID=" + m_copyFromId + " to " + toMProductID);
+		if (log.isLoggable(Level.INFO)) log.info("From M_Product_ID=" + m_copyFromId + " to " + toMProductID);
 		if (toMProductID == 0)
 			throw new IllegalArgumentException("Target M_Product_ID == 0");
 		if (m_copyFromId == 0)

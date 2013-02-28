@@ -54,7 +54,7 @@ public class OrderPayScheduleValidate extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info ("C_OrderPaySchedule_ID=" + getRecord_ID());
+		if (log.isLoggable(Level.INFO)) log.info ("C_OrderPaySchedule_ID=" + getRecord_ID());
 		MOrderPaySchedule[] schedule = MOrderPaySchedule.getOrderPaySchedule
 			(getCtx(), 0, getRecord_ID(), null);
 		if (schedule.length == 0)

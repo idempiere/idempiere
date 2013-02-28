@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -56,7 +57,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 		String parentTable = atts.getValue(SPECIAL_ATRRIBUTE__TABLE_NAME);
 		String language = atts.getValue("AD_Language");
 		
-		log.info(elementValue+" "+parentTable+" "+atts.getValue("Name"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue+" "+parentTable+" "+atts.getValue("Name"));
 		
 		if(isRecordExists(parentTable, parentID, language, ctx)){
 			

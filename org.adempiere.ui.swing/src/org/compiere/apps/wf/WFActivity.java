@@ -672,7 +672,7 @@ public class WFActivity extends CPanel
 			MQuery query = MQuery.getEqualQuery(ColumnName, Record_ID);
 			boolean IsSOTrx = m_activity.isSOTrx();
 			//
-			log.info("Zoom to AD_Window_ID=" + AD_Window_ID 
+			if (log.isLoggable(Level.INFO)) log.info("Zoom to AD_Window_ID=" + AD_Window_ID 
 				+ " - " + query + " (IsSOTrx=" + IsSOTrx + ")");
 			AWindow frame = new AWindow(null);
 			if (!frame.initWindow(AD_Window_ID, query))

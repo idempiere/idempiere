@@ -98,7 +98,7 @@ public class AdempiereService extends StateEngine
 		}
 		if (!ok)
 			return abort();
-		log.info("start - " + ok);
+		if (log.isLoggable(Level.INFO)) log.info("start - " + ok);
 		getState();
 		return ok;
 	}	//	start
@@ -127,7 +127,7 @@ public class AdempiereService extends StateEngine
 		}
 		if (!ok)
 			return abort();
-		log.info("resume - " + ok);
+		if (log.isLoggable(Level.INFO)) log.info("resume - " + ok);
 		getState();
 		return ok;
 	}	//	resume
@@ -156,7 +156,7 @@ public class AdempiereService extends StateEngine
 				return abort();
 			}
 		}
-		log.info("complete - " + ok);
+		if (log.isLoggable(Level.INFO)) log.info("complete - " + ok);
 		return ok;
 	}	//	complete
 
@@ -183,7 +183,7 @@ public class AdempiereService extends StateEngine
 				return abort();
 			}
 		}
-		log.info("suspend - " + ok);
+		if (log.isLoggable(Level.INFO)) log.info("suspend - " + ok);
 		return ok;
 	}	//	suspend
 	

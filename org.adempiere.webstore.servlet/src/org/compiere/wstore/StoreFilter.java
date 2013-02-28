@@ -55,7 +55,7 @@ public class StoreFilter implements javax.servlet.Filter
 		WebEnv.initWeb(config.getServletContext());
 		if (log == null)
 			log = CLogger.getCLogger(StoreFilter.class);
-		log.info(config.getFilterName());
+		if (log.isLoggable(Level.INFO)) log.info(config.getFilterName());
 	}	//	init
 	
 	/**

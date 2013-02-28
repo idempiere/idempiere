@@ -120,7 +120,7 @@ public class RequestServlet extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		String url = "/requestDetails.jsp";
 		//
 		HttpSession session = request.getSession(false);
@@ -142,7 +142,7 @@ public class RequestServlet extends HttpServlet
 				info.setMessage(msg);
 		}
 
-		log.info ("Forward to " + url);
+		if (log.isLoggable(Level.INFO)) log.info ("Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 		dispatcher.forward (request, response);
 	}   //  doGet
@@ -168,7 +168,7 @@ public class RequestServlet extends HttpServlet
 			log.fine("No index)");
 			return "No Request Attachment index";
 		}
-		log.info("R_Request_ID=" + R_Request_ID + " / " + attachmentIndex);
+		if (log.isLoggable(Level.INFO)) log.info("R_Request_ID=" + R_Request_ID + " / " + attachmentIndex);
 
 		//	Get Request
 		Properties ctx = JSPEnv.getCtx(request);
@@ -218,7 +218,7 @@ public class RequestServlet extends HttpServlet
 		throws ServletException, IOException
 	{
 		String contentType = request.getContentType();
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr()
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr()
 			+ " - " + contentType);
 
 		//  Get Session attributes

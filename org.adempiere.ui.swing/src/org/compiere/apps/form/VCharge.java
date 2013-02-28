@@ -168,7 +168,7 @@ public class VCharge extends Charge
 	 */
 	public void actionPerformed (ActionEvent e)
 	{
-		log.info(e.getActionCommand());
+		if (log.isLoggable(Level.INFO)) log.info(e.getActionCommand());
 		//
 		if (e.getActionCommand().equals(ConfirmPanel.A_OK) || m_C_Element_ID == 0)
 			dispose();

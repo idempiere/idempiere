@@ -122,7 +122,7 @@ public class GLJournalGenerate extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("QSS_Journal_Generator_ID=" + p_QSS_JournalGenerator_ID
+		if (log.isLoggable(Level.INFO)) log.info("QSS_Journal_Generator_ID=" + p_QSS_JournalGenerator_ID
 				+ ", ProcessingDate=" + p_ProcessingDateFrom + "/" + p_ProcessingDateTo
 				+ ", DateAcct=" + p_DateAcct
 				+ ", IsSimulation=" + p_IsSimulation

@@ -73,7 +73,7 @@ public class PackageCreate extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("doIt - M_InOut_ID=" + p_M_InOut_ID + ", M_Shipper_ID=" + p_M_Shipper_ID);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - M_InOut_ID=" + p_M_InOut_ID + ", M_Shipper_ID=" + p_M_Shipper_ID);
 		if (p_M_InOut_ID == 0)
 			throw new IllegalArgumentException("No Shipment");
 		if (p_M_Shipper_ID == 0)

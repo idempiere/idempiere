@@ -112,7 +112,7 @@ public class MigrateData
 			rs = null; pstmt = null;
 		}
 
-		log.info("#" + count);
+		if (log.isLoggable(Level.INFO)) log.info("#" + count);
 	}	//	release252c
 	
 	

@@ -94,7 +94,7 @@ public class AllocationReset extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info ("C_BP_Group_ID=" + p_C_BP_Group_ID + ", C_BPartner_ID=" + p_C_BPartner_ID
+		if (log.isLoggable(Level.INFO)) log.info ("C_BP_Group_ID=" + p_C_BP_Group_ID + ", C_BPartner_ID=" + p_C_BPartner_ID
 			+ ", DateAcct= " + p_DateAcct_From + " - " + p_DateAcct_To
 			+ ", C_AllocationHdr_ID=" + p_C_AllocationHdr_ID
 			+ ", AllAllocations=" + p_AllAllocations);

@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.report.MReportTree;
 import org.compiere.util.CCache;
@@ -473,7 +474,7 @@ public class MAcctSchema extends X_C_AcctSchema
 	 */
 	public void checkCosting()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		//	Create Cost Type
 		if (getM_CostType_ID() == 0)
 		{

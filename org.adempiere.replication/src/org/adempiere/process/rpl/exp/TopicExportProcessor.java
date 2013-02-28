@@ -32,6 +32,7 @@ package org.adempiere.process.rpl.exp;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
@@ -91,8 +92,10 @@ public class TopicExportProcessor implements IExportProcessor {
         X_EXP_ProcessorParameter[] processorParameters = expProcessor.getEXP_ProcessorParameters(trx.getTrxName());
         if (processorParameters != null && processorParameters.length > 0) {
         	for (int i = 0; i < processorParameters.length; i++) {
-        		log.info("ProcesParameter          Value = " + processorParameters[i].getValue());
-        		log.info("ProcesParameter ParameterValue = " + processorParameters[i].getParameterValue());
+        		if (log.isLoggable(Level.INFO)) {
+        			log.info("ProcesParameter          Value = " + processorParameters[i].getValue());
+        			log.info("ProcesParameter ParameterValue = " + processorParameters[i].getParameterValue());
+        		}
         		if (processorParameters[i].getValue().equals("topicName")) {
         			topicName = processorParameters[i].getParameterValue();
         		} else if (processorParameters[i].getValue().equals("protocol")) {

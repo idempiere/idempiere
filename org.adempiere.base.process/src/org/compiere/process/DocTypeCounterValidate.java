@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.util.logging.Level;
+
 import org.compiere.model.MDocTypeCounter;
 
 /**
@@ -45,7 +47,7 @@ public class DocTypeCounterValidate extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("C_DocTypeCounter_ID=" + p_C_DocTypeCounter_ID);
+		if (log.isLoggable(Level.INFO)) log.info("C_DocTypeCounter_ID=" + p_C_DocTypeCounter_ID);
 		m_counter = new MDocTypeCounter (getCtx(), p_C_DocTypeCounter_ID, get_TrxName());
 		if (m_counter == null || m_counter.get_ID() == 0)
 			throw new IllegalArgumentException("Not found C_DocTypeCounter_ID=" + p_C_DocTypeCounter_ID);

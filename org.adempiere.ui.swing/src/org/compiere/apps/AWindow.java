@@ -183,7 +183,7 @@ public class AWindow extends CFrame
 	{
 		if (AEnv.hideWindow(this))
 			return;
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		if (m_APanel != null)
 			m_APanel.dispose();
 		m_APanel = null;

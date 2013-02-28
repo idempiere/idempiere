@@ -578,7 +578,7 @@ public class GridTable extends AbstractTableModel
 	 */
 	public boolean open (int maxRows)
 	{
-		log.info("MaxRows=" + maxRows);
+		if (log.isLoggable(Level.INFO)) log.info("MaxRows=" + maxRows);
 		m_maxRows = maxRows;
 		if (m_open)
 		{
@@ -880,7 +880,7 @@ public class GridTable extends AbstractTableModel
 	 */
 	public void sort (int col, boolean ascending)
 	{
-		log.info("#" + col + " " + ascending);
+		if (log.isLoggable(Level.INFO)) log.info("#" + col + " " + ascending);
 		if (col < 0) {
 			return;
 		}
@@ -909,7 +909,7 @@ public class GridTable extends AbstractTableModel
 			else
 				sort.data = rowData[col];								//	data
 		}
-		log.info(field.toString() + " #" + m_sort.size());
+		if (log.isLoggable(Level.INFO)) log.info(field.toString() + " #" + m_sort.size());
 
 		//	sort it
 		MSort sort = new MSort(0, null);
@@ -1439,7 +1439,7 @@ public class GridTable extends AbstractTableModel
 			return SAVE_ACCESS;
 		}
 
-		log.info("Row=" + m_rowChanged);
+		if (log.isLoggable(Level.INFO)) log.info("Row=" + m_rowChanged);
 
 		//  inform about data save action, if not manually initiated
 		try
@@ -2457,7 +2457,7 @@ public class GridTable extends AbstractTableModel
 	 */
 	public boolean dataNew (int currentRow, boolean copyCurrent)
 	{
-		log.info("Current=" + currentRow + ", Copy=" + copyCurrent);
+		if (log.isLoggable(Level.INFO)) log.info("Current=" + currentRow + ", Copy=" + copyCurrent);
 		//  Read only
 		if (m_readOnly)
 		{
@@ -2551,7 +2551,7 @@ public class GridTable extends AbstractTableModel
 	 */
 	public boolean dataDelete (int row)
 	{
-		log.info("Row=" + row);
+		if (log.isLoggable(Level.INFO)) log.info("Row=" + row);
 		if (row < 0)
 			return false;
 
@@ -2699,7 +2699,7 @@ public class GridTable extends AbstractTableModel
 			m_newRow = -1;
 			return;
 		}
-		log.info("Inserting=" + m_inserting);
+		if (log.isLoggable(Level.INFO)) log.info("Inserting=" + m_inserting);
 
 		//	Inserting - delete new row
 		if (m_inserting)
@@ -2780,7 +2780,7 @@ public class GridTable extends AbstractTableModel
 	 */
 	public void dataRefresh (int row, boolean fireStatusEvent)
 	{
-		log.info("Row=" + row);
+		if (log.isLoggable(Level.INFO)) log.info("Row=" + row);
 
 		if (row < 0 || m_sort.size() == 0 || m_inserting)
 			return;
@@ -2899,7 +2899,7 @@ public class GridTable extends AbstractTableModel
 	 */
 	public boolean dataRequery (String whereClause, boolean onlyCurrentRows, int onlyCurrentDays)
 	{
-		log.info(whereClause + "; OnlyCurrent=" + onlyCurrentRows);
+		if (log.isLoggable(Level.INFO)) log.info(whereClause + "; OnlyCurrent=" + onlyCurrentRows);
 		close(false);
 		m_onlyCurrentDays = onlyCurrentDays;
 		setSelectWhereClause(whereClause, onlyCurrentRows, m_onlyCurrentDays);
@@ -3650,7 +3650,7 @@ public class GridTable extends AbstractTableModel
 	    				dbProcessedS = rs.getString(idx++);
 	    		}
 	    		else
-	    			log.info("No Value " + sql);
+	    			if (log.isLoggable(Level.INFO)) log.info("No Value " + sql);
 	    	}
 	    	catch (SQLException e)
 	    	{

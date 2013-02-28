@@ -218,7 +218,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
     {
     	File reportFile = null;
     	File downloadedFile = null;
-    	log.info(" report deployed to " + reportLocation);
+    	if (log.isLoggable(Level.INFO)) log.info(" report deployed to " + reportLocation);
     	try {
 
 
@@ -234,16 +234,16 @@ public class ReportStarter implements ProcessCall, ClientProcess
     		{
     			String localMD5hash = DigestOfFile.GetLocalMD5Hash(reportFile);
     			String remoteMD5Hash = getRemoteMD5(reportLocation);
-    			log.info("MD5 for local file is "+localMD5hash );
+    			if (log.isLoggable(Level.INFO)) log.info("MD5 for local file is "+localMD5hash );
     			if ( remoteMD5Hash != null)
     			{
     				if (localMD5hash.equals(remoteMD5Hash))
     				{
-    					log.info(" no need to download: local report is up-to-date");
+    					if (log.isLoggable(Level.INFO)) log.info(" no need to download: local report is up-to-date");
     				}
     				else
     				{
-    					log.info(" report on server is different that local one, download and replace");
+    					if (log.isLoggable(Level.INFO)) log.info(" report on server is different that local one, download and replace");
     					downloadedFile = getRemoteFile(reportLocation, downloadedLocalFile);
     					reportFile.delete();
     					downloadedFile.renameTo(reportFile);
@@ -257,11 +257,11 @@ public class ReportStarter implements ProcessCall, ClientProcess
     				if ( DigestOfFile.md5localHashCompare(reportFile,downloadedFile) )
     				{
     					//nothing file are identical
-    					log.info(" no need to replace your existing report");
+    					if (log.isLoggable(Level.INFO)) log.info(" no need to replace your existing report");
     				}
     				else
     				{
-    					log.info(" report on server is different that local one, replacing");
+    					if (log.isLoggable(Level.INFO)) log.info(" report on server is different that local one, replacing");
     					reportFile.delete();
     					downloadedFile.renameTo(reportFile);
     				}
@@ -355,7 +355,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         int AD_PInstance_ID=pi.getAD_PInstance_ID();
         int Record_ID=pi.getRecord_ID();
 
-        log.info( "Name="+Name+"  AD_PInstance_ID="+AD_PInstance_ID+" Record_ID="+Record_ID);
+        if (log.isLoggable(Level.INFO)) log.info( "Name="+Name+"  AD_PInstance_ID="+AD_PInstance_ID+" Record_ID="+Record_ID);
         String trxName = null;
         if (trx != null) {
         	trxName = trx.getTrxName();
@@ -609,7 +609,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
                 {
 	                if (reportData.isDirectPrint())
 	                {
-	                    log.info( "ReportStarter.startProcess print report -" + jasperPrint.getName());
+	                    if (log.isLoggable(Level.INFO)) log.info( "ReportStarter.startProcess print report -" + jasperPrint.getName());
 	                    //RF 1906632
 	                    if (!processInfo.isBatch()) {
 	
@@ -670,7 +670,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	                    // You can use JasperPrint to create PDF
 	//                        JasperExportManager.exportReportToPdfFile(jasperPrint, "BasicReport.pdf");
 	                } else {
-	                    log.info( "ReportStarter.startProcess run report -"+jasperPrint.getName());
+	                    if (log.isLoggable(Level.INFO)) log.info( "ReportStarter.startProcess run report -"+jasperPrint.getName());
 	                    JRViewerProvider viewerLauncher = Service.locator().locate(JRViewerProvider.class).getService();
 	                    viewerLauncher.openViewer(jasperPrint, pi.getTitle()+" - " + reportPath);
 	                }
@@ -931,11 +931,13 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		File reportFile;
 		String name = reportPath.substring("resource:".length()).trim();
 		String localName = name.replace('/', '_');
-		log.info("reportPath = " + reportPath);
-		log.info("getting resource from = " + getClass().getClassLoader().getResource(name));
+		if (log.isLoggable(Level.INFO)) {
+			log.info("reportPath = " + reportPath);
+			log.info("getting resource from = " + getClass().getClassLoader().getResource(name));
+		}
 		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(name);
 		String localFile = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + localName;
-		log.info("localFile = " + localFile);
+		if (log.isLoggable(Level.INFO)) log.info("localFile = " + localFile);
 		reportFile = new File(localFile);
 
 		OutputStream out = null;
@@ -1032,7 +1034,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
      * @return
      */
     protected JasperData processReport( File reportFile) {
-        log.info( "reportFile.getAbsolutePath() = "+reportFile.getAbsolutePath());
+        if (log.isLoggable(Level.INFO)) log.info( "reportFile.getAbsolutePath() = "+reportFile.getAbsolutePath());
         JasperReport jasperReport = null;
 
         String jasperName = reportFile.getName();
@@ -1044,7 +1046,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         File jasperFile = new File( reportDir.getAbsolutePath(), jasperName+".jasper");
         if (jasperFile.exists()) { // test time
             if (reportFile.lastModified() == jasperFile.lastModified()) {
-            	log.info(" no need to compile use "+jasperFile.getAbsolutePath());
+            	if (log.isLoggable(Level.INFO)) log.info(" no need to compile use "+jasperFile.getAbsolutePath());
                 try {
                     jasperReport = (JasperReport)JRLoader.loadObjectFromFile(jasperFile.getAbsolutePath());
                 } catch (JRException e) {

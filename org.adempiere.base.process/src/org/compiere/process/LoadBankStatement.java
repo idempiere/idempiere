@@ -76,10 +76,12 @@ public class LoadBankStatement extends SvrProcess
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
 		m_AD_Client_ID = Env.getAD_Client_ID(m_ctx);
-		log.info("AD_Client_ID=" + m_AD_Client_ID);
+		if (log.isLoggable(Level.INFO)) log.info("AD_Client_ID=" + m_AD_Client_ID);
 		m_AD_Org_ID = Env.getAD_Org_ID(m_ctx);
-		log.info("AD_Org_ID=" + m_AD_Org_ID);
-		log.info("C_BankStatementLoader_ID=" + m_C_BankStmtLoader_ID);
+		if (log.isLoggable(Level.INFO)){
+			log.info("AD_Org_ID=" + m_AD_Org_ID);
+			log.info("C_BankStatementLoader_ID=" + m_C_BankStmtLoader_ID);
+		}
 	}	//	prepare
 
 
@@ -94,7 +96,7 @@ public class LoadBankStatement extends SvrProcess
 		String message = "@Error@";
 		
 		m_controller = new MBankStatementLoader(m_ctx, m_C_BankStmtLoader_ID, fileName, get_TrxName());
-		log.info(m_controller.toString());
+		if (log.isLoggable(Level.INFO)) log.info(m_controller.toString());
 		
 		if (m_controller == null || m_controller.get_ID() == 0)
 			log.log(Level.SEVERE, "Invalid Loader");
@@ -105,7 +107,7 @@ public class LoadBankStatement extends SvrProcess
 		
 		else
 		{
-			log.info("Imported=" + m_controller.getLoadCount());
+			if (log.isLoggable(Level.INFO)) log.info("Imported=" + m_controller.getLoadCount());
 			addLog (0, null, new BigDecimal (m_controller.getLoadCount()), "@Loaded@");
 			message = "@OK@";
 		}

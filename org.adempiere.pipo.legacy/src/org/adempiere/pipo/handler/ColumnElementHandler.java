@@ -52,7 +52,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 		PackIn packIn = (PackIn)ctx.get("PackInProcess");
 		String elementValue = element.getElementValue();
 		Attributes atts = element.attributes;
-		log.info(elementValue + " " + atts.getValue("ColumnName"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + atts.getValue("ColumnName"));
 		int success = 0;
 		String entitytype = atts.getValue("EntityType");
 		if (isProcessElement(ctx, entitytype)) {

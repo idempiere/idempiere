@@ -81,7 +81,7 @@ public class ProductUOMConvert extends SvrProcess
 		//
 		MProduct product = MProduct.get(getCtx(), p_M_Product_ID);
 		MProduct productTo = MProduct.get(getCtx(), p_M_Product_To_ID);
-		log.info("Product=" + product + ", ProductTo=" + productTo 
+		if (log.isLoggable(Level.INFO)) log.info("Product=" + product + ", ProductTo=" + productTo 
 			+ ", M_Locator_ID=" + p_M_Locator_ID + ", Qty=" + p_Qty);
 		
 		MUOMConversion[] conversions = MUOMConversion.getProductConversions(getCtx(), product.getM_Product_ID());
@@ -100,7 +100,7 @@ public class ProductUOMConvert extends SvrProcess
 		if (qtyTo.compareTo(qtyTo6) != 0)
 			throw new AdempiereUserError("@StdPrecision@: " + qtyTo + " <> " + qtyTo6 
 				+ " (" + p_Qty + "/" + conversion.getDivideRate() + ")");
-		log.info(conversion + " -> " + qtyTo); 
+		if (log.isLoggable(Level.INFO)) log.info(conversion + " -> " + qtyTo); 
 		
 		
 		//	Set to Beta

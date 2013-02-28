@@ -72,14 +72,14 @@ public class MPrintFormatProcess extends SvrProcess
 	{
 		if (m_AD_Table_ID != null && m_AD_Table_ID.intValue() > 0)
 		{
-			log.info("Create from AD_Table_ID=" + m_AD_Table_ID);
+			if (log.isLoggable(Level.INFO)) log.info("Create from AD_Table_ID=" + m_AD_Table_ID);
 			MPrintFormat pf = MPrintFormat.createFromTable(getCtx(), m_AD_Table_ID.intValue(), getRecord_ID());
 			addLog(m_AD_Table_ID.intValue(), null, new BigDecimal(pf.getItemCount()), pf.getName());
 			return pf.getName() + " #" + pf.getItemCount();
 		}
 		else if (m_AD_PrintFormat_ID != null && m_AD_PrintFormat_ID.intValue() > 0)
 		{
-			log.info("Copy from AD_PrintFormat_ID=" + m_AD_PrintFormat_ID);
+			if (log.isLoggable(Level.INFO)) log.info("Copy from AD_PrintFormat_ID=" + m_AD_PrintFormat_ID);
 			MPrintFormat pf = MPrintFormat.copy (getCtx(), m_AD_PrintFormat_ID.intValue(), getRecord_ID());
 			addLog(m_AD_PrintFormat_ID.intValue(), null, new BigDecimal(pf.getItemCount()), pf.getName());
 			return pf.getName() + " #" + pf.getItemCount();

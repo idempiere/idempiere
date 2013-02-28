@@ -18,6 +18,7 @@ package org.eevolution.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MOrgInfo;
@@ -113,7 +114,7 @@ public class MPPProductPlanning extends X_PP_Product_Planning
 											int m_warehouse_id, int s_resource_id, int m_product_id,
 											String trxname)
 	{
-		log.info("AD_Client_ID="  + ad_client_id + " AD_Org_ID=" + ad_org_id + " M_Product_ID=" + m_product_id + " M_Warehouse_ID=" + m_warehouse_id + " S_Resource_ID=" + s_resource_id );
+		if (log.isLoggable(Level.INFO)) log.info("AD_Client_ID="  + ad_client_id + " AD_Org_ID=" + ad_org_id + " M_Product_ID=" + m_product_id + " M_Warehouse_ID=" + m_warehouse_id + " S_Resource_ID=" + s_resource_id );
 		String  sql_warehouse = COLUMNNAME_M_Warehouse_ID+"=?";
 		if(m_warehouse_id == 0)
 		{

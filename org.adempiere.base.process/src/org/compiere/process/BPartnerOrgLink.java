@@ -77,7 +77,7 @@ public class BPartnerOrgLink extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("C_BPartner_ID=" + p_C_BPartner_ID 
+		if (log.isLoggable(Level.INFO)) log.info("C_BPartner_ID=" + p_C_BPartner_ID 
 			+ ", AD_Org_ID=" + p_AD_Org_ID
 			+ ", AD_OrgType_ID=" + p_AD_OrgType_ID
 			+ ", AD_Role_ID=" + p_AD_Role_ID);

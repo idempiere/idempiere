@@ -152,7 +152,7 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 					else
 						msg.append(" @No@ @IsRemitTo@");
 					msg.append(" & @IsBillTo@");
-					log.info(msg.toString());
+					if (log.isLoggable(Level.INFO)) log.info(msg.toString());
 					setC_BPartner_Location_ID (firstActive.getC_BPartner_Location_ID());
 				}
 			}

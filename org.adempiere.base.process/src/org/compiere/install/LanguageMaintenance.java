@@ -73,7 +73,7 @@ public class LanguageMaintenance extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		m_language = new MLanguage (getCtx(), p_AD_Language_ID, get_TrxName());
-		log.info("Mode=" + p_MaintenanceMode + ", ID=" + p_AD_Language_ID
+		if (log.isLoggable(Level.INFO)) log.info("Mode=" + p_MaintenanceMode + ", ID=" + p_AD_Language_ID
 			+ " - " + m_language);
 		
 		if (m_language.isBaseLanguage())

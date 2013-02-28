@@ -19,6 +19,7 @@ package org.compiere.wstore;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -91,7 +92,7 @@ public class LocationServlet extends HttpServlet
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException
     {
-        log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+        if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
         doPost(request, response);
     }   //  doGet
 
@@ -106,7 +107,7 @@ public class LocationServlet extends HttpServlet
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException
     {
-        log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+        if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
         @SuppressWarnings("unused")
 		HttpSession session = request.getSession(true);
         Properties ctx = JSPEnv.getCtx(request);

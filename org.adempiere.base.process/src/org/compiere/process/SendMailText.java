@@ -98,7 +98,7 @@ public class SendMailText extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("R_MailText_ID=" + m_R_MailText_ID);
+		if (log.isLoggable(Level.INFO)) log.info("R_MailText_ID=" + m_R_MailText_ID);
 		//	Mail Test
 		m_MailText = new MMailText (getCtx(), m_R_MailText_ID, get_TrxName());
 		if (m_MailText.getR_MailText_ID() == 0)
@@ -134,7 +134,7 @@ public class SendMailText extends SvrProcess
 	 */
 	private void sendInterestArea()
 	{
-		log.info("R_InterestArea_ID=" + m_R_InterestArea_ID);
+		if (log.isLoggable(Level.INFO)) log.info("R_InterestArea_ID=" + m_R_InterestArea_ID);
 		m_ia = MInterestArea.get(getCtx(), m_R_InterestArea_ID);
 		StringBuilder unsubscribe = null;
 		if (m_ia.isSelfService())
@@ -204,7 +204,7 @@ public class SendMailText extends SvrProcess
 	 */
 	private void sendBPGroup()
 	{
-		log.info("C_BP_Group_ID=" + m_C_BP_Group_ID);
+		if (log.isLoggable(Level.INFO)) log.info("C_BP_Group_ID=" + m_C_BP_Group_ID);
 		String sql = "SELECT u.Name, u.EMail, u.AD_User_ID "
 			+ "FROM AD_User u"
 			+ " INNER JOIN C_BPartner bp ON (u.C_BPartner_ID=bp.C_BPartner_ID) "

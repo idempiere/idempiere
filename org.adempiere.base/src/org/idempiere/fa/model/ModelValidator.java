@@ -4,6 +4,7 @@
 package org.idempiere.fa.model;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.acct.Fact;
@@ -98,7 +99,7 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 	public String docValidate(PO po, int timing)
 	{
 			
-		log.info(po.get_TableName() + " Timing: " + timing);
+		if (log.isLoggable(Level.INFO)) log.info(po.get_TableName() + " Timing: " + timing);
 		String result = null;
 		
 		// TABLE C_Invoice

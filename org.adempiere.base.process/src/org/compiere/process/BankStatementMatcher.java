@@ -65,7 +65,7 @@ public class BankStatementMatcher extends SvrProcess
 		if (m_matchers == null || m_matchers.length == 0)
 			throw new IllegalStateException("No Matchers found");
 		//
-		log.info ("doIt - Table_ID=" + Table_ID + ", Record_ID=" + Record_ID
+		if (log.isLoggable(Level.INFO)) log.info ("doIt - Table_ID=" + Table_ID + ", Record_ID=" + Record_ID
 			+ ", Matchers=" + m_matchers.length);
 		
 		if (Table_ID == X_I_BankStatement.Table_ID)

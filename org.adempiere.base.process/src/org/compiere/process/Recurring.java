@@ -52,7 +52,7 @@ public class Recurring extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		MRecurring rec = new MRecurring (getCtx(), getRecord_ID(), get_TrxName());
-		log.info(rec.toString());
+		if (log.isLoggable(Level.INFO)) log.info(rec.toString());
 		return rec.executeRun();
 	}	//	doIt
 

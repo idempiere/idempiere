@@ -121,7 +121,7 @@ public class Export extends SvrProcess
 //		m_dateTimeFormat = DisplayType.getDateFormat(DisplayType.DateTime, Env.getLanguage(getCtx()));
 //		m_dateFormat 	 = DisplayType.getDateFormat(DisplayType.Date, Env.getLanguage(getCtx()));
 		//
-		log.info(sb.toString());
+		if (log.isLoggable(Level.INFO)) log.info(sb.toString());
 	}
 
 	// create new Document
@@ -141,12 +141,12 @@ public class Export extends SvrProcess
 		outDocument = createNewDocument();
 		
 		MClient client = MClient.get (getCtx(), p_AD_Client_ID);
-		log.info(client.toString());
+		if (log.isLoggable(Level.INFO)) log.info(client.toString());
 		// TODO - get proper Export Format!
 		int EXP_Format_ID = 1000000;
 		
 		MTable table = MTable.get(getCtx(), AD_Table_ID);
-		log.info("Table = " + table);
+		if (log.isLoggable(Level.INFO)) log.info("Table = " + table);
 		PO po = table.getPO (p_Record_ID, get_TrxName());
 		
 		if (po.get_KeyColumns().length > 1 || po.get_KeyColumns().length < 1) {
@@ -268,7 +268,7 @@ public class Export extends SvrProcess
 					}
 				}*/
 				StringBuilder msglog = new StringBuilder("EXP Field - column=[").append(column.getColumnName()).append("]; value=").append(value);
-				log.info(msglog.toString());
+				if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 				if (valueString != null && !"".equals(valueString) && !"null".equals(valueString)) {
 					Text newText = outDocument.createTextNode(valueString);
 					newElement.appendChild(newText);
@@ -330,7 +330,7 @@ public class Export extends SvrProcess
 					}
 				}*/
 				StringBuilder msglog = new StringBuilder("EXP Field - column=[").append(column.getColumnName()).append("]; value=").append(value);
-				log.info(msglog.toString());
+				if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 				if (valueString != null && !"".equals(valueString) && !"null".equals(valueString)) {
 					rootElement.setAttribute(formatLine.getValue(), valueString);
 					elementHasValue = true;
@@ -346,7 +346,7 @@ public class Export extends SvrProcess
 				MEXPFormat embeddedFormat = new MEXPFormat(getCtx(), embeddedFormat_ID, get_TrxName());
 				
 				MTable tableEmbedded = MTable.get(getCtx(), embeddedFormat.getAD_Table_ID());
-				log.info("Table Embedded = " + tableEmbedded);
+				if (log.isLoggable(Level.INFO)) log.info("Table Embedded = " + tableEmbedded);
 				StringBuilder sql = new StringBuilder("SELECT * ")
 					   .append("FROM ").append(tableEmbedded.getTableName()).append(" ")
 					   .append("WHERE ").append(masterPO.get_KeyColumns()[0]).append("=?")

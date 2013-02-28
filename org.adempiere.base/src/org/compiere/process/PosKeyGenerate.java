@@ -17,6 +17,7 @@
 package org.compiere.process;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.model.MPOSKey;
@@ -43,7 +44,7 @@ public class PosKeyGenerate extends SvrProcess {
 			if ( para.getParameterName().equals("M_Product_Category_ID") )
 				productCategoryId = para.getParameterAsInt();
 			else 
-				log.info("Parameter not found " + para.getParameterName());
+				if (log.isLoggable(Level.INFO)) log.info("Parameter not found " + para.getParameterName());
 		}
 
 		if ( posKeyLayoutId == 0 )

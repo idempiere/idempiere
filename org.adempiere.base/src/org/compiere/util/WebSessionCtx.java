@@ -108,7 +108,7 @@ public class WebSessionCtx implements Serializable
 	 */
 	private WebSessionCtx (HttpServletRequest request)
 	{
-		log.info (request.getContextPath() + " (" + request.getRemoteAddr() 
+		if (log.isLoggable(Level.INFO)) log.info (request.getContextPath() + " (" + request.getRemoteAddr() 
 			+ " - " + request.getLocale() + ") #" + counter);
 		ctx = new Properties();
 		setLanguage(request);
@@ -143,7 +143,7 @@ public class WebSessionCtx implements Serializable
 	 */
 	private WebSessionCtx (HttpServletRequest request, int W_Store_ID)
 	{
-		log.info (request.getContextPath() + " (" + request.getRemoteAddr() 
+		if (log.isLoggable(Level.INFO)) log.info (request.getContextPath() + " (" + request.getRemoteAddr() 
 			+ " - " + request.getLocale() + ") #" + counter);
 		ctx = new Properties();
 		setLanguage(request);
@@ -218,7 +218,7 @@ public class WebSessionCtx implements Serializable
 			wstore = MStore.get(ctx, W_Store_ID);
 			if (wstore.getW_Store_ID() != 0)
 			{
-				log.info("From web.xml - " + wstore);
+				if (log.isLoggable(Level.INFO)) log.info("From web.xml - " + wstore);
 				return;
 			}
 		}
@@ -249,7 +249,7 @@ public class WebSessionCtx implements Serializable
 			wstore = MStore.get(ctx, W_Store_ID);
 			if (wstore.getW_Store_ID() != 0)
 			{
-				log.info("From web.xml - " + wstore);
+				if (log.isLoggable(Level.INFO)) log.info("From web.xml - " + wstore);
 				return;
 			}
 		}
@@ -273,7 +273,7 @@ public class WebSessionCtx implements Serializable
 		/**	Create New Context		*/
 		if (newCtx == null)
 		{
-			log.info(wstore.getWebContext());
+			if (log.isLoggable(Level.INFO)) log.info(wstore.getWebContext());
 			newCtx = new Properties();
 			//	copy explicitly
 			Enumeration<?> e = ctx.keys();

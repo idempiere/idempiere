@@ -291,7 +291,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 			setRegionName(m_r.getName());
 			if (m_r.getC_Country_ID() != getC_Country_ID())
 			{
-				log.info("Region(" + region + ") C_Country_ID=" + region.getC_Country_ID()
+				if (log.isLoggable(Level.INFO)) log.info("Region(" + region + ") C_Country_ID=" + region.getC_Country_ID()
 						+ " - From  C_Country_ID=" + getC_Country_ID());
 				setC_Country_ID(region.getC_Country_ID());
 			}

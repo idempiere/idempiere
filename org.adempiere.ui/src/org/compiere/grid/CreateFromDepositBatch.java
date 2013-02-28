@@ -41,7 +41,7 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 	public CreateFromDepositBatch(GridTab mTab) 
 	{
 		super(mTab);
-		log.info(mTab.toString());
+		if (log.isLoggable(Level.INFO)) log.info(mTab.toString());
 	}
 
 	public boolean dynInit() throws Exception

@@ -69,7 +69,7 @@ public class VImageDialog extends CDialog
 	public VImageDialog (Frame owner, MImage mImage)
 	{
 		super (owner, Msg.translate(Env.getCtx(), "AD_Image_ID"), true);
-		log.info("MImage=" + mImage);
+		if (log.isLoggable(Level.INFO)) log.info("MImage=" + mImage);
 		m_mImage = mImage;
 		try
 		{

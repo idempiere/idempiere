@@ -62,7 +62,7 @@ public class TabCopy extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("To AD_Tab_ID=" + p_AD_TabTo_ID + ", From=" + p_AD_TabFrom_ID);
+		if (log.isLoggable(Level.INFO)) log.info("To AD_Tab_ID=" + p_AD_TabTo_ID + ", From=" + p_AD_TabFrom_ID);
 		MTab from = new MTab (getCtx(), p_AD_TabFrom_ID, get_TrxName());
 		if (from.get_ID() == 0)
 			throw new AdempiereUserError("@NotFound@ (from->) @AD_Tab_ID@");

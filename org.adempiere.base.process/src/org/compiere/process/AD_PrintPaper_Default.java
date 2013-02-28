@@ -78,7 +78,7 @@ public class AD_PrintPaper_Default extends SvrProcess
 				sql.append(" AND AD_Client_ID = ").append(p_AD_Client_ID);
 			}
 			cnt = DB.executeUpdate(sql.toString(), get_TrxName());
-			log.info("Updated " + cnt + " columns");
+			if (log.isLoggable(Level.INFO)) log.info("Updated " + cnt + " columns");
 			log.fine("Committing ...");
 			DB.commit(true, null);
 		}

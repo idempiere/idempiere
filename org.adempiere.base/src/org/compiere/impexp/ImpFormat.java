@@ -488,7 +488,7 @@ public final class ImpFormat
 				}
 				//  we should be at end of line or a delimiter
 				if (pos < length && line.charAt(pos) != delimiter)
-					log.info("Did not find delimiter at pos " + pos + " " + line);
+					if (log.isLoggable(Level.INFO)) log.info("Did not find delimiter at pos " + pos + " " + line);
 				pos++;  //  move over delimiter
 			}
 			else // plain copy

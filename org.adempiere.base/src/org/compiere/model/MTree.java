@@ -87,7 +87,7 @@ public class MTree extends MTree_Base
 		else
 			AD_User_ID = Env.getContextAsInt(ctx, "AD_User_ID");
 		m_clientTree = clientTree;
-		log.info("AD_Tree_ID=" + AD_Tree_ID
+		if (log.isLoggable(Level.INFO)) log.info("AD_Tree_ID=" + AD_Tree_ID
 				+ ", AD_User_ID=" + AD_User_ID 
 				+ ", Editable=" + editable
 				+ ", OnClient=" + clientTree);

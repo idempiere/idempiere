@@ -98,7 +98,7 @@ public final class AEnv
 		for (int i = 0; i < s_hiddenWindows.size(); i++)
 		{
 			CFrame hidden = s_hiddenWindows.get(i);
-			log.info(i + ": " + hidden);
+			if (log.isLoggable(Level.INFO)) log.info(i + ": " + hidden);
 			if (hidden.getAD_Window_ID() == window.getAD_Window_ID())
 				return false;	//	already there
 		}
@@ -107,7 +107,7 @@ public final class AEnv
 			if (s_hiddenWindows.add(window))
 			{
 				window.setVisible(false);
-				log.info(window.toString());
+				if (log.isLoggable(Level.INFO)) log.info(window.toString());
 			//	window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_ICONIFIED));
 				if (s_hiddenWindows.size() > 10) {
 					CFrame toClose = s_hiddenWindows.remove(0);		//	sort of lru
@@ -137,7 +137,7 @@ public final class AEnv
 			if (hidden.getAD_Window_ID() == AD_Window_ID)
 			{
 				s_hiddenWindows.remove(i);
-				log.info(hidden.toString());
+				if (log.isLoggable(Level.INFO)) log.info(hidden.toString());
 				hidden.setVisible(true);
 				// De-iconify window - teo_sarca [ 1707221 ]
 				int state = hidden.getExtendedState();

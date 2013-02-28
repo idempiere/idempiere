@@ -395,7 +395,7 @@ public class ImportAccount extends SvrProcess
 					no = 0;
 				}
 				if (no == 0)
-					log.info("Parent not found for " + rs.getString(5));
+					if (log.isLoggable(Level.INFO)) log.info("Parent not found for " + rs.getString(5));
 			}
 		}
 		catch (SQLException e)

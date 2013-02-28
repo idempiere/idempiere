@@ -75,7 +75,7 @@ public class ProjectGenPO extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("doIt - C_Project_ID=" + m_C_Project_ID + " - C_ProjectLine_ID=" + m_C_ProjectLine_ID + " - Consolidate=" + m_ConsolidateDocument);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - C_Project_ID=" + m_C_Project_ID + " - C_ProjectLine_ID=" + m_C_ProjectLine_ID + " - Consolidate=" + m_ConsolidateDocument);
 		if (m_C_ProjectLine_ID != 0)
 		{
 			MProjectLine projectLine = new MProjectLine(getCtx(), m_C_ProjectLine_ID, get_TrxName());

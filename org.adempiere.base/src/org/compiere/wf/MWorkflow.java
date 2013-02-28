@@ -851,7 +851,7 @@ public class MWorkflow extends X_AD_Workflow
 		boolean valid = errors.length() == 0;
 		setIsValid(valid);
 		if (!valid)
-			log.info("validate: " + errors);
+			if (log.isLoggable(Level.INFO)) log.info("validate: " + errors);
 		return errors.toString();
 	}	//	validate
 	

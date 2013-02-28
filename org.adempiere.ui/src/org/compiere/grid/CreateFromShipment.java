@@ -67,7 +67,7 @@ public abstract class CreateFromShipment extends CreateFrom
 	public CreateFromShipment(GridTab mTab)
 	{
 		super(mTab);
-		log.info(mTab.toString());
+		if (log.isLoggable(Level.INFO)) log.info(mTab.toString());
 	}   //  VCreateFromShipment
 
 	/**

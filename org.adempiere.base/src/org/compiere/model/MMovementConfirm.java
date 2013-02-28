@@ -268,7 +268,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 */
 	public boolean unlockIt()
 	{
-		log.info("unlockIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
 		setProcessing(false);
 		return true;
 	}	//	unlockIt
@@ -279,7 +279,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 */
 	public boolean invalidateIt()
 	{
-		log.info("invalidateIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("invalidateIt - " + toString());
 		setDocAction(DOCACTION_Prepare);
 		return true;
 	}	//	invalidateIt
@@ -290,7 +290,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 */
 	public String prepareIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -333,7 +333,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 */
 	public boolean  approveIt()
 	{
-		log.info("approveIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("approveIt - " + toString());
 		setIsApproved(true);
 		return true;
 	}	//	approveIt
@@ -344,7 +344,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 */
 	public boolean rejectIt()
 	{
-		log.info("rejectIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("rejectIt - " + toString());
 		setIsApproved(false);
 		return true;
 	}	//	rejectIt
@@ -370,7 +370,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		//	Implicit Approval
 		if (!isApproved())
 			approveIt();
-		log.info("completeIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("completeIt - " + toString());
 		//
 		MMovement move = new MMovement (getCtx(), getM_Movement_ID(), get_TrxName());
 		MMovementLineConfirm[] lines = getLines(false);
@@ -466,7 +466,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 					m_inventoryInfo += "," + m_inventoryFrom.getDocumentNo();
 			}
 			
-			log.info("createDifferenceDoc - Difference=" + confirm.getDifferenceQty());
+			if (log.isLoggable(Level.INFO)) log.info("createDifferenceDoc - Difference=" + confirm.getDifferenceQty());
 			MInventoryLine line = new MInventoryLine (m_inventoryFrom, 
 					mLine.getM_Locator_ID(), mLine.getM_Product_ID(), mLine.getM_AttributeSetInstance_ID(),
 					confirm.getDifferenceQty(), Env.ZERO);
@@ -508,7 +508,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 					m_inventoryInfo += "," + m_inventoryTo.getDocumentNo();
 			}
 			
-			log.info("createDifferenceDoc - Scrapped=" + confirm.getScrappedQty());
+			if (log.isLoggable(Level.INFO)) log.info("createDifferenceDoc - Scrapped=" + confirm.getScrappedQty());
 			MInventoryLine line = new MInventoryLine (m_inventoryTo, 
 				mLine.getM_LocatorTo_ID(), mLine.getM_Product_ID(), mLine.getM_AttributeSetInstance_ID(),
 				confirm.getScrappedQty(), Env.ZERO);
@@ -530,7 +530,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 */
 	public boolean voidIt()
 	{
-		log.info("voidIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("voidIt - " + toString());
 		// Before Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
@@ -550,7 +550,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 */
 	public boolean closeIt()
 	{
-		log.info("closeIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("closeIt - " + toString());
 		// Before Close
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
@@ -572,7 +572,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 */
 	public boolean reverseCorrectIt()
 	{
-		log.info("reverseCorrectIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("reverseCorrectIt - " + toString());
 		// Before reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
@@ -592,7 +592,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 */
 	public boolean reverseAccrualIt()
 	{
-		log.info("reverseAccrualIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("reverseAccrualIt - " + toString());
 		// Before reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)
@@ -612,7 +612,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 */
 	public boolean reActivateIt()
 	{
-		log.info("reActivateIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("reActivateIt - " + toString());
 		// Before reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)

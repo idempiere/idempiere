@@ -100,7 +100,7 @@ public class ProcessDialog extends CFrame
 	public ProcessDialog (GraphicsConfiguration gc, int AD_Process_ID, boolean isSOTrx)
 	{
 		super(gc);
-		log.info("Process=" + AD_Process_ID + "; SOTrx=" + isSOTrx);
+		if (log.isLoggable(Level.INFO)) log.info("Process=" + AD_Process_ID + "; SOTrx=" + isSOTrx);
 		enableEvents(AWTEvent.WINDOW_EVENT_MASK);
 		m_AD_Process_ID = AD_Process_ID;
 		m_WindowNo = AEnv.createWindowNo (this);

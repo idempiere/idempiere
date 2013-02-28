@@ -65,7 +65,7 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("C_AcctSchema_ID=" + p_C_AcctSchema_ID
+		if (log.isLoggable(Level.INFO)) log.info("C_AcctSchema_ID=" + p_C_AcctSchema_ID
 			+ ", CopyOverwriteAcct=" + p_CopyOverwriteAcct);
 		if (p_C_AcctSchema_ID == 0)
 			throw new AdempiereSystemError("C_AcctSchema_ID=0");

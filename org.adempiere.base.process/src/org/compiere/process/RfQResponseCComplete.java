@@ -56,7 +56,7 @@ public class RfQResponseCComplete extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		MRfQResponse response = new MRfQResponse (getCtx(), p_C_RfQResponse_ID, get_TrxName());
-		log.info("doIt - " + response);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - " + response);
 		//
 		String error = response.checkComplete();
 		if (error != null && error.length() > 0)

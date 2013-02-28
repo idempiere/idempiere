@@ -113,7 +113,7 @@ public class BeanShellEditor extends CDialog implements ActionListener
 		m_WindowNo = WindowNo;
 		if (m_WindowNo == 0)
 			m_WindowNo = AEnv.createWindowNo(this);
-		log.info("Window=" + m_WindowNo);
+		if (log.isLoggable(Level.INFO)) log.info("Window=" + m_WindowNo);
 		try
 		{
 			jbInit();

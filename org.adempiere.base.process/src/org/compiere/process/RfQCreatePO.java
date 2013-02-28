@@ -78,7 +78,7 @@ public class RfQCreatePO extends SvrProcess
 		MRfQ rfq = new MRfQ (getCtx(), p_C_RfQ_ID, get_TrxName());
 		if (rfq.get_ID() == 0)
 			throw new IllegalArgumentException("No RfQ found");
-		log.info(rfq.toString());
+		if (log.isLoggable(Level.INFO)) log.info(rfq.toString());
 		
 		//	Complete 
 		MRfQResponse[] responses = rfq.getResponses(true, true);

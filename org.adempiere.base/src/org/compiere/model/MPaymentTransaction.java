@@ -173,7 +173,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	
 	public boolean processOnline(String trxName)
 	{
-		log.info ("Amt=" + getPayAmt());
+		if (log.isLoggable(Level.INFO)) log.info ("Amt=" + getPayAmt());
 		//
 		setIsOnline(true);
 		setErrorMessage(null);
@@ -182,7 +182,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		{
 			if (isVoided())
 			{
-				log.info("Already voided - " + getR_Result() + " - " + getR_RespMsg());
+				if (log.isLoggable(Level.INFO)) log.info("Already voided - " + getR_Result() + " - " + getR_RespMsg());
 				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentTransactionAlreadyVoided"));
 				return true;
 			}
@@ -191,7 +191,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		{
 			if (isDelayedCapture())
 			{
-				log.info("Already delayed capture - " + getR_Result() + " - " + getR_RespMsg());
+				if (log.isLoggable(Level.INFO)) log.info("Already delayed capture - " + getR_Result() + " - " + getR_RespMsg());
 				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentTransactionAlreadyDelayedCapture"));
 				return true;
 			}
@@ -200,7 +200,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		{
 			if (isApproved())
 			{
-				log.info("Already processed - " + getR_Result() + " - " + getR_RespMsg());
+				if (log.isLoggable(Level.INFO)) log.info("Already processed - " + getR_Result() + " - " + getR_RespMsg());
 				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentTransactionAlreadyProcessed"));
 				return true;
 			}
@@ -506,7 +506,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	 */
 	@Override
 	public boolean startProcess(Properties ctx, ProcessInfo pi, Trx trx) {
-		log.info("startProcess - " + pi.getRecord_ID());
+		if (log.isLoggable(Level.INFO)) log.info("startProcess - " + pi.getRecord_ID());
 		boolean retValue = false;
 		//
 		if (pi.getRecord_ID() != get_ID())

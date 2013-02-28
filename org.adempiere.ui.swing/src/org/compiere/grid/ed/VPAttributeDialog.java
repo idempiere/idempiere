@@ -681,7 +681,7 @@ public class VPAttributeDialog extends CDialog
 			M_Lot_ID = pp.getKey();
 		MQuery zoomQuery = new MQuery("M_Lot");
 		zoomQuery.addRestriction("M_Lot_ID", MQuery.EQUAL, M_Lot_ID);
-		log.info(zoomQuery.toString());
+		if (log.isLoggable(Level.INFO)) log.info(zoomQuery.toString());
 		//
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		//

@@ -571,7 +571,7 @@ public class PrintData implements Serializable
 	 */
 	private static void dumpHeader (PrintData pd)
 	{
-		log.info(pd.toString());
+		if (log.isLoggable(Level.INFO)) log.info(pd.toString());
 		if (pd.getColumnInfo() != null)
 		{
 			for (int i = 0; i < pd.getColumnInfo().length; i++)
@@ -586,7 +586,7 @@ public class PrintData implements Serializable
 	 */
 	private static void dumpRow (PrintData pd, int row)
 	{
-		log.info("Row #" + row);
+		if (log.isLoggable(Level.INFO)) log.info("Row #" + row);
 		if (row < 0 || row >= pd.getRowCount())
 		{
 			log.warning("- invalid -");

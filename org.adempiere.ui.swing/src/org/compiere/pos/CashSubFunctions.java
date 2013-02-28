@@ -25,6 +25,7 @@ import java.awt.event.InputMethodListener;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.swing.border.TitledBorder;
 
@@ -339,7 +340,7 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 		String action = e.getActionCommand();		
 		if (action == null || action.length() == 0)
 			return;
-		log.info("PosCashSubFunctions - actionPerformed: " + action);
+		if (log.isLoggable(Level.INFO)) log.info("PosCashSubFunctions - actionPerformed: " + action);
 		
 		//	to display panel with initial change
 		if (action.equals("displayInitialChange"))

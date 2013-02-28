@@ -354,7 +354,7 @@ public final class VAccount extends JComponent
 		m_cmdTextRunning = true;
 		
 		String text = m_text.getText();
-		log.info("Text=" + text);
+		if (log.isLoggable(Level.INFO)) log.info("Text=" + text);
 		if (text == null || text.length() == 0 || text.equals("%"))
 		{
 			cmd_button();

@@ -63,7 +63,7 @@ public class BankStatementPayment extends SvrProcess
 	{
 		int Table_ID = getTable_ID();
 		int Record_ID = getRecord_ID();
-		log.info ("Table_ID=" + Table_ID + ", Record_ID=" + Record_ID);
+		if (log.isLoggable(Level.INFO)) log.info ("Table_ID=" + Table_ID + ", Record_ID=" + Record_ID);
 		
 		if (Table_ID == X_I_BankStatement.Table_ID)
 			return createPayment (new X_I_BankStatement(getCtx(), Record_ID, get_TrxName()));

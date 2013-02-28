@@ -34,7 +34,6 @@ import org.compiere.model.MJournalLine;
 import org.compiere.model.MOrg;
 import org.compiere.model.Query;
 import org.compiere.model.X_T_InvoiceGL;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -104,7 +103,7 @@ public class InvoiceNGL extends SvrProcess
 	{
 		if (p_IsAllCurrencies)
 			p_C_Currency_ID = 0;
-		log.info("C_AcctSchema_ID=" + p_C_AcctSchema_ID 
+		if (log.isLoggable(Level.INFO)) log.info("C_AcctSchema_ID=" + p_C_AcctSchema_ID 
 			+ ",C_ConversionTypeReval_ID=" + p_C_ConversionTypeReval_ID
 			+ ",DateReval=" + p_DateReval 
 			+ ", APAR=" + p_APAR
@@ -120,7 +119,7 @@ public class InvoiceNGL extends SvrProcess
 		StringBuilder sql = new StringBuilder("DELETE T_InvoiceGL WHERE AD_PInstance_ID=").append(getAD_PInstance_ID());
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
-			log.info("Deleted #" + no);
+			if (log.isLoggable(Level.INFO)) log.info("Deleted #" + no);
 		
 		//	Insert Trx
 		String dateStr = DB.TO_DATE(p_DateReval, true);
@@ -158,12 +157,13 @@ public class InvoiceNGL extends SvrProcess
 			sql.append(" AND i.C_Currency_ID=").append(p_C_Currency_ID);
 		
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		if (no != 0)
-			log.info("Inserted #" + no);
-		else if (CLogMgt.isLevelFiner())
+		if (no != 0) {
+			if (log.isLoggable(Level.INFO)) log.info("Inserted #" + no);
+		} else if (log.isLoggable(Level.FINER)) {
 			log.warning("Inserted #" + no + " - " + sql);
-		else 
+		} else {
 			log.warning("Inserted #" + no);
+		}
 
 		//	Calculate Difference
 		sql = new StringBuilder("UPDATE T_InvoiceGL gl ")
@@ -181,13 +181,13 @@ public class InvoiceNGL extends SvrProcess
 			.append("WHERE GrandTotal=OpenAmt AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
-			log.info("Not Paid #" + no);
+			if (log.isLoggable(Level.INFO)) log.info("Not Paid #" + no);
 
 		sql = new StringBuilder("UPDATE T_InvoiceGL SET Percent = ROUND(OpenAmt*100/GrandTotal,6) ")
 			.append("WHERE GrandTotal<>OpenAmt AND GrandTotal <> 0 AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
-			log.info("Partial Paid #" + no);
+			if (log.isLoggable(Level.INFO)) log.info("Partial Paid #" + no);
 
 		sql = new StringBuilder("UPDATE T_InvoiceGL SET AmtRevalDr = AmtRevalDr * Percent/100,")
 			.append(" AmtRevalCr = AmtRevalCr * Percent/100,")

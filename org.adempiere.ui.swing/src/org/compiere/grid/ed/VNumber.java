@@ -728,7 +728,7 @@ public final class VNumber extends JComponent
 		}
 		catch (ParseException pe)
 		{
-			log.info("InvalidEntry - " + pe.getMessage());
+			if (log.isLoggable(Level.INFO)) log.info("InvalidEntry - " + pe.getMessage());
 		}
 		
 		//	Find frame

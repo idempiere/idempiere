@@ -493,11 +493,12 @@ public class CLogMgt
 	{
 		if (p == null)
 			return;
-		if (logIt)
-			log.info(description + " - Size=" + p.size()
+		if (logIt) {
+			if (log.isLoggable(Level.INFO)) log.info(description + " - Size=" + p.size()
 				+ ", Hash=" + p.hashCode() + "\n" + getLocalHost());
-		else
+		} else {
 			System.out.println("Log.printProperties = " + description + ", Size=" + p.size());
+		}
 
 		Object[] pp = p.keySet().toArray();
 		Arrays.sort(pp);

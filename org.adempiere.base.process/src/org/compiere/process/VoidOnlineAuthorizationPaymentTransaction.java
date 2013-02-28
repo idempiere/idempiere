@@ -24,7 +24,7 @@ public class VoidOnlineAuthorizationPaymentTransaction extends SvrProcess {
 	
 	protected String doIt() throws Exception
 	{
-		log.info("Record_ID=" + getRecord_ID());
+		if (log.isLoggable(Level.INFO)) log.info("Record_ID=" + getRecord_ID());
 		//	get Payment
 		MPaymentTransaction pt = new MPaymentTransaction (getCtx(), getRecord_ID(), get_TrxName());
 		

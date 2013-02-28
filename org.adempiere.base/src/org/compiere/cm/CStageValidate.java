@@ -57,7 +57,7 @@ public class CStageValidate extends SvrProcess
 	protected String doIt ()
 		throws Exception
 	{
-		log.info("CM_CStage_ID=" + p_CM_CStage_ID);
+		if (log.isLoggable(Level.INFO)) log.info("CM_CStage_ID=" + p_CM_CStage_ID);
 		MCStage stage = new MCStage (getCtx(), p_CM_CStage_ID, get_TrxName());
 		return stage.validate();
 	}	//	doIt

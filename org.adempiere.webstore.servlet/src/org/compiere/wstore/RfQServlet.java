@@ -105,7 +105,7 @@ public class RfQServlet extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("doGet from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("doGet from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		String url = "/rfqs.jsp";
 		//
 		HttpSession session = request.getSession(false);
@@ -127,7 +127,7 @@ public class RfQServlet extends HttpServlet
 				info.setMessage(msg);
 		}
 
-		log.info ("doGet - Forward to " + url);
+		if (log.isLoggable(Level.INFO)) log.info ("doGet - Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 		dispatcher.forward (request, response);
 	}   //  doGet
@@ -208,7 +208,7 @@ public class RfQServlet extends HttpServlet
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 	//	Log.setTraceLevel(9);
 	//	WebEnv.dump(request);
 	//	WebEnv.dump(request.getSession());
@@ -244,7 +244,7 @@ public class RfQServlet extends HttpServlet
 		session.setAttribute(WebSessionCtx.HDR_MESSAGE, msg);
 		String url = "/rfqDetails.jsp?C_RfQ_ID=" + C_RfQ_ID;
 		//
-		log.info ("doGet - Forward to " + url);
+		if (log.isLoggable(Level.INFO)) log.info ("doGet - Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 		dispatcher.forward (request, response);
 	}   //  doPost

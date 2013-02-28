@@ -83,7 +83,7 @@ public class InfoSchedule extends CDialog
 		else
 			m_mAssignment = mAssignment;
 		if (mAssignment != null)
-			log.info(mAssignment.toString());
+			if (log.isLoggable(Level.INFO)) log.info(mAssignment.toString());
 		m_dateFrom = m_mAssignment.getAssignDateFrom();
 		if (m_dateFrom == null)
 			m_dateFrom = new Timestamp(System.currentTimeMillis());

@@ -57,9 +57,9 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		Attributes atts = element.attributes;
 		String elementValue = element.getElementValue();
-		log.info(elementValue + " " + atts.getValue("Name"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + atts.getValue("Name"));
 		String entitytype = atts.getValue("EntityType");
-		log.info("entitytype " + atts.getValue("EntityType"));
+		if (log.isLoggable(Level.INFO)) log.info("entitytype " + atts.getValue("EntityType"));
 
 		if (isProcessElement(ctx, entitytype)) {
 			
@@ -281,7 +281,7 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 										rsnnc = pstmtnnc.executeQuery();
 										while (rsnnc.next()) {
 											ad_wf_nodenextcondition_id = rsnnc.getInt("AD_WF_NextCondition_ID");
-											log.info("ad_wf_nodenextcondition_id: " + String.valueOf(ad_wf_nodenextcondition_id));
+											if (log.isLoggable(Level.INFO)) log.info("ad_wf_nodenextcondition_id: " + String.valueOf(ad_wf_nodenextcondition_id));
 											if (ad_wf_nodenextcondition_id > 0) {
 												createNodeNextCondition(ctx, document, ad_wf_nodenextcondition_id);
 											}

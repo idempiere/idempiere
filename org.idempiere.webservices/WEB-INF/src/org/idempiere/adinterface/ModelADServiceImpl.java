@@ -928,7 +928,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				sqlParaList.add(Env.getAD_Client_ID(Env.getCtx()));
 	
 				String sql = sqlBuilder.toString();
-				log.info("Web service type " + m_webservicetype.getValue() + "SQL to check existing record " + sql);
+				if (log.isLoggable(Level.INFO)) log.info("Web service type " + m_webservicetype.getValue() + "SQL to check existing record " + sql);
 				try {
 					record_id = DB.getSQLValueEx(trxName, sql, sqlParaList);
 				} catch (Exception e) {

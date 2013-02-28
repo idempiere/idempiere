@@ -19,6 +19,7 @@ package org.adempiere.pipo.handler;
 
 import java.math.BigDecimal;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -53,7 +54,7 @@ public class FieldElementHandler extends AbstractElementHandler
 		PackIn packIn = (PackIn)ctx.get("PackInProcess");
 		String elementValue = element.getElementValue();
 		Attributes atts = element.attributes;
-		log.info(elementValue + " " + atts.getValue("Name"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + atts.getValue("Name"));
 		String entitytype = atts.getValue("EntityType");
 		if (isProcessElement(ctx, entitytype)) {
 			if (element.parent != null && element.parent.getElementValue().equals("tab") &&

@@ -453,7 +453,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 		catch (InterruptedException ie)
 		{
 		}
-		log.info("#" + m_lookup.size());
+		if (log.isLoggable(Level.INFO)) log.info("#" + m_lookup.size());
 		return m_lookup.size();
 	}	//	refresh
 

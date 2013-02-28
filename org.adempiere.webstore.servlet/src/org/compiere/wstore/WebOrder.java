@@ -126,7 +126,7 @@ public class WebOrder
 		//	log.info("-------------------------------------- " + wu.isCustomer());
 		}
 		BigDecimal amt = m_order.getGrandTotal();
-		log.info("Amt=" + amt);
+		if (log.isLoggable(Level.INFO)) log.info("Amt=" + amt);
 		return ok;
 	}	//	createOrder
 

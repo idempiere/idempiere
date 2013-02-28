@@ -93,7 +93,7 @@ public class TrxMaterial {
 		//  DateTO
 		if (movementDateTo != null)
 			query.addRestriction("TRUNC(MovementDate)", MQuery.LESS_EQUAL, movementDateTo);
-		log.info( "VTrxMaterial.refresh query=" + query.toString());
+		if (log.isLoggable(Level.INFO)) log.info( "VTrxMaterial.refresh query=" + query.toString());
 
 		/**
 		 *  Refresh/Requery

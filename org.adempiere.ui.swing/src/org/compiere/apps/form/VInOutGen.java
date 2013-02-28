@@ -216,7 +216,7 @@ public class VInOutGen extends InOutGen implements FormPanel, ActionListener, Ve
 	 */
 	public void vetoableChange(PropertyChangeEvent e)
 	{
-		log.info(e.getPropertyName() + "=" + e.getNewValue());
+		if (log.isLoggable(Level.INFO)) log.info(e.getPropertyName() + "=" + e.getNewValue());
 		if (e.getPropertyName().equals("M_Warehouse_ID"))
 			setM_Warehouse_ID(e.getNewValue());
 		if (e.getPropertyName().equals("C_BPartner_ID"))

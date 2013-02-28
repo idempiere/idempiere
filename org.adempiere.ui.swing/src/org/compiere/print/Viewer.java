@@ -817,7 +817,7 @@ public class Viewer extends CFrame
 	private void mouse_clicked (MouseEvent e, boolean rightClick)
 	{
 		Point point = e.getPoint();
-		log.info("Right=" + rightClick + " - " + point.toString());
+		if (log.isLoggable(Level.INFO)) log.info("Right=" + rightClick + " - " + point.toString());
 		if (rightClick)
 		{
 			m_ddQ = m_viewPanel.getDrillDown(point);
@@ -854,7 +854,7 @@ public class Viewer extends CFrame
 			MQuery query = m_viewPanel.getDrillDown(point);
 			if (query != null)
 			{
-				log.info("Drill Down: " + query.getWhereClause(true));
+				if (log.isLoggable(Level.INFO)) log.info("Drill Down: " + query.getWhereClause(true));
 				executeDrill(query);
 			}
 		}
@@ -865,7 +865,7 @@ public class Viewer extends CFrame
 			{
 				NamePair pp = (NamePair)comboDrill.getSelectedItem();
 				query.setTableName(pp.getID());
-				log.info("Drill Accross: " + query.getWhereClause(true));
+				if (log.isLoggable(Level.INFO)) log.info("Drill Accross: " + query.getWhereClause(true));
 				executeDrill(query);
 			}
 		}

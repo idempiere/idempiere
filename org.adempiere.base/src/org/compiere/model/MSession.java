@@ -239,7 +239,7 @@ public class MSession extends X_AD_Session
 		setProcessed(true);
 		saveEx();
 		s_sessions.remove(new Integer(getAD_Session_ID()));
-		log.info(TimeUtil.formatElapsed(getCreated(), getUpdated()));
+		if (log.isLoggable(Level.INFO)) log.info(TimeUtil.formatElapsed(getCreated(), getUpdated()));
 	}	//	logout
 
 	/**

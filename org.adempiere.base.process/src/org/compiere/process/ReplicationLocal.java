@@ -99,7 +99,7 @@ public class ReplicationLocal extends SvrProcess
 		if (m_system == null || !m_system.isValid())
 			return ("SystemNotSetupForReplication");
 		//
-		log.info("doIt - Record_ID=" + getRecord_ID() + ", test=" + m_test);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - Record_ID=" + getRecord_ID() + ", test=" + m_test);
 		connectRemote();
 		//
 		setupRemote();
@@ -107,7 +107,7 @@ public class ReplicationLocal extends SvrProcess
 		sendUpdates();
 
 		//	Save Info
-		log.info("doIt - Replicated=" + m_replicated + " - " + m_replicationStart);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - Replicated=" + m_replicated + " - " + m_replicationStart);
 		m_replicationRun.setIsReplicated(m_replicated);
 		double sec = (System.currentTimeMillis() - m_start);
 		sec /= 1000;
@@ -137,7 +137,7 @@ public class ReplicationLocal extends SvrProcess
 		int AppsPort = m_replication.getHostPort();
 		
 		CConnection connection = new CConnection(AppsHost);
-		log.info (AppsHost + ":" + AppsPort);
+		if (log.isLoggable(Level.INFO)) log.info (AppsHost + ":" + AppsPort);
 		try
 		{
 			Server server = connection.getServer();
@@ -198,7 +198,7 @@ public class ReplicationLocal extends SvrProcess
 		if (logs != null && logs.length > 0)
 			dateRun = logs[0].getP_Date();	//	User Remote Timestamp!
 		//
-		log.info ("setupRemote - " + pi + " - Remote Timestamp = " + dateRun);
+		if (log.isLoggable(Level.INFO)) log.info ("setupRemote - " + pi + " - Remote Timestamp = " + dateRun);
 		if (dateRun != null)
 			m_replicationStart = dateRun;
 		m_replicationRun = new MReplicationRun (getCtx(), m_replication.getAD_Replication_ID(), m_replicationStart, get_TrxName());
@@ -295,7 +295,7 @@ public class ReplicationLocal extends SvrProcess
 		StringBuilder msg = new StringBuilder("< ");
 		if (logs != null && logs.length > 0)
 			msg.append(logs[0].getP_Msg());	//	Remote Message
-		log.info("mergeDataTable - " + pi);
+		if (log.isLoggable(Level.INFO)) log.info("mergeDataTable - " + pi);
 		//
 		MReplicationLog rLog = new MReplicationLog (getCtx(), m_replicationRun.getAD_Replication_Run_ID(), AD_ReplicationTable_ID, msg.toString(), get_TrxName());
 		if (pi.isError())
@@ -488,7 +488,7 @@ public class ReplicationLocal extends SvrProcess
 		pi.setSerializableObject(data);
 		//	send it
 		pi = m_serverRemote.process (new Properties (), pi);
-		log.info("sendUpdatesTable - " + pi);
+		if (log.isLoggable(Level.INFO)) log.info("sendUpdatesTable - " + pi);
 		ProcessInfoLog[] logs = pi.getLogs();
 		StringBuilder msg = new StringBuilder("> ");
 		if (logs != null && logs.length > 0)

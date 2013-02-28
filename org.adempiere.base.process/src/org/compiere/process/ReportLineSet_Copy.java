@@ -68,7 +68,7 @@ public class ReportLineSet_Copy extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		int to_ID = super.getRecord_ID();
-		log.info("From PA_ReportLineSet_ID=" + m_PA_ReportLineSet_ID + ", To=" + to_ID);
+		if (log.isLoggable(Level.INFO)) log.info("From PA_ReportLineSet_ID=" + m_PA_ReportLineSet_ID + ", To=" + to_ID);
 		if (to_ID < 1)
 			throw new Exception(MSG_SaveErrorRowNotFound);
 		//

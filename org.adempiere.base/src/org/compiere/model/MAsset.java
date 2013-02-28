@@ -453,7 +453,7 @@ public class MAsset extends X_A_Asset
 		{
 			String sql = "DELETE FROM "+MAssetAddition.Table_Name+" WHERE "+MAssetAddition.COLUMNNAME_Processed+"=? AND "+MAssetAddition.COLUMNNAME_A_Asset_ID+"=?";
 			int no = DB.executeUpdateEx(sql, new Object[]{false, getA_Asset_ID()}, get_TrxName());
-			log.info("@A_Asset_Addition@ @Deleted@ #" + no);
+			if (log.isLoggable(Level.INFO)) log.info("@A_Asset_Addition@ @Deleted@ #" + no);
 		}
 		//
 		// update invoice line
@@ -463,7 +463,7 @@ public class MAsset extends X_A_Asset
 										+","+MInvoiceLine.COLUMNNAME_A_Processed+"=?"
 								+" WHERE "+MInvoiceLine.COLUMNNAME_A_Asset_ID+"=?";
 			int no = DB.executeUpdateEx(sql, new Object[]{null, false, getA_Asset_ID()}, get_TrxName());
-			log.info("@C_InvoiceLine@ @Updated@ #" + no);
+			if (log.isLoggable(Level.INFO)) log.info("@C_InvoiceLine@ @Updated@ #" + no);
 		}
 		return true;
 	}       //      beforeDelete

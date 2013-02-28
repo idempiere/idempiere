@@ -215,6 +215,6 @@ public class Archive {
 		//metas: Bugfix zu included_Role ende
 		//
 		m_archives = MArchive.get(Env.getCtx(), sql.toString());
-		log.info("Length=" + m_archives.length);
+		if (log.isLoggable(Level.INFO)) log.info("Length=" + m_archives.length);
 	}	//	cmd_query
 }

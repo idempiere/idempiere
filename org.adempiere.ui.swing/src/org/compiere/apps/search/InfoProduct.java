@@ -118,7 +118,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 		boolean multiSelection, String whereClause, boolean lookup)
 	{
 		super (frame, modal, WindowNo, "p", "M_Product_ID", multiSelection, whereClause, lookup);
-		log.info(value + ", Wh=" + M_Warehouse_ID + ", PL=" + M_PriceList_ID + ", WHERE=" + whereClause);
+		if (log.isLoggable(Level.INFO)) log.info(value + ", Wh=" + M_Warehouse_ID + ", PL=" + M_PriceList_ID + ", WHERE=" + whereClause);
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoProduct"));
 		//
 		statInit();
@@ -1049,7 +1049,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 	 */
 	protected void zoom()
 	{
-		log.info("");
+		if (log.isLoggable(Level.INFO)) log.info("");
 		Integer M_Product_ID = getSelectedRowKey();
 		if (M_Product_ID == null)
 			return;

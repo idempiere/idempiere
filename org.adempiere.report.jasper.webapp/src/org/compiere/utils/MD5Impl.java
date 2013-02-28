@@ -7,6 +7,7 @@
 package org.compiere.utils;
 
 import java.net.URL;
+import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.utils.DigestOfFile;
@@ -42,7 +43,7 @@ public class MD5Impl {
 				URL currentFile = Thread.currentThread().getContextClassLoader().getResource(filepartOnly);
 				System.out.println(filepartOnly);
 				absoluteFilename = currentFile.getFile();
-				log.info("decoded absolute path name for "+filepartOnly +" is "+absoluteFilename);
+				if (log.isLoggable(Level.INFO)) log.info("decoded absolute path name for "+filepartOnly +" is "+absoluteFilename);
 			}
 			else
 			{

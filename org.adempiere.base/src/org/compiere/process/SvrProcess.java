@@ -440,7 +440,7 @@ public abstract class SvrProcess implements ProcessCall
 		if (m_pi != null)
 			m_pi.addLog(id, date, number, msg,tableId,recordId);
 		
-		log.info(id + " - " + date + " - " + number + " - " + msg +" - "+tableId);
+		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg +" - "+tableId);
 	}	//	addLog
 
 	/**************************************************************************
@@ -454,7 +454,7 @@ public abstract class SvrProcess implements ProcessCall
 	{
 		if (m_pi != null)
 			m_pi.addLog(id, date, number, msg);
-		log.info(id + " - " + date + " - " + number + " - " + msg);
+		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg);
 	}	//	addLog
 
 	/**

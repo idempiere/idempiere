@@ -59,7 +59,7 @@ public class CostCreate extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("M_Product_ID=" + p_M_Product_ID);
+		if (log.isLoggable(Level.INFO)) log.info("M_Product_ID=" + p_M_Product_ID);
 		if (p_M_Product_ID == 0)
 			throw new AdempiereUserError("@NotFound@: @M_Product_ID@ = " + p_M_Product_ID);
 		MProduct product = MProduct.get(getCtx(), p_M_Product_ID);

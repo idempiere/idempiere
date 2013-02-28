@@ -225,7 +225,7 @@ public class TopicListener implements MessageListener {
 				}
 				catch (Exception e)
 				{
-					log.info("Error while invoking setClientID(" + clientID +")! " + e.getMessage());
+					if (log.isLoggable(Level.INFO)) log.info("Error while invoking setClientID(" + clientID +")! " + e.getMessage());
 					conn.close();
 					return;
 				}

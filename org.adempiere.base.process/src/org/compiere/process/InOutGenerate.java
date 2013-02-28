@@ -135,7 +135,7 @@ public class InOutGenerate extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("Selection=" + p_Selection
+		if (log.isLoggable(Level.INFO)) log.info("Selection=" + p_Selection
 			+ ", M_Warehouse_ID=" + p_M_Warehouse_ID 
 			+ ", C_BPartner_ID=" + p_C_BPartner_ID 
 			+ ", Consolidate=" + p_ConsolidateDocument

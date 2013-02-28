@@ -63,7 +63,7 @@ public class WindowCopy extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("doIt - To AD_Window_ID=" + p_AD_WindowTo_ID + ", From=" + p_AD_WindowFrom_ID);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - To AD_Window_ID=" + p_AD_WindowTo_ID + ", From=" + p_AD_WindowFrom_ID);
 		MWindow from = new MWindow (getCtx(), p_AD_WindowFrom_ID, get_TrxName());
 		if (from.get_ID() == 0)
 			throw new AdempiereUserError("@NotFound@ (from->) @AD_Window_ID@");

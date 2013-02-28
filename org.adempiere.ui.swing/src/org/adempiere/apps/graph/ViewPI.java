@@ -138,7 +138,7 @@ implements FormPanel, ActionListener
 		else if (e.getSource() instanceof PerformanceIndicator)
 		{
 			PerformanceIndicator pi = (PerformanceIndicator)e.getSource();
-			log.info(pi.getName());
+			if (log.isLoggable(Level.INFO)) log.info(pi.getName());
 			MGoal goal = pi.getGoal();
 			if (goal.getMeasure() != null)
 				new PerformanceDetail(goal);

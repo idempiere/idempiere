@@ -257,7 +257,7 @@ public class MWFProcess extends X_AD_WF_Process
 	public void checkActivities(String trxName, PO lastPO)
 	{
 		this.set_TrxName(trxName); // ensure process is working on the same transaction
-		log.info("(" + getAD_Workflow_ID() + ") - " + getWFState() 
+		if (log.isLoggable(Level.INFO)) log.info("(" + getAD_Workflow_ID() + ") - " + getWFState() 
 			+ (trxName == null ? "" : "[" + trxName + "]"));
 		if (m_state.isClosed())
 			return;

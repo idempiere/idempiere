@@ -72,7 +72,7 @@ public class BPartnerValidate extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("C_BPartner_ID=" + p_C_BPartner_ID + ", C_BP_Group_ID=" + p_C_BP_Group_ID); 
+		if (log.isLoggable(Level.INFO)) log.info("C_BPartner_ID=" + p_C_BPartner_ID + ", C_BP_Group_ID=" + p_C_BP_Group_ID); 
 		if (p_C_BPartner_ID == 0 && p_C_BP_Group_ID == 0)
 			throw new AdempiereUserError ("No Business Partner/Group selected");
 		

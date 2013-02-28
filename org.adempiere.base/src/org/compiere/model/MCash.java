@@ -334,7 +334,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public boolean unlockIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setProcessing(false);
 		return true;
 	}	//	unlockIt
@@ -345,7 +345,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public boolean invalidateIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setDocAction(DOCACTION_Prepare);
 		return true;
 	}	//	invalidateIt
@@ -356,7 +356,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public String prepareIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -415,7 +415,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public boolean  approveIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setIsApproved(true);
 		return true;
 	}	//	approveIt
@@ -426,7 +426,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public boolean rejectIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setIsApproved(false);
 		return true;
 	}	//	rejectIt
@@ -454,7 +454,7 @@ public class MCash extends X_C_Cash implements DocAction
 		if (!isApproved())
 			approveIt();
 		//
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		
 		MCashLine[] lines = getLines(false);
 		for (int i = 0; i < lines.length; i++)
@@ -566,7 +566,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public boolean voidIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
@@ -677,7 +677,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public boolean closeIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before Close
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
@@ -698,7 +698,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public boolean reverseCorrectIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
@@ -723,7 +723,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public boolean reverseAccrualIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)
@@ -743,7 +743,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public boolean reActivateIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)

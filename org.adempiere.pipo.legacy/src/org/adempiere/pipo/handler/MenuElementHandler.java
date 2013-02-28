@@ -45,7 +45,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 		int AD_Backup_ID = -1;
 		String Object_Status = null;
 		Attributes atts = element.attributes;
-		log.info(elementValue + " " + atts.getValue("ADMenuNameID"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + atts.getValue("ADMenuNameID"));
 		// String entitytype = atts.getValue("EntityType");
 		// if (entitytype.compareTo("U") == 0 || entitytype.compareTo("D") == 0
 		// && m_UpdateMode == true ) {
@@ -149,7 +149,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 						get_IDWithColumn(ctx, "AD_Table", "TableName",
 								"AD_Menu"));
 			} catch (SAXException e) {
-				log.info("setmenu:" + e);
+				if (log.isLoggable(Level.INFO)) log.info("setmenu:" + e);
 			}
 		} else {
 			try {
@@ -158,7 +158,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 						get_IDWithColumn(ctx, "AD_Table", "TableName",
 								"AD_Menu"));
 			} catch (SAXException e) {
-				log.info("setmenu:" + e);
+				if (log.isLoggable(Level.INFO)) log.info("setmenu:" + e);
 			}
 		}
 		name = atts.getValue("ADParentMenuNameID");
@@ -246,7 +246,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 				pstmt1 = null;
 
 			} catch (Exception e) {
-				log.info("get_IDWithMasterID:" + e);
+				if (log.isLoggable(Level.INFO)) log.info("get_IDWithMasterID:" + e);
 			}
 
 			sqlB = new StringBuffer("UPDATE AD_TREENODEMM ").append(

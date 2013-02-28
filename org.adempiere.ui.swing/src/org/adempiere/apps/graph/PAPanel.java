@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
 
 import javax.swing.Box;
 import javax.swing.JScrollPane;
@@ -174,7 +175,7 @@ public class PAPanel extends CPanel implements ActionListener
 		if (e.getSource() instanceof PerformanceIndicator)
 		{
 			PerformanceIndicator pi = (PerformanceIndicator)e.getSource();
-			log.info(pi.getName());
+			if (log.isLoggable(Level.INFO)) log.info(pi.getName());
 			MGoal goal = pi.getGoal();
 			if (goal.getMeasure() != null)
 				new PerformanceDetail(goal);

@@ -300,7 +300,7 @@ public class MProcess extends X_AD_Process
 	{
 		int AD_PInstance_ID = processInfo.getAD_PInstance_ID();
 		//  execute on this thread/connection
-		log.info(ProcedureName + "(" + AD_PInstance_ID + ")");
+		if (log.isLoggable(Level.INFO)) log.info(ProcedureName + "(" + AD_PInstance_ID + ")");
 		
 		return ProcessUtil.startDatabaseProcedure(processInfo, ProcedureName, trx, managedTrx);
 	}   //  startProcess
@@ -322,7 +322,7 @@ public class MProcess extends X_AD_Process
 	 */
 	private boolean startClass (ProcessInfo pi, Trx trx, boolean managedTrx)
 	{
-		log.info(pi.getClassName());
+		if (log.isLoggable(Level.INFO)) log.info(pi.getClassName());
 		
 		return ProcessUtil.startJavaProcess(getCtx(), pi, trx, managedTrx);
 	}   //  startClass

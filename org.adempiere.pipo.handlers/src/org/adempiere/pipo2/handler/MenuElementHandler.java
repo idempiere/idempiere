@@ -94,14 +94,14 @@ public class MenuElementHandler extends AbstractElementHandler {
 				logImportDetail(ctx, impDetail, 1, mMenu.getName(), mMenu
 						.get_ID(), action);
 			} catch (SAXException e) {
-				log.info("setmenu:" + e);
+				if (log.isLoggable(Level.INFO)) log.info("setmenu:" + e);
 			}
 		} else {
 			try {
 				logImportDetail(ctx, impDetail, 0, mMenu.getName(), mMenu
 						.get_ID(), action);
 			} catch (SAXException e) {
-				log.info("setmenu:" + e);
+				if (log.isLoggable(Level.INFO)) log.info("setmenu:" + e);
 			}
 		}
 

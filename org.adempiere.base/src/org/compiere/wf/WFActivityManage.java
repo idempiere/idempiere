@@ -71,7 +71,7 @@ public class WFActivityManage extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		MWFActivity activity = new MWFActivity (getCtx(), p_AD_WF_Activity_ID, get_TrxName());
-		log.info("doIt - " + activity);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - " + activity);
 		
 		MUser user = MUser.get(getCtx(), getAD_User_ID());
 		//	Abort

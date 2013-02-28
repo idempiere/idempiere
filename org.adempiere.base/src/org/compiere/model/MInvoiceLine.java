@@ -1003,7 +1003,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		StringBuilder sql = new StringBuilder("DELETE C_LandedCostAllocation WHERE C_InvoiceLine_ID=").append(getC_InvoiceLine_ID());
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.info("Deleted #" + no);
+			if (log.isLoggable(Level.INFO)) log.info("Deleted #" + no);
 
 		int inserted = 0;
 		//	*** Single Criteria ***
@@ -1063,7 +1063,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 					}	
 					inserted++;
 				}
-				log.info("Inserted " + inserted);
+				if (log.isLoggable(Level.INFO)) log.info("Inserted " + inserted);
 				allocateLandedCostRounding();
 				return "";
 			}
@@ -1185,7 +1185,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			inserted++;
 		}
 
-		log.info("Inserted " + inserted);
+		if (log.isLoggable(Level.INFO)) log.info("Inserted " + inserted);
 		allocateLandedCostRounding();
 		return "";
 	}	//	allocate Costs

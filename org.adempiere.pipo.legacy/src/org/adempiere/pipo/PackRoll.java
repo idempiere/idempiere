@@ -106,7 +106,7 @@ public class PackRoll extends SvrProcess {
 		sql = new StringBuffer("SELECT * " + "FROM AD_Package_Imp_Detail "
 				+ "WHERE AD_Package_Imp_ID=" + m_AD_Package_Imp_ID
 				+ " ORDER BY AD_Package_Imp_Detail_ID DESC");
-		log.info(sql.toString());
+		if (log.isLoggable(Level.INFO)) log.info(sql.toString());
 		PreparedStatement pstmt = null;
 		try {
 			pstmt = DB.prepareStatement(sql.toString(), null);

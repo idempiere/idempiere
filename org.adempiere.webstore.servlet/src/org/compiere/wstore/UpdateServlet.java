@@ -18,6 +18,7 @@ package org.compiere.wstore;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -108,7 +109,7 @@ public class UpdateServlet
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException
     {
-        log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+        if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
         @SuppressWarnings("unused")
 		HttpSession session = request.getSession(true);
         // ignore GET
@@ -125,7 +126,7 @@ public class UpdateServlet
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException
     {
-        log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+        if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
         Properties ctx = JSPEnv.getCtx(request);
         HttpSession session = request.getSession(true);
         session.removeAttribute(WebSessionCtx.HDR_MESSAGE);
@@ -158,7 +159,7 @@ public class UpdateServlet
 		if (!url.startsWith("/"))
             url = "/" + url;
 
-        log.info("Forward to " + url);
+        if (log.isLoggable(Level.INFO)) log.info("Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(url);
 		dispatcher.forward(request, response);
     }	//	doPost

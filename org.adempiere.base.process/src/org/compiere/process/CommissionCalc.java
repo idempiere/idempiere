@@ -76,7 +76,7 @@ public class CommissionCalc extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("C_Commission_ID=" + getRecord_ID() + ", StartDate=" + p_StartDate);
+		if (log.isLoggable(Level.INFO)) log.info("C_Commission_ID=" + getRecord_ID() + ", StartDate=" + p_StartDate);
 		if (p_StartDate == null)
 			p_StartDate = new Timestamp (System.currentTimeMillis());
 		m_com = new MCommission (getCtx(), getRecord_ID(), get_TrxName());

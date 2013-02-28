@@ -118,7 +118,7 @@ public class ImmediateBankTransfer extends SvrProcess
 					.append(" - C_CashBook_ID=").append(p_C_CashBook_ID).append(" - Amount=").append(p_Amount).append(" - Name=").append(p_Name)
 					.append(" - Description=").append(p_Description).append(" - Statement Date=").append(p_StatementDate)
 					.append(" - Date Account=").append(p_DateAcct);		
-		log.info(msglog.toString());
+		if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 
 		if (p_To_C_BankAccount_ID == 0 || p_From_C_BankAccount_ID == 0)
 			throw new IllegalArgumentException("Banks required");

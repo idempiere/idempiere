@@ -430,7 +430,7 @@ public class KeyStoreMgt
 	 */
 	public static void keytool(String cmd)
 	{
-		log.info("keytool " + cmd);
+		if (log.isLoggable(Level.INFO)) log.info("keytool " + cmd);
 		ArrayList<String> list = new ArrayList<String>();
 		StringTokenizer st = new StringTokenizer(cmd, " ");
 		String quoteBuffer = null;

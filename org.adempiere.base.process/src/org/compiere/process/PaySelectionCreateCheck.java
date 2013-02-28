@@ -70,7 +70,7 @@ public class PaySelectionCreateCheck extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info ("C_PaySelection_ID=" + p_C_PaySelection_ID
+		if (log.isLoggable(Level.INFO)) log.info ("C_PaySelection_ID=" + p_C_PaySelection_ID
 			+ ", PaymentRule=" + p_PaymentRule);
 		
 		MPaySelection psel = new MPaySelection (getCtx(), p_C_PaySelection_ID, get_TrxName());

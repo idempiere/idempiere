@@ -109,7 +109,7 @@ public class PackInHandler extends DefaultHandler {
 		// idempiere
 		if (qName.equals("idempiere"))
 		{
-			log.info("idempiere updateMode="+m_updateDictionary);
+			if (log.isLoggable(Level.INFO)) log.info("idempiere updateMode="+m_updateDictionary);
 
 			//check client
 			String clientAttribute = atts.getValue("Client");

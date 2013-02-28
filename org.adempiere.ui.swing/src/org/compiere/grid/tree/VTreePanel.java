@@ -682,7 +682,7 @@ public final class VTreePanel extends CPanel
 			}
 			return true;
 		}
-		log.info("Node not found; ID=" + nodeID);
+		if (log.isLoggable(Level.INFO)) log.info("Node not found; ID=" + nodeID);
 		return false;
 	}   //  selectID
 
@@ -1018,7 +1018,7 @@ public final class VTreePanel extends CPanel
 	private void setBusy (boolean busy)
 	{
 		JFrame frame = AEnv.getFrame(this);
-		log.info("frame: " + frame);
+		if (log.isLoggable(Level.INFO)) log.info("frame: " + frame);
 		if (frame == null)  //  during init
 			return;
 		if (busy)

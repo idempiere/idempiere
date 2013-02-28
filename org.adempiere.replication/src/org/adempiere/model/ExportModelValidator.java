@@ -29,6 +29,8 @@
 
 package org.adempiere.model;
 
+import java.util.logging.Level;
+
 import org.adempiere.process.rpl.exp.ExportHelper;
 import org.compiere.model.MClient;
 import org.compiere.model.MOrg;
@@ -108,7 +110,7 @@ public class ExportModelValidator implements ModelValidator
 	    if (client != null)
 	    {
 			m_AD_Client_ID = client.getAD_Client_ID();
-			log.info(client.toString());
+			if (log.isLoggable(Level.INFO)) log.info(client.toString());
 	    }
 	    else 
 	    {
@@ -128,7 +130,7 @@ public class ExportModelValidator implements ModelValidator
 	public String modelChange (PO po, int type) throws Exception
 	{
 		//String Mode = "Table";
-		log.info("po.get_TableName() = " + po.get_TableName());
+		if (log.isLoggable(Level.INFO)) log.info("po.get_TableName() = " + po.get_TableName());
 		if (expHelper != null) {
 		if (   type == TYPE_AFTER_CHANGE 
 			|| type == TYPE_AFTER_NEW 
@@ -161,7 +163,7 @@ public class ExportModelValidator implements ModelValidator
 	 */
 	public String docValidate (PO po, int type) 
 	{
-		log.info("Replicate the Document = " + po.get_TableName() + " with Type = " + type);
+		if (log.isLoggable(Level.INFO)) log.info("Replicate the Document = " + po.get_TableName() + " with Type = " + type);
 		String result = null;
 		if (expHelper != null) {
 			try {
@@ -219,9 +221,10 @@ public class ExportModelValidator implements ModelValidator
 		m_AD_Role_ID = AD_Role_ID;
 		m_AD_User_ID = AD_User_ID;
 		
-		log.info("AD_Org_ID  =" + m_AD_Org_ID);
-		log.info("AD_Role_ID =" + m_AD_Role_ID);
-		log.info("AD_User_ID =" + m_AD_User_ID);
+		if (log.isLoggable(Level.INFO)){
+			log.info("AD_Org_ID  =" + m_AD_Org_ID);
+			log.info("AD_Role_ID =" + m_AD_Role_ID);
+			log.info("AD_User_ID =" + m_AD_User_ID);}
 		loadReplicationStrategy();
 		return null;
 	}
@@ -246,7 +249,7 @@ public class ExportModelValidator implements ModelValidator
 		if(m_AD_ReplicationStrategy_ID  <= 0)
 		{    
 		    m_AD_ReplicationStrategy_ID =  client.getAD_ReplicationStrategy_ID();
-		    log.info("client.getAD_ReplicationStrategy_ID() = " + m_AD_ReplicationStrategy_ID);
+		    if (log.isLoggable(Level.INFO)) log.info("client.getAD_ReplicationStrategy_ID() = " + m_AD_ReplicationStrategy_ID);
 		}
 		
 		if (m_AD_ReplicationStrategy_ID > 0) {

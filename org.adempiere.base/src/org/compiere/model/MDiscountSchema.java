@@ -236,7 +236,7 @@ public class MDiscountSchema extends X_M_DiscountSchema
 		else if (DISCOUNTTYPE_Formula.equals(getDiscountType())
 			|| DISCOUNTTYPE_Pricelist.equals(getDiscountType()))
 		{
-			log.info ("Not supported (yet) DiscountType=" + getDiscountType());
+			if (log.isLoggable(Level.INFO)) log.info ("Not supported (yet) DiscountType=" + getDiscountType());
 			return Env.ZERO;
 		}
 		

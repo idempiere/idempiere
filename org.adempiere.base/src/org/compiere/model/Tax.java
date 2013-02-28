@@ -483,7 +483,7 @@ public class Tax
 
 		if (CLogMgt.isLevelFine())
 		{
-			log.info("get(Detail) - Category=" + C_TaxCategory_ID 
+			if (log.isLoggable(Level.INFO)) log.info("get(Detail) - Category=" + C_TaxCategory_ID 
 				+ ", SOTrx=" + IsSOTrx);
 			if (log.isLoggable(Level.CONFIG)) log.config("get(Detail) - BillFrom=" + billFromC_Location_ID 
 				+ ", BillTo=" + billToC_Location_ID + ", BillDate=" + billDate);

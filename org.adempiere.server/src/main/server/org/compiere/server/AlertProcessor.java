@@ -123,7 +123,7 @@ public class AlertProcessor extends AdempiereServer
 	{
 		if (!alert.isValid())
 			return false;
-		log.info("" + alert);
+		if (log.isLoggable(Level.INFO)) log.info("" + alert);
 
 		StringBuffer message = new StringBuffer(alert.getAlertMessage())
 			.append(Env.NL);

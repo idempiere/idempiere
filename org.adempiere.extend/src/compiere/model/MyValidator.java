@@ -16,6 +16,8 @@
  *****************************************************************************/
 package compiere.model;
 
+import java.util.logging.Level;
+
 import org.compiere.model.MClient;
 import org.compiere.model.MOrder;
 import org.compiere.model.MRole;
@@ -61,10 +63,10 @@ public class MyValidator implements ModelValidator
 		//client = null for global validator
 		if (client != null) {	
 			m_AD_Client_ID = client.getAD_Client_ID();
-			log.info(client.toString());
+			if (log.isLoggable(Level.INFO)) log.info(client.toString());
 		}
 		else  {
-			log.info("Initializing global validator: "+this.toString());
+			if (log.isLoggable(Level.INFO)) log.info("Initializing global validator: "+this.toString());
 		}
 		
 		//	We want to be informed when C_Order is created/changed
@@ -88,7 +90,7 @@ public class MyValidator implements ModelValidator
 		{
 			@SuppressWarnings("unused")
 			MOrder order = (MOrder)po;
-			log.info(po.toString());
+			if (log.isLoggable(Level.INFO)) log.info(po.toString());
 		}
 		return null;
 	}	//	modelChange
@@ -104,7 +106,7 @@ public class MyValidator implements ModelValidator
 	 */
 	public String docValidate (PO po, int timing)
 	{
-		log.info(po.get_TableName() + " Timing: "+timing);
+		if (log.isLoggable(Level.INFO)) log.info(po.get_TableName() + " Timing: "+timing);
 		
 		//	Ignore all after Complete events
 		if (timing == TIMING_AFTER_COMPLETE)
@@ -119,7 +121,7 @@ public class MyValidator implements ModelValidator
 				if (error != null)
 					return error;
 				/** Order Discount Example */
-				log.info(po.toString());
+				if (log.isLoggable(Level.INFO)) log.info(po.toString());
 			}
 		}
 
@@ -171,7 +173,7 @@ public class MyValidator implements ModelValidator
 		if (!discountLine.save())
 			return "Could not save discount line";
 		
-		log.info(discountLine.toString());
+		if (log.isLoggable(Level.INFO)) log.info(discountLine.toString());
 		order.getLines(true, null);
 		return null;
 	}	//	orderDiscount*/
@@ -188,7 +190,7 @@ public class MyValidator implements ModelValidator
 	 */
 	public String login (int AD_Org_ID, int AD_Role_ID, int AD_User_ID)
 	{
-		log.info("AD_User_ID=" + AD_User_ID);
+		if (log.isLoggable(Level.INFO)) log.info("AD_User_ID=" + AD_User_ID);
 		m_AD_User_ID = AD_User_ID;
 		m_AD_Role_ID = AD_Role_ID;
 		return null;

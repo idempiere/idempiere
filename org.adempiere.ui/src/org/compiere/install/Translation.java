@@ -128,7 +128,7 @@ public class Translation
 		//	factory.setValidating(true);
 			SAXParser parser = factory.newSAXParser();
 			parser.parse(in, handler);
-			log.info("Updated=" + handler.getUpdateCount());
+			if (log.isLoggable(Level.INFO)) log.info("Updated=" + handler.getUpdateCount());
 			MLanguage lang = MLanguage.get(m_ctx, AD_Language);
 			if (! lang.isLoginLocale()) {
 				lang.setIsLoginLocale(true);
@@ -247,7 +247,7 @@ public class Translation
 				root.appendChild(row);
 				rows++;
 			}
-			log.info("Records=" + rows 
+			if (log.isLoggable(Level.INFO)) log.info("Records=" + rows 
 				+ ", DTD=" + document.getDoctype()
 				+ " - " + Trl_Table);
 			//
@@ -411,7 +411,7 @@ public class Translation
 		}
 		
 		//	Validate Translation
-		log.info("Start Validating ... " + language);
+		if (log.isLoggable(Level.INFO)) log.info("Start Validating ... " + language);
 		language.maintain(true);
 		return "";
 	}	//	validateLanguage

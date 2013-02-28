@@ -154,7 +154,7 @@ public class PackOut extends SvrProcess
 		
 		OutputStream  packageDocStream = null;
 		OutputStream  packOutDocStream = null;
-		log.info("doIt - AD_PACKAGE_EXP_ID=" + p_PackOut_ID);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - AD_PACKAGE_EXP_ID=" + p_PackOut_ID);
 		if (p_PackOut_ID == 0)
 			throw new IllegalArgumentException("No Record");
 		String sql1 = "SELECT * FROM AD_Package_Exp WHERE AD_Package_Exp_ID = "+p_PackOut_ID;		
@@ -284,7 +284,7 @@ public class PackOut extends SvrProcess
 						final int AD_EntityType_ID = rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_EntityType_ID);
 						Env.setContext(getCtx(), X_AD_Package_Exp_Detail.COLUMNNAME_AD_EntityType_ID, AD_EntityType_ID);
 						//
-						log.info(rs.getString(X_AD_Package_Exp_Detail.COLUMNNAME_Line));
+						if (log.isLoggable(Level.INFO)) log.info(rs.getString(X_AD_Package_Exp_Detail.COLUMNNAME_Line));
 						if (Type.compareTo("M") == 0){
 							createMenu(rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Menu_ID), packOutDocument );
 						}

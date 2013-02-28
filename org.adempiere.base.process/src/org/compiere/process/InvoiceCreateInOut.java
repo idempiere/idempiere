@@ -74,7 +74,7 @@ public class InvoiceCreateInOut extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("C_Invoice_ID=" + p_C_Invoice_ID + ", M_Warehouse_ID=" + p_M_Warehouse_ID);
+		if (log.isLoggable(Level.INFO)) log.info("C_Invoice_ID=" + p_C_Invoice_ID + ", M_Warehouse_ID=" + p_M_Warehouse_ID);
 		if (p_C_Invoice_ID <= 0)
 			throw new FillMandatoryException("C_Invoice_ID");
 		if (p_M_Warehouse_ID == 0)

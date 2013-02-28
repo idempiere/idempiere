@@ -62,7 +62,7 @@ public class ProjectClose extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		MProject project = new MProject (getCtx(), m_C_Project_ID, get_TrxName());
-		log.info("doIt - " + project);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - " + project);
 
 		MProjectLine[] projectLines = project.getLines();
 		if (MProject.PROJECTCATEGORY_WorkOrderJob.equals(project.getProjectCategory())

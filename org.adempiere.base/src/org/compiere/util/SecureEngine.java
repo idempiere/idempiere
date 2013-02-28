@@ -266,18 +266,20 @@ public class SecureEngine
 		init (System.getProperties());
 		//	Ini Test
 		//String ini1 = SecureInterface.CLEARVALUE_START + "test" + SecureInterface.CLEARVALUE_END;
-		/**
-		log.info("Decrypt clear test   =" + test(decrypt(ini1), "test"));
-		log.info("Decrypt clear 'test' =" + test(decrypt("'" + ini1 + "'"), "'test'"));
-		log.info("Decrypt ''   =" + test(decrypt("''"), "''"));
-		log.info("Decrypt      =" + test(decrypt(""), ""));
-		log.info("Decrypt null =" + test(decrypt(null), null));
-		log.info("Decrypt test =" + test(decrypt("test"), "test"));
-		**/
-		log.info("Decrypt {test} =" + test(decrypt("af2309f390afed74", 0), "test"));
-		log.info("Decrypt ~{test}~ =" + test(decrypt(SecureInterface.ENCRYPTEDVALUE_START + "af2309f390afed74" + SecureInterface.ENCRYPTEDVALUE_END, 0), "test"));
-		
-		log.info("Encrypt test =" + test(encrypt("test", 0), "af2309f390afed74"));
+		if (log.isLoggable(Level.INFO)) {
+			/**
+			log.info("Decrypt clear test   =" + test(decrypt(ini1), "test"));
+			log.info("Decrypt clear 'test' =" + test(decrypt("'" + ini1 + "'"), "'test'"));
+			log.info("Decrypt ''   =" + test(decrypt("''"), "''"));
+			log.info("Decrypt      =" + test(decrypt(""), ""));
+			log.info("Decrypt null =" + test(decrypt(null), null));
+			log.info("Decrypt test =" + test(decrypt("test"), "test"));
+			**/
+			log.info("Decrypt {test} =" + test(decrypt("af2309f390afed74", 0), "test"));
+			log.info("Decrypt ~{test}~ =" + test(decrypt(SecureInterface.ENCRYPTEDVALUE_START + "af2309f390afed74" + SecureInterface.ENCRYPTEDVALUE_END, 0), "test"));
+			
+			log.info("Encrypt test =" + test(encrypt("test", 0), "af2309f390afed74"));
+		}
 		
 		
 		

@@ -51,7 +51,7 @@ public class VCreateFromInvoiceUI extends CreateFromInvoice implements ActionLis
 	public VCreateFromInvoiceUI(GridTab mTab)
 	{
 		super(mTab);
-		log.info(getGridTab().toString());
+		if (log.isLoggable(Level.INFO)) log.info(getGridTab().toString());
 		
 		dialog = new VCreateFromDialog(this, getGridTab().getWindowNo(), true);
 		

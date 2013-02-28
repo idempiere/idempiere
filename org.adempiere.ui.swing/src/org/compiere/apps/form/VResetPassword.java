@@ -195,7 +195,7 @@ public class VResetPassword implements FormPanel, ActionListener, VetoableChange
 	@Override
 	public void vetoableChange(PropertyChangeEvent e) throws PropertyVetoException 
 	{
-		log.info(e.getPropertyName() + "=" + e.getNewValue());
+		if (log.isLoggable(Level.INFO)) log.info(e.getPropertyName() + "=" + e.getNewValue());
 		if (e.getPropertyName().equals("AD_User_ID"))
 			fUser.setValue(e.getNewValue());
 	}

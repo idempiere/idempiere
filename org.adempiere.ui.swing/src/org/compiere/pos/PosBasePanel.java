@@ -126,7 +126,7 @@ public class PosBasePanel extends CPanel
 		}
 		
 		m_SalesRep_ID = Env.getAD_User_ID(m_ctx);
-		log.info("init - SalesRep_ID=" + m_SalesRep_ID);
+		if (log.isLoggable(Level.INFO)) log.info("init - SalesRep_ID=" + m_SalesRep_ID);
 		m_WindowNo = WindowNo;
 		m_frame = frame;
 		frame.setJMenuBar(null);

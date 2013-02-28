@@ -28,6 +28,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
 
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
@@ -125,7 +126,7 @@ public class FitRecorder implements ModelValidator {
 					engine.addModelChange(rs.getString(1), this);
 				}
 			} catch(Exception e) {
-				log.info(e.getLocalizedMessage());
+				if (log.isLoggable(Level.INFO)) log.info(e.getLocalizedMessage());
 			} finally {
 				DB.close(rs, pstmt);
 				pstmt = null; rs = null;
@@ -146,13 +147,13 @@ public class FitRecorder implements ModelValidator {
 					engine.addDocValidate(rs.getString(1), this);
 				}
 			} catch (Exception e) {
-				log.info(e.getLocalizedMessage());
+				if (log.isLoggable(Level.INFO)) log.info(e.getLocalizedMessage());
 			} finally {
 				DB.close(rs, pstmt);
 				pstmt = null; rs = null;
 			}
 		} catch (Exception e) {
-			log.info(e.getLocalizedMessage());
+			if (log.isLoggable(Level.INFO)) log.info(e.getLocalizedMessage());
 		}
 	}
 
@@ -477,7 +478,7 @@ public class FitRecorder implements ModelValidator {
 				writer.flush();
 			}
 		} catch (Exception e) {
-			log.info(e.getLocalizedMessage());
+			if (log.isLoggable(Level.INFO)) log.info(e.getLocalizedMessage());
 		}
 		return null;
 	}

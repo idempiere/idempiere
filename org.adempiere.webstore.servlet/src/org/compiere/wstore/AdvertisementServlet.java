@@ -18,6 +18,7 @@ package org.compiere.wstore;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -97,7 +98,7 @@ public class AdvertisementServlet extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("Get from " + request.getRemoteHost() + " - " + request.getRemoteAddr() + " - forward to request.jsp");
+		if (log.isLoggable(Level.INFO)) log.info("Get from " + request.getRemoteHost() + " - " + request.getRemoteAddr() + " - forward to request.jsp");
 		if (!response.isCommitted ())
 		response.sendRedirect("advertisements.jsp");
 	}   //  doGet
@@ -114,7 +115,7 @@ public class AdvertisementServlet extends HttpServlet
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("Post from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("Post from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 
 		//  Get Session attributes
 		HttpSession session = request.getSession(true);

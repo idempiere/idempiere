@@ -17,6 +17,7 @@
 package org.compiere.process;
 
 import java.io.File;
+import java.util.logging.Level;
 
 import org.compiere.model.MClient;
 import org.compiere.model.MStore;
@@ -51,7 +52,7 @@ public class EMailTest extends SvrProcess
 	protected String doIt () throws Exception
 	{
 		MClient client = MClient.get (getCtx(), p_AD_Client_ID);
-		log.info(client.toString());
+		if (log.isLoggable(Level.INFO)) log.info(client.toString());
 		
 		//	 Test Client Mail
 		String clientTest = client.testEMail();

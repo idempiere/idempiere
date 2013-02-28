@@ -233,7 +233,7 @@ public final class MDocNumber extends PlainDocument
 						}
 						catch (ParseException pe)
 						{
-							log.info("InvalidEntry - " + pe.getMessage());
+							if (log.isLoggable(Level.INFO)) log.info("InvalidEntry - " + pe.getMessage());
 						}
 
 					}

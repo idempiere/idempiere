@@ -77,7 +77,7 @@ public class Allocation
 	{
 		m_C_Currency_ID = Env.getContextAsInt(Env.getCtx(), "$C_Currency_ID");   //  default
 		//
-		log.info("Currency=" + m_C_Currency_ID);
+		if (log.isLoggable(Level.INFO)) log.info("Currency=" + m_C_Currency_ID);
 		
 		m_AD_Org_ID = Env.getAD_Org_ID(Env.getCtx());
 	}

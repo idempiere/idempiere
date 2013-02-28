@@ -410,7 +410,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	public boolean unlockIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setProcessing(false);
 		return true;
 	}	//	unlockIt
@@ -421,7 +421,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	public boolean invalidateIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		return true;
 	}	//	invalidateIt
 	
@@ -431,7 +431,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	public String prepareIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -564,7 +564,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	public boolean  approveIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setIsApproved(true);
 		return true;
 	}	//	approveIt
@@ -575,7 +575,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	public boolean rejectIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setIsApproved(false);
 		return true;
 	}	//	rejectIt
@@ -601,7 +601,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		//	Implicit Approval
 		if (!isApproved())
 			approveIt();
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
@@ -644,7 +644,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	public boolean voidIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
@@ -676,7 +676,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	public boolean closeIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before Close
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
@@ -733,7 +733,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	public MJournal reverseCorrectIt (int GL_JournalBatch_ID)
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		//	Journal
 		MJournal reverse = new MJournal (this);
 		reverse.setGL_JournalBatch_ID(GL_JournalBatch_ID);
@@ -793,7 +793,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	public MJournal reverseAccrualIt (int GL_JournalBatch_ID)
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		//	Journal
 		MJournal reverse = new MJournal (this);
 		reverse.setGL_JournalBatch_ID(GL_JournalBatch_ID);
@@ -824,7 +824,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	public boolean reActivateIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)

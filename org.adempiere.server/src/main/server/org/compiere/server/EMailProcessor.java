@@ -259,7 +259,7 @@ public class EMailProcessor
 			noProcessed++;
 		}
 		
-		log.info("processInBox - Total=" + noProcessed + " - Errors=" + noError);
+		if (log.isLoggable(Level.INFO)) log.info("processInBox - Total=" + noProcessed + " - Errors=" + noError);
 		//	Fini
 		errorFolder.close(false);
 		requestFolder.close(false);

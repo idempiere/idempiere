@@ -61,7 +61,7 @@ public class CommissionCopy extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("doIt - C_Commission_ID=" + p_C_Commission_ID + " - copy to " + p_C_CommissionTo_ID);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - C_Commission_ID=" + p_C_Commission_ID + " - copy to " + p_C_CommissionTo_ID);
 		MCommission comFrom = new MCommission (getCtx(), p_C_Commission_ID, get_TrxName());
 		if (comFrom.get_ID() == 0)
 			throw new AdempiereUserError ("No From Commission");

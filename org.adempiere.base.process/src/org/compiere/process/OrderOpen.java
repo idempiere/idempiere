@@ -57,7 +57,7 @@ public class OrderOpen extends SvrProcess
 	 */
 	protected String doIt() throws AdempiereSystemError
 	{
-		log.info("doIt - Open C_Order_ID=" + p_C_Order_ID);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - Open C_Order_ID=" + p_C_Order_ID);
 		if (p_C_Order_ID == 0)
 			return "";
 		//

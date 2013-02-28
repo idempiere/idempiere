@@ -159,7 +159,7 @@ public class PackInHandler extends DefaultHandler {
 		logDate = formatter_log.format(today);
 		
 		String file_document = packageDirectory+File.separator+"doc"+File.separator+"Importlog_"+fileDate+".xml";		
-		log.info("file_document="+file_document);
+		if (log.isLoggable(Level.INFO)) log.info("file_document="+file_document);
 		try {
 			fw_document = new FileOutputStream (file_document, false);
 		} catch (FileNotFoundException e1) {
@@ -171,7 +171,7 @@ public class PackInHandler extends DefaultHandler {
 		try {
 			logDocument = tf_document.newTransformerHandler();
 		} catch (TransformerConfigurationException e2) {
-			log.info ("startElement:"+e2);
+			if (log.isLoggable(Level.INFO)) log.info ("startElement:"+e2);
 		}		
 		serializer_document = logDocument.getTransformer();		
 		serializer_document.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-1");		
@@ -271,7 +271,7 @@ public class PackInHandler extends DefaultHandler {
 		
 		// adempiereAD.	
 		if (elementValue.equals("adempiereAD")) {		
-			log.info("adempiereAD updateMode="+m_UpdateMode);
+			if (log.isLoggable(Level.INFO)) log.info("adempiereAD updateMode="+m_UpdateMode);
 			//Start package log
 			AttributesImpl attsOut = new AttributesImpl();
 			logDocument.startElement("","","adempiereDocument",attsOut);
@@ -489,7 +489,7 @@ public class PackInHandler extends DefaultHandler {
     					pstmt = null;
     				}
     				catch (Exception e) {
-    					log.info ("createImp_Sum_table:"+e);
+    					if (log.isLoggable(Level.INFO)) log.info ("createImp_Sum_table:"+e);
     				}
     			}
     			if (tablename.equals("AD_Package_Imp_Inst")){
@@ -526,7 +526,7 @@ public class PackInHandler extends DefaultHandler {
     					pstmt = null;
     				}
     				catch (Exception e) {
-    					log.info ("createImp_Sum_table:"+e);
+    					if (log.isLoggable(Level.INFO)) log.info ("createImp_Sum_table:"+e);
     				}
     			}
     			if (tablename.equals("AD_Package_Imp_Detail")){
@@ -560,7 +560,7 @@ public class PackInHandler extends DefaultHandler {
     					pstmt = null;
     				}
     				catch (Exception e) {
-    					log.info ("createImp_Sum_table:"+e);
+    					if (log.isLoggable(Level.INFO)) log.info ("createImp_Sum_table:"+e);
     				}
     			}
     			if (tablename.equals("AD_Package_Imp_Backup")){
@@ -593,7 +593,7 @@ public class PackInHandler extends DefaultHandler {
     					pstmt = null;
     				}	
     				catch (Exception e) {
-    					log.info ("createImp_Sum_table:"+e);
+    					if (log.isLoggable(Level.INFO)) log.info ("createImp_Sum_table:"+e);
     				}
     			}	
     		}
@@ -602,7 +602,7 @@ public class PackInHandler extends DefaultHandler {
     	}
     	
     	catch (SQLException e) {
-    		log.info ("createImp_Sum_table:"+e);
+    		if (log.isLoggable(Level.INFO)) log.info ("createImp_Sum_table:"+e);
     	}
     	
     	finally

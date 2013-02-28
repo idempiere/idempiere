@@ -498,7 +498,7 @@ public class MClient extends X_AD_Client
 			}
 			if (EMail.SENT_OK.equals (msg))
 			{
-				log.info("Sent Test EMail to " + getRequestEMail());
+				if (log.isLoggable(Level.INFO)) log.info("Sent Test EMail to " + getRequestEMail());
 				return "OK";
 			}
 			else
@@ -626,7 +626,7 @@ public class MClient extends X_AD_Client
 			}
 			if (EMail.SENT_OK.equals (msg))
 			{
-				log.info("Sent EMail " + subject + " to " + to);
+				if (log.isLoggable(Level.INFO)) log.info("Sent EMail " + subject + " to " + to);
 				return true;
 			}
 			else
@@ -728,13 +728,14 @@ public class MClient extends X_AD_Client
 		//
 		if (email.isSentOK())
 		{
-			if (from != null)
-				log.info("Sent Email: " + email.getSubject()
+			if (from != null) {
+				if (log.isLoggable(Level.INFO)) log.info("Sent Email: " + email.getSubject()
 					+ " from " + from.getEMail()
 					+ " to " + to.getEMail());
-			else
-				log.info("Sent Email: " + email.getSubject()
-					+ " to " + to.getEMail());
+			} else {
+				if (log.isLoggable(Level.INFO)) log.info("Sent Email: " + email.getSubject()
+						+ " to " + to.getEMail());
+			}
 			return true;
 		}
 		else

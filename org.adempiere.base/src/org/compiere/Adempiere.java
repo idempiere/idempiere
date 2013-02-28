@@ -501,7 +501,7 @@ public final class Adempiere
 		//	Init Log
 		log = CLogger.getCLogger(Adempiere.class);
 		//	Greeting
-		log.info(getSummaryAscii());
+		if (log.isLoggable(Level.INFO)) log.info(getSummaryAscii());
 	//	log.info(getAdempiereHome() + " - " + getJavaInfo() + " - " + getOSInfo());
 
 		//  Load System environment

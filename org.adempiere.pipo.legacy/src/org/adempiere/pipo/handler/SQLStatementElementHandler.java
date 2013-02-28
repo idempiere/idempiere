@@ -53,11 +53,11 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 			if(DBType.equals("ALL")) {
 				@SuppressWarnings("unused")
 				int n = pstmt.executeUpdate();				
-				log.info("Executed SQL Statement: "+ atts.getValue("statement"));
+				if (log.isLoggable(Level.INFO)) log.info("Executed SQL Statement: "+ atts.getValue("statement"));
 			}
 			else if(DB.isOracle() == true && DBType.equals("Oracle")) {
 				pstmt.executeUpdate();
-				log.info("Executed SQL Statement for Oracle: "+ atts.getValue("statement"));
+				if (log.isLoggable(Level.INFO)) log.info("Executed SQL Statement for Oracle: "+ atts.getValue("statement"));
 			}
 			else if (   DB.isPostgreSQL() 
 					 && (   DBType.equals("Postgres")
@@ -74,7 +74,7 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 					Statement stmt = m_con.createStatement();
 					@SuppressWarnings("unused")
 					int n = stmt.executeUpdate (atts.getValue("statement"));
-					log.info("Executed SQL Statement for PostgreSQL: "+ atts.getValue("statement"));
+					if (log.isLoggable(Level.INFO)) log.info("Executed SQL Statement for PostgreSQL: "+ atts.getValue("statement"));
 					// Postgres needs to commit DDL statements
 					if (m_con != null && !m_con.getAutoCommit())
 						m_con.commit();

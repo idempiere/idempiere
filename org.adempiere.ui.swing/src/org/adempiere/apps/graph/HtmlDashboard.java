@@ -294,7 +294,7 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 					queryZoom.add(query);
 				}
 				else {
-					log.info("Nothing to zoom to - " + bgc);
+					if (log.isLoggable(Level.INFO)) log.info("Nothing to zoom to - " + bgc);
 					output.append(bgc.getValue());
 				}
 				output.append("</td></tr>");

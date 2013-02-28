@@ -54,7 +54,7 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 		String Object_Status = null;
 
 		Attributes atts = element.attributes;
-		log.info(elementValue + " " + atts.getValue("name"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + atts.getValue("name"));
 
 		String entitytype = atts.getValue("EntityType");
 		String name = atts.getValue("name");

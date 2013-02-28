@@ -1349,7 +1349,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public boolean unlockIt()
 	{
-		log.info("unlockIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
 		setProcessing(false);
 		return true;
 	}	//	unlockIt
@@ -1360,7 +1360,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public boolean invalidateIt()
 	{
-		log.info("invalidateIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("invalidateIt - " + toString());
 		setDocAction(DOCACTION_Prepare);
 		return true;
 	}	//	invalidateIt
@@ -1371,7 +1371,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public String prepareIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -1673,7 +1673,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public boolean  approveIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setIsApproved(true);
 		return true;
 	}	//	approveIt
@@ -1684,7 +1684,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public boolean rejectIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setIsApproved(false);
 		return true;
 	}	//	rejectIt
@@ -1710,7 +1710,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		//	Implicit Approval
 		if (!isApproved())
 			approveIt();
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		StringBuilder info = new StringBuilder();
 		
 		// POS supports multiple payments
@@ -2099,7 +2099,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 
 		MBPartner counterBP = new MBPartner (getCtx(), counterC_BPartner_ID, null);
 //		MOrgInfo counterOrgInfo = MOrgInfo.get(getCtx(), counterAD_Org_ID);
-		log.info("Counter BP=" + counterBP.getName());
+		if (log.isLoggable(Level.INFO)) log.info("Counter BP=" + counterBP.getName());
 
 		//	Document Type
 		int C_DocTypeTarget_ID = 0;
@@ -2168,7 +2168,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public boolean voidIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
@@ -2240,7 +2240,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public boolean closeIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before Close
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
@@ -2262,7 +2262,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public boolean reverseCorrectIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
@@ -2479,7 +2479,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public boolean reverseAccrualIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)
@@ -2505,7 +2505,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public boolean reActivateIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)

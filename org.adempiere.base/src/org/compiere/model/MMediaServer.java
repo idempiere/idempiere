@@ -100,10 +100,9 @@ public class MMediaServer extends X_CM_Media_Server
 		try
 		{
 			ftp.connect (getIP_Address());
-			if (ftp.login (getUserName(), getPassword()))
-				log.info("Connected to " + getIP_Address() + " as " + getUserName());
-			else
-			{
+			if (ftp.login (getUserName(), getPassword())) {
+				if (log.isLoggable(Level.INFO)) log.info("Connected to " + getIP_Address() + " as " + getUserName());
+			} else {
 				log.warning("Could NOT connect to " + getIP_Address() + " as " + getUserName());
 				return false;
 			}

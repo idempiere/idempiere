@@ -311,7 +311,7 @@ public class MDistribution extends X_GL_Distribution
 	 */
 	public void distribute (MAccount acct, BigDecimal Amt, BigDecimal Qty, int C_Currency_ID)
 	{
-		log.info("distribute - Amt=" + Amt + " - Qty=" + Qty + " - " + acct);
+		if (log.isLoggable(Level.INFO)) log.info("distribute - Amt=" + Amt + " - Qty=" + Qty + " - " + acct);
 		getLines(false);
 		int precision = MCurrency.getStdPrecision(getCtx(), C_Currency_ID);
 		//	First Round

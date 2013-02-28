@@ -46,7 +46,7 @@ public class CalloutRequest extends CalloutEngine
 	public String copyMail (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		String colName = mField.getColumnName();
-		log.info(colName + "=" + value);
+		if (log.isLoggable(Level.INFO)) log.info(colName + "=" + value);
 		if (value == null)
 			return "";
 
@@ -81,7 +81,7 @@ public class CalloutRequest extends CalloutEngine
 	public String copyResponse (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		String colName = mField.getColumnName();
-		log.info(colName + "=" + value);
+		if (log.isLoggable(Level.INFO)) log.info(colName + "=" + value);
 		if (value == null)
 			return "";
 
@@ -128,7 +128,7 @@ public class CalloutRequest extends CalloutEngine
 	public String type (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		String colName = mField.getColumnName();
-		log.info(colName + "=" + value);
+		if (log.isLoggable(Level.INFO)) log.info(colName + "=" + value);
 		mTab.setValue("R_Status_ID", null);
 		if (value == null)
 			return "";

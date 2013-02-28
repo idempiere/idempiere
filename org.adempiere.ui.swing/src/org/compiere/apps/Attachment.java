@@ -503,7 +503,7 @@ public final class Attachment extends CDialog
 	private void saveAttachmentToFile()
 	{
 		int index = cbContent.getSelectedIndex();
-		log.info("index=" + index);
+		if (log.isLoggable(Level.INFO)) log.info("index=" + index);
 		if (m_attachment.getEntryCount() < index)
 			return;
 

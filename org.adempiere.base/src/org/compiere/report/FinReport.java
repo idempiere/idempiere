@@ -199,7 +199,7 @@ public class FinReport extends SvrProcess
 		if ( p_PA_ReportCube_ID > 0)
 			m_parameterWhere.append(" AND PA_ReportCube_ID=").append(p_PA_ReportCube_ID);
 		
-		log.info(sb.toString());
+		if (log.isLoggable(Level.INFO)) log.info(sb.toString());
 	//	m_report.list();
 	}	//	prepare
 
@@ -208,7 +208,7 @@ public class FinReport extends SvrProcess
 	 */
 	private void setPeriods()
 	{
-		log.info("C_Calendar_ID=" + m_report.getC_Calendar_ID());
+		if (log.isLoggable(Level.INFO)) log.info("C_Calendar_ID=" + m_report.getC_Calendar_ID());
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		ArrayList<FinReportPeriod> list = new ArrayList<FinReportPeriod>();
 
@@ -268,7 +268,7 @@ public class FinReport extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("AD_PInstance_ID=" + getAD_PInstance_ID());
+		if (log.isLoggable(Level.INFO)) log.info("AD_PInstance_ID=" + getAD_PInstance_ID());
 		
 		if ( p_PA_ReportCube_ID > 0 )
 		{
@@ -327,7 +327,7 @@ public class FinReport extends SvrProcess
 	 */
 	private void insertLine (int line)
 	{
-		log.info("" + m_lines[line]);
+		if (log.isLoggable(Level.INFO)) log.info("" + m_lines[line]);
 
 		//	No source lines - Headings
 		if (m_lines[line] == null || m_lines[line].getSources().length == 0)
@@ -888,7 +888,7 @@ public class FinReport extends SvrProcess
 	 */
 	private void insertLineSource (int line)
 	{
-		log.info("Line=" + line + " - " + m_lines[line]);
+		if (log.isLoggable(Level.INFO)) log.info("Line=" + line + " - " + m_lines[line]);
 
 		//	No source lines
 		if (m_lines[line] == null || m_lines[line].getSources().length == 0)
@@ -1044,7 +1044,7 @@ public class FinReport extends SvrProcess
 	 */
 	private void insertLineTrx (int line, String variable)
 	{
-		log.info("Line=" + line + " - Variable=" + variable);
+		if (log.isLoggable(Level.INFO)) log.info("Line=" + line + " - Variable=" + variable);
 
 		//	Insert
 		StringBuffer insert = new StringBuffer("INSERT INTO T_Report "
@@ -1169,7 +1169,7 @@ public class FinReport extends SvrProcess
 	private MPrintFormat getPrintFormat()
 	{
 		int AD_PrintFormat_ID = m_report.getAD_PrintFormat_ID();
-		log.info("AD_PrintFormat_ID=" + AD_PrintFormat_ID);
+		if (log.isLoggable(Level.INFO)) log.info("AD_PrintFormat_ID=" + AD_PrintFormat_ID);
 		MPrintFormat pf = null;
 		boolean createNew = AD_PrintFormat_ID == 0;
 

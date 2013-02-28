@@ -44,7 +44,7 @@ public abstract class CreateFromPackageShipment extends CreateFrom
 	public CreateFromPackageShipment(GridTab gridTab) 
 	{
 		super(gridTab);
-		log.info(gridTab.toString());
+		if (log.isLoggable(Level.INFO)) log.info(gridTab.toString());
 	}
 	
 	public boolean dynInit() throws Exception

@@ -1197,7 +1197,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public boolean unlockIt()
 	{
-		log.info("unlockIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
 		setProcessing(false);
 		return true;
 	}	//	unlockIt
@@ -1208,7 +1208,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public boolean invalidateIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setDocAction(DOCACTION_Prepare);
 		return true;
 	}	//	invalidateIt
@@ -1220,7 +1220,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public String prepareIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -1860,7 +1860,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public boolean  approveIt()
 	{
-		log.info("approveIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("approveIt - " + toString());
 		setIsApproved(true);
 		return true;
 	}	//	approveIt
@@ -1871,7 +1871,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public boolean rejectIt()
 	{
-		log.info("rejectIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("rejectIt - " + toString());
 		setIsApproved(false);
 		return true;
 	}	//	rejectIt
@@ -1935,7 +1935,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (!isApproved())
 			approveIt();
 		getLines(true,null);
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		StringBuilder info = new StringBuilder();
 		
 		boolean realTimePOS = MSysConfig.getBooleanValue(MSysConfig.REAL_TIME_POS, false , getAD_Client_ID());
@@ -2149,7 +2149,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	private MInOut createShipment(MDocType dt, Timestamp movementDate)
 	{
-		log.info("For " + dt);
+		if (log.isLoggable(Level.INFO)) log.info("For " + dt);
 		MInOut shipment = new MInOut (this, dt.getC_DocTypeShipment_ID(), movementDate);
 	//	shipment.setDateAcct(getDateAcct());
 		if (!shipment.save(get_TrxName()))
@@ -2210,7 +2210,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	private MInvoice createInvoice (MDocType dt, MInOut shipment, Timestamp invoiceDate)
 	{
-		log.info(dt.toString());
+		if (log.isLoggable(Level.INFO)) log.info(dt.toString());
 		MInvoice invoice = new MInvoice (this, dt.getC_DocTypeInvoice_ID(), invoiceDate);
 		if (!invoice.save(get_TrxName()))
 		{
@@ -2328,7 +2328,7 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		MBPartner counterBP = new MBPartner (getCtx(), counterC_BPartner_ID, null);
 		MOrgInfo counterOrgInfo = MOrgInfo.get(getCtx(), counterAD_Org_ID, get_TrxName());
-		log.info("Counter BP=" + counterBP.getName());
+		if (log.isLoggable(Level.INFO)) log.info("Counter BP=" + counterBP.getName());
 
 		//	Document Type
 		int C_DocTypeTarget_ID = 0;
@@ -2395,7 +2395,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public boolean voidIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
@@ -2547,7 +2547,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public boolean closeIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before Close
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
@@ -2590,7 +2590,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 * (reverse steps of close())
 	 */
 	public String reopenIt() {
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		if (!MOrder.DOCSTATUS_Closed.equals(getDocStatus()))
 		{
 			return "Not closed - can't reopen";
@@ -2642,7 +2642,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public boolean reverseCorrectIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
@@ -2662,7 +2662,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public boolean reverseAccrualIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)
@@ -2682,7 +2682,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public boolean reActivateIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)
@@ -2714,10 +2714,10 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 
 		//	PO - just re-open
-		if (!isSOTrx())
-			log.info("Existing documents not modified - " + dt);
+		if (!isSOTrx()) {
+			if (log.isLoggable(Level.INFO)) log.info("Existing documents not modified - " + dt);
 		//	Reverse Direct Documents
-		else if (MDocType.DOCSUBTYPESO_OnCreditOrder.equals(DocSubTypeSO)	//	(W)illCall(I)nvoice
+		} else if (MDocType.DOCSUBTYPESO_OnCreditOrder.equals(DocSubTypeSO)	//	(W)illCall(I)nvoice
 			|| MDocType.DOCSUBTYPESO_WarehouseOrder.equals(DocSubTypeSO)	//	(W)illCall(P)ickup	
 			|| MDocType.DOCSUBTYPESO_POSOrder.equals(DocSubTypeSO))			//	(W)alkIn(R)eceipt
 		{
@@ -2726,7 +2726,7 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 		else
 		{
-			log.info("Existing documents not modified - SubType=" + DocSubTypeSO);
+			if (log.isLoggable(Level.INFO)) log.info("Existing documents not modified - SubType=" + DocSubTypeSO);
 		}
 
 		/* globalqss - 2317928 - Reactivating/Voiding order must reset posted */

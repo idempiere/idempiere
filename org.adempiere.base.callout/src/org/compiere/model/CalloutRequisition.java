@@ -90,7 +90,7 @@ public class CalloutRequisition extends CalloutEngine
 		if (LineNetAmt.scale() > StdPrecision)
 			LineNetAmt = LineNetAmt.setScale(StdPrecision, BigDecimal.ROUND_HALF_UP);
 		line.setLineNetAmt(LineNetAmt);
-		log.info("amt - LineNetAmt=" + LineNetAmt);
+		if (log.isLoggable(Level.INFO)) log.info("amt - LineNetAmt=" + LineNetAmt);
 		//
 		return "";
 	}	//	amt

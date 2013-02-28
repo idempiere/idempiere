@@ -184,7 +184,7 @@ public class VGenPanel extends CPanel implements ActionListener, ChangeListener,
 	 */
 	public void actionPerformed (ActionEvent e)
 	{
-		log.info("Cmd=" + e.getActionCommand());
+		if (log.isLoggable(Level.INFO)) log.info("Cmd=" + e.getActionCommand());
 		//
 		if (e.getActionCommand().equals(ConfirmPanel.A_CANCEL))
 		{

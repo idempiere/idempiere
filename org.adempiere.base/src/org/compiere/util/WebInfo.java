@@ -165,7 +165,7 @@ public class WebInfo
 	 */
 	public void setId (int id)
 	{
-		log.info("ID=" + id);
+		if (log.isLoggable(Level.INFO)) log.info("ID=" + id);
 		m_id = id;
 	}	//	setId
 

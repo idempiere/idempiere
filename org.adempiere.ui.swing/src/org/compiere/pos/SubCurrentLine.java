@@ -234,7 +234,7 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener, Focus
 		String action = e.getActionCommand();
 		if (action == null || action.length() == 0)
 			return;
-		log.info( "SubCurrentLine - actionPerformed: " + action);
+		if (log.isLoggable(Level.INFO)) log.info( "SubCurrentLine - actionPerformed: " + action);
 		
 		//	Plus
 		if (action.equals("Plus"))

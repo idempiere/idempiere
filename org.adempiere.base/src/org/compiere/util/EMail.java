@@ -230,8 +230,10 @@ public final class EMail implements Serializable
 	 */
 	public String send ()
 	{
-		log.info("(" + m_smtpHost + ") " + m_from + " -> " + m_to);
-		log.info("(m_auth) " + m_auth);
+		if (log.isLoggable(Level.INFO)){
+			log.info("(" + m_smtpHost + ") " + m_from + " -> " + m_to);
+			log.info("(m_auth) " + m_auth);
+		}
 		
 		m_sentMsg = null;
 		//

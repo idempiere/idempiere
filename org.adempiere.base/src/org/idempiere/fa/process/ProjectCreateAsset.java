@@ -94,7 +94,7 @@ public class ProjectCreateAsset extends SvrProcess
 		}
 		
 		MProject project = new MProject (getCtx(), m_C_Project_ID, get_TrxName());
-		log.info("doIt - " + project);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - " + project);
 		
 		MProduct product = new MProduct(getCtx(), m_Product_ID, get_TrxName());
 		MProductCategory pc = MProductCategory.get(getCtx(), product.getM_Product_Category_ID());

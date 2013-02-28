@@ -64,7 +64,7 @@ public class TranslationDocSync extends SvrProcess
 		if (client.isMultiLingualDocument())
 			throw new AdempiereUserError("@AD_Client_ID@: @IsMultiLingualDocument@");
 		//
-		log.info("" + client);
+		if (log.isLoggable(Level.INFO)) log.info("" + client);
 		String sql = "SELECT * FROM AD_Table "
 			+ "WHERE TableName LIKE '%_Trl' AND TableName NOT LIKE 'AD%' "
 			+ "ORDER BY TableName";

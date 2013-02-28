@@ -120,7 +120,7 @@ public class InvoiceWriteOff extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("C_BPartner_ID=" + p_C_BPartner_ID 
+		if (log.isLoggable(Level.INFO)) log.info("C_BPartner_ID=" + p_C_BPartner_ID 
 			+ ", C_BP_Group_ID=" + p_C_BP_Group_ID
 			+ ", C_Invoice_ID=" + p_C_Invoice_ID
 			+ "; APAR=" + p_APAR

@@ -80,7 +80,7 @@ public class ProcessModalDialog extends CDialog
 			int tableId, int recordId, boolean autoStart)
 	{
 		super(parent, title, true);
-		log.info("Process=" + AD_Process_ID );
+		if (log.isLoggable(Level.INFO)) log.info("Process=" + AD_Process_ID );
 		m_ctx = ctx;
 		m_processUI = aProcess;
 		m_WindowNo = WindowNo;

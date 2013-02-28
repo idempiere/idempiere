@@ -67,7 +67,7 @@ public class YearCreatePeriods extends SvrProcess
 		MYear year = new MYear (getCtx(), p_C_Year_ID, get_TrxName());
 		if (p_C_Year_ID == 0 || year.get_ID() != p_C_Year_ID)
 			throw new AdempiereUserError ("@NotFound@: @C_Year_ID@ - " + p_C_Year_ID);
-		log.info(year.toString());
+		if (log.isLoggable(Level.INFO)) log.info(year.toString());
 		//
 		if (year.createStdPeriods(null, p_StartDate, p_DateFormat))
 			return "@OK@";

@@ -82,7 +82,7 @@ public class InfoAsset extends Info
 		boolean multiSelection, String whereClause, boolean lookup)
 	{
 		super (frame, modal, WindowNo, "a", "A_Asset_ID", multiSelection, whereClause);
-		log.info(value + ", ID=" + A_Asset_ID + ", WHERE=" + whereClause);
+		if (log.isLoggable(Level.INFO)) log.info(value + ", ID=" + A_Asset_ID + ", WHERE=" + whereClause);
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoAsset"));
 		//
 		statInit();

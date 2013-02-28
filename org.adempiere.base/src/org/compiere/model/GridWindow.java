@@ -130,7 +130,7 @@ public class GridWindow implements Serializable
 	 */
 	public void dispose()
 	{
-		log.info("AD_Window_ID=" + m_vo.AD_Window_ID);
+		if (log.isLoggable(Level.INFO)) log.info("AD_Window_ID=" + m_vo.AD_Window_ID);
 		for (int i = 0; i < getTabCount(); i++)
 			getTab(i).dispose();
 		m_tabs.clear();

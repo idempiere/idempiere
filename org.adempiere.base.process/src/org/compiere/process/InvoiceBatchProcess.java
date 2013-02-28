@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.util.logging.Level;
+
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceBatch;
 import org.compiere.model.MInvoiceBatchLine;
@@ -73,7 +75,7 @@ public class InvoiceBatchProcess extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("C_InvoiceBatch_ID=" + p_C_InvoiceBatch_ID + ", DocAction=" + p_DocAction);
+		if (log.isLoggable(Level.INFO)) log.info("C_InvoiceBatch_ID=" + p_C_InvoiceBatch_ID + ", DocAction=" + p_DocAction);
 		if (p_C_InvoiceBatch_ID == 0)
 			throw new AdempiereUserError("C_InvoiceBatch_ID = 0");
 		MInvoiceBatch batch = new MInvoiceBatch(getCtx(), p_C_InvoiceBatch_ID, get_TrxName());

@@ -421,7 +421,7 @@ public class VInOutInvoiceGen extends CPanel
 	 */
 	public void actionPerformed (ActionEvent e)
 	{
-		log.info("Cmd=" + e.getActionCommand());
+		if (log.isLoggable(Level.INFO)) log.info("Cmd=" + e.getActionCommand());
 		//
 		if (e.getActionCommand().equals(ConfirmPanel.A_CANCEL))
 		{
@@ -453,7 +453,7 @@ public class VInOutInvoiceGen extends CPanel
 	 */
 	public void vetoableChange(PropertyChangeEvent e)
 	{
-		log.info(e.getPropertyName() + "=" + e.getNewValue());
+		if (log.isLoggable(Level.INFO)) log.info(e.getPropertyName() + "=" + e.getNewValue());
 		if (e.getPropertyName().equals("M_Warehouse_ID"))
 			m_M_Warehouse_ID = e.getNewValue();
 		if (e.getPropertyName().equals("C_BPartner_ID"))
@@ -527,7 +527,7 @@ public class VInOutInvoiceGen extends CPanel
 	 */
 	private void generateShipments ()
 	{
-		log.info("M_Warehouse_ID=" + m_M_Warehouse_ID);
+		if (log.isLoggable(Level.INFO)) log.info("M_Warehouse_ID=" + m_M_Warehouse_ID);
 		String trxName = Trx.createTrxName("IOG");	
 		Trx trx = Trx.get(trxName, true);	//trx needs to be committed too
 		//String trxName = null;

@@ -134,7 +134,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 	{
 		if (pf == null)
 			throw new IllegalArgumentException("ReportEngine - no PrintFormat");
-		log.info(pf + " -- " + query);
+		if (log.isLoggable(Level.INFO)) log.info(pf + " -- " + query);
 		m_ctx = ctx;
 		//
 		m_printFormat = pf;
@@ -359,7 +359,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 	 */
 	public void print ()
 	{
-		log.info(m_info.toString());
+		if (log.isLoggable(Level.INFO)) log.info(m_info.toString());
 		if (m_layout == null)
 			layout();
 		
@@ -400,7 +400,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 			//	Document: Print Copies
 			if (printCopy)
 			{
-				log.info("Copy " + (m_info.getCopies()-1));
+				if (log.isLoggable(Level.INFO)) log.info("Copy " + (m_info.getCopies()-1));
 				prats.add(new Copies(m_info.getCopies()-1));
 				job = getPrinterJob(m_info.getPrinterName());
 			//	job.getPrintService().addPrintServiceAttributeListener(this);
@@ -995,7 +995,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		}
 
 		File file2 = new File(fileName);
-		log.info(file2.getAbsolutePath() + " - " + file2.length());
+		if (log.isLoggable(Level.INFO)) log.info(file2.getAbsolutePath() + " - " + file2.length());
 		return file2.exists();
 	}	//	createPDF
 
@@ -1224,7 +1224,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		}
 		if (format != null && format.getItemCount() == 0)
 		{
-			log.info("No Items - recreating:  " + format);
+			if (log.isLoggable(Level.INFO)) log.info("No Items - recreating:  " + format);
 			format.delete(true);
 			format = null;
 		}

@@ -86,7 +86,7 @@ public class PrintFormatUtil
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.info ("Total = " + total);
+		if (log.isLoggable(Level.INFO)) log.info ("Total = " + total);
 	}	//	addMissingColumns
 
 

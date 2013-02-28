@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.util.logging.Level;
+
 import org.compiere.model.MLandedCost;
 import org.compiere.util.AdempiereUserError;
 
@@ -48,7 +50,7 @@ public class LandedCostDistribute extends SvrProcess
 	protected String doIt () throws Exception
 	{
 		m_lc = new MLandedCost (getCtx(), p_C_LandedCost_ID, get_TrxName());
-		log.info(m_lc.toString());
+		if (log.isLoggable(Level.INFO)) log.info(m_lc.toString());
 		if (m_lc.get_ID() == 0)
 			throw new AdempiereUserError("@NotFound@: @C_LandedCost_ID@ - " + p_C_LandedCost_ID);
 

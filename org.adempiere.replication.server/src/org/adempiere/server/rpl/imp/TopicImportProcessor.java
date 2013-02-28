@@ -29,6 +29,7 @@
 package org.adempiere.server.rpl.imp;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.server.rpl.IImportProcessor;
 import org.compiere.model.MIMPProcessor;
@@ -56,8 +57,10 @@ public class TopicImportProcessor implements IImportProcessor {
 	public void process(Properties ctx, ReplicationProcessor replicationProcessor, String trxName)
 			throws Exception {
 		
-		log.info("replicationProcessor = " + replicationProcessor);
-		log.info("replicationProcessor.getMImportProcessor() = " + replicationProcessor.getMImportProcessor());
+		if (log.isLoggable(Level.INFO)) {
+			log.info("replicationProcessor = " + replicationProcessor);
+			log.info("replicationProcessor.getMImportProcessor() = " + replicationProcessor.getMImportProcessor());
+		}
 		
 		MIMPProcessor impProcessor = replicationProcessor.getMImportProcessor();
 		
@@ -78,8 +81,10 @@ public class TopicImportProcessor implements IImportProcessor {
 		
 		if (processorParameters != null && processorParameters.length > 0) {
         	for (int i = 0; i < processorParameters.length; i++) {
-        		log.info("ProcesParameter          Value = " + processorParameters[i].getValue());
-        		log.info("ProcesParameter ParameterValue = " + processorParameters[i].getParameterValue());
+        		if (log.isLoggable(Level.INFO)) {
+        			log.info("ProcesParameter          Value = " + processorParameters[i].getValue());
+        			log.info("ProcesParameter ParameterValue = " + processorParameters[i].getParameterValue());
+        		}
         		if (processorParameters[i].getValue().equals("topicName")) {
         			topicName = processorParameters[i].getParameterValue();
         		} else if (processorParameters[i].getValue().equals("protocol")) {
@@ -114,7 +119,7 @@ public class TopicImportProcessor implements IImportProcessor {
         		, account, password, options, trxName);
         
         topicListener.run();
-        log.info("Started topicListener = " + topicListener);
+        if (log.isLoggable(Level.INFO)) log.info("Started topicListener = " + topicListener);
    }
 
 	public void stop() throws Exception {

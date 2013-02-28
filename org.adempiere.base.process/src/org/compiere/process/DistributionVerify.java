@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.util.logging.Level;
+
 import org.compiere.model.MDistribution;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.AdempiereUserError;
@@ -44,7 +46,7 @@ public class DistributionVerify extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("doIt - GL_Distribution_ID=" + getRecord_ID());
+		if (log.isLoggable(Level.INFO)) log.info("doIt - GL_Distribution_ID=" + getRecord_ID());
 		MDistribution distribution = new MDistribution (getCtx(), getRecord_ID(), get_TrxName());
 		if (distribution.get_ID() == 0)
 			throw new AdempiereUserError("Not found GL_Distribution_ID=" + getRecord_ID());

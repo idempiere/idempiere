@@ -103,7 +103,7 @@ public class BasketServlet extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr()
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr()
 			+ " - " + request.getRequestURL());
 		@SuppressWarnings("unused")
 		Properties ctx = JSPEnv.getCtx(request);
@@ -137,10 +137,10 @@ public class BasketServlet extends HttpServlet
 		//	Do we add?	Add_x
 		addLine (request, pl, wb);
 
-		log.info(wb.toString());
+		if (log.isLoggable(Level.INFO)) log.info(wb.toString());
 		//	Go back to basket
 		String url = "/basket.jsp";
-		log.info ("Forward to " + url);
+		if (log.isLoggable(Level.INFO)) log.info ("Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 		dispatcher.forward (request, response);
 	}	//	doGet

@@ -447,7 +447,7 @@ public class EMailDialog extends CDialog
 	{
 		VLookup source = (VLookup) evt.getSource();
 		Object value = evt.getNewValue();
-		log.info("Value=" + value);
+		if (log.isLoggable(Level.INFO)) log.info("Value=" + value);
 		if (source.equals(fUser)) {
 			// fUser			
 			if (value == null)

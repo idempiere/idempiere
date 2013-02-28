@@ -116,11 +116,11 @@ public class PackIn extends SvrProcess {
 	 * @return status message
 	 */
 	public String importXML(String fileName, Properties ctx, String trxName) throws Exception {
-		log.info("importXML:" + fileName);
+		if (log.isLoggable(Level.INFO)) log.info("importXML:" + fileName);
 		File in = new File(fileName);
 		if (!in.exists()) {
 			String msg = "File does not exist: " + fileName;
-			log.info("importXML:" + msg);
+			if (log.isLoggable(Level.INFO)) log.info("importXML:" + msg);
 			return msg;
 		}
 		try {
@@ -177,14 +177,14 @@ public class PackIn extends SvrProcess {
 
 		// Unzip package
 		File zipFilepath = new File(adPackageImp.getAD_Package_Source());
-		log.info("zipFilepath->" + zipFilepath);
+		if (log.isLoggable(Level.INFO)) log.info("zipFilepath->" + zipFilepath);
 		String PackageName = CreateZipFile.getParentDir(zipFilepath);
 		CreateZipFile.unpackFile(zipFilepath, targetDir);
 
 		String dict_file = packageDirectory + File.separator
 				+ "packages" + File.separator + PackageName + File.separator
 				+ "dict" + File.separator + "PackOut.xml";
-		log.info("dict file->" + dict_file);
+		if (log.isLoggable(Level.INFO)) log.info("dict file->" + dict_file);
 		PackIn packIn = new PackIn();
 
 		if (adPackageImp.isAD_Override_Dict() == true)

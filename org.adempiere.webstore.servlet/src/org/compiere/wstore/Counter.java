@@ -138,7 +138,7 @@ public class Counter extends HttpServlet implements Runnable
 		String ref = request.getHeader("referer");
 		if (ref == null || ref.length() == 0)
 			ref = request.getRequestURL().toString();
-		log.info("Referer=" + request.getHeader("referer") + " - URL=" + request.getRequestURL());
+		if (log.isLoggable(Level.INFO)) log.info("Referer=" + request.getHeader("referer") + " - URL=" + request.getRequestURL());
 	}	//	run
 
 }   //  Counter

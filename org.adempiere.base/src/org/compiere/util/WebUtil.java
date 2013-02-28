@@ -746,7 +746,7 @@ public final class WebUtil
 			try
 			{
 				result = URLEncoder.encode(result, enc);
-				log.info("encode: " + enc);
+				if (log.isLoggable(Level.INFO)) log.info("encode: " + enc);
 			}
 			catch (Exception ex)
 			{
@@ -963,7 +963,7 @@ public final class WebUtil
 			//
 			time = System.currentTimeMillis() - time;
 			double speed = (fileLength/(double)1024) / (time/(double)1000);
-			log.info("Length=" 
+			if (log.isLoggable(Level.INFO)) log.info("Length=" 
 				+ fileLength + " - " 
 				+ time + " ms - " 
 				+ speed + " kB/sec - " + entry.getContentType());
@@ -1016,7 +1016,7 @@ public final class WebUtil
 			//
 			time = System.currentTimeMillis() - time;
 			double speed = (fileLength/(double)1024) / (time/(double)1000);
-			log.info("Length=" 
+			if (log.isLoggable(Level.INFO)) log.info("Length=" 
 				+ fileLength + " - " 
 				+ time + " ms - " 
 				+ speed + " kB/sec - " + mimeType);

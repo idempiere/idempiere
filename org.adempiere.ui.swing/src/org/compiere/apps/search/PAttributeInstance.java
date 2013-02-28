@@ -102,7 +102,7 @@ public class PAttributeInstance extends CDialog
 	 */
 	private void init (int M_Warehouse_ID, int M_Locator_ID, int M_Product_ID, int C_BPartner_ID)
 	{
-		log.info("M_Warehouse_ID=" + M_Warehouse_ID 
+		if (log.isLoggable(Level.INFO)) log.info("M_Warehouse_ID=" + M_Warehouse_ID 
 			+ ", M_Locator_ID=" + M_Locator_ID
 			+ ", M_Product_ID=" + M_Product_ID);
 		m_M_Warehouse_ID = M_Warehouse_ID;

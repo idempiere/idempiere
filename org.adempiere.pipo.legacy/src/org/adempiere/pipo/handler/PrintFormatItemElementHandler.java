@@ -18,6 +18,7 @@
 package org.adempiere.pipo.handler;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -40,7 +41,7 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler {
 		int AD_Backup_ID = -1;
 		String Object_Status = null;
 		Attributes atts = element.attributes;
-		log.info(elementValue + " " + atts.getValue("Name"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + atts.getValue("Name"));
 		if (element.parent != null && element.parent.getElementValue().equals("printformat") &&
 			element.parent.defer) {
 			element.defer = true;

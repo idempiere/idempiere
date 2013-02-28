@@ -334,7 +334,7 @@ public class Trx
 			if (m_connection != null)
 			{
 				m_connection.rollback(savepoint);
-				log.info ("**** " + m_trxName);
+				if (log.isLoggable(Level.INFO)) log.info ("**** " + m_trxName);
 				return true;
 			}
 		}
@@ -359,7 +359,7 @@ public class Trx
 			if (m_connection != null)
 			{
 				m_connection.commit();
-				log.info ("**** " + m_trxName);
+				if (log.isLoggable(Level.INFO)) log.info ("**** " + m_trxName);
 				m_active = false;
 				fireAfterCommitEvent(true);
 				return true;

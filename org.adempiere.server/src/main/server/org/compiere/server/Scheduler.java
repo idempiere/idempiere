@@ -150,7 +150,7 @@ public class Scheduler extends AdempiereServer
 	 */
 	private String runProcess(MProcess process) throws Exception
 	{
-		log.info(process.toString());
+		if (log.isLoggable(Level.INFO)) log.info(process.toString());
 		
 		boolean isReport = (process.isReport() || process.getAD_ReportView_ID() > 0);
 		

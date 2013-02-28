@@ -65,7 +65,7 @@ public class AcctSchemaCopyAcct extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("SourceAcctSchema_ID=" + p_SourceAcctSchema_ID 
+		if (log.isLoggable(Level.INFO)) log.info("SourceAcctSchema_ID=" + p_SourceAcctSchema_ID 
 			+ ", TargetAcctSchema_ID=" + p_TargetAcctSchema_ID);
 		
 		if (p_SourceAcctSchema_ID == 0 || p_TargetAcctSchema_ID == 0)

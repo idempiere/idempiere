@@ -89,7 +89,7 @@ public class RequestInvoice extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("R_RequestType_ID=" + p_R_RequestType_ID + ", R_Group_ID=" + p_R_Group_ID
+		if (log.isLoggable(Level.INFO)) log.info("R_RequestType_ID=" + p_R_RequestType_ID + ", R_Group_ID=" + p_R_Group_ID
 			+ ", R_Category_ID=" + p_R_Category_ID + ", C_BPartner_ID=" + p_C_BPartner_ID
 			+ ", p_M_Product_ID=" + p_M_Product_ID);
 		

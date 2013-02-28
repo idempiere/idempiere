@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
@@ -196,7 +197,7 @@ public class MWarehouse extends X_M_Warehouse
 		MLocator loc = new MLocator (this, "Standard");
 		loc.setIsDefault(true);
 		loc.saveEx();
-		log.info("Created default locator for " + getName());
+		if (log.isLoggable(Level.INFO)) log.info("Created default locator for " + getName());
 		return loc;
 	}	//	getLocators
 	

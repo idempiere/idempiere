@@ -135,7 +135,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	
 	protected boolean beforeSave (boolean newRecord)
 	{
-		log.info ("Entering: trxName=" + get_TrxName());
+		if (log.isLoggable(Level.INFO)) log.info ("Entering: trxName=" + get_TrxName());
 		
 		// copy UseLife to A_Life
 		if (newRecord) { //@win: should only update only if newrecord
@@ -186,7 +186,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		}
 		
 		
-		log.info("Leaving: trxName=" + get_TrxName() + " [RETURN TRUE]");
+		if (log.isLoggable(Level.INFO)) log.info("Leaving: trxName=" + get_TrxName() + " [RETURN TRUE]");
 		return true;
 	}	//	beforeSave
 	

@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -187,7 +188,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 		if (idxet >= 0) {
 			String entityType = (String) po.get_Value(idxet);
 			if (! isProcessElement(ctx.ctx, entityType)) {
-				log.info("Generic PO not processed as it's official " + po.toString());
+				if (log.isLoggable(Level.INFO)) log.info("Generic PO not processed as it's official " + po.toString());
 				element.skip = true;
 				return;
 			}

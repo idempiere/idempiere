@@ -71,7 +71,7 @@ public class CreateAdempiere
 		else
 			m_databasePort = databasePort;
 		m_systemPassword = systemPassword;
-		log.info(m_dbTarget.getName() + " on " + databaseHost);
+		if (log.isLoggable(Level.INFO)) log.info(m_dbTarget.getName() + " on " + databaseHost);
 	}   //  create
 
 	/** Adempiere Target Database */
@@ -173,7 +173,7 @@ public class CreateAdempiere
 	{
 		String dbUrl = m_dbTarget.getConnectionURL (m_databaseHost, m_databasePort, 
 			m_databaseName, m_dbTarget.getSystemUser());	//	adempiere may not be defined yet
-		log.info(dbUrl + " - " + m_dbTarget.getSystemUser() + "/" + m_systemPassword);
+		if (log.isLoggable(Level.INFO)) log.info(dbUrl + " - " + m_dbTarget.getSystemUser() + "/" + m_systemPassword);
 		try
 		{
 			Connection conn = m_dbTarget.getDriverConnection(dbUrl, m_dbTarget.getSystemUser(), m_systemPassword);
@@ -202,7 +202,7 @@ public class CreateAdempiere
 	 */
 	public boolean createUser (Connection sysConn)
 	{
-		log.info(m_adempiereUser + "/" + m_adempierePassword);
+		if (log.isLoggable(Level.INFO)) log.info(m_adempiereUser + "/" + m_adempierePassword);
 		return executeCommands(m_dbTarget.getCommands(AdempiereDatabase.CMD_CREATE_USER), 
 			sysConn, true, false);
 	}   //  createUser
@@ -214,7 +214,7 @@ public class CreateAdempiere
 	 */
 	public boolean createDatabase (Connection sysConn)
 	{
-		log.info(m_databaseName + "(" + m_databaseDevice + ")");
+		if (log.isLoggable(Level.INFO)) log.info(m_databaseName + "(" + m_databaseDevice + ")");
 		return executeCommands(m_dbTarget.getCommands(AdempiereDatabase.CMD_CREATE_DATABASE), 
 			sysConn, true, false);
 	}   //  createDatabase	
@@ -308,7 +308,7 @@ public class CreateAdempiere
 
 		databaseBuild();
 		
-		log.info("#" + count);
+		if (log.isLoggable(Level.INFO)) log.info("#" + count);
 		
 		try
 		{
@@ -792,7 +792,7 @@ public class CreateAdempiere
 			{
 				File file = File.createTempFile("create", ".log");
 				m_writer = new PrintWriter(new FileWriter(file));
-				log.info(file.toString());
+				if (log.isLoggable(Level.INFO)) log.info(file.toString());
 			}
 			m_writer.println(cmd);
 			m_writer.flush();

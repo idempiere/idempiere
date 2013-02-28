@@ -87,7 +87,7 @@ public class VTreeMaintenance extends TreeMaintenance
 	{
 		m_WindowNo = WindowNo;
 		m_frame = frame;
-		log.info( "VMerge.init - WinNo=" + m_WindowNo);
+		if (log.isLoggable(Level.INFO)) log.info( "VMerge.init - WinNo=" + m_WindowNo);
 		try
 		{
 			preInit();
@@ -188,7 +188,7 @@ public class VTreeMaintenance extends TreeMaintenance
 	private void action_loadTree()
 	{
 		KeyNamePair tree = (KeyNamePair)treeField.getSelectedItem();
-		log.info("Tree=" + tree);
+		if (log.isLoggable(Level.INFO)) log.info("Tree=" + tree);
 		if (tree.getKey() <= 0)
 		{
 			centerList.setModel(new DefaultListModel());
@@ -232,7 +232,7 @@ public class VTreeMaintenance extends TreeMaintenance
 		catch (Exception ex)
 		{
 		}
-		log.info("Selected=" + selected);
+		if (log.isLoggable(Level.INFO)) log.info("Selected=" + selected);
 		if (selected != null)	//	allow add if not in tree
 			bAdd.setEnabled(!centerTree.setSelectedNode(selected.id));
 	}	//	valueChanged
@@ -246,7 +246,7 @@ public class VTreeMaintenance extends TreeMaintenance
 		MTreeNode tn = (MTreeNode)e.getNewValue();
 		if (tn == null)
 			return;
-		log.info(tn.toString());
+		if (log.isLoggable(Level.INFO)) log.info(tn.toString());
 		ListModel model = centerList.getModel();
 		int size = model.getSize();
 		int index = -1;
@@ -265,7 +265,7 @@ public class VTreeMaintenance extends TreeMaintenance
 	 */
 	private void action_treeAdd(ListItem item)
 	{
-		log.info("Item=" + item);
+		if (log.isLoggable(Level.INFO)) log.info("Item=" + item);
 		if (item != null)
 		{
 			centerTree.nodeChanged(true, item.id, item.name, 
@@ -282,7 +282,7 @@ public class VTreeMaintenance extends TreeMaintenance
 	 */
 	private void action_treeDelete(ListItem item)
 	{
-		log.info("Item=" + item);
+		if (log.isLoggable(Level.INFO)) log.info("Item=" + item);
 		if (item != null)
 		{
 			centerTree.nodeChanged(false, item.id, item.name, 

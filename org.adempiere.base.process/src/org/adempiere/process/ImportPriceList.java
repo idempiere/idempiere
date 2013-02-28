@@ -106,7 +106,7 @@ public class ImportPriceList extends SvrProcess
 			sql = new StringBuilder("DELETE I_PriceList "
 				+ "WHERE I_IsImported='Y'").append(clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
-			log.info("Delete Old Impored =" + no);
+			if (log.isLoggable(Level.INFO)) log.info("Delete Old Impored =" + no);
 		}
 
 		//	Set Client, Org, IsActive, Created/Updated, EnforcePriceLimit, IsSOPriceList, IsTaxIncluded, PricePrecision
@@ -126,7 +126,7 @@ public class ImportPriceList extends SvrProcess
 			.append(" I_IsImported = 'N' ")
 			.append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("Reset=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("Reset=" + no);
 
 		//	Set Optional BPartner
 		sql = new StringBuilder ("UPDATE I_PriceList ")
@@ -135,7 +135,7 @@ public class ImportPriceList extends SvrProcess
 			.append("WHERE C_BPartner_ID IS NULL AND BPartner_Value IS NOT NULL")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("BPartner=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("BPartner=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_PriceList ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid BPartner,' ")
@@ -169,7 +169,7 @@ public class ImportPriceList extends SvrProcess
 			.append("WHERE M_PriceList_ID IS NULL")
 			.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("Price List Existing Value=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("Price List Existing Value=" + no);
 
 		//	****	Find Price List Version
 		//	List Name (ID) + ValidFrom
@@ -179,7 +179,7 @@ public class ImportPriceList extends SvrProcess
 			.append("WHERE M_PriceList_ID IS NOT NULL AND M_PriceList_Version_ID IS NULL")
 			.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("Price List Version Existing Value=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("Price List Version Existing Value=" + no);
 		
 		/* UOM For Future USE
 		//	Set UOM (System/own)
@@ -224,7 +224,7 @@ public class ImportPriceList extends SvrProcess
 			.append("WHERE C_Currency_ID IS NULL")
 			.append(" AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.info("doIt- Set Currency=" + no);
+		if (log.isLoggable(Level.INFO)) log.info("doIt- Set Currency=" + no);
 		//
 		sql = new StringBuilder ("UPDATE I_PriceList ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Currency,' ")

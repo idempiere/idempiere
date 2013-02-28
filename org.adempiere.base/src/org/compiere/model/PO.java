@@ -1715,7 +1715,7 @@ public abstract class PO
 					continue;
 				if (get_Value(i) == null || get_Value(i).equals(Null.NULL))
 				{
-					log.info(p_info.getColumnName(i));
+					if (log.isLoggable(Level.INFO)) log.info(p_info.getColumnName(i));
 					return false;
 				}
 			}

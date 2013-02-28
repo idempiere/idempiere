@@ -33,6 +33,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
@@ -317,7 +318,7 @@ public class Service {
 		
 		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat( dateFormatOnlyForCtx ); 
 		Env.setContext( getCtx(), "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
-		log.info(" #Date = "+ Env.getContextAsDate( getCtx(), "#Date"));
+		if (log.isLoggable(Level.INFO)) log.info(" #Date = "+ Env.getContextAsDate( getCtx(), "#Date"));
 
 		Env.setContext( getCtx(), "#M_Warehouse_ID", AD_Warehouse_ID );
 		Env.setContext(getCtx(), Env.LANGUAGE, m_lang.getAD_Language());

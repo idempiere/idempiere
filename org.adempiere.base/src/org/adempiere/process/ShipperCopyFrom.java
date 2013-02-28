@@ -34,7 +34,7 @@ public class ShipperCopyFrom extends SvrProcess
 	protected String doIt() throws Exception 
 	{
 		int To_X_Shipper_ID = getRecord_ID();
-		log.info("From X_Shipper_ID=" + p_X_Shipper_ID + " to " + To_X_Shipper_ID);
+		if (log.isLoggable(Level.INFO)) log.info("From X_Shipper_ID=" + p_X_Shipper_ID + " to " + To_X_Shipper_ID);
 		if (To_X_Shipper_ID == 0)
 			throw new IllegalArgumentException("Target X_Shipper_ID == 0");
 		if (p_X_Shipper_ID == 0)

@@ -670,7 +670,7 @@ public class Process {
 	
 	static public ReportEngine start (ProcessInfo pi)
 	{
-		log.info("start - " + pi);
+		if (log.isLoggable(Level.INFO)) log.info("start - " + pi);
 
 		/**
 		 *	Order Print

@@ -58,7 +58,7 @@ public class CommissionAPInvoice extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("doIt - C_CommissionRun_ID=" + getRecord_ID());
+		if (log.isLoggable(Level.INFO)) log.info("doIt - C_CommissionRun_ID=" + getRecord_ID());
 		//	Load Data
 		MCommissionRun comRun = new MCommissionRun (getCtx(), getRecord_ID(), get_TrxName());
 		if (comRun.get_ID() == 0)

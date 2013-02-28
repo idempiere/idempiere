@@ -120,7 +120,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	public LayoutEngine (MPrintFormat format, PrintData data, MQuery query, PrintInfo info ,  String trxName)
 	{
 		m_TrxName = trxName;
-		log.info(format + " - " + data + " - " + query);
+		if (log.isLoggable(Level.INFO)) log.info(format + " - " + data + " - " + query);
 	//	s_FASTDRAW = MClient.get(format.getCtx()).isUseBetaFunctions();
 		//
 		setPrintFormat(format, false);
@@ -997,7 +997,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		//	for every row
 		for (int row = 0; row < m_data.getRowCount(); row++)
 		{
-			log.info("Row=" + row);
+			if (log.isLoggable(Level.INFO)) log.info("Row=" + row);
 			m_data.setRowIndex(row);
 			boolean somethingPrinted = true;	//	prevent NL of nothing printed and supress null
 			//	for every item
@@ -1202,7 +1202,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		if (m_format.isTranslationView())
 			format.setTranslationLanguage(m_format.getLanguage());
 		int AD_Column_ID = item.getAD_Column_ID();
-		log.info(format + " - Item=" + item.getName() + " (" + AD_Column_ID + ")");
+		if (log.isLoggable(Level.INFO)) log.info(format + " - Item=" + item.getName() + " (" + AD_Column_ID + ")");
 		//
 		Object obj = data.getNode(new Integer(AD_Column_ID));
 		//	Object obj = data.getNode(item.getColumnName());	//	slower
@@ -1536,7 +1536,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	private PrintElement layoutTable (MPrintFormat format, PrintData printData,
 		int xOffset)
 	{
-		log.info(format.getName() + " - " + printData.getName());
+		if (log.isLoggable(Level.INFO)) log.info(format.getName() + " - " + printData.getName());
 		MPrintTableFormat tf = format.getTableFormat();
 		//	Initial Values
 		HashMap<Point,Font> rowColFont = new HashMap<Point,Font>();

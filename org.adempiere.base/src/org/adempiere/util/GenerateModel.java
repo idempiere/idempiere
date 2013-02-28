@@ -84,7 +84,7 @@ public class GenerateModel
 			System.err.println("No Directory");
 			System.exit(1);
 		}
-		log.info("Directory: " + directory);
+		if (log.isLoggable(Level.INFO)) log.info("Directory: " + directory);
 		
 		//	second parameter
 		String packageName = "compiere.model";
@@ -95,7 +95,7 @@ public class GenerateModel
 			System.err.println("No package");
 			System.exit(1);
 		}
-		log.info("Package:   " + packageName);
+		if (log.isLoggable(Level.INFO)) log.info("Package:   " + packageName);
 		
 		//	third parameter
 		String entityType = "'U','A'";	//	User, Application
@@ -116,7 +116,7 @@ public class GenerateModel
 		// tableLike = "'AD_OrgInfo', 'AD_Role', 'C_CashLine', 'C_Currency', 'C_Invoice', 'C_Order', 'C_Payment', 'M_InventoryLine', 'M_PriceList', 'M_Product', 'U_POSTerminal'";	//	Only specific tables
 		if (args.length > 3)
 			tableLike = args[3];
-		log.info("Table Like: " + tableLike);
+		if (log.isLoggable(Level.INFO)) log.info("Table Like: " + tableLike);
 
 		//	complete sql
 		sql.insert(0, "SELECT AD_Table_ID "
@@ -156,7 +156,7 @@ public class GenerateModel
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.info("Generated = " + count);
+		if (log.isLoggable(Level.INFO)) log.info("Generated = " + count);
 	}
 
 }

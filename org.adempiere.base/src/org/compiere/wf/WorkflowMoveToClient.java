@@ -63,7 +63,7 @@ public class WorkflowMoveToClient extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("doIt - AD_Client_ID=" + p_AD_Client_ID + ", AD_Workflow_ID=" + p_AD_Workflow_ID);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - AD_Client_ID=" + p_AD_Client_ID + ", AD_Workflow_ID=" + p_AD_Workflow_ID);
 		
 		int changes = 0;
 		//	WF

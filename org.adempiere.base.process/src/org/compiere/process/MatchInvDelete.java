@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.util.logging.Level;
+
 import org.compiere.model.MMatchInv;
 import org.compiere.util.AdempiereUserError;
 
@@ -46,7 +48,7 @@ public class MatchInvDelete extends SvrProcess
 	 */
 	protected String doIt()	throws Exception
 	{
-		log.info ("M_MatchInv_ID=" + p_M_MatchInv_ID);
+		if (log.isLoggable(Level.INFO)) log.info ("M_MatchInv_ID=" + p_M_MatchInv_ID);
 		MMatchInv inv = new MMatchInv (getCtx(), p_M_MatchInv_ID, get_TrxName());
 		if (inv.get_ID() == 0)
 			throw new AdempiereUserError("@NotFound@ @M_MatchInv_ID@ " + p_M_MatchInv_ID);

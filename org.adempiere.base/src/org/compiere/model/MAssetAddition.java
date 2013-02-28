@@ -510,7 +510,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	
 	public boolean unlockIt()
 	{
-		log.info("unlockIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
 	//	setProcessing(false);
 		return true;
 	}	//	unlockIt
@@ -518,14 +518,14 @@ public class MAssetAddition extends X_A_Asset_Addition
 	
 	public boolean invalidateIt()
 	{
-		log.info("invalidateIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("invalidateIt - " + toString());
 		return false;
 	}	//	invalidateIt
 	
 	
 	public String prepareIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		
 		// Call model validators
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
@@ -610,7 +610,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	
 	public boolean approveIt()
 	{
-		log.info("approveIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("approveIt - " + toString());
 		setIsApproved(true);
 		return true;
 	}	//	approveIt
@@ -618,7 +618,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	
 	public boolean rejectIt()
 	{
-		log.info("rejectIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("rejectIt - " + toString());
 		setIsApproved(false);
 		return true;
 	}	//	rejectIt
@@ -642,7 +642,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		//	Implicit Approval
 		if (!isApproved())
 			approveIt();
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		//
 		
 		// Check/Create ASI:
@@ -881,7 +881,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	
 	public boolean closeIt()
 	{
-		log.info("closeIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("closeIt - " + toString());
 		setDocAction(DOCACTION_None);
 		return true;
 	}	//	closeIt

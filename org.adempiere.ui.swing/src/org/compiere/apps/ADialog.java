@@ -62,7 +62,7 @@ public final class ADialog
 	 */
 	public static void info (int WindowNo, Container c, String clearHeading, String clearMessage, String clearText)
 	{
-		log.info(clearHeading 
+		if (log.isLoggable(Level.INFO)) log.info(clearHeading 
 			+ ": " + clearMessage + " " + clearText);
 		String out = clearMessage;
 		if (clearText != null && !clearText.equals(""))
@@ -101,7 +101,7 @@ public final class ADialog
 	 */
 	public static void info (int WindowNo, Container c, String AD_Message, String msg)
 	{
-		log.info(AD_Message + " - " + msg);
+		if (log.isLoggable(Level.INFO)) log.info(AD_Message + " - " + msg);
 		Properties ctx = Env.getCtx();
 		StringBuilder out = new StringBuilder();
 		if (AD_Message != null && !AD_Message.equals(""))
@@ -154,7 +154,7 @@ public final class ADialog
 	 */
 	public static void warn (int WindowNo, Container c, String AD_Message, String msg)
 	{
-		log.info(AD_Message + " - " + msg);
+		if (log.isLoggable(Level.INFO)) log.info(AD_Message + " - " + msg);
 		Properties ctx = Env.getCtx();
 		StringBuilder out = new StringBuilder();
 		if (AD_Message != null && !AD_Message.equals(""))
@@ -207,7 +207,7 @@ public final class ADialog
 	 */
 	public static void error (int WindowNo, Container c, String AD_Message, String msg)
 	{
-		log.info(AD_Message + " - " + msg);
+		if (log.isLoggable(Level.INFO)) log.info(AD_Message + " - " + msg);
 		if (CLogMgt.isLevelFinest())
 			Trace.printStack();
 		Properties ctx = Env.getCtx();
@@ -263,7 +263,7 @@ public final class ADialog
 	 */
 	public static boolean ask (int WindowNo, Container c, String AD_Message, String msg)
 	{
-		log.info(AD_Message + " - " + msg);
+		if (log.isLoggable(Level.INFO)) log.info(AD_Message + " - " + msg);
 		Properties ctx = Env.getCtx();
 		StringBuilder out = new StringBuilder();
 		if (AD_Message != null && !AD_Message.equals(""))
@@ -332,7 +332,7 @@ public final class ADialog
 	 */
 	public static void clear (int WindowNo, Container c, String ParseString)
 	{
-		log.info( "Dialog.clear: " + ParseString);
+		if (log.isLoggable(Level.INFO)) log.info( "Dialog.clear: " + ParseString);
 		Properties ctx = Env.getCtx();
 		String parse = Env.parseContext(ctx, WindowNo, ParseString, false);
 		if (parse.length() == 0)

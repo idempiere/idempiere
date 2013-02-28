@@ -71,7 +71,7 @@ public class DepositBatchClose extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		MDepositBatch depositbatch = new MDepositBatch (getCtx(), m_X_DepositBatch_ID, get_TrxName());
-		log.info("doIt - " + depositbatch);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - " + depositbatch);
 
 		MDepositBatchLine[] depositbatchLines = depositbatch.getLines();
 		

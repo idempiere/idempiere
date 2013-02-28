@@ -653,7 +653,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 
 		//	Starting user
 		MUser user = MUser.get(getCtx(), AD_User_ID);
-		log.info("For User=" + user
+		if (log.isLoggable(Level.INFO)) log.info("For User=" + user
 			+ ", Amt=" + amount
 			+ ", Own=" + ownDocument);
 
@@ -662,7 +662,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		{
 			if (user.equals(oldUser))
 			{
-				log.info("Loop - " + user.getName());
+				if (log.isLoggable(Level.INFO)) log.info("Loop - " + user.getName());
 				user=null;
 				break;
 			}
@@ -700,7 +700,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 						BigDecimal amtApprovedAccum = getAmtAccum(m_po, daysAmtAcc.intValue(), user.getAD_User_ID());
 						amtApprovedAccum = amtApprovedAccum.add(amount); // include amount of current doc
 						approved = amtApprovedAccum.compareTo(roleAmtAcc) <= 0;
-						log.info("ApprovedAccum=" + approved 
+						if (log.isLoggable(Level.INFO)) log.info("ApprovedAccum=" + approved 
 								+ " - User=" + user.getName() + ", Role=" + role.getName()
 								+ ", ApprovalAmtAccum=" + roleAmtAcc
 								+ ", AccumDocsApproved=" + amtApprovedAccum
@@ -830,7 +830,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	 */
 	public void run()
 	{
-		log.info ("Node=" + getNode());
+		if (log.isLoggable(Level.INFO)) log.info ("Node=" + getNode());
 		m_newValue = null;
 
 
@@ -950,7 +950,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	 */
 	private boolean performWork (Trx trx) throws Exception
 	{
-		log.info (m_node + " [" + (trx!=null ? trx.getTrxName() : "") + "]");
+		if (log.isLoggable(Level.INFO)) log.info (m_node + " [" + (trx!=null ? trx.getTrxName() : "") + "]");
 		m_docStatus = null;
 		if (m_node.getPriority() != 0)		//	overwrite priority if defined
 			setPriority(m_node.getPriority());
@@ -1703,7 +1703,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				}
 			}
 			else
-				log.info("No EMail for User " + user.getName());
+				if (log.isLoggable(Level.INFO)) log.info("No EMail for User " + user.getName());
 		}
 		else if (email != null && email.length() > 0)
 		{

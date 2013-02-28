@@ -52,7 +52,7 @@ public class ImpFormatElementHandler extends AbstractElementHandler {
 		int AD_Backup_ID = -1;
 		String Object_Status = null;
 		Attributes atts = element.attributes;
-		log.info(elementValue + " " + atts.getValue("Name"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + atts.getValue("Name"));
 
 		int id = get_ID(ctx, "AD_ImpFormat", atts.getValue("Name"));
 		X_AD_ImpFormat m_ImpFormat = new X_AD_ImpFormat(ctx, id,

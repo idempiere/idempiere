@@ -58,7 +58,7 @@ public class CopyFromJournal extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		int To_GL_JournalBatch_ID = getRecord_ID();
-		log.info("doIt - From GL_JournalBatch_ID=" + m_GL_JournalBatch_ID + " to " + To_GL_JournalBatch_ID);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - From GL_JournalBatch_ID=" + m_GL_JournalBatch_ID + " to " + To_GL_JournalBatch_ID);
 		if (To_GL_JournalBatch_ID == 0)
 			throw new IllegalArgumentException("Target GL_JournalBatch_ID == 0");
 		if (m_GL_JournalBatch_ID == 0)

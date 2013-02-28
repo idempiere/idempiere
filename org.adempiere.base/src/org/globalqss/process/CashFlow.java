@@ -113,7 +113,7 @@ public class CashFlow  extends SvrProcess {
 		cfini.setC_ElementValue_ID(p_C_ElementValue_ID);
 		if (!cfini.save())
 			throw new AdempiereSystemError("Error saving cash flow ini");
-		log.info("Initial balance calculated = " + initialBalance);
+		if (log.isLoggable(Level.INFO)) log.info("Initial balance calculated = " + initialBalance);
 
 		/* plan records */
 		String sqlPlan = "SELECT cpl.AD_Org_ID, " +
@@ -177,7 +177,7 @@ public class CashFlow  extends SvrProcess {
 				if (!cfplan.save())
 					throw new AdempiereSystemError("Error saving cash flow plan");
 			}
-			log.info(noPlan + " plan inserted");
+			if (log.isLoggable(Level.INFO)) log.info(noPlan + " plan inserted");
 		}
 		catch (Exception e)
 		{
@@ -209,7 +209,7 @@ public class CashFlow  extends SvrProcess {
 			{
 				noOrders++;
 				if ((noOrders % 100) == 0)
-					log.info(noOrders + " orders processed");
+					if (log.isLoggable(Level.INFO)) log.info(noOrders + " orders processed");
 				int order_id = rsOpenOrders.getInt("C_Order_ID");
 				boolean isPaySchedule = ("Y".equals(rsOpenOrders.getString("IsPayScheduleValid")));
 				BigDecimal pending = rsOpenOrders.getBigDecimal("Pending");
@@ -302,7 +302,7 @@ public class CashFlow  extends SvrProcess {
 					}
 				}
 			}
-			log.info(noOrders + " orders processed, " + noOrdIns + " orders inserted, " + noOrdSchIns + " schedule inserted");
+			if (log.isLoggable(Level.INFO)) log.info(noOrders + " orders processed, " + noOrdIns + " orders inserted, " + noOrdSchIns + " schedule inserted");
 		}
 		catch (Exception e)
 		{
@@ -359,7 +359,7 @@ public class CashFlow  extends SvrProcess {
 				if (!cfactual.save())
 					throw new AdempiereSystemError("Error saving cash flow actual");
 			}
-			log.info(noInv + " invoices inserted");
+			if (log.isLoggable(Level.INFO)) log.info(noInv + " invoices inserted");
 		}
 		catch (Exception e)
 		{
@@ -391,7 +391,7 @@ public class CashFlow  extends SvrProcess {
 					X_T_CashFlow.CASHFLOWSOURCE_2_Plan, 
 					X_T_CashFlow.CASHFLOWSOURCE_3_CommitmentsOrders}, 
 				false, get_TrxName());
-		log.info(noupdord + " plans subtracted from orders");
+		if (log.isLoggable(Level.INFO)) log.info(noupdord + " plans subtracted from orders");
 
 		/* subtract from plan lines the related invoices */
 		String sqlupdinv = "UPDATE T_CashFlow " +
@@ -413,7 +413,7 @@ public class CashFlow  extends SvrProcess {
 					X_T_CashFlow.CASHFLOWSOURCE_2_Plan, 
 					X_T_CashFlow.CASHFLOWSOURCE_4_ActualDebtInvoices}, 
 				false, get_TrxName());
-		log.info(noupdinv + " plans subtracted from invoices");
+		if (log.isLoggable(Level.INFO)) log.info(noupdinv + " plans subtracted from invoices");
 
 		/* delete overplanned records */
 		String sqldeloverplanned = "DELETE FROM T_CashFlow " +
@@ -424,7 +424,7 @@ public class CashFlow  extends SvrProcess {
 				new Object[] {getAD_PInstance_ID(), 
 					X_T_CashFlow.CASHFLOWSOURCE_2_Plan}, 
 				false, get_TrxName());
-		log.info(nodelplan + " overplanned plans deleted");
+		if (log.isLoggable(Level.INFO)) log.info(nodelplan + " overplanned plans deleted");
 
 		return "OK";
 	} // doIt

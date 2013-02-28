@@ -6,6 +6,7 @@ package org.adempiere.pipo.handler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -38,7 +39,7 @@ public class EntityTypeElementHandler extends AbstractElementHandler
 		final String elementValue = element.getElementValue();
 		final Attributes atts = element.attributes;
 		final String entitytype = atts.getValue(I_AD_EntityType.COLUMNNAME_EntityType);
-		log.info(elementValue+" "+entitytype);
+		if (log.isLoggable(Level.INFO)) log.info(elementValue+" "+entitytype);
 		if (isProcessElement(ctx, entitytype))
 		{
 			int id = get_IDWithColumn(ctx, I_AD_EntityType.Table_Name, I_AD_EntityType.COLUMNNAME_EntityType, entitytype);

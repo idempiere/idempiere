@@ -333,10 +333,9 @@ public class MProject extends X_C_Project
 				}
 			}
 			//	Phase exist
-			if (exists)
-				log.info("Phase already exists here, ignored - " + fromPhases[i]);
-			else
-			{
+			if (exists) {
+				if (log.isLoggable(Level.INFO)) log.info("Phase already exists here, ignored - " + fromPhases[i]);
+			} else {
 				MProjectPhase toPhase = new MProjectPhase (getCtx (), 0, get_TrxName());
 				PO.copyValues (fromPhases[i], toPhase, getAD_Client_ID (), getAD_Org_ID ());
 				toPhase.setC_Project_ID (getC_Project_ID ());

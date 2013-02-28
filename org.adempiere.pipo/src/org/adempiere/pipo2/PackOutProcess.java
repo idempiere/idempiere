@@ -84,7 +84,7 @@ public class PackOutProcess extends SvrProcess
 
 	protected String doIt() throws java.lang.Exception
 	{
-		log.info("doIt - AD_PACKAGE_EXP_ID=" + p_PackOut_ID);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - AD_PACKAGE_EXP_ID=" + p_PackOut_ID);
 
 		if (p_PackOut_ID == 0)
 			throw new IllegalArgumentException("No Record");
@@ -122,7 +122,7 @@ public class PackOutProcess extends SvrProcess
 																 .list();
 				for(MPackageExpDetail dtl : packageExpDetails){
 					String type = getTypeName(dtl.getType());
-					log.info(Integer.toString(dtl.getLine()));
+					if (log.isLoggable(Level.INFO)) log.info(Integer.toString(dtl.getLine()));
 					PackoutItem item = new PackoutItem(type, dtl.getExpRecordId(), getExpProperties(dtl));
 					packoutItems.add(item);
 				}

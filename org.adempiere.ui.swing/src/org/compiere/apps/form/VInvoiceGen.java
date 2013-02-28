@@ -198,7 +198,7 @@ public class VInvoiceGen extends InvoiceGen implements FormPanel, ActionListener
 	 */
 	public void vetoableChange(PropertyChangeEvent e)
 	{
-		log.info(e.getPropertyName() + "=" + e.getNewValue());
+		if (log.isLoggable(Level.INFO)) log.info(e.getPropertyName() + "=" + e.getNewValue());
 		if (e.getPropertyName().equals("AD_Org_ID"))
 			m_AD_Org_ID = e.getNewValue();
 		if (e.getPropertyName().equals("C_BPartner_ID"))

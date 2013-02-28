@@ -383,7 +383,7 @@ public class MStore extends X_W_Store
 			String msg = email.send();
 			if (EMail.SENT_OK.equals (msg))
 			{
-				log.info("Sent EMail " + subject + " to " + to);
+				if (log.isLoggable(Level.INFO)) log.info("Sent EMail " + subject + " to " + to);
 				return true;
 			}
 			else
@@ -420,7 +420,7 @@ public class MStore extends X_W_Store
 			String msg = email.send();
 			if (EMail.SENT_OK.equals (msg))
 			{
-				log.info("Sent Test EMail to " + getWStoreEMail());
+				if (log.isLoggable(Level.INFO)) log.info("Sent Test EMail to " + getWStoreEMail());
 				return "OK";
 			}
 			else
@@ -606,7 +606,7 @@ public class MStore extends X_W_Store
 				log.severe("Not created MailMsgType=" + initMsgs[i][0]);
 		}	//	for all initMsgs
 		
-		log.info("#" + counter);
+		if (log.isLoggable(Level.INFO)) log.info("#" + counter);
 		m_msgs = null;		//	reset
 		return counter;
 	}	//	createMessages

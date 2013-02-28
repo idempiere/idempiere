@@ -69,7 +69,7 @@ public class FactReconcile extends SvrProcess
 	protected String doIt() throws Exception
 	{
 
-		log.info("Reconcile Account: " + account.getName());
+		if (log.isLoggable(Level.INFO)) log.info("Reconcile Account: " + account.getName());
 		
 		String subselect = "null";
 		
@@ -115,7 +115,7 @@ public class FactReconcile extends SvrProcess
 		
 		String sql = "";
 		
-		log.info("AD_PInstance_ID= " + getAD_PInstance_ID());
+		if (log.isLoggable(Level.INFO)) log.info("AD_PInstance_ID= " + getAD_PInstance_ID());
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

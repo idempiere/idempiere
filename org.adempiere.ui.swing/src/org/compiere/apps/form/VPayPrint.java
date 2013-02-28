@@ -303,7 +303,7 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener, Ve
 			return;
 		String PaymentRule = pp.getValue();
 
-		log.info("PaymentRule=" + PaymentRule);
+		if (log.isLoggable(Level.INFO)) log.info("PaymentRule=" + PaymentRule);
 		fNoPayments.setText(" ");
 		
 		String msg = loadPaymentRuleInfo(m_C_PaySelection_ID, PaymentRule);

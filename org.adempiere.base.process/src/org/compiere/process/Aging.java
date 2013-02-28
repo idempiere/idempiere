@@ -98,7 +98,7 @@ public class Aging extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("StatementDate=" + p_StatementDate + ", IsSOTrx=" + p_IsSOTrx
+		if (log.isLoggable(Level.INFO)) log.info("StatementDate=" + p_StatementDate + ", IsSOTrx=" + p_IsSOTrx
 			+ ", C_Currency_ID=" + p_C_Currency_ID + ", AD_Org_ID=" + p_AD_Org_ID
 			+ ", C_BP_Group_ID=" + p_C_BP_Group_ID + ", C_BPartner_ID=" + p_C_BPartner_ID
 			+ ", IsListInvoices=" + p_IsListInvoices);
@@ -252,7 +252,7 @@ public class Aging extends SvrProcess
 			rs = null; pstmt = null;
 		}
 		//	
-		log.info("#" + counter + " - rows=" + rows);
+		if (log.isLoggable(Level.INFO)) log.info("#" + counter + " - rows=" + rows);
 		return "";
 	}	//	doIt
 

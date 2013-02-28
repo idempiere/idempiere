@@ -76,7 +76,7 @@ public class IssueReportServlet extends HttpServlet
 	 */
 	public void destroy()
 	{
-		log.info("");
+		if (log.isLoggable(Level.INFO)) log.info("");
 	}   //  destroy
 
 	
@@ -92,7 +92,7 @@ public class IssueReportServlet extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		Properties ctx = JSPEnv.getCtx(request);
 		@SuppressWarnings("unused")
 		HttpSession session = request.getSession(true);
@@ -167,7 +167,7 @@ public class IssueReportServlet extends HttpServlet
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("Post from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("Post from " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		doGet(request, response);
 	}   //  doPost
 

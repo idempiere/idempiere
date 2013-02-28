@@ -97,7 +97,7 @@ public class ClientAcctProcessor extends SvrProcess
 	protected String doIt () throws Exception
 	{
 		StringBuilder msglog = new StringBuilder("C_AcctSchema_ID=").append(p_C_AcctSchema_ID).append(", AD_Table_ID=").append(p_AD_Table_ID);
-		log.info(msglog.toString());
+		if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 
 		if (! MClient.isClientAccounting())
 			throw new AdempiereUserError(Msg.getMsg(getCtx(), "ClientAccountingNotEnabled"));

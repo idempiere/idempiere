@@ -29,6 +29,7 @@
 package org.adempiere.server.rpl.imp;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.process.rpl.imp.ImportHelper;
 import org.adempiere.process.rpl.XMLHelper;
@@ -60,8 +61,10 @@ public class FileImportProcessor implements IImportProcessor {
 		String folder  = "";
 		if (processorParameters != null && processorParameters.length > 0) {
         	for (int i = 0; i < processorParameters.length; i++) {
-        		log.info("ProcesParameter          Value = " + processorParameters[i].getValue());
-        		log.info("ProcesParameter ParameterValue = " + processorParameters[i].getParameterValue());
+        		if (log.isLoggable(Level.INFO)) {
+        			log.info("ProcesParameter          Value = " + processorParameters[i].getValue());
+        			log.info("ProcesParameter ParameterValue = " + processorParameters[i].getParameterValue());
+        		}
         		if (processorParameters[i].getValue().equals("fileName")) {
         			fileName = processorParameters[i].getParameterValue();
         		} else if ( processorParameters[i].getValue().equals("folder") ) {

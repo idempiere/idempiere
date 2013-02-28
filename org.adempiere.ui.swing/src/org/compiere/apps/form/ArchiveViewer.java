@@ -273,7 +273,7 @@ public class ArchiveViewer extends Archive
 	 */
 	public void actionPerformed (ActionEvent e)
 	{
-		log.info(e.getActionCommand());
+		if (log.isLoggable(Level.INFO)) log.info(e.getActionCommand());
 		//
 		if (e.getSource() == updateArchive)
 			cmd_updateArchive();
@@ -340,7 +340,7 @@ public class ArchiveViewer extends Archive
 		bNext.setEnabled(m_index < m_archives.length-1);
 		updateArchive.setEnabled(false);
 		//
-		log.info("Index=" + m_index + ", Length=" + m_archives.length);
+		if (log.isLoggable(Level.INFO)) log.info("Index=" + m_index + ", Length=" + m_archives.length);
 		if (m_archives.length == 0)
 		{
 			positionInfo.setText("No Record Found");
@@ -403,7 +403,7 @@ public class ArchiveViewer extends Archive
 			ar.setHelp(helpField.getText());
 			update = true;
 		}
-		log.info("Update=" + update);
+		if (log.isLoggable(Level.INFO)) log.info("Update=" + update);
 		if (update)
 			ar.saveEx();
 		//

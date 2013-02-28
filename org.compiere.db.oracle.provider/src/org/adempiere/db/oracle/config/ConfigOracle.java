@@ -316,7 +316,7 @@ public class ConfigOracle implements IDatabaseConfig
 		if (monitor != null)
 			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SERVER, "ErrorDatabaseServer",
 				pass, true, error));
-		log.info("OK: Database Server = " + databaseServer);
+		if (log.isLoggable(Level.INFO)) log.info("OK: Database Server = " + databaseServer);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_SERVER, databaseServer!=null ? databaseServer.getHostName() : null);
 		//store as lower case for better script level backward compatibility
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_TYPE, data.getDatabaseType());
@@ -331,7 +331,7 @@ public class ConfigOracle implements IDatabaseConfig
 				pass, true, error));
 		if (!pass)
 			return error;
-		log.info("OK: Database Port = " + databasePort);
+		if (log.isLoggable(Level.INFO)) log.info("OK: Database Port = " + databasePort);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_PORT, String.valueOf(databasePort));
 
 		boolean  isDBExists =  data.getDatabaseExists();
@@ -363,9 +363,9 @@ public class ConfigOracle implements IDatabaseConfig
 				pass, true, error));
 		if (!pass)
 			return error;
-		log.info("OK: Connection = " + url);
+		if (log.isLoggable(Level.INFO)) log.info("OK: Connection = " + url);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_URL, url);
-		log.info("OK: Database System User " + databaseName);
+		if (log.isLoggable(Level.INFO)) log.info("OK: Database System User " + databaseName);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_NAME, databaseName);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_SYSTEM, systemPassword);
 
@@ -388,7 +388,7 @@ public class ConfigOracle implements IDatabaseConfig
 				pass, true, error));
 		if (pass)
 		{
-			log.info("OK: Database User = " + databaseUser);
+			if (log.isLoggable(Level.INFO)) log.info("OK: Database User = " + databaseUser);
 			if (m_con != null)
 				data.setProperty(ConfigurationData.ADEMPIERE_WEBSTORES, data.getWebStores(m_con));
 		}
@@ -441,12 +441,14 @@ public class ConfigOracle implements IDatabaseConfig
 		{
 			url = "jdbc:oracle:oci8:@" + databaseName;
 			pass = testJDBC(url, "system", systemPassword);
-			if (pass)
-				log.info("OK: Connection = " + url);
-			else
+			if (pass) {
+				if (log.isLoggable(Level.INFO)) log.info("OK: Connection = " + url);
+			} else {
 				log.warning("Cannot connect via Net8: " + url);
-		} else
+			}
+		} else {
 			log.info("OCI Test Skipped");
+		}
 
 		//
 		m_con = null;

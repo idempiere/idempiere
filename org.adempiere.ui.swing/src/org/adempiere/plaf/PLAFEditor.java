@@ -466,7 +466,7 @@ public class PLAFEditor extends JDialog
 				themeField.setSelectedItem(theme);
 		}
 		m_setting = false;
-		log.info(lookFeel + " - " + metalTheme);
+		if (log.isLoggable(Level.INFO)) log.info(lookFeel + " - " + metalTheme);
 	}   //  setLFSelection
 
 	

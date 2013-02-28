@@ -125,7 +125,7 @@ public class CalloutInventory extends CalloutEngine
 		}
 		
 		//
-		log.info("M_Product_ID=" + M_Product_ID 
+		if (log.isLoggable(Level.INFO)) log.info("M_Product_ID=" + M_Product_ID 
 			+ ", M_Locator_ID=" + M_Locator_ID
 			+ ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID
 			+ " - QtyBook=" + bd);

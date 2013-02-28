@@ -63,7 +63,7 @@ public class TransactionXRef extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("M_InOut_ID=" + p_Search_InOut_ID + ", C_Order_ID=" + p_Search_Order_ID
+		if (log.isLoggable(Level.INFO)) log.info("M_InOut_ID=" + p_Search_InOut_ID + ", C_Order_ID=" + p_Search_Order_ID
 			+ ", C_Invoice_ID=" + p_Search_Invoice_ID);
 		//
 		if (p_Search_InOut_ID != 0){

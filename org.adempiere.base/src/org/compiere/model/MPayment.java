@@ -455,7 +455,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public boolean processOnline()
 	{
-		log.info ("Amt=" + getPayAmt());
+		if (log.isLoggable(Level.INFO)) log.info ("Amt=" + getPayAmt());
 		//
 		setIsOnline(true);
 		setErrorMessage(null);
@@ -464,7 +464,7 @@ public final class MPayment extends X_C_Payment
 		{
 			if (isVoided())
 			{
-				log.info("Already voided - " + getR_Result() + " - " + getR_RespMsg());
+				if (log.isLoggable(Level.INFO)) log.info("Already voided - " + getR_Result() + " - " + getR_RespMsg());
 				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentAlreadyVoided"));
 				return true;
 			}
@@ -473,7 +473,7 @@ public final class MPayment extends X_C_Payment
 		{
 			if (isDelayedCapture())
 			{
-				log.info("Already delayed capture - " + getR_Result() + " - " + getR_RespMsg());
+				if (log.isLoggable(Level.INFO)) log.info("Already delayed capture - " + getR_Result() + " - " + getR_RespMsg());
 				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentAlreadyDelayedCapture"));
 				return true;
 			}
@@ -482,7 +482,7 @@ public final class MPayment extends X_C_Payment
 		{
 			if (isApproved())
 			{
-				log.info("Already processed - " + getR_Result() + " - " + getR_RespMsg());
+				if (log.isLoggable(Level.INFO)) log.info("Already processed - " + getR_Result() + " - " + getR_RespMsg());
 				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentAlreadyProcessed"));
 				return true;
 			}
@@ -604,7 +604,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public boolean startProcess (Properties ctx, ProcessInfo pi, Trx trx)
 	{
-		log.info("startProcess - " + pi.getRecord_ID());
+		if (log.isLoggable(Level.INFO)) log.info("startProcess - " + pi.getRecord_ID());
 		boolean retValue = false;
 		//
 		if (pi.getRecord_ID() != get_ID())
@@ -1708,7 +1708,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public boolean unlockIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setProcessing(false);
 		return true;
 	}	//	unlockIt
@@ -1719,7 +1719,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public boolean invalidateIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setDocAction(DOCACTION_Prepare);
 		return true;
 	}	//	invalidateIt
@@ -1731,7 +1731,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public String prepareIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -1847,7 +1847,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public boolean  approveIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setIsApproved(true);
 		return true;
 	}	//	approveIt
@@ -1858,7 +1858,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public boolean rejectIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		setIsApproved(false);
 		return true;
 	}	//	rejectIt
@@ -1885,7 +1885,7 @@ public final class MPayment extends X_C_Payment
 		//	Implicit Approval
 		if (!isApproved())
 			approveIt();
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 
 		//	Charge Handling
 		if (getC_Charge_ID() != 0)
@@ -2058,7 +2058,7 @@ public final class MPayment extends X_C_Payment
 		
 		MBPartner counterBP = new MBPartner (getCtx(), counterC_BPartner_ID, get_TrxName());
 	//	MOrgInfo counterOrgInfo = MOrgInfo.get(getCtx(), counterAD_Org_ID);
-		log.info("Counter BP=" + counterBP.getName());
+		if (log.isLoggable(Level.INFO)) log.info("Counter BP=" + counterBP.getName());
 
 		//	Document Type
 		int C_DocTypeTarget_ID = 0;
@@ -2396,7 +2396,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public boolean voidIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
@@ -2453,7 +2453,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public boolean closeIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before Close
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
@@ -2474,7 +2474,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public boolean reverseCorrectIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
@@ -2633,7 +2633,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public boolean reverseAccrualIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		
 		// Before reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
@@ -2660,7 +2660,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public boolean reActivateIt()
 	{
-		log.info(toString());
+		if (log.isLoggable(Level.INFO)) log.info(toString());
 		// Before reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)

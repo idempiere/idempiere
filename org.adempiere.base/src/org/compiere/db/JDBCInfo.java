@@ -44,11 +44,11 @@ public class JDBCInfo
 	public JDBCInfo(Connection conn) throws SQLException
 	{
 		m_md = conn.getMetaData(); 
-		log.info(m_md.getDatabaseProductName());
+		if (log.isLoggable(Level.INFO)) log.info(m_md.getDatabaseProductName());
 		if (log.isLoggable(Level.CONFIG)) log.config(m_md.getDatabaseProductVersion());
 	//	log.config(m_md.getDatabaseMajorVersion() + "/" + m_md.getDatabaseMinorVersion());
 		//
-		log.info(m_md.getDriverName());
+		if (log.isLoggable(Level.INFO)) log.info(m_md.getDriverName());
 		if (log.isLoggable(Level.CONFIG)){
 			log.config(m_md.getDriverVersion());
 			log.config(m_md.getDriverMajorVersion() + "/" + m_md.getDriverMinorVersion());
@@ -101,7 +101,7 @@ public class JDBCInfo
 	 */
 	public void listCatalogs() throws SQLException
 	{
-		log.info(m_md.getCatalogTerm() + " -> " + m_md.getCatalogSeparator());
+		if (log.isLoggable(Level.INFO)) log.info(m_md.getCatalogTerm() + " -> " + m_md.getCatalogSeparator());
 		ResultSet rs = m_md.getCatalogs();
 		while (rs.next())
 		{
@@ -115,7 +115,7 @@ public class JDBCInfo
 	 */
 	public void listSchemas() throws SQLException
 	{
-		log.info(m_md.getSchemaTerm());
+		if (log.isLoggable(Level.INFO)) log.info(m_md.getSchemaTerm());
 		ResultSet rs = m_md.getSchemas();
 		while (rs.next())
 		{

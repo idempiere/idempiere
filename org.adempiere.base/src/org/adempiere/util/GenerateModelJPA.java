@@ -694,7 +694,7 @@ public class GenerateModelJPA
 			fw.close ();
 			float size = out.length();
 			size /= 1024;
-			log.info(out.getAbsolutePath() + " - " + size + " kB");
+			if (log.isLoggable(Level.INFO)) log.info(out.getAbsolutePath() + " - " + size + " kB");
 		}
 		catch (Exception ex)
 		{
@@ -744,7 +744,7 @@ public class GenerateModelJPA
 			System.err.println("No Directory");
 			System.exit(1);
 		}
-		log.info("Directory: " + directory);
+		if (log.isLoggable(Level.INFO)) log.info("Directory: " + directory);
 		
 		//	second parameter
 		String packageName = "adempiere.model";
@@ -755,7 +755,7 @@ public class GenerateModelJPA
 			System.err.println("No package");
 			System.exit(1);
 		}
-		log.info("Package:   " + packageName);
+		if (log.isLoggable(Level.INFO)) log.info("Package:   " + packageName);
 		
 		//	third parameter
 		String entityType = "'U','A','D'";	//	User, Application
@@ -768,7 +768,7 @@ public class GenerateModelJPA
 		}
 		StringBuffer sql = new StringBuffer("EntityType IN (")
 			.append(entityType).append(")");
-		log.info(sql.toString());
+		if (log.isLoggable(Level.INFO)) log.info(sql.toString());
 		log.info("----------------------------------");
 		
 		//	complete sql
@@ -803,7 +803,7 @@ public class GenerateModelJPA
 			rs = null; pstmt = null;
 		}
 		
-		log.info("Generated = " + count);
+		if (log.isLoggable(Level.INFO)) log.info("Generated = " + count);
 
 	}	//	main
 

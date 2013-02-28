@@ -241,7 +241,7 @@ public class Login
 	 */
 	private KeyNamePair[] getRoles (String app_user, String app_pwd, boolean force)
 	{
-		log.info("User=" + app_user);
+		if (log.isLoggable(Level.INFO)) log.info("User=" + app_user);
 
 		//long start = System.currentTimeMillis();
 		if (app_user == null)
@@ -706,7 +706,7 @@ public class Login
 
 			if (!rs.next())
 			{
-				log.info("No Warehouses for Org: " + org.toStringX());
+				if (log.isLoggable(Level.INFO)) log.info("No Warehouses for Org: " + org.toStringX());
 				return null;
 			}
 
@@ -779,7 +779,7 @@ public class Login
 	public String loadPreferences (KeyNamePair org, 
 		KeyNamePair warehouse, java.sql.Timestamp timestamp, String printerName)
 	{
-		log.info("Org: " + org.toStringX());
+		if (log.isLoggable(Level.INFO)) log.info("Org: " + org.toStringX());
 
 		if (m_ctx == null || org == null)
 			throw new IllegalArgumentException("Required parameter missing");
@@ -942,7 +942,7 @@ public class Login
 			}
 
 			//	Default Values
-			log.info("Default Values ...");
+			if (log.isLoggable(Level.INFO)) log.info("Default Values ...");
 			sql = "SELECT t.TableName, c.ColumnName "
 				+ "FROM AD_Column c "
 				+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID) "
@@ -1049,7 +1049,7 @@ public class Login
 			log.severe("User/Password invalid: " + uid);
 			return false;
 		}
-		log.info("User: " + uid);
+		if (log.isLoggable(Level.INFO)) log.info("User: " + uid);
 		
 		//	Role
 		String role = Ini.getProperty(Ini.P_ROLE);
@@ -1066,11 +1066,13 @@ public class Login
 		if (rolePP == null)
 		{
 			log.severe("Role invalid: " + role);
-			for (int i = 0; i < roles.length; i++)
-				log.info("Option: " + roles[i]);
+			if (log.isLoggable(Level.INFO)) {
+				for (int i = 0; i < roles.length; i++)
+					log.info("Option: " + roles[i]);
+			}
 			return false;
 		}
-		log.info("Role: " + role);
+		if (log.isLoggable(Level.INFO)) log.info("Role: " + role);
 		
 		//	Clients
 		String client = Ini.getProperty(Ini.P_CLIENT);
@@ -1093,8 +1095,10 @@ public class Login
 		if (clientPP == null)
 		{
 			log.severe("Client invalid: " + client);
-			for (int i = 0; i < clients.length; i++)
-				log.info("Option: " + clients[i]);
+			if (log.isLoggable(Level.INFO)) {
+				for (int i = 0; i < clients.length; i++)
+					log.info("Option: " + clients[i]);
+			}
 			return false;
 		}
 		
@@ -1119,8 +1123,10 @@ public class Login
 		if (orgPP == null)
 		{
 			log.severe("Org invalid: " + org);
-			for (int i = 0; i < orgs.length; i++)
-				log.info("Option: " + orgs[i]);
+			if (log.isLoggable(Level.INFO)) {
+				for (int i = 0; i < orgs.length; i++)
+					log.info("Option: " + orgs[i]);
+			}
 			return false;
 		}
 		String error = validateLogin(orgPP);
@@ -1148,8 +1154,10 @@ public class Login
 		if (whPP == null)
 		{
 			log.severe("Warehouse invalid: " + wh);
-			for (int i = 0; i < whs.length; i++)
-				log.info("Option: " + whs[i]);
+			if (log.isLoggable(Level.INFO)) {
+				for (int i = 0; i < whs.length; i++)
+					log.info("Option: " + whs[i]);
+			}
 			return false;
 		}
 
@@ -1169,7 +1177,7 @@ public class Login
 			loginDate = new java.sql.Timestamp(System.currentTimeMillis());
 		loadPreferences(orgPP, whPP, loginDate, printerName);
 		//
-		log.info("complete");
+		if (log.isLoggable(Level.INFO)) log.info("complete");
 		return true;
 	}	//	batchLogin
 
@@ -1199,7 +1207,7 @@ public class Login
 	 *  @return client array or null if in error.
 	 */
 	public KeyNamePair[] getClients(String app_user, String app_pwd) {
-		log.info("User=" + app_user);
+		if (log.isLoggable(Level.INFO)) log.info("User=" + app_user);
 
 		if (Util.isEmpty(app_user))
 		{

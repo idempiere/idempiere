@@ -103,7 +103,7 @@ public class PosOrderModel extends MOrder {
 			}
 			else
 			{
-				log.info("SubCurrentLine.getOrder -" + partner);
+				if (log.isLoggable(Level.INFO)) log.info("SubCurrentLine.getOrder -" + partner);
 				super.setBPartner(partner);
 				MOrderLine[] lineas = getLines();
 				for (int i = 0; i < lineas.length; i++)

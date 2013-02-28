@@ -64,7 +64,7 @@ public class PeriodStatus extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info ("C_Period_ID=" + p_C_Period_ID + ", PeriodAction=" + p_PeriodAction);
+		if (log.isLoggable(Level.INFO)) log.info ("C_Period_ID=" + p_C_Period_ID + ", PeriodAction=" + p_PeriodAction);
 		MPeriod period = new MPeriod (getCtx(), p_C_Period_ID, get_TrxName());
 		if (period.get_ID() == 0)
 			throw new AdempiereUserError("@NotFound@  @C_Period_ID@=" + p_C_Period_ID);

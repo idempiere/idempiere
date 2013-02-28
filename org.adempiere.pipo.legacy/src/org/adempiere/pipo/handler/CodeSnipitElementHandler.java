@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -102,7 +103,7 @@ public class CodeSnipitElementHandler extends AbstractElementHandler {
 				targetDirectoryModified = fullDirectory.replace(slash2,slash1);	
 			
 			File file = new File(targetDirectoryModified+sourceName);		
-			log.info(targetDirectoryModified+sourceName);
+			if (log.isLoggable(Level.INFO)) log.info(targetDirectoryModified+sourceName);
 			//TODO: derived force from user parameter
 			boolean force = true;
 			//	check to see if overwrites are allowed
@@ -114,15 +115,15 @@ public class CodeSnipitElementHandler extends AbstractElementHandler {
 			//backup file to package directory
 			else if (file.exists() && force == true) {
 				Object_Status = "Update";			
-				log.info("Target Backup:"+targetDirectoryModified+sourceName);
+				if (log.isLoggable(Level.INFO)) log.info("Target Backup:"+targetDirectoryModified+sourceName);
 				source = OpenInputfile(targetDirectoryModified+sourceName);
 				SimpleDateFormat formatter_file = new SimpleDateFormat("yyMMddHHmmssSSSSZ");	    	
 				Date today = new Date();
 				fileDate = formatter_file.format(today);
 				copy = OpenOutputfile(packagePath+File.separator+"backup"+File.separator+fileDate+"_"+sourceName);
-				log.info("Source Backup:"+packagePath+File.separator+"backup"+File.separator+fileDate+"_"+sourceName);
+				if (log.isLoggable(Level.INFO)) log.info("Source Backup:"+packagePath+File.separator+"backup"+File.separator+fileDate+"_"+sourceName);
 				copyFile (source,copy);
-				log.info("Backup Complete");
+				if (log.isLoggable(Level.INFO)) log.info("Backup Complete");
 			}	        
 			
 			int success = readReplace(targetDirectoryModified+sourceName, oldCode, newCode);
@@ -133,14 +134,14 @@ public class CodeSnipitElementHandler extends AbstractElementHandler {
 				try {				
 					idDetail = record_log (ctx, 1, sourceName,"codesnipit", 0,0, Object_Status,sourceName,0);
 				} catch (SAXException e) {
-					log.info ("setfile:"+e);
+					if (log.isLoggable(Level.INFO)) log.info ("setfile:"+e);
 				}           		        		
 			}
 			else{
 				try {
 					idDetail = record_log (ctx, 0, sourceName,"codesnipit", 0,0, Object_Status,sourceName,0);
 				} catch (SAXException e) {
-					log.info ("setfile:"+e);
+					if (log.isLoggable(Level.INFO)) log.info ("setfile:"+e);
 				}
 			}
 			//Record in transaction file 

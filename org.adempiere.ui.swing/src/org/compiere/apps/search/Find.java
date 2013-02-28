@@ -803,7 +803,7 @@ public final class Find extends CDialog
 	 */
 	public void actionPerformed (ActionEvent e)
 	{
-		log.info(e.getActionCommand());
+		if (log.isLoggable(Level.INFO)) log.info(e.getActionCommand());
 		//
 		if (e.getActionCommand().equals(ConfirmPanel.A_CANCEL))
 			cmd_cancel();
@@ -1584,7 +1584,7 @@ public final class Find extends CDialog
 			log.warning("Query - over max");
 		}
 		else
-			log.info("Query=" + m_query);
+			if (log.isLoggable(Level.INFO)) log.info("Query=" + m_query);
 		return m_query;
 	}	//	getQuery
 

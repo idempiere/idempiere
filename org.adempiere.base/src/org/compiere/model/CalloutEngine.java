@@ -86,7 +86,7 @@ public class CalloutEngine implements Callout
 			.append(" (old=").append(oldValue)
 			.append(") {active=").append(isCalloutActive()).append("}");
 		if (!isCalloutActive())
-			log.info (msg.toString());
+			if (log.isLoggable(Level.INFO)) log.info (msg.toString());
 		
 		//	Find Method
 		Method method = getMethod(methodName);
@@ -142,7 +142,7 @@ public class CalloutEngine implements Callout
 		//
 		String retValue = null;
 		StringBuffer msg = new StringBuffer(methodName).append(" - ").append(value);
-		log.info (msg.toString());
+		if (log.isLoggable(Level.INFO)) log.info (msg.toString());
 		//
 		//	Find Method
 		Method method = getMethod(methodName);
@@ -259,7 +259,7 @@ public class CalloutEngine implements Callout
 			mTab.setValue("DivideRate", rate2);
 		else
 			mTab.setValue("MultiplyRate", rate2);
-		log.info(mField.getColumnName() + "=" + rate1 + " => " + rate2);
+		if (log.isLoggable(Level.INFO)) log.info(mField.getColumnName() + "=" + rate1 + " => " + rate2);
 		return NO_ERROR;
 	}	//	rate
 	

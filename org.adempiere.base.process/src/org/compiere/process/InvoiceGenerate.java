@@ -124,7 +124,7 @@ public class InvoiceGenerate extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("Selection=" + p_Selection + ", DateInvoiced=" + p_DateInvoiced
+		if (log.isLoggable(Level.INFO)) log.info("Selection=" + p_Selection + ", DateInvoiced=" + p_DateInvoiced
 			+ ", AD_Org_ID=" + p_AD_Org_ID + ", C_BPartner_ID=" + p_C_BPartner_ID
 			+ ", C_Order_ID=" + p_C_Order_ID + ", DocAction=" + p_docAction 
 			+ ", Consolidate=" + p_ConsolidateDocument);

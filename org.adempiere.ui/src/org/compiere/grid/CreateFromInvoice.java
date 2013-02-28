@@ -63,7 +63,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 	public CreateFromInvoice(GridTab mTab)
 	{
 		super(mTab);
-		log.info(mTab.toString());
+		if (log.isLoggable(Level.INFO)) log.info(mTab.toString());
 	}   //  VCreateFromInvoice
 
 	/**

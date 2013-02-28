@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
@@ -75,8 +76,10 @@ public class HDDExportProcessor implements IExportProcessor {
         		// One special parameter which will be used for remote folder name. 
         		// Or could add flag to ProcessorParameters table which will distinguish between 
         		// connection parameters and FTP Upload parameters.
-        		log.info("ProcesParameter          Value = " + processorParameters[i].getValue());
-        		log.info("ProcesParameter ParameterValue = " + processorParameters[i].getParameterValue());
+        		if (log.isLoggable(Level.INFO)) {
+        			log.info("ProcesParameter          Value = " + processorParameters[i].getValue());
+        			log.info("ProcesParameter ParameterValue = " + processorParameters[i].getParameterValue());
+        		}
         		if ( processorParameters[i].getValue().equals("fileName") ) {
         			fileName = processorParameters[i].getParameterValue();
         		} else if ( processorParameters[i].getValue().equals("folder") ) {

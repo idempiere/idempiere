@@ -378,7 +378,7 @@ public final class MSetup
 		boolean hasMCampaign, boolean hasSRegion,
 		File AccountingFile)
 	{
-		log.info(m_client.toString());
+		if (log.isLoggable(Level.INFO)) log.info(m_client.toString());
 		//
 		m_hasProject = hasProject;
 		m_hasMCampaign = hasMCampaign;
@@ -789,11 +789,11 @@ public final class MSetup
 			}
 			else if (DisplayType.Account == c.getAD_Reference_ID()) {
 				acct.set_Value(columnName, getAcct(columnName));
-				log.info("Account: " + columnName);
+				if (log.isLoggable(Level.INFO)) log.info("Account: " + columnName);
 			}
 			else if (DisplayType.YesNo == c.getAD_Reference_ID()) {
 				acct.set_Value(columnName, Boolean.TRUE);
-				log.info("YesNo: " + c.getColumnName());
+				if (log.isLoggable(Level.INFO)) log.info("YesNo: " + c.getColumnName());
 			}
 		}
 		acct.setAD_Client_ID(m_client.getAD_Client_ID());
@@ -939,7 +939,7 @@ public final class MSetup
 			m_trx.close();
 			return false;
 		}
-		log.info("C_Country_ID=" + C_Country_ID 
+		if (log.isLoggable(Level.INFO)) log.info("C_Country_ID=" + C_Country_ID 
 			+ ", City=" + City + ", C_Region_ID=" + C_Region_ID);
 		m_info.append("\n----\n");
 		//

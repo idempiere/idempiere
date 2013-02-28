@@ -52,7 +52,7 @@ public class TableElementHandler extends AbstractElementHandler {
 		final PackIn packIn = (PackIn)ctx.get("PackInProcess");
 		final String elementValue = element.getElementValue();
 		final Attributes atts = element.attributes;
-		log.info(elementValue+" "+atts.getValue("ADTableNameID"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue+" "+atts.getValue("ADTableNameID"));
 		final String entitytype = atts.getValue("EntityType");
 		
 		if (isProcessElement(ctx, entitytype))

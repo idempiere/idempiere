@@ -65,7 +65,7 @@ public class TabCreateFields extends SvrProcess
 		MTab tab = new MTab (getCtx(), p_AD_Tab_ID, get_TrxName());
 		if (p_AD_Tab_ID == 0 || tab == null || tab.get_ID() == 0)
 			throw new AdempiereSystemError("@NotFound@: @AD_Tab_ID@ " + p_AD_Tab_ID);
-		log.info(tab.toString());
+		if (log.isLoggable(Level.INFO)) log.info(tab.toString());
 		//
 		int count = 0;
 		String sql = "SELECT * FROM AD_Column c "

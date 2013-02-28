@@ -102,7 +102,7 @@ public class NoteServlet extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		String url = "/notes.jsp";
 		//
 		HttpSession session = request.getSession(false);
@@ -124,7 +124,7 @@ public class NoteServlet extends HttpServlet
 				info.setMessage(msg);
 		}
 
-		log.info ("Forward to " + url);
+		if (log.isLoggable(Level.INFO)) log.info ("Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 		dispatcher.forward (request, response);
 	}   //  doGet
@@ -150,7 +150,7 @@ public class NoteServlet extends HttpServlet
 			log.fine("No index)");
 			return "No Request Attachment index";
 		}
-		log.info("AD_Notice_ID=" + AD_Note_ID + " / " + attachmentIndex);
+		if (log.isLoggable(Level.INFO)) log.info("AD_Notice_ID=" + AD_Note_ID + " / " + attachmentIndex);
 
 		//	Get Note
 		Properties ctx = JSPEnv.getCtx(request);
@@ -194,7 +194,7 @@ public class NoteServlet extends HttpServlet
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException
 	{
-		log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
+		if (log.isLoggable(Level.INFO)) log.info("From " + request.getRemoteHost() + " - " + request.getRemoteAddr());
 		String url = "/notes.jsp";
 
 		//  Get Session attributes
@@ -227,7 +227,7 @@ public class NoteServlet extends HttpServlet
 		}
 		
 		//	Redisplay
-		log.info ("Forward to " + url);
+		if (log.isLoggable(Level.INFO)) log.info ("Forward to " + url);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher (url);
 		dispatcher.forward (request, response);
 	}   //  doPost

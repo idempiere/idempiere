@@ -94,7 +94,7 @@ public class AllocationAuto extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info ("C_BP_Group_ID=" + p_C_BP_Group_ID 
+		if (log.isLoggable(Level.INFO)) log.info ("C_BP_Group_ID=" + p_C_BP_Group_ID 
 			+ ", C_BPartner_ID=" + p_C_BPartner_ID 
 			+ ", Oldest=" + p_AllocateOldest
 			+ ", AP/AR=" + p_APAR);
@@ -184,7 +184,7 @@ public class AllocationAuto extends SvrProcess
 	{
 		getPayments(C_BPartner_ID);
 		getInvoices(C_BPartner_ID);
-		log.info ("(1) - C_BPartner_ID=" + C_BPartner_ID 
+		if (log.isLoggable(Level.INFO)) log.info ("(1) - C_BPartner_ID=" + C_BPartner_ID 
 			+ " - #Payments=" + m_payments.length + ", #Invoices=" + m_invoices.length);
 		if (m_payments.length + m_invoices.length < 2)
 			return 0;
@@ -195,7 +195,7 @@ public class AllocationAuto extends SvrProcess
 		{
 			getPayments(C_BPartner_ID);		//	for next
 			getInvoices(C_BPartner_ID);
-			log.info ("(2) - C_BPartner_ID=" + C_BPartner_ID 
+			if (log.isLoggable(Level.INFO)) log.info ("(2) - C_BPartner_ID=" + C_BPartner_ID 
 				+ " - #Payments=" + m_payments.length + ", #Invoices=" + m_invoices.length);
 			if (m_payments.length + m_invoices.length < 2)
 				return count;
@@ -209,7 +209,7 @@ public class AllocationAuto extends SvrProcess
 			getPayments(C_BPartner_ID);		//	for next
 			getInvoices(C_BPartner_ID);
 			processAllocation();
-			log.info ("(3) - C_BPartner_ID=" + C_BPartner_ID 
+			if (log.isLoggable(Level.INFO)) log.info ("(3) - C_BPartner_ID=" + C_BPartner_ID 
 				+ " - #Payments=" + m_payments.length + ", #Invoices=" + m_invoices.length);
 			if (m_payments.length + m_invoices.length < 2)
 				return count;
@@ -223,7 +223,7 @@ public class AllocationAuto extends SvrProcess
 			getPayments(C_BPartner_ID);		//	for next
 			getInvoices(C_BPartner_ID);
 			processAllocation();
-			log.info ("(4) - C_BPartner_ID=" + C_BPartner_ID 
+			if (log.isLoggable(Level.INFO)) log.info ("(4) - C_BPartner_ID=" + C_BPartner_ID 
 				+ " - #Payments=" + m_payments.length + ", #Invoices=" + m_invoices.length);
 			if (m_payments.length + m_invoices.length < 2)
 				return count;
@@ -239,7 +239,7 @@ public class AllocationAuto extends SvrProcess
 				getPayments(C_BPartner_ID);		//	for next
 				getInvoices(C_BPartner_ID);
 				processAllocation();
-				log.info ("(5) - C_BPartner_ID=" + C_BPartner_ID 
+				if (log.isLoggable(Level.INFO)) log.info ("(5) - C_BPartner_ID=" + C_BPartner_ID 
 					+ " - #Payments=" + m_payments.length + ", #Invoices=" + m_invoices.length);
 				if (m_payments.length + m_invoices.length < 2)
 					return count;
@@ -366,7 +366,7 @@ public class AllocationAuto extends SvrProcess
 			if (payment.isAllocated())
 				continue;
 			BigDecimal allocatedAmt = payment.getAllocatedAmt();
-			log.info(payment + ", Allocated=" + allocatedAmt);
+			if (log.isLoggable(Level.INFO)) log.info(payment + ", Allocated=" + allocatedAmt);
 			if (allocatedAmt != null && allocatedAmt.signum() != 0)
 				continue;
 			BigDecimal availableAmt = payment.getPayAmt()
@@ -469,7 +469,7 @@ public class AllocationAuto extends SvrProcess
 			if (payment.isAllocated())
 				continue;
 			BigDecimal allocatedAmt = payment.getAllocatedAmt();
-			log.info(payment + ", Allocated=" + allocatedAmt);
+			if (log.isLoggable(Level.INFO)) log.info(payment + ", Allocated=" + allocatedAmt);
 			if (allocatedAmt != null && allocatedAmt.signum() != 0)
 				continue;
 			BigDecimal availableAmt = payment.getPayAmt()
@@ -574,7 +574,7 @@ public class AllocationAuto extends SvrProcess
 		}
 		
 		BigDecimal difference = totalInvoices.subtract(totalPayments);
-		log.info("= Invoices=" + totalInvoices 
+		if (log.isLoggable(Level.INFO)) log.info("= Invoices=" + totalInvoices 
 			+ " - Payments=" + totalPayments 
 			+ " = Difference=" + difference);
 		
@@ -649,7 +649,7 @@ public class AllocationAuto extends SvrProcess
 			if (payment.getC_Currency_ID() != C_Currency_ID)
 				continue;
 			BigDecimal allocatedAmt = payment.getAllocatedAmt();
-			log.info(payment + ", Allocated=" + allocatedAmt);
+			if (log.isLoggable(Level.INFO)) log.info(payment + ", Allocated=" + allocatedAmt);
 			BigDecimal availableAmt = payment.getPayAmt()
 				.add(payment.getDiscountAmt())
 				.add(payment.getWriteOffAmt())
@@ -694,7 +694,7 @@ public class AllocationAuto extends SvrProcess
 		BigDecimal maxAmt = totalInvoices.abs().min(totalPayments.abs());
 		if (totalInvoices.signum() < 0)
 			maxAmt = maxAmt.negate();
-		log.info("= Invoices=" + totalInvoices 
+		if (log.isLoggable(Level.INFO)) log.info("= Invoices=" + totalInvoices 
 			+ " - Payments=" + totalPayments 
 			+ " = Difference=" + difference + " - Max=" + maxAmt);
 		

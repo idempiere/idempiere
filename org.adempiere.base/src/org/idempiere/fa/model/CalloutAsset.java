@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.model.CalloutEngine;
 import org.compiere.model.GridField;
@@ -105,7 +106,7 @@ public class CalloutAsset extends CalloutEngine {
 			}
 			catch (SQLException e)
 			{
-				log.info("PeriodType "+ e);
+				if (log.isLoggable(Level.INFO)) log.info("PeriodType "+ e);
 				return e.getLocalizedMessage();
 			}
 			finally
@@ -171,7 +172,7 @@ public class CalloutAsset extends CalloutEngine {
 			}
 			catch (SQLException e)
 			{
-				log.info("PeriodType "+ e);
+				if (log.isLoggable(Level.INFO)) log.info("PeriodType "+ e);
 				return e.getLocalizedMessage();
 			}
 			finally

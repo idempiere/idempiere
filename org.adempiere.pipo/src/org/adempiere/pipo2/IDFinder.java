@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.apache.commons.codec.DecoderException;
@@ -292,7 +293,7 @@ public class IDFinder {
 		sqlB.append(tableNameMaster+"_ID = ? AND AD_Client_ID IN (0, ?) ")
 			.append("ORDER BY AD_Client_ID Desc ");
 
-		log.info(sqlB.toString());
+		if (log.isLoggable(Level.INFO)) log.info(sqlB.toString());
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

@@ -46,7 +46,7 @@ public class TabElementHandler extends AbstractElementHandler
 	public void startElement(Properties ctx, Element element) throws SAXException {
 		String elementValue = element.getElementValue();
 		Attributes atts = element.attributes;
-		log.info(elementValue+" "+atts.getValue("ADTabNameID"));
+		if (log.isLoggable(Level.INFO)) log.info(elementValue+" "+atts.getValue("ADTabNameID"));
 		String entitytype = atts.getValue("EntityType");
 		if (isProcessElement(ctx, entitytype)) {
 			if (element.parent != null && element.parent.getElementValue().equals("window")

@@ -68,7 +68,7 @@ public class VMerge extends Merge implements FormPanel, ActionListener
 	{
 		m_WindowNo = WindowNo;
 		m_frame = frame;
-		log.info( "VMerge.init - WinNo=" + m_WindowNo);
+		if (log.isLoggable(Level.INFO)) log.info( "VMerge.init - WinNo=" + m_WindowNo);
 		try
 		{
 			preInit();

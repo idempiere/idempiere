@@ -61,7 +61,7 @@ public class ProjectSetType extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		m_C_Project_ID = getRecord_ID();
-		log.info("doIt - C_Project_ID=" + m_C_Project_ID + ", C_ProjectType_ID=" + m_C_ProjectType_ID);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - C_Project_ID=" + m_C_Project_ID + ", C_ProjectType_ID=" + m_C_ProjectType_ID);
 		//
 		MProject project = new MProject (getCtx(), m_C_Project_ID, get_TrxName());
 		if (project.getC_Project_ID() == 0 || project.getC_Project_ID() != m_C_Project_ID)

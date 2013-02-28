@@ -981,7 +981,7 @@ public class CalloutOrder extends CalloutEngine
 		int C_Tax_ID = Tax.get (ctx, M_Product_ID, C_Charge_ID, billDate, shipDate,
 			AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID,
 			"Y".equals(Env.getContext(ctx, WindowNo, "IsSOTrx")));
-		log.info("Tax ID=" + C_Tax_ID);
+		if (log.isLoggable(Level.INFO)) log.info("Tax ID=" + C_Tax_ID);
 		//
 		if (C_Tax_ID == 0)
 			mTab.fireDataStatusEEvent(CLogger.retrieveError());
@@ -1166,7 +1166,7 @@ public class CalloutOrder extends CalloutEngine
 		BigDecimal LineNetAmt = QtyOrdered.multiply(PriceActual);
 		if (LineNetAmt.scale() > StdPrecision)
 			LineNetAmt = LineNetAmt.setScale(StdPrecision, BigDecimal.ROUND_HALF_UP);
-		log.info("LineNetAmt=" + LineNetAmt);
+		if (log.isLoggable(Level.INFO)) log.info("LineNetAmt=" + LineNetAmt);
 		mTab.setValue("LineNetAmt", LineNetAmt);
 		//
 		return "";

@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -117,13 +118,13 @@ public class DistFileElementHandler extends AbstractElementHandler {
 				//backup file to package directory
 				else {
 					action = "Update";
-					log.info("Target Backup:"+fullTargetPath+fileName);
+					if (log.isLoggable(Level.INFO)) log.info("Target Backup:"+fullTargetPath+fileName);
 					inputStream = OpenInputfile(fullTargetPath+fileName);
 					SimpleDateFormat formatter_file = new SimpleDateFormat("yyMMddHHmmssSSSSZ");
 					Date today = new Date();
 					fileDate = formatter_file.format(today);
 					outputStream = OpenOutputfile(packagePath+File.separator+"backup"+File.separator+fileDate+"_"+fileName);
-					log.info("Source Backup:"+packagePath+File.separator+"backup"+File.separator+fileDate+"_"+fileName);
+					if (log.isLoggable(Level.INFO)) log.info("Source Backup:"+packagePath+File.separator+"backup"+File.separator+fileDate+"_"+fileName);
 					copyFile (inputStream, outputStream);
 					log.info("Backup Complete");
 				}
@@ -154,14 +155,14 @@ public class DistFileElementHandler extends AbstractElementHandler {
 				try {
 					logImportDetail (ctx, impDetail, 1, fileName, 0, action);
 				} catch (SAXException e) {
-					log.info ("setfile:"+e);
+					if (log.isLoggable(Level.INFO)) log.info ("setfile:"+e);
 				}
 			}
 			else{
 				try {
 					logImportDetail (ctx, impDetail, 0, fileName, 0, action);
 				} catch (SAXException e) {
-					log.info ("setfile:"+e);
+					if (log.isLoggable(Level.INFO)) log.info ("setfile:"+e);
 				}
 			}
 			//Record in transaction file

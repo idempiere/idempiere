@@ -1232,7 +1232,7 @@ public class MRequest extends X_R_Request
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		log.info("EMail Success=" + success + ", Failure=" + failure
+		if (log.isLoggable(Level.INFO)) log.info("EMail Success=" + success + ", Failure=" + failure
 			+ " - Notices=" + notices);
 	}	//	sendNotice
 	

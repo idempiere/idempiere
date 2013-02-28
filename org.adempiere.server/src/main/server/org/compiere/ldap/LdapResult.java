@@ -132,7 +132,7 @@ public class LdapResult
 					generateResult("", LdapMessage.BIND_RESPONSE, 
 							LDAP_INAPPROPRIATE_AUTHENTICATION, 
 							ldapErrorMessage[LDAP_INAPPROPRIATE_AUTHENTICATION]);
-					log.info("Failed : " + ldapErrorMessage[LDAP_INAPPROPRIATE_AUTHENTICATION]);
+					if (log.isLoggable(Level.INFO)) log.info("Failed : " + ldapErrorMessage[LDAP_INAPPROPRIATE_AUTHENTICATION]);
 				}
 			}
 			else if (ldapMsg.getOperation() == LdapMessage.SEARCH_REQUEST)

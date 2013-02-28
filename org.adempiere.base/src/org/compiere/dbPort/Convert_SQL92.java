@@ -68,7 +68,7 @@ public abstract class Convert_SQL92 extends Convert {
 		//
 		if (trace)
 		{
-			log.info("OuterJoin<== " + sqlStatement);
+			if (log.isLoggable(Level.INFO)) log.info("OuterJoin<== " + sqlStatement);
 		//	log.info("From=" + fromIndex + ", Where=" + whereIndex + ", End=" + endWhereIndex + ", Length=" + sqlStatement.length());
 		}
 		//
@@ -115,7 +115,7 @@ public abstract class Convert_SQL92 extends Convert {
 			String condition = newWherePart.substring(start+startOffset, end);
 			joins.add(condition);
 			if (trace)
-				log.info("->" + condition);
+				if (log.isLoggable(Level.INFO)) log.info("->" + condition);
 			//  new WHERE clause
 			newWherePart = newWherePart.substring(0, start) + newWherePart.substring(end);
 		//	log.info("=> " + newWherePart);
@@ -129,7 +129,7 @@ public abstract class Convert_SQL92 extends Convert {
 		else if (newWherePart.startsWith("OR "))
 			newWherePart = "WHERE" + newWherePart.substring(2);
 		if (trace)
-			log.info("=> " + newWherePart);
+			if (log.isLoggable(Level.INFO)) log.info("=> " + newWherePart);
 
 		//  Correct FROM clause -----------------------------------------------
 		//  Disassemble FROM
@@ -150,7 +150,7 @@ public abstract class Convert_SQL92 extends Convert {
 			fromAlias.put(alias, table);
 			fromLookup.put(alias, table);
 			if (trace)
-				log.info("Alias=" + alias + ", Table=" + table);
+				if (log.isLoggable(Level.INFO)) log.info("Alias=" + alias + ", Table=" + table);
 		}
 
 		/** Single column
@@ -197,7 +197,7 @@ public abstract class Convert_SQL92 extends Convert {
 			first.setJoinTable((String)fromLookup.get(first.getJoinAlias()));
 			fromAlias.remove(first.getJoinAlias());     //  remove from list
 			if (trace)
-				log.info("-First: " + first);
+				if (log.isLoggable(Level.INFO)) log.info("-First: " + first);
 			//
 			if (newFrom.length() == 0)
 				newFrom.append(" FROM ");
@@ -218,7 +218,7 @@ public abstract class Convert_SQL92 extends Convert {
 					|| second.isConditionOf(first) )
 				{
 					if (trace)
-						log.info("-Second/key: " + second);
+						if (log.isLoggable(Level.INFO)) log.info("-Second/key: " + second);
 					newFrom.append(" AND ").append(second.getCondition());
 					joins.remove(j);                        //  remove from join list
 					fromAlias.remove(first.getJoinAlias()); //  remove from table list
@@ -231,17 +231,17 @@ public abstract class Convert_SQL92 extends Convert {
 						if (third.isConditionOf(second))
 						{
 							if (trace)
-								log.info("-Third/key: " + third);
+								if (log.isLoggable(Level.INFO)) log.info("-Third/key: " + third);
 							newFrom.append(" AND ").append(third.getCondition());
 							joins.remove(k);                            //  remove from join list
 							fromAlias.remove(third.getJoinAlias());     //  remove from table list
 						}
 						else if (trace)
-							log.info("-Third/key-skip: " + third);
+							if (log.isLoggable(Level.INFO)) log.info("-Third/key-skip: " + third);
 					}
 				}
 				else if (trace)
-					log.info("-Second/key-skip: " + second);
+					if (log.isLoggable(Level.INFO)) log.info("-Second/key-skip: " + second);
 			}
 			newFrom.append(")");    //  close ON
 			//  check dependency on first table
@@ -253,7 +253,7 @@ public abstract class Convert_SQL92 extends Convert {
 				if (first.getMainTable().equals(second.getMainTable()))
 				{
 					if (trace)
-						log.info("-Second/dep: " + second);
+						if (log.isLoggable(Level.INFO)) log.info("-Second/dep: " + second);
 					//   FROM (AD_Field f LEFT OUTER JOIN AD_Column c ON (f.AD_Column_ID = c.AD_Column_ID))
 					//  LEFT OUTER JOIN AD_FieldGroup fg ON (f.AD_FieldGroup_ID = fg.AD_FieldGroup_ID),
 					newFrom.insert(6, '(');     //  _FROM ...
@@ -275,7 +275,7 @@ public abstract class Convert_SQL92 extends Convert {
 						if (second.getJoinTable().equals(third.getMainTable()))
 						{
 							if (trace)
-								log.info("-Third-dep: " + third);
+								if (log.isLoggable(Level.INFO)) log.info("-Third-dep: " + third);
 							//   FROM ((C_BPartner p LEFT OUTER JOIN AD_User c ON (p.C_BPartner_ID=c.C_BPartner_ID))
 							//  LEFT OUTER JOIN C_BPartner_Location l ON (p.C_BPartner_ID=l.C_BPartner_ID))
 							//  LEFT OUTER JOIN C_Location a ON (l.C_Location_ID=a.C_Location_ID)
@@ -291,11 +291,11 @@ public abstract class Convert_SQL92 extends Convert {
 							newFrom.append(")");    //  close ON
 						}
 						else if (trace)
-							log.info("-Third-skip: " + third);
+							if (log.isLoggable(Level.INFO)) log.info("-Third-skip: " + third);
 					}
 				}
 				else if (trace)
-					log.info("-Second/dep-skip: " + second);
+					if (log.isLoggable(Level.INFO)) log.info("-Second/dep-skip: " + second);
 			}   //  dependency on first table
 		}
 		//  remaining Tables
@@ -309,7 +309,7 @@ public abstract class Convert_SQL92 extends Convert {
 				newFrom.append(" ").append(alias);
 		}
 		if (trace)
-			log.info(newFrom.toString());
+			if (log.isLoggable(Level.INFO)) log.info(newFrom.toString());
 		//
 		StringBuilder retValue = new StringBuilder (sqlStatement.length()+20);
 		retValue.append(selectPart)
@@ -317,7 +317,7 @@ public abstract class Convert_SQL92 extends Convert {
 			.append(newWherePart).append(rest);
 		//
 		if (trace)
-			log.info("OuterJoin==> " + retValue.toString());
+			if (log.isLoggable(Level.INFO)) log.info("OuterJoin==> " + retValue.toString());
 		return retValue.toString();
 	}   //  convertOuterJoin
 	

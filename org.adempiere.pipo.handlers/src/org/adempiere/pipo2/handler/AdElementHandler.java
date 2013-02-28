@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -137,7 +138,7 @@ public class AdElementHandler extends AbstractElementHandler {
 		}
 		catch(Exception e)
 		{
-			log.info(e.toString());
+			if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		}
 
 		document.endElement("", "", "AD_Element");

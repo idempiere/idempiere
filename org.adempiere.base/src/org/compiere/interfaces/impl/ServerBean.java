@@ -59,7 +59,7 @@ public class ServerBean implements Server
 	public String postImmediate (Properties ctx, 
 		int AD_Client_ID, int AD_Table_ID, int Record_ID, boolean force)
 	{
-		log.info ("Table=" + AD_Table_ID + ", Record=" + Record_ID);
+		if (log.isLoggable(Level.INFO)) log.info ("Table=" + AD_Table_ID + ", Record=" + Record_ID);
 
 		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(ctx, AD_Client_ID);
 		return Doc.postImmediate(ass, AD_Table_ID, Record_ID, force, null);
@@ -90,7 +90,7 @@ public class ServerBean implements Server
 	 */
 	public ProcessInfo workflow (Properties ctx, ProcessInfo pi, int AD_Workflow_ID)
 	{
-		log.info ("AD_Workflow_ID=" + AD_Workflow_ID);
+		if (log.isLoggable(Level.INFO)) log.info ("AD_Workflow_ID=" + AD_Workflow_ID);
 		ProcessUtil.startWorkFlow(ctx, pi, AD_Workflow_ID);
 		return pi;
 	}	//	workflow

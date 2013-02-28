@@ -113,7 +113,7 @@ public class ChangeLogProcess extends SvrProcess
 		if (p_SetCustomization)
 			return setCustomization();
 		
-		log.info("AD_ChangeLog_ID=" + p_AD_ChangeLog_ID
+		if (log.isLoggable(Level.INFO)) log.info("AD_ChangeLog_ID=" + p_AD_ChangeLog_ID
 			+ ", CheckOldValue=" + p_CheckOldValue + ", CheckNewValue=" + p_CheckNewValue);
 		
 		//	Single Change or All Customizations
@@ -306,7 +306,7 @@ public class ChangeLogProcess extends SvrProcess
 		if (m_isInsert && m_numberColumns > 2)
 		{
 			m_sqlInsert.append(m_sqlInsertValue).append(")");
-			log.info(m_sqlInsert.toString());
+			if (log.isLoggable(Level.INFO)) log.info(m_sqlInsert.toString());
 			//
 			no = DB.executeUpdate(m_sqlInsert.toString(), get_TrxName());
 			if (no == -1)
@@ -325,7 +325,7 @@ public class ChangeLogProcess extends SvrProcess
 		else	//	Update SQL
 		{
 			m_sqlUpdate.append(m_sqlUpdateWhere);
-			log.info(m_sqlUpdate.toString());
+			if (log.isLoggable(Level.INFO)) log.info(m_sqlUpdate.toString());
 			//
 			no = DB.executeUpdate(m_sqlUpdate.toString(), get_TrxName());
 			if (no == -1)

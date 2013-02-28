@@ -151,7 +151,7 @@ public class MDepositBatch extends X_X_DepositBatch
 	 */
 	public boolean unlockIt()
 	{
-		log.info("unlockIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
 		setProcessing(false);
 		return true;
 	}	//	unlockIt
@@ -162,7 +162,7 @@ public class MDepositBatch extends X_X_DepositBatch
 	 */
 	public boolean invalidateIt()
 	{
-		log.info("invalidateIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("invalidateIt - " + toString());
 		return true;
 	}	//	invalidateIt
 	
@@ -174,7 +174,7 @@ public class MDepositBatch extends X_X_DepositBatch
 	 */
 	public boolean voidIt()
 	{
-		log.info("voidIt - " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("voidIt - " + toString());
 		// Before Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)

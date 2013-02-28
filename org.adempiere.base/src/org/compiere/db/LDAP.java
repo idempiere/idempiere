@@ -74,7 +74,7 @@ public class LDAP
 		}
 		catch (AuthenticationException e)
 		{
-			log.info("Error: " + principal + " - " + e.getLocalizedMessage());
+			if (log.isLoggable(Level.INFO)) log.info("Error: " + principal + " - " + e.getLocalizedMessage());
 			return false;
 		}
 		catch (Exception e) 
@@ -82,7 +82,7 @@ public class LDAP
 			log.log (Level.SEVERE, ldapURL + " - " + principal, e);
 		    return false;
 		}
-		log.info("OK: " + principal);
+		if (log.isLoggable(Level.INFO)) log.info("OK: " + principal);
 		return true;
 	}	//	validate
 	

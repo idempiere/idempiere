@@ -63,7 +63,7 @@ public class VCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 	public VCreateFromDepositBatchUI(GridTab mTab)
 	{
 		super(mTab);
-		log.info(getGridTab().toString());
+		if (log.isLoggable(Level.INFO)) log.info(getGridTab().toString());
 		
 		dialog = new VCreateFromDialog(this, getGridTab().getWindowNo(), true);
 		

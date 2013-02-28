@@ -28,6 +28,8 @@
 ***********************************************************************/
 package test.functional;
 
+import java.util.logging.Level;
+
 import org.compiere.model.MAlert;
 import org.compiere.model.MAlertProcessor;
 import org.compiere.model.MAlertProcessorLog;
@@ -55,20 +57,20 @@ public class AlertTest extends AdempiereTestCase
 	 */
 	public void testAlertCreation() throws Exception 
 	{
-		log.info("trx = " + getTrxName());
+		if (log.isLoggable(Level.INFO)) log.info("trx = " + getTrxName());
 		boolean resultSave = false;
 		
 		//----- Old way:
 		MAlert alertOldWay = new MAlert(Env.getCtx(), 100, getTrxName());
-		log.info(alertOldWay.toString());
+		if (log.isLoggable(Level.INFO)) log.info(alertOldWay.toString());
 		
 		X_AD_AlertProcessor alertProcessorOldWay = new X_AD_AlertProcessor(Env.getCtx(), alertOldWay.getAD_AlertProcessor_ID(), getTrxName());
-		log.info("alertProcessorOldWay.getAD_AlertProcessor_ID = " + alertProcessorOldWay.getAD_AlertProcessor_ID());
+		if (log.isLoggable(Level.INFO)) log.info("alertProcessorOldWay.getAD_AlertProcessor_ID = " + alertProcessorOldWay.getAD_AlertProcessor_ID());
 		
 		alertOldWay.setDescription("Trifon test");
 		//--- Save; 
 		resultSave = alertOldWay.save();
-		log.info("resultSave = " + resultSave);
+		if (log.isLoggable(Level.INFO)) log.info("resultSave = " + resultSave);
 		
 		System.out.println("New value of Description = " + alertOldWay.getDescription());
 		

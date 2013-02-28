@@ -76,7 +76,7 @@ public class TaxDeclarationCreate extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		log.info("C_TaxDeclaration_ID=" + p_C_TaxDeclaration_ID);
+		if (log.isLoggable(Level.INFO)) log.info("C_TaxDeclaration_ID=" + p_C_TaxDeclaration_ID);
 		m_td = new MTaxDeclaration (getCtx(), p_C_TaxDeclaration_ID, get_TrxName());
 		if (m_td.get_ID() == 0)
 			throw new AdempiereSystemError("@NotFound@ @C_TaxDeclaration_ID@ = " + p_C_TaxDeclaration_ID);

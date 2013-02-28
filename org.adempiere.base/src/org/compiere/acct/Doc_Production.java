@@ -95,7 +95,7 @@ public class Doc_Production extends Doc
 				X_M_ProductionLine line = new X_M_ProductionLine(getCtx(), rsPL, getTrxName());
 				if (line.getMovementQty().signum() == 0)
 				{
-					log.info("LineQty=0 - " + line);
+					if (log.isLoggable(Level.INFO)) log.info("LineQty=0 - " + line);
 					continue;
 				}
 				DocLine docLine = new DocLine (line, this);

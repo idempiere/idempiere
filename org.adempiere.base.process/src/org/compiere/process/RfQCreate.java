@@ -63,7 +63,7 @@ public class RfQCreate extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		MRfQ rfq = new MRfQ (getCtx(), p_C_RfQ_ID, get_TrxName());
-		log.info("doIt - " + rfq + ", Send=" + p_IsSendRfQ);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - " + rfq + ", Send=" + p_IsSendRfQ);
 		String error = rfq.checkQuoteTotalAmtOnly();
 		if (error != null && error.length() > 0)
 			throw new Exception (error);

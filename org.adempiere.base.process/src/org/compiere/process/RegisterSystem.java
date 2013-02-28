@@ -61,7 +61,7 @@ public class RegisterSystem extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		int AD_Registration_ID = getRecord_ID();
-		log.info("doIt - AD_Registration_ID=" + AD_Registration_ID);
+		if (log.isLoggable(Level.INFO)) log.info("doIt - AD_Registration_ID=" + AD_Registration_ID);
 		//	Check Ststem
 		MSystem sys = MSystem.get(getCtx());
 		if (sys.getName().equals("?") || sys.getName().length()<2)
@@ -148,7 +148,7 @@ public class RegisterSystem extends SvrProcess
 		}
 		//
 		String info = sb.toString();
-		log.info("Response=" + info);
+		if (log.isLoggable(Level.INFO)) log.info("Response=" + info);
 		//	Record at the end
 		int index = sb.indexOf("Record_ID=");
 		if (index != -1)

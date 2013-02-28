@@ -62,7 +62,7 @@ public class CopyFromBOM extends SvrProcess {
 
 	protected String doIt() throws Exception
 	{
-		log.info("From PP_Product_BOM_ID=" + p_PP_Product_BOM_ID + " to " + p_Record_ID);
+		if (log.isLoggable(Level.INFO)) log.info("From PP_Product_BOM_ID=" + p_PP_Product_BOM_ID + " to " + p_Record_ID);
 		if (p_Record_ID == 0)
 			throw new IllegalArgumentException("Target PP_Product_BOM_ID == 0");
 		if (p_PP_Product_BOM_ID == 0)

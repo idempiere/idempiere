@@ -241,7 +241,7 @@ public class VTabbedPane extends CTabbedPane
 			boolean display = Evaluator.evaluateLogic(gc, logic);
 			if (!display)
 			{
-				log.info("Not displayed - " + logic);
+				if (log.isLoggable(Level.INFO)) log.info("Not displayed - " + logic);
 				return false;
 			}
 		}
