@@ -1105,6 +1105,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public void dataIgnore()
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo);
+		if (!m_mTable.isOpen())
+			return;
+		
 		if (m_mTable.isInserting()) 
 		{
 			m_currentRow--;
