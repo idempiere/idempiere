@@ -83,6 +83,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
+import org.zkoss.zk.ui.event.SwipeEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Cell;
@@ -186,6 +187,14 @@ DataStatusListener, IADTabpanel, IdSpace
 
 	public static final String ON_TOGGLE_EVENT = "onToggle";
 	
+	private static enum SouthEvent {
+    	SLIDE(),
+    	OPEN(),
+    	CLOSE();
+    	
+		private SouthEvent() {}
+    }
+	
 	public ADTabpanel()
 	{
         init();
@@ -238,6 +247,21 @@ DataStatusListener, IADTabpanel, IdSpace
 					"var se = new zk.Event(this, 'onSlide', null, {toServer: true}); zAu.send(se); } }");
 			south.addEventListener(Events.ON_OPEN, this);
 			south.addEventListener("onSlide", this);
+			
+			south.addEventListener(Events.ON_SWIPE, new EventListener<SwipeEvent>() {
+
+				@Override
+				public void onEvent(SwipeEvent event) throws Exception {
+					if ("down".equals(event.getSwipeDirection())) {
+						Borderlayout borderLayout = (Borderlayout) formContainer;
+						South south = borderLayout.getSouth();
+						if (south.isOpen()) {
+							south.setOpen(false);
+							onSouthEvent(SouthEvent.CLOSE);
+						}
+					}
+				}
+			});
 		} 
 		south.appendChild(component);
 		
@@ -973,23 +997,11 @@ DataStatusListener, IADTabpanel, IdSpace
     		if (detailPane != null) {
     			boolean openEvent = event instanceof OpenEvent; 
     			if (openEvent) {
-    				Events.echoEvent(ON_SAVE_OPEN_PREFERENCE_EVENT, this, ((OpenEvent)event).isOpen());
-    				if (!((OpenEvent)event).isOpen()) {
-    					return;
-    				}
+    				OpenEvent oe = (OpenEvent)event;
+    				onSouthEvent(oe.isOpen() ? SouthEvent.OPEN : SouthEvent.CLOSE);
+    			} else {
+    				onSouthEvent(SouthEvent.SLIDE);
     			}
-    			if (detailPane.getParent() == null) {
-    				formContainer.appendSouth(detailPane);
-    			}
-    			IADTabpanel tabPanel = detailPane.getSelectedADTabpanel();	    
-    	    	if (tabPanel != null) {
-    	    		if (!tabPanel.isActivated()) {
-    	    			tabPanel.activate(true);
-    	    		}
-    		    	if (!tabPanel.isGridView()) {
-    		    		tabPanel.switchRowPresentation();	
-    		    	}	    		    	
-    	    	}
     		}
     	}
     	else if (event.getName().equals(ON_SAVE_OPEN_PREFERENCE_EVENT)) {
@@ -1037,6 +1049,28 @@ DataStatusListener, IADTabpanel, IdSpace
     	}
     }
 
+    private void onSouthEvent(SouthEvent event) {
+    	if (event == SouthEvent.OPEN || event == SouthEvent.CLOSE) {
+    		boolean open = event == SouthEvent.OPEN ? true : false; 
+    		Events.echoEvent(ON_SAVE_OPEN_PREFERENCE_EVENT, this, open);
+    		if (!open)
+    			return;
+    	}
+		
+		if (detailPane.getParent() == null) {
+			formContainer.appendSouth(detailPane);
+		}
+		IADTabpanel tabPanel = detailPane.getSelectedADTabpanel();	    
+    	if (tabPanel != null) {
+    		if (!tabPanel.isActivated()) {
+    			tabPanel.activate(true);
+    		}
+	    	if (!tabPanel.isGridView()) {
+	    		tabPanel.switchRowPresentation();	
+	    	}	    		    	
+    	}
+    }
+    
     private boolean isOpenDetailPane() {
     	boolean open = true;
     	int windowId = getGridTab().getAD_Window_ID();

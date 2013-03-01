@@ -73,6 +73,7 @@ import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
+import org.zkoss.zk.ui.event.SwipeEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.Borderlayout;
@@ -177,9 +178,20 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 			@Override
 			public void onEvent(Event event) throws Exception {
 				OpenEvent oe = (OpenEvent) event;
-				UserPreference pref = SessionManager.getSessionApplication().getUserPreference();
-				pref.setProperty(UserPreference.P_MENU_COLLAPSED, !oe.isOpen());
-				pref.savePreference();
+				updateMenuCollapsedPreference(!oe.isOpen());
+			}			
+		});
+        w.addEventListener(Events.ON_SWIPE, new EventListener<SwipeEvent>() {
+
+			@Override
+			public void onEvent(SwipeEvent event) throws Exception {
+				if ("left".equals(event.getSwipeDirection())) {
+					West w = (West) event.getTarget();
+					if (w.isOpen()) {
+						w.setOpen(false);
+						updateMenuCollapsedPreference(true);
+					}
+				}
 			}
 		});
         UserPreference pref = SessionManager.getSessionApplication().getUserPreference();
@@ -199,11 +211,24 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 			@Override
 			public void onEvent(Event event) throws Exception {
 				OpenEvent oe = (OpenEvent) event;
-				UserPreference pref = SessionManager.getSessionApplication().getUserPreference();
-				pref.setProperty(UserPreference.P_HELP_COLLAPSED, !oe.isOpen());
-				pref.savePreference();
+				updateHelpCollapsedPreference(!oe.isOpen());
 			}
 		});
+
+        e.addEventListener(Events.ON_SWIPE, new EventListener<SwipeEvent>() {
+
+			@Override
+			public void onEvent(SwipeEvent event) throws Exception {
+				if ("right".equals(event.getSwipeDirection())) {
+					East e = (East) event.getTarget();
+					if (e.isOpen()) {
+						e.setOpen(false);
+						updateHelpCollapsedPreference(true);
+					}
+				}
+			}
+		});
+        
         boolean helpCollapsed= pref.isPropertyBool(UserPreference.P_HELP_COLLAPSED);
         e.setOpen(!helpCollapsed);
         
@@ -257,6 +282,18 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
         return layout;
     }
+
+    private void updateMenuCollapsedPreference(boolean collapsed) {
+		UserPreference pref = SessionManager.getSessionApplication().getUserPreference();
+		pref.setProperty(UserPreference.P_MENU_COLLAPSED, collapsed);
+		pref.savePreference();
+	}
+    
+	private void updateHelpCollapsedPreference(boolean collapsed) {
+		UserPreference pref = SessionManager.getSessionApplication().getUserPreference();
+		pref.setProperty(UserPreference.P_HELP_COLLAPSED, collapsed);
+		pref.savePreference();
+	}
 
 	private void renderHomeTab()
 	{

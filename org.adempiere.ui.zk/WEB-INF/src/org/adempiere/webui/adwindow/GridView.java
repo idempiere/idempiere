@@ -374,9 +374,14 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 
 		Columns columns = new Columns();
 		
-		Frozen frozen = new Frozen();
-		frozen.setColumns(1);
-		listbox.appendChild(frozen);
+		//frozen not working well on tablet devices yet
+		if (!AEnv.isTablet())
+		{
+			Frozen frozen = new Frozen();
+			frozen.setColumns(1);
+			listbox.appendChild(frozen);
+		}
+		
 		org.zkoss.zul.Column indicator = new Column();				
 		indicator.setWidth("18px");
 		try {

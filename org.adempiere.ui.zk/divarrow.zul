@@ -1,8 +1,8 @@
 <div class="tabs arrows" xmlns:w="client" forward="onMoveDate(${arg.type})"
-	w:unbind_="function(){this.$unbind_();jq(this).unbind('mouseover').unbind('mouseout');}">
+	w:unbind_="function(skipper, after){this.$unbind_(skipper, after);jq(this).unbind('mouseover').unbind('mouseout');}">
 	<attribute w:name="bind_"><![CDATA[ 
-		function () { 
-			this.$bind_();
+		function (desktop, skipper, after) { 
+			this.$bind_(desktop, skipper, after);
 			jq(this).bind('mouseover',function(evt){jq(evt.currentTarget).addClass('arrow-over');})
 					.bind('mouseout',function(evt){jq(evt.currentTarget).removeClass('arrow-over');});
 		} 

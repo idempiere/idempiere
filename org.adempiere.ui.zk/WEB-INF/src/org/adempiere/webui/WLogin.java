@@ -17,11 +17,14 @@ package org.adempiere.webui;
 import java.util.Locale;
 import java.util.Properties;
 
+import javax.servlet.ServletRequest;
+
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.LoginWindow;
+import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -123,6 +126,13 @@ public class WLogin extends AbstractUIPart
 	    	West west = new West();
 	    	west.setSclass(ITheme.LOGIN_WEST_PANEL_CLASS);
 	    	addContent(west, pageDefintion);
+	    	String ua = Servlets.getUserAgent((ServletRequest) Executions.getCurrent().getNativeRequest());
+			ua = ua.toLowerCase();
+			boolean mobile = ua.indexOf("ipad") >= 0 || ua.indexOf("iphone") >= 0 || ua.indexOf("android") >= 0;
+	    	if (mobile) {
+	    		west.setCollapsible(true);
+	    		west.setOpen(false);
+	    	}
         } catch (Exception e){
         	//ignore page not found exception
         	if (e instanceof UiException) {

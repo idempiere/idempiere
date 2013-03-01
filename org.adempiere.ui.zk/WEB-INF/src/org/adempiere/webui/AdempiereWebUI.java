@@ -449,14 +449,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 				appDesktop.setClientInfo(clientInfo);
 			String ua = Servlets.getUserAgent((ServletRequest) Executions.getCurrent().getNativeRequest());
 			clientInfo.userAgent = ua;
-			if (Servlets.getBrowser(ua).equals("webkit")) {
-				ua = ua.toLowerCase();
-				if (ua.indexOf("ipad") >= 0) {
-					clientInfo.tablet = true;
-				} else if (ua.indexOf("android") >= 0 && ua.indexOf("chrome") >= 0 && ua.indexOf("mobile") < 0) {
-					clientInfo.tablet = true;
-				}
-			}
+			ua = ua.toLowerCase();
+			clientInfo.tablet = ua.indexOf("ipad") >= 0 || ua.indexOf("iphone") >= 0 || ua.indexOf("android") >= 0;
 			if (getDesktop() != null && getDesktop().getSession() != null) {
 				getDesktop().getSession().setAttribute(CLIENT_INFO, clientInfo);
 			}

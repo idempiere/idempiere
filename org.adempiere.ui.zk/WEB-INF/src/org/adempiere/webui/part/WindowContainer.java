@@ -29,6 +29,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SwipeEvent;
 import org.zkoss.zul.Anchorlayout;
 import org.zkoss.zul.Vlayout;
 
@@ -127,6 +128,17 @@ public class WindowContainer extends AbstractUIPart
 	        setTabTitle(title, tab);
         }
         tab.setClosable(closeable);
+        tab.addEventListener(Events.ON_SWIPE, new EventListener<SwipeEvent>() {
+
+			@Override
+			public void onEvent(SwipeEvent event) throws Exception {
+				Tab tab = (Tab) event.getTarget();
+				if (tab.isClosable() 
+					&& ("right".equals(event.getSwipeDirection()) || "left".equals(event.getSwipeDirection()))) {
+					tab.onClose();
+				}
+			}
+		});
         
         // fix scroll position lost coming back into a grid view tab
         tab.addEventListener(Events.ON_SELECT, new EventListener<Event>() {
