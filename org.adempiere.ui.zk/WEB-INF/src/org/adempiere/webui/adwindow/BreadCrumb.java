@@ -705,6 +705,14 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		}
 	}
 	
+	public boolean isPreviousEnabled() {
+		return !btnPrevious.isDisabled();
+	}
+	
+	public boolean isNextEnabled() {
+		return !btnNext.isDisabled();
+	}
+	
 	class RecordLink extends A {
 		private static final long serialVersionUID = 3793489614175751401L;
 		

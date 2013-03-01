@@ -38,6 +38,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
+import org.zkoss.zk.ui.event.SwipeEvent;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Vlayout;
@@ -91,6 +92,28 @@ public class ADWindowContent extends AbstractADWindowContent
         breadCrumb.setToolbarListener(this);
         breadCrumb.setId("breadCrumb");
         div.appendChild(breadCrumb);
+        div.addEventListener(Events.ON_SWIPE, new EventListener<SwipeEvent>() {
+			@Override
+			public void onEvent(SwipeEvent event) throws Exception {
+				if ("right".equals(event.getSwipeDirection())) {
+					if (breadCrumb.isNextEnabled()) {
+						onNext();
+					}
+				} else if ("left".equals(event.getSwipeDirection())) {
+					if (breadCrumb.isPreviousEnabled()) {
+						onPrevious();
+					}
+				} else if ("up".equals(event.getSwipeDirection())) {
+					if (!toolbar.getButton("ParentRecord").isDisabled()) {
+						onParentRecord();
+					}
+				} else if ("down".equals(event.getSwipeDirection())) {
+					if (!toolbar.getButton("DetailRecord").isDisabled()) {
+						onDetailRecord();
+					}
+				}
+			}
+		});
 
         //status bar
         Div south = new Div();        
