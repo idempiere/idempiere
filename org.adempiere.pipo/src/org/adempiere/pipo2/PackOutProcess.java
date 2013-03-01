@@ -31,6 +31,7 @@ import org.compiere.model.I_AD_Form;
 import org.compiere.model.I_AD_ImpFormat;
 import org.compiere.model.I_AD_Menu;
 import org.compiere.model.I_AD_Message;
+import org.compiere.model.I_AD_ModelValidator;
 import org.compiere.model.I_AD_PrintFormat;
 import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Reference;
@@ -186,7 +187,8 @@ public class PackOutProcess extends SvrProcess
 			return I_AD_Window.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_Workflow.equals(type))
 			return I_AD_Workflow.Table_Name;
-
+		else if (X_AD_Package_Exp_Detail.TYPE_ModelValidator.equals(type))
+			return I_AD_ModelValidator.Table_Name;
 		return type;
 	}
 

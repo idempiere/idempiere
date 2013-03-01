@@ -116,11 +116,11 @@ public class WProcessInfo extends ProcessInfo {
 		//try append W prefix to class name
 		if (zkName == null)
 		{
-			int lastdot = className.lastIndexOf(".");
-			zkName = className.substring(0, lastdot) + ".W" +  className.substring(lastdot+1);
 			try {
+				int lastdot = className.lastIndexOf(".");
+				zkName = className.substring(0, lastdot) + ".W" +  className.substring(lastdot+1);
 				this.getClass().getClassLoader().loadClass(zkName);
-			} catch (ClassNotFoundException e) {
+			} catch (Exception e) {
 				zkName = null;
 			}
 		}
