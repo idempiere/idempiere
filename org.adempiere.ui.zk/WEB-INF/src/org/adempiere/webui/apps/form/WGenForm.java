@@ -93,8 +93,8 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	private Tabbox tabbedPane = new Tabbox();
 	private Borderlayout selPanel = new Borderlayout();
 	private Grid selNorthPanel = GridFactory.newGridLayout();
-	private ConfirmPanel confirmPanelSel = new ConfirmPanel(true);
-	private ConfirmPanel confirmPanelGen = new ConfirmPanel(false, true, false, false, false, false, false);
+	private ConfirmPanel confirmPanelSel = new ConfirmPanel(true, true, false, false, false, false, false);
+	private ConfirmPanel confirmPanelGen = new ConfirmPanel(false, false, false, false, false, false, false);
 	private StatusBarPanel statusBar = new StatusBarPanel();
 	private Borderlayout genPanel = new Borderlayout();
 	private Html info = new Html();
@@ -256,18 +256,28 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 			dispose();
 			return;
 		}
+		else if (e.getTarget().getId().equals(ConfirmPanel.A_REFRESH))
+		{
+			postQueryEvent();
+		}
 		else if (e.getTarget() instanceof Tab)
 		{
 			int index = tabbedPane.getSelectedIndex();
 			genForm.setSelectionActive(index == 0);
+			if (index == 0 && miniTable.getSelectedCount() > 0)
+			{
+				postQueryEvent();
+			}
 			return;
+		}
+		else if (e.getTarget().getId().equals(ConfirmPanel.A_OK))
+		{
+			genForm.validate();
 		}
 		else
 		{
 			super.onEvent(e);
-		}
-		
-		genForm.validate();
+		}				
 	}	//	actionPerformed
 
 	/**
