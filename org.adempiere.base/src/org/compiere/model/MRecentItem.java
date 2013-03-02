@@ -170,11 +170,22 @@ public class MRecentItem extends X_AD_RecentItem
 			ri.setAD_Table_ID(AD_Table_ID);
 			ri.setRecord_ID(Record_ID);
 			ri.setAD_User_ID(AD_User_ID);
+			ri.setAD_Role_ID(AD_Role_ID);
+			ri.setAD_Window_ID(AD_Window_ID);
+			ri.setAD_Tab_ID(AD_Tab_ID);
+			ri.saveEx();
+		} else {
+			if (   ri.getAD_Role_ID() != AD_Role_ID
+				|| ri.getAD_Window_ID() != AD_Window_ID
+				|| ri.getAD_Tab_ID() != AD_Tab_ID) {
+				ri.setAD_Role_ID(AD_Role_ID);
+				ri.setAD_Window_ID(AD_Window_ID);
+				ri.setAD_Tab_ID(AD_Tab_ID);
+				ri.saveEx();
+			} else {
+				DB.executeUpdateEx("UPDATE AD_RecentItem SET Updated=SYSDATE WHERE AD_RecentItem_ID=?", new Object[] {ri.getAD_RecentItem_ID()}, null);
+			}
 		}
-		ri.setAD_Role_ID(AD_Role_ID);
-		ri.setAD_Window_ID(AD_Window_ID);
-		ri.setAD_Tab_ID(AD_Tab_ID);
-		ri.saveEx();
 		publishChangedEvent(AD_User_ID);
 	}
 
