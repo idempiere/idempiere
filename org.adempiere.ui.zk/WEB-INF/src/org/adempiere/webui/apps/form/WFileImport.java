@@ -233,7 +233,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		//	Load Formats
 		pickFormat.appendItem(s_none, s_none);
 		
-		String sql = MRole.getDefault().addAccessSQL("SELECT Name FROM AD_ImpFormat", "AD_ImpFormat",
+		String sql = MRole.getDefault().addAccessSQL("SELECT Name,AD_Impformat_ID FROM AD_ImpFormat WHERE isactive='Y'", "AD_ImpFormat",
 				MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -243,7 +243,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			rs = pstmt.executeQuery();
 		
 			while (rs.next())
-				pickFormat.appendItem(rs.getString(1), rs.getString(1));
+				pickFormat.appendItem(rs.getString(1), rs.getInt(2));
 		}
 		catch (SQLException e)
 		{
@@ -451,12 +451,13 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		
 		ListItem listitem = pickFormat.getSelectedItem();
 		
-		String formatName = (String)listitem.getValue();
+		String formatName = (String)listitem.getLabel();
 		
 		if (formatName.equals(s_none))
 			return;
-		
-		m_format = ImpFormat.load (formatName);
+
+		int formatId = (Integer)listitem.getValue();
+		m_format = ImpFormat.load (formatId);
 		
 		if (m_format == null)
 		{

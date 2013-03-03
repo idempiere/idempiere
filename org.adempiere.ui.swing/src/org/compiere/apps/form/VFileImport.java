@@ -56,6 +56,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 
@@ -205,8 +206,8 @@ public class VFileImport extends CPanel
 	private void dynInit()
 	{
 		//	Load Formats
-		pickFormat.addItem(s_none);
-		String sql = MRole.getDefault().addAccessSQL("SELECT Name FROM AD_ImpFormat", "AD_ImpFormat",
+		pickFormat.addItem(new KeyNamePair(-1,s_none));
+		String sql = MRole.getDefault().addAccessSQL("SELECT AD_Impformat_ID,Name FROM AD_ImpFormat WHERE isactive='Y'", "AD_ImpFormat",
 				MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -215,7 +216,7 @@ public class VFileImport extends CPanel
 			pstmt = DB.prepareStatement(sql, null);
 			rs = pstmt.executeQuery();
 			while (rs.next())
-				pickFormat.addItem(rs.getString(1));
+				pickFormat.addItem(new KeyNamePair(rs.getInt(1),rs.getString(2)));
 		}
 		catch (SQLException e)
 		{
@@ -373,13 +374,13 @@ public class VFileImport extends CPanel
 		//	clear panel
 		previewPanel.removeAll();
 		//
-		String formatName = pickFormat.getSelectedItem().toString();
-		if (formatName.equals(s_none))
-			return;
-		m_format = ImpFormat.load (formatName);
+		KeyNamePair pickFormatKNPair = (KeyNamePair)pickFormat.getSelectedItem();
+		if (pickFormatKNPair.getName().equals(s_none))
+			return;	
+		m_format = ImpFormat.load (pickFormatKNPair.getKey());
 		if (m_format == null)
 		{
-			ADialog.error(m_WindowNo, this, "FileImportNoFormat", formatName);
+			ADialog.error(m_WindowNo, this, "FileImportNoFormat", pickFormatKNPair.getName());
 			return;
 		}
 
