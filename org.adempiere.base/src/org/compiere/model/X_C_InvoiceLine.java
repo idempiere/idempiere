@@ -33,7 +33,7 @@ public class X_C_InvoiceLine extends PO implements I_C_InvoiceLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130228L;
 
     /** Standard Constructor */
     public X_C_InvoiceLine (Properties ctx, int C_InvoiceLine_ID, String trxName)
@@ -190,6 +190,27 @@ public class X_C_InvoiceLine extends PO implements I_C_InvoiceLine, I_Persistent
 		return false;
 	}
 
+	/** Set Processed.
+		@param A_Processed Processed	  */
+	public void setA_Processed (boolean A_Processed)
+	{
+		set_Value (COLUMNNAME_A_Processed, Boolean.valueOf(A_Processed));
+	}
+
+	/** Get Processed.
+		@return Processed	  */
+	public boolean isA_Processed () 
+	{
+		Object oo = get_Value(COLUMNNAME_A_Processed);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Trx Organization.
 		@param AD_OrgTrx_ID 
 		Performing or initiating organization
@@ -213,25 +234,29 @@ public class X_C_InvoiceLine extends PO implements I_C_InvoiceLine, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Processed.
-		@param A_Processed Processed	  */
-	public void setA_Processed (boolean A_Processed)
+	public org.compiere.model.I_ASU_1099Box getASU_1099Box() throws RuntimeException
+    {
+		return (org.compiere.model.I_ASU_1099Box)MTable.get(getCtx(), org.compiere.model.I_ASU_1099Box.Table_Name)
+			.getPO(getASU_1099Box_ID(), get_TrxName());	}
+
+	/** Set 1099 Box.
+		@param ASU_1099Box_ID 1099 Box	  */
+	public void setASU_1099Box_ID (int ASU_1099Box_ID)
 	{
-		set_Value (COLUMNNAME_A_Processed, Boolean.valueOf(A_Processed));
+		if (ASU_1099Box_ID < 1) 
+			set_Value (COLUMNNAME_ASU_1099Box_ID, null);
+		else 
+			set_Value (COLUMNNAME_ASU_1099Box_ID, Integer.valueOf(ASU_1099Box_ID));
 	}
 
-	/** Get Processed.
-		@return Processed	  */
-	public boolean isA_Processed () 
+	/** Get 1099 Box.
+		@return 1099 Box	  */
+	public int getASU_1099Box_ID () 
 	{
-		Object oo = get_Value(COLUMNNAME_A_Processed);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		Integer ii = (Integer)get_Value(COLUMNNAME_ASU_1099Box_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
