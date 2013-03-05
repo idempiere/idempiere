@@ -42,8 +42,9 @@ CREATE OR REPLACE VIEW rv_fact_simple AS
   GROUP BY rv_fact_acct.ad_client_id, rv_fact_acct.ad_org_id, rv_fact_acct.isactive, rv_fact_acct.created, 
   rv_fact_acct.createdby, rv_fact_acct.updated, rv_fact_acct.updatedby, rv_fact_acct.c_project_id, 
   rv_fact_acct.c_acctschema_id, rv_fact_acct.account_id, rv_fact_acct.accountvalue, rv_fact_acct.accounttype, 
-  rv_fact_acct.dateacct, rv_fact_acct.amtacct;
-  
+  rv_fact_acct.dateacct, rv_fact_acct.amtacct
+;
+
 CREATE OR REPLACE VIEW rv_fact_adaxa AS 
  SELECT f.ad_client_id, f.ad_org_id, ( SELECT cli.name
            FROM ad_client cli
@@ -184,7 +185,9 @@ CREATE OR REPLACE VIEW rv_fact_adaxa AS
    JOIN ad_org o ON f.ad_org_id = o.ad_org_id
    JOIN c_elementvalue ev ON f.account_id = ev.c_elementvalue_id
    LEFT JOIN c_bpartner bp ON f.c_bpartner_id = bp.c_bpartner_id
-   LEFT JOIN m_product p ON f.m_product_id = p.m_product_id;
+   LEFT JOIN m_product p ON f.m_product_id = p.m_product_id
+;
+
 -- Mar 1, 2013 5:49:51 PM SGT
 -- Ticket 1001763: Standard Templates for Docs and Forms - Reporting
 INSERT INTO AD_Table (ImportTable,CopyColumnsFromTable,IsSecurityEnabled,AccessLevel,LoadSeq,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,AD_Table_UU,IsCentrallyMaintained,IsDeleteable,TableName,Name,AD_Client_ID,IsActive,AD_Org_ID,Updated,CreatedBy,UpdatedBy,Created) VALUES ('N','N','N','3',0,200072,'N','Y','N','D','L','014cfa42-6fad-47d9-bc06-d29272245190','Y','N','RV_Fact_Simple','Simple Fact View',0,'Y',0,TO_TIMESTAMP('2013-03-01 17:49:50','YYYY-MM-DD HH24:MI:SS'),100,100,TO_TIMESTAMP('2013-03-01 17:49:50','YYYY-MM-DD HH24:MI:SS'))

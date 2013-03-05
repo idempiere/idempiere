@@ -5116,8 +5116,9 @@ CREATE OR REPLACE VIEW x_packagelineweight AS
  SELECT pl.ad_client_id, pl.m_package_id, pl.qty, pl.m_inoutline_id, iol.m_inout_id, iol.m_product_id, p.weight, pl.qty * p.weight AS lineweight, pl.m_packagemps_id
    FROM m_packageline pl
    JOIN m_inoutline iol ON pl.m_inoutline_id = iol.m_inoutline_id
-   JOIN m_product p ON iol.m_product_id = p.m_product_id;
-   
+   JOIN m_product p ON iol.m_product_id = p.m_product_id
+;
+
 -- Dec 6, 2012 4:40:10 PM SGT
 -- Ticket 1001758: FedEx & UPS
 INSERT INTO AD_Element (ColumnName,AD_Element_ID,EntityType,Name,PrintName,AD_Element_UU,AD_Client_ID,Created,Updated,AD_Org_ID,CreatedBy,UpdatedBy,IsActive) VALUES ('EstimatedWeight',200316,'D','Estimated Weight','Estimated Weight','24c8a046-795b-44af-b212-baa38e062742',0,TO_TIMESTAMP('2012-12-06 16:40:09','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2012-12-06 16:40:09','YYYY-MM-DD HH24:MI:SS'),0,100,100,'Y')

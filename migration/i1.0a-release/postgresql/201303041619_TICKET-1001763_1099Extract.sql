@@ -1293,7 +1293,10 @@ CREATE OR REPLACE VIEW RV_T_1099Extract AS
    LEFT JOIN c_region r ON r.c_region_id = l.c_region_id
    LEFT JOIN c_country ctry ON ctry.c_country_id = l.c_country_id
   WHERE t.ad_pinstance_id = (SELECT max(t_1099extract.ad_pinstance_id) AS max
-   FROM t_1099extract);-- Feb 28, 2013 5:57:20 PM SGT
+   FROM t_1099extract)
+;
+
+-- Feb 28, 2013 5:57:20 PM SGT
 -- Ticket 1001763: Standard Templates for Docs and Forms - Reporting
 INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,AD_Column_UU,IsUpdateable,ColumnName,Description,Name,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID,IsAlwaysUpdateable,IsEncrypted) VALUES (0,200068,208646,'D','N','N','N','N',10,'N',19,'N',114,'23bfec04-9c67-4d6e-8483-dc3ae4a8f522','N','AD_PInstance_ID','Instance of the process','Process Instance',100,TO_TIMESTAMP('2013-02-28 17:57:19','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_TIMESTAMP('2013-02-28 17:57:19','YYYY-MM-DD HH24:MI:SS'),100,0,'N','N')
 ;
@@ -6802,9 +6805,10 @@ DECLARE
 ******************************************************************************/
 BEGIN
    SELECT SUM (  (COALESCE (linenetamt, 0) + COALESCE (taxamt, 0))
-               * (CASE WHEN docbasetype = 'API' THEN 1 
-					CASE WHEN docbasetype = 'APC' THEN -1
-					ELSE 0 END)
+               * (CASE WHEN docbasetype = 'API' THEN 1
+                       WHEN docbasetype = 'APC' THEN -1
+                       ELSE 0
+                  END)
               )            -- +API->AP Invoice / -APC->AP Credit Memo
      INTO tmpvar
      FROM C_INVOICE i, C_INVOICELINE il, ASU_1099BOX b, C_DOCTYPE dt
@@ -6821,7 +6825,8 @@ BEGIN
 END;
 $BODY$
    LANGUAGE plpgsql VOLATILE
-   COST 100;
+   COST 100
+;
 
 SELECT register_migration_script('201303041619_TICKET-1001763_1099Extract.sql') FROM dual
 ;

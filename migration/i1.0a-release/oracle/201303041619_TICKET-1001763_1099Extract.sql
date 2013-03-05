@@ -1293,7 +1293,10 @@ CREATE OR REPLACE VIEW RV_T_1099Extract AS
    LEFT JOIN c_region r ON r.c_region_id = l.c_region_id
    LEFT JOIN c_country ctry ON ctry.c_country_id = l.c_country_id
   WHERE t.ad_pinstance_id = (SELECT max(t_1099extract.ad_pinstance_id) AS max
-   FROM t_1099extract);-- Feb 28, 2013 5:57:20 PM SGT
+   FROM t_1099extract)
+;
+
+-- Feb 28, 2013 5:57:20 PM SGT
 -- Ticket 1001763: Standard Templates for Docs and Forms - Reporting
 INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,AD_Column_UU,IsUpdateable,ColumnName,Description,Name,CreatedBy,Updated,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID,IsAlwaysUpdateable,IsEncrypted) VALUES (0,200068,208646,'D','N','N','N','N',10,'N',19,'N',114,'23bfec04-9c67-4d6e-8483-dc3ae4a8f522','N','AD_PInstance_ID','Instance of the process','Process Instance',100,TO_DATE('2013-02-28 17:57:19','YYYY-MM-DD HH24:MI:SS'),0,'Y',TO_DATE('2013-02-28 17:57:19','YYYY-MM-DD HH24:MI:SS'),100,0,'N','N')
 ;
