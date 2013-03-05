@@ -186,6 +186,19 @@ public interface I_PA_Report
 	  */
 	public boolean isListSources();
 
+    /** Column name ListSourcesXTrx */
+    public static final String COLUMNNAME_ListSourcesXTrx = "ListSourcesXTrx";
+
+	/** Set Include source accounts with no transaction.
+	  * Include source accounts with no transaction for list report line sources
+	  */
+	public void setListSourcesXTrx (boolean ListSourcesXTrx);
+
+	/** Get Include source accounts with no transaction.
+	  * Include source accounts with no transaction for list report line sources
+	  */
+	public boolean isListSourcesXTrx();
+
     /** Column name ListTrx */
     public static final String COLUMNNAME_ListTrx = "ListTrx";
 

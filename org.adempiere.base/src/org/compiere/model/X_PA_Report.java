@@ -30,7 +30,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130305L;
 
     /** Standard Constructor */
     public X_PA_Report (Properties ctx, int PA_Report_ID, String trxName)
@@ -236,6 +236,30 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	public boolean isListSources () 
 	{
 		Object oo = get_Value(COLUMNNAME_ListSources);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Include source accounts with no transaction.
+		@param ListSourcesXTrx 
+		Include source accounts with no transaction for list report line sources
+	  */
+	public void setListSourcesXTrx (boolean ListSourcesXTrx)
+	{
+		set_Value (COLUMNNAME_ListSourcesXTrx, Boolean.valueOf(ListSourcesXTrx));
+	}
+
+	/** Get Include source accounts with no transaction.
+		@return Include source accounts with no transaction for list report line sources
+	  */
+	public boolean isListSourcesXTrx () 
+	{
+		Object oo = get_Value(COLUMNNAME_ListSourcesXTrx);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

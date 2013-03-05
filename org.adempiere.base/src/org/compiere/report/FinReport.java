@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.compiere.model.I_C_ValidCombination;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MReportCube;
 import org.compiere.print.MPrintFormat;
@@ -845,21 +846,27 @@ public class FinReport extends SvrProcess
 				insertLineSource (line);
 		}
 
-		//	Clean up empty rows
-		StringBuffer sql = new StringBuffer ("DELETE FROM T_Report WHERE ABS(LevelNo)<>0")
-			.append(" AND Col_0 IS NULL AND Col_1 IS NULL AND Col_2 IS NULL AND Col_3 IS NULL AND Col_4 IS NULL AND Col_5 IS NULL AND Col_6 IS NULL AND Col_7 IS NULL AND Col_8 IS NULL AND Col_9 IS NULL")
-			.append(" AND Col_10 IS NULL AND Col_11 IS NULL AND Col_12 IS NULL AND Col_13 IS NULL AND Col_14 IS NULL AND Col_15 IS NULL AND Col_16 IS NULL AND Col_17 IS NULL AND Col_18 IS NULL AND Col_19 IS NULL AND Col_20 IS NULL"); 
-		int no = DB.executeUpdate(sql.toString(), get_TrxName());
-		if (log.isLoggable(Level.FINE)) log.fine("Deleted empty #=" + no);
+		//Add the ability to display all child account elements of a summary account even though there is no transaction 
+		//for that child account element in the selected period.
+		boolean listSourceNoTrx = m_report.isListSourcesXTrx();
+		if (!listSourceNoTrx) {
+			//	Clean up empty rows
+			StringBuilder sql = new StringBuilder("DELETE FROM T_Report WHERE ABS(LevelNo)<>0")
+				.append(" AND Col_0 IS NULL AND Col_1 IS NULL AND Col_2 IS NULL AND Col_3 IS NULL AND Col_4 IS NULL AND Col_5 IS NULL AND Col_6 IS NULL AND Col_7 IS NULL AND Col_8 IS NULL AND Col_9 IS NULL")
+				.append(" AND Col_10 IS NULL AND Col_11 IS NULL AND Col_12 IS NULL AND Col_13 IS NULL AND Col_14 IS NULL AND Col_15 IS NULL AND Col_16 IS NULL AND Col_17 IS NULL AND Col_18 IS NULL AND Col_19 IS NULL AND Col_20 IS NULL"); 
+			int no = DB.executeUpdate(sql.toString(), get_TrxName());
+			if (log.isLoggable(Level.FINE)) log.fine("Deleted empty #=" + no);
+		}
+		//
 		
 		//	Set SeqNo
-		sql = new StringBuffer ("UPDATE T_Report r1 "
+		StringBuilder sql = new StringBuilder ("UPDATE T_Report r1 "
 			+ "SET SeqNo = (SELECT SeqNo "
 				+ "FROM T_Report r2 "
 				+ "WHERE r1.AD_PInstance_ID=r2.AD_PInstance_ID AND r1.PA_ReportLine_ID=r2.PA_ReportLine_ID"
 				+ " AND r2.Record_ID=0 AND r2.Fact_Acct_ID=0)"
 			+ "WHERE SeqNo IS NULL");
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("SeqNo #=" + no);
 
 		if (!m_report.isListTrx())
@@ -872,7 +879,7 @@ public class FinReport extends SvrProcess
 			+ " INNER JOIN AD_Element e ON (t.TableName||'_ID'=e.ColumnName) "
 			+ "WHERE r.Fact_Acct_ID=fa.Fact_Acct_ID";
 		//	Translated Version ...
-		sql = new StringBuffer ("UPDATE T_Report r SET (Name,Description)=(")
+		sql = new StringBuilder ("UPDATE T_Report r SET (Name,Description)=(")
 			.append(sql_select).append(") "
 			+ "WHERE Fact_Acct_ID <> 0 AND AD_PInstance_ID=")
 			.append(getAD_PInstance_ID());
@@ -908,19 +915,38 @@ public class FinReport extends SvrProcess
 			.append(getAD_PInstance_ID()).append(",")
 			.append(m_lines[line].getPA_ReportLine_ID()).append(",")
 			.append(variable).append(",0,");
-		if (p_DetailsSourceFirst)
+		
+		boolean listSourceNoTrx = m_report.isListSourcesXTrx() && variable.equalsIgnoreCase(I_C_ValidCombination.COLUMNNAME_Account_ID);
+		//SQL to get the Account Element which no transaction		
+		StringBuffer unionInsert = listSourceNoTrx ? new StringBuffer() : null;
+		if (listSourceNoTrx) {
+			unionInsert.append(" UNION SELECT ")
+			.append(getAD_PInstance_ID()).append(",")
+			.append(m_lines[line].getPA_ReportLine_ID()).append(",")
+			.append(variable).append(",0,");
+		}
+		//
+				
+		if (p_DetailsSourceFirst) {
 			insert.append("-1 ");
-		else
+			if (listSourceNoTrx)
+				unionInsert.append("-1 ");
+		} else {
 			insert.append("1 ");
+			if (listSourceNoTrx)
+				unionInsert.append("1 ");
+		}
 
 		//	for all columns create select statement
 		for (int col = 0; col < m_columns.length; col++)
 		{
 			insert.append(", ");
+			if (listSourceNoTrx)
+				unionInsert.append(", Cast(NULL AS NUMBER)");
 			//	No calculation
 			if (m_columns[col].isColumnTypeCalculation())
 			{
-				insert.append("NULL");
+				insert.append("Cast(NULL AS NUMBER)");
 				continue;
 			}
 
@@ -932,7 +958,7 @@ public class FinReport extends SvrProcess
 				select.append (m_columns[col].getSelectClause (true));
 			else
 			{
-				insert.append("NULL");
+				insert.append("Cast(NULL AS NUMBER)");
 				continue;
 			}
 
@@ -991,18 +1017,66 @@ public class FinReport extends SvrProcess
 			
 			//	Parameter Where
 			select.append(m_parameterWhere);
-		//	System.out.println("    c=" + col + ", l=" + line + ": " + select);
+			if (log.isLoggable(Level.FINEST))
+				log.finest("Col=" + col + ", Line=" + line + ": " + select);
 			//
 			insert.append("(").append(select).append(")");
 		}
 		//	WHERE (sources, posting type)
 		StringBuffer where = new StringBuffer(m_lines[line].getWhereClause(p_PA_Hierarchy_ID));
+		
+		StringBuffer unionWhere = listSourceNoTrx ? new StringBuffer() : null;
+		if (listSourceNoTrx && m_lines[line].getSources() != null && m_lines[line].getSources().length > 0){
+			//	Only one
+			if (m_lines[line].getSources().length == 1 
+				&& (m_lines[line].getSources()[0]).getElementType().equalsIgnoreCase(MReportSource.ELEMENTTYPE_Account))
+			{
+				unionWhere.append(m_lines[line].getSources()[0].getWhereClause(p_PA_Hierarchy_ID));
+			}
+			else
+			{
+				//	Multiple
+				StringBuffer sb = new StringBuffer ("(");
+				for (int i = 0; i < m_lines[line].getSources().length; i++)
+				{
+					if ((m_lines[line].getSources()[i]).getElementType().equalsIgnoreCase(MReportSource.ELEMENTTYPE_Account)) {
+						if (i > 0)
+							sb.append (" OR ");
+						sb.append (m_lines[line].getSources()[i].getWhereClause(p_PA_Hierarchy_ID));
+					}
+				}
+				sb.append (")");
+				unionWhere.append(sb.toString ());
+			}
+			//	Posting Type
+			String PostingType = m_lines[line].getPostingType();
+			if (PostingType != null && PostingType.length() > 0)
+			{
+				if (unionWhere.length() > 0)
+					unionWhere.append(" AND ");
+				unionWhere.append("PostingType='" + PostingType + "'");
+				if (MReportLine.POSTINGTYPE_Budget.equals(PostingType)) {
+					if (m_lines[line].getGL_Budget_ID() > 0)
+						unionWhere.append(" AND GL_Budget_ID=" + m_lines[line].getGL_Budget_ID());
+				}
+			}
+		}
+		//
+
 		String s = m_report.getWhereClause();
 		if (s != null && s.length() > 0)
 		{
 			if (where.length() > 0)
 				where.append(" AND ");
 			where.append(s);
+
+			if (listSourceNoTrx)
+			{
+				if (unionWhere.length() > 0)
+					unionWhere.append(" AND ");
+				unionWhere.append(s);
+			}
+
 		}
 		if (where.length() > 0)
 			where.append(" AND ");
@@ -1011,11 +1085,29 @@ public class FinReport extends SvrProcess
 		if (p_PA_ReportCube_ID > 0)
 			insert.append(" FROM Fact_Acct_Summary x WHERE ").append(where);
 		else
-		//	FROM .. WHERE
-		insert.append(" FROM Fact_Acct x WHERE ").append(where);	
+			//	FROM .. WHERE
+			insert.append(" FROM Fact_Acct x WHERE ").append(where);	
 		//
 		insert.append(m_parameterWhere)
 			.append(" GROUP BY ").append(variable);
+
+		if (listSourceNoTrx) {
+			if (unionWhere.length() > 0)
+				unionWhere.append(" AND ");
+			unionWhere.append(variable).append(" IS NOT NULL");
+			unionWhere.append(" AND Account_ID not in (select Account_ID ");
+			if (p_PA_ReportCube_ID > 0)
+				unionWhere.append(" from Fact_Acct_Summary x WHERE ").append(where);
+			else
+				unionWhere.append(" from Fact_Acct x WHERE ").append(where);	
+			//
+			unionWhere.append(m_parameterWhere).append(")");
+	
+			unionInsert.append(" FROM (select c_elementvalue.c_elementvalue_id as Account_ID, c_acctschema_element.C_AcctSchema_ID from c_elementvalue inner join c_acctschema_element on (c_elementvalue.c_element_id = c_acctschema_element.c_element_id)) x WHERE ").append(unionWhere);
+			unionInsert.append(" GROUP BY ").append(variable);
+				
+			insert.append(unionInsert);
+		}
 
 		int no = DB.executeUpdate(insert.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Source #=" + no + " - " + insert);
