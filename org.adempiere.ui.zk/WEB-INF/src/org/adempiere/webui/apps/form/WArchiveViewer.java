@@ -59,6 +59,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -122,20 +123,31 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	
 	private Iframe iframe = new Iframe();
 	private Button bRefresh = new Button();
-	
+	private boolean showQuery = true;
+
 	public WArchiveViewer()
 	{
 		log.info("");
 
-		try
-		{
-			dynInit();
-			jbInit();
-		}
-		catch(Exception e)
-		{
-			log.log(Level.SEVERE, "init", e);
-		}
+		form = new CustomForm() {
+			private static final long serialVersionUID = 7226661630651936293L;
+
+			@Override
+			public void onPageAttached(Page newpage, Page oldpage) {
+				super.onPageAttached(newpage, oldpage);
+				if (newpage != null)
+					try {
+						dynInit();
+						jbInit();
+					}
+				catch(Exception e)
+				{
+					log.log(Level.SEVERE, "init", e);
+				}
+
+			}
+
+		};
 	}
 	
 	/**
@@ -221,103 +233,108 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		reportField.setLabel(Msg.translate(Env.getCtx(), "IsReport"));
 		reportField.addEventListener(Events.ON_CHECK, this);
 		
-		Grid gridQuery = new Grid();
-		gridQuery.setWidth("500px");
-		gridQuery.setStyle("margin:0; padding:0;");
-		gridQuery.makeNoStrip();
-		gridQuery.setOddRowSclass("even");
-        
-		Rows rows = new Rows();
-		gridQuery.appendChild(rows);
+		Rows rows;
+		Row row;
+		Div div;
 		
-		Row row = new Row();
-		rows.appendChild(row);
-		row.setAlign("right");
-		row.appendCellChild(reportField, 3);
+		if(showQuery){
+			Grid gridQuery = new Grid();
+			gridQuery.setWidth("500px");
+			gridQuery.setStyle("margin:0; padding:0;");
+			gridQuery.makeNoStrip();
+			gridQuery.setOddRowSclass("even");
 
-		row = new Row();
-		rows.appendChild(row);
-		Div div = new Div();
-		div.setStyle("text-align: right;");
-		div.appendChild(processLabel);
-		row.appendCellChild(div, 1);
-		row.appendCellChild(processField, 2);
-		processField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		div = new Div();
-		div.setStyle("text-align: right;");
-		div.appendChild(bPartnerLabel);
-		row.appendCellChild(div, 1);
-		row.appendCellChild(bPartnerField.getComponent(), 2);
-		
-		row = new Row();
-		rows.appendChild(row);
-		div = new Div();
-		div.setStyle("text-align: right;");
-		div.appendChild(tableLabel);
-		row.appendCellChild(div, 1);
-		row.appendCellChild(tableField, 2);
-		tableField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		div = new Div();
-		div.setStyle("text-align: right;");
-		div.appendChild(nameQLabel);
-		row.appendCellChild(div, 1);
-		row.appendCellChild(nameQField, 2);
-		nameQField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		div = new Div();
-		div.setStyle("text-align: right;");
-		div.appendChild(descriptionQLabel);
-		row.appendCellChild(div, 1);
-		row.appendCellChild(descriptionQField, 2);
-		descriptionQField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		div = new Div();
-		div.setStyle("text-align: right;");
-		div.appendChild(helpQLabel);
-		row.appendCellChild(div, 1);
-		row.appendCellChild(helpQField, 2);
-		helpQField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		div = new Div();
-		div.setStyle("text-align: right;");
-		div.appendChild(createdByQLabel);
-		row.appendCellChild(div, 1);
-		row.appendCellChild(createdByQField, 2);
-		createdByQField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		div = new Div();
-		div.setStyle("text-align: right;");
-		div.appendChild(createdQLabel);
-		row.appendChild(div);
-		row.appendChild(createdQFrom);
-		row.appendChild(createdQTo);
-		
-		div = new Div();
-		div.setStyle("text-align: center;");
-		div.appendChild(gridQuery);
-		
-		Tabpanel tabQueryPanel = new Tabpanel();
-		tabQueryPanel.appendChild(div);
+			rows = new Rows();
+			gridQuery.appendChild(rows);
 
-		Tab tabQuery = new Tab(Msg.getMsg(Env.getCtx(), "ViewerQuery"));
+			row = new Row();
+			rows.appendChild(row);
+			row.setAlign("right");
+			row.appendCellChild(reportField, 3);
 
-		tabpanels.appendChild(tabQueryPanel);
-		tabs.appendChild(tabQuery);
-		
+			row = new Row();
+			rows.appendChild(row);
+			div = new Div();
+			div.setStyle("text-align: right;");
+			div.appendChild(processLabel);
+			row.appendCellChild(div, 1);
+			row.appendCellChild(processField, 2);
+			processField.setWidth("100%");
+
+			row = new Row();
+			rows.appendChild(row);
+			div = new Div();
+			div.setStyle("text-align: right;");
+			div.appendChild(bPartnerLabel);
+			row.appendCellChild(div, 1);
+			row.appendCellChild(bPartnerField.getComponent(), 2);
+
+			row = new Row();
+			rows.appendChild(row);
+			div = new Div();
+			div.setStyle("text-align: right;");
+			div.appendChild(tableLabel);
+			row.appendCellChild(div, 1);
+			row.appendCellChild(tableField, 2);
+			tableField.setWidth("100%");
+
+			row = new Row();
+			rows.appendChild(row);
+			div = new Div();
+			div.setStyle("text-align: right;");
+			div.appendChild(nameQLabel);
+			row.appendCellChild(div, 1);
+			row.appendCellChild(nameQField, 2);
+			nameQField.setWidth("100%");
+
+			row = new Row();
+			rows.appendChild(row);
+			div = new Div();
+			div.setStyle("text-align: right;");
+			div.appendChild(descriptionQLabel);
+			row.appendCellChild(div, 1);
+			row.appendCellChild(descriptionQField, 2);
+			descriptionQField.setWidth("100%");
+
+			row = new Row();
+			rows.appendChild(row);
+			div = new Div();
+			div.setStyle("text-align: right;");
+			div.appendChild(helpQLabel);
+			row.appendCellChild(div, 1);
+			row.appendCellChild(helpQField, 2);
+			helpQField.setWidth("100%");
+
+			row = new Row();
+			rows.appendChild(row);
+			div = new Div();
+			div.setStyle("text-align: right;");
+			div.appendChild(createdByQLabel);
+			row.appendCellChild(div, 1);
+			row.appendCellChild(createdByQField, 2);
+			createdByQField.setWidth("100%");
+
+			row = new Row();
+			rows.appendChild(row);
+			div = new Div();
+			div.setStyle("text-align: right;");
+			div.appendChild(createdQLabel);
+			row.appendChild(div);
+			row.appendChild(createdQFrom);
+			row.appendChild(createdQTo);
+
+			div = new Div();
+			div.setStyle("text-align: center;");
+			div.appendChild(gridQuery);
+
+			Tabpanel tabQueryPanel = new Tabpanel();
+			tabQueryPanel.appendChild(div);
+
+			Tab tabQuery = new Tab(Msg.getMsg(Env.getCtx(), "ViewerQuery"));
+
+			tabpanels.appendChild(tabQueryPanel);
+			tabs.appendChild(tabQuery);
+		}
 		Grid gridView = new Grid();
 		gridView.setStyle("margin:0; padding:0;");
 		gridView.makeNoStrip();
@@ -450,10 +467,10 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			SessionManager.getAppDesktop().closeActiveWindow();
 		else if (e.getTarget().getId().equals(ConfirmPanel.A_OK))
 		{
-			if (tabbox.getSelectedIndex() == 1)
-				SessionManager.getAppDesktop().closeActiveWindow();
-			else
+			if (showQuery && tabbox.getSelectedIndex() == 0)
 				cmd_query();
+			else
+				SessionManager.getAppDesktop().closeActiveWindow();
 		}
 		else if (e.getTarget() == reportField)
 			updateQDisplay();
@@ -465,7 +482,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			iframe.invalidate();
 		else if (e.getTarget() instanceof Tab)
 		{
-			if(tabbox.getSelectedIndex() == 1)
+			if(tabbox.getSelectedIndex() == (showQuery ? 1 : 0))
 				iframe.invalidate();
 		}
 		
@@ -504,6 +521,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 					MArchive ar = m_archives[m_index];
 					ar.delete(true);
 					tabbox.setSelectedIndex(0);
+					cmd_query();
 					dynInit();
 				}
 			}
@@ -639,50 +657,67 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	{
 		boolean reports = reportField.isChecked();
 		
-		ListItem listitem = processField.getSelectedItem();
 		KeyNamePair process = null;
-		if (listitem != null)
-			process = (KeyNamePair)listitem.getValue();
-		
-		listitem = tableField.getSelectedItem();
+		Integer C_BPartner_ID = null;
+		String name = null;
+		String description = null;
+		String help = null;
 		KeyNamePair table = null;
-		if (listitem != null)
-			table = (KeyNamePair)listitem.getValue();
-		
-		Integer C_BPartner_ID = (Integer)bPartnerField.getValue();
-		String name = nameQField.getText();
-		String description = descriptionQField.getText();
-		String help = helpQField.getText();
-		
-		listitem = createdByQField.getSelectedItem();
 		KeyNamePair createdBy = null;
-		if (listitem != null)
-			createdBy = (KeyNamePair)listitem.getValue();
-		
-		Date date = null;
 		Timestamp createdFrom = null;
-		if (createdQFrom.getValue() != null)
-		{
-			date = createdQFrom.getValue();
-			createdFrom = new Timestamp(date.getTime());
-		}
-		
 		Timestamp createdTo = null;
-		if (createdQTo.getValue() != null)
-		{
-			date = createdQTo.getValue();
-			createdTo = new Timestamp(date.getTime());
+		
+		if (showQuery) {
+			ListItem listitem = processField.getSelectedItem();
+			process = null;
+			if (listitem != null)
+				process = (KeyNamePair)listitem.getValue();
+
+			listitem = tableField.getSelectedItem();
+			table = null;
+			if (listitem != null)
+				table = (KeyNamePair)listitem.getValue();
+
+			C_BPartner_ID = (Integer)bPartnerField.getValue();
+			name = nameQField.getText();
+			description = descriptionQField.getText();
+			help = helpQField.getText();
+
+			listitem = createdByQField.getSelectedItem();
+			createdBy = null;
+			if (listitem != null)
+				createdBy = (KeyNamePair)listitem.getValue();
+
+			Date date = null;
+			createdFrom = null;
+			if (createdQFrom.getValue() != null)
+			{
+				date = createdQFrom.getValue();
+				createdFrom = new Timestamp(date.getTime());
+			}
+
+			createdTo = null;
+			if (createdQTo.getValue() != null)
+			{
+				date = createdQTo.getValue();
+				createdTo = new Timestamp(date.getTime());
+			}
 		}
 		
 		cmd_query(reports, process, table, C_BPartner_ID, name, description, help, 
 				createdBy, createdFrom, createdTo);
 		
-		//	Display
-		tabbox.setSelectedIndex(1);
 		
 		m_index = 1;
+		if (showQuery)
+			tabbox.setSelectedIndex(1);
+		
 		updateVDisplay(false);
 	}	//	cmd_query
+	
+	public void setShowQuery(boolean showQuery) {
+		this.showQuery = showQuery;
+	}
 	
 	public ADForm getForm() {
 		return form;

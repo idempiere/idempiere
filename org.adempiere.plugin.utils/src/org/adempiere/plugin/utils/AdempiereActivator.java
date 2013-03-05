@@ -11,6 +11,7 @@ import org.adempiere.base.IDictionaryService;
 import org.adempiere.base.Service;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp;
+import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.osgi.framework.BundleActivator;
@@ -97,6 +98,8 @@ public class AdempiereActivator implements BundleActivator {
 			IDictionaryService service = Service.locator().locate(IDictionaryService.class).getService();
 			FileOutputStream zipstream = null;
 			try {
+				if (service == null)
+					throw new AdempiereSystemError("Could not find/load OSGi service for packin");
 				// copy the resource to a temporary file to process it with 2pack
 				InputStream stream = context.getBundle().getEntry("/META-INF/2Pack.zip").openStream();
 				File zipfile = File.createTempFile(getName(), ".zip");

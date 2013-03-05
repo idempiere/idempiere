@@ -150,14 +150,7 @@ public final class ImpFormat
 		m_tableUniqueParent = "";
 		m_tableUniqueChild = "";
 
-		if (m_AD_Table_ID == 311)			//	I_061_SyncItem
-		{
-			m_tableUnique1 = "H_UPC";					//	UPC = unique
-			m_tableUnique2 = "Value";
-			m_tableUniqueChild = "H_Commodity1";		//	Vendor No may not be unique !
-			m_tableUniqueParent = "H_PartnrID";			//			Makes it unique
-		}
-		else if (m_AD_Table_ID == TABLE_I_PRODUCT)		//	I_Product
+		if (m_AD_Table_ID == TABLE_I_PRODUCT)		//	I_Product
 		{
 			m_tableUnique1 = "UPC";						//	UPC = unique
 			m_tableUnique2 = "Value";
@@ -266,26 +259,24 @@ public final class ImpFormat
 
 	/*************************************************************************
 	 *	Factory load
-	 *  @param name name
+	 *  @param Id id
 	 *  @return Import Format
 	 */
-	public static ImpFormat load (String name)
+	public static ImpFormat load (int Id)
 	{
-		log.config(name);
+		if (log.isLoggable(Level.CONFIG))log.config(String.valueOf(Id));
 		ImpFormat retValue = null;
-		String sql = "SELECT * FROM AD_ImpFormat WHERE Name=?";
-		int ID = 0;
+		String sql = "SELECT * FROM AD_ImpFormat WHERE AD_Impformat_ID=?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString (1, name);
+			pstmt.setInt (1, Id);
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
-				retValue = new ImpFormat (name, rs.getInt("AD_Table_ID"), rs.getString("FormatType"));
-				ID = rs.getInt ("AD_ImpFormat_ID");
+				retValue = new ImpFormat (rs.getString("Name"), rs.getInt("AD_Table_ID"), rs.getString("FormatType"));
 				if (X_AD_ImpFormat.FORMATTYPE_CustomSeparatorChar.equals(rs.getString(I_AD_ImpFormat.COLUMNNAME_FormatType))) {
 					retValue.setSeparatorChar(rs.getString(I_AD_ImpFormat.COLUMNNAME_SeparatorChar));
 				}
@@ -302,7 +293,7 @@ public final class ImpFormat
 			rs = null;
 			pstmt = null;
 		}
-		loadRows (retValue, ID);
+		loadRows (retValue, Id);
 		return retValue;
 	}	//	getFormat
 

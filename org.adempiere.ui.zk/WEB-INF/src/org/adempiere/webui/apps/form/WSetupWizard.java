@@ -27,11 +27,8 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
-import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
-import org.adempiere.webui.component.Row;
-import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WSearchEditor;
@@ -54,11 +51,13 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.East;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Progressmeter;
+import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecell;
@@ -66,8 +65,6 @@ import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
 import org.zkoss.zul.Vbox;
-import org.zkoss.zul.West;
-
 /**
  * View for Setup Wizard
  *
@@ -86,6 +83,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	private Tree			wfnodeTree;
 	private Treeitem 		prevti = null;
 
+	private Label			pretitleLabel	= new Label(Msg.getMsg(Env.getCtx(), "SetupTask"));
 	private Label			titleLabel	= new Label();
 	private Iframe			helpFrame	= new Iframe();
 	private Label			notesLabel  = new Label(Msg.getElement(Env.getCtx(), MWizardProcess.COLUMNNAME_Note));
@@ -97,6 +95,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	private Label			statusLabel = new Label();
 	private WTableDirEditor statusField;
 	
+	private Label			bZoomLabel = new Label(Msg.getMsg(Env.getCtx(), "ZoomLabel"));
 	private Button 			bRefresh 	= new Button();
 	private Button 			bOK 		= new Button();
 	private Button 			bNext 		= new Button();
@@ -111,8 +110,9 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	private static final String WIZARD_LABEL_STYLE = "font-weight: bold";
 	
 	private boolean expandTree = false;
-	private Vbox east = new Vbox();
-	private Vbox eastdown = new Vbox();
+	private boolean allFinished = true;
+	private Vbox centerBox = new Vbox();
+	private Vbox centerBoxdown = new Vbox();
 	private Vbox westdown = new Vbox();
 	private ArrayList<Integer> openNodes = new ArrayList<Integer>();
 
@@ -163,6 +163,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 
 	protected void addWfEntry(MWorkflow wfwizard) {
 		/* TODO: Color of workflow according to wizard status */
+		allFinished = true;
 		Treechildren treeChildren = wfnodeTree.getTreechildren();
 		Treeitem treeitemwf = new Treeitem();
 		treeChildren.appendChild(treeitemwf);
@@ -185,6 +186,10 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 			treeitemwf.setOpen(true);
 		addNodes(wfwizard, treeitemwf);
 
+		if(allFinished && showColors.isChecked()){
+			wizardLabel.setZclass("tree-wsetupwizard-finished-all");
+		}
+		
 		treeitemwf.setAttribute("AD_Workflow_ID", wfwizard.getAD_Workflow_ID());
 		if (prevti != null && prevti.getAttribute("AD_Workflow_ID") != null) {
 			if (prevti.getAttribute("AD_Workflow_ID").equals(treeitemwf.getAttribute("AD_Workflow_ID")))
@@ -206,12 +211,27 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		if (node != null && showColors.isChecked()) {
 			MWizardProcess wp = MWizardProcess.get(Env.getCtx(), node.getAD_WF_Node_ID(), Env.getAD_Client_ID(Env.getCtx()));
 			String status = wp.getWizardStatus();
-			if (   MWizardProcess.WIZARDSTATUS_Finished.equals(status)
-				|| MWizardProcess.WIZARDSTATUS_Skipped.equals(status)) {
-				nodeLabel.setStyle("background-color: #90EE90;margin-left:20px;");
-			} else {
-				nodeLabel.setStyle("background-color: #FFFF00;margin-left:20px;");
+			if (MWizardProcess.WIZARDSTATUS_Finished.equals(status)){
+				nodeLabel.setZclass("tree-wsetupwizard-finished");
+				allFinished = allFinished && true;
+			}else if (MWizardProcess.WIZARDSTATUS_Skipped.equals(status)) {
+				nodeLabel.setZclass("tree-wsetupwizard-skipped");
+				allFinished = allFinished && true;
+			}else if (MWizardProcess.WIZARDSTATUS_Delayed.equals(status)) {
+				nodeLabel.setZclass("tree-wsetupwizard-delayed");
+				allFinished = allFinished && false;
+			}else if (MWizardProcess.WIZARDSTATUS_In_Progress.equals(status)) {
+				nodeLabel.setZclass("tree-wsetupwizard-in-progress");
+				allFinished = allFinished && false;
+			}else if (MWizardProcess.WIZARDSTATUS_Pending.equals(status)) {
+				nodeLabel.setZclass("tree-wsetupwizard-pending");
+				allFinished = allFinished && false;
+			}else {
+				nodeLabel.setZclass("tree-setupwizard-nostatus");
+				allFinished = false;
 			}
+		}else{
+			nodeLabel.setStyle("margin-left:20px;");
 		}
 		
 		Div div = new Div();
@@ -245,6 +265,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	 * 	Static init
 	 *	@throws Exception
 	 */
+	@SuppressWarnings("deprecation")
 	private void jbInit () throws Exception
 	{
 		form.setWidth("99%");
@@ -279,12 +300,10 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		justmine.setTooltiptext(Msg.getMsg(Env.getCtx(), "JustMine"));
 		justmine.addEventListener(Events.ON_CHECK,this);
 		
-		
 		showColors.setLabel("Show Colors");
 		showColors.setTooltiptext(Msg.getMsg(Env.getCtx(), "ShowColors"));
 		showColors.addEventListener(Events.ON_CHECK,this);
-		
-		
+			
 		North north = new North();
 		mainLayout.appendChild(north);
 		north.appendChild(northPanel);
@@ -292,6 +311,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		//
 		northPanel.appendChild(progressbar);
 		progressbar.setWidth("100%");
+		progressbar.setZclass("progressmeter-setupwizard");
 		northPanel.appendChild(progressLabel);
 		progressLabel.setWidth("100%");
 		progressLabel.setStyle("margin:0; padding:0; position: absolute; align: center; valign: center; border:0; text-align: center; ");
@@ -304,62 +324,53 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		statusField = new WTableDirEditor("WizardStatus", true, false, true,wizardL);
 		statusField.setValue(MWizardProcess.WIZARDSTATUS_Pending);
 		
-		east.setVflex("1");
-		east.setHflex("1");
-		West west = new West();
-		mainLayout.appendChild(west);	
-		west.appendChild(east);
-		east.appendChild(wfnodeTree);
+		centerBox.setVflex("1");
+		centerBox.setHflex("1");
+		Center center = new Center();
+		mainLayout.appendChild(center);	
+		center.appendChild(centerBox);
+		centerBox.appendChild(wfnodeTree);
+		centerBox.setWidth("100%");
 		wfnodeTree.setVflex("1");
-		wfnodeTree.setHflex("1");
-		east.appendChild(eastdown);
-		eastdown.setOrient("horizontal");
-		eastdown.appendChild(bExpand);
-		eastdown.appendChild(justmine);
-		eastdown.appendChild(showColors);
-		west.setAutoscroll(true);
-		west.setWidth("30%");
+		centerBox.appendChild(centerBoxdown);
+		centerBoxdown.setOrient("horizontal");
+		centerBoxdown.appendChild(bExpand);
+		centerBoxdown.appendChild(justmine);
+		centerBoxdown.appendChild(showColors);
+		center.setAutoscroll(true);
+	
+		Div div = new Div();
+		div.setHeight("88%");
+		div.setHflex("1");
 		
-		Grid gridView = new Grid();
-		gridView.setStyle("margin:0; padding:0;");
-		gridView.makeNoStrip();
-		gridView.setOddRowSclass("even");
-
-		Rows rows = new Rows();
-		gridView.appendChild(rows);
-
-		Row row = new Row();
-		rows.appendChild(row);
-		row.setAlign("center");
-		row.appendChild(titleLabel);
+		div.setStyle("text-align:center ");
+		pretitleLabel.setStyle("font-weight: bold; font-size: 14px");
+		div.appendChild(titleLabel);
 		titleLabel.setStyle("font-weight: bold; font-size: 14px");
-
-		row = new Row();
-		rows.appendChild(row);
-		row.appendChild(helpFrame);
+		titleLabel.setLeft("50%");
+		
+		div.appendChild(helpFrame);
 		helpFrame.setWidth("99%");
 		helpFrame.setHeight("90%");
-		helpFrame.setStyle("min-height:300px; border: 1px solid lightgray; margin:auto");
-
-		row = new Row();
-		rows.appendChild(row);
-		row.appendChild(notesLabel);
-		notesLabel.setWidth("100%");
+		helpFrame.setStyle("border: 1px solid lightgray; margin:auto");
 		
-		row = new Row();
-		rows.appendChild(row);
-		row.appendChild(notesField);
+		Div divNote = new Div();
+		divNote.setStyle("text-align:left");
+		Separator separator = new Separator();
+		divNote.appendChild(separator);
+		divNote.appendChild(notesLabel);
+		
+		divNote.appendChild(notesField);
 		notesField.setRows(4);
-		notesField.setWidth("100%");
+		notesField.setWidth("99%");
 
 		MLookup lookup = MLookupFactory.get(Env.getCtx(), form.getWindowNo(),
                 0, 200913, DisplayType.Search);
 		userField = new WSearchEditor(lookup, Msg.translate(
                 Env.getCtx(), "AD_User_ID"), "", false, false, true);
 
-		row = new Row();
-		rows.appendChild(row);
 		westdown.setOrient("horizontal");
+		westdown.appendChild(bZoomLabel);
 		westdown.appendChild(bZoom);
 		westdown.appendChild(userLabel);
 		westdown.appendChild(userField.getComponent());
@@ -370,17 +381,26 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		westdown.appendChild(bRefresh);
 		westdown.appendChild(bOK);
 		westdown.appendChild(bNext);
-		row.appendChild(westdown);
-		row.setAlign("right");
+		Div divButton = new Div();
+		divButton.setAlign("right");
+		divButton.appendChild(westdown);
 
 		East east = new East();
 		mainLayout.appendChild(east);
-		east.appendChild(gridView);
-		east.setCollapsible(false);
+		div.appendChild(divNote);
+		div.appendChild(divButton);
+		east.appendChild(div);
+		east.setCollapsible(true);
 		east.setSplittable(true);
 		east.setWidth("70%");
+		east.setAutoscroll(true);
 
 		setNotesPanelVisible(false);
+		
+		MWorkflow wf = MWorkflow.get(Env.getCtx(), getWfWizards().get(0).get_ID());
+		showInRightPanel(wf.getAD_Workflow_ID(), 0);
+
+
 	}	//	jbInit
 
 	private void refreshProgress() {
@@ -396,7 +416,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		progressLabel.setText(msg);
 		progressbar.setValue(percent);
 		progressbar.setTooltiptext(msg);
-		progressbar.setStyle("background: #BBC2DB;");
 	}
 
 	/**
@@ -419,6 +438,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 			showInRightPanel(0, m_node.getAD_WF_Node_ID());
 		} else if (e.getTarget() == bOK) {
 			int userid = 0;
+			allFinished=true;
 			if (!userField.isNullOrEmpty())
 				userid = (Integer)userField.getValue();
 			if (save(notesField.getText(), (String) statusField.getValue(), userid))
@@ -438,14 +458,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	}	//	actionPerformed
 
 	private void showColors() {
-		if (!showColors.isChecked()) {
-			for (Treeitem nextItem : nextItems){
-				Treeitem ti= nextItem;
-				if (ti.getLevel() != 0) {
-					ti.setStyle("background-color: #FFFFFF;");
-				}
-			}
-		}
+		if (showColors.isChecked())
+			allFinished = true;
 		repaintTree();
 	}
 
@@ -496,10 +510,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	}
 
 	private void repaintTree() {
-		east.removeChild(wfnodeTree);
-		east.removeChild(eastdown);
-		east.setVflex("1");
-		east.setHflex("1");
 		openNodes.removeAll(openNodes);
 		for (Treeitem nextItem : nextItems) {
 			if (nextItem.isOpen() && nextItem.getAttribute("AD_Workflow_ID") != null) {
@@ -509,8 +519,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		prevti = wfnodeTree.getSelectedItem();
 		wfnodeTree.clear();
 		loadWizardNodes();
-		east.appendChild(wfnodeTree);
-		east.appendChild(eastdown);
 		refreshProgress();
 	}
 	
@@ -580,7 +588,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 			setNotesPanelVisible(false);
 			m_node = null;
 		}
-		titleLabel.setText(title);
+		titleLabel.setText(pretitleLabel.getValue() + title);
 		if (help != null) {
 	    	AMedia media = new AMedia("Help", "html", "text/html", help.getBytes());
 			helpFrame.setContent(media);
@@ -600,6 +608,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		statusField.setVisible(visible);
 		userLabel.setVisible(visible);
 		userField.setVisible(visible);
+		bZoomLabel.setVisible(visible);
 		bZoom.setVisible(visible);
 	}
 
