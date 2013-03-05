@@ -13,10 +13,4 @@
 	<listener>
     	<listener-class>org.adempiere.webui.UiLifeCycleListener</listener-class>
 	</listener>
-
-	<!-- turn off uuid reuse for selenium testing -->
-	<library-property>
-		<name>org.zkoss.zk.ui.uuidRecycle.disabled</name>
-		<value>true</value>
-	</library-property>	
 </zk>

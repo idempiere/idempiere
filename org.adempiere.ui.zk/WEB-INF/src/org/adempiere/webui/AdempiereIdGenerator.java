@@ -39,48 +39,43 @@ import org.zkoss.zk.ui.sys.IdGenerator;
 public class AdempiereIdGenerator implements IdGenerator {
 
 	public static final String ZK_LOCATOR_ATTRIBUTE = "_zk_locator";
-	private static final String DEFAULT_ZK_COMP_PREFIX = "zk_comp_";
-	private static final String DESKTOP_ID_ATTRIBUTE = "org.adempiere.comp.id";
 	
 	@Override
 	public String nextComponentUuid(Desktop desktop, Component comp, ComponentInfo compInfo) {
-		String prefix = comp.getId(); 
+		String id = comp.getId(); 
 		StringBuilder locatorBuilder = new StringBuilder();
 					
-		if (prefix == null || prefix.length() == 0) {
+		if (id == null || id.length() == 0) {
 			String attribute = comp.getWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME);
 			if (attribute != null && attribute.length() > 0) {
 				String widgetName = getWidgetName(comp.getWidgetClass());
-				prefix = widgetName+"0"+attribute;
+				id = widgetName+"0"+attribute;
 				locatorBuilder.append("@")
 					.append(widgetName).append("[")
 					.append(AdempiereWebUI.WIDGET_INSTANCE_NAME)
 					.append("=\'").append(attribute).append("']");
 			}
 		} else {
-			if (prefix.indexOf(" ") > 0) {
+			if (id.indexOf(" ") > 0) {
 				String widgetName = getWidgetName(comp.getWidgetClass());
 				locatorBuilder.append("@")
 					.append(widgetName).append("[id")
-					.append("=\'").append(prefix).append("']");
+					.append("=\'").append(id).append("']");
 			} else {
-				locatorBuilder.append("$").append(prefix);
+				locatorBuilder.append("$").append(id);
 			}
 		}
 		
-		if (prefix == null || prefix.length() == 0) {
-			prefix = DEFAULT_ZK_COMP_PREFIX;
+		if (id == null || id.length() == 0) {
 			locatorBuilder.append("@").append(getWidgetName(comp.getWidgetClass()));
 		}
 		
-		StringBuilder builder = new StringBuilder(prefix);
 		Component parent = comp.getParent();
 		while(parent != null) {
 			//only include id space owner to ease converting test case to use zk id selector instead of uuid
 			if (parent instanceof IdSpace) {
-				String id = parent.getId();
+				id = parent.getId();
 				if (id != null && id.length() > 0) {
-					builder.insert(0, id+"_");		
 					if (id.indexOf(" ") > 0) {
 						String widgetName = getWidgetName(parent.getWidgetClass());
 						locatorBuilder.insert(0, "@"+widgetName+"[id=\'"+id+"\'] ");
@@ -92,7 +87,6 @@ public class AdempiereIdGenerator implements IdGenerator {
 					if (attribute != null && attribute.length() > 0) {
 						String widgetName = getWidgetName(parent.getWidgetClass()); 
 						id = widgetName+"0"+attribute;
-						builder.insert(0, id+"_");
 						locatorBuilder.insert(0, "@"+widgetName+"["+AdempiereWebUI.WIDGET_INSTANCE_NAME+"=\'"+attribute+"\'] ");
 					} else {
 						locatorBuilder.insert(0, "@"+getWidgetName(parent.getWidgetClass())+" ");
@@ -103,30 +97,8 @@ public class AdempiereIdGenerator implements IdGenerator {
 		}
 		
 		comp.setWidgetAttribute(ZK_LOCATOR_ATTRIBUTE, locatorBuilder.toString());
-		prefix = builder.toString();
 		
-		prefix = escapeId(prefix);
-		
-		if (desktop.getComponentByUuidIfAny(prefix) == null) { // look to avoid dups
-			return prefix;
-		} 
-
-		/* add sequence suffix to guarantee uniqueness */
-		int i = 0;
-		try {
-			String number = null;
-			if (desktop.getAttribute(DESKTOP_ID_ATTRIBUTE) != null) {
-				number = desktop.getAttribute(DESKTOP_ID_ATTRIBUTE).toString();
-				i = Integer.parseInt(number);
-				i++;// Start from 1
-			}
-		} catch (Throwable t) {
-			i = 1;
-		}
-		desktop.setAttribute(DESKTOP_ID_ATTRIBUTE, String.valueOf(i));
-		if (!prefix.endsWith("_"))
-			prefix = prefix + "_";
-		return prefix + i;
+		return null;
 	}
 
 	private static String getWidgetName(String widgetClass) {
@@ -148,10 +120,6 @@ public class AdempiereIdGenerator implements IdGenerator {
 
 	@Override
 	public String nextDesktopId(Desktop desktop) {
-		if (desktop.getAttribute(DESKTOP_ID_ATTRIBUTE) == null) {
-			String number = "0";
-			desktop.setAttribute(DESKTOP_ID_ATTRIBUTE, number);
-		}
 		return null;
 	}
 
@@ -161,30 +129,30 @@ public class AdempiereIdGenerator implements IdGenerator {
 	}
 
 	public static void updateZkLocatorAttribute(Component comp) {
-		String prefix = comp.getId(); 
+		String id = comp.getId(); 
 		StringBuilder locatorBuilder = new StringBuilder();
 					
-		if (prefix == null || prefix.length() == 0) {
+		if (id == null || id.length() == 0) {
 			String attribute = comp.getWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME);
 			if (attribute != null && attribute.length() > 0) {
-				prefix = getWidgetName(comp.getWidgetClass());
+				id = getWidgetName(comp.getWidgetClass());
 				locatorBuilder.append("@")
-					.append(prefix).append("[")
+					.append(id).append("[")
 					.append(AdempiereWebUI.WIDGET_INSTANCE_NAME)
 					.append("=\'").append(attribute).append("']");
 			}
 		} else {
-			if (prefix.indexOf(" ") > 0) {
+			if (id.indexOf(" ") > 0) {
 				String widgetName = getWidgetName(comp.getWidgetClass());
 				locatorBuilder.append("@")
 					.append(widgetName).append("[id")
-					.append("=\'").append(prefix).append("']");
+					.append("=\'").append(id).append("']");
 			} else {
-				locatorBuilder.append("$").append(prefix);
+				locatorBuilder.append("$").append(id);
 			}
 		}
 		
-		if (prefix == null || prefix.length() == 0) {
+		if (id == null || id.length() == 0) {
 			locatorBuilder.append("@").append(getWidgetName(comp.getWidgetClass()));
 		}
 		
@@ -192,7 +160,7 @@ public class AdempiereIdGenerator implements IdGenerator {
 		while(parent != null) {
 			//only include id space owner to ease converting test case to use zk id selector instead of uuid
 			if (parent instanceof IdSpace) {
-				String id = parent.getId();
+				id = parent.getId();
 				if (id != null && id.length() > 0) {
 					if (id.indexOf(" ") > 0) {
 						String widgetName = getWidgetName(parent.getWidgetClass());
