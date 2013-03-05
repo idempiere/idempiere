@@ -89,6 +89,15 @@ public interface I_C_InvoiceLine
 	/** Get Create Asset	  */
 	public boolean isA_CreateAsset();
 
+    /** Column name A_Processed */
+    public static final String COLUMNNAME_A_Processed = "A_Processed";
+
+	/** Set Processed	  */
+	public void setA_Processed (boolean A_Processed);
+
+	/** Get Processed	  */
+	public boolean isA_Processed();
+
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -123,14 +132,16 @@ public interface I_C_InvoiceLine
 	  */
 	public int getAD_OrgTrx_ID();
 
-    /** Column name A_Processed */
-    public static final String COLUMNNAME_A_Processed = "A_Processed";
+    /** Column name ASU_1099Box_ID */
+    public static final String COLUMNNAME_ASU_1099Box_ID = "ASU_1099Box_ID";
 
-	/** Set Processed	  */
-	public void setA_Processed (boolean A_Processed);
+	/** Set 1099 Box	  */
+	public void setASU_1099Box_ID (int ASU_1099Box_ID);
 
-	/** Get Processed	  */
-	public boolean isA_Processed();
+	/** Get 1099 Box	  */
+	public int getASU_1099Box_ID();
+
+	public org.compiere.model.I_ASU_1099Box getASU_1099Box() throws RuntimeException;
 
     /** Column name C_Activity_ID */
     public static final String COLUMNNAME_C_Activity_ID = "C_Activity_ID";
@@ -274,22 +285,6 @@ public interface I_C_InvoiceLine
 
 	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException;
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
-
     /** Column name C_Tax_ID */
     public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
 
@@ -319,6 +314,22 @@ public interface I_C_InvoiceLine
 	public int getC_UOM_ID();
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
