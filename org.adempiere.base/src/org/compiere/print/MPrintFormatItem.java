@@ -665,21 +665,21 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 		//	&& MClient.get(getCtx()).isMultiLingualDocument()
 			&& getPrintName() != null && getPrintName().length() > 0)
 		{
-			String sql = "UPDATE AD_PrintFormatItem_Trl trl "
+			String sql = "UPDATE AD_PrintFormatItem_Trl "
 				+ "SET PrintName = (SELECT e.PrintName "
 					+ "FROM AD_Element_Trl e, AD_Column c "
-					+ "WHERE e.AD_Language=trl.AD_Language"
+					+ "WHERE e.AD_Language=AD_PrintFormatItem_Trl.AD_Language"
 					+ " AND e.AD_Element_ID=c.AD_Element_ID"
 					+ " AND c.AD_Column_ID=" + getAD_Column_ID() + ") "
 				+ "WHERE AD_PrintFormatItem_ID = " + get_ID()
 				+ " AND EXISTS (SELECT * "
 					+ "FROM AD_Element_Trl e, AD_Column c "
-					+ "WHERE e.AD_Language=trl.AD_Language"
+					+ "WHERE e.AD_Language=AD_PrintFormatItem_Trl.AD_Language"
 					+ " AND e.AD_Element_ID=c.AD_Element_ID"
 					+ " AND c.AD_Column_ID=" + getAD_Column_ID()
-					+ " AND trl.AD_PrintFormatItem_ID = " + get_ID() + ")"
+					+ " AND AD_PrintFormatItem_Trl.AD_PrintFormatItem_ID = " + get_ID() + ")"
 				+ " AND EXISTS (SELECT * FROM AD_Client "
-					+ "WHERE AD_Client_ID=trl.AD_Client_ID AND IsMultiLingualDocument='Y')";
+					+ "WHERE AD_Client_ID=AD_PrintFormatItem_Trl.AD_Client_ID AND IsMultiLingualDocument='Y')";
 			int no = DB.executeUpdate(sql, get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("translations updated #" + no);
 		}
