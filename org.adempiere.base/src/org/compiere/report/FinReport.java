@@ -23,6 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.I_C_ValidCombination;
@@ -307,6 +308,7 @@ public class FinReport extends SvrProcess
 
 		insertLineDetail();
 		doCalculations();
+		doColumnPercentageOfLineForMultiRange();
 
 		deleteUnprintedLines();
 		
@@ -682,12 +684,49 @@ public class FinReport extends SvrProcess
 					.append ("COALESCE(Col_").append (ii_2).append(",0)");
 			//	/
 			if (m_columns[col].isCalculationTypePercent()) 
-				sb.append ("CASE WHEN COALESCE(Col_").append(ii_2)
-					.append(",0)=0 THEN NULL ELSE ")
-					.append("COALESCE(Col_").append (ii_1).append(",0)")
-					.append("/")
-					.append ("Col_").append (ii_2)
-					.append("*100 END");	//	Zero Divide
+			{
+				String oper2Line = (String) m_columns[col].get_Value("Oper_2_LineName");
+				String oper1col = "Col_" + ii_1;
+				String oper2col = "Col_" + ii_2;
+				if (oper2Line != null)
+				{
+					String oper2 = null;
+					//multiple range or all column value as percentage of a single calculated line value
+					String[] multi = oper2Line.split("[,]");
+					if (multi.length > 1)
+						continue;
+					String colsql = "SELECT a." + oper2col + " FROM T_Report a " +
+							" INNER JOIN PA_ReportLine b ON a.PA_ReportLine_ID = b.PA_ReportLine_ID " +
+							" WHERE a.AD_PInstance_ID = " + getAD_PInstance_ID() +
+							" AND b.Name = ?";
+					BigDecimal value2 = DB.getSQLValueBD(get_TrxName(), colsql, oper2Line);
+					if (value2 != null && value2.signum() != 0)
+						oper2 = value2.toPlainString();
+
+					if (oper2 == null)
+					{
+						sb.append(" NULL ");
+					}
+					else
+					{
+						sb.append("Round(");
+						sb.append("COALESCE(").append(oper1col).append(",0)")
+						  .append("/")
+						  .append(oper2)
+						  .append("*100 ");
+						sb.append(", 2)");
+					}
+				}
+				else
+				{
+					sb.append ("CASE WHEN COALESCE(Col_").append(ii_2)
+						.append(",0)=0 THEN NULL ELSE ")
+						.append("COALESCE(Col_").append (ii_1).append(",0)")
+						.append("/")
+						.append ("Col_").append (ii_2)
+						.append("*100 END");	//	Zero Divide
+				}
+			}
 			//	Range
 			else if (m_columns[col].isCalculationTypeRange())
 			{
@@ -710,6 +749,162 @@ public class FinReport extends SvrProcess
 		} 	//	for all columns
 
 	}	//	doCalculations
+
+	/**
+	 * percentage calculation for column value against calculated line value for multiple range
+	 */
+	private void doColumnPercentageOfLineForMultiRange() {
+		//	for all columns		***********************************************
+		for (int col = 0; col < m_columns.length; col++)
+		{
+			//	Only Calculations
+			if (!m_columns[col].isColumnTypeCalculation ())
+				continue;
+
+			if (!m_columns[col].isCalculationTypePercent())
+				continue;
+
+			//	First Operand
+			int ii_1 = getColumnIndex(m_columns[col].getOper_1_ID());
+			if (ii_1 < 0)
+			{
+				log.log(Level.SEVERE, "Column Index for Operator 1 not found - " + m_columns[col]);
+				continue;
+			}
+			//	Second Operand
+			int ii_2 = getColumnIndex(m_columns[col].getOper_2_ID());
+			if (ii_2 < 0)
+			{
+				log.log(Level.SEVERE, "Column Index for Operator 2 not found - " + m_columns[col]);
+				continue;
+			}
+			log.fine("Column " + col + " = #" + ii_1 + " "
+				+ m_columns[col].getCalculationType() + " #" + ii_2);
+			//	Reverse Range
+			if (ii_1 > ii_2 && m_columns[col].isCalculationTypeRange())
+			{
+				log.fine("Swap operands from " + ii_1 + " op " + ii_2);
+				int temp = ii_1;
+				ii_1 = ii_2;
+				ii_2 = temp;
+			}
+
+			String oper2Line = (String) m_columns[col].get_Value("Oper_2_LineName");
+			String oper1col = "Col_" + ii_1;
+			String oper2col = "Col_" + ii_2;
+			if (oper2Line == null)
+				continue;
+
+			String oper2 = null;
+			String[] multi = oper2Line.split("[,]");
+			if (multi.length < 2)
+				continue;
+
+			boolean lteq = true; //less than or equal to
+			String seqsql = "SELECT b.seqNo FROM T_Report a " +
+			" INNER JOIN PA_ReportLine b ON a.PA_ReportLine_ID = b.PA_ReportLine_ID " +
+			" WHERE a.AD_PInstance_ID = " + getAD_PInstance_ID() +
+			" AND b.Name = ?";
+			int seqNo = -1;
+			try {
+				seqNo = Integer.parseInt(multi[0].trim());
+			} catch (Exception e) {}
+			if (seqNo == -1)
+			{
+				seqNo = DB.getSQLValue(get_TrxName(), seqsql, multi[0].trim());
+			}
+			if (seqNo < 0)
+				continue;
+
+			String countsql = "SELECT count(*) FROM T_Report a " +
+			" INNER JOIN PA_ReportLine b ON a.PA_ReportLine_ID = b.PA_ReportLine_ID " +
+			" WHERE a.AD_PInstance_ID = " + getAD_PInstance_ID() +
+			" AND b.seqNo < ? AND a."+oper1col+" IS NOT NULL " +
+			" AND a."+oper2col+" IS NOT NULL ";
+			int count = DB.getSQLValue(get_TrxName(), countsql, seqNo);
+			if (count == 0)
+				lteq = false;
+
+			List<Integer> seqlist = new ArrayList<Integer>();
+			seqlist.add(seqNo);
+			for(int i = 1; i < multi.length; i++)
+			{
+				seqNo = -1;
+				try {
+					seqNo = Integer.parseInt(multi[i].trim());
+				} catch (Exception e) {}
+				if (seqNo == -1)
+				{
+					seqNo = DB.getSQLValue(get_TrxName(), seqsql, multi[i].trim());
+				}
+				if (seqNo < 0)
+					continue;
+				seqlist.add(seqNo);
+			}
+
+			for (int i = 0; i < seqlist.size(); i++)
+			{
+				int currentSeq = seqlist.get(i);
+				StringBuffer sb = new StringBuffer ("UPDATE T_Report SET ");
+				//	Column to set
+				sb.append ("Col_").append (col).append("=");
+
+				String colsql = "SELECT a." + oper2col + " FROM T_Report a " +
+						" INNER JOIN PA_ReportLine b ON a.PA_ReportLine_ID = b.PA_ReportLine_ID " +
+						" WHERE a.AD_PInstance_ID = " + getAD_PInstance_ID() +
+						" AND b.seqNo = ?";
+				BigDecimal value2 = DB.getSQLValueBD(get_TrxName(), colsql, currentSeq);
+				if (value2 != null && value2.signum() != 0)
+					oper2 = value2.toPlainString();
+
+				if (oper2 == null)
+				{
+					sb.append(" NULL ");
+				}
+				else
+				{
+					sb.append("Round(");
+					sb.append("COALESCE(").append(oper1col).append(",0)")
+					  .append("/")
+					  .append(oper2)
+					  .append("*100 ");
+					sb.append(", 2)");
+				}
+							//
+				sb.append(" WHERE AD_PInstance_ID=").append(getAD_PInstance_ID())
+					.append(" AND ABS(LevelNo)<2");			//	0=Line 1=Acct
+				if (lteq)
+				{
+					sb.append(" AND seqNo <= " + currentSeq);
+					if (i > 0)
+					{
+						int prevSeq = seqlist.get(i - 1);
+						sb.append(" AND seqNo > " + prevSeq);
+					}
+				}
+				else
+				{
+					sb.append(" AND seqNo >= " + currentSeq);
+					if (i+1 < seqlist.size())
+					{
+						int nextSeq = seqlist.get(i+1);
+						sb.append(" AND seqNo < " + nextSeq);
+					}
+				}
+				int no = DB.executeUpdate(sb.toString(), get_TrxName());
+				if (no < 1)
+					log.severe ("#=" + no + " for " + m_columns[col]
+						+ " - " + sb.toString());
+				else
+				{
+					log.fine("Col=" + col + " - " + m_columns[col]);
+					log.finest (sb.toString ());
+				}
+			}
+
+		}
+
+	}
 
 	/**
 	 * 	Get List of PA_ReportLine_ID from .. to
