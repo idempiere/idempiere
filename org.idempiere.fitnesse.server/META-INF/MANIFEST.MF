@@ -18,7 +18,7 @@ Bundle-ClassPath: .,
  lib/fitnesse.jar,
  lib/log4j-1.2.16.jar,
  lib/fitlibraryweb-2.0.jar,
- lib/selenium-server-standalone-2.27.0.jar
+ lib/selenium-server-standalone-2.31.0.jar
 Web-ContextPath: fitnesse
 Export-Package: fit,
  fit.decorator,
