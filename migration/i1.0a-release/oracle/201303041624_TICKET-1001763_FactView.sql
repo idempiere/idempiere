@@ -4168,5 +4168,25 @@ UPDATE AD_Column SET AD_Reference_ID=13, IsToolbarButton='N',Updated=TO_DATE('20
 UPDATE AD_Column SET AD_Reference_ID=10, IsToolbarButton='N',Updated=TO_DATE('2013-03-04 15:45:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=208770
 ;
 
+-- Mar 5, 2013 4:56:57 PM SGT
+-- Ticket 1001763: Standard Templates for Docs and Forms - Reporting
+INSERT INTO AD_Process_Para (IsRange,AD_Element_ID,AD_Process_Para_ID,AD_Process_Para_UU,Help,AD_Process_ID,AD_Reference_ID,IsMandatory,AD_Reference_Value_ID,EntityType,Name,ColumnName,Description,FieldLength,IsCentrallyMaintained,SeqNo,IsActive,UpdatedBy,Updated,CreatedBy,Created,AD_Org_ID,AD_Client_ID,IsEncrypted) VALUES ('N',113,200061,'51b3c02a-015e-4cc4-9b1b-a3acac1e4aef','An organization is a unit of your client or legal entity - examples are store, department. You can share data between organizations.',200038,18,'N',130,'D','Organization','AD_Org_ID','Organizational entity within client',0,'Y',10,'Y',100,TO_DATE('2013-03-05 16:56:55','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-03-05 16:56:55','YYYY-MM-DD HH24:MI:SS'),0,0,'N')
+;
+
+-- Mar 5, 2013 4:56:58 PM SGT
+-- Ticket 1001763: Standard Templates for Docs and Forms - Reporting
+INSERT INTO AD_Process_Para_Trl (AD_Language,AD_Process_Para_ID, Help,Name,Description, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Process_Para_Trl_UU ) SELECT l.AD_Language,t.AD_Process_Para_ID, t.Help,t.Name,t.Description, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Process_Para t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Process_Para_ID=200061 AND NOT EXISTS (SELECT * FROM AD_Process_Para_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Process_Para_ID=t.AD_Process_Para_ID)
+;
+
+-- Mar 5, 2013 4:58:35 PM SGT
+-- Ticket 1001763: Standard Templates for Docs and Forms - Reporting
+INSERT INTO AD_Process_Para (IsRange,AD_Element_ID,AD_Process_Para_ID,AD_Process_Para_UU,Help,AD_Process_ID,AD_Reference_ID,IsMandatory,EntityType,Name,ColumnName,Description,FieldLength,IsCentrallyMaintained,VFormat,SeqNo,IsActive,UpdatedBy,Updated,CreatedBy,Created,AD_Org_ID,AD_Client_ID,IsEncrypted) VALUES ('Y',202265,200062,'f25968f1-3fea-4cc4-a572-b7fc7656ce74','The only valid date format is: YYYY-MM',200038,10,'N','D','Financial Year Month','FYMth','The only valid date format is: YYYY-MM',0,'N','0000-00',20,'Y',100,TO_DATE('2013-03-05 16:58:35','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-03-05 16:58:35','YYYY-MM-DD HH24:MI:SS'),0,0,'N')
+;
+
+-- Mar 5, 2013 4:58:35 PM SGT
+-- Ticket 1001763: Standard Templates for Docs and Forms - Reporting
+INSERT INTO AD_Process_Para_Trl (AD_Language,AD_Process_Para_ID, Help,Name,Description, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Process_Para_Trl_UU ) SELECT l.AD_Language,t.AD_Process_Para_ID, t.Help,t.Name,t.Description, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Process_Para t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Process_Para_ID=200062 AND NOT EXISTS (SELECT * FROM AD_Process_Para_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Process_Para_ID=t.AD_Process_Para_ID)
+;
+
 SELECT register_migration_script('201303041624_TICKET-1001763_FactView.sql') FROM dual
 ;

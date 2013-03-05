@@ -1198,5 +1198,10 @@ UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=31, Updated=CURRENT_TIMESTAMP WHER
 UPDATE AD_TreeNodeMM SET Parent_ID=236, SeqNo=32, Updated=CURRENT_TIMESTAMP WHERE AD_Tree_ID=10 AND Node_ID=53187
 ;
 
+-- Mar 5, 2013 4:01:18 PM SGT
+-- Ticket 1001763: Standard Templates for Docs and Forms - Reporting
+UPDATE AD_Process_Para SET IsRange='Y',Updated=TO_TIMESTAMP('2013-03-05 16:01:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200053
+;
+
 SELECT register_migration_script('201303041621_TICKET-1001763_BankRegister.sql') FROM dual
 ;

@@ -6801,14 +6801,11 @@ DECLARE
 
 ******************************************************************************/
 BEGIN
-   SELECT SUM (  (NVL (linenetamt, 0) + NVL (taxamt, 0))
-               * DECODE
-                       (docbasetype,
-                        'API', 1,
-                        'APC', -1,
-                        0
-                       )            -- +API->AP Invoice / -APC->AP Credit Memo
-              )
+   SELECT SUM (  (COALESCE (linenetamt, 0) + COALESCE (taxamt, 0))
+               * (CASE WHEN docbasetype = 'API' THEN 1 
+					CASE WHEN docbasetype = 'APC' THEN -1
+					ELSE 0 END)
+              )            -- +API->AP Invoice / -APC->AP Credit Memo
      INTO tmpvar
      FROM C_INVOICE i, C_INVOICELINE il, ASU_1099BOX b, C_DOCTYPE dt
     WHERE i.c_invoice_id = il.c_invoice_id
