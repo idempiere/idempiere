@@ -287,12 +287,12 @@ public class M_Element extends X_AD_Element
 				|| is_ValueChanged(M_Element.COLUMNNAME_Name)
 				) {
 				//	Print Info
-				sql = new StringBuilder("UPDATE AD_PrintFormatItem pi SET PrintName=")
+				sql = new StringBuilder("UPDATE AD_PrintFormatItem SET PrintName=")
 					.append(DB.TO_STRING(getPrintName()))
 					.append(", Name=").append(DB.TO_STRING(getName()))
 					.append(" WHERE IsCentrallyMaintained='Y'")	
 					.append(" AND EXISTS (SELECT * FROM AD_Column c ")
-						.append("WHERE c.AD_Column_ID=pi.AD_Column_ID AND c.AD_Element_ID=")
+						.append("WHERE c.AD_Column_ID=AD_PrintFormatItem.AD_Column_ID AND c.AD_Element_ID=")
 						.append(get_ID()).append(")");
 				no = DB.executeUpdate(sql.toString(), get_TrxName());
 				if (log.isLoggable(Level.FINE)) log.fine("PrintFormatItem updated #" + no);

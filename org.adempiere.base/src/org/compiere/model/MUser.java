@@ -902,7 +902,7 @@ public class MUser extends X_AD_User
 		if (email_login && getPassword() != null && getPassword().length() > 0) {
 			// email is mandatory for users with password
 			if (getEMail() == null || getEMail().length() == 0) {
-				log.saveError("SaveError", Msg.getMsg(getCtx(), "FillMandatory") + Msg.getElement(getCtx(), COLUMNNAME_EMail));
+				log.saveError("SaveError", Msg.getMsg(getCtx(), "FillMandatory") + Msg.getElement(getCtx(), COLUMNNAME_EMail) + " - " + toString());
 				return false;
 			}
 			// email with password must be unique on the same tenant

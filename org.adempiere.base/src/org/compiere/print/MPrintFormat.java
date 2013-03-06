@@ -19,8 +19,10 @@ package org.compiere.print;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -503,8 +505,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 
 		//	Get Info
 		String sql = "SELECT TableName,"		//	1
-			+ " (SELECT COUNT(*) FROM AD_PrintFormat x WHERE x.AD_Table_ID=t.AD_Table_ID AND x.AD_Client_ID=c.AD_Client_ID) AS Count,"
-			+ " COALESCE (cpc.AD_PrintColor_ID, pc.AD_PrintColor_ID) AS AD_PrintColor_ID,"	//	3
+			+ " COALESCE (cpc.AD_PrintColor_ID, pc.AD_PrintColor_ID) AS AD_PrintColor_ID,"	//	2
 			+ " COALESCE (cpf.AD_PrintFont_ID, pf.AD_PrintFont_ID) AS AD_PrintFont_ID,"
 			+ " COALESCE (cpp.AD_PrintPaper_ID, pp.AD_PrintPaper_ID) AS AD_PrintPaper_ID "
 			+ "FROM AD_Table t, AD_Client c"
@@ -528,21 +529,18 @@ public class MPrintFormat extends X_AD_PrintFormat
 				//	Name
 				String TableName = rs.getString(1);
 				String ColumnName = TableName + "_ID";
-				String s = ColumnName;
+				String basename = ColumnName;
 				if (!ColumnName.equals("T_Report_ID"))
 				{
-					s = Msg.translate (ctx, ColumnName);
-					if (ColumnName.equals (s)) //	not found
-						s = Msg.translate (ctx, TableName);
+					basename = Msg.translate (ctx, ColumnName);
+					if (ColumnName.equals (basename)) //	not found
+						basename = Msg.translate (ctx, TableName);
 				}
-				int count = rs.getInt(2);
-				if (count > 0)
-					s += "_" + (count+1);
-				pf.setName(s);
+				setUniqueName(AD_Client_ID, pf, basename);
 				//
-				pf.setAD_PrintColor_ID(rs.getInt(3));
-				pf.setAD_PrintFont_ID(rs.getInt(4));
-				pf.setAD_PrintPaper_ID(rs.getInt(5));
+				pf.setAD_PrintColor_ID(rs.getInt(2));
+				pf.setAD_PrintFont_ID(rs.getInt(3));
+				pf.setAD_PrintPaper_ID(rs.getInt(4));
 				//
 				error = false;
 			}
@@ -561,8 +559,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 			return null;
 
 		//	Save & complete
-		if (!pf.save())
-			return null;
+		pf.saveEx();
 		
 		GridField[] gridFields = null;
 		
@@ -634,6 +631,12 @@ public class MPrintFormat extends X_AD_PrintFormat
 		return pf;
 	}
 
+	private static boolean exists(int clientID, String name) {
+		final String sql = "SELECT COUNT(*) FROM AD_PrintFormat WHERE AD_Client_ID=? AND Name=?";
+		int cnt = DB.getSQLValue(null, sql, clientID, name);
+		return cnt > 0;
+	}
+
 	/**************************************************************************
 	 * 	Create MPrintFormat for Table
 	 *  @param ctx context
@@ -663,8 +666,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 
 		//	Get Info
 		String sql = "SELECT TableName,"		//	1
-			+ " (SELECT COUNT(*) FROM AD_PrintFormat x WHERE x.AD_Table_ID=t.AD_Table_ID AND x.AD_Client_ID=c.AD_Client_ID) AS Count,"
-			+ " COALESCE (cpc.AD_PrintColor_ID, pc.AD_PrintColor_ID) AS AD_PrintColor_ID,"	//	3
+			+ " COALESCE (cpc.AD_PrintColor_ID, pc.AD_PrintColor_ID) AS AD_PrintColor_ID,"	//	2
 			+ " COALESCE (cpf.AD_PrintFont_ID, pf.AD_PrintFont_ID) AS AD_PrintFont_ID,"
 			+ " COALESCE (cpp.AD_PrintPaper_ID, pp.AD_PrintPaper_ID) AS AD_PrintPaper_ID "
 			+ "FROM AD_Table t, AD_Client c"
@@ -688,21 +690,18 @@ public class MPrintFormat extends X_AD_PrintFormat
 				//	Name
 				String TableName = rs.getString(1);
 				String ColumnName = TableName + "_ID";
-				String s = ColumnName;
+				String basename = ColumnName;
 				if (!ColumnName.equals("T_Report_ID"))
 				{
-					s = Msg.translate (ctx, ColumnName);
-					if (ColumnName.equals (s)) //	not found
-						s = Msg.translate (ctx, TableName);
+					basename = Msg.translate (ctx, ColumnName);
+					if (ColumnName.equals (basename)) //	not found
+						basename = Msg.translate (ctx, TableName);
 				}
-				int count = rs.getInt(2);
-				if (count > 0)
-					s += "_" + (count+1);
-				pf.setName(s);
+				setUniqueName(AD_Client_ID, pf, basename);
 				//
-				pf.setAD_PrintColor_ID(rs.getInt(3));
-				pf.setAD_PrintFont_ID(rs.getInt(4));
-				pf.setAD_PrintPaper_ID(rs.getInt(5));
+				pf.setAD_PrintColor_ID(rs.getInt(2));
+				pf.setAD_PrintFont_ID(rs.getInt(3));
+				pf.setAD_PrintPaper_ID(rs.getInt(4));
 				//
 				error = false;
 			}
@@ -721,8 +720,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 			return null;
 
 		//	Save & complete
-		if (!pf.save())
-			return null;
+		pf.saveEx();
 	//	pf.dump();
 		pf.setItems (createItems(ctx, pf));
 		//
@@ -746,7 +744,6 @@ public class MPrintFormat extends X_AD_PrintFormat
 
 		//	Get Info
 		String sql = "SELECT t.TableName,"
-			+ " (SELECT COUNT(*) FROM AD_PrintFormat x WHERE x.AD_ReportView_ID=rv.AD_ReportView_ID AND x.AD_Client_ID=c.AD_Client_ID) AS Count,"
 			+ " COALESCE (cpc.AD_PrintColor_ID, pc.AD_PrintColor_ID) AS AD_PrintColor_ID,"
 			+ " COALESCE (cpf.AD_PrintFont_ID, pf.AD_PrintFont_ID) AS AD_PrintFont_ID,"
 			+ " COALESCE (cpp.AD_PrintPaper_ID, pp.AD_PrintPaper_ID) AS AD_PrintPaper_ID,"
@@ -772,19 +769,16 @@ public class MPrintFormat extends X_AD_PrintFormat
 			if (rs.next())
 			{
 				//	Name
-				String name = ReportName;
-				if (name == null || name.length() == 0)
-					name = rs.getString(1);		//	TableName
-				int count = rs.getInt(2);
-				if (count > 0)
-					name += "_" + count;
-				pf.setName(name);
+				String basename = ReportName;
+				if (basename == null || basename.length() == 0)
+					basename = rs.getString(1);		//	TableName
+				setUniqueName(AD_Client_ID, pf, basename);
 				//
-				pf.setAD_PrintColor_ID(rs.getInt(3));
-				pf.setAD_PrintFont_ID(rs.getInt(4));
-				pf.setAD_PrintPaper_ID(rs.getInt(5));
+				pf.setAD_PrintColor_ID(rs.getInt(2));
+				pf.setAD_PrintFont_ID(rs.getInt(3));
+				pf.setAD_PrintPaper_ID(rs.getInt(4));
 				//
-				pf.setAD_Table_ID (rs.getInt(6));
+				pf.setAD_Table_ID (rs.getInt(5));
 				error = false;
 			}
 			else
@@ -802,13 +796,26 @@ public class MPrintFormat extends X_AD_PrintFormat
 			return null;
 
 		//	Save & complete
-		if (!pf.save())
-			return null;
+		pf.saveEx();
 	//	pf.dump();
 		pf.setItems (createItems(ctx, pf));
 		//
 		return pf;
 	}	//	createFromReportView
+
+	private static void setUniqueName(int AD_Client_ID, MPrintFormat pf, String basename) {
+		String name = basename;
+		pf.setName(name);
+		boolean sleep = false;
+		while (exists(AD_Client_ID, name)) {
+			if (sleep)
+				Env.sleep(1); // wait 1 sec to get next second in datetime
+			else
+				sleep = true;
+			name = basename + "_" + getDateTime();
+			pf.setName(name);
+		}
+	}
 
 
 	/**
@@ -1022,8 +1029,8 @@ public class MPrintFormat extends X_AD_PrintFormat
 		//	Set Name - Remove TEMPLATE - add copy
 		to.setName(Util.replace(to.getName(), "TEMPLATE", String.valueOf(to_Client_ID)));
 		to.setName(to.getName()
-			+ " " + Msg.getMsg(ctx, "Copy")
-			+ " " + to.hashCode());		//	unique name
+			+ " - " + Util.cleanAmp(Msg.getMsg(ctx, "Copy"))
+			+ " " + getDateTime());		//	unique name
 		//
 		to.saveEx();
 
@@ -1033,6 +1040,13 @@ public class MPrintFormat extends X_AD_PrintFormat
 	}	//	copyToClient
 
 	/*************************************************************************/
+
+	private static String getDateTime() {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String dt = sdf.format(cal.getTime());
+		return dt;
+	}
 
 	/** Cached Formats						*/
 	static private CCache<Integer,MPrintFormat> s_formats = new CCache<Integer,MPrintFormat>(Table_Name, 30);

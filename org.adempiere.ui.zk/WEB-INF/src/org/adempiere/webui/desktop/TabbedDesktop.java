@@ -169,6 +169,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 				runnable.run();
 			}
 		});				
+		preOpenNewTab();
 		Events.echoEvent(new Event("onOpenWindow", tabPanel));
 	}
 
@@ -259,6 +260,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 				runnable.run();
 			}
 		});				
+		preOpenNewTab();
 		Events.echoEvent(new Event("onOpenWindow", tabPanel));
 	}
 
@@ -383,8 +385,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		}
 		
 		@Override
-		public void run() {
-			preOpenNewTab();
+		public void run() {			
 			if (adWindow.createPart(tabPanel) != null ) {
 				tab.setImage(null);
 				tab.setClosable(true);
