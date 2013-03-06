@@ -27,11 +27,13 @@ import java.util.Properties;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
@@ -39,6 +41,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.SwipeEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Vlayout;
@@ -96,20 +99,36 @@ public class ADWindowContent extends AbstractADWindowContent
 			@Override
 			public void onEvent(SwipeEvent event) throws Exception {
 				if ("right".equals(event.getSwipeDirection())) {
-					if (breadCrumb.isNextEnabled()) {
-						onNext();
+					ToolBarButton nextBtn = breadCrumb.getNextButton();
+					if (!nextBtn.isDisabled()) {
+						nextBtn.setDisabled(true);
+						String script = "var w=zk.Widget.$('#"+nextBtn.getUuid()+"');" +
+								"w.fire('onClick',null,{toServer:true});";
+						Clients.response(new AuScript(script));
 					}
 				} else if ("left".equals(event.getSwipeDirection())) {
-					if (breadCrumb.isPreviousEnabled()) {
-						onPrevious();
+					ToolBarButton previousBtn = breadCrumb.getPreviousButton();
+					if (!previousBtn.isDisabled()) {
+						previousBtn.setDisabled(true);
+						String script = "var w=zk.Widget.$('#"+previousBtn.getUuid()+"');" +
+								"w.fire('onClick',null,{toServer:true});";
+						Clients.response(new AuScript(script));
 					}
 				} else if ("up".equals(event.getSwipeDirection())) {
-					if (!toolbar.getButton("ParentRecord").isDisabled()) {
-						onParentRecord();
+					ToolBarButton parentBtn = toolbar.getButton("ParentRecord");
+					if (!parentBtn.isDisabled()) {
+						parentBtn.setDisabled(true);
+						String script = "var w=zk.Widget.$('#"+parentBtn.getUuid()+"');" +
+								"w.fire('onClick',null,{toServer:true});";
+						Clients.response(new AuScript(script));
 					}
 				} else if ("down".equals(event.getSwipeDirection())) {
-					if (!toolbar.getButton("DetailRecord").isDisabled()) {
-						onDetailRecord();
+					ToolBarButton detailBtn = toolbar.getButton("DetailRecord");
+					if (!detailBtn.isDisabled()) {
+						detailBtn.setDisabled(true);
+						String script = "var w=zk.Widget.$('#"+detailBtn.getUuid()+"');" +
+								"w.fire('onClick',null,{toServer:true});";
+						Clients.response(new AuScript(script));
 					}
 				}
 			}
