@@ -148,7 +148,7 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 				}
 			}
 			else if (m_order.getFreightCostRule().equals(MOrder.FREIGHTCOSTRULE_Calculated))
-			{			
+			{
 				if (freightLine == null)
 				{
 					freightLine = new MOrderLine(m_order);
@@ -166,6 +166,12 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 				freightLine.setQty(BigDecimal.ONE);
 				freightLine.setPrice(st.getPrice());
 				freightLine.saveEx();
+				
+				if (m_order.isPriviledgedRate() != p_IsPriviledgedRate)
+				{
+					m_order.setIsPriviledgedRate(p_IsPriviledgedRate);
+					m_order.saveEx();
+				}
 			}
 		}
 		else
