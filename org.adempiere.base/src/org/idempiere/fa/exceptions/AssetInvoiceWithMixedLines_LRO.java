@@ -16,6 +16,6 @@ public class AssetInvoiceWithMixedLines_LRO extends AssetException {
 	private static final long serialVersionUID = 7477049497754422353L;
 
 	public AssetInvoiceWithMixedLines_LRO() {
-		super("No new bills that contain both fixed and normal products");
+		super("@AssetInvoiceWithMixedLines@");
 	}
 }
