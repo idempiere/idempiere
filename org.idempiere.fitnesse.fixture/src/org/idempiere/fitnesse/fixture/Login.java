@@ -27,6 +27,7 @@
 package org.idempiere.fitnesse.fixture;
 
 import org.compiere.model.MSession;
+import org.compiere.model.MUser;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
@@ -140,7 +141,29 @@ public class Login extends TableFixture {
 			return null; // already logged with same data
 		
 		org.compiere.util.Login login = new org.compiere.util.Login(m_ads!=null ? m_ads.getCtx() : null);
-		KeyNamePair[] roles = login.getRoles(m_user, m_password);
+		
+		KeyNamePair[] clients = login.getClients(m_user, m_password);
+		boolean okclient = false;
+		KeyNamePair selectedClient = null;
+		for (KeyNamePair client : clients) {
+			if (client.getKey() == m_client_id) {
+				okclient = true;
+				selectedClient = client;
+				break;
+			}
+		}
+		if (!okclient)
+			return "Error logging in - client not allowed for this user";
+
+       	Env.setContext(m_ads.getCtx(), "#AD_Client_ID", (String) selectedClient.getID());
+    	MUser user = MUser.get (m_ads.getCtx(), m_user);
+    	if (user != null) {
+    		Env.setContext(m_ads.getCtx(), "#AD_User_ID", user.getAD_User_ID() );
+    		Env.setContext(m_ads.getCtx(), "#AD_User_Name", user.getName() );
+    		Env.setContext(m_ads.getCtx(), "#SalesRep_ID", user.getAD_User_ID() );
+    	}
+		
+		KeyNamePair[] roles = login.getRoles(m_user, selectedClient);
 		if (roles != null)
 		{
 			boolean okrole = false;
@@ -153,19 +176,6 @@ public class Login extends TableFixture {
 			if (!okrole)
 				return "Error logging in - role not allowed for this user";
 
-			KeyNamePair[] clients = login.getClients( new KeyNamePair(m_role_id, "" ) );
-			boolean okclient = false;
-			for (KeyNamePair client : clients) {
-				if (client.getKey() == m_client_id) {
-					okclient = true;
-					break;
-				}
-			}
-			if (!okclient)
-				return "Error logging in - client not allowed for this role";
-
-			m_ads.getCtx().setProperty("#AD_Client_ID", Integer.toString(m_client_id));
-			
 			KeyNamePair[] orgs  = login.getOrgs( new KeyNamePair(m_role_id, "" ));
 
 			if (orgs == null)

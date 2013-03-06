@@ -171,6 +171,7 @@ public class Login
 	 * @param force ignore pwd
 	 * @return  Array of Role KeyNamePair or null if error
 	 * The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
+	 * @deprecated
 	 */
 	protected KeyNamePair[] getRoles (CConnection cc,
 		String app_user, String app_pwd, boolean force)
@@ -206,6 +207,7 @@ public class Login
 	 *  @param app_user Principal
 	 *  @return role array or null if in error.
 	 *  The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
+	 *  @deprecated use public KeyNamePair[] getRoles(String app_user, KeyNamePair client)
 	 */
 	public KeyNamePair[] getRoles (Principal app_user)
 	{
@@ -225,6 +227,7 @@ public class Login
 	 *  @param app_pwd password
 	 *  @return role array or null if in error.
 	 *  The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
+	 *  @deprecated use public KeyNamePair[] getRoles(String app_user, KeyNamePair client)
 	 */
 	public KeyNamePair[] getRoles (String app_user, String app_pwd)
 	{
@@ -238,6 +241,7 @@ public class Login
 	 *  @param force ignore pwd
 	 *  @return role array or null if in error.
 	 *  The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
+	 *  @deprecated use public KeyNamePair[] getRoles(String app_user, KeyNamePair client)
 	 */
 	private KeyNamePair[] getRoles (String app_user, String app_pwd, boolean force)
 	{
@@ -296,6 +300,8 @@ public class Login
 					"         AND c.IsActive='Y') AND " +
 					" AD_User.IsActive='Y'";
 
+			// deprecate this method - it cannot cope with same user found on multiple clients
+			// use public KeyNamePair[] getRoles(String app_user, KeyNamePair client) approach instead
 			MUser user = MTable.get(m_ctx, MUser.Table_ID).createQuery( where, null).setParameters(app_user).firstOnly();   // throws error if username collision occurs
 
 			// always do calculation to confuse timing based attacks
@@ -397,7 +403,13 @@ public class Login
 				do	//	read all roles
 				{
 					MUser user = new MUser(m_ctx, rs.getInt(1), null);
-					if (user.getPassword() != null && user.getPassword().equals(app_pwd)) { 
+					boolean valid = false;
+					if (hash_password) {
+						valid = user.authenticateHash(app_pwd);
+					} else {
+						valid = user.getPassword() != null && user.getPassword().equals(app_pwd);
+					}
+					if (valid) { 
 						int AD_Role_ID = rs.getInt(2);
 						if (AD_Role_ID == 0)
 							Env.setContext(m_ctx, "#SysAdmin", "Y");

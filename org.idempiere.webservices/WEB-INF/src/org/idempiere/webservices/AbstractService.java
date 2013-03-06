@@ -33,6 +33,7 @@ import org.adempiere.base.ServiceQuery;
 import org.adempiere.base.equinox.EquinoxExtensionLocator;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.Lookup;
+import org.compiere.model.MUser;
 import org.compiere.model.MWebService;
 import org.compiere.model.MWebServiceType;
 import org.compiere.model.PO;
@@ -89,7 +90,29 @@ public class AbstractService {
 			return ret;
 		
 		Login login = new Login(m_cs.getCtx());
-		KeyNamePair[] roles = login.getRoles(loginRequest.getUser(), loginRequest.getPass());
+		KeyNamePair[] clients = login.getClients(loginRequest.getUser(), loginRequest.getPass());
+		boolean okclient = false;
+		KeyNamePair selectedClient = null;
+		for (KeyNamePair client : clients) {
+			if (client.getKey() == loginRequest.getClientID()) {
+				okclient = true;
+				selectedClient = client;
+				break;
+			}
+		}
+		if (!okclient)
+			return "Error logging in - client not allowed for this user";
+
+		m_cs.getCtx().setProperty("#AD_Client_ID", "" + loginRequest.getClientID());
+       	Env.setContext(m_cs.getCtx(), "#AD_Client_ID", (String) selectedClient.getID());
+    	MUser user = MUser.get (m_cs.getCtx(), loginRequest.getUser());
+    	if (user != null) {
+    		Env.setContext(m_cs.getCtx(), "#AD_User_ID", user.getAD_User_ID() );
+    		Env.setContext(m_cs.getCtx(), "#AD_User_Name", user.getName() );
+    		Env.setContext(m_cs.getCtx(), "#SalesRep_ID", user.getAD_User_ID() );
+    	}
+
+		KeyNamePair[] roles = login.getRoles(loginRequest.getUser(), selectedClient);
 		if (roles != null) {
 			boolean okrole = false;
 			for (KeyNamePair role : roles) {
@@ -100,19 +123,6 @@ public class AbstractService {
 			}
 			if (!okrole)
 				return "Error logging in - role not allowed for this user";
-
-			KeyNamePair[] clients = login.getClients(new KeyNamePair(loginRequest.getRoleID(), ""));
-			boolean okclient = false;
-			for (KeyNamePair client : clients) {
-				if (client.getKey() == loginRequest.getClientID()) {
-					okclient = true;
-					break;
-				}
-			}
-			if (!okclient)
-				return "Error logging in - client not allowed for this role";
-
-			m_cs.getCtx().setProperty("#AD_Client_ID", "" + loginRequest.getClientID());
 
 			KeyNamePair[] orgs = login.getOrgs(new KeyNamePair(loginRequest.getRoleID(), ""));
 
@@ -151,8 +161,6 @@ public class AbstractService {
 			
 			if (!m_cs.login(AD_User_ID, loginRequest.getRoleID(), loginRequest.getClientID(), loginRequest.getOrgID(), loginRequest.getWarehouseID(), loginRequest.getLang()))
 				return "Error logging in";
-			
-			
 			
 		} else {
 			return "Error logging in - no roles or user/pwd invalid for user " + loginRequest.getUser();
