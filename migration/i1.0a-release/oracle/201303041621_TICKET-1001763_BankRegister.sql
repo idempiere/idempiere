@@ -1,3 +1,6 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
 -- Mar 1, 2013 12:13:25 PM SGT
 -- Ticket 1001763: Standard Templates for Docs and Forms - Reporting
 INSERT INTO AD_Table (ImportTable,CopyColumnsFromTable,IsSecurityEnabled,AccessLevel,LoadSeq,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,AD_Table_UU,IsCentrallyMaintained,IsDeleteable,TableName,Name,AD_Client_ID,IsActive,AD_Org_ID,Updated,CreatedBy,UpdatedBy,Created) VALUES ('N','N','N','4',0,200070,'N','N','N','D','L','056ac053-9bfe-418e-b853-c5bc786bb13d','Y','Y','T_BankRegister','Bank Register',0,'Y',0,TO_DATE('2013-03-01 12:13:23','YYYY-MM-DD HH24:MI:SS'),100,100,TO_DATE('2013-03-01 12:13:23','YYYY-MM-DD HH24:MI:SS'))
