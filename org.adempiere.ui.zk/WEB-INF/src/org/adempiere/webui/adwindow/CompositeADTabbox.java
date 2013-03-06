@@ -45,6 +45,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Vlayout;
 
 /**
@@ -210,7 +212,7 @@ public class CompositeADTabbox extends AbstractADTabbox
     	layout.addEventListener(ON_POST_TAB_SELECTION_CHANGED_EVENT, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				onPostTabSelectionChanged();
+				onPostTabSelectionChanged((Boolean)event.getData());
 			}
 		});
     	    	
@@ -435,10 +437,10 @@ public class CompositeADTabbox extends AbstractADTabbox
 		headerTab.setDetailPaneMode(false);
 		getBreadCrumb().getFirstChild().setVisible(false);
 		
-		Events.echoEvent(new Event(ON_POST_TAB_SELECTION_CHANGED_EVENT, layout));
+		Events.echoEvent(new Event(ON_POST_TAB_SELECTION_CHANGED_EVENT, layout, oldIndex > newIndex));
 	}
 
-	private void onPostTabSelectionChanged() {
+	private void onPostTabSelectionChanged(Boolean back) {
 		if (headerTab instanceof ADTabpanel) {
 			DetailPane detailPane = headerTab.getDetailPane();
 			if (detailPane == null) {
@@ -487,6 +489,17 @@ public class CompositeADTabbox extends AbstractADTabbox
         if (adwindow != null) {
         	adwindow.getADWindowContent().getToolbar().enableTabNavigation(getBreadCrumb().hasParentLink(), 
         			headerTab.getDetailPane() != null && headerTab.getDetailPane().getTabcount() > 0);
+        }
+        
+        //indicator and row highlight lost after navigate back from child to parent
+        if (back != null && back.booleanValue()) {
+        	if (headerTab.isGridView()) {
+        		RowRenderer<Object[]> renderer = headerTab.getGridView().getListbox().getRowRenderer();
+        		GridTabRowRenderer gtr = (GridTabRowRenderer)renderer;
+        		Row row = gtr.getCurrentRow();
+        		if (row != null)	
+        			gtr.setCurrentRow(row);
+        	}
         }
 	}
 
