@@ -1292,3 +1292,8 @@ font-size: 0;
 	margin:0px;
 	padding: 1px 4px 1px 4px;
 }
+
+<%-- workaround for http://jira.idempiere.com/browse/IDEMPIERE-692 --%>
+.z-combobox-pp {
+	max-height: 200px;
+}
