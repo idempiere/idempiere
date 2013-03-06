@@ -87,6 +87,8 @@ ContextMenuListener, IZoomableEditor
 
 	private CCacheListener tableCacheListener;
 
+	private boolean onselecting = false;
+
     public WTableDirEditor(GridField gridField)
     {
         super(new EditorCombobox(), gridField);
@@ -247,6 +249,10 @@ ContextMenuListener, IZoomableEditor
 
     public void setValue(Object value)
     {
+    	if (onselecting) {
+    		return;
+    	}
+    	
     	if (value != null && (value instanceof Integer || value instanceof String))
         {
 
@@ -373,12 +379,17 @@ ContextMenuListener, IZoomableEditor
     {
     	if (Events.ON_SELECT.equalsIgnoreCase(event.getName()))
     	{
-	        Object newValue = getValue();
-	        if (isValueChange(newValue)) {
-		        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
-		        super.fireValueChange(changeEvent);
-		        oldValue = newValue;
-	        }
+    		try {
+    			onselecting = true;
+		        Object newValue = getValue();
+		        if (isValueChange(newValue)) {
+			        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
+			        super.fireValueChange(changeEvent);
+			        oldValue = newValue;
+		        }
+    		} finally {
+    			onselecting = false;
+    		}
     	}
     	else if (Events.ON_BLUR.equalsIgnoreCase(event.getName()))
     	{
