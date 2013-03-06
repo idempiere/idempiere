@@ -30,6 +30,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.WReport;
+import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.DrillEvent;
@@ -438,14 +439,22 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 				);
 	}
 
+	//use _docClick undocumented api. need verification after major zk release update
+	private final static String autoHideMenuScript = "try{var w=zk.Widget.$('#{0}');var t=zk.Widget.$('#{1}');" +
+			"var e=new Object;e.target=t;w._docClick(e);}catch(error){}";
+	
 	private void autoHideMenu() {
 		if (layout.getWest().isCollapsible() && !layout.getWest().isOpen())
 		{
 			String id = layout.getWest().getUuid();
-			//$n('colled') is not documented api so this might break in release after 6.0.0
-			String script = "jq(zk.Widget.$('"+id+"').$n('colled')).click();";
-			AuScript aus = new AuScript(layout.getWest(), script);
-			Clients.response("autoHideWest", aus);
+			Tab tab = windowContainer.getSelectedTab();
+			if (tab != null) {
+				String tabId = tab.getUuid();
+				String script = autoHideMenuScript.replace("{0}", id);
+				script = script.replace("{1}", tabId);
+				AuScript aus = new AuScript(layout.getWest(), script);
+				Clients.response("autoHideWest", aus);
+			}			
 		}
 	}
 
