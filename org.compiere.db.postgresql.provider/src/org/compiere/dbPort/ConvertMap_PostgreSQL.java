@@ -63,11 +63,11 @@ public final class ConvertMap_PostgreSQL {
 		s_pg.put("\\bBITMAP INDEX\\b",          "INDEX");
 
 		//  Functions
-		s_pg.put("\\bSYSDATE\\b",               "CURRENT_TIMESTAMP");   //  alternative: NOW()
+		s_pg.put("\\bSYSDATE\\b",               "now()");
         //begin vpj-cd e-evolution 03/11/2005 PostgreSQL		                                     
 		s_pg.put("\\bDUMP\\b",               "MD5"); 	
 		s_pg.put("END CASE",               "END");
-		s_pg.put("\\bgetDate\\b\\(\\)",               "CURRENT_TIMESTAMP");   //  alternative: NOW()
+		s_pg.put("\\bgetDate\\b\\(\\)",               "now()");
 		//end vpj-cd e-evolution 03/11/2005 PostgreSQL
 		s_pg.put("\\bNVL\\b",                   "COALESCE");
 		s_pg.put("\\bTO_DATE\\b",               "TO_TIMESTAMP");
