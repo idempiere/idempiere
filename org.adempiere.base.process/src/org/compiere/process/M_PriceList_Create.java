@@ -19,6 +19,7 @@
 
 package org.compiere.process;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,6 +28,12 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.compiere.model.MAcctSchema;
+import org.compiere.model.MClientInfo;
+import org.compiere.model.MDiscountSchemaLine;
+import org.compiere.model.MProduct;
+import org.compiere.model.MProductPrice;
+import org.compiere.model.ProductCost;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
@@ -613,6 +620,75 @@ public class M_PriceList_Create extends SvrProcess {
 						raiseError("Update  M_ProductPrice ", sqlupd.toString());
 					totu += cntu;
 					if (log.isLoggable(Level.FINE)) log.fine("Updated " + cntu);
+					
+					/**
+					 * Product Cost overwrite
+					 * Elaine 2009/12/24
+					 */
+					if(rsDiscountLine.getString(MDiscountSchemaLine.COLUMNNAME_List_Base).equals(MDiscountSchemaLine.LIST_BASE_ProductCost) || 
+							rsDiscountLine.getString(MDiscountSchemaLine.COLUMNNAME_Std_Base).equals(MDiscountSchemaLine.STD_BASE_ProductCost) || 
+							rsDiscountLine.getString(MDiscountSchemaLine.COLUMNNAME_Limit_Base).equals(MDiscountSchemaLine.LIMIT_BASE_ProductCost))
+					{
+						MClientInfo m_clientInfo = MClientInfo.get(getCtx(), rsCurgen.getInt("AD_Client_ID"), get_TrxName());
+						MAcctSchema as = new MAcctSchema(getCtx(), m_clientInfo.getC_AcctSchema1_ID(), get_TrxName());
+						
+						StringBuilder sqlpc = new StringBuilder("SELECT p.M_Product_ID ");
+						sqlpc.append(" FROM M_ProductPrice p");
+						sqlpc.append(" WHERE M_PriceList_Version_ID=").append(p_PriceList_Version_ID);
+						sqlpc.append(" AND EXISTS (SELECT * FROM T_Selection s");
+						sqlpc.append(" WHERE s.T_Selection_ID=p.M_Product_ID");
+						sqlpc.append(" AND s.AD_PInstance_ID=").append(m_AD_PInstance_ID + ")");
+						
+						PreparedStatement ps = DB.prepareStatement(sqlpc.toString(), get_TrxName());
+						ResultSet rs = ps.executeQuery();
+						while(rs.next()) 
+						{
+							int M_Product_ID = rs.getInt(MProductPrice.COLUMNNAME_M_Product_ID);
+							ProductCost m_productCost = new ProductCost (getCtx(), M_Product_ID, 0, get_TrxName());
+							m_productCost.setQty(BigDecimal.ONE);
+							BigDecimal costs = m_productCost.getProductCosts(as, rsCurgen.getInt("AD_Org_ID"), null, 0, false);	
+							
+							if (costs == null || costs.signum() == 0)	//	zero costs OK
+							{
+								MProduct product = new MProduct(getCtx(), M_Product_ID, get_TrxName());
+								if (product.isStocked())
+									log.log(Level.WARNING, "No Costs for " + product.getName());
+							}
+							else
+							{
+								sqlupd = new StringBuilder("UPDATE M_ProductPrice p ");
+								sqlupd.append(" SET	PriceList  = (DECODE('").append(rsDiscountLine.getString(MDiscountSchemaLine.COLUMNNAME_List_Base)).append("', 'P', ?, PriceList) + ?) * (1 - ?/100), ");
+								sqlupd.append("     PriceStd   = (DECODE('").append(rsDiscountLine.getString(MDiscountSchemaLine.COLUMNNAME_Std_Base)).append("', 'P', ?, PriceStd) + ?) * (1 - ?/100),");
+								sqlupd.append("     PriceLimit = (DECODE('").append(rsDiscountLine.getString(MDiscountSchemaLine.COLUMNNAME_Limit_Base)).append("', 'P', ?, PriceLimit) + ?) * (1 - ?/100)");
+								sqlupd.append(" WHERE	M_PriceList_Version_ID=").append(p_PriceList_Version_ID); 
+								sqlupd.append(" AND M_Product_ID = ?");
+								sqlupd.append(" AND EXISTS	(SELECT * FROM T_Selection s");
+								sqlupd.append(" WHERE s.T_Selection_ID=p.M_Product_ID");
+								sqlupd.append(" AND s.AD_PInstance_ID=").append(m_AD_PInstance_ID + ")");
+								
+								pstmu = DB.prepareStatement(sqlupd.toString(),
+										ResultSet.TYPE_SCROLL_INSENSITIVE,
+										ResultSet.CONCUR_UPDATABLE, get_TrxName());
+
+								pstmu.setBigDecimal(1, costs);
+								pstmu.setDouble(2, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_List_AddAmt));
+								pstmu.setDouble(3, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_List_Discount));
+								pstmu.setBigDecimal(4, costs);
+								pstmu.setDouble(5, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_Std_AddAmt));
+								pstmu.setDouble(6, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_Std_Discount));
+								pstmu.setBigDecimal(7, costs);
+								pstmu.setDouble(8, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_Limit_AddAmt));
+								pstmu.setDouble(9, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_Limit_Discount));
+								pstmu.setInt(10, M_Product_ID);
+
+								cntu = pstmu.executeUpdate();
+
+								if (cntu == -1)
+									raiseError("Update	M_ProductPrice ", sqlupd.toString());
+								if (log.isLoggable(Level.FINE)) log.fine("Updated " + cntu);
+							}
+						}
+					}
 
 					//
 					//Rounding	(AD_Reference_ID=155)
