@@ -606,7 +606,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
 		// IDEMPIERE-297 - Check for Table Access and Window Access for New Report
 		if (   MRole.getDefault().isTableAccess(MPrintFormat.Table_ID, false) 
-			&& MRole.getDefault().getWindowAccess(WINDOW_PRINTFORMAT))
+			&& MRole.getDefault().getWindowAccess(WINDOW_PRINTFORMAT) == Boolean.TRUE)
 		{
 			StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(Env.getCtx(), "NewReport")).append(" **");
 			KeyNamePair pp = new KeyNamePair(-1, sb.toString());
