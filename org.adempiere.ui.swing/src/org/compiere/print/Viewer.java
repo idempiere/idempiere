@@ -467,7 +467,7 @@ public class Viewer extends CFrame
 		}
 		// IDEMPIERE-297 - Check for Table Access and Window Access for New Report
 		if (   MRole.getDefault().isTableAccess(MPrintFormat.Table_ID, false) 
-			&& (MRole.getDefault().getWindowAccess(WINDOW_PRINTFORMAT) == Boolean.TRUE))
+			&& (Boolean.TRUE.equals(MRole.getDefault().getWindowAccess(WINDOW_PRINTFORMAT))))
 		{
 			StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(m_ctx, "NewReport")).append(" **");
 			KeyNamePair pp = new KeyNamePair(-1, sb.toString());

@@ -133,7 +133,7 @@ public class ColumnSync extends SvrProcess
 				String statements[] = sql.split(DB.SQLSTATEMENT_SEPARATOR);
 				for (int i = 0; i < statements.length; i++)
 				{
-					int count = DB.executeUpdate(statements[i], false, get_TrxName());
+					int count = DB.executeUpdateEx(statements[i], get_TrxName());
 					addLog (0, null, new BigDecimal(count), statements[i]);
 					no += count;
 				}
