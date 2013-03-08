@@ -61,7 +61,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8307496567084341384L;
+	private static final long serialVersionUID = -1378114118642378625L;
 
 	/**
 	 *	Public Constructor.
@@ -803,17 +803,27 @@ public class MPrintFormat extends X_AD_PrintFormat
 		return pf;
 	}	//	createFromReportView
 
-	private static void setUniqueName(int AD_Client_ID, MPrintFormat pf, String basename) {
+	public static void setUniqueName(int AD_Client_ID, MPrintFormat pf, String basename) {
 		String name = basename;
 		pf.setName(name);
+		boolean dateAsSuffix = true;
 		boolean sleep = false;
-		while (exists(AD_Client_ID, name)) {
+		while (exists(AD_Client_ID, pf.getName())) {
 			if (sleep)
 				Env.sleep(1); // wait 1 sec to get next second in datetime
 			else
 				sleep = true;
-			name = basename + "_" + getDateTime();
+			if (dateAsSuffix) {
+				name = basename + "_" + getDateTime();
+			} else {
+				name = getDateTime() + "_" + basename;
+			}
 			pf.setName(name);
+			if (sleep && !name.equals(pf.getName())) {
+				// there has been already one iteration and the name is being truncated
+				// change method to put date as prefix
+				dateAsSuffix = false;
+			}
 		}
 	}
 
@@ -1029,8 +1039,8 @@ public class MPrintFormat extends X_AD_PrintFormat
 		//	Set Name - Remove TEMPLATE - add copy
 		to.setName(Util.replace(to.getName(), "TEMPLATE", String.valueOf(to_Client_ID)));
 		to.setName(to.getName()
-			+ " - " + Util.cleanAmp(Msg.getMsg(ctx, "Copy"))
-			+ " " + getDateTime());		//	unique name
+			+ " - " + Util.cleanAmp(Msg.getMsg(ctx, "Copy")));
+		setUniqueName(to.getAD_Client_ID(), to, to.getName());
 		//
 		to.saveEx();
 
