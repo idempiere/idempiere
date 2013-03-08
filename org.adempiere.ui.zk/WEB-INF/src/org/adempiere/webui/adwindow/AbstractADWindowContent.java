@@ -66,6 +66,7 @@ import org.adempiere.webui.panel.action.ExportAction;
 import org.adempiere.webui.panel.action.FileImportAction;
 import org.adempiere.webui.panel.action.ReportAction;
 import org.adempiere.webui.part.AbstractUIPart;
+import org.adempiere.webui.part.ITabOnSelectHandler;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.CustomizeGridViewDialog;
 import org.adempiere.webui.window.FDialog;
@@ -141,7 +142,7 @@ import org.zkoss.zul.Window.Mode;
  *  		https://sourceforge.net/tracker/?func=detail&aid=2985892&group_id=176962&atid=955896
  */
 public abstract class AbstractADWindowContent extends AbstractUIPart implements ToolbarListener,
-        EventListener<Event>, DataStatusListener, ActionListener
+        EventListener<Event>, DataStatusListener, ActionListener, ITabOnSelectHandler
 {
     private static final String ON_FOCUS_DEFER_EVENT = "onFocusDefer";
 
@@ -222,6 +223,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         comp.addEventListener(LayoutUtils.ON_REDRAW_EVENT, this);
         comp.addEventListener(ON_DEFER_SET_DETAILPANE_SELECTION_EVENT, this);
         comp.addEventListener(ON_FOCUS_DEFER_EVENT, this);
+        comp.setAttribute(ITabOnSelectHandler.ATTRIBUTE_KEY, this);
         return comp;
     }
 
@@ -2877,5 +2879,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		popup.render(adtab.getToolbarButtons());
 
 		LayoutUtils.openPopupWindow(toolbar.getButton("Process"), popup, "after_start");
+	}
+
+	@Override
+	public void onSelect() {
+		if (findWindow != null && findWindow.getPage() != null && findWindow.isVisible() && m_queryInitiating) {
+			LayoutUtils.openEmbeddedWindow(getComponent().getParent(), findWindow, "overlap");
+		}
 	}
 }
