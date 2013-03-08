@@ -18,7 +18,7 @@ function Calc()
 
 	     if(key == 13 || key == 61) // Enter, =
 	     {
-	     	evaluate(displayTextId, calcTextId);
+	     	evaluate(displayTextId, calcTextId, String.fromCharCode(separatorKey));
 	        return false;
 	     }
 	     else if (key == 0) // control, delete, ...
