@@ -20,6 +20,7 @@ package org.adempiere.webui.adwindow;
 import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_REDO;
 import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_UNDO;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -1268,16 +1269,46 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	{
 	            StringBuilder sb = new StringBuilder();
 	            String msg = e.getMessage();
+	            StringBuilder adMessage = new StringBuilder();
 	            if (msg != null && msg.length() > 0)
 	            {
-	                sb.append(Msg.getMsg(Env.getCtx(), e.getAD_Message()));
+	            	adMessage.append(Msg.getMsg(Env.getCtx(), e.getAD_Message()));
 	            }
 	            String info = e.getInfo();
 	            if (info != null && info.length() > 0)
 	            {
-	                if (sb.length() > 0 && !sb.toString().trim().endsWith(":"))
-	                    sb.append(": ");
-	                sb.append(info);
+	            	Object[] arguments = info.split("[;]");
+	            	int index = 0;
+	            	while(index < arguments.length)
+	            	{
+	            		String expr = "{"+index+"}";
+	            		if (adMessage.indexOf(expr) >= 0)
+	            		{
+	            			index++;
+	            		}
+	            		else
+	            		{
+	            			break;
+	            		}
+	            	}
+	            	if (index < arguments.length)
+	            	{
+	            		if (adMessage.length() > 0 && !adMessage.toString().trim().endsWith(":"))
+		                    adMessage.append(": ");
+	            		StringBuilder tail = new StringBuilder();
+	            		while(index < arguments.length)
+	            		{
+	            			if (tail.length() > 0) tail.append(", ");
+	            			tail.append("{").append(index).append("}");
+	            			index++;
+	            		}
+	            		adMessage.append(tail);
+	            	}
+	            	sb.append(MessageFormat.format(adMessage.toString(), arguments));
+	            }
+	            else
+	            {
+	            	sb.append(adMessage);
 	            }
 	            if (sb.length() > 0)
 	            {

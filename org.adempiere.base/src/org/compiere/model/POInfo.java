@@ -663,7 +663,7 @@ public class POInfo implements Serializable
 		//	Mandatory (i.e. not null
 		if (m_columns[index].IsMandatory && value == null)
 		{
-			return "IsMandatory";
+			return "FillMandatory";
 		}
 		if (value == null)
 			return null;
@@ -686,10 +686,7 @@ public class POInfo implements Serializable
 				int comp = m_columns[index].ValueMin_BD.compareTo(value_BD);
 				if (comp > 0)
 				{
-					return "MinValue=" + m_columns[index].ValueMin_BD 
-						+ "(" + m_columns[index].ValueMin + ")"
-						+ " - compared with Numeric Value=" + value_BD + "(" + value + ")"
-						+ " - results in " + comp;
+					return "LessThanMinValue"+";"+m_columns[index].ValueMin_BD.toPlainString();
 				}
 			}
 			else	//	String
@@ -697,9 +694,7 @@ public class POInfo implements Serializable
 				int comp = m_columns[index].ValueMin.compareTo(value.toString());
 				if (comp > 0)
 				{
-					return "MinValue=" + m_columns[index].ValueMin
-					  + " - compared with String Value=" + value
-					  + " - results in " + comp;
+					return "LessThanMinValue"+";"+m_columns[index].ValueMin;
 				}
 			}
 		}
@@ -718,9 +713,7 @@ public class POInfo implements Serializable
 				int comp = m_columns[index].ValueMax_BD.compareTo(value_BD);
 				if (comp < 0)
 				{
-					return "MaxValue=" + m_columns[index].ValueMax_BD + "(" + m_columns[index].ValueMax + ")"
-					  + " - compared with Numeric Value=" + value_BD + "(" + value + ")"
-					  + " - results in " + comp;
+					return "MoreThanMaxValue"+";"+m_columns[index].ValueMax_BD.toPlainString();
 				}
 			}
 			else	//	String
@@ -728,9 +721,7 @@ public class POInfo implements Serializable
 				int comp = m_columns[index].ValueMax.compareTo(value.toString());
 				if (comp < 0)
 				{
-					return "MaxValue=" + m_columns[index].ValueMax
-					  + " - compared with String Value=" + value
-					  + " - results in " + comp;
+					return "MoreThanMaxValue"+";"+m_columns[index].ValueMax;
 				}
 			}
 		}

@@ -2121,7 +2121,24 @@ public class GridTable extends AbstractTableModel
 					|| ((value != null && dbValue != null && value.getClass().equals(byte[].class) && dbValue.getClass().equals(byte[].class)) && Arrays.equals((byte[])oldValue, (byte[])dbValue)) 
 						)
 				{
-					po.set_ValueNoCheck (columnName, value);
+					if (!po.set_ValueNoCheck (columnName, value))
+					{
+						ValueNamePair lastError = CLogger.retrieveError();
+						if (lastError != null) {
+							String adMessage = lastError.getValue();
+							String adMessageArgument = lastError.getName().trim();
+							
+							StringBuilder info = new StringBuilder(adMessageArgument);
+							
+							if (!adMessageArgument.endsWith(";")) info.append(";");
+							info.append(field.getHeader());
+							
+							fireDataStatusEEvent(adMessage, info.toString(), true);
+						} else {
+							fireDataStatusEEvent("Set value failed", field.getHeader(), true);
+						}
+						return SAVE_ERROR;
+					}
 				}
 				//	Original != DB
 				else
