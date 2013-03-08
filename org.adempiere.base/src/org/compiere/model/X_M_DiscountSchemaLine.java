@@ -33,7 +33,7 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130306L;
 
     /** Standard Constructor */
     public X_M_DiscountSchemaLine (Properties ctx, int M_DiscountSchemaLine_ID, String trxName)
@@ -251,6 +251,8 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public static final String LIMIT_BASE_LimitPOPrice = "X";
 	/** Fixed Price = F */
 	public static final String LIMIT_BASE_FixedPrice = "F";
+	/** Product Cost = P */
+	public static final String LIMIT_BASE_ProductCost = "P";
 	/** Set Limit price Base.
 		@param Limit_Base 
 		Base price for calculation of the new price
@@ -415,6 +417,8 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public static final String LIST_BASE_LimitPOPrice = "X";
 	/** Fixed Price = F */
 	public static final String LIST_BASE_FixedPrice = "F";
+	/** Product Cost = P */
+	public static final String LIST_BASE_ProductCost = "P";
 	/** Set List price Base.
 		@param List_Base 
 		Price used as the basis for price list calculations
@@ -728,6 +732,8 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public static final String STD_BASE_LimitPOPrice = "X";
 	/** Fixed Price = F */
 	public static final String STD_BASE_FixedPrice = "F";
+	/** Product Cost = P */
+	public static final String STD_BASE_ProductCost = "P";
 	/** Set Standard price Base.
 		@param Std_Base 
 		Base price for calculating new standard price
