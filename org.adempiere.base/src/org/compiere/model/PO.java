@@ -785,7 +785,7 @@ public abstract class PO
 		//
 		if (value == null)
 		{
-			if (p_info.isColumnMandatory(index))
+			if (checkWritable && p_info.isColumnMandatory(index))
 			{
 				log.saveError("FillMandatory", ColumnName + " is mandatory.");
 				throw new IllegalArgumentException (ColumnName + " is mandatory.");
