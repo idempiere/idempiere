@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.base.Service;
 import org.adempiere.base.event.AbstractEventHandler;
@@ -33,6 +34,7 @@ import org.adempiere.webui.util.ServerPushTemplate;
 import org.compiere.model.I_R_Request;
 import org.compiere.model.PO;
 import org.compiere.model.X_R_RequestType;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
@@ -82,9 +84,12 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	private EventWindow eventWin;
 	private Properties ctx;
 	private Desktop desktop;
+	private ArrayList<ADCalendarEvent> events;
 	
 	private static RequestEventHandler eventHandler;
 	private static TopicSubscriber subscriber;
+	
+	private static final CLogger log = CLogger.getCLogger(DPCalendar.class);
 	
 	public DPCalendar() {
 		super();
@@ -395,6 +400,9 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 
 	@Override
 	public void updateUI() {
+		scm = new SimpleCalendarModel();
+		for (ADCalendarEvent event : events)
+			scm.add(event);
 		calendars.setModel(scm);
 		calendars.invalidate();
 	}
@@ -404,11 +412,8 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 		updateUI();
 	}
 
-	private void refreshModel() {
-		scm = new SimpleCalendarModel();
-		ArrayList<ADCalendarEvent> events = getEvents(0, ctx);
-		for (ADCalendarEvent event : events)
-			scm.add(event);
+	private void refreshModel() {		
+		events = getEvents(0, ctx);		
 	}
 	
 	private void updateDateLabel() {
@@ -452,7 +457,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 							EventManager.getInstance().unregister(this);
 						}
 					} catch (Exception e) {
-						EventManager.getInstance().unregister(this);
+						log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 					}
 				}
 			}
