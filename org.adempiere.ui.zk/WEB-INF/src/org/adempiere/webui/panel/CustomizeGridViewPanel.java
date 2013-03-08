@@ -532,7 +532,7 @@ public class CustomizeGridViewPanel extends Panel
 		} else{
 			uc = new MTabCustomization(Env.getCtx(), 0, null);
 			uc.setAD_Tab_ID(m_AD_Tab_ID);
-			uc.setAD_User_ID(m_AD_User_ID);
+			uc.set_ValueOfColumn("AD_User_ID", m_AD_User_ID);
 			uc.setCustom(custom.toString());			
 		}
 		if (uc.getCustom() == null || uc.getCustom().trim().length() == 0)
