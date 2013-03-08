@@ -204,7 +204,7 @@ public class NumberBox extends Div
         decimalBox.setId(decimalBox.getUuid());
         txtCalc.setId(txtCalc.getUuid());
         
-        txtCalc.setWidgetListener("onKeyPress", "return calc.validate('" + 
+        txtCalc.setWidgetListener("onKeyUp", "return calc.validate('" + 
         		decimalBox.getId() + "','" + txtCalc.getId() 
                 + "'," + integral + "," + (int)separatorChar + ", event);");
         txtCalc.setMaxlength(250);

@@ -516,6 +516,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	}
 
 	public void copyFormat(){
+		pfi.clear();
 		MPrintFormat newpf=MPrintFormat.copyToClient(m_ctx, m_reportEngine.getPrintFormat().get_ID() ,Env.getAD_Client_ID(m_ctx));
 			
 		for (MPrintFormatItem item : newpf.getAllItems("IsPrinted DESC, NULLIF(SeqNo,0), Name"))

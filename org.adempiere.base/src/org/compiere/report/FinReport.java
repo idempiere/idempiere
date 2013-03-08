@@ -1473,8 +1473,10 @@ public class FinReport extends SvrProcess
 			pf = MPrintFormat.get (getCtx(), AD_PrintFormat_ID, false);	//	use Cache
 
 		//	Print Format Sync
-		if (!m_report.getName().equals(pf.getName()))
+		if (!m_report.getName().equals(pf.getName())) {
 			pf.setName(m_report.getName());
+			MPrintFormat.setUniqueName(pf.getAD_Client_ID(), pf, pf.getName());
+		}
 		if (m_report.getDescription() == null)
 		{
 			if (pf.getDescription () != null)
