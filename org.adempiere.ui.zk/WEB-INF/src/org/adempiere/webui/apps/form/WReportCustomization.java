@@ -31,7 +31,6 @@ import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
-import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
@@ -91,9 +90,9 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	private Label selectAll;
 	private Label deselectAll;
 	private Label pipeSeparator;
-	private ToolBarButton bExport = new ToolBarButton();
+	private Button bExport = new Button();
 	private Button bnext ;
-	private ToolBarButton btnSave;
+	private Button btnSave;
 	private Tabbox tabbox = new Tabbox();
 	private Tabs tabs = new Tabs();
 	private Tabpanels tabpanels = new Tabpanels(); 
@@ -264,39 +263,31 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		Foot f=new Foot();
 
 		Grid grid=new Grid();
-		btnSave = new ToolBarButton();
-		btnSave.setAttribute("name","btnSave");
+		btnSave = new Button();
+		btnSave.setName("btnSave");
 		btnSave.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Save")));
 		btnSave.setImage("/images/Save24.png");
 		if(fm.getAD_Client_ID()== 0 || !isChange)
 		{	
 			btnSave.setDisabled(true);
 		}   
-		btnSave.addEventListener(Events.ON_CLICK, this);
 
-		foot.appendChild(btnSave);
-		foot.appendChild(new Separator("vertical"));
+		confirmPanelMain.addComponentsLeft(btnSave);
 
 		if (m_isCanExport)
 		{
 			bExport.setImage("/images/ExportX24.png");
-			bExport.setAttribute("name","btnExport");
+			bExport.setName("btnExport");
 			bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
-			bExport.addEventListener(Events.ON_CLICK, this);
-
-			foot.appendChild(bExport);
-			foot.appendChild(new Separator("vertical"));
+			confirmPanelMain.addComponentsLeft(bExport);
 		}
 
 		bnext=new Button();
 		bnext.setLabel(Msg.getMsg(Env.getCtx(), "NextPage"));
 		bnext.setName("Next");
-		bnext.addEventListener(Events.ON_CLICK, this);
-		foot.appendChild(bnext);
-		Vbox vb = new Vbox();
-		vb.setWidth("50%");
-		foot.appendChild(vb);
-		vb.appendChild(confirmPanelMain);
+		confirmPanelMain.addComponentsLeft(bnext);
+		
+		foot.appendChild(confirmPanelMain);
 		confirmPanelMain.addActionListener(this);
 		confirmPanelMain.setVflex("0");
 		
@@ -309,16 +300,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	@Override
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_CLICK.equals(event.getName())) {
-			if (event.getTarget() instanceof ToolBarButton) {
-				((WRCTabPanel) tabbox.getSelectedTabpanel()).updatePFI();
-				ToolBarButton button = (ToolBarButton)event.getTarget();
-				if ("btnSave".equals(button.getAttribute("name").toString())) {
-					onSave();
-				}
-				if ("btnExport".equals(button.getAttribute("name").toString())) {
-					cmd_export();
-				}
-			} else if (event.getTarget() instanceof Label) {
+			if (event.getTarget() instanceof Label) {
 				if (tabbox.getSelectedIndex() == 0) {
 					Label lb = (Label)event.getTarget();
 					if ("SelectAll".equals(lb.getAttribute("name").toString())) {
@@ -336,6 +318,14 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 						oldtabidx = 0;
 					((WRCTabPanel) tabbox.getTabpanel(oldtabidx)).refresh();
 					tabbox.setSelectedIndex(oldtabidx);
+				}
+				else if ("btnSave".equals(bt.getName())) {
+					((WRCTabPanel) tabbox.getSelectedTabpanel()).updatePFI();
+					onSave();
+				}
+				else if ("btnExport".equals(bt.getName())) {
+					((WRCTabPanel) tabbox.getSelectedTabpanel()).updatePFI();
+					cmd_export();
 				}
 				else{
 					if("NewPrintFormat".equals(bt.getName())){
