@@ -404,7 +404,7 @@ public class ReportAction implements EventListener<Event>
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 		}
 		
-		if (MRole.getDefault().isTableAccess(MPrintFormat.Table_ID, false) && MRole.getDefault().getWindowAccess(WINDOW_PRINTFORMAT) == Boolean.TRUE)
+		if (MRole.getDefault().isTableAccess(MPrintFormat.Table_ID, false) && Boolean.TRUE.equals(MRole.getDefault().getWindowAccess(WINDOW_PRINTFORMAT)))
 		{
 			StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(Env.getCtx(), "NewReport")).append(" **");
 			pp = new KeyNamePair(-1, sb.toString());
