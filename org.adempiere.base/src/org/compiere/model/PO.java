@@ -684,6 +684,18 @@ public abstract class PO
 	 */
 	protected final boolean set_Value (String ColumnName, Object value)
 	{
+		return set_Value(ColumnName, value, true);
+	}
+	
+	/**************************************************************************
+	 *  Set Value
+	 *  @param ColumnName column name
+	 *  @param value value
+	 *  @param checkWritable
+	 *  @return true if value set
+	 */
+	protected final boolean set_Value (String ColumnName, Object value, boolean checkWritable)
+	{
 		if (value instanceof String && ColumnName.equals("WhereClause")
 			&& value.toString().toUpperCase().indexOf("=NULL") != -1)
 			log.warning("Invalid Null Value - " + ColumnName + "=" + value);
@@ -692,6 +704,7 @@ public abstract class PO
 		if (index < 0)
 		{
 			log.log(Level.SEVERE, "Column not found - " + ColumnName);
+			log.saveError("ColumnNotFound", "Column not found - " + ColumnName);
 			return false;
 		}
 		if (ColumnName.endsWith("_ID") && value instanceof String )
@@ -705,7 +718,7 @@ public abstract class PO
 			}
 		}
 
-		return set_Value (index, value);
+		return set_Value (index, value, checkWritable);
 	}   //  setValue
 
 	/**
@@ -728,6 +741,19 @@ public abstract class PO
 	 */
 	protected final boolean set_Value (int index, Object value)
 	{
+		return set_Value(index, value, true);
+	}
+	
+	/**
+	 *  Set Value if updateable and correct class.
+	 *  (and to NULL if not mandatory)
+	 *  @param index index
+	 *  @param value value
+	 *  @param checkWritable
+	 *  @return true if value set
+	 */
+	protected final boolean set_Value (int index, Object value, boolean checkWritable)
+	{
 		if (index < 0 || index >= get_ColumnCount())
 		{
 			log.log(Level.WARNING, "Index invalid - " + index);
@@ -736,26 +762,32 @@ public abstract class PO
 		String ColumnName = p_info.getColumnName(index);
 		String colInfo = " - " + ColumnName;
 		//
-		if (p_info.isVirtualColumn(index))
+		if (checkWritable)
 		{
-			log.log(Level.WARNING, "Virtual Column" + colInfo);
-			return false;
-		}
-
-		//
-		// globalqss -- Bug 1618469 - is throwing not updateable even on new records
-		// if (!p_info.isColumnUpdateable(index))
-		if ( ( ! p_info.isColumnUpdateable(index) ) && ( ! is_new() ) )
-		{
-			colInfo += " - NewValue=" + value + " - OldValue=" + get_Value(index);
-			log.log(Level.WARNING, "Column not updateable" + colInfo);
-			return false;
+			if (p_info.isVirtualColumn(index))
+			{
+				log.log(Level.WARNING, "Virtual Column" + colInfo);
+				log.saveError("VirtualColumn", "Virtual Column" + colInfo);
+				return false;
+			}
+	
+			//
+			// globalqss -- Bug 1618469 - is throwing not updateable even on new records
+			// if (!p_info.isColumnUpdateable(index))
+			if ( ( ! p_info.isColumnUpdateable(index) ) && ( ! is_new() ) )
+			{
+				colInfo += " - NewValue=" + value + " - OldValue=" + get_Value(index);
+				log.log(Level.WARNING, "Column not updateable" + colInfo);
+				log.saveError("ColumnReadonly", "Column not updateable" + colInfo);
+				return false;
+			}
 		}
 		//
 		if (value == null)
 		{
 			if (p_info.isColumnMandatory(index))
 			{
+				log.saveError("FillMandatory", ColumnName + " is mandatory.");
 				throw new IllegalArgumentException (ColumnName + " is mandatory.");
 			}
 			m_newValues[index] = Null.NULL;          //  correct
@@ -793,6 +825,9 @@ public abstract class PO
 					log.log(Level.SEVERE, ColumnName
 						+ " - Class invalid: " + value.getClass().toString()
 						+ ", Should be " + p_info.getColumnClass(index).toString() + ": " + value);
+					log.saveError("WrongDataType", ColumnName
+							+ " - Class invalid: " + value.getClass().toString()
+							+ ", Should be " + p_info.getColumnClass(index).toString() + ": " + value);
 					return false;
 				}
 			else
@@ -800,6 +835,9 @@ public abstract class PO
 				log.log(Level.SEVERE, ColumnName
 					+ " - Class invalid: " + value.getClass().toString()
 					+ ", Should be " + p_info.getColumnClass(index).toString() + ": " + value);
+				log.saveError("WrongDataType", ColumnName
+						+ " - Class invalid: " + value.getClass().toString()
+						+ ", Should be " + p_info.getColumnClass(index).toString() + ": " + value);
 				return false;
 			}
 			//	Validate (Min/Max)
@@ -807,6 +845,12 @@ public abstract class PO
 			if (error != null)
 			{
 				log.log(Level.WARNING, ColumnName + "=" + value + " - " + error);
+				int separatorIndex = error.indexOf(";");
+				if (separatorIndex > 0) {
+					log.saveError(error.substring(0,separatorIndex), error.substring(separatorIndex+1));
+				} else {
+					log.saveError(error, ColumnName);
+				}
 				return false;
 			}
 			//	Length for String
@@ -831,6 +875,8 @@ public abstract class PO
 					StringBuilder validValues = new StringBuilder();
 					for (ValueNamePair vp : MRefList.getList(getCtx(), p_info.getColumn(index).AD_Reference_Value_ID, false))
 						validValues.append(" - ").append(vp.getValue());
+					log.saveError("Validate", ColumnName + " Invalid value - "
+							+ value + " - Reference_ID=" + p_info.getColumn(index).AD_Reference_Value_ID + validValues.toString());
 					throw new IllegalArgumentException(ColumnName + " Invalid value - "
 							+ value + " - Reference_ID=" + p_info.getColumn(index).AD_Reference_Value_ID + validValues.toString());
 				}
@@ -878,75 +924,7 @@ public abstract class PO
 	 */
 	public final boolean set_ValueNoCheck (String ColumnName, Object value)
 	{
-		int index = get_ColumnIndex(ColumnName);
-		if (index < 0)
-		{
-			log.log(Level.SEVERE, "Column not found - " + ColumnName);
-			return false;
-		}
-		if (value == null)
-			m_newValues[index] = Null.NULL;		//	write direct
-		else
-		{
-			//  matching class or generic object
-			if (value.getClass().equals(p_info.getColumnClass(index))
-				|| p_info.getColumnClass(index) == Object.class)
-				m_newValues[index] = value;     //  correct
-			//  Integer can be set as BigDecimal
-			else if (value.getClass() == BigDecimal.class
-				&& p_info.getColumnClass(index) == Integer.class)
-				m_newValues[index] = new Integer (((BigDecimal)value).intValue());
-			//	Set Boolean
-			else if (p_info.getColumnClass(index) == Boolean.class
-				&& ("Y".equals(value) || "N".equals(value)) )
-				m_newValues[index] = new Boolean("Y".equals(value));
-			else if (p_info.getColumnClass(index) == Integer.class
-				&& value.getClass() == String.class)
-			{
-				try
-				{
-					int intValue = Integer.parseInt((String)value);
-					m_newValues[index] = Integer.valueOf(intValue);
-				}
-				catch (Exception e)
-				{
-					log.warning (ColumnName
-							+ " - Class invalid: " + value.getClass().toString()
-							+ ", Should be " + p_info.getColumnClass(index).toString() + ": " + value);
-					m_newValues[index] = null;
-				}
-			}
-			else
-			{
-				log.warning (ColumnName
-					+ " - Class invalid: " + value.getClass().toString()
-					+ ", Should be " + p_info.getColumnClass(index).toString() + ": " + value);
-				m_newValues[index] = value;     //  correct
-			}
-			//	Validate (Min/Max)
-			String error = p_info.validate(index, value);
-			if (error != null)
-				log.warning(ColumnName + "=" + value + " - " + error);
-			//	length for String
-			if (p_info.getColumnClass(index) == String.class)
-			{
-				String stringValue = value.toString();
-				int length = p_info.getFieldLength(index);
-				if (stringValue.length() > length && length > 0)
-				{
-					log.warning(ColumnName + " - Value too long - truncated to length=" + length);
-					m_newValues[index] = stringValue.substring(0,length);
-				}
-			}
-		}
-		if (log.isLoggable(Level.FINEST)) log.finest(ColumnName + " = " + m_newValues[index]
-				+ " (" + (m_newValues[index]==null ? "-" : m_newValues[index].getClass().getName()) + ")");
-		set_Keys (ColumnName, m_newValues[index]);
-
-		// FR 2962094 Fill ProcessedOn when the Processed column is changing from N to Y
-		setProcessedOn(ColumnName, value, m_oldValues[index]);
-
-		return true;
+		return set_Value(ColumnName, value, false);
 	}   //  set_ValueNoCheck
 
 	/**
