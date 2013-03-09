@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
-import java.util.UUID;
 import java.util.logging.Level;
 
 import javax.script.ScriptEngine;
@@ -156,56 +155,12 @@ public final class ProcessUtil {
 		}
 
 		ProcessCall process = null;
-		//always query equinox extension first
+		//invoke process factory
 		process = Core.getProcess(className);
 
 		if (process == null) {
-			//Get Class
-			Class<?> processClass = null;
-			//use context classloader if available
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			if (classLoader != null)
-			{
-				try
-				{
-					processClass = classLoader.loadClass(className);
-				}
-				catch (ClassNotFoundException ex)
-				{
-					log.log(Level.FINE, className, ex);
-				}
-			}
-			if (processClass == null)
-			{
-				classLoader = ProcessUtil.class.getClassLoader();
-				try
-				{
-					processClass = classLoader.loadClass(className);
-				}
-				catch (ClassNotFoundException ex)
-				{
-					log.log(Level.WARNING, className, ex);
-					pi.setSummary ("ClassNotFound", true);
+			pi.setSummary("Failed to create new process instance for " + className, true);
 			return false;
-				}
-			}
-
-			if (processClass == null) {
-				pi.setSummary("No Instance for " + pi.getClassName(), true);
-				return false;
-			}
-
-			//Get Process
-			try
-			{
-				process = (ProcessCall)processClass.newInstance();
-			}
-			catch (Exception ex)
-			{
-				log.log(Level.WARNING, "Instance for " + className, ex);
-				pi.setSummary ("InstanceError", true);
-				return false;
-			}
 		}
 
 		boolean success = false;
@@ -268,7 +223,7 @@ public final class ProcessUtil {
 			// now add the method arguments to the engine
 			engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", ctx);
 			if (trx == null)
-				trx = Trx.get(pi.getTitle()+"_"+pi.getAD_PInstance_ID() + "_" + UUID.randomUUID(), true);
+				trx = Trx.get(Trx.createTrxName(pi.getTitle()+"_"+pi.getAD_PInstance_ID()), true);
 			engine.put(MRule.ARGUMENTS_PREFIX + "Trx", trx);
 			engine.put(MRule.ARGUMENTS_PREFIX + "TrxName", trx.getTrxName());
 			engine.put(MRule.ARGUMENTS_PREFIX + "Record_ID", pi.getRecord_ID());

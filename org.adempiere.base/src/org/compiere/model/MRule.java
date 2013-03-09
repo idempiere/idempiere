@@ -26,7 +26,6 @@ import java.util.Properties;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-import org.compiere.Adempiere;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Msg;
@@ -196,7 +195,7 @@ public class MRule extends X_AD_Rule
 	 *	@return ScriptEngine
 	 */
 	public ScriptEngine getScriptEngine() {
-		factory = new ScriptEngineManager(Adempiere.class.getClassLoader());
+		factory = new ScriptEngineManager(getClass().getClassLoader());
 		String engineName = getEngineName();
 		if (engineName != null)
 			engine = factory.getEngineByName(getEngineName());

@@ -118,8 +118,10 @@ public class WProcessInfo extends ProcessInfo {
 		{
 			try {
 				int lastdot = className.lastIndexOf(".");
-				zkName = className.substring(0, lastdot) + ".W" +  className.substring(lastdot+1);
-				this.getClass().getClassLoader().loadClass(zkName);
+				if (lastdot > 0) {
+					zkName = className.substring(0, lastdot) + ".W" +  className.substring(lastdot+1);
+					this.getClass().getClassLoader().loadClass(zkName);
+				}
 			} catch (Exception e) {
 				zkName = null;
 			}
