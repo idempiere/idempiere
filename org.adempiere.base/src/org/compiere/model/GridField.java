@@ -34,6 +34,8 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
+import org.adempiere.base.ILookupFactory;
+import org.adempiere.base.Service;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -163,49 +165,44 @@ public class GridField
 			return;
 		if (log.isLoggable(Level.CONFIG)) log.config("(" + m_vo.ColumnName + ")");
 
-		if (DisplayType.isLookup(m_vo.displayType) && m_vo.IsDisplayed)
+		if (DisplayType.isLookup(m_vo.displayType))
 		{
-			if (m_vo.lookupInfo == null)
+			if (m_vo.IsDisplayed)
 			{
-				log.log(Level.SEVERE, "(" + m_vo.ColumnName + ") - No LookupInfo");
-				return;
+				if (m_vo.lookupInfo == null)
+				{
+					log.log(Level.SEVERE, "(" + m_vo.ColumnName + ") - No LookupInfo");
+					return;
+				}
+				//	Prevent loading of CreatedBy/UpdatedBy
+				if (m_vo.displayType == DisplayType.Table
+					&& (m_vo.ColumnName.equals("CreatedBy") || m_vo.ColumnName.equals("UpdatedBy")) )
+				{
+					m_vo.lookupInfo.IsCreadedUpdatedBy = true;
+					m_vo.lookupInfo.DisplayType = DisplayType.Search;
+				}
+				//
+				loadLookupNoValidate();
 			}
-			//	Prevent loading of CreatedBy/UpdatedBy
-			if (m_vo.displayType == DisplayType.Table
-				&& (m_vo.ColumnName.equals("CreatedBy") || m_vo.ColumnName.equals("UpdatedBy")) )
-			{
-				m_vo.lookupInfo.IsCreadedUpdatedBy = true;
-				m_vo.lookupInfo.DisplayType = DisplayType.Search;
-			}
-			//
-			loadLookupNoValidate();
 		}
-		else if (m_vo.displayType == DisplayType.Location)   //  not cached
+		else 
 		{
-			MLocationLookup ml = new MLocationLookup (m_vo.ctx, m_vo.WindowNo);
-			m_lookup = ml;
-		}
-		else if (m_vo.displayType == DisplayType.Locator)
-		{
-			MLocatorLookup ml = new MLocatorLookup (m_vo.ctx, m_vo.WindowNo);
-			m_lookup = ml;
-		}
-		else if (m_vo.displayType == DisplayType.Account)    //  not cached
-		{
-			MAccountLookup ma = new MAccountLookup (m_vo.ctx, m_vo.WindowNo);
-			m_lookup = ma;
-		}
-		else if (m_vo.displayType == DisplayType.PAttribute)    //  not cached
-		{
-			MPAttributeLookup pa = new MPAttributeLookup (m_vo.ctx, m_vo.WindowNo);
-			m_lookup = pa;
-		}
-		else if (m_vo.displayType == DisplayType.Payment)
-		{
-			MPaymentLookup pl = new MPaymentLookup (m_vo.ctx, m_vo.WindowNo, m_vo.AD_Column_ID);
-			m_lookup = pl;
+			loadLookupFromFactory();
+			
 		}
 	}   //  m_lookup
+
+	private void loadLookupFromFactory() {
+		//http://jira.idempiere.com/browse/IDEMPIERE-694
+		//see DefaultLookupFactory.java for the other default Lookups
+		List<ILookupFactory> factoryList = Service.locator().list(ILookupFactory.class).getServices();
+		for(ILookupFactory factory : factoryList)
+		{
+			m_lookup = factory.getLookup(m_vo);
+			if (m_lookup != null)
+				break;
+		}
+	}
 
 	/***
 	 * bypass isdisplay validation, used by findwindow
@@ -218,8 +215,7 @@ public class GridField
 			return;
 		}
 		m_vo.lookupInfo.IsKey = isKey();
-		MLookup ml = new MLookup (m_vo.lookupInfo, m_vo.TabNo);
-		m_lookup = ml;
+		loadLookupFromFactory();
 	}
 
 	/**
@@ -254,13 +250,17 @@ public class GridField
 			retValue = false;
 	//	else if (m_vo.ColumnName.equals("CreatedBy") || m_vo.ColumnName.equals("UpdatedBy"))
 	//		retValue = false;
-		else if (m_vo.displayType == DisplayType.Location
-			|| m_vo.displayType == DisplayType.Locator
-			|| m_vo.displayType == DisplayType.Account
-			|| m_vo.displayType == DisplayType.PAttribute
-			|| m_vo.displayType == DisplayType.Payment)
-			retValue = true;
-
+		else {
+			//http://jira.idempiere.com/browse/IDEMPIERE-694
+			//see DefaultLookupFactory.java for the other default Lookups
+			List<ILookupFactory> factoryList = Service.locator().list(ILookupFactory.class).getServices();
+			for(ILookupFactory factory : factoryList)
+			{
+				retValue = factory.isLookup(m_vo);
+				if (retValue == true)
+					break;
+			}
+		}
 		return retValue;
 	}   //  isLookup
 
