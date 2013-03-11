@@ -59,6 +59,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
+import org.compiere.util.ValueNamePair;
 import org.idempiere.adInterface.x10.ADLoginRequest;
 import org.idempiere.adInterface.x10.DataField;
 import org.idempiere.adInterface.x10.DataRow;
@@ -1078,8 +1079,13 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				value = convertToObj(strValue, columnClass, field.getColumn());
 			}
 		}
-		if (!po.set_ValueOfColumnReturningBoolean(field.getColumn(), value))
+		if (!po.set_ValueOfColumnReturningBoolean(field.getColumn(), value)) {
+			ValueNamePair error = CLogger.retrieveError();
+			if (error != null) {
+				log.log(Level.SEVERE, error.getValue() + ", " + error.getName() + ": " + field.getColumn());
+			}
 			throw new IdempiereServiceFault("Cannot set value of column " + field.getColumn(), new QName("setValueAccordingToClass"));
+		}
 		//Setting context for lookup resolution
 		Env.setContext(Env.getCtx(), 0, field.getColumn(), 	value==null ? null : value.toString());
 	}
