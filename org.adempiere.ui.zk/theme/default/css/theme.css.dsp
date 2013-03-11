@@ -749,7 +749,7 @@ input:focus, textarea:focus, .z-combobox-inp:focus, z-datebox-inp:focus {
     cursor: pointer;
 }
 
-span.z-tree-tee, span.z-tree-last {
+span.z-tree-tee, span.z-tree-last, span.z-tree-firstspacer {
 	width:0px;
 } 
 
