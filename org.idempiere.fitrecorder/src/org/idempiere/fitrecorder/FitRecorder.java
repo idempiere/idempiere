@@ -16,8 +16,6 @@
  *****************************************************************************/
 package org.idempiere.fitrecorder;
 
-import groovy.swing.factory.WidgetFactory;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,21 +25,17 @@ import java.io.Writer;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-import org.codehaus.groovy.control.messages.Message;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessPara;
-import org.compiere.model.MSearchDefinition;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -58,9 +52,7 @@ import org.compiere.util.Ini;
 
 public class FitRecorder implements ModelValidator {
 
-	private static FileOutputStream FileOr = null;
-	 private static Writer writer;
-	 private HashMap<Integer, Writer> files;
+	private HashMap<Integer, Writer> writersPerSession;
 
 	/** Logger */
 	private static CLogger log = CLogger.getCLogger(FitRecorder.class);
@@ -112,7 +104,7 @@ public class FitRecorder implements ModelValidator {
 	
 	@Override
 	public void initialize(ModelValidationEngine engine, MClient client) {
-		files=new HashMap<Integer, Writer>();
+		writersPerSession=new HashMap<Integer, Writer>();
 
 		try {
 			
@@ -178,7 +170,7 @@ public class FitRecorder implements ModelValidator {
 		try {
 			if (type == TYPE_AFTER_NEW ) {
 				
-				if(po instanceof MSession){
+				if (po instanceof MSession) {
 					loginFixture(po);
 				}
 				if (dontLogTables.contains(po.get_TableName().toUpperCase()))
@@ -305,18 +297,15 @@ public class FitRecorder implements ModelValidator {
 				}
 			}
 			
-			if (po instanceof MSession){
+			if (po instanceof MSession) {
 				if (type == TYPE_AFTER_CHANGE) {
-					MSession session =(MSession) po;
-					if(session.isProcessed()){
-						String msg=closefile();
-						if (msg != null){
-							return msg;
-						}
+					MSession session = (MSession) po;
+					if (session.isProcessed()) {
+						closefile();
 					}
 				}
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			return e.getLocalizedMessage();
 		}
 		return null;
@@ -490,58 +479,56 @@ public class FitRecorder implements ModelValidator {
 		String msg=null;
 		String preference = Env.getPreference(Env.getCtx(), 0, "FitRecorder", false);
 		if (preference.equals("Y")) {			
-			int Session_ID = po.get_ID();
-			int User_ID = Env.getContextAsInt(Env.getCtx(), "#AD_User_ID");
-			int AD_Org_ID = Env.getContextAsInt(Env.getCtx(), "#AD_Org_ID");
-			MUser user = new MUser(Env.getCtx(), User_ID, null);
-			String name = Ini.getAdempiereHome() + "/log/fit_test_" + Session_ID+ user.getName() + ".txt";
-			File fileNameOr;
+			int session_ID = po.get_ID();
+			int user_ID = Env.getContextAsInt(Env.getCtx(), "#AD_User_ID");
+			int org_ID = Env.getContextAsInt(Env.getCtx(), "#AD_Org_ID");
+			MUser user = new MUser(Env.getCtx(), user_ID, null);
+			String name = Ini.getAdempiereHome() + "/log/fit_test_" + session_ID+ user.getName() + ".txt";
 			try {
-				fileNameOr = new File(name);
-				FileOr = new FileOutputStream(fileNameOr, true);
-				writer = new BufferedWriter(new OutputStreamWriter(FileOr,
-						"UTF8"));
-				files.put(Session_ID, writer);
-				writer.append("\n");
-				writer.append("\n");
-				writer.append("LOGIN");
-				writer.append("\n");
-				writer.append("!");
-				writer.append("|Login|");
-				writer.append("\n");
-				writer.append("|User|");
+				File file = new File(name);
+				FileOutputStream fos = new FileOutputStream(file, true);
+				Writer writer = new BufferedWriter(new OutputStreamWriter(fos, "UTF8"));
+				Env.setContext(Env.getCtx(), "#AD_Session_ID", session_ID);
+				writersPerSession.put(session_ID, writer);
+				writeFile("\n");
+				writeFile("\n");
+				writeFile("LOGIN");
+				writeFile("\n");
+				writeFile("!");
+				writeFile("|Login|");
+				writeFile("\n");
+				writeFile("|User|");
 				if (MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN,
 						false))
-					writer.append(user.getEMail() + "|");
+					writeFile(user.getEMail() + "|");
 				else if (user.getLDAPUser() != null)
-					writer.append(user.getLDAPUser() + "|");
+					writeFile(user.getLDAPUser() + "|");
 				else
-					writer.append(user.getName() + "|");
-				writer.append("\n");
-				writer.append("|Password|");
-				writer.append("                                |");
-				writer.append("\n");
-				writer.append("|AD_Client_ID|");
+					writeFile(user.getName() + "|");
+				writeFile("\n");
+				writeFile("|Password|");
+				writeFile("                                |");
+				writeFile("\n");
+				writeFile("|AD_Client_ID|");
 				MClient client = MClient.get(Env.getCtx(),Env.getContextAsInt(Env.getCtx(), "#AD_Client_ID"));
-				writer.append("@Ref=AD_Client[Name='" + client.getName()	+ "'].AD_Client_ID|");
-				writer.append("\n");
-				writer.append("|AD_Org_ID|");
-				String orgName = DB.getSQLValueString(null,"SELECT Name FROM AD_Org WHERE AD_Org_ID=?", AD_Org_ID);
-				writer.append("@Ref=AD_Org[Name='" + orgName + "'].AD_Org_ID|");
-				writer.append("\n");
-				writer.append("|AD_Role_ID|");
-				writer.append("@Ref=AD_Role[Name='"+ Env.getContext(Env.getCtx(), "#AD_Role_Name")+ "'].AD_Role_ID|");
-				writer.append("\n");
+				writeFile("@Ref=AD_Client[Name='" + client.getName()	+ "'].AD_Client_ID|");
+				writeFile("\n");
+				writeFile("|AD_Org_ID|");
+				String orgName = DB.getSQLValueString(null,"SELECT Name FROM AD_Org WHERE AD_Org_ID=?", org_ID);
+				writeFile("@Ref=AD_Org[Name='" + orgName + "'].AD_Org_ID|");
+				writeFile("\n");
+				writeFile("|AD_Role_ID|");
+				writeFile("@Ref=AD_Role[Name='"+ Env.getContext(Env.getCtx(), "#AD_Role_Name")+ "'].AD_Role_ID|");
+				writeFile("\n");
 				int warehouseid = Env.getContextAsInt(Env.getCtx(),Env.M_WAREHOUSE_ID);
 				if (warehouseid > 0) {
 					MWarehouse warehouse = MWarehouse.get(Env.getCtx(),warehouseid);
-					writer.append("|M_Warehouse_ID|");
-					writer.append("@Ref=M_Warehouse[Name='" + warehouse.getName()+ "'].M_Warehouse_ID|");
-					writer.append("\n");
+					writeFile("|M_Warehouse_ID|");
+					writeFile("@Ref=M_Warehouse[Name='" + warehouse.getName()+ "'].M_Warehouse_ID|");
+					writeFile("\n");
 				}
-				writer.append("|*Login*|");
-				writer.append("\n");
-				files.put(Session_ID, writer);
+				writeFile("|*Login*|");
+				writeFile("\n");
 			} catch (Exception e) {
 				return e.getLocalizedMessage();
 			}
@@ -550,27 +537,24 @@ public class FitRecorder implements ModelValidator {
 	}
 	
 	public void writeFile(String msg){
-		int Session_ID=Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID");
-		Writer writerOr=(Writer) files.get(Session_ID);
-		try{
-			writerOr.append(msg);
-			writerOr.flush();
-			
-		}catch (Exception e) {
-			
-		}				
+		int session_ID=Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID");
+		Writer writer = (Writer) writersPerSession.get(session_ID);
+		if (writer != null) {
+			try{
+				writer.append(msg);
+				writer.flush();
+			} catch (Exception e) {}				
+		}
 	}
 	
-	public String closefile(){
-		String msg=null;
+	public void closefile(){
 		int Session_ID=Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID");
-		Writer writerOr=(Writer) files.get(Session_ID);
-		try {
-			writerOr.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			return e.getLocalizedMessage();
-		}		
-		return msg;
+		Writer writer = (Writer) writersPerSession.get(Session_ID);
+		if (writer != null) {
+			try {
+				writer.close();
+				writersPerSession.remove(Session_ID);
+			} catch (IOException e) {}		
+		}
 	}
 }
