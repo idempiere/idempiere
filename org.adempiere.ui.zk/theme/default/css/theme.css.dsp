@@ -1089,7 +1089,7 @@ tbody.z-grid-empty-body td {
 	border-bottom: 5px solid transparent;
 }
 
-.grid-combobox-editor {
+i.grid-combobox-editor {
 	width: 96% !important;
 }
 
