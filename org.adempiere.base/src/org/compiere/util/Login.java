@@ -869,7 +869,7 @@ public class Login
 			if (!rs.next())
 			{
 				//  No Warning for System
-				if (AD_Role_ID != 0)
+				if (AD_Client_ID != 0)
 					retValue = "NoValidAcctInfo";
 			}
 			else
@@ -965,8 +965,6 @@ public class Login
 			rs = pstmt.executeQuery();
 			while (rs.next())
 				loadDefault (rs.getString(1), rs.getString(2));
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
 		}
 		catch (SQLException e)
 		{
