@@ -414,7 +414,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	public void displaySelected() {
 		MAttachmentEntry entry = m_attachment.getEntry(displayIndex);
 		if (log.isLoggable(Level.CONFIG)) log.config("Index=" + displayIndex + " - " + entry);
-		if (entry != null && entry.getData() != null)
+		if (entry != null && entry.getData() != null && autoPreviewList.contains(entry.getContentType()))
 		{
 			if (log.isLoggable(Level.CONFIG)) log.config(entry.toStringX());
 
