@@ -649,6 +649,21 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 			return false;
 		}
 		
+		//check city id
+		if (m_c != null && !m_c.isAllowCitiesOutOfList() && getC_City_ID() > 0) {
+			int city_id = DB.getSQLValue(get_TrxName(),
+										"SELECT C_City_ID "+
+										"  FROM C_City "+
+										" WHERE C_Country_ID=? "+
+										"   AND COALESCE(C_Region_ID,0)=? " +
+										"   AND C_City_ID =?",
+										new Object[] {getC_Country_ID(), getC_Region_ID(), getC_City_ID()});
+			
+			if (city_id<0){
+			    log.saveError("CityNotFound",Msg.translate(getCtx(), "CityNotFound")+" C_City_ID["+getC_City_ID()+"]");
+			    return false;
+			}
+		}
 		return true;
 	}	//	beforeSave
 	

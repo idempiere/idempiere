@@ -302,7 +302,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		if (MLocation.LOCATION_MAPS_URL_PREFIX == null)
 			toLink.setVisible(false);
 		pnlLinks.appendChild(toRoute);
-		if (MLocation.LOCATION_MAPS_ROUTE_PREFIX == null)
+		if (MLocation.LOCATION_MAPS_ROUTE_PREFIX == null || Env.getAD_Org_ID(Env.getCtx()) <= 0)
 			toRoute.setVisible(false);
 		pnlLinks.setWidth("100%");
 		pnlLinks.setStyle("text-align:left");

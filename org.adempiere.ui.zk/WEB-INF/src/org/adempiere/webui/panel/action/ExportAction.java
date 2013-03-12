@@ -205,7 +205,7 @@ public class ExportAction implements EventListener<Event>
 			winExportFile = null;
 			AMedia media = null;
 			media = new AMedia(exporter.getSuggestedFileName(panel.getActiveGridTab()), null, exporter.getContentType(), file, true);
-			Filedownload.save(media, panel.getActiveGridTab().getName() + "." + ext);
+			Filedownload.save(media);
 		} catch (Exception e) {
 			throw new AdempiereException(e);
 		} finally {

@@ -282,8 +282,8 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 		}	//	down
 
 		if (change) {
-			sortList.setSelectedIndices(indices);
 			refresh();
+			sortList.setSelectedIndices(indices);
 			wc.setIsChanged(true);
 			if ( sortList.getSelectedItem() != null)
 			{
