@@ -1361,6 +1361,7 @@ public class Login
                    .append(" INNER JOIN AD_Client cli on (ur.AD_Client_ID=cli.AD_Client_ID)")
                    .append(" WHERE ur.IsActive='Y'")
                    .append(" AND u.IsActive='Y'")
+                   .append(" AND cli.IsActive='Y'")
                    .append(" AND ur.AD_User_ID=?");
 			      PreparedStatement pstmt=null;
 			      ResultSet rs=null;
