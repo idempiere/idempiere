@@ -424,10 +424,8 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 {
                 	ComboItem ci = new ComboItem(orgKNPairs[i].getName(), orgKNPairs[i].getID());
                 	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
-                	System.out.println("|"+ci.getId()+"|");
                 	if (lstOrganisation.getFellowIfAny(id) == null)
                 		ci.setId(id);
-                	System.out.println("|"+ci.getId()+"|");
                 	lstOrganisation.appendChild(ci);
                     if(orgKNPairs[i].getID().equals(initDefault))
                     	lstOrganisation.setSelectedItem(ci);
