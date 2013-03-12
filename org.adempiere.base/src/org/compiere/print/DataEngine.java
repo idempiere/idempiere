@@ -854,7 +854,8 @@ public class DataEngine
 										String valueString = value.toString();
 										if (value instanceof Timestamp)
 											valueString = DisplayType.getDateFormat(pdc.getDisplayType(), m_language).format(value);
-										valueString	+= PrintDataFunction.getFunctionSymbol(functions[f]);
+										if (format.getTableFormat().isPrintFunctionSymbols())		//	Translate Sum, etc.
+											valueString	+= PrintDataFunction.getFunctionSymbol(functions[f]);
 										pd.addNode(new PrintDataElement(pdc.getColumnName(),
 											valueString, DisplayType.String, false, pdc.isPageBreak(), pdc.getFormatPattern()));
 									}
@@ -1053,7 +1054,8 @@ public class DataEngine
 								String valueString = value.toString();
 								if (value instanceof Timestamp)
 									valueString = DisplayType.getDateFormat(pdc.getDisplayType(), m_language).format(value);
-								valueString	+= PrintDataFunction.getFunctionSymbol(functions[f]);
+								if (format.getTableFormat().isPrintFunctionSymbols())		//	Translate Sum, etc.
+									valueString	+= PrintDataFunction.getFunctionSymbol(functions[f]);
 								pd.addNode(new PrintDataElement(pdc.getColumnName(),
 									valueString, DisplayType.String, pdc.getFormatPattern()));
 							}
@@ -1086,10 +1088,11 @@ public class DataEngine
 					pdc = pd.getColumnInfo()[c];
 					if (c == 0)		//	put Function in first Column
 					{
-						String name = "";
+						String name;
 						if (!format.getTableFormat().isPrintFunctionSymbols())		//	Translate Sum, etc.
 							name = Msg.getMsg(format.getLanguage(), PrintDataFunction.getFunctionName(functions[f]));
-						name += PrintDataFunction.getFunctionSymbol(functions[f]);	//	Symbol
+						else
+							name = PrintDataFunction.getFunctionSymbol(functions[f]);	//	Symbol
 						pd.addNode(new PrintDataElement(pdc.getColumnName(), name.trim(),
 								DisplayType.String, pdc.getFormatPattern()));
 					}
