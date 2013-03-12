@@ -14,6 +14,7 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.InfoSchedule;
 import org.adempiere.webui.window.WAssignmentDialog;
 import org.adempiere.webui.window.WFieldRecordInfo;
@@ -48,7 +49,7 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 	
 	private void initComponents() {
 		getComponent().getTextbox().setReadonly(true);
-		getComponent().setButtonImage("images/Assignment10.png");
+		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Assignment10.png"));
 		
 		popupMenu = new WEditorPopupMenu(true, false, false);
 		popupMenu.addMenuListener(this);

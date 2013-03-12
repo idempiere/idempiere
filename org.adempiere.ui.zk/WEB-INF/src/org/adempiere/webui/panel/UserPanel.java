@@ -19,7 +19,6 @@ package org.adempiere.webui.panel;
 
 import java.util.Properties;
 
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Messagebox;
@@ -37,9 +36,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Separator;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -71,71 +68,30 @@ public class UserPanel extends Vbox implements EventListener<Event>
     {
     	super();
         this.ctx = Env.getCtx();
-        init();
+        addEventListener(Events.ON_CREATE, this);
     }
 
-    private void init()
-    {	
-    	
-    	this.setSclass("desktop-user-panel");
-    	
-    	Vbox vbox = new Vbox();
-    	this.appendChild(vbox);
-
+    private void onCreate()
+    {
+    	lblUserNameValue = (Label) getFellow("loginUserAndRole");
     	lblUserNameValue.setValue(getUserName() + "@" + getClientName() + "." + getOrgName()+"/"+this.getRoleName());
-    	lblUserNameValue.setStyle("cursor: pointer;");
     	lblUserNameValue.addEventListener(Events.ON_CLICK, this);
-    	lblUserNameValue.setId("loginUserAndRole");
-    	LayoutUtils.addSclass("desktop-header-font", lblUserNameValue);
-    	LayoutUtils.addSclass("desktop-header-username", lblUserNameValue);
-    	vbox.appendChild(lblUserNameValue);
 
-    	Hbox hbox = new Hbox();
-    	vbox.appendChild(hbox);
-    	hbox.setAlign("center");
-
+    	feedback = (ToolBarButton) getFellow("feedback");
     	feedback.setLabel(Msg.getMsg(Env.getCtx(), "Feedback"));
-    	feedback.setId("feedback");
     	feedback.addEventListener(Events.ON_CLICK, this);
-    	LayoutUtils.addSclass("desktop-header-font", feedback);
-    	LayoutUtils.addSclass("link", feedback);
-    	feedback.setParent(hbox);    	
 
-    	Separator sep = new Separator("vertical");
-    	sep.setBar(true);
-    	sep.setHeight("13px");
-    	sep.setParent(hbox);
-    	
+    	preference = (ToolBarButton) getFellow("preference");
     	preference.setLabel(Msg.getMsg(Env.getCtx(), "Preference"));
-    	preference.setId("preference");
     	preference.addEventListener(Events.ON_CLICK, this);
-    	LayoutUtils.addSclass("desktop-header-font", preference);
-    	LayoutUtils.addSclass("link", preference);
-    	preference.setParent(hbox);    	
 
-    	sep = new Separator("vertical");
-    	sep.setBar(true);
-    	sep.setHeight("13px");
-    	sep.setParent(hbox);
-
+    	changeRole = (ToolBarButton) getFellow("changeRole");
     	changeRole.setLabel(Msg.getMsg(Env.getCtx(), "changeRole"));
-    	changeRole.setId("changeRole");
     	changeRole.addEventListener(Events.ON_CLICK, this);
-    	LayoutUtils.addSclass("desktop-header-font", changeRole);
-    	LayoutUtils.addSclass("link", changeRole);
-    	changeRole.setParent(hbox);
 
-    	sep = new Separator("vertical");
-    	sep.setBar(true);
-    	sep.setHeight("13px");
-    	sep.setParent(hbox);
-
+    	logout = (ToolBarButton) getFellow("logout");
     	logout.setLabel(Msg.getMsg(Env.getCtx(),"Logout"));
-    	logout.setId("logout");
     	logout.addEventListener(Events.ON_CLICK, this);
-    	LayoutUtils.addSclass("desktop-header-font", logout);
-    	LayoutUtils.addSclass("link", logout);
-    	logout.setParent(hbox);
     	
     	feedbackMenu = new Menupopup();
     	Menuitem mi = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestNew"));
@@ -247,6 +203,10 @@ public class UserPanel extends Vbox implements EventListener<Event>
 					FeedbackManager.createNewRequest();
 				}
 			}
+		}
+		else if (Events.ON_CREATE.equals(event.getName()))
+		{
+			onCreate();
 		}
 
 	}

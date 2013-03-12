@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.EventListener;
@@ -112,13 +113,13 @@ public final class ConfirmPanel extends Hbox
 
         if (m_withText && text != null)
         {
-        	button.setImage("images/"+name+"16.png");
+        	button.setImage(ThemeManager.getThemeResource("images/"+name+"16.png"));
         	button.setLabel(text);
         	LayoutUtils.addSclass("action-text-button", button);
         }
         else
         {
-        	button.setImage("images/"+name+"24.png");
+        	button.setImage(ThemeManager.getThemeResource("images/"+name+"24.png"));
         	if (text != null)
         		button.setTooltiptext(text);
         	LayoutUtils.addSclass("action-button", button);

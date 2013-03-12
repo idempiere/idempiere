@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -63,7 +64,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		lblMsg.setEncode(false);
 		lblMsg.setValue(header);
 
-		btnOk.setImage("/images/Ok16.png");
+		btnOk.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 		btnOk.addEventListener(Events.ON_CLICK, this);
 		LayoutUtils.addSclass("action-text-button", btnOk);
 

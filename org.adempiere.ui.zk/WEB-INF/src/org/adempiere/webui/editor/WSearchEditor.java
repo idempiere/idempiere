@@ -41,6 +41,7 @@ import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.grid.WQuickEntry;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -162,16 +163,16 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	{
 
 		columnName = this.getColumnName();
-		imageUrl = "/images/PickOpen10.png";
+		imageUrl = ThemeManager.getThemeResource("images/PickOpen10.png");
 		if (columnName.equals("C_BPartner_ID"))
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), true, true, false, lookup);
-			imageUrl = "/images/BPartner10.png";
+			imageUrl = ThemeManager.getThemeResource("images/BPartner10.png");
 		}
 		else if (columnName.equals("M_Product_ID"))
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, lookup);
-			imageUrl = "/images/Product10.png";
+			imageUrl = ThemeManager.getThemeResource("images/Product10.png");
 		}
 		else
 		{

@@ -34,6 +34,7 @@ import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Paymentbox;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -601,7 +602,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
      * @param popupMenu
      */
 	protected void addTextEditorMenu(WEditorPopupMenu popupMenu) {
-		Menuitem editor = new Menuitem(Msg.getMsg(Env.getCtx(), "Editor"), "images/Editor16.png");
+		Menuitem editor = new Menuitem(Msg.getMsg(Env.getCtx(), "Editor"), ThemeManager.getThemeResource("images/Editor16.png"));
 		editor.setAttribute("EVENT", WEditorPopupMenu.EDITOR_EVENT);
 		editor.addEventListener(Events.ON_CLICK, popupMenu);
 		popupMenu.appendChild(editor);

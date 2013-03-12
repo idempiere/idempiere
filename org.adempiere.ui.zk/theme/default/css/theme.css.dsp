@@ -659,7 +659,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .z-grid tbody tr.highlight td.row-indicator-seld {
 	background-color: transparent !important;
-	background-image: url(${c:encodeURL('/images/EditRecord16.png')}) !important;
+	background-image: url(${c:encodeURL('/theme/default/images/EditRecord16.png')}) !important;
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: 16px 16px;  
@@ -1270,7 +1270,7 @@ height: 20px;
 line-height: 0;
 font-size: 0;
 }
-.
+
 .menu-search-toggle-box {
 	display: inline-block;
 	border: 1px solid #ababab;			

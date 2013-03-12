@@ -49,6 +49,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.Archive;
 import org.compiere.model.MArchive;
@@ -206,23 +207,23 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		createdByQField.setMold("select");
 		createdByQField.setRows(1);
 		
-		updateArchive.setImage("/images/Ok24.png");
+		updateArchive.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
 		updateArchive.setTooltiptext(Msg.getMsg(Env.getCtx(), "Update"));
 		updateArchive.addEventListener(Events.ON_CLICK, this);
 		
-		deleteArchive.setImage("/images/Delete24.png");
+		deleteArchive.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
 		deleteArchive.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
 		deleteArchive.addEventListener(Events.ON_CLICK, this);
 		
-		bRefresh.setImage("/images/Refresh24.png");
+		bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
 		bRefresh.setTooltiptext(Msg.getMsg(Env.getCtx(), "Refresh"));
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 		
-		bBack.setImage("/images/wfBack24.png");
+		bBack.setImage(ThemeManager.getThemeResource("images/wfBack24.png"));
 		bBack.setTooltiptext(Msg.getMsg(Env.getCtx(), "Previous"));
 		bBack.addEventListener(Events.ON_CLICK, this);
 		
-		bNext.setImage("/images/wfNext24.png");
+		bNext.setImage(ThemeManager.getThemeResource("images/wfNext24.png"));
 		bNext.setTooltiptext(Msg.getMsg(Env.getCtx(), "Next"));
 		bNext.addEventListener(Events.ON_CLICK, this);
 		

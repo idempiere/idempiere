@@ -22,6 +22,7 @@ import org.adempiere.webui.component.Combinationbox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WAccountDialog;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
@@ -52,7 +53,7 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 	public WAccountEditor(GridField gridField)
 	{
 		super(new Combinationbox(), gridField);
-		getComponent().setButtonImage("/images/Account10.png");
+		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Account10.png"));
 
 		m_mAccount = new MAccountLookup (gridField.getVO().ctx, gridField.getWindowNo());
 		

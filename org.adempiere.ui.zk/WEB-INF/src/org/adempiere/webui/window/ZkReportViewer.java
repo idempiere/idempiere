@@ -52,6 +52,7 @@ import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
 import org.compiere.model.MArchive;
 import org.compiere.model.MClient;
@@ -276,7 +277,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		toolBar.appendChild(new Separator("vertical"));
 		
 		bCustomize.setName("Customize");
-		bCustomize.setImage("/images/Preference24.png");
+		bCustomize.setImage(ThemeManager.getThemeResource("images/Preference24.png"));
 		bCustomize.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "PrintCustomize")));
 		toolBar.appendChild(bCustomize);
 		bCustomize.addEventListener(Events.ON_CLICK, this);
@@ -284,7 +285,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		
 		bFind.setName("Find");
-		bFind.setImage("/images/Find24.png");
+		bFind.setImage(ThemeManager.getThemeResource("images/Find24.png"));
 		bFind.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Find")));
 		toolBar.appendChild(bFind);
 		bFind.addEventListener(Events.ON_CLICK, this);
@@ -292,13 +293,13 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		toolBar.appendChild(new Separator("vertical"));
 		
 		bSendMail.setName("SendMail");
-		bSendMail.setImage("/images/SendMail24.png");
+		bSendMail.setImage(ThemeManager.getThemeResource("images/SendMail24.png"));
 		bSendMail.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "SendMail")));
 		toolBar.appendChild(bSendMail);
 		bSendMail.addEventListener(Events.ON_CLICK, this);
 		
 		bArchive.setName("Archive");
-		bArchive.setImage("/images/Archive24.png");
+		bArchive.setImage(ThemeManager.getThemeResource("images/Archive24.png"));
 		bArchive.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Archive")));
 		toolBar.appendChild(bArchive);
 		bArchive.addEventListener(Events.ON_CLICK, this);
@@ -306,7 +307,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		if (m_isCanExport)
 		{
 			bExport.setName("Export");
-			bExport.setImage("/images/ExportX24.png");
+			bExport.setImage(ThemeManager.getThemeResource("images/Export24.png"));
 			bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
 			toolBar.appendChild(bExport);
 			bExport.addEventListener(Events.ON_CLICK, this);
@@ -315,12 +316,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		toolBar.appendChild(new Separator("vertical"));
 		
 		bRefresh.setName("Refresh");
-		bRefresh.setImage("/images/Refresh24.png");
+		bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
 		bRefresh.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 		toolBar.appendChild(bRefresh);
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 
-		bWizard.setImage("/images/Wizard24.png");
+		bWizard.setImage(ThemeManager.getThemeResource("images/Wizard24.png"));
 		bWizard.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "PrintWizard")));
 		toolBar.appendChild(bWizard);
 		bWizard.addEventListener(Events.ON_CLICK, this);

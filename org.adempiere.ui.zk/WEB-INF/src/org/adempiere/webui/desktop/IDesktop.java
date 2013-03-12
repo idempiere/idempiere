@@ -22,7 +22,6 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.part.UIPart;
 import org.compiere.model.GridField;
 import org.compiere.model.MQuery;
-import org.compiere.util.WebDoc;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
 
@@ -89,7 +88,7 @@ public interface IDesktop extends UIPart {
 	 * @param string
 	 * @param closeable
 	 */
-	public void showURL(WebDoc doc, String string, boolean closeable);
+	public void showHTMLContent(String content, String title, boolean closeable);
 
 	/**
 	 *

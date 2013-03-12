@@ -37,6 +37,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.compiere.Adempiere;
@@ -176,14 +177,14 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		hbox.setWidth("100%");
 		hbox.setStyle("margin-top: 10px");
 		Button btn = new Button("");
-		btn.setImage("/images/Ok24.png");
+		btn.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
 		LayoutUtils.addSclass("action-button", btn);
 		btn.setId("Ok");
 		btn.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btn);
 
 		btn = new Button("");
-		btn.setImage("/images/Cancel24.png");
+		btn.setImage(ThemeManager.getThemeResource("images/Cancel24.png"));
 		btn.setId("Cancel");
 		LayoutUtils.addSclass("action-button", btn);
 		btn.addEventListener(Events.ON_CLICK, this);

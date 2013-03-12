@@ -36,6 +36,7 @@ import org.adempiere.webui.dashboard.DashboardRunnable;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.Adempiere;
 import org.compiere.model.I_AD_Menu;
@@ -288,7 +289,7 @@ public class DashboardController implements EventListener<Event> {
 	        	{
 	        		//link to open performance detail
 	        		Toolbarbutton link = new Toolbarbutton();
-		            link.setImage("/images/Zoom16.png");
+		            link.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
 		            link.setAttribute("PA_Goal_ID", PA_Goal_ID);
 		            link.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 						public void onEvent(Event event) throws Exception {

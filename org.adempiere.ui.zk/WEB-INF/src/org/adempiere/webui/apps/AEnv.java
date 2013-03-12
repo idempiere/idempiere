@@ -556,7 +556,7 @@ public final class AEnv
         URI uri = null;
         try
         {
-            uri = new URI("/images/" + fileNameInImageDir);
+            uri = new URI(ThemeManager.getThemeResource("images/" + fileNameInImageDir));
         }
         catch (URISyntaxException exception)
         {

@@ -34,6 +34,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.grid.WQuickEntry;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocationDialog;
 import org.compiere.model.GridField;
@@ -203,7 +204,7 @@ ContextMenuListener, IZoomableEditor
         			searchMode = new Menuitem();
         			searchMode.setAttribute(WEditorPopupMenu.EVENT_ATTRIBUTE, SHORT_LIST_EVENT);
         			searchMode.setLabel(Msg.getMsg(Env.getCtx(), "ShortListSwitchSearchMode"));
-        			searchMode.setImage("/images/Lock16.png");
+        			searchMode.setImage(ThemeManager.getThemeResource("images/Lock16.png"));
         			searchMode.addEventListener(Events.ON_CLICK, popupMenu);
         			popupMenu.appendChild(searchMode);
         		}

@@ -16,6 +16,7 @@ package org.adempiere.webui.component;
 import java.io.File;
 
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Ini;
@@ -126,7 +127,7 @@ public class FolderBrowser extends Window implements EventListener<Event>
 			if(!dir.getParent().equals(root.getParent()))
 			{
 				ListItem li = new ListItem(dir.getName(), dir.getParent());
-				li.setImage("images/Undo16.png");
+				li.setImage(ThemeManager.getThemeResource("images/Undo16.png"));
 				listDir.appendChild(li);
 			}
 
@@ -137,7 +138,7 @@ public class FolderBrowser extends Window implements EventListener<Event>
 				if(file.isDirectory())
 				{
 					ListItem li = new ListItem(file.getName(), file.getAbsolutePath());
-					li.setImage("images/Folder16.png");
+					li.setImage(ThemeManager.getThemeResource("images/Folder16.png"));
 					listDir.appendChild(li);
 				}
 			}

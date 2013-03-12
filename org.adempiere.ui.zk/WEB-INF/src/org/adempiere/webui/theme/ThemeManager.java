@@ -114,4 +114,14 @@ public final class ThemeManager {
 		String def = ITheme.THEME_PATH_PREFIX + theme + ITheme.BROWSER_ICON_IMAGE;
 		return MSysConfig.getValue(MSysConfig.ZK_BROWSER_ICON, def);
 	}
+	
+	/**
+	 * Get theme resource url
+	 * @param name relative resource name from theme root
+	 * @return full resource url
+	 */
+	public static String getThemeResource(String name) {
+		String theme = getTheme();
+		return ITheme.THEME_PATH_PREFIX + theme + "/" + name;
+	}
 }

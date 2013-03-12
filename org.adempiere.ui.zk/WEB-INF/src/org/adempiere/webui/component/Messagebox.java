@@ -23,6 +23,7 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -115,25 +116,25 @@ public class Messagebox extends Window implements EventListener<Event>
 		lblMsg.setValue(msg);
 		// Invert - Unify  OK/Cancel IDEMPIERE-77
 		//btnOk.setLabel(Util.cleanAmp(Msg.getMsg(ctx, "OK")));
-		btnOk.setImage("/images/Ok16.png");
+		btnOk.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 		btnOk.setId("btnOk");
 		btnOk.addEventListener(Events.ON_CLICK, this);
 		LayoutUtils.addSclass("action-text-button", btnOk);
 
 		//btnCancel.setLabel(Util.cleanAmp(Msg.getMsg(ctx, "Cancel")));
-		btnCancel.setImage("/images/Cancel16.png");
+		btnCancel.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
 		btnCancel.addEventListener(Events.ON_CLICK, this);
 		btnCancel.setId("btnCancel");
 		LayoutUtils.addSclass("action-text-button", btnCancel);
 
 		btnYes.setLabel(Util.cleanAmp(Msg.getMsg(ctx, "Yes")));
-		btnYes.setImage("/images/Ok16.png");
+		btnYes.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 		btnYes.addEventListener(Events.ON_CLICK, this);
 		btnYes.setId("btnYes");
 		LayoutUtils.addSclass("action-text-button", btnYes);
 
 		btnNo.setLabel(Util.cleanAmp(Msg.getMsg(ctx, "No")));
-		btnNo.setImage("/images/Cancel16.png");
+		btnNo.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
 		btnNo.addEventListener(Events.ON_CLICK, this);
 		btnNo.setId("btnNo");
 		LayoutUtils.addSclass("action-text-button", btnNo);
@@ -149,7 +150,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		LayoutUtils.addSclass("action-text-button", btnRetry);
 
 		btnIgnore.setLabel("Ignore");
-		btnIgnore.setImage("/images/Ignore16.png");
+		btnIgnore.setImage(ThemeManager.getThemeResource("images/Ignore16.png"));
 		btnIgnore.addEventListener(Events.ON_CLICK, this);
 		btnIgnore.setId("btnIgnore");
 		LayoutUtils.addSclass("action-text-button", btnIgnore);

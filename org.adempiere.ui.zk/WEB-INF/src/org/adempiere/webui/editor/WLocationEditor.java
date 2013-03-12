@@ -28,6 +28,7 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocationDialog;
 import org.compiere.model.GridField;
@@ -84,7 +85,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 
     private void init()
     {
-    	getComponent().setButtonImage("/images/Location10.png");
+    	getComponent().setButtonImage(ThemeManager.getThemeResource("images/Location10.png"));
     	
     	popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
     	popupMenu.addMenuListener(this);

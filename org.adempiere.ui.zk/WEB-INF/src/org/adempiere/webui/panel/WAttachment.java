@@ -35,6 +35,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
@@ -246,18 +247,18 @@ public class WAttachment extends Window implements EventListener<Event>
 
 		bSave.setEnabled(false);
 		bSave.setSclass("action-button");
-		bSave.setImage("/images/Export24.png");
+		bSave.setImage(ThemeManager.getThemeResource("images/Export24.png"));
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(), "AttachmentSave"));
 		bSave.addEventListener(Events.ON_CLICK, this);
 
-		bLoad.setImage("/images/Import24.png");
+		bLoad.setImage(ThemeManager.getThemeResource("images/Import24.png"));
 		bLoad.setSclass("action-button");
 		bLoad.setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);
 		bLoad.setTooltiptext(Msg.getMsg(Env.getCtx(), "Load"));
 		bLoad.setUpload("true");
 		bLoad.addEventListener(Events.ON_UPLOAD, this);
 
-		bDelete.setImage("/images/Delete24.png");
+		bDelete.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
 		bDelete.setSclass("action-button");
 		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
 		bDelete.addEventListener(Events.ON_CLICK, this);
@@ -278,19 +279,19 @@ public class WAttachment extends Window implements EventListener<Event>
 		southPane.appendChild(confirmPanel);
 		southPane.setHeight("30px");
 
-		bCancel.setImage("/images/Cancel24.png");
+		bCancel.setImage(ThemeManager.getThemeResource("images/Cancel24.png"));
 		bCancel.setSclass("action-button");
 		bCancel.addEventListener(Events.ON_CLICK, this);
 
-		bOk.setImage("/images/Ok24.png");
+		bOk.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
 		bOk.setSclass("action-button");
 		bOk.addEventListener(Events.ON_CLICK, this);
 
-		bDeleteAll.setImage("/images/Delete24.png");
+		bDeleteAll.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
 		bDeleteAll.setSclass("action-button");
 		bDeleteAll.addEventListener(Events.ON_CLICK, this);
 
-		bRefresh.setImage("/images/Refresh24.png");
+		bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
 		bRefresh.setSclass("action-button");
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 

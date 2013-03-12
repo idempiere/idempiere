@@ -17,6 +17,7 @@ import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.editor.WYesNoEditor;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -98,7 +99,7 @@ public class WPreference extends Popup implements EventListener<Event> {
 		this.appendChild(toolbar);
 		ToolBarButton btn = new ToolBarButton("");
         btn.setName("btnSave");
-        btn.setImage("/images/Save24.png");
+        btn.setImage(ThemeManager.getThemeResource("images/Save24.png"));
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),"Save"));
         btn.addEventListener(Events.ON_CLICK, this);
         toolbar.appendChild(btn);

@@ -42,6 +42,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.Lookup;
 import org.compiere.model.MClient;
 import org.compiere.model.MLookupFactory;
@@ -311,7 +312,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		Div southDiv = new Div();
 		
 		Button btn = new Button();
-		btn.setImage("/images/Attachment24.png");
+		btn.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));
 		btn.setUpload("true");
 		btn.addEventListener(Events.ON_UPLOAD, this);
 		btn.setTooltiptext(Msg.getMsg(Env.getCtx(), "Attachment"));

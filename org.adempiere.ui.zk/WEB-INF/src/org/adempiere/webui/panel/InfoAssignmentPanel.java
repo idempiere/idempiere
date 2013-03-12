@@ -36,6 +36,7 @@ import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.event.WTableModelEvent;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MLookupFactory;
@@ -176,7 +177,7 @@ public class InfoAssignmentPanel extends InfoPanel implements EventListener<Even
 			return false;
 		}
 
-		bNew.setImage("/images/New16.png");
+		bNew.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		
 		return true;
 	} // initLookups

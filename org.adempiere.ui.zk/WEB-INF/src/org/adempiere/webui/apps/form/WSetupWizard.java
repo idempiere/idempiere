@@ -37,6 +37,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeUtils;
 import org.compiere.apps.form.SetupWizard;
 import org.compiere.model.MLookup;
@@ -276,19 +277,19 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		mainLayout.setHeight("100%");
 		mainLayout.setStyle("position: absolute");
 
-		bRefresh.setImage("/images/Refresh24.png");
+		bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
 		bRefresh.setTooltiptext(Msg.getMsg(Env.getCtx(), "Refresh"));
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 
-		bOK.setImage("/images/Ok24.png");
+		bOK.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
 		bOK.setTooltiptext(Msg.getMsg(Env.getCtx(), "Update"));
 		bOK.addEventListener(Events.ON_CLICK, this);
 
-		bNext.setImage("/images/Next24.png");
+		bNext.setImage(ThemeManager.getThemeResource("images/Next24.png"));
 		bNext.setTooltiptext(Msg.getMsg(Env.getCtx(), "Next"));
 		bNext.addEventListener(Events.ON_CLICK, this);
 		
-		bZoom.setImage("/images/Zoom16.png");
+		bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
 		bZoom.setTooltiptext(Msg.getMsg(Env.getCtx(), "Zoom"));
 		bZoom.addEventListener(Events.ON_CLICK, this);
 		

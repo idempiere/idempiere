@@ -17,6 +17,7 @@ import java.util.List;
 
 import javax.activation.DataSource;
 
+import org.adempiere.webui.theme.ThemeManager;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -42,7 +43,7 @@ public class AttachmentItem extends Hlayout implements EventListener<Event>{
 				"margin-right: 5px; margin-bottom: 5px;padding-left: 5px; padding-right: 5px;");
 		appendChild(new Label(ds.getName()));
 		if (removable) {
-			A x = new A("", "/images/X8.png");
+			A x = new A("", ThemeManager.getThemeResource("images/X8.png"));
 			x.setStyle("float: right; background-color: #f5f5f5");
 			appendChild(x);
 			this.ds = ds;

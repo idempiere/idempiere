@@ -17,6 +17,7 @@ import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ADTabListModel.ADTabLabel;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -54,19 +55,19 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 
 	private static final String STATUS_ERROR_ATTRIBUTE = "status.error";
 
-	private static final String DELETE_IMAGE = "/images/Delete16.png";
-	private static final String EDIT_IMAGE = "/images/EditRecord16.png";
-	private static final String NEW_IMAGE = "/images/New16.png";
-	private static final String PROCESS_IMAGE = "/images/Process16.png";
+	private static final String DELETE_IMAGE = "images/Delete16.png";
+	private static final String EDIT_IMAGE = "images/EditRecord16.png";
+	private static final String NEW_IMAGE = "images/New16.png";
+	private static final String PROCESS_IMAGE = "images/Process16.png";
 
 	/**
 	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -7914602940626352282L;
 	
-	private static final String INFO_INDICATOR_IMAGE = "/images/InfoIndicator16.png";
+	private static final String INFO_INDICATOR_IMAGE = "images/InfoIndicator16.png";
 
-	private static final String ERROR_INDICATOR_IMAGE = "/images/ErrorIndicator16.png";
+	private static final String ERROR_INDICATOR_IMAGE = "images/ErrorIndicator16.png";
 	
 	private Tabbox tabbox;
 
@@ -251,7 +252,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		ToolBarButton button = new ToolBarButton();
 		
 		button = new ToolBarButton();		
-		button.setImage(NEW_IMAGE);
+		button.setImage(ThemeManager.getThemeResource(NEW_IMAGE));
 		button.setId("BtnNew");
 		toolbar.appendChild(button);
 		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
@@ -264,7 +265,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "New")));
 		
 		button = new ToolBarButton();
-		button.setImage(EDIT_IMAGE);
+		button.setImage(ThemeManager.getThemeResource(EDIT_IMAGE));
 		button.setId("BtnEdit");
 		toolbar.appendChild(button);
 		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
@@ -276,7 +277,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "EditRecord")));
 		
 		button = new ToolBarButton();
-		button.setImage(DELETE_IMAGE);
+		button.setImage(ThemeManager.getThemeResource(DELETE_IMAGE));
 		button.setId("BtnDelete");
 		toolbar.appendChild(button);
 		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
@@ -290,7 +291,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		
 		if (!tabPanel.getGridTab().isSortTab()) {
 			button = new ToolBarButton();
-			button.setImage(PROCESS_IMAGE);
+			button.setImage(ThemeManager.getThemeResource(PROCESS_IMAGE));
 			button.setId("BtnProcess");
 			toolbar.appendChild(button);
 			button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
@@ -419,9 +420,9 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
     	
 		Image image = null;
     	if (error)
-    		image = new Image(ERROR_INDICATOR_IMAGE);
+    		image = new Image(ThemeManager.getThemeResource(ERROR_INDICATOR_IMAGE));
     	else
-			image = new Image(INFO_INDICATOR_IMAGE);
+			image = new Image(ThemeManager.getThemeResource(INFO_INDICATOR_IMAGE));
     	
 		image.setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);		
     	messageContainer.appendChild(image);
@@ -563,14 +564,17 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         }
         boolean enableNew = !changed && insertRecord && !adtab.getGridTab().isSortTab();
         boolean enableDelete = !changed && !readOnly && !adtab.getGridTab().isSortTab();
+        String newImage = ThemeManager.getThemeResource(NEW_IMAGE);
+        String deleteImage = ThemeManager.getThemeResource(DELETE_IMAGE);
+        String editImage = ThemeManager.getThemeResource(EDIT_IMAGE);
         for(Component c : toolbar.getChildren()) {
         	if (c instanceof ToolBarButton) {
         		ToolBarButton btn = (ToolBarButton) c;
-        		if (NEW_IMAGE.equals(btn.getImage())) {
+        		if (newImage.equals(btn.getImage())) {
         			btn.setDisabled(!enableNew);
-        		} else if (DELETE_IMAGE.equals(btn.getImage())) {
+        		} else if (deleteImage.equals(btn.getImage())) {
         			btn.setDisabled(!enableDelete);
-        		} else if (EDIT_IMAGE.equals(btn.getImage())) {
+        		} else if (editImage.equals(btn.getImage())) {
         			btn.setDisabled(false);
         		}
         	}        	
@@ -587,10 +591,11 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		IADTabpanel adtab = getADTabpanel(index);
 		if (adtab == null) return;
 		
+		String processImage = ThemeManager.getThemeResource(PROCESS_IMAGE);
         for(Component c : toolbar.getChildren()) {
         	if (c instanceof ToolBarButton) {
         		ToolBarButton btn = (ToolBarButton) c;
-        		if (PROCESS_IMAGE.equals(btn.getImage())) {
+        		if (processImage.equals(btn.getImage())) {
         			if (adtab.getGridTab().isSortTab()) {
         				btn.setDisabled(true);
         			} else {

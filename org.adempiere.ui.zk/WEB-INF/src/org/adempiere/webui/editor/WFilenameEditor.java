@@ -23,6 +23,7 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.component.FilenameBox;
 import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
 import org.zkoss.util.media.Media;
@@ -46,7 +47,7 @@ public class WFilenameEditor extends WEditor
 	public WFilenameEditor(GridField gridField)
 	{
 		super(new FilenameBox(), gridField);
-		getComponent().setButtonImage("/images/Open16.png");
+		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Open16.png"));
 		getComponent().addEventListener(Events.ON_UPLOAD, this);
 		getComponent().getButton().setUpload("true,native");
 		getComponent().getButton().setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);

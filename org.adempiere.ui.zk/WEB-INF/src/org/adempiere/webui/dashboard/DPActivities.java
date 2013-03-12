@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.compiere.model.MRole;
 import org.compiere.util.CLogger;
@@ -80,7 +81,7 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
         labelN = Util.cleanAmp(Msg.translate(Env.getCtx(), "AD_Note_ID"));
         btnNotice.setLabel(labelN + " : 0");
         btnNotice.setTooltiptext(labelN);
-        btnNotice.setImage("/images/GetMail16.png");
+        btnNotice.setImage(ThemeManager.getThemeResource("images/GetMail16.png"));
         int AD_Menu_ID = DB.getSQLValue(null, "SELECT AD_Menu_ID FROM AD_Menu WHERE Name = 'Notice' AND IsSummary = 'N'");
         btnNotice.setName(String.valueOf(AD_Menu_ID));
         btnNotice.addEventListener(Events.ON_CLICK, this);
@@ -90,7 +91,7 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
         labelR = Util.cleanAmp(Msg.translate(Env.getCtx(), "R_Request_ID"));
         btnRequest.setLabel(labelR + " : 0");
         btnRequest.setTooltiptext(labelR);
-        btnRequest.setImage("/images/Request16.png");
+        btnRequest.setImage(ThemeManager.getThemeResource("images/Request16.png"));
         AD_Menu_ID = DB.getSQLValue(null, "SELECT AD_Menu_ID FROM AD_Menu WHERE Name = 'Request' AND IsSummary = 'N'");
         btnRequest.setName(String.valueOf(AD_Menu_ID));
         btnRequest.addEventListener(Events.ON_CLICK, this);
@@ -100,7 +101,7 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
         labelW = Util.cleanAmp(Msg.translate(Env.getCtx(), "WorkflowActivities"));
         btnWorkflow.setLabel(labelW + " : 0");
         btnWorkflow.setTooltiptext(labelW);
-        btnWorkflow.setImage("/images/Assignment16.png");
+        btnWorkflow.setImage(ThemeManager.getThemeResource("images/Assignment16.png"));
         AD_Menu_ID = DB.getSQLValue(null, "SELECT AD_Menu_ID FROM AD_Menu WHERE Name = 'Workflow Activities' AND IsSummary = 'N'");
         btnWorkflow.setName(String.valueOf(AD_Menu_ID));
         btnWorkflow.addEventListener(Events.ON_CLICK, this);
@@ -111,7 +112,7 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
             labelU = Util.cleanAmp(Msg.translate(Env.getCtx(), "UnprocessedDocs"));
             btnUnprocessed.setLabel(labelU + " : 0");
             btnUnprocessed.setTooltiptext(labelU);
-            btnUnprocessed.setImage("/images/Open16.png");
+            btnUnprocessed.setImage(ThemeManager.getThemeResource("images/Open16.png"));
             AD_Menu_ID = DB.getSQLValue(null, "SELECT AD_Menu_ID FROM AD_Menu WHERE Name = 'My Unprocessed Documents' AND IsSummary = 'N'");
             btnUnprocessed.setName(String.valueOf(AD_Menu_ID));
             btnUnprocessed.addEventListener(Events.ON_CLICK, this);

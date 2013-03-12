@@ -20,6 +20,7 @@ import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 
 import org.adempiere.webui.component.Panel;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.MColorSchema;
 import org.compiere.model.MGoal;
 import org.compiere.util.DisplayType;
@@ -82,7 +83,7 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 	private static DecimalFormat	s_format = DisplayType.getNumberFormat(DisplayType.Integer);
 
 	Menupopup 					popupMenu = new Menupopup();
-	private Menuitem 			mRefresh = new Menuitem(Msg.getMsg(Env.getCtx(), "Refresh"), "/images/Refresh16.png");
+	private Menuitem 			mRefresh = new Menuitem(Msg.getMsg(Env.getCtx(), "Refresh"), ThemeManager.getThemeResource("images/Refresh16.png"));
 
 	ChartPanel chartPanel;
 

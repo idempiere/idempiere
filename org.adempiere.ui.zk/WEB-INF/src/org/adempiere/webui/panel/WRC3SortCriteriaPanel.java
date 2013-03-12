@@ -28,6 +28,7 @@ import org.adempiere.webui.component.ListHeader;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.SimpleListModel;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
@@ -99,10 +100,10 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		yesList.setSeltype("multiple");
 		noList.setSeltype("multiple");
 
-		bAdd.setImage("images/Next24.png");
+		bAdd.setImage(ThemeManager.getThemeResource("images/Next24.png"));
 		bAdd.addEventListener(Events.ON_CLICK, actionListener);
 
-		bRemove.setImage("images/Previous24.png");
+		bRemove.setImage(ThemeManager.getThemeResource("images/Previous24.png"));
 		bRemove.addEventListener(Events.ON_CLICK, actionListener);
 
 		EventListener<Event> crossListMouseListener = new DragListener();
@@ -148,10 +149,10 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 			}
 		};
 		
-		bUp.setImage("images/Parent24.png");
+		bUp.setImage(ThemeManager.getThemeResource("images/Parent24.png"));
 		bUp.addEventListener(Events.ON_CLICK, actionListener2);
 
-		bDown.setImage("images/Detail24.png");
+		bDown.setImage(ThemeManager.getThemeResource("images/Detail24.png"));
 		bDown.addEventListener(Events.ON_CLICK, actionListener2);
 		
 		vbox = new Vbox();

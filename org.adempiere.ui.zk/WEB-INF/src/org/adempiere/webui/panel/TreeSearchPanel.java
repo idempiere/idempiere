@@ -25,6 +25,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.AutoComplete;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.DocumentSearch;
 import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeNodeAction;
@@ -233,7 +234,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         		treeImages[i] = getImage(treeItem);
         		if ((treeImages[i] == null || treeImages[i].trim().length() == 0) && isFolder(treeItem))
         		{
-        			treeImages[i] = "/images/Folder16.png";
+        			treeImages[i] = ThemeManager.getThemeResource("images/Folder16.png");
         		}
         	}
         	else if (value instanceof DefaultTreeNode)

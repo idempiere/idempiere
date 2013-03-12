@@ -24,6 +24,7 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridTab;
 import org.compiere.model.MMenu;
 import org.compiere.model.MQuery;
@@ -206,35 +207,35 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 
                 if (mChildNode.isReport())
                 {
-                	link.setImage("/images/mReport.png");
+                	link.setImage(ThemeManager.getThemeResource("images/mReport.png"));
                 	treeitem.setAttribute("menu.type", "report");
                 }
                 else if (mChildNode.isProcess() || mChildNode.isTask())
                 {
-                	link.setImage("/images/mProcess.png");
+                	link.setImage(ThemeManager.getThemeResource("images/mProcess.png"));
                 	treeitem.setAttribute("menu.type", "process");
                 }
                 else if (mChildNode.isWorkFlow())
                 {
-                	link.setImage("/images/mWorkFlow.png");
+                	link.setImage(ThemeManager.getThemeResource("images/mWorkFlow.png"));
                 	treeitem.setAttribute("menu.type", "workflow");
                 }
                 else if (mChildNode.isForm())
                 {
-                	link.setImage("/images/mWindow.png");
+                	link.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
                 	treeitem.setAttribute("menu.type", "form");
                 }
                 else if (mChildNode.isInfo())
                 {
-                	link.setImage("/images/mWindow.png");
+                	link.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
                 	treeitem.setAttribute("menu.type", "info");
                 }
                 else // Window
                 {
-                	link.setImage("/images/mWindow.png");
+                	link.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
                 	treeitem.setAttribute("menu.type", "window");
 
-                	Toolbarbutton newBtn = new Toolbarbutton(null, "/images/New10.png");
+                	Toolbarbutton newBtn = new Toolbarbutton(null, ThemeManager.getThemeResource("images/New10.png"));
                 	newBtn.setStyle("padding-left:3px; margin-bottom:5px");
                 	treeCell.appendChild(newBtn);
                 	newBtn.addEventListener(Events.ON_CLICK, this);

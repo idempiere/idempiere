@@ -22,6 +22,7 @@ import org.adempiere.webui.component.Urlbox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
@@ -37,7 +38,7 @@ public class WUrlEditor extends WEditor implements ContextMenuListener
 	public WUrlEditor(GridField gridField)
 	{
 		super(new Urlbox(), gridField);
-		getComponent().setButtonImage("/images/Online10.png");
+		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Online10.png"));
 		
 		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
 		popupMenu.addMenuListener(this);

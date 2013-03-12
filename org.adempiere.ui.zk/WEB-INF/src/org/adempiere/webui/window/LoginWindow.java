@@ -65,21 +65,18 @@ public class LoginWindow extends FWindow implements EventListener<Event>
     private ChangePasswordPanel pnlChangePassword;
     private RolePanel pnlRole;
 
-    public LoginWindow(IWebClient app)
+    public LoginWindow() {}
+
+    public void init(IWebClient app)
     {
-        this.ctx = Env.getCtx();
+    	this.ctx = Env.getCtx();
         this.app = app;
         initComponents();
-        init();
+        this.appendChild(pnlLogin);
+        this.setStyle("background-color: transparent");
         // add listener on 'ENTER' key for the login window
         addEventListener(Events.ON_OK,this);
         setWidgetListener("onOK", "zAu.cmd0.showBusy(null)");
-    }
-
-    private void init()
-    {
-        this.appendChild(pnlLogin);
-        this.setStyle("background-color: transparent");
     }
 
     private void initComponents()

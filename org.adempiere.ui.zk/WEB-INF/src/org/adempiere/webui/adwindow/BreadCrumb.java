@@ -31,6 +31,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WRecordInfo;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.MRole;
@@ -69,9 +70,9 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	
 	private static final String ON_MOUSE_OUT_ECHO_EVENT = "onMouseOutEcho";
 
-	private static final String INFO_INDICATOR_IMAGE = "/images/InfoIndicator16.png";
+	private static final String INFO_INDICATOR_IMAGE = "images/InfoIndicator16.png";
 
-	private static final String ERROR_INDICATOR_IMAGE = "/images/ErrorIndicator16.png";
+	private static final String ERROR_INDICATOR_IMAGE = "images/ErrorIndicator16.png";
 
 	/**
 	 * generated serial id 
@@ -327,7 +328,8 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		pathLabel.addEventListener(Events.ON_MOUSE_OVER, listener);
 		pathLabel.addEventListener(Events.ON_MOUSE_OUT, listener);
 		pathLabel.addEventListener(ON_MOUSE_OVER_ECHO_EVENT, listener);
-		ZkCssHelper.appendStyle(pathLabel, "background: transparent url('images/downarrow.png') no-repeat right center");
+		ZkCssHelper.appendStyle(pathLabel, "background: transparent url('theme/" + ThemeManager.getTheme() + 
+				"/images/downarrow.png') no-repeat right center");
 	}
 
 	@Override
@@ -426,7 +428,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
     	ToolBarButton btn = new ToolBarButton("");
         btn.setName(BTNPREFIX+name);
         btn.setId(name);
-        btn.setImage("/images/"+image + "24.png");
+        btn.setImage(ThemeManager.getThemeResource("images/"+image + "24.png"));
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),tooltip));
         btn.setSclass("breadcrumb-toolbar-button");
         
@@ -522,9 +524,9 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		
 		Image image = null;
     	if (error)
-    		image = new Image(ERROR_INDICATOR_IMAGE);
+    		image = new Image(ThemeManager.getThemeResource(ERROR_INDICATOR_IMAGE));
     	else
-			image = new Image(INFO_INDICATOR_IMAGE);    	
+			image = new Image(ThemeManager.getThemeResource(INFO_INDICATOR_IMAGE));    	
     	
 		image.setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);
     	messageContainer.appendChild(image);
@@ -653,7 +655,8 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 
 	private void showPopup() {
-		msgPopupCaption.setImage(m_statusError ? ERROR_INDICATOR_IMAGE : INFO_INDICATOR_IMAGE);
+		msgPopupCaption.setImage(m_statusError ? ThemeManager.getThemeResource(ERROR_INDICATOR_IMAGE) 
+				: ThemeManager.getThemeResource(INFO_INDICATOR_IMAGE));
 		appendChild(msgPopup);
 		LayoutUtils.openOverlappedWindow(messageContainer, msgPopup, "overlap_end");
 	}

@@ -28,6 +28,7 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.MRecordAccess;
 import org.compiere.model.MRole;
 import org.compiere.util.CLogger;
@@ -150,13 +151,13 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 	 */
 	private void jbInit() throws Exception
 	{
-		bDelete.setImage("/images/Delete16.png");
+		bDelete.setImage(ThemeManager.getThemeResource("images/Delete16.png"));
 		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
-		bNew.setImage("/images/New16.png");
+		bNew.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		bNew.setTooltiptext(Msg.getMsg(Env.getCtx(), "New"));
-		bUp.setImage("/images/Previous16.png");
+		bUp.setImage(ThemeManager.getThemeResource("images/Previous16.png"));
 		bUp.setTooltiptext(Msg.getMsg(Env.getCtx(), "Previous"));
-		bDown.setImage("/images/Next16.png");
+		bDown.setImage(ThemeManager.getThemeResource("images/Next16.png"));
 		bDown.setTooltiptext(Msg.getMsg(Env.getCtx(), "Next"));
 		
 		cbActive.setText(Msg.translate(Env.getCtx(), "IsActive"));

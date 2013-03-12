@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridTab;
 import org.compiere.model.MAsset;
 import org.compiere.model.MBPartner;
@@ -102,7 +103,7 @@ public class WRequest implements EventListener<Event>
 	private void getRequests (Component invoker)
 	{
 		m_new = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestNew"));
-		m_new.setImage("/images/New16.png");
+		m_new.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		m_new.addEventListener(Events.ON_CLICK, this);
 		m_popup.appendChild(m_new);
 		//

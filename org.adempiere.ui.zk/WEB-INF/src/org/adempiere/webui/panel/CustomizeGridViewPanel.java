@@ -38,6 +38,7 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.SimpleListModel;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.util.CLogger;
@@ -161,10 +162,10 @@ public class CustomizeGridViewPanel extends Panel
 		yesModel.setMultiple(true);
 		noModel.setMultiple(true);
 		
-		bAdd.setImage("images/Next24.png");
+		bAdd.setImage(ThemeManager.getThemeResource("images/Next24.png"));
 		bAdd.addEventListener(Events.ON_CLICK, actionListener);
 
-		bRemove.setImage("images/Previous24.png");
+		bRemove.setImage(ThemeManager.getThemeResource("images/Previous24.png"));
 		bRemove.addEventListener(Events.ON_CLICK, actionListener);
 
 		EventListener<Event> crossListMouseListener = new DragListener();
@@ -180,10 +181,10 @@ public class CustomizeGridViewPanel extends Panel
 			}
 		};
 
-		bUp.setImage("images/Parent24.png");
+		bUp.setImage(ThemeManager.getThemeResource("images/Parent24.png"));
 		bUp.addEventListener(Events.ON_CLICK, actionListener);
 
-		bDown.setImage("images/Detail24.png");
+		bDown.setImage(ThemeManager.getThemeResource("images/Detail24.png"));
 		bDown.addEventListener(Events.ON_CLICK, actionListener);
 		
 		ListHead listHead = new ListHead();
@@ -245,7 +246,7 @@ public class CustomizeGridViewPanel extends Panel
 		@SuppressWarnings("unused")
 		String label = Msg.getMsg(Env.getCtx(), "save");
 		Button bOK = new Button();
-		bOK.setImage("/images/Ok16.png");
+		bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 		bOK.setId("Ok");
 		EventListener<Event> onClickListener = new EventListener<Event>()
 		{
@@ -264,7 +265,7 @@ public class CustomizeGridViewPanel extends Panel
 		southPanel.appendChild(bOK);
 		label = Msg.getMsg(Env.getCtx(), "Cancel");
 		Button btn = new Button();
-		btn.setImage("/images/Cancel16.png");
+		btn.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
 		btn.setId("Cancel");
 		EventListener<Event> onClickCancelListener = new EventListener<Event>()
 		{

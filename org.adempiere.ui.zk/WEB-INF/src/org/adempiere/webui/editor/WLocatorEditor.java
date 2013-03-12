@@ -32,6 +32,7 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocatorDialog;
 import org.compiere.model.GridField;
@@ -93,7 +94,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 		
 		setColumnName(columnName);
 		m_mLocator = mLocator;
-		getComponent().setButtonImage("/images/Locator10.png");
+		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Locator10.png"));
 
 		m_WindowNo = windowNo;	//Yvonne: move it b4 setDefault_Locator_ID()
 		setDefault_Locator_ID(); // set default locator, teo_sarca [ 1661546 ]
@@ -107,7 +108,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 		super(new EditorBox(), gridField);
 		m_mLocator = (MLocatorLookup)gridField.getLookup();
 		
-		getComponent().setButtonImage("/images/Locator10.png");
+		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Locator10.png"));
 		
 		setDefault_Locator_ID(); // set default locator, teo_sarca [ 1661546 ]
 		

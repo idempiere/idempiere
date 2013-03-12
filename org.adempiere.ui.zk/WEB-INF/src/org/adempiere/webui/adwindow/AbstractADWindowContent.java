@@ -33,6 +33,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.AdempiereWebUI;
@@ -68,6 +70,7 @@ import org.adempiere.webui.panel.action.ReportAction;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.part.ITabOnSelectHandler;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.CustomizeGridViewDialog;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.FindWindow;
@@ -1554,8 +1557,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
     public void onHelp()
     {
-    	WebDoc doc = gridWindow.getHelpDoc(true);
-		SessionManager.getAppDesktop().showURL(doc, "Help", true);
+    	WebDoc doc = gridWindow.getHelpDoc(false);
+    	String html = doc.toString();
+    	HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+    	String logo = request.getContextPath() + ThemeManager.getThemeResource("images/header-logo.png");
+    	html = html.replace("images/header-logo.png", logo);
+		SessionManager.getAppDesktop().showHTMLContent(html, "Help", true);
     }
 
     /**
@@ -2098,7 +2105,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		Button btnOk = new Button();
 		// Invert - Unify  OK/Cancel IDEMPIERE-77
 		//btnOk.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "OK")));
-		btnOk.setImage("/images/Ok16.png");
+		btnOk.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 		btnOk.addEventListener(Events.ON_CLICK, new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception
@@ -2148,7 +2155,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		Button btnCancel = new Button();
 		//btnCancel.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Cancel")));
-		btnCancel.setImage("/images/Cancel16.png");
+		btnCancel.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
 		btnCancel.addEventListener(Events.ON_CLICK, new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception

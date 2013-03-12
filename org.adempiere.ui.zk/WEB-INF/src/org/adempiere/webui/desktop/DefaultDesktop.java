@@ -44,6 +44,7 @@ import org.adempiere.webui.panel.HelpController;
 import org.adempiere.webui.panel.TimeoutPanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.UserPreference;
@@ -75,12 +76,12 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.event.SwipeEvent;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.East;
-import org.zkoss.zul.North;
 import org.zkoss.zul.West;
 
 /**
@@ -146,35 +147,38 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
     protected Component doCreatePart(Component parent)
     {
-    	pnlHead = new HeaderPanel();
-
-        layout = new Borderlayout();
-        if (parent != null)
-        {
-        	layout.setParent(parent);
-        	layout.setWidth("100%");
-        	layout.setHeight("100%");
-        	layout.setSclass("desktop-layout");
-        }
-        else
-        	layout.setPage(page);
+    	PageDefinition pagedef = Executions.getCurrent().getPageDefinition(ThemeManager.getThemeResource("zul/desktop/desktop.zul"));
+    	Component page = Executions.createComponents(pagedef, parent, null);
+    	layout = (Borderlayout) page.getFellow("layout");
+    	pnlHead = (HeaderPanel) page.getFellow("northBody").getFellow("header");
+//
+//        layout = new Borderlayout();
+//        if (parent != null)
+//        {
+//        	layout.setParent(parent);
+//        	layout.setWidth("100%");
+//        	layout.setHeight("100%");
+//        	layout.setSclass("desktop-layout");
+//        }
+//        else
+//        	layout.setPage(page);
         
         layout.addEventListener("onZoom", this);
         layout.addEventListener(DrillEvent.ON_DRILL_DOWN, this);
 
-        North n = new North();
-        layout.appendChild(n);
-        n.setCollapsible(false);
-        n.setSclass("desktop-north");
-        pnlHead.setParent(n);
+//        North n = new North();
+//        layout.appendChild(n);
+//        n.setCollapsible(false);
+//        n.setSclass("desktop-north");
+//        pnlHead.setParent(n);
         
-        West w = new West();
-        w.setId("desktop-left-column");
-        layout.appendChild(w);
-        w.setSclass("desktop-left-column");
-        w.setCollapsible(true);
-        w.setSplittable(true);
-        w.setHflex("1");
+        West w = layout.getWest();
+//        w.setId("desktop-left-column");
+//        layout.appendChild(w);
+//        w.setSclass("desktop-left-column");
+//        w.setCollapsible(true);
+//        w.setSplittable(true);
+//        w.setHflex("1");
         w.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -201,13 +205,13 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         
         sideController.render(w, this, false);
         
-        East e = new East();
-        e.setId("desktop-right-column");
-        layout.appendChild(e);
-        e.setSclass("desktop-right-column");
-        e.setCollapsible(true);
-        e.setSplittable(true);
-        e.setHflex("1");
+        East e = layout.getEast();
+//        e.setId("desktop-right-column");
+//        layout.appendChild(e);
+//        e.setSclass("desktop-right-column");
+//        e.setCollapsible(true);
+//        e.setSplittable(true);
+//        e.setHflex("1");
         e.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -235,9 +239,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         
         helpController.render(e, this);
 
-        windowArea = new Center();
-        windowArea.setParent(layout);
-        windowArea.setSclass("desktop-center");
+        windowArea = layout.getCenter();
+//        windowArea.setParent(layout);
+//        windowArea.setSclass("desktop-center");
 
         windowContainer.createPart(windowArea);
 

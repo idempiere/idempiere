@@ -37,6 +37,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
@@ -128,8 +129,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
         fAnswerList.setMold("select");
 
-    	bZoom.setImage("/images/Zoom16.png");
-    	bOK.setImage("/images/Ok24.png");
+    	bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
+    	bOK.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
 
         MLookup lookup = MLookupFactory.get(Env.getCtx(), m_WindowNo,
                 0, 10443, DisplayType.Search);
@@ -454,7 +455,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		fAnswerText.setVisible(false);
 		fAnswerList.setVisible(false);
 		fAnswerButton.setVisible(false);
-		fAnswerButton.setImage("/images/mWindow.png");
+		fAnswerButton.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
 		fTextMsg.setReadonly(!(selIndex >= 0));
 		bZoom.setEnabled(selIndex >= 0);
 		bOK.setEnabled(selIndex >= 0);

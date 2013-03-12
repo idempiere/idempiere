@@ -33,6 +33,7 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WTableDirEditor;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
 import org.adempiere.webui.window.FDialog;
 import org.apache.commons.io.IOUtils;
@@ -199,7 +200,7 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		vlayout.appendChild(confirmPanel);
 		
 		Button btn = new Button();
-		btn.setImage("/images/Attachment24.png");
+		btn.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));
 		btn.setUpload("true");
 		btn.addEventListener(Events.ON_UPLOAD, this);
 		btn.setTooltiptext(Msg.getMsg(Env.getCtx(), "Attachment"));

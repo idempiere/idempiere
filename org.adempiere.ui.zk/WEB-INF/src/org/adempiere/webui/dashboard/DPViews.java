@@ -17,6 +17,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.InfoPanel;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.InfoSchedule;
 import org.compiere.model.MRole;
 import org.compiere.util.Env;
@@ -58,7 +59,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			ToolBarButton btnViewItem = new ToolBarButton("InfoProduct");
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoProduct")));
-			btnViewItem.setImage("/images/InfoProduct16.png");
+			btnViewItem.setImage(ThemeManager.getThemeResource("images/InfoProduct16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
@@ -67,7 +68,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			ToolBarButton btnViewItem = new ToolBarButton("InfoBPartner");
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoBPartner")));
-			btnViewItem.setImage("/images/InfoBPartner16.png");
+			btnViewItem.setImage(ThemeManager.getThemeResource("images/InfoBPartner16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
@@ -76,7 +77,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			ToolBarButton btnViewItem = new ToolBarButton("InfoAccount");
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoAccount")));
-			btnViewItem.setImage("/images/InfoAccount16.png");
+			btnViewItem.setImage(ThemeManager.getThemeResource("images/InfoAccount16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
@@ -85,7 +86,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			ToolBarButton btnViewItem = new ToolBarButton("InfoSchedule");
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoSchedule")));
-			btnViewItem.setImage("/images/InfoSchedule16.png");
+			btnViewItem.setImage(ThemeManager.getThemeResource("images/InfoSchedule16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
@@ -95,7 +96,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			ToolBarButton btnViewItem = new ToolBarButton("InfoOrder");
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoOrder")));
-			btnViewItem.setImage("/images/Info16.png");
+			btnViewItem.setImage(ThemeManager.getThemeResource("images/Info16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
@@ -104,7 +105,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			ToolBarButton btnViewItem = new ToolBarButton("InfoInvoice");
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoInvoice")));
-			btnViewItem.setImage("/images/Info16.png");
+			btnViewItem.setImage(ThemeManager.getThemeResource("images/Info16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
@@ -113,7 +114,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			ToolBarButton btnViewItem = new ToolBarButton("InfoInOut");
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoInOut")));
-			btnViewItem.setImage("/images/Info16.png");
+			btnViewItem.setImage(ThemeManager.getThemeResource("images/Info16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
@@ -122,7 +123,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			ToolBarButton btnViewItem = new ToolBarButton("InfoPayment");
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoPayment")));
-			btnViewItem.setImage("/images/Info16.png");
+			btnViewItem.setImage(ThemeManager.getThemeResource("images/Info16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
@@ -139,7 +140,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			ToolBarButton btnViewItem = new ToolBarButton("InfoAssignment");
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoAssignment")));
-			btnViewItem.setImage("/images/Info16.png");
+			btnViewItem.setImage(ThemeManager.getThemeResource("images/Info16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
@@ -148,7 +149,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			ToolBarButton btnViewItem = new ToolBarButton("InfoAsset");
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoAsset")));
-			btnViewItem.setImage("/images/Info16.png");
+			btnViewItem.setImage(ThemeManager.getThemeResource("images/Info16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}

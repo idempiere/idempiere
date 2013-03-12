@@ -64,6 +64,7 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MDocType;
@@ -262,7 +263,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		lblVendor = new Label();
 		lblVendor.setValue(Msg.translate(Env.getCtx(), "Vendor"));
 
-		m_InfoPAttributeButton.setImage("/images/PAttribute16.png");
+		m_InfoPAttributeButton.setImage(ThemeManager.getThemeResource("images/PAttribute16.png"));
 		m_InfoPAttributeButton.setTooltiptext(Msg.getMsg(Env.getCtx(), "PAttribute"));
 		m_InfoPAttributeButton.addEventListener(Events.ON_CLICK,this);
 

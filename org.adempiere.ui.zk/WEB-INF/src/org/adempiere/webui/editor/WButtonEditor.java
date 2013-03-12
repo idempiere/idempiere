@@ -32,6 +32,7 @@ import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -117,26 +118,26 @@ public class WButtonEditor extends WEditor implements IProcessButton
         if (columnName.equals("PaymentRule"))
         {
             readReference(REFERENCE_PAYMENTRULE);
-            getComponent().setImage("/images/Payment16.png");    //  29*14
+            getComponent().setImage(ThemeManager.getThemeResource("images/Payment16.png"));    //  29*14
         }
         else if (columnName.equals("DocAction"))
         {
             readReference(REFERENCE_DOCUMENTACTION);
-            getComponent().setImage("/images/Process16.png");    //  16*16
+            getComponent().setImage(ThemeManager.getThemeResource("images/Process16.png"));    //  16*16
         }
         else if (columnName.equals("CreateFrom"))
         {
-            getComponent().setImage("/images/Copy16.png");       //  16*16
+            getComponent().setImage(ThemeManager.getThemeResource("images/Copy16.png"));       //  16*16
         }
         else if (columnName.equals("Record_ID"))
         {
-            getComponent().setImage("/images/Zoom16.png");       //  16*16
+            getComponent().setImage(ThemeManager.getThemeResource("images/Zoom16.png"));       //  16*16
             getComponent().setLabel(Msg.getMsg(Env.getCtx(), "ZoomDocument"));
         }
         else if (columnName.equals("Posted"))
         {
             readReference(REFERENCE_POSTED);
-            getComponent().setImage("/images/InfoAccount16.png");    //  16*16
+            getComponent().setImage(ThemeManager.getThemeResource("images/InfoAccount16.png"));    //  16*16
         }
         
         if (gridField.getColumnName().endsWith("_ID") && !gridField.getColumnName().equals("Record_ID"))

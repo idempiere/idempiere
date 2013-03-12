@@ -17,24 +17,20 @@
 
 package org.adempiere.webui.panel;
 
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.AboutWindow;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Center;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Popup;
-import org.zkoss.zul.West;
 
 /**
  *
@@ -56,35 +52,21 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     public HeaderPanel()
     {
         super();
-        init();
+        addEventListener(Events.ON_CREATE, this);
     }
 
-    private void init()
+    private void onCreate()
     {
-    	LayoutUtils.addSclass("desktop-header", this);
-
-    	UserPanel userPanel = new UserPanel();
-
-    	image = new Image(ThemeManager.getSmallLogo());
+    	image = (Image) getFellow("logo");
+    	image.setSrc(ThemeManager.getSmallLogo());
     	image.addEventListener(Events.ON_CLICK, this);
     	image.setStyle("cursor: pointer;");
 
-    	Borderlayout layout = new Borderlayout();
-    	LayoutUtils.addSclass("desktop-header", layout);
-    	layout.setParent(this);
-    	West west = new West();
-    	west.setWidth("50%");
-    	west.setParent(layout);
-
-    	Hbox hbox = new Hbox();
-    	hbox.setParent(west);
-    	hbox.setHeight("100%");
-    	hbox.setPack("center");
-        hbox.setAlign("left");
-
-    	image.setParent(hbox);
-    	
-    	new MenuSearchPanel(this).setParent(hbox);
+    	MenuSearchPanel menuSearchPanel = new MenuSearchPanel(this);
+    	Component stub = getFellow("menuLookup");
+    	stub.getParent().insertBefore(menuSearchPanel, stub);
+    	stub.detach();
+    	menuSearchPanel.setId("menuLookup");
 
     	popMenu = new Popup();
     	popMenu.setId("menuTreePopup");
@@ -92,24 +74,11 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	popMenu.setSclass("desktop-menu-popup");
     	popMenu.setHeight("90%");
     	popMenu.setWidth("600px");
+    	popMenu.setPage(this.getPage());
 
-    	btnMenu = new Button();
+    	btnMenu = (Button) getFellow("menuButton");
     	btnMenu.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")));
-    	btnMenu.setParent(hbox);
     	btnMenu.addEventListener(Events.ON_CLICK, this);
-
-    	LayoutUtils.addSclass("desktop-header-left", west);
-
-    	// Elaine 2009/03/02
-    	Center center = new Center();
-    	center.setParent(layout);
-    	userPanel.setParent(center);
-    	userPanel.setHeight("100%");
-    	userPanel.setAlign("right");
-    	userPanel.setStyle("position: absolute; text-align:right;");
-    	userPanel.setVflex("1");
-    	userPanel.setHflex("1");
-    	LayoutUtils.addSclass("desktop-header-right", center);
     }
 
 	public void onEvent(Event event) throws Exception {
@@ -124,6 +93,8 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 			{
 				popMenu.open(btnMenu, "after_start");
 			}
+		} else if (Events.ON_CREATE.equals(event.getName())) {
+			onCreate();
 		}
 	}
 
@@ -133,7 +104,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
 		super.onPageAttached(newpage, oldpage);
-		if (newpage != null)
+		if (newpage != null && popMenu != null)
 			popMenu.setPage(newpage);
 	}
 

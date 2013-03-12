@@ -15,6 +15,7 @@
 package org.adempiere.webui.panel;
 
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeUtils;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
@@ -105,7 +106,7 @@ public class MenuTreePanel extends AbstractMenuPanel
         pc.appendChild(filterPanel);
 
         filterBtn = new Toolbarbutton();
-        filterBtn.setImage("/images/Preference16.png");
+        filterBtn.setImage(ThemeManager.getThemeResource("images/Preference16.png"));
         filterBtn.addEventListener(Events.ON_CLICK, this);
         toolbar.appendChild(filterBtn);        
     }

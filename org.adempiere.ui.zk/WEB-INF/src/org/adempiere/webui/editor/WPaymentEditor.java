@@ -24,6 +24,7 @@ import org.adempiere.webui.component.Paymentbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.grid.IPaymentForm;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -64,7 +65,7 @@ public class WPaymentEditor extends WEditor implements ListDataListener {
         getComponent().getCombobox().setAutocomplete(true);
         getComponent().getCombobox().setAutodrop(true);
         getComponent().getCombobox().addEventListener(Events.ON_BLUR, this);
-        getComponent().setButtonImage("/images/Payment10.png");        
+        getComponent().setButtonImage(ThemeManager.getThemeResource("images/Payment10.png"));        
         getComponent().getButton().addActionListener(this);
 
         if (lookup != null)

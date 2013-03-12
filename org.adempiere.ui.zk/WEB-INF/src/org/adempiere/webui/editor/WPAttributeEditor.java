@@ -23,6 +23,7 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WPAttributeDialog;
 import org.compiere.model.GridField;
@@ -69,7 +70,7 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 	}
 
 	private void initComponents() {
-		getComponent().setButtonImage("images/PAttribute10.png");
+		getComponent().setButtonImage(ThemeManager.getThemeResource("images/PAttribute10.png"));
 		// getComponent().addEventListener(Events.ON_CLICK, this); // IDEMPIERE-426 - dup listener, already set at WEditor
 
 		m_WindowNo = gridField.getWindowNo();

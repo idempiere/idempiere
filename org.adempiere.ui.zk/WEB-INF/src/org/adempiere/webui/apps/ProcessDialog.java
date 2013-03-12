@@ -29,6 +29,7 @@ import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
@@ -176,7 +177,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		// Invert - Unify  OK/Cancel IDEMPIERE-77
 		//bOK = new Button(label.replaceAll("&", ""));
 		bOK = new Button();
-		bOK.setImage("/images/Ok16.png");
+		bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 		bOK.setId("Ok");
 		bOK.addEventListener(Events.ON_CLICK, this);
 		bOK.setSclass("action-image-text-button");
@@ -184,7 +185,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		
 		//label = Msg.getMsg(Env.getCtx(), "Cancel");
 		Button btn = new Button();
-		btn.setImage("/images/Cancel16.png");
+		btn.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
 		btn.setId("Cancel");
 		btn.addEventListener(Events.ON_CLICK, this);
 		btn.setSclass("action-image-text-button");
@@ -470,7 +471,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		appendRecordLogInfo(pi.getLogs());
 		
 		bOK.setLabel(Msg.getMsg(Env.getCtx(), "Parameter"));
-		bOK.setImage("/images/Reset16.png");
+		bOK.setImage(ThemeManager.getThemeResource("images/Reset16.png"));
 		isParameterPage = false;
 
 		m_ids = pi.getIDs();
@@ -587,7 +588,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		isParameterPage = true;
 
 		bOK.setLabel(Msg.getMsg(Env.getCtx(), "Start"));
-		bOK.setImage("/images/Ok16.png");
+		bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 
 		//recreate process info
 		m_pi = new WProcessInfo(m_Name, m_AD_Process_ID);

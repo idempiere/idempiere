@@ -35,6 +35,7 @@ import org.adempiere.webui.component.FToolbar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.MRole;
 import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
@@ -222,7 +223,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btn.setName(BTNPREFIX+name);
         btn.setId(btn.getName());
         if (image != null)
-        	btn.setImage("/images/"+image + "24.png");
+        	btn.setImage(ThemeManager.getThemeResource("images/"+image + "24.png"));
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),tooltip));
         btn.setSclass("toolbar-button");
 
@@ -463,7 +464,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     {
     	this.btnLock.setPressed(locked);
 
-    	String imgURL = "/images/"+ (this.btnLock.isPressed() ? "LockX" : "Lock") + "24.png";
+    	String imgURL = "images/"+ (this.btnLock.isPressed() ? "LockX" : "Lock") + "24.png";
+    	imgURL = ThemeManager.getThemeResource(imgURL);
 		this.btnLock.setImage(imgURL);
     }
 

@@ -32,6 +32,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.TreeMaintenance;
 import org.compiere.model.MTree;
@@ -123,10 +124,10 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	 */
 	private void jbInit () throws Exception
 	{
-		bAddAll.setImage("images/FastBack24.png");
-		bAdd.setImage("images/StepBack24.png");
-		bDelete.setImage("images/StepForward24.png");
-		bDeleteAll.setImage("images/FastForward24.png");
+		bAddAll.setImage(ThemeManager.getThemeResource("images/FastBack24.png"));
+		bAdd.setImage(ThemeManager.getThemeResource("images/StepBack24.png"));
+		bDelete.setImage(ThemeManager.getThemeResource("images/StepForward24.png"));
+		bDeleteAll.setImage(ThemeManager.getThemeResource("images/FastForward24.png"));
 		
 		form.setWidth("99%");
 		form.setHeight("100%");

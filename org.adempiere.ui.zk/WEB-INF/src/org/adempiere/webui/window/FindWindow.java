@@ -65,6 +65,7 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.part.MultiTabPart;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridTab;
@@ -306,21 +307,21 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         Button btnNew = new Button();
         btnNew.setName("btnNew");
         btnNew.setId("btnNew");
-        btnNew.setImage("/images/New24.png");
+        btnNew.setImage(ThemeManager.getThemeResource("images/New24.png"));
         btnNew.addEventListener(Events.ON_CLICK,this);
         LayoutUtils.addSclass("action-button", btnNew);
 
         Button btnOk = new Button();
         btnOk.setName("btnOkSimple");
         btnOk.setId("btnOk");
-        btnOk.setImage("/images/Ok24.png");
+        btnOk.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
         btnOk.addEventListener(Events.ON_CLICK,this);
         LayoutUtils.addSclass("action-button", btnOk);
 
         Button btnCancel = new Button();
         btnCancel.setName("btnCancel");
         btnCancel.setId("btnCancel");
-        btnCancel.setImage("/images/Cancel24.png");
+        btnCancel.setImage(ThemeManager.getThemeResource("images/Cancel24.png"));
         btnCancel.addEventListener(Events.ON_CLICK,this);
         LayoutUtils.addSclass("action-button", btnCancel);
 
@@ -395,24 +396,24 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private void initAdvanced()
     {
         ToolBarButton btnNew = new ToolBarButton();
-        btnNew.setImage("/images/New24.png");
+        btnNew.setImage(ThemeManager.getThemeResource("images/New24.png"));
         btnNew.setAttribute("name", "btnNewAdv");
         btnNew.addEventListener(Events.ON_CLICK, this);
 
         ToolBarButton btnDelete = new ToolBarButton();
         btnDelete.setAttribute("name","btnDeleteAdv");
-        btnDelete.setImage("/images/Delete24.png");
+        btnDelete.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
         btnDelete.addEventListener(Events.ON_CLICK, this);
 
         Button btnOk = new Button();
         btnOk.setName("btnOkAdv");
-        btnOk.setImage("/images/Ok24.png");
+        btnOk.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
         btnOk.addEventListener(Events.ON_CLICK, this);
         LayoutUtils.addSclass("action-button", btnOk);
 
         Button btnCancel = new Button();
         btnCancel.setName("btnCancel");
-        btnCancel.setImage("/images/Cancel24.png");
+        btnCancel.setImage(ThemeManager.getThemeResource("images/Cancel24.png"));
         btnCancel.addEventListener(Events.ON_CLICK, this);
         LayoutUtils.addSclass("action-button", btnCancel);
 
@@ -511,7 +512,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	
     	btnSave = new ToolBarButton();
         btnSave.setAttribute("name","btnSaveAdv");
-        btnSave.setImage("/images/Save24.png");
+        btnSave.setImage(ThemeManager.getThemeResource("images/Save24.png"));
         btnSave.addEventListener(Events.ON_CLICK, this);
         btnSave.setDisabled(true);
         btnSave.setId("btnSave");

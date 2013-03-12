@@ -34,6 +34,7 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.MLocator;
 import org.compiere.model.MLocatorLookup;
 import org.compiere.model.MRole;
@@ -258,10 +259,10 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		boxButtons.setStyle("padding: 5px;");
 		boxButtons.setPack("end");		
 	
-		btnOk.setImage("/images/Ok16.png");
+		btnOk.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 		btnOk.addEventListener(Events.ON_CLICK, this);
 		
-		btnCancel.setImage("/images/Cancel16.png");
+		btnCancel.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
 		btnCancel.addEventListener(Events.ON_CLICK, this);
 		
 		boxButtons.appendChild(btnOk);

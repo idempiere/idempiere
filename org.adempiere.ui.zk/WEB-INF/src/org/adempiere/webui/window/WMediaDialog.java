@@ -25,6 +25,7 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -143,16 +144,16 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		
 
 		bSave.setEnabled(false);
-		bSave.setImage("/images/Export24.png");
+		bSave.setImage(ThemeManager.getThemeResource("images/Export24.png"));
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(), "AttachmentSave"));
 		bSave.addEventListener(Events.ON_CLICK, this);
 
-		bLoad.setImage("/images/Import24.png");
+		bLoad.setImage(ThemeManager.getThemeResource("images/Import24.png"));
 		bLoad.setTooltiptext(Msg.getMsg(Env.getCtx(), "Load"));
 		bLoad.addEventListener(Events.ON_UPLOAD, this);
 		bLoad.setUpload("true");
 
-		bDelete.setImage("/images/Delete24.png");
+		bDelete.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
 		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
 		bDelete.addEventListener(Events.ON_CLICK, this);
 
@@ -173,10 +174,10 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		southPane.appendChild(confirmPanel);
 		southPane.setHeight("30px");
 		
-		bOk.setImage("/images/Ok24.png");
+		bOk.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
 		bOk.addEventListener(Events.ON_CLICK, this);
 				
-		bCancel.setImage("/images/Cancel24.png");
+		bCancel.setImage(ThemeManager.getThemeResource("images/Cancel24.png"));
 		bCancel.addEventListener(Events.ON_CLICK, this);
 		
 		confirmPanel.appendChild(bOk);

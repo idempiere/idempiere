@@ -30,6 +30,7 @@ import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.ADForm;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
 import org.compiere.model.MQuery;
@@ -111,19 +112,19 @@ public class WFEditor extends ADForm {
 		workflowList.setStyle("margin-left: 10px; margin-top: 5px; margin-right:5px;");
 		// Zoom
 		zoomButton = new Toolbarbutton();
-		zoomButton.setImage("/images/Zoom16.png");
+		zoomButton.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
 		toolbar.appendChild(zoomButton);
 		zoomButton.addEventListener(Events.ON_CLICK, this);
 		zoomButton.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")));
 		// New Node
 		newButton = new Toolbarbutton();
-		newButton.setImage("/images/New16.png");
+		newButton.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		toolbar.appendChild(newButton);
 		newButton.addEventListener(Events.ON_CLICK, this);
 		newButton.setTooltiptext(Msg.getMsg(Env.getCtx(), "CreateNewNode"));
 		// Refresh
 		refreshButton = new Toolbarbutton();
-		refreshButton.setImage("/images/Refresh16.png");
+		refreshButton.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
 		toolbar.appendChild(refreshButton);
 		refreshButton.addEventListener(Events.ON_CLICK, this);
 		refreshButton.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));

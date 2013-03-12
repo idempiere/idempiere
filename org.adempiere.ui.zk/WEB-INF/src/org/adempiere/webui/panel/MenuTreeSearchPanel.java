@@ -16,6 +16,7 @@ package org.adempiere.webui.panel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeNodeAction;
 import org.adempiere.webui.util.TreeUtils;
@@ -71,7 +72,7 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
 		hlayout.setSclass("menu-search-toggle-box");
 				
 		newBtn = new Toolbarbutton();
-		newBtn.setImage("/images/New16.png");
+		newBtn.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		newBtn.setSclass("menu-search-toggle-off");
 		newBtn.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
@@ -87,7 +88,7 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
 		newBtn.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "New")));
 		
 		openBtn = new Toolbarbutton();
-		openBtn.setImage("/images/Open16.png");
+		openBtn.setImage(ThemeManager.getThemeResource("images/Open16.png"));
 		openBtn.setSclass("menu-search-toggle-on");
 		openBtn.setDisabled(true);
 		openBtn.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
@@ -154,7 +155,7 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
         		String image = getImage(treeItem);
         		if (image == null || image.length() == 0)
         		{
-        			image = "/images/Folder16.png";
+        			image = ThemeManager.getThemeResource("images/Folder16.png");
         		}
         		imageList.add(image);
         	}

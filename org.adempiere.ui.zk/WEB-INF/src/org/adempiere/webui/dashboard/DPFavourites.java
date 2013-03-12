@@ -21,6 +21,7 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MMenu;
@@ -91,7 +92,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		this.appendChild(favToolbar);
 		
 		// Elaine 2008/07/24
-		Image img = new Image("/images/Delete24.png");
+		Image img = new Image(ThemeManager.getThemeResource("images/Delete24.png"));
 		favToolbar.appendChild(img);
 		img.setStyle("text-align: right");
 		img.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Delete")));
@@ -146,7 +147,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		hbox.appendChild(btnFavItem);
 		btnFavItem.setLabel(label);
 		btnFavItem.setTooltiptext(description);
-		btnFavItem.setImage(imageSrc);
+		btnFavItem.setImage(ThemeManager.getThemeResource(imageSrc));
 		btnFavItem.setDraggable(DELETE_FAV_DROPPABLE);
 		btnFavItem.addEventListener(Events.ON_CLICK, this);
 		btnFavItem.addEventListener(Events.ON_DROP, this);
@@ -154,7 +155,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 									
 		if (addNewBtn)
 		{
-			Toolbarbutton newBtn = new Toolbarbutton(null, "/images/New10.png");
+			Toolbarbutton newBtn = new Toolbarbutton(null, ThemeManager.getThemeResource("images/New10.png"));
 			newBtn.setAttribute(NODE_ID_ATTR, String.valueOf(nodeId));
 			hbox.appendChild(newBtn);
 			newBtn.addEventListener(Events.ON_CLICK, this);

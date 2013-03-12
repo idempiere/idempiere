@@ -446,15 +446,7 @@ public class GridWindow implements Serializable
 	{
 		StringBuilder title = new StringBuilder(Msg.getMsg(Env.getCtx(), "Window")).append(": ").append(getName());
 		WebDoc doc = null;
-		if (javaClient)
-		{
-			doc = WebDoc.create (false, title.toString(), javaClient);
-		}
-		else	//	HTML
-		{
-			doc = WebDoc.createPopup (title.toString());
-			doc.addPopupClose(Env.getCtx());
-		}
+		doc = WebDoc.create (false, title.toString(), javaClient);
 		
 	//	body.addElement("&copy;&nbsp;Adempiere &nbsp; ");
 	//	body.addElement(new a("http://www.adempiere.org/help/", "Online Help"));
@@ -565,8 +557,6 @@ public class GridWindow implements Serializable
 			center.addElement(new p().addElement(WebDoc.NBSP));
 		}	//	for all Tabs
 		
-		if (!javaClient)
-			doc.addPopupClose(Env.getCtx());
 	   	//System.out.println(doc.toString());
 		return doc;
 	}	//	getHelpDoc

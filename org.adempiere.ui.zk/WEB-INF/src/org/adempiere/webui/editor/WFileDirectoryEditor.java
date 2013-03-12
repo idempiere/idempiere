@@ -17,6 +17,7 @@ package org.adempiere.webui.editor;
 import org.adempiere.webui.component.FilenameBox;
 import org.adempiere.webui.component.FolderBrowser;
 import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
 import org.zkoss.zk.ui.event.Event;
@@ -39,7 +40,7 @@ public class WFileDirectoryEditor extends WEditor
 	public WFileDirectoryEditor(GridField gridField)
 	{
 		super(new FilenameBox(), gridField);
-		getComponent().setButtonImage("/images/Open16.png");
+		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Open16.png"));
 		getComponent().addEventListener(Events.ON_CLICK, this);
 		getComponent().getButton().setUpload("false");
 	}

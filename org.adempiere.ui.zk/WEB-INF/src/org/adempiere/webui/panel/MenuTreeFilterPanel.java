@@ -1,5 +1,6 @@
 package org.adempiere.webui.panel;
 
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeUtils;
 import org.compiere.util.Env;
@@ -34,28 +35,28 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 		Vbox box = new Vbox();
 
 		Checkbox report = new Checkbox();
-		report.setImage("/images/mReport.png");
+		report.setImage(ThemeManager.getThemeResource("images/mReport.png"));
 		report.setChecked(true);
 		report.setId("report");
 		report.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(report);
 
 		Checkbox process = new Checkbox();
-		process.setImage("/images/mProcess.png");
+		process.setImage(ThemeManager.getThemeResource("images/mProcess.png"));
 		process.setChecked(true);
 		process.setId("process");
 		process.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(process);
 
 		Checkbox workflow = new Checkbox();
-		workflow.setImage("/images/mWorkFlow.png");
+		workflow.setImage(ThemeManager.getThemeResource("images/mWorkFlow.png"));
 		workflow.setChecked(true);
 		workflow.setId("workflow");
 		workflow.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(workflow);
 
 		Checkbox window = new Checkbox();
-		window.setImage("/images/mWindow.png");
+		window.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
 		window.setChecked(true);
 		window.setId("window");
 		window.addEventListener(Events.ON_CHECK, this);

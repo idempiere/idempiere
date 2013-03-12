@@ -34,7 +34,6 @@ import org.adempiere.webui.window.WTask;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTask;
 import org.compiere.util.Env;
-import org.compiere.util.WebDoc;
 import org.compiere.wf.MWorkflow;
 import org.zkoss.image.AImage;
 import org.zkoss.util.media.AMedia;
@@ -203,15 +202,16 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     }
 
     /**
-     * @param webDoc
+     * @param content
      * @param title
      * @param closeable
      */
-    public void showURL(WebDoc webDoc, String title, boolean closeable)
+    @Override
+    public void showHTMLContent(String content, String title, boolean closeable)
     {
     	Iframe iframe = new Iframe();
 
-    	AMedia media = new AMedia(title, "html", "text/html", webDoc.toString().getBytes());
+    	AMedia media = new AMedia(title, "html", "text/html", content.getBytes());
     	iframe.setContent(media);
 
     	addWin(iframe, title, closeable);

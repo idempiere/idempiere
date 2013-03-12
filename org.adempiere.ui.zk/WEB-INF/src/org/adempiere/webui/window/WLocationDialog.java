@@ -36,6 +36,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MCountry;
@@ -243,10 +244,10 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		lstCountry.setRows(0);
 
 		btnOk = new Button();
-		btnOk.setImage("/images/Ok16.png");
+		btnOk.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 		btnOk.addEventListener(Events.ON_CLICK,this);
 		btnCancel = new Button();
-		btnCancel.setImage("/images/Cancel16.png");
+		btnCancel.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
 		btnCancel.addEventListener(Events.ON_CLICK,this);
 
 		toLink = new Button(TO_LINK);

@@ -21,23 +21,19 @@ import javax.servlet.ServletRequest;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.part.AbstractUIPart;
-import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.LoginWindow;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Center;
 import org.zkoss.zul.East;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.West;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 
 /**
@@ -62,31 +58,13 @@ public class WLogin extends AbstractUIPart
 
     protected Component doCreatePart(Component parent)
     {
-        layout = new Borderlayout();
-        if (parent != null)
-        	layout.setParent(parent);
-        else
-        	layout.setPage(page);
-        LayoutUtils.addSclass(ITheme.LOGIN_WINDOW_CLASS, layout);
+    	PageDefinition pageDefintion = Executions.getCurrent().getPageDefinition(ThemeManager.getThemeResource("zul/login/login.zul"));
+    	Component loginPage = Executions.createComponents(pageDefintion, parent, null);
+    	
+        layout = (Borderlayout) loginPage.getFellow("layout");
 
-        Center center = new Center();
-        center.setParent(layout);
-        center.setBorder("none");
-        center.setAutoscroll(true);
-        center.setStyle("border: none; background-color: transparent;");
-
-        Vbox vb = new Vbox();
-        vb.setParent(center);
-        vb.setHeight("100%");
-        vb.setWidth("100%");
-        vb.setPack("center");
-        vb.setAlign("center");
-        vb.setStyle("background-color: transparent;");
-        vb.setHflex("1");
-        vb.setVflex("1");
-
-        loginWindow = new LoginWindow(app);
-        loginWindow.setParent(vb);
+        loginWindow = (LoginWindow) loginPage.getFellow("loginWindow");
+        loginWindow.init(app);
 
         if (!AEnv.isBrowserSupported())
         {
@@ -103,87 +81,42 @@ public class WLogin extends AbstractUIPart
         	browserWarningWindow.doOverlapped();
         }
         
-        try {
-        	String right = ThemeManager.getLoginRightPanel();
-	        PageDefinition pageDefintion = Executions.getCurrent().getPageDefinition(right);
-	    	East east = new East();
-	    	east.setSclass(ITheme.LOGIN_EAST_PANEL_CLASS);
-	    	addContent(east, pageDefintion);
-        } catch (Exception e) {
-        	//ignore page not found exception
-        	if (e instanceof UiException) {
-        		if (!(e.getMessage() != null && e.getMessage().startsWith("Page not found"))) {
-        			e.printStackTrace();
-        		}
-        	} else {
-        		e.printStackTrace();
+        String ua = Servlets.getUserAgent((ServletRequest) Executions.getCurrent().getNativeRequest());
+		ua = ua.toLowerCase();
+		boolean mobile = ua.indexOf("ipad") >= 0 || ua.indexOf("iphone") >= 0 || ua.indexOf("android") >= 0;
+    	
+    	
+        West west = layout.getWest();
+        if (west.getFirstChild() != null && west.getFirstChild().getFirstChild() != null) {
+        	if (mobile) {    		
+        		west.setCollapsible(true);
+        		west.setOpen(false);
         	}
+        } else {
+        	west.setVisible(false);
         }
-
-        try {
-	        String left = ThemeManager.getLoginLeftPanel();
-	        PageDefinition pageDefintion = Executions.getCurrent().getPageDefinition(left);
-	    	West west = new West();
-	    	west.setSclass(ITheme.LOGIN_WEST_PANEL_CLASS);
-	    	addContent(west, pageDefintion);
-	    	String ua = Servlets.getUserAgent((ServletRequest) Executions.getCurrent().getNativeRequest());
-			ua = ua.toLowerCase();
-			boolean mobile = ua.indexOf("ipad") >= 0 || ua.indexOf("iphone") >= 0 || ua.indexOf("android") >= 0;
-	    	if (mobile) {
-	    		west.setCollapsible(true);
-	    		west.setOpen(false);
-	    	}
-        } catch (Exception e){
-        	//ignore page not found exception
-        	if (e instanceof UiException) {
-        		if (!(e.getMessage() != null && e.getMessage().startsWith("Page not found"))) {
-        			e.printStackTrace();
-        		}
-        	} else {
-        		e.printStackTrace();
+        
+        East east = layout.getEast();
+        if (east.getFirstChild() != null && east.getFirstChild().getFirstChild() != null) {
+        	if (mobile) {    		
+        		east.setCollapsible(true);
+        		east.setOpen(false);
         	}
+        } else {
+        	east.setVisible(false);
         }
-
-        try {
-	        String top = ThemeManager.getLoginTopPanel();
-	        PageDefinition pageDefintion = Executions.getCurrent().getPageDefinition(top);
-	    	North north = new North();
-	    	north.setSclass(ITheme.LOGIN_NORTH_PANEL_CLASS);
-	    	addContent(north, pageDefintion);
-        } catch (Exception e) {
-        	//ignore page not found exception
-        	if (e instanceof UiException) {
-        		if (!(e.getMessage() != null && e.getMessage().startsWith("Page not found"))) {
-        			e.printStackTrace();
-        		}
-        	} else {
-        		e.printStackTrace();
-        	}
+        
+        North north = layout.getNorth();
+        if (north.getFirstChild() == null || north.getFirstChild().getFirstChild() == null) {
+        	north.setVisible(false);
         }
-
-        try {
-	        String bottom = ThemeManager.getLoginBottomPanel();
-	        PageDefinition pageDefintion = Executions.getCurrent().getPageDefinition(bottom);
-	    	South south = new South();
-	    	south.setSclass(ITheme.LOGIN_SOUTH_PANEL_CLASS);
-	    	addContent(south, pageDefintion);
-        } catch (Exception e) {
-        	//ignore page not found exception
-        	if (e instanceof UiException) {
-        		if (!(e.getMessage() != null && e.getMessage().startsWith("Page not found"))) {
-        			e.printStackTrace();
-        		}
-        	} else {
-        		e.printStackTrace();
-        	}
+        
+        South south = layout.getSouth();
+        if (south.getFirstChild() == null || south.getFirstChild().getFirstChild() == null) {
+        	south.setVisible(false);
         }
 
         return layout;
-    }
-
-    private void addContent(Component parent, PageDefinition page) {
-    	layout.appendChild(parent);
-    	Executions.createComponents(page, parent, null);
     }
 
 	public void detach() {

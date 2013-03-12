@@ -19,6 +19,7 @@ import java.util.Properties;
 import org.adempiere.base.Service;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRecentItem;
@@ -92,14 +93,14 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		Toolbar recentItemsToolbar = new Toolbar();
 		this.appendChild(recentItemsToolbar);
 
-		Image imgr = new Image("/images/Refresh24.png");
+		Image imgr = new Image(ThemeManager.getThemeResource("images/Refresh24.png"));
 		recentItemsToolbar.appendChild(imgr);
 		imgr.setStyle("text-align: right; cursor: pointer;");
 		imgr.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Refresh")));
 		imgr.addEventListener(Events.ON_CLICK, this);
 		//
 
-		Image img = new Image("/images/Delete24.png");
+		Image img = new Image(ThemeManager.getThemeResource("images/Delete24.png"));
 		recentItemsToolbar.appendChild(img);
 		img.setStyle("text-align: right;");
 		img.setDroppable(DELETE_RECENTITEMS_DROPPABLE);
@@ -216,7 +217,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 			btnrecentItem.setAttribute(AD_RECENT_ITEM_ID_ATTR, String.valueOf(ri.getAD_RecentItem_ID()));
 			bxRecentItems.appendChild(btnrecentItem);
 			btnrecentItem.setLabel(label);
-			btnrecentItem.setImage(getIconFile());
+			btnrecentItem.setImage(ThemeManager.getThemeResource(getIconFile()));
 			btnrecentItem.setDraggable(DELETE_RECENTITEMS_DROPPABLE);
 			btnrecentItem.addEventListener(Events.ON_CLICK, this);
 			btnrecentItem.addEventListener(Events.ON_DROP, this);

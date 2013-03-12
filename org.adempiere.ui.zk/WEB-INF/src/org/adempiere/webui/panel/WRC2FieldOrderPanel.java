@@ -26,6 +26,7 @@ import org.adempiere.webui.component.ListHeader;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.SimpleListModel;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
@@ -139,10 +140,10 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 			}
 		};
 
-		bUp.setImage("images/Parent24.png");
+		bUp.setImage(ThemeManager.getThemeResource("images/Parent24.png"));
 		bUp.addEventListener(Events.ON_CLICK, actionListener);
 
-		bDown.setImage("images/Detail24.png");
+		bDown.setImage(ThemeManager.getThemeResource("images/Detail24.png"));
 		bDown.addEventListener(Events.ON_CLICK, actionListener);
 		
 		Vbox vbox = new Vbox();

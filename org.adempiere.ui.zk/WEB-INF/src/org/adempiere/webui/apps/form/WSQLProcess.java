@@ -34,6 +34,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.panel.ADForm;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -139,7 +140,7 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
     {
         Button btnProcess = new Button();
 
-        btnProcess.setImage("/images/Process24.png");
+        btnProcess.setImage(ThemeManager.getThemeResource("images/Process24.png"));
         btnProcess.setName(Msg.getMsg(Env.getCtx(), "Process"));
 
         return btnProcess;

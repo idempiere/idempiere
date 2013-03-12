@@ -14,6 +14,7 @@
 package org.adempiere.webui.report;
 
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.theme.ThemeManager;
 import org.apache.ecs.ConcreteElement;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.div;
@@ -64,7 +65,7 @@ public class HTMLExtension implements IHTMLExtension {
 				+ dataElement.getValueAsString() + "')");
 		window.addElement(href);
 		menu.addElement(window);									
-		img image = new img("/webui/images/mWindow.png");
+		img image = new img("/webui" + ThemeManager.getThemeResource("images/mWindow.png"));
 		image.setAlign("middle");
 		href.addElement(image);
 		href.addElement(Msg.getMsg(AEnv.getLanguage(Env.getCtx()), "Window"));
@@ -82,7 +83,7 @@ public class HTMLExtension implements IHTMLExtension {
 				+ dataElement.getValueAsString() + "')");
 		report.addElement(href);
 		menu.addElement(report);
-		image = new img("/webui/images/mReport.png");
+		image = new img("/webui" + ThemeManager.getThemeResource("images/mReport.png"));
 		image.setAlign("middle");
 		href.addElement(image);
 		href.addElement(Msg.getMsg(AEnv.getLanguage(Env.getCtx()), "Report").replace("&", ""));

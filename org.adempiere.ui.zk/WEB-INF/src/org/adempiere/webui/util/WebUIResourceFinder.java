@@ -17,6 +17,7 @@ import java.net.URL;
 
 import org.adempiere.base.IResourceFinder;
 import org.adempiere.webui.WebUIActivator;
+import org.adempiere.webui.theme.ThemeManager;
 
 /**
  *
@@ -30,6 +31,7 @@ public class WebUIResourceFinder implements IResourceFinder {
 		URL url = WebUIActivator.getBundleContext().getBundle().getEntry(name);
 		if (url == null && name.startsWith("org/compiere/images")) {
 			String t = name.substring("org/compiere/".length());
+			t = ThemeManager.getThemeResource(t);
 			url = WebUIActivator.getBundleContext().getBundle().getEntry(t);
 			if (url == null && t.endsWith(".gif")) {
 				t = t.replace(".gif", ".png");
@@ -37,6 +39,7 @@ public class WebUIResourceFinder implements IResourceFinder {
 			}
 		} else if (url == null && name.startsWith("/org/compiere/images")) {
 			String t = name.substring("/org/compiere/".length());
+			t = ThemeManager.getThemeResource(t);
 			url = WebUIActivator.getBundleContext().getBundle().getEntry(t);
 			if (url == null && t.endsWith(".gif")) {
 				t = t.replace(".gif", ".png");
