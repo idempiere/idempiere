@@ -14,6 +14,7 @@
 package org.adempiere.webui.util;
 
 import java.net.URL;
+import java.util.Enumeration;
 
 import org.adempiere.base.IResourceFinder;
 import org.adempiere.webui.WebUIActivator;
@@ -26,24 +27,42 @@ import org.adempiere.webui.theme.ThemeManager;
  */
 public class WebUIResourceFinder implements IResourceFinder {
 
+	private Enumeration<URL> find(String name) {
+		int pathIndex = name.lastIndexOf("/");
+		String path = "/";
+		String pattern = null;
+		if (pathIndex > 0) {
+			path = name.substring(0, pathIndex);
+			pattern = name.substring(pathIndex+1);
+		} else {
+			pattern = name;
+		}
+		return WebUIActivator.getBundleContext().getBundle().findEntries(path, pattern, false);
+	}
+	
 	@Override
 	public URL getResource(String name) {
-		URL url = WebUIActivator.getBundleContext().getBundle().getEntry(name);
+		Enumeration<URL> e = find(name);
+		URL url = e != null && e.hasMoreElements() ? e.nextElement() : null;
 		if (url == null && name.startsWith("org/compiere/images")) {
 			String t = name.substring("org/compiere/".length());
 			t = ThemeManager.getThemeResource(t);
-			url = WebUIActivator.getBundleContext().getBundle().getEntry(t);
+			e = find(t);
+			url = e != null && e.hasMoreElements() ? e.nextElement() : null;
 			if (url == null && t.endsWith(".gif")) {
 				t = t.replace(".gif", ".png");
-				url = WebUIActivator.getBundleContext().getBundle().getEntry(t);
+				e = find(t);
+				url = e != null && e.hasMoreElements() ? e.nextElement() : null;
 			}
 		} else if (url == null && name.startsWith("/org/compiere/images")) {
 			String t = name.substring("/org/compiere/".length());
 			t = ThemeManager.getThemeResource(t);
-			url = WebUIActivator.getBundleContext().getBundle().getEntry(t);
+			e = find(t);
+			url = e != null && e.hasMoreElements() ? e.nextElement() : null;
 			if (url == null && t.endsWith(".gif")) {
 				t = t.replace(".gif", ".png");
-				url = WebUIActivator.getBundleContext().getBundle().getEntry(t);
+				e = find(t);
+				url = e != null && e.hasMoreElements() ? e.nextElement() : null;
 			}
 		}
 		return url;
