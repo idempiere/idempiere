@@ -42,6 +42,9 @@ public class WebUIResourceFinder implements IResourceFinder {
 	
 	@Override
 	public URL getResource(String name) {
+		if ("images/AdempiereHR.png".equals(name) || "images/Adempiere.png".equals(name)) {
+			name = ThemeManager.getThemeResource("images/header-logo.png");
+		}
 		Enumeration<URL> e = find(name);
 		URL url = e != null && e.hasMoreElements() ? e.nextElement() : null;
 		if (url == null && name.startsWith("org/compiere/images")) {
@@ -64,6 +67,19 @@ public class WebUIResourceFinder implements IResourceFinder {
 				e = find(t);
 				url = e != null && e.hasMoreElements() ? e.nextElement() : null;
 			}
+		} else if (url == null && name.startsWith("images/")) {
+			String t = ThemeManager.getThemeResource(name);
+			e = find(t);
+			url = e != null && e.hasMoreElements() ? e.nextElement() : null;
+			if (url == null && t.endsWith(".gif")) {
+				t = t.replace(".gif", ".png");
+				e = find(t);
+				url = e != null && e.hasMoreElements() ? e.nextElement() : null;
+			}
+		} else if (url == null && name.endsWith(".gif")) {
+			String t = name.replace(".gif", ".png");
+			e = find(t);
+			url = e != null && e.hasMoreElements() ? e.nextElement() : null;
 		}
 		return url;
 	}
