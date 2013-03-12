@@ -9,6 +9,7 @@
 		<dependency name="org.idempiere.fitnesse" componentType="eclipse.feature"/>
 		<dependency name="org.idempiere.fitnesse.fixture" componentType="osgi.bundle"/>
 		<dependency name="org.idempiere.fitnesse.server" componentType="osgi.bundle"/>
+		<dependency name="org.idempiere.fitrecorder" componentType="osgi.bundle"/>
 		<dependency name="org.idempiere.ui.zk.selenium" componentType="osgi.bundle"/>
 	</dependencies>
 	<generators>
@@ -66,6 +67,7 @@
 			<attribute name="bundle.jars" component="org.idempiere.fitnesse.fixture"/>
 			<attribute name="bundle.jars" component="org.idempiere.fitnesse.server"/>
 			<attribute name="bundle.jars" component="org.idempiere.fitnesse"/>
+			<attribute name="bundle.jars" component="org.idempiere.fitrecorder"/>
 			<attribute name="bundle.jars" component="org.idempiere.ui.zk.selenium"/>
 		</public>
 		<public name="feature.references">
