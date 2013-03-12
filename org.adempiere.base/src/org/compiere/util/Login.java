@@ -842,9 +842,6 @@ public class Login
 		String retValue = "";
 		int AD_Client_ID = Env.getContextAsInt(m_ctx, "#AD_Client_ID");
 		int AD_Org_ID =  org.getKey();
-		@SuppressWarnings("unused")
-		int AD_User_ID =  Env.getContextAsInt(m_ctx, "#AD_User_ID");
-		int AD_Role_ID =  Env.getContextAsInt(m_ctx, "#AD_Role_ID");
 
 		//	Other Settings
 		Env.setContext(m_ctx, "#YYYY", "Y");

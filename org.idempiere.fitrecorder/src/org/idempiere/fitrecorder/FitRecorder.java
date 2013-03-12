@@ -19,15 +19,15 @@ package org.idempiere.fitrecorder;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 import org.compiere.model.MClient;
@@ -36,6 +36,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessPara;
+import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
@@ -47,11 +48,11 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Ini;
 
 public class FitRecorder implements ModelValidator {
 
-	private static FileOutputStream tempFile = null;
-	private static Writer writer;
+	private HashMap<Integer, Writer> writersPerSession;
 
 	/** Logger */
 	private static CLogger log = CLogger.getCLogger(FitRecorder.class);
@@ -103,14 +104,10 @@ public class FitRecorder implements ModelValidator {
 	
 	@Override
 	public void initialize(ModelValidationEngine engine, MClient client) {
-		SimpleDateFormat format = new SimpleDateFormat ("yyyyMMddHHmmss");
-		String dateTimeText = format.format(new Timestamp(System.currentTimeMillis()));
+		writersPerSession=new HashMap<Integer, Writer>();
 
 		try {
-			File fileNameOr = File.createTempFile("fit_test_" + dateTimeText + "_", ".txt");
-			tempFile = new FileOutputStream(fileNameOr, true);
-			writer = new BufferedWriter(new OutputStreamWriter(tempFile, "UTF8"));
-
+			
 			String sql = "SELECT ta.TableName"
 					+" FROM AD_Table ta"
 					+" WHERE ta.IsActive='Y'"
@@ -164,53 +161,6 @@ public class FitRecorder implements ModelValidator {
 	@Override
 	public String login(int AD_Org_ID, int AD_Role_ID, int AD_User_ID) {
 
-		try {
-
-			writer.append("\n");
-			writer.append("\n");
-			writer.append("LOGIN");
-			writer.append("\n");
-			writer.append("!");
-			writer.append("|Login|");
-			writer.append("\n");
-			MUser user = MUser.get(Env.getCtx(), AD_User_ID);
-			writer.append("|User|");
-			if (MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false))
-				writer.append(user.getEMail() + "|");
-			else
-				if (user.getLDAPUser() != null)
-					writer.append(user.getLDAPUser() + "|");
-				else
-					writer.append(user.getName() + "|");
-			writer.append("\n");
-			writer.append("|Password|");
-			writer.append(user.getPassword() + "|");
-			writer.append("\n");
-			writer.append("|AD_Client_ID|");
-			MClient client = MClient.get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "#AD_Client_ID"));
-			writer.append("@Ref=AD_Client[Name='" + client.getName() + "'].AD_Client_ID|");
-			writer.append("\n");
-			writer.append("|AD_Org_ID|");
-			String orgName = DB.getSQLValueString(null, "SELECT Name FROM AD_Org WHERE AD_Org_ID=?", AD_Org_ID);
-			writer.append("@Ref=AD_Org[Name='" + orgName + "'].AD_Org_ID|");
-			writer.append("\n");
-			writer.append("|AD_Role_ID|");
-			writer.append("@Ref=AD_Role[Name='" + Env.getContext(Env.getCtx(), "#AD_Role_Name") + "'].AD_Role_ID|");
-			writer.append("\n");
-			int warehouseid = Env.getContextAsInt(Env.getCtx(), Env.M_WAREHOUSE_ID);
-			if (warehouseid > 0) {
-				MWarehouse warehouse = MWarehouse.get(Env.getCtx(), warehouseid);
-				writer.append("|M_Warehouse_ID|");
-				writer.append("@Ref=M_Warehouse[Name='" + warehouse.getName() + "'].M_Warehouse_ID|");
-				writer.append("\n");
-			}
-			writer.append("|*Login*|");
-			writer.append("\n");
-			writer.flush();
-
-		} catch (Exception e) {
-			return e.getLocalizedMessage();
-		}
 		return null;
 	}
 
@@ -219,6 +169,10 @@ public class FitRecorder implements ModelValidator {
 
 		try {
 			if (type == TYPE_AFTER_NEW ) {
+				
+				if (po instanceof MSession) {
+					loginFixture(po);
+				}
 				if (dontLogTables.contains(po.get_TableName().toUpperCase()))
 					return null;
 
@@ -230,15 +184,15 @@ public class FitRecorder implements ModelValidator {
 				if (po.get_TrxName().startsWith("WFP_"))
 					return null;
 
-				writer.append("\n");
-				writer.append("\n");
-				writer.append("CREATE RECORD");
-				writer.append("\n");
-				writer.append("!");
-				writer.append("|Create Record||");
-				writer.append("\n");
-				writer.append("|*Table*|");
-				writer.append(po.get_TableName() + "|");
+				writeFile("\n");
+				writeFile("\n");
+				writeFile("CREATE RECORD");
+				writeFile("\n");
+				writeFile("!");
+				writeFile("|Create Record||");
+				writeFile("\n");
+				writeFile("|*Table*|");
+				writeFile(po.get_TableName() + "|");
 
 				MTable table = MTable.get(Env.getCtx(),po.get_Table_ID());
 				for(MColumn column : table.getColumns(false)) {
@@ -260,19 +214,18 @@ public class FitRecorder implements ModelValidator {
 
 					String value = po.get_ValueAsString(colName);
 					if (value != null && value.length() > 0) {
-						writer.append("\n");
-						writer.append("|" + colName + "|");
+						writeFile("\n");
+						writeFile("|" + colName + "|");
 						if (DisplayType.isLookup(column.getAD_Reference_ID()) && DisplayType.List != column.getAD_Reference_ID()) {
-							writer.append(resolveValue(po, table, column) + "|");
+							writeFile(resolveValue(po, table, column) + "|");
 						} else {
-							writer.append(value +"|");
+							writeFile(value +"|");
 						}
 					}
 				}
-				writer.append("\n");
-				writer.append("|*Save*|");
-				writer.append("\n");
-				writer.flush();
+				writeFile("\n");
+				writeFile("|*Save*|");
+				writeFile("\n");
 
 			}
 
@@ -281,15 +234,15 @@ public class FitRecorder implements ModelValidator {
 
 					MProcess pro = MProcess.get(Env.getCtx(), po.get_ValueAsInt("AD_Process_ID"));
 					MPInstance pint = (MPInstance)po;
-					writer.append("\n");
-					writer.append("\n");
-					writer.append("RUN PROCESS");
-					writer.append("\n");
-					writer.append("!");
-					writer.append("|Run Process|");
-					writer.append("\n");
-					writer.append("|*ProcessValue*|");
-					writer.append(pro.getValue() + "|");
+					writeFile("\n");
+					writeFile("\n");
+					writeFile("RUN PROCESS");
+					writeFile("\n");
+					writeFile("!");
+					writeFile("|Run Process|");
+					writeFile("\n");
+					writeFile("|*ProcessValue*|");
+					writeFile(pro.getValue() + "|");
 					MPInstancePara[] iparas = pint.getParameters();
 					for (MProcessPara para : pro.getParameters()) {
 						MPInstancePara ipara = null;
@@ -327,24 +280,32 @@ public class FitRecorder implements ModelValidator {
 								valueTo = ipara.getP_String_To();
 						}
 						if (value != null) {
-							writer.append("\n");
-							writer.append("|" + para.getColumnName() + "|");
-							writer.append(value + "|");
+							writeFile("\n");
+							writeFile("|" + para.getColumnName() + "|");
+							writeFile(value + "|");
 						}
 						if (para.isRange() && valueTo != null) {
-							writer.append("\n");
-							writer.append("|" + para.getColumnName() + "_2|");
-							writer.append(valueTo + "|");
+							writeFile("\n");
+							writeFile("|" + para.getColumnName() + "_2|");
+							writeFile(valueTo + "|");
 						}
 					}
-					writer.append("\n");
-					writer.append("|*Run*|");
-					writer.append("\n");
-					writer.flush();
+					writeFile("\n");
+					writeFile("|*Run*|");
+					writeFile("\n");					
 
 				}
 			}
-		}catch (Exception e) {
+			
+			if (po instanceof MSession) {
+				if (type == TYPE_AFTER_CHANGE) {
+					MSession session = (MSession) po;
+					if (session.isProcessed()) {
+						closefile();
+					}
+				}
+			}
+		} catch (Exception e) {
 			return e.getLocalizedMessage();
 		}
 		return null;
@@ -435,47 +396,46 @@ public class FitRecorder implements ModelValidator {
 				if (timing == TIMING_BEFORE_POST)
 					action = "PO";
 				
-				writer.append("\n");
-				writer.append("\n");
+				writeFile("\n");
+				writeFile("\n");
 				if (action.equals("CO")) {
 					// run process
 					String processValue = DB.getSQLValueString(po.get_TrxName(),
 							"SELECT p.Value FROM AD_Process p JOIN AD_Workflow w ON (p.AD_Workflow_ID=w.AD_Workflow_ID) WHERE w.AD_Table_ID=?", po.get_Table_ID());
-					writer.append("RUN PROCESS");
-					writer.append("\n");
-					writer.append("!");
-					writer.append("|Run Process|");
-					writer.append("\n");
-					writer.append("|*ProcessValue*|");
-					writer.append(processValue + "|");
-					writer.append("\n");
-					writer.append("|*RecordID*|");
-					writer.append(resolveValueDoc(po.get_ID(), po.get_TableName()) + "|");
-					writer.append("\n");
-					writer.append("|*DocAction*|");
-					writer.append(action + "|");
-					writer.append("\n");
-					writer.append("|*Run*|");
+					writeFile("RUN PROCESS");
+					writeFile("\n");
+					writeFile("!");
+					writeFile("|Run Process|");
+					writeFile("\n");
+					writeFile("|*ProcessValue*|");
+					writeFile(processValue + "|");
+					writeFile("\n");
+					writeFile("|*RecordID*|");
+					writeFile(resolveValueDoc(po.get_ID(), po.get_TableName()) + "|");
+					writeFile("\n");
+					writeFile("|*DocAction*|");
+					writeFile(action + "|");
+					writeFile("\n");
+					writeFile("|*Run*|");
 				} else {
 					// set doc action
-					writer.append("SET DOC ACTION");
-					writer.append("\n");
-					writer.append("!");
-					writer.append("|Set DocAction|");
-					writer.append("\n");
-					writer.append("|*Table*|");
-					writer.append(po.get_TableName() + "|");
-					writer.append("\n");
-					writer.append("|" + po.get_TableName() + "_ID|");
-					writer.append(resolveValueDoc(po.get_ID(), po.get_TableName()) + "|");
-					writer.append("\n");
-					writer.append("|DocAction|");
-					writer.append(action + "|");
-					writer.append("\n");
-					writer.append("|*Save*|");
+					writeFile("SET DOC ACTION");
+					writeFile("\n");
+					writeFile("!");
+					writeFile("|Set DocAction|");
+					writeFile("\n");
+					writeFile("|*Table*|");
+					writeFile(po.get_TableName() + "|");
+					writeFile("\n");
+					writeFile("|" + po.get_TableName() + "_ID|");
+					writeFile(resolveValueDoc(po.get_ID(), po.get_TableName()) + "|");
+					writeFile("\n");
+					writeFile("|DocAction|");
+					writeFile(action + "|");
+					writeFile("\n");
+					writeFile("|*Save*|");
 				}
-				writer.append("\n");
-				writer.flush();
+				writeFile("\n");
 			}
 		} catch (Exception e) {
 			if (log.isLoggable(Level.INFO)) log.info(e.getLocalizedMessage());
@@ -513,5 +473,88 @@ public class FitRecorder implements ModelValidator {
 		}
 
 		return value;
+	}
+	
+	public String loginFixture(PO po){
+		String msg=null;
+		String preference = Env.getPreference(Env.getCtx(), 0, "FitRecorder", false);
+		if (preference.equals("Y")) {			
+			int session_ID = po.get_ID();
+			int user_ID = Env.getContextAsInt(Env.getCtx(), "#AD_User_ID");
+			int org_ID = Env.getContextAsInt(Env.getCtx(), "#AD_Org_ID");
+			MUser user = new MUser(Env.getCtx(), user_ID, null);
+			String name = Ini.getAdempiereHome() + "/log/fit_test_" + session_ID+ user.getName() + ".txt";
+			try {
+				File file = new File(name);
+				FileOutputStream fos = new FileOutputStream(file, true);
+				Writer writer = new BufferedWriter(new OutputStreamWriter(fos, "UTF8"));
+				Env.setContext(Env.getCtx(), "#AD_Session_ID", session_ID);
+				writersPerSession.put(session_ID, writer);
+				writeFile("\n");
+				writeFile("\n");
+				writeFile("LOGIN");
+				writeFile("\n");
+				writeFile("!");
+				writeFile("|Login|");
+				writeFile("\n");
+				writeFile("|User|");
+				if (MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN,
+						false))
+					writeFile(user.getEMail() + "|");
+				else if (user.getLDAPUser() != null)
+					writeFile(user.getLDAPUser() + "|");
+				else
+					writeFile(user.getName() + "|");
+				writeFile("\n");
+				writeFile("|Password|");
+				writeFile("                                |");
+				writeFile("\n");
+				writeFile("|AD_Client_ID|");
+				MClient client = MClient.get(Env.getCtx(),Env.getContextAsInt(Env.getCtx(), "#AD_Client_ID"));
+				writeFile("@Ref=AD_Client[Name='" + client.getName()	+ "'].AD_Client_ID|");
+				writeFile("\n");
+				writeFile("|AD_Org_ID|");
+				String orgName = DB.getSQLValueString(null,"SELECT Name FROM AD_Org WHERE AD_Org_ID=?", org_ID);
+				writeFile("@Ref=AD_Org[Name='" + orgName + "'].AD_Org_ID|");
+				writeFile("\n");
+				writeFile("|AD_Role_ID|");
+				writeFile("@Ref=AD_Role[Name='"+ Env.getContext(Env.getCtx(), "#AD_Role_Name")+ "'].AD_Role_ID|");
+				writeFile("\n");
+				int warehouseid = Env.getContextAsInt(Env.getCtx(),Env.M_WAREHOUSE_ID);
+				if (warehouseid > 0) {
+					MWarehouse warehouse = MWarehouse.get(Env.getCtx(),warehouseid);
+					writeFile("|M_Warehouse_ID|");
+					writeFile("@Ref=M_Warehouse[Name='" + warehouse.getName()+ "'].M_Warehouse_ID|");
+					writeFile("\n");
+				}
+				writeFile("|*Login*|");
+				writeFile("\n");
+			} catch (Exception e) {
+				return e.getLocalizedMessage();
+			}
+		}
+		return msg;
+	}
+	
+	public void writeFile(String msg){
+		int session_ID=Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID");
+		Writer writer = (Writer) writersPerSession.get(session_ID);
+		if (writer != null) {
+			try{
+				writer.append(msg);
+				writer.flush();
+			} catch (Exception e) {}				
+		}
+	}
+	
+	public void closefile(){
+		int Session_ID=Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID");
+		Writer writer = (Writer) writersPerSession.get(Session_ID);
+		if (writer != null) {
+			try {
+				writer.close();
+				writersPerSession.remove(Session_ID);
+			} catch (IOException e) {}		
+		}
 	}
 }
