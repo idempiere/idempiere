@@ -122,7 +122,7 @@ public class RunProcess extends TableFixture {
 					exception(getCell(i, 1), new Exception(errorMsg));
 				if (recordID > 0)
 					pInstance.setRecord_ID( recordID);
-				pInstance.save();
+				pInstance.saveEx();
 				if (docAction != null) {
 					if (docAction != null && docAction.length() > 0) {
 						// Requirements
@@ -139,7 +139,7 @@ public class RunProcess extends TableFixture {
 							    	PO po = table.getPO(recordID, null);
 							    	if (po != null) {
 							    		po.set_ValueOfColumn("DocAction", docAction);
-										po.save();
+										po.saveEx();
 							    	}
 						    	}
 							}
@@ -389,7 +389,7 @@ public class RunProcess extends TableFixture {
 					}
 
 					//
-					iPara.save();
+					iPara.saveEx();
 				}
 				catch (Exception e)
 				{

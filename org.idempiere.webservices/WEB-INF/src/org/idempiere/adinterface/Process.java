@@ -194,7 +194,7 @@ public class Process {
 				    	PO po = table.getPO(m_record_id, null);
 				    	if (po != null) {
 				    		po.set_ValueOfColumn("DocAction", docAction);
-							po.save();
+							po.saveEx();
 				    	}
 			    	}
 				}
@@ -218,7 +218,7 @@ public class Process {
 		if (m_record_id>0)
 		{
 			pInstance.setRecord_ID( m_record_id);
-			pInstance.save();
+			pInstance.saveEx();
 		}
 		//
 		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID());
@@ -539,7 +539,7 @@ public class Process {
 					}
 					
 					//
-					iPara.save();
+					iPara.saveEx();
 				}
 				catch (Exception e)
 				{
@@ -551,7 +551,7 @@ public class Process {
 			}	//	not null
 		}	//	instance parameter loop
 		
-		pInstance.save(); // kolec - tego chyba brakowalo
+		pInstance.saveEx(); // kolec - tego chyba brakowalo
 		
 		return pInstance;
 	}	//	fillParameter
