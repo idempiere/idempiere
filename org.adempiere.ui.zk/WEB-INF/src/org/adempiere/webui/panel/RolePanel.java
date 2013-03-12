@@ -321,7 +321,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
             {
             	ComboItem ci = new ComboItem(m_clientKNPairs[i].getName(), m_clientKNPairs[i].getID());
             	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
-            	if (ci.getFellowIfAny(id) == null)
+            	if (lstClient.getFellowIfAny(id) == null)
             		ci.setId(id);
             	lstClient.appendChild(ci);
                 if (m_clientKNPairs[i].getID().equals(initDefault))
@@ -369,9 +369,8 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 {
                 	ComboItem ci = new ComboItem(roleKNPairs[i].getName(), roleKNPairs[i].getID());
                 	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
-                	if (lstRole.getFellowIfAny(id) == null) {
+                	if (lstRole.getFellowIfAny(id) == null)
                 		ci.setId(id);
-                	}
                 	lstRole.appendChild(ci);
                     if (roleKNPairs[i].getID().equals(initDefault))
                     	lstRole.setSelectedItem(ci);
@@ -425,8 +424,10 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 {
                 	ComboItem ci = new ComboItem(orgKNPairs[i].getName(), orgKNPairs[i].getID());
                 	String id = AdempiereIdGenerator.escapeId(ci.getLabel());
-                	if (ci.getFellowIfAny(id) == null)
+                	System.out.println("|"+ci.getId()+"|");
+                	if (lstOrganisation.getFellowIfAny(id) == null)
                 		ci.setId(id);
+                	System.out.println("|"+ci.getId()+"|");
                 	lstOrganisation.appendChild(ci);
                     if(orgKNPairs[i].getID().equals(initDefault))
                     	lstOrganisation.setSelectedItem(ci);
