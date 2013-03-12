@@ -30,7 +30,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130312L;
 
     /** Standard Constructor */
     public X_PA_ReportLine (Properties ctx, int PA_ReportLine_ID, String trxName)
@@ -38,6 +38,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
       super (ctx, PA_ReportLine_ID, trxName);
       /** if (PA_ReportLine_ID == 0)
         {
+			setIsInverseDebitCreditOnly (false);
+// N
 			setIsPrinted (true);
 // Y
 			setLineType (null);
@@ -145,6 +147,30 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Inverse Operation for Debit/Credit Only Column.
+		@param IsInverseDebitCreditOnly 
+		Apply inverse operation to debit or credit only column
+	  */
+	public void setIsInverseDebitCreditOnly (boolean IsInverseDebitCreditOnly)
+	{
+		set_Value (COLUMNNAME_IsInverseDebitCreditOnly, Boolean.valueOf(IsInverseDebitCreditOnly));
+	}
+
+	/** Get Inverse Operation for Debit/Credit Only Column.
+		@return Apply inverse operation to debit or credit only column
+	  */
+	public boolean isInverseDebitCreditOnly () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsInverseDebitCreditOnly);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Printed.

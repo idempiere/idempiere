@@ -128,6 +128,19 @@ public interface I_PA_ReportLine
 	  */
 	public boolean isActive();
 
+    /** Column name IsInverseDebitCreditOnly */
+    public static final String COLUMNNAME_IsInverseDebitCreditOnly = "IsInverseDebitCreditOnly";
+
+	/** Set Inverse Operation for Debit/Credit Only Column.
+	  * Apply inverse operation to debit or credit only column
+	  */
+	public void setIsInverseDebitCreditOnly (boolean IsInverseDebitCreditOnly);
+
+	/** Get Inverse Operation for Debit/Credit Only Column.
+	  * Apply inverse operation to debit or credit only column
+	  */
+	public boolean isInverseDebitCreditOnly();
+
     /** Column name IsPrinted */
     public static final String COLUMNNAME_IsPrinted = "IsPrinted";
 

@@ -177,28 +177,34 @@ public class Evaluator
 		String operand = st.nextToken();
 		
 		//	Second Part
-		String second = st.nextToken();							//	get value
-		String secondEval = second.trim();
-		if (second.indexOf('@') != -1)		//	variable
+		String rightToken = st.nextToken();							//	get value
+		String[] list = rightToken.split("[,]");
+		for(String second : list)
 		{
-			second = second.replace('@', ' ').trim();			// strip tag
-			secondEval = source.get_ValueAsString (second);		//	replace with it's value
+			String secondEval = second.trim();
+			if (second.indexOf('@') != -1)		//	variable
+			{
+				second = second.replace('@', ' ').trim();			// strip tag
+				secondEval = source.get_ValueAsString (second);		//	replace with it's value
+			}
+			secondEval = secondEval.replace('\'', ' ').replace('"', ' ').trim();	//	strip ' and "
+	
+			//	Handling of ID compare (null => 0)
+			if (first.indexOf("_ID") != -1 && firstEval.length() == 0)
+				firstEval = "0";
+			if (second.indexOf("_ID") != -1 && secondEval.length() == 0)
+				secondEval = "0";
+	
+			//	Logical Comparison
+			boolean result = evaluateLogicTuple (firstEval, operand, secondEval);
+			//
+			if (s_log.isLoggable(Level.FINEST)) s_log.finest(logic 
+				+ " => \"" + firstEval + "\" " + operand + " \"" + secondEval + "\" => " + result);
+			if (result)
+				return true;
 		}
-		secondEval = secondEval.replace('\'', ' ').replace('"', ' ').trim();	//	strip ' and "
-
-		//	Handling of ID compare (null => 0)
-		if (first.indexOf("_ID") != -1 && firstEval.length() == 0)
-			firstEval = "0";
-		if (second.indexOf("_ID") != -1 && secondEval.length() == 0)
-			secondEval = "0";
-
-		//	Logical Comparison
-		boolean result = evaluateLogicTuple (firstEval, operand, secondEval);
 		//
-		if (s_log.isLoggable(Level.FINEST)) s_log.finest(logic 
-			+ " => \"" + firstEval + "\" " + operand + " \"" + secondEval + "\" => " + result);
-		//
-		return result;
+		return false;
 	}	//	evaluateLogicTuple
 	
 	/**

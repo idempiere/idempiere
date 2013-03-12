@@ -507,17 +507,75 @@ public class FinReport extends SvrProcess
 		{
 			if (!m_lines[line].isLineTypeCalculation ())
 				continue;
+			
+			if (log.isLoggable(Level.FINE)) log.fine("Line " + line + " = #" + m_lines[line].getOper_1_ID() + " " 
+				+ m_lines[line].getCalculationType() + " #" + m_lines[line].getOper_2_ID());
 
-			int oper_1 = m_lines[line].getOper_1_ID();
-			int oper_2 = m_lines[line].getOper_2_ID();
-
-			if (log.isLoggable(Level.FINE)) log.fine("Line " + line + " = #" + oper_1 + " " 
-				+ m_lines[line].getCalculationType() + " #" + oper_2);
-
-			//	Adding
-			if (m_lines[line].isCalculationTypeAdd() 
-				|| m_lines[line].isCalculationTypeRange())
+			List<Integer> addList = new ArrayList<Integer>();
+			List<Integer> notAddList = new ArrayList<Integer>();
+			
+			boolean inverse = m_lines[line].isInverseDebitCreditOnly();
+			
+			if (m_lines[line].isCalculationTypeAdd()
+					|| m_lines[line].isCalculationTypeRange())
 			{
+				for (int col = 0; col < m_columns.length; col++) 
+				{
+					if (m_columns[col].isColumnTypeCalculation() || !inverse)
+					{
+						addList.add(col);
+					}
+					else 
+					{
+						String amountType = m_columns[col].getPAAmountType();
+						if (amountType != null && (amountType.startsWith("C") || amountType.startsWith("D")))
+						{
+							notAddList.add(col);
+						}
+						else
+						{
+							addList.add(col);
+						}
+					}
+				}
+			}
+			else if (m_lines[line].isCalculationTypeSubtract()) 
+			{
+				for (int col = 0; col < m_columns.length; col++) 
+				{
+					if (m_columns[col].isColumnTypeCalculation() || !inverse) 
+					{
+						notAddList.add(col);
+					}
+					else
+					{
+						String amountType = m_columns[col].getPAAmountType();
+						if (amountType != null && (amountType.startsWith("C") || amountType.startsWith("D")))
+						{
+							addList.add(col);
+						}
+						else
+						{
+							notAddList.add(col);
+						}
+					}					
+				}
+			} 
+			else
+			{
+				//percentage
+				for (int col = 0; col < m_columns.length; col++) 
+				{
+					notAddList.add(col);
+				}
+			}
+			
+			//	Adding
+			if (addList.size() > 0)
+			{
+				int oper_1 = m_lines[line].getOper_1_ID();
+				int oper_2 = m_lines[line].getOper_2_ID();
+
 				//	Reverse range
 				if (oper_1 > oper_2)
 				{
@@ -526,14 +584,14 @@ public class FinReport extends SvrProcess
 					oper_2 = temp;
 				}
 				StringBuilder sb = new StringBuilder ("UPDATE T_Report SET (");
-				for (int col = 0; col < m_columns.length; col++)
+				for (int col : addList) 
 				{
 					if (col > 0)
 						sb.append(",");
 					sb.append ("Col_").append (col);
 				}
 				sb.append(") = (SELECT ");
-				for (int col = 0; col < m_columns.length; col++)
+				for (int col : addList)
 				{
 					if (col > 0)
 						sb.append(",");
@@ -558,18 +616,23 @@ public class FinReport extends SvrProcess
 					if (log.isLoggable(Level.FINEST)) log.finest ("(+) " + sb.toString ());
 				}
 			}
-			else	//	No Add (subtract, percent)
+			
+			//	No Add (subtract, percent)
+			if (notAddList.size() > 0)
 			{
+				int oper_1 = m_lines[line].getOper_1_ID();
+				int oper_2 = m_lines[line].getOper_2_ID();
+
 				//	Step 1 - get First Value or 0 in there
 				StringBuilder sb = new StringBuilder ("UPDATE T_Report SET (");
-				for (int col = 0; col < m_columns.length; col++)
+				for (int col : notAddList)
 				{
 					if (col > 0)
 						sb.append(",");
 					sb.append ("Col_").append (col);
 				}
 				sb.append(") = (SELECT ");
-				for (int col = 0; col < m_columns.length; col++)
+				for (int col : notAddList)
 				{
 					if (col > 0)
 						sb.append(",");
@@ -591,14 +654,14 @@ public class FinReport extends SvrProcess
 
 				//	Step 2 - do Calculation with Second Value
 				sb = new StringBuilder ("UPDATE T_Report r1 SET (");
-				for (int col = 0; col < m_columns.length; col++)
+				for (int col : notAddList)
 				{
 					if (col > 0)
 						sb.append(",");
 					sb.append ("Col_").append (col);
 				}
 				sb.append(") = (SELECT ");
-				for (int col = 0; col < m_columns.length; col++)
+				for (int col : notAddList)
 				{
 					if (col > 0)
 						sb.append(",");
