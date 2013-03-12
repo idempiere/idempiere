@@ -31,8 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Level;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.adempiere.base.IGridTabImporter;
 import org.adempiere.exceptions.AdempiereException;
@@ -503,7 +503,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 
 	private List<Object> getOrderedRowFromMap (List<String> header,Map<String, Object> map){
 		List<Object> tmpRow= new ArrayList<Object>();  
-		for(String item : header)
+		for (int i = 0; i < header.size(); i++)
 			tmpRow.add(null);
 		
 		for(Map.Entry<String, Object> record : map.entrySet()) {
@@ -730,7 +730,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 				}
 				
 				if (!field.isEditable(true) && value!=null) {
-					logMsg = Msg.getMsg(Env.getCtx(), "FieldNotEditable")+" "+header.get(i)+"{"+value+"}";
+					logMsg = Msg.getMsg(Env.getCtx(), "FieldNotEditable", new Object[] {header.get(i)}) + "{" + value + "}";
 					break;
 				}		
 				if(value.toString().trim().equals("(null)")){

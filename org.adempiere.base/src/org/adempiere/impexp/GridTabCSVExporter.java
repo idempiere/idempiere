@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.adempiere.base.IGridTabExporter;
 import org.adempiere.exceptions.AdempiereException;
@@ -37,13 +38,14 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MLocation;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRefList;
+import org.compiere.model.MTab;
 import org.compiere.model.MTable;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-import org.jfree.util.Log;
 import org.supercsv.cellprocessor.FmtBool;
 import org.supercsv.cellprocessor.FmtDate;
 import org.supercsv.cellprocessor.FmtNumber;
@@ -60,6 +62,9 @@ import org.supercsv.prefs.CsvPreference;
  */
 public class GridTabCSVExporter implements IGridTabExporter
 {
+	/**	Logger			*/
+	private static CLogger log = CLogger.getCLogger(GridTabCSVExporter.class);
+
 	@Override
 	public void export(GridTab gridTab, List<GridTab> childs, boolean currentRowOnly, File file) {
 
@@ -69,9 +74,9 @@ public class GridTabCSVExporter implements IGridTabExporter
 		MTable tableDetail = null;
 		try {
 			mapWriter = new CsvMapWriter(new FileWriter(file), CsvPreference.STANDARD_PREFERENCE);
-			String IsValidTab = IsValidTabToExport(gridTab);
-			if (IsValidTab!=null){
-				Log.info(IsValidTab);
+			String isValidTab = isValidTabToExport(gridTab);
+			if (isValidTab!=null){
+				if (log.isLoggable(Level.INFO)) log.info(isValidTab);
 				return;
 			}
 			GridTable gt = gridTab.getTableModel();
@@ -125,9 +130,9 @@ public class GridTabCSVExporter implements IGridTabExporter
 				 if(detail.getTabLevel()>1) 
 	 			    continue; 
 				  
-				 IsValidTab = IsValidTabToExport(detail);
-				 if (IsValidTab!=null){
-					 Log.info(IsValidTab);
+				 isValidTab = isValidTabToExport(detail);
+				 if (isValidTab!=null){
+					 if (log.isLoggable(Level.INFO)) log.info(isValidTab);
 					 continue;
 				 }	
 				 tableDetail = MTable.get(Env.getCtx(), detail.getTableName());	 
@@ -270,14 +275,16 @@ public class GridTabCSVExporter implements IGridTabExporter
 	}
 	
 	//add constraints to not allow certain tabs 
-	private String IsValidTabToExport(GridTab gridTab){
+	private String isValidTabToExport(GridTab gridTab){
 	    String result=null;
-	    		
-		if(gridTab.isReadOnly())
+	    
+	    MTab tab = new MTab(Env.getCtx(), gridTab.getAD_Tab_ID(), null);
+
+		if (tab.isReadOnly())
 		   result = Msg.getMsg(Env.getCtx(),"FieldIsReadOnly", new Object[] {gridTab.getName()});
 		
-		if(gridTab.getTableName().endsWith("_Acct"))
-		   result = "Accounting Tab cannot be exported "+ gridTab.getName();
+		if (gridTab.getTableName().endsWith("_Acct"))
+		   result = "Accounting Tab are not exported by default: "+ gridTab.getName();
 		
 		return result;
 	}
