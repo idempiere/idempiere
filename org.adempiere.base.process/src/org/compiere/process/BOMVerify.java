@@ -195,21 +195,21 @@ public class BOMVerify extends SvrProcess
 		{
 			invalidproducts.add(product);
 			product.setIsVerified(false);
-			product.save();
+			product.saveEx();
 			return false;
 		}
 		else if (containsinvalid)
 		{
 			containinvalidproducts.add(product);
 			product.setIsVerified(false);
-			product.save();
+			product.saveEx();
 			return false;
 		}
 		else
 		{
 			validproducts.add(product);
 			product.setIsVerified(true);
-			product.save();
+			product.saveEx();
 			return true;
 		}
 		

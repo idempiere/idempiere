@@ -1022,7 +1022,7 @@ DataStatusListener, IADTabpanel, IdSpace
     				preference.setAttribute(adTabId+"|DetailPane.IsOpen");
     				preference.setValue(value ? "Y" : "N");
     			}
-    			preference.save();
+    			preference.saveEx();
     			//update current context
     			Env.getCtx().setProperty("P"+windowId+"|"+adTabId+"|DetailPane.IsOpen", value ? "Y" : "N");
     		}

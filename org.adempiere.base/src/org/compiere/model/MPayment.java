@@ -2874,13 +2874,13 @@ public final class MPayment extends X_C_Payment
 		{
 			MInvoice inv = new MInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 			inv.setC_Payment_ID(0);
-			inv.save();
+			inv.saveEx();
 		}
 		if (getC_Order_ID() != 0)
 		{
 			MOrder ord = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
 			ord.setC_Payment_ID(0);
-			ord.save();
+			ord.saveEx();
 		}
 		
 		return true;

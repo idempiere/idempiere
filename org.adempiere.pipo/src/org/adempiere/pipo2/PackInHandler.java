@@ -301,14 +301,14 @@ public class PackInHandler extends DefaultHandler {
     				//Update package history log with package status
     	    		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, AD_Package_Imp_ID, null);
     	    		packageImp.setPK_Status(packageStatus);
-    	    		packageImp.save();
+    	    		packageImp.saveEx();
     	    		throw re;
     			} catch (SAXException se) {
     				packageStatus = "Import Failed";
     				//Update package history log with package status
     	    		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, AD_Package_Imp_ID, null);
     	    		packageImp.setPK_Status(packageStatus);
-    	    		packageImp.save();
+    	    		packageImp.saveEx();
     	    		throw se;
     			}
     		}

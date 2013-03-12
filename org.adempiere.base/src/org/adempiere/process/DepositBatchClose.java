@@ -79,11 +79,11 @@ public class DepositBatchClose extends SvrProcess
 		for (int line = 0; line < depositbatchLines.length; line++)
 		{
 			depositbatchLines[line].setProcessed(true);
-			depositbatchLines[line].save();
+			depositbatchLines[line].saveEx();
 		}
 
 		depositbatch.setProcessed(true);
-		depositbatch.save();
+		depositbatch.saveEx();
 
 		return "";
 	}	//	doIt
