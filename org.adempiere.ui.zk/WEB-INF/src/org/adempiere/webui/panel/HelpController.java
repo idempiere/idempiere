@@ -33,10 +33,12 @@ import org.compiere.model.X_AD_InfoWindow;
 import org.compiere.model.X_AD_Process;
 import org.compiere.model.X_AD_Tab;
 import org.compiere.model.X_AD_Task;
+import org.compiere.model.X_AD_WF_Node;
 import org.compiere.model.X_AD_Workflow;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWorkflow;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Anchorchildren;
@@ -143,7 +145,7 @@ public class HelpController
     	if (ctxType != X_AD_CtxHelp.CTXTYPE_Home && ctxType != X_AD_CtxHelp.CTXTYPE_Tab && 
     			ctxType != X_AD_CtxHelp.CTXTYPE_Process && ctxType != X_AD_CtxHelp.CTXTYPE_Form && 
     			ctxType != X_AD_CtxHelp.CTXTYPE_Info && ctxType != X_AD_CtxHelp.CTXTYPE_Workflow && 
-    			ctxType != X_AD_CtxHelp.CTXTYPE_Task)
+    			ctxType != X_AD_CtxHelp.CTXTYPE_Task && ctxType != X_AD_CtxHelp.CTXTYPE_Node)
     		ctxType = X_AD_CtxHelp.CTXTYPE_Home;
     			
     	if (recordId == 0)
@@ -247,7 +249,21 @@ public class HelpController
     				if (task.getHelp() != null && task.getHelp().length() != 0)
     					sb.append("<br><br>\n" + task.getHelp());
     			}
-        	}    		
+        	}
+        	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Node))
+        	{
+        		MWFNode node = new MWFNode(Env.getCtx(), recordId, null);
+    			if (node != null && node.getName() != null && node.getName().length() != 0)
+    			{
+    				sb.append("<br><br>\n<b>" + node.getName() + "</b>");
+    				
+    				if (node.getDescription() != null && node.getDescription().length() != 0)
+    					sb.append("<br><br>\n<i>" + node.getDescription() + "</i>");
+    				
+    				if (node.getHelp() != null && node.getHelp().length() != 0)
+    					sb.append("<br><br>\n" + node.getHelp());
+    			}
+        	}
     	}
 
     	sb.append("</div>\n</body>\n</html>");
@@ -290,6 +306,8 @@ public class HelpController
     		sql.append(X_AD_Workflow.COLUMNNAME_AD_CtxHelp_ID);
     	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Task)
     		sql.append(X_AD_Task.COLUMNNAME_AD_CtxHelp_ID);
+    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Node)
+    		sql.append(X_AD_WF_Node.COLUMNNAME_AD_CtxHelp_ID);
     	else
     		sql.append(X_AD_CtxHelp.COLUMNNAME_AD_CtxHelp_ID);
     	
@@ -306,6 +324,8 @@ public class HelpController
     		sql.append(X_AD_Workflow.Table_Name);
     	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Task)
     		sql.append(X_AD_Task.Table_Name);
+    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Node)
+    		sql.append(X_AD_WF_Node.Table_Name);
     	else
     		sql.append(X_AD_CtxHelp.Table_Name);
     	sql.append(" t, AD_CtxHelp h ");
@@ -320,7 +340,8 @@ public class HelpController
     		sql.append("AND h." + X_AD_CtxHelp.COLUMNNAME_CtxType);    		
     	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Tab || ctxType == X_AD_CtxHelp.CTXTYPE_Process ||
     			ctxType == X_AD_CtxHelp.CTXTYPE_Form || ctxType == X_AD_CtxHelp.CTXTYPE_Info ||
-    			ctxType == X_AD_CtxHelp.CTXTYPE_Workflow || ctxType == X_AD_CtxHelp.CTXTYPE_Task)
+    			ctxType == X_AD_CtxHelp.CTXTYPE_Workflow || ctxType == X_AD_CtxHelp.CTXTYPE_Task ||
+    			ctxType == X_AD_CtxHelp.CTXTYPE_Node)
     	{
 	    	sql.append("AND t.");
 	    	if (ctxType == X_AD_CtxHelp.CTXTYPE_Tab)
@@ -335,6 +356,8 @@ public class HelpController
 	    		sql.append(X_AD_Workflow.COLUMNNAME_AD_Workflow_ID);
 	    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Task)
 	    		sql.append(X_AD_Task.COLUMNNAME_AD_Task_ID);
+	    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Node)
+	    		sql.append(X_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID);
     	}
     	else
     		sql.append("1");

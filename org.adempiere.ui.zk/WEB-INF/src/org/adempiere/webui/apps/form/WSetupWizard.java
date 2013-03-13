@@ -36,12 +36,14 @@ import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
+import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeUtils;
 import org.compiere.apps.form.SetupWizard;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -74,7 +76,7 @@ import org.zkoss.zul.Vbox;
  */
 public class WSetupWizard extends SetupWizard implements IFormController, EventListener<Event>
 {
-	private CustomForm form = new CustomForm();	
+	private CustomForm form = null;
 	
 	private Borderlayout	mainLayout	= new Borderlayout();
 	private Panel 			northPanel	= new Panel();
@@ -136,10 +138,37 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	 */
 	private void preInit()
 	{
+		form = new CustomForm()
+		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 8563773513335140396L;
+
+			public void onEvent(Event event) throws Exception
+		    {
+				if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT)) 
+				{
+					Treeitem ti = wfnodeTree.getSelectedItem();
+					if (ti.getAttribute("AD_Workflow_ID") != null) {
+						// MWorkflow
+						int wfid = (Integer) ti.getAttribute("AD_Workflow_ID");
+						SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Workflow, wfid);
+					} else if (ti.getAttribute("AD_WF_Node_ID") != null) {
+						// MWFNode
+						int nodeid = (Integer) ti.getAttribute("AD_WF_Node_ID");
+						SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Node, nodeid);
+					}
+				}
+				else
+					super.onEvent(event);
+		    }
+		};
+		
 		wfnodeTree = new Tree();
 		wfnodeTree.addEventListener(Events.ON_SELECT, this);
 		showColors.setChecked(true);
-		loadWizardNodes();		
+		loadWizardNodes();
 	}	//	preInit
 	
 	/**
@@ -562,10 +591,12 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 			// MWorkflow
 			int wfid = (Integer) ti.getAttribute("AD_Workflow_ID");
 			showInRightPanel(wfid, 0);
+			SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Workflow, wfid);
 		} else if (ti.getAttribute("AD_WF_Node_ID") != null) {
 			// MWFNode
 			int nodeid = (Integer) ti.getAttribute("AD_WF_Node_ID");
 			showInRightPanel(0, nodeid);
+			SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Node, nodeid);
 		}
 	}
 

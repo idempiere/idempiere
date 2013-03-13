@@ -77,6 +77,17 @@ public interface I_AD_WF_Node
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
+    /** Column name AD_CtxHelp_ID */
+    public static final String COLUMNNAME_AD_CtxHelp_ID = "AD_CtxHelp_ID";
+
+	/** Set Context Help	  */
+	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID);
+
+	/** Get Context Help	  */
+	public int getAD_CtxHelp_ID();
+
+	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException;
+
     /** Column name AD_Form_ID */
     public static final String COLUMNNAME_AD_Form_ID = "AD_Form_ID";
 
@@ -580,6 +591,21 @@ public interface I_AD_WF_Node
 
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException;
 
+    /** Column name S_Resource_ID */
+    public static final String COLUMNNAME_S_Resource_ID = "S_Resource_ID";
+
+	/** Set Resource.
+	  * Resource
+	  */
+	public void setS_Resource_ID (int S_Resource_ID);
+
+	/** Get Resource.
+	  * Resource
+	  */
+	public int getS_Resource_ID();
+
+	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
+
     /** Column name SetupTime */
     public static final String COLUMNNAME_SetupTime = "SetupTime";
 
@@ -605,21 +631,6 @@ public interface I_AD_WF_Node
 	  * Semantics for multiple outgoing Transitions
 	  */
 	public String getSplitElement();
-
-    /** Column name S_Resource_ID */
-    public static final String COLUMNNAME_S_Resource_ID = "S_Resource_ID";
-
-	/** Set Resource.
-	  * Resource
-	  */
-	public void setS_Resource_ID (int S_Resource_ID);
-
-	/** Get Resource.
-	  * Resource
-	  */
-	public int getS_Resource_ID();
-
-	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
 
     /** Column name StartMode */
     public static final String COLUMNNAME_StartMode = "StartMode";
