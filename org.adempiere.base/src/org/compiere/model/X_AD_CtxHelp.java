@@ -29,7 +29,7 @@ public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130219L;
+	private static final long serialVersionUID = 20130313L;
 
     /** Standard Constructor */
     public X_AD_CtxHelp (Properties ctx, int AD_CtxHelp_ID, String trxName)
@@ -120,6 +120,10 @@ public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent
 	public static final String CTXTYPE_Task = "K";
 	/** Home = H */
 	public static final String CTXTYPE_Home = "H";
+	/** All = A */
+	public static final String CTXTYPE_All = "A";
+	/** Node = N */
+	public static final String CTXTYPE_Node = "N";
 	/** Set Context Type.
 		@param CtxType 
 		Type of Context Help
