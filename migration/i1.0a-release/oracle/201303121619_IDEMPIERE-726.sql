@@ -133,6 +133,6 @@ UPDATE AD_Field SET SeqNo=170,Updated=TO_DATE('2013-03-12 23:33:06','YYYY-MM-DD 
 UPDATE AD_Field SET SeqNo=0,Updated=TO_DATE('2013-03-12 23:33:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4785
 ;
 
-SELECT register_migration_script('201203121619_IDEMPIERE-726.sql') FROM dual
+SELECT register_migration_script('201303121619_IDEMPIERE-726.sql') FROM dual
 ;
 
