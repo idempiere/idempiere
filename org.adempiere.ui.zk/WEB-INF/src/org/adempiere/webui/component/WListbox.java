@@ -1189,7 +1189,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 			{	
 				if(col == 0 )
 				{	
-					setValueAt(" Σ  " , row -1 , col);
+					setValueAt(" \u03a3  " , row -1 , col);
 				}	
 				else
 					setValueAt(null , row - 1, col );	
