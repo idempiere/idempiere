@@ -16,6 +16,8 @@ package org.idempiere.hazelcast.service;
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
 
+import com.hazelcast.core.HazelcastInstance;
+
 /**
  * @author hengsin
  *
@@ -30,7 +32,12 @@ public class MessageServiceImpl implements IMessageService {
 
 	@Override
 	public <T> ITopic<T> getTopic(String name) {
-		com.hazelcast.core.ITopic<T> topic = Activator.getHazelcastInstance().getTopic(name);
-		return new TopicImpl<T>(topic);
+		HazelcastInstance instance = Activator.getHazelcastInstance();
+		if (instance != null) {
+			com.hazelcast.core.ITopic<T> topic = instance.getTopic(name);
+			return new TopicImpl<T>(topic);
+		} else {
+			return null;
+		}
 	}
 }

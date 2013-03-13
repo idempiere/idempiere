@@ -142,19 +142,23 @@ public class CacheMgt
 		if (service != null) {			
 			ResetCacheCallable callable = new ResetCacheCallable(tableName, recordId);
 			Future<Collection<Integer>> future = service.execute(callable, service.getMembers());
-			int total = 0;
-			try {
-				Collection<Integer> results = future.get();
-				for(Integer i : results) 
-				{
-					total += i.intValue();
+			if (future != null) {
+				int total = 0;
+				try {
+					Collection<Integer> results = future.get();
+					for(Integer i : results) 
+					{
+						total += i.intValue();
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					e.printStackTrace();
 				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
+				return total;
+			} else {
+				return resetLocalCache(tableName, recordId);
 			}
-			return total;
 		} else {
 			return resetLocalCache(tableName, recordId);
 		}
@@ -172,7 +176,9 @@ public class CacheMgt
 		IClusterService service = holder.getService();
 		if (service != null) {			
 			CacheNewRecordCallable callable = new CacheNewRecordCallable(tableName, recordId);
-			service.execute(callable, service.getMembers());
+			if (service.execute(callable, service.getMembers()) == null) {
+				localNewRecord(tableName, recordId);
+			}
 		} else {
 			localNewRecord(tableName, recordId);
 		}

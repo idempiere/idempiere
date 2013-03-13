@@ -23,6 +23,7 @@ import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 
 import com.hazelcast.core.DistributedTask;
+import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.Member;
 import com.hazelcast.core.MultiTask;
 
@@ -37,10 +38,13 @@ public class ClusterServiceImpl implements IClusterService {
 	 */
 	@Override
 	public Collection<IClusterMember> getMembers() {
-		Set<Member> members = Activator.getHazelcastInstance().getCluster().getMembers();
+		HazelcastInstance instance = Activator.getHazelcastInstance();		
 		Set<IClusterMember> clusterMembers = new HashSet<IClusterMember>();
-		for(Member member : members) {
-			clusterMembers.add(new ClusterMember(member.getUuid(), member.getInetSocketAddress().getAddress(), member.getInetSocketAddress().getPort()));
+		if (instance != null) {
+			Set<Member> members = instance.getCluster().getMembers();
+			for(Member member : members) {
+				clusterMembers.add(new ClusterMember(member.getUuid(), member.getInetSocketAddress().getAddress(), member.getInetSocketAddress().getPort()));
+			}
 		}
 		return clusterMembers;
 	}
@@ -50,8 +54,13 @@ public class ClusterServiceImpl implements IClusterService {
 	 */
 	@Override
 	public IClusterMember getLocalMember() {
-		Member member = Activator.getHazelcastInstance().getCluster().getLocalMember();
-		return new ClusterMember(member.getUuid(), member.getInetSocketAddress().getAddress(), member.getInetSocketAddress().getPort());
+		HazelcastInstance instance = Activator.getHazelcastInstance();
+		if (instance != null) {
+			Member member = instance.getCluster().getLocalMember();
+			return new ClusterMember(member.getUuid(), member.getInetSocketAddress().getAddress(), member.getInetSocketAddress().getPort());
+		} else {
+			return null;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -59,12 +68,15 @@ public class ClusterServiceImpl implements IClusterService {
 	 */
 	@Override
 	public <V> Future<V> execute(Callable<V> task, IClusterMember clusterMember) {
-		Set<Member> members = Activator.getHazelcastInstance().getCluster().getMembers();
-		for(Member member : members) {
-			if (member.getUuid().equals(clusterMember.getId())) {
-				DistributedTask<V> distributedTask = new DistributedTask<V>(task, member);
-				Activator.getHazelcastInstance().getExecutorService().execute(distributedTask);
-				return distributedTask;
+		HazelcastInstance instance = Activator.getHazelcastInstance();
+		if (instance != null) {
+			Set<Member> members = instance.getCluster().getMembers();
+			for(Member member : members) {
+				if (member.getUuid().equals(clusterMember.getId())) {
+					DistributedTask<V> distributedTask = new DistributedTask<V>(task, member);
+					Activator.getHazelcastInstance().getExecutorService().execute(distributedTask);
+					return distributedTask;
+				}
 			}
 		}
 		return null;
@@ -81,17 +93,20 @@ public class ClusterServiceImpl implements IClusterService {
 		for(IClusterMember clusterMember : clusterMembers) {
 			selectedIds.add(clusterMember.getId());
 		}
-		Set<Member> members = Activator.getHazelcastInstance().getCluster().getMembers();
-		Set<Member> selectedMembers = new HashSet<Member>();
-		for(Member member : members) {
-			if (selectedIds.contains(member.getUuid())) {
-				selectedMembers.add(member);
+		HazelcastInstance instance = Activator.getHazelcastInstance();
+		if (instance != null) {
+			Set<Member> members = instance.getCluster().getMembers();
+			Set<Member> selectedMembers = new HashSet<Member>();
+			for(Member member : members) {
+				if (selectedIds.contains(member.getUuid())) {
+					selectedMembers.add(member);
+				}
 			}
-		}
-		if (selectedMembers.size() > 0) {
-			MultiTask<V> multiTask = new MultiTask<V>(task, selectedMembers);
-			Activator.getHazelcastInstance().getExecutorService().execute(multiTask);
-			return multiTask;
+			if (selectedMembers.size() > 0) {
+				MultiTask<V> multiTask = new MultiTask<V>(task, selectedMembers);
+				Activator.getHazelcastInstance().getExecutorService().execute(multiTask);
+				return multiTask;
+			}
 		}
 		return null;
 	}

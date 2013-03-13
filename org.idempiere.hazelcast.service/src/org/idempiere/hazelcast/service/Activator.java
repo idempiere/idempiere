@@ -17,10 +17,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.compiere.Adempiere;
 import org.compiere.model.ServerStateChangeEvent;
@@ -46,7 +47,7 @@ public class Activator implements BundleActivator {
 	}
 
 	private volatile static HazelcastInstance hazelcastInstance;
-	private static AtomicReference<Future<?>> futureRef = new AtomicReference<Future<?>>();
+	private static Future<?> future;
 
 	/*
 	 * (non-Javadoc)
@@ -68,10 +69,10 @@ public class Activator implements BundleActivator {
 		}
 	}
 
-	private void createHazelCastInstance() {
+	private static synchronized void createHazelCastInstance() {
 		ScheduledThreadPoolExecutor executor = Adempiere.getThreadPoolExecutor();
 		
-		Future<?> future = executor.submit(new Runnable() {			
+		future = executor.submit(new Runnable() {			
 			@Override
 			public void run() {
 				String dataArea = System.getProperty("osgi.install.area");
@@ -92,11 +93,9 @@ public class Activator implements BundleActivator {
 				hazelcastInstance = Hazelcast.newHazelcastInstance(null);		
 			}
 		});
-		futureRef.set(future);
 	}
 
-	public static HazelcastInstance getHazelcastInstance() {
-		Future<?> future = futureRef.get();
+	public static synchronized HazelcastInstance getHazelcastInstance() {
 		if (future != null && !future.isDone()) {
 			try {
 				future.get();
@@ -105,6 +104,26 @@ public class Activator implements BundleActivator {
 			}		
 		}
 				
+		if (hazelcastInstance != null) {
+			if (!hazelcastInstance.getLifecycleService().isRunning()) {
+				System.err.println(DateFormat.getDateTimeInstance().format(new Date()) + " Hazelcast instance is down!");
+				//recreate
+				try {
+					hazelcastInstance = Hazelcast.newHazelcastInstance(null);
+					if (!hazelcastInstance.getLifecycleService().isRunning()) {
+						hazelcastInstance = null;
+						System.err.println(DateFormat.getDateTimeInstance().format(new Date()) + " Failed to re-create Hazelcast instance!");
+					} else {
+						System.err.println(DateFormat.getDateTimeInstance().format(new Date()) + " Hazelcast instance re-created!");
+					}
+				} catch (Throwable t) {
+					t.printStackTrace();
+					hazelcastInstance = null;
+					System.err.println(DateFormat.getDateTimeInstance().format(new Date()) + " Failed to re-create Hazelcast instance!");
+				}				
+			}						
+		}
+		
 		return hazelcastInstance;
 	}
 	
@@ -114,13 +133,13 @@ public class Activator implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
-		Future<?> future = futureRef.get();
-		if (future != null && !future.isDone()) {
-			future.cancel(true); 
-		} else if (hazelcastInstance != null) {
-			hazelcastInstance.getLifecycleService().shutdown();
-			hazelcastInstance = null;
+		synchronized (Activator.class) {
+			if (future != null && !future.isDone()) {
+				future.cancel(true); 
+			} else if (hazelcastInstance != null) {
+				hazelcastInstance.getLifecycleService().shutdown();
+				hazelcastInstance = null;
+			}
 		}
-		futureRef.set(null);
 	}
 }
