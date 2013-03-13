@@ -152,15 +152,17 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
      */
     public void setStatusDB (String text, DataStatusEvent dse)
     {
-        if (text == null || text.length() == 0)
+        if (text == null || text.trim().length() == 0)
         {
             statusDB.setValue("");
+           	statusDB.setVisible(false);
         }
         else
         {
             StringBuilder sb = new StringBuilder (" ");
             sb.append(text).append(" ");
             statusDB.setValue(sb.toString());
+           	statusDB.setVisible(true);
         }
 
         m_text = text;
