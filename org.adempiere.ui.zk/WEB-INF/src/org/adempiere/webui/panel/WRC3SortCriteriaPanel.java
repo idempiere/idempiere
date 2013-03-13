@@ -417,6 +417,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 				ListElement pp = (ListElement)yesModel.getElementAt(i);
 				yesList.addItem(new KeyNamePair(pp.m_key, pp.getName()));
 			}
+			yesList.setSelectedIndices(indices);
 			wc.setIsChanged(true);
 			if ( yesList.getSelectedItem() != null)
 			{
