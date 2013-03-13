@@ -8,11 +8,6 @@ INSERT INTO AD_Element (ColumnName,AD_Element_ID,Help,EntityType,Name,Descriptio
 INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_Help,Name,Description,PrintName,PO_Name,PO_PrintName, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Element_Trl_UU ) SELECT l.AD_Language,t.AD_Element_ID, t.Help,t.PO_Description,t.PO_Help,t.Name,t.Description,t.PrintName,t.PO_Name,t.PO_PrintName, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Element t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Element_ID=202293 AND NOT EXISTS (SELECT * FROM AD_Element_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Element_ID=t.AD_Element_ID)
 ;
 
--- Mar 5, 2013 3:27:15 PM MYT
--- IDEMPIERE-673 Financial Report: Option to include source with no transaction.
-UPDATE C_AcctProcessor SET DateNextRun=TO_TIMESTAMP('2013-03-05 15:37:15','YYYY-MM-DD HH24:MI:SS'), DateLastRun=TO_TIMESTAMP('2013-03-05 15:27:15','YYYY-MM-DD HH24:MI:SS'),Updated=TO_TIMESTAMP('2013-03-05 15:27:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_AcctProcessor_ID=100
-;
-
 -- Mar 5, 2013 3:28:04 PM MYT
 -- IDEMPIERE-673 Financial Report: Option to include source with no transaction.
 INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,AD_Client_ID,IsToolbarButton,IsAlwaysUpdateable,IsEncrypted) VALUES (0,'N',1,445,208800,'D','N','N','N',0,'N',1,'N',20,'N',202293,'N','Y','177eb65e-2d11-4571-a3fe-a28200cd224a','Y','ListSourcesXTrx','Include source accounts with no transaction for list report line sources','N','List the Source Accounts with or without transactions for Summary Accounts selected','Include source accounts with no transaction','Y',TO_TIMESTAMP('2013-03-05 15:28:03','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_TIMESTAMP('2013-03-05 15:28:03','YYYY-MM-DD HH24:MI:SS'),100,0,'N','N','N')

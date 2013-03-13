@@ -496,6 +496,7 @@ public abstract class Convert
 			"AD_PINSTANCE",
 			"AD_PINSTANCE_LOG",
 			"AD_PINSTANCE_PARA",
+			"AD_PREFERENCE",
 			"AD_PROCESS_ACCESS",
 			"AD_RECENTITEM",
 			"AD_REPLICATION_LOG",
@@ -533,6 +534,8 @@ public abstract class Convert
 			return true;
 		// don't log update to statistic process
 		if (uppStmt.startsWith("UPDATE AD_PROCESS SET STATISTIC_"))
+			return true;
+		if (uppStmt.startsWith("UPDATE C_ACCTPROCESSOR SET DATENEXTRUN"))
 			return true;
 		// Don't log DELETE FROM Some_Table WHERE AD_Table_ID=? AND Record_ID=?
 		if (uppStmt.startsWith("DELETE FROM ") && uppStmt.endsWith(" WHERE AD_TABLE_ID=? AND RECORD_ID=?"))

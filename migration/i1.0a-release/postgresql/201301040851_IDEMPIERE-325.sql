@@ -480,16 +480,6 @@ UPDATE AD_Field SET ColumnSpan=2, SeqNo=170,Updated=TO_TIMESTAMP('2013-01-04 15:
 UPDATE AD_Field SET ColumnSpan=2, SeqNo=180,Updated=TO_TIMESTAMP('2013-01-04 15:34:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=201623
 ;
 
--- Jan 4, 2013 3:35:26 PM MYT
--- IDEMPIERE-325 Complete AD based info window ( AD_InfoWindow ) implementation
-DELETE FROM AD_InfoWindow_Trl WHERE AD_InfoWindow_ID=1000000
-;
-
--- Jan 4, 2013 3:35:26 PM MYT
--- IDEMPIERE-325 Complete AD based info window ( AD_InfoWindow ) implementation
-DELETE FROM AD_InfoWindow WHERE AD_InfoWindow_ID=1000000
-;
-
 -- Jan 4, 2013 3:37:20 PM MYT
 -- IDEMPIERE-325 Complete AD based info window ( AD_InfoWindow ) implementation
 UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N' WHERE AD_Field_ID=13572

@@ -107,14 +107,6 @@ UPDATE AD_TreeNodeMM SET Parent_ID=157, SeqNo=3, Updated=SysDate WHERE AD_Tree_I
 UPDATE AD_TreeNodeMM SET Parent_ID=157, SeqNo=4, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=519
 ;
 
--- Mar 12, 2013 4:38:53 PM COT
-INSERT INTO AD_Preference (AD_Preference_ID,AD_Window_ID,Attribute,AD_Preference_UU,Value,CreatedBy,AD_Org_ID,AD_Client_ID,Created,UpdatedBy,Updated,IsActive) VALUES (200002,105,'110|DetailPane.IsOpen','07a57a64-2c7f-49c5-b8c7-c3fd4ed1fe0f','N',100,0,0,TO_DATE('2013-03-12 16:38:52','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-03-12 16:38:52','YYYY-MM-DD HH24:MI:SS'),'Y')
-;
-
--- Mar 12, 2013 4:38:53 PM COT
-UPDATE AD_Preference SET Value='Y',Updated=TO_DATE('2013-03-12 16:38:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Preference_ID=1000008
-;
-
 -- Mar 12, 2013 4:39:31 PM COT
 UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=0, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=218
 ;

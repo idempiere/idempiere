@@ -31,11 +31,6 @@ INSERT INTO AD_InfoWindow_Access (AD_InfoWindow_Access_UU,Updated,UpdatedBy,AD_R
 INSERT INTO AD_InfoWindow_Access (AD_InfoWindow_Access_UU,Updated,UpdatedBy,AD_Role_ID,AD_InfoWindow_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,IsActive) VALUES ('bd739160-6bcd-4a7c-a549-e13c900db538',TO_DATE('2013-02-01 06:50:59','YYYY-MM-DD HH24:MI:SS'),100,50001,200003,0,0,TO_DATE('2013-02-01 06:50:59','YYYY-MM-DD HH24:MI:SS'),100,'Y')
 ;
 
--- Feb 1, 2013 6:51:17 AM MYT
--- IDEMPIERE-325 Complete AD based info window ( AD_InfoWindow ) implementation
-UPDATE AD_Preference SET Value='Y',Updated=TO_DATE('2013-02-01 06:51:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Preference_ID=1000020
-;
-
 -- Feb 1, 2013 6:53:42 AM MYT
 -- IDEMPIERE-325 Complete AD based info window ( AD_InfoWindow ) implementation
 INSERT INTO AD_InfoColumn (AD_InfoWindow_ID,Help,AD_InfoColumn_UU,AD_Reference_ID,AD_InfoColumn_ID,IsQueryCriteria,EntityType,Description,Created,CreatedBy,Updated,AD_Client_ID,AD_Org_ID,UpdatedBy,Name,AD_Val_Rule_ID,IsCentrallyMaintained,ColumnName,IsDisplayed,IsActive,AD_Element_ID,SeqNo,QueryOperator,SelectClause,IsIdentifier,SeqNoSelection) VALUES (200003,'A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson','a8e309a2-00e9-488e-aa86-6b4f6d4eb464',30,200052,'Y','D','Identifies a Business Partner',TO_DATE('2013-02-01 06:53:41','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-02-01 06:53:41','YYYY-MM-DD HH24:MI:SS'),0,0,100,'Business Partner ',230,'Y','C_BPartner_ID','Y','Y',187,10,'=','i.C_BPartner_ID','N',20)
@@ -163,11 +158,6 @@ INSERT INTO AD_InfoColumn (AD_InfoWindow_ID,Help,AD_InfoColumn_UU,AD_Reference_I
 UPDATE AD_InfoWindow SET IsValid='Y',Updated=TO_DATE('2013-02-01 07:32:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_InfoWindow_ID=200003
 ;
 
--- Feb 1, 2013 3:31:12 PM MYT
--- IDEMPIERE-325 Complete AD based info window ( AD_InfoWindow ) implementation
-UPDATE AD_Preference SET Value='N',Updated=TO_DATE('2013-02-01 15:31:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Preference_ID=1000020
-;
-
 -- Feb 1, 2013 3:31:42 PM MYT
 -- IDEMPIERE-325 Complete AD based info window ( AD_InfoWindow ) implementation
 INSERT INTO AD_InfoWindow (Processing,FromClause,AD_InfoWindow_UU,AD_InfoWindow_ID,AD_Table_ID,EntityType,Name,AD_Client_ID,AD_Org_ID,Created,Updated,UpdatedBy,CreatedBy,IsActive,IsDefault,IsDistinct,OrderByClause,IsValid) VALUES ('N','M_InOut i','65ce8228-dafb-4597-a74c-e2315d5882c2',200004,319,'D','Shipment Info',0,0,TO_DATE('2013-02-01 15:31:40','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2013-02-01 15:31:40','YYYY-MM-DD HH24:MI:SS'),100,100,'Y','Y','N','2,3,4','N')
@@ -196,11 +186,6 @@ INSERT INTO AD_InfoWindow_Access (AD_InfoWindow_Access_UU,Updated,UpdatedBy,AD_R
 -- Feb 1, 2013 3:31:43 PM MYT
 -- IDEMPIERE-325 Complete AD based info window ( AD_InfoWindow ) implementation
 INSERT INTO AD_InfoWindow_Access (AD_InfoWindow_Access_UU,Updated,UpdatedBy,AD_Role_ID,AD_InfoWindow_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,IsActive) VALUES ('e3a580a7-0093-4784-9e78-7b9c525871eb',TO_DATE('2013-02-01 15:31:43','YYYY-MM-DD HH24:MI:SS'),100,50001,200004,0,0,TO_DATE('2013-02-01 15:31:43','YYYY-MM-DD HH24:MI:SS'),100,'Y')
-;
-
--- Feb 1, 2013 3:31:55 PM MYT
--- IDEMPIERE-325 Complete AD based info window ( AD_InfoWindow ) implementation
-UPDATE AD_Preference SET Value='Y',Updated=TO_DATE('2013-02-01 15:31:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Preference_ID=1000020
 ;
 
 -- Feb 1, 2013 3:32:56 PM MYT
