@@ -23,11 +23,6 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 ALTER TABLE PA_ReportLine ADD COLUMN IsInverseDebitCreditOnly CHAR(1) DEFAULT 'N' CHECK (IsInverseDebitCreditOnly IN ('Y','N')) NOT NULL
 ;
 
--- Mar 12, 2013 11:25:01 PM MYT
--- IDEMPIERE-726 Financial Report: Add inverse operation option for credit/debit only column
-UPDATE AD_Preference SET Value='Y',Updated=TO_TIMESTAMP('2013-03-12 23:25:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Preference_ID=200000
-;
-
 -- Mar 12, 2013 11:25:42 PM MYT
 -- IDEMPIERE-726 Financial Report: Add inverse operation option for credit/debit only column
 INSERT INTO AD_Field (ColumnSpan,NumLines,SortNo,IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,AD_Column_ID,SeqNo,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,EntityType,Description,Name,IsDisplayed,IsFieldOnly,AD_Field_UU,UpdatedBy,AD_Org_ID,Created,AD_Client_ID,CreatedBy,Updated,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry) VALUES (3,1,0,'N',376,0,'N','N',208803,195,'Y',201872,'N','D','Apply inverse operation to debit or credit only column','Inverse Operation for Debit/Credit Only Column','Y','N','0b1330b3-1101-46be-8473-4ad3a26c8d1d',100,0,TO_TIMESTAMP('2013-03-12 23:25:41','YYYY-MM-DD HH24:MI:SS'),0,100,TO_TIMESTAMP('2013-03-12 23:25:41','YYYY-MM-DD HH24:MI:SS'),'Y','Y',195,1,'N')

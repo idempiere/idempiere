@@ -118,11 +118,6 @@ UPDATE AD_Field SET DisplayLogic='@IsDisplayed@=Y|@IsQueryCriteria=Y',Updated=TO
 UPDATE AD_Field SET DisplayLogic='@IsDisplayed@=Y|@IsQueryCriteria@=Y',Updated=TO_DATE('2013-01-29 15:58:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=201625
 ;
 
--- Jan 29, 2013 3:59:19 PM MYT
--- IDEMPIERE-325 Complete AD based info window ( AD_InfoWindow ) implementation
-INSERT INTO AD_Preference (AD_Preference_ID,AD_Window_ID,Attribute,AD_Preference_UU,Value,CreatedBy,AD_Org_ID,AD_Client_ID,Created,UpdatedBy,Updated,IsActive) VALUES (200000,102,'106|DetailPane.IsOpen','8366496c-2e0e-4898-92cc-0093cb95cecc','N',100,0,0,TO_DATE('2013-01-29 15:59:17','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-01-29 15:59:17','YYYY-MM-DD HH24:MI:SS'),'Y')
-;
-
 -- Jan 29, 2013 4:04:57 PM MYT
 -- IDEMPIERE-325 Complete AD based info window ( AD_InfoWindow ) implementation
 INSERT INTO AD_InfoColumn (AD_InfoWindow_ID,Help,AD_InfoColumn_UU,AD_Reference_ID,AD_InfoColumn_ID,IsQueryCriteria,EntityType,Description,Created,CreatedBy,Updated,AD_Client_ID,AD_Org_ID,UpdatedBy,Name,IsCentrallyMaintained,DisplayLogic,ColumnName,IsDisplayed,IsActive,AD_Element_ID,SeqNo,QueryOperator,SelectClause) VALUES (200001,'The Customer checkbox indicates if this Business Partner is a customer.  If it is select additional fields will display which further define this customer.','64676c6f-aab0-40d3-8875-23257197ef5c',20,200036,'Y','D','Indicates if this Business Partner is a Customer',TO_DATE('2013-01-29 16:04:53','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-01-29 16:04:53','YYYY-MM-DD HH24:MI:SS'),0,0,100,'Customer','Y','@IsSOTrx:Y@=Y','IsCustomer','N','Y',364,140,'=','bp.IsCustomer')

@@ -455,7 +455,7 @@ public final class WAccountDialog extends Window
 			m_adTabPanel.switchRowPresentation();
 
 		statusBar.setStatusLine(s_AcctSchema.toString());
-		statusBar.setStatusDB("?");
+		statusBar.setStatusDB("");
 
 		//	Initial value
 		if (m_mAccount.C_ValidCombination_ID != 0)

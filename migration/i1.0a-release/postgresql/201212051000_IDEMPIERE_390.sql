@@ -53,11 +53,6 @@ INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,IsEncrypted,Version,AD_Tabl
 INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=201007 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
 ;
 
--- Nov 30, 2012 5:14:08 PM COT
--- IDEMPIERE-390 Attachments/archives on load balancer scenario
-UPDATE C_AcctProcessor SET DateNextRun=TO_TIMESTAMP('2012-11-30 17:24:08','YYYY-MM-DD HH24:MI:SS'), DateLastRun=TO_TIMESTAMP('2012-11-30 17:14:08','YYYY-MM-DD HH24:MI:SS'),Updated=TO_TIMESTAMP('2012-11-30 17:14:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_AcctProcessor_ID=100
-;
-
 -- Nov 30, 2012 5:16:08 PM COT
 -- IDEMPIERE-390 Attachments/archives on load balancer scenario
 INSERT INTO AD_Reference (AD_Reference_ID,Name,EntityType,AD_Reference_UU,IsOrderByValue,Description,ValidationType,AD_Client_ID,AD_Org_ID,CreatedBy,Updated,IsActive,Created,UpdatedBy) VALUES (200023,'AD_StorageProvider_ID','D','2dc5386f-d9db-4758-a03e-e8695a286ff2','N','AD_StorageProvider_ID','T',0,0,100,TO_TIMESTAMP('2012-11-30 17:16:07','YYYY-MM-DD HH24:MI:SS'),'Y',TO_TIMESTAMP('2012-11-30 17:16:07','YYYY-MM-DD HH24:MI:SS'),100)

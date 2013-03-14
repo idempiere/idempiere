@@ -28,11 +28,6 @@ UPDATE AD_Column SET FieldLength=512,Updated=TO_DATE('2013-03-05 16:20:42','YYYY
 ALTER TABLE PA_ReportColumn ADD Oper_2_LineName NVARCHAR2(512) DEFAULT NULL 
 ;
 
--- Mar 5, 2013 4:21:21 PM MYT
--- IDEMPIERE-674 Financial Report: Percentage of column against line total
-INSERT INTO AD_Preference (AD_Preference_ID,AD_Window_ID,Attribute,AD_Preference_UU,Value,CreatedBy,AD_Org_ID,AD_Client_ID,Created,UpdatedBy,Updated,IsActive) VALUES (200001,102,'107|DetailPane.IsOpen','d68b1ac5-7833-4599-956d-eaf6dec673fe','N',100,0,0,TO_DATE('2013-03-05 16:21:20','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-03-05 16:21:20','YYYY-MM-DD HH24:MI:SS'),'Y')
-;
-
 -- Mar 5, 2013 4:21:58 PM MYT
 -- IDEMPIERE-674 Financial Report: Percentage of column against line total
 INSERT INTO AD_Field (ColumnSpan,NumLines,SortNo,IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,AD_Column_ID,SeqNo,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,Help,DisplayLogic,EntityType,Description,Name,IsDisplayed,IsFieldOnly,AD_Field_UU,UpdatedBy,AD_Org_ID,Created,AD_Client_ID,CreatedBy,Updated,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry) VALUES (1,1,0,'N',374,0,'N','N',208801,470,'Y',201868,'N','When specify this identified the name of the financial report line to take values from for column Oper_2_ID. No validation at entry time, value will be zero if the name doesn''t match any line.','@ColumnType@=C','D','Name of the financial report line to take values from','Operand 2 Line Name','Y','N','a6d0adf3-bf54-47d5-84d6-b5532ab919b6',100,0,TO_DATE('2013-03-05 16:21:57','YYYY-MM-DD HH24:MI:SS'),0,100,TO_DATE('2013-03-05 16:21:57','YYYY-MM-DD HH24:MI:SS'),'Y','Y',470,1,'N')
