@@ -157,9 +157,15 @@ public class GridFieldVO implements Serializable
 				else if (columnName.equalsIgnoreCase("IsParent"))
 					vo.IsParent = "Y".equals(rs.getString (i));
 				else if (columnName.equalsIgnoreCase("Description"))
-					vo.Description = rs.getString (i);
+				{
+					String s = rs.getString (i);
+					vo.Description = s != null ? s.intern() : s;
+				}
 				else if (columnName.equalsIgnoreCase("Help"))
-					vo.Help = rs.getString (i);
+				{
+					String s = rs.getString (i);
+					vo.Help = s != null ? s.intern() : s; 
+				}
 				else if (columnName.equalsIgnoreCase("Callout"))
 					vo.Callout = rs.getString (i);
 				else if (columnName.equalsIgnoreCase("AD_Process_ID"))

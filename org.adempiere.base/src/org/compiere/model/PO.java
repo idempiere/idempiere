@@ -1381,7 +1381,21 @@ public abstract class PO
 				else if (DisplayType.isLOB(dt))
 					m_oldValues[index] = get_LOB (rs.getObject(columnName));
 				else if (clazz == String.class)
-					m_oldValues[index] = decrypt(index, rs.getString(columnName));
+				{
+					String value = (String)decrypt(index, rs.getString(columnName));
+					if (value != null)
+					{
+						if (get_Table_ID() == I_AD_Column.Table_ID || get_Table_ID() == I_AD_Element.Table_ID
+							|| get_Table_ID() == I_AD_Field.Table_ID)
+						{
+							if ("Description".equals(columnName) || "Help".equals(columnName))
+							{
+								value = value.intern();
+							}
+						}
+					}
+					m_oldValues[index] = value;
+				}
 				else
 					m_oldValues[index] = loadSpecial(rs, index);
 				//	NULL

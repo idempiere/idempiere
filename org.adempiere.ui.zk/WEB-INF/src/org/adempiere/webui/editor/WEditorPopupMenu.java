@@ -154,7 +154,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         {
             zoomItem = new Menuitem();
             zoomItem.setAttribute(EVENT_ATTRIBUTE, ZOOM_EVENT);
-            zoomItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")));
+            zoomItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")).intern());
             zoomItem.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
             zoomItem.addEventListener(Events.ON_CLICK, this);
             
@@ -165,7 +165,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         {
             requeryItem = new Menuitem();
             requeryItem.setAttribute(EVENT_ATTRIBUTE, REQUERY_EVENT);
-            requeryItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
+            requeryItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")).intern());
             requeryItem.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
             requeryItem.addEventListener(Events.ON_CLICK, this);
             this.appendChild(requeryItem);
@@ -175,7 +175,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         {
             prefItem = new Menuitem();
             prefItem.setAttribute(EVENT_ATTRIBUTE, PREFERENCE_EVENT);
-            prefItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ValuePreference")));
+            prefItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ValuePreference")).intern());
             prefItem.setImage(ThemeManager.getThemeResource("images/VPreference16.png"));
             prefItem.addEventListener(Events.ON_CLICK, this);
             this.appendChild(prefItem);
@@ -185,7 +185,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         {
         	newItem = new Menuitem();
         	newItem.setAttribute(EVENT_ATTRIBUTE, NEW_EVENT);
-        	newItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "New")));
+        	newItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "New")).intern());
         	newItem.setImage(ThemeManager.getThemeResource("images/New16.png"));
         	newItem.addEventListener(Events.ON_CLICK, this);
         	this.appendChild(newItem);
@@ -196,7 +196,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         {
         	updateItem = new Menuitem();
         	updateItem.setAttribute(EVENT_ATTRIBUTE, UPDATE_EVENT);
-        	updateItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Update")));
+        	updateItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Update")).intern());
         	updateItem.setImage(ThemeManager.getThemeResource("images/InfoBPartner16.png"));
         	updateItem.addEventListener(Events.ON_CLICK, this);
         	this.appendChild(updateItem);
@@ -206,7 +206,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         {
         	showLocationItem = new Menuitem();
         	showLocationItem.setAttribute(EVENT_ATTRIBUTE, SHOWLOCATION_EVENT);
-        	showLocationItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ShowLocation")));
+        	showLocationItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ShowLocation")).intern());
         	showLocationItem.setImage(ThemeManager.getThemeResource("images/InfoBPartner16.png"));
         	showLocationItem.addEventListener(Events.ON_CLICK, this);
         	this.appendChild(showLocationItem);

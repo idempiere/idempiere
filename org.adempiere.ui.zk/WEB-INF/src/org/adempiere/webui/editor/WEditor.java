@@ -555,7 +555,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	
 	public void updateLabelStyle() {				
 		if (getLabel() != null) {
-			getLabel().setStyle( (isZoomable() ? STYLE_ZOOMABLE_LABEL : "") + (isMandatoryStyle() ? STYLE_EMPTY_MANDATORY_LABEL : STYLE_NORMAL_LABEL));			
+			String style = (isZoomable() ? STYLE_ZOOMABLE_LABEL : "") + (isMandatoryStyle() ? STYLE_EMPTY_MANDATORY_LABEL : STYLE_NORMAL_LABEL);
+			getLabel().setStyle(style.intern());			
 		}
 	}
 	

@@ -121,7 +121,10 @@ public final class ThemeManager {
 	 * @return full resource url
 	 */
 	public static String getThemeResource(String name) {
-		String theme = getTheme();
-		return ITheme.THEME_PATH_PREFIX + theme + "/" + name;
+		StringBuilder builder = new StringBuilder(ITheme.THEME_PATH_PREFIX);
+		builder.append(getTheme());
+		builder.append("/").append(name);
+		String url = builder.toString().intern();
+		return  url;
 	}
 }

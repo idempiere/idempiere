@@ -44,9 +44,10 @@ public class ToolBarButton extends org.zkoss.zul.Toolbarbutton
 		super.setDisabled(disabled);
 		if (disabled) {
 			LayoutUtils.addSclass("disableFilter", this);
+			this.setSclass(getSclass().intern());
 		} else {
 			if (this.getSclass() != null && this.getSclass().indexOf("disableFilter") >= 0)
-				this.setSclass(this.getSclass().replace("disableFilter", ""));
+				this.setSclass(this.getSclass().replace("disableFilter", "").intern());
 		}
 	}
     
