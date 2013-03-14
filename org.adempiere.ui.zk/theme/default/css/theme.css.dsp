@@ -229,6 +229,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 .desktop-layout {
 	position: absolute; 
 	border: none;
+	background-color: #E4E4E4;
 }
 
 .desktop-tabbox {
@@ -292,6 +293,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 .desktop-left-column {
 	width: 200px;
 	border: none;
+	border-right: 1px solid #C5C5C5;
 	background-color: #E4E4E4;
 	padding-top: 4px; 
 }
@@ -299,13 +301,18 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 .desktop-right-column {
 	width: 200px;
 	border: none;
+	border-left: 1px solid #C5C5C5;
 	background-color: #E4E4E4;
 	padding-top: 4px; 
 }
 
-.desktop-left-column + .z-west-splt, .desktop-right-column + .z-east-splt {
+.desktop-left-column + .z-west-splt {
 	border-top: none; 
 	border-right: 1px solid #c5c5c5;
+}
+
+.desktop-right-column + .z-east-splt {
+	border-top: none; 
 	border-left: 1px solid #c5c5c5;
 }
 
@@ -760,6 +767,12 @@ span.z-tree-tee, span.z-tree-last, span.z-tree-firstspacer {
 
 .z-west-colpsd {
 	cursor: pointer;
+	border-top: none;
+}
+
+.z-east-colpsd {
+	cursor: pointer;
+	border-top: none;
 }
 
 <%-- FOCUSED FIELD in different color --%>
