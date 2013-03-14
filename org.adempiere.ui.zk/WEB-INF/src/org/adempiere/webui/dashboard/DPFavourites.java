@@ -21,6 +21,7 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
@@ -147,7 +148,10 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		hbox.appendChild(btnFavItem);
 		btnFavItem.setLabel(label);
 		btnFavItem.setTooltiptext(description);
-		btnFavItem.setImage(ThemeManager.getThemeResource(imageSrc));
+		if (imageSrc.startsWith(ITheme.THEME_PATH_PREFIX))
+			btnFavItem.setImage(imageSrc);
+		else			
+			btnFavItem.setImage(ThemeManager.getThemeResource(imageSrc));
 		btnFavItem.setDraggable(DELETE_FAV_DROPPABLE);
 		btnFavItem.addEventListener(Events.ON_CLICK, this);
 		btnFavItem.addEventListener(Events.ON_DROP, this);
