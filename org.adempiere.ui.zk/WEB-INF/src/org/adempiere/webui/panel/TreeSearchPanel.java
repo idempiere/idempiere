@@ -243,7 +243,8 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         		MTreeNode mNode = (MTreeNode) sNode.getData();
         		treeValues[i] = mNode.getName();
         		treeDescription[i] = mNode.getDescription();
-       			treeImages[i] = mNode.getImagePath();
+        		String imagePath = mNode.getImagePath(); 
+       			treeImages[i] = imagePath != null ? imagePath.intern() : null;
         	}
         }
 
@@ -287,7 +288,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         		image = element.getImage();
         	}
         }
-        return image;
+        return image != null ? image.intern() : null;
 	}
 
 	/**

@@ -69,6 +69,9 @@ public final class Msg
 	/**  The Map                    */
 	private CCache<String,CCache<String,String>> m_languages 
 		= new CCache<String,CCache<String,String>>(null, "msg_lang", 2, 0, false);
+	
+	private CCache<String,CCache<String,String>> m_elementCache 
+		= new CCache<String,CCache<String,String>>(null, "msg_element", 2, 0, false);
 
 	/**
 	 *  Get Language specific Message Map
@@ -94,6 +97,21 @@ public final class Msg
 		}
 		return retValue;
 	}   //  getMsgMap
+	
+	private CCache<String,String> getElementMap (String ad_language)
+	{
+		String AD_Language = ad_language;
+		if (AD_Language == null || AD_Language.length() == 0)
+			AD_Language = Language.getBaseAD_Language();
+		//  Do we have the language ?
+		CCache<String,String> retValue = (CCache<String,String>)m_elementCache.get(AD_Language);
+		if (retValue != null && retValue.size() > 0)
+			return retValue;
+
+		retValue = new CCache<String, String>("element", 100);
+		m_elementCache.put(AD_Language, retValue);
+		return retValue;
+	}
 
 
 	/**
@@ -465,33 +483,29 @@ public final class Msg
 		String AD_Language = ad_language;
 		if (AD_Language == null || AD_Language.length() == 0)
 			AD_Language = Language.getBaseAD_Language();
+		
+		Msg msg = get();
+		CCache<String, String> cache = msg.getElementMap(AD_Language);
+		String key = ColumnName+"|"+isSOTrx;
+		String retStr = cache.get(key);
+		if (retStr != null)
+			return retStr;
 
 		//	Check AD_Element
-		String retStr = "";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			try
+			if (AD_Language == null || AD_Language.length() == 0 || Env.isBaseLanguage(AD_Language, "AD_Element"))
+				pstmt = DB.prepareStatement("SELECT Name, PO_Name FROM AD_Element WHERE UPPER(ColumnName)=?", null);
+			else
 			{
-				if (AD_Language == null || AD_Language.length() == 0 || Env.isBaseLanguage(AD_Language, "AD_Element"))
-					pstmt = DB.prepareStatement("SELECT Name, PO_Name FROM AD_Element WHERE UPPER(ColumnName)=?", null);
-				else
-				{
-					pstmt = DB.prepareStatement("SELECT t.Name, t.PO_Name FROM AD_Element_Trl t, AD_Element e "
-						+ "WHERE t.AD_Element_ID=e.AD_Element_ID AND UPPER(e.ColumnName)=? "
-						+ "AND t.AD_Language=?", null);
-					pstmt.setString(2, AD_Language);
-				}
+				pstmt = DB.prepareStatement("SELECT t.Name, t.PO_Name FROM AD_Element_Trl t, AD_Element e "
+					+ "WHERE t.AD_Element_ID=e.AD_Element_ID AND UPPER(e.ColumnName)=? "
+					+ "AND t.AD_Language=?", null);
+				pstmt.setString(2, AD_Language);
 			}
-			catch (Exception e)
-			{
-				return ColumnName;
-			}
-			finally {
-				DB.close(rs);
-				rs = null;
-			}
+
 			pstmt.setString(1, ColumnName.toUpperCase());
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -515,8 +529,11 @@ public final class Msg
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		if (retStr != null)
-			return retStr.trim();
+		if (retStr != null) {
+			retStr = retStr.trim();
+			cache.put(key, retStr);
+			return retStr;
+		}
 		return retStr;
 	}   //  getElement
 
