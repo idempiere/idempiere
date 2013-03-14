@@ -151,34 +151,11 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
     	Component page = Executions.createComponents(pagedef, parent, null);
     	layout = (Borderlayout) page.getFellow("layout");
     	pnlHead = (HeaderPanel) page.getFellow("northBody").getFellow("header");
-//
-//        layout = new Borderlayout();
-//        if (parent != null)
-//        {
-//        	layout.setParent(parent);
-//        	layout.setWidth("100%");
-//        	layout.setHeight("100%");
-//        	layout.setSclass("desktop-layout");
-//        }
-//        else
-//        	layout.setPage(page);
         
         layout.addEventListener("onZoom", this);
         layout.addEventListener(DrillEvent.ON_DRILL_DOWN, this);
 
-//        North n = new North();
-//        layout.appendChild(n);
-//        n.setCollapsible(false);
-//        n.setSclass("desktop-north");
-//        pnlHead.setParent(n);
-        
         West w = layout.getWest();
-//        w.setId("desktop-left-column");
-//        layout.appendChild(w);
-//        w.setSclass("desktop-left-column");
-//        w.setCollapsible(true);
-//        w.setSplittable(true);
-//        w.setHflex("1");
         w.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -206,12 +183,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         sideController.render(w, this, false);
         
         East e = layout.getEast();
-//        e.setId("desktop-right-column");
-//        layout.appendChild(e);
-//        e.setSclass("desktop-right-column");
-//        e.setCollapsible(true);
-//        e.setSplittable(true);
-//        e.setHflex("1");
         e.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -240,8 +211,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         helpController.render(e, this);
 
         windowArea = layout.getCenter();
-//        windowArea.setParent(layout);
-//        windowArea.setSclass("desktop-center");
 
         windowContainer.createPart(windowArea);
 
