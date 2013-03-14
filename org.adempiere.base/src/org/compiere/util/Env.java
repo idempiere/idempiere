@@ -1367,8 +1367,11 @@ public final class Env
 			int j = inStr.indexOf('@');						// next @
 			if (j < 0)
 			{
-				getLogger().log(Level.SEVERE, "No second tag: " + inStr);
-				return "";						//	no second tag
+				if (getLogger().isLoggable(Level.INFO))
+					getLogger().log(Level.INFO, "No second tag: " + inStr);
+				//not context variable, add back @ and break
+				outStr.append("@");
+				break;
 			}
 
 			token = inStr.substring(0, j);
