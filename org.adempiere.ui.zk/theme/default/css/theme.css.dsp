@@ -356,6 +356,10 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	width: 99% !important;
 }
 
+.link {
+	cursor:pointer;
+}
+
 .link.z-toolbarbutton-over {
 	border: none;
 	padding: 1px 0;
@@ -663,6 +667,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: 16px 16px;  
+	cursor: pointer;
 }
 
 .z-grid tbody tr.highlight td.row-indicator {
