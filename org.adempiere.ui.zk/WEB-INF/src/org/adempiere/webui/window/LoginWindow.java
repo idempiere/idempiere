@@ -42,6 +42,7 @@ import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  *
@@ -93,6 +94,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
     
     public void changePassword(String userName, String userPassword, boolean show, KeyNamePair[] clientsKNPairs)
     {
+    	Clients.clearBusy();
 		pnlChangePassword = new ChangePasswordPanel(ctx, this, userName, userPassword, show, clientsKNPairs);
         this.getChildren().clear();
         this.appendChild(pnlChangePassword);
