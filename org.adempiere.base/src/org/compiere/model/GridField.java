@@ -590,7 +590,10 @@ public class GridField
 					if (rs.next())
 						defStr = rs.getString(1);
 					else
-						log.log(Level.WARNING, "(" + m_vo.ColumnName + ") - no Result: " + sql);
+					{
+						if (log.isLoggable(Level.INFO))
+							log.log(Level.INFO, "(" + m_vo.ColumnName + ") - no Result: " + sql);
+					}
 				}
 				catch (SQLException e)
 				{
