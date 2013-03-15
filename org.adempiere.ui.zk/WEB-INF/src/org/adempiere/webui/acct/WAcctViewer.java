@@ -462,17 +462,17 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		forcePost.setVisible(false);
 
 		// Elaine 2009/07/29
-		bZoom.setImage(ThemeManager.getThemeResource(ThemeManager.getThemeResource("images/Zoom16.png")));
+		bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
 		bZoom.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")));
 		bZoom.setVisible(tabbedPane.getSelectedIndex() == 1);
 		bZoom.addEventListener(Events.ON_CLICK, this);
 		//
 		
-		bQuery.setImage(ThemeManager.getThemeResource(ThemeManager.getThemeResource("images/Refresh16.png")));
+		bQuery.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
 		bQuery.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 		bQuery.addEventListener(Events.ON_CLICK, this);
 
-		bExport.setImage(ThemeManager.getThemeResource(ThemeManager.getThemeResource("images/Export16.png")));
+		bExport.setImage(ThemeManager.getThemeResource("images/Export16.png"));
 		bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
 		bExport.addEventListener(Events.ON_CLICK, this);
 		bExport.setVisible(false);

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?component name="divarrow" macro-uri="divarrow.zul"?>
 <zk>
+<zscript><![CDATA[
+	var calendarIcon = org.adempiere.webui.theme.ThemeManager.getThemeResource("images/Calendar16.png");
+]]></zscript>
 <style src="calendar.css"/>
 <calendars firstDayOfWeek="Monday" model="${cm}" mold="month" id="cal">
 	<toolbar sclass="calendar-toolbar">
@@ -13,7 +16,7 @@
 				    <separator orient="vertical" spacing="2px"/>
 					<label id="lblDate"/>
 					<toolbarbutton id="btnRefresh" label="Refresh" class="refresh"/>
-					<toolbarbutton id="btnCal" image="/images/Calendar16.png"/>
+					<toolbarbutton id="btnCal" image="${calendarIcon}"/>
 				</div>
 			</hbox>
 		</div>
