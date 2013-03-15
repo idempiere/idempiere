@@ -1,3 +1,6 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
 -- Mar 13, 2013 2:23:27 PM SGT
 -- Ticket #1002211: Create Help pane for Bizidium
 INSERT INTO AD_Ref_List (AD_Client_ID,AD_Ref_List_ID,AD_Reference_ID,EntityType,Name,AD_Ref_List_UU,Value,CreatedBy,Created,Updated,UpdatedBy,IsActive,AD_Org_ID) VALUES (0,200135,200064,'D','All','298064ff-6e69-435f-aa0e-d156375339f5','A',100,TO_DATE('2013-03-13 14:23:25','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2013-03-13 14:23:25','YYYY-MM-DD HH24:MI:SS'),100,'Y',0)
