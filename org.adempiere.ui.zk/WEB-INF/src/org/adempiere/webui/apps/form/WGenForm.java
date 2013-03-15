@@ -25,6 +25,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.WProcessCtl;
+import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.DesktopTabpanel;
 import org.adempiere.webui.component.Grid;
@@ -189,6 +190,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		tabpanel.appendChild(genPanel);
 		tab = new Tab(Msg.getMsg(Env.getCtx(), "Generate"));
 		tabs.appendChild(tab);
+		tab.setDisabled(true);
 		genPanel.setWidth("99%");
 		genPanel.setHeight("90%");
 		genPanel.setStyle("border: none; position: absolute");
@@ -216,6 +218,9 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		statusBar.setStatusDB(" ");
 		//	Tabbed Pane Listener
 		tabbedPane.addEventListener(Events.ON_SELECT, this);
+		
+		Button button = confirmPanelSel.getButton(ConfirmPanel.A_OK);
+		button.setEnabled(false);
 	}	//	dynInit
 
 	public void postQueryEvent() 
@@ -264,6 +269,10 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		{
 			int index = tabbedPane.getSelectedIndex();
 			genForm.setSelectionActive(index == 0);
+			if (index == 0)
+			{
+				tabbedPane.getTabpanel(1).getLinkedTab().setDisabled(true);
+			}
 			if (index == 0 && miniTable.getSelectedCount() > 0)
 			{
 				postQueryEvent();
@@ -295,6 +304,11 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 				rowsSelected++;
 		}
 		statusBar.setStatusDB(" " + rowsSelected + " ");
+		if (tabbedPane.getSelectedIndex() == 0)
+		{
+			Button button = confirmPanelSel.getButton(ConfirmPanel.A_OK);
+			button.setEnabled(rowsSelected > 0);			
+		}
 	}   //  tableChanged
 
 	/**
@@ -344,7 +358,8 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		}
 		
 		//  Switch Tabs
-		tabbedPane.setSelectedIndex(1);
+		tabbedPane.getTabpanel(1).getLinkedTab().setDisabled(false);
+		tabbedPane.setSelectedIndex(1);		
 		//
 		ProcessInfoUtil.setLogFromDB(genForm.getProcessInfo());
 		StringBuilder iText = new StringBuilder();
