@@ -30,13 +30,19 @@ import org.zkoss.zk.ui.event.Events;
 
 public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 	
+	private static final String RETRIEVE_RESOURCE_ASSIGNMENT_SQL = "SELECT r.Name,ra.AssignDateFrom,ra.Qty,uom.UOMSymbol "
+			+ "FROM S_ResourceAssignment ra, S_Resource r, S_ResourceType rt, C_UOM uom "
+			+ "WHERE ra.S_ResourceAssignment_ID=?"
+			+ " AND ra.S_Resource_ID=r.S_Resource_ID"
+			+ " AND r.S_ResourceType_ID=rt.S_ResourceType_ID"
+			+ " and rt.C_UOM_ID=uom.C_UOM_ID";
+
 	private final static CLogger log = CLogger.getCLogger(WAssignmentEditor.class);
 	
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
 		
 	private boolean m_readWrite;
 	private Object m_value;
-	private PreparedStatement m_pstmt;
 	
 	private DateFormat			m_dateFormat = DisplayType.getDateFormat(DisplayType.DateTime);
 	private NumberFormat		m_qtyFormat = DisplayType.getNumberFormat(DisplayType.Quantity);
@@ -105,20 +111,14 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 			return;
 		}
 
-		//	Statement
-		if (m_pstmt == null)
-			m_pstmt = DB.prepareStatement("SELECT r.Name,ra.AssignDateFrom,ra.Qty,uom.UOMSymbol "
-				+ "FROM S_ResourceAssignment ra, S_Resource r, S_ResourceType rt, C_UOM uom "
-				+ "WHERE ra.S_ResourceAssignment_ID=?"
-				+ " AND ra.S_Resource_ID=r.S_Resource_ID"
-				+ " AND r.S_ResourceType_ID=rt.S_ResourceType_ID"
-				+ " and rt.C_UOM_ID=uom.C_UOM_ID", null);
 		//
-		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;		
 		try
 		{
-			m_pstmt.setInt(1, S_ResourceAssignment_ID);
-			rs = m_pstmt.executeQuery();
+			pstmt = DB.prepareStatement(RETRIEVE_RESOURCE_ASSIGNMENT_SQL, null);
+			pstmt.setInt(1, S_ResourceAssignment_ID);
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				StringBuilder sb = new StringBuilder(rs.getString(1));
@@ -136,7 +136,7 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 		}
 		finally
 		{
-			DB.close(rs);
+			DB.close(rs, pstmt);
 		}
 
 	}
