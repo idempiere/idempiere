@@ -536,9 +536,9 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 		}
 		
 		//	Guarantee Date
-		Timestamp ts = (Timestamp)guaranteeDateField.getValue();
-		if (ts != null)
+		if (guaranteeDateField.getValue() != null)
 		{
+			Timestamp ts = new Timestamp(guaranteeDateField.getValue().getTime());
 			sb.append(" AND TRUNC(asi.GuaranteeDate)");
 			int index = guaranteeDateSelection.getSelectedIndex();	//	 < = >
 			if (index == 0)
