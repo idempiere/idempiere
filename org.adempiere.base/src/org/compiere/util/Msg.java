@@ -529,12 +529,11 @@ public final class Msg
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		if (retStr != null) {
-			retStr = retStr.trim();
-			cache.put(key, retStr);
-			return retStr;
-		}
+		
+		retStr = retStr == null ? "" : retStr.trim();
+		cache.put(key, retStr);
 		return retStr;
+		
 	}   //  getElement
 
 	/**
