@@ -5,7 +5,10 @@ Bundle-SymbolicName: org.adempiere.plugin.utils
 Bundle-Version: 0.0.0.1
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.adempiere.base,
+ org.adempiere.util,
+ org.compiere,
  org.compiere.model,
  org.compiere.util,
- org.osgi.framework;version="1.5.0"
+ org.osgi.framework;version="1.5.0",
+ org.osgi.util.tracker;version="1.5.0"
 Export-Package: org.adempiere.plugin.utils

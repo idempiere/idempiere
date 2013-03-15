@@ -4,30 +4,36 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.adempiere.base.IDictionaryService;
-import org.adempiere.base.Service;
+import org.adempiere.util.ServerContext;
+import org.compiere.Adempiere;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp;
-import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.*;
 
-public class AdempiereActivator implements BundleActivator {
+public class AdempiereActivator implements BundleActivator, ServiceTrackerCustomizer<IDictionaryService, IDictionaryService> {
 
 	protected final static Logger logger = Logger
 			.getLogger(AdempiereActivator.class.getName());
 	private BundleContext context;
+	private ServiceTracker<IDictionaryService, IDictionaryService> serviceTracker;
+	private IDictionaryService service;
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		this.context = context;
 		if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + getVersion() + " starting...");
-		installPackage();
+		serviceTracker = new ServiceTracker<IDictionaryService, IDictionaryService>(context, IDictionaryService.class.getName(), this);
+		serviceTracker.open();
 		start();
 		if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + getVersion() + " ready.");
 	}
@@ -94,12 +100,9 @@ public class AdempiereActivator implements BundleActivator {
 
 	protected void packIn(String trxName) {
 		URL packout = context.getBundle().getEntry("/META-INF/2Pack.zip");
-		if (packout != null) {
-			IDictionaryService service = Service.locator().locate(IDictionaryService.class).getService();
+		if (packout != null && service != null) {
 			FileOutputStream zipstream = null;
 			try {
-				if (service == null)
-					throw new AdempiereSystemError("Could not find/load OSGi service for packin");
 				// copy the resource to a temporary file to process it with 2pack
 				InputStream stream = context.getBundle().getEntry("/META-INF/2Pack.zip").openStream();
 				File zipfile = File.createTempFile(getName(), ".zip");
@@ -135,6 +138,8 @@ public class AdempiereActivator implements BundleActivator {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		stop();
+		serviceTracker.close();
+		this.context = null;
 		if (logger.isLoggable(Level.INFO)) logger.info(context.getBundle().getSymbolicName() + " "
 				+ context.getBundle().getHeaders().get("Bundle-Version")
 				+ " stopped.");
@@ -147,5 +152,39 @@ public class AdempiereActivator implements BundleActivator {
 	};
 
 	protected void stop() {
+	}
+
+	@Override
+	public IDictionaryService addingService(
+			ServiceReference<IDictionaryService> reference) {
+		service = context.getService(reference);
+		Adempiere.getThreadPoolExecutor().execute(new Runnable() {			
+			@Override
+			public void run() {
+				setupPackInContext();
+				try {
+					installPackage();
+				} finally {
+					ServerContext.dispose();
+					service = null;
+				}
+			}
+		});
+		return null;
+	}
+
+	@Override
+	public void modifiedService(ServiceReference<IDictionaryService> reference,
+			IDictionaryService service) {
+	}
+
+	@Override
+	public void removedService(ServiceReference<IDictionaryService> reference,
+			IDictionaryService service) {
+	}
+
+	protected void setupPackInContext() {
+		Properties serverContext = new Properties();
+		ServerContext.setCurrentInstance(serverContext);
 	};
 }
