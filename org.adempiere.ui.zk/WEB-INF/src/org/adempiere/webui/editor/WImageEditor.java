@@ -40,13 +40,6 @@ public class WImageEditor extends WEditor
 {
     private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     
-	private static final CLogger logger;
-    
-    static
-    {
-        logger = CLogger.getCLogger(WImageEditor.class);
-    }
-    
     /** The Image Model         */
 	private MImage  m_mImage = null;
 	
@@ -139,7 +132,7 @@ public class WImageEditor extends WEditor
 			try {
 				img = new AImage(null, data);				
 			} catch (Exception e) {		
-				logger.log(Level.WARNING, e.getLocalizedMessage(), e);
+				log.log(Level.WARNING, e.getLocalizedMessage(), e);
 			}
 		}
 		getComponent().setContent(img);

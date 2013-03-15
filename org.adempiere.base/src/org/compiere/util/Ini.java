@@ -58,9 +58,12 @@ import org.compiere.model.ModelValidationEngine;
 public final class Ini implements Serializable
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 3666529972922769528L;
+	private static final long serialVersionUID = -8936090051638559660L;
+
+	/**	Logger			*/
+	private static CLogger log = CLogger.getCLogger(Ini.class);
 
 	/** Property file name				*/
 	public static final String	IDEMPIERE_PROPERTY_FILE = "idempiere.properties";
@@ -228,10 +231,6 @@ public final class Ini implements Serializable
 
 	private static String s_propertyFileName = null;
 
-	private static CLogger getLogger() {
-		return CLogger.getCLogger(Ini.class.getName());
-	}
-
 	/**
 	 *	Save INI parameters to disk
 	 *  @param tryUserHome get user home first
@@ -262,15 +261,15 @@ public final class Ini implements Serializable
 			}
 			catch (Exception e)
 			{
-				getLogger().log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + e.toString());
+				log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + e.toString());
 				return;
 			}
 			catch (Throwable t)
 			{
-				getLogger().log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + t.toString());
+				log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + t.toString());
 				return;
 			}
-			getLogger().finer(fileName);
+			if (log.isLoggable(Level.FINER)) log.finer(fileName);
 		}
 	}	//	save
 
@@ -304,7 +303,7 @@ public final class Ini implements Serializable
 	        ps = (PersistenceService)ServiceManager.lookup("javax.jnlp.PersistenceService");
 	    } catch (UnavailableServiceException e) {
 	        ps = null;
-	        getLogger().log(Level.SEVERE, e.toString());
+	        log.log(Level.SEVERE, e.toString());
 	        return false;
 	    }
 
@@ -312,7 +311,7 @@ public final class Ini implements Serializable
 	    try {
 			fc = ps.get(getCodeBase());
 		} catch (MalformedURLException e) {
-			getLogger().log(Level.SEVERE, e.toString());
+			log.log(Level.SEVERE, e.toString());
 			return false;
 		} catch (FileNotFoundException e) {
 			try {
@@ -323,7 +322,7 @@ public final class Ini implements Serializable
 
 			}
 		} catch (IOException e) {
-			getLogger().log(Level.SEVERE, e.toString());
+			log.log(Level.SEVERE, e.toString());
 			return false;
 		}
 
@@ -337,7 +336,7 @@ public final class Ini implements Serializable
 		}
 		catch (Throwable t)
 		{
-			getLogger().log(Level.SEVERE, t.toString());
+			log.log(Level.SEVERE, t.toString());
 			loadOK = false;
 		}
 		if (!loadOK || s_prop.getProperty(P_TODAY, "").equals(""))
@@ -364,7 +363,7 @@ public final class Ini implements Serializable
 	        ps = (PersistenceService)ServiceManager.lookup("javax.jnlp.PersistenceService");
 	    } catch (UnavailableServiceException e) {
 	        ps = null;
-	        getLogger().log(Level.SEVERE, e.toString());
+	        log.log(Level.SEVERE, e.toString());
 	        return;
 	    }
 
@@ -377,7 +376,7 @@ public final class Ini implements Serializable
 		}
 		catch (Throwable t)
 		{
-			getLogger().log(Level.SEVERE, "Cannot save Properties to " + getCodeBase() + " - " + t.toString());
+			log.log(Level.SEVERE, "Cannot save Properties to " + getCodeBase() + " - " + t.toString());
 			return;
 		}
 
@@ -429,22 +428,22 @@ public final class Ini implements Serializable
 		}
 		catch (FileNotFoundException e)
 		{
-			getLogger().warning(filename + " not found");
+			log.warning(filename + " not found");
 			loadOK = false;
 		}
 		catch (Exception e)
 		{
-			getLogger().log(Level.SEVERE, filename + " - " + e.toString());
+			log.log(Level.SEVERE, filename + " - " + e.toString());
 			loadOK = false;
 		}
 		catch (Throwable t)
 		{
-			getLogger().log(Level.SEVERE, filename + " - " + t.toString());
+			log.log(Level.SEVERE, filename + " - " + t.toString());
 			loadOK = false;
 		}
 		if (!loadOK || s_prop.getProperty(P_TODAY, "").equals(""))
 		{
-			getLogger().config(filename);
+			if (log.isLoggable(Level.CONFIG)) log.config(filename);
 			firstTime = true;
 		}
 
@@ -454,7 +453,7 @@ public final class Ini implements Serializable
 		if (!loadOK || firstTime)
 			saveProperties(true);
 		s_loaded = true;
-		getLogger().info(filename + " #" + s_prop.size());
+		if (log.isLoggable(Level.INFO)) log.info(filename + " #" + s_prop.size());
 		s_propertyFileName = filename;
 
 		return firstTime;
@@ -491,11 +490,11 @@ public final class Ini implements Serializable
 				if (!file.delete())
 					file.deleteOnExit();
 				s_prop = new Properties();
-				getLogger().config (fileName);
+				if (log.isLoggable(Level.CONFIG)) log.config (fileName);
 			}
 			catch (Exception e)
 			{
-				getLogger().log (Level.WARNING, "Cannot delete Property file", e);
+				log.log (Level.WARNING, "Cannot delete Property file", e);
 			}
 		}
 	}	//	deleteProperties
@@ -564,7 +563,7 @@ public final class Ini implements Serializable
 	 */
 	public static void setProperty (String key, String value)
 	{
-	//	getLogger().finer(key + "=" + value);
+	//	log.finer(key + "=" + value);
 		if (s_prop == null)
 			s_prop = new Properties();
 		if (key.equals(P_WARNING) || key.equals(P_WARNING_de))
@@ -620,7 +619,7 @@ public final class Ini implements Serializable
 			return "";
 		//
 		String value = SecureEngine.decrypt(retStr, 0);
-	//	getLogger().finer(key + "=" + value);
+	//	log.finer(key + "=" + value);
 		if (value == null)
 			return "";
 		return value;

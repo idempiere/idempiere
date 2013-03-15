@@ -89,6 +89,9 @@ public final class Env
 
 	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();
 
+	/**	Logger			*/
+	private static CLogger log = CLogger.getCLogger(Env.class);
+
 	/**
 	 * @param provider
 	 * @deprecated
@@ -245,17 +248,13 @@ public final class Env
 	{
 		if (ctx == null || context == null)
 			return;
-		getLogger().finer("Context " + context + "==" + value);
+		if (log.isLoggable(Level.FINER)) log.finer("Context " + context + "==" + value);
 		//
 		if (value == null || value.length() == 0)
 			ctx.remove(context);
 		else
 			ctx.setProperty(context, value);
 	}	//	setContext
-
-	private static CLogger getLogger() {
-		return CLogger.getCLogger(Env.class.getName());
-	}
 
 	/**
 	 *	Set Global Context to Value
@@ -270,7 +269,7 @@ public final class Env
 		if (value == null)
 		{
 			ctx.remove(context);
-			getLogger().finer("Context " + context + "==" + value);
+			if (log.isLoggable(Level.FINER)) log.finer("Context " + context + "==" + value);
 		}
 		else
 		{	//	JDBC Format	2005-05-09 00:00:00.0
@@ -284,7 +283,7 @@ public final class Env
 			//stringValue = stringValue.substring(0, stringValue.indexOf("."));
 			// KTU
 			ctx.setProperty(context, stringValue);
-			getLogger().finer("Context " + context + "==" + stringValue);
+			if (log.isLoggable(Level.FINER)) log.finer("Context " + context + "==" + stringValue);
 		}
 	}	//	setContext
 
@@ -298,7 +297,7 @@ public final class Env
 	{
 		if (ctx == null || context == null)
 			return;
-		getLogger().finer("Context " + context + "==" + value);
+		if (log.isLoggable(Level.FINER)) log.finer("Context " + context + "==" + value);
 		//
 		ctx.setProperty(context, String.valueOf(value));
 	}	//	setContext
@@ -325,8 +324,7 @@ public final class Env
 	{
 		if (ctx == null || context == null)
 			return;
-		if (getLogger().isLoggable(Level.FINER))
-			getLogger().finer("Context("+WindowNo+") " + context + "==" + value);
+		if (log.isLoggable(Level.FINER)) log.finer("Context("+WindowNo+") " + context + "==" + value);
 		//
 		if (value == null || value.equals(""))
 			ctx.remove(WindowNo+"|"+context);
@@ -348,8 +346,7 @@ public final class Env
 		if (value == null)
 		{
 			ctx.remove(WindowNo+"|"+context);
-			if (getLogger().isLoggable(Level.FINER))
-				getLogger().finer("Context("+WindowNo+") " + context + "==" + value);
+			if (log.isLoggable(Level.FINER)) log.finer("Context("+WindowNo+") " + context + "==" + value);
 		}
 		else
 		{	//	JDBC Format	2005-05-09 00:00:00.0
@@ -363,8 +360,7 @@ public final class Env
 			//stringValue = stringValue.substring(0, stringValue.indexOf("."));
 			// KTU
 			ctx.setProperty(WindowNo+"|"+context, stringValue);
-			if (getLogger().isLoggable(Level.FINER))
-				getLogger().finer("Context("+WindowNo+") " + context + "==" + stringValue);
+			if (log.isLoggable(Level.FINER)) log.finer("Context("+WindowNo+") " + context + "==" + stringValue);
 		}
 	}	//	setContext
 	
@@ -379,8 +375,7 @@ public final class Env
 	{
 		if (ctx == null || context == null)
 			return;
-		if (getLogger().isLoggable(Level.FINER))
-			getLogger().finer("Context("+WindowNo+") " + context + "==" + value);
+		if (log.isLoggable(Level.FINER)) log.finer("Context("+WindowNo+") " + context + "==" + value);
 		//
 		ctx.setProperty(WindowNo+"|"+context, String.valueOf(value));
 	}	//	setContext
@@ -425,8 +420,7 @@ public final class Env
 	{
 		if (ctx == null || context == null)
 			return;
-		if (getLogger().isLoggable(Level.FINEST))
-			getLogger().finest("Context("+WindowNo+","+TabNo+") " + context + "==" + value);
+		if (log.isLoggable(Level.FINEST)) log.finest("Context("+WindowNo+","+TabNo+") " + context + "==" + value);
 		//
 		if (value == null)
 			if (context.endsWith("_ID"))
@@ -643,7 +637,7 @@ public final class Env
 		}
 		catch (NumberFormatException e)
 		{
-			getLogger().log(Level.SEVERE, "(" + context + ") = " + s, e);
+			log.log(Level.SEVERE, "(" + context + ") = " + s, e);
 		}
 		return 0;
 	}	//	getContextAsInt
@@ -667,7 +661,7 @@ public final class Env
 		}
 		catch (NumberFormatException e)
 		{
-			getLogger().log(Level.SEVERE, "(" + context + ") = " + s, e);
+			log.log(Level.SEVERE, "(" + context + ") = " + s, e);
 		}
 		return 0;
 	}	//	getContextAsInt
@@ -692,7 +686,7 @@ public final class Env
 		}
 		catch (NumberFormatException e)
 		{
-			getLogger().log(Level.SEVERE, "(" + context + ") = " + s, e);
+			log.log(Level.SEVERE, "(" + context + ") = " + s, e);
 		}
 		return 0;
 	}	//	getContextAsInt
@@ -717,7 +711,7 @@ public final class Env
 		}
 		catch (NumberFormatException e)
 		{
-			getLogger().log(Level.SEVERE, "(" + context + ") = " + s, e);
+			log.log(Level.SEVERE, "(" + context + ") = " + s, e);
 		}
 		return 0;
 	}	//	getContextAsInt
@@ -853,7 +847,7 @@ public final class Env
 		{
 			if (!"#date".equalsIgnoreCase(context))
 			{
-				getLogger().log(Level.WARNING, "No value for: " + context);
+				log.log(Level.WARNING, "No value for: " + context);
 			}
 			return new Timestamp(System.currentTimeMillis());
 		}
@@ -1109,7 +1103,7 @@ public final class Env
 		}
 		catch (SQLException e)
 		{
-			getLogger().log(Level.SEVERE, "", e);
+			log.log(Level.SEVERE, "", e);
 		}
 		finally {
 			DB.close(rs, pstmt);
@@ -1138,7 +1132,7 @@ public final class Env
 		}
 		catch (SQLException e)
 		{
-			getLogger().log(Level.SEVERE, "", e);
+			log.log(Level.SEVERE, "", e);
 		}
 		finally {
 			DB.close(rs, pstmt);
@@ -1182,7 +1176,7 @@ public final class Env
 		}
 		catch (SQLException e)
 		{
-			getLogger().log(Level.SEVERE, "", e);
+			log.log(Level.SEVERE, "", e);
 		}
 		finally {
 			DB.close(rs, pstmt);
@@ -1194,7 +1188,7 @@ public final class Env
 		//	No Language - set to System
 		if (AD_Languages.size() == 0)
 		{
-			getLogger().warning ("NO System Language - Set to Base " + Language.getBaseAD_Language());
+			log.warning ("NO System Language - Set to Base " + Language.getBaseAD_Language());
 			language.setAD_Language(Language.getBaseAD_Language());
 			return;
 		}
@@ -1207,7 +1201,7 @@ public final class Env
 			String langCompare = language.getAD_Language().substring(0, 2);
 			if (lang.equals(langCompare))
 			{
-				getLogger().fine("Found similar Language " + AD_Language);
+				if (log.isLoggable(Level.FINE)) log.fine("Found similar Language " + AD_Language);
 				language.setAD_Language(AD_Language);
 				return;
 			}
@@ -1216,7 +1210,7 @@ public final class Env
 		//	We found same language
 	//	if (!"0".equals(Msg.getMsg(AD_Language, "0")))
 
-		getLogger().warning ("Not System Language=" + language
+		log.warning ("Not System Language=" + language
 			+ " - Set to Base Language " + Language.getBaseAD_Language());
 		language.setAD_Language(Language.getBaseAD_Language());
 	}   //  verifyLanguage
@@ -1367,8 +1361,7 @@ public final class Env
 			int j = inStr.indexOf('@');						// next @
 			if (j < 0)
 			{
-				if (getLogger().isLoggable(Level.INFO))
-					getLogger().log(Level.INFO, "No second tag: " + inStr);
+				if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "No second tag: " + inStr);
 				//not context variable, add back @ and break
 				outStr.append("@");
 				break;
@@ -1394,7 +1387,7 @@ public final class Env
 
 			if (ctxInfo.length() == 0)
 			{
-				getLogger().config("No Context Win=" + WindowNo + " for: " + token);
+				if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
 				if (!ignoreUnparsable)
 					return "";						//	token not found
 			}
@@ -1448,7 +1441,7 @@ public final class Env
 			int j = inStr.indexOf('@');						// next @
 			if (j < 0)
 			{
-				getLogger().log(Level.SEVERE, "No second tag: " + inStr);
+				log.log(Level.SEVERE, "No second tag: " + inStr);
 				return "";						//	no second tag
 			}
 
@@ -1580,7 +1573,7 @@ public final class Env
 //		URL url = Adempiere.class.getResource("images/" + fileNameInImageDir);
 		if (url == null)
 		{
-			getLogger().log(Level.SEVERE, "Not found: " +  fileNameInImageDir);
+			log.log(Level.SEVERE, "Not found: " +  fileNameInImageDir);
 			return null;
 		}
 		Toolkit tk = Toolkit.getDefaultToolkit();
@@ -1600,7 +1593,7 @@ public final class Env
 //		URL url = Adempiere.class.getResource("images/" + fileNameInImageDir);
 		if (url == null)
 		{
-			getLogger().log(Level.INFO, "Not found: " +  fileNameInImageDir);
+			if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "Not found: " +  fileNameInImageDir);
 			return null;
 		}
 		return new ImageIcon(url);
@@ -1625,7 +1618,7 @@ public final class Env
 //			url = Adempiere.class.getResource("images/" + fileName+".png");
 		if (url == null)
 		{
-			getLogger().log(Level.INFO, "GIF/PNG Not found: " + fileName);
+			if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "GIF/PNG Not found: " + fileName);
 			return null;
 		}
 		return new ImageIcon(url);
@@ -1638,7 +1631,7 @@ public final class Env
 	 */
 	public static void startBrowser (String url)
 	{
-		getLogger().info(url);
+		if (log.isLoggable(Level.INFO)) log.info(url);
 		getContextProvider().showURL(url);
 	}   //  startBrowser
 
@@ -1670,16 +1663,16 @@ public final class Env
 	 */
 	public static void sleep (int sec)
 	{
-		getLogger().info("Start - Seconds=" + sec);
+		if (log.isLoggable(Level.INFO)) log.info("Start - Seconds=" + sec);
 		try
 		{
 			Thread.sleep(sec*1000);
 		}
 		catch (Exception e)
 		{
-			getLogger().log(Level.WARNING, "", e);
+			log.log(Level.WARNING, "", e);
 		}
-		getLogger().info("End");
+		if (log.isLoggable(Level.INFO)) log.info("End");
 	}	//	sleep
 
 	/**
@@ -1723,7 +1716,7 @@ public final class Env
 	 */
 	public static GridWindowVO getMWindowVO (int WindowNo, int AD_Window_ID, int AD_Menu_ID)
 	{
-		getLogger().config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
 		GridWindowVO mWindowVO = null;
 		if (AD_Window_ID != 0 && Ini.isCacheWindow())	//	try cache
 		{
@@ -1731,14 +1724,14 @@ public final class Env
 			if (mWindowVO != null)
 			{
 				mWindowVO = mWindowVO.clone(WindowNo);
-				getLogger().info("Cached=" + mWindowVO);
+				if (log.isLoggable(Level.INFO)) log.info("Cached=" + mWindowVO);
 			}
 		}
 
 		//  Create Window Model on Client
 		if (mWindowVO == null)
 		{
-			getLogger().config("create local");
+			if (log.isLoggable(Level.CONFIG)) log.config("create local");
 			mWindowVO = GridWindowVO.create (Env.getCtx(), WindowNo, AD_Window_ID, AD_Menu_ID);
 			if (mWindowVO != null)
 				s_windowsvo.put(AD_Window_ID, mWindowVO);

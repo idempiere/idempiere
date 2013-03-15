@@ -142,7 +142,7 @@ public class GridTable extends AbstractTableModel
 		m_virtual = virtual;
 	}	//	MTable
 
-	private static CLogger		log = CLogger.getCLogger(GridTable.class.getName());
+	private static CLogger		log = CLogger.getCLogger(GridTable.class);
 	private Properties          m_ctx;
 	private int					m_AD_Table_ID;
 	private String 		        m_tableName = "";

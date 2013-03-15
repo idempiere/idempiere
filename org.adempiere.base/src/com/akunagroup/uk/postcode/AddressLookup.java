@@ -37,7 +37,6 @@ import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.adempiere.util.GenerateModel;
 import org.compiere.util.CLogger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,7 +54,7 @@ import org.w3c.dom.NodeList;
  */
 public class AddressLookup implements AddressLookupInterface {
 	/** The logger. */
-	private static CLogger log = CLogger.getCLogger(GenerateModel.class);
+	private static CLogger log = CLogger.getCLogger(AddressLookup.class);
 
 	/**
 	 * The access code which is used along with clientID to authenticate the

@@ -75,7 +75,7 @@ public class VGenPanel extends CPanel implements ActionListener, ChangeListener,
 	private FormFrame 		m_frame;
 
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(VInOutGen.class);
+	private static CLogger log = CLogger.getCLogger(VGenPanel.class);
 	//
 	
 	private CTabbedPane tabbedPane = new CTabbedPane();
