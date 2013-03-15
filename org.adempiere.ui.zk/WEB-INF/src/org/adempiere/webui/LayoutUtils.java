@@ -140,6 +140,24 @@ public final class LayoutUtils {
 	}
 	
 	/**
+	 * position opened window relative to the ref component
+	 * @param ref
+	 * @param window
+	 * @param position
+	 */
+	public static void positionWindow(Component ref, Window window, String position) {
+		StringBuilder script = new StringBuilder();
+		script.append("_idempiere_popup_window('#")
+			.append(ref.getUuid())
+			.append("','#")
+			.append(window.getUuid())
+			.append("','")
+			.append(position)
+			.append("');");
+		Clients.response("_openPopupWindow_", new AuScript(window, script.toString()));
+	}
+	
+	/**
 	 * open popup window relative to the ref component
 	 * @param ref
 	 * @param window

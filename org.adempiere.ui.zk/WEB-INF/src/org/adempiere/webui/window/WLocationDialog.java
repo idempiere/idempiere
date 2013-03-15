@@ -582,6 +582,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			//  refresh
 			initLocation();
 			inCountryAction = false;
+			lstCountry.focus();
 		}
 		//  Region Changed 
 		else if (lstRegion.equals(event.getTarget()))
@@ -594,6 +595,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			m_location.setCity(null);
 			//  refresh
 			initLocation();
+			lstRegion.focus();
 		}
 	}
 
@@ -701,6 +703,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		}	
 		super.dispose();
 	}
+	
 	/** returns a string that contains all fields of current form */
 	String getFullAdress()
 	{

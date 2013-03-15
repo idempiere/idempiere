@@ -40,6 +40,7 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.OpenEvent;
 
 /**
  * @author Sendy Yagambrum
@@ -171,6 +172,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 
 				@Override
 				public void onEvent(Event event) throws Exception {
+					getComponent().getTextbox().focus();
 					m_value = ld.getValue();
 		            //
 					if (!ld.isChanged())
@@ -190,6 +192,14 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 		                fireValueChange(vc);
 		            }
 		            setValue(ii);					
+				}
+			});
+            ld.addEventListener(Events.ON_OPEN, new EventListener<OpenEvent>() {
+				@Override
+				public void onEvent(OpenEvent event) throws Exception {
+					if (!event.isOpen()) {
+						ld.detach();
+					}
 				}
 			});
             ld.setTitle(null);
