@@ -93,6 +93,21 @@ public interface I_AD_Language
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_PrintPaper_ID */
+    public static final String COLUMNNAME_AD_PrintPaper_ID = "AD_PrintPaper_ID";
+
+	/** Set Print Paper.
+	  * Printer paper definition
+	  */
+	public void setAD_PrintPaper_ID (int AD_PrintPaper_ID);
+
+	/** Get Print Paper.
+	  * Printer paper definition
+	  */
+	public int getAD_PrintPaper_ID();
+
+	public org.compiere.model.I_AD_PrintPaper getAD_PrintPaper() throws RuntimeException;
+
     /** Column name CountryCode */
     public static final String COLUMNNAME_CountryCode = "CountryCode";
 
@@ -167,12 +182,12 @@ public interface I_AD_Language
 	/** Set Decimal Point.
 	  * The number notation has a decimal point (no decimal comma)
 	  */
-	public void setIsDecimalPoint (boolean IsDecimalPoint);
+	public void setIsDecimalPoint (String IsDecimalPoint);
 
 	/** Get Decimal Point.
 	  * The number notation has a decimal point (no decimal comma)
 	  */
-	public boolean isDecimalPoint();
+	public String getIsDecimalPoint();
 
     /** Column name IsLoginLocale */
     public static final String COLUMNNAME_IsLoginLocale = "IsLoginLocale";
@@ -221,6 +236,19 @@ public interface I_AD_Language
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name PrintName */
+    public static final String COLUMNNAME_PrintName = "PrintName";
+
+	/** Set Print Text.
+	  * The label text to be printed on a document or correspondence.
+	  */
+	public void setPrintName (String PrintName);
+
+	/** Get Print Text.
+	  * The label text to be printed on a document or correspondence.
+	  */
+	public String getPrintName();
 
     /** Column name Processing */
     public static final String COLUMNNAME_Processing = "Processing";

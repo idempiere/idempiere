@@ -30,7 +30,7 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130315L;
 
     /** Standard Constructor */
     public X_AD_Language (Properties ctx, int AD_Language_ID, String trxName)
@@ -43,9 +43,9 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 // @SQL=SELECT NVL(MAX(AD_Language_ID),0)+1 AS DefaultValue FROM AD_Language
 			setIsBaseLanguage (false);
 // N
-			setIsDecimalPoint (false);
 			setIsSystemLanguage (false);
 			setName (null);
+			setPrintName (null);
         } */
     }
 
@@ -128,6 +128,34 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_Language_UU);
 	}
 
+	public org.compiere.model.I_AD_PrintPaper getAD_PrintPaper() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_PrintPaper)MTable.get(getCtx(), org.compiere.model.I_AD_PrintPaper.Table_Name)
+			.getPO(getAD_PrintPaper_ID(), get_TrxName());	}
+
+	/** Set Print Paper.
+		@param AD_PrintPaper_ID 
+		Printer paper definition
+	  */
+	public void setAD_PrintPaper_ID (int AD_PrintPaper_ID)
+	{
+		if (AD_PrintPaper_ID < 1) 
+			set_Value (COLUMNNAME_AD_PrintPaper_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_PrintPaper_ID, Integer.valueOf(AD_PrintPaper_ID));
+	}
+
+	/** Get Print Paper.
+		@return Printer paper definition
+	  */
+	public int getAD_PrintPaper_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintPaper_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set ISO Country Code.
 		@param CountryCode 
 		Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
@@ -186,28 +214,28 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 		return false;
 	}
 
+	/** IsDecimalPoint AD_Reference_ID=319 */
+	public static final int ISDECIMALPOINT_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISDECIMALPOINT_Yes = "Y";
+	/** No = N */
+	public static final String ISDECIMALPOINT_No = "N";
 	/** Set Decimal Point.
 		@param IsDecimalPoint 
 		The number notation has a decimal point (no decimal comma)
 	  */
-	public void setIsDecimalPoint (boolean IsDecimalPoint)
+	public void setIsDecimalPoint (String IsDecimalPoint)
 	{
-		set_Value (COLUMNNAME_IsDecimalPoint, Boolean.valueOf(IsDecimalPoint));
+
+		set_Value (COLUMNNAME_IsDecimalPoint, IsDecimalPoint);
 	}
 
 	/** Get Decimal Point.
 		@return The number notation has a decimal point (no decimal comma)
 	  */
-	public boolean isDecimalPoint () 
+	public String getIsDecimalPoint () 
 	{
-		Object oo = get_Value(COLUMNNAME_IsDecimalPoint);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_IsDecimalPoint);
 	}
 
 	/** Set Login Locale.
@@ -296,6 +324,23 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Print Text.
+		@param PrintName 
+		The label text to be printed on a document or correspondence.
+	  */
+	public void setPrintName (String PrintName)
+	{
+		set_Value (COLUMNNAME_PrintName, PrintName);
+	}
+
+	/** Get Print Text.
+		@return The label text to be printed on a document or correspondence.
+	  */
+	public String getPrintName () 
+	{
+		return (String)get_Value(COLUMNNAME_PrintName);
+	}
 
 	/** Set Process Now.
 		@param Processing Process Now	  */

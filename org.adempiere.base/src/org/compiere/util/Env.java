@@ -1115,7 +1115,7 @@ public final class Env
 	public static ArrayList<String> getLoginLanguages()
 	{
 		ArrayList<String> AD_Languages = new ArrayList<String>();
-		String sql = "SELECT AD_Language FROM AD_Language WHERE IsLoginLocale = 'Y'";
+		String sql = "SELECT AD_Language FROM AD_Language WHERE IsActive='Y' AND IsLoginLocale = 'Y'";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -1156,6 +1156,7 @@ public final class Env
 
 		boolean isSystemLanguage = false;
 		ArrayList<String> AD_Languages = new ArrayList<String>();
+		AD_Languages.add(Language.getBaseAD_Language());
 		String sql = "SELECT DISTINCT AD_Language FROM AD_Message_Trl";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

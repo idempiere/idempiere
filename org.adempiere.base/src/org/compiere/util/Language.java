@@ -29,6 +29,9 @@ import java.util.logging.Logger;
 
 import javax.print.attribute.standard.MediaSize;
 
+import org.compiere.model.MLanguage;
+import org.compiere.print.MPrintPaper;
+
 /**
  *  Language Management.
  *
@@ -40,6 +43,11 @@ public class Language implements Serializable
 	/**
 	 * 
 	 */
+	private static final long serialVersionUID = 6705748825004207885L;
+
+	/**
+	 * 
+	 */
 	/**************************************************************************
 	 *  Languages
 	 *      http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt
@@ -47,176 +55,22 @@ public class Language implements Serializable
 	 *      http://www.iso.org/iso/country_codes/iso_3166_code_lists/english_country_names_and_code_elements.htm
 	 *************************************************************************/
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -964846521004545703L;
 	/** Base Language               */
-	public static final String  AD_Language_en_US = "en_US";
-	/** Additional Languages         */
-	private static final String AD_Language_en_GB = "en_GB";
-	private static final String AD_Language_en_AU = "en_AU";
-	private static final String AD_Language_ca_ES = "ca_ES";
-	private static final String AD_Language_hr_HR = "hr_HR";
-	private static final String AD_Language_de_DE = "de_DE";
-	private static final String AD_Language_it_IT = "it_IT";
-	private static final String AD_Language_es_ES = "es_ES";
-	private static final String AD_Language_es_MX = "es_MX";
-	private static final String AD_Language_es_CO = "es_CO";
-	private static final String AD_Language_es_DO = "es_DO";
-	private static final String AD_Language_fr_FR = "fr_FR";
-	private static final String AD_Language_fr_CA = "fr_CA";
-	private static final String AD_Language_bg_BG = "bg_BG";
-	private static final String AD_Language_th_TH = "th_TH";
-	private static final String AD_Language_pl_PL = "pl_PL";
-	private static final String AD_Language_zh_TW = "zh_TW";
-	private static final String AD_Language_nl_NL = "nl_NL";
-	private static final String AD_Language_no_NO = "no_NO";
-	private static final String AD_Language_pt_BR = "pt_BR";
-	private static final String AD_Language_ru_RU = "ru_RU";
-	private static final String AD_Language_sl_SI = "sl_SI";
-	private static final String AD_Language_sr_RS = "sr_RS";
-	private static final String AD_Language_sv_SE = "sv_SE";
-	private static final String AD_Language_vi_VN = "vi_VN";
-	private static final String AD_Language_zh_CN = "zh_CN";
-	private static final String AD_Language_da_DK = "da_DK";
-	private static final String AD_Language_ms_MY = "ms_MY";
-	private static final String AD_Language_fa_IR = "fa_IR";
-	private static final String AD_Language_fi_FI = "fi_FI";
-	private static final String AD_Language_ro_RO = "ro_RO";
-	private static final String AD_Language_ja_JP = "ja_JP";
-	private static final String AD_Language_in_ID = "in_ID";
-	private static final String AD_Language_ar_TN = "ar_TN";
-	private static final String AD_Language_hu_HU = "hu_HU";
-	private static final String AD_Language_el_GR = "el_GR";
+	private static final String  AD_Language_en_US = "en_US";
 	
 	/***
 	 *  System Languages.
 	 *  If you want to add a language, extend the array
 	 *  - or use the addLanguage() method.
 	 **/
-	static private Language[]   s_languages = {
+	static private Language[]   s_languages = new Language[] {
 		new Language ("English",
-			AD_Language_en_US,  Locale.US,      null, null,
-			MediaSize.NA.LETTER),							    //  Base Language
-		//	ordered by locale
-		//	Not predefined Locales - need to define decimal Point and date pattern (not sure about time)
-		new Language ("\uFE94\uFEF4\uFE91\uFEAE\uFECC\uFEDF\uFE8D (AR)",
-			AD_Language_ar_TN,  new Locale("ar","TN"), new Boolean(true), "dd.MM.yyyy",
-			MediaSize.ISO.A4),
-		new Language ("\u0411\u044A\u043B\u0433\u0430\u0440\u0441\u043A\u0438 (BG)",
-			AD_Language_bg_BG,  new Locale("bg","BG"), new Boolean(false), "dd/MM/yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Catal\u00e0",
-			AD_Language_ca_ES, new Locale("ca", "ES"), null, "dd/MM/yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Deutsch",
-			AD_Language_de_DE,  Locale.GERMANY, null, null,
-			MediaSize.ISO.A4),
-		new Language ("Dansk",
-			AD_Language_da_DK,  new Locale("da","DK"),  new Boolean(false), "dd-MM-yyyy",
-			MediaSize.ISO.A4),
-		new Language ("English (AU)",
-			AD_Language_en_AU,  new Locale("en","AU"), null, "dd/MM/yyyy",
-			MediaSize.ISO.A4),
-		new Language ("English (UK)",
-			AD_Language_en_GB,  Locale.UK,      null, null,
-			MediaSize.ISO.A4),
-		new Language ("Espa\u00f1ol",
-			AD_Language_es_ES,  new Locale("es","ES"), new Boolean(false), "dd/MM/yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Espa\u00f1ol (MX)",
-			AD_Language_es_MX,  new Locale("es","MX"), new Boolean(true), "dd/MM/yyyy",
-			MediaSize.NA.LETTER),
-		new Language ("Espa\u00f1ol (CO)",
-			AD_Language_es_CO,  new Locale("es","ES"), new Boolean(false), "dd/MM/yyyy",
-			MediaSize.NA.LETTER),
-		new Language ("Espa\u00f1ol (VE)",
-			AD_Language_es_ES,  new Locale("es","ES"), new Boolean(false), "dd/MM/yyyy",
-			MediaSize.ISO.A4),				
-		new Language ("Espa\u00f1ol (EC)",
-			AD_Language_es_ES,  new Locale("es","ES"), new Boolean(false), "dd/MM/yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Espa\u00f1ol (DO)",
-			AD_Language_es_DO,  new Locale("es","DO"), new Boolean(true), "dd/MM/yyyy",
-			MediaSize.ISO.A4),
-		new Language ("\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac (GR)",
-			AD_Language_el_GR,  new Locale("el","GR"),  new Boolean(false), "dd/MM/yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Farsi",
-			AD_Language_fa_IR,  new Locale("fa","IR"),  new Boolean(false), "dd-MM-yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Finnish",
-			AD_Language_fi_FI,  new Locale("fi","FI"),  new Boolean(true), "dd.MM.yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Fran\u00e7ais",
-			AD_Language_fr_FR,  Locale.FRANCE,  null, null,		//  dd.MM.yy
-			MediaSize.ISO.A4),
-		new Language ("Fran\u00e7ais (CA)",
-			AD_Language_fr_CA,  new Locale("fr","CA"),  new Boolean(true), "MM/dd/yyyy",	// MM/dd/yy
-			MediaSize.NA.LETTER),
-		new Language ("Hrvatski",
-			AD_Language_hr_HR, new Locale("hr", "HR"), null, "dd.MM.yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Indonesia Bahasa",
-			AD_Language_in_ID, new Locale("in","ID"), new Boolean(false), "dd-MM-yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Italiano",
-			AD_Language_it_IT,  Locale.ITALY,   null, null,		//  dd.MM.yy
-			MediaSize.ISO.A4),
-		new Language ("\u65e5\u672c\u8a9e (JP)",
-			AD_Language_ja_JP, Locale.JAPAN, null, null,
-			MediaSize.ISO.A4),
-		new Language ("Malaysian",
-			AD_Language_ms_MY, new Locale("ms","MY"), new Boolean(false), "dd-MM-yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Magyar (HU)",
-			AD_Language_hu_HU,  new Locale("hu","HU"), new Boolean(false), "yyyy.MM.dd",
-			MediaSize.ISO.A4),			
-		new Language ("Nederlands",
-			AD_Language_nl_NL, new Locale("nl","NL"), new Boolean(false), "dd-MM-yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Norsk",
-			AD_Language_no_NO,  new Locale("no","NO"), new Boolean(false), "dd/MM/yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Polski",
-			AD_Language_pl_PL, new Locale("pl","PL"), new Boolean(false), "dd-MM-yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Portuguese (BR)",
-			AD_Language_pt_BR, new Locale("pt","BR"), new Boolean(false), "dd/MM/yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Rom\u00e2n\u0103",
-			AD_Language_ro_RO, new Locale("ro","RO"), new Boolean(false), "dd.MM.yyyy",
-			MediaSize.ISO.A4),
-		new Language ("\u0420\u0443\u0441\u0441\u043a\u0438\u0439 (Russian)",
-			AD_Language_ru_RU, new Locale("ru","RU"), new Boolean(false), "dd-MM-yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Slovenski",
-			AD_Language_sl_SI, new Locale("sl", "SI"), null, "dd.MM.yyyy",
-			MediaSize.ISO.A4),
-		new Language ("\u0421\u0440\u043F\u0441\u043A\u0438 (RS)",
-			AD_Language_sr_RS, new Locale("sr", "RS"), null, "dd.MM.yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Svenska",
-			AD_Language_sv_SE,  new Locale("sv","SE"),  new Boolean(false), "yyyy-MM-dd",
-			MediaSize.ISO.A4),
-		new Language ("\u0e44\u0e17\u0e22 (TH)",
-			AD_Language_th_TH,  new Locale("th","TH"), new Boolean(false), "dd/MM/yyyy",
-			MediaSize.ISO.A4),
-		new Language ("Vi\u1EC7t Nam",
-			AD_Language_vi_VN, new Locale("vi","VN"), new Boolean(false), "dd-MM-yyyy",
-			MediaSize.ISO.A4),
-		//	Need to have (Windows) Asian Language Pack installed to view properly 
-		new Language ("\u7b80\u4f53\u4e2d\u6587 (CN)",
-			AD_Language_zh_CN,  Locale.CHINA,  null, "yyyy-MM-dd",
-			MediaSize.ISO.A4),
-		new Language ("\u7e41\u9ad4\u4e2d\u6587 (TW)",
-			AD_Language_zh_TW,  Locale.TAIWAN,  null, null,		//  dd.MM.yy
-			MediaSize.ISO.A4)
-
+				AD_Language_en_US,  Locale.US,      null, null,
+				MediaSize.NA.LETTER)
 	};
-	/** Default Language            */
-	private static Language     s_loginLanguage = s_languages[0];
+
+	/** Base Language            */
+	private static Language     s_baseLanguage = s_languages[0];
 
 	/**	Logger			*/
 	private static Logger log = Logger.getLogger(Language.class.getName());
@@ -238,13 +92,14 @@ public class Language implements Serializable
 	public static Language getLanguage (int index)
 	{
 		if (index < 0 || index >= s_languages.length)
-			return s_loginLanguage;
+			return s_baseLanguage;
 		return s_languages[index];
 	}   //  getLanguage
 
 	/**
 	 *  Add Language to supported Languages
 	 *  @param language new language
+	 *  @deprecated IDEMPIERE-489 Configure the language in the database
 	 */
 	public static void addLanguage (Language language)
 	{
@@ -264,6 +119,7 @@ public class Language implements Serializable
 	 */
 	public static Language getLanguage (String langInfo)
 	{
+		int idxReplace = -1;
 		String lang = langInfo;
 		if (lang == null || lang.length() == 0)
 			lang = System.getProperty("user.language", "");
@@ -271,32 +127,67 @@ public class Language implements Serializable
 		//	Search existing Languages
 		for (int i = 0; i < s_languages.length; i++)
 		{
-			if 	(lang.equals(s_languages[i].getName())
-				||  lang.equals(s_languages[i].getLanguageCode())
-				|| lang.equals(s_languages[i].getAD_Language()))
-				return s_languages[i];
+			if 	(   lang.equals(s_languages[i].getName())
+				 || lang.equals(s_languages[i].getLanguageCode())
+				 || lang.equals(s_languages[i].getAD_Language())) {
+				if (!s_languages[i].m_fromDB && DB.isConnected()) {
+					// if language was not get from DB and now we're connected
+					idxReplace = i;
+					break;
+				} else {
+					return s_languages[i];
+				}
+			}
 		}
 
 		//	Create Language on the fly
 		if (lang.length() == 5)		//	standard format <language>_<Country>
 		{
+			Language ll;
 			String language = lang.substring(0,2);
 			String country = lang.substring(3);
 			Locale locale = new Locale(language, country);
-			StringBuilder msglog = new StringBuilder()
-					.append("Adding Language=").append(language).append(", Country=").append(country).append(", Locale=").append(locale);			
+			if (DB.isConnected()) {
+				MLanguage dblang = MLanguage.get(Env.getCtx(), langInfo);
+				Boolean decimalPoint = null;
+				if (dblang.getIsDecimalPoint() != null)
+					decimalPoint = "Y".equals(dblang.getIsDecimalPoint());
+				if (!(   language.equals(dblang.getLanguageISO()) 
+					  && country.equals(dblang.getCountryCode())
+					 )
+					) {
+					locale = new Locale(dblang.getLanguageISO(), dblang.getCountryCode());
+				}
+				MediaSize mediaSize = MediaSize.ISO.A4;
+				if (dblang.getAD_PrintPaper_ID() > 0) {
+					MPrintPaper pp = MPrintPaper.get(dblang.getAD_PrintPaper_ID());
+					mediaSize = pp.getMediaSize();
+				}
+				ll = new Language(dblang.getPrintName(), langInfo, locale, decimalPoint, dblang.getDatePattern(), mediaSize);
+				ll.m_fromDB = true;
+				if (dblang.isBaseLanguage()) {
+					idxReplace = 0;
+					s_baseLanguage = ll;
+				}
+			} else {
+				ll = new Language (lang, lang, locale);
+			}
+			StringBuilder msglog = new StringBuilder("Adding Language=").append(language).append(", Country=").append(country).append(", Locale=").append(locale);			
 			if (log.isLoggable(Level.INFO)) log.info (msglog.toString());
-			Language ll = new Language (lang, lang, locale);
-			//	Add to Languages
-			ArrayList<Language> list = new ArrayList<Language>(Arrays.asList(s_languages));
-			list.add(ll);
-			s_languages = new Language [list.size()];
-			list.toArray(s_languages);
-			//	Return Language
+			if (idxReplace >= 0) {
+				s_languages[idxReplace] = ll;
+			} else {
+				//	Add to Languages
+				ArrayList<Language> list = new ArrayList<Language>(Arrays.asList(s_languages));
+				list.add(ll);
+				s_languages = new Language [list.size()];
+				list.toArray(s_languages);
+				//	Return Language
+			}
 			return ll;
 		}
 		//	Get the default one
-		return s_loginLanguage;
+		return s_baseLanguage;
 	}   //  getLanguage
 
 	/**
@@ -307,9 +198,9 @@ public class Language implements Serializable
 	public static boolean isBaseLanguage (String langInfo)
 	{
 		if (langInfo == null || langInfo.length() == 0
-			|| langInfo.equals(s_languages[0].getName())
-			|| langInfo.equals(s_languages[0].getLanguageCode())
-			|| langInfo.equals(s_languages[0].getAD_Language()))
+			|| langInfo.equals(s_baseLanguage.getName())
+			|| langInfo.equals(s_baseLanguage.getLanguageCode())
+			|| langInfo.equals(s_baseLanguage.getAD_Language()))
 			return true;
 		return false;
 	}   //  isBaseLanguage
@@ -320,7 +211,7 @@ public class Language implements Serializable
 	 */
 	public static Language getBaseLanguage()
 	{
-		return s_languages[0];
+		return s_baseLanguage;
 	}   //  getBase
 
 	/**
@@ -329,7 +220,7 @@ public class Language implements Serializable
 	 */
 	public static String getBaseAD_Language()
 	{
-		return s_languages[0].getAD_Language();
+		return s_baseLanguage.getAD_Language();
 	}   //  getBase
 
 	/**
@@ -367,7 +258,7 @@ public class Language implements Serializable
 					return s_languages[i].getAD_Language();
 			}
 		}
-		return s_loginLanguage.getAD_Language();
+		return s_baseLanguage.getAD_Language();
 	}   //  getLocale
 
 	/**
@@ -409,7 +300,6 @@ public class Language implements Serializable
 	 */
 	public static Language getLoginLanguage ()
 	{
-		// return s_loginLanguage; // See bug [2946164]
 		return Env.getLanguage(Env.getCtx());
 	}   //  getLanguage
 
@@ -475,6 +365,7 @@ public class Language implements Serializable
 	private Boolean				m_leftToRight;
 	private SimpleDateFormat    m_dateFormat;
 	private MediaSize 			m_mediaSize = MediaSize.ISO.A4;
+	private boolean             m_fromDB = false;
 
 	/**
 	 *  Get Language Name.

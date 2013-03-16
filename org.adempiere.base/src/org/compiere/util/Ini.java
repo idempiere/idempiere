@@ -85,8 +85,7 @@ public final class Ini implements Serializable
 	private static final boolean DEFAULT_TRACEFILE = false;
 	/** Language			*/
 	public static final String 	P_LANGUAGE = 		"Language";
-	private static final String DEFAULT_LANGUAGE = 	Language.getName
-		(System.getProperty("user.language") + "_" + System.getProperty("user.country"));
+	private static final String DEFAULT_LANGUAGE = 	Language.getName(System.getProperty("user.language") + "_" + System.getProperty("user.country"));
 	/** Ini File Name		*/
 	public static final String 	P_INI = 			"FileNameINI";
 	private static final String DEFAULT_INI = 		"";
