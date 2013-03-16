@@ -1298,10 +1298,14 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		int tableIdColumn = m_rmodel.getColumnIndex("AD_Table_ID");
 		int recordIdColumn = m_rmodel.getColumnIndex("Record_ID");
 		ListModelTable model = (ListModelTable) table.getListModel();
-		int AD_Table_ID = ((KeyNamePair) model.getDataAt(selected, tableIdColumn)).getKey();
-		int Record_ID = ((Integer) model.getDataAt(selected, recordIdColumn)).intValue();
-		
-		AEnv.zoom(AD_Table_ID, Record_ID);
+		KeyNamePair tabknp = (KeyNamePair) model.getDataAt(selected, tableIdColumn);
+		Integer recint = (Integer) model.getDataAt(selected, recordIdColumn);
+		if (tabknp != null && recint != null) {
+			int AD_Table_ID = tabknp.getKey();
+			int Record_ID = recint.intValue();
+
+			AEnv.zoom(AD_Table_ID, Record_ID);
+		}
 	}
 	//
 	
