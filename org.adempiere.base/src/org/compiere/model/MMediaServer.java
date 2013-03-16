@@ -124,7 +124,7 @@ public class MMediaServer extends X_CM_Media_Server
 			//
 			cmd = "list";
 			String[] fileNames = ftp.listNames();
-			log.log(Level.FINE, "Number of files in " + getFolder() + ": " + fileNames.length);
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Number of files in " + getFolder() + ": " + fileNames.length);
 			
 			/*
 			FTPFile[] files = ftp.listFiles();
@@ -138,7 +138,7 @@ public class MMediaServer extends X_CM_Media_Server
 			for (int i = 0; i < media.length; i++)
 			{
 				if (!media[i].isSummary()) {
-					log.log(Level.INFO, " Deploying Media Item:" + media[i].get_ID() + media[i].getExtension());
+					if (log.isLoggable(Level.INFO))log.log(Level.INFO, " Deploying Media Item:" + media[i].get_ID() + media[i].getExtension());
 					MImage thisImage = media[i].getImage();
 		
 					// Open the file and output streams

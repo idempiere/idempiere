@@ -276,7 +276,7 @@ public class FinReport extends SvrProcess
 		{
 			MReportCube cube = new MReportCube(getCtx(), p_PA_ReportCube_ID, get_TrxName());
 			String result = cube.update(false, false);
-			log.log(Level.FINE, result);
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, result);
 		}
 		//	** Create Temporary and empty Report Lines from PA_ReportLine
 		//	- AD_PInstance_ID, PA_ReportLine_ID, 0, 0

@@ -434,7 +434,7 @@ public final class Msg
 		}
 		catch (ClassNotFoundException e)
 		{
-			s_log.log(Level.FINER, "Class not found: " + className);
+			if (s_log.isLoggable(Level.FINER))s_log.log(Level.FINER, "Class not found: " + className);
 		}
 		catch (Exception e)
 		{

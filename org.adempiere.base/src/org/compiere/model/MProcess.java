@@ -426,7 +426,7 @@ public class MProcess extends X_AD_Process
 	public void copyFrom (MProcess source)
 	{
 
-		log.log(Level.FINE, "Copying from:" + source + ", to: " + this);
+		if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Copying from:" + source + ", to: " + this);
 		setAccessLevel(source.getAccessLevel());
 		setAD_Form_ID(source.getAD_Form_ID());
 		setAD_PrintFormat_ID(source.getAD_PrintFormat_ID());

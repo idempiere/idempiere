@@ -522,7 +522,7 @@ public abstract class Doc
 		}
 		catch (AverageCostingNegativeQtyException e)
 		{
-			log.log(Level.INFO, e.getLocalizedMessage(), e);
+			if (log.isLoggable(Level.INFO))log.log(Level.INFO, e.getLocalizedMessage(), e);
 			p_Status = STATUS_NotPosted;
 			p_Error = e.toString();
 		}

@@ -269,7 +269,7 @@ public class FactAcctReset extends SvrProcess
 			sql1 += " AND TRUNC(fact.DateAcct) <= " + DB.TO_DATE(p_DateAcct_To);
 		sql1 += ")";
 
-		log.log(Level.FINE, sql1);
+		if (log.isLoggable(Level.FINE))log.log(Level.FINE, sql1);
 
 		int reset = DB.executeUpdate(sql1, get_TrxName()); 
 		//	Fact
@@ -288,7 +288,7 @@ public class FactAcctReset extends SvrProcess
 		if (p_DateAcct_To != null)
 			sql2 += " AND TRUNC(Fact_Acct.DateAcct) <= " + DB.TO_DATE(p_DateAcct_To);
 
-		log.log(Level.FINE, sql2);
+		if (log.isLoggable(Level.FINE))log.log(Level.FINE, sql2);
 		
 		int deleted = DB.executeUpdate(sql2, get_TrxName());
 		//

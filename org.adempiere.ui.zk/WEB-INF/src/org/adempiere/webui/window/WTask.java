@@ -138,11 +138,11 @@ public class WTask extends Window implements EventListener<Event>
 							Executions.deactivate(desktop);
 						}
 					} catch (DesktopUnavailableException e) {
-						log.log(Level.FINE, e.getLocalizedMessage(), e);
+						if (log.isLoggable(Level.FINE))log.log(Level.FINE, e.getLocalizedMessage(), e);
 						osTask.interrupt();
 						break;
 					} catch (InterruptedException e) {
-						log.log(Level.FINE, e.getLocalizedMessage(), e);
+						if (log.isLoggable(Level.FINE))log.log(Level.FINE, e.getLocalizedMessage(), e);
 						osTask.interrupt();
 						break;
 					}

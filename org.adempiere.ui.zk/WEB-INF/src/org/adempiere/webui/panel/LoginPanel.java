@@ -300,7 +300,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 					}
 				} catch (Exception e) {
 					//safe to ignore
-					logger.log(Level.INFO, e.getLocalizedMessage(), e);
+					if (logger.isLoggable(Level.INFO))logger.log(Level.INFO, e.getLocalizedMessage(), e);
 				}
 			}
 		});

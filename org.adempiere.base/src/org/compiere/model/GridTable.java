@@ -2290,7 +2290,7 @@ public class GridTable extends AbstractTableModel
 				Object value = rowData[col]; 
 				if (value == null)
 				{
-					log.log(Level.INFO, "FK data is null - " + columnName);
+					if (log.isLoggable(Level.INFO))log.log(Level.INFO, "FK data is null - " + columnName);
 					continue;
 				}
 				if (multiRowWHERE == null)

@@ -79,7 +79,7 @@ public class FactReconciliation extends SvrProcess
 			int count = pstmt.executeUpdate();
 			String result = Msg.getMsg(getCtx(),"@Created@") + ": " + count + ", ";
 			
-			log.log(Level.FINE, result);
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, result);
 
 			sql = "DELETE FROM T_Reconciliation t " +
 			"WHERE (SELECT SUM(f.amtacctdr-f.amtacctcr) FROM T_Reconciliation r " +
@@ -93,7 +93,7 @@ public class FactReconciliation extends SvrProcess
 		count = pstmt.executeUpdate();
 		result = Msg.getMsg(getCtx(), "@Deleted@") + ": " + count;
 		
-		log.log(Level.FINE, result);
+		if (log.isLoggable(Level.FINE))log.log(Level.FINE, result);
 		
 		
 	}

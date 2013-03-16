@@ -71,7 +71,7 @@ public class MReportCube extends X_PA_ReportCube {
 			start = System.currentTimeMillis();
 			KeyNamePair[] changedPeriods = DB.getKeyNamePairs(sql, false, getPA_ReportCube_ID());
 			elapsed = (System.currentTimeMillis() - start)/1000;
-			log.log(Level.FINE, "Selecting changed periods took:" + elapsed + "s");
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Selecting changed periods took:" + elapsed + "s");
 
 			if (changedPeriods != null && changedPeriods.length > 0 )
 			{
@@ -84,7 +84,7 @@ public class MReportCube extends X_PA_ReportCube {
 				periodList.delete(periodList.length() - 2, periodList.length());
 				periodList.append(" )");
 
-				log.log(Level.FINE, "Periods requiring update: " + periodNames.toString());
+				if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Periods requiring update: " + periodNames.toString());
 			}
 			else
 				return "Nothing to update in " + getName();
@@ -108,13 +108,13 @@ public class MReportCube extends X_PA_ReportCube {
 		{
 			// delete
 			String delSQL = "DELETE FROM Fact_Acct_Summary fas " + where;
-			log.log(Level.FINE, "Delete sql: " + delSQL);
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Delete sql: " + delSQL);
 			start = System.currentTimeMillis();
 			int deleted = DB.executeUpdateEx(delSQL, get_TrxName());
 			elapsed = (System.currentTimeMillis() - start)/1000;
 			result += "Deleted " + deleted + " in " + elapsed + " s;";
 			
-			log.log(Level.FINE, result);
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, result);
 
 			// insert
 			StringBuilder insert = new StringBuilder("INSERT " +
@@ -189,7 +189,7 @@ public class MReportCube extends X_PA_ReportCube {
 
 
 			String sql = insert.append(select.toString()).append(from).append(groups.toString()).toString();
-			log.log(Level.FINE, sql);
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, sql);
 			Object[] params = new Object[] { getPA_ReportCube_ID(), getC_Calendar_ID() };
 
 			start = System.currentTimeMillis();
@@ -197,7 +197,7 @@ public class MReportCube extends X_PA_ReportCube {
 			long seconds = (System.currentTimeMillis() - start)/1000;
 			
 			String insertResult = "Inserted " + rows  + " in " + seconds + " s.";
-			log.log(Level.FINE, insertResult);
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, insertResult);
 			result += insertResult;
 			
 
@@ -206,14 +206,14 @@ public class MReportCube extends X_PA_ReportCube {
 			" FROM Fact_Acct_Summary fas" +
 			" WHERE fas.PA_ReportCube_ID = " + getPA_ReportCube_ID();
 			ts = DB.getSQLValueTS(get_TrxName(), tsSQL);
-			log.log(Level.FINE, "Last updated: " + ts);
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Last updated: " + ts);
 			
 		}
 		catch (DBException e)
 		{
 			// failure results in null timestamp => rebuild on next run
 			// nothing else to do
-			log.log(Level.FINE, getName() + " update failed:" + e.getMessage());
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, getName() + " update failed:" + e.getMessage());
 		}
 		finally
 		{

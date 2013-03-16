@@ -53,7 +53,7 @@ public class DefaultProcessFactory implements IProcessFactory {
 				}
 				catch (ClassNotFoundException ex)
 				{
-					log.log(Level.FINE, className, ex);
+					if (log.isLoggable(Level.FINE))log.log(Level.FINE, className, ex);
 				}
 			}
 			if (processClass == null)

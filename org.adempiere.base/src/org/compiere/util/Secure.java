@@ -179,7 +179,7 @@ public class Secure implements SecureInterface
 			return encString;
 		} catch (Exception ex) {
 			// log.log(Level.INFO, value, ex);
-			log.log(Level.INFO, "Problem encrypting string", ex);
+			if (log.isLoggable(Level.INFO))log.log(Level.INFO, "Problem encrypting string", ex);
 		}
 
 		// Fallback

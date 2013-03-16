@@ -818,7 +818,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		
 		protected void doRun() {
 			try {
-				log.log(Level.INFO, "Process Info="+m_pi+" AD_Client_ID="+Env.getAD_Client_ID(Env.getCtx()));
+				if (log.isLoggable(Level.INFO))log.log(Level.INFO, "Process Info="+m_pi+" AD_Client_ID="+Env.getAD_Client_ID(Env.getCtx()));
 				WProcessCtl.process(ProcessDialog.this, m_WindowNo, parameterPanel, m_pi, null);
 			} finally {
 				Executions.schedule(getDesktop(), ProcessDialog.this, new Event(ON_COMPLETE, ProcessDialog.this, null));

@@ -142,7 +142,7 @@ public class POSKeyboard extends CDialog implements ActionListener, PosKeyListen
 			try {
 				text.commitEdit();
 			} catch (ParseException e1) {
-				log.log(Level.FINE, "JFormattedTextField commit failed");
+				if (log.isLoggable(Level.FINE))log.log(Level.FINE, "JFormattedTextField commit failed");
 			}
 		}
 		else if ( action.equals(ConfirmPanel.A_CANCEL))
@@ -155,7 +155,7 @@ public class POSKeyboard extends CDialog implements ActionListener, PosKeyListen
 			try {
 				field.commitEdit();
 			} catch (ParseException e1) {
-				log.log(Level.FINE, "JFormattedTextField commit failed");
+				if (log.isLoggable(Level.FINE))log.log(Level.FINE, "JFormattedTextField commit failed");
 			}
 			dispose();
 		}
@@ -242,7 +242,7 @@ public class POSKeyboard extends CDialog implements ActionListener, PosKeyListen
 				try {
 					text.commitEdit();
 				} catch (ParseException e) {
-					log.log(Level.FINE, "JFormattedTextField commit failed");
+					if (log.isLoggable(Level.FINE))log.log(Level.FINE, "JFormattedTextField commit failed");
 				}
 			}
 		}
