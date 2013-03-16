@@ -3,20 +3,20 @@ package org.adempiere.pipo.srv;
 import java.io.File;
 import java.sql.Timestamp;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.adempiere.base.IDictionaryService;
 import org.adempiere.pipo2.PackIn;
 import org.adempiere.pipo2.Zipper;
 import org.compiere.Adempiere;
 import org.compiere.model.X_AD_Package_Imp_Proc;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.osgi.framework.BundleContext;
 
 public class PipoDictionaryService implements IDictionaryService {
 
-	Logger logger = Logger.getLogger(PipoDictionaryService.class.getName());
+	CLogger logger = CLogger.getCLogger(PipoDictionaryService.class.getName());
 
 	@Override
 	public void merge(BundleContext context, File packageFile) throws Exception {

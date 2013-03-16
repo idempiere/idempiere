@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.print.attribute.standard.MediaSize;
 
@@ -73,7 +72,7 @@ public class Language implements Serializable
 	private static Language     s_baseLanguage = s_languages[0];
 
 	/**	Logger			*/
-	private static Logger log = Logger.getLogger(Language.class.getName());
+	private static CLogger log = CLogger.getCLogger(Language.class.getName());
 	
 	/**
 	 *  Get Number of Languages

@@ -45,7 +45,7 @@ import javax.swing.KeyStroke;
 public class Util
 {
 	/**	Logger			*/
-	private static Logger log = Logger.getLogger(Util.class.getName());
+	private static CLogger log = CLogger.getCLogger(Util.class.getName());
 
 	/**
 	 *	Replace String values.

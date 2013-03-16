@@ -18,7 +18,7 @@ public class StoredHtmlSrc extends MultiPartElement implements Printable {
 	private static final long serialVersionUID = 50303119083373138L;
 	
 	/**	Logger					*/
-	protected static Logger 	log = Logger.getLogger(StoredHtmlSrc.class.getName());
+	protected static CLogger 	log = CLogger.getCLogger(StoredHtmlSrc.class.getName());
 	
 	
 	/**

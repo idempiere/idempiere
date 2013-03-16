@@ -136,7 +136,7 @@ public class Secure implements SecureInterface
 
 	private IKeyStore m_keyStore = null;
 	/**	Logger						*/
-	private static Logger	log	= Logger.getLogger (Secure.class.getName());
+	private static CLogger	log	= CLogger.getCLogger (Secure.class.getName());
 
 	/**
 	 * 	Initialize Cipher & Key
