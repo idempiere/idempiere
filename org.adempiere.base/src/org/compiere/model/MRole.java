@@ -518,11 +518,11 @@ public final class MRole extends X_AD_Role
 		if (reset)
 			deleteAccessRecords();
 
-		int win = DB.executeUpdate(sqlWindow + roleAccessLevelWin, get_TrxName());
-		int proc = DB.executeUpdate(sqlProcess + roleAccessLevel, get_TrxName());
-		int form = DB.executeUpdate(sqlForm + roleAccessLevel, get_TrxName());
-		int wf = DB.executeUpdate(sqlWorkflow + roleAccessLevel, get_TrxName());
-		int docact = DB.executeUpdate(sqlDocAction, get_TrxName());
+		int win = DB.executeUpdateEx(sqlWindow + roleAccessLevelWin, get_TrxName());
+		int proc = DB.executeUpdateEx(sqlProcess + roleAccessLevel, get_TrxName());
+		int form = DB.executeUpdateEx(sqlForm + roleAccessLevel, get_TrxName());
+		int wf = DB.executeUpdateEx(sqlWorkflow + roleAccessLevel, get_TrxName());
+		int docact = DB.executeUpdateEx(sqlDocAction, get_TrxName());
 		
 		loadAccess(true);
 		return "@AD_Window_ID@ #" + win 
@@ -539,11 +539,11 @@ public final class MRole extends X_AD_Role
 	private void deleteAccessRecords() {
 		String whereDel = " WHERE AD_Role_ID=" + getAD_Role_ID();
 		//
-		int winDel = DB.executeUpdate("DELETE FROM AD_Window_Access" + whereDel, get_TrxName());
-		int procDel = DB.executeUpdate("DELETE FROM AD_Process_Access" + whereDel, get_TrxName());
-		int formDel = DB.executeUpdate("DELETE FROM AD_Form_Access" + whereDel, get_TrxName());
-		int wfDel = DB.executeUpdate("DELETE FROM AD_WorkFlow_Access" + whereDel, get_TrxName());
-		int docactDel = DB.executeUpdate("DELETE FROM AD_Document_Action_Access" + whereDel, get_TrxName());
+		int winDel = DB.executeUpdateEx("DELETE FROM AD_Window_Access" + whereDel, get_TrxName());
+		int procDel = DB.executeUpdateEx("DELETE FROM AD_Process_Access" + whereDel, get_TrxName());
+		int formDel = DB.executeUpdateEx("DELETE FROM AD_Form_Access" + whereDel, get_TrxName());
+		int wfDel = DB.executeUpdateEx("DELETE FROM AD_WorkFlow_Access" + whereDel, get_TrxName());
+		int docactDel = DB.executeUpdateEx("DELETE FROM AD_Document_Action_Access" + whereDel, get_TrxName());
 		
 
 		if (log.isLoggable(Level.FINE)) log.fine("AD_Window_Access=" + winDel
