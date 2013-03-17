@@ -161,6 +161,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(div);
 		row.appendChild(fNode);
 		fNode.setWidth("100%");
+		fNode.setHflex("true");
 		fNode.setReadonly(true);
 
 		row = new Row();
@@ -173,6 +174,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(fDescription);
 		fDescription.setMultiline(true);
 		fDescription.setWidth("100%");
+		fDescription.setHflex("true");
 		fDescription.setReadonly(true);
 
 		row = new Row();
@@ -184,6 +186,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(fHelp);
 		fHelp.setMultiline(true);
 		fHelp.setWidth("100%");
+		fHelp.setHflex("true");
 		fHelp.setReadonly(true);
 		fHelp.setRows(3);
 		row.appendChild(new Label());
@@ -195,6 +198,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		div.appendChild(lHistory);
 		row.appendChild(div);
 		row.appendChild(fHistory);
+		fHistory.setHflex("true");
 		row.appendChild(new Label());
 
 		row = new Row();
@@ -205,6 +209,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(div);
 		Hbox hbox = new Hbox();
 		hbox.appendChild(fAnswerText);
+		fAnswerText.setHflex("true");
 		hbox.appendChild(fAnswerList);
 		hbox.appendChild(fAnswerButton);
 		fAnswerButton.addEventListener(Events.ON_CLICK, this);
@@ -219,6 +224,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		div.appendChild(lTextMsg);
 		row.appendChild(div);
 		row.appendChild(fTextMsg);
+		fTextMsg.setHflex("true");
 		fTextMsg.setMultiline(true);
 		fTextMsg.setWidth("100%");
 		row.appendChild(new Label());
