@@ -937,6 +937,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			if (infoName != null && infoDisplay != null)
 				break;
 		}
+		if (infoDisplay == null) {
+			infoDisplay = "";
+		}
 		String description = infoName + ": " + infoDisplay;
 
     	WChat chat = new WChat(curWindowNo, adTabbox.getSelectedGridTab().getCM_ChatID(), adTabbox.getSelectedGridTab().getAD_Table_ID(), recordId, description, null);
