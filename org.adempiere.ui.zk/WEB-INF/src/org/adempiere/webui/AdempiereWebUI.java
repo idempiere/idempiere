@@ -390,11 +390,15 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     public void logout()
     {
     	Session session = logout0();
+    	DesktopCache desktopCache = ((SessionCtrl)session).getDesktopCache();
     	
     	//clear context, invalidate session
     	Env.getCtx().clear();
     	session.invalidate();
-        
+            	
+		if (desktopCache != null)
+			desktopCache.removeDesktop(Executions.getCurrent().getDesktop());
+		
         //redirect to login page
         Executions.sendRedirect("index.zul");
     }

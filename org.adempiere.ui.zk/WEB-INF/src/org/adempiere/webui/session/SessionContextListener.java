@@ -275,6 +275,10 @@ public class SessionContextListener implements ExecutionInit,
 		Properties ctx = ServerContext.getCurrentInstance();
 		if (ctx == null)
 			return false;
+		
+		if (exec == null || exec.getDesktop() == null)
+			return false;
+		
 		Session session = exec.getDesktop().getSession();
 		HttpSession httpSession = (HttpSession)session.getNativeSession();
 		//verify ctx
@@ -306,34 +310,54 @@ public class SessionContextListener implements ExecutionInit,
 	
 	@Override
 	public void cleanup(Desktop desktop) throws Exception {
+		if(Executions.getCurrent()==null) {
+			if (!ServerContext.getCurrentInstance().isEmpty()) {
+				ServerContext.dispose();
+			}
+			return;
+		}
+		
 		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
     	{
-			if(Executions.getCurrent()==null)
-				return;
-				
 			setupExecutionContextFromSession(Executions.getCurrent());
     	}
-		MSession mSession = MSession.get(Env.getCtx(), false);
-		if(mSession!=null && !mSession.isProcessed() && (Env.getContext(Env.getCtx(), "isReloaded")==null  || Env.getContext(Env.getCtx(), "isReloaded").equals("")  || Env.getContext(Env.getCtx(), "isReloaded").equals("N"))){
-	        mSession.setProcessed(true);
-	        mSession.saveEx();
+		int AD_Session_ID = Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID");
+		if (AD_Session_ID > 0) {
+			String key = "ad_session."+AD_Session_ID+".desktop";
+			String dtid = (String) Env.getCtx().get(key);
+			if (dtid != null) {
+				if (!dtid.equals(desktop.getId())) {
+					return;
+				} else {
+					Env.getCtx().remove(key);
+				}
+			}
+		
+			MSession mSession = MSession.get(Env.getCtx(), false);
+			if(mSession!=null && !mSession.isProcessed()) {
+				
+		        mSession.setProcessed(true);
+		        mSession.saveEx();
+			}
 		}
-		Env.setContext(Env.getCtx(), "isReloaded", "N");
 	}
 
 	@Override
 	public void init(Desktop desktop, Object request) throws Exception {
+		if(Executions.getCurrent()==null)
+			return;
+		
 		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
     	{
-			if(Executions.getCurrent()!=null)
-				setupExecutionContextFromSession(Executions.getCurrent());
+			setupExecutionContextFromSession(Executions.getCurrent());
     	}
 		MSession mSession = MSession.get(Env.getCtx(), false);
-		if(mSession!=null && mSession.isProcessed()){
-			mSession.setProcessed(false);
-			mSession.saveEx();
-		}else if(mSession!=null){
-			Env.setContext(Env.getCtx(), "isReloaded", "Y");
+		if(mSession!=null){
+			if (mSession.isProcessed()) {
+				mSession.setProcessed(false);
+				mSession.saveEx();
+			}
+			Env.getCtx().put("ad_session."+mSession.getAD_Session_ID()+".desktop", desktop.getId());
 		}
 	}
 }
