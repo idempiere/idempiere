@@ -20,7 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 	Security Engine
