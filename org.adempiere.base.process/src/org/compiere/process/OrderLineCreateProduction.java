@@ -27,6 +27,7 @@ import org.compiere.model.MProduction;
 import org.compiere.model.MWarehouse;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
  
 /**
  *	Create (Generate) Invoice from Shipment
@@ -125,14 +126,56 @@ public class OrderLineCreateProduction extends SvrProcess
 		if ( locator == 0 )
 			locator = MWarehouse.get(getCtx(), line.getM_Warehouse_ID()).getDefaultLocator().get_ID();
 		production.setM_Locator_ID(locator);
+
+		if (line.getC_BPartner_ID() > 0) {
+			production.setC_BPartner_ID(order.getC_BPartner_ID());
+		}
+
+		if (line.getC_Project_ID() > 0 ) {
+			production.setC_Project_ID(line.getC_Project_ID());
+		} else {
+			production.setC_Project_ID(order.getC_Project_ID());
+		}
+		
+		if (line.getC_Campaign_ID() > 0) {
+			production.setC_Campaign_ID(line.getC_Campaign_ID());
+		} else {
+			production.setC_Campaign_ID(order.getC_Campaign_ID());
+		}
+		
+		if (line.getC_Activity_ID() > 0) {
+			production.setC_Activity_ID(line.getC_Activity_ID());
+		} else {
+			production.setC_Activity_ID(order.getC_Activity_ID());
+		}
+		
+		if (line.getUser1_ID() > 0) {
+			production.setUser1_ID(line.getUser1_ID());			
+		} else {
+			production.setUser1_ID(order.getUser1_ID());			
+		}
+		
+		if (line.getUser2_ID() > 0) {
+			production.setUser2_ID(line.getUser2_ID());
+		} else {
+			production.setUser2_ID(order.getUser2_ID());
+		}
+		
+		if (line.getAD_OrgTrx_ID() > 0) {
+			production.setAD_OrgTrx_ID(line.getAD_OrgTrx_ID());
+		} else {
+			production.setAD_OrgTrx_ID(order.getAD_OrgTrx_ID());
+		}
+
 		production.saveEx();
 		
 		production.createLines(false);
 		production.setIsCreated("Y");
 		production.saveEx();
-	
-		StringBuilder msgreturn = new StringBuilder("Production created -- ").append(production.get_ValueAsString("DocumentNo"));
-		return msgreturn.toString();
+
+		String msg = Msg.parseTranslation(getCtx(), "@M_Production_ID@ @Created@ " + production.getDocumentNo());
+		addLog(production.getM_Production_ID(), null, null, msg, MProduction.Table_ID, production.getM_Production_ID());
+		return "@OK@";
 	}	//	OrderLineCreateShipment
 	
 }	//	OrderLineCreateShipment
