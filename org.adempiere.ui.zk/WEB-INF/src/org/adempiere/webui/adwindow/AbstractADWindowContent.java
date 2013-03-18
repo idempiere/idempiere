@@ -174,8 +174,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
     protected String             title;
 
-    private boolean              newRecord;
-
     private boolean 			 boolChanges = false;
 
 	private int m_onlyCurrentDays = 0;
@@ -1584,7 +1582,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			public void onCallback(Boolean result) {
 				if (result)
 				{
-					newRecord = adTabbox.getSelectedGridTab().dataNew(false);
+					boolean newRecord = adTabbox.getSelectedGridTab().dataNew(false);
 			        if (newRecord)
 			        {
 			            adTabbox.getSelectedTabpanel().dynamicDisplay(0);
@@ -1631,7 +1629,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             return;
         }
 
-        newRecord = adTabbox.getSelectedGridTab().dataNew(true);
+        boolean newRecord = adTabbox.getSelectedGridTab().dataNew(true);
         if (newRecord)
         {
             adTabbox.getSelectedTabpanel().dynamicDisplay(0);
@@ -1747,6 +1745,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        } else if (dirtyTabpanel != null) {
 	        	dirtyTabpanel.getGridTab().dataRefresh(true);	// update statusbar & toolbar
 	        	dirtyTabpanel.dynamicDisplay(0);
+	        } else {
+	        	onRefresh(true, false);
 	        }
 
     	}
@@ -1804,9 +1804,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     {
     	final boolean wasChanged = toolbar.isSaveEnable();
     	IADTabpanel dirtyTabpanel = adTabbox.getDirtyADTabpanel();
-    	final boolean newRecord = dirtyTabpanel != null ? (dirtyTabpanel.getGridTab().getRecord_ID() <= 0) : false;
+    	final boolean newRecord = dirtyTabpanel != null ? (dirtyTabpanel.getGridTab().isNew()) : adTabbox.getSelectedGridTab().isNew();
     	if (dirtyTabpanel == null) {
-			onSave0(onSaveEvent, onNavigationEvent, this.newRecord, wasChanged, callback);
+			onSave0(onSaveEvent, onNavigationEvent, newRecord, wasChanged, callback);
 			return;
     	}
     	if (dirtyTabpanel instanceof ADSortTab)
