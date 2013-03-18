@@ -375,6 +375,26 @@ UPDATE AD_Field SET Name='M_ShippingProcessorCfg_UU', Description=NULL, Help=NUL
 UPDATE AD_PrintFormatItem SET PrintName='M_ShippingProcessorCfg_UU', Name='M_ShippingProcessorCfg_UU' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=AD_PrintFormatItem.AD_Column_ID AND c.AD_Element_ID=200600)
 ;
 
+-- Mar 18, 2013 5:35:40 PM COT
+-- IDEMPIERE-764 Some tablenames starts with X whereas they have centralized IDs
+UPDATE AD_Val_Rule SET Code='M_ShippingProcessor.M_ShippingProcessorCfg_ID IN (SELECT M_ShippingProcessorCfg_ID FROM M_ShipperCfg WHERE M_ShipperCfg_ID=@M_ShipperCfg_ID@)',Updated=TO_TIMESTAMP('2013-03-18 17:35:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200018
+;
+
+-- Mar 18, 2013 5:36:43 PM COT
+-- IDEMPIERE-764 Some tablenames starts with X whereas they have centralized IDs
+UPDATE AD_Val_Rule SET Code='M_ShipperLabelsCfg.M_ShipperLabelsCfg_ID IN (SELECT M_ShipperLabelsCfg_ID FROM M_ShipperLabelsCfg WHERE M_ShipperCfg_ID IN (SELECT M_ShipperCfg_ID FROM M_Shipper WHERE M_Shipper_ID=@M_Shipper_ID@))', Name='M_ShipperLabels M_ShipperLabelsCfg_ID',Updated=TO_TIMESTAMP('2013-03-18 17:36:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200020
+;
+
+-- Mar 18, 2013 5:37:18 PM COT
+-- IDEMPIERE-764 Some tablenames starts with X whereas they have centralized IDs
+UPDATE AD_Val_Rule SET Code='M_ShipperPackagingCfg.M_ShipperPackagingCfg_ID IN (SELECT M_ShipperPackagingCfg_ID FROM M_ShipperPackagingCfg WHERE M_ShipperCfg_ID IN (SELECT M_ShipperCfg_ID FROM M_Shipper WHERE M_Shipper_ID=@M_Shipper_ID@))', Name='M_ShipperPackaging M_ShipperPackagingCfg_ID',Updated=TO_TIMESTAMP('2013-03-18 17:37:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200021
+;
+
+-- Mar 18, 2013 5:37:56 PM COT
+-- IDEMPIERE-764 Some tablenames starts with X whereas they have centralized IDs
+UPDATE AD_Val_Rule SET Code='M_ShipperPickupTypesCfg.M_ShipperPickupTypesCfg_ID IN (SELECT M_ShipperPickupTypesCfg_ID FROM M_ShipperPickupTypesCfg WHERE M_ShipperCfg_ID IN (SELECT M_ShipperCfg_ID FROM M_Shipper WHERE M_Shipper_ID=@M_Shipper_ID@))', Name='M_ShipperPickupTypes M_ShipperPickupTypesCfg_ID',Updated=TO_TIMESTAMP('2013-03-18 17:37:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200022
+;
+
 SELECT register_migration_script('201303181636_IDEMPIERE-764.sql') FROM dual
 ;
 
