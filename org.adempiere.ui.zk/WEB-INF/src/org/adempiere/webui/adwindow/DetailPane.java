@@ -258,8 +258,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				Event openEvent = new Event(ON_NEW_EVENT, DetailPane.this);
-				eventListener.onEvent(openEvent);
+				onNew();
 			}
 		});
 		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "New")));
@@ -708,5 +707,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			parent = parent.getParent();
 		}
 		return null;
+	}
+
+	public void onNew() throws Exception {
+		Event openEvent = new Event(ON_NEW_EVENT, DetailPane.this);
+		eventListener.onEvent(openEvent);
 	}
 }

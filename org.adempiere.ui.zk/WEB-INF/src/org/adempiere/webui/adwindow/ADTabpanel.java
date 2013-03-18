@@ -114,7 +114,7 @@ import org.zkoss.zul.impl.XulElement;
  * @author Low Heng Sin
  */
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
-DataStatusListener, IADTabpanel, IdSpace
+DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 {
 	private static final String ON_SAVE_OPEN_PREFERENCE_EVENT = "onSaveOpenPreference";
 
@@ -923,7 +923,7 @@ DataStatusListener, IADTabpanel, IdSpace
         } else {
         	if (activate) {
         		formContainer.setVisible(activate);
-        		setFocusToField();
+        		focusToFirstEditor();
         	}
         }
 
@@ -938,7 +938,8 @@ DataStatusListener, IADTabpanel, IdSpace
 	/**
 	 * set focus to first active editor
 	 */
-	private void setFocusToField() {
+    @Override
+	public void focusToFirstEditor() {
 		WEditor toFocus = null;
 		for (WEditor editor : editors) {
 			if (editor.isHasFocus() && editor.isVisible() && editor.getComponent().getParent() != null) {
@@ -954,14 +955,7 @@ DataStatusListener, IADTabpanel, IdSpace
 			}
 		}
 		if (toFocus != null) {
-			Component c = toFocus.getComponent();
-			if (c instanceof EditorBox) {
-				c = ((EditorBox)c).getTextbox();
-			} else if (c instanceof NumberBox) {
-				c = ((NumberBox)c).getDecimalbox();
-            }
-
-			Clients.response(new AuFocus(c));
+			focusToEditor(toFocus);
 		}
 	}
 
@@ -1302,7 +1296,7 @@ DataStatusListener, IADTabpanel, IdSpace
 	@Override
 	public void focus() {
 		if (formContainer.isVisible())
-			this.setFocusToField();
+			this.focusToFirstEditor();
 		else
 			listPanel.focus();
 	}
@@ -1476,6 +1470,37 @@ DataStatusListener, IADTabpanel, IdSpace
 		}
 		
 		return detailPane != null && detailPane.getTabcount() > 0;
+	}
+	
+	/**
+	 * set focus to next readwrite editor from ref
+	 * @param ref
+	 */
+	@Override
+	public void focusToNextEditor(WEditor ref) {
+		boolean found = false;
+		for (WEditor editor : editors) {
+			if (editor == ref) {
+				found = true;
+				continue;
+			}
+			if (found) {
+				if (editor.isVisible() && editor.isReadWrite()) {
+					focusToEditor(editor);
+					break;
+				}
+			}
+		}
+	}
+	
+	protected void focusToEditor(WEditor toFocus) {
+		Component c = toFocus.getComponent();
+		if (c instanceof EditorBox) {
+			c = ((EditorBox)c).getTextbox();
+		} else if (c instanceof NumberBox) {
+			c = ((NumberBox)c).getDecimalbox();
+		}
+		((HtmlBasedComponent)c).focus();
 	}
 }
 

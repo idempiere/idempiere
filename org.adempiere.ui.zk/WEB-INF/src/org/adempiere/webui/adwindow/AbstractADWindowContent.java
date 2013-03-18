@@ -1916,6 +1916,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 
 		if (dirtyTabpanel != null && dirtyTabpanel.getGridTab().isDetail()) {
+			Executions.getCurrent().setAttribute("adtabpane.saved", dirtyTabpanel);
 			dirtyTabpanel.getGridTab().refreshParentTabs();
 		}
 		
@@ -1945,7 +1946,16 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				if(result)
 		    	{
 		    		adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
-		    		onNew();
+		    		IADTabpanel dirtyTabpanel = (IADTabpanel) Executions.getCurrent().removeAttribute("adtabpane.saved");
+		    		if (dirtyTabpanel != null && dirtyTabpanel.getGridTab().isDetail()) {
+		    			try {
+							adTabbox.getSelectedTabpanel().getDetailPane().onNew();
+						} catch (Exception e) {
+							throw new RuntimeException(e);
+						}
+		    		} else {
+		    			onNew();
+		    		}
 		    	}
 			}
 		});

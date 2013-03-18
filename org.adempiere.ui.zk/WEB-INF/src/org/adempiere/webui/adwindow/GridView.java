@@ -18,10 +18,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.table.AbstractTableModel;
 
 import org.adempiere.model.MTabCustomization;
+import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
@@ -60,7 +62,7 @@ import org.zkoss.zul.event.ZulEvents;
  * @author Low Heng Sin
  *
  */
-public class GridView extends Vbox implements EventListener<Event>, IdSpace
+public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFieldEditorContainer
 {
 	private static final String HEADER_GRID_STYLE = "border: none; margin:0; padding: 0;";
 
@@ -529,7 +531,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 						if (columnName != null && columnName.trim().length() > 0)
 							setFocusToField(columnName);
 						else
-							renderer.setFocusToEditor();
+							renderer.focusToFirstEditor();
 					}
 				}
 				else
@@ -587,7 +589,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 					setFocusToField(columnOnClick);
 					columnOnClick = null;
 				} else {
-					renderer.setFocusToEditor();
+					renderer.focusToFirstEditor();
 				}
 			} else {
 				focusToRow(row);
@@ -610,7 +612,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 					setFocusToField(columnOnClick);
 					columnOnClick = null;
 				} else {
-					renderer.setFocusToEditor();
+					renderer.focusToFirstEditor();
 				}
 			} else {
 				focusToRow(row);
@@ -631,7 +633,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 				setFocusToField(columnOnClick);
 				columnOnClick = null;
 			} else {
-				renderer.setFocusToEditor();
+				renderer.focusToFirstEditor();
 			}
 		} else {
 			Component cmp = null;
@@ -744,11 +746,25 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
                     comp.setReadWrite(rw);
                 }
                 
-                comp.setVisible(mField.isDisplayedGrid());
+                Properties ctx = isDetailPane() ? new GridRowCtx(Env.getCtx(), gridTab, gridTab.getCurrentRow()) 
+            		: mField.getVO().ctx;
+                
+                comp.setVisible(mField.isDisplayedGrid() && mField.isDisplayed(ctx, true));
             }
         }
 	}
 
+	private boolean isDetailPane() {
+		Component parent = this.getParent();
+		while (parent != null) {
+			if (parent instanceof DetailPane) {
+				return true;
+			} 
+			parent = parent.getParent();					
+		}
+		return false;
+	}
+	
 	/**
 	 *
 	 * @param windowNo
@@ -760,7 +776,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 	@Override
 	public void focus() {
 		if (renderer != null && renderer.isEditing()) {
-			renderer.setFocusToEditor();
+			renderer.focusToFirstEditor();
 		}
 	}
 
@@ -770,7 +786,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 	public boolean onEnterKey() {
 		if (!modeless && renderer != null && !renderer.isEditing()) {
 			renderer.editCurrentRow();
-			renderer.setFocusToEditor();
+			renderer.focusToFirstEditor();
 			return true;
 		}
 		return false;
@@ -827,9 +843,34 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace
 	}
 	
 	public void onEditCurrentRow() {
+		onEditCurrentRow(null);
+	}
+	
+	public void onEditCurrentRow(Event event) {
 		if (!renderer.isEditing()) {
-			renderer.editCurrentRow();
-			renderer.setFocusToEditor();
+			Row currentRow = renderer.getCurrentRow();
+			if (currentRow == null || currentRow.getParent() == null || !currentRow.isVisible()) {
+				if (event == null) {
+					Events.postEvent("onEditCurrentRow", this, null);
+				}
+			} else {
+				renderer.editCurrentRow();
+				renderer.focusToFirstEditor();
+			}
+		} 
+	}
+
+	@Override
+	public void focusToFirstEditor() {
+		if (renderer.isEditing()) {
+			renderer.focusToFirstEditor();
+		}
+	}
+
+	@Override
+	public void focusToNextEditor(WEditor ref) {
+		if (renderer.isEditing()) {
+			renderer.focusToNextEditor(ref);
 		}
 	}
 }

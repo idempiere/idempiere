@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.adwindow.IFieldEditorContainer;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Searchbox;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -55,11 +56,14 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.zkoss.zk.au.out.AuScript;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  * Search Editor for web UI.
@@ -405,6 +409,22 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		actionCombo(new Integer(id));          //  data binding
 		
+		Searchbox comp = getComponent();
+		Component parent = comp.getParent();
+		while (parent != null) {
+			if (parent instanceof IFieldEditorContainer) {
+				((IFieldEditorContainer) parent).focusToNextEditor(this);
+				break;
+			}
+			parent = parent.getParent();
+		}
+		
+		//safety check: if focus is going no where, focus back to self
+		String uid = getComponent().getTextbox().getUuid();
+		String script = "setTimeout(function(){try{var e = zk.Widget.$('#" + uid +
+				"').$n(); if (jq(':focus').size() == 0) e.focus();} catch(error){}}, 100);";
+		Clients.response(new AuScript(script));
+		
 		resetButtonState();
 	}	//	actionText
 
@@ -563,6 +583,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				{
 					if (log.isLoggable(Level.CONFIG)) log.config(getColumnName() + " - Result = null (not cancelled)");
 				}
+				getComponent().getTextbox().focus();
 			}
 		});
 		ip.setId(ip.getTitle()+"_"+ip.getWindowNo());

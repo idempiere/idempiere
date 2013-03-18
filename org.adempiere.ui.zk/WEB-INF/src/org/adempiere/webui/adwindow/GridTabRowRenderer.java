@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.component.Checkbox;
@@ -37,7 +38,6 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
@@ -397,6 +397,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				else if (DisplayType.isNumeric(gridPanelFields[i].getDisplayType())) {
 					divStyle = CELL_DIV_STYLE_ALIGN_RIGHT;
 				}
+				GridRowCtx ctx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
+				component.setVisible(gridPanelFields[i].isDisplayed(ctx, true));
 			}
 			div.setStyle(divStyle);
 			div.setWidth("100%");
@@ -498,8 +500,12 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		            	popupMenu.addContextElement((XulElement) editor.getComponent());
 		            }		            
 		            
+		            
+		            Properties ctx = isDetailPane() ? new GridRowCtx(Env.getCtx(), gridTab, gridTab.getCurrentRow()) 
+		            	: gridPanelFields[i].getVO().ctx;
 		            //check context
-					if (!gridPanelFields[i].isDisplayedGrid()) 
+					if (!gridPanelFields[i].isDisplayedGrid() || 
+						!gridPanelFields[i].isDisplayed(ctx, true)) 
 					{
 						editor.setVisible(false);
 					}
@@ -512,6 +518,17 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			model.setEditing(true);
 
 		}
+	}
+
+	private boolean isDetailPane() {
+		Component parent = grid.getParent();
+		while (parent != null) {
+			if (parent instanceof DetailPane) {
+				return true;
+			} 
+			parent = parent.getParent();					
+		}
+		return false;
 	}
 
 	/**
@@ -556,7 +573,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	/**
 	 * set focus to first active editor
 	 */
-	public void setFocusToEditor() {
+	public void focusToFirstEditor() {
 		if (currentRow != null && currentRow.getParent() != null) {
 			WEditor toFocus = null;
 			WEditor firstEditor = null;
@@ -575,21 +592,39 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				}
 			}
 			if (toFocus != null) {
-				Component c = toFocus.getComponent();
-				if (c instanceof EditorBox) {
-					c = ((EditorBox)c).getTextbox();
-				} else if (c instanceof NumberBox) {
-					c = ((NumberBox)c).getDecimalbox();
-				}
-				Clients.response(new AuFocus(c));
+				focusToEditor(toFocus);
 			} else if (firstEditor != null) {
-				Component c = firstEditor.getComponent();
-				if (c instanceof EditorBox) {
-					c = ((EditorBox)c).getTextbox();
-				} else if (c instanceof NumberBox) {
-					c = ((NumberBox)c).getDecimalbox();
+				focusToEditor(firstEditor);
+			}
+		}
+	}
+
+	protected void focusToEditor(WEditor toFocus) {
+		Component c = toFocus.getComponent();
+		if (c instanceof EditorBox) {
+			c = ((EditorBox)c).getTextbox();
+		} else if (c instanceof NumberBox) {
+			c = ((NumberBox)c).getDecimalbox();
+		}
+		((HtmlBasedComponent)c).focus();
+	}
+	
+	/**
+	 * set focus to next readwrite editor from ref
+	 * @param ref
+	 */
+	public void focusToNextEditor(WEditor ref) {
+		boolean found = false;
+		for (WEditor editor : getEditors()) {
+			if (editor == ref) {
+				found = true;
+				continue;
+			}
+			if (found) {
+				if (editor.isVisible() && editor.isReadWrite()) {
+					focusToEditor(editor);
+					break;
 				}
-				Clients.response(new AuFocus(c));
 			}
 		}
 	}
