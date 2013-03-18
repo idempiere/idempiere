@@ -129,25 +129,25 @@ public interface I_I_Invoice
 	  */
 	public String getAddress2();
 
-    /** Column name ASU_1099Box_ID */
-    public static final String COLUMNNAME_ASU_1099Box_ID = "ASU_1099Box_ID";
+    /** Column name C_1099Box_ID */
+    public static final String COLUMNNAME_C_1099Box_ID = "C_1099Box_ID";
 
 	/** Set 1099 Box	  */
-	public void setASU_1099Box_ID (int ASU_1099Box_ID);
+	public void setC_1099Box_ID (int C_1099Box_ID);
 
 	/** Get 1099 Box	  */
-	public int getASU_1099Box_ID();
+	public int getC_1099Box_ID();
 
-	public org.compiere.model.I_ASU_1099Box getASU_1099Box() throws RuntimeException;
+	public org.compiere.model.I_C_1099Box getC_1099Box() throws RuntimeException;
 
-    /** Column name ASU_1099Box_Value */
-    public static final String COLUMNNAME_ASU_1099Box_Value = "ASU_1099Box_Value";
+    /** Column name C_1099Box_Value */
+    public static final String COLUMNNAME_C_1099Box_Value = "C_1099Box_Value";
 
 	/** Set 1099 Box Value	  */
-	public void setASU_1099Box_Value (String ASU_1099Box_Value);
+	public void setC_1099Box_Value (String C_1099Box_Value);
 
 	/** Get 1099 Box Value	  */
-	public String getASU_1099Box_Value();
+	public String getC_1099Box_Value();
 
     /** Column name BPartnerValue */
     public static final String COLUMNNAME_BPartnerValue = "BPartnerValue";

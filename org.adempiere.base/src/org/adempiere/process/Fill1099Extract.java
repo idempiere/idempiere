@@ -23,11 +23,11 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.*;
 
 /**
- *	ASU - Fill 1099 Extract
+ *	Fill 1099 Extract
  *  @author Carlos Ruiz
- *  @version $Id: ASU_Fill1099Extract.java
+ *  @version $Id: Fill1099Extract.java
  */
-public class ASU_Fill1099Extract extends SvrProcess
+public class Fill1099Extract extends SvrProcess
 {
 	private Timestamp	p_Cut_Date = null;
 	
@@ -58,7 +58,7 @@ public class ASU_Fill1099Extract extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		log.info("CUT_DATE=" + p_Cut_Date);
+		if (log.isLoggable(Level.INFO)) log.info("CUT_DATE=" + p_Cut_Date);
 		int AD_PInstance_ID = getAD_PInstance_ID();
 		//
 		StringBuilder sql = new StringBuilder();
@@ -81,22 +81,22 @@ public class ASU_Fill1099Extract extends SvrProcess
 			sql.append("date_part('year', ?::timestamp), trunc(?::timestamp),");
 		else
 			sql.append("EXTRACT(year from ?), TRUNC (?), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 1), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 2), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 3), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 4), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 5), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 6), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 7), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 8), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 9), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 10), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 11), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 12), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 13), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 14), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 15), ");
-		sql.append("asu_get1099bucket (bp.c_bpartner_id, ?, 16) ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 1), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 2), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 3), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 4), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 5), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 6), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 7), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 8), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 9), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 10), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 11), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 12), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 13), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 14), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 15), ");
+		sql.append("get1099bucket (bp.c_bpartner_id, ?, 16) ");
 		sql.append("FROM c_bpartner bp, c_bpartner_location bpl ");	//Yvonne: added  C_BPARTNER_LOCATION bpl
 		sql.append("WHERE bp.c_bpartner_id = bpl.c_bpartner_id ");	//Yvonne: added
 		sql.append("AND bp.isactive = 'Y' ");
@@ -111,14 +111,14 @@ public class ASU_Fill1099Extract extends SvrProcess
 		sql.append(" AND i.docstatus IN ('CO', 'CL') ");
 		sql.append(" AND i.ad_client_id = ? ");
 		sql.append(" AND i.ispaid = 'Y' "); 	//Yvonne 16/02/2009: only those which have been paid
-		sql.append(" AND il.asu_1099box_id IS NOT NULL ");
+		sql.append(" AND il.c_1099box_id IS NOT NULL ");
 		sql.append(" AND i.dateacct BETWEEN ");
 		if (DB.isPostgreSQL())
 			sql.append("date_trunc('year', ?::timestamp) ");
 		else
 			sql.append("TRUNC (?, 'YEAR') ");
 		sql.append("AND ?) ");
-		log.finest(sql.toString());
+		if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
 		
 		PreparedStatement pstmt = null;
 		//
@@ -150,27 +150,15 @@ public class ASU_Fill1099Extract extends SvrProcess
 			pstmt.setTimestamp(23, p_Cut_Date);
 			
 			int rows = pstmt.executeUpdate();
-			log.info("inserted rows=" + rows);
-			
-			pstmt.close();
+			if (log.isLoggable(Level.INFO)) log.info("inserted rows=" + rows);
+		}
+		finally
+		{
+			DB.close(pstmt);
 			pstmt = null;
 		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql.toString(), e);
-		}
-		try
-		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
-		}	
 		//
 		return "";
 	}	//	doIt
 
-}	//	ASU_Fill1099Extract
+}	//	Fill1099Extract

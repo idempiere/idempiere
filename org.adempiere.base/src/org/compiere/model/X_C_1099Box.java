@@ -21,10 +21,10 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Model for ASU_1099Box
+/** Generated Model for C_1099Box
  *  @author iDempiere (generated) 
  *  @version Release 1.0a - $Id$ */
-public class X_ASU_1099Box extends PO implements I_ASU_1099Box, I_Persistent 
+public class X_C_1099Box extends PO implements I_C_1099Box, I_Persistent 
 {
 
 	/**
@@ -33,12 +33,12 @@ public class X_ASU_1099Box extends PO implements I_ASU_1099Box, I_Persistent
 	private static final long serialVersionUID = 20130228L;
 
     /** Standard Constructor */
-    public X_ASU_1099Box (Properties ctx, int ASU_1099Box_ID, String trxName)
+    public X_C_1099Box (Properties ctx, int C_1099Box_ID, String trxName)
     {
-      super (ctx, ASU_1099Box_ID, trxName);
-      /** if (ASU_1099Box_ID == 0)
+      super (ctx, C_1099Box_ID, trxName);
+      /** if (C_1099Box_ID == 0)
         {
-			setASU_1099Box_ID (0);
+			setC_1099Box_ID (0);
 			setBucket (0);
 			setName (null);
 			setValue (null);
@@ -46,7 +46,7 @@ public class X_ASU_1099Box extends PO implements I_ASU_1099Box, I_Persistent
     }
 
     /** Load Constructor */
-    public X_ASU_1099Box (Properties ctx, ResultSet rs, String trxName)
+    public X_C_1099Box (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -68,43 +68,43 @@ public class X_ASU_1099Box extends PO implements I_ASU_1099Box, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_ASU_1099Box[")
+      StringBuffer sb = new StringBuffer ("X_C_1099Box[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	/** Set 1099 Box.
-		@param ASU_1099Box_ID 1099 Box	  */
-	public void setASU_1099Box_ID (int ASU_1099Box_ID)
+		@param C_1099Box_ID 1099 Box	  */
+	public void setC_1099Box_ID (int C_1099Box_ID)
 	{
-		if (ASU_1099Box_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_ASU_1099Box_ID, null);
+		if (C_1099Box_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_1099Box_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_ASU_1099Box_ID, Integer.valueOf(ASU_1099Box_ID));
+			set_ValueNoCheck (COLUMNNAME_C_1099Box_ID, Integer.valueOf(C_1099Box_ID));
 	}
 
 	/** Get 1099 Box.
 		@return 1099 Box	  */
-	public int getASU_1099Box_ID () 
+	public int getC_1099Box_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ASU_1099Box_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_1099Box_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
-	/** Set ASU_1099Box_UU.
-		@param ASU_1099Box_UU ASU_1099Box_UU	  */
-	public void setASU_1099Box_UU (String ASU_1099Box_UU)
+	/** Set C_1099Box_UU.
+		@param C_1099Box_UU C_1099Box_UU	  */
+	public void setC_1099Box_UU (String C_1099Box_UU)
 	{
-		set_Value (COLUMNNAME_ASU_1099Box_UU, ASU_1099Box_UU);
+		set_Value (COLUMNNAME_C_1099Box_UU, C_1099Box_UU);
 	}
 
-	/** Get ASU_1099Box_UU.
-		@return ASU_1099Box_UU	  */
-	public String getASU_1099Box_UU () 
+	/** Get C_1099Box_UU.
+		@return C_1099Box_UU	  */
+	public String getC_1099Box_UU () 
 	{
-		return (String)get_Value(COLUMNNAME_ASU_1099Box_UU);
+		return (String)get_Value(COLUMNNAME_C_1099Box_UU);
 	}
 
 	/** Set Bucket.

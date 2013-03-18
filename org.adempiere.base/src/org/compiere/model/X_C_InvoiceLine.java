@@ -234,26 +234,26 @@ public class X_C_InvoiceLine extends PO implements I_C_InvoiceLine, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_ASU_1099Box getASU_1099Box() throws RuntimeException
+	public org.compiere.model.I_C_1099Box getC_1099Box() throws RuntimeException
     {
-		return (org.compiere.model.I_ASU_1099Box)MTable.get(getCtx(), org.compiere.model.I_ASU_1099Box.Table_Name)
-			.getPO(getASU_1099Box_ID(), get_TrxName());	}
+		return (org.compiere.model.I_C_1099Box)MTable.get(getCtx(), org.compiere.model.I_C_1099Box.Table_Name)
+			.getPO(getC_1099Box_ID(), get_TrxName());	}
 
 	/** Set 1099 Box.
-		@param ASU_1099Box_ID 1099 Box	  */
-	public void setASU_1099Box_ID (int ASU_1099Box_ID)
+		@param C_1099Box_ID 1099 Box	  */
+	public void setC_1099Box_ID (int C_1099Box_ID)
 	{
-		if (ASU_1099Box_ID < 1) 
-			set_Value (COLUMNNAME_ASU_1099Box_ID, null);
+		if (C_1099Box_ID < 1) 
+			set_Value (COLUMNNAME_C_1099Box_ID, null);
 		else 
-			set_Value (COLUMNNAME_ASU_1099Box_ID, Integer.valueOf(ASU_1099Box_ID));
+			set_Value (COLUMNNAME_C_1099Box_ID, Integer.valueOf(C_1099Box_ID));
 	}
 
 	/** Get 1099 Box.
 		@return 1099 Box	  */
-	public int getASU_1099Box_ID () 
+	public int getC_1099Box_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ASU_1099Box_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_1099Box_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

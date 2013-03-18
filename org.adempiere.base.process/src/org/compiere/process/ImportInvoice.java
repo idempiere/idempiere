@@ -478,19 +478,19 @@ public class ImportInvoice extends SvrProcess
 		
 		// Set 1099 Box
 		sql = new StringBuilder ("UPDATE I_Invoice o ")
-				.append("SET ASU_1099Box_ID=(SELECT ASU_1099Box_ID FROM ASU_1099Box a")
-				.append(" WHERE o.ASU_1099Box_Value=a.Value AND a.AD_Client_ID = o.AD_Client_ID) ")
-				.append(" WHERE ASU_1099Box_ID IS NULL and ASU_1099Box_Value IS NOT NULL")
+				.append("SET C_1099Box_ID=(SELECT C_1099Box_ID FROM C_1099Box a")
+				.append(" WHERE o.C_1099Box_Value=a.Value AND a.AD_Client_ID = o.AD_Client_ID) ")
+				.append(" WHERE C_1099Box_ID IS NULL and C_1099Box_Value IS NOT NULL")
 				.append(" AND I_IsImported<>'Y' AND IsSOTrx='N'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set ASU_1099Box_ID=" + no);
+		log.fine("Set C_1099Box_ID=" + no);
 		sql = new StringBuilder ("UPDATE I_Invoice ")
-				.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid ASU_1099Box_Value, ' ")
-				.append("WHERE ASU_1099Box_ID IS NULL AND (ASU_1099Box_Value IS NOT NULL)")
+				.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid C_1099Box_Value, ' ")
+				.append("WHERE C_1099Box_ID IS NULL AND (C_1099Box_Value IS NOT NULL)")
 				.append(" AND I_IsImported<>'Y' AND IsSOTrx='N'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
-			log.warning ("Invalid ASU_1099Box_Value=" + no);
+			log.warning ("Invalid C_1099Box_Value=" + no);
 		
 		commitEx();
 		

@@ -20,15 +20,15 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for ASU_1099Box
+/** Generated Interface for C_1099Box
  *  @author iDempiere (generated) 
  *  @version Release 1.0a
  */
-public interface I_ASU_1099Box 
+public interface I_C_1099Box 
 {
 
-    /** TableName=ASU_1099Box */
-    public static final String Table_Name = "ASU_1099Box";
+    /** TableName=C_1099Box */
+    public static final String Table_Name = "C_1099Box";
 
     /** AD_Table_ID=200069 */
     public static final int Table_ID = 200069;
@@ -62,23 +62,23 @@ public interface I_ASU_1099Box
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name ASU_1099Box_ID */
-    public static final String COLUMNNAME_ASU_1099Box_ID = "ASU_1099Box_ID";
+    /** Column name C_1099Box_ID */
+    public static final String COLUMNNAME_C_1099Box_ID = "C_1099Box_ID";
 
 	/** Set 1099 Box	  */
-	public void setASU_1099Box_ID (int ASU_1099Box_ID);
+	public void setC_1099Box_ID (int C_1099Box_ID);
 
 	/** Get 1099 Box	  */
-	public int getASU_1099Box_ID();
+	public int getC_1099Box_ID();
 
-    /** Column name ASU_1099Box_UU */
-    public static final String COLUMNNAME_ASU_1099Box_UU = "ASU_1099Box_UU";
+    /** Column name C_1099Box_UU */
+    public static final String COLUMNNAME_C_1099Box_UU = "C_1099Box_UU";
 
-	/** Set ASU_1099Box_UU	  */
-	public void setASU_1099Box_UU (String ASU_1099Box_UU);
+	/** Set C_1099Box_UU	  */
+	public void setC_1099Box_UU (String C_1099Box_UU);
 
-	/** Get ASU_1099Box_UU	  */
-	public String getASU_1099Box_UU();
+	/** Get C_1099Box_UU	  */
+	public String getC_1099Box_UU();
 
     /** Column name Bucket */
     public static final String COLUMNNAME_Bucket = "Bucket";

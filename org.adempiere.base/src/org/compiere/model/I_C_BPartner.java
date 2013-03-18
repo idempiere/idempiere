@@ -269,7 +269,7 @@ public interface I_C_BPartner
 	/** Get Default 1099 Box	  */
 	public int getDefault1099Box_ID();
 
-	public org.compiere.model.I_ASU_1099Box getDefault1099Box() throws RuntimeException;
+	public org.compiere.model.I_C_1099Box getDefault1099Box() throws RuntimeException;
 
     /** Column name DeliveryRule */
     public static final String COLUMNNAME_DeliveryRule = "DeliveryRule";

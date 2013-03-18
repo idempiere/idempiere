@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION asu_get1099bucket (
+CREATE OR REPLACE FUNCTION get1099bucket (
    p_cbpartner_id   IN   NUMBER,
    p_cut_date       IN   DATE,
    p_bucket         IN   NUMBER
@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION asu_get1099bucket (
 IS
    tmpvar   NUMBER;
 /******************************************************************************
-   NAME:       asu_get1099bucket
+   NAME:       get1099bucket
    PURPOSE:
 
    REVISIONS:
@@ -26,10 +26,10 @@ BEGIN
                        )            -- +API->AP Invoice / -APC->AP Credit Memo
               )
      INTO tmpvar
-     FROM C_INVOICE i, C_INVOICELINE il, ASU_1099BOX b, C_DOCTYPE dt
+     FROM C_INVOICE i, C_INVOICELINE il, C_1099BOX b, C_DOCTYPE dt
     WHERE i.c_invoice_id = il.c_invoice_id
       AND i.issotrx = 'N'
-      AND il.asu_1099box_id = b.asu_1099box_id
+      AND il.c_1099box_id = b.c_1099box_id
       AND i.dateacct BETWEEN TRUNC (p_cut_date, 'YEAR') AND p_cut_date
       AND c_bpartner_id = p_cbpartner_id
       AND b.bucket = p_bucket
@@ -37,6 +37,6 @@ BEGIN
       AND i.docstatus IN ('CO', 'CL');
 
    RETURN tmpvar;
-END asu_get1099bucket;
+END get1099bucket;
 /
 

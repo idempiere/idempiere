@@ -132,16 +132,16 @@ public interface I_C_InvoiceLine
 	  */
 	public int getAD_OrgTrx_ID();
 
-    /** Column name ASU_1099Box_ID */
-    public static final String COLUMNNAME_ASU_1099Box_ID = "ASU_1099Box_ID";
+    /** Column name C_1099Box_ID */
+    public static final String COLUMNNAME_C_1099Box_ID = "C_1099Box_ID";
 
 	/** Set 1099 Box	  */
-	public void setASU_1099Box_ID (int ASU_1099Box_ID);
+	public void setC_1099Box_ID (int C_1099Box_ID);
 
 	/** Get 1099 Box	  */
-	public int getASU_1099Box_ID();
+	public int getC_1099Box_ID();
 
-	public org.compiere.model.I_ASU_1099Box getASU_1099Box() throws RuntimeException;
+	public org.compiere.model.I_C_1099Box getC_1099Box() throws RuntimeException;
 
     /** Column name C_Activity_ID */
     public static final String COLUMNNAME_C_Activity_ID = "C_Activity_ID";

@@ -406,9 +406,9 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 		return (String)get_Value(COLUMNNAME_CustomerProfileID);
 	}
 
-	public org.compiere.model.I_ASU_1099Box getDefault1099Box() throws RuntimeException
+	public org.compiere.model.I_C_1099Box getDefault1099Box() throws RuntimeException
     {
-		return (org.compiere.model.I_ASU_1099Box)MTable.get(getCtx(), org.compiere.model.I_ASU_1099Box.Table_Name)
+		return (org.compiere.model.I_C_1099Box)MTable.get(getCtx(), org.compiere.model.I_C_1099Box.Table_Name)
 			.getPO(getDefault1099Box_ID(), get_TrxName());	}
 
 	/** Set Default 1099 Box.
