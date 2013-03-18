@@ -20,10 +20,10 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-/** Generated Model for X_OnlineTrxHistory
+/** Generated Model for C_OnlineTrxHistory
  *  @author Adempiere (generated) 
  *  @version Release 3.6.0LTS - $Id$ */
-public class X_X_OnlineTrxHistory extends PO implements I_X_OnlineTrxHistory, I_Persistent 
+public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_Persistent 
 {
 
 	/**
@@ -32,10 +32,10 @@ public class X_X_OnlineTrxHistory extends PO implements I_X_OnlineTrxHistory, I_
 	private static final long serialVersionUID = 20121031L;
 
     /** Standard Constructor */
-    public X_X_OnlineTrxHistory (Properties ctx, int X_OnlineTrxHistory_ID, String trxName)
+    public X_C_OnlineTrxHistory (Properties ctx, int C_OnlineTrxHistory_ID, String trxName)
     {
-      super (ctx, X_OnlineTrxHistory_ID, trxName);
-      /** if (X_OnlineTrxHistory_ID == 0)
+      super (ctx, C_OnlineTrxHistory_ID, trxName);
+      /** if (C_OnlineTrxHistory_ID == 0)
         {
 			setAD_Table_ID (0);
 			setIsError (false);
@@ -43,12 +43,12 @@ public class X_X_OnlineTrxHistory extends PO implements I_X_OnlineTrxHistory, I_
 			setProcessed (false);
 // N
 			setRecord_ID (0);
-			setX_OnlineTrxHistory_ID (0);
+			setC_OnlineTrxHistory_ID (0);
         } */
     }
 
     /** Load Constructor */
-    public X_X_OnlineTrxHistory (Properties ctx, ResultSet rs, String trxName)
+    public X_C_OnlineTrxHistory (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -70,7 +70,7 @@ public class X_X_OnlineTrxHistory extends PO implements I_X_OnlineTrxHistory, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_X_OnlineTrxHistory[")
+      StringBuffer sb = new StringBuffer ("X_C_OnlineTrxHistory[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
@@ -192,36 +192,36 @@ public class X_X_OnlineTrxHistory extends PO implements I_X_OnlineTrxHistory, I_
 	}
 
 	/** Set Online Transaction History.
-		@param X_OnlineTrxHistory_ID Online Transaction History	  */
-	public void setX_OnlineTrxHistory_ID (int X_OnlineTrxHistory_ID)
+		@param C_OnlineTrxHistory_ID Online Transaction History	  */
+	public void setC_OnlineTrxHistory_ID (int C_OnlineTrxHistory_ID)
 	{
-		if (X_OnlineTrxHistory_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_X_OnlineTrxHistory_ID, null);
+		if (C_OnlineTrxHistory_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_OnlineTrxHistory_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_X_OnlineTrxHistory_ID, Integer.valueOf(X_OnlineTrxHistory_ID));
+			set_ValueNoCheck (COLUMNNAME_C_OnlineTrxHistory_ID, Integer.valueOf(C_OnlineTrxHistory_ID));
 	}
 
 	/** Get Online Transaction History.
 		@return Online Transaction History	  */
-	public int getX_OnlineTrxHistory_ID () 
+	public int getC_OnlineTrxHistory_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_X_OnlineTrxHistory_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_OnlineTrxHistory_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
-	/** Set X_OnlineTrxHistory_UU.
-		@param X_OnlineTrxHistory_UU X_OnlineTrxHistory_UU	  */
-	public void setX_OnlineTrxHistory_UU (String X_OnlineTrxHistory_UU)
+	/** Set C_OnlineTrxHistory_UU.
+		@param C_OnlineTrxHistory_UU C_OnlineTrxHistory_UU	  */
+	public void setC_OnlineTrxHistory_UU (String C_OnlineTrxHistory_UU)
 	{
-		set_Value (COLUMNNAME_X_OnlineTrxHistory_UU, X_OnlineTrxHistory_UU);
+		set_Value (COLUMNNAME_C_OnlineTrxHistory_UU, C_OnlineTrxHistory_UU);
 	}
 
-	/** Get X_OnlineTrxHistory_UU.
-		@return X_OnlineTrxHistory_UU	  */
-	public String getX_OnlineTrxHistory_UU () 
+	/** Get C_OnlineTrxHistory_UU.
+		@return C_OnlineTrxHistory_UU	  */
+	public String getC_OnlineTrxHistory_UU () 
 	{
-		return (String)get_Value(COLUMNNAME_X_OnlineTrxHistory_UU);
+		return (String)get_Value(COLUMNNAME_C_OnlineTrxHistory_UU);
 	}
 }

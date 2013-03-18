@@ -20,15 +20,15 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for X_OnlineTrxHistory
+/** Generated Interface for C_OnlineTrxHistory
  *  @author Adempiere (generated) 
  *  @version Release 3.6.0LTS
  */
-public interface I_X_OnlineTrxHistory 
+public interface I_C_OnlineTrxHistory 
 {
 
-    /** TableName=X_OnlineTrxHistory */
-    public static final String Table_Name = "X_OnlineTrxHistory";
+    /** TableName=C_OnlineTrxHistory */
+    public static final String Table_Name = "C_OnlineTrxHistory";
 
     /** AD_Table_ID=200032 */
     public static final int Table_ID = 200032;
@@ -174,21 +174,21 @@ public interface I_X_OnlineTrxHistory
 	  */
 	public int getUpdatedBy();
 
-    /** Column name X_OnlineTrxHistory_ID */
-    public static final String COLUMNNAME_X_OnlineTrxHistory_ID = "X_OnlineTrxHistory_ID";
+    /** Column name C_OnlineTrxHistory_ID */
+    public static final String COLUMNNAME_C_OnlineTrxHistory_ID = "C_OnlineTrxHistory_ID";
 
 	/** Set Online Transaction History	  */
-	public void setX_OnlineTrxHistory_ID (int X_OnlineTrxHistory_ID);
+	public void setC_OnlineTrxHistory_ID (int C_OnlineTrxHistory_ID);
 
 	/** Get Online Transaction History	  */
-	public int getX_OnlineTrxHistory_ID();
+	public int getC_OnlineTrxHistory_ID();
 
-    /** Column name X_OnlineTrxHistory_UU */
-    public static final String COLUMNNAME_X_OnlineTrxHistory_UU = "X_OnlineTrxHistory_UU";
+    /** Column name C_OnlineTrxHistory_UU */
+    public static final String COLUMNNAME_C_OnlineTrxHistory_UU = "C_OnlineTrxHistory_UU";
 
-	/** Set X_OnlineTrxHistory_UU	  */
-	public void setX_OnlineTrxHistory_UU (String X_OnlineTrxHistory_UU);
+	/** Set C_OnlineTrxHistory_UU	  */
+	public void setC_OnlineTrxHistory_UU (String C_OnlineTrxHistory_UU);
 
-	/** Get X_OnlineTrxHistory_UU	  */
-	public String getX_OnlineTrxHistory_UU();
+	/** Get C_OnlineTrxHistory_UU	  */
+	public String getC_OnlineTrxHistory_UU();
 }
