@@ -119,6 +119,17 @@ public interface I_M_Shipper
 	  */
 	public boolean isActive();
 
+    /** Column name M_ShipperCfg_ID */
+    public static final String COLUMNNAME_M_ShipperCfg_ID = "M_ShipperCfg_ID";
+
+	/** Set Shipper Configuration	  */
+	public void setM_ShipperCfg_ID (int M_ShipperCfg_ID);
+
+	/** Get Shipper Configuration	  */
+	public int getM_ShipperCfg_ID();
+
+	public org.compiere.model.I_M_ShipperCfg getM_ShipperCfg() throws RuntimeException;
+
     /** Column name M_Shipper_ID */
     public static final String COLUMNNAME_M_Shipper_ID = "M_Shipper_ID";
 
@@ -180,15 +191,4 @@ public interface I_M_Shipper
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name X_Shipper_ID */
-    public static final String COLUMNNAME_X_Shipper_ID = "X_Shipper_ID";
-
-	/** Set Shipper	  */
-	public void setX_Shipper_ID (int X_Shipper_ID);
-
-	/** Get Shipper	  */
-	public int getX_Shipper_ID();
-
-	public org.compiere.model.I_X_Shipper getX_Shipper() throws RuntimeException;
 }

@@ -29,7 +29,7 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130109L;
+	private static final long serialVersionUID = 20130318L;
 
     /** Standard Constructor */
     public X_M_ShipperPickupTypes (Properties ctx, int M_ShipperPickupTypes_ID, String trxName)
@@ -40,9 +40,9 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 			setIsDefault (false);
 // N
 			setM_Shipper_ID (0);
+			setM_ShipperPickupTypesCfg_ID (0);
 			setM_ShipperPickupTypes_ID (0);
 			setName (null);
-			setX_ShipperPickupTypes_ID (0);
         } */
     }
 
@@ -126,6 +126,31 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_M_ShipperPickupTypesCfg getM_ShipperPickupTypesCfg() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_ShipperPickupTypesCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPickupTypesCfg.Table_Name)
+			.getPO(getM_ShipperPickupTypesCfg_ID(), get_TrxName());	}
+
+	/** Set Shipper Pickup Types Configuration.
+		@param M_ShipperPickupTypesCfg_ID Shipper Pickup Types Configuration	  */
+	public void setM_ShipperPickupTypesCfg_ID (int M_ShipperPickupTypesCfg_ID)
+	{
+		if (M_ShipperPickupTypesCfg_ID < 1) 
+			set_Value (COLUMNNAME_M_ShipperPickupTypesCfg_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_ShipperPickupTypesCfg_ID, Integer.valueOf(M_ShipperPickupTypesCfg_ID));
+	}
+
+	/** Get Shipper Pickup Types Configuration.
+		@return Shipper Pickup Types Configuration	  */
+	public int getM_ShipperPickupTypesCfg_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperPickupTypesCfg_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Shipper Pickup Types.
 		@param M_ShipperPickupTypes_ID Shipper Pickup Types	  */
 	public void setM_ShipperPickupTypes_ID (int M_ShipperPickupTypes_ID)
@@ -175,30 +200,5 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	public String getName () 
 	{
 		return (String)get_Value(COLUMNNAME_Name);
-	}
-
-	public org.compiere.model.I_X_ShipperPickupTypes getX_ShipperPickupTypes() throws RuntimeException
-    {
-		return (org.compiere.model.I_X_ShipperPickupTypes)MTable.get(getCtx(), org.compiere.model.I_X_ShipperPickupTypes.Table_Name)
-			.getPO(getX_ShipperPickupTypes_ID(), get_TrxName());	}
-
-	/** Set Shipper Pickup Types.
-		@param X_ShipperPickupTypes_ID Shipper Pickup Types	  */
-	public void setX_ShipperPickupTypes_ID (int X_ShipperPickupTypes_ID)
-	{
-		if (X_ShipperPickupTypes_ID < 1) 
-			set_Value (COLUMNNAME_X_ShipperPickupTypes_ID, null);
-		else 
-			set_Value (COLUMNNAME_X_ShipperPickupTypes_ID, Integer.valueOf(X_ShipperPickupTypes_ID));
-	}
-
-	/** Get Shipper Pickup Types.
-		@return Shipper Pickup Types	  */
-	public int getX_ShipperPickupTypes_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_X_ShipperPickupTypes_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 }

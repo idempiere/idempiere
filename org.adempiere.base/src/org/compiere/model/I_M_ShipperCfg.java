@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for X_ShipperPackaging
+/** Generated Interface for M_ShipperCfg
  *  @author iDempiere (generated) 
  *  @version Release 1.0a
  */
-public interface I_X_ShipperPackaging 
+public interface I_M_ShipperCfg 
 {
 
-    /** TableName=X_ShipperPackaging */
-    public static final String Table_Name = "X_ShipperPackaging";
+    /** TableName=M_ShipperCfg */
+    public static final String Table_Name = "M_ShipperCfg";
 
-    /** AD_Table_ID=200049 */
-    public static final int Table_ID = 200049;
+    /** AD_Table_ID=200047 */
+    public static final int Table_ID = 200047;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -61,6 +61,19 @@ public interface I_X_ShipperPackaging
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name CopyFrom */
+    public static final String COLUMNNAME_CopyFrom = "CopyFrom";
+
+	/** Set Copy From.
+	  * Copy From Record
+	  */
+	public void setCopyFrom (String CopyFrom);
+
+	/** Get Copy From.
+	  * Copy From Record
+	  */
+	public String getCopyFrom();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -104,18 +117,74 @@ public interface I_X_ShipperPackaging
 	  */
 	public boolean isActive();
 
-    /** Column name IsDefault */
-    public static final String COLUMNNAME_IsDefault = "IsDefault";
+    /** Column name IsInternational */
+    public static final String COLUMNNAME_IsInternational = "IsInternational";
 
-	/** Set Default.
-	  * Default value
-	  */
-	public void setIsDefault (boolean IsDefault);
+	/** Set International	  */
+	public void setIsInternational (boolean IsInternational);
 
-	/** Get Default.
-	  * Default value
+	/** Get International	  */
+	public boolean isInternational();
+
+    /** Column name IsOnline */
+    public static final String COLUMNNAME_IsOnline = "IsOnline";
+
+	/** Set Online Access.
+	  * Can be accessed online 
 	  */
-	public boolean isDefault();
+	public void setIsOnline (boolean IsOnline);
+
+	/** Get Online Access.
+	  * Can be accessed online 
+	  */
+	public boolean isOnline();
+
+    /** Column name IsResidential */
+    public static final String COLUMNNAME_IsResidential = "IsResidential";
+
+	/** Set Residential	  */
+	public void setIsResidential (boolean IsResidential);
+
+	/** Get Residential	  */
+	public boolean isResidential();
+
+    /** Column name IsSaturdayDelivery */
+    public static final String COLUMNNAME_IsSaturdayDelivery = "IsSaturdayDelivery";
+
+	/** Set Saturday Delivery	  */
+	public void setIsSaturdayDelivery (boolean IsSaturdayDelivery);
+
+	/** Get Saturday Delivery	  */
+	public boolean isSaturdayDelivery();
+
+    /** Column name M_ShipperCfg_ID */
+    public static final String COLUMNNAME_M_ShipperCfg_ID = "M_ShipperCfg_ID";
+
+	/** Set Shipper Configuration	  */
+	public void setM_ShipperCfg_ID (int M_ShipperCfg_ID);
+
+	/** Get Shipper Configuration	  */
+	public int getM_ShipperCfg_ID();
+
+    /** Column name M_ShipperCfg_UU */
+    public static final String COLUMNNAME_M_ShipperCfg_UU = "M_ShipperCfg_UU";
+
+	/** Set M_ShipperCfg_UU	  */
+	public void setM_ShipperCfg_UU (String M_ShipperCfg_UU);
+
+	/** Get M_ShipperCfg_UU	  */
+	public String getM_ShipperCfg_UU();
+
+    /** Column name M_ShippingProcessorCfg_ID */
+    public static final String COLUMNNAME_M_ShippingProcessorCfg_ID = "M_ShippingProcessorCfg_ID";
+
+	/** Set Shipping Processor Configuration	  */
+	public void setM_ShippingProcessorCfg_ID (int M_ShippingProcessorCfg_ID);
+
+	/** Get Shipping Processor Configuration	  */
+	public int getM_ShippingProcessorCfg_ID();
+
+	public org.compiere.model.I_M_ShippingProcessorCfg getM_ShippingProcessorCfg() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -129,6 +198,28 @@ public interface I_X_ShipperPackaging
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name ShippingServiceCode */
+    public static final String COLUMNNAME_ShippingServiceCode = "ShippingServiceCode";
+
+	/** Set Service Code	  */
+	public void setShippingServiceCode (String ShippingServiceCode);
+
+	/** Get Service Code	  */
+	public String getShippingServiceCode();
+
+    /** Column name TrackingURL */
+    public static final String COLUMNNAME_TrackingURL = "TrackingURL";
+
+	/** Set Tracking URL.
+	  * URL of the shipper to track shipments
+	  */
+	public void setTrackingURL (String TrackingURL);
+
+	/** Get Tracking URL.
+	  * URL of the shipper to track shipments
+	  */
+	public String getTrackingURL();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -145,59 +236,4 @@ public interface I_X_ShipperPackaging
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name Value */
-    public static final String COLUMNNAME_Value = "Value";
-
-	/** Set Search Key.
-	  * Search key for the record in the format required - must be unique
-	  */
-	public void setValue (String Value);
-
-	/** Get Search Key.
-	  * Search key for the record in the format required - must be unique
-	  */
-	public String getValue();
-
-    /** Column name Weight */
-    public static final String COLUMNNAME_Weight = "Weight";
-
-	/** Set Weight.
-	  * Weight of a product
-	  */
-	public void setWeight (BigDecimal Weight);
-
-	/** Get Weight.
-	  * Weight of a product
-	  */
-	public BigDecimal getWeight();
-
-    /** Column name X_Shipper_ID */
-    public static final String COLUMNNAME_X_Shipper_ID = "X_Shipper_ID";
-
-	/** Set Shipper	  */
-	public void setX_Shipper_ID (int X_Shipper_ID);
-
-	/** Get Shipper	  */
-	public int getX_Shipper_ID();
-
-	public org.compiere.model.I_X_Shipper getX_Shipper() throws RuntimeException;
-
-    /** Column name X_ShipperPackaging_ID */
-    public static final String COLUMNNAME_X_ShipperPackaging_ID = "X_ShipperPackaging_ID";
-
-	/** Set Shipper Packaging	  */
-	public void setX_ShipperPackaging_ID (int X_ShipperPackaging_ID);
-
-	/** Get Shipper Packaging	  */
-	public int getX_ShipperPackaging_ID();
-
-    /** Column name X_ShipperPackaging_UU */
-    public static final String COLUMNNAME_X_ShipperPackaging_UU = "X_ShipperPackaging_UU";
-
-	/** Set X_ShipperPackaging_UU	  */
-	public void setX_ShipperPackaging_UU (String X_ShipperPackaging_UU);
-
-	/** Get X_ShipperPackaging_UU	  */
-	public String getX_ShipperPackaging_UU();
 }

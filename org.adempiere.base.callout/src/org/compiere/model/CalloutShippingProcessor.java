@@ -24,11 +24,11 @@ public class CalloutShippingProcessor extends CalloutEngine
 {
 	public String shippingProcessor(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
-		Integer X_ShippingProcessor_ID = (Integer)value;
-		if (X_ShippingProcessor_ID == null || X_ShippingProcessor_ID.intValue() == 0)
+		Integer M_ShippingProcessorCfg_ID = (Integer)value;
+		if (M_ShippingProcessorCfg_ID == null || M_ShippingProcessorCfg_ID.intValue() == 0)
 			return "";
 		
-		X_X_ShippingProcessor sp = new X_X_ShippingProcessor(ctx, X_ShippingProcessor_ID, null);
+		X_M_ShippingProcessorCfg sp = new X_M_ShippingProcessorCfg(ctx, M_ShippingProcessorCfg_ID, null);
 		mTab.setValue(MShippingProcessor.COLUMNNAME_Name, sp.getName());
 		
 		return null;

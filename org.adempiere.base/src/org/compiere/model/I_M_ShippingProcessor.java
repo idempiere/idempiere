@@ -109,6 +109,17 @@ public interface I_M_ShippingProcessor
 	  */
 	public boolean isActive();
 
+    /** Column name M_ShippingProcessorCfg_ID */
+    public static final String COLUMNNAME_M_ShippingProcessorCfg_ID = "M_ShippingProcessorCfg_ID";
+
+	/** Set Shipping Processor Configuration	  */
+	public void setM_ShippingProcessorCfg_ID (int M_ShippingProcessorCfg_ID);
+
+	/** Get Shipping Processor Configuration	  */
+	public int getM_ShippingProcessorCfg_ID();
+
+	public org.compiere.model.I_M_ShippingProcessorCfg getM_ShippingProcessorCfg() throws RuntimeException;
+
     /** Column name M_ShippingProcessor_ID */
     public static final String COLUMNNAME_M_ShippingProcessor_ID = "M_ShippingProcessor_ID";
 
@@ -168,15 +179,4 @@ public interface I_M_ShippingProcessor
 	  * User ID or account number
 	  */
 	public String getUserID();
-
-    /** Column name X_ShippingProcessor_ID */
-    public static final String COLUMNNAME_X_ShippingProcessor_ID = "X_ShippingProcessor_ID";
-
-	/** Set Shipping Processor	  */
-	public void setX_ShippingProcessor_ID (int X_ShippingProcessor_ID);
-
-	/** Get Shipping Processor	  */
-	public int getX_ShippingProcessor_ID();
-
-	public org.compiere.model.I_X_ShippingProcessor getX_ShippingProcessor() throws RuntimeException;
 }

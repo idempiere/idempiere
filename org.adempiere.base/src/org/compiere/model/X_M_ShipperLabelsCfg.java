@@ -23,34 +23,34 @@ import java.util.Properties;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Model for X_ShipperPackaging
+/** Generated Model for M_ShipperLabelsCfg
  *  @author iDempiere (generated) 
  *  @version Release 1.0a - $Id$ */
-public class X_X_ShipperPackaging extends PO implements I_X_ShipperPackaging, I_Persistent 
+public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121213L;
+	private static final long serialVersionUID = 20130318L;
 
     /** Standard Constructor */
-    public X_X_ShipperPackaging (Properties ctx, int X_ShipperPackaging_ID, String trxName)
+    public X_M_ShipperLabelsCfg (Properties ctx, int M_ShipperLabelsCfg_ID, String trxName)
     {
-      super (ctx, X_ShipperPackaging_ID, trxName);
-      /** if (X_ShipperPackaging_ID == 0)
+      super (ctx, M_ShipperLabelsCfg_ID, trxName);
+      /** if (M_ShipperLabelsCfg_ID == 0)
         {
 			setIsDefault (false);
 // N
+			setM_ShipperCfg_ID (0);
+			setM_ShipperLabelsCfg_ID (0);
 			setName (null);
 			setValue (null);
-			setX_Shipper_ID (0);
-			setX_ShipperPackaging_ID (0);
         } */
     }
 
     /** Load Constructor */
-    public X_X_ShipperPackaging (Properties ctx, ResultSet rs, String trxName)
+    public X_M_ShipperLabelsCfg (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -72,7 +72,7 @@ public class X_X_ShipperPackaging extends PO implements I_X_ShipperPackaging, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_X_ShipperPackaging[")
+      StringBuffer sb = new StringBuffer ("X_M_ShipperLabelsCfg[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
@@ -92,6 +92,23 @@ public class X_X_ShipperPackaging extends PO implements I_X_ShipperPackaging, I_
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set Height.
+		@param Height Height	  */
+	public void setHeight (BigDecimal Height)
+	{
+		set_Value (COLUMNNAME_Height, Height);
+	}
+
+	/** Get Height.
+		@return Height	  */
+	public BigDecimal getHeight () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Height);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Default.
@@ -116,6 +133,88 @@ public class X_X_ShipperPackaging extends PO implements I_X_ShipperPackaging, I_
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** LabelPrintMethod AD_Reference_ID=200027 */
+	public static final int LABELPRINTMETHOD_AD_Reference_ID=200027;
+	/** Eltron = E */
+	public static final String LABELPRINTMETHOD_Eltron = "E";
+	/** Image = I */
+	public static final String LABELPRINTMETHOD_Image = "I";
+	/** Zebra = Z */
+	public static final String LABELPRINTMETHOD_Zebra = "Z";
+	/** Set Label Print Method.
+		@param LabelPrintMethod Label Print Method	  */
+	public void setLabelPrintMethod (String LabelPrintMethod)
+	{
+
+		set_Value (COLUMNNAME_LabelPrintMethod, LabelPrintMethod);
+	}
+
+	/** Get Label Print Method.
+		@return Label Print Method	  */
+	public String getLabelPrintMethod () 
+	{
+		return (String)get_Value(COLUMNNAME_LabelPrintMethod);
+	}
+
+	public org.compiere.model.I_M_ShipperCfg getM_ShipperCfg() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_ShipperCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperCfg.Table_Name)
+			.getPO(getM_ShipperCfg_ID(), get_TrxName());	}
+
+	/** Set Shipper Configuration.
+		@param M_ShipperCfg_ID Shipper Configuration	  */
+	public void setM_ShipperCfg_ID (int M_ShipperCfg_ID)
+	{
+		if (M_ShipperCfg_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_M_ShipperCfg_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_M_ShipperCfg_ID, Integer.valueOf(M_ShipperCfg_ID));
+	}
+
+	/** Get Shipper Configuration.
+		@return Shipper Configuration	  */
+	public int getM_ShipperCfg_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperCfg_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Shipper Labels Configuration.
+		@param M_ShipperLabelsCfg_ID Shipper Labels Configuration	  */
+	public void setM_ShipperLabelsCfg_ID (int M_ShipperLabelsCfg_ID)
+	{
+		if (M_ShipperLabelsCfg_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_M_ShipperLabelsCfg_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_M_ShipperLabelsCfg_ID, Integer.valueOf(M_ShipperLabelsCfg_ID));
+	}
+
+	/** Get Shipper Labels Configuration.
+		@return Shipper Labels Configuration	  */
+	public int getM_ShipperLabelsCfg_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperLabelsCfg_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set M_ShipperLabelsCfg_UU.
+		@param M_ShipperLabelsCfg_UU M_ShipperLabelsCfg_UU	  */
+	public void setM_ShipperLabelsCfg_UU (String M_ShipperLabelsCfg_UU)
+	{
+		set_Value (COLUMNNAME_M_ShipperLabelsCfg_UU, M_ShipperLabelsCfg_UU);
+	}
+
+	/** Get M_ShipperLabelsCfg_UU.
+		@return M_ShipperLabelsCfg_UU	  */
+	public String getM_ShipperLabelsCfg_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_ShipperLabelsCfg_UU);
 	}
 
 	/** Set Name.
@@ -160,82 +259,20 @@ public class X_X_ShipperPackaging extends PO implements I_X_ShipperPackaging, I_
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
-	/** Set Weight.
-		@param Weight 
-		Weight of a product
-	  */
-	public void setWeight (BigDecimal Weight)
+	/** Set Width.
+		@param Width Width	  */
+	public void setWidth (BigDecimal Width)
 	{
-		set_Value (COLUMNNAME_Weight, Weight);
+		set_Value (COLUMNNAME_Width, Width);
 	}
 
-	/** Get Weight.
-		@return Weight of a product
-	  */
-	public BigDecimal getWeight () 
+	/** Get Width.
+		@return Width	  */
+	public BigDecimal getWidth () 
 	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Weight);
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Width);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
-	}
-
-	public org.compiere.model.I_X_Shipper getX_Shipper() throws RuntimeException
-    {
-		return (org.compiere.model.I_X_Shipper)MTable.get(getCtx(), org.compiere.model.I_X_Shipper.Table_Name)
-			.getPO(getX_Shipper_ID(), get_TrxName());	}
-
-	/** Set Shipper.
-		@param X_Shipper_ID Shipper	  */
-	public void setX_Shipper_ID (int X_Shipper_ID)
-	{
-		if (X_Shipper_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_X_Shipper_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_X_Shipper_ID, Integer.valueOf(X_Shipper_ID));
-	}
-
-	/** Get Shipper.
-		@return Shipper	  */
-	public int getX_Shipper_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_X_Shipper_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Shipper Packaging.
-		@param X_ShipperPackaging_ID Shipper Packaging	  */
-	public void setX_ShipperPackaging_ID (int X_ShipperPackaging_ID)
-	{
-		if (X_ShipperPackaging_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_X_ShipperPackaging_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_X_ShipperPackaging_ID, Integer.valueOf(X_ShipperPackaging_ID));
-	}
-
-	/** Get Shipper Packaging.
-		@return Shipper Packaging	  */
-	public int getX_ShipperPackaging_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_X_ShipperPackaging_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set X_ShipperPackaging_UU.
-		@param X_ShipperPackaging_UU X_ShipperPackaging_UU	  */
-	public void setX_ShipperPackaging_UU (String X_ShipperPackaging_UU)
-	{
-		set_Value (COLUMNNAME_X_ShipperPackaging_UU, X_ShipperPackaging_UU);
-	}
-
-	/** Get X_ShipperPackaging_UU.
-		@return X_ShipperPackaging_UU	  */
-	public String getX_ShipperPackaging_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_X_ShipperPackaging_UU);
 	}
 }

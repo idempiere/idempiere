@@ -23,6 +23,6 @@ public class MShipperPackaging extends X_M_ShipperPackaging
 	
 	public String getValue()
 	{
-		return getX_ShipperPackaging().getValue();
+		return getM_ShipperPackagingCfg().getValue();
 	}
 }

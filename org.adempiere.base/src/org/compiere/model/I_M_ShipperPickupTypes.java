@@ -119,6 +119,17 @@ public interface I_M_ShipperPickupTypes
 
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
+    /** Column name M_ShipperPickupTypesCfg_ID */
+    public static final String COLUMNNAME_M_ShipperPickupTypesCfg_ID = "M_ShipperPickupTypesCfg_ID";
+
+	/** Set Shipper Pickup Types Configuration	  */
+	public void setM_ShipperPickupTypesCfg_ID (int M_ShipperPickupTypesCfg_ID);
+
+	/** Get Shipper Pickup Types Configuration	  */
+	public int getM_ShipperPickupTypesCfg_ID();
+
+	public org.compiere.model.I_M_ShipperPickupTypesCfg getM_ShipperPickupTypesCfg() throws RuntimeException;
+
     /** Column name M_ShipperPickupTypes_ID */
     public static final String COLUMNNAME_M_ShipperPickupTypes_ID = "M_ShipperPickupTypes_ID";
 
@@ -165,15 +176,4 @@ public interface I_M_ShipperPickupTypes
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name X_ShipperPickupTypes_ID */
-    public static final String COLUMNNAME_X_ShipperPickupTypes_ID = "X_ShipperPickupTypes_ID";
-
-	/** Set Shipper Pickup Types	  */
-	public void setX_ShipperPickupTypes_ID (int X_ShipperPickupTypes_ID);
-
-	/** Get Shipper Pickup Types	  */
-	public int getX_ShipperPickupTypes_ID();
-
-	public org.compiere.model.I_X_ShipperPickupTypes getX_ShipperPickupTypes() throws RuntimeException;
 }

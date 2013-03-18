@@ -20,15 +20,15 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for X_ShipperLabels
+/** Generated Interface for M_ShipperLabelsCfg
  *  @author iDempiere (generated) 
  *  @version Release 1.0a
  */
-public interface I_X_ShipperLabels 
+public interface I_M_ShipperLabelsCfg 
 {
 
-    /** TableName=X_ShipperLabels */
-    public static final String Table_Name = "X_ShipperLabels";
+    /** TableName=M_ShipperLabelsCfg */
+    public static final String Table_Name = "M_ShipperLabelsCfg";
 
     /** AD_Table_ID=200048 */
     public static final int Table_ID = 200048;
@@ -135,6 +135,35 @@ public interface I_X_ShipperLabels
 	/** Get Label Print Method	  */
 	public String getLabelPrintMethod();
 
+    /** Column name M_ShipperCfg_ID */
+    public static final String COLUMNNAME_M_ShipperCfg_ID = "M_ShipperCfg_ID";
+
+	/** Set Shipper Configuration	  */
+	public void setM_ShipperCfg_ID (int M_ShipperCfg_ID);
+
+	/** Get Shipper Configuration	  */
+	public int getM_ShipperCfg_ID();
+
+	public org.compiere.model.I_M_ShipperCfg getM_ShipperCfg() throws RuntimeException;
+
+    /** Column name M_ShipperLabelsCfg_ID */
+    public static final String COLUMNNAME_M_ShipperLabelsCfg_ID = "M_ShipperLabelsCfg_ID";
+
+	/** Set Shipper Labels Configuration	  */
+	public void setM_ShipperLabelsCfg_ID (int M_ShipperLabelsCfg_ID);
+
+	/** Get Shipper Labels Configuration	  */
+	public int getM_ShipperLabelsCfg_ID();
+
+    /** Column name M_ShipperLabelsCfg_UU */
+    public static final String COLUMNNAME_M_ShipperLabelsCfg_UU = "M_ShipperLabelsCfg_UU";
+
+	/** Set M_ShipperLabelsCfg_UU	  */
+	public void setM_ShipperLabelsCfg_UU (String M_ShipperLabelsCfg_UU);
+
+	/** Get M_ShipperLabelsCfg_UU	  */
+	public String getM_ShipperLabelsCfg_UU();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -185,33 +214,4 @@ public interface I_X_ShipperLabels
 
 	/** Get Width	  */
 	public BigDecimal getWidth();
-
-    /** Column name X_Shipper_ID */
-    public static final String COLUMNNAME_X_Shipper_ID = "X_Shipper_ID";
-
-	/** Set Shipper	  */
-	public void setX_Shipper_ID (int X_Shipper_ID);
-
-	/** Get Shipper	  */
-	public int getX_Shipper_ID();
-
-	public org.compiere.model.I_X_Shipper getX_Shipper() throws RuntimeException;
-
-    /** Column name X_ShipperLabels_ID */
-    public static final String COLUMNNAME_X_ShipperLabels_ID = "X_ShipperLabels_ID";
-
-	/** Set Shipper Labels	  */
-	public void setX_ShipperLabels_ID (int X_ShipperLabels_ID);
-
-	/** Get Shipper Labels	  */
-	public int getX_ShipperLabels_ID();
-
-    /** Column name X_ShipperLabels_UU */
-    public static final String COLUMNNAME_X_ShipperLabels_UU = "X_ShipperLabels_UU";
-
-	/** Set X_ShipperLabels_UU	  */
-	public void setX_ShipperLabels_UU (String X_ShipperLabels_UU);
-
-	/** Get X_ShipperLabels_UU	  */
-	public String getX_ShipperLabels_UU();
 }

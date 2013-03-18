@@ -24,17 +24,17 @@ public class MShipperLabels extends X_M_ShipperLabels
 	
 	public String getValue()
 	{
-		return getX_ShipperLabels().getValue();
+		return getM_ShipperLabelsCfg().getValue();
 	}
 	
 	public BigDecimal getHeight()
 	{
-		return getX_ShipperLabels().getHeight();
+		return getM_ShipperLabelsCfg().getHeight();
 	}
 	
 	public BigDecimal getWidth()
 	{
-		return getX_ShipperLabels().getWidth();
+		return getM_ShipperLabelsCfg().getWidth();
 	}
 	
 }

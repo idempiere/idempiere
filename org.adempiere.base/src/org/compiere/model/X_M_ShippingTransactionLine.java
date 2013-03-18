@@ -32,7 +32,7 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121219L;
+	private static final long serialVersionUID = 20130318L;
 
     /** Standard Constructor */
     public X_M_ShippingTransactionLine (Properties ctx, int M_ShippingTransactionLine_ID, String trxName)
@@ -182,6 +182,20 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
 		return bd;
 	}
 
+	/** Set Master Tracking No.
+		@param MasterTrackingNo Master Tracking No	  */
+	public void setMasterTrackingNo (String MasterTrackingNo)
+	{
+		set_Value (COLUMNNAME_MasterTrackingNo, MasterTrackingNo);
+	}
+
+	/** Get Master Tracking No.
+		@return Master Tracking No	  */
+	public String getMasterTrackingNo () 
+	{
+		return (String)get_Value(COLUMNNAME_MasterTrackingNo);
+	}
+
 	public org.compiere.model.I_M_PackageMPS getM_PackageMPS() throws RuntimeException
     {
 		return (org.compiere.model.I_M_PackageMPS)MTable.get(getCtx(), org.compiere.model.I_M_PackageMPS.Table_Name)
@@ -272,20 +286,6 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
 	public String getM_ShippingTransactionLine_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_M_ShippingTransactionLine_UU);
-	}
-
-	/** Set Master Tracking No.
-		@param MasterTrackingNo Master Tracking No	  */
-	public void setMasterTrackingNo (String MasterTrackingNo)
-	{
-		set_Value (COLUMNNAME_MasterTrackingNo, MasterTrackingNo);
-	}
-
-	/** Get Master Tracking No.
-		@return Master Tracking No	  */
-	public String getMasterTrackingNo () 
-	{
-		return (String)get_Value(COLUMNNAME_MasterTrackingNo);
 	}
 
 	/** Set Price.

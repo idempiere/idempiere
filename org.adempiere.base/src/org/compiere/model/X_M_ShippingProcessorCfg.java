@@ -21,10 +21,10 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Model for X_ShippingProcessor
+/** Generated Model for M_ShippingProcessorCfg
  *  @author iDempiere (generated) 
  *  @version Release 1.0a - $Id$ */
-public class X_X_ShippingProcessor extends PO implements I_X_ShippingProcessor, I_Persistent 
+public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcessorCfg, I_Persistent 
 {
 
 	/**
@@ -33,20 +33,20 @@ public class X_X_ShippingProcessor extends PO implements I_X_ShippingProcessor, 
 	private static final long serialVersionUID = 20121213L;
 
     /** Standard Constructor */
-    public X_X_ShippingProcessor (Properties ctx, int X_ShippingProcessor_ID, String trxName)
+    public X_M_ShippingProcessorCfg (Properties ctx, int M_ShippingProcessorCfg_ID, String trxName)
     {
-      super (ctx, X_ShippingProcessor_ID, trxName);
-      /** if (X_ShippingProcessor_ID == 0)
+      super (ctx, M_ShippingProcessorCfg_ID, trxName);
+      /** if (M_ShippingProcessorCfg_ID == 0)
         {
 			setHostAddress (null);
 			setHostPort (0);
 			setName (null);
-			setX_ShippingProcessor_ID (0);
+			setM_ShippingProcessorCfg_ID (0);
         } */
     }
 
     /** Load Constructor */
-    public X_X_ShippingProcessor (Properties ctx, ResultSet rs, String trxName)
+    public X_M_ShippingProcessorCfg (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -68,7 +68,7 @@ public class X_X_ShippingProcessor extends PO implements I_X_ShippingProcessor, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_X_ShippingProcessor[")
+      StringBuffer sb = new StringBuffer ("X_M_ShippingProcessorCfg[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
@@ -252,36 +252,36 @@ public class X_X_ShippingProcessor extends PO implements I_X_ShippingProcessor, 
 	}
 
 	/** Set Shipping Processor.
-		@param X_ShippingProcessor_ID Shipping Processor	  */
-	public void setX_ShippingProcessor_ID (int X_ShippingProcessor_ID)
+		@param M_ShippingProcessorCfg_ID Shipping Processor	  */
+	public void setM_ShippingProcessorCfg_ID (int M_ShippingProcessorCfg_ID)
 	{
-		if (X_ShippingProcessor_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_X_ShippingProcessor_ID, null);
+		if (M_ShippingProcessorCfg_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_M_ShippingProcessorCfg_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_X_ShippingProcessor_ID, Integer.valueOf(X_ShippingProcessor_ID));
+			set_ValueNoCheck (COLUMNNAME_M_ShippingProcessorCfg_ID, Integer.valueOf(M_ShippingProcessorCfg_ID));
 	}
 
 	/** Get Shipping Processor.
 		@return Shipping Processor	  */
-	public int getX_ShippingProcessor_ID () 
+	public int getM_ShippingProcessorCfg_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_X_ShippingProcessor_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShippingProcessorCfg_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
-	/** Set X_ShippingProcessor_UU.
-		@param X_ShippingProcessor_UU X_ShippingProcessor_UU	  */
-	public void setX_ShippingProcessor_UU (String X_ShippingProcessor_UU)
+	/** Set M_ShippingProcessorCfg_UU.
+		@param M_ShippingProcessorCfg_UU M_ShippingProcessorCfg_UU	  */
+	public void setM_ShippingProcessorCfg_UU (String M_ShippingProcessorCfg_UU)
 	{
-		set_Value (COLUMNNAME_X_ShippingProcessor_UU, X_ShippingProcessor_UU);
+		set_Value (COLUMNNAME_M_ShippingProcessorCfg_UU, M_ShippingProcessorCfg_UU);
 	}
 
-	/** Get X_ShippingProcessor_UU.
-		@return X_ShippingProcessor_UU	  */
-	public String getX_ShippingProcessor_UU () 
+	/** Get M_ShippingProcessorCfg_UU.
+		@return M_ShippingProcessorCfg_UU	  */
+	public String getM_ShippingProcessorCfg_UU () 
 	{
-		return (String)get_Value(COLUMNNAME_X_ShippingProcessor_UU);
+		return (String)get_Value(COLUMNNAME_M_ShippingProcessorCfg_UU);
 	}
 }

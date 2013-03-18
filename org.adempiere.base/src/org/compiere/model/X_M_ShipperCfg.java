@@ -21,22 +21,22 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Model for X_Shipper
+/** Generated Model for M_ShipperCfg
  *  @author iDempiere (generated) 
  *  @version Release 1.0a - $Id$ */
-public class X_X_Shipper extends PO implements I_X_Shipper, I_Persistent 
+public class X_M_ShipperCfg extends PO implements I_M_ShipperCfg, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121213L;
+	private static final long serialVersionUID = 20130318L;
 
     /** Standard Constructor */
-    public X_X_Shipper (Properties ctx, int X_Shipper_ID, String trxName)
+    public X_M_ShipperCfg (Properties ctx, int M_ShipperCfg_ID, String trxName)
     {
-      super (ctx, X_Shipper_ID, trxName);
-      /** if (X_Shipper_ID == 0)
+      super (ctx, M_ShipperCfg_ID, trxName);
+      /** if (M_ShipperCfg_ID == 0)
         {
 			setIsInternational (false);
 // N
@@ -46,13 +46,13 @@ public class X_X_Shipper extends PO implements I_X_Shipper, I_Persistent
 // N
 			setIsSaturdayDelivery (false);
 // N
+			setM_ShipperCfg_ID (0);
 			setName (null);
-			setX_Shipper_ID (0);
         } */
     }
 
     /** Load Constructor */
-    public X_X_Shipper (Properties ctx, ResultSet rs, String trxName)
+    public X_M_ShipperCfg (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -74,10 +74,27 @@ public class X_X_Shipper extends PO implements I_X_Shipper, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_X_Shipper[")
+      StringBuffer sb = new StringBuffer ("X_M_ShipperCfg[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** Set Copy From.
+		@param CopyFrom 
+		Copy From Record
+	  */
+	public void setCopyFrom (String CopyFrom)
+	{
+		set_Value (COLUMNNAME_CopyFrom, CopyFrom);
+	}
+
+	/** Get Copy From.
+		@return Copy From Record
+	  */
+	public String getCopyFrom () 
+	{
+		return (String)get_Value(COLUMNNAME_CopyFrom);
+	}
 
 	/** Set Description.
 		@param Description 
@@ -183,6 +200,65 @@ public class X_X_Shipper extends PO implements I_X_Shipper, I_Persistent
 		return false;
 	}
 
+	/** Set Shipper Configuration.
+		@param M_ShipperCfg_ID Shipper Configuration	  */
+	public void setM_ShipperCfg_ID (int M_ShipperCfg_ID)
+	{
+		if (M_ShipperCfg_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_M_ShipperCfg_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_M_ShipperCfg_ID, Integer.valueOf(M_ShipperCfg_ID));
+	}
+
+	/** Get Shipper Configuration.
+		@return Shipper Configuration	  */
+	public int getM_ShipperCfg_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperCfg_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set M_ShipperCfg_UU.
+		@param M_ShipperCfg_UU M_ShipperCfg_UU	  */
+	public void setM_ShipperCfg_UU (String M_ShipperCfg_UU)
+	{
+		set_Value (COLUMNNAME_M_ShipperCfg_UU, M_ShipperCfg_UU);
+	}
+
+	/** Get M_ShipperCfg_UU.
+		@return M_ShipperCfg_UU	  */
+	public String getM_ShipperCfg_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_ShipperCfg_UU);
+	}
+
+	public org.compiere.model.I_M_ShippingProcessorCfg getM_ShippingProcessorCfg() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_ShippingProcessorCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessorCfg.Table_Name)
+			.getPO(getM_ShippingProcessorCfg_ID(), get_TrxName());	}
+
+	/** Set Shipping Processor Configuration.
+		@param M_ShippingProcessorCfg_ID Shipping Processor Configuration	  */
+	public void setM_ShippingProcessorCfg_ID (int M_ShippingProcessorCfg_ID)
+	{
+		if (M_ShippingProcessorCfg_ID < 1) 
+			set_Value (COLUMNNAME_M_ShippingProcessorCfg_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_ShippingProcessorCfg_ID, Integer.valueOf(M_ShippingProcessorCfg_ID));
+	}
+
+	/** Get Shipping Processor Configuration.
+		@return Shipping Processor Configuration	  */
+	public int getM_ShippingProcessorCfg_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShippingProcessorCfg_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Name.
 		@param Name 
 		Alphanumeric identifier of the entity
@@ -237,64 +313,5 @@ public class X_X_Shipper extends PO implements I_X_Shipper, I_Persistent
 	public String getTrackingURL () 
 	{
 		return (String)get_Value(COLUMNNAME_TrackingURL);
-	}
-
-	/** Set Shipper.
-		@param X_Shipper_ID Shipper	  */
-	public void setX_Shipper_ID (int X_Shipper_ID)
-	{
-		if (X_Shipper_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_X_Shipper_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_X_Shipper_ID, Integer.valueOf(X_Shipper_ID));
-	}
-
-	/** Get Shipper.
-		@return Shipper	  */
-	public int getX_Shipper_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_X_Shipper_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set X_Shipper_UU.
-		@param X_Shipper_UU X_Shipper_UU	  */
-	public void setX_Shipper_UU (String X_Shipper_UU)
-	{
-		set_Value (COLUMNNAME_X_Shipper_UU, X_Shipper_UU);
-	}
-
-	/** Get X_Shipper_UU.
-		@return X_Shipper_UU	  */
-	public String getX_Shipper_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_X_Shipper_UU);
-	}
-
-	public org.compiere.model.I_X_ShippingProcessor getX_ShippingProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_X_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_X_ShippingProcessor.Table_Name)
-			.getPO(getX_ShippingProcessor_ID(), get_TrxName());	}
-
-	/** Set Shipping Processor.
-		@param X_ShippingProcessor_ID Shipping Processor	  */
-	public void setX_ShippingProcessor_ID (int X_ShippingProcessor_ID)
-	{
-		if (X_ShippingProcessor_ID < 1) 
-			set_Value (COLUMNNAME_X_ShippingProcessor_ID, null);
-		else 
-			set_Value (COLUMNNAME_X_ShippingProcessor_ID, Integer.valueOf(X_ShippingProcessor_ID));
-	}
-
-	/** Get Shipping Processor.
-		@return Shipping Processor	  */
-	public int getX_ShippingProcessor_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_X_ShippingProcessor_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 }

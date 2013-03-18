@@ -21,34 +21,34 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Model for X_ShipperPickupTypes
+/** Generated Model for M_ShipperPickupTypesCfg
  *  @author iDempiere (generated) 
  *  @version Release 1.0a - $Id$ */
-public class X_X_ShipperPickupTypes extends PO implements I_X_ShipperPickupTypes, I_Persistent 
+public class X_M_ShipperPickupTypesCfg extends PO implements I_M_ShipperPickupTypesCfg, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121213L;
+	private static final long serialVersionUID = 20130318L;
 
     /** Standard Constructor */
-    public X_X_ShipperPickupTypes (Properties ctx, int X_ShipperPickupTypes_ID, String trxName)
+    public X_M_ShipperPickupTypesCfg (Properties ctx, int M_ShipperPickupTypesCfg_ID, String trxName)
     {
-      super (ctx, X_ShipperPickupTypes_ID, trxName);
-      /** if (X_ShipperPickupTypes_ID == 0)
+      super (ctx, M_ShipperPickupTypesCfg_ID, trxName);
+      /** if (M_ShipperPickupTypesCfg_ID == 0)
         {
 			setIsDefault (false);
 // N
+			setM_ShipperCfg_ID (0);
+			setM_ShipperPickupTypesCfg_ID (0);
 			setName (null);
 			setValue (null);
-			setX_Shipper_ID (0);
-			setX_ShipperPickupTypes_ID (0);
         } */
     }
 
     /** Load Constructor */
-    public X_X_ShipperPickupTypes (Properties ctx, ResultSet rs, String trxName)
+    public X_M_ShipperPickupTypesCfg (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -70,7 +70,7 @@ public class X_X_ShipperPickupTypes extends PO implements I_X_ShipperPickupTypes
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_X_ShipperPickupTypes[")
+      StringBuffer sb = new StringBuffer ("X_M_ShipperPickupTypesCfg[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
@@ -116,6 +116,65 @@ public class X_X_ShipperPickupTypes extends PO implements I_X_ShipperPickupTypes
 		return false;
 	}
 
+	public org.compiere.model.I_M_ShipperCfg getM_ShipperCfg() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_ShipperCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperCfg.Table_Name)
+			.getPO(getM_ShipperCfg_ID(), get_TrxName());	}
+
+	/** Set Shipper Configuration.
+		@param M_ShipperCfg_ID Shipper Configuration	  */
+	public void setM_ShipperCfg_ID (int M_ShipperCfg_ID)
+	{
+		if (M_ShipperCfg_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_M_ShipperCfg_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_M_ShipperCfg_ID, Integer.valueOf(M_ShipperCfg_ID));
+	}
+
+	/** Get Shipper Configuration.
+		@return Shipper Configuration	  */
+	public int getM_ShipperCfg_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperCfg_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Shipper Pickup Types Configuration.
+		@param M_ShipperPickupTypesCfg_ID Shipper Pickup Types Configuration	  */
+	public void setM_ShipperPickupTypesCfg_ID (int M_ShipperPickupTypesCfg_ID)
+	{
+		if (M_ShipperPickupTypesCfg_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_M_ShipperPickupTypesCfg_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_M_ShipperPickupTypesCfg_ID, Integer.valueOf(M_ShipperPickupTypesCfg_ID));
+	}
+
+	/** Get Shipper Pickup Types Configuration.
+		@return Shipper Pickup Types Configuration	  */
+	public int getM_ShipperPickupTypesCfg_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperPickupTypesCfg_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set M_ShipperPickupTypesCfg_UU.
+		@param M_ShipperPickupTypesCfg_UU M_ShipperPickupTypesCfg_UU	  */
+	public void setM_ShipperPickupTypesCfg_UU (String M_ShipperPickupTypesCfg_UU)
+	{
+		set_Value (COLUMNNAME_M_ShipperPickupTypesCfg_UU, M_ShipperPickupTypesCfg_UU);
+	}
+
+	/** Get M_ShipperPickupTypesCfg_UU.
+		@return M_ShipperPickupTypesCfg_UU	  */
+	public String getM_ShipperPickupTypesCfg_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_ShipperPickupTypesCfg_UU);
+	}
+
 	/** Set Name.
 		@param Name 
 		Alphanumeric identifier of the entity
@@ -156,64 +215,5 @@ public class X_X_ShipperPickupTypes extends PO implements I_X_ShipperPickupTypes
 	public String getValue () 
 	{
 		return (String)get_Value(COLUMNNAME_Value);
-	}
-
-	public org.compiere.model.I_X_Shipper getX_Shipper() throws RuntimeException
-    {
-		return (org.compiere.model.I_X_Shipper)MTable.get(getCtx(), org.compiere.model.I_X_Shipper.Table_Name)
-			.getPO(getX_Shipper_ID(), get_TrxName());	}
-
-	/** Set Shipper.
-		@param X_Shipper_ID Shipper	  */
-	public void setX_Shipper_ID (int X_Shipper_ID)
-	{
-		if (X_Shipper_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_X_Shipper_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_X_Shipper_ID, Integer.valueOf(X_Shipper_ID));
-	}
-
-	/** Get Shipper.
-		@return Shipper	  */
-	public int getX_Shipper_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_X_Shipper_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Shipper Pickup Types.
-		@param X_ShipperPickupTypes_ID Shipper Pickup Types	  */
-	public void setX_ShipperPickupTypes_ID (int X_ShipperPickupTypes_ID)
-	{
-		if (X_ShipperPickupTypes_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_X_ShipperPickupTypes_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_X_ShipperPickupTypes_ID, Integer.valueOf(X_ShipperPickupTypes_ID));
-	}
-
-	/** Get Shipper Pickup Types.
-		@return Shipper Pickup Types	  */
-	public int getX_ShipperPickupTypes_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_X_ShipperPickupTypes_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set X_ShipperPickupTypes_UU.
-		@param X_ShipperPickupTypes_UU X_ShipperPickupTypes_UU	  */
-	public void setX_ShipperPickupTypes_UU (String X_ShipperPickupTypes_UU)
-	{
-		set_Value (COLUMNNAME_X_ShipperPickupTypes_UU, X_ShipperPickupTypes_UU);
-	}
-
-	/** Get X_ShipperPickupTypes_UU.
-		@return X_ShipperPickupTypes_UU	  */
-	public String getX_ShipperPickupTypes_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_X_ShipperPickupTypes_UU);
 	}
 }

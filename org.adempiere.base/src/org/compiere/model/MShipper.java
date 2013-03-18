@@ -77,27 +77,27 @@ public class MShipper extends X_M_Shipper
 	
 	public String getShippingServiceCode()
 	{
-		return getX_Shipper().getShippingServiceCode();
+		return getM_ShipperCfg().getShippingServiceCode();
 	}
 	
 	public boolean isInternational()
 	{
-		return getX_Shipper().isInternational();
+		return getM_ShipperCfg().isInternational();
 	}
 
 	public boolean isResidential()
 	{
-		return getX_Shipper().isResidential();
+		return getM_ShipperCfg().isResidential();
 	}
 	
 	public boolean isSaturdayDelivery()
 	{
-		return getX_Shipper().isSaturdayDelivery();
+		return getM_ShipperCfg().isSaturdayDelivery();
 	}
 	
 	public String getTrackingURL()
 	{
-		return getX_Shipper().getTrackingURL();
+		return getM_ShipperCfg().getTrackingURL();
 	}
 	
 }	//	MShipper

@@ -31,7 +31,7 @@ public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130109L;
+	private static final long serialVersionUID = 20130318L;
 
     /** Standard Constructor */
     public X_M_ShipperPackaging (Properties ctx, int M_ShipperPackaging_ID, String trxName)
@@ -42,9 +42,9 @@ public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_
 			setIsDefault (false);
 // N
 			setM_Shipper_ID (0);
+			setM_ShipperPackagingCfg_ID (0);
 			setM_ShipperPackaging_ID (0);
 			setName (null);
-			setX_ShipperPackaging_ID (0);
         } */
     }
 
@@ -128,6 +128,31 @@ public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_M_ShipperPackagingCfg getM_ShipperPackagingCfg() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_ShipperPackagingCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPackagingCfg.Table_Name)
+			.getPO(getM_ShipperPackagingCfg_ID(), get_TrxName());	}
+
+	/** Set Shipper Packaging Configuration.
+		@param M_ShipperPackagingCfg_ID Shipper Packaging Configuration	  */
+	public void setM_ShipperPackagingCfg_ID (int M_ShipperPackagingCfg_ID)
+	{
+		if (M_ShipperPackagingCfg_ID < 1) 
+			set_Value (COLUMNNAME_M_ShipperPackagingCfg_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_ShipperPackagingCfg_ID, Integer.valueOf(M_ShipperPackagingCfg_ID));
+	}
+
+	/** Get Shipper Packaging Configuration.
+		@return Shipper Packaging Configuration	  */
+	public int getM_ShipperPackagingCfg_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperPackagingCfg_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Shipper Packaging.
 		@param M_ShipperPackaging_ID Shipper Packaging	  */
 	public void setM_ShipperPackaging_ID (int M_ShipperPackaging_ID)
@@ -197,30 +222,5 @@ public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
-	}
-
-	public org.compiere.model.I_X_ShipperPackaging getX_ShipperPackaging() throws RuntimeException
-    {
-		return (org.compiere.model.I_X_ShipperPackaging)MTable.get(getCtx(), org.compiere.model.I_X_ShipperPackaging.Table_Name)
-			.getPO(getX_ShipperPackaging_ID(), get_TrxName());	}
-
-	/** Set Shipper Packaging.
-		@param X_ShipperPackaging_ID Shipper Packaging	  */
-	public void setX_ShipperPackaging_ID (int X_ShipperPackaging_ID)
-	{
-		if (X_ShipperPackaging_ID < 1) 
-			set_Value (COLUMNNAME_X_ShipperPackaging_ID, null);
-		else 
-			set_Value (COLUMNNAME_X_ShipperPackaging_ID, Integer.valueOf(X_ShipperPackaging_ID));
-	}
-
-	/** Get Shipper Packaging.
-		@return Shipper Packaging	  */
-	public int getX_ShipperPackaging_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_X_ShipperPackaging_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 }

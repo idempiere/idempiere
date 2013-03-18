@@ -128,6 +128,17 @@ public interface I_M_ShipperLabels
 
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
+    /** Column name M_ShipperLabelsCfg_ID */
+    public static final String COLUMNNAME_M_ShipperLabelsCfg_ID = "M_ShipperLabelsCfg_ID";
+
+	/** Set Shipper Labels Configuration	  */
+	public void setM_ShipperLabelsCfg_ID (int M_ShipperLabelsCfg_ID);
+
+	/** Get Shipper Labels Configuration	  */
+	public int getM_ShipperLabelsCfg_ID();
+
+	public org.compiere.model.I_M_ShipperLabelsCfg getM_ShipperLabelsCfg() throws RuntimeException;
+
     /** Column name M_ShipperLabels_ID */
     public static final String COLUMNNAME_M_ShipperLabels_ID = "M_ShipperLabels_ID";
 
@@ -174,15 +185,4 @@ public interface I_M_ShipperLabels
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name X_ShipperLabels_ID */
-    public static final String COLUMNNAME_X_ShipperLabels_ID = "X_ShipperLabels_ID";
-
-	/** Set Shipper Labels	  */
-	public void setX_ShipperLabels_ID (int X_ShipperLabels_ID);
-
-	/** Get Shipper Labels	  */
-	public int getX_ShipperLabels_ID();
-
-	public org.compiere.model.I_X_ShipperLabels getX_ShipperLabels() throws RuntimeException;
 }

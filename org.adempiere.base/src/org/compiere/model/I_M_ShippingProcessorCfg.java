@@ -20,15 +20,15 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for X_ShippingProcessor
+/** Generated Interface for M_ShippingProcessorCfg
  *  @author iDempiere (generated) 
  *  @version Release 1.0a
  */
-public interface I_X_ShippingProcessor 
+public interface I_M_ShippingProcessorCfg 
 {
 
-    /** TableName=X_ShippingProcessor */
-    public static final String Table_Name = "X_ShippingProcessor";
+    /** TableName=M_ShippingProcessorCfg */
+    public static final String Table_Name = "M_ShippingProcessorCfg";
 
     /** AD_Table_ID=200046 */
     public static final int Table_ID = 200046;
@@ -130,6 +130,24 @@ public interface I_X_ShippingProcessor
 	  */
 	public boolean isActive();
 
+    /** Column name M_ShippingProcessorCfg_ID */
+    public static final String COLUMNNAME_M_ShippingProcessorCfg_ID = "M_ShippingProcessorCfg_ID";
+
+	/** Set Shipping Processor Configuration	  */
+	public void setM_ShippingProcessorCfg_ID (int M_ShippingProcessorCfg_ID);
+
+	/** Get Shipping Processor Configuration	  */
+	public int getM_ShippingProcessorCfg_ID();
+
+    /** Column name M_ShippingProcessorCfg_UU */
+    public static final String COLUMNNAME_M_ShippingProcessorCfg_UU = "M_ShippingProcessorCfg_UU";
+
+	/** Set M_ShippingProcessorCfg_UU	  */
+	public void setM_ShippingProcessorCfg_UU (String M_ShippingProcessorCfg_UU);
+
+	/** Get M_ShippingProcessorCfg_UU	  */
+	public String getM_ShippingProcessorCfg_UU();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -228,22 +246,4 @@ public interface I_X_ShippingProcessor
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name X_ShippingProcessor_ID */
-    public static final String COLUMNNAME_X_ShippingProcessor_ID = "X_ShippingProcessor_ID";
-
-	/** Set Shipping Processor	  */
-	public void setX_ShippingProcessor_ID (int X_ShippingProcessor_ID);
-
-	/** Get Shipping Processor	  */
-	public int getX_ShippingProcessor_ID();
-
-    /** Column name X_ShippingProcessor_UU */
-    public static final String COLUMNNAME_X_ShippingProcessor_UU = "X_ShippingProcessor_UU";
-
-	/** Set X_ShippingProcessor_UU	  */
-	public void setX_ShippingProcessor_UU (String X_ShippingProcessor_UU);
-
-	/** Get X_ShippingProcessor_UU	  */
-	public String getX_ShippingProcessor_UU();
 }

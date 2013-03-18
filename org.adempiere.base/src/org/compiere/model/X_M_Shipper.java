@@ -29,7 +29,7 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130109L;
+	private static final long serialVersionUID = 20130318L;
 
     /** Standard Constructor */
     public X_M_Shipper (Properties ctx, int M_Shipper_ID, String trxName)
@@ -115,6 +115,31 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 		return (String)get_Value(COLUMNNAME_CreateFrom);
 	}
 
+	public org.compiere.model.I_M_ShipperCfg getM_ShipperCfg() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_ShipperCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperCfg.Table_Name)
+			.getPO(getM_ShipperCfg_ID(), get_TrxName());	}
+
+	/** Set Shipper Configuration.
+		@param M_ShipperCfg_ID Shipper Configuration	  */
+	public void setM_ShipperCfg_ID (int M_ShipperCfg_ID)
+	{
+		if (M_ShipperCfg_ID < 1) 
+			set_Value (COLUMNNAME_M_ShipperCfg_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_ShipperCfg_ID, Integer.valueOf(M_ShipperCfg_ID));
+	}
+
+	/** Get Shipper Configuration.
+		@return Shipper Configuration	  */
+	public int getM_ShipperCfg_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperCfg_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Shipper.
 		@param M_Shipper_ID 
 		Method or manner of product delivery
@@ -192,30 +217,5 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 	public String getName () 
 	{
 		return (String)get_Value(COLUMNNAME_Name);
-	}
-
-	public org.compiere.model.I_X_Shipper getX_Shipper() throws RuntimeException
-    {
-		return (org.compiere.model.I_X_Shipper)MTable.get(getCtx(), org.compiere.model.I_X_Shipper.Table_Name)
-			.getPO(getX_Shipper_ID(), get_TrxName());	}
-
-	/** Set Shipper.
-		@param X_Shipper_ID Shipper	  */
-	public void setX_Shipper_ID (int X_Shipper_ID)
-	{
-		if (X_Shipper_ID < 1) 
-			set_Value (COLUMNNAME_X_Shipper_ID, null);
-		else 
-			set_Value (COLUMNNAME_X_Shipper_ID, Integer.valueOf(X_Shipper_ID));
-	}
-
-	/** Get Shipper.
-		@return Shipper	  */
-	public int getX_Shipper_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_X_Shipper_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 }

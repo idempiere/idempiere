@@ -29,7 +29,7 @@ public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130109L;
+	private static final long serialVersionUID = 20130318L;
 
     /** Standard Constructor */
     public X_M_ShippingProcessor (Properties ctx, int M_ShippingProcessor_ID, String trxName)
@@ -38,10 +38,10 @@ public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, 
       /** if (M_ShippingProcessor_ID == 0)
         {
 			setConnectionPassword (null);
+			setM_ShippingProcessorCfg_ID (0);
 			setM_ShippingProcessor_ID (0);
 			setName (null);
 			setUserID (null);
-			setX_ShippingProcessor_ID (0);
         } */
     }
 
@@ -99,6 +99,31 @@ public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, 
 	public String getConnectionPassword () 
 	{
 		return (String)get_Value(COLUMNNAME_ConnectionPassword);
+	}
+
+	public org.compiere.model.I_M_ShippingProcessorCfg getM_ShippingProcessorCfg() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_ShippingProcessorCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessorCfg.Table_Name)
+			.getPO(getM_ShippingProcessorCfg_ID(), get_TrxName());	}
+
+	/** Set Shipping Processor Configuration.
+		@param M_ShippingProcessorCfg_ID Shipping Processor Configuration	  */
+	public void setM_ShippingProcessorCfg_ID (int M_ShippingProcessorCfg_ID)
+	{
+		if (M_ShippingProcessorCfg_ID < 1) 
+			set_Value (COLUMNNAME_M_ShippingProcessorCfg_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_ShippingProcessorCfg_ID, Integer.valueOf(M_ShippingProcessorCfg_ID));
+	}
+
+	/** Get Shipping Processor Configuration.
+		@return Shipping Processor Configuration	  */
+	public int getM_ShippingProcessorCfg_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShippingProcessorCfg_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Shipping Processor.
@@ -167,30 +192,5 @@ public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, 
 	public String getUserID () 
 	{
 		return (String)get_Value(COLUMNNAME_UserID);
-	}
-
-	public org.compiere.model.I_X_ShippingProcessor getX_ShippingProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_X_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_X_ShippingProcessor.Table_Name)
-			.getPO(getX_ShippingProcessor_ID(), get_TrxName());	}
-
-	/** Set Shipping Processor.
-		@param X_ShippingProcessor_ID Shipping Processor	  */
-	public void setX_ShippingProcessor_ID (int X_ShippingProcessor_ID)
-	{
-		if (X_ShippingProcessor_ID < 1) 
-			set_Value (COLUMNNAME_X_ShippingProcessor_ID, null);
-		else 
-			set_Value (COLUMNNAME_X_ShippingProcessor_ID, Integer.valueOf(X_ShippingProcessor_ID));
-	}
-
-	/** Get Shipping Processor.
-		@return Shipping Processor	  */
-	public int getX_ShippingProcessor_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_X_ShippingProcessor_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 }

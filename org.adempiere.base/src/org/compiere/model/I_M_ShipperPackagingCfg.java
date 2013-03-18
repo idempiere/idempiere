@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for X_ShipperPickupTypes
+/** Generated Interface for M_ShipperPackagingCfg
  *  @author iDempiere (generated) 
  *  @version Release 1.0a
  */
-public interface I_X_ShipperPickupTypes 
+public interface I_M_ShipperPackagingCfg 
 {
 
-    /** TableName=X_ShipperPickupTypes */
-    public static final String Table_Name = "X_ShipperPickupTypes";
+    /** TableName=M_ShipperPackagingCfg */
+    public static final String Table_Name = "M_ShipperPackagingCfg";
 
-    /** AD_Table_ID=200050 */
-    public static final int Table_ID = 200050;
+    /** AD_Table_ID=200049 */
+    public static final int Table_ID = 200049;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -117,6 +117,35 @@ public interface I_X_ShipperPickupTypes
 	  */
 	public boolean isDefault();
 
+    /** Column name M_ShipperCfg_ID */
+    public static final String COLUMNNAME_M_ShipperCfg_ID = "M_ShipperCfg_ID";
+
+	/** Set Shipper Configuration	  */
+	public void setM_ShipperCfg_ID (int M_ShipperCfg_ID);
+
+	/** Get Shipper Configuration	  */
+	public int getM_ShipperCfg_ID();
+
+	public org.compiere.model.I_M_ShipperCfg getM_ShipperCfg() throws RuntimeException;
+
+    /** Column name M_ShipperPackagingCfg_ID */
+    public static final String COLUMNNAME_M_ShipperPackagingCfg_ID = "M_ShipperPackagingCfg_ID";
+
+	/** Set Shipper Packaging Configuration	  */
+	public void setM_ShipperPackagingCfg_ID (int M_ShipperPackagingCfg_ID);
+
+	/** Get Shipper Packaging Configuration	  */
+	public int getM_ShipperPackagingCfg_ID();
+
+    /** Column name M_ShipperPackagingCfg_UU */
+    public static final String COLUMNNAME_M_ShipperPackagingCfg_UU = "M_ShipperPackagingCfg_UU";
+
+	/** Set M_ShipperPackagingCfg_UU	  */
+	public void setM_ShipperPackagingCfg_UU (String M_ShipperPackagingCfg_UU);
+
+	/** Get M_ShipperPackagingCfg_UU	  */
+	public String getM_ShipperPackagingCfg_UU();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -159,32 +188,16 @@ public interface I_X_ShipperPickupTypes
 	  */
 	public String getValue();
 
-    /** Column name X_Shipper_ID */
-    public static final String COLUMNNAME_X_Shipper_ID = "X_Shipper_ID";
+    /** Column name Weight */
+    public static final String COLUMNNAME_Weight = "Weight";
 
-	/** Set Shipper	  */
-	public void setX_Shipper_ID (int X_Shipper_ID);
+	/** Set Weight.
+	  * Weight of a product
+	  */
+	public void setWeight (BigDecimal Weight);
 
-	/** Get Shipper	  */
-	public int getX_Shipper_ID();
-
-	public org.compiere.model.I_X_Shipper getX_Shipper() throws RuntimeException;
-
-    /** Column name X_ShipperPickupTypes_ID */
-    public static final String COLUMNNAME_X_ShipperPickupTypes_ID = "X_ShipperPickupTypes_ID";
-
-	/** Set Shipper Pickup Types	  */
-	public void setX_ShipperPickupTypes_ID (int X_ShipperPickupTypes_ID);
-
-	/** Get Shipper Pickup Types	  */
-	public int getX_ShipperPickupTypes_ID();
-
-    /** Column name X_ShipperPickupTypes_UU */
-    public static final String COLUMNNAME_X_ShipperPickupTypes_UU = "X_ShipperPickupTypes_UU";
-
-	/** Set X_ShipperPickupTypes_UU	  */
-	public void setX_ShipperPickupTypes_UU (String X_ShipperPickupTypes_UU);
-
-	/** Get X_ShipperPickupTypes_UU	  */
-	public String getX_ShipperPickupTypes_UU();
+	/** Get Weight.
+	  * Weight of a product
+	  */
+	public BigDecimal getWeight();
 }

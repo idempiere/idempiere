@@ -119,6 +119,17 @@ public interface I_M_ShipperPackaging
 
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
+    /** Column name M_ShipperPackagingCfg_ID */
+    public static final String COLUMNNAME_M_ShipperPackagingCfg_ID = "M_ShipperPackagingCfg_ID";
+
+	/** Set Shipper Packaging Configuration	  */
+	public void setM_ShipperPackagingCfg_ID (int M_ShipperPackagingCfg_ID);
+
+	/** Get Shipper Packaging Configuration	  */
+	public int getM_ShipperPackagingCfg_ID();
+
+	public org.compiere.model.I_M_ShipperPackagingCfg getM_ShipperPackagingCfg() throws RuntimeException;
+
     /** Column name M_ShipperPackaging_ID */
     public static final String COLUMNNAME_M_ShipperPackaging_ID = "M_ShipperPackaging_ID";
 
@@ -178,15 +189,4 @@ public interface I_M_ShipperPackaging
 	  * Weight of a product
 	  */
 	public BigDecimal getWeight();
-
-    /** Column name X_ShipperPackaging_ID */
-    public static final String COLUMNNAME_X_ShipperPackaging_ID = "X_ShipperPackaging_ID";
-
-	/** Set Shipper Packaging	  */
-	public void setX_ShipperPackaging_ID (int X_ShipperPackaging_ID);
-
-	/** Get Shipper Packaging	  */
-	public int getX_ShipperPackaging_ID();
-
-	public org.compiere.model.I_X_ShipperPackaging getX_ShipperPackaging() throws RuntimeException;
 }

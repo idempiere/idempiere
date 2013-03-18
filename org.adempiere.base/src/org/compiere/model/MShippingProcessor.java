@@ -23,42 +23,42 @@ public class MShippingProcessor extends X_M_ShippingProcessor
 	
 	public String getShippingProcessorClass()
 	{
-		return getX_ShippingProcessor().getShippingProcessorClass();
+		return getM_ShippingProcessorCfg().getShippingProcessorClass();
 	}
 	
 	public String getHostAddress()
 	{
-		return getX_ShippingProcessor().getHostAddress();
+		return getM_ShippingProcessorCfg().getHostAddress();
 	}
 	
 	public int getHostPort()
 	{
-		return getX_ShippingProcessor().getHostPort();
+		return getM_ShippingProcessorCfg().getHostPort();
 	}
 	
 	public String getProxyAddress()
 	{
-		return getX_ShippingProcessor().getProxyAddress();
+		return getM_ShippingProcessorCfg().getProxyAddress();
 	}
 	
 	public int getProxyPort()
 	{
-		return getX_ShippingProcessor().getProxyPort();
+		return getM_ShippingProcessorCfg().getProxyPort();
 	}
 	
 	public String getProxyLogon()
 	{
-		return getX_ShippingProcessor().getProxyLogon();
+		return getM_ShippingProcessorCfg().getProxyLogon();
 	}
 	
 	public String getProxyPassword()
 	{
-		return getX_ShippingProcessor().getProxyPassword();
+		return getM_ShippingProcessorCfg().getProxyPassword();
 	}
 	
 	public String getServicePath()
 	{
-		return getX_ShippingProcessor().getServicePath();
+		return getM_ShippingProcessorCfg().getServicePath();
 	}
 	
 }

@@ -27,25 +27,25 @@ public class CalloutShipper extends CalloutEngine
 {
 	public String shipper(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
-		Integer X_Shipper_ID = (Integer)value;
-		if (X_Shipper_ID == null || X_Shipper_ID.intValue() == 0)
+		Integer M_ShipperCfg_ID = (Integer)value;
+		if (M_ShipperCfg_ID == null || M_ShipperCfg_ID.intValue() == 0)
 			return "";
 		
-		X_X_Shipper s = new X_X_Shipper(ctx, X_Shipper_ID, null);
+		X_M_ShipperCfg s = new X_M_ShipperCfg(ctx, M_ShipperCfg_ID, null);
 		mTab.setValue(MShipper.COLUMNNAME_Name, s.getName());
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT sp.M_ShippingProcessor_ID ");
-		sb.append("FROM M_ShippingProcessor sp, X_ShippingProcessor xsp, X_Shipper xs ");
-		sb.append("WHERE sp.X_ShippingProcessor_ID = xsp.X_ShippingProcessor_ID ");
-		sb.append("AND xsp.X_ShippingProcessor_ID = xs.X_ShippingProcessor_ID ");
+		sb.append("FROM M_ShippingProcessor sp, M_ShippingProcessorCfg xsp, M_ShipperCfg xs ");
+		sb.append("WHERE sp.M_ShippingProcessorCfg_ID = xsp.M_ShippingProcessorCfg_ID ");
+		sb.append("AND xsp.M_ShippingProcessorCfg_ID = xs.M_ShippingProcessorCfg_ID ");
 		sb.append("AND sp.IsActive = 'Y' ");
 		sb.append("AND sp.AD_Client_ID = ? ");
 		sb.append("AND sp.AD_Org_ID IN (0, ?) ");
-		sb.append("AND xs.X_Shipper_ID = ? ");
+		sb.append("AND xs.M_ShipperCfg_ID = ? ");
 		sb.append("ORDER BY sp.AD_Org_ID DESC");
 
-		int M_ShippingProcessor_ID = DB.getSQLValue(null, sb.toString(), Env.getAD_Client_ID(ctx), Env.getAD_Org_ID(ctx), X_Shipper_ID);
+		int M_ShippingProcessor_ID = DB.getSQLValue(null, sb.toString(), Env.getAD_Client_ID(ctx), Env.getAD_Org_ID(ctx), M_ShipperCfg_ID);
 		if (M_ShippingProcessor_ID > 0)
 			mTab.setValue(MShipper.COLUMNNAME_M_ShippingProcessor_ID, M_ShippingProcessor_ID);
 		
@@ -54,11 +54,11 @@ public class CalloutShipper extends CalloutEngine
 	
 	public String shipperLabels(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
-		Integer X_ShipperLabels_ID = (Integer)value;
-		if (X_ShipperLabels_ID == null || X_ShipperLabels_ID.intValue() == 0)
+		Integer M_ShipperLabelsCfg_ID = (Integer)value;
+		if (M_ShipperLabelsCfg_ID == null || M_ShipperLabelsCfg_ID.intValue() == 0)
 			return "";
 		
-		X_X_ShipperLabels sl = new X_X_ShipperLabels(ctx, X_ShipperLabels_ID, null);
+		X_M_ShipperLabelsCfg sl = new X_M_ShipperLabelsCfg(ctx, M_ShipperLabelsCfg_ID, null);
 		mTab.setValue(MShipperLabels.COLUMNNAME_Name, sl.getName());
 		mTab.setValue(MShipperLabels.COLUMNNAME_LabelPrintMethod, sl.getLabelPrintMethod());
 		mTab.setValue(MShipperLabels.COLUMNNAME_IsDefault, sl.isDefault());
@@ -68,11 +68,11 @@ public class CalloutShipper extends CalloutEngine
 	
 	public String shipperPackaging(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
-		Integer X_ShipperPackaging_ID = (Integer)value;
-		if (X_ShipperPackaging_ID == null || X_ShipperPackaging_ID.intValue() == 0)
+		Integer M_ShipperPackagingCfg_ID = (Integer)value;
+		if (M_ShipperPackagingCfg_ID == null || M_ShipperPackagingCfg_ID.intValue() == 0)
 			return "";
 		
-		X_X_ShipperPackaging sp = new X_X_ShipperPackaging(ctx, X_ShipperPackaging_ID, null);
+		X_M_ShipperPackagingCfg sp = new X_M_ShipperPackagingCfg(ctx, M_ShipperPackagingCfg_ID, null);
 		mTab.setValue(MShipperPackaging.COLUMNNAME_Name, sp.getName());
 		mTab.setValue(MShipperPackaging.COLUMNNAME_IsDefault, sp.isDefault());
 		mTab.setValue(MShipperPackaging.COLUMNNAME_Weight, sp.getWeight());
@@ -82,11 +82,11 @@ public class CalloutShipper extends CalloutEngine
 	
 	public String shipperPickupTypes(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
-		Integer X_ShipperPickupTypes_ID = (Integer)value;
-		if (X_ShipperPickupTypes_ID == null || X_ShipperPickupTypes_ID.intValue() == 0)
+		Integer M_ShipperPickupTypesCfg_ID = (Integer)value;
+		if (M_ShipperPickupTypesCfg_ID == null || M_ShipperPickupTypesCfg_ID.intValue() == 0)
 			return "";
 		
-		X_X_ShipperPickupTypes spt = new X_X_ShipperPickupTypes(ctx, X_ShipperPickupTypes_ID, null);
+		X_M_ShipperPickupTypesCfg spt = new X_M_ShipperPickupTypesCfg(ctx, M_ShipperPickupTypesCfg_ID, null);
 		mTab.setValue(MShipperLabels.COLUMNNAME_Name, spt.getName());
 		mTab.setValue(MShipperLabels.COLUMNNAME_IsDefault, spt.isDefault());
 		
