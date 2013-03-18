@@ -755,6 +755,7 @@ public class ImportInvoice extends SvrProcess
 				BigDecimal taxAmt = imp.getTaxAmt();
 				if (taxAmt != null && Env.ZERO.compareTo(taxAmt) != 0)
 					line.setTaxAmt(taxAmt);
+				line.setC_1099Box_ID(imp.getC_1099Box_ID());
 				line.saveEx();
 				//
 				imp.setC_InvoiceLine_ID(line.getC_InvoiceLine_ID());
