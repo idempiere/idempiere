@@ -20,10 +20,10 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-/** Generated Model for X_CommodityShipment
+/** Generated Model for M_CommodityShipment
  *  @author iDempiere (generated) 
  *  @version Release 1.0a - $Id$ */
-public class X_X_CommodityShipment extends PO implements I_X_CommodityShipment, I_Persistent 
+public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, I_Persistent 
 {
 
 	/**
@@ -32,19 +32,19 @@ public class X_X_CommodityShipment extends PO implements I_X_CommodityShipment, 
 	private static final long serialVersionUID = 20121207L;
 
     /** Standard Constructor */
-    public X_X_CommodityShipment (Properties ctx, int X_CommodityShipment_ID, String trxName)
+    public X_M_CommodityShipment (Properties ctx, int M_CommodityShipment_ID, String trxName)
     {
-      super (ctx, X_CommodityShipment_ID, trxName);
-      /** if (X_CommodityShipment_ID == 0)
+      super (ctx, M_CommodityShipment_ID, trxName);
+      /** if (M_CommodityShipment_ID == 0)
         {
 			setCountryOfManufacture (0);
 			setHarmonizedCode (null);
-			setX_CommodityShipment_ID (0);
+			setM_CommodityShipment_ID (0);
         } */
     }
 
     /** Load Constructor */
-    public X_X_CommodityShipment (Properties ctx, ResultSet rs, String trxName)
+    public X_M_CommodityShipment (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -66,7 +66,7 @@ public class X_X_CommodityShipment extends PO implements I_X_CommodityShipment, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_X_CommodityShipment[")
+      StringBuffer sb = new StringBuffer ("X_M_CommodityShipment[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
@@ -161,37 +161,37 @@ public class X_X_CommodityShipment extends PO implements I_X_CommodityShipment, 
 		return ii.intValue();
 	}
 
-	/** Set X_CommodityShipment.
-		@param X_CommodityShipment_ID X_CommodityShipment	  */
-	public void setX_CommodityShipment_ID (int X_CommodityShipment_ID)
+	/** Set M_CommodityShipment.
+		@param M_CommodityShipment_ID M_CommodityShipment	  */
+	public void setM_CommodityShipment_ID (int M_CommodityShipment_ID)
 	{
-		if (X_CommodityShipment_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_X_CommodityShipment_ID, null);
+		if (M_CommodityShipment_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_M_CommodityShipment_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_X_CommodityShipment_ID, Integer.valueOf(X_CommodityShipment_ID));
+			set_ValueNoCheck (COLUMNNAME_M_CommodityShipment_ID, Integer.valueOf(M_CommodityShipment_ID));
 	}
 
-	/** Get X_CommodityShipment.
-		@return X_CommodityShipment	  */
-	public int getX_CommodityShipment_ID () 
+	/** Get M_CommodityShipment.
+		@return M_CommodityShipment	  */
+	public int getM_CommodityShipment_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_X_CommodityShipment_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_CommodityShipment_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
-	/** Set X_CommodityShipment_UU.
-		@param X_CommodityShipment_UU X_CommodityShipment_UU	  */
-	public void setX_CommodityShipment_UU (String X_CommodityShipment_UU)
+	/** Set M_CommodityShipment_UU.
+		@param M_CommodityShipment_UU M_CommodityShipment_UU	  */
+	public void setM_CommodityShipment_UU (String M_CommodityShipment_UU)
 	{
-		set_Value (COLUMNNAME_X_CommodityShipment_UU, X_CommodityShipment_UU);
+		set_Value (COLUMNNAME_M_CommodityShipment_UU, M_CommodityShipment_UU);
 	}
 
-	/** Get X_CommodityShipment_UU.
-		@return X_CommodityShipment_UU	  */
-	public String getX_CommodityShipment_UU () 
+	/** Get M_CommodityShipment_UU.
+		@return M_CommodityShipment_UU	  */
+	public String getM_CommodityShipment_UU () 
 	{
-		return (String)get_Value(COLUMNNAME_X_CommodityShipment_UU);
+		return (String)get_Value(COLUMNNAME_M_CommodityShipment_UU);
 	}
 }

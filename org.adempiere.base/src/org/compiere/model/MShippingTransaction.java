@@ -235,12 +235,12 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		return MShippingTransaction.FREIGHTCHARGES_3rdParty.equals(getFreightCharges());
 	}
 	
-	public X_X_CommodityShipment getCommodityShipment(int M_Product_ID)
+	public X_M_CommodityShipment getCommodityShipment(int M_Product_ID)
 	{
-		X_X_CommodityShipment commodityShipment = null;
+		X_M_CommodityShipment commodityShipment = null;
 		
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT * FROM X_CommodityShipment ");
+		sql.append("SELECT * FROM M_CommodityShipment ");
 		sql.append("WHERE M_Product_ID IN (0, ?) OR M_Product_ID IS NULL ");
 		sql.append("AND AD_Client_ID IN (0, ?) ");
 		sql.append("AND AD_Org_ID IN (0, ?) ");
@@ -258,7 +258,7 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 			
 			if(rs.next())
 			{
-				commodityShipment = new X_X_CommodityShipment(getCtx(), rs, null);
+				commodityShipment = new X_M_CommodityShipment(getCtx(), rs, null);
 			}
 		} 
 		catch (Exception e) 
@@ -271,38 +271,38 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		}
 		
 		if(commodityShipment == null)
-			commodityShipment = new X_X_CommodityShipment(getCtx(), 0, null);
+			commodityShipment = new X_M_CommodityShipment(getCtx(), 0, null);
 		
 		return commodityShipment;
 	}
 	
 	public int getCommodityShipmentID(int M_Product_ID) 
 	{
-		X_X_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
-		return commodityShipment.getX_CommodityShipment_ID();
+		X_M_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
+		return commodityShipment.getM_CommodityShipment_ID();
 	}
 
 	public String getCommodityDescription(int M_Product_ID) 
 	{
-		X_X_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
+		X_M_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
 		return commodityShipment.getDescription();		
 	}
 
 	public String getHarmonizedCode(int M_Product_ID) 
 	{
-		X_X_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
+		X_M_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
 		return commodityShipment.getHarmonizedCode();
 	}
 	
 	public String getExportLicenseNum(int M_Product_ID) 
 	{
-		X_X_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
+		X_M_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
 		return commodityShipment.getExportLicenseNum();
 	}
 	
 	public String getCountryOfManufacture(int M_Product_ID) 
 	{
-		X_X_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
+		X_M_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
 		int countryId = commodityShipment.getCountryOfManufacture();
 		X_C_Country c = new X_C_Country(getCtx(), countryId, null);
 		return c.getCountryCode();

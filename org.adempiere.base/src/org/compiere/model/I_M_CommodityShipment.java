@@ -20,15 +20,15 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for X_CommodityShipment
+/** Generated Interface for M_CommodityShipment
  *  @author iDempiere (generated) 
  *  @version Release 1.0a
  */
-public interface I_X_CommodityShipment 
+public interface I_M_CommodityShipment 
 {
 
-    /** TableName=X_CommodityShipment */
-    public static final String Table_Name = "X_CommodityShipment";
+    /** TableName=M_CommodityShipment */
+    public static final String Table_Name = "M_CommodityShipment";
 
     /** AD_Table_ID=200045 */
     public static final int Table_ID = 200045;
@@ -162,21 +162,21 @@ public interface I_X_CommodityShipment
 	  */
 	public int getUpdatedBy();
 
-    /** Column name X_CommodityShipment_ID */
-    public static final String COLUMNNAME_X_CommodityShipment_ID = "X_CommodityShipment_ID";
+    /** Column name M_CommodityShipment_ID */
+    public static final String COLUMNNAME_M_CommodityShipment_ID = "M_CommodityShipment_ID";
 
-	/** Set X_CommodityShipment	  */
-	public void setX_CommodityShipment_ID (int X_CommodityShipment_ID);
+	/** Set M_CommodityShipment	  */
+	public void setM_CommodityShipment_ID (int M_CommodityShipment_ID);
 
-	/** Get X_CommodityShipment	  */
-	public int getX_CommodityShipment_ID();
+	/** Get M_CommodityShipment	  */
+	public int getM_CommodityShipment_ID();
 
-    /** Column name X_CommodityShipment_UU */
-    public static final String COLUMNNAME_X_CommodityShipment_UU = "X_CommodityShipment_UU";
+    /** Column name M_CommodityShipment_UU */
+    public static final String COLUMNNAME_M_CommodityShipment_UU = "M_CommodityShipment_UU";
 
-	/** Set X_CommodityShipment_UU	  */
-	public void setX_CommodityShipment_UU (String X_CommodityShipment_UU);
+	/** Set M_CommodityShipment_UU	  */
+	public void setM_CommodityShipment_UU (String M_CommodityShipment_UU);
 
-	/** Get X_CommodityShipment_UU	  */
-	public String getX_CommodityShipment_UU();
+	/** Get M_CommodityShipment_UU	  */
+	public String getM_CommodityShipment_UU();
 }
