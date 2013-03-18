@@ -180,7 +180,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		boolean firstadded = true;
 		for (int i = 0; i < index; i++)
 		{
-			//	Serach for option and add it
+			//	Search for option and add it
 			boolean added = false;
 
 			for (int j = 0; j < s_value.length && !added; j++)
