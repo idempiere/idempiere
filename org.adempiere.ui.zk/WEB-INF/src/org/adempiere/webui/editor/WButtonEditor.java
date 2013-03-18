@@ -153,10 +153,12 @@ public class WButtonEditor extends WEditor implements IProcessButton
         }
     }
 
-     @Override
+    @Override
     public String getDisplay()
     {
-        return m_value.toString();
+    	if (m_value != null)
+    		return m_value.toString();
+    	return null;
     }
 
     @Override

@@ -48,7 +48,7 @@ import org.compiere.util.DB;
  *	@author Alejandro Falcone
  *	@version $Id: MDepositBatch.java,v 1.3 2007/06/28 00:51:03 afalcone Exp $
  */
-public class MDepositBatch extends X_X_DepositBatch
+public class MDepositBatch extends X_C_DepositBatch
 {
 	/**
 	 * 
@@ -58,13 +58,13 @@ public class MDepositBatch extends X_X_DepositBatch
 	/**
 	 *  Create & Load existing Persistent Object
 	 *  @param ctx context
-	 *  @param X_DepositBatch_ID  The unique ID of the object
+	 *  @param C_DepositBatch_ID  The unique ID of the object
 	 *  @param trxName transaction name	
 	 */
-	public MDepositBatch (Properties ctx, int X_DepositBatch_ID, String trxName)
+	public MDepositBatch (Properties ctx, int C_DepositBatch_ID, String trxName)
 	{
-		super (ctx, X_DepositBatch_ID, trxName);
-		if (X_DepositBatch_ID == 0)
+		super (ctx, C_DepositBatch_ID, trxName);
+		if (C_DepositBatch_ID == 0)
 		{
 			setDocStatus (DOCSTATUS_Drafted);
 			setProcessed (false);
@@ -94,7 +94,7 @@ public class MDepositBatch extends X_X_DepositBatch
 	{
 		this (original.getCtx(), 0, original.get_TrxName());
 		setClientOrg(original);
-		setX_DepositBatch_ID(original.getX_DepositBatch_ID());
+		setC_DepositBatch_ID(original.getC_DepositBatch_ID());
 
 		setDescription(original.getDescription());
 		setC_DocType_ID(original.getC_DocType_ID());
@@ -103,19 +103,6 @@ public class MDepositBatch extends X_X_DepositBatch
 		setDateDeposit(original.getDateDeposit());
 		setDepositAmt(original.getDepositAmt());
 	}	//	MDepositBatch
-
-	public int getX_DepositBatch_ID() 
-	{
-		Integer ii = (Integer)get_Value("X_DepositBatch_ID");
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-	
-	public void setX_DepositBatch_ID(int X_DepositBatch_ID)
-	{
-		set_Value("X_DepositBatch_ID", Integer.valueOf(X_DepositBatch_ID));
-	}
 
 	/**
 	 * 	Overwrite Client/Org if required
@@ -279,10 +266,10 @@ public class MDepositBatch extends X_X_DepositBatch
 	 */
 	protected boolean afterDelete (boolean success)
 	{
-		if (getX_DepositBatch_ID() != 0 )
+		if (getC_DepositBatch_ID() != 0 )
 		{
-			String sql = "UPDATE C_Payment p SET X_DepositBatch_ID= 0  WHERE p.X_DepositBatch_ID=?";			
-			DB.executeUpdate(sql, getX_DepositBatch_ID(), get_TrxName());
+			String sql = "UPDATE C_Payment p SET C_DepositBatch_ID= 0  WHERE p.C_DepositBatch_ID=?";			
+			DB.executeUpdateEx(sql, new Object[] {getC_DepositBatch_ID()}, get_TrxName());
 		}
 		
 		return success;
@@ -296,13 +283,13 @@ public class MDepositBatch extends X_X_DepositBatch
 	public MDepositBatchLine[] getLines()
 	{
 		ArrayList<MDepositBatchLine> list = new ArrayList<MDepositBatchLine>();
-		String sql = "SELECT * FROM X_DepositBatchLine WHERE X_DepositBatch_ID=? ORDER BY Line";
+		String sql = "SELECT * FROM C_DepositBatchLine WHERE C_DepositBatch_ID=? ORDER BY Line";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
-			pstmt.setInt(1, getX_DepositBatch_ID());
+			pstmt.setInt(1, getC_DepositBatch_ID());
 			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new MDepositBatchLine (getCtx(), rs, get_TrxName()));

@@ -44,7 +44,7 @@ import org.compiere.process.SvrProcess;
 public class DepositBatchClose extends SvrProcess
 {
 	/**	Deposit Batch from Record			*/
-	private int 		m_X_DepositBatch_ID = 0;
+	private int 		m_C_DepositBatch_ID = 0;
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -60,7 +60,7 @@ public class DepositBatchClose extends SvrProcess
 			else
 				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
 		}
-		m_X_DepositBatch_ID = getRecord_ID();
+		m_C_DepositBatch_ID = getRecord_ID();
 	}	//	prepare
 
 	/**
@@ -70,7 +70,7 @@ public class DepositBatchClose extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		MDepositBatch depositbatch = new MDepositBatch (getCtx(), m_X_DepositBatch_ID, get_TrxName());
+		MDepositBatch depositbatch = new MDepositBatch (getCtx(), m_C_DepositBatch_ID, get_TrxName());
 		if (log.isLoggable(Level.INFO)) log.info("doIt - " + depositbatch);
 
 		MDepositBatchLine[] depositbatchLines = depositbatch.getLines();

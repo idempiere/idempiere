@@ -33,7 +33,7 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130318L;
 
     /** Standard Constructor */
     public X_C_Payment (Properties ctx, int C_Payment_ID, String trxName)
@@ -547,6 +547,31 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	public int getC_Currency_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_DepositBatch getC_DepositBatch() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_DepositBatch)MTable.get(getCtx(), org.compiere.model.I_C_DepositBatch.Table_Name)
+			.getPO(getC_DepositBatch_ID(), get_TrxName());	}
+
+	/** Set Deposit Batch.
+		@param C_DepositBatch_ID Deposit Batch	  */
+	public void setC_DepositBatch_ID (int C_DepositBatch_ID)
+	{
+		if (C_DepositBatch_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, Integer.valueOf(C_DepositBatch_ID));
+	}
+
+	/** Get Deposit Batch.
+		@return Deposit Batch	  */
+	public int getC_DepositBatch_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_DepositBatch_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

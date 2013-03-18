@@ -181,21 +181,21 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT py.X_DepositBatch_ID, db.DocumentNo, db.DateDeposit, db.C_BankAccount_ID, ba.AccountNo,");
+		sql.append("SELECT py.C_DepositBatch_ID, db.DocumentNo, db.DateDeposit, db.C_BankAccount_ID, ba.AccountNo,");
 		sql.append("SUM(currencyConvert(p.PayAmt,p.C_Currency_ID,ba.C_Currency_ID,?,null,p.AD_Client_ID,p.AD_Org_ID)) AS amount,");
 		sql.append("SUM(p.PayAmt) AS amountoriginal");
 		sql.append(" FROM C_BankAccount ba");
 		sql.append(" INNER JOIN C_Payment_v p ON (p.C_BankAccount_ID=ba.C_BankAccount_ID)");
 		sql.append(" INNER JOIN C_Currency c ON (p.C_Currency_ID=c.C_Currency_ID)");
 		sql.append(" INNER JOIN C_Payment py ON (py.C_Payment_ID=p.C_Payment_ID)");
-		sql.append(" INNER JOIN X_DepositBatch db ON (py.X_DepositBatch_ID = db.X_DepositBatch_ID) ");
+		sql.append(" INNER JOIN C_DepositBatch db ON (py.C_DepositBatch_ID = db.C_DepositBatch_ID) ");
 		sql.append(getSQLWhere(BPartner, DocumentNo, DateFrom, DateTo, AmtFrom, AmtTo, DocType, TenderType, AuthCode));
 		
 		sql.append(" AND p.IsReceipt = 'Y'");
-		sql.append(" AND py.X_DepositBatch_ID <> 0");
+		sql.append(" AND py.C_DepositBatch_ID <> 0");
 		sql.append(" AND db.Processed = 'Y'");
 		
-		sql.append(" GROUP BY py.X_DepositBatch_ID,db.DocumentNo,db.DateDeposit, db.C_BankAccount_ID,ba.AccountNo");
+		sql.append(" GROUP BY py.C_DepositBatch_ID,db.DocumentNo,db.DateDeposit, db.C_BankAccount_ID,ba.AccountNo");
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -210,7 +210,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 				line.add(new Boolean(false));       //  0-Selection
 				line.add(rs.getTimestamp(3));       //  1-DateDeposit
 				KeyNamePair pp = new KeyNamePair(rs.getInt(1), rs.getString(2));
-				line.add(pp);                       //  2-X_DepositBatch  
+				line.add(pp);                       //  2-C_DepositBatch  
 				line.add(rs.getBigDecimal(7));      //  3-PayAmt
 				line.add(rs.getBigDecimal(6));      //  4-Conv Amt
 				pp = new KeyNamePair(rs.getInt(4), rs.getString(5));
@@ -257,11 +257,11 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		sql.append(" INNER JOIN C_Payment_v p ON (p.C_BankAccount_ID=ba.C_BankAccount_ID)");
 		sql.append(" INNER JOIN C_Currency c ON (p.C_Currency_ID=c.C_Currency_ID)");
 		sql.append(" INNER JOIN C_Payment py ON (py.C_Payment_ID=p.C_Payment_ID)");
-		sql.append(" INNER JOIN X_DepositBatch db ON (py.X_DepositBatch_ID = db.X_DepositBatch_ID)");
+		sql.append(" INNER JOIN C_DepositBatch db ON (py.C_DepositBatch_ID = db.C_DepositBatch_ID)");
 		sql.append(" LEFT OUTER JOIN C_BPartner bp ON (p.C_BPartner_ID=bp.C_BPartner_ID)");
 		sql.append(" WHERE p.Processed='Y' AND p.IsReconciled='N'");
 		sql.append(" AND p.IsReceipt = 'Y'");
-		sql.append(" AND py.X_DepositBatch_ID = ?");
+		sql.append(" AND py.C_DepositBatch_ID = ?");
 		sql.append(" AND p.DocStatus IN ('CO','CL','RE','VO') AND p.PayAmt<>0");
 		sql.append(" AND p.C_BankAccount_ID=?");
 		sql.append(" AND NOT EXISTS (SELECT * FROM C_BankStatementLine l WHERE p.C_Payment_ID=l.C_Payment_ID AND l.StmtAmt <> 0)");
@@ -276,13 +276,13 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 			if(((Boolean) miniTable.getValueAt(i, 0)).booleanValue())
 			{
 				Timestamp trxDate = (Timestamp) miniTable.getValueAt(i, 1);  //  1-DateTrx
-				KeyNamePair pp = (KeyNamePair) miniTable.getValueAt(i, 2);   //  2-X_DepositBatch_ID
-				int X_DepositBatch_ID = pp.getKey();
+				KeyNamePair pp = (KeyNamePair) miniTable.getValueAt(i, 2);   //  2-C_DepositBatch_ID
+				int C_DepositBatch_ID = pp.getKey();
 				
 				pp = (KeyNamePair) miniTable.getValueAt(i, 5);               //  5- C_BankAccount_ID
 				int C_BankAccount_ID = pp.getKey();
 
-				if (log.isLoggable(Level.FINE)) log.fine("Deposit Batch Date=" + trxDate + ", Batch=" + X_DepositBatch_ID 
+				if (log.isLoggable(Level.FINE)) log.fine("Deposit Batch Date=" + trxDate + ", Batch=" + C_DepositBatch_ID 
 						+" , Bank Account" + C_BankAccount_ID);
 
 				PreparedStatement pstmt = null;
@@ -291,7 +291,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 				{
 					pstmt = DB.prepareStatement(sql.toString(), null);
 					pstmt.setTimestamp(1, ts);
-					pstmt.setInt(2, X_DepositBatch_ID);
+					pstmt.setInt(2, C_DepositBatch_ID);
 					pstmt.setInt(3, C_BankAccount_ID);
 					rs = pstmt.executeQuery();
 					while(rs.next())
@@ -330,7 +330,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	    Vector<String> columnNames = new Vector<String>(6);
 	    columnNames.add(Msg.getMsg(Env.getCtx(), "Select"));
 		columnNames.add(Msg.translate(Env.getCtx(), "Date"));
-		columnNames.add(Msg.getElement(Env.getCtx(), "X_DepositBatch_ID"));
+		columnNames.add(Msg.getElement(Env.getCtx(), "C_DepositBatch_ID"));
 		columnNames.add(Msg.translate(Env.getCtx(), "Amount"));
 		columnNames.add(Msg.translate(Env.getCtx(), "ConvertedAmount"));
 		columnNames.add(Msg.translate(Env.getCtx(), "C_BankAccount_ID"));		

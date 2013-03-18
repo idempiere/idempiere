@@ -24,10 +24,10 @@ import java.util.Properties;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Model for X_DepositBatch
+/** Generated Model for C_DepositBatch
  *  @author iDempiere (generated) 
  *  @version Release 1.0a - $Id$ */
-public class X_X_DepositBatch extends PO implements I_X_DepositBatch, I_Persistent 
+public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persistent 
 {
 
 	/**
@@ -36,10 +36,10 @@ public class X_X_DepositBatch extends PO implements I_X_DepositBatch, I_Persiste
 	private static final long serialVersionUID = 20130123L;
 
     /** Standard Constructor */
-    public X_X_DepositBatch (Properties ctx, int X_DepositBatch_ID, String trxName)
+    public X_C_DepositBatch (Properties ctx, int C_DepositBatch_ID, String trxName)
     {
-      super (ctx, X_DepositBatch_ID, trxName);
-      /** if (X_DepositBatch_ID == 0)
+      super (ctx, C_DepositBatch_ID, trxName);
+      /** if (C_DepositBatch_ID == 0)
         {
 			setC_BankAccount_ID (0);
 			setC_DocType_ID (0);
@@ -52,12 +52,12 @@ public class X_X_DepositBatch extends PO implements I_X_DepositBatch, I_Persiste
 // DR
 			setDocumentNo (null);
 			setProcessed (false);
-			setX_DepositBatch_ID (0);
+			setC_DepositBatch_ID (0);
         } */
     }
 
     /** Load Constructor */
-    public X_X_DepositBatch (Properties ctx, ResultSet rs, String trxName)
+    public X_C_DepositBatch (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -79,7 +79,7 @@ public class X_X_DepositBatch extends PO implements I_X_DepositBatch, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_X_DepositBatch[")
+      StringBuffer sb = new StringBuffer ("X_C_DepositBatch[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
@@ -337,36 +337,36 @@ public class X_X_DepositBatch extends PO implements I_X_DepositBatch, I_Persiste
 	}
 
 	/** Set Deposit Batch.
-		@param X_DepositBatch_ID Deposit Batch	  */
-	public void setX_DepositBatch_ID (int X_DepositBatch_ID)
+		@param C_DepositBatch_ID Deposit Batch	  */
+	public void setC_DepositBatch_ID (int C_DepositBatch_ID)
 	{
-		if (X_DepositBatch_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_X_DepositBatch_ID, null);
+		if (C_DepositBatch_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_X_DepositBatch_ID, Integer.valueOf(X_DepositBatch_ID));
+			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, Integer.valueOf(C_DepositBatch_ID));
 	}
 
 	/** Get Deposit Batch.
 		@return Deposit Batch	  */
-	public int getX_DepositBatch_ID () 
+	public int getC_DepositBatch_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_X_DepositBatch_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_DepositBatch_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
-	/** Set X_DepositBatch_UU.
-		@param X_DepositBatch_UU X_DepositBatch_UU	  */
-	public void setX_DepositBatch_UU (String X_DepositBatch_UU)
+	/** Set C_DepositBatch_UU.
+		@param C_DepositBatch_UU C_DepositBatch_UU	  */
+	public void setC_DepositBatch_UU (String C_DepositBatch_UU)
 	{
-		set_Value (COLUMNNAME_X_DepositBatch_UU, X_DepositBatch_UU);
+		set_Value (COLUMNNAME_C_DepositBatch_UU, C_DepositBatch_UU);
 	}
 
-	/** Get X_DepositBatch_UU.
-		@return X_DepositBatch_UU	  */
-	public String getX_DepositBatch_UU () 
+	/** Get C_DepositBatch_UU.
+		@return C_DepositBatch_UU	  */
+	public String getC_DepositBatch_UU () 
 	{
-		return (String)get_Value(COLUMNNAME_X_DepositBatch_UU);
+		return (String)get_Value(COLUMNNAME_C_DepositBatch_UU);
 	}
 }

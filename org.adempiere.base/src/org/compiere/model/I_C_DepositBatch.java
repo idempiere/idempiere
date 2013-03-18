@@ -20,15 +20,15 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for X_DepositBatch
+/** Generated Interface for C_DepositBatch
  *  @author iDempiere (generated) 
  *  @version Release 1.0a
  */
-public interface I_X_DepositBatch 
+public interface I_C_DepositBatch 
 {
 
-    /** TableName=X_DepositBatch */
-    public static final String Table_Name = "X_DepositBatch";
+    /** TableName=C_DepositBatch */
+    public static final String Table_Name = "C_DepositBatch";
 
     /** AD_Table_ID=200056 */
     public static final int Table_ID = 200056;
@@ -242,21 +242,21 @@ public interface I_X_DepositBatch
 	  */
 	public int getUpdatedBy();
 
-    /** Column name X_DepositBatch_ID */
-    public static final String COLUMNNAME_X_DepositBatch_ID = "X_DepositBatch_ID";
+    /** Column name C_DepositBatch_ID */
+    public static final String COLUMNNAME_C_DepositBatch_ID = "C_DepositBatch_ID";
 
 	/** Set Deposit Batch	  */
-	public void setX_DepositBatch_ID (int X_DepositBatch_ID);
+	public void setC_DepositBatch_ID (int C_DepositBatch_ID);
 
 	/** Get Deposit Batch	  */
-	public int getX_DepositBatch_ID();
+	public int getC_DepositBatch_ID();
 
-    /** Column name X_DepositBatch_UU */
-    public static final String COLUMNNAME_X_DepositBatch_UU = "X_DepositBatch_UU";
+    /** Column name C_DepositBatch_UU */
+    public static final String COLUMNNAME_C_DepositBatch_UU = "C_DepositBatch_UU";
 
-	/** Set X_DepositBatch_UU	  */
-	public void setX_DepositBatch_UU (String X_DepositBatch_UU);
+	/** Set C_DepositBatch_UU	  */
+	public void setC_DepositBatch_UU (String C_DepositBatch_UU);
 
-	/** Get X_DepositBatch_UU	  */
-	public String getX_DepositBatch_UU();
+	/** Get C_DepositBatch_UU	  */
+	public String getC_DepositBatch_UU();
 }

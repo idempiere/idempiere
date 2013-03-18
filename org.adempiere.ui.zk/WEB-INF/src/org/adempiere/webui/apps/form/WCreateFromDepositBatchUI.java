@@ -139,7 +139,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		refreshButton.addEventListener(Events.ON_CLICK, this);
 		window.getConfirmPanel().addButton(refreshButton);
 				
-		if (getGridTab().getValue("X_DepositBatch_ID") == null)
+		if (getGridTab().getValue("C_DepositBatch_ID") == null)
 		{
 			FDialog.error(0, window, "SaveErrorRowNotFound");
 			return false;

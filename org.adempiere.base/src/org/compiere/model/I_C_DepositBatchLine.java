@@ -20,15 +20,15 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for X_DepositBatchLine
+/** Generated Interface for C_DepositBatchLine
  *  @author iDempiere (generated) 
  *  @version Release 1.0a
  */
-public interface I_X_DepositBatchLine 
+public interface I_C_DepositBatchLine 
 {
 
-    /** TableName=X_DepositBatchLine */
-    public static final String Table_Name = "X_DepositBatchLine";
+    /** TableName=C_DepositBatchLine */
+    public static final String Table_Name = "C_DepositBatchLine";
 
     /** AD_Table_ID=200057 */
     public static final int Table_ID = 200057;
@@ -170,32 +170,32 @@ public interface I_X_DepositBatchLine
 	  */
 	public int getUpdatedBy();
 
-    /** Column name X_DepositBatch_ID */
-    public static final String COLUMNNAME_X_DepositBatch_ID = "X_DepositBatch_ID";
+    /** Column name C_DepositBatch_ID */
+    public static final String COLUMNNAME_C_DepositBatch_ID = "C_DepositBatch_ID";
 
 	/** Set Deposit Batch	  */
-	public void setX_DepositBatch_ID (int X_DepositBatch_ID);
+	public void setC_DepositBatch_ID (int C_DepositBatch_ID);
 
 	/** Get Deposit Batch	  */
-	public int getX_DepositBatch_ID();
+	public int getC_DepositBatch_ID();
 
-	public org.compiere.model.I_X_DepositBatch getX_DepositBatch() throws RuntimeException;
+	public org.compiere.model.I_C_DepositBatch getC_DepositBatch() throws RuntimeException;
 
-    /** Column name X_DepositBatchLine_ID */
-    public static final String COLUMNNAME_X_DepositBatchLine_ID = "X_DepositBatchLine_ID";
+    /** Column name C_DepositBatchLine_ID */
+    public static final String COLUMNNAME_C_DepositBatchLine_ID = "C_DepositBatchLine_ID";
 
 	/** Set Deposit Batch Line	  */
-	public void setX_DepositBatchLine_ID (int X_DepositBatchLine_ID);
+	public void setC_DepositBatchLine_ID (int C_DepositBatchLine_ID);
 
 	/** Get Deposit Batch Line	  */
-	public int getX_DepositBatchLine_ID();
+	public int getC_DepositBatchLine_ID();
 
-    /** Column name X_DepositBatchLine_UU */
-    public static final String COLUMNNAME_X_DepositBatchLine_UU = "X_DepositBatchLine_UU";
+    /** Column name C_DepositBatchLine_UU */
+    public static final String COLUMNNAME_C_DepositBatchLine_UU = "C_DepositBatchLine_UU";
 
-	/** Set X_DepositBatchLine_UU	  */
-	public void setX_DepositBatchLine_UU (String X_DepositBatchLine_UU);
+	/** Set C_DepositBatchLine_UU	  */
+	public void setC_DepositBatchLine_UU (String C_DepositBatchLine_UU);
 
-	/** Get X_DepositBatchLine_UU	  */
-	public String getX_DepositBatchLine_UU();
+	/** Get C_DepositBatchLine_UU	  */
+	public String getC_DepositBatchLine_UU();
 }

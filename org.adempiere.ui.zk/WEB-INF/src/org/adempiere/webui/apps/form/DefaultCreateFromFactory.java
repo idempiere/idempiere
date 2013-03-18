@@ -21,7 +21,7 @@ import org.compiere.model.I_C_Invoice;
 import org.compiere.model.I_M_InOut;
 import org.compiere.model.I_M_PackageMPS;
 import org.compiere.model.I_M_RMA;
-import org.compiere.model.I_X_DepositBatch;
+import org.compiere.model.I_C_DepositBatch;
 
 /**
  * 
@@ -45,7 +45,7 @@ public class DefaultCreateFromFactory implements ICreateFromFactory
 			return new WCreateFromRMAUI(mTab);
 		else if (tableName.equals(I_M_PackageMPS.Table_Name))
 			return new WCreateFromPackageShipmentUI(mTab);
-		else if (tableName.equals(I_X_DepositBatch.Table_Name))
+		else if (tableName.equals(I_C_DepositBatch.Table_Name))
 			return new WCreateFromDepositBatchUI(mTab);
 		return null;
 	}

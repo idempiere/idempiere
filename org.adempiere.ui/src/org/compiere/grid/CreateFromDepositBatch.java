@@ -47,7 +47,7 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 	public boolean dynInit() throws Exception
 	{
 		log.config("");
-		setTitle(Msg.getElement(Env.getCtx(), "X_DepositBatch_ID") + " .. " + Msg.translate(Env.getCtx(), "CreateFrom"));
+		setTitle(Msg.getElement(Env.getCtx(), "C_DepositBatch_ID") + " .. " + Msg.translate(Env.getCtx(), "CreateFrom"));
 
 		return true;
 	}
@@ -68,7 +68,7 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 		sql.append(getSQLWhere(BPartner, DocumentNo, DateFrom, DateTo, AmtFrom, AmtTo, DocType, TenderType, AuthCode));
 		
 		sql.append(" AND p.IsReceipt = 'Y'");
-		sql.append(" AND (py.X_DepositBatch_ID = 0 OR py.X_DepositBatch_ID IS NULL)");
+		sql.append(" AND (py.C_DepositBatch_ID = 0 OR py.C_DepositBatch_ID IS NULL)");
 		
 		sql.append(" ORDER BY p.DateTrx");
 		
@@ -123,8 +123,8 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 	public boolean save(IMiniTable miniTable, String trxName)
 	{
 		//  fixed values
-		int X_DepositBatch_ID = ((Integer) getGridTab().getValue("X_DepositBatch_ID")).intValue();
-		MDepositBatch db = new MDepositBatch(Env.getCtx(), X_DepositBatch_ID, null);
+		int C_DepositBatch_ID = ((Integer) getGridTab().getValue("C_DepositBatch_ID")).intValue();
+		MDepositBatch db = new MDepositBatch(Env.getCtx(), C_DepositBatch_ID, null);
 		if (log.isLoggable(Level.CONFIG)) log.config(db.toString());
 
 		//  Lines

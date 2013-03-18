@@ -44,7 +44,7 @@ import org.compiere.util.Env;
  *	@version $Id: MDepositBatchLine.java,v 1.3 2007/07/02 00:51:02 afalcone Exp $
  *  
  */
- public class MDepositBatchLine extends X_X_DepositBatchLine
+ public class MDepositBatchLine extends X_C_DepositBatchLine
  {
 	/**
 	 * 
@@ -59,10 +59,10 @@ import org.compiere.util.Env;
 	 *	@param C_BankStatementLine_ID id
 	 *	@param trxName transaction
 	 */
-	public MDepositBatchLine (Properties ctx, int X_DepositBatchLine_ID, String trxName)
+	public MDepositBatchLine (Properties ctx, int C_DepositBatchLine_ID, String trxName)
 	{
-		super (ctx, X_DepositBatchLine_ID, trxName);
-		if (X_DepositBatchLine_ID == 0)
+		super (ctx, C_DepositBatchLine_ID, trxName);
+		if (C_DepositBatchLine_ID == 0)
 		{
 			setPayAmt(Env.ZERO);
 		}
@@ -87,7 +87,7 @@ import org.compiere.util.Env;
 	{
 		this (statement.getCtx(), 0, statement.get_TrxName());
 		setClientOrg(statement);
-		setX_DepositBatch_ID(statement.getX_DepositBatch_ID());
+		setC_DepositBatch_ID(statement.getC_DepositBatch_ID());
 	}	//	MDepositBatchLine
 
 	/**
@@ -125,16 +125,16 @@ import org.compiere.util.Env;
 		//	Set Line No
 		if (getLine() == 0)
 		{
-			String sql = "SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM X_DepositBatchLine WHERE X_DepositBatch_ID=?";
-			int ii = DB.getSQLValue (get_TrxName(), sql, getX_DepositBatch_ID());
+			String sql = "SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM C_DepositBatchLine WHERE C_DepositBatch_ID=?";
+			int ii = DB.getSQLValue (get_TrxName(), sql, getC_DepositBatch_ID());
 			setLine (ii);
 		}
 		
 		//	Set DepositBatch_ID into C_Payment table
 		if (getC_Payment_ID() != 0 )
 		{
-			String sql = "UPDATE C_Payment p SET X_DepositBatch_ID=? WHERE p.C_Payment_ID=?";			
-			DB.executeUpdate(sql, new Object[] {getX_DepositBatch_ID(), getC_Payment_ID()}, false, get_TrxName());
+			String sql = "UPDATE C_Payment p SET C_DepositBatch_ID=? WHERE p.C_Payment_ID=?";			
+			DB.executeUpdateEx(sql, new Object[] {getC_DepositBatch_ID(), getC_Payment_ID()}, get_TrxName());
 		}
 		//
 		
@@ -164,8 +164,8 @@ import org.compiere.util.Env;
 		updateHeader();
 		if (getC_Payment_ID() != 0 )
 		{
-			String sql = "UPDATE C_Payment p SET X_DepositBatch_ID= 0 WHERE p.C_Payment_ID=?";
-			DB.executeUpdate(sql, getC_Payment_ID(), get_TrxName());
+			String sql = "UPDATE C_Payment p SET C_DepositBatch_ID= 0 WHERE p.C_Payment_ID=?";
+			DB.executeUpdateEx(sql, new Object[] {getC_Payment_ID()}, get_TrxName());
 		}
 		
 		return success;
@@ -178,12 +178,11 @@ import org.compiere.util.Env;
 	 */
 	private void updateHeader()
 	{
-		StringBuilder sql = new StringBuilder();
-		sql.append("UPDATE X_DepositBatch dp");
-		sql.append(" SET DepositAmt=(SELECT COALESCE(SUM(PayAmt),0) FROM X_DepositBatchLine dpl ");
-		sql.append("WHERE dpl.X_DepositBatch_ID=dp.X_DepositBatch_ID AND dpl.IsActive='Y') ");
-		sql.append("WHERE X_DepositBatch_ID=?");
-		DB.executeUpdate(sql.toString(), getX_DepositBatch_ID(), get_TrxName());
+		String sql = "UPDATE C_DepositBatch dp"
+				+ " SET DepositAmt=(SELECT COALESCE(SUM(PayAmt),0) FROM C_DepositBatchLine dpl "
+				+ "WHERE dpl.C_DepositBatch_ID=dp.C_DepositBatch_ID AND dpl.IsActive='Y') "
+				+ "WHERE C_DepositBatch_ID=?";
+		DB.executeUpdateEx(sql, new Object[] {getC_DepositBatch_ID()}, get_TrxName());
 	}	//	updateHeader
 	
  }	//	MDepositBatchLine
