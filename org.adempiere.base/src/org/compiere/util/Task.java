@@ -136,7 +136,7 @@ public class Task extends Thread
 			}
 			catch (InterruptedException ie)
 			{
-				log.log(Level.INFO, "(ie) - " + ie);
+				if (log.isLoggable(Level.INFO))log.log(Level.INFO, "(ie) - " + ie);
 			}
 			//  ExitValue
 			try

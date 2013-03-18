@@ -230,7 +230,7 @@ public class CLogMgt
 		Logger rootLogger = getRootLogger();
 		rootLogger.addHandler(handler);
 		//
-		log.log(Level.CONFIG, "Handler=" + handler);
+		if (log.isLoggable(Level.CONFIG))log.log(Level.CONFIG, "Handler=" + handler);
 	}	//	addHandler
 
 
@@ -246,7 +246,7 @@ public class CLogMgt
 		{
 			handlers[i].setFormatter(formatter);
 		}
-		log.log(Level.CONFIG, "Formatter=" + formatter);
+		if (log.isLoggable(Level.CONFIG))log.log(Level.CONFIG, "Formatter=" + formatter);
 	}	//	setFormatter
 
 	/**
@@ -261,7 +261,7 @@ public class CLogMgt
 		{
 			handlers[i].setFilter(filter);
 		}
-		log.log(Level.CONFIG, "Filter=" + filter);
+		if (log.isLoggable(Level.CONFIG))log.log(Level.CONFIG, "Filter=" + filter);
 	}	//	setFilter
 
 	/**
@@ -362,7 +362,7 @@ public class CLogMgt
 		    	return;
 		    }
 		}
-		log.log(Level.CONFIG, "Ignored: " + levelString);
+		if (log.isLoggable(Level.CONFIG))log.log(Level.CONFIG, "Ignored: " + levelString);
 	}
 
 	/**
@@ -793,8 +793,10 @@ public class CLogMgt
 		{
 			log1.log(Level.SEVERE, "error message", e);
 		}
-		log1.log(Level.INFO, "info message 1", "1Param");
-		log1.log(Level.INFO, "info message n", new Object[]{"1Param","2Param"});
+		if (log1.isLoggable(Level.INFO)){
+			log1.log(Level.INFO, "info message 1", "1Param");
+			log1.log(Level.INFO, "info message n", new Object[]{"1Param","2Param"});
+		}
 	}	//	testLog
 
 	/**

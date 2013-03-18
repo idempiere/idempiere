@@ -131,7 +131,7 @@ public class OSTask extends Thread
 				}
 				catch (Exception ie)
 				{
-					log.log(Level.INFO, "(ie) - " + ie);
+					if (log.isLoggable(Level.INFO))log.log(Level.INFO, "(ie) - " + ie);
 				}
 				//  ExitValue
 				log.config("done");

@@ -107,7 +107,7 @@ public class CashSubFunctions extends PosQuery implements ActionListener, InputM
 	private Properties p_ctx;
 
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(SubCheckout.class);
+	private static CLogger log = CLogger.getCLogger(CashSubFunctions.class);
 	
 	/**
 	 * 	Set up Panel 

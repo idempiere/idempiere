@@ -20,7 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 	Security Engine
@@ -227,7 +226,7 @@ public class SecureEngine
 	/** The real Engine				*/
 	private	SecureInterface		implementation = null;
 	/**	Logger						*/
-	private static Logger		log	= Logger.getLogger (SecureEngine.class.getName());
+	private static CLogger		log	= CLogger.getCLogger (SecureEngine.class.getName());
 	
 	
 	/**

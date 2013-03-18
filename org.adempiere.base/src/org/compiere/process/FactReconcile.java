@@ -80,7 +80,7 @@ public class FactReconcile extends SvrProcess
 		else
 			subselect = rule.getScript();
 		
-		log.log(Level.FINE, "Rule subselect: " + subselect);
+		if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Rule subselect: " + subselect);
 		
 		
 		/*  example matching rules:
@@ -144,7 +144,7 @@ public class FactReconcile extends SvrProcess
 			pstmt.setInt(1, seq.getAD_Sequence_ID());
 			pstmt.setInt(2, account.get_ID());
 			count = pstmt.executeUpdate();
-			log.log(Level.FINE, "Inserted " + count + " new facts into Fact_Reconciliation");
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Inserted " + count + " new facts into Fact_Reconciliation");
 			
 			// set the matchcode based on the rule found in AD_Rule
 			// which is a sql fragment that returns a string based on the accounting fact
@@ -161,7 +161,7 @@ public class FactReconcile extends SvrProcess
 			pstmt.setInt(1, account.get_ID());
 			count = pstmt.executeUpdate();
 			
-			log.log(Level.FINE, "Updated " + count + " match codes.");
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Updated " + count + " match codes.");
 			
 			// remove any matchcodes that don't balance to zero
 			sql = "UPDATE Fact_Reconciliation " +
@@ -179,7 +179,7 @@ public class FactReconcile extends SvrProcess
 		pstmt.setInt(2, account.get_ID());
 		unmatched = pstmt.executeUpdate();
 		
-		log.log(Level.FINE, "Cleared match codes from " + unmatched + " unreconciled facts.");
+		if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Cleared match codes from " + unmatched + " unreconciled facts.");
 			
 		}
 		catch (SQLException e)

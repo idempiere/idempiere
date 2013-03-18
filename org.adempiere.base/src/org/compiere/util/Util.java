@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -45,7 +44,7 @@ import javax.swing.KeyStroke;
 public class Util
 {
 	/**	Logger			*/
-	private static Logger log = Logger.getLogger(Util.class.getName());
+	private static CLogger log = CLogger.getCLogger(Util.class.getName());
 
 	/**
 	 *	Replace String values.

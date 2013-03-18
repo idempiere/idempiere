@@ -553,7 +553,7 @@ public class RequestEMailProcessor extends SvrProcess
 					}
 				}
 				catch (IOException e) {
-					log.log(Level.FINE, "Error extracting attachments", e);
+					if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Error extracting attachments", e);
 				}
 			}
 

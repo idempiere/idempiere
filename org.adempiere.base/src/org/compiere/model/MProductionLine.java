@@ -69,14 +69,14 @@ public class MProductionLine extends X_M_ProductionLine {
 	public String createTransactions(Timestamp date, boolean mustBeStocked) {
 		// delete existing ASI records
 		int deleted = deleteMA();
-		log.log(Level.FINE, "Deleted " + deleted + " attribute records ");
+		if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Deleted " + deleted + " attribute records ");
 		
 		MProduct prod = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
-		log.log(Level.FINE,"Loaded Product " + prod.toString());
+		if (log.isLoggable(Level.FINE))log.log(Level.FINE,"Loaded Product " + prod.toString());
 		
 		if ( prod.getProductType().compareTo(MProduct.PRODUCTTYPE_Item ) != 0 )  {
 			// no need to do any movements
-			log.log(Level.FINE, "Production Line " + getLine() + " does not require stock movement");
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Production Line " + getLine() + " does not require stock movement");
 			return "";
 		}
 		StringBuilder errorString = new StringBuilder();
@@ -86,7 +86,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		if ( asiString == null )
 			asiString = "";
 		
-		log.log(Level.FINEST, "asi Description is: " + asiString);
+		if (log.isLoggable(Level.FINEST))	log.log(Level.FINEST, "asi Description is: " + asiString);
 		// create transactions for finished goods
 		if ( getMovementQty().compareTo(Env.ZERO) > 0 ) {
 			MProductionLineMA lineMA = new MProductionLineMA( this,
@@ -111,7 +111,7 @@ public class MProductionLine extends X_M_ProductionLine {
 				log.log(Level.SEVERE, "Could not update storage for " + toString());
 				errorString.append("Could not save transaction for " + toString() + "\n");
 			}
-			log.log(Level.FINE, "Created finished goods line " + getLine());
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Created finished goods line " + getLine());
 			
 			return errorString.toString();
 		}
@@ -129,7 +129,7 @@ public class MProductionLine extends X_M_ProductionLine {
 
 			BigDecimal lineQty = storages[sl].getQtyOnHand();
 			
-			log.log(Level.FINE, "QtyAvailable " + lineQty );
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "QtyAvailable " + lineQty );
 			if (lineQty.signum() > 0) 
 			{
 				if (lineQty.compareTo(qtyToMove ) > 0)
@@ -141,7 +141,7 @@ public class MProductionLine extends X_M_ProductionLine {
 				if (slASIString == null)
 					slASIString = "";
 				
-				log.log(Level.FINEST,"slASI-Description =" + slASIString);
+				if (log.isLoggable(Level.FINEST))log.log(Level.FINEST,"slASI-Description =" + slASIString);
 					
 				if ( slASIString.compareTo(asiString) == 0
 						|| asi.getM_AttributeSet_ID() == 0  )  
@@ -153,9 +153,9 @@ public class MProductionLine extends X_M_ProductionLine {
 					if ( !lineMA.save(get_TrxName()) ) {
 						log.log(Level.SEVERE, "Could not save MA for " + toString());
 						errorString.append("Could not save MA for " + toString() + "\n" );
+					} else {
+						if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Saved MA for " + toString());
 					}
-					else
-						log.log(Level.FINE, "Saved MA for " + toString());
 					matTrx = new MTransaction (getCtx(), getAD_Org_ID(), 
 							"P-", 
 							getM_Locator_ID(), getM_Product_ID(), asi.get_ID(), 
@@ -164,16 +164,16 @@ public class MProductionLine extends X_M_ProductionLine {
 					if ( !matTrx.save(get_TrxName()) ) {
 						log.log(Level.SEVERE, "Could not save transaction for " + toString());
 						errorString.append("Could not save transaction for " + toString() + "\n");
+					} else {
+						if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Saved transaction for " + toString());
 					}
-					else
-						log.log(Level.FINE, "Saved transaction for " + toString());
 					storages[sl].changeQtyOnHand(lineQty, false);
 					if ( !storages[sl].save(get_TrxName()) )  {
 						log.log(Level.SEVERE, "Could not update storage for " + toString());
 						errorString.append("Could not update storage for " + toString() + "\n");
 					}
 					qtyToMove = qtyToMove.subtract(lineQty);
-					log.log(Level.FINE, getLine() + " Qty moved = " + lineQty + ", Remaining = " + qtyToMove );
+					if (log.isLoggable(Level.FINE))log.log(Level.FINE, getLine() + " Qty moved = " + lineQty + ", Remaining = " + qtyToMove );
 				}
 			}
 			
@@ -210,7 +210,7 @@ public class MProductionLine extends X_M_ProductionLine {
 				if (slASIString == null)
 					slASIString = "";
 				
-				log.log(Level.FINEST,"slASI-Description =" + slASIString);
+				if (log.isLoggable(Level.FINEST))log.log(Level.FINEST,"slASI-Description =" + slASIString);
 					
 				if ( slASIString.compareTo(asiString) == 0
 						|| asi.getM_AttributeSet_ID() == 0  )  
@@ -226,9 +226,9 @@ public class MProductionLine extends X_M_ProductionLine {
 					if ( !lineMA.save(get_TrxName()) ) {
 						log.log(Level.SEVERE, "Could not save MA for " + toString());
 						errorString.append("Could not save MA for " + toString() + "\n" );
+					} else {
+						if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Saved MA for " + toString());
 					}
-					else
-						log.log(Level.FINE, "Saved MA for " + toString());
 					matTrx = new MTransaction (getCtx(), getAD_Org_ID(), 
 							"P-", 
 							getM_Locator_ID(), getM_Product_ID(), asi.get_ID(), 
@@ -237,16 +237,16 @@ public class MProductionLine extends X_M_ProductionLine {
 					if ( !matTrx.save(get_TrxName()) ) {
 						log.log(Level.SEVERE, "Could not save transaction for " + toString());
 						errorString.append("Could not save transaction for " + toString() + "\n");
+					} else {
+						if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Saved transaction for " + toString());
 					}
-					else
-						log.log(Level.FINE, "Saved transaction for " + toString());
 					storage.changeQtyOnHand(lineQty, false);
 					if ( !storage.save(get_TrxName()) )  {
 						log.log(Level.SEVERE, "Could not update storage for " + toString());
 						errorString.append("Could not update storage for " + toString() + "\n");
 					}
 					qtyToMove = qtyToMove.subtract(lineQty);
-					log.log(Level.FINE, getLine() + " Qty moved = " + lineQty + ", Remaining = " + qtyToMove );
+					if (log.isLoggable(Level.FINE))log.log(Level.FINE, getLine() + " Qty moved = " + lineQty + ", Remaining = " + qtyToMove );
 				}
 				
 			}

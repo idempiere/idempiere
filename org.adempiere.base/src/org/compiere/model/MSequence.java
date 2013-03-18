@@ -1305,7 +1305,7 @@ public class MSequence extends X_AD_Sequence
 			System.err.println(e);
 			retValue = -1;
 		}
-		s_log.log(Level.INFO, "getNextID_HTTP - " + TableName + "=" + read + "(" + retValue + ")");
+		if (s_log.isLoggable(Level.INFO))s_log.log(Level.INFO, "getNextID_HTTP - " + TableName + "=" + read + "(" + retValue + ")");
 
 		return retValue;
 	}

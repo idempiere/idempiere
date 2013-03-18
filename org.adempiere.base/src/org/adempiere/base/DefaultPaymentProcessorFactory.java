@@ -25,7 +25,7 @@ import org.compiere.util.CLogger;
  */
 public class DefaultPaymentProcessorFactory implements IPaymentProcessorFactory {
 
-	private final static CLogger s_log = CLogger.getCLogger(IPaymentProcessorFactory.class);
+	private final static CLogger s_log = CLogger.getCLogger(DefaultPaymentProcessorFactory.class);
 			
 	/**
 	 * default constructor

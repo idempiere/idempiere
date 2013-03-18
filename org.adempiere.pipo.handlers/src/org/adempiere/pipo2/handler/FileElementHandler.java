@@ -25,11 +25,11 @@ public class FileElementHandler implements ElementHandler {
 			TransformerHandler docHandler, int recordId) throws Exception {
 		PackoutDocument header = packout.getPackoutDocument();
 		PackoutItem detail = packout.getCurrentPackoutItem();
-		log.log(Level.INFO,
+		if (log.isLoggable(Level.INFO))log.log(Level.INFO,
 				"In PackOut.java handling Code or Other 2pack module creation");
 		String fileDirectory = packout.getPackoutDirectory() + header.getPackageName()
 				+ detail.getProperty(FileElementParameters.TARGET_DIRECTORY);
-		log.log(Level.INFO, "targetDirectory" + fileDirectory);
+		if (log.isLoggable(Level.INFO))log.log(Level.INFO, "targetDirectory" + fileDirectory);
 		String targetDirectory = null;
 		char fileseperator1 = '/';
 		char fileseperator2 = '\\';

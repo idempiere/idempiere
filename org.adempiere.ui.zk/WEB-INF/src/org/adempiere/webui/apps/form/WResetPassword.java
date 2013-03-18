@@ -1,6 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2012 Elaine Tan                                              *
- * Copyright (C) 2012 Trek Global
+ * Copyright (C) 2012 Trek Global                                             *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -67,18 +67,18 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
     private Label lblNewPassword;
     private Label lblRetypeNewPassword;
     private Label lblNewEMail;
-    private Label lblRetypeNewEMail;
     private Label lblNewEMailUser;
     private Label lblNewEMailUserPW;
+    private Label lblRetypeNewEMailPW;
     
     private WSearchEditor fUser;
     private Textbox txtOldPassword;
     private Textbox txtNewPassword;
     private Textbox txtRetypeNewPassword;
     private Textbox txtNewEMail;
-    private Textbox txtRetypeNewEMail;
     private Textbox txtNewEMailUser;
     private Textbox txtNewEMailUserPW;
+    private Textbox txtRetypeNewEMailPW;
     
     public WResetPassword()
     {
@@ -118,9 +118,9 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
     	lblNewPassword = new Label(Msg.getMsg(Env.getCtx(), "New Password"));
     	lblRetypeNewPassword = new Label(Msg.getMsg(Env.getCtx(), "New Password Confirm"));
     	lblNewEMail = new Label(Msg.getMsg(Env.getCtx(), "New EMail"));
-    	lblRetypeNewEMail = new Label(Msg.getMsg(Env.getCtx(), "New EMail Confirm"));
     	lblNewEMailUser = new Label(Msg.getMsg(Env.getCtx(), "New EMail User"));
     	lblNewEMailUserPW = new Label(Msg.getMsg(Env.getCtx(), "New EMail User Password"));
+    	lblRetypeNewEMailPW = new Label(Msg.getMsg(Env.getCtx(), "New EMail PW Confirm"));
     	
 		//	AD_User.AD_User_ID
 		MLookup userLkp = MLookupFactory.get(Env.getCtx(), form.getWindowNo(), 0, 212, DisplayType.Search);
@@ -150,11 +150,6 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
         txtNewEMail.setCols(25);
         txtNewEMail.setWidth("220px");
         
-        txtRetypeNewEMail = new Textbox();
-        txtRetypeNewEMail.setId("txtRetypeNewEMail");
-        txtRetypeNewEMail.setCols(25);
-        txtRetypeNewEMail.setWidth("220px");
-        
         txtNewEMailUser = new Textbox();
         txtNewEMailUser.setId("txtNewEMailUser");
         txtNewEMailUser.setCols(25);
@@ -162,8 +157,15 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
         
         txtNewEMailUserPW = new Textbox();
         txtNewEMailUserPW.setId("txtNewEMailUserPW");
+        txtNewEMailUserPW.setType("password");
         txtNewEMailUserPW.setCols(25);
         txtNewEMailUserPW.setWidth("220px");
+        
+        txtRetypeNewEMailPW = new Textbox();
+        txtRetypeNewEMailPW.setId("txtRetypeNewEMail");
+        txtRetypeNewEMailPW.setType("password");
+        txtRetypeNewEMailPW.setCols(25);
+        txtRetypeNewEMailPW.setWidth("220px");
         
 		confirmPanel = new ConfirmPanel(true);
 	}
@@ -214,11 +216,6 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.appendChild(lblRetypeNewEMail.rightAlign());
-		row.appendChild(txtRetypeNewEMail);
-		
-		row = new Row();
-		rows.appendChild(row);
 		row.appendChild(lblNewEMailUser.rightAlign());
 		row.appendChild(txtNewEMailUser);
 		
@@ -226,6 +223,11 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 		rows.appendChild(row);
 		row.appendChild(lblNewEMailUserPW.rightAlign());
 		row.appendChild(txtNewEMailUserPW);
+
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(lblRetypeNewEMailPW.rightAlign());
+		row.appendChild(txtRetypeNewEMailPW);
 	}
     
 	@Override
@@ -261,7 +263,7 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 		String p_NewPassword = txtNewPassword.getValue();
 		String p_NewPasswordConfirm = txtRetypeNewPassword.getValue();
 		String p_NewEMail = txtNewEMail.getValue();
-		String p_NewEMailConfirm = txtRetypeNewEMail.getValue();
+		String p_NewEMailConfirm = txtRetypeNewEMailPW.getValue();
 		String p_NewEMailUser = txtNewEMailUser.getValue();
 		String p_NewEMailUserPW = txtNewEMailUserPW.getValue();
 				
@@ -297,7 +299,7 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 		}
 		
 		// new password confirm
-//		if (!Util.isEmpty(p_NewPassword)) {
+		if (!Util.isEmpty(p_NewPassword)) {
 			if (Util.isEmpty(p_NewPasswordConfirm)) {
 				throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "NewPasswordConfirmMandatory"));
 			} else {
@@ -305,7 +307,7 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 					throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "PasswordNotMatch"));
 				} 
 			}
-//		}
+		}
 		
 		if (!Util.isEmpty(p_NewEMailUserPW)) {
 			if (Util.isEmpty(p_NewEMailConfirm)) {
@@ -346,7 +348,7 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 	    txtNewPassword.setValue(null);
 	    txtRetypeNewPassword.setValue(null);
 	    txtNewEMail.setValue(null);
-	    txtRetypeNewEMail.setValue(null);
+	    txtRetypeNewEMailPW.setValue(null);
 	    txtNewEMailUser.setValue(null);
 	    txtNewEMailUserPW.setValue(null);
 	}

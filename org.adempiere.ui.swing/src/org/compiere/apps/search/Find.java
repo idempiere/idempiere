@@ -1497,7 +1497,7 @@ public final class Find extends CDialog
 	private Object parseString(GridField field, String in)
 	{
 		StringBuilder msglog = new StringBuilder("Parse: ").append(field).append(":").append(in);
-		log.log(Level.FINE, msglog.toString());
+		if (log.isLoggable(Level.FINE))log.log(Level.FINE, msglog.toString());
 		if (in == null)
 			return null;
 		int dt = field.getDisplayType();

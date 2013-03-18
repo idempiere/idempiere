@@ -226,7 +226,7 @@ public class MProcessPara extends X_AD_Process_Para
 	public void copyFrom (MProcessPara source)
 	{
 
-		log.log(Level.FINE, "Copying from:" + source + ", to: " + this);
+		if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Copying from:" + source + ", to: " + this);
 		setAD_Element_ID(source.getAD_Element_ID());
 		setAD_Reference_ID(source.getAD_Reference_ID());
 		setAD_Reference_Value_ID(source.getAD_Reference_Value_ID());
@@ -254,7 +254,7 @@ public class MProcessPara extends X_AD_Process_Para
 		// delete new translations and copy translations from source
 		String sql = "DELETE FROM AD_Process_Para_Trl WHERE AD_Process_Para_ID = ?";
 		int count = DB.executeUpdateEx(sql, new Object[] { getAD_Process_Para_ID() }, get_TrxName());
-		log.log(Level.FINE, "AD_Process_Para_Trl deleted: " + count);
+		if (log.isLoggable(Level.FINE))log.log(Level.FINE, "AD_Process_Para_Trl deleted: " + count);
 		
 		sql = "INSERT INTO AD_Process_Para_Trl (AD_Process_Para_ID, AD_Language, " +
 				" AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy, " +
@@ -263,7 +263,7 @@ public class MProcessPara extends X_AD_Process_Para
 				" Updated, UpdatedBy, Name, Description, Help, IsTranslated " +
 				" FROM AD_Process_Para_Trl WHERE AD_Process_Para_ID = ? ";
 		count = DB.executeUpdateEx(sql, new Object[] { getAD_Process_Para_ID(), source.getAD_Process_Para_ID() }, get_TrxName());
-		log.log(Level.FINE, "AD_Process_Para_Trl inserted: " + count);
+		if (log.isLoggable(Level.FINE))log.log(Level.FINE, "AD_Process_Para_Trl inserted: " + count);
 		
 	}
 

@@ -1285,7 +1285,7 @@ public class DB_Oracle implements AdempiereDatabase
 					return false;
 				}
 			} catch (Exception e) {
-				log.log(Level.INFO, e.getLocalizedMessage(), e);
+				if (log.isLoggable(Level.INFO))log.log(Level.INFO, e.getLocalizedMessage(), e);
 				throw new DBException("Could not lock record for " + po.toString() + " caused by " + e.getLocalizedMessage());
 			} finally {
 				DB.close(rs, stmt);

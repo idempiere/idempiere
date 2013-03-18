@@ -173,8 +173,8 @@ public class Trx
 	 */
 	public Connection getConnection(boolean createNew)
 	{
-		log.log(Level.ALL, "Active=" + isActive() + ", Connection=" + m_connection);
-		
+		if (log.isLoggable(Level.ALL))log.log(Level.ALL, "Active=" + isActive() + ", Connection=" + m_connection);
+
 		if (m_connection == null)	//	get new Connection
 		{
 			if (createNew)

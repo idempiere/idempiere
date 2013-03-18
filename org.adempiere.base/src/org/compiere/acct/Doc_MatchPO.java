@@ -199,7 +199,7 @@ public class Doc_MatchPO extends Doc
 			//	Nothing to post
 			if (difference.signum() == 0)
 			{
-				log.log(Level.FINE, "No Cost Difference for M_Product_ID=" + getM_Product_ID());
+				if (log.isLoggable(Level.FINE))log.log(Level.FINE, "No Cost Difference for M_Product_ID=" + getM_Product_ID());
 				return facts;
 			}
 

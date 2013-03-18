@@ -6,24 +6,24 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.adempiere.base.IDictionaryService;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 public class AdempiereActivator implements BundleActivator, ServiceTrackerCustomizer<IDictionaryService, IDictionaryService> {
 
-	protected final static Logger logger = Logger
-			.getLogger(AdempiereActivator.class.getName());
+	protected final static CLogger logger = CLogger.getCLogger(AdempiereActivator.class.getName());
 	private BundleContext context;
 	private ServiceTracker<IDictionaryService, IDictionaryService> serviceTracker;
 	private IDictionaryService service;

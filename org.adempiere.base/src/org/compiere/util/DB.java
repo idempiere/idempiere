@@ -1847,7 +1847,7 @@ public final class DB
         	}
         }
         if (noIsSOTrxColumn)
-        	log.log(Level.FINEST, TableName + " - No SOTrx");
+        	if (log.isLoggable(Level.FINEST))log.log(Level.FINEST, TableName + " - No SOTrx");
         return isSOTrx;
 	}	//	isSOTrx
 

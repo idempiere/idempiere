@@ -313,7 +313,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 
 		if (X_WS_WebService_Para.PARAMETERTYPE_Constant.equals(para.getParameterType())) {
 			if (string == null || string.length() == 0) {
-				log.log(Level.INFO, "Web service type "
+				if (log.isLoggable(Level.INFO))log.log(Level.INFO, "Web service type "
 						+ m_webservicetype.getValue() + ": constant parameter "
 						+ parameterName + " set to "
 						+ para.getConstantValue());

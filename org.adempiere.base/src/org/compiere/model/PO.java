@@ -1034,7 +1034,7 @@ public abstract class PO
 		else //	if (value instanceof String)
 			valueString = DB.TO_STRING(value.toString());
 		//	Save it
-		log.log(Level.INFO, columnName + "=" + valueString);
+		if (log.isLoggable(Level.INFO))log.log(Level.INFO, columnName + "=" + valueString);
 		m_custom.put(columnName, valueString);
 		return true;
 	}	//	set_CustomColumn
@@ -1408,10 +1408,9 @@ public abstract class PO
 			}
 			catch (SQLException e)
 			{
-				if (p_info.isVirtualColumn(index))	//	if rs constructor used
-					log.log(Level.FINER, "Virtual Column not loaded: " + columnName);
-				else
-				{
+				if (p_info.isVirtualColumn(index)) {	//	if rs constructor used
+					if (log.isLoggable(Level.FINER))log.log(Level.FINER, "Virtual Column not loaded: " + columnName);
+				} else {
 					log.log(Level.SEVERE, "(rs) - " + String.valueOf(index)
 						+ ": " + p_info.getTableName() + "." + p_info.getColumnName(index)
 						+ " (" + p_info.getColumnClass(index) + ") - " + e);
@@ -1468,10 +1467,9 @@ public abstract class PO
 			}
 			catch (Exception e)
 			{
-				if (p_info.isVirtualColumn(index))	//	if rs constructor used
-					log.log(Level.FINER, "Virtual Column not loaded: " + columnName);
-				else
-				{
+				if (p_info.isVirtualColumn(index)) {	//	if rs constructor used
+					if (log.isLoggable(Level.FINER))log.log(Level.FINER, "Virtual Column not loaded: " + columnName);
+				} else {
 					log.log(Level.SEVERE, "(ht) - " + String.valueOf(index)
 						+ ": " + p_info.getTableName() + "." + p_info.getColumnName(index)
 						+ " (" + p_info.getColumnClass(index) + ") - " + e);

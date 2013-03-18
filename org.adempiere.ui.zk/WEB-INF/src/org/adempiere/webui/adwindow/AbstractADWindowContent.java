@@ -937,6 +937,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			if (infoName != null && infoDisplay != null)
 				break;
 		}
+		if (infoDisplay == null) {
+			infoDisplay = "";
+		}
 		String description = infoName + ": " + infoDisplay;
 
     	WChat chat = new WChat(curWindowNo, adTabbox.getSelectedGridTab().getCM_ChatID(), adTabbox.getSelectedGridTab().getAD_Table_ID(), recordId, description, null);
@@ -1803,7 +1806,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	IADTabpanel dirtyTabpanel = adTabbox.getDirtyADTabpanel();
     	final boolean newRecord = dirtyTabpanel != null ? (dirtyTabpanel.getGridTab().getRecord_ID() <= 0) : false;
     	if (dirtyTabpanel == null) {
-			onSave0(onSaveEvent, onNavigationEvent, newRecord, wasChanged, callback);
+			onSave0(onSaveEvent, onNavigationEvent, this.newRecord, wasChanged, callback);
 			return;
     	}
     	if (dirtyTabpanel instanceof ADSortTab)

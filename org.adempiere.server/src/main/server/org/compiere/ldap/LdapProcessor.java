@@ -80,11 +80,11 @@ public class LdapProcessor extends AdempiereServer
 		try
 		{
 			m_serverSocket = new ServerSocket(m_model.getLdapPort());
-			log.log(Level.INFO, "Opened Port=" + m_model.getLdapPort());
+			if (log.isLoggable(Level.INFO))log.log(Level.INFO, "Opened Port=" + m_model.getLdapPort());
 			while (!isInterrupted())
 			{
 				Socket socket = m_serverSocket.accept();	//	waits for connection
-				log.log(Level.FINE, "Connection on Port=" + m_model.getLdapPort());
+				if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Connection on Port=" + m_model.getLdapPort());
 				LdapConnectionHandler handler = 
 					new LdapConnectionHandler (socket, m_model);
 				handler.start();

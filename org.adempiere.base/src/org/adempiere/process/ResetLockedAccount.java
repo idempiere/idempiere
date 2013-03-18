@@ -30,7 +30,7 @@ public class ResetLockedAccount extends SvrProcess {
 			else if (name.equals("AD_User_ID"))
 				p_AD_User_ID = element.getParameterAsInt();
 			else
-				log.log(Level.INFO, "Unknown Parameter: " + name);
+				if (log.isLoggable(Level.INFO))log.log(Level.INFO, "Unknown Parameter: " + name);
 		}
 	}
 

@@ -350,7 +350,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			if (!oraStatement.equals(retValue[0]) && retValue[0].indexOf("AD_Error") == -1)
 			{
 				//begin vpj-cd 24/06/2005 e-evolution
-				log.log(Level.FINE, "PostgreSQL =>" + retValue[0] + "<= <" + oraStatement + ">");
+				if (log.isLoggable(Level.FINE))log.log(Level.FINE, "PostgreSQL =>" + retValue[0] + "<= <" + oraStatement + ">");
 			}
 		}
 		    //end vpj-cd 24/06/2005 e-evolution
@@ -1038,7 +1038,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 					return false;
 				}
 			} catch (Exception e) {
-				log.log(Level.INFO, e.getLocalizedMessage(), e);
+				if (log.isLoggable(Level.INFO))log.log(Level.INFO, e.getLocalizedMessage(), e);
 				throw new DBException("Could not lock record for " + po.toString() + " caused by " + e.getLocalizedMessage());
 			} finally {
 				try {

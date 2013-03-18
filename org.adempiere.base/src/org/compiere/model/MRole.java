@@ -61,7 +61,7 @@ public final class MRole extends X_AD_Role
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2716871587637082891L;
+	private static final long serialVersionUID = -1135628544466487086L;
 
 	/**
 	 * 	Get Default (Client) Role
@@ -518,11 +518,11 @@ public final class MRole extends X_AD_Role
 		if (reset)
 			deleteAccessRecords();
 
-		int win = DB.executeUpdate(sqlWindow + roleAccessLevelWin, get_TrxName());
-		int proc = DB.executeUpdate(sqlProcess + roleAccessLevel, get_TrxName());
-		int form = DB.executeUpdate(sqlForm + roleAccessLevel, get_TrxName());
-		int wf = DB.executeUpdate(sqlWorkflow + roleAccessLevel, get_TrxName());
-		int docact = DB.executeUpdate(sqlDocAction, get_TrxName());
+		int win = DB.executeUpdateEx(sqlWindow + roleAccessLevelWin, get_TrxName());
+		int proc = DB.executeUpdateEx(sqlProcess + roleAccessLevel, get_TrxName());
+		int form = DB.executeUpdateEx(sqlForm + roleAccessLevel, get_TrxName());
+		int wf = DB.executeUpdateEx(sqlWorkflow + roleAccessLevel, get_TrxName());
+		int docact = DB.executeUpdateEx(sqlDocAction, get_TrxName());
 		
 		loadAccess(true);
 		return "@AD_Window_ID@ #" + win 
@@ -539,11 +539,11 @@ public final class MRole extends X_AD_Role
 	private void deleteAccessRecords() {
 		String whereDel = " WHERE AD_Role_ID=" + getAD_Role_ID();
 		//
-		int winDel = DB.executeUpdate("DELETE FROM AD_Window_Access" + whereDel, get_TrxName());
-		int procDel = DB.executeUpdate("DELETE FROM AD_Process_Access" + whereDel, get_TrxName());
-		int formDel = DB.executeUpdate("DELETE FROM AD_Form_Access" + whereDel, get_TrxName());
-		int wfDel = DB.executeUpdate("DELETE FROM AD_WorkFlow_Access" + whereDel, get_TrxName());
-		int docactDel = DB.executeUpdate("DELETE FROM AD_Document_Action_Access" + whereDel, get_TrxName());
+		int winDel = DB.executeUpdateEx("DELETE FROM AD_Window_Access" + whereDel, get_TrxName());
+		int procDel = DB.executeUpdateEx("DELETE FROM AD_Process_Access" + whereDel, get_TrxName());
+		int formDel = DB.executeUpdateEx("DELETE FROM AD_Form_Access" + whereDel, get_TrxName());
+		int wfDel = DB.executeUpdateEx("DELETE FROM AD_WorkFlow_Access" + whereDel, get_TrxName());
+		int docactDel = DB.executeUpdateEx("DELETE FROM AD_Document_Action_Access" + whereDel, get_TrxName());
 		
 
 		if (log.isLoggable(Level.FINE)) log.fine("AD_Window_Access=" + winDel
@@ -2494,86 +2494,75 @@ public final class MRole extends X_AD_Role
 			return maxIndex;
 		//
 		final ArrayList<String> validOptions = new ArrayList<String>();
-		final List<Object> params = new ArrayList<Object>();
-		params.add(clientId);
-		params.add(docTypeId);
+		final List<Object> optionParams = new ArrayList<Object>();
 		//
 		final StringBuffer sql_values = new StringBuffer();
 		for (int i = 0; i < maxIndex; i++) {
 			if (sql_values.length() > 0)
 				sql_values.append(",");
 			sql_values.append("?");
-			params.add(options[i]);
+			optionParams.add(options[i]);
 		}
 		//
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		PreparedStatement pstmt1 = null;
-		ResultSet rs1 = null;
-		String sql=null;
 
 		List<MRole> roles = getIncludedRoles(true);
+		roles.add(this); // add current role to the list of included roles
+		String sql = null;
 		try {
+			for (MRole role : roles) {
+				int idxpar = 1;
+				if (role.getAD_Client_ID() == 0 && role.isMasterRole()) {
+					// master role on system - check options based on docbasetype and docsubtypeso
+					MDocType doc = new MDocType(getCtx(), docTypeId, get_TrxName());
 
-			if (roles.size() > 0) {
+					sql = "SELECT DISTINCT rl.Value, a.IsActive"
+							+ " FROM AD_Document_Action_Access a"
+							+ " INNER JOIN AD_Ref_List rl ON (rl.AD_Reference_ID=135 and rl.AD_Ref_List_ID=a.AD_Ref_List_ID)"
+							+ " INNER JOIN AD_Role ro ON (a.AD_Role_ID=ro.AD_Role_ID)"
+							+ " INNER JOIN C_Doctype ty ON (a.C_Doctype_ID=ty.C_Doctype_ID)"
+							+ " WHERE ro.AD_Role_ID=?"
+							+ " AND ty.DocBaseType=?"
+							+ (MDocType.DOCBASETYPE_SalesOrder.equals(doc.getDocBaseType()) ? " AND ty.DocSubTypeSO=?" : "")
+							+ " AND rl.Value IN ("
+							+ sql_values
+							+ ")";
 
-				MDocType doc = new MDocType(getCtx(), docTypeId, get_TrxName());
-				ArrayList<String> option = new ArrayList<String>();
-				for (int j = 0; j < options.length; j++) {
-					if (options[j] != null)
-						option.add(options[j]);
+					pstmt = DB.prepareStatement(sql, get_TrxName());
+					pstmt.setInt(idxpar++, role.getAD_Role_ID());
+					pstmt.setString(idxpar++, doc.getDocBaseType());
+					if (MDocType.DOCBASETYPE_SalesOrder.equals(doc.getDocBaseType()))
+						pstmt.setString(idxpar++, doc.getDocSubTypeSO());
+				} else {
+					// master role on tenant - check options based on doctypeid
+				    sql = "SELECT DISTINCT rl.Value, a.IsActive"
+				    		+ " FROM AD_Document_Action_Access a"
+							+ " INNER JOIN AD_Ref_List rl ON (rl.AD_Reference_ID=135 and rl.AD_Ref_List_ID=a.AD_Ref_List_ID)"
+							+ " WHERE a.AD_Client_ID=? AND a.C_DocType_ID=?" // #1,2
+							+ " AND a.AD_Role_ID=?"
+							+ " AND rl.Value IN ("
+							+ sql_values
+							+ ")";
+					pstmt = DB.prepareStatement(sql, get_TrxName());
+					pstmt.setInt(idxpar++, clientId);
+					pstmt.setInt(idxpar++, docTypeId);
+					pstmt.setInt(idxpar++, role.getAD_Role_ID());
 				}
+				for (Object param : optionParams)
+					pstmt.setObject(idxpar++, param);
 
-				String sql1 = "SELECT rl.Value"
-						+ " FROM AD_Document_Action_Access da1"
-						+ " INNER JOIN AD_Ref_List rl ON (rl.AD_Reference_ID=135 and rl.AD_Ref_List_ID=da1.AD_Ref_List_ID)"
-						+ " INNER JOIN AD_Role_Included ri ON (da1.AD_Role_ID=ri.Included_Role_ID)"
-						+ " INNER JOIN AD_Role ro ON (ri.AD_Role_ID=ro.AD_Role_ID)"
-						+ " INNER JOIN C_Doctype ty ON (da1.C_Doctype_ID=ty.C_Doctype_ID)"
-						+ " WHERE ro.AD_Role_ID=?"
-						+ " AND ty.DocBaseType IN (?)"
-						+ " AND da1.IsActive='Y'";
-
-				pstmt1 = DB.prepareStatement(sql1, get_TrxName());
-				pstmt1.setInt(1, getAD_Role_ID());
-				pstmt1.setString(2, doc.getDocBaseType());
-
-				if (s_log.isLoggable(Level.INFO)) s_log.info(sql1 + " : " + getAD_Role_ID() + " "
-						+ doc.getDocBaseType());
-				rs1 = pstmt1.executeQuery();
-
-				while (rs1.next() && rs1 != null) {
-					String op = rs1.getString(1);
-					if (option.contains(op)) {
-						validOptions.add(op);
-					}
-
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					String op = rs.getString(1);
+					String active=rs.getString(2);
+					if ("N".equals(active) && validOptions.contains(op)) {
+						validOptions.remove(op);
+					} else {
+					  if (!validOptions.contains(op))
+						  validOptions.add(op);
+					} 				
 				}
-
-			}
-
-		    sql = "SELECT DISTINCT rl.Value, a.IsActive FROM AD_Document_Action_Access a"
-					+ " INNER JOIN AD_Ref_List rl ON (rl.AD_Reference_ID=135 and rl.AD_Ref_List_ID=a.AD_Ref_List_ID)"
-					+ " WHERE a.AD_Client_ID=? AND a.C_DocType_ID=?" // #1,2
-					+ " AND rl.Value IN ("
-					+ sql_values
-					+ ")"
-					+ " AND "
-					+ getIncludedRolesWhereClause("a.AD_Role_ID", params);
-
-			pstmt = DB.prepareStatement(sql, null);
-			DB.setParameters(pstmt, params);
-			if (s_log.isLoggable(Level.INFO)) s_log.info(sql + " : " );
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				String op = rs.getString(1);
-				String active=rs.getString(2);
-				if(active.equals("N") && validOptions.contains(op) ){
-					validOptions.remove(op);
-				}else{
-				  if(!validOptions.contains(op))
-					  validOptions.add(op);
-				} 				
 			}
 
 			validOptions.toArray(options);
@@ -2581,11 +2570,7 @@ public final class MRole extends X_AD_Role
 			log.log(Level.SEVERE, sql, e);
 		} finally {
 			DB.close(rs, pstmt);
-			DB.close(rs1, pstmt1);
-			rs = null;
-			pstmt = null;
-			rs1 = null;
-			pstmt1 = null;
+			rs = null; pstmt = null;
 		}
 		//
 		int newMaxIndex = validOptions.size();

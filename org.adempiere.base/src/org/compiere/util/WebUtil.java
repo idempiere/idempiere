@@ -264,8 +264,8 @@ public final class WebUtil
 			try
 			{
 				String dataEnc = new String(data.getBytes(enc), WebEnv.ENCODING);
-				log.log(Level.FINER, "Convert " + data + " (" + enc + ")-> " 
-					+ dataEnc + " (" + WebEnv.ENCODING + ")");
+				if (log.isLoggable(Level.FINER))log.log(Level.FINER, "Convert " + data + " (" + enc + ")-> " 
+						+ dataEnc + " (" + WebEnv.ENCODING + ")");
 				data = dataEnc;
 			}
 			catch (Exception e)

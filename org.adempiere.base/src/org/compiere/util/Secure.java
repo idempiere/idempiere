@@ -23,7 +23,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 
@@ -136,7 +135,7 @@ public class Secure implements SecureInterface
 
 	private IKeyStore m_keyStore = null;
 	/**	Logger						*/
-	private static Logger	log	= Logger.getLogger (Secure.class.getName());
+	private static CLogger	log	= CLogger.getCLogger (Secure.class.getName());
 
 	/**
 	 * 	Initialize Cipher & Key
@@ -179,7 +178,7 @@ public class Secure implements SecureInterface
 			return encString;
 		} catch (Exception ex) {
 			// log.log(Level.INFO, value, ex);
-			log.log(Level.INFO, "Problem encrypting string", ex);
+			if (log.isLoggable(Level.INFO))log.log(Level.INFO, "Problem encrypting string", ex);
 		}
 
 		// Fallback

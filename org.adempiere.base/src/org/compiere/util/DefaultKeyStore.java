@@ -22,7 +22,6 @@ import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.SecretKeyEntry;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -43,7 +42,7 @@ public class DefaultKeyStore implements IKeyStore {
 	private static final String IDEMPIERE_KEYSTORE = "idempiere.ks";
 
 	/**	Logger						*/
-	private static Logger	log	= Logger.getLogger (DefaultKeyStore.class.getName());
+	private static CLogger	log	= CLogger.getCLogger (DefaultKeyStore.class.getName());
 	
 	/** Adempiere Key				*/
 	private SecretKey m_key = null;
