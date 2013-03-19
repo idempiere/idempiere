@@ -141,7 +141,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 				false, "AD_Ref_List.Value IN ('CO','PR')");
 		docAction = new WTableDirEditor("DocAction", true, false, true,docActionL);
 		docAction.setValue(DocAction.ACTION_Complete);
-		docAction.addValueChangeListener(this);
+		// docAction.addValueChangeListener(this); // IDEMPIERE-768
 		//	C_Order.C_BPartner_ID
 		MLookup bpL = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, 2762, DisplayType.Search);
 		fBPartner = new WSearchEditor("C_BPartner_ID", false, false, true, bpL);
@@ -174,7 +174,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 	 */
 	public void onEvent(Event e)
 	{
-		log.info("Cmd=" + e.getTarget().getId());
+		if (log.isLoggable(Level.INFO)) log.info("Cmd=" + e.getTarget().getId());
 		//
 		if(cmbDocType.equals(e.getTarget()))
 		{
@@ -214,7 +214,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 	 */
 	public void valueChange(ValueChangeEvent e)
 	{
-		log.info(e.getPropertyName() + "=" + e.getNewValue());
+		if (log.isLoggable(Level.INFO)) log.info(e.getPropertyName() + "=" + e.getNewValue());
 		if (e.getPropertyName().equals("M_Warehouse_ID"))
 			setM_Warehouse_ID(e.getNewValue());
 		if (e.getPropertyName().equals("C_BPartner_ID"))

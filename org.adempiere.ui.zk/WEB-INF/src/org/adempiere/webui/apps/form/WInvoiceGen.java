@@ -143,7 +143,7 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 				false, "AD_Ref_List.Value IN ('CO','PR')");
 		docAction = new WTableDirEditor("DocAction", true, false, true,docActionL);
 		docAction.setValue(DocAction.ACTION_Complete);
-		docAction.addValueChangeListener(this);
+		// docAction.addValueChangeListener(this); // IDEMPIERE-768
 
 //      Document Type Sales Order/Vendor RMA
         lDocType.setText(Msg.translate(Env.getCtx(), "C_DocType_ID"));
@@ -172,7 +172,7 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 	 */
 	public void onEvent(Event e)
 	{
-		log.info("Cmd=" + e.getTarget().getId());
+		if (log.isLoggable(Level.INFO)) log.info("Cmd=" + e.getTarget().getId());
 		//
 		if(cmbDocType.equals(e.getTarget()))
 		{
@@ -201,7 +201,7 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 	 */
 	public void valueChange(ValueChangeEvent e)
 	{
-		log.info(e.getPropertyName() + "=" + e.getNewValue());
+		if (log.isLoggable(Level.INFO)) log.info(e.getPropertyName() + "=" + e.getNewValue());
 		if (e.getPropertyName().equals("AD_Org_ID"))
 			m_AD_Org_ID = e.getNewValue();
 		if (e.getPropertyName().equals("C_BPartner_ID"))
