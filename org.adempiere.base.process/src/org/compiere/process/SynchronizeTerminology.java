@@ -388,7 +388,9 @@ public class SynchronizeTerminology extends SvrProcess
 				+" WHERE n.IsCentrallyMaintained = 'Y'"
 				+"  AND EXISTS  (SELECT 1 FROM AD_WINDOW w"
 				+" 		WHERE w.AD_Window_ID=n.AD_Window_ID"
-				+" 		  AND (w.Name <> n.Name OR NVL(w.Description,' ') <> NVL(n.Description,' ') OR NVL(w.Help,' ') <> NVL(n.Help,' ')))";
+				+" 		  AND (w.Name <> n.Name OR NVL(w.Description,' ') <> NVL(n.Description,' ') OR NVL(w.Help,' ') <> NVL("
+				+ (DB.isOracle() ? "dbms_lob.substr(n.Help, 4000, 1 )" : "n.Help")
+				+",' ')))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
@@ -408,7 +410,9 @@ public class SynchronizeTerminology extends SvrProcess
 				+" WHERE EXISTS (SELECT 1 FROM AD_WINDOW_TRL t, AD_WF_NODE n"
 				+" 		WHERE trl.AD_WF_Node_ID=n.AD_WF_Node_ID AND n.AD_Window_ID=t.AD_Window_ID"
 				+" 		  AND trl.AD_LANGUAGE=t.AD_LANGUAGE AND n.IsCentrallyMaintained='Y' AND n.IsActive='Y'"
-				+" 		  AND (trl.Name <> t.Name OR NVL(trl.Description,' ') <> NVL(t.Description,' ') OR NVL(trl.Help,' ') <> NVL(t.Help,' ')))";
+				+" 		  AND (trl.Name <> t.Name OR NVL(trl.Description,' ') <> NVL(t.Description,' ') OR NVL("
+				+ (DB.isOracle() ? "dbms_lob.substr(trl.Help, 4000, 1 )" : "trl.Help")
+				+",' ') <> NVL(t.Help,' ')))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
@@ -422,7 +426,9 @@ public class SynchronizeTerminology extends SvrProcess
 				+" WHERE n.IsCentrallyMaintained = 'Y'"
 				+" AND EXISTS  (SELECT 1 FROM AD_FORM f"
 				+" 		WHERE f.AD_Form_ID=n.AD_Form_ID"
-				+" 		  AND (f.Name <> n.Name OR NVL(f.Description,' ') <> NVL(n.Description,' ') OR NVL(f.Help,' ') <> NVL(n.Help,' ')))";
+				+" 		  AND (f.Name <> n.Name OR NVL(f.Description,' ') <> NVL(n.Description,' ') OR NVL(f.Help,' ') <> NVL("
+				+ (DB.isOracle() ? "dbms_lob.substr(n.Help, 4000, 1 )" : "n.Help")
+				+",' ')))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
@@ -437,7 +443,9 @@ public class SynchronizeTerminology extends SvrProcess
 				+" WHERE EXISTS (SELECT 1 FROM AD_FORM_TRL t, AD_WF_NODE n"
 				+" 		WHERE trl.AD_WF_Node_ID=n.AD_WF_Node_ID AND n.AD_Form_ID=t.AD_Form_ID"
 				+" 		  AND trl.AD_LANGUAGE=t.AD_LANGUAGE AND n.IsCentrallyMaintained='Y' AND n.IsActive='Y'"
-				+" 		  AND (trl.Name <> t.Name OR NVL(trl.Description,' ') <> NVL(t.Description,' ') OR NVL(trl.Help,' ') <> NVL(t.Help,' ')))";
+				+" 		  AND (trl.Name <> t.Name OR NVL(trl.Description,' ') <> NVL(t.Description,' ') OR NVL("
+				+ (DB.isOracle() ? "dbms_lob.substr(trl.Help, 4000, 1 )" : "trl.Help")
+				+",' ') <> NVL(t.Help,' ')))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
@@ -451,7 +459,9 @@ public class SynchronizeTerminology extends SvrProcess
 				+" WHERE n.IsCentrallyMaintained = 'Y'"
 				+" AND EXISTS  (SELECT 1 FROM AD_PROCESS f"
 				+" 		WHERE f.AD_Process_ID=n.AD_Process_ID"
-				+" 		  AND (f.Name <> n.Name OR NVL(f.Description,' ') <> NVL(n.Description,' ') OR NVL(f.Help,' ') <> NVL(n.Help,' ')))";
+				+" 		  AND (f.Name <> n.Name OR NVL(f.Description,' ') <> NVL(n.Description,' ') OR NVL(f.Help,' ') <> NVL("
+				+ (DB.isOracle() ? "dbms_lob.substr(n.Help, 4000, 1 )" : "n.Help")
+				+",' ')))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
@@ -466,7 +476,9 @@ public class SynchronizeTerminology extends SvrProcess
 				+" WHERE EXISTS (SELECT 1 FROM AD_PROCESS_TRL t, AD_WF_NODE n"
 				+" WHERE trl.AD_WF_Node_ID=n.AD_WF_Node_ID AND n.AD_Process_ID=t.AD_Process_ID"
 				+"  AND trl.AD_LANGUAGE=t.AD_LANGUAGE AND n.IsCentrallyMaintained='Y' AND n.IsActive='Y'"
-				+"  AND (trl.Name <> t.Name OR NVL(trl.Description,' ') <> NVL(t.Description,' ') OR NVL(trl.Help,' ') <> NVL(t.Help,' ')))";
+				+"  AND (trl.Name <> t.Name OR NVL(trl.Description,' ') <> NVL(t.Description,' ') OR NVL("
+				+ (DB.isOracle() ? "dbms_lob.substr(trl.Help, 4000, 1 )" : "trl.Help")
+				+",' ') <> NVL(t.Help,' ')))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);

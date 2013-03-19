@@ -1,1004 +1,131 @@
--- Synchronize Terminology
+-- Mar 19, 2013 11:59:08 AM COT
+-- IDEMPIERE-774 Migration Script for Synchronize Terminology
+INSERT INTO AD_ELEMENT_TRL (AD_Element_ID, AD_LANGUAGE, AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy, Name, PrintName, Description, Help, IsTranslated) SELECT m.AD_Element_ID, l.AD_LANGUAGE, m.AD_Client_ID, m.AD_Org_ID, m.IsActive, m.Created, m.CreatedBy, m.Updated, m.UpdatedBy, m.Name, m.PrintName, m.Description, m.Help, 'N' FROM AD_ELEMENT m, AD_LANGUAGE l WHERE l.IsActive = 'Y' AND l.IsSystemLanguage = 'Y' AND AD_Element_ID || AD_LANGUAGE NOT IN (SELECT AD_Element_ID || AD_LANGUAGE FROM AD_ELEMENT_TRL)
+;
 
-/*
--- take account of the output for these two selects
+UPDATE AD_COLUMN SET AD_Element_id = (SELECT AD_Element_ID FROM AD_ELEMENT e WHERE UPPER(AD_COLUMN.ColumnName)=UPPER(e.ColumnName)) WHERE AD_Element_ID IS NULL
+;
 
-SELECT DISTINCT columnname, NAME, description, HELP, entitytype
-           FROM AD_COLUMN c
-          WHERE NOT EXISTS (SELECT 1
-                              FROM AD_ELEMENT e
-                             WHERE UPPER (c.columnname) = UPPER (e.columnname));
+DELETE FROM AD_ELEMENT_TRL WHERE AD_Element_ID >= 1000000 AND AD_Element_ID IN (SELECT AD_Element_ID FROM AD_ELEMENT e WHERE NOT EXISTS (SELECT 1 FROM AD_COLUMN c WHERE UPPER(e.ColumnName)=UPPER(c.ColumnName)) AND NOT EXISTS (SELECT 1 FROM AD_PROCESS_PARA p WHERE UPPER(e.ColumnName)=UPPER(p.ColumnName)))
+;
 
-SELECT DISTINCT columnname, NAME, description, HELP, entitytype
-           FROM AD_PROCESS_PARA p
-          WHERE NOT EXISTS (SELECT 1
-                              FROM AD_ELEMENT e
-                             WHERE UPPER (p.columnname) = UPPER (e.columnname));
+DELETE FROM AD_ELEMENT WHERE AD_Element_ID >= 1000000 AND NOT EXISTS (SELECT 1 FROM AD_COLUMN c WHERE UPPER(AD_ELEMENT.ColumnName)=UPPER(c.ColumnName)) AND NOT EXISTS (SELECT 1 FROM AD_PROCESS_PARA p WHERE UPPER(AD_ELEMENT.ColumnName)=UPPER(p.ColumnName))
+;
 
-*/
--- execute							 
+UPDATE AD_COLUMN SET ColumnName=e.ColumnName,Name=e.Name,Description=e.Description,Help=e.Help, Updated = statement_timestamp() FROM AD_ELEMENT e WHERE AD_COLUMN.AD_Element_ID=e.AD_Element_ID AND EXISTS (SELECT 1 FROM AD_ELEMENT e WHERE AD_COLUMN.AD_Element_ID=e.AD_Element_ID AND (AD_COLUMN.ColumnName <> e.ColumnName OR AD_COLUMN.Name <> e.Name OR COALESCE(AD_COLUMN.Description,' ') <> COALESCE(e.Description,' ') OR COALESCE(AD_COLUMN.Help,' ') <> COALESCE(e.Help,' ')))
+;
 
-INSERT INTO AD_ELEMENT_TRL
-            (ad_element_id, AD_LANGUAGE, ad_client_id, ad_org_id, isactive,
-             created, createdby, updated, updatedby, NAME, printname,
-             description, HELP, istranslated)
-   SELECT m.ad_element_id, l.AD_LANGUAGE, m.ad_client_id, m.ad_org_id,
-          m.isactive, m.created, m.createdby, m.updated, m.updatedby, m.NAME,
-          m.printname, m.description, m.HELP, 'N'
-     FROM AD_ELEMENT m, AD_LANGUAGE l
-    WHERE l.isactive = 'Y'
-      AND l.issystemlanguage = 'Y'
-      AND ad_element_id || AD_LANGUAGE NOT IN (
-                                           SELECT ad_element_id || AD_LANGUAGE
-                                             FROM AD_ELEMENT_TRL);
+UPDATE AD_FIELD SET Name=e.Name,Description=e.Description,Help=e.Help, Updated = statement_timestamp() FROM AD_ELEMENT e, AD_COLUMN c WHERE e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=AD_FIELD.AD_Column_ID AND AD_FIELD.IsCentrallyMaintained='Y' AND AD_FIELD.IsActive='Y' AND EXISTS (SELECT 1 FROM AD_ELEMENT e, AD_COLUMN c WHERE AD_FIELD.AD_Column_ID=c.AD_Column_ID AND c.AD_Element_ID=e.AD_Element_ID AND c.AD_Process_ID IS NULL AND (AD_FIELD.Name <> e.Name OR COALESCE(AD_FIELD.Description,' ') <> COALESCE(e.Description,' ') OR COALESCE(AD_FIELD.Help,' ') <> COALESCE(e.Help,' ')))
+;
 
-UPDATE AD_COLUMN
-   SET ad_element_id = (SELECT ad_element_id
-                          FROM AD_ELEMENT e
-                         WHERE UPPER (AD_COLUMN.columnname) = UPPER (e.columnname))
- WHERE ad_element_id IS NULL;
+UPDATE AD_FIELD_TRL SET Name = (SELECT e.Name FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f WHERE e.AD_LANGUAGE=AD_FIELD_TRL.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=AD_FIELD_TRL.AD_Field_ID), Description = (SELECT e.Description FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f WHERE e.AD_LANGUAGE=AD_FIELD_TRL.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=AD_FIELD_TRL.AD_Field_ID), Help = (SELECT e.Help FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f WHERE e.AD_LANGUAGE=AD_FIELD_TRL.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=AD_FIELD_TRL.AD_Field_ID), IsTranslated = (SELECT e.IsTranslated FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f WHERE e.AD_LANGUAGE=AD_FIELD_TRL.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=AD_FIELD_TRL.AD_Field_ID), Updated = statement_timestamp() WHERE EXISTS (SELECT 1 FROM AD_FIELD f, AD_ELEMENT_TRL e, AD_COLUMN c WHERE AD_FIELD_TRL.AD_Field_ID=f.AD_Field_ID AND f.AD_Column_ID=c.AD_Column_ID AND c.AD_Element_ID=e.AD_Element_ID AND c.AD_Process_ID IS NULL AND AD_FIELD_TRL.AD_LANGUAGE=e.AD_LANGUAGE AND f.IsCentrallyMaintained='Y' AND f.IsActive='Y' AND (AD_FIELD_TRL.Name <> e.Name OR COALESCE(AD_FIELD_TRL.Description,' ') <> COALESCE(e.Description,' ') OR COALESCE(AD_FIELD_TRL.Help,' ') <> COALESCE(e.Help,' ')))
+;
 
-DELETE FROM AD_ELEMENT_TRL
-      WHERE ad_element_id IN (
-               SELECT ad_element_id
-                 FROM AD_ELEMENT e
-                WHERE NOT EXISTS (
-                              SELECT 1
-                                FROM AD_COLUMN c
-                               WHERE UPPER (e.columnname) =
-                                                          UPPER (c.columnname))
-                  AND NOT EXISTS (
-                              SELECT 1
-                                FROM AD_PROCESS_PARA p
-                               WHERE UPPER (e.columnname) =
-                                                          UPPER (p.columnname)));
+UPDATE AD_FIELD SET Name = (SELECT e.PO_Name FROM AD_ELEMENT e, AD_COLUMN c WHERE e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=AD_FIELD.AD_Column_ID), Description = (SELECT e.PO_Description FROM AD_ELEMENT e, AD_COLUMN c WHERE e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=AD_FIELD.AD_Column_ID), Help = (SELECT e.PO_Help FROM AD_ELEMENT e, AD_COLUMN c WHERE e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=AD_FIELD.AD_Column_ID), Updated = statement_timestamp() WHERE AD_FIELD.IsCentrallyMaintained='Y' AND AD_FIELD.IsActive='Y' AND EXISTS (SELECT 1 FROM AD_ELEMENT e, AD_COLUMN c WHERE AD_FIELD.AD_Column_ID=c.AD_Column_ID AND c.AD_Element_ID=e.AD_Element_ID AND c.AD_Process_ID IS NULL AND (AD_FIELD.Name <> e.PO_Name OR COALESCE(AD_FIELD.Description,' ') <> COALESCE(e.PO_Description,' ') OR COALESCE(AD_FIELD.Help,' ') <> COALESCE(e.PO_Help,' ')) AND e.PO_Name IS NOT NULL) AND EXISTS (SELECT 1 FROM AD_TAB t, AD_WINDOW w WHERE AD_FIELD.AD_Tab_ID=t.AD_Tab_ID AND t.AD_Window_ID=w.AD_Window_ID AND w.IsSOTrx='N')
+;
 
-DELETE FROM AD_ELEMENT
-      WHERE AD_Element_ID >= 1000000 AND NOT EXISTS (SELECT 1
-                          FROM AD_COLUMN c
-                         WHERE UPPER (AD_ELEMENT.columnname) = UPPER (c.columnname))
-        AND NOT EXISTS (SELECT 1
-                          FROM AD_PROCESS_PARA p
-                         WHERE UPPER (AD_ELEMENT.columnname) = UPPER (p.columnname));
+UPDATE AD_FIELD_TRL SET Name = (SELECT e.PO_Name FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f WHERE e.AD_LANGUAGE=AD_FIELD_TRL.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=AD_FIELD_TRL.AD_Field_ID), Description = (SELECT e.PO_Description FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f WHERE e.AD_LANGUAGE=AD_FIELD_TRL.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=AD_FIELD_TRL.AD_Field_ID), Help = (SELECT e.PO_Help FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f WHERE e.AD_LANGUAGE=AD_FIELD_TRL.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=AD_FIELD_TRL.AD_Field_ID), IsTranslated = (SELECT e.IsTranslated FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f WHERE e.AD_LANGUAGE=AD_FIELD_TRL.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=AD_FIELD_TRL.AD_Field_ID), Updated = statement_timestamp() WHERE EXISTS (SELECT 1 FROM AD_FIELD f, AD_ELEMENT_TRL e, AD_COLUMN c WHERE AD_FIELD_TRL.AD_Field_ID=f.AD_Field_ID AND f.AD_Column_ID=c.AD_Column_ID AND c.AD_Element_ID=e.AD_Element_ID AND c.AD_Process_ID IS NULL AND AD_FIELD_TRL.AD_LANGUAGE=e.AD_LANGUAGE AND f.IsCentrallyMaintained='Y' AND f.IsActive='Y' AND (AD_FIELD_TRL.Name <> e.PO_Name OR COALESCE(AD_FIELD_TRL.Description,' ') <> COALESCE(e.PO_Description,' ') OR COALESCE(AD_FIELD_TRL.Help,' ') <> COALESCE(e.PO_Help,' ')) AND e.PO_Name IS NOT NULL) AND EXISTS (SELECT 1 FROM AD_FIELD f, AD_TAB t, AD_WINDOW w WHERE AD_FIELD_TRL.AD_Field_ID=f.AD_Field_ID AND f.AD_Tab_ID=t.AD_Tab_ID AND t.AD_Window_ID=w.AD_Window_ID AND w.IsSOTrx='N')
+;
 
-UPDATE AD_COLUMN
-   SET columnname =
-          (SELECT columnname
-             FROM AD_ELEMENT e
-            WHERE AD_COLUMN.ad_element_id = e.ad_element_id),
-       NAME =
-          (SELECT NAME
-             FROM AD_ELEMENT e
-            WHERE AD_COLUMN.ad_element_id = e.ad_element_id),
-       description =
-          (SELECT description
-             FROM AD_ELEMENT e
-            WHERE AD_COLUMN.ad_element_id = e.ad_element_id),
-       HELP =
-          (SELECT HELP
-             FROM AD_ELEMENT e
-            WHERE AD_COLUMN.ad_element_id = e.ad_element_id),
-       updated = current_timestamp
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_ELEMENT e
-           WHERE AD_COLUMN.ad_element_id = e.ad_element_id
-             AND (   AD_COLUMN.columnname <> e.columnname
-                  OR AD_COLUMN.NAME <> e.NAME
-                  OR COALESCE (AD_COLUMN.description, ' ') <> COALESCE (e.description, ' ')
-                  OR COALESCE (AD_COLUMN.HELP, ' ') <> COALESCE (e.HELP, ' ')
-                 ));
+UPDATE AD_FIELD SET Name = (SELECT p.Name FROM AD_PROCESS p, AD_COLUMN c WHERE p.AD_Process_ID=c.AD_Process_ID AND c.AD_Column_ID=AD_FIELD.AD_Column_ID), Description = (SELECT p.Description FROM AD_PROCESS p, AD_COLUMN c WHERE p.AD_Process_ID=c.AD_Process_ID AND c.AD_Column_ID=AD_FIELD.AD_Column_ID), Help = (SELECT p.Help FROM AD_PROCESS p, AD_COLUMN c WHERE p.AD_Process_ID=c.AD_Process_ID AND c.AD_Column_ID=AD_FIELD.AD_Column_ID), Updated = statement_timestamp() WHERE AD_FIELD.IsCentrallyMaintained='Y' AND AD_FIELD.IsActive='Y' AND EXISTS (SELECT 1 FROM AD_PROCESS p, AD_COLUMN c WHERE c.AD_Process_ID=p.AD_Process_ID AND AD_FIELD.AD_Column_ID=c.AD_Column_ID AND (AD_FIELD.Name<>p.Name OR COALESCE(AD_FIELD.Description,' ')<>COALESCE(p.Description,' ') OR COALESCE(AD_FIELD.Help,' ')<>COALESCE(p.Help,' ')))
+;
 
-UPDATE AD_FIELD
-   SET NAME =
-          (SELECT e.NAME
-             FROM AD_ELEMENT e, AD_COLUMN c
-            WHERE e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = AD_FIELD.ad_column_id),
-       description =
-          (SELECT e.description
-             FROM AD_ELEMENT e, AD_COLUMN c
-            WHERE e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = AD_FIELD.ad_column_id),
-       HELP =
-          (SELECT e.HELP
-             FROM AD_ELEMENT e, AD_COLUMN c
-            WHERE e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = AD_FIELD.ad_column_id),
-       updated = current_timestamp
- WHERE AD_FIELD.iscentrallymaintained = 'Y'
-   AND AD_FIELD.isactive = 'Y'
-   AND EXISTS (
-          SELECT 1
-            FROM AD_ELEMENT e, AD_COLUMN c
-           WHERE AD_FIELD.ad_column_id = c.ad_column_id
-             AND c.ad_element_id = e.ad_element_id
-             AND c.ad_process_id IS NULL
-             AND (   AD_FIELD.NAME <> e.NAME
-                  OR COALESCE (AD_FIELD.description, ' ') <> COALESCE (e.description, ' ')
-                  OR COALESCE (AD_FIELD.HELP, ' ') <> COALESCE (e.HELP, ' ')
-                 ));
+UPDATE AD_FIELD_TRL SET Name = (SELECT p.Name FROM AD_PROCESS_TRL p, AD_COLUMN c, AD_FIELD f WHERE p.AD_Process_ID=c.AD_Process_ID AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=AD_FIELD_TRL.AD_Field_ID AND p.AD_LANGUAGE=AD_FIELD_TRL.AD_LANGUAGE), Description = (SELECT p.Description FROM AD_PROCESS_TRL p, AD_COLUMN c, AD_FIELD f WHERE p.AD_Process_ID=c.AD_Process_ID AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=AD_FIELD_TRL.AD_Field_ID AND p.AD_LANGUAGE=AD_FIELD_TRL.AD_LANGUAGE), Help = (SELECT p.Help FROM AD_PROCESS_TRL p, AD_COLUMN c, AD_FIELD f WHERE p.AD_Process_ID=c.AD_Process_ID AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=AD_FIELD_TRL.AD_Field_ID AND p.AD_LANGUAGE=AD_FIELD_TRL.AD_LANGUAGE), IsTranslated = (SELECT p.IsTranslated FROM AD_PROCESS_TRL p, AD_COLUMN c, AD_FIELD f WHERE p.AD_Process_ID=c.AD_Process_ID AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=AD_FIELD_TRL.AD_Field_ID AND p.AD_LANGUAGE=AD_FIELD_TRL.AD_LANGUAGE), Updated = statement_timestamp() WHERE EXISTS (SELECT 1 FROM AD_PROCESS_TRL p, AD_COLUMN c, AD_FIELD f WHERE c.AD_Process_ID=p.AD_Process_ID AND f.AD_Column_ID=c.AD_Column_ID AND f.AD_Field_ID=AD_FIELD_TRL.AD_Field_ID AND p.AD_LANGUAGE=AD_FIELD_TRL.AD_LANGUAGE AND f.IsCentrallyMaintained='Y' AND f.IsActive='Y' AND (AD_FIELD_TRL.Name<>p.Name OR COALESCE(AD_FIELD_TRL.Description,' ')<>COALESCE(p.Description,' ') OR COALESCE(AD_FIELD_TRL.Help,' ')<>COALESCE(p.Help,' ')))
+;
 
-UPDATE AD_FIELD_TRL
-   SET NAME =
-          (SELECT e.NAME
-             FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f
-            WHERE e.AD_LANGUAGE = AD_FIELD_TRL.AD_LANGUAGE
-              AND e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = f.ad_column_id
-              AND f.ad_field_id = AD_FIELD_TRL.ad_field_id),
-       description =
-          (SELECT e.description
-             FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f
-            WHERE e.AD_LANGUAGE = AD_FIELD_TRL.AD_LANGUAGE
-              AND e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = f.ad_column_id
-              AND f.ad_field_id = AD_FIELD_TRL.ad_field_id),
-       HELP =
-          (SELECT e.HELP
-             FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f
-            WHERE e.AD_LANGUAGE = AD_FIELD_TRL.AD_LANGUAGE
-              AND e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = f.ad_column_id
-              AND f.ad_field_id = AD_FIELD_TRL.ad_field_id),
-       istranslated =
-          (SELECT e.istranslated
-             FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f
-            WHERE e.AD_LANGUAGE = AD_FIELD_TRL.AD_LANGUAGE
-              AND e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = f.ad_column_id
-              AND f.ad_field_id = AD_FIELD_TRL.ad_field_id),
-       updated = current_timestamp
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_FIELD f, AD_ELEMENT_TRL e, AD_COLUMN c
-           WHERE AD_FIELD_TRL.ad_field_id = f.ad_field_id
-             AND f.ad_column_id = c.ad_column_id
-             AND c.ad_element_id = e.ad_element_id
-             AND c.ad_process_id IS NULL
-             AND AD_FIELD_TRL.AD_LANGUAGE = e.AD_LANGUAGE
-             AND f.iscentrallymaintained = 'Y'
-             AND f.isactive = 'Y'
-             AND (   AD_FIELD_TRL.NAME <> e.NAME
-                  OR COALESCE (AD_FIELD_TRL.description, ' ') <> COALESCE (e.description, ' ')
-                  OR COALESCE (AD_FIELD_TRL.HELP, ' ') <> COALESCE (e.HELP, ' ')
-                 ));
+UPDATE AD_PROCESS_PARA SET ColumnName = (SELECT e.ColumnName FROM AD_ELEMENT e WHERE UPPER(e.ColumnName)=UPPER(AD_PROCESS_PARA.ColumnName)) WHERE AD_PROCESS_PARA.IsCentrallyMaintained='Y' AND AD_PROCESS_PARA.IsActive='Y' AND EXISTS (SELECT 1 FROM AD_ELEMENT e WHERE UPPER(e.ColumnName)=UPPER(AD_PROCESS_PARA.ColumnName) AND e.ColumnName<>AD_PROCESS_PARA.ColumnName)
+;
 
-UPDATE AD_FIELD
-   SET NAME =
-          (SELECT e.po_name
-             FROM AD_ELEMENT e, AD_COLUMN c
-            WHERE e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = AD_FIELD.ad_column_id),
-       description =
-          (SELECT e.po_description
-             FROM AD_ELEMENT e, AD_COLUMN c
-            WHERE e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = AD_FIELD.ad_column_id),
-       HELP =
-          (SELECT e.po_help
-             FROM AD_ELEMENT e, AD_COLUMN c
-            WHERE e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = AD_FIELD.ad_column_id),
-       updated = current_timestamp
- WHERE AD_FIELD.iscentrallymaintained = 'Y'
-   AND AD_FIELD.isactive = 'Y'
-   AND EXISTS (
-          SELECT 1
-            FROM AD_ELEMENT e, AD_COLUMN c
-           WHERE AD_FIELD.ad_column_id = c.ad_column_id
-             AND c.ad_element_id = e.ad_element_id
-             AND c.ad_process_id IS NULL
-             AND (   AD_FIELD.NAME <> e.po_name
-                  OR COALESCE (AD_FIELD.description, ' ') <> COALESCE (e.po_description, ' ')
-                  OR COALESCE (AD_FIELD.HELP, ' ') <> COALESCE (e.po_help, ' ')
-                 )
-             AND e.po_name IS NOT NULL)
-   AND EXISTS (
-          SELECT 1
-            FROM AD_TAB t, AD_WINDOW w
-           WHERE AD_FIELD.ad_tab_id = t.ad_tab_id
-             AND t.ad_window_id = w.ad_window_id
-             AND w.issotrx = 'N');
+UPDATE AD_PROCESS_PARA SET IsCentrallyMaintained = 'N' WHERE IsCentrallyMaintained <> 'N' AND NOT EXISTS (SELECT 1 FROM AD_ELEMENT e WHERE AD_PROCESS_PARA.ColumnName=e.ColumnName)
+;
 
-UPDATE AD_FIELD_TRL
-   SET NAME =
-          (SELECT e.po_name
-             FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f
-            WHERE e.AD_LANGUAGE = AD_FIELD_TRL.AD_LANGUAGE
-              AND e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = f.ad_column_id
-              AND f.ad_field_id = AD_FIELD_TRL.ad_field_id),
-       description =
-          (SELECT e.po_description
-             FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f
-            WHERE e.AD_LANGUAGE = AD_FIELD_TRL.AD_LANGUAGE
-              AND e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = f.ad_column_id
-              AND f.ad_field_id = AD_FIELD_TRL.ad_field_id),
-       HELP =
-          (SELECT e.po_help
-             FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f
-            WHERE e.AD_LANGUAGE = AD_FIELD_TRL.AD_LANGUAGE
-              AND e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = f.ad_column_id
-              AND f.ad_field_id = AD_FIELD_TRL.ad_field_id),
-       istranslated =
-          (SELECT e.istranslated
-             FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f
-            WHERE e.AD_LANGUAGE = AD_FIELD_TRL.AD_LANGUAGE
-              AND e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = f.ad_column_id
-              AND f.ad_field_id = AD_FIELD_TRL.ad_field_id),
-       updated = current_timestamp
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_FIELD f, AD_ELEMENT_TRL e, AD_COLUMN c
-           WHERE AD_FIELD_TRL.ad_field_id = f.ad_field_id
-             AND f.ad_column_id = c.ad_column_id
-             AND c.ad_element_id = e.ad_element_id
-             AND c.ad_process_id IS NULL
-             AND AD_FIELD_TRL.AD_LANGUAGE = e.AD_LANGUAGE
-             AND f.iscentrallymaintained = 'Y'
-             AND f.isactive = 'Y'
-             AND (   AD_FIELD_TRL.NAME <> e.po_name
-                  OR COALESCE (AD_FIELD_TRL.description, ' ') <> COALESCE (e.po_description, ' ')
-                  OR COALESCE (AD_FIELD_TRL.HELP, ' ') <> COALESCE (e.po_help, ' ')
-                 )
-             AND e.po_name IS NOT NULL)
-   AND EXISTS (
-          SELECT 1
-            FROM AD_FIELD f, AD_TAB t, AD_WINDOW w
-           WHERE AD_FIELD_TRL.ad_field_id = f.ad_field_id
-             AND f.ad_tab_id = t.ad_tab_id
-             AND t.ad_window_id = w.ad_window_id
-             AND w.issotrx = 'N');
+UPDATE AD_PROCESS_PARA SET Name = (SELECT e.Name FROM AD_ELEMENT e WHERE e.ColumnName=AD_PROCESS_PARA.ColumnName), Description = (SELECT e.Description FROM AD_ELEMENT e WHERE e.ColumnName=AD_PROCESS_PARA.ColumnName), Help = (SELECT e.Help FROM AD_ELEMENT e WHERE e.ColumnName=AD_PROCESS_PARA.ColumnName), Updated = statement_timestamp() WHERE AD_PROCESS_PARA.IsCentrallyMaintained='Y' AND AD_PROCESS_PARA.IsActive='Y' AND EXISTS (SELECT 1 FROM AD_ELEMENT e WHERE e.ColumnName=AD_PROCESS_PARA.ColumnName AND (AD_PROCESS_PARA.Name <> e.Name OR COALESCE(AD_PROCESS_PARA.Description,' ') <> COALESCE(e.Description,' ') OR COALESCE(AD_PROCESS_PARA.Help,' ') <> COALESCE(e.Help,' ')))
+;
 
-UPDATE AD_FIELD
-   SET NAME =
-          (SELECT p.NAME
-             FROM AD_PROCESS p, AD_COLUMN c
-            WHERE p.ad_process_id = c.ad_process_id
-              AND c.ad_column_id = AD_FIELD.ad_column_id),
-       description =
-          (SELECT p.description
-             FROM AD_PROCESS p, AD_COLUMN c
-            WHERE p.ad_process_id = c.ad_process_id
-              AND c.ad_column_id = AD_FIELD.ad_column_id),
-       HELP =
-          (SELECT p.HELP
-             FROM AD_PROCESS p, AD_COLUMN c
-            WHERE p.ad_process_id = c.ad_process_id
-              AND c.ad_column_id = AD_FIELD.ad_column_id),
-       updated = current_timestamp
- WHERE AD_FIELD.iscentrallymaintained = 'Y'
-   AND AD_FIELD.isactive = 'Y'
-   AND EXISTS (
-          SELECT 1
-            FROM AD_PROCESS p, AD_COLUMN c
-           WHERE c.ad_process_id = p.ad_process_id
-             AND AD_FIELD.ad_column_id = c.ad_column_id
-             AND (   AD_FIELD.NAME <> p.NAME
-                  OR COALESCE (AD_FIELD.description, ' ') <> COALESCE (p.description, ' ')
-                  OR COALESCE (AD_FIELD.HELP, ' ') <> COALESCE (p.HELP, ' ')
-                 ));
+UPDATE AD_PROCESS_PARA_TRL SET Name = (SELECT et.Name FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_PROCESS_PARA f WHERE et.AD_LANGUAGE=AD_PROCESS_PARA_TRL.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID AND e.ColumnName=f.ColumnName AND f.AD_Process_Para_ID=AD_PROCESS_PARA_TRL.AD_Process_Para_ID), Description = (SELECT et.Description FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_PROCESS_PARA f WHERE et.AD_LANGUAGE=AD_PROCESS_PARA_TRL.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID AND e.ColumnName=f.ColumnName AND f.AD_Process_Para_ID=AD_PROCESS_PARA_TRL.AD_Process_Para_ID), Help = (SELECT et.Help FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_PROCESS_PARA f WHERE et.AD_LANGUAGE=AD_PROCESS_PARA_TRL.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID AND e.ColumnName=f.ColumnName AND f.AD_Process_Para_ID=AD_PROCESS_PARA_TRL.AD_Process_Para_ID), IsTranslated = (SELECT et.IsTranslated FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_PROCESS_PARA f WHERE et.AD_LANGUAGE=AD_PROCESS_PARA_TRL.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID AND e.ColumnName=f.ColumnName AND f.AD_Process_Para_ID=AD_PROCESS_PARA_TRL.AD_Process_Para_ID), Updated = statement_timestamp() WHERE EXISTS (SELECT 1 FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_PROCESS_PARA f WHERE et.AD_LANGUAGE=AD_PROCESS_PARA_TRL.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID AND e.ColumnName=f.ColumnName AND f.AD_Process_Para_ID=AD_PROCESS_PARA_TRL.AD_Process_Para_ID AND f.IsCentrallyMaintained='Y' AND f.IsActive='Y' AND (AD_PROCESS_PARA_TRL.Name <> et.Name OR COALESCE(AD_PROCESS_PARA_TRL.Description,' ') <> COALESCE(et.Description,' ') OR COALESCE(AD_PROCESS_PARA_TRL.Help,' ') <> COALESCE(et.Help,' ')))
+;
 
-UPDATE AD_FIELD_TRL
-   SET NAME =
-          (SELECT p.NAME
-             FROM AD_PROCESS_TRL p, AD_COLUMN c, AD_FIELD f
-            WHERE p.ad_process_id = c.ad_process_id
-              AND c.ad_column_id = f.ad_column_id
-              AND f.ad_field_id = AD_FIELD_TRL.ad_field_id
-              AND p.AD_LANGUAGE = AD_FIELD_TRL.AD_LANGUAGE),
-       description =
-          (SELECT p.description
-             FROM AD_PROCESS_TRL p, AD_COLUMN c, AD_FIELD f
-            WHERE p.ad_process_id = c.ad_process_id
-              AND c.ad_column_id = f.ad_column_id
-              AND f.ad_field_id = AD_FIELD_TRL.ad_field_id
-              AND p.AD_LANGUAGE = AD_FIELD_TRL.AD_LANGUAGE),
-       HELP =
-          (SELECT p.HELP
-             FROM AD_PROCESS_TRL p, AD_COLUMN c, AD_FIELD f
-            WHERE p.ad_process_id = c.ad_process_id
-              AND c.ad_column_id = f.ad_column_id
-              AND f.ad_field_id = AD_FIELD_TRL.ad_field_id
-              AND p.AD_LANGUAGE = AD_FIELD_TRL.AD_LANGUAGE),
-       istranslated =
-          (SELECT p.istranslated
-             FROM AD_PROCESS_TRL p, AD_COLUMN c, AD_FIELD f
-            WHERE p.ad_process_id = c.ad_process_id
-              AND c.ad_column_id = f.ad_column_id
-              AND f.ad_field_id = AD_FIELD_TRL.ad_field_id
-              AND p.AD_LANGUAGE = AD_FIELD_TRL.AD_LANGUAGE),
-       updated = current_timestamp
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_PROCESS_TRL p, AD_COLUMN c, AD_FIELD f
-           WHERE c.ad_process_id = p.ad_process_id
-             AND f.ad_column_id = c.ad_column_id
-             AND f.ad_field_id = AD_FIELD_TRL.ad_field_id
-             AND p.AD_LANGUAGE = AD_FIELD_TRL.AD_LANGUAGE
-             AND f.iscentrallymaintained = 'Y'
-             AND f.isactive = 'Y'
-             AND (   AD_FIELD_TRL.NAME <> p.NAME
-                  OR COALESCE (AD_FIELD_TRL.description, ' ') <> COALESCE (p.description, ' ')
-                  OR COALESCE (AD_FIELD_TRL.HELP, ' ') <> COALESCE (p.HELP, ' ')
-                 ));
+UPDATE AD_WF_NODE SET Name = (SELECT w.Name FROM AD_WINDOW w WHERE w.AD_Window_ID=AD_WF_NODE.AD_Window_ID), Description = (SELECT w.Description FROM AD_WINDOW w WHERE w.AD_Window_ID=AD_WF_NODE.AD_Window_ID), Help = (SELECT w.Help FROM AD_WINDOW w WHERE w.AD_Window_ID=AD_WF_NODE.AD_Window_ID) WHERE AD_WF_NODE.IsCentrallyMaintained = 'Y' AND EXISTS (SELECT 1 FROM AD_WINDOW w WHERE w.AD_Window_ID=AD_WF_NODE.AD_Window_ID AND (w.Name <> AD_WF_NODE.Name OR COALESCE(w.Description,' ') <> COALESCE(AD_WF_NODE.Description,' ') OR COALESCE(w.Help,' ') <> COALESCE(AD_WF_NODE.Help,' ')))
+;
 
-/*
--- check for element errors				 
-SELECT   UPPER (e.columnname), COUNT (*)
-    FROM AD_ELEMENT e
-GROUP BY UPPER (e.columnname)
-  HAVING COUNT (*) > 1;
+UPDATE AD_WF_NODE_TRL SET Name = (SELECT t.Name FROM AD_WINDOW_TRL t, AD_WF_NODE n WHERE AD_WF_NODE_TRL.AD_WF_Node_ID=n.AD_WF_Node_ID AND n.AD_Window_ID=t.AD_Window_ID AND AD_WF_NODE_TRL.AD_LANGUAGE=t.AD_LANGUAGE), Description = (SELECT t.Description FROM AD_WINDOW_TRL t, AD_WF_NODE n WHERE AD_WF_NODE_TRL.AD_WF_Node_ID=n.AD_WF_Node_ID AND n.AD_Window_ID=t.AD_Window_ID AND AD_WF_NODE_TRL.AD_LANGUAGE=t.AD_LANGUAGE), Help = (SELECT t.Help FROM AD_WINDOW_TRL t, AD_WF_NODE n WHERE AD_WF_NODE_TRL.AD_WF_Node_ID=n.AD_WF_Node_ID AND n.AD_Window_ID=t.AD_Window_ID AND AD_WF_NODE_TRL.AD_LANGUAGE=t.AD_LANGUAGE) WHERE EXISTS (SELECT 1 FROM AD_WINDOW_TRL t, AD_WF_NODE n WHERE AD_WF_NODE_TRL.AD_WF_Node_ID=n.AD_WF_Node_ID AND n.AD_Window_ID=t.AD_Window_ID AND AD_WF_NODE_TRL.AD_LANGUAGE=t.AD_LANGUAGE AND n.IsCentrallyMaintained='Y' AND n.IsActive='Y' AND (AD_WF_NODE_TRL.Name <> t.Name OR COALESCE(AD_WF_NODE_TRL.Description,' ') <> COALESCE(t.Description,' ') OR COALESCE(AD_WF_NODE_TRL.Help,' ') <> COALESCE(t.Help,' ')))
+;
 
-SELECT   ROWID, ad_element_id, columnname,
-         (SELECT COUNT (*)
-            FROM AD_COLUMN c
-           WHERE c.ad_element_id = AD_ELEMENT.ad_element_id) cnt
-    FROM AD_ELEMENT
-   WHERE UPPER (columnname) IN (SELECT   UPPER (e.columnname)
-                                    FROM AD_ELEMENT e
-                                GROUP BY UPPER (e.columnname)
-                                  HAVING COUNT (*) > 1)
-ORDER BY UPPER (columnname), columnname;
-*/
+UPDATE AD_WF_NODE SET Name=f.Name,Description=f.Description,Help=f.Help FROM AD_FORM f WHERE f.AD_Form_ID=AD_WF_NODE.AD_Form_ID AND AD_WF_NODE.IsCentrallyMaintained = 'Y' AND EXISTS (SELECT 1 FROM AD_FORM f WHERE f.AD_Form_ID=AD_WF_NODE.AD_Form_ID AND (f.Name <> AD_WF_NODE.Name OR COALESCE(f.Description,' ') <> COALESCE(AD_WF_NODE.Description,' ') OR COALESCE(f.Help,' ') <> COALESCE(AD_WF_NODE.Help,' ')))
+;
 
-UPDATE AD_PROCESS_PARA
-   SET columnname = (SELECT e.columnname
-                       FROM AD_ELEMENT e
-                      WHERE UPPER (e.columnname) = UPPER (AD_PROCESS_PARA.columnname))
- WHERE AD_PROCESS_PARA.iscentrallymaintained = 'Y'
-   AND AD_PROCESS_PARA.isactive = 'Y'
-   AND EXISTS (
-          SELECT 1
-            FROM AD_ELEMENT e
-           WHERE UPPER (e.columnname) = UPPER (AD_PROCESS_PARA.columnname)
-             AND e.columnname <> AD_PROCESS_PARA.columnname);
+UPDATE AD_WF_NODE_TRL SET Name=t.Name,Description=t.Description,Help=t.Help FROM AD_FORM_TRL t, AD_WF_NODE n WHERE AD_WF_NODE_TRL.AD_WF_Node_ID=n.AD_WF_Node_ID AND n.AD_Form_ID=t.AD_Form_ID AND AD_WF_NODE_TRL.AD_LANGUAGE=t.AD_LANGUAGE AND EXISTS (SELECT 1 FROM AD_FORM_TRL t, AD_WF_NODE n WHERE AD_WF_NODE_TRL.AD_WF_Node_ID=n.AD_WF_Node_ID AND n.AD_Form_ID=t.AD_Form_ID AND AD_WF_NODE_TRL.AD_LANGUAGE=t.AD_LANGUAGE AND n.IsCentrallyMaintained='Y' AND n.IsActive='Y' AND (AD_WF_NODE_TRL.Name <> t.Name OR COALESCE(AD_WF_NODE_TRL.Description,' ') <> COALESCE(t.Description,' ') OR COALESCE(AD_WF_NODE_TRL.Help,' ') <> COALESCE(t.Help,' ')))
+;
 
-UPDATE AD_PROCESS_PARA
-   SET iscentrallymaintained = 'N'
- WHERE iscentrallymaintained <> 'N'
-   AND NOT EXISTS (SELECT 1
-                     FROM AD_ELEMENT e
-                    WHERE AD_PROCESS_PARA.columnname = e.columnname);
+UPDATE AD_WF_NODE SET Name=f.Name,Description=f.Description,Help=f.Help FROM AD_PROCESS f WHERE f.AD_Process_ID=AD_WF_NODE.AD_Process_ID AND AD_WF_NODE.IsCentrallyMaintained = 'Y' AND EXISTS (SELECT 1 FROM AD_PROCESS f WHERE f.AD_Process_ID=AD_WF_NODE.AD_Process_ID AND (f.Name <> AD_WF_NODE.Name OR COALESCE(f.Description,' ') <> COALESCE(AD_WF_NODE.Description,' ') OR COALESCE(f.Help,' ') <> COALESCE(AD_WF_NODE.Help,' ')))
+;
 
-UPDATE AD_PROCESS_PARA
-   SET NAME = (SELECT e.NAME
-                 FROM AD_ELEMENT e
-                WHERE e.columnname = AD_PROCESS_PARA.columnname),
-       description = (SELECT e.description
-                        FROM AD_ELEMENT e
-                       WHERE e.columnname = AD_PROCESS_PARA.columnname),
-       HELP = (SELECT e.HELP
-                 FROM AD_ELEMENT e
-                WHERE e.columnname = AD_PROCESS_PARA.columnname),
-       updated = current_timestamp
- WHERE AD_PROCESS_PARA.iscentrallymaintained = 'Y'
-   AND AD_PROCESS_PARA.isactive = 'Y'
-   AND EXISTS (
-          SELECT 1
-            FROM AD_ELEMENT e
-           WHERE e.columnname = AD_PROCESS_PARA.columnname
-             AND (   AD_PROCESS_PARA.NAME <> e.NAME
-                  OR COALESCE (AD_PROCESS_PARA.description, ' ') <> COALESCE (e.description, ' ')
-                  OR COALESCE (AD_PROCESS_PARA.HELP, ' ') <> COALESCE (e.HELP, ' ')
-                 ));
+UPDATE AD_WF_NODE_TRL SET Name=t.Name,Description=t.Description,Help=t.Help FROM AD_PROCESS_TRL t, AD_WF_NODE n WHERE AD_WF_NODE_TRL.AD_WF_Node_ID=n.AD_WF_Node_ID AND n.AD_Process_ID=t.AD_Process_ID AND AD_WF_NODE_TRL.AD_LANGUAGE=t.AD_LANGUAGE AND EXISTS (SELECT 1 FROM AD_PROCESS_TRL t, AD_WF_NODE n WHERE AD_WF_NODE_TRL.AD_WF_Node_ID=n.AD_WF_Node_ID AND n.AD_Process_ID=t.AD_Process_ID AND AD_WF_NODE_TRL.AD_LANGUAGE=t.AD_LANGUAGE AND n.IsCentrallyMaintained='Y' AND n.IsActive='Y' AND (AD_WF_NODE_TRL.Name <> t.Name OR COALESCE(AD_WF_NODE_TRL.Description,' ') <> COALESCE(t.Description,' ') OR COALESCE(AD_WF_NODE_TRL.Help,' ') <> COALESCE(t.Help,' ')))
+;
 
-UPDATE AD_PROCESS_PARA_TRL
-   SET NAME =
-          (SELECT et.NAME
-             FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_PROCESS_PARA f
-            WHERE et.AD_LANGUAGE = AD_PROCESS_PARA_TRL.AD_LANGUAGE
-              AND et.ad_element_id = e.ad_element_id
-              AND e.columnname = f.columnname
-              AND f.ad_process_para_id = AD_PROCESS_PARA_TRL.ad_process_para_id),
-       description =
-          (SELECT et.description
-             FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_PROCESS_PARA f
-            WHERE et.AD_LANGUAGE = AD_PROCESS_PARA_TRL.AD_LANGUAGE
-              AND et.ad_element_id = e.ad_element_id
-              AND e.columnname = f.columnname
-              AND f.ad_process_para_id = AD_PROCESS_PARA_TRL.ad_process_para_id),
-       HELP =
-          (SELECT et.HELP
-             FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_PROCESS_PARA f
-            WHERE et.AD_LANGUAGE = AD_PROCESS_PARA_TRL.AD_LANGUAGE
-              AND et.ad_element_id = e.ad_element_id
-              AND e.columnname = f.columnname
-              AND f.ad_process_para_id = AD_PROCESS_PARA_TRL.ad_process_para_id),
-       istranslated =
-          (SELECT et.istranslated
-             FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_PROCESS_PARA f
-            WHERE et.AD_LANGUAGE = AD_PROCESS_PARA_TRL.AD_LANGUAGE
-              AND et.ad_element_id = e.ad_element_id
-              AND e.columnname = f.columnname
-              AND f.ad_process_para_id = AD_PROCESS_PARA_TRL.ad_process_para_id),
-       updated = current_timestamp
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_PROCESS_PARA f
-           WHERE et.AD_LANGUAGE = AD_PROCESS_PARA_TRL.AD_LANGUAGE
-             AND et.ad_element_id = e.ad_element_id
-             AND e.columnname = f.columnname
-             AND f.ad_process_para_id = AD_PROCESS_PARA_TRL.ad_process_para_id
-             AND f.iscentrallymaintained = 'Y'
-             AND f.isactive = 'Y'
-             AND (   AD_PROCESS_PARA_TRL.NAME <> et.NAME
-                  OR COALESCE (AD_PROCESS_PARA_TRL.description, ' ') <> COALESCE (et.description, ' ')
-                  OR COALESCE (AD_PROCESS_PARA_TRL.HELP, ' ') <> COALESCE (et.HELP, ' ')
-                 ));
+UPDATE AD_PRINTFORMATITEM SET Name = (SELECT e.Name FROM AD_ELEMENT e, AD_COLUMN c WHERE e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=AD_PRINTFORMATITEM.AD_Column_ID) WHERE AD_PRINTFORMATITEM.IsCentrallyMaintained='Y' AND EXISTS (SELECT 1 FROM AD_ELEMENT e, AD_COLUMN c WHERE e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=AD_PRINTFORMATITEM.AD_Column_ID AND e.Name<>AD_PRINTFORMATITEM.Name) AND EXISTS (SELECT 1 FROM AD_CLIENT WHERE AD_Client_ID=AD_PRINTFORMATITEM.AD_Client_ID AND IsMultiLingualDocument='Y')
+;
 
-UPDATE AD_WF_NODE
-   SET NAME = (SELECT w.NAME
-                 FROM AD_WINDOW w
-                WHERE w.ad_window_id = AD_WF_NODE.ad_window_id),
-       description = (SELECT w.description
-                        FROM AD_WINDOW w
-                       WHERE w.ad_window_id = AD_WF_NODE.ad_window_id),
-       HELP = (SELECT w.HELP
-                 FROM AD_WINDOW w
-                WHERE w.ad_window_id = AD_WF_NODE.ad_window_id)
- WHERE AD_WF_NODE.iscentrallymaintained = 'Y'
-   AND EXISTS (
-          SELECT 1
-            FROM AD_WINDOW w
-           WHERE w.ad_window_id = AD_WF_NODE.ad_window_id
-             AND (   w.NAME <> AD_WF_NODE.NAME
-                  OR COALESCE (w.description, ' ') <> COALESCE (AD_WF_NODE.description, ' ')
-                  OR COALESCE (w.HELP, ' ') <> COALESCE (AD_WF_NODE.HELP, ' ')
-                 ));
+UPDATE AD_PRINTFORMATITEM SET PrintName = (SELECT e.PrintName FROM AD_ELEMENT e, AD_COLUMN c WHERE e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=AD_PRINTFORMATITEM.AD_Column_ID) WHERE AD_PRINTFORMATITEM.IsCentrallyMaintained='Y' AND EXISTS (SELECT 1 FROM AD_ELEMENT e, AD_COLUMN c, AD_PRINTFORMAT pf WHERE e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=AD_PRINTFORMATITEM.AD_Column_ID AND LENGTH(AD_PRINTFORMATITEM.PrintName) > 0 AND e.PrintName<>AD_PRINTFORMATITEM.PrintName AND pf.AD_PrintFormat_ID=AD_PRINTFORMATITEM.AD_PrintFormat_ID AND pf.IsForm='N' AND IsTableBased='Y') AND EXISTS (SELECT 1 FROM AD_CLIENT WHERE AD_Client_ID=AD_PRINTFORMATITEM.AD_Client_ID AND IsMultiLingualDocument='Y')
+;
 
-UPDATE AD_WF_NODE_TRL
-   SET NAME =
-          (SELECT t.NAME
-             FROM AD_WINDOW_TRL t, AD_WF_NODE n
-            WHERE AD_WF_NODE_TRL.ad_wf_node_id = n.ad_wf_node_id
-              AND n.ad_window_id = t.ad_window_id
-              AND AD_WF_NODE_TRL.AD_LANGUAGE = t.AD_LANGUAGE),
-       description =
-          (SELECT t.description
-             FROM AD_WINDOW_TRL t, AD_WF_NODE n
-            WHERE AD_WF_NODE_TRL.ad_wf_node_id = n.ad_wf_node_id
-              AND n.ad_window_id = t.ad_window_id
-              AND AD_WF_NODE_TRL.AD_LANGUAGE = t.AD_LANGUAGE),
-       HELP =
-          (SELECT t.HELP
-             FROM AD_WINDOW_TRL t, AD_WF_NODE n
-            WHERE AD_WF_NODE_TRL.ad_wf_node_id = n.ad_wf_node_id
-              AND n.ad_window_id = t.ad_window_id
-              AND AD_WF_NODE_TRL.AD_LANGUAGE = t.AD_LANGUAGE)
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_WINDOW_TRL t, AD_WF_NODE n
-           WHERE AD_WF_NODE_TRL.ad_wf_node_id = n.ad_wf_node_id
-             AND n.ad_window_id = t.ad_window_id
-             AND AD_WF_NODE_TRL.AD_LANGUAGE = t.AD_LANGUAGE
-             AND n.iscentrallymaintained = 'Y'
-             AND n.isactive = 'Y'
-             AND (   AD_WF_NODE_TRL.NAME <> t.NAME
-                  OR COALESCE (AD_WF_NODE_TRL.description, ' ') <> COALESCE (t.description, ' ')
-                  OR COALESCE (AD_WF_NODE_TRL.HELP, ' ') <> COALESCE (t.HELP, ' ')
-                 ));
+UPDATE AD_PRINTFORMATITEM_TRL SET Name = (SELECT e.Name FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_PRINTFORMATITEM p WHERE e.AD_LANGUAGE=AD_PRINTFORMATITEM_TRL.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=p.AD_Column_ID AND p.AD_PrintFormatItem_ID=AD_PRINTFORMATITEM_TRL.AD_PrintFormatItem_ID), Updated = statement_timestamp() WHERE EXISTS (SELECT 1 FROM AD_PRINTFORMATITEM p, AD_ELEMENT_TRL e, AD_COLUMN c WHERE AD_PRINTFORMATITEM_TRL.AD_PrintFormatItem_ID=p.AD_PrintFormatItem_ID AND p.AD_Column_ID=c.AD_Column_ID AND c.AD_Element_ID=e.AD_Element_ID AND c.AD_Process_ID IS NULL AND AD_PRINTFORMATITEM_TRL.AD_LANGUAGE=e.AD_LANGUAGE AND p.IsCentrallyMaintained='Y' AND p.IsActive='Y' AND (AD_PRINTFORMATITEM_TRL.Name <> e.Name))
+;
 
-UPDATE AD_WF_NODE
-   SET NAME = 
-       (SELECT f.NAME
-            FROM AD_FORM f
-           WHERE f.ad_form_id = AD_WF_NODE.ad_form_id),
-       description = 
-       (SELECT f.description
-            FROM AD_FORM f
-           WHERE f.ad_form_id = AD_WF_NODE.ad_form_id),
-       HELP = 
-       (SELECT f.HELP
-            FROM AD_FORM f
-           WHERE f.ad_form_id = AD_WF_NODE.ad_form_id)
- WHERE AD_WF_NODE.iscentrallymaintained = 'Y'
-   AND EXISTS (
-          SELECT 1
-            FROM AD_FORM f
-           WHERE f.ad_form_id = AD_WF_NODE.ad_form_id
-             AND (   f.NAME <> AD_WF_NODE.NAME
-                  OR COALESCE (f.description, ' ') <> COALESCE (AD_WF_NODE.description, ' ')
-                  OR COALESCE (f.HELP, ' ') <> COALESCE (AD_WF_NODE.HELP, ' ')
-                 ));
+UPDATE AD_PRINTFORMATITEM_TRL SET PrintName = (SELECT e.PrintName FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_PRINTFORMATITEM pfi WHERE e.AD_LANGUAGE=AD_PRINTFORMATITEM_TRL.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=pfi.AD_Column_ID AND pfi.AD_PrintFormatItem_ID=AD_PRINTFORMATITEM_TRL.AD_PrintFormatItem_ID) WHERE EXISTS (SELECT 1 FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_PRINTFORMATITEM pfi, AD_PRINTFORMAT pf WHERE e.AD_LANGUAGE=AD_PRINTFORMATITEM_TRL.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=pfi.AD_Column_ID AND pfi.AD_PrintFormatItem_ID=AD_PRINTFORMATITEM_TRL.AD_PrintFormatItem_ID AND pfi.IsCentrallyMaintained='Y' AND LENGTH(pfi.PrintName) > 0 AND (e.PrintName<>AD_PRINTFORMATITEM_TRL.PrintName OR AD_PRINTFORMATITEM_TRL.PrintName IS NULL) AND pf.AD_PrintFormat_ID=pfi.AD_PrintFormat_ID AND pf.IsForm='N' AND IsTableBased='Y') AND EXISTS (SELECT 1 FROM AD_CLIENT WHERE AD_Client_ID=AD_PRINTFORMATITEM_TRL.AD_Client_ID AND IsMultiLingualDocument='Y')
+;
 
-UPDATE AD_WF_NODE_TRL
-   SET NAME =
-          (SELECT t.NAME
-             FROM AD_FORM_TRL t, AD_WF_NODE n
-            WHERE AD_WF_NODE_TRL.ad_wf_node_id = n.ad_wf_node_id
-              AND n.ad_form_id = t.ad_form_id
-              AND AD_WF_NODE_TRL.AD_LANGUAGE = t.AD_LANGUAGE),
-       description =
-          (SELECT t.description
-             FROM AD_FORM_TRL t, AD_WF_NODE n
-            WHERE AD_WF_NODE_TRL.ad_wf_node_id = n.ad_wf_node_id
-              AND n.ad_form_id = t.ad_form_id
-              AND AD_WF_NODE_TRL.AD_LANGUAGE = t.AD_LANGUAGE),
-       HELP =
-          (SELECT t.HELP
-             FROM AD_FORM_TRL t, AD_WF_NODE n
-            WHERE AD_WF_NODE_TRL.ad_wf_node_id = n.ad_wf_node_id
-              AND n.ad_form_id = t.ad_form_id
-              AND AD_WF_NODE_TRL.AD_LANGUAGE = t.AD_LANGUAGE)
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_FORM_TRL t, AD_WF_NODE n
-           WHERE AD_WF_NODE_TRL.ad_wf_node_id = n.ad_wf_node_id
-             AND n.ad_form_id = t.ad_form_id
-             AND AD_WF_NODE_TRL.AD_LANGUAGE = t.AD_LANGUAGE
-             AND n.iscentrallymaintained = 'Y'
-             AND n.isactive = 'Y'
-             AND (   AD_WF_NODE_TRL.NAME <> t.NAME
-                  OR COALESCE (AD_WF_NODE_TRL.description, ' ') <> COALESCE (t.description, ' ')
-                  OR COALESCE (AD_WF_NODE_TRL.HELP, ' ') <> COALESCE (t.HELP, ' ')
-                 ));
+UPDATE AD_PRINTFORMATITEM_TRL SET PrintName = (SELECT pfi.PrintName FROM AD_PRINTFORMATITEM pfi WHERE pfi.AD_PrintFormatItem_ID=AD_PRINTFORMATITEM_TRL.AD_PrintFormatItem_ID) WHERE EXISTS (SELECT 1 FROM AD_PRINTFORMATITEM pfi, AD_PRINTFORMAT pf WHERE pfi.AD_PrintFormatItem_ID=AD_PRINTFORMATITEM_TRL.AD_PrintFormatItem_ID AND pfi.IsCentrallyMaintained='Y' AND LENGTH(pfi.PrintName) > 0 AND pfi.PrintName<>AD_PRINTFORMATITEM_TRL.PrintName AND pf.AD_PrintFormat_ID=pfi.AD_PrintFormat_ID AND pf.IsForm='N' AND pf.IsTableBased='Y') AND EXISTS (SELECT 1 FROM AD_CLIENT WHERE AD_Client_ID=AD_PRINTFORMATITEM_TRL.AD_Client_ID AND IsMultiLingualDocument='N')
+;
 
-UPDATE AD_WF_NODE
-   SET NAME = 
-       (SELECT f.NAME
-            FROM AD_PROCESS f
-           WHERE f.ad_process_id = AD_WF_NODE.ad_process_id),
-       description = 
-       (SELECT f.description
-            FROM AD_PROCESS f
-           WHERE f.ad_process_id = AD_WF_NODE.ad_process_id),
-       HELP = 
-       (SELECT f.HELP
-            FROM AD_PROCESS f
-           WHERE f.ad_process_id = AD_WF_NODE.ad_process_id)
- WHERE AD_WF_NODE.iscentrallymaintained = 'Y'
-   AND EXISTS (
-          SELECT 1
-            FROM AD_PROCESS f
-           WHERE f.ad_process_id = AD_WF_NODE.ad_process_id
-             AND (   f.NAME <> AD_WF_NODE.NAME
-                  OR COALESCE (f.description, ' ') <> COALESCE (AD_WF_NODE.description, ' ')
-                  OR COALESCE (f.HELP, ' ') <> COALESCE (AD_WF_NODE.HELP, ' ')
-                 ));
+UPDATE AD_PRINTFORMATITEM_TRL SET PrintName = NULL WHERE PrintName IS NOT NULL AND EXISTS (SELECT 1 FROM AD_PRINTFORMATITEM pfi WHERE pfi.AD_PrintFormatItem_ID=AD_PRINTFORMATITEM_TRL.AD_PrintFormatItem_ID AND pfi.IsCentrallyMaintained='Y' AND (LENGTH (pfi.PrintName) = 0 OR pfi.PrintName IS NULL))
+;
 
-UPDATE AD_WF_NODE_TRL
-   SET NAME =
-          (SELECT t.NAME
-             FROM AD_PROCESS_TRL t, AD_WF_NODE n
-            WHERE AD_WF_NODE_TRL.ad_wf_node_id = n.ad_wf_node_id
-              AND n.ad_process_id = t.ad_process_id
-              AND AD_WF_NODE_TRL.AD_LANGUAGE = t.AD_LANGUAGE),
-       description =
-          (SELECT t.description
-             FROM AD_PROCESS_TRL t, AD_WF_NODE n
-            WHERE AD_WF_NODE_TRL.ad_wf_node_id = n.ad_wf_node_id
-              AND n.ad_process_id = t.ad_process_id
-              AND AD_WF_NODE_TRL.AD_LANGUAGE = t.AD_LANGUAGE),
-       HELP =
-          (SELECT t.HELP
-             FROM AD_PROCESS_TRL t, AD_WF_NODE n
-            WHERE AD_WF_NODE_TRL.ad_wf_node_id = n.ad_wf_node_id
-              AND n.ad_process_id = t.ad_process_id
-              AND AD_WF_NODE_TRL.AD_LANGUAGE = t.AD_LANGUAGE)
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_PROCESS_TRL t, AD_WF_NODE n
-           WHERE AD_WF_NODE_TRL.ad_wf_node_id = n.ad_wf_node_id
-             AND n.ad_process_id = t.ad_process_id
-             AND AD_WF_NODE_TRL.AD_LANGUAGE = t.AD_LANGUAGE
-             AND n.iscentrallymaintained = 'Y'
-             AND n.isactive = 'Y'
-             AND (   AD_WF_NODE_TRL.NAME <> t.NAME
-                  OR COALESCE (AD_WF_NODE_TRL.description, ' ') <> COALESCE (t.description, ' ')
-                  OR COALESCE (AD_WF_NODE_TRL.HELP, ' ') <> COALESCE (t.HELP, ' ')
-                 ));
+UPDATE AD_MENU SET Name = (SELECT Name FROM AD_WINDOW w WHERE AD_MENU.AD_Window_ID=w.AD_Window_ID), Description = (SELECT Description FROM AD_WINDOW w WHERE AD_MENU.AD_Window_ID=w.AD_Window_ID) WHERE AD_MENU.AD_Window_ID IS NOT NULL AND AD_MENU."action" = 'W' AND AD_MENU.IsCentrallyMaintained='Y' AND AD_MENU.IsActive='Y'
+;
 
-UPDATE AD_PRINTFORMATITEM
-   SET NAME =
-          (SELECT e.NAME
-             FROM AD_ELEMENT e, AD_COLUMN c
-            WHERE e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = AD_PRINTFORMATITEM.ad_column_id)
- WHERE AD_PRINTFORMATITEM.iscentrallymaintained = 'Y'
-   AND EXISTS (
-          SELECT 1
-            FROM AD_ELEMENT e, AD_COLUMN c
-           WHERE e.ad_element_id = c.ad_element_id
-             AND c.ad_column_id = AD_PRINTFORMATITEM.ad_column_id
-             AND e.NAME <> AD_PRINTFORMATITEM.NAME)
-   AND EXISTS (
-          SELECT 1
-            FROM AD_CLIENT
-           WHERE ad_client_id = AD_PRINTFORMATITEM.ad_client_id
-             AND ismultilingualdocument = 'Y');
+UPDATE AD_MENU_TRL SET Name = (SELECT wt.Name FROM AD_WINDOW_TRL wt, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Window_ID=wt.AD_Window_ID AND AD_MENU_TRL.AD_LANGUAGE=wt.AD_LANGUAGE), Description = (SELECT wt.Description FROM AD_WINDOW_TRL wt, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Window_ID=wt.AD_Window_ID AND AD_MENU_TRL.AD_LANGUAGE=wt.AD_LANGUAGE), IsTranslated = (SELECT wt.IsTranslated FROM AD_WINDOW_TRL wt, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Window_ID=wt.AD_Window_ID AND AD_MENU_TRL.AD_LANGUAGE=wt.AD_LANGUAGE) WHERE EXISTS (SELECT 1 FROM AD_WINDOW_TRL wt, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Window_ID=wt.AD_Window_ID AND AD_MENU_TRL.AD_LANGUAGE=wt.AD_LANGUAGE AND m.AD_Window_ID IS NOT NULL AND m."action" = 'W' AND m.IsCentrallyMaintained='Y' AND m.IsActive='Y')
+;
 
-UPDATE AD_PRINTFORMATITEM
-   SET printname =
-          (SELECT e.printname
-             FROM AD_ELEMENT e, AD_COLUMN c
-            WHERE e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = AD_PRINTFORMATITEM.ad_column_id)
- WHERE AD_PRINTFORMATITEM.iscentrallymaintained = 'Y'
-   AND EXISTS (
-          SELECT 1
-            FROM AD_ELEMENT e, AD_COLUMN c, AD_PRINTFORMAT pf
-           WHERE e.ad_element_id = c.ad_element_id
-             AND c.ad_column_id = AD_PRINTFORMATITEM.ad_column_id
-             AND LENGTH (AD_PRINTFORMATITEM.printname) > 0
-             AND e.printname <> AD_PRINTFORMATITEM.printname
-             AND pf.ad_printformat_id = AD_PRINTFORMATITEM.ad_printformat_id
-             AND pf.isform = 'N'
-             AND istablebased = 'Y')
-   AND EXISTS (
-          SELECT 1
-            FROM AD_CLIENT
-           WHERE ad_client_id = AD_PRINTFORMATITEM.ad_client_id
-             AND ismultilingualdocument = 'Y');
+UPDATE AD_MENU SET Name = (SELECT p.Name FROM AD_PROCESS p WHERE AD_MENU.AD_Process_ID=p.AD_Process_ID), Description = (SELECT p.Description FROM AD_PROCESS p WHERE AD_MENU.AD_Process_ID=p.AD_Process_ID) WHERE AD_MENU.AD_Process_ID IS NOT NULL AND AD_MENU."action" IN ('R', 'P') AND AD_MENU.IsCentrallyMaintained='Y' AND AD_MENU.IsActive='Y'
+;
 
-UPDATE AD_PRINTFORMATITEM_TRL trl
-                                 SET Name = (SELECT e.Name FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_PRINTFORMATITEM p
-                                                        WHERE e.AD_LANGUAGE=trl.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID
-                                                          AND c.AD_Column_ID=p.AD_Column_ID AND p.AD_PrintFormatItem_ID=trl.AD_PrintFormatItem_ID),
-                                        Updated = now()
-                                 WHERE EXISTS (SELECT 1 FROM AD_PRINTFORMATITEM p, AD_ELEMENT_TRL e, AD_COLUMN c
-                                                WHERE trl.AD_PrintFormatItem_ID=p.AD_PrintFormatItem_ID
-                                                  AND p.AD_Column_ID=c.AD_Column_ID
-                                                  AND c.AD_Element_ID=e.AD_Element_ID AND c.AD_Process_ID IS NULL
-                                                  AND trl.AD_LANGUAGE=e.AD_LANGUAGE
-                                                  AND p.IsCentrallyMaintained='Y' AND p.IsActive='Y'
-                                                  AND (trl.Name <> e.Name));
+UPDATE AD_MENU_TRL SET Name = (SELECT pt.Name FROM AD_PROCESS_TRL pt, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Process_ID=pt.AD_Process_ID AND AD_MENU_TRL.AD_LANGUAGE=pt.AD_LANGUAGE), Description = (SELECT pt.Description FROM AD_PROCESS_TRL pt, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Process_ID=pt.AD_Process_ID AND AD_MENU_TRL.AD_LANGUAGE=pt.AD_LANGUAGE), IsTranslated = (SELECT pt.IsTranslated FROM AD_PROCESS_TRL pt, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Process_ID=pt.AD_Process_ID AND AD_MENU_TRL.AD_LANGUAGE=pt.AD_LANGUAGE) WHERE EXISTS (SELECT 1 FROM AD_PROCESS_TRL pt, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Process_ID=pt.AD_Process_ID AND AD_MENU_TRL.AD_LANGUAGE=pt.AD_LANGUAGE AND m.AD_Process_ID IS NOT NULL AND m."action" IN ('R', 'P') AND m.IsCentrallyMaintained='Y' AND m.IsActive='Y')
+;
 
-UPDATE AD_PRINTFORMATITEM_TRL
-   SET printname =
-          (SELECT e.printname
-             FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_PRINTFORMATITEM pfi
-            WHERE e.AD_LANGUAGE = AD_PRINTFORMATITEM_TRL.AD_LANGUAGE
-              AND e.ad_element_id = c.ad_element_id
-              AND c.ad_column_id = pfi.ad_column_id
-              AND pfi.ad_printformatitem_id = AD_PRINTFORMATITEM_TRL.ad_printformatitem_id)
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_ELEMENT_TRL e,
-                 AD_COLUMN c,
-                 AD_PRINTFORMATITEM pfi,
-                 AD_PRINTFORMAT pf
-           WHERE e.AD_LANGUAGE = AD_PRINTFORMATITEM_TRL.AD_LANGUAGE
-             AND e.ad_element_id = c.ad_element_id
-             AND c.ad_column_id = pfi.ad_column_id
-             AND pfi.ad_printformatitem_id = AD_PRINTFORMATITEM_TRL.ad_printformatitem_id
-             AND pfi.iscentrallymaintained = 'Y'
-             AND LENGTH (pfi.printname) > 0
-             AND (e.printname <> AD_PRINTFORMATITEM_TRL.printname OR AD_PRINTFORMATITEM_TRL.printname IS NULL)
-             AND pf.ad_printformat_id = pfi.ad_printformat_id
-             AND pf.isform = 'N'
-             AND istablebased = 'Y')
-   AND EXISTS (
-          SELECT 1
-            FROM AD_CLIENT
-           WHERE ad_client_id = AD_PRINTFORMATITEM_TRL.ad_client_id
-             AND ismultilingualdocument = 'Y');
+UPDATE AD_MENU SET Name = (SELECT Name FROM AD_FORM f WHERE AD_MENU.AD_Form_ID=f.AD_Form_ID), Description = (SELECT Description FROM AD_FORM f WHERE AD_MENU.AD_Form_ID=f.AD_Form_ID) WHERE AD_MENU.AD_Form_ID IS NOT NULL AND AD_MENU."action" = 'X' AND AD_MENU.IsCentrallyMaintained='Y' AND AD_MENU.IsActive='Y'
+;
 
-UPDATE AD_PRINTFORMATITEM_TRL
-   SET printname =
-                (SELECT pfi.printname
-                   FROM AD_PRINTFORMATITEM pfi
-                  WHERE pfi.ad_printformatitem_id = AD_PRINTFORMATITEM_TRL.ad_printformatitem_id)
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_PRINTFORMATITEM pfi, AD_PRINTFORMAT pf
-           WHERE pfi.ad_printformatitem_id = AD_PRINTFORMATITEM_TRL.ad_printformatitem_id
-             AND pfi.iscentrallymaintained = 'Y'
-             AND LENGTH (pfi.printname) > 0
-             AND pfi.printname <> AD_PRINTFORMATITEM_TRL.printname
-             AND pf.ad_printformat_id = pfi.ad_printformat_id
-             AND pf.isform = 'N'
-             AND pf.istablebased = 'Y')
-   AND EXISTS (
-          SELECT 1
-            FROM AD_CLIENT
-           WHERE ad_client_id = AD_PRINTFORMATITEM_TRL.ad_client_id
-             AND ismultilingualdocument = 'N');
+UPDATE AD_MENU_TRL SET Name = (SELECT ft.Name FROM AD_FORM_TRL ft, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Form_ID=ft.AD_Form_ID AND AD_MENU_TRL.AD_LANGUAGE=ft.AD_LANGUAGE), Description = (SELECT ft.Description FROM AD_FORM_TRL ft, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Form_ID=ft.AD_Form_ID AND AD_MENU_TRL.AD_LANGUAGE=ft.AD_LANGUAGE), IsTranslated = (SELECT ft.IsTranslated FROM AD_FORM_TRL ft, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Form_ID=ft.AD_Form_ID AND AD_MENU_TRL.AD_LANGUAGE=ft.AD_LANGUAGE) WHERE EXISTS (SELECT 1 FROM AD_FORM_TRL ft, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Form_ID=ft.AD_Form_ID AND AD_MENU_TRL.AD_LANGUAGE=ft.AD_LANGUAGE AND m.AD_Form_ID IS NOT NULL AND m."action" = 'X' AND m.IsCentrallyMaintained='Y' AND m.IsActive='Y')
+;
 
-UPDATE AD_PRINTFORMATITEM_TRL
-   SET printname = NULL
- WHERE printname IS NOT NULL
-   AND EXISTS (
-          SELECT 1
-            FROM AD_PRINTFORMATITEM pfi
-           WHERE pfi.ad_printformatitem_id = AD_PRINTFORMATITEM_TRL.ad_printformatitem_id
-             AND pfi.iscentrallymaintained = 'Y'
-             AND (LENGTH (pfi.printname) = 0 OR pfi.printname IS NULL));
+UPDATE AD_MENU SET Name = (SELECT p.Name FROM AD_WORKFLOW p WHERE AD_MENU.AD_Workflow_ID=p.AD_Workflow_ID), Description = (SELECT p.Description FROM AD_WORKFLOW p WHERE AD_MENU.AD_Workflow_ID=p.AD_Workflow_ID) WHERE AD_MENU.AD_Workflow_ID IS NOT NULL AND AD_MENU."action" = 'F' AND AD_MENU.IsCentrallyMaintained='Y' AND AD_MENU.IsActive='Y'
+;
 
-UPDATE AD_MENU
-   SET NAME = (SELECT NAME
-                 FROM AD_WINDOW w
-                WHERE AD_MENU.ad_window_id = w.ad_window_id),
-       description = (SELECT description
-                        FROM AD_WINDOW w
-                       WHERE AD_MENU.ad_window_id = w.ad_window_id)
- WHERE ad_window_id IS NOT NULL AND action = 'W';
+UPDATE AD_MENU_TRL SET Name = (SELECT pt.Name FROM AD_WORKFLOW_TRL pt, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Workflow_ID=pt.AD_Workflow_ID AND AD_MENU_TRL.AD_LANGUAGE=pt.AD_LANGUAGE), Description = (SELECT pt.Description FROM AD_WORKFLOW_TRL pt, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Workflow_ID=pt.AD_Workflow_ID AND AD_MENU_TRL.AD_LANGUAGE=pt.AD_LANGUAGE), IsTranslated = (SELECT pt.IsTranslated FROM AD_WORKFLOW_TRL pt, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Workflow_ID=pt.AD_Workflow_ID AND AD_MENU_TRL.AD_LANGUAGE=pt.AD_LANGUAGE) WHERE EXISTS (SELECT 1 FROM AD_WORKFLOW_TRL pt, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Workflow_ID=pt.AD_Workflow_ID AND AD_MENU_TRL.AD_LANGUAGE=pt.AD_LANGUAGE AND m.AD_Workflow_ID IS NOT NULL AND m."action" = 'F' AND m.IsCentrallyMaintained='Y' AND m.IsActive='Y')
+;
 
-UPDATE AD_MENU_TRL
-   SET NAME =
-          (SELECT wt.NAME
-             FROM AD_WINDOW_TRL wt, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_window_id = wt.ad_window_id
-              AND AD_MENU_TRL.AD_LANGUAGE = wt.AD_LANGUAGE),
-       description =
-          (SELECT wt.description
-             FROM AD_WINDOW_TRL wt, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_window_id = wt.ad_window_id
-              AND AD_MENU_TRL.AD_LANGUAGE = wt.AD_LANGUAGE),
-       istranslated =
-          (SELECT wt.istranslated
-             FROM AD_WINDOW_TRL wt, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_window_id = wt.ad_window_id
-              AND AD_MENU_TRL.AD_LANGUAGE = wt.AD_LANGUAGE)
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_WINDOW_TRL wt, AD_MENU m
-           WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-             AND m.ad_window_id = wt.ad_window_id
-             AND AD_MENU_TRL.AD_LANGUAGE = wt.AD_LANGUAGE
-             AND m.ad_window_id IS NOT NULL
-             AND m.action = 'W');
+UPDATE AD_MENU SET Name = (SELECT Name FROM AD_TASK f WHERE AD_MENU.AD_Task_ID=f.AD_Task_ID), Description = (SELECT Description FROM AD_TASK f WHERE AD_MENU.AD_Task_ID=f.AD_Task_ID) WHERE AD_MENU.AD_Task_ID IS NOT NULL AND AD_MENU."action" = 'T' AND AD_MENU.IsCentrallyMaintained='Y' AND AD_MENU.IsActive='Y'
+;
 
-UPDATE AD_MENU
-   SET NAME = (SELECT p.NAME
-                 FROM AD_PROCESS p
-                WHERE AD_MENU.ad_process_id = p.ad_process_id),
-       description = (SELECT p.description
-                        FROM AD_PROCESS p
-                       WHERE AD_MENU.ad_process_id = p.ad_process_id)
- WHERE AD_MENU.ad_process_id IS NOT NULL AND AD_MENU.action IN ('R', 'P');
+UPDATE AD_MENU_TRL SET Name = (SELECT ft.Name FROM AD_TASK_TRL ft, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Task_ID=ft.AD_Task_ID AND AD_MENU_TRL.AD_LANGUAGE=ft.AD_LANGUAGE), Description = (SELECT ft.Description FROM AD_TASK_TRL ft, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Task_ID=ft.AD_Task_ID AND AD_MENU_TRL.AD_LANGUAGE=ft.AD_LANGUAGE), IsTranslated = (SELECT ft.IsTranslated FROM AD_TASK_TRL ft, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Task_ID=ft.AD_Task_ID AND AD_MENU_TRL.AD_LANGUAGE=ft.AD_LANGUAGE) WHERE EXISTS (SELECT 1 FROM AD_TASK_TRL ft, AD_MENU m WHERE AD_MENU_TRL.AD_Menu_ID=m.AD_Menu_ID AND m.AD_Task_ID=ft.AD_Task_ID AND AD_MENU_TRL.AD_LANGUAGE=ft.AD_LANGUAGE AND m.AD_Task_ID IS NOT NULL AND m."action" = 'T' AND m.IsCentrallyMaintained='Y' AND m.IsActive='Y')
+;
 
-UPDATE AD_MENU_TRL
-   SET NAME =
-          (SELECT pt.NAME
-             FROM AD_PROCESS_TRL pt, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_process_id = pt.ad_process_id
-              AND AD_MENU_TRL.AD_LANGUAGE = pt.AD_LANGUAGE),
-       description =
-          (SELECT pt.description
-             FROM AD_PROCESS_TRL pt, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_process_id = pt.ad_process_id
-              AND AD_MENU_TRL.AD_LANGUAGE = pt.AD_LANGUAGE),
-       istranslated =
-          (SELECT pt.istranslated
-             FROM AD_PROCESS_TRL pt, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_process_id = pt.ad_process_id
-              AND AD_MENU_TRL.AD_LANGUAGE = pt.AD_LANGUAGE)
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_PROCESS_TRL pt, AD_MENU m
-           WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-             AND m.ad_process_id = pt.ad_process_id
-             AND AD_MENU_TRL.AD_LANGUAGE = pt.AD_LANGUAGE
-             AND m.ad_process_id IS NOT NULL
-             AND action IN ('R', 'P'));
+UPDATE AD_COLUMN SET Name=e.Name,Description=e.Description,Help=e.Help FROM AD_ELEMENT e WHERE AD_COLUMN.AD_Element_ID=e.AD_Element_ID AND EXISTS (SELECT 1 FROM AD_ELEMENT e WHERE AD_COLUMN.AD_Element_ID=e.AD_Element_ID AND AD_COLUMN.Name<>e.Name)
+;
 
-UPDATE AD_MENU
-   SET NAME = (SELECT NAME
-                 FROM AD_FORM f
-                WHERE AD_MENU.ad_form_id = f.ad_form_id),
-       description = (SELECT description
-                        FROM AD_FORM f
-                       WHERE AD_MENU.ad_form_id = f.ad_form_id)
- WHERE ad_form_id IS NOT NULL AND action = 'X';
+UPDATE AD_COLUMN_TRL SET Name = (SELECT e.Name FROM AD_COLUMN c INNER JOIN AD_ELEMENT_TRL e ON (c.AD_Element_ID=e.AD_Element_ID) WHERE AD_COLUMN_TRL.AD_Column_ID=c.AD_Column_ID AND AD_COLUMN_TRL.AD_LANGUAGE=e.AD_LANGUAGE) WHERE EXISTS (SELECT 1 FROM AD_COLUMN c INNER JOIN AD_ELEMENT_TRL e ON (c.AD_Element_ID=e.AD_Element_ID) WHERE AD_COLUMN_TRL.AD_Column_ID=c.AD_Column_ID AND AD_COLUMN_TRL.AD_LANGUAGE=e.AD_LANGUAGE AND AD_COLUMN_TRL.Name<>e.Name)
+;
 
-UPDATE AD_MENU_TRL
-   SET NAME =
-          (SELECT ft.NAME
-             FROM AD_FORM_TRL ft, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_form_id = ft.ad_form_id
-              AND AD_MENU_TRL.AD_LANGUAGE = ft.AD_LANGUAGE),
-       description =
-          (SELECT ft.description
-             FROM AD_FORM_TRL ft, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_form_id = ft.ad_form_id
-              AND AD_MENU_TRL.AD_LANGUAGE = ft.AD_LANGUAGE),
-       istranslated =
-          (SELECT ft.istranslated
-             FROM AD_FORM_TRL ft, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_form_id = ft.ad_form_id
-              AND AD_MENU_TRL.AD_LANGUAGE = ft.AD_LANGUAGE)
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_FORM_TRL ft, AD_MENU m
-           WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-             AND m.ad_form_id = ft.ad_form_id
-             AND AD_MENU_TRL.AD_LANGUAGE = ft.AD_LANGUAGE
-             AND m.ad_form_id IS NOT NULL
-             AND action = 'X');
+UPDATE AD_TABLE SET Name=e.Name,Description=e.Description FROM AD_ELEMENT e WHERE AD_TABLE.TableName||'_ID'=e.ColumnName AND EXISTS (SELECT 1 FROM AD_ELEMENT e WHERE AD_TABLE.TableName||'_ID'=e.ColumnName AND AD_TABLE.Name<>e.Name)
+;
 
-UPDATE AD_MENU
-   SET NAME = (SELECT p.NAME
-                 FROM AD_WORKFLOW p
-                WHERE AD_MENU.ad_workflow_id = p.ad_workflow_id),
-       description = (SELECT p.description
-                        FROM AD_WORKFLOW p
-                       WHERE AD_MENU.ad_workflow_id = p.ad_workflow_id)
- WHERE AD_MENU.ad_workflow_id IS NOT NULL AND AD_MENU.action = 'F';
+UPDATE AD_TABLE_TRL SET Name = (SELECT e.Name FROM AD_TABLE t INNER JOIN AD_ELEMENT ex ON (t.TableName||'_ID'=ex.ColumnName) INNER JOIN AD_ELEMENT_TRL e ON (ex.AD_Element_ID=e.AD_Element_ID) WHERE AD_TABLE_TRL.AD_Table_ID=t.AD_Table_ID AND AD_TABLE_TRL.AD_LANGUAGE=e.AD_LANGUAGE) WHERE EXISTS (SELECT 1 FROM AD_TABLE t INNER JOIN AD_ELEMENT ex ON (t.TableName||'_ID'=ex.ColumnName) INNER JOIN AD_ELEMENT_TRL e ON (ex.AD_Element_ID=e.AD_Element_ID) WHERE AD_TABLE_TRL.AD_Table_ID=t.AD_Table_ID AND AD_TABLE_TRL.AD_LANGUAGE=e.AD_LANGUAGE AND AD_TABLE_TRL.Name<>e.Name)
+;
 
-UPDATE AD_MENU_TRL
-   SET NAME =
-          (SELECT pt.NAME
-             FROM AD_WORKFLOW_TRL pt, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_workflow_id = pt.ad_workflow_id
-              AND AD_MENU_TRL.AD_LANGUAGE = pt.AD_LANGUAGE),
-       description =
-          (SELECT pt.description
-             FROM AD_WORKFLOW_TRL pt, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_workflow_id = pt.ad_workflow_id
-              AND AD_MENU_TRL.AD_LANGUAGE = pt.AD_LANGUAGE),
-       istranslated =
-          (SELECT pt.istranslated
-             FROM AD_WORKFLOW_TRL pt, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_workflow_id = pt.ad_workflow_id
-              AND AD_MENU_TRL.AD_LANGUAGE = pt.AD_LANGUAGE)
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_WORKFLOW_TRL pt, AD_MENU m
-           WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-             AND m.ad_workflow_id = pt.ad_workflow_id
-             AND AD_MENU_TRL.AD_LANGUAGE = pt.AD_LANGUAGE
-             AND m.ad_workflow_id IS NOT NULL
-             AND action = 'F');
+UPDATE AD_TABLE SET Name=e.Name||' Trl',Description=e.Description FROM AD_ELEMENT e WHERE SUBSTR(AD_TABLE.TableName,1,LENGTH(AD_TABLE.TableName)-4)||'_ID'=e.ColumnName AND AD_TABLE.TableName LIKE '%_Trl' AND EXISTS (SELECT 1 FROM AD_ELEMENT e WHERE SUBSTR(AD_TABLE.TableName,1,LENGTH(AD_TABLE.TableName)-4)||'_ID'=e.ColumnName AND AD_TABLE.Name<>e.Name)
+;
 
-UPDATE AD_MENU
-   SET NAME = (SELECT NAME
-                 FROM AD_TASK f
-                WHERE AD_MENU.ad_task_id = f.ad_task_id),
-       description = (SELECT description
-                        FROM AD_TASK f
-                       WHERE AD_MENU.ad_task_id = f.ad_task_id)
- WHERE ad_task_id IS NOT NULL AND action = 'T';
+UPDATE AD_TABLE_TRL SET Name = (SELECT e.Name || ' **' FROM AD_TABLE t INNER JOIN AD_ELEMENT ex ON (SUBSTR(t.TableName,1,LENGTH(t.TableName)-4)||'_ID'=ex.ColumnName) INNER JOIN AD_ELEMENT_TRL e ON (ex.AD_Element_ID=e.AD_Element_ID) WHERE AD_TABLE_TRL.AD_Table_ID=t.AD_Table_ID AND AD_TABLE_TRL.AD_LANGUAGE=e.AD_LANGUAGE) WHERE EXISTS (SELECT 1 FROM AD_TABLE t INNER JOIN AD_ELEMENT ex ON (SUBSTR(t.TableName,1,LENGTH(t.TableName)-4)||'_ID'=ex.ColumnName) INNER JOIN AD_ELEMENT_TRL e ON (ex.AD_Element_ID=e.AD_Element_ID) WHERE AD_TABLE_TRL.AD_Table_ID=t.AD_Table_ID AND AD_TABLE_TRL.AD_LANGUAGE=e.AD_LANGUAGE AND t.TableName LIKE '%_Trl' AND AD_TABLE_TRL.Name<>e.Name)
+;
 
-UPDATE AD_MENU_TRL
-   SET NAME =
-          (SELECT ft.NAME
-             FROM AD_TASK_TRL ft, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_task_id = ft.ad_task_id
-              AND AD_MENU_TRL.AD_LANGUAGE = ft.AD_LANGUAGE),
-       description =
-          (SELECT ft.description
-             FROM AD_TASK_TRL ft, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_task_id = ft.ad_task_id
-              AND AD_MENU_TRL.AD_LANGUAGE = ft.AD_LANGUAGE),
-       istranslated =
-          (SELECT ft.istranslated
-             FROM AD_TASK_TRL ft, AD_MENU m
-            WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-              AND m.ad_task_id = ft.ad_task_id
-              AND AD_MENU_TRL.AD_LANGUAGE = ft.AD_LANGUAGE)
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_TASK_TRL ft, AD_MENU m
-           WHERE AD_MENU_TRL.ad_menu_id = m.ad_menu_id
-             AND m.ad_task_id = ft.ad_task_id
-             AND AD_MENU_TRL.AD_LANGUAGE = ft.AD_LANGUAGE
-             AND m.ad_task_id IS NOT NULL
-             AND action = 'T');
-
-UPDATE AD_COLUMN
-   SET NAME = 
-       (SELECT e.NAME
-            FROM AD_ELEMENT e
-           WHERE AD_COLUMN.ad_element_id = e.ad_element_id),
-       description = 
-       (SELECT e.description
-            FROM AD_ELEMENT e
-           WHERE AD_COLUMN.ad_element_id = e.ad_element_id),
-       HELP = 
-       (SELECT e.HELP
-            FROM AD_ELEMENT e
-           WHERE AD_COLUMN.ad_element_id = e.ad_element_id)
- WHERE EXISTS (SELECT 1
-                 FROM AD_ELEMENT e
-                WHERE AD_COLUMN.ad_element_id = e.ad_element_id AND AD_COLUMN.NAME <> e.NAME);
-
-UPDATE AD_COLUMN_TRL
-   SET NAME =
-          (SELECT e.NAME
-             FROM AD_COLUMN c INNER JOIN AD_ELEMENT_TRL e
-                  ON (c.ad_element_id = e.ad_element_id)
-            WHERE AD_COLUMN_TRL.ad_column_id = c.ad_column_id
-              AND AD_COLUMN_TRL.AD_LANGUAGE = e.AD_LANGUAGE)
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_COLUMN c INNER JOIN AD_ELEMENT_TRL e
-                 ON (c.ad_element_id = e.ad_element_id)
-           WHERE AD_COLUMN_TRL.ad_column_id = c.ad_column_id
-             AND AD_COLUMN_TRL.AD_LANGUAGE = e.AD_LANGUAGE
-             AND AD_COLUMN_TRL.NAME <> e.NAME);
-
-UPDATE AD_TABLE
-   SET NAME = 
-        (SELECT e.NAME
-            FROM AD_ELEMENT e
-           WHERE AD_TABLE.tablename || '_ID' = e.columnname),
-       description = 
-        (SELECT e.description
-            FROM AD_ELEMENT e
-           WHERE AD_TABLE.tablename || '_ID' = e.columnname)
- WHERE EXISTS (SELECT 1
-                 FROM AD_ELEMENT e
-                WHERE AD_TABLE.tablename || '_ID' = e.columnname AND AD_TABLE.NAME <> e.NAME);
-
-UPDATE AD_TABLE_TRL
-   SET NAME =
-          (SELECT e.NAME
-             FROM AD_TABLE t INNER JOIN AD_ELEMENT ex
-                  ON (t.tablename || '_ID' = ex.columnname)
-                  INNER JOIN AD_ELEMENT_TRL e
-                  ON (ex.ad_element_id = e.ad_element_id)
-            WHERE AD_TABLE_TRL.ad_table_id = t.ad_table_id
-              AND AD_TABLE_TRL.AD_LANGUAGE = e.AD_LANGUAGE)
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_TABLE t INNER JOIN AD_ELEMENT ex
-                 ON (t.tablename || '_ID' = ex.columnname)
-                 INNER JOIN AD_ELEMENT_TRL e
-                 ON (ex.ad_element_id = e.ad_element_id)
-           WHERE AD_TABLE_TRL.ad_table_id = t.ad_table_id
-             AND AD_TABLE_TRL.AD_LANGUAGE = e.AD_LANGUAGE
-             AND AD_TABLE_TRL.NAME <> e.NAME);
-
-UPDATE AD_TABLE
-     SET NAME =
-          (SELECT e.NAME || ' Trl'
-             FROM AD_ELEMENT e
-            WHERE SUBSTR (AD_TABLE.tablename, 1, LENGTH (AD_TABLE.tablename) - 4) || '_ID' =
-                                                                  e.columnname),
-       description =
-          (SELECT e.description
-             FROM AD_ELEMENT e
-            WHERE SUBSTR (AD_TABLE.tablename, 1, LENGTH (AD_TABLE.tablename) - 4) || '_ID' =
-                                                                  e.columnname)
- WHERE tablename LIKE '%_Trl'
-   AND EXISTS (
-          SELECT 1
-            FROM AD_ELEMENT e
-           WHERE SUBSTR (AD_TABLE.tablename, 1, LENGTH (AD_TABLE.tablename) - 4) || '_ID' =
-                                                                  e.columnname
-             AND AD_TABLE.NAME <> e.NAME);
-
-UPDATE AD_TABLE_TRL
-   SET NAME =
-          (SELECT e.NAME || ' **'
-             FROM AD_TABLE t INNER JOIN AD_ELEMENT ex
-                  ON (SUBSTR (t.tablename, 1, LENGTH (t.tablename) - 4)
-                      || '_ID' = ex.columnname
-                     )
-                  INNER JOIN AD_ELEMENT_TRL e
-                  ON (ex.ad_element_id = e.ad_element_id)
-            WHERE AD_TABLE_TRL.ad_table_id = t.ad_table_id
-              AND AD_TABLE_TRL.AD_LANGUAGE = e.AD_LANGUAGE)
- WHERE EXISTS (
-          SELECT 1
-            FROM AD_TABLE t INNER JOIN AD_ELEMENT ex
-                 ON (SUBSTR (t.tablename, 1, LENGTH (t.tablename) - 4)
-                     || '_ID' = ex.columnname
-                    )
-                 INNER JOIN AD_ELEMENT_TRL e
-                 ON (ex.ad_element_id = e.ad_element_id)
-           WHERE AD_TABLE_TRL.ad_table_id = t.ad_table_id
-             AND AD_TABLE_TRL.AD_LANGUAGE = e.AD_LANGUAGE
-             AND t.tablename LIKE '%_Trl'
-             AND AD_TABLE_TRL.NAME <> e.NAME);
-
-COMMIT ;

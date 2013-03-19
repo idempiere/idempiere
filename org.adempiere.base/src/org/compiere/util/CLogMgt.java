@@ -689,7 +689,7 @@ public class CLogMgt
 		sb.append(cc.getAppsHost()).append(" (");
 
 		//  Server
-		if (cc.isAppsServerOK(false))
+		if (!cc.getAppsHost().equalsIgnoreCase("MyAppsServer") && cc.isAppsServerOK(false))
 			sb.append(CConnection.get().getServerVersion());
 		else
 			sb.append(getMsg("NotActive"));
