@@ -747,6 +747,26 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		setCurrentRow(0, true);
 	}	//	query
 
+	public void clearForNewParentRecord() {
+		if (m_mTable.isOpen())
+		{
+			StringBuffer where = new StringBuffer("2=3");
+			m_extendedWhere = where.toString();
+			m_oldQuery = where.toString();
+			m_parentNeedSave = true;
+			
+			m_currentRow = -1;
+			/**
+			 *	Query
+			 */
+			if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - " + where);		
+			m_mTable.dataRequery(where.toString(), m_vo.onlyCurrentRows && !isDetail(), 0);
+			
+			// Go to Record 0
+			setCurrentRow(0, true);
+		}
+	}
+	
 	/**
 	 * 	Validate Query.
 	 *  If query column is not a tab column create EXISTS query
