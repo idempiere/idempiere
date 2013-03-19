@@ -83,8 +83,6 @@ public class AboutWindow extends Window implements EventListener<Event> {
 
 	private Button btnAdempiereLog;
 
-	private Button btnServerLog;
-
 	private Listbox levelListBox;
 
 	public AboutWindow() {
@@ -170,34 +168,8 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		vbox.setParent(tabPanel);
 		vbox.setHflex("1");
 		vbox.setVflex("1");
-
+		
 		Hbox hbox = new Hbox();
-		bErrorsOnly = new Checkbox();
-		bErrorsOnly.setLabel(Msg.getMsg(Env.getCtx(), "ErrorsOnly"));
-		//default only show error
-		bErrorsOnly.setChecked(true);
-		bErrorsOnly.addEventListener(Events.ON_CHECK, this);
-		hbox.appendChild(bErrorsOnly);
-		hbox.appendChild(new Space());
-		btnDownload = new Button(Msg.getMsg(Env.getCtx(), "SaveFile"));
-		btnDownload .setTooltiptext("Download session log");
-		btnDownload.addEventListener(Events.ON_CLICK, this);
-		hbox.appendChild(btnDownload);
-		hbox.appendChild(new Space());
-		btnErrorEmail = new Button(Msg.getMsg(Env.getCtx(), "SendEMail"));
-		btnErrorEmail.setTooltiptext("Email session log");
-		btnErrorEmail.addEventListener(Events.ON_CLICK, this);
-		hbox.appendChild(btnErrorEmail);
-		hbox.appendChild(new Space());
-		btnViewLog = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "View")));
-		btnViewLog.setTooltiptext("View session log");
-		btnViewLog.addEventListener(Events.ON_CLICK, this);
-		hbox.appendChild(btnViewLog);
-		hbox.setHflex("1");
-		hbox.setVflex("0");
-		vbox.appendChild(hbox);
-
-		hbox = new Hbox();
 		hbox.setAlign("center");
 		hbox.setPack("start");
 		Label levelLabel = new Label("Trace Level:");
@@ -234,18 +206,38 @@ public class AboutWindow extends Window implements EventListener<Event> {
 				btnAdempiereLog.setTooltiptext("Download iDempiere log file from server");
 				btnAdempiereLog.addEventListener(Events.ON_CLICK, this);
 
-				btnServerLog = new Button("Server Log");
-				btnServerLog.setTooltiptext("Download iDempiere server log file");
-				btnServerLog.addEventListener(Events.ON_CLICK, this);
-
 				hbox.appendChild(new Space());
 				hbox.appendChild(btnAdempiereLog);
-				hbox.appendChild(new Space());
-				hbox.appendChild(btnServerLog);
 
 			}
 		}
 
+		hbox.setHflex("1");
+		hbox.setVflex("0");
+		vbox.appendChild(hbox);
+
+		hbox = new Hbox();
+		bErrorsOnly = new Checkbox();
+		bErrorsOnly.setLabel(Msg.getMsg(Env.getCtx(), "ErrorsOnly"));
+		//default only show error
+		bErrorsOnly.setChecked(true);
+		bErrorsOnly.addEventListener(Events.ON_CHECK, this);
+		hbox.appendChild(bErrorsOnly);
+		hbox.appendChild(new Space());
+		btnDownload = new Button(Msg.getMsg(Env.getCtx(), "SaveFile"));
+		btnDownload .setTooltiptext("Download session log");
+		btnDownload.addEventListener(Events.ON_CLICK, this);
+		hbox.appendChild(btnDownload);
+		hbox.appendChild(new Space());
+		btnErrorEmail = new Button(Msg.getMsg(Env.getCtx(), "SendEMail"));
+		btnErrorEmail.setTooltiptext("Email session log");
+		btnErrorEmail.addEventListener(Events.ON_CLICK, this);
+		hbox.appendChild(btnErrorEmail);
+		hbox.appendChild(new Space());
+		btnViewLog = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "View")));
+		btnViewLog.setTooltiptext("View session log");
+		btnViewLog.addEventListener(Events.ON_CLICK, this);
+		hbox.appendChild(btnViewLog);
 		hbox.setHflex("1");
 		hbox.setVflex("0");
 		vbox.appendChild(hbox);
@@ -469,8 +461,6 @@ public class AboutWindow extends Window implements EventListener<Event> {
 			cmd_errorEMail();
 		else if (event.getTarget() == btnAdempiereLog)
 			downloadAdempiereLogFile();
-		else if (event.getTarget() == btnServerLog)
-			downloadServerLogFile();
 		else if (event.getTarget() == levelListBox)
 			setTraceLevel();
 		else if (Events.ON_CLICK.equals(event.getName()))
@@ -484,23 +474,6 @@ public class AboutWindow extends Window implements EventListener<Event> {
 			CLogMgt.setLevel(level);
 			Ini.setProperty(Ini.P_TRACELEVEL, CLogMgt.getLevel().getName());
 			Ini.saveProperties(false);
-		}
-	}
-
-	private void downloadServerLogFile() {
-		String path = Ini.getAdempiereHome() + File.separator + "jboss" + File.separator
-			+ "server" + File.separator + "adempiere" + File.separator + "log";
-		FolderBrowser fileBrowser = new FolderBrowser(path, false);
-		String selected = fileBrowser.getPath();
-		if (selected != null && selected.trim().length() > 0) {
-			File file = new File(selected);
-			if (file.exists() && file.isFile() && file.canRead()) {
-				try {
-					AMedia media = new AMedia(file, "text/plain", null);
-					Filedownload.save(media);
-				} catch (FileNotFoundException e) {
-				}
-			}
 		}
 	}
 
