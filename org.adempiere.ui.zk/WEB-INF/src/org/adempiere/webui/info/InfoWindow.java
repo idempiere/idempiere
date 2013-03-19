@@ -214,8 +214,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					vo.ValidationCode = infoColumn.getAD_Val_Rule().getCode();
 				}
 				vo.DisplayLogic = infoColumn.getDisplayLogic() != null ? infoColumn.getDisplayLogic() : "";
-				vo.Description = infoColumn.getDescription() != null ? infoColumn.getDescription() : "";
-				vo.Help = infoColumn.getHelp() != null ? infoColumn.getHelp() : "";
+				String desc = infoColumn.get_Translation("Description");
+				vo.Description = desc != null ? desc : "";
+				String help = infoColumn.get_Translation("Help");
+				vo.Help = help != null ? help : "";
 				GridField gridField = new GridField(vo);
 				gridFields.add(gridField);
 			}
@@ -261,13 +263,13 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					if (infoColumn.getSelectClause().equalsIgnoreCase(keySelectClause))
 						continue;
 					
-					columnInfo = new ColumnInfo(infoColumn.getName(), infoColumn.getSelectClause(), DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
+					columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
 				}
 				else if (DisplayType.isLookup(infoColumn.getAD_Reference_ID()))
 				{
 					if (infoColumn.getAD_Reference_ID() == DisplayType.List)
 					{
-						columnInfo = new ColumnInfo(infoColumn.getName(), infoColumn.getSelectClause(), ValueNamePair.class, (String)null);
+						columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), ValueNamePair.class, (String)null);
 					}
 					else
 					{
@@ -276,9 +278,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				}
 				else  
 				{
-					columnInfo = new ColumnInfo(infoColumn.getName(), infoColumn.getSelectClause(), DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
+					columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
 				}
-				columnInfo.setColDescription(infoColumn.getDescription());
+				columnInfo.setColDescription(infoColumn.get_Translation("Description"));
 				columnInfo.setGridField(gridFields.get(i));
 				list.add(columnInfo);				
 			}		
@@ -309,7 +311,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					if (tableInfo.getTableName().equalsIgnoreCase(lookupInfo.TableName))
 					{
 						displayColumn = displayColumn.replace(lookupInfo.TableName+".", tableInfo.getSynonym()+".");
-						ColumnInfo columnInfo = new ColumnInfo(infoColumn.getName(), displayColumn, KeyNamePair.class, infoColumn.getSelectClause());
+						ColumnInfo columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), displayColumn, KeyNamePair.class, infoColumn.getSelectClause());
 						return columnInfo;
 					}
 					break;
@@ -323,7 +325,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         editor.setReadWrite(false);
         editorMap.put(infoColumn.getSelectClause(), editor);
         
-		ColumnInfo columnInfo = new ColumnInfo(infoColumn.getName(), infoColumn.getSelectClause(), KeyNamePair.class, (String)null);
+		ColumnInfo columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), KeyNamePair.class, (String)null);
 		return columnInfo;
 	}
 
