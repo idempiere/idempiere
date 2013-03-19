@@ -1219,9 +1219,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
         //Deepak-Enabling customize button IDEMPIERE-364
         if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
+        {
         	toolbar.enableCustomize(((ADTabpanel)adTabbox.getSelectedTabpanel()).isGridView());
-        else
+        }
+        else 
+        {
         	toolbar.enableCustomize(false);
+        	toolbar.enableProcessButton(false);
+        }
 
 	}
 
