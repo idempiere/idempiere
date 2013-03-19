@@ -148,8 +148,6 @@ public class PackIn {
 			IDFinder.clearIDCache();
 			importDetails = new ArrayList<X_AD_Package_Imp_Detail>();
 
-			System.setProperty("javax.xml.parsers.SAXParserFactory",
-					"org.apache.xerces.jaxp.SAXParserFactoryImpl");
 			PackInHandler handler = new PackInHandler();
 			PIPOContext context = new PIPOContext();
 			context.trx = Trx.get(trxName, true);

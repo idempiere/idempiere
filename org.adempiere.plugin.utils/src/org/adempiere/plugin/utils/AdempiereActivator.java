@@ -11,6 +11,8 @@ import org.adempiere.base.IDictionaryService;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.model.Query;
+import org.compiere.model.ServerStateChangeEvent;
+import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.X_AD_Package_Imp;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -114,8 +116,8 @@ public class AdempiereActivator implements BundleActivator, ServiceTrackerCustom
 			    }
 			    // call 2pack
 				service.merge(context, zipfile);
-			} catch (Exception e) {
-				logger.log(Level.SEVERE, "Error on Dictionary service", e);
+			} catch (Throwable e) {
+				logger.log(Level.SEVERE, "Pack in failed.", e);
 			}
 			finally{
 				if (zipstream != null) {
@@ -158,18 +160,35 @@ public class AdempiereActivator implements BundleActivator, ServiceTrackerCustom
 	public IDictionaryService addingService(
 			ServiceReference<IDictionaryService> reference) {
 		service = context.getService(reference);
-		Adempiere.getThreadPoolExecutor().execute(new Runnable() {			
-			@Override
-			public void run() {
-				setupPackInContext();
-				try {
-					installPackage();
-				} finally {
-					ServerContext.dispose();
-					service = null;
+		if (Adempiere.getThreadPoolExecutor() != null) {
+			Adempiere.getThreadPoolExecutor().execute(new Runnable() {			
+				@Override
+				public void run() {
+					try {
+						setupPackInContext();
+						installPackage();
+					} finally {
+						ServerContext.dispose();
+						service = null;
+					}
 				}
-			}
-		});
+			});
+		} else {
+			Adempiere.addServerStateChangeListener(new ServerStateChangeListener() {				
+				@Override
+				public void stateChange(ServerStateChangeEvent event) {
+					if (event.getEventType() == ServerStateChangeEvent.SERVER_START && service != null) {
+						try {
+							setupPackInContext();
+							installPackage();
+						} finally {
+							ServerContext.dispose();
+							service = null;
+						}
+					}					
+				}
+			});
+		}
 		return null;
 	}
 
