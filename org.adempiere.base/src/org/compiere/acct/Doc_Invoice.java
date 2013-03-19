@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
-import org.compiere.model.MConversionRate;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MInvoice;
@@ -851,6 +850,7 @@ public class Doc_Invoice extends Doc
 			fl.setM_Product_ID(lca.getM_Product_ID());
 
 			//	Cost Detail - Convert to AcctCurrency
+			/*
 			BigDecimal allocationAmt =  lca.getAmt();
 			if (getC_Currency_ID() != as.getC_Currency_ID())
 				allocationAmt = MConversionRate.convert(getCtx(), allocationAmt,
@@ -862,12 +862,13 @@ public class Doc_Invoice extends Doc
 			if (!dr)
 				allocationAmt = allocationAmt.negate();
 			// AZ Goodwill
-			// use createInvoice to create/update non Material Cost Detail
+			// use createInvoice to create/update non Material Cost Detail			
 			MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
 					lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
 					C_InvoiceLine_ID, lca.getM_CostElement_ID(),
 					allocationAmt, lca.getQty(),
 					desc, getTrxName());
+			*/
 			// end AZ
 		}
 

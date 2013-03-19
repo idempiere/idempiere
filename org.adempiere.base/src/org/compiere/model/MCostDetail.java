@@ -988,6 +988,7 @@ public class MCostDetail extends X_M_CostDetail
 				cost.add(amt, qty);
 				if (log.isLoggable(Level.FINER)) log.finer("Inv - UserDef - " + cost);
 			}
+			/*
 			else if (!ce.isCostingMethod())		//	Cost Adjustments
 			{
 				// AZ Goodwill
@@ -996,12 +997,12 @@ public class MCostDetail extends X_M_CostDetail
 				if (MAcctSchema.COSTINGMETHOD_AveragePO.equals(costingMethod) ||
 					MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(costingMethod))
 				{
-					/**	Problem with Landed Costs: certain cost element may not occur in every purchases, 
-					 *  causing the average calculation of that cost element wrongly took the current qty.
-					 *  
-					 *  Solution:
-					 *  Make sure the current qty is reflecting the actual qty in storage
-					 */
+					//	Problem with Landed Costs: certain cost element may not occur in every purchases, 
+					//  causing the average calculation of that cost element wrongly took the current qty.
+					//  
+					//  Solution:
+					//  Make sure the current qty is reflecting the actual qty in storage
+					//
 					StringBuilder sql = new StringBuilder("SELECT COALESCE(SUM(QtyOnHand),0) FROM M_StorageOnHand")					
 						.append(" WHERE AD_Client_ID=").append(cost.getAD_Client_ID())
 						.append(" AND M_Product_ID=").append(cost.getM_Product_ID());
@@ -1033,6 +1034,7 @@ public class MCostDetail extends X_M_CostDetail
 				// end AZ
 				if (log.isLoggable(Level.FINER)) log.finer("Inv - Landed Costs - " + cost);
 			}
+			 */
 		//	else
 		//		log.warning("Inv - " + ce + " - " + cost);
 		}
@@ -1152,6 +1154,7 @@ public class MCostDetail extends X_M_CostDetail
 			
 			//AZ Goodwill
 			//Also update Landed Costs to reflect the actual qty in storage
+			/*
 			String costingMethod = ce.getCostingMethod();
 			if (MAcctSchema.COSTINGMETHOD_AveragePO.equals(costingMethod) ||
 				MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(costingMethod))
@@ -1194,6 +1197,7 @@ public class MCostDetail extends X_M_CostDetail
 					}					
 				}//end-if
 			}
+			*/
 			//end AZ
 		}
 		else	//	unknown or no id
