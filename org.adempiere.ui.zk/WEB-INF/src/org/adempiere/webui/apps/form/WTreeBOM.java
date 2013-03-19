@@ -37,7 +37,6 @@ import org.adempiere.webui.component.SimpleTreeModel;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
-import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
@@ -74,7 +73,6 @@ import org.zkoss.zul.West;
 
 public class WTreeBOM extends TreeBOM implements IFormController, EventListener<Event> {
 	
-	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_CHANGE, Events.ON_OK, Events.ON_SELECT, Events.ON_SELECTION, Events.ON_DOUBLE_CLICK};
 	private int         	m_WindowNo = 0;
 	private CustomForm		m_frame = new CustomForm();
 	private Tree			m_tree = new Tree();
@@ -90,7 +88,6 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 	private Panel dataPane = new Panel();
 	private Panel treePane = new Panel();
 
-	protected ArrayList<ValueChangeListener> listeners = new ArrayList<ValueChangeListener>();	
 	private mySimpleTreeNode   m_selectedNode;	//	the selected model node
 	private int   m_selected_id = 0;
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
@@ -224,6 +221,7 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 		m_tree.setStyle("border: none;");
 		west.setWidth("33%");
 		west.setAutoscroll(true);
+		m_tree.addEventListener(Events.ON_SELECT, this);
 		
 		Center center = new Center();
 		mainLayout.appendChild(center);
@@ -390,7 +388,6 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 			m_tree.setModel(model);
 		}
 		
-		m_tree.addEventListener(Events.ON_SELECT, this);
 		loadTableBOM();
 
 		treeExpand.setChecked(false);
@@ -447,12 +444,13 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 		line.add((BigDecimal) ((bomline.getBOMQty()!=null) ? bomline.getBOMQty() : new BigDecimal(0)).setScale(4, BigDecimal.ROUND_HALF_UP).stripTrailingZeros());  //  4 QtyBOM
 
 		mySimpleTreeNode child = new mySimpleTreeNode(line,new ArrayList<TreeNode<Object>>());
-		parent.getChildren().add(child);
+		if (!reload)
+			parent.getChildren().add(child);
 		
-		if(m_selected_id == bomline.getM_Product_ID() || getM_Product_ID() == bomline.getM_Product_ID())		
+		if (m_selected_id == bomline.getM_Product_ID() || getM_Product_ID() == bomline.getM_Product_ID())		
 			dataBOM.add(line);
 		
-		if(reload)  return;
+		if (reload) return;
 
 		for (MProductBOM bom : getChildBOMs(bomline.getM_ProductBOM_ID(), false))
 		{
@@ -477,10 +475,11 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 		if(m_selected_id == bom.getM_ProductBOM_ID() || getM_Product_ID() == bom.getM_ProductBOM_ID())		
 			dataBOM.add(line);
 
-		mySimpleTreeNode child = new mySimpleTreeNode(line,new ArrayList<TreeNode<Object>>()); 
-		parent.getChildren().add(child);
+		mySimpleTreeNode child = new mySimpleTreeNode(line,new ArrayList<TreeNode<Object>>());
+		if (!reload)
+			parent.getChildren().add(child);
 
-		if(reload)  return;
+		if (reload) return;
 		
 		for (MProductBOM bomline : getParentBOMs(bom.getM_Product_ID()))
 		{
@@ -524,11 +523,6 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 	public ADForm getForm() {
 		return m_frame;
 	}
-
-	public String[] getEvents()
-    {
-        return LISTENER_EVENTS;
-    }
 
 }
 
