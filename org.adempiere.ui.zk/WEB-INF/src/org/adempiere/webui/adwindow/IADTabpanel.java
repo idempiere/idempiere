@@ -180,4 +180,9 @@ public interface IADTabpanel extends Component, Evaluatee {
 	 * @return detailpane
 	 */
 	public DetailPane getDetailPane();
+
+	/**
+	 * reset detail data grid when parent tab current record is new and not saved yet
+	 */
+	public abstract void resetDetailForNewParentRecord();
 }

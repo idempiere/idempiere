@@ -233,6 +233,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         listPanel.getListbox().addEventListener(Events.ON_DOUBLE_CLICK, this);
     }
     
+    @Override
     public void setDetailPane(DetailPane component) {
 		detailPane = component;
 
@@ -272,6 +273,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		south.setSclass("adwindow-gridview-detail");
     }
     
+    @Override
     public DetailPane getDetailPane() {
     	return detailPane;
     }
@@ -389,6 +391,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	/**
      * Create UI components if not already created
      */
+    @Override
     public void createUI()
     {
     	if (uiCreated) return;
@@ -649,6 +652,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	 * Validate display properties of fields of current row
 	 * @param col
 	 */
+	@Override
     public void dynamicDisplay (int col)
     {
         if (!gridTab.isOpen())
@@ -796,6 +800,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     /**
      * @return String
      */
+    @Override
     public String getDisplayLogic()
     {
         return gridTab.getDisplayLogic();
@@ -804,6 +809,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     /**
      * @return String
      */
+    @Override
     public String getTitle()
     {
         return gridTab.getName();
@@ -812,6 +818,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     /**
      * @param variableName
      */
+    @Override
     public String get_ValueAsString(String variableName)
     {
         return Env.getContext(Env.getCtx(), windowNo, variableName);
@@ -820,6 +827,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     /**
      * @return The tab level of this Tabpanel
      */
+    @Override
     public int getTabLevel()
     {
         return gridTab.getTabLevel();
@@ -828,6 +836,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     /**
      * @return The tablename of this Tabpanel
      */
+    @Override
     public String getTableName()
     {
         return gridTab.getTableName();
@@ -836,6 +845,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     /**
      * @return The record ID of this Tabpanel
      */
+    @Override
     public int getRecord_ID()
     {
         return gridTab.getRecord_ID();
@@ -845,6 +855,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
      * Is panel need refresh
      * @return boolean
      */
+    @Override
     public boolean isCurrent()
     {
         return gridTab != null ? gridTab.isCurrent() : false;
@@ -862,6 +873,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     /**
      * Retrieve from db
      */
+    @Override
     public void query()
     {
     	boolean open = gridTab.isOpen();
@@ -876,6 +888,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
      * @param onlyCurrentDays
      * @param maxRows
      */
+    @Override
     public void query (boolean onlyCurrentRows, int onlyCurrentDays, int maxRows)
     {
     	boolean open = gridTab.isOpen();
@@ -884,6 +897,19 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         	gridTab.getTableModel().fireTableDataChanged();
     }
 
+    /**
+     * clear data grid for new parent record that's not saved yet
+     */
+    @Override
+	public void resetDetailForNewParentRecord ()
+    {
+    	boolean open = gridTab.isOpen();
+        if (open) 
+        {
+        	gridTab.clearForNewParentRecord();
+        }
+    }
+    
     /**
      * @return GridTab
      */

@@ -728,8 +728,12 @@ public class CompositeADTabbox extends AbstractADTabbox
 	}
 
 	private void onActivateDetail(IADTabpanel tabPanel) {
-		tabPanel.createUI();					
-		tabPanel.query(false, 0, 0);
+		tabPanel.createUI();			
+		if (headerTab.getGridTab().isNew()) {
+			tabPanel.resetDetailForNewParentRecord();
+		} else {
+			tabPanel.query(false, 0, 0);
+		}
 		if (!tabPanel.isVisible())
 			tabPanel.setVisible(true);
 		if (!tabPanel.isGridView()) {

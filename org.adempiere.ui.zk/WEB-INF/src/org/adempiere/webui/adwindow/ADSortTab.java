@@ -989,5 +989,24 @@ public class ADSortTab extends Panel implements IADTabpanel
 	public DetailPane getDetailPane() {
 		return null;
 	}
+
+	@Override
+	public void resetDetailForNewParentRecord() {
+		yesModel.removeAllElements();
+		noModel.removeAllElements();
+
+		setIsChanged(false);
+		bAdd.setEnabled(false);
+		bRemove.setEnabled(false);
+		bUp.setEnabled(false);
+		bDown.setEnabled(false);
+		yesList.setEnabled(false);
+		noList.setEnabled(false);
+
+		yesList.setItemRenderer(yesModel);
+		yesList.setModel(yesModel);
+		noList.setItemRenderer(noModel);
+		noList.setModel(noModel);
+	}
 }	//ADSortTab
 
