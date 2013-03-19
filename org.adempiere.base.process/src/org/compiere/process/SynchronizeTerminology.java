@@ -167,6 +167,22 @@ public class SynchronizeTerminology extends SvrProcess
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
 
+			//	Info Columns
+			log.info("Synchronize Info Column");
+			sql=" 	UPDATE AD_INFOCOLUMN c"
+				+" 		SET	(ColumnName, Name, Description, Help) =" 
+				+" 	           (SELECT ColumnName, Name, Description, Help" 
+				+" 	            FROM AD_ELEMENT e WHERE c.AD_Element_ID=e.AD_Element_ID),"
+				+" 			Updated = SYSDATE"
+				+" 	WHERE c.IsCentrallyMaintained='Y' AND c.IsActive='Y'"
+				+" 	 AND EXISTS (SELECT 1 FROM AD_ELEMENT e "
+				+" 				WHERE c.AD_Element_ID=e.AD_Element_ID"
+				+" 				  AND (c.ColumnName <> e.ColumnName OR c.Name <> e.Name "
+				+" 					OR NVL(c.Description,' ') <> NVL(e.Description,' ') OR NVL(c.Help,' ') <> NVL(e.Help,' ')))";
+			no = DB.executeUpdate(sql, false, get_TrxName());	  	
+			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
+			trx.commit(true);
+
 			//	Fields should now be synchronized
 			log.info("Synchronize Field");
 			sql=" 	UPDATE AD_FIELD f"
@@ -376,6 +392,31 @@ public class SynchronizeTerminology extends SvrProcess
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
 
+			//	Info Window Column Translations
+			log.info("Synchronize Info Window Column Trl");
+			sql="UPDATE AD_INFOCOLUMN_TRL trl"
+				+" SET Name = (SELECT et.Name FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_INFOCOLUMN f"
+				+" 			WHERE et.AD_LANGUAGE=trl.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID"
+				+" 			  AND e.ColumnName=f.ColumnName AND f.AD_InfoColumn_ID=trl.AD_InfoColumn_ID),"
+				+" 	Description = (SELECT et.Description FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_INFOCOLUMN f"
+				+" 			WHERE et.AD_LANGUAGE=trl.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID"
+				+" 			  AND e.ColumnName=f.ColumnName AND f.AD_InfoColumn_ID=trl.AD_InfoColumn_ID),"
+				+" 	Help = (SELECT et.Help FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_INFOCOLUMN f"
+				+" 			WHERE et.AD_LANGUAGE=trl.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID"
+				+" 			  AND e.ColumnName=f.ColumnName AND f.AD_InfoColumn_ID=trl.AD_InfoColumn_ID),"
+				+" 	IsTranslated = (SELECT et.IsTranslated FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_INFOCOLUMN f"
+				+" 			WHERE et.AD_LANGUAGE=trl.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID"
+				+" 			  AND e.ColumnName=f.ColumnName AND f.AD_InfoColumn_ID=trl.AD_InfoColumn_ID),"
+				+" 	Updated = SYSDATE"
+				+" WHERE EXISTS (SELECT 1 FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_INFOCOLUMN f"
+				+" 			WHERE et.AD_LANGUAGE=trl.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID"
+				+" 			  AND e.ColumnName=f.ColumnName AND f.AD_InfoColumn_ID=trl.AD_InfoColumn_ID"
+				+" 			  AND f.IsCentrallyMaintained='Y' AND f.IsActive='Y'"
+				+" 			  AND (trl.Name <> et.Name OR NVL(trl.Description,' ') <> NVL(et.Description,' ') OR NVL(trl.Help,' ') <> NVL(et.Help,' ')))";
+			no = DB.executeUpdate(sql, false, get_TrxName());	  	
+			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
+			trx.commit(true);
+
 			//	Workflow Node - Window
 			log.info("Synchronize Workflow Node from Window");
 			sql="UPDATE AD_WF_NODE n"
@@ -450,7 +491,7 @@ public class SynchronizeTerminology extends SvrProcess
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
 
-			//	Workflow Node - Report
+			//	Workflow Node - Report and Process
 			log.info("Synchronize Workflow Node from Process");
 			sql="UPDATE AD_WF_NODE n"
 				+" SET (Name, Description, Help) = (SELECT f.Name, f.Description, f.Help" 
@@ -466,7 +507,7 @@ public class SynchronizeTerminology extends SvrProcess
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
 
-			//	Workflow Translations - Form
+			//	Workflow Translations - Report and process
 			log.info("Synchronize Workflow Node Trl from Process Trl");
 			sql="UPDATE AD_WF_NODE_TRL trl"
 				+" SET (Name, Description, Help) = (SELECT t.Name, t.Description, t.Help"
@@ -483,7 +524,6 @@ public class SynchronizeTerminology extends SvrProcess
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
 
-			//  Need centrally maintained flag here!
 			log.info("Synchronize PrintFormatItem Name from Element");
 			sql="UPDATE AD_PRINTFORMATITEM pfi"
 				+" SET Name = (SELECT e.Name "
@@ -777,17 +817,6 @@ public class SynchronizeTerminology extends SvrProcess
 			trx.commit(true);
 
 			//  Column Name + Element
-			log.info("Synchronizing Column with Element");
-			sql="UPDATE AD_COLUMN c"
-				+" SET (Name,Description,Help) =" 
-				+" (SELECT e.Name,e.Description,e.Help "
-				+" FROM AD_ELEMENT e WHERE c.AD_Element_ID=e.AD_Element_ID)"
-				+" WHERE EXISTS "
-				+" (SELECT 1 FROM AD_ELEMENT e "
-				+" WHERE c.AD_Element_ID=e.AD_Element_ID"
-				+" AND c.Name<>e.Name)";
-			no = DB.executeUpdate(sql, false, get_TrxName());	  	
-			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			sql="UPDATE AD_COLUMN_TRL ct"
 				+" SET Name = (SELECT e.Name"
 				+" FROM AD_COLUMN c INNER JOIN AD_ELEMENT_TRL e ON (c.AD_Element_ID=e.AD_Element_ID)"
@@ -809,9 +838,9 @@ public class SynchronizeTerminology extends SvrProcess
 				+"WHERE t.TableName||'_ID'=e.ColumnName "
 				+"AND t.Name<>e.Name)";
 			no = DB.executeUpdate(sql, false, get_TrxName());
+			if (log.isLoggable(Level.INFO)) log.info("  rows updated: " +no);
 			trx.commit(true);
 
-			if (log.isLoggable(Level.INFO)) log.info("  rows updated: " +no);
 			sql="UPDATE AD_TABLE_TRL tt" 
 				+" SET Name = (SELECT e.Name "
 				+" FROM AD_TABLE t INNER JOIN AD_ELEMENT ex ON (t.TableName||'_ID'=ex.ColumnName)"
@@ -861,8 +890,7 @@ public class SynchronizeTerminology extends SvrProcess
 		finally
 		{
 			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
+			rs = null; pstmt = null;
 		}
 
 		return "@OK@";
