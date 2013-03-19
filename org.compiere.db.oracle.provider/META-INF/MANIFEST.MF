@@ -8,8 +8,9 @@ Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
  org.adempiere.install;bundle-version="1.0.0"
 Bundle-ClassPath: .,
  ojdbc6.jar,
- c3p0-0.9.1.2.jar,
- c3p0-oracle-thin-extras-0.9.1.2.jar
+ c3p0-0.9.2.jar,
+ c3p0-oracle-thin-extras-0.9.2.jar,
+ mchange-commons-java-0.2.3.3.jar
 Import-Package: org.osgi.framework
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.adempiere.db.oracle.OracleBundleActivator
