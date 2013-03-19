@@ -747,7 +747,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		setCurrentRow(0, true);
 	}	//	query
 
-	public void clearForNewParentRecord() {
+	/**
+	 * reset detail data grid when parent tab current record is new and not saved yet
+	 */
+	public void resetDetailForNewParentRecord() {
 		if (m_mTable.isOpen())
 		{
 			StringBuffer where = new StringBuffer("2=3");

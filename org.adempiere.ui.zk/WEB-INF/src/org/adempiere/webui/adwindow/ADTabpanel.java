@@ -898,7 +898,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
 
     /**
-     * clear data grid for new parent record that's not saved yet
+     * reset detail data grid for new parent record that's not saved yet
      */
     @Override
 	public void resetDetailForNewParentRecord ()
@@ -906,7 +906,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     	boolean open = gridTab.isOpen();
         if (open) 
         {
-        	gridTab.clearForNewParentRecord();
+        	gridTab.resetDetailForNewParentRecord();
         }
     }
     
