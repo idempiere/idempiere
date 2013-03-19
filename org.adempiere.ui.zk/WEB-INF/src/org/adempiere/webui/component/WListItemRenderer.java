@@ -254,7 +254,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 				}
 				else
 				{
-					DecimalFormat format = field instanceof BigDecimal
+					DecimalFormat format = (field instanceof BigDecimal || field instanceof Double || field instanceof Float)
 						? DisplayType.getNumberFormat(DisplayType.Amount, AEnv.getLanguage(Env.getCtx()))
 					    : DisplayType.getNumberFormat(DisplayType.Integer, AEnv.getLanguage(Env.getCtx()));
 
