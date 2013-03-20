@@ -1062,6 +1062,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     				fQueryName.setReadonly(false);
     				btnSave.setDisabled(m_AD_Tab_ID <= 0);
     				historyCombo.setSelectedItem(null);
+    				if (advancedPanel.getItems().size() == 0) {
+    					createFields();
+    				}
     			} else {
     				fQueryName.setReadonly(true);
     				btnSave.setDisabled(true);
