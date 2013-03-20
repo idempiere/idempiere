@@ -342,15 +342,23 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 			builder.append(tableInfos[0].getSynonym()).append(".IsActive='Y'");
 		}
+		int count = 0;
 		for(WEditor editor : editors) {
 			if (editor instanceof IWhereClauseEditor) {
 				String whereClause = ((IWhereClauseEditor) editor).getWhereClause();
 				if (whereClause != null && whereClause.trim().length() > 0) {
-					if (builder.length() > 0) {
+					count++;
+					if (count == 1) {
+						if (builder.length() > 0) {
+							builder.append(" AND ");
+							if (!checkAND.isChecked()) builder.append(" ( ");
+						} else if (p_whereClause != null && p_whereClause.trim().length() > 0) {
+							builder.append(" AND ");
+							if (!checkAND.isChecked()) builder.append(" ( ");
+						}	
+					} else {
 						builder.append(checkAND.isChecked() ? " AND " : " OR ");
-					} else if (p_whereClause != null && p_whereClause.trim().length() > 0) {
-						builder.append(" AND ");
-					}	
+					}
 					builder.append(whereClause);
 				}
 			} else if (editor.getGridField() != null && editor.getValue() != null && editor.getValue().toString().trim().length() > 0) {
@@ -363,11 +371,20 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				if (asIndex > 0) {
 					columnName = columnName.substring(0, asIndex);
 				}
-				if (builder.length() > 0) {
+				
+				count++;
+				if (count == 1) {
+					if (builder.length() > 0) {
+						builder.append(" AND ");
+						if (!checkAND.isChecked()) builder.append(" ( ");
+					} else if (p_whereClause != null && p_whereClause.trim().length() > 0) {
+						builder.append(" AND ");
+						if (!checkAND.isChecked()) builder.append(" ( ");
+					}	
+				} else {
 					builder.append(checkAND.isChecked() ? " AND " : " OR ");
-				} else if (p_whereClause != null && p_whereClause.trim().length() > 0) {
-					builder.append(" AND ");
-				}		
+				}
+				
 				String columnClause = null;
 				if (mInfoColumn.getQueryFunction() != null && mInfoColumn.getQueryFunction().trim().length() > 0) {
 					String function = mInfoColumn.getQueryFunction();
@@ -392,7 +409,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					   .append(mInfoColumn.getQueryOperator())
 					   .append(" ?");				
 			}
-		}		
+		}	
+		if (count > 0 && !checkAND.isChecked()) {
+			builder.append(" ) ");
+		}
 		return builder.toString();
 	}
 
