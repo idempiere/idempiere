@@ -148,25 +148,32 @@ public class Language implements Serializable
 			Locale locale = new Locale(language, country);
 			if (DB.isConnected()) {
 				MLanguage dblang = MLanguage.get(Env.getCtx(), langInfo);
-				Boolean decimalPoint = null;
-				if (dblang.getIsDecimalPoint() != null)
-					decimalPoint = "Y".equals(dblang.getIsDecimalPoint());
-				if (!(   language.equals(dblang.getLanguageISO()) 
-					  && country.equals(dblang.getCountryCode())
-					 )
-					) {
-					locale = new Locale(dblang.getLanguageISO(), dblang.getCountryCode());
+				if (dblang == null)
+				{
+					ll = new Language (lang, lang, locale);
 				}
-				MediaSize mediaSize = MediaSize.ISO.A4;
-				if (dblang.getAD_PrintPaper_ID() > 0) {
-					MPrintPaper pp = MPrintPaper.get(dblang.getAD_PrintPaper_ID());
-					mediaSize = pp.getMediaSize();
-				}
-				ll = new Language(dblang.getPrintName(), langInfo, locale, decimalPoint, dblang.getDatePattern(), mediaSize);
-				ll.m_fromDB = true;
-				if (dblang.isBaseLanguage()) {
-					idxReplace = 0;
-					s_baseLanguage = ll;
+				else
+				{
+					Boolean decimalPoint = null;
+					if (dblang.getIsDecimalPoint() != null)
+						decimalPoint = "Y".equals(dblang.getIsDecimalPoint());
+					if (!(   language.equals(dblang.getLanguageISO()) 
+						  && country.equals(dblang.getCountryCode())
+						 )
+						) {
+						locale = new Locale(dblang.getLanguageISO(), dblang.getCountryCode());
+					}
+					MediaSize mediaSize = MediaSize.ISO.A4;
+					if (dblang.getAD_PrintPaper_ID() > 0) {
+						MPrintPaper pp = MPrintPaper.get(dblang.getAD_PrintPaper_ID());
+						mediaSize = pp.getMediaSize();
+					}
+					ll = new Language(dblang.getPrintName(), langInfo, locale, decimalPoint, dblang.getDatePattern(), mediaSize);
+					ll.m_fromDB = true;
+					if (dblang.isBaseLanguage()) {
+						idxReplace = 0;
+						s_baseLanguage = ll;
+					}
 				}
 			} else {
 				ll = new Language (lang, lang, locale);
