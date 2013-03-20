@@ -1,31 +1,12 @@
-CREATE OR REPLACE VIEW RV_BPARTNEROPEN
-(AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, 
- UPDATED, UPDATEDBY, C_BPARTNER_ID, C_CURRENCY_ID, AMT, 
- OPENAMT, DATEDOC, DAYSDUE, C_CAMPAIGN_ID, C_PROJECT_ID, 
- C_ACTIVITY_ID)
-AS 
-SELECT i.AD_Client_ID,i.AD_Org_ID, i.IsActive, i.Created,i.CreatedBy,i.Updated,i.UpdatedBy,
-    i.C_BPartner_ID, i.C_Currency_ID,
-    i.GrandTotal*i.MultiplierAP AS Amt,
-    invoiceOpen (i.C_Invoice_ID, i.C_InvoicePaySchedule_ID)*MultiplierAP AS OpenAmt,
-    i.DateInvoiced AS DateDoc, 
-    COALESCE(daysBetween(getdate(),ips.DueDate), paymentTermDueDays(C_PaymentTerm_ID,DateInvoiced,getdate())) AS DaysDue,
-    i.C_Campaign_ID, i.C_Project_ID, i.C_Activity_ID
-FROM C_Invoice_v i 
-  LEFT OUTER JOIN C_InvoicePaySchedule ips ON (i.C_InvoicePaySchedule_ID=ips.C_InvoicePaySchedule_ID)
-WHERE IsPaid='N'
- AND DocStatus IN ('CO','CL')
-UNION
-SELECT p.AD_Client_ID,p.AD_Org_ID, p.IsActive, p.Created,p.CreatedBy,p.Updated,p.UpdatedBy,
-    p.C_BPartner_ID, p.C_Currency_ID,
-    p.PayAmt*MultiplierAP*-1 AS Amt,
-    paymentAvailable(p.C_Payment_ID)*p.MultiplierAP*-1 AS OpenAmt,
-    p.DateTrx AS DateDoc,
-    null,
-    p.C_Campaign_ID, p.C_Project_ID, p.C_Activity_ID
-FROM C_Payment_v p 
-WHERE p.IsAllocated='N' AND p.C_BPartner_ID IS NOT NULL
- AND p.DocStatus IN ('CO','CL');
+DROP VIEW rv_bpartneropen;
 
-
+CREATE OR REPLACE VIEW rv_bpartneropen AS 
+         SELECT i.ad_client_id, i.ad_org_id, i.isactive, i.created, i.createdby, i.updated, i.updatedby, i.c_bpartner_id, i.c_currency_id, i.grandtotal * i.multiplierap AS amt, invoiceopen(i.c_invoice_id, i.c_invoicepayschedule_id) * i.multiplierap AS openamt, i.dateinvoiced AS datedoc, COALESCE(daysbetween(getdate(), ips.duedate), paymenttermduedays(i.c_paymentterm_id, i.dateinvoiced, getdate())) AS daysdue, i.c_campaign_id, i.c_project_id, i.c_activity_id, i.ad_orgtrx_id, i.c_charge_id, i.c_conversiontype_id, i.c_doctype_id, i.chargeamt, i.c_invoice_id, i.c_order_id, i.c_payment_id, i.dateacct, i.description, i.docstatus, i.documentno, i.isapproved, i.isselfservice, i.posted, i.processedon, i.reversal_id
+           FROM c_invoice_v i
+      LEFT JOIN c_invoicepayschedule ips ON i.c_invoicepayschedule_id = ips.c_invoicepayschedule_id
+     WHERE i.ispaid = 'N' AND i.docstatus IN ('CO', 'CL')
+UNION 
+         SELECT p.ad_client_id, p.ad_org_id, p.isactive, p.created, p.createdby, p.updated, p.updatedby, p.c_bpartner_id, p.c_currency_id, p.payamt * p.multiplierap * (-1) AS amt, paymentavailable(p.c_payment_id) * p.multiplierap * (-1) AS openamt, p.datetrx AS datedoc, NULL AS daysdue, p.c_campaign_id, p.c_project_id, p.c_activity_id, p.ad_orgtrx_id, p.c_charge_id, p.c_conversiontype_id, p.c_doctype_id, p.chargeamt, p.c_invoice_id, p.c_order_id, p.c_payment_id, p.dateacct, p.description, p.docstatus, p.documentno, p.isapproved, p.isselfservice, p.posted, p.processedon, p.reversal_id
+           FROM c_payment_v p
+          WHERE p.isallocated = 'N' AND p.c_bpartner_id IS NOT NULL AND p.docstatus IN ('CO', 'CL');
 

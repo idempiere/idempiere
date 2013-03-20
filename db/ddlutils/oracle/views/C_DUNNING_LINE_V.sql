@@ -1,50 +1,13 @@
-CREATE OR REPLACE VIEW C_DUNNING_LINE_V
-(AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, 
- UPDATED, UPDATEDBY, AD_LANGUAGE, C_DUNNINGRUNLINE_ID, C_DUNNINGRUNENTRY_ID, 
- AMT, CONVERTEDAMT, DAYSDUE, TIMESDUNNED, INTERESTAMT, 
- FEEAMT, TOTALAMT, C_INVOICE_ID, ISSOTRX, DOCUMENTNO, 
- DOCSTATUS, DATETRX, C_DOCTYPE_ID, DOCUMENTTYPE, DESCRIPTION, 
- C_CURRENCY_ID, C_CAMPAIGN_ID, C_PROJECT_ID, C_ACTIVITY_ID, USER1_ID, 
- USER2_ID, DATEACCT, C_CONVERSIONTYPE_ID, AD_ORGTRX_ID, POREFERENCE, 
- DATEORDERED, DATEINVOICED, ISINDISPUTE, PAYMENTTERM, C_CHARGE_ID, 
- CHARGEAMT, TOTALLINES, GRANDTOTAL, AMTINWORDS, M_PRICELIST_ID, 
- ISPAID, ISALLOCATED, TENDERTYPE, DISCOUNTAMT)
-AS 
-SELECT drl.AD_Client_ID, drl.AD_Org_ID, drl.IsActive, drl.Created, drl.CreatedBy, drl.Updated, drl.UpdatedBy, 
-	cast('en_US' as varchar2(6)) AS AD_Language,
-    drl.C_DunningRunLine_ID, drl.C_DunningRunEntry_ID,
-    drl.Amt, drl.ConvertedAmt, drl.DaysDue, drl.TimesDunned, 
-    drl.InterestAmt, drl.FeeAmt, drl.TotalAmt,
-	drl.C_Invoice_ID, 
-    COALESCE(i.IsSOTrx,p.IsReceipt) AS IsSOTrx,
-    COALESCE(i.DocumentNo,p.DocumentNo) AS DocumentNo,
-    COALESCE(i.DocStatus,p.DocStatus) AS DocStatus, 
-	COALESCE(i.DateInvoiced, p.DateTrx) AS DateTrx,
-    COALESCE(i.C_DocType_ID,p.C_DocType_ID) AS C_DocType_ID,
-    COALESCE(dt.PrintName,dtp.PrintName) AS DocumentType, 
-    COALESCE(i.Description,p.Description) AS Description, 
-	COALESCE(i.C_Currency_ID,p.C_Currency_ID) AS C_Currency_ID, 
-    COALESCE(i.C_Campaign_ID,p.C_Campaign_ID) AS C_Campaign_ID, 
-    COALESCE(i.C_Project_ID,p.C_Project_ID) AS C_Project_ID,
-    COALESCE(i.C_Activity_ID,p.C_Activity_ID) AS C_Activity_ID,
-    COALESCE(i.User1_ID,p.User1_ID) AS User1_ID,
-    COALESCE(i.User2_ID,p.User2_ID) AS User2_ID,
-    COALESCE(i.DateAcct,p.DateAcct) AS DateAcct,
-    COALESCE(i.C_ConversionType_ID,i.C_ConversionType_ID) AS C_ConversionType_ID,
-    COALESCE(i.AD_OrgTrx_ID,p.AD_OrgTrx_ID) AS AD_OrgTrx_ID,
-    i.POReference, i.DateOrdered,
-	i.DateInvoiced, i.IsInDispute,
-	pt.Name AS PaymentTerm,
-    i.C_Charge_ID, i.ChargeAmt,
-	i.TotalLines, i.GrandTotal, i.GrandTotal AS AmtInWords,
-	i.M_PriceList_ID, i.IsPaid,
-    p.IsAllocated, p.TenderType, p.DiscountAmt
-FROM C_DunningRunLine drl
-    LEFT OUTER JOIN C_Invoice i ON (drl.C_Invoice_ID=i.C_Invoice_ID)
-	LEFT OUTER JOIN C_DocType dt ON (i.C_DocType_ID=dt.C_DocType_ID)
-	LEFT OUTER JOIN C_PaymentTerm pt ON (i.C_PaymentTerm_ID=pt.C_PaymentTerm_ID)
-    LEFT OUTER JOIN C_Payment p ON (drl.C_Payment_ID=p.C_Payment_ID)
-	LEFT OUTER JOIN C_DocType dtp ON (p.C_DocType_ID=dtp.C_DocType_ID);
+DROP VIEW c_dunning_line_v;
 
-
+CREATE OR REPLACE VIEW c_dunning_line_v AS 
+ SELECT drl.ad_client_id, drl.ad_org_id, drl.isactive, drl.created, drl.createdby, drl.updated, drl.updatedby, 
+ 'en_US' AS ad_language, 
+ drl.c_dunningrunline_id, drl.c_dunningrunentry_id, drl.amt, drl.convertedamt, drl.daysdue, drl.timesdunned, drl.interestamt, drl.feeamt, drl.totalamt, drl.c_invoice_id, COALESCE(i.issotrx, p.isreceipt) AS issotrx, COALESCE(i.documentno, p.documentno) AS documentno, COALESCE(i.docstatus, p.docstatus) AS docstatus, COALESCE(i.dateinvoiced, p.datetrx) AS datetrx, COALESCE(i.c_doctype_id, p.c_doctype_id) AS c_doctype_id, COALESCE(dt.printname, dtp.printname) AS documenttype, COALESCE(i.description, p.description) AS description, COALESCE(i.c_currency_id, p.c_currency_id) AS c_currency_id, COALESCE(i.c_campaign_id, p.c_campaign_id) AS c_campaign_id, COALESCE(i.c_project_id, p.c_project_id) AS c_project_id, COALESCE(i.c_activity_id, p.c_activity_id) AS c_activity_id, COALESCE(i.user1_id, p.user1_id) AS user1_id, COALESCE(i.user2_id, p.user2_id) AS user2_id, COALESCE(i.dateacct, p.dateacct) AS dateacct, COALESCE(i.c_conversiontype_id, p.c_conversiontype_id) AS c_conversiontype_id, COALESCE(i.ad_orgtrx_id, p.ad_orgtrx_id) AS ad_orgtrx_id, i.poreference, i.dateordered, i.dateinvoiced, i.isindispute, pt.name AS paymentterm, i.c_charge_id, i.chargeamt, i.totallines, i.grandtotal, i.grandtotal AS amtinwords, i.m_pricelist_id, i.ispaid, p.isallocated, p.tendertype, p.discountamt, drl.c_invoicepayschedule_id, drl.c_payment_id, drl.isindispute AS c_dunningrunline_isindispute, drl.openamt, drl.processed AS c_dunningrunline_processed, i.ad_org_id AS c_invoice_ad_org_id, i.ad_user_id, i.c_bpartner_id AS c_invoice_c_bpartner_id, i.c_bpartner_location_id, i.c_doctypetarget_id, i.c_dunninglevel_id, i.c_order_id AS c_invoice_c_order_id, i.c_payment_id AS c_invoice_c_payment_id, i.created AS c_invoice_created, i.createdby AS c_invoice_createdby, i.dateprinted, i.docaction, i.dunninggrace, i.generateto, i.invoicecollectiontype, i.isactive AS c_invoice_isactive, i.isapproved AS c_invoice_isapproved, i.isdiscountprinted, i.ispayschedulevalid, i.isprinted, i.isselfservice AS c_invoice_isselfservice, i.istaxincluded, i.istransferred, i.m_rma_id, i.paymentrule, i.posted AS c_invoice_posted, i.processedon AS c_invoice_processedon, i.processing, i.ref_invoice_id, i.reversal_id AS c_invoice_reversal_id, i.salesrep_id, i.sendemail, i.updated AS c_invoice_updated, i.updatedby AS c_invoice_updatedby, pt.ad_org_id AS c_paymentterm_ad_org_id, pt.afterdelivery, pt.c_paymentterm_id, pt.description AS c_paymentterm_description, pt.discount, pt.discount2, pt.discountdays, pt.discountdays2, pt.documentnote, pt.fixmonthcutoff, pt.fixmonthday, pt.fixmonthoffset, pt.gracedays, pt.isactive AS c_paymentterm_isactive, pt.isduefixed, pt.isnextbusinessday, pt.isvalid, pt.netday, pt.netdays, pt.paymenttermusage, pt.value AS c_paymentterm_value, p.a_city, p.a_country, p.ad_org_id AS c_payment_ad_org_id, p.a_email, p.a_ident_dl, p.a_name, p.a_state, p.a_street, p.a_zip, p.c_bpartner_id AS c_payment_c_bpartner_id, p.c_charge_id AS c_payment_c_charge_id, p.chargeamt AS c_payment_chargeamt, p.checkno, p.c_invoice_id AS c_payment_c_invoice_id, p.c_order_id AS c_payment_c_order_id, p.c_paymentbatch_id, p.created AS c_payment_created, p.createdby AS c_payment_createdby, p.isactive AS c_payment_isactive, p.isapproved, p.isdelayedcapture, p.isonline, p.isoverunderpayment, p.isprepayment, p.isreconciled, p.isselfservice AS c_payment_isselfservice, p.micr, p.orig_trxid, p.overunderamt, p.payamt, p.ponum, p.posted AS c_payment_posted, p.processed AS c_payment_processed, p.processedon AS c_payment_processedon, p.r_authcode, p.r_authcode_dc, p.r_avsaddr, p.r_avszip, p.r_cvv2match, p.ref_payment_id, p.reversal_id AS c_payment_reversal_id, p.r_info, p.routingno, p.r_pnref, p.r_pnref_dc, p.r_respmsg, p.r_result, p.swipe, p.taxamt, p.trxtype, p.updated AS c_payment_updated, p.updatedby AS c_payment_updatedby, p.voiceauthcode, p.writeoffamt
+   FROM c_dunningrunline drl
+   LEFT JOIN c_invoice i ON drl.c_invoice_id = i.c_invoice_id
+   LEFT JOIN c_doctype dt ON i.c_doctype_id = dt.c_doctype_id
+   LEFT JOIN c_paymentterm pt ON i.c_paymentterm_id = pt.c_paymentterm_id
+   LEFT JOIN c_payment p ON drl.c_payment_id = p.c_payment_id
+   LEFT JOIN c_doctype dtp ON p.c_doctype_id = dtp.c_doctype_id;
 

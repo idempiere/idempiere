@@ -1,42 +1,12 @@
-CREATE OR REPLACE VIEW RV_FACT_ACCT
-(AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, 
- UPDATED, UPDATEDBY, FACT_ACCT_ID, C_ACCTSCHEMA_ID, ACCOUNT_ID, 
- DATETRX, DATEACCT, C_PERIOD_ID, AD_TABLE_ID, RECORD_ID, 
- LINE_ID, GL_CATEGORY_ID, GL_BUDGET_ID, C_TAX_ID, M_LOCATOR_ID, 
- POSTINGTYPE, C_CURRENCY_ID, AMTSOURCEDR, AMTSOURCECR, AMTSOURCE, 
- AMTACCTDR, AMTACCTCR, AMTACCT, RATE, C_UOM_ID, 
- QTY, M_PRODUCT_ID, C_BPARTNER_ID, AD_ORGTRX_ID, C_LOCFROM_ID, 
- C_LOCTO_ID, C_SALESREGION_ID, C_PROJECT_ID, C_CAMPAIGN_ID, C_ACTIVITY_ID, 
- USER1_ID, USER2_ID, A_ASSET_ID, DESCRIPTION, ORGVALUE, 
- ORGNAME, ACCOUNTVALUE, NAME, ACCOUNTTYPE, BPARTNERVALUE, 
- BPNAME, C_BP_GROUP_ID, PRODUCTVALUE, PRODUCTNAME, UPC, 
- M_PRODUCT_CATEGORY_ID)
-AS 
-SELECT f.AD_Client_ID, f.AD_Org_ID, f.IsActive,f.Created,f.CreatedBy,f.Updated,f.UpdatedBy,
-    f.Fact_Acct_ID,
-    f.C_AcctSchema_ID, f.Account_ID, f.DateTrx, f.DateAcct, f.C_Period_ID, 
-    f.AD_Table_ID, f.Record_ID, f.Line_ID,
-    f.GL_Category_ID, f.GL_Budget_ID, f.C_Tax_ID, f.M_Locator_ID, 
-    f.PostingType, f.C_Currency_ID,
-    f.AmtSourceDr, f.AmtSourceCr, (f.AmtSourceDr - f.AmtSourceCr) AS AmtSource,
-    f.AmtAcctDr, f.AmtAcctCr, (f.AmtAcctDr - f.AmtAcctCr) AS AmtAcct,
-    CASE WHEN (f.AmtSourceDr - f.AmtSourceCr) = 0 THEN 0 ELSE
-        (f.AmtAcctDr - f.AmtAcctCr) / (f.AmtSourceDr - f.AmtSourceCr) END AS Rate,
-    f.C_UOM_ID, f.Qty,
-    f.M_Product_ID, f.C_BPartner_ID, f.AD_OrgTrx_ID, 
-    f.C_LocFrom_ID, f.C_LocTo_ID, f.C_SalesRegion_ID,
-    f.C_Project_ID, f.C_Campaign_ID, f.C_Activity_ID, 
-    f.User1_ID, f.User2_ID, f.A_Asset_ID,
-    f.Description,
-    o.Value AS OrgValue, o.Name AS OrgName,
-    ev.Value AS AccountValue, ev.Name, ev.AccountType,
-    bp.Value AS BPartnerValue, bp.Name AS BPName, bp.C_BP_Group_ID, 
-    p.Value AS ProductValue, p.Name AS ProductName, p.UPC, p.M_Product_Category_ID
-FROM Fact_Acct f
-  INNER JOIN AD_Org o ON (f.AD_Org_ID=o.AD_Org_ID)
-  INNER JOIN C_ElementValue ev ON (f.Account_ID=ev.C_ElementValue_ID)
-  LEFT OUTER JOIN C_BPartner bp ON (f.C_BPartner_ID=bp.C_BPartner_ID)
-  LEFT OUTER JOIN M_Product p ON (f.M_Product_ID=p.M_Product_ID);
-
-
+﻿CREATE OR REPLACE VIEW rv_fact_acct AS 
+ SELECT f.ad_client_id, f.ad_org_id, f.isactive, f.created, f.createdby, f.updated, f.updatedby, f.fact_acct_id, f.c_acctschema_id, f.account_id, f.datetrx, f.dateacct, f.c_period_id, f.ad_table_id, f.record_id, f.line_id, f.gl_category_id, f.gl_budget_id, f.c_tax_id, f.m_locator_id, f.postingtype, f.c_currency_id, f.amtsourcedr, f.amtsourcecr, f.amtsourcedr - f.amtsourcecr AS amtsource, f.amtacctdr, f.amtacctcr, f.amtacctdr - f.amtacctcr AS amtacct, 
+        CASE
+            WHEN (f.amtsourcedr - f.amtsourcecr) = 0 THEN 0
+            ELSE (f.amtacctdr - f.amtacctcr) / (f.amtsourcedr - f.amtsourcecr)
+        END AS rate, f.c_uom_id, f.qty, f.m_product_id, f.c_bpartner_id, f.ad_orgtrx_id, f.c_locfrom_id, f.c_locto_id, f.c_salesregion_id, f.c_project_id, f.c_campaign_id, f.c_activity_id, f.user1_id, f.user2_id, f.a_asset_id, f.description, o.value AS orgvalue, o.name AS orgname, ev.value AS accountvalue, ev.name, ev.accounttype, bp.value AS bpartnervalue, bp.name AS bpname, bp.c_bp_group_id, p.value AS productvalue, p.name AS productname, p.upc, p.m_product_category_id, f.c_projectphase_id, f.c_projecttask_id, f.c_subacct_id, f.userelement1_id, f.userelement2_id, o.description AS ad_org_description, o.isactive AS ad_org_isactive, ev.ad_org_id AS c_elementvalue_ad_org_id, ev.c_bankaccount_id, ev.c_currency_id AS c_elementvalue_c_currency_id, ev.c_element_id, ev.c_elementvalue_id, ev.description AS c_elementvalue_description, ev.isactive AS c_elementvalue_isactive, ev.isbankaccount, ev.isforeigncurrency, ev.issummary AS c_elementvalue_issummary, bp.acqusitioncost AS c_bp_acqusitioncost, bp.actuallifetimevalue AS c_bp_actuallifetimevalue, bp.ad_language AS c_bp_ad_language, bp.ad_orgbp_id AS c_bp_ad_orgbp_id, bp.ad_org_id AS c_bp_ad_org_id, bp.bpartner_parent_id AS c_bp_bpartner_parent_id, bp.c_dunning_id AS c_bp_c_dunning_id, bp.c_greeting_id AS c_bp_c_greeting_id, bp.c_invoiceschedule_id AS c_bp_c_invoiceschedule_id, bp.c_paymentterm_id AS c_bp_c_paymentterm_id, bp.created AS c_bp_created, bp.createdby AS c_bp_createdby, bp.c_taxgroup_id AS c_bp_c_taxgroup_id, bp.deliveryrule AS c_bp_deliveryrule, bp.deliveryviarule AS c_bp_deliveryviarule, bp.description AS c_bp_description, bp.dunninggrace AS c_bp_dunninggrace, bp.duns, bp.firstsale AS c_bp_firstsale, bp.flatdiscount AS c_bp_flatdiscount, bp.freightcostrule AS c_bp_freightcostrule, bp.invoicerule AS c_bp_invoicerule, bp.isactive AS c_bp_isactive, bp.iscustomer AS c_bp_iscustomer, bp.isdiscountprinted AS c_bp_isdiscountprinted, bp.isemployee AS c_bp_isemployee, bp.ismanufacturer AS c_bp_ismanufacturer, bp.isonetime AS c_bp_isonetime, bp.ispotaxexempt AS c_bp_ispotaxexempt, bp.isprospect AS c_bp_isprospect, bp.issalesrep AS c_bp_issalesrep, bp.issummary AS c_bp_issummary, bp.istaxexempt AS c_bp_istaxexempt, bp.isvendor AS c_bp_isvendor, bp.logo_id AS c_bp_logo_id, bp.m_discountschema_id AS c_bp_m_discountschema_id, bp.m_pricelist_id AS c_bp_m_pricelist_id, bp.naics, bp.name2 AS c_bp_name2, bp.numberemployees AS c_bp_numberemployees, bp.paymentrule AS c_bp_paymentrule, bp.paymentrulepo AS c_bp_paymentrulepo, bp.po_discountschema_id AS c_bp_po_discountschema_id, bp.po_paymentterm_id AS c_bp_po_paymentterm_id, bp.po_pricelist_id AS c_bp_po_pricelist_id, bp.poreference AS c_bp_poreference, bp.potentiallifetimevalue AS c_bp_potentiallifetimevalue, bp.rating AS c_bp_rating, bp.referenceno, bp.salesrep_id AS c_bp_salesrep_id, bp.salesvolume AS c_bp_salesvolume, bp.sendemail AS c_bp_sendemail, bp.shareofcustomer AS c_bp_shareofcustomer, bp.shelflifeminpct AS c_bp_shelflifeminpct, bp.so_creditlimit AS c_bp_so_creditlimit, bp.socreditstatus AS c_bp_socreditstatus, bp.so_creditused AS c_bp_so_creditused, bp.so_description AS c_bp_so_description, bp.taxid, bp.totalopenbalance AS c_bp_totalopenbalance, bp.updated AS c_bp_updated, bp.updatedby AS c_bp_updatedby, bp.url AS c_bp_url, p.ad_org_id AS m_product_ad_org_id, p.classification, p.copyfrom AS m_product_copyfrom, p.created AS m_product_created, p.createdby AS m_product_createdby, p.c_revenuerecognition_id, p.c_subscriptiontype_id, p.c_taxcategory_id, p.c_uom_id AS m_product_c_uom_id, p.description AS m_product_description, p.descriptionurl, p.discontinued, p.discontinuedat, p.documentnote, p.group1, p.group2, p.guaranteedays, p.guaranteedaysmin, p.help, p.imageurl, p.isactive AS m_product_isactive, p.isdropship, p.isexcludeautodelivery, p.isinvoiceprintdetails, p.ispicklistprintdetails, p.ispurchased, p.isselfservice, p.issold, p.isstocked, p.issummary AS m_product_issummary, p.isverified, p.iswebstorefeatured, p.lowlevel, p.m_attributeset_id AS m_product_m_attributeset_id, p.m_attributesetinstance_id AS m_product_m_asi_id, p.m_freightcategory_id, p.m_locator_id AS m_product_m_locator_id, p.processing AS m_product_processing, p.producttype, p.r_mailtext_id, p.salesrep_id AS m_product_salesrep_id, p.s_expensetype_id, p.shelfdepth, p.shelfheight, p.shelfwidth, p.sku, p.s_resource_id, p.unitsperpack, p.unitsperpallet, p.updated AS m_product_updated, p.updatedby AS m_product_updatedby, p.versionno, p.volume, p.weight
+   FROM fact_acct f
+   JOIN ad_org o ON f.ad_org_id = o.ad_org_id
+   JOIN c_elementvalue ev ON f.account_id = ev.c_elementvalue_id
+   LEFT JOIN c_bpartner bp ON f.c_bpartner_id = bp.c_bpartner_id
+   LEFT JOIN m_product p ON f.m_product_id = p.m_product_id;
 

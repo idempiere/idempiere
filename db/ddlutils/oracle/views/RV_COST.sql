@@ -1,22 +1,9 @@
-CREATE OR REPLACE VIEW RV_COST
-(AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, 
- UPDATED, UPDATEDBY, M_PRODUCT_ID, VALUE, NAME, 
- UPC, ISBOM, PRODUCTTYPE, M_PRODUCT_CATEGORY_ID, M_COSTTYPE_ID, 
- M_COSTELEMENT_ID, COSTELEMENTTYPE, COSTINGMETHOD, ISCALCULATED, C_ACCTSCHEMA_ID, 
- C_CURRENCY_ID, CURRENTCOSTPRICE, FUTURECOSTPRICE, DESCRIPTION,
- CURRENTCOSTPRICELL, FUTURECOSTPRICELL, ISCOSTFROZEN)
-AS 
-SELECT 	c.AD_Client_ID, c.AD_Org_ID, c.IsActive, c.Created,c.CreatedBy,c.Updated,c.UpdatedBy,
-    p.M_Product_ID, p.Value, p.Name, p.UPC, p.IsBOM, p.ProductType, p.M_Product_Category_ID,
-    c.M_CostType_ID, 
-    ce.M_CostElement_ID, ce.CostElementType, ce.CostingMethod, ce.IsCalculated, 
-    acct.C_AcctSchema_ID, acct.C_Currency_ID,
-    c.CurrentCostPrice, c.FutureCostPrice, c.Description,
-    c.CurrentCostPriceLL, c.FutureCostPriceLL, c.IsCostFrozen
-FROM M_Cost c
-  INNER JOIN M_Product p ON (c.M_Product_ID=p.M_Product_ID)
-  INNER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID)
-  INNER JOIN C_AcctSchema acct ON (c.C_AcctSchema_ID=acct.C_AcctSchema_ID);
+DROP VIEW rv_cost;
 
-
+CREATE OR REPLACE VIEW rv_cost AS 
+ SELECT c.ad_client_id, c.ad_org_id, c.isactive, c.created, c.createdby, c.updated, c.updatedby, p.m_product_id, p.value, p.name, p.upc, p.isbom, p.producttype, p.m_product_category_id, c.m_costtype_id, ce.m_costelement_id, ce.costelementtype, ce.costingmethod, ce.iscalculated, acct.c_acctschema_id, acct.c_currency_id, c.currentcostprice, c.futurecostprice, c.description, c.currentcostpricell, c.futurecostpricell, c.iscostfrozen, c.cumulatedamt, c.cumulatedqty, c.currentqty, c.m_attributesetinstance_id, c.percent, p.ad_org_id AS m_product_ad_org_id, p.classification, p.copyfrom AS m_product_copyfrom, p.created AS m_product_created, p.createdby AS m_product_createdby, p.c_revenuerecognition_id, p.c_subscriptiontype_id, p.c_taxcategory_id, p.c_uom_id, p.description AS m_product_description, p.descriptionurl, p.discontinued, p.discontinuedat, p.documentnote, p.group1, p.group2, p.guaranteedays, p.guaranteedaysmin, p.help, p.imageurl, p.isactive AS m_product_isactive, p.isdropship, p.isexcludeautodelivery, p.isinvoiceprintdetails, p.ispicklistprintdetails, p.ispurchased, p.isselfservice, p.issold, p.isstocked, p.issummary AS m_product_issummary, p.isverified, p.iswebstorefeatured, p.lowlevel, p.m_attributeset_id AS m_product_m_attributeset_id, p.m_attributesetinstance_id AS m_product_m_attributesetinsta, p.m_freightcategory_id, p.m_locator_id, p.processing AS m_product_processing, p.r_mailtext_id, p.salesrep_id AS m_product_salesrep_id, p.s_expensetype_id, p.shelfdepth, p.shelfheight, p.shelfwidth, p.sku, p.s_resource_id, p.unitsperpack, p.unitsperpallet, p.updated AS m_product_updated, p.updatedby AS m_product_updatedby, p.versionno, p.volume, p.weight, ce.ad_org_id AS m_costelement_ad_org_id, ce.description AS m_costelement_description, ce.isactive AS m_costelement_isactive, ce.name AS m_costelement_name, acct.ad_org_id AS c_acctschema_ad_org_id, acct.description AS c_acctschema_description, acct.name AS c_acctschema_name
+   FROM m_cost c
+   JOIN m_product p ON c.m_product_id = p.m_product_id
+   JOIN m_costelement ce ON c.m_costelement_id = ce.m_costelement_id
+   JOIN c_acctschema acct ON c.c_acctschema_id = acct.c_acctschema_id;
 

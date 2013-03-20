@@ -1,55 +1,13 @@
-CREATE OR REPLACE VIEW RV_OPENITEM
-(AD_ORG_ID, AD_CLIENT_ID, DOCUMENTNO, C_INVOICE_ID, C_ORDER_ID, 
- C_BPARTNER_ID, ISSOTRX, DATEINVOICED, DATEACCT, NETDAYS, 
- DUEDATE, DAYSDUE, DISCOUNTDATE, DISCOUNTAMT, GRANDTOTAL, 
- PAIDAMT, OPENAMT, C_CURRENCY_ID, C_CONVERSIONTYPE_ID, C_PAYMENTTERM_ID, 
- ISPAYSCHEDULEVALID, C_INVOICEPAYSCHEDULE_ID, INVOICECOLLECTIONTYPE, C_CAMPAIGN_ID, C_PROJECT_ID, 
- C_ACTIVITY_ID)
-AS 
-SELECT i.AD_Org_ID, i.AD_Client_ID,
-	i.DocumentNo, i.C_Invoice_ID, i.C_Order_ID, i.C_BPartner_ID, i.IsSOTrx,
-	i.DateInvoiced, i.DateAcct,
-    p.NetDays,
-	paymentTermDueDate(i.C_PaymentTerm_ID, i.DateInvoiced) AS DueDate,
-	paymentTermDueDays(i.C_PaymentTerm_ID, i.DateInvoiced, getdate()) AS DaysDue,
-    addDays(i.DateInvoiced,p.DiscountDays) AS DiscountDate,
-    ROUND(i.GrandTotal*p.Discount/100,2) AS DiscountAmt,
-	i.GrandTotal,
-	invoicePaid(i.C_Invoice_ID, i.C_Currency_ID, 1) AS PaidAmt,
-	invoiceOpen(i.C_Invoice_ID,0) AS OpenAmt,
-    i.C_Currency_ID, i.C_ConversionType_ID,
-    i.C_PaymentTerm_ID,
-    i.IsPayScheduleValid, cast(null as number) AS C_InvoicePaySchedule_ID, i.InvoiceCollectionType,
-    i.C_Campaign_ID, i.C_Project_ID, i.C_Activity_ID
-FROM RV_C_Invoice i
-    INNER JOIN C_PaymentTerm p ON (i.C_PaymentTerm_ID=p.C_PaymentTerm_ID)
-WHERE --    i.IsPaid='N'
-    invoiceOpen(i.C_Invoice_ID,0) <> 0
-    AND i.IsPayScheduleValid<>'Y'
-    AND i.DocStatus IN ('CO','CL')
-UNION
-SELECT i.AD_Org_ID, i.AD_Client_ID,
-    i.DocumentNo, i.C_Invoice_ID, i.C_Order_ID, i.C_BPartner_ID, i.IsSOTrx,
-	i.DateInvoiced, i.DateAcct,
-    daysBetween(ips.DueDate,i.DateInvoiced) AS NetDays,
-    ips.DueDate,
-    daysBetween(getdate(),ips.DueDate) AS DaysDue,
-    ips.DiscountDate,
-    ips.DiscountAmt,
-	ips.DueAmt AS GrandTotal,
-	invoicePaid(i.C_Invoice_ID, i.C_Currency_ID, 1) AS PaidAmt,
-	invoiceOpen(i.C_Invoice_ID, ips.C_InvoicePaySchedule_ID) AS OpenAmt,
-    i.C_Currency_ID, i.C_ConversionType_ID,
-    i.C_PaymentTerm_ID,
-    i.IsPayScheduleValid, ips.C_InvoicePaySchedule_ID, i.InvoiceCollectionType,
-    i.C_Campaign_ID, i.C_Project_ID, i.C_Activity_ID
-FROM RV_C_Invoice i
-    INNER JOIN C_InvoicePaySchedule ips ON (i.C_Invoice_ID=ips.C_Invoice_ID)
-WHERE  --   i.IsPaid='N'
-    invoiceOpen(i.C_Invoice_ID,ips.C_InvoicePaySchedule_ID) <> 0
-    AND i.IsPayScheduleValid='Y'
-    AND i.DocStatus IN ('CO','CL')
-    AND ips.IsValid='Y';
+DROP VIEW rv_openitem;
 
-
+CREATE OR REPLACE VIEW rv_openitem AS 
+         SELECT i.ad_org_id, i.ad_client_id, i.documentno, i.c_invoice_id, i.c_order_id, i.c_bpartner_id, i.issotrx, i.dateinvoiced, i.dateacct, p.netdays, paymenttermduedate(i.c_paymentterm_id, i.dateinvoiced) AS duedate, paymenttermduedays(i.c_paymentterm_id, i.dateinvoiced, getdate()) AS daysdue, adddays(i.dateinvoiced, p.discountdays) AS discountdate, round(i.grandtotal * p.discount / 100, 2) AS discountamt, i.grandtotal, invoicepaid(i.c_invoice_id, i.c_currency_id, 1) AS paidamt, invoiceopen(i.c_invoice_id, 0) AS openamt, i.c_currency_id, i.c_conversiontype_id, i.c_paymentterm_id, i.ispayschedulevalid, NULL AS c_invoicepayschedule_id, i.invoicecollectiontype, i.c_campaign_id, i.c_project_id, i.c_activity_id, i.c_invoice_ad_orgtrx_id AS ad_orgtrx_id, i.ad_user_id, i.c_bpartner_location_id, i.c_charge_id, i.c_doctype_id, i.c_doctypetarget_id, i.c_dunninglevel_id, i.chargeamt, i.c_payment_id, i.created, i.createdby, i.dateordered, i.dateprinted, i.description, i.docaction, i.docstatus, i.dunninggrace, i.generateto, i.isactive, i.isapproved, i.isdiscountprinted, i.isindispute, i.ispaid, i.isprinted, i.c_invoice_isselfservice AS isselfservice, i.istaxincluded, i.istransferred, i.m_pricelist_id, i.m_rma_id, i.paymentrule, i.poreference, i.posted, i.processedon, i.processing, i.ref_invoice_id, i.reversal_id, i.salesrep_id, i.sendemail, i.totallines, i.updated, i.updatedby, i.user1_id, i.user2_id
+           FROM rv_c_invoice i
+      JOIN c_paymentterm p ON i.c_paymentterm_id = p.c_paymentterm_id
+     WHERE invoiceopen(i.c_invoice_id, 0) <> 0 AND i.ispayschedulevalid <> 'Y' AND i.docstatus IN ('CO', 'CL')
+UNION 
+         SELECT i.ad_org_id, i.ad_client_id, i.documentno, i.c_invoice_id, i.c_order_id, i.c_bpartner_id, i.issotrx, i.dateinvoiced, i.dateacct, daysbetween(ips.duedate, i.dateinvoiced) AS netdays, ips.duedate, daysbetween(getdate(), ips.duedate) AS daysdue, ips.discountdate, ips.discountamt, ips.dueamt AS grandtotal, invoicepaid(i.c_invoice_id, i.c_currency_id, 1) AS paidamt, invoiceopen(i.c_invoice_id, ips.c_invoicepayschedule_id) AS openamt, i.c_currency_id, i.c_conversiontype_id, i.c_paymentterm_id, i.ispayschedulevalid, ips.c_invoicepayschedule_id, i.invoicecollectiontype, i.c_campaign_id, i.c_project_id, i.c_activity_id, i.c_invoice_ad_orgtrx_id AS ad_orgtrx_id, i.ad_user_id, i.c_bpartner_location_id, i.c_charge_id, i.c_doctype_id, i.c_doctypetarget_id, i.c_dunninglevel_id, i.chargeamt, i.c_payment_id, i.created, i.createdby, i.dateordered, i.dateprinted, i.description, i.docaction, i.docstatus, i.dunninggrace, i.generateto, i.isactive, i.isapproved, i.isdiscountprinted, i.isindispute, i.ispaid, i.isprinted, i.c_invoice_isselfservice AS isselfservice, i.istaxincluded, i.istransferred, i.m_pricelist_id, i.m_rma_id, i.paymentrule, i.poreference, i.posted, i.processedon, i.processing, i.ref_invoice_id, i.reversal_id, i.salesrep_id, i.sendemail, i.totallines, i.updated, i.updatedby, i.user1_id, i.user2_id
+           FROM rv_c_invoice i
+      JOIN c_invoicepayschedule ips ON i.c_invoice_id = ips.c_invoice_id
+     WHERE invoiceopen(i.c_invoice_id, ips.c_invoicepayschedule_id) <> 0 AND i.ispayschedulevalid = 'Y' AND i.docstatus IN ('CO', 'CL') AND ips.isvalid = 'Y';
 
