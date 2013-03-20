@@ -155,7 +155,7 @@ public class ImportInventory extends SvrProcess
 		//	Set Client, Org, Location, IsActive, Created/Updated
 		sql = new StringBuilder ("UPDATE I_Inventory ")
 			  .append("SET AD_Client_ID = COALESCE (AD_Client_ID,").append (p_AD_Client_ID).append ("),")
-			  .append(" AD_Org_ID = DECODE (NVL(AD_Org_ID),0,").append (p_AD_Org_ID).append (",AD_Org_ID),");
+			  .append(" AD_Org_ID = CASE WHEN COALESCE(AD_Org_ID,0)=0 THEN ").append (p_AD_Org_ID).append (" ELSE AD_Org_ID END,");
 		if (p_MovementDate != null)
 			sql.append(" MovementDate = COALESCE (MovementDate,").append (DB.TO_DATE(p_MovementDate)).append ("),");
 		sql.append(" IsActive = COALESCE (IsActive, 'Y'),")

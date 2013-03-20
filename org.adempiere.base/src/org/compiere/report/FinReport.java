@@ -583,30 +583,53 @@ public class FinReport extends SvrProcess
 					oper_1 = oper_2;
 					oper_2 = temp;
 				}
-				StringBuilder sb = new StringBuilder ("UPDATE T_Report SET (");
-				for (int col : addList) 
-				{
-					if (col > 0)
-						sb.append(",");
-					sb.append ("Col_").append (col);
+				StringBuilder sb = new StringBuilder ("UPDATE T_Report SET ");
+				if (DB.isPostgreSQL()) {
+					for (int col : addList) 
+					{
+						if (col > 0)
+							sb.append(",");
+						sb.append ("Col_").append (col)
+						  .append("=")
+						  .append("r2.c").append (col);
+					}
+					sb.append(" FROM ( SELECT ");
+					for (int col : addList) 
+					{
+						if (col > 0)
+							sb.append(",");
+						sb.append ("COALESCE(SUM(r2.Col_").append (col).append("),0) AS c").append(col);
+					}
+				} else {
+					sb.append(" (");
+					for (int col : addList) 
+					{
+						if (col > 0)
+							sb.append(",");
+						sb.append ("Col_").append (col);
+					}
+					sb.append(") = (SELECT ");
+					for (int col : addList)
+					{
+						if (col > 0)
+							sb.append(",");
+						sb.append ("COALESCE(SUM(r2.Col_").append (col).append("),0)");
+					}
 				}
-				sb.append(") = (SELECT ");
-				for (int col : addList)
-				{
-					if (col > 0)
-						sb.append(",");
-					sb.append ("COALESCE(SUM(r2.Col_").append (col).append("),0)");
-				}
+				
 				sb.append(" FROM T_Report r2 WHERE r2.AD_PInstance_ID=").append(getAD_PInstance_ID())
 					.append(" AND r2.PA_ReportLine_ID IN (");
 				if (m_lines[line].isCalculationTypeAdd())
 					sb.append(oper_1).append(",").append(oper_2);
 				else
 					sb.append(getLineIDs (oper_1, oper_2));		//	list of columns to add up
-				sb.append(") AND ABS(r2.LevelNo)<1) "		//	0=Line 1=Acct
-					+ "WHERE AD_PInstance_ID=").append(getAD_PInstance_ID())
-					.append(" AND PA_ReportLine_ID=").append(m_lines[line].getPA_ReportLine_ID())
-					.append(" AND ABS(LevelNo)<1");		//	not trx
+				sb.append(") AND ABS(r2.LevelNo)<1) ");		//	0=Line 1=Acct
+				if (DB.isPostgreSQL()) {
+					sb.append(" r2 ");
+				}
+				sb.append("WHERE T_Report.AD_PInstance_ID=").append(getAD_PInstance_ID())
+					.append(" AND T_Report.PA_ReportLine_ID=").append(m_lines[line].getPA_ReportLine_ID())
+					.append(" AND ABS(T_Report.LevelNo)<1");		//	not trx
 				int no = DB.executeUpdate(sb.toString(), get_TrxName());
 				if (no != 1)
 					log.log(Level.SEVERE, "(+) #=" + no + " for " + m_lines[line] + " - " + sb.toString());
@@ -624,27 +647,52 @@ public class FinReport extends SvrProcess
 				int oper_2 = m_lines[line].getOper_2_ID();
 
 				//	Step 1 - get First Value or 0 in there
-				StringBuilder sb = new StringBuilder ("UPDATE T_Report SET (");
-				for (int col : notAddList)
+				StringBuilder sb = new StringBuilder ("UPDATE T_Report SET ");
+				if (DB.isPostgreSQL()) 
 				{
-					if (col > 0)
-						sb.append(",");
-					sb.append ("Col_").append (col);
+					for (int col : notAddList)
+					{
+						if (col > 0)
+							sb.append(",");
+						sb.append ("Col_").append (col)
+						  .append("=r2.c").append(col);
+					}
+					sb.append(" FROM (SELECT ");
+					for (int col : notAddList)
+					{
+						if (col > 0)
+							sb.append(",");
+						sb.append ("COALESCE(r2.Col_").append (col).append(",0) AS c").append(col);
+					}
 				}
-				sb.append(") = (SELECT ");
-				for (int col : notAddList)
+				else 
 				{
-					if (col > 0)
-						sb.append(",");
-					sb.append ("COALESCE(r2.Col_").append (col).append(",0)");
+					sb.append(" (");
+					for (int col : notAddList)
+					{
+						if (col > 0)
+							sb.append(",");
+						sb.append ("Col_").append (col);
+					}
+					sb.append(") = (SELECT ");
+					for (int col : notAddList)
+					{
+						if (col > 0)
+							sb.append(",");
+						sb.append ("COALESCE(r2.Col_").append (col).append(",0)");
+					}
 				}
 				sb.append(" FROM T_Report r2 WHERE r2.AD_PInstance_ID=").append(getAD_PInstance_ID())
 					.append(" AND r2.PA_ReportLine_ID=").append(oper_1)
-					.append(" AND r2.Record_ID=0 AND r2.Fact_Acct_ID=0) "
+					.append(" AND r2.Record_ID=0 AND r2.Fact_Acct_ID=0) ");
+				if (DB.isPostgreSQL())
+				{
+					sb.append(" r2 ");
+				}
 				//
-					+ "WHERE AD_PInstance_ID=").append(getAD_PInstance_ID())
-					   .append(" AND PA_ReportLine_ID=").append(m_lines[line].getPA_ReportLine_ID())
-					.append(" AND ABS(LevelNo)<1");			//	0=Line 1=Acct
+				sb.append("WHERE T_Report.AD_PInstance_ID=").append(getAD_PInstance_ID())
+					   .append(" AND T_Report.PA_ReportLine_ID=").append(m_lines[line].getPA_ReportLine_ID())
+					.append(" AND ABS(T_Report.LevelNo)<1");			//	0=Line 1=Acct
 				int no = DB.executeUpdate(sb.toString(), get_TrxName());
 				if (no != 1)
 				{
@@ -653,41 +701,86 @@ public class FinReport extends SvrProcess
 				}
 
 				//	Step 2 - do Calculation with Second Value
-				sb = new StringBuilder ("UPDATE T_Report r1 SET (");
-				for (int col : notAddList)
+				sb = new StringBuilder ("UPDATE T_Report r1 SET ");
+				if (DB.isPostgreSQL())
 				{
-					if (col > 0)
-						sb.append(",");
-					sb.append ("Col_").append (col);
-				}
-				sb.append(") = (SELECT ");
-				for (int col : notAddList)
-				{
-					if (col > 0)
-						sb.append(",");
-					sb.append ("COALESCE(r1.Col_").append (col).append(",0)");
-					// fix bug [ 1563664 ] Errors in values shown in Financial Reports
-					// Carlos Ruiz - globalqss
-					if (m_lines[line].isCalculationTypeSubtract()) {
-						sb.append("-");
-						// Solution, for subtraction replace the null with 0, instead of 0.000000001 
-						sb.append ("COALESCE(r2.Col_").append (col).append(",0)");
-					} else {
-						// Solution, for division don't replace the null, convert 0 to null (avoid ORA-01476)
-						sb.append("/");
-						sb.append ("DECODE (r2.Col_").append (col).append(", 0, NULL, r2.Col_").append (col).append(")");
+					for (int col : notAddList)
+					{
+						if (col > 0)
+							sb.append(",");
+						sb.append ("Col_").append (col).append("=");
+						sb.append ("COALESCE(r1.Col_").append (col).append(",0)");
+						// fix bug [ 1563664 ] Errors in values shown in Financial Reports
+						// Carlos Ruiz - globalqss
+						if (m_lines[line].isCalculationTypeSubtract()) {
+							sb.append("-");
+							// Solution, for subtraction replace the null with 0, instead of 0.000000001 
+							sb.append (" r2.c").append (col);
+						} else {
+							// Solution, for division don't replace the null, convert 0 to null (avoid ORA-01476)
+							sb.append("/ r2.c").append(col);
+						}
+						// end fix bug [ 1563664 ]
+						if (m_lines[line].isCalculationTypePercent())
+							sb.append(" *100");
 					}
-					// end fix bug [ 1563664 ]
-					if (m_lines[line].isCalculationTypePercent())
-						sb.append(" *100");
+					sb.append(" FROM (SELECT ");
+					for (int col : notAddList)
+					{
+						if (col > 0)
+							sb.append(",");
+						
+						if (m_lines[line].isCalculationTypeSubtract()) {
+							// Solution, for subtraction replace the null with 0, instead of 0.000000001 
+							sb.append ("COALESCE(r2.Col_").append (col).append(",0) AS c").append(col);
+						} else {
+							// Solution, for division don't replace the null, convert 0 to null (avoid ORA-01476)
+							sb.append ("CASE WHEN r2.Col_").append (col).append("=0 THEN NULL ELSE r2.Col_").append (col).append(" END AS c").append(col);
+						}
+					}
+				}
+				else
+				{
+					sb.append(" (");
+					for (int col : notAddList)
+					{
+						if (col > 0)
+							sb.append(",");
+						sb.append ("Col_").append (col);
+					}
+					sb.append(") = (SELECT ");
+					for (int col : notAddList)
+					{
+						if (col > 0)
+							sb.append(",");
+						sb.append ("COALESCE(r1.Col_").append (col).append(",0)");
+						// fix bug [ 1563664 ] Errors in values shown in Financial Reports
+						// Carlos Ruiz - globalqss
+						if (m_lines[line].isCalculationTypeSubtract()) {
+							sb.append("-");
+							// Solution, for subtraction replace the null with 0, instead of 0.000000001 
+							sb.append ("COALESCE(r2.Col_").append (col).append(",0)");
+						} else {
+							// Solution, for division don't replace the null, convert 0 to null (avoid ORA-01476)
+							sb.append("/");
+							sb.append ("CASE WHEN r2.Col_").append (col).append("=0 THEN NULL ELSE r2.Col_").append (col).append(" END");
+						}
+						// end fix bug [ 1563664 ]
+						if (m_lines[line].isCalculationTypePercent())
+							sb.append(" *100");
+					}
 				}
 				sb.append(" FROM T_Report r2 WHERE r2.AD_PInstance_ID=").append(getAD_PInstance_ID())
 					.append(" AND r2.PA_ReportLine_ID=").append(oper_2)
-					.append(" AND r2.Record_ID=0 AND r2.Fact_Acct_ID=0) "
+					.append(" AND r2.Record_ID=0 AND r2.Fact_Acct_ID=0) ");
+				if (DB.isPostgreSQL())
+				{
+					sb.append(" r2 ");
+				}
 				//
-					+ "WHERE AD_PInstance_ID=").append(getAD_PInstance_ID())
-					   .append(" AND PA_ReportLine_ID=").append(m_lines[line].getPA_ReportLine_ID())
-					.append(" AND ABS(LevelNo)<1");			//	0=Line 1=Acct
+				sb.append("WHERE r1.AD_PInstance_ID=").append(getAD_PInstance_ID())
+					   .append(" AND r1.PA_ReportLine_ID=").append(m_lines[line].getPA_ReportLine_ID())
+					.append(" AND ABS(r1.LevelNo)<1");			//	0=Line 1=Acct
 				no = DB.executeUpdate(sb.toString(), get_TrxName());
 				if (no != 1)
 					log.severe ("(x) #=" + no + " for " + m_lines[line] + " - " + sb.toString ());
