@@ -1,20 +1,7 @@
-CREATE OR REPLACE VIEW RV_ALLOCATION
-(C_ALLOCATIONHDR_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, 
- CREATEDBY, UPDATED, UPDATEDBY, DOCUMENTNO, DESCRIPTION, 
- DATETRX, DATEACCT, C_CURRENCY_ID, APPROVALAMT, ISMANUAL, 
- DOCSTATUS, DOCACTION, PROCESSED, C_ALLOCATIONLINE_ID, C_INVOICE_ID, 
- C_BPARTNER_ID, C_ORDER_ID, C_PAYMENT_ID, C_CASHLINE_ID, AMOUNT, 
- DISCOUNTAMT, WRITEOFFAMT, OVERUNDERAMT)
-AS 
-SELECT h.C_AllocationHdr_ID, h.AD_Client_ID, h.AD_Org_ID, 
-  h.IsActive, h.Created, h.CreatedBy, h.Updated, h.UpdatedBy,
-  h.DocumentNo, h.Description, h.DateTrx, h.DateAcct,
-  h.C_Currency_ID, h.ApprovalAmt, h.IsManual, h.DocStatus, h.DocAction, h.Processed,
-  l.C_AllocationLine_ID,
-  l.C_Invoice_ID, l.C_BPartner_ID, l.C_Order_ID, l.C_Payment_ID, l.C_CashLine_ID,
-  l.Amount, l.DiscountAmt, l.WriteOffAmt, l.OverUnderAmt
-FROM C_AllocationHdr h
-  INNER JOIN C_AllocationLine l ON (h.C_AllocationHdr_ID=l.C_AllocationHdr_ID);
+DROP VIEW rv_allocation;
 
-
+CREATE OR REPLACE VIEW rv_allocation AS 
+ SELECT h.c_allocationhdr_id, h.ad_client_id, h.ad_org_id, h.isactive, h.created, h.createdby, h.updated, h.updatedby, h.documentno, h.description, h.datetrx, h.dateacct, h.c_currency_id, h.approvalamt, h.ismanual, h.docstatus, h.docaction, h.processed, l.c_allocationline_id, l.c_invoice_id, l.c_bpartner_id, l.c_order_id, l.c_payment_id, l.c_cashline_id, l.amount, l.discountamt, l.writeoffamt, l.overunderamt, h.isapproved, h.posted, l.ad_org_id AS c_allocationline_ad_org_id, l.created AS c_allocationline_created, l.createdby AS c_allocationline_createdby, l.datetrx AS c_allocationline_datetrx, l.isactive AS c_allocationline_isactive, l.ismanual AS c_allocationline_ismanual, l.updated AS c_allocationline_updated, l.updatedby AS c_allocationline_updatedby
+   FROM c_allocationhdr h
+   JOIN c_allocationline l ON h.c_allocationhdr_id = l.c_allocationhdr_id;
 

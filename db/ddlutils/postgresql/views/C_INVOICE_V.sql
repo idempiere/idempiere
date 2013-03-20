@@ -1,53 +1,44 @@
-CREATE OR REPLACE VIEW C_INVOICE_V
-(C_INVOICE_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, 
- CREATEDBY, UPDATED, UPDATEDBY, ISSOTRX, DOCUMENTNO, 
- DOCSTATUS, DOCACTION, PROCESSING, PROCESSED, C_DOCTYPE_ID, 
- C_DOCTYPETARGET_ID, C_ORDER_ID, DESCRIPTION, ISAPPROVED, ISTRANSFERRED, 
- SALESREP_ID, DATEINVOICED, DATEPRINTED, DATEACCT, C_BPARTNER_ID, 
- C_BPARTNER_LOCATION_ID, AD_USER_ID, POREFERENCE, DATEORDERED, C_CURRENCY_ID, 
- C_CONVERSIONTYPE_ID, PAYMENTRULE, C_PAYMENTTERM_ID, C_CHARGE_ID, M_PRICELIST_ID, 
- C_CAMPAIGN_ID, C_PROJECT_ID, C_ACTIVITY_ID, ISPRINTED, ISDISCOUNTPRINTED, 
- ISPAID, ISINDISPUTE, ISPAYSCHEDULEVALID, C_INVOICEPAYSCHEDULE_ID, INVOICECOLLECTIONTYPE,DUNNINGGRACE, 
- CHARGEAMT, TOTALLINES, GRANDTOTAL, MULTIPLIER, MULTIPLIERAP, 
- DOCBASETYPE, DUEDATE
- )
-AS 
-SELECT i.C_Invoice_ID, i.AD_Client_ID, i.AD_Org_ID, i.IsActive, i.Created, i.CreatedBy, i.Updated, i.UpdatedBy,
-    i.IsSOTrx, i.DocumentNo, i.DocStatus, i.DocAction, i.Processing, i.Processed, i.C_DocType_ID,
-    i.C_DocTypeTarget_ID, i.C_Order_ID, i.Description, i.IsApproved, i.IsTransferred,
-    i.SalesRep_ID, i.DateInvoiced, i.DatePrinted, i.DateAcct, i.C_BPartner_ID, i.C_BPartner_Location_ID,
-    i.AD_User_ID, i.POReference, i.DateOrdered, i.C_Currency_ID, i.C_ConversionType_ID, i.PaymentRule,
-    i.C_PaymentTerm_ID, i.C_Charge_ID, i.M_PriceList_ID, i.C_Campaign_ID, i.C_Project_ID,
-    i.C_Activity_ID, i.IsPrinted, i.IsDiscountPrinted, i.IsPaid, i.IsInDispute,
-    i.IsPayScheduleValid, cast(null as numeric) AS C_InvoicePaySchedule_ID, i.InvoiceCollectionType,i.DunningGrace,
-    CASE WHEN charAt(d.DocBaseType,3)='C' THEN i.ChargeAmt*-1 ELSE i.ChargeAmt END AS ChargeAmt,
-    CASE WHEN charAt(d.DocBaseType,3)='C' THEN i.TotalLines*-1 ELSE i.TotalLines END AS TotalLines,
-    CASE WHEN charAt(d.DocBaseType,3)='C' THEN i.GrandTotal*-1 ELSE i.GrandTotal END AS GrandTotal,
-    CASE WHEN charAt(d.DocBaseType,3)='C' THEN -1.0 ELSE 1.0 END AS Multiplier,
-    CASE WHEN charAt(d.DocBaseType,2)='P' THEN -1.0 ELSE 1.0 END AS MultiplierAP,
-    d.DocBaseType
-    , paymentTermDueDate(i.C_PaymentTerm_ID, i.DateInvoiced) as DueDate
-FROM C_Invoice i
-    INNER JOIN C_DocType d ON (i.C_DocType_ID=d.C_DocType_ID)
-WHERE i.IsPayScheduleValid<>'Y'
-UNION
-SELECT i.C_Invoice_ID, i.AD_Client_ID, i.AD_Org_ID, i.IsActive, i.Created, i.CreatedBy, i.Updated, i.UpdatedBy,
-    i.IsSOTrx, i.DocumentNo, i.DocStatus, i.DocAction, i.Processing, i.Processed, i.C_DocType_ID,
-    i.C_DocTypeTarget_ID, i.C_Order_ID, i.Description, i.IsApproved, i.IsTransferred,
-    i.SalesRep_ID, i.DateInvoiced, i.DatePrinted, i.DateAcct, i.C_BPartner_ID, i.C_BPartner_Location_ID,
-    i.AD_User_ID, i.POReference, i.DateOrdered, i.C_Currency_ID, i.C_ConversionType_ID, i.PaymentRule,
-    i.C_PaymentTerm_ID, i.C_Charge_ID, i.M_PriceList_ID, i.C_Campaign_ID, i.C_Project_ID,
-    i.C_Activity_ID, i.IsPrinted, i.IsDiscountPrinted, i.IsPaid, i.IsInDispute,
-    i.IsPayScheduleValid, ips.C_InvoicePaySchedule_ID, i.InvoiceCollectionType, i.DunningGrace,
-    null AS ChargeAmt,
-    null AS TotalLines,
-    CASE WHEN charAt(d.DocBaseType,3)='C' THEN ips.DueAmt*-1 ELSE ips.DueAmt END AS GrandTotal,
-    CASE WHEN charAt(d.DocBaseType,3)='C' THEN -1 ELSE 1 END AS Multiplier,
-    CASE WHEN charAt(d.DocBaseType,2)='P' THEN -1 ELSE 1 END AS MultiplierAP,
-    d.DocBaseType
-    , ips.DueDate
-FROM C_Invoice i
-    INNER JOIN C_DocType d ON (i.C_DocType_ID=d.C_DocType_ID)
-    INNER JOIN C_InvoicePaySchedule ips ON (i.C_Invoice_ID=ips.C_Invoice_ID)
-WHERE i.IsPayScheduleValid='Y'
-    AND ips.IsValid='Y';
+﻿CREATE OR REPLACE VIEW c_invoice_v AS 
+         SELECT i.c_invoice_id, i.ad_client_id, i.ad_org_id, i.isactive, i.created, i.createdby, i.updated, i.updatedby, i.issotrx, i.documentno, i.docstatus, i.docaction, i.processing, i.processed, i.c_doctype_id, i.c_doctypetarget_id, i.c_order_id, i.description, i.isapproved, i.istransferred, i.salesrep_id, i.dateinvoiced, i.dateprinted, i.dateacct, i.c_bpartner_id, i.c_bpartner_location_id, i.ad_user_id, i.poreference, i.dateordered, i.c_currency_id, i.c_conversiontype_id, i.paymentrule, i.c_paymentterm_id, i.c_charge_id, i.m_pricelist_id, i.c_campaign_id, i.c_project_id, i.c_activity_id, i.isprinted, i.isdiscountprinted, i.ispaid, i.isindispute, i.ispayschedulevalid, NULL AS c_invoicepayschedule_id, i.invoicecollectiontype, i.dunninggrace, 
+                CASE
+                    WHEN charat(d.docbasetype, 3) = 'C' THEN i.chargeamt * (-1)
+                    ELSE i.chargeamt
+                END AS chargeamt, 
+                CASE
+                    WHEN charat(d.docbasetype, 3) = 'C' THEN i.totallines * (-1)
+                    ELSE i.totallines
+                END AS totallines, 
+                CASE
+                    WHEN charat(d.docbasetype, 3) = 'C' THEN i.grandtotal * (-1)
+                    ELSE i.grandtotal
+                END AS grandtotal, 
+                CASE
+                    WHEN charat(d.docbasetype, 3) = 'C' THEN (-1.0)
+                    ELSE 1.0
+                END AS multiplier, 
+                CASE
+                    WHEN charat(d.docbasetype, 2) = 'P' THEN (-1.0)
+                    ELSE 1.0
+                END AS multiplierap, d.docbasetype, paymenttermduedate(i.c_paymentterm_id, i.dateinvoiced) AS duedate, i.ad_orgtrx_id, i.c_payment_id, i.isselfservice, i.posted, i.processedon, i.reversal_id
+           FROM c_invoice i
+      JOIN c_doctype d ON i.c_doctype_id = d.c_doctype_id
+     WHERE i.ispayschedulevalid <> 'Y'
+UNION 
+         SELECT i.c_invoice_id, i.ad_client_id, i.ad_org_id, i.isactive, i.created, i.createdby, i.updated, i.updatedby, i.issotrx, i.documentno, i.docstatus, i.docaction, i.processing, i.processed, i.c_doctype_id, i.c_doctypetarget_id, i.c_order_id, i.description, i.isapproved, i.istransferred, i.salesrep_id, i.dateinvoiced, i.dateprinted, i.dateacct, i.c_bpartner_id, i.c_bpartner_location_id, i.ad_user_id, i.poreference, i.dateordered, i.c_currency_id, i.c_conversiontype_id, i.paymentrule, i.c_paymentterm_id, i.c_charge_id, i.m_pricelist_id, i.c_campaign_id, i.c_project_id, i.c_activity_id, i.isprinted, i.isdiscountprinted, i.ispaid, i.isindispute, i.ispayschedulevalid, ips.c_invoicepayschedule_id, i.invoicecollectiontype, i.dunninggrace, NULL AS chargeamt, NULL AS totallines, 
+                CASE
+                    WHEN charat(d.docbasetype, 3) = 'C' THEN ips.dueamt * (-1)
+                    ELSE ips.dueamt
+                END AS grandtotal, 
+                CASE
+                    WHEN charat(d.docbasetype, 3) = 'C' THEN (-1)
+                    ELSE 1
+                END AS multiplier, 
+                CASE
+                    WHEN charat(d.docbasetype, 2) = 'P' THEN (-1)
+                    ELSE 1
+                END AS multiplierap, d.docbasetype, ips.duedate, i.ad_orgtrx_id, i.c_payment_id, i.isselfservice, i.posted, i.processedon, i.reversal_id
+           FROM c_invoice i
+      JOIN c_doctype d ON i.c_doctype_id = d.c_doctype_id
+   JOIN c_invoicepayschedule ips ON i.c_invoice_id = ips.c_invoice_id
+  WHERE i.ispayschedulevalid = 'Y' AND ips.isvalid = 'Y';
+

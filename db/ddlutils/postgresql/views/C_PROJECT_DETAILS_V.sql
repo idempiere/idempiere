@@ -1,28 +1,15 @@
-CREATE OR REPLACE VIEW C_PROJECT_DETAILS_V
-(AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, 
- UPDATED, UPDATEDBY, AD_LANGUAGE, C_PROJECT_ID, C_PROJECTLINE_ID, 
- LINE, PLANNEDQTY, PLANNEDPRICE, PLANNEDAMT, PLANNEDMARGINAMT, 
- COMMITTEDAMT, M_PRODUCT_ID, NAME, DESCRIPTION, DOCUMENTNOTE, 
- UPC, SKU, PRODUCTVALUE, M_PRODUCT_CATEGORY_ID, INVOICEDAMT, 
- INVOICEDQTY, COMMITTEDQTY)
-AS 
-SELECT pl.AD_Client_ID, pl.AD_Org_ID, pl.IsActive, pl.Created, pl.CreatedBy, pl.Updated, pl.UpdatedBy,
-	cast('en_US' as varchar) AS AD_Language,
-    pj.C_Project_ID, pl.C_ProjectLine_ID,
-    pl.Line, 
-    pl.PlannedQty, pl.PlannedPrice, pl.PlannedAmt, pl.PlannedMarginAmt,
-    pl.CommittedAmt,
-    pl.M_Product_ID,
-	COALESCE(p.Name, pl.Description) AS Name, -- main line
-	CASE WHEN p.Name IS NOT NULL THEN pl.Description END AS Description, -- second line
-	p.DocumentNote, -- third line
-    p.UPC, p.SKU, p.Value AS ProductValue,
-    pl.M_Product_Category_ID,
-    pl.InvoicedAmt, pl.InvoicedQty, pl.CommittedQty
-FROM C_ProjectLine pl
-  INNER JOIN C_Project pj ON (pl.C_Project_ID=pj.C_Project_ID)
-  LEFT OUTER JOIN M_Product p ON (pl.M_Product_ID=p.M_Product_ID)
-WHERE pl.IsPrinted='Y';
+﻿DROP VIEW c_project_details_v;
 
-
+CREATE OR REPLACE VIEW c_project_details_v AS 
+ SELECT pl.ad_client_id, pl.ad_org_id, pl.isactive, pl.created, pl.createdby, pl.updated, pl.updatedby, 
+ 'en_US'::character varying AS ad_language, 
+ pj.c_project_id, pl.c_projectline_id, pl.line, pl.plannedqty, pl.plannedprice, pl.plannedamt, pl.plannedmarginamt, pl.committedamt, pl.m_product_id, COALESCE(p.name, pl.description) AS name, 
+        CASE
+            WHEN p.name IS NOT NULL THEN pl.description
+            ELSE NULL
+        END AS description, p.documentnote, p.upc, p.sku, p.value AS productvalue, pl.m_product_category_id, pl.invoicedamt, pl.invoicedqty, pl.committedqty, pl.c_order_id, pl.c_orderpo_id, pl.c_projectissue_id, pl.c_projectphase_id, pl.c_projecttask_id, pl.dopricing, pl.isprinted, pl.processed AS c_projectline_processed, pj.ad_org_id AS c_project_ad_org_id, pj.ad_user_id, pj.c_bpartner_id, pj.c_bpartner_location_id, pj.c_bpartnersr_id, pj.c_campaign_id, pj.c_currency_id, pj.committedamt AS c_project_committedamt, pj.committedqty AS c_project_committedqty, pj.copyfrom AS c_project_copyfrom, pj.c_paymentterm_id, pj.c_phase_id, pj.c_projecttype_id, pj.created AS c_project_created, pj.createdby AS c_project_createdby, pj.datecontract, pj.datefinish, pj.description AS c_project_description, pj.generateto, pj.invoicedamt AS c_project_invoicedamt, pj.invoicedqty AS c_project_invoicedqty, pj.isactive AS c_project_isactive, pj.iscommitceiling, pj.iscommitment, pj.issummary AS c_project_issummary, pj.m_pricelist_version_id, pj.m_warehouse_id, pj.name AS c_project_name, pj.note AS c_project_note, pj.plannedamt AS c_project_plannedamt, pj.plannedmarginamt AS c_project_plannedmarginamt, pj.plannedqty AS c_project_plannedqty, pj.poreference, pj.processed AS c_project_processed, pj.processing AS c_project_processing, pj.projectbalanceamt, pj.projectcategory, pj.projectlinelevel, pj.projinvoicerule, pj.salesrep_id AS c_project_salesrep_id, pj.updated AS c_project_updated, pj.updatedby AS c_project_updatedby, pj.value AS c_project_value, p.ad_org_id AS m_product_ad_org_id, p.classification, p.copyfrom AS m_product_copyfrom, p.created AS m_product_created, p.createdby AS m_product_createdby, p.c_revenuerecognition_id, p.c_subscriptiontype_id, p.c_taxcategory_id, p.c_uom_id, p.description AS m_product_description, p.descriptionurl, p.discontinued, p.discontinuedat, p.group1, p.group2, p.guaranteedays, p.guaranteedaysmin, p.help, p.imageurl, p.isactive AS m_product_isactive, p.isdropship, p.isexcludeautodelivery, p.isinvoiceprintdetails, p.ispicklistprintdetails, p.ispurchased, p.isselfservice, p.issold, p.isstocked, p.issummary AS m_product_issummary, p.isverified, p.iswebstorefeatured, p.lowlevel, p.m_attributeset_id, p.m_attributesetinstance_id, p.m_freightcategory_id, p.m_locator_id, p.m_product_category_id AS m_product_m_prod_category_id, p.m_product_id AS m_product_m_product_id, p.processing AS m_product_processing, p.producttype, p.r_mailtext_id, p.salesrep_id AS m_product_salesrep_id, p.s_expensetype_id, p.shelfdepth, p.shelfheight, p.shelfwidth, p.s_resource_id, p.unitsperpack, p.unitsperpallet, p.updated AS m_product_updated, p.updatedby AS m_product_updatedby, p.versionno, p.volume, p.weight
+   FROM c_projectline pl
+   JOIN c_project pj ON pl.c_project_id = pj.c_project_id
+   LEFT JOIN m_product p ON pl.m_product_id = p.m_product_id
+  WHERE pl.isprinted = 'Y';
 

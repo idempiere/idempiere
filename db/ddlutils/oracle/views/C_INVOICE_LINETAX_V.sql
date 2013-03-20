@@ -1,123 +1,95 @@
-CREATE OR REPLACE VIEW C_INVOICE_LINETAX_V
-(AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, 
- UPDATED, UPDATEDBY, AD_LANGUAGE, C_INVOICE_ID, C_INVOICELINE_ID, 
- C_TAX_ID, TAXAMT, LINETOTALAMT, TAXINDICATOR, LINE, 
- M_PRODUCT_ID, QTYINVOICED, QTYENTERED, UOMSYMBOL, NAME, 
- DESCRIPTION, DOCUMENTNOTE, UPC, SKU, PRODUCTVALUE, 
- RESOURCEDESCRIPTION, PRICELIST, PRICEENTEREDLIST, DISCOUNT, PRICEACTUAL, 
- PRICEENTERED, LINENETAMT, M_ATTRIBUTESETINSTANCE_ID, M_ATTRIBUTESET_ID, SERNO, 
- LOT, M_LOT_ID, GUARANTEEDATE, PRODUCTDESCRIPTION, IMAGEURL, 
- C_CAMPAIGN_ID, C_PROJECT_ID, C_ACTIVITY_ID, C_PROJECTPHASE_ID, C_PROJECTTASK_ID)
-AS 
-SELECT il.AD_Client_ID, il.AD_Org_ID, il.IsActive, il.Created, il.CreatedBy, il.Updated, il.UpdatedBy,
-	'en_US' AS AD_Language,
-	il.C_Invoice_ID, il.C_InvoiceLine_ID,
-    il.C_Tax_ID, il.TaxAmt, il.LineTotalAmt, t.TaxIndicator,
-	il.Line, p.M_Product_ID,
-	CASE WHEN il.QtyInvoiced<>0 OR il.M_Product_ID IS NOT NULL THEN il.QtyInvoiced END AS QtyInvoiced,
-    CASE WHEN il.QtyEntered<>0 OR il.M_Product_ID IS NOT NULL THEN il.QtyEntered END AS QtyEntered,
-    CASE WHEN il.QtyEntered<>0 OR il.M_Product_ID IS NOT NULL THEN uom.UOMSymbol END AS UOMSymbol,
-	COALESCE(c.Name,p.Name||productAttribute(il.M_AttributeSetInstance_ID), il.Description) AS Name, -- main line
-	CASE WHEN COALESCE(c.Name,p.Name) IS NOT NULL THEN il.Description END AS Description, -- second line
-	p.DocumentNote, -- third line
-    p.UPC, p.SKU, COALESCE(pp.VendorProductNo,p.Value) AS ProductValue,
-	ra.Description AS ResourceDescription, -- forth line
-	CASE WHEN i.IsDiscountPrinted='Y' AND il.PriceList<>0
-        THEN il.PriceList END AS PriceList,
-	CASE WHEN i.IsDiscountPrinted='Y' AND il.PriceList<>0 AND il.QtyEntered<>0
-        THEN il.PriceList*il.QtyInvoiced/il.QtyEntered END AS PriceEnteredList,
-	CASE WHEN i.IsDiscountPrinted='Y' AND il.PriceList>il.PriceActual AND il.PriceList<>0
-        THEN (il.PriceList-il.PriceActual)/il.PriceList*100 END AS Discount,
-	CASE WHEN il.PriceActual<>0 OR il.M_Product_ID IS NOT NULL THEN il.PriceActual END AS PriceActual,
-	CASE WHEN il.PriceEntered<>0 OR il.M_Product_ID IS NOT NULL THEN il.PriceEntered END AS PriceEntered,
-	CASE WHEN il.LineNetAmt<>0 OR il.M_Product_ID IS NOT NULL THEN il.LineNetAmt END AS LineNetAmt,
-    il.M_AttributeSetInstance_ID, asi.M_AttributeSet_ID,
-    asi.SerNo, asi.Lot, asi.M_Lot_ID,asi.GuaranteeDate,
-    p.Description as ProductDescription, p.ImageURL,
-    il.C_Campaign_ID, il.C_Project_ID, il.C_Activity_ID, il.C_ProjectPhase_ID, il.C_ProjectTask_ID
-FROM C_InvoiceLine il
-	INNER JOIN C_UOM uom ON (il.C_UOM_ID=uom.C_UOM_ID)
-	INNER JOIN C_Invoice i ON (il.C_Invoice_ID=i.C_Invoice_ID)
-    LEFT OUTER JOIN C_Tax t ON (il.C_Tax_ID=t.C_Tax_ID)
-	LEFT OUTER JOIN M_Product p ON (il.M_Product_ID=p.M_Product_ID)
-	LEFT OUTER JOIN C_Charge c ON (il.C_Charge_ID=c.C_Charge_ID)
-    LEFT OUTER JOIN C_BPartner_Product pp ON (il.M_Product_ID=pp.M_Product_ID AND i.C_BPartner_ID=pp.C_BPartner_ID)
-	LEFT OUTER JOIN S_ResourceAssignment ra ON (il.S_ResourceAssignment_ID=ra.S_ResourceAssignment_ID)
-    LEFT OUTER JOIN M_AttributeSetInstance asi ON (il.M_AttributeSetInstance_ID=asi.M_AttributeSetInstance_ID)
-UNION   --  bom lines
-SELECT il.AD_Client_ID, il.AD_Org_ID, il.IsActive, il.Created, il.CreatedBy, il.Updated, il.UpdatedBy,
-	'en_US' AS AD_Language,
-	il.C_Invoice_ID, il.C_InvoiceLine_ID,
-    il.C_Tax_ID, il.TaxAmt, il.LineTotalAmt, t.TaxIndicator,
-	il.Line+(bl.Line/100) AS Line, p.M_Product_ID,
-	--il.QtyInvoiced*b.BOMQty AS QtyInvoiced,
-	CASE WHEN bl.IsQtyPercentage = 'N' THEN il.QtyInvoiced*bl.QtyBOM ELSE il.QtyInvoiced*(bl.QtyBatch / 100) END AS QtyInvoiced, 
-    --il.QtyEntered*b.BOMQty AS QtyEntered,
-    CASE WHEN bl.IsQtyPercentage = 'N' THEN il.QtyEntered*bl.QtyBOM ELSE il.QtyEntered*(bl.QtyBatch / 100) END AS QtyEntered, 
-    uom.UOMSymbol,
-	p.Name,	-- main
-	b.Description,
-	p.DocumentNote, p.UPC, p.SKU, p.Value AS ProductValue,
-	null, null, null, null, null, null, null,
-    il.M_AttributeSetInstance_ID, asi.M_AttributeSet_ID, asi.SerNo, asi.Lot, asi.M_Lot_ID,asi.GuaranteeDate,
-    p.Description as ProductDescription, p.ImageURL,
-    il.C_Campaign_ID, il.C_Project_ID, il.C_Activity_ID, il.C_ProjectPhase_ID, il.C_ProjectTask_ID
-/*FROM M_Product_BOM b	-- BOM lines
-	INNER JOIN C_InvoiceLine il ON (b.M_Product_ID=il.M_Product_ID)
-	INNER JOIN M_Product bp ON (bp.M_Product_ID=il.M_Product_ID -- BOM Product
-		AND bp.IsBOM='Y' AND bp.IsVerified='Y' AND bp.IsInvoicePrintDetails='Y')
-	INNER JOIN M_Product p ON (b.M_ProductBOM_ID=p.M_Product_ID) -- BOM line product
-	INNER JOIN C_UOM uom ON (p.C_UOM_ID=uom.C_UOM_ID)
-    LEFT OUTER JOIN C_Tax t ON (il.C_Tax_ID=t.C_Tax_ID)
-    LEFT OUTER JOIN M_AttributeSetInstance asi ON (il.M_AttributeSetInstance_ID=asi.M_AttributeSetInstance_ID)*/
-FROM PP_Product_BOM b	-- BOM lines
-	INNER JOIN C_InvoiceLine il ON (b.M_Product_ID=il.M_Product_ID)
-	INNER JOIN M_Product bp ON (bp.M_Product_ID=il.M_Product_ID -- BOM Product
-		AND bp.IsBOM='Y' AND bp.IsVerified='Y' AND bp.IsInvoicePrintDetails='Y')
-	INNER JOIN PP_Product_BOMLine bl ON (bl.PP_Product_BOM_ID=b.PP_Product_BOM_ID)
-	INNER JOIN M_Product p ON (bl.M_Product_ID=p.M_Product_ID) -- BOM line product
-	INNER JOIN C_UOM uom ON (p.C_UOM_ID=uom.C_UOM_ID)
-    LEFT OUTER JOIN C_Tax t ON (il.C_Tax_ID=t.C_Tax_ID)
-    LEFT OUTER JOIN M_AttributeSetInstance asi ON (il.M_AttributeSetInstance_ID=asi.M_AttributeSetInstance_ID)
-UNION   --  comment lines
-SELECT il.AD_Client_ID, il.AD_Org_ID, il.IsActive, il.Created, il.CreatedBy, il.Updated, il.UpdatedBy,
-	'en_US', il.C_Invoice_ID, il.C_InvoiceLine_ID,
-    null, null, null, null,
-	il.Line, null,
-	null, null, null,
-	il.Description,
-	null, null, null, null, null, null,
-	null, null, null, null, null, null,
-    null, null, null, null, null, null, null, null,
-    null, null, null, null, null
-FROM C_InvoiceLine il
-WHERE il.C_UOM_ID IS NULL
-UNION   --  empty line
-SELECT AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,
-	'en_US', C_Invoice_ID, null,
-    null, null, null, null,
-	999998, null,
-	null, null, null,
-	null,
-	null, null, null, null, null, null,
-	null, null, null, null, null, null,
-    null, null, null, null, null, null, null, null,
-    null, null, null, null, null
-FROM C_Invoice
-UNION   --   tax lines
-SELECT it.AD_Client_ID, it.AD_Org_ID, it.IsActive, it.Created, it.CreatedBy, it.Updated, it.UpdatedBy,
-	'en_US', it.C_Invoice_ID, null,
-    it.C_Tax_ID, null, null, t.TaxIndicator,
-	999999, null,
-	null, null, null,
-	t.Name,
-	null, null, null, null, null, null,
-	null, null, null,
-    CASE WHEN it.IsTaxIncluded='Y' THEN it.TaxAmt ELSE it.TaxBaseAmt END,
-    CASE WHEN it.IsTaxIncluded='Y' THEN it.TaxAmt ELSE it.TaxBaseAmt END,
-    CASE WHEN it.IsTaxIncluded='Y' THEN NULL ELSE it.TaxAmt END,
-    null, null, null, null, null, null, null, null,
-    null, null, null, null, null
-FROM C_InvoiceTax it
-	INNER JOIN C_Tax t ON (it.C_Tax_ID=t.C_Tax_ID);
+DROP VIEW c_invoice_linetax_v;
+
+CREATE OR REPLACE VIEW c_invoice_linetax_v AS 
+        (        (        (         SELECT il.ad_client_id, il.ad_org_id, il.isactive, il.created, il.createdby, il.updated, il.updatedby, 'en_US' AS ad_language, il.c_invoice_id, il.c_invoiceline_id, il.c_tax_id, il.taxamt, il.linetotalamt, t.taxindicator, il.line, p.m_product_id, 
+                                        CASE
+                                            WHEN il.qtyinvoiced <> 0 OR il.m_product_id IS NOT NULL THEN il.qtyinvoiced
+                                            ELSE NULL
+                                        END AS qtyinvoiced, 
+                                        CASE
+                                            WHEN il.qtyentered <> 0 OR il.m_product_id IS NOT NULL THEN il.qtyentered
+                                            ELSE NULL
+                                        END AS qtyentered, 
+                                        CASE
+                                            WHEN il.qtyentered <> 0 OR il.m_product_id IS NOT NULL THEN uom.uomsymbol
+                                            ELSE NULL
+                                        END AS uomsymbol, COALESCE(c.name, (p.name || COALESCE(productattribute(il.m_attributesetinstance_id), '')), il.description) AS name, 
+                                        CASE
+                                            WHEN COALESCE(c.name, p.name) IS NOT NULL THEN il.description
+                                            ELSE NULL
+                                        END AS description, p.documentnote, p.upc, p.sku, COALESCE(pp.vendorproductno, p.value) AS productvalue, ra.description AS resourcedescription, 
+                                        CASE
+                                            WHEN i.isdiscountprinted = 'Y' AND il.pricelist <> 0 THEN il.pricelist
+                                            ELSE NULL
+                                        END AS pricelist, 
+                                        CASE
+                                            WHEN i.isdiscountprinted = 'Y' AND il.pricelist <> 0 AND il.qtyentered <> 0 THEN il.pricelist * il.qtyinvoiced / il.qtyentered
+                                            ELSE NULL
+                                        END AS priceenteredlist, 
+                                        CASE
+                                            WHEN i.isdiscountprinted = 'Y' AND il.pricelist > il.priceactual AND il.pricelist <> 0 THEN (il.pricelist - il.priceactual) / il.pricelist * 100
+                                            ELSE NULL
+                                        END AS discount, 
+                                        CASE
+                                            WHEN il.priceactual <> 0 OR il.m_product_id IS NOT NULL THEN il.priceactual
+                                            ELSE NULL
+                                        END AS priceactual, 
+                                        CASE
+                                            WHEN il.priceentered <> 0 OR il.m_product_id IS NOT NULL THEN il.priceentered
+                                            ELSE NULL
+                                        END AS priceentered, 
+                                        CASE
+                                            WHEN il.linenetamt <> 0 OR il.m_product_id IS NOT NULL THEN il.linenetamt
+                                            ELSE NULL
+                                        END AS linenetamt, il.m_attributesetinstance_id, asi.m_attributeset_id, asi.serno, asi.lot, asi.m_lot_id, asi.guaranteedate, p.description AS productdescription, p.imageurl, il.c_campaign_id, il.c_project_id, il.c_activity_id, il.c_projectphase_id, il.c_projecttask_id, il.ad_orgtrx_id AS c_invoiceline_ad_orgtrx_id, il.a_processed, il.c_charge_id, il.c_orderline_id, il.c_uom_id, il.isdescription, il.isprinted AS c_invoiceline_isprinted, il.m_inoutline_id, il.m_rmaline_id, il.pricelimit, il.processed AS c_invoiceline_processed, il.ref_invoiceline_id, il.rramt, il.rrstartdate, il.s_resourceassignment_id, il.user1_id AS c_invoiceline_user1_id, il.user2_id AS c_invoiceline_user2_id, uom.ad_org_id AS c_uom_ad_org_id, uom.costingprecision, uom.description AS c_uom_description, uom.isactive AS c_uom_isactive, uom.isdefault AS c_uom_isdefault, uom.name AS c_uom_name, uom.stdprecision, uom.uomtype, uom.x12de355, i.ad_org_id AS c_invoice_ad_org_id, i.ad_orgtrx_id AS c_invoice_ad_orgtrx_id, i.ad_user_id AS c_invoice_ad_user_id, i.c_activity_id AS c_invoice_c_activity_id, i.c_bpartner_id AS c_invoice_c_bpartner_id, i.c_bpartner_location_id, i.c_campaign_id AS c_invoice_c_campaign_id, i.c_charge_id AS c_invoice_c_charge_id, i.c_conversiontype_id, i.c_currency_id, i.c_doctype_id, i.c_doctypetarget_id, i.c_dunninglevel_id, i.chargeamt AS c_invoice_chargeamt, i.c_order_id, i.c_payment_id, i.c_paymentterm_id, i.c_project_id AS c_invoice_c_project_id, i.created AS c_invoice_created, i.createdby AS c_invoice_createdby, i.dateacct, i.dateinvoiced, i.dateordered, i.dateprinted, i.description AS c_invoice_description, i.docaction, i.docstatus, i.documentno, i.dunninggrace, i.generateto, i.grandtotal, i.invoicecollectiontype, i.isactive AS c_invoice_isactive, i.isapproved, i.isdiscountprinted, i.isindispute, i.ispaid, i.ispayschedulevalid, i.isprinted AS c_invoice_isprinted, i.isselfservice AS c_invoice_isselfservice, i.issotrx, i.istaxincluded AS c_invoice_istaxincluded, i.istransferred, i.m_pricelist_id, i.m_rma_id, i.paymentrule, i.poreference, i.posted, i.processedon, i.processing, i.ref_invoice_id, i.reversal_id, i.salesrep_id, i.sendemail, i.totallines, i.updated AS c_invoice_updated, i.updatedby AS c_invoice_updatedby, i.user1_id AS c_invoice_user1_id, i.user2_id AS c_invoice_user2_id, t.ad_org_id AS c_tax_ad_org_id, t.ad_rule_id, t.c_country_id, t.c_region_id, t.c_taxcategory_id AS c_tax_c_taxcategory_id, t.description AS c_tax_description, t.isactive AS c_tax_isactive, t.isdefault AS c_tax_isdefault, t.isdocumentlevel, t.issalestax, t.issummary AS c_tax_issummary, t.istaxexempt, t.name AS c_tax_name, t.parent_tax_id, t.rate, t.requirestaxcertificate, t.sopotype, t.to_country_id, t.to_region_id, t.validfrom, p.ad_org_id AS m_product_ad_org_id, p.classification, p.copyfrom AS m_product_copyfrom, p.created AS m_product_created, p.createdby AS m_product_createdby, p.c_revenuerecognition_id, p.c_subscriptiontype_id, p.c_taxcategory_id AS m_product_c_taxcategory_id, p.descriptionurl, p.discontinued, p.discontinuedat, p.group1, p.group2, p.guaranteedays, p.guaranteedaysmin, p.help, p.isactive AS m_product_isactive, p.isbom, p.isdropship, p.isexcludeautodelivery, p.isinvoiceprintdetails, p.ispicklistprintdetails, p.ispurchased, p.isselfservice AS m_product_isselfservice, p.issold, p.isstocked, p.issummary AS m_product_issummary, p.isverified, p.iswebstorefeatured, p.lowlevel, p.m_attributeset_id AS m_product_m_attributeset_id, p.m_attributesetinstance_id AS m_product_m_asi_id, p.m_freightcategory_id, p.m_locator_id, p.m_product_category_id AS m_product_m_prod_category_id, p.processing AS m_product_processing, p.producttype, p.r_mailtext_id, p.salesrep_id AS m_product_salesrep_id, p.s_expensetype_id, p.shelfdepth, p.shelfheight, p.shelfwidth, p.s_resource_id AS m_product_s_resource_id, p.unitsperpack, p.unitsperpallet, p.updated AS m_product_updated, p.updatedby AS m_product_updatedby, p.versionno, p.volume, p.weight, c.ad_org_id AS c_charge_ad_org_id, c.c_bpartner_id AS c_charge_c_bpartner_id, c.c_chargetype_id, c.chargeamt AS c_charge_chargeamt, c.c_taxcategory_id AS c_charge_c_taxcategory_id, c.description AS c_charge_description, c.isactive AS c_charge_isactive, c.issamecurrency, c.issametax, c.istaxincluded AS c_charge_istaxincluded, pp.ad_org_id AS c_bp_product_ad_org_id, pp.c_bpartner_id AS c_bp_product_c_bpartner_id, pp.created AS c_bp_product_created, pp.createdby AS c_bp_product_createdby, pp.description AS c_bp_product_description, pp.isactive AS c_bp_product_isactive, pp.ismanufacturer, pp.manufacturer, pp.qualityrating, pp.shelflifemindays, pp.shelflifeminpct, pp.updated AS c_bp_product_updated, pp.updatedby AS c_bp_product_updatedby, pp.vendorcategory, ra.ad_org_id AS s_rassignment_ad_org_id, ra.assigndatefrom, ra.assigndateto, ra.created AS s_rassignment_created, ra.createdby AS s_rassignment_createby, ra.isactive AS s_rassignment_isactive, ra.isconfirmed, ra.name AS s_rassignment_name, ra.qty AS s_rassignment_qty, ra.s_resource_id AS s_rassignment_s_resource_id, ra.updated AS s_rassignment_updated, ra.updatedby AS s_rassignment_updatedby, asi.ad_org_id AS m_asi_ad_org_id, asi.created AS m_asi_created, asi.createdby AS m_asi_createdby, asi.description AS m_asi_description, asi.isactive AS m_asi_isactive, asi.updated AS m_asi_updated, asi.updatedby AS m_asi_updatedby
+                                   FROM c_invoiceline il
+                              JOIN c_uom uom ON il.c_uom_id = uom.c_uom_id
+                         JOIN c_invoice i ON il.c_invoice_id = i.c_invoice_id
+                    LEFT JOIN c_tax t ON il.c_tax_id = t.c_tax_id
+               LEFT JOIN m_product p ON il.m_product_id = p.m_product_id
+          LEFT JOIN c_charge c ON il.c_charge_id = c.c_charge_id
+     LEFT JOIN c_bpartner_product pp ON il.m_product_id = pp.m_product_id AND i.c_bpartner_id = pp.c_bpartner_id
+   LEFT JOIN s_resourceassignment ra ON il.s_resourceassignment_id = ra.s_resourceassignment_id
+   LEFT JOIN m_attributesetinstance asi ON il.m_attributesetinstance_id = asi.m_attributesetinstance_id
+                        UNION 
+                                 SELECT il.ad_client_id, il.ad_org_id, il.isactive, il.created, il.createdby, il.updated, il.updatedby, 'en_US' AS ad_language, il.c_invoice_id, il.c_invoiceline_id, il.c_tax_id, il.taxamt, il.linetotalamt, t.taxindicator, il.line + bl.line / 100 AS line, p.m_product_id, 
+                                        CASE
+                                            WHEN bl.isqtypercentage = 'N' THEN il.qtyinvoiced * bl.qtybom
+                                            ELSE il.qtyinvoiced * (bl.qtybatch / 100)
+                                        END AS qtyinvoiced, 
+                                        CASE
+                                            WHEN bl.isqtypercentage = 'N' THEN il.qtyentered * bl.qtybom
+                                            ELSE il.qtyentered * (bl.qtybatch / 100)
+                                        END AS qtyentered, uom.uomsymbol, p.name, b.description, p.documentnote, p.upc, p.sku, p.value AS productvalue, NULL AS resourcedescription, NULL AS pricelist, NULL AS priceenteredlist, NULL AS discount, NULL AS priceactual, NULL AS priceentered, NULL AS linenetamt, il.m_attributesetinstance_id, asi.m_attributeset_id, asi.serno, asi.lot, asi.m_lot_id, asi.guaranteedate, p.description AS productdescription, p.imageurl, il.c_campaign_id, il.c_project_id, il.c_activity_id, il.c_projectphase_id, il.c_projecttask_id, il.ad_orgtrx_id AS c_invoiceline_ad_orgtrx_id, il.a_processed, il.c_charge_id, il.c_orderline_id, il.c_uom_id, il.isdescription, il.isprinted AS c_invoiceline_isprinted, il.m_inoutline_id, il.m_rmaline_id, il.pricelimit, il.processed AS c_invoiceline_processed, il.ref_invoiceline_id, il.rramt, il.rrstartdate, il.s_resourceassignment_id, il.user1_id AS c_invoiceline_user1_id, il.user2_id AS c_invoiceline_user2_id, uom.ad_org_id AS c_uom_ad_org_id, uom.costingprecision, uom.description AS c_uom_description, uom.isactive AS c_uom_isactive, uom.isdefault AS c_uom_isdefault, uom.name AS c_uom_name, uom.stdprecision, uom.uomtype, uom.x12de355, NULL AS c_invoice_ad_org_id, NULL AS c_invoice_ad_orgtrx_id, NULL AS c_invoice_ad_user_id, NULL AS c_invoice_c_activity_id, NULL AS c_invoice_c_bpartner_id, NULL AS c_bpartner_location_id, NULL AS c_invoice_c_campaign_id, NULL AS c_invoice_c_charge_id, NULL AS c_conversiontype_id, NULL AS c_currency_id, NULL AS c_doctype_id, NULL AS c_doctypetarget_id, NULL AS c_dunninglevel_id, NULL AS c_invoice_chargeamt, NULL AS c_order_id, NULL AS c_payment_id, NULL AS c_paymentterm_id, NULL AS c_invoice_c_project_id, NULL AS c_invoice_created, NULL AS c_invoice_createdby, NULL AS dateacct, NULL AS dateinvoiced, NULL AS dateordered, NULL AS dateprinted, NULL AS c_invoice_description, NULL AS docaction, NULL AS docstatus, NULL AS documentno, NULL AS dunninggrace, NULL AS generateto, NULL AS grandtotal, NULL AS invoicecollectiontype, NULL AS c_invoice_isactive, NULL AS isapproved, NULL AS isdiscountprinted, NULL AS isindispute, NULL AS ispaid, NULL AS ispayschedulevalid, NULL AS c_invoice_isprinted, NULL AS c_invoice_isselfservice, NULL AS issotrx, NULL AS c_invoice_istaxincluded, NULL AS istransferred, NULL AS m_pricelist_id, NULL AS m_rma_id, NULL AS paymentrule, NULL AS poreference, NULL AS posted, NULL AS processedon, NULL AS processing, NULL AS ref_invoice_id, NULL AS reversal_id, NULL AS salesrep_id, NULL AS sendemail, NULL AS totallines, NULL AS c_invoice_updated, NULL AS c_invoice_updatedby, NULL AS c_invoice_user1_id, NULL AS c_invoice_user2_id, t.ad_org_id AS c_tax_ad_org_id, t.ad_rule_id, t.c_country_id, t.c_region_id, t.c_taxcategory_id AS c_tax_c_taxcategory_id, t.description AS c_tax_description, t.isactive AS c_tax_isactive, t.isdefault AS c_tax_isdefault, t.isdocumentlevel, t.issalestax, t.issummary AS c_tax_issummary, t.istaxexempt, t.name AS c_tax_name, t.parent_tax_id, t.rate, t.requirestaxcertificate, t.sopotype, t.to_country_id, t.to_region_id, t.validfrom, p.ad_org_id AS m_product_ad_org_id, p.classification, p.copyfrom AS m_product_copyfrom, p.created AS m_product_created, p.createdby AS m_product_createdby, p.c_revenuerecognition_id, p.c_subscriptiontype_id, p.c_taxcategory_id AS m_product_c_taxcategory_id, p.descriptionurl, p.discontinued, p.discontinuedat, p.group1, p.group2, p.guaranteedays, p.guaranteedaysmin, p.help, p.isactive AS m_product_isactive, p.isbom, p.isdropship, p.isexcludeautodelivery, p.isinvoiceprintdetails, p.ispicklistprintdetails, p.ispurchased, p.isselfservice AS m_product_isselfservice, p.issold, p.isstocked, p.issummary AS m_product_issummary, p.isverified, p.iswebstorefeatured, p.lowlevel, p.m_attributeset_id AS m_product_m_attributeset_id, p.m_attributesetinstance_id AS m_product_m_asi_id, p.m_freightcategory_id, p.m_locator_id, p.m_product_category_id AS m_product_m_prod_category_id, p.processing AS m_product_processing, p.producttype, p.r_mailtext_id, p.salesrep_id AS m_product_salesrep_id, p.s_expensetype_id, p.shelfdepth, p.shelfheight, p.shelfwidth, p.s_resource_id AS m_product_s_resource_id, p.unitsperpack, p.unitsperpallet, p.updated AS m_product_updated, p.updatedby AS m_product_updatedby, p.versionno, p.volume, p.weight, NULL AS c_charge_ad_org_id, NULL AS c_charge_c_bpartner_id, NULL AS c_chargetype_id, NULL AS c_charge_chargeamt, NULL AS c_charge_c_taxcategory_id, NULL AS c_charge_description, NULL AS c_charge_isactive, NULL AS issamecurrency, NULL AS issametax, NULL AS c_charge_istaxincluded, NULL AS c_bp_product_ad_org_id, NULL AS c_bp_product_c_bpartner_id, NULL AS c_bp_product_created, NULL AS c_bp_product_createdby, NULL AS c_bp_product_description, NULL AS c_bp_product_isactive, NULL AS ismanufacturer, NULL AS manufacturer, NULL AS qualityrating, NULL AS shelflifemindays, NULL AS shelflifeminpct, NULL AS c_bp_product_updated, NULL AS c_bp_product_updatedby, NULL AS vendorcategory, NULL AS s_rassignment_ad_org_id, NULL AS assigndatefrom, NULL AS assigndateto, NULL AS s_rassignment_created, NULL AS s_rassignment_createby, NULL AS s_rassignment_isactive, NULL AS isconfirmed, NULL AS s_rassignment_name, NULL AS s_rassignment_qty, NULL AS s_rassignment_s_resource_id, NULL AS s_rassignment_updated, NULL AS s_rassignment_updatedby, asi.ad_org_id AS m_asi_ad_org_id, asi.created AS m_asi_created, asi.createdby AS m_asi_createdby, asi.description AS m_asi_description, asi.isactive AS m_asi_isactive, asi.updated AS m_asi_updated, asi.updatedby AS m_asi_updatedby
+                                   FROM pp_product_bom b
+                              JOIN c_invoiceline il ON b.m_product_id = il.m_product_id
+                         JOIN m_product bp ON bp.m_product_id = il.m_product_id AND bp.isbom = 'Y' AND bp.isverified = 'Y' AND bp.isinvoiceprintdetails = 'Y'
+                    JOIN pp_product_bomline bl ON bl.pp_product_bom_id = b.pp_product_bom_id
+               JOIN m_product p ON bl.m_product_id = p.m_product_id
+          JOIN c_uom uom ON p.c_uom_id = uom.c_uom_id
+     LEFT JOIN c_tax t ON il.c_tax_id = t.c_tax_id
+   LEFT JOIN m_attributesetinstance asi ON il.m_attributesetinstance_id = asi.m_attributesetinstance_id)
+                UNION 
+                         SELECT il.ad_client_id, il.ad_org_id, il.isactive, il.created, il.createdby, il.updated, il.updatedby, 'en_US' AS ad_language, il.c_invoice_id, il.c_invoiceline_id, NULL AS c_tax_id, NULL AS taxamt, NULL AS linetotalamt, NULL AS taxindicator, il.line, NULL AS m_product_id, NULL AS qtyinvoiced, NULL AS qtyentered, NULL AS uomsymbol, il.description AS name, NULL AS description, NULL AS documentnote, NULL AS upc, NULL AS sku, NULL AS productvalue, NULL AS resourcedescription, NULL AS pricelist, NULL AS priceenteredlist, NULL AS discount, NULL AS priceactual, NULL AS priceentered, NULL AS linenetamt, NULL AS m_attributesetinstance_id, NULL AS m_attributeset_id, NULL AS serno, NULL AS lot, NULL AS m_lot_id, NULL AS guaranteedate, NULL AS productdescription, NULL AS imageurl, NULL AS c_campaign_id, NULL AS c_project_id, NULL AS c_activity_id, NULL AS c_projectphase_id, NULL AS c_projecttask_id, il.ad_orgtrx_id AS c_invoiceline_ad_orgtrx_id, il.a_processed, il.c_charge_id, il.c_orderline_id, il.c_uom_id, il.isdescription, il.isprinted AS c_invoiceline_isprinted, il.m_inoutline_id, il.m_rmaline_id, il.pricelimit, il.processed AS c_invoiceline_processed, il.ref_invoiceline_id, il.rramt, il.rrstartdate, il.s_resourceassignment_id, il.user1_id AS c_invoiceline_user1_id, il.user2_id AS c_invoiceline_user2_id, NULL AS c_uom_ad_org_id, NULL AS costingprecision, NULL AS c_uom_description, NULL AS c_uom_isactive, NULL AS c_uom_isdefault, NULL AS c_uom_name, NULL AS stdprecision, NULL AS uomtype, NULL AS x12de355, NULL AS c_invoice_ad_org_id, NULL AS c_invoice_ad_orgtrx_id, NULL AS c_invoice_ad_user_id, NULL AS c_invoice_c_activity_id, NULL AS c_invoice_c_bpartner_id, NULL AS c_bpartner_location_id, NULL AS c_invoice_c_campaign_id, NULL AS c_invoice_c_charge_id, NULL AS c_conversiontype_id, NULL AS c_currency_id, NULL AS c_doctype_id, NULL AS c_doctypetarget_id, NULL AS c_dunninglevel_id, NULL AS c_invoice_chargeamt, NULL AS c_order_id, NULL AS c_payment_id, NULL AS c_paymentterm_id, NULL AS c_invoice_c_project_id, NULL AS c_invoice_created, NULL AS c_invoice_createdby, NULL AS dateacct, NULL AS dateinvoiced, NULL AS dateordered, NULL AS dateprinted, NULL AS c_invoice_description, NULL AS docaction, NULL AS docstatus, NULL AS documentno, NULL AS dunninggrace, NULL AS generateto, NULL AS grandtotal, NULL AS invoicecollectiontype, NULL AS c_invoice_isactive, NULL AS isapproved, NULL AS isdiscountprinted, NULL AS isindispute, NULL AS ispaid, NULL AS ispayschedulevalid, NULL AS c_invoice_isprinted, NULL AS c_invoice_isselfservice, NULL AS issotrx, NULL AS c_invoice_istaxincluded, NULL AS istransferred, NULL AS m_pricelist_id, NULL AS m_rma_id, NULL AS paymentrule, NULL AS poreference, NULL AS posted, NULL AS processedon, NULL AS processing, NULL AS ref_invoice_id, NULL AS reversal_id, NULL AS salesrep_id, NULL AS sendemail, NULL AS totallines, NULL AS c_invoice_updated, NULL AS c_invoice_updatedby, NULL AS c_invoice_user1_id, NULL AS c_invoice_user2_id, NULL AS c_tax_ad_org_id, NULL AS ad_rule_id, NULL AS c_country_id, NULL AS c_region_id, NULL AS c_tax_c_taxcategory_id, NULL AS c_tax_description, NULL AS c_tax_isactive, NULL AS c_tax_isdefault, NULL AS isdocumentlevel, NULL AS issalestax, NULL AS c_tax_issummary, NULL AS istaxexempt, NULL AS c_tax_name, NULL AS parent_tax_id, NULL AS rate, NULL AS requirestaxcertificate, NULL AS sopotype, NULL AS to_country_id, NULL AS to_region_id, NULL AS validfrom, NULL AS m_product_ad_org_id, NULL AS classification, NULL AS m_product_copyfrom, NULL AS m_product_created, NULL AS m_product_createdby, NULL AS c_revenuerecognition_id, NULL AS c_subscriptiontype_id, NULL AS m_product_c_taxcategory_id, NULL AS descriptionurl, NULL AS discontinued, NULL AS discontinuedat, NULL AS group1, NULL AS group2, NULL AS guaranteedays, NULL AS guaranteedaysmin, NULL AS help, NULL AS m_product_isactive, NULL AS isbom, NULL AS isdropship, NULL AS isexcludeautodelivery, NULL AS isinvoiceprintdetails, NULL AS ispicklistprintdetails, NULL AS ispurchased, NULL AS m_product_isselfservice, NULL AS issold, NULL AS isstocked, NULL AS m_product_issummary, NULL AS isverified, NULL AS iswebstorefeatured, NULL AS lowlevel, NULL AS m_product_m_attributeset_id, NULL AS m_product_m_asi_id, NULL AS m_freightcategory_id, NULL AS m_locator_id, NULL AS m_product_m_prod_category_id, NULL AS m_product_processing, NULL AS producttype, NULL AS r_mailtext_id, NULL AS m_product_salesrep_id, NULL AS s_expensetype_id, NULL AS shelfdepth, NULL AS shelfheight, NULL AS shelfwidth, NULL AS m_product_s_resource_id, NULL AS unitsperpack, NULL AS unitsperpallet, NULL AS m_product_updated, NULL AS m_product_updatedby, NULL AS versionno, NULL AS volume, NULL AS weight, NULL AS c_charge_ad_org_id, NULL AS c_charge_c_bpartner_id, NULL AS c_chargetype_id, NULL AS c_charge_chargeamt, NULL AS c_charge_c_taxcategory_id, NULL AS c_charge_description, NULL AS c_charge_isactive, NULL AS issamecurrency, NULL AS issametax, NULL AS c_charge_istaxincluded, NULL AS c_bp_product_ad_org_id, NULL AS c_bp_product_c_bpartner_id, NULL AS c_bp_product_created, NULL AS c_bp_product_createdby, NULL AS c_bp_product_description, NULL AS c_bp_product_isactive, NULL AS ismanufacturer, NULL AS manufacturer, NULL AS qualityrating, NULL AS shelflifemindays, NULL AS shelflifeminpct, NULL AS c_bp_product_updated, NULL AS c_bp_product_updatedby, NULL AS vendorcategory, NULL AS s_rassignment_ad_org_id, NULL AS assigndatefrom, NULL AS assigndateto, NULL AS s_rassignment_created, NULL AS s_rassignment_createby, NULL AS s_rassignment_isactive, NULL AS isconfirmed, NULL AS s_rassignment_name, NULL AS s_rassignment_qty, NULL AS s_rassignment_s_resource_id, NULL AS s_rassignment_updated, NULL AS s_rassignment_updatedby, NULL AS m_asi_ad_org_id, NULL AS m_asi_created, NULL AS m_asi_createdby, NULL AS m_asi_description, NULL AS m_asi_isactive, NULL AS m_asi_updated, NULL AS m_asi_updatedby
+                           FROM c_invoiceline il
+                          WHERE il.c_uom_id IS NULL)
+        UNION 
+                 SELECT i.ad_client_id, i.ad_org_id, i.isactive, i.created, i.createdby, i.updated, i.updatedby, 'en_US' AS ad_language, i.c_invoice_id, NULL AS c_invoiceline_id, NULL AS c_tax_id, NULL AS taxamt, NULL AS linetotalamt, NULL AS taxindicator, 999998 AS line, NULL AS m_product_id, NULL AS qtyinvoiced, NULL AS qtyentered, NULL AS uomsymbol, NULL AS name, NULL AS description, NULL AS documentnote, NULL AS upc, NULL AS sku, NULL AS productvalue, NULL AS resourcedescription, NULL AS pricelist, NULL AS priceenteredlist, NULL AS discount, NULL AS priceactual, NULL AS priceentered, NULL AS linenetamt, NULL AS m_attributesetinstance_id, NULL AS m_attributeset_id, NULL AS serno, NULL AS lot, NULL AS m_lot_id, NULL AS guaranteedate, NULL AS productdescription, NULL AS imageurl, NULL AS c_campaign_id, NULL AS c_project_id, NULL AS c_activity_id, NULL AS c_projectphase_id, NULL AS c_projecttask_id, NULL AS c_invoiceline_ad_orgtrx_id, NULL AS a_processed, NULL AS c_charge_id, NULL AS c_orderline_id, NULL AS c_uom_id, NULL AS isdescription, NULL AS c_invoiceline_isprinted, NULL AS m_inoutline_id, NULL AS m_rmaline_id, NULL AS pricelimit, NULL AS c_invoiceline_processed, NULL AS ref_invoiceline_id, NULL AS rramt, NULL AS rrstartdate, NULL AS s_resourceassignment_id, NULL AS c_invoiceline_user1_id, NULL AS c_invoiceline_user2_id, NULL AS c_uom_ad_org_id, NULL AS costingprecision, NULL AS c_uom_description, NULL AS c_uom_isactive, NULL AS c_uom_isdefault, NULL AS c_uom_name, NULL AS stdprecision, NULL AS uomtype, NULL AS x12de355, i.ad_org_id AS c_invoice_ad_org_id, i.ad_orgtrx_id AS c_invoice_ad_orgtrx_id, i.ad_user_id AS c_invoice_ad_user_id, i.c_activity_id AS c_invoice_c_activity_id, i.c_bpartner_id AS c_invoice_c_bpartner_id, i.c_bpartner_location_id, i.c_campaign_id AS c_invoice_c_campaign_id, i.c_charge_id AS c_invoice_c_charge_id, i.c_conversiontype_id, i.c_currency_id, i.c_doctype_id, i.c_doctypetarget_id, i.c_dunninglevel_id, i.chargeamt AS c_invoice_chargeamt, i.c_order_id, i.c_payment_id, i.c_paymentterm_id, i.c_project_id AS c_invoice_c_project_id, i.created AS c_invoice_created, i.createdby AS c_invoice_createdby, i.dateacct, i.dateinvoiced, i.dateordered, i.dateprinted, i.description AS c_invoice_description, i.docaction, i.docstatus, i.documentno, i.dunninggrace, i.generateto, i.grandtotal, i.invoicecollectiontype, i.isactive AS c_invoice_isactive, i.isapproved, i.isdiscountprinted, i.isindispute, i.ispaid, i.ispayschedulevalid, i.isprinted AS c_invoice_isprinted, i.isselfservice AS c_invoice_isselfservice, i.issotrx, i.istaxincluded AS c_invoice_istaxincluded, i.istransferred, i.m_pricelist_id, i.m_rma_id, i.paymentrule, i.poreference, i.posted, i.processedon, i.processing, i.ref_invoice_id, i.reversal_id, i.salesrep_id, i.sendemail, i.totallines, i.updated AS c_invoice_updated, i.updatedby AS c_invoice_updatedby, i.user1_id AS c_invoice_user1_id, i.user2_id AS c_invoice_user2_id, NULL AS c_tax_ad_org_id, NULL AS ad_rule_id, NULL AS c_country_id, NULL AS c_region_id, NULL AS c_tax_c_taxcategory_id, NULL AS c_tax_description, NULL AS c_tax_isactive, NULL AS c_tax_isdefault, NULL AS isdocumentlevel, NULL AS issalestax, NULL AS c_tax_issummary, NULL AS istaxexempt, NULL AS c_tax_name, NULL AS parent_tax_id, NULL AS rate, NULL AS requirestaxcertificate, NULL AS sopotype, NULL AS to_country_id, NULL AS to_region_id, NULL AS validfrom, NULL AS m_product_ad_org_id, NULL AS classification, NULL AS m_product_copyfrom, NULL AS m_product_created, NULL AS m_product_createdby, NULL AS c_revenuerecognition_id, NULL AS c_subscriptiontype_id, NULL AS m_product_c_taxcategory_id, NULL AS descriptionurl, NULL AS discontinued, NULL AS discontinuedat, NULL AS group1, NULL AS group2, NULL AS guaranteedays, NULL AS guaranteedaysmin, NULL AS help, NULL AS m_product_isactive, NULL AS isbom, NULL AS isdropship, NULL AS isexcludeautodelivery, NULL AS isinvoiceprintdetails, NULL AS ispicklistprintdetails, NULL AS ispurchased, NULL AS m_product_isselfservice, NULL AS issold, NULL AS isstocked, NULL AS m_product_issummary, NULL AS isverified, NULL AS iswebstorefeatured, NULL AS lowlevel, NULL AS m_product_m_attributeset_id, NULL AS m_product_m_asi_id, NULL AS m_freightcategory_id, NULL AS m_locator_id, NULL AS m_product_m_prod_category_id, NULL AS m_product_processing, NULL AS producttype, NULL AS r_mailtext_id, NULL AS m_product_salesrep_id, NULL AS s_expensetype_id, NULL AS shelfdepth, NULL AS shelfheight, NULL AS shelfwidth, NULL AS m_product_s_resource_id, NULL AS unitsperpack, NULL AS unitsperpallet, NULL AS m_product_updated, NULL AS m_product_updatedby, NULL AS versionno, NULL AS volume, NULL AS weight, NULL AS c_charge_ad_org_id, NULL AS c_charge_c_bpartner_id, NULL AS c_chargetype_id, NULL AS c_charge_chargeamt, NULL AS c_charge_c_taxcategory_id, NULL AS c_charge_description, NULL AS c_charge_isactive, NULL AS issamecurrency, NULL AS issametax, NULL AS c_charge_istaxincluded, NULL AS c_bp_product_ad_org_id, NULL AS c_bp_product_c_bpartner_id, NULL AS c_bp_product_created, NULL AS c_bp_product_createdby, NULL AS c_bp_product_description, NULL AS c_bp_product_isactive, NULL AS ismanufacturer, NULL AS manufacturer, NULL AS qualityrating, NULL AS shelflifemindays, NULL AS shelflifeminpct, NULL AS c_bp_product_updated, NULL AS c_bp_product_updatedby, NULL AS vendorcategory, NULL AS s_rassignment_ad_org_id, NULL AS assigndatefrom, NULL AS assigndateto, NULL AS s_rassignment_created, NULL AS s_rassignment_createby, NULL AS s_rassignment_isactive, NULL AS isconfirmed, NULL AS s_rassignment_name, NULL AS s_rassignment_qty, NULL AS s_rassignment_s_resource_id, NULL AS s_rassignment_updated, NULL AS s_rassignment_updatedby, NULL AS m_asi_ad_org_id, NULL AS m_asi_created, NULL AS m_asi_createdby, NULL AS m_asi_description, NULL AS m_asi_isactive, NULL AS m_asi_updated, NULL AS m_asi_updatedby
+                   FROM c_invoice i)
+UNION 
+         SELECT it.ad_client_id, it.ad_org_id, it.isactive, it.created, it.createdby, it.updated, it.updatedby, 'en_US' AS ad_language, it.c_invoice_id, NULL AS c_invoiceline_id, it.c_tax_id, NULL AS taxamt, NULL AS linetotalamt, t.taxindicator, 999999 AS line, NULL AS m_product_id, NULL AS qtyinvoiced, NULL AS qtyentered, NULL AS uomsymbol, t.name, NULL AS description, NULL AS documentnote, NULL AS upc, NULL AS sku, NULL AS productvalue, NULL AS resourcedescription, NULL AS pricelist, NULL AS priceenteredlist, NULL AS discount, 
+                CASE
+                    WHEN it.istaxincluded = 'Y' THEN it.taxamt
+                    ELSE it.taxbaseamt
+                END AS priceactual, 
+                CASE
+                    WHEN it.istaxincluded = 'Y' THEN it.taxamt
+                    ELSE it.taxbaseamt
+                END AS priceentered, 
+                CASE
+                    WHEN it.istaxincluded = 'Y' THEN NULL
+                    ELSE it.taxamt
+                END AS linenetamt, NULL AS m_attributesetinstance_id, NULL AS m_attributeset_id, NULL AS serno, NULL AS lot, NULL AS m_lot_id, NULL AS guaranteedate, NULL AS productdescription, NULL AS imageurl, NULL AS c_campaign_id, NULL AS c_project_id, NULL AS c_activity_id, NULL AS c_projectphase_id, NULL AS c_projecttask_id, NULL AS c_invoiceline_ad_orgtrx_id, NULL AS a_processed, NULL AS c_charge_id, NULL AS c_orderline_id, NULL AS c_uom_id, NULL AS isdescription, NULL AS c_invoiceline_isprinted, NULL AS m_inoutline_id, NULL AS m_rmaline_id, NULL AS pricelimit, NULL AS c_invoiceline_processed, NULL AS ref_invoiceline_id, NULL AS rramt, NULL AS rrstartdate, NULL AS s_resourceassignment_id, NULL AS c_invoiceline_user1_id, NULL AS c_invoiceline_user2_id, NULL AS c_uom_ad_org_id, NULL AS costingprecision, NULL AS c_uom_description, NULL AS c_uom_isactive, NULL AS c_uom_isdefault, NULL AS c_uom_name, NULL AS stdprecision, NULL AS uomtype, NULL AS x12de355, NULL AS c_invoice_ad_org_id, NULL AS c_invoice_ad_orgtrx_id, NULL AS c_invoice_ad_user_id, NULL AS c_invoice_c_activity_id, NULL AS c_invoice_c_bpartner_id, NULL AS c_bpartner_location_id, NULL AS c_invoice_c_campaign_id, NULL AS c_invoice_c_charge_id, NULL AS c_conversiontype_id, NULL AS c_currency_id, NULL AS c_doctype_id, NULL AS c_doctypetarget_id, NULL AS c_dunninglevel_id, NULL AS c_invoice_chargeamt, NULL AS c_order_id, NULL AS c_payment_id, NULL AS c_paymentterm_id, NULL AS c_invoice_c_project_id, NULL AS c_invoice_created, NULL AS c_invoice_createdby, NULL AS dateacct, NULL AS dateinvoiced, NULL AS dateordered, NULL AS dateprinted, NULL AS c_invoice_description, NULL AS docaction, NULL AS docstatus, NULL AS documentno, NULL AS dunninggrace, NULL AS generateto, NULL AS grandtotal, NULL AS invoicecollectiontype, NULL AS c_invoice_isactive, NULL AS isapproved, NULL AS isdiscountprinted, NULL AS isindispute, NULL AS ispaid, NULL AS ispayschedulevalid, NULL AS c_invoice_isprinted, NULL AS c_invoice_isselfservice, NULL AS issotrx, NULL AS c_invoice_istaxincluded, NULL AS istransferred, NULL AS m_pricelist_id, NULL AS m_rma_id, NULL AS paymentrule, NULL AS poreference, NULL AS posted, NULL AS processedon, NULL AS processing, NULL AS ref_invoice_id, NULL AS reversal_id, NULL AS salesrep_id, NULL AS sendemail, NULL AS totallines, NULL AS c_invoice_updated, NULL AS c_invoice_updatedby, NULL AS c_invoice_user1_id, NULL AS c_invoice_user2_id, NULL AS c_tax_ad_org_id, NULL AS ad_rule_id, NULL AS c_country_id, NULL AS c_region_id, NULL AS c_tax_c_taxcategory_id, NULL AS c_tax_description, NULL AS c_tax_isactive, NULL AS c_tax_isdefault, NULL AS isdocumentlevel, NULL AS issalestax, NULL AS c_tax_issummary, NULL AS istaxexempt, NULL AS c_tax_name, NULL AS parent_tax_id, NULL AS rate, NULL AS requirestaxcertificate, NULL AS sopotype, NULL AS to_country_id, NULL AS to_region_id, NULL AS validfrom, NULL AS m_product_ad_org_id, NULL AS classification, NULL AS m_product_copyfrom, NULL AS m_product_created, NULL AS m_product_createdby, NULL AS c_revenuerecognition_id, NULL AS c_subscriptiontype_id, NULL AS m_product_c_taxcategory_id, NULL AS descriptionurl, NULL AS discontinued, NULL AS discontinuedat, NULL AS group1, NULL AS group2, NULL AS guaranteedays, NULL AS guaranteedaysmin, NULL AS help, NULL AS m_product_isactive, NULL AS isbom, NULL AS isdropship, NULL AS isexcludeautodelivery, NULL AS isinvoiceprintdetails, NULL AS ispicklistprintdetails, NULL AS ispurchased, NULL AS m_product_isselfservice, NULL AS issold, NULL AS isstocked, NULL AS m_product_issummary, NULL AS isverified, NULL AS iswebstorefeatured, NULL AS lowlevel, NULL AS m_product_m_attributeset_id, NULL AS m_product_m_asi_id, NULL AS m_freightcategory_id, NULL AS m_locator_id, NULL AS m_product_m_prod_category_id, NULL AS m_product_processing, NULL AS producttype, NULL AS r_mailtext_id, NULL AS m_product_salesrep_id, NULL AS s_expensetype_id, NULL AS shelfdepth, NULL AS shelfheight, NULL AS shelfwidth, NULL AS m_product_s_resource_id, NULL AS unitsperpack, NULL AS unitsperpallet, NULL AS m_product_updated, NULL AS m_product_updatedby, NULL AS versionno, NULL AS volume, NULL AS weight, NULL AS c_charge_ad_org_id, NULL AS c_charge_c_bpartner_id, NULL AS c_chargetype_id, NULL AS c_charge_chargeamt, NULL AS c_charge_c_taxcategory_id, NULL AS c_charge_description, NULL AS c_charge_isactive, NULL AS issamecurrency, NULL AS issametax, NULL AS c_charge_istaxincluded, NULL AS c_bp_product_ad_org_id, NULL AS c_bp_product_c_bpartner_id, NULL AS c_bp_product_created, NULL AS c_bp_product_createdby, NULL AS c_bp_product_description, NULL AS c_bp_product_isactive, NULL AS ismanufacturer, NULL AS manufacturer, NULL AS qualityrating, NULL AS shelflifemindays, NULL AS shelflifeminpct, NULL AS c_bp_product_updated, NULL AS c_bp_product_updatedby, NULL AS vendorcategory, NULL AS s_rassignment_ad_org_id, NULL AS assigndatefrom, NULL AS assigndateto, NULL AS s_rassignment_created, NULL AS s_rassignment_createby, NULL AS s_rassignment_isactive, NULL AS isconfirmed, NULL AS s_rassignment_name, NULL AS s_rassignment_qty, NULL AS s_rassignment_s_resource_id, NULL AS s_rassignment_updated, NULL AS s_rassignment_updatedby, NULL AS m_asi_ad_org_id, NULL AS m_asi_created, NULL AS m_asi_createdby, NULL AS m_asi_description, NULL AS m_asi_isactive, NULL AS m_asi_updated, NULL AS m_asi_updatedby
+           FROM c_invoicetax it
+      JOIN c_tax t ON it.c_tax_id = t.c_tax_id;
 
