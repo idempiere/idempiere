@@ -1923,7 +1923,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    }
 		}
 
-		if (dirtyTabpanel != null && dirtyTabpanel.getGridTab().isDetail()) {
+		if (dirtyTabpanel != null && dirtyTabpanel != adTabbox.getSelectedTabpanel()) {
 			Executions.getCurrent().setAttribute("adtabpane.saved", dirtyTabpanel);
 			dirtyTabpanel.getGridTab().refreshParentTabs();
 		}

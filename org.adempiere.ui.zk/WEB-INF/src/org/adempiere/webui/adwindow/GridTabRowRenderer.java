@@ -586,13 +586,9 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			WEditor firstEditor = null;
 			for (WEditor editor : getEditors()) {
 				if (editor.isVisible() && editor.getComponent().getParent() != null) {
-					toFocus = editor;
-					break;
-				}
-
-				if (editor.isVisible() && editor.getComponent().getParent() != null) {
-					if (toFocus == null && editor.isReadWrite()) {
+					if (editor.isReadWrite()) {
 						toFocus = editor;
+						break;
 					}
 					if (firstEditor == null)
 						firstEditor = editor;

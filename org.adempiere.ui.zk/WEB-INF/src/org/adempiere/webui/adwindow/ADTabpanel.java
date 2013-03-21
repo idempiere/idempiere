@@ -971,16 +971,10 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	public void focusToFirstEditor() {
 		WEditor toFocus = null;
 		for (WEditor editor : editors) {
-			if (editor.isVisible() && editor.getComponent().getParent() != null) {
+			if (editor.isVisible() && editor.isReadWrite() && editor.getComponent().getParent() != null
+				&& !(editor instanceof WImageEditor)) {
 				toFocus = editor;
 				break;
-			}
-
-			if (toFocus == null) {
-				if (editor.isVisible() && editor.isReadWrite() && editor.getComponent().getParent() != null
-					&& !(editor instanceof WImageEditor)) {
-					toFocus = editor;
-				}
 			}
 		}
 		if (toFocus != null) {
