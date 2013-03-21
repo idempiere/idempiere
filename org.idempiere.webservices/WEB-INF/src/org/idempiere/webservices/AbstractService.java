@@ -154,6 +154,8 @@ public class AbstractService {
 				if (!okwh)
 					return "Error logging in - warehouse not allowed for this org";
 			}
+			else if (warehouses == null && loginRequest.getWarehouseID() > 0)
+				return "Error logging in - warehouse not allowed for this org";
 
 			String error = login.validateLogin(orglogin);
 			if (error != null && error.length() > 0)
