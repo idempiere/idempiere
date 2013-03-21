@@ -54,6 +54,7 @@ import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MColumn;
+import org.compiere.model.MFactAcct;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.model.X_C_AcctSchema_Element;
 import org.compiere.report.core.RModel;
@@ -95,12 +96,12 @@ import org.zkoss.zul.South;
 
 public class WAcctViewer extends Window implements EventListener<Event>
 {
-	private static final String TITLE = "Posting";
-
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = -223185724918504685L;
+	private static final long serialVersionUID = 3440375640756094077L;
+
+	private static final String TITLE = "Posting";
 
 	private static final int PAGE_SIZE = 1000;
 
@@ -522,6 +523,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		resultCenter.appendChild(table);
 		table.setHflex("1");
 		table.setVflex("1");
+		table.addEventListener(Events.ON_DOUBLE_CLICK, this);
 
 		pagingPanel = new South();
 		resultPanel.appendChild(pagingPanel);
@@ -757,6 +759,9 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			List<ArrayList<Object>> list = m_queryData.subList(start, end);
 			ListModelTable model = new ListModelTable(list);
 			table.setModel(model);
+		}
+		else if (Events.ON_DOUBLE_CLICK.equals(e.getName()) && source instanceof Listbox && source == table) {
+			actionZoomFactAcct();
 		}
 	} // onEvent
 
@@ -1309,6 +1314,20 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	}
 	//
 	
+	private void actionZoomFactAcct() {
+		int selected = table.getSelectedIndex();
+		if(selected == -1) return;
+
+		int factAcctIdColumn = m_rmodel.getColumnIndex("Fact_Acct_ID");
+		ListModelTable model = (ListModelTable) table.getListModel();
+		Integer faint = (Integer) model.getDataAt(selected, factAcctIdColumn);
+		if (faint != null) {
+			int fact_acct_ID = faint.intValue();
+
+			AEnv.zoom(MFactAcct.Table_ID, fact_acct_ID);
+		}
+	}
+
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
 		super.onPageAttached(newpage, oldpage);

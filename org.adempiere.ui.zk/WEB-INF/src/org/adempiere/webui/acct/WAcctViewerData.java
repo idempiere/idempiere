@@ -561,6 +561,7 @@ public class WAcctViewerData
 		
 		rm.addColumn(new RColumn(ctx, "AD_Table_ID", DisplayType.TableDir));
 		rm.addColumn(new RColumn(ctx, "Record_ID", DisplayType.ID));
+		rm.addColumn(new RColumn(ctx, "Fact_Acct_ID", DisplayType.ID));
 		if (displayDocumentInfo)
 		{			
 			rm.addColumn(new RColumn(ctx, "Description", DisplayType.String));
