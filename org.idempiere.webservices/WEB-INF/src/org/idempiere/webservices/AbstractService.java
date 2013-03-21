@@ -142,15 +142,18 @@ public class AbstractService {
 				return "Error logging in - org not allowed for this role";
 
 			KeyNamePair[] warehouses = login.getWarehouses(new KeyNamePair(loginRequest.getOrgID(), ""));
-			boolean okwh = false;
-			for (KeyNamePair warehouse : warehouses) {
-				if (warehouse.getKey() == loginRequest.getWarehouseID()) {
-					okwh = true;
-					break;
+			if (warehouses != null)
+			{
+				boolean okwh = false;
+				for (KeyNamePair warehouse : warehouses) {
+					if (warehouse.getKey() == loginRequest.getWarehouseID()) {
+						okwh = true;
+						break;
+					}
 				}
+				if (!okwh)
+					return "Error logging in - warehouse not allowed for this org";
 			}
-			if (!okwh)
-				return "Error logging in - warehouse not allowed for this org";
 
 			String error = login.validateLogin(orglogin);
 			if (error != null && error.length() > 0)
