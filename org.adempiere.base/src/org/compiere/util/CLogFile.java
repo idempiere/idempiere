@@ -264,7 +264,7 @@ public class CLogFile extends Handler
 	 *	@see java.util.logging.Handler#publish(java.util.logging.LogRecord)
 	 *	@param record log record
 	 */
-	public void publish (LogRecord record)
+	public synchronized void publish (LogRecord record)
 	{
 		if (!isLoggable (record) || m_writer == null)
 			return;
@@ -328,7 +328,7 @@ public class CLogFile extends Handler
 	 *	@see java.util.logging.Handler#close()
 	 *	@throws java.lang.SecurityException
 	 */
-	public void close () throws SecurityException
+	public synchronized void close () throws SecurityException
 	{
 		if (m_writer == null)
 			return;
