@@ -291,7 +291,7 @@ public class PrintData implements Serializable
 	 */
 	public int getRowIndex()
 	{
-		return m_matrix.getRowCount();
+		return m_matrix.getRowIndex();
 	}	//	getRowIndex
 
 	/**
