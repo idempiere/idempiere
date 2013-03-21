@@ -16,11 +16,13 @@ package org.adempiere.webui.editor;
 
 import org.adempiere.webui.component.FilenameBox;
 import org.adempiere.webui.component.FolderBrowser;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
@@ -41,7 +43,6 @@ public class WFileDirectoryEditor extends WEditor
 	{
 		super(new FilenameBox(), gridField);
 		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Open16.png"));
-		getComponent().addEventListener(Events.ON_CLICK, this);
 		getComponent().getButton().setUpload("false");
 	}
 
@@ -98,13 +99,22 @@ public class WFileDirectoryEditor extends WEditor
 		else if (Events.ON_CLICK.equals(event.getName()))
 		{
 			cmd_file();
-			newValue = getComponent().getText();
 		}
 		else
 		{
 			return;
 		}
 
+		if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
+    	    return;
+    	}
+        if (oldValue == null && newValue == null) {
+        	return;
+        }
+		processNewValue(newValue);
+	}
+
+	protected void processNewValue(String newValue) {
 		if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
     	    return;
     	}
@@ -120,10 +130,16 @@ public class WFileDirectoryEditor extends WEditor
 	 */
 	private void cmd_file()
 	{
-		FolderBrowser directoryDialog = new FolderBrowser(true);
-		String directory = directoryDialog.getPath();
-		getComponent().setText(directory);
-		getComponent().getTextbox().focus();
+		final FolderBrowser directoryDialog = new FolderBrowser(true);
+		directoryDialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				String directory = directoryDialog.getPath();
+				getComponent().setText(directory);
+				getComponent().getTextbox().focus();
+				processNewValue(getComponent().getText());
+			}
+		});
 	}   //  cmd_file
 
 	public String[] getEvents()

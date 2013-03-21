@@ -136,7 +136,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 			
 			status.setStyle("margin-top:10px;");
 			textBox.addEventListener(Events.ON_CHANGE, this);
-			editor.addEventListener(Events.ON_CHANGE, this);
+			if (editor != null)
+				editor.addEventListener(Events.ON_CHANGE, this);
 		}		
 		
 		tabbox.addEventListener(Events.ON_SELECT, this);

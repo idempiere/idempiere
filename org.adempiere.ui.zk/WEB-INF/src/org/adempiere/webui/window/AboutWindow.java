@@ -35,6 +35,7 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
 import org.compiere.Adempiere;
@@ -68,9 +69,9 @@ import org.zkoss.zul.Vbox;
  */
 public class AboutWindow extends Window implements EventListener<Event> {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = -2600883713422452076L;
+	private static final long serialVersionUID = 6573804051552633150L;
 
 	private Checkbox bErrorsOnly;
 	private Listbox logTable;
@@ -479,18 +480,23 @@ public class AboutWindow extends Window implements EventListener<Event> {
 
 	private void downloadAdempiereLogFile() {
 		String path = Ini.getAdempiereHome() + File.separator + "log";
-		FolderBrowser fileBrowser = new FolderBrowser(path, false);
-		String selected = fileBrowser.getPath();
-		if (selected != null && selected.trim().length() > 0) {
-			File file = new File(selected);
-			if (file.exists() && file.isFile() && file.canRead()) {
-				try {
-					AMedia media = new AMedia(file, "text/plain", null);
-					Filedownload.save(media);
-				} catch (FileNotFoundException e) {
+		final FolderBrowser fileBrowser = new FolderBrowser(path, false);
+		fileBrowser.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				String selected = fileBrowser.getPath();
+				if (selected != null && selected.trim().length() > 0) {
+					File file = new File(selected);
+					if (file.exists() && file.isFile() && file.canRead()) {
+						try {
+							AMedia media = new AMedia(file, "text/plain", null);
+							Filedownload.save(media);
+						} catch (FileNotFoundException e) {
+						}
+					}
 				}
 			}
-		}
+		});
 	}
 
 	private void downloadLog() {
