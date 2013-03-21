@@ -31,6 +31,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -173,7 +174,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		
 		bFile.setLabel(Msg.getMsg(Env.getCtx(), "FileImportFile"));
 		bFile.setTooltiptext(Msg.getMsg(Env.getCtx(), "FileImportFileInfo"));
-		bFile.setUpload("true");
+		bFile.setUpload(AdempiereWebUI.getUploadSetting());
 		bFile.addEventListener(Events.ON_UPLOAD, this);
 		
 		fCharset.setMold("select");

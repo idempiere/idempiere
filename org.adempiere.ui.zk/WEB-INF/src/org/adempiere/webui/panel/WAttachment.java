@@ -255,7 +255,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		bLoad.setSclass("action-button");
 		bLoad.setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);
 		bLoad.setTooltiptext(Msg.getMsg(Env.getCtx(), "Load"));
-		bLoad.setUpload("true");
+		bLoad.setUpload(AdempiereWebUI.getUploadSetting());
 		bLoad.addEventListener(Events.ON_UPLOAD, this);
 
 		bDelete.setImage(ThemeManager.getThemeResource("images/Delete24.png"));

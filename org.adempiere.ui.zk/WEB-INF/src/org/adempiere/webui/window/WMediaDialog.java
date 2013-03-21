@@ -21,6 +21,7 @@ import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
@@ -151,7 +152,7 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		bLoad.setImage(ThemeManager.getThemeResource("images/Import24.png"));
 		bLoad.setTooltiptext(Msg.getMsg(Env.getCtx(), "Load"));
 		bLoad.addEventListener(Events.ON_UPLOAD, this);
-		bLoad.setUpload("true");
+		bLoad.setUpload(AdempiereWebUI.getUploadSetting());
 
 		bDelete.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
 		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));

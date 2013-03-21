@@ -12,6 +12,7 @@
  *****************************************************************************/
 package org.adempiere.webui.component;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
@@ -30,7 +31,7 @@ public class FilenameBox extends EditorBox
 	public FilenameBox()
     {
         super();
-        btn.setUpload("true");
+        btn.setUpload(AdempiereWebUI.getUploadSetting());
     }
 
 	/**
@@ -40,7 +41,7 @@ public class FilenameBox extends EditorBox
     {
         super();
         setText(fileName);
-        btn.setUpload("true");
+        btn.setUpload(AdempiereWebUI.getUploadSetting());
     }
 
 	/* (non-Javadoc)

@@ -528,4 +528,16 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		
 		Executions.sendRedirect("index.zul");
 	}
+	
+	/**
+	 * @return string for setupload
+	 */
+	public static String getUploadSetting() {
+		StringBuilder uploadSetting = new StringBuilder("true,native");
+		int size = MSysConfig.getIntValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, 0);
+		if (size > 0) {
+			uploadSetting.append(",maxsize=").append(size);
+		}
+		return uploadSetting.toString();
+	}
 }

@@ -187,7 +187,7 @@ public class FileImportAction implements EventListener<Event>
 			hb = new Hbox();
 			bFile.setLabel(Msg.getMsg(Env.getCtx(), "FileImportFile"));
 			bFile.setTooltiptext(Msg.getMsg(Env.getCtx(), "FileImportFileInfo"));
-			bFile.setUpload("true");
+			bFile.setUpload(AdempiereWebUI.getUploadSetting());
 			bFile.addEventListener(Events.ON_UPLOAD, this);
 			hb.appendChild(bFile);
 			vb.appendChild(hb);

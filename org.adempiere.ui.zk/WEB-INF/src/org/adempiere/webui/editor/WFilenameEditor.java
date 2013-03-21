@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.FilenameBox;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
@@ -49,7 +50,7 @@ public class WFilenameEditor extends WEditor
 		super(new FilenameBox(), gridField);
 		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Open16.png"));
 		getComponent().addEventListener(Events.ON_UPLOAD, this);
-		getComponent().getButton().setUpload("true,native");
+		getComponent().getButton().setUpload(AdempiereWebUI.getUploadSetting());
 		getComponent().getButton().setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);
 	}
 
