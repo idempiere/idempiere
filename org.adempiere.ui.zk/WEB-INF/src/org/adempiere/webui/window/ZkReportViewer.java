@@ -173,6 +173,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private int mediaVersion = 0;
 
 	private A reportLink;
+
+	private boolean init;
 	
 	//private static final String REPORT = "org.idempiere.ui.report";
 	
@@ -182,8 +184,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	 */
 	public ZkReportViewer(ReportEngine re, String title) {		
 		super();
-
-		log.info("");
+		
+		init = false;
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		Env.setContext(re.getCtx(), m_WindowNo, "_WinInfo_IsReportViewer", "Y");
 		m_reportEngine = re;
@@ -203,7 +205,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
 		super.onPageAttached(newpage, oldpage);
-		if (newpage != null) {
+		if (newpage != null && !init) {
 			try
 			{
 				m_ctx = m_reportEngine.getCtx();
@@ -410,6 +412,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				
 			}
 		});
+		
+		init = true;
 	}
 
 	private void renderReport() throws Exception {
