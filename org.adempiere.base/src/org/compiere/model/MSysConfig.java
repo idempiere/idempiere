@@ -113,6 +113,7 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE = "SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE";
 	public static final String SHIPPING_SAVE_REQUEST_RESPONSE_LOG = "SHIPPING_SAVE_REQUEST_RESPONSE_LOG";
 	public static final String DOCACTIONBUTTON_SHOWACTIONNAME = "DOCACTIONBUTTON_SHOWACTIONNAME";
+	public static final String ZK_MAX_UPLOAD_SIZE = "ZK_MAX_UPLOAD_SIZE";
 
 	/**
 	 * 	Standard Constructor
@@ -656,4 +657,4 @@ public class MSysConfig extends X_AD_SysConfig
 			+"]";
 	}
 
-}	//	MSysConfig
+}	//	MSysConfig;
