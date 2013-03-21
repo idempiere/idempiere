@@ -444,9 +444,9 @@ public class HelpController
 	{
 		// If the content is null, then return ''
 		if (content == null)
-			return "''";
+			return "function(){return '';}";
 		//
-		StringBuilder out = new StringBuilder("'");
+		StringBuilder out = new StringBuilder("function(){return '");
 		char[] chars = content.toCharArray();
 		for (int i = 0; i < chars.length; i++)
 		{
@@ -468,7 +468,7 @@ public class HelpController
 					break;
 			}
 		}
-		out.append("'");
+		out.append("';}");
 		return out.toString();
 	}	//	maskHTML
 }
