@@ -796,12 +796,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 	 * @param columnName
 	 */
 	public void setFocusToField(String columnName) {
-		boolean found = false;
 		for (WEditor editor : renderer.getEditors()) {
-			if (found)
-				editor.setHasFocus(false);
-			else if (columnName.equals(editor.getColumnName())) {
-				editor.setHasFocus(true);
+			if (columnName.equals(editor.getColumnName())) {
 				Component c = editor.getComponent();
 				if (c instanceof EditorBox) {
 					c = ((EditorBox)c).getTextbox();
@@ -809,7 +805,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 					c = ((NumberBox)c).getDecimalbox();
 				}
 				Clients.response(new AuFocus(c));
-				found = true;
+				break;
 			}
 		}
 	}

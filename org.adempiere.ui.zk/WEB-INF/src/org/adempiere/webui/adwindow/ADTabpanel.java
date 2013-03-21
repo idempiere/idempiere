@@ -48,7 +48,7 @@ import org.adempiere.webui.editor.WImageEditor;
 import org.adempiere.webui.editor.WPaymentEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ContextMenuListener;
-import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.panel.HelpController;
 import org.adempiere.webui.util.GridTabDataBinder;
 import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.window.FDialog;
@@ -527,8 +527,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
         		if (editor != null) // Not heading
         		{
-        			editor.getComponent().addEventListener(Events.ON_FOCUS, this);
-        			editor.getComponent().addEventListener(Events.ON_BLUR, this);
+        			editor.getComponent().setWidgetOverride("fieldHeader", HelpController.escapeJavascriptContent(field.getHeader()));
+        			editor.getComponent().setWidgetOverride("fieldDescription", HelpController.escapeJavascriptContent(field.getDescription()));
+        			editor.getComponent().setWidgetOverride("fieldHelp", HelpController.escapeJavascriptContent(field.getHelp()));
+        			editor.getComponent().setWidgetListener("onFocus", "zWatch.fire('onFieldTooltip', this, null, this.fieldHeader, this.fieldDescription, this.fieldHelp);");
+        			editor.getComponent().setWidgetListener("onBlur", "zWatch.fire('onFieldTooltip', this);");
         			
         			editor.setGridTab(this.getGridTab());
         			field.addPropertyChangeListener(editor);
@@ -968,7 +971,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	public void focusToFirstEditor() {
 		WEditor toFocus = null;
 		for (WEditor editor : editors) {
-			if (editor.isHasFocus() && editor.isVisible() && editor.getComponent().getParent() != null) {
+			if (editor.isVisible() && editor.getComponent().getParent() != null) {
 				toFocus = editor;
 				break;
 			}
@@ -1045,26 +1048,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     			preference.saveEx();
     			//update current context
     			Env.getCtx().setProperty("P"+windowId+"|"+adTabId+"|DetailPane.IsOpen", value ? "Y" : "N");
-    		}
-    	}
-    	else if (event.getName().equals(Events.ON_FOCUS)) {
-    		for (WEditor editor : editors)
-    		{
-    			if (editor.isComponentOfEditor(event.getTarget()))
-    			{
-        			SessionManager.getAppDesktop().updateHelpTooltip(editor.getGridField());
-        			return;
-    			}
-    		}
-    	}
-    	else if (event.getName().equals(Events.ON_BLUR)) {
-    		for (WEditor editor : editors)
-    		{
-    			if (editor.isComponentOfEditor(event.getTarget()))
-    			{
-        			SessionManager.getAppDesktop().updateHelpTooltip(null);
-        			return;
-    			}
     		}
     	}
     }
@@ -1351,14 +1334,10 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	 */
 	public void setFocusToField(String columnName) {
 		if (formContainer.isVisible()) {
-			boolean found = false;
 			for (WEditor editor : editors) {
-				if (found)
-					editor.setHasFocus(false);
-				else if (columnName.equals(editor.getColumnName())) {
-					editor.setHasFocus(true);
+				if (columnName.equals(editor.getColumnName())) {
 					Clients.response(new AuFocus(editor.getComponent()));
-					found = true;
+					break;
 				}
 			}
 		} else {

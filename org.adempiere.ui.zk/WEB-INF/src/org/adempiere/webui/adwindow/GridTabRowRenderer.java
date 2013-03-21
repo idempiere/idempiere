@@ -30,6 +30,7 @@ import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
 import org.adempiere.webui.event.ContextMenuListener;
+import org.adempiere.webui.panel.HelpController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.GridTabDataBinder;
 import org.compiere.model.GridField;
@@ -376,6 +377,12 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				WEditor readOnlyEditor = WebEditorFactory.getEditor(gridPanelFields[i], true);
 				readOnlyEditor.setReadWrite(false);
 				readOnlyEditors.put(gridPanelFields[i], readOnlyEditor);
+				
+				editor.getComponent().setWidgetOverride("fieldHeader", HelpController.escapeJavascriptContent(gridPanelFields[i].getHeader()));
+    			editor.getComponent().setWidgetOverride("fieldDescription", HelpController.escapeJavascriptContent(gridPanelFields[i].getDescription()));
+    			editor.getComponent().setWidgetOverride("fieldHelp", HelpController.escapeJavascriptContent(gridPanelFields[i].getHelp()));
+    			editor.getComponent().setWidgetListener("onFocus", "zWatch.fire('onFieldTooltip', this, null, this.fieldHeader, this.fieldDescription, this.fieldHelp);");
+    			editor.getComponent().setWidgetListener("onBlur", "zWatch.fire('onFieldTooltip', this);");
 			}
 			
 			if (!gridPanelFields[i].isDisplayedGrid() || gridPanelFields[i].isToolbarButton()) {
@@ -578,7 +585,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			WEditor toFocus = null;
 			WEditor firstEditor = null;
 			for (WEditor editor : getEditors()) {
-				if (editor.isHasFocus() && editor.isVisible() && editor.getComponent().getParent() != null) {
+				if (editor.isVisible() && editor.getComponent().getParent() != null) {
 					toFocus = editor;
 					break;
 				}

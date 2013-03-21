@@ -331,7 +331,6 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 			}
 		}
 		upcField.setValue("");
-		upcField.setHasFocus(true);
 	}
 
 	/**

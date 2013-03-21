@@ -40,7 +40,9 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWorkflow;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Anchorchildren;
 import org.zkoss.zul.Anchorlayout;
 import org.zkoss.zul.Html;
@@ -95,6 +97,15 @@ public class HelpController
     	Panelchildren content = new Panelchildren();
         pnlToolTip.appendChild(content);
         content.appendChild(htmlToolTip = new Html());
+        htmlToolTip.setWidgetOverride("defaultMessage", "'"+Msg.getMsg(Env.getCtx(), "PlaceCursorIntoField")+"'");
+        htmlToolTip.setWidgetOverride("onFieldTooltip", "function(origin,opts,header,description,help)" +
+        		"{var s='<html><body><div class=\"help-content\">';" +
+        		"if (typeof header == 'undefined') {s=s+'<i>'+this.defaultMessage+'</i>';} " +
+        		"else {s=s+'<b>'+header+'</b>';" +
+        		"if (typeof description=='string' && description.length > 0) {s=s+'<br><br><i>'+description+'</i>';}" +
+        		"if (typeof help=='string' && help.length > 0) {s=s+'<br><br>'+help;}}" +
+        		"s=s+'</div></body></html>';this.setContent(s);}");
+        Clients.response(new AuScript(htmlToolTip, "var w=zk.Widget.$('#"+htmlToolTip.getUuid()+"');zWatch.listen({onFieldTooltip: w});"));
         
         pnlContextHelp = new Panel();
         pnlContextHelp.setSclass("dashboard-widget");
@@ -106,7 +117,7 @@ public class HelpController
     	dashboardColumnLayout.appendChild(pnlContextHelp);
     	content = new Panelchildren();
     	pnlContextHelp.appendChild(content);
-        content.appendChild(htmlContextHelp = new Html()); 
+        content.appendChild(htmlContextHelp = new Html());         
         
         renderToolTip(null);
         renderCtxHelp(X_AD_CtxHelp.CTXTYPE_Home, 0);
@@ -424,4 +435,40 @@ public class HelpController
     	
     	return "";
 	}
+    
+    /**
+	 * @param content content
+	 * @return masked content or empty string if the <code>content</code> is null
+	 */
+	public static String escapeJavascriptContent(String content)
+	{
+		// If the content is null, then return ''
+		if (content == null)
+			return "''";
+		//
+		StringBuilder out = new StringBuilder("'");
+		char[] chars = content.toCharArray();
+		for (int i = 0; i < chars.length; i++)
+		{
+			char c = chars[i];
+			switch (c)
+			{
+				case '\r':
+					out.append ("");
+					break;
+				case '\'':
+					out.append ("\\'");
+					break;
+				case '\n':
+					out.append ("<br>");
+					break;
+				//
+				default:
+					out.append(c);
+					break;
+			}
+		}
+		out.append("'");
+		return out.toString();
+	}	//	maskHTML
 }

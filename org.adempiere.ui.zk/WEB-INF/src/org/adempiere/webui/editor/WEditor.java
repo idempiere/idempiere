@@ -88,8 +88,6 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
     private String columnName;
 
-	protected boolean hasFocus;
-	
 	protected WEditorPopupMenu popupMenu;
 
 	private boolean tableEditor;
@@ -230,18 +228,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         {
             component.addEventListener(event, this);
         }
-        component.addEventListener(Events.ON_FOCUS, new EventListener<Event>() {
-			public void onEvent(Event event) throws Exception {
-				hasFocus = true;
-			}
-
-        });
-        component.addEventListener(Events.ON_BLUR, new EventListener<Event>() {
-			public void onEvent(Event event) throws Exception {
-				hasFocus = false;
-			}
-
-        });
+        
+        component.setAttribute("idempiere.editor", this);
     }
 
     /**
@@ -545,14 +533,6 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         }
     }
 
-	public boolean isHasFocus() {
-		return hasFocus;
-	}
-
-	public void setHasFocus(boolean b) {
-		hasFocus = b;
-	}
-	
 	public void updateLabelStyle() {				
 		if (getLabel() != null) {
 			String style = (isZoomable() ? STYLE_ZOOMABLE_LABEL : "") + (isMandatoryStyle() ? STYLE_EMPTY_MANDATORY_LABEL : STYLE_NORMAL_LABEL);
