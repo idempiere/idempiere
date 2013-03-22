@@ -34,6 +34,7 @@ import org.idempiere.distributed.ITopicSubscriber;
 import org.osgi.service.event.EventHandler;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -106,8 +107,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		img.setDroppable(DELETE_RECENTITEMS_DROPPABLE);
 		img.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Delete")));
 		img.addEventListener(Events.ON_DROP, this);
-		//				
-		EventManager.getInstance().register(MRecentItem.ON_RECENT_ITEM_CHANGED_TOPIC, this);
+		//						
 		createTopicSubscriber();
 	}
 
@@ -279,6 +279,22 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		}
 	}
 
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		if (newpage != null) {
+			EventManager.getInstance().register(MRecentItem.ON_RECENT_ITEM_CHANGED_TOPIC, this);
+			desktop = getDesktop();
+		}
+	}
+	
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		EventManager.getInstance().unregister(this);
+		desktop = null;
+	}
+	
 	static class TopicSubscriber implements ITopicSubscriber<Integer> {
 		@Override
 		public void onMessage(Integer message) {

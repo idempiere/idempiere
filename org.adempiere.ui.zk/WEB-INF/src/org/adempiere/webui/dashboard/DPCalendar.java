@@ -51,6 +51,7 @@ import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -123,8 +124,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 
 		calendars.addEventListener("onEventCreate", this);
 		calendars.addEventListener("onEventEdit", this);	
-		
-		EventManager.getInstance().register(ON_REQUEST_CHANGED_TOPIC, this);
+				
 		createStaticListeners();
 	}
 
@@ -462,6 +462,22 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		if (newpage != null) {
+			EventManager.getInstance().register(ON_REQUEST_CHANGED_TOPIC, this);
+			desktop = getDesktop();
+		}
+	}
+	
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		EventManager.getInstance().unregister(this);
+		desktop = null;
 	}
 	
 	static class TopicSubscriber implements ITopicSubscriber<Map<String, String>> {		
