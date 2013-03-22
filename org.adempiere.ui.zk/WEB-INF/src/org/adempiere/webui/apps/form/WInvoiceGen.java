@@ -37,6 +37,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Space;
@@ -186,6 +187,10 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 
 	public void validate()
 	{
+		String docActionSelected = (String)docAction.getValue();
+		if ( docActionSelected==null || docActionSelected.isEmpty() )
+			throw new WrongValueException(docAction.getComponent(), Msg.translate(Env.getCtx(), "FillMandatory"));
+
 		form.saveSelection();
 
 		ArrayList<Integer> selection = getSelection();

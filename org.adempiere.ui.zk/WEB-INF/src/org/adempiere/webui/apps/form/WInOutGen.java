@@ -192,6 +192,9 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 		{
 			throw new WrongValueException(fWarehouse.getComponent(), Msg.translate(Env.getCtx(), "FillMandatory"));
 		}
+		String docActionSelected = (String)docAction.getValue();
+		if ( docActionSelected==null || docActionSelected.isEmpty() )
+			throw new WrongValueException(docAction.getComponent(), Msg.translate(Env.getCtx(), "FillMandatory"));
 
 		form.saveSelection();
 
