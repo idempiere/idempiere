@@ -298,6 +298,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 							}
 						}
 						appDesktop.setPage(this.getPage());
+						Clients.response(new AuScript("$('.slimScroll .z-anchorlayout-body').slimScroll({height: '100%',railVisible: true, alwaysVisible: false});"));
 						currSess.setAttribute(EXECUTION_CARRYOVER_SESSION_KEY, current);
 					}
 					
