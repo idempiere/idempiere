@@ -9,6 +9,7 @@ import org.idempiere.ui.zk.selenium.Widget;
 import org.idempiere.ui.zk.selenium.Zk;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
 import fitlibrary.annotation.SimpleAction;
 import fitlibrary.spider.AbstractSpiderFixture;
@@ -217,6 +218,14 @@ public class ZkFixture extends SpiderFixture {
 	public Object withWidgetEval(String locator, String command) {
 		Widget widget = new Widget(locator);
 		return widget.eval(webDriver, command);
+	}
+	
+	@SimpleAction(wiki = "|''<i>context click</i>''|zk locator|", tooltip = "Open context menu")
+	public void contextClick(String locator) {
+		Widget widget = new Widget(locator);
+		WebElement element = widget.findElement(webDriver);
+		Actions actions = new Actions(webDriver);
+		actions.contextClick(element).build().perform();
 	}
 	
 	/**

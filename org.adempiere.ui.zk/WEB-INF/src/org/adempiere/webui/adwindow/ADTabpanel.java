@@ -571,6 +571,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         			if (popupMenu != null)
         			{
         				popupMenu.addMenuListener((ContextMenuListener)editor);
+        				popupMenu.setId(field.getColumnName()+"-popup");
         				this.appendChild(popupMenu);
         				if (!field.isFieldOnly())
         				{
@@ -585,9 +586,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         					{
         						popupMenu.addContextElement((XulElement) editor.getComponent());
         					}
-        				}
-        				
-        				popupMenu.setId(field.getColumnName()+"-popup");
+        				}        				        				
         			}
         		}
         	}

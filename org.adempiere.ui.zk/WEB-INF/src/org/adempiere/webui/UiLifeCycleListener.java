@@ -35,6 +35,7 @@ public class UiLifeCycleListener implements UiLifeCycle {
 	 */
 	@Override
 	public void afterComponentAttached(Component comp, Page page) {
+		AdempiereIdGenerator.updateZkLocatorAttribute(comp);
 	}
 
 	/* (non-Javadoc)
@@ -49,10 +50,7 @@ public class UiLifeCycleListener implements UiLifeCycle {
 	 */
 	@Override
 	public void afterComponentMoved(Component parent, Component child, Component prevparent) {
-		String locator = child.getWidgetAttribute(AdempiereIdGenerator.ZK_LOCATOR_ATTRIBUTE);
-		if (locator != null) {
-			AdempiereIdGenerator.updateZkLocatorAttribute(child);
-		}
+		AdempiereIdGenerator.updateZkLocatorAttribute(child);
 	}
 
 	/* (non-Javadoc)

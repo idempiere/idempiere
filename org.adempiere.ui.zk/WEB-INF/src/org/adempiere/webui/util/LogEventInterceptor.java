@@ -34,8 +34,9 @@ public class LogEventInterceptor implements EventInterceptor {
 	 * @see org.zkoss.zk.ui.util.EventInterceptor#beforeProcessEvent(org.zkoss.zk.ui.event.Event)
 	 */
 	@Override
-	public Event beforeProcessEvent(Event event) {
-		System.out.println("beforeProcessEvent, event="+event.getName()+",target="+event.getTarget());
+	public Event beforeProcessEvent(Event event) {		
+		String locator = event.getTarget() != null ? event.getTarget().getWidgetAttribute("_zk_locator") : "";
+		System.out.println("beforeProcessEvent, event="+event.getName()+",target="+event.getTarget()+",locator="+locator);
 		return event;
 	}
 
