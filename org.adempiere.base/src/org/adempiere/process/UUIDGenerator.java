@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MColumn;
@@ -47,6 +48,9 @@ import org.compiere.util.ValueNamePair;
 public class UUIDGenerator extends SvrProcess {
 
 	private String tableName;
+
+	/**	Logger							*/
+	private static CLogger log = CLogger.getCLogger(UUIDGenerator.class);
 
 	/**
 	 * @see org.compiere.process.SvrProcess#prepare()
@@ -94,7 +98,7 @@ public class UUIDGenerator extends SvrProcess {
 				String columnName = PO.getUUIDColumnName(cTableName);
 				int AD_Column_ID = DB.getSQLValue(null, "SELECT AD_Column_ID FROM AD_Column Where AD_Table_ID = ? AND ColumnName = ?", AD_Table_ID, columnName);
 				if (AD_Column_ID <= 0) {
-					System.out.println("Adding UUID to " + cTableName);
+					if (log.isLoggable(Level.INFO)) log.info("Adding UUID to " + cTableName);
 					count++;
 					//create column
 					MColumn mColumn = new MColumn(getCtx(), 0, null);
@@ -141,6 +145,10 @@ public class UUIDGenerator extends SvrProcess {
 			keyColumn = table.getTableName()+"_ID";
 		} else {
 			compositeKeys = Arrays.asList(table.getKeyColumns());
+		}
+		if ((compositeKeys == null || compositeKeys.size() == 0) && keyColumn == null) {
+			log.warning("Cannot update orphan table " + table.getTableName() + " (not ID neither parents)");
+			return;
 		}
 		if (compositeKeys == null) {
 			sql.append(keyColumn);
