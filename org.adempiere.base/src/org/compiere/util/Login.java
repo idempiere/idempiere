@@ -956,7 +956,7 @@ public class Login
 			sql = "SELECT t.TableName, c.ColumnName "
 				+ "FROM AD_Column c "
 				+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID) "
-				+ "WHERE c.IsKey='Y' AND t.IsActive='Y'"
+				+ "WHERE c.IsKey='Y' AND t.IsActive='Y' AND t.IsView='N'"
 				+ " AND EXISTS (SELECT * FROM AD_Column cc "
 				+ " WHERE ColumnName = 'IsDefault' AND t.AD_Table_ID=cc.AD_Table_ID AND cc.IsActive='Y')";
 			pstmt = DB.prepareStatement(sql, null);
