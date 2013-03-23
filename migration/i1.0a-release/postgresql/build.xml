@@ -1,13 +1,13 @@
 <project name="migrate-db-postgre" default="run-scripts" basedir=".">
 	<property file="../../postgresql.properties" />
 	<path id="lib.path">
-		<fileset dir="../../../tools/lib">
+		<fileset dir="../../../db/ddlutils/lib">
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
 	<taskdef resource="net/sf/antcontrib/antlib.xml">
 		<classpath>
-			<fileset dir="../../../tools/lib">
+			<fileset dir="../../../db/ddlutils/lib">
 				<include name="**/*.jar" />
 			</fileset>
 		</classpath>
