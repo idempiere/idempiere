@@ -240,6 +240,19 @@ public interface I_C_DocType
 	  */
 	public String getDocSubTypeSO();
 
+    /** Column name DocSubTypeInv */
+    public static final String COLUMNNAME_DocSubTypeInv = "DocSubTypeInv";
+
+	/** Set Inv Sub Type.
+	  * Physical Inventory Sub Type
+	  */
+	public void setDocSubTypeInv (String DocSubTypeInv);
+
+	/** Get Inv Sub Type.
+	  * Physical Inventory Sub Type
+	  */
+	public String getDocSubTypeInv();
+	
     /** Column name DocumentCopies */
     public static final String COLUMNNAME_DocumentCopies = "DocumentCopies";
 

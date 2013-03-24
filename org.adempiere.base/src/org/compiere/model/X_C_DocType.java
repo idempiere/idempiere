@@ -452,7 +452,33 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	{
 		return (String)get_Value(COLUMNNAME_DocSubTypeSO);
 	}
+	
+	/** DocSubTypeInv AD_Reference_ID=200068 */
+	public static final int DOCSUBTYPEInv_AD_Reference_ID=200068;
+	/** Physical Inventory = PI */
+	public static final String DOCSUBTYPEInv_PhysicalInventory = "PI";
+	/** Internal Use Inventory= IU */
+	public static final String DOCSUBTYPEInv_InternalUseInventory = "IU";
 
+	/** Set SO Sub Type.
+		@param DocSubTypeSO 
+		Sales Order Sub Type
+	  */
+	public void setDocSubTypeInv (String DocSubTypeInv)
+	{
+
+		set_Value (COLUMNNAME_DocSubTypeInv, DocSubTypeInv);
+	}
+
+	/** Get SO Sub Type.
+		@return Sales Order Sub Type
+	  */
+	public String getDocSubTypeInv () 
+	{
+		return (String)get_Value(COLUMNNAME_DocSubTypeInv);
+	}
+
+	
 	/** Set Document Copies.
 		@param DocumentCopies 
 		Number of copies to be printed

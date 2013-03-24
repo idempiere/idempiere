@@ -380,6 +380,9 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 */
 	public String completeIt()
 	{
+		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
+		String DocSubTypeInv = dt.getDocSubTypeInv();
+		
 		//	Re-Check
 		if (!m_justPrepared)
 		{
@@ -405,16 +408,15 @@ public class MInventory extends X_M_Inventory implements DocAction
 
 			MProduct product = line.getProduct();	
 
-			//Get Quantity Internal Use
-			BigDecimal qtyDiff = line.getQtyInternalUse().negate();
-			//If Quantity Internal Use = Zero Then Physical Inventory  Else Internal Use Inventory
-			if (qtyDiff.signum() == 0)
-			{
+			BigDecimal qtyDiff = Env.ZERO;
+			if (MDocType.DOCSUBTYPEInv_InternalUseInventory.equals(DocSubTypeInv))
+				qtyDiff = line.getQtyInternalUse().negate();
+			else if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(DocSubTypeInv))
 				qtyDiff = line.getQtyCount().subtract(line.getQtyBook());
-				//If Quantity Count minus Quantity Book = Zero, then no change in Inventory
-				if (qtyDiff.signum() == 0)
-					continue;
-			}
+				
+			//If Quantity Count minus Quantity Book = Zero, then no change in Inventory
+			if (qtyDiff.signum() == 0)
+				continue;
 
 			//Ignore the Material Policy when is Reverse Correction
 			if(!isReversal())
@@ -453,7 +455,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 						}
 
 						// Only Update Date Last Inventory if is a Physical Inventory
-						if(line.getQtyInternalUse().compareTo(Env.ZERO) == 0)
+						if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(DocSubTypeInv))
 						{	
 							MStorageOnHand storage = MStorageOnHand.get(getCtx(), line.getM_Locator_ID(), 
 									line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(), get_TrxName());						
@@ -504,7 +506,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 					}
 
 					// Only Update Date Last Inventory if is a Physical Inventory
-					if(line.getQtyInternalUse().compareTo(Env.ZERO) == 0)
+					if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(DocSubTypeInv))
 					{	
 						MStorageOnHand storage = MStorageOnHand.get(getCtx(), line.getM_Locator_ID(), 
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), get_TrxName());						
@@ -535,7 +537,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 				}	//	Fallback
 			}	//	stock movement
 
-		}	//	for all lines
+		}	//	for all lines	
 
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);

@@ -297,32 +297,26 @@ public class MInventoryLine extends X_M_InventoryLine
 		if (newRecord || is_ValueChanged("QtyInternalUse"))
 			setQtyInternalUse(getQtyInternalUse());
 		
-		//	InternalUse Inventory
-		if (getQtyInternalUse().signum() != 0)
-		{
+		MDocType dt = MDocType.get(getCtx(), getParent().getC_DocType_ID());
+		String DocSubTypeInv = dt.getDocSubTypeInv();
+//		InternalUse Inventory
+		if (MDocType.DOCSUBTYPEInv_InternalUseInventory.equals(DocSubTypeInv)) {
 			if (!INVENTORYTYPE_ChargeAccount.equals(getInventoryType()))
 				setInventoryType(INVENTORYTYPE_ChargeAccount);
 			//
 			if (getC_Charge_ID() == 0)
 			{
-				log.saveError("InternalUseNeedsCharge", "");
-				return false;
-			}
-		}
-		else if (INVENTORYTYPE_ChargeAccount.equals(getInventoryType()))
-		{
-			if (getC_Charge_ID() == 0)
-			{
 				log.saveError("FillMandatory", Msg.getElement(getCtx(), "C_Charge_ID"));
 				return false;
 			}
-		}
-		else if (getC_Charge_ID() != 0)
+		} else if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(DocSubTypeInv)) {
 			setC_Charge_ID(0);
+			if (!INVENTORYTYPE_InventoryDifference.equals(getInventoryType()))
+				setInventoryType(INVENTORYTYPE_InventoryDifference);
+			
+		}
 		
-		//	Set AD_Org to parent if not charge
-		if (getC_Charge_ID() == 0)
-			setAD_Org_ID(getParent().getAD_Org_ID());
+		setAD_Org_ID(getParent().getAD_Org_ID());
 		
 		return true;
 	}	//	beforeSave
