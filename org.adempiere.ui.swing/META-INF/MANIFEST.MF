@@ -64,7 +64,11 @@ Export-Package: de.schaeffer.compiere.tools,
 Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
  org.adempiere.ui;bundle-version="1.0.0",
  org.adempiere.report.jasper;bundle-version="1.0.0",
- org.adempiere.report.jasper.library;bundle-version="1.0.0"
+ org.adempiere.report.jasper.library;bundle-version="1.0.0",
+ org.restlet;bundle-version="2.1.0",
+ org.restlet.ext.net;bundle-version="2.1.0",
+ org.restlet.ext.servlet;bundle-version="2.1.0",
+ org.restlet.ext.ssl;bundle-version="2.1.0"
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.adempiere.base
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
@@ -79,6 +83,7 @@ Import-Package: javax.net.ssl,
  org.restlet,
  org.restlet.data,
  org.restlet.engine,
+ org.restlet.engine.connector,
  org.restlet.engine.security,
  org.restlet.ext.net,
  org.restlet.ext.ssl,
