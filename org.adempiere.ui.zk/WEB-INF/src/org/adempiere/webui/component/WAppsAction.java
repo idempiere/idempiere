@@ -107,7 +107,7 @@ public class WAppsAction
        {
     	   m_button.setLabel(newToolTipText);
        }
-       LayoutUtils.addSclass("action-button", m_button);
+       LayoutUtils.addSclass("img-btn", m_button);
    }   //  Action
    
    private Button  m_button;

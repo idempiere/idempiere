@@ -33,11 +33,12 @@ import org.adempiere.util.ServerContext;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
-import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.compiere.Adempiere;
@@ -176,17 +177,13 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		Hbox hbox = new Hbox();
 		hbox.setWidth("100%");
 		hbox.setStyle("margin-top: 10px");
-		Button btn = new Button("");
-		btn.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
-		LayoutUtils.addSclass("action-button", btn);
+		Button btn = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
 		btn.setId("Ok");
 		btn.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btn);
 
-		btn = new Button("");
-		btn.setImage(ThemeManager.getThemeResource("images/Cancel24.png"));
+		btn = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL);
 		btn.setId("Cancel");
-		LayoutUtils.addSclass("action-button", btn);
 		btn.addEventListener(Events.ON_CLICK, this);
 
 		hbox.appendChild(btn);

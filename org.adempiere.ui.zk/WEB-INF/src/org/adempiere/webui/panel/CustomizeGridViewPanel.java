@@ -31,6 +31,7 @@ import org.adempiere.model.MTabCustomization;
 import org.adempiere.webui.adwindow.GridView;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHead;
 import org.adempiere.webui.component.ListHeader;
@@ -38,6 +39,7 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.SimpleListModel;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
@@ -245,8 +247,7 @@ public class CustomizeGridViewPanel extends Panel
 		southPanel.setStyle("margin-top: 2px; margin-right: 4px");
 		@SuppressWarnings("unused")
 		String label = Msg.getMsg(Env.getCtx(), "save");
-		Button bOK = new Button();
-		bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
+		Button bOK = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
 		bOK.setId("Ok");
 		EventListener<Event> onClickListener = new EventListener<Event>()
 		{
@@ -261,11 +262,9 @@ public class CustomizeGridViewPanel extends Panel
 		
 		};		
 		bOK.addActionListener(onClickListener);
-		bOK.setSclass("action-button");
 		southPanel.appendChild(bOK);
 		label = Msg.getMsg(Env.getCtx(), "Cancel");
-		Button btn = new Button();
-		btn.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
+		Button btn = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL);
 		btn.setId("Cancel");
 		EventListener<Event> onClickCancelListener = new EventListener<Event>()
 		{
@@ -280,7 +279,6 @@ public class CustomizeGridViewPanel extends Panel
 		};
 		
 		btn.addActionListener(onClickCancelListener);
-		btn.setSclass("action-button");
 		
 		southPanel.appendChild(btn);
 		south.appendChild(southPanel);

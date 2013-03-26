@@ -246,20 +246,20 @@ public class WAttachment extends Window implements EventListener<Event>
 		northPanel.appendChild(div);
 
 		bSave.setEnabled(false);
-		bSave.setSclass("action-button");
+		bSave.setSclass("img-btn");
 		bSave.setImage(ThemeManager.getThemeResource("images/Export24.png"));
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(), "AttachmentSave"));
 		bSave.addEventListener(Events.ON_CLICK, this);
 
 		bLoad.setImage(ThemeManager.getThemeResource("images/Import24.png"));
-		bLoad.setSclass("action-button");
+		bLoad.setSclass("img-btn");
 		bLoad.setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);
 		bLoad.setTooltiptext(Msg.getMsg(Env.getCtx(), "Load"));
 		bLoad.setUpload(AdempiereWebUI.getUploadSetting());
 		bLoad.addEventListener(Events.ON_UPLOAD, this);
 
 		bDelete.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
-		bDelete.setSclass("action-button");
+		bDelete.setSclass("img-btn");
 		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
 		bDelete.addEventListener(Events.ON_CLICK, this);
 
@@ -280,19 +280,19 @@ public class WAttachment extends Window implements EventListener<Event>
 		southPane.setHeight("30px");
 
 		bCancel.setImage(ThemeManager.getThemeResource("images/Cancel24.png"));
-		bCancel.setSclass("action-button");
+		bCancel.setSclass("img-btn");
 		bCancel.addEventListener(Events.ON_CLICK, this);
 
 		bOk.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
-		bOk.setSclass("action-button");
+		bOk.setSclass("img-btn");
 		bOk.addEventListener(Events.ON_CLICK, this);
 
 		bDeleteAll.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
-		bDeleteAll.setSclass("action-button");
+		bDeleteAll.setSclass("img-btn");
 		bDeleteAll.addEventListener(Events.ON_CLICK, this);
 
 		bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
-		bRefresh.setSclass("action-button");
+		bRefresh.setSclass("img-btn");
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 
 		confirmPanel.appendChild(bDeleteAll);

@@ -75,7 +75,7 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 		tRoutingText.setText(Msg.translate(Env.getCtx(), "RoutingNo"));
 		tNumberText.setText(Msg.translate(Env.getCtx(), "AccountNo"));
 		tOnline.setLabel(Msg.getMsg(Env.getCtx(), "Online"));
-		LayoutUtils.addSclass("action-text-button", tOnline);
+		LayoutUtils.addSclass("txt-btn", tOnline);
 		tOnline.addActionListener(this);
 		window.getPanel().setId("tPanel");
 		

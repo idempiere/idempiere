@@ -38,11 +38,11 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import org.adempiere.webui.AdempiereWebUI;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.Combobox;
+import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListCell;
@@ -64,6 +64,7 @@ import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.part.MultiTabPart;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
@@ -304,26 +305,18 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     **/
     private void initSimple()
     {
-        Button btnNew = new Button();
-        btnNew.setName("btnNew");
+        Button btnNew = ButtonFactory.createNamedButton(ConfirmPanel.A_NEW);
         btnNew.setId("btnNew");
-        btnNew.setImage(ThemeManager.getThemeResource("images/New24.png"));
         btnNew.addEventListener(Events.ON_CLICK,this);
-        LayoutUtils.addSclass("action-button", btnNew);
 
-        Button btnOk = new Button();
+        Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
         btnOk.setName("btnOkSimple");
         btnOk.setId("btnOk");
-        btnOk.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
         btnOk.addEventListener(Events.ON_CLICK,this);
-        LayoutUtils.addSclass("action-button", btnOk);
 
-        Button btnCancel = new Button();
-        btnCancel.setName("btnCancel");
+        Button btnCancel = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL);
         btnCancel.setId("btnCancel");
-        btnCancel.setImage(ThemeManager.getThemeResource("images/Cancel24.png"));
         btnCancel.addEventListener(Events.ON_CLICK,this);
-        LayoutUtils.addSclass("action-button", btnCancel);
 
         Panel pnlButtonRight = new Panel();
         pnlButtonRight.appendChild(btnOk);
@@ -405,17 +398,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         btnDelete.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
         btnDelete.addEventListener(Events.ON_CLICK, this);
 
-        Button btnOk = new Button();
+        Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
         btnOk.setName("btnOkAdv");
-        btnOk.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
         btnOk.addEventListener(Events.ON_CLICK, this);
-        LayoutUtils.addSclass("action-button", btnOk);
 
-        Button btnCancel = new Button();
-        btnCancel.setName("btnCancel");
-        btnCancel.setImage(ThemeManager.getThemeResource("images/Cancel24.png"));
+        Button btnCancel = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL);
         btnCancel.addEventListener(Events.ON_CLICK, this);
-        LayoutUtils.addSclass("action-button", btnCancel);
 
         Panel pnlButtonRight = new Panel();
         pnlButtonRight.appendChild(btnOk);

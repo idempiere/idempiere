@@ -21,8 +21,8 @@ import java.util.Properties;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -55,13 +55,13 @@ public class Messagebox extends Window implements EventListener<Event>
 
 	private Text lblMsg = new Text();
 
-	private Button btnOk = new Button();
-	private Button btnCancel = new Button();
-	private Button btnYes = new Button();
-	private Button btnNo = new Button();
-	private Button btnAbort = new Button();
-	private Button btnRetry = new Button();
-	private Button btnIgnore = new Button();
+	private Button btnOk;
+	private Button btnCancel;
+	private Button btnYes;
+	private Button btnNo;
+	private Button btnAbort;
+	private Button btnRetry;
+	private Button btnIgnore;
 
 	private Image img = new Image();
 
@@ -115,45 +115,39 @@ public class Messagebox extends Window implements EventListener<Event>
 		lblMsg.setEncode(false);
 		lblMsg.setValue(msg);
 		// Invert - Unify  OK/Cancel IDEMPIERE-77
-		//btnOk.setLabel(Util.cleanAmp(Msg.getMsg(ctx, "OK")));
-		btnOk.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
+		btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
 		btnOk.setId("btnOk");
 		btnOk.addEventListener(Events.ON_CLICK, this);
-		LayoutUtils.addSclass("action-text-button", btnOk);
 
-		//btnCancel.setLabel(Util.cleanAmp(Msg.getMsg(ctx, "Cancel")));
-		btnCancel.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
+		btnCancel = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL);
 		btnCancel.addEventListener(Events.ON_CLICK, this);
 		btnCancel.setId("btnCancel");
-		LayoutUtils.addSclass("action-text-button", btnCancel);
 
-		btnYes.setLabel(Util.cleanAmp(Msg.getMsg(ctx, "Yes")));
-		btnYes.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
+		String yesLabel = Util.cleanAmp(Msg.getMsg(ctx, "Yes"));
+		btnYes = ButtonFactory.createButton(ButtonFactory.isWithText() ? yesLabel : null, 
+				ButtonFactory.isWithImage() ? (ButtonFactory.isWithText() ? ThemeManager.getThemeResource("images/Ok16.png") : ThemeManager.getThemeResource("images/Ok24.png")) : null, 
+				ButtonFactory.isWithText() ? null : yesLabel);
 		btnYes.addEventListener(Events.ON_CLICK, this);
 		btnYes.setId("btnYes");
-		LayoutUtils.addSclass("action-text-button", btnYes);
 
-		btnNo.setLabel(Util.cleanAmp(Msg.getMsg(ctx, "No")));
-		btnNo.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
+		String noLabel = Util.cleanAmp(Msg.getMsg(ctx, "No"));
+		btnNo = ButtonFactory.createButton(ButtonFactory.isWithText() ? noLabel : null, 
+				ButtonFactory.isWithImage() ? ( ButtonFactory.isWithText() ? ThemeManager.getThemeResource("images/Cancel16.png") : ThemeManager.getThemeResource("images/Cancel24.png")) : null, 
+				ButtonFactory.isWithText() ? null : noLabel);
 		btnNo.addEventListener(Events.ON_CLICK, this);
 		btnNo.setId("btnNo");
-		LayoutUtils.addSclass("action-text-button", btnNo);
-
-		btnAbort.setLabel("Abort");
+		
+		btnAbort = ButtonFactory.createButton("Abort", null, null);
 		btnAbort.addEventListener(Events.ON_CLICK, this);
 		btnAbort.setId("btnAbort");
-		LayoutUtils.addSclass("action-text-button", btnAbort);
 
-		btnRetry.setLabel("Retry");
+		btnRetry = ButtonFactory.createButton("Retry", null, null);
 		btnRetry.addEventListener(Events.ON_CLICK, this);
 		btnRetry.setId("btnRetry");
-		LayoutUtils.addSclass("action-text-button", btnRetry);
 
-		btnIgnore.setLabel("Ignore");
-		btnIgnore.setImage(ThemeManager.getThemeResource("images/Ignore16.png"));
+		btnIgnore = ButtonFactory.createNamedButton("Ignore");
 		btnIgnore.addEventListener(Events.ON_CLICK, this);
 		btnIgnore.setId("btnIgnore");
-		LayoutUtils.addSclass("action-text-button", btnIgnore);
 
 		Panel pnlMessage = new Panel();
 		pnlMessage.setStyle(MESSAGE_PANEL_STYLE);
@@ -219,6 +213,8 @@ public class Messagebox extends Window implements EventListener<Event>
 		this.imgSrc = icon;
 		this.callback = callback;
 
+		init();
+		
 		btnOk.setVisible(false);
 		btnCancel.setVisible(false);
 		btnYes.setVisible(false);
@@ -247,8 +243,6 @@ public class Messagebox extends Window implements EventListener<Event>
 
 		if ((buttons & IGNORE) != 0)
 			btnIgnore.setVisible(true);
-
-		init();
 
 		this.setTitle(title);
 		this.setPosition("center");

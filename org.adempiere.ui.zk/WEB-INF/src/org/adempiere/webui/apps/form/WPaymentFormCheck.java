@@ -92,7 +92,7 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		sNumberField.setWidth("100pt");
 		sRoutingField.setWidth("70pt");
 		sOnline.setLabel(Msg.getMsg(Env.getCtx(), "Online"));
-		LayoutUtils.addSclass("action-text-button", sOnline);
+		LayoutUtils.addSclass("txt-btn", sOnline);
 		sOnline.addActionListener(this);
 		window.getPanel().setId("sPanel");
 		

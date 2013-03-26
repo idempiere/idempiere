@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.FolderBrowser;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHead;
@@ -36,6 +37,7 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
 import org.compiere.Adempiere;
@@ -152,9 +154,8 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		hbox.setParent(layout);
 		hbox.setPack("end");
 		hbox.setWidth("100%");
-		hbox.setVflex("0");
-		Button btnOk = new Button();
-		btnOk.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
+		hbox.setVflex("min");
+		Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK); 
 		btnOk.addEventListener(Events.ON_CLICK, this);
 		btnOk.setParent(hbox);
 

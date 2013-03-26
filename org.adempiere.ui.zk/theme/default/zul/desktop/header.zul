@@ -6,7 +6,7 @@
 				<hbox height="100%" pack="center" align="left">
 					<image id="logo"/>
 					<div id="menuLookup"/>
-					<button id="menuButton"/>
+					<button id="menuButton" sclass="btn-small"/>
 				</hbox>
 			</west>
 			<center sclass="desktop-header-right">

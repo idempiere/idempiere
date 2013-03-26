@@ -82,8 +82,7 @@ html,body {
 }
 
 .login-btn {
-	height: 36px;
-	width: 72px;
+	padding: 4px 20px !important;
 }
 
 .login-east-panel, .login-west-panel {
@@ -195,26 +194,103 @@ html,body {
 }
 
 <%-- button --%>
-.action-button {
-	height: 30px;
-	width: 48px;
+.z-button-os {
+  display: inline-block;
+  margin: 0px;
+  padding: 2px 10px;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-color: #f5f5f5;
+  background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
+  background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -o-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: linear-gradient(to bottom, #ffffff, #e6e6e6);
+  background-repeat: repeat-x;
+  border: 1px solid #cccccc;
+  border-color: #e6e6e6 #e6e6e6 #bfbfbf;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  border-bottom-color: #b3b3b3;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe6e6e6', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  zoom: 1;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+     -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.action-text-button {
-	height: 30px;
-	min-width: 80px;
+.z-button-os:hover,
+.z-button-os:focus,
+.z-button-os:active,
+.z-button-os.active,
+.z-button-os.disabled,
+.z-button-os[disabled] {
+  color: #333333;
+  background-color: #e6e6e6;
 }
 
-.action-image-text-button {
-	height: 30px;
-	min-width: 80px;
+.z-button-os:active,
+.z-button-os.active {
+  background-color: #cccccc \9;
 }
 
-.action-button .z-button-cm img, 
-.action-text-button .z-button-cm img,
-.action-image-text-button .z-button-cm img {
+.z-button-os:hover,
+.z-button-os:focus {
+  color: #333333;
+  text-decoration: none;
+  background-position: 0 -15px;
+  -webkit-transition: background-position 0.1s linear;
+     -moz-transition: background-position 0.1s linear;
+       -o-transition: background-position 0.1s linear;
+          transition: background-position 0.1s linear;
+}
+
+.z-button-os:focus {
+  outline: 5px auto -webkit-focus-ring-color;
+}
+
+.z-button-os.active,
+.z-button-os:active {
+  background-image: none;
+  outline: 0;
+  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+     -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.z-button-os.disabled,
+.z-button-os[disabled] {
+  cursor: default;
+  background-image: none;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+     -moz-box-shadow: none;
+          box-shadow: none;
+}
+
+.img-btn img {
 	height: 22px;
 	width: 22px;
+	background-color: transparent;
+}
+
+.txt-btn img {
+	height: 16px;
+	width: 16px;
+	background-color: transparent;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+.z-button-os.btn-small {
+	padding: 1px 5px;
 }
 
 <%-- desktop --%>
@@ -503,7 +579,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	width: 100%;
 }
 
-.activities-box .z-button .z-button-cm {
+.activities-box .z-button-os {
 	text-align: left;
 }
 
@@ -826,20 +902,19 @@ span.z-tree-tee, span.z-tree-last, span.z-tree-firstspacer {
 	width: 99%;
 }
 
-.editor-box .editor-button {
-	width: 32px;
-	padding: 0px;
+.editor-button {
+	padding: 3px 8px;
+	margin: 0px;
 }
 
-.editor-box .editor-button img {
+.editor-button img {
 	vertical-align: middle;
 	text-align: center;
 	width: 10px;
 	height: 10px;
 }
 
-.editor-box .editor-button-column {
-	width: 28px !important;
+.editor-button-column {
 }
 
 .number-box {
@@ -1060,9 +1135,16 @@ tbody.z-grid-empty-body td {
 	padding: 3px !important;
 }
 
-<%-- toolbar popup dialog --%>
+<%-- toolbar popup dialog --%>	
 .toolbar-popup-window .z-window-popup-cnt {
 	margin-top: 6px;
+}
+
+.toolbar-popup-window.process-buttons-popup .z-button-os {
+	white-space: nowrap;
+	width: 95%;
+	text-align: left;
+	margin: auto;
 }
 
 .toolbar-popup-window-cnt {

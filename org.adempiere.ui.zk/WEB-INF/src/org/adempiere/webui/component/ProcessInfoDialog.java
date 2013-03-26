@@ -16,9 +16,8 @@ package org.adempiere.webui.component;
 
 import java.text.SimpleDateFormat;
 
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -42,7 +41,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	private static final String MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 250pt; min-width: 230pt; max-width: 450pt;";
 
 	private Text lblMsg = new Text();
-	private Button btnOk = new Button();
+	private Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
 	private Image img = new Image();
 	public static final String INFORMATION = "~./zul/img/msgbox/info-btn.png";
 
@@ -64,9 +63,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		lblMsg.setEncode(false);
 		lblMsg.setValue(header);
 
-		btnOk.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 		btnOk.addEventListener(Events.ON_CLICK, this);
-		LayoutUtils.addSclass("action-text-button", btnOk);
 
 		Panel pnlMessage = new Panel();
 		pnlMessage.setStyle(MESSAGE_PANEL_STYLE);

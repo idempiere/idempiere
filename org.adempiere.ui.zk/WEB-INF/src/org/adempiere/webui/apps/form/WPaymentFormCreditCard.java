@@ -16,7 +16,6 @@ package org.adempiere.webui.apps.form;
 import java.math.BigDecimal;
 
 import org.adempiere.util.PaymentUtil;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
@@ -30,6 +29,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.editor.WNumberEditor;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.grid.PaymentFormCreditCard;
 import org.compiere.model.GridTab;
@@ -64,7 +64,7 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 	private WNumberEditor kAmountField = new WNumberEditor();
 	private Label kApprovalLabel = new Label();
 	private Textbox kApprovalField = new Textbox();
-	private Button kOnline = new Button();
+	private Button kOnline = ButtonFactory.createNamedButton("Online");
 	private Label kStatus = new Label();
 	
 	public WPaymentFormCreditCard(int windowNo, GridTab mTab) {
@@ -85,8 +85,6 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		kExpLabel.setText(Msg.getMsg(Env.getCtx(), "Expires"));
 		kApprovalLabel.setText(Msg.translate(Env.getCtx(), "VoiceAuthCode"));
 		kAmountLabel.setText(Msg.getMsg(Env.getCtx(), "Amount"));
-		kOnline.setLabel(Msg.getMsg(Env.getCtx(), "Online"));
-		LayoutUtils.addSclass("action-text-button", kOnline);
 		kOnline.addActionListener(this);
 		window.getPanel().setId("kPanel");
 		

@@ -23,9 +23,11 @@ import org.adempiere.util.ServerContext;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
@@ -175,20 +177,14 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		@SuppressWarnings("unused")
 		String label = Msg.getMsg(Env.getCtx(), "Start");
 		// Invert - Unify  OK/Cancel IDEMPIERE-77
-		//bOK = new Button(label.replaceAll("&", ""));
-		bOK = new Button();
-		bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
+		bOK = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
 		bOK.setId("Ok");
 		bOK.addEventListener(Events.ON_CLICK, this);
-		bOK.setSclass("action-image-text-button");
 		hbox.appendChild(bOK);
 		
-		//label = Msg.getMsg(Env.getCtx(), "Cancel");
-		Button btn = new Button();
-		btn.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
+		Button btn = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL);
 		btn.setId("Cancel");
 		btn.addEventListener(Events.ON_CLICK, this);
-		btn.setSclass("action-image-text-button");
 		hbox.appendChild(btn);		
 		div.appendChild(hbox);
 		div.setStyle("padding: 10px; text-align: center; text-align: -webkit-center; text-align: -moz-center; ");

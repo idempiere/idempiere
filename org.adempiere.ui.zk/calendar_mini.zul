@@ -12,7 +12,7 @@
 				<divarrow id="divArrowLeft" type="arrow-left"/>
 				<divarrow id="divArrowRight" type="arrow-right"/>
 				<div>
-					<button id="btnCurrentDate" mold="os" label="today"/>
+					<button id="btnCurrentDate" label="today" sclass="btn-small"/>
 				    <separator orient="vertical" spacing="2px"/>
 					<label id="lblDate"/>
 					<toolbarbutton id="btnRefresh" label="Refresh" class="refresh"/>

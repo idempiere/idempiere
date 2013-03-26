@@ -22,10 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.theme.ThemeManager;
-import org.compiere.util.Env;
-import org.compiere.util.Msg;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hbox;
@@ -75,6 +72,7 @@ public final class ConfirmPanel extends Hbox
     private boolean  m_withText = false;
 
     private Map<String, Button> buttonMap = new HashMap<String, Button>();
+	private boolean m_withImage = true;
 
     /**
      * Creates a button of the specified id
@@ -101,33 +99,30 @@ public final class ConfirmPanel extends Hbox
      */
     public Button createButton(String name)
     {
-        Button button = new Button();
-        button.setName("btn"+name);
+        Button button = ButtonFactory.createNamedButton(name, m_withText, m_withImage);        
         button.setId(name);
-        
-        String text = Msg.translate(Env.getCtx(), name);
-        if (!name.equals(text))
-        	text = text.replaceAll("[&]", "");
-        else
-        	text = null;
-
-        if (m_withText && text != null)
-        {
-        	button.setImage(ThemeManager.getThemeResource("images/"+name+"16.png"));
-        	button.setLabel(text);
-        	LayoutUtils.addSclass("action-text-button", button);
-        }
-        else
-        {
-        	button.setImage(ThemeManager.getThemeResource("images/"+name+"24.png"));
-        	if (text != null)
-        		button.setTooltiptext(text);
-        	LayoutUtils.addSclass("action-button", button);
-        }
-
         buttonMap.put(name, button);
 
         return button;
+    }
+    
+    /**
+     * create confirm panel with multiple options
+     * @param withCancelButton       with cancel
+     * @param withRefreshButton      with refresh
+     * @param withResetButton        with reset
+     * @param withCustomizeButton    with customize
+     * @param withHistoryButton      with history
+     * @param withZoomButton         with zoom
+     */
+    public ConfirmPanel(boolean withCancelButton,
+             boolean withRefreshButton,
+             boolean withResetButton,
+             boolean withCustomizeButton,
+             boolean withHistoryButton,
+             boolean withZoomButton)
+    {
+    	this(withCancelButton, withRefreshButton, withResetButton, withCustomizeButton, withHistoryButton, withZoomButton, ButtonFactory.isWithText());
     }
 
     /**
@@ -138,26 +133,8 @@ public final class ConfirmPanel extends Hbox
      * @param withCustomizeButton    with customize
      * @param withHistoryButton      with history
      * @param withZoomButton         with zoom
+     * @param withText
      */
-     public ConfirmPanel(boolean withCancelButton,
-             boolean withRefreshButton,
-             boolean withResetButton,
-             boolean withCustomizeButton,
-             boolean withHistoryButton,
-             boolean withZoomButton)
-     {
-    	 this(withCancelButton, withRefreshButton, withResetButton, withCustomizeButton, withHistoryButton, withZoomButton, false);
-     }
-
-   /**
-    * create confirm panel with multiple options
-    * @param withCancelButton       with cancel
-    * @param withRefreshButton      with refresh
-    * @param withResetButton        with reset
-    * @param withCustomizeButton    with customize
-    * @param withHistoryButton      with history
-    * @param withZoomButton         with zoom
-    */
     public ConfirmPanel(boolean withCancelButton,
             boolean withRefreshButton,
             boolean withResetButton,
@@ -166,7 +143,31 @@ public final class ConfirmPanel extends Hbox
             boolean withZoomButton,
             boolean withText)
     {
+    	this(withCancelButton, withRefreshButton, withResetButton, withCustomizeButton, withHistoryButton, withZoomButton, withText, !withText ? true : ButtonFactory.isWithImage());
+    }
+    
+    /**
+     * create confirm panel with multiple options
+     * @param withCancelButton       with cancel
+     * @param withRefreshButton      with refresh
+     * @param withResetButton        with reset
+     * @param withCustomizeButton    with customize
+     * @param withHistoryButton      with history
+     * @param withZoomButton         with zoom
+     * @param withText
+     * @param withImage Incude image for button. Note that image always included if withText is false
+     */
+    public ConfirmPanel(boolean withCancelButton,
+            boolean withRefreshButton,
+            boolean withResetButton,
+            boolean withCustomizeButton,
+            boolean withHistoryButton,
+            boolean withZoomButton,
+            boolean withText,
+            boolean withImage)
+    {
     	m_withText = withText;
+    	m_withImage  = withImage;
 
         init();
 
