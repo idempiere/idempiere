@@ -105,7 +105,8 @@ public class Util {
 		if (cell_value.toLowerCase().startsWith("@sql=")) {
 			String sqlcmd = Env.parseContext(ctx, windowNo, lowerContextTableColumn(cell_value.substring(5)), false, false);
 			String newval = DB.getSQLValueStringEx(null, sqlcmd);
-			parse.addToBody("<hr/>" + newval);
+			if (parse != null)
+				parse.addToBody("<hr/>" + newval);
 			if (log.isLoggable(Level.CONFIG)) log.config("Cell value " + cell_value + " evaluated to " + newval);
 			return newval;
 		} else if (cell_value.toLowerCase().startsWith("@ref=")) {
@@ -120,7 +121,8 @@ public class Util {
 			String whereParsed = Env.parseContext(ctx, windowNo, where, false);
 			String columnname = cell_value.substring(pos_clsqb+2);
 			String newval = DB.getSQLValueStringEx(null, "SELECT " + columnname + " FROM " + tablename + " WHERE " + whereParsed);
-			parse.addToBody("<hr/>" + newval);
+			if (parse != null)
+				parse.addToBody("<hr/>" + newval);
 			if (log.isLoggable(Level.CONFIG)) log.config("Cell value " + cell_value + " evaluated to " + newval);
 			return newval;
 		} else if (cell_value.startsWith("@") && cell_value.endsWith("@")) {
@@ -131,7 +133,8 @@ public class Util {
 			String newval = Env.getContext(ctx, windowNo, cell_value.substring(1, cell_value.length()-1));
 			if (newval == null)
 				return cell_value;
-			parse.addToBody("<hr/>" + newval);
+			if (parse != null)
+				parse.addToBody("<hr/>" + newval);
 			if (log.isLoggable(Level.CONFIG)) log.config("Cell value " + cell_value + " evaluated to " + newval);
 			return newval;
 		} else if ((cell_value.toLowerCase().startsWith("@random_number(") || cell_value.toLowerCase().startsWith("@random_string("))
@@ -191,7 +194,8 @@ public class Util {
 			String newval = randomstr.toString();
 			if (newval == null)
 				return cell_value;
-			parse.addToBody("<hr/>" + newval);
+			if (parse != null)
+				parse.addToBody("<hr/>" + newval);
 			if (log.isLoggable(Level.CONFIG)) log.config("Cell value " + cell_value + " evaluated to " + newval);
 			return newval;
 		} else if (cell_value.startsWith("\\@")) {
@@ -239,4 +243,11 @@ public class Util {
 	}	//	parseContext
 	
 
+	public static String evaluate(String expr) {
+		Instance adempiereInstance = Static_iDempiereInstance.getInstance();
+		Properties ctx = adempiereInstance.getAdempiereService().getCtx();
+		int windowNo = adempiereInstance.getAdempiereService().getWindowNo();
+		
+		return evaluate(ctx, windowNo, expr, null);
+	}
 } // AdempiereUtil
