@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHead;
@@ -33,7 +34,7 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.SimpleListModel;
-import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
@@ -109,10 +110,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 	//	UI variables
 	private Label noLabel = new Label();
 	private Label yesLabel = new Label();
-	private Button bAdd = new Button();
-	private Button bRemove = new Button();
-	private Button bUp = new Button();
-	private Button bDown = new Button();
+	private Button bAdd = ButtonFactory.createNamedButton("Next", false, true);
+	private Button bRemove = ButtonFactory.createNamedButton("Previous", false, true);
+	private Button bUp = ButtonFactory.createNamedButton("Parent", false, true);
+	private Button bDown = ButtonFactory.createNamedButton("Detail", false, true);
 	//
 	SimpleListModel noModel = new SimpleListModel() {
 		/**
@@ -289,10 +290,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 		yesModel.setMultiple(true);
 		noModel.setMultiple(true);
 
-		bAdd.setImage(ThemeManager.getThemeResource("images/Next24.png"));
+		LayoutUtils.addSclass("btn-small", bAdd);
 		bAdd.addEventListener(Events.ON_CLICK, actionListener);
 
-		bRemove.setImage(ThemeManager.getThemeResource("images/Previous24.png"));
+		LayoutUtils.addSclass("btn-small", bRemove);
 		bRemove.addEventListener(Events.ON_CLICK, actionListener);
 
 		EventListener<Event> crossListMouseListener = new DragListener();
@@ -308,10 +309,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 			}
 		};
 
-		bUp.setImage(ThemeManager.getThemeResource("images/Parent24.png"));
+		LayoutUtils.addSclass("btn-small", bUp);
 		bUp.addEventListener(Events.ON_CLICK, actionListener2);
 
-		bDown.setImage(ThemeManager.getThemeResource("images/Detail24.png"));
+		LayoutUtils.addSclass("btn-small", bDown);
 		bDown.addEventListener(Events.ON_CLICK, actionListener2);
 
 		ListHead listHead = new ListHead();
@@ -338,6 +339,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		vbox.appendChild(bAdd);
 		vbox.appendChild(bRemove);
 		vbox.setWidth("46px");
+		vbox.setAlign("center");
 		hlayout.appendChild(vbox);
 
 		yesList.setVflex(true);

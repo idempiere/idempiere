@@ -21,7 +21,7 @@ public class ProcessButtonPopup extends Window {
 	private static final long serialVersionUID = 304878472233552113L;
 
 	public void render(List<Button> buttons) {
-		setSclass("toolbar-popup-window");
+		setSclass("toolbar-popup-window process-buttons-popup");
 		//setWidth("250px");
 		setHflex("min");
 		setBorder("normal");

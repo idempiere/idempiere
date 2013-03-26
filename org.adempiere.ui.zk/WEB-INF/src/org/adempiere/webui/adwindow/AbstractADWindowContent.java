@@ -48,6 +48,7 @@ import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.form.WCreateFromFactory;
 import org.adempiere.webui.apps.form.WCreateFromWindow;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.ProcessInfoDialog;
@@ -60,6 +61,7 @@ import org.adempiere.webui.event.ActionListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.exception.ApplicationException;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.panel.WAttachment;
@@ -2118,12 +2120,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		messagePanel.appendChild(div);
 
 		Hbox hbox = new Hbox();
+		hbox.setStyle("padding-top: 2px");
 		div.appendChild(hbox);
 
-		Button btnOk = new Button();
+		Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
 		// Invert - Unify  OK/Cancel IDEMPIERE-77
-		//btnOk.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "OK")));
-		btnOk.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 		btnOk.addEventListener(Events.ON_CLICK, new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception
@@ -2171,9 +2172,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		});
 		hbox.appendChild(btnOk);
 
-		Button btnCancel = new Button();
-		//btnCancel.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Cancel")));
-		btnCancel.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
+		Button btnCancel = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL);
 		btnCancel.addEventListener(Events.ON_CLICK, new EventListener<Event>()
 		{
 			public void onEvent(Event event) throws Exception
