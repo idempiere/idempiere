@@ -935,7 +935,7 @@ public class MBPartner extends X_C_BPartner
 			MBPGroup grp = getBPGroup();
 			if (grp == null)
 			{
-				log.saveWarning("Error", Msg.parseTranslation(getCtx(), "@NotFound@:  @C_BP_Group_ID@"));
+				log.saveError("Error", Msg.parseTranslation(getCtx(), "@NotFound@:  @C_BP_Group_ID@"));
 				return false;
 			}
 			setBPGroup(grp);	//	setDefaults
