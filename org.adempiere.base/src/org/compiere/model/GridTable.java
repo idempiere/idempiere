@@ -16,6 +16,9 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import static org.compiere.model.SystemIDs.USER_SUPERUSER;
+import static org.compiere.model.SystemIDs.USER_SYSTEM;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
@@ -54,10 +57,10 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.MSort;
+import org.compiere.util.Msg;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
-import static org.compiere.model.SystemIDs.*;
 
 /**
  *	Grid Table Model for JDBC access including buffering.
@@ -97,7 +100,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3181940154166340664L;
+	private static final long serialVersionUID = 4727235099287761006L;
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 
@@ -2169,6 +2172,8 @@ public class GridTable extends AbstractTableModel
 			{
 				msg = ppE.getValue();
 				info = ppE.getName();
+				if ("DBExecuteError".equals(msg))
+					info = "DBExecuteError:" + info;
 				//	Unique Constraint
 				if (DBException.isUniqueContraintError(CLogger.retrieveException()))
 					msg = "SaveErrorNotUnique";
@@ -3288,7 +3293,20 @@ public class GridTable extends AbstractTableModel
 	//	org.compiere.util.Trace.printStack();
 		//
 		DataStatusEvent e = createDSE();
-		e.setInfo(AD_Message, info, isError, !isError);
+		if (info != null && info.startsWith("DBExecuteError:")) {
+			String firstline;
+			int nl = info.indexOf("\n");
+			if (nl > 0)
+				firstline = info.substring(0, nl);
+			else
+				firstline = info;
+			String newinfo = Msg.getMsg(m_ctx, firstline);
+			if (firstline.equals(newinfo))
+				newinfo = info.substring(15); // size of "DBExecuteError:"
+			e.setInfo(AD_Message, newinfo, isError, !isError);
+		} else {
+			e.setInfo(AD_Message, info, isError, !isError);
+		}
 		if (isError)
 			log.saveWarning(AD_Message, info);
 		fireDataStatusChanged (e);
