@@ -10,3 +10,4 @@ Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
  org.adempiere.report.jasper.library;bundle-version="1.0.0"
 Import-Package: org.osgi.framework
 Service-Component: OSGI-INF/jrviewerprovider.xml
+Bundle-ActivationPolicy: lazy
