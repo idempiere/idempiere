@@ -429,30 +429,30 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         ListHeader lstHAndOr = new ListHeader();
         lstHAndOr.setLabel(Msg.getMsg(Env.getCtx(), "And/Or"));
-        lstHAndOr.setWidth("70px");
+        lstHAndOr.setWidth("10%");
 
         ListHeader lstHLeftBracket = new ListHeader();
         lstHLeftBracket.setLabel("(");
-        lstHLeftBracket.setWidth("55px");
+        lstHLeftBracket.setWidth("6%");
 
         ListHeader lstHColumn = new ListHeader();
         lstHColumn.setLabel(Msg.translate(Env.getCtx(), "AD_Column_ID"));
-        lstHColumn.setWidth("210px");
+        lstHColumn.setWidth("30%");
 
         ListHeader lstHOperator = new ListHeader();
         lstHOperator.setLabel(Msg.getMsg(Env.getCtx(), "Operator"));
 
         ListHeader lstHQueryValue = new ListHeader();
         lstHQueryValue.setLabel(Msg.getMsg(Env.getCtx(), "QueryValue"));
-        lstHQueryValue.setWidth("200px");
+        lstHQueryValue.setWidth("24%");
 
         ListHeader lstHQueryTo = new ListHeader();
         lstHQueryTo.setLabel(Msg.getMsg(Env.getCtx(), "QueryValue2"));
-        lstHQueryTo.setWidth("200px");
+        lstHQueryTo.setWidth("20%");
 
         ListHeader lstHRightBracket = new ListHeader();
         lstHRightBracket.setLabel(")");
-        lstHRightBracket.setWidth("55px");
+        lstHRightBracket.setWidth("6%");
 
         listhead.appendChild(lstHAndOr);
         listhead.appendChild(lstHLeftBracket);
@@ -699,13 +699,15 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listColumn.setMold("select");
         listColumn.setRows(0);
         listColumn.addEventListener(Events.ON_SELECT,this);
-
+        listColumn.setHflex("true");
+        
         Listbox listOperator = new Listbox();
         listOperator.setId("listOperator"+listItem.getId());
         listOperator.setName("listOperator");
         listOperator.setMold("select");
         listOperator.setRows(0);
         listOperator.addEventListener(Events.ON_SELECT,this);
+        listOperator.setHflex("true");
         
         Listbox listAndOr = new Listbox();
         listAndOr.setId("listAndOr"+listItem.getId());
@@ -713,6 +715,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listAndOr.setMold("select");
         listAndOr.setRows(0);
         listAndOr.addEventListener(Events.ON_SELECT,this);
+        listAndOr.setHflex("true");
 
         Listbox listLeftBracket = new Listbox();
         listLeftBracket.setId("listLeftBracket"+listItem.getId());
@@ -720,6 +723,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listLeftBracket.setMold("select");
         listLeftBracket.setRows(0);
         listLeftBracket.addEventListener(Events.ON_SELECT,this);
+        listLeftBracket.setHflex("true");
 
         Listbox listRightBracket = new Listbox();
         listRightBracket.setId("listRightBracket"+listItem.getId());
@@ -727,6 +731,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listRightBracket.setMold("select");
         listRightBracket.setRows(0);
         listRightBracket.addEventListener(Events.ON_SELECT,this);
+        listRightBracket.setHflex("true");
 
         setValues(listColumn, listOperator, fields);
 
