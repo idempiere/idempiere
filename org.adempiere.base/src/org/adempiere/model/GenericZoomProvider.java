@@ -119,6 +119,8 @@ public class GenericZoomProvider implements IZoomProvider {
 		query.setZoomColumnName(po.get_KeyColumns()[0]);
 		query.setZoomValue(po.get_ID());
 
+		query.addRestriction("AD_Client_ID", MQuery.EQUAL, Env.getAD_Client_ID(Env.getCtx()));
+
 		String sql = "SELECT COUNT(*) FROM " + targetTableName + " WHERE "
 				+ Env.parseVariable(query.getWhereClause(false), po, null, false);
 		int count = DB.getSQLValue(null, sql);
