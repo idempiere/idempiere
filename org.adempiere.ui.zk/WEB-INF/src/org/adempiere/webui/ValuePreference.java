@@ -219,10 +219,10 @@ public class ValuePreference extends Window implements EventListener<Event>
 		
 		this.setClosable(true);
 		adwindowContent = findADWindowContent(ref);
-		if (adwindowContent != null) {
-			adwindowContent.showBusyMask();
+		if (adwindowContent != null) {			
 			ZkCssHelper.appendStyle(this, "position: absolute;");
 			adwindowContent.getComponent().getParent().appendChild(this);
+			adwindowContent.showBusyMask(this);
 			LayoutUtils.openOverlappedWindow(ref, this, "after_start");
 		} else {
 			AEnv.showCenterScreen(this);

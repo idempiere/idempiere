@@ -195,9 +195,9 @@ public class FileImportAction implements EventListener<Event>
 			vb.appendChild(confirmPanel);
 			confirmPanel.addActionListener(this);
 		}
-
-		panel.showBusyMask();
+		
 		panel.getComponent().getParent().appendChild(winImportFile);
+		panel.showBusyMask(winImportFile);
 		LayoutUtils.openOverlappedWindow(panel.getComponent(), winImportFile, "middle_center");
 		winImportFile.addEventListener(DialogEvents.ON_WINDOW_CLOSE, this);
 	}

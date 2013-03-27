@@ -162,9 +162,9 @@ public class WBinaryEditor extends WEditor
 			});			
 			adwindow = ADWindow.findADWindow(getComponent());
 			if (adwindow != null) {
-				ADWindowContent content = adwindow.getADWindowContent();
-				content.showBusyMask();
+				ADWindowContent content = adwindow.getADWindowContent();				
 				content.getComponent().getParent().appendChild(dialog);
+				content.showBusyMask(dialog);
 				LayoutUtils.openOverlappedWindow(content.getComponent().getParent(), dialog, "middle_center");
 			} else {
 				AEnv.showWindow(dialog);

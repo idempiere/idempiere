@@ -248,7 +248,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 			if (adwindowContent != null) 
 			{
 				adwindowContent.getComponent().getParent().appendChild(dialog);
-				adwindowContent.showBusyMask();
+				adwindowContent.showBusyMask(dialog);
 				LayoutUtils.openOverlappedWindow(adwindowContent.getComponent().getParent(), dialog, "middle_center");
 			}
 			else

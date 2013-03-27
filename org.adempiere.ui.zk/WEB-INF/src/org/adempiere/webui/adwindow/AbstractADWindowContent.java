@@ -104,6 +104,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.WebDoc;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -908,8 +909,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				hideBusyMask();
 			}
 		});
-		showBusyMask();
 		getComponent().getParent().appendChild(win);
+		showBusyMask(win);		
 		LayoutUtils.openOverlappedWindow(getComponent(), win, "middle_center");
 	}
 
@@ -951,8 +952,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				focusToActivePanel();				
 			}
 		});
-    	showBusyMask();
-    	getComponent().getParent().appendChild(chat);    	
+    	getComponent().getParent().appendChild(chat);
+    	showBusyMask(chat);    	    	
     	LayoutUtils.openOverlappedWindow(getComponent(), chat, "middle_center");
     	chat.showWindow();
     }
@@ -1726,8 +1727,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			});
         }
 
-        showBusyMask();
-        getComponent().getParent().appendChild(findWindow);        
+        getComponent().getParent().appendChild(findWindow);
+        showBusyMask(findWindow);                
         LayoutUtils.openEmbeddedWindow(toolbar, findWindow, "after_start");
 	}
 
@@ -2190,9 +2191,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				hideBusyMask();
 				focusToActivePanel();
 			}
-		});
-		showBusyMask();
+		});		
 		getComponent().getParent().appendChild(messagePanel);
+		showBusyMask(messagePanel);
 		LayoutUtils.openOverlappedWindow(getComponent(), messagePanel, "middle_center");
 	}
 	//
@@ -2223,9 +2224,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					ProcessModalDialog dialog = new ProcessModalDialog(AbstractADWindowContent.this, getWindowNo(), AD_Process_ID,table_ID, record_ID, true);
 					if (dialog.isValid()) {
 						dialog.setWidth("500px");
-						dialog.setBorder("normal");
-						showBusyMask();
+						dialog.setBorder("normal");						
 						getComponent().getParent().appendChild(dialog);
+						showBusyMask(dialog);
 						LayoutUtils.openOverlappedWindow(getComponent(), dialog, "middle_center");
 						dialog.focus();
 					}
@@ -2474,9 +2475,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						boolean isProcessMandatory = true;
 						executeButtonProcess(wButton, startWOasking, table_ID, recordIdParam, isProcessMandatory);
 					}
-				});
-				showBusyMask();
+				});				
 				getComponent().getParent().appendChild(win);
+				showBusyMask(win);
 				LayoutUtils.openOverlappedWindow(getComponent(), win, "middle_center");
 				win.focus();
 				return;
@@ -2506,9 +2507,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					window.setZindex(1000);
 					window.setMaximizable(true);
 					window.setSizable(true);
-					ZkCssHelper.appendStyle(window, "position: absolute; ");
-					showBusyMask();
+					ZkCssHelper.appendStyle(window, "position: absolute; ");					
 					getComponent().getParent().appendChild(window);
+					showBusyMask(window);
 					cf.showWindow();
 					LayoutUtils.openOverlappedWindow(getComponent(), window, "middle_center");
 					window.focus();
@@ -2601,11 +2602,22 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	public void hideBusyMask() {
 		if (mask != null && mask.getParent() != null) {
 			mask.detach();
+			StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+			script.append(getComponent().getParent().getUuid()).append("');w.busy=false;");
+			Clients.response(new AuScript(script.toString()));
 		}
 	}
 	
-	public void showBusyMask() {
+	public void showBusyMask(Window window) {
 		getComponent().getParent().appendChild(getMask());
+		StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+		script.append(getComponent().getParent().getUuid()).append("');");
+		if (window != null) {
+			script.append("var d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
+		} else {
+			script.append("w.busy=true;");
+		}
+		Clients.response(new AuScript(script.toString()));
 	}
 
 	private void executeButtonProcess(final IProcessButton wButton,
@@ -2677,7 +2689,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						onRefresh(true, false);						
 					}
 				});
-				showBusyMask();
+				showBusyMask(form);
 				LayoutUtils.openOverlappedWindow(getComponent(), form, "middle_center");
 				form.focus();
 			}
@@ -2692,9 +2704,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			if (dialog.isValid())
 			{
 				dialog.setWidth("500px");
-				dialog.setBorder("normal");
-				showBusyMask();
+				dialog.setBorder("normal");				
 				getComponent().getParent().appendChild(dialog);
+				showBusyMask(dialog);
 				LayoutUtils.openOverlappedWindow(getComponent(), dialog, "middle_center");
 				dialog.focus();
 			}
@@ -2842,9 +2854,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				public void onEvent(Event event) throws Exception {
 					hideBusyMask();
 				}
-			});
-			showBusyMask();
-			getComponent().getParent().appendChild(dialog);			
+			});			
+			getComponent().getParent().appendChild(dialog);
+			showBusyMask(dialog);
 			LayoutUtils.openOverlappedWindow(this.getComponent(),dialog,"middle_center");
 		}
 		

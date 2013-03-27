@@ -133,9 +133,9 @@ public class ExportAction implements EventListener<Event>
 			vb.appendChild(confirmPanel);
 			confirmPanel.addActionListener(this);
 		}
-
-		panel.showBusyMask();
+		
 		panel.getComponent().getParent().appendChild(winExportFile);
+		panel.showBusyMask(winExportFile);
 		LayoutUtils.openOverlappedWindow(panel.getComponent(), winExportFile, "middle_center");
 		winExportFile.addEventListener(DialogEvents.ON_WINDOW_CLOSE, this);
 	}
