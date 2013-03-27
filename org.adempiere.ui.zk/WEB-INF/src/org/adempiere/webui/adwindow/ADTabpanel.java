@@ -1458,6 +1458,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		    	if (!tabPanel.isGridView()) {
 		    		tabPanel.switchRowPresentation();	
 		    	}	    		    	
+	    	} else if (tabPanel != null && !tabPanel.getGridTab().isCurrent()) {
+	    		tabPanel.activate(true);
 	    	}
 		}
 		
