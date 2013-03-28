@@ -712,6 +712,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
             }
 
             m_ds = cpds;
+            m_connectionURL = m_ds.getJdbcUrl();
         }
         catch (Exception ex)
         {

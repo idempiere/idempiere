@@ -519,10 +519,9 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		w.setHeight("500px");
 		Textarea textbox = new Textarea();
 		textbox.setDynamicProperty("readonly", "true");
-		textbox.setStyle("width:100%; height: 100%");
+		textbox.setStyle("width:99%; height: 99%; margin: auto; display: inline-block;");
 		w.appendChild(textbox);
-		Text text = new Text(log);
-		textbox.appendChild(text);
+		textbox.setValue(log);
 		AEnv.showCenterScreen(w);
 	}
 
