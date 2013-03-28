@@ -59,6 +59,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Ini;
+import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.Trace;
@@ -3334,8 +3335,8 @@ public abstract class PO
 		//	Not a translation table
 		if (m_IDs.length > 1
 			|| m_IDs[0].equals(I_ZERO)
-			|| !p_info.isTranslated()
-			|| !(m_IDs[0] instanceof Integer))
+			|| !(m_IDs[0] instanceof Integer)
+			|| !p_info.isTranslated())
 			return true;
 		//
 		StringBuilder iColumns = new StringBuilder();
@@ -3405,9 +3406,14 @@ public abstract class PO
 		//	Not a translation table
 		if (m_IDs.length > 1
 			|| m_IDs[0].equals(I_ZERO)
-			|| !p_info.isTranslated()
-			|| !(m_IDs[0] instanceof Integer))
+			|| !(m_IDs[0] instanceof Integer)
+			|| !p_info.isTranslated())
 			return true;
+
+		String tableName = p_info.getTableName();
+		if (tableName.startsWith("AD") && getAD_Client_ID() == 0)
+			return true;
+
 		//
 		boolean trlColumnChanged = false;
 		for (int i = 0; i < p_info.getColumnCount(); i++)
@@ -3424,42 +3430,82 @@ public abstract class PO
 		//
 		MClient client = MClient.get(getCtx());
 		//
-		String tableName = p_info.getTableName();
 		String keyColumn = m_KeyColumns[0];
-		StringBuilder sql = new StringBuilder ("UPDATE ")
+		StringBuilder sqlupdate = new StringBuilder("UPDATE ")
 			.append(tableName).append("_Trl SET ");
+
 		//
-		if (client.isAutoUpdateTrl(tableName))
+		StringBuilder sqlcols = new StringBuilder();
+		for (int i = 0; i < p_info.getColumnCount(); i++)
 		{
-			for (int i = 0; i < p_info.getColumnCount(); i++)
+			String columnName = p_info.getColumnName(i);
+			if (p_info.isColumnTranslated(i)
+				&& is_ValueChanged(columnName))
 			{
-				if (p_info.isColumnTranslated(i))
-				{
-					String columnName = p_info.getColumnName(i);
-					sql.append(columnName).append("=");
-					Object value = get_Value(columnName);
-					if (value == null)
-						sql.append("NULL");
-					else if (value instanceof String)
-						sql.append(DB.TO_STRING((String)value));
-					else if (value instanceof Boolean)
-						sql.append(((Boolean)value).booleanValue() ? "'Y'" : "'N'");
-					else if (value instanceof Timestamp)
-						sql.append(DB.TO_DATE((Timestamp)value));
-					else
-						sql.append(value.toString());
-					sql.append(",");
+				sqlcols.append(columnName).append("=");
+				Object value = get_Value(columnName);
+				if (value == null)
+					sqlcols.append("NULL");
+				else if (value instanceof String)
+					sqlcols.append(DB.TO_STRING((String)value));
+				else if (value instanceof Boolean)
+					sqlcols.append(((Boolean)value).booleanValue() ? "'Y'" : "'N'");
+				else if (value instanceof Timestamp)
+					sqlcols.append(DB.TO_DATE((Timestamp)value));
+				else
+					sqlcols.append(value.toString());
+				sqlcols.append(",");
+			}
+		}
+		StringBuilder whereid = new StringBuilder(" WHERE ").append(keyColumn).append("=").append(get_ID());
+		StringBuilder andlang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(client.getAD_Language()));
+		StringBuilder andnotlang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(client.getAD_Language()));
+		int no = -1;
+
+		if (client.isMultiLingualDocument()) {
+			String baselang = Language.getBaseAD_Language();
+			if (client.getAD_Language().equals(baselang)) {
+				// tenant language = base language
+				// set all translations as untranslated
+				StringBuilder sqlexec = new StringBuilder()
+					.append(sqlupdate)
+					.append("IsTranslated='N'")
+					.append(whereid);
+				no = DB.executeUpdate(sqlexec.toString(), m_trxName);
+				if (log.isLoggable(Level.FINE)) log.fine("#" + no);
+			} else {
+				// tenant language <> base language
+				// auto update translation for tenant language
+				StringBuilder sqlexec = new StringBuilder()
+					.append(sqlupdate)
+					.append(sqlcols)
+					.append("IsTranslated='Y'")
+					.append(whereid)
+					.append(andlang);
+				no = DB.executeUpdate(sqlexec.toString(), m_trxName);
+				if (log.isLoggable(Level.FINE)) log.fine("#" + no);
+				if (no >= 0) {
+					// set other translations as untranslated
+					sqlexec = new StringBuilder()
+						.append(sqlupdate)
+						.append("IsTranslated='N'")
+						.append(whereid)
+						.append(andnotlang);
+					no = DB.executeUpdate(sqlexec.toString(), m_trxName);
+					if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 				}
 			}
-			sql.append("IsTranslated='Y'");
+			
+		} else {
+			// auto update all translations
+			StringBuilder sqlexec = new StringBuilder()
+				.append(sqlupdate)
+				.append(sqlcols)
+				.append("IsTranslated='Y'")
+				.append(whereid);
+			no = DB.executeUpdate(sqlexec.toString(), m_trxName);
+			if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 		}
-		else
-			sql.append("IsTranslated='N'");
-		//
-		sql.append(" WHERE ")
-			.append(keyColumn).append("=").append(get_ID());
-		int no = DB.executeUpdate(sql.toString(), m_trxName);
-		if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 		return no >= 0;
 	}	//	updateTranslations
 
@@ -3473,8 +3519,8 @@ public abstract class PO
 		//	Not a translation table
 		if (m_IDs.length > 1
 			|| m_IDs[0].equals(I_ZERO)
-			|| !p_info.isTranslated()
-			|| !(m_IDs[0] instanceof Integer))
+			|| !(m_IDs[0] instanceof Integer)
+			|| !p_info.isTranslated())
 			return true;
 		//
 		String tableName = p_info.getTableName();

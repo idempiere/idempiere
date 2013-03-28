@@ -54,10 +54,9 @@ import org.compiere.util.Language;
 public class MClient extends X_AD_Client
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 5428247545086634858L;
-
+	private static final long serialVersionUID = -1242880454287104705L;
 
 	/**
 	 * 	Get client
@@ -419,24 +418,6 @@ public class MClient extends X_AD_Client
 		String aa = getAutoArchive();
 		return aa != null && !aa.equals(AUTOARCHIVE_None);
 	}	//	isAutoArchive
-
-
-	/**
-	 * 	Update Trl Tables automatically?
-	 * 	@param TableName table name
-	 *	@return true if automatically translated
-	 */
-	public boolean isAutoUpdateTrl (String TableName)
-	{
-		if (super.isMultiLingualDocument())
-			return false;
-		if (TableName == null)
-			return false;
-		//	Not Multi-Lingual Documents - only Doc Related
-		if (TableName.startsWith("AD") && getAD_Client_ID() == 0)
-			return false;
-		return true;
-	}	//	isMultiLingualDocument
 
 	/**
 	 *	Get Primary Accounting Schema

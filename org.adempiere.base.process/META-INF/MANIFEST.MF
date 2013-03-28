@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.adempiere.base;bundle-version="1.0.0"
 Export-Package: org.adempiere.process,
- org.compiere.process
+ org.compiere.process,
+ org.idempiere.process
 Import-Package: javax.mail;version="1.4.5",
  javax.mail.internet;version="1.4.5",
  javax.servlet;version="2.5.0",

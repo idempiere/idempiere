@@ -23,6 +23,7 @@ import java.util.Properties;
  *	Client Callout
  *	
  *  @author Karsten Thiemann - kthiemann@adempiere.org
+ *  @author Carlos Ruiz - globalqss
  */
 public class CalloutClient extends CalloutEngine
 {
@@ -54,5 +55,13 @@ public class CalloutClient extends CalloutEngine
 	{
 		return "StoreArchiveWarning";
 	}	//	storeArchiveOnFileSystem
-	
+
+	/**
+	 *	Shows a warning message when changing the language
+	 */
+	public String clientLanguageWarning (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		return "ClientLanguageWarning";
+	}	//	clientLanguageWarning
+
 }	//	CalloutClient
