@@ -75,7 +75,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 {
 	private static final String ERROR_HEADER = "_ERROR_";
 	private static final String LOG_HEADER = "_LOG_";
-	private static String IMPORT_MODE = null;
+	private String IMPORT_MODE = null;
 	
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(GridTabCSVImporter.class);
@@ -1078,7 +1078,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 		return localFile;
 	}
 	
-    class ValueComparator implements Comparator<GridTab> {
+    static class ValueComparator implements Comparator<GridTab> {
     	Map<GridTab,Integer> base;
 		public ValueComparator(Map<GridTab,Integer> base) {
 		    this.base = base;
