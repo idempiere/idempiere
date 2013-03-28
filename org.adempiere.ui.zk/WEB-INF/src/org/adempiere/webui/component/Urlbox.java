@@ -12,20 +12,34 @@
  *****************************************************************************/
 package org.adempiere.webui.component;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
+import org.adempiere.webui.LayoutUtils;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.A;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Hlayout;
+
 /**
  * URL Box
  * @author Low Heng Sin
  */
-public class Urlbox extends EditorBox
+public class Urlbox extends Div 
 {
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3846071364733430994L;
-
+	private static final long serialVersionUID = -5493978668402134644L;
+	
+	protected PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(this);
+	protected Textbox txt;
+	protected A btn;
+	
 	public Urlbox()
     {
-        super();
+		initComponents();
     }
 
     /**
@@ -33,12 +47,110 @@ public class Urlbox extends EditorBox
      */
     public Urlbox(String url)
     {
-        super();
+    	initComponents();
         setText(url);
     }
     
-    @Override
+    private void initComponents() {
+		Hlayout hlayout = new Hlayout();
+		this.appendChild(hlayout);
+		hlayout.setHflex("1");
+		txt = new Textbox();
+		hlayout.appendChild(txt);
+		txt.setHflex("1");
+
+		btn = new A();
+		btn.setTarget("_blank");
+		btn.setTabindex(-1);
+		btn.setSclass("editor-button");
+		btn.setZclass("z-button-os");
+		btn.setHflex("0");
+		hlayout.appendChild(btn);
+
+		LayoutUtils.addSclass("editor-box", this);
+	}
+    
+    /**
+	 * @param imageSrc
+	 */
+	public void setButtonImage(String imageSrc) {
+		btn.setImage(imageSrc);
+	}
+	
+    /**
+	 * @return textbox component
+	 */
+	public Textbox getTextbox() {
+		return txt;
+	}
+
+	/**
+	 * @param value
+	 */
+	public void setText(String value) {
+		txt.setText(value);
+		String url = null;
+		if (value == null) {
+			url = "about:blank";
+		} else {
+			url = value.trim();
+			if (url.length() == 0) {
+				url = "about:blank";
+			} else if (url.indexOf("://") < 0) {
+				url = "http://"+url;
+			}
+		}
+		btn.setHref(url);
+	}
+
+	/**
+	 * @return text
+	 */
+	public String getText() {
+		return txt.getText();
+	}
+	
 	public void setEnabled(boolean enabled) {
     	txt.setReadonly(!enabled);
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public boolean isEnabled() {
+		return !txt.isReadonly();
+	}
+
+	/**
+	 * @param evtnm
+	 * @param listener
+	 */
+	public boolean addEventListener(String evtnm, EventListener<?> listener) {
+		if (Events.ON_CLICK.equals(evtnm)) {
+			return btn.addEventListener(evtnm, listener);
+		} else {
+			return txt.addEventListener(evtnm, listener);
+		}
+	}
+	
+	/**
+	 * @param l
+	 */
+	public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
+		m_propertyChangeListeners.addPropertyChangeListener(l);
+	}
+
+	/**
+	 * @param tooltiptext
+	 */
+	public void setToolTipText(String tooltiptext) {
+		txt.setTooltiptext(tooltiptext);
+	}
+	
+	/**
+	 * @return A
+	 */
+	public A getButton() {
+		return btn;
 	}
 }

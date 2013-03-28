@@ -23,17 +23,14 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
-import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
-import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
 
 public class WUrlEditor extends WEditor implements ContextMenuListener
 {
-	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_CHANGE, Events.ON_OK};
+	private static final String[] LISTENER_EVENTS = {Events.ON_CHANGE, Events.ON_OK};
 	private String oldValue;
 
 	public WUrlEditor(GridField gridField)
@@ -106,25 +103,6 @@ public class WUrlEditor extends WEditor implements ContextMenuListener
 			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
 			fireValueChange(changeEvent);
 			oldValue = newValue;
-		}
-		else if (Events.ON_CLICK.equals(event.getName()))
-		{
-			String urlString =getComponent().getText();
-            String message = null;
-			if (urlString != null && urlString.length() > 0)
-			{
-				try
-                {
-					Clients.response(new AuScript("window.open('"+urlString+"');"));
-                    return;
-                }
-                catch(Exception e)
-                {
-                    message = e.getMessage();
-                }
-			}
-            FDialog.warn(0, this.getComponent(), "URLnotValid", message);
-
 		}
 	}
 
