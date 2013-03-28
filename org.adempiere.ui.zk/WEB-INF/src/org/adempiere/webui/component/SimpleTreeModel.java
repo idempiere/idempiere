@@ -249,8 +249,9 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 	 * @param newParent
 	 * @param newNode
 	 * @param index
+	 * @return parent node. this could be a new instance created to replace the newParent node param
 	 */
-	public void addNode(DefaultTreeNode<Object> newParent, DefaultTreeNode<Object> newNode,
+	public DefaultTreeNode<Object> addNode(DefaultTreeNode<Object> newParent, DefaultTreeNode<Object> newNode,
 			int index) {
 		DefaultTreeNode<Object> parent = newParent;
 		if (newParent.getChildren() == null) {
@@ -260,6 +261,7 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 		}
 		
 		parent.getChildren().add(index, newNode);
+		return parent;
 	}
 	
 	/**

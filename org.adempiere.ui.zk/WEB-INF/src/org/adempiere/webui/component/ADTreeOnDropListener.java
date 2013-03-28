@@ -145,7 +145,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 		}
 		
 		//  insert
-		treeModel.addNode(newParent, movingNode, index);
+		newParent = treeModel.addNode(newParent, movingNode, index);
 		
 		int path[] = treeModel.getPath(movingNode);
 		if (TreeUtils.isOnInitRenderPosted(tree) || tree.getTreechildren() == null)
@@ -192,7 +192,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 						.append(" WHERE AD_Tree_ID=").append(mTree.getAD_Tree_ID())
 						.append(" AND Node_ID=").append(md.getNode_ID());
 					if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
-					no = DB.executeUpdate(sql.toString(),trx.getTrxName());
+					DB.executeUpdateEx(sql.toString(),trx.getTrxName());
 				}
 			}
 			//	COMMIT          *********************
@@ -203,8 +203,11 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 			trx.rollback();
 			FDialog.error(windowNo, tree, "TreeUpdateError", e.getLocalizedMessage());
 		}
-		trx.close();
-		trx = null;
+		finally
+		{
+			trx.close();
+			trx = null;
+		}
 	}
 	
 	class MenuListener implements EventListener<Event> {
