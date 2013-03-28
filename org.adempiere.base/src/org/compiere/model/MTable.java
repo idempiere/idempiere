@@ -67,7 +67,7 @@ public class MTable extends X_AD_Table
 	 */
 	public static MTable get (Properties ctx, int AD_Table_ID)
 	{
-		Integer key = new Integer (AD_Table_ID);
+		Integer key = Integer.valueOf(AD_Table_ID);
 		MTable retValue = s_cache.get (key);
 		if (retValue != null && retValue.getCtx() == ctx) {
 			return retValue;
@@ -125,7 +125,7 @@ public class MTable extends X_AD_Table
 
 		if (retValue != null)
 		{
-			Integer key = new Integer (retValue.getAD_Table_ID());
+			Integer key = Integer.valueOf(retValue.getAD_Table_ID());
 			s_cache.put (key, retValue);
 		}
 		return retValue;
@@ -216,7 +216,7 @@ public class MTable extends X_AD_Table
 	 *	@param requery requery
 	 *	@return array of columns
 	 */
-	public MColumn[] getColumns (boolean requery)
+	public synchronized MColumn[] getColumns (boolean requery)
 	{
 		if (m_columns != null && !requery)
 			return m_columns;
@@ -277,7 +277,7 @@ public class MTable extends X_AD_Table
 	 *  @param ColumnName column name
 	 *  @return index of column with ColumnName or -1 if not found
 	 */
-	public int getColumnIndex (String ColumnName)
+	public synchronized int getColumnIndex (String ColumnName)
 	{
 		if (m_columns == null)
 			getColumns(false);
@@ -293,7 +293,7 @@ public class MTable extends X_AD_Table
 	 *  @param AD_Column_ID column
 	 *  @return index of column with ColumnName or -1 if not found
 	 */
-	public int getColumnIndex (int AD_Column_ID)
+	public synchronized int getColumnIndex (int AD_Column_ID)
 	{
 		if (m_columns == null)
 			getColumns(false);
@@ -370,7 +370,7 @@ public class MTable extends X_AD_Table
 
 		if (po == null)
 		{
-			po = new GenericPO(tableName, getCtx(), new Integer(Record_ID), trxName);
+			po = new GenericPO(tableName, getCtx(), Record_ID, trxName);
 			if (po.get_ID() != Record_ID && Record_ID > 0)
 				po = null;
 		}
@@ -493,7 +493,7 @@ public class MTable extends X_AD_Table
 		MSequence seq = MSequence.get(getCtx(), getTableName(), get_TrxName());
 		if (seq == null || seq.get_ID() == 0)
 			MSequence.createTableSequence(getCtx(), getTableName(), get_TrxName());
-		else if (seq != null && !seq.getName().equals(getTableName()))
+		else if (!seq.getName().equals(getTableName()))
 		{
 			seq.setName(getTableName());
 			seq.saveEx();

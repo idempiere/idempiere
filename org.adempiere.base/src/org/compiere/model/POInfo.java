@@ -69,9 +69,9 @@ public class POInfo implements Serializable
 	 *  @param trxName Transaction name
 	 *  @return POInfo
 	 */
-	public static POInfo getPOInfo (Properties ctx, int AD_Table_ID, String trxName)
+	public static synchronized POInfo getPOInfo (Properties ctx, int AD_Table_ID, String trxName)
 	{
-		Integer key = new Integer(AD_Table_ID);
+		Integer key = Integer.valueOf(AD_Table_ID);
 		POInfo retValue = (POInfo)s_cache.get(key);
 		if (retValue == null)
 		{
@@ -577,7 +577,7 @@ public class POInfo implements Serializable
 	 *  Is Table Translated
 	 *  @return true if table is translated
 	 */
-	public boolean isTranslated ()
+	public synchronized boolean isTranslated ()
 	{
 		if (m_IsTranslated  == null) {
 			m_IsTranslated = Boolean.FALSE;
