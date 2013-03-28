@@ -26,9 +26,10 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
-import org.compiere.util.Env;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 
 public class WUrlEditor extends WEditor implements ContextMenuListener
 {
@@ -114,7 +115,7 @@ public class WUrlEditor extends WEditor implements ContextMenuListener
 			{
 				try
                 {
-                    Env.startBrowser(urlString);
+					Clients.response(new AuScript("window.open('"+urlString+"');"));
                     return;
                 }
                 catch(Exception e)
