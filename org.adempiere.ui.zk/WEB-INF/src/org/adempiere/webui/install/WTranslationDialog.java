@@ -13,9 +13,19 @@
  *****************************************************************************/
 package org.adempiere.webui.install;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.logging.Level;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.FolderBrowser;
@@ -33,15 +43,20 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ReaderInputStream;
 import org.adempiere.webui.window.FDialog;
+import org.apache.commons.io.FileUtils;
 import org.compiere.install.Translation;
 import org.compiere.install.TranslationController;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
@@ -84,6 +99,7 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 	
 	private Button bExport = new Button();
 	private Button bImport = new Button();
+	private Button bImportZIP = new Button();
 	
 	private Label lClient = new Label();
 	private Listbox cbClient = ListboxFactory.newDropdownListbox();
@@ -108,9 +124,13 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 		//
 		bExport.setLabel(Msg.getMsg(Env.getCtx(), "Export"));
 		bExport.addActionListener(this);	
+		bExport.setStyle("text-align: right;");
 		bImport.setLabel(Msg.getMsg(Env.getCtx(), "Import"));
 		bImport.addActionListener(this);		
-		
+		bImportZIP.setLabel(Msg.getMsg(Env.getCtx(), "ImportZIP"));
+		bImportZIP.setUpload("true");
+		bImportZIP.addEventListener(Events.ON_UPLOAD, this);
+
 		Rows rows = centerLayout.newRows();
 		Row row = rows.newRow();
 		row.appendChild(lClient.rightAlign());
@@ -124,13 +144,21 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 		row.appendChild(lTable.rightAlign());
 		row.appendChild(cbTable);
 		
+		row = rows.newRow();
 		Div div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(bExport);
-		
-		row = rows.newRow();
 		row.appendChild(div);
-		row.appendChild(bImport);
+
+		div = new Div();
+		div.setStyle("text-align: center;");
+		div.appendChild(bImport);
+		row.appendChild(div);
+
+		div = new Div();
+		div.setStyle("text-align: left;");
+		div.appendChild(bImportZIP);
+		row.appendChild(div);
 	}
 	
 	/**
@@ -166,6 +194,10 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 		SessionManager.getAppDesktop().closeActiveWindow();
 	}	//	dispose
 	
+	public ADForm getForm() {
+		return form;
+	}
+	
 	/**************************************************************************
 	 *  Action Listener
 	 *  @param e event
@@ -192,7 +224,7 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 		if (m_AD_Table == null)
 			return;
 		
-		m_imp = (e.getTarget() == bImport);
+		m_imp = (e.getTarget() == bImport || e.getTarget() == bImportZIP);
 		
 		m_AD_Client_ID = -1;
 		KeyNamePair AD_Client = null;
@@ -201,65 +233,178 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 		
 		if (AD_Client != null)
 			m_AD_Client_ID = AD_Client.getKey();
-		
+
+		if (e instanceof UploadEvent) 
+		{
+			// upload and import zip
+			UploadEvent ue = (UploadEvent) e;
+			try {
+				processUploadMedia(ue.getMedia());
+			} catch (AdempiereException e1) {
+				throw new RuntimeException(e1);
+			}
+			return;
+		}
+
 		final FolderBrowser directoryDialog = new FolderBrowser(true);
 		directoryDialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				callImportProcess(directoryDialog.getPath());
 			}
-
-			private void callImportProcess(String path) {
-				String directory = directoryDialog.getPath();
-				
-				if(directory == null) return;
-				//
-				statusBar.setStatusLine(directory);
-				
-				Translation t = new Translation(Env.getCtx());
-				StringBuilder msg = new StringBuilder(t.validateLanguage(m_AD_Language.getValue()));
-				if (msg.length() > 0)
-				{
-					FDialog.error(m_WindowNo, form, "LanguageSetupError", msg.toString());
-					return;
-				}
-
-				//	All Tables
-				if (m_AD_Table.getValue().equals(""))
-				{
-					msg = new StringBuilder();
-					
-					for (int i = 1; i < cbTable.getItemCount(); i++)
-					{
-						m_AD_Table = (ValueNamePair)cbTable.getItemAtIndex(i).toValueNamePair();
-						// Carlos Ruiz - globalqss - improve output message from translation import process
-						msg.append(m_AD_Table.getValue()).append(" ").append((m_imp
-								? t.importTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue())
-								: t.exportTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue()))).append(" ");
-					}
-					
-					if(msg == null || msg.length() == 0)
-						msg = new StringBuilder((m_imp ? "Import" : "Export")).append(" Successful. [").append(directory).append("]");
-
-					statusBar.setStatusLine(msg.toString());
-				}
-				else	//	single table
-				{
-					msg = null;
-					msg = new StringBuilder(m_imp
-						? t.importTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue())
-						: t.exportTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue()));
-						
-					if(msg == null || msg.length() == 0)
-						msg = new StringBuilder(m_imp ? "Import" : "Export").append(" Successful. [").append(directory).append("]");
-					
-					statusBar.setStatusLine(msg.toString());
-				}
-			}
 		});
-	}   //  actionPerformed
-	
-	public ADForm getForm() {
-		return form;
+	}   //  onEvent
+
+	private void callImportProcess(String directory) {
+		if(directory == null) return;
+		//
+		statusBar.setStatusLine(directory);
+		
+		Translation t = new Translation(Env.getCtx());
+		StringBuilder msg = new StringBuilder(t.validateLanguage(m_AD_Language.getValue()));
+		if (msg.length() > 0)
+		{
+			FDialog.error(m_WindowNo, form, "LanguageSetupError", msg.toString());
+			return;
+		}
+
+		//	All Tables
+		if (m_AD_Table.getValue().equals(""))
+		{
+			msg = new StringBuilder();
+			
+			for (int i = 1; i < cbTable.getItemCount(); i++)
+			{
+				m_AD_Table = (ValueNamePair)cbTable.getItemAtIndex(i).toValueNamePair();
+				// Carlos Ruiz - globalqss - improve output message from translation import process
+				msg.append(m_AD_Table.getValue()).append(" ").append((m_imp
+						? t.importTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue())
+						: t.exportTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue()))).append(" ");
+			}
+			
+			if(msg == null || msg.length() == 0)
+				msg = new StringBuilder((m_imp ? "Import" : "Export")).append(" Successful. [").append(directory).append("]");
+
+			statusBar.setStatusLine(msg.toString());
+		}
+		else	//	single table
+		{
+			msg = null;
+			msg = new StringBuilder(m_imp
+				? t.importTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue())
+				: t.exportTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue()));
+				
+			if(msg == null || msg.length() == 0)
+				msg = new StringBuilder(m_imp ? "Import" : "Export").append(" Successful. [").append(directory).append("]");
+			
+			statusBar.setStatusLine(msg.toString());
+		}
 	}
+
+	private void processUploadMedia(Media media) throws AdempiereException {
+		if (media == null)
+			return;
+
+		InputStream istream;
+		if (media.isBinary()) {
+			istream = media.getStreamData();
+		} else {
+			istream = new ReaderInputStream(media.getReaderData());
+		}
+
+		if (log.isLoggable(Level.CONFIG)) log.config(media.getName());
+
+		unZipAndProcess(istream);
+	}
+
+	private void unZipAndProcess(InputStream istream) throws AdempiereException {
+		FileOutputStream ostream = null;
+		File file = null;
+		try {
+			file = File.createTempFile("trlImport", ".zip");
+			ostream = new FileOutputStream(file);
+		    byte[] buffer = new byte[1024];
+		    int read;
+		    while ((read = istream.read(buffer)) != -1) {
+		    	ostream.write(buffer, 0, read);
+		    }
+		} catch (Throwable e) {
+			throw new AdempiereException("Copy zip failed", e);
+		} finally {
+			if (ostream != null) {
+				try {
+					ostream.close();
+				} catch (Exception e2) {}
+			}
+		}
+
+		// create temp folder
+	    File tempfolder;
+		try {
+			tempfolder = File.createTempFile(m_AD_Language.getValue(), ".trl");
+		    tempfolder.delete();
+		    tempfolder.mkdir();
+		} catch (IOException e1) {
+			throw new AdempiereException("Problem creating temp folder", e1);
+		}
+
+		String suffix = "_" + m_AD_Language.getValue() + ".xml";
+		ZipFile zipFile = null;
+		boolean validfile = false;
+		try {
+			zipFile = new ZipFile(file);
+
+			Enumeration<? extends ZipEntry> entries = zipFile.entries();
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = (ZipEntry)entries.nextElement();
+
+				if (entry.isDirectory()) {
+					// ignore folders
+					log.warning("Imported zip must not contain folders, ignored folder" + entry.getName());
+					continue;
+				}
+
+				if (! entry.getName().endsWith(suffix)) {
+					// not valid file
+					log.warning("Ignored file " + entry.getName());
+					continue;
+				}
+
+				if (log.isLoggable(Level.INFO)) log.info("Extracting file: " + entry.getName());
+				copyInputStream(zipFile.getInputStream(entry), new BufferedOutputStream(new FileOutputStream(tempfolder.getPath() + File.separator + entry.getName())));
+				validfile = true;
+			}
+		} catch (Throwable e) {
+			throw new AdempiereException("Uncompress zip failed", e);
+		} finally {
+			if (zipFile != null)
+				try {
+					zipFile.close();
+				} catch (IOException e) {}
+		}
+		
+		if (!validfile) {
+			throw new AdempiereException("ZIP file invalid, doesn't contain *" + suffix + " files");
+		}
+
+		callImportProcess(tempfolder.getPath());
+		
+		file.delete();
+		try {
+			FileUtils.deleteDirectory(tempfolder);
+		} catch (IOException e) {}
+	}
+
+	public static final void copyInputStream(InputStream in, OutputStream out) throws IOException
+	{
+		byte[] buffer = new byte[1024];
+		int len;
+
+		while((len = in.read(buffer)) >= 0)
+			out.write(buffer, 0, len);
+
+		in.close();
+		out.close();
+	}	
+
 }

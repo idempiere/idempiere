@@ -14,6 +14,7 @@
 package org.adempiere.webui.component;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.theme.ThemeManager;
@@ -132,6 +133,7 @@ public class FolderBrowser extends Window implements EventListener<Event>
 			}
 
 			File[] files = dir.listFiles();
+			Arrays.sort(files);
 			
 			for(File file: files)
 			{
