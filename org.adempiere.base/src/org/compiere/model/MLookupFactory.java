@@ -699,7 +699,11 @@ public class MLookupFactory
 		int ZoomWindowPO = 0;
 
 		//try cache
-		StringBuilder cacheKey = new StringBuilder().append(Env.getAD_Client_ID(ctx)).append("|").append(TableName).append(".").append(KeyColumn);
+		StringBuilder cacheKey = new StringBuilder()
+				.append(Env.getAD_Client_ID(ctx)).append("|")
+				.append(language.getAD_Language()).append("|")
+				.append(TableName).append(".")
+				.append(KeyColumn);
 		if (s_cacheRefTable.containsKey(cacheKey.toString()))
 			return s_cacheRefTable.get(cacheKey.toString()).cloneIt();
 
