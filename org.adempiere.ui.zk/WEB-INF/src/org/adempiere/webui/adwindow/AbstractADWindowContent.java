@@ -1361,9 +1361,17 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         //  Confirm Warning
         else if (e.isWarning() && !e.isConfirmed())
         {
-        	if (! adTabbox.getSelectedGridTab().getTableModel().isImporting()) {
-                FDialog.warn(curWindowNo, null, e.getAD_Message(), e.getInfo());
-                e.setConfirmed(true);   //  show just once - if MTable.setCurrentRow is involved the status event is re-issued
+        	boolean isImporting = false; 
+        	if (e.getSource() instanceof GridTab) {
+        		GridTab gridTab = (GridTab)e.getSource();
+        		isImporting = gridTab.getTableModel().isImporting();
+        	} else if (e.getSource() instanceof GridTable) {
+        		GridTable gridTable = (GridTable) e.getSource();
+        		isImporting = gridTable.isImporting();
+        	}
+        	if (!isImporting) {
+        		FDialog.warn(curWindowNo, null, e.getAD_Message(), e.getInfo());
+        		e.setConfirmed(true);   //  show just once - if MTable.setCurrentRow is involved the status event is re-issued
         	}
         }
 
