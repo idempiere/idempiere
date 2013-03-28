@@ -559,8 +559,8 @@ public class CLogMgt
 		sb.append(getMsg("ImplementationVendor")).append(eq).append(org.compiere.Adempiere.getImplementationVendor()).append(NL);
 		sb.append(getMsg("ImplementationVersion")).append(eq).append(org.compiere.Adempiere.getImplementationVersion()).append(NL);
 		//
-		sb.append("AdempiereHome = ").append(Adempiere.getAdempiereHome()).append(NL);
-		sb.append("AdempiereProperties = ").append(Ini.getPropertyFileName()).append(NL);
+		sb.append("iDempiereHome = ").append(Adempiere.getAdempiereHome()).append(NL);
+		sb.append("iDempiereProperties = ").append(Ini.getPropertyFileName()).append(NL);
 		sb.append(Env.getLanguage(Env.getCtx())).append(NL);
 		MClient client = MClient.get(Env.getCtx());
 		sb.append(client).append(NL);
@@ -686,15 +686,20 @@ public class CLogMgt
 		StringBuilder sb = new StringBuilder();
 		CConnection cc = CConnection.get();
 		//  Host
-		sb.append(cc.getAppsHost()).append(" (");
+		sb.append(cc.getAppsHost());
+		
+		if (Ini.isClient())
+		{
+			sb.append(" (");
 
-		//  Server
-		if (!cc.getAppsHost().equalsIgnoreCase("MyAppsServer") && cc.isAppsServerOK(false))
-			sb.append(CConnection.get().getServerVersion());
-		else
-			sb.append(getMsg("NotActive"));
-		//
-		sb.append(")\n  ");
+			//  Server
+			if (!cc.getAppsHost().equalsIgnoreCase("MyAppsServer") && cc.isAppsServerOK(false))
+				sb.append(CConnection.get().getServerVersion());
+			else
+				sb.append(getMsg("NotActive"));
+			//
+			sb.append(")\n  ");
+		}
 		//
 		return sb.toString();
 	}   //  getServerInfo

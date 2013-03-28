@@ -1108,9 +1108,17 @@ public class CConnection implements Serializable, Cloneable
 	{
 		StringBuilder sb = new StringBuilder (m_info[0] != null ? m_info[0] : "");
 		sb.append (" - ").append (m_info[1] != null ? m_info[1] : "")
-		  .append ("\n").append (getDatabase ().toString ())
-		  .append ("\nAppsServerOK=").append (isAppsServerOK (false))
-		  .append (", DatabaseOK=").append (isDatabaseOK ());
+		  .append ("\n").append (getDatabase ().toString ());
+		
+		if (Ini.isClient()) 
+		{
+			sb.append ("\nAppsServerOK=").append (isAppsServerOK (false))
+		      .append (", DatabaseOK=").append (isDatabaseOK ());
+		}
+		else
+		{
+			sb.append ("\nDatabaseOK=").append (isDatabaseOK ());
+		}
 		return sb.toString ();
 	}	//  getInfo
 
