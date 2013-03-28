@@ -31,8 +31,10 @@ import org.compiere.model.MRole;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  *
@@ -104,15 +106,30 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 			public void onCallback(Integer result) {
 				Integer newValue = result;
 				
-				if (newValue == null)
-					return;
+				boolean changed = true;
+				if (newValue == null) 
+				{
+					if (m_value == null) 
+						changed = false;
+					if (m_mAccount.getDisplay(m_value).equals(getComponent().getText()))
+						changed = false;
+				}
 
-				Object oldValue = m_value;
-
-				//	set & redisplay
-				setValue(newValue);
-				ValueChangeEvent changeEvent = new ValueChangeEvent(WAccountEditor.this, getColumnName(), oldValue, newValue);
-				fireValueChange(changeEvent);
+				if (changed)
+				{
+					Object oldValue = m_value;
+	
+					//	set & redisplay
+					setValue(newValue);
+					ValueChangeEvent changeEvent = new ValueChangeEvent(WAccountEditor.this, getColumnName(), oldValue, newValue);
+					fireValueChange(changeEvent);
+				}
+				
+				//safety check: if focus is going no where, focus back to self
+				String uid = getComponent().getTextbox().getUuid();
+				String script = "setTimeout(function(){try{var e = zk.Widget.$('#" + uid +
+						"').$n(); if (jq(':focus').size() == 0) e.focus();} catch(error){}}, 100);";
+				Clients.response(new AuScript(script));
 			}
 		});
 		//				
