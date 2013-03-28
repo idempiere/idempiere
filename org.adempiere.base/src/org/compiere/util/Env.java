@@ -1202,7 +1202,7 @@ public final class Env
 			String langCompare = language.getAD_Language().substring(0, 2);
 			if (lang.equals(langCompare))
 			{
-				if (log.isLoggable(Level.FINE)) log.fine("Found similar Language " + AD_Language);
+				if (log.isLoggable(Level.INFO)) log.info("Found similar Language " + AD_Language);
 				language.setAD_Language(AD_Language);
 				return;
 			}

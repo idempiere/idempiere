@@ -48,7 +48,7 @@ public class POInfo implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6383466650370705655L;
+	private static final long serialVersionUID = 3496403499343293597L;
 
 	/** Used by Remote FinReport			*/
 	/**
@@ -132,6 +132,7 @@ public class POInfo implements Serializable
 	private Map<String, Integer> m_columnNameMap;
 	/** ad_column_id to index map **/
 	private Map<Integer, Integer> m_columnIdMap;
+	private Boolean m_IsTranslated = null;
 
 	/**
 	 *  Load Table/Column Info
@@ -578,12 +579,17 @@ public class POInfo implements Serializable
 	 */
 	public boolean isTranslated ()
 	{
-		for (int i = 0; i < m_columns.length; i++)
-		{
-			if (m_columns[i].IsTranslated)
-				return true;
+		if (m_IsTranslated  == null) {
+			m_IsTranslated = Boolean.FALSE;
+			for (int i = 0; i < m_columns.length; i++)
+			{
+				if (m_columns[i].IsTranslated) {
+					m_IsTranslated = Boolean.TRUE;
+					break;
+				}
+			}
 		}
-		return false;
+		return m_IsTranslated.booleanValue();
 	}   //  isTranslated
 
 	/**

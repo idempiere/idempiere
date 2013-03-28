@@ -361,10 +361,8 @@ public class LoginPanel extends Window implements EventListener<Event>
         String[] availableLanguages = Language.getNames();
         for (String langName : availableLanguages) {
     		Language language = Language.getLanguage(langName);
-    		if (!language.isBaseLanguage()) {
-    			if (!supported.contains(language.getAD_Language()))
-    				continue;
-    		}
+   			if (!supported.contains(language.getAD_Language()))
+   				continue;
 			lstLanguage.appendItem(langName, language.getAD_Language());
 		}
 

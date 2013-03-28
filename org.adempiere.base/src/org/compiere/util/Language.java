@@ -70,6 +70,7 @@ public class Language implements Serializable
 
 	/** Base Language            */
 	private static Language     s_baseLanguage = s_languages[0];
+	private static boolean     isBaseLanguageSet = false;
 
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(Language.class.getName());
@@ -142,18 +143,17 @@ public class Language implements Serializable
 		//	Create Language on the fly
 		if (lang.length() == 5)		//	standard format <language>_<Country>
 		{
-			Language ll;
+			Language ll = null;
 			String language = lang.substring(0,2);
 			String country = lang.substring(3);
 			Locale locale = new Locale(language, country);
 			if (DB.isConnected()) {
-				MLanguage dblang = MLanguage.get(Env.getCtx(), langInfo);
-				if (dblang == null)
-				{
-					ll = new Language (lang, lang, locale);
+				// first time connected?
+				if (!isBaseLanguageSet) {
+					setBaseLanguage();
 				}
-				else
-				{
+				MLanguage dblang = MLanguage.get(Env.getCtx(), langInfo);
+				if (dblang != null) {
 					Boolean decimalPoint = null;
 					if (dblang.getIsDecimalPoint() != null)
 						decimalPoint = "Y".equals(dblang.getIsDecimalPoint());
@@ -172,10 +172,16 @@ public class Language implements Serializable
 					ll.m_fromDB = true;
 					if (dblang.isBaseLanguage()) {
 						idxReplace = 0;
-						s_baseLanguage = ll;
+						if (dblang.isSystemLanguage()) {
+							// base language is uploaded also as System language, don't use base language but the corresponding translation
+							s_baseLanguage = new Language ("no-base", "xx_XX", locale);
+						} else {
+							s_baseLanguage = ll;
+						}
 					}
 				}
-			} else {
+			}
+			if (ll == null) {
 				ll = new Language (lang, lang, locale);
 			}
 			StringBuilder msglog = new StringBuilder("Adding Language=").append(language).append(", Country=").append(country).append(", Locale=").append(locale);			
@@ -195,6 +201,19 @@ public class Language implements Serializable
 		//	Get the default one
 		return s_baseLanguage;
 	}   //  getLanguage
+
+	private static void setBaseLanguage() {
+		isBaseLanguageSet = true;
+		String baselang = DB.getSQLValueStringEx(null, "SELECT AD_Language FROM AD_Language WHERE IsActive='Y' AND IsBaseLanguage = 'Y'");
+		if (baselang != null) {
+			getLanguage(baselang);
+		}
+	}
+
+	public static void setBaseLanguage(String baselang) {
+		Language lang = getLanguage(baselang);
+		s_baseLanguage = lang;
+	}
 
 	/**
 	 *  Is it the base language
