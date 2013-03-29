@@ -42,7 +42,7 @@ public class ProcessInfo implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1426147857271483561L;
+	private static final long serialVersionUID = 1371812474929601477L;
 
 	/**
 	 *  Constructor
@@ -136,6 +136,9 @@ public class ProcessInfo implements Serializable
 	
 	/**	Export File				*/
 	private File				m_exportFile = null;
+
+	/** Row count */
+	private int m_rowCount;
 
 	/**
 	 *  String representation
@@ -761,4 +764,13 @@ public class ProcessInfo implements Serializable
 	{
 		m_Record_IDs = Record_IDs;
 	}
+
+	public void setRowCount(int rowCount) {
+		m_rowCount = rowCount;
+	}
+
+	public int getRowCount() {
+		return m_rowCount;
+	}
+
 }   //  ProcessInfo

@@ -53,8 +53,8 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JRQuery;
+import net.sf.jasperreports.engine.JRVariable;
 import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JRDesignQuery;
@@ -67,6 +67,8 @@ import net.sf.jasperreports.engine.export.JRPrintServiceExporterParameter;
 import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
+import net.sf.jasperreports.engine.fill.JRBaseFiller;
+import net.sf.jasperreports.engine.fill.JRFiller;
 import net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.util.JRSwapFile;
@@ -351,6 +353,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
     private boolean startProcess0(Properties ctx, ProcessInfo pi, Trx trx)
     {
     	processInfo = pi;
+    	int nrows = 0;
+    	Object onrows = null;
 		String Name=pi.getTitle();
         int AD_PInstance_ID=pi.getAD_PInstance_ID();
         int Record_ID=pi.getRecord_ID();
@@ -603,8 +607,10 @@ public class ReportStarter implements ProcessCall, ClientProcess
 				params.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
 				DefaultJasperReportsContext jasperContext = DefaultJasperReportsContext.getInstance();
 				JRPropertiesUtil.getInstance(jasperContext).setProperty("net.sf.jasperreports.awt.ignore.missing.font", "true");
-                JasperPrint jasperPrint = JasperFillManager.fillReport( jasperReport, params, conn);
-                
+				JRBaseFiller filler = JRFiller.createFiller(jasperContext, jasperReport);
+				JasperPrint jasperPrint = filler.fill(params, conn);
+				onrows = filler.getVariableValue(JRVariable.REPORT_COUNT);
+
                 if (!processInfo.isExport())
                 {
 	                if (reportData.isDirectPrint())
@@ -734,6 +740,10 @@ public class ReportStarter implements ProcessCall, ClientProcess
             }
         }
 
+        if (onrows != null && onrows instanceof Integer) {
+        	nrows = (Integer) onrows;
+        	processInfo.setRowCount(nrows);
+        }
         reportResult( AD_PInstance_ID, null, trxName);
         return true;
     }

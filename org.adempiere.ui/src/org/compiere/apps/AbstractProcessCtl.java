@@ -26,6 +26,7 @@ import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.db.CConnection;
 import org.compiere.interfaces.Server;
+import org.compiere.model.MPInstance;
 import org.compiere.model.MRule;
 import org.compiere.print.ReportCtl;
 import org.compiere.process.ClientProcess;
@@ -37,6 +38,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.wf.MWFProcess;
 
 /**
@@ -268,6 +270,14 @@ public abstract class AbstractProcessCtl implements Runnable
 			m_pi.setReportingProcess(true);
 			m_pi.setClassName(ProcessUtil.JASPER_STARTER_CLASS);
 			startProcess();
+			MPInstance pinstance = new MPInstance(Env.getCtx(), m_pi.getAD_PInstance_ID(), null);
+			String errmsg = pinstance.getErrorMsg();
+			if (Util.isEmpty(errmsg, true))
+				errmsg = "Rows=" + String.valueOf(m_pi.getRowCount());
+			else
+				errmsg += " Rows=" + m_pi.getRowCount();
+			pinstance.setErrorMsg(errmsg);
+			pinstance.saveEx();
 			unlock();
 			return;
 		}
@@ -278,6 +288,14 @@ public abstract class AbstractProcessCtl implements Runnable
 			//	Start Report	-----------------------------------------------
 			boolean ok = ReportCtl.start(m_processUI, windowno, m_pi, IsDirectPrint);
 			m_pi.setSummary("Report", !ok);
+			MPInstance pinstance = new MPInstance(Env.getCtx(), m_pi.getAD_PInstance_ID(), null);
+			String errmsg = pinstance.getErrorMsg();
+			if (Util.isEmpty(errmsg, true))
+				errmsg = "Rows=" + String.valueOf(m_pi.getRowCount());
+			else
+				errmsg += " Rows=" + m_pi.getRowCount();
+			pinstance.setErrorMsg(errmsg);
+			pinstance.saveEx();
 			unlock ();
 		}
 		/**********************************************************************

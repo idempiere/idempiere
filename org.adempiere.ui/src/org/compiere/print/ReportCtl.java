@@ -16,6 +16,16 @@
  *****************************************************************************/
 package org.compiere.print;
 
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_DUNNING;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_INVOICE;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_ORDER;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_PAYMENT;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_PROJECT;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_RFQRESPONSE;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_FINREPORT;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_FINSTATEMENT;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INOUT;
+
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -27,7 +37,6 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -66,6 +75,7 @@ public class ReportCtl
 
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (ReportCtl.class);
+	private volatile static ProcessInfo m_pi;
 
 	/**
 	 *	Create Report.
@@ -113,6 +123,7 @@ public class ReportCtl
 	{
 		if (s_log.isLoggable(Level.INFO)) s_log.info("start - " + pi);
 
+		m_pi = pi;
 		/**
 		 *	Order Print
 		 */
@@ -363,6 +374,8 @@ public class ReportCtl
 
 	private static void createOutput(ReportEngine re, boolean printPreview, String printerName)
 	{
+		if (m_pi != null)
+			m_pi.setRowCount(re.getPrintData().getRowCount());
 		if (printPreview)
 			preview(re);
 		else {
