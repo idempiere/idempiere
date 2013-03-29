@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for WS_WebServiceFieldInput
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a
  */
 public interface I_WS_WebServiceFieldInput 
 {
@@ -91,6 +91,21 @@ public interface I_WS_WebServiceFieldInput
 	public int getAD_Reference_ID();
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
+
+    /** Column name AD_Reference_Value_ID */
+    public static final String COLUMNNAME_AD_Reference_Value_ID = "AD_Reference_Value_ID";
+
+	/** Set Reference Key.
+	  * Required to specify, if data type is Table or List
+	  */
+	public void setAD_Reference_Value_ID (int AD_Reference_Value_ID);
+
+	/** Get Reference Key.
+	  * Required to specify, if data type is Table or List
+	  */
+	public int getAD_Reference_Value_ID();
+
+	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException;
 
     /** Column name ColumnName */
     public static final String COLUMNNAME_ColumnName = "ColumnName";
@@ -193,6 +208,15 @@ public interface I_WS_WebServiceFieldInput
 
 	/** Get Web Service Field Input	  */
 	public int getWS_WebServiceFieldInput_ID();
+
+    /** Column name WS_WebServiceFieldInput_UU */
+    public static final String COLUMNNAME_WS_WebServiceFieldInput_UU = "WS_WebServiceFieldInput_UU";
+
+	/** Set WS_WebServiceFieldInput_UU	  */
+	public void setWS_WebServiceFieldInput_UU (String WS_WebServiceFieldInput_UU);
+
+	/** Get WS_WebServiceFieldInput_UU	  */
+	public String getWS_WebServiceFieldInput_UU();
 
     /** Column name WS_WebServiceType_ID */
     public static final String COLUMNNAME_WS_WebServiceType_ID = "WS_WebServiceType_ID";

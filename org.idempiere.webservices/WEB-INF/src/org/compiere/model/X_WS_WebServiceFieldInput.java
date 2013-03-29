@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceFieldInput
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0a - $Id$ */
 public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFieldInput, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121118L;
+	private static final long serialVersionUID = 20130326L;
 
     /** Standard Constructor */
     public X_WS_WebServiceFieldInput (Properties ctx, int WS_WebServiceFieldInput_ID, String trxName)
@@ -122,6 +122,34 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	public int getAD_Reference_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
+			.getPO(getAD_Reference_Value_ID(), get_TrxName());	}
+
+	/** Set Reference Key.
+		@param AD_Reference_Value_ID 
+		Required to specify, if data type is Table or List
+	  */
+	public void setAD_Reference_Value_ID (int AD_Reference_Value_ID)
+	{
+		if (AD_Reference_Value_ID < 1) 
+			set_Value (COLUMNNAME_AD_Reference_Value_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Reference_Value_ID, Integer.valueOf(AD_Reference_Value_ID));
+	}
+
+	/** Get Reference Key.
+		@return Required to specify, if data type is Table or List
+	  */
+	public int getAD_Reference_Value_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_Value_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -233,6 +261,19 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
     {
         return new KeyNamePair(get_ID(), String.valueOf(getWS_WebServiceFieldInput_ID()));
     }
+	/** Set WS_WebServiceFieldInput_UU.
+		@param WS_WebServiceFieldInput_UU WS_WebServiceFieldInput_UU	  */
+	public void setWS_WebServiceFieldInput_UU (String WS_WebServiceFieldInput_UU)
+	{
+		set_Value (COLUMNNAME_WS_WebServiceFieldInput_UU, WS_WebServiceFieldInput_UU);
+	}
+
+	/** Get WS_WebServiceFieldInput_UU.
+		@return WS_WebServiceFieldInput_UU	  */
+	public String getWS_WebServiceFieldInput_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_WS_WebServiceFieldInput_UU);
+	}
 
 	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException
     {
