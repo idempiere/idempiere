@@ -219,8 +219,11 @@ public class GridTabCSVImporter implements IGridTabImporter
 		        sortedtTabMapIndexes = new TreeMap<GridTab,Integer>(bvc);
 		        sortedtTabMapIndexes.putAll(tabMapIndexes);
 		    }else{
-		    	sortedtTabMapIndexes = new TreeMap<GridTab,Integer>();
-		    	sortedtTabMapIndexes.put(gridTab,header.size()-1); 	   
+		    	Map<GridTab,Integer> localMapIndexes = new HashMap<GridTab,Integer>();
+		    	localMapIndexes.put(gridTab, header.size()-1);
+		    	ValueComparator bvc =  new ValueComparator(localMapIndexes);
+		        sortedtTabMapIndexes = new TreeMap<GridTab,Integer>(bvc);
+		    	sortedtTabMapIndexes.putAll(localMapIndexes);
 		    }
 			
 		    CellProcessor[] processors = readProcArray.toArray(new CellProcessor[readProcArray.size()]);	
