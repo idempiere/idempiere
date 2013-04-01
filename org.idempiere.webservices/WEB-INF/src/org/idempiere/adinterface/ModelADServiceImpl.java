@@ -46,6 +46,7 @@ import org.apache.xmlbeans.StringEnumAbstractBase.Table;
 import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
+import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRefTable;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
@@ -1010,7 +1011,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		}
 	} // createUpdateData
 
-	private void setValueAccordingToClass(PO po, POInfo poinfo, DataField field, int idxcol) {
+	private void setValueAccordingToClass(PO po, POInfo poinfo, DataField field, int idxcol,X_WS_WebServiceFieldInput fieldInput) {
 		CompiereService m_cs = getCompiereService();
 		// Evaluate the type of the column and assign a proper variable
 		Class<?> columnClass = poinfo.getColumnClass(idxcol);
@@ -1018,8 +1019,22 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		String strValue = field.getVal();
 		String lookupValue = field.getLval();
 		if (lookupValue != null && !"".equals(lookupValue)) {
-
-			Lookup lookup = poinfo.getColumnLookup(idxcol);
+			Lookup lookup = null;
+			
+			if(fieldInput.getAD_Reference_Value_ID()>0)
+			{
+				try{
+					lookup = MLookupFactory.get(m_cs.getCtx(),0,poinfo.getAD_Column_ID(poinfo.getColumnName(idxcol)),fieldInput.getAD_Reference_ID(),null,poinfo.getColumnName(idxcol),fieldInput.getAD_Reference_Value_ID(),false,null); 
+				}catch (Exception e) {
+					throw new IdempiereServiceFault("Exception in resolving overridden lookup ", new QName(
+							"LookupResolutionFailed"));
+				}
+			}
+			else
+			{
+				lookup = poinfo.getColumnLookup(idxcol);
+			}
+			
 			if (lookup == null) {
 				throw new IdempiereServiceFault(field.getColumn() + " is not lookup column. Pass Value in val element ", new QName(
 						"LookupResolutionFailed"));
@@ -1104,7 +1119,13 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				if (fieldInput.getAD_Column_ID() == 0 && fieldInput.getColumnName() != null) { 
 					String varName = fieldInput.getColumnName();
 					Class<?> columnClass = getVariableType(varName, fieldInput.getAD_Reference_ID());
-					Object objVal = convertToObj(field.getVal(),columnClass,varName); 
+					Object objVal = null;
+					String val = field.getVal();
+					if(val!=null && val.charAt(0) == '@')
+						objVal = parseVariable(field.getVal(), po, poinfo, requestCtx);
+					else
+						objVal = convertToObj(field.getVal(),columnClass,varName);
+					
 					requestCtx.put(varName, objVal);
 					
 				} else{ 
@@ -1117,7 +1138,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 								+ ": input column " + field.getColumn() + " does not exist");
 					} else {
 						try {
-							setValueAccordingToClass(po, poinfo, field, idxcol);
+							setValueAccordingToClass(po, poinfo, field, idxcol,fieldInput);
 						} catch (IdempiereServiceFault e) {
 							log.log(Level.WARNING, "Error setting value", e);
 							return rollbackAndSetError(trx, resp, ret, true, "Web service type " + m_webservicetype.getValue()
