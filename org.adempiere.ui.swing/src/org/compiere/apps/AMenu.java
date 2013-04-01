@@ -48,6 +48,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JProgressBar;
 import javax.swing.KeyStroke;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -110,7 +111,10 @@ public final class AMenu extends CFrame
 	public AMenu ()
 	{
 		super();
-		if (log.isLoggable(Level.INFO)) log.info("CodeBase=" + Adempiere.getCodeBase());		
+		if (log.isLoggable(Level.INFO)) log.info("CodeBase=" + Adempiere.getCodeBase());	
+		
+		UIManager.put( "ClassLoader", this.getClass().getClassLoader());
+		
 		Splash splash = Splash.getSplash();
 		//
 		m_WindowNo = AEnv.createWindowNo(this);

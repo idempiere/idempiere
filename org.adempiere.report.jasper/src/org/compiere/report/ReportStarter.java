@@ -335,7 +335,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
     public boolean startProcess(Properties ctx, ProcessInfo pi, Trx trx)
     {
     	ClassLoader cl1 = Thread.currentThread().getContextClassLoader();
-    	ClassLoader cl2 = getClass().getClassLoader();
+    	ClassLoader cl2 = JasperReport.class.getClassLoader();
     	try {
     		if (!cl1.equals(cl2)) {
     			Thread.currentThread().setContextClassLoader(cl2);
@@ -464,7 +464,10 @@ public class ReportStarter implements ProcessCall, ClientProcess
                 			    newQuery.setText(newQueryText);
                 			    jasperDesign.setQuery(newQuery);
                 			    
-                			    JasperReport newJasperReport = JasperCompileManager.compileReport(jasperDesign);
+                			    LocalJasperReportsContext context = new LocalJasperReportsContext(DefaultJasperReportsContext.getInstance());
+                	        	context.setClassLoader(JasperReport.class.getClassLoader());
+                	        	JasperCompileManager manager = JasperCompileManager.getInstance(context);
+                	        	JasperReport newJasperReport = manager.compile(jasperDesign);
                 			    if (newJasperReport != null)
                 			    {
                 			    	data.jasperReport = newJasperReport;
@@ -1115,12 +1118,21 @@ public class ReportStarter implements ProcessCall, ClientProcess
                         params.put( name, pDate);
                     }
                 } else if (pNum != null) {
-                    if (pNumTo!=null) {
-                        params.put( name+"1", pNum);
-                        params.put( name+"2", pNumTo);
-                    } else {
-                        params.put( name, pNum);
-                    }
+                	if (name.endsWith("_ID")) {
+                		if (pNumTo!=null) {
+	                        params.put( name+"1", pNum.intValue());
+	                        params.put( name+"2", pNumTo.intValue());
+	                    } else {
+	                        params.put( name, pNum.intValue());
+	                    }
+                	} else {
+	                    if (pNumTo!=null) {
+	                        params.put( name+"1", pNum);
+	                        params.put( name+"2", pNumTo);
+	                    } else {
+	                        params.put( name, pNum);
+	                    }
+                	}
                 }
                 //
                 // Add parameter info - teo_sarca FR [ 2581145 ]
@@ -1166,7 +1178,10 @@ public class ReportStarter implements ProcessCall, ClientProcess
     {
         JasperReport compiledJasperReport = null;
         try {
-          	JasperCompileManager.compileReportToFile ( reportFile.getAbsolutePath(), jasperFile.getAbsolutePath() );
+        	LocalJasperReportsContext context = new LocalJasperReportsContext(DefaultJasperReportsContext.getInstance());
+        	context.setClassLoader(JasperReport.class.getClassLoader());
+        	JasperCompileManager manager = JasperCompileManager.getInstance(context);
+        	manager.compileToFile(reportFile.getAbsolutePath(), jasperFile.getAbsolutePath() );
             jasperFile.setLastModified( reportFile.lastModified()); //Synchronize Dates
             compiledJasperReport =  (JasperReport)JRLoader.loadObject(jasperFile);
         } catch (JRException e) {

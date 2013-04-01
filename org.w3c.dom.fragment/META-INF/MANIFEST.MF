@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Fragment
+Bundle-SymbolicName: org.w3c.dom.fragment
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: system.bundle; extension:=framework
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: batik-ext.jar,
+ .
+Export-Package: org.w3c.dom,
+ org.w3c.dom.events;version="3.0.0"

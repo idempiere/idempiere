@@ -164,8 +164,10 @@ public final class ProcessUtil {
 		}
 
 		boolean success = false;
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		try
 		{			
+			Thread.currentThread().setContextClassLoader(process.getClass().getClassLoader());
 			process.setProcessUI(processMonitor);
 			success = process.startProcess(ctx, pi, trx);
 			if (success && trx != null && managedTrx)
@@ -190,6 +192,7 @@ public final class ProcessUtil {
 				trx.close();
 				trx = null;
 			}
+			Thread.currentThread().setContextClassLoader(cl);
 		}
 		return success;
 	}

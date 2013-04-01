@@ -6,14 +6,17 @@ import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
+import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.component.Listbox;
@@ -138,75 +141,82 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	}
 	
 	private void renderReport() throws Exception {
-		Listitem selected = previewType.getSelectedItem();
-		if (selected == null || "PDF".equals(selected.getValue())) {
-			String path = System.getProperty("java.io.tmpdir");
-			String prefix = makePrefix(jasperPrint.getName());
-			if (log.isLoggable(Level.FINE))
-			{
-				log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		try {			
+			Thread.currentThread().setContextClassLoader(JasperReport.class.getClassLoader());
+			Listitem selected = previewType.getSelectedItem();
+			if (selected == null || "PDF".equals(selected.getValue())) {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = makePrefix(jasperPrint.getName());
+				if (log.isLoggable(Level.FINE))
+				{
+					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				}
+				File file = File.createTempFile(prefix, ".pdf", new File(path));
+				LocalJasperReportsContext context = new LocalJasperReportsContext(DefaultJasperReportsContext.getInstance());
+				context.setClassLoader(JRPdfExporter.class.getClassLoader());
+				JRPdfExporter exporter = new JRPdfExporter(context);                    		
+	    		exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+	    		exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, file.getAbsolutePath());
+	    		exporter.exportReport();    		
+				media = new AMedia(getTitle(), "pdf", "application/pdf", file, true);
+							
+				
+			} else if ("HTML".equals(previewType.getSelectedItem().getValue())) {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = makePrefix(jasperPrint.getName());
+				if (log.isLoggable(Level.FINE))
+				{
+					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				}
+				File file = File.createTempFile(prefix, ".html", new File(path));
+				
+				JRHtmlExporter exporter = new JRHtmlExporter();
+		          exporter.setParameter(JRExporterParameter.JASPER_PRINT,jasperPrint);
+		          exporter.setParameter(JRExporterParameter.OUTPUT_FILE, file);
+		          // Make images available for the HTML output  
+		         exporter.setParameter(JRHtmlExporterParameter.IS_OUTPUT_IMAGES_TO_DIR, Boolean.TRUE);
+		         exporter.setParameter(JRHtmlExporterParameter.IMAGES_DIR_NAME, Executions.getCurrent().getDesktop().getSession().getWebApp().getRealPath("/images/report/"));
+		         HttpServletRequest request = (HttpServletRequest)Executions.getCurrent().getNativeRequest();
+		         exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, request.getContextPath()+"/images/report/");
+		 	     exporter.exportReport();			
+				media = new AMedia(getTitle(), "html", "text/html", file, false);
+			} else if ("XLS".equals(previewType.getSelectedItem().getValue())) {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = makePrefix(jasperPrint.getName());
+				if (log.isLoggable(Level.FINE))
+				{
+					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				}
+				File file = File.createTempFile(prefix, ".xls", new File(path));		
+		        FileOutputStream fos = new FileOutputStream(file);
+	
+				// coding For Excel:
+				JRXlsExporter exporterXLS = new JRXlsExporter();
+				exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+				exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, fos);
+				exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+				exporterXLS.exportReport();			
+				media = new AMedia(getTitle(), "xls", "application/vnd.ms-excel", file, true);						
+				
+			}else if ("CSV".equals(previewType.getSelectedItem().getValue())) {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = makePrefix(jasperPrint.getName());
+				if (log.isLoggable(Level.FINE))
+				{
+					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				}
+				File file = File.createTempFile(prefix, ".csv", new File(path));
+				FileOutputStream fos = new FileOutputStream(file);
+				JRCsvExporter exporter= new JRCsvExporter();
+				exporter.setParameter(JRExporterParameter.JASPER_PRINT,  jasperPrint);
+				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM,  fos);
+				exporter.exportReport();
+				
+				media = new AMedia(getTitle(), "csv", "application/csv", file, true);	
 			}
-			File file = File.createTempFile(prefix, ".pdf", new File(path));
-			JRPdfExporter exporter = new JRPdfExporter();                    		
-    		exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-    		exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, file.getAbsolutePath());
-    		exporter.setParameter(JRExporterParameter.CLASS_LOADER, exporter.getClass().getClassLoader());
-    		exporter.exportReport();    		
-			media = new AMedia(getTitle(), "pdf", "application/pdf", file, true);
-						
-			
-		} else if ("HTML".equals(previewType.getSelectedItem().getValue())) {
-			String path = System.getProperty("java.io.tmpdir");
-			String prefix = makePrefix(jasperPrint.getName());
-			if (log.isLoggable(Level.FINE))
-			{
-				log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-			}
-			File file = File.createTempFile(prefix, ".html", new File(path));
-			
-			JRHtmlExporter exporter = new JRHtmlExporter();
-	          exporter.setParameter(JRExporterParameter.JASPER_PRINT,jasperPrint);
-	          exporter.setParameter(JRExporterParameter.OUTPUT_FILE, file);
-	          // Make images available for the HTML output  
-	         exporter.setParameter(JRHtmlExporterParameter.IS_OUTPUT_IMAGES_TO_DIR, Boolean.TRUE);
-	         exporter.setParameter(JRHtmlExporterParameter.IMAGES_DIR_NAME, Executions.getCurrent().getDesktop().getSession().getWebApp().getRealPath("/images/report/"));
-	         HttpServletRequest request = (HttpServletRequest)Executions.getCurrent().getNativeRequest();
-	         exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, request.getContextPath()+"/images/report/");
-	 	     exporter.exportReport();			
-			media = new AMedia(getTitle(), "html", "text/html", file, false);
-		} else if ("XLS".equals(previewType.getSelectedItem().getValue())) {
-			String path = System.getProperty("java.io.tmpdir");
-			String prefix = makePrefix(jasperPrint.getName());
-			if (log.isLoggable(Level.FINE))
-			{
-				log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-			}
-			File file = File.createTempFile(prefix, ".xls", new File(path));		
-	        FileOutputStream fos = new FileOutputStream(file);
-
-			// coding For Excel:
-			JRXlsExporter exporterXLS = new JRXlsExporter();
-			exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
-			exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, fos);
-			exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
-			exporterXLS.exportReport();			
-			media = new AMedia(getTitle(), "xls", "application/vnd.ms-excel", file, true);						
-			
-		}else if ("CSV".equals(previewType.getSelectedItem().getValue())) {
-			String path = System.getProperty("java.io.tmpdir");
-			String prefix = makePrefix(jasperPrint.getName());
-			if (log.isLoggable(Level.FINE))
-			{
-				log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-			}
-			File file = File.createTempFile(prefix, ".csv", new File(path));
-			FileOutputStream fos = new FileOutputStream(file);
-			JRCsvExporter exporter= new JRCsvExporter();
-			exporter.setParameter(JRExporterParameter.JASPER_PRINT,  jasperPrint);
-			exporter.setParameter(JRExporterParameter.OUTPUT_STREAM,  fos);
-			exporter.exportReport();
-			
-			media = new AMedia(getTitle(), "csv", "application/csv", file, true);	
+		} finally {
+			Thread.currentThread().setContextClassLoader(cl);
 		}
 
 		iframe.setSrc(null);

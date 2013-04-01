@@ -104,49 +104,58 @@ public abstract class SvrProcess implements ProcessCall
 		if (localTrx)
 			m_trx = Trx.get(Trx.createTrxName("SvrProcess"), true);
 		//
-		lock();
-		
-		boolean success = false;
-		
 		ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
-		try 
-		{
-			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-			m_ctx.put(PROCESS_INFO_CTX_KEY, m_pi);
-			if (processUI != null)
-				m_ctx.put(PROCESS_UI_CTX_KEY, processUI);
-			success = process();			
-		}
-		finally
-		{
-			m_ctx.remove(PROCESS_INFO_CTX_KEY);
-			m_ctx.remove(PROCESS_UI_CTX_KEY);
-			if (localTrx)
-			{
-				if (success)
-				{
-					try 
-					{
-						m_trx.commit(true);
-					} catch (Exception e)
-					{
-						log.log(Level.SEVERE, "Commit failed.", e);
-						m_pi.addSummary("Commit Failed.");
-						m_pi.setError(true);
-					}
-				}
-				else
-					m_trx.rollback();
-				m_trx.close();
-				m_trx = null;
+		ClassLoader processLoader = getClass().getClassLoader();
+		try {
+			if (processLoader != contextLoader) {
+				Thread.currentThread().setContextClassLoader(processLoader);
 			}
-		
-			unlock();
+			lock();
 			
-			// outside transaction processing [ teo_sarca, 1646891 ]
-			postProcess(!m_pi.isError());
+			boolean success = false;
+					
+			try 
+			{			
+				m_ctx.put(PROCESS_INFO_CTX_KEY, m_pi);
+				if (processUI != null)
+					m_ctx.put(PROCESS_UI_CTX_KEY, processUI);
+				success = process();			
+			}
+			finally
+			{
+				m_ctx.remove(PROCESS_INFO_CTX_KEY);
+				m_ctx.remove(PROCESS_UI_CTX_KEY);
+				if (localTrx)
+				{
+					if (success)
+					{
+						try 
+						{
+							m_trx.commit(true);
+						} catch (Exception e)
+						{
+							log.log(Level.SEVERE, "Commit failed.", e);
+							m_pi.addSummary("Commit Failed.");
+							m_pi.setError(true);
+						}
+					}
+					else
+						m_trx.rollback();
+					m_trx.close();
+					m_trx = null;
+				}
 			
-			Thread.currentThread().setContextClassLoader(contextLoader);
+				unlock();
+				
+				// outside transaction processing [ teo_sarca, 1646891 ]
+				postProcess(!m_pi.isError());
+				
+				Thread.currentThread().setContextClassLoader(contextLoader);
+			}
+		} finally {
+			if (processLoader != contextLoader) {
+				Thread.currentThread().setContextClassLoader(contextLoader);
+			}
 		}
 		
 		return !m_pi.isError();

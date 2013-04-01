@@ -636,6 +636,9 @@ public final class Adempiere
 
 		if (!isClient)
 			DB.updateMail();
+		
+		System.setProperty("javax.xml.parsers.SAXParserFactory", "org.apache.xerces.jaxp.SAXParserFactoryImpl");
+		
 		return true;
 	}	//	startupEnvironment
 

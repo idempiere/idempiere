@@ -3,6 +3,7 @@
  */
 package org.compiere.report;
 
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -19,6 +20,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.view.JRViewer;
 
@@ -85,6 +87,21 @@ public class JasperReportViewer extends JRViewer {
     public String getFormat() {
         return (String) comboBox.getSelectedItem();
     }
+    
+
+	@Override
+	protected void paintPage(Graphics2D grx) {
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		try {
+			Thread.currentThread().setContextClassLoader(JasperReport.class.getClassLoader());
+			super.paintPage(grx);
+		} finally {
+			Thread.currentThread().setContextClassLoader(cl);
+		}
+	}
+    
+    
+
 }
 
 class ExportListener implements ActionListener {
