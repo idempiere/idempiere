@@ -40,6 +40,7 @@ import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.SimpleTreeModel;
+import org.adempiere.webui.component.Urlbox;
 import org.adempiere.webui.editor.IZoomableEditor;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
@@ -75,6 +76,7 @@ import org.compiere.util.Evaluatee;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
@@ -963,11 +965,19 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         Events.postEvent(event);
     }
 
-	/**
+    /**
 	 * set focus to first active editor
 	 */
     @Override
-	public void focusToFirstEditor() {
+    public void focusToFirstEditor() {
+    	focusToFirstEditor(false);
+    }
+    
+    /**
+     * 
+     * @param checkCurrent
+     */
+    public void focusToFirstEditor(boolean checkCurrent) {
 		WEditor toFocus = null;
 		for (WEditor editor : editors) {
 			if (editor.isVisible() && editor.isReadWrite() && editor.getComponent().getParent() != null
@@ -977,7 +987,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			}
 		}
 		if (toFocus != null) {
-			focusToEditor(toFocus);
+			focusToEditor(toFocus, checkCurrent);
 		}
 	}
 
@@ -1316,7 +1326,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	@Override
 	public void focus() {
 		if (formContainer.isVisible())
-			this.focusToFirstEditor();
+			this.focusToFirstEditor(true);
 		else
 			listPanel.focus();
 	}
@@ -1504,21 +1514,32 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			}
 			if (found) {
 				if (editor.isVisible() && editor.isReadWrite()) {
-					focusToEditor(editor);
+					focusToEditor(editor, false);
 					break;
 				}
 			}
 		}
 	}
 	
-	protected void focusToEditor(WEditor toFocus) {
+	protected void focusToEditor(WEditor toFocus, boolean checkCurrent) {
 		Component c = toFocus.getComponent();
 		if (c instanceof EditorBox) {
 			c = ((EditorBox)c).getTextbox();
 		} else if (c instanceof NumberBox) {
 			c = ((NumberBox)c).getDecimalbox();
+		} else if (c instanceof Urlbox) {
+			c = ((Urlbox)c).getTextbox();
 		}
-		((HtmlBasedComponent)c).focus();
+		if (!checkCurrent) {
+			((HtmlBasedComponent)c).focus();
+		} else {
+			StringBuilder script = new StringBuilder("var b=true;try{if (zk.currentFocus) {");
+			script.append("var p=zk.Widget.$('#").append(formContainer.getCenter().getUuid()).append("');");
+			script.append("if (zUtl.isAncestor(p, zk.currentFocus)) {");
+			script.append("b=false;}}}catch(error){}");
+			script.append("if(b){var w=zk.Widget.$('#").append(c.getUuid()).append("');w.focus(0);}");
+			Clients.response(new AuScript(script.toString()));
+		}
 	}
 }
 
