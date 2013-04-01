@@ -247,7 +247,7 @@ public abstract class Doc
 	 * 	@param defaultDocumentType default document type or null
 	 * 	@param trxName trx
 	 */
-	Doc (MAcctSchema as, Class<?> clazz, ResultSet rs, String defaultDocumentType, String trxName)
+	public Doc (MAcctSchema as, Class<?> clazz, ResultSet rs, String defaultDocumentType, String trxName)
 	{
 		p_Status = STATUS_Error;
 		m_as = as;
