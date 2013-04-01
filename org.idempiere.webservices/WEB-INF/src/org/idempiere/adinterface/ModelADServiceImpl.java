@@ -1021,10 +1021,10 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		if (lookupValue != null && !"".equals(lookupValue)) {
 			Lookup lookup = null;
 			
-			if(fieldInput.getAD_Reference_Value_ID()>0)
+			if(fieldInput.getAD_Reference_ID() > 0 && fieldInput.getAD_Reference_Value_ID()>0)
 			{
 				try{
-					lookup = MLookupFactory.get(m_cs.getCtx(),0,poinfo.getAD_Column_ID(poinfo.getColumnName(idxcol)),fieldInput.getAD_Reference_ID(),null,poinfo.getColumnName(idxcol),fieldInput.getAD_Reference_Value_ID(),false,null); 
+					lookup = MLookupFactory.get(m_cs.getCtx(),0,poinfo.getAD_Column_ID(poinfo.getColumnName(idxcol)),fieldInput.getAD_Reference_ID(),Env.getLanguage(m_cs.getCtx()),poinfo.getColumnName(idxcol),fieldInput.getAD_Reference_Value_ID(),false,null); 
 				}catch (Exception e) {
 					throw new IdempiereServiceFault("Exception in resolving overridden lookup ", new QName(
 							"LookupResolutionFailed"));
@@ -1121,7 +1121,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 					Class<?> columnClass = getVariableType(varName, fieldInput.getAD_Reference_ID());
 					Object objVal = null;
 					String val = field.getVal();
-					if(val!=null && val.charAt(0) == '@')
+					if(val!=null && val.length() > 0 && val.charAt(0) == '@')
 						objVal = parseVariable(field.getVal(), po, poinfo, requestCtx);
 					else
 						objVal = convertToObj(field.getVal(),columnClass,varName);
