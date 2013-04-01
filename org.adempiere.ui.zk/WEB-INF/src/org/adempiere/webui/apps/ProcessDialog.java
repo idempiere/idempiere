@@ -107,7 +107,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	 * generate serial version ID
 	 */
 	private static final long serialVersionUID = 5545731871518761455L;
-	private static final String MESSAGE_DIV_STYLE = "max-height: 150pt; overflow: auto";	
+	private static final String MESSAGE_DIV_STYLE = "max-height: 150pt; overflow: auto; margin: 10px;";	
 	private Div messageDiv;
 	private Center center;
 	private Table logMessageTable;
@@ -177,12 +177,12 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		@SuppressWarnings("unused")
 		String label = Msg.getMsg(Env.getCtx(), "Start");
 		// Invert - Unify  OK/Cancel IDEMPIERE-77
-		bOK = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
+		bOK = ButtonFactory.createNamedButton(ConfirmPanel.A_OK, true, true);
 		bOK.setId("Ok");
 		bOK.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(bOK);
 		
-		Button btn = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL);
+		Button btn = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL, true, true);
 		btn.setId("Cancel");
 		btn.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btn);		
