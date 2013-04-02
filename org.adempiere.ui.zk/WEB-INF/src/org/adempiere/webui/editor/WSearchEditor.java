@@ -577,6 +577,13 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				else if (cancelled)
 				{
 					if (log.isLoggable(Level.CONFIG)) log.config(getColumnName() + " - Result = null (cancelled)");
+					if (value != null) 
+					{
+						if (lookup.getDisplay(value).equals(getComponent().getText()))
+						{
+							return;
+						}
+					}
 					actionCombo(null);
 				}
 				else
