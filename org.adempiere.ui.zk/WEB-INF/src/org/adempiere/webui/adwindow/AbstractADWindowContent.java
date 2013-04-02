@@ -1566,7 +1566,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
     public void onRefresh()
     {
-    	onRefresh(true);
+    	onRefresh(true, false);
     }
 
     /**
