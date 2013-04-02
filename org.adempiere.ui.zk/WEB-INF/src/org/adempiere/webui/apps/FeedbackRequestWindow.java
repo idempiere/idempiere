@@ -75,12 +75,12 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 
 	private static CLogger log = CLogger.getCLogger(FeedbackRequestWindow.class);
 	
-	private WTableDirEditor requestTypeField, priorityField, salesRepField;
-	private Textbox txtSummary;
-	private ConfirmPanel confirmPanel;
+	protected WTableDirEditor requestTypeField, priorityField, salesRepField;
+	protected Textbox txtSummary;
+	protected ConfirmPanel confirmPanel;
 	
-	private List<DataSource> attachments = new ArrayList<DataSource>();
-	private Div attachmentBox;
+	protected List<DataSource> attachments = new ArrayList<DataSource>();
+	protected Div attachmentBox;
 	
 	public FeedbackRequestWindow() {
 		
@@ -224,51 +224,7 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 			if (salesRepField.getValue() == null || salesRepField.getValue().equals("0"))
 				throw new WrongValueException(salesRepField.getComponent(), Msg.translate(Env.getCtx(), "FillMandatory"));
 			
-			Trx trx = Trx.get(Trx.createTrxName("SaveNewRequest"), true);
-			try {
-				trx.start();
-				MRequest request = new MRequest(Env.getCtx(), 0, trx.getTrxName());
-				request.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
-				request.setR_RequestType_ID((Integer) requestTypeField.getValue());
-				request.setPriority((String) priorityField.getValue());
-				request.setSummary(txtSummary.getText());
-				request.setSalesRep_ID((Integer) salesRepField.getValue());
-				
-				boolean success = request.save();
-				if (success)
-				{
-					MAttachment attachment = null;
-					for(DataSource ds : attachments)
-					{
-						if (attachment == null)
-						{
-							attachment = new MAttachment(Env.getCtx(), 0, request.get_TrxName());
-							attachment.setAD_Table_ID(request.get_Table_ID());
-							attachment.setRecord_ID(request.get_ID());
-						}
-						
-						attachment.addEntry(ds.getName(), IOUtils.toByteArray(ds.getInputStream()));
-					}
-					if (attachment != null)
-						success = attachment.save();
-					
-					if (success)
-						success = trx.commit();
-					
-				}
-				
-				if (success)
-				{
-					FDialog.info(0, null, Msg.getMsg(Env.getCtx(), "Saved"));
-				}
-				else
-				{
-					trx.rollback();
-					FDialog.error(0, this, Msg.getMsg(Env.getCtx(), "SaveError"));
-				}
-			} finally {
-				trx.close();
-			}
+			saveRequest();
 			
 			this.detach();
 		}
@@ -288,6 +244,59 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 				addAttachment(dataSource, true);			    
 			}
 		}
+	}
+
+	protected void saveRequest() throws IOException {
+		Trx trx = Trx.get(Trx.createTrxName("SaveNewRequest"), true);
+		try {
+			trx.start();
+			MRequest request = createMRequest(trx);
+			
+			boolean success = request.save();
+			if (success)
+			{
+				MAttachment attachment = null;
+				for(DataSource ds : attachments)
+				{
+					if (attachment == null)
+					{
+						attachment = new MAttachment(Env.getCtx(), 0, request.get_TrxName());
+						attachment.setAD_Table_ID(request.get_Table_ID());
+						attachment.setRecord_ID(request.get_ID());
+					}
+					
+					attachment.addEntry(ds.getName(), IOUtils.toByteArray(ds.getInputStream()));
+				}
+				if (attachment != null)
+					success = attachment.save();
+				
+				if (success)
+					success = trx.commit();
+				
+			}
+			
+			if (success)
+			{
+				FDialog.info(0, null, Msg.getMsg(Env.getCtx(), "Saved"));
+			}
+			else
+			{
+				trx.rollback();
+				FDialog.error(0, this, Msg.getMsg(Env.getCtx(), "SaveError"));
+			}
+		} finally {
+			trx.close();
+		}
+	}
+
+	protected MRequest createMRequest(Trx trx) {
+		MRequest request = new MRequest(Env.getCtx(), 0, trx.getTrxName());
+		request.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
+		request.setR_RequestType_ID((Integer) requestTypeField.getValue());
+		request.setPriority((String) priorityField.getValue());
+		request.setSummary(txtSummary.getText());
+		request.setSalesRep_ID((Integer) salesRepField.getValue());
+		return request;
 	}
 
 	public void addAttachment(DataSource dataSource, boolean removable) {

@@ -62,7 +62,7 @@ public class DefaultFeedbackService implements IFeedbackService {
 		new CreateNewRequestAction();
 	}
 
-	private static class EmailSupportAction implements EventListener<Event>{
+	protected static class EmailSupportAction implements EventListener<Event>{
 
 		private boolean errorOnly;
 		
@@ -96,7 +96,7 @@ public class DefaultFeedbackService implements IFeedbackService {
 			showEmailDialog(imageBytes);
 		}
 		
-		private void showEmailDialog(byte[] imageBytes) {
+		protected void showEmailDialog(byte[] imageBytes) {
 			DataSource ds = FeedbackManager.getLogAttachment(errorOnly);
 			
 			WEMailDialog dialog = new WEMailDialog(
@@ -122,7 +122,7 @@ public class DefaultFeedbackService implements IFeedbackService {
 		}
 	}
 	
-	private static class CreateNewRequestAction implements EventListener<Event>{
+	protected static class CreateNewRequestAction implements EventListener<Event>{
 		protected CreateNewRequestAction() {
 			SessionManager.getAppDesktop().getComponent().addEventListener("onCreateFeedbackRequest", this);
 			
@@ -152,7 +152,7 @@ public class DefaultFeedbackService implements IFeedbackService {
 			showRequestDialog(imageBytes);
 		}
 		
-		private void showRequestDialog(byte[] imageBytes) {
+		protected void showRequestDialog(byte[] imageBytes) {
 			FeedbackRequestWindow window = new FeedbackRequestWindow();
 			AEnv.showWindow(window);
 			

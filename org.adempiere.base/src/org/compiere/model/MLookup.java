@@ -676,6 +676,14 @@ public final class MLookup extends Lookup implements Serializable
 		return false;
 	}
 	
+	/**
+	 * @return lookup info
+	 */
+	public MLookupInfo getLookupInfo() 
+	{
+		return m_info;
+	}
+	
 	/**************************************************************************
 	 *	MLookup Loader
 	 */

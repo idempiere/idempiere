@@ -467,6 +467,11 @@ ContextMenuListener, IZoomableEditor
     	}
 	}
     
+    public Lookup getLookup()
+    {
+    	return lookup;
+    }
+    
     private void onNewRecord() {
     	try
         {
