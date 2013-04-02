@@ -164,12 +164,15 @@ public class AdempiereActivator implements BundleActivator, ServiceTrackerCustom
 			Adempiere.getThreadPoolExecutor().execute(new Runnable() {			
 				@Override
 				public void run() {
+					ClassLoader cl = Thread.currentThread().getContextClassLoader();
 					try {
+						Thread.currentThread().setContextClassLoader(AdempiereActivator.class.getClassLoader());
 						setupPackInContext();
 						installPackage();
 					} finally {
 						ServerContext.dispose();
 						service = null;
+						Thread.currentThread().setContextClassLoader(cl);
 					}
 				}
 			});
@@ -178,12 +181,15 @@ public class AdempiereActivator implements BundleActivator, ServiceTrackerCustom
 				@Override
 				public void stateChange(ServerStateChangeEvent event) {
 					if (event.getEventType() == ServerStateChangeEvent.SERVER_START && service != null) {
+						ClassLoader cl = Thread.currentThread().getContextClassLoader();
 						try {
+							Thread.currentThread().setContextClassLoader(AdempiereActivator.class.getClassLoader());
 							setupPackInContext();
 							installPackage();
 						} finally {
 							ServerContext.dispose();
 							service = null;
+							Thread.currentThread().setContextClassLoader(cl);
 						}
 					}					
 				}
