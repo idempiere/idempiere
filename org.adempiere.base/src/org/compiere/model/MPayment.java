@@ -546,44 +546,54 @@ public final class MPayment extends X_C_Payment
 		
 		Trx trx = Trx.get(Trx.createTrxName("ppt-"), true);
 		
-		MPaymentTransaction m_mPaymentTransaction = createPaymentTransaction(trx.getTrxName());
-		m_mPaymentTransaction.setIsApproved(approved);
-		if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))
-			m_mPaymentTransaction.setIsVoided(approved);	
-		m_mPaymentTransaction.setProcessed(approved);
-		m_mPaymentTransaction.setC_Payment_ID(getC_Payment_ID());
-		m_mPaymentTransaction.saveEx();
-		
-		MOnlineTrxHistory history = new MOnlineTrxHistory(getCtx(), 0, trx.getTrxName());
-		history.setAD_Table_ID(MPaymentTransaction.Table_ID);
-		history.setRecord_ID(m_mPaymentTransaction.getC_PaymentTransaction_ID());
-		history.setIsError(!approved);
-		history.setProcessed(approved);
-		
-		StringBuilder msg = new StringBuilder();
-		if (approved)
+		try
 		{
+			MPaymentTransaction m_mPaymentTransaction = createPaymentTransaction(trx.getTrxName());
+			m_mPaymentTransaction.setIsApproved(approved);
 			if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))
-				msg.append(getR_VoidMsg() + "\n");
-			else
+				m_mPaymentTransaction.setIsVoided(approved);	
+			m_mPaymentTransaction.setProcessed(approved);
+			m_mPaymentTransaction.setC_Payment_ID(getC_Payment_ID());
+			m_mPaymentTransaction.saveEx();
+			
+			MOnlineTrxHistory history = new MOnlineTrxHistory(getCtx(), 0, trx.getTrxName());
+			history.setAD_Table_ID(MPaymentTransaction.Table_ID);
+			history.setRecord_ID(m_mPaymentTransaction.getC_PaymentTransaction_ID());
+			history.setIsError(!approved);
+			history.setProcessed(approved);
+			
+			StringBuilder msg = new StringBuilder();
+			if (approved)
 			{
-				msg.append("Result: " + getR_Result() + "\n");
-				msg.append("Response Message: " + getR_RespMsg() + "\n");
-				msg.append("Reference: " + getR_PnRef() + "\n");
-				msg.append("Authorization Code: " + getR_AuthCode() + "\n");
+				if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))
+					msg.append(getR_VoidMsg() + "\n");
+				else
+				{
+					msg.append("Result: " + getR_Result() + "\n");
+					msg.append("Response Message: " + getR_RespMsg() + "\n");
+					msg.append("Reference: " + getR_PnRef() + "\n");
+					msg.append("Authorization Code: " + getR_AuthCode() + "\n");
+				}
 			}
+			else
+				msg.append("ERROR: " + getErrorMessage() + "\n");
+			msg.append("Transaction Type: " + getTrxType());
+			history.setTextMsg(msg.toString());
+			
+			history.saveEx();
 		}
-		else
-			msg.append("ERROR: " + getErrorMessage() + "\n");
-		msg.append("Transaction Type: " + getTrxType());
-		history.setTextMsg(msg.toString());
-		
-		history.saveEx();
-		
-		if (trx != null)
+		catch (Exception e)
 		{
-			trx.commit();
-			trx.close();
+			log.log(Level.SEVERE, "processOnline", e);
+			setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNotProcessed") + ": " + e.getMessage());
+		}
+		finally
+		{
+			if (trx != null)
+			{
+				trx.commit();
+				trx.close();
+			}
 		}
 		
 		if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))
@@ -916,7 +926,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public boolean setPaymentProcessor ()
 	{
-		return setPaymentProcessor (getTenderType(), getCreditCardType());
+		return setPaymentProcessor (getTenderType(), getCreditCardType(), getC_PaymentProcessor_ID());
 	}	//	setPaymentProcessor
 
 	/**
@@ -925,7 +935,7 @@ public final class MPayment extends X_C_Payment
 	 *  @param CCType CC Type see CC_
 	 *  @return true if found
 	 */
-	public boolean setPaymentProcessor (String tender, String CCType)
+	public boolean setPaymentProcessor (String tender, String CCType, int C_PaymentProcessor_ID)
 	{
 		m_mBankAccountProcessor = null;
 		//	Get Processor List
@@ -945,8 +955,11 @@ public final class MPayment extends X_C_Payment
 			MBankAccountProcessor bankAccountProcessor = m_mBankAccountProcessors[i];
 			if (bankAccountProcessor.accepts(tender, CCType))
 			{
-				m_mBankAccountProcessor = m_mBankAccountProcessors[i];
-				break;
+				if (C_PaymentProcessor_ID == 0 || bankAccountProcessor.getC_PaymentProcessor_ID() == C_PaymentProcessor_ID)
+				{
+					m_mBankAccountProcessor = m_mBankAccountProcessors[i];
+					break;
+				}
 			}
 		}
 		if (m_mBankAccountProcessor != null)

@@ -36,16 +36,16 @@ public class PaymentUtil {
 
 	private static final CLogger logger = CLogger.getCLogger(PaymentUtil.class);
 
-	public static MBPBankAccount[] getBankAccounts(MBPartner bpartner,
-			String creditCardNo) {
+	public static MBPBankAccount[] getBankAccounts(MBPartner bpartner, String creditCardNo, int C_PaymentProcessor_ID) {
 		ArrayList<MBPBankAccount> list = new ArrayList<MBPBankAccount>();
-		String sql = "SELECT * FROM C_BP_BankAccount WHERE C_BPartner_ID=? AND CREDITCARDNUMBER=? AND IsActive='Y' order by created";
+		String sql = "SELECT * FROM C_BP_BankAccount WHERE C_BPartner_ID=? AND CreditCardNumber=? AND C_PaymentProcessor_ID = ? AND IsActive='Y' ORDER BY Created";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			pstmt = DB.prepareStatement(sql, bpartner.get_TrxName());
 			pstmt.setInt(1, bpartner.getC_BPartner_ID());
 			pstmt.setString(2, creditCardNo);
+			pstmt.setInt(3, C_PaymentProcessor_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new MBPBankAccount(bpartner.getCtx(), rs, bpartner
