@@ -28,6 +28,7 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
@@ -35,6 +36,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MAttachment;
@@ -42,6 +44,7 @@ import org.compiere.model.MAttachmentEntry;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuEcho;
@@ -53,12 +56,13 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
+import org.zkoss.zul.Vlayout;
 
 /**
  *
@@ -91,13 +95,13 @@ public class WAttachment extends Window implements EventListener<Event>
 
 	private Listbox cbContent = new Listbox();
 
-	private Button bDelete = new Button();
+	private Button bDelete = ButtonFactory.createNamedButton(ConfirmPanel.A_DELETE, false, true);
 	private Button bSave = new Button();
 	private Button bDeleteAll = new Button();
 	private Button bLoad = new Button();
-	private Button bCancel = new Button();
-	private Button bOk = new Button();
-	private Button bRefresh = new Button();
+	private Button bCancel = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL, false, true);
+	private Button bOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK, false, true);
+	private Button bRefresh = ButtonFactory.createNamedButton(ConfirmPanel.A_REFRESH, false, true);
 
 	private Panel previewPanel = new Panel();
 
@@ -105,7 +109,7 @@ public class WAttachment extends Window implements EventListener<Event>
 
 	private Hbox toolBar = new Hbox();
 
-	private Hbox confirmPanel = new Hbox();
+	private Hlayout confirmPanel = new Hlayout();
 
 	private int displayIndex;
 
@@ -214,16 +218,18 @@ public class WAttachment extends Window implements EventListener<Event>
 		this.setAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "attachment");
 		this.setMaximizable(true);
 		this.setWidth("700px");
-		this.setHeight("600px");
+		this.setHeight("88%");
 		this.setTitle("Attachment");
 		this.setClosable(true);
 		this.setSizable(true);
 		this.setBorder("normal");
+		this.setSclass("popup-dialog");
 		this.appendChild(mainPanel);
 		mainPanel.setHeight("100%");
 		mainPanel.setWidth("100%");
 
 		North northPanel = new North();
+		northPanel.setStyle("padding: 4px");
 		northPanel.setCollapsible(false);
 		northPanel.setSplittable(false);
 
@@ -238,10 +244,10 @@ public class WAttachment extends Window implements EventListener<Event>
 		toolBar.appendChild(sizeLabel);
 
 		mainPanel.appendChild(northPanel);
-		Div div = new Div();
+		Vlayout div = new Vlayout();
 		div.appendChild(toolBar);
 		text.setRows(3);
-		text.setWidth("100%");
+		text.setHflex("1");
 		div.appendChild(text);
 		northPanel.appendChild(div);
 
@@ -258,9 +264,6 @@ public class WAttachment extends Window implements EventListener<Event>
 		bLoad.setUpload(AdempiereWebUI.getUploadSetting());
 		bLoad.addEventListener(Events.ON_UPLOAD, this);
 
-		bDelete.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
-		bDelete.setSclass("img-btn");
-		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
 		bDelete.addEventListener(Events.ON_CLICK, this);
 
 		previewPanel.appendChild(preview);
@@ -268,6 +271,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		preview.setWidth("100%");
 
 		Center centerPane = new Center();
+		centerPane.setSclass("dialog-content");
 		centerPane.setAutoscroll(true);
 		mainPanel.appendChild(centerPane);
 		centerPane.appendChild(previewPanel);
@@ -275,30 +279,30 @@ public class WAttachment extends Window implements EventListener<Event>
 		previewPanel.setHflex("1");
 
 		South southPane = new South();
+		southPane.setSclass("dialog-footer");
 		mainPanel.appendChild(southPane);
 		southPane.appendChild(confirmPanel);
-		southPane.setHeight("30px");
+		southPane.setVflex("min");
 
-		bCancel.setImage(ThemeManager.getThemeResource("images/Cancel24.png"));
-		bCancel.setSclass("img-btn");
 		bCancel.addEventListener(Events.ON_CLICK, this);
-
-		bOk.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
-		bOk.setSclass("img-btn");
 		bOk.addEventListener(Events.ON_CLICK, this);
 
 		bDeleteAll.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
 		bDeleteAll.setSclass("img-btn");
 		bDeleteAll.addEventListener(Events.ON_CLICK, this);
+		bDeleteAll.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "DeleteAll")));
 
-		bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
-		bRefresh.setSclass("img-btn");
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 
 		confirmPanel.appendChild(bDeleteAll);
 		confirmPanel.appendChild(bRefresh);
-		confirmPanel.appendChild(bOk);
-		confirmPanel.appendChild(bCancel);
+		confirmPanel.setHflex("1");
+		Hbox hbox = new Hbox();
+		hbox.setPack("end");
+		hbox.setHflex("1");
+		confirmPanel.appendChild(hbox);
+		hbox.appendChild(bOk);
+		hbox.appendChild(bCancel);
 		
 
 		text.setTooltiptext(Msg.getElement(Env.getCtx(), "TextMsg"));		

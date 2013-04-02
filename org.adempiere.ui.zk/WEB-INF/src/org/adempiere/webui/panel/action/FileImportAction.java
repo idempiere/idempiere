@@ -56,6 +56,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Vbox;
+import org.zkoss.zul.Vlayout;
 
 /**
  *
@@ -136,6 +137,7 @@ public class FileImportAction implements EventListener<Event>
 			winImportFile.setBorder("normal");
 			winImportFile.setStyle("position:absolute");
 			winImportFile.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "importAction");
+			winImportFile.setSclass("popup-dialog");
 
 			cboType.setMold("select");
 
@@ -151,6 +153,10 @@ public class FileImportAction implements EventListener<Event>
 			vb.setWidth("100%");
 			winImportFile.appendChild(vb);
 
+			Vlayout vlayout = new Vlayout();
+			vlayout.setSclass("dialog-content");
+			vb.appendChild(vlayout);
+			
 			Hbox hb = new Hbox();
 			Div div = new Div();
 			div.setStyle("text-align: right;");
@@ -158,7 +164,7 @@ public class FileImportAction implements EventListener<Event>
 			hb.appendChild(div);
 			hb.appendChild(cboType);
 			cboType.setWidth("100%");
-			vb.appendChild(hb);
+			vlayout.appendChild(hb);
 
 			hb = new Hbox();
 			Div div2 = new Div();
@@ -170,7 +176,7 @@ public class FileImportAction implements EventListener<Event>
 			fCharset.setTooltiptext(Msg.getMsg(Env.getCtx(), "Charset", false));
 			hb.appendChild(fCharset);
 			fCharset.setWidth("100%");
-			vb.appendChild(hb);
+			vlayout.appendChild(hb);
 			
 			hb = new Hbox();
 			Div div3 = new Div();
@@ -182,7 +188,7 @@ public class FileImportAction implements EventListener<Event>
 			fImportMode.setTooltiptext(Msg.getMsg(Env.getCtx(), "import.mode", false));
 			hb.appendChild(fImportMode);
 			fImportMode.setWidth("100%");
-			vb.appendChild(hb);
+			vlayout.appendChild(hb);
 			
 			hb = new Hbox();
 			bFile.setLabel(Msg.getMsg(Env.getCtx(), "FileImportFile"));
@@ -190,8 +196,9 @@ public class FileImportAction implements EventListener<Event>
 			bFile.setUpload(AdempiereWebUI.getUploadSetting());
 			bFile.addEventListener(Events.ON_UPLOAD, this);
 			hb.appendChild(bFile);
-			vb.appendChild(hb);
+			vlayout.appendChild(hb);
 
+			LayoutUtils.addSclass("dialog-footer", confirmPanel);
 			vb.appendChild(confirmPanel);
 			confirmPanel.addActionListener(this);
 		}

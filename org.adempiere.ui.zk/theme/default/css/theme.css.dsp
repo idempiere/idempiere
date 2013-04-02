@@ -194,10 +194,41 @@ html,body {
 }
 
 <%-- button --%>
-.z-button-os {
+.z-button .z-button-tl,
+.z-button .z-button-tr,
+.z-button .z-button-bl,
+.z-button .z-button-br
+{
+	display: none;
+	background: none !important;
+}
+
+.z-button .z-button-tm,
+.z-button .z-button-bm
+{
+	display: none;
+	background: none !important;
+}
+
+.z-button .z-button-cl,
+.z-button .z-button-cr
+{
+	display: none;
+	background: none !important;
+}
+
+.z-button .z-button-cm
+{
+	background: none !important;
+	border: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.z-button-os, .z-button {
   display: inline-block;
   margin: 0px;
-  padding: 2px 10px;
+  padding: 4px 20px;
   font-size: 12px;
   line-height: 20px;
   text-align: center;
@@ -225,23 +256,27 @@ html,body {
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.z-button-os:hover,
-.z-button-os:focus,
-.z-button-os:active,
-.z-button-os.active,
-.z-button-os.disabled,
+.z-button {
+	margin: 0px !important;
+}
+
+.z-button-os:hover, .z-button-over,
+.z-button-os:focus, .z-button-focus,
+.z-button-os:active, .z-button-clk,
+.z-button-os.active, 
+.z-button-os.disabled, .z-button-disd,
 .z-button-os[disabled] {
   color: #333333;
   background-color: #e6e6e6;
 }
 
-.z-button-os:active,
+.z-button-os:active, .z-button-clk,
 .z-button-os.active {
   background-color: #cccccc \9;
 }
 
-.z-button-os:hover,
-.z-button-os:focus {
+.z-button-os:hover, .z-button-over,
+.z-button-os:focus, .z-button-focus {
   color: #333333;
   text-decoration: none;
   background-position: 0 -15px;
@@ -251,11 +286,11 @@ html,body {
           transition: background-position 0.1s linear;
 }
 
-.z-button-os:focus {
+.z-button-os:focus, .z-button-focus {
   outline: 5px auto -webkit-focus-ring-color;
 }
 
-.z-button-os.active,
+.z-button-os.active, .z-button-clk,
 .z-button-os:active {
   background-image: none;
   outline: 0;
@@ -264,7 +299,7 @@ html,body {
           box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.z-button-os.disabled,
+.z-button-os.disabled, .z-button-disd,
 .z-button-os[disabled] {
   cursor: default;
   background-image: none;
@@ -1396,4 +1431,39 @@ font-size: 0;
 <%-- workaround for http://jira.idempiere.com/browse/IDEMPIERE-692 --%>
 .z-combobox-pp {
 	max-height: 200px;
+}
+
+<%-- dialog --%>
+.popup-dialog .z-window-overlapped-cnt, .popup-dialog .z-window-highlighted-cnt {
+	padding: 0px;
+}
+
+.popup-dialog .z-window-overlapped-bl, .popup-dialog .z-window-highlighted-bl {
+	background-color: #f5f5f5;
+}
+
+.popup-dialog .dialog-content {
+	padding: 8px !important;
+	margin-bottom: 20px !important;
+}
+
+.popup-dialog.z-window-overlapped .dialog-footer {
+	padding: 12px 15px 8px 15px;
+}
+
+.popup-dialog.z-window-highlighted .dialog-footer {
+	padding: 12px 15px 5px 15px;
+}
+
+.dialog-footer {
+	margin-bottom: 0;
+	background-color: #f5f5f5;
+	border-top: 1px solid #ddd;
+	-webkit-box-shadow: inset 0 1px 0 #ffffff;
+	-moz-box-shadow: inset 0 1px 0 #ffffff;
+	box-shadow: inset 0 1px 0 #ffffff;
+}
+
+.btn-ok {
+	font-weight: bold;
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
@@ -48,6 +49,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Space;
+import org.zkoss.zul.Vlayout;
 
 
 
@@ -244,16 +246,23 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 
 	private void init()
 	{
-
+		setSclass("popup-dialog");
+		Vlayout vlayout = new Vlayout();
+		vlayout.setHflex("1");
+		vlayout.setVflex("1");
+		this.appendChild(vlayout);
+		
 		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "documentAction");
 		Grid grid = GridFactory.newGridLayout();
-        grid.setStyle("width: 390px; margin: auto;");
+        grid.setStyle("background-image: none;");
+        LayoutUtils.addSclass("dialog-content", grid);
+        vlayout.appendChild(grid);
 
         Rows rows = new Rows();
+        grid.appendChild(rows);
 
 		Row rowDocAction = new Row();
 		Row rowLabel = new Row();
-        Row rowConfirm = new Row();
         Row rowSpacer = new Row();
 
 		Panel pnlDocAction = new Panel();
@@ -263,21 +272,20 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 
 		rowDocAction.appendChild(pnlDocAction);
 		rowLabel.appendChild(label);
-		rowConfirm.appendChild(confirmPanel);
+		
 		rowSpacer.appendChild(new Space());
 	    rows.appendChild(rowDocAction);
 	    rows.appendChild(rowLabel);
 	    rows.appendChild(rowSpacer);
-	    rows.appendChild(rowConfirm);
-
-	    grid.appendChild(rows);
+	    
+	    vlayout.appendChild(confirmPanel);
+		LayoutUtils.addSclass("dialog-footer", confirmPanel);
+	    
 	    this.setTitle(Msg.translate(Env.getCtx(), "DocAction"));
 	    this.setWidth("410px");
 	    this.setBorder("normal");
-	    this.setStyle("position: absolute");
+	    this.setStyle("position: absolute; margin: 0; padding: 0");
 	    this.setZindex(1000);
-	    this.appendChild(grid);
-
 	}
 
 	/**

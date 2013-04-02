@@ -58,6 +58,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.Vlayout;
 
 /**
  *
@@ -166,17 +167,22 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		this.setBorder("normal");
 		dialogBody = new VerticalBox();
 		dialogBody.setHflex("1");
+		Vlayout dialogContent = new Vlayout();
+		dialogContent.setHflex("1");
+		dialogContent.setVflex("1");
+		dialogContent.setSclass("dialog-content");
+		dialogBody.appendChild(dialogContent);
 		Div div = new Div();
 		div.setId("message");
 		message = new Html();
 		div.appendChild(message);
 		div.setStyle("max-height: 150pt; overflow: auto;");
-		dialogBody.appendChild(div);
+		dialogContent.appendChild(div);
 		centerPanel = new Panel();
-		dialogBody.appendChild(centerPanel);
+		dialogContent.appendChild(centerPanel);
 		Hbox hbox = new Hbox();
 		hbox.setWidth("100%");
-		hbox.setStyle("margin-top: 10px");
+		hbox.setSclass("dialog-footer");
 		Button btn = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
 		btn.setId("Ok");
 		btn.addEventListener(Events.ON_CLICK, this);
@@ -190,6 +196,7 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		hbox.setPack("end");
 		dialogBody.appendChild(hbox);
 		this.appendChild(dialogBody);
+		this.setSclass("popup-dialog");
 
 	}
 

@@ -47,6 +47,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Vbox;
+import org.zkoss.zul.Vlayout;
 
 /**
  *
@@ -99,6 +100,7 @@ public class ExportAction implements EventListener<Event>
 			winExportFile.setClosable(true);
 			winExportFile.setBorder("normal");
 			winExportFile.setStyle("position:absolute");
+			winExportFile.setSclass("popup-dialog");
 			winExportFile.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "exportAction");
 
 			cboType.setMold("select");
@@ -115,6 +117,10 @@ public class ExportAction implements EventListener<Event>
 			vb.setWidth("100%");
 			winExportFile.appendChild(vb);
 
+			Vlayout vlayout = new Vlayout();
+			vlayout.setSclass("dialog-content");
+			vb.appendChild(vlayout);
+			
 			Hbox hb = new Hbox();
 			Div div = new Div();
 			div.setStyle("text-align: right;");
@@ -122,14 +128,15 @@ public class ExportAction implements EventListener<Event>
 			hb.appendChild(div);
 			hb.appendChild(cboType);
 			cboType.setWidth("100%");
-			vb.appendChild(hb);
+			vlayout.appendChild(hb);
 
 			hb = new Hbox();
 			chkCurrentRow.setLabel(Msg.getMsg(Env.getCtx(), "ExportCurrentRowOnly"));
 			chkCurrentRow.setSelected(true);
 			hb.appendChild(chkCurrentRow);
-			vb.appendChild(hb);
+			vlayout.appendChild(hb);
 
+			LayoutUtils.addSclass("dialog-footer", confirmPanel);
 			vb.appendChild(confirmPanel);
 			confirmPanel.addActionListener(this);
 		}

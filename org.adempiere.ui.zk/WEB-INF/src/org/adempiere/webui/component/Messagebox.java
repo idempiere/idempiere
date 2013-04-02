@@ -34,7 +34,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
-import org.zkoss.zul.Separator;
 
 /**
 * Messagebox : Replaces ZK's Messagebox
@@ -111,6 +110,8 @@ public class Messagebox extends Window implements EventListener<Event>
 
 	private void init()
 	{
+		setSclass("popup-dialog");
+		
 		Properties ctx = Env.getCtx();
 		lblMsg.setEncode(false);
 		lblMsg.setValue(msg);
@@ -164,13 +165,12 @@ public class Messagebox extends Window implements EventListener<Event>
 				
 		Hbox north = new Hbox();
 		north.setAlign("center");
-		north.setStyle("margin: 20pt 10pt 20pt 10pt;"); //trbl
 		this.appendChild(north);		
 		north.appendChild(pnlImage);
 		north.appendChild(pnlMessage);
+		north.setSclass("dialog-content");
 
 		Hbox pnlButtons = new Hbox();
-		pnlButtons.setHeight("52px");
 		pnlButtons.setAlign("center");
 		pnlButtons.setPack("end");
 		pnlButtons.appendChild(btnOk);
@@ -181,16 +181,9 @@ public class Messagebox extends Window implements EventListener<Event>
 		pnlButtons.appendChild(btnRetry);
 		pnlButtons.appendChild(btnIgnore);
 
-		Separator separator = new Separator();
-		separator.setWidth("100%");
-		separator.setBar(true);
-		this.appendChild(separator);
-		
-		Hbox south = new Hbox();
-		south.setPack("end");
-		south.setWidth("100%");
-		this.appendChild(south);		
-		south.appendChild(pnlButtons);
+		pnlButtons.setWidth("100%");
+		this.appendChild(pnlButtons);		
+		pnlButtons.setSclass("dialog-footer");
 		
 		this.setBorder("normal");
 		this.setContentStyle("background-color:#ffffff;");

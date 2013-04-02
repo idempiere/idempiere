@@ -190,6 +190,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		div.setStyle("padding: 10px; text-align: center; text-align: -webkit-center; text-align: -moz-center; ");
 		
 		South south = new South();
+		south.setSclass("dialog-footer");
 		layout.appendChild(south);
 		south.appendChild(div);		
 		this.appendChild(layout);

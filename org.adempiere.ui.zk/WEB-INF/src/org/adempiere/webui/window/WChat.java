@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -50,6 +51,7 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
+import org.zkoss.zul.Vlayout;
 
 /**
  * 	Application Chat
@@ -133,39 +135,44 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	 */
 	private void staticInit () throws Exception
 	{
+		this.setSclass("popup-dialog");
+		this.setStyle("position: absolute");
 		this.setAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "chat");
 		this.appendChild(mainPanel);
-		mainPanel.setStyle("position:absolute; height:90%; width:95%; border: none; background-color: white;");
+		mainPanel.setStyle("border: none; background-color: white;");
 		//
 		
 		Center center = new Center();
-		messageTree.setHflex("true");
-		messageTree.setVflex("true");
-		center.appendChild(messageTree);
+		Vlayout content = new Vlayout();
+		content.setHflex("1");
+		content.setVflex("1");
+		content.setSclass("dialog-content");
+		center.appendChild(content);
+		messageTree.setHflex("1");
+		messageTree.setVflex("1");
+		content.appendChild(messageTree);
 		center.setAutoscroll(true);
 		mainPanel.appendChild(center);
 		//
-		//	South
-		Div southDiv = new Div();
-		South south = new South();
-		south.setHeight("130px");
-		south.setStyle("border: none; margin-top: 10px");
-		south.appendChild(southDiv);
-		southDiv.setStyle("position:absolute; height:130px; width:100%");
-		
-		mainPanel.appendChild(south);
-		southDiv.appendChild(newText);
+		content.appendChild(newText);
+		newText.setRows(3);
+		newText.setMultiline(true);		
+		newText.setHflex("1");
+		newText.setVflex("min");
 		addButton = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Add")));
 		addButton.addActionListener(this);
-		southDiv.appendChild(addButton);
-		southDiv.appendChild(confirmPanel);
-		newText.setStyle("position:absolute; height:50px; width:99%");
-		newText.setMultiline(true);		
-		addButton.setStyle("position:absolute; top: 53px;");
-		confirmPanel.setStyle("position:absolute; height:30px; width:99%; top:80px;");
-		confirmPanel.addActionListener(this);				
+		content.appendChild(addButton);
+		//	South
+		South south = new South();		
+		south.setVflex("min");
+		
+		mainPanel.appendChild(south);		
+		LayoutUtils.addSclass("dialog-footer", confirmPanel);
+		confirmPanel.addActionListener(this);
+		south.appendChild(confirmPanel);
+		confirmPanel.setVflex("min");
 
-		this.setHeight("600px");
+		this.setHeight("88%");
 		this.setWidth("500px");
 		this.setMaximizable(true);
 		this.setSizable(true);
