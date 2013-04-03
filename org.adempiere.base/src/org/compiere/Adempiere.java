@@ -650,6 +650,7 @@ public final class Adempiere
 		if (threadPoolExecutor != null) {
 			threadPoolExecutor.shutdown();
 		}
+		log = null;
 	}
 	
 	public static ScheduledThreadPoolExecutor getThreadPoolExecutor() {
