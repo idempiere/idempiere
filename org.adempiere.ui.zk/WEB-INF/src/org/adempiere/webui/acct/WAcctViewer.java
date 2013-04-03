@@ -1062,6 +1062,10 @@ public class WAcctViewer extends Window implements EventListener<Event>
 					{
 						listheader.setVisible(false);
 					}
+					else if ("Fact_Acct_ID".equals(m_rmodel.getRColumn(i).getColumnName()))
+					{
+						listheader.setVisible(false);
+					}
 				}
 				listhead.appendChild(listheader);
 			}
