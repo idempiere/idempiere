@@ -26,6 +26,8 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Center;
@@ -52,18 +54,18 @@ public class EventWindow extends Window implements EventListener<Event> {
 		
 		super();
 		
-		setTitle("Event");
+		setTitle(Msg.getMsg(Env.getCtx(),"Event"));
 		setAttribute(Window.MODE_KEY, Window.MODE_POPUP);
 		setWidth("400px");
 		setHeight("310px");
 		this.setBorder("normal");
 		this.setClosable(true);
 		
-		Label lblHeaderColor = new Label("Header Color");
-		Label lblContentColor = new Label("Content Color");
-		Label lblBeginDate = new Label("Begin Date");
-		Label lblEndDate = new Label("End Date");
-		Label lblContent = new Label("Content");
+		Label lblHeaderColor = new Label(Msg.getMsg(Env.getCtx(),"HeaderColor"));
+		Label lblContentColor = new Label(Msg.getMsg(Env.getCtx(),"ContentColor"));
+		Label lblBeginDate = new Label(Msg.getMsg(Env.getCtx(),"BeginDate"));
+		Label lblEndDate = new Label(Msg.getMsg(Env.getCtx(),"EndDate"));
+		Label lblContent = new Label(Msg.getMsg(Env.getCtx(),"Content"));
 				
 		dtBeginDate = new DatetimeBox();
 		dtBeginDate.setEnabled(false);

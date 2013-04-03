@@ -3,6 +3,10 @@
 <zk>
 <zscript><![CDATA[
 	var calendarIcon = org.adempiere.webui.theme.ThemeManager.getThemeResource("images/Calendar16.png");
+	import org.compiere.util.Msg;
+	import org.compiere.util.Env;
+	var today = Msg.getMsg(Env.getCtx(),"today");
+	var refresh = Msg.getMsg(Env.getCtx(),"refresh");
 ]]></zscript>
 <style src="calendar.css"/>
 <calendars firstDayOfWeek="Monday" model="${cm}" mold="month" id="cal">
@@ -12,10 +16,10 @@
 				<divarrow id="divArrowLeft" type="arrow-left"/>
 				<divarrow id="divArrowRight" type="arrow-right"/>
 				<div>
-					<button id="btnCurrentDate" label="today" sclass="btn-small"/>
+					<button id="btnCurrentDate" label="${today}" sclass="btn-small"/>
 				    <separator orient="vertical" spacing="2px"/>
 					<label id="lblDate"/>
-					<toolbarbutton id="btnRefresh" label="Refresh" class="refresh"/>
+					<toolbarbutton id="btnRefresh" label="${refresh}" class="refresh"/>
 					<toolbarbutton id="btnCal" image="${calendarIcon}"/>
 				</div>
 			</hbox>

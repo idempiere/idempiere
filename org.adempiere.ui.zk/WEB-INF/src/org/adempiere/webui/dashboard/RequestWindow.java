@@ -80,7 +80,7 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		
 		this.parent = parent;
 		
-		setTitle("Event");
+		setTitle(Msg.getMsg(Env.getCtx(),"Event"));
 		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		setWidth("400px");
 		setHeight("500px");
@@ -91,17 +91,17 @@ public class RequestWindow extends Window implements EventListener<Event> {
 				Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()), 
 				MRequest.Table_ID, 0, false);
 		
-		Label lblDueType = new Label("Due Type");
-		Label lblRequestType = new Label("Request Type");
-		Label lblPriority = new Label("Priority");
-		Label lblSummary = new Label("Summary");
-		Label lblConfidential = new Label("Confidentiality");
-		Label lblSalesRep = new Label("Sales Representative");
-		Label lblEntryConfidential = new Label("Entry Confidentiality");
-		Label lblStartPlan = new Label("Start Plan");
-		Label lblCompletePlan = new Label("Complete Plan");
-		Label lblStartTime = new Label("Start Time");
-		Label lblEndTime = new Label("End Time");
+		Label lblDueType = new Label(Msg.getMsg(Env.getCtx(),"DueType"));
+		Label lblRequestType = new Label(Msg.getMsg(Env.getCtx(),"RequestType"));
+		Label lblPriority = new Label(Msg.getMsg(Env.getCtx(),"Priority"));
+		Label lblSummary = new Label(Msg.getMsg(Env.getCtx(),"Summary"));
+		Label lblConfidential = new Label(Msg.getMsg(Env.getCtx(),"Confidentiality"));
+		Label lblSalesRep = new Label(Msg.getMsg(Env.getCtx(),"SalesRepresentative"));
+		Label lblEntryConfidential = new Label(Msg.getMsg(Env.getCtx(),"EntryConfidentiality"));
+		Label lblStartPlan = new Label(Msg.getMsg(Env.getCtx(),"StartPlan"));
+		Label lblCompletePlan = new Label(Msg.getMsg(Env.getCtx(),"CompletePlan"));
+		Label lblStartTime = new Label(Msg.getMsg(Env.getCtx(),"StartTime"));
+		Label lblEndTime = new Label(Msg.getMsg(Env.getCtx(),"EndTime"));
 		
 		int columnID = MColumn.getColumn_ID(MRequest.Table_Name, MRequest.COLUMNNAME_DueType);
 		MLookup lookup = MLookupFactory.get(Env.getCtx(), 0, 0, columnID, DisplayType.List);
