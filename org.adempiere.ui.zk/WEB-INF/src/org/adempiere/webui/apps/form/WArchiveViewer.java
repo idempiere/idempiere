@@ -59,6 +59,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
@@ -331,7 +332,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			Tabpanel tabQueryPanel = new Tabpanel();
 			tabQueryPanel.appendChild(div);
 
-			Tab tabQuery = new Tab(Msg.getMsg(Env.getCtx(), "ViewerQuery"));
+			Tab tabQuery = new Tab(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ViewerQuery")));
 
 			tabpanels.appendChild(tabQueryPanel);
 			tabs.appendChild(tabQuery);
