@@ -5,8 +5,9 @@
 	var calendarIcon = org.adempiere.webui.theme.ThemeManager.getThemeResource("images/Calendar16.png");
 	import org.compiere.util.Msg;
 	import org.compiere.util.Env;
-	var today = Msg.getMsg(Env.getCtx(),"today");
-	var refresh = Msg.getMsg(Env.getCtx(),"refresh");
+    import org.compiere.util.Util;
+	var today = Msg.getMsg(Env.getCtx(),"Today");
+	var refresh = Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Refresh"));
 ]]></zscript>
 <style src="calendar.css"/>
 <calendars firstDayOfWeek="Monday" model="${cm}" mold="month" id="cal">

@@ -13,6 +13,8 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
+import java.util.Properties;
+
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Column;
@@ -26,6 +28,8 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.compiere.model.MRequest;
+import org.compiere.model.MRequestType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
@@ -54,19 +58,20 @@ public class EventWindow extends Window implements EventListener<Event> {
 		
 		super();
 		
-		setTitle(Msg.getMsg(Env.getCtx(),"Event"));
+		Properties ctx = Env.getCtx();
+		setTitle(Msg.getMsg(ctx,"Event"));
 		setAttribute(Window.MODE_KEY, Window.MODE_POPUP);
 		setWidth("400px");
 		setHeight("310px");
 		this.setBorder("normal");
 		this.setClosable(true);
 		
-		Label lblHeaderColor = new Label(Msg.getMsg(Env.getCtx(),"HeaderColor"));
-		Label lblContentColor = new Label(Msg.getMsg(Env.getCtx(),"ContentColor"));
-		Label lblBeginDate = new Label(Msg.getMsg(Env.getCtx(),"BeginDate"));
-		Label lblEndDate = new Label(Msg.getMsg(Env.getCtx(),"EndDate"));
-		Label lblContent = new Label(Msg.getMsg(Env.getCtx(),"Content"));
-				
+		Label lblHeaderColor  = new Label(Msg.getElement(ctx,MRequestType.COLUMNNAME_HeaderColor));
+		Label lblContentColor = new Label(Msg.getElement(ctx,MRequestType.COLUMNNAME_ContentColor));
+		Label lblBeginDate    = new Label(Msg.getElement(ctx,"StartDate"));
+		Label lblEndDate      = new Label(Msg.getElement(ctx,"EndDate"));
+		Label lblContent      = new Label(Msg.getElement(ctx,MRequest.COLUMNNAME_Summary));
+
 		dtBeginDate = new DatetimeBox();
 		dtBeginDate.setEnabled(false);
 		

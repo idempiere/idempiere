@@ -14,6 +14,7 @@
 package org.adempiere.webui.dashboard;
 
 import java.sql.Timestamp;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.webui.component.Borderlayout;
@@ -79,7 +80,8 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		super();
 		
 		this.parent = parent;
-		
+
+		Properties ctx = Env.getCtx();
 		setTitle(Msg.getMsg(Env.getCtx(),"Event"));
 		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		setWidth("400px");
@@ -88,65 +90,65 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		this.setClosable(true);
 		
 		m_readOnly = !MRole.getDefault().canUpdate(
-				Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()), 
+				Env.getAD_Client_ID(ctx), Env.getAD_Org_ID(ctx), 
 				MRequest.Table_ID, 0, false);
-		
-		Label lblDueType = new Label(Msg.getMsg(Env.getCtx(),"DueType"));
-		Label lblRequestType = new Label(Msg.getMsg(Env.getCtx(),"RequestType"));
-		Label lblPriority = new Label(Msg.getMsg(Env.getCtx(),"Priority"));
-		Label lblSummary = new Label(Msg.getMsg(Env.getCtx(),"Summary"));
-		Label lblConfidential = new Label(Msg.getMsg(Env.getCtx(),"Confidentiality"));
-		Label lblSalesRep = new Label(Msg.getMsg(Env.getCtx(),"SalesRepresentative"));
-		Label lblEntryConfidential = new Label(Msg.getMsg(Env.getCtx(),"EntryConfidentiality"));
-		Label lblStartPlan = new Label(Msg.getMsg(Env.getCtx(),"StartPlan"));
-		Label lblCompletePlan = new Label(Msg.getMsg(Env.getCtx(),"CompletePlan"));
-		Label lblStartTime = new Label(Msg.getMsg(Env.getCtx(),"StartTime"));
-		Label lblEndTime = new Label(Msg.getMsg(Env.getCtx(),"EndTime"));
-		
+
+		Label lblDueType           = new Label(Msg.getElement(ctx, MRequest.COLUMNNAME_DueType));
+		Label lblRequestType       = new Label(Msg.getElement(ctx, MRequest.COLUMNNAME_R_RequestType_ID));
+		Label lblPriority          = new Label(Msg.getElement(ctx, MRequest.COLUMNNAME_Priority));
+		Label lblSummary           = new Label(Msg.getElement(ctx, MRequest.COLUMNNAME_Summary));
+		Label lblConfidential      = new Label(Msg.getElement(ctx, MRequest.COLUMNNAME_ConfidentialType));
+		Label lblSalesRep          = new Label(Msg.getElement(ctx, MRequest.COLUMNNAME_SalesRep_ID));
+		Label lblEntryConfidential = new Label(Msg.getElement(ctx, MRequest.COLUMNNAME_ConfidentialTypeEntry));
+		Label lblStartPlan         = new Label(Msg.getElement(ctx, MRequest.COLUMNNAME_DateStartPlan));
+		Label lblCompletePlan      = new Label(Msg.getElement(ctx, MRequest.COLUMNNAME_DateCompletePlan));
+		Label lblStartTime         = new Label(Msg.getElement(ctx, MRequest.COLUMNNAME_StartTime));
+		Label lblEndTime           = new Label(Msg.getElement(ctx, MRequest.COLUMNNAME_EndTime));
+
 		int columnID = MColumn.getColumn_ID(MRequest.Table_Name, MRequest.COLUMNNAME_DueType);
-		MLookup lookup = MLookupFactory.get(Env.getCtx(), 0, 0, columnID, DisplayType.List);
+		MLookup lookup = MLookupFactory.get(ctx, 0, 0, columnID, DisplayType.List);
 		dueTypeField = new WTableDirEditor("DueType", true, false, true, lookup);
-		dueTypeField.setValue(Env.getContext(Env.getCtx(), "P232|DueType"));
+		dueTypeField.setValue(Env.getContext(ctx, "P232|DueType"));
 		if(dueTypeField.getValue() == null || dueTypeField.getValue().equals(""))
 			if(dueTypeField.getComponent().getItemCount() > 1)
 				dueTypeField.setValue(dueTypeField.getComponent().getItemAtIndex(1).getValue());
 		
 		columnID = MColumn.getColumn_ID(MRequest.Table_Name, MRequest.COLUMNNAME_R_RequestType_ID);
-		lookup = MLookupFactory.get(Env.getCtx(), 0, 0, columnID, DisplayType.TableDir);
+		lookup = MLookupFactory.get(ctx, 0, 0, columnID, DisplayType.TableDir);
 		requestTypeField = new WTableDirEditor("R_RequestType_ID", true, false, true, lookup);
-		requestTypeField.setValue(Env.getContext(Env.getCtx(), "P232|R_RequestType_ID"));
+		requestTypeField.setValue(Env.getContext(ctx, "P232|R_RequestType_ID"));
 		if(requestTypeField.getValue() == null || requestTypeField.getValue().equals(""))
 			if(requestTypeField.getComponent().getItemCount() > 1)
 				requestTypeField.setValue(requestTypeField.getComponent().getItemAtIndex(1).getValue());
 				
 		columnID = MColumn.getColumn_ID(MRequest.Table_Name, MRequest.COLUMNNAME_Priority);
-		lookup = MLookupFactory.get(Env.getCtx(), 0, 0, columnID, DisplayType.List);
+		lookup = MLookupFactory.get(ctx, 0, 0, columnID, DisplayType.List);
 		priorityField = new WTableDirEditor("Priority", true, false, true, lookup);
-		priorityField.setValue(Env.getContext(Env.getCtx(), "P232|Priority"));
+		priorityField.setValue(Env.getContext(ctx, "P232|Priority"));
 		if(priorityField.getValue() == null || priorityField.getValue().equals(""))
 			if(priorityField.getComponent().getItemCount() > 1)
 				priorityField.setValue(priorityField.getComponent().getItemAtIndex(1).getValue());
 		
 		columnID = MColumn.getColumn_ID(MRequest.Table_Name, MRequest.COLUMNNAME_ConfidentialType);
-		lookup = MLookupFactory.get(Env.getCtx(), 0, 0, columnID, DisplayType.List);
+		lookup = MLookupFactory.get(ctx, 0, 0, columnID, DisplayType.List);
 		confidentialField = new WTableDirEditor("ConfidentialType", true, false, true, lookup);
-		confidentialField.setValue(Env.getContext(Env.getCtx(), "P232|ConfidentialType"));
+		confidentialField.setValue(Env.getContext(ctx, "P232|ConfidentialType"));
 		if(confidentialField.getValue() == null || confidentialField.getValue().equals(""))
 			if(confidentialField.getComponent().getItemCount() > 1)
 				confidentialField.setValue(confidentialField.getComponent().getItemAtIndex(1).getValue());
 		
 		columnID = MColumn.getColumn_ID(MRequest.Table_Name, MRequest.COLUMNNAME_SalesRep_ID);
-		lookup = MLookupFactory.get(Env.getCtx(), 0, 0, columnID, DisplayType.TableDir);
+		lookup = MLookupFactory.get(ctx, 0, 0, columnID, DisplayType.TableDir);
 		salesRepField = new WTableDirEditor("SalesRep_ID", true, false, true, lookup);
-		salesRepField.setValue(Env.getContextAsInt(Env.getCtx(), "SalesRep_ID"));
-		if(salesRepField.getValue() == null || salesRepField.getValue().equals("0"))
+		salesRepField.setValue(Env.getContextAsInt(ctx, "SalesRep_ID"));
+		if(salesRepField.getValue() == null || salesRepField.getValue().equals(0))
 			if(salesRepField.getComponent().getItemCount() > 1)
 				salesRepField.setValue(salesRepField.getComponent().getItemAtIndex(1).getValue());
 		
 		columnID = MColumn.getColumn_ID(MRequest.Table_Name, MRequest.COLUMNNAME_ConfidentialTypeEntry);
-		lookup = MLookupFactory.get(Env.getCtx(), 0, 0, columnID, DisplayType.List);
+		lookup = MLookupFactory.get(ctx, 0, 0, columnID, DisplayType.List);
 		entryConfidentialField = new WTableDirEditor("ConfidentialTypeEntry", true, false, true, lookup);
-		entryConfidentialField.setValue(Env.getContext(Env.getCtx(), "P232|ConfidentialTypeEntry"));
+		entryConfidentialField.setValue(Env.getContext(ctx, "P232|ConfidentialTypeEntry"));
 		if(entryConfidentialField.getValue() == null || entryConfidentialField.getValue().equals(""))
 			if(entryConfidentialField.getComponent().getItemCount() > 1)
 				entryConfidentialField.setValue(entryConfidentialField.getComponent().getItemAtIndex(1).getValue());
@@ -260,20 +262,21 @@ public class RequestWindow extends Window implements EventListener<Event> {
 			this.detach();
 		else if (e.getTarget() == confirmPanel.getButton(ConfirmPanel.A_OK)) {
 			// Check Mandatory fields
+			String fillMandatory = Msg.translate(Env.getCtx(), "FillMandatory");
 			if (dueTypeField.getValue() == null || dueTypeField.getValue().equals(""))
-				throw new WrongValueException(dueTypeField.getComponent(), Msg.translate(Env.getCtx(), "FillMandatory"));
-			if (requestTypeField.getValue() == null || requestTypeField.getValue().equals("0"))
-				throw new WrongValueException(requestTypeField.getComponent(), Msg.translate(Env.getCtx(), "FillMandatory"));
+				throw new WrongValueException(dueTypeField.getComponent(), fillMandatory);
+			if (requestTypeField.getValue() == null || requestTypeField.getValue().equals(0))
+				throw new WrongValueException(requestTypeField.getComponent(), fillMandatory);
 			if (priorityField.getValue() == null || priorityField.getValue().equals(""))
-				throw new WrongValueException(priorityField.getComponent(), Msg.translate(Env.getCtx(), "FillMandatory"));
+				throw new WrongValueException(priorityField.getComponent(), fillMandatory);
 			if (txtSummary.getText() == null || txtSummary.getText().equals(""))
-				throw new WrongValueException(txtSummary, Msg.translate(Env.getCtx(), "FillMandatory"));
+				throw new WrongValueException(txtSummary, fillMandatory);
 			if (confidentialField.getValue() == null || confidentialField.getValue().equals(""))
-				throw new WrongValueException(confidentialField.getComponent(), Msg.translate(Env.getCtx(), "FillMandatory"));
-			if (salesRepField.getValue() == null || salesRepField.getValue().equals("0"))
-				throw new WrongValueException(salesRepField.getComponent(), Msg.translate(Env.getCtx(), "FillMandatory"));
+				throw new WrongValueException(confidentialField.getComponent(), fillMandatory);
+			if (salesRepField.getValue() == null || salesRepField.getValue().equals(0))
+				throw new WrongValueException(salesRepField.getComponent(), fillMandatory);
 			if (entryConfidentialField.getValue() == null || entryConfidentialField.getValue().equals(""))
-				throw new WrongValueException(entryConfidentialField.getComponent(), Msg.translate(Env.getCtx(), "FillMandatory"));
+				throw new WrongValueException(entryConfidentialField.getComponent(), fillMandatory);
 			
 			MRequest request = new MRequest(Env.getCtx(), 0, null);
 			request.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
