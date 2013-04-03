@@ -49,6 +49,15 @@ public class CalloutInventory extends CalloutEngine
 	{
 		if (isCalloutActive())
 			return "";
+
+		// set docSubTypeInv
+		int doctypeid = Env.getContextAsInt(ctx, WindowNo, "C_DocType_ID");
+		String docSubTypeInv = null;
+		if (doctypeid > 0) {
+			MDocType dt = MDocType.get(ctx, doctypeid);
+			docSubTypeInv = dt.getDocSubTypeInv();
+		}
+
 		Integer InventoryLine = (Integer)mTab.getValue("M_InventoryLine_ID");
 		BigDecimal bd = null;
 		
@@ -69,11 +78,13 @@ public class CalloutInventory extends CalloutEngine
 				} else {
 					mTab.setValue("M_AttributeSetInstance_ID", null);
 				}
-				try {
-					bd = setQtyBook(M_AttributeSetInstance_ID, M_Product_ID, M_Locator_ID);
-					mTab.setValue("QtyBook", bd);
-				} catch (Exception e) {
-					return mTab.setValue("QtyBook", bd);
+				if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(docSubTypeInv)) {
+					try {
+						bd = setQtyBook(M_AttributeSetInstance_ID, M_Product_ID, M_Locator_ID);
+						mTab.setValue("QtyBook", bd);
+					} catch (Exception e) {
+						return e.getLocalizedMessage();
+					}
 				}
 			}
 			return "";
@@ -117,11 +128,13 @@ public class CalloutInventory extends CalloutEngine
 			
 		// Set QtyBook from first storage location
 		// kviiksaar: Call's now the extracted function
-		try {
-			bd = setQtyBook(M_AttributeSetInstance_ID, M_Product_ID, M_Locator_ID);
-			mTab.setValue("QtyBook", bd);
-		} catch (Exception e) {
-			return mTab.setValue("QtyBook", bd);
+		if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(docSubTypeInv)) {
+			try {
+				bd = setQtyBook(M_AttributeSetInstance_ID, M_Product_ID, M_Locator_ID);
+				mTab.setValue("QtyBook", bd);
+			} catch (Exception e) {
+				return e.getLocalizedMessage();
+			}
 		}
 		
 		//

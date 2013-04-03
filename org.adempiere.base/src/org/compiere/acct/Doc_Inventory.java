@@ -24,10 +24,12 @@ import java.util.logging.Level;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCostDetail;
+import org.compiere.model.MDocType;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.ProductCost;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *  Post Inventory Documents.
@@ -84,27 +86,36 @@ public class Doc_Inventory extends Doc
 	 */
 	private DocLine[] loadLines(MInventory inventory)
 	{
+		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
+		String parentDocSubTypeInv = dt.getDocSubTypeInv();
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
 		MInventoryLine[] lines = inventory.getLines(false);
 		for (int i = 0; i < lines.length; i++)
 		{
 			MInventoryLine line = lines[i];
+			String docSubTypeInv;
+			if (Util.isEmpty(parentDocSubTypeInv)) {
+				// IDEMPIERE-675: for backward compatibility - to post old documents that could have subtypeinv empty
+				if (line.getQtyInternalUse().signum() != 0) {
+					docSubTypeInv = MDocType.DOCSUBTYPEInv_InternalUseInventory;
+				} else {
+					docSubTypeInv = MDocType.DOCSUBTYPEInv_PhysicalInventory;
+				}
+			} else {
+				docSubTypeInv = parentDocSubTypeInv;
+			}
+
+			BigDecimal qtyDiff = Env.ZERO;
+			if (MDocType.DOCSUBTYPEInv_InternalUseInventory.equals(docSubTypeInv))
+				qtyDiff = line.getQtyInternalUse().negate();
+			else if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(docSubTypeInv))
+				qtyDiff = line.getQtyCount().subtract(line.getQtyBook());
 			//	nothing to post
-			if (line.getQtyBook().compareTo(line.getQtyCount()) == 0
-				&& line.getQtyInternalUse().signum() == 0)
+			if (qtyDiff.signum() == 0)
 				continue;
 			//
 			DocLine docLine = new DocLine (line, this);
-			BigDecimal Qty = line.getQtyInternalUse();
-			if (Qty.signum() != 0)
-				Qty = Qty.negate();		//	Internal Use entered positive
-			else
-			{
-				BigDecimal QtyBook = line.getQtyBook();
-				BigDecimal QtyCount = line.getQtyCount();
-				Qty = QtyCount.subtract(QtyBook);
-			}
-			docLine.setQty (Qty, false);		// -5 => -5
+			docLine.setQty (qtyDiff, false);		// -5 => -5
 			docLine.setReversalLine_ID(line.getReversalLine_ID());
 			if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
 			list.add (docLine);

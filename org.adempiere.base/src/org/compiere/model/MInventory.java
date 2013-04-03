@@ -31,6 +31,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *  Physical Inventory Model
@@ -50,8 +51,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7137974064086172763L;
-
+	private static final long serialVersionUID = -2155186682727239214L;
 	/** Reversal Indicator			*/
 	public static String	REVERSE_INDICATOR = "^";
 	
@@ -249,14 +249,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 	{
 		if (getC_DocType_ID() == 0)
 		{
-			MDocType types[] = MDocType.getOfDocBaseType(getCtx(), MDocType.DOCBASETYPE_MaterialPhysicalInventory);
-			if (types.length > 0)	//	get first
-				setC_DocType_ID(types[0].getC_DocType_ID());
-			else
-			{
-				log.saveError("Error", Msg.parseTranslation(getCtx(), "@NotFound@ @C_DocType_ID@"));
-				return false;
-			}
+			log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_C_DocType_ID));
+			return false;
 		}
 		return true;
 	}	//	beforeSave
@@ -381,8 +375,12 @@ public class MInventory extends X_M_Inventory implements DocAction
 	public String completeIt()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		String DocSubTypeInv = dt.getDocSubTypeInv();
-		
+		String docSubTypeInv = dt.getDocSubTypeInv();
+		if (Util.isEmpty(docSubTypeInv)) {
+			m_processMsg = "Document inventory subtype not configured, cannot complete";
+			return DocAction.STATUS_Invalid;
+		}
+
 		//	Re-Check
 		if (!m_justPrepared)
 		{
@@ -409,11 +407,11 @@ public class MInventory extends X_M_Inventory implements DocAction
 			MProduct product = line.getProduct();	
 
 			BigDecimal qtyDiff = Env.ZERO;
-			if (MDocType.DOCSUBTYPEInv_InternalUseInventory.equals(DocSubTypeInv))
+			if (MDocType.DOCSUBTYPEInv_InternalUseInventory.equals(docSubTypeInv))
 				qtyDiff = line.getQtyInternalUse().negate();
-			else if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(DocSubTypeInv))
+			else if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(docSubTypeInv))
 				qtyDiff = line.getQtyCount().subtract(line.getQtyBook());
-				
+
 			//If Quantity Count minus Quantity Book = Zero, then no change in Inventory
 			if (qtyDiff.signum() == 0)
 				continue;
@@ -455,7 +453,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 						}
 
 						// Only Update Date Last Inventory if is a Physical Inventory
-						if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(DocSubTypeInv))
+						if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(docSubTypeInv))
 						{	
 							MStorageOnHand storage = MStorageOnHand.get(getCtx(), line.getM_Locator_ID(), 
 									line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(), get_TrxName());						
@@ -506,7 +504,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 					}
 
 					// Only Update Date Last Inventory if is a Physical Inventory
-					if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(DocSubTypeInv))
+					if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(docSubTypeInv))
 					{	
 						MStorageOnHand storage = MStorageOnHand.get(getCtx(), line.getM_Locator_ID(), 
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), get_TrxName());						
@@ -537,7 +535,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 				}	//	Fallback
 			}	//	stock movement
 
-		}	//	for all lines	
+		}	//	for all lines
 
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);

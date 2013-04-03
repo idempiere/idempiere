@@ -9,3 +9,6 @@ UPDATE AD_Tab SET WhereClause='(SELECT COUNT(*) FROM C_DocType WHERE  C_DocType.
 UPDATE AD_Tab SET WhereClause='(SELECT COUNT(*) FROM C_DocType WHERE C_DocType.C_DocType_ID=M_Inventory.C_DocType_ID AND C_DocType.DocBaseType=''MMI'' AND C_DocType.DocSubTypeInv=''IU'') > 0',Updated=TO_DATE('2013-03-29 12:04:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=682
 ;
 
+SELECT register_migration_script('201304030855_IDEMPIERE-675_2.sql') FROM dual
+;
+

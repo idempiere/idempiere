@@ -32,8 +32,10 @@ import org.compiere.model.MInventoryLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.X_I_Inventory;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.ValueNamePair;
 
 /**
  *	Import Physical Inventory from I_Inventory
@@ -372,6 +374,11 @@ public class ImportInventory extends SvrProcess
 					//
 					if (!inventory.save())
 					{
+						ValueNamePair vnp = CLogger.retrieveError();
+						if (vnp != null) {
+							imp.setI_ErrorMsg(vnp.getValue() + ": " + vnp.getName());
+							imp.saveEx();
+						}
 						log.log(Level.SEVERE, "Inventory not saved");
 						break;
 					}
@@ -443,6 +450,14 @@ public class ImportInventory extends SvrProcess
 							cost.saveEx();
 						}
 					}
+				} else {
+					ValueNamePair vnp = CLogger.retrieveError();
+					if (vnp != null) {
+						imp.setI_ErrorMsg(vnp.getValue() + ": " + vnp.getName());
+						imp.saveEx();
+					}
+					log.log(Level.SEVERE, "Inventory Line not saved");
+					break;
 				}
 			}
 			if (inventory != null) {

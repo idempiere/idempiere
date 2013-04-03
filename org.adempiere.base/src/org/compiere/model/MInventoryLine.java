@@ -298,26 +298,62 @@ public class MInventoryLine extends X_M_InventoryLine
 			setQtyInternalUse(getQtyInternalUse());
 		
 		MDocType dt = MDocType.get(getCtx(), getParent().getC_DocType_ID());
-		String DocSubTypeInv = dt.getDocSubTypeInv();
-//		InternalUse Inventory
-		if (MDocType.DOCSUBTYPEInv_InternalUseInventory.equals(DocSubTypeInv)) {
+		String docSubTypeInv = dt.getDocSubTypeInv();
+
+		if (MDocType.DOCSUBTYPEInv_InternalUseInventory.equals(docSubTypeInv)) {
+
+			// Internal Use Inventory validations
 			if (!INVENTORYTYPE_ChargeAccount.equals(getInventoryType()))
 				setInventoryType(INVENTORYTYPE_ChargeAccount);
 			//
 			if (getC_Charge_ID() == 0)
 			{
-				log.saveError("FillMandatory", Msg.getElement(getCtx(), "C_Charge_ID"));
+				log.saveError("InternalUseNeedsCharge", "");
 				return false;
 			}
-		} else if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(DocSubTypeInv)) {
-			setC_Charge_ID(0);
-			if (!INVENTORYTYPE_InventoryDifference.equals(getInventoryType()))
-				setInventoryType(INVENTORYTYPE_InventoryDifference);
-			
+			// error if book or count are filled on an internal use inventory
+			// i.e. coming from import or web services
+			if (getQtyBook().signum() != 0) {
+				log.saveError("Quantity", Msg.getElement(getCtx(), COLUMNNAME_QtyBook));
+				return false;
+			}
+			if (getQtyCount().signum() != 0) {
+				log.saveError("Quantity", Msg.getElement(getCtx(), COLUMNNAME_QtyCount));
+				return false;
+			}
+			if (getQtyInternalUse().signum() == 0) {
+				log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_QtyInternalUse));
+				return false;
+			}
+
+		} else if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(docSubTypeInv)) {
+
+			// Physical Inventory validations
+			if (INVENTORYTYPE_ChargeAccount.equals(getInventoryType()))
+			{
+				if (getC_Charge_ID() == 0)
+				{
+					log.saveError("FillMandatory", Msg.getElement(getCtx(), "C_Charge_ID"));
+					return false;
+				}
+			}
+			else if (getC_Charge_ID() != 0) {
+				setC_Charge_ID(0);
+			}
+			if (getQtyInternalUse().signum() != 0) {
+				log.saveError("Quantity", Msg.getElement(getCtx(), COLUMNNAME_QtyInternalUse));
+				return false;
+			}
+
+		} else {
+			log.saveError("Error", "Document inventory subtype not configured, cannot complete");
+			return false;
 		}
-		
-		setAD_Org_ID(getParent().getAD_Org_ID());
-		
+
+		//	Set AD_Org to parent if not charge
+		if (getC_Charge_ID() == 0)
+			setAD_Org_ID(getParent().getAD_Org_ID());
+
 		return true;
 	}	//	beforeSave
 
