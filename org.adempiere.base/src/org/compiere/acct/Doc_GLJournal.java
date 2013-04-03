@@ -83,6 +83,8 @@ public class Doc_GLJournal extends Doc
 		{
 			MJournalLine line = lines[i];
 			DocLine docLine = new DocLine (line, this);
+			// -- Quantity
+			docLine.setQty(line.getQty(), false);
 			//  --  Source Amounts
 			docLine.setAmount (line.getAmtSourceDr(), line.getAmtSourceCr());
 			//  --  Converted Amounts
