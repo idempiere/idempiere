@@ -1384,14 +1384,17 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	    	String sqlquery = "SELECT * FROM " + tableName;
 			sqlquery = role.addAccessSQL(sqlquery, tableName, true, true);
 			
-			for (DataField field : modelCRUD.getDataRow().getFieldArray()) {
-	    		if (m_webservicetype.isInputColumnNameAllowed(field.getColumn())) {
-	        		sqlquery += " AND " + field.getColumn() + "=?";
-	    		} else {
-					throw new IdempiereServiceFault("Web service type "
-							+ m_webservicetype.getValue() + ": input column "
-							+ field.getColumn() + " not allowed", new QName("queryData"));
-	    		}
+			if (modelCRUD.getDataRow() != null)
+			{
+				for (DataField field : modelCRUD.getDataRow().getFieldArray()) {
+		    		if (m_webservicetype.isInputColumnNameAllowed(field.getColumn())) {
+		        		sqlquery += " AND " + field.getColumn() + "=?";
+		    		} else {
+						throw new IdempiereServiceFault("Web service type "
+								+ m_webservicetype.getValue() + ": input column "
+								+ field.getColumn() + " not allowed", new QName("queryData"));
+		    		}
+				}
 			}
 			
 			if (modelCRUD.getFilter() != null && modelCRUD.getFilter().length() > 0)
@@ -1406,15 +1409,18 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			{
 				pstmtquery = DB.prepareStatement (sqlquery, null);
 				int p = 1;
-				for (DataField field : modelCRUD.getDataRow().getFieldArray()) {
-	    			int idx = poinfo.getColumnIndex(field.getColumn());
-	    			Class<?> c = poinfo.getColumnClass(idx);
-	    			if (c == Integer.class)
-		        		pstmtquery.setInt(p++, Integer.valueOf(field.getVal()));
-	    			else if (c == Timestamp.class)
-		        		pstmtquery.setTimestamp(p++, Timestamp.valueOf(field.getVal()));
-	    			else if (c == Boolean.class || c == String.class)
-		        		pstmtquery.setString(p++, field.getVal());
+				if (modelCRUD.getDataRow() != null)
+				{
+					for (DataField field : modelCRUD.getDataRow().getFieldArray()) {
+		    			int idx = poinfo.getColumnIndex(field.getColumn());
+		    			Class<?> c = poinfo.getColumnClass(idx);
+		    			if (c == Integer.class)
+			        		pstmtquery.setInt(p++, Integer.valueOf(field.getVal()));
+		    			else if (c == Timestamp.class)
+			        		pstmtquery.setTimestamp(p++, Timestamp.valueOf(field.getVal()));
+		    			else if (c == Boolean.class || c == String.class)
+			        		pstmtquery.setString(p++, field.getVal());
+					}
 				}
 				rsquery = pstmtquery.executeQuery ();
 				// Angelo Dabala' (genied) must create just one DataSet, moved outside of the while loop
