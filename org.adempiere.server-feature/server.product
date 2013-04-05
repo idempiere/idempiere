@@ -3,7 +3,6 @@
 
 <product name="iDempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.server_product" application="org.adempiere.server.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
@@ -15,7 +14,6 @@
 
    <windowImages/>
 
-
    <launcher name="idempiere">
       <solaris/>
       <win useIco="false">
@@ -23,10 +21,8 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
    </plugins>
@@ -53,10 +49,12 @@
       <plugin id="org.adempiere.webstore" autoStart="true" startLevel="4" />
       <plugin id="org.apache.felix.webconsole" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.cm" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.metatype" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.gemini.web.core" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.gemini.web.extender" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.gemini.web.tomcat" autoStart="true" startLevel="4" />
