@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -217,6 +218,19 @@ public class MColumn extends X_AD_Column
 			{
 				setIsToolbarButton(false);
 			}
+		}
+		
+		if (!isVirtualColumn() && getValueMax() != null && getValueMin() != null)
+		{
+			try {
+				BigDecimal valueMax = new BigDecimal(getValueMax());
+				BigDecimal valueMin = new BigDecimal(getValueMin());
+				if (valueMax.compareTo(valueMin) < 0) 
+				{
+					log.saveError("MaxLessThanMin", Msg.getElement(getCtx(), COLUMNNAME_ValueMax));
+					return false;
+				}
+			} catch (Exception e){}
 		}
 		
 		/** Views are not updateable
