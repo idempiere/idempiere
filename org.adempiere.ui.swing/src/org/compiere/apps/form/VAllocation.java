@@ -43,6 +43,7 @@ import org.compiere.apps.StatusBar;
 import org.compiere.grid.ed.VDate;
 import org.compiere.grid.ed.VLookup;
 import org.compiere.minigrid.MiniTable;
+import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import static org.compiere.model.SystemIDs.*;
@@ -481,7 +482,9 @@ public class VAllocation extends Allocation
 			{
 				public void run(String trxName)
 				{
-					statusBar.setStatusLine(saveData(m_WindowNo, dateField.getValue(), paymentTable, invoiceTable, trxName));
+					MAllocationHdr allocation = saveData(m_WindowNo, dateField.getValue(), paymentTable, invoiceTable, trxName);
+					if (allocation != null)
+						statusBar.setStatusLine(allocation.getDocumentNo());
 				}
 			});
 		}

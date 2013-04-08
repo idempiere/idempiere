@@ -595,10 +595,10 @@ public class Allocation
 	/**************************************************************************
 	 *  Save Data
 	 */
-	public String saveData(int m_WindowNo, Object date, IMiniTable payment, IMiniTable invoice, String trxName)
+	public MAllocationHdr saveData(int m_WindowNo, Object date, IMiniTable payment, IMiniTable invoice, String trxName)
 	{
 		if (m_noInvoices + m_noPayments == 0)
-			return "";
+			return null;
 
 		//  fixed fields
 		int AD_Client_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "AD_Client_ID");
@@ -801,6 +801,6 @@ public class Allocation
 		paymentList.clear();
 		amountList.clear();
 		
-		return alloc.getDocumentNo();
+		return alloc;
 	}   //  saveData
 }

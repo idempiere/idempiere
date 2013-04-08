@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Grid;
@@ -46,9 +47,9 @@ import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
-import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.Allocation;
+import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.util.DisplayType;
@@ -56,10 +57,15 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
+import org.compiere.util.Util;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.A;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
@@ -124,13 +130,14 @@ public class WAllocation extends Allocation
 	private Label differenceLabel = new Label();
 	private Textbox differenceField = new Textbox();
 	private Button allocateButton = new Button();
+	private Button refreshButton = new Button();
 	private Label currencyLabel = new Label();
 	private WTableDirEditor currencyPick = null;
 	private Checkbox multiCurrency = new Checkbox();
 	private Label chargeLabel = new Label();
 	private WTableDirEditor chargePick = null;
 	private Label allocCurrencyLabel = new Label();
-	private StatusBarPanel statusBar = new StatusBarPanel();
+	private Hlayout statusBar = new Hlayout();
 	private Label dateLabel = new Label();
 	private WDateEditor dateField = new WDateEditor();
 	private Checkbox autoWriteOff = new Checkbox();
@@ -166,8 +173,13 @@ public class WAllocation extends Allocation
 		chargeLabel.setText(" " + Msg.translate(Env.getCtx(), "C_Charge_ID"));
 		differenceLabel.setText(Msg.getMsg(Env.getCtx(), "Difference"));
 		differenceField.setText("0");
-		allocateButton.setLabel(Msg.getMsg(Env.getCtx(), "Process"));
+		differenceField.setReadonly(true);
+		differenceField.setStyle("text-align: right");
+		allocateButton.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Process")));
 		allocateButton.addActionListener(this);
+		refreshButton.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
+		refreshButton.addActionListener(this);
+		refreshButton.setAutodisable("self");
 		currencyLabel.setText(Msg.translate(Env.getCtx(), "C_Currency_ID"));
 		multiCurrency.setText(Msg.getMsg(Env.getCtx(), "MultiCurrency"));
 		multiCurrency.addActionListener(this);
@@ -217,7 +229,7 @@ public class WAllocation extends Allocation
 		south.appendChild(southPanel);
 		southPanel.appendChild(allocationPanel);
 		allocationPanel.appendChild(allocationLayout);
-		allocationLayout.setWidth("600px");
+		allocationLayout.setHflex("min");
 		rows = allocationLayout.newRows();
 		row = rows.newRow();
 		row.appendCellChild(differenceLabel.rightAlign());
@@ -226,9 +238,10 @@ public class WAllocation extends Allocation
 		row.appendCellChild(differenceField);
 		row.appendCellChild(chargeLabel.rightAlign());
 		chargePick.getComponent().setHflex("true");
-		row.appendCellChild(chargePick.getComponent(),2);
+		row.appendCellChild(chargePick.getComponent());
 		allocateButton.setHflex("true");
 		row.appendCellChild(allocateButton);
+		row.appendCellChild(refreshButton);
 		
 		paymentPanel.appendChild(paymentLayout);
 		paymentPanel.setWidth("100%");
@@ -325,9 +338,9 @@ public class WAllocation extends Allocation
 		bpartnerSearch.addValueChangeListener(this);
 
 		//  Translation
-		statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "AllocateStatus"));
-		statusBar.setStatusDB("");
-
+		statusBar.appendChild(new Label(Msg.getMsg(Env.getCtx(), "AllocateStatus")));
+		statusBar.setVflex("min");
+		
 		//  Date set to Login Date
 		dateField.setValue(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		dateField.addValueChangeListener(this);
@@ -356,9 +369,34 @@ public class WAllocation extends Allocation
 		else if (e.getTarget().equals(allocateButton))
 		{
 			allocateButton.setEnabled(false);
-			saveData();
+			MAllocationHdr allocation = saveData();
 			loadBPartner();
 			allocateButton.setEnabled(true);
+			if (allocation != null) 
+			{
+				A link = new A(allocation.getDocumentNo());
+				link.setAttribute("Record_ID", allocation.get_ID());
+				link.setAttribute("AD_Table_ID", allocation.get_Table_ID());
+				link.addEventListener(Events.ON_CLICK, new EventListener<Event>() 
+						{
+					@Override
+					public void onEvent(Event event) throws Exception 
+					{
+						Component comp = event.getTarget();
+						Integer Record_ID = (Integer) comp.getAttribute("Record_ID");
+						Integer AD_Table_ID = (Integer) comp.getAttribute("AD_Table_ID");
+						if (Record_ID != null && Record_ID > 0 && AD_Table_ID != null && AD_Table_ID > 0)
+						{
+							AEnv.zoom(AD_Table_ID, Record_ID);
+						}
+					}
+				});
+				statusBar.appendChild(link);
+			}					
+		}
+		else if (e.getTarget().equals(refreshButton))
+		{
+			loadBPartner();
 		}
 	}   //  actionPerformed
 
@@ -506,6 +544,8 @@ public class WAllocation extends Allocation
 		
 		//  Calculate Totals
 		calculate();
+		
+		statusBar.getChildren().clear();
 	}   //  loadBPartner
 	
 	public void calculate()
@@ -530,7 +570,7 @@ public class WAllocation extends Allocation
 	/**************************************************************************
 	 *  Save Data
 	 */
-	public void saveData()
+	private MAllocationHdr saveData()
 	{
 		if (m_AD_Org_ID > 0)
 			Env.setContext(Env.getCtx(), form.getWindowNo(), "AD_Org_ID", m_AD_Org_ID);
@@ -538,18 +578,23 @@ public class WAllocation extends Allocation
 			Env.setContext(Env.getCtx(), form.getWindowNo(), "AD_Org_ID", "");
 		try
 		{
+			final MAllocationHdr[] allocation = new MAllocationHdr[1];
 			Trx.run(new TrxRunnable() 
 			{
 				public void run(String trxName)
 				{
-					statusBar.setStatusLine(saveData(form.getWindowNo(), dateField.getValue(), paymentTable, invoiceTable, trxName));
+					statusBar.getChildren().clear();
+					allocation[0] = saveData(form.getWindowNo(), dateField.getValue(), paymentTable, invoiceTable, trxName);
+					
 				}
 			});
+			
+			return allocation[0];
 		}
 		catch (Exception e)
 		{
 			FDialog.error(form.getWindowNo(), form, "Error", e.getLocalizedMessage());
-			return;
+			return null;
 		}
 	}   //  saveData
 	
