@@ -94,6 +94,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 			form.setTitle(null);
 			preOpenNewTab();
 			windowContainer.addWindow(tabPanel, form.getFormName(), true);
+			form.focus();
 		} else {
 			form.setAttribute(Window.MODE_KEY, form.getWindowMode());
 			showWindow(form);
