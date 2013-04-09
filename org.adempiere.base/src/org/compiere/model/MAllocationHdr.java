@@ -57,7 +57,7 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 	private static final long serialVersionUID = 8726957992840702609L;
 
 	/**	Tolerance Gain and Loss */
-	private static final BigDecimal	TOLERANCE = new BigDecimal (0.02);
+	private static final BigDecimal	TOLERANCE = BigDecimal.valueOf(0.02);
 	
 	/**
 	 * 	Get Allocations of Payment
@@ -1045,7 +1045,7 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 					//	allocation as a percentage of the invoice
 					double multiplier = allocAmt.doubleValue() / invoice.getGrandTotal().doubleValue();
 					//	Reduce Orig Invoice Accounted
-					invAmtAccted = invAmtAccted.multiply(new BigDecimal(multiplier));
+					invAmtAccted = invAmtAccted.multiply(BigDecimal.valueOf(multiplier));
 					//	Difference based on percentage of Orig Invoice
 					openBalanceDiff = openBalanceDiff.add(invAmtAccted).subtract(allocAmtAccted);	//	gain is negative
 					//	ignore Tolerance
