@@ -302,7 +302,7 @@ public class M_PriceList_Create extends SvrProcess {
 						//
 						//Create Selection from M_Product_PO
 						//
-						sqlins.append("INSERT INTO T_Selection (AD_PInstance_ID, T_Selection_ID) ");
+						sqlins = new StringBuilder("INSERT INTO T_Selection (AD_PInstance_ID, T_Selection_ID) ");
 								sqlins.append( " SELECT DISTINCT ").append(m_AD_PInstance_ID).append(", po.M_Product_ID ");
 								sqlins.append(" FROM M_Product p, M_Product_PO po");
 								sqlins.append(" WHERE p.M_Product_ID=po.M_Product_ID ");
