@@ -28,6 +28,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.PeriodClosedException;
 import org.adempiere.util.IProcessUI;
 import org.adempiere.util.PaymentUtil;
 import org.compiere.process.DocAction;
@@ -1920,6 +1921,7 @@ public final class MPayment extends X_C_Payment
 		if (getC_BPartner_ID() != 0 && getC_Invoice_ID() == 0 && getC_Charge_ID() == 0 && MPaymentAllocate.get(this).length == 0)
 		{
 			MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
+			DB.getDatabase().forUpdate(bp, 0);
 			//	Update total balance to include this payment 
 			BigDecimal payAmt = MConversionRate.convertBase(getCtx(), getPayAmt(), 
 				getC_Currency_ID(), getDateAcct(), getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
@@ -1930,7 +1932,7 @@ public final class MPayment extends X_C_Payment
 				return DocAction.STATUS_Invalid;
 			}
 			//	Total Balance
-			BigDecimal newBalance = bp.getTotalOpenBalance(false);
+			BigDecimal newBalance = bp.getTotalOpenBalance();
 			if (newBalance == null)
 				newBalance = Env.ZERO;
 			if (isReceipt())
@@ -2361,6 +2363,12 @@ public final class MPayment extends X_C_Payment
 		for (int i = 0; i < allocations.length; i++)
 		{
 			allocations[i].set_TrxName(get_TrxName());
+			if (DOCSTATUS_Reversed.equals(allocations[i].getDocStatus())
+				|| DOCSTATUS_Voided.equals(allocations[i].getDocStatus()))
+			{
+				continue;
+			}
+			
 			if (accrual) 
 			{
 				allocations[i].setDocAction(DocAction.ACTION_Reverse_Accrual);
@@ -2409,11 +2417,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	public boolean voidIt()
 	{
-		if (log.isLoggable(Level.INFO)) log.info(toString());
-		// Before Void
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
-		if (m_processMsg != null)
-			return false;
+		if (log.isLoggable(Level.INFO)) log.info(toString());		
 		
 		if (DOCSTATUS_Closed.equals(getDocStatus())
 			|| DOCSTATUS_Reversed.equals(getDocStatus())
@@ -2434,6 +2438,11 @@ public final class MPayment extends X_C_Payment
 			|| DOCSTATUS_Approved.equals(getDocStatus())
 			|| DOCSTATUS_NotApproved.equals(getDocStatus()) )
 		{
+			// Before Void
+			m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
+			if (m_processMsg != null)
+				return false;
+			
 			if (!voidOnlinePayment())
 				return false;
 			
@@ -2447,7 +2456,22 @@ public final class MPayment extends X_C_Payment
 			deAllocate(false);
 		}
 		else
-			return reverseCorrectIt();
+		{
+			boolean accrual = false;
+			try 
+			{
+				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+			}
+			catch (PeriodClosedException e) 
+			{
+				accrual = true;
+			}
+			
+			if (accrual)
+				return reverseAccrualIt();
+			else
+				return reverseCorrectIt();
+		}
 		
 		//
 		// After Void

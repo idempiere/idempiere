@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoAddressException;
 import org.adempiere.exceptions.DBException;
+import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
@@ -1863,6 +1864,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 
 		//	Update BP Statistics
 		MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
+		DB.getDatabase().forUpdate(bp, 0);
 		//	Update total revenue and balance / credit limit (reversed on AllocationLine.processIt)
 		BigDecimal invAmt = MConversionRate.convertBase(getCtx(), getGrandTotal(true),	//	CM adjusted
 			getC_Currency_ID(), getDateAcct(), getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
@@ -1873,7 +1875,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 		//	Total Balance
-		BigDecimal newBalance = bp.getTotalOpenBalance(false);
+		BigDecimal newBalance = bp.getTotalOpenBalance();
 		if (newBalance == null)
 			newBalance = Env.ZERO;
 		if (isSOTrx())
@@ -1896,7 +1898,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			if (log.isLoggable(Level.FINE)) log.fine("GrandTotal=" + getGrandTotal(true) + "(" + invAmt
 				+ ") BP Life=" + bp.getActualLifeTimeValue() + "->" + newLifeAmt
 				+ ", Credit=" + bp.getSO_CreditUsed() + "->" + newCreditAmt
-				+ ", Balance=" + bp.getTotalOpenBalance(false) + " -> " + newBalance);
+				+ ", Balance=" + bp.getTotalOpenBalance() + " -> " + newBalance);
 			bp.setActualLifeTimeValue(newLifeAmt);
 			bp.setSO_CreditUsed(newCreditAmt);
 		}	//	SO
@@ -1904,7 +1906,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		{
 			newBalance = newBalance.subtract(invAmt);
 			if (log.isLoggable(Level.FINE)) log.fine("GrandTotal=" + getGrandTotal(true) + "(" + invAmt
-				+ ") Balance=" + bp.getTotalOpenBalance(false) + " -> " + newBalance);
+				+ ") Balance=" + bp.getTotalOpenBalance() + " -> " + newBalance);
 		}
 		bp.setTotalOpenBalance(newBalance);
 		bp.setSOCreditStatus();
@@ -2169,11 +2171,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	public boolean voidIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
-		// Before Void
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
-		if (m_processMsg != null)
-			return false;
-
+		
 		if (DOCSTATUS_Closed.equals(getDocStatus())
 			|| DOCSTATUS_Reversed.equals(getDocStatus())
 			|| DOCSTATUS_Voided.equals(getDocStatus()))
@@ -2190,6 +2188,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			|| DOCSTATUS_Approved.equals(getDocStatus())
 			|| DOCSTATUS_NotApproved.equals(getDocStatus()) )
 		{
+			// Before Void
+			m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
+			if (m_processMsg != null)
+				return false;
+			
 			//	Set lines to 0
 			MInvoiceLine[] lines = getLines(false);
 			for (int i = 0; i < lines.length; i++)
@@ -2221,7 +2224,20 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		}
 		else
 		{
-			return reverseCorrectIt();
+			boolean accrual = false;
+			try 
+			{
+				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+			}
+			catch (PeriodClosedException e) 
+			{
+				accrual = true;
+			}
+			
+			if (accrual)
+				return reverseAccrualIt();
+			else
+				return reverseCorrectIt();
 		}
 
 		// After Void

@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
@@ -2020,11 +2021,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public boolean voidIt()
 	{
-		if (log.isLoggable(Level.INFO)) log.info(toString());
-		// Before Void
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
-		if (m_processMsg != null)
-			return false;
+		if (log.isLoggable(Level.INFO)) log.info(toString());		
 
 		if (DOCSTATUS_Closed.equals(getDocStatus())
 			|| DOCSTATUS_Reversed.equals(getDocStatus())
@@ -2041,6 +2038,11 @@ public class MInOut extends X_M_InOut implements DocAction
 			|| DOCSTATUS_Approved.equals(getDocStatus())
 			|| DOCSTATUS_NotApproved.equals(getDocStatus()) )
 		{
+			// Before Void
+			m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
+			if (m_processMsg != null)
+				return false;
+			
 			//	Set lines to 0
 			MInOutLine[] lines = getLines(false);
 			for (int i = 0; i < lines.length; i++)
@@ -2063,7 +2065,20 @@ public class MInOut extends X_M_InOut implements DocAction
 		}
 		else
 		{
-			return reverseCorrectIt();
+			boolean accrual = false;
+			try 
+			{
+				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+			}
+			catch (PeriodClosedException e) 
+			{
+				accrual = true;
+			}
+			
+			if (accrual)
+				return reverseAccrualIt();
+			else
+				return reverseCorrectIt();
 		}
 
 		// After Void

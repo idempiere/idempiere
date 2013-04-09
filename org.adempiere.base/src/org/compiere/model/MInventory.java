@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.CCache;
@@ -665,11 +666,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	public boolean voidIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
-		// Before Void
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
-		if (m_processMsg != null)
-			return false;
-		
+				
 		if (DOCSTATUS_Closed.equals(getDocStatus())
 			|| DOCSTATUS_Reversed.equals(getDocStatus())
 			|| DOCSTATUS_Voided.equals(getDocStatus()))
@@ -685,6 +682,11 @@ public class MInventory extends X_M_Inventory implements DocAction
 			|| DOCSTATUS_Approved.equals(getDocStatus())
 			|| DOCSTATUS_NotApproved.equals(getDocStatus()) )
 		{
+			// Before Void
+			m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
+			if (m_processMsg != null)
+				return false;
+			
 			//	Set lines to 0
 			MInventoryLine[] lines = getLines(false);
 			for (int i = 0; i < lines.length; i++)
@@ -705,7 +707,20 @@ public class MInventory extends X_M_Inventory implements DocAction
 		}
 		else
 		{
-			return reverseCorrectIt();
+			boolean accrual = false;
+			try 
+			{
+				MPeriod.testPeriodOpen(getCtx(), getMovementDate(), getC_DocType_ID(), getAD_Org_ID());
+			}
+			catch (PeriodClosedException e) 
+			{
+				accrual = true;
+			}
+			
+			if (accrual)
+				return reverseAccrualIt();
+			else
+				return reverseCorrectIt();
 		}
 			
 		// After Void

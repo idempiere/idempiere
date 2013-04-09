@@ -289,8 +289,6 @@ public class MBPartner extends X_C_BPartner
 	private Integer					m_primaryC_BPartner_Location_ID = null;
 	/** Prim User						*/
 	private Integer					m_primaryAD_User_ID = null;
-	/** Credit Limit recently calculated		*/
-	private boolean 				m_TotalOpenBalanceSet = false;
 	/** BP Group						*/
 	private MBPGroup				m_group = null;
 	
@@ -692,7 +690,6 @@ public class MBPartner extends X_C_BPartner
 			pstmt = null;
 		}
 		//
-		m_TotalOpenBalanceSet = true;
 		if (SO_CreditUsed != null)
 			super.setSO_CreditUsed (SO_CreditUsed);
 		if (TotalOpenBalance != null)
@@ -737,19 +734,6 @@ public class MBPartner extends X_C_BPartner
 	}	//	setActualLifeTimeValue
 	
 	/**
-	 * 	Get Total Open Balance
-	 * 	@param calculate if null calculate it
-	 *	@return Open Balance
-	 */
-	public BigDecimal getTotalOpenBalance (boolean calculate)
-	{
-		if (getTotalOpenBalance().signum() == 0 && calculate)
-			setTotalOpenBalance();
-		return super.getTotalOpenBalance ();
-	}	//	getTotalOpenBalance
-	
-	
-	/**
 	 * 	Set Credit Status
 	 */
 	public void setSOCreditStatus ()
@@ -762,7 +746,7 @@ public class MBPartner extends X_C_BPartner
 			return;
 
 		//	Above Credit Limit
-		if (creditLimit.compareTo(getTotalOpenBalance(!m_TotalOpenBalanceSet)) < 0)
+		if (creditLimit.compareTo(getTotalOpenBalance()) < 0)
 			setSOCreditStatus(SOCREDITSTATUS_CreditHold);
 		else
 		{
@@ -795,7 +779,7 @@ public class MBPartner extends X_C_BPartner
 
 		//	Above (reduced) Credit Limit
 		creditLimit = creditLimit.subtract(additionalAmt);
-		if (creditLimit.compareTo(getTotalOpenBalance(!m_TotalOpenBalanceSet)) < 0)
+		if (creditLimit.compareTo(getTotalOpenBalance()) < 0)
 			return SOCREDITSTATUS_CreditHold;
 		
 		//	Above Watch Limit
@@ -826,16 +810,6 @@ public class MBPartner extends X_C_BPartner
 		return SOCREDITSTATUS_CreditStop.equals(status)
 			|| SOCREDITSTATUS_CreditHold.equals(status);
 	}	//	isCreditStopHold
-	
-	/**
-	 * 	Set Total Open Balance
-	 *	@param TotalOpenBalance
-	 */
-	public void setTotalOpenBalance (BigDecimal TotalOpenBalance)
-	{
-		m_TotalOpenBalanceSet = false;
-		super.setTotalOpenBalance (TotalOpenBalance);
-	}	//	setTotalOpenBalance
 	
 	/**
 	 * 	Get BP Group
