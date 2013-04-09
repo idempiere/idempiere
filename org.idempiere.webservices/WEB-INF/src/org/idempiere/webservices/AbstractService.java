@@ -32,6 +32,7 @@ import javax.xml.ws.handler.MessageContext;
 import org.adempiere.base.ServiceQuery;
 import org.adempiere.base.equinox.EquinoxExtensionLocator;
 import org.adempiere.exceptions.AdempiereException;
+import org.apache.commons.codec.binary.Base64;
 import org.compiere.model.Lookup;
 import org.compiere.model.MUser;
 import org.compiere.model.MWebService;
@@ -45,8 +46,6 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Login;
 import org.compiere.util.NamePair;
 import org.compiere.util.Trx;
-import org.idempiere.webservices.fault.IdempiereServiceFault;
-
 import org.idempiere.adInterface.x10.ADLoginRequest;
 import org.idempiere.adInterface.x10.DataField;
 import org.idempiere.adInterface.x10.OutputField;
@@ -54,6 +53,7 @@ import org.idempiere.adInterface.x10.OutputFields;
 import org.idempiere.adInterface.x10.StandardResponse;
 import org.idempiere.adInterface.x10.StandardResponseDocument;
 import org.idempiere.adinterface.CompiereService;
+import org.idempiere.webservices.fault.IdempiereServiceFault;
 
 
 
@@ -490,9 +490,14 @@ public class AbstractService {
 						"setValueAccordingToClass"));
 			}
 		} else if (columnClass == byte[].class) {
-			throw new IdempiereServiceFault(" input column "
-					+ colName + " LOB not supported",
-					new QName("setValueAccordingToClass"));
+			try {
+				value = Base64.decodeBase64(strValue.getBytes());
+			} catch (Exception e) {
+				throw new IdempiereServiceFault(e.getClass().toString()
+						+ " " + e.getMessage() + " for "
+						+ colName, e.getCause(), new QName(
+						"setValueAccordingToClass"));
+			}
 		} else {
 			value = strValue;
 		}
