@@ -620,10 +620,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     private void initialQuery(final MQuery query, GridTab mTab, final Callback<MQuery> callback)
     {
         // We have a (Zoom) query
-        if (query != null && query.isActive() && query.getRecordCount() < 10)
+        if (query != null && query.isActive())
         {
-        	callback.onCallback(query);
-        	return;
+    		callback.onCallback(query);
+    		return;
         }
 
         //
