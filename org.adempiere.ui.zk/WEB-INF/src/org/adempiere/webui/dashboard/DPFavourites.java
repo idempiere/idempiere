@@ -18,13 +18,13 @@ import static org.compiere.model.SystemIDs.TREE_MENUPRIMARY;
 import java.util.Enumeration;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
-import org.compiere.model.GridTab;
 import org.compiere.model.MMenu;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTree;
@@ -279,8 +279,9 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 							if(result == null)
 			    				return;
 			        		
-							GridTab tab = result.getADWindowContent().getActiveGridTab();
-							tab.dataNew(false);
+							result.getADWindowContent().onNew();
+							ADTabpanel adtabpanel = (ADTabpanel) result.getADWindowContent().getADTab().getSelectedTabpanel();
+							adtabpanel.focusToFirstEditor(false);
 						}
 					});					
 	            }

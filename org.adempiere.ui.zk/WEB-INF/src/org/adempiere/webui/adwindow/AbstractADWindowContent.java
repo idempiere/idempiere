@@ -513,6 +513,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				@Override
 				public void onEvent(Event event) throws Exception {
 					onNew();
+					ADTabpanel adtabpanel = (ADTabpanel) getADTab().getSelectedTabpanel();
+					adtabpanel.focusToFirstEditor(false);
 				}
 			}, new Event("onInsert"));
 		}

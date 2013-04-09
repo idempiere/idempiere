@@ -28,6 +28,7 @@ import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ValuePreference;
+import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.IFieldEditorContainer;
 import org.adempiere.webui.apps.AEnv;
@@ -45,7 +46,6 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
-import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -310,8 +310,9 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 					if(result == null)
 						return;
 		    					
-					GridTab tab = result.getADWindowContent().getActiveGridTab();
-					tab.dataNew(false);					
+					result.getADWindowContent().onNew();
+					ADTabpanel adtabpanel = (ADTabpanel) result.getADWindowContent().getADTab().getSelectedTabpanel();
+					adtabpanel.focusToFirstEditor(false);
 				}
 			});			
         }
