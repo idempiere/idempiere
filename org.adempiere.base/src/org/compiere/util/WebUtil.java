@@ -375,7 +375,7 @@ public final class WebUtil
 			if (oo instanceof BigDecimal)
 				return (BigDecimal)oo;
 			else if (oo instanceof Number)
-				return new BigDecimal (((Number)oo).doubleValue());
+				return BigDecimal.valueOf(((Number)oo).doubleValue());
 			return new BigDecimal (oo.toString());
 		}
 		catch (Exception e)

@@ -475,7 +475,7 @@ boolean jedinceBezBroja) {
 		amount = amount.replaceAll (",", "");
 
         Double iznos = Double.parseDouble(amount);
-		sb.append (slovimaUValuti (new BigDecimal(Double.valueOf(iznos))));
+		sb.append (slovimaUValuti (BigDecimal.valueOf(Double.valueOf(iznos))));
 
 		return sb.toString ();
 	}	//	getAmtInWords

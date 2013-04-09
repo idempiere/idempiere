@@ -195,57 +195,57 @@ public class MGoal extends X_PA_Goal
 		if (MeasureScope.equals(MEASURESCOPE_Year))
 		{
 			if (MeasureDisplay.equals(MEASUREDISPLAY_Quarter))
-				Multiplier = new BigDecimal(1.0/4.0);
+				Multiplier = BigDecimal.valueOf(1.0/4.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Month))
-				Multiplier = new BigDecimal(1.0/12.0);
+				Multiplier = BigDecimal.valueOf(1.0/12.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Week))
-				Multiplier = new BigDecimal(1.0/52.0);
+				Multiplier = BigDecimal.valueOf(1.0/52.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Day))
-				Multiplier = new BigDecimal(1.0/364.0);
+				Multiplier = BigDecimal.valueOf(1.0/364.0);
 		}
 		else if (MeasureScope.equals(MEASURESCOPE_Quarter))
 		{
 			if (MeasureDisplay.equals(MEASUREDISPLAY_Year))
-				Multiplier = new BigDecimal(4.0);
+				Multiplier = BigDecimal.valueOf(4.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Month))
-				Multiplier = new BigDecimal(1.0/3.0);
+				Multiplier = BigDecimal.valueOf(1.0/3.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Week))
-				Multiplier = new BigDecimal(1.0/13.0);
+				Multiplier = BigDecimal.valueOf(1.0/13.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Day))
-				Multiplier = new BigDecimal(1.0/91.0);
+				Multiplier = BigDecimal.valueOf(1.0/91.0);
 		}
 		else if (MeasureScope.equals(MEASURESCOPE_Month))
 		{
 			if (MeasureDisplay.equals(MEASUREDISPLAY_Year))
-				Multiplier = new BigDecimal(12.0);
+				Multiplier = BigDecimal.valueOf(12.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Quarter))
-				Multiplier = new BigDecimal(3.0);
+				Multiplier = BigDecimal.valueOf(3.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Week))
-				Multiplier = new BigDecimal(1.0/4.0);
+				Multiplier = BigDecimal.valueOf(1.0/4.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Day))
-				Multiplier = new BigDecimal(1.0/30.0);
+				Multiplier = BigDecimal.valueOf(1.0/30.0);
 		}
 		else if (MeasureScope.equals(MEASURESCOPE_Week))
 		{
 			if (MeasureDisplay.equals(MEASUREDISPLAY_Year))
-				Multiplier = new BigDecimal(52.0);
+				Multiplier = BigDecimal.valueOf(52.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Quarter))
-				Multiplier = new BigDecimal(13.0);
+				Multiplier = BigDecimal.valueOf(13.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Month))
-				Multiplier = new BigDecimal(4.0);
+				Multiplier = BigDecimal.valueOf(4.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Day))
-				Multiplier = new BigDecimal(1.0/7.0);
+				Multiplier = BigDecimal.valueOf(1.0/7.0);
 		}
 		else if (MeasureScope.equals(MEASURESCOPE_Day))
 		{
 			if (MeasureDisplay.equals(MEASUREDISPLAY_Year))
-				Multiplier = new BigDecimal(364.0);
+				Multiplier = BigDecimal.valueOf(364.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Quarter))
-				Multiplier = new BigDecimal(91.0);
+				Multiplier = BigDecimal.valueOf(91.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Month))
-				Multiplier = new BigDecimal(30.0);
+				Multiplier = BigDecimal.valueOf(30.0);
 			else if (MeasureDisplay.equals(MEASUREDISPLAY_Week))
-				Multiplier = new BigDecimal(7.0);
+				Multiplier = BigDecimal.valueOf(7.0);
 		}
 		return Multiplier;
 	}	//	getMultiplier

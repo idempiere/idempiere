@@ -334,7 +334,7 @@ public class MConversionRate extends X_C_Conversion_Rate
 		{
 			super.setMultiplyRate(MultiplyRate);
 			double dd = 1 / MultiplyRate.doubleValue();
-			super.setDivideRate(new BigDecimal(dd));
+			super.setDivideRate(BigDecimal.valueOf(dd));
 		}
 	}	//	setMultiplyRate
 
@@ -356,7 +356,7 @@ public class MConversionRate extends X_C_Conversion_Rate
 		{
 			super.setDivideRate(DivideRate);
 			double dd = 1 / DivideRate.doubleValue();
-			super.setMultiplyRate(new BigDecimal(dd));
+			super.setMultiplyRate(BigDecimal.valueOf(dd));
 		}
 	}	//	setDivideRate
 

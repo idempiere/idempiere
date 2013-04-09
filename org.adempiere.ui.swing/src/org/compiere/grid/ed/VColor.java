@@ -340,7 +340,7 @@ public class VColor extends CButton
 			setColor (cc.getTextureTaintColor(), true);
 		//	URL url = cc.getTextureURL();
 		//	m_mTab.setValue("AD_Image_ID");
-			m_mTab.setValue("ImageAlpha", new BigDecimal(cc.getTextureCompositeAlpha()));
+			m_mTab.setValue("ImageAlpha", BigDecimal.valueOf(cc.getTextureCompositeAlpha()));
 		}
 		m_cc = cc;
 	}   //  actionPerformed

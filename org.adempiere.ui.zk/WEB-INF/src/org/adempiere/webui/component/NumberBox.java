@@ -123,7 +123,7 @@ public class NumberBox extends Div
     	else if (value instanceof BigDecimal)
     		decimalBox.setValue((BigDecimal) value);
     	else if (value instanceof Number)
-    		decimalBox.setValue(new BigDecimal(((Number)value).doubleValue()));
+    		decimalBox.setValue(BigDecimal.valueOf(((Number)value).doubleValue()));
     	else
     		decimalBox.setValue(new BigDecimal(value.toString()));
     }

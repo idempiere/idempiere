@@ -909,7 +909,7 @@ public abstract class PO
 				long mili = ts.getTime();
 				int nano = ts.getNanos();
 				double doublets = Double.parseDouble(Long.toString(mili) + "." + Integer.toString(nano));
-				BigDecimal bdtimestamp = new BigDecimal(doublets);
+				BigDecimal bdtimestamp = BigDecimal.valueOf(doublets);
 				set_Value("ProcessedOn", bdtimestamp);
 			}
 		}

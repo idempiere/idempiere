@@ -97,9 +97,9 @@ class Base
 		listThreads();
 		//
 		System.out.println("API Test");
-		System.out.println("64.72=" + MConversionRate.convert(ctx, new BigDecimal(100.0), 116, 100,0,0));
+		System.out.println("64.72=" + MConversionRate.convert(ctx, BigDecimal.valueOf(100.0), 116, 100,0,0));
 		System.out.println("0.647169=" + MConversionRate.getRate(116, 100, null, 0,0,0));
-		System.out.println("12.5=" + MUOMConversion.convert(101, 102, new BigDecimal(100.0), true));
+		System.out.println("12.5=" + MUOMConversion.convert(101, 102, BigDecimal.valueOf(100.0), true));
 
 	}   //  Base
 

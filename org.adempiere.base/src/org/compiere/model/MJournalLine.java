@@ -210,9 +210,9 @@ public class MJournalLine extends X_GL_JournalLine
 		}
 		
 		if (rateDR != 0)
-			setCurrencyRate(new BigDecimal(rateDR));
+			setCurrencyRate(BigDecimal.valueOf(rateDR));
 		if (rateCR != 0)
-			setCurrencyRate(new BigDecimal(rateCR));
+			setCurrencyRate(BigDecimal.valueOf(rateCR));
 	}	//	setAmtAcct
 
 	

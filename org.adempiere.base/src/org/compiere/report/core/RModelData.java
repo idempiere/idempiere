@@ -76,7 +76,7 @@ public class RModelData
 	private ArrayList<Boolean>  	m_groupRowsIndicator = null;
 
 	/** Constant 1                      */
-	private static final BigDecimal     ONE = new BigDecimal(1.0);
+	private static final BigDecimal     ONE = BigDecimal.valueOf(1.0);
 
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(RModelData.class);

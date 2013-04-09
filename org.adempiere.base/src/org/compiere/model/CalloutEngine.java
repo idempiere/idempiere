@@ -250,7 +250,7 @@ public class CalloutEngine implements Callout
 
 		BigDecimal rate1 = (BigDecimal)value;
 		BigDecimal rate2 = Env.ZERO;
-		BigDecimal one = new BigDecimal(1.0);
+		BigDecimal one = BigDecimal.valueOf(1.0);
 
 		if (rate1.doubleValue() != 0.0)	//	no divide by zero
 			rate2 = one.divide(rate1, 12, BigDecimal.ROUND_HALF_UP);

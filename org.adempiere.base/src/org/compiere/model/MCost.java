@@ -1482,7 +1482,7 @@ public class MCost extends X_M_Cost
 		//amount must follow the sign of qty
 		if (amt.signum() != 0 && amt.signum() != qty.signum())
 		{
-			amt = amt.multiply(new BigDecimal(-1.00d));
+			amt = amt.multiply(BigDecimal.valueOf(-1.00d));
 		}
 		
 		if (getCurrentQty().add(qty).signum() < 0)

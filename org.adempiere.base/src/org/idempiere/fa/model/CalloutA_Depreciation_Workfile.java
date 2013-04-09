@@ -28,26 +28,26 @@ public class CalloutA_Depreciation_Workfile extends CalloutEngine
 		BigDecimal uselife = null;
 		if (MDepreciationWorkfile.COLUMNNAME_UseLifeYears.equals(mField.getColumnName()))
 		{
-			uselife =  new BigDecimal(value.toString()).multiply(new BigDecimal(12.0));
+			uselife =  new BigDecimal(value.toString()).multiply(BigDecimal.valueOf(12.0));
 			mTab.setValue(MDepreciationWorkfile.COLUMNNAME_UseLifeYears_F, value);
 			mTab.setValue(MDepreciationWorkfile.COLUMNNAME_UseLifeMonths, uselife);
 			mTab.setValue(MDepreciationWorkfile.COLUMNNAME_UseLifeMonths_F, uselife);	
 			
 		} else if (MDepreciationWorkfile.COLUMNNAME_UseLifeMonths.equals(mField.getColumnName()))
 		{
-			uselife =  new BigDecimal(value.toString()).divide(new BigDecimal(12.0));
+			uselife =  new BigDecimal(value.toString()).divide(BigDecimal.valueOf(12.0));
 			mTab.setValue(MDepreciationWorkfile.COLUMNNAME_UseLifeYears, uselife);
 			mTab.setValue(MDepreciationWorkfile.COLUMNNAME_UseLifeYears_F, uselife);
 			mTab.setValue(MDepreciationWorkfile.COLUMNNAME_UseLifeMonths_F, value);
 			
 		} else if (MDepreciationWorkfile.COLUMNNAME_UseLifeYears_F.equals(mField.getColumnName()))
 		{
-			uselife =  new BigDecimal(value.toString()).multiply(new BigDecimal(12.0));
+			uselife =  new BigDecimal(value.toString()).multiply(BigDecimal.valueOf(12.0));
 			mTab.setValue(MDepreciationWorkfile.COLUMNNAME_UseLifeMonths_F, uselife);
 			
 		} else if (MDepreciationWorkfile.COLUMNNAME_UseLifeMonths_F.equals(mField.getColumnName()))
 		{
-			uselife =  new BigDecimal(value.toString()).divide(new BigDecimal(12.0));
+			uselife =  new BigDecimal(value.toString()).divide(BigDecimal.valueOf(12.0));
 			mTab.setValue(MDepreciationWorkfile.COLUMNNAME_UseLifeYears_F, uselife);
 			
 		}

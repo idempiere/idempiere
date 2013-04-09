@@ -48,7 +48,7 @@ public class MResourceAssignment extends X_S_ResourceAssignment
 		if (S_ResourceAssignment_ID == 0)
 		{
 			setAssignDateFrom(new Timestamp(System.currentTimeMillis()));
-			setQty(new BigDecimal(1.0));
+			setQty(BigDecimal.valueOf(1.0));
 			setName(".");
 			setIsConfirmed(false);
 		}

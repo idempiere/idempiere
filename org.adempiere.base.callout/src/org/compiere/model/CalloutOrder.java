@@ -1111,7 +1111,7 @@ public class CalloutOrder extends CalloutEngine
 		if (mField.getColumnName().equals("Discount"))
 		{
 			if ( PriceList.doubleValue() != 0 )
-				PriceActual = new BigDecimal ((100.0 - Discount.doubleValue()) / 100.0 * PriceList.doubleValue());
+				PriceActual = BigDecimal.valueOf((100.0 - Discount.doubleValue()) / 100.0 * PriceList.doubleValue());
 			if (PriceActual.scale() > StdPrecision)
 				PriceActual = PriceActual.setScale(StdPrecision, BigDecimal.ROUND_HALF_UP);
 			PriceEntered = MUOMConversion.convertProductFrom (ctx, M_Product_ID,
@@ -1127,7 +1127,7 @@ public class CalloutOrder extends CalloutEngine
 			if (PriceList.intValue() == 0)
 				Discount = Env.ZERO;
 			else
-				Discount = new BigDecimal ((PriceList.doubleValue() - PriceActual.doubleValue()) / PriceList.doubleValue() * 100.0);
+				Discount = BigDecimal.valueOf((PriceList.doubleValue() - PriceActual.doubleValue()) / PriceList.doubleValue() * 100.0);
 			if (Discount.scale() > 2)
 				Discount = Discount.setScale(2, BigDecimal.ROUND_HALF_UP);
 			mTab.setValue("Discount", Discount);
@@ -1155,7 +1155,7 @@ public class CalloutOrder extends CalloutEngine
 			//	Repeat Discount calc
 			if (PriceList.intValue() != 0)
 			{
-				Discount = new BigDecimal ((PriceList.doubleValue () - PriceActual.doubleValue ()) / PriceList.doubleValue () * 100.0);
+				Discount = BigDecimal.valueOf((PriceList.doubleValue () - PriceActual.doubleValue ()) / PriceList.doubleValue () * 100.0);
 				if (Discount.scale () > 2)
 					Discount = Discount.setScale (2, BigDecimal.ROUND_HALF_UP);
 				mTab.setValue ("Discount", Discount);

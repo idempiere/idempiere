@@ -530,7 +530,7 @@ public class WGraph extends Div implements IdSpace {
 			td = new Td();
 			td.setSclass("pa-tdvalue");
 			tr.appendChild(td);
-			BigDecimal value = new BigDecimal(bgc.getValue());
+			BigDecimal value = BigDecimal.valueOf(bgc.getValue());
 			if (bgc.getMQuery(builder.getMGoal()) != null) {				
 				A a = new A();
 				a.setSclass("pa-hrefNode");

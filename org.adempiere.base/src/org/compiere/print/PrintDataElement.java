@@ -126,7 +126,7 @@ public class PrintDataElement implements Serializable
 		if (m_value instanceof BigDecimal)
 			return (BigDecimal)m_value;
 		if (m_value instanceof Number)
-			return new BigDecimal(((Number)m_value).doubleValue());
+			return BigDecimal.valueOf(((Number)m_value).doubleValue());
 
 		//	Boolean - return 1 for true 0 for false
 		if (m_value instanceof Boolean)

@@ -1777,11 +1777,11 @@ public final class Env
 	 */
 
 	/**	Big Decimal 0	 */
-	static final public BigDecimal ZERO = new BigDecimal(0.0);
+	static final public BigDecimal ZERO = BigDecimal.valueOf(0.0);
 	/**	Big Decimal 1	 */
-	static final public BigDecimal ONE = new BigDecimal(1.0);
+	static final public BigDecimal ONE = BigDecimal.valueOf(1.0);
 	/**	Big Decimal 100	 */
-	static final public BigDecimal ONEHUNDRED = new BigDecimal(100.0);
+	static final public BigDecimal ONEHUNDRED = BigDecimal.valueOf(100.0);
 
 	/**	New Line 		 */
 	public static final String	NL = System.getProperty("line.separator");

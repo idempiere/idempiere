@@ -105,7 +105,7 @@ public class Doc_Requisition extends Doc
 	 */
 	public BigDecimal getBalance ()
 	{
-		BigDecimal retValue = new BigDecimal (0.0);
+		BigDecimal retValue = BigDecimal.valueOf(0.0);
 		return retValue;
 	}	// getBalance
 

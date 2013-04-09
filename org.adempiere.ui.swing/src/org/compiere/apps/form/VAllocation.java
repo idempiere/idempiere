@@ -394,7 +394,7 @@ public class VAllocation extends Allocation
 
 	
 	private void setAllocateButton() {
-		if (totalDiff.compareTo(new BigDecimal(0.0)) == 0 ^ m_C_Charge_ID > 0 )
+		if (totalDiff.compareTo(BigDecimal.valueOf(0.0)) == 0 ^ m_C_Charge_ID > 0 )
 		{
 			allocateButton.setEnabled(true);
 			// chargePick.setValue(m_C_Charge_ID);
@@ -404,7 +404,7 @@ public class VAllocation extends Allocation
 			allocateButton.setEnabled(false);
 		}
 		
-		if ( totalDiff.compareTo(new BigDecimal(0.0)) == 0 )
+		if ( totalDiff.compareTo(BigDecimal.valueOf(0.0)) == 0 )
 		{
 			chargePick.setValue(null);
 			m_C_Charge_ID = 0;

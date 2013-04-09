@@ -534,7 +534,7 @@ public class GLJournalGenerate extends SvrProcess
 			sourceAmt = sourceAmt.multiply(amtMultiplier, MathContext.UNLIMITED);
 
 		if (roundFactor < 0) {
-			BigDecimal divisor = new BigDecimal(Math.pow(10, -roundFactor));
+			BigDecimal divisor = BigDecimal.valueOf(Math.pow(10, -roundFactor));
 			sourceAmt = sourceAmt.divide(divisor, MathContext.UNLIMITED);
 			sourceAmt = sourceAmt.setScale(0, BigDecimal.ROUND_HALF_UP);
 			sourceAmt = sourceAmt.multiply(divisor, MathContext.UNLIMITED);

@@ -222,12 +222,12 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 		}
 		
 		MShipperPackaging sp = new MShipperPackaging(ctx, M_ShipperPackaging_ID, trxName);
-		BigDecimal WeightPerPackage = sp.getWeight().multiply(isPound ? new BigDecimal(2.20462) : BigDecimal.ONE);
+		BigDecimal WeightPerPackage = sp.getWeight().multiply(isPound ? BigDecimal.valueOf(2.20462) : BigDecimal.ONE);
 		
 		if (WeightPerPackage == null || WeightPerPackage.compareTo(BigDecimal.ZERO) == 0)
 		{
-			BigDecimal defaultWeightPerPackage = new BigDecimal(MSysConfig.getDoubleValue(MSysConfig.SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE, 30));
-			WeightPerPackage = defaultWeightPerPackage.multiply(isPound ? new BigDecimal(2.20462) : BigDecimal.ONE);
+			BigDecimal defaultWeightPerPackage = BigDecimal.valueOf(MSysConfig.getDoubleValue(MSysConfig.SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE, 30));
+			WeightPerPackage = defaultWeightPerPackage.multiply(isPound ? BigDecimal.valueOf(2.20462) : BigDecimal.ONE);
 		}
 		
 		BigDecimal CODAmount = m_order.getGrandTotal();

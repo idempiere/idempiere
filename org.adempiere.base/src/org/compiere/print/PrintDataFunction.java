@@ -148,7 +148,7 @@ public class PrintDataFunction
 			return variance;
 		}
 		//	Standard Deviation
-		BigDecimal deviation = new BigDecimal(Math.sqrt(variance.doubleValue()));
+		BigDecimal deviation = BigDecimal.valueOf(Math.sqrt(variance.doubleValue()));
 		if (deviation.scale() > 4)
 			deviation = deviation.setScale(4, BigDecimal.ROUND_HALF_UP);
 		return deviation;
