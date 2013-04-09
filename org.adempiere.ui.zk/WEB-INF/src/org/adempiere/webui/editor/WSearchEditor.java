@@ -303,7 +303,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
     		query.addRestriction("1=2");
 			query.setRecordCount(0);
 
-			SessionManager.getAppDesktop().openWindow(lookup.getZoom(query), query, new Callback<ADWindow>() {				
+			int zoomWindowId = gridField != null ? lookup.getZoom(Env.isSOTrx(Env.getCtx(), gridField.getWindowNo())) : lookup.getZoom(Env.isSOTrx(Env.getCtx()));
+			SessionManager.getAppDesktop().openWindow(zoomWindowId, query, new Callback<ADWindow>() {				
 				@Override
 				public void onCallback(ADWindow result) {
 					if(result == null)

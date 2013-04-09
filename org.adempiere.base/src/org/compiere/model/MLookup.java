@@ -563,6 +563,7 @@ public final class MLookup extends Lookup implements Serializable
 	 * 	@param query query
 	 *  @return Zoom Window
 	 */
+	@Override
 	public int getZoom(MQuery query)
 	{
 		if (m_info.ZoomWindowPO == 0 || query == null)
@@ -570,11 +571,18 @@ public final class MLookup extends Lookup implements Serializable
 		//	Need to check SO/PO
 		boolean isSOTrx = DB.isSOTrx(m_info.TableName, query.getWhereClause(false));
 		//
-		if (!isSOTrx)
-			return m_info.ZoomWindowPO;
-		return m_info.ZoomWindow;
+		return getZoom(isSOTrx);
 	}	//	getZoom
 
+	@Override
+	public int getZoom(boolean isSOTrx)
+	{
+		if (m_info.ZoomWindowPO == 0)
+			return m_info.ZoomWindow;
+		
+		return isSOTrx ? m_info.ZoomWindow : m_info.ZoomWindowPO;
+	}
+	
 	/**
 	 *	Get Zoom Query String
 	 *  @return Zoom SQL Where Clause

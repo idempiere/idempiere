@@ -429,6 +429,15 @@ public abstract class Lookup extends AbstractListModel
 	}	//	getZoom
 
 	/**
+	 * @param isSOTrx
+	 * @return Zoom AD_Window_ID
+	 */
+	public int getZoom(boolean isSOTrx)
+	{
+		return 0;
+	}
+	
+	/**
 	 *	Get Zoom - default implementation
 	 * 	@param query query
 	 *  @return Zoom Window - here 0
