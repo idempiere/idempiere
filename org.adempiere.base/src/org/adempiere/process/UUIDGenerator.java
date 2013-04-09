@@ -36,6 +36,7 @@ import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
 
@@ -119,7 +120,7 @@ public class UUIDGenerator extends SvrProcess {
 					mColumn.setEntityType("U");
 					mColumn.setFieldLength(36);
 					mColumn.setName(columnName);
-					mColumn.setVersion(new BigDecimal("1.00"));
+					mColumn.setVersion(Env.ONE);
 					mColumn.saveEx();
 
 					syncColumn(mColumn);

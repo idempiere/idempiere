@@ -193,7 +193,7 @@ public class Doc_Production extends Doc
 							as.get_ID(), base.getAccount_ID(), 0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 					// 
 					// only post variance if it's not zero 
-					if (variance.compareTo(new BigDecimal("0.00")) != 0) 
+					if (variance.signum() != 0) 
 					{
 						//post variance 
 						fl = fact.createLine(line, 

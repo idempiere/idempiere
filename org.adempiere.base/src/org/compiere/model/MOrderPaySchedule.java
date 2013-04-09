@@ -96,10 +96,6 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 	/** Static Logger					*/
 	private static CLogger		s_log = CLogger.getCLogger (MOrderPaySchedule.class);
 
-	/** 100								*/
-	private final static BigDecimal		HUNDRED = new BigDecimal(100);
-
-	
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -156,10 +152,10 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 		else
 		{
 			due = due.multiply(paySchedule.getPercentage())
-				.divide(HUNDRED, scale, BigDecimal.ROUND_HALF_UP);
+				.divide(Env.ONEHUNDRED, scale, BigDecimal.ROUND_HALF_UP);
 			setDueAmt (due);
 			BigDecimal discount = due.multiply(paySchedule.getDiscount())
-				.divide(HUNDRED, scale, BigDecimal.ROUND_HALF_UP);
+				.divide(Env.ONEHUNDRED, scale, BigDecimal.ROUND_HALF_UP);
 			setDiscountAmt (discount);
 			setIsValid(true);
 		}

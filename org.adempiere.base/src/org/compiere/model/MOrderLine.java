@@ -720,7 +720,7 @@ public class MOrderLine extends X_C_OrderLine
 		if (Env.ZERO.compareTo(list) == 0)
 			return;
 		BigDecimal discount = list.subtract(getPriceActual())
-			.multiply(new BigDecimal(100))
+			.multiply(Env.ONEHUNDRED)
 			.divide(list, getPrecision(), BigDecimal.ROUND_HALF_UP);
 		setDiscount(discount);
 	}	//	setDiscount

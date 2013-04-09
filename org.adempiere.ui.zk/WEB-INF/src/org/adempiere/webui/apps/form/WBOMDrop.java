@@ -207,7 +207,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		
 		Label lblProduct = new Label(Msg.translate(Env.getCtx(), "M_Product_ID"));
 		Label lblQty = new Label(Msg.translate(Env.getCtx(), "Qty"));
-		productQty.setValue(new BigDecimal(1));
+		productQty.setValue(Env.ONE);
 		productField.addEventListener(Events.ON_SELECT, this);
 		productQty.addEventListener(Events.ON_CHANGE, this);
 		

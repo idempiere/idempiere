@@ -717,7 +717,7 @@ public final class VNumber extends JComponent
 		DecimalFormat format, int displayType, String title, char operator)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Value=" + value);
-		BigDecimal startValue = BigDecimal.valueOf(0.0);
+		BigDecimal startValue = Env.ZERO;
 		try
 		{
 			if (value != null && value.length() > 0)
