@@ -61,7 +61,7 @@ public class PaySelect
 	/** Format                  */
 	public DecimalFormat   m_format = DisplayType.getNumberFormat(DisplayType.Amount);
 	/** Bank Balance            */
-	private BigDecimal      m_bankBalance = BigDecimal.valueOf(0.0);
+	private BigDecimal      m_bankBalance = Env.ZERO;
 	/** SQL for Query           */
 	private String          m_sql;
 	/** Number of selected rows */
@@ -379,7 +379,7 @@ public class PaySelect
 	public String calculateSelection(IMiniTable miniTable)
 	{
 		m_noSelected = 0;
-		BigDecimal invoiceAmt = BigDecimal.valueOf(0.0);
+		BigDecimal invoiceAmt = Env.ZERO;
 
 		int rows = miniTable.getRowCount();
 		for (int i = 0; i < rows; i++)

@@ -193,10 +193,10 @@ public class PromotionRule {
 						} else if (pr.getRewardType().equals(MPromotionReward.REWARDTYPE_FlatDiscount)) {
 							discount = pr.getAmount();
 						} else if (pr.getRewardType().equals(MPromotionReward.REWARDTYPE_Percentage)) {
-							discount = pr.getAmount().divide(BigDecimal.valueOf(100.00)).multiply(totalPrice);
+							discount = pr.getAmount().divide(Env.ONEHUNDRED).multiply(totalPrice);
 						}
 						if (discount.signum() > 0) {
-							addDiscountLine(order, null, discount, BigDecimal.valueOf(1.00), pr.getC_Charge_ID(), pr.getM_Promotion());
+							addDiscountLine(order, null, discount, Env.ONE, pr.getC_Charge_ID(), pr.getM_Promotion());
 						}
 					} else {
 						int M_PromotionDistribution_ID = pr.getM_PromotionDistribution_ID();
@@ -260,10 +260,10 @@ public class PromotionRule {
 								if (ol.getC_OrderLine_ID() == C_OrderLine_ID) {
 									if (pr.getRewardType().equals(MPromotionReward.REWARDTYPE_Percentage)) {
 										BigDecimal priceActual = ol.getPriceActual();
-										BigDecimal discount = priceActual.multiply(pr.getAmount().divide(BigDecimal.valueOf(100.00)));
+										BigDecimal discount = priceActual.multiply(pr.getAmount().divide(Env.ONEHUNDRED));
 										addDiscountLine(order, ol, discount, qty, pr.getC_Charge_ID(), pr.getM_Promotion());
 									} else if (pr.getRewardType().equals(MPromotionReward.REWARDTYPE_FlatDiscount)) {
-										addDiscountLine(order, ol, pr.getAmount(), BigDecimal.valueOf(1.00), pr.getC_Charge_ID(), pr.getM_Promotion());
+										addDiscountLine(order, ol, pr.getAmount(), Env.ONE, pr.getC_Charge_ID(), pr.getM_Promotion());
 									} else if (pr.getRewardType().equals(MPromotionReward.REWARDTYPE_AbsoluteAmount)) {
 										BigDecimal priceActual = ol.getPriceActual();
 										totalPrice = totalPrice.add(priceActual.multiply(qty));
@@ -278,7 +278,7 @@ public class PromotionRule {
 						}
 						if (pr.getRewardType().equals(MPromotionReward.REWARDTYPE_AbsoluteAmount))  {
 							if (pr.getAmount().compareTo(totalPrice) < 0) {
-								addDiscountLine(order, null, totalPrice.subtract(pr.getAmount()), BigDecimal.valueOf(1.00), pr.getC_Charge_ID(), pr.getM_Promotion());
+								addDiscountLine(order, null, totalPrice.subtract(pr.getAmount()), Env.ONE, pr.getC_Charge_ID(), pr.getM_Promotion());
 							}
 						}
 					}

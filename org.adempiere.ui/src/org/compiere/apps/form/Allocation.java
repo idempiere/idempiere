@@ -53,9 +53,9 @@ public class Allocation
 	public int         	m_C_BPartner_ID = 0;
 	private int         m_noInvoices = 0;
 	private int         m_noPayments = 0;
-	public BigDecimal	totalInv = BigDecimal.valueOf(0.0);
-	public BigDecimal 	totalPay = BigDecimal.valueOf(0.0);
-	public BigDecimal	totalDiff = BigDecimal.valueOf(0.0);
+	public BigDecimal	totalInv = Env.ZERO;
+	public BigDecimal 	totalPay = Env.ZERO;
+	public BigDecimal	totalDiff = Env.ZERO;
 	
 	public Timestamp allocDate = null;
 
@@ -548,7 +548,7 @@ public class Allocation
 		log.config("");
 
 		//  Payment
-		totalPay = BigDecimal.valueOf(0.0);
+		totalPay = Env.ZERO;
 		int rows = payment.getRowCount();
 		m_noPayments = 0;
 		for (int i = 0; i < rows; i++)
@@ -571,7 +571,7 @@ public class Allocation
 	public String calculateInvoice(IMiniTable invoice, boolean isMultiCurrency)
 	{		
 		//  Invoices
-		totalInv = BigDecimal.valueOf(0.0);
+		totalInv = Env.ZERO;
 		int rows = invoice.getRowCount();
 		m_noInvoices = 0;
 

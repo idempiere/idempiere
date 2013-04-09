@@ -486,7 +486,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 	{
 		BigDecimal retValue = super.getLineStroke();
 		if (retValue == null || Env.ZERO.compareTo(retValue) <= 0)
-			retValue = BigDecimal.valueOf(1.0);
+			retValue = Env.ONE;
 		return retValue;
 	}	//	getLineStroke
 
@@ -498,7 +498,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 	{
 		BigDecimal retValue = super.getLineStroke();
 		if (retValue == null || Env.ZERO.compareTo(retValue) <= 0)
-			retValue = BigDecimal.valueOf(1.0);
+			retValue = Env.ONE;
 		return retValue;
 	}	//	getVLineStroke
 	

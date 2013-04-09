@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.compiere.model.Callout;
 import org.compiere.model.X_AD_ImpFormat_Row;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 
 /**
  *	Import Format Row with parsing capability
@@ -486,7 +487,7 @@ public final class ImpFormatRow
 			return "0";
 		BigDecimal bd = new BigDecimal(sb.toString());
 		if (m_divideBy100)					//	assumed two decimal scale
-			bd = bd.divide(BigDecimal.valueOf(100.0), 2, BigDecimal.ROUND_HALF_UP);
+			bd = bd.divide(Env.ONEHUNDRED, 2, BigDecimal.ROUND_HALF_UP);
 		return bd.toString();
 	}	//	parseNumber
 
