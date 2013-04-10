@@ -403,16 +403,19 @@ public class ConfigOracle implements IDatabaseConfig
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_USER, databaseUser);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_PASSWORD, databasePassword);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_EXISTS, (isDBExists ? "Y" : "N"));		
-		String ospath;
-		if (System.getProperty("os.name").startsWith("Windows"))
-			ospath = "windows";
-		else
-			ospath = "unix";
-		String testFile = "utils." + ospath + "/oracle/Test.sql";
+		String testFile = "utils/oracle/Test.sql";
 		if (! new File(testFile).isFile()) {
-			testFile = "org.adempiere.server-feature/" + testFile;
+			String ospath;
+			if (System.getProperty("os.name").startsWith("Windows"))
+				ospath = "windows";
+			else
+				ospath = "unix";
+			testFile = "utils." + ospath + "/oracle/Test.sql";
 			if (! new File(testFile).isFile()) {
-				testFile = null;
+				testFile = "org.adempiere.server-feature/" + testFile;
+				if (! new File(testFile).isFile()) {
+					testFile = null;
+				}
 			}
 		}
 		if (testFile != null) {

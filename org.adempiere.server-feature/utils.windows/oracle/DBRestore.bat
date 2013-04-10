@@ -24,11 +24,6 @@
 @imp %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% FILE=%IDEMPIERE_HOME%\data\ExpDat.dmp FROMUSER=(%2) TOUSER=%2 STATISTICS=RECALCULATE
 
 @echo -------------------------------------
-@echo Create SQLJ 
-@echo -------------------------------------
-@call %IDEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\create %ADEMPIERE_DB_USER%/%ADEMPIERE_DB_PASSWORD%
-
-@echo -------------------------------------
 @echo Check System
 @echo Import may show some warnings. This is OK as long as the following does not show errors
 @echo -------------------------------------

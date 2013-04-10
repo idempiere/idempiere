@@ -29,11 +29,6 @@
 @impdp %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDat.dmp SCHEMAS=%2
 
 @echo -------------------------------------
-@echo Create SQLJ 
-@echo -------------------------------------
-@call %IDEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\create %ADEMPIERE_DB_USER%/%ADEMPIERE_DB_PASSWORD%
-
-@echo -------------------------------------
 @echo Check System
 @echo Import may show some warnings. This is OK as long as the following does not show errors
 @echo -------------------------------------
