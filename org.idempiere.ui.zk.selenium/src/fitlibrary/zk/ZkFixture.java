@@ -15,6 +15,7 @@ import fitlibrary.annotation.SimpleAction;
 import fitlibrary.spider.AbstractSpiderFixture;
 import fitlibrary.spider.Finder;
 import fitlibrary.spider.SpiderFixture;
+import fitlibrary.spider.polling.PollForWithError;
 
 /**
  * @author hengsin
@@ -42,9 +43,29 @@ public class ZkFixture extends SpiderFixture {
 
 	@Override
 	public boolean withSelect(String locator, final boolean select) {
-		locator = locator + " ~ input";
+		Widget widget = new Widget(locator);
+		final WebElement element = widget.$n(webDriver, "real");
+		if (element.isSelected()) {
+			if (!select) {
+				element.click();
+			}
+		} else {
+			if (select) {
+				element.click();
+			}
+		}
 
-		return super.withSelect(locator, select);
+		ensureBecomes(new PollForWithError() {
+			@Override
+			public boolean matches() {
+				return element.isSelected() == select;
+			}
+			@Override
+			public String error() {
+				return "Not selected correctly";
+			}
+		});
+		return true;
 	}
 
 	// --------- ComboBox ---------
