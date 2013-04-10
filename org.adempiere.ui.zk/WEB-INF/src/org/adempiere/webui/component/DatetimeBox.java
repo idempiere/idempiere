@@ -38,7 +38,7 @@ public class DatetimeBox extends Panel {
 		dateBox.setCols(10);
 		timeBox = new Timebox();
 		timeBox.setCols(10);
-		timeBox.setButtonVisible(false);
+		//timeBox.setButtonVisible(false);
 		appendChild(dateBox);
 		appendChild(timeBox);
 		this.setHflex("1");

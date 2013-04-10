@@ -98,6 +98,7 @@ public class WTimeEditor extends WEditor implements ContextMenuListener
 
 	private void init()
 	{
+		getComponent().setCols(10);
 		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
 		popupMenu.addMenuListener(this);
 		addChangeLogMenu(popupMenu);
