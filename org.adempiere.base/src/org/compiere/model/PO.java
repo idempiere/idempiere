@@ -102,12 +102,12 @@ import org.w3c.dom.Element;
 public abstract class PO
 	implements Serializable, Comparator<Object>, Evaluatee, Cloneable
 {
-	public static final String LOCAL_TRX_PREFIX = "POSave";
-
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 6604764467216189092L;
+	private static final long serialVersionUID = 8742545079591136114L;
+
+	public static final String LOCAL_TRX_PREFIX = "POSave";
 
 	private static final String USE_TIMEOUT_FOR_UPDATE = "org.adempiere.po.useTimeoutForUpdate";
 
@@ -196,6 +196,7 @@ public abstract class PO
 		int size = p_info.getColumnCount();
 		m_oldValues = new Object[size];
 		m_newValues = new Object[size];
+		m_setErrors = new ValueNamePair[size];
 
 		if (rs != null)
 			load(rs);		//	will not have virtual columns
@@ -235,6 +236,8 @@ public abstract class PO
 	private Object[]    		m_oldValues = null;
 	/** New Values              */
 	private Object[]    		m_newValues = null;
+	/** Errors when setting     */
+	private ValueNamePair[]		m_setErrors = null;
 
 	/** Record_IDs          		*/
 	private Object[]       		m_IDs = new Object[] {I_ZERO};
@@ -763,12 +766,14 @@ public abstract class PO
 		String ColumnName = p_info.getColumnName(index);
 		String colInfo = " - " + ColumnName;
 		//
+		m_setErrors[index] = null;
 		if (checkWritable)
 		{
 			if (p_info.isVirtualColumn(index))
 			{
 				log.log(Level.WARNING, "Virtual Column" + colInfo);
 				log.saveError("VirtualColumn", "Virtual Column" + colInfo);
+				m_setErrors[index] = new ValueNamePair("VirtualColumn", "Virtual Column" + colInfo);
 				return false;
 			}
 	
@@ -780,6 +785,7 @@ public abstract class PO
 				colInfo += " - NewValue=" + value + " - OldValue=" + get_Value(index);
 				log.log(Level.WARNING, "Column not updateable" + colInfo);
 				log.saveError("ColumnReadonly", "Column not updateable" + colInfo);
+				m_setErrors[index] = new ValueNamePair("ColumnReadonly", "Column not updateable" + colInfo);
 				return false;
 			}
 		}
@@ -789,7 +795,8 @@ public abstract class PO
 			if (checkWritable && p_info.isColumnMandatory(index))
 			{
 				log.saveError("FillMandatory", ColumnName + " is mandatory.");
-				throw new IllegalArgumentException (ColumnName + " is mandatory.");
+				m_setErrors[index] = new ValueNamePair("FillMandatory", ColumnName + " is mandatory.");
+				return false;
 			}
 			m_newValues[index] = Null.NULL;          //  correct
 			if (log.isLoggable(Level.FINER)) log.finer(ColumnName + " = null");
@@ -823,22 +830,22 @@ public abstract class PO
 				}
 				catch (NumberFormatException e)
 				{
-					log.log(Level.SEVERE, ColumnName
-						+ " - Class invalid: " + value.getClass().toString()
-						+ ", Should be " + p_info.getColumnClass(index).toString() + ": " + value);
-					log.saveError("WrongDataType", ColumnName
+					String errmsg = ColumnName
 							+ " - Class invalid: " + value.getClass().toString()
-							+ ", Should be " + p_info.getColumnClass(index).toString() + ": " + value);
+							+ ", Should be " + p_info.getColumnClass(index).toString() + ": " + value;
+					log.log(Level.SEVERE, errmsg);
+					log.saveError("WrongDataType", errmsg);
+					m_setErrors[index] = new ValueNamePair("WrongDataType", errmsg);
 					return false;
 				}
 			else
 			{
-				log.log(Level.SEVERE, ColumnName
-					+ " - Class invalid: " + value.getClass().toString()
-					+ ", Should be " + p_info.getColumnClass(index).toString() + ": " + value);
-				log.saveError("WrongDataType", ColumnName
+				String errmsg = ColumnName
 						+ " - Class invalid: " + value.getClass().toString()
-						+ ", Should be " + p_info.getColumnClass(index).toString() + ": " + value);
+						+ ", Should be " + p_info.getColumnClass(index).toString() + ": " + value;
+				log.log(Level.SEVERE, errmsg);
+				log.saveError("WrongDataType", errmsg);
+				m_setErrors[index] = new ValueNamePair("WrongDataType", errmsg);
 				return false;
 			}
 			//	Validate (Min/Max)
@@ -849,8 +856,10 @@ public abstract class PO
 				int separatorIndex = error.indexOf(";");
 				if (separatorIndex > 0) {
 					log.saveError(error.substring(0,separatorIndex), error.substring(separatorIndex+1));
+					m_setErrors[index] = new ValueNamePair(error.substring(0,separatorIndex), error.substring(separatorIndex+1));
 				} else {
 					log.saveError(error, ColumnName);
+					m_setErrors[index] = new ValueNamePair(error, ColumnName);
 				}
 				return false;
 			}
@@ -876,10 +885,11 @@ public abstract class PO
 					StringBuilder validValues = new StringBuilder();
 					for (ValueNamePair vp : MRefList.getList(getCtx(), p_info.getColumn(index).AD_Reference_Value_ID, false))
 						validValues.append(" - ").append(vp.getValue());
-					log.saveError("Validate", ColumnName + " Invalid value - "
-							+ value + " - Reference_ID=" + p_info.getColumn(index).AD_Reference_Value_ID + validValues.toString());
-					throw new IllegalArgumentException(ColumnName + " Invalid value - "
-							+ value + " - Reference_ID=" + p_info.getColumn(index).AD_Reference_Value_ID + validValues.toString());
+					String errmsg = ColumnName + " Invalid value - "
+							+ value + " - Reference_ID=" + p_info.getColumn(index).AD_Reference_Value_ID + validValues.toString();
+					log.saveError("Validate", errmsg);
+					m_setErrors[index] = new ValueNamePair("Validate", errmsg);
+					return false;
 				}
 			}
 			if (log.isLoggable(Level.FINEST)) log.finest(ColumnName + " = " + m_newValues[index] + " (OldValue="+m_oldValues[index]+")");
@@ -1952,6 +1962,14 @@ public abstract class PO
 			if (log.isLoggable(Level.FINE)) log.fine("Nothing changed - " + p_info.getTableName());
 			return true;
 		}
+		
+		for (int i = 0; i < m_setErrors.length; i++) {
+			ValueNamePair setError = m_setErrors[i];
+			if (setError != null) {
+				log.saveError(setError.getValue(), Msg.getElement(getCtx(), p_info.getColumnName(i)) + " - " + setError.getName());
+				return false;
+			}
+		}
 
 		//	Organization Check
 		if (getAD_Org_ID() == 0
@@ -2156,8 +2174,9 @@ public abstract class PO
 		if (!save()) {
 			String msg = null;
 			ValueNamePair err = CLogger.retrieveError();
+			String val = Msg.translate(getCtx(), err.getValue());
 			if (err != null)
-				msg = err.getName();
+				msg = (val != null ? val + ": " : "") + err.getName();
 			if (msg == null || msg.length() == 0)
 				msg = "SaveError";
 			throw new AdempiereException(msg);

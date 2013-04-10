@@ -810,7 +810,9 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 			} else if (MField.COLUMNNAME_XPosition.equals(propertyName)) {
 				field.setXPosition(intvalue);
 			} else if (MField.COLUMNNAME_ColumnSpan.equals(propertyName)) {
-				field.setColumnSpan(intvalue);
+				int prevcolspan = field.getColumnSpan();
+				if (!field.set_ValueOfColumnReturningBoolean(MField.COLUMNNAME_ColumnSpan, intvalue))
+					field.setColumnSpan(prevcolspan);
 			} else if (MField.COLUMNNAME_NumLines.equals(propertyName)) {
 				field.setNumLines(intvalue);
 			}
