@@ -244,6 +244,8 @@ ContextMenuListener, IZoomableEditor
             retVal = selItem.getValue();
             if ((retVal instanceof Integer) && (Integer)retVal == -1)
             	retVal = null;
+            else if ((retVal instanceof String) && "".equals(retVal))
+            	retVal = null;
         }
         return retVal;
     }
