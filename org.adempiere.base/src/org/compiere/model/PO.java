@@ -1172,7 +1172,7 @@ public abstract class PO
 	 *	@param currentValue current value
 	 *	@return String value with "./." as null
 	 */
-	protected String get_DisplayValue(String columnName, boolean currentValue)
+	public String get_DisplayValue(String columnName, boolean currentValue)
 	{
 		Object value = currentValue ? get_Value(columnName) : get_ValueOld(columnName);
 		if (value == null)
