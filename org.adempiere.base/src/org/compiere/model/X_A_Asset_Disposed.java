@@ -33,7 +33,7 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130410L;
 
     /** Standard Constructor */
     public X_A_Asset_Disposed (Properties ctx, int A_Asset_Disposed_ID, String trxName)
@@ -78,7 +78,7 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 3 - Client - Org 
       */
     protected int get_AccessLevel()
     {
@@ -403,6 +403,34 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
+			.getPO(getC_DocType_ID(), get_TrxName());	}
+
+	/** Set Document Type.
+		@param C_DocType_ID 
+		Document type or rules
+	  */
+	public void setC_DocType_ID (int C_DocType_ID)
+	{
+		if (C_DocType_ID < 0) 
+			set_Value (COLUMNNAME_C_DocType_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
+	}
+
+	/** Get Document Type.
+		@return Document type or rules
+	  */
+	public int getC_DocType_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException

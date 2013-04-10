@@ -35,9 +35,9 @@ public interface I_A_Asset_Disposed
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 7 - System - Client - Org 
+    /** AccessLevel = 3 - Client - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(7);
+    BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
 
@@ -130,14 +130,6 @@ public interface I_A_Asset_Disposed
 
 	public org.compiere.model.I_A_Asset getA_Asset_Trade() throws RuntimeException;
 
-    /** Column name AD_Client_ID */
-    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
-
-	/** Get Client.
-	  * Client/Tenant for this installation.
-	  */
-	public int getAD_Client_ID();
-
     /** Column name A_Disposal_Amt */
     public static final String COLUMNNAME_A_Disposal_Amt = "A_Disposal_Amt";
 
@@ -174,6 +166,23 @@ public interface I_A_Asset_Disposed
 	/** Get Disposed Reason	  */
 	public String getA_Disposed_Reason();
 
+    /** Column name A_Proceeds */
+    public static final String COLUMNNAME_A_Proceeds = "A_Proceeds";
+
+	/** Set Asset Proceeds	  */
+	public void setA_Proceeds (BigDecimal A_Proceeds);
+
+	/** Get Asset Proceeds	  */
+	public BigDecimal getA_Proceeds();
+
+    /** Column name AD_Client_ID */
+    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
+
+	/** Get Client.
+	  * Client/Tenant for this installation.
+	  */
+	public int getAD_Client_ID();
+
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
@@ -187,14 +196,20 @@ public interface I_A_Asset_Disposed
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name A_Proceeds */
-    public static final String COLUMNNAME_A_Proceeds = "A_Proceeds";
+    /** Column name C_DocType_ID */
+    public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
 
-	/** Set Asset Proceeds	  */
-	public void setA_Proceeds (BigDecimal A_Proceeds);
+	/** Set Document Type.
+	  * Document type or rules
+	  */
+	public void setC_DocType_ID (int C_DocType_ID);
 
-	/** Get Asset Proceeds	  */
-	public BigDecimal getA_Proceeds();
+	/** Get Document Type.
+	  * Document type or rules
+	  */
+	public int getC_DocType_ID();
+
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
     public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
