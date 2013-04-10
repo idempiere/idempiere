@@ -316,7 +316,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 					double priceList = rs.getDouble(3);
 					double priceActual = rs.getDouble(2);
 					if (priceList != 0) {
-						discountBD = new BigDecimal((priceList - priceActual)/priceList * 100);
+						discountBD = BigDecimal.valueOf((priceList - priceActual)/priceList * 100);
 						// Rounding:
 						int precision = MPriceList.getStandardPrecision(Env.getCtx(), rs.getInt(9));
 						if (discountBD.scale() > precision)

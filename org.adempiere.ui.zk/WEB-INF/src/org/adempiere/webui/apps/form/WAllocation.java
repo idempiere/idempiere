@@ -20,7 +20,6 @@ import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
 import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_CURRENCY_ID;
 import static org.compiere.model.SystemIDs.COLUMN_C_PERIOD_AD_ORG_ID;
 
-import java.math.BigDecimal;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -485,7 +484,7 @@ public class WAllocation extends Allocation
 	}   //  vetoableChange
 	
 	private void setAllocateButton() {
-			if (totalDiff.compareTo(new BigDecimal(0.0)) == 0 ^ m_C_Charge_ID > 0 )
+			if (totalDiff.signum() == 0 ^ m_C_Charge_ID > 0 )
 			{
 				allocateButton.setEnabled(true);
 			// chargePick.setValue(m_C_Charge_ID);
@@ -495,7 +494,7 @@ public class WAllocation extends Allocation
 				allocateButton.setEnabled(false);
 			}
 
-			if ( totalDiff.compareTo(new BigDecimal(0.0)) == 0 )
+			if ( totalDiff.signum() == 0 )
 			{
 					chargePick.setValue(null);
 					m_C_Charge_ID = 0;

@@ -341,7 +341,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	public void info(IMiniTable miniTable, IStatusBar statusBar)
 	{		
 		DecimalFormat format = DisplayType.getNumberFormat(DisplayType.Amount);
-		BigDecimal total = new BigDecimal(0);
+		BigDecimal total = Env.ZERO;
 		int rows = miniTable.getRowCount();
 		int count = 0;
 		for(int i = 0; i < rows; i++)

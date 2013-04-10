@@ -799,7 +799,7 @@ public class MProductPricing
 	{
 		BigDecimal Discount = Env.ZERO;
 		if (m_PriceList.intValue() != 0)
-			Discount = new BigDecimal ((m_PriceList.doubleValue() - m_PriceStd.doubleValue())
+			Discount = BigDecimal.valueOf((m_PriceList.doubleValue() - m_PriceStd.doubleValue())
 				/ m_PriceList.doubleValue() * 100.0);
 		if (Discount.scale() > 2)
 			Discount = Discount.setScale(2, BigDecimal.ROUND_HALF_UP);

@@ -710,12 +710,12 @@ public final class AMenu extends CFrame
 		memoryBar.setMaximum((int)total);
 		memoryBar.setValue((int)used);
 		String msg = MessageFormat.format("{0,number,integer} MB - {1,number,integer}%", 
-			new Object[] {new BigDecimal(total / 1024), new BigDecimal(percent)});
+			new Object[] {BigDecimal.valueOf(total / 1024), BigDecimal.valueOf(percent)});
 		memoryBar.setString(msg);
 		//
 	//	msg = MessageFormat.format("Total Memory {0,number,integer} kB - Free {1,number,integer} kB", 
 		msg = Msg.getMsg(m_ctx, "MemoryInfo",
-			new Object[] {new BigDecimal(total), new BigDecimal(free)});
+			new Object[] {BigDecimal.valueOf(total), BigDecimal.valueOf(free)});
 		memoryBar.setToolTipText(msg);
 	//	progressBar.repaint();
 		

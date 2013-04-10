@@ -84,8 +84,6 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 	
 	/**	RfQ Line Qty			*/
 	private MRfQLineQty		m_rfqQty = null;
-	/**	100						*/
-	private static BigDecimal 	ONEHUNDRED = new BigDecimal (100);
 	
 	/**
 	 * 	Get RfQ Line Qty
@@ -114,7 +112,7 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 		BigDecimal discount = getDiscount();
 		if (discount != null)
 		{
-			if (discount.abs().compareTo(ONEHUNDRED) > 0)
+			if (discount.abs().compareTo(Env.ONEHUNDRED) > 0)
 			{
 				log.warning("Discount > 100 - " + discount);
 				return false;
@@ -149,8 +147,8 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 			return price;
 		//	Calculate
 	//	double result = price.doubleValue() * (100.0 - discount.doubleValue()) / 100.0;
-		BigDecimal factor = ONEHUNDRED.subtract(discount);
-		return price.multiply(factor).divide(ONEHUNDRED, 2, BigDecimal.ROUND_HALF_UP);  
+		BigDecimal factor = Env.ONEHUNDRED.subtract(discount);
+		return price.multiply(factor).divide(Env.ONEHUNDRED, 2, BigDecimal.ROUND_HALF_UP);  
 	}	//	getNetAmt
 
 	

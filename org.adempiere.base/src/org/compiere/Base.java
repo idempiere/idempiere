@@ -16,14 +16,14 @@
  *****************************************************************************/
 package org.compiere;
 
-import java.math.BigDecimal;
+import static org.compiere.model.SystemIDs.WINDOW_WINDOW_TAB_FIELD;
+
 import java.util.Properties;
 
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MUOMConversion;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.Env;
 import org.compiere.util.Login;
 
@@ -97,9 +97,9 @@ class Base
 		listThreads();
 		//
 		System.out.println("API Test");
-		System.out.println("64.72=" + MConversionRate.convert(ctx, new BigDecimal(100.0), 116, 100,0,0));
+		System.out.println("64.72=" + MConversionRate.convert(ctx, Env.ONEHUNDRED, 116, 100,0,0));
 		System.out.println("0.647169=" + MConversionRate.getRate(116, 100, null, 0,0,0));
-		System.out.println("12.5=" + MUOMConversion.convert(101, 102, new BigDecimal(100.0), true));
+		System.out.println("12.5=" + MUOMConversion.convert(101, 102, Env.ONEHUNDRED, true));
 
 	}   //  Base
 

@@ -567,7 +567,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener, TreeS
 		MUOM u = new MUOM(M_Product.getCtx(), M_Product.getC_UOM_ID(), M_Product.get_TrxName());
 		KeyNamePair uom = new KeyNamePair(u.get_ID(), u.getUOMSymbol());
 		line.add(uom); //  3 C_UOM_ID
-		line.add((BigDecimal) ((bomline.getBOMQty()!=null) ? bomline.getBOMQty() : new BigDecimal(0)));  //  4 QtyBOM
+		line.add((BigDecimal) ((bomline.getBOMQty()!=null) ? bomline.getBOMQty() : Env.ZERO));  //  4 QtyBOM
 
 		DefaultMutableTreeNode child = new DefaultMutableTreeNode(line);
 		parent.add(child);
@@ -595,7 +595,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener, TreeS
 		MUOM u = new MUOM(M_Product.getCtx(), M_Product.getC_UOM_ID(), M_Product.get_TrxName());
 		KeyNamePair uom = new KeyNamePair(u.get_ID(),u.getUOMSymbol());
 		line.add(uom); //  3 C_UOM_ID
-		line.add((BigDecimal) ((bom.getBOMQty()!=null) ? bom.getBOMQty() : new BigDecimal(0)));  //  4 QtyBOM
+		line.add((BigDecimal) ((bom.getBOMQty()!=null) ? bom.getBOMQty() : Env.ZERO));  //  4 QtyBOM
 		
 		if(m_selected_id == bom.getM_ProductBOM_ID() || getM_Product_ID() == bom.getM_ProductBOM_ID())
 			dataBOM.add(line);

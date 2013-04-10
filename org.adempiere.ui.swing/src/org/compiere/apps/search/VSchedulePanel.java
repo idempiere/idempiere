@@ -27,7 +27,6 @@ import java.awt.event.MouseListener;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
@@ -391,7 +390,7 @@ public class VSchedulePanel extends JComponent implements MouseListener
 			ma.setS_Resource_ID(m_S_Resource_ID);
 			ma.setAssignDateFrom(TimeUtil.getDayTime(TimeUtil.addDays(m_startDate, dayIndex),
 				m_timePanel.getTimeSlot(timeIndex).getStartTime()));
-			ma.setQty(new BigDecimal(1));
+			ma.setQty(Env.ONE);
 			VAssignmentDialog vad =  new VAssignmentDialog (AEnv.getFrame(this), ma, false, m_createNew);
 			m_infoSchedule.mAssignmentCallback(vad.getMResourceAssignment());
 			return;

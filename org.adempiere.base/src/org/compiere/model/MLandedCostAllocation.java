@@ -131,7 +131,7 @@ public class MLandedCostAllocation extends X_C_LandedCostAllocation
 	 */
 	public void setAmt (double Amt, int precision)
 	{
-		BigDecimal bd = new BigDecimal(Amt);
+		BigDecimal bd = BigDecimal.valueOf(Amt);
 		if (bd.scale() > precision)
 			bd = bd.setScale(precision, BigDecimal.ROUND_HALF_UP);
 		super.setAmt(bd);

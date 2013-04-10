@@ -594,7 +594,7 @@ public class Doc_AllocationHdr extends Doc
 		Doc_Invoice docInvoice = (Doc_Invoice)Doc.get(as,
 			MInvoice.Table_ID, invoice.getC_Invoice_ID(), getTrxName());
 		docInvoice.loadDocumentDetails();
-		allocationAccounted = docInvoice.createFactCash(as, fact, new BigDecimal(percent));
+		allocationAccounted = docInvoice.createFactCash(as, fact, BigDecimal.valueOf(percent));
 		if (log.isLoggable(Level.CONFIG)) log.config("Allocation Accounted=" + allocationAccounted);
 
 		//	Cash Based Commitment Release
@@ -604,7 +604,7 @@ public class Doc_AllocationHdr extends Doc
 			for (int i = 0; i < lines.length; i++)
 			{
 				Fact factC = Doc_Order.getCommitmentRelease(as, this,
-					lines[i].getQtyInvoiced(), lines[i].getC_InvoiceLine_ID(), new BigDecimal(percent));
+					lines[i].getQtyInvoiced(), lines[i].getC_InvoiceLine_ID(), BigDecimal.valueOf(percent));
 				if (factC == null)
 					return null;
 				m_facts.add(factC);
@@ -780,7 +780,7 @@ public class Doc_AllocationHdr extends Doc
 			//	percent of total payment
 			double multiplier = allocationSource.doubleValue() / invoiceSource.doubleValue();
 			//	Reduce Orig Invoice Accounted
-			invoiceAccounted = invoiceAccounted.multiply(new BigDecimal(multiplier));
+			invoiceAccounted = invoiceAccounted.multiply(BigDecimal.valueOf(multiplier));
 			//	Difference based on percentage of Orig Invoice
 			acctDifference = invoiceAccounted.subtract(allocationAccounted);	//	gain is negative
 			//	ignore Tolerance

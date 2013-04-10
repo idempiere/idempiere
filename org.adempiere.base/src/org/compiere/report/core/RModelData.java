@@ -75,9 +75,6 @@ public class RModelData
 	private ArrayList<Integer>		m_groupRows = new ArrayList<Integer>();
 	private ArrayList<Boolean>  	m_groupRowsIndicator = null;
 
-	/** Constant 1                      */
-	private static final BigDecimal     ONE = new BigDecimal(1.0);
-
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(RModelData.class);
 
@@ -322,7 +319,7 @@ public class RModelData
 					if (funcFuns[fc].equals(RModel.FUNCTION_SUM))
 						funcVals[fc][level] = funcVals[fc][level].add(bd);
 					else if (funcFuns[fc].equals(RModel.FUNCTION_COUNT))
-						funcVals[fc][level] = funcVals[fc][level].add(ONE);
+						funcVals[fc][level] = funcVals[fc][level].add(Env.ONE);
 				}   //  for all group levels
 			}   //  for all functions
 

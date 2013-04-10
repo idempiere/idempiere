@@ -320,7 +320,7 @@ implements FormPanel, ActionListener, TableModelListener, VetoableChangeListener
 	public void calculateSelection()
 	{
 		m_noSelected = 0;
-		BigDecimal selectedAmt = new BigDecimal(0.0);
+		BigDecimal selectedAmt = Env.ZERO;
 
 		int rows = miniTable.getRowCount();
 		for (int i = 0; i < rows; i++)

@@ -13,6 +13,10 @@
  *****************************************************************************/
 package org.compiere.apps.form;
 
+import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
+import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_CURRENCY_ID;
+import static org.compiere.model.SystemIDs.COLUMN_C_PERIOD_AD_ORG_ID;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -22,7 +26,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.VetoableChangeListener;
-import java.math.BigDecimal;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -46,7 +49,6 @@ import org.compiere.minigrid.MiniTable;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.swing.CPanel;
 import org.compiere.swing.CTextField;
@@ -394,7 +396,7 @@ public class VAllocation extends Allocation
 
 	
 	private void setAllocateButton() {
-		if (totalDiff.compareTo(new BigDecimal(0.0)) == 0 ^ m_C_Charge_ID > 0 )
+		if (totalDiff.signum() == 0 ^ m_C_Charge_ID > 0 )
 		{
 			allocateButton.setEnabled(true);
 			// chargePick.setValue(m_C_Charge_ID);
@@ -404,7 +406,7 @@ public class VAllocation extends Allocation
 			allocateButton.setEnabled(false);
 		}
 		
-		if ( totalDiff.compareTo(new BigDecimal(0.0)) == 0 )
+		if ( totalDiff.signum() == 0 )
 		{
 			chargePick.setValue(null);
 			m_C_Charge_ID = 0;

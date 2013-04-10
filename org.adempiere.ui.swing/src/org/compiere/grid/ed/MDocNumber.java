@@ -30,6 +30,7 @@ import javax.swing.text.PlainDocument;
 import org.compiere.apps.ADialog;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 
 /**
  *  Number Document Model.
@@ -220,14 +221,14 @@ public final class MDocNumber extends PlainDocument
 					else
 					{
 						String value = getText();
-						BigDecimal percentValue = new BigDecimal(0.0);
+						BigDecimal percentValue = Env.ZERO;
 						try
 						{
 							if (value != null && value.length() > 0)
 							{
 								Number number = m_format.parse(value);
 								percentValue = new BigDecimal (number.toString());
-								percentValue = percentValue.divide(new BigDecimal(100.0), m_format.getMaximumFractionDigits(), BigDecimal.ROUND_HALF_UP);
+								percentValue = percentValue.divide(Env.ONEHUNDRED, m_format.getMaximumFractionDigits(), BigDecimal.ROUND_HALF_UP);
 								m_tc.setText(m_format.format(percentValue));
 							}
 						}

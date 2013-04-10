@@ -48,8 +48,6 @@ public class MTax extends X_C_Tax
 	/**	Cache of Client						*/
 	private static CCache<Integer,MTax[]>	s_cacheAll = new CCache<Integer,MTax[]>(Table_Name, Table_Name+"_Of_Client", 5);
 	
-	/**	100					*/
-	private static BigDecimal ONEHUNDRED = new BigDecimal(100);
 	/**	Child Taxes			*/
 	private MTax[]			m_childTaxes = null;
 	/** Postal Codes		*/
@@ -258,7 +256,7 @@ public class MTax extends X_C_Tax
 		if (isZeroTax())
 			return Env.ZERO;
 		
-		BigDecimal multiplier = getRate().divide(ONEHUNDRED, 12, BigDecimal.ROUND_HALF_UP);		
+		BigDecimal multiplier = getRate().divide(Env.ONEHUNDRED, 12, BigDecimal.ROUND_HALF_UP);		
 
 		BigDecimal tax = null;		
 		if (!taxIncluded)	//	$100 * 6 / 100 == $6 == $100 * 0.06

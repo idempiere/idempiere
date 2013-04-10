@@ -348,7 +348,7 @@ public class DunningRunCreate extends SvrProcess
 		//
 		MDunningRunLine line = new MDunningRunLine (entry);
 		line.setInvoice(C_Invoice_ID, C_Currency_ID, GrandTotal, Open, 
-			new BigDecimal(0), DaysDue, IsInDispute, TimesDunned, 
+			Env.ZERO, DaysDue, IsInDispute, TimesDunned, 
 			DaysAfterLast);
 		line.setC_InvoicePaySchedule_ID(C_InvoicePaySchedule_ID);
 		if (!line.save())
@@ -497,7 +497,7 @@ public class DunningRunCreate extends SvrProcess
 				line.setFee (p_C_Currency_ID, level.getFeeAmt());
 				if (!line.save())
 					throw new IllegalStateException("Cannot save MDunningRunLine");
-				element.setQty (element.getQty ().subtract (new BigDecimal(1)));
+				element.setQty (element.getQty ().subtract (Env.ONE));
 		}
 	}
 	}	//	addFees

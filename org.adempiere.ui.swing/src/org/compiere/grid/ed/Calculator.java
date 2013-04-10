@@ -96,7 +96,7 @@ public final class Calculator extends CDialog
 		//
 		m_number = number;
 		if (m_number == null)
-			m_number = new BigDecimal(0.0);
+			m_number = Env.ZERO;
 		//
 		try
 		{
@@ -433,7 +433,7 @@ public final class Calculator extends CDialog
 		//	nothing or zero
 		if (m_display == null || m_display.equals("") || m_display.equals("0"))
 		{
-			m_number = new BigDecimal(0.0);
+			m_number = Env.ZERO;
 			return m_number;
 		}
 
@@ -448,7 +448,7 @@ public final class Calculator extends CDialog
 				token += st.nextToken();
 			else
 			{
-				m_number = new BigDecimal(0.0);
+				m_number = Env.ZERO;
 				return m_number;
 			}
 		}
@@ -462,7 +462,7 @@ public final class Calculator extends CDialog
 		catch (ParseException pe1)
 		{
 			log.log(Level.SEVERE, "Calculator.evaluate - token: " + token, pe1);
-			m_number = new BigDecimal(0.0);
+			m_number = Env.ZERO;
 			return  m_number;
 		}
 		BigDecimal firstNo =  new BigDecimal(firstNumber.toString());
@@ -485,7 +485,7 @@ public final class Calculator extends CDialog
 		char op = token.charAt(0);
 
 		if (op == '%') {
-			firstNo = firstNo.divide(new BigDecimal(100.0), m_format.getMaximumFractionDigits(), BigDecimal.ROUND_HALF_UP);
+			firstNo = firstNo.divide(Env.ONEHUNDRED, m_format.getMaximumFractionDigits(), BigDecimal.ROUND_HALF_UP);
 			m_number = firstNo;
 		}
 		
@@ -502,7 +502,7 @@ public final class Calculator extends CDialog
 		catch (ParseException pe2)
 		{
 			log.log(Level.SEVERE, "Calculator.evaluate - token: " + token, pe2);
-			m_number = new BigDecimal(0.0);
+			m_number = Env.ZERO;
 			return m_number;
 		}
 		BigDecimal secondNo = new BigDecimal(secondNumber.toString());
@@ -523,7 +523,7 @@ public final class Calculator extends CDialog
 
 		//	Percent operation
 		if (op2 == '%')
-			secondNo = secondNo.divide(new BigDecimal(100.0), m_format.getMaximumFractionDigits(), BigDecimal.ROUND_HALF_UP);
+			secondNo = secondNo.divide(Env.ONEHUNDRED, m_format.getMaximumFractionDigits(), BigDecimal.ROUND_HALF_UP);
 
 		switch (op)
 		{

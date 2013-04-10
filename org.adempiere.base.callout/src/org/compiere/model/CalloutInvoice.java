@@ -638,7 +638,7 @@ public class CalloutInvoice extends CalloutEngine
 			//	Repeat Discount calc
 			if (PriceList.intValue() != 0)
 			{
-				Discount = new BigDecimal ((PriceList.doubleValue () - PriceActual.doubleValue ()) / PriceList.doubleValue () * 100.0);
+				Discount = BigDecimal.valueOf((PriceList.doubleValue () - PriceActual.doubleValue ()) / PriceList.doubleValue () * 100.0);
 				if (Discount.scale () > 2)
 					Discount = Discount.setScale (2, BigDecimal.ROUND_HALF_UP);
 			//	mTab.setValue ("Discount", Discount);

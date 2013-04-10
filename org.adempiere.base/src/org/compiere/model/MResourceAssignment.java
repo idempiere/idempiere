@@ -16,10 +16,11 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+
+import org.compiere.util.Env;
 
 
 /**
@@ -48,7 +49,7 @@ public class MResourceAssignment extends X_S_ResourceAssignment
 		if (S_ResourceAssignment_ID == 0)
 		{
 			setAssignDateFrom(new Timestamp(System.currentTimeMillis()));
-			setQty(new BigDecimal(1.0));
+			setQty(Env.ONE);
 			setName(".");
 			setIsConfirmed(false);
 		}

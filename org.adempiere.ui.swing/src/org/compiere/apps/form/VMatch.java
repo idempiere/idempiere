@@ -442,7 +442,7 @@ public class VMatch extends Match
 
 		}
 		//  Display To be Matched Qty
-		m_xMatched = new BigDecimal (qty);
+		m_xMatched = BigDecimal.valueOf(qty);
 		xMatched.setValue(m_xMatched);
 		xMatchedTo.setValue(Env.ZERO);
 		difference.setValue(m_xMatched);
@@ -494,7 +494,7 @@ public class VMatch extends Match
 			}
 		}
 		//  update quantities
-		m_xMatchedTo = new BigDecimal(qty);
+		m_xMatchedTo = BigDecimal.valueOf(qty);
 		xMatchedTo.setValue(m_xMatchedTo);
 		difference.setValue(m_xMatched.subtract(m_xMatchedTo));
 		bProcess.setEnabled(noRows != 0);

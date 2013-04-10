@@ -524,7 +524,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			ma.setS_Resource_ID(S_Resource_ID);
 			
 			ma.setAssignDateFrom(start);
-			ma.setQty(new BigDecimal(hours));
+			ma.setQty(BigDecimal.valueOf(hours));
 			if (m_parent == null || m_callback == null) {
 				final boolean createNew = true;
 				if (vad != null && vad.getPage() != null)
@@ -569,7 +569,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			
 			MResourceAssignment ma = slot.getMAssignment();
 			ma.setAssignDateFrom(start);
-			ma.setQty(new BigDecimal(hours));
+			ma.setQty(BigDecimal.valueOf(hours));
 			
 			if (m_parent == null || m_callback == null) {
 				if (event.getBeginDate() != null && event.getEndDate() != null) {

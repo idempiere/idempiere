@@ -41,6 +41,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *  Deposit Batch Model
@@ -69,7 +70,7 @@ public class MDepositBatch extends X_C_DepositBatch
 			setDocStatus (DOCSTATUS_Drafted);
 			setProcessed (false);
 			setProcessing (false);
-			setDepositAmt(new BigDecimal(0));
+			setDepositAmt(Env.ZERO);
 		}
 	}	//	MDepositBatch
 	

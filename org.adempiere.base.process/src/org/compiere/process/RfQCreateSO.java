@@ -40,9 +40,6 @@ public class RfQCreateSO extends SvrProcess
 	private int		p_C_RfQ_ID = 0;
 	private int		p_C_DocType_ID = 0;
 
-	/**	100						*/
-	private static BigDecimal 	ONEHUNDRED = new BigDecimal (100);
-
 	/**
 	 * 	Prepare
 	 */
@@ -130,9 +127,9 @@ public class RfQCreateSO extends SvrProcess
 								margin = rfq.getMargin();
 							if (margin != null && margin.signum() != 0)
 							{
-								margin = margin.add(ONEHUNDRED);
+								margin = margin.add(Env.ONEHUNDRED);
 								price = price.multiply(margin)
-									.divide(ONEHUNDRED, 2, BigDecimal.ROUND_HALF_UP);
+									.divide(Env.ONEHUNDRED, 2, BigDecimal.ROUND_HALF_UP);
 							}
 						}
 					}	//	price

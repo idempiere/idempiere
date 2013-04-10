@@ -78,9 +78,6 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		super(ctx, rs, trxName);
 	}	//	MPaymentTerm
 
-	/** 100									*/
-	private final static BigDecimal		HUNDRED = new BigDecimal(100);
-
 	/**	Payment Schedule children			*/
 	private MPaySchedule[]				m_schedule;
 
@@ -159,7 +156,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 			if (percent != null)
 				total = total.add(percent);
 		}
-		boolean valid = total.compareTo(HUNDRED) == 0;
+		boolean valid = total.compareTo(Env.ONEHUNDRED) == 0;
 		if (isValid() != valid)
 			setIsValid (valid);
 		for (int i = 0; i < m_schedule.length; i++)
@@ -172,7 +169,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		}
 		if (valid)
 			return validMsg;
-		return "@Total@ = " + total + " - @Difference@ = " + HUNDRED.subtract(total); 
+		return "@Total@ = " + total + " - @Difference@ = " + Env.ONEHUNDRED.subtract(total); 
 	}	//	validate
 
 

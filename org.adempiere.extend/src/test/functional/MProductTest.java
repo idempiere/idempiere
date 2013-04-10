@@ -2,6 +2,7 @@
 package test.functional;
 
 import org.compiere.model.MProductPrice;
+
 import test.AdempiereTestCase;
 
 public class MProductTest extends AdempiereTestCase {
@@ -86,7 +87,7 @@ public class MProductTest extends AdempiereTestCase {
 	}  
 	
 	public void testSetBaseInfo() {
-		MProductPricing prodprice = new MProductPricing(122,100, new BigDecimal (100),true);
+		MProductPricing prodprice = new MProductPricing(122,100, Env.ONEHUNDRED,true);
 		int uom = 0;
 		uom = prodprice.getC_UOM_ID();
 		assertTrue("UOM must be correct", uom == 100);

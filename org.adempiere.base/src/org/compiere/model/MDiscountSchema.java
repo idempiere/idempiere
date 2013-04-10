@@ -201,7 +201,7 @@ public class MDiscountSchema extends X_M_DiscountSchema
 		if (discount == null || discount.signum() == 0)
 			return Price;
 		//
-		BigDecimal onehundred = new BigDecimal(100);
+		BigDecimal onehundred = Env.ONEHUNDRED;
 		BigDecimal multiplier = (onehundred).subtract(discount);
 		multiplier = multiplier.divide(onehundred, 6, BigDecimal.ROUND_HALF_UP);
 		BigDecimal newPrice = Price.multiply(multiplier);

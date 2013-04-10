@@ -569,7 +569,7 @@ public class SubOrder extends PosSubPanel
 		if (p_posPanel != null && p_posPanel.f_curLine != null)
 		{
 			MOrder order = p_posPanel.f_curLine.getOrder();
-			BigDecimal total = new BigDecimal(0);
+			BigDecimal total = Env.ZERO;
 			if (order != null)
 				total = order.getGrandTotal();
 			paid = given.doubleValue() >= total.doubleValue();

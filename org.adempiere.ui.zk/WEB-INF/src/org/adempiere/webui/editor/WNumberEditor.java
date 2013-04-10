@@ -209,7 +209,7 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
     	else if (value instanceof BigDecimal)
     		oldValue = (BigDecimal) value;
     	else if (value instanceof Number)
-    		oldValue = new BigDecimal(((Number)value).doubleValue());
+    		oldValue = BigDecimal.valueOf(((Number)value).doubleValue());
     	else
     		oldValue = new BigDecimal(value.toString());
     	getComponent().setValue(oldValue);

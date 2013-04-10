@@ -472,7 +472,7 @@ public class WMatch extends Match
 			xMatchedToTable = (WListbox) cmd_searchTo(xMatchedTable, xMatchedToTable, displayString, matchToType, sameBPartner.isSelected(), sameProduct.isSelected(), sameQty.isSelected(), matchMode.getSelectedIndex() == MODE_MATCHED);
 		}
 		//  Display To be Matched Qty
-		m_xMatched = new BigDecimal (qty);
+		m_xMatched = BigDecimal.valueOf(qty);
 		xMatched.setValue(m_xMatched);
 		xMatchedTo.setValue(Env.ZERO);
 		difference.setValue(m_xMatched);
@@ -528,7 +528,7 @@ public class WMatch extends Match
 			}
 		}
 		//  update qualtities
-		m_xMatchedTo = new BigDecimal(qty);
+		m_xMatchedTo = BigDecimal.valueOf(qty);
 		xMatchedTo.setValue(m_xMatchedTo);
 		difference.setValue(m_xMatched.subtract(m_xMatchedTo));
 		bProcess.setEnabled(noRows != 0);

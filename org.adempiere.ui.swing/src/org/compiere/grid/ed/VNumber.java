@@ -667,12 +667,12 @@ public final class VNumber extends JComponent
 				if (bd.doubleValue()  < m_minValue)
 				{
 					error = oo + " < " + m_minValue;
-					oo = new BigDecimal(m_minValue);
+					oo = BigDecimal.valueOf(m_minValue);
 				}
 				else if (bd.doubleValue() > m_maxValue)
 				{
 					error = oo + " > " + m_maxValue;
-					oo = new BigDecimal(m_maxValue);
+					oo = BigDecimal.valueOf(m_maxValue);
 				}
 			}
 			if (error != null)
@@ -717,7 +717,7 @@ public final class VNumber extends JComponent
 		DecimalFormat format, int displayType, String title, char operator)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Value=" + value);
-		BigDecimal startValue = new BigDecimal(0.0);
+		BigDecimal startValue = Env.ZERO;
 		try
 		{
 			if (value != null && value.length() > 0)

@@ -186,7 +186,7 @@ public class CalloutInventory extends CalloutEngine
 			} else {
 				// gwu: 1719401: clear Booked Quantity to zero first in case the query returns no rows, 
 				// for example when the locator has never stored a particular product.
-				return new BigDecimal(0);
+				return Env.ZERO;
 			}
 		}
 		catch (SQLException e)
@@ -201,7 +201,7 @@ public class CalloutInventory extends CalloutEngine
 			pstmt = null;
 		}
 
-		return new BigDecimal(0);
+		return Env.ZERO;
 	}
 	
 
