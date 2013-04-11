@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
@@ -54,6 +55,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -130,7 +132,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 
 		try
 		{
-			 confirmPanel = new ConfirmPanel(true);
+			confirmPanel = new ConfirmPanel(true);
 			 
 			//	Top Selection Panel
 			createSelectionPanel(true, true, true);
@@ -139,6 +141,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 			createMainPanel();
 
 			confirmPanel.addActionListener(Events.ON_CLICK, this);
+			
 		}
 		catch(Exception e)
 		{
@@ -662,12 +665,13 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		//	OK
 		else if (confirmPanel.getButton("Ok").equals(e.getTarget()))
 		{
-			if (cmd_save())
+			if (onSave()){
 				SessionManager.getAppDesktop().closeActiveWindow();
+			}	
 		}
-		else if (confirmPanel.getButton("Cancel").equals(e.getTarget()))
+		else if (confirmPanel.getButton("Cancel").equals(e.getTarget())){
 			SessionManager.getAppDesktop().closeActiveWindow();
-		else
+		}else
 		{
 			super.onEvent(e);
 		}
@@ -748,12 +752,37 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		return retValue;
 	}	//	isSelected
 
+	private boolean onSave()
+	{
+		String trxName = Trx.createTrxName("BDP");	
+		Trx localTrx = Trx.get(trxName, true);	//trx needs to be committed too
+		try
+		{
+			if (cmd_save(localTrx)) 
+			{
+				localTrx.commit();
+				return true;
+			}
+			else
+			{
+				localTrx.rollback();
+				return false;
+			}
+			
+		}
+		finally 
+		{
+			localTrx.close();
+		}
+	}
+	
 	/**************************************************************************
 	 * 	Save Selection
+	 *  @param trx
 	 * 	@return true if saved
 	 */
 	
-	private boolean cmd_save()
+	private boolean cmd_save(Trx trx)
 	{
 		ListItem listitem = orderField.getSelectedItem();
 		
@@ -763,7 +792,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 			pp = listitem.toKeyNamePair();
 		
 		if (pp != null && pp.getKey() > 0)
-			return cmd_saveOrder (pp.getKey());
+			return cmd_saveOrder (pp.getKey(), trx);
 		
 		listitem = invoiceField.getSelectedItem();
 		
@@ -773,7 +802,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 			pp = listitem.toKeyNamePair();
 		
 		if (pp != null && pp.getKey() > 0)
-			return cmd_saveInvoice (pp.getKey());
+			return cmd_saveInvoice (pp.getKey(), trx);
 		
 		listitem = projectField.getSelectedItem();
 		
@@ -783,7 +812,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 			pp = listitem.toKeyNamePair();
 		
 		if (pp != null && pp.getKey() > 0)
-			return cmd_saveProject (pp.getKey());
+			return cmd_saveProject (pp.getKey(), trx);
 		
 		log.log(Level.SEVERE, "Nothing selected");
 		return false;
@@ -792,13 +821,14 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	/**
 	 * 	Save to Order
 	 *	@param C_Order_ID id
+	 *  @param trx 
 	 *	@return true if saved
 	 */
 	
-	private boolean cmd_saveOrder (int C_Order_ID)
+	private boolean cmd_saveOrder (int C_Order_ID, Trx trx)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("C_Order_ID=" + C_Order_ID);
-		MOrder order = new MOrder (Env.getCtx(), C_Order_ID, null);
+		MOrder order = new MOrder (Env.getCtx(), C_Order_ID, trx != null ? trx.getTrxName() : null);
 		
 		if (order.get_ID() == 0)
 		{
@@ -807,28 +837,37 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		}
 		
 		int lineCount = 0;
-		
-		//	for all bom lines
-		for (int i = 0; i < m_selectionList.size(); i++)
+		try 
 		{
-			if (isSelectionSelected(m_selectionList.get(i)))
+			//for all bom lines
+			for (int i = 0; i < m_selectionList.size(); i++) 
 			{
-				BigDecimal qty = m_qtyList.get(i).getValue();
-				int M_Product_ID = m_productList.get(i).intValue();
-				//	Create Line
-				MOrderLine ol = new MOrderLine (order);
-				ol.setM_Product_ID(M_Product_ID, true);
-				ol.setQty(qty);
-				ol.setPrice();
-				ol.setTax();
-				if (ol.save())
+				if (isSelectionSelected(m_selectionList.get(i))) 
+				{
+					BigDecimal qty = m_qtyList.get(i).getValue();
+					int M_Product_ID = m_productList.get(i).intValue();
+					// Create Line
+					MOrderLine ol = new MOrderLine(order);
+					ol.setM_Product_ID(M_Product_ID, true);
+					ol.setQty(qty);
+					ol.setPrice();
+					ol.setTax();
+					ol.saveEx();
 					lineCount++;
-				else
-					log.log(Level.SEVERE, "Line not saved");
-			}	//	line selected
-		}	//	for all bom lines
+
+				} // line selected
+			} // for all bom lines
+		} catch (Exception e) 
+		{
+			log.log(Level.SEVERE, "Line not saved");
+			if (trx != null) 
+			{
+				trx.rollback();
+			}
+			throw new AdempiereException(e.getMessage());
+		}				
 		
-		FDialog.info(-1, this, order.getDocumentInfo() + " " + Msg.translate(Env.getCtx(), "Inserted") + "=" + lineCount);
+		FDialog.info(-1, this, Msg.translate(Env.getCtx(), "C_Order_ID")+ " : " + order.getDocumentInfo() + " , " + Msg.translate(Env.getCtx(), "NoOfLines") + " " + Msg.translate(Env.getCtx(), "Inserted") + " = " + lineCount);
 		if (log.isLoggable(Level.CONFIG)) log.config("#" + lineCount);
 		return true;
 	}	//	cmd_saveOrder
@@ -836,13 +875,14 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	/**
 	 * 	Save to Invoice
 	 *	@param C_Invoice_ID id
+	 *  @param trx 
 	 *	@return true if saved
 	 */
 	
-	private boolean cmd_saveInvoice (int C_Invoice_ID)
+	private boolean cmd_saveInvoice (int C_Invoice_ID, Trx trx)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("C_Invoice_ID=" + C_Invoice_ID);
-		MInvoice invoice = new MInvoice (Env.getCtx(), C_Invoice_ID, null);
+		MInvoice invoice = new MInvoice (Env.getCtx(), C_Invoice_ID, trx != null ? trx.getTrxName() : null);
 		if (invoice.get_ID() == 0)
 		{
 			log.log(Level.SEVERE, "Not found - C_Invoice_ID=" + C_Invoice_ID);
@@ -851,26 +891,35 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		int lineCount = 0;
 		
 		//	for all bom lines
-		for (int i = 0; i < m_selectionList.size(); i++)
+		try 
 		{
-			if (isSelectionSelected(m_selectionList.get(i)))
+			for (int i = 0; i < m_selectionList.size(); i++)
 			{
-				BigDecimal qty = m_qtyList.get(i).getValue();
-				int M_Product_ID = m_productList.get(i).intValue();
-				//	Create Line
-				MInvoiceLine il = new MInvoiceLine (invoice);
-				il.setM_Product_ID(M_Product_ID, true);
-				il.setQty(qty);
-				il.setPrice();
-				il.setTax();
-				if (il.save())
+				if (isSelectionSelected(m_selectionList.get(i)))
+				{
+					BigDecimal qty = m_qtyList.get(i).getValue();
+					int M_Product_ID = m_productList.get(i).intValue();
+					//	Create Line
+					MInvoiceLine il = new MInvoiceLine (invoice);
+					il.setM_Product_ID(M_Product_ID, true);
+					il.setQty(qty);
+					il.setPrice();
+					il.setTax();
+					il.saveEx();
 					lineCount++;
-				else
-					log.log(Level.SEVERE, "Line not saved");
-			}	//	line selected
-		}	//	for all bom lines
+				}	//	line selected
+			}	//	for all bom lines
+		} catch (Exception e) 
+		{
+			log.log(Level.SEVERE, "Line not saved");
+			if (trx != null) 
+			{
+				trx.rollback();
+			}
+			throw new AdempiereException(e.getMessage());
+		}		
 		
-		FDialog.info(-1, this, invoice.getDocumentInfo() +  " " + Msg.translate(Env.getCtx(), "Inserted") + "=" + lineCount);
+		FDialog.info(-1, this, Msg.translate(Env.getCtx(), "C_Invoice_ID")+ " : " + invoice.getDocumentInfo() +  " , " + Msg.translate(Env.getCtx(), "NoOfLines") + " " + Msg.translate(Env.getCtx(), "Inserted") + " = " + lineCount);
 		if (log.isLoggable(Level.CONFIG)) log.config("#" + lineCount);
 		return true;
 	}	//	cmd_saveInvoice
@@ -878,12 +927,13 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	/**
 	 * 	Save to Project
 	 *	@param C_Project_ID id
+	 *  @param trx
 	 *	@return true if saved
 	 */
-	private boolean cmd_saveProject (int C_Project_ID)
+	private boolean cmd_saveProject (int C_Project_ID, Trx trx)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("C_Project_ID=" + C_Project_ID);
-		MProject project = new MProject (Env.getCtx(), C_Project_ID, null);
+		MProject project = new MProject (Env.getCtx(), C_Project_ID, trx != null ? trx.getTrxName() : null);
 		if (project.get_ID() == 0)
 		{
 			log.log(Level.SEVERE, "Not found - C_Project_ID=" + C_Project_ID);
@@ -892,25 +942,33 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		int lineCount = 0;
 		
 		//	for all bom lines
-		for (int i = 0; i < m_selectionList.size(); i++)
+		try 
 		{
-			if (isSelectionSelected(m_selectionList.get(i)))
+			for (int i = 0; i < m_selectionList.size(); i++)
 			{
-				BigDecimal qty = m_qtyList.get(i).getValue();
-				int M_Product_ID = m_productList.get(i).intValue();
-				//	Create Line
-				MProjectLine pl = new MProjectLine (project);
-				pl.setM_Product_ID(M_Product_ID);
-				pl.setPlannedQty(qty);
-
-				if (pl.save())
+				if (isSelectionSelected(m_selectionList.get(i)))
+				{
+					BigDecimal qty = m_qtyList.get(i).getValue();
+					int M_Product_ID = m_productList.get(i).intValue();
+					//	Create Line
+					MProjectLine pl = new MProjectLine (project);
+					pl.setM_Product_ID(M_Product_ID);
+					pl.setPlannedQty(qty);
+					pl.saveEx();
 					lineCount++;
-				else
-					log.log(Level.SEVERE, "Line not saved");
-			}	//	line selected
-		}	//	for all bom lines
+				}	//	line selected
+			}	//	for all bom lines
+		} catch (Exception e) 
+		{
+			log.log(Level.SEVERE, "Line not saved");
+			if (trx != null) 
+			{
+				trx.rollback();
+			}
+			throw new AdempiereException(e.getMessage());
+		}		
 		
-		FDialog.info(-1, this, project.getName() + " " + Msg.translate(Env.getCtx(), "Inserted") + "=" + lineCount);
+		FDialog.info(-1, this, Msg.translate(Env.getCtx(), "C_Project_ID")+ " : " + project.getName() + " , " + Msg.translate(Env.getCtx(), "NoOfLines") + " " + Msg.translate(Env.getCtx(), "Inserted") + " = " + lineCount);
 		if (log.isLoggable(Level.CONFIG)) log.config("#" + lineCount);
 		return true;
 	}	//	cmd_saveProject
