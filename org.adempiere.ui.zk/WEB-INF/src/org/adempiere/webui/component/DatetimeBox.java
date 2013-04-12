@@ -102,6 +102,7 @@ public class DatetimeBox extends Panel {
 		dateBox.setReadonly(!readWrite);
 		timeBox.setReadonly(!readWrite);
 		dateBox.setButtonVisible(readWrite);
+		timeBox.setButtonVisible(readWrite);
 	}
 
 	/**
