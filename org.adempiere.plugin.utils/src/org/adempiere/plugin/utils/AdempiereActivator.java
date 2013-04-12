@@ -85,9 +85,10 @@ public class AdempiereActivator implements BundleActivator, ServiceTrackerCustom
 			q.setParameters(new Object[] { getName(), version + "%" });
 			X_AD_Package_Imp pkg = q.first();
 			if (pkg == null) {
+				System.out.println("Installing " + getName() + " " + version + " ...");
 				packIn(trxName);
 				install();
-				if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + version + " installed.");
+				System.out.println(getName() + " " + version + " installed.");
 			} else {
 				if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + version + " was installed: "
 						+ pkg.getCreated());
