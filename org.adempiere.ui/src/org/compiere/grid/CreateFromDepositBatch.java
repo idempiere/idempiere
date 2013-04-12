@@ -67,7 +67,8 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 		sql.append(" LEFT OUTER JOIN C_BPartner bp ON (p.C_BPartner_ID=bp.C_BPartner_ID) ");
 		sql.append(getSQLWhere(BPartner, DocumentNo, DateFrom, DateTo, AmtFrom, AmtTo, DocType, TenderType, AuthCode));
 		
-		sql.append(" AND p.IsReceipt = 'Y'");
+		sql.append(" AND py.IsReconciled = 'N'");
+		sql.append(" AND py.TrxType <> 'X'");
 		sql.append(" AND (py.C_DepositBatch_ID = 0 OR py.C_DepositBatch_ID IS NULL)");
 		
 		sql.append(" ORDER BY p.DateTrx");
@@ -124,7 +125,7 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 	{
 		//  fixed values
 		int C_DepositBatch_ID = ((Integer) getGridTab().getValue("C_DepositBatch_ID")).intValue();
-		MDepositBatch db = new MDepositBatch(Env.getCtx(), C_DepositBatch_ID, null);
+		MDepositBatch db = new MDepositBatch(Env.getCtx(), C_DepositBatch_ID, trxName);
 		if (log.isLoggable(Level.CONFIG)) log.config(db.toString());
 
 		//  Lines
@@ -144,7 +145,7 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 				//	
 				MDepositBatchLine dbl = new MDepositBatchLine(db);
 				//	dbl.setStatementLineDate(trxDate);
-				dbl.setPayment(new MPayment(Env.getCtx(), C_Payment_ID, null));
+				dbl.setPayment(new MPayment(Env.getCtx(), C_Payment_ID, trxName));
 				if(!dbl.save())
 					log.log(Level.SEVERE, "Line not created #" + i);
 			}   //   if selected

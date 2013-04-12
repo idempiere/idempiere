@@ -135,8 +135,10 @@ import org.compiere.util.Env;
 		{
 			String sql = "UPDATE C_Payment p SET C_DepositBatch_ID=? WHERE p.C_Payment_ID=?";			
 			DB.executeUpdateEx(sql, new Object[] {getC_DepositBatch_ID(), getC_Payment_ID()}, get_TrxName());
+			
+			MPayment payment = new MPayment(getCtx(), getC_Payment_ID(), get_TrxName());
+			setPayment(payment);	// set payment amount
 		}
-		//
 		
 		return true;
 	}	//	beforeSave

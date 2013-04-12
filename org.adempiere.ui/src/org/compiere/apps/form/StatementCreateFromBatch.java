@@ -191,7 +191,6 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		sql.append(" INNER JOIN C_DepositBatch db ON (py.C_DepositBatch_ID = db.C_DepositBatch_ID) ");
 		sql.append(getSQLWhere(BPartner, DocumentNo, DateFrom, DateTo, AmtFrom, AmtTo, DocType, TenderType, AuthCode));
 		
-		sql.append(" AND p.IsReceipt = 'Y'");
 		sql.append(" AND py.C_DepositBatch_ID <> 0");
 		sql.append(" AND db.Processed = 'Y'");
 		
@@ -247,7 +246,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	{
 		//  fixed values
 		int C_BankStatement_ID = ((Integer) gridTab.getValue("C_BankStatement_ID")).intValue();
-		MBankStatement bs = new MBankStatement (Env.getCtx(), C_BankStatement_ID, null);
+		MBankStatement bs = new MBankStatement (Env.getCtx(), C_BankStatement_ID, trxName);
 		if (log.isLoggable(Level.CONFIG)) log.config(bs.toString());
 
 		StringBuilder sql = new StringBuilder();
@@ -260,7 +259,6 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		sql.append(" INNER JOIN C_DepositBatch db ON (py.C_DepositBatch_ID = db.C_DepositBatch_ID)");
 		sql.append(" LEFT OUTER JOIN C_BPartner bp ON (p.C_BPartner_ID=bp.C_BPartner_ID)");
 		sql.append(" WHERE p.Processed='Y' AND p.IsReconciled='N'");
-		sql.append(" AND p.IsReceipt = 'Y'");
 		sql.append(" AND py.C_DepositBatch_ID = ?");
 		sql.append(" AND p.DocStatus IN ('CO','CL','RE','VO') AND p.PayAmt<>0");
 		sql.append(" AND p.C_BankAccount_ID=?");
@@ -289,7 +287,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 				ResultSet rs = null;
 				try
 				{
-					pstmt = DB.prepareStatement(sql.toString(), null);
+					pstmt = DB.prepareStatement(sql.toString(), trxName);
 					pstmt.setTimestamp(1, ts);
 					pstmt.setInt(2, C_DepositBatch_ID);
 					pstmt.setInt(3, C_BankAccount_ID);
@@ -304,7 +302,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 						//	
 						MBankStatementLine bsl = new MBankStatementLine (bs);
 						bsl.setStatementLineDate(trxDate);
-						bsl.setPayment(new MPayment(Env.getCtx(), C_Payment_ID, null));
+						bsl.setPayment(new MPayment(Env.getCtx(), C_Payment_ID, trxName));
 						if (!bsl.save())
 							log.log(Level.SEVERE, "Line not created #" + i);
 							
