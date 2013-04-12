@@ -62,7 +62,7 @@ public class VStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	public void init (int WindowNo, FormFrame frame)
 	{
 		form = new VCreateFromForm(this, frame);
-		p_WindowNo = WindowNo;
+		p_WindowNo = frame.getGridTab().getWindowNo();;
 		m_frame = frame;
 		initForm();
 	}
