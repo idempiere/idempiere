@@ -1038,7 +1038,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 					}
 				}	
 			}
-			gridTab.getTableModel().dataRequery(pquery.getWhereClause());
+			gridTab.getTableModel().dataRequery(pquery.getWhereClause(), false, 0, false);
 	    	if (isInsertMode()){
 				if(gridTab.getTableModel().getRowCount()>=1)
 				   logMsg = Msg.getMsg(Env.getCtx(), "AlreadyExists")+" "+pquery;
