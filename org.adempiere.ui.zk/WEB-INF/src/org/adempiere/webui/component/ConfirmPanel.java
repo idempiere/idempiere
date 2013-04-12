@@ -25,7 +25,8 @@ import java.util.Map;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Messagebox;
 /**
  * Application Confirm Panel
@@ -33,7 +34,7 @@ import org.zkoss.zul.Messagebox;
  * @author Sendy Yagambrum
  * @date July 25, 2007
  **/
-public final class ConfirmPanel extends Hbox
+public final class ConfirmPanel extends Div
 {
 	/**
 	 * 
@@ -217,35 +218,23 @@ public final class ConfirmPanel extends Hbox
         this(withCancel,false,false,false,false,false);
     }
     //
-    private Hbox hboxBtnLeft;
-    private Hbox hboxBtnRight;
-    //
-    private Panel pnlBtnRight;
-    private Panel pnlBtnLeft;
+    private Hlayout pnlBtnRight;
+    private Hlayout pnlBtnLeft;
 
     /**
      * initialise components
      */
     private void init()
     {
-        pnlBtnLeft = new Panel();
+        pnlBtnLeft = new Hlayout();
         pnlBtnLeft.setSclass("confirm-panel-left");
-        pnlBtnRight = new Panel();
+        pnlBtnRight = new Hlayout();
         pnlBtnRight.setSclass("confirm-panel-right");
 
-        hboxBtnRight = new Hbox();
-        hboxBtnRight.appendChild(pnlBtnRight);
-        hboxBtnRight.setPack("end");
-        hboxBtnRight.setHflex("1");
-
-        hboxBtnLeft = new Hbox();
-        hboxBtnLeft.appendChild(pnlBtnLeft);
-        hboxBtnLeft.setPack("start");
-        hboxBtnLeft.setHflex("1");
-
-        this.appendChild(hboxBtnLeft);
-        this.appendChild(hboxBtnRight);
+        this.appendChild(pnlBtnLeft);
+        this.appendChild(pnlBtnRight);
         this.setSclass("confirm-panel");
+        this.setVflex("min");
         setId("confirmPanel");
     }
 

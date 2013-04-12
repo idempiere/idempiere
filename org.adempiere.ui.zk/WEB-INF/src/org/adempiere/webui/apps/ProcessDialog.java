@@ -62,7 +62,7 @@ import org.zkoss.zul.A;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.North;
@@ -172,8 +172,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		center.setAutoscroll(true);
 		center.setStyle("border: none");
 		
-		Div div = new Div();
-		Hbox hbox = new Hbox();
+		Hlayout hbox = new Hlayout();
 		@SuppressWarnings("unused")
 		String label = Msg.getMsg(Env.getCtx(), "Start");
 		// Invert - Unify  OK/Cancel IDEMPIERE-77
@@ -186,13 +185,13 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		btn.setId("Cancel");
 		btn.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btn);		
-		div.appendChild(hbox);
-		div.setStyle("padding: 10px; text-align: center; text-align: -webkit-center; text-align: -moz-center; ");
+		hbox.setStyle("padding: 10px; margin: auto; overflow: visible;");
+		hbox.setHflex("min");
 		
 		South south = new South();
 		south.setSclass("dialog-footer");
 		layout.appendChild(south);
-		south.appendChild(div);		
+		south.appendChild(hbox);		
 		this.appendChild(layout);
 	}
 

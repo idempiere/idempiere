@@ -67,7 +67,7 @@ html,body {
 	width: 604px;
 	margin-left: 10px;
 	margin-right: 10px;
-	padding-top: 40px;
+	padding-top: 40px !important;
 }
 
 .login-label {
@@ -1130,21 +1130,19 @@ div.simileAjax-bubble-container {
 }
 
 .confirm-panel {
-	width: 100%;
-	height: 36px;
+	width: auto;
+	height: auto;
 	position: relative;
+	padding-left: 2px;
+	padding-right: 2px;
 }
 
-.confirm-panel .z-hbox {
-	margin: 2px;
+.confirm-panel-right {
+	float: right;
 }
 
-.confirm-panel-right .z-button-os {
-	margin-left: 3px;
-}
-
-.confirm-panel-left .z-button-os {
-	margin-right: 3px;
+.confirm-panel-left {
+	float: left;
 }
 
 .info-product-tabbedpane {
@@ -1448,11 +1446,11 @@ font-size: 0;
 }
 
 .popup-dialog.z-window-overlapped .dialog-footer {
-	padding: 12px 15px 8px 15px;
+	padding: 12px 15px 8px 15px !important;
 }
 
 .popup-dialog.z-window-highlighted .dialog-footer {
-	padding: 12px 15px 5px 15px;
+	padding: 12px 15px 5px 15px !important;
 }
 
 .dialog-footer {
@@ -1466,4 +1464,9 @@ font-size: 0;
 
 .btn-ok {
 	font-weight: bold;
+}
+
+<%-- vbox fix for firefox and ie --%>
+table.z-vbox > tbody > tr > td > table {
+	width: 100%;	
 }
