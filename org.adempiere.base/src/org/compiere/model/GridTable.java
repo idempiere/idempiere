@@ -2936,6 +2936,25 @@ public class GridTable extends AbstractTableModel
 		return true;
 	}	//	dataRequery
 
+	/**
+	 *	Requery with new whereClause
+	 *  @param whereClause sql where clause
+	 *  @return true if success
+	 */
+	public boolean dataRequery (String whereClause)
+	{
+		if (log.isLoggable(Level.INFO)) log.info(whereClause + "; OnlyCurrent=" + 0);
+		close(false);
+		m_onlyCurrentDays = 0;
+		setSelectWhereClause(whereClause,false, m_onlyCurrentDays);
+		open(m_maxRows);
+		//  Info
+		m_rowData = null;
+		m_changed = false;
+		m_rowChanged = -1;
+		m_inserting = false;
+		return true;
+	}	//	dataRequery
 
 	/**************************************************************************
 	 *	Is Cell Editable.
