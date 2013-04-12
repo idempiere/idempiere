@@ -895,6 +895,128 @@ _html2canvas.Util.Font = (function () {
   };
 
 })();
+function h2cRenderContext(width, height) {
+  var storage = [];
+  return {
+    storage: storage,
+    width: width,
+    height: height,
+    clip: function() {
+      storage.push({
+        type: "function",
+        name: "clip",
+        'arguments': arguments
+      });
+    },
+    translate: function() {
+      storage.push({
+        type: "function",
+        name: "translate",
+        'arguments': arguments
+      });
+    },
+    fill: function() {
+      storage.push({
+        type: "function",
+        name: "fill",
+        'arguments': arguments
+      });
+    },
+    save: function() {
+      storage.push({
+        type: "function",
+        name: "save",
+        'arguments': arguments
+      });
+    },
+    restore: function() {
+      storage.push({
+        type: "function",
+        name: "restore",
+        'arguments': arguments
+      });
+    },
+    fillRect: function () {
+      storage.push({
+        type: "function",
+        name: "fillRect",
+        'arguments': arguments
+      });
+    },
+    createPattern: function() {
+      storage.push({
+        type: "function",
+        name: "createPattern",
+        'arguments': arguments
+      });
+    },
+    drawShape: function() {
+
+      var shape = [];
+
+      storage.push({
+        type: "function",
+        name: "drawShape",
+        'arguments': shape
+      });
+
+      return {
+        moveTo: function() {
+          shape.push({
+            name: "moveTo",
+            'arguments': arguments
+          });
+        },
+        lineTo: function() {
+          shape.push({
+            name: "lineTo",
+            'arguments': arguments
+          });
+        },
+        arcTo: function() {
+          shape.push({
+            name: "arcTo",
+            'arguments': arguments
+          });
+        },
+        bezierCurveTo: function() {
+          shape.push({
+            name: "bezierCurveTo",
+            'arguments': arguments
+          });
+        },
+        quadraticCurveTo: function() {
+          shape.push({
+            name: "quadraticCurveTo",
+            'arguments': arguments
+          });
+        }
+      };
+
+    },
+    drawImage: function () {
+      storage.push({
+        type: "function",
+        name: "drawImage",
+        'arguments': arguments
+      });
+    },
+    fillText: function () {
+      storage.push({
+        type: "function",
+        name: "fillText",
+        'arguments': arguments
+      });
+    },
+    setVariable: function (variable, value) {
+      storage.push({
+        type: "variable",
+        name: variable,
+        'arguments': value
+      });
+    }
+  };
+}
 _html2canvas.Parse = function (images, options) {
   window.scroll(0,0);
 
@@ -1656,7 +1778,7 @@ _html2canvas.Parse = function (images, options) {
 
   function getPseudoElement(el, which) {
     var elStyle = document.defaultView.getComputedStyle(el, which);
-    if(!elStyle || !elStyle.content || elStyle.content === "none" || elStyle.content === "-moz-alt-content") {
+    if(!elStyle || !elStyle.content || elStyle.content === "none" || elStyle.content === "-moz-alt-content" || elStyle.display === "none") {
       return;
     }
     var content = elStyle.content + '',
@@ -1672,7 +1794,12 @@ _html2canvas.Parse = function (images, options) {
     elps.className = pseudoHide + "-before " + pseudoHide + "-after";
 
     Object.keys(elStyle).filter(indexedProperty).forEach(function(prop) {
-      elps.style[prop] = elStyle[prop];
+      // Prevent assigning of read only CSS Rules, ex. length, parentRule
+      try {
+      	elps.style[prop] = elStyle[prop];
+      } catch (e) {
+        h2clog(['Tried to assign readonly property ', prop, 'Error:', e]);
+      }
     });
 
     if(isImage) {
@@ -1909,7 +2036,7 @@ _html2canvas.Parse = function (images, options) {
       case "INPUT":
         // TODO add all relevant type's, i.e. HTML5 new stuff
         // todo add support for placeholder attribute for browsers which support it
-        if (/^(text|url|email|submit|button|reset)$/.test(element.type) && (element.value || element.placeholder).length > 0){
+        if (/^(text|url|email|submit|button|reset)$/.test(element.type) && (element.value || element.placeholder || "").length > 0){
           renderFormValue(element, bounds, stack);
         }
         break;
@@ -2059,7 +2186,7 @@ _html2canvas.Preload = function( options ) {
   count = 0,
   element = options.elements[0] || document.body,
   doc = element.ownerDocument,
-  domImages = doc.images, // TODO probably should limit it to images present in the element only
+  domImages = element.getElementsByTagName('img'), // Fetch images of the present element only
   imgLen = domImages.length,
   link = doc.createElement("a"),
   supportCORS = (function( img ){
@@ -2382,128 +2509,7 @@ _html2canvas.Preload = function( options ) {
   return methods;
 
 };
-function h2cRenderContext(width, height) {
-  var storage = [];
-  return {
-    storage: storage,
-    width: width,
-    height: height,
-    clip: function() {
-      storage.push({
-        type: "function",
-        name: "clip",
-        'arguments': arguments
-      });
-    },
-    translate: function() {
-      storage.push({
-        type: "function",
-        name: "translate",
-        'arguments': arguments
-      });
-    },
-    fill: function() {
-      storage.push({
-        type: "function",
-        name: "fill",
-        'arguments': arguments
-      });
-    },
-    save: function() {
-      storage.push({
-        type: "function",
-        name: "save",
-        'arguments': arguments
-      });
-    },
-    restore: function() {
-      storage.push({
-        type: "function",
-        name: "restore",
-        'arguments': arguments
-      });
-    },
-    fillRect: function () {
-      storage.push({
-        type: "function",
-        name: "fillRect",
-        'arguments': arguments
-      });
-    },
-    createPattern: function() {
-      storage.push({
-        type: "function",
-        name: "createPattern",
-        'arguments': arguments
-      });
-    },
-    drawShape: function() {
 
-      var shape = [];
-
-      storage.push({
-        type: "function",
-        name: "drawShape",
-        'arguments': shape
-      });
-
-      return {
-        moveTo: function() {
-          shape.push({
-            name: "moveTo",
-            'arguments': arguments
-          });
-        },
-        lineTo: function() {
-          shape.push({
-            name: "lineTo",
-            'arguments': arguments
-          });
-        },
-        arcTo: function() {
-          shape.push({
-            name: "arcTo",
-            'arguments': arguments
-          });
-        },
-        bezierCurveTo: function() {
-          shape.push({
-            name: "bezierCurveTo",
-            'arguments': arguments
-          });
-        },
-        quadraticCurveTo: function() {
-          shape.push({
-            name: "quadraticCurveTo",
-            'arguments': arguments
-          });
-        }
-      };
-
-    },
-    drawImage: function () {
-      storage.push({
-        type: "function",
-        name: "drawImage",
-        'arguments': arguments
-      });
-    },
-    fillText: function () {
-      storage.push({
-        type: "function",
-        name: "fillText",
-        'arguments': arguments
-      });
-    },
-    setVariable: function (variable, value) {
-      storage.push({
-        type: "variable",
-        name: variable,
-        'arguments': value
-      });
-    }
-  };
-}
 _html2canvas.Renderer = function(parseQueue, options){
 
   function createRenderQueue(parseQueue) {
