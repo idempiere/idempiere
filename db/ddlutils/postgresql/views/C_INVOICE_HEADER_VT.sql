@@ -1,4 +1,4 @@
-﻿DROP VIEW c_invoice_header_vt;
+DROP VIEW c_invoice_header_vt;
 
 CREATE OR REPLACE VIEW c_invoice_header_vt AS 
 SELECT i.ad_client_id,
@@ -328,7 +328,9 @@ SELECT i.ad_client_id,
     ubp.updated                      AS bpartner_updated,
     ubp.updatedby                    AS bpartner_updatedby,
     ubp.url                          AS bpartner_url,
-    ubp.value                        AS bpartner_value 
+    ubp.value                        AS bpartner_value,
+    cur.cursymbol,
+    cur.description                  AS cur_description
 FROM c_invoice i 
         JOIN c_doctype_trl dt 
         ON i.c_doctype_id = dt.c_doctype_id 
@@ -360,4 +362,6 @@ FROM c_invoice i
         ON i.salesrep_id = u.ad_user_id 
         LEFT JOIN c_bpartner ubp 
         ON u.c_bpartner_id = ubp.c_bpartner_id
+        LEFT JOIN c_currency_trl cur
+        ON i.c_currency_id = cur.c_currency_id AND dt.ad_language = cur.ad_language 
 ;
