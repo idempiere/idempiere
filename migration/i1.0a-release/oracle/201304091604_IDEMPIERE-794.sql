@@ -654,7 +654,6 @@ UPDATE AD_PrintFormatItem SET PrintName='AD_User_C_BPartner_Location_ID', Name='
 UPDATE AD_Column SET AD_Reference_ID=18, ColumnName='AD_User_C_BPartner_Location_ID', Name='AD_User_C_BPartner_Location_ID', IsToolbarButton='N',Updated=TO_DATE('2013-04-04 16:30:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=205916
 ;
 
--
 -- Apr 4, 2013 4:36:29 PM COT
 UPDATE AD_Column SET AD_Element_ID=200347, ColumnName='c_bpartner_ad_org_id', Description=NULL, Help=NULL, Name='c_bpartner_ad_org_id', IsToolbarButton='N',Updated=TO_DATE('2013-04-04 16:36:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=205821
 ;
@@ -1224,7 +1223,7 @@ UPDATE AD_Column SET AD_Reference_ID=18,Updated=TO_DATE('2013-04-08 18:58:48','Y
 ;
 
 -- Apr 8, 2013 6:58:48 PM COT
-UPDATE AD_Column SET AD_Reference_ID=18,Length=10, Name='C_OrderLine_M_Shipper_ID',Updated=TO_DATE('2013-04-08 18:58:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=207056
+UPDATE AD_Column SET AD_Reference_ID=18,FieldLength=10, Name='C_OrderLine_M_Shipper_ID',Updated=TO_DATE('2013-04-08 18:58:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=207056
 ;
 
 -- Apr 8, 2013 7:56:10 PM COT
