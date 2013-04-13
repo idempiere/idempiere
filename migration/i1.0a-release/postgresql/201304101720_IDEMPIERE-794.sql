@@ -1,0 +1,11 @@
+-- Apr 10, 2013 5:13:51 PM COT
+UPDATE AD_Column SET AD_Reference_Value_ID=271,Updated=TO_TIMESTAMP('2013-04-10 17:13:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=204815
+;
+
+-- Apr 10, 2013 5:14:38 PM COT
+UPDATE AD_Column SET AD_Reference_Value_ID=290,Updated=TO_TIMESTAMP('2013-04-10 17:14:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=204935
+;
+
+SELECT register_migration_script('201304101720_IDEMPIERE-794.sql') FROM dual
+;
+
