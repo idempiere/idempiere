@@ -1,0 +1,1128 @@
+-- Apr 13, 2013 9:43:34 PM COT
+-- UUID Generator
+UPDATE AD_Column SET AD_Column_UU='01a4af50-035b-4083-8a15-97e962bca37e' WHERE AD_Column_ID=200621
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='8ca6582a-6adf-496f-b317-18726fac0b95' WHERE AD_Column_ID=200622
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='af2b3983-1922-43d8-8338-013bab39965a' WHERE AD_Column_ID=200623
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='e7a3eb1f-51bb-42cb-8c38-81d50d36e351' WHERE AD_Column_ID=200626
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='3235655e-94ab-4598-9819-7b16cdf0633d' WHERE AD_Column_ID=200627
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='8bdb8f4b-68c8-4abf-b1a2-e6a6f651e3e4' WHERE AD_Column_ID=200628
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='15cf9b2a-cf49-4c4d-aa25-6e5b699e2d55' WHERE AD_Column_ID=200629
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='dffe47b0-afc7-4023-b5a8-a29e3fe57136' WHERE AD_Column_ID=200630
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='126161fe-f9ea-4314-9da4-08058d165193' WHERE AD_Column_ID=200631
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='141a79b0-1a53-4fc3-8782-854646fda511' WHERE AD_Column_ID=200632
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='067242b7-a784-408f-8b4c-0912ea38daff' WHERE AD_Column_ID=200633
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='1854e1bc-88da-4245-947b-8ea4a006be2e' WHERE AD_Column_ID=200634
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='f7fd3e2c-1197-4d9b-81ef-d249ecffa102' WHERE AD_Column_ID=200639
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='48b4a601-7e99-4b85-a758-b55ddb09735f' WHERE AD_Column_ID=200636
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='1714b2d4-f66e-44b9-be14-7e9b9932cc25' WHERE AD_Column_ID=200638
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='24d12f7e-5eb5-43b5-8c60-0221ec3dbaac' WHERE AD_Column_ID=200637
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='1324ba19-0f14-4929-af8c-030593d53a0c' WHERE AD_Column_ID=200614
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='ccfb506d-3c22-452f-ad6c-ee5c815e585a' WHERE AD_Column_ID=200615
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='8783e72f-e74b-46e0-867d-598ff3c3dded' WHERE AD_Column_ID=200616
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='c2c7bdca-c08e-48ab-a62c-cd6fdb78ce70' WHERE AD_Column_ID=200617
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='889c260b-b21a-4f58-a497-ab7a9897088b' WHERE AD_Column_ID=200618
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='f778998b-327d-4998-a745-968bfc2cbc9c' WHERE AD_Column_ID=200619
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='b6c8135b-a4f6-4bdb-b2c7-6b432d4e4349' WHERE AD_Column_ID=200620
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='7e54fc25-4b31-451a-95d1-7a3744e583a5' WHERE AD_Column_ID=200635
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='13553e5c-051e-42f8-bb8c-4a25ee92560f' WHERE AD_Column_ID=200640
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='a7cf56b4-27ce-4730-8e96-368ab1a464af' WHERE AD_Column_ID=200704
+;
+
+-- Apr 13, 2013 9:43:34 PM COT
+UPDATE AD_Column SET AD_Column_UU='3ac2d4aa-b904-4ef7-9015-bf8895688149' WHERE AD_Column_ID=56695
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='4b86a0db-216b-40d4-992e-9aaba873f4ec' WHERE AD_Column_ID=200585
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='f76258f9-9449-4ebc-a143-918af5acb471' WHERE AD_Column_ID=61939
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='9e2aa74a-41bf-4f2b-b925-cd84ca1c3f4d' WHERE AD_Column_ID=56694
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='d68007b5-a66b-4443-933b-bddc77549bcc' WHERE AD_Column_ID=56696
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='87041bdd-f6cc-48d1-953b-76ce86ed9659' WHERE AD_Column_ID=56697
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='28f57261-fb76-432f-bb3c-02f25ea48c54' WHERE AD_Column_ID=56698
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='e4875a2a-83bd-4f76-a73f-685dd301db04' WHERE AD_Column_ID=56699
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='ac60c3d5-3d18-431a-873e-9b20d24190a6' WHERE AD_Column_ID=56700
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='f2c6486a-0f9d-4b9f-bcfb-e440741f6a78' WHERE AD_Column_ID=56701
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='021f048a-1337-4383-b122-a6f52d8037ed' WHERE AD_Column_ID=56702
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='e7a706a0-4cb8-4bc3-b279-ac3247ef68a7' WHERE AD_Column_ID=56703
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='7cee1f17-76ba-4ba8-832e-44fe105c10a2' WHERE AD_Column_ID=56704
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='71b475f7-89b3-432d-9e49-ed94dda7ee9d' WHERE AD_Column_ID=56705
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='81cd2924-22e5-41eb-abb9-98b3839a237c' WHERE AD_Column_ID=56706
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='f7fed18a-d7a9-4deb-979e-f03ad496c02f' WHERE AD_Column_ID=56707
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='f23f8182-3a19-4b3f-88b4-b01274ef9c54' WHERE AD_Column_ID=56708
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='b88f59d9-aefc-4230-8301-466fce68c911' WHERE AD_Column_ID=56709
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='ae5c7bc7-2d9a-4a53-9b6b-1ccbb97ac161' WHERE AD_Column_ID=56710
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='3128b1b5-9a05-4123-88c8-4209eb7f2bb7' WHERE AD_Column_ID=56711
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='165203f6-c7d4-4a85-a56f-23aefabfc769' WHERE AD_Column_ID=56712
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='20bfdcb6-6ce6-4d4f-8a7c-c2a09021b757' WHERE AD_Column_ID=56713
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='dcaff0ac-c216-460d-815d-678510746b36' WHERE AD_Column_ID=56715
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='ee288b11-1b03-4e39-86d2-2738d08bae97' WHERE AD_Column_ID=56716
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='b90f818e-5562-45b9-ba73-a2b95064eb50' WHERE AD_Column_ID=56717
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='08e7a5bf-603e-438e-b129-b227bba0f3b4' WHERE AD_Column_ID=56718
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='94309cd2-d83d-4479-8fb8-9cc146ca17ef' WHERE AD_Column_ID=56719
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='bc75cf77-16c2-4ff7-b3bc-294b9562aa0b' WHERE AD_Column_ID=56720
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='41554e33-ee30-44fb-84a8-9eda95584668' WHERE AD_Column_ID=56721
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='f02523e0-b992-4180-b6f4-2a4608dbd11a' WHERE AD_Column_ID=56722
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='e28ea624-dc7d-4f38-b7ba-101d2e7cbc81' WHERE AD_Column_ID=56723
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='fc108646-bf30-43bf-beb6-38ea5206aba7' WHERE AD_Column_ID=56724
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='ce695b97-3d8b-4876-a02b-525b877b3613' WHERE AD_Column_ID=56725
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='d7dabac8-29ec-44f9-9f13-0c1a35292830' WHERE AD_Column_ID=56726
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='c980df81-4f24-4be2-b436-3af60c8fb3d4' WHERE AD_Column_ID=56727
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='11c76862-3864-4642-a83e-f11ad06854f5' WHERE AD_Column_ID=56728
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='e542b49b-13f7-4761-b08c-417d6d88810d' WHERE AD_Column_ID=56729
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='fbc03b32-7ce7-4b2e-b1f8-9080e54e5c69' WHERE AD_Column_ID=56731
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='7684bf41-1d8d-4505-bb2b-b58b016bab8e' WHERE AD_Column_ID=56732
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='ca15e44b-cab9-46c4-a85f-23bdced56122' WHERE AD_Column_ID=56733
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='caca95ec-4efc-4e3f-84a2-d1b77c54c5fb' WHERE AD_Column_ID=56735
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='96f2c984-7e0c-46fd-85f4-22619a70ada7' WHERE AD_Column_ID=56737
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='146833ae-4b2f-4934-9041-b11e02845178' WHERE AD_Column_ID=56738
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='d658c12c-6dff-49b7-9628-633d04942460' WHERE AD_Column_ID=56739
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='39a72da7-4352-4618-a2ec-17a7d0a39e0d' WHERE AD_Column_ID=56740
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='ada48fcc-89dc-4f64-a58d-f6211880c824' WHERE AD_Column_ID=56741
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='5a5e1a5c-32b9-4020-834b-8fe9f35b8a89' WHERE AD_Column_ID=56736
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='6e989148-c01d-462b-9be8-26ec5a55ff46' WHERE AD_Column_ID=56742
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='75e987e1-98c2-4ab8-863b-a46282f86592' WHERE AD_Column_ID=56743
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='7c697594-5b99-493d-ac49-29fc0352b750' WHERE AD_Column_ID=56744
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='2ee426c1-7066-4c75-b406-fbd566f37633' WHERE AD_Column_ID=56734
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='a9e663c2-dfea-4fe2-b4a0-def0606f5289' WHERE AD_Column_ID=56747
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='4eea1d33-be41-41df-a7be-0e812f811a12' WHERE AD_Column_ID=56749
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='46038268-89d8-4e9e-bcfe-32d1f3e47870' WHERE AD_Column_ID=56750
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='dc214e11-5c38-448f-98fb-4403b664b49d' WHERE AD_Column_ID=56751
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='c9eb1528-b3f1-4fc1-a8c4-12970d94f5ea' WHERE AD_Column_ID=56752
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='7c5ed753-39d7-4393-95ea-573c6836e29b' WHERE AD_Column_ID=56753
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='5af19bb6-a427-473a-b290-72974244e491' WHERE AD_Column_ID=56754
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='d1ba1047-fe5d-4aba-b454-7603f56bb328' WHERE AD_Column_ID=56748
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='a1fd4f9b-3019-4a8d-b898-91eebaf41502' WHERE AD_Column_ID=56755
+;
+
+-- Apr 13, 2013 9:43:35 PM COT
+UPDATE AD_Column SET AD_Column_UU='a33483ae-d394-4a06-9ed9-79965e0dffbf' WHERE AD_Column_ID=56757
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='3978f586-3cb4-451b-b077-ef980a1e36ff' WHERE AD_Column_ID=56758
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='8ea8c702-641f-432f-80a1-6adfc901d679' WHERE AD_Column_ID=56759
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='611e7302-3dca-4cf8-8088-8b389eb42312' WHERE AD_Column_ID=56760
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='0a35a96c-182a-4fc3-b340-4ba92f409b0d' WHERE AD_Column_ID=56761
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='1d897342-8d20-4e18-a03c-0f40073f0c08' WHERE AD_Column_ID=56762
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='617681e3-a087-4de7-bdb1-bd1468fe97ae' WHERE AD_Column_ID=56763
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='b99677ee-af96-48da-940b-8f75c480d93a' WHERE AD_Column_ID=56764
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='4fba0f46-91da-4101-9ba6-c5ac8d47f21d' WHERE AD_Column_ID=56765
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='5b002e8e-3ef6-4363-91e1-b9675e05f3ce' WHERE AD_Column_ID=56767
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='21bf3822-51c1-4eef-b0cf-0db2ef09b41d' WHERE AD_Column_ID=56768
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='f0504125-cffc-4d64-9565-af6810e5eee7' WHERE AD_Column_ID=56770
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='c51d9cd1-5757-4929-9aaa-0ed479d023b8' WHERE AD_Column_ID=56771
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='4b18c324-755b-4e56-83a1-3cd6282f7af6' WHERE AD_Column_ID=56772
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='3ab48953-158f-4050-908a-7e5b455277b8' WHERE AD_Column_ID=56773
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='ac37c7fa-3486-458e-ae1b-d3190f7ca1a9' WHERE AD_Column_ID=56774
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='d0f641d3-dd5d-4fab-b055-3314e18a3f7d' WHERE AD_Column_ID=56775
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='ae9e1d9c-d020-41d3-89fb-da83dffa5ae9' WHERE AD_Column_ID=56769
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='c24d5f8c-96ea-4def-8b59-b4c0402f50af' WHERE AD_Column_ID=56745
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='bfaf2d56-ef68-432c-bf95-7cfa66920302' WHERE AD_Column_ID=56714
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='a7ac9f27-54cf-45f8-b903-a502595b6a14' WHERE AD_Column_ID=56730
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='0c14c682-49db-4fe4-9184-3100d0473df5' WHERE AD_Column_ID=56746
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='77be2dc1-8741-457e-acc3-faf2f831e9f9' WHERE AD_Column_ID=56756
+;
+
+-- Apr 13, 2013 9:43:36 PM COT
+UPDATE AD_Column SET AD_Column_UU='d5373920-54b9-4718-bee4-30950cf942df' WHERE AD_Column_ID=56766
+;
+
+-- Apr 13, 2013 9:43:47 PM COT
+UPDATE AD_Element SET AD_Element_UU='7134841c-d138-43d5-b275-01b861901be7' WHERE AD_Element_ID=53766
+;
+
+-- Apr 13, 2013 9:43:47 PM COT
+UPDATE AD_Element SET AD_Element_UU='f6abafb9-0954-49e5-9fe8-d625189c1479' WHERE AD_Element_ID=53767
+;
+
+-- Apr 13, 2013 9:43:47 PM COT
+UPDATE AD_Element SET AD_Element_UU='6c8d3b80-f036-4093-9f7f-6f7a50c6f77f' WHERE AD_Element_ID=53768
+;
+
+-- Apr 13, 2013 9:43:47 PM COT
+UPDATE AD_Element SET AD_Element_UU='f1aa9a7f-76db-47f0-be1c-2840e449472d' WHERE AD_Element_ID=53769
+;
+
+-- Apr 13, 2013 9:43:47 PM COT
+UPDATE AD_Element SET AD_Element_UU='e93755d2-e066-442d-8e2c-1b320f87057d' WHERE AD_Element_ID=53770
+;
+
+-- Apr 13, 2013 9:43:47 PM COT
+UPDATE AD_Element SET AD_Element_UU='02023e27-24cb-40e1-b6ea-2764da45bf3f' WHERE AD_Element_ID=53771
+;
+
+-- Apr 13, 2013 9:43:47 PM COT
+UPDATE AD_Element SET AD_Element_UU='4addaeaf-875f-4ebe-ab98-69794edeb456' WHERE AD_Element_ID=53772
+;
+
+-- Apr 13, 2013 9:43:47 PM COT
+UPDATE AD_Element SET AD_Element_UU='8b8c0e1b-b73b-44fc-b941-903aa5bc9e2b' WHERE AD_Element_ID=200188
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='f7f37a72-3270-45d8-bc86-ca800bb9f7a4' WHERE AD_Field_ID=200649
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='a4f9c220-715f-4db1-9575-16419f11fb1c' WHERE AD_Field_ID=200843
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='5240bf98-1ab3-49e5-9ea2-e75b3af368c9' WHERE AD_Field_ID=200839
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='52a4f881-0969-4f76-b22a-0dc0c1a28de7' WHERE AD_Field_ID=200840
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='4d647a46-9526-44c8-9b69-703cfb3f6451' WHERE AD_Field_ID=200844
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='11af92f6-1fd8-4236-b211-b7024ab7aa5b' WHERE AD_Field_ID=200846
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='498a7af2-3090-48ee-901d-2bf798d6571b' WHERE AD_Field_ID=200842
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='85152ad2-357f-4266-a1b6-dbb9f57a7e25' WHERE AD_Field_ID=200847
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='16e707f7-21de-48bc-a047-d4d84c40f2ca' WHERE AD_Field_ID=200845
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='4b6a7663-ab60-4ca0-b809-989e86960776' WHERE AD_Field_ID=56644
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='424a9cee-c382-4205-b6bf-5d99b0742894' WHERE AD_Field_ID=56629
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='277004ac-e69f-4533-9923-df34770901c2' WHERE AD_Field_ID=56634
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='2b467a1e-af47-4140-a742-af70b400e62a' WHERE AD_Field_ID=56647
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='853672fc-69c2-4779-a30e-6884bbecec48' WHERE AD_Field_ID=56648
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='c69401a1-9f68-4416-a648-ec1c64bffd02' WHERE AD_Field_ID=200599
+;
+
+-- Apr 13, 2013 9:43:49 PM COT
+UPDATE AD_Field SET AD_Field_UU='6339c5f6-4ae2-4cac-b9e5-5d870f24f850' WHERE AD_Field_ID=200600
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='d68096da-0692-4647-8f47-8c6472f17fab' WHERE AD_Field_ID=61967
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='d6feb078-a9e4-46df-9a48-86fd469eabfe' WHERE AD_Field_ID=56628
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='21447469-d7c4-46d0-a65e-6de08136acae' WHERE AD_Field_ID=56630
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='b5a9fd60-494c-4219-9482-d2faa290d612' WHERE AD_Field_ID=56631
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='35135637-dad0-4b61-ab28-1f0b0ac994ed' WHERE AD_Field_ID=56632
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='08e73bee-7bdd-4c33-85aa-e47abc50c6b0' WHERE AD_Field_ID=56633
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='7f7bb152-9728-4b3e-938a-55c46f190687' WHERE AD_Field_ID=56635
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='bca0cdd6-e5c4-4c60-b4bb-d343f713b335' WHERE AD_Field_ID=56636
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='fa13473a-8447-41d5-985b-33e52b35ed28' WHERE AD_Field_ID=56637
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='8e8d4130-1e15-4127-a3fb-f25ee5e3ac17' WHERE AD_Field_ID=56638
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='dfb164cf-835c-44f8-a894-a253aa857831' WHERE AD_Field_ID=56639
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='ae915110-a314-404f-b34a-dda6c7ab6b21' WHERE AD_Field_ID=56640
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='86259757-bfed-4f40-adb7-0234c9470fda' WHERE AD_Field_ID=56641
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='f25897d0-e5c1-4a6a-a873-eae872d78a7f' WHERE AD_Field_ID=56642
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='2863260a-d439-4a9c-bad6-7d6326411838' WHERE AD_Field_ID=56643
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='3eaa1502-5d32-43f1-b709-ee01a35e8c83' WHERE AD_Field_ID=56649
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='4c91f076-b72d-4eea-9b25-7f1880a42482' WHERE AD_Field_ID=56650
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='a30cec37-8e39-4379-9ce9-6ea67798db10' WHERE AD_Field_ID=56651
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='0f33a205-c487-402d-82dc-7f90caeecddb' WHERE AD_Field_ID=56652
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='7f56eb32-5ea3-46cb-a5b8-ce33a0485fe3' WHERE AD_Field_ID=56653
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='3cbdc01e-b0e4-4b69-a3a1-7ab15d269f75' WHERE AD_Field_ID=56654
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='4eb45235-01c4-42f9-8b47-c7aabff0cc5c' WHERE AD_Field_ID=56655
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='37a514eb-3ef0-45b1-b591-6f53e5381d10' WHERE AD_Field_ID=56646
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='64b763a0-a94d-4540-97f2-8271b5c1c75b' WHERE AD_Field_ID=56662
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='d8df6125-489d-4a10-8f54-354a6ce59209' WHERE AD_Field_ID=56645
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='b2b4ea9a-05db-410c-a758-91aaa100ead7' WHERE AD_Field_ID=56656
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='c81dd63d-6f01-4c68-b087-a8466bc5f68c' WHERE AD_Field_ID=56658
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='51e17761-de55-445d-8644-7d9888f6eccc' WHERE AD_Field_ID=56659
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='335b83b3-c879-4206-b2e5-40a9f865e175' WHERE AD_Field_ID=56660
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='62dbccc1-c667-41bd-ae7b-8710536336da' WHERE AD_Field_ID=56661
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='67276e92-768c-459f-9df5-bf86f289b377' WHERE AD_Field_ID=56663
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='7b0510e8-5ce3-40a8-9d5c-513070140fbc' WHERE AD_Field_ID=56666
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='dbcb2dd4-6ecc-41f2-bea1-42e65e1a4e2b' WHERE AD_Field_ID=56667
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='3ccd28bf-81fa-4032-a1bc-5d4fa642614b' WHERE AD_Field_ID=56668
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='ef7d1b53-2c16-4f58-a82b-573a9de6747f' WHERE AD_Field_ID=56665
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='814ff41e-ecbf-4872-82ff-93e61e635a8d' WHERE AD_Field_ID=56669
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='f47617d8-f567-4cb4-8dfe-d36b65f5a433' WHERE AD_Field_ID=56664
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='c4f515f8-d9af-4354-9eb6-9921ef9786b9' WHERE AD_Field_ID=56670
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='9de9487e-83d5-41ac-8e7a-4bbca1177595' WHERE AD_Field_ID=56672
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='81de7b2a-516a-4294-89b5-90386a272dc9' WHERE AD_Field_ID=56673
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='8a6f3e8b-00f5-48d2-9e8a-e204649a233d' WHERE AD_Field_ID=56674
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='f6c7acb0-5d8c-4965-9802-7634f73993cb' WHERE AD_Field_ID=56675
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='9bb32bd9-8a7e-4839-acfe-b445b06e0c43' WHERE AD_Field_ID=56676
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='32b8ef8e-bd33-491e-b150-0722f247e3ec' WHERE AD_Field_ID=56677
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='52856242-e6d1-43b9-beac-30a3a3a23bb7' WHERE AD_Field_ID=56678
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='af669990-8079-4c9a-8d97-8bdc90245216' WHERE AD_Field_ID=56679
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='370c4f71-7df8-4d80-b573-7b6aea955303' WHERE AD_Field_ID=56680
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='72d6244b-56a2-4122-8cb1-cbec981821ad' WHERE AD_Field_ID=56681
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='739cf6db-9151-43ad-bfb8-a71142bf075b' WHERE AD_Field_ID=200841
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='67c07d05-168f-4c2c-a688-ff2e0fe74603' WHERE AD_Field_ID=56657
+;
+
+-- Apr 13, 2013 9:43:50 PM COT
+UPDATE AD_Field SET AD_Field_UU='c0844439-118f-425f-8ee6-e83ac2d1382e' WHERE AD_Field_ID=56671
+;
+
+-- Apr 13, 2013 9:44:02 PM COT
+UPDATE AD_Menu SET AD_Menu_UU='57d16e27-60fa-47ea-b686-4747b18e7532' WHERE AD_Menu_ID=53200
+;
+
+-- Apr 13, 2013 9:44:02 PM COT
+UPDATE AD_Menu SET AD_Menu_UU='7be85b76-2f0b-43cd-b807-bd6c47a6e6c7' WHERE AD_Menu_ID=53201
+;
+
+-- Apr 13, 2013 9:44:04 PM COT
+UPDATE AD_Process SET AD_Process_UU='7f5402d4-9b91-4ac8-9bcd-a5b6b995d918' WHERE AD_Process_ID=200012
+;
+
+-- Apr 13, 2013 9:44:04 PM COT
+UPDATE AD_Process_Para SET AD_Process_Para_UU='e3d63000-d28f-4c41-8bfb-4cb49fd1a017' WHERE AD_Process_Para_ID=200043
+;
+
+-- Apr 13, 2013 9:44:05 PM COT
+UPDATE AD_Reference SET AD_Reference_UU='1b6497fd-bd10-4974-9877-09874cbe4885' WHERE AD_Reference_ID=53288
+;
+
+-- Apr 13, 2013 9:44:05 PM COT
+UPDATE AD_Ref_List SET AD_Ref_List_UU='a06cad2b-3c86-4add-8093-4478a8b55cb2' WHERE AD_Ref_List_ID=53452
+;
+
+-- Apr 13, 2013 9:44:05 PM COT
+UPDATE AD_Ref_List SET AD_Ref_List_UU='4faecb14-90aa-4546-97bb-750e2b92a981' WHERE AD_Ref_List_ID=53451
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Role SET AD_Role_UU='d9507a38-d669-4ea2-8e26-51c16614b934' WHERE AD_Role_ID=50004
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='34926aac-6f08-4517-90d0-0a443278b349' WHERE AD_Sequence_ID=53270
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='114ec463-e43e-4409-b8db-6918dd9a3e71' WHERE AD_Sequence_ID=53269
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='1982ebca-3984-46d4-9c39-af93badaf59d' WHERE AD_Sequence_ID=53268
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='5790969a-c494-4cef-818e-5d005d4ab0e2' WHERE AD_Sequence_ID=53266
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='44cc7d37-81a6-427b-ad2b-028651ead3c1' WHERE AD_Sequence_ID=53265
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='84beca7c-d07a-4755-937f-3090c0d0d735' WHERE AD_Sequence_ID=53264
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='371734de-998b-4d44-b1b1-0c6aad68d13e' WHERE AD_Sequence_ID=53262
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='f5b86ae0-ef0e-4cf9-b6e2-c730c6a566ee' WHERE AD_Sequence_ID=53261
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='714304c0-a319-498b-a139-bd9d6d7cb721' WHERE AD_Sequence_ID=53260
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='47de001f-3e22-4bcc-b706-1a4713ee469a' WHERE AD_Sequence_ID=53259
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='bfc1b4dc-21b8-4d62-98bf-4575b0f4a42c' WHERE AD_Sequence_ID=53258
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='2eecea2e-6096-4a3a-9d61-3a6ac73b1ba0' WHERE AD_Sequence_ID=53257
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='07ebff64-efe0-428a-8f41-d1c7932db721' WHERE AD_Sequence_ID=53256
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='84f56c57-752d-4457-85ce-3d7675604089' WHERE AD_Sequence_ID=200027
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Sequence SET AD_Sequence_UU='2ea6d9c7-e635-4667-b787-e774da16915b' WHERE AD_Sequence_ID=200026
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Tab SET AD_Tab_UU='b519bc95-9d3b-4623-a0db-df00df1f0a48' WHERE AD_Tab_ID=200031
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Tab SET AD_Tab_UU='21a4440d-067c-45cc-bfef-16ff2e272ce7' WHERE AD_Tab_ID=53191
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Tab SET AD_Tab_UU='21d967ed-2e82-4ddc-b13a-d8846406f253' WHERE AD_Tab_ID=53190
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Tab SET AD_Tab_UU='06d30678-94b4-4957-bd4b-813e2f1f2e87' WHERE AD_Tab_ID=53185
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Tab SET AD_Tab_UU='3785dc7a-d157-4d82-a52a-52d237d5567b' WHERE AD_Tab_ID=53186
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Tab SET AD_Tab_UU='280c3da6-7228-4db2-a74e-1e0e9538a2bb' WHERE AD_Tab_ID=53187
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Tab SET AD_Tab_UU='a1ea44a6-213a-4028-bc4f-16bb8ded6222' WHERE AD_Tab_ID=53188
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Tab SET AD_Tab_UU='5fd0b27f-8cbe-4207-9cee-828215d55319' WHERE AD_Tab_ID=53189
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Table SET AD_Table_UU='8f644730-2f5b-4ff9-a6c1-f04d199278c3' WHERE AD_Table_ID=53168
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Table SET AD_Table_UU='edc84751-b64a-4b5e-b57d-3ba4c247d08a' WHERE AD_Table_ID=53167
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Table SET AD_Table_UU='7994f729-7c9d-426f-999b-791c9d0009f9' WHERE AD_Table_ID=53166
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Table SET AD_Table_UU='91c1be6d-08d7-4575-9676-fafe7687dd04' WHERE AD_Table_ID=53165
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Table SET AD_Table_UU='1d170e1d-9f22-4299-985a-6f713b19cd06' WHERE AD_Table_ID=53164
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Table SET AD_Table_UU='06637401-49d6-438b-912e-7e5901337bb2' WHERE AD_Table_ID=53163
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Table SET AD_Table_UU='6fc05546-b51a-4990-b163-9c228b84a61b' WHERE AD_Table_ID=53162
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Table SET AD_Table_UU='05c8c42f-bc0d-4fa4-9e76-d7e6194efd62' WHERE AD_Table_ID=200027
+;
+
+-- Apr 13, 2013 9:44:06 PM COT
+UPDATE AD_Table SET AD_Table_UU='d0fb9988-fb24-4d38-88c3-93ec15662b6c' WHERE AD_Table_ID=200026
+;
+
+-- Apr 13, 2013 9:44:07 PM COT
+UPDATE AD_TreeBar SET AD_TreeBar_UU='3e9969f0-3f00-460c-bf31-f0198e806654',Updated=TO_DATE('2013-04-13 21:44:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE Node_ID=495 AND AD_Tree_ID=10 AND AD_User_ID=0
+;
+
+-- Apr 13, 2013 9:44:07 PM COT
+UPDATE AD_TreeNodeMM SET AD_TreeNodeMM_UU='632973fc-4ed9-43c9-a61f-a83874807ea3',Updated=TO_DATE('2013-04-13 21:44:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=53201
+;
+
+-- Apr 13, 2013 9:44:07 PM COT
+UPDATE AD_TreeNodeMM SET AD_TreeNodeMM_UU='318f234c-7140-4400-b409-198179ae47bd',Updated=TO_DATE('2013-04-13 21:44:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=53200
+;
+
+-- Apr 13, 2013 9:44:07 PM COT
+UPDATE AD_User SET AD_User_UU='e904b07d-e23b-4494-8bff-066efc7cae83' WHERE AD_User_ID=50001
+;
+
+-- Apr 13, 2013 9:44:07 PM COT
+UPDATE AD_User_Roles SET AD_User_Roles_UU='9777948f-e98f-42eb-afd3-75a433c09bff',Updated=TO_DATE('2013-04-13 21:44:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Role_ID=50004 AND AD_User_ID=100
+;
+
+-- Apr 13, 2013 9:44:07 PM COT
+UPDATE AD_User_Roles SET AD_User_Roles_UU='8f246aed-d8da-421a-bd4d-73c4c258ab85',Updated=TO_DATE('2013-04-13 21:44:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Role_ID=50004 AND AD_User_ID=50001
+;
+
+-- Apr 13, 2013 9:44:07 PM COT
+UPDATE AD_Val_Rule SET AD_Val_Rule_UU='a7083858-e66a-46d4-a0c3-de7d225134ed' WHERE AD_Val_Rule_ID=52044
+;
+
+-- Apr 13, 2013 9:44:07 PM COT
+UPDATE AD_Val_Rule SET AD_Val_Rule_UU='81451e7b-4f8d-4233-a8a0-4bae2b9a9f7c' WHERE AD_Val_Rule_ID=200008
+;
+
+-- Apr 13, 2013 9:44:08 PM COT
+UPDATE AD_Window SET AD_Window_UU='a9874196-95b5-445b-8de5-0b31fce0c765' WHERE AD_Window_ID=53068
+;
+
+-- Apr 13, 2013 9:44:08 PM COT
+UPDATE AD_Window SET AD_Window_UU='0d708224-ee1d-4d60-9df4-c1963f32908e' WHERE AD_Window_ID=53067
+;
+
+-- Apr 13, 2013 9:44:11 PM COT
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,AD_Column_UU,IsUpdateable,ColumnName,Name,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsAlwaysUpdateable,IsEncrypted,AD_Client_ID) VALUES (1.00,200070,210244,'U','N','N','N','N',36,'N',10,'N',202253,'27c17fc3-9fed-46a0-9140-cf066fe26aed','Y','T_BankRegister_UU','T_BankRegister_UU',TO_DATE('2013-04-13 21:44:10','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-04-13 21:44:10','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0)
+;
+
+-- Apr 13, 2013 9:44:11 PM COT
+INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=210244 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
+;
+
+-- Apr 13, 2013 9:44:11 PM COT
+ALTER TABLE T_BankRegister ADD T_BankRegister_UU NVARCHAR2(36) DEFAULT NULL 
+;
+
+-- Apr 13, 2013 9:44:11 PM COT
+CREATE UNIQUE INDEX T_BankRegister_UU_idx ON t_bankregister(T_BankRegister_UU)
+;
+
+-- Apr 13, 2013 9:44:12 PM COT
+INSERT INTO AD_Element (ColumnName,AD_Element_ID,EntityType,Name,PrintName,AD_Element_UU,Created,Updated,AD_Org_ID,CreatedBy,UpdatedBy,IsActive,AD_Client_ID) VALUES ('WS_WebService_UU',202510,'U','WS_WebService_UU','WS_WebService_UU','0999f664-7498-4f21-b9a9-23928c9eb3b1',TO_DATE('2013-04-13 21:44:12','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2013-04-13 21:44:12','YYYY-MM-DD HH24:MI:SS'),0,100,100,'Y',0)
+;
+
+-- Apr 13, 2013 9:44:12 PM COT
+INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_Help,Name,Description,PrintName,PO_Name,PO_PrintName, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Element_Trl_UU ) SELECT l.AD_Language,t.AD_Element_ID, t.Help,t.PO_Description,t.PO_Help,t.Name,t.Description,t.PrintName,t.PO_Name,t.PO_PrintName, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Element t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Element_ID=202510 AND NOT EXISTS (SELECT * FROM AD_Element_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Element_ID=t.AD_Element_ID)
+;
+
+-- Apr 13, 2013 9:44:13 PM COT
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,AD_Column_UU,IsUpdateable,ColumnName,Name,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsAlwaysUpdateable,IsEncrypted,AD_Client_ID) VALUES (1.00,53162,210245,'U','N','N','N','N',36,'N',10,'N',202510,'d44a3ff8-1030-4d25-bc59-eb9375556e28','Y','WS_WebService_UU','WS_WebService_UU',TO_DATE('2013-04-13 21:44:12','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-04-13 21:44:12','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0)
+;
+
+-- Apr 13, 2013 9:44:13 PM COT
+INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=210245 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
+;
+
+-- Apr 13, 2013 9:44:13 PM COT
+ALTER TABLE WS_WebService ADD WS_WebService_UU NVARCHAR2(36) DEFAULT NULL 
+;
+
+-- Apr 13, 2013 9:44:13 PM COT
+CREATE UNIQUE INDEX WS_WebService_UU_idx ON ws_webservice(WS_WebService_UU)
+;
+
+-- Apr 13, 2013 9:44:13 PM COT
+UPDATE WS_WebService SET WS_WebService_UU='55fbf210-3daa-49d4-b3d6-a82558cbdc78' WHERE WS_WebService_ID=50001
+;
+
+-- Apr 13, 2013 9:44:13 PM COT
+UPDATE WS_WebService SET WS_WebService_UU='294ebf4d-6661-4074-9a75-4dd7d80bd539' WHERE WS_WebService_ID=200001
+;
+
+-- Apr 13, 2013 9:44:14 PM COT
+UPDATE WS_WebServiceFieldInput SET WS_WebServiceFieldInput_UU='f5b29ff7-7be3-422e-ae03-3c1cc3ddaeb8' WHERE WS_WebServiceFieldInput_ID=50000
+;
+
+-- Apr 13, 2013 9:44:14 PM COT
+UPDATE WS_WebServiceFieldInput SET WS_WebServiceFieldInput_UU='8d09bba0-e542-4a78-b229-9ca492060365' WHERE WS_WebServiceFieldInput_ID=50001
+;
+
+-- Apr 13, 2013 9:44:14 PM COT
+UPDATE WS_WebServiceFieldInput SET WS_WebServiceFieldInput_UU='78211c03-dd6c-4f25-9fa6-6b7584b34c15' WHERE WS_WebServiceFieldInput_ID=50002
+;
+
+-- Apr 13, 2013 9:44:14 PM COT
+UPDATE WS_WebServiceFieldInput SET WS_WebServiceFieldInput_UU='29bf9b91-6159-46df-8883-e1bdd80ac05b' WHERE WS_WebServiceFieldInput_ID=50003
+;
+
+-- Apr 13, 2013 9:44:14 PM COT
+UPDATE WS_WebServiceFieldInput SET WS_WebServiceFieldInput_UU='a69bdeb1-c736-4f0d-bde5-1eba00d7a007' WHERE WS_WebServiceFieldInput_ID=50004
+;
+
+-- Apr 13, 2013 9:44:14 PM COT
+UPDATE WS_WebServiceFieldInput SET WS_WebServiceFieldInput_UU='ae1867fe-23b0-4a53-9224-a7b9592f3b78' WHERE WS_WebServiceFieldInput_ID=50005
+;
+
+-- Apr 13, 2013 9:44:14 PM COT
+UPDATE WS_WebServiceFieldInput SET WS_WebServiceFieldInput_UU='84880422-b857-45b8-9490-e792703935b3' WHERE WS_WebServiceFieldInput_ID=50006
+;
+
+-- Apr 13, 2013 9:44:14 PM COT
+UPDATE WS_WebServiceFieldInput SET WS_WebServiceFieldInput_UU='1d8a44e2-9b2a-4be9-b09d-843009388616' WHERE WS_WebServiceFieldInput_ID=50007
+;
+
+-- Apr 13, 2013 9:44:15 PM COT
+INSERT INTO AD_Element (ColumnName,AD_Element_ID,EntityType,Name,PrintName,AD_Element_UU,Created,Updated,AD_Org_ID,CreatedBy,UpdatedBy,IsActive,AD_Client_ID) VALUES ('WS_WebServiceMethod_UU',202511,'U','WS_WebServiceMethod_UU','WS_WebServiceMethod_UU','f8cbb4f8-3e5b-4bcb-876d-49e4e33e366d',TO_DATE('2013-04-13 21:44:14','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2013-04-13 21:44:14','YYYY-MM-DD HH24:MI:SS'),0,100,100,'Y',0)
+;
+
+-- Apr 13, 2013 9:44:15 PM COT
+INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_Help,Name,Description,PrintName,PO_Name,PO_PrintName, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Element_Trl_UU ) SELECT l.AD_Language,t.AD_Element_ID, t.Help,t.PO_Description,t.PO_Help,t.Name,t.Description,t.PrintName,t.PO_Name,t.PO_PrintName, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Element t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Element_ID=202511 AND NOT EXISTS (SELECT * FROM AD_Element_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Element_ID=t.AD_Element_ID)
+;
+
+-- Apr 13, 2013 9:44:15 PM COT
+INSERT INTO AD_Column (Version,AD_Table_ID,AD_Column_ID,EntityType,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Element_ID,AD_Column_UU,IsUpdateable,ColumnName,Name,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsAlwaysUpdateable,IsEncrypted,AD_Client_ID) VALUES (1.00,53163,210246,'U','N','N','N','N',36,'N',10,'N',202511,'87b8210a-638c-4120-af13-73d13f2b35cc','Y','WS_WebServiceMethod_UU','WS_WebServiceMethod_UU',TO_DATE('2013-04-13 21:44:14','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-04-13 21:44:14','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0)
+;
+
+-- Apr 13, 2013 9:44:15 PM COT
+INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=210246 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
+;
+
+-- Apr 13, 2013 9:44:15 PM COT
+ALTER TABLE WS_WebServiceMethod ADD WS_WebServiceMethod_UU NVARCHAR2(36) DEFAULT NULL 
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+CREATE UNIQUE INDEX WS_WebServiceMethod_UU_idx ON ws_webservicemethod(WS_WebServiceMethod_UU)
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebServiceMethod SET WS_WebServiceMethod_UU='8a1b0ca4-4744-493e-8118-094ebcbda4c9' WHERE WS_WebServiceMethod_ID=50021
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebServiceMethod SET WS_WebServiceMethod_UU='96888688-eb3f-4742-b63c-f717d563ca0d' WHERE WS_WebServiceMethod_ID=50022
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebServiceMethod SET WS_WebServiceMethod_UU='2ba1359c-b3b6-4ac2-89dd-7410c9974597' WHERE WS_WebServiceMethod_ID=50023
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebServiceMethod SET WS_WebServiceMethod_UU='13d93556-a526-4459-9011-58eda6fb9adc' WHERE WS_WebServiceMethod_ID=50024
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebServiceMethod SET WS_WebServiceMethod_UU='ecb19fd4-d235-4877-a87a-633c06e6ae04' WHERE WS_WebServiceMethod_ID=50025
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebServiceMethod SET WS_WebServiceMethod_UU='9284c78a-bd93-4d1a-9b32-f11b5dd728bd' WHERE WS_WebServiceMethod_ID=50026
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebServiceMethod SET WS_WebServiceMethod_UU='586c21e5-2e1c-4ebe-a292-d034df938db8' WHERE WS_WebServiceMethod_ID=50027
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebServiceMethod SET WS_WebServiceMethod_UU='f4031e95-93e1-4719-a3a1-fe775667c920' WHERE WS_WebServiceMethod_ID=50028
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebServiceMethod SET WS_WebServiceMethod_UU='a7d42f74-c069-440d-b28e-4cf0aba87c2b' WHERE WS_WebServiceMethod_ID=200001
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebService_Para SET WS_WebService_Para_UU='decd86e1-093d-431e-be4a-127d5a235bfd' WHERE WS_WebService_Para_ID=50000
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebService_Para SET WS_WebService_Para_UU='e4df7266-3948-4c47-bf33-710f7dd71230' WHERE WS_WebService_Para_ID=50001
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebService_Para SET WS_WebService_Para_UU='fb9d4028-9ce5-4836-80b3-2e67032f9df2' WHERE WS_WebService_Para_ID=50002
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebService_Para SET WS_WebService_Para_UU='6c551234-fec0-4518-80b8-78dc79b3714f' WHERE WS_WebService_Para_ID=50003
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebService_Para SET WS_WebService_Para_UU='e8c27528-7715-48eb-9bd0-10a3ae44832d' WHERE WS_WebService_Para_ID=50004
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebService_Para SET WS_WebService_Para_UU='de8a1882-dcae-4166-9b34-f623d3314281' WHERE WS_WebService_Para_ID=50005
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebService_Para SET WS_WebService_Para_UU='595c04ff-f227-4f67-a12d-2bd59cde154d' WHERE WS_WebService_Para_ID=50006
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebServiceType SET WS_WebServiceType_UU='90c6a206-62ac-4a77-9192-2cf9cb5f3e7b' WHERE WS_WebServiceType_ID=50000
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebServiceType SET WS_WebServiceType_UU='e69debe3-0b96-424b-82cf-8a93eda53568' WHERE WS_WebServiceType_ID=50001
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebServiceTypeAccess SET WS_WebServiceTypeAccess_UU='ee03a61b-2b1d-447f-a2ba-6281a62db226',Updated=TO_DATE('2013-04-13 21:44:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Role_ID=50004 AND WS_WebServiceType_ID=50000
+;
+
+-- Apr 13, 2013 9:44:16 PM COT
+UPDATE WS_WebServiceTypeAccess SET WS_WebServiceTypeAccess_UU='f684e71c-d611-40d0-980c-3b7fe23fc2a9',Updated=TO_DATE('2013-04-13 21:44:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Role_ID=50004 AND WS_WebServiceType_ID=50001
+;
+
+SELECT register_migration_script('201304132144_UUID_Generator.sql') FROM dual
+;
+
