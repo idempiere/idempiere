@@ -25,12 +25,14 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TimeZone;
 
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.X_R_RequestType;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.encoders.EncoderUtil;
@@ -93,8 +95,8 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 		super();
 		
 		this.scm = scm;
-
-		setTitle("Calendar");
+		Properties ctx = Env.getCtx();
+		setTitle(Msg.getMsg(ctx,"Calendar"));
 		setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 		
 		Component component = Executions.createComponents("calendar.zul", this, null);
@@ -116,7 +118,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 		lbxRequestTypes = (Listbox) component.getFellow("lbxRequestTypes");
 		lbxRequestTypes.addEventListener(Events.ON_SELECT, this);
 		
-		lbxRequestTypes.appendItem("(Show All)", "0");
+		lbxRequestTypes.appendItem(Msg.getMsg(ctx,"ShowAll"), "0");
 		ArrayList<X_R_RequestType> types = DPCalendar.getRequestTypes(Env.getCtx());
 		for(X_R_RequestType type : types)
 			lbxRequestTypes.appendItem(type.getName(), type.getR_RequestType_ID() + "");
@@ -146,6 +148,11 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 		lbxFDOW = (Listbox) component.getFellow("lbxFDOW");
 		lbxFDOW.addEventListener(Events.ON_SELECT, this);
 		lbxFDOW.addEventListener(Events.ON_CREATE, this);
+		
+		String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+		for (String day : days) {
+			lbxFDOW.appendItem(Msg.getMsg(Env.getCtx(),day), day);
+		}
 		
 		divTabDay = component.getFellow("divTabDay");
 		divTabDay.addEventListener("onUpdateView", this);
@@ -204,7 +211,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 		}
 		else if (type.equals("onUpdateView")) {
 			String text = String.valueOf(e.getData());
-			int days = "Day".equals(text) ? 1: "5 Days".equals(text) ? 5: "Week".equals(text) ? 7: 0;
+			int days = Msg.getMsg(Env.getCtx(),"Day").equals(text) ? 1: Msg.getMsg(Env.getCtx(),"5Days").equals(text) ? 5: Msg.getMsg(Env.getCtx(),"Week").equals(text) ? 7: 0;
 			divTabClicked(days);
 		}
 		else if (type.equals(Events.ON_SELECT)) {
@@ -224,7 +231,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 				syncModel();
 			}
 			else if (e.getTarget() == lbxFDOW) {
-				calendars.setFirstDayOfWeek(lbxFDOW.getSelectedItem().getLabel());
+				calendars.setFirstDayOfWeek(lbxFDOW.getSelectedItem().getValue().toString());
 				syncModel();
 			}
 		}
@@ -312,7 +319,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 			pieDataset.setValue(name == null ? "" : name, new Double(size > 0 ? value.doubleValue()/size*100 : 0));
 		}
 		
-		JFreeChart chart = ChartFactory.createPieChart3D("Events Analysis", pieDataset, true, true, true);
+		JFreeChart chart = ChartFactory.createPieChart3D(Msg.getMsg(Env.getCtx(),"EventsAnalysis"), pieDataset, true, true, true);
 		PiePlot3D plot = (PiePlot3D) chart.getPlot(); 
 		plot.setForegroundAlpha(0.5f);
 		BufferedImage bi = chart.createBufferedImage(600, 250);
@@ -341,7 +348,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 		for (int i = cnt - 1; i >=0; i--)
 			lbxRequestTypes.removeItemAt(i);
 		
-		lbxRequestTypes.appendItem("(Show All)", "0");
+		lbxRequestTypes.appendItem(Msg.getMsg(Env.getCtx(),"ShowAll"), "0");
 		ArrayList<X_R_RequestType> types = DPCalendar.getRequestTypes(Env.getCtx());
 		for(X_R_RequestType requestType : types)
 		{
