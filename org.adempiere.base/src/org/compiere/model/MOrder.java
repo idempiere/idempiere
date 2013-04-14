@@ -2401,6 +2401,11 @@ public class MOrder extends X_C_Order implements DocAction
 		if (m_processMsg != null)
 			return false;
 
+		if (getLink_Order_ID() > 0) {
+			MOrder so = new MOrder(getCtx(), getLink_Order_ID(), get_TrxName());
+			so.setLink_Order_ID(0);
+			so.saveEx();
+		}
 		MOrderLine[] lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);
 		for (int i = 0; i < lines.length; i++)
 		{
@@ -2417,6 +2422,11 @@ public class MOrder extends X_C_Order implements DocAction
 			if (!isSOTrx())
 			{
 				deleteMatchPOCostDetail(line);
+			}
+			if (line.getLink_OrderLine_ID() > 0) {
+				MOrderLine soline = new MOrderLine(getCtx(), line.getLink_OrderLine_ID(), get_TrxName());
+				soline.setLink_OrderLine_ID(0);
+				soline.saveEx();
 			}
 		}
 		
