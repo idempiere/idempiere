@@ -30,7 +30,7 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130315L;
+	private static final long serialVersionUID = 20130413L;
 
     /** Standard Constructor */
     public X_AD_Language (Properties ctx, int AD_Language_ID, String trxName)
@@ -214,28 +214,28 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 		return false;
 	}
 
-	/** IsDecimalPoint AD_Reference_ID=319 */
-	public static final int ISDECIMALPOINT_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISDECIMALPOINT_Yes = "Y";
-	/** No = N */
-	public static final String ISDECIMALPOINT_No = "N";
 	/** Set Decimal Point.
 		@param IsDecimalPoint 
 		The number notation has a decimal point (no decimal comma)
 	  */
-	public void setIsDecimalPoint (String IsDecimalPoint)
+	public void setIsDecimalPoint (boolean IsDecimalPoint)
 	{
-
-		set_Value (COLUMNNAME_IsDecimalPoint, IsDecimalPoint);
+		set_Value (COLUMNNAME_IsDecimalPoint, Boolean.valueOf(IsDecimalPoint));
 	}
 
 	/** Get Decimal Point.
 		@return The number notation has a decimal point (no decimal comma)
 	  */
-	public String getIsDecimalPoint () 
+	public boolean isDecimalPoint () 
 	{
-		return (String)get_Value(COLUMNNAME_IsDecimalPoint);
+		Object oo = get_Value(COLUMNNAME_IsDecimalPoint);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Login Locale.

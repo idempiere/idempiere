@@ -182,12 +182,12 @@ public interface I_AD_Language
 	/** Set Decimal Point.
 	  * The number notation has a decimal point (no decimal comma)
 	  */
-	public void setIsDecimalPoint (String IsDecimalPoint);
+	public void setIsDecimalPoint (boolean IsDecimalPoint);
 
 	/** Get Decimal Point.
 	  * The number notation has a decimal point (no decimal comma)
 	  */
-	public String getIsDecimalPoint();
+	public boolean isDecimalPoint();
 
     /** Column name IsLoginLocale */
     public static final String COLUMNNAME_IsLoginLocale = "IsLoginLocale";

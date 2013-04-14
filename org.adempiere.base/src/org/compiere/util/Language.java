@@ -154,9 +154,6 @@ public class Language implements Serializable
 				}
 				MLanguage dblang = MLanguage.get(Env.getCtx(), langInfo);
 				if (dblang != null) {
-					Boolean decimalPoint = null;
-					if (dblang.getIsDecimalPoint() != null)
-						decimalPoint = "Y".equals(dblang.getIsDecimalPoint());
 					if (!(   language.equals(dblang.getLanguageISO()) 
 						  && country.equals(dblang.getCountryCode())
 						 )
@@ -168,7 +165,7 @@ public class Language implements Serializable
 						MPrintPaper pp = MPrintPaper.get(dblang.getAD_PrintPaper_ID());
 						mediaSize = pp.getMediaSize();
 					}
-					ll = new Language(dblang.getPrintName(), langInfo, locale, decimalPoint, dblang.getDatePattern(), mediaSize);
+					ll = new Language(dblang.getPrintName(), langInfo, locale, null, dblang.getDatePattern(), mediaSize);
 					ll.m_fromDB = true;
 					if (dblang.isBaseLanguage()) {
 						idxReplace = 0;
