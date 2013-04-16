@@ -100,6 +100,8 @@ public class InfoGeneral extends Info
 		//
 		statInit();
 		p_loadedOK = initInfo ();
+		if (!p_loadedOK)
+			return;
 		//
 		int no = p_table.getRowCount();
 		setStatusLine(Integer.toString(no) + " "
@@ -233,14 +235,14 @@ public class InfoGeneral extends Info
 		String sql = "SELECT c.ColumnName, t.AD_Table_ID, t.TableName, c.ColumnSql "
 			+ "FROM AD_Table t"
 			+ " INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID)"
-			+ "WHERE c.AD_Reference_ID=10"
+			+ "WHERE c.AD_Reference_ID IN (10,14)"
 			+ " AND t.TableName=?"	//	#1
 			//	Displayed in Window
 			+ " AND EXISTS (SELECT * FROM AD_Field f "
 				+ "WHERE f.AD_Column_ID=c.AD_Column_ID"
 				+ " AND f.IsDisplayed='Y' AND f.IsEncrypted='N' AND f.ObscureType IS NULL) "
 			//
-			+ "ORDER BY c.IsIdentifier DESC, c.SeqNo";
+			+ "ORDER BY c.IsIdentifier DESC, c.AD_Reference_ID, c.SeqNo";
 		int AD_Table_ID = 0;
 		String tableName = null;
 		PreparedStatement pstmt = null;
@@ -278,6 +280,7 @@ public class InfoGeneral extends Info
 		//	Miminum check
 		if (m_queryColumns.size() == 0)
 		{
+			ADialog.error(p_WindowNo, this, "Error", "No query columns found");
 			log.log(Level.SEVERE, "No query columns found");
 			return false;
 		}

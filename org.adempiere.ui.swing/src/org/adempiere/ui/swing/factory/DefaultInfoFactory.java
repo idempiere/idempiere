@@ -120,10 +120,15 @@ public class DefaultInfoFactory implements IInfoFactory {
 		else if (tableName.equals("S_ResourceAssigment"))
 			info = new InfoAssignment (frame, modal, WindowNo, value,
 					multiSelection, whereClause, lookup);
-		else
+		else {
 			info = new InfoGeneral (frame, modal, WindowNo, value,
-				tableName, keyColumn,
-				multiSelection, whereClause, lookup);
+					tableName, keyColumn,
+					multiSelection, whereClause, lookup);
+			if (!info.loadedOK()) {
+				info.dispose(false);
+				info = null;
+			}
+		}
 		//
 		return info;
 	}
