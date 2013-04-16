@@ -443,10 +443,22 @@ public class MPackage extends X_M_Package
 					sb.append("FROM M_InOutLine ");
 					sb.append("WHERE M_InOut_ID = ?) ");
 					sb.append("ORDER BY C_OrderLine_ID DESC");
-					int C_Invoice_ID = DB.getSQLValue(get_TrxName(), sb.toString(), getM_InOut_ID());
-					if (C_Invoice_ID > 0)
-						invoice = new MInvoice(getCtx(), C_Invoice_ID, get_TrxName());
+					int C_Order_ID = DB.getSQLValue(get_TrxName(), sb.toString(), getM_InOut_ID());
+					if (C_Order_ID > 0)
+						order = new MOrder(getCtx(), C_Order_ID, get_TrxName());
 				}
+			}
+			
+			if (invoice == null && order != null)
+			{
+				StringBuilder sb = new StringBuilder();
+				sb.append("SELECT C_Invoice_ID ");
+				sb.append("FROM C_Invoice ");
+				sb.append("WHERE C_Order_ID = ? ");
+				sb.append("ORDER BY C_Invoice_ID DESC");
+				int C_Invoice_ID = DB.getSQLValue(get_TrxName(), sb.toString(), order.getC_Order_ID());
+				if (C_Invoice_ID > 0)
+					invoice = new MInvoice(getCtx(), C_Invoice_ID, get_TrxName());
 			}
 		}
 		
