@@ -150,9 +150,10 @@ public class BroadcastMsgUtil
 		String sql = "SELECT bm.AD_BroadcastMessage_ID "
 				+ " FROM AD_Note n INNER JOIN AD_BroadcastMessage bm ON (bm.AD_BroadcastMessage_ID=n.AD_BroadcastMessage_ID) "
 				+ " WHERE n.AD_User_ID=?"
+				+ " AND n.AD_Client_ID=?"
 				+ " AND (bm.BroadcastType='IL' OR bm.BroadcastType='L') "
 				+ " AND bm.isPublished='Y' AND n.processed = 'N'"
-				+ " AND ((bm.BroadcastFrequency='U' AND bm.Expired='N' AND bm.expiration > SYSDATE) OR bm.BroadcastFrequency='J')";
+				+ " AND ((bm.BroadcastFrequency='U' AND bm.Expired='N' AND (bm.expiration IS NULL OR bm.expiration > SYSDATE)) OR bm.BroadcastFrequency='J')";
 
 		ArrayList<MBroadcastMessage> mbMessages = new ArrayList<MBroadcastMessage>();
 		PreparedStatement pstmt = null;
@@ -160,6 +161,7 @@ public class BroadcastMsgUtil
 		try {
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_User_ID);
+			pstmt.setInt(2, Env.getAD_Client_ID(Env.getCtx()));
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				mbMessages.add(MBroadcastMessage.get(Env.getCtx(), rs.getInt(1)));
