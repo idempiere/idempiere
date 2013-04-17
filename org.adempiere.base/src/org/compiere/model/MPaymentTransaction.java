@@ -644,4 +644,32 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 
 		return MPaymentTransaction.getAllIDs(Table_Name, whereClause.toString(), trxName);
 	}
+	
+	public static int[] getAuthorizationPaymentTransactionIDs(int[] orderIDList, int C_Invoice_ID, String trxName)
+	{
+		StringBuilder sb = new StringBuilder();
+		if (orderIDList != null)
+		{
+			for (int orderID : orderIDList)
+				sb.append(orderID).append(",");
+		}
+		
+		String orderIDs = sb.toString();
+		if (orderIDs.length() > 0)
+			orderIDs = orderIDs.substring(0, orderIDs.length() - 1);
+		
+		StringBuilder whereClause = new StringBuilder();
+		whereClause.append("TenderType='").append(MPaymentTransaction.TENDERTYPE_CreditCard).append("' ");
+		whereClause.append("AND TrxType='").append(MPaymentTransaction.TRXTYPE_Authorization).append("' ");
+		if (orderIDs.length() > 0 && C_Invoice_ID > 0)
+			whereClause.append(" AND (C_Order_ID IN (").append(orderIDs).append(") OR C_Invoice_ID=").append(C_Invoice_ID).append(")");
+		else if (orderIDs.length() > 0)
+			whereClause.append(" AND C_Order_ID IN ('").append(orderIDs).append(")");
+		else if (C_Invoice_ID > 0)
+			whereClause.append(" AND C_Invoice_ID=").append(C_Invoice_ID);
+		whereClause.append(" AND IsApproved='Y' AND IsVoided='N' AND IsDelayedCapture='N' ");
+		whereClause.append("ORDER BY DateTrx DESC");
+
+		return MPaymentTransaction.getAllIDs(Table_Name, whereClause.toString(), trxName);
+	}
 }

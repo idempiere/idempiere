@@ -1964,7 +1964,18 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		// auto delay capture authorization payment
 		if (isSOTrx() && !isReversal())
 		{
-			int[] ids = MPaymentTransaction.getAuthorizationPaymentTransactionIDs(getC_Order_ID(), getC_Invoice_ID(), get_TrxName());			
+			StringBuilder whereClause = new StringBuilder();
+			whereClause.append("C_Order_ID IN (");
+			whereClause.append("SELECT C_Order_ID ");
+			whereClause.append("FROM C_OrderLine ");
+			whereClause.append("WHERE C_OrderLine_ID IN (");
+			whereClause.append("SELECT C_OrderLine_ID ");
+			whereClause.append("FROM C_InvoiceLine ");
+			whereClause.append("WHERE C_Invoice_ID = ");
+			whereClause.append(getC_Invoice_ID()).append("))");
+			int[] orderIDList = MOrder.getAllIDs(MOrder.Table_Name, whereClause.toString(), get_TrxName());
+			
+			int[] ids = MPaymentTransaction.getAuthorizationPaymentTransactionIDs(orderIDList, getC_Invoice_ID(), get_TrxName());			
 			if (ids.length > 0)
 			{
 				ArrayList<MPaymentTransaction> ptList = new ArrayList<MPaymentTransaction>();
@@ -1972,8 +1983,6 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				for (int id : ids)
 				{
 					MPaymentTransaction pt = new MPaymentTransaction(Env.getCtx(), id, get_TrxName());
-					
-					
 					totalPayAmt = totalPayAmt.add(pt.getPayAmt());
 					ptList.add(pt);
 				}
