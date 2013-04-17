@@ -33,7 +33,7 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130410L;
+	private static final long serialVersionUID = 20130417L;
 
     /** Standard Constructor */
     public X_A_Asset_Disposed (Properties ctx, int A_Asset_Disposed_ID, String trxName)
@@ -61,7 +61,7 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 			setExpense (Env.ZERO);
 // 0
 			setIsApproved (false);
-// @#IsCanApproveOwnDoc@
+// N
 			setPosted (false);
 // N
 			setPostingType (null);
