@@ -66,7 +66,7 @@ public class WCreateFromPackageShipmentUI extends CreateFromPackageShipment
 		
 		window.setTitle(getTitle());
 
-		int M_PackageMPS_ID = (Integer) getGridTab().getValue(MPackageMPS.COLUMNNAME_M_Package_ID);
+		int M_PackageMPS_ID = (Integer) getGridTab().getValue(MPackageMPS.COLUMNNAME_M_PackageMPS_ID);
 		MPackageMPS packageMPS = new MPackageMPS(Env.getCtx(), M_PackageMPS_ID, null);
 		MPackage mPackage = new MPackage(Env.getCtx(), packageMPS.getM_Package_ID(), null);
 		loadTableOIS(getShipmentData(mPackage.getM_InOut_ID()));
