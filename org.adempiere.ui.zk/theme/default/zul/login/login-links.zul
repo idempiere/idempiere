@@ -25,7 +25,7 @@ Copyright (C) 2009 Idalica Corporation
 		image="http://sfx-images.mozilla.org/affiliates/Buttons/firefox3/110x32_get_ffx.png"
 		target="_blank"
 		/>
-	<button href="http://www.idempiere.org" image="images/AD32.png"
+	<button href="http://www.idempiere.org" image="images/iD32.png"
 		tooltiptext="iDempiere Community" style="height:32px; width:32px" target="_blank"/>
 </div>
 

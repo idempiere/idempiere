@@ -33,7 +33,7 @@ public final class ALoginRes_da extends ListResourceBundle
 	{
 	{ "Connection",         "Forbindelse" },
 	{ "Defaults",           "Basis" },
-	{ "Login",              "ADempiere: Log p\u00e5" },
+	{ "Login",              "iDempiere: Log p\u00e5" },
 	{ "File",               "Fil" },
 	{ "Exit",               "Afslut" },
 	{ "Help",               "Hj\u00e6lp" },

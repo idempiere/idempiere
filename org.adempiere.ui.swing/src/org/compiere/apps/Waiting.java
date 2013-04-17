@@ -145,7 +145,7 @@ public class Waiting extends CDialog
 		infoLabel.setFont(new java.awt.Font("Dialog", 3, 14));
 		infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		infoLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
-		infoLabel.setIcon(Env.getImageIcon("C10030.gif"));
+		infoLabel.setIcon(Env.getImageIcon("iD10030.png"));
 		infoLabel.setIconTextGap(10);
 		mainPanel.add(infoLabel, BorderLayout.NORTH);
 		mainPanel.add(progressBar,  BorderLayout.CENTER);

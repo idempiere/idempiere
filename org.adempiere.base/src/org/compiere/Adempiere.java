@@ -79,14 +79,14 @@ public final class Adempiere
 	/** URL of Product          */
 	static public final String	URL				= "www.idempiere.org";
 	/** 16*16 Product Image. **/
-	static private final String	s_File16x16		= "images/AD16.gif";
+	static private final String	s_File16x16		= "images/iD16.gif";
 	/** 32*32 Product Image.   	*/
-	static private final String	s_file32x32		= "images/AD32.gif";
+	static private final String	s_file32x32		= "images/iD32.gif";
 	/** 100*30 Product Image.  	*/
-	static private final String	s_file100x30	= "images/AD10030.png";
+	static private final String	s_file100x30	= "images/iD10030.png";
 	/** 48*15 Product Image.   	*/
-	static private final String	s_file48x15		= "images/Adempiere.png";
-	static private final String	s_file48x15HR	= "images/AdempiereHR.png";
+	static private final String	s_file48x15		= "images/iDempiere.png";
+	static private final String	s_file48x15HR	= "images/iDempiereHR.png";
 	/** Support Email           */
 	static private String		s_supportEmail	= "";
 

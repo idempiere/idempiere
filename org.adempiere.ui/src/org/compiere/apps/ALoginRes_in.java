@@ -33,7 +33,7 @@ public final class ALoginRes_in extends ListResourceBundle
 	{
 	{ "Connection",         "Koneksi" },
 	{ "Defaults",           "Konfigurasi Dasar" },
-	{ "Login",              "Login ADempiere" },
+	{ "Login",              "Login iDempiere" },
 	{ "File",               "File" },
 	{ "Exit",               "Keluar" },
 	{ "Help",               "Tolong" },

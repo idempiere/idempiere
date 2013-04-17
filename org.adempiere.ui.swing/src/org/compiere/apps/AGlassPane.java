@@ -60,7 +60,7 @@ public class AGlassPane extends JPanel implements MouseListener, ActionListener
 	}   //  AGlassPane
 
 	/** The Image               */
-	public static Image         s_image = Env.getImage("C10030.gif");
+	public static Image         s_image = Env.getImage("iD10030.png");
 	/** The Message Font        */
 	public static Font          s_font = new Font("Dialog", 3, 14);
 	/** The Message Color       */

@@ -33,7 +33,7 @@ public final class ALoginRes_hr extends ListResourceBundle
 	{
 		{ "Connection",         "Veza" },
 		{ "Defaults",           "Uobi\u010dajeno" },
-		{ "Login",              "ADempiere Login" },	
+		{ "Login",              "iDempiere Login" },	
 		{ "File",               "Datoteka" },
 		{ "Exit",               "Izlaz" },
 		{ "Help",               "Pomo\u0107" },

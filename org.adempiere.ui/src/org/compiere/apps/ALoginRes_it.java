@@ -29,7 +29,7 @@ public final class ALoginRes_it extends ListResourceBundle
 	static final Object[][] contents = new String[][]{
 	  { "Connection",       "Connessione" },
 	  { "Defaults",         "Defaults" }, //Need to be checked
-	  { "Login",            "ADempiere Login" },
+	  { "Login",            "iDempiere Login" },
 	  { "File",             "File" },
 	  { "Exit",             "Esci" },
 	  { "Help",             "Aiuto" },

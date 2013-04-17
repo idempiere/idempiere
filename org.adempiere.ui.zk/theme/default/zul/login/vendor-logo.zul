@@ -10,7 +10,7 @@ Copyright (C) 2009 Idalica Corporation
 	<hbox align="center">
 		<toolbarbutton
 			href="http://www.idalica.com" image="http://www.testadempiere.com/images/Idalica_Logo-grey-sm.png" target="_blank"/>
-		<label value="ADempiere Online Demonstration - Built Nightly by Idalica"
+		<label value="iDempiere Online Demonstration - Built Nightly by Idalica"
 			style="font-family:Arial,sans-serif; color:#578BB8; font-size:1em; font-weight: bold;" />
 	</hbox>
 </div>
@@ -18,7 +18,7 @@ Copyright (C) 2009 Idalica Corporation
 	if="${desktop.execution.serverName.startsWith(&quot;demo.&quot;)}">
 	<hbox align="center">
 		<toolbarbutton
-			href="http://www.idempiere.org" image="http://www.idempiere.org/_/rsrc/1341897488671/config/customLogo.gif?revision=2" target="_blank"/>
+			href="http://www.idempiere.org" image="http://www.idempiere.org/_/rsrc/1366146890872/config/customLogo.gif?revision=3" target="_blank"/>
 		<label value="iDempiere Online Demonstration"
 			style="font-family:Arial,sans-serif; color:#578BB8; font-size:1.5em; font-weight: bold;" />
 	</hbox>

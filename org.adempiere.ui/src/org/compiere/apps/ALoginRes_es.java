@@ -33,7 +33,7 @@ public final class ALoginRes_es extends ListResourceBundle
 	{
 	{ "Connection", 		"Conexi\u00f3n" },
 	{ "Defaults", 			"Predeterminados" },
-	{ "Login", 				"Autenticaci\u00f3n ADempiere" },
+	{ "Login", 				"Autenticaci\u00f3n iDempiere" },
 	{ "File", 				"Archivo" },
 	{ "Exit", 				"Salir" },
 	{ "Help", 				"Ayuda" },

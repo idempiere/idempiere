@@ -31,7 +31,7 @@ public final class ALoginRes_nl extends ListResourceBundle
 	{
 	{ "Connection",         "Verbinding" },
 	{ "Defaults",           "Standaard" },
-	{ "Login",              "Aanmelden bij ADempiere" },
+	{ "Login",              "Aanmelden bij iDempiere" },
 	{ "File",               "Bestand" },
 	{ "Exit",               "Afsluiten" },
 	{ "Help",               "Help" },
@@ -61,7 +61,7 @@ public final class ALoginRes_nl extends ListResourceBundle
 	{ "Cancel",             "Annuleren" },
 	{ "VersionConflict",    "Versie Conflict:" },
 	{ "VersionInfo",        "Server <> Client" },
-	{ "PleaseUpgrade",      "Uw ADempiere installatie dient te worden bijgewerkt." }
+	{ "PleaseUpgrade",      "Uw iDempiere installatie dient te worden bijgewerkt." }
 	};
 
 	/**
