@@ -1990,6 +1990,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				// automatically void authorization payment and create a new sales payment when invoiced amount is NOT equals to the authorized amount (applied to CIM payment processor)
 				if(getGrandTotal().compareTo(totalPayAmt) != 0 && 
 						ptList.size() > 0 && 
+						ptList.get(0).getC_PaymentProcessor_ID() > 0 &&
 						ptList.get(0).getCustomerPaymentProfileID() != null && 
 						ptList.get(0).getCustomerPaymentProfileID().length() > 0)
 				{
@@ -1998,12 +1999,14 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					newSalesPT.setIsApproved(false);
 					newSalesPT.setIsVoided(false);
 					newSalesPT.setIsDelayedCapture(false);
-					newSalesPT.setDescription("InvoicedAmt: " + getGrandTotal() + " > TotalAuthorizedAmt: " + totalPayAmt);
+					newSalesPT.setDescription("InvoicedAmt: " + getGrandTotal() + " <> TotalAuthorizedAmt: " + totalPayAmt);
+					newSalesPT.setC_Invoice_ID(getC_Invoice_ID());
+					newSalesPT.setPayAmt(getGrandTotal());
 					
 					// void authorization payment
 					for (MPaymentTransaction pt : ptList)
 					{
-						pt.setDescription("InvoicedAmt: " + getGrandTotal() + " > AuthorizedAmt: " + pt.getPayAmt());
+						pt.setDescription("InvoicedAmt: " + getGrandTotal() + " <> AuthorizedAmt: " + pt.getPayAmt());
 						boolean ok = pt.voidOnlineAuthorizationPaymentTransaction();
 						pt.saveEx();
 						if (!ok)
@@ -2021,6 +2024,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 						m_processMsg = Msg.getMsg(getCtx(), "CreateNewSalesPaymentFailed") + ": " + newSalesPT.getErrorMessage();
 						return DocAction.STATUS_Invalid;
 					}
+				}
+				else if (getGrandTotal().compareTo(totalPayAmt) != 0 && ptList.size() > 0)
+				{
+					m_processMsg = "InvoicedAmt: " + getGrandTotal() + " <> AuthorizedAmt: " + totalPayAmt;
+					return DocAction.STATUS_Invalid;
 				}
 				else
 				{
