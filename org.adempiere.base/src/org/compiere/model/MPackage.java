@@ -282,6 +282,7 @@ public class MPackage extends X_M_Package
 		{			
 			MShippingTransaction st = createShippingTransaction(action, isPriviledgedRate, trx.getTrxName());
 			ok = st.processOnline();
+			st.saveEx();
 			
 			if (action.equals(MShippingTransaction.ACTION_ProcessShipment))
 			{

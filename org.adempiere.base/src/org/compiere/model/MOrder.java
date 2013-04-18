@@ -44,7 +44,6 @@ import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
@@ -1503,23 +1502,17 @@ public class MOrder extends X_C_Order implements DocAction
 				}
 			}
 			
-			Trx trx = Trx.get(Trx.createTrxName("spt-"), true);
 			boolean ok = false;
 			MShippingTransaction st = null;
 			try
 			{			
 				st = SalesOrderRateInquiryProcess.createShippingTransaction(getCtx(), this, MShippingTransaction.ACTION_RateInquiry, isPriviledgedRate(), get_TrxName());
 				ok = st.processOnline();
+				st.saveEx();
 			}
 			catch (Exception e)
 			{
 				log.log(Level.SEVERE, "processOnline", e);
-			}
-			
-			if (trx != null)
-			{
-				trx.commit();
-				trx.close();
 			}
 			
 			if (ok)
