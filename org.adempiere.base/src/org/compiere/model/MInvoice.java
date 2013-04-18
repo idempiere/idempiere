@@ -1978,21 +1978,35 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			int[] ids = MPaymentTransaction.getAuthorizationPaymentTransactionIDs(orderIDList, getC_Invoice_ID(), get_TrxName());			
 			if (ids.length > 0)
 			{
+				boolean pureCIM = true;
 				ArrayList<MPaymentTransaction> ptList = new ArrayList<MPaymentTransaction>();
 				BigDecimal totalPayAmt = BigDecimal.ZERO;
 				for (int id : ids)
 				{
-					MPaymentTransaction pt = new MPaymentTransaction(Env.getCtx(), id, get_TrxName());
+					MPaymentTransaction pt = new MPaymentTransaction(getCtx(), id, get_TrxName());
+					
+					if (!pt.setPaymentProcessor())
+					{
+						if (pt.getC_PaymentProcessor_ID() > 0)
+						{
+							MPaymentProcessor pp = new MPaymentProcessor(getCtx(), pt.getC_PaymentProcessor_ID(), get_TrxName());
+							m_processMsg = Msg.getMsg(getCtx(), "PaymentNoProcessorModel") + ": " + pp.toString();
+						}
+						else
+							m_processMsg = Msg.getMsg(getCtx(), "PaymentNoProcessorModel");
+						return DocAction.STATUS_Invalid;
+					}
+					
+					boolean isCIM = pt.getC_PaymentProcessor_ID() > 0 && pt.getCustomerPaymentProfileID() != null && pt.getCustomerPaymentProfileID().length() > 0;
+					if (pureCIM && !isCIM)
+						pureCIM = false;
+					
 					totalPayAmt = totalPayAmt.add(pt.getPayAmt());
 					ptList.add(pt);
 				}
 				
 				// automatically void authorization payment and create a new sales payment when invoiced amount is NOT equals to the authorized amount (applied to CIM payment processor)
-				if(getGrandTotal().compareTo(totalPayAmt) != 0 && 
-						ptList.size() > 0 && 
-						ptList.get(0).getC_PaymentProcessor_ID() > 0 &&
-						ptList.get(0).getCustomerPaymentProfileID() != null && 
-						ptList.get(0).getCustomerPaymentProfileID().length() > 0)
+				if (getGrandTotal().compareTo(totalPayAmt) != 0 && ptList.size() > 0 && pureCIM)
 				{
 					// create a new sales payment
 					MPaymentTransaction newSalesPT = MPaymentTransaction.copyFrom(ptList.get(0), new Timestamp(System.currentTimeMillis()), MPayment.TRXTYPE_Sales, "", get_TrxName());

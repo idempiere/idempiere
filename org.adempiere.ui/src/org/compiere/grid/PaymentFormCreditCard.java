@@ -394,6 +394,11 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	
 	public boolean processOnline(String CCType, String CCNumber, String CCExp)
 	{
+		return processOnline(CCType, CCNumber, CCExp, 0);
+	}
+	
+	public boolean processOnline(String CCType, String CCNumber, String CCExp, int C_PaymentProcessor_ID)
+	{
 		processMsg = null;
 		boolean error = false;
 
@@ -427,6 +432,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		mpt.setAD_Org_ID(m_AD_Org_ID);
 		mpt.setCreditCard(MPayment.TRXTYPE_Sales, CCType, CCNumber, "", CCExp);
 		mpt.setAmount(m_C_Currency_ID, payAmount);
+		mpt.setC_PaymentProcessor_ID(C_PaymentProcessor_ID);
 		mpt.setPaymentProcessor();
 		
 		if (isPOSOrder || isInvoice)

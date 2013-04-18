@@ -171,11 +171,6 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	 */
 	public boolean processOnline()
 	{
-		return processOnline(get_TrxName());
-	}
-	
-	public boolean processOnline(String trxName)
-	{
 		if (log.isLoggable(Level.INFO)) log.info ("Amt=" + getPayAmt());
 		//
 		setIsOnline(true);
@@ -213,8 +208,17 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 			setPaymentProcessor();
 		if (m_mBankAccountProcessor == null)
 		{
-			log.log(Level.WARNING, "No Payment Processor Model");
-			setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNoProcessorModel"));
+			if (getC_PaymentProcessor_ID() > 0)
+			{
+				MPaymentProcessor pp = new MPaymentProcessor(getCtx(), getC_PaymentProcessor_ID(), get_TrxName());
+				log.log(Level.WARNING, "No Payment Processor Model " + pp.toString());
+				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNoProcessorModel") + ": " + pp.toString());
+			}
+			else
+			{
+				log.log(Level.WARNING, "No Payment Processor Model");
+				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNoProcessorModel"));
+			}
 			return false;
 		}
 
@@ -252,7 +256,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 								&& !getTrxType().equals(MPaymentTransaction.TRXTYPE_VoiceAuthorization)
 								&& !getTrxType().equals(MPaymentTransaction.TRXTYPE_Void))
 						{
-							MPayment m_mPayment = createPayment(trxName);
+							MPayment m_mPayment = createPayment(get_TrxName());
 							m_mPayment.saveEx();
 							setC_Payment_ID(m_mPayment.getC_Payment_ID());
 							processed = m_mPayment.processIt(DocAction.ACTION_Complete);
@@ -287,7 +291,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 			setIsVoided(approved);
 		else if(getTrxType().equals(TRXTYPE_DelayedCapture))
 			setIsDelayedCapture(approved);
-		
+				
 		MOnlineTrxHistory history = new MOnlineTrxHistory(getCtx(), 0, get_TrxName());
 		history.setAD_Table_ID(MPaymentTransaction.Table_ID);
 		history.setRecord_ID(getC_PaymentTransaction_ID());
@@ -321,16 +325,14 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	{
 		if (getTenderType().equals(TENDERTYPE_CreditCard) && isOnline() && getTrxType().equals(TRXTYPE_Authorization) && !isVoided() && !isDelayedCapture())
 		{
-			Trx trx = Trx.get(Trx.createTrxName("ppt-"), true);
-			
 			boolean ok = false;
 			try
 			{
-				MPaymentTransaction m_mPaymentTransaction = copyFrom(this, new Timestamp(System.currentTimeMillis()), TRXTYPE_Void, getR_PnRef(), trx.getTrxName());
+				MPaymentTransaction m_mPaymentTransaction = copyFrom(this, new Timestamp(System.currentTimeMillis()), TRXTYPE_Void, getR_PnRef(), get_TrxName());
 				m_mPaymentTransaction.setIsApproved(false);
 				m_mPaymentTransaction.setIsVoided(false);
 				m_mPaymentTransaction.setIsDelayedCapture(false);
-				ok = m_mPaymentTransaction.processOnline(get_TrxName());
+				ok = m_mPaymentTransaction.processOnline();
 				m_mPaymentTransaction.setRef_PaymentTransaction_ID(getC_PaymentTransaction_ID());
 				m_mPaymentTransaction.saveEx();
 				
@@ -348,14 +350,6 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 				log.log(Level.SEVERE, "voidOnlineAuthorizationPaymentTransaction", e);
 				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNotProcessed") + ": " + e.getMessage());
 			}
-			finally
-			{
-				if (trx != null)
-				{
-					trx.commit();
-					trx.close();
-				}
-			}
 			
 			return ok;
 		}
@@ -367,12 +361,10 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	{
 		if (getTenderType().equals(TENDERTYPE_CreditCard) && isOnline() && getTrxType().equals(TRXTYPE_Authorization) && !isVoided() && !isDelayedCapture())
 		{
-			Trx trx = Trx.get(Trx.createTrxName("ppt-"), true);
-			
 			boolean ok = false;
 			try
 			{
-				MPaymentTransaction m_mPaymentTransaction = copyFrom(this, new Timestamp(System.currentTimeMillis()), TRXTYPE_DelayedCapture, getR_PnRef(), trx.getTrxName());
+				MPaymentTransaction m_mPaymentTransaction = copyFrom(this, new Timestamp(System.currentTimeMillis()), TRXTYPE_DelayedCapture, getR_PnRef(), get_TrxName());
 				m_mPaymentTransaction.setIsApproved(false);
 				m_mPaymentTransaction.setIsVoided(false);
 				m_mPaymentTransaction.setIsDelayedCapture(false);
@@ -380,7 +372,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 				if (C_Invoice_ID != 0)
 					m_mPaymentTransaction.setC_Invoice_ID(C_Invoice_ID);
 	
-				ok = m_mPaymentTransaction.processOnline(get_TrxName());
+				ok = m_mPaymentTransaction.processOnline();
 				m_mPaymentTransaction.setRef_PaymentTransaction_ID(getC_PaymentTransaction_ID());
 				m_mPaymentTransaction.saveEx();
 				
@@ -398,14 +390,6 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 			{
 				log.log(Level.SEVERE, "delayCaptureOnlineAuthorizationPaymentTransaction", e);
 				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNotProcessed") + ": " + e.getMessage());
-			}
-			finally
-			{
-				if (trx != null)
-				{
-					trx.commit();
-					trx.close();
-				}
 			}
 			
 			return ok;
@@ -596,26 +580,26 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		to.setDateTrx(dateTrx);
 		to.setDescription(from.getDescription());
 		to.setIsActive(from.isActive());
-//		to.setIsApproved(from.isApproved());
-//		to.setIsDelayedCapture(from.isDelayedCapture());
+		to.setIsApproved(false);
+		to.setIsDelayedCapture(false);
 		to.setIsOnline(from.isOnline());
 		to.setIsReceipt(from.isReceipt());
 		to.setIsSelfService(from.isSelfService());
-//		to.setIsVoided(from.isVoided());
+		to.setIsVoided(false);
 		to.setMicr(from.getMicr());
 		to.setOrig_TrxID(orig_TrxID);
 		to.setPayAmt(from.getPayAmt());
 		to.setPONum(from.getPONum());
-//		to.setProcessed(from.isProcessed());
-//		to.setR_AuthCode(from.getR_AuthCode());
-//		to.setR_AvsAddr(from.getR_AvsAddr());
-//		to.setR_AvsZip(from.getR_AvsZip());
-//		to.setR_CVV2Match(from.isR_CVV2Match());
-//		to.setR_Info(from.getR_Info());
-//		to.setR_PnRef(from.getR_PnRef());
-//		to.setR_RespMsg(from.getR_RespMsg());
-//		to.setR_Result(from.getR_Result());
-//		to.setR_VoidMsg(from.getR_VoidMsg());
+		to.setProcessed(false);
+		to.setR_AuthCode(null);
+		to.setR_AvsAddr(null);
+		to.setR_AvsZip(null);
+		to.setR_CVV2Match(false);
+		to.setR_Info(null);
+		to.setR_PnRef(null);
+		to.setR_RespMsg(null);
+		to.setR_Result(null);
+		to.setR_VoidMsg(null);
 		to.setRoutingNo(from.getRoutingNo());
 		to.setTaxAmt(from.getTaxAmt());
 		to.setTenderType(from.getTenderType());
