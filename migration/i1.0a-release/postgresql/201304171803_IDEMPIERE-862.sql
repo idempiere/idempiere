@@ -29,5 +29,5 @@ UNION
           WHERE m_package.m_inout_id = iol.m_inout_id))), 0 )) <> 0 
   ORDER BY 1, 2, 3, 5;
 
-SELECT register_migration_script('201304171803_IDEMPIERE-861.sql') FROM dual
+SELECT register_migration_script('201304171803_IDEMPIERE-862.sql') FROM dual
 ;
