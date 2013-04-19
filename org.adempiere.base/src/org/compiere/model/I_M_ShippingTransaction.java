@@ -114,14 +114,16 @@ public interface I_M_ShippingTransaction
 	/** Get Box Count	  */
 	public int getBoxCount();
 
-    /** Column name CashOnDelivery */
-    public static final String COLUMNNAME_CashOnDelivery = "CashOnDelivery";
+    /** Column name C_BP_ShippingAcct_ID */
+    public static final String COLUMNNAME_C_BP_ShippingAcct_ID = "C_BP_ShippingAcct_ID";
 
-	/** Set COD	  */
-	public void setCashOnDelivery (boolean CashOnDelivery);
+	/** Set Business Partner Shipping Account	  */
+	public void setC_BP_ShippingAcct_ID (int C_BP_ShippingAcct_ID);
 
-	/** Get COD	  */
-	public boolean isCashOnDelivery();
+	/** Get Business Partner Shipping Account	  */
+	public int getC_BP_ShippingAcct_ID();
+
+	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -153,17 +155,6 @@ public interface I_M_ShippingTransaction
 
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
-    /** Column name C_BP_ShippingAcct_ID */
-    public static final String COLUMNNAME_C_BP_ShippingAcct_ID = "C_BP_ShippingAcct_ID";
-
-	/** Set Business Partner Shipping Account	  */
-	public void setC_BP_ShippingAcct_ID (int C_BP_ShippingAcct_ID);
-
-	/** Get Business Partner Shipping Account	  */
-	public int getC_BP_ShippingAcct_ID();
-
-	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException;
-
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
 
@@ -194,15 +185,6 @@ public interface I_M_ShippingTransaction
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
-    /** Column name CODAmount */
-    public static final String COLUMNNAME_CODAmount = "CODAmount";
-
-	/** Set COD Amount	  */
-	public void setCODAmount (BigDecimal CODAmount);
-
-	/** Get COD Amount	  */
-	public BigDecimal getCODAmount();
-
     /** Column name C_Order_ID */
     public static final String COLUMNNAME_C_Order_ID = "C_Order_ID";
 
@@ -217,22 +199,6 @@ public interface I_M_ShippingTransaction
 	public int getC_Order_ID();
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
-
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
 
     /** Column name C_UOM_Length_ID */
     public static final String COLUMNNAME_C_UOM_Length_ID = "C_UOM_Length_ID";
@@ -263,6 +229,40 @@ public interface I_M_ShippingTransaction
 	public int getC_UOM_Weight_ID();
 
 	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException;
+
+    /** Column name CashOnDelivery */
+    public static final String COLUMNNAME_CashOnDelivery = "CashOnDelivery";
+
+	/** Set COD	  */
+	public void setCashOnDelivery (boolean CashOnDelivery);
+
+	/** Get COD	  */
+	public boolean isCashOnDelivery();
+
+    /** Column name CODAmount */
+    public static final String COLUMNNAME_CODAmount = "CODAmount";
+
+	/** Set COD Amount	  */
+	public void setCODAmount (BigDecimal CODAmount);
+
+	/** Get COD Amount	  */
+	public BigDecimal getCODAmount();
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name CustomsValue */
     public static final String COLUMNNAME_CustomsValue = "CustomsValue";
@@ -397,16 +397,16 @@ public interface I_M_ShippingTransaction
 	/** Get Height	  */
 	public BigDecimal getHeight();
 
-    /** Column name HoldAddress */
-    public static final String COLUMNNAME_HoldAddress = "HoldAddress";
+    /** Column name HoldAddress_ID */
+    public static final String COLUMNNAME_HoldAddress_ID = "HoldAddress_ID";
 
 	/** Set Hold Address	  */
-	public void setHoldAddress (int HoldAddress);
+	public void setHoldAddress_ID (int HoldAddress_ID);
 
 	/** Get Hold Address	  */
-	public int getHoldAddress();
+	public int getHoldAddress_ID();
 
-	public org.compiere.model.I_C_BPartner_Location getHoldAddr() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner_Location getHoldAddress() throws RuntimeException;
 
     /** Column name HomeDeliveryPremiumDate */
     public static final String COLUMNNAME_HomeDeliveryPremiumDate = "HomeDeliveryPremiumDate";

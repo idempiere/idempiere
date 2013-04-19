@@ -300,16 +300,16 @@ public interface I_M_Package
 	/** Get Height	  */
 	public BigDecimal getHeight();
 
-    /** Column name HoldAddress */
-    public static final String COLUMNNAME_HoldAddress = "HoldAddress";
+    /** Column name HoldAddress_ID */
+    public static final String COLUMNNAME_HoldAddress_ID = "HoldAddress_ID";
 
 	/** Set Hold Address	  */
-	public void setHoldAddress (int HoldAddress);
+	public void setHoldAddress_ID (int HoldAddress_ID);
 
 	/** Get Hold Address	  */
-	public int getHoldAddress();
+	public int getHoldAddress_ID();
 
-	public org.compiere.model.I_C_BPartner_Location getHoldAddr() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner_Location getHoldAddress() throws RuntimeException;
 
     /** Column name HomeDeliveryPremiumDate */
     public static final String COLUMNNAME_HomeDeliveryPremiumDate = "HomeDeliveryPremiumDate";

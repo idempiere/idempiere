@@ -29,7 +29,7 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121207L;
+	private static final long serialVersionUID = 20130419L;
 
     /** Standard Constructor */
     public X_M_CommodityShipment (Properties ctx, int M_CommodityShipment_ID, String trxName)
@@ -37,7 +37,7 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
       super (ctx, M_CommodityShipment_ID, trxName);
       /** if (M_CommodityShipment_ID == 0)
         {
-			setCountryOfManufacture (0);
+			setCountryOfManufacture_ID (0);
 			setHarmonizedCode (null);
 			setM_CommodityShipment_ID (0);
         } */
@@ -72,17 +72,20 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
     }
 
 	/** Set Country Of Manufacture.
-		@param CountryOfManufacture Country Of Manufacture	  */
-	public void setCountryOfManufacture (int CountryOfManufacture)
+		@param CountryOfManufacture_ID Country Of Manufacture	  */
+	public void setCountryOfManufacture_ID (int CountryOfManufacture_ID)
 	{
-		set_Value (COLUMNNAME_CountryOfManufacture, Integer.valueOf(CountryOfManufacture));
+		if (CountryOfManufacture_ID < 1) 
+			set_Value (COLUMNNAME_CountryOfManufacture_ID, null);
+		else 
+			set_Value (COLUMNNAME_CountryOfManufacture_ID, Integer.valueOf(CountryOfManufacture_ID));
 	}
 
 	/** Get Country Of Manufacture.
 		@return Country Of Manufacture	  */
-	public int getCountryOfManufacture () 
+	public int getCountryOfManufacture_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_CountryOfManufacture);
+		Integer ii = (Integer)get_Value(COLUMNNAME_CountryOfManufacture_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -133,6 +136,40 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 		return (String)get_Value(COLUMNNAME_HarmonizedCode);
 	}
 
+	/** Set Commodity Shipment.
+		@param M_CommodityShipment_ID Commodity Shipment	  */
+	public void setM_CommodityShipment_ID (int M_CommodityShipment_ID)
+	{
+		if (M_CommodityShipment_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_M_CommodityShipment_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_M_CommodityShipment_ID, Integer.valueOf(M_CommodityShipment_ID));
+	}
+
+	/** Get Commodity Shipment.
+		@return Commodity Shipment	  */
+	public int getM_CommodityShipment_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_CommodityShipment_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set M_CommodityShipment_UU.
+		@param M_CommodityShipment_UU M_CommodityShipment_UU	  */
+	public void setM_CommodityShipment_UU (String M_CommodityShipment_UU)
+	{
+		set_Value (COLUMNNAME_M_CommodityShipment_UU, M_CommodityShipment_UU);
+	}
+
+	/** Get M_CommodityShipment_UU.
+		@return M_CommodityShipment_UU	  */
+	public String getM_CommodityShipment_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_CommodityShipment_UU);
+	}
+
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
     {
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
@@ -159,39 +196,5 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set M_CommodityShipment.
-		@param M_CommodityShipment_ID M_CommodityShipment	  */
-	public void setM_CommodityShipment_ID (int M_CommodityShipment_ID)
-	{
-		if (M_CommodityShipment_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_M_CommodityShipment_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_M_CommodityShipment_ID, Integer.valueOf(M_CommodityShipment_ID));
-	}
-
-	/** Get M_CommodityShipment.
-		@return M_CommodityShipment	  */
-	public int getM_CommodityShipment_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_CommodityShipment_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set M_CommodityShipment_UU.
-		@param M_CommodityShipment_UU M_CommodityShipment_UU	  */
-	public void setM_CommodityShipment_UU (String M_CommodityShipment_UU)
-	{
-		set_Value (COLUMNNAME_M_CommodityShipment_UU, M_CommodityShipment_UU);
-	}
-
-	/** Get M_CommodityShipment_UU.
-		@return M_CommodityShipment_UU	  */
-	public String getM_CommodityShipment_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_M_CommodityShipment_UU);
 	}
 }

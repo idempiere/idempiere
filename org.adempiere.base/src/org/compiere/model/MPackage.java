@@ -521,7 +521,7 @@ public class MPackage extends X_M_Package
 		st.setFreightCharges(getFreightCharges());
 		st.setHandlingCharge(getHandlingCharge());
 		st.setHeight(getHeight());
-		st.setHoldAddress(getHoldAddress());
+		st.setHoldAddress_ID(getHoldAddress_ID());
 		st.setHomeDeliveryPremiumDate(getHomeDeliveryPremiumDate());
 		st.setHomeDeliveryPremiumPhone(getHomeDeliveryPremiumPhone());
 		st.setHomeDeliveryPremiumType(getHomeDeliveryPremiumType());
