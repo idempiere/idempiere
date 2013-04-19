@@ -1,0 +1,2 @@
+From http://wiki.apache.org/ws/FrontPage/Axis/SslUnsignedCertificate
+-Daxis.socketSecureFactory=org.apache.axis.components.net.SunFakeTrustSocketFactory
