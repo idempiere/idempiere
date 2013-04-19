@@ -99,7 +99,7 @@ public class AttachmentDBSystem implements IAttachmentStore
 		ZipOutputStream zip = new ZipOutputStream(out);
 		zip.setMethod(ZipOutputStream.DEFLATED);
 		zip.setLevel(Deflater.BEST_COMPRESSION);
-		zip.setComment("adempiere");
+		zip.setComment("iDempiere");
 		//
 		try
 		{
