@@ -14,6 +14,8 @@
  *****************************************************************************/
 package org.adempiere.impexp;
 
+import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -93,23 +95,23 @@ public class GridTabCSVExporter implements IGridTabExporter
 				GridField field = gridFields[idxfld];
 				MColumn column = MColumn.get(Env.getCtx(), field.getAD_Column_ID());		
 				//Special Columns 
-				if(DisplayType.Location == column.getAD_Reference_ID()){
+				if(DisplayType.Location == field.getDisplayType()){
 				   specialHDispayType = DisplayType.Location;
 				   continue;
 				}
 				String headName = resolveColumnName(table, column);
 				headArray.add(headName);
-				if (DisplayType.Date == column.getAD_Reference_ID()) {
+				if (DisplayType.Date == field.getDisplayType()) {
 					procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_DATE_FORMAT)));
-				} else if (DisplayType.DateTime == column.getAD_Reference_ID()) {
+				} else if (DisplayType.DateTime == field.getDisplayType()) {
 					procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_TIMESTAMP_FORMAT)));
-				} else if (DisplayType.Time == column.getAD_Reference_ID()) {
+				} else if (DisplayType.Time == field.getDisplayType()) {
 					procArray.add(new Optional(new FmtDate("DisplayType.DEFAULT_TIME_FORMAT")));
-				} else if (DisplayType.Integer == column.getAD_Reference_ID() || DisplayType.isNumeric(column.getAD_Reference_ID())) {
-					DecimalFormat nf = DisplayType.getNumberFormat(column.getAD_Reference_ID());
+				} else if (DisplayType.Integer == field.getDisplayType() || DisplayType.isNumeric(field.getDisplayType())) {
+					DecimalFormat nf = DisplayType.getNumberFormat(field.getDisplayType());
 					nf.setGroupingUsed(false);
 					procArray.add(new Optional(new FmtNumber(nf)));
-				} else if (DisplayType.YesNo == column.getAD_Reference_ID()) {
+				} else if (DisplayType.YesNo == field.getDisplayType()) {
 					procArray.add(new Optional(new FmtBool("Y", "N")));
 				} else { // lookups
 					procArray.add(new Optional());
@@ -153,23 +155,23 @@ public class GridTabCSVExporter implements IGridTabExporter
 				 gridFields = getFields(detail);
 				 for(GridField field : gridFields){
 					 MColumn columnDetail  = MColumn.get(Env.getCtx(), field.getAD_Column_ID());
-					 if(DisplayType.Location == columnDetail.getAD_Reference_ID()){
+					 if(DisplayType.Location == field.getDisplayType()){
 						specialDetDispayType = DisplayType.Location;
 						continue;
 					 }
 					 String  headNameDetail= detail.getTableName()+">"+resolveColumnName(tableDetail, columnDetail);
 					 headArray.add(headNameDetail); 
-					 if (DisplayType.Date == columnDetail.getAD_Reference_ID()) {
+					 if (DisplayType.Date == field.getDisplayType()) {
 						 procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_DATE_FORMAT)));
-					 } else if (DisplayType.DateTime == columnDetail.getAD_Reference_ID()) {
+					 } else if (DisplayType.DateTime == field.getDisplayType()) {
 						 procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_TIMESTAMP_FORMAT)));
-					 } else if (DisplayType.Time == columnDetail.getAD_Reference_ID()) {
+					 } else if (DisplayType.Time == field.getDisplayType()) {
 						 procArray.add(new Optional(new FmtDate("DisplayType.DEFAULT_TIME_FORMAT")));
-					 } else if (DisplayType.Integer == columnDetail.getAD_Reference_ID() || DisplayType.isNumeric(columnDetail.getAD_Reference_ID())) {
-						 DecimalFormat nf = DisplayType.getNumberFormat(columnDetail.getAD_Reference_ID());
+					 } else if (DisplayType.Integer == field.getDisplayType() || DisplayType.isNumeric(field.getDisplayType())) {
+						 DecimalFormat nf = DisplayType.getNumberFormat(field.getDisplayType());
 						 nf.setGroupingUsed(false);
 						 procArray.add(new Optional(new FmtNumber(nf)));
-					 } else if (DisplayType.YesNo == columnDetail.getAD_Reference_ID()) {
+					 } else if (DisplayType.YesNo == field.getDisplayType()) {
 						 procArray.add(new Optional(new FmtBool("Y", "N")));
 					 } else { // lookups and text
 						 procArray.add(new Optional());
@@ -212,16 +214,19 @@ public class GridTabCSVExporter implements IGridTabExporter
 				
 				for(GridField field : getFields(gridTab)){   
 					MColumn column = MColumn.get(Env.getCtx(), field.getAD_Column_ID());
-					
-					if(DisplayType.Location == column.getAD_Reference_ID()){
+					Object value = null;
+					String headName = header[idxfld];
+					if(DisplayType.Location == field.getDisplayType()){
 					   Object fResolved =resolveValue(gridTab, table, column, idxrow, column.getColumnName());  
 					   if (fResolved!=null)  		   
 						   record_Id= Integer.parseInt(fResolved.toString());
 					   
 					   continue;
+					}else if (DisplayType.Payment == field.getDisplayType()){
+					   value = MRefList.getListName(Env.getCtx(),REFERENCE_PAYMENTRULE, gridTab.getValue(idxrow, header[idxfld]).toString()); 		 
+					}else{	
+					   value = resolveValue(gridTab, table, column, idxrow, headName);
 					}
-					String headName = header[idxfld];
-					Object value = resolveValue(gridTab, table, column, idxrow, headName);
 					//Ignore row 
 					if("IsActive".equals(headName) && value!=null && Boolean.valueOf((Boolean)value)==false){
 						isActiveRow=false;	
@@ -342,6 +347,10 @@ public class GridTabCSVExporter implements IGridTabExporter
 				    MTable tableDetail = MTable.get(Env.getCtx(), childTab.getTableName());
 				    String headName = headArray.get(headArray.indexOf(childTab.getTableName()+">"+resolveColumnName(tableDetail,column))); 
 				    value = resolveValue(childTab, MTable.get(Env.getCtx(),childTab.getTableName()), column, currentDetRow, headName.substring(headName.indexOf(">")+ 1,headName.length()));
+				    
+				    if(DisplayType.Payment == field.getDisplayType())
+					   value = MRefList.getListName(Env.getCtx(),REFERENCE_PAYMENTRULE, value.toString()); 
+					   
 				    row.put(headName,value);
 				    if(value!=null)
 				       hasDetails = true;
