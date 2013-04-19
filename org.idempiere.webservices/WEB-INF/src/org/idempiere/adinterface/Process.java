@@ -5,13 +5,18 @@ import java.io.CharArrayWriter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
+
+import javax.xml.namespace.QName;
 
 import net.sf.compilo.report.ReportProcessor;
 import net.sf.jasperreports.engine.JasperPrint;
 
 import org.compiere.model.Lookup;
+import org.compiere.model.MLookup;
+import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MPaySelectionCheck;
@@ -24,11 +29,15 @@ import org.compiere.model.PrintInfo;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.process.ProcessInfoUtil;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.NamePair;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.wf.MWFProcess;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.adInterface.x10.DataField;
@@ -43,6 +52,7 @@ import org.idempiere.adInterface.x10.RunProcess;
 import org.idempiere.adInterface.x10.RunProcessDocument;
 import org.idempiere.adInterface.x10.RunProcessResponse;
 import org.idempiere.adInterface.x10.RunProcessResponseDocument;
+import org.idempiere.webservices.fault.IdempiereServiceFault;
 
 /*
  * ADEMPIERE/COMPIERE
@@ -149,13 +159,26 @@ public class Process {
 		return res;
 	}
 	
-	
 	/**************************************************************************
-	 * 	Create Process Page
-	 *	@param AD_Process_ID Process
-	 *	@return Page
+	 * 	Run process
+	 *	@param m_cs
+	 *  @param req
+	 *	@return {@link RunProcessResponseDocument}
 	 */
 	public static RunProcessResponseDocument runProcess (CompiereService m_cs, RunProcessDocument req )
+	{
+		return runProcess(m_cs, req, null, null);
+	}
+	
+	/**************************************************************************
+	 * 	Run process
+	 *	@param m_cs
+	 *  @param req
+	 *  @param requestCtx
+	 *  @param trxName
+	 *	@return {@link RunProcessResponseDocument}
+	 */
+	public static RunProcessResponseDocument runProcess (CompiereService m_cs, RunProcessDocument req, Map<String, Object> requestCtx, String trxName )
 	{
 		RunProcessResponseDocument res = RunProcessResponseDocument.Factory.newInstance();
 		RunProcessResponse r= res.addNewRunProcessResponse();
@@ -163,19 +186,15 @@ public class Process {
 		RunProcess rp = req.getRunProcess();
 		int AD_Process_ID = rp.getADProcessID();
 		int m_record_id = rp.getADRecordID();
-	  	//WebSessionCtx wsc = WebSessionCtx.get (request);
 	  	
 		MProcess process = MProcess.get (m_cs.getCtx() , AD_Process_ID);
 		//	need to check if Role can access
 		if (process == null)
 		{
-			// WebDoc doc = WebDoc.createWindow("Process not found");
 			r.setError("Process not found");
 			r.setIsError( true );
 			return res;
 		}
-		//process.getDescription()
-		//process.getHelp()
 		
 		// Evaluate DocAction, if call have DocAction parameter, then try to set DocAction before calling workflow process
 		String docAction = rp.getDocAction();
@@ -205,14 +224,37 @@ public class Process {
 		MPInstance pInstance = null;
 		try 
 		{
-			pInstance = fillParameter (m_cs, rp.getParamValues(), process);
+			pInstance = fillParameter (m_cs, rp.getParamValues(), process, requestCtx);
 		}
 		catch (Exception ex)
 		{
-			//center.addElement(new p("B��d: " + ex.getMessage(), AlignType.LEFT).setClass("ProcesResultError"));
 			r.setError(ex.getMessage());
 			r.setIsError( true );
 			return res;
+		}
+		
+		DataField[] fields = rp.getParamValues().getFieldArray();
+		for(DataField field : fields) {
+			if ("AD_Record_ID".equals(field.getColumn())) {
+				Object value = null;
+				String s = field.getVal();
+				if (requestCtx != null && !Util.isEmpty(s) && s.charAt(0) == '@') {
+					value = ModelADServiceImpl.parseVatriable(m_cs, requestCtx, field.getColumn(), s);
+					if (value != null) {
+						if (value instanceof Number) {
+							m_record_id = ((Number)value).intValue();
+						} else {
+							try {
+								m_record_id = Integer.parseInt(value.toString());
+							} catch (Exception e){}
+						}
+					}
+				} else if (!Util.isEmpty(s)) {
+					try {
+						m_record_id = Integer.parseInt(s);
+					} catch (Exception e){}
+				}
+			}
 		}
 		
 		if (m_record_id>0)
@@ -227,18 +269,29 @@ public class Process {
 		pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
 		if (m_record_id >0)
 			pi.setRecord_ID( m_record_id  );
+		ProcessInfoParameter[] parameters = pi.getParameter();
+		if (parameters == null)
+		{
+			ProcessInfoUtil.setParameterFromDB(pi);
+			parameters = pi.getParameter();
+		}
+		for(DataField field : fields) {
+			if (isDataURI(field.getVal())) {
+				for(ProcessInfoParameter param : parameters) {
+					if (param.getParameterName().equals(field.getColumn())) {
+						String data = field.getVal().substring(field.getVal().indexOf(";base64,")+";base64,".length());
+						param.setParameter(data);
+						break;
+					}
+				}
+			}
+		}
 		
-		//	Info
-		//p p = new p();
-		//p.addElement(Msg.translate(wsc.ctx, "AD_PInstance_ID") + ": " + pInstance.getAD_PInstance_ID());
-		//center.addElement(p);
 		boolean processOK = false;
-		
 		boolean jasperreport = (process != null && process.getClassname()!=null && process.getClassname().indexOf( "net.sf.compilo.report.ReportStarter" ) >=0 );
 		
 		if (jasperreport)
 		{
-			//this.jasperReport( request, response, wsc.ctx, pi);
 			processOK = true;
 		}
 		
@@ -265,28 +318,29 @@ public class Process {
 				r.setLogInfo(pi.getLogInfo(true) );
 				r.setIsError( true );
 				return res;				
-				//Wyj�tek: pi.getLogInfo(true) pi.getLogInfo(true)
 			}
-			//started = wfProcess != null;
 		}
 	
 		if (process.isJavaProcess() && !jasperreport)
 		{
-			Trx trx = Trx.get(Trx.createTrxName("WebPrc"), true);
+			Trx trx = trxName == null ? Trx.get(Trx.createTrxName("WebPrc"), true) : Trx.get(trxName, true);
 			try
 			{
-				processOK = process.processIt(pi, trx);
-				trx.commit();
-				trx.close();
+				processOK = process.processIt(pi, trx, false);
+				if (trxName == null)
+					trx.commit();				
 			}
 			catch (Throwable t)
 			{
 				trx.rollback();
-				trx.close();
+			}
+			finally
+			{
+				if (trxName == null)
+					trx.close();
 			}
 			if (!processOK || pi.isError())
 			{
-				// b��d:  pi.getSummary()
 				r.setSummary(pi.getSummary());
 				r.setLogInfo(pi.getLogInfo(true));
 				r.setIsError( true );				
@@ -297,97 +351,81 @@ public class Process {
 				r.setSummary(pi.getSummary());
 				r.setLogInfo(pi.getLogInfo(true));
 				r.setIsError( false );
-				//return res;	
-				// wynik - String summary = pi.getSummary();
 			}
 		}
 		
 		//	Report
-		if (/*processOK &&*/ (process.isReport() || jasperreport))//&& !m_jasperreport)
+		if ((process.isReport() || jasperreport))
 		{
 			r.setIsReport(true);
-			//if (m_jasperreport)
-			//{
-			//	center.addElement(new p("JASPER REPORT", AlignType.LEFT).setClass("Cerror"));
-			//} 
-			//else
-			{
-				ReportEngine re=null;
-				if (!jasperreport) 
-					re = start(pi);
+			ReportEngine re=null;
+			if (!jasperreport) 
+				re = start(pi);
 
-				if (re == null && !jasperreport)
+			if (re == null && !jasperreport)
+			{
+				; 
+			}
+			else
+			{
+				try
 				{
-					//b��d: "Nie uda�o si� uruchomi� silnika raport�w (ReportEngine)", 
-				}
-				else
-				{
-					try
+					boolean ok = false;
+					String file_type = "pdf"; 
+					if (!jasperreport)
 					{
-						boolean ok = false;
-						String file_type = "pdf"; 
-						if (!jasperreport)
+						MPrintFormat pf = re.getPrintFormat();
+						if (pf.isTableBased())
 						{
-							MPrintFormat pf = re.getPrintFormat();
-							if (pf.isTableBased())
-							{
-								CharArrayWriter wr = new CharArrayWriter();
-								ok = ReportEngineEx.createEXCEL_HTML_wr( re, m_cs.getCtx(), wr, false, re.getPrintFormat().getLanguage() );
-								file_type ="xls";
-								String data = wr.toString();
-								if (data!=null)
-									r.setData(data.getBytes());
-								r.setReportFormat(file_type);
-							} else
-							{
-								byte dat[] = re.createPDFData();
-								file_type ="pdf";
-								r.setData(dat);		
-								r.setReportFormat(file_type);
-							}
-							
-							//r.setReportFormat("xls");							
-							ok = true;
-						}
-						else
-						{
-							JasperPrint jp = getJasperReportPrint( m_cs.getCtx(), pi);
-							//file = File.createTempFile("WProcess", ".pdf");
-							ByteArrayOutputStream wr = new ByteArrayOutputStream();
-							net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jp, wr); 
-							//exportReportToPdfFile( jp, file.getAbsolutePath() );							
-							file_type ="pdf";							
-							r.setData(wr.toByteArray());	
+							CharArrayWriter wr = new CharArrayWriter();
+							ok = ReportEngineEx.createEXCEL_HTML_wr( re, m_cs.getCtx(), wr, false, re.getPrintFormat().getLanguage() );
+							file_type ="xls";
+							String data = wr.toString();
+							if (data!=null)
+								r.setData(data.getBytes());
 							r.setReportFormat(file_type);
-							ok = true;
-						}
-												
-						if (ok)
+						} else
 						{
-							//pInstance.getAD_PInstance_ID()
-							//file.getAbsolutePath()
-							
-							//	Marker that Process is OK
-							m_cs.getCtx().put("AD_PInstance_ID=" + pInstance.getAD_PInstance_ID(), "ok");
+							byte dat[] = re.createPDFData();
+							file_type ="pdf";
+							r.setData(dat);		
+							r.setReportFormat(file_type);
 						}
-						else
-						{
-							r.setError("Cannot create report");
-							r.setLogInfo(pi.getLogInfo(true) );
-							r.setIsError( true );
-							return res;								
-							//"Cannot create report:",
-						}
+						
+						ok = true;
 					}
-					catch (Exception e)
+					else
 					{
-						r.setError("Cannot create report:" + e.getMessage());
+						JasperPrint jp = getJasperReportPrint( m_cs.getCtx(), pi);
+						ByteArrayOutputStream wr = new ByteArrayOutputStream();
+						net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jp, wr); 
+						file_type ="pdf";							
+						r.setData(wr.toByteArray());	
+						r.setReportFormat(file_type);
+						ok = true;
+					}
+											
+					if (ok)
+					{
+						//	Marker that Process is OK
+						m_cs.getCtx().put("AD_PInstance_ID=" + pInstance.getAD_PInstance_ID(), "ok");
+					}
+					else
+					{
+						r.setError("Cannot create report");
 						r.setLogInfo(pi.getLogInfo(true) );
 						r.setIsError( true );
 						return res;								
-						// , 
-					}  
+					}
 				}
+				catch (Exception e)
+				{
+					r.setError("Cannot create report:" + e.getMessage());
+					r.setLogInfo(pi.getLogInfo(true) );
+					r.setIsError( true );
+					return res;								
+					// , 
+				}  
 			}
 		}
 		return res;
@@ -395,14 +433,14 @@ public class Process {
 
 	
 	
-	private static MPInstance fillParameter(CompiereService m_cs, DataRow dr, MProcess process) throws Exception
+	private static MPInstance fillParameter(CompiereService m_cs, DataRow dr, MProcess process, Map<String, Object> requestCtx) throws Exception
 	{
 		MPInstance pInstance = new MPInstance (process, 0);
 		
 		DataField f[] = dr.getFieldArray();
-		HashMap<String,String> fmap = new HashMap<String,String>();
+		HashMap<String,DataField> fmap = new HashMap<String,DataField>();
 		for (int i=0; i<f.length; i++)
-			fmap.put(f[i].getColumn(), f[i].getVal());
+			fmap.put(f[i].getColumn(), f[i]);
 		//
 		MPInstancePara[] iParams = pInstance.getParameters();
 		for (int pi = 0; pi < iParams.length; pi++)
@@ -418,17 +456,43 @@ public class Process {
 			int displayType = pPara.getAD_Reference_ID();
 			
 			String valueString = null; 
-			Object ob = fmap.get( key );
-			if (ob!=null )
-				valueString = ob.toString();
+			DataField dataField = fmap.get( key );
+			if (dataField != null && !Util.isEmpty(dataField.getVal()))
+			{
+				valueString = dataField.getVal();
+				if (requestCtx != null && valueString.charAt(0) == '@') 
+				{
+					Object value = ModelADServiceImpl.parseVatriable(m_cs, requestCtx, iPara.getParameterName(), valueString);
+					valueString = value != null ? value.toString() : null;
+				}
+			}
+			else if (dataField != null && !Util.isEmpty(dataField.getLval()))
+				valueString = getLookupValue(pPara, dataField);
+			
+			if (isDataURI(valueString))
+			{
+				valueString = "";
+				iPara.setInfo("binary");
+			}
+			
 			String valueString2 = null;
 			if (pPara.isRange())
 			{
-				ob = fmap.get( key+"_2" );
-				if (ob!=null)
-				valueString2 = ob.toString(); 
+				dataField = fmap.get( key+"_2" );
+				if (dataField != null && !Util.isEmpty(dataField.getVal()))
+				{
+					valueString2 = dataField.toString();
+					if (requestCtx != null && valueString2.charAt(0) == '@') 
+					{
+						Object value = ModelADServiceImpl.parseVatriable(m_cs, requestCtx, iPara.getParameterName(), valueString2);
+						valueString2 = value != null ? value.toString() : null;
+					}
+				}
+				else if (dataField != null && !Util.isEmpty(dataField.getLval()))
+					valueString2 = getLookupValue(pPara, dataField);
 			}
 			if (log.isLoggable(Level.FINE)) log.fine("fillParameter - " + key + " = " + valueString);
+			
 			Object value = valueString;
 			if (valueString != null && valueString.length() == 0)
 				value = null;
@@ -552,96 +616,28 @@ public class Process {
 		}	//	instance parameter loop
 		
 		pInstance.saveEx(); // kolec - tego chyba brakowalo
-		
+				
 		return pInstance;
 	}	//	fillParameter
 
-	/*
-	static ReportServer server = null;
-	
-	private void jasperReport(HttpServletRequest request, HttpServletResponse response, Properties ctx, int AD_Process_ID, int AD_Instance_ID) throws Exception
-	{
-	
-		MProcess process = MProcess.get (ctx, AD_Process_ID);
-		//	need to check if Role can access
-		if (process == null)
-			throw new Exception( "Brak procesu" );
+	private static String getLookupValue(MProcessPara pPara, DataField dataField) {
+		MLookup lookup = null;
+		try {
+			lookup = MLookupFactory.get(pPara.getCtx(),0,0,pPara.getAD_Reference_ID(),Env.getLanguage(pPara.getCtx()),pPara.getColumnName(),pPara.getAD_Reference_Value_ID(),false,null);
+		} catch (Exception e) {
+			throw new IdempiereServiceFault("Exception in resolving lookup ", new QName(
+					"LookupResolutionFailed"));
+		}
 		
-		MPInstance pInstance = new MPInstance( ctx, AD_Instance_ID, null );
-		if (pInstance == null)
-			throw new Exception( "Brak intancji procesu" );
-		
-		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID());
-		pi.setAD_User_ID(pInstance.getAD_User_ID());
-		pi.setAD_Client_ID(pInstance.getAD_Client_ID());
-		pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
-		pi.setRecord_ID( pInstance.getRecord_ID()  );
-		
-		jasperReport( request, response, ctx, pi);
-	}
-	*/
-	
-	/**
-	 * Procedura obsluguje raporty jasper - przekazuje wynik raportu w postaci PDF
-	 * @param request
-	 * @param response
-	 * @param ctx
-	 * @param pi
-	 */
-	/*
-	private void jasperReport(HttpServletRequest request, HttpServletResponse response, Properties ctx, ProcessInfo pi)
-	{
-		try
-		{
-				JasperPrint jasperPrint = getJasperReportPrint( ctx, pi );
-	        	
-	        	ServletOutputStream output = response.getOutputStream();
-	        	net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, output);
-	        	
-	        	int bufferSize = 2048; //	2k Buffer
-	        	
-	        	//response.setContentType(mimeType.getMimeType());
-				response.setBufferSize(bufferSize);
-				
-	        	response.setHeader("Cache-Control","no-cache"); //HTTP 1.1
-	        	response.setHeader("Pragma","no-cache"); //HTTP 1.0
-	        	response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
-				
-				response.setContentType( "application/pdf" );
-				
-				//response.setHeader("Content-disposition","inline;filename=generated.pdf");		
-				//	response.setHeader("Pragma","no-cache");	
-				//	response.setHeader("Cache-Control", "no-cache");
-				//	response.setHeader("Cache-Control","no-store" );
-				//	response.setDateHeader("Expires", -1);
-				//	response.setHeader("Content-Type","application/pdf" );
-				//response.setContentType( "application/pdf" );
-				//response.setHeader("Content-Type","application/pdf" );
-								
-								
-	        	output.flush();
-	        	output.close();
+		String sql = ADLookup.getDirectAccessSQL(lookup, dataField.getLval().toUpperCase());
+		sql = sql + " ORDER BY AD_Client_ID DESC ";
+		int id = DB.getSQLValue(null, sql); 
+		if (id > 0)
+			return Integer.toString(id);
 
-	        	
-	        }        
-	        catch (JRException e)
-	        {
-	            log.saveError("ReportStarter.startProcess: Can not run report - ", e);
-	            return;
-	            //return e.getMessage();
-	        }
-	        catch (Exception ex)
-			{
-	        	log.saveError("ReportStarter.startProcess: Can not run report - ", ex);
-	        	return;
-	        	// return ex.getMessage();
-			}
-		
-		
+		return null;
 	}
-	
-	*/
-	
+
 	private static JasperPrint getJasperReportPrint(Properties ctx, ProcessInfo pi)
 	{
         try
@@ -721,13 +717,6 @@ public class Process {
 			//ADialog.error(0, null, "NoDocPrintFormat");
 			return null;
 		}
-/*		if (IsDirectPrint)
-		{
-			re.print ();
-			ReportEngine.printConfirm (type, Record_ID);
-		}
-		else
-			new Viewer(re);*/
 		
 		return re;
 	}	//	StartDocumentPrint
@@ -748,12 +737,6 @@ public class Process {
 			pi.setSummary("No ReportEngine");
 			return null;
 		}
-		//if (IsDirectPrint)
-		//{
-		//	re.print();
-		//}
-		//else
-		//	new Viewer(re);
 		return re;
 	}	//	startStandardReport
 
@@ -780,6 +763,16 @@ public class Process {
 		return startDocumentPrint (ReportEngine.CHECK, C_PaySelectionCheck_ID);
 	}	//	startCheckPrint
 
+	private static boolean isDataURI(String s)
+	{
+		if (Util.isEmpty(s)) return false;
+		
+		if (s.startsWith("data:") && s.indexOf(";base64,") > 0)
+			return true;
+		else
+			return false;
+	}
+	
 	/**
 	 *	Start Financial Report.
 	 *  @param pi Process Info

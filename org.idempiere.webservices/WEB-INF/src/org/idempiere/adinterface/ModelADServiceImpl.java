@@ -45,7 +45,6 @@ import javax.xml.ws.WebServiceContext;
 import org.apache.xmlbeans.StringEnumAbstractBase.Table;
 import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
-import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRefTable;
 import org.compiere.model.MRole;
@@ -60,6 +59,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.adInterface.x10.ADLoginRequest;
 import org.idempiere.adInterface.x10.DataField;
@@ -339,6 +339,25 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			return -1;
 		if (string.equals(io.toString()))
 			return i;
+		if (parameterName.endsWith("_ID") && ADLookup.isUUID(string)) {
+			String tableName = parameterName.substring(0, parameterName.length()-3);
+			StringBuilder sql = new StringBuilder("SELECT ");
+			sql.append(parameterName).append(" FROM ").append(tableName)
+				.append(" WHERE ").append(tableName).append("_UU=").append(DB.TO_STRING(string));
+			return DB.getSQLValue(null, sql.toString());
+		}
+		
+		Map<String, Object> requestCtx = getRequestCtx();
+		if (requestCtx != null && string.charAt(0) == '@') {
+			Object value = parseVatriable(getCompiereService(), requestCtx, parameterName, string);
+			if (value != null && value instanceof Number) {
+				return ((Number)value).intValue();
+			} else if (value != null ){
+				string = value.toString();
+			} else {
+				return -1;
+			}
+		}
 		return Integer.parseInt(string);
 	}
 
@@ -391,7 +410,10 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			reqprocess.setADMenuID(modelRunProcess.getADMenuID());
 			reqprocess.setADRecordID(modelRunProcess.getADRecordID());
 			reqprocess.setDocAction(modelRunProcess.getDocAction());
-			return Process.runProcess(getCompiereService(), docprocess);
+			RunProcessResponseDocument response = Process.runProcess(getCompiereService(), docprocess, getRequestCtx(), localTrxName);
+			Map<String, Object> requestCtx = getRequestCtx();
+			requestCtx.put(serviceType+"_Summary", response.getRunProcessResponse().getSummary());
+			return response;
 		} finally {
 			if (!connected)
 				getCompiereService().disconnect();
@@ -620,6 +642,9 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	public StandardResponseDocument deleteData(ModelCRUDRequestDocument req) {
 		boolean connected = getCompiereService().isConnected();
 		
+		Trx trx = null;
+		boolean manageTrx = this.manageTrx;
+		
 		try {
 			if (!connected)
 				getCompiereService().connect();
@@ -655,7 +680,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	
 			// start a trx
 			String trxName = localTrxName;
-			Trx trx = null;
+			
 			if (trxName == null) {
 				trxName = Trx.createTrxName("ws_modelCreateData");
 				manageTrx = true;
@@ -680,11 +705,11 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				return rollbackAndSetError(trx, resp, ret, true, "Cannot commit transaction after delete record " + recordID + " in "
 						+ tableName);
 	
-			if (manageTrx)
-				trx.close();
-	
 			return ret;
 		} finally {
+			if (manageTrx && trx != null)
+				trx.close();
+			
 			if (!connected)
 				getCompiereService().disconnect();
 		}
@@ -697,9 +722,12 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		modelCRUD.setAction(validateParameter("Action", modelCRUD.getAction(), ModelCRUD.Action.Enum.table));
 	}
 
-	public StandardResponseDocument createData(ModelCRUDRequestDocument req){
+	public StandardResponseDocument createData(ModelCRUDRequestDocument req) {
 		
 		boolean connected = getCompiereService().isConnected();
+		
+		Trx trx = null;
+		boolean manageTrx = this.manageTrx;
 		
 		try {
 			if (!connected)
@@ -734,7 +762,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	    	
 	    	// start a trx
 	    	String trxName = localTrxName;
-	    	Trx trx = null;
+	    	
 	    	if(trxName==null){
 	    		trxName = Trx.createTrxName("ws_modelCreateData");
 	    		manageTrx = true;
@@ -795,13 +823,13 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			if (manageTrx && !trx.commit())
 	    		return rollbackAndSetError(trx, resp, ret, true, "Cannot commit transaction after create record " + recordID + " in " + tableName);
 	
-			if (manageTrx)
-				trx.close();
-	    	
 			setOuputFields(resp, m_webservicetype,po,poinfo);
 			
 			return ret;
 		} finally {
+			if (manageTrx && trx != null)
+				trx.close();
+			
 			if (!connected)
 				getCompiereService().disconnect();
 				
@@ -810,6 +838,9 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 
 	public StandardResponseDocument createUpdateData(ModelCRUDRequestDocument req) {
 		boolean connected = getCompiereService().isConnected();
+		
+		Trx trx = null;
+		boolean manageTrx = this.manageTrx;
 		
 		try {
 			if (!connected)
@@ -844,7 +875,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	
 			// start a trx
 			String trxName = localTrxName;
-			Trx trx = null;
+			
 			if (trxName == null) {
 				trxName = Trx.createTrxName("ws_modelCreateData");
 				manageTrx = true;
@@ -999,13 +1030,13 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				return rollbackAndSetError(trx, resp, ret, true, "Cannot commit transaction after create record " + recordID + " in "
 						+ tableName);
 	
-			if (manageTrx)
-				trx.close();
-	
 			setOuputFields(resp, m_webservicetype, po, poinfo);
 	
 			return ret;
 		} finally {
+			if (manageTrx && trx != null)
+				trx.close();
+			
 			if (!connected)
 				getCompiereService().disconnect();
 		}
@@ -1018,7 +1049,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		Object value = null;
 		String strValue = field.getVal();
 		String lookupValue = field.getLval();
-		if (lookupValue != null && !"".equals(lookupValue)) {
+		if (!Util.isEmpty(lookupValue)) {
 			Lookup lookup = null;
 			
 			if(fieldInput.getAD_Reference_ID() > 0 && fieldInput.getAD_Reference_Value_ID()>0)
@@ -1040,7 +1071,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 						"LookupResolutionFailed"));
 			}
 			
-			String sql = getDirectAccessSQL(lookup, lookupValue.toUpperCase());
+			String sql = ADLookup.getDirectAccessSQL(lookup, lookupValue.toUpperCase());
 			int id = DB.getSQLValue(localTrxName, sql); 
 			if (id > 0)
 				value = id;
@@ -1054,44 +1085,12 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		} else {
 			Map<String, Object> requestCtx = getRequestCtx();
 			if (requestCtx != null && strValue.charAt(0) == '@') {
-				String varName = strValue.substring(1);
-				if (varName.charAt(0) == '#') {
-					varName = varName.substring(1);
-					strValue = m_cs.getCtx().getProperty(varName);
-				} else {
-					int indDot = varName.indexOf(".");
-					if (indDot == -1) {
-						// If there is no table name, then it should be
-						// premitive data type
-						value = requestCtx.get(varName);
-					} else {
-						String tblName = varName.substring(0, indDot);
-						String colName = varName.substring(indDot + 1);
-						if (colName.indexOf(".") >= 0) {
-							throw new IdempiereServiceFault(field.getVal() + " contains un supported multi level object resolution",
-									new QName("resolveCtxVariable"));
-						}
-						Object obj = requestCtx.get(tblName);
-						if (obj == null || !(obj instanceof PO)) {
-							throw new IdempiereServiceFault(" input column " + field.getColumn() + " can not found object of " + tblName
-									+ ". Request variable " + field.getVal() + " can not resolved", new QName("resolveCtxVariable"));
-						}
-
-						PO refPO = (PO) obj;
-						value = refPO.get_Value(colName);
-
-					}
-
-					if (value == null) {
-						throw new IdempiereServiceFault(
-								" input column " + field.getColumn() + " can not be resolved for value " + strValue, new QName(
-										"resolveCtxVariable"));
-					}
-				}
+				value = parseVatriable(getCompiereService(), requestCtx, field.getColumn(), strValue);
 			}
 			if (value == null) {
-
 				value = convertToObj(strValue, columnClass, field.getColumn());
+			} else if (value instanceof String && !columnClass.equals(String.class)) {
+				value = convertToObj(value.toString(), columnClass, field.getColumn());
 			}
 		}
 		if (!po.set_ValueOfColumnReturningBoolean(field.getColumn(), value)) {
@@ -1103,6 +1102,38 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		}
 		//Setting context for lookup resolution
 		Env.setContext(Env.getCtx(), 0, field.getColumn(), 	value==null ? null : value.toString());
+	}
+
+	public static Object parseVatriable(CompiereService cs, Map<String, Object> requestCtx, String name,
+			String strValue) {		
+		String varName = strValue.substring(1);
+		if (varName.charAt(0) == '#') {
+			varName = varName.substring(1);
+			return cs.getCtx().getProperty(varName);
+		} else {
+			int indDot = varName.indexOf(".");
+			if (indDot == -1) {
+				// If there is no table name, then it should be
+				// premitive data type
+				return requestCtx.get(varName);
+			} else {
+				String tblName = varName.substring(0, indDot);
+				String colName = varName.substring(indDot + 1);
+				if (colName.indexOf(".") >= 0) {
+					throw new IdempiereServiceFault(strValue + " contains un supported multi level object resolution",
+							new QName("resolveCtxVariable"));
+				}
+				Object obj = requestCtx.get(tblName);
+				if (obj == null || !(obj instanceof PO)) {
+					throw new IdempiereServiceFault(" input column " + name + " can not found object of " + tblName
+							+ ". Request variable " + strValue + " can not resolved", new QName("resolveCtxVariable"));
+				}
+
+				PO refPO = (PO) obj;
+				return refPO.get_Value(colName);
+
+			}
+		}
 	}
 
 	public StandardResponseDocument scanFields(DataField[] fields,MWebServiceType m_webservicetype,PO po,POInfo poinfo,Trx trx,StandardResponse resp, StandardResponseDocument ret){
@@ -1159,6 +1190,9 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	public StandardResponseDocument updateData(ModelCRUDRequestDocument req){
 		boolean connected = getCompiereService().isConnected();
 		
+		Trx trx = null;
+		boolean manageTrx = this.manageTrx;
+		
 		try {
 			if (!connected)
 				getCompiereService().connect();
@@ -1195,7 +1229,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	    	
 	    	// start a trx
 	    	String trxName = localTrxName;
-	    	Trx trx = null;
+	    	
 	    	if(trxName==null){
 	    		trxName = Trx.createTrxName("ws_modelCreateData");
 	    		manageTrx = true;
@@ -1233,14 +1267,14 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			if (manageTrx && !trx.commit())
 				return rollbackAndSetError(trx, resp, ret, true, "Cannot commit transaction after create record " + recordID + " in "
 						+ tableName);
-	
-			if (manageTrx)
-				trx.close();
-	
+				
 			setOuputFields(resp, m_webservicetype, po, poinfo);
 	
 			return ret;
 		} finally {
+			if (manageTrx && trx != null)
+				trx.close();
+			
 			if (!connected)
 				getCompiereService().disconnect();
 		}
@@ -1407,7 +1441,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			ResultSet rsquery = null;
 			try
 			{
-				pstmtquery = DB.prepareStatement (sqlquery, null);
+				pstmtquery = DB.prepareStatement (sqlquery, localTrxName);
 				int p = 1;
 				if (modelCRUD.getDataRow() != null)
 				{
@@ -1415,7 +1449,43 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		    			int idx = poinfo.getColumnIndex(field.getColumn());
 		    			Class<?> c = poinfo.getColumnClass(idx);
 		    			if (c == Integer.class)
-			        		pstmtquery.setInt(p++, Integer.valueOf(field.getVal()));
+		    			{
+		    				int value = 0;
+		    				if (Util.isEmpty(field.getVal()) && !Util.isEmpty(field.getLval()))
+		    				{
+		    					Lookup lookup = null;
+		    					int idxcol = poinfo.getColumnIndex(field.getColumn());
+		    					X_WS_WebServiceFieldInput fieldInput = m_webservicetype.getFieldInput(field.getColumn());
+		    					if(fieldInput.getAD_Reference_ID() > 0 && fieldInput.getAD_Reference_Value_ID()>0)
+		    					{
+		    						try{
+		    							lookup = MLookupFactory.get(m_cs.getCtx(),0,poinfo.getAD_Column_ID(poinfo.getColumnName(idxcol)),fieldInput.getAD_Reference_ID(),Env.getLanguage(m_cs.getCtx()),poinfo.getColumnName(idxcol),fieldInput.getAD_Reference_Value_ID(),false,null); 
+		    						}catch (Exception e) {
+		    							throw new IdempiereServiceFault("Exception in resolving overridden lookup ", new QName(
+		    									"LookupResolutionFailed"));
+		    						}
+		    					}
+		    					else
+		    					{
+		    						lookup = poinfo.getColumnLookup(idxcol);
+		    					}
+		    					
+		    					if (lookup == null) {
+		    						throw new IdempiereServiceFault(field.getColumn() + " is not lookup column. Pass Value in val element ", new QName(
+		    								"LookupResolutionFailed"));
+		    					}
+		    					
+		    					String sql = ADLookup.getDirectAccessSQL(lookup, field.getLval().toUpperCase());
+		    					int id = DB.getSQLValue(localTrxName, sql); 
+		    					if (id > 0)
+		    						value = id;
+		    				}
+		    				else
+		    				{
+		    					value = Integer.valueOf(field.getVal());
+		    				}
+			        		pstmtquery.setInt(p++, value);
+		    			}
 		    			else if (c == Timestamp.class)
 			        		pstmtquery.setTimestamp(p++, Timestamp.valueOf(field.getVal()));
 		    			else if (c == Boolean.class || c == String.class)
@@ -1440,7 +1510,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			}
 			catch (Exception e)
 			{
-				// ignore this exception
+				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}
 			finally
 			{
@@ -1460,271 +1530,4 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				getCompiereService().disconnect();
 		}
 	}
-
-	
-	/**
-	 * 	Generate Access SQL for Search.
-	 * 	The SQL returns the ID of the value entered
-	 * 	Also sets m_tableName and m_keyColumnName
-	 *	@param text uppercase text for LIKE comparison
-	 *	@return sql or ""
-	 *  Example
-	 *	SELECT C_Payment_ID FROM C_Payment WHERE UPPER(DocumentNo) LIKE x OR ...
-	 */
-	private String getDirectAccessSQL (Lookup lookup, String text)
-	{
-		String m_columnName = lookup.getColumnName();
-
-		String m_tableName = null;
-		String m_keyColumnName = null;
-		StringBuffer sql = new StringBuffer();
-		if (m_columnName.indexOf(".") > 0) {
-			m_tableName = m_columnName.substring(0, m_columnName.indexOf("."));
-			m_keyColumnName = m_columnName.substring(m_columnName.indexOf(".")+1);
-		} else {
-			m_tableName = m_columnName.substring(0, m_columnName.length()-3);
-			m_keyColumnName = m_columnName;
-		}
-
-		if (m_columnName.equals("M_Product_ID"))
-		{
-			sql.append("SELECT M_Product_ID FROM M_Product WHERE (UPPER(Value) LIKE ")
-				.append(DB.TO_STRING(text))
-				.append(" OR UPPER(Name) LIKE ").append(DB.TO_STRING(text))
-				.append(" OR UPC LIKE ").append(DB.TO_STRING(text)).append(")");
-		}
-		else if (m_columnName.equals("C_BPartner_ID"))
-		{
-			sql.append("SELECT C_BPartner_ID FROM C_BPartner WHERE (UPPER(Value) LIKE ")
-				.append(DB.TO_STRING(text))
-				.append(" OR UPPER(Name) LIKE ").append(DB.TO_STRING(text)).append(")");
-		}
-		else if (m_columnName.equals("C_Order_ID"))
-		{
-			sql.append("SELECT C_Order_ID FROM C_Order WHERE UPPER(DocumentNo) LIKE ")
-				.append(DB.TO_STRING(text));
-		}
-		else if (m_columnName.equals("C_Invoice_ID"))
-		{
-			sql.append("SELECT C_Invoice_ID FROM C_Invoice WHERE UPPER(DocumentNo) LIKE ")
-				.append(DB.TO_STRING(text));
-		}
-		else if (m_columnName.equals("M_InOut_ID"))
-		{
-			sql.append("SELECT M_InOut_ID FROM M_InOut WHERE UPPER(DocumentNo) LIKE ")
-				.append(DB.TO_STRING(text));
-		}
-		else if (m_columnName.equals("C_Payment_ID"))
-		{
-			sql.append("SELECT C_Payment_ID FROM C_Payment WHERE UPPER(DocumentNo) LIKE ")
-				.append(DB.TO_STRING(text));
-		}
-		else if (m_columnName.equals("GL_JournalBatch_ID"))
-		{
-			sql.append("SELECT GL_JournalBatch_ID FROM GL_JournalBatch WHERE UPPER(DocumentNo) LIKE ")
-				.append(DB.TO_STRING(text));
-		}
-		else if (m_columnName.equals("SalesRep_ID"))
-		{
-			sql.append("SELECT AD_User_ID FROM AD_User WHERE UPPER(Name) LIKE ")
-				.append(DB.TO_STRING(text));
-
-			m_tableName = "AD_User";
-			m_keyColumnName = "AD_User_ID";
-		}
-
-		//	Predefined
-
-		if (sql.length() > 0)
-		{
-			String wc = getWhereClause(lookup);
-
-			if (wc != null && wc.length() > 0)
-				sql.append(" AND ").append(wc);
-
-			sql.append(" AND IsActive='Y'");
-			//	***
-
-			if (log.isLoggable(Level.FINEST))
-				log.finest(m_columnName + " (predefined) " + sql.toString());
-
-			return MRole.getDefault().addAccessSQL(sql.toString(),
-				m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-		}
-
-		//	Check if it is a Table Reference
-
-		if (lookup != null && lookup instanceof MLookup)
-		{
-			int AD_Reference_ID = ((MLookup)lookup).getAD_Reference_Value_ID();
-
-			if (AD_Reference_ID != 0)
-			{
-				boolean isValueDisplayed = false;
-				String query = "SELECT kc.ColumnName, dc.ColumnName, t.TableName, rt.IsValueDisplayed "
-					+ "FROM AD_Ref_Table rt"
-					+ " INNER JOIN AD_Column kc ON (rt.AD_Key=kc.AD_Column_ID)"
-					+ " INNER JOIN AD_Column dc ON (rt.AD_Display=dc.AD_Column_ID)"
-					+ " INNER JOIN AD_Table t ON (rt.AD_Table_ID=t.AD_Table_ID) "
-					+ "WHERE rt.AD_Reference_ID=?";
-
-				String displayColumnName = null;
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-
-				try
-				{
-					pstmt = DB.prepareStatement(query, null);
-					pstmt.setInt(1, AD_Reference_ID);
-					rs = pstmt.executeQuery();
-
-					if (rs.next())
-					{
-						m_keyColumnName = rs.getString(1);
-						displayColumnName = rs.getString(2);
-						m_tableName = rs.getString(3);
-						String t = rs.getString(4);
-						isValueDisplayed = "Y".equalsIgnoreCase(t);
-					}
-				}
-				catch (Exception e)
-				{
-					log.log(Level.SEVERE, query, e);
-				}
-				finally
-				{
-					DB.close(rs, pstmt);
-				}
-
-
-				if (displayColumnName != null)
-				{
-					sql = new StringBuffer();
-					sql.append("SELECT ").append(m_keyColumnName)
-						.append(" FROM ").append(m_tableName)
-						.append(" WHERE (UPPER(").append(displayColumnName)
-						.append(") LIKE ").append(DB.TO_STRING(text));
-					if (isValueDisplayed)
-					{
-						sql.append(" OR UPPER(").append("Value")
-						   .append(") LIKE ").append(DB.TO_STRING(text));
-					}
-					sql.append(")");
-					sql.append(" AND IsActive='Y'");
-
-					String wc = getWhereClause(lookup);
-
-					if (wc != null && wc.length() > 0)
-						sql.append(" AND ").append(wc);
-
-					//	***
-
-					if (log.isLoggable(Level.FINEST))
-						log.finest(m_columnName + " (Table) " + sql.toString());
-
-					return MRole.getDefault().addAccessSQL(sql.toString(),
-								m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-				}
-			} // Table Reference
-		} // MLookup
-
-		/** Check Well Known Columns of Table - assumes TableDir	**/
-
-		String query = "SELECT t.TableName, c.ColumnName "
-			+ "FROM AD_Column c "
-			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID AND t.IsView='N') "
-			+ "WHERE (c.ColumnName IN ('DocumentNo', 'Value', 'Name') OR c.IsIdentifier='Y')"
-			+ " AND c.AD_Reference_ID IN (10,14)"
-			+ " AND EXISTS (SELECT * FROM AD_Column cc WHERE cc.AD_Table_ID=t.AD_Table_ID"
-				+ " AND cc.IsKey='Y' AND cc.ColumnName=?)";
-
-		sql = new StringBuffer();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(query, null);
-			pstmt.setString(1, m_keyColumnName);
-			rs = pstmt.executeQuery();
-
-			while (rs.next())
-			{
-				if (sql.length() != 0)
-					sql.append(" OR ");
-
-				m_tableName = rs.getString(1);
-				sql.append("UPPER(").append(rs.getString(2)).append(") LIKE ").append(DB.TO_STRING(text));
-			}
-		}
-		catch (SQLException ex)
-		{
-			log.log(Level.SEVERE, query, ex);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		//
-		if (sql.length() == 0)
-		{
-			log.log(Level.SEVERE, m_columnName + " (TableDir) - no standard/identifier columns");
-			return "";
-		}
-		//
-		StringBuffer retValue = new StringBuffer ("SELECT ")
-			.append(m_columnName).append(" FROM ").append(m_tableName)
-			.append(" WHERE ").append(sql)
-			.append(" AND IsActive='Y'");
-
-		String wc = getWhereClause(lookup);
-
-		if (wc != null && wc.length() > 0)
-			retValue.append(" AND ").append(wc);
-		//	***
-		if (log.isLoggable(Level.FINEST))
-			log.finest(m_columnName + " (TableDir) " + sql.toString());
-		return MRole.getDefault().addAccessSQL(retValue.toString(),
-					m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-	}
-	
-	private String getWhereClause(Lookup lookup)
-	{
-		String whereClause = "";
-
-		if (lookup == null)
-			return "";
-
-		if (lookup.getZoomQuery() != null)
-			whereClause = lookup.getZoomQuery().getWhereClause();
-
-		String validation = lookup.getValidation();
-
-		if (validation == null)
-			validation = "";
-
-		if (whereClause.length() == 0)
-			whereClause = validation;
-		else if (validation.length() > 0)
-			whereClause += " AND " + validation;
-
-		//	log.finest("ZoomQuery=" + (lookup.getZoomQuery()==null ? "" : lookup.getZoomQuery().getWhereClause())
-	//		+ ", Validation=" + lookup.getValidation());
-
-		if (whereClause.indexOf('@') != -1)
-		{
-			String validated = Env.parseContext(Env.getCtx(), lookup.getWindowNo(), whereClause, false);
-
-			if (validated.length() == 0)
-				log.severe(lookup.getColumnName() + " - Cannot Parse=" + whereClause);
-			else
-			{
-				if (log.isLoggable(Level.FINE))
-					log.fine(lookup.getColumnName() + " - Parsed: " + validated);
-				return validated;
-			}
-		}
-		return whereClause;
-	}	//	getWhereClause
 }

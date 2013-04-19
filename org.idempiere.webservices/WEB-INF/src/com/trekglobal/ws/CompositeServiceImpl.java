@@ -103,13 +103,17 @@ public class CompositeServiceImpl extends AbstractService implements CompositeSe
 					if (operationArr.length > 0) {
 						CompositeResponse compResp = resps.addNewCompositeResponse();
 						ArrayList<StandardResponse> respAggregator = new ArrayList<StandardResponse>();
-						boolean isSuccess = performOperations(trx, operationArr, modelADService, compResp, respAggregator, reqlogin);
-		
-						// Committing after each operation set
-						if (isSuccess) {
-							commitTrx(trx, compResp, respAggregator, "Cannot commit at end of process", false);
-						}
-		
+						try {
+							boolean isSuccess = performOperations(trx, operationArr, modelADService, compResp, respAggregator, reqlogin);
+			
+							// Committing after each operation set
+							if (isSuccess) {
+								commitTrx(trx, compResp, respAggregator, "Cannot commit at end of process", false);
+							}
+						} catch (RuntimeException e) {
+							rollbackAndSetError(trx, compResp, respAggregator, e.getLocalizedMessage());
+							throw e;
+						}		
 					}
 				}
 			} finally {
