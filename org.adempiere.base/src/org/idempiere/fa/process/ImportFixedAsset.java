@@ -30,7 +30,6 @@ public class ImportFixedAsset extends SvrProcess
 	private int				p_AD_Org_ID = 0;
 
 	/** Account Date					*/
-	@SuppressWarnings("unused")
 	private Timestamp		p_DateAcct = null;
 
 	/** Validate Only - only validate import data */
@@ -359,8 +358,8 @@ public class ImportFixedAsset extends SvrProcess
 					}
 					//if(p_A_Asset_Group_ID>0)
 					//	assetAdd.getA_Asset().setA_Asset_Group_ID(p_A_Asset_Group_ID);
-					//if(p_DateAcct!=null)
-					//	assetAdd.setDateAcct(p_DateAcct);
+					if(p_DateAcct!=null)
+						assetAdd.setDateAcct(p_DateAcct);
 					assetAdd.saveEx();
 					
 					//Process Asset Addition Based on Document Action

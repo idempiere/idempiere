@@ -238,6 +238,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	{
 		this(match.getCtx(), 0, match.get_TrxName());
 		setM_MatchInv(match);
+		setC_DocType_ID();
 	}
 	
 	//added by @win
@@ -263,6 +264,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		setA_CreateAsset(true); //added by @win as create from project will certainly for createnew
 		setDeltaUseLifeYears(I_ZERO);
 		setDeltaUseLifeYears_F(I_ZERO);
+		setC_DocType_ID();
 		
 		Timestamp dateAcct = new Timestamp (System.currentTimeMillis());
 		if (dateAcct != null)
@@ -314,6 +316,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		setA_CapvsExp(MAssetAddition.A_CAPVSEXP_Capital); //added by zuhri, import must be in Capital
 		setA_CreateAsset(true); //added by zuhri, import must be create asset
 		setA_Salvage_Value(ifa.getA_Salvage_Value());
+		setC_DocType_ID();
 		
 		Timestamp dateAcct = ifa.getDateAcct();
 		if (dateAcct != null)
@@ -1187,4 +1190,21 @@ public class MAssetAddition extends X_A_Asset_Addition
 			}
 		}
 	}
+	
+	private void setC_DocType_ID() 
+	{
+	StringBuilder sql = new StringBuilder ("SELECT C_DocType_ID FROM C_DocType ")
+			.append( "WHERE AD_Client_ID=? AND AD_Org_ID IN (0,").append( getAD_Org_ID())
+			.append( ") AND DocBaseType='FAA' ")
+			.append( "ORDER BY AD_Org_ID DESC, IsDefault DESC");
+		int C_DocType_ID = DB.getSQLValue(null, sql.toString(), getAD_Client_ID());
+		if (C_DocType_ID <= 0)
+			log.severe ("No FAA found for AD_Client_ID=" + getAD_Client_ID ());
+		else
+		{
+			if (log.isLoggable(Level.FINE)) log.fine("(PO) - " + C_DocType_ID);
+			setC_DocType_ID (C_DocType_ID);
+		}
+	
+	}	
 }	//	MAssetAddition

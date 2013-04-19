@@ -324,7 +324,8 @@ public class MAsset extends X_A_Asset
 		// Copy fields from C_BPartner_Location
 		if (is_ValueChanged(COLUMNNAME_C_BPartner_Location_ID) && getC_BPartner_Location_ID() > 0)
 		{
-			SetGetUtil.copyValues((SetGetModel)this, MBPartnerLocation.Table_Name, getC_BPartner_Location_ID(),
+			// Goodwill BF: “Error: org.compiere.model.MAsset cannot be cast to org.compiere.model.SetGetModel”
+			SetGetUtil.copyValues(SetGetUtil.wrap(this), MBPartnerLocation.Table_Name, getC_BPartner_Location_ID(),
 					new String[]{MBPartnerLocation.COLUMNNAME_C_Location_ID}
 			);
 		}
