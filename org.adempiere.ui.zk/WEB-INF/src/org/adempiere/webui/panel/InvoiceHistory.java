@@ -210,6 +210,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		Vector<String> columnNames = new Vector<String>();
 		columnNames.add(Msg.translate(Env.getCtx(), m_C_BPartner_ID == 0 ? "C_BPartner_ID" : "M_Product_ID"));
 		columnNames.add(Msg.translate(Env.getCtx(), "PriceActual"));
+		columnNames.add(Msg.translate(Env.getCtx(), "C_Currency_ID"));
 		columnNames.add(Msg.translate(Env.getCtx(), "QtyInvoiced"));
 		columnNames.add(Msg.translate(Env.getCtx(), "Discount"));
 		columnNames.add(Msg.translate(Env.getCtx(), "DocumentNo"));
@@ -229,11 +230,12 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		//
 		m_tablePrice.setColumnClass(0, String.class, true);      //  Product/Partner
 		m_tablePrice.setColumnClass(1, Double.class, true);  	 //  Price
-		m_tablePrice.setColumnClass(2, Double.class, true);      //  Quantity
-		m_tablePrice.setColumnClass(3, BigDecimal.class, true);  //  Discount (%) to limit precision
-		m_tablePrice.setColumnClass(4, String.class, true);      //  DocNo
-		m_tablePrice.setColumnClass(5, Timestamp.class, true);   //  Date
-		m_tablePrice.setColumnClass(6, String.class, true);   	 //  Org
+		m_tablePrice.setColumnClass(2, String.class, true);  	 //  Currency
+		m_tablePrice.setColumnClass(3, Double.class, true);      //  Quantity
+		m_tablePrice.setColumnClass(4, BigDecimal.class, true);  //  Discount (%) to limit precision
+		m_tablePrice.setColumnClass(5, String.class, true);      //  DocNo
+		m_tablePrice.setColumnClass(6, Timestamp.class, true);   //  Date
+		m_tablePrice.setColumnClass(7, String.class, true);   	 //  Org
 		//
 		m_tablePrice.autoSize();
 		//
@@ -247,15 +249,16 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 	 */
 	private Vector<Vector<Object>> queryProduct ()
 	{
-		String sql = "SELECT p.Name,l.PriceActual,l.PriceList,l.QtyInvoiced,"		//  1,2,3,4
-			+ "i.DateInvoiced,dt.PrintName || ' ' || i.DocumentNo As DocumentNo,"	//  5,6
-			+ "o.Name, "															//  7
-			+ "NULL, i.M_PriceList_ID "												//  8,9
+		String sql = "SELECT p.Name,l.PriceActual,c.Iso_Code,l.PriceList,l.QtyInvoiced,"		//  1,2,3,4,5
+			+ "i.DateInvoiced,dt.PrintName || ' ' || i.DocumentNo As DocumentNo,"	//  6,7
+			+ "o.Name, "															//  8
+			+ "NULL, i.M_PriceList_ID "												//  9,10
 			+ "FROM C_Invoice i"
 			+ " INNER JOIN C_InvoiceLine l ON (i.C_Invoice_ID=l.C_Invoice_ID)"
 			+ " INNER JOIN C_DocType dt ON (i.C_DocType_ID=dt.C_DocType_ID)"
 			+ " INNER JOIN AD_Org o ON (i.AD_Org_ID=o.AD_Org_ID)"
 			+ " INNER JOIN M_Product p  ON (l.M_Product_ID=p.M_Product_ID) "
+			+ " INNER JOIN C_Currency c ON (i.C_Currency_ID=c.C_Currency_ID) "
 			+ "WHERE i.C_BPartner_ID=? "
 			+ "ORDER BY i.DateInvoiced DESC";
 
@@ -271,15 +274,16 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 	 */
 	private Vector<Vector<Object>> queryBPartner ()
 	{
-		String sql = "SELECT bp.Name,l.PriceActual,l.PriceList,l.QtyInvoiced,"		//	1,2,3,4
-			+ "i.DateInvoiced,dt.PrintName || ' ' || i.DocumentNo As DocumentNo,"	//	5,6
-			+ "o.Name,"																//  7
-			+ "NULL, i.M_PriceList_ID"												//  8,9
+		String sql = "SELECT bp.Name,l.PriceActual,c.Iso_Code,l.PriceList,l.QtyInvoiced,"		//	1,2,3,4,5
+			+ "i.DateInvoiced,dt.PrintName || ' ' || i.DocumentNo As DocumentNo,"	//	6,7
+			+ "o.Name,"																//  8
+			+ "NULL, i.M_PriceList_ID"												//  9,10
 			+ " FROM C_Invoice i"
 			+ " INNER JOIN C_InvoiceLine l ON (i.C_Invoice_ID=l.C_Invoice_ID)"
 			+ " INNER JOIN C_DocType dt ON (i.C_DocType_ID=dt.C_DocType_ID)"
 			+ " INNER JOIN AD_Org o ON (i.AD_Org_ID=o.AD_Org_ID)"
 			+ " INNER JOIN C_BPartner bp ON (i.C_BPartner_ID=bp.C_BPartner_ID) "
+			+ " INNER JOIN C_Currency c ON (i.C_Currency_ID=c.C_Currency_ID) "
 			+ "WHERE l.M_Product_ID=? " 
 			+ "ORDER BY i.DateInvoiced DESC";
 
@@ -310,15 +314,16 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 				//	0-Name, 1-PriceActual, 2-QtyInvoiced, 3-Discount, 4-DocumentNo, 5-DateInvoiced
 				line.add(rs.getString(1));      //  Name
 				line.add(rs.getBigDecimal(2));  //	Price
-				line.add(new Double(rs.getDouble(4)));      //  Qty
-				BigDecimal discountBD = rs.getBigDecimal(8);
+				line.add(rs.getString(3));  //	Currency
+				line.add(new Double(rs.getDouble(5)));      //  Qty
+				BigDecimal discountBD = rs.getBigDecimal(9);
 				if (discountBD == null) {
-					double priceList = rs.getDouble(3);
+					double priceList = rs.getDouble(4);
 					double priceActual = rs.getDouble(2);
 					if (priceList != 0) {
 						discountBD = BigDecimal.valueOf((priceList - priceActual)/priceList * 100);
 						// Rounding:
-						int precision = MPriceList.getStandardPrecision(Env.getCtx(), rs.getInt(9));
+						int precision = MPriceList.getStandardPrecision(Env.getCtx(), rs.getInt(10));
 						if (discountBD.scale() > precision)
 							discountBD = discountBD.setScale(precision, RoundingMode.HALF_UP);
 					}
@@ -326,9 +331,9 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 						discountBD = Env.ZERO;
 				}
 				line.add(discountBD);  //  Discount
-				line.add(rs.getString(6));      //  DocNo
-				line.add(rs.getTimestamp(5));   //  Date
-				line.add(rs.getString(7));		//	Org/Warehouse
+				line.add(rs.getString(7));      //  DocNo
+				line.add(rs.getTimestamp(6));   //  Date
+				line.add(rs.getString(8));		//	Org/Warehouse
 				data.add(line);
 			}
 		}
