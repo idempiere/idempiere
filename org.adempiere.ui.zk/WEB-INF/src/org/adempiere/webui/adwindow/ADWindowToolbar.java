@@ -17,7 +17,6 @@
 
 package org.adempiere.webui.adwindow;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +35,7 @@ import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MRole;
 import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
@@ -43,6 +43,7 @@ import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.ValueNamePair;
 import org.zkoss.image.AImage;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
@@ -355,25 +356,24 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		        Method method = tListener.getClass().getMethod(methodName, (Class[]) null);
 		        method.invoke(tListener, (Object[]) null);
 		    }
-		    catch(SecurityException e)
+		    catch (Exception e)
 		    {
-		        log.log(Level.SEVERE, "Could not invoke Toolbar listener method: " + methodName + "()", e);
-		    }
-		    catch(NoSuchMethodException e)
-		    {
-		        log.log(Level.SEVERE, "Could not invoke Toolbar listener method: " + methodName + "()", e);
-		    }
-		    catch(IllegalArgumentException e)
-		    {
-		        log.log(Level.SEVERE, "Could not invoke Toolbar listener method: " + methodName + "()", e);
-		    }
-		    catch(IllegalAccessException e)
-		    {
-		        log.log(Level.SEVERE, "Could not invoke Toolbar listener method: " + methodName + "()", e);
-		    }
-		    catch(InvocationTargetException e)
-		    {
-		        log.log(Level.SEVERE, "Could not invoke Toolbar listener method: " + methodName + "()", e);
+		    	String msg = null;
+		    	ValueNamePair vp = CLogger.retrieveError();
+		    	if (vp != null) {
+		    		msg = vp.getName();
+		    	}
+		    	if (msg == null) {
+		    		Throwable cause = e.getCause();
+		    		if (cause != null) {
+		    			msg = cause.getLocalizedMessage();
+		    		}
+		    	}
+		    	if (msg == null) {
+		    		msg = "Could not invoke Toolbar listener method: " + methodName + "()";
+		    	}
+		    	FDialog.error(windowNo, this, "Error", msg);
+		    	log.log(Level.SEVERE, msg, e);
 		    }
 		}
 		this.event = null;
