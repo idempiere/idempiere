@@ -68,7 +68,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	public WStatementCreateFromBatch()
 	{
 		form = new WCreateFromForm(this);
-		p_WindowNo = form.getGridTab().getWindowNo();
+		p_WindowNo = form.getWindowNo();
 	}
 	
 	public void initForm()
