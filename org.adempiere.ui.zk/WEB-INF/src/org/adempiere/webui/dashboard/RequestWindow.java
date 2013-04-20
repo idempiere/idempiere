@@ -14,6 +14,7 @@
 package org.adempiere.webui.dashboard;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -232,11 +233,13 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		rows.appendChild(row);
 		row.appendChild(lblStartTime.rightAlign());
 		row.appendChild(tbxStartTime);
+		tbxStartTime.setWidth("40%");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lblEndTime.rightAlign());
 		row.appendChild(tbxEndTime);
+		tbxEndTime.setWidth("40%");
 		
 		Borderlayout borderlayout = new Borderlayout();
 		appendChild(borderlayout);
@@ -277,7 +280,11 @@ public class RequestWindow extends Window implements EventListener<Event> {
 				throw new WrongValueException(salesRepField.getComponent(), fillMandatory);
 			if (entryConfidentialField.getValue() == null || entryConfidentialField.getValue().equals(""))
 				throw new WrongValueException(entryConfidentialField.getComponent(), fillMandatory);
-			
+			if (dbxStartPlan.getValue().compareTo(dbxCompletePlan.getValue()) > 0) 
+				throw new WrongValueException(dbxCompletePlan, Msg.translate(Env.getCtx(), "DateCompletePlan"));	
+			if (checkTime() && (dbxStartPlan.getValue().compareTo(dbxCompletePlan.getValue()) == 0)) 
+				throw new WrongValueException(tbxStartTime, Msg.translate(Env.getCtx(), "CheckTime"));	
+					
 			MRequest request = new MRequest(Env.getCtx(), 0, null);
 			request.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
 			request.setDueType((String) dueTypeField.getValue());
@@ -308,5 +315,18 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		}
 		else if (e.getTarget() == confirmPanel.getButton(ConfirmPanel.A_CANCEL))
 			this.detach();
+	}
+	
+	//Check, Start time is not  >=  End time, when Start Plan == Complete Plan
+	private boolean checkTime()
+	{
+		Calendar cal =Calendar.getInstance();
+		cal.setTimeInMillis(tbxStartTime.getValue().getTime());		
+		Calendar cal2 = Calendar.getInstance();
+		cal2.setTimeInMillis(tbxEndTime.getValue().getTime());		
+		if ((cal.get(Calendar.HOUR_OF_DAY) >= cal2.get(Calendar.HOUR_OF_DAY)))
+			return true;		
+		else
+			return false;
 	}
 }
