@@ -276,6 +276,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 
 	private void exportDetail(PIPOContext ctx, TransformerHandler document, GenericPO parent, int index, String[] tables) {
 		AttributesImpl atts = new AttributesImpl();
+		tables[index] = tables[index].trim();
 		String sql = "SELECT * FROM " + tables[index] + " WHERE " + parent.get_TableName() + "_ID = ?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
