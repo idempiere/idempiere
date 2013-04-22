@@ -83,6 +83,8 @@ public class RunProcess extends TableFixture {
 		HashMap<String,Object> fmap = new HashMap<String,Object>();
 		int recordID = 0;
 		String docAction = null;
+		boolean error="*Run*Error*".equalsIgnoreCase(getText(rows-1, 0));
+		String msgerror1=getText(rows-1, 1);
 		for (int i = 0; i < rows; i++) {
 			String cell_title = getText(i, 0);
 			String cell_value = getText(i, 1);
@@ -93,9 +95,14 @@ public class RunProcess extends TableFixture {
 				}
 				String processValue = cell_value;
 				int processID = MProcess.getProcess_ID(processValue, null);
-				if (processID <= 0) {
-					exception(getCell(i, 1), new Exception("Process with Value=" + processValue + " doesn't exist"));
-					return;
+				if (processID <= 0 ) {
+					boolean value=Util.evaluateError(msgerror1,"Process with Value=" + processValue + " doesn't exist", error); 
+					if(value){
+						right(getCell(i, 1));
+					}else{	
+					   exception(getCell(i, 1), new Exception("Process with Value=" + processValue + " doesn't exist"));
+					    return;
+					}    
 				}
 				process = new MProcess(ctx, processID, null);
 			} else if (cell_title.equalsIgnoreCase("*ProcessID*")) {
@@ -106,10 +113,15 @@ public class RunProcess extends TableFixture {
 				int processID = getInt(i, 1);
 				process = new MProcess(ctx, processID, null);
 				if (process == null || process.get_ID() <= 0) {
-					exception(getCell(i, 1), new Exception("Process with ID=" + processID + " doesn't exist"));
-					return;
+					boolean value=Util.evaluateError(msgerror1,"Process with ID=" + processID + " doesn't exist", error); 
+					if(value){
+						right(getCell(i, 1));
+					}else{
+					   exception(getCell(i, 1), new Exception("Process with ID=" + processID + " doesn't exist"));
+					   return;
+					}
 				}
-			} else if (cell_title.equalsIgnoreCase("*Run*")) {
+			} else if (cell_title.equalsIgnoreCase("*Run*") || cell_title.equalsIgnoreCase("*Run*Error*") ) {
 				if (i != rows-1) {
 					exception(getCell(i, 1), new Exception("*Run* must be called in last row"));
 					return;
@@ -118,8 +130,14 @@ public class RunProcess extends TableFixture {
 				pInstance = new MPInstance (process, 0);
 				MPInstancePara[] iParams = pInstance.getParameters();
 				String errorMsg = setParams(process, iParams, fmap);
-				if (errorMsg != null)
-					exception(getCell(i, 1), new Exception(errorMsg));
+				if (errorMsg != null){
+					boolean value=Util.evaluateError(msgerror1,errorMsg, error); 
+					if(value){
+						
+					}else{
+						exception(getCell(i, 1), new Exception(errorMsg));
+					}
+				}	
 				if (recordID > 0)
 					pInstance.setRecord_ID( recordID);
 				pInstance.saveEx();
@@ -141,6 +159,7 @@ public class RunProcess extends TableFixture {
 							    		po.set_ValueOfColumn("DocAction", docAction);
 										po.saveEx();
 							    	}
+							    	
 						    	}
 							}
 						}
@@ -157,6 +176,7 @@ public class RunProcess extends TableFixture {
 				//	Start
 				if (process.isWorkflow())
 				{
+					boolean value=Util.evaluateError(msgerror1,pi.getSummary(), error); 	
 					try
 					{
 						int AD_Workflow_ID = process.getAD_Workflow_ID();
@@ -166,12 +186,43 @@ public class RunProcess extends TableFixture {
 						{
 							getCell(i, 1).addToBody(Msg.parseTranslation(ctx, pi.getSummary()));
 							addLogInfo(pInstance, i);
-							right(getCell(i, 1));
+												
+							if (wf.getWorkflowType().equals(MWorkflow.WORKFLOWTYPE_DocumentProcess)) {
+								MTable table = MTable.get(ctx, wf.getAD_Table_ID());
+						    	if (table != null) {
+							    	PO po = table.getPO(recordID, null);
+							    	if(!docAction.equals(po.get_Value("DocStatus"))){
+							    		if(value){
+							    		   right(getCell(i, 1));
+							    		}else{
+							    			wrong(getCell(i, 1));
+							    		}
+							    	}
+							    	else {
+										if (value) {
+											right(getCell(i, 1));
+										} else {
+											wrong(getCell(i, 1));
+										}
+									}
+						    	}	
+							}
+							else{
+								if(value){
+						    		 right(getCell(i, 1));
+						    	}else{
+						    		wrong(getCell(i, 1));
+						    	}
+							}
 						}
 					}
 					catch(Exception ex)
 					{
-						exception(getCell(i, 1), ex);
+						if(value){
+							right(getCell(i, 1));
+						}else{
+						 exception(getCell(i, 1), ex);
+						}
 					}
 					//started = wfProcess != null;
 				}
@@ -192,14 +243,24 @@ public class RunProcess extends TableFixture {
 					}
 					if (!processOK || pi.isError())
 					{
-						exception(getCell(i, 1), new Exception(pi.getSummary()));
-						processOK = false;
+						boolean value=Util.evaluateError(msgerror1,pi.getSummary(), error); 
+						if(value){
+							right(getCell(i, 1));
+							processOK = true;
+						}else{
+						  exception(getCell(i, 1), new Exception(pi.getSummary()));
+						  processOK = false;
+						}
 					} 
 					else
 					{
-						getCell(i, 1).addToBody(Msg.parseTranslation(ctx, pi.getSummary()));
-						addLogInfo(pInstance, i);
-						right(getCell(i, 1));
+						if(error){
+							wrong(getCell(i, 1));
+						}else{
+						   getCell(i, 1).addToBody(Msg.parseTranslation(ctx, pi.getSummary()));
+						   addLogInfo(pInstance, i);
+						   right(getCell(i, 1));
+						}
 					}
 				}
 				
