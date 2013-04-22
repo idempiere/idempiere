@@ -2174,7 +2174,7 @@ public abstract class PO
 		if (!save()) {
 			String msg = null;
 			ValueNamePair err = CLogger.retrieveError();
-			String val = Msg.translate(getCtx(), err.getValue());
+			String val = err != null ? Msg.translate(getCtx(), err.getValue()) : "";
 			if (err != null)
 				msg = (val != null ? val + ": " : "") + err.getName();
 			if (msg == null || msg.length() == 0)
