@@ -254,10 +254,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 				}
 
 				if (dateStartPlan != null && dateCompletePlan != null) {
-					
-					boolean isBeginFullDay = false;
-					boolean isEndFullDay = false;
-					
+							
 					Calendar calBegin = Calendar.getInstance();
 					calBegin.setTime(dateStartPlan);
 					if (startTime != null) {
@@ -268,18 +265,15 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 						calBegin.set(Calendar.SECOND, 0);
 						calBegin.set(Calendar.MILLISECOND, 0);
 						
-						if(calBegin.get(Calendar.HOUR_OF_DAY) == 0 && calBegin.get(Calendar.MINUTE) == 0)
-							isBeginFullDay = true;
 					} else {
 						calBegin.set(Calendar.HOUR_OF_DAY, 0);
 						calBegin.set(Calendar.MINUTE, 0);
 						calBegin.set(Calendar.SECOND, 0);
 						calBegin.set(Calendar.MILLISECOND, 0);
-						isBeginFullDay = true;
 					}
 					
 					Calendar calEnd = Calendar.getInstance();
-					calEnd.setTime(dateStartPlan);
+					calEnd.setTime(dateCompletePlan);
 					if (endTime != null) {
 						Calendar cal1 = Calendar.getInstance();
 						cal1.setTimeInMillis(endTime.getTime());
@@ -288,66 +282,25 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 						calEnd.set(Calendar.SECOND, 0);
 						calEnd.set(Calendar.MILLISECOND, 0);
 						
-						if(calEnd.get(Calendar.HOUR_OF_DAY) == 0 && calEnd.get(Calendar.MINUTE) == 0)
-							isEndFullDay = true;
 					} else {
 						calEnd.add(Calendar.HOUR_OF_DAY, 24);
-						isEndFullDay = true;
 					}
+										
+					ADCalendarEvent event = new ADCalendarEvent();
+					event.setR_Request_ID(R_Request_ID);
 					
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(dateCompletePlan);
-					if (endTime != null) {
-						Calendar cal1 = Calendar.getInstance();
-						cal1.setTimeInMillis(endTime.getTime());
-						cal.set(Calendar.HOUR_OF_DAY, cal1.get(Calendar.HOUR_OF_DAY));
-						cal.set(Calendar.MINUTE, cal1.get(Calendar.MINUTE));
-						cal.set(Calendar.SECOND, 0);
-						cal.set(Calendar.MILLISECOND, 0);
-					} else {
-						cal.add(Calendar.HOUR_OF_DAY, 24);	
-					}
-					dateCompletePlan.setTime(cal.getTimeInMillis());
+					event.setBeginDate(calBegin.getTime());
+					event.setEndDate(calEnd.getTime());
 					
-					if(isBeginFullDay && isEndFullDay)
-					{
-						ADCalendarEvent event = new ADCalendarEvent();
-						event.setR_Request_ID(R_Request_ID);
-						
-						event.setBeginDate(calBegin.getTime());
-						event.setEndDate(cal.getTime());
-						
-						if(event.getBeginDate().compareTo(event.getEndDate()) >= 0)
-							continue;
+					if(event.getBeginDate().compareTo(event.getEndDate()) >= 0)
+						continue;
 
-						event.setContent(summary);
-						event.setHeaderColor(headerColor);
-						event.setContentColor(contentColor);
-						event.setR_RequestType_ID(R_RequestType_ID);
-						event.setLocked(true);
-						events.add(event);
-					}
-					else
-					{
-						for(; calBegin.getTime().compareTo(dateCompletePlan) <= 0; calBegin.add(Calendar.DATE, 1), calEnd.add(Calendar.DATE, 1))
-						{
-							ADCalendarEvent event = new ADCalendarEvent();
-							event.setR_Request_ID(R_Request_ID);
-							
-							event.setBeginDate(calBegin.getTime());
-							event.setEndDate(calEnd.getTime());
-							
-							if(event.getBeginDate().compareTo(event.getEndDate()) >= 0)
-								continue;
-	
-							event.setContent(summary);
-							event.setHeaderColor(headerColor);
-							event.setContentColor(contentColor);
-							event.setR_RequestType_ID(R_RequestType_ID);
-							event.setLocked(true);
-							events.add(event);
-						}
-					}
+					event.setContent(summary);
+					event.setHeaderColor(headerColor);
+					event.setContentColor(contentColor);
+					event.setR_RequestType_ID(R_RequestType_ID);
+					event.setLocked(true);
+					events.add(event);
 				}
 			}
 		} catch (Exception e) {

@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
+import org.adempiere.exceptions.AdempiereException;
 
 public class MStorageProvider extends X_AD_StorageProvider {
 	/**
@@ -43,8 +44,8 @@ public class MStorageProvider extends X_AD_StorageProvider {
 			method = "DB";
 		query.put("method", method);
 		IAttachmentStore store = Service.locator().locate(IAttachmentStore.class, query).getService();			
-		if (store == null){
-			log.saveError("Error", "No attachment storage provider found");
+		if (store == null) {
+			throw new AdempiereException("No attachment storage provider found");
 		}
 		return store;
 	}
@@ -56,8 +57,8 @@ public class MStorageProvider extends X_AD_StorageProvider {
 			method = "DB";
 		query.put("method", method);
 		IArchiveStore store = Service.locator().locate(IArchiveStore.class, query).getService();
-		if (store == null){
-			log.saveError("Error", "No archive storage provider found");
+		if (store == null) {
+			throw new AdempiereException("No archive storage provider found");
 		}
 		return store;
 	}

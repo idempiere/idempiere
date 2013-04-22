@@ -282,11 +282,11 @@ public class ProcessParameterPanel extends Panel implements
 		editor.getComponent().addEventListener(Events.ON_BLUR, this);		
 		editor.addValueChangeListener(this);
 		editor.dynamicDisplay();
-		// MField => VEditor - New Field value to be updated to editor
-		mField.addPropertyChangeListener(editor);
 		// Set Default
 		Object defaultObject = mField.getDefault();
 		mField.setValue(defaultObject, true);
+		// MField => VEditor - New Field value to be updated to editor
+		mField.addPropertyChangeListener(editor);
 		// streach component to fill grid cell
 		editor.fillHorizontal();
 		// setup editor context menu

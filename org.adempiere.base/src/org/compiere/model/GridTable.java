@@ -3822,4 +3822,7 @@ public class GridTable extends AbstractTableModel
 		return m_importing;
 	}
 	
+	public String get_TrxName() {
+		return m_trxName;
+	}
 }
