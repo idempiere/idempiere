@@ -36,7 +36,7 @@ public final class ALoginRes_hu extends ListResourceBundle
 	{
 	{ "Connection",         "Kapcsolat" },
 	{ "Defaults",           "Alap\u00e9rtelmez\u00e9s" },
-	{ "Login",              "ADempiere Bel\u00e9p\u00e9s" },
+	{ "Login",              "iDempiere Bel\u00e9p\u00e9s" },
 	{ "File",               "F\u00e1jl" },
 	{ "Exit",               "Kil\u00e9p\u00e9s" },
 	{ "Help",               "S\u00fag\u00f3" },

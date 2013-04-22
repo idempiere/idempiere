@@ -259,13 +259,13 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		String sql = "SELECT c.ColumnName, t.AD_Table_ID, t.TableName, c.ColumnSql "
 			+ "FROM AD_Table t"
 			+ " INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID)"
-			+ "WHERE c.AD_Reference_ID=10"
+			+ "WHERE c.AD_Reference_ID IN (10,14)"
 			+ " AND t.TableName=?"	//	#1
 			//	Displayed in Window
 			+ " AND EXISTS (SELECT * FROM AD_Field f "
 				+ "WHERE f.AD_Column_ID=c.AD_Column_ID"
 				+ " AND f.IsDisplayed='Y' AND f.IsEncrypted='N' AND f.ObscureType IS NULL) "
-			+ "ORDER BY c.IsIdentifier DESC, c.SeqNo";
+			+ "ORDER BY c.IsIdentifier DESC, c.AD_Reference_ID, c.SeqNo";
 
 		int AD_Table_ID = 0;
 		String tableName = null;
@@ -310,6 +310,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		//	Miminum check
 		if (m_queryColumns.size() == 0)
 		{
+			FDialog.error(p_WindowNo, this, "Error", "No query columns found");
 			log.log(Level.SEVERE, "No query columns found");
 			return false;
 		}

@@ -640,7 +640,7 @@ public class CompiereColor implements Serializable
 		if (!isTexture())
 			return null;
 		if (m_textureURL == null)
-			m_textureURL = CompiereColor.class.getResource("Adempiere00x100.gif");
+			m_textureURL = CompiereColor.class.getResource("iDempiere00x100.gif");
 		return m_textureURL;
 	}   //  getTextureURL
 

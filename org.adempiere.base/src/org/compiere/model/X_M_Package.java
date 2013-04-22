@@ -32,7 +32,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121212L;
+	private static final long serialVersionUID = 20130419L;
 
     /** Standard Constructor */
     public X_M_Package (Properties ctx, int M_Package_ID, String trxName)
@@ -592,23 +592,26 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return bd;
 	}
 
-	public org.compiere.model.I_C_BPartner_Location getHoldAddr() throws RuntimeException
+	public org.compiere.model.I_C_BPartner_Location getHoldAddress() throws RuntimeException
     {
 		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getHoldAddress(), get_TrxName());	}
+			.getPO(getHoldAddress_ID(), get_TrxName());	}
 
 	/** Set Hold Address.
-		@param HoldAddress Hold Address	  */
-	public void setHoldAddress (int HoldAddress)
+		@param HoldAddress_ID Hold Address	  */
+	public void setHoldAddress_ID (int HoldAddress_ID)
 	{
-		set_Value (COLUMNNAME_HoldAddress, Integer.valueOf(HoldAddress));
+		if (HoldAddress_ID < 1) 
+			set_Value (COLUMNNAME_HoldAddress_ID, null);
+		else 
+			set_Value (COLUMNNAME_HoldAddress_ID, Integer.valueOf(HoldAddress_ID));
 	}
 
 	/** Get Hold Address.
 		@return Hold Address	  */
-	public int getHoldAddress () 
+	public int getHoldAddress_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_HoldAddress);
+		Integer ii = (Integer)get_Value(COLUMNNAME_HoldAddress_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

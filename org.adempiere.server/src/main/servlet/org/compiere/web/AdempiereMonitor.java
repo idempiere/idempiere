@@ -189,7 +189,7 @@ public class AdempiereMonitor extends HttpServlet
 			return false;
 		}
 		
-		WebDoc doc = WebDoc.create ("Adempiere Server Monitor Log");
+		WebDoc doc = WebDoc.create ("iDempiere Server Monitor Log");
 		//	Body
 		body b = doc.getBody();
 		//
@@ -555,7 +555,7 @@ public class AdempiereMonitor extends HttpServlet
 	private void createSummaryPage (HttpServletRequest request, HttpServletResponse response,boolean refresh)
 		throws ServletException, IOException
 	{
-		WebDoc doc = WebDoc.create ("Adempiere Server Monitor");
+		WebDoc doc = WebDoc.create ("iDempiere Server Monitor");
 	//	log.info("ServletConfig=" + getServletConfig());
 		AdempiereServerGroup.get().dump();
 
@@ -1094,7 +1094,7 @@ public class AdempiereMonitor extends HttpServlet
 	 */
 	public String getServletInfo ()
 	{
-		return "Adempiere Server Monitor";
+		return "iDempiere Server Monitor";
 	}	//	getServletName
 
 	private static final String s_dirAccessFileName = "dirAccess.txt";

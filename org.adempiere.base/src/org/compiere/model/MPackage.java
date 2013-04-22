@@ -282,6 +282,7 @@ public class MPackage extends X_M_Package
 		{			
 			MShippingTransaction st = createShippingTransaction(action, isPriviledgedRate, trx.getTrxName());
 			ok = st.processOnline();
+			st.saveEx();
 			
 			if (action.equals(MShippingTransaction.ACTION_ProcessShipment))
 			{
@@ -443,10 +444,22 @@ public class MPackage extends X_M_Package
 					sb.append("FROM M_InOutLine ");
 					sb.append("WHERE M_InOut_ID = ?) ");
 					sb.append("ORDER BY C_OrderLine_ID DESC");
-					int C_Invoice_ID = DB.getSQLValue(get_TrxName(), sb.toString(), getM_InOut_ID());
-					if (C_Invoice_ID > 0)
-						invoice = new MInvoice(getCtx(), C_Invoice_ID, get_TrxName());
+					int C_Order_ID = DB.getSQLValue(get_TrxName(), sb.toString(), getM_InOut_ID());
+					if (C_Order_ID > 0)
+						order = new MOrder(getCtx(), C_Order_ID, get_TrxName());
 				}
+			}
+			
+			if (invoice == null && order != null)
+			{
+				StringBuilder sb = new StringBuilder();
+				sb.append("SELECT C_Invoice_ID ");
+				sb.append("FROM C_Invoice ");
+				sb.append("WHERE C_Order_ID = ? ");
+				sb.append("ORDER BY C_Invoice_ID DESC");
+				int C_Invoice_ID = DB.getSQLValue(get_TrxName(), sb.toString(), order.getC_Order_ID());
+				if (C_Invoice_ID > 0)
+					invoice = new MInvoice(getCtx(), C_Invoice_ID, get_TrxName());
 			}
 		}
 		
@@ -508,7 +521,7 @@ public class MPackage extends X_M_Package
 		st.setFreightCharges(getFreightCharges());
 		st.setHandlingCharge(getHandlingCharge());
 		st.setHeight(getHeight());
-		st.setHoldAddress(getHoldAddress());
+		st.setHoldAddress_ID(getHoldAddress_ID());
 		st.setHomeDeliveryPremiumDate(getHomeDeliveryPremiumDate());
 		st.setHomeDeliveryPremiumPhone(getHomeDeliveryPremiumPhone());
 		st.setHomeDeliveryPremiumType(getHomeDeliveryPremiumType());
@@ -567,6 +580,15 @@ public class MPackage extends X_M_Package
 		for (int i = 0; i < ids.length; i++)
 		{
 			MPackageMPS packageMPS = new MPackageMPS(getCtx(), ids[i], get_TrxName());
+			if (packageMPS.getWeight() == null || packageMPS.getWeight().compareTo(BigDecimal.ZERO) == 0)
+			{
+				String sql = "SELECT SUM(LineWeight) FROM X_PackageLineWeight plw WHERE plw.M_PackageMPS_ID=?";
+				BigDecimal weight = DB.getSQLValueBD(get_TrxName(), sql, packageMPS.getM_PackageMPS_ID());
+				if (weight == null)
+					weight = BigDecimal.ZERO;
+				packageMPS.setWeight(weight);
+				packageMPS.saveEx();
+			}
 			
 			MShippingTransactionLine stl = new MShippingTransactionLine(st.getCtx(), 0, st.get_TrxName());
 			stl.setAD_Client_ID(packageMPS.getAD_Client_ID());

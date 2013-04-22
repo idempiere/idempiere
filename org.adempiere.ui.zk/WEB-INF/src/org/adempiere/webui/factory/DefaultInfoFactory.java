@@ -108,6 +108,10 @@ public class DefaultInfoFactory implements IInfoFactory {
 	            info = new InfoGeneralPanel (value, WindowNo,
 	                tableName, keyColumn,
 	                multiSelection, whereClause, lookup);
+	        	if (!info.loadedOK()) {
+	        		info.dispose(false);
+	        		info = null;
+	        	}
         	}
         }
         //

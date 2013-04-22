@@ -62,14 +62,14 @@ public interface I_M_CommodityShipment
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name CountryOfManufacture */
-    public static final String COLUMNNAME_CountryOfManufacture = "CountryOfManufacture";
+    /** Column name CountryOfManufacture_ID */
+    public static final String COLUMNNAME_CountryOfManufacture_ID = "CountryOfManufacture_ID";
 
 	/** Set Country Of Manufacture	  */
-	public void setCountryOfManufacture (int CountryOfManufacture);
+	public void setCountryOfManufacture_ID (int CountryOfManufacture_ID);
 
 	/** Get Country Of Manufacture	  */
-	public int getCountryOfManufacture();
+	public int getCountryOfManufacture_ID();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -131,6 +131,24 @@ public interface I_M_CommodityShipment
 	  */
 	public boolean isActive();
 
+    /** Column name M_CommodityShipment_ID */
+    public static final String COLUMNNAME_M_CommodityShipment_ID = "M_CommodityShipment_ID";
+
+	/** Set Commodity Shipment	  */
+	public void setM_CommodityShipment_ID (int M_CommodityShipment_ID);
+
+	/** Get Commodity Shipment	  */
+	public int getM_CommodityShipment_ID();
+
+    /** Column name M_CommodityShipment_UU */
+    public static final String COLUMNNAME_M_CommodityShipment_UU = "M_CommodityShipment_UU";
+
+	/** Set M_CommodityShipment_UU	  */
+	public void setM_CommodityShipment_UU (String M_CommodityShipment_UU);
+
+	/** Get M_CommodityShipment_UU	  */
+	public String getM_CommodityShipment_UU();
+
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
 
@@ -161,22 +179,4 @@ public interface I_M_CommodityShipment
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name M_CommodityShipment_ID */
-    public static final String COLUMNNAME_M_CommodityShipment_ID = "M_CommodityShipment_ID";
-
-	/** Set M_CommodityShipment	  */
-	public void setM_CommodityShipment_ID (int M_CommodityShipment_ID);
-
-	/** Get M_CommodityShipment	  */
-	public int getM_CommodityShipment_ID();
-
-    /** Column name M_CommodityShipment_UU */
-    public static final String COLUMNNAME_M_CommodityShipment_UU = "M_CommodityShipment_UU";
-
-	/** Set M_CommodityShipment_UU	  */
-	public void setM_CommodityShipment_UU (String M_CommodityShipment_UU);
-
-	/** Get M_CommodityShipment_UU	  */
-	public String getM_CommodityShipment_UU();
 }

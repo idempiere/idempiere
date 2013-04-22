@@ -549,7 +549,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			getDirectAccessSQL("*");
 
 		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, queryValue, false, whereClause);
-		showInfoPanel(ip);
+		if (ip != null)
+			showInfoPanel(ip);
 	}
 
 

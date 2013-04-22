@@ -21,6 +21,7 @@ import java.awt.Component;
 import java.awt.Insets;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 
 import javax.swing.JCheckBox;
@@ -204,10 +205,16 @@ public final class VCellRenderer extends DefaultTableCellRenderer
 				;
 			//	Number
 			else if (DisplayType.isNumeric(m_displayType))
-				retValue = m_numberFormat.format(value);
+				if (value instanceof Number)
+					retValue = m_numberFormat.format(value);
+				else
+					retValue = value.toString();
 			//	Date
 			else if (DisplayType.isDate(m_displayType))
-				retValue = m_dateFormat.format(value);
+				if (value instanceof Date)
+					retValue = m_dateFormat.format(value);
+				else
+					retValue = value.toString();
 			//	Row ID
 			else if (m_displayType == DisplayType.RowID)
 				retValue = "";

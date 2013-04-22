@@ -141,7 +141,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		Cell rightCell = new Cell();
 		southHLayout.appendChild(rightCell);
 		rightCell.setAlign("right");
-		rightCell.setHflex("2");
+		rightCell.setHflex("true");
 		sDiv = new Div();
 		sDiv.setWidth("70px");
 		rightCell.appendChild(sDiv);

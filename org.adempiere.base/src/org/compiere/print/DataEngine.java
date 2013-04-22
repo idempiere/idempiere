@@ -739,12 +739,9 @@ public class DataEngine
 			cc++;
 		//
 		m_synonym = String.valueOf(cc);
-		if (length == 1)
-			return;
-		m_synonym += String.valueOf(cc);
-		if (length == 2)
-			return;
-		m_synonym += String.valueOf(cc);
+		for (int i = 1; i < length; i++) {
+			m_synonym += String.valueOf(cc);
+		}
 	}	//	synonymNext
 
 	/**

@@ -4,9 +4,9 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
     version="2.4">
 	<icon>
-		<large-icon>/C32.gif</large-icon>
+		<large-icon>/iD32.gif</large-icon>
 	</icon>
-	<display-name>ADempiere Web Store</display-name>
+	<display-name>iDempiere Web Store</display-name>
 	<description></description>
 	<!--Standard Parameters - if 0 use web store context -->
 	<context-param>

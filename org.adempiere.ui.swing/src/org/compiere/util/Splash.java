@@ -93,7 +93,7 @@ public class Splash extends Frame
 	 */
 	public Splash (String text)
 	{
-		super("Adempiere");
+		super("iDempiere");
 		System.out.println(text);
 		message.setText(text);
 		try

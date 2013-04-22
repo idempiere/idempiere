@@ -11,7 +11,7 @@
 		<description kind = "short">Adempiere ERP+CRM ($$context)</description>
 		<description kind = "one-line">Adempiere ERP+CRM</description>
 		<description kind = "tooltip">Adempiere ERP+CRM ($$context)</description>
-		<icon href = "$$context/C32.gif"/>
+		<icon href = "$$context/iD32.gif"/>
 		<shortcut online="true">
 			<desktop/>
 			<menu submenu="Adempiere 3.6.0LTS $$context"/>

@@ -1,3 +1,4 @@
+DROP VIEW m_product_stock_v;
 CREATE OR REPLACE VIEW m_product_stock_v AS 
  SELECT ms.isactive, ms.created, ms.createdby, ms.updated, ms.updatedby, mp.value, mp.help, ms.qtyonhand - coalesce(mr.qty,0) AS qtyavailable, ms.qtyonhand, coalesce(mr.qty,0) as qtyreserved, mp.description, mw.name AS warehouse, mw.m_warehouse_id, mw.ad_client_id, mw.ad_org_id, mp.documentnote
    FROM m_storageonhand ms
@@ -7,6 +8,7 @@ CREATE OR REPLACE VIEW m_product_stock_v AS
    LEFT JOIN m_storagereservation mr ON ms.m_product_id = mr.m_product_id AND mw.m_warehouse_id = mr.m_warehouse_id AND mr.isSOTrx='Y'
   ORDER BY mw.name;
 
+DROP VIEW m_product_substituterelated_v;
 CREATE OR REPLACE VIEW m_product_substituterelated_v AS 
          SELECT s.ad_client_id, s.ad_org_id, s.isactive, s.created, s.createdby, s.updated, s.updatedby, s.m_product_id, s.substitute_id, 'S'::text AS rowtype, mp.name, sum(ms.qtyonhand - coalesce(mr.qty,0)) AS qtyavailable, sum(ms.qtyonhand) AS qtyonhand, coalesce(sum(mr.qty),0) AS qtyreserved, round(max(mpr.pricestd), 0) AS pricestd, mpr.m_pricelist_version_id, mw.m_warehouse_id, org.name AS orgname
            FROM m_substitute s

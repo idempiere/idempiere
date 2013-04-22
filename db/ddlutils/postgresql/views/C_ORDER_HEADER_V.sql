@@ -1,4 +1,4 @@
-﻿DROP VIEW c_order_header_v;
+DROP VIEW c_order_header_v;
 
 CREATE OR REPLACE VIEW c_order_header_v AS 
 SELECT o.ad_client_id,
@@ -471,7 +471,9 @@ SELECT o.ad_client_id,
     bbpc.supervisor_id               AS bill_user_supervisor_id,
     bbpc.updated                     AS bill_user_updated,
     bbpc.updatedby                   AS bill_user_updatedby,
-    bbpc.value                       AS bill_user_value 
+    bbpc.value                       AS bill_user_value,
+    cur.cursymbol,
+    cur.description                  AS cur_description
 FROM c_order o 
         JOIN c_doctype dt 
         ON o.c_doctype_id = dt.c_doctype_id 
@@ -505,4 +507,6 @@ FROM c_order o
         ON o.bill_location_id = bbpl.c_bpartner_location_id 
         LEFT JOIN ad_user bbpc 
         ON o.bill_user_id = bbpc.ad_user_id
+        LEFT JOIN c_currency cur
+        ON o.c_currency_id = cur.c_currency_id
 ;

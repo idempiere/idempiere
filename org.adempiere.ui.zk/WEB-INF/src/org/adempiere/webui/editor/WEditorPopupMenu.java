@@ -122,6 +122,8 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     	    	this.newEnabled = false;
     	    	this.updateEnabled = false;
     		} else {
+    			int posPoint = lookup.getColumnName().indexOf(".");
+    			String tableName = lookup.getColumnName().substring(0, posPoint);
     			int cnt = DB.getSQLValueEx(null,
     					"SELECT COUNT(*) "
     							+ "FROM   AD_Field f "
@@ -130,8 +132,10 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     							+ "WHERE  t.AD_Window_ID = ? "
     							+ "       AND f.IsActive = 'Y' "
     							+ "       AND t.IsActive = 'Y' "
-    							+ "       AND f.IsQuickEntry = 'Y' ",
-    					winID);
+    							+ "       AND f.IsQuickEntry = 'Y' "
+    							+ "       AND (t.TabLevel = 0 "
+    							+ "          AND   t.AD_Table_ID IN (SELECT AD_Table_ID FROM AD_Table WHERE TableName = ? )) ",
+    					winID,tableName);
     			if (cnt > 0) {
         	    	this.newEnabled = true;
         	    	this.updateEnabled = true;

@@ -38,7 +38,6 @@ import org.compiere.model.MUOM;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
-import org.compiere.util.Trx;
 
 /**
  * 
@@ -100,23 +99,17 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 			}
 		}
 		
-		Trx trx = Trx.get(Trx.createTrxName("spt-"), true);
 		boolean ok = false;
 		MShippingTransaction st = null;
 		try
 		{			
 			st = createShippingTransaction(getCtx(), m_order, MShippingTransaction.ACTION_RateInquiry, p_IsPriviledgedRate, get_TrxName());
 			ok = st.processOnline();
+			st.saveEx();
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "processOnline", e);
-		}
-		
-		if (trx != null)
-		{
-			trx.commit();
-			trx.close();
 		}
 		
 		if (ok)

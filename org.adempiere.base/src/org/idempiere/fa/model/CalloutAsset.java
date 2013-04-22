@@ -51,9 +51,10 @@ public class CalloutAsset extends CalloutEngine {
 
 	public String asset(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
-		if (MAsset.COLUMNNAME_A_Asset_ID.equals(mField.getColumnName()))
+		if (value != null && MAsset.COLUMNNAME_A_Asset_ID.equals(mField.getColumnName()))
 		{
 			MAsset asset = new MAsset(ctx, (Integer) value, null);
+			if (asset != null)
 			mTab.setValue(MAsset.COLUMNNAME_M_Product_ID, asset.getM_Product_ID());
 		}
 		

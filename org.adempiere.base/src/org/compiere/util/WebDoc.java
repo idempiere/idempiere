@@ -186,7 +186,7 @@ public class WebDoc
 		m_topRight = new td().setAlign("right");
 		
 		if (javaClient) {
-			m_topRight.addElement(new img("res:org/compiere/images/AD10030.png")
+			m_topRight.addElement(new img("res:org/compiere/images/iD10030.png")
 			.setAlign(AlignType.RIGHT).setAlt("iDempiere"));
 		} else {
 			m_topRight.addElement(new img("images/header-logo.png")

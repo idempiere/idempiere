@@ -405,7 +405,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		vbox.setPack("center");
 		vbox.setParent(tabPanel);
 
-		Image image = new Image(ThemeManager.getSmallLogo());
+		Image image = new Image(ThemeManager.getLargeLogo());
 		image.setParent(vbox);
 
 		Text text = new Text(Adempiere.getSubtitle());

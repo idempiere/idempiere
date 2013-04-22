@@ -303,7 +303,7 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 	public String getCountryOfManufacture(int M_Product_ID) 
 	{
 		X_M_CommodityShipment commodityShipment = getCommodityShipment(M_Product_ID);
-		int countryId = commodityShipment.getCountryOfManufacture();
+		int countryId = commodityShipment.getCountryOfManufacture_ID();
 		X_C_Country c = new X_C_Country(getCtx(), countryId, null);
 		return c.getCountryCode();
 	}

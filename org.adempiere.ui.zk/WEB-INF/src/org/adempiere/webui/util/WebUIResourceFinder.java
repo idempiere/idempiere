@@ -42,7 +42,7 @@ public class WebUIResourceFinder implements IResourceFinder {
 	
 	@Override
 	public URL getResource(String name) {
-		if ("images/AdempiereHR.png".equals(name) || "images/Adempiere.png".equals(name)) {
+		if ("images/iDempiereHR.png".equals(name) || "images/iDempiere.png".equals(name)) {
 			name = ThemeManager.getThemeResource("images/header-logo.png");
 		}
 		Enumeration<URL> e = find(name);

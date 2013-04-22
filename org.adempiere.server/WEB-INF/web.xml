@@ -4,20 +4,20 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
    version="2.4">
-	<display-name>ADempiere Root</display-name>
+	<display-name>iDempiere Root</display-name>
 	<description></description>
 	<context-param>
 		<param-name>ServerRoot</param-name>
 		<param-value>1</param-value>
 	</context-param>
 	<filter>
-		<display-name>ADempiere Monitor Filter</display-name>
-		<filter-name>AdempiereMonitorFilter</filter-name>
+		<display-name>iDempiere Monitor Filter</display-name>
+		<filter-name>idempiereMonitorFilter</filter-name>
 		<filter-class>org.compiere.web.AdempiereMonitorFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>AdempiereMonitorFilter</filter-name>
-		<url-pattern>/adempiereMonitor/*</url-pattern>
+		<filter-name>idempiereMonitorFilter</filter-name>
+		<url-pattern>/idempiereMonitor/*</url-pattern>
 	</filter-mapping>
 	<servlet>
 		<display-name>JNLP Download Servlet</display-name>
@@ -30,15 +30,15 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet>
-		<description>ADempiere Server Status Info</description>
+		<description>iDempiere Server Status Info</description>
 		<display-name>Server Status</display-name>
 		<servlet-name>StatusInfo</servlet-name>
 		<servlet-class>org.compiere.web.StatusInfo</servlet-class>
 	</servlet>
 	<servlet>
-		<description>ADempiere Server Monitor</description>
-		<display-name>ADempiere Monitor</display-name>
-		<servlet-name>AdempiereMonitor</servlet-name>
+		<description>iDempiere Server Monitor</description>
+		<display-name>iDempiere Monitor</display-name>
+		<servlet-name>idempiereMonitor</servlet-name>
 		<servlet-class>org.compiere.web.AdempiereMonitor</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
@@ -61,8 +61,8 @@
 		<url-pattern>/statusInfo</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>AdempiereMonitor</servlet-name>
-		<url-pattern>/adempiereMonitor/*</url-pattern>
+		<servlet-name>idempiereMonitor</servlet-name>
+		<url-pattern>/idempiereMonitor/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>  
       <servlet-name>RestletServlet</servlet-name>  
@@ -86,7 +86,7 @@
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>admin</web-resource-name>
-			<url-pattern>/adempiereMonitor/*</url-pattern>
+			<url-pattern>/idempiereMonitor/*</url-pattern>
 		</web-resource-collection>
 		<web-resource-collection>
 			<web-resource-name>service</web-resource-name>
@@ -97,6 +97,6 @@
 		</user-data-constraint>
 	</security-constraint>
 	<welcome-file-list>
-		<welcome-file>adempiere.html</welcome-file>
+		<welcome-file>idempiere.html</welcome-file>
 	</welcome-file-list>
 </web-app>

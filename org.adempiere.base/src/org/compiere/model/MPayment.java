@@ -493,8 +493,17 @@ public final class MPayment extends X_C_Payment
 			setPaymentProcessor();
 		if (m_mBankAccountProcessor == null)
 		{
-			log.log(Level.WARNING, "No Payment Processor Model");
-			setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNoProcessorModel"));
+			if (getC_PaymentProcessor_ID() > 0)
+			{
+				MPaymentProcessor pp = new MPaymentProcessor(getCtx(), getC_PaymentProcessor_ID(), get_TrxName());
+				log.log(Level.WARNING, "No Payment Processor Model " + pp.toString());
+				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNoProcessorModel") + ": " + pp.toString());
+			}
+			else
+			{
+				log.log(Level.WARNING, "No Payment Processor Model");
+				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNoProcessorModel"));
+			}
 			return false;
 		}
 
@@ -549,6 +558,8 @@ public final class MPayment extends X_C_Payment
 		
 		try
 		{
+			trx.start();
+			
 			MPaymentTransaction m_mPaymentTransaction = createPaymentTransaction(trx.getTrxName());
 			m_mPaymentTransaction.setIsApproved(approved);
 			if(getTrxType().equals(TRXTYPE_Void) || getTrxType().equals(TRXTYPE_CreditPayment))

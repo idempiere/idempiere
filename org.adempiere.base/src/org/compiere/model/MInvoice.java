@@ -1964,37 +1964,63 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		// auto delay capture authorization payment
 		if (isSOTrx() && !isReversal())
 		{
-			int[] ids = MPaymentTransaction.getAuthorizationPaymentTransactionIDs(getC_Order_ID(), getC_Invoice_ID(), get_TrxName());			
+			StringBuilder whereClause = new StringBuilder();
+			whereClause.append("C_Order_ID IN (");
+			whereClause.append("SELECT C_Order_ID ");
+			whereClause.append("FROM C_OrderLine ");
+			whereClause.append("WHERE C_OrderLine_ID IN (");
+			whereClause.append("SELECT C_OrderLine_ID ");
+			whereClause.append("FROM C_InvoiceLine ");
+			whereClause.append("WHERE C_Invoice_ID = ");
+			whereClause.append(getC_Invoice_ID()).append("))");
+			int[] orderIDList = MOrder.getAllIDs(MOrder.Table_Name, whereClause.toString(), get_TrxName());
+			
+			int[] ids = MPaymentTransaction.getAuthorizationPaymentTransactionIDs(orderIDList, getC_Invoice_ID(), get_TrxName());			
 			if (ids.length > 0)
 			{
+				boolean pureCIM = true;
 				ArrayList<MPaymentTransaction> ptList = new ArrayList<MPaymentTransaction>();
 				BigDecimal totalPayAmt = BigDecimal.ZERO;
 				for (int id : ids)
 				{
-					MPaymentTransaction pt = new MPaymentTransaction(Env.getCtx(), id, get_TrxName());
+					MPaymentTransaction pt = new MPaymentTransaction(getCtx(), id, get_TrxName());
 					
+					if (!pt.setPaymentProcessor())
+					{
+						if (pt.getC_PaymentProcessor_ID() > 0)
+						{
+							MPaymentProcessor pp = new MPaymentProcessor(getCtx(), pt.getC_PaymentProcessor_ID(), get_TrxName());
+							m_processMsg = Msg.getMsg(getCtx(), "PaymentNoProcessorModel") + ": " + pp.toString();
+						}
+						else
+							m_processMsg = Msg.getMsg(getCtx(), "PaymentNoProcessorModel");
+						return DocAction.STATUS_Invalid;
+					}
+					
+					boolean isCIM = pt.getC_PaymentProcessor_ID() > 0 && pt.getCustomerPaymentProfileID() != null && pt.getCustomerPaymentProfileID().length() > 0;
+					if (pureCIM && !isCIM)
+						pureCIM = false;
 					
 					totalPayAmt = totalPayAmt.add(pt.getPayAmt());
 					ptList.add(pt);
 				}
 				
 				// automatically void authorization payment and create a new sales payment when invoiced amount is NOT equals to the authorized amount (applied to CIM payment processor)
-				if(getGrandTotal().compareTo(totalPayAmt) != 0 && 
-						ptList.size() > 0 && 
-						ptList.get(0).getCustomerPaymentProfileID() != null && 
-						ptList.get(0).getCustomerPaymentProfileID().length() > 0)
+				if (getGrandTotal().compareTo(totalPayAmt) != 0 && ptList.size() > 0 && pureCIM)
 				{
 					// create a new sales payment
 					MPaymentTransaction newSalesPT = MPaymentTransaction.copyFrom(ptList.get(0), new Timestamp(System.currentTimeMillis()), MPayment.TRXTYPE_Sales, "", get_TrxName());
 					newSalesPT.setIsApproved(false);
 					newSalesPT.setIsVoided(false);
 					newSalesPT.setIsDelayedCapture(false);
-					newSalesPT.setDescription("InvoicedAmt: " + getGrandTotal() + " > TotalAuthorizedAmt: " + totalPayAmt);
+					newSalesPT.setDescription("InvoicedAmt: " + getGrandTotal() + " <> TotalAuthorizedAmt: " + totalPayAmt);
+					newSalesPT.setC_Invoice_ID(getC_Invoice_ID());
+					newSalesPT.setPayAmt(getGrandTotal());
 					
 					// void authorization payment
 					for (MPaymentTransaction pt : ptList)
 					{
-						pt.setDescription("InvoicedAmt: " + getGrandTotal() + " > AuthorizedAmt: " + pt.getPayAmt());
+						pt.setDescription("InvoicedAmt: " + getGrandTotal() + " <> AuthorizedAmt: " + pt.getPayAmt());
 						boolean ok = pt.voidOnlineAuthorizationPaymentTransaction();
 						pt.saveEx();
 						if (!ok)
@@ -2012,6 +2038,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 						m_processMsg = Msg.getMsg(getCtx(), "CreateNewSalesPaymentFailed") + ": " + newSalesPT.getErrorMessage();
 						return DocAction.STATUS_Invalid;
 					}
+				}
+				else if (getGrandTotal().compareTo(totalPayAmt) != 0 && ptList.size() > 0)
+				{
+					m_processMsg = "InvoicedAmt: " + getGrandTotal() + " <> AuthorizedAmt: " + totalPayAmt;
+					return DocAction.STATUS_Invalid;
 				}
 				else
 				{

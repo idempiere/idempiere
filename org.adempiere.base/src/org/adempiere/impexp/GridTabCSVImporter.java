@@ -94,6 +94,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 		String delimiter = String.valueOf((char) csvpref.getDelimiterChar());
 		String quoteChar = String.valueOf((char) csvpref.getQuoteChar());
 		m_import_mode = importMode;
+		PO masterRecord = null;
         
 		if(!gridTab.isInsertRecord() && isInsertMode())
         	throw new AdempiereException("Insert record disabled for Tab");
@@ -292,8 +293,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 				// write the header
 				logFileW.write(rawHeader + delimiter + LOG_HEADER + "\n");
 				// no errors found - process header and then details 
-				boolean isMasterok = true;
-				PO masterRecord = null; 
+				boolean isMasterok = true; 
 				String trxName= null;
 				for (int idx = 0; idx < data.size(); idx++) {
 					String rawLine = rawData.get(idx);
@@ -302,12 +302,20 @@ public class GridTabCSVImporter implements IGridTabImporter
 					Trx trx = null;
 					GridTab currentGridTab=null;
 					boolean error=false;
-					boolean isDetail=false ;
+					boolean isDetail=false;
 					int currentColumn=0;
 					
-					if (rawLine.charAt(0)==',')
-						isDetail=true;
-		
+					if (rawLine.charAt(0)==','){
+				    	isDetail=true;
+						//check out if master row comes empty  
+						Map<String, Object> rowMap = data.get(idx);
+					    for(int i=0; i < indxDetail-1; i++){	
+					    	if(rowMap.get(header.get(i))!=null){
+					    	   isDetail=false;
+					    	   break;
+					    	}
+					    }
+					}
 					//if master failed, then ignore any detail from it.  
 					if (!isMasterok && isDetail){
 						rawLine = rawLine + delimiter + quoteChar + Msg.getMsg(Env.getCtx(),"NotProccesed") + quoteChar + "\n";
@@ -316,7 +324,6 @@ public class GridTabCSVImporter implements IGridTabImporter
 					}					
 					
 					try {
-						Map<String, Object> map = data.get(idx);
 						isMasterok = true;
 						if(!isDetail){
 						   masterRecord = null;
@@ -335,21 +342,24 @@ public class GridTabCSVImporter implements IGridTabImporter
 						
 							currentGridTab.getTableModel().setImportingMode(true,trxName);	
 							trx = Trx.get(trxName,true);
-							int j =  tabIndex.getValue();	
+							int j = tabIndex.getValue();	
 							
-							logMsg = areValidKeysAndColumns(currentGridTab,map,header,currentColumn,j,masterRecord);
+							logMsg = areValidKeysAndColumns(currentGridTab,data.get(idx),header,currentColumn,j,masterRecord);
 							
 							if (logMsg == null){
 								if (isInsertMode()){
 								  if(!currentGridTab.getTableModel().isOpen())
 								      currentGridTab.getTableModel().open(0);					
 								  //how to read from status since the warning is coming empty ?
-								  if (!currentGridTab.dataNew(false))
+								  if (!currentGridTab.dataNew(false)){
 									  logMsg = "["+currentGridTab.getName()+"]"+"- Was not able to create a new record!";
+								  }else{
+									  currentGridTab.navigateCurrent();
+								  }
 								} 
 								
 								if(logMsg==null)
-								   logMsg = proccessRow(currentGridTab,header,map,currentColumn,j,masterRecord);
+								   logMsg = proccessRow(currentGridTab,header,data.get(idx),currentColumn,j,masterRecord);
 
 								currentColumn = j + 1;		
 								if(!(logMsg == null)){
@@ -357,7 +367,6 @@ public class GridTabCSVImporter implements IGridTabImporter
 							 	   //Ignore row since there is no data 
 								   if("NO_DATA_TO_IMPORT".equals(logMsg)){
 									  logMsg ="";
-									  currentGridTab.dataIgnore();
 									  continue;
 								   }else 
 									  error =true;
@@ -379,11 +388,9 @@ public class GridTabCSVImporter implements IGridTabImporter
 									   logMsg = Msg.getMsg(Env.getCtx(), "Updated")+" "+ po.toString(); 
 									
 									trx.commit();
-									if(isDetail || currentGridTab.isDetail()){
-									   currentGridTab.refreshParentTabs();   
-									   currentGridTab.getTableModel().dataRequery(masterRecord.get_WhereClause(true), false, 0);
-									}
-									currentGridTab.dataRefresh(true);
+									//if it's parent record and there are details, parent needs to be refreshed
+									if(currentGridTab.equals(gridTab) && sortedtTabMapIndexes.size()>1)
+									   currentGridTab.dataRefresh(false);
 								} else {
 									ValueNamePair ppE = CLogger.retrieveWarning();
 									if (ppE==null)   
@@ -428,11 +435,15 @@ public class GridTabCSVImporter implements IGridTabImporter
 						}
 					} catch (Exception e) {
 						rowResult.append("<"+currentGridTab.getTableName()+">: ");
-						rowResult.append(Msg.getMsg(Env.getCtx(), "Error") + " " + e.getLocalizedMessage());
+						rowResult.append(Msg.getMsg(Env.getCtx(), "Error") + " " + e);
 					    rowResult.append(" / ");
 						currentGridTab.dataIgnore();
 						trx.rollback();
 						error = true;
+						//Master Failed, thus details cannot be imported 
+						if(currentGridTab.equals(gridTab) && masterRecord==null){
+						   isMasterok = false;
+						}
 					} finally {						
 					  if (trx != null) {
 						  trx.close();
@@ -463,9 +474,11 @@ public class GridTabCSVImporter implements IGridTabImporter
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-		gridTab.getTableModel().dataRequery("1=1",false,0);
-		gridTab.dataRefreshAll();
+		}	
+		if(masterRecord!=null){
+		   Env.setContext(Env.getCtx(),gridTab.getWindowNo(),gridTab.getTabNo(),GridTab.CTX_SQL,masterRecord.get_WhereClause(true));
+		   gridTab.dataRefresh();
+		}	
 		if (logFile != null)
 			return logFile;
 		else
@@ -649,7 +662,12 @@ public class GridTabCSVImporter implements IGridTabImporter
 		   for(int j= i;j< header.size();j++){
 			   if(!header.get(j).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID)))
 			       break;
-			   				   
+			    //validate if location contains its parent table 
+				if(!header.get(j).contains(gridTab.getTableName()))
+				    return new StringBuilder().append("Invalid location column's name, it must contain its parent table: ")
+				    		   .append(gridTab.getTableName().toString())
+				    		   .append("[").append(header.get(j)).append("]");
+				
 			   String columnName = header.get(j);	
 			   Object value = tmpRow.get(j);   
 			   if(value!=null){ 
@@ -711,12 +729,13 @@ public class GridTabCSVImporter implements IGridTabImporter
 			if(header.get(i).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID))){
 		    
 				if(address == null){
+					String trxName= (masterRecord==null?null:masterRecord.get_TrxName());
 				    if(isInsertMode()){
-					   address = new MLocation (Env.getCtx(),0,masterRecord.get_TrxName());	   
+					   address = new MLocation (Env.getCtx(),0,trxName);	   
 				    }else{
 				       Object location = gridTab.getValue("C_Location_ID")==null?0:gridTab.getValue("C_Location_ID").toString();
 					   int C_Location_ID = Integer.parseInt(location.toString());  
-					   address =  new MLocation (Env.getCtx(),C_Location_ID,masterRecord.get_TrxName());	
+					   address =  new MLocation (Env.getCtx(),C_Location_ID,trxName);	
 				    }
 				}
 				
@@ -784,9 +803,9 @@ public class GridTabCSVImporter implements IGridTabImporter
 				if(!field.isDisplayed(true)) 
 					continue;
 					
-				if (!isInsertMode() && !field.isEditable(true) && value!=null) {
-					logMsg = Msg.getMsg(Env.getCtx(), "FieldNotEditable", new Object[] {header.get(i)}) + "{" + value + "}";
-					break;
+				if(!isInsertMode() && (!field.isEditable(true) && !MColumn.get(Env.getCtx(), field.getAD_Column_ID()).isUpdateable()) && value!=null){
+				   logMsg = Msg.getMsg(Env.getCtx(), "FieldNotEditable", new Object[] {header.get(i)}) + "{" + value + "}";
+				   break;
 				}		
 				if("(null)".equals(value.toString().trim())){
 				   logMsg = gridTab.setValue(field,null);	
@@ -847,6 +866,8 @@ public class GridTabCSVImporter implements IGridTabImporter
 				logMsg = gridTab.setValue("C_Location_ID",address.get_ID());
 				if(logMsg.equals(""))
 				   logMsg= null;
+				else 
+				   return logMsg;
 				
 				isThereRow =true;	
 			}
@@ -981,7 +1002,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 			if (gridTab.isDetail()){
 				for(String linkColumn : gridTab.getParentColumnNames()){
 					if(!pquery.getWhereClause().contains(linkColumn)){
-						Object value = masterRecord.get_Value(linkColumn);
+						Object value = masterRecord!=null?masterRecord.get_Value(linkColumn):null;
 						//resolve key
 						if(value==null){
 						   String columnName = null;
@@ -1017,8 +1038,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 					}
 				}	
 			}
-			gridTab.getTableModel().dataRequery(pquery.getWhereClause(),false,0);
-			gridTab.setCurrentRow(0,true);
+			gridTab.getTableModel().dataRequery(pquery.getWhereClause(), false, 0, false);
 	    	if (isInsertMode()){
 				if(gridTab.getTableModel().getRowCount()>=1)
 				   logMsg = Msg.getMsg(Env.getCtx(), "AlreadyExists")+" "+pquery;
@@ -1026,17 +1046,20 @@ public class GridTabCSVImporter implements IGridTabImporter
 				  return null;	
 			}
 			if (isUpdateMode()){
-				if(gridTab.getTableModel().getRowCount()==1)
+				if(gridTab.getTableModel().getRowCount()==1){
+				   gridTab.navigateRelative(gridTab.getCurrentRow());
 				   return null;
+				}
 				else if(gridTab.getTableModel().getRowCount()<=0)
 				   logMsg = Msg.getMsg(Env.getCtx(), "not.found")+" "+pquery; 
 				else if(gridTab.getTableModel().getRowCount()>1)
 			       logMsg = Msg.getMsg(Env.getCtx(),"TooManyRows")+" "+pquery; 
 			}
 		    if (isMergeMode()){
-			   if(gridTab.getTableModel().getRowCount()==1)
+			   if(gridTab.getTableModel().getRowCount()==1){
+				  gridTab.navigateRelative(gridTab.getCurrentRow());
 				  m_import_mode = IMPORT_MODE_UPDATE;
-			   else if(gridTab.getTableModel().getRowCount()<=0)
+			   }else if(gridTab.getTableModel().getRowCount()<=0)
 				  m_import_mode = IMPORT_MODE_INSERT;
 			   else if(gridTab.getTableModel().getRowCount()>1)
 				  logMsg = Msg.getMsg(Env.getCtx(),"TooManyRows")+" "+pquery; 	

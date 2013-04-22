@@ -2,6 +2,22 @@
 <?component name="divtab" macro-uri="divtab.zul"?>
 <?component name="divarrow" macro-uri="divarrow.zul"?>
 <zk>
+<zscript><![CDATA[
+	import org.compiere.util.Msg;
+	import org.compiere.util.Env;
+	import org.compiere.util.Util;
+	var today = Msg.getMsg(Env.getCtx(),"Today");
+	var refresh = Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Refresh"));
+	var switchTimeZone = Msg.getMsg(Env.getCtx(),"SwitchTimeZone");
+	var Day = Msg.getMsg(Env.getCtx(),"Day");
+	var Week = Msg.getMsg(Env.getCtx(),"Week");
+	var Month = Msg.getMsg(Env.getCtx(),"Month");
+	var Days = Msg.getMsg(Env.getCtx(),"5Days");
+	var EventsAnalysis = Msg.getMsg(Env.getCtx(),"EventsAnalysis");
+	var FirstDayofWeek = Msg.getMsg(Env.getCtx(),"FirstDayofWeek");
+	var RequestType = Msg.getElement(Env.getCtx(),"RequestType");
+	
+]]></zscript>
 <style src="calendar.css"/>
 <borderlayout id="main">
 <center border="none">
@@ -12,37 +28,35 @@
 				<divarrow id="divArrowLeft" type="arrow-left"/>
 				<divarrow id="divArrowRight" type="arrow-right"/>
 				<div>
-					<button id="btnCurrentDate" mold="os" label="today"/>
-					<button id="btnSwitchTimeZone" mold="os" label="Switch TimeZone"/>
+					<button id="btnCurrentDate" mold="os" label="${today}"/>
+					<button id="btnSwitchTimeZone" mold="os" label="${switchTimeZone}"/>
 					<span id="FDOW">
-						First Day of Week:
-						<listbox id="lbxFDOW" mold="select">
-							<listitem forEach="Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday" label="${each}" />
-					    </listbox>
+						${FirstDayofWeek}:
+						<listbox id="lbxFDOW" mold="select"/>
 				    </span>
 					<span>
-						Request Type:
+						${RequestType}:
 						<listbox id="lbxRequestTypes" mold="select"/>
 					</span>
 				    <separator orient="vertical"/>
 					<label id="lblDate"/>
-					<toolbarbutton id="btnRefresh" label="Refresh" class="refresh"/>
+					<toolbarbutton id="btnRefresh" label="${refresh}" class="refresh"/>
 				</div>
 			</hbox>
 		</div>
 		<div class="float-right">
 			<hbox>
-				<divtab id="divTabDay" text="Day"/>
-				<divtab id="divTabWeek" text="Week"/>
-				<divtab id="divTabWeekdays" text="5 Days"/>
-				<divtab id="divTabMonth" text="Month"/>
+				<divtab id="divTabDay" text="${Day}"/>
+				<divtab id="divTabWeek" text="${Week}"/>
+				<divtab id="divTabWeekdays" text="${Days}"/>
+				<divtab id="divTabMonth" text="${Month}"/>
 			</hbox>
 		</div>
 	</toolbar>
 </calendars>
 </center>
-<south open="false" size="300px" flex="true" title="Events Analysis" collapsible="true">
-	<image id="mychart" width="600" height="250"/>
+<south open="false" size="300px" title="${EventsAnalysis}" collapsible="true">
+	<image id="mychart" width="600" height="250" vflex="1" hflex="1"/>
 </south>
 </borderlayout>
 

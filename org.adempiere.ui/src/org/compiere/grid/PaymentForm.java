@@ -216,6 +216,7 @@ public abstract class PaymentForm implements IPaymentForm {
 	{
 		int retValue = 0;
 		String sql = "SELECT C_Invoice_ID FROM C_Invoice WHERE C_Order_ID=? "
+			+ "AND DocStatus NOT IN ('VO','RE') "
 			+ "ORDER BY C_Invoice_ID DESC";     //  last invoice
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

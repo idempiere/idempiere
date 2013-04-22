@@ -100,7 +100,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4727235099287761006L;
+	private static final long serialVersionUID = 5782826500266625861L;
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 
@@ -2917,9 +2917,10 @@ public class GridTable extends AbstractTableModel
 	 *  @param whereClause sql where clause
 	 *  @param onlyCurrentRows only current rows
 	 *  @param onlyCurrentDays how many days back
+	 *  @param fireEvents if tabledatachanged and datastatusievent must be fired
 	 *  @return true if success
 	 */
-	public boolean dataRequery (String whereClause, boolean onlyCurrentRows, int onlyCurrentDays)
+	public boolean dataRequery (String whereClause, boolean onlyCurrentRows, int onlyCurrentDays, boolean fireEvents)
 	{
 		if (log.isLoggable(Level.INFO)) log.info(whereClause + "; OnlyCurrent=" + onlyCurrentRows);
 		close(false);
@@ -2931,11 +2932,17 @@ public class GridTable extends AbstractTableModel
 		m_changed = false;
 		m_rowChanged = -1;
 		m_inserting = false;
-		fireTableDataChanged();
-		fireDataStatusIEvent(DATA_REFRESH_MESSAGE, "");
+		if (fireEvents) {
+			fireTableDataChanged();
+			fireDataStatusIEvent(DATA_REFRESH_MESSAGE, "");
+		}
 		return true;
 	}	//	dataRequery
 
+	public boolean dataRequery (String whereClause, boolean onlyCurrentRows, int onlyCurrentDays)
+	{
+		return dataRequery (whereClause, onlyCurrentRows, onlyCurrentDays, true);
+	}	//	dataRequery
 
 	/**************************************************************************
 	 *	Is Cell Editable.
