@@ -1,7 +1,6 @@
 /**********************************************************************
-* This file is part of Adempiere ERP Bazaar                           *
-* http://www.adempiere.org                                            *
-*                                                                     *
+* This file is part of iDempiere ERP Bazaar                           *
+* http://www.idempiere.org                                            *
 *                                                                     *
 * Copyright (C) Contributors                                          *
 *                                                                     *
@@ -20,7 +19,7 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
 * MA 02110-1301, USA.                                                 *
 *                                                                     *
-***********************************************************************/
+**********************************************************************/
 
 package org.idempiere.fitnesse.fixture;
 
@@ -31,13 +30,8 @@ import java.util.Properties;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.DB;
-import org.idempiere.fitnesse.fixture.Instance;
-import org.idempiere.fitnesse.fixture.Static_iDempiereInstance;
-import org.idempiere.fitnesse.fixture.Util;
 
 import fitnesse.fixtures.TableFixture;
-
-
 
 /**
  * @author juliana
@@ -48,7 +42,7 @@ public class DeleteRecord extends TableFixture {
 	/* (non-Javadoc)
 	 * @see fitnesse.fixtures.TableFixture#doStaticTable(int)
 	 */
-	
+
 	private volatile static Instance adempiereInstance = null;
 	
 	
@@ -72,8 +66,8 @@ public class DeleteRecord extends TableFixture {
 
 		boolean alreadyread = false;
 		StringBuilder whereclause = new StringBuilder("");
-		boolean error = false;
-		String msgerror=null;
+		boolean isErrorExpected = false;
+		String msgerror = null;
 		
 		for (int i = 0; i < rows; i++) {
 			String cell_title = getText(i, 0);
@@ -99,8 +93,8 @@ public class DeleteRecord extends TableFixture {
 				}
 				whereclause.append(cell_value);
 			} else if (cell_title.equalsIgnoreCase("*Delete*") || cell_title.equalsIgnoreCase("*Delete*Error*")) {
-				error = "*Delete*Error*".equalsIgnoreCase(cell_title);
-				msgerror=cell_value;
+				isErrorExpected = "*Delete*Error*".equalsIgnoreCase(cell_title);
+				msgerror = cell_value;
 				if (!tableOK) {
 					getCell(i, 1).addToBody("Table " + tableName + " does not exist");
 					wrong(i, 1);
@@ -121,26 +115,23 @@ public class DeleteRecord extends TableFixture {
 						gpo = table.getPO(rs, null);
 					} else {
 						getCell(i, 1).addToBody("No record found: " + sql);
-						boolean value = Util.evaluateError("No record found: ",cell_value, error);
-						if (value) {
+						boolean ok = Util.evaluateError("No record found: ",cell_value, isErrorExpected);
+						if (ok) {
 							right(i, 1);
-							return;
 						} else {
 							wrong(i, 1);
-							return;
 						}
-
+						return;
 					}
 					if (rs.next()) {
 						getCell(i, 1).addToBody("More than one record found: " + sql);
-						boolean value = Util.evaluateError("More than one record found: ", cell_value,error);
-						if (value) {
+						boolean ok = Util.evaluateError("More than one record found: ", cell_value,isErrorExpected);
+						if (ok) {
 							right(i, 1);
-							return;
 						} else {
 							wrong(i, 1);
-							return;
 						}
+						return;
 					}
 					
 					if (gpo != null) {
@@ -148,14 +139,13 @@ public class DeleteRecord extends TableFixture {
 					}
 							
 				} catch (Exception e) {
-					boolean value = Util.evaluateError(e.getMessage(),msgerror, error);
-					if (value) {
+					boolean ok = Util.evaluateError(e.getMessage(), msgerror, isErrorExpected);
+					if (ok) {
 						right(getCell(i, 1));
-						return;
 					} else {
 						exception(getCell(i, 1), e);
-						return;
 					}
+					return;
 				} finally {
 					DB.close(rs, pstmt);
 					rs = null;
@@ -172,11 +162,11 @@ public class DeleteRecord extends TableFixture {
 						if (whereclause.length() > 0)
 							whereclause.append(" AND ");
 						whereclause.append(cell_title).append("=").append(value_evaluated);
-					} 
+					}
 				}
 			}
 		}//end while
-	
+
 	}
 
 }

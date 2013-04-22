@@ -67,7 +67,7 @@ public class ReadRecord extends TableFixture {
 		POInfo poinfo = null;
 		boolean alreadyread = false;
 		String whereclause = new String("");
-		boolean error=false;
+		boolean isErrorExpected = false;
 		for (int i = 0; i < rows; i++) {
 			String cell_title = getText(i, 0);
 			String cell_value = getText(i, 1);
@@ -89,7 +89,7 @@ public class ReadRecord extends TableFixture {
 				if (i != 1) {
 					exception(getCell(i, 1), new Exception("*Where* must be defined in second row"));
 					return;
-				}				
+				}
 				whereclause = cell_value;
 			} else if (cell_title.equalsIgnoreCase("*Read*") || cell_title.equalsIgnoreCase("*Read*Error*")) {
 				if (! tableOK) {
@@ -97,7 +97,7 @@ public class ReadRecord extends TableFixture {
 					wrong(i, 1);
 					return;
 				} 
-				error="*Read*Error*".equalsIgnoreCase(cell_title);
+				isErrorExpected="*Read*Error*".equalsIgnoreCase(cell_title);
 				if (whereclause.length() == 0) {
 					getCell(i, 1).addToBody("No where clause");
 					wrong(i, 1);
@@ -112,42 +112,39 @@ public class ReadRecord extends TableFixture {
 					rs = pstmt.executeQuery();
 					if (rs.next()) {
 						gpo = table.getPO(rs, null);
-						if(error){
+						if (isErrorExpected) {
 							wrong(i,1);							
 						}
 					} else {
 						getCell(i, 1).addToBody("No record found: " + sql);
-						boolean value=Util.evaluateError("No record found: ",cell_value,error);
-						if(value){
+						boolean ok = Util.evaluateError("No record found: ", cell_value, isErrorExpected);
+						if (ok) {
 							right(i,1);
-							return;
-						}else{
+						} else {
 							wrong(i,1);
-							return;
 						}
+						return;
 					}
 					if (rs.next()) {
 						getCell(i, 1).addToBody("More than one record found: " + sql);
-						boolean value=Util.evaluateError("More than one record found: ",cell_value,error);
-						if(value){
+						boolean ok = Util.evaluateError("More than one record found: ",cell_value,isErrorExpected);
+						if (ok) {
 							right(i,1);
-							return;
-						}else{
+						} else {
 							wrong(i,1);
-							return;
-						}		
+						}
+						return;
 					}
 				}
 				catch (SQLException e)
 				{
-					boolean value=Util.evaluateError(e.getMessage(),cell_value,error);
-					if(value){
+					boolean ok = Util.evaluateError(e.getMessage(),cell_value,isErrorExpected);
+					if (ok) {
 						right(getCell(i, 1));
-						return;
-					}else{
+					} else {
 						exception(getCell(i, 1), e);
-						return;
-					}		
+					}
+					return;
 				}
 				finally
 				{
@@ -158,7 +155,7 @@ public class ReadRecord extends TableFixture {
 				right(i, 1);
 				if (gpo != null) {
 					getCell(i, 1).addToBody(gpo.toString());
-				} 
+				}
 				// read - set context variables
 				for (int idx = 0; idx < poinfo.getColumnCount(); idx++) {
 					String colname = poinfo.getColumnName(idx);

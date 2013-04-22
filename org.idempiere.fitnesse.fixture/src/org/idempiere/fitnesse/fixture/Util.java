@@ -250,16 +250,16 @@ public class Util {
 		
 		return evaluate(ctx, windowNo, expr, null);
 	}
-	
-	public static boolean evaluateError(String error, String cell,boolean isError) {
+
+	public static boolean evaluateError(String error, String cell, boolean isExpectedError) {
 		boolean evaluate = false;
-		
-		if(error == null)
-			error="";
+
+		if (error == null)
+			error = "";
 		if (cell == null)
-			cell="";
-		
-		if (isError) {
+			cell = "";
+
+		if (isExpectedError) {
 			if (cell.length() > 0) {
 				if (error.contains(cell)) {
 					evaluate = true;
@@ -275,5 +275,5 @@ public class Util {
 		}
 		return evaluate;
 	}
-	 
+
 } // AdempiereUtil

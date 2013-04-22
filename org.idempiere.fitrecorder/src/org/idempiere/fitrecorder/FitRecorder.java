@@ -183,7 +183,7 @@ public class FitRecorder implements ModelValidator {
 				// Ignore records created within a workflow process
 				if (po.get_TrxName().startsWith("WFP_"))
 					return null;
-				
+
 				writeFile("\n");
 				writeFile("\n");
 				writeFile("CREATE RECORD");
@@ -227,10 +227,10 @@ public class FitRecorder implements ModelValidator {
 				writeFile("\n");
 
 			}
-			
+
 			if(type == TYPE_AFTER_CHANGE)
 			{
-				if (po instanceof MPInstance) 
+				if (po instanceof MPInstance)
 				{
 					MProcess pro = MProcess.get(Env.getCtx(), po.get_ValueAsInt("AD_Process_ID"));
 					MPInstance pint = (MPInstance)po;
@@ -294,8 +294,7 @@ public class FitRecorder implements ModelValidator {
 					writeFile("|*Run*|");
 					writeFile("\n");					
 
-				}else if(po instanceof MSession)
-				{
+				} else if (po instanceof MSession) {
 					MSession session = (MSession) po;
 					if (session.isProcessed()) {
 						closefile();
@@ -387,7 +386,7 @@ public class FitRecorder implements ModelValidator {
 
 			}
 			
-			if(type == TYPE_AFTER_DELETE)
+			if (type == TYPE_AFTER_DELETE)
 			{
 				if (dontLogTables.contains(po.get_TableName().toUpperCase()))
 					return null;
@@ -399,7 +398,7 @@ public class FitRecorder implements ModelValidator {
 				// Ignore records created within a workflow process
 				if (po.get_TrxName().startsWith("WFP_"))
 					return null;
-				
+
 				writeFile("\n");
 				writeFile("\n");
 				writeFile("DELETE RECORD");
@@ -422,14 +421,12 @@ public class FitRecorder implements ModelValidator {
 					String value=null;
 					if (DisplayType.isLookup(column.getAD_Reference_ID()) && DisplayType.List != column.getAD_Reference_ID()) {
 					     value = resolveValue(po, table, column);
-					}else{
+					} else {
 						value=po.get_ValueAsString(colName);
 					}
 					
-					if (column.isAllowLogging()) 
-					{
-						if (column.isKey()) 
-						{
+					if (column.isAllowLogging()) {
+						if (column.isKey()) {
 							if (!key) {
 								writeFile("| *Where* | ");
 								writeFile(colName + " = " + value+ " | ");
@@ -440,7 +437,7 @@ public class FitRecorder implements ModelValidator {
 							}
 						}
 					}	
-				}//while columns	
+				}//while columns
 				
 				writeFile("\n");
 				writeFile("| *Delete*  |");				
@@ -517,7 +514,7 @@ public class FitRecorder implements ModelValidator {
 		} else {
 			value = po.get_ValueAsString(column.getColumnName());
 		}
-		
+
 		return value;
 	}
 

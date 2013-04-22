@@ -54,8 +54,8 @@ public class Login extends TableFixture {
 		if (adempiereInstance == null) {
 			adempiereInstance = Static_iDempiereInstance.getInstance();
 		}
-		boolean error="*Login*Error*".equalsIgnoreCase(getText(rows-1, 0));
-		String msgerror=getText(rows-1, 1);
+		boolean isErrorExpected = "*Login*Error*".equalsIgnoreCase(getText(rows-1, 0));
+		String msgerror = getText(rows-1, 1);
 		for (int i = 0; i < rows; i++) {
 			String cell_title = getText(i, 0);
 			String cell_value = getText(i, 1);
@@ -106,31 +106,30 @@ public class Login extends TableFixture {
 					|| m_password == null || m_password.length() == 0
 					|| m_role_id < 0
 					|| m_client_id < 0) {
-					
-					boolean value=Util.evaluateError("Incomplete data to login, needed User|Password|AD_Role_ID|AD_Client_ID", msgerror, error);
-					if(value)
+
+					boolean ok = Util.evaluateError("Incomplete data to login, needed User|Password|AD_Role_ID|AD_Client_ID", msgerror, isErrorExpected);
+					if (ok)
 						right(i,1);
-					else					
+					else
 					    exception(getCell(rows-1, 1), new Exception("Incomplete data to login, needed User|Password|AD_Role_ID|AD_Client_ID"));
 				}
 				else {
 					String msg = modelLogin();
 					if (msg == null || msg.length() == 0) {
 						MSession.get (Env.getCtx(), true);//	Start Session
-						if(error){
+						if (isErrorExpected) {
 							wrong(rows-1, 0);
 							wrong(rows-1, 1);
-						}else{
+						} else {
 						   right(rows-1, 0);
 						   right(rows-1, 1);
 						}
 					} else {
-						
-						boolean value=Util.evaluateError(msg, msgerror, error);
-						if(value){
+
+						boolean ok = Util.evaluateError(msg, msgerror, isErrorExpected);
+						if (ok) {
 							right(rows-1, 0);
-						}							
-						else{
+						} else {
 							wrong(rows-1, 0);
 							exception(getCell(rows-1, 1), new Exception(msg));
 						}
