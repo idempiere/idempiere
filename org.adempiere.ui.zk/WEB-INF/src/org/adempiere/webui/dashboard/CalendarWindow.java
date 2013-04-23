@@ -13,6 +13,8 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
+import static org.compiere.model.MSysConfig.CALENDAR_ALTERNATE_TIMEZONE;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -30,9 +32,11 @@ import java.util.TimeZone;
 
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.X_R_RequestType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.encoders.EncoderUtil;
@@ -370,10 +374,20 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 	
 	private String getTimeZone()
 	{
+		String alternateTimeZone = MSysConfig.getValue(CALENDAR_ALTERNATE_TIMEZONE, "Pacific Time=PST", Env.getAD_Client_ID(Env.getCtx()));
 		TimeZone defaultTimeZone = TimeZone.getDefault();
-		String defaultTimeZoneName = defaultTimeZone.getDisplayName();
-		int defaultTimeZoneOffset = defaultTimeZone.getOffset(0) / 3375000;
-		return defaultTimeZoneName + "=GMT" + (defaultTimeZoneOffset > 0 ? "+" : "-") + defaultTimeZoneOffset + ",Pacific Time=GMT-8";
+		StringBuilder defaultTimeZoneName = new StringBuilder(defaultTimeZone.getDisplayName());
+		int defaultTimeZoneOffset = defaultTimeZone.getOffset(0) / 3600000;
+		defaultTimeZoneName.append("=GMT");
+		if (defaultTimeZoneOffset >= 0)
+			defaultTimeZoneName.append("+");
+		defaultTimeZoneName.append(defaultTimeZoneOffset);
+		if (!Util.isEmpty(alternateTimeZone, true)) {
+			if (!alternateTimeZone.equalsIgnoreCase(defaultTimeZoneName.toString())) {
+				defaultTimeZoneName.append(",").append(alternateTimeZone);
+			}
+		}
+		return defaultTimeZoneName.toString();
 	}
 	
 	private void updateDateLabel() {
