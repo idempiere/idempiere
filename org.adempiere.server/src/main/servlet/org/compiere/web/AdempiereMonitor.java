@@ -194,7 +194,7 @@ public class AdempiereMonitor extends HttpServlet
 		body b = doc.getBody();
 		//
 		p para = new p();
-		a link = new a ("adempiereMonitor#" + serverID, "Return");
+		a link = new a ("idempiereMonitor#" + serverID, "Return");
 		para.addElement(link);
 		b.addElement(para);
 		//
@@ -605,16 +605,16 @@ public class AdempiereMonitor extends HttpServlet
 		bb.addElement(table);
 		//
 		p para = new p();
-		a link = new a ("adempiereMonitor?Action=Start_All", "Start All");
+		a link = new a ("idempiereMonitor?Action=Start_All", "Start All");
 		para.addElement(link);
 		para.addElement(" - ");
-		link = new a ("adempiereMonitor?Action=Stop_All", "Stop All");
+		link = new a ("idempiereMonitor?Action=Stop_All", "Stop All");
 		para.addElement(link);
 		para.addElement(" - ");
-		link = new a ("adempiereMonitor?Action=Reload", "Reload");
+		link = new a ("idempiereMonitor?Action=Reload", "Reload");
 		para.addElement(link);
 		para.addElement(" - ");
-		link = new a ("adempiereMonitor", "Refresh");
+		link = new a ("idempiereMonitor", "Refresh");
 		para.addElement(link);
 		bb.addElement(para);
 		
@@ -659,7 +659,7 @@ public class AdempiereMonitor extends HttpServlet
 			if (server.isAlive())
 			{
 				String msg = "Stop";
-				link = new a ("adempiereMonitor?Action=Stop_" + server.getServer().getServerID(), msg);
+				link = new a ("idempiereMonitor?Action=Stop_" + server.getServer().getServerID(), msg);
 				if (server.getServer().isSleeping())
 				{
 					line.addElement(new th().addElement("Sleeping"));
@@ -680,7 +680,7 @@ public class AdempiereMonitor extends HttpServlet
 			{
 				String msg = "Start";
 				line.addElement(new th().addElement("Not Started"));
-				link = new a ("adempiereMonitor?Action=Start_" + server.getServer().getServerID(), msg);
+				link = new a ("idempiereMonitor?Action=Start_" + server.getServer().getServerID(), msg);
 				line.addElement(new td().addElement(link));
 			}
 			table.addElement(line);
@@ -704,7 +704,7 @@ public class AdempiereMonitor extends HttpServlet
 			td td = new td();
 			td.addElement(WebEnv.getCellContent(server.getServer().getDateNextRun(false)));
 			td.addElement(" - ");
-			link = new a ("adempiereMonitor?RunNow=" + server.getServer().getServerID(), "(Run Now)");
+			link = new a ("idempiereMonitor?RunNow=" + server.getServer().getServerID(), "(Run Now)");
 			td.addElement(link);
 			line.addElement(td);
 			table.addElement(line);
@@ -720,10 +720,10 @@ public class AdempiereMonitor extends HttpServlet
 			link = new a ("#top", "Top");
 			bb.addElement(link);
 			bb.addElement(" - ");
-			link = new a ("adempiereMonitor?Log=" + server.getServer().getServerID(), "Log");
+			link = new a ("idempiereMonitor?Log=" + server.getServer().getServerID(), "Log");
 			bb.addElement(link);
 			bb.addElement(" - ");
-			link = new a ("adempiereMonitor", "Refresh");
+			link = new a ("idempiereMonitor", "Refresh");
 			bb.addElement(link);
 		}
 
@@ -928,13 +928,13 @@ public class AdempiereMonitor extends HttpServlet
 		//	Cache Reset
 		line = new tr();
 		line.addElement(new th().addElement(CacheMgt.get().toStringX()));
-		line.addElement(new td().addElement(new a ("adempiereMonitor?CacheReset=Yes", "Reset Cache")));
+		line.addElement(new td().addElement(new a ("idempiereMonitor?CacheReset=Yes", "Reset Cache")));
 		table.addElement(line);
 		
 		//	Trace Level
 		line = new tr();
 		line.addElement(new th().addElement(new label("TraceLevel").addElement("Trace Log Level")));
-		form myForm = new form("adempiereMonitor", form.METHOD_POST, form.ENC_DEFAULT);
+		form myForm = new form("idempiereMonitor", form.METHOD_POST, form.ENC_DEFAULT);
 		//	LogLevel Selection
 		option[] options = new option[CLogMgt.LEVELS.length];
 		for (int i = 0; i < options.length; i++) 
