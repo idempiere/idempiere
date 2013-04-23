@@ -9,5 +9,5 @@ UPDATE AD_Column SET IsAllowLogging='N',Updated=TO_TIMESTAMP('2013-04-18 18:42:1
 ;
 
 
-SELECT register_migration_script('2010304181900_IDEMPIERE-851.sql') FROM dual
+SELECT register_migration_script('201304181900_IDEMPIERE-851.sql') FROM dual
 ;
