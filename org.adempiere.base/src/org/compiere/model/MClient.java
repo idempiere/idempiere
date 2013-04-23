@@ -17,6 +17,9 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import static org.compiere.model.MSysConfig.CLIENT_ACCOUNTING;
+import static org.compiere.model.MSysConfig.MAIL_SEND_CREDENTIALS;
+
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -56,7 +59,7 @@ public class MClient extends X_AD_Client
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1242880454287104705L;
+	private static final long serialVersionUID = 3043792947325698506L;
 
 	/**
 	 * 	Get client
@@ -181,18 +184,6 @@ public class MClient extends X_AD_Client
 	private boolean				m_createNew = false;
 	/** Client Info Setup Tree for Account	*/
 	private int					m_AD_Tree_Account_ID;
-
-	/**
-	 *	Get SMTP Host
-	 *	@return SMTP or loaclhost
-	 */
-	public String getSMTPHost()
-	{
-		String s = super.getSMTPHost();
-		if (s == null)
-			s = "localhost";
-		return s;
-	}	//	getSMTPHost
 
 	/**
 	 *	Get Client Info
@@ -459,9 +450,9 @@ public class MClient extends X_AD_Client
 			return msgreturn.toString();
 		}	
 		//
-		StringBuilder msgce = new StringBuilder("Adempiere EMail Test: ").append(toString());
+		StringBuilder msgce = new StringBuilder("iDempiere EMail Test: ").append(toString());
 		EMail email = createEMail (getRequestEMail(),
-			"Adempiere EMail Test",msgce.toString());
+			"iDempiere EMail Test",msgce.toString());
 		if (email == null){
 			StringBuilder msgreturn = new StringBuilder("Could not create EMail: ").append(getName());
 			return msgreturn.toString();
@@ -861,6 +852,9 @@ public class MClient extends X_AD_Client
 				   message, html);
 		if (isSmtpAuthorization())
 			email.createAuthenticator (from.getEMailUser(), from.getEMailUserPW());
+		if (from.getEMail() != null && ! from.getEMail().equalsIgnoreCase(from.getEMailUser())) {
+			email.setReplyTo(from.getEMail());
+		}
 		return email;
 	}	//	createEMail
 
@@ -878,21 +872,21 @@ public class MClient extends X_AD_Client
 	private static final String CLIENT_ACCOUNTING_IMMEDIATE = "I";
 
 	public static boolean isClientAccounting() {
-		String ca = MSysConfig.getValue(MSysConfig.CLIENT_ACCOUNTING,
+		String ca = MSysConfig.getValue(CLIENT_ACCOUNTING,
 				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return (ca.equalsIgnoreCase(CLIENT_ACCOUNTING_IMMEDIATE) || ca.equalsIgnoreCase(CLIENT_ACCOUNTING_QUEUE));
 	}
 
 	public static boolean isClientAccountingQueue() {
-		String ca = MSysConfig.getValue(MSysConfig.CLIENT_ACCOUNTING,
+		String ca = MSysConfig.getValue(CLIENT_ACCOUNTING,
 				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return ca.equalsIgnoreCase(CLIENT_ACCOUNTING_QUEUE);
 	}
 
 	public static boolean isClientAccountingImmediate() {
-		String ca = MSysConfig.getValue(MSysConfig.CLIENT_ACCOUNTING,
+		String ca = MSysConfig.getValue(CLIENT_ACCOUNTING,
 				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return ca.equalsIgnoreCase(CLIENT_ACCOUNTING_IMMEDIATE);
@@ -968,17 +962,91 @@ public class MClient extends X_AD_Client
 		return (Collections.binarySearch(m_fieldAccess, aDFieldID) > 0);
 	}
 
-	
 	@Override
-	protected boolean beforeSave(boolean newRecord)
-	{
-		//gmail specific support
-		if ("smtp.gmail.com".equals(getSMTPHost()))
-		{
-			if (getSMTPPort() == 0)
-				setSMTPPort(587);
+	public String getRequestUser() {
+		// IDEMPIERE-722
+		if (getAD_Client_ID() != 0 && isSendCredentialsSystem()) {
+			MClient sysclient = MClient.get(getCtx(), 0);
+			return sysclient.getRequestUser();
 		}
-		return true;
+		return super.getRequestUser();
+	}
+
+	@Override
+	public String getRequestUserPW() {
+		// IDEMPIERE-722
+		if (getAD_Client_ID() != 0 && isSendCredentialsSystem()) {
+			MClient sysclient = MClient.get(getCtx(), 0);
+			return sysclient.getRequestUserPW();
+		}
+		return super.getRequestUserPW();
+	}
+
+	@Override
+	public boolean isSmtpAuthorization() {
+		// IDEMPIERE-722
+		if (getAD_Client_ID() != 0 && isSendCredentialsSystem()) {
+			MClient sysclient = MClient.get(getCtx(), 0);
+			return sysclient.isSmtpAuthorization();
+		}
+		return super.isSmtpAuthorization();
+	}
+
+	@Override
+	public int getSMTPPort() {
+		// IDEMPIERE-722
+		if (getAD_Client_ID() != 0 && isSendCredentialsSystem()) {
+			MClient sysclient = MClient.get(getCtx(), 0);
+			return sysclient.getSMTPPort();
+		}
+		return super.getSMTPPort();
+	}
+
+	@Override
+	public boolean isSecureSMTP() {
+		// IDEMPIERE-722
+		if (getAD_Client_ID() != 0 && isSendCredentialsSystem()) {
+			MClient sysclient = MClient.get(getCtx(), 0);
+			return sysclient.isSecureSMTP();
+		}
+		return super.isSecureSMTP();
+	}
+
+	/**
+	 *	Get SMTP Host
+	 *	@return SMTP or loaclhost
+	 */
+	@Override
+	public String getSMTPHost() {
+		String s = null;
+		if (getAD_Client_ID() != 0 && isSendCredentialsSystem()) {
+			MClient sysclient = MClient.get(getCtx(), 0);
+			s = sysclient.getSMTPHost();
+		} else {
+			s = super.getSMTPHost();
+		}
+		if (s == null)
+			s = "localhost";
+		return s;
+	}	//	getSMTPHost
+
+	// IDEMPIERE-722
+	private static final String MAIL_SEND_CREDENTIALS_USER = "U";
+	private static final String MAIL_SEND_CREDENTIALS_CLIENT = "C";
+	private static final String MAIL_SEND_CREDENTIALS_SYSTEM = "S";
+
+	public static boolean isSendCredentialsClient() {
+		String msc = MSysConfig.getValue(MAIL_SEND_CREDENTIALS,
+				MAIL_SEND_CREDENTIALS_USER, // default
+				Env.getAD_Client_ID(Env.getCtx()));
+		return (MAIL_SEND_CREDENTIALS_CLIENT.equalsIgnoreCase(msc));
+	}
+
+	public static boolean isSendCredentialsSystem() {
+		String msc = MSysConfig.getValue(MAIL_SEND_CREDENTIALS,
+				MAIL_SEND_CREDENTIALS_USER, // default
+				Env.getAD_Client_ID(Env.getCtx()));
+		return (MAIL_SEND_CREDENTIALS_SYSTEM.equalsIgnoreCase(msc));
 	}
 
 }	//	MClient
