@@ -1721,47 +1721,60 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			fromPOS = getC_Order().getC_POS_ID() > 0;
 		}
 
-  		//	Create Cash
+  		//	Create Cash Payment
 		if (PAYMENTRULE_Cash.equals(getPaymentRule()) && !fromPOS )
 		{
-			// Modifications for POSterita
-            //
-            //    MCash cash = MCash.get (getCtx(), getAD_Org_ID(),
-            //    getDateInvoiced(), getC_Currency_ID(), get_TrxName());
-
-			MCash cash;
-
-            int posId = Env.getContextAsInt(getCtx(),Env.POS_ID);
-
-            if (posId != 0)
-            {
-                MPOS pos = new MPOS(getCtx(),posId,get_TrxName());
-                int cashBookId = pos.getC_CashBook_ID();
-                cash = MCash.get(getCtx(),cashBookId,getDateInvoiced(),get_TrxName());
-            }
-            else
-            {
-                cash = MCash.get (getCtx(), getAD_Org_ID(),
-                        getDateInvoiced(), getC_Currency_ID(), get_TrxName());
-            }
-
-            // End Posterita Modifications
-
-			if (cash == null || cash.get_ID() == 0)
-			{
-				m_processMsg = "@NoCashBook@";
+			String whereClause = "AD_Org_ID=? AND C_Currency_ID=?";
+			MBankAccount ba = new Query(getCtx(),MBankAccount.Table_Name,whereClause,get_TrxName())
+				.setParameters(getAD_Org_ID(), getC_Currency_ID())
+				.setOrderBy("IsDefault DESC")
+				.first();
+			if (ba == null) {
+				m_processMsg = "@NoAccountOrgCurrency@";
 				return DocAction.STATUS_Invalid;
 			}
-			MCashLine cl = new MCashLine (cash);
-			cl.setInvoice(this);
-			if (!cl.save(get_TrxName()))
-			{
-				m_processMsg = "Could not save Cash Journal Line";
+
+			MDocType[] doctypes = MDocType.getOfDocBaseType(getCtx(), MDocType.DOCBASETYPE_ARReceipt);
+			if (doctypes == null || doctypes.length == 0) {
+				m_processMsg = "No document type for AR Receipt";
 				return DocAction.STATUS_Invalid;
 			}
-			info.append("@C_Cash_ID@: " + cash.getName() +  " #" + cl.getLine());
-			setC_CashLine_ID(cl.getC_CashLine_ID());
-		}	//	CashBook
+			MDocType doctype = null;
+			for (MDocType doc : doctypes) {
+				if (doc.getAD_Org_ID() == this.getAD_Org_ID()) {
+					doctype = doc;
+					break;
+				}
+			}
+			if (doctype == null)
+				doctype = doctypes[0];
+
+			MPayment payment = new MPayment(getCtx(), 0, get_TrxName());
+			payment.setAD_Org_ID(getAD_Org_ID());
+			payment.setTenderType(MPayment.TENDERTYPE_Cash);
+			payment.setC_BankAccount_ID(ba.getC_BankAccount_ID());
+			payment.setC_BPartner_ID(getC_BPartner_ID());
+			payment.setC_Invoice_ID(getC_Invoice_ID());
+			payment.setC_Currency_ID(getC_Currency_ID());			
+			payment.setC_DocType_ID(doctype.getC_DocType_ID());
+			payment.setPayAmt(getGrandTotal());
+			payment.setIsPrepayment(false);					
+			payment.setDateAcct(getDateAcct());
+			payment.setDateTrx(getDateInvoiced());
+
+			//	Save payment
+			payment.saveEx();
+
+			payment.setDocAction(MPayment.DOCACTION_Complete);
+			if (!payment.processIt(MPayment.DOCACTION_Complete)) {
+				m_processMsg = "Cannot Complete the Payment :" + payment;
+				return DocAction.STATUS_Invalid;
+			}
+
+			payment.saveEx();
+			info.append("@C_Payment_ID@: " + payment.getDocumentInfo());
+
+		}	//	Payment
 
 		//	Update Order & Match
 		int matchInv = 0;
