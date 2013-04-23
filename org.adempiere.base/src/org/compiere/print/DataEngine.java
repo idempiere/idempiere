@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -1001,6 +1002,7 @@ public class DataEngine
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, pdc + " - " + e.getMessage() + "\nSQL=" + pd.getSQL());
+			throw new AdempiereException(e);
 		}
 		finally
 		{
