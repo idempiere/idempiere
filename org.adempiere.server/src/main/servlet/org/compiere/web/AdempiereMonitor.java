@@ -953,12 +953,12 @@ public class AdempiereMonitor extends HttpServlet
 		line = new tr();
 		CLogFile fileHandler = CLogFile.get (true, null, false);
 		line.addElement(new th().addElement("Trace File"));
-		line.addElement(new td().addElement(new a ("adempiereMonitor?Trace=" + fileHandler.getFileName(), "Current")));
+		line.addElement(new td().addElement(new a ("idempiereMonitor?Trace=" + fileHandler.getFileName(), "Current")));
 		table.addElement(line);
 		//
 		line = new tr();
-		line.addElement(new td().addElement(new a ("adempiereMonitor?Trace=ROTATE", "Rotate Trace Log")));
-		line.addElement(new td().addElement(new a ("adempiereMonitor?Trace=DELETE", "Delete all Trace Logs")));
+		line.addElement(new td().addElement(new a ("idempiereMonitor?Trace=ROTATE", "Rotate Trace Log")));
+		line.addElement(new td().addElement(new a ("idempiereMonitor?Trace=DELETE", "Delete all Trace Logs")));
 		table.addElement(line);
 		//
 		bb.addElement(table);
@@ -980,7 +980,7 @@ public class AdempiereMonitor extends HttpServlet
 				if (i != 0)
 					p.addElement(" - ");
 				String fileName = logs[i].getAbsolutePath();
-				a link = new a ("adempiereMonitor?Trace=" + fileName, fileName);
+				a link = new a ("idempiereMonitor?Trace=" + fileName, fileName);
 				p.addElement(link);
 				int size = (int)(logs[i].length()/1024);
 				if (size < 1024)
@@ -1006,7 +1006,7 @@ public class AdempiereMonitor extends HttpServlet
 			MClient client = clients[i];
 			if (i > 0)
 				p.addElement(" - ");
-			p.addElement(new a("adempiereMonitor?EMail=" + client.getAD_Client_ID(), client.getName()));
+			p.addElement(new a("idempiereMonitor?EMail=" + client.getAD_Client_ID(), client.getName()));
 		}
 		if (clients.length == 0)
 			p.addElement("&nbsp;");
