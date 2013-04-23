@@ -8,3 +8,5 @@ UPDATE AD_Column SET DefaultValue='1',Updated=TO_DATE('2013-03-18 10:42:09','YYY
 ;
 
 SELECT register_migration_script('201303181045_IDEMPIERE-704.sql') FROM dual
+;
+
