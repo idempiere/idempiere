@@ -3,6 +3,7 @@ DECLARE
    cmdsys           VARCHAR2 (1000);
    cmdnosys         VARCHAR2 (1000);
    cmdseq           VARCHAR2 (1000);
+   cmdcrseq         VARCHAR2 (1000);
    cmdupd           VARCHAR2 (1000);
    currentnextsys   NUMBER (10);
    currentnext      NUMBER (10);
@@ -10,6 +11,8 @@ DECLARE
    Currentseq       Number (10);
    Isnativeseqon    Varchar2(1);  
    sqlcmd           VARCHAR2(200);
+   seq_doesnot_exist EXCEPTION;
+   PRAGMA EXCEPTION_INIT(seq_doesnot_exist, -2289);   
 BEGIN
    DBMS_OUTPUT.PUT_LINE ('Start');
 
@@ -20,6 +23,7 @@ BEGIN
                            FROM AD_COLUMN c
                           WHERE t.ad_table_id = c.ad_table_id
                             AND c.columnname = t.tablename || '_ID')
+                 AND IsView= 'N'
              ORDER BY 1)
    LOOP
       cmdsys :=
@@ -87,16 +91,22 @@ BEGIN
          || 'WHERE Name = '''
          || r.Tablename
          || ''' AND istableid = ''Y''';      
+        BEGIN
+          EXECUTE IMMEDIATE cmdseq INTO currentseq, currentseqsys;
+        EXCEPTION
+          WHEN seq_doesnot_exist THEN
+            cmdcrseq:= 'CREATE SEQUENCE '||Trim(R.Tablename)||'_SQ MINVALUE 1000000 MAXVALUE 2147483647 INCREMENT BY 1 START WITH 1000000';
+            Execute Immediate cmdcrseq;
+            EXECUTE IMMEDIATE cmdseq INTO currentseq, currentseqsys;
+        END;
       ELSE   
         cmdseq :=
               'SELECT currentnext, currentnextsys FROM AD_Sequence '
            || 'WHERE Name = '''
            || r.tablename
            || ''' AND istableid = ''Y''';
+        EXECUTE IMMEDIATE cmdseq INTO currentseq, currentseqsys;
       END IF;
-
-      EXECUTE IMMEDIATE cmdseq
-                   INTO currentseq, currentseqsys;
 
       IF currentnextsys <> currentseqsys OR (currentnext <> currentseq AND Isnativeseqon ='N')
       THEN

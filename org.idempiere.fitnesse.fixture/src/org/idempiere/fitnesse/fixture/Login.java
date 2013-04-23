@@ -54,6 +54,8 @@ public class Login extends TableFixture {
 		if (adempiereInstance == null) {
 			adempiereInstance = Static_iDempiereInstance.getInstance();
 		}
+		boolean isErrorExpected = "*Login*Error*".equalsIgnoreCase(getText(rows-1, 0));
+		String msgerror = getText(rows-1, 1);
 		for (int i = 0; i < rows; i++) {
 			String cell_title = getText(i, 0);
 			String cell_value = getText(i, 1);
@@ -92,7 +94,7 @@ public class Login extends TableFixture {
 					exception(getCell(i, 1), e);
 					continue;
 				}
-			} else if (cell_title.equalsIgnoreCase("*Login*")) {
+			} else if (cell_title.equalsIgnoreCase("*Login*") || cell_title.equalsIgnoreCase("*Login*Error*")) {
 				if (i != rows-1) {
 					exception(getCell(i, 1), new Exception("*Login* must be called in last row"));
 					return;
@@ -104,17 +106,34 @@ public class Login extends TableFixture {
 					|| m_password == null || m_password.length() == 0
 					|| m_role_id < 0
 					|| m_client_id < 0) {
-					exception(getCell(rows-1, 1), new Exception("Incomplete data to login, needed User|Password|AD_Role_ID|AD_Client_ID"));
+
+					boolean ok = Util.evaluateError("Incomplete data to login, needed User|Password|AD_Role_ID|AD_Client_ID", msgerror, isErrorExpected);
+					if (ok)
+						right(i,1);
+					else
+					    exception(getCell(rows-1, 1), new Exception("Incomplete data to login, needed User|Password|AD_Role_ID|AD_Client_ID"));
 				}
 				else {
 					String msg = modelLogin();
 					if (msg == null || msg.length() == 0) {
-						MSession.get (Env.getCtx(), true);		//	Start Session
-						right(rows-1, 0);
-						right(rows-1, 1);
+						MSession.get (Env.getCtx(), true);//	Start Session
+						if (isErrorExpected) {
+							wrong(rows-1, 0);
+							wrong(rows-1, 1);
+						} else {
+						   right(rows-1, 0);
+						   right(rows-1, 1);
+						}
 					} else {
-						wrong(rows-1, 0);
-						exception(getCell(rows-1, 1), new Exception(msg));
+
+						boolean ok = Util.evaluateError(msg, msgerror, isErrorExpected);
+						if (ok) {
+							right(rows-1, 0);
+						} else {
+							wrong(rows-1, 0);
+							exception(getCell(rows-1, 1), new Exception(msg));
+						}
+						
 					}
 				}
 				

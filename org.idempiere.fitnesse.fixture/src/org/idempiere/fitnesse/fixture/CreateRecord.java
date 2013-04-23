@@ -64,8 +64,10 @@ public class CreateRecord extends TableFixture {
 		String columnName = null;
 		boolean tableOK = false;
 		boolean columnsOK = true;
+		boolean isErrorExpected = "*Save*Error*".equalsIgnoreCase(getText(rows-1, 0));
 		MTable table = null;
 		POInfo poinfo = null;
+
 		for (int i = 0; i < rows; i++) {
 			String cell_title = getText(i, 0);
 			String cell_value = getText(i, 1);
@@ -79,21 +81,30 @@ public class CreateRecord extends TableFixture {
 				// TODO : verify if the record already exists
 				table = MTable.get(ctx, tableName);
 				if (table == null || table.get_ID() <= 0) {
-					wrong(i, 1);
+					boolean ok = Util.evaluateError("Table " + tableName + " does not exist", cell_value, isErrorExpected);
+					if (ok)
+						right(i,1);
+					else
+						wrong(i,1);
 					tableOK = false;
 				} else {
 					tableOK = true;
 					gpo = table.getPO(0, null);
 				}
 		    	poinfo = POInfo.getPOInfo(ctx, table!=null ? table.getAD_Table_ID() : 0);
-			} else if (cell_title.equalsIgnoreCase("*Save*")) {
+			} else if (cell_title.equalsIgnoreCase("*Save*") || cell_title.equalsIgnoreCase("*Save*Error*")) {
 				if (i != rows-1) {
 					exception(getCell(i, 1), new Exception("*Save* must be called in last row"));
 					return;
 				}
+				
 				if (! tableOK) {
 					getCell(i, 1).addToBody("Table " + tableName + " does not exist");
-					wrong(i, 1);
+					boolean ok = Util.evaluateError("Table " + tableName + " does not exist", cell_value, isErrorExpected);
+					if (ok)
+						right(i,1);
+					else
+						wrong(i,1);
 				} else {
 					if (columnsOK) {
 						if (!gpo.save()) {
@@ -107,9 +118,17 @@ public class CreateRecord extends TableFixture {
 									msg.append("Error: " + vnp.getName());
 							}
 							getCell(i, 1).addToBody(msg.toString());
-							wrong(i, 1);
+							boolean ok = Util.evaluateError(msg.toString(),cell_value,isErrorExpected);
+							if (ok)
+								right(i,1);
+							else
+								wrong(i,1);
 						} else {
-							right(i, 1);
+							if (isErrorExpected) {
+								wrong(i,1);
+							} else {
+								right(i, 1);
+							}
 							getCell(i, 1).addToBody(gpo.toString());
 							for (int idx = 0; idx < poinfo.getColumnCount(); idx++) {
 								String colname = poinfo.getColumnName(idx);
@@ -126,7 +145,7 @@ public class CreateRecord extends TableFixture {
 					columnName = cell_title;
 					int idxcol = gpo.get_ColumnIndex(columnName);
 					if (idxcol < 0) {
-						wrong(i, 0);
+						wrong(i,1);
 						// column does not exist in dictionary - anyways try custom column in case it exists in table
 						gpo.set_CustomColumnReturningBoolean(columnName, cell_value);
 					} else {
@@ -175,11 +194,19 @@ public class CreateRecord extends TableFixture {
 						try {
 							if (!gpo.set_ValueOfColumnReturningBoolean(columnName, value)) {
 								columnsOK = false;
-								exception(getCell(i, 1), new Exception("Cannot set value of column"));
+								boolean ok = Util.evaluateError("Cannot set value of column", cell_value, isErrorExpected);
+								if (ok)
+									right(getCell(i, 1));
+								else
+									exception(getCell(i, 1), new Exception("Cannot set value of column"));
 							}
 						} catch (Exception e) {
 							columnsOK = false;
-							exception(getCell(i, 1), e);
+							boolean ok = Util.evaluateError(e.getMessage(), cell_value, isErrorExpected);
+							if (ok)
+								right(getCell(i, 1));
+							else
+								exception(getCell(i, 1), e);
 						}
 					}
 				}

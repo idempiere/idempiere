@@ -66,7 +66,8 @@ public class AssertRecord extends TableFixture {
 		MTable table = null;
 		POInfo poinfo = null;
 		boolean alreadyread = false;
-		String whereclause = new String("");
+		StringBuilder whereclause = new StringBuilder("");
+		boolean isErrorExpected = false;
 		for (int i = 0; i < rows; i++) {
 			String cell_title = getText(i, 0);
 			String cell_value = getText(i, 1);
@@ -89,8 +90,10 @@ public class AssertRecord extends TableFixture {
 					exception(getCell(i, 1), new Exception("*Where* must be defined in second row"));
 					return;
 				}
-				whereclause = cell_value;
-			} else if (cell_title.equalsIgnoreCase("*Read*")) {
+				whereclause.append(cell_value);
+			} else if (cell_title.equalsIgnoreCase("*Read*") || cell_title.equalsIgnoreCase("*Read*Error*") ) 
+			{
+				isErrorExpected = "*Read*Error*".equalsIgnoreCase(cell_title); 				
 				if (! tableOK) {
 					getCell(i, 1).addToBody("Table " + tableName + " does not exist");
 					wrong(i, 1);
@@ -110,20 +113,40 @@ public class AssertRecord extends TableFixture {
 					rs = pstmt.executeQuery();
 					if (rs.next()) {
 						gpo = table.getPO(rs, null);
+						if (isErrorExpected) {
+							wrong(i,1);
+							return;	
+						}
+
 					} else {
 						getCell(i, 1).addToBody("No record found: " + sql);
-						wrong(i, 1);
+						boolean ok = Util.evaluateError("No record found: ", cell_value, isErrorExpected);
+						if (ok) {
+							right(i,1);
+						} else {
+							wrong(i,1);
+						}
 						return;
 					}
 					if (rs.next()) {
 						getCell(i, 1).addToBody("More than one record found: " + sql);
-						wrong(i, 1);
+						boolean ok = Util.evaluateError("More than one record found: ", cell_value, isErrorExpected);
+						if (ok) {
+							right(i,1);
+						} else {
+							wrong(i,1);
+						}
 						return;
 					}
 				}
 				catch (SQLException e)
 				{
-					exception(getCell(i, 1), e);
+					boolean ok = Util.evaluateError(e.getMessage(), cell_value, isErrorExpected);
+					if (ok) {
+						right(getCell(i, 1));
+					} else {
+						exception(getCell(i, 1), e);
+					}
 					return;
 				}
 				finally
@@ -133,7 +156,9 @@ public class AssertRecord extends TableFixture {
 					pstmt = null;
 				}
 				right(i, 1);
-				getCell(i, 1).addToBody(gpo.toString());
+				if (gpo != null) {
+					getCell(i, 1).addToBody(gpo.toString());
+				}
 				alreadyread = true;
 			} else {
 				// columns
@@ -142,26 +167,28 @@ public class AssertRecord extends TableFixture {
 						// not read yet - add value to where clause
 						String value_evaluated = Util.evaluate(ctx, windowNo, cell_value, getCell(i, 1));
 						if (whereclause.length() > 0)
-							whereclause = whereclause + " AND ";
-						whereclause = whereclause + cell_title + "=" + value_evaluated;
+							whereclause.append(" AND ");
+						whereclause.append(cell_title).append("=").append(value_evaluated);
 					} else {
 						// already read, compare the value of db with the context variable or formula
 						String title_evaluated = "";
-						Object result = gpo.get_Value(cell_title);
-						if (result != null) {
-							getCell(i, 0).addToBody("<hr/>" + result.toString());
-							title_evaluated = result.toString();
-						}
-						
-						String value_evaluated = cell_value;
-						if (cell_value.startsWith("@")) {
-							value_evaluated = Util.evaluate(ctx, windowNo, cell_value, getCell(i, 1));
-						}
-						
-						if (title_evaluated.equals(value_evaluated)) {
-							right(i, 1);
-						} else {
-							wrong(i, 1);
+						if (gpo != null) {
+							Object result = gpo.get_Value(cell_title);
+							if (result != null) {
+								getCell(i, 0).addToBody("<hr/>" + result.toString());
+								title_evaluated = result.toString();
+							}
+
+							String value_evaluated = cell_value;
+							if (cell_value.startsWith("@")) {
+								value_evaluated = Util.evaluate(ctx, windowNo,cell_value, getCell(i, 1));
+							}
+
+							if (title_evaluated.equals(value_evaluated)) {
+								right(i, 1);
+							} else {
+								wrong(i, 1);
+							}
 						}
 					}
 				}
@@ -177,5 +204,5 @@ public class AssertRecord extends TableFixture {
 		}
 
 	} // doStaticTable
-
+	
 } // AdempiereReadRecord

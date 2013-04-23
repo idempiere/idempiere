@@ -1,9 +1,10 @@
-CREATE OR REPLACE FUNCTION update_sequences() RETURNS void as $func$
 -- TODO: Currently not inserting new sequences
+CREATE OR REPLACE FUNCTION update_sequences() RETURNS void as $func$
 DECLARE
    cmdsys           VARCHAR (1000);
    cmdnosys         VARCHAR (1000);
    cmdseq           VARCHAR (1000);
+   cmdcrseq         VARCHAR (1000);
    cmdupd           VARCHAR (1000);
    currentnextsys   NUMERIC (10);
    currentnext      NUMERIC (10);
@@ -21,6 +22,7 @@ BEGIN
                            FROM AD_COLUMN c
                           WHERE t.ad_table_id = c.ad_table_id
                             AND c.columnname = t.tablename || '_ID')
+                AND IsView= 'N'
              ORDER BY 1)
    LOOP
       cmdsys :=
@@ -82,15 +84,22 @@ BEGIN
  	 || 'WHERE Name = '''
 	 || r.tablename
 	 || ''' AND istableid = ''Y''';
+	   BEGIN
+        EXECUTE cmdseq INTO currentseq, currentseqsys;
+       EXCEPTION
+        WHEN undefined_table THEN
+          cmdcrseq := 'CREATE SEQUENCE '||trim(r.tablename)||'_SQ INCREMENT 1 MINVALUE 1000000 MAXVALUE 2147483647 START '||currentseq;
+	      EXECUTE cmdcrseq;
+          EXECUTE cmdseq INTO currentseq, currentseqsys;
+       END;
       ELSE 
        cmdseq :=
  	    'SELECT currentnext, currentnextsys FROM AD_Sequence '
  	 || 'WHERE Name = '''
 	 || r.tablename
 	 || ''' AND istableid = ''Y''';
+       EXECUTE cmdseq INTO currentseq, currentseqsys;
       END IF;  
-
-      EXECUTE cmdseq INTO currentseq, currentseqsys;
 
       IF currentnextsys <> currentseqsys OR (currentnext <> currentseq AND isnativeseqon ='N')
       THEN

@@ -205,8 +205,7 @@ public class FitRecorder implements ModelValidator {
 						|| colName.equals("AD_Client_ID")
 						|| colName.equals(table.getTableName() + "_ID")
 						|| colName.equals(PO.getUUIDColumnName(table.getTableName()))
-						|| column.getAD_Reference_ID() == DisplayType.Button
-						)
+						|| column.getAD_Reference_ID() == DisplayType.Button)
 						continue;
 					if (po.isActive() && colName.equals("IsActive"))
 						continue;
@@ -229,9 +228,10 @@ public class FitRecorder implements ModelValidator {
 
 			}
 
-			if (po instanceof MPInstance) {
-				if (type == TYPE_AFTER_CHANGE) {
-
+			if(type == TYPE_AFTER_CHANGE)
+			{
+				if (po instanceof MPInstance)
+				{
 					MProcess pro = MProcess.get(Env.getCtx(), po.get_ValueAsInt("AD_Process_ID"));
 					MPInstance pint = (MPInstance)po;
 					writeFile("\n");
@@ -294,18 +294,157 @@ public class FitRecorder implements ModelValidator {
 					writeFile("|*Run*|");
 					writeFile("\n");					
 
-				}
-			}
-			
-			if (po instanceof MSession) {
-				if (type == TYPE_AFTER_CHANGE) {
+				} else if (po instanceof MSession) {
 					MSession session = (MSession) po;
 					if (session.isProcessed()) {
 						closefile();
 					}
+				} else {
+
+					if (dontLogTables.contains(po.get_TableName().toUpperCase()))
+						return null;
+
+					// Ignore records created within a process
+					if (po.get_TrxName().startsWith("SvrProcess_"))
+						return null;
+
+					// Ignore records created within a workflow process
+					if (po.get_TrxName().startsWith("WFP_"))
+						return null;
+					
+					MTable table = MTable.get(Env.getCtx(), po.get_Table_ID());
+
+					MColumn[] columns = table.getColumns(true);
+					StringBuilder where = new StringBuilder();
+					StringBuilder set = new StringBuilder();
+					boolean key=false;
+					for (int i = 0; i < columns.length; i++) 
+					{
+						MColumn column = columns[i];
+						String colName = column.getColumnName();
+						String value=null;
+						if (DisplayType.isLookup(column.getAD_Reference_ID()) && DisplayType.List != column.getAD_Reference_ID()) {
+						     value = resolveValue(po, table, column);
+						}else{
+							value=po.get_ValueAsString(colName);
+						}
+						if (column.isAllowLogging()) 
+						{
+							if (column.isKey()) 
+							{
+								if (!key) {
+									where.append("| *Where* | ");
+									where.append(colName + " = " + value+ " | ");
+									key=true;
+								} else {
+									where.append(" | " + colName + " | ");
+									where.append(value + " | ");
+								}
+							}
+							if (po.is_ValueChanged(colName)) {
+								if (colName.equals("Created")
+										|| colName.equals("CreatedBy")
+										|| colName.equals("Updated")
+										|| colName.equals("UpdatedBy")
+										|| colName.equals("AD_Client_ID")
+										|| colName.equals(table.getTableName()+ "_ID")
+										|| colName.equals(PO.getUUIDColumnName(table.getTableName()))
+										|| column.getAD_Reference_ID() == DisplayType.Button)
+									      continue;
+								
+								if (po.isActive() && colName.equals("IsActive"))
+									continue;
+
+								if (value != null && value.length() > 0) {
+									set.append("\n");
+									set.append("| " + colName + " | ");
+								    set.append(value + "|");									
+								}
+
+							}
+						}
+
+					}// end while columns
+
+					if (where.length() > 0 && set.length() > 0) {
+						writeFile("\n");
+						writeFile("\n");
+						writeFile("UPDATE RECORD");
+						writeFile("\n");
+						writeFile("!");
+						writeFile("| Update Record |");
+						writeFile("\n");
+						writeFile("| *Table* |  ");
+						writeFile(po.get_TableName() + "  |");
+						writeFile("\n");
+						writeFile(where.toString());
+						writeFile("\n");
+						writeFile("| *Update*  |");
+						writeFile(set.toString());
+					}
 				}
+
 			}
+			
+			if (type == TYPE_AFTER_DELETE)
+			{
+				if (dontLogTables.contains(po.get_TableName().toUpperCase()))
+					return null;
+
+				// Ignore records created within a process
+				if (po.get_TrxName().startsWith("SvrProcess_"))
+					return null;
+
+				// Ignore records created within a workflow process
+				if (po.get_TrxName().startsWith("WFP_"))
+					return null;
+
+				writeFile("\n");
+				writeFile("\n");
+				writeFile("DELETE RECORD");
+				writeFile("\n");
+				writeFile("!");
+				writeFile("| Delete Record |");
+				writeFile("\n");
+				writeFile("| *Table* |  ");
+				writeFile(po.get_TableName() + "  |");
+				writeFile("\n");
+				
+				MTable table = MTable.get(Env.getCtx(), po.get_Table_ID());
+				MColumn[] columns = table.getColumns(true);
+				boolean key=false;
+				
+				for (int i = 0; i < columns.length; i++) 
+				{
+					MColumn column = columns[i];
+					String colName = column.getColumnName();
+					String value=null;
+					if (DisplayType.isLookup(column.getAD_Reference_ID()) && DisplayType.List != column.getAD_Reference_ID()) {
+					     value = resolveValue(po, table, column);
+					} else {
+						value=po.get_ValueAsString(colName);
+					}
+					
+					if (column.isAllowLogging()) {
+						if (column.isKey()) {
+							if (!key) {
+								writeFile("| *Where* | ");
+								writeFile(colName + " = " + value+ " | ");
+								key=true;
+							} else {
+								writeFile(" | " + colName + " | ");
+								writeFile(value + " | ");
+							}
+						}
+					}	
+				}//while columns
+				
+				writeFile("\n");
+				writeFile("| *Delete*  |");				
+			}
+
 		} catch (Exception e) {
+			if (log.isLoggable(Level.INFO)) log.info(e.getLocalizedMessage());
 			return e.getLocalizedMessage();
 		}
 		return null;
@@ -401,7 +540,7 @@ public class FitRecorder implements ModelValidator {
 				if (action.equals("CO")) {
 					// run process
 					String processValue = DB.getSQLValueString(po.get_TrxName(),
-							"SELECT p.Value FROM AD_Process p JOIN AD_Workflow w ON (p.AD_Workflow_ID=w.AD_Workflow_ID) WHERE w.AD_Table_ID=?", po.get_Table_ID());
+				   "SELECT p.Value FROM AD_Process p JOIN AD_Workflow w ON (p.AD_Workflow_ID=w.AD_Workflow_ID) WHERE w.AD_Table_ID=?", po.get_Table_ID());
 					writeFile("RUN PROCESS");
 					writeFile("\n");
 					writeFile("!");
@@ -498,8 +637,7 @@ public class FitRecorder implements ModelValidator {
 				writeFile("|Login|");
 				writeFile("\n");
 				writeFile("|User|");
-				if (MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN,
-						false))
+				if (MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN,false))
 					writeFile(user.getEMail() + "|");
 				else if (user.getLDAPUser() != null)
 					writeFile(user.getLDAPUser() + "|");
