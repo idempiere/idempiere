@@ -3,6 +3,7 @@ package org.compiere.process;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.compiere.model.MClient;
 import org.compiere.model.MProduction;
 import org.compiere.model.MProductionLine;
 import org.compiere.util.AdempiereSystemError;
@@ -84,7 +85,14 @@ public class ProductionProcess extends SvrProcess {
 		m_production.setProcessed(true);
 		
 		m_production.saveEx(get_TrxName());
-		StringBuilder msgreturn = new StringBuilder().append(processed).append(" production lines were processed");
+
+		/* Immediate accounting */
+		if (MClient.isClientAccountingImmediate()) {
+			@SuppressWarnings("unused")
+			String ignoreError = DocumentEngine.postImmediate(getCtx(), getAD_Client_ID(), m_production.get_Table_ID(), m_production.get_ID(), true, get_TrxName());						
+		}
+
+		StringBuilder msgreturn = new StringBuilder("@Processed@ #").append(processed);
 		return msgreturn.toString();
 	}
 

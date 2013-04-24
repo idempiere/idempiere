@@ -520,12 +520,6 @@ public abstract class Doc
 				p_Status = postLogic ();
 			}
 		}
-		catch (AverageCostingNegativeQtyException e)
-		{
-			if (log.isLoggable(Level.INFO))log.log(Level.INFO, e.getLocalizedMessage(), e);
-			p_Status = STATUS_NotPosted;
-			p_Error = e.toString();
-		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
