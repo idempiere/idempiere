@@ -392,6 +392,7 @@ ContextMenuListener, IZoomableEditor
 			        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
 			        super.fireValueChange(changeEvent);
 			        oldValue = newValue;
+	    			getComponent().setValue(newValue);
 		        }
     		} finally {
     			onselecting = false;
