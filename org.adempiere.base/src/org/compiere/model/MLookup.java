@@ -542,8 +542,14 @@ public final class MLookup extends Lookup implements Serializable
 		if (cacheLocal  && !saveInCache && directValue != null)
 		{
 			if (m_lookupDirect == null)
+			{
 				m_lookupDirect = new HashMap<Object,Object>();
-			m_lookupDirect.put(key, directValue);
+			}
+			else if (!m_lookupDirect.containsKey(key))
+			{
+				m_lookupDirect.clear();
+				m_lookupDirect.put(key, directValue);
+			}
 		}
 		m_hasInactive = true;
 		return directValue;

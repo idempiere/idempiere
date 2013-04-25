@@ -167,7 +167,8 @@ ContextMenuListener, IZoomableEditor
             //no need to refresh readonly lookup
             if (isReadWrite())
             	lookup.refresh();
-            refreshList();            
+            else
+            	refreshList();            
         }
         
         if (gridField != null) 
@@ -265,11 +266,17 @@ ContextMenuListener, IZoomableEditor
             getComponent().setValue(value);            
             if (!getComponent().isSelected(value))
             {
-            	if (isReadWrite() && lookup != null)
-            		lookup.refresh();
             	Object curValue = oldValue;
                 oldValue = value;
-                refreshList();
+                
+            	if (isReadWrite() && lookup != null)
+            	{
+            		lookup.refresh();
+            	}
+            	else
+            	{
+                	refreshList();
+            	}
                 
                 //still not in list, reset to zero
                 if (!getComponent().isSelected(value))
@@ -349,7 +356,7 @@ ContextMenuListener, IZoomableEditor
 	        	}	        	        
 	            if (!found && oldValue != null)
 	            {
-	            	NamePair pair = lookup.getDirect(oldValue, false, false);
+	            	NamePair pair = lookup.getDirect(oldValue, false, true);
 	            	if (pair != null) {
 		    			if (pair instanceof KeyNamePair) {
 		    				int key = ((KeyNamePair)pair).getKey();
@@ -449,7 +456,8 @@ ContextMenuListener, IZoomableEditor
 			
 			if (isReadWrite())
 				lookup.refresh();
-            refreshList();
+			else
+				refreshList();
             if (curValue != null)
             {
             	setValue(curValue);
