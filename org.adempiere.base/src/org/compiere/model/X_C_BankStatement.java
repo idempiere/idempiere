@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankStatement
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130123L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_C_BankStatement (Properties ctx, int C_BankStatement_ID, String trxName)
@@ -208,6 +208,20 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
 	public String getCreateFrom () 
 	{
 		return (String)get_Value(COLUMNNAME_CreateFrom);
+	}
+
+	/** Set Create From Batch.
+		@param CreateFromBatch Create From Batch	  */
+	public void setCreateFromBatch (String CreateFromBatch)
+	{
+		set_Value (COLUMNNAME_CreateFromBatch, CreateFromBatch);
+	}
+
+	/** Get Create From Batch.
+		@return Create From Batch	  */
+	public String getCreateFromBatch () 
+	{
+		return (String)get_Value(COLUMNNAME_CreateFromBatch);
 	}
 
 	/** Set Account Date.
@@ -601,19 +615,5 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
-	}
-
-	/** Set Create From Batch.
-		@param X_CreateFromBatch Create From Batch	  */
-	public void setX_CreateFromBatch (String X_CreateFromBatch)
-	{
-		set_Value (COLUMNNAME_X_CreateFromBatch, X_CreateFromBatch);
-	}
-
-	/** Get Create From Batch.
-		@return Create From Batch	  */
-	public String getX_CreateFromBatch () 
-	{
-		return (String)get_Value(COLUMNNAME_X_CreateFromBatch);
 	}
 }

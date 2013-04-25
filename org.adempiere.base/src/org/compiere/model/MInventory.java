@@ -408,9 +408,9 @@ public class MInventory extends X_M_Inventory implements DocAction
 			MProduct product = line.getProduct();	
 
 			BigDecimal qtyDiff = Env.ZERO;
-			if (MDocType.DOCSUBTYPEInv_InternalUseInventory.equals(docSubTypeInv))
+			if (MDocType.DOCSUBTYPEINV_InternalUseInventory.equals(docSubTypeInv))
 				qtyDiff = line.getQtyInternalUse().negate();
-			else if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(docSubTypeInv))
+			else if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv))
 				qtyDiff = line.getQtyCount().subtract(line.getQtyBook());
 
 			//If Quantity Count minus Quantity Book = Zero, then no change in Inventory
@@ -454,7 +454,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 						}
 
 						// Only Update Date Last Inventory if is a Physical Inventory
-						if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(docSubTypeInv))
+						if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv))
 						{	
 							MStorageOnHand storage = MStorageOnHand.get(getCtx(), line.getM_Locator_ID(), 
 									line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(), get_TrxName());						
@@ -505,7 +505,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 					}
 
 					// Only Update Date Last Inventory if is a Physical Inventory
-					if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(docSubTypeInv))
+					if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv))
 					{	
 						MStorageOnHand storage = MStorageOnHand.get(getCtx(), line.getM_Locator_ID(), 
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), get_TrxName());						

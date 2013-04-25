@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for WS_WebServiceFieldOutput
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+/** Generated Interface for WS_WebServiceTypeAccess
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0b
  */
-public interface I_WS_WebServiceFieldOutput 
+public interface I_WS_WebServiceTypeAccess 
 {
 
-    /** TableName=WS_WebServiceFieldOutput */
-    public static final String Table_Name = "WS_WebServiceFieldOutput";
+    /** TableName=WS_WebServiceTypeAccess */
+    public static final String Table_Name = "WS_WebServiceTypeAccess";
 
-    /** AD_Table_ID=53167 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=53168 */
+    public static final int Table_ID = 53168;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -49,21 +49,6 @@ public interface I_WS_WebServiceFieldOutput
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_Column_ID */
-    public static final String COLUMNNAME_AD_Column_ID = "AD_Column_ID";
-
-	/** Set Column.
-	  * Column in the table
-	  */
-	public void setAD_Column_ID (int AD_Column_ID);
-
-	/** Get Column.
-	  * Column in the table
-	  */
-	public int getAD_Column_ID();
-
-	public I_AD_Column getAD_Column() throws RuntimeException;
-
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
@@ -76,6 +61,21 @@ public interface I_WS_WebServiceFieldOutput
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name AD_Role_ID */
+    public static final String COLUMNNAME_AD_Role_ID = "AD_Role_ID";
+
+	/** Set Role.
+	  * Responsibility Role
+	  */
+	public void setAD_Role_ID (int AD_Role_ID);
+
+	/** Get Role.
+	  * Responsibility Role
+	  */
+	public int getAD_Role_ID();
+
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -106,6 +106,19 @@ public interface I_WS_WebServiceFieldOutput
 	  */
 	public boolean isActive();
 
+    /** Column name IsReadWrite */
+    public static final String COLUMNNAME_IsReadWrite = "IsReadWrite";
+
+	/** Set Read Write.
+	  * Field is read / write
+	  */
+	public void setIsReadWrite (boolean IsReadWrite);
+
+	/** Get Read Write.
+	  * Field is read / write
+	  */
+	public boolean isReadWrite();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
@@ -122,14 +135,14 @@ public interface I_WS_WebServiceFieldOutput
 	  */
 	public int getUpdatedBy();
 
-    /** Column name WS_WebServiceFieldOutput_ID */
-    public static final String COLUMNNAME_WS_WebServiceFieldOutput_ID = "WS_WebServiceFieldOutput_ID";
+    /** Column name WS_WebServiceTypeAccess_UU */
+    public static final String COLUMNNAME_WS_WebServiceTypeAccess_UU = "WS_WebServiceTypeAccess_UU";
 
-	/** Set Web Service Field Output	  */
-	public void setWS_WebServiceFieldOutput_ID (int WS_WebServiceFieldOutput_ID);
+	/** Set WS_WebServiceTypeAccess_UU	  */
+	public void setWS_WebServiceTypeAccess_UU (String WS_WebServiceTypeAccess_UU);
 
-	/** Get Web Service Field Output	  */
-	public int getWS_WebServiceFieldOutput_ID();
+	/** Get WS_WebServiceTypeAccess_UU	  */
+	public String getWS_WebServiceTypeAccess_UU();
 
     /** Column name WS_WebServiceType_ID */
     public static final String COLUMNNAME_WS_WebServiceType_ID = "WS_WebServiceType_ID";
@@ -140,5 +153,5 @@ public interface I_WS_WebServiceFieldOutput
 	/** Get Web Service Type	  */
 	public int getWS_WebServiceType_ID();
 
-	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
+	public org.compiere.model.I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
 }

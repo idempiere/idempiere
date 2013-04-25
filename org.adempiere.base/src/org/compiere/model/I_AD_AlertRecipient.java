@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AlertRecipient
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_AD_AlertRecipient 
 {
@@ -45,12 +45,12 @@ public interface I_AD_AlertRecipient
     public static final String COLUMNNAME_AD_Alert_ID = "AD_Alert_ID";
 
 	/** Set Alert.
-	  * Adempiere Alert
+	  * iDempiere Alert
 	  */
 	public void setAD_Alert_ID (int AD_Alert_ID);
 
 	/** Get Alert.
-	  * Adempiere Alert
+	  * iDempiere Alert
 	  */
 	public int getAD_Alert_ID();
 

@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Change
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_A_Asset_Change (Properties ctx, int A_Asset_Change_ID, String trxName)
@@ -44,6 +44,7 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
 			setA_Asset_Change_ID (0);
 			setA_Asset_ID (0);
 			setAssetValueAmt (Env.ZERO);
+// 0
 			setChangeType (null);
 			setTextDetails (null);
         } */

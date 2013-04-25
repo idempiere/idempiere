@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Field
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_AD_Field extends PO implements I_AD_Field, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121120L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -449,23 +449,6 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Info Factory Class.
-		@param InfoFactoryClass 
-		Fully qualified class name that implements the InfoFactory interface
-	  */
-	public void setInfoFactoryClass (String InfoFactoryClass)
-	{
-		set_Value (COLUMNNAME_InfoFactoryClass, InfoFactoryClass);
-	}
-
-	/** Get Info Factory Class.
-		@return Fully qualified class name that implements the InfoFactory interface
-	  */
-	public String getInfoFactoryClass () 
-	{
-		return (String)get_Value(COLUMNNAME_InfoFactoryClass);
-	}
-
 	/** IsAllowCopy AD_Reference_ID=319 */
 	public static final int ISALLOWCOPY_AD_Reference_ID=319;
 	/** Yes = Y */
@@ -496,7 +479,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	public static final String ISALWAYSUPDATEABLE_Yes = "Y";
 	/** No = N */
 	public static final String ISALWAYSUPDATEABLE_No = "N";
-	/** Set Always Updateable.
+	/** Set Always Updatable.
 		@param IsAlwaysUpdateable 
 		The column is always updateable, even if the record is not active or processed
 	  */
@@ -506,7 +489,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		set_Value (COLUMNNAME_IsAlwaysUpdateable, IsAlwaysUpdateable);
 	}
 
-	/** Get Always Updateable.
+	/** Get Always Updatable.
 		@return The column is always updateable, even if the record is not active or processed
 	  */
 	public String getIsAlwaysUpdateable () 

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_GLJournal
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_I_GLJournal 
 {
@@ -85,10 +85,14 @@ public interface I_I_GLJournal
     /** Column name ActivityValue */
     public static final String COLUMNNAME_ActivityValue = "ActivityValue";
 
-	/** Set Activity Value	  */
+	/** Set Activity Key.
+	  * Text key for Activity
+	  */
 	public void setActivityValue (String ActivityValue);
 
-	/** Get Activity Value	  */
+	/** Get Activity Key.
+	  * Text key for Activity
+	  */
 	public String getActivityValue();
 
     /** Column name AD_Client_ID */
@@ -262,10 +266,14 @@ public interface I_I_GLJournal
     /** Column name CampaignValue */
     public static final String COLUMNNAME_CampaignValue = "CampaignValue";
 
-	/** Set CampaignValue	  */
+	/** Set Campaign Key.
+	  * Text key of the Campaign
+	  */
 	public void setCampaignValue (String CampaignValue);
 
-	/** Get CampaignValue	  */
+	/** Get Campaign Key.
+	  * Text key of the Campaign
+	  */
 	public String getCampaignValue();
 
     /** Column name CategoryName */
@@ -874,13 +882,13 @@ public interface I_I_GLJournal
     /** Column name SalesRegionValue */
     public static final String COLUMNNAME_SalesRegionValue = "SalesRegionValue";
 
-	/** Set Sales Region Value.
-	  * Key of the Sales Region
+	/** Set Sales Region Key.
+	  * Text key of the Sales Region
 	  */
 	public void setSalesRegionValue (String SalesRegionValue);
 
-	/** Get Sales Region Value.
-	  * Key of the Sales Region
+	/** Get Sales Region Key.
+	  * Text key of the Sales Region
 	  */
 	public String getSalesRegionValue();
 

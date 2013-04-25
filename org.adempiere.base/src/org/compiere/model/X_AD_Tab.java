@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Tab
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130219L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_AD_Tab (Properties ctx, int AD_Tab_ID, String trxName)
@@ -276,20 +276,6 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set AD_Tab_UU.
-		@param AD_Tab_UU AD_Tab_UU	  */
-	public void setAD_Tab_UU (String AD_Tab_UU)
-	{
-		set_Value (COLUMNNAME_AD_Tab_UU, AD_Tab_UU);
-	}
-
-	/** Get AD_Tab_UU.
-		@return AD_Tab_UU	  */
-	public String getAD_Tab_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_AD_Tab_UU);
-	}
-
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
@@ -316,6 +302,20 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_Tab_UU.
+		@param AD_Tab_UU AD_Tab_UU	  */
+	public void setAD_Tab_UU (String AD_Tab_UU)
+	{
+		set_Value (COLUMNNAME_AD_Tab_UU, AD_Tab_UU);
+	}
+
+	/** Get AD_Tab_UU.
+		@return AD_Tab_UU	  */
+	public String getAD_Tab_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Tab_UU);
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException

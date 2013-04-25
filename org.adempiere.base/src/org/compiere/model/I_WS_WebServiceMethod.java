@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for WS_WebService
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+/** Generated Interface for WS_WebServiceMethod
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0b
  */
-public interface I_WS_WebService 
+public interface I_WS_WebServiceMethod 
 {
 
-    /** TableName=WS_WebService */
-    public static final String Table_Name = "WS_WebService";
+    /** TableName=WS_WebServiceMethod */
+    public static final String Table_Name = "WS_WebServiceMethod";
 
-    /** AD_Table_ID=53162 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=53163 */
+    public static final int Table_ID = 53163;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -167,4 +167,24 @@ public interface I_WS_WebService
 
 	/** Get Web Service	  */
 	public int getWS_WebService_ID();
+
+	public org.compiere.model.I_WS_WebService getWS_WebService() throws RuntimeException;
+
+    /** Column name WS_WebServiceMethod_ID */
+    public static final String COLUMNNAME_WS_WebServiceMethod_ID = "WS_WebServiceMethod_ID";
+
+	/** Set Web Service Method	  */
+	public void setWS_WebServiceMethod_ID (int WS_WebServiceMethod_ID);
+
+	/** Get Web Service Method	  */
+	public int getWS_WebServiceMethod_ID();
+
+    /** Column name WS_WebServiceMethod_UU */
+    public static final String COLUMNNAME_WS_WebServiceMethod_UU = "WS_WebServiceMethod_UU";
+
+	/** Set WS_WebServiceMethod_UU	  */
+	public void setWS_WebServiceMethod_UU (String WS_WebServiceMethod_UU);
+
+	/** Get WS_WebServiceMethod_UU	  */
+	public String getWS_WebServiceMethod_UU();
 }

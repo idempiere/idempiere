@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DepositBatchLine
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_C_DepositBatchLine 
 {
@@ -61,6 +61,35 @@ public interface I_C_DepositBatchLine
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name C_DepositBatch_ID */
+    public static final String COLUMNNAME_C_DepositBatch_ID = "C_DepositBatch_ID";
+
+	/** Set Deposit Batch	  */
+	public void setC_DepositBatch_ID (int C_DepositBatch_ID);
+
+	/** Get Deposit Batch	  */
+	public int getC_DepositBatch_ID();
+
+	public org.compiere.model.I_C_DepositBatch getC_DepositBatch() throws RuntimeException;
+
+    /** Column name C_DepositBatchLine_ID */
+    public static final String COLUMNNAME_C_DepositBatchLine_ID = "C_DepositBatchLine_ID";
+
+	/** Set Deposit Batch Line	  */
+	public void setC_DepositBatchLine_ID (int C_DepositBatchLine_ID);
+
+	/** Get Deposit Batch Line	  */
+	public int getC_DepositBatchLine_ID();
+
+    /** Column name C_DepositBatchLine_UU */
+    public static final String COLUMNNAME_C_DepositBatchLine_UU = "C_DepositBatchLine_UU";
+
+	/** Set C_DepositBatchLine_UU	  */
+	public void setC_DepositBatchLine_UU (String C_DepositBatchLine_UU);
+
+	/** Get C_DepositBatchLine_UU	  */
+	public String getC_DepositBatchLine_UU();
 
     /** Column name C_Payment_ID */
     public static final String COLUMNNAME_C_Payment_ID = "C_Payment_ID";
@@ -169,33 +198,4 @@ public interface I_C_DepositBatchLine
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name C_DepositBatch_ID */
-    public static final String COLUMNNAME_C_DepositBatch_ID = "C_DepositBatch_ID";
-
-	/** Set Deposit Batch	  */
-	public void setC_DepositBatch_ID (int C_DepositBatch_ID);
-
-	/** Get Deposit Batch	  */
-	public int getC_DepositBatch_ID();
-
-	public org.compiere.model.I_C_DepositBatch getC_DepositBatch() throws RuntimeException;
-
-    /** Column name C_DepositBatchLine_ID */
-    public static final String COLUMNNAME_C_DepositBatchLine_ID = "C_DepositBatchLine_ID";
-
-	/** Set Deposit Batch Line	  */
-	public void setC_DepositBatchLine_ID (int C_DepositBatchLine_ID);
-
-	/** Get Deposit Batch Line	  */
-	public int getC_DepositBatchLine_ID();
-
-    /** Column name C_DepositBatchLine_UU */
-    public static final String COLUMNNAME_C_DepositBatchLine_UU = "C_DepositBatchLine_UU";
-
-	/** Set C_DepositBatchLine_UU	  */
-	public void setC_DepositBatchLine_UU (String C_DepositBatchLine_UU);
-
-	/** Get C_DepositBatchLine_UU	  */
-	public String getC_DepositBatchLine_UU();
 }

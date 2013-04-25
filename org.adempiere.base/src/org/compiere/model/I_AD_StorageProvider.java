@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_StorageProvider
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_AD_StorageProvider 
 {
@@ -35,9 +35,9 @@ public interface I_AD_StorageProvider
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(3);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -65,10 +65,10 @@ public interface I_AD_StorageProvider
     /** Column name AD_StorageProvider_ID */
     public static final String COLUMNNAME_AD_StorageProvider_ID = "AD_StorageProvider_ID";
 
-	/** Set AD_StorageProvider_ID	  */
+	/** Set Storage Provider	  */
 	public void setAD_StorageProvider_ID (int AD_StorageProvider_ID);
 
-	/** Get AD_StorageProvider_ID	  */
+	/** Get Storage Provider	  */
 	public int getAD_StorageProvider_ID();
 
     /** Column name AD_StorageProvider_UU */
@@ -189,13 +189,9 @@ public interface I_AD_StorageProvider
     /** Column name UserName */
     public static final String COLUMNNAME_UserName = "UserName";
 
-	/** Set Registered EMail.
-	  * Email of the responsible for the System
-	  */
+	/** Set User Name	  */
 	public void setUserName (String UserName);
 
-	/** Get Registered EMail.
-	  * Email of the responsible for the System
-	  */
+	/** Get User Name	  */
 	public String getUserName();
 }

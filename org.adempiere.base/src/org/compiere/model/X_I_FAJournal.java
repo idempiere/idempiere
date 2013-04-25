@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_FAJournal
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_I_FAJournal (Properties ctx, int I_FAJournal_ID, String trxName)
@@ -575,6 +575,11 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 		return (String)get_Value(COLUMNNAME_ClientValue);
 	}
 
+	public org.compiere.model.I_C_Location getC_LocFrom() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_Name)
+			.getPO(getC_LocFrom_ID(), get_TrxName());	}
+
 	/** Set Location From.
 		@param C_LocFrom_ID 
 		Location that inventory was moved from
@@ -597,6 +602,11 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 			 return 0;
 		return ii.intValue();
 	}
+
+	public org.compiere.model.I_C_Location getC_LocTo() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_Name)
+			.getPO(getC_LocTo_ID(), get_TrxName());	}
 
 	/** Set Location To.
 		@param C_LocTo_ID 

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DocType
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_C_DocType 
 {
@@ -227,6 +227,19 @@ public interface I_C_DocType
 
 	public org.compiere.model.I_AD_Sequence getDocNoSequence() throws RuntimeException;
 
+    /** Column name DocSubTypeInv */
+    public static final String COLUMNNAME_DocSubTypeInv = "DocSubTypeInv";
+
+	/** Set Inv Sub Type.
+	  * Inventory Sub Type
+	  */
+	public void setDocSubTypeInv (String DocSubTypeInv);
+
+	/** Get Inv Sub Type.
+	  * Inventory Sub Type
+	  */
+	public String getDocSubTypeInv();
+
     /** Column name DocSubTypeSO */
     public static final String COLUMNNAME_DocSubTypeSO = "DocSubTypeSO";
 
@@ -240,19 +253,6 @@ public interface I_C_DocType
 	  */
 	public String getDocSubTypeSO();
 
-    /** Column name DocSubTypeInv */
-    public static final String COLUMNNAME_DocSubTypeInv = "DocSubTypeInv";
-
-	/** Set Inv Sub Type.
-	  * Physical Inventory Sub Type
-	  */
-	public void setDocSubTypeInv (String DocSubTypeInv);
-
-	/** Get Inv Sub Type.
-	  * Physical Inventory Sub Type
-	  */
-	public String getDocSubTypeInv();
-	
     /** Column name DocumentCopies */
     public static final String COLUMNNAME_DocumentCopies = "DocumentCopies";
 

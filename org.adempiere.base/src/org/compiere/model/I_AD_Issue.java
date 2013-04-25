@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Issue
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_AD_Issue 
 {
@@ -459,12 +459,12 @@ public interface I_AD_Issue
     public static final String COLUMNNAME_RequestDocumentNo = "RequestDocumentNo";
 
 	/** Set Request Document No.
-	  * Adempiere Request Document No
+	  * iDempiere Request Document No
 	  */
 	public void setRequestDocumentNo (String RequestDocumentNo);
 
 	/** Get Request Document No.
-	  * Adempiere Request Document No
+	  * iDempiere Request Document No
 	  */
 	public String getRequestDocumentNo();
 
@@ -653,14 +653,10 @@ public interface I_AD_Issue
     /** Column name UserName */
     public static final String COLUMNNAME_UserName = "UserName";
 
-	/** Set Registered EMail.
-	  * Email of the responsible for the System
-	  */
+	/** Set User Name	  */
 	public void setUserName (String UserName);
 
-	/** Get Registered EMail.
-	  * Email of the responsible for the System
-	  */
+	/** Get User Name	  */
 	public String getUserName();
 
     /** Column name Version */

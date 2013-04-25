@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Order
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_C_Order extends PO implements I_C_Order, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130222L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_C_Order (Properties ctx, int C_Order_ID, String trxName)
@@ -607,6 +607,43 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Charge amount.
+		@param ChargeAmt 
+		Charge Amount
+	  */
+	public void setChargeAmt (BigDecimal ChargeAmt)
+	{
+		set_Value (COLUMNNAME_ChargeAmt, ChargeAmt);
+	}
+
+	/** Get Charge amount.
+		@return Charge Amount
+	  */
+	public BigDecimal getChargeAmt () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ChargeAmt);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Copy From.
+		@param CopyFrom 
+		Copy From Record
+	  */
+	public void setCopyFrom (String CopyFrom)
+	{
+		set_Value (COLUMNNAME_CopyFrom, CopyFrom);
+	}
+
+	/** Get Copy From.
+		@return Copy From Record
+	  */
+	public String getCopyFrom () 
+	{
+		return (String)get_Value(COLUMNNAME_CopyFrom);
+	}
+
 	/** Set Order.
 		@param C_Order_ID 
 		Order
@@ -628,20 +665,6 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set C_Order_UU.
-		@param C_Order_UU C_Order_UU	  */
-	public void setC_Order_UU (String C_Order_UU)
-	{
-		set_Value (COLUMNNAME_C_Order_UU, C_Order_UU);
-	}
-
-	/** Get C_Order_UU.
-		@return C_Order_UU	  */
-	public String getC_Order_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_C_Order_UU);
 	}
 
 	public org.compiere.model.I_C_OrderSource getC_OrderSource() throws RuntimeException
@@ -667,6 +690,20 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_Order_UU.
+		@param C_Order_UU C_Order_UU	  */
+	public void setC_Order_UU (String C_Order_UU)
+	{
+		set_Value (COLUMNNAME_C_Order_UU, C_Order_UU);
+	}
+
+	/** Get C_Order_UU.
+		@return C_Order_UU	  */
+	public String getC_Order_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_Order_UU);
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
@@ -779,43 +816,6 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Charge amount.
-		@param ChargeAmt 
-		Charge Amount
-	  */
-	public void setChargeAmt (BigDecimal ChargeAmt)
-	{
-		set_Value (COLUMNNAME_ChargeAmt, ChargeAmt);
-	}
-
-	/** Get Charge amount.
-		@return Charge Amount
-	  */
-	public BigDecimal getChargeAmt () 
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ChargeAmt);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** Set Copy From.
-		@param CopyFrom 
-		Copy From Record
-	  */
-	public void setCopyFrom (String CopyFrom)
-	{
-		set_Value (COLUMNNAME_CopyFrom, CopyFrom);
-	}
-
-	/** Get Copy From.
-		@return Copy From Record
-	  */
-	public String getCopyFrom () 
-	{
-		return (String)get_Value(COLUMNNAME_CopyFrom);
 	}
 
 	/** Set Account Date.
@@ -1083,7 +1083,7 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getDropShip_BPartner_ID(), get_TrxName());	}
 
-	/** Set Drop Shipment Partner.
+	/** Set DropShip_BPartner_ID.
 		@param DropShip_BPartner_ID 
 		Business Partner to ship to
 	  */
@@ -1095,7 +1095,7 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 			set_Value (COLUMNNAME_DropShip_BPartner_ID, Integer.valueOf(DropShip_BPartner_ID));
 	}
 
-	/** Get Drop Shipment Partner.
+	/** Get DropShip_BPartner_ID.
 		@return Business Partner to ship to
 	  */
 	public int getDropShip_BPartner_ID () 
@@ -1723,23 +1723,6 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Order Type.
-		@param OrderType 
-		Type of Order: MRP records grouped by source (Sales Order, Purchase Order, Distribution Order, Requisition)
-	  */
-	public void setOrderType (String OrderType)
-	{
-		set_Value (COLUMNNAME_OrderType, OrderType);
-	}
-
-	/** Get Order Type.
-		@return Type of Order: MRP records grouped by source (Sales Order, Purchase Order, Distribution Order, Requisition)
-	  */
-	public String getOrderType () 
-	{
-		return (String)get_Value(COLUMNNAME_OrderType);
 	}
 
 	/** Set Payment BPartner.

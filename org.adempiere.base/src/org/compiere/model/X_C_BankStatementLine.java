@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankStatementLine
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_C_BankStatementLine (Properties ctx, int C_BankStatementLine_ID, String trxName)
@@ -48,7 +48,7 @@ public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, 
 // @SQL=SELECT C_Currency_ID FROM C_BankAccount WHERE C_BankAccount_ID=@C_BankAccount_ID@
 			setChargeAmt (Env.ZERO);
 			setDateAcct (new Timestamp( System.currentTimeMillis() ));
-// @StatementDate@
+// @DateAcct@
 			setInterestAmt (Env.ZERO);
 			setIsManual (true);
 // Y

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_FAJournal
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_I_FAJournal 
 {
@@ -384,6 +384,8 @@ public interface I_I_FAJournal
 	  */
 	public int getC_LocFrom_ID();
 
+	public org.compiere.model.I_C_Location getC_LocFrom() throws RuntimeException;
+
     /** Column name C_LocTo_ID */
     public static final String COLUMNNAME_C_LocTo_ID = "C_LocTo_ID";
 
@@ -396,6 +398,8 @@ public interface I_I_FAJournal
 	  * Location that inventory was moved to
 	  */
 	public int getC_LocTo_ID();
+
+	public org.compiere.model.I_C_Location getC_LocTo() throws RuntimeException;
 
     /** Column name ConversionTypeValue */
     public static final String COLUMNNAME_ConversionTypeValue = "ConversionTypeValue";

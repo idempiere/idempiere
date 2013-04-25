@@ -22,9 +22,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
-import org.compiere.model.MAcctSchemaDefault;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.ProductCost;
 import org.compiere.model.X_M_Production;

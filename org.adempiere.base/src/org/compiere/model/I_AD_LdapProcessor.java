@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_LdapProcessor
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_AD_LdapProcessor 
 {
@@ -53,12 +53,12 @@ public interface I_AD_LdapProcessor
     public static final String COLUMNNAME_AD_LdapProcessor_ID = "AD_LdapProcessor_ID";
 
 	/** Set Ldap Processor.
-	  * LDAP Server to authenticate and authorize external systems based on Adempiere
+	  * LDAP Server to authenticate and authorize external systems based on iDempiere
 	  */
 	public void setAD_LdapProcessor_ID (int AD_LdapProcessor_ID);
 
 	/** Get Ldap Processor.
-	  * LDAP Server to authenticate and authorize external systems based on Adempiere
+	  * LDAP Server to authenticate and authorize external systems based on iDempiere
 	  */
 	public int getAD_LdapProcessor_ID();
 

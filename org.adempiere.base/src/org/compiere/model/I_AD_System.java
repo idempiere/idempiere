@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_System
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_AD_System 
 {
@@ -300,12 +300,12 @@ public interface I_AD_System
     public static final String COLUMNNAME_LDAPDomain = "LDAPDomain";
 
 	/** Set LDAP Domain.
-	  * Directory service domain name - e.g. adempiere.org
+	  * Directory service domain name - e.g. idempiere.org
 	  */
 	public void setLDAPDomain (String LDAPDomain);
 
 	/** Get LDAP Domain.
-	  * Directory service domain name - e.g. adempiere.org
+	  * Directory service domain name - e.g. idempiere.org
 	  */
 	public String getLDAPDomain();
 
@@ -474,12 +474,12 @@ public interface I_AD_System
     public static final String COLUMNNAME_SupportExpDate = "SupportExpDate";
 
 	/** Set Support Expires.
-	  * Date when the Adempiere support expires
+	  * Date when the iDempiere support expires
 	  */
 	public void setSupportExpDate (Timestamp SupportExpDate);
 
 	/** Get Support Expires.
-	  * Date when the Adempiere support expires
+	  * Date when the iDempiere support expires
 	  */
 	public Timestamp getSupportExpDate();
 
@@ -487,12 +487,12 @@ public interface I_AD_System
     public static final String COLUMNNAME_SupportUnits = "SupportUnits";
 
 	/** Set Internal Users.
-	  * Number of Internal Users for Adempiere Support
+	  * Number of Internal Users for iDempiere Support
 	  */
 	public void setSupportUnits (int SupportUnits);
 
 	/** Get Internal Users.
-	  * Number of Internal Users for Adempiere Support
+	  * Number of Internal Users for iDempiere Support
 	  */
 	public int getSupportUnits();
 
@@ -528,14 +528,10 @@ public interface I_AD_System
     /** Column name UserName */
     public static final String COLUMNNAME_UserName = "UserName";
 
-	/** Set Registered EMail.
-	  * Email of the responsible for the System
-	  */
+	/** Set User Name	  */
 	public void setUserName (String UserName);
 
-	/** Get Registered EMail.
-	  * Email of the responsible for the System
-	  */
+	/** Get User Name	  */
 	public String getUserName();
 
     /** Column name Version */

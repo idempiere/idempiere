@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Warehouse
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_M_Warehouse 
 {
@@ -144,6 +144,21 @@ public interface I_M_Warehouse
 	  * Movement is in transit
 	  */
 	public boolean isInTransit();
+
+    /** Column name M_ReserveLocator_ID */
+    public static final String COLUMNNAME_M_ReserveLocator_ID = "M_ReserveLocator_ID";
+
+	/** Set Reservation Locator.
+	  * Reservation Locator (just for reporting purposes)
+	  */
+	public void setM_ReserveLocator_ID (int M_ReserveLocator_ID);
+
+	/** Get Reservation Locator.
+	  * Reservation Locator (just for reporting purposes)
+	  */
+	public int getM_ReserveLocator_ID();
+
+	public org.compiere.model.I_M_Locator getM_ReserveLocator() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
     public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";

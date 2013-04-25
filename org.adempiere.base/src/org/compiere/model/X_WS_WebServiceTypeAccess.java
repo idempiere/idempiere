@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for WS_WebServiceTypeAccess
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0b - $Id$ */
 public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceTypeAccess, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100713L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_WS_WebServiceTypeAccess (Properties ctx, int WS_WebServiceTypeAccess_ID, String trxName)
@@ -72,9 +72,9 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
       return sb.toString();
     }
 
-	public I_AD_Role getAD_Role() throws RuntimeException
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
     {
-		return (I_AD_Role)MTable.get(getCtx(), I_AD_Role.Table_Name)
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
 			.getPO(getAD_Role_ID(), get_TrxName());	}
 
 	/** Set Role.
@@ -124,9 +124,23 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
 		return false;
 	}
 
-	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException
+	/** Set WS_WebServiceTypeAccess_UU.
+		@param WS_WebServiceTypeAccess_UU WS_WebServiceTypeAccess_UU	  */
+	public void setWS_WebServiceTypeAccess_UU (String WS_WebServiceTypeAccess_UU)
+	{
+		set_Value (COLUMNNAME_WS_WebServiceTypeAccess_UU, WS_WebServiceTypeAccess_UU);
+	}
+
+	/** Get WS_WebServiceTypeAccess_UU.
+		@return WS_WebServiceTypeAccess_UU	  */
+	public String getWS_WebServiceTypeAccess_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_WS_WebServiceTypeAccess_UU);
+	}
+
+	public org.compiere.model.I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException
     {
-		return (I_WS_WebServiceType)MTable.get(getCtx(), I_WS_WebServiceType.Table_Name)
+		return (org.compiere.model.I_WS_WebServiceType)MTable.get(getCtx(), org.compiere.model.I_WS_WebServiceType.Table_Name)
 			.getPO(getWS_WebServiceType_ID(), get_TrxName());	}
 
 	/** Set Web Service Type.

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BankStatement
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_C_BankStatement 
 {
@@ -153,6 +153,15 @@ public interface I_C_BankStatement
 	  * Process which will generate a new document lines based on an existing document
 	  */
 	public String getCreateFrom();
+
+    /** Column name CreateFromBatch */
+    public static final String COLUMNNAME_CreateFromBatch = "CreateFromBatch";
+
+	/** Set Create From Batch	  */
+	public void setCreateFromBatch (String CreateFromBatch);
+
+	/** Get Create From Batch	  */
+	public String getCreateFromBatch();
 
     /** Column name DateAcct */
     public static final String COLUMNNAME_DateAcct = "DateAcct";
@@ -395,13 +404,4 @@ public interface I_C_BankStatement
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name X_CreateFromBatch */
-    public static final String COLUMNNAME_X_CreateFromBatch = "X_CreateFromBatch";
-
-	/** Set Create From Batch	  */
-	public void setX_CreateFromBatch (String X_CreateFromBatch);
-
-	/** Get Create From Batch	  */
-	public String getX_CreateFromBatch();
 }

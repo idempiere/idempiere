@@ -78,7 +78,7 @@ public class CalloutInventory extends CalloutEngine
 				} else {
 					mTab.setValue("M_AttributeSetInstance_ID", null);
 				}
-				if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(docSubTypeInv)) {
+				if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv)) {
 					try {
 						bd = setQtyBook(M_AttributeSetInstance_ID, M_Product_ID, M_Locator_ID);
 						mTab.setValue("QtyBook", bd);
@@ -128,7 +128,7 @@ public class CalloutInventory extends CalloutEngine
 			
 		// Set QtyBook from first storage location
 		// kviiksaar: Call's now the extracted function
-		if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(docSubTypeInv)) {
+		if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv)) {
 			try {
 				bd = setQtyBook(M_AttributeSetInstance_ID, M_Product_ID, M_Locator_ID);
 				mTab.setValue("QtyBook", bd);

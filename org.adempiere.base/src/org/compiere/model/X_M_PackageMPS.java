@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PackageMPS
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121207L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_M_PackageMPS (Properties ctx, int M_PackageMPS_ID, String trxName)
@@ -74,6 +74,23 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** Set Create lines from.
+		@param CreateFrom 
+		Process which will generate a new document lines based on an existing document
+	  */
+	public void setCreateFrom (String CreateFrom)
+	{
+		set_Value (COLUMNNAME_CreateFrom, CreateFrom);
+	}
+
+	/** Get Create lines from.
+		@return Process which will generate a new document lines based on an existing document
+	  */
+	public String getCreateFrom () 
+	{
+		return (String)get_Value(COLUMNNAME_CreateFrom);
+	}
 
 	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException
     {
@@ -129,23 +146,6 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Create lines from.
-		@param CreateFrom 
-		Process which will generate a new document lines based on an existing document
-	  */
-	public void setCreateFrom (String CreateFrom)
-	{
-		set_Value (COLUMNNAME_CreateFrom, CreateFrom);
-	}
-
-	/** Get Create lines from.
-		@return Process which will generate a new document lines based on an existing document
-	  */
-	public String getCreateFrom () 
-	{
-		return (String)get_Value(COLUMNNAME_CreateFrom);
 	}
 
 	/** Set Description.
@@ -213,6 +213,20 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set Master Tracking No.
+		@param MasterTrackingNo Master Tracking No	  */
+	public void setMasterTrackingNo (String MasterTrackingNo)
+	{
+		set_Value (COLUMNNAME_MasterTrackingNo, MasterTrackingNo);
+	}
+
+	/** Get Master Tracking No.
+		@return Master Tracking No	  */
+	public String getMasterTrackingNo () 
+	{
+		return (String)get_Value(COLUMNNAME_MasterTrackingNo);
 	}
 
 	public org.compiere.model.I_M_Package getM_Package() throws RuntimeException
@@ -283,20 +297,6 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
 	public String getM_PackageMPS_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_M_PackageMPS_UU);
-	}
-
-	/** Set Master Tracking No.
-		@param MasterTrackingNo Master Tracking No	  */
-	public void setMasterTrackingNo (String MasterTrackingNo)
-	{
-		set_Value (COLUMNNAME_MasterTrackingNo, MasterTrackingNo);
-	}
-
-	/** Get Master Tracking No.
-		@return Master Tracking No	  */
-	public String getMasterTrackingNo () 
-	{
-		return (String)get_Value(COLUMNNAME_MasterTrackingNo);
 	}
 
 	/** Set Price.

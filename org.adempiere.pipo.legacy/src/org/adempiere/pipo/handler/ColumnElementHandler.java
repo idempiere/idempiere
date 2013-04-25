@@ -167,7 +167,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			if (getStringValue(atts, "Version") != null)
 				m_Column.setVersion(new BigDecimal(atts.getValue("Version")));
 			
-			m_Column.setInfoFactoryClass(getStringValue(atts, "InfoFactoryClass"));
+			//m_Column.setInfoFactoryClass(getStringValue(atts, "InfoFactoryClass"));
 
 			// Setup Element.
 			id = get_IDWithColumn(ctx, "AD_Element", "ColumnName", m_Column
@@ -519,8 +519,8 @@ public class ColumnElementHandler extends AbstractElementHandler {
 		atts.addAttribute("", "", "Version", "CDATA",
 				(m_Column.getVersion() != null ? "" + m_Column.getVersion()
 						: "0.0"));
-		atts.addAttribute("", "", "InfoFactoryClass", "CDATA", (m_Column.getInfoFactoryClass() != null 
-				? m_Column.getInfoFactoryClass() : ""));
+		//atts.addAttribute("", "", "InfoFactoryClass", "CDATA", (m_Column.getInfoFactoryClass() != null 
+		//		? m_Column.getInfoFactoryClass() : ""));
 		
 		return atts;
 	}

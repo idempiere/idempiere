@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceFieldInput
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFieldInput, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130326L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_WS_WebServiceFieldInput (Properties ctx, int WS_WebServiceFieldInput_ID, String trxName)
@@ -71,9 +71,9 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
       return sb.toString();
     }
 
-	public I_AD_Column getAD_Column() throws RuntimeException
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
     {
-		return (I_AD_Column)MTable.get(getCtx(), I_AD_Column.Table_Name)
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
 			.getPO(getAD_Column_ID(), get_TrxName());	}
 
 	/** Set Column.
@@ -261,6 +261,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
     {
         return new KeyNamePair(get_ID(), String.valueOf(getWS_WebServiceFieldInput_ID()));
     }
+
 	/** Set WS_WebServiceFieldInput_UU.
 		@param WS_WebServiceFieldInput_UU WS_WebServiceFieldInput_UU	  */
 	public void setWS_WebServiceFieldInput_UU (String WS_WebServiceFieldInput_UU)
@@ -275,9 +276,9 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 		return (String)get_Value(COLUMNNAME_WS_WebServiceFieldInput_UU);
 	}
 
-	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException
+	public org.compiere.model.I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException
     {
-		return (I_WS_WebServiceType)MTable.get(getCtx(), I_WS_WebServiceType.Table_Name)
+		return (org.compiere.model.I_WS_WebServiceType)MTable.get(getCtx(), org.compiere.model.I_WS_WebServiceType.Table_Name)
 			.getPO(getWS_WebServiceType_ID(), get_TrxName());	}
 
 	/** Set Web Service Type.

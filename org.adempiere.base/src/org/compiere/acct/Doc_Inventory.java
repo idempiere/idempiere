@@ -97,18 +97,18 @@ public class Doc_Inventory extends Doc
 			if (Util.isEmpty(parentDocSubTypeInv)) {
 				// IDEMPIERE-675: for backward compatibility - to post old documents that could have subtypeinv empty
 				if (line.getQtyInternalUse().signum() != 0) {
-					docSubTypeInv = MDocType.DOCSUBTYPEInv_InternalUseInventory;
+					docSubTypeInv = MDocType.DOCSUBTYPEINV_InternalUseInventory;
 				} else {
-					docSubTypeInv = MDocType.DOCSUBTYPEInv_PhysicalInventory;
+					docSubTypeInv = MDocType.DOCSUBTYPEINV_PhysicalInventory;
 				}
 			} else {
 				docSubTypeInv = parentDocSubTypeInv;
 			}
 
 			BigDecimal qtyDiff = Env.ZERO;
-			if (MDocType.DOCSUBTYPEInv_InternalUseInventory.equals(docSubTypeInv))
+			if (MDocType.DOCSUBTYPEINV_InternalUseInventory.equals(docSubTypeInv))
 				qtyDiff = line.getQtyInternalUse().negate();
-			else if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(docSubTypeInv))
+			else if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv))
 				qtyDiff = line.getQtyCount().subtract(line.getQtyBook());
 			//	nothing to post
 			if (qtyDiff.signum() == 0)

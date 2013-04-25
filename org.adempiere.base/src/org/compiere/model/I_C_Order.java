@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Order
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_C_Order 
 {
@@ -314,6 +314,32 @@ public interface I_C_Order
 
 	public org.compiere.model.I_C_DocType getC_DocTypeTarget() throws RuntimeException;
 
+    /** Column name ChargeAmt */
+    public static final String COLUMNNAME_ChargeAmt = "ChargeAmt";
+
+	/** Set Charge amount.
+	  * Charge Amount
+	  */
+	public void setChargeAmt (BigDecimal ChargeAmt);
+
+	/** Get Charge amount.
+	  * Charge Amount
+	  */
+	public BigDecimal getChargeAmt();
+
+    /** Column name CopyFrom */
+    public static final String COLUMNNAME_CopyFrom = "CopyFrom";
+
+	/** Set Copy From.
+	  * Copy From Record
+	  */
+	public void setCopyFrom (String CopyFrom);
+
+	/** Get Copy From.
+	  * Copy From Record
+	  */
+	public String getCopyFrom();
+
     /** Column name C_Order_ID */
     public static final String COLUMNNAME_C_Order_ID = "C_Order_ID";
 
@@ -327,15 +353,6 @@ public interface I_C_Order
 	  */
 	public int getC_Order_ID();
 
-    /** Column name C_Order_UU */
-    public static final String COLUMNNAME_C_Order_UU = "C_Order_UU";
-
-	/** Set C_Order_UU	  */
-	public void setC_Order_UU (String C_Order_UU);
-
-	/** Get C_Order_UU	  */
-	public String getC_Order_UU();
-
     /** Column name C_OrderSource_ID */
     public static final String COLUMNNAME_C_OrderSource_ID = "C_OrderSource_ID";
 
@@ -346,6 +363,15 @@ public interface I_C_Order
 	public int getC_OrderSource_ID();
 
 	public org.compiere.model.I_C_OrderSource getC_OrderSource() throws RuntimeException;
+
+    /** Column name C_Order_UU */
+    public static final String COLUMNNAME_C_Order_UU = "C_Order_UU";
+
+	/** Set C_Order_UU	  */
+	public void setC_Order_UU (String C_Order_UU);
+
+	/** Get C_Order_UU	  */
+	public String getC_Order_UU();
 
     /** Column name C_Payment_ID */
     public static final String COLUMNNAME_C_Payment_ID = "C_Payment_ID";
@@ -406,32 +432,6 @@ public interface I_C_Order
 	public int getC_Project_ID();
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
-
-    /** Column name ChargeAmt */
-    public static final String COLUMNNAME_ChargeAmt = "ChargeAmt";
-
-	/** Set Charge amount.
-	  * Charge Amount
-	  */
-	public void setChargeAmt (BigDecimal ChargeAmt);
-
-	/** Get Charge amount.
-	  * Charge Amount
-	  */
-	public BigDecimal getChargeAmt();
-
-    /** Column name CopyFrom */
-    public static final String COLUMNNAME_CopyFrom = "CopyFrom";
-
-	/** Set Copy From.
-	  * Copy From Record
-	  */
-	public void setCopyFrom (String CopyFrom);
-
-	/** Get Copy From.
-	  * Copy From Record
-	  */
-	public String getCopyFrom();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -582,12 +582,12 @@ public interface I_C_Order
     /** Column name DropShip_BPartner_ID */
     public static final String COLUMNNAME_DropShip_BPartner_ID = "DropShip_BPartner_ID";
 
-	/** Set Drop Shipment Partner.
+	/** Set DropShip_BPartner_ID.
 	  * Business Partner to ship to
 	  */
 	public void setDropShip_BPartner_ID (int DropShip_BPartner_ID);
 
-	/** Get Drop Shipment Partner.
+	/** Get DropShip_BPartner_ID.
 	  * Business Partner to ship to
 	  */
 	public int getDropShip_BPartner_ID();
@@ -933,19 +933,6 @@ public interface I_C_Order
 	public int getM_Warehouse_ID();
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
-
-    /** Column name OrderType */
-    public static final String COLUMNNAME_OrderType = "OrderType";
-
-	/** Set Order Type.
-	  * Type of Order: MRP records grouped by source (Sales Order, Purchase Order, Distribution Order, Requisition)
-	  */
-	public void setOrderType (String OrderType);
-
-	/** Get Order Type.
-	  * Type of Order: MRP records grouped by source (Sales Order, Purchase Order, Distribution Order, Requisition)
-	  */
-	public String getOrderType();
 
     /** Column name Pay_BPartner_ID */
     public static final String COLUMNNAME_Pay_BPartner_ID = "Pay_BPartner_ID";

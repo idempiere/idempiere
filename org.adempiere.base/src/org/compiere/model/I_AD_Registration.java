@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Registration
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_AD_Registration 
 {
@@ -327,12 +327,12 @@ public interface I_AD_Registration
     public static final String COLUMNNAME_StartProductionDate = "StartProductionDate";
 
 	/** Set Start Implementation/Production.
-	  * The day you started the implementation (if implementing) - or production (went life) with Adempiere
+	  * The day you started the implementation (if implementing) - or production (went life) with iDempiere
 	  */
 	public void setStartProductionDate (Timestamp StartProductionDate);
 
 	/** Get Start Implementation/Production.
-	  * The day you started the implementation (if implementing) - or production (went life) with Adempiere
+	  * The day you started the implementation (if implementing) - or production (went life) with iDempiere
 	  */
 	public Timestamp getStartProductionDate();
 

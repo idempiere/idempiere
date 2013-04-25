@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for M_ShippingProcessor
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130318L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_M_ShippingProcessor (Properties ctx, int M_ShippingProcessor_ID, String trxName)

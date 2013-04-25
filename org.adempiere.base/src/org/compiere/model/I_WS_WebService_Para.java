@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for WS_WebServiceTypeAccess
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+/** Generated Interface for WS_WebService_Para
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0b
  */
-public interface I_WS_WebServiceTypeAccess 
+public interface I_WS_WebService_Para 
 {
 
-    /** TableName=WS_WebServiceTypeAccess */
-    public static final String Table_Name = "WS_WebServiceTypeAccess";
+    /** TableName=WS_WebService_Para */
+    public static final String Table_Name = "WS_WebService_Para";
 
-    /** AD_Table_ID=53168 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=53165 */
+    public static final int Table_ID = 53165;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,20 +62,18 @@ public interface I_WS_WebServiceTypeAccess
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AD_Role_ID */
-    public static final String COLUMNNAME_AD_Role_ID = "AD_Role_ID";
+    /** Column name ConstantValue */
+    public static final String COLUMNNAME_ConstantValue = "ConstantValue";
 
-	/** Set Role.
-	  * Responsibility Role
+	/** Set Constant Value.
+	  * Constant value
 	  */
-	public void setAD_Role_ID (int AD_Role_ID);
+	public void setConstantValue (String ConstantValue);
 
-	/** Get Role.
-	  * Responsibility Role
+	/** Get Constant Value.
+	  * Constant value
 	  */
-	public int getAD_Role_ID();
-
-	public I_AD_Role getAD_Role() throws RuntimeException;
+	public String getConstantValue();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -106,18 +104,23 @@ public interface I_WS_WebServiceTypeAccess
 	  */
 	public boolean isActive();
 
-    /** Column name IsReadWrite */
-    public static final String COLUMNNAME_IsReadWrite = "IsReadWrite";
+    /** Column name ParameterName */
+    public static final String COLUMNNAME_ParameterName = "ParameterName";
 
-	/** Set Read Write.
-	  * Field is read / write
-	  */
-	public void setIsReadWrite (boolean IsReadWrite);
+	/** Set Parameter Name	  */
+	public void setParameterName (String ParameterName);
 
-	/** Get Read Write.
-	  * Field is read / write
-	  */
-	public boolean isReadWrite();
+	/** Get Parameter Name	  */
+	public String getParameterName();
+
+    /** Column name ParameterType */
+    public static final String COLUMNNAME_ParameterType = "ParameterType";
+
+	/** Set Parameter Type	  */
+	public void setParameterType (String ParameterType);
+
+	/** Get Parameter Type	  */
+	public String getParameterType();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -135,6 +138,24 @@ public interface I_WS_WebServiceTypeAccess
 	  */
 	public int getUpdatedBy();
 
+    /** Column name WS_WebService_Para_ID */
+    public static final String COLUMNNAME_WS_WebService_Para_ID = "WS_WebService_Para_ID";
+
+	/** Set Web Service Parameters	  */
+	public void setWS_WebService_Para_ID (int WS_WebService_Para_ID);
+
+	/** Get Web Service Parameters	  */
+	public int getWS_WebService_Para_ID();
+
+    /** Column name WS_WebService_Para_UU */
+    public static final String COLUMNNAME_WS_WebService_Para_UU = "WS_WebService_Para_UU";
+
+	/** Set WS_WebService_Para_UU	  */
+	public void setWS_WebService_Para_UU (String WS_WebService_Para_UU);
+
+	/** Get WS_WebService_Para_UU	  */
+	public String getWS_WebService_Para_UU();
+
     /** Column name WS_WebServiceType_ID */
     public static final String COLUMNNAME_WS_WebServiceType_ID = "WS_WebServiceType_ID";
 
@@ -144,5 +165,5 @@ public interface I_WS_WebServiceTypeAccess
 	/** Get Web Service Type	  */
 	public int getWS_WebServiceType_ID();
 
-	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
+	public org.compiere.model.I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
 }

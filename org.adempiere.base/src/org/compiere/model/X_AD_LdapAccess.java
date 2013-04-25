@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_LdapAccess
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_AD_LdapAccess (Properties ctx, int AD_LdapAccess_ID, String trxName)
@@ -116,7 +116,7 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 
 	/** Set Ldap Processor.
 		@param AD_LdapProcessor_ID 
-		LDAP Server to authenticate and authorize external systems based on Adempiere
+		LDAP Server to authenticate and authorize external systems based on iDempiere
 	  */
 	public void setAD_LdapProcessor_ID (int AD_LdapProcessor_ID)
 	{
@@ -127,7 +127,7 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 	}
 
 	/** Get Ldap Processor.
-		@return LDAP Server to authenticate and authorize external systems based on Adempiere
+		@return LDAP Server to authenticate and authorize external systems based on iDempiere
 	  */
 	public int getAD_LdapProcessor_ID () 
 	{

@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DepositBatch
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130123L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_C_DepositBatch (Properties ctx, int C_DepositBatch_ID, String trxName)
@@ -42,6 +42,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
       /** if (C_DepositBatch_ID == 0)
         {
 			setC_BankAccount_ID (0);
+			setC_DepositBatch_ID (0);
 			setC_DocType_ID (0);
 			setDateDeposit (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
@@ -52,7 +53,6 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 // DR
 			setDocumentNo (null);
 			setProcessed (false);
-			setC_DepositBatch_ID (0);
         } */
     }
 
@@ -110,6 +110,40 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Deposit Batch.
+		@param C_DepositBatch_ID Deposit Batch	  */
+	public void setC_DepositBatch_ID (int C_DepositBatch_ID)
+	{
+		if (C_DepositBatch_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, Integer.valueOf(C_DepositBatch_ID));
+	}
+
+	/** Get Deposit Batch.
+		@return Deposit Batch	  */
+	public int getC_DepositBatch_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_DepositBatch_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set C_DepositBatch_UU.
+		@param C_DepositBatch_UU C_DepositBatch_UU	  */
+	public void setC_DepositBatch_UU (String C_DepositBatch_UU)
+	{
+		set_Value (COLUMNNAME_C_DepositBatch_UU, C_DepositBatch_UU);
+	}
+
+	/** Get C_DepositBatch_UU.
+		@return C_DepositBatch_UU	  */
+	public String getC_DepositBatch_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_DepositBatch_UU);
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
@@ -334,39 +368,5 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 			return "Y".equals(oo);
 		}
 		return false;
-	}
-
-	/** Set Deposit Batch.
-		@param C_DepositBatch_ID Deposit Batch	  */
-	public void setC_DepositBatch_ID (int C_DepositBatch_ID)
-	{
-		if (C_DepositBatch_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, Integer.valueOf(C_DepositBatch_ID));
-	}
-
-	/** Get Deposit Batch.
-		@return Deposit Batch	  */
-	public int getC_DepositBatch_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_DepositBatch_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set C_DepositBatch_UU.
-		@param C_DepositBatch_UU C_DepositBatch_UU	  */
-	public void setC_DepositBatch_UU (String C_DepositBatch_UU)
-	{
-		set_Value (COLUMNNAME_C_DepositBatch_UU, C_DepositBatch_UU);
-	}
-
-	/** Get C_DepositBatch_UU.
-		@return C_DepositBatch_UU	  */
-	public String getC_DepositBatch_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_C_DepositBatch_UU);
 	}
 }

@@ -23,9 +23,9 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for DD_Order
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public interface I_DD_Order 
 {
 
@@ -725,6 +725,8 @@ public interface I_DD_Order
 	  * Reference to corresponding Sales/Purchase Order
 	  */
 	public int getRef_Order_ID();
+
+	public org.compiere.model.I_C_Order getRef_Order() throws RuntimeException;
 
     /** Column name SalesRep_ID */
     public static final String COLUMNNAME_SalesRep_ID = "SalesRep_ID";

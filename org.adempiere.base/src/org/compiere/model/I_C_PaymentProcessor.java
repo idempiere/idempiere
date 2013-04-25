@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_PaymentProcessor
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_C_PaymentProcessor 
 {
@@ -237,28 +237,6 @@ public interface I_C_PaymentProcessor
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
-    /** Column name C_PaymentProcessor_ID */
-    public static final String COLUMNNAME_C_PaymentProcessor_ID = "C_PaymentProcessor_ID";
-
-	/** Set Payment Processor.
-	  * Payment processor for electronic payments
-	  */
-	public void setC_PaymentProcessor_ID (int C_PaymentProcessor_ID);
-
-	/** Get Payment Processor.
-	  * Payment processor for electronic payments
-	  */
-	public int getC_PaymentProcessor_ID();
-
-    /** Column name C_PaymentProcessor_UU */
-    public static final String COLUMNNAME_C_PaymentProcessor_UU = "C_PaymentProcessor_UU";
-
-	/** Set C_PaymentProcessor_UU	  */
-	public void setC_PaymentProcessor_UU (String C_PaymentProcessor_UU);
-
-	/** Get C_PaymentProcessor_UU	  */
-	public String getC_PaymentProcessor_UU();
-
     /** Column name Commission */
     public static final String COLUMNNAME_Commission = "Commission";
 
@@ -284,6 +262,28 @@ public interface I_C_PaymentProcessor
 	  * Fixed cost per transaction
 	  */
 	public BigDecimal getCostPerTrx();
+
+    /** Column name C_PaymentProcessor_ID */
+    public static final String COLUMNNAME_C_PaymentProcessor_ID = "C_PaymentProcessor_ID";
+
+	/** Set Payment Processor.
+	  * Payment processor for electronic payments
+	  */
+	public void setC_PaymentProcessor_ID (int C_PaymentProcessor_ID);
+
+	/** Get Payment Processor.
+	  * Payment processor for electronic payments
+	  */
+	public int getC_PaymentProcessor_ID();
+
+    /** Column name C_PaymentProcessor_UU */
+    public static final String COLUMNNAME_C_PaymentProcessor_UU = "C_PaymentProcessor_UU";
+
+	/** Set C_PaymentProcessor_UU	  */
+	public void setC_PaymentProcessor_UU (String C_PaymentProcessor_UU);
+
+	/** Get C_PaymentProcessor_UU	  */
+	public String getC_PaymentProcessor_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
