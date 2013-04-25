@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Warehouse
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_M_Warehouse (Properties ctx, int M_Warehouse_ID, String trxName)
@@ -168,6 +168,34 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	public org.compiere.model.I_M_Locator getM_ReserveLocator() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_Locator)MTable.get(getCtx(), org.compiere.model.I_M_Locator.Table_Name)
+			.getPO(getM_ReserveLocator_ID(), get_TrxName());	}
+
+	/** Set Reservation Locator.
+		@param M_ReserveLocator_ID 
+		Reservation Locator (just for reporting purposes)
+	  */
+	public void setM_ReserveLocator_ID (int M_ReserveLocator_ID)
+	{
+		if (M_ReserveLocator_ID < 1) 
+			set_Value (COLUMNNAME_M_ReserveLocator_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_ReserveLocator_ID, Integer.valueOf(M_ReserveLocator_ID));
+	}
+
+	/** Get Reservation Locator.
+		@return Reservation Locator (just for reporting purposes)
+	  */
+	public int getM_ReserveLocator_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ReserveLocator_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Warehouse.

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_OnlineTrxHistory
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0b
  */
 public interface I_C_OnlineTrxHistory 
 {
@@ -76,6 +76,24 @@ public interface I_C_OnlineTrxHistory
 	public int getAD_Table_ID();
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+
+    /** Column name C_OnlineTrxHistory_ID */
+    public static final String COLUMNNAME_C_OnlineTrxHistory_ID = "C_OnlineTrxHistory_ID";
+
+	/** Set Online Transaction History	  */
+	public void setC_OnlineTrxHistory_ID (int C_OnlineTrxHistory_ID);
+
+	/** Get Online Transaction History	  */
+	public int getC_OnlineTrxHistory_ID();
+
+    /** Column name C_OnlineTrxHistory_UU */
+    public static final String COLUMNNAME_C_OnlineTrxHistory_UU = "C_OnlineTrxHistory_UU";
+
+	/** Set C_OnlineTrxHistory_UU	  */
+	public void setC_OnlineTrxHistory_UU (String C_OnlineTrxHistory_UU);
+
+	/** Get C_OnlineTrxHistory_UU	  */
+	public String getC_OnlineTrxHistory_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -173,22 +191,4 @@ public interface I_C_OnlineTrxHistory
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name C_OnlineTrxHistory_ID */
-    public static final String COLUMNNAME_C_OnlineTrxHistory_ID = "C_OnlineTrxHistory_ID";
-
-	/** Set Online Transaction History	  */
-	public void setC_OnlineTrxHistory_ID (int C_OnlineTrxHistory_ID);
-
-	/** Get Online Transaction History	  */
-	public int getC_OnlineTrxHistory_ID();
-
-    /** Column name C_OnlineTrxHistory_UU */
-    public static final String COLUMNNAME_C_OnlineTrxHistory_UU = "C_OnlineTrxHistory_UU";
-
-	/** Set C_OnlineTrxHistory_UU	  */
-	public void setC_OnlineTrxHistory_UU (String C_OnlineTrxHistory_UU);
-
-	/** Get C_OnlineTrxHistory_UU	  */
-	public String getC_OnlineTrxHistory_UU();
 }

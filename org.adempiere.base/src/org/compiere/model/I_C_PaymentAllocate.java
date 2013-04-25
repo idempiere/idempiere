@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_PaymentAllocate
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_C_PaymentAllocate 
 {

@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_BOM
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_M_BOM extends PO implements I_M_BOM, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_M_BOM (Properties ctx, int M_BOM_ID, String trxName)

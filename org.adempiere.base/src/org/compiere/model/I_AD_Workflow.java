@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Workflow
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_AD_Workflow 
 {
@@ -144,15 +144,6 @@ public interface I_AD_Workflow
 	  */
 	public int getAD_Workflow_ID();
 
-    /** Column name AD_Workflow_UU */
-    public static final String COLUMNNAME_AD_Workflow_UU = "AD_Workflow_UU";
-
-	/** Set AD_Workflow_UU	  */
-	public void setAD_Workflow_UU (String AD_Workflow_UU);
-
-	/** Get AD_Workflow_UU	  */
-	public String getAD_Workflow_UU();
-
     /** Column name AD_WorkflowProcessor_ID */
     public static final String COLUMNNAME_AD_WorkflowProcessor_ID = "AD_WorkflowProcessor_ID";
 
@@ -167,6 +158,15 @@ public interface I_AD_Workflow
 	public int getAD_WorkflowProcessor_ID();
 
 	public org.compiere.model.I_AD_WorkflowProcessor getAD_WorkflowProcessor() throws RuntimeException;
+
+    /** Column name AD_Workflow_UU */
+    public static final String COLUMNNAME_AD_Workflow_UU = "AD_Workflow_UU";
+
+	/** Set AD_Workflow_UU	  */
+	public void setAD_Workflow_UU (String AD_Workflow_UU);
+
+	/** Get AD_Workflow_UU	  */
+	public String getAD_Workflow_UU();
 
     /** Column name Author */
     public static final String COLUMNNAME_Author = "Author";
@@ -460,6 +460,19 @@ public interface I_AD_Workflow
 	  */
 	public int getQueuingTime();
 
+    /** Column name SetupTime */
+    public static final String COLUMNNAME_SetupTime = "SetupTime";
+
+	/** Set Setup Time.
+	  * Setup time before starting Production
+	  */
+	public void setSetupTime (int SetupTime);
+
+	/** Get Setup Time.
+	  * Setup time before starting Production
+	  */
+	public int getSetupTime();
+
     /** Column name S_Resource_ID */
     public static final String COLUMNNAME_S_Resource_ID = "S_Resource_ID";
 
@@ -474,19 +487,6 @@ public interface I_AD_Workflow
 	public int getS_Resource_ID();
 
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
-
-    /** Column name SetupTime */
-    public static final String COLUMNNAME_SetupTime = "SetupTime";
-
-	/** Set Setup Time.
-	  * Setup time before starting Production
-	  */
-	public void setSetupTime (int SetupTime);
-
-	/** Get Setup Time.
-	  * Setup time before starting Production
-	  */
-	public int getSetupTime();
 
     /** Column name UnitsCycles */
     public static final String COLUMNNAME_UnitsCycles = "UnitsCycles";

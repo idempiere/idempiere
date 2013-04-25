@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PInstance
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_AD_PInstance (Properties ctx, int AD_PInstance_ID, String trxName)

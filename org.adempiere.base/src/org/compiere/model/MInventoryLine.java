@@ -300,7 +300,7 @@ public class MInventoryLine extends X_M_InventoryLine
 		MDocType dt = MDocType.get(getCtx(), getParent().getC_DocType_ID());
 		String docSubTypeInv = dt.getDocSubTypeInv();
 
-		if (MDocType.DOCSUBTYPEInv_InternalUseInventory.equals(docSubTypeInv)) {
+		if (MDocType.DOCSUBTYPEINV_InternalUseInventory.equals(docSubTypeInv)) {
 
 			// Internal Use Inventory validations
 			if (!INVENTORYTYPE_ChargeAccount.equals(getInventoryType()))
@@ -326,7 +326,7 @@ public class MInventoryLine extends X_M_InventoryLine
 				return false;
 			}
 
-		} else if (MDocType.DOCSUBTYPEInv_PhysicalInventory.equals(docSubTypeInv)) {
+		} else if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv)) {
 
 			// Physical Inventory validations
 			if (INVENTORYTYPE_ChargeAccount.equals(getInventoryType()))

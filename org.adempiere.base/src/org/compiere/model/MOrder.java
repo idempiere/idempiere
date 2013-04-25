@@ -2290,6 +2290,11 @@ public class MOrder extends X_C_Order implements DocAction
 		// end added
 		invoice.saveEx(get_TrxName());
 		setC_CashLine_ID(invoice.getC_CashLine_ID());
+		if (PAYMENTRULE_Cash.equals(invoice.getPaymentRule()) && getC_POS_ID() == 0) {
+			if (invoice.testAllocation()) {
+				invoice.saveEx();
+			}
+		}
 		if (!DOCSTATUS_Completed.equals(invoice.getDocStatus()))
 		{
 			m_processMsg = "@C_Invoice_ID@: " + invoice.getProcessMsg();

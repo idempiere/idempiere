@@ -33,12 +33,14 @@ import org.compiere.model.MClientInfo;
 import org.compiere.model.MDiscountSchemaLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
+import org.compiere.model.MUOMConversion;
 import org.compiere.model.ProductCost;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.CPreparedStatement;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -266,13 +268,14 @@ public class M_PriceList_Create extends SvrProcess {
 				//
 				// For All Discount Lines in Sequence
 				//
-				sql = new StringBuilder("SELECT m_discountschemaline_id");
-							sql.append(",ad_client_id,ad_org_id,isactive,created,createdby,updated,updatedby"); 
-							sql.append(",m_discountschema_id,seqno,m_product_category_id,c_bpartner_id,m_product_id");
-							sql.append(",conversiondate,list_base,list_addamt,list_discount,list_rounding,list_minamt");
-							sql.append(",list_maxamt,list_fixed,std_base,std_addamt,std_discount,std_rounding");
-							sql.append(",std_minamt,std_maxamt,std_fixed,limit_base,limit_addamt,limit_discount");
-							sql.append(",limit_rounding,limit_minamt,limit_maxamt,limit_fixed,group1,group2,c_conversiontype_id");
+				int precision = rsCurgen.getInt("StdPrecision");
+				sql = new StringBuilder("SELECT M_DiscountSchemaLine_ID");
+							sql.append(",AD_Client_ID,AD_Org_ID,IsActive,Created,Createdby,Updated,Updatedby"); 
+							sql.append(",M_DiscountSchema_ID,SeqNo,M_Product_Category_ID,C_Bpartner_ID,M_Product_ID");
+							sql.append(",ConversionDate,List_Base,List_Addamt,List_Discount,List_Rounding,List_MinAmt");
+							sql.append(",List_MaxAmt,List_Fixed,Std_Base,Std_Addamt,Std_Discount,Std_Rounding");
+							sql.append(",Std_MinAmt,Std_MaxAmt,Std_Fixed,Limit_Base,Limit_AddAmt,Limit_Discount");
+							sql.append(",Limit_Rounding,Limit_Minamt,Limit_MaxAmt,Limit_Fixed,Group1,Group2,C_ConversionType_ID");
 							sql.append(" FROM  M_DiscountSchemaLine");
 							sql.append(" WHERE M_DiscountSchema_ID=");
 							sql.append(rsCurgen.getInt("M_DiscountSchema_ID"));
@@ -362,14 +365,14 @@ public class M_PriceList_Create extends SvrProcess {
 								if (dl_Group2 != null)
 									sqlins.append(" AND (p.Group2=?)");
 								sqlins.append(" AND (NULLIF(").append(rsDiscountLine.getInt("C_BPartner_ID")).append(",0) IS NULL OR EXISTS ");
-								sqlins.append("(SELECT m_product_id,c_bpartner_id,ad_client_id,ad_org_id,isactive");
-								sqlins.append(",created,createdby,updated,updatedby,iscurrentvendor,c_uom_id");
-								sqlins.append(",c_currency_id,pricelist,pricepo,priceeffective,pricelastpo");
-								sqlins.append(",pricelastinv,vendorproductno,upc,vendorcategory,discontinued");
-								sqlins.append(",discontinuedby,order_min,order_pack,costperorder");
-								sqlins.append(",deliverytime_promised,deliverytime_actual,qualityrating");
-								sqlins.append(",royaltyamt,group1,group2");
-								sqlins.append(",manufacturer FROM M_Product_PO po WHERE po.M_Product_ID=p.M_Product_ID");
+								sqlins.append("(SELECT M_Product_ID,C_Bpartner_ID,AD_Client_ID,AD_Org_ID,IsActive");
+								sqlins.append(",Created,CreatedBy,Updated,Updatedby,IsCurrentVendor,C_Uom_ID");
+								sqlins.append(",C_Currency_ID,PriceList,PricePo,PriceEffective,PriceLastPo");
+								sqlins.append(",PriceLastInv,VendorProductno,Upc,VendorCategory,Discontinued");
+								sqlins.append(",Discontinuedby,Order_Min,Order_Pack,CostPerOrder");
+								sqlins.append(",DeliveryTime_Promised,DeliveryTime_Actual,QualityRating");
+								sqlins.append(",RoyaltyAmt,Group1,Group2");
+								sqlins.append(",Manufacturer FROM M_Product_PO po WHERE po.M_Product_ID=p.M_Product_ID");
 								sqlins.append(" AND po.C_BPartner_ID=").append(rsDiscountLine.getInt("C_BPartner_ID")).append("))"); 
 								sqlins.append(" AND	(NULLIF(").append(rsDiscountLine.getInt("M_Product_ID")).append(",0) IS NULL ");
 								sqlins.append("   OR p.M_Product_ID=").append(rsDiscountLine.getInt("M_Product_ID")).append(")");
@@ -507,6 +510,58 @@ public class M_PriceList_Create extends SvrProcess {
 									sqlins.toString());
 						toti += cnti;
 						if (log.isLoggable(Level.FINE)) log.fine("Inserted " + cnti);
+
+						String sqlconversion = "SELECT p.M_Product_ID,po.C_Uom_ID,pp.PriceList"
+								+ " FROM M_Product p"
+								+ " INNER JOIN M_ProductPrice pp on (p.M_Product_ID=pp.M_Product_ID)"
+								+ " INNER JOIN M_Product_PO po on (po.M_Product_ID=p.M_Product_ID)"
+								+ " INNER JOIN C_Uom_Conversion uc on (p.M_Product_ID=uc.M_Product_ID)"
+								+ " INNER JOIN T_Selection s on (s.T_Selection_ID=po.M_Product_ID)"
+								+ " WHERE pp.M_PriceList_Version_ID=?"
+								+ " AND po.C_Uom_ID<> p.C_Uom_ID"
+								+ " AND s.AD_PInstance_ID=?";
+						PreparedStatement pstmtconversion = null;
+						ResultSet rsconversion = null;
+						BigDecimal price = Env.ZERO;
+						int product_id = 0;
+						MUOMConversion conversion = null;
+						try {
+							pstmtconversion = DB.prepareStatement(sqlconversion.toString(), get_TrxName());
+							pstmtconversion.setInt(1, p_PriceList_Version_ID);
+							pstmtconversion.setInt(2, m_AD_PInstance_ID);
+
+							rsconversion = pstmtconversion.executeQuery();
+							while (rsconversion != null && rsconversion.next())
+							{
+								product_id = rsconversion.getInt(1);
+								MUOMConversion[] conversions = MUOMConversion.getProductConversions(getCtx(), product_id);
+								for (int i = 0; i < conversions.length; i++)
+								{
+									if (conversions[i].getC_UOM_To_ID() == rsconversion.getInt(2))
+									{
+										conversion = conversions[i];
+										price = rsconversion.getBigDecimal(3);
+									}
+								}
+							}
+							if (conversion != null)
+							{
+								price = price.divide(conversion.getDivideRate(), precision, BigDecimal.ROUND_HALF_DOWN);
+								StringBuilder sqlupdate = new StringBuilder();
+								sqlupdate.append("UPDATE M_ProductPrice SET PriceList=").append(price).append(" WHERE M_PriceList_Version_ID=").append(p_PriceList_Version_ID)
+									.append(" AND M_Product_ID= ").append(product_id);
+								int count = DB.executeUpdate(sqlupdate.toString(),get_TrxName());
+								if (count == -1) {
+									raiseError(
+											" UPDATE M_ProductPrice set PriceList=? ",
+											sqlupdate.toString());
+								}
+							}
+						} catch (Exception e) {
+							throw e;
+						} finally {
+							DB.close(rsconversion, pstmtconversion);
+						}
 					} else {
 						//
 						//Copy and Convert from other PriceList_Version
@@ -705,7 +760,7 @@ public class M_PriceList_Create extends SvrProcess {
 								 sqlupd.append(" '9', CASE"); //Whole 9 or 5
 								 	sqlupd.append(" WHEN MOD(ROUND(PriceList),10)<=5 THEN ROUND(PriceList)+(5-MOD(ROUND(PriceList),10))");
 								 	sqlupd.append(" WHEN MOD(ROUND(PriceList),10)>5 THEN ROUND(PriceList)+(9-MOD(ROUND(PriceList),10)) END,"); 
-							 	 sqlupd.append(" ROUND(PriceList, ").append(rsCurgen.getInt("StdPrecision"));
+							 	 sqlupd.append(" ROUND(PriceList, ").append(precision);
 							 	 sqlupd.append(")),");//Currency
 							 	 sqlupd.append(" PriceStd = DECODE('").append(rsDiscountLine.getString("Std_Rounding"));
 							 	 sqlupd.append("',").append(" 'N', PriceStd, ");
@@ -717,7 +772,7 @@ public class M_PriceList_Create extends SvrProcess {
 							 	 sqlupd.append(" '9', CASE");  //Whole 9 or 5
 							 	 	sqlupd.append(" WHEN MOD(ROUND(PriceStd),10)<=5 THEN ROUND(PriceStd)+(5-MOD(ROUND(PriceStd),10))");
 							 	 	sqlupd.append(" WHEN MOD(ROUND(PriceStd),10)>5 THEN ROUND(PriceStd)+(9-MOD(ROUND(PriceStd),10)) END,");
-						 	 	 sqlupd.append("ROUND(PriceStd, ").append(rsCurgen.getInt("StdPrecision")).append(")),"); //Currency
+						 	 	 sqlupd.append("ROUND(PriceStd, ").append(precision).append(")),"); //Currency
 						 	 	 sqlupd.append("PriceLimit = DECODE('");	
 						 	 	 sqlupd.append(rsDiscountLine.getString("Limit_Rounding")).append("', ");
 						 	 	 sqlupd.append(" 		'N', PriceLimit, ");
@@ -729,7 +784,7 @@ public class M_PriceList_Create extends SvrProcess {
 						 	 	 sqlupd.append("    '9', CASE");  //Whole 9 or 5
 						 	 	 	sqlupd.append(" WHEN MOD(ROUND(PriceLimit),10)<=5 THEN ROUND(PriceLimit)+(5-MOD(ROUND(PriceLimit),10))");
 						 	 	 	sqlupd.append(" WHEN MOD(ROUND(PriceLimit),10)>5 THEN ROUND(PriceLimit)+(9-MOD(ROUND(PriceLimit),10)) END,");
-					 	 	 	sqlupd.append("		ROUND(PriceLimit, ").append(rsCurgen.getInt("StdPrecision"));
+					 	 	 	sqlupd.append("		ROUND(PriceLimit, ").append(precision);
 					 	 	 	sqlupd.append(")) "); //	Currency
 					 	 	 	sqlupd.append(" WHERE	M_PriceList_Version_ID=");
 					 	 	 	sqlupd.append(p_PriceList_Version_ID);

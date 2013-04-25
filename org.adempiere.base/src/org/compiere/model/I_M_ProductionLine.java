@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ProductionLine
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_M_ProductionLine 
 {
@@ -35,9 +35,9 @@ public interface I_M_ProductionLine
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel = 1 - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(3);
+    BigDecimal accessLevel = BigDecimal.valueOf(1);
 
     /** Load Meta Data */
 

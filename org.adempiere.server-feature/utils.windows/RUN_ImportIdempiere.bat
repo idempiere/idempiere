@@ -8,6 +8,15 @@ SET SYSUSER=system
 if (%ADEMPIERE_DB_PATH%) == (postgresql) SET SUFFIX=_pg
 if (%ADEMPIERE_DB_PATH%) == (postgresql) SET SYSUSER=postgres
 
+@Rem for oracle or postgres version 9.1 or higher you run this the usual way:
+@Rem   RUN_ImportIdempiere.sh
+@Rem for postgres versions 8.4 or 9.0 you can run this way:
+@Rem   RUN_ImportIdempiere.sh 8.4
+@Rem     or
+@Rem   RUN_ImportIdempiere.sh 9.0
+if (%1) == (8.4) SET SUFFIX=_pg84
+if (%1) == (9.0) SET SUFFIX=_pg84
+
 @echo Re-Create idempiere User and import %IDEMPIERE_HOME%\data\Adempiere.dmp - (%ADEMPIERE_DB_NAME%)
 cd %IDEMPIERE_HOME%\data\seed
 jar xvf Adempiere%SUFFIX%.jar

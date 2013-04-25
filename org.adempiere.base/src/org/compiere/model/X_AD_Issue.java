@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Issue
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_AD_Issue (Properties ctx, int AD_Issue_ID, String trxName)
@@ -340,6 +340,8 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	public static final String ISSUESOURCE_Form = "X";
 	/** Workbench = B */
 	public static final String ISSUESOURCE_Workbench = "B";
+	/** Info = I */
+	public static final String ISSUESOURCE_Info = "I";
 	/** Set Source.
 		@param IssueSource 
 		Issue Source
@@ -667,7 +669,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 
 	/** Set Request Document No.
 		@param RequestDocumentNo 
-		Adempiere Request Document No
+		iDempiere Request Document No
 	  */
 	public void setRequestDocumentNo (String RequestDocumentNo)
 	{
@@ -675,7 +677,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Get Request Document No.
-		@return Adempiere Request Document No
+		@return iDempiere Request Document No
 	  */
 	public String getRequestDocumentNo () 
 	{
@@ -950,18 +952,15 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 		return (String)get_Value(COLUMNNAME_SystemStatus);
 	}
 
-	/** Set Registered EMail.
-		@param UserName 
-		Email of the responsible for the System
-	  */
+	/** Set User Name.
+		@param UserName User Name	  */
 	public void setUserName (String UserName)
 	{
 		set_ValueNoCheck (COLUMNNAME_UserName, UserName);
 	}
 
-	/** Get Registered EMail.
-		@return Email of the responsible for the System
-	  */
+	/** Get User Name.
+		@return User Name	  */
 	public String getUserName () 
 	{
 		return (String)get_Value(COLUMNNAME_UserName);

@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_System
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_AD_System extends PO implements I_AD_System, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_AD_System (Properties ctx, int AD_System_ID, String trxName)
@@ -416,7 +416,7 @@ public class X_AD_System extends PO implements I_AD_System, I_Persistent
 
 	/** Set LDAP Domain.
 		@param LDAPDomain 
-		Directory service domain name - e.g. adempiere.org
+		Directory service domain name - e.g. idempiere.org
 	  */
 	public void setLDAPDomain (String LDAPDomain)
 	{
@@ -424,7 +424,7 @@ public class X_AD_System extends PO implements I_AD_System, I_Persistent
 	}
 
 	/** Get LDAP Domain.
-		@return Directory service domain name - e.g. adempiere.org
+		@return Directory service domain name - e.g. idempiere.org
 	  */
 	public String getLDAPDomain () 
 	{
@@ -683,7 +683,7 @@ public class X_AD_System extends PO implements I_AD_System, I_Persistent
 
 	/** Set Support Expires.
 		@param SupportExpDate 
-		Date when the Adempiere support expires
+		Date when the iDempiere support expires
 	  */
 	public void setSupportExpDate (Timestamp SupportExpDate)
 	{
@@ -691,7 +691,7 @@ public class X_AD_System extends PO implements I_AD_System, I_Persistent
 	}
 
 	/** Get Support Expires.
-		@return Date when the Adempiere support expires
+		@return Date when the iDempiere support expires
 	  */
 	public Timestamp getSupportExpDate () 
 	{
@@ -700,7 +700,7 @@ public class X_AD_System extends PO implements I_AD_System, I_Persistent
 
 	/** Set Internal Users.
 		@param SupportUnits 
-		Number of Internal Users for Adempiere Support
+		Number of Internal Users for iDempiere Support
 	  */
 	public void setSupportUnits (int SupportUnits)
 	{
@@ -708,7 +708,7 @@ public class X_AD_System extends PO implements I_AD_System, I_Persistent
 	}
 
 	/** Get Internal Users.
-		@return Number of Internal Users for Adempiere Support
+		@return Number of Internal Users for iDempiere Support
 	  */
 	public int getSupportUnits () 
 	{
@@ -744,18 +744,15 @@ public class X_AD_System extends PO implements I_AD_System, I_Persistent
 		return (String)get_Value(COLUMNNAME_SystemStatus);
 	}
 
-	/** Set Registered EMail.
-		@param UserName 
-		Email of the responsible for the System
-	  */
+	/** Set User Name.
+		@param UserName User Name	  */
 	public void setUserName (String UserName)
 	{
 		set_Value (COLUMNNAME_UserName, UserName);
 	}
 
-	/** Get Registered EMail.
-		@return Email of the responsible for the System
-	  */
+	/** Get User Name.
+		@return User Name	  */
 	public String getUserName () 
 	{
 		return (String)get_Value(COLUMNNAME_UserName);

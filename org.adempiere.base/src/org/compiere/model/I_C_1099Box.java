@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_1099Box
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_C_1099Box 
 {
@@ -62,6 +62,15 @@ public interface I_C_1099Box
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name Bucket */
+    public static final String COLUMNNAME_Bucket = "Bucket";
+
+	/** Set Bucket	  */
+	public void setBucket (int Bucket);
+
+	/** Get Bucket	  */
+	public int getBucket();
+
     /** Column name C_1099Box_ID */
     public static final String COLUMNNAME_C_1099Box_ID = "C_1099Box_ID";
 
@@ -79,15 +88,6 @@ public interface I_C_1099Box
 
 	/** Get C_1099Box_UU	  */
 	public String getC_1099Box_UU();
-
-    /** Column name Bucket */
-    public static final String COLUMNNAME_Bucket = "Bucket";
-
-	/** Set Bucket	  */
-	public void setBucket (int Bucket);
-
-	/** Get Bucket	  */
-	public int getBucket();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

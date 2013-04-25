@@ -23,14 +23,14 @@ import org.compiere.model.*;
 
 /** Generated Model for PP_WF_Node_Asset
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_PP_WF_Node_Asset (Properties ctx, int PP_WF_Node_Asset_ID, String trxName)

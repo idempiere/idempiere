@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ShippingProcessorCfg
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcessorCfg, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121213L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_M_ShippingProcessorCfg (Properties ctx, int M_ShippingProcessorCfg_ID, String trxName)
@@ -40,8 +40,8 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
         {
 			setHostAddress (null);
 			setHostPort (0);
-			setName (null);
 			setM_ShippingProcessorCfg_ID (0);
+			setName (null);
         } */
     }
 
@@ -125,6 +125,40 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Shipping Processor Configuration.
+		@param M_ShippingProcessorCfg_ID Shipping Processor Configuration	  */
+	public void setM_ShippingProcessorCfg_ID (int M_ShippingProcessorCfg_ID)
+	{
+		if (M_ShippingProcessorCfg_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_M_ShippingProcessorCfg_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_M_ShippingProcessorCfg_ID, Integer.valueOf(M_ShippingProcessorCfg_ID));
+	}
+
+	/** Get Shipping Processor Configuration.
+		@return Shipping Processor Configuration	  */
+	public int getM_ShippingProcessorCfg_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShippingProcessorCfg_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set M_ShippingProcessorCfg_UU.
+		@param M_ShippingProcessorCfg_UU M_ShippingProcessorCfg_UU	  */
+	public void setM_ShippingProcessorCfg_UU (String M_ShippingProcessorCfg_UU)
+	{
+		set_Value (COLUMNNAME_M_ShippingProcessorCfg_UU, M_ShippingProcessorCfg_UU);
+	}
+
+	/** Get M_ShippingProcessorCfg_UU.
+		@return M_ShippingProcessorCfg_UU	  */
+	public String getM_ShippingProcessorCfg_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_M_ShippingProcessorCfg_UU);
 	}
 
 	/** Set Name.
@@ -249,39 +283,5 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	public String getShippingProcessorClass () 
 	{
 		return (String)get_Value(COLUMNNAME_ShippingProcessorClass);
-	}
-
-	/** Set Shipping Processor.
-		@param M_ShippingProcessorCfg_ID Shipping Processor	  */
-	public void setM_ShippingProcessorCfg_ID (int M_ShippingProcessorCfg_ID)
-	{
-		if (M_ShippingProcessorCfg_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_M_ShippingProcessorCfg_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_M_ShippingProcessorCfg_ID, Integer.valueOf(M_ShippingProcessorCfg_ID));
-	}
-
-	/** Get Shipping Processor.
-		@return Shipping Processor	  */
-	public int getM_ShippingProcessorCfg_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShippingProcessorCfg_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set M_ShippingProcessorCfg_UU.
-		@param M_ShippingProcessorCfg_UU M_ShippingProcessorCfg_UU	  */
-	public void setM_ShippingProcessorCfg_UU (String M_ShippingProcessorCfg_UU)
-	{
-		set_Value (COLUMNNAME_M_ShippingProcessorCfg_UU, M_ShippingProcessorCfg_UU);
-	}
-
-	/** Get M_ShippingProcessorCfg_UU.
-		@return M_ShippingProcessorCfg_UU	  */
-	public String getM_ShippingProcessorCfg_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_M_ShippingProcessorCfg_UU);
 	}
 }

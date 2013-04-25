@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_ShippingTransaction
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransaction, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130419L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_M_ShippingTransaction (Properties ctx, int M_ShippingTransaction_ID, String trxName)
@@ -211,29 +211,25 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BP_ShippingAcct)MTable.get(getCtx(), org.compiere.model.I_C_BP_ShippingAcct.Table_Name)
-			.getPO(getC_BP_ShippingAcct_ID(), get_TrxName());	}
-
-	/** Set Business Partner Shipping Account.
-		@param C_BP_ShippingAcct_ID Business Partner Shipping Account	  */
-	public void setC_BP_ShippingAcct_ID (int C_BP_ShippingAcct_ID)
+	/** Set COD.
+		@param CashOnDelivery COD	  */
+	public void setCashOnDelivery (boolean CashOnDelivery)
 	{
-		if (C_BP_ShippingAcct_ID < 1) 
-			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, null);
-		else 
-			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, Integer.valueOf(C_BP_ShippingAcct_ID));
+		set_Value (COLUMNNAME_CashOnDelivery, Boolean.valueOf(CashOnDelivery));
 	}
 
-	/** Get Business Partner Shipping Account.
-		@return Business Partner Shipping Account	  */
-	public int getC_BP_ShippingAcct_ID () 
+	/** Get COD.
+		@return COD	  */
+	public boolean isCashOnDelivery () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_ShippingAcct_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		Object oo = get_Value(COLUMNNAME_CashOnDelivery);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
@@ -287,6 +283,31 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public int getC_BPartner_Location_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_BP_ShippingAcct)MTable.get(getCtx(), org.compiere.model.I_C_BP_ShippingAcct.Table_Name)
+			.getPO(getC_BP_ShippingAcct_ID(), get_TrxName());	}
+
+	/** Set Business Partner Shipping Account.
+		@param C_BP_ShippingAcct_ID Business Partner Shipping Account	  */
+	public void setC_BP_ShippingAcct_ID (int C_BP_ShippingAcct_ID)
+	{
+		if (C_BP_ShippingAcct_ID < 1) 
+			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, Integer.valueOf(C_BP_ShippingAcct_ID));
+	}
+
+	/** Get Business Partner Shipping Account.
+		@return Business Partner Shipping Account	  */
+	public int getC_BP_ShippingAcct_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_ShippingAcct_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -346,6 +367,23 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set COD Amount.
+		@param CODAmount COD Amount	  */
+	public void setCODAmount (BigDecimal CODAmount)
+	{
+		set_Value (COLUMNNAME_CODAmount, CODAmount);
+	}
+
+	/** Get COD Amount.
+		@return COD Amount	  */
+	public BigDecimal getCODAmount () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CODAmount);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
@@ -430,44 +468,6 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set COD.
-		@param CashOnDelivery COD	  */
-	public void setCashOnDelivery (boolean CashOnDelivery)
-	{
-		set_Value (COLUMNNAME_CashOnDelivery, Boolean.valueOf(CashOnDelivery));
-	}
-
-	/** Get COD.
-		@return COD	  */
-	public boolean isCashOnDelivery () 
-	{
-		Object oo = get_Value(COLUMNNAME_CashOnDelivery);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set COD Amount.
-		@param CODAmount COD Amount	  */
-	public void setCODAmount (BigDecimal CODAmount)
-	{
-		set_Value (COLUMNNAME_CODAmount, CODAmount);
-	}
-
-	/** Get COD Amount.
-		@return COD Amount	  */
-	public BigDecimal getCODAmount () 
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CODAmount);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
 	}
 
 	/** Set Customs Value.

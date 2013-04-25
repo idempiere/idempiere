@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for Fact_Acct_Summary
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_Fact_Acct_Summary (Properties ctx, int Fact_Acct_Summary_ID, String trxName)
@@ -106,11 +106,6 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
 			 return 0;
 		return ii.intValue();
 	}
-
-	public org.compiere.model.I_AD_Org getAD_OrgTrx() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Org)MTable.get(getCtx(), org.compiere.model.I_AD_Org.Table_Name)
-			.getPO(getAD_OrgTrx_ID(), get_TrxName());	}
 
 	/** Set Trx Organization.
 		@param AD_OrgTrx_ID 

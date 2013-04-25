@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DocType
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_C_DocType extends PO implements I_C_DocType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -371,6 +371,12 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public static final String DOCBASETYPE_DistributionOrder = "DOO";
 	/** Manufacturing Cost Collector = MCC */
 	public static final String DOCBASETYPE_ManufacturingCostCollector = "MCC";
+	/** Fixed Assets Addition = FAA */
+	public static final String DOCBASETYPE_FixedAssetsAddition = "FAA";
+	/** Fixed Assets Disposal = FAD */
+	public static final String DOCBASETYPE_FixedAssetsDisposal = "FAD";
+	/** Fixed Assets Depreciation = FDP */
+	public static final String DOCBASETYPE_FixedAssetsDepreciation = "FDP";
 	/** Set Document BaseType.
 		@param DocBaseType 
 		Logical type of document
@@ -417,6 +423,30 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
+	/** DocSubTypeInv AD_Reference_ID=200068 */
+	public static final int DOCSUBTYPEINV_AD_Reference_ID=200068;
+	/** Physical Inventory = PI */
+	public static final String DOCSUBTYPEINV_PhysicalInventory = "PI";
+	/** Internal Use Inventory = IU */
+	public static final String DOCSUBTYPEINV_InternalUseInventory = "IU";
+	/** Set Inv Sub Type.
+		@param DocSubTypeInv 
+		Inventory Sub Type
+	  */
+	public void setDocSubTypeInv (String DocSubTypeInv)
+	{
+
+		set_Value (COLUMNNAME_DocSubTypeInv, DocSubTypeInv);
+	}
+
+	/** Get Inv Sub Type.
+		@return Inventory Sub Type
+	  */
+	public String getDocSubTypeInv () 
+	{
+		return (String)get_Value(COLUMNNAME_DocSubTypeInv);
+	}
+
 	/** DocSubTypeSO AD_Reference_ID=148 */
 	public static final int DOCSUBTYPESO_AD_Reference_ID=148;
 	/** On Credit Order = WI */
@@ -452,33 +482,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	{
 		return (String)get_Value(COLUMNNAME_DocSubTypeSO);
 	}
-	
-	/** DocSubTypeInv AD_Reference_ID=200068 */
-	public static final int DOCSUBTYPEInv_AD_Reference_ID=200068;
-	/** Physical Inventory = PI */
-	public static final String DOCSUBTYPEInv_PhysicalInventory = "PI";
-	/** Internal Use Inventory= IU */
-	public static final String DOCSUBTYPEInv_InternalUseInventory = "IU";
 
-	/** Set SO Sub Type.
-		@param DocSubTypeSO 
-		Sales Order Sub Type
-	  */
-	public void setDocSubTypeInv (String DocSubTypeInv)
-	{
-
-		set_Value (COLUMNNAME_DocSubTypeInv, DocSubTypeInv);
-	}
-
-	/** Get SO Sub Type.
-		@return Sales Order Sub Type
-	  */
-	public String getDocSubTypeInv () 
-	{
-		return (String)get_Value(COLUMNNAME_DocSubTypeInv);
-	}
-
-	
 	/** Set Document Copies.
 		@param DocumentCopies 
 		Number of copies to be printed

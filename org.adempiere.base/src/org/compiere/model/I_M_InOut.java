@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_InOut
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_M_InOut 
 {
@@ -180,6 +180,19 @@ public interface I_M_InOut
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
+    /** Column name ChargeAmt */
+    public static final String COLUMNNAME_ChargeAmt = "ChargeAmt";
+
+	/** Set Charge amount.
+	  * Charge Amount
+	  */
+	public void setChargeAmt (BigDecimal ChargeAmt);
+
+	/** Get Charge amount.
+	  * Charge Amount
+	  */
+	public BigDecimal getChargeAmt();
+
     /** Column name C_Invoice_ID */
     public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
 
@@ -224,19 +237,6 @@ public interface I_M_InOut
 	public int getC_Project_ID();
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
-
-    /** Column name ChargeAmt */
-    public static final String COLUMNNAME_ChargeAmt = "ChargeAmt";
-
-	/** Set Charge amount.
-	  * Charge Amount
-	  */
-	public void setChargeAmt (BigDecimal ChargeAmt);
-
-	/** Get Charge amount.
-	  * Charge Amount
-	  */
-	public BigDecimal getChargeAmt();
 
     /** Column name CreateConfirm */
     public static final String COLUMNNAME_CreateConfirm = "CreateConfirm";
@@ -418,12 +418,12 @@ public interface I_M_InOut
     /** Column name DropShip_BPartner_ID */
     public static final String COLUMNNAME_DropShip_BPartner_ID = "DropShip_BPartner_ID";
 
-	/** Set Drop Shipment Partner.
+	/** Set DropShip_BPartner_ID.
 	  * Business Partner to ship to
 	  */
 	public void setDropShip_BPartner_ID (int DropShip_BPartner_ID);
 
-	/** Get Drop Shipment Partner.
+	/** Get DropShip_BPartner_ID.
 	  * Business Partner to ship to
 	  */
 	public int getDropShip_BPartner_ID();
@@ -648,6 +648,32 @@ public interface I_M_InOut
 	/** Get M_InOut_UU	  */
 	public String getM_InOut_UU();
 
+    /** Column name MovementDate */
+    public static final String COLUMNNAME_MovementDate = "MovementDate";
+
+	/** Set Movement Date.
+	  * Date a product was moved in or out of inventory
+	  */
+	public void setMovementDate (Timestamp MovementDate);
+
+	/** Get Movement Date.
+	  * Date a product was moved in or out of inventory
+	  */
+	public Timestamp getMovementDate();
+
+    /** Column name MovementType */
+    public static final String COLUMNNAME_MovementType = "MovementType";
+
+	/** Set Movement Type.
+	  * Method of moving the inventory
+	  */
+	public void setMovementType (String MovementType);
+
+	/** Get Movement Type.
+	  * Method of moving the inventory
+	  */
+	public String getMovementType();
+
     /** Column name M_RMA_ID */
     public static final String COLUMNNAME_M_RMA_ID = "M_RMA_ID";
 
@@ -692,32 +718,6 @@ public interface I_M_InOut
 	public int getM_Warehouse_ID();
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
-
-    /** Column name MovementDate */
-    public static final String COLUMNNAME_MovementDate = "MovementDate";
-
-	/** Set Movement Date.
-	  * Date a product was moved in or out of inventory
-	  */
-	public void setMovementDate (Timestamp MovementDate);
-
-	/** Get Movement Date.
-	  * Date a product was moved in or out of inventory
-	  */
-	public Timestamp getMovementDate();
-
-    /** Column name MovementType */
-    public static final String COLUMNNAME_MovementType = "MovementType";
-
-	/** Set Movement Type.
-	  * Method of moving the inventory
-	  */
-	public void setMovementType (String MovementType);
-
-	/** Get Movement Type.
-	  * Method of moving the inventory
-	  */
-	public String getMovementType();
 
     /** Column name NoPackages */
     public static final String COLUMNNAME_NoPackages = "NoPackages";

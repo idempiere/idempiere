@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_RMALine
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_M_RMALine 
 {
@@ -90,21 +90,6 @@ public interface I_M_RMALine
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
-    /** Column name C_Tax_ID */
-    public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
-
-	/** Set Tax.
-	  * Tax identifier
-	  */
-	public void setC_Tax_ID (int C_Tax_ID);
-
-	/** Get Tax.
-	  * Tax identifier
-	  */
-	public int getC_Tax_ID();
-
-	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
-
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -120,6 +105,21 @@ public interface I_M_RMALine
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name C_Tax_ID */
+    public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
+
+	/** Set Tax.
+	  * Tax identifier
+	  */
+	public void setC_Tax_ID (int C_Tax_ID);
+
+	/** Get Tax.
+	  * Tax identifier
+	  */
+	public int getC_Tax_ID();
+
+	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

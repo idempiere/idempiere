@@ -42,7 +42,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -872111480299074889L;
+	private static final long serialVersionUID = -3368661022903012786L;
 
 	public final static String PDF_FONT_DIR = "PDF_FONT_DIR";
 	public final static String TWOPACK_HANDLE_TRANSLATIONS = "2PACK_HANDLE_TRANSLATIONS";
@@ -116,6 +116,7 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String SHIPPING_SAVE_REQUEST_RESPONSE_LOG = "SHIPPING_SAVE_REQUEST_RESPONSE_LOG";
 	public static final String DOCACTIONBUTTON_SHOWACTIONNAME = "DOCACTIONBUTTON_SHOWACTIONNAME";
 	public static final String ZK_MAX_UPLOAD_SIZE = "ZK_MAX_UPLOAD_SIZE";
+	public static final String CALENDAR_ALTERNATE_TIMEZONE = "CALENDAR_ALTERNATE_TIMEZONE";
 
 	/**
 	 * 	Standard Constructor

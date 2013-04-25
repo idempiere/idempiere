@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DepositBatch
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_C_DepositBatch 
 {
@@ -76,6 +76,24 @@ public interface I_C_DepositBatch
 	public int getC_BankAccount_ID();
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
+
+    /** Column name C_DepositBatch_ID */
+    public static final String COLUMNNAME_C_DepositBatch_ID = "C_DepositBatch_ID";
+
+	/** Set Deposit Batch	  */
+	public void setC_DepositBatch_ID (int C_DepositBatch_ID);
+
+	/** Get Deposit Batch	  */
+	public int getC_DepositBatch_ID();
+
+    /** Column name C_DepositBatch_UU */
+    public static final String COLUMNNAME_C_DepositBatch_UU = "C_DepositBatch_UU";
+
+	/** Set C_DepositBatch_UU	  */
+	public void setC_DepositBatch_UU (String C_DepositBatch_UU);
+
+	/** Get C_DepositBatch_UU	  */
+	public String getC_DepositBatch_UU();
 
     /** Column name C_DocType_ID */
     public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
@@ -241,22 +259,4 @@ public interface I_C_DepositBatch
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name C_DepositBatch_ID */
-    public static final String COLUMNNAME_C_DepositBatch_ID = "C_DepositBatch_ID";
-
-	/** Set Deposit Batch	  */
-	public void setC_DepositBatch_ID (int C_DepositBatch_ID);
-
-	/** Get Deposit Batch	  */
-	public int getC_DepositBatch_ID();
-
-    /** Column name C_DepositBatch_UU */
-    public static final String COLUMNNAME_C_DepositBatch_UU = "C_DepositBatch_UU";
-
-	/** Set C_DepositBatch_UU	  */
-	public void setC_DepositBatch_UU (String C_DepositBatch_UU);
-
-	/** Get C_DepositBatch_UU	  */
-	public String getC_DepositBatch_UU();
 }

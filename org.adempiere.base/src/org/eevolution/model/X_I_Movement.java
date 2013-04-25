@@ -26,14 +26,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_Movement
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_I_Movement extends PO implements I_I_Movement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_I_Movement (Properties ctx, int I_Movement_ID, String trxName)
@@ -77,11 +77,6 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_AD_Org getAD_OrgTrx() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Org)MTable.get(getCtx(), org.compiere.model.I_AD_Org.Table_Name)
-			.getPO(getAD_OrgTrx_ID(), get_TrxName());	}
 
 	/** Set Trx Organization.
 		@param AD_OrgTrx_ID 
@@ -151,15 +146,18 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return (String)get_Value(COLUMNNAME_BPartnerValue);
 	}
 
-	/** Set CampaignValue.
-		@param CampaignValue CampaignValue	  */
+	/** Set Campaign Key.
+		@param CampaignValue 
+		Text key of the Campaign
+	  */
 	public void setCampaignValue (String CampaignValue)
 	{
 		set_Value (COLUMNNAME_CampaignValue, CampaignValue);
 	}
 
-	/** Get CampaignValue.
-		@return CampaignValue	  */
+	/** Get Campaign Key.
+		@return Text key of the Campaign
+	  */
 	public String getCampaignValue () 
 	{
 		return (String)get_Value(COLUMNNAME_CampaignValue);

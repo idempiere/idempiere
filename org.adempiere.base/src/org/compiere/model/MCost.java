@@ -178,15 +178,15 @@ public class MCost extends X_M_Cost
 					+ ", CostingMethod=" + cm
 					+ ", Percent=" + percent);
 				//
-				if (currentCostPrice.signum() != 0 || currentCostPriceLL.signum() != 0)
+				if (currentCostPrice != null && currentCostPrice.signum() != 0)
 				{
 					if (cm != null)
 					{
-						materialCostEach = materialCostEach.add(currentCostPrice).add(currentCostPriceLL);
+						materialCostEach = materialCostEach.add(currentCostPrice);
 					}
 					else
 					{
-						otherCostEach = otherCostEach.add(currentCostPrice).add(currentCostPriceLL);
+						otherCostEach = otherCostEach.add(currentCostPrice);
 					}
 				}
 				if (percent != null && percent.signum() != 0)

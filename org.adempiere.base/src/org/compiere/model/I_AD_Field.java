@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Field
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_AD_Field 
 {
@@ -300,19 +300,6 @@ public interface I_AD_Field
 
 	public org.compiere.model.I_AD_Tab getIncluded_Tab() throws RuntimeException;
 
-    /** Column name InfoFactoryClass */
-    public static final String COLUMNNAME_InfoFactoryClass = "InfoFactoryClass";
-
-	/** Set Info Factory Class.
-	  * Fully qualified class name that implements the InfoFactory interface
-	  */
-	public void setInfoFactoryClass (String InfoFactoryClass);
-
-	/** Get Info Factory Class.
-	  * Fully qualified class name that implements the InfoFactory interface
-	  */
-	public String getInfoFactoryClass();
-
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -342,12 +329,12 @@ public interface I_AD_Field
     /** Column name IsAlwaysUpdateable */
     public static final String COLUMNNAME_IsAlwaysUpdateable = "IsAlwaysUpdateable";
 
-	/** Set Always Updateable.
+	/** Set Always Updatable.
 	  * The column is always updateable, even if the record is not active or processed
 	  */
 	public void setIsAlwaysUpdateable (String IsAlwaysUpdateable);
 
-	/** Get Always Updateable.
+	/** Get Always Updatable.
 	  * The column is always updateable, even if the record is not active or processed
 	  */
 	public String getIsAlwaysUpdateable();

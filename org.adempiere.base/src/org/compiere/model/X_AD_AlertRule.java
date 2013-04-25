@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AlertRule
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_AD_AlertRule (Properties ctx, int AD_AlertRule_ID, String trxName)
@@ -83,7 +83,7 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 
 	/** Set Alert.
 		@param AD_Alert_ID 
-		Adempiere Alert
+		iDempiere Alert
 	  */
 	public void setAD_Alert_ID (int AD_Alert_ID)
 	{
@@ -94,7 +94,7 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	}
 
 	/** Get Alert.
-		@return Adempiere Alert
+		@return iDempiere Alert
 	  */
 	public int getAD_Alert_ID () 
 	{

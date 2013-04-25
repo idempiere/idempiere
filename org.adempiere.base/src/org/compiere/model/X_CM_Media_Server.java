@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_Media_Server
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_CM_Media_Server extends PO implements I_CM_Media_Server, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_CM_Media_Server (Properties ctx, int CM_Media_Server_ID, String trxName)
@@ -289,18 +289,15 @@ public class X_CM_Media_Server extends PO implements I_CM_Media_Server, I_Persis
 		return (String)get_Value(COLUMNNAME_URL);
 	}
 
-	/** Set Registered EMail.
-		@param UserName 
-		Email of the responsible for the System
-	  */
+	/** Set User Name.
+		@param UserName User Name	  */
 	public void setUserName (String UserName)
 	{
 		set_Value (COLUMNNAME_UserName, UserName);
 	}
 
-	/** Get Registered EMail.
-		@return Email of the responsible for the System
-	  */
+	/** Get User Name.
+		@return User Name	  */
 	public String getUserName () 
 	{
 		return (String)get_Value(COLUMNNAME_UserName);

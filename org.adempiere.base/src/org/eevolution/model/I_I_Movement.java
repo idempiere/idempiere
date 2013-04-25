@@ -23,8 +23,9 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Movement
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
+@SuppressWarnings("all")
 public interface I_I_Movement 
 {
 
@@ -76,8 +77,6 @@ public interface I_I_Movement
 	  */
 	public int getAD_OrgTrx_ID();
 
-	public org.compiere.model.I_AD_Org getAD_OrgTrx() throws RuntimeException;
-
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
 
@@ -109,10 +108,14 @@ public interface I_I_Movement
     /** Column name CampaignValue */
     public static final String COLUMNNAME_CampaignValue = "CampaignValue";
 
-	/** Set CampaignValue	  */
+	/** Set Campaign Key.
+	  * Text key of the Campaign
+	  */
 	public void setCampaignValue (String CampaignValue);
 
-	/** Get CampaignValue	  */
+	/** Get Campaign Key.
+	  * Text key of the Campaign
+	  */
 	public String getCampaignValue();
 
     /** Column name C_BPartner_ID */

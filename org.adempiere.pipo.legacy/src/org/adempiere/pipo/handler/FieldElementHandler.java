@@ -170,7 +170,7 @@ public class FieldElementHandler extends AbstractElementHandler
 				Name = atts.getValue("ADReferenceNameValueID");
 				id = get_IDWithColumn(ctx, "AD_Reference", "Name", Name);
 				m_Field.setAD_Reference_Value_ID(id);
-				m_Field.setInfoFactoryClass(getStringValue(atts, "InfoFactoryClass"));
+				//m_Field.setInfoFactoryClass(getStringValue(atts, "InfoFactoryClass"));
 				setIncluded_Tab_ID(ctx, m_Field, include_tabname);
 				
 				if (m_Field.save(getTrxName(ctx)) == true) {
@@ -325,8 +325,8 @@ public class FieldElementHandler extends AbstractElementHandler
 		atts.addAttribute("", "", "ObscureType", "CDATA", (m_Field
 				.getObscureType() != null ? m_Field.getObscureType() : ""));
 		
-		atts.addAttribute("", "", "InfoFactoryClass", "CDATA", (m_Field.getInfoFactoryClass() != null 
-				? m_Field.getInfoFactoryClass() : ""));
+		//atts.addAttribute("", "", "InfoFactoryClass", "CDATA", (m_Field.getInfoFactoryClass() != null 
+		//		? m_Field.getInfoFactoryClass() : ""));
 		
 		if (m_Field.getAD_Reference_ID() > 0) {
 			sql = "SELECT Name FROM AD_Reference WHERE AD_Reference_ID=?";

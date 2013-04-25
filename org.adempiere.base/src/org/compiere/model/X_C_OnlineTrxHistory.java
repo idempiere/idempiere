@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for C_OnlineTrxHistory
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0b - $Id$ */
 public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_C_OnlineTrxHistory (Properties ctx, int C_OnlineTrxHistory_ID, String trxName)
@@ -38,12 +38,12 @@ public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_
       /** if (C_OnlineTrxHistory_ID == 0)
         {
 			setAD_Table_ID (0);
+			setC_OnlineTrxHistory_ID (0);
 			setIsError (false);
 // N
 			setProcessed (false);
 // N
 			setRecord_ID (0);
-			setC_OnlineTrxHistory_ID (0);
         } */
     }
 
@@ -101,6 +101,40 @@ public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Online Transaction History.
+		@param C_OnlineTrxHistory_ID Online Transaction History	  */
+	public void setC_OnlineTrxHistory_ID (int C_OnlineTrxHistory_ID)
+	{
+		if (C_OnlineTrxHistory_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_OnlineTrxHistory_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_OnlineTrxHistory_ID, Integer.valueOf(C_OnlineTrxHistory_ID));
+	}
+
+	/** Get Online Transaction History.
+		@return Online Transaction History	  */
+	public int getC_OnlineTrxHistory_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_OnlineTrxHistory_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set C_OnlineTrxHistory_UU.
+		@param C_OnlineTrxHistory_UU C_OnlineTrxHistory_UU	  */
+	public void setC_OnlineTrxHistory_UU (String C_OnlineTrxHistory_UU)
+	{
+		set_Value (COLUMNNAME_C_OnlineTrxHistory_UU, C_OnlineTrxHistory_UU);
+	}
+
+	/** Get C_OnlineTrxHistory_UU.
+		@return C_OnlineTrxHistory_UU	  */
+	public String getC_OnlineTrxHistory_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_OnlineTrxHistory_UU);
 	}
 
 	/** Set Error.
@@ -189,39 +223,5 @@ public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_
 	public String getTextMsg () 
 	{
 		return (String)get_Value(COLUMNNAME_TextMsg);
-	}
-
-	/** Set Online Transaction History.
-		@param C_OnlineTrxHistory_ID Online Transaction History	  */
-	public void setC_OnlineTrxHistory_ID (int C_OnlineTrxHistory_ID)
-	{
-		if (C_OnlineTrxHistory_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_C_OnlineTrxHistory_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_C_OnlineTrxHistory_ID, Integer.valueOf(C_OnlineTrxHistory_ID));
-	}
-
-	/** Get Online Transaction History.
-		@return Online Transaction History	  */
-	public int getC_OnlineTrxHistory_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_OnlineTrxHistory_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set C_OnlineTrxHistory_UU.
-		@param C_OnlineTrxHistory_UU C_OnlineTrxHistory_UU	  */
-	public void setC_OnlineTrxHistory_UU (String C_OnlineTrxHistory_UU)
-	{
-		set_Value (COLUMNNAME_C_OnlineTrxHistory_UU, C_OnlineTrxHistory_UU);
-	}
-
-	/** Get C_OnlineTrxHistory_UU.
-		@return C_OnlineTrxHistory_UU	  */
-	public String getC_OnlineTrxHistory_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_C_OnlineTrxHistory_UU);
 	}
 }

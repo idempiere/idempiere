@@ -68,11 +68,11 @@ public final class Adempiere
 	/** Main Version String         */
 	// Conventions for naming second number is even for stable, and odd for unstable
 	// the releases will have a suffix (a) for alpha - (b) for beta - (t) for trunk - (s) for stable - and (LTS) for long term support
-	static public String	MAIN_VERSION	= "Release 1.0a";
+	static public String	MAIN_VERSION	= "Release 1.0b";
 	/** Detail Version as date      Used for Client/Server		*/
-	static public String	DATE_VERSION	= "2012-10-31";
+	static public String	DATE_VERSION	= "2013-04-24";
 	/** Database Version as date    Compared with AD_System		*/
-	static public String	DB_VERSION		= "2012-10-31";
+	static public String	DB_VERSION		= "2013-04-24";
 
 	/** Product Name            */
 	static public final String	NAME 			= "iDempiere\u00AE";
@@ -181,7 +181,7 @@ public final class Adempiere
 
 	/**
 	 *	Summary (Windows).
-	 * 	iDempiere(tm) Release 1.0a_2012-10-31 -Smart Suite ERP, CRM and SCM- Copyright (c) 1999-2012 iDempiere; Implementation: 2.5.1a 20040417-0243 - (C) 1999-2005 Jorg Janke, iDempiere Inc. USA
+	 * 	iDempiere(tm) Release 1.0b_2013-04-24 -Smart Suite ERP, CRM and SCM- Copyright (c) 1999-2012 iDempiere; Implementation: 2.5.1a 20040417-0243 - (C) 1999-2005 Jorg Janke, iDempiere Inc. USA
 	 *  @return Summary in Windows character set
 	 */
 	public static String getSummary()

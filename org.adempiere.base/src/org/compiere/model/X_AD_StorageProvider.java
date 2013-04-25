@@ -19,17 +19,18 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_StorageProvider
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121123L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_AD_StorageProvider (Properties ctx, int AD_StorageProvider_ID, String trxName)
@@ -37,6 +38,8 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
       super (ctx, AD_StorageProvider_ID, trxName);
       /** if (AD_StorageProvider_ID == 0)
         {
+			setAD_StorageProvider_ID (0);
+			setName (null);
         } */
     }
 
@@ -47,7 +50,7 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {
@@ -68,18 +71,18 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
       return sb.toString();
     }
 
-	/** Set AD_StorageProvider_ID.
-		@param AD_StorageProvider_ID AD_StorageProvider_ID	  */
+	/** Set Storage Provider.
+		@param AD_StorageProvider_ID Storage Provider	  */
 	public void setAD_StorageProvider_ID (int AD_StorageProvider_ID)
 	{
 		if (AD_StorageProvider_ID < 1) 
-			set_Value (COLUMNNAME_AD_StorageProvider_ID, null);
+			set_ValueNoCheck (COLUMNNAME_AD_StorageProvider_ID, null);
 		else 
-			set_Value (COLUMNNAME_AD_StorageProvider_ID, Integer.valueOf(AD_StorageProvider_ID));
+			set_ValueNoCheck (COLUMNNAME_AD_StorageProvider_ID, Integer.valueOf(AD_StorageProvider_ID));
 	}
 
-	/** Get AD_StorageProvider_ID.
-		@return AD_StorageProvider_ID	  */
+	/** Get Storage Provider.
+		@return Storage Provider	  */
 	public int getAD_StorageProvider_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StorageProvider_ID);
@@ -157,6 +160,14 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), getName());
+    }
+
 	/** Set Password.
 		@param Password 
 		Password of any length (case sensitive)
@@ -191,18 +202,15 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 		return (String)get_Value(COLUMNNAME_URL);
 	}
 
-	/** Set Registered EMail.
-		@param UserName 
-		Email of the responsible for the System
-	  */
+	/** Set User Name.
+		@param UserName User Name	  */
 	public void setUserName (String UserName)
 	{
 		set_Value (COLUMNNAME_UserName, UserName);
 	}
 
-	/** Get Registered EMail.
-		@return Email of the responsible for the System
-	  */
+	/** Get User Name.
+		@return User Name	  */
 	public String getUserName () 
 	{
 		return (String)get_Value(COLUMNNAME_UserName);

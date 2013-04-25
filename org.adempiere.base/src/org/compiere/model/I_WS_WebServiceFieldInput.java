@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for WS_WebServiceFieldInput
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_WS_WebServiceFieldInput 
 {
@@ -31,7 +31,7 @@ public interface I_WS_WebServiceFieldInput
     public static final String Table_Name = "WS_WebServiceFieldInput";
 
     /** AD_Table_ID=53166 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53166;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,7 +62,7 @@ public interface I_WS_WebServiceFieldInput
 	  */
 	public int getAD_Column_ID();
 
-	public I_AD_Column getAD_Column() throws RuntimeException;
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -227,5 +227,5 @@ public interface I_WS_WebServiceFieldInput
 	/** Get Web Service Type	  */
 	public int getWS_WebServiceType_ID();
 
-	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
+	public org.compiere.model.I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
 }

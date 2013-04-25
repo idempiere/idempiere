@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_ReportColumn
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_PA_ReportColumn 
 {
@@ -557,6 +557,19 @@ public interface I_PA_ReportColumn
 	public int getOper_2_ID();
 
 	public org.compiere.model.I_PA_ReportColumn getOper_2() throws RuntimeException;
+
+    /** Column name Oper_2_LineName */
+    public static final String COLUMNNAME_Oper_2_LineName = "Oper_2_LineName";
+
+	/** Set Operand 2 Line Name.
+	  * Name of the financial report line to take values from
+	  */
+	public void setOper_2_LineName (String Oper_2_LineName);
+
+	/** Get Operand 2 Line Name.
+	  * Name of the financial report line to take values from
+	  */
+	public String getOper_2_LineName();
 
     /** Column name Org_ID */
     public static final String COLUMNNAME_Org_ID = "Org_ID";

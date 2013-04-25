@@ -23,14 +23,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_BroadcastMessage
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121202L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_AD_BroadcastMessage (Properties ctx, int AD_BroadcastMessage_ID, String trxName)

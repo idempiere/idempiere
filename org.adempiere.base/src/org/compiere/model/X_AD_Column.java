@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Column
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_AD_Column extends PO implements I_AD_Column, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -470,23 +470,6 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
-	/** Set Info Factory Class.
-		@param InfoFactoryClass 
-		Fully qualified class name that implements the InfoFactory interface
-	  */
-	public void setInfoFactoryClass (String InfoFactoryClass)
-	{
-		set_Value (COLUMNNAME_InfoFactoryClass, InfoFactoryClass);
-	}
-
-	/** Get Info Factory Class.
-		@return Fully qualified class name that implements the InfoFactory interface
-	  */
-	public String getInfoFactoryClass () 
-	{
-		return (String)get_Value(COLUMNNAME_InfoFactoryClass);
-	}
-
 	/** Set Allow Copy.
 		@param IsAllowCopy 
 		Determine if a column must be copied when pushing the button to copy record
@@ -535,7 +518,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 		return false;
 	}
 
-	/** Set Always Updateable.
+	/** Set Always Updatable.
 		@param IsAlwaysUpdateable 
 		The column is always updateable, even if the record is not active or processed
 	  */
@@ -544,7 +527,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 		set_Value (COLUMNNAME_IsAlwaysUpdateable, Boolean.valueOf(IsAlwaysUpdateable));
 	}
 
-	/** Get Always Updateable.
+	/** Get Always Updatable.
 		@return The column is always updateable, even if the record is not active or processed
 	  */
 	public boolean isAlwaysUpdateable () 

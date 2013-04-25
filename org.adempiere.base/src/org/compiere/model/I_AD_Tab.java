@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Tab
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_AD_Tab 
 {
@@ -161,15 +161,6 @@ public interface I_AD_Tab
 	  */
 	public int getAD_Tab_ID();
 
-    /** Column name AD_Tab_UU */
-    public static final String COLUMNNAME_AD_Tab_UU = "AD_Tab_UU";
-
-	/** Set AD_Tab_UU	  */
-	public void setAD_Tab_UU (String AD_Tab_UU);
-
-	/** Get AD_Tab_UU	  */
-	public String getAD_Tab_UU();
-
     /** Column name AD_Table_ID */
     public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
 
@@ -184,6 +175,15 @@ public interface I_AD_Tab
 	public int getAD_Table_ID();
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+
+    /** Column name AD_Tab_UU */
+    public static final String COLUMNNAME_AD_Tab_UU = "AD_Tab_UU";
+
+	/** Set AD_Tab_UU	  */
+	public void setAD_Tab_UU (String AD_Tab_UU);
+
+	/** Get AD_Tab_UU	  */
+	public String getAD_Tab_UU();
 
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";

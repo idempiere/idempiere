@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_StorageReservation
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_M_StorageReservation extends PO implements I_M_StorageReservation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121119L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_M_StorageReservation (Properties ctx, int M_StorageReservation_ID, String trxName)
@@ -40,6 +40,8 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
       super (ctx, M_StorageReservation_ID, trxName);
       /** if (M_StorageReservation_ID == 0)
         {
+			setIsSOTrx (true);
+// Y
 			setM_AttributeSetInstance_ID (0);
 			setM_Product_ID (0);
 			setM_Warehouse_ID (0);
@@ -98,7 +100,7 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 	  */
 	public void setIsSOTrx (boolean IsSOTrx)
 	{
-		set_Value (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
+		set_ValueNoCheck (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
 	}
 
 	/** Get Sales Transaction.

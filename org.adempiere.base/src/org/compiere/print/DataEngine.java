@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -369,10 +370,6 @@ public class DataEngine
 						eSql = MLookupFactory.getLookup_TableDirEmbed(m_language, ColumnName, tableName);
 					}
 
-					//	TableName
-					String table = ColumnName;
-					if (table.endsWith("_ID"))
-						table = table.substring(0, table.length()-3);
 					//  DisplayColumn
 					String display = ColumnName;
 					//	=> (..) AS AName, Table.ID,
@@ -394,31 +391,18 @@ public class DataEngine
 					{
 						lookupSQL = ColumnSQL;
 					}
-					if (AD_Reference_Value_ID <= 0)
-					{
-						log.warning(ColumnName + " - AD_Reference_Value_ID not set");
-						continue;
-					}
-					TableReference tr = getTableReference(AD_Reference_Value_ID);
-					String display = tr.DisplayColumn;
-					//	=> A.Name AS AName, Table.ID,
-					if (tr.IsValueDisplayed)
-						sqlSELECT.append(m_synonym).append(".Value||'-'||");
-					sqlSELECT.append(m_synonym).append(".").append(display);
-					sqlSELECT.append(" AS ").append(m_synonym).append(display).append(",")
+
+					String eSql;
+
+					eSql = MLookupFactory.getLookup_TableEmbed(m_language, ColumnName, tableName, AD_Reference_Value_ID);
+
+					//  DisplayColumn
+					String display = ColumnName;
+					//	=> (..) AS AName, Table.ID,
+					sqlSELECT.append("(").append(eSql).append(") AS ").append(m_synonym).append(display).append(",")
 						.append(lookupSQL).append(" AS ").append(ColumnName).append(",");
 					groupByColumns.add(m_synonym+display);
 					groupByColumns.add(lookupSQL);
-					orderName = m_synonym + display;
-
-					//	=> x JOIN table A ON (x.KeyColumn=A.Key)
-					if (IsMandatory)
-						sqlFROM.append(" INNER JOIN ");
-					else
-						sqlFROM.append(" LEFT OUTER JOIN ");
-					sqlFROM.append(tr.TableName).append(" ").append(m_synonym).append(" ON (")
-						.append(lookupSQL).append("=")
-						.append(m_synonym).append(".").append(tr.KeyColumn).append(")");
 					//
 					pdc = new PrintDataColumn(AD_Column_ID, ColumnName, AD_Reference_ID, FieldLength, orderName, isPageBreak);
 					synonymNext();
@@ -1018,6 +1002,7 @@ public class DataEngine
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, pdc + " - " + e.getMessage() + "\nSQL=" + pd.getSQL());
+			throw new AdempiereException(e);
 		}
 		finally
 		{

@@ -22,9 +22,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
-import org.compiere.model.MAcctSchemaDefault;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.ProductCost;
 import org.compiere.model.X_M_Production;
@@ -157,59 +155,45 @@ public class Doc_Production extends Doc
 			//	Calculate Costs
 			BigDecimal costs = null;
 
-			/* adaxa-pb don't use cost details
 			// MZ Goodwill
 			// if Production CostDetail exist then get Cost from Cost Detail
 			MCostDetail cd = MCostDetail.get (as.getCtx(), "M_ProductionLine_ID=?",
 					line.get_ID(), line.getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), getTrxName());
-			if (cd != null)
+			if (cd != null) {
 				costs = cd.getAmt();
-			else
-			*/
-			{
-				int variedHeader = 0;
-				BigDecimal variance = null;
+			} else {
 				costs = line.getProductCosts(as, line.getAD_Org_ID(), false);
-				if (line.isProductionBOM() && line.getM_Production_ID() != variedHeader ) 
+			}
+			if (line.isProductionBOM())
+			{
+				//	Get BOM Cost - Sum of individual lines
+				BigDecimal bomCost = Env.ZERO;
+				for (int ii = 0; ii < p_lines.length; ii++)
 				{
-					//	Get BOM Cost - Sum of individual lines
-					BigDecimal bomCost = Env.ZERO;
-					for (int ii = 0; ii < p_lines.length; ii++)
-					{
-						DocLine line0 = p_lines[ii];
-						if (line0.getM_Production_ID() != line.getM_Production_ID())
-							continue;
-						//pb changed this 20/10/06 
-						if (!line0.isProductionBOM())
+					DocLine line0 = p_lines[ii];
+					if (line0.getM_Production_ID() != line.getM_Production_ID())
+						continue;
+					//pb changed this 20/10/06 
+					if (!line0.isProductionBOM())
 						bomCost = bomCost.add(line0.getProductCosts(as, line.getAD_Org_ID(), false).setScale(2,BigDecimal.ROUND_HALF_UP));
-					}
-					variance = (costs.setScale(2,BigDecimal.ROUND_HALF_UP)).subtract(bomCost.negate());
-					//TODO use currency precision instead of hardcoded 2 
-					// get variance account
-					int validCombination = MAcctSchemaDefault.get(getCtx(),
-							as.get_ID()).getP_RateVariance_Acct();
-					MAccount base = MAccount.get(getCtx(), validCombination);
-					MAccount account = MAccount.get(getCtx(),as.getAD_Client_ID(),as.getAD_Org_ID(),
-							as.get_ID(), base.getAccount_ID(), 0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-					// 
-					// only post variance if it's not zero 
-					if (variance.signum() != 0) 
-					{
-						//post variance 
-						fl = fact.createLine(line, 
-								account, 
-								as.getC_Currency_ID(), variance.negate()); 
-						if (fl == null) 
-						{ 
-							p_Error = "Couldn't post variance " + line.getLine() + " - " + line; 
-							return null; 
-						}
-						fl.setQty(Env.ZERO);
-					}
-					// costs = bomCost.negate();
 				}
-				else
-					costs = line.getProductCosts(as, line.getAD_Org_ID(), false);
+				int precision = as.getStdPrecision();
+				BigDecimal variance = (costs.setScale(precision, BigDecimal.ROUND_HALF_UP)).subtract(bomCost.negate());
+				// only post variance if it's not zero 
+				if (variance.signum() != 0) 
+				{
+					//post variance 
+					fl = fact.createLine(line, 
+							line.getAccount(ProductCost.ACCTTYPE_P_RateVariance, as),
+							as.getC_Currency_ID(), variance.negate()); 
+					if (fl == null) 
+					{ 
+						p_Error = "Couldn't post variance " + line.getLine() + " - " + line; 
+						return null; 
+					}
+					fl.setQty(Env.ZERO);
+				}
+				// costs = bomCost.negate();
 			}
 			// end MZ
 

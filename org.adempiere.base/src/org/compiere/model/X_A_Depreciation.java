@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for A_Depreciation
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_A_Depreciation (Properties ctx, int A_Depreciation_ID, String trxName)

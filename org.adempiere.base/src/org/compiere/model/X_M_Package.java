@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_Package
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_M_Package extends PO implements I_M_Package, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130419L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_M_Package (Properties ctx, int M_Package_ID, String trxName)
@@ -126,29 +126,25 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BP_ShippingAcct)MTable.get(getCtx(), org.compiere.model.I_C_BP_ShippingAcct.Table_Name)
-			.getPO(getC_BP_ShippingAcct_ID(), get_TrxName());	}
-
-	/** Set Business Partner Shipping Account.
-		@param C_BP_ShippingAcct_ID Business Partner Shipping Account	  */
-	public void setC_BP_ShippingAcct_ID (int C_BP_ShippingAcct_ID)
+	/** Set COD.
+		@param CashOnDelivery COD	  */
+	public void setCashOnDelivery (boolean CashOnDelivery)
 	{
-		if (C_BP_ShippingAcct_ID < 1) 
-			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, null);
-		else 
-			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, Integer.valueOf(C_BP_ShippingAcct_ID));
+		set_Value (COLUMNNAME_CashOnDelivery, Boolean.valueOf(CashOnDelivery));
 	}
 
-	/** Get Business Partner Shipping Account.
-		@return Business Partner Shipping Account	  */
-	public int getC_BP_ShippingAcct_ID () 
+	/** Get COD.
+		@return COD	  */
+	public boolean isCashOnDelivery () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_ShippingAcct_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		Object oo = get_Value(COLUMNNAME_CashOnDelivery);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
@@ -174,6 +170,31 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	public int getC_BPartner_Location_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_BP_ShippingAcct)MTable.get(getCtx(), org.compiere.model.I_C_BP_ShippingAcct.Table_Name)
+			.getPO(getC_BP_ShippingAcct_ID(), get_TrxName());	}
+
+	/** Set Business Partner Shipping Account.
+		@param C_BP_ShippingAcct_ID Business Partner Shipping Account	  */
+	public void setC_BP_ShippingAcct_ID (int C_BP_ShippingAcct_ID)
+	{
+		if (C_BP_ShippingAcct_ID < 1) 
+			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, Integer.valueOf(C_BP_ShippingAcct_ID));
+	}
+
+	/** Get Business Partner Shipping Account.
+		@return Business Partner Shipping Account	  */
+	public int getC_BP_ShippingAcct_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_ShippingAcct_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -261,27 +282,6 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set COD.
-		@param CashOnDelivery COD	  */
-	public void setCashOnDelivery (boolean CashOnDelivery)
-	{
-		set_Value (COLUMNNAME_CashOnDelivery, Boolean.valueOf(CashOnDelivery));
-	}
-
-	/** Get COD.
-		@return COD	  */
-	public boolean isCashOnDelivery () 
-	{
-		Object oo = get_Value(COLUMNNAME_CashOnDelivery);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 
 	/** Set Date received.

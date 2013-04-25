@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for WS_WebService_Para
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+/** Generated Interface for WS_WebServiceType
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0b
  */
-public interface I_WS_WebService_Para 
+public interface I_WS_WebServiceType 
 {
 
-    /** TableName=WS_WebService_Para */
-    public static final String Table_Name = "WS_WebService_Para";
+    /** TableName=WS_WebServiceType */
+    public static final String Table_Name = "WS_WebServiceType";
 
-    /** AD_Table_ID=53165 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=53164 */
+    public static final int Table_ID = 53164;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,18 +62,20 @@ public interface I_WS_WebService_Para
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name ConstantValue */
-    public static final String COLUMNNAME_ConstantValue = "ConstantValue";
+    /** Column name AD_Table_ID */
+    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
 
-	/** Set Constant Value.
-	  * Constant value
+	/** Set Table.
+	  * Database Table information
 	  */
-	public void setConstantValue (String ConstantValue);
+	public void setAD_Table_ID (int AD_Table_ID);
 
-	/** Get Constant Value.
-	  * Constant value
+	/** Get Table.
+	  * Database Table information
 	  */
-	public String getConstantValue();
+	public int getAD_Table_ID();
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -91,6 +93,32 @@ public interface I_WS_WebService_Para
 	  */
 	public int getCreatedBy();
 
+    /** Column name Description */
+    public static final String COLUMNNAME_Description = "Description";
+
+	/** Set Description.
+	  * Optional short description of the record
+	  */
+	public void setDescription (String Description);
+
+	/** Get Description.
+	  * Optional short description of the record
+	  */
+	public String getDescription();
+
+    /** Column name Help */
+    public static final String COLUMNNAME_Help = "Help";
+
+	/** Set Comment/Help.
+	  * Comment or Hint
+	  */
+	public void setHelp (String Help);
+
+	/** Get Comment/Help.
+	  * Comment or Hint
+	  */
+	public String getHelp();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -104,23 +132,18 @@ public interface I_WS_WebService_Para
 	  */
 	public boolean isActive();
 
-    /** Column name ParameterName */
-    public static final String COLUMNNAME_ParameterName = "ParameterName";
+    /** Column name Name */
+    public static final String COLUMNNAME_Name = "Name";
 
-	/** Set Parameter Name	  */
-	public void setParameterName (String ParameterName);
+	/** Set Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name);
 
-	/** Get Parameter Name	  */
-	public String getParameterName();
-
-    /** Column name ParameterType */
-    public static final String COLUMNNAME_ParameterType = "ParameterType";
-
-	/** Set Parameter Type	  */
-	public void setParameterType (String ParameterType);
-
-	/** Get Parameter Type	  */
-	public String getParameterType();
+	/** Get Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public String getName();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -138,14 +161,40 @@ public interface I_WS_WebService_Para
 	  */
 	public int getUpdatedBy();
 
-    /** Column name WS_WebService_Para_ID */
-    public static final String COLUMNNAME_WS_WebService_Para_ID = "WS_WebService_Para_ID";
+    /** Column name Value */
+    public static final String COLUMNNAME_Value = "Value";
 
-	/** Set Web Service Parameters	  */
-	public void setWS_WebService_Para_ID (int WS_WebService_Para_ID);
+	/** Set Search Key.
+	  * Search key for the record in the format required - must be unique
+	  */
+	public void setValue (String Value);
 
-	/** Get Web Service Parameters	  */
-	public int getWS_WebService_Para_ID();
+	/** Get Search Key.
+	  * Search key for the record in the format required - must be unique
+	  */
+	public String getValue();
+
+    /** Column name WS_WebService_ID */
+    public static final String COLUMNNAME_WS_WebService_ID = "WS_WebService_ID";
+
+	/** Set Web Service	  */
+	public void setWS_WebService_ID (int WS_WebService_ID);
+
+	/** Get Web Service	  */
+	public int getWS_WebService_ID();
+
+	public org.compiere.model.I_WS_WebService getWS_WebService() throws RuntimeException;
+
+    /** Column name WS_WebServiceMethod_ID */
+    public static final String COLUMNNAME_WS_WebServiceMethod_ID = "WS_WebServiceMethod_ID";
+
+	/** Set Web Service Method	  */
+	public void setWS_WebServiceMethod_ID (int WS_WebServiceMethod_ID);
+
+	/** Get Web Service Method	  */
+	public int getWS_WebServiceMethod_ID();
+
+	public org.compiere.model.I_WS_WebServiceMethod getWS_WebServiceMethod() throws RuntimeException;
 
     /** Column name WS_WebServiceType_ID */
     public static final String COLUMNNAME_WS_WebServiceType_ID = "WS_WebServiceType_ID";
@@ -156,5 +205,12 @@ public interface I_WS_WebService_Para
 	/** Get Web Service Type	  */
 	public int getWS_WebServiceType_ID();
 
-	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
+    /** Column name WS_WebServiceType_UU */
+    public static final String COLUMNNAME_WS_WebServiceType_UU = "WS_WebServiceType_UU";
+
+	/** Set WS_WebServiceType_UU	  */
+	public void setWS_WebServiceType_UU (String WS_WebServiceType_UU);
+
+	/** Get WS_WebServiceType_UU	  */
+	public String getWS_WebServiceType_UU();
 }

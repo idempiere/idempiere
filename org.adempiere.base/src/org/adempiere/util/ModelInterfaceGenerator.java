@@ -191,7 +191,7 @@ public class ModelInterfaceGenerator
 			 .append(" *  @version ").append(Adempiere.MAIN_VERSION).append(NL) //.append(" - ").append(s_run).append("\n")
 			 .append(" */\n");
 		if (!packageName.equals("org.compiere.model")) {
-			 start.append("@SuppressWarnings(\"unused\")\n");
+			 start.append("@SuppressWarnings(\"all\")\n");
 		}
 		start.append("public interface ").append(className).append(" {").append("\n")
 

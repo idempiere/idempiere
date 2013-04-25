@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Note
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_AD_Note 
 {
@@ -41,33 +41,20 @@ public interface I_AD_Note
 
     /** Load Meta Data */
 
-    /** Column name AcknowledgeDateTime */
-    public static final String COLUMNNAME_AcknowledgeDateTime = "AcknowledgeDateTime";
-
-	/** Set Acknowledgement Time.
-	  * Acknowledgement Time of message
-	  */
-	public void setAcknowledgeDateTime (Timestamp AcknowledgeDateTime);
-
-	/** Get Acknowledgement Time.
-	  * Acknowledgement Time of message
-	  */
-	public Timestamp getAcknowledgeDateTime();
-
-    /** Column name AD_Broadcastmessage_ID */
-    public static final String COLUMNNAME_AD_Broadcastmessage_ID = "AD_Broadcastmessage_ID";
+    /** Column name AD_BroadcastMessage_ID */
+    public static final String COLUMNNAME_AD_BroadcastMessage_ID = "AD_BroadcastMessage_ID";
 
 	/** Set Broadcast Message.
 	  * Broadcast Message
 	  */
-	public void setAD_Broadcastmessage_ID (int AD_Broadcastmessage_ID);
+	public void setAD_BroadcastMessage_ID (int AD_BroadcastMessage_ID);
 
 	/** Get Broadcast Message.
 	  * Broadcast Message
 	  */
-	public int getAD_Broadcastmessage_ID();
+	public int getAD_BroadcastMessage_ID();
 
-	public I_AD_BroadcastMessage getAD_Broadcastmessage() throws RuntimeException;
+	public org.compiere.model.I_AD_BroadcastMessage getAD_BroadcastMessage() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";

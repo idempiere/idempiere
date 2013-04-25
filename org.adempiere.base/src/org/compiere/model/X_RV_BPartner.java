@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for RV_BPartner
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_RV_BPartner (Properties ctx, int RV_BPartner_ID, String trxName)
@@ -180,6 +180,23 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return (String)get_Value(COLUMNNAME_Address3);
 	}
 
+	/** Set Address 4.
+		@param Address4 
+		Address Line 4 for the location
+	  */
+	public void setAddress4 (String Address4)
+	{
+		set_ValueNoCheck (COLUMNNAME_Address4, Address4);
+	}
+
+	/** Get Address 4.
+		@return Address Line 4 for the location
+	  */
+	public String getAddress4 () 
+	{
+		return (String)get_Value(COLUMNNAME_Address4);
+	}
+
 	/** AD_Language AD_Reference_ID=106 */
 	public static final int AD_LANGUAGE_AD_Reference_ID=106;
 	/** Set Language.
@@ -246,6 +263,112 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set AD_User_AD_Org_ID.
+		@param AD_User_AD_Org_ID AD_User_AD_Org_ID	  */
+	public void setAD_User_AD_Org_ID (int AD_User_AD_Org_ID)
+	{
+		if (AD_User_AD_Org_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_AD_User_AD_Org_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_AD_User_AD_Org_ID, Integer.valueOf(AD_User_AD_Org_ID));
+	}
+
+	/** Get AD_User_AD_Org_ID.
+		@return AD_User_AD_Org_ID	  */
+	public int getAD_User_AD_Org_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_AD_Org_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BPartner getAD_User_C_BPartner() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
+			.getPO(getAD_User_C_BPartner_ID(), get_TrxName());	}
+
+	/** Set AD_User_C_BPartner_ID.
+		@param AD_User_C_BPartner_ID AD_User_C_BPartner_ID	  */
+	public void setAD_User_C_BPartner_ID (int AD_User_C_BPartner_ID)
+	{
+		if (AD_User_C_BPartner_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_AD_User_C_BPartner_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_AD_User_C_BPartner_ID, Integer.valueOf(AD_User_C_BPartner_ID));
+	}
+
+	/** Get AD_User_C_BPartner_ID.
+		@return AD_User_C_BPartner_ID	  */
+	public int getAD_User_C_BPartner_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BPartner_Location getAD_User_C_BPartner_Location() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
+			.getPO(getAD_User_C_BPartner_Location_ID(), get_TrxName());	}
+
+	/** Set AD_User_C_BPartner_Location_ID.
+		@param AD_User_C_BPartner_Location_ID AD_User_C_BPartner_Location_ID	  */
+	public void setAD_User_C_BPartner_Location_ID (int AD_User_C_BPartner_Location_ID)
+	{
+		if (AD_User_C_BPartner_Location_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_AD_User_C_BPartner_Location_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_AD_User_C_BPartner_Location_ID, Integer.valueOf(AD_User_C_BPartner_Location_ID));
+	}
+
+	/** Get AD_User_C_BPartner_Location_ID.
+		@return AD_User_C_BPartner_Location_ID	  */
+	public int getAD_User_C_BPartner_Location_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_C_BPartner_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set ad_user_created.
+		@param ad_user_created ad_user_created	  */
+	public void setad_user_created (Timestamp ad_user_created)
+	{
+		set_ValueNoCheck (COLUMNNAME_ad_user_created, ad_user_created);
+	}
+
+	/** Get ad_user_created.
+		@return ad_user_created	  */
+	public Timestamp getad_user_created () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_ad_user_created);
+	}
+
+	public org.compiere.model.I_AD_User getAD_User_Create() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+			.getPO(getAD_User_CreatedBy(), get_TrxName());	}
+
+	/** Set ad_user_createdby.
+		@param AD_User_CreatedBy ad_user_createdby	  */
+	public void setAD_User_CreatedBy (int AD_User_CreatedBy)
+	{
+		set_ValueNoCheck (COLUMNNAME_AD_User_CreatedBy, Integer.valueOf(AD_User_CreatedBy));
+	}
+
+	/** Get ad_user_createdby.
+		@return ad_user_createdby	  */
+	public int getAD_User_CreatedBy () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_CreatedBy);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
@@ -272,6 +395,77 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set ad_user_isactive.
+		@param ad_user_isactive ad_user_isactive	  */
+	public void setad_user_isactive (boolean ad_user_isactive)
+	{
+		set_ValueNoCheck (COLUMNNAME_ad_user_isactive, Boolean.valueOf(ad_user_isactive));
+	}
+
+	/** Get ad_user_isactive.
+		@return ad_user_isactive	  */
+	public boolean isad_user_isactive () 
+	{
+		Object oo = get_Value(COLUMNNAME_ad_user_isactive);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set ad_user_updated.
+		@param ad_user_updated ad_user_updated	  */
+	public void setad_user_updated (Timestamp ad_user_updated)
+	{
+		set_ValueNoCheck (COLUMNNAME_ad_user_updated, ad_user_updated);
+	}
+
+	/** Get ad_user_updated.
+		@return ad_user_updated	  */
+	public Timestamp getad_user_updated () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_ad_user_updated);
+	}
+
+	public org.compiere.model.I_AD_User getAD_User_Update() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+			.getPO(getAD_User_UpdatedBy(), get_TrxName());	}
+
+	/** Set ad_user_updatedby.
+		@param AD_User_UpdatedBy ad_user_updatedby	  */
+	public void setAD_User_UpdatedBy (int AD_User_UpdatedBy)
+	{
+		set_ValueNoCheck (COLUMNNAME_AD_User_UpdatedBy, Integer.valueOf(AD_User_UpdatedBy));
+	}
+
+	/** Get ad_user_updatedby.
+		@return ad_user_updatedby	  */
+	public int getAD_User_UpdatedBy () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_UpdatedBy);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set ad_user_value.
+		@param ad_user_value ad_user_value	  */
+	public void setad_user_value (String ad_user_value)
+	{
+		set_ValueNoCheck (COLUMNNAME_ad_user_value, ad_user_value);
+	}
+
+	/** Get ad_user_value.
+		@return ad_user_value	  */
+	public String getad_user_value () 
+	{
+		return (String)get_Value(COLUMNNAME_ad_user_value);
 	}
 
 	/** Set Birthday.
@@ -395,6 +589,45 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.eevolution.model.I_C_TaxGroup getC_BP_C_TaxGroup() throws RuntimeException
+    {
+		return (org.eevolution.model.I_C_TaxGroup)MTable.get(getCtx(), org.eevolution.model.I_C_TaxGroup.Table_Name)
+			.getPO(getC_BP_C_TaxGroup_ID(), get_TrxName());	}
+
+	/** Set c_bp_c_taxgroup_id.
+		@param C_BP_C_TaxGroup_ID c_bp_c_taxgroup_id	  */
+	public void setC_BP_C_TaxGroup_ID (int C_BP_C_TaxGroup_ID)
+	{
+		if (C_BP_C_TaxGroup_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_BP_C_TaxGroup_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_BP_C_TaxGroup_ID, Integer.valueOf(C_BP_C_TaxGroup_ID));
+	}
+
+	/** Get c_bp_c_taxgroup_id.
+		@return c_bp_c_taxgroup_id	  */
+	public int getC_BP_C_TaxGroup_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_C_TaxGroup_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set c_bp_dunninggrace.
+		@param c_bp_dunninggrace c_bp_dunninggrace	  */
+	public void setc_bp_dunninggrace (Timestamp c_bp_dunninggrace)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_dunninggrace, c_bp_dunninggrace);
+	}
+
+	/** Get c_bp_dunninggrace.
+		@return c_bp_dunninggrace	  */
+	public Timestamp getc_bp_dunninggrace () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_c_bp_dunninggrace);
+	}
+
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException
     {
 		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_Name)
@@ -423,6 +656,491 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set c_bp_ismanufacturer.
+		@param c_bp_ismanufacturer c_bp_ismanufacturer	  */
+	public void setc_bp_ismanufacturer (boolean c_bp_ismanufacturer)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_ismanufacturer, Boolean.valueOf(c_bp_ismanufacturer));
+	}
+
+	/** Get c_bp_ismanufacturer.
+		@return c_bp_ismanufacturer	  */
+	public boolean isc_bp_ismanufacturer () 
+	{
+		Object oo = get_Value(COLUMNNAME_c_bp_ismanufacturer);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_bp_ispotaxexempt.
+		@param c_bp_ispotaxexempt c_bp_ispotaxexempt	  */
+	public void setc_bp_ispotaxexempt (boolean c_bp_ispotaxexempt)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_ispotaxexempt, Boolean.valueOf(c_bp_ispotaxexempt));
+	}
+
+	/** Get c_bp_ispotaxexempt.
+		@return c_bp_ispotaxexempt	  */
+	public boolean isc_bp_ispotaxexempt () 
+	{
+		Object oo = get_Value(COLUMNNAME_c_bp_ispotaxexempt);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_bp_location_ad_org_id.
+		@param C_BP_Location_AD_Org_ID c_bp_location_ad_org_id	  */
+	public void setC_BP_Location_AD_Org_ID (int C_BP_Location_AD_Org_ID)
+	{
+		if (C_BP_Location_AD_Org_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_BP_Location_AD_Org_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_BP_Location_AD_Org_ID, Integer.valueOf(C_BP_Location_AD_Org_ID));
+	}
+
+	/** Get c_bp_location_ad_org_id.
+		@return c_bp_location_ad_org_id	  */
+	public int getC_BP_Location_AD_Org_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Location_AD_Org_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BPartner getC_BP_Location_C_BPartner() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
+			.getPO(getC_BP_Location_C_BPartner_ID(), get_TrxName());	}
+
+	/** Set c_bpartner_location_c_bpartner_id.
+		@param C_BP_Location_C_BPartner_ID c_bpartner_location_c_bpartner_id	  */
+	public void setC_BP_Location_C_BPartner_ID (int C_BP_Location_C_BPartner_ID)
+	{
+		if (C_BP_Location_C_BPartner_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_BP_Location_C_BPartner_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_BP_Location_C_BPartner_ID, Integer.valueOf(C_BP_Location_C_BPartner_ID));
+	}
+
+	/** Get c_bpartner_location_c_bpartner_id.
+		@return c_bpartner_location_c_bpartner_id	  */
+	public int getC_BP_Location_C_BPartner_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Location_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_C_Location getC_BP_Location_C_Location() throws RuntimeException
+    {
+		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_Name)
+			.getPO(getC_BP_Location_C_Location_ID(), get_TrxName());	}
+
+	/** Set c_bp_location_c_location_id.
+		@param C_BP_Location_C_Location_ID c_bp_location_c_location_id	  */
+	public void setC_BP_Location_C_Location_ID (int C_BP_Location_C_Location_ID)
+	{
+		if (C_BP_Location_C_Location_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_BP_Location_C_Location_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_BP_Location_C_Location_ID, Integer.valueOf(C_BP_Location_C_Location_ID));
+	}
+
+	/** Get c_bp_location_c_location_id.
+		@return c_bp_location_c_location_id	  */
+	public int getC_BP_Location_C_Location_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Location_C_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set c_bp_location_created.
+		@param c_bp_location_created c_bp_location_created	  */
+	public void setc_bp_location_created (Timestamp c_bp_location_created)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_created, c_bp_location_created);
+	}
+
+	/** Get c_bp_location_created.
+		@return c_bp_location_created	  */
+	public Timestamp getc_bp_location_created () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_c_bp_location_created);
+	}
+
+	public org.compiere.model.I_AD_User getC_BP_Location_Create() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+			.getPO(getC_BP_Location_CreatedBy(), get_TrxName());	}
+
+	/** Set c_bp_location_createdby.
+		@param C_BP_Location_CreatedBy c_bp_location_createdby	  */
+	public void setC_BP_Location_CreatedBy (int C_BP_Location_CreatedBy)
+	{
+		set_ValueNoCheck (COLUMNNAME_C_BP_Location_CreatedBy, Integer.valueOf(C_BP_Location_CreatedBy));
+	}
+
+	/** Get c_bp_location_createdby.
+		@return c_bp_location_createdby	  */
+	public int getC_BP_Location_CreatedBy () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Location_CreatedBy);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set c_bp_location_fax.
+		@param c_bp_location_fax c_bp_location_fax	  */
+	public void setc_bp_location_fax (String c_bp_location_fax)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_fax, c_bp_location_fax);
+	}
+
+	/** Get c_bp_location_fax.
+		@return c_bp_location_fax	  */
+	public String getc_bp_location_fax () 
+	{
+		return (String)get_Value(COLUMNNAME_c_bp_location_fax);
+	}
+
+	/** Set c_bp_location_isactive.
+		@param c_bp_location_isactive c_bp_location_isactive	  */
+	public void setc_bp_location_isactive (boolean c_bp_location_isactive)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_isactive, Boolean.valueOf(c_bp_location_isactive));
+	}
+
+	/** Get c_bp_location_isactive.
+		@return c_bp_location_isactive	  */
+	public boolean isc_bp_location_isactive () 
+	{
+		Object oo = get_Value(COLUMNNAME_c_bp_location_isactive);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_bp_location_isbillto.
+		@param c_bp_location_isbillto c_bp_location_isbillto	  */
+	public void setc_bp_location_isbillto (boolean c_bp_location_isbillto)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_isbillto, Boolean.valueOf(c_bp_location_isbillto));
+	}
+
+	/** Get c_bp_location_isbillto.
+		@return c_bp_location_isbillto	  */
+	public boolean isc_bp_location_isbillto () 
+	{
+		Object oo = get_Value(COLUMNNAME_c_bp_location_isbillto);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_bp_location_isdn.
+		@param c_bp_location_isdn c_bp_location_isdn	  */
+	public void setc_bp_location_isdn (String c_bp_location_isdn)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_isdn, c_bp_location_isdn);
+	}
+
+	/** Get c_bp_location_isdn.
+		@return c_bp_location_isdn	  */
+	public String getc_bp_location_isdn () 
+	{
+		return (String)get_Value(COLUMNNAME_c_bp_location_isdn);
+	}
+
+	/** Set c_bp_location_ispayfrom.
+		@param c_bp_location_ispayfrom c_bp_location_ispayfrom	  */
+	public void setc_bp_location_ispayfrom (boolean c_bp_location_ispayfrom)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_ispayfrom, Boolean.valueOf(c_bp_location_ispayfrom));
+	}
+
+	/** Get c_bp_location_ispayfrom.
+		@return c_bp_location_ispayfrom	  */
+	public boolean isc_bp_location_ispayfrom () 
+	{
+		Object oo = get_Value(COLUMNNAME_c_bp_location_ispayfrom);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_bp_location_isremitto.
+		@param c_bp_location_isremitto c_bp_location_isremitto	  */
+	public void setc_bp_location_isremitto (boolean c_bp_location_isremitto)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_isremitto, Boolean.valueOf(c_bp_location_isremitto));
+	}
+
+	/** Get c_bp_location_isremitto.
+		@return c_bp_location_isremitto	  */
+	public boolean isc_bp_location_isremitto () 
+	{
+		Object oo = get_Value(COLUMNNAME_c_bp_location_isremitto);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_bp_location_isshipto.
+		@param c_bp_location_isshipto c_bp_location_isshipto	  */
+	public void setc_bp_location_isshipto (boolean c_bp_location_isshipto)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_isshipto, Boolean.valueOf(c_bp_location_isshipto));
+	}
+
+	/** Get c_bp_location_isshipto.
+		@return c_bp_location_isshipto	  */
+	public boolean isc_bp_location_isshipto () 
+	{
+		Object oo = get_Value(COLUMNNAME_c_bp_location_isshipto);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_bp_location_name.
+		@param c_bp_location_name c_bp_location_name	  */
+	public void setc_bp_location_name (String c_bp_location_name)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_name, c_bp_location_name);
+	}
+
+	/** Get c_bp_location_name.
+		@return c_bp_location_name	  */
+	public String getc_bp_location_name () 
+	{
+		return (String)get_Value(COLUMNNAME_c_bp_location_name);
+	}
+
+	/** Set c_bp_location_phone.
+		@param c_bp_location_phone c_bp_location_phone	  */
+	public void setc_bp_location_phone (String c_bp_location_phone)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_phone, c_bp_location_phone);
+	}
+
+	/** Get c_bp_location_phone.
+		@return c_bp_location_phone	  */
+	public String getc_bp_location_phone () 
+	{
+		return (String)get_Value(COLUMNNAME_c_bp_location_phone);
+	}
+
+	/** Set c_bp_location_phone2.
+		@param c_bp_location_phone2 c_bp_location_phone2	  */
+	public void setc_bp_location_phone2 (String c_bp_location_phone2)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_phone2, c_bp_location_phone2);
+	}
+
+	/** Get c_bp_location_phone2.
+		@return c_bp_location_phone2	  */
+	public String getc_bp_location_phone2 () 
+	{
+		return (String)get_Value(COLUMNNAME_c_bp_location_phone2);
+	}
+
+	public org.compiere.model.I_C_SalesRegion getC_BP_Location_SalesRegion() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_Name)
+			.getPO(getC_BP_Location_SalesRegion_ID(), get_TrxName());	}
+
+	/** Set c_bp_location_salesregion_id.
+		@param C_BP_Location_SalesRegion_ID c_bp_location_salesregion_id	  */
+	public void setC_BP_Location_SalesRegion_ID (int C_BP_Location_SalesRegion_ID)
+	{
+		if (C_BP_Location_SalesRegion_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_BP_Location_SalesRegion_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_BP_Location_SalesRegion_ID, Integer.valueOf(C_BP_Location_SalesRegion_ID));
+	}
+
+	/** Get c_bp_location_salesregion_id.
+		@return c_bp_location_salesregion_id	  */
+	public int getC_BP_Location_SalesRegion_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Location_SalesRegion_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set c_bp_location_updated.
+		@param c_bp_location_updated c_bp_location_updated	  */
+	public void setc_bp_location_updated (Timestamp c_bp_location_updated)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_bp_location_updated, c_bp_location_updated);
+	}
+
+	/** Get c_bp_location_updated.
+		@return c_bp_location_updated	  */
+	public Timestamp getc_bp_location_updated () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_c_bp_location_updated);
+	}
+
+	public org.compiere.model.I_AD_User getC_BP_Location_Update() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+			.getPO(getC_BP_Location_UpdatedBy(), get_TrxName());	}
+
+	/** Set c_bp_location_updatedby.
+		@param C_BP_Location_UpdatedBy c_bp_location_updatedby	  */
+	public void setC_BP_Location_UpdatedBy (int C_BP_Location_UpdatedBy)
+	{
+		set_ValueNoCheck (COLUMNNAME_C_BP_Location_UpdatedBy, Integer.valueOf(C_BP_Location_UpdatedBy));
+	}
+
+	/** Get c_bp_location_updatedby.
+		@return c_bp_location_updatedby	  */
+	public int getC_BP_Location_UpdatedBy () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Location_UpdatedBy);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set c_bp_logo_id.
+		@param C_BP_Logo_ID c_bp_logo_id	  */
+	public void setC_BP_Logo_ID (int C_BP_Logo_ID)
+	{
+		if (C_BP_Logo_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_BP_Logo_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_BP_Logo_ID, Integer.valueOf(C_BP_Logo_ID));
+	}
+
+	/** Get c_bp_logo_id.
+		@return c_bp_logo_id	  */
+	public int getC_BP_Logo_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Logo_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_City getC_City() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_City)MTable.get(getCtx(), org.compiere.model.I_C_City.Table_Name)
+			.getPO(getC_City_ID(), get_TrxName());	}
+
+	/** Set City.
+		@param C_City_ID 
+		City
+	  */
+	public void setC_City_ID (int C_City_ID)
+	{
+		if (C_City_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_City_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_City_ID, Integer.valueOf(C_City_ID));
+	}
+
+	/** Get City.
+		@return City
+	  */
+	public int getC_City_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_City_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set c_country_ad_language.
+		@param c_country_ad_language c_country_ad_language	  */
+	public void setc_country_ad_language (String c_country_ad_language)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_country_ad_language, c_country_ad_language);
+	}
+
+	/** Get c_country_ad_language.
+		@return c_country_ad_language	  */
+	public String getc_country_ad_language () 
+	{
+		return (String)get_Value(COLUMNNAME_c_country_ad_language);
+	}
+
+	public org.compiere.model.I_C_Currency getC_Country_C_Currency() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
+			.getPO(getC_Country_C_Currency_ID(), get_TrxName());	}
+
+	/** Set c_country_c_currency_id.
+		@param C_Country_C_Currency_ID c_country_c_currency_id	  */
+	public void setC_Country_C_Currency_ID (int C_Country_C_Currency_ID)
+	{
+		if (C_Country_C_Currency_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_Country_C_Currency_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_Country_C_Currency_ID, Integer.valueOf(C_Country_C_Currency_ID));
+	}
+
+	/** Get c_country_c_currency_id.
+		@return c_country_c_currency_id	  */
+	public int getC_Country_C_Currency_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Country_C_Currency_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set c_country_description.
+		@param c_country_description c_country_description	  */
+	public void setc_country_description (String c_country_description)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_country_description, c_country_description);
+	}
+
+	/** Get c_country_description.
+		@return c_country_description	  */
+	public String getc_country_description () 
+	{
+		return (String)get_Value(COLUMNNAME_c_country_description);
+	}
+
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException
     {
 		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_Name)
@@ -449,6 +1167,27 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set c_country_isactive.
+		@param c_country_isactive c_country_isactive	  */
+	public void setc_country_isactive (boolean c_country_isactive)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_country_isactive, Boolean.valueOf(c_country_isactive));
+	}
+
+	/** Get c_country_isactive.
+		@return c_country_isactive	  */
+	public boolean isc_country_isactive () 
+	{
+		Object oo = get_Value(COLUMNNAME_c_country_isactive);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException
@@ -552,6 +1291,147 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return (String)get_Value(COLUMNNAME_City);
 	}
 
+	/** Set c_location_ad_org_id.
+		@param C_Location_AD_Org_ID c_location_ad_org_id	  */
+	public void setC_Location_AD_Org_ID (int C_Location_AD_Org_ID)
+	{
+		if (C_Location_AD_Org_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_Location_AD_Org_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_Location_AD_Org_ID, Integer.valueOf(C_Location_AD_Org_ID));
+	}
+
+	/** Get c_location_ad_org_id.
+		@return c_location_ad_org_id	  */
+	public int getC_Location_AD_Org_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_AD_Org_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set c_location_created.
+		@param c_location_created c_location_created	  */
+	public void setc_location_created (Timestamp c_location_created)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_location_created, c_location_created);
+	}
+
+	/** Get c_location_created.
+		@return c_location_created	  */
+	public Timestamp getc_location_created () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_c_location_created);
+	}
+
+	public org.compiere.model.I_AD_User getC_Location_Create() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+			.getPO(getC_Location_CreatedBy(), get_TrxName());	}
+
+	/** Set c_location_createdby.
+		@param C_Location_CreatedBy c_location_createdby	  */
+	public void setC_Location_CreatedBy (int C_Location_CreatedBy)
+	{
+		set_ValueNoCheck (COLUMNNAME_C_Location_CreatedBy, Integer.valueOf(C_Location_CreatedBy));
+	}
+
+	/** Get c_location_createdby.
+		@return c_location_createdby	  */
+	public int getC_Location_CreatedBy () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_CreatedBy);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_C_Location getC_Location() throws RuntimeException
+    {
+		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_Name)
+			.getPO(getC_Location_ID(), get_TrxName());	}
+
+	/** Set Address.
+		@param C_Location_ID 
+		Location or Address
+	  */
+	public void setC_Location_ID (int C_Location_ID)
+	{
+		if (C_Location_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_Location_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_Location_ID, Integer.valueOf(C_Location_ID));
+	}
+
+	/** Get Address.
+		@return Location or Address
+	  */
+	public int getC_Location_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set c_location_isactive.
+		@param c_location_isactive c_location_isactive	  */
+	public void setc_location_isactive (boolean c_location_isactive)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_location_isactive, Boolean.valueOf(c_location_isactive));
+	}
+
+	/** Get c_location_isactive.
+		@return c_location_isactive	  */
+	public boolean isc_location_isactive () 
+	{
+		Object oo = get_Value(COLUMNNAME_c_location_isactive);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set c_location_updated.
+		@param c_location_updated c_location_updated	  */
+	public void setc_location_updated (Timestamp c_location_updated)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_location_updated, c_location_updated);
+	}
+
+	/** Get c_location_updated.
+		@return c_location_updated	  */
+	public Timestamp getc_location_updated () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_c_location_updated);
+	}
+
+	public org.compiere.model.I_AD_User getC_Location_Update() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+			.getPO(getC_Location_UpdatedBy(), get_TrxName());	}
+
+	/** Set c_location_updatedby.
+		@param C_Location_UpdatedBy c_location_updatedby	  */
+	public void setC_Location_UpdatedBy (int C_Location_UpdatedBy)
+	{
+		set_ValueNoCheck (COLUMNNAME_C_Location_UpdatedBy, Integer.valueOf(C_Location_UpdatedBy));
+	}
+
+	/** Get c_location_updatedby.
+		@return c_location_updatedby	  */
+	public int getC_Location_UpdatedBy () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_UpdatedBy);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Comments.
 		@param Comments 
 		Comments or additional information
@@ -603,6 +1483,23 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return (String)get_Value(COLUMNNAME_ContactName);
 	}
 
+	/** Set ISO Country Code.
+		@param CountryCode 
+		Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  */
+	public void setCountryCode (String CountryCode)
+	{
+		set_ValueNoCheck (COLUMNNAME_CountryCode, CountryCode);
+	}
+
+	/** Get ISO Country Code.
+		@return Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  */
+	public String getCountryCode () 
+	{
+		return (String)get_Value(COLUMNNAME_CountryCode);
+	}
+
 	/** Set Country.
 		@param CountryName 
 		Country Name
@@ -648,6 +1545,60 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set c_region_ad_org_id.
+		@param C_Region_AD_Org_ID c_region_ad_org_id	  */
+	public void setC_Region_AD_Org_ID (int C_Region_AD_Org_ID)
+	{
+		if (C_Region_AD_Org_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_Region_AD_Org_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_Region_AD_Org_ID, Integer.valueOf(C_Region_AD_Org_ID));
+	}
+
+	/** Get c_region_ad_org_id.
+		@return c_region_ad_org_id	  */
+	public int getC_Region_AD_Org_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Region_AD_Org_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set c_region_c_country_id.
+		@param C_Region_C_Country_ID c_region_c_country_id	  */
+	public void setC_Region_C_Country_ID (int C_Region_C_Country_ID)
+	{
+		if (C_Region_C_Country_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_Region_C_Country_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_Region_C_Country_ID, Integer.valueOf(C_Region_C_Country_ID));
+	}
+
+	/** Get c_region_c_country_id.
+		@return c_region_c_country_id	  */
+	public int getC_Region_C_Country_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Region_C_Country_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set c_region_description.
+		@param c_region_description c_region_description	  */
+	public void setc_region_description (String c_region_description)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_region_description, c_region_description);
+	}
+
+	/** Get c_region_description.
+		@return c_region_description	  */
+	public String getc_region_description () 
+	{
+		return (String)get_Value(COLUMNNAME_c_region_description);
+	}
+
 	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException
     {
 		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_Name)
@@ -674,6 +1625,27 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set c_region_isactive.
+		@param c_region_isactive c_region_isactive	  */
+	public void setc_region_isactive (boolean c_region_isactive)
+	{
+		set_ValueNoCheck (COLUMNNAME_c_region_isactive, Boolean.valueOf(c_region_isactive));
+	}
+
+	/** Get c_region_isactive.
+		@return c_region_isactive	  */
+	public boolean isc_region_isactive () 
+	{
+		Object oo = get_Value(COLUMNNAME_c_region_isactive);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** DeliveryRule AD_Reference_ID=151 */
@@ -1009,6 +1981,30 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isCustomer () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsCustomer);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Default.
+		@param IsDefault 
+		Default value
+	  */
+	public void setIsDefault (boolean IsDefault)
+	{
+		set_ValueNoCheck (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
+	}
+
+	/** Get Default.
+		@return Default value
+	  */
+	public boolean isDefault () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 
@@ -1638,6 +2634,23 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public String getPostal () 
 	{
 		return (String)get_Value(COLUMNNAME_Postal);
+	}
+
+	/** Set Additional Zip.
+		@param Postal_Add 
+		Additional ZIP or Postal code
+	  */
+	public void setPostal_Add (String Postal_Add)
+	{
+		set_ValueNoCheck (COLUMNNAME_Postal_Add, Postal_Add);
+	}
+
+	/** Get Additional Zip.
+		@return Additional ZIP or Postal code
+	  */
+	public String getPostal_Add () 
+	{
+		return (String)get_Value(COLUMNNAME_Postal_Add);
 	}
 
 	/** Set Potential Life Time Value.

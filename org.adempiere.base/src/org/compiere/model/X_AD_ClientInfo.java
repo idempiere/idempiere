@@ -18,18 +18,19 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for AD_ClientInfo
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121217L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_AD_ClientInfo (Properties ctx, int AD_ClientInfo_ID, String trxName)
@@ -551,6 +552,20 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Financial Year Start Date.
+		@param FY_StartDate Financial Year Start Date	  */
+	public void setFY_StartDate (Timestamp FY_StartDate)
+	{
+		set_Value (COLUMNNAME_FY_StartDate, FY_StartDate);
+	}
+
+	/** Get Financial Year Start Date.
+		@return Financial Year Start Date	  */
+	public Timestamp getFY_StartDate () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_FY_StartDate);
 	}
 
 	/** Set Discount calculated from Line Amounts.

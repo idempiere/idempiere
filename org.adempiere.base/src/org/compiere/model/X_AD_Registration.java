@@ -23,14 +23,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_Registration
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_AD_Registration extends PO implements I_AD_Registration, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_AD_Registration (Properties ctx, int AD_Registration_ID, String trxName)
@@ -468,7 +468,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 
 	/** Set Start Implementation/Production.
 		@param StartProductionDate 
-		The day you started the implementation (if implementing) - or production (went life) with Adempiere
+		The day you started the implementation (if implementing) - or production (went life) with iDempiere
 	  */
 	public void setStartProductionDate (Timestamp StartProductionDate)
 	{
@@ -476,7 +476,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	/** Get Start Implementation/Production.
-		@return The day you started the implementation (if implementing) - or production (went life) with Adempiere
+		@return The day you started the implementation (if implementing) - or production (went life) with iDempiere
 	  */
 	public Timestamp getStartProductionDate () 
 	{

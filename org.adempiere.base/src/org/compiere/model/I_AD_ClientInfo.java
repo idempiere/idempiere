@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ClientInfo
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
 public interface I_AD_ClientInfo 
 {
@@ -258,6 +258,22 @@ public interface I_AD_ClientInfo
 
 	public org.compiere.model.I_C_Charge getC_ChargeFreight() throws RuntimeException;
 
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
+
     /** Column name C_UOM_Length_ID */
     public static final String COLUMNNAME_C_UOM_Length_ID = "C_UOM_Length_ID";
 
@@ -318,21 +334,14 @@ public interface I_AD_ClientInfo
 
 	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException;
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
+    /** Column name FY_StartDate */
+    public static final String COLUMNNAME_FY_StartDate = "FY_StartDate";
 
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
+	/** Set Financial Year Start Date	  */
+	public void setFY_StartDate (Timestamp FY_StartDate);
 
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
+	/** Get Financial Year Start Date	  */
+	public Timestamp getFY_StartDate();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

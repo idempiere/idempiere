@@ -46,6 +46,7 @@ import org.eevolution.model.MPPProductBOMLine;
  * @author victor.perez@e-evolution.com
  * @contributor: Carlos Ruiz (globalqss) - review backward compatibility - implement mustBeStocked properly
  */
+@Deprecated // replaced by ProductionProcess
 public class M_Production_Run extends SvrProcess {
 
 	/** The Record */

@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_GLJournal
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121226L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_I_GLJournal (Properties ctx, int I_GLJournal_ID, String trxName)
@@ -136,15 +136,18 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return (String)get_Value(COLUMNNAME_AcctSchemaName);
 	}
 
-	/** Set Activity Value.
-		@param ActivityValue Activity Value	  */
+	/** Set Activity Key.
+		@param ActivityValue 
+		Text key for Activity
+	  */
 	public void setActivityValue (String ActivityValue)
 	{
 		set_Value (COLUMNNAME_ActivityValue, ActivityValue);
 	}
 
-	/** Get Activity Value.
-		@return Activity Value	  */
+	/** Get Activity Key.
+		@return Text key for Activity
+	  */
 	public String getActivityValue () 
 	{
 		return (String)get_Value(COLUMNNAME_ActivityValue);
@@ -383,15 +386,18 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set CampaignValue.
-		@param CampaignValue CampaignValue	  */
+	/** Set Campaign Key.
+		@param CampaignValue 
+		Text key of the Campaign
+	  */
 	public void setCampaignValue (String CampaignValue)
 	{
 		set_Value (COLUMNNAME_CampaignValue, CampaignValue);
 	}
 
-	/** Get CampaignValue.
-		@return CampaignValue	  */
+	/** Get Campaign Key.
+		@return Text key of the Campaign
+	  */
 	public String getCampaignValue () 
 	{
 		return (String)get_Value(COLUMNNAME_CampaignValue);
@@ -1374,17 +1380,17 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return bd;
 	}
 
-	/** Set Sales Region Value.
+	/** Set Sales Region Key.
 		@param SalesRegionValue 
-		Key of the Sales Region
+		Text key of the Sales Region
 	  */
 	public void setSalesRegionValue (String SalesRegionValue)
 	{
 		set_Value (COLUMNNAME_SalesRegionValue, SalesRegionValue);
 	}
 
-	/** Get Sales Region Value.
-		@return Key of the Sales Region
+	/** Get Sales Region Key.
+		@return Text key of the Sales Region
 	  */
 	public String getSalesRegionValue () 
 	{

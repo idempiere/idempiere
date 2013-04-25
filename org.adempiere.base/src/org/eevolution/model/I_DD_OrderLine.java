@@ -23,8 +23,9 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for DD_OrderLine
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
+@SuppressWarnings("all")
 public interface I_DD_OrderLine 
 {
 

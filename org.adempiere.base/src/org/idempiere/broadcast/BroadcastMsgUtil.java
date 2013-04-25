@@ -75,7 +75,7 @@ public class BroadcastMsgUtil
 
 				for (int userID : userIDs) {
 					MNote note = new MNote(Env.getCtx(), 0, trxName);
-					note.setAD_Broadcastmessage_ID(messageID);
+					note.setAD_BroadcastMessage_ID(messageID);
 					note.setAD_User_ID(userID);
 					note.setAD_Message_ID(0);
 					note.saveEx();

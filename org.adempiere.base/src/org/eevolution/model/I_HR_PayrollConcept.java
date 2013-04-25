@@ -23,9 +23,9 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_PayrollConcept
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public interface I_HR_PayrollConcept 
 {
 

@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_1099Box
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_C_1099Box extends PO implements I_C_1099Box, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130228L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_C_1099Box (Properties ctx, int C_1099Box_ID, String trxName)
@@ -38,8 +38,8 @@ public class X_C_1099Box extends PO implements I_C_1099Box, I_Persistent
       super (ctx, C_1099Box_ID, trxName);
       /** if (C_1099Box_ID == 0)
         {
-			setC_1099Box_ID (0);
 			setBucket (0);
+			setC_1099Box_ID (0);
 			setName (null);
 			setValue (null);
         } */
@@ -73,6 +73,23 @@ public class X_C_1099Box extends PO implements I_C_1099Box, I_Persistent
       return sb.toString();
     }
 
+	/** Set Bucket.
+		@param Bucket Bucket	  */
+	public void setBucket (int Bucket)
+	{
+		set_Value (COLUMNNAME_Bucket, Integer.valueOf(Bucket));
+	}
+
+	/** Get Bucket.
+		@return Bucket	  */
+	public int getBucket () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Bucket);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set 1099 Box.
 		@param C_1099Box_ID 1099 Box	  */
 	public void setC_1099Box_ID (int C_1099Box_ID)
@@ -105,23 +122,6 @@ public class X_C_1099Box extends PO implements I_C_1099Box, I_Persistent
 	public String getC_1099Box_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_C_1099Box_UU);
-	}
-
-	/** Set Bucket.
-		@param Bucket Bucket	  */
-	public void setBucket (int Bucket)
-	{
-		set_Value (COLUMNNAME_Bucket, Integer.valueOf(Bucket));
-	}
-
-	/** Get Bucket.
-		@return Bucket	  */
-	public int getBucket () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Bucket);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Description.

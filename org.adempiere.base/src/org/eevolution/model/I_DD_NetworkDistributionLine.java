@@ -23,9 +23,9 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for DD_NetworkDistributionLine
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public interface I_DD_NetworkDistributionLine 
 {
 

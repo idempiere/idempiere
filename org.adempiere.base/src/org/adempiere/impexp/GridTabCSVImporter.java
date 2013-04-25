@@ -15,6 +15,7 @@
 package org.adempiere.impexp;
 
 import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
+import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTACTION;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,16 +39,19 @@ import java.util.logging.Level;
 
 import org.adempiere.base.IGridTabImporter;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.util.ProcessUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLocation;
+import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRefList;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.process.ProcessInfo;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -57,6 +61,7 @@ import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
+import org.compiere.wf.MWFProcess;
 import org.supercsv.cellprocessor.Optional;
 import org.supercsv.cellprocessor.ParseBigDecimal;
 import org.supercsv.cellprocessor.ParseBool;
@@ -113,6 +118,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 			int indxDetail=0;
 			List<GridField> locationFields = null;
 			boolean isThereKey   = false;
+			boolean isThereDocAction = false;
 			//Mapping header  
 			for(int idx = 0; idx < header.size(); idx++) {
 				String headName = header.get(idx);
@@ -148,6 +154,9 @@ public class GridTabCSVImporter implements IGridTabImporter
 						throw new AdempiereException(Msg.getMsg(Env.getCtx(), "FieldNotFound" , new Object[] {columnName}) );
 					else if(isKeyColumn && !isThereKey)
 						isThereKey =true;
+					else if (!isThereDocAction &&
+							  MColumn.get(Env.getCtx(),field.getAD_Column_ID()).getAD_Reference_Value_ID() == REFERENCE_DOCUMENTACTION )
+						isThereDocAction= true;
 					
 					readProcArray.add(getProccesorFromColumn(field)); 
 					indxDetail++;
@@ -340,24 +349,51 @@ public class GridTabCSVImporter implements IGridTabImporter
 
 						if(!isDetail){
 							if(trx!=null){ 
-								if(error){
+							   if(error){
 								   trx.rollback();
 								   for(String row:rowsTmpResult){						   
 									   row =row.replaceAll("Updated","RolledBack");
 									   row =row.replaceAll("Inserted","RolledBack");
 									   logFileW.write(row);  
 								   }
-								   trx.close();
-								   trx=null;
 								   error =false;
-								}else { 
-								   trx.commit();
-								   for(String row:rowsTmpResult)						   
-									   logFileW.write(row);
-							
-								   trx.close();
-								   trx=null;
-								}
+							   }else { 
+								 
+								   if(isThereDocAction){ 
+									  boolean isError = false;
+									  int AD_Process_ID = MColumn.get(Env.getCtx(),gridTab.getField("DocAction").getAD_Column_ID()).getAD_Process_ID(); 
+								      
+									  if( AD_Process_ID > 0 ){
+										  String docResult = processDocAction(masterRecord,AD_Process_ID); 
+										     
+										  if(docResult.contains("error")) 
+											 isError = true; 
+										  
+								    	  rowsTmpResult.set(0,rowsTmpResult.get(0).replace(quoteChar + "\n",docResult + quoteChar + "\n")); 
+								      }else {
+								      	 throw new AdempiereException("No Process found for document action.");	  
+								      }
+									  
+									  if(isError){
+									     trx.rollback();	 
+										 for(String row:rowsTmpResult){
+											 row = row.replaceAll("Updated","RolledBack");
+											 row = row.replaceAll("Inserted","RolledBack");
+											 logFileW.write(row);
+										 }   
+									  }else{
+									     trx.commit();   
+									     for(String row:rowsTmpResult)						   
+											 logFileW.write(row);
+									  }
+								   }else{
+									   trx.commit();  
+									   for(String row:rowsTmpResult)						   
+										   logFileW.write(row);
+								   }								   
+							   }
+							   trx.close();
+							   trx=null;
 							}
 							trxName = "Import_" + gridTab.getTableName() + "_" + UUID.randomUUID();
 							gridTab.getTableModel().setImportingMode(true,trxName);	
@@ -509,27 +545,52 @@ public class GridTabCSVImporter implements IGridTabImporter
 					  }   
 					  gridTab.dataRefreshAll();
 					}else{
-					  trx.commit();
-					  for(String row:rowsTmpResult)						   
-						  logFileW.write(row);
-						
-					  if(masterRecord!=null){
-						 gridTab.getTableModel().dataRequery(masterRecord.get_WhereClause(true),false,0,false);
-						 gridTab.dataRefresh();
+					  if(isThereDocAction){
+						 
+						 boolean isError = false;
+					     int AD_Process_ID = MColumn.get(Env.getCtx(),gridTab.getField("DocAction").getAD_Column_ID()).getAD_Process_ID(); 
+						 
+					     if( AD_Process_ID > 0 ){
+						     String docResult = processDocAction(masterRecord,AD_Process_ID); 
+						     
+						     if(docResult.contains("error")) 
+						        isError = true; 
+						     
+						     rowsTmpResult.set(0,rowsTmpResult.get(0).replace(quoteChar + "\n",docResult + quoteChar + "\n"));    
+						 }else {
+						    throw new AdempiereException("No Process found for document action.");	  
+						 }
+						 
+						 if(isError){
+							trx.rollback();	 
+							for(String row:rowsTmpResult){
+								row = row.replaceAll("Updated","RolledBack");
+								row = row.replaceAll("Inserted","RolledBack");
+							    logFileW.write(row);
+							}   
+						 }else{
+							trx.commit();   
+							for(String row:rowsTmpResult)						   
+								logFileW.write(row);
+						 }
+					  }else {
+					     trx.commit();  
+						 for(String row:rowsTmpResult)						   
+							 logFileW.write(row);
 					  }
-					}
+					}   
+				   
+				    if(masterRecord!=null){
+				       gridTab.getTableModel().dataRequery(masterRecord.get_WhereClause(true),false,0,false);
+				       gridTab.navigateCurrent();
+					   gridTab.getTableModel().setImportingMode(false, null);
+					   
+					   for(GridTab detail: childs)
+						   if(detail.getTableModel().isOpen())
+							  detail.getTableModel().setImportingMode(false,null);	
+				    }					
 				    trx.close();
-					trx=null;
-					
-					gridTab.getTableModel().setImportingMode(false, null);
-					Env.clearTabContext(Env.getCtx(),gridTab.getWindowNo(),gridTab.getTabNo());		
-					for(GridTab detail: childs){
-						if(detail.getTableModel().isOpen()){
-						   detail.getTableModel().setImportingMode(false,null);
-						   Env.clearTabContext(Env.getCtx(),detail.getWindowNo(),detail.getTabNo());		
-						}
-					} 	
-					
+					trx=null;	
 				}
 			}
 		} catch (IOException e) {
@@ -557,6 +618,24 @@ public class GridTabCSVImporter implements IGridTabImporter
 			return errFile;
 	}
 
+	private String processDocAction(PO document, int AD_Process_ID){
+		int AD_Workflow_ID = MProcess.get(Env.getCtx(),AD_Process_ID).getAD_Workflow_ID();  
+		
+		if (AD_Workflow_ID > 0){
+			ProcessInfo wfProcess = new ProcessInfo (document.get_TrxName(),AD_Process_ID,document.get_Table_ID(),document.get_ID());
+			wfProcess.setTransactionName(document.get_TrxName());  
+			MWFProcess wdPro = ProcessUtil.startWorkFlow(Env.getCtx(),wfProcess, AD_Workflow_ID);
+			if(wdPro == null) 
+			   return "Document action could not be proccesed"; 
+			else if (wfProcess.isError())
+			   return "Document action error: "+wfProcess.getSummary();
+			else  	
+			   return "Document action processed ["+wfProcess.getSummary()+"]";
+		}else {
+		   return "No workflow was found";	
+		}
+	}
+	
 	private boolean isInsertMode() {
 		return IMPORT_MODE_INSERT.equals(m_import_mode);
 	}
@@ -874,7 +953,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 				if(!field.isDisplayed(true)) 
 					continue;
 					
-				if(!isInsertMode() && (!field.isEditable(true) && !MColumn.get(Env.getCtx(), field.getAD_Column_ID()).isUpdateable()) && value!=null){
+				if(!isInsertMode() && !field.isEditable(true) && value!=null){
 				   logMsg = Msg.getMsg(Env.getCtx(), "FieldNotEditable", new Object[] {header.get(i)}) + "{" + value + "}";
 				   break;
 				}		
@@ -928,7 +1007,23 @@ public class GridTabCSVImporter implements IGridTabImporter
 							     value = oldValue;
 							 else
 								 return Msg.getMsg(Env.getCtx(),"ForeignNotResolved",new Object[]{header.get(i),value}); 
-						  }
+						  }else if(DisplayType.Button == field.getDisplayType()){
+							 if(column.getAD_Reference_Value_ID()== REFERENCE_DOCUMENTACTION){
+								String oldValue = value.toString(); 
+							    for(ValueNamePair pList: MRefList.getList(Env.getCtx(),REFERENCE_DOCUMENTACTION,false)){
+								    if(pList.getName().equals(oldValue.toString())){
+									   oldValue = pList.getValue(); 
+									   break;
+									}
+								}
+								if(!value.toString().equals(oldValue)) 
+									value = oldValue;
+							    else
+								    return Msg.getMsg(Env.getCtx(),"ForeignNotResolved",new Object[]{header.get(i),value});  
+							 }else{
+								 return Msg.getMsg(Env.getCtx(),"Invalid") + " Column ["+column.getColumnName()+"]";   
+							 } 
+						  }  
 						  setValue = value;
 						  isThereRow =true;
 					   }

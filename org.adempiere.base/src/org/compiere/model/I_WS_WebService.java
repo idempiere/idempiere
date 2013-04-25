@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -20,24 +20,24 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for WS_WebServiceType
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS
+/** Generated Interface for WS_WebService
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0b
  */
-public interface I_WS_WebServiceType 
+public interface I_WS_WebService 
 {
 
-    /** TableName=WS_WebServiceType */
-    public static final String Table_Name = "WS_WebServiceType";
+    /** TableName=WS_WebService */
+    public static final String Table_Name = "WS_WebService";
 
-    /** AD_Table_ID=53164 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=53162 */
+    public static final int Table_ID = 53162;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 6 - System - Client 
+    /** AccessLevel = 4 - System 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(6);
+    BigDecimal accessLevel = BigDecimal.valueOf(4);
 
     /** Load Meta Data */
 
@@ -61,21 +61,6 @@ public interface I_WS_WebServiceType
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
-
-    /** Column name AD_Table_ID */
-    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
-
-	/** Set Table.
-	  * Database Table information
-	  */
-	public void setAD_Table_ID (int AD_Table_ID);
-
-	/** Get Table.
-	  * Database Table information
-	  */
-	public int getAD_Table_ID();
-
-	public I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -183,25 +168,12 @@ public interface I_WS_WebServiceType
 	/** Get Web Service	  */
 	public int getWS_WebService_ID();
 
-	public I_WS_WebService getWS_WebService() throws RuntimeException;
+    /** Column name WS_WebService_UU */
+    public static final String COLUMNNAME_WS_WebService_UU = "WS_WebService_UU";
 
-    /** Column name WS_WebServiceMethod_ID */
-    public static final String COLUMNNAME_WS_WebServiceMethod_ID = "WS_WebServiceMethod_ID";
+	/** Set WS_WebService_UU	  */
+	public void setWS_WebService_UU (String WS_WebService_UU);
 
-	/** Set Web Service Method	  */
-	public void setWS_WebServiceMethod_ID (int WS_WebServiceMethod_ID);
-
-	/** Get Web Service Method	  */
-	public int getWS_WebServiceMethod_ID();
-
-	public I_WS_WebServiceMethod getWS_WebServiceMethod() throws RuntimeException;
-
-    /** Column name WS_WebServiceType_ID */
-    public static final String COLUMNNAME_WS_WebServiceType_ID = "WS_WebServiceType_ID";
-
-	/** Set Web Service Type	  */
-	public void setWS_WebServiceType_ID (int WS_WebServiceType_ID);
-
-	/** Get Web Service Type	  */
-	public int getWS_WebServiceType_ID();
+	/** Get WS_WebService_UU	  */
+	public String getWS_WebService_UU();
 }

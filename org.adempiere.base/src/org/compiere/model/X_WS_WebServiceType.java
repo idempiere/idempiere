@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceType
- *  @author Adempiere (generated) 
- *  @version Release 3.6.0LTS - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0b - $Id$ */
 public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20100713L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_WS_WebServiceType (Properties ctx, int WS_WebServiceType_ID, String trxName)
@@ -74,9 +74,9 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
       return sb.toString();
     }
 
-	public I_AD_Table getAD_Table() throws RuntimeException
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
-		return (I_AD_Table)MTable.get(getCtx(), I_AD_Table.Table_Name)
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
 			.getPO(getAD_Table_ID(), get_TrxName());	}
 
 	/** Set Table.
@@ -178,9 +178,9 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
-	public I_WS_WebService getWS_WebService() throws RuntimeException
+	public org.compiere.model.I_WS_WebService getWS_WebService() throws RuntimeException
     {
-		return (I_WS_WebService)MTable.get(getCtx(), I_WS_WebService.Table_Name)
+		return (org.compiere.model.I_WS_WebService)MTable.get(getCtx(), org.compiere.model.I_WS_WebService.Table_Name)
 			.getPO(getWS_WebService_ID(), get_TrxName());	}
 
 	/** Set Web Service.
@@ -203,9 +203,9 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 		return ii.intValue();
 	}
 
-	public I_WS_WebServiceMethod getWS_WebServiceMethod() throws RuntimeException
+	public org.compiere.model.I_WS_WebServiceMethod getWS_WebServiceMethod() throws RuntimeException
     {
-		return (I_WS_WebServiceMethod)MTable.get(getCtx(), I_WS_WebServiceMethod.Table_Name)
+		return (org.compiere.model.I_WS_WebServiceMethod)MTable.get(getCtx(), org.compiere.model.I_WS_WebServiceMethod.Table_Name)
 			.getPO(getWS_WebServiceMethod_ID(), get_TrxName());	}
 
 	/** Set Web Service Method.
@@ -246,5 +246,19 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set WS_WebServiceType_UU.
+		@param WS_WebServiceType_UU WS_WebServiceType_UU	  */
+	public void setWS_WebServiceType_UU (String WS_WebServiceType_UU)
+	{
+		set_Value (COLUMNNAME_WS_WebServiceType_UU, WS_WebServiceType_UU);
+	}
+
+	/** Get WS_WebServiceType_UU.
+		@return WS_WebServiceType_UU	  */
+	public String getWS_WebServiceType_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_WS_WebServiceType_UU);
 	}
 }

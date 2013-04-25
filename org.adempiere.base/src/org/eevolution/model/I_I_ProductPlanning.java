@@ -23,9 +23,9 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_ProductPlanning
  *  @author iDempiere (generated) 
- *  @version Release 1.0a
+ *  @version Release 1.0b
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public interface I_I_ProductPlanning 
 {
 
@@ -76,6 +76,8 @@ public interface I_I_ProductPlanning
 	  * Workflow or combination of tasks
 	  */
 	public int getAD_Workflow_ID();
+
+	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name BPartner_Value */
     public static final String COLUMNNAME_BPartner_Value = "BPartner_Value";
@@ -142,6 +144,8 @@ public interface I_I_ProductPlanning
 
 	/** Get Network Distribution	  */
 	public int getDD_NetworkDistribution_ID();
+
+	public org.eevolution.model.I_DD_NetworkDistribution getDD_NetworkDistribution() throws RuntimeException;
 
     /** Column name DeliveryTime_Promised */
     public static final String COLUMNNAME_DeliveryTime_Promised = "DeliveryTime_Promised";
@@ -562,6 +566,8 @@ public interface I_I_ProductPlanning
 	  * Sales Representative or Company Agent
 	  */
 	public int getSalesRep_ID();
+
+	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name S_Resource_ID */
     public static final String COLUMNNAME_S_Resource_ID = "S_Resource_ID";

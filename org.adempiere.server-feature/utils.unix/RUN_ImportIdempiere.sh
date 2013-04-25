@@ -16,6 +16,17 @@ then
     SYSUSER=postgres
 fi
 
+# for oracle or postgres version 9.1 or higher you run this the usual way:
+#   RUN_ImportIdempiere.sh
+# for postgres versions 8.4 or 9.0 you can run this way:
+#   RUN_ImportIdempiere.sh 8.4
+#     or
+#   RUN_ImportIdempiere.sh 9.0
+if [ "x$1" = x8.4 -o "x$1" = x9.0 ]
+then
+    SUFFIX="_pg84"
+fi
+
 echo Re-Create idempiere User and import $IDEMPIERE_HOME/data/Adempiere${SUFFIX}.dmp - \($ADEMPIERE_DB_NAME\)
 echo == The import will show warnings. This is OK ==
 cd $IDEMPIERE_HOME/data/seed

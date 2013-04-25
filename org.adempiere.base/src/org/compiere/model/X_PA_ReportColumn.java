@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportColumn
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_PA_ReportColumn (Properties ctx, int PA_ReportColumn_ID, String trxName)
@@ -1005,6 +1005,23 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Operand 2 Line Name.
+		@param Oper_2_LineName 
+		Name of the financial report line to take values from
+	  */
+	public void setOper_2_LineName (String Oper_2_LineName)
+	{
+		set_Value (COLUMNNAME_Oper_2_LineName, Oper_2_LineName);
+	}
+
+	/** Get Operand 2 Line Name.
+		@return Name of the financial report line to take values from
+	  */
+	public String getOper_2_LineName () 
+	{
+		return (String)get_Value(COLUMNNAME_Oper_2_LineName);
 	}
 
 	/** Set Organization.

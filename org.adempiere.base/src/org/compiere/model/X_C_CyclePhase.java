@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for C_CyclePhase
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121031L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_C_CyclePhase (Properties ctx, int C_CyclePhase_ID, String trxName)

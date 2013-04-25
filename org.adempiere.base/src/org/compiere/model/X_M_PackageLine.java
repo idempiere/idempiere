@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PackageLine
  *  @author iDempiere (generated) 
- *  @version Release 1.0a - $Id$ */
+ *  @version Release 1.0b - $Id$ */
 public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20121207L;
+	private static final long serialVersionUID = 20130425L;
 
     /** Standard Constructor */
     public X_M_PackageLine (Properties ctx, int M_PackageLine_ID, String trxName)
