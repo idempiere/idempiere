@@ -18,9 +18,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
@@ -45,7 +48,15 @@ public class AdempiereIdGenerator implements IdGenerator {
 	public String nextComponentUuid(Desktop desktop, Component comp, ComponentInfo compInfo) {
 		buildLocatorAttribute(comp);
 		
-		return null;
+		String number;
+        if ((number = (String)desktop.getAttribute("Id_Num")) == null) {
+            number = "0";
+            desktop.setAttribute("Id_Num", number);
+        }
+        int i = Integer.parseInt(number);
+        i++;// Start from 1
+        desktop.setAttribute("Id_Num", String.valueOf(i));
+        return "t_" + i;
 	}
 
 	private static String getWidgetName(String widgetClass) {
@@ -67,8 +78,10 @@ public class AdempiereIdGenerator implements IdGenerator {
 
 	@Override
 	public String nextDesktopId(Desktop desktop) {
-		return null;
-	}
+        HttpServletRequest req = (HttpServletRequest)Executions.getCurrent().getNativeRequest();
+        String dtid = req.getParameter("tdtid");
+        return dtid==null?null:dtid;
+    }
 
 	@Override
 	public String nextPageUuid(Page page) {
