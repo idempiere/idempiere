@@ -1,3 +1,6 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
 -- Sep 10, 2012 5:10:21 PM SGT
 -- IDEMPIERE-375 Implement Forgot my Password
 INSERT INTO AD_Element (ColumnName,AD_Element_ID,EntityType,Name,PrintName,AD_Element_UU,AD_Client_ID,Created,Updated,AD_Org_ID,CreatedBy,UpdatedBy,IsActive) VALUES ('IsExpired',200126,'D','Expired','Expired','875fbbb0-2513-4a00-9f74-001bceab1f24',0,TO_DATE('2012-09-10 17:10:19','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2012-09-10 17:10:19','YYYY-MM-DD HH24:MI:SS'),0,100,100,'Y')
