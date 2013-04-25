@@ -56,7 +56,7 @@ public class MUser extends X_AD_User
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 239972951892250043L;
+	private static final long serialVersionUID = -1916348077418252152L;
 
 	/**
 	 * Get active Users of BPartner
@@ -1026,4 +1026,33 @@ public class MUser extends X_AD_User
 	//	org.compiere.Adempiere.startupClient();
 	//	System.out.println ( MUser.get(Env.getCtx(), "SuperUser", "22") );
 	}	//	main	/* */
+
+	@Override
+	public String getEMailUser() {
+		// IDEMPIERE-722
+		if (MClient.isSendCredentialsSystem()) {
+			MClient sysclient = MClient.get(getCtx(), 0);
+			return sysclient.getRequestUser();
+		} else if (MClient.isSendCredentialsClient()) {
+			MClient client = MClient.get(getCtx());
+			return client.getRequestUser();
+		} else {
+			return super.getEMailUser();
+		}
+	}
+
+	@Override
+	public String getEMailUserPW() {
+		// IDEMPIERE-722
+		if (MClient.isSendCredentialsSystem()) {
+			MClient sysclient = MClient.get(getCtx(), 0);
+			return sysclient.getRequestUserPW();
+		} else if (MClient.isSendCredentialsClient()) {
+			MClient client = MClient.get(getCtx());
+			return client.getRequestUserPW();
+		} else {
+			return super.getEMailUserPW();
+		}
+	}
+
 }	//	MUser

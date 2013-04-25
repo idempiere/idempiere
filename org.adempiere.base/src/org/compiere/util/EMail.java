@@ -305,7 +305,7 @@ public final class EMail implements Serializable
 				m_msg.setReplyTo(new Address[] {m_replyTo});
 			//
 			m_msg.setSentDate(new java.util.Date());
-			m_msg.setHeader("Comments", "AdempiereMail");
+			m_msg.setHeader("Comments", "iDempiereMail");
 		//	m_msg.setDescription("Description");
 			//	SMTP specifics
 			m_msg.setAllow8bitMIME(true);
