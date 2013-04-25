@@ -78,7 +78,7 @@ public abstract class CreateFromPackageShipment extends CreateFrom
                 line.add(new Boolean(false));           //  0-Selection
                 KeyNamePair lineKNPair = new KeyNamePair(rs.getInt(1), rs.getString(2)); // M_InOutLine_ID, Line
                 line.add(lineKNPair);
-                line.add(rs.getInt(3));	   				//Qty
+                line.add(rs.getBigDecimal(3));	   				//Qty
                 KeyNamePair productKNPair = new KeyNamePair(rs.getInt(4), rs.getString(5)); // ProductID, Product Name
                 line.add(productKNPair);				//Product
                 //line.add(rs.getString(5)); 				
@@ -110,7 +110,7 @@ public abstract class CreateFromPackageShipment extends CreateFrom
 	{
 		miniTable.setColumnClass(0, Boolean.class, false);      //  0-Selection
 		miniTable.setColumnClass(1, String.class, true);        //  1-Line
-		miniTable.setColumnClass(2, Integer.class, false);      //  2-Qty
+		miniTable.setColumnClass(2, BigDecimal.class, false);      //  2-Qty
 		miniTable.setColumnClass(3, String.class, true);        //  3-Product
 		miniTable.setColumnClass(4, String.class, true);        //  4-UOM
 		//  Table UI
@@ -137,7 +137,7 @@ public abstract class CreateFromPackageShipment extends CreateFrom
 		{
 			if (((Boolean)miniTable.getValueAt(i, 0)).booleanValue())
             {
-            	int qty = (Integer)miniTable.getValueAt(i, 2);
+				BigDecimal qty = (BigDecimal)miniTable.getValueAt(i, 2);
             	KeyNamePair pp = (KeyNamePair)miniTable.getValueAt(i, 1);   //  1-Line
             	KeyNamePair prod = (KeyNamePair)miniTable.getValueAt(i, 3);   //  1-Prod
                 
@@ -147,7 +147,7 @@ public abstract class CreateFromPackageShipment extends CreateFrom
                 MPackageLine packageLine = new MPackageLine(mPackage);
                 packageLine.setInOutLine((MInOutLine)lineMap.get(inOutLineId));
                 packageLine.setM_Product_ID(productId);
-                packageLine.setQty(new BigDecimal(qty));
+                packageLine.setQty(qty);
                 packageLine.setM_PackageMPS_ID(M_PackageMPS_ID);
                 
                 if (!packageLine.save(mPackage.get_TrxName()))
