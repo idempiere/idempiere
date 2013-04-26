@@ -342,6 +342,7 @@ public class Process {
 			if (!processOK || pi.isError())
 			{
 				r.setSummary(pi.getSummary());
+				r.setError(pi.getSummary());
 				r.setLogInfo(pi.getLogInfo(true));
 				r.setIsError( true );				
 				processOK = false;
@@ -349,6 +350,7 @@ public class Process {
 			else
 			{
 				r.setSummary(pi.getSummary());
+				r.setError(pi.getSummary());
 				r.setLogInfo(pi.getLogInfo(true));
 				r.setIsError( false );
 			}
