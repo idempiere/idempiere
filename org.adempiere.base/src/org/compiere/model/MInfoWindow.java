@@ -74,6 +74,7 @@ public class MInfoWindow extends X_AD_InfoWindow
 	public MInfoColumn[] getInfoColumns(TableInfo[] tableInfos) {
 		Query query = new Query(getCtx(), MTable.get(getCtx(), I_AD_InfoColumn.Table_ID), I_AD_InfoColumn.COLUMNNAME_AD_InfoWindow_ID+"=?", get_TrxName());
 		List<MInfoColumn> list = query.setParameters(getAD_InfoWindow_ID())
+				.setOnlyActiveRecords(true)
 				.setOrderBy(I_AD_InfoColumn.COLUMNNAME_SeqNo)
 				.list();
 		for(int i = list.size() - 1; i >= 0; i--) {
@@ -87,6 +88,7 @@ public class MInfoWindow extends X_AD_InfoWindow
 	public MInfoColumn[] getInfoColumns() {
 		Query query = new Query(getCtx(), MTable.get(getCtx(), I_AD_InfoColumn.Table_ID), I_AD_InfoColumn.COLUMNNAME_AD_InfoWindow_ID+"=?", get_TrxName());
 		List<MInfoColumn> list = query.setParameters(getAD_InfoWindow_ID())
+				.setOnlyActiveRecords(true)
 				.setOrderBy(I_AD_InfoColumn.COLUMNNAME_SeqNo)
 				.list();
 		return list.toArray(new MInfoColumn[0]);
