@@ -244,6 +244,17 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         		treeValues[i] = mNode.getName();
         		treeDescription[i] = mNode.getDescription();
         		String imagePath = mNode.getImagePath(); 
+        		if (imagePath != null)
+        		{
+        			if (imagePath.startsWith("/images"))
+        			{
+        				imagePath = ThemeManager.getThemeResource(imagePath.substring(1));
+        			}
+        			else if (imagePath.startsWith("images"))
+        			{
+        				imagePath = ThemeManager.getThemeResource(imagePath);
+        			}
+        		}
        			treeImages[i] = imagePath != null ? imagePath.intern() : null;
         	}
         }
