@@ -319,7 +319,7 @@ public class MPackage extends X_M_Package
 						if (line.getM_PackageMPS_ID() == 0)
 							continue;
 						
-						MPackageMPS packageMPS = new MPackageMPS(getCtx(), line.getM_PackageMPS_ID(), get_TrxName());
+						MPackageMPS packageMPS = new MPackageMPS(getCtx(), line.getM_PackageMPS_ID(), null);
 						packageMPS.setMasterTrackingNo(line.getMasterTrackingNo());
 						packageMPS.setTrackingNo(line.getTrackingNo());
 						packageMPS.setPrice(line.getPrice());
@@ -369,11 +369,13 @@ public class MPackage extends X_M_Package
 			log.log(Level.SEVERE, "processOnline", e);
 			setErrorMessage(Msg.getMsg(Env.getCtx(), "ShippingNotProcessed") + ": " + e.getMessage());
 		}
-		
-		if (trx != null)
-		{
-			trx.commit();
-			trx.close();
+		finally
+		{		
+			if (trx != null)
+			{
+				trx.commit();
+				trx.close();
+			}
 		}
 
 		return ok;
