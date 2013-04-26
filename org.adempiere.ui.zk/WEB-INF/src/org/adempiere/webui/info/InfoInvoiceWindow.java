@@ -59,6 +59,17 @@ public class InfoInvoiceWindow extends InfoWindow {
 			isSOTrx = "Y";
 		}
 		
+		//Set Defaults
+        String bp = Env.getContext(Env.getCtx(), p_WindowNo, "C_BPartner_ID");
+        if (!Util.isEmpty(bp)) {
+        	for (WEditor editor : editors) {
+				if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("C_BPartner_ID")) {
+					editor.setValue(new Integer(bp));
+					break;
+				}
+			}
+        }
+        
 		if (!Util.isEmpty(isSOTrx)) {
 			for (WEditor editor : editors) {
 				if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("IsSOTrx")) {
