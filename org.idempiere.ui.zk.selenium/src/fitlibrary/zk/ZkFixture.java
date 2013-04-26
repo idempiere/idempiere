@@ -42,8 +42,8 @@ public class ZkFixture extends SpiderFixture {
 	}
 
 	@Override
-	public boolean withSelect(String locator, final boolean select) {
-		Widget widget = new Widget(locator);
+	public boolean withSelect(final String locator, final boolean select) {
+		final Widget widget = new Widget(locator);
 		final WebElement element = widget.$n(webDriver, "real");
 		if (element.isSelected()) {
 			if (!select) {
@@ -58,7 +58,9 @@ public class ZkFixture extends SpiderFixture {
 		ensureBecomes(new PollForWithError() {
 			@Override
 			public boolean matches() {
-				return element.isSelected() == select;
+				//search again to avoid StaleElementReferenceException
+				final WebElement e = widget.$n(webDriver, "real");
+				return e.isSelected() == select;
 			}
 			@Override
 			public String error() {
