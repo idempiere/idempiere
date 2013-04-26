@@ -579,7 +579,7 @@ public class MPackage extends X_M_Package
 		int[] ids = MPackageMPS.getAllIDs(MPackageMPS.Table_Name, "M_Package_ID = " + getM_Package_ID(), get_TrxName());
 		for (int i = 0; i < ids.length; i++)
 		{
-			MPackageMPS packageMPS = new MPackageMPS(getCtx(), ids[i], get_TrxName());
+			MPackageMPS packageMPS = new MPackageMPS(getCtx(), ids[i], null);
 			if (packageMPS.getWeight() == null || packageMPS.getWeight().compareTo(BigDecimal.ZERO) == 0)
 			{
 				String sql = "SELECT SUM(LineWeight) FROM X_PackageLineWeight plw WHERE plw.M_PackageMPS_ID=?";
