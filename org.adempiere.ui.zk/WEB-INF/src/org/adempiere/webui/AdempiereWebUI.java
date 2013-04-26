@@ -353,6 +353,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			BrowserToken.remove();
 		}
 		
+		Env.setContext(ctx, "#UIClient", "zk");
+		
 		Clients.response(new AuScript("zAu.cmd0.clearBusy()"));
     }
     

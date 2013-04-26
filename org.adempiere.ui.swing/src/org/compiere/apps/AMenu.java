@@ -206,6 +206,8 @@ public final class AMenu extends CFrame
                 treePanel.expandTree(true);
         // Auto Expand Tree - nmicoud IDEMPIERE 195
 
+        Env.setContext(Env.getCtx(), "#UIClient", "swing");
+        
 		//
 		Env.addEventListener(this);
 		//
