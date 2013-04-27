@@ -423,10 +423,7 @@ public class DataEngine
 						groupByColumns.add(m_synonym+".Name");
 						orderName = m_synonym + "Name";
 						//	=> x JOIN AD_Ref_List A ON (x.KeyColumn=A.Value AND A.AD_Reference_ID=123)
-						if (IsMandatory)
-							sqlFROM.append(" INNER JOIN ");
-						else
-							sqlFROM.append(" LEFT OUTER JOIN ");
+						sqlFROM.append(" LEFT OUTER JOIN ");
 						sqlFROM.append("AD_Ref_List ").append(m_synonym).append(" ON (")
 							.append(lookupSQL).append("=").append(m_synonym).append(".Value")
 							.append(" AND ").append(m_synonym).append(".AD_Reference_ID=").append(AD_Reference_Value_ID).append(")");
@@ -440,18 +437,12 @@ public class DataEngine
 
 						//	LEFT OUTER JOIN AD_Ref_List XA ON (AD_Table.EntityType=XA.Value AND XA.AD_Reference_ID=245)
 						//	LEFT OUTER JOIN AD_Ref_List_Trl A ON (XA.AD_Ref_List_ID=A.AD_Ref_List_ID AND A.AD_Language='de_DE')
-						if (IsMandatory)
-							sqlFROM.append(" INNER JOIN ");
-						else
-							sqlFROM.append(" LEFT OUTER JOIN ");
+						sqlFROM.append(" LEFT OUTER JOIN ");
 						sqlFROM.append(" AD_Ref_List X").append(m_synonym).append(" ON (")
 							.append(lookupSQL).append("=X")
 							.append(m_synonym).append(".Value AND X").append(m_synonym).append(".AD_Reference_ID=").append(AD_Reference_Value_ID)
 							.append(")");
-						if (IsMandatory)
-							sqlFROM.append(" INNER JOIN ");
-						else
-							sqlFROM.append(" LEFT OUTER JOIN ");
+						sqlFROM.append(" LEFT OUTER JOIN ");
 						sqlFROM.append(" AD_Ref_List_Trl ").append(m_synonym).append(" ON (X")
 							.append(m_synonym).append(".AD_Ref_List_ID=").append(m_synonym).append(".AD_Ref_List_ID")
 							.append(" AND ").append(m_synonym).append(".AD_Language='").append(m_language.getAD_Language()).append("')");
