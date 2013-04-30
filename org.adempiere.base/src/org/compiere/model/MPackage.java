@@ -241,9 +241,12 @@ public class MPackage extends X_M_Package
 		
 		if (getBoxCount() > 0 && getBoxCount() - packageMPSCount > 0)
 		{
-			MPackageMPS packageMPS = new MPackageMPS(getCtx(), 0, get_TrxName());
-			packageMPS.setM_Package_ID(getM_Package_ID());
-			packageMPS.saveEx();
+			for (int i = 0; i < getBoxCount() - packageMPSCount; i++)
+			{
+				MPackageMPS packageMPS = new MPackageMPS(getCtx(), 0, get_TrxName());
+				packageMPS.setM_Package_ID(getM_Package_ID());
+				packageMPS.saveEx();
+			}
 		}
 		
 		return success;

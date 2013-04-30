@@ -100,7 +100,7 @@ public class ADLookup {
 		if (isUUID(text))
 		{
 			sql.append("SELECT ").append(m_keyColumnName).append(" FROM ").append(m_tableName)
-			   .append(" WHERE ").append(m_tableName).append("_UU=").append(DB.TO_STRING(text));
+			   .append(" WHERE ").append(m_tableName).append("_UU=").append(DB.TO_STRING(text.toLowerCase()));
 		}
 		else if (m_columnName.equals("M_Product_ID"))
 		{
