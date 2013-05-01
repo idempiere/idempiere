@@ -79,7 +79,7 @@ public class HTMLExtension implements IHTMLExtension {
 		href.setStyle("text-decoration: none; font-size: 11px; vertical-align: middle;");
 		href.addAttribute("onclick", "parent.drillDown('" 
 				+ componentId + "', '" 
-				+ dataElement.getColumnName() + "', '"
+				+ dataElement.getForeignColumnName() + "', '"
 				+ dataElement.getValueAsString() + "')");
 		report.addElement(href);
 		menu.addElement(report);

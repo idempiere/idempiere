@@ -36,10 +36,9 @@ public class PrintDataColumn
 	 * 	@param columnSize Column Size
 	 *  @param alias Alias in query or the same as column name or null
 	 *  @param isPageBreak if true force page break after function
+	 *  @param foreignColumnName name foreign
 	 */
-	public PrintDataColumn (int AD_Column_ID, String columnName,
-		int displayType, int columnSize,
-		String alias, boolean isPageBreak)
+	public PrintDataColumn(int AD_Column_ID, String columnName,int displayType, int columnSize,String alias, boolean isPageBreak, String foreignColumnName) 
 	{
 		m_AD_Column_ID = AD_Column_ID;
 		m_columnName = columnName;
@@ -51,15 +50,22 @@ public class PrintDataColumn
 		if (m_alias == null)
 			m_alias = columnName;
 		m_pageBreak = isPageBreak;
-	}	//	PrintDataColumn
+		m_foreignColumnName = foreignColumnName;
+	}
 
+	public PrintDataColumn (int AD_Column_ID, String columnName,int displayType, int columnSize,String alias, boolean isPageBreak)
+	{
+		this(AD_Column_ID, columnName, displayType, columnSize, alias, isPageBreak, null);
+	}	//	PrintDataColumn
+	
 	private int			m_AD_Column_ID;
 	private String		m_columnName;
+	private String		m_foreignColumnName;
 	private int			m_displayType;
 	private int			m_columnSize;
 	private String		m_alias;
 	private boolean		m_pageBreak;
-	private String m_FormatPattern;
+	private String      m_FormatPattern;
 
 	/*************************************************************************/
 
@@ -80,6 +86,18 @@ public class PrintDataColumn
 	{
 		return m_columnName;
 	}	//	getColumnName
+
+	/**
+	 * 	Get ForeignColumn Name
+	 * 	@return column foreign name
+	 */
+	public String getForeignColumnName()
+	{
+		if (m_foreignColumnName == null)
+			return m_columnName;
+		else
+			return m_foreignColumnName;
+	}	//	getForeignColumnName
 
 	/**
 	 * 	Get Display Type

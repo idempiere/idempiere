@@ -36,10 +36,9 @@ import org.compiere.util.NamePair;
 public class PrintDataElement implements Serializable
 {
 	/**
-	 * generated serialize id
+	 * 
 	 */
-	private static final long serialVersionUID = -4823568539698752659L;
-
+	private static final long serialVersionUID = 2177482817458457236L;
 
 	/**
 	 *	Print Data Element Constructor
@@ -48,8 +47,9 @@ public class PrintDataElement implements Serializable
 	 *  @param displayType optional displayType
 	 *  @param isPKey is primary key
 	 *  @param isPageBreak if true force page break
+	 *  @param foreignColumnName name foreign
 	 */
-	public PrintDataElement (String columnName, Serializable value, int displayType, boolean isPKey, boolean isPageBreak, String format)
+	public PrintDataElement (String columnName, Serializable value, int displayType, boolean isPKey, boolean isPageBreak, String format, String foreignColumnName)
 	{
 		if (columnName == null)
 			throw new IllegalArgumentException("PrintDataElement - Name cannot be null");
@@ -59,8 +59,14 @@ public class PrintDataElement implements Serializable
 		m_isPKey = isPKey;
 		m_isPageBreak = isPageBreak;
 		m_formatPattern = format;
+		m_foreignColumnName = foreignColumnName;
 	}	//	PrintDataElement
 
+	public PrintDataElement(String columnName, Serializable value, int displayType, String pattern, String foreignColumnName)
+	{
+		this (columnName, value, displayType, false, false, pattern, foreignColumnName);
+	}	//	PrintDataElement
+	
 	/**
 	 *	Print Data Element Constructor
 	 *  @param columnName name
@@ -70,8 +76,13 @@ public class PrintDataElement implements Serializable
 	 */
 	public PrintDataElement(String columnName, Serializable value, int displayType, String pattern)
 	{
-		this (columnName, value, displayType, false, false, pattern);
+		this (columnName, value, displayType, false, false, pattern, null);
 	}	//	PrintDataElement
+
+	public PrintDataElement (String columnName, Serializable value, int displayType, boolean isPKey, boolean isPageBreak, String format)
+	{
+		this(columnName, value, displayType, isPKey, isPageBreak, format, null);
+	}
 
 	/**	Data Name			*/
 	private String 		m_columnName;
@@ -85,6 +96,8 @@ public class PrintDataElement implements Serializable
 	private boolean		m_isPageBreak;
 	/** Value format pattern */
 	private String		m_formatPattern;
+	/** Value foreign name */
+	private String m_foreignColumnName;
 
 
 	/**	XML Element Name			*/
@@ -103,6 +116,18 @@ public class PrintDataElement implements Serializable
 	{
 		return m_columnName;
 	}	//	getName
+	
+	/**
+	 * 	Get ForeignName
+	 * 	@return name
+	 */
+	public String getForeignColumnName() {
+		if (m_foreignColumnName == null)
+			return m_columnName;
+		else
+			return m_foreignColumnName;
+	}
+
 
 	/**
 	 * 	Get Node Value
