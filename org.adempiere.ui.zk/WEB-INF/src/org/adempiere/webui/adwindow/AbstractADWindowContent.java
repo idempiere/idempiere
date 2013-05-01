@@ -1322,12 +1322,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	            		}
 	            		adMessage.append(tail);
 	            	}
-	            	String adMessageQuot = Util.replace(adMessage.toString(), "'", "''");
 					if (   arguments.length == 1 
 						&& origmsg != null 
 						&& origmsg.equals(arguments[0])) { // check dup message
 		            	sb.append(origmsg);
 					} else {
+		            	String adMessageQuot = Util.replace(adMessage.toString(), "'", "''");
 		            	sb.append(MessageFormat.format(adMessageQuot, arguments));
 	            	}
 	            }
