@@ -295,9 +295,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	private ColumnInfo createLookupColumnInfo(TableInfo[] tableInfos,
 			GridField gridField, MInfoColumn infoColumn) {
 		String columnName = gridField.getColumnName();
-		int AD_Reference_Value_ID = 0;
 		String validationCode = "";
-		MLookupInfo lookupInfo = MLookupFactory.getLookupInfo(Env.getCtx(), p_WindowNo, 0, infoColumn.getAD_Reference_ID(), Env.getLanguage(Env.getCtx()), columnName, AD_Reference_Value_ID, false, validationCode);
+		MLookupInfo lookupInfo = MLookupFactory.getLookupInfo(Env.getCtx(), p_WindowNo, 0, infoColumn.getAD_Reference_ID(), Env.getLanguage(Env.getCtx()), columnName, infoColumn.getAD_Reference_Value_ID(), false, validationCode);
 		String displayColumn = lookupInfo.DisplayColumn;
 		
 		int index = infoColumn.getSelectClause().indexOf(".");
