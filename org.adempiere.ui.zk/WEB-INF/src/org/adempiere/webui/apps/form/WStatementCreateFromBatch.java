@@ -68,13 +68,17 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	public WStatementCreateFromBatch()
 	{
 		form = new WCreateFromForm(this);
-		p_WindowNo = form.getWindowNo();
 	}
 	
 	public void initForm()
 	{
 		try
 		{
+			if (form.getGridTab() != null)
+				p_WindowNo = form.getGridTab().getWindowNo();
+			else
+				p_WindowNo = form.getWindowNo();
+			
 			if (!dynInit())
 				return;
 			zkInit();
