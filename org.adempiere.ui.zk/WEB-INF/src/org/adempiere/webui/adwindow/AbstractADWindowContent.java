@@ -1286,9 +1286,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	            StringBuilder sb = new StringBuilder();
 	            String msg = e.getMessage();
 	            StringBuilder adMessage = new StringBuilder();
+	            String origmsg = null;
 	            if (msg != null && msg.length() > 0)
 	            {
-	            	adMessage.append(Msg.getMsg(Env.getCtx(), e.getAD_Message()));
+	            	origmsg = Msg.getMsg(Env.getCtx(), e.getAD_Message());
+	            	adMessage.append(origmsg);
 	            }
 	            String info = e.getInfo();
 	            if (info != null && info.length() > 0)
@@ -1320,7 +1322,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	            		}
 	            		adMessage.append(tail);
 	            	}
-	            	sb.append(MessageFormat.format(adMessage.toString(), arguments));
+					if (   arguments.length == 1 
+						&& origmsg != null 
+						&& origmsg.equals(arguments[0])) { // check dup message
+		            	sb.append(origmsg);
+					} else {
+		            	String adMessageQuot = Util.replace(adMessage.toString(), "'", "''");
+		            	sb.append(MessageFormat.format(adMessageQuot, arguments));
+	            	}
 	            }
 	            else
 	            {

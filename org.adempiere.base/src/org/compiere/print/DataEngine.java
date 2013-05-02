@@ -404,7 +404,9 @@ public class DataEngine
 					groupByColumns.add(m_synonym+display);
 					groupByColumns.add(lookupSQL);
 					//
-					pdc = new PrintDataColumn(AD_Column_ID, ColumnName, AD_Reference_ID, FieldLength, orderName, isPageBreak);
+					TableReference tr = getTableReference(AD_Reference_Value_ID);
+					String foreignColumnName = tr.KeyColumn;
+					pdc = new PrintDataColumn(AD_Column_ID, ColumnName, AD_Reference_ID, FieldLength, orderName, isPageBreak, foreignColumnName);
 					synonymNext();
 				}
 
@@ -904,7 +906,7 @@ public class DataEngine
 								if (display != null && !rs.wasNull())
 								{
 									KeyNamePair pp = new KeyNamePair(id, display);
-									pde = new PrintDataElement(pdc.getColumnName(), pp, pdc.getDisplayType(), pdc.getFormatPattern());
+									pde = new PrintDataElement(pdc.getColumnName(), pp, pdc.getDisplayType(), pdc.getFormatPattern(), pdc.getForeignColumnName());
 								}
 							}
 							else

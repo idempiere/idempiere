@@ -30,8 +30,8 @@ import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
-import org.compiere.model.MPrivateAccess;
 import org.compiere.model.MRMA;
+import org.compiere.model.MRole;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -93,7 +93,8 @@ public class InvoiceGen extends GenForm
 	{
 	    StringBuilder sql = new StringBuilder(
 	            "SELECT C_Order_ID, o.Name, dt.Name, DocumentNo, bp.Name, DateOrdered, TotalLines "
-	            + "FROM C_Invoice_Candidate_v ic, AD_Org o, C_BPartner bp, C_DocType dt "
+	    		// use C_Order instead of C_Invoice_Candidate_v for access purposes, will be replaced later
+	            + "FROM C_Order ic, AD_Org o, C_BPartner bp, C_DocType dt "
 	            + "WHERE ic.AD_Org_ID=o.AD_Org_ID"
 	            + " AND ic.C_BPartner_ID=bp.C_BPartner_ID"
 	            + " AND ic.C_DocType_ID=dt.C_DocType_ID"
@@ -103,21 +104,11 @@ public class InvoiceGen extends GenForm
             sql.append(" AND ic.AD_Org_ID=").append(m_AD_Org_ID);
         if (m_C_BPartner_ID != null)
             sql.append(" AND ic.C_BPartner_ID=").append(m_C_BPartner_ID);
-        
-        // bug - [ 1713337 ] "Generate Invoices (manual)" show locked records.
-        /* begin - Exclude locked records; @Trifon */
-        int AD_User_ID = Env.getContextAsInt(Env.getCtx(), "#AD_User_ID");
-        String lockedIDs = MPrivateAccess.getLockedRecordWhere(MOrder.Table_ID, AD_User_ID);
-        if (lockedIDs != null)
-        {
-            if (sql.length() > 0)
-                sql.append(" AND ");
-            sql.append("C_Order_ID").append(lockedIDs);
-        }
-        /* eng - Exclude locked records; @Trifon */
-
-        //
         sql.append(" ORDER BY o.Name,bp.Name,DateOrdered");
+        sql = new StringBuilder(MRole.getDefault().addAccessSQL(sql.toString(), "ic", true, false));
+        // Replace C_Order by C_Invoice_Candidate_v
+        int idxtable = sql.indexOf(" C_Order ");
+        sql.replace(idxtable, idxtable+" C_Order ".length(), " C_Invoice_Candidate_v ");
         
         return sql.toString();
 	}
@@ -151,14 +142,8 @@ public class InvoiceGen extends GenForm
         if (m_C_BPartner_ID != null)
             sql.append(" AND bp.C_BPartner_ID=").append(m_C_BPartner_ID);
         
-        int AD_User_ID = Env.getContextAsInt(Env.getCtx(), "#AD_User_ID");
-        String lockedIDs = MPrivateAccess.getLockedRecordWhere(MRMA.Table_ID, AD_User_ID);
-        if (lockedIDs != null)
-        {
-            sql.append(" AND rma.M_RMA_ID").append(lockedIDs);
-        }
-        
         sql.append(" ORDER BY org.Name, bp.Name, rma.Created ");
+        sql = new StringBuilder(MRole.getDefault().addAccessSQL(sql.toString(), "rma", true, false));
         
         return sql.toString();
 	}
