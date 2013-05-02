@@ -39,7 +39,6 @@ import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Textbox;
-import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.TokenEvent;
 import org.adempiere.webui.exception.ApplicationException;
@@ -82,6 +81,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.A;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Image;
@@ -106,19 +106,19 @@ public class LoginPanel extends Window implements EventListener<Event>
 	private static final String ON_LOAD_TOKEN = "onLoadToken";
     private static CLogger logger = CLogger.getCLogger(LoginPanel.class);
 
-    private Properties ctx;
-    private Label lblUserId;
-    private Label lblPassword;
-    private Label lblLanguage;
-    private Textbox txtUserId;
-    private Textbox txtPassword;
-    private Combobox lstLanguage;
-    private LoginWindow wndLogin;
-    private Checkbox chkRememberMe;
-    private Checkbox chkSelectRole;
-    private ToolBarButton btnResetPassword;
-    private ConfirmPanel pnlButtons; 
-    boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+    protected Properties ctx;
+    protected Label lblUserId;
+    protected Label lblPassword;
+    protected Label lblLanguage;
+    protected Textbox txtUserId;
+    protected Textbox txtPassword;
+    protected Combobox lstLanguage;
+    protected LoginWindow wndLogin;
+    protected Checkbox chkRememberMe;
+    protected Checkbox chkSelectRole;
+    protected A btnResetPassword;
+    protected ConfirmPanel pnlButtons; 
+    protected boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 
     public LoginPanel(Properties ctx, LoginWindow loginWindow)
     {
@@ -138,7 +138,71 @@ public class LoginPanel extends Window implements EventListener<Event>
 
     private void init()
     {
-    	Div div = new Div();
+    	createUI();
+
+        txtUserId.addEventListener(TokenEvent.ON_USER_TOKEN, new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event event) throws Exception {
+				String[] data = (String[]) event.getData();
+				try
+				{
+					int AD_Session_ID = Integer.parseInt(data[0]);
+					MSession session = new MSession(Env.getCtx(), AD_Session_ID, null);
+					if (session.get_ID() == AD_Session_ID)
+					{
+						int AD_User_ID = session.getCreatedBy();
+						MUser user = MUser.get(Env.getCtx(), AD_User_ID);
+						if (user != null && user.get_ID() == AD_User_ID)
+						{
+						    String token = data[1];
+						    if (BrowserToken.validateToken(session, user, token))
+						    {
+						    	if (MSystem.isZKRememberUserAllowed()) {
+						    		if (email_login) {
+						    			txtUserId.setValue(user.getEMail());
+						    		} else {
+						    			if (user.getLDAPUser() != null && user.getLDAPUser().length() > 0) {
+						    				txtUserId.setValue(user.getLDAPUser());
+						    			} else {
+						    				txtUserId.setValue(user.getName());
+						    			}
+						    		}
+							    	onUserIdChange(AD_User_ID);
+							    	chkRememberMe.setChecked(true);
+						    	}
+						    	if (MSystem.isZKRememberPasswordAllowed()) {
+							    	txtPassword.setValue(token);
+							    	txtPassword.setAttribute("user.token.hash", token);
+							    	txtPassword.setAttribute("user.token.sid", AD_Session_ID);
+						    	}
+						    	chkSelectRole.setChecked(false);
+						    }
+						}
+					}
+				} catch (Exception e) {
+					//safe to ignore
+					if (logger.isLoggable(Level.INFO))logger.log(Level.INFO, e.getLocalizedMessage(), e);
+				}
+			}
+		});
+
+        // Make the default language the language of client System
+        String defaultLanguage = MClient.get(ctx, 0).getAD_Language();
+        for(int i = 0; i < lstLanguage.getItemCount(); i++)
+        {
+        	Comboitem li = lstLanguage.getItemAtIndex(i);
+        	if (li.getValue().equals(defaultLanguage))
+        	{
+        		lstLanguage.setSelectedIndex(i);
+        		languageChanged(li.getLabel());
+        		break;
+        	}
+        }
+    }
+
+	protected void createUI() {
+		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
     	Label label = new Label("Login");
     	label.setSclass(ITheme.LOGIN_BOX_HEADER_TXT_CLASS);
@@ -257,67 +321,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         pnlButtons.getButton(ConfirmPanel.A_OK).setSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
         this.appendChild(div);
-
-        txtUserId.addEventListener(TokenEvent.ON_USER_TOKEN, new EventListener<Event>() {
-
-			@Override
-			public void onEvent(Event event) throws Exception {
-				String[] data = (String[]) event.getData();
-				try
-				{
-					int AD_Session_ID = Integer.parseInt(data[0]);
-					MSession session = new MSession(Env.getCtx(), AD_Session_ID, null);
-					if (session.get_ID() == AD_Session_ID)
-					{
-						int AD_User_ID = session.getCreatedBy();
-						MUser user = MUser.get(Env.getCtx(), AD_User_ID);
-						if (user != null && user.get_ID() == AD_User_ID)
-						{
-						    String token = data[1];
-						    if (BrowserToken.validateToken(session, user, token))
-						    {
-						    	if (MSystem.isZKRememberUserAllowed()) {
-						    		if (email_login) {
-						    			txtUserId.setValue(user.getEMail());
-						    		} else {
-						    			if (user.getLDAPUser() != null && user.getLDAPUser().length() > 0) {
-						    				txtUserId.setValue(user.getLDAPUser());
-						    			} else {
-						    				txtUserId.setValue(user.getName());
-						    			}
-						    		}
-							    	onUserIdChange(AD_User_ID);
-							    	chkRememberMe.setChecked(true);
-						    	}
-						    	if (MSystem.isZKRememberPasswordAllowed()) {
-							    	txtPassword.setValue(token);
-							    	txtPassword.setAttribute("user.token.hash", token);
-							    	txtPassword.setAttribute("user.token.sid", AD_Session_ID);
-						    	}
-						    	chkSelectRole.setChecked(false);
-						    }
-						}
-					}
-				} catch (Exception e) {
-					//safe to ignore
-					if (logger.isLoggable(Level.INFO))logger.log(Level.INFO, e.getLocalizedMessage(), e);
-				}
-			}
-		});
-
-        // Make the default language the language of client System
-        String defaultLanguage = MClient.get(ctx, 0).getAD_Language();
-        for(int i = 0; i < lstLanguage.getItemCount(); i++)
-        {
-        	Comboitem li = lstLanguage.getItemAtIndex(i);
-        	if (li.getValue().equals(defaultLanguage))
-        	{
-        		lstLanguage.setSelectedIndex(i);
-        		languageChanged(li.getLabel());
-        		break;
-        	}
-        }
-    }
+	}
 
     private void initComponents()
     {
@@ -372,7 +376,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         chkSelectRole = new Checkbox(Msg.getMsg(Language.getBaseAD_Language(), "SelectRole"));
         chkSelectRole.setId("chkSelectRole");
         
-        btnResetPassword = new ToolBarButton(Msg.getMsg(Language.getBaseAD_Language(), "ForgotMyPassword"));
+        btnResetPassword = new A(Msg.getMsg(Language.getBaseAD_Language(), "ForgotMyPassword"));
         btnResetPassword.setId("btnResetPassword");
    }
 

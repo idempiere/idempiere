@@ -78,24 +78,24 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	 */
 	private static final long serialVersionUID = 1071903027424763936L;
 
-	private LoginWindow wndLogin;
-    private Login login;
+	protected LoginWindow wndLogin;
+	protected Login login;
 
-    private Combobox lstRole, lstClient, lstOrganisation, lstWarehouse;
-    private Label lblRole, lblClient, lblOrganisation, lblWarehouse, lblDate;
-	private WDateEditor lstDate;
-    private Button btnOk, btnCancel;
+	protected Combobox lstRole, lstClient, lstOrganisation, lstWarehouse;
+	protected Label lblRole, lblClient, lblOrganisation, lblWarehouse, lblDate;
+	protected WDateEditor lstDate;
+	protected Button btnOk, btnCancel;
 
     /** Context					*/
-    private Properties      m_ctx;
+	protected Properties      m_ctx;
     /** Username					*/
-    private String			m_userName;
+	protected String			m_userName;
     /** Password					*/
-    private KeyNamePair[]	m_clientKNPairs;
+	protected KeyNamePair[]	m_clientKNPairs;
     
-    private UserPreference m_userpreference=null;
+	protected UserPreference m_userpreference=null;
 
-	private boolean m_show = true;
+	protected boolean m_show = true;
 
     public RolePanel(Properties ctx, LoginWindow loginWindow, String userName, boolean show, KeyNamePair[] clientsKNPairs) {
     	this.wndLogin = loginWindow;
@@ -138,7 +138,11 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     private void init()
     {
     	Clients.response(new AuScript("zAu.cmd0.clearBusy()"));
-    	Div div = new Div();
+    	createUI();
+    }
+
+	protected void createUI() {
+		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
     	Label label = new Label("Login");
     	label.setSclass(ITheme.LOGIN_BOX_HEADER_TXT_CLASS);
@@ -236,7 +240,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         pnlButtons.getButton(ConfirmPanel.A_CANCEL).setSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
         this.appendChild(div);
-    }
+	}
 
     private void initComponents()
     {

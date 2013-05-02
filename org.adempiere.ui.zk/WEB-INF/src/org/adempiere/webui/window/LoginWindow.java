@@ -59,12 +59,12 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 	 */
 	private static final long serialVersionUID = -5169830531440825871L;
 
-	private IWebClient app;
-    private Properties ctx;
-    private LoginPanel pnlLogin;
-    private ResetPasswordPanel pnlResetPassword;
-    private ChangePasswordPanel pnlChangePassword;
-    private RolePanel pnlRole;
+	protected IWebClient app;
+    protected Properties ctx;
+    protected LoginPanel pnlLogin;
+    protected ResetPasswordPanel pnlResetPassword;
+    protected ChangePasswordPanel pnlChangePassword;
+    protected RolePanel pnlRole;
 
     public LoginWindow() {}
 
@@ -82,30 +82,49 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 
     private void initComponents()
     {
-        pnlLogin = new LoginPanel(ctx, this);
+        createLoginPanel();
     }
+
+	protected void createLoginPanel() {
+		pnlLogin = new LoginPanel(ctx, this);
+	}
 
     public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
     {
-        pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs);
+        createRolePanel(userName, show, clientsKNPairs);
         this.getChildren().clear();
         this.appendChild(pnlRole);
     }
+
+	protected void createRolePanel(String userName, boolean show,
+			KeyNamePair[] clientsKNPairs) {
+		pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs);
+	}
     
     public void changePassword(String userName, String userPassword, boolean show, KeyNamePair[] clientsKNPairs)
     {
     	Clients.clearBusy();
-		pnlChangePassword = new ChangePasswordPanel(ctx, this, userName, userPassword, show, clientsKNPairs);
+		createChangePasswordPanel(userName, userPassword, show, clientsKNPairs);
         this.getChildren().clear();
         this.appendChild(pnlChangePassword);
     }
+
+	protected void createChangePasswordPanel(String userName,
+			String userPassword, boolean show, KeyNamePair[] clientsKNPairs) {
+		pnlChangePassword = new ChangePasswordPanel(ctx, this, userName, userPassword, show, clientsKNPairs);
+	}
     
     public void resetPassword(String userName, boolean noSecurityQuestion)
     {
-    	pnlResetPassword = new ResetPasswordPanel(ctx, this, userName, noSecurityQuestion);
+    	createResetPasswordPanel(userName, noSecurityQuestion);
         this.getChildren().clear();
         this.appendChild(pnlResetPassword);
     }
+
+	protected void createResetPasswordPanel(String userName,
+			boolean noSecurityQuestion) {
+		pnlResetPassword = new ResetPasswordPanel(ctx, this, userName, noSecurityQuestion);
+	}
 
     public void loginCompleted()
     {
@@ -114,7 +133,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 
     public void loginCancelled()
     {
-        pnlLogin = new LoginPanel(ctx, this);
+        createLoginPanel();
         this.getChildren().clear();
         this.appendChild(pnlLogin);
     }
