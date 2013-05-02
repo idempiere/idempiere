@@ -69,32 +69,32 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 
 	private static CLogger logger = CLogger.getCLogger(ResetPasswordPanel.class);
 	
-    private static final int MAX_RESET_PASSWORD_TRIES = 3; 
+	protected static final int MAX_RESET_PASSWORD_TRIES = 3; 
     protected static final int NO_OF_SECURITY_QUESTION = 5; 
     protected static final String SECURITY_QUESTION_PREFIX = "SecurityQuestion_";
-    private static final String RESET_PASSWORD_MAIL_TEXT_NAME = "Reset Password";
+    protected static final String RESET_PASSWORD_MAIL_TEXT_NAME = "Reset Password";
 
-    private LoginWindow wndLogin;
+    protected LoginWindow wndLogin;
 
     /** Context					*/
-    private Properties      m_ctx;
+    protected Properties      m_ctx;
     /** Username				*/
-    private String			m_userName;
+    protected String			m_userName;
     /** No Security Question	*/
-    private boolean 		m_noSecurityQuestion;
+    protected boolean 		m_noSecurityQuestion;
     /** Tries Counter			*/
-    private int				counter;
+    protected int				counter;
     /** EMail Login preference  */
-    boolean m_email_login = false;
+    protected boolean m_email_login = false;
 	
-    private Label lblSecurityQuestion;
-    private Label lblAnswer;
-    private Label lblUserId;
-    private Label lblEmail;
-    private Textbox txtSecurityQuestion;
-    private Textbox txtAnswer;
-    private Textbox txtUserId;
-    private Textbox txtEmail;
+    protected Label lblSecurityQuestion;
+    protected Label lblAnswer;
+    protected Label lblUserId;
+    protected Label lblEmail;
+    protected Textbox txtSecurityQuestion;
+    protected Textbox txtAnswer;
+    protected Textbox txtUserId;
+    protected Textbox txtEmail;
     
     public ResetPasswordPanel(Properties ctx, LoginWindow loginWindow, String userName, boolean noSecurityQuestion) 
     {
@@ -107,13 +107,18 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
         initComponents();
         init();
         this.setId("resetPasswordPanel");
+        this.setSclass("login-box");
         
         loadData();
     }
 
     private void init()
     {
-    	Div div = new Div();
+    	createUI();
+    }
+
+	protected void createUI() {
+		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
     	Label label = new Label(Msg.getMsg(m_ctx, "ForgotMyPassword"));
     	label.setSclass(ITheme.LOGIN_BOX_HEADER_TXT_CLASS);
@@ -207,7 +212,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
         pnlButtons.getButton(ConfirmPanel.A_CANCEL).setSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
         this.appendChild(div);
-    }
+	}
 
     private void initComponents()
     {
@@ -270,7 +275,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     	}
     }
     
-    private void loadSecurityQuestion()
+    protected void loadSecurityQuestion()
     {
     	String email = txtEmail.getValue();
     	String userid = txtUserId.getValue();
@@ -321,7 +326,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
         }
     }
     
-    private void validateEmail()
+    protected void validateEmail()
     {
     	String email = txtEmail.getValue();
     	String userid = txtUserId.getValue();
@@ -351,7 +356,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 		loadSecurityQuestion();
     }
     
-    private void validateResetPassword()
+    protected void validateResetPassword()
     {
     	String email = txtEmail.getValue();
     	String userid = txtUserId.getValue();
@@ -485,7 +490,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     	}    	
     }
     
-    private boolean sendEmail(MUser to, String newPassword)
+    protected boolean sendEmail(MUser to, String newPassword)
     {
     	MClient client = MClient.get(m_ctx, to.getAD_Client_ID());
     	

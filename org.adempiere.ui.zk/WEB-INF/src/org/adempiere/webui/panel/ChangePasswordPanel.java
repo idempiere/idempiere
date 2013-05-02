@@ -61,28 +61,28 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
 
 	private static CLogger logger = CLogger.getCLogger(ChangePasswordPanel.class);
 
-    private LoginWindow wndLogin;
+    protected LoginWindow wndLogin;
 
     /** Context					*/
-    private Properties      m_ctx;
+    protected Properties      m_ctx;
     /** Username					*/
-    private String			m_userName;
+    protected String			m_userName;
     /** Password					*/
-    private String			m_userPassword;
-    private KeyNamePair[]	m_clientKNPairs;
+    protected String			m_userPassword;
+    protected KeyNamePair[]	m_clientKNPairs;
 
-	private boolean m_show = true;
+    protected boolean m_show = true;
 	
-    private Label lblOldPassword;
-    private Label lblNewPassword;
-    private Label lblRetypeNewPassword;
-    private Label lblSecurityQuestion;
-    private Label lblAnswer;
-    private Combobox lstSecurityQuestion;
-    private Textbox txtOldPassword;
-    private Textbox txtNewPassword;
-    private Textbox txtRetypeNewPassword;
-    private Textbox txtAnswer;
+    protected Label lblOldPassword;
+    protected Label lblNewPassword;
+    protected Label lblRetypeNewPassword;
+    protected Label lblSecurityQuestion;
+    protected Label lblAnswer;
+    protected Combobox lstSecurityQuestion;
+    protected Textbox txtOldPassword;
+    protected Textbox txtNewPassword;
+    protected Textbox txtRetypeNewPassword;
+    protected Textbox txtAnswer;
 
     public ChangePasswordPanel(Properties ctx, LoginWindow loginWindow, String userName, String userPassword, boolean show, KeyNamePair[] clientsKNPairs) 
     {
@@ -96,11 +96,16 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         initComponents();
         init();
         this.setId("changePasswordPanel");
+        this.setSclass("login-box");        
     }
 
     private void init()
     {
-    	Div div = new Div();
+    	createUI();
+    }
+
+	protected void createUI() {
+		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
     	Label label = new Label(Msg.getMsg(m_ctx, "ChangePassword"));
     	label.setSclass(ITheme.LOGIN_BOX_HEADER_TXT_CLASS);
@@ -195,7 +200,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         pnlButtons.getButton(ConfirmPanel.A_CANCEL).setSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
         this.appendChild(div);
-    }
+	}
 
     private void initComponents()
     {
