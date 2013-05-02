@@ -86,6 +86,8 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	{
 		try
 		{
+			m_WindowNo = form.getWindowNo();
+			
 			dynInit();
 			zkInit();
 			Borderlayout contentLayout = new Borderlayout();

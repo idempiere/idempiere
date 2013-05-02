@@ -93,6 +93,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	{
 		try
 		{
+			m_WindowNo = form.getWindowNo();
 			preInit();
 			jbInit ();
 			action_loadTree();

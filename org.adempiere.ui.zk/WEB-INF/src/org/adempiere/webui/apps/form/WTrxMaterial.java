@@ -106,6 +106,7 @@ public class WTrxMaterial extends TrxMaterial
 		log.info("");
 		try
 		{
+			m_WindowNo = form.getWindowNo();
 			dynParameter();
 			zkInit();
 			dynInit();			

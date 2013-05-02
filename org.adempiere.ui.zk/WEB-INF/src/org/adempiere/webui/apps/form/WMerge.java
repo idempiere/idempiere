@@ -86,6 +86,9 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 	 */
 	public WMerge()
 	{
+		form = new WMergeUI(this);
+		m_WindowNo = form.getWindowNo();
+		
 		log.info( "VMerge.init - WinNo=" + m_WindowNo);
 		try
 		{
@@ -148,7 +151,6 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 	 */
 	void zkInit () throws Exception
 	{
-		form = new WMergeUI(this);		
 		form.appendChild (mainLayout);
 		mainLayout.setHeight("100%");
 		mainLayout.setWidth("100%");
