@@ -13,6 +13,7 @@
 
 package org.adempiere.webui.part;
 
+import org.adempiere.webui.adwindow.ADWindowContent.ADWindowVlayout;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.wf.WFPanel;
 import org.adempiere.webui.component.Tab;
@@ -30,8 +31,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SwipeEvent;
-import org.zkoss.zul.Anchorlayout;
-import org.zkoss.zul.Vlayout;
 
 /**
  * 
@@ -152,9 +151,8 @@ public class WindowContainer extends AbstractUIPart
 					handler.onSelect();
 				}
 				
-				if (component instanceof Vlayout || component instanceof ADForm || component instanceof ProcessDialog
-						|| component instanceof InfoPanel || component instanceof Anchorlayout 
-						|| component instanceof WFPanel || component instanceof WTask)
+				if (component instanceof ADWindowVlayout || component instanceof ADForm || component instanceof ProcessDialog 
+						|| component instanceof InfoPanel || component instanceof WFPanel || component instanceof WTask)
 					Events.sendEvent(new Event(ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, component));
 				else
 					SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);

@@ -67,6 +67,12 @@ public interface IDesktop extends UIPart {
 	 * @return boolean
 	 */
 	public boolean closeActiveWindow();
+	
+	/**
+	 * get active window
+	 * @return Component
+	 */
+	public Component getActiveWindow();
 
 	/**
 	 *
