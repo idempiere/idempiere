@@ -33,6 +33,7 @@ import org.adempiere.webui.util.TreeUtils;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -243,19 +244,23 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         		MTreeNode mNode = (MTreeNode) sNode.getData();
         		treeValues[i] = mNode.getName();
         		treeDescription[i] = mNode.getDescription();
-        		String imagePath = mNode.getImagePath(); 
-        		if (imagePath != null)
+        		String indicator = mNode.getImageIndiactor();
+        		if (!Util.isEmpty(indicator) || mNode.isSummary())
         		{
-        			if (imagePath.startsWith("/images"))
-        			{
-        				imagePath = ThemeManager.getThemeResource(imagePath.substring(1));
-        			}
-        			else if (imagePath.startsWith("images"))
-        			{
-        				imagePath = ThemeManager.getThemeResource(imagePath);
-        			}
+	        		String imagePath = mNode.getImagePath(); 
+	        		if (imagePath != null)
+	        		{
+	        			if (imagePath.startsWith("/images"))
+	        			{
+	        				imagePath = ThemeManager.getThemeResource(imagePath.substring(1));
+	        			}
+	        			else if (imagePath.startsWith("images"))
+	        			{
+	        				imagePath = ThemeManager.getThemeResource(imagePath);
+	        			}
+	        		}
+	       			treeImages[i] = imagePath != null ? imagePath.intern() : null;
         		}
-       			treeImages[i] = imagePath != null ? imagePath.intern() : null;
         	}
         }
 
