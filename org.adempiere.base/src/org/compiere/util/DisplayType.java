@@ -50,12 +50,16 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIME;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_URL;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_YES_NO;
 
+import org.adempiere.base.IDisplayTypeFactory;
+import org.adempiere.base.Service;
+
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.logging.Level;
+import java.util.List;
 
 /**
  *	System Display Types.
@@ -184,6 +188,13 @@ public final class DisplayType
 			|| displayType == Account || displayType == Assignment || displayType == PAttribute
 			|| displayType == Image || displayType == Color)
 			return true;
+		
+		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
+		for(IDisplayTypeFactory factory : factoryList){
+			if(factory.isID(displayType))
+				return true;
+		}
+		
 		return false;
 	}	//	isID
 
@@ -198,6 +209,13 @@ public final class DisplayType
 		if (displayType == Amount || displayType == Number || displayType == CostPrice
 			|| displayType == Integer || displayType == Quantity)
 			return true;
+		
+		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
+		for(IDisplayTypeFactory factory : factoryList){
+			if(factory.isNumeric(displayType))
+				return true;
+		}
+		
 		return false;
 	}	//	isNumeric
 
@@ -216,6 +234,14 @@ public final class DisplayType
 		if (displayType == CostPrice
 			|| displayType == Quantity)
 			return 4;
+		
+		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
+		for(IDisplayTypeFactory factory : factoryList){
+			if(factory.getDefaultPrecision(displayType) != null)
+				return factory.getDefaultPrecision(displayType).intValue();
+				
+		}
+		
 		return 0;
 	}	//	getDefaultPrecision
 
@@ -232,6 +258,12 @@ public final class DisplayType
 			|| displayType == FilePath || displayType == FileName
 			|| displayType == URL || displayType == PrinterName)
 			return true;
+		
+		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
+		for(IDisplayTypeFactory factory : factoryList){
+			if(factory.isText(displayType))
+				return true;
+		}
 		return false;
 	}	//	isText
 
@@ -245,6 +277,13 @@ public final class DisplayType
 	{
 		if (displayType == Date || displayType == DateTime || displayType == Time)
 			return true;
+		
+		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
+		for(IDisplayTypeFactory factory : factoryList){
+			if(factory.isDate(displayType))
+				return true;
+		}
+		
 		return false;
 	}	//	isDate
 
@@ -259,6 +298,13 @@ public final class DisplayType
 		if (displayType == List || displayType == Table
 			|| displayType == TableDir || displayType == Search)
 			return true;
+		
+		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
+		for(IDisplayTypeFactory factory : factoryList){
+			if(factory.isLookup(displayType))
+				return true;				
+		}
+		
 		return false;
 	}	//	isLookup
 
@@ -272,6 +318,13 @@ public final class DisplayType
 		if (displayType == Binary
 			|| displayType == TextLong)
 			return true;
+		
+		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
+		for(IDisplayTypeFactory factory : factoryList){
+			if(factory.isLOB(displayType))
+				return true;				
+		}
+		
 		return false;
 	}	//	isLOB
 
@@ -327,8 +380,16 @@ public final class DisplayType
 			format.setMaximumFractionDigits(MAX_FRACTION);
 			format.setMinimumFractionDigits(AMOUNT_FRACTION);
 		}
-		else //	if (displayType == Number)
+		else
 		{
+			List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
+			for(IDisplayTypeFactory factory : factoryList){
+				DecimalFormat osgiFormat = factory.getNumberFormat(displayType, myLanguage, pattern);
+				if(osgiFormat!=null){
+					return osgiFormat;
+				}
+			}
+			
 			format.setMaximumIntegerDigits(MAX_DIGITS);
 			format.setMaximumFractionDigits(MAX_FRACTION);
 			format.setMinimumFractionDigits(1);
@@ -426,6 +487,15 @@ public final class DisplayType
 			return myLanguage.getDateTimeFormat();
 		else if (displayType == Time)
 			return myLanguage.getTimeFormat();
+		else{
+			List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
+			for(IDisplayTypeFactory factory : factoryList){
+				SimpleDateFormat osgiFormat = factory.getDateFormat(displayType, myLanguage, pattern);
+				if(osgiFormat!=null)
+					return osgiFormat;
+			}
+		}
+		
 	//	else if (displayType == Date)
 		return myLanguage.getDateFormat();		//	default
 	}	//	getDateFormat
@@ -476,6 +546,15 @@ public final class DisplayType
 			return String.class;
 		else if (isLOB(displayType))	//	CLOB is String
 			return byte[].class;
+		else
+		{
+			List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
+			for(IDisplayTypeFactory factory : factoryList){
+				Class<?> osgiClass = factory.getClass(displayType, yesNoAsBoolean); 
+				if(osgiClass!=null)
+					return osgiClass;
+			}
+		}
 		//
 		return Object.class;
 	}   //  getClass
@@ -542,6 +621,14 @@ public final class DisplayType
 			else
 				return "CHAR(" + fieldLength + ")";
 		}
+		
+		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
+		for(IDisplayTypeFactory factory : factoryList){
+			String osgiSQLDataType = factory.getSQLDataType(displayType, columnName, fieldLength);
+			if(osgiSQLDataType!=null)
+				return osgiSQLDataType;
+		}
+		
 		if (!DisplayType.isText(displayType))
 			s_log.severe("Unhandled Data Type = " + displayType);
 
@@ -621,6 +708,14 @@ public final class DisplayType
 			return "PrinterName";
 		if (displayType == Payment)
 			return "Payment";
+		
+		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
+		for(IDisplayTypeFactory factory : factoryList){
+			String osgiDescription = factory.getDescription(displayType);
+			if(osgiDescription!=null)
+				return osgiDescription;
+		}
+		
 		//
 		return "UNKNOWN DisplayType=" + displayType;
 	}	//	getDescription
