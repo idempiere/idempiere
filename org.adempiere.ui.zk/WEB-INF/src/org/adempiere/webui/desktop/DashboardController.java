@@ -33,7 +33,6 @@ import org.adempiere.webui.apps.graph.WPerformanceDetail;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.dashboard.DashboardRunnable;
-import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -48,7 +47,6 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MSysConfig;
-import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -104,8 +102,6 @@ public class DashboardController implements EventListener<Event> {
         maximizedHolder = new Anchorchildren();                
         maximizedHolder.setAnchor("100% 100%");
         maximizedHolder.setStyle("overflow: hidden; border: none; margin: 0; padding: 0;");
-        
-        dashboardLayout.addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 	}
 	
 	public void render(Component parent, IDesktop desktopImpl, boolean isShowInDashboard) {
@@ -489,9 +485,6 @@ public class DashboardController implements EventListener<Event> {
     					logger.log(Level.SEVERE, "Failed to save dashboard preference " + preference.toString());
     			}
     		}
-		}
-		else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT)) {
-    		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
 		}
 	}
 	

@@ -33,11 +33,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
-import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
-import org.adempiere.webui.apps.ProcessDialog;
-import org.adempiere.webui.apps.wf.WFPanel;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.WListItemRenderer;
@@ -52,7 +49,6 @@ import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.part.ITabOnSelectHandler;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.window.WTask;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.I_A_Asset;
@@ -75,18 +71,15 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuEcho;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Anchorlayout;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Paging;
-import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.ext.Sortable;
 
@@ -1324,35 +1317,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         if (Window.MODE_EMBEDDED.equals(getAttribute(Window.MODE_KEY)))
         	SessionManager.getAppDesktop().closeActiveWindow();
         else
-        {
-        	if (getWindowNo() > 0)
-        	{
-        		Object window = SessionManager.getAppDesktop().findWindow(getWindowNo());
-        		Component component = null;
-        		if (window instanceof ADWindow)
-        		{
-        			ADWindow w = (ADWindow) window;
-        			component = w.getADWindowContent().getComponent();
-        		}
-        		else if (window instanceof ADForm || window instanceof ProcessDialog || window instanceof InfoPanel 
-        				|| window instanceof WFPanel || window instanceof WTask)
-        		{
-        			component = (Component) window;
-        		}
-        		
-        		if (component != null && 
-        				(component instanceof Vlayout || component instanceof ADForm || component instanceof ProcessDialog
-						|| component instanceof InfoPanel || component instanceof Anchorlayout 
-						|| component instanceof WFPanel || component instanceof WTask))
-        			Events.sendEvent(new Event(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, component));
-        		else
-					SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
-        	}
-        	else
-        		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
-        	
 	        this.detach();
-        }
     }   //  dispose
 
 	public void sort(Comparator<Object> cmpr, boolean ascending) {

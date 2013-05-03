@@ -210,7 +210,7 @@ public class ADWindowContent extends AbstractADWindowContent
 		}
 	}
 	
-	static class ADWindowVlayout extends Vlayout {
+	public static class ADWindowVlayout extends Vlayout {
 		/**
 		 * generated serial id
 		 */
