@@ -249,7 +249,7 @@ public class WFEditor extends ADForm {
 		w.doHighlighted();				
 	}
 
-	void reload(int workflowId, boolean reread) {
+	protected void reload(int workflowId, boolean reread) {
 		center.removeChild(table);
 		createTable();
 		center.appendChild(table);
