@@ -55,7 +55,7 @@ public class ZkFixture extends SpiderFixture {
 			}
 		}
 
-		ensureBecomes(new PollForWithError() {
+		ensureMatchesNoException(new PollForWithError() {
 			@Override
 			public boolean matches() {
 				//search again to avoid StaleElementReferenceException
