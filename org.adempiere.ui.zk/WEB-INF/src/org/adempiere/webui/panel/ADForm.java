@@ -39,7 +39,7 @@ import org.zkoss.zk.ui.event.EventListener;
  *
  * @author Andrew Kimball
  */
-public abstract class ADForm extends Window implements EventListener<Event>
+public abstract class ADForm extends Window implements EventListener<Event>, IHelpContext
 {
 	/**
 	 *

@@ -13,18 +13,13 @@
 
 package org.adempiere.webui.part;
 
-import org.adempiere.webui.adwindow.ADWindowContent.ADWindowVlayout;
-import org.adempiere.webui.apps.ProcessDialog;
-import org.adempiere.webui.apps.wf.WFPanel;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
-import org.adempiere.webui.panel.ADForm;
-import org.adempiere.webui.panel.InfoPanel;
+import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.window.WTask;
 import org.compiere.model.X_AD_CtxHelp;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -151,8 +146,7 @@ public class WindowContainer extends AbstractUIPart
 					handler.onSelect();
 				}
 				
-				if (component instanceof ADWindowVlayout || component instanceof ADForm || component instanceof ProcessDialog 
-						|| component instanceof InfoPanel || component instanceof WFPanel || component instanceof WTask)
+				if (component instanceof IHelpContext)
 					Events.sendEvent(new Event(ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, component));
 				else
 					SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);

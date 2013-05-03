@@ -28,6 +28,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
@@ -101,7 +102,7 @@ import com.lowagie.text.pdf.PdfWriter;
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
  */
-public class ProcessDialog extends Window implements EventListener<Event>, IProcessUI
+public class ProcessDialog extends Window implements EventListener<Event>, IProcessUI, IHelpContext
 {
 	/**
 	 * generate serial version ID
