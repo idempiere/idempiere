@@ -150,6 +150,8 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			}
 
 		};
+		
+		m_WindowNo = form.getWindowNo();
 	}
 	
 	/**

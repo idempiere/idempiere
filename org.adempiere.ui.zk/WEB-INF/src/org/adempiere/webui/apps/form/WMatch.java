@@ -84,6 +84,7 @@ public class WMatch extends Match
 	 */
 	public WMatch()
 	{
+		m_WindowNo = form.getWindowNo();
 		log.info("WinNo=" + m_WindowNo
 			+ " - AD_Client_ID=" + m_AD_Client_ID + ", AD_Org_ID=" + m_AD_Org_ID + ", By=" + m_by);
 		Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", "N");

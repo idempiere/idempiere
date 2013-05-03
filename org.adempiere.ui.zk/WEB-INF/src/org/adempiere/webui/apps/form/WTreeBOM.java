@@ -101,6 +101,7 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 	
 	public WTreeBOM(){
 		try{
+			m_WindowNo = m_frame.getWindowNo();
 			preInit();
 			jbInit ();
 		}

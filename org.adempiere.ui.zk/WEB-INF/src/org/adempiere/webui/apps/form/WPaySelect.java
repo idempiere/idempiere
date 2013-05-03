@@ -119,6 +119,8 @@ public class WPaySelect extends PaySelect
 	{
 		try
 		{
+			m_WindowNo = form.getWindowNo();
+			
 			zkInit();
 			dynInit();
 			

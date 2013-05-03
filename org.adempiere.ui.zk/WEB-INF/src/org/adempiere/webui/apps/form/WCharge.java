@@ -178,6 +178,7 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
     public WCharge()
     {
         super();
+        m_WindowNo = form.getWindowNo();
         initForm();
     }
 
