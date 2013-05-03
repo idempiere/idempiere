@@ -189,9 +189,12 @@ public class ReportAction implements EventListener<Event>
 		else if(event.getTarget() == chkExport)
 			cboExportType.setVisible(chkExport.isChecked());
 		else if (event.getName().equals("onValidate")) {
-			validate();
-			Clients.clearBusy();
-			panel.getComponent().invalidate();
+			try {
+				validate();
+			} finally {
+				Clients.clearBusy();
+				panel.getComponent().invalidate();
+			}
 		}
 	}
 	
