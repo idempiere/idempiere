@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.compiere.Adempiere;
+import org.compiere.model.I_AD_EntityType;
 import org.compiere.model.I_AD_Form;
 import org.compiere.model.I_AD_ImpFormat;
 import org.compiere.model.I_AD_Menu;
@@ -189,6 +190,8 @@ public class PackOutProcess extends SvrProcess
 			return I_AD_Workflow.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_ModelValidator.equals(type))
 			return I_AD_ModelValidator.Table_Name;
+		else if (X_AD_Package_Exp_Detail.TYPE_EntityType.equals(type))
+			return I_AD_EntityType.Table_Name;
 		return type;
 	}
 

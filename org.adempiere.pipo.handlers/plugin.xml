@@ -180,6 +180,14 @@
             class="org.adempiere.pipo2.handler.ModelValidatorElementHandler"
             id="AD_ModelValidator">
       </handler>
+      <handler
+            class="org.adempiere.pipo2.handler.EntityTypeElementHandler"
+            id="AD_EntityType">
+      </handler>
+      <handler
+            class="org.adempiere.pipo2.handler.ModificationElementHandler"
+            id="AD_Modification">
+      </handler>
    </extension>
 
 </plugin>
