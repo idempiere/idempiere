@@ -538,7 +538,7 @@ public class MBPartner extends X_C_BPartner
 		if (AD_OrgBP_ID == 0)
 			super.setAD_OrgBP_ID (null);
 		else
-			super.setAD_OrgBP_ID (String.valueOf(AD_OrgBP_ID));
+			super.set_Value("AD_OrgBP_ID", AD_OrgBP_ID);
 	}	//	setAD_OrgBP_ID
 	
 	/** 
