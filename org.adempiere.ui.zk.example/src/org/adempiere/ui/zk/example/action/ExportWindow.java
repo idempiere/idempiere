@@ -173,7 +173,11 @@ public class ExportWindow extends Window implements EventListener<Event> {
 				childs.add(adTabPanel.getGridTab());
 			}
 
-			exporter.export(panel.getActiveGridTab(), childs, currentRowOnly, file);
+			int indxDetailSelected = 0;
+			if( adTab.getSelectedDetailADTabpanel()!=null )
+				indxDetailSelected = adTab.getSelectedDetailADTabpanel().getGridTab().getTabNo();
+			
+			exporter.export(panel.getActiveGridTab(), childs, currentRowOnly,file,indxDetailSelected);
 
 			onClose();
 			AMedia media = null;
