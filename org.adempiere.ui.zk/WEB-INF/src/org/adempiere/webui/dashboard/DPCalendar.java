@@ -380,6 +380,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	private void btnCurrentDateClicked() {
 		calendars.setCurrentDate(Calendar.getInstance(calendars.getDefaultTimeZone()).getTime());
 		updateDateLabel();
+		updateUI();
 	}
 
 	private void divArrowClicked(boolean isNext) {
@@ -388,6 +389,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 		else
 			calendars.previousPage();
 		updateDateLabel();
+		updateUI();
 	}
 	
 	@Override
