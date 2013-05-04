@@ -32,7 +32,7 @@ public interface IGridTabExporter {
 	 * @param isCurrentRowOnly
 	 * @param file
 	 */
-	public void export(GridTab gridTab, List<GridTab> childs, boolean isCurrentRowOnly, File file);
+	public void export(GridTab gridTab, List<GridTab> childs, boolean isCurrentRowOnly, File file, int indxDetailSelected);
 
 	/**
 	 * @return file extension

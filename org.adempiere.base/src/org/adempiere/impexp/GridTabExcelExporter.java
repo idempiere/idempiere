@@ -153,7 +153,7 @@ public class GridTabExcelExporter extends AbstractExcelExporter implements IGrid
 	}
 
 	@Override
-	public void export(GridTab gridTab, List<GridTab> childs, boolean currentRowOnly, File file) {
+	public void export(GridTab gridTab, List<GridTab> childs, boolean currentRowOnly, File file,int indxDetailSelected) {
 		m_tab = gridTab;
 		setCurrentRowOnly(currentRowOnly);
 		try {

@@ -205,8 +205,12 @@ public class ExportAction implements EventListener<Event>
 				tables.add(tableName);
 				childs.add(adTabPanel.getGridTab());
 			}
-
-			exporter.export(panel.getActiveGridTab(), childs, currentRowOnly, file);
+			
+			int indxDetailSelected = 0;
+			if( adTab.getSelectedDetailADTabpanel()!=null )
+				indxDetailSelected = adTab.getSelectedDetailADTabpanel().getGridTab().getTabNo();
+			
+			exporter.export(panel.getActiveGridTab(), childs, currentRowOnly,file,indxDetailSelected);
 
 			winExportFile.onClose();
 			winExportFile = null;

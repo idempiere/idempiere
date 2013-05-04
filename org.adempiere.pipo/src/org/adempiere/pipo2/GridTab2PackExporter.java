@@ -43,7 +43,7 @@ public class GridTab2PackExporter implements IGridTabExporter {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void export(GridTab gridTab, List<GridTab> childs, boolean currentRowOnly, File file) {
+	public void export(GridTab gridTab, List<GridTab> childs, boolean currentRowOnly, File file,int indxDetailSelected) {
 		String tableName = gridTab.getTableName();
 		PackOut packOut = new PackOut();
 		packOut.setCtx(Env.getCtx());
