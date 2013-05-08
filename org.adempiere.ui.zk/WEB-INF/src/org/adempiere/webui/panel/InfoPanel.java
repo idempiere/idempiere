@@ -93,7 +93,7 @@ import org.zkoss.zul.ext.Sortable;
  * @author Elaine
  * @version	Info.java Adempiere Swing UI 3.4.1
  */
-public abstract class InfoPanel extends Window implements EventListener<Event>, WTableModelListener, Sortable<Object>
+public abstract class InfoPanel extends Window implements EventListener<Event>, WTableModelListener, Sortable<Object>, IHelpContext
 {
 
 	/**

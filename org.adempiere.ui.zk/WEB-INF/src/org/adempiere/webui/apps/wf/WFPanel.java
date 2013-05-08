@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.apps.wf.WFGraphLayout;
@@ -46,7 +47,7 @@ import org.zkoss.zul.Html;
  *
  * 	@author Low Heng Sin
  */
-public class WFPanel extends Borderlayout implements EventListener<Event>
+public class WFPanel extends Borderlayout implements EventListener<Event>, IHelpContext
 {
 	/**
 	 * 

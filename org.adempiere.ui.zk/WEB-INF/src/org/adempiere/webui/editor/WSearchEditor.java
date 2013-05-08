@@ -31,10 +31,7 @@ import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.IFieldEditorContainer;
-import org.adempiere.webui.adwindow.ADWindowContent.ADWindowVlayout;
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.apps.ProcessDialog;
-import org.adempiere.webui.apps.wf.WFPanel;
 import org.adempiere.webui.component.Searchbox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
@@ -44,13 +41,12 @@ import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.grid.WQuickEntry;
-import org.adempiere.webui.panel.ADForm;
+import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
-import org.adempiere.webui.window.WTask;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
@@ -572,8 +568,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			@Override
 			public void onEvent(Event event) throws Exception {
 				Component component = SessionManager.getAppDesktop().getActiveWindow();
-				if (component instanceof ADWindowVlayout || component instanceof ADForm || component instanceof ProcessDialog 
-						|| component instanceof InfoPanel || component instanceof WFPanel || component instanceof WTask)
+				if (component instanceof IHelpContext)
 					Events.sendEvent(new Event(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, component));
 				else
 					SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);

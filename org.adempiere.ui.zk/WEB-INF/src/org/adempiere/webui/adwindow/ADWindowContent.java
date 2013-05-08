@@ -28,6 +28,7 @@ import java.util.Properties;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
@@ -210,7 +211,7 @@ public class ADWindowContent extends AbstractADWindowContent
 		}
 	}
 	
-	public static class ADWindowVlayout extends Vlayout {
+	public static class ADWindowVlayout extends Vlayout implements IHelpContext {
 		/**
 		 * generated serial id
 		 */

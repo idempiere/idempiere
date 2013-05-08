@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.OSTask;
@@ -48,7 +49,7 @@ import org.zkoss.zul.Html;
  *
  *  @author Low Heng Sin
  */
-public class WTask extends Window implements EventListener<Event>
+public class WTask extends Window implements EventListener<Event>, IHelpContext
 {
 	/**
 	 *
