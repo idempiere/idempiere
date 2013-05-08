@@ -295,13 +295,13 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         final int valueFieldColumns = 10;
 
         // top row
-        m_lblValue.setValue(Msg.translate(Env.getCtx(), EColumn.VALUE.title()));
+        m_lblValue.setValue(Msg.getElement(Env.getCtx(), EColumn.VALUE.title()));
         m_txbValueField.setCols(valueFieldColumns);
         m_chbIsExpense.setChecked(true);
-        m_chbIsExpense.setLabel(Msg.getMsg(Env.getCtx(), EColumn.EXPENSE.title()));
+        m_chbIsExpense.setLabel(Msg.getElement(Env.getCtx(), EColumn.EXPENSE.title()));
 
         // bottom row
-        m_lblName.setValue(Msg.translate(Env.getCtx(), EColumn.NAME.title()));
+        m_lblName.setValue(Msg.getElement(Env.getCtx(), EColumn.NAME.title()));
         m_txbNameField.setCols(nameFieldColumns);
         m_btnNew.setLabel(Msg.getMsg(Env.getCtx(), AD_MESSAGE_CREATE) + " " + Util.cleanAmp(Msg.getMsg(Env.getCtx(), "New")));
         m_btnNew.addEventListener(Events.ON_CLICK, this);

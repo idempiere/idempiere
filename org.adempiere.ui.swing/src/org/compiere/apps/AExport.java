@@ -160,6 +160,6 @@ public class AExport
 			childs.add(gc.getMTab());
 		}
 
-		exporter.export(tab, childs, currentRowOnly, outFile);
+		exporter.export(tab, childs, currentRowOnly, outFile,0);
 	}
 }

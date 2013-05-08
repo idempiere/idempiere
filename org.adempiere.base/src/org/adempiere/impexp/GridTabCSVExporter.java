@@ -69,7 +69,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 	private static CLogger log = CLogger.getCLogger(GridTabCSVExporter.class);
 
 	@Override
-	public void export(GridTab gridTab, List<GridTab> childs, boolean currentRowOnly, File file) {
+	public void export(GridTab gridTab, List<GridTab> childs, boolean currentRowOnly, File file,int indxDetailSelected) {
 
 		ICsvMapWriter mapWriter = null;
 		Map<GridTab,GridField[]> tabMapDetails = new HashMap<GridTab, GridField[]>();
@@ -129,6 +129,9 @@ public class GridTabCSVExporter implements IGridTabExporter
 			  int specialDetDispayType = 0; 
 			  int numOfTabs=0;
 			  for(GridTab detail: childs){
+				 
+				 if(indxDetailSelected != detail.getTabNo())
+					continue;
 				  
 				 if(!detail.isDisplayed())
 					continue;

@@ -370,6 +370,9 @@ public class DataEngine
 						eSql = MLookupFactory.getLookup_TableDirEmbed(m_language, ColumnName, tableName);
 					}
 
+					if (Util.isEmpty(eSql)) { // No Identifier records found
+						eSql = lookupSQL;
+					}
 					//  DisplayColumn
 					String display = ColumnName;
 					//	=> (..) AS AName, Table.ID,

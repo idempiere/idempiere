@@ -214,6 +214,7 @@ public class Charge
 				MElementValue.ACCOUNTSIGN_Natural,
 				false, false, null);
 		ev.setAD_Org_ID(m_AD_Org_ID);
+		ev.setC_Element_ID(m_C_Element_ID);
 		if (!ev.save())
 			log.log(Level.WARNING, "C_ElementValue_ID not created");
 		return ev.getC_ElementValue_ID();

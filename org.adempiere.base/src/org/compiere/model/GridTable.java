@@ -2822,7 +2822,7 @@ public class GridTable extends AbstractTableModel
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql,get_TrxName());
 			rs = pstmt.executeQuery();
 			//	only one row
 			if (rs.next())
@@ -3681,7 +3681,7 @@ public class GridTable extends AbstractTableModel
 	    	String sql = "SELECT " + columns + " FROM " + m_tableName + " WHERE " + m_tableName + "_ID=?";
 	    	try
 	    	{
-	    		pstmt = DB.prepareStatement(sql, null);
+	    		pstmt = DB.prepareStatement(sql, get_TrxName());
 	    		pstmt.setInt(1, getKeyID(row));
 	    		rs = pstmt.executeQuery();
 	    		if (rs.next()) {
@@ -3717,9 +3717,13 @@ public class GridTable extends AbstractTableModel
 	    	if (hasProcessed) {
 				Boolean memProcessed = null;
 				memProcessed = (Boolean) getOldValue(row, colProcessed);
-				if (memProcessed == null)
-					memProcessed = (Boolean) getValueAt(row, colProcessed);
-		    	
+				if (memProcessed == null){
+					if(getValueAt(row, colProcessed) instanceof Boolean )
+					   memProcessed = (Boolean) getValueAt(row, colProcessed); 
+					else if (getValueAt(row, colProcessed) instanceof String )
+					   memProcessed = Boolean.valueOf((String)getValueAt(row, colProcessed)); 
+				}
+	    			
 				Boolean dbProcessed = Boolean.TRUE;
 				if (! dbProcessedS.equals("Y"))
 					dbProcessed = Boolean.FALSE;

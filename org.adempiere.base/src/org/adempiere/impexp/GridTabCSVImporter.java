@@ -459,12 +459,11 @@ public class GridTabCSVImporter implements IGridTabImporter
 
 									if(isInsertMode())
 									   logMsg = Msg.getMsg(Env.getCtx(), "Inserted")+" "+ po.toString();	
-									else
+									else{
 									   logMsg = Msg.getMsg(Env.getCtx(), "Updated")+" "+ po.toString(); 
-									
-									//if it's parent record and there are details, parent needs to be refreshed
-									if(currentGridTab.equals(gridTab) && sortedtTabMapIndexes.size()>1)
-									   currentGridTab.dataRefresh(false);
+									   if(currentGridTab.equals(gridTab) && sortedtTabMapIndexes.size()>1)
+										  currentGridTab.dataRefresh(true); 
+									}
 								} else {
 									ValueNamePair ppE = CLogger.retrieveWarning();
 									if (ppE==null)   
@@ -482,11 +481,17 @@ public class GridTabCSVImporter implements IGridTabImporter
 
 									if(currentGridTab.equals(gridTab) && masterRecord==null){
 									   isMasterok = false;
+									   rowResult.append("<"+currentGridTab.getTableName()+">: ");
+									   rowResult.append(logMsg);
+									   rowResult.append(" / ");
 									   break;
 								    }
 									
 									if(!currentGridTab.equals(gridTab) && masterRecord!=null){
 										isDetailok = false;
+										rowResult.append("<"+currentGridTab.getTableName()+">: ");
+										rowResult.append(logMsg);
+									    rowResult.append(" / ");
 										break;
 								    }
 								}
@@ -543,7 +548,6 @@ public class GridTabCSVImporter implements IGridTabImporter
 						  row =row.replaceAll("Inserted","RolledBack");
 					      logFileW.write(row);
 					  }   
-					  gridTab.dataRefreshAll();
 					}else{
 					  if(isThereDocAction){
 						 
@@ -581,13 +585,13 @@ public class GridTabCSVImporter implements IGridTabImporter
 					}   
 				   
 				    if(masterRecord!=null){
-				       gridTab.getTableModel().dataRequery(masterRecord.get_WhereClause(true),false,0,false);
-				       gridTab.navigateCurrent();
-					   gridTab.getTableModel().setImportingMode(false, null);
-					   
+				       gridTab.query(false);
+				       gridTab.getTableModel().setImportingMode(false,null);
 					   for(GridTab detail: childs)
-						   if(detail.getTableModel().isOpen())
+						   if(detail.getTableModel().isOpen()){
+							  detail.query(true);
 							  detail.getTableModel().setImportingMode(false,null);	
+						   }
 				    }					
 				    trx.close();
 					trx=null;	
@@ -1227,7 +1231,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 			}
 			if (isUpdateMode()){
 				if(gridTab.getTableModel().getRowCount()==1){
-				   gridTab.navigateRelative(gridTab.getCurrentRow());
+			       gridTab.navigateCurrent();
 				   return null;
 				}
 				else if(gridTab.getTableModel().getRowCount()<=0)
@@ -1237,7 +1241,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 			}
 		    if (isMergeMode()){
 			   if(gridTab.getTableModel().getRowCount()==1){
-				  gridTab.navigateRelative(gridTab.getCurrentRow());
+			      gridTab.navigateCurrent();
 				  m_import_mode = IMPORT_MODE_UPDATE;
 			   }else if(gridTab.getTableModel().getRowCount()<=0)
 				  m_import_mode = IMPORT_MODE_INSERT;

@@ -62,7 +62,7 @@ public class CopyFromJournalDoc extends SvrProcess
 		MJournal from = new MJournal (getCtx(), m_GL_Journal_ID, get_TrxName());
 		MJournal to = new MJournal (getCtx(), To_GL_Journal_ID, get_TrxName());
 		//
-		int no = to.copyLinesFrom(from, from.getDateAcct(), 'x');
+		int no = to.copyLinesFrom(from, to.getDateAcct(), 'x');
 		//
 		return "@Copied@=" + no;
 	}	//	doIt
