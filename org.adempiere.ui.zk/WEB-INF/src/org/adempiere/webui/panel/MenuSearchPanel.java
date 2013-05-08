@@ -34,11 +34,12 @@ public class MenuSearchPanel extends AbstractMenuPanel
 	 */
 	private static final long serialVersionUID = 5308522340852904168L;
 	
-	private MenuTreeSearchPanel pnlSearch;
+	protected MenuTreeSearchPanel pnlSearch;
     
     public MenuSearchPanel(Component parent)
     {
     	super(parent);
+    	this.setSclass("menu-search-panel-container");
     }
 
 	protected void init() 
@@ -70,12 +71,16 @@ public class MenuSearchPanel extends AbstractMenuPanel
     {
     	super.initComponents();
     	
-    	Toolbar toolbar = new Toolbar();
+    	createSearchPanel();
+    }
+
+	protected void createSearchPanel() {
+		Toolbar toolbar = new Toolbar();
         toolbar.setMold("panel");
         this.appendChild(toolbar);
         
         pnlSearch = new MenuTreeSearchPanel(getMenuTree());
         pnlSearch.setSclass("menu-search-panel");
         toolbar.appendChild(pnlSearch);
-    }
+	}
 }

@@ -10,7 +10,7 @@
 				</hbox>
 			</west>
 			<center sclass="desktop-header-right">
-				<vbox use="org.adempiere.webui.panel.UserPanel" height="100%" align="right"
+				<vbox apply="org.adempiere.webui.panel.UserPanel" height="100%" align="right"
 					style="position: absolute; text-align:right;" hflex="1" vflex="1"
 					sclass="desktop-user-panel">
 					<vbox>

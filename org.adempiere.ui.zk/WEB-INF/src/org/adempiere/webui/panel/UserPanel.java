@@ -22,7 +22,6 @@ import java.util.Properties;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Messagebox;
-import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.FeedbackManager;
 import org.adempiere.webui.window.WPreference;
@@ -32,12 +31,14 @@ import org.compiere.model.MRole;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
+import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Vbox;
+import org.zkoss.zul.impl.LabelImageElement;
 
 /**
  *
@@ -45,51 +46,48 @@ import org.zkoss.zul.Vbox;
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-public class UserPanel extends Vbox implements EventListener<Event>
+public class UserPanel implements EventListener<Event>, Composer<Component>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6605639697034780065L;
 
-	private Properties ctx;
+	protected Properties ctx;
 
-    private ToolBarButton logout = new ToolBarButton();
-    private ToolBarButton changeRole = new ToolBarButton();
-    private ToolBarButton preference = new ToolBarButton();
-    private ToolBarButton feedback = new ToolBarButton();
+	protected LabelImageElement logout;
+    protected LabelImageElement changeRole;
+    protected LabelImageElement preference;
+    protected LabelImageElement feedback;
 
-    private Label lblUserNameValue = new Label();
-	private WPreference preferencePopup;
+    protected Label lblUserNameValue = new Label();
+    protected WPreference preferencePopup;
 	
-	private Menupopup feedbackMenu;
+	protected Menupopup feedbackMenu;
+
+	protected Component component;
 
     public UserPanel()
     {
     	super();
         this.ctx = Env.getCtx();
-        addEventListener(Events.ON_CREATE, this);
     }
 
-    private void onCreate()
+    protected void onCreate()
     {
-    	lblUserNameValue = (Label) getFellow("loginUserAndRole");
+    	lblUserNameValue = (Label) component.getFellowIfAny("loginUserAndRole", true);
     	lblUserNameValue.setValue(getUserName() + "@" + getClientName() + "." + getOrgName()+"/"+this.getRoleName());
     	lblUserNameValue.addEventListener(Events.ON_CLICK, this);
 
-    	feedback = (ToolBarButton) getFellow("feedback");
+    	feedback = (LabelImageElement) component.getFellowIfAny("feedback", true);
     	feedback.setLabel(Msg.getMsg(Env.getCtx(), "Feedback"));
     	feedback.addEventListener(Events.ON_CLICK, this);
 
-    	preference = (ToolBarButton) getFellow("preference");
+    	preference = (LabelImageElement) component.getFellowIfAny("preference", true);
     	preference.setLabel(Msg.getMsg(Env.getCtx(), "Preference"));
     	preference.addEventListener(Events.ON_CLICK, this);
 
-    	changeRole = (ToolBarButton) getFellow("changeRole");
+    	changeRole = (LabelImageElement) component.getFellowIfAny("changeRole", true);
     	changeRole.setLabel(Msg.getMsg(Env.getCtx(), "changeRole"));
     	changeRole.addEventListener(Events.ON_CLICK, this);
 
-    	logout = (ToolBarButton) getFellow("logout");
+    	logout = (LabelImageElement) component.getFellowIfAny("logout", true);
     	logout.setLabel(Msg.getMsg(Env.getCtx(),"Logout"));
     	logout.addEventListener(Events.ON_CLICK, this);
     	
@@ -104,7 +102,7 @@ public class UserPanel extends Vbox implements EventListener<Event>
     	feedbackMenu.appendChild(mi);
     	
     	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
-    	addEventListener("onEmailSupport", this);
+    	component.addEventListener("onEmailSupport", this);
     }
 
     private String getUserName()
@@ -165,14 +163,14 @@ public class UserPanel extends Vbox implements EventListener<Event>
 				preferencePopup.detach();
 			}
 			preferencePopup = new WPreference();
-			preferencePopup.setPage(this.getPage());
+			preferencePopup.setPage(component.getPage());
 			preferencePopup.open(preference, "after_start");
 		}
 		else if (feedback == event.getTarget())
 		{
 			if (feedbackMenu.getPage() == null)
 			{
-				this.appendChild(feedbackMenu);
+				component.appendChild(feedbackMenu);
 			}
 			feedbackMenu.open(feedback, "after_start");
 		}
@@ -204,10 +202,11 @@ public class UserPanel extends Vbox implements EventListener<Event>
 				}
 			}
 		}
-		else if (Events.ON_CREATE.equals(event.getName()))
-		{
-			onCreate();
-		}
+	}
 
+	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+		this.component = comp;
+		onCreate();
 	}
 }

@@ -28,9 +28,9 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Popup;
+import org.zkoss.zul.impl.LabelImageElement;
 
 /**
  *
@@ -45,9 +45,9 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 {
 	private static final long serialVersionUID = -2351317624519209484L;
 
-	private Image image;
-	private Button btnMenu;
-	private Popup popMenu;
+	protected Image image;
+	protected LabelImageElement btnMenu;
+	protected Popup popMenu;
 
     public HeaderPanel()
     {
@@ -55,31 +55,39 @@ public class HeaderPanel extends Panel implements EventListener<Event>
         addEventListener(Events.ON_CREATE, this);
     }
 
-    private void onCreate()
+    protected void onCreate()
     {
     	image = (Image) getFellow("logo");
     	image.setSrc(ThemeManager.getSmallLogo());
     	image.addEventListener(Events.ON_CLICK, this);
     	image.setStyle("cursor: pointer;");
 
-    	MenuSearchPanel menuSearchPanel = new MenuSearchPanel(this);
-    	Component stub = getFellow("menuLookup");
-    	stub.getParent().insertBefore(menuSearchPanel, stub);
-    	stub.detach();
-    	menuSearchPanel.setId("menuLookup");
+    	createSearchPanel();
 
-    	popMenu = new Popup();
+    	createPopupMenu();
+
+    	btnMenu = (LabelImageElement) getFellow("menuButton");
+    	btnMenu.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")));
+    	btnMenu.addEventListener(Events.ON_CLICK, this);
+    }
+
+	protected void createPopupMenu() {
+		popMenu = new Popup();
     	popMenu.setId("menuTreePopup");
 		new MenuTreePanel(popMenu);
     	popMenu.setSclass("desktop-menu-popup");
     	popMenu.setHeight("90%");
     	popMenu.setWidth("600px");
     	popMenu.setPage(this.getPage());
+	}
 
-    	btnMenu = (Button) getFellow("menuButton");
-    	btnMenu.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")));
-    	btnMenu.addEventListener(Events.ON_CLICK, this);
-    }
+	protected void createSearchPanel() {
+		MenuSearchPanel menuSearchPanel = new MenuSearchPanel(this);
+    	Component stub = getFellow("menuLookup");
+    	stub.getParent().insertBefore(menuSearchPanel, stub);
+    	stub.detach();
+    	menuSearchPanel.setId("menuLookup");
+	}
 
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_CLICK.equals(event.getName())) {

@@ -144,7 +144,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	protected void createUI() {
 		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
-    	Label label = new Label("Login");
+    	Label label = new Label(Msg.getMsg(Env.getCtx(), "SelectRole"));
     	label.setSclass(ITheme.LOGIN_BOX_HEADER_TXT_CLASS);
     	div.appendChild(label);
     	this.appendChild(div);

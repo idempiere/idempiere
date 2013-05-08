@@ -46,9 +46,9 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8785295166415073971L;
-	private Toolbarbutton newBtn;
-	private Toolbarbutton openBtn;
-	private boolean isNew = false;
+	protected Toolbarbutton newBtn;
+	protected Toolbarbutton openBtn;
+	protected boolean isNew = false;
 
 	public MenuTreeSearchPanel(Tree tree, String event, int windowno, int tabno) {
 		super(tree, event, windowno, tabno);
@@ -71,22 +71,17 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
 		hlayout.setSpacing("0px");
 		hlayout.setSclass("menu-search-toggle-box");
 				
-		newBtn = new Toolbarbutton();
-		newBtn.setImage(ThemeManager.getThemeResource("images/New16.png"));
-		newBtn.setSclass("menu-search-toggle-off");
-		newBtn.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				newBtn.setDisabled(true);
-				newBtn.setSclass("menu-search-toggle-on");
-				isNew = true;
-				openBtn.setDisabled(false);
-				openBtn.setSclass("menu-search-toggle-off");
-				refreshAutoComplete();
-			}
-		});
-		newBtn.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "New")));
+		createNewButton();
 		
+		createOpenButton();
+		
+		hlayout.appendChild(newBtn);
+		hlayout.appendChild(openBtn);
+		
+		layout.insertBefore(hlayout, layout.getFirstChild());
+	}
+
+	protected void createOpenButton() {
 		openBtn = new Toolbarbutton();
 		openBtn.setImage(ThemeManager.getThemeResource("images/Open16.png"));
 		openBtn.setSclass("menu-search-toggle-on");
@@ -103,11 +98,24 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
 			}
 		});
 		openBtn.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Open")));
-		
-		hlayout.appendChild(newBtn);
-		hlayout.appendChild(openBtn);
-		
-		layout.insertBefore(hlayout, layout.getFirstChild());
+	}
+
+	protected void createNewButton() {
+		newBtn = new Toolbarbutton();
+		newBtn.setImage(ThemeManager.getThemeResource("images/New16.png"));
+		newBtn.setSclass("menu-search-toggle-off");
+		newBtn.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				newBtn.setDisabled(true);
+				newBtn.setSclass("menu-search-toggle-on");
+				isNew = true;
+				openBtn.setDisabled(false);
+				openBtn.setSclass("menu-search-toggle-off");
+				refreshAutoComplete();
+			}
+		});
+		newBtn.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "New")));
 	}
 	
 	@Override
@@ -131,7 +139,7 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
 		refreshAutoComplete();
 	}
 
-	private void refreshAutoComplete() {
+	protected void refreshAutoComplete() {
 		List<String> valueList = new ArrayList<String>();
 		List<String> descriptionList = new ArrayList<String>();
 		List<String> imageList = new ArrayList<String>();

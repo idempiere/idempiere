@@ -204,7 +204,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 	protected void createUI() {
 		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
-    	Label label = new Label("Login");
+    	Label label = new Label(Msg.getMsg(Env.getCtx(), "Login"));
     	label.setSclass(ITheme.LOGIN_BOX_HEADER_TXT_CLASS);
     	div.appendChild(label);
     	this.appendChild(div);
