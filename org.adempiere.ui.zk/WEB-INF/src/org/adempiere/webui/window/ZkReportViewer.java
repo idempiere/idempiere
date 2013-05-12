@@ -822,7 +822,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			winExportFile = new Window();
 			winExportFile.setTitle(Msg.getMsg(Env.getCtx(), "Export") + ": " + getTitle());
 			winExportFile.setWidth("450px");
-			winExportFile.setHeight("300px");
+			winExportFile.setHeight("150px");
 			winExportFile.setClosable(true);
 			winExportFile.setBorder("normal");
 			winExportFile.setStyle("position:absolute");
@@ -857,7 +857,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			vb.appendChild(hb);
 			vb.appendChild(confirmPanel);
 			confirmPanel.addActionListener(this);
-			confirmPanel.setVflex("0");
 		}
 		
 		winExportFile.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
