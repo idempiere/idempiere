@@ -233,9 +233,10 @@ public class GridField
 	 *  @return lookup
 	 */
 	public Lookup getLookup()
-	{
+	{ 
+		if (m_lookup == null) loadLookupFromFactory(); // IDEMPIERE-913
 		return m_lookup;
-	}   //  getLookup
+	}    //  getLookup
 
 	/**
 	 *  Is this field a Lookup?.
