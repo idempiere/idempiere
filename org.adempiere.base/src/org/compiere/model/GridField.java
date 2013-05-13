@@ -234,7 +234,7 @@ public class GridField
 	 */
 	public Lookup getLookup()
 	{ 
-		if (m_lookup == null) loadLookupFromFactory(); // IDEMPIERE-913
+		if (m_lookup == null) loadLookupNoValidate(); // IDEMPIERE-913
 		return m_lookup;
 	}    //  getLookup
 

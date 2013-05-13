@@ -34,7 +34,7 @@ public class DefaultLookupFactory implements ILookupFactory{
 	@Override
 	public Lookup getLookup(GridFieldVO gridFieldVO) {
 		Lookup lookup = null;
-		if (gridFieldVO.lookupInfo == null) // IDEMPIERE-913
+		if (gridFieldVO.lookupInfo == null && DisplayType.isLookup(gridFieldVO.displayType)) // IDEMPIERE-913
 			gridFieldVO.loadLookupInfo();
 		if (gridFieldVO.displayType == Location)   //  not cached
 		{
