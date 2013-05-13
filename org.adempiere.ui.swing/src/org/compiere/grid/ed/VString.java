@@ -369,7 +369,7 @@ public final class VString extends CTextField
 		String text = super.getText();
 		if (m_obscure != null && text != null && text.length() > 0)
 		{
-			if (text.equals(m_obscure.getObscuredValue()))
+			if (isReadWrite() && text.equals(m_obscure.getObscuredValue()))
 				text = m_obscure.getClearValue();
 		}
 		return text;

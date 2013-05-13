@@ -86,7 +86,7 @@ public class Textbox extends org.zkoss.zul.Textbox implements EventListener<Even
 		String value = super.getValue();
 		if (m_obscure != null && value != null && value.length() > 0)
 		{
-			if (value.equals(m_obscure.getObscuredValue()))
+			if (!isReadonly() && value.equals(m_obscure.getObscuredValue()))
 				value = m_obscure.getClearValue();
 		}
 		return value;
