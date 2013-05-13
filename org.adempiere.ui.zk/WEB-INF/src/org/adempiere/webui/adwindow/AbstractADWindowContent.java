@@ -1036,11 +1036,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		hideBusyMask();
     		ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
     		onModalClose(dialog.getProcessInfo());
-    		String s = breadCrumb.getStatusLine(); 
-    		boolean b = breadCrumb.getStatusError();
-    		ProcessInfoLog[] logs = breadCrumb.getPLogs();
+    		String s = statusBar.getStatusLine(); 
+    		boolean b = statusBar.getStatusError();
+    		ProcessInfoLog[] logs = statusBar.getPLogs();
     		onRefresh(true, false);
-    		breadCrumb.setStatusLine(s, b, logs);       	
+    		statusBar.setStatusLine(s, b, logs);       	
     	}
     	else if (ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT.equals(event.getName()))
     	{
@@ -1278,7 +1278,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         		if (detailTab) {
                 	adTabbox.setDetailPaneStatusMessage("", false);
                 } else {
-                	breadCrumb.setStatusLine ("", false);
+                	statusBar.setStatusLine ("", false);
                 }
         	}
         	else
@@ -1345,7 +1345,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	                if (detailTab) {
 	                	adTabbox.setDetailPaneStatusMessage(sb.toString (), e.isError ());
 	                } else {
-	                	breadCrumb.setStatusLine (sb.toString (), e.isError ());
+	                	statusBar.setStatusLine (sb.toString (), e.isError ());
 	                }
 	            }
         	}
@@ -1797,9 +1797,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			{
 				if (result)
 				{
-		    		String statusLine = breadCrumb.getStatusLine();
+		    		String statusLine = statusBar.getStatusLine();
 		    		adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
-		    		breadCrumb.setStatusLine(statusLine);
+		    		statusBar.setStatusLine(statusLine);
 		    	}
 				if (dirtyTabpanel != null) {
 					if (dirtyTabpanel == adTabbox.getSelectedDetailADTabpanel())
@@ -1848,7 +1848,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		}
     		if (!sortTab.isChanged()) {
     			if (sortTab == adTabbox.getSelectedTabpanel()) {
-    				breadCrumb.setStatusLine(Msg.getMsg(Env.getCtx(), "Saved"));
+    				statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Saved"));
     			} else {
     				adTabbox.setDetailPaneStatusMessage(Msg.getMsg(Env.getCtx(), "Saved"), false);
     			}
@@ -1958,7 +1958,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		String msg = CLogger.retrieveErrorString(null);
 		if (msg != null)
 		{
-			breadCrumb.setStatusLine(Msg.getMsg(Env.getCtx(), msg), true);
+			statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), msg), true);
 		}
 		//other error will be catch in the dataStatusChanged event
 	}
@@ -2599,7 +2599,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 							onRefresh(true, false);
 
 							if (error != null)
-								breadCrumb.setStatusLine(error, true);
+								statusBar.setStatusLine(error, true);
 						}
 					}
 				});
@@ -2747,7 +2747,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				String error = processButtonCallout((IProcessButton) event.getSource());
 				if (error != null && error.trim().length() > 0)
 				{
-					breadCrumb.setStatusLine(error, true);
+					statusBar.setStatusLine(error, true);
 					return;
 				}
 				actionButton((IProcessButton) event.getSource());
@@ -2865,7 +2865,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		//		Get Log Info
 		ProcessInfoUtil.setLogFromDB(pi);
 		ProcessInfoLog m_logs[] = pi.getLogs();
-		breadCrumb.setStatusLine(pi.getSummary(), pi.isError(),m_logs);
+		statusBar.setStatusLine(pi.getSummary(), pi.isError(),m_logs);
 		if (m_logs != null) {
 			ProcessInfoDialog dialog = new ProcessInfoDialog(AEnv.getDialogHeader(ctx, curWindowNo),Env.getHeader(ctx, curWindowNo), m_logs);
 			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {

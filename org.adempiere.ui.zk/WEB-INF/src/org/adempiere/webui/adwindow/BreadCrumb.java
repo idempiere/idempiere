@@ -21,13 +21,10 @@ import java.util.Map;
 
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Menupopup;
-import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
-import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.session.SessionManager;
@@ -35,30 +32,21 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WRecordInfo;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.MRole;
-import org.compiere.process.ProcessInfoLog;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-import org.zkoss.zhtml.Text;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Execution;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.A;
-import org.zkoss.zul.Caption;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Hlayout;
-import org.zkoss.zul.Image;
 import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Separator;
-import org.zkoss.zul.Space;
 
 /**
  * @author hengsin
@@ -69,10 +57,6 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	private static final String ON_MOUSE_OVER_ECHO_EVENT = "onMouseOverEcho";
 	
 	private static final String ON_MOUSE_OUT_ECHO_EVENT = "onMouseOutEcho";
-
-	private static final String INFO_INDICATOR_IMAGE = "images/InfoIndicator16.png";
-
-	private static final String ERROR_INDICATOR_IMAGE = "images/ErrorIndicator16.png";
 
 	/**
 	 * generated serial id 
@@ -97,24 +81,10 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 
 	private String m_text;
 
-	private boolean m_statusError;
-
-	private String m_statusText;
-
-	private Window msgPopup;
-
-	private Div msgPopupCnt;
-
 	private ToolbarListener toolbarListener;
 
 	private Hlayout toolbarContainer;
 
-	private Hbox messageContainer;
-
-	private Caption msgPopupCaption;
-
-	private ProcessInfoLog[] pInfoLogs = null;
-	
 	protected Menupopup linkPopup;
 
 	/**
@@ -133,7 +103,8 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		this.setSclass("adwindow-breadcrumb");
 				
 		toolbarContainer = new Hlayout();
-		layout.appendChild(toolbarContainer);
+		toolbarContainer.setStyle("display: inline-block; float: right");
+		this.appendChild(toolbarContainer);
 		
 		ToolBar toolbar = new ToolBar();
 		toolbarContainer.appendChild(toolbar);		
@@ -157,18 +128,10 @@ public class BreadCrumb extends Div implements EventListener<Event> {
         btnLast.setTooltiptext(btnLast.getTooltiptext()+"    Alt+End");
         toolbar.appendChild(btnLast);
         
-        messageContainer = new Hbox();
-        messageContainer.setStyle("float: right; height: 30px;");
-        messageContainer.setAlign("center");
-        messageContainer.setId("messages");
-        appendChild(messageContainer);
-        
         altKeyMap.put(KeyEvent.UP, btnPrevious);
 		altKeyMap.put(KeyEvent.DOWN, btnNext);
 		altKeyMap.put(KeyEvent.PAGE_UP, btnFirst);
 		altKeyMap.put(KeyEvent.PAGE_DOWN, btnLast);		
-		
-		createPopup();
 		
 		toolbar.setStyle("background-image: none; background-color: transparent; border: none;");
 		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "breadcrumb");
@@ -197,23 +160,23 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 			a.setId("breadcrumb-"+label);
 			a.setPathId(id);
 			a.addEventListener(Events.ON_CLICK, this);
-			if (layout.getChildren().size() > 1) {
+			if (layout.getChildren().size() > 0) {
 				Label symbol = new Label();
 				symbol.setValue(" > ");
-				layout.insertBefore(symbol, toolbarContainer);
+				layout.appendChild(symbol);
 			}
-			layout.insertBefore(a, toolbarContainer);
+			layout.appendChild(a);
 		} else {
 			Label pathLabel = new Label();
 			pathLabel.setId("breadcrumb-"+label);
 			pathLabel.setValue(label);
-			if (layout.getChildren().size() > 1) {
+			if (layout.getChildren().size() > 0) {
 				Label symbol = new Label();
 				symbol.setValue(" > ");
-				layout.insertBefore(symbol, toolbarContainer);
+				layout.appendChild(symbol);
 			}
 			pathLabel.setStyle("font-weight: bold");
-			layout.insertBefore(pathLabel, toolbarContainer);
+			layout.appendChild(pathLabel);
 		}
 	}
 	
@@ -236,7 +199,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	 */
 	public void addLinks(LinkedHashMap<String, String> links) {
 		this.links = links;
-		final Label pathLabel = (Label) layout.getChildren().get(layout.getChildren().size()-2);
+		final Label pathLabel = (Label) layout.getChildren().get(layout.getChildren().size()-1);
 		pathLabel.setStyle("cursor: pointer; font-weight: bold; padding-right: 10px;");
 		EventListener<Event> listener = new EventListener<Event>() {
 			@Override
@@ -342,10 +305,6 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 
 			String title = Msg.getMsg(Env.getCtx(), "Who") + m_text;
 			new WRecordInfo (title, m_dse);
-		} else if(event.getTarget() instanceof RecordLink){
-			doZoom((RecordLink)event.getTarget());
- 		} else if (event.getTarget().getParent() == messageContainer) {
-			showPopup();
 		} else if (event.getTarget() == btnFirst) {
 			if (toolbarListener != null)
 				toolbarListener.onFirst();
@@ -396,11 +355,8 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	 * remove all links
 	 */
 	public void reset() {
-		if (layout.getChildren().size() == 0 || layout.getChildren().size() > 1) {
-			layout.getChildren().clear();
-			layout.appendChild(toolbarContainer);
-			this.links = null;
-		}
+		layout.getChildren().clear();
+		this.links = null;
 	}
 
 	/**
@@ -474,193 +430,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
         	enableLastNavigation(m_dse.getTotalRows() > m_dse.getCurrentRow()+1);
         }
     }
-    
-    /**
-     * @param text
-     */
-    public void setStatusLine (String text)
-    {
-        setStatusLine(text, false,null);
-    }
-
-    /**
-     * @param text
-     * @param error
-     */
-    public void setStatusLine (String text, boolean error)
-    {
-    	setStatusLine(text, error, null);
-    }
-    
-    /**
-     * @param text
-     * @param error
-     * @param m_logs
-     */
-    public void setStatusLine (String text, boolean error, ProcessInfoLog[] m_logs)
-    {
-    	pInfoLogs = m_logs;
-    	Div div = null;
-    	
-       	Execution execution = Executions.getCurrent();
-    	if (execution != null) {
-    		String key = this.getClass().getName()+"."+getUuid();
-    		Object o = execution.getAttribute(key);
-    		if (o != null) {
-    			if (text == null || text.trim().length() == 0)
-    				return;
-    		} else {
-    			execution.setAttribute(key, Boolean.TRUE);
-    		}
-    	}
-    	
-    	m_statusText = text;
-    	m_statusError = error;
-    	
-		messageContainer.getChildren().clear();
-		
-		if (text == null || text.trim().length() == 0 )
-			return;
-		
-		Image image = null;
-    	if (error)
-    		image = new Image(ThemeManager.getThemeResource(ERROR_INDICATOR_IMAGE));
-    	else
-			image = new Image(ThemeManager.getThemeResource(INFO_INDICATOR_IMAGE));    	
-    	
-		image.setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);
-    	messageContainer.appendChild(image);
-    	String labelText = buildLabelText(m_statusText);
-    	if (error) {
-    		Clients.showNotification(buildNotificationText(m_statusText), "error", findTabpanel(this), "top_left", 3500, true);
-    	}
-    	Label label = new Label(labelText);
-    	messageContainer.appendChild(label);
-		if (m_logs != null) {
-			div = new Div();
-			for (int i = 0; i < m_logs.length; i++) {
-				if (m_logs[i].getP_Msg() != null) {
-					if (m_logs[i].getAD_Table_ID() > 0
-							&& m_logs[i].getRecord_ID() > 0) {
-						RecordLink recordLink = new RecordLink(m_logs[i].getAD_Table_ID(), m_logs[i].getRecord_ID());
-						recordLink.setLabel(m_logs[i].getP_Msg());
-						recordLink.addEventListener(Events.ON_CLICK, this);
-						if (!div.getChildren().isEmpty())
-							div.appendChild(new Separator("horizontal"));
-						div.appendChild(recordLink);						
-					}
-				}
-			}
-		}
-
-		if (labelText.length() != m_statusText.length() || (div != null && div.getChildren().size() > 0)) {
-			image.addEventListener(Events.ON_CLICK, this);
-			image.setStyle("cursor: pointer");
-			label.addEventListener(Events.ON_CLICK, this);
-			label.setStyle("cursor: pointer");
-		
-			label = new Label(" ...");
-			label.setStyle("cursor: pointer");
-			messageContainer.appendChild(label);
-			label.addEventListener(Events.ON_CLICK, this);
-		}
-    	
-    	messageContainer.appendChild(new Space());
-    	createPopupContent();
-    	if(div!=null)
-    	{
-    		msgPopupCnt.appendChild(div);
-    	}
         
-    }
-    	
-	private Component findTabpanel(BreadCrumb breadCrumb) {
-		Component parent = breadCrumb.getParent();
-		while (parent != null) {
-			if (parent instanceof Tabpanel)
-				return parent;
-			
-			parent = parent.getParent();
-		}
-		return null;
-	}
-
-	private void doZoom(RecordLink link) {
-		int Record_ID = 0;
-		int AD_Table_ID = 0;
-		Record_ID = link.recordId;
-		AD_Table_ID = link.tableId;
-		if (Record_ID > 0 && AD_Table_ID > 0) {
-			AEnv.zoom(AD_Table_ID, Record_ID);
-		}
-	}
-
-	private String buildLabelText(String statusText) {
-		if (statusText == null)
-			return "";
-		if (statusText.length() <= 80)
-			return statusText;
-		
-		int index = statusText.indexOf(" - java.lang.Exception");
-		if (index > 0)
-			return statusText.substring(0, index);
-		return statusText.substring(0, 80);
-	}
-	
-	private String buildNotificationText(String statusText) {
-		if (statusText == null)
-			return "";
-		if (statusText.length() <= 140)
-			return statusText;
-		
-		int index = statusText.indexOf(" - java.lang.Exception");
-		if (index > 0)
-			return statusText.substring(0, index);
-		return statusText.substring(0, 136) + " ...";
-	}
-
-	protected void createPopupContent() {
-		Text t = new Text(m_statusText);
-		msgPopupCnt.getChildren().clear();
-		msgPopupCnt.appendChild(t);
-	}
-
-    /**
-     *
-     * @return current status line text
-     */
-    public String getStatusLine() {
-   		return m_statusText;
-   	}
-    
-    public boolean getStatusError() {
-    	return m_statusError;
-    }
-
-	private void createPopup() {
-		msgPopupCnt = new Div();
-		msgPopupCnt.setVflex("1");
-
-		
-		msgPopup = new Window();
-		msgPopup.setBorder(true);
-		msgPopup.setClosable(true);
-		msgPopup.setSizable(true);
-		msgPopup.setContentStyle("overflow: auto");
-        msgPopup.setWidth("500px");
-        msgPopup.appendChild(msgPopupCnt);
-        msgPopup.setShadow(true);
-        msgPopupCaption = new Caption();
-        msgPopup.appendChild(msgPopupCaption);        
-	}
-
-	private void showPopup() {
-		msgPopupCaption.setImage(m_statusError ? ThemeManager.getThemeResource(ERROR_INDICATOR_IMAGE) 
-				: ThemeManager.getThemeResource(INFO_INDICATOR_IMAGE));
-		appendChild(msgPopup);
-		LayoutUtils.openOverlappedWindow(messageContainer, msgPopup, "overlap_end");
-	}
-
 	@Override
 	public void onPageDetached(Page page) {
 		super.onPageDetached(page);
@@ -692,14 +462,6 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		return false;
 	}
 	
-	/**
-	 * 
-	 * @return process logs
-	 */
-	public ProcessInfoLog[] getPLogs() {
-		return pInfoLogs;
-	}
-
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
 		super.onPageAttached(newpage, oldpage);
@@ -722,18 +484,5 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	
 	public ToolBarButton getPreviousButton() {
 		return btnPrevious;
-	}
-	
-	class RecordLink extends A {
-		private static final long serialVersionUID = 3793489614175751401L;
-		
-		protected int recordId;
-		protected int tableId;
-
-		protected RecordLink(int AD_Table_ID, int Record_ID) {
-			super();
-			tableId = AD_Table_ID;
-			recordId = Record_ID;
-		}
-	}
+	}	
 }

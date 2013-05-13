@@ -134,13 +134,10 @@ public class ADWindowContent extends AbstractADWindowContent
 				}
 			}
 		});
-
-        //status bar
-        Div south = new Div();        
-        south.setSclass("adwindow-south");
-        south.setVflex("0");
-        statusBar.setParent(south);
         
+        //status bar
+        div.appendChild(statusBar);
+
         LayoutUtils.addSclass("adwindow-status", statusBar);
 
         contentArea = new Div();
@@ -150,8 +147,6 @@ public class ADWindowContent extends AbstractADWindowContent
         contentArea.setStyle("overflow: auto;");
         adTabbox.createPart(contentArea);
         
-        layout.appendChild(south);
-
         if (parent instanceof Tabpanel) {
         	TabOnCloseHanlder handler = new TabOnCloseHanlder();
         	((Tabpanel)parent).setOnCloseHandler(handler);

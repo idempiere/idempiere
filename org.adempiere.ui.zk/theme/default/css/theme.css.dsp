@@ -657,8 +657,27 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .adwindow-status {
-	background-color: #F4F4F4;
 	height: 20px;
+}
+
+.adwindow-status-docinfo {
+	display: inline-block;
+	float: right;
+	padding-right: 4px;
+}
+
+.adwindow-status-docinfo .z-label, .adwindow-status-docstatus .z-label {
+	color: #6a6a6a;
+}
+
+.adwindow-status-docstatus .docstatus-error .z-label {
+	color: red;
+}
+
+.adwindow-status-docstatus {
+	display: inline-block;
+	float: left;
+	padding-left: 4px;
 }
 
 .adwindow-toolbar {
