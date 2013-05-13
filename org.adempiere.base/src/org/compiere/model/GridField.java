@@ -208,7 +208,7 @@ public class GridField
 	 * bypass isdisplay validation, used by findwindow
 	 */
 	public void loadLookupNoValidate() {
-		if (m_vo.lookupInfo == null) {
+		if (m_vo.lookupInfo == null && isLookup()) {
 			m_vo.loadLookupInfo();
 		}
 		if (m_vo.lookupInfo == null) {
@@ -233,9 +233,10 @@ public class GridField
 	 *  @return lookup
 	 */
 	public Lookup getLookup()
-	{
+	{ 
+		if (m_lookup == null) loadLookupNoValidate(); // IDEMPIERE-913
 		return m_lookup;
-	}   //  getLookup
+	}    //  getLookup
 
 	/**
 	 *  Is this field a Lookup?.

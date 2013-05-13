@@ -139,9 +139,12 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        if (getComponent() instanceof Textbox)
 	        	((Textbox)getComponent()).setObscureType(obscureType);
 
-	        popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
-	        addTextEditorMenu(popupMenu);
-	        addChangeLogMenu(popupMenu);
+
+	        if(!(this instanceof WPasswordEditor)){ // check password field
+	        	popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
+	        	addTextEditorMenu(popupMenu);
+	        	addChangeLogMenu(popupMenu);
+	        }
 
 	        if (gridField.isAutocomplete()) {
 	        	Combobox combo = (Combobox)getComponent();
