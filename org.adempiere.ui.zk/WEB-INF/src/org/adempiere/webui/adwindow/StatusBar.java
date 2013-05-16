@@ -159,16 +159,6 @@ public class StatusBar extends Panel implements EventListener<Event>
 		if (text == null || text.trim().length() == 0 )
 			return;
 		
-		/*
-		Image image = null;
-    	if (error)
-    		image = new Image(ThemeManager.getThemeResource(ERROR_INDICATOR_IMAGE));
-    	else
-			image = new Image(ThemeManager.getThemeResource(INFO_INDICATOR_IMAGE));    	
-    	
-		image.setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);
-		*/
-//    	messageContainer.appendChild(image);
     	String labelText = buildLabelText(m_statusText);
     	if (error) {
     		Clients.showNotification(buildNotificationText(m_statusText), "error", findTabpanel(this), "top_left", 3500, true);

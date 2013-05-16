@@ -457,6 +457,10 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	margin-left: 4px !important;
 }
 
+.desktop-tabbox .z-toolbar-tabs-body {
+	padding-top: 10px !important;
+}
+
 .desktop-menu-popup {
 	z-index: 9999;
 	background-color: #fff;
@@ -502,7 +506,9 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .z-panel {
-	border: 1px solid #c5c5c5;
+	border-radius: 3px;
+	border: 1px solid #d8d8d8;
+	border-bottom-width: 2px;
 }
 
 .z-panel-noborder {
@@ -514,13 +520,15 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .z-panel-hl {
-	padding-bottom: 1px;
-	border-bottom: 1px solid #008BB6;
+	padding-bottom: 4px;
+	border-bottom: none;
 }
 
 .z-panel-hl .z-panel-header {
 	padding: 0 0 2px 0;
-	color: #333; font-weight: bold;
+	color: #262626; 
+	font-weight: 300;
+	font-size: 13px;
 }	
 
 .desktop-home-tabpanel .z-panel-tl, .desktop-home-tabpanel .z-panel-tr, 
@@ -551,7 +559,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	margin-left: auto; 
 	margin-right: auto;
 	position: relative;
-	width: 92%;
+	width: 92%;	
 }
 
 .dashboard-report-iframe {
@@ -666,11 +674,11 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	padding-right: 4px;
 }
 
-.adwindow-status-docinfo .z-label, .adwindow-status-docstatus .z-label {
+.docstatus-normal .z-label {
 	color: #6a6a6a;
 }
 
-.adwindow-status-docstatus .docstatus-error .z-label {
+.docstatus-error .z-label {
 	color: red;
 }
 
@@ -682,6 +690,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .adwindow-toolbar {
 	border: 0px;
+	padding: 2px 4px;
 	height: 26px;
 	background-image: none;
 	background-color: #fff;

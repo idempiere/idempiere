@@ -32,10 +32,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.sys.ExecutionCtrl;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Caption;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Image;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Tabpanels;
 import org.zkoss.zul.Tabs;
@@ -65,10 +63,6 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	 */
 	private static final long serialVersionUID = -7914602940626352282L;
 	
-	private static final String INFO_INDICATOR_IMAGE = "images/InfoIndicator16.png";
-
-	private static final String ERROR_INDICATOR_IMAGE = "images/ErrorIndicator16.png";
-	
 	private Tabbox tabbox;
 
 	private EventListener<Event> eventListener;
@@ -78,8 +72,6 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	private Div msgPopupCnt;
 
 	private Window msgPopup;
-
-	private Caption msgPopupCaption;
 	
 	private int prevSelectedIndex = 0;
 
@@ -413,18 +405,11 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		messageContainer.getChildren().clear();
 		messageContainer.setAttribute(STATUS_ERROR_ATTRIBUTE, error);
     	messageContainer.setAttribute(STATUS_TEXT_ATTRIBUTE, status);
+    	messageContainer.setSclass(error ? "docstatus-error" : "docstatus-normal");
     	
     	if (status == null || status.trim().length() == 0)
     		return;
     	
-		Image image = null;
-    	if (error)
-    		image = new Image(ThemeManager.getThemeResource(ERROR_INDICATOR_IMAGE));
-    	else
-			image = new Image(ThemeManager.getThemeResource(INFO_INDICATOR_IMAGE));
-    	
-		image.setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);		
-    	messageContainer.appendChild(image);
     	String labelText = buildLabelText(status);
     	if (error) {
     		Clients.showNotification(buildNotificationText(status), "error", findTabpanel(this), "top_left", 3500, true);
@@ -432,8 +417,6 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
     	Label label = new Label(labelText);
     	messageContainer.appendChild(label);
     	if (labelText.length() != status.length()) {
-    		image.addEventListener(Events.ON_CLICK, this);
-    		image.setStyle("cursor: pointer");
     		label.addEventListener(Events.ON_CLICK, this);
     		label.setStyle("cursor: pointer");
     		
@@ -501,7 +484,6 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	}
 	
 	private void showPopup(boolean error, Component messageContainer) {
-		msgPopupCaption.setImage(error ? ERROR_INDICATOR_IMAGE : INFO_INDICATOR_IMAGE);
 		LayoutUtils.openOverlappedWindow(messageContainer, msgPopup, "overlap_end");
 	}
 	
@@ -520,8 +502,6 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         msgPopup.appendChild(msgPopupCnt);
         msgPopup.setPage(SessionManager.getAppDesktop().getComponent().getPage());
         msgPopup.setShadow(true);
-        msgPopupCaption = new Caption();
-        msgPopup.appendChild(msgPopupCaption);        
 	}
 	
 	@Override

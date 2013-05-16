@@ -32,6 +32,7 @@ import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.DrillEvent;
 import org.adempiere.webui.event.MenuListener;
@@ -95,6 +96,10 @@ import org.zkoss.zul.West;
  */
 public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, EventHandler, DesktopCleanup
 {
+	private static final String IMAGES_UPARROW_PNG = "images/uparrow.png";
+
+	private static final String IMAGES_DOWNARROW_PNG = "images/downarrow.png";
+
 	/**
 	 * generated serial version ID
 	 */
@@ -127,6 +132,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private TimeoutPanel panel = null; 
 	
 	private HelpController helpController;
+
+	private ToolBarButton max;
 
     public DefaultDesktop()
     {
@@ -254,6 +261,13 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 		Adempiere.getThreadPoolExecutor().submit(runnable);
 
+		ToolBar toolbar = new ToolBar();
+        windowContainer.getComponent().appendChild(toolbar);
+        max = new ToolBarButton();
+        toolbar.appendChild(max);
+        max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
+        max.addEventListener(Events.ON_CLICK, this);
+        
         return layout;
     }
 
@@ -288,7 +302,20 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
         if(eventName.equals(Events.ON_CLICK))
         {
-            if(comp instanceof ToolBarButton)
+        	if (comp == max)
+        	{
+        		if (layout.getNorth().isVisible())
+        		{
+        			layout.getNorth().setVisible(false);
+        			max.setImage(ThemeManager.getThemeResource(IMAGES_DOWNARROW_PNG));
+        		}
+        		else
+        		{
+        			layout.getNorth().setVisible(true);
+        			max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
+        		}
+        	}
+        	else if(comp instanceof ToolBarButton)
             {
             	ToolBarButton btn = (ToolBarButton) comp;
 

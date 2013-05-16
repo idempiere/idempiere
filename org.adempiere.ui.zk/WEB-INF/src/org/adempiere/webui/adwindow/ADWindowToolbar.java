@@ -145,7 +145,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
         btnIgnore = createButton("Ignore", "Ignore", "Ignore");
         btnIgnore.setTooltiptext(btnIgnore.getTooltiptext()+ "    Alt+Z");
-        addSeparator();
         btnHelp = createButton("Help", "Help","Help");
         btnHelp.setTooltiptext(btnHelp.getTooltiptext()+ "    Alt+H");
         btnNew = createButton("New", "New", "New");
@@ -159,7 +158,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btnSave.setTooltiptext(btnSave.getTooltiptext()+ "    Alt+S");
         btnSaveAndCreate = createButton("SaveCreate", "SaveCreate", "SaveCreate");
         btnSaveAndCreate.setTooltiptext(btnSaveAndCreate.getTooltiptext()+ "    Alt+A");
-        addSeparator();
         btnRefresh = createButton("Refresh", "Refresh", "Refresh");
         btnRefresh.setTooltiptext(btnRefresh.getTooltiptext()+ "    Alt+E");
         btnFind = createButton("Find", "Find", "Find");
@@ -168,18 +166,15 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btnChat = createButton("Chat", "Chat", "Chat");
         btnGridToggle = createButton("Toggle", "Multi", "Multi");
         btnGridToggle.setTooltiptext(btnGridToggle.getTooltiptext()+ "    Alt+T");
-        addSeparator();
         btnParentRecord = createButton("ParentRecord", "Parent", "Parent");
         btnParentRecord.setTooltiptext(btnParentRecord.getTooltiptext()+ "   Alt+Up");
         btnDetailRecord = createButton("DetailRecord", "Detail", "Detail");
         btnDetailRecord.setTooltiptext(btnDetailRecord.getTooltiptext()+ "   Alt+Down");
-        addSeparator();
         btnReport = createButton("Report", "Report", "Report");
         btnReport.setTooltiptext(btnReport.getTooltiptext()+ "    Alt+R");
         btnArchive = createButton("Archive", "Archive", "Archive");
         btnPrint = createButton("Print", "Print", "Print");
         btnPrint.setTooltiptext(btnPrint.getTooltiptext()+ "    Alt+P");
-        addSeparator();
         btnLock = createButton("Lock", "Lock", "Lock"); // Elaine 2008/12/04
 		btnLock.setVisible(isPersonalLock);
 		btnZoomAcross = createButton("ZoomAcross", "ZoomAcross", "ZoomAcross");
@@ -188,7 +183,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btnProductInfo = createButton("ProductInfo", "Product", "InfoProduct");
         btnProductInfo.setVisible(isAllowProductInfo);
 
-        addSeparator();
         btnCustomize= createButton("Customize", "Customize", "Customize");
         btnCustomize.setDisabled(false);
 
