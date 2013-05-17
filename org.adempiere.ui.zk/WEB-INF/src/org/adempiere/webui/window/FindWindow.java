@@ -1600,45 +1600,45 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         boolean enabled = !to || (to && between);
 
         //  Create Editor
-        GridField field = getTargetMField(columnName);
+        GridField field = getTargetMField(columnName);        
         if(field == null) return new Label("");
 
+        GridField findField = (GridField) field.clone(m_findCtx);        
         WEditor editor = null;
-        if (field.isKey() 
-        		|| (!DisplayType.isLookup(field.getDisplayType()) && DisplayType.isID(field.getDisplayType())))
+        if (findField.isKey() 
+        		|| (!DisplayType.isLookup(findField.getDisplayType()) && DisplayType.isID(findField.getDisplayType())))
         {
-            editor = new WNumberEditor(field);
+            editor = new WNumberEditor(findField);
 		}
-        else if (field.getDisplayType() == DisplayType.Button)
+        else if (findField.getDisplayType() == DisplayType.Button)
         {
         	if (columnName.endsWith("_ID"))
         	{
-                editor = new WNumberEditor(field);
+                editor = new WNumberEditor(findField);
         	} else {
-                editor = new WStringEditor(field);
+                editor = new WStringEditor(findField);
         	}
         }
         else
         {
+        	
         	//reload lookupinfo for find window
-        	if (DisplayType.isLookup(field.getDisplayType()) ) 
-        	{
-        		GridField findField = (GridField) field.clone(m_findCtx);
-        		findField.loadLookupNoValidate();
-        		
+        	if (DisplayType.isLookup(findField.getDisplayType()) ) 
+        	{        		
+        		findField.loadLookupNoValidate();        		
         		editor = WebEditorFactory.getEditor(findField, true);
         		findField.addPropertyChangeListener(editor);
         	} 
         	else 
         	{
-        		editor = WebEditorFactory.getEditor(field, true);
-        		field.addPropertyChangeListener(editor);
+        		editor = WebEditorFactory.getEditor(findField, true);
+        		findField.addPropertyChangeListener(editor);
         	}
         }
         if (editor == null)
         {
-            editor = new WStringEditor(field);
-            field.addPropertyChangeListener(editor);
+            editor = new WStringEditor(findField);
+            findField.addPropertyChangeListener(editor);
         }
         
         editor.addValueChangeListener(this);

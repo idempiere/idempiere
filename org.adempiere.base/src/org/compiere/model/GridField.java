@@ -1998,6 +1998,7 @@ public class GridField
 			field.m_vo = field.m_vo.clone(ctx, field.m_vo.WindowNo, field.m_vo.TabNo, 
 					field.m_vo.AD_Window_ID, field.m_vo.AD_Tab_ID, field.m_vo.tabReadOnly);
 			field.m_vo.lookupInfo = null;
+			field.m_propertyChangeListeners = new PropertyChangeSupport(this);
 			return field;
 		} catch (CloneNotSupportedException e) {
 			throw new IllegalStateException(e.getLocalizedMessage(), e);
