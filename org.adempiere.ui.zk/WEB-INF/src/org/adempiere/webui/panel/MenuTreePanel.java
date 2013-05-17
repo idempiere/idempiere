@@ -63,7 +63,7 @@ public class MenuTreePanel extends AbstractMenuPanel
      		expandAll();
      	// Auto Expand Tree - nmicoud IDEMPIERE 195
      	
-     	EventQueues.lookup(MenuTreeFilterPanel.MENU_TREE_FILTER_CHECKED_QUEUE, EventQueues.APPLICATION, true).subscribe(new EventListener<Event>() {
+     	EventQueues.lookup(MenuTreeFilterPanel.MENU_TREE_FILTER_CHECKED_QUEUE, EventQueues.DESKTOP, true).subscribe(new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
 				if (event.getName() == Events.ON_CHECK)
 				{

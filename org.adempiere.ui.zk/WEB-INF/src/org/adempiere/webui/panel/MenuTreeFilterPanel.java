@@ -82,7 +82,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 			searchPanel.refreshSearchList();
 		tree.invalidate();
 */		
-		EventQueues.lookup(MENU_TREE_FILTER_CHECKED_QUEUE, EventQueues.APPLICATION, true).publish(new Event(Events.ON_CHECK, null, chk));
+		EventQueues.lookup(MENU_TREE_FILTER_CHECKED_QUEUE, EventQueues.DESKTOP, true).publish(new Event(Events.ON_CHECK, null, chk));
 	}
 
 	public static void toggleFlatView(Tree tree, final Checkbox chk) {
