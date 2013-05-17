@@ -17,6 +17,7 @@
 
 package org.adempiere.webui.adwindow;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
@@ -34,7 +35,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Caption;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
 
@@ -69,7 +70,7 @@ public class StatusBar extends Panel implements EventListener<Event>
 
 	private Div msgPopupCnt;
 
-	private Hbox messageContainer;
+	private Hlayout messageContainer;
 
 	private Caption msgPopupCaption;
 	
@@ -92,8 +93,7 @@ public class StatusBar extends Panel implements EventListener<Event>
         west = new Div();
         west.setSclass("adwindow-status-docstatus");
         
-        messageContainer = new Hbox();
-        messageContainer.setAlign("center");
+        messageContainer = new Hlayout();
         messageContainer.setId("messages");
         west.appendChild(messageContainer);
         
@@ -247,7 +247,14 @@ public class StatusBar extends Panel implements EventListener<Event>
 	public void onEvent(Event event) throws Exception {
 		if(event.getTarget() instanceof RecordLink){
 			doZoom((RecordLink)event.getTarget());
+ 		} else if (event.getTarget() instanceof Label) {
+ 			showPopup();
  		}
+	}
+	
+	private void showPopup() {
+		appendChild(msgPopup);
+		LayoutUtils.openOverlappedWindow(messageContainer, msgPopup, "overlap_end");
 	}
 	
 	private void doZoom(RecordLink link) {

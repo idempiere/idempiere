@@ -665,7 +665,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .adwindow-status {
-	height: 20px;
+	min-height: 22px;
 }
 
 .adwindow-status-docinfo {
