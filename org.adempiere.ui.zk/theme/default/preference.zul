@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zk>
+<script defer="true">
+<![CDATA[
+    adempiere.store.set("zkTimeoutURL", "sessiontimeout.zul");
+]]>	
+</script>
+<zscript>
+<![CDATA[
+	import org.compiere.util.Env;
+	
+	Env.setContext(Env.getCtx(), "#ZK_Toolbar_Button_Size", "24");	
+]]>
+</zscript>
+</zk>

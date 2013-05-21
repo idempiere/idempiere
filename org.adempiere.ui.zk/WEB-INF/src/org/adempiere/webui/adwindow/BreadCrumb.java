@@ -384,7 +384,13 @@ public class BreadCrumb extends Div implements EventListener<Event> {
     	ToolBarButton btn = new ToolBarButton("");
         btn.setName(BTNPREFIX+name);
         btn.setId(name);
-        btn.setImage(ThemeManager.getThemeResource("images/"+image + "24.png"));
+        String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
+    	String suffix = "24.png";
+    	if (!Util.isEmpty(size)) 
+    	{
+    		suffix = size + ".png";
+    	}
+        btn.setImage(ThemeManager.getThemeResource("images/"+image + suffix));
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),tooltip));
         btn.setSclass("breadcrumb-toolbar-button");
         

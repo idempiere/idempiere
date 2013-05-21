@@ -68,42 +68,17 @@ public final class ThemeManager {
 	}
 
 	/**
+	 * @return url of theme preference page
+	 */
+	public static String getPreference() {
+		return ITheme.THEME_PATH_PREFIX + getTheme() + ITheme.THEME_PREFERENCE;
+	}
+	
+	/**
 	 * @return title text for the browser window
 	 */
 	public static String getBrowserTitle() {
 		return MSysConfig.getValue(MSysConfig.ZK_BROWSER_TITLE, AdempiereWebUI.APP_NAME);
-	}
-
-	/**
-	 * @return url for right panel
-	 */
-	public static String getLoginRightPanel() {
-		String theme = getTheme();
-		return ITheme.THEME_PATH_PREFIX + theme + ITheme.LOGIN_RIGHT_PANEL_ZUL;
-	}
-
-	/**
-	 * @return url for left panel
-	 */
-	public static String getLoginLeftPanel() {
-		String theme = getTheme();
-		return ITheme.THEME_PATH_PREFIX + theme + ITheme.LOGIN_LEFT_PANEL_ZUL;
-	}
-
-	/**
-	 * @return url for top panel
-	 */
-	public static String getLoginTopPanel() {
-		String theme = getTheme();
-		return ITheme.THEME_PATH_PREFIX + theme + ITheme.LOGIN_TOP_PANEL_ZUL;
-	}
-
-	/**
-	 * @return url for bottom panel
-	 */
-	public static String getLoginBottomPanel() {
-		String theme = getTheme();
-		return ITheme.THEME_PATH_PREFIX + theme + ITheme.LOGIN_BOTTOM_PANEL_ZUL;
 	}
 
 	/**

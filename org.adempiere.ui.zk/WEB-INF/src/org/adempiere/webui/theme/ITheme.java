@@ -41,17 +41,6 @@ public interface ITheme {
 	public static final String LOGIN_LABEL_CLASS = "login-label";
 	public static final String LOGIN_FIELD_CLASS = "login-field";
 
-	//optional top, bottom, left, right content for the login page
-	public static final String LOGIN_NORTH_PANEL_CLASS = "login-north-panel";
-	public static final String LOGIN_SOUTH_PANEL_CLASS = "login-south-panel";
-	public static final String LOGIN_WEST_PANEL_CLASS = "login-west-panel";
-	public static final String LOGIN_EAST_PANEL_CLASS = "login-east-panel";
-
-	public static final String LOGIN_TOP_PANEL_ZUL = "/login-top.zul";
-	public static final String LOGIN_BOTTOM_PANEL_ZUL = "/login-bottom.zul";
-	public static final String LOGIN_LEFT_PANEL_ZUL = "/login-left.zul";
-	public static final String LOGIN_RIGHT_PANEL_ZUL = "/login-right.zul";
-
 	//logo
 	public static final String LOGIN_LOGO_IMAGE = "/images/login-logo.png";
 	public static final String HEADER_LOGO_IMAGE = "/images/header-logo.png";
@@ -60,4 +49,7 @@ public interface ITheme {
 	//stylesheet url
 	public static final String THEME_STYLESHEET = "/css/theme.css.dsp";
 	public static final String THEME_STYLESHEET_BY_BROWSER = "/css/theme*.css.dsp*";
+	
+	//theme preference
+	public static final String THEME_PREFERENCE = "/preference.zul";
 }

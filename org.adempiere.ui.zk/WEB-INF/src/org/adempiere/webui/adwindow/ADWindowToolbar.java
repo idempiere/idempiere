@@ -43,6 +43,7 @@ import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.image.AImage;
 import org.zkoss.zk.au.out.AuScript;
@@ -219,8 +220,16 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     	ToolBarButton btn = new ToolBarButton("");
         btn.setName(BTNPREFIX+name);
         btn.setId(btn.getName());
-        if (image != null)
-        	btn.setImage(ThemeManager.getThemeResource("images/"+image + "24.png"));
+        if (image != null) 
+        {
+        	String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
+        	String suffix = "24.png";
+        	if (!Util.isEmpty(size)) 
+        	{
+        		suffix = size + ".png";
+        	}
+        	btn.setImage(ThemeManager.getThemeResource("images/"+image + suffix));
+        }
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),tooltip));
         btn.setSclass("toolbar-button");
 
