@@ -816,6 +816,40 @@ public class SynchronizeTerminology extends SvrProcess
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
 
+			//	Sync Names = InfoWindow
+			log.info("Synchronizing Menu with InfoWindow");
+			sql="UPDATE	AD_MENU m"
+					+" SET Name = (SELECT Name FROM AD_InfoWindow f WHERE m.AD_InfoWindow_ID=f.AD_InfoWindow_ID),"
+					+" Description = (SELECT Description FROM AD_InfoWindow f WHERE m.AD_InfoWindow_ID=f.AD_InfoWindow_ID)"
+					+" WHERE m.AD_InfoWindow_ID IS NOT NULL"
+					+" AND m.Action = 'I'"
+					+" AND m.IsCentrallyMaintained='Y' AND m.IsActive='Y'"
+					;
+			no = DB.executeUpdate(sql, false, get_TrxName());	  	
+			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
+			trx.commit(true);
+
+			sql="UPDATE	AD_MENU_TRL mt"
+					+" SET Name = (SELECT ft.Name FROM AD_InfoWindow_TRL ft, AD_MENU m"
+					+" WHERE mt.AD_Menu_ID=m.AD_Menu_ID AND m.AD_InfoWindow_ID=ft.AD_InfoWindow_ID"
+					+" AND mt.AD_LANGUAGE=ft.AD_LANGUAGE),"
+					+" Description = (SELECT ft.Description FROM AD_InfoWindow_TRL ft, AD_MENU m"
+					+" WHERE mt.AD_Menu_ID=m.AD_Menu_ID AND m.AD_InfoWindow_ID=ft.AD_InfoWindow_ID"
+					+" AND mt.AD_LANGUAGE=ft.AD_LANGUAGE),"
+					+" IsTranslated = (SELECT ft.IsTranslated FROM AD_InfoWindow_TRL ft, AD_MENU m"
+					+" WHERE mt.AD_Menu_ID=m.AD_Menu_ID AND m.AD_InfoWindow_ID=ft.AD_InfoWindow_ID"
+					+" AND mt.AD_LANGUAGE=ft.AD_LANGUAGE)"
+					+" WHERE EXISTS (SELECT 1 FROM AD_InfoWindow_TRL ft, AD_MENU m"
+					+" WHERE mt.AD_Menu_ID=m.AD_Menu_ID AND m.AD_InfoWindow_ID=ft.AD_InfoWindow_ID"
+					+" AND mt.AD_LANGUAGE=ft.AD_LANGUAGE"
+					+" AND m.AD_InfoWindow_ID IS NOT NULL"
+					+" AND m.Action = 'I'"
+					+" AND m.IsCentrallyMaintained='Y' AND m.IsActive='Y'"
+					+")";
+			no = DB.executeUpdate(sql, false, get_TrxName());	  	
+			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
+			trx.commit(true);
+
 			//  Column Name + Element
 			sql="UPDATE AD_COLUMN_TRL ct"
 				+" SET Name = (SELECT e.Name"
