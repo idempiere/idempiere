@@ -3,29 +3,38 @@
 <!DOCTYPE web-app
     PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
     "http://java.sun.com/dtd/web-app_2_3.dtd">
-    
-<web-app>
-  <servlet>
-    <servlet-name>CXFServlet</servlet-name>
-    <display-name>CXF Servlet</display-name>
-    <servlet-class>
-       org.apache.cxf.transport.servlet.CXFServlet
-    </servlet-class>
-    <init-param>
-      <param-name>config-location</param-name>
-      <param-value>/META-INF/cxf/services.xml</param-value>    
-    </init-param>
-    <load-on-startup>1</load-on-startup> 
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>CXFServlet</servlet-name>
-    <url-pattern>/services/*</url-pattern>
-  </servlet-mapping>
 
-  <session-config>
-    <session-timeout>15</session-timeout>
-  </session-config>
+<web-app>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			classpath:/META-INF/cxf/services.xml
+		</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>
+			com.trekglobal.ws.ContextLoaderListener
+		</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>CXFServlet</servlet-name>
+		<display-name>CXF Servlet</display-name>
+		<servlet-class>
+			org.apache.cxf.transport.servlet.CXFServlet
+		</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>CXFServlet</servlet-name>
+		<url-pattern>/services/*</url-pattern>
+	</servlet-mapping>
+
+	<session-config>
+		<session-timeout>15</session-timeout>
+	</session-config>
 
 </web-app>
 <!-- END SNIPPET: webxml -->
