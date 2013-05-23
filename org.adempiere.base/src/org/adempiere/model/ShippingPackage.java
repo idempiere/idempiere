@@ -14,9 +14,6 @@
 package org.adempiere.model;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-
-import org.compiere.model.MProduct;
 
 /**
  * 
@@ -29,7 +26,7 @@ public class ShippingPackage
 	private BigDecimal height;
 	private BigDecimal length;
 	private BigDecimal width;
-	private ArrayList<MProduct> products;
+	private String description;
 	
 	public BigDecimal getWeight() {
 		return weight;
@@ -63,11 +60,11 @@ public class ShippingPackage
 		this.width = width;
 	}
 	
-	public ArrayList<MProduct> getProducts() {
-		return products;
+	public String getDescription() {
+		return description;
 	}
-	
-	public void setProducts(ArrayList<MProduct> products) {
-		this.products = products;
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }
