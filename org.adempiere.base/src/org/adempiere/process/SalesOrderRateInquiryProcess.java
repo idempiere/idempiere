@@ -15,7 +15,10 @@ package org.adempiere.process;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -38,6 +41,7 @@ import org.compiere.model.MUOM;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
+import org.compiere.util.DisplayType;
 
 /**
  * 
@@ -228,9 +232,10 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 		BigDecimal FreightAmt = BigDecimal.ZERO;
 		BigDecimal TotalWeight = BigDecimal.ZERO;
 		
+		DecimalFormat df = DisplayType.getNumberFormat(DisplayType.Quantity);
+		
 		ArrayList<ShippingPackage> packages = new ArrayList<ShippingPackage>();
-		BigDecimal TotalPackageWeight = BigDecimal.ZERO;
-		ArrayList<MProduct> products = new ArrayList<MProduct>();
+		ArrayList<Object[]> items = new ArrayList<Object[]>();
 		MOrderLine[] ols = m_order.getLines(false, MOrderLine.COLUMNNAME_Line);
 		for (MOrderLine ol : ols)
 		{
@@ -254,41 +259,91 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 				
 				if (product.isOwnBox())
 				{
-					ArrayList<MProduct> ownBoxProducts = new ArrayList<MProduct>();
-					ownBoxProducts.add(product);
-					
 					BigDecimal remainingQty = qty;
-					for(int i = 0; i < qty.doubleValue(); i++)
+					while (remainingQty.compareTo(BigDecimal.ZERO) > 0)
 					{
-						remainingQty = remainingQty.subtract(BigDecimal.ONE);
-						
+						BigDecimal itemQty = new BigDecimal(Math.min(remainingQty.doubleValue(), 1));
 						ShippingPackage shippingPackage = new ShippingPackage();
-						shippingPackage.setWeight(weight.multiply(remainingQty));
-						shippingPackage.setProducts(ownBoxProducts);
+						shippingPackage.setWeight(weight.multiply(itemQty));
+						shippingPackage.setDescription(df.format(itemQty) + " x " + product.getValue());
 						shippingPackage.setHeight(product.getShelfHeight());
 						shippingPackage.setWidth(new BigDecimal(product.getShelfWidth()));
 						shippingPackage.setLength(new BigDecimal(product.getShelfDepth()));
 						packages.add(shippingPackage);
+						remainingQty = remainingQty.subtract(BigDecimal.ONE);
 					}
 				}
 				else
 				{
-					products.add(product);
-					
-					if ((weight.multiply(qty)).add(TotalPackageWeight).compareTo(WeightPerPackage) > 0)
+					BigDecimal remainingQty = qty;
+					while (remainingQty.compareTo(BigDecimal.ZERO) > 0)
 					{
-						ShippingPackage shippingPackage = new ShippingPackage();
-						shippingPackage.setWeight(TotalPackageWeight);
-						shippingPackage.setProducts(products);
-						packages.add(shippingPackage);
-						products.clear();
-						TotalPackageWeight = weight.multiply(qty);
+						BigDecimal itemQty = new BigDecimal(Math.min(remainingQty.doubleValue(), 1));
+						items.add(new Object[] {product, itemQty});
+						remainingQty = remainingQty.subtract(BigDecimal.ONE);						
 					}
-					else
-						TotalPackageWeight = TotalPackageWeight.add(weight.multiply(qty));
 				}
 					
 				TotalWeight = TotalWeight.add(weight.multiply(qty));
+			}
+		}
+		
+		Hashtable<MProduct, BigDecimal> packageItems = new Hashtable<MProduct, BigDecimal>();
+		BigDecimal TotalPackageWeight = BigDecimal.ZERO;
+		for (Object[] item : items)
+		{
+			MProduct product = (MProduct) item[0];
+			BigDecimal qty = (BigDecimal) item[1];
+			BigDecimal itemWeight = product.getWeight().multiply(qty);
+			
+			if (itemWeight.compareTo(WeightPerPackage) >= 0)
+			{
+				ArrayList<MProduct> ownBoxProducts = new ArrayList<MProduct>();
+				ownBoxProducts.add(product);
+				
+				ShippingPackage shippingPackage = new ShippingPackage();
+				shippingPackage.setWeight(itemWeight);
+				shippingPackage.setDescription(df.format(qty) + " x " + product.getValue());
+				shippingPackage.setHeight(product.getShelfHeight());
+				shippingPackage.setWidth(new BigDecimal(product.getShelfWidth()));
+				shippingPackage.setLength(new BigDecimal(product.getShelfDepth()));
+				packages.add(shippingPackage);
+			}
+			else if ((itemWeight.add(TotalPackageWeight)).compareTo(WeightPerPackage) > 0)
+			{
+				ShippingPackage shippingPackage = new ShippingPackage();
+				shippingPackage.setWeight(TotalPackageWeight);
+				
+				String description = "";
+				Enumeration<MProduct> en = packageItems.keys();
+				while (en.hasMoreElements())
+				{
+					MProduct packageProduct = en.nextElement();
+					BigDecimal packageQty = packageItems.get(packageProduct);
+					description += df.format(packageQty) + " x " + packageProduct.getValue() + ", ";
+				}
+				if (description.length() > 0)
+					description = description.substring(0, description.length() - 2);
+				shippingPackage.setDescription(description);
+				
+				packages.add(shippingPackage);
+				
+				packageItems.clear();
+				TotalPackageWeight = BigDecimal.ZERO;
+				
+				TotalPackageWeight = TotalPackageWeight.add(itemWeight);
+				BigDecimal packageQty = packageItems.get(product);
+				if (packageQty == null)
+					packageQty = BigDecimal.ZERO;
+				packageItems.put(product, packageQty.add(qty));
+			}
+			else
+			{
+				TotalPackageWeight = TotalPackageWeight.add(itemWeight);
+				BigDecimal packageQty = packageItems.get(product);
+				if (packageQty == null)
+					packageQty = BigDecimal.ZERO;
+				packageItems.put(product, packageQty.add(qty));
 			}
 		}
 		
@@ -296,7 +351,19 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 		{
 			ShippingPackage shippingPackage = new ShippingPackage();
 			shippingPackage.setWeight(TotalPackageWeight);
-			shippingPackage.setProducts(products);
+			
+			String description = "";
+			Enumeration<MProduct> en = packageItems.keys();
+			while (en.hasMoreElements())
+			{
+				MProduct packageProduct = en.nextElement();
+				BigDecimal packageQty = packageItems.get(packageProduct);
+				description += df.format(packageQty) + " x " + packageProduct.getValue() + ", ";
+			}
+			if (description.length() > 0)
+				description = description.substring(0, description.length() - 2);
+			shippingPackage.setDescription(description);
+			
 			packages.add(shippingPackage);
 		}
 		
@@ -398,7 +465,7 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 			stl.setAD_Org_ID(m_order.getAD_Org_ID());
 			stl.setC_UOM_Length_ID(ci.getC_UOM_Length_ID());
 			stl.setC_UOM_Weight_ID(ci.getC_UOM_Weight_ID());
-//			stl.setDescription(getDescription());
+			stl.setDescription(shippingPackage.getDescription());
 			stl.setHeight(shippingPackage.getHeight());
 			stl.setIsActive(m_order.isActive());
 			stl.setLength(shippingPackage.getLength());
