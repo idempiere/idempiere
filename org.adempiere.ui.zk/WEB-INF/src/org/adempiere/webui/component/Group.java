@@ -9,6 +9,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Cell;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
@@ -104,15 +105,19 @@ public class Group extends org.zkoss.zul.Group {
 		{
 			setZclass("z-group-header");
 			
+			Div div = new Div();
+			div.setZclass("z-group-header-body");
+			appendChild(div);
+			
 			img = new Image();
 			img.setZclass("z-group-img");
-			appendChild(img);
+			div.appendChild(img);
 			img.addEventListener(Events.ON_CLICK, this);
 			
 			lbl = new Label();
 			lbl.setStyle("cursor: pointer");
 			lbl.addEventListener(Events.ON_CLICK, this);
-			appendChild(lbl);
+			div.appendChild(lbl);
 		}
 		
 		public String getTitle() {
@@ -138,10 +143,7 @@ public class Group extends org.zkoss.zul.Group {
 		{
 			if (e.getName().equals(Events.ON_CLICK))
 			{
-//				if (e.getTarget() == img)
-//				{
-					((Group) getParent()).setOpen(!isOpen());
-//				}
+				((Group) getParent()).setOpen(!isOpen());
 			}
 		}
 	}
