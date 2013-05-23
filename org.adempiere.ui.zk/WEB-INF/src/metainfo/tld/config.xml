@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+	<version>
+		<version-class>org.adempiere.webui.AdempiereWebUI</version-class>
+		<version-uid>1.0.0</version-uid>
+	</version>
+	<taglib>
+		<taglib-uri>http://www.idempiere.org/dsp/web/util</taglib-uri>
+		<taglib-location>/WEB-INF/tld/web/idempiere-util.dsp.tld</taglib-location>
+	</taglib>
+</config>

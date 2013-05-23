@@ -1,5 +1,6 @@
 <%@ page contentType="text/css;charset=UTF-8" %>
 <%@ taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c" %>
+<%@ taglib uri="http://www.idempiere.org/dsp/web/util" prefix="u" %>
 
 html,body {
 	margin: 0;
@@ -802,6 +803,16 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	background-color: #F9F9F9;
 }
 
+.adtab-form-borderlayout .z-south-colpsd:before { 
+	content: '${u:cleanAmp(u:getMsg(u:getCtx(), "Detail"))}';
+	position: relative; 
+	font-size: 12px; 
+	font-weight: bold;
+	top: 3px;
+	left: 4px;
+	z-index: -1;
+}
+			
 .z-grid tbody tr.highlight td.z-cell { 
 	background-color: #FFFFCC !important;
 	background-image: none !important;

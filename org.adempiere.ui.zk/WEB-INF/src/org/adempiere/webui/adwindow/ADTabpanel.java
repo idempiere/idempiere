@@ -358,21 +358,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			div.setVflex("1");
 			div.setWidth("100%");
 			div.setSpacing("0px");
-			
-			StringBuilder cssContent = new StringBuilder();
-			cssContent.append(".adtab-form-borderlayout .z-south-colpsd:before { ");
-			cssContent.append("content: \"");
-			cssContent.append(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Detail")));
-			cssContent.append("\"; ");
-			cssContent.append("position: relative; font-size: 12px; font-weight: bold; ");
-			cssContent.append("top: 3px; ");
-			cssContent.append("left: 4px; ");
-			cssContent.append("z-index: -1; ");
-			cssContent.append("} ");
-			Style style = new Style();
-			style.setContent(cssContent.toString());
-			appendChild(style);
-			
+						
 			Borderlayout layout = new Borderlayout();
 			layout.setParent(this);
 			layout.setSclass("adtab-form-borderlayout");

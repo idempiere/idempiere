@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib>
+	<uri>http://www.idempiere.org/dsp/web/util</uri>
+	<description>
+	Util methods for zweb in DSP
+	</description>
+	
+	<function>
+		<name>getCtx</name>
+		<function-class>org.compiere.util.Env</function-class>
+		<function-signature>
+	java.util.Properties getCtx()
+		</function-signature>
+		<description>
+	Returns current context
+		</description>
+	</function>
+	
+	<function>
+		<name>getMsg</name>
+		<function-class>org.compiere.util.Msg</function-class>
+		<function-signature>
+	java.lang.String getMsg(java.util.Properties,java.lang.String)
+		</function-signature>
+		<description>
+	Returns translated message
+		</description>
+	</function>
+	
+	<function>
+		<name>cleanAmp</name>
+		<function-class>org.compiere.util.Util</function-class>
+		<function-signature>
+	java.lang.String cleanAmp(java.lang.String)
+		</function-signature>
+		<description>
+	Clean all ampersand from string
+		</description>
+	</function>
+</taglib>
