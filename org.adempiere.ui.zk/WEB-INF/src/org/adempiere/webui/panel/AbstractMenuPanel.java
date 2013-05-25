@@ -72,7 +72,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
     		this.setParent(parent);
         init();
         
-    	EventQueues.lookup(MENU_ITEM_SELECTED_QUEUE, EventQueues.APPLICATION, true).subscribe(new EventListener<Event>() {
+    	EventQueues.lookup(MENU_ITEM_SELECTED_QUEUE, EventQueues.DESKTOP, true).subscribe(new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
 				if (event.getName() == Events.ON_SELECT)
 				{
@@ -288,7 +288,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 		    else
 		    	selectedItem.setOpen(!selectedItem.isOpen());
 		    selectedItem.setSelected(true);
-	        EventQueues.lookup(MENU_ITEM_SELECTED_QUEUE, EventQueues.APPLICATION, true).publish(new Event(Events.ON_SELECT, null, selectedItem));
+	        EventQueues.lookup(MENU_ITEM_SELECTED_QUEUE, EventQueues.DESKTOP, true).publish(new Event(Events.ON_SELECT, null, selectedItem));
 		}
 	}
     
