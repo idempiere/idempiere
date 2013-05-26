@@ -18,7 +18,8 @@ Bundle-ClassPath: .,
  lib/fitnesse.jar,
  lib/log4j-1.2.16.jar,
  lib/fitlibraryweb-2.0.jar,
- lib/selenium-server-standalone-2.31.0.jar
+ lib/selenium-server-standalone-2.31.0.jar,
+ lib/phantomjsdriver-1.0.3.jar
 Web-ContextPath: fitnesse
 Export-Package: fit,
  fit.decorator,
@@ -300,6 +301,7 @@ Export-Package: fit,
  org.openqa.selenium.logging.profiler,
  org.openqa.selenium.net,
  org.openqa.selenium.os,
+ org.openqa.selenium.phantomjs,
  org.openqa.selenium.remote,
  org.openqa.selenium.remote.html5,
  org.openqa.selenium.remote.internal,

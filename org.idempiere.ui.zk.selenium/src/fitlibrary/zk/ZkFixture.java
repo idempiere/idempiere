@@ -8,8 +8,11 @@ import java.util.List;
 import org.idempiere.ui.zk.selenium.Widget;
 import org.idempiere.ui.zk.selenium.Zk;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import fitlibrary.annotation.SimpleAction;
 import fitlibrary.spider.AbstractSpiderFixture;
@@ -272,6 +275,25 @@ public class ZkFixture extends SpiderFixture {
 	
 	
 	
+	@Override
+	public WebDriver webDriver() {
+		if (webDriver == null) {
+			String driver = getDynamicVariable(WEB_DRIVER_VARIABLE_NAME,"htmlunit").toString();
+			
+			if ("phantomjs".equals(driver)) {
+				webDriver = phantomjsDriver();
+				return webDriver;
+			}
+		}
+		return super.webDriver();
+	}
+
+	private WebDriver phantomjsDriver() {
+		return new PhantomJSDriver(new DesiredCapabilities());
+	}
+
+
+
 	class ZkFinder implements Finder {
 
 		@Override
