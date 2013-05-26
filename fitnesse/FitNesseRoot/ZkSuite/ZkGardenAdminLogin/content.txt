@@ -1,9 +1,12 @@
 !contents
 !|fitlibrary.zk.ZkFixture|
 
+'''start firefox,chrome or phantomjs'''
 |''start spider with''|firefox|
 |''shutdown browser automatically''|false|
 |''get url''|http://localhost:8080/webui/index.zul|
+
+|''wait response''|
 
 '''Login'''
 |''with''|$loginPanel $txtUserId|''set text''|!-GardenAdmin-!|
