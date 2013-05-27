@@ -3,6 +3,7 @@
 
 <product name="iDempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.server_product" application="org.adempiere.server.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -14,6 +15,7 @@
 
    <windowImages/>
 
+
    <launcher name="idempiere">
       <solaris/>
       <win useIco="false">
@@ -21,8 +23,10 @@
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
    </plugins>
@@ -61,6 +65,7 @@
       <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="3" />
       <plugin id="org.idempiere.felix.webconsole" autoStart="true" startLevel="0" />
       <plugin id="org.idempiere.hazelcast.service" autoStart="true" startLevel="0" />
+      <plugin id="org.idempiere.webservices" autoStart="true" startLevel="0" />
       <plugin id="org.restlet" autoStart="true" startLevel="3" />
       <property name="org.eclipse.update.reconcile" value="false" />
    </configurations>
