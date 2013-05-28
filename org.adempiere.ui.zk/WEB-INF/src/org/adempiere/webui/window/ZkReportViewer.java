@@ -252,16 +252,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				? MSysConfig.getValue(MSysConfig.ZK_REPORT_FORM_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx))
 				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));
 
-		if ("HTML".equals(type))
+		if ("HTML".equals(type)) {
 			previewType.setSelectedIndex(0);
-		else if ("PDF".equals(type))
+		} else if ("PDF".equals(type) && m_isCanExport) {
 			previewType.setSelectedIndex(1);
-		else if ("XLS".equals(type))
+		} else if ("XLS".equals(type) && m_isCanExport) {
 			previewType.setSelectedIndex(2);
-		else
+		} else {
 			// XXX - provide hint if unexpected value
-			previewType.setSelectedIndex(0); //fall back to PDF
-			
+			previewType.setSelectedIndex(0); //fall back to HTML
+		}
 		
 		labelDrill.setValue(Msg.getMsg(Env.getCtx(), "Drill") + ": ");
 		toolBar.appendChild(labelDrill);
