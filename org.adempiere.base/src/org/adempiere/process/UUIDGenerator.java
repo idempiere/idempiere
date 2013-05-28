@@ -300,19 +300,6 @@ public class UUIDGenerator extends SvrProcess {
 				}
 			}
 
-			if (no != -1)
-			{
-				StringBuilder indexName = new StringBuilder().append(column.getColumnName()).append("_idx");
-				if (indexName.length() > 30) {
-					int i = indexName.length() - 31;
-					indexName = new StringBuilder().append(column.getColumnName().substring(0, column.getColumnName().length() - i));
-					indexName.append("_uu_idx");
-				}
-				StringBuilder indexSql = new StringBuilder("CREATE UNIQUE INDEX ").append(indexName).append(" ON ").append(tableName)
-					.append("(").append(column.getColumnName()).append(")");
-				DB.executeUpdateEx(indexSql.toString(), null);
-			}
-
 			if (no == -1)
 			{
 				StringBuilder msg = new StringBuilder("@Error@ ");
