@@ -1050,7 +1050,7 @@ tr.z-group {
 	font-family: Helvetica,Arial,sans-serif;
 }
 
-.z-textbox-readonly, .z-intbox-readonly, .z-longbox-readonly, .z-doublebox-readonly, .z-decimalbox-readonly {
+.z-textbox-readonly, .z-intbox-readonly, .z-longbox-readonly, .z-doublebox-readonly, .z-decimalbox-readonly, .z-datebox-readonly {
 	background-color: #F0F0F0;
 }
 
