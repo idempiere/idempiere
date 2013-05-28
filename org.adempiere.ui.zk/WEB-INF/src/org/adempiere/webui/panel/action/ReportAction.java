@@ -88,6 +88,7 @@ public class ReportAction implements EventListener<Event>
 	
 	public void show() 
 	{
+		final boolean isCanExport=MRole.getDefault().isCanExport();
 		if(winReport == null)
 		{
 			winReport = new Window();
@@ -119,10 +120,13 @@ public class ReportAction implements EventListener<Event>
 			
 			chkCurrentRowOnly.setLabel(Msg.getMsg(Env.getCtx(), "CurrentRowOnly"));
 			chkCurrentRowOnly.setSelected(false);
-
-			chkExport.setLabel(Msg.getMsg(Env.getCtx(), "Export"));
-			chkExport.setSelected(false);
-
+			
+			if( isCanExport )
+			{
+				chkExport.setLabel(Msg.getMsg(Env.getCtx(), "Export"));
+				chkExport.setSelected(false);
+		        }
+			
 			chkAllColumns.setLabel(Msg.getMsg(Env.getCtx(), "AllColumns"));
 			chkAllColumns.setSelected(false);
 			li = cboPrintFormat.getSelectedItem();
@@ -151,13 +155,21 @@ public class ReportAction implements EventListener<Event>
 
 			vb.appendChild(chkCurrentRowOnly);
 			
-			hb = new Hbox();
-			hb.setAlign("center");
-			hb.appendChild(chkExport);
-			chkExport.addEventListener(Events.ON_CHECK, this);
-			hb.appendChild(cboExportType);
-			cboExportType.setWidth("100%");
-			vb.appendChild(hb);
+		
+			
+			if ( isCanExport )
+			{
+				hb = new Hbox();
+				hb.setAlign("center");
+				hb.appendChild(chkExport);
+				chkExport.addEventListener(Events.ON_CHECK, this);
+				hb.appendChild(cboExportType);
+				cboExportType.setWidth("100%");
+				vb.appendChild(hb);
+			}
+			
+	
+			
 			
 			vb.appendChild(chkAllColumns);
 
