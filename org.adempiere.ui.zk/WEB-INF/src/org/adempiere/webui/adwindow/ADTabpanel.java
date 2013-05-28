@@ -1232,14 +1232,16 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 				if (ti.getPage() == null) {
 					Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
 				}
-				
+
 				boolean changed = false;
-				String name = (String) gridTab.getValue("Name");
-				if (name != null && !name.equals(data.getName())) {
-					data.setName(name);
-					changed = true;
-				}				
-				
+				if (Env.isBaseLanguage(Env.getCtx(), "AD_Menu")) {
+					String name = (String) gridTab.getValue("Name");
+					if (name != null && !name.equals(data.getName())) {
+						data.setName(name);
+						changed = true;
+					}				
+				}
+
 				Boolean summary = (Boolean) gridTab.getValue("IsSummary");
 				if (summary != null && !summary.booleanValue() == data.isSummary()) {
 					data.setSummary(summary);
