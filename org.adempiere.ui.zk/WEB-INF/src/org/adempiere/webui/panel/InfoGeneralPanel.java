@@ -37,6 +37,7 @@ import org.adempiere.webui.window.FDialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.I_C_ElementValue;
+import org.compiere.model.MTable;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -120,17 +121,22 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 		if (queryValue != null && queryValue.length() > 0)
         {
-			String separator = I_C_ElementValue.Table_Name.equalsIgnoreCase(p_tableName) ? "-" : "_";
-			if (txt2.isVisible())
+			MTable table = MTable.get(Env.getCtx(), p_tableName);
+			if (table.getIdentifierColumns().length > 1) 
 			{
-				String[] values = queryValue.split("["+separator+"]");
-				if (values != null && values.length == 2) 
+				String separator = I_C_ElementValue.Table_Name.equalsIgnoreCase(p_tableName) ? "-" : "_";
+				if (txt2.isVisible())
 				{
-					txt1.setValue(values[0]);
-					txt2.setValue(values[1]);
+					String[] values = queryValue.split("["+separator+"]");
+					if (values != null && values.length == 2) 
+					{
+						txt1.setValue(values[0]);
+						txt2.setValue(values[1]);
+					}
 				}
-			}
 
+			}			
+			
             executeQuery();
             renderItems();
         }
