@@ -117,6 +117,8 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String DOCACTIONBUTTON_SHOWACTIONNAME = "DOCACTIONBUTTON_SHOWACTIONNAME";
 	public static final String ZK_MAX_UPLOAD_SIZE = "ZK_MAX_UPLOAD_SIZE";
 	public static final String CALENDAR_ALTERNATE_TIMEZONE = "CALENDAR_ALTERNATE_TIMEZONE";
+	public static final String ZK_REPORT_JASPER_OUTPUT_TYPE="ZK_REPORT_JASPER_OUTPUT_TYPE";
+	
 
 	/**
 	 * 	Standard Constructor
