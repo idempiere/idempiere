@@ -55,8 +55,7 @@ public class MWorkflow extends X_AD_Workflow
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4925514638954671534L;
-
+	private static final long serialVersionUID = 1905448790453650036L;
 
 	/**
 	 * 	Get Workflow from Cache
@@ -637,7 +636,7 @@ public class MWorkflow extends X_AD_Workflow
 		}
 		//	Menu/Workflow
 		else if (is_ValueChanged("IsActive") || is_ValueChanged(COLUMNNAME_Name) 
-			|| is_ValueChanged(COLUMNNAME_Description) || is_ValueChanged(COLUMNNAME_Help))
+			|| is_ValueChanged(COLUMNNAME_Description))
 		{
 			MMenu[] menues = MMenu.get(getCtx(), "AD_Workflow_ID=" + getAD_Workflow_ID(), get_TrxName());
 			for (int i = 0; i < menues.length; i++)
@@ -647,26 +646,6 @@ public class MWorkflow extends X_AD_Workflow
 				menues[i].setDescription(getDescription());
 				menues[i].saveEx();
 			}
-// TODO: teo_sarca: why do we need to sync node name with workflow name? - see BF 2665963
-//			X_AD_WF_Node[] nodes = MWindow.getWFNodes(getCtx(), "AD_Workflow_ID=" + getAD_Workflow_ID(), get_TrxName());
-//			for (int i = 0; i < nodes.length; i++)
-//			{
-//				boolean changed = false;
-//				if (nodes[i].isActive() != isActive())
-//				{
-//					nodes[i].setIsActive(isActive());
-//					changed = true;
-//				}
-//				if (nodes[i].isCentrallyMaintained())
-//				{
-//					nodes[i].setName(getName());
-//					nodes[i].setDescription(getDescription());
-//					nodes[i].setHelp(getHelp());
-//					changed = true;
-//				}
-//				if (changed)
-//					nodes[i].saveEx();
-//			}
 		}
 
 		return success;

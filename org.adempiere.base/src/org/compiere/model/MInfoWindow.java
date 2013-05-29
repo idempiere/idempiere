@@ -34,7 +34,7 @@ public class MInfoWindow extends X_AD_InfoWindow
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4040291733093824436L;
+	private static final long serialVersionUID = -8062633099053363108L;
 
 	/**
 	 * 	Standard Constructor
@@ -130,7 +130,7 @@ public class MInfoWindow extends X_AD_InfoWindow
 
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
-		if (newRecord && success)	//	Add to all automatic roles
+		if (newRecord)	//	Add to all automatic roles
 		{
 			MRole[] roles = MRole.getOf(getCtx(), "IsManual='N'");
 			for (int i = 0; i < roles.length; i++)
@@ -138,6 +138,20 @@ public class MInfoWindow extends X_AD_InfoWindow
 				MInfoWindowAccess wa = new MInfoWindowAccess(this, roles[i].getAD_Role_ID());
 				wa.saveEx();
 			}
+		}
+		//	Menu
+		else if (is_ValueChanged("IsActive") || is_ValueChanged("Name") 
+			|| is_ValueChanged("Description"))
+		{
+			MMenu[] menues = MMenu.get(getCtx(), "AD_InfoWindow_ID=" + getAD_InfoWindow_ID(), get_TrxName());
+			for (int i = 0; i < menues.length; i++)
+			{
+				menues[i].setName(getName());
+				menues[i].setDescription(getDescription());
+				menues[i].setIsActive(isActive());
+				menues[i].saveEx();
+			}
+			//
 		}
 		return super.afterSave(newRecord, success);
 	}
