@@ -75,6 +75,7 @@ public class RequestWindow extends Window implements EventListener<Event> {
 	private ConfirmPanel confirmPanel;
 	
 	private Window parent;
+	private Calendar calBegin,calEnd;
 	
 	public RequestWindow(CalendarsEvent ce, Window parent) {
 		
@@ -282,7 +283,7 @@ public class RequestWindow extends Window implements EventListener<Event> {
 				throw new WrongValueException(entryConfidentialField.getComponent(), fillMandatory);
 			if (dbxStartPlan.getValue().compareTo(dbxCompletePlan.getValue()) > 0) 
 				throw new WrongValueException(dbxCompletePlan, Msg.translate(Env.getCtx(), "DateCompletePlan"));	
-			if (checkTime() && (dbxStartPlan.getValue().compareTo(dbxCompletePlan.getValue()) == 0)) 
+			if (checkTime()) 
 				throw new WrongValueException(tbxStartTime, Msg.translate(Env.getCtx(), "CheckTime"));	
 					
 			MRequest request = new MRequest(Env.getCtx(), 0, null);
@@ -294,10 +295,10 @@ public class RequestWindow extends Window implements EventListener<Event> {
 			request.setConfidentialType((String) confidentialField.getValue());
 			request.setSalesRep_ID((Integer) salesRepField.getValue());
 			request.setConfidentialTypeEntry((String) entryConfidentialField.getValue());
-			request.setDateStartPlan(new Timestamp(dbxStartPlan.getValue().getTime()));
-			request.setDateCompletePlan(new Timestamp(dbxCompletePlan.getValue().getTime()));
-			request.setStartTime(new Timestamp(tbxStartTime.getValue().getTime()));
-			request.setEndTime(new Timestamp(tbxEndTime.getValue().getTime()));
+			request.setDateStartPlan(new Timestamp(calBegin.getTimeInMillis()));
+			request.setDateCompletePlan(new Timestamp(calEnd.getTimeInMillis()));
+			request.setStartTime(new Timestamp(calBegin.getTimeInMillis()));
+			request.setEndTime(new Timestamp(calEnd.getTimeInMillis()));
 			
 			if (request.save())
 			{
@@ -320,13 +321,28 @@ public class RequestWindow extends Window implements EventListener<Event> {
 	//Check, Start time is not  >=  End time, when Start Plan == Complete Plan
 	private boolean checkTime()
 	{
-		Calendar cal =Calendar.getInstance();
-		cal.setTimeInMillis(tbxStartTime.getValue().getTime());		
+		calBegin = Calendar.getInstance();
+		calBegin.setTime(dbxStartPlan.getValue());
+		Calendar cal1 = Calendar.getInstance();
+		cal1.setTimeInMillis(tbxStartTime.getValue().getTime());
+		calBegin.set(Calendar.HOUR_OF_DAY, cal1.get(Calendar.HOUR_OF_DAY));
+		calBegin.set(Calendar.MINUTE, cal1.get(Calendar.MINUTE));
+		calBegin.set(Calendar.SECOND, 0);
+		calBegin.set(Calendar.MILLISECOND, 0);
+		
+		calEnd = Calendar.getInstance();
+		calEnd.setTime(dbxCompletePlan.getValue());
 		Calendar cal2 = Calendar.getInstance();
-		cal2.setTimeInMillis(tbxEndTime.getValue().getTime());		
-		if ((cal.get(Calendar.HOUR_OF_DAY) >= cal2.get(Calendar.HOUR_OF_DAY)))
-			return true;		
-		else
+		cal2.setTimeInMillis(tbxEndTime.getValue().getTime());
+		calEnd.set(Calendar.HOUR_OF_DAY, cal2.get(Calendar.HOUR_OF_DAY));
+		calEnd.set(Calendar.MINUTE, cal2.get(Calendar.MINUTE));
+		calEnd.set(Calendar.SECOND, 0);
+		calEnd.set(Calendar.MILLISECOND, 0);
+
+		if ((cal1.get(Calendar.HOUR_OF_DAY) >= cal2.get(Calendar.HOUR_OF_DAY)) && (dbxStartPlan.getValue().compareTo(dbxCompletePlan.getValue()) == 0)) {
+			return true;
+		} else {
 			return false;
+		}	
 	}
 }
