@@ -55,7 +55,7 @@ public class MTable extends X_AD_Table
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8904670462021706436L;
+	private static final long serialVersionUID = 3743087295968040894L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
