@@ -72,6 +72,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 	private static final long serialVersionUID = 3478451169922775667L;
 	protected TreeMap<String, Object> treeNodeItemMap = new TreeMap<String, Object>();
     protected String[] treeValues;
+    protected String[] treeTypes;
     protected String[] treeDescription;
     protected String[] treeImages;
 
@@ -176,8 +177,8 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 
     protected void addTreeItem(Treeitem treeItem)
     {
-        String key = getLabel(treeItem);
-        treeNodeItemMap.put(key, treeItem);
+        StringBuilder key = new StringBuilder(getLabel(treeItem)).append(".").append(treeItem.getAttribute("menu.type"));
+        treeNodeItemMap.put(key.toString(), treeItem);        
     }
 
     protected void addTreeItem(DefaultTreeNode<?> node) {
@@ -221,9 +222,9 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
     	treeValues = new String[treeNodeItemMap.size()];
     	treeDescription = new String[treeNodeItemMap.size()];
     	treeImages = new String[treeNodeItemMap.size()];
+    	treeTypes = new String[treeNodeItemMap.size()];
 
     	int i = -1;
-
         for (Object value : treeNodeItemMap.values())
         {
         	i++;
@@ -231,6 +232,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         	{
         		Treeitem treeItem = (Treeitem) value;
         		treeValues[i] = getLabel(treeItem);
+        		treeTypes[i]= String.valueOf(treeItem.getAttribute("menu.type")); 
         		treeDescription[i] = treeItem.getTooltiptext();
         		treeImages[i] = getImage(treeItem);
         		if ((treeImages[i] == null || treeImages[i].trim().length() == 0) && isFolder(treeItem))
@@ -267,6 +269,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         cmbSearch.setDescription(treeDescription);
         cmbSearch.setDict(treeValues);
         cmbSearch.setImages(treeImages);
+        cmbSearch.setContents(treeTypes);
 	}
 
 	protected boolean isFolder(Treeitem treeItem) {
@@ -353,8 +356,9 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         			if (comp.getUuid().equals(uuid))
         			{
         				Comboitem item = (Comboitem) comp;
-        				String value = item.getLabel();
-        				selectTreeitem(value);
+        				String value = item.getLabel();   
+        				String type = item.getContent();
+        				selectTreeitem(value+"."+type);
         			}
         		}	        	
         	}
