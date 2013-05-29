@@ -36,7 +36,7 @@ public class AutoComplete extends Combobox
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2642639623099513816L;
+	private static final long serialVersionUID = -6440285742490532737L;
 
 	/** comboItems	All menu labels	 */
 	private String[] comboItems;
@@ -45,7 +45,7 @@ public class AutoComplete extends Combobox
 	private String[] strDescription;
 	
 	private String[] images;
-	
+
 	private String[] contents;
 
 	/**
@@ -85,7 +85,7 @@ public class AutoComplete extends Combobox
 	{
 		contents = vals;
 	}
-	
+
 	public void setImages(String[] images)
 	{
 		this.images = images;
@@ -164,7 +164,7 @@ public class AutoComplete extends Combobox
 
 				comboitem.setLabel(comboItems[i]);
 				comboitem.setDescription(strDescription[i]);
-				
+
 				if (images != null && i < images.length && images[i] != null && images[i].trim().length() > 0)
 				{
 					comboitem.setImage(images[i]);

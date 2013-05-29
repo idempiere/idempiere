@@ -63,13 +63,14 @@ import org.zkoss.zul.impl.LabelImageElement;
  */
 public class TreeSearchPanel extends Panel implements EventListener<Event>, TreeDataListener, IdSpace
 {
-	private static final String ON_COMBO_SELECT_ECHO_EVENT = "onComboSelectEcho";
-	private static final String ON_POST_SELECT_TREEITEM_EVENT = "onPostSelectTreeitem";
-	protected static final String ON_POST_FIRE_TREE_EVENT = "onPostFireTreeEvent";
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3478451169922775667L;
+	private static final long serialVersionUID = -1659100374345282774L;
+
+	private static final String ON_COMBO_SELECT_ECHO_EVENT = "onComboSelectEcho";
+	private static final String ON_POST_SELECT_TREEITEM_EVENT = "onPostSelectTreeitem";
+	protected static final String ON_POST_FIRE_TREE_EVENT = "onPostFireTreeEvent";
 	protected TreeMap<String, Object> treeNodeItemMap = new TreeMap<String, Object>();
     protected String[] treeValues;
     protected String[] treeTypes;
@@ -178,7 +179,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
     protected void addTreeItem(Treeitem treeItem)
     {
         StringBuilder key = new StringBuilder(getLabel(treeItem)).append(".").append(treeItem.getAttribute("menu.type"));
-        treeNodeItemMap.put(key.toString(), treeItem);        
+        treeNodeItemMap.put(key.toString(), treeItem);
     }
 
     protected void addTreeItem(DefaultTreeNode<?> node) {
@@ -356,7 +357,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         			if (comp.getUuid().equals(uuid))
         			{
         				Comboitem item = (Comboitem) comp;
-        				String value = item.getLabel();   
+        				String value = item.getLabel();
         				String type = item.getContent();
         				selectTreeitem(value+"."+type);
         			}
