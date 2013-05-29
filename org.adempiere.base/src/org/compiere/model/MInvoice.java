@@ -1733,10 +1733,16 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				m_processMsg = "@NoAccountOrgCurrency@";
 				return DocAction.STATUS_Invalid;
 			}
-
-			MDocType[] doctypes = MDocType.getOfDocBaseType(getCtx(), MDocType.DOCBASETYPE_ARReceipt);
+			
+			String docBaseType = "";
+			if (isSOTrx())
+				docBaseType=MDocType.DOCBASETYPE_ARReceipt;
+			else
+				docBaseType=MDocType.DOCBASETYPE_APPayment;
+			
+			MDocType[] doctypes = MDocType.getOfDocBaseType(getCtx(), docBaseType);
 			if (doctypes == null || doctypes.length == 0) {
-				m_processMsg = "No document type for AR Receipt";
+				m_processMsg = "No document type ";
 				return DocAction.STATUS_Invalid;
 			}
 			MDocType doctype = null;
