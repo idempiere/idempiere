@@ -20,6 +20,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Msg;
 
 
 /**
@@ -115,6 +116,23 @@ public class MUserDefField extends X_AD_UserDef_Field
 		}
 
 		return retValue;
+	}
+	
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true
+	 */
+	protected boolean beforeSave (boolean newRecord)
+	{
+		if (is_ValueChanged("AD_Reference_ID")){
+			MField field = new MField(getCtx(), getAD_Field_ID(), get_TrxName());
+			if (field.isEncrypted()){
+				log.saveError("SaveError", Msg.getMsg(getCtx(), "NotChangeReference"));
+				return false;
+			}
+		}
+		return true;
 	}
 		
 }	//	MyModelExample
