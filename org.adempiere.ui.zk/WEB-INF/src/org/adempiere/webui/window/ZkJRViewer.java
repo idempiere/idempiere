@@ -1,5 +1,7 @@
 package org.adempiere.webui.window;
 
+import static org.compiere.model.MSysConfig.ZK_REPORT_JASPER_OUTPUT_TYPE;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.logging.Level;
@@ -17,8 +19,6 @@ import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
-
-import ognl.DefaultTypeConverter;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.component.Listbox;
@@ -71,8 +71,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	
 	private void init() {
 		final boolean isCanExport=MRole.getDefault().isCanExport();
-		defaultType=MSysConfig.getValue(MSysConfig.ZK_REPORT_JASPER_OUTPUT_TYPE);//It gets default Jasper output type
-		
+		defaultType = MSysConfig.getValue(ZK_REPORT_JASPER_OUTPUT_TYPE, "PDF",
+				Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));//It gets default Jasper output type
+
 		Borderlayout layout = new Borderlayout();
 		layout.setStyle("position: absolute; height: 99%; width: 99%");
 		this.appendChild(layout);
@@ -80,36 +81,42 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 		Toolbar toolbar = new Toolbar();
 		toolbar.setHeight("26px");
-		
+
 		previewType.setMold("select");
-		if( isCanExport ){ 
-			previewType.appendItem("HTML", "HTML");
+		if (isCanExport) {
 			previewType.appendItem("PDF", "PDF");
+			previewType.appendItem("HTML", "HTML");
 			previewType.appendItem("Excel", "XLS");
 			previewType.appendItem("CSV", "CSV");	
-			if( "HTML".equals(defaultType) ){				
+			if ("PDF".equals(defaultType)) {
 				previewType.setSelectedIndex(0);
-			} else if( "PDF".equals(defaultType) ){				
+			} else if ("HTML".equals(defaultType)) {
 				previewType.setSelectedIndex(1);
-			} else if( "XLS".equals(defaultType) ){				
+			} else if ("XLS".equals(defaultType)) {
 				previewType.setSelectedIndex(2);
-			} else if( "CSV".equals(defaultType) ){				
+			} else if ("CSV".equals(defaultType)) {
 				previewType.setSelectedIndex(3);
 			} else {
-					previewType.setSelectedIndex(1);
-					log.info("Format not Valid: "+defaultType);
+				previewType.setSelectedIndex(0);
+				log.info("Format not Valid: "+defaultType);
 			}
-		}else{
-			previewType.appendItem("HTML", "HTML");
+		} else {
 			previewType.appendItem("PDF", "PDF");
-			if( "XLS".equals(defaultType) || "CSV".equals(defaultType) ){
-				defaultType="PDF";
-			}else if("HTML".equals(defaultType) || "PDF".equals(defaultType)){}
-				else log.info("Format not Valid: "+defaultType);
-		
-			previewType.setSelectedIndex(1);
-		} 
-		
+			previewType.appendItem("HTML", "HTML");
+			if ("PDF".equals(defaultType)) {
+				previewType.setSelectedIndex(0);
+			} else if ("HTML".equals(defaultType)) {
+				previewType.setSelectedIndex(1);
+			} else if ("XLS".equals(defaultType)) {
+				previewType.setSelectedIndex(0); // default to PDF if cannot export
+			} else if ("CSV".equals(defaultType)) {
+				previewType.setSelectedIndex(0); // default to PDF if cannot export
+			} else {
+				previewType.setSelectedIndex(0);
+				log.info("Format not Valid: "+defaultType);
+			}
+		}
+
 		toolbar.appendChild(previewType);
 		previewType.addEventListener(Events.ON_SELECT, this);
 		
