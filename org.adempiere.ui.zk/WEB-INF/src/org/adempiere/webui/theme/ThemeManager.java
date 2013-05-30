@@ -13,9 +13,19 @@
  *****************************************************************************/
 package org.adempiere.webui.theme;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.IOException;
+
 import org.adempiere.webui.AdempiereWebUI;
+import org.compiere.model.MClientInfo;
+import org.compiere.model.MImage;
 import org.compiere.model.MSysConfig;
+import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.zkoss.image.Images;
 
 /**
  *
@@ -101,5 +111,36 @@ public final class ThemeManager {
 		builder.append("/").append(name);
 		String url = builder.toString().intern();
 		return  url;
+	}
+	
+	/**
+	 * 
+	 * @return client web logo if available
+	 * @throws IOException
+	 */
+	public static org.zkoss.image.Image getClientWebLogo() throws IOException {
+		MClientInfo cinfo = MClientInfo.get(Env.getCtx());
+		if (cinfo.getLogoWeb_ID() > 0) {
+			MImage mImage = MImage.get(Env.getCtx(), cinfo.getLogoWeb_ID());
+			Image image = mImage.getImage();
+			if (image instanceof RenderedImage) {
+				RenderedImage rImage = (RenderedImage)image;
+				return Images.encode(mImage.getName(), rImage);
+			} else {
+				BufferedImage bImage = new BufferedImage(image.getWidth(null),
+	                    image.getHeight(null),
+	                    BufferedImage.TYPE_INT_ARGB);
+				Graphics2D bImageGraphics = bImage.createGraphics();
+				bImageGraphics.drawImage(image, null, null);
+				RenderedImage rImage = (RenderedImage)bImage;
+				String name = mImage.getName();
+				if (name.endsWith("jpg")) {
+					name = name.replace("jpg", "jpeg");
+				}
+				return Images.encode(name, rImage);
+			}
+		} else {
+			return null;
+		}
 	}
 }
