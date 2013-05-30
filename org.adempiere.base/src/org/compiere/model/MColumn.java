@@ -543,7 +543,17 @@ public class MColumn extends X_AD_Column
 				+ " FOREIGN KEY (" + getColumnName() + ") REFERENCES "
 				+ AD_Table(AD_Table_ID) ON DELETE CASCADE
 		**/
-		
+		// IDEMPIERE-965
+		if (getColumnName().equals(PO.getUUIDColumnName(tableName))) {
+			StringBuilder indexName = new StringBuilder().append(getColumnName()).append("_idx");
+			if (indexName.length() > 30) {
+				int i = indexName.length() - 31;
+				indexName = new StringBuilder().append(getColumnName().substring(0, getColumnName().length() - i));
+				indexName.append("_uu_idx");
+			}
+			StringBuilder msgreturn = new StringBuilder("CONSTRAINT ").append(indexName).append(" UNIQUE (").append(getColumnName()).append(")");
+			return msgreturn.toString();
+		}
 		return "";
 	}	//	getConstraint
 	

@@ -1,5 +1,7 @@
 package org.adempiere.webui.window;
 
+import static org.compiere.model.MSysConfig.ZK_REPORT_JASPER_OUTPUT_TYPE;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.logging.Level;
@@ -24,7 +26,10 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.session.SessionManager;
+import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -49,6 +54,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	private Listbox previewType = new Listbox();
 	private Iframe iframe;
 	private AMedia media;
+	private String defaultType;
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ZkJRViewer.class);
 	
@@ -64,6 +70,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	}
 	
 	private void init() {
+		final boolean isCanExport=MRole.getDefault().isCanExport();
+		defaultType = MSysConfig.getValue(ZK_REPORT_JASPER_OUTPUT_TYPE, "PDF",
+				Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));//It gets default Jasper output type
+
 		Borderlayout layout = new Borderlayout();
 		layout.setStyle("position: absolute; height: 99%; width: 99%");
 		this.appendChild(layout);
@@ -73,10 +83,40 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		toolbar.setHeight("26px");
 
 		previewType.setMold("select");
-		previewType.appendItem("PDF", "PDF");
-		previewType.appendItem("HTML", "HTML");
-		previewType.appendItem("Excel", "XLS");
-		previewType.appendItem("CSV", "CSV");
+		if (isCanExport) {
+			previewType.appendItem("PDF", "PDF");
+			previewType.appendItem("HTML", "HTML");
+			previewType.appendItem("Excel", "XLS");
+			previewType.appendItem("CSV", "CSV");	
+			if ("PDF".equals(defaultType)) {
+				previewType.setSelectedIndex(0);
+			} else if ("HTML".equals(defaultType)) {
+				previewType.setSelectedIndex(1);
+			} else if ("XLS".equals(defaultType)) {
+				previewType.setSelectedIndex(2);
+			} else if ("CSV".equals(defaultType)) {
+				previewType.setSelectedIndex(3);
+			} else {
+				previewType.setSelectedIndex(0);
+				log.info("Format not Valid: "+defaultType);
+			}
+		} else {
+			previewType.appendItem("PDF", "PDF");
+			previewType.appendItem("HTML", "HTML");
+			if ("PDF".equals(defaultType)) {
+				previewType.setSelectedIndex(0);
+			} else if ("HTML".equals(defaultType)) {
+				previewType.setSelectedIndex(1);
+			} else if ("XLS".equals(defaultType)) {
+				previewType.setSelectedIndex(0); // default to PDF if cannot export
+			} else if ("CSV".equals(defaultType)) {
+				previewType.setSelectedIndex(0); // default to PDF if cannot export
+			} else {
+				previewType.setSelectedIndex(0);
+				log.info("Format not Valid: "+defaultType);
+			}
+		}
+
 		toolbar.appendChild(previewType);
 		previewType.addEventListener(Events.ON_SELECT, this);
 		
@@ -112,7 +152,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				prefix.append(ch);
 			} else {
 				prefix.append("_");
-			}
+			} 
 		}
 		return prefix.toString();
 	}
@@ -129,7 +169,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 	private void cmd_render() {
 		try {
-			renderReport();
+			renderReport(); 
 		} catch (Exception e) {
 			throw new AdempiereException("Failed to render report", e);
 		}
@@ -141,11 +181,14 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	}
 	
 	private void renderReport() throws Exception {
+		String reportType;
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		try {			
 			Thread.currentThread().setContextClassLoader(JasperReport.class.getClassLoader());
 			Listitem selected = previewType.getSelectedItem();
-			if (selected == null || "PDF".equals(selected.getValue())) {
+			reportType=selected.getValue();
+			if ( "PDF".equals( reportType ) ) 
+			{
 				String path = System.getProperty("java.io.tmpdir");
 				String prefix = makePrefix(jasperPrint.getName());
 				if (log.isLoggable(Level.FINE))
@@ -162,7 +205,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				media = new AMedia(getTitle(), "pdf", "application/pdf", file, true);
 							
 				
-			} else if ("HTML".equals(previewType.getSelectedItem().getValue())) {
+			} else if ("HTML".equals(reportType)) {
 				String path = System.getProperty("java.io.tmpdir");
 				String prefix = makePrefix(jasperPrint.getName());
 				if (log.isLoggable(Level.FINE))
@@ -181,7 +224,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		         exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, request.getContextPath()+"/images/report/");
 		 	     exporter.exportReport();			
 				media = new AMedia(getTitle(), "html", "text/html", file, false);
-			} else if ("XLS".equals(previewType.getSelectedItem().getValue())) {
+			} else if ("XLS".equals(reportType)) {
 				String path = System.getProperty("java.io.tmpdir");
 				String prefix = makePrefix(jasperPrint.getName());
 				if (log.isLoggable(Level.FINE))
@@ -199,7 +242,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				exporterXLS.exportReport();			
 				media = new AMedia(getTitle(), "xls", "application/vnd.ms-excel", file, true);						
 				
-			}else if ("CSV".equals(previewType.getSelectedItem().getValue())) {
+			}else if ("CSV".equals(reportType)) {
 				String path = System.getProperty("java.io.tmpdir");
 				String prefix = makePrefix(jasperPrint.getName());
 				if (log.isLoggable(Level.FINE))

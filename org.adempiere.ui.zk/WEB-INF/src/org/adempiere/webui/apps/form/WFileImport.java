@@ -454,8 +454,12 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		
 		String formatName = (String)listitem.getLabel();
 		
-		if (formatName.equals(s_none))
+		if (formatName.equals(s_none)) {
+			confirmPanel.getButton("Ok").setEnabled(false);
+			m_format=null;
 			return;
+		}
+			
 
 		int formatId = (Integer)listitem.getValue();
 		m_format = ImpFormat.load (formatId);

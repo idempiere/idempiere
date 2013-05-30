@@ -27,6 +27,7 @@ public class ProcessButtonPopup extends Window {
 		setBorder("normal");
 		
 		Vbox vbox = new Vbox();
+		vbox.setHflex("true");
 		appendChild(vbox);
 		vbox.setSclass("toolbar-popup-window-cnt");
 		vbox.setAlign("stretch");
@@ -35,6 +36,7 @@ public class ProcessButtonPopup extends Window {
 			if (button.getPage() != null) {
 				button.detach();
 			}
+			button.setHflex("1");
 			vbox.appendChild(button);
 		}
 	}

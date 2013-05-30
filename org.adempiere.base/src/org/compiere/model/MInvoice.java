@@ -66,7 +66,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6821562060687417857L;
+	private static final long serialVersionUID = -1223767990636657474L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -1132,11 +1132,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 * 	Test Allocation (and set paid flag)
 	 *	@return true if updated
 	 */
-	public boolean testAllocation()
+	public boolean testAllocation(boolean beingCompleted)
 	{
 		boolean change = false;
 
-		if ( isProcessed() ) {
+		if ( isProcessed() || beingCompleted) {
 			BigDecimal alloc = getAllocatedAmt();	//	absolute
 			if (alloc == null)
 				alloc = Env.ZERO;
@@ -1155,6 +1155,10 @@ public class MInvoice extends X_C_Invoice implements DocAction
 
 		return change;
 	}	//	testAllocation
+
+	public boolean testAllocation() {
+		return testAllocation(false);
+	}
 
 	/**
 	 * 	Set Paid Flag for invoices
@@ -1386,13 +1390,13 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			m_processMsg = "@NoLines@";
 			return DocAction.STATUS_Invalid;
 		}
-		//	No Cash Book
-		if (PAYMENTRULE_Cash.equals(getPaymentRule())
-			&& MCashBook.get(getCtx(), getAD_Org_ID(), getC_Currency_ID()) == null)
-		{
-			m_processMsg = "@NoCashBook@";
-			return DocAction.STATUS_Invalid;
-		}
+		//	No Cash Book // deprecated with IDEMPIERE-170 Complete Cash as Payment functionality 
+//		if (PAYMENTRULE_Cash.equals(getPaymentRule())
+//			&& MCashBook.get(getCtx(), getAD_Org_ID(), getC_Currency_ID()) == null)
+//		{
+//			m_processMsg = "@NoCashBook@";
+//			return DocAction.STATUS_Invalid;
+//		}
 
 		//	Convert/Check DocType
 		if (getC_DocType_ID() != getC_DocTypeTarget_ID() )
@@ -1733,10 +1737,16 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				m_processMsg = "@NoAccountOrgCurrency@";
 				return DocAction.STATUS_Invalid;
 			}
-
-			MDocType[] doctypes = MDocType.getOfDocBaseType(getCtx(), MDocType.DOCBASETYPE_ARReceipt);
+			
+			String docBaseType = "";
+			if (isSOTrx())
+				docBaseType=MDocType.DOCBASETYPE_ARReceipt;
+			else
+				docBaseType=MDocType.DOCBASETYPE_APPayment;
+			
+			MDocType[] doctypes = MDocType.getOfDocBaseType(getCtx(), docBaseType);
 			if (doctypes == null || doctypes.length == 0) {
-				m_processMsg = "No document type for AR Receipt";
+				m_processMsg = "No document type ";
 				return DocAction.STATUS_Invalid;
 			}
 			MDocType doctype = null;
@@ -1767,7 +1777,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 
 			payment.setDocAction(MPayment.DOCACTION_Complete);
 			if (!payment.processIt(MPayment.DOCACTION_Complete)) {
-				m_processMsg = "Cannot Complete the Payment :" + payment;
+				m_processMsg = "Cannot Complete the Payment : [" + payment.getProcessMsg() + "] " + payment;
 				return DocAction.STATUS_Invalid;
 			}
 
@@ -2074,6 +2084,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			}
 		}
 
+		if (PAYMENTRULE_Cash.equals(getPaymentRule())) {
+			if (testAllocation(true)) {
+				saveEx();
+			}
+		}
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)

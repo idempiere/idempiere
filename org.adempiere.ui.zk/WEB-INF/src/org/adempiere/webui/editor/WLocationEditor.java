@@ -117,7 +117,10 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
         }
         else
         {
-        	String trxName = this.gridField.getGridTab().getTableModel().get_TrxName(); 
+        	String trxName = null; // could be null if called from a form
+        	if (this.gridField != null)
+        		trxName = this.gridField.getGridTab().getTableModel().get_TrxName();
+
             m_value = m_Location.getLocation(value, trxName);
             if (m_value == null)
                 getComponent().setText("<" + value + ">");

@@ -383,7 +383,8 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		if (log.isLoggable(Level.CONFIG)) log.config("PrintItems=" + ids.length);
 		
 		m_ids = ids;
-		Clients.response(new AuEcho(this, "onAfterProcess", null));
+		if (!genForm.getProcessInfo().isError())
+			Clients.response(new AuEcho(this, "onAfterProcess", null));
 		
 	}   //  generateShipments_complete
 	
@@ -559,7 +560,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 				tr.appendChild(td);
 			}
 			
-			if (msgPresents) {
+			if (msgPresents && !genForm.getProcessInfo().isError()) {
 				Td td = new Td();
 				if (log.getP_Msg() != null) {
 					if (log.getAD_Table_ID() > 0 && log.getRecord_ID() > 0) {

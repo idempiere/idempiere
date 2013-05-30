@@ -35,7 +35,7 @@ public class MTask extends X_AD_Task
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3798377076931060582L;
+	private static final long serialVersionUID = 5286481246615520755L;
 
 	/**
 	 * 	Standard Constructor
@@ -143,5 +143,34 @@ public class MTask extends X_AD_Task
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
+
+	/**
+	 *  After Save.
+	 *  @param newRecord new record
+	 *  @param success success
+	 *  @return true if save complete (if not overwritten true)
+	 */
+	protected boolean afterSave (boolean newRecord, boolean success)
+	{
+		if (log.isLoggable(Level.FINE)) log.fine("Success=" + success);
+		if (! newRecord)
+		{
+			//	Menu/Workflow
+			if (is_ValueChanged("IsActive") || is_ValueChanged("Name") 
+				|| is_ValueChanged("Description"))
+			{
+				MMenu[] menues = MMenu.get(getCtx(), "AD_Task_ID=" + getAD_Task_ID(), get_TrxName());
+				for (int i = 0; i < menues.length; i++)
+				{
+					menues[i].setIsActive(isActive());
+					menues[i].setName(getName());
+					menues[i].setDescription(getDescription());
+					menues[i].saveEx();
+				}
+			}
+		}
+
+		return success;
+	}   //  afterSave
+
 }	//	MTask

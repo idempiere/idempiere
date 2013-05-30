@@ -55,7 +55,7 @@ public class MTable extends X_AD_Table
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8904670462021706436L;
+	private static final long serialVersionUID = 3743087295968040894L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -335,6 +335,27 @@ public class MTable extends X_AD_Table
 		retValue = list.toArray(retValue);
 		return retValue;
 	}	//	getKeyColumns
+	
+	/**
+	 * 	Get Identifier Columns of Table
+	 *	@return Identifier columns
+	 */
+	public String[] getIdentifierColumns()
+	{
+		getColumns(false);
+		ArrayList<String> list = new ArrayList<String>();
+		//
+		for (int i = 0; i < m_columns.length; i++)
+		{
+			MColumn column = m_columns[i];
+			if (column.isIdentifier())
+				list.add(column.getColumnName());
+		}
+		String[] retValue = new String[list.size()];
+		retValue = list.toArray(retValue);
+		return retValue;
+	}	//	getIdentifierColumns
+
 
 	/**************************************************************************
 	 * 	Get PO Class Instance

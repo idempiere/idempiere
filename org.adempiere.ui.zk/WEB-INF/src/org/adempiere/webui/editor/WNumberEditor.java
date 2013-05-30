@@ -170,7 +170,7 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 	        
 	        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
 	        super.fireValueChange(changeEvent);
-	        oldValue = newValue;
+	        oldValue = getComponent().getValue(); // IDEMPIERE-963 - check again the value could be changed by callout
     	}
     }
 

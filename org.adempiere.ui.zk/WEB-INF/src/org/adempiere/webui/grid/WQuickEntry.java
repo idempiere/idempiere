@@ -345,7 +345,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 
 				boolean changed = (value != null && initialValue == null)
 						|| (value == null && initialValue != null)
-						|| (value != null && initialValue != null && value != initialValue);
+						|| (value != null && initialValue != null && !value.equals(initialValue));
 		
 				boolean thisMandatoryError = false;
 				if (field.isMandatory(true)) {

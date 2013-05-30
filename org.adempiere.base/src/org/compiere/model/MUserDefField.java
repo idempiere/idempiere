@@ -14,12 +14,15 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Msg;
 
 
 /**
@@ -32,8 +35,7 @@ public class MUserDefField extends X_AD_UserDef_Field
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 20120403114400L;
-
+	private static final long serialVersionUID = 2522038599257589829L;
 
 	/**
 	 * 	Standard constructor.
@@ -116,5 +118,23 @@ public class MUserDefField extends X_AD_UserDef_Field
 
 		return retValue;
 	}
+	
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true
+	 */
+	protected boolean beforeSave (boolean newRecord)
+	{
+		if (is_ValueChanged("AD_Reference_ID")) {
+			MField field = new MField(getCtx(), getAD_Field_ID(), get_TrxName());
+			MColumn column = (MColumn) field.getAD_Column();
+			if (column.isEncrypted() || field.isEncrypted() || field.getObscureType() != null) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "NotChangeReference"));
+				return false;
+			}
+		}
+		return true;
+	}
 		
-}	//	MyModelExample
+}	//	MUserDefField

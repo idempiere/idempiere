@@ -488,22 +488,26 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				{
 					String display = rs.getString(colIndex);
 					int key = rs.getInt(colIndex+1);
-	                value = new KeyNamePair(key, display);
+					if (! rs.wasNull()) {
+		                value = new KeyNamePair(key, display);
+					}
 	
 					colOffset++;
 				}
 				else
 				{
 					int key = rs.getInt(colIndex);
-					WEditor editor = editorMap.get(p_layout[col].getColSQL());
-					if (editor != null)
-					{
-						editor.setValue(key);
-						value = new KeyNamePair(key, editor.getDisplayTextForGridView(key));
-					}					
-					else
-					{
-						value = new KeyNamePair(key, Integer.toString(key));
+					if (! rs.wasNull()) {
+						WEditor editor = editorMap.get(p_layout[col].getColSQL());
+						if (editor != null)
+						{
+							editor.setValue(key);
+							value = new KeyNamePair(key, editor.getDisplayTextForGridView(key));
+						}					
+						else
+						{
+							value = new KeyNamePair(key, Integer.toString(key));
+						}
 					}
 				}
 			}

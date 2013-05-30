@@ -355,6 +355,7 @@ public class NumberBox extends Div
         vbox.appendChild(row4);
 
         popup.appendChild(vbox);
+        popup.setWidgetListener("onOpen", "calc.clearAll('" + txtCalcId + "')");
         return popup;
     }
 

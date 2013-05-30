@@ -234,9 +234,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		toolBar.setWidth("100%");
 		
 		previewType.setMold("select");
-		previewType.appendItem("PDF", "PDF");
 		previewType.appendItem("HTML", "HTML");
-		previewType.appendItem("Excel", "XLS");
+		
+		if ( m_isCanExport )
+		{
+			previewType.appendItem("PDF", "PDF");
+			previewType.appendItem("Excel", "XLS");
+		}
+		
 		toolBar.appendChild(previewType);		
 		previewType.addEventListener(Events.ON_SELECT, this);
 		toolBar.appendChild(new Separator("vertical"));
@@ -247,16 +252,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				? MSysConfig.getValue(MSysConfig.ZK_REPORT_FORM_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx))
 				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));
 
-		if ("PDF".equals(type))
+		if ("HTML".equals(type)) {
 			previewType.setSelectedIndex(0);
-		else if ("HTML".equals(type))
+		} else if ("PDF".equals(type) && m_isCanExport) {
 			previewType.setSelectedIndex(1);
-		else if ("XLS".equals(type))
+		} else if ("XLS".equals(type) && m_isCanExport) {
 			previewType.setSelectedIndex(2);
-		else
+		} else {
 			// XXX - provide hint if unexpected value
-			previewType.setSelectedIndex(0); //fall back to PDF
-			
+			previewType.setSelectedIndex(0); //fall back to HTML
+		}
 		
 		labelDrill.setValue(Msg.getMsg(Env.getCtx(), "Drill") + ": ");
 		toolBar.appendChild(labelDrill);
@@ -306,7 +311,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		toolBar.appendChild(bArchive);
 		bArchive.addEventListener(Events.ON_CLICK, this);
 		
-		if (m_isCanExport)
+		if ( m_isCanExport )
 		{
 			bExport.setName("Export");
 			bExport.setImage(ThemeManager.getThemeResource("images/Export24.png"));

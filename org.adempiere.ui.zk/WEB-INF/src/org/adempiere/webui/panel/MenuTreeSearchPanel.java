@@ -41,11 +41,11 @@ import org.zkoss.zul.Treeitem;
  *
  */
 public class MenuTreeSearchPanel extends TreeSearchPanel {
-
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 8785295166415073971L;
+	private static final long serialVersionUID = 3127547233019932429L;
+
 	protected Toolbarbutton newBtn;
 	protected Toolbarbutton openBtn;
 	protected boolean isNew = false;
@@ -143,6 +143,7 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
 		List<String> valueList = new ArrayList<String>();
 		List<String> descriptionList = new ArrayList<String>();
 		List<String> imageList = new ArrayList<String>();
+		List<String> typeList = new ArrayList<String>();
 
         for (Object value : treeNodeItemMap.values())
         {        	
@@ -160,6 +161,7 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
         		
         		valueList.add(getLabel(treeItem));
         		descriptionList.add(treeItem.getTooltiptext());
+        		typeList.add(String.valueOf(treeItem.getAttribute("menu.type")));
         		String image = getImage(treeItem);
         		if (image == null || image.length() == 0)
         		{
@@ -189,10 +191,13 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
         treeDescription = descriptionList.toArray(new String[0]);
         treeValues = valueList.toArray(new String[0]);
         treeImages = imageList.toArray(new String[0]);
-        
+        treeTypes = typeList.toArray(new String[0]);               
+        orderArrays();
+
         cmbSearch.setDescription(treeDescription);
         cmbSearch.setDict(treeValues);
         cmbSearch.setImages(treeImages);
+        cmbSearch.setContents(treeTypes);
         cmbSearch.refresh("");
 	}
 	
@@ -216,4 +221,33 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
     	Events.postEvent(event);
     	Events.echoEvent(ON_POST_FIRE_TREE_EVENT, this, null);
     }
+
+	protected void orderArrays()
+	{
+		String aux;
+		for (int i = 1; i < treeValues.length; i++)
+		{
+			for (int j = 0; j < treeValues.length-i; j++)
+			{
+				if (treeValues[j].compareTo(treeValues[j+1]) > 0)
+				{
+					aux = treeValues[j];
+					treeValues[j] = treeValues[j+1];
+					treeValues[j+1]=aux;
+
+					aux = treeDescription[j];
+					treeDescription[j] = treeDescription[j+1];
+					treeDescription[j+1]=aux;
+
+					aux = treeTypes[j];
+					treeTypes[j] = treeTypes[j+1];
+					treeTypes[j+1]=aux;
+
+					aux = treeImages[j];
+					treeImages[j] = treeImages[j+1];
+					treeImages[j+1]=aux;
+				}
+			}
+		}
+	}
 }

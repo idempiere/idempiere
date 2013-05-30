@@ -1252,7 +1252,7 @@ public class FinReport extends SvrProcess
 		if (m_lines[line] == null || m_lines[line].getSources().length == 0)
 			return;
 		String variable = m_lines[line].getSourceColumnName();
-		if (variable == null)
+		if (variable == null || variable.equals("") )
 			return;
 		if (log.isLoggable(Level.FINE)) log.fine("Variable=" + variable);
 

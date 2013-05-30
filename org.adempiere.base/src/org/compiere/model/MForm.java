@@ -72,6 +72,20 @@ public class MForm extends X_AD_Form
 			MFormAccess pa = new MFormAccess(this, AD_Role_ID);
 			pa.saveEx();
 		}
+		//	Menu
+		else if (is_ValueChanged("IsActive") || is_ValueChanged("Name") 
+			|| is_ValueChanged("Description"))
+		{
+			MMenu[] menues = MMenu.get(getCtx(), "AD_Form_ID=" + getAD_Form_ID(), get_TrxName());
+			for (int i = 0; i < menues.length; i++)
+			{
+				menues[i].setName(getName());
+				menues[i].setDescription(getDescription());
+				menues[i].setIsActive(isActive());
+				menues[i].saveEx();
+			}
+			//
+		}
 		return success;
 	}	//	afterSave
 	

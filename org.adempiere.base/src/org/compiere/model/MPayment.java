@@ -1459,7 +1459,7 @@ public final class MPayment extends X_C_Payment
 		{
 			String sql = "SELECT idt.IsSOTrx "
 				+ "FROM C_Invoice i"
-				+ " INNER JOIN C_DocType idt ON (i.C_DocType_ID=idt.C_DocType_ID) "
+				+ " INNER JOIN C_DocType idt ON (CASE WHEN i.C_DocType_ID=0 THEN i.C_DocTypeTarget_ID ELSE i.C_DocType_ID END=idt.C_DocType_ID) "
 				+ "WHERE i.C_Invoice_ID=?";
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
