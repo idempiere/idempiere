@@ -28,6 +28,7 @@ import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.InfoSchedule;
 import org.compiere.model.MAssignmentSlot;
 import org.compiere.model.ScheduleUtil;
@@ -136,7 +137,7 @@ public class WSchedule extends Window implements EventListener<Event>
 	{
 		this.getChildren().clear();
 				
-		calendarContainer = Executions.createComponents("calendar.zul", this, null);
+		calendarContainer = Executions.createComponents(ThemeManager.getThemeResource("/zul/calendar/calendar.zul"), this, null);
 		
 		borderlayout = (Borderlayout) calendarContainer.getFellow("main");
 		borderlayout.setStyle("position: absolute; width: 98%; margin: auto;");

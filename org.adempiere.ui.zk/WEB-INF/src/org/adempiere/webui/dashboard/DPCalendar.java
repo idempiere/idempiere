@@ -30,6 +30,7 @@ import org.adempiere.base.event.AbstractEventHandler;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.compiere.model.I_R_Request;
 import org.compiere.model.PO;
@@ -55,9 +56,8 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Toolbarbutton;
+import org.zkoss.zul.impl.LabelImageElement;
 
 /**
  * Dashboard item: ZK calendar
@@ -74,9 +74,9 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	private static final long serialVersionUID = -224914882522997787L;
 	private Calendars calendars;
 	private SimpleCalendarModel scm;
-	private Toolbarbutton btnCal, btnRefresh;	
+	private LabelImageElement btnCal, btnRefresh;	
 
-	private Button btnCurrentDate;
+	private LabelImageElement btnCurrentDate;
 	private Label lblDate;
 	private Component divArrowLeft, divArrowRight;
 	
@@ -98,17 +98,17 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 		ctx = new Properties();
 		ctx.putAll(Env.getCtx());
 		
-		Component component = Executions.createComponents("calendar_mini.zul", this, null);
+		Component component = Executions.createComponents(ThemeManager.getThemeResource("zul/calendar/calendar_mini.zul"), this, null);
 
 		calendars = (Calendars) component.getFellow("cal");
 
-		btnCal = (Toolbarbutton) component.getFellow("btnCal");
+		btnCal = (LabelImageElement) component.getFellow("btnCal");
 		btnCal.addEventListener(Events.ON_CLICK, this);
 		
-		btnRefresh = (Toolbarbutton) component.getFellow("btnRefresh");
+		btnRefresh = (LabelImageElement) component.getFellow("btnRefresh");
 		btnRefresh.addEventListener(Events.ON_CLICK, this);
 		
-		btnCurrentDate = (Button) component.getFellow("btnCurrentDate");
+		btnCurrentDate = (LabelImageElement) component.getFellow("btnCurrentDate");
 		btnCurrentDate.addEventListener(Events.ON_CLICK, this);
 		
 		lblDate = (Label) component.getFellow("lblDate");

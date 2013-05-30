@@ -159,7 +159,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 									
 		if (addNewBtn)
 		{
-			Toolbarbutton newBtn = new Toolbarbutton(null, ThemeManager.getThemeResource("images/New10.png"));
+			Toolbarbutton newBtn = new Toolbarbutton(null, ThemeManager.getThemeResource("images/New16.png"));
 			newBtn.setAttribute(NODE_ID_ATTR, String.valueOf(nodeId));
 			hbox.appendChild(newBtn);
 			newBtn.addEventListener(Events.ON_CLICK, this);

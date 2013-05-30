@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?component name="divtab" macro-uri="divtab.zul"?>
-<?component name="divarrow" macro-uri="divarrow.zul"?>
+<?component name="divtab" macro-uri="/theme/default/zul/calendar/divtab.zul"?>
+<?component name="divarrow" macro-uri="/theme/default/zul/calendar/divarrow.zul"?>
 <zk>
 <zscript><![CDATA[
 	import org.compiere.util.Msg;
@@ -18,10 +18,10 @@
 	var RequestType = Msg.getElement(Env.getCtx(),"RequestType");
 	
 ]]></zscript>
-<style src="calendar.css"/>
+<style src="/theme/default/zul/calendar/calendar.css"/>
 <borderlayout id="main">
 <center border="none">
-<calendars firstDayOfWeek="Monday" model="${cm}" mold="month" id="cal">
+<calendars firstDayOfWeek="Monday" mold="month" id="cal">
 	<toolbar sclass="calendar-toolbar">
 		<div class="float-left">
 			<hbox>

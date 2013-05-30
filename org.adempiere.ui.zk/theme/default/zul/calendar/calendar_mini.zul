@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?component name="divarrow" macro-uri="divarrow.zul"?>
+<?component name="divarrow" macro-uri="/theme/default/zul/calendar/divarrow.zul"?>
 <zk>
 <zscript><![CDATA[
 	var calendarIcon = org.adempiere.webui.theme.ThemeManager.getThemeResource("images/Calendar16.png");
@@ -9,8 +9,8 @@
 	var today = Msg.getMsg(Env.getCtx(),"Today");
 	var refresh = Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Refresh"));
 ]]></zscript>
-<style src="calendar.css"/>
-<calendars firstDayOfWeek="Monday" model="${cm}" mold="month" id="cal">
+<style src="/theme/default/zul/calendar/calendar.css"/>
+<calendars firstDayOfWeek="Monday" mold="month" id="cal">
 	<toolbar sclass="calendar-toolbar">
 		<div class="float-left">
 			<hbox>

@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<window use="org.adempiere.webui.dashboard.DPViews"/>
+<zk>
+	<zscript>
+	<![CDATA[	
+		import org.adempiere.webui.theme.ThemeManager;
+		
+		var path = ThemeManager.getThemeResource("zul/dashboard/views.zul");
+	]]>
+	</zscript>
+	<include src="${path}"/>
+</zk>

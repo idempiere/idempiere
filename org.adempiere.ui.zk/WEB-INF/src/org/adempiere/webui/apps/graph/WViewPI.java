@@ -11,7 +11,11 @@ public class WViewPI extends ADForm {
 
 	@Override
 	protected void initForm() {
-		WPAPanel paPanel = WPAPanel.get();
+		this.setSclass("window-view-pi");
+		WPerformanceIndicator.Options options = new WPerformanceIndicator.Options();
+		options.chartHeight = 180;
+		options.chartWidth = 180;
+		WPAPanel paPanel = WPAPanel.get(options);
 		appendChild(paPanel);
 	}
 

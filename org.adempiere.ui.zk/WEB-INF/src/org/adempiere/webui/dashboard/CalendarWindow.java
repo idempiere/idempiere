@@ -32,6 +32,7 @@ import java.util.TimeZone;
 
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.X_R_RequestType;
 import org.compiere.util.Env;
@@ -103,7 +104,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 		setTitle(Msg.getMsg(ctx,"Calendar"));
 		setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 		
-		Component component = Executions.createComponents("calendar.zul", this, null);
+		Component component = Executions.createComponents(ThemeManager.getThemeResource("/zul/calendar/calendar.zul"), this, null);
 
 		Borderlayout borderlayout = (Borderlayout) component.getFellow("main");
 		borderlayout.setStyle("position: absolute");

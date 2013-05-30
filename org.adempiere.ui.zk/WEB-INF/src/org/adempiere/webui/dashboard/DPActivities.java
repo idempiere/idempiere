@@ -13,18 +13,14 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
-import org.compiere.model.MRole;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -57,6 +53,7 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
 	 */
 	private static final long serialVersionUID = 3787249181565314148L;
 
+	@SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(DPActivities.class);
 
 	private Button btnNotice, btnRequest, btnWorkflow, btnUnprocessed;
@@ -106,7 +103,7 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
         btnWorkflow.setName(String.valueOf(AD_Menu_ID));
         btnWorkflow.addEventListener(Events.ON_CLICK, this);
 
-        if (isShowUnprocessed()) {
+        if (DPActivitiesModel.isShowUnprocessed()) {
             btnUnprocessed = new Button();
             vbox.appendChild(btnUnprocessed);
             labelU = Util.cleanAmp(Msg.translate(Env.getCtx(), "UnprocessedDocs"));
@@ -121,116 +118,15 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
         return vbox;
 	}
 
-	private static boolean isShowUnprocessed() {
-		return 	(Env.getAD_Client_ID(Env.getCtx()) > 0);
-	}
-
-	/**
-	 * Get notice count
-	 * @return number of notice
-	 */
-	public static int getNoticeCount()
-	{
-		String sql = "SELECT COUNT(1) FROM AD_Note "
-			+ "WHERE AD_Client_ID=? AND AD_User_ID IN (0,?)"
-			+ " AND Processed='N' AND AD_BroadcastMessage_ID IS NULL";
-
-		int retValue = DB.getSQLValue(null, sql, Env.getAD_Client_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()));
-		return retValue;
-	}
-
-	/**
-	 * Get request count
-	 * @return number of request
-	 */
-	public static int getRequestCount()
-	{
-		String sql = MRole.getDefault().addAccessSQL ("SELECT COUNT(1) FROM R_Request "
-				+ "WHERE (SalesRep_ID=? OR AD_Role_ID=?) AND Processed='N'"
-				+ " AND (DateNextAction IS NULL OR TRUNC(DateNextAction) <= TRUNC(SysDate))"
-				+ " AND (R_Status_ID IS NULL OR R_Status_ID IN (SELECT R_Status_ID FROM R_Status WHERE IsClosed='N'))",
-					"R_Request", false, true);	//	not qualified - RW
-		int retValue = DB.getSQLValue(null, sql, Env.getAD_User_ID(Env.getCtx()), Env.getAD_Role_ID(Env.getCtx()));
-		return retValue;
-	}
-
-	/**
-	 * Get workflow activity count
-	 * @return number of workflow activity
-	 */
-	public static int getWorkflowCount()
-	{
-		int count = 0;
-
-		String sql = "SELECT count(*) FROM AD_WF_Activity a "
-			+ "WHERE "
-			+ "a.Processed='N' AND a.WFState='OS' AND ("
-			//	Owner of Activity
-			+ " a.AD_User_ID=?"	//	#1
-			//	Invoker (if no invoker = all)
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
-			+ " AND r.ResponsibleType='H' AND COALESCE(r.AD_User_ID,0)=0 AND COALESCE(r.AD_Role_ID,0)=0 AND (a.AD_User_ID=? OR a.AD_User_ID IS NULL))"	//	#2
-			//  Responsible User
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
-			+ " AND r.ResponsibleType='H' AND r.AD_User_ID=?)"		//	#3
-			//	Responsible Role
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r INNER JOIN AD_User_Roles ur ON (r.AD_Role_ID=ur.AD_Role_ID)"
-			+ " WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID AND r.ResponsibleType='R' AND ur.AD_User_ID=?)"	//	#4
-			//
-			+ ") AND a.AD_Client_ID=?";	//	#5
-		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
-		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, AD_User_ID);
-			pstmt.setInt (2, AD_User_ID);
-			pstmt.setInt (3, AD_User_ID);
-			pstmt.setInt (4, AD_User_ID);
-			pstmt.setInt (5, AD_Client_ID);
-			rs = pstmt.executeQuery ();
-			if (rs.next ()) {
-				count = rs.getInt(1);
-			}
-		}
-		catch (Exception e)
-		{
-			logger.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-
-		return count;
-	}
-
-	/**
-	 * Get unprocessed count
-	 * @return number of unprocessed
-	 */
-	public static int getUnprocessedCount()
-	{
-		if (! isShowUnprocessed())
-			return 0;
-		
-		String sql = "SELECT COUNT(1) FROM RV_Unprocessed "
-			+ "WHERE AD_Client_ID=? AND CreatedBy=?";
-
-		int retValue = DB.getSQLValue(null, sql, Env.getAD_Client_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()));
-		return retValue;
-	}
+	
 
 	@Override
     public void refresh(ServerPushTemplate template)
 	{
-		int notice = getNoticeCount();
-		int request = getRequestCount();
-		int workflow = getWorkflowCount();
-		int unprocessed = getUnprocessedCount();
+		int notice = DPActivitiesModel.getNoticeCount();
+		int request = DPActivitiesModel.getRequestCount();
+		int workflow = DPActivitiesModel.getWorkflowCount();
+		int unprocessed = DPActivitiesModel.getUnprocessedCount();
 		if (noOfNotice != notice || noOfRequest != request 
 			|| noOfWorkflow != workflow || noOfUnprocessed != unprocessed )
 		{
@@ -247,7 +143,8 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
     	btnNotice.setLabel(labelN + " : " + noOfNotice);
 		btnRequest.setLabel(labelR + " : " + noOfRequest);
 		btnWorkflow.setLabel(labelW + " : " + noOfWorkflow);
-		if (isShowUnprocessed()) btnUnprocessed.setLabel(labelU + " : " + noOfUnprocessed);
+		if (DPActivitiesModel.isShowUnprocessed()) 
+			btnUnprocessed.setLabel(labelU + " : " + noOfUnprocessed);
 		
 		EventQueue<Event> queue = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, true);
 		Map<String, Object> map = new HashMap<String, Object>();

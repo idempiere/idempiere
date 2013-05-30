@@ -140,8 +140,7 @@ html,body {
 }
 
 .fav-new-btn {
-	margin-top: 4px;
-	margin-left: 2px;
+	margin-left: 4px;
 }
 
 .disableFilter img {
@@ -458,8 +457,33 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	margin-left: 4px !important;
 }
 
-.desktop-tabbox .z-toolbar-tabs-body {
-	padding-top: 10px !important;
+.desktop-tabbox .z-tabs .z-toolbar-tabs-body {
+	padding: 0px !important;
+	margin: 0px !important;
+}
+
+.desktop-tabbox .z-tabs .z-toolbar-tabs-body .z-toolbarbutton {
+	padding: 0px !important;
+	border: 1px solid transparent !important;
+	margin: 0px !important;
+}
+
+.desktop-tabbox .z-tabs .z-toolbar-tabs .z-toolbarbutton-over .z-toolbarbutton-body {
+	border: none !important;
+	padding: 0px !important;
+	margin: 0px !important;
+}
+
+.desktop-tabbox .z-tabs .z-toolbar-tabs .z-toolbarbutton-over .z-toolbarbutton-cnt {
+	background-image: none !important;
+	background-color:#DDD !important;
+	padding: 0px !important;
+	margin: 0px !important;
+	-webkit-box-shadow:inset 0px 0px 3px #CCC;
+	-moz-box-shadow:inset 0px 0px 3px #CCC;	
+	-o-box-shadow:inset 0px 0px 3px #CCC;	
+	-ms-box-shadow:inset 0px 0px 3px #CCC;	
+	box-shadow:inset 0px 0px 3px #CCC;
 }
 
 .desktop-menu-popup {
@@ -1508,4 +1532,38 @@ font-size: 0;
 <%-- vbox fix for firefox and ie --%>
 table.z-vbox > tbody > tr > td > table {
 	width: 100%;	
+}
+
+<%-- performance indicator --%>
+.performance-indicator {
+	margin: auto; 
+	position: relative; 
+	width: 120px !important;
+}
+
+.window-view-pi .performance-indicator {
+	width: 180px !important;
+}
+
+.performance-indicator-box {
+	background-color: #eee; 
+	border: 1px solid #d8d8d8; 
+	border-radius: 5px; 
+	cursor: pointer;
+}
+
+.performance-indicator-title {
+	text-align: center; 
+	background-color: #c8c8c8; 
+	border: 1px solid #c8c8c8;
+	padding-top: 4px; 
+	padding-bottom: 4px;
+}
+
+.performance-panel .z-grid {
+	border: none;
+	margin:0; 
+	padding:0; 
+	position: relative;
+	width: 100%;
 }

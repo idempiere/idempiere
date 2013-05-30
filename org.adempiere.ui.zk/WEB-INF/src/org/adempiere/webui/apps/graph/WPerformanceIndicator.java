@@ -16,8 +16,11 @@ package org.adempiere.webui.apps.graph;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.LinearGradientPaint;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
+import java.util.Map;
 
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.theme.ThemeManager;
@@ -35,7 +38,6 @@ import org.jfree.chart.plot.MeterInterval;
 import org.jfree.chart.plot.MeterPlot;
 import org.jfree.data.Range;
 import org.jfree.data.general.DefaultValueDataset;
-import org.jfree.ui.RectangleInsets;
 import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -51,19 +53,49 @@ import org.zkoss.zul.Menupopup;
  */
 public class WPerformanceIndicator extends Panel implements EventListener<Event>
 {
+	public static final String TICK_COLOR = "tickColor";
+	public static final String NEEDLE_COLOR = "needleColor";
+	public static final String DIAL_BACKGROUND = "dialBackground";
+	public static final String CHART_BACKGROUND = "chartBackground";
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 3580494126343850939L;
 
+	public WPerformanceIndicator(MGoal goal)
+	{
+		this(goal, null);
+	}
+	
 	/**
 	 * 	Constructor
 	 *	@param goal goal model
 	 */
-	public WPerformanceIndicator(MGoal goal)
+	public WPerformanceIndicator(MGoal goal, Options options)
 	{
-		super();
+		if (options != null) {
+			if (options.chartHeight > 0)
+				chartHeight = options.chartHeight;
+			if (options.chartWidth > 0)
+				chartWidth = options.chartWidth;
+			if (options.colorMap != null) {
+				Color color = options.colorMap.get(CHART_BACKGROUND);
+				if (color != null)
+					chartBackground = color;
+				color = options.colorMap.get(DIAL_BACKGROUND);
+				if (color != null)
+					dialBackground = color;
+				color = options.colorMap.get(NEEDLE_COLOR);
+				if (color != null)
+					needleColor = color;
+				color = options.colorMap.get(TICK_COLOR);
+				if (color != null)
+					dialBackground = color;
+			}
+		}
 
+		setSclass("performance-indicator");
+		
 		m_goal = goal;
 
 		init();
@@ -85,6 +117,13 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 	Menupopup 					popupMenu = new Menupopup();
 	private Menuitem 			mRefresh = new Menuitem(Msg.getMsg(Env.getCtx(), "Refresh"), ThemeManager.getThemeResource("images/Refresh16.png"));
 
+	private Color chartBackground = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+	private int chartWidth = 120;
+	private int chartHeight = 120;
+	private Color dialBackground = Color.white;
+	private Color needleColor = Color.darkGray;
+	private Color tickColor = Color.darkGray;
+	
 	ChartPanel chartPanel;
 
 	/**
@@ -124,6 +163,9 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 
         MColorSchema colorSchema = m_goal.getColorSchema();
         int rangeLo = 0; int rangeHi=0;
+        Point2D start = new Point2D.Float(0, 0);
+        Point2D end = new Point2D.Float(50, 50);
+        float[] dist = {0.0f, 0.2f, 0.45f, 0.75f, 1.0f};
         for (int i=1; i<=4; i++){
             switch (i) {
              case 1: rangeHi = colorSchema.getMark1Percent(); break;
@@ -133,30 +175,36 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
             }
             if (rangeHi==9999)
             	rangeHi = (int) Math.floor(rangeLo*1.5);
-            if (rangeLo < rangeHi) {
+            if (rangeLo < rangeHi) {            	
+                Color[] colors = {colorSchema.getColor(rangeHi).brighter().brighter(), 
+                		colorSchema.getColor(rangeHi).brighter(), colorSchema.getColor(rangeHi), 
+                		colorSchema.getColor(rangeHi).darker(), colorSchema.getColor(rangeHi).darker().darker()};
+                LinearGradientPaint p =
+                    new LinearGradientPaint(start, end, dist, colors);
+                
             	plot.addInterval(new MeterInterval("Normal", //label
                  	  new Range(rangeLo, rangeHi), //range
-                 	  colorSchema.getColor(rangeHi),
+                 	  p,
                  	  new BasicStroke(7.0f),
-                 	  new Color(-13091716)
+                 	  dialBackground
                 ));
             	rangeLo = rangeHi;
             }
         }
         plot.setRange(new Range(0,rangeLo));
-
-        plot.setDialBackgroundPaint(new Color(-13091716));
+        plot.setDialBackgroundPaint(dialBackground);
         plot.setUnits("");
-        plot.setDialShape(DialShape.CHORD);//CIRCLE);
-        plot.setNeedlePaint(Color.white);
+        plot.setDialShape(DialShape.CHORD);
+        plot.setNeedlePaint(needleColor);
         plot.setTickSize(2000);
         plot.setTickLabelFont(new Font("SansSerif", Font.BOLD, 8));
         plot.setValueFont(new Font("SansSerif", Font.BOLD, 8));
         plot.setNoDataMessageFont(new Font("SansSerif", Font.BOLD, 8));
-        plot.setTickLabelPaint(Color.white);
-        plot.setInsets(new RectangleInsets(1.0, 2.0, 3.0, 4.0));
-
-        chart = new JFreeChart( m_text, new Font("SansSerif", Font.BOLD, 9), plot,false);
+        plot.setTickLabelPaint(tickColor);
+        plot.setValuePaint(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+        plot.setTickPaint(tickColor);
+        //
+        chart = new JFreeChart( "", new Font("SansSerif", Font.BOLD, 9), plot,false);
 
 		return chart;
 	}
@@ -168,11 +216,9 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 	private void init()
 	{
 		JFreeChart chart = createChart();
-		chart.setBackgroundPaint(Color.WHITE);
-		chart.setBorderVisible(true);
-		chart.setBorderPaint(Color.LIGHT_GRAY);
+		chart.setBackgroundPaint(chartBackground);
 		chart.setAntiAlias(true);
-		BufferedImage bi = chart.createBufferedImage(200, 120, BufferedImage.TRANSLUCENT , null);
+		BufferedImage bi = chart.createBufferedImage(chartWidth, chartHeight, BufferedImage.TRANSLUCENT , null);
 		try {
 		    byte[] bytes = EncoderUtil.encode(bi, ImageFormat.PNG, true);
 
@@ -183,7 +229,7 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 		}
 		catch (Exception e)
 		{
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 
 	    invalidate();
@@ -201,5 +247,16 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 
 	public void onEvent(Event event) throws Exception
 	{
+	}
+	
+	public String getTitle() 
+	{
+		return m_text;
+	}
+	
+	public static class Options {
+		public Map<String, Color> colorMap;
+		public int chartWidth;
+		public int chartHeight;
 	}
 }

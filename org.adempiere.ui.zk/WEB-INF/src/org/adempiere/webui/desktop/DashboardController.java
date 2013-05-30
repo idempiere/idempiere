@@ -67,6 +67,7 @@ import org.zkoss.zul.Anchorchildren;
 import org.zkoss.zul.Anchorlayout;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Iframe;
+import org.zkoss.zul.Include;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Separator;
@@ -313,6 +314,9 @@ public class DashboardController implements EventListener<Event> {
 		                Component component = Executions.createComponents(url, content, null);
 		                if(component != null)
 		                {
+		                	if (component instanceof Include)
+		                		component = component.getFirstChild();
+		                	
 		                	if (component instanceof DashboardPanel)
 		                	{
 			                	DashboardPanel dashboardPanel = (DashboardPanel) component;

@@ -96,9 +96,9 @@ import org.zkoss.zul.West;
  */
 public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, EventHandler, DesktopCleanup
 {
-	private static final String IMAGES_UPARROW_PNG = "images/uparrow.png";
+	private static final String IMAGES_UPARROW_PNG = "images/collapse-header.png";
 
-	private static final String IMAGES_DOWNARROW_PNG = "images/downarrow.png";
+	private static final String IMAGES_DOWNARROW_PNG = "images/expand-header.png";
 
 	/**
 	 * generated serial version ID
@@ -267,6 +267,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         toolbar.appendChild(max);
         max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
         max.addEventListener(Events.ON_CLICK, this);
+        max.setStyle("cursor: pointer; border: 1px solid transparent; padding: 2px;");
         
         return layout;
     }

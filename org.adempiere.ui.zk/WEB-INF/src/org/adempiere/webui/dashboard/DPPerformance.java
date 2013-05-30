@@ -37,12 +37,18 @@ public class DPPerformance extends DashboardPanel {
 	public DPPerformance()
 	{
 		super();
+		setSclass("performance-widget");
 		
-        WPAPanel paPanel = WPAPanel.get();
+        WPAPanel paPanel = createPAPanel();
         if (paPanel != null) 
         {
         	this.appendChild(paPanel);        	
         }
+	}
+
+	protected WPAPanel createPAPanel() {
+		WPAPanel paPanel = WPAPanel.get();
+		return paPanel;
 	}
 	
 	public void refresh(ServerPushTemplate template) {
@@ -63,10 +69,13 @@ public class DPPerformance extends DashboardPanel {
 	//adjust window height to match grid height
 	public void onPostRender() 
 	{
-		Component grid = this.getFirstChild().getFirstChild();
-		String script = "setTimeout(function() { var grid = jq('#" + grid.getUuid() + "');";
-		script = script + "grid.parent().height(grid.css('height'));}, 500);";
-		if (Executions.getCurrent() != null)
-			Clients.response(new AuScript(script));
+		if (this.getFirstChild() != null)
+		{
+			Component grid = this.getFirstChild().getFirstChild();
+			String script = "setTimeout(function() { var grid = jq('#" + grid.getUuid() + "');";
+			script = script + "grid.parent().height(grid.css('height'));}, 500);";
+			if (Executions.getCurrent() != null)
+				Clients.response(new AuScript(script));
+		}
 	}
 }
