@@ -163,7 +163,6 @@ public class ZkFixture extends SpiderFixture {
 	public void openWindow(String label) {		
 		Widget widget = new Widget("$treeSearchCombo");
 		String search = label.indexOf("&") > 0 ? label.substring(0, label.indexOf("&")) : label;
-		search = search.indexOf("(") > 0 ? search.substring(0, search.indexOf("(")) : search;
 		WebElement element = widget.$n(webDriver, "real");
 		element.clear();
 		element.sendKeys(search);
