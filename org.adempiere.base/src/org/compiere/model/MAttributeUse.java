@@ -69,6 +69,8 @@ public class MAttributeUse extends X_M_AttributeUse
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		//	also used for afterDelete
 		StringBuilder sql = new StringBuilder("UPDATE M_AttributeSet mas")
 			.append(" SET IsInstanceAttribute='Y' ")
