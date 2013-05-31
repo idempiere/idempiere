@@ -1337,16 +1337,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             Object value = null;
             
             //Allowing Date validation before save
-            List<Component> compoList = cellQueryFrom.getChildren();
-            if(compoList.get(0) instanceof Datebox) {
-            	Datebox dbox = (Datebox)compoList.get(0);
-            	if(dbox.getValue() != null)
-            		value = new Timestamp(((Date)dbox.getValue()).getTime());
+            Component compo = cellQueryFrom.getFirstChild();
+            if(compo instanceof Datebox) {
+               Datebox dbox = (Datebox)compo;
+               if(dbox.getValue() != null)
+            	  value = new Timestamp(((Date)dbox.getValue()).getTime());
             }
-            else if(compoList.get(0) instanceof DatetimeBox) {
-            	DatetimeBox dtbox = (DatetimeBox)compoList.get(0);
-            	if(dtbox.getValue() != null)
-            		value = new Timestamp(((Date)dtbox.getValue()).getTime());
+            else if(compo instanceof DatetimeBox) {
+            	  DatetimeBox dtbox = (DatetimeBox)compo;
+            	  if(dtbox.getValue() != null)
+            		 value = new Timestamp(((Date)dtbox.getValue()).getTime());
             }
             else {
             	value = cellQueryFrom.getAttribute("value");
@@ -1391,16 +1391,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 ListCell cellQueryTo = (ListCell)row.getFellow("cellQueryTo"+row.getId());
                 
                 //Allowing Date validation before save
-                compoList = cellQueryTo.getChildren();
-                if(compoList.get(0) instanceof Datebox) {
-                	Datebox dbox = (Datebox)compoList.get(0);
-                	if(dbox.getValue() != null)
-                		value2 = new Timestamp(((Date)dbox.getValue()).getTime());
+                compo = cellQueryTo.getFirstChild();
+                if(compo instanceof Datebox) {
+                   Datebox dbox = (Datebox)compo;
+                   if(dbox.getValue() != null)
+                	  value2 = new Timestamp(((Date)dbox.getValue()).getTime());
                 }
-                else if(compoList.get(0) instanceof DatetimeBox) {
-                	DatetimeBox dtbox = (DatetimeBox)compoList.get(0);
-                	if(dtbox.getValue() != null)
-                		value2 = new Timestamp(((Date)dtbox.getValue()).getTime());
+                else if(compo instanceof DatetimeBox) {
+                	  DatetimeBox dtbox = (DatetimeBox)compo;
+                	  if(dtbox.getValue() != null)
+                		 value2 = new Timestamp(((Date)dtbox.getValue()).getTime());
                 }
                 else {
                 	value2 = cellQueryFrom.getAttribute("value");
