@@ -111,7 +111,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1638364577972806113L;
+	private static final long serialVersionUID = -4022944302529684348L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -785,20 +785,20 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (query.getRestrictionCount() != 1)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Ignored(More than 1 Restriction): " + query);
-			return query.getWhereClause();
+			return query.getWhereClause(true);
 		}
 
 		String colName = query.getColumnName(0);
 		if (colName == null)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Ignored(No Column): " + query);
-			return query.getWhereClause();
+			return query.getWhereClause(true);
 		}
 		//	a '(' in the name = function - don't try to resolve
 		if (colName.indexOf('(') != -1)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Ignored(Function): " + colName);
-			return query.getWhereClause();
+			return query.getWhereClause(true);
 		}
 		//	OK - Query is valid
 
@@ -806,7 +806,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (getField(colName) != null)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Field Found: " + colName);
-			return query.getWhereClause();
+			return query.getWhereClause(true);
 		}
 
 		String refColName = null;
@@ -845,7 +845,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			if (getField(refColName) != null)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("Column " + colName + " replaced with " + refColName);
-				return query.getWhereClause();
+				return query.getWhereClause(true);
 			}
 			colName = refColName;
 		}
@@ -897,7 +897,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			if (log.isLoggable(Level.INFO)) log.info ("Not successfull - Column="
 				+ colName + ", Key=" + tabKeyColumn
 				+ ", Query=" + query);
-			return query.getWhereClause();
+			return query.getWhereClause(true);
 		}
 
 		query.setTableName("xx");
