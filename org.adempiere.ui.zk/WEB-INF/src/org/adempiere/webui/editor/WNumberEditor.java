@@ -30,6 +30,7 @@ import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Language;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
@@ -134,8 +135,12 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 			displayType = DisplayType.Integer;
 		else if (!DisplayType.isNumeric(displayType))
 			displayType = DisplayType.Number;
-		DecimalFormat format = DisplayType.getNumberFormat(displayType, AEnv.getLanguage(Env.getCtx()));
+		// IDEMPIERE-989
+		Language lang = AEnv.getLanguage(Env.getCtx());
+		DecimalFormat format = DisplayType.getNumberFormat(displayType, lang);
 		getComponent().getDecimalbox().setFormat(format.toPattern());
+		getComponent().getDecimalbox().setLocale(lang.getLocale());
+		getComponent().setFormat(format);
 		
 		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
     	addChangeLogMenu(popupMenu);
