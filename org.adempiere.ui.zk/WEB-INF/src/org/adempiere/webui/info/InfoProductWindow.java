@@ -312,6 +312,7 @@ public class InfoProductWindow extends InfoWindow {
 				}
 			}
 		});
+		south.setSclass("south-collapsible-with-title");
 		contentBorderLayout.appendChild(south);
 		tabbedPane.setSclass("info-product-tabbedpane");
 		south.appendChild(tabbedPane);
