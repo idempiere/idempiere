@@ -170,16 +170,16 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	{
 
 		columnName = this.getColumnName();
-		imageUrl = ThemeManager.getThemeResource("images/PickOpen10.png");
+		imageUrl = ThemeManager.getThemeResource("images/PickOpen16.png");
 		if (columnName.equals("C_BPartner_ID"))
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), true, true, false, lookup);
-			imageUrl = ThemeManager.getThemeResource("images/BPartner10.png");
+			imageUrl = ThemeManager.getThemeResource("images/BPartner16.png");
 		}
 		else if (columnName.equals("M_Product_ID"))
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, lookup);
-			imageUrl = ThemeManager.getThemeResource("images/Product10.png");
+			imageUrl = ThemeManager.getThemeResource("images/Product16.png");
 		}
 		else
 		{

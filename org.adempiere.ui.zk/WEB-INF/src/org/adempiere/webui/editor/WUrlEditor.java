@@ -36,7 +36,7 @@ public class WUrlEditor extends WEditor implements ContextMenuListener
 	public WUrlEditor(GridField gridField)
 	{
 		super(new Urlbox(), gridField);
-		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Online10.png"));
+		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Online16.png"));
 		
 		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
 		popupMenu.addMenuListener(this);

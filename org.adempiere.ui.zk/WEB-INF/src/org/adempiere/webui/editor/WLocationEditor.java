@@ -86,7 +86,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 
     private void init()
     {
-    	getComponent().setButtonImage(ThemeManager.getThemeResource("images/Location10.png"));
+    	getComponent().setButtonImage(ThemeManager.getThemeResource("images/Location16.png"));
     	
     	popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
     	popupMenu.addMenuListener(this);

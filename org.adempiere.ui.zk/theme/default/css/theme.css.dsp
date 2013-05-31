@@ -1001,15 +1001,16 @@ span.z-tree-tee, span.z-tree-last, span.z-tree-firstspacer {
 }
 
 .editor-button {
-	padding: 3px 8px;
+	padding: 0px 2px;
 	margin: 0px;
+	border-radius: 2px;
 }
 
 .editor-button img {
 	vertical-align: middle;
 	text-align: center;
-	width: 10px;
-	height: 10px;
+	width: 16px;
+	height: 16px;
 }
 
 .editor-button-column {

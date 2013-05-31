@@ -86,7 +86,7 @@ public class NumberBox extends Div
     	hlayout.appendChild(decimalBox);
 		
 		btn = new Button();
-        btn.setImage(ThemeManager.getThemeResource("images/Calculator10.png"));
+        btn.setImage(ThemeManager.getThemeResource("images/Calculator16.png"));
 		btn.setTabindex(-1);
 		btn.setHflex("0");
 		btn.setWidgetListener("onClick", "try{var id=this.getPopup(); zk.Widget.$(id.substring(5, id.length - 1)).focus_(100);" +

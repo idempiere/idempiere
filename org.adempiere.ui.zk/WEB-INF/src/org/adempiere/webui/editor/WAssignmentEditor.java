@@ -55,7 +55,7 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 	
 	private void initComponents() {
 		getComponent().getTextbox().setReadonly(true);
-		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Assignment10.png"));
+		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Assignment16.png"));
 		
 		popupMenu = new WEditorPopupMenu(true, false, false);
 		popupMenu.addMenuListener(this);
