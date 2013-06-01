@@ -583,7 +583,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		southPanel.setVflex("1");
 		southPanel.setHflex("1");
 
-		this.setTitle(TITLE);
+		this.setTitle(Msg.getMsg(Env.getCtx(), TITLE));
 		this.setClosable(true);
 		this.setStyle("position: absolute; width: 100%; height: 100%;");
 		this.setSizable(true);
@@ -770,7 +770,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			RModelExcelExporter exporter = new RModelExcelExporter(m_rmodel);
 			File file;
 			try {
-				file = new File(FileUtil.getTempMailName(TITLE, ".xls"));
+				file = new File(FileUtil.getTempMailName(Msg.getMsg(Env.getCtx(), TITLE), ".xls"));
 				exporter.export(file, Env.getLanguage(Env.getCtx()));
 				Filedownload.save(file, "application/vnd.ms-excel");
 			} catch (Exception e) {
