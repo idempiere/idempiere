@@ -1352,7 +1352,6 @@ public class MInOut extends X_M_InOut implements DocAction
 								orderedDiff = ma.getMovementQty().negate();
 						}
 
-
 						//	Update Storage - see also VMatch.createMatchRecord
 						if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 							sLine.getM_Locator_ID(),
@@ -1362,7 +1361,7 @@ public class MInOut extends X_M_InOut implements DocAction
 							get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
-							m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
+							m_processMsg = "Cannot correct Inventory OnHand (MA) [" + product.getValue() + "] - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
 						if (sameWarehouse && reservedDiff.signum() != 0) {
@@ -1374,7 +1373,7 @@ public class MInOut extends X_M_InOut implements DocAction
 									get_TrxName()))
 							{
 								String lastError = CLogger.retrieveErrorString("");
-								m_processMsg = "Cannot correct Inventory Reserved (MA) - " + lastError;
+								m_processMsg = "Cannot correct Inventory Reserved (MA) [" + product.getValue() + "] - " + lastError;
 								return DocAction.STATUS_Invalid;
 							}
 						}
@@ -1387,7 +1386,7 @@ public class MInOut extends X_M_InOut implements DocAction
 									get_TrxName()))
 							{
 								String lastError = CLogger.retrieveErrorString("");
-								m_processMsg = "Cannot correct Inventory Ordered (MA) - " + lastError;
+								m_processMsg = "Cannot correct Inventory Ordered (MA) [" + product.getValue() + "] - " + lastError;
 								return DocAction.STATUS_Invalid;
 							}
 						}
@@ -1401,7 +1400,7 @@ public class MInOut extends X_M_InOut implements DocAction
 										ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
 										reservedDiff, true, get_TrxName()))
 								{
-									m_processMsg = "Cannot correct Inventory Reserved (MA) in order warehouse";
+									m_processMsg = "Cannot correct Inventory Reserved (MA) in order warehouse [" + product.getValue() + "]";
 									return DocAction.STATUS_Invalid;
 								}
 							}
@@ -1411,7 +1410,7 @@ public class MInOut extends X_M_InOut implements DocAction
 										ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
 										orderedDiff, false, get_TrxName()))
 								{
-									m_processMsg = "Cannot correct Inventory Ordered (MA) in order warehouse";
+									m_processMsg = "Cannot correct Inventory Ordered (MA) in order warehouse [" + product.getValue() + "]";
 									return DocAction.STATUS_Invalid;
 								}
 
@@ -1425,7 +1424,7 @@ public class MInOut extends X_M_InOut implements DocAction
 						mtrx.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
 						if (!mtrx.save())
 						{
-							m_processMsg = "Could not create Material Transaction (MA)";
+							m_processMsg = "Could not create Material Transaction (MA) [" + product.getValue() + "]";
 							return DocAction.STATUS_Invalid;
 						}
 					}
@@ -1444,7 +1443,7 @@ public class MInOut extends X_M_InOut implements DocAction
 						Qty, get_TrxName()))
 					{
 						String lastError = CLogger.retrieveErrorString("");
-						m_processMsg = "Cannot correct Inventory OnHand - " + lastError;
+						m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
 						return DocAction.STATUS_Invalid;
 					}
 					if (reservedDiff.signum() != 0) {
@@ -1453,7 +1452,7 @@ public class MInOut extends X_M_InOut implements DocAction
 								sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
 								reservedDiff, true, get_TrxName()))
 						{
-							m_processMsg = "Cannot correct Inventory Reserved";
+							m_processMsg = "Cannot correct Inventory Reserved [" + product.getValue() + "]";
 							return DocAction.STATUS_Invalid;
 						}
 					}
@@ -1463,7 +1462,7 @@ public class MInOut extends X_M_InOut implements DocAction
 								sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
 								orderedDiff, false, get_TrxName()))
 						{
-							m_processMsg = "Cannot correct Inventory Ordered";
+							m_processMsg = "Cannot correct Inventory Ordered [" + product.getValue() + "]";
 							return DocAction.STATUS_Invalid;
 						}
 					}
@@ -1477,7 +1476,7 @@ public class MInOut extends X_M_InOut implements DocAction
 									sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
 									QtySO.negate(), true, get_TrxName()))
 							{
-								m_processMsg = "Cannot correct Inventory Reserved";
+								m_processMsg = "Cannot correct Inventory Reserved [" + product.getValue() + "]";
 								return DocAction.STATUS_Invalid;
 							}
 						}
@@ -1487,7 +1486,7 @@ public class MInOut extends X_M_InOut implements DocAction
 									sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
 									QtyPO.negate(), false, get_TrxName()))
 							{
-								m_processMsg = "Cannot correct Inventory Ordered";
+								m_processMsg = "Cannot correct Inventory Ordered [" + product.getValue() + "]";
 								return DocAction.STATUS_Invalid;
 							}
 						}
@@ -1500,7 +1499,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					mtrx.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
 					if (!mtrx.save())
 					{
-						m_processMsg = CLogger.retrieveErrorString("Could not create Material Transaction");
+						m_processMsg = CLogger.retrieveErrorString("Could not create Material Transaction [" + product.getValue() + "]");
 						return DocAction.STATUS_Invalid;
 					}
 				}
