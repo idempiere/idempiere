@@ -77,7 +77,6 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private String m_msg;
 	private boolean m_success;
-	private BusyDialog progressWindow;
 
 	private MergeRunnable runnable;
 
@@ -255,10 +254,7 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 				{
 					updateDeleteTable(columnNameRef);
 
-					progressWindow = new BusyDialog();
-					progressWindow.setPage(form.getPage());
-					progressWindow.doHighlighted();
-					
+					Clients.showBusy("");
 					runnable = new MergeRunnable(columnNameRef, fromIdRef, toIdRef);
 					Clients.response(new AuEcho(form, "runProcess", null));
 				}
@@ -279,7 +275,8 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 		public void run() {
 			try {                    
 				m_success = merge (columnName, from_ID, to_ID);
-				postMerge(columnName, to_ID);
+				if (m_success)
+					postMerge(columnName, to_ID);
 			} finally{
 				Clients.clearBusy();
 				Clients.response(new AuEcho(form, "onAfterProcess", null));
