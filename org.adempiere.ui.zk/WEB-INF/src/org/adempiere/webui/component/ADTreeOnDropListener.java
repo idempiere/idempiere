@@ -20,14 +20,16 @@ import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
-import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
@@ -102,21 +104,20 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 			
 			tree.setSelectedItem(toItem);
 			Events.sendEvent(tree, new Event(Events.ON_SELECT, tree));
-			
+
 			MenuListener listener = new MenuListener(movingNode, toNode);
-			
-			//TODO: translation
+
 			Menupopup popup = new Menupopup();
-			Menuitem menuItem = new Menuitem("Insert After");
+			Menuitem menuItem = new Menuitem(Msg.getMsg(Env.getCtx(), "InsertAfter"));
 			menuItem.setValue("InsertAfter");
 			menuItem.setParent(popup);
 			menuItem.addEventListener(Events.ON_CLICK, listener);
-			
-			menuItem = new Menuitem("Move Into");
+
+			menuItem = new Menuitem(Msg.getMsg(Env.getCtx(), "MoveInto"));
 			menuItem.setValue("MoveInto");
 			menuItem.setParent(popup);
 			menuItem.addEventListener(Events.ON_CLICK, listener);
-			
+
 			popup.setPage(tree.getPage());
 			popup.open(toItem.getTreerow());
 		}
