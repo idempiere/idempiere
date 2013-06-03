@@ -84,9 +84,9 @@ public class WindowCopy extends SvrProcess
 				//	Copy Fields
 				for (MField oldField : oldTab.getFields(false, get_TrxName()))
 				{
-					if (! oldField.isActive())
-						continue;
 					MField newField = new MField (newTab, oldField);
+					if (! oldField.isActive())
+						newField.setIsActive(false);
 					if (newField.save())
 						fieldCount++;
 					else

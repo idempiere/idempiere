@@ -73,11 +73,11 @@ public class TabCopy extends SvrProcess
 			throw new AdempiereUserError("@Error@ @AD_Table_ID@");
 		
 		int count = 0;
-		MField[] oldFields = from.getFields(false, get_TrxName());
-		for (int i = 0; i < oldFields.length; i++)
+		for (MField oldField : from.getFields(false, get_TrxName()))
 		{
-			MField oldField = oldFields[i];
 			MField newField = new MField (to, oldField);
+			if (! oldField.isActive())
+				newField.setIsActive(false);
 			if (newField.save())
 				count++;
 			else
