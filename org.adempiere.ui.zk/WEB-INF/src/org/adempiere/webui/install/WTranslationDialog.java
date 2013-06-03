@@ -26,6 +26,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.FolderBrowser;
@@ -128,7 +129,7 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 		bImport.setLabel(Msg.getMsg(Env.getCtx(), "Import"));
 		bImport.addActionListener(this);		
 		bImportZIP.setLabel(Msg.getMsg(Env.getCtx(), "ImportZIP"));
-		bImportZIP.setUpload("true");
+		bImportZIP.setUpload(AdempiereWebUI.getUploadSetting());
 		bImportZIP.addEventListener(Events.ON_UPLOAD, this);
 
 		Rows rows = centerLayout.newRows();

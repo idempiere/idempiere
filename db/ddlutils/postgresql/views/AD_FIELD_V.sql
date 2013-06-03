@@ -19,7 +19,8 @@ CREATE OR REPLACE VIEW ad_field_v AS
 	f.isdisplayedgrid, 
 	f.seqnogrid,
 	c.seqnoselection, f.xposition, f.columnspan, f.numlines, 
- COALESCE(f.istoolbarbutton , c.istoolbarbutton ) As istoolbarbutton
+ COALESCE(f.istoolbarbutton , c.istoolbarbutton ) As istoolbarbutton,
+ c.FormatPattern
    FROM ad_field f
    JOIN ad_tab t ON f.ad_tab_id = t.ad_tab_id
    LEFT JOIN ad_fieldgroup fg ON f.ad_fieldgroup_id = fg.ad_fieldgroup_id

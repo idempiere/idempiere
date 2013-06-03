@@ -238,7 +238,7 @@ public class AccessSqlParser
 			index = from.indexOf(ON);
 			while (index != -1)
 			{
-				int indexClose = from.indexOf(')');		//	does not catch "IN (1,2)" in ON
+				int indexClose = getIndexClose(from);		//	does not catch "IN (1,2)" in ON
 				int indexNextOn = from.indexOf(ON, index+4);
 				if (indexNextOn != -1)
 					indexClose = from.lastIndexOf(')', indexNextOn);
@@ -383,6 +383,33 @@ public class AccessSqlParser
 		}
 		return "";
 	}	//	getMainSql
+	
+	/**
+	 * 	Get index of ')'
+	 *	@return index of ')'
+	 */
+	public int getIndexClose(String from)
+	{
+		int parenthesisLevel = 0;
+		int indexOpen=from.indexOf('(');
+		int index=-1;
+		while(indexOpen!=-1)
+		{
+			parenthesisLevel++;
+			int indexNextOpen = from.indexOf('(', indexOpen+1);
+			int indexClose = from.indexOf(')',indexOpen+1);
+			if (indexNextOpen==-1 || indexClose<indexNextOpen){
+				break;
+			}	
+			indexOpen=from.indexOf('(',indexNextOpen);
+		}
+		while(parenthesisLevel>0)
+		{
+			index = from.indexOf(')',index+1);
+			parenthesisLevel--;
+		}
+		return index;
+	}
 
 	/**
 	 * 	Table Info VO

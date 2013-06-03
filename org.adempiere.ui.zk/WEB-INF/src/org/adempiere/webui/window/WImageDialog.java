@@ -38,11 +38,10 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.North;
-import org.zkoss.zul.South;
-import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Image;
+import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 
 /**
  *  Base on the original Swing Image Dialog.
@@ -57,7 +56,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4253571652070223072L;
+	private static final long serialVersionUID = -5048907034691374834L;
 
 	/**
 	 *  Constructor
@@ -147,9 +146,10 @@ public class WImageDialog extends Window implements EventListener<Event>
 		south.setStyle("background-color: transparent; border: none;");
 		south.setParent(mainLayout);
 		south.appendChild(confirmPanel);
-		
+
 		//
-		fileButton.addEventListener(Events.ON_CLICK, this);
+		fileButton.setUpload(AdempiereWebUI.getUploadSetting());
+		fileButton.addEventListener(Events.ON_UPLOAD, this);
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
 		
 		addEventListener(Events.ON_UPLOAD, this);
@@ -160,10 +160,6 @@ public class WImageDialog extends Window implements EventListener<Event>
 		{
 			UploadEvent ue = (UploadEvent) e;
 			processUploadMedia(ue.getMedia());
-		}
-		else if (e.getTarget() == fileButton)
-		{
-			cmd_file();
 		}
 		else if (e.getTarget().getId().equals(ConfirmPanel.A_OK))
 		{
@@ -196,17 +192,6 @@ public class WImageDialog extends Window implements EventListener<Event>
 	public boolean isCancel() {
 		return cancel;
 	}
-	
-	/**
-	 *  Load file & display
-	 */
-	private void cmd_file()
-	{
-		//  Show File Open Dialog
-		Media media = Fileupload.get();
-		if (AdempiereWebUI.isEventThreadEnabled())
-			processUploadMedia(media);
-	}   //  cmd_file
 
 	private void processUploadMedia(Media imageFile) {
 		if (imageFile == null)

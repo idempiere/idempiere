@@ -45,10 +45,10 @@ import org.zkoss.zul.Vbox;
  */
 public class NumberBox extends Div
 {
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7089099079981906933L;
+	private static final long serialVersionUID = -3548087521669052891L;
 
 	private Textbox txtCalc = new Textbox();
     
@@ -145,11 +145,7 @@ public class NumberBox extends Div
     {
     	BigDecimal value = decimalBox.getValue();
     	if (value == null) return null;
-    	
-    	if (format != null)
-    		return format.format(value);
-    	else
-    		return value.toPlainString();
+   		return decimalBox.getText();
     }
     
     /**

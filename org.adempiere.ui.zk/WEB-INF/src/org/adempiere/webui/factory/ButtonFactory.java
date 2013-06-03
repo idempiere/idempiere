@@ -68,12 +68,8 @@ public class ButtonFactory {
     {
         Button button = new Button();
         button.setName("btn"+name);
-        
-        String text = Msg.translate(Env.getCtx(), name);
-        if (!name.equals(text))
-        	text = text.replaceAll("[&]", "");
-        else
-        	text = null;
+
+        String text = Util.cleanAmp(Msg.translate(Env.getCtx(), name));
 
         if (withText && text != null)
         {

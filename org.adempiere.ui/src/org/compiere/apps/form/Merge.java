@@ -28,8 +28,6 @@ import org.compiere.util.Trx;
 
 public class Merge 
 {
-	@SuppressWarnings("unused")
-	private static final long serialVersionUID = 149783846292562740L;
 	/**	Window No			*/
 	public int         	m_WindowNo = 0;
 	/**	Total Count			*/
@@ -115,7 +113,6 @@ public class Merge
 		ResultSet rs = null;
 		try
 		{
-			
 			m_trx = Trx.get(Trx.createTrxName("merge"), true);
 			//
 			pstmt = DB.prepareStatement(sql, Trx.createTrxName());
@@ -142,9 +139,6 @@ public class Merge
 			{
 				sql = "DELETE " + TableName + " WHERE " + ColumnName + "=" + from_ID;
 				
-
-
-				
 				if ( DB.executeUpdate(sql, m_trx.getTrxName()) < 0 )
 				{
 					m_errorLog.append(Env.NL).append("DELETE ").append(TableName)
@@ -156,14 +150,6 @@ public class Merge
 				}
 				
 			}
-			//
-			if ( success )
-				success = m_trx.commit();
-			else
-				m_trx.rollback();
-			
-			m_trx.close();
-
 		}
 		catch (Exception ex)
 		{
@@ -172,6 +158,14 @@ public class Merge
 		}
 		finally
 		{
+			//
+			if (m_trx != null) {
+				if (success)
+					success = m_trx.commit();
+				else
+					m_trx.rollback();
+				m_trx.close();
+			}
 			DB.close(rs, pstmt);
 			rs = null;
 			pstmt = null;
@@ -214,11 +208,8 @@ public class Merge
 		}
 
 		int count = DB.executeUpdate(sql, m_trx.getTrxName());
-        
-		
-		if (  count < 0 )
+		if (count < 0)
 		{
-					
 			count = -1;
 			m_errorLog.append(Env.NL)
 				.append(delete ? "DELETE " : "UPDATE ")
@@ -226,12 +217,10 @@ public class Merge
 				.append(" - ").append(sql);
 			if (log.isLoggable(Level.CONFIG)) log.config(m_errorLog.toString());
 			m_trx.rollback();
-		
 		}
 		if (log.isLoggable(Level.FINE)) log.fine(count
 				+ (delete ? " -Delete- " : " -Update- ") + TableName);
-		
-		
+
 		return count;
 	}	//	mergeTable
 

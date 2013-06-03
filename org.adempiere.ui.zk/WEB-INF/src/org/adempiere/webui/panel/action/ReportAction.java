@@ -247,21 +247,45 @@ public class ReportAction implements EventListener<Event>
 		int Record_ID = 0;
 		int[] RecordIDs = null;
 		MQuery query = new MQuery(gridTab.getTableName());
+		String whereClause;
+
 		if (currentRowOnly)
 		{
 			Record_ID = gridTab.getRecord_ID();
-			query.addRestriction(query.getTableName() + "_ID", MQuery.EQUAL, Record_ID);
+			whereClause = gridTab.getTableModel().getWhereClause(gridTab.getCurrentRow());
+			if (whereClause==null)
+				whereClause = gridTab.getTableModel().getSelectWhereClause();
+
 		}
 		else
 		{
+			whereClause = gridTab.getTableModel().getSelectWhereClause();
 			RecordIDs = new int[gridTab.getRowCount()];
 			for(int i = 0; i < gridTab.getRowCount(); i++)
 			{
 				RecordIDs[i] = gridTab.getKeyID(i);
-				query.addRestriction(query.getTableName() + "." + query.getTableName() + "_ID" + MQuery.EQUAL + RecordIDs[i], false, 0);
+			}
+		}
+
+		if (whereClause!=null && whereClause.length() > 0)
+		{
+			if (whereClause.indexOf('@') != -1) //replace variables in context
+			{
+				String context = Env.parseContext(Env.getCtx(), panel.getWindowNo(), whereClause, false);
+				if(context != null && context.trim().length() > 0)
+				{
+					whereClause = context;
+				}
+				else
+				{
+					log.log(Level.WARNING, "Failed to parse where clause. whereClause= "+whereClause);
+					whereClause = ("1 = 2");
+				}
 			}
 		}
 				
+		query.addRestriction(whereClause);
+
 		PrintInfo info = new PrintInfo(pf.getName(), pf.getAD_Table_ID(), Record_ID);
 		info.setDescription(query.getInfo());
 		

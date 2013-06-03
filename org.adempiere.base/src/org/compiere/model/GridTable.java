@@ -100,7 +100,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5782826500266625861L;
+	private static final long serialVersionUID = -2181155164268688340L;
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 
@@ -2270,6 +2270,7 @@ public class GridTable extends AbstractTableModel
 		int size = m_fields.size();
 		StringBuffer singleRowWHERE = null;
 		StringBuffer multiRowWHERE = null;
+		String tableName = getTableName();
 		for (int col = 0; col < size; col++)
 		{
 			GridField field = (GridField)m_fields.get (col);
@@ -2283,10 +2284,10 @@ public class GridTable extends AbstractTableModel
 					return null;
 				}
 				if (columnName.endsWith ("_ID"))
-					singleRowWHERE = new StringBuffer(columnName)
+					singleRowWHERE = new StringBuffer(tableName).append(".").append(columnName)
 						.append ("=").append (value);
 				else
-					singleRowWHERE = new StringBuffer(columnName)
+					singleRowWHERE = new StringBuffer(tableName).append(".").append(columnName)
 						.append ("=").append (DB.TO_STRING(value.toString()));
 			}
 			else if (field.isParentColumn())
@@ -2303,10 +2304,10 @@ public class GridTable extends AbstractTableModel
 				else
 					multiRowWHERE.append(" AND ");
 				if (columnName.endsWith ("_ID"))
-					multiRowWHERE.append (columnName)
+					multiRowWHERE.append (tableName).append(".").append(columnName)
 						.append ("=").append (value);
 				else
-					multiRowWHERE.append (columnName)
+					multiRowWHERE.append (tableName).append(".").append(columnName)
 						.append ("=").append (DB.TO_STRING(value.toString()));
 			}
 		}	//	for all columns
@@ -2889,13 +2890,13 @@ public class GridTable extends AbstractTableModel
 		close(false);
 		if (retainedWhere != null)
 		{
-			String whereClause = m_whereClause;
+			// String whereClause = m_whereClause;
 			if (m_whereClause != null && m_whereClause.trim().length() > 0)
 			{
 				m_whereClause = "((" + m_whereClause + ") OR (" + retainedWhere + ")) ";
 			}
 			open(m_maxRows);
-			m_whereClause = whereClause;
+			// m_whereClause = whereClause;
 		}
 		else
 		{

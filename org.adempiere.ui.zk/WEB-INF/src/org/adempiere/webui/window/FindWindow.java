@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +44,7 @@ import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.DatetimeBox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListCell;
@@ -96,6 +98,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.South;
@@ -1331,7 +1334,24 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
             //  Value   ******
             ListCell cellQueryFrom = (ListCell)row.getFellow("cellQueryFrom"+row.getId());
-            Object value = cellQueryFrom.getAttribute("value");
+            Object value = null;
+            
+            //Allowing Date validation before save
+            Component compo = cellQueryFrom.getFirstChild();
+            if(compo instanceof Datebox) {
+               Datebox dbox = (Datebox)compo;
+               if(dbox.getValue() != null)
+            	  value = new Timestamp(((Date)dbox.getValue()).getTime());
+            }
+            else if(compo instanceof DatetimeBox) {
+            	  DatetimeBox dtbox = (DatetimeBox)compo;
+            	  if(dtbox.getValue() != null)
+            		 value = new Timestamp(((Date)dtbox.getValue()).getTime());
+            }
+            else {
+            	value = cellQueryFrom.getAttribute("value");
+            }
+            
             if (value == null)
             {
             	if(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))
@@ -1369,6 +1389,24 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             if (MQuery.OPERATORS[MQuery.BETWEEN_INDEX].getValue().equals(Operator))
             {
                 ListCell cellQueryTo = (ListCell)row.getFellow("cellQueryTo"+row.getId());
+                
+                //Allowing Date validation before save
+                compo = cellQueryTo.getFirstChild();
+                if(compo instanceof Datebox) {
+                   Datebox dbox = (Datebox)compo;
+                   if(dbox.getValue() != null)
+                	  value2 = new Timestamp(((Date)dbox.getValue()).getTime());
+                }
+                else if(compo instanceof DatetimeBox) {
+                	  DatetimeBox dtbox = (DatetimeBox)compo;
+                	  if(dtbox.getValue() != null)
+                		 value2 = new Timestamp(((Date)dtbox.getValue()).getTime());
+                }
+                else {
+                	value2 = cellQueryFrom.getAttribute("value");
+                }
+                
+                
                 value2 = cellQueryTo.getAttribute("value");
                 if (value2 == null)
                     continue;

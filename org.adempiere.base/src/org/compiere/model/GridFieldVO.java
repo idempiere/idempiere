@@ -45,7 +45,7 @@ public class GridFieldVO implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 542767511640866058L;
+	private static final long serialVersionUID = -6098724121324445114L;
 
 	/**
 	 *  Return the SQL statement used for the MFieldVO.create
@@ -144,6 +144,8 @@ public class GridFieldVO implements Serializable
 					vo.FieldLength = rs.getInt (i);
 				else if (columnName.equalsIgnoreCase("VFormat"))
 					vo.VFormat = rs.getString (i);
+				else if (columnName.equalsIgnoreCase("FormatPattern"))
+					vo.FormatPattern = rs.getString (i);
 				else if (columnName.equalsIgnoreCase("ValueMin"))
 					vo.ValueMin = rs.getString (i);
 				else if (columnName.equalsIgnoreCase("ValueMax"))
@@ -311,6 +313,7 @@ public class GridFieldVO implements Serializable
 			vo.DefaultValue = rs.getString("DefaultValue");
 			vo.DefaultValue2 = rs.getString("DefaultValue2");
 			vo.VFormat = rs.getString("VFormat");
+			vo.FormatPattern = rs.getString("FormatPattern");
 			vo.ValueMin = rs.getString("ValueMin");
 			vo.ValueMax = rs.getString("ValueMax");
 			vo.isRange = rs.getString("IsRange").equals("Y");
@@ -359,6 +362,7 @@ public class GridFieldVO implements Serializable
 		voT.DisplayLength = voF.FieldLength;
 		voT.DefaultValue = voF.DefaultValue2;
 		voT.VFormat = voF.VFormat;
+		voT.FormatPattern = voF.FormatPattern;
 		voT.ValueMin = voF.ValueMin;
 		voT.ValueMax = voF.ValueMax;
 		voT.isRange = voF.isRange;
@@ -519,6 +523,8 @@ public class GridFieldVO implements Serializable
 	public int          FieldLength = 0;
 	/**	Format enforcement		*/
 	public String       VFormat = "";
+	/**	Format pattern		*/
+	public String FormatPattern;
 	/**	Min. Value		*/
 	public String       ValueMin = "";
 	/**	Max. Value		*/
@@ -696,6 +702,7 @@ public class GridFieldVO implements Serializable
 		clone.SortNo = SortNo;
 		clone.FieldLength = FieldLength;
 		clone.VFormat = VFormat;
+		clone.FormatPattern = FormatPattern;
 		clone.ValueMin = ValueMin;
 		clone.ValueMax = ValueMax;
 		clone.FieldGroup = FieldGroup;

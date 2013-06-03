@@ -170,7 +170,6 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	{
 
 		columnName = this.getColumnName();
-		imageUrl = ThemeManager.getThemeResource("images/PickOpen16.png");
 		if (columnName.equals("C_BPartner_ID"))
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), true, true, false, lookup);
@@ -184,6 +183,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		else
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, lookup);
+			imageUrl = ThemeManager.getThemeResource("images/PickOpen16.png");
 		}
 		getComponent().getButton().setImage(imageUrl);
 
