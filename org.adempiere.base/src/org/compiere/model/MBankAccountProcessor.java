@@ -22,8 +22,10 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Msg;
 
 /**
  * Bank Account Payment Processor
@@ -72,26 +74,26 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 				+ " AND (bap.C_Currency_ID IS NULL OR bap.C_Currency_ID=?)"		//	#2
 				+ " AND (bap.MinimumAmt IS NULL OR bap.MinimumAmt = 0 OR bap.MinimumAmt <= ?)");	//	#3
 		if (MPayment.TENDERTYPE_DirectDeposit.equals(tender))
-			sql.append(" AND bap.AcceptDirectDeposit='Y'");
+			sql.append(" AND bap.AcceptDirectDeposit='Y' AND pp.AcceptDirectDeposit='Y' ");
 		else if (MPayment.TENDERTYPE_DirectDebit.equals(tender))
-			sql.append(" AND bap.AcceptDirectDebit='Y'");
+			sql.append(" AND bap.AcceptDirectDebit='Y' AND AND pp.AcceptDirectDebit='Y' ");
 		else if (MPayment.TENDERTYPE_Check.equals(tender))
-			sql.append(" AND bap.AcceptCheck='Y'");
+			sql.append(" AND bap.AcceptCheck='Y' AND pp.AcceptCheck='Y' ");
 		//  CreditCards
 		else if (MPayment.CREDITCARDTYPE_ATM.equals(CCType))
-			sql.append(" AND bap.AcceptATM='Y'");
+			sql.append(" AND bap.AcceptATM='Y' AND pp.AcceptATM='Y' ");
 		else if (MPayment.CREDITCARDTYPE_Amex.equals(CCType))
-			sql.append(" AND bap.AcceptAMEX='Y'");
+			sql.append(" AND bap.AcceptAMEX='Y' AND pp.AcceptAMEX='Y' ");
 		else if (MPayment.CREDITCARDTYPE_Visa.equals(CCType))
-			sql.append(" AND bap.AcceptVISA='Y'");
+			sql.append(" AND bap.AcceptVISA='Y' AND pp.AcceptVISA='Y' ");
 		else if (MPayment.CREDITCARDTYPE_MasterCard.equals(CCType))
-			sql.append(" AND bap.AcceptMC='Y'");
+			sql.append(" AND bap.AcceptMC='Y' AND pp.AcceptMC='Y' ");
 		else if (MPayment.CREDITCARDTYPE_Diners.equals(CCType))
-			sql.append(" AND bap.AcceptDiners='Y'");
+			sql.append(" AND bap.AcceptDiners='Y' AND pp.AcceptDiners='Y' ");
 		else if (MPayment.CREDITCARDTYPE_Discover.equals(CCType))
-			sql.append(" AND bap.AcceptDiscover='Y'");
+			sql.append(" AND bap.AcceptDiscover='Y' AND pp.AcceptDiscover='Y' ");
 		else if (MPayment.CREDITCARDTYPE_PurchaseCard.equals(CCType))
-			sql.append(" AND bap.AcceptCORPORATE='Y'");
+			sql.append(" AND bap.AcceptCORPORATE='Y' AND pp.AcceptCORPORATE='Y' ");
 		sql.append(" ORDER BY ba.IsDefault DESC ");
 		//
 		PreparedStatement pstmt = null;
@@ -157,6 +159,19 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 		setC_PaymentProcessor_ID(C_PaymentProcessor_ID);	//	FK
 	}
 	
+	@Override
+	protected boolean beforeSave(boolean newRecord) 
+	{
+		if (getC_PaymentProcessor_ID() > 0 && isActive())
+		{
+			MPaymentProcessor pp = new MPaymentProcessor(getCtx(), getC_PaymentProcessor_ID(), get_TrxName());
+			if (!pp.isActive())
+				throw new AdempiereException(Msg.translate(getCtx(), "InactivePaymentProcessor") + ". " + pp.toString());
+		}
+		
+		return true;
+	}
+
 	/**
 	 * 	Does Payment Processor accepts tender / CC
 	 *	@param TenderType tender type
@@ -165,19 +180,40 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 	 */
 	public boolean accepts (String TenderType, String CreditCardType)
 	{
-		if ((MPayment.TENDERTYPE_DirectDeposit.equals(TenderType) && isAcceptDirectDeposit())
-			|| (MPayment.TENDERTYPE_DirectDebit.equals(TenderType) && isAcceptDirectDebit())
-			|| (MPayment.TENDERTYPE_Check.equals(TenderType) && isAcceptCheck())
-			//
-			|| (MPayment.CREDITCARDTYPE_ATM.equals(CreditCardType) && isAcceptATM())
-			|| (MPayment.CREDITCARDTYPE_Amex.equals(CreditCardType) && isAcceptAMEX())
-			|| (MPayment.CREDITCARDTYPE_PurchaseCard.equals(CreditCardType) && isAcceptCorporate())
-			|| (MPayment.CREDITCARDTYPE_Diners.equals(CreditCardType) && isAcceptDiners())
-			|| (MPayment.CREDITCARDTYPE_Discover.equals(CreditCardType) && isAcceptDiscover())
-			|| (MPayment.CREDITCARDTYPE_MasterCard.equals(CreditCardType) && isAcceptMC())
-			|| (MPayment.CREDITCARDTYPE_Visa.equals(CreditCardType) && isAcceptVisa()))
-			return true;
-		return false;
+		if (getC_PaymentProcessor_ID() > 0)
+		{
+			MPaymentProcessor pp = new MPaymentProcessor(getCtx(), getC_PaymentProcessor_ID(), get_TrxName());
+			
+			if ((MPayment.TENDERTYPE_DirectDeposit.equals(TenderType) && isAcceptDirectDeposit() && pp.isAcceptDirectDeposit())
+				|| (MPayment.TENDERTYPE_DirectDebit.equals(TenderType) && isAcceptDirectDebit() && pp.isAcceptDirectDebit())
+				|| (MPayment.TENDERTYPE_Check.equals(TenderType) && isAcceptCheck() && pp.isAcceptCheck())
+				//
+				|| (MPayment.CREDITCARDTYPE_ATM.equals(CreditCardType) && isAcceptATM() && pp.isAcceptATM())
+				|| (MPayment.CREDITCARDTYPE_Amex.equals(CreditCardType) && isAcceptAMEX() && pp.isAcceptAMEX())
+				|| (MPayment.CREDITCARDTYPE_PurchaseCard.equals(CreditCardType) && isAcceptCorporate() && pp.isAcceptCorporate())
+				|| (MPayment.CREDITCARDTYPE_Diners.equals(CreditCardType) && isAcceptDiners() && pp.isAcceptDiners())
+				|| (MPayment.CREDITCARDTYPE_Discover.equals(CreditCardType) && isAcceptDiscover() && pp.isAcceptDiscover())
+				|| (MPayment.CREDITCARDTYPE_MasterCard.equals(CreditCardType) && isAcceptMC() && pp.isAcceptMC())
+				|| (MPayment.CREDITCARDTYPE_Visa.equals(CreditCardType) && isAcceptVisa() && pp.isAcceptVisa()))
+				return true;
+			return false;
+		}
+		else
+		{
+			if ((MPayment.TENDERTYPE_DirectDeposit.equals(TenderType) && isAcceptDirectDeposit())
+					|| (MPayment.TENDERTYPE_DirectDebit.equals(TenderType) && isAcceptDirectDebit())
+					|| (MPayment.TENDERTYPE_Check.equals(TenderType) && isAcceptCheck())
+					//
+					|| (MPayment.CREDITCARDTYPE_ATM.equals(CreditCardType) && isAcceptATM())
+					|| (MPayment.CREDITCARDTYPE_Amex.equals(CreditCardType) && isAcceptAMEX())
+					|| (MPayment.CREDITCARDTYPE_PurchaseCard.equals(CreditCardType) && isAcceptCorporate())
+					|| (MPayment.CREDITCARDTYPE_Diners.equals(CreditCardType) && isAcceptDiners())
+					|| (MPayment.CREDITCARDTYPE_Discover.equals(CreditCardType) && isAcceptDiscover())
+					|| (MPayment.CREDITCARDTYPE_MasterCard.equals(CreditCardType) && isAcceptMC())
+					|| (MPayment.CREDITCARDTYPE_Visa.equals(CreditCardType) && isAcceptVisa()))
+				return true;
+			return false;
+		}
 	}	//	accepts
 	
 	public String toString()
