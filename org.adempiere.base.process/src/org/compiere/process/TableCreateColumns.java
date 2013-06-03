@@ -26,6 +26,7 @@ import org.compiere.db.AdempiereDatabase;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.M_Element;
+import org.compiere.model.PO;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -254,6 +255,15 @@ public class TableCreateColumns extends SvrProcess
 					element.setName(table.getName());
 					element.setPrintName(table.getName());
 				}
+				
+				////handle uuid column   xolali bug IDEMPIERE-971
+				String uuidColumn = PO.getUUIDColumnName(table.getTableName()); //table.getTableName() + "_UU";
+				
+				if (columnName.equalsIgnoreCase (uuidColumn)) { // 
+					element.setColumnName(uuidColumn);
+					element.setName(uuidColumn);
+					element.setPrintName(uuidColumn);
+				}
 				element.save ();
 			}
 			column.setColumnName (element.getColumnName ());
@@ -270,6 +280,14 @@ public class TableCreateColumns extends SvrProcess
 				column.setAD_Reference_ID (DisplayType.ID);
 				column.setIsUpdateable(false);
 			}
+		    //handle uuid column   xolali bug IDEMPIERE-971
+			if (columnName.equalsIgnoreCase (PO.getUUIDColumnName(table.getTableName())))
+			{
+				column.setAD_Reference_ID (DisplayType.String);
+				column.setIsUpdateable(false);
+				column.setIsAllowCopy(false);
+			}
+			
 			// Account
 			// bug [ 1637912 ] 
 			else if (columnName.toUpperCase ().endsWith("_ACCT")
