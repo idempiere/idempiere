@@ -20,6 +20,11 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -39,11 +44,10 @@ import org.compiere.util.Util;
  */
 public class MColumn extends X_AD_Column
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6543789555737635129L;
+	private static final long serialVersionUID = -3366954463322356334L;
 
 	/**
 	 * 	Get MColumn from Cache
@@ -305,11 +309,33 @@ public class MColumn extends X_AD_Column
 			)
 				setIsAllowCopy(false);
 		}
-		
+
+		// validate FormatPattern
+		String pattern = getFormatPattern();
+		if (! Util.isEmpty(pattern, true)) {
+			if (DisplayType.isNumeric(getAD_Reference_ID())) {
+				DecimalFormat format = (DecimalFormat)NumberFormat.getNumberInstance(Locale.US);
+				try {
+					format.applyPattern(pattern);
+				} catch (IllegalArgumentException e) {
+					log.saveError("SaveError", "Invalid number format: " + pattern);
+					return false;
+				}
+			} else if (DisplayType.isDate(getAD_Reference_ID())) {
+				SimpleDateFormat format = (SimpleDateFormat)DateFormat.getInstance();
+				try {
+					format.applyPattern(pattern);
+				} catch (IllegalArgumentException e) {
+					log.saveError("SaveError", "Invalid date pattern: " + pattern);
+					return false;
+				}
+			} else {
+				setFormatPattern(null);
+			}
+		}
+
 		return true;
 	}	//	beforeSave
-
-	
 	
 	/**
 	 * 	After Save

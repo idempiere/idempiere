@@ -76,12 +76,10 @@ import org.compiere.util.Evaluator;
 public class GridField 
 	implements Serializable, Evaluatee, Cloneable
 {
-
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2384947306143518488L;
+	private static final long serialVersionUID = -4907605626586089308L;
 
 	/**
 	 *  Field Constructor.
@@ -1198,6 +1196,13 @@ public class GridField
 		return m_vo.VFormat;
 	}
 	/**
+	 * 	Get Format Pattern
+	 *	@return format pattern
+	 */
+	public String getFormatPattern() {
+		return m_vo.FormatPattern;
+	}
+	/**
 	 * 	Get Value Min
 	 *	@return min
 	 */
@@ -2005,4 +2010,5 @@ public class GridField
 		}
 		
 	}
+
 }   //  MField

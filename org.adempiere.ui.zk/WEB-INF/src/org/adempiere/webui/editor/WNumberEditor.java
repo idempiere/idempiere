@@ -138,7 +138,10 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 		// IDEMPIERE-989
 		Language lang = AEnv.getLanguage(Env.getCtx());
 		DecimalFormat format = DisplayType.getNumberFormat(displayType, lang);
-		getComponent().getDecimalbox().setFormat(format.toPattern());
+		if (gridField != null && gridField.getFormatPattern() != null)
+			getComponent().getDecimalbox().setFormat(gridField.getFormatPattern());
+		else
+			getComponent().getDecimalbox().setFormat(format.toPattern());
 		getComponent().getDecimalbox().setLocale(lang.getLocale());
 		getComponent().setFormat(format);
 		
