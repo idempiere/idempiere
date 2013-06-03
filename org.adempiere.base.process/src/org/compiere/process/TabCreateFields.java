@@ -23,8 +23,11 @@ import java.util.logging.Level;
 import org.compiere.model.MColumn;
 import org.compiere.model.MField;
 import org.compiere.model.MTab;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 
 
 /**
@@ -76,9 +79,20 @@ public class TabCreateFields extends SvrProcess
 			+ " AND AD_Table_ID=?"			//	#3
 			+ " AND NOT (Name LIKE 'Created%' OR Name LIKE 'Updated%')"
 			+ " AND IsActive='Y' "
-			+ "ORDER BY Name";
+			+ "ORDER  BY CASE "
+			+ "            WHEN c.ColumnName = 'AD_Client_ID' THEN -100 "
+			+ "            WHEN c.ColumnName = 'AD_Org_ID' THEN -90 "
+			+ "            WHEN c.ColumnName = 'Value' THEN -80 "
+			+ "            WHEN c.ColumnName = 'Name' THEN -70 "
+			+ "            WHEN c.ColumnName = 'Description' THEN -60 "
+			+ "            WHEN c.ColumnName = 'Help' THEN -50 "
+			+ "            WHEN c.ColumnName = 'IsActive' THEN 1000000000 "
+			+ "            ELSE c.AD_Column_ID "
+			+ "          END ";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		int seqno = DB.getSQLValue(null, "SELECT MAX(SeqNo) FROM AD_Field WHERE AD_Tab_ID=?", tab.getAD_Tab_ID());
+		seqno = seqno + 10;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
@@ -86,6 +100,7 @@ public class TabCreateFields extends SvrProcess
 			pstmt.setInt (2, tab.getAD_Tab_ID());
 			pstmt.setInt (3, tab.getAD_Table_ID());
 			rs = pstmt.executeQuery ();
+			String uuidcolname = PO.getUUIDColumnName(tab.getAD_Table().getTableName());
 			while (rs.next ())
 			{
 				MColumn column = new MColumn (getCtx(), rs, get_TrxName());
@@ -104,10 +119,44 @@ public class TabCreateFields extends SvrProcess
 				
 				// end F3P
 				
-				if (column.isKey()){
+				if (column.isKey() || uuidcolname.equalsIgnoreCase(field.getName())) {
 					field.setIsDisplayed(false);
 					field.setIsDisplayedGrid(false);
 				}
+
+				// Assign some default formatting
+				field.setSeqNo(seqno);
+				seqno = seqno + 10;
+				if (column.getAD_Reference_ID() == DisplayType.Button || column.getAD_Reference_ID() == DisplayType.YesNo) {
+					field.setXPosition(2);
+				}
+				field.setColumnSpan(2);
+				if (column.getFieldLength() >= 60) {
+					field.setColumnSpan(5);
+				}
+				if (column.getAD_Reference_ID() == DisplayType.Text) {
+					field.setNumLines(3);
+				} else if (column.getAD_Reference_ID() == DisplayType.TextLong) {
+					field.setNumLines(5);
+				} else if (column.getAD_Reference_ID() == DisplayType.Memo) {
+					field.setNumLines(8);
+				}
+				String accessLevel = tab.getAD_Table().getAccessLevel();
+				if (column.getColumnName().equals("AD_Org_ID")) {
+					field.setXPosition(4);
+					if (   accessLevel.equals(MTable.ACCESSLEVEL_ClientOnly)
+						|| accessLevel.equals(MTable.ACCESSLEVEL_SystemOnly)
+						|| accessLevel.equals(MTable.ACCESSLEVEL_SystemPlusClient)) {
+						field.setIsDisplayedGrid(false);
+					}
+				}
+				if (column.getColumnName().equals("AD_Client_ID")) {
+					if (! (accessLevel.equals(MTable.ACCESSLEVEL_All)
+						|| accessLevel.equals(MTable.ACCESSLEVEL_SystemPlusClient))) {
+						field.setIsDisplayedGrid(false);
+					}
+				}
+
 				if (field.save())
 				{
 					addLog(0, null, null, column.getName());
