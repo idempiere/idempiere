@@ -281,8 +281,8 @@ ContextMenuListener, IZoomableEditor
                 //still not in list, reset to zero
                 if (!getComponent().isSelected(value))
                 {
-                	if (value instanceof Integer && gridField != null && gridField.getDisplayType() != DisplayType.ID
-                			&& gridTab != null && !gridTab.getTableModel().isImporting()) // for IDs is ok to be out of the list
+                	if (value instanceof Integer && gridField != null && gridField.getDisplayType() != DisplayType.ID && 
+                			(gridTab==null || !gridTab.getTableModel().isImporting())) // for IDs is ok to be out of the list
                 	{
                 		getComponent().setValue(null);
                 		if (curValue == null)
