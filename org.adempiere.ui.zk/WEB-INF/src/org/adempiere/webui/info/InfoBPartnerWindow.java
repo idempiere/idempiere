@@ -6,6 +6,7 @@ package org.adempiere.webui.info;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.panel.InvoiceHistory;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Util;
 
 /**
@@ -13,11 +14,13 @@ import org.compiere.util.Util;
  *
  */
 public class InfoBPartnerWindow extends InfoWindow {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8994747783253141939L;
+	private static final long serialVersionUID = -7970170769665110830L;
+
+	private int m_AD_User_ID_index = -1;
+    private int m_C_BPartner_Location_ID_index = -1;
 
 	/**
 	 * @param WindowNo
@@ -105,4 +108,51 @@ public class InfoBPartnerWindow extends InfoWindow {
 			}
 		}
 	}
+	
+	@Override
+	protected void saveSelectionDetail() {
+        int row = contentPanel.getSelectedRow();
+        if (row == -1)
+            return;
+
+        int AD_User_ID = 0;
+        int C_BPartner_Location_ID = 0;
+        
+        if (m_AD_User_ID_index != -1)
+        {
+            Object data =contentPanel.getValueAt(row, m_AD_User_ID_index);
+            if (data instanceof KeyNamePair)
+            	AD_User_ID = ((KeyNamePair)data).getKey();
+        }
+        //
+        if (m_C_BPartner_Location_ID_index != -1)
+        {
+            Object data =contentPanel.getValueAt(row, m_C_BPartner_Location_ID_index);
+            if (data instanceof KeyNamePair)
+                C_BPartner_Location_ID = ((KeyNamePair)data).getKey();
+        }
+        //  publish for Callout to read
+        Integer ID = getSelectedRowKey();
+        Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "C_BPartner_ID", ID == null ? "0" : ID.toString());
+        Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "AD_User_ID", String.valueOf(AD_User_ID));
+        Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "C_BPartner_Location_ID", String.valueOf(C_BPartner_Location_ID));
+       
+		super.saveSelectionDetail();
+	}
+	
+	@Override
+	protected void prepareTable() {
+		super.prepareTable();
+
+		// Get indexes
+        for (int i = 0; i < p_layout.length; i++)
+        {
+        	if (p_layout[i].getKeyPairColSQL().indexOf("AD_User_ID") != -1)
+				m_AD_User_ID_index = i;
+        	//
+            if (p_layout[i].getKeyPairColSQL().indexOf("C_BPartner_Location_ID") != -1)
+                m_C_BPartner_Location_ID_index = i;
+        }
+	}
+
 }

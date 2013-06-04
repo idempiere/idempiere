@@ -70,11 +70,11 @@ import org.zkoss.zul.Vbox;
  *
  */
 public class InfoWindow extends InfoPanel implements ValueChangeListener, EventListener<Event> {
-
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -6235804178650786285L;
+	private static final long serialVersionUID = -2133132636255923989L;
+
 	protected Grid parameterGrid;
 	private Borderlayout layout;
 	private Vbox southBody;
@@ -243,7 +243,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	}
 
-	private void prepareTable() {		
+	protected void prepareTable() {		
 		List<ColumnInfo> list = new ArrayList<ColumnInfo>();
 		String keyTableAlias = tableInfos[0].getSynonym() != null && tableInfos[0].getSynonym().trim().length() > 0 
 				? tableInfos[0].getSynonym()
