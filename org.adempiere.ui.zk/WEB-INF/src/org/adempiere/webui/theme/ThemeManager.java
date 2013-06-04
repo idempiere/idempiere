@@ -13,10 +13,6 @@
  *****************************************************************************/
 package org.adempiere.webui.theme;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.IOException;
 
 import org.adempiere.webui.AdempiereWebUI;
@@ -25,7 +21,7 @@ import org.compiere.model.MImage;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
-import org.zkoss.image.Images;
+import org.zkoss.image.AImage;
 
 /**
  *
@@ -121,7 +117,10 @@ public final class ThemeManager {
 	public static org.zkoss.image.Image getClientWebLogo() throws IOException {
 		MClientInfo cinfo = MClientInfo.get(Env.getCtx());
 		if (cinfo.getLogoWeb_ID() > 0) {
-			MImage mImage = MImage.get(Env.getCtx(), cinfo.getLogoWeb_ID());
+			MImage mImage = MImage.get(Env.getCtx(), cinfo.getLogoWeb_ID());			
+			return new AImage(mImage.getName(), mImage.getData());
+	    	
+			/* Using different approach: ImageEncoder supports only PNG and JPEG
 			Image image = mImage.getImage();
 			if (image instanceof RenderedImage) {
 				RenderedImage rImage = (RenderedImage)image;
@@ -139,6 +138,7 @@ public final class ThemeManager {
 				}
 				return Images.encode(name, rImage);
 			}
+			*/			
 		} else {
 			return null;
 		}
