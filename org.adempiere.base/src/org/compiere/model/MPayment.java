@@ -1011,17 +1011,19 @@ public final class MPayment extends X_C_Payment
 			for (int i = 0; i < m_mBankAccountProcessors.length; i++)
 			{
 				MBankAccountProcessor bankAccountProcessor = m_mBankAccountProcessors[i];
-				if (bankAccountProcessor.isAcceptAMEX())
+				MPaymentProcessor paymentProcessor = new MPaymentProcessor(getCtx(), bankAccountProcessor.getC_PaymentProcessor_ID(), get_TrxName());
+				
+				if (bankAccountProcessor.isAcceptAMEX() && paymentProcessor.isAcceptAMEX())
 					map.put (CREDITCARDTYPE_Amex, getCreditCardPair (CREDITCARDTYPE_Amex));
-				if (bankAccountProcessor.isAcceptDiners())
+				if (bankAccountProcessor.isAcceptDiners() && paymentProcessor.isAcceptDiners())
 					map.put (CREDITCARDTYPE_Diners, getCreditCardPair (CREDITCARDTYPE_Diners));
-				if (bankAccountProcessor.isAcceptDiscover())
+				if (bankAccountProcessor.isAcceptDiscover() && paymentProcessor.isAcceptDiscover())
 					map.put (CREDITCARDTYPE_Discover, getCreditCardPair (CREDITCARDTYPE_Discover));
-				if (bankAccountProcessor.isAcceptMC())
+				if (bankAccountProcessor.isAcceptMC() && paymentProcessor.isAcceptMC())
 					map.put (CREDITCARDTYPE_MasterCard, getCreditCardPair (CREDITCARDTYPE_MasterCard));
-				if (bankAccountProcessor.isAcceptCorporate())
+				if (bankAccountProcessor.isAcceptCorporate() && paymentProcessor.isAcceptCorporate())
 					map.put (CREDITCARDTYPE_PurchaseCard, getCreditCardPair (CREDITCARDTYPE_PurchaseCard));
-				if (bankAccountProcessor.isAcceptVisa())
+				if (bankAccountProcessor.isAcceptVisa() && paymentProcessor.isAcceptVisa())
 					map.put (CREDITCARDTYPE_Visa, getCreditCardPair (CREDITCARDTYPE_Visa));
 			} //	for all payment processors
 			//
