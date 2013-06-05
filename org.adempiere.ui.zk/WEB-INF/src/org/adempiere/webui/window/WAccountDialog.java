@@ -432,7 +432,7 @@ public final class WAccountDialog extends Window
 		cell.setColspan(4);
 		cell.appendChild(f_Description);
 		row.appendChild(cell);
-		row.setStyle("background-color: transparent;");
+		row.setStyle("background-color: transparent; padding: 10px");
 		m_rows.appendChild(row);
 
 		//	Finish

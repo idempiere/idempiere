@@ -490,7 +490,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		repostLayout.appendChild(bRePost);
 		repostLayout.appendChild(new Separator());
 		repostLayout.appendChild(forcePost);
-		repostLayout.setHeight("24px");
+		repostLayout.setVflex("1");
 		southLeft.appendChild(statusLine);
 		
 		Grid southRight = new Grid();

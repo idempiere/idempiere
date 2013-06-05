@@ -241,7 +241,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 
         confirmPanel = new ConfirmPanel(true);
         confirmPanel.addActionListener(Events.ON_CLICK, this);
-
+        confirmPanel.setVflex("true");
 	}
 
 	private void init()
@@ -249,7 +249,6 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		setSclass("popup-dialog");
 		Vlayout vlayout = new Vlayout();
 		vlayout.setHflex("1");
-		vlayout.setVflex("1");
 		this.appendChild(vlayout);
 		
 		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "documentAction");
