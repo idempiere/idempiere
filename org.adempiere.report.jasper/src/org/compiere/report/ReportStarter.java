@@ -779,16 +779,18 @@ public class ReportStarter implements ProcessCall, ClientProcess
     	File resFile = null;
     	MAttachmentEntry[] entries = attachment.getEntries();
     	// try baseName + "_" + language
+    	String resname = jasperName + "_" + currLang.getLocale().getLanguage() + ".properties";
         for( int i=0; i<entries.length; i++) {
-            if ( entries[i].getName().equals( jasperName+currLang.getLocale().getLanguage()+".properties")) {
+            if (entries[i].getName().equals(resname)) {
                 resFile = getAttachmentEntryFile(entries[i]);
                 break;
             }
         }
         if (resFile==null) {
             // try baseName only
+        	resname = jasperName + ".properties";
             for( int i=0; i<entries.length; i++) {
-                if ( entries[i].getName().equals( jasperName+".properties")) {
+                if (entries[i].getName().equals(resname)) {
                 	resFile = getAttachmentEntryFile(entries[i]);
                     break;
                 }
@@ -806,7 +808,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
     private File getResourcesForResourceFile(String jasperName, Language currLang) {
     	File resFile = null;
 		try {
-			resFile = getFileAsResource(jasperName+currLang.getLocale().getLanguage()+".properties");
+			resFile = getFileAsResource(jasperName+"_"+currLang.getLocale().getLanguage()+".properties");
 		} catch (Exception e) {
 			// ignore exception - file couldn't exist
 		}
