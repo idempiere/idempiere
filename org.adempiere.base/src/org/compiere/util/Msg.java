@@ -686,4 +686,15 @@ public final class Msg
 		return outStr.toString();
 	}   //  parseTranslation
 
+
+	/**
+	 *  Get translated text message for AD_Message, ampersand cleaned (used to indicate shortcut)
+	 *  @param  ctx Context to retrieve language
+	 *  @param	AD_Message - Message Key
+	 *  @return translated text
+	 */
+	public static String getCleanMsg(Properties ctx, String string) {
+		return Util.cleanAmp(getMsg(Env.getAD_Language(ctx), string));
+	}
+
 }	//	Msg

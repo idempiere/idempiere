@@ -98,7 +98,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	private Label			statusLabel = new Label();
 	private WTableDirEditor statusField;
 	
-	private Label			bZoomLabel = new Label(Msg.getMsg(Env.getCtx(), "ZoomLabel"));
+	private Label			bZoomLabel = new Label(Msg.getMsg(Env.getCtx(), "Zoom"));
 	private Button 			bRefresh 	= new Button();
 	private Button 			bOK 		= new Button();
 	private Button 			bNext 		= new Button();
@@ -306,32 +306,32 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		mainLayout.setHeight("100%");
 		mainLayout.setStyle("position: absolute");
 
-		bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
-		bRefresh.setTooltiptext(Msg.getMsg(Env.getCtx(), "Refresh"));
+		bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
+		bRefresh.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "Refresh"));
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 
-		bOK.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
-		bOK.setTooltiptext(Msg.getMsg(Env.getCtx(), "Update"));
+		bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
+		bOK.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "Update"));
 		bOK.addEventListener(Events.ON_CLICK, this);
 
-		bNext.setImage(ThemeManager.getThemeResource("images/Next24.png"));
-		bNext.setTooltiptext(Msg.getMsg(Env.getCtx(), "Next"));
+		bNext.setImage(ThemeManager.getThemeResource("images/Next16.png"));
+		bNext.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "Next"));
 		bNext.addEventListener(Events.ON_CLICK, this);
 		
 		bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
-		bZoom.setTooltiptext(Msg.getMsg(Env.getCtx(), "Zoom"));
+		bZoom.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "Zoom"));
 		bZoom.addEventListener(Events.ON_CLICK, this);
 		
 		bExpand.setLabel("Expand Tree");
-		bExpand.setTooltiptext(Msg.getMsg(Env.getCtx(), "ExpandTree"));
+		bExpand.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "ExpandTree"));
 		bExpand.addEventListener(Events.ON_CLICK, this);
 		
 		justmine.setLabel("Just Mine");
-		justmine.setTooltiptext(Msg.getMsg(Env.getCtx(), "JustMine"));
+		justmine.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "JustMine"));
 		justmine.addEventListener(Events.ON_CHECK,this);
 		
 		showColors.setLabel("Show Colors");
-		showColors.setTooltiptext(Msg.getMsg(Env.getCtx(), "ShowColors"));
+		showColors.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "ShowColors"));
 		showColors.addEventListener(Events.ON_CHECK,this);
 			
 		North north = new North();
@@ -381,7 +381,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		
 		div.appendChild(helpFrame);
 		helpFrame.setWidth("99%");
-		helpFrame.setHeight("90%");
+		helpFrame.setHeight("80%");
 		helpFrame.setStyle("border: 1px solid lightgray; margin:auto");
 		
 		Div divNote = new Div();
