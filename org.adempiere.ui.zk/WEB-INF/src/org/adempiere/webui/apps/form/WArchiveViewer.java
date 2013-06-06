@@ -29,10 +29,13 @@ import java.util.logging.Level;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Datebox;
 import org.adempiere.webui.component.DatetimeBox;
 import org.adempiere.webui.component.Grid;
+import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
@@ -61,14 +64,13 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
-import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Cell;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
+import org.zkoss.zul.Space;
 
 /**
  * 	Archive Viewer
@@ -131,26 +133,16 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	{
 		log.info("");
 
-		form = new CustomForm() {
-			private static final long serialVersionUID = 7226661630651936293L;
+		form = new CustomForm();
+		try {
+			dynInit();
+			jbInit();
+		}
+		catch(Exception e)
+		{
+			log.log(Level.SEVERE, "init", e);
+		}
 
-			@Override
-			public void onPageAttached(Page newpage, Page oldpage) {
-				super.onPageAttached(newpage, oldpage);
-				if (newpage != null)
-					try {
-						dynInit();
-						jbInit();
-					}
-				catch(Exception e)
-				{
-					log.log(Level.SEVERE, "init", e);
-				}
-
-			}
-
-		};
-		
 		m_WindowNo = form.getWindowNo();
 	}
 	
@@ -237,190 +229,205 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		reportField.setLabel(Msg.translate(Env.getCtx(), "IsReport"));
 		reportField.addEventListener(Events.ON_CHECK, this);
 		
-		Rows rows;
-		Row row;
-		Div div;
-		
-		if(showQuery){
-			Grid gridQuery = new Grid();
-			gridQuery.setWidth("500px");
+		if(showQuery)
+		{
+			Grid gridQuery = GridFactory.newGridLayout();
 			gridQuery.setStyle("margin:0; padding:0;");
 			gridQuery.makeNoStrip();
 			gridQuery.setOddRowSclass("even");
+			
+			Columns columns = new Columns();
+			gridQuery.appendChild(columns);
+			
+			Column column = new Column();
+			column.setWidth("35%");
+			column.setAlign("right");
+			columns.appendChild(column);
+			
+			column = new Column();
+			column.setWidth("40%");
+			column.setAlign("left");
+			columns.appendChild(column);
+			
+			column = new Column();
+			column.setWidth("25%");
+			column.setAlign("left");
+			columns.appendChild(column);
 
-			rows = new Rows();
+			Rows rows = new Rows();
 			gridQuery.appendChild(rows);
 
-			row = new Row();
+			Row row = new Row();
 			rows.appendChild(row);
 			row.setAlign("right");
-			row.appendCellChild(reportField, 3);
+			row.appendCellChild(reportField, 2);
+			row.appendChild(new Space());
 
 			row = new Row();
 			rows.appendChild(row);
-			div = new Div();
-			div.setStyle("text-align: right;");
-			div.appendChild(processLabel);
-			row.appendCellChild(div, 1);
-			row.appendCellChild(processField, 2);
-			processField.setWidth("100%");
+			row.appendChild(processLabel);
+			row.appendChild(processField);
+			processField.setHflex("1");
+			row.appendChild(new Space());
 
 			row = new Row();
 			rows.appendChild(row);
-			div = new Div();
-			div.setStyle("text-align: right;");
-			div.appendChild(bPartnerLabel);
-			row.appendCellChild(div, 1);
-			row.appendCellChild(bPartnerField.getComponent(), 2);
+			row.appendChild(bPartnerLabel);
+			row.appendChild(bPartnerField.getComponent());
+			bPartnerField.getComponent().setHflex("1");
+			row.appendChild(new Space());
 
 			row = new Row();
 			rows.appendChild(row);
-			div = new Div();
-			div.setStyle("text-align: right;");
-			div.appendChild(tableLabel);
-			row.appendCellChild(div, 1);
-			row.appendCellChild(tableField, 2);
-			tableField.setWidth("100%");
+			row.appendChild(tableLabel);
+			row.appendChild(tableField);
+			tableField.setHflex("1");
+			row.appendChild(new Space());
 
 			row = new Row();
 			rows.appendChild(row);
-			div = new Div();
-			div.setStyle("text-align: right;");
-			div.appendChild(nameQLabel);
-			row.appendCellChild(div, 1);
-			row.appendCellChild(nameQField, 2);
-			nameQField.setWidth("100%");
+			row.appendChild(nameQLabel);
+			row.appendChild(nameQField);
+			nameQField.setHflex("1");
+			row.appendChild(new Space());
 
 			row = new Row();
 			rows.appendChild(row);
-			div = new Div();
-			div.setStyle("text-align: right;");
-			div.appendChild(descriptionQLabel);
-			row.appendCellChild(div, 1);
-			row.appendCellChild(descriptionQField, 2);
-			descriptionQField.setWidth("100%");
+			row.appendChild(descriptionQLabel);
+			row.appendChild(descriptionQField);
+			descriptionQField.setHflex("1");
+			row.appendChild(new Space());
 
 			row = new Row();
 			rows.appendChild(row);
-			div = new Div();
-			div.setStyle("text-align: right;");
-			div.appendChild(helpQLabel);
-			row.appendCellChild(div, 1);
-			row.appendCellChild(helpQField, 2);
-			helpQField.setWidth("100%");
+			row.appendChild(helpQLabel);
+			row.appendChild(helpQField);
+			helpQField.setHflex("1");
+			row.appendChild(new Space());
 
 			row = new Row();
 			rows.appendChild(row);
-			div = new Div();
-			div.setStyle("text-align: right;");
-			div.appendChild(createdByQLabel);
-			row.appendCellChild(div, 1);
-			row.appendCellChild(createdByQField, 2);
-			createdByQField.setWidth("100%");
+			row.appendChild(createdByQLabel);
+			row.appendChild(createdByQField);
+			createdByQField.setHflex("1");
+			row.appendChild(new Space());
 
 			row = new Row();
 			rows.appendChild(row);
-			div = new Div();
-			div.setStyle("text-align: right;");
-			div.appendChild(createdQLabel);
-			row.appendChild(div);
-			row.appendChild(createdQFrom);
-			row.appendChild(createdQTo);
-
-			div = new Div();
-			div.setStyle("text-align: center;");
-			div.appendChild(gridQuery);
-
+			row.appendChild(createdQLabel);
+			Hbox hbox = new Hbox();
+			hbox.appendChild(createdQFrom);
+			hbox.appendChild(createdQTo);
+			row.appendChild(hbox);
+			row.appendChild(new Space());
+			
 			Tabpanel tabQueryPanel = new Tabpanel();
-			tabQueryPanel.appendChild(div);
+			tabQueryPanel.appendChild(gridQuery);
 
 			Tab tabQuery = new Tab(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ViewerQuery")));
 
 			tabpanels.appendChild(tabQueryPanel);
 			tabs.appendChild(tabQuery);
 		}
-		Grid gridView = new Grid();
+		
+		Grid gridView = GridFactory.newGridLayout();
 		gridView.setStyle("margin:0; padding:0;");
 		gridView.makeNoStrip();
 		gridView.setOddRowSclass("even");
+		
+		Columns columns = new Columns();
+		gridView.appendChild(columns);
+		
+		Column column = new Column();
+		column.setHflex("min");
+		column.setAlign("left");
+		columns.appendChild(column);
+
+		column = new Column();
+		column.setHflex("1");
+		column.setAlign("center");
+		columns.appendChild(column);
+
+		column = new Column();
+		column.setHflex("min");
+		column.setAlign("right");
+		columns.appendChild(column);
         
-		rows = new Rows();
+		Rows rows = new Rows();
 		gridView.appendChild(rows);
 		
-		row = new Row();
+		Row row = new Row();
 		rows.appendChild(row);
-		div = new Div();
-		div.setStyle("text-align: left;");
-		div.appendChild(bBack);
-		row.appendCellChild(div, 1);
-		div = new Div();
-		div.setStyle("text-align: center;");
-		div.appendChild(positionInfo);
-		row.appendCellChild(div, 2);
-		div = new Div();
-		div.setStyle("text-align: right;");
-		div.appendChild(bNext);
-		row.appendCellChild(div, 1);
+		row.appendChild(bBack);
+		row.appendChild(positionInfo);
+		row.appendChild(bNext);
 
 		row = new Row();
 		rows.appendChild(row);
-		row.appendCellChild(createdByLabel, 4);
-		createdByLabel.setWidth("100%");
+		row.appendCellChild(createdByLabel, 3);
+		createdByLabel.setHflex("1");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.appendCellChild(createdByField, 4);
-		createdByField.setWidth("100%");
+		row.appendCellChild(createdByField, 3);
+		createdByField.setHflex("1");
 		
 		row = new Row();
 		rows.appendChild(row);
-		div = new Div();
-		div.setStyle("text-align: right;");
-		div.appendChild(createdField);
-		row.appendCellChild(div, 4);
+		Cell cell = new Cell();
+		cell.setColspan(3);
+		cell.setRowspan(1);
+		cell.setAlign("right");
+		cell.appendChild(createdField);
+		row.appendChild(cell);
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.appendCellChild(nameLabel, 4);
-		nameLabel.setWidth("100%");
+		row.appendCellChild(nameLabel, 3);
+		nameLabel.setHflex("1");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.appendCellChild(nameField, 4);
-		nameField.setWidth("100%");
+		row.appendCellChild(nameField, 3);
+		nameField.setHflex("1");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.appendCellChild(descriptionLabel, 4);
-		descriptionLabel.setWidth("100%");
+		row.appendCellChild(descriptionLabel, 3);
+		descriptionLabel.setHflex("1");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.appendCellChild(descriptionField, 4);
+		row.appendCellChild(descriptionField, 3);
 		descriptionField.setRows(3);
-		descriptionField.setWidth("100%");
+		descriptionField.setHflex("1");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.appendCellChild(helpLabel, 4);
-		helpLabel.setWidth("100%");
+		row.appendCellChild(helpLabel, 3);
+		helpLabel.setHflex("1");
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.appendCellChild(helpField, 4);
+		row.appendCellChild(helpField, 3);
 		helpField.setRows(3);
-		helpField.setWidth("100%");
+		helpField.setHflex("1");
 		
 		row = new Row();
-		rows.appendChild(row);
-		div = new Div();
-		div.setStyle("text-align: right;");
-		div.appendChild(deleteArchive);
-		div.appendChild(bRefresh);
-		div.appendChild(updateArchive);
-		row.appendCellChild(div, 4);
+		rows.appendChild(row);		
+		Hbox hbox = new Hbox();
+		hbox.appendChild(deleteArchive);
+		hbox.appendChild(bRefresh);
+		hbox.appendChild(updateArchive);
+		cell = new Cell();
+		cell.setColspan(3);
+		cell.setRowspan(1);
+		cell.setAlign("right");
+		cell.appendChild(hbox);
+		row.appendChild(cell);
 				
 		createdByField.setReadonly(true);
+		createdField.setEnabled(false);
 		createdField.getDatebox().setReadonly(true);
 		createdField.getTimebox().setReadonly(true);
 		
@@ -430,7 +437,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		Hbox boxViewSeparator = new Hbox();
 		boxViewSeparator.setWidth("100%");
 		boxViewSeparator.setHeight("100%");			
-		Cell cell = new Cell();
+		cell = new Cell();
 		cell.setWidth("70%");
 		cell.appendChild(iframe);
 		boxViewSeparator.appendChild(cell);
@@ -508,10 +515,12 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		//	Show
 		processLabel.setVisible(reports);
 		processField.setVisible(reports);
+		processLabel.getParent().setVisible(reports);
 		
 		//	Hide
 		bPartnerLabel.setVisible(!reports);
 		bPartnerField.setVisible(!reports);
+		bPartnerLabel.getParent().setVisible(!reports);
 	}	//	updateQDisplay
 
 	public void cmd_deleteArchive(){

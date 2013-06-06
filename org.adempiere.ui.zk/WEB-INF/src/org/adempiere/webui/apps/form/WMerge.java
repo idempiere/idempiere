@@ -19,7 +19,6 @@ package org.adempiere.webui.apps.form;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
-import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;

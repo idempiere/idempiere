@@ -48,6 +48,7 @@ import org.compiere.util.ValueNamePair;
 import org.zkoss.image.AImage;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -222,6 +223,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btn.setId(btn.getName());
         if (image != null) 
         {
+        	Executions.createComponents(ThemeManager.getPreference(), this, null);
         	String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
         	String suffix = "24.png";
         	if (!Util.isEmpty(size)) 

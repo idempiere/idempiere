@@ -37,6 +37,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -384,6 +385,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
     	ToolBarButton btn = new ToolBarButton("");
         btn.setName(BTNPREFIX+name);
         btn.setId(name);
+        Executions.createComponents(ThemeManager.getPreference(), this, null);
         String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
     	String suffix = "24.png";
     	if (!Util.isEmpty(size)) 
