@@ -27,14 +27,19 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
+import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.Grid;
+import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.Row;
+import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
-import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.MLocator;
 import org.compiere.model.MLocatorLookup;
 import org.compiere.model.MRole;
@@ -46,10 +51,10 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Cell;
-import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Separator;
-import org.zkoss.zul.Vbox;
+import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Center;
+import org.zkoss.zul.South;
+import org.zkoss.zul.Space;
 
 /**
  * Location Dialog : Based on VLocationDialog
@@ -65,7 +70,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 	 */
 	private static final long serialVersionUID = -1013647722305985723L;
 
-	private Vbox mainBox = new Vbox();
+	private Grid mainPanel = GridFactory.newGridLayout();
 	
 	private Listbox lstLocator = new Listbox();
 	private Listbox lstWarehouse = new Listbox();
@@ -80,13 +85,13 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 	
 	private Label lblLocator = new Label();
 	private Label lblWarehouse = new Label();
+	private Label lblWarehouse2 = new Label();
 	private Label lblAisleX = new Label();
 	private Label lblBinY = new Label();
 	private Label lblLevelZ = new Label();
 	private Label lblKey = new Label();
 	
-	private Button btnCancel = new Button();
-	private Button btnOk = new Button();
+	private ConfirmPanel confirmPanel;
 
 	private MLocatorLookup m_mLocator;
 	
@@ -145,149 +150,110 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 	{
 		lblLocator.setValue(Msg.translate(Env.getCtx(), "M_Locator_ID"));
 		lblWarehouse.setValue(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));
+		lblWarehouse2.setValue(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));
 		lblAisleX.setValue(Msg.getElement(Env.getCtx(), "X"));
 		lblBinY.setValue(Msg.getElement(Env.getCtx(), "Y"));
 		lblLevelZ.setValue(Msg.getElement(Env.getCtx(), "Z"));
 		lblKey.setValue(Msg.translate(Env.getCtx(), "Value"));
 		
-		Hbox boxLocator = new Hbox();
-		boxLocator.setWidth("100%");
-				
-		lstLocator.setWidth("150px"); // Elaine 2009/02/02 - fixed the locator width
 		lstLocator.setMold("select");
 		lstLocator.setRows(0);
 		LayoutUtils.addSclass("z-label", lstLocator);
 		
-		Cell cell = new Cell();
-		cell.setWidth("30%");
-		boxLocator.appendChild(cell);
-		cell.appendChild(lblLocator);
-		cell = new Cell();
-		cell.setWidth("70%");
-		boxLocator.appendChild(cell);
-		cell.appendChild(lstLocator);
-		
-		Hbox boxCheckbox = new Hbox();
-		boxCheckbox.setWidth("100%");
-		boxCheckbox.setPack("start");
-		
 		chkCreateNew.setLabel(Msg.getMsg(Env.getCtx(), "CreateNew"));
 		
-		cell = new Cell();
-		cell.setWidth("100%");
-		boxCheckbox.appendChild(cell);
-		cell.appendChild(chkCreateNew);
-		
-		Hbox boxWarehouse = new Hbox();
-		boxWarehouse.setWidth("100%");
-		boxWarehouse.setHflex("true");
-		
-		lstWarehouse.setWidth("100px");
 		lstWarehouse.setMold("select");
 		lstWarehouse.setRows(0);		
 		LayoutUtils.addSclass("z-label", lstWarehouse);
+		
+		confirmPanel = new ConfirmPanel(true);
+		confirmPanel.addActionListener(this);
 
-		cell = new Cell();
-		cell.setWidth("30%");
-		boxWarehouse.appendChild(cell);
-		cell.appendChild(lblWarehouse);
-		lblWarehouse.setHflex("true");
-		cell = new Cell();
-		cell.setWidth("70%");
-		boxWarehouse.appendChild(cell);
-		cell.appendChild(lstWarehouse);
-		cell.appendChild(txtWarehouse);
+		Columns columns = new Columns();
+		mainPanel.appendChild(columns);
 		
-		Hbox boxAisle = new Hbox();
-		boxAisle.setWidth("100%");
-		boxAisle.setHflex("true");
+		Column column = new Column();
+		columns.appendChild(column);
+		column.setWidth("30%");
 		
-		cell = new Cell();
-		cell.setWidth("30%");
-		boxAisle.appendChild(cell);
-		lblAisleX.setHflex("true");
-		cell.appendChild(lblAisleX);
-		cell = new Cell();
-		cell.setWidth("70%");
-		boxAisle.appendChild(cell);
-		cell.appendChild(txtAisleX);
+		column = new Column();
+		columns.appendChild(column);
+		column.setWidth("70%");
 		
-		Hbox boxBin = new Hbox();
-		boxBin.setWidth("100%");
-		boxBin.setHflex("true");
+		Rows rows = mainPanel.newRows();
+		
+		Row row = new Row();
+		rows.appendChild(row);
+		row.appendChild(lblLocator);
+		row.appendChild(lstLocator);
+		lstLocator.setHflex("1");
+		
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(new Space());
+		row.appendChild(chkCreateNew);
 
-		cell = new Cell();
-		cell.setWidth("30%");
-		boxBin.appendChild(cell);
-		cell.appendChild(lblBinY);
-		lblBinY.setHflex("true");
-		cell = new Cell();
-		cell.setWidth("70%");
-		boxBin.appendChild(cell);
-		cell.appendChild(txtBinY);
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(lblWarehouse);
+		row.appendChild(lstWarehouse);
+		lstWarehouse.setHflex("1");
 		
-		Hbox boxLevel = new Hbox();
-		boxLevel.setWidth("100%");
-		boxLevel.setHflex("true");
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(lblWarehouse2);
+		row.appendChild(txtWarehouse);
+		txtWarehouse.setHflex("1");
+		
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(lblAisleX);
+		row.appendChild(txtAisleX);
+		txtAisleX.setHflex("1");
+		
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(lblBinY);
+		row.appendChild(txtBinY);
+		txtBinY.setHflex("1");
+		
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(lblLevelZ);
+		row.appendChild(txtLevelZ);
+		txtLevelZ.setHflex("1");
+		
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(lblKey);
+		row.appendChild(txtKey);
+		txtKey.setHflex("1");
+		
+		Borderlayout borderlayout = new Borderlayout();
+		this.appendChild(borderlayout);
+		borderlayout.setHflex("1");
+		borderlayout.setVflex("min");
+		
+		Center centerPane = new Center();
+		centerPane.setSclass("dialog-content");
+		centerPane.setAutoscroll(true);
+		borderlayout.appendChild(centerPane);
+		centerPane.appendChild(mainPanel);
+		mainPanel.setVflex("1");
+		mainPanel.setHflex("1");
 
-		cell = new Cell();
-		cell.setWidth("30%");
-		boxLevel.appendChild(cell);
-		cell.appendChild(lblLevelZ);
-		lblLevelZ.setHflex("true");
-		cell = new Cell();
-		cell.setWidth("70%");
-		boxLevel.appendChild(cell);
-		cell.appendChild(txtLevelZ);
+		South southPane = new South();
+		southPane.setSclass("dialog-footer");
+		borderlayout.appendChild(southPane);
+		southPane.appendChild(confirmPanel);
 		
-		Hbox boxKey = new Hbox();
-		boxKey.setWidth("100%");
-		boxKey.setHflex("true");
-		
-		cell = new Cell();
-		cell.setWidth("30%");
-		boxKey.appendChild(cell);
-		cell.appendChild(lblKey);
-		lblKey.setHflex("true");
-		cell = new Cell();
-		cell.setWidth("70%");
-		boxKey.appendChild(cell);
-		cell.appendChild(txtKey);
-		
-		Hbox boxButtons = new Hbox();
-		boxButtons.setWidth("100%");
-		boxButtons.setStyle("padding: 5px;");
-		boxButtons.setPack("end");		
-	
-		btnOk.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
-		btnOk.addEventListener(Events.ON_CLICK, this);
-		
-		btnCancel.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
-		btnCancel.addEventListener(Events.ON_CLICK, this);
-		
-		boxButtons.appendChild(btnOk);
-		boxButtons.appendChild(btnCancel);
-		
-		mainBox.setWidth("250px");
-		mainBox.setStyle("text-align:right");
-		mainBox.appendChild(boxLocator);
-		mainBox.appendChild(new Separator());
-		mainBox.appendChild(boxCheckbox);
-		mainBox.appendChild(new Separator());
-		mainBox.appendChild(boxWarehouse);
-		mainBox.appendChild(boxAisle);
-		mainBox.appendChild(boxBin);
-		mainBox.appendChild(boxLevel);
-		mainBox.appendChild(boxKey);
-		mainBox.appendChild(new Separator());
-		mainBox.appendChild(boxButtons);
-		
-		this.appendChild(mainBox);
 		this.setTitle(title);
+		this.setSclass("popup-dialog");
 		this.setClosable(true);
 		this.setBorder("normal");
-		this.setWidth("260Px");
+		this.setWidth("260px");
 		this.setShadow(true);
+		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		this.setSizable(true); // Elaine 2009/02/02 - window set to resizable
 	}
 	
@@ -414,8 +380,10 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		boolean sel = chkCreateNew.isChecked();
 		//lblWarehouse.setVisible(sel);
 		lstWarehouse.setVisible(sel);
+		lstWarehouse.getParent().setVisible(sel);
 		//lWarehouseInfo.setVisible(!sel);
 		txtWarehouse.setVisible(!sel);
+		txtWarehouse.getParent().setVisible(!sel);
 		
 		txtWarehouse.setReadonly(true);
 		txtAisleX.setReadonly(!sel);
@@ -423,7 +391,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		txtLevelZ.setReadonly(!sel);
 		txtKey.setReadonly(!sel);
 		
-		//pack();
+		mainPanel.invalidate();	
 	} // enableNew
 
 	/**
@@ -596,12 +564,12 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		if (event == null)
 			return;
 		
-		if (event.getTarget() == btnCancel)
+		if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_CANCEL))
 		{
 			m_change = false;
 			this.detach();
 		}
-		else if (event.getTarget() == btnOk)
+		else if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_OK))
 		{
 			actionOK();
 			m_change = true;

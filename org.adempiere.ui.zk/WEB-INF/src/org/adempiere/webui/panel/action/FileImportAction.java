@@ -158,6 +158,8 @@ public class FileImportAction implements EventListener<Event>
 			vb.appendChild(vlayout);
 			
 			Hbox hb = new Hbox();
+			hb.setAlign("center");
+			hb.setPack("start");
 			Div div = new Div();
 			div.setStyle("text-align: right;");
 			div.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
@@ -167,6 +169,8 @@ public class FileImportAction implements EventListener<Event>
 			vlayout.appendChild(hb);
 
 			hb = new Hbox();
+			hb.setAlign("center");
+			hb.setPack("start");
 			Div div2 = new Div();
 			div2.setStyle("text-align: right;");
 			div2.appendChild(new Label(Msg.getMsg(Env.getCtx(), "Charset", false)));
@@ -179,6 +183,8 @@ public class FileImportAction implements EventListener<Event>
 			vlayout.appendChild(hb);
 			
 			hb = new Hbox();
+			hb.setAlign("center");
+			hb.setPack("start");
 			Div div3 = new Div();
 			div3.setStyle("text-align: right;");
 			div3.appendChild(new Label(Msg.getMsg(Env.getCtx(), "import.mode", true)));
@@ -191,9 +197,12 @@ public class FileImportAction implements EventListener<Event>
 			vlayout.appendChild(hb);
 			
 			hb = new Hbox();
+			hb.setAlign("center");
+			hb.setPack("start");
 			bFile.setLabel(Msg.getMsg(Env.getCtx(), "FileImportFile"));
 			bFile.setTooltiptext(Msg.getMsg(Env.getCtx(), "FileImportFileInfo"));
 			bFile.setUpload(AdempiereWebUI.getUploadSetting());
+			LayoutUtils.addSclass("txt-btn", bFile);
 			bFile.addEventListener(Events.ON_UPLOAD, this);
 			hb.appendChild(bFile);
 			vlayout.appendChild(hb);

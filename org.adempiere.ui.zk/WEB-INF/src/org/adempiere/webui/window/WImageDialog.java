@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -114,21 +115,24 @@ public class WImageDialog extends Window implements EventListener<Event>
 	 */
 	void init() throws Exception
 	{
+		this.setSclass("popup-dialog");
+		this.setBorder("normal");
 		this.setWidth("450px");
 		this.setHeight("550px");
+		this.setShadow(true);
+		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		this.setSizable(true);
 		
 		mainLayout.setParent(this);
-		mainLayout.setWidth("100%");
-		mainLayout.setHeight("100%");
-		mainLayout.setStyle("background-color: transparent");
+		mainLayout.setHflex("1");
+		mainLayout.setVflex("1");
 		
 		fileLabel.setValue(Msg.getMsg(Env.getCtx(), "SelectFile"));
 		fileButton.setLabel("-");
+		LayoutUtils.addSclass("txt-btn", fileButton);
 		
 		North north = new North();
 		north.setParent(mainLayout);
-		north.setStyle("background-color: transparent");
 		north.appendChild(parameterPanel);
 		
 		parameterPanel.appendChild(fileLabel);
@@ -136,14 +140,14 @@ public class WImageDialog extends Window implements EventListener<Event>
 		parameterPanel.appendChild((fileButton));
 		
 		Center center = new Center();
+		center.setSclass("dialog-content");
 		image.setHflex("true");
 		image.setVflex("true");
 		center.setParent(mainLayout);
 		center.appendChild(image);
-		center.setStyle("background-color: transparent");
 		
 		South south = new South();
-		south.setStyle("background-color: transparent; border: none;");
+		south.setSclass("dialog-footer");
 		south.setParent(mainLayout);
 		south.appendChild(confirmPanel);
 

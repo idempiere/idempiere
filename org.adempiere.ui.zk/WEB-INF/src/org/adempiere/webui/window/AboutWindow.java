@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -55,12 +56,15 @@ import org.zkoss.zhtml.Textarea;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Vbox;
 
@@ -100,18 +104,12 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		
 		this.setPosition("center");
 		this.setTitle(ThemeManager.getBrowserTitle());
+		this.setSclass("popup-dialog");
 		this.setClosable(true);
 		this.setMaximizable(true);
 		this.setSizable(true);
 
-		Vbox layout = new Vbox();
-		layout.setWidth("100%");
-		layout.setParent(this);
-		layout.setVflex("1");
-		layout.setHflex("1");
-
 		tabbox = new Tabbox();
-		tabbox.setParent(layout);
 		tabbox.setVflex("1");
 		tabbox.setHflex("1");
 		Tabs tabs = new Tabs();
@@ -150,18 +148,31 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		tabPanel = createTrace();
 		tabPanel.setParent(tabPanels);
 
-		Hbox hbox = new Hbox();
-		hbox.setParent(layout);
-		hbox.setPack("end");
-		hbox.setWidth("100%");
-		hbox.setVflex("min");
 		Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK); 
 		btnOk.addEventListener(Events.ON_CLICK, this);
-		btnOk.setParent(hbox);
+		
+		Borderlayout borderlayout = new Borderlayout();
+		this.appendChild(borderlayout);
+		borderlayout.setHflex("1");
+		borderlayout.setVflex("1");
+		
+		Center centerPane = new Center();
+		centerPane.setSclass("dialog-content");
+		centerPane.setAutoscroll(true);
+		borderlayout.appendChild(centerPane);
+		centerPane.appendChild(tabbox);
+
+		South southPane = new South();
+		southPane.setStyle("text-align: right");
+		southPane.setSclass("dialog-footer");
+		borderlayout.appendChild(southPane);
+		southPane.appendChild(btnOk);
 
 		this.setBorder("normal");
-		this.setWidth("500px");
+		this.setWidth("600px");
 		this.setHeight("450px");
+		this.setShadow(true);
+		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 	}
 
 	private Tabpanel createTrace() {
@@ -206,6 +217,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 				levelLabel.setTooltiptext("Set trace level. Warning: this will effect all session not just the current session");
 				btnAdempiereLog = new Button("iDempiere Log");
 				btnAdempiereLog.setTooltiptext("Download iDempiere log file from server");
+				LayoutUtils.addSclass("txt-btn", btnAdempiereLog);
 				btnAdempiereLog.addEventListener(Events.ON_CLICK, this);
 
 				hbox.appendChild(new Space());
@@ -219,6 +231,8 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		vbox.appendChild(hbox);
 
 		hbox = new Hbox();
+		hbox.setAlign("center");
+		hbox.setPack("start");
 		bErrorsOnly = new Checkbox();
 		bErrorsOnly.setLabel(Msg.getMsg(Env.getCtx(), "ErrorsOnly"));
 		//default only show error
@@ -228,16 +242,17 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		hbox.appendChild(new Space());
 		btnDownload = new Button(Msg.getMsg(Env.getCtx(), "SaveFile"));
 		btnDownload .setTooltiptext("Download session log");
+		LayoutUtils.addSclass("txt-btn", btnDownload);
 		btnDownload.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btnDownload);
-		hbox.appendChild(new Space());
 		btnErrorEmail = new Button(Msg.getMsg(Env.getCtx(), "SendEMail"));
 		btnErrorEmail.setTooltiptext("Email session log");
+		LayoutUtils.addSclass("txt-btn", btnErrorEmail);
 		btnErrorEmail.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btnErrorEmail);
-		hbox.appendChild(new Space());
 		btnViewLog = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "View")));
 		btnViewLog.setTooltiptext("View session log");
+		LayoutUtils.addSclass("txt-btn", btnViewLog);
 		btnViewLog.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btnViewLog);
 		hbox.setHflex("1");

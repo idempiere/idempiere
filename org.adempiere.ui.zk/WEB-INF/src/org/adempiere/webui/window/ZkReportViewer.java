@@ -830,6 +830,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			winExportFile.setHeight("150px");
 			winExportFile.setClosable(true);
 			winExportFile.setBorder("normal");
+			winExportFile.setSclass("popup-dialog");
 			winExportFile.setStyle("position:absolute");
 
 			cboType.setMold("select");
@@ -846,21 +847,22 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			cboType.setSelectedItem(li);
 			
 			Hbox hb = new Hbox();
+			hb.setSclass("dialog-content");			
+			hb.setAlign("center");
+			hb.setPack("start");
 			Div div = new Div();
 			div.setStyle("text-align: right;");
 			div.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
 			hb.appendChild(div);
 			hb.appendChild(cboType);
 			cboType.setWidth("100%");
-			hb.setVflex("1");
-			hb.setStyle("margin-top: 10px");
 
 			Vbox vb = new Vbox();
-			vb.setVflex("1");
 			vb.setWidth("100%");
 			winExportFile.appendChild(vb);
 			vb.appendChild(hb);
 			vb.appendChild(confirmPanel);
+			LayoutUtils.addSclass("dialog-footer", confirmPanel);
 			confirmPanel.addActionListener(this);
 		}
 		

@@ -122,6 +122,8 @@ public class ExportAction implements EventListener<Event>
 			vb.appendChild(vlayout);
 			
 			Hbox hb = new Hbox();
+			hb.setAlign("center");
+			hb.setPack("start");
 			Div div = new Div();
 			div.setStyle("text-align: right;");
 			div.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
@@ -131,6 +133,8 @@ public class ExportAction implements EventListener<Event>
 			vlayout.appendChild(hb);
 
 			hb = new Hbox();
+			hb.setAlign("center");
+			hb.setPack("start");
 			chkCurrentRow.setLabel(Msg.getMsg(Env.getCtx(), "ExportCurrentRowOnly"));
 			chkCurrentRow.setSelected(true);
 			hb.appendChild(chkCurrentRow);

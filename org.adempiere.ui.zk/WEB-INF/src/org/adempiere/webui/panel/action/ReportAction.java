@@ -125,7 +125,7 @@ public class ReportAction implements EventListener<Event>
 			{
 				chkExport.setLabel(Msg.getMsg(Env.getCtx(), "Export"));
 				chkExport.setSelected(false);
-		        }
+		    }
 			
 			chkAllColumns.setLabel(Msg.getMsg(Env.getCtx(), "AllColumns"));
 			chkAllColumns.setSelected(false);
@@ -145,6 +145,7 @@ public class ReportAction implements EventListener<Event>
 
 			Hbox hb = new Hbox();
 			hb.setAlign("center");
+			hb.setPack("start");
 			Div div = new Div();
 			div.appendChild(new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID")));
 			hb.appendChild(div);
@@ -154,13 +155,12 @@ public class ReportAction implements EventListener<Event>
 			vb.appendChild(hb);
 
 			vb.appendChild(chkCurrentRowOnly);
-			
-		
-			
+
 			if ( isCanExport )
 			{
 				hb = new Hbox();
 				hb.setAlign("center");
+				hb.setPack("start");
 				hb.appendChild(chkExport);
 				chkExport.addEventListener(Events.ON_CHECK, this);
 				hb.appendChild(cboExportType);
@@ -168,12 +168,10 @@ public class ReportAction implements EventListener<Event>
 				vb.appendChild(hb);
 			}
 			
-	
-			
-			
 			vb.appendChild(chkAllColumns);
 
 			vb.appendChild(confirmPanel);
+			LayoutUtils.addSclass("dialog-footer", confirmPanel);
 			confirmPanel.addActionListener(this);
 		}
 

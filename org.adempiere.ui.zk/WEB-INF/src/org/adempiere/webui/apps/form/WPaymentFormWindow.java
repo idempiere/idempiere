@@ -68,26 +68,28 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		}
 		
 		this.setTitle(Msg.getMsg(Env.getCtx(), "Payment"));
-		this.setHeight("400px");
-		this.setWidth("500px");
+		this.setSclass("popup-dialog");
 		this.setBorder("normal");
+		this.setWidth("500px");
+		this.setShadow(true);
+		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 	}
 	
 	private void zkInit() throws Exception {
 		this.appendChild(mainPanel);
 		mainPanel.appendChild(mainLayout);
-		mainPanel.setStyle("width: 100%; height: 100%; padding: 0; margin: 0");
-		mainLayout.setHeight("100%");
-		mainLayout.setWidth("100%");
 		Center center = new Center();
+		center.setSclass("dialog-content");
 		mainLayout.appendChild(center);
-		center.appendChild(centerPanel = getPanel());
-		centerPanel.setHflex("1");
+		mainLayout.setHflex("1");
+		mainLayout.setVflex("min");	
+		center.appendChild(centerPanel = getPanel());	
 		centerPanel.setVflex("1");
+		centerPanel.setHflex("1");
 		center.setAutoscroll(true);
 		//
 		South south = new South();
-		south.setStyle("border: none");
+		south.setSclass("dialog-footer");		
 		mainLayout.appendChild(south);
 		south.appendChild(confirmPanel);
 		confirmPanel.addActionListener(this);

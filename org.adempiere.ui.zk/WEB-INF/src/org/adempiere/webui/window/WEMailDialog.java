@@ -63,9 +63,12 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
+import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Vlayout;
+import org.zkoss.zul.South;
+import org.zkoss.zul.Space;
 
 /**
  *	EMail Dialog
@@ -102,12 +105,12 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	{
 		super();
         this.setTitle(title);
-		this.setWidth("550px");
-		this.setHeight("600px");
+        this.setSclass("popup-dialog");
 		this.setClosable(true);
-		this.setMaximizable(true);
 		this.setBorder("normal");
-        this.setStyle("position:absolute; margin: 0; padding: 0;");
+		this.setWidth("550px");
+		this.setShadow(true);
+		this.setMaximizable(true);
 		        
 		commonInit(from, to, subject, message, attachment);				
 	}	//	EmailDialog
@@ -298,19 +301,13 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.appendCellChild(fMessage, 2);
+		row.appendChild(new Space());
+		row.appendChild(fMessage);
 		fMessage.setHflex("1");
+		fMessage.setHeight("100%");
 		fMessage.setRows(10);
 		
 		confirmPanel.addActionListener(this);
-		
-		Vlayout vlayout = new Vlayout();
-		vlayout.setStyle("width: 99%; margin: auto; height: 100%;");
-		
-		grid.setVflex("1");		
-		vlayout.appendChild(grid);
-		
-		Div southDiv = new Div();
 		
 		Button btn = new Button();
 		btn.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));
@@ -320,11 +317,23 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		confirmPanel.addComponentsLeft(btn);
 		confirmPanel.getButton(ConfirmPanel.A_OK).setWidgetListener("onClick", "zAu.cmd0.showBusy(null)");
 		
-		southDiv.appendChild(confirmPanel);
-		southDiv.setVflex("min");
-		vlayout.appendChild(southDiv);
+		Borderlayout borderlayout = new Borderlayout();
+		this.appendChild(borderlayout);
+		borderlayout.setHflex("1");
+		borderlayout.setVflex("min");
 		
-		this.appendChild(vlayout);		
+		Center centerPane = new Center();
+		centerPane.setSclass("dialog-content");
+		centerPane.setAutoscroll(true);
+		borderlayout.appendChild(centerPane);
+		centerPane.appendChild(grid);
+		grid.setVflex("1");
+		grid.setHflex("1");
+
+		South southPane = new South();
+		southPane.setSclass("dialog-footer");
+		borderlayout.appendChild(southPane);
+		southPane.appendChild(confirmPanel);
 	}	//	render
 
 	/**

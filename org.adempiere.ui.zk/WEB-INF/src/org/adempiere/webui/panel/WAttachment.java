@@ -218,12 +218,13 @@ public class WAttachment extends Window implements EventListener<Event>
 		this.setAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "attachment");
 		this.setMaximizable(true);
 		this.setWidth("700px");
-		this.setHeight("88%");
+		this.setHeight("85%");
 		this.setTitle("Attachment");
 		this.setClosable(true);
 		this.setSizable(true);
 		this.setBorder("normal");
 		this.setSclass("popup-dialog");
+		this.setShadow(true);
 		this.appendChild(mainPanel);
 		mainPanel.setHeight("100%");
 		mainPanel.setWidth("100%");
@@ -248,6 +249,8 @@ public class WAttachment extends Window implements EventListener<Event>
 		div.appendChild(toolBar);
 		text.setRows(3);
 		text.setHflex("1");
+		text.setHeight("100%");
+		
 		div.appendChild(text);
 		northPanel.appendChild(div);
 

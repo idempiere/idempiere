@@ -26,7 +26,11 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
+import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -36,7 +40,6 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
-import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MCountry;
@@ -52,6 +55,10 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Center;
+import org.zkoss.zul.South;
+import org.zkoss.zul.Vbox;
 
 /**
  * @author Sendy Yagambrum
@@ -100,8 +107,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 	private Listbox lstRegion;
 	private Listbox lstCountry;
 
-	private Button btnOk;
-	private Button btnCancel;
+	private ConfirmPanel confirmPanel;
 	private Grid mainPanel;
 
 	private boolean     m_change = false;
@@ -181,7 +187,8 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		setRegion();
 		initLocation();
 		//               
-		this.setWidth("380px");
+		this.setWidth("350px");
+		this.setSclass("popup-dialog");
 		this.setClosable(true);
 		this.setBorder("normal");
 		this.setShadow(true);
@@ -242,60 +249,77 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		lstCountry.setMold("select");
 		lstCountry.setWidth("154px");
 		lstCountry.setRows(0);
-
-		btnOk = new Button();
-		btnOk.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
-		btnOk.addEventListener(Events.ON_CLICK,this);
-		btnCancel = new Button();
-		btnCancel.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
-		btnCancel.addEventListener(Events.ON_CLICK,this);
+		
+		confirmPanel = new ConfirmPanel(true);
+		confirmPanel.addActionListener(this);
 
 		toLink = new Button(TO_LINK);
+		LayoutUtils.addSclass("txt-btn", toLink);
 		toLink.addEventListener(Events.ON_CLICK,this);
 		toRoute = new Button(TO_ROUTE);
+		LayoutUtils.addSclass("txt-btn", toRoute);
 		toRoute.addEventListener(Events.ON_CLICK,this);
 
 		mainPanel = GridFactory.newGridLayout();
-		mainPanel.setStyle("padding:5px");
 	}
 
 	private void init()
 	{
+		Columns columns = new Columns();
+		mainPanel.appendChild(columns);
+		
+		Column column = new Column();
+		columns.appendChild(column);
+		column.setWidth("30%");
+		
+		column = new Column();
+		columns.appendChild(column);
+		column.setWidth("70%");
+		
 		Row pnlAddress1 = new Row();
 		pnlAddress1.appendChild(lblAddress1.rightAlign());
-		pnlAddress1.appendChild(txtAddress1);        
+		pnlAddress1.appendChild(txtAddress1);
+		txtAddress1.setHflex("1");
 
 		Row pnlAddress2 = new Row();
 		pnlAddress2.appendChild(lblAddress2.rightAlign());
 		pnlAddress2.appendChild(txtAddress2);
+		txtAddress2.setHflex("1");
 
 		Row pnlAddress3 = new Row();
 		pnlAddress3.appendChild(lblAddress3.rightAlign());
 		pnlAddress3.appendChild(txtAddress3);
+		txtAddress3.setHflex("1");
 
 		Row pnlAddress4 = new Row();
 		pnlAddress4.appendChild(lblAddress4.rightAlign());
 		pnlAddress4.appendChild(txtAddress4);
+		txtAddress4.setHflex("1");
 
 		Row pnlCity     = new Row();
 		pnlCity.appendChild(lblCity.rightAlign());
 		pnlCity.appendChild(txtCity);
+		txtCity.setHflex("1");
 
 		Row pnlPostal   = new Row();
 		pnlPostal.appendChild(lblPostal.rightAlign());
 		pnlPostal.appendChild(txtPostal);
+		txtPostal.setHflex("1");
 
 		Row pnlPostalAdd = new Row();
 		pnlPostalAdd.appendChild(lblPostalAdd.rightAlign());
 		pnlPostalAdd.appendChild(txtPostalAdd);
+		txtPostalAdd.setHflex("1");
 
 		Row pnlRegion    = new Row();
 		pnlRegion.appendChild(lblRegion.rightAlign());
 		pnlRegion.appendChild(lstRegion);
+		lstRegion.setHflex("1");
 
 		Row pnlCountry  = new Row();
 		pnlCountry.appendChild(lblCountry.rightAlign());
 		pnlCountry.appendChild(lstCountry);
+		lstCountry.setHflex("1");
 
 		Panel pnlLinks    = new Panel();
 		pnlLinks.appendChild(toLink);
@@ -305,18 +329,30 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		if (MLocation.LOCATION_MAPS_ROUTE_PREFIX == null || Env.getAD_Org_ID(Env.getCtx()) <= 0)
 			toRoute.setVisible(false);
 		pnlLinks.setWidth("100%");
-		pnlLinks.setStyle("text-align:left");
-
-		Panel pnlButton   = new Panel();
-		pnlButton.appendChild(btnOk);
-		pnlButton.appendChild(btnCancel);
-		pnlButton.setWidth("100%");
-		pnlButton.setStyle("text-align:right");
-
-		this.appendChild(mainPanel);
+		pnlLinks.setStyle("text-align:right");
+		
+		Borderlayout borderlayout = new Borderlayout();
+		this.appendChild(borderlayout);
+		borderlayout.setHflex("1");
+		borderlayout.setVflex("min");
+		
+		Center centerPane = new Center();
+		centerPane.setSclass("dialog-content");
+		centerPane.setAutoscroll(true);
+		borderlayout.appendChild(centerPane);
+		
+		Vbox vbox = new Vbox();
+		centerPane.appendChild(vbox);
+		vbox.appendChild(mainPanel);
 		if (MLocation.LOCATION_MAPS_URL_PREFIX != null || MLocation.LOCATION_MAPS_ROUTE_PREFIX != null)
-			this.appendChild(pnlLinks);
-		this.appendChild(pnlButton);
+			vbox.appendChild(pnlLinks);
+		vbox.setVflex("1");
+		vbox.setHflex("1");
+
+		South southPane = new South();
+		southPane.setSclass("dialog-footer");
+		borderlayout.appendChild(southPane);
+		southPane.appendChild(confirmPanel);
 	}
 	/**
 	 * Dynamically add fields to the Location dialog box
@@ -504,7 +540,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 
 	public void onEvent(Event event) throws Exception
 	{
-		if (btnOk.equals(event.getTarget()))
+		if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_OK)) 
 		{
 			inOKAction = true;
 			
@@ -534,7 +570,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			}
 			inOKAction = false;
 		}
-		else if (btnCancel.equals(event.getTarget()))
+		else if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_CANCEL))
 		{
 			m_change = false;
 			this.dispose();
