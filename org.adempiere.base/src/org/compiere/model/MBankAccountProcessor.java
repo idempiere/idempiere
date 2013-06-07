@@ -76,7 +76,7 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 		if (MPayment.TENDERTYPE_DirectDeposit.equals(tender))
 			sql.append(" AND bap.AcceptDirectDeposit='Y' AND pp.AcceptDirectDeposit='Y' ");
 		else if (MPayment.TENDERTYPE_DirectDebit.equals(tender))
-			sql.append(" AND bap.AcceptDirectDebit='Y' AND AND pp.AcceptDirectDebit='Y' ");
+			sql.append(" AND bap.AcceptDirectDebit='Y' AND pp.AcceptDirectDebit='Y' ");
 		else if (MPayment.TENDERTYPE_Check.equals(tender))
 			sql.append(" AND bap.AcceptCheck='Y' AND pp.AcceptCheck='Y' ");
 		//  CreditCards
