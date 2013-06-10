@@ -201,7 +201,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
             ld.addEventListener(Events.ON_OPEN, new EventListener<OpenEvent>() {
 				@Override
 				public void onEvent(OpenEvent event) throws Exception {
-					if (!event.isOpen()) {
+					if (!event.isOpen() && !ld.isOnSaveError()) {
 						ld.detach();
 					}
 				}

@@ -199,6 +199,11 @@ public class FDialog
         error(windowNo, null, adMessage, msg);
     }
 
+    public static void error(int windowNo, Component comp, String adMessage, String message)
+    {
+    	error(windowNo, comp, adMessage, message, (Callback<Integer>)null);
+    }
+    
 	/**
 	 *	Display error with error icon.
 	 *
@@ -206,13 +211,14 @@ public class FDialog
 	 *  @param	comp		Component (unused)
 	 *	@param	adMessage	Message to be translated
 	 *	@param	message		Additional message
+	 *  @param  callback
 	 *
 	 *  @see #error(int, String)
 	 *  @see #error(int, Component, String)
 	 *  @see #error(int, String, String)
 	 */
     
-    public static void error(int windowNo, Component comp, String adMessage, String message)
+    public static void error(int windowNo, Component comp, String adMessage, String message, Callback<Integer> callback)
     {
     	Properties ctx = Env.getCtx();
 		StringBuffer out = new StringBuffer();
@@ -227,7 +233,7 @@ public class FDialog
 		out = constructMessage(adMessage, message);
 		
 		String s = out.toString().replace("\n", "<br>");
-		Messagebox.showDialog(s, AEnv.getDialogHeader(ctx, windowNo), Messagebox.OK, Messagebox.ERROR);
+		Messagebox.showDialog(s, AEnv.getDialogHeader(ctx, windowNo), Messagebox.OK, Messagebox.ERROR, callback);
 		
 		return;
     }

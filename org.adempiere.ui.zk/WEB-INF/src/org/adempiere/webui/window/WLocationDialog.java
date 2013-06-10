@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
@@ -137,6 +138,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 	private Button toLink;
 	private Button toRoute;
 	private GridField m_GridField = null;
+	private boolean onSaveError = false;
 	//END
 
 	public WLocationDialog(String title, MLocation location)
@@ -353,6 +355,8 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		southPane.setSclass("dialog-footer");
 		borderlayout.appendChild(southPane);
 		southPane.appendChild(confirmPanel);
+		
+		addEventListener("onSaveError", this);
 	}
 	/**
 	 * Dynamically add fields to the Location dialog box
@@ -542,6 +546,8 @@ public class WLocationDialog extends Window implements EventListener<Event>
 	{
 		if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_OK)) 
 		{
+			onSaveError = false;
+			
 			inOKAction = true;
 			
 			if (m_location.getCountry().isHasRegion() && lstRegion.getSelectedItem() == null) {
@@ -553,7 +559,13 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			
 			String msg = validate_OK();
 			if (msg != null) {
-				FDialog.error(0, this, "FillMandatory", Msg.parseTranslation(Env.getCtx(), msg));
+				onSaveError = true;
+				FDialog.error(0, this, "FillMandatory", Msg.parseTranslation(Env.getCtx(), msg), new Callback<Integer>() {					
+					@Override
+					public void onCallback(Integer result) {
+						Events.echoEvent("onSaveError", WLocationDialog.this, null);
+					}
+				});
 				inOKAction = false;
 				return;
 			}
@@ -566,7 +578,13 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			}
 			else
 			{
-				FDialog.error(0, this, "CityNotFound");
+				onSaveError = true;
+				FDialog.error(0, this, "CityNotFound", (String)null, new Callback<Integer>() {					
+					@Override
+					public void onCallback(Integer result) {
+						Events.echoEvent("onSaveError", WLocationDialog.this, null);
+					}
+				});
 			}
 			inOKAction = false;
 		}
@@ -632,6 +650,11 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			//  refresh
 			initLocation();
 			lstRegion.focus();
+		}
+		else if ("onSaveError".equals(event.getName())) {
+			onSaveError = false;
+			doPopup();
+			focus();			
 		}
 	}
 
@@ -730,6 +753,10 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		return success;
 	}   //  actionOK
 
+	public boolean isOnSaveError() {
+		return onSaveError;
+	}
+	
 	@Override
 	public void dispose()
 	{
@@ -759,5 +786,5 @@ public class WLocationDialog extends Window implements EventListener<Event>
 
 		address = address + (c.getName() != null ? c.getName() : "");
 		return address.replace(" ", "+");
-	}
+	}	
 }
