@@ -155,8 +155,7 @@ ContextMenuListener, IZoomableEditor
         if (lookup != null)
         {
             lookup.addListDataListener(this);
-            //always need the empty item for zk to work correctly
-            lookup.setMandatory(false);
+            lookup.setMandatory(isMandatory());
             
             if ((lookup.getDisplayType() == DisplayType.List && Env.getContextAsInt(Env.getCtx(), "#AD_Role_ID") == 0)
             		|| lookup.getDisplayType() != DisplayType.List) 
