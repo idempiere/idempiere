@@ -212,6 +212,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 						infoColumn.getAD_Reference_Value_ID(), false, false);
 				if (infoColumn.getAD_Val_Rule_ID() > 0) {
 					vo.ValidationCode = infoColumn.getAD_Val_Rule().getCode();
+					if (vo.lookupInfo != null) {
+						vo.lookupInfo.ValidationCode = vo.ValidationCode;
+						vo.lookupInfo.IsValidated = false;
+					}
 				}
 				vo.DisplayLogic = infoColumn.getDisplayLogic() != null ? infoColumn.getDisplayLogic() : "";
 				String desc = infoColumn.get_Translation("Description");
