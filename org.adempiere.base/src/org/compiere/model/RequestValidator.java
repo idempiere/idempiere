@@ -76,9 +76,9 @@ public class RequestValidator implements ModelValidator, EventHandler
 		{
 			MRequest r = (MRequest) po;			
 			if (type == TYPE_BEFORE_NEW || type == TYPE_BEFORE_CHANGE)
-				beforeSaveRequest(r);
+				beforeSaveRequest(r, type == TYPE_BEFORE_NEW);
 			else if (type == TYPE_AFTER_NEW || type == TYPE_AFTER_CHANGE)
-				afterSaveRequest(r);
+				afterSaveRequest(r, type == TYPE_AFTER_NEW);
 		}
 		return null;
 	}
@@ -89,10 +89,10 @@ public class RequestValidator implements ModelValidator, EventHandler
 		return null;
 	}
 	
-	public static String beforeSaveRequest(MRequest r)
+	public static String beforeSaveRequest(MRequest r, boolean newRecord)
 	{
 		//	New
-		if (r.is_new())
+		if (newRecord)
 			return null;
 		
 		//	Change Log
@@ -208,10 +208,10 @@ public class RequestValidator implements ModelValidator, EventHandler
 		return null;
 	}
 	
-	public static String afterSaveRequest(MRequest r)
+	public static String afterSaveRequest(MRequest r, boolean newRecord)
 	{
 		//	Initial Mail
-		if (r.is_new())
+		if (newRecord)
 			sendNotices(r, new ArrayList<String>());
 		
 		return null;
