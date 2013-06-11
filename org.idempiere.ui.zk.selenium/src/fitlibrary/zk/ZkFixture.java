@@ -8,10 +8,14 @@ import java.util.List;
 import org.idempiere.ui.zk.selenium.Widget;
 import org.idempiere.ui.zk.selenium.Zk;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import fitlibrary.annotation.SimpleAction;
@@ -286,9 +290,34 @@ public class ZkFixture extends SpiderFixture {
 		}
 		return super.webDriver();
 	}
+	
+	public void screenShot() {
+		if (webDriver instanceof TakesScreenshot)
+		{
+			String s = ((TakesScreenshot)webDriver).getScreenshotAs(OutputType.BASE64);
+			show("<img src=\"data:image/png;base64,"+s+"\" />");
+		}
+		else
+		{
+			Augmenter augmenter = new Augmenter(); 
+			TakesScreenshot ts = (TakesScreenshot) augmenter.augment(webDriver);
+			String s = ts.getScreenshotAs(OutputType.BASE64);
+			show("<img src=\"data:image/png;base64,"+s+"\" />");
+		}
+	}
 
+	public void maximizeWindow() {
+		webDriver.manage().window().maximize();
+	}
+	
 	private WebDriver phantomjsDriver() {
-		return new PhantomJSDriver(new DesiredCapabilities());
+		DesiredCapabilities caps = new DesiredCapabilities();
+		caps.setJavascriptEnabled(true);
+		caps.setCapability("takesScreenshot", true);
+		PhantomJSDriver driver = new PhantomJSDriver(caps);
+		//set default resolution
+		driver.manage().window().setSize(new Dimension(1366, 768));
+		return driver;
 	}
 
 
