@@ -178,6 +178,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	private Tabpanel createTrace() {
 		Tabpanel tabPanel = new Tabpanel();
 		Vbox vbox = new Vbox();
+		LayoutUtils.addSclass("about-trace-panel", vbox);
 		vbox.setParent(tabPanel);
 		vbox.setHflex("1");
 		vbox.setVflex("1");
@@ -295,6 +296,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	private Tabpanel createInfo() {
 		Tabpanel tabPanel = new Tabpanel();
 		Div div = new Div();
+		LayoutUtils.addSclass("about-info-panel", div);
 		div.setParent(tabPanel);
 		div.setHeight("100%");
 		div.setStyle("overflow: auto;");
@@ -307,12 +309,16 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	}
 
 	private Tabpanel createCredit() {
-		Tabpanel tabPanel = new Tabpanel();
-		Vbox vbox = new Vbox();
-		vbox.setParent(tabPanel);
-		vbox.setWidth("100%");
+		Tabpanel tabPanel = new Tabpanel();		
+		Div div = new Div();
+		LayoutUtils.addSclass("about-credit-panel", div);
+		div.setParent(tabPanel);
+		div.setWidth("100%");
+		div.setHeight("100%");
+		div.setStyle("overflow: auto;");
 		Hbox hbox = new Hbox();
-		hbox.setParent(vbox);
+		LayoutUtils.addSclass("about-credit-panel-logo", hbox);
+		hbox.setParent(div);
 		ToolBarButton link = new ToolBarButton();
 		link.setImage("images/TrekGlobal.jpg");
 		link.setParent(hbox);
@@ -322,20 +328,26 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		label.setParent(hbox);
 
 		Separator separator = new Separator();
-		separator.setParent(vbox);
+		separator.setParent(div);
 
-		Div div = new Div();
-		div.setParent(vbox);
-		div.setWidth("100%");
+		Div panel = new Div();
+		LayoutUtils.addSclass("about-credit-panel-sponsors", panel);
+		panel.setParent(div);
+		panel.setWidth("100%");
+		Vbox vbox = new Vbox();
+		LayoutUtils.addSclass("about-credit-panel-sponsors-header", vbox);
+		vbox.setWidth("100%");
+		vbox.setParent(panel);
 		Label caption = new Label("Sponsors");
 		caption.setStyle("font-weight: bold;");
-		div.appendChild(caption);
+		caption.setParent(vbox);
 		separator = new Separator();
 		separator.setBar(true);
-		separator.setParent(div);
+		separator.setParent(vbox);
 		Vbox content = new Vbox();
+		LayoutUtils.addSclass("about-credit-panel-sponsors-links", content);
 		content.setWidth("100%");
-		content.setParent(div);
+		content.setParent(panel);
 
 		link = new ToolBarButton();
 		link.setLabel("GlobalQSS");
@@ -362,20 +374,26 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		link.setParent(content);
 
 		separator = new Separator();
-		separator.setParent(vbox);
+		separator.setParent(div);
 
-		div = new Div();
-		div.setParent(vbox);
-		div.setWidth("100%");
+		panel = new Div();
+		LayoutUtils.addSclass("about-credit-panel-contributors", panel);
+		panel.setParent(div);
+		panel.setWidth("100%");
+		vbox = new Vbox();
+		LayoutUtils.addSclass("about-credit-panel-contributors-header", vbox);
+		vbox.setWidth("100%");
+		vbox.setParent(panel);
 		caption = new Label("Contributors");
 		caption.setStyle("font-weight: bold;");
-		div.appendChild(caption);
+		caption.setParent(vbox);
 		separator = new Separator();
 		separator.setBar(true);
-		separator.setParent(div);
+		separator.setParent(vbox);
 		content = new Vbox();
+		LayoutUtils.addSclass("about-credit-panel-contributors-links", content);
 		content.setWidth("100%");
-		content.setParent(div);
+		content.setParent(panel);
 
 		link = new ToolBarButton();
 		link.setLabel("Low Heng Sin");
@@ -413,24 +431,42 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	private Tabpanel createAbout() {
 		Tabpanel tabPanel = new Tabpanel();
 
-		Vbox vbox = new Vbox();
-		vbox.setWidth("100%");
-		vbox.setHeight("100%");
-		vbox.setAlign("center");
-		vbox.setPack("center");
-		vbox.setParent(tabPanel);
+		Vbox vb = new Vbox();
+		LayoutUtils.addSclass("about-main-panel", vb);
+		vb.setWidth("100%");
+		vb.setHeight("100%");
+		vb.setAlign("center");
+		vb.setPack("center");
+		vb.setParent(tabPanel);
 
+		Vbox vbox = new Vbox();
+		LayoutUtils.addSclass("about-main-panel-logo", vbox);
+		vbox.setWidth("100%");
+		vbox.setAlign("center");
+		vbox.setParent(vb);
+		
 		Image image = new Image(ThemeManager.getLargeLogo());
 		image.setParent(vbox);
 
+		vbox = new Vbox();
+		LayoutUtils.addSclass("about-main-panel-version", vbox);
+		vbox.setWidth("100%");
+		vbox.setAlign("center");
+		vbox.setParent(vb);
+		
 		Text text = new Text(Adempiere.getSubtitle());
 		text.setParent(vbox);
 		Separator separator = new Separator();
 		separator.setParent(vbox);
-
 		text = new Text(Adempiere.getVersion());
 		text.setParent(vbox);
-
+		
+		vbox = new Vbox();
+		LayoutUtils.addSclass("about-main-panel-links", vbox);
+		vbox.setWidth("100%");
+		vbox.setAlign("center");
+		vbox.setParent(vb);
+		
 		separator = new Separator();
 		separator.setParent(vbox);
 		ToolBarButton link = new ToolBarButton();
@@ -438,7 +474,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		link.setHref("http://www.idempiere.com");
 		link.setTarget("_blank");
 		link.setParent(vbox);
-
+		
 		separator = new Separator();
 		separator.setParent(vbox);
 		link = new ToolBarButton();
