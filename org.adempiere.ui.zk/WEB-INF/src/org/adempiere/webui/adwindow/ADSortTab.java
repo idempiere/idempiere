@@ -35,6 +35,7 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
@@ -51,7 +52,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hlayout;
-import org.zkoss.zul.Vbox;
 import org.zkoss.zul.event.ListDataEvent;
 
 /**
@@ -110,10 +110,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 	//	UI variables
 	private Label noLabel = new Label();
 	private Label yesLabel = new Label();
-	private Button bAdd = ButtonFactory.createNamedButton("Next", false, true);
-	private Button bRemove = ButtonFactory.createNamedButton("Previous", false, true);
-	private Button bUp = ButtonFactory.createNamedButton("Parent", false, true);
-	private Button bDown = ButtonFactory.createNamedButton("Detail", false, true);
+	private Button bAdd = ButtonFactory.createButton(null, ThemeManager.getThemeResource("images/MoveLeft16.png"), null);
+	private Button bRemove = ButtonFactory.createButton(null, ThemeManager.getThemeResource("images/MoveRight16.png"), null);
+	private Button bUp = ButtonFactory.createButton(null, ThemeManager.getThemeResource("images/MoveUp16.png"), null);
+	private Button bDown = ButtonFactory.createButton(null, ThemeManager.getThemeResource("images/MoveDown16.png"), null);
 	//
 	SimpleListModel noModel = new SimpleListModel() {
 		/**
@@ -291,9 +291,11 @@ public class ADSortTab extends Panel implements IADTabpanel
 		noModel.setMultiple(true);
 
 		LayoutUtils.addSclass("btn-small", bAdd);
+		LayoutUtils.addSclass("btn-sorttab small-img-btn", bAdd);
 		bAdd.addEventListener(Events.ON_CLICK, actionListener);
 
 		LayoutUtils.addSclass("btn-small", bRemove);
+		LayoutUtils.addSclass("btn-sorttab small-img-btn", bRemove);
 		bRemove.addEventListener(Events.ON_CLICK, actionListener);
 
 		EventListener<Event> crossListMouseListener = new DragListener();
@@ -310,21 +312,33 @@ public class ADSortTab extends Panel implements IADTabpanel
 		};
 
 		LayoutUtils.addSclass("btn-small", bUp);
+		LayoutUtils.addSclass("btn-sorttab small-img-btn", bUp);
 		bUp.addEventListener(Events.ON_CLICK, actionListener2);
 
 		LayoutUtils.addSclass("btn-small", bDown);
+		LayoutUtils.addSclass("btn-sorttab small-img-btn", bDown);
 		bDown.addEventListener(Events.ON_CLICK, actionListener2);
 
 		ListHead listHead = new ListHead();
 		listHead.setParent(yesList);
 		ListHeader listHeader = new ListHeader();
 		listHeader.appendChild(yesLabel);
+		Hlayout yesButtonLayout = new Hlayout();
+		yesButtonLayout.appendChild(bUp);
+		yesButtonLayout.appendChild(bDown);
+		listHeader.appendChild(yesButtonLayout);
+		yesButtonLayout.setStyle("display: inline-block; float: right;");
 		listHeader.setParent(listHead);
 
 		listHead = new ListHead();
 		listHead.setParent(noList);
 		listHeader = new ListHeader();
 		listHeader.appendChild(noLabel);
+		Hlayout noButtonLayout = new Hlayout();
+		noButtonLayout.appendChild(bRemove);
+		noButtonLayout.appendChild(bAdd);
+		listHeader.appendChild(noButtonLayout);
+		noButtonLayout.setStyle("display: inline-block; float: right;");
 		listHeader.setParent(listHead);
 
 		Hlayout hlayout = new Hlayout();
@@ -335,21 +349,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 		noList.setHflex("1");
 		noList.setVflex(true);
 		hlayout.appendChild(noList);
-		Vbox vbox = new Vbox();
-		vbox.appendChild(bAdd);
-		vbox.appendChild(bRemove);
-		vbox.setWidth("46px");
-		vbox.setAlign("center");
-		hlayout.appendChild(vbox);
 
 		yesList.setVflex(true);
 		yesList.setHflex("1");
 		hlayout.appendChild(yesList);
-		vbox = new Vbox();
-		vbox.appendChild(bUp);
-		vbox.appendChild(bDown);
-		vbox.setWidth("46px");
-		hlayout.appendChild(vbox);
 		
 		addEventListener(ON_ACTIVATE_EVENT, new EventListener<Event>() {
 			@Override

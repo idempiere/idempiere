@@ -316,7 +316,7 @@ html,body {
 	background-color: transparent;
 }
 
-.txt-btn img {
+.txt-btn img, .small-img-btn img {
 	height: 16px;
 	width: 16px;
 	background-color: transparent;
@@ -326,6 +326,13 @@ html,body {
 
 .z-button-os.btn-small {
 	padding: 1px 5px;
+}
+
+.btn-sorttab {
+	box-shadow: 0px 0px 4px #bbb;
+	color: #555;
+	border: solid 1px #bbb;
+	text-shadow: 0px 1px 2px #888;
 }
 
 <%-- desktop --%>
