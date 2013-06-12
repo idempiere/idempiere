@@ -103,7 +103,7 @@ public class CacheMgt
 	 *	@param instance Cache
 	 *	@return true if removed
 	 */
-	public boolean unregister (CacheInterface instance)
+	public synchronized boolean unregister (CacheInterface instance)
 	{
 		if (instance == null)
 			return false;
@@ -223,9 +223,9 @@ public class CacheMgt
 	{
 		int counter = 0;
 		int total = 0;
-		for (int i = 0; i < m_instances.size(); i++)
+		CacheInterface[] instances = getInstancesAsArray();
+		for (CacheInterface stored : instances)
 		{
-			CacheInterface stored = (CacheInterface)m_instances.get(i);
 			if (stored != null && stored.size() > 0)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine(stored.toString());
@@ -235,6 +235,13 @@ public class CacheMgt
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("#" + counter + " (" + total + ")");
 		return total;
+	}
+
+	/**
+	 * @return
+	 */
+	protected synchronized CacheInterface[] getInstancesAsArray() {
+		return m_instances.toArray(new CacheInterface[0]);
 	}
 	
 	/**
@@ -252,9 +259,9 @@ public class CacheMgt
 		//
 		int counter = 0;
 		int total = 0;
-		for (int i = 0; i < m_instances.size(); i++)
+		CacheInterface[] instances = getInstancesAsArray();
+		for (CacheInterface stored : instances)
 		{
-			CacheInterface stored = (CacheInterface)m_instances.get(i);
 			if (stored != null && stored instanceof CCache)
 			{
 				CCache<?, ?> cc = (CCache<?, ?>)stored;
@@ -287,9 +294,9 @@ public class CacheMgt
 		if (!m_tableNames.contains(tableName))
 			return;
 		//
-		for (int i = 0; i < m_instances.size(); i++)
+		CacheInterface[] instances = getInstancesAsArray();
+		for (CacheInterface stored : instances)
 		{
-			CacheInterface stored = (CacheInterface)m_instances.get(i);
 			if (stored != null && stored instanceof CCache)
 			{
 				CCache<?, ?> cc = (CCache<?, ?>)stored;
@@ -308,11 +315,11 @@ public class CacheMgt
 	 *	@return count
 	 */
 	public int getElementCount()
-	{
+	{		
 		int total = 0;
-		for (int i = 0; i < m_instances.size(); i++)
+		CacheInterface[] instances = getInstancesAsArray();
+		for (CacheInterface stored : instances)
 		{
-			CacheInterface stored = (CacheInterface)m_instances.get(i);
 			if (stored != null && stored.size() > 0)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine(stored.toString());
