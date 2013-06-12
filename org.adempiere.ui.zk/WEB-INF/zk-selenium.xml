@@ -2,6 +2,10 @@
 
 	<!--
 		zk.xml Copyright (C) 2006 Potix Corporation. All Rights Reserved.
+		
+		Instructions:
+		Add next parameter to the VM arguments of the server launcher
+		-Dorg.zkoss.zk.config.path=file://${workspace_loc}/org.adempiere.ui.zk/WEB-INF/zk-selenium.xml
 	-->
 
 <zk>

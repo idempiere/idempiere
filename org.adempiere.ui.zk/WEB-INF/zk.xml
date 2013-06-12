@@ -46,7 +46,7 @@
 		</system-config>
 	-->
 
-	<!-- uncomment the following for selenium testing -->
+	<!-- uncomment the following for selenium testing / see zk-selenium.xml for an easier way -->
 	<!--  system-config>
 		<id-generator-class>org.adempiere.webui.AdempiereIdGenerator</id-generator-class>
 	</system-config -->
