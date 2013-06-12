@@ -460,8 +460,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			Boolean error = (Boolean) messageContainer.getAttribute(STATUS_ERROR_ATTRIBUTE);
 			String status = (String) messageContainer.getAttribute(STATUS_TEXT_ATTRIBUTE);
 			
-			createPopupContent(status);
-			showPopup(error, messageContainer);
+			showPopup(error, status);
 		} else if (event.getName().equals(ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT)) {
 			if (LayoutUtils.isReallyVisible(this))
 				updateProcessToolbar();
@@ -483,8 +482,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		msgPopupCnt.appendChild(t);
 	}
 	
-	private void showPopup(boolean error, Component messageContainer) {
-		LayoutUtils.openOverlappedWindow(messageContainer, msgPopup, "overlap_end");
+	private void showPopup(boolean error, String msg) {		
+		Clients.showNotification(buildNotificationText(msg), "error", findTabpanel(this), "at_pointer", 3500, true);
 	}
 	
 	private void createPopup() {
