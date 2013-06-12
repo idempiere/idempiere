@@ -348,7 +348,7 @@ public class GridField
 			return false;
 
 		//  Numeric Keys and Created/Updated as well as 
-		//	DocumentNo/Value/ASI ars not mandatory (persistency layer manages them)
+		//	DocumentNo/Value/ASI are not mandatory (persistence layer manages them)
 		if (m_gridTab != null &&  // if gridtab doesn't exist then it's not a window field (probably a process parameter field)
 			  (   (m_vo.IsKey && m_vo.ColumnName.endsWith("_ID"))
 				|| m_vo.ColumnName.startsWith("Created") || m_vo.ColumnName.startsWith("Updated")

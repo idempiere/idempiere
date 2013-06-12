@@ -298,10 +298,8 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	{
 		log.config("");
 		boolean anyChange = false;
-		List<WEditor> specialQuickEditors = new ArrayList<WEditor>();
-		WEditor editor=null;
 		for (int idxf = 0; idxf < quickEditors.size(); idxf++) {
-			editor = quickEditors.get(idxf);
+			WEditor editor = quickEditors.get(idxf);
 			Object value = editor.getValue();
 			Object initialValue = initialValues.get(idxf);
 
@@ -327,7 +325,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 		int parentID = 0;
 		String parentColumn = null;
 		String tabZeroName=null;
-		boolean isParentSave=false;
+		boolean isParentSave = (getRecord_ID() > 0);
 		for (int idxt = 0; idxt < quickTabs.size(); idxt++) {
 			GridTab gridtab = quickTabs.get(idxt);
 			PO po = quickPOs.get(idxt);
@@ -344,20 +342,13 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 				if (field.getGridTab() != gridtab)
 					continue;
 
-				editor = quickEditors.get(idxf);
+				WEditor editor = quickEditors.get(idxf);
 				Object value = editor.getValue();
 				Object initialValue = initialValues.get(idxf);
 
 				boolean changed = (value != null && initialValue == null)
 						|| (value == null && initialValue != null)
 						|| (value != null && initialValue != null && !value.equals(initialValue));
-				if(field.getColumnName().equals("Value")
-						||field.getColumnName().equals("DocumentNo")
-						||field.getColumnName().equals("M_AttributeSetInstance_ID")){
-						if(!specialQuickEditors.contains(field)){
-						specialQuickEditors.add(editor);
-						}
-				}
 				boolean thisMandatoryError = false;
 				if (field.isMandatory(true)) {
 					if (value == null || value.toString().length() == 0) {
@@ -387,14 +378,19 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 				}
 				if(gridtab.getTabLevel()>0 && !isParentSave){
 					FDialog.error(m_WindowNo, this, "FillMinimumInfo",tabZeroName);
-				return false;
+					return false;
 				}
 				po.saveEx();
 				if(gridtab.getTabLevel()==0){
 					isParentSave=true;
 				}
-				for(WEditor we:specialQuickEditors){
-					if(po.get_Value(we.getColumnName())!=null){
+				for (int idxf = 0; idxf < quickFields.size(); idxf++) {
+					GridField field = quickFields.get(idxf);
+					if (field.getGridTab() != gridtab)
+						continue;
+
+					WEditor we = quickEditors.get(idxf);
+					if (po.get_Value(we.getColumnName()) != null) {
 						we.setValue(po.get_Value(we.getColumnName()));
 					}
 				}
