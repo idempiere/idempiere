@@ -1242,12 +1242,20 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 					}				
 				}
 
-				Boolean summary = (Boolean) gridTab.getValue("IsSummary");
-				if (summary != null && !summary.booleanValue() == data.isSummary()) {
+				Object summaryobj = gridTab.getValue("IsSummary");
+				boolean summary = false;
+				if (summaryobj != null) {
+					if (summaryobj instanceof Boolean) {
+						summary = ((Boolean)summaryobj).booleanValue();
+					} else {
+						summary = "Y".equals(summaryobj.toString());
+					}
+				}
+				if (summary != data.isSummary()) {
 					data.setSummary(summary);
 					changed = true;
 				}
-				
+
 				if (changed) {
 					treeNode.setData(data);
 				}
