@@ -298,8 +298,10 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	{
 		log.config("");
 		boolean anyChange = false;
+		List<WEditor> specialQuickEditors = new ArrayList<WEditor>();
+		WEditor editor=null;
 		for (int idxf = 0; idxf < quickEditors.size(); idxf++) {
-			WEditor editor = quickEditors.get(idxf);
+			editor = quickEditors.get(idxf);
 			Object value = editor.getValue();
 			Object initialValue = initialValues.get(idxf);
 
@@ -324,11 +326,14 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 
 		int parentID = 0;
 		String parentColumn = null;
+		String tabZeroName=null;
+		boolean isParentSave=false;
 		for (int idxt = 0; idxt < quickTabs.size(); idxt++) {
 			GridTab gridtab = quickTabs.get(idxt);
 			PO po = quickPOs.get(idxt);
 			if (idxt == 0) {
 				parentColumn = gridtab.getTableName() + "_ID";
+				tabZeroName=gridtab.getName();
 			}
 
 			boolean savePO = false;
@@ -339,14 +344,20 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 				if (field.getGridTab() != gridtab)
 					continue;
 
-				WEditor editor = quickEditors.get(idxf);
+				editor = quickEditors.get(idxf);
 				Object value = editor.getValue();
 				Object initialValue = initialValues.get(idxf);
 
 				boolean changed = (value != null && initialValue == null)
 						|| (value == null && initialValue != null)
 						|| (value != null && initialValue != null && !value.equals(initialValue));
-		
+				if(field.getColumnName().equals("Value")
+						||field.getColumnName().equals("DocumentNo")
+						||field.getColumnName().equals("M_AttributeSetInstance_ID")){
+						if(!specialQuickEditors.contains(field)){
+						specialQuickEditors.add(editor);
+						}
+				}
 				boolean thisMandatoryError = false;
 				if (field.isMandatory(true)) {
 					if (value == null || value.toString().length() == 0) {
@@ -374,8 +385,19 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 						po.set_ValueOfColumn(parentColumn, parentID);
 					}
 				}
-
+				if(gridtab.getTabLevel()>0 && !isParentSave){
+					FDialog.error(m_WindowNo, this, "FillMinimumInfo",tabZeroName);
+				return false;
+				}
 				po.saveEx();
+				if(gridtab.getTabLevel()==0){
+					isParentSave=true;
+				}
+				for(WEditor we:specialQuickEditors){
+					if(po.get_Value(we.getColumnName())!=null){
+						we.setValue(po.get_Value(we.getColumnName()));
+					}
+				}
 			}
 			if (idxt == 0) {
 				parentID = po.get_ID();
