@@ -2003,7 +2003,11 @@ public abstract class PO
 		Savepoint savepoint = null;
 		if (m_trxName == null)
 		{
-			m_trxName = Trx.createTrxName(LOCAL_TRX_PREFIX + get_TableName());
+			StringBuilder l_trxname = new StringBuilder(LOCAL_TRX_PREFIX)
+				.append(get_TableName());
+			if (l_trxname.length() > 23)
+				l_trxname.setLength(23);
+			m_trxName = Trx.createTrxName(l_trxname.toString());
 			localTrx = Trx.get(m_trxName, true);
 		}
 		else
