@@ -1000,7 +1000,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		yesModel.removeAllElements();
 		noModel.removeAllElements();
 
-		setIsChanged(false);
+		//setIsChanged(false);
 		bAdd.setEnabled(false);
 		bRemove.setEnabled(false);
 		bUp.setEnabled(false);
