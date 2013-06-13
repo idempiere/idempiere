@@ -1441,7 +1441,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
         //
         //  No Rows
-        if (e.getTotalRows() == 0 && insertRecord && !detailTab)
+        if (e.getTotalRows() == 0 && insertRecord && !detailTab && !tabPanel.getGridTab().isSortTab())
         {
             toolbar.enableNew(true);
             toolbar.enableDelete(false);
