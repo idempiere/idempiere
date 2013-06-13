@@ -532,7 +532,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		Toolbar toolbar = (Toolbar) tabpanel.getFirstChild();
 		
 		IADTabpanel adtab = getADTabpanel(index);
-		if (adtab.getGridTab().isSortTab())
+		if (adtab!=null &&  adtab.getGridTab().isSortTab())
 			readOnly = true;
 		
 		boolean insertRecord = !readOnly;

@@ -687,6 +687,8 @@ public class CompositeADTabbox extends AbstractADTabbox
 		IADTabpanel detailPanel = getSelectedDetailADTabpanel();
 		if (detailPanel != null) {
 			detailPanel.getGridTab().dataIgnore();
+			if (detailPanel.getGridTab().isSortTab())
+				detailPanel.activate(true);
 		}
 		headerTab.getGridTab().dataIgnore();
 	}
