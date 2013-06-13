@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
+import java.lang.ref.WeakReference;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -56,6 +57,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.impl.LabelImageElement;
 
@@ -84,8 +86,9 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	
 	private EventWindow eventWin;
 	private Properties ctx;
-	private Desktop desktop;
+	private WeakReference<Desktop> desktop;
 	private ArrayList<ADCalendarEvent> events;
+	private DesktopCleanup listener;
 	
 	private static RequestEventHandler eventHandler;
 	private static TopicSubscriber subscriber;
@@ -126,6 +129,13 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 		calendars.addEventListener("onEventEdit", this);	
 				
 		createStaticListeners();
+		
+		listener = new DesktopCleanup() {			
+			@Override
+			public void cleanup(Desktop desktop) throws Exception {
+				DPCalendar.this.cleanup();
+			}
+		};
 	}
 
 	private synchronized void createStaticListeners() {
@@ -348,7 +358,17 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	public void refresh(ServerPushTemplate template) {
 		refreshModel();
 		template.executeAsync(this);
-		desktop = getDesktop();
+		if (desktop != null && desktop.get() != null) {
+			if (desktop.get() != getDesktop()) {
+				desktop.get().removeListener(listener);
+				desktop = new WeakReference<Desktop>(getDesktop());
+				desktop.get().addListener(listener);
+			}
+		} else {
+			desktop = new WeakReference<Desktop>(getDesktop());
+			desktop.get().addListener(listener);
+		}
+		
 	}
 
 	@Override
@@ -405,8 +425,8 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 			if (clientId.equals(AD_Client_ID) && !"0".equals(AD_User_ID)) {
 				if (salesRepId.equals(AD_User_ID) || userId.equals(AD_User_ID) || createdBy.equals(AD_User_ID)) {
 					try {
-						if (desktop != null && desktop.isAlive()) {
-							ServerPushTemplate template = new ServerPushTemplate(desktop);
+						if (desktop != null && desktop.get() != null && desktop.get().isAlive()) {
+							ServerPushTemplate template = new ServerPushTemplate(desktop.get());
 							refresh(template);
 						} else {
 							EventManager.getInstance().unregister(this);
@@ -424,13 +444,24 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 		super.onPageAttached(newpage, oldpage);
 		if (newpage != null) {
 			EventManager.getInstance().register(ON_REQUEST_CHANGED_TOPIC, this);
-			desktop = getDesktop();
+			if (desktop != null && desktop.get() != null) {
+				desktop.get().removeListener(listener);
+			}
+			desktop = new WeakReference<Desktop>(getDesktop());
+			desktop.get().addListener(listener);
 		}
 	}
 	
 	@Override
 	public void onPageDetached(Page page) {
 		super.onPageDetached(page);
+		cleanup();
+	}
+
+	/**
+	 * 
+	 */
+	protected void cleanup() {
 		EventManager.getInstance().unregister(this);
 		desktop = null;
 	}

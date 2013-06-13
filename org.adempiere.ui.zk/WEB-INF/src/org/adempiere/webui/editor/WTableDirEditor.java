@@ -53,11 +53,13 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Menuitem;
 
@@ -656,18 +658,37 @@ ContextMenuListener, IZoomableEditor
 		 */
 		private static final long serialVersionUID = 4540856986889452983L;
 		protected WTableDirEditor editor;
+		private DesktopCleanup listener = null;
 
 		@Override
 		public void onPageAttached(Page newpage, Page oldpage) {
 			super.onPageAttached(newpage, oldpage);
 			if (editor.tableCacheListener == null) {
 				editor.createCacheListener();
+				if (listener == null) {
+					listener = new DesktopCleanup() {						
+						@Override
+						public void cleanup(Desktop desktop) throws Exception {
+							EditorCombobox.this.cleanup();
+						}
+					};
+					newpage.getDesktop().addListener(listener);
+				}
 			}
 		}
 
 		@Override
 		public void onPageDetached(Page page) {
 			super.onPageDetached(page);
+			if (listener != null && page.getDesktop() != null)
+				page.getDesktop().removeListener(listener);
+			cleanup();
+		}
+
+		/**
+		 * 
+		 */
+		protected void cleanup() {
 			if (editor.tableCacheListener != null) {
 				CacheMgt.get().unregister(editor.tableCacheListener);
 				editor.tableCacheListener = null;

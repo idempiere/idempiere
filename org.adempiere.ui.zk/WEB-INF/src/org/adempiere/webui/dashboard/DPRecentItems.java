@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Properties;
 
@@ -39,6 +40,7 @@ import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Box;
 import org.zkoss.zul.Image;
@@ -71,7 +73,9 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 	
 	private Properties ctx;
 
-	private Desktop desktop;
+	private WeakReference<Desktop> desktop;
+
+	private DesktopCleanup listener;
 
 	public DPRecentItems()
 	{
@@ -109,6 +113,18 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		img.addEventListener(Events.ON_DROP, this);
 		//						
 		createTopicSubscriber();
+		
+		listener = new DesktopCleanup() {			
+			@Override
+			public void cleanup(Desktop desktop) throws Exception {
+				DPRecentItems.this.cleanup();
+			}
+		};
+	}
+
+	protected void cleanup() {
+		EventManager.getInstance().unregister(this);
+		desktop = null;
 	}
 
 	private static synchronized void createTopicSubscriber() {
@@ -256,7 +272,21 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 	public void updateUI() {
 		refresh();
 		bxRecentItems.invalidate();
-		desktop = getDesktop();
+		updateDesktopReference();
+		
+	}
+
+	/**
+	 * 
+	 */
+	protected void updateDesktopReference() {
+		if ((desktop == null || desktop.get() == null) || (desktop.get() != null && desktop.get() != getDesktop())) {
+			if (desktop != null && desktop.get() != null)
+				desktop.get().removeListener(listener);
+			
+			desktop = new WeakReference<Desktop>(getDesktop());
+			desktop.get().addListener(listener);
+		}
 	}
 
 	@Override
@@ -267,8 +297,8 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 				int id = ((Number)property).intValue();
 				if (id == AD_User_ID) {
 					try {
-						if (desktop != null && desktop.isAlive()) {
-							ServerPushTemplate template = new ServerPushTemplate(desktop);
+						if (desktop != null && desktop.get() != null && desktop.get().isAlive()) {
+							ServerPushTemplate template = new ServerPushTemplate(desktop.get());
 							refresh(template);
 						}
 					} catch (Exception e) {
@@ -284,15 +314,14 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		super.onPageAttached(newpage, oldpage);
 		if (newpage != null) {
 			EventManager.getInstance().register(MRecentItem.ON_RECENT_ITEM_CHANGED_TOPIC, this);
-			desktop = getDesktop();
+			updateDesktopReference();
 		}
 	}
 	
 	@Override
 	public void onPageDetached(Page page) {
 		super.onPageDetached(page);
-		EventManager.getInstance().unregister(this);
-		desktop = null;
+		cleanup();
 	}
 	
 	static class TopicSubscriber implements ITopicSubscriber<Integer> {

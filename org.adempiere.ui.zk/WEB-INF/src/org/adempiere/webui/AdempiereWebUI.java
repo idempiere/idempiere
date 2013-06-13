@@ -17,6 +17,7 @@
 
 package org.adempiere.webui;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -53,6 +54,7 @@ import org.zkoss.web.Attributes;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Session;
@@ -238,10 +240,14 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		keyListener.setCtrlKeys("@a@c@d@e@f@h@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter^u@u");
 		keyListener.setAutoBlur(false);
 		
-		IDesktop d = (IDesktop) currSess.getAttribute(APPLICATION_DESKTOP_KEY);
+		@SuppressWarnings("unchecked")
+		WeakReference<IDesktop> desktopRef = (WeakReference<IDesktop>) currSess.getAttribute(APPLICATION_DESKTOP_KEY);
+		IDesktop d = desktopRef != null ? desktopRef.get() : null; 
 		if (d != null && d instanceof IDesktop)
 		{
-			ExecutionCarryOver eco = (ExecutionCarryOver) currSess.getAttribute(EXECUTION_CARRYOVER_SESSION_KEY);
+			@SuppressWarnings("unchecked")
+			WeakReference<ExecutionCarryOver> ecoRef = (WeakReference<ExecutionCarryOver>) currSess.getAttribute(EXECUTION_CARRYOVER_SESSION_KEY);;
+			ExecutionCarryOver eco = ecoRef != null ? ecoRef.get() : null; 
 			if (eco != null) {
 				//try restore
 				try {
@@ -299,11 +305,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 						}
 						appDesktop.setPage(this.getPage());
 						Clients.response(new AuScript("$('.slimScroll .z-anchorlayout-body').slimScroll({height: '100%',railVisible: true, alwaysVisible: false});"));
-						currSess.setAttribute(EXECUTION_CARRYOVER_SESSION_KEY, current);
+						currSess.setAttribute(EXECUTION_CARRYOVER_SESSION_KEY, new WeakReference<ExecutionCarryOver>(current));
 					}
 					
-					currSess.setAttribute(ZK_DESKTOP_SESSION_KEY, this.getPage().getDesktop());
-					ctx.put(ZK_DESKTOP_SESSION_KEY, this.getPage().getDesktop());
+					currSess.setAttribute(ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(this.getPage().getDesktop()));
+					ctx.put(ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(this.getPage().getDesktop()));
 					ClientInfo sessionClientInfo = (ClientInfo) currSess.getAttribute(CLIENT_INFO);
 					if (sessionClientInfo != null) {
 						clientInfo = sessionClientInfo;
@@ -329,11 +335,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			createDesktop();
 			appDesktop.setClientInfo(clientInfo);
 			appDesktop.createPart(this.getPage());
-			currSess.setAttribute(APPLICATION_DESKTOP_KEY, appDesktop);
+			currSess.setAttribute(APPLICATION_DESKTOP_KEY, new WeakReference<IDesktop>(appDesktop));
 			ExecutionCarryOver eco = new ExecutionCarryOver(this.getPage().getDesktop());
-			currSess.setAttribute(EXECUTION_CARRYOVER_SESSION_KEY, eco);
-			currSess.setAttribute(ZK_DESKTOP_SESSION_KEY, this.getPage().getDesktop());
-			ctx.put(ZK_DESKTOP_SESSION_KEY, this.getPage().getDesktop());
+			currSess.setAttribute(EXECUTION_CARRYOVER_SESSION_KEY, new WeakReference<ExecutionCarryOver>(eco));
+			currSess.setAttribute(ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(this.getPage().getDesktop()));
+			ctx.put(ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(this.getPage().getDesktop()));
 		}
 		
 		//ensure server push is on

@@ -384,12 +384,12 @@ public class DashboardController implements EventListener<Event> {
         {
         	dashboardRunnable.refreshDashboard(false);
 
-        	// default Update every one minutes
-    		int interval = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_REFRESH_INTERVAL, 60000);
-    		dashboardFuture = Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(dashboardRunnable, interval, interval, TimeUnit.MILLISECONDS);    		
-		}       
+			// default Update every one minutes
+			int interval = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_REFRESH_INTERVAL, 60000);
+	    	dashboardFuture = Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(dashboardRunnable, interval, interval, TimeUnit.MILLISECONDS);    		
+		}
 	}
-	
+
 	public void onEvent(Event event) throws Exception {
 		Component comp = event.getTarget();
         String eventName = event.getName();
@@ -598,8 +598,9 @@ public class DashboardController implements EventListener<Event> {
 	public void onSetPage(Page page, Desktop desktop) {
 		if (dashboardFuture != null && !dashboardFuture.isDone()) {
 			dashboardFuture.cancel(true);
-
-			DashboardRunnable tmp = dashboardRunnable;
+			Adempiere.getThreadPoolExecutor().remove((Runnable) dashboardFuture);
+			
+			DashboardRunnable tmp = dashboardRunnable;			
 			dashboardRunnable = new DashboardRunnable(tmp, desktop);
 			// default Update every one minutes
 			int interval = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_REFRESH_INTERVAL, 60000);
@@ -613,7 +614,14 @@ public class DashboardController implements EventListener<Event> {
 	public void onLogOut() {
 		if (dashboardFuture != null && !dashboardFuture.isDone()) {
 			dashboardFuture.cancel(true);
+			Adempiere.getThreadPoolExecutor().remove((Runnable) dashboardFuture);
+			dashboardFuture = null;
 		}
+		if (dashboardRunnable != null) {			
+			dashboardRunnable = null;
+		}
+		dashboardLayout.detach();
+		dashboardLayout = null;
 	}
 
 	public void addDashboardPanel(DashboardPanel dashboardPanel) {

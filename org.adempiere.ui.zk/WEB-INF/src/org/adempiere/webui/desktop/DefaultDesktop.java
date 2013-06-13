@@ -108,8 +108,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	@SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(DefaultDesktop.class);
 
-    private Center windowArea;
-
 	private Borderlayout layout;
 
 	private int noOfNotice;
@@ -124,12 +122,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	private DashboardController dashboardController, sideController;
 	
-	private BroadcastMessageWindow messageWindow;
-	private BroadcastMessageWindow testMessageWindow;
 	private HeaderPanel pnlHead;
 	
 	private Desktop m_desktop = null;
-	private TimeoutPanel panel = null; 
 	
 	private HelpController helpController;
 
@@ -217,7 +212,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         
         helpController.render(e, this);
 
-        windowArea = layout.getCenter();
+        Center windowArea = layout.getCenter();
 
         windowContainer.createPart(windowArea);
 
@@ -229,7 +224,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         busyDialog.setShadow(false);
         homeTab.appendChild(busyDialog);
         
-        messageWindow = new BroadcastMessageWindow(pnlHead);
+        BroadcastMessageWindow messageWindow = new BroadcastMessageWindow(pnlHead);
         BroadcastMsgUtil.showPendingMessage(Env.getAD_User_ID(Env.getCtx()), messageWindow);
         
         if (!layout.getDesktop().isServerPushEnabled())
@@ -422,11 +417,18 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		unbindEventManager();
 		if (dashboardController != null) {
 			dashboardController.onLogOut();
+			dashboardController = null;
 		}
 		
 		if (sideController != null) {
 			sideController.onLogOut();
+			sideController = null;
 		}
+		layout.detach();
+		layout = null;
+		pnlHead = null;
+		max = null;
+		m_desktop = null;
 	}
 
 	public void updateUI() {
@@ -499,8 +501,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 								.toString(Env.getContextAsInt(Env.getCtx(),
 										"AD_Session_ID"));
 						if (currSession.equals(msg.getTarget())) {
-							if (testMessageWindow == null)
-								testMessageWindow = new BroadcastMessageWindow(
+							BroadcastMessageWindow testMessageWindow = new BroadcastMessageWindow(
 										pnlHead);
 							testMessageWindow.appendMessage(mbMessage, true);
 							testMessageWindow = null;
@@ -512,8 +513,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 								Env.getCtx(), msg.getIntData());
 						if (mbMessage.isValidUserforMessage()) {
 							
-							if (messageWindow == null)
-								messageWindow = new BroadcastMessageWindow(
+							BroadcastMessageWindow messageWindow = new BroadcastMessageWindow(
 										pnlHead);
 							messageWindow.appendMessage(mbMessage, false);
 						}
@@ -522,12 +522,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 						currSession = Integer.toString(Env.getContextAsInt(
 								Env.getCtx(), "AD_Session_ID"));
-						System.out.println("Current Session" + currSession);
 						if (currSession.equalsIgnoreCase(msg.getTarget())) {
-							if (panel == null) {
-								panel = new TimeoutPanel(pnlHead,
-										msg.getIntData());
-							}
+							new TimeoutPanel(pnlHead, msg.getIntData());
 						}
 
 						break;
@@ -536,10 +532,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 						currSession = WebUtil.getServerName();
 
 						if (currSession.equalsIgnoreCase(msg.getTarget())) {
-							if (panel == null) {
-								panel = new TimeoutPanel(pnlHead,
-										msg.getIntData());
-							}
+							new TimeoutPanel(pnlHead, msg.getIntData());
 						}
 
 					}

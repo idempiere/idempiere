@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
@@ -811,8 +812,13 @@ public final class AEnv
 	 */
 	public static Desktop getDesktop() {
 		boolean inUIThread = Executions.getCurrent() != null;
-		return inUIThread ? Executions.getCurrent().getDesktop() 
-					: (Desktop) Env.getCtx().get(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY);
+		if (inUIThread) {
+			return Executions.getCurrent().getDesktop();
+		} else {
+			@SuppressWarnings("unchecked")
+			WeakReference<Desktop> ref = (WeakReference<Desktop>) Env.getCtx().get(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY);
+			return ref != null ? ref.get() : null;
+		}
 	}
 	
 	/**

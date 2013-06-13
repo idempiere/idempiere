@@ -17,6 +17,7 @@
 package org.adempiere.webui.apps;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -382,7 +383,7 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		Properties context = ServerContext.getCurrentInstance();
 		if (context.get(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY) == null) {
 			Desktop desktop = this.getDesktop();
-			context.put(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY, desktop);
+			context.put(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(desktop));
 		}
 		
 		processDialogRunnable = new ProcessDialogRunnable();

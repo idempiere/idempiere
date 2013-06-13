@@ -33,8 +33,10 @@ import org.compiere.model.MTreeNode;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.A;
@@ -65,57 +67,14 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 	
 	private Properties ctx;
     private Tree menuTree;
+
+	private EventListener<Event> listener;
     
     public AbstractMenuPanel(Component parent)
     {
     	if (parent != null)
     		this.setParent(parent);
-        init();
-        
-    	EventQueues.lookup(MENU_ITEM_SELECTED_QUEUE, EventQueues.DESKTOP, true).subscribe(new EventListener<Event>() {
-			public void onEvent(Event event) throws Exception {
-				if (event.getName() == Events.ON_SELECT)
-				{
-					Treeitem selectedItem = (Treeitem) event.getData();
-				    	
-					if (selectedItem != null)
-					{
-						Object value = selectedItem.getValue();
-						if (value != null)
-						{
-							if (menuTree.getSelectedItem() != null && menuTree.getSelectedItem().getValue() != null && menuTree.getSelectedItem().getValue().equals(value))
-								return;
-							
-							Collection<Treeitem> items = menuTree.getItems();
-							for (Treeitem item : items)
-							{
-								if (item != null && item.getValue() != null && item.getValue().equals(value))
-								{
-									TreeSearchPanel.select(item);
-									return;
-								}
-							}
-						}
-						else
-						{
-							String label = selectedItem.getLabel();
-							if (menuTree.getSelectedItem() != null && menuTree.getSelectedItem().getLabel() != null && menuTree.getSelectedItem().getLabel().equals(label))
-								return;
-							
-							Collection<Treeitem> items = menuTree.getItems();
-							for (Treeitem item : items)
-							{
-								if (item != null && item.getLabel() != null && item.getLabel().equals(label))
-								{
-									TreeSearchPanel.select(item);								
-									return;
-								}
-							}
-						}
-					}
-				}
-			}
-		});
+        init();            	
     }
     
     protected void init() {
@@ -350,4 +309,75 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 	{
 		return ctx;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.zkoss.zk.ui.AbstractComponent#onPageDetached(org.zkoss.zk.ui.Page)
+	 */
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		if (listener != null) {
+			try {
+				EventQueue<Event> queue = EventQueues.lookup(MENU_ITEM_SELECTED_QUEUE, EventQueues.DESKTOP, true);
+				if (queue != null)
+					queue.unsubscribe(listener);
+			} finally {
+				listener = null;
+			}
+			
+		}
+	}
+	
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		if (listener == null) {
+			listener = new EventListener<Event>() {
+				public void onEvent(Event event) throws Exception {
+					if (event.getName() == Events.ON_SELECT)
+					{
+						Treeitem selectedItem = (Treeitem) event.getData();
+					    	
+						if (selectedItem != null)
+						{
+							Object value = selectedItem.getValue();
+							if (value != null)
+							{
+								if (menuTree.getSelectedItem() != null && menuTree.getSelectedItem().getValue() != null && menuTree.getSelectedItem().getValue().equals(value))
+									return;
+								
+								Collection<Treeitem> items = menuTree.getItems();
+								for (Treeitem item : items)
+								{
+									if (item != null && item.getValue() != null && item.getValue().equals(value))
+									{
+										TreeSearchPanel.select(item);
+										return;
+									}
+								}
+							}
+							else
+							{
+								String label = selectedItem.getLabel();
+								if (menuTree.getSelectedItem() != null && menuTree.getSelectedItem().getLabel() != null && menuTree.getSelectedItem().getLabel().equals(label))
+									return;
+								
+								Collection<Treeitem> items = menuTree.getItems();
+								for (Treeitem item : items)
+								{
+									if (item != null && item.getLabel() != null && item.getLabel().equals(label))
+									{
+										TreeSearchPanel.select(item);								
+										return;
+									}
+								}
+							}
+						}
+					}
+				}
+			};
+		}
+		EventQueues.lookup(MENU_ITEM_SELECTED_QUEUE, EventQueues.DESKTOP, true).subscribe(listener);
+	}
+	
 }
