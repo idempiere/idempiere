@@ -81,11 +81,16 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 		SimpleTreeModel treeModel = SimpleTreeModel.createFrom(root);
 		treeModel.setItemDraggable(true);
 		treeModel.addOnDropEventListener(new ADTreeOnDropListener(tree, treeModel, vTree, windowNo));
-		
-		Treecols treeCols = new Treecols();
-		tree.appendChild(treeCols);
-		Treecol treeCol = new Treecol();
-		treeCols.appendChild(treeCol);
+
+		if (tree.getTreecols() == null)
+		{
+				Treecols treeCols = new Treecols();
+				tree.getTreecols();
+				tree.appendChild(treeCols);
+				Treecol treeCol = new Treecol();
+				treeCols.appendChild(treeCol);
+		}
+
 		tree.setPageSize(-1);
 		try {
 			tree.setItemRenderer(treeModel);

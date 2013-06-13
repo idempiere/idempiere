@@ -324,11 +324,14 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 
 		int parentID = 0;
 		String parentColumn = null;
+		String tabZeroName=null;
+		boolean isParentSave = (getRecord_ID() > 0);
 		for (int idxt = 0; idxt < quickTabs.size(); idxt++) {
 			GridTab gridtab = quickTabs.get(idxt);
 			PO po = quickPOs.get(idxt);
 			if (idxt == 0) {
 				parentColumn = gridtab.getTableName() + "_ID";
+				tabZeroName=gridtab.getName();
 			}
 
 			boolean savePO = false;
@@ -346,7 +349,6 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 				boolean changed = (value != null && initialValue == null)
 						|| (value == null && initialValue != null)
 						|| (value != null && initialValue != null && !value.equals(initialValue));
-		
 				boolean thisMandatoryError = false;
 				if (field.isMandatory(true)) {
 					if (value == null || value.toString().length() == 0) {
@@ -374,8 +376,24 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 						po.set_ValueOfColumn(parentColumn, parentID);
 					}
 				}
-
+				if(gridtab.getTabLevel()>0 && !isParentSave){
+					FDialog.error(m_WindowNo, this, "FillMinimumInfo",tabZeroName);
+					return false;
+				}
 				po.saveEx();
+				if(gridtab.getTabLevel()==0){
+					isParentSave=true;
+				}
+				for (int idxf = 0; idxf < quickFields.size(); idxf++) {
+					GridField field = quickFields.get(idxf);
+					if (field.getGridTab() != gridtab)
+						continue;
+
+					WEditor we = quickEditors.get(idxf);
+					if (po.get_Value(we.getColumnName()) != null) {
+						we.setValue(po.get_Value(we.getColumnName()));
+					}
+				}
 			}
 			if (idxt == 0) {
 				parentID = po.get_ID();

@@ -335,8 +335,20 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 	    				cmbSearch.setText(null);
 	            	return;
 	            }
-		            
-	            selectTreeitem(value);
+
+	            for(Component comp : cmbSearch.getChildren())
+        		{
+	            	Comboitem item = (Comboitem) comp;
+	            	if (item.getLabel().equals(value))
+	            	{
+	    				String type = item.getContent();
+	    				if (!Util.isEmpty(type))
+	    					selectTreeitem(value+"."+type);
+	    				else
+	    					selectTreeitem(value);
+	    				return;
+					}
+        		}
         	} 
         } 
         else if (event.getName().equals(ON_POST_FIRE_TREE_EVENT)) 

@@ -601,9 +601,19 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         		
         //create tree
         if (gridTab.isTreeTab() && treePanel != null) {
-			int AD_Tree_ID = MTree.getDefaultAD_Tree_ID (
-				Env.getAD_Client_ID(Env.getCtx()), gridTab.getKeyColumnName());
-			treePanel.initTree(AD_Tree_ID, windowNo);
+        	int AD_Tree_ID = Env.getContextAsInt (Env.getCtx(), getWindowNo(), "AD_Tree_ID", true);
+        	int AD_Tree_ID_Default = MTree.getDefaultAD_Tree_ID (Env.getAD_Client_ID(Env.getCtx()), gridTab.getKeyColumnName());
+        	if (gridTab.getRecord_ID() >= 0) {
+        		if (AD_Tree_ID != 0) {
+        			treePanel.initTree(AD_Tree_ID, windowNo);
+        			setSelectedNode(gridTab.getRecord_ID());
+        		} else if (AD_Tree_ID_Default != 0) {
+        			treePanel.initTree(AD_Tree_ID_Default, windowNo);
+        			setSelectedNode(gridTab.getRecord_ID());
+        		}
+        	} else {
+        		treePanel.getTree().clear();
+        	}
         }
 
         if (!gridTab.isSingleRow() && !isGridView())
@@ -1155,19 +1165,65 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         	createUI();
         dynamicDisplay(col);
 
-        //sync tree
-        if (treePanel != null) {
+        //sync tree 
+        if (treePanel != null) 
+        {
         	if ("Deleted".equalsIgnoreCase(e.getAD_Message()))
-        		if (e.Record_ID != null
-        				&& e.Record_ID instanceof Integer
-        				&& ((Integer)e.Record_ID != gridTab.getRecord_ID()))
+        	{
+        		if (e.Record_ID != null && e.Record_ID instanceof Integer && ((Integer)e.Record_ID != gridTab.getRecord_ID()))
         			deleteNode((Integer)e.Record_ID);
         		else
         			setSelectedNode(gridTab.getRecord_ID());
-        	else
-        		setSelectedNode(gridTab.getRecord_ID());
+        	}        		
+        	else if (!e.isInserting())
+        	{
+        		boolean refresh=true;      		
+        		Treeitem item = treePanel.getTree().getSelectedItem();
+        		if (item != null)
+        		{
+        			@SuppressWarnings("unchecked")
+					MTreeNode treeNode = ((DefaultTreeNode<MTreeNode>) item.getValue()).getData();        		
+            		if (treeNode.getNode_ID() == gridTab.getRecord_ID()){
+            			setSelectedNode(gridTab.getRecord_ID());
+            			refresh = false;
+            		}
+				}
+ 
+        		if (refresh)
+        		{
+        			int AD_Tree_ID = Env.getContextAsInt (Env.getCtx(), getWindowNo(), "AD_Tree_ID", true);
+        			if (gridTab.getRecord_ID()>=0) 
+        			{
+        				if (AD_Tree_ID != 0)
+        				{
+                			treePanel.initTree(AD_Tree_ID, windowNo);
+                    		setSelectedNode(gridTab.getRecord_ID());
+                		}   
+        				else
+        				{
+        					AD_Tree_ID = MTree.getDefaultAD_Tree_ID (Env.getAD_Client_ID(Env.getCtx()), gridTab.getKeyColumnName());
+        					treePanel.initTree(AD_Tree_ID, windowNo);
+        				}
+					}
+        			else
+        			{	
+    					treePanel.getTree().clear();
+        			}	
+				}    
+        		
+        	}else if(e.isInserting() && gridTab.getRecord_ID() < 0 && gridTab.getTabLevel() > 0 )
+        	{		
+    			int AD_Tree_ID = Integer.parseInt(gridTab.getParentTab().getValue("AD_Tree_ID").toString());
+    			MTreeNode root = new MTree (Env.getCtx(), AD_Tree_ID, true, true, null).getRoot();
+    			SimpleTreeModel treeModel = SimpleTreeModel.createFrom(root);
+    			try {
+    				treePanel.getTree().setItemRenderer(treeModel);
+    				treePanel.getTree().setModel(treeModel);
+    			} catch (Exception treeExc) {
+    				logger.log(Level.SEVERE, "Failed to setup tree");
+    			}
+    		}
         }
-
         if (listPanel.isVisible()) {
         	listPanel.updateListIndex();
         	listPanel.dynamicDisplay(col);
@@ -1242,12 +1298,20 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 					}				
 				}
 
-				Boolean summary = (Boolean) gridTab.getValue("IsSummary");
-				if (summary != null && !summary.booleanValue() == data.isSummary()) {
+				Object summaryobj = gridTab.getValue("IsSummary");
+				boolean summary = false;
+				if (summaryobj != null) {
+					if (summaryobj instanceof Boolean) {
+						summary = ((Boolean)summaryobj).booleanValue();
+					} else {
+						summary = "Y".equals(summaryobj.toString());
+					}
+				}
+				if (summary != data.isSummary()) {
 					data.setSummary(summary);
 					changed = true;
 				}
-				
+
 				if (changed) {
 					treeNode.setData(data);
 				}
