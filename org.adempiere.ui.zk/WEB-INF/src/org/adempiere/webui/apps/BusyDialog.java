@@ -13,12 +13,13 @@
  *****************************************************************************/
 package org.adempiere.webui.apps;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Window;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Image;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Span;
 
 /**
  * 
@@ -32,18 +33,22 @@ public class BusyDialog extends Window {
 
 	public BusyDialog() {
 		super();
-		Hbox box = new Hbox();
-		box.setStyle("padding: 5px");
+		LayoutUtils.addSclass("busy-dialog", this);
+		
+		Div box = new Div();
+		LayoutUtils.addSclass("busy-dialog-box", box);
 		appendChild(box);
-		label = new Label(Msg.getMsg(Env.getCtx(), "Processing"));
-		box.appendChild(label);
-		Image image = new Image();
+		
+		Span image = new Span();
+		LayoutUtils.addSclass("busy-dialog-img", image);
 		box.appendChild(image);
-		image.setHeight("16px");
-		image.setWidth("16px");
-		image.setSrc("~./zk/img/progress3.gif");
+		
+		label = new Label(Msg.getMsg(Env.getCtx(), "Processing"));
+		LayoutUtils.addSclass("busy-dialog-label", label);
+		box.appendChild(label);
+		
 		setPosition("center");
-		setShadow(true);		
+		setShadow(true);
 	}
 
 	public void statusUpdate(String message) {
