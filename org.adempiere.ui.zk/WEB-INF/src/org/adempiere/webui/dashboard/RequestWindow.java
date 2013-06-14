@@ -87,8 +87,9 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		setTitle(Msg.getMsg(Env.getCtx(),"Event"));
 		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		setWidth("400px");
-		setHeight("500px");
+		this.setSclass("popup-dialog");
 		this.setBorder("normal");
+		this.setShadow(true);
 		this.setClosable(true);
 		
 		m_readOnly = !MRole.getDefault().canUpdate(
@@ -158,6 +159,7 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		txtSummary = new Textbox();
 		txtSummary.setRows(3);
 		txtSummary.setWidth("95%");
+		txtSummary.setHeight("100%");
 		
 		dbxStartPlan = new Datebox();
 		dbxCompletePlan = new Datebox();
@@ -243,17 +245,23 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		tbxEndTime.setWidth("40%");
 		
 		Borderlayout borderlayout = new Borderlayout();
-		appendChild(borderlayout);
+		this.appendChild(borderlayout);
+		borderlayout.setHflex("1");
+		borderlayout.setVflex("min");
 		
-		Center center = new Center();
-		borderlayout.appendChild(center);
-		center.appendChild(grid);
+		Center centerPane = new Center();
+		centerPane.setSclass("dialog-content");
+		centerPane.setAutoscroll(true);
+		borderlayout.appendChild(centerPane);
+		
+		centerPane.appendChild(grid);
 		grid.setVflex("1");
 		grid.setHflex("1");
-		
-		South south = new South();
-		borderlayout.appendChild(south);
-		south.appendChild(confirmPanel);
+
+		South southPane = new South();
+		southPane.setSclass("dialog-footer");
+		borderlayout.appendChild(southPane);
+		southPane.appendChild(confirmPanel);
 		
 		dbxStartPlan.setValue(ce.getBeginDate());
 		dbxCompletePlan.setValue(ce.getEndDate());

@@ -194,8 +194,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 	link.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
                 	treeitem.setAttribute("menu.type", "window");
 
-                	Toolbarbutton newBtn = new Toolbarbutton(null, ThemeManager.getThemeResource("images/New10.png"));
-                	newBtn.setStyle("padding-left:3px; margin-bottom:5px");
+                	Toolbarbutton newBtn = createNewButton();
                 	treeCell.appendChild(newBtn);
                 	newBtn.addEventListener(Events.ON_CLICK, this);
                 }
@@ -207,6 +206,13 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 treeitem.getTreerow().setDraggable("favourite"); // Elaine 2008/07/24
             }
         }
+    }
+    
+    public Toolbarbutton createNewButton()
+    {
+    	Toolbarbutton newBtn = new Toolbarbutton(null, ThemeManager.getThemeResource("images/New10.png"));
+    	newBtn.setStyle("padding-left:3px; margin-bottom:5px");
+    	return newBtn;
     }
     
     public void onEvent(Event event)

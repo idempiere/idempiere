@@ -39,6 +39,7 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
@@ -250,6 +251,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         
         this.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "findWindow");
         this.setId("findWindow_"+targetWindowNo);
+        LayoutUtils.addSclass("find-window", this);
     }
     
     public boolean initialize() 
@@ -366,7 +368,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         contentSimple.setVflex(true);
 
         Borderlayout layout = new Borderlayout();
-        layout.setStyle("height: 100%; width: 99%; position: relative");
+        layout.setHflex("1");
+        layout.setVflex("1");
         winLookupRecord.appendChild(layout);
 
         Center center = new Center();
@@ -382,6 +385,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         winLookupRecord.setWidth("100%");
         winLookupRecord.setHeight("100%");
         winLookupRecord.addEventListener(Events.ON_OK, this);
+        LayoutUtils.addSclass("find-window-simple", winLookupRecord);
 
     }   //  initSimple
 
@@ -468,19 +472,25 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         advancedPanel.appendChild(listhead);
         advancedPanel.setVflex(true);
 
-        Vlayout vlayout = new Vlayout();
-        vlayout.setStyle("width: 100%; height: 100%; position: relative");
-        vlayout.setVflex("1");
-        winAdvanced.appendChild(vlayout);
-        toolBar.setVflex("0");
-        vlayout.appendChild(toolBar);
-        vlayout.appendChild(advancedPanel);
-        confirmPanel.setVflex("0");
-        vlayout.appendChild(confirmPanel);
+        Borderlayout layout = new Borderlayout();
+        layout.setHflex("1");
+        layout.setVflex("1");
+        winAdvanced.appendChild(layout);
+
+        Center center = new Center();
+        layout.appendChild(center);
+        center.appendChild(advancedPanel);
+        advancedPanel.setVflex("1");
+        advancedPanel.setHflex("1");
+
+        South south = new South();
+        layout.appendChild(south);
+        south.appendChild(confirmPanel);
 
         winAdvanced.setHeight("100%");
         winAdvanced.setWidth("99%");
         winAdvanced.addEventListener(Events.ON_OK,this);
+        LayoutUtils.addSclass("find-window-advanced", winAdvanced);
 
     } // initAdvanced
 
