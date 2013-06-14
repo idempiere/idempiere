@@ -1310,19 +1310,21 @@ public class MOrder extends X_C_Order implements DocAction
 		}	//	convert DocType
 
 		//	Mandatory Product Attribute Set Instance
-		String mandatoryType = "='Y'";	//	IN ('Y','S')
-		String sql = "SELECT COUNT(*) "
-			+ "FROM C_OrderLine ol"
-			+ " INNER JOIN M_Product p ON (ol.M_Product_ID=p.M_Product_ID)" 
-			+ " INNER JOIN M_AttributeSet pas ON (p.M_AttributeSet_ID=pas.M_AttributeSet_ID) "
-			+ "WHERE pas.MandatoryType" + mandatoryType		
-			+ " AND (ol.M_AttributeSetInstance_ID is NULL OR ol.M_AttributeSetInstance_ID = 0)"
-			+ " AND ol.C_Order_ID=?";
-		int no = DB.getSQLValue(get_TrxName(), sql, getC_Order_ID());
-		if (no != 0)
-		{
-			m_processMsg = "@LinesWithoutProductAttribute@ (" + no + ")";
-			return DocAction.STATUS_Invalid;
+		for (MOrderLine line : getLines()) {
+			if (line.getM_Product_ID() > 0 && line.getM_AttributeSetInstance_ID() == 0) {
+				MProduct product = line.getProduct();
+				if (product.isASIMandatory(isSOTrx())) {
+					if (! product.getAttributeSet().excludeTableEntry(MOrderLine.Table_ID, isSOTrx())) {
+						StringBuilder msg = new StringBuilder("@M_AttributeSet_ID@ @IsMandatory@ (@Line@ #")
+							.append(line.getLine())
+							.append(", @M_Product_ID@=")
+							.append(product.getValue())
+							.append(")");
+						m_processMsg = msg.toString();
+						return DocAction.STATUS_Invalid;
+					}
+				}
+			}
 		}
 
 		//	Lines

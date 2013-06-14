@@ -41,8 +41,7 @@ public class MAttributeSet extends X_M_AttributeSet
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2703536167929259405L;
-
+	private static final long serialVersionUID = -187568054160926817L;
 
 	/**
 	 * 	Get MAttributeSet from Cache
@@ -210,13 +209,40 @@ public class MAttributeSet extends X_M_AttributeSet
 	}	//	isMandatoryShipping
 	
 	/**
-	 * 	Exclude entry
+	 * 	Exclude column entry
 	 *	@param AD_Column_ID column
 	 *	@param isSOTrx sales order
 	 *	@return true if excluded
 	 */
 	public boolean excludeEntry (int AD_Column_ID, boolean isSOTrx)
 	{
+		MColumn column = MColumn.get(getCtx(), AD_Column_ID);
+		return excludeTableEntry(column.getAD_Table_ID(), isSOTrx);
+	}	//	excludeEntry
+	
+	/**
+	 * 	Exclude table entry
+	 *	@param AD_Table_ID column
+	 *	@param isSOTrx sales order
+	 *	@return true if excluded
+	 */
+	public boolean excludeTableEntry (int AD_Table_ID, boolean isSOTrx)
+	{
+		loadExcludes();
+		//	Find it
+		if (m_excludes != null && m_excludes.length > 0)
+		{
+			for (int i = 0; i < m_excludes.length; i++)
+			{
+				if (m_excludes[i].getAD_Table_ID() == AD_Table_ID
+					&& m_excludes[i].isSOTrx() == isSOTrx)
+					return true;
+			}
+		}
+		return false;
+	}	//	excludeTableEntry
+
+	private void loadExcludes() {
 		if (m_excludes == null)
 		{
 			final String whereClause = X_M_AttributeSetExclude.COLUMNNAME_M_AttributeSet_ID+"=?";
@@ -227,19 +253,7 @@ public class MAttributeSet extends X_M_AttributeSet
 			m_excludes = new X_M_AttributeSetExclude[list.size ()];
 			list.toArray (m_excludes);
 		}
-		//	Find it
-		if (m_excludes != null && m_excludes.length > 0)
-		{
-			MColumn column = MColumn.get(getCtx(), AD_Column_ID);
-			for (int i = 0; i < m_excludes.length; i++)
-			{
-				if (m_excludes[i].getAD_Table_ID() == column.getAD_Table_ID()
-					&& m_excludes[i].isSOTrx() == isSOTrx)
-					return true;
-			}
-		}
-		return false;
-	}	//	excludeEntry
+	}
 	
 	/**
 	 * 	Exclude Lot creation

@@ -260,7 +260,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InventoryLine"));
 			return false;
 		}
-		if (newRecord && m_isManualEntry)
+		if (m_isManualEntry)
 		{
 			//	Product requires ASI
 			if (getM_AttributeSetInstance_ID() == 0)
@@ -268,11 +268,13 @@ public class MInventoryLine extends X_M_InventoryLine
 				MProduct product = MProduct.get(getCtx(), getM_Product_ID());
 				if (product != null && product.isASIMandatory(isSOTrx()))
 				{
-					log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_M_AttributeSetInstance_ID));
-					return false;
+					if (! product.getAttributeSet().excludeTableEntry(MInventoryLine.Table_ID, isSOTrx())) {
+						log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_M_AttributeSetInstance_ID));
+						return false;
+					}
 				}
 			}	//	No ASI
-		}	//	new or manual
+		}	//	manual
 		
 		//	Set Line No
 		if (getLine() == 0)
@@ -423,12 +425,10 @@ public class MInventoryLine extends X_M_InventoryLine
 	 * @return true if is internal use inventory
 	 */
 	public boolean isInternalUseInventory() {
-		/* TODO: need to add M_Inventory.IsInternalUseInventory flag
-			see FR [ 1879029 ] Added IsInternalUseInventory flag to M_Inventory table
-		MInventory parent = getParent();
-		return parent != null && parent.isInternalUseInventory();
-		*/
-		return getQtyInternalUse().signum() != 0;
+		//  IDEMPIERE-675
+		MDocType dt = MDocType.get(getCtx(), getParent().getC_DocType_ID());
+		String docSubTypeInv = dt.getDocSubTypeInv();
+		return (MDocType.DOCSUBTYPEINV_InternalUseInventory.equals(docSubTypeInv));
 	}
 	
 	/**

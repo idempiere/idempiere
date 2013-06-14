@@ -211,9 +211,11 @@ public class MMovementLine extends X_M_MovementLine
 		//      Mandatory Instance
 		MProduct product = getProduct();
 		if (getM_AttributeSetInstance_ID() == 0) {
-			if (product != null && product.isASIMandatory(false)) {
-				log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_M_AttributeSetInstance_ID));
-				return false;
+			if (product != null && product.isASIMandatory(true)) {
+				if (! product.getAttributeSet().excludeTableEntry(MMovementLine.Table_ID, true /*outgoing*/)) {
+					log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_M_AttributeSetInstance_ID));
+					return false;
+				}
 			}
 		}
 		if (getM_AttributeSetInstanceTo_ID() == 0)
@@ -225,10 +227,12 @@ public class MMovementLine extends X_M_MovementLine
 					setM_AttributeSetInstanceTo_ID(getM_AttributeSetInstance_ID());
 			}
 			
-			if (product != null && product.isASIMandatory(true) && getM_AttributeSetInstanceTo_ID() == 0)
+			if (product != null && product.isASIMandatory(false) && getM_AttributeSetInstanceTo_ID() == 0)
 			{
-				log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_M_AttributeSetInstanceTo_ID));
-				return false;
+				if (! product.getAttributeSet().excludeTableEntry(MMovementLine.Table_ID, false /*incoming*/)) {
+					log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_M_AttributeSetInstanceTo_ID));
+					return false;
+				}
 			}
 		}       //      ASI
 
