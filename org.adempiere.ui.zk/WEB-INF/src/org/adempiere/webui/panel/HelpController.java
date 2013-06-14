@@ -171,6 +171,8 @@ public class HelpController
     	sb.append("<html>\n<body>\n<div class=\"help-content\">\n");
     	    	
     	String ctxHelpMsg = getCtxHelpMsgList(ctxType, recordId);
+    	String helpMsg, nameMsg, descMsg;
+    	
     	if (ctxHelpMsg.length() > 0)
 	    	sb.append(stripHtml(ctxHelpMsg, false) + "<br>\n");
     	else
@@ -180,58 +182,145 @@ public class HelpController
     		if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Tab))
         	{
         		MTab tab = new MTab(Env.getCtx(), recordId, null);
-    			if (tab != null && tab.getName() != null && tab.getName().length() != 0)
-    			{
-    				sb.append("<br><br>\n<b>" + tab.getName() + "</b>");
-    				
-    				if (tab.getDescription() != null && tab.getDescription().length() != 0)
-    					sb.append("<br><br>\n<i>" + tab.getDescription() + "</i>");
-    				
-    				if (tab.getHelp() != null && tab.getHelp().length() != 0)
-    					sb.append("<br><br>\n" + tab.getHelp());
-    			}
+        		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Tab")) {
+
+					nameMsg = tab.get_Translation("Name");
+					if (tab != null && nameMsg != null && nameMsg.length() != 0)
+						sb.append("<br><br>\n<b>" + nameMsg + "</b>");
+
+					descMsg = tab.get_Translation("Description");
+					if (descMsg != null && descMsg.length() != 0)
+						sb.append("<br><br>\n<i>" + descMsg + "</i>");
+
+					helpMsg = tab.get_Translation("Help");
+					if (helpMsg != null && helpMsg.length() != 0)
+						sb.append("<br><br>\n" + helpMsg);
+
+				}
+
+				else {
+					if (tab != null && tab.getName() != null
+							&& tab.getName().length() != 0) {
+						sb.append("<br><br>\n<b>" + tab.getName() + "</b>");
+
+						if (tab.getDescription() != null
+								&& tab.getDescription().length() != 0)
+							sb.append("<br><br>\n<i>" + tab.getDescription()
+									+ "</i>");
+
+						if (tab.getHelp() != null
+								&& tab.getHelp().length() != 0)
+							sb.append("<br><br>\n" + tab.getHelp());
+					}
+				}
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Process))
         	{
         		MProcess process = new MProcess(Env.getCtx(), recordId, null);
-    			if (process != null && process.getName() != null && process.getName().length() != 0)
-    			{
-    				sb.append("<br><br>\n<b>" + process.getName() + "</b>");
-    				
-    				if (process.getDescription() != null && process.getDescription().length() != 0)
-    					sb.append("<br><br>\n<i>" + process.getDescription() + "</i>");
-    				
-    				if (process.getHelp() != null && process.getHelp().length() != 0)
-    					sb.append("<br><br>\n" + process.getHelp());
-    			}
+        		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Process")) {
+
+					nameMsg = process.get_Translation("Name");
+					if (process != null && nameMsg != null
+							&& nameMsg.length() != 0)
+						sb.append("<br><br>\n<b>" + nameMsg + "</b>");
+
+					descMsg = process.get_Translation("Description");
+					if (descMsg != null && descMsg.length() != 0)
+						sb.append("<br><br>\n<i>" + descMsg + "</i>");
+
+					helpMsg = process.get_Translation("Help");
+					if (helpMsg != null && helpMsg.length() != 0)
+						sb.append("<br><br>\n" + helpMsg);
+
+				} else {
+
+					if (process != null && process.getName() != null
+							&& process.getName().length() != 0)
+						sb.append("<br><br>\n<b>" + process.getName() + "</b>");
+
+					if (process.getDescription() != null
+							&& process.getDescription().length() != 0)
+						sb.append("<br><br>\n<i>" + process.getDescription()
+								+ "</i>");
+
+					if (process.getHelp() != null
+							&& process.getHelp().length() != 0)
+						sb.append("<br><br>\n" + process.getHelp());
+
+				}
+
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Form))
         	{
         		MForm form = new MForm(Env.getCtx(), recordId, null);
-    			if (form != null && form.getName() != null && form.getName().length() != 0)
-    			{
-    				sb.append("<br><br>\n<b>" + form.getName() + "</b>");
-    				
-    				if (form.getDescription() != null && form.getDescription().length() != 0)
-    					sb.append("<br><br>\n<i>" + form.getDescription() + "</i>");
-    				
-    				if (form.getHelp() != null && form.getHelp().length() != 0)
-    					sb.append("<br><br>\n" + form.getHelp());
-    			}
+        		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Form")) {
+
+					nameMsg = form.get_Translation("Name");
+
+					if (form != null && nameMsg != null
+							&& nameMsg.length() != 0)
+						sb.append("<br><br>\n<b>" + nameMsg + "</b>");
+
+					descMsg = form.get_Translation("Description");
+					if (descMsg != null && descMsg.length() != 0)
+						sb.append("<br><br>\n<i>" + descMsg + "</i>");
+
+					helpMsg = form.get_Translation("Help");
+					if (helpMsg != null && helpMsg.length() != 0)
+						sb.append("<br><br>\n" + helpMsg);
+
+				} else {
+
+					if (form != null && form.getName() != null
+							&& form.getName().length() != 0) {
+						sb.append("<br><br>\n<b>" + form.getName() + "</b>");
+
+						if (form.getDescription() != null
+								&& form.getDescription().length() != 0)
+							sb.append("<br><br>\n<i>" + form.getDescription()
+									+ "</i>");
+
+						if (form.getHelp() != null
+								&& form.getHelp().length() != 0)
+							sb.append("<br><br>\n" + form.getHelp());
+					}
+
+				}
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Info))
         	{
         		MInfoWindow info = new MInfoWindow(Env.getCtx(), recordId, null);
-    			if (info != null && info.getName() != null && info.getName().length() != 0)
-    			{
-    				sb.append("<br><br>\n<b>" + info.getName() + "</b>");
-    				
-    				if (info.getDescription() != null && info.getDescription().length() != 0)
-    					sb.append("<br><br>\n<i>" + info.getDescription() + "</i>");
-    				
-    				if (info.getHelp() != null && info.getHelp().length() != 0)
-    					sb.append("<br><br>\n" + info.getHelp());
-    			}
+        		if (!Env.getLoginLanguage(Env.getCtx()).isBaseLanguage()) {
+
+					nameMsg = info.get_Translation("Name");
+					if (info != null && nameMsg != null
+							&& nameMsg.length() != 0) {
+						sb.append("<br><br>\n<b>" + nameMsg + "</b>");
+
+						descMsg = info.get_Translation("Description");
+						if (descMsg != null && descMsg.length() != 0)
+							sb.append("<br><br>\n<i>" + descMsg + "</i>");
+
+						helpMsg = info.get_Translation("Help");
+						if (helpMsg != null && helpMsg.length() != 0)
+							sb.append("<br><br>\n" + helpMsg);
+
+					} else {
+						if (info != null && info.getName() != null
+								&& info.getName().length() != 0)
+							sb.append("<br><br>\n<b>" + info.getName() + "</b>");
+
+						if (info.getDescription() != null
+								&& info.getDescription().length() != 0)
+							sb.append("<br><br>\n<i>" + info.getDescription()
+									+ "</i>");
+
+						if (info.getHelp() != null
+								&& info.getHelp().length() != 0)
+							sb.append("<br><br>\n" + info.getHelp());
+
+					}
+				}
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Workflow))
         	{
