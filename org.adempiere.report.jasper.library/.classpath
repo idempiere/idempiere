@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/xalan.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.9.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/barcode4j-2.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-core-asl-1.9.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jasperreports-fonts-4.6.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xalan-2.7.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson-core-2.0.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/barcode4j-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jasperreports-fonts-5.1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-beanutils-1.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-digester-2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jasperreports-4.6.0.jar" sourcepath="lib/jasperreports-4.6.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jasperreports-5.1.2.jar" sourcepath="lib/jasperreports-5.1.2-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jdt-compiler-3.1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
