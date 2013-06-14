@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Grid;
@@ -117,10 +118,11 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	private ListModelTable model = null;
 	private WListbox listbox = new WListbox();
 
-	private final static String HISTORY_DIV_START_TAG = "<div style='width: 100%; height: 100px; border: 1px solid #7F9DB9;'>";
+	private final static String HISTORY_DIV_START_TAG = "<div style='height: 100px; border: 1px solid #7F9DB9;'>";
 	public WWFActivity()
 	{
 		super();
+		LayoutUtils.addSclass("workflow-activity-form", this);
 	}
 
     protected void initForm()

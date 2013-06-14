@@ -28,6 +28,7 @@ import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Grid;
+import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Group;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHead;
@@ -127,6 +128,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 	public WTabEditor()
 	{
 		tabform = new WTabEditorForm(this);
+		LayoutUtils.addSclass("tab-editor-form", tabform);
 	}
 
 	public void initForm() {
@@ -390,31 +392,40 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 	 */
 	private Grid createPropertiesGrid()
 	{
-		Grid gridView = new Grid();
+		Grid gridView = GridFactory.newGridLayout();
 		//
 		Columns columns = new Columns();
 		gridView.appendChild(columns);
     	//
     	Column  column = new Column();
     	columns.appendChild(column);
-    	column.setLabel(Msg.getMsg(Env.getCtx(), "Property"));
-    	column.setWidth("30%");
+    	column.setHflex("min");
     	column.setAlign("right");
 
     	column = new Column();
     	columns.appendChild(column);
-    	column.setWidth("70%");
+    	column.setHflex("1");
 		Rows rows = new Rows();
 		gridView.appendChild(rows);
-
+		
 		Row row = null;
+		
+		row = new Row();
+		Group group = new Group(Msg.getMsg(Env.getCtx(), "Property"));
+		Cell cell = (Cell) group.getFirstChild();
+		cell.setSclass("z-group-inner");
+		cell.setColspan(1);
+		group.setOpen(true);
+		rows.appendChild(group);
+		
 		row = new Row();
 		Label labelName =  new Label(Msg.getElement(Env.getCtx(), MField.COLUMNNAME_Name));
 		editorName = new WStringEditor(MField.COLUMNNAME_Name, false, true, false, 0, 0, null, null);
-		((WStringEditor) editorName).getComponent().setCols(30);
+		((WStringEditor) editorName).getComponent().setHflex("1");
 		row.appendChild(labelName.rightAlign());
 		row.appendChild(editorName.getComponent());
 		// editorName.addValueChangeListener(this);
+		row.setGroup(group);
 		rows.appendChild(row);
 
 		row = new Row();
@@ -423,6 +434,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		row.appendChild(labelIsDisplayed.rightAlign());
 		row.appendChild(editorIsDisplayed.getComponent());
 		// editorIsDisplayed.addValueChangeListener(this);
+		row.setGroup(group);
 		rows.appendChild(row);
 
 		row = new Row();
@@ -431,15 +443,18 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		row.appendChild(labelSeqNo.rightAlign());
 		row.appendChild(editorSeqNo.getComponent());
 		// editorSeqNo.addValueChangeListener(this);
+		row.setGroup(group);
 		rows.appendChild(row);
 
 		row = new Row();
 		Label labelAD_FieldGroup_ID =  new Label(Msg.getElement(Env.getCtx(), MField.COLUMNNAME_AD_FieldGroup_ID));
 		MLookup lookup = MLookupFactory.get (Env.getCtx(), tabform.getWindowNo(), 0, COLUMN_AD_FIELD_AD_FIELDGROUP_ID, DisplayType.TableDir);
 		editorAD_FieldGroup_ID = new WTableDirEditor(MField.COLUMNNAME_AD_FieldGroup_ID, false, false, true, lookup);
+		((WTableDirEditor) editorAD_FieldGroup_ID).getComponent().setHflex("1");
 		row.appendChild(labelAD_FieldGroup_ID.rightAlign());
 		row.appendChild(editorAD_FieldGroup_ID.getComponent());
 		editorAD_FieldGroup_ID.addValueChangeListener(this);
+		row.setGroup(group);
 		rows.appendChild(row);
 
 		row = new Row();
@@ -448,6 +463,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		row.appendChild(labelXPosition.rightAlign());
 		row.appendChild(editorXPosition.getComponent());
 		editorXPosition.addValueChangeListener(this);
+		row.setGroup(group);
 		rows.appendChild(row);
 
 		row = new Row();
@@ -456,6 +472,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		row.appendChild(labelColumnSpan.rightAlign());
 		row.appendChild(editorColumnSpan.getComponent());
 		editorColumnSpan.addValueChangeListener(this);
+		row.setGroup(group);
 		rows.appendChild(row);
 
 		row = new Row();
@@ -464,6 +481,19 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		row.appendChild(labelNumLines.rightAlign());
 		row.appendChild(editorNumLines.getComponent());
 		editorNumLines.addValueChangeListener(this);
+		row.setGroup(group);
+		rows.appendChild(row);
+		
+		row = new Row();
+		Separator esep = new Separator("horizontal");
+		esep.setSpacing("10px");
+		row.appendCellChild(esep, 2);
+		row.setGroup(group);
+		rows.appendChild(row);
+		
+		row = new Row();
+		row.appendCellChild(confirmPanel, 2);
+		row.setGroup(group);
 		rows.appendChild(row);
 
 	    return gridView;
@@ -487,16 +517,10 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 
 		Grid propGrid = createPropertiesGrid();
 
-		Vlayout eastVLayout = new Vlayout();
-		eastVLayout.appendChild(propGrid);
-		Separator esep = new Separator("horizontal");
-		esep.setSpacing("10px");
-		eastVLayout.appendChild(esep);
-		eastVLayout.appendChild(confirmPanel);
-
 		East east = new East();
+		LayoutUtils.addSclass("tab-editor-form-east-panel", east);
 		mainLayout.appendChild(east);
-		east.appendChild(eastVLayout);
+		east.appendChild(propGrid);
 		east.setWidth("320px");
 
 		ListHead visibleHead = new ListHead();
@@ -528,10 +552,12 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		centerVLayout.setStyle("overflow:auto");
 
 		Center center = new Center();
+		LayoutUtils.addSclass("tab-editor-form-center-panel", east);
 		mainLayout.appendChild(center);
 		center.appendChild(centerVLayout);
 
 		West west = new West();
+		LayoutUtils.addSclass("tab-editor-form-west-panel", east);
 		mainLayout.appendChild(west);
 		west.appendChild(westVLayout);
 		west.setCollapsible(true);

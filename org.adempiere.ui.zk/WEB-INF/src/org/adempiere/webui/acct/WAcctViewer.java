@@ -83,6 +83,7 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
+import org.zkoss.zul.Space;
 
 /**
  *  Account Viewer : Based on class AcctViewer
@@ -264,6 +265,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		column.setWidth("30%");
 		columns.appendChild(column);
 		column = new Column();
+		column.setWidth("60%");
 		columns.appendChild(column);
 		
 		Rows rows = grid.newRows();
@@ -275,6 +277,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		Row row = rows.newRow();
 		row.appendChild(lacctSchema);
 		row.appendChild(selAcctSchema);
+		selAcctSchema.setHflex("1");
 
 		selDocument.setLabel(Msg.getMsg(Env.getCtx(), "SelectDocument"));
 		selDocument.addEventListener(Events.ON_CHECK, this);
@@ -298,6 +301,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		row = rows.newRow();
 		row.appendChild(lpostingType);
 		row.appendChild(selPostingType);
+		selPostingType.setHflex("1");
 
 			// Date
 
@@ -321,6 +325,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		row = rows.newRow();
 		row.appendChild(lOrg);
 		row.appendChild(selOrg);
+		selOrg.setHflex("1");
 
 			// Account
 
@@ -383,6 +388,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		displayPanel.appendChild(displayDocumentInfo);
 		displayPanel.appendChild(displaySourceAmt);
 		displayPanel.appendChild(displayQty);
+		displayPanel.appendChild(new Space());
 		
 		grid = new Grid();
 		grid.setSclass("grid-layout");
@@ -402,30 +408,35 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		lSort.setValue(Msg.getMsg(Env.getCtx(), "SortBy"));
 		lGroup.setValue(Msg.getMsg(Env.getCtx(), "GroupBy"));
 		row.appendChild(lSort);
+		lSort.setHflex("1");
 		row.appendChild(lGroup);
 
 		row = rows.newRow();		
 		sortBy1.setMold("select");
 		sortBy1.setRows(1);
 		row.appendChild(sortBy1);
+		sortBy1.setHflex("1");
 		row.appendChild(group1);
 
 		row = rows.newRow();
 		sortBy2.setMold("select");
 		sortBy2.setRows(1);
 		row.appendChild(sortBy2);
+		sortBy2.setHflex("1");
 		row.appendChild(group2);
 
 		row = rows.newRow();
 		sortBy3.setMold("select");
 		sortBy3.setRows(1);
 		row.appendChild(sortBy3);
+		sortBy3.setHflex("1");
 		row.appendChild(group3);
 
 		row = rows.newRow();
 		sortBy4.setMold("select");
 		sortBy4.setRows(1);
 		row.appendChild(sortBy4);
+		sortBy4.setHflex("1");
 		row.appendChild(group4);
 
 		//"images/InfoAccount16.png"

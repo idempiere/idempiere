@@ -57,9 +57,10 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Separator;
-import org.zkoss.zul.Vlayout;
+import org.zkoss.zul.South;
 
 /**
  * 
@@ -89,7 +90,9 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		setTitle(Msg.getMsg(Env.getCtx(), "RequestNew"));
 		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		setWidth("400px");
+		this.setSclass("popup-dialog");
 		this.setBorder("normal");
+		this.setShadow(true);
 		this.setClosable(true);
 		
 		boolean readOnly = !MRole.getDefault().canUpdate(
@@ -188,17 +191,24 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		row.setStyle("padding: 0px 4px 4px 6px");
 		row.appendChild(attachmentBox);
 		
-		Vlayout vlayout = new Vlayout();
-		appendChild(vlayout);
+		Borderlayout borderlayout = new Borderlayout();
+		this.appendChild(borderlayout);
+		borderlayout.setHflex("1");
+		borderlayout.setVflex("min");
 		
-		vlayout.appendChild(grid);
-		grid.setVflex("min");
+		Center centerPane = new Center();
+		centerPane.setSclass("dialog-content");
+		centerPane.setAutoscroll(true);
+		borderlayout.appendChild(centerPane);
+		
+		centerPane.appendChild(grid);
+		grid.setVflex("1");
 		grid.setHflex("1");
-		
-		Separator separator = new Separator();
-		separator.setOrient("horizontal");
-		vlayout.appendChild(separator);
-		vlayout.appendChild(confirmPanel);
+
+		South southPane = new South();
+		southPane.setSclass("dialog-footer");
+		borderlayout.appendChild(southPane);
+		southPane.appendChild(confirmPanel);
 		
 		Button btn = new Button();
 		btn.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));

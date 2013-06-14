@@ -1605,3 +1605,59 @@ table.z-vbox > tbody > tr > td > table {
 }
 .about-main-panel-links {
 }
+
+<%-- busy dialog --%>
+.busy-dialog {
+	cursor: wait;
+	background-color: transparent;
+}
+
+.busy-dialog-box {
+	background-color: transparent;
+	padding: 9px; 
+}
+
+.busy-dialog-img {
+	height: 16px; 
+	width: 16px;
+	background: transparent no-repeat center;
+	background-image: url(../images/progress3.gif) !important;
+	display: -moz-inline-box; 
+	vertical-align: top; 
+	display: inline-block;
+}
+
+.busy-dialog-label {
+	color: #363636;
+}
+
+<%-- tab editor --%>
+.tab-editor-form {
+}
+.tab-editor-form-east-panel {
+}
+.tab-editor-form-center-panel {
+}
+.tab-editor-form-west-panel {
+}
+
+<%-- workflow activity --%>
+.workflow-activity-form {
+}
+
+<%-- find window --%>
+.find-window {
+}
+.find-window-simple {
+}
+.find-window-advanced {
+}
+
+.find-window-simple .z-south .z-hbox, .find-window-advanced .z-south .z-hbox {
+	margin-top: 5px;
+}
+
+.find-window-simple .img-btn, .find-window-simple .img-btn.btn-ok.z-button-os, .find-window-simple .img-btn.btn-cancel.z-button-os,
+.find-window-advanced .img-btn, .find-window-advanced .img-btn.btn-ok.z-button-os, .find-window-advanced .img-btn.btn-cancel.z-button-os {
+	margin: 0 2px;
+}
