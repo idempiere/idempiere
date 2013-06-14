@@ -130,6 +130,8 @@ public class MInfoWindow extends X_AD_InfoWindow
 
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (!success)
+			return success;
 		if (newRecord)	//	Add to all automatic roles
 		{
 			MRole[] roles = MRole.getOf(getCtx(), "IsManual='N'");

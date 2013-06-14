@@ -191,12 +191,14 @@ public class MClientShare extends X_AD_ClientShare
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		if (isActive())
 		{
 			setDataToLevel();
 			listChildRecords();
 		}
-		return true;
+		return success;
 	}	//	afterSave
 	
 	/**

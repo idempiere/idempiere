@@ -32,8 +32,7 @@ public class MRevenueRecognitionPlan extends X_C_RevenueRecognition_Plan
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6748195415080148091L;
-
+	private static final long serialVersionUID = -8437258098744762898L;
 
 	/**
 	 * 	Standard Constructor
@@ -74,33 +73,35 @@ public class MRevenueRecognitionPlan extends X_C_RevenueRecognition_Plan
 	 *	@param success success
 	 *	@return success
 	 */
-	protected boolean afterSave (boolean newRecord, boolean success)
-	{
-		if (newRecord)
-		{
-			MRevenueRecognition rr = new MRevenueRecognition(getCtx(), getC_RevenueRecognition_ID(), get_TrxName());
-			if (rr.isTimeBased())
-			{
-				/**	Get InvoiveQty
-				SELECT	QtyInvoiced, M_Product_ID 
-				  INTO	v_Qty, v_M_Product_ID
-				FROM	C_InvoiceLine 
-				WHERE 	C_InvoiceLine_ID=:new.C_InvoiceLine_ID;
-				--	Insert
-				AD_Sequence_Next ('C_ServiceLevel', :new.AD_Client_ID, v_NextNo);
-				INSERT INTO C_ServiceLevel
-					(C_ServiceLevel_ID, C_RevenueRecognition_Plan_ID,
-					AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,
-					M_Product_ID, Description, ServiceLevelInvoiced, ServiceLevelProvided,
-					Processing,Processed)
-				VALUES
-					(v_NextNo, :new.C_RevenueRecognition_Plan_ID,
-					:new.AD_Client_ID,:new.AD_Org_ID,'Y',SysDate,:new.CreatedBy,SysDate,:new.UpdatedBy,
-					v_M_Product_ID, NULL, v_Qty, 0,
-					'N', 'N');
-				**/
-			}
-		}
-		return success;
-	}	//	afterSave
+//	protected boolean afterSave (boolean newRecord, boolean success)
+//	{
+//		if (!success)
+//			return success;
+//		if (newRecord)
+//		{
+//			MRevenueRecognition rr = new MRevenueRecognition(getCtx(), getC_RevenueRecognition_ID(), get_TrxName());
+//			if (rr.isTimeBased())
+//			{
+//				/**	Get InvoiveQty
+//				SELECT	QtyInvoiced, M_Product_ID 
+//				  INTO	v_Qty, v_M_Product_ID
+//				FROM	C_InvoiceLine 
+//				WHERE 	C_InvoiceLine_ID=:new.C_InvoiceLine_ID;
+//				--	Insert
+//				AD_Sequence_Next ('C_ServiceLevel', :new.AD_Client_ID, v_NextNo);
+//				INSERT INTO C_ServiceLevel
+//					(C_ServiceLevel_ID, C_RevenueRecognition_Plan_ID,
+//					AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,
+//					M_Product_ID, Description, ServiceLevelInvoiced, ServiceLevelProvided,
+//					Processing,Processed)
+//				VALUES
+//					(v_NextNo, :new.C_RevenueRecognition_Plan_ID,
+//					:new.AD_Client_ID,:new.AD_Org_ID,'Y',SysDate,:new.CreatedBy,SysDate,:new.UpdatedBy,
+//					v_M_Product_ID, NULL, v_Qty, 0,
+//					'N', 'N');
+//				**/
+//			}
+//		}
+//		return success;
+//	}	//	afterSave
 }	//	MRevenueRecognitionPlan

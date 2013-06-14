@@ -318,6 +318,8 @@ public class MLanguage extends X_AD_Language
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		int no = TranslationTable.getActiveLanguages(true);
 		if (log.isLoggable(Level.FINE)) log.fine("Active Languages=" + no);
 		return true;

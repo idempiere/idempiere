@@ -208,6 +208,8 @@ public class M_Element extends X_AD_Element
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		//	Update Columns, Fields, Parameters, Print Info
 		if (!newRecord)
 		{

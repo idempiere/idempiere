@@ -345,6 +345,8 @@ public class MColumn extends X_AD_Column
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		//	Update Fields
 		if (!newRecord)
 		{

@@ -363,6 +363,8 @@ public final class MRole extends X_AD_Role
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		if (newRecord && success)
 		{
 			//	Add Role to SuperUser

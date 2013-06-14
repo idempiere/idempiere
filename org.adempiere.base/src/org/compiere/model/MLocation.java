@@ -675,6 +675,8 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		//	Value/Name change in Account
 		if (!newRecord
 			&& ("Y".equals(Env.getContext(getCtx(), "$Element_LF")) 

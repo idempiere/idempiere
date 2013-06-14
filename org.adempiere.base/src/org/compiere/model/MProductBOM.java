@@ -157,6 +157,8 @@ public class MProductBOM extends X_M_Product_BOM
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		//	Product Line was changed
 		if (newRecord || is_ValueChanged("M_ProductBOM_ID"))
 		{

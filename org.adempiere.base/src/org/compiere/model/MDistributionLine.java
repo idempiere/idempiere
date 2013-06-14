@@ -270,6 +270,8 @@ public class MDistributionLine extends X_GL_DistributionLine
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		getParent();
 		m_parent.validate();
 		m_parent.saveEx();

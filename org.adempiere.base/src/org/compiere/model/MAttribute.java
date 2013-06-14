@@ -241,6 +241,8 @@ public class MAttribute extends X_M_Attribute
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		//	Changed to Instance Attribute
 		if (!newRecord && is_ValueChanged("IsInstanceAttribute") && isInstanceAttribute())
 		{

@@ -118,6 +118,8 @@ public class MWindow extends X_AD_Window
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		if (newRecord)	//	Add to all automatic roles
 		{
 			MRole[] roles = MRole.getOf(getCtx(), "IsManual='N'");

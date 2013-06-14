@@ -153,6 +153,8 @@ public class MTask extends X_AD_Task
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("Success=" + success);
+		if (!success)
+			return success;
 		if (! newRecord)
 		{
 			//	Menu/Workflow

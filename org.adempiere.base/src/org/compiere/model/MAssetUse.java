@@ -41,7 +41,8 @@ public class MAssetUse extends X_A_Asset_Use
 protected boolean afterSave (boolean newRecord,boolean success)
 {
 	log.info ("afterSave");
-	
+	if (!success)
+		return success;
 	int		p_A_Asset_ID = 0;
 	int		total_unitsused = 0;	
 	p_A_Asset_ID = getA_Asset_ID();
@@ -64,7 +65,7 @@ protected boolean afterSave (boolean newRecord,boolean success)
 	change.setUseUnits(getUseUnits());
 	change.saveEx();
 	
-	return true;
+	return success;
 	 
 	
 }	//	afterSave

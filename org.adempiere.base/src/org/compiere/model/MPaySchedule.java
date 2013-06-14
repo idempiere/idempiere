@@ -110,6 +110,8 @@ public class MPaySchedule extends X_C_PaySchedule
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		if (newRecord || is_ValueChanged("Percentage") || is_ValueChanged("IsActive"))
 		{
 			log.fine("afterSave");

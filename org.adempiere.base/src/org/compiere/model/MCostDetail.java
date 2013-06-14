@@ -49,7 +49,7 @@ public class MCostDetail extends X_M_CostDetail
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7882724307127281675L;
+	private static final long serialVersionUID = -448632684360931078L;
 
 	/**
 	 * 	Create New Order Cost Detail for Purchase Orders.
@@ -686,19 +686,7 @@ public class MCostDetail extends X_M_CostDetail
 		return !(getDeltaAmt().signum() == 0 
 			&& getDeltaQty().signum() == 0);
 	}	//	isDelta
-	
-	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return true
-	 */
-	protected boolean afterSave (boolean newRecord, boolean success)
-	{
-		return true;
-	}	//	afterSave
-	
+
 	/**
 	 * 	Before Delete
 	 *	@return false if processed

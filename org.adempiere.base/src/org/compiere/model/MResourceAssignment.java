@@ -34,7 +34,7 @@ public class MResourceAssignment extends X_S_ResourceAssignment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3024759545660161137L;
+	private static final long serialVersionUID = 4230793339153210998L;
 
 	/**
 	 * 	Stnadard Constructor
@@ -72,37 +72,39 @@ public class MResourceAssignment extends X_S_ResourceAssignment
 	 *	@param success success
 	 *	@return true
 	 */
-	protected boolean afterSave (boolean newRecord, boolean success)
-	{
-		/*
-		v_Description := :new.Name;
-	IF (:new.Description IS NOT NULL AND LENGTH(:new.Description) > 0) THEN
-		v_Description := v_Description || ' (' || :new.Description || ')';			
-	END IF;
-	
-	-- Update Expense Line
-	UPDATE S_TimeExpenseLine
-	  SET  Description = v_Description,
-		Qty = :new.Qty
-	WHERE S_ResourceAssignment_ID = :new.S_ResourceAssignment_ID
-	  AND (Description <> v_Description OR Qty <> :new.Qty);
-	  
-	-- Update Order Line
-	UPDATE C_OrderLine
-	  SET  Description = v_Description,
-		QtyOrdered = :new.Qty
-	WHERE S_ResourceAssignment_ID = :new.S_ResourceAssignment_ID
-	  AND (Description <> v_Description OR QtyOrdered <> :new.Qty);
-
-	-- Update Invoice Line
-	UPDATE C_InvoiceLine
-	  SET  Description = v_Description,
-		QtyInvoiced = :new.Qty
-	WHERE S_ResourceAssignment_ID = :new.S_ResourceAssignment_ID
-	  AND (Description <> v_Description OR QtyInvoiced <> :new.Qty);
-	  */
-		return success;
-	}	//	afterSave
+//	protected boolean afterSave (boolean newRecord, boolean success)
+//	{
+//		/*
+//		if (!success)
+//		    return success; 
+//		v_Description := :new.Name;
+//	IF (:new.Description IS NOT NULL AND LENGTH(:new.Description) > 0) THEN
+//		v_Description := v_Description || ' (' || :new.Description || ')';			
+//	END IF;
+//	
+//	-- Update Expense Line
+//	UPDATE S_TimeExpenseLine
+//	  SET  Description = v_Description,
+//		Qty = :new.Qty
+//	WHERE S_ResourceAssignment_ID = :new.S_ResourceAssignment_ID
+//	  AND (Description <> v_Description OR Qty <> :new.Qty);
+//	  
+//	-- Update Order Line
+//	UPDATE C_OrderLine
+//	  SET  Description = v_Description,
+//		QtyOrdered = :new.Qty
+//	WHERE S_ResourceAssignment_ID = :new.S_ResourceAssignment_ID
+//	  AND (Description <> v_Description OR QtyOrdered <> :new.Qty);
+//
+//	-- Update Invoice Line
+//	UPDATE C_InvoiceLine
+//	  SET  Description = v_Description,
+//		QtyInvoiced = :new.Qty
+//	WHERE S_ResourceAssignment_ID = :new.S_ResourceAssignment_ID
+//	  AND (Description <> v_Description OR QtyInvoiced <> :new.Qty);
+//	  */
+//		return success;
+//	}	//	afterSave
 	
 	/**
 	 *  String Representation

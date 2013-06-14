@@ -510,6 +510,8 @@ public class MTable extends X_AD_Table
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		//	Sync Table ID
 		MSequence seq = MSequence.get(getCtx(), getTableName(), get_TrxName());
 		if (seq == null || seq.get_ID() == 0)

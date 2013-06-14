@@ -318,6 +318,8 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		updateEntry();
 		return success;
 	}	//	afterSave
@@ -329,6 +331,8 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	 */
 	protected boolean afterDelete (boolean success)
 	{
+		if (!success)
+			return success;
 		updateEntry();
 		return success;
 	}	//	afterDelete
