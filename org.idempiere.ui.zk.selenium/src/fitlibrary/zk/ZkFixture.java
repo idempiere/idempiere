@@ -3,6 +3,7 @@
  */
 package fitlibrary.zk;
 
+import java.io.File;
 import java.util.List;
 
 import org.idempiere.ui.zk.selenium.Widget;
@@ -256,6 +257,21 @@ public class ZkFixture extends SpiderFixture {
 		WebElement element = widget.findElement(webDriver);
 		Actions actions = new Actions(webDriver);
 		actions.contextClick(element).build().perform();
+	}
+	
+	@SimpleAction(wiki = "|''<i>file upload</i>''|xpath, id or other locator|''<i>file path</i>''|path of file|", tooltip = "Uploads file from the given path.")
+	public boolean fileUploadFilePath(String locator, String filePath) throws Exception{
+		if(filePath.equals("")){
+			throw new Exception("file path is not specified.");
+		}
+		File file = new File(filePath);
+		String ext = filePath.substring(filePath.trim().lastIndexOf("."), filePath.length()).toLowerCase();
+		if(!file.exists() || !(ext.endsWith(".jpg") || ext.endsWith(".bmp") || ext.endsWith(".png") || ext.endsWith(".ico"))){
+			throw new Exception("Upload an image of type jpg, bmp, png or ico.");
+		}
+		WebElement fileInput = webDriver.findElement(By.xpath(locator));
+		fileInput.sendKeys(filePath);
+		return true;
 	}
 	
 	/**
