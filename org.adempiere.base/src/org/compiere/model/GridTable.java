@@ -2844,7 +2844,8 @@ public class GridTable extends AbstractTableModel
 		}
 
 		//	update buffer
-		setDataAtRow(row, rowDataDB);
+		if (rowDataDB!=null)
+			setDataAtRow(row, rowDataDB);
 		//	info
 		m_rowData = null;
 		m_changed = false;
