@@ -283,6 +283,9 @@ public abstract class TabbedDesktop extends AbstractDesktop {
    	{
 		Tabpanel tabPanel = new Tabpanel();
     	window.setParent(tabPanel);
+    	Object defer = window.getAttribute(WindowContainer.DEFER_SET_SELECTED_TAB);
+    	if ( defer != null)
+    		tabPanel.setAttribute(WindowContainer.DEFER_SET_SELECTED_TAB, defer);
     	String title = window.getTitle();
     	window.setTitle(null);
     	preOpenNewTab();

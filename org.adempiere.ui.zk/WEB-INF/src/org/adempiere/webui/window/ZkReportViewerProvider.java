@@ -18,6 +18,7 @@ package org.adempiere.webui.window;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.print.ReportEngine;
 import org.compiere.print.ReportViewerProvider;
@@ -37,6 +38,7 @@ public class ZkReportViewerProvider implements ReportViewerProvider {
 				
 		    	viewer.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 		    	viewer.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
+		    	viewer.setAttribute(WindowContainer.DEFER_SET_SELECTED_TAB, Boolean.TRUE);
 		    	SessionManager.getAppDesktop().showWindow(viewer);				
 			}
 		};

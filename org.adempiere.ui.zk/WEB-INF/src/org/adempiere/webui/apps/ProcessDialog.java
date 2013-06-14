@@ -25,6 +25,7 @@ import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
@@ -53,6 +54,7 @@ import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuEcho;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -224,6 +226,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	private BusyDialog progressWindow;
 	private Future<?> future;
 	private ProcessDialogRunnable processDialogRunnable;
+	private Mask mask;
 
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
 	private static final String ON_COMPLETE = "onComplete";
@@ -436,13 +439,33 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		showBusyDialog();
 	}
 
-	private void showBusyDialog() {
-		Clients.showBusy(this, " ");
+	private void showBusyDialog() {		
 		progressWindow = new BusyDialog();
 		progressWindow.setStyle("position: absolute;");
+		this.appendChild(progressWindow);
+		showBusyMask(progressWindow);
 		LayoutUtils.openOverlappedWindow(this, progressWindow, "middle_center");
 	}
 
+	private Div getMask() {
+		if (mask == null) {
+			mask = new Mask();
+		}
+		return mask;
+	}
+	
+	public void showBusyMask(Window window) {
+		getParent().appendChild(getMask());
+		StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+		script.append(getParent().getUuid()).append("');");
+		if (window != null) {
+			script.append("var d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
+		} else {
+			script.append("w.busy=true;");
+		}
+		Clients.response(new AuScript(script.toString()));
+	}
+	
 	public void unlockUI(ProcessInfo pi) {
 		if (!m_isLocked || Executions.getCurrent() == null) return;
 		
@@ -451,8 +474,17 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		updateUI(pi);
 	}
 
+	public void hideBusyMask() {
+		if (mask != null && mask.getParent() != null) {
+			mask.detach();
+			StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+			script.append(getParent().getUuid()).append("');w.busy=false;");
+			Clients.response(new AuScript(script.toString()));
+		}
+	}
+	
 	private void hideBusyDialog() {
-		Clients.clearBusy(this);
+		hideBusyMask();
 		if (progressWindow != null) {
 			progressWindow.dispose();
 			progressWindow = null;

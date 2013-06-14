@@ -34,7 +34,11 @@ import org.zkoss.zk.ui.event.SwipeEvent;
  */
 public class WindowContainer extends AbstractUIPart 
 {
+	private static final String ON_DEFER_SET_SELECTED_TAB = "onDeferSetSelectedTab";
+
 	public static final String ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT = "onWindowContainerSelectionChanged";
+	
+	public static final String DEFER_SET_SELECTED_TAB = "deferSetSelectedTab";
 	
 	private static final int MAX_TITLE_LENGTH = 30;
     
@@ -62,6 +66,14 @@ public class WindowContainer extends AbstractUIPart
         tabbox = new Tabbox();
         tabbox.setSclass("desktop-tabbox");
         tabbox.setId("desktop_tabbox");
+        tabbox.addEventListener(ON_DEFER_SET_SELECTED_TAB, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				Tab tab = (Tab) event.getData();
+				if (tab != null)
+					setSelectedTab(tab);
+			}
+		});
         
         Tabpanels tabpanels = new Tabpanels();
         tabpanels.setVflex("1");
@@ -179,7 +191,13 @@ public class WindowContainer extends AbstractUIPart
         }
 
         if (enable)
-        	setSelectedTab(tab);
+        {
+        	Boolean b = (Boolean) comp.getAttribute(DEFER_SET_SELECTED_TAB);
+        	if (b != null && b.booleanValue())
+        		Events.echoEvent(ON_DEFER_SET_SELECTED_TAB, tabbox, tab);
+        	else
+        		setSelectedTab(tab);
+        }
         
         return tab;
     }
