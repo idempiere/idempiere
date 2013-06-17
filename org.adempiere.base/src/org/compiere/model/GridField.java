@@ -92,7 +92,7 @@ public class GridField
 		//  Set Attributes
 		loadLookup();
 		setError(false);
-	}   //  MField
+	}   //  GridField
 
 	/** Value Object                */
 	private GridFieldVO        m_vo;
@@ -106,7 +106,7 @@ public class GridField
 	 */
 	protected void dispose()
 	{
-	//	log.fine( "MField.dispose = " + m_vo.ColumnName);
+	//	log.fine( "GridField.dispose = " + m_vo.ColumnName);
 		m_propertyChangeListeners = null;
 		if (m_lookup != null)
 			m_lookup.dispose();
@@ -1090,6 +1090,36 @@ public class GridField
 	 *	@return true if allow copy
 	 */
 	public boolean isAllowCopy() {
+		/* IDEMPIERE-67
+		 * Extending MColumn.isStandardColumn
+		 * Force some additional columns to forbid copy from the UI
+		 */
+		String colname = getColumnName();
+		if (   colname.equals("C_CashLine_ID")
+			|| colname.equals("C_Location_ID")
+			|| colname.equals("C_Payment_ID")
+			|| colname.equals("DocAction")
+			|| colname.equals("DocStatus")
+			|| colname.equals("DocumentNo")
+			|| colname.equals("EntityType")
+			|| colname.equals("GrandTotal")
+			|| colname.equals("IsAllocated")
+			|| colname.equals("IsApproved")
+			|| colname.equals("IsDelivered")
+			|| colname.equals("IsGenerated")
+			|| colname.equals("IsInvoiced")
+			|| colname.equals("IsPaid")
+			|| colname.equals("IsReconciled")
+			|| colname.equals("IsSelfService")
+			|| colname.equals("Line")
+			|| colname.equals("Posted")
+			|| colname.equals("Processed")
+			|| colname.equals("ProcessedOn")
+			|| colname.equals("TotalCr")
+			|| colname.equals("TotalDr")
+			|| colname.equals("TotalLines")
+			|| colname.startsWith("Ref_"))
+			return false;
 		return m_vo.IsAllowCopy;
 	}
 	/**
@@ -1693,7 +1723,7 @@ public class GridField
 	 */
 	public String toStringX()
 	{
-		StringBuilder sb = new StringBuilder("MField[");
+		StringBuilder sb = new StringBuilder("GridField[");
 		sb.append(m_vo.ColumnName).append("=").append(m_value)
 			.append(",DisplayType=").append(getDisplayType())
 			.append("]");
@@ -2011,4 +2041,4 @@ public class GridField
 		
 	}
 
-}   //  MField
+}   //  GridField

@@ -119,7 +119,7 @@ public class ColumnEncryption extends SvrProcess {
 		int dt = column.getAD_Reference_ID();
 
 		// Can it be enabled?
-		if (column.isKey() || column.isParent() || column.isStandardColumn()
+		if (column.isKey() || column.isParent() || column.isStandardColumn() || column.isUUIDColumn()
 				|| column.isVirtualColumn() || column.isIdentifier()
 				|| column.isTranslated() || DisplayType.isLookup(dt)
 				|| DisplayType.isLOB(dt) || DisplayType.isDate(dt) || DisplayType.isNumeric(dt)				

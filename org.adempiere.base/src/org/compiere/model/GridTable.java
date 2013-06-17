@@ -533,7 +533,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 *	Get Column at index
 	 *  @param index index
-	 *  @return MField
+	 *  @return GridField
 	 */
 	protected GridField getField (int index)
 	{
@@ -545,7 +545,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 *	Return Columns with Identifier (ColumnName)
 	 *  @param identifier column name
-	 *  @return MField
+	 *  @return GridField
 	 */
 	protected GridField getField (String identifier)
 	{
@@ -564,7 +564,7 @@ public class GridTable extends AbstractTableModel
 
 	/**
 	 *  Get all Fields
-	 *  @return MFields
+	 *  @return GridFields
 	 */
 	public GridField[] getFields ()
 	{
@@ -791,7 +791,7 @@ public class GridTable extends AbstractTableModel
 	 */
 	private void dispose()
 	{
-		//  MFields
+		//  GridFields
 		for (int i = 0; i < m_fields.size(); i++)
 			((GridField)m_fields.get(i)).dispose();
 		m_fields.clear();
@@ -1183,7 +1183,7 @@ public class GridTable extends AbstractTableModel
 	}	//	setChanged
 
 	/**
-	 * 	Set Value in data and update MField.
+	 * 	Set Value in data and update GridField.
 	 *  (called directly or from JTable.editingStopped())
 	 *
 	 *  @param  value value to assign to cell
@@ -1196,7 +1196,7 @@ public class GridTable extends AbstractTableModel
 	}	//	setValueAt
 
 	/**
-	 * 	Set Value in data and update MField.
+	 * 	Set Value in data and update GridField.
 	 *  (called directly or from JTable.editingStopped())
 	 *
 	 *  @param  value value to assign to cell
@@ -1261,7 +1261,7 @@ public class GridTable extends AbstractTableModel
 		setDataAtRow(row, rowData);
 		//  update Table
 		fireTableCellUpdated(row, col);
-		//  update MField
+		//  update GridField
 		GridField field = getField(col);
 		field.setValue(value, m_inserting);
 		//  inform
@@ -2530,18 +2530,28 @@ public class GridTable extends AbstractTableModel
 		//	fill data
 		if (copyCurrent)
 		{
+			boolean hasDocTypeTargetField = (getField("C_DocTypeTarget_ID") != null);
 			Object[] origData = getDataAtRow(currentRow);
 			for (int i = 0; i < size; i++)
 			{
 				GridField field = (GridField)m_fields.get(i);
+				MColumn column = null;
+				if (field.getAD_Column_ID() > 0)
+					column = MColumn.get(m_ctx, field.getAD_Column_ID());
 				if (field.isVirtualColumn())
 					;
-				else if (field.isAllowCopy())
-					rowData[i] = origData[i];
-				else {
+				else if (   field.isKey()		//	KeyColumn
+						  || (column != null && column.isUUIDColumn()) // IDEMPIERE-67
+						  || (column != null && column.isStandardColumn() && !column.getColumnName().equals("AD_Org_ID")) // AD_Org_ID can be copied
+						  // Bug [ 1807947 ]
+						  || (hasDocTypeTargetField && field.getColumnName().equals("C_DocType_ID"))
+						  || ! field.isAllowCopy())
+				{
 					rowData[i] = field.getDefault();
 					field.setValue(rowData[i], m_inserting);
 				}
+				else
+					rowData[i] = origData[i];
 			}
 		}
 		else	//	new
@@ -3124,7 +3134,7 @@ public class GridTable extends AbstractTableModel
 		String columnName = null;
 		int displayType = 0;
 
-		//	Types see also MField.createDefault
+		//	Types see also GridField.createDefault
 		try
 		{
 			//	get row data
