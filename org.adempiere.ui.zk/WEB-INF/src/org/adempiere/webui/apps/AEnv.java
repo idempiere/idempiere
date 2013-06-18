@@ -369,52 +369,6 @@ public final class AEnv
 		CacheMgt.get().reset(tableName, Record_ID);
 	}   //  cacheReset
 
-	/**
-	 *  Validate permissions to access Info queries on the view menu
-	*   @author kstan_79
-	*   @return true if access is allowed
-	*/
-
-	public static boolean canAccessInfo(String infoWindowName)
-	{
-		boolean result=false;
-		int roleid= Env.getAD_Role_ID(Env.getCtx());
-		String sqlRolePermission="Select COUNT(AD_ROLE_ID) AS ROWCOUNT FROM AD_ROLE WHERE AD_ROLE_ID=" + roleid
-	                              + " AND ALLOW_INFO_" + infoWindowName + "='Y'";
-
-		log.config(sqlRolePermission);
-		PreparedStatement prolestmt = null;
-		ResultSet rs = null;
-		try
-		{
-			prolestmt = DB.prepareStatement (sqlRolePermission, null);
-
-			rs = prolestmt.executeQuery ();
-
-			rs.next();
-
-			if (rs.getInt("ROWCOUNT")>0)
-			{
-				result=true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, "(1)", e);
-		}
-		finally
-		{
-			DB.close(rs, prolestmt);
-		}
-
-		return result;
-
-	} // 	canAccessInfo
-
     public static void actionRefresh(Lookup lookup, Object value, boolean mandatory, boolean shortList) // IDEMPIERE 90
     {
         if (lookup == null)
