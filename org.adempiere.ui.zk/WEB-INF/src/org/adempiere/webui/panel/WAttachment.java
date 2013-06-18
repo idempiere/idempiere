@@ -238,6 +238,8 @@ public class WAttachment extends Window implements EventListener<Event>
 		cbContent.setRows(0);
 		cbContent.addEventListener(Events.ON_SELECT, this);
 
+		toolBar.setAlign("center");
+		toolBar.setPack("start");
 		toolBar.appendChild(bLoad);
 		toolBar.appendChild(bDelete);
 		toolBar.appendChild(bSave);

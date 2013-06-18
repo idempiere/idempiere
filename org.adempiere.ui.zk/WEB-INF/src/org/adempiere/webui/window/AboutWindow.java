@@ -268,7 +268,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		listHead.setSizable(true);
 		for (Object obj : columnNames) {
 			ListHeader header = new ListHeader(obj.toString());
-			header.setWidth("100px");
+			header.setHflex("1");
 			listHead.appendChild(header);
 		}
 

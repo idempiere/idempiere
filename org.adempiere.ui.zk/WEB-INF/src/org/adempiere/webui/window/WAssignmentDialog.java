@@ -200,7 +200,8 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		row.appendCellChild(fDescription, 2);
 		fDescription.setMultiline(true);
 		fDescription.setRows(3);
-		fDescription.setStyle("width: 100%");
+		fDescription.setWidth("100%");
+		fDescription.setHeight("100%");
 		rows.appendChild(row);
 		
 		row = new Row();

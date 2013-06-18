@@ -66,6 +66,9 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
 	{
 		super();
 		setTitle(Msg.getMsg(Env.getCtx(), "PAttributeInstance"));
+        setWidth("700px");
+        setHeight("400px");
+		setSclass("popup-dialog");
 		
 		init (M_Warehouse_ID, M_Locator_ID, M_Product_ID, C_BPartner_ID);
 		AEnv.showCenterWindow(parent, this);
@@ -121,9 +124,8 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
         showAll.setText(Msg.getMsg(Env.getCtx(), "ShowAll"));
         
 		Borderlayout borderlayout = new Borderlayout();
-        borderlayout.setWidth("700px");
-        borderlayout.setHeight("400px");
-        borderlayout.setStyle("border: none; position: relative");
+		borderlayout.setHflex("1");
+		borderlayout.setVflex("1");
         this.appendChild(borderlayout);
         
         North north = new North();
@@ -134,6 +136,7 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
         north.appendChild(div);
         
         Center center = new Center();
+        center.setSclass("dialog-content");
         center.setAutoscroll(true);
         borderlayout.appendChild(center);
 		center.appendChild(m_table);
@@ -141,6 +144,7 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
 		m_table.setHflex("1");
 		
 		South south = new South();
+		south.setSclass("dialog-footer");
 		borderlayout.appendChild(south);
 		south.appendChild(confirmPanel);
 		

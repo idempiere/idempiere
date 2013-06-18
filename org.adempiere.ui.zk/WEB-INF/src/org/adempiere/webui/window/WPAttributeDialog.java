@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
+import static org.compiere.model.SystemIDs.COLUMN_M_MOVEMENTLINE_M_ATTRIBUTESETINSTANCE_ID;
+
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,9 +26,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Datebox;
 import org.adempiere.webui.component.Grid;
@@ -53,7 +58,6 @@ import org.compiere.model.MLotCtl;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSerNoCtl;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_M_MovementLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -66,9 +70,9 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.impl.InputElement;
 
@@ -103,9 +107,11 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	{
 		super ();
 		this.setTitle(Msg.translate(Env.getCtx(), "M_AttributeSetInstance_ID"));
-		this.setBorder("normal");
 		this.setWidth("500px");
-		this.setHeight("600px");
+		this.setSclass("popup-dialog");
+//		this.setHeight("600px");
+		this.setBorder("normal");
+		this.setShadow(true);
 		this.setSizable(true);
 		
 		if (log.isLoggable(Level.CONFIG)) log.config("M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID 
@@ -201,16 +207,18 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	private void init () throws Exception
 	{
 		mainLayout.setParent(this);
-		mainLayout.setWidth("100%");
-		mainLayout.setHeight("100%");
+		mainLayout.setHflex("1");
+		mainLayout.setVflex("min");
 		
 		Center center = new Center();
+		center.setSclass("dialog-content");
 		center.setParent(mainLayout);
-		centerPanel.setHflex("true");
-		centerPanel.setVflex("true");
+		centerPanel.setVflex("1");
+		centerPanel.setHflex("1");
 		center.appendChild(centerPanel);
 
 		South south = new South();
+		south.setSclass("dialog-footer");
 		south.setParent(mainLayout);
 		south.appendChild(confirmPanel);
 		
@@ -226,6 +234,17 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	 */
 	private boolean initAttributes ()
 	{
+		Columns columns = new Columns();
+		columns.setParent(centerLayout);
+		
+		Column column = new Column();
+		column.setParent(columns);
+		column.setWidth("30%");
+		
+		column = new Column();
+		column.setParent(columns);
+		column.setWidth("70%");
+		
 		Rows rows = new Rows();
 		rows.setParent(centerLayout);
 		
@@ -292,9 +311,11 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			}
 			existingCombo.addActionListener(this);
 			row.appendChild(existingCombo);
+			existingCombo.setHflex("1");
 			
 			row = new Row();
 			row.setParent(rows);
+			LayoutUtils.addSclass("txt-btn", bNewRecord);
 			bNewRecord.addActionListener(this);
 			row.appendChild(bNewRecord);
 			row.appendChild(new Space());
@@ -330,6 +351,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			bSelect.setImage(ThemeManager.getThemeResource("images/PAttribute16.png"));
 			bSelect.addEventListener(Events.ON_CLICK, this);
 			row.appendChild(bSelect);
+			bSelect.setHflex("1");
 			rows.appendChild(row);
 			
 			//	All Attributes
@@ -348,6 +370,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			Label label = new Label (Msg.translate(Env.getCtx(), "Lot"));
 			row.appendChild(label);
 			row.appendChild(fieldLotString);
+			fieldLotString.setHflex("1");
 			fieldLotString.setText (m_masi.getLot());
 			//	M_Lot_ID
 		//	int AD_Column_ID = 9771;	//	M_AttributeSetInstance.M_Lot_ID
@@ -371,6 +394,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			m_row++;
 			row.appendChild(label);
 			row.appendChild(fieldLot);
+			fieldLot.setHflex("1");
 			if (m_masi.getM_Lot_ID() != 0)
 			{
 				for (int i = 1; i < fieldLot.getItemCount(); i++)
@@ -397,6 +421,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 					m_row++;
 					row.appendChild(bLot);
 					bLot.addEventListener(Events.ON_CLICK, this);
+					LayoutUtils.addSclass("txt-btn", bLot);
 				}
 			}
 			//	Popup 
@@ -416,6 +441,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			Label label = new Label (Msg.translate(Env.getCtx(), "SerNo"));
 			row.appendChild(label);
 			row.appendChild(fieldSerNo);
+			fieldSerNo.setHflex("1");
 			fieldSerNo.setText(m_masi.getSerNo());
 			
 			//	New SerNo Button
@@ -429,6 +455,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 					m_row++;
 					row.appendChild(bSerNo);
 					bSerNo.addEventListener(Events.ON_CLICK, this);
+					LayoutUtils.addSclass("txt-btn", bSerNo);
 				}
 			}
 		}	//	SerNo
@@ -487,6 +514,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		row.setParent(rows);
 		row.appendChild(label);
 		row.appendChild(fieldDescription);
+		fieldDescription.setHflex("1");
 		
 		return true;
 	}	//	initAttribute
@@ -528,6 +556,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			else
 				m_editors.add (editor);
 			row.appendChild(editor);
+			editor.setHflex("1");
 			setListAttribute(attribute, editor);
 		}
 		else if (MAttribute.ATTRIBUTEVALUETYPE_Number.equals(attribute.getAttributeValueType()))
@@ -535,6 +564,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			NumberBox editor = new NumberBox(false);
 			setNumberAttribute(attribute, editor);
 			row.appendChild(editor);
+			editor.setHflex("1");
 			if (readOnly)
 				editor.setEnabled(false);
 			else
@@ -545,6 +575,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			Textbox editor = new Textbox();
 			setStringAttribute(attribute, editor);
 			row.appendChild(editor);
+			editor.setHflex("1");
 			if (readOnly)
 				editor.setEnabled(false);
 			else

@@ -99,6 +99,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		textBox = new Textbox(text);
 		textBox.setCols(80);
 		textBox.setRows(30);
+		textBox.setHeight("100%");
 		textBox.setEnabled(editable);
 		textBox.setHflex("1");
 		textBox.setVflex("1");

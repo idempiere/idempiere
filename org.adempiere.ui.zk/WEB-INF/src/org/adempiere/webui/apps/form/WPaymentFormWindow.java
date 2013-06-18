@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
@@ -83,7 +84,8 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		mainLayout.appendChild(center);
 		mainLayout.setHflex("1");
 		mainLayout.setVflex("min");	
-		center.appendChild(centerPanel = getPanel());	
+		center.appendChild(centerPanel = getPanel());
+		LayoutUtils.addSclass("payment-form-content", centerPanel);
 		centerPanel.setVflex("1");
 		centerPanel.setHflex("1");
 		center.setAutoscroll(true);

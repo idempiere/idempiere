@@ -143,10 +143,10 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		//
 		
 		Center center = new Center();
+		center.setSclass("dialog-content");
 		Vlayout content = new Vlayout();
 		content.setHflex("1");
 		content.setVflex("1");
-		content.setSclass("dialog-content");
 		center.appendChild(content);
 		messageTree.setHflex("1");
 		messageTree.setVflex("1");
@@ -156,6 +156,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		//
 		content.appendChild(newText);
 		newText.setRows(3);
+		newText.setHeight("100%");
 		newText.setMultiline(true);		
 		newText.setHflex("1");
 		newText.setVflex("min");
@@ -320,8 +321,9 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 			div.setWidth("100%");
 			Textbox replyTextbox = new Textbox();
 			replyTextbox.setMultiline(true);
-			replyTextbox.setWidth("100%");
 			replyTextbox.setRows(3);
+			replyTextbox.setWidth("100%");
+			replyTextbox.setHeight("100%");
 			div.appendChild(replyTextbox);
 			Button btn = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Ok")));
 			div.appendChild(btn);

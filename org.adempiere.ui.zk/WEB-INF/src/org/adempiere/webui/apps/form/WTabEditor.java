@@ -511,6 +511,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		tabform.setWidth("95%");
 		tabform.setHeight("95%");
 		tabform.appendChild (mainLayout);
+		LayoutUtils.addSclass("tab-editor-form-content", mainLayout);
 		tabform.setBorder("normal");
 
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
@@ -540,8 +541,6 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		westVLayout = new Vlayout();
 		westVLayout.setHeight("100%");
 		westVLayout.appendChild(visible);
-		Separator wsep = new Separator("horizontal");
-		westVLayout.appendChild(wsep);
 		westVLayout.appendChild(invisible);
 
 		createUI();
@@ -552,12 +551,12 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		centerVLayout.setStyle("overflow:auto");
 
 		Center center = new Center();
-		LayoutUtils.addSclass("tab-editor-form-center-panel", east);
+		LayoutUtils.addSclass("tab-editor-form-center-panel", center);
 		mainLayout.appendChild(center);
 		center.appendChild(centerVLayout);
 
 		West west = new West();
-		LayoutUtils.addSclass("tab-editor-form-west-panel", east);
+		LayoutUtils.addSclass("tab-editor-form-west-panel", west);
 		mainLayout.appendChild(west);
 		west.appendChild(westVLayout);
 		west.setCollapsible(true);

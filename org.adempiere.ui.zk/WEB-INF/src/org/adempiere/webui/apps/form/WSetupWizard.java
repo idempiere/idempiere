@@ -364,6 +364,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		wfnodeTree.setVflex("1");
 		centerBox.appendChild(centerBoxdown);
 		centerBoxdown.setOrient("horizontal");
+		centerBoxdown.setAlign("center");
+		centerBoxdown.setPack("start");
 		centerBoxdown.appendChild(bExpand);
 		centerBoxdown.appendChild(justmine);
 		centerBoxdown.appendChild(showColors);
@@ -392,6 +394,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		
 		divNote.appendChild(notesField);
 		notesField.setRows(4);
+		notesField.setHeight("100%");
 		notesField.setWidth("99%");
 
 		MLookup lookup = MLookupFactory.get(Env.getCtx(), form.getWindowNo(),
@@ -400,6 +403,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
                 Env.getCtx(), "AD_User_ID"), "", false, false, true);
 
 		westdown.setOrient("horizontal");
+		westdown.setAlign("center");
+		westdown.setPack("center");
 		westdown.appendChild(bZoomLabel);
 		westdown.appendChild(bZoom);
 		westdown.appendChild(userLabel);

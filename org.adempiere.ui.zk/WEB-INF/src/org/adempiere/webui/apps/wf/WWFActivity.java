@@ -187,10 +187,11 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(div);
 		row.appendChild(fHelp);
 		fHelp.setMultiline(true);
+		fHelp.setRows(3);
 		fHelp.setWidth("100%");
+		fHelp.setHeight("100%");
 		fHelp.setHflex("true");
 		fHelp.setReadonly(true);
-		fHelp.setRows(3);
 		row.appendChild(new Label());
 
 		row = new Row();

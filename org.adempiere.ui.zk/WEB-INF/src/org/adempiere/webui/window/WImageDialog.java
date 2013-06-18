@@ -39,6 +39,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
@@ -127,7 +128,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 		mainLayout.setHflex("1");
 		mainLayout.setVflex("1");
 		
-		fileLabel.setValue(Msg.getMsg(Env.getCtx(), "SelectFile"));
+		fileLabel.setValue(Msg.getMsg(Env.getCtx(), "SelectFile") + ": ");
 		fileButton.setLabel("-");
 		LayoutUtils.addSclass("txt-btn", fileButton);
 		
@@ -135,9 +136,18 @@ public class WImageDialog extends Window implements EventListener<Event>
 		north.setParent(mainLayout);
 		north.appendChild(parameterPanel);
 		
-		parameterPanel.appendChild(fileLabel);
-		parameterPanel.appendChild(new Separator());
-		parameterPanel.appendChild((fileButton));
+		Hbox hbox = new Hbox();
+		hbox.setAlign("center");
+		hbox.setPack("start");
+		hbox.appendChild(fileLabel);
+		hbox.appendChild(fileButton);
+		
+		parameterPanel.setStyle("padding: 5px");
+		parameterPanel.appendChild(hbox);
+		Separator separator = new Separator();
+		separator.setOrient("horizontal");
+		separator.setBar(true);
+		parameterPanel.appendChild(separator);
 		
 		Center center = new Center();
 		center.setSclass("dialog-content");

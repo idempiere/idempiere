@@ -30,10 +30,17 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.apps.WProcessCtl;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.Grid;
+import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.Panel;
+import org.adempiere.webui.component.Row;
+import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
@@ -54,9 +61,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Space;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Vbox;
 
@@ -142,33 +148,55 @@ public class ReportAction implements EventListener<Event>
 			winReport.setSclass("toolbar-popup-window");
 			vb.setSclass("toolbar-popup-window-cnt");
 			vb.setAlign("stretch");
-
-			Hbox hb = new Hbox();
-			hb.setAlign("center");
-			hb.setPack("start");
-			Div div = new Div();
-			div.appendChild(new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID")));
-			hb.appendChild(div);
-			hb.appendChild(cboPrintFormat);
-			cboPrintFormat.setWidth("100%");
+			
+			Grid grid = GridFactory.newGridLayout();
+			vb.appendChild(grid);
+	        
+	        Columns columns = new Columns();
+	        Column column = new Column();
+	        column.setHflex("min");
+	        columns.appendChild(column);
+	        column = new Column();
+	        column.setHflex("1");
+	        columns.appendChild(column);
+	        grid.appendChild(columns);
+	        
+	        Rows rows = new Rows();
+			grid.appendChild(rows);
+			
+			Row row = new Row();
+			rows.appendChild(row);
+			row.appendChild(new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID")));
+			row.appendChild(cboPrintFormat);
+			cboPrintFormat.setHflex("1");
 			cboPrintFormat.addEventListener(Events.ON_SELECT, this);
-			vb.appendChild(hb);
+			
+			row = new Row();
+			rows.appendChild(row);
+			row.appendChild(new Space());
+			row.appendChild(chkCurrentRowOnly);
 
-			vb.appendChild(chkCurrentRowOnly);
-
-			if ( isCanExport )
+			if (isCanExport)
 			{
-				hb = new Hbox();
-				hb.setAlign("center");
-				hb.setPack("start");
-				hb.appendChild(chkExport);
+				Panel panel = new Panel();
+				panel.appendChild(chkExport);
+				chkExport.setHflex("min");
+				panel.appendChild(new Space());
 				chkExport.addEventListener(Events.ON_CHECK, this);
-				hb.appendChild(cboExportType);
-				cboExportType.setWidth("100%");
-				vb.appendChild(hb);
+				panel.appendChild(cboExportType);
+				cboExportType.setHflex("1");
+				panel.setHflex("1");
+				
+				row = new Row();
+				rows.appendChild(row);
+				row.appendChild(new Space());
+				row.appendChild(panel);
 			}
 			
-			vb.appendChild(chkAllColumns);
+			row = new Row();
+			rows.appendChild(row);
+			row.appendChild(new Space());
+			row.appendChild(chkAllColumns);
 
 			vb.appendChild(confirmPanel);
 			LayoutUtils.addSclass("dialog-footer", confirmPanel);

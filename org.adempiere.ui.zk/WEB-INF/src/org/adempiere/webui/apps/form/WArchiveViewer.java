@@ -400,6 +400,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		rows.appendChild(row);
 		row.appendCellChild(descriptionField, 3);
 		descriptionField.setRows(3);
+		descriptionField.setHeight("100%");
 		descriptionField.setHflex("1");
 		
 		row = new Row();
@@ -411,6 +412,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		rows.appendChild(row);
 		row.appendCellChild(helpField, 3);
 		helpField.setRows(3);
+		helpField.setHeight("100%");
 		helpField.setHflex("1");
 		
 		row = new Row();

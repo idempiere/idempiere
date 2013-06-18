@@ -30,10 +30,16 @@ import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.adwindow.IADTabbox;
 import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.Grid;
+import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.Row;
+import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.window.FDialog;
@@ -43,9 +49,8 @@ import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Space;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Vlayout;
 
@@ -121,24 +126,33 @@ public class ExportAction implements EventListener<Event>
 			vlayout.setSclass("dialog-content");
 			vb.appendChild(vlayout);
 			
-			Hbox hb = new Hbox();
-			hb.setAlign("center");
-			hb.setPack("start");
-			Div div = new Div();
-			div.setStyle("text-align: right;");
-			div.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
-			hb.appendChild(div);
-			hb.appendChild(cboType);
-			cboType.setWidth("100%");
-			vlayout.appendChild(hb);
-
-			hb = new Hbox();
-			hb.setAlign("center");
-			hb.setPack("start");
+			Grid grid = GridFactory.newGridLayout();
+			vlayout.appendChild(grid);
+	        
+	        Columns columns = new Columns();
+	        Column column = new Column();
+	        column.setHflex("min");
+	        columns.appendChild(column);
+	        column = new Column();
+	        column.setHflex("1");
+	        columns.appendChild(column);
+	        grid.appendChild(columns);
+	        
+			Rows rows = new Rows();
+			grid.appendChild(rows);
+			
+			Row row = new Row();
+			rows.appendChild(row);
+			row.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
+			row.appendChild(cboType);
+			cboType.setHflex("1");
+			
+			row = new Row();
+			rows.appendChild(row);
+			row.appendChild(new Space());
 			chkCurrentRow.setLabel(Msg.getMsg(Env.getCtx(), "ExportCurrentRowOnly"));
 			chkCurrentRow.setSelected(true);
-			hb.appendChild(chkCurrentRow);
-			vlayout.appendChild(hb);
+			row.appendChild(chkCurrentRow);
 
 			LayoutUtils.addSclass("dialog-footer", confirmPanel);
 			vb.appendChild(confirmPanel);

@@ -81,6 +81,7 @@ public class EventWindow extends Window implements EventListener<Event> {
 		txtContent = new Textbox();
 		txtContent.setRows(5);
 		txtContent.setWidth("95%");
+		txtContent.setHeight("100%");
 		txtContent.setReadonly(true);
 		
 		txtHeaderColor = new Textbox();

@@ -42,6 +42,8 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Center;
 
 /**
  * A Custom Form to specify and process SQL statements.
@@ -103,6 +105,8 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
         m_txbSqlField.setMultiline(true);
         m_txbSqlField.setMaxlength(maxStatementLength);
         m_txbSqlField.setRows(noStatementRows);
+        m_txbSqlField.setHeight("100%");
+        m_txbSqlField.setHflex("1");
         m_txbSqlField.setCols(noColumns);
         m_txbSqlField.setReadonly(false);
 
@@ -117,6 +121,8 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
         // create the bottom row of components
         m_txbResultField.setCols(noColumns);
         m_txbResultField.setRows(noResultRows);
+        m_txbResultField.setHeight("100%");
+        m_txbResultField.setHflex("1");
         m_txbResultField.setReadonly(true);
 
         rwBottom.appendCellChild(m_txbResultField, 3);
@@ -127,7 +133,16 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
         // put it all together
         m_grdMain.appendChild(rows);
 
-        this.appendChild(m_grdMain);
+        Borderlayout contentPane = new Borderlayout();
+		this.appendChild(contentPane);
+		contentPane.setWidth("99%");
+		contentPane.setHeight("100%");
+		Center center = new Center();
+		center.setStyle("border: none");
+		contentPane.appendChild(center);
+		m_grdMain.setHflex("true");
+		m_grdMain.setVflex("true");
+		center.appendChild(m_grdMain);
 
         return;
     }

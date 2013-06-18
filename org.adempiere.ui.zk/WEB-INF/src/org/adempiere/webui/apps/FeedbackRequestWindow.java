@@ -136,6 +136,7 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		txtSummary = new Textbox();
 		txtSummary.setRows(10);
 		txtSummary.setWidth("95%");
+		txtSummary.setHeight("100%");
 		
 		confirmPanel = new ConfirmPanel(true);
 		confirmPanel.addActionListener(this);

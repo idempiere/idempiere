@@ -33,10 +33,16 @@ import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.adwindow.IADTabbox;
 import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.Grid;
+import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.Row;
+import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.util.ReaderInputStream;
@@ -52,9 +58,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Space;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Vlayout;
 
@@ -157,55 +162,54 @@ public class FileImportAction implements EventListener<Event>
 			vlayout.setSclass("dialog-content");
 			vb.appendChild(vlayout);
 			
-			Hbox hb = new Hbox();
-			hb.setAlign("center");
-			hb.setPack("start");
-			Div div = new Div();
-			div.setStyle("text-align: right;");
-			div.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
-			hb.appendChild(div);
-			hb.appendChild(cboType);
-			cboType.setWidth("100%");
-			vlayout.appendChild(hb);
-
-			hb = new Hbox();
-			hb.setAlign("center");
-			hb.setPack("start");
-			Div div2 = new Div();
-			div2.setStyle("text-align: right;");
-			div2.appendChild(new Label(Msg.getMsg(Env.getCtx(), "Charset", false)));
-			hb.appendChild(div2);
+			Grid grid = GridFactory.newGridLayout();
+			vlayout.appendChild(grid);
+	        
+	        Columns columns = new Columns();
+	        Column column = new Column();
+	        column.setHflex("min");
+	        columns.appendChild(column);
+	        column = new Column();
+	        column.setHflex("1");
+	        columns.appendChild(column);
+	        grid.appendChild(columns);
+	        
+			Rows rows = new Rows();
+			grid.appendChild(rows);
+			
+			Row row = new Row();
+			rows.appendChild(row);
+			row.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
+			row.appendChild(cboType);
+			cboType.setHflex("1");
+			
+			row = new Row();
+			rows.appendChild(row);
+			row.appendChild(new Label(Msg.getMsg(Env.getCtx(), "Charset", false) + ": "));
 			fCharset.setMold("select");
 			fCharset.setRows(0);
 			fCharset.setTooltiptext(Msg.getMsg(Env.getCtx(), "Charset", false));
-			hb.appendChild(fCharset);
-			fCharset.setWidth("100%");
-			vlayout.appendChild(hb);
-			
-			hb = new Hbox();
-			hb.setAlign("center");
-			hb.setPack("start");
-			Div div3 = new Div();
-			div3.setStyle("text-align: right;");
-			div3.appendChild(new Label(Msg.getMsg(Env.getCtx(), "import.mode", true)));
-			hb.appendChild(div3);
+			row.appendChild(fCharset);
+			fCharset.setHflex("1");
+
+			row = new Row();
+			rows.appendChild(row);
+			row.appendChild(new Label(Msg.getMsg(Env.getCtx(), "import.mode", true)));
 			fImportMode.setMold("select");
 			fImportMode.setRows(0);
 			fImportMode.setTooltiptext(Msg.getMsg(Env.getCtx(), "import.mode", false));
-			hb.appendChild(fImportMode);
-			fImportMode.setWidth("100%");
-			vlayout.appendChild(hb);
+			row.appendChild(fImportMode);
+			fImportMode.setHflex("1");
 			
-			hb = new Hbox();
-			hb.setAlign("center");
-			hb.setPack("start");
+			row = new Row();
+			rows.appendChild(row);
+			row.appendChild(new Space());
 			bFile.setLabel(Msg.getMsg(Env.getCtx(), "FileImportFile"));
 			bFile.setTooltiptext(Msg.getMsg(Env.getCtx(), "FileImportFileInfo"));
 			bFile.setUpload(AdempiereWebUI.getUploadSetting());
 			LayoutUtils.addSclass("txt-btn", bFile);
 			bFile.addEventListener(Events.ON_UPLOAD, this);
-			hb.appendChild(bFile);
-			vlayout.appendChild(hb);
+			row.appendChild(bFile);
 
 			LayoutUtils.addSclass("dialog-footer", confirmPanel);
 			vb.appendChild(confirmPanel);

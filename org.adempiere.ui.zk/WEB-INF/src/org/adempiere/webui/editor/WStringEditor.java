@@ -135,6 +135,8 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        else
 	            getComponent().setMultiline(false);
 	        getComponent().setRows(gridField.getNumLines() <= 0 ? 1 : gridField.getNumLines());
+	        if (getComponent().getRows() > 1)
+	        	getComponent().setHeight("100%");
 
 	        if (getComponent() instanceof Textbox)
 	        	((Textbox)getComponent()).setObscureType(obscureType);

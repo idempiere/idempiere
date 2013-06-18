@@ -92,6 +92,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 			log.log(Level.SEVERE, "", ex);
 		}
 		
+		this.setSclass("popup-dialog");
 		AEnv.showCenterWindow(parent, this);
 	}	//	InvoiceHistory
 
@@ -188,7 +189,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		north.appendChild(label);
 		
 		Center center = new Center();
-		center.setStyle("border: none");
+		center.setSclass("dialog-content");
 		center.setAutoscroll(true);
         borderlayout.appendChild(center);
 		center.appendChild(tabbox);
@@ -196,7 +197,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		tabbox.setHflex("1");
 		
 		South south = new South();
-		south.setStyle("border: none");
+		south.setSclass("dialog-footer");
 		borderlayout.appendChild(south);
 		south.appendChild(confirmPanel);
 	}	//	jbInit
