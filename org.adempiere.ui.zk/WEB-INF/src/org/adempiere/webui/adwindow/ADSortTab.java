@@ -459,7 +459,9 @@ public class ADSortTab extends Panel implements IADTabpanel
 			rs = null; pstmt = null;
 		}
 
-		setIsChanged(false);
+		if (!gridTab.getParentTab().needSave(true, true))
+			setIsChanged(false);
+
 		bAdd.setEnabled(isReadWrite);
 		bRemove.setEnabled(isReadWrite);
 		bUp.setEnabled(isReadWrite);
