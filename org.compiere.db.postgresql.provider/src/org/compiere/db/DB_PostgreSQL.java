@@ -302,6 +302,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
             sb.append(" , # Busy Connections: ").append(m_ds.getNumBusyConnections());
             sb.append(" , # Idle Connections: ").append(m_ds.getNumIdleConnections());
             sb.append(" , # Orphaned Connections: ").append(m_ds.getNumUnclosedOrphanedConnections());
+            sb.append(" , # Min Pool Size: ").append(m_ds.getMinPoolSize());
+            sb.append(" , # Max Pool Size: ").append(m_ds.getMaxPoolSize());
             sb.append(" , # Active Transactions: ").append(Trx.getActiveTransactions().length);
         }
         catch (Exception e)
