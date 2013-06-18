@@ -204,7 +204,9 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 	 *	@return success
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
-	{
+	{	
+		if (!success)
+			return success;
 		if (!isActive())
 		{
 			getQtys (false);

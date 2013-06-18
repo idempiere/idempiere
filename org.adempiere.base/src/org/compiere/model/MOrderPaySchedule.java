@@ -227,6 +227,8 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		if (is_ValueChanged("DueAmt"))
 		{
 			log.fine("afterSave");

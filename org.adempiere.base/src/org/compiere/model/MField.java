@@ -132,12 +132,17 @@ public class MField extends X_AD_Field
 		if (getIsAllowCopy() != null) {
 			MColumn column = (MColumn) getAD_Column();
 			if (   column.isKey()
-				|| column.getColumnSQL() != null
-				|| column.isStandardColumn()
+				|| column.isVirtualColumn()
+				|| column.isUUIDColumn()
+				|| (column.isStandardColumn() && !column.getColumnName().equals("AD_Org_ID")) // AD_Org_ID can be copied
 			)
 				setIsAllowCopy(null);
 		}
-		
+		if (getIsAllowCopy() == null) { // IDEMPIERE-67
+			// By default allow copy of AD_Org_ID overwriting value
+			if (getAD_Column().getColumnName().equals("AD_Org_ID")) // AD_Org_ID can be copied
+				setIsAllowCopy("Y");
+		}
 
 		return true;
 	}	//	beforeSave

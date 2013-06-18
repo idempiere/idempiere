@@ -70,7 +70,7 @@ public class MRequestUpdate extends X_R_RequestUpdate
 		//
 		for (final MColumn col : MTable.get(getCtx(), Table_ID).getColumns(false))
 		{
-			if (col.isStandardColumn() || col.isKey() || col.isParent())
+			if (col.isStandardColumn() || col.isKey() || col.isParent() || col.isUUIDColumn() || col.isVirtualColumn())
 				continue;
 			final String columnName = col.getColumnName();
 			final int i = parent.get_ColumnIndex(columnName);

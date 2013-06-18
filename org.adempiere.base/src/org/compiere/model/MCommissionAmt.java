@@ -139,6 +139,8 @@ public class MCommissionAmt extends X_C_CommissionAmt
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		if (!newRecord)
 			updateRunHeader();
 		return success;

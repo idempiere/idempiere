@@ -138,6 +138,8 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		setHeader();
 		return success;
 	}	//	afterSave
@@ -149,6 +151,8 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	 */
 	protected boolean afterDelete (boolean success)
 	{
+		if (!success)
+			return success;
 		setHeader();
 		return success;
 	}	//	afterDelete

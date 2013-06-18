@@ -289,6 +289,8 @@ public class MPInstance extends X_AD_PInstance
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		//	Update Statistics
 		if (!newRecord 
 			&& !isProcessing()

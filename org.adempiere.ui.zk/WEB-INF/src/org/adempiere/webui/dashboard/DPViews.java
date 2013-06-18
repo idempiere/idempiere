@@ -19,6 +19,15 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.InfoSchedule;
+import org.compiere.model.I_A_Asset;
+import org.compiere.model.I_C_BPartner;
+import org.compiere.model.I_C_Invoice;
+import org.compiere.model.I_C_Order;
+import org.compiere.model.I_C_Payment;
+import org.compiere.model.I_M_InOut;
+import org.compiere.model.I_M_Product;
+import org.compiere.model.I_S_ResourceAssignment;
+import org.compiere.model.MInfoWindow;
 import org.compiere.model.MRole;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -53,8 +62,8 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 	private Box createViewPanel()
 	{
 		Vbox vbox = new Vbox();
-				
-		if (MRole.getDefault().isAllow_Info_Product())
+
+		if (MInfoWindow.get(I_M_Product.Table_Name, null) != null)
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoProduct");
 			btnViewItem.setSclass("link");
@@ -63,7 +72,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
-		if (MRole.getDefault().isAllow_Info_BPartner())
+		if (MInfoWindow.get(I_C_BPartner.Table_Name, null) != null)
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoBPartner");
 			btnViewItem.setSclass("link");
@@ -91,7 +100,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			vbox.appendChild(btnViewItem);
 		}
 		vbox.appendChild(new Separator("horizontal"));
-		if (MRole.getDefault().isAllow_Info_Order())
+		if (MInfoWindow.get(I_C_Order.Table_Name, null) != null)
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoOrder");
 			btnViewItem.setSclass("link");
@@ -100,7 +109,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
-		if (MRole.getDefault().isAllow_Info_Invoice())
+		if (MInfoWindow.get(I_C_Invoice.Table_Name, null) != null)
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoInvoice");
 			btnViewItem.setSclass("link");
@@ -109,7 +118,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
-		if (MRole.getDefault().isAllow_Info_InOut())
+		if (MInfoWindow.get(I_M_InOut.Table_Name, null) != null)
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoInOut");
 			btnViewItem.setSclass("link");
@@ -118,7 +127,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
-		if (MRole.getDefault().isAllow_Info_Payment())
+		if (MInfoWindow.get(I_C_Payment.Table_Name, null) != null)
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoPayment");
 			btnViewItem.setSclass("link");
@@ -135,7 +144,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 //			btnViewItem.addEventListener(Events.ON_CLICK, this);
 //			vbox.appendChild(btnViewItem);
 //		}
-		if (MRole.getDefault().isAllow_Info_Resource())
+		if (MInfoWindow.get(I_S_ResourceAssignment.Table_Name, null) != null)
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoAssignment");
 			btnViewItem.setSclass("link");
@@ -144,7 +153,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
-		if (MRole.getDefault().isAllow_Info_Asset())
+		if (MInfoWindow.get(I_A_Asset.Table_Name, null) != null)
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoAsset");
 			btnViewItem.setSclass("link");
@@ -170,51 +179,49 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
         		String actionCommand = btn.getName();
         		int WindowNo = 0;
         		
-        		if (actionCommand.equals("InfoProduct") && AEnv.canAccessInfo("PRODUCT"))
+        		if (actionCommand.equals("InfoProduct"))
         		{
         			InfoPanel.showProduct(WindowNo);
         		}
-        		else if (actionCommand.equals("InfoBPartner") && AEnv.canAccessInfo("BPARTNER"))
+        		else if (actionCommand.equals("InfoBPartner"))
         		{
         			InfoPanel.showBPartner(WindowNo);
         		}
-        		else if (actionCommand.equals("InfoAsset") && AEnv.canAccessInfo("ASSET"))
+        		else if (actionCommand.equals("InfoAsset"))
         		{
         			InfoPanel.showAsset(WindowNo);
         		}
-        		else if (actionCommand.equals("InfoAccount") && 
-        				  MRole.getDefault().isShowAcct() &&
-        				  AEnv.canAccessInfo("ACCOUNT"))
+        		else if (actionCommand.equals("InfoAccount"))
         		{
         			new org.adempiere.webui.acct.WAcctViewer();
         		}
-        		else if (actionCommand.equals("InfoSchedule") && AEnv.canAccessInfo("SCHEDULE"))
+        		else if (actionCommand.equals("InfoSchedule"))
         		{
         			InfoSchedule is = new InfoSchedule(null, false);
         			is.setAttribute(Window.MODE_KEY, Mode.EMBEDDED);
         			AEnv.showWindow(is);
         		}
-        		else if (actionCommand.equals("InfoOrder") && AEnv.canAccessInfo("ORDER"))
+        		else if (actionCommand.equals("InfoOrder"))
         		{
         			InfoPanel.showOrder(WindowNo, "");
         		}
-        		else if (actionCommand.equals("InfoInvoice") && AEnv.canAccessInfo("INVOICE"))
+        		else if (actionCommand.equals("InfoInvoice"))
         		{
         			InfoPanel.showInvoice(WindowNo, "");
         		}
-        		else if (actionCommand.equals("InfoInOut") && AEnv.canAccessInfo("INOUT"))
+        		else if (actionCommand.equals("InfoInOut"))
         		{
         			InfoPanel.showInOut(WindowNo, "");
         		}
-        		else if (actionCommand.equals("InfoPayment") && AEnv.canAccessInfo("PAYMENT"))
+        		else if (actionCommand.equals("InfoPayment"))
         		{
         			InfoPanel.showPayment(WindowNo, "");
         		}
-        		else if (actionCommand.equals("InfoCashLine") && AEnv.canAccessInfo("CASHJOURNAL"))
-        		{
-        			InfoPanel.showCashLine(WindowNo, "");
-        		}
-        		else if (actionCommand.equals("InfoAssignment") && AEnv.canAccessInfo("RESOURCE"))
+//        		else if (actionCommand.equals("InfoCashLine"))
+//        		{
+//        			InfoPanel.showCashLine(WindowNo, "");
+//        		}
+        		else if (actionCommand.equals("InfoAssignment"))
         		{
         			InfoPanel.showAssignment(WindowNo, "");
         		}

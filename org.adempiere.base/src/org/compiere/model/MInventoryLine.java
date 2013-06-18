@@ -39,7 +39,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3513145563716006099L;
+	private static final long serialVersionUID = -3864175464877913555L;
 
 	/**
 	 * 	Get Inventory Line with parameters
@@ -365,17 +365,17 @@ public class MInventoryLine extends X_M_InventoryLine
 	 *	@param success success
 	 *	@return true
 	 */
-	protected boolean afterSave (boolean newRecord, boolean success)
-	{
-		if (!success)
-			return false;
-		
-		//	Create MA
-		//if (newRecord && success 
-		//	&& m_isManualEntry && getM_AttributeSetInstance_ID() == 0)
-		//	createMA();
-		return true;
-	}	//	afterSave
+	//protected boolean afterSave (boolean newRecord, boolean success)
+	//{
+	//	if (!success)
+	//		return false;
+	//	
+	//	//	Create MA
+	//	//if (newRecord && success 
+	//	//	&& m_isManualEntry && getM_AttributeSetInstance_ID() == 0)
+	//	//	createMA();
+	//	return true;
+	//}	//	afterSave
 	
 	/**
 	 * 	Create Material Allocations for new Instances

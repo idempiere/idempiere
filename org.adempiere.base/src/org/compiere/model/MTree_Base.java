@@ -353,6 +353,8 @@ public class MTree_Base extends X_AD_Tree
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		if (newRecord)	//	Base Node
 		{
 			if (TREETYPE_BPartner.equals(getTreeType()))

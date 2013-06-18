@@ -105,6 +105,8 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		checkCosting();
 		return success;
 	}	//	afterSave

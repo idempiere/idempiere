@@ -470,6 +470,8 @@ public final class MAcctSchemaElement extends X_C_AcctSchema_Element
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		//	Default Value
 		if (isMandatory() && is_ValueChanged(COLUMNNAME_IsMandatory))
 		{
@@ -535,6 +537,8 @@ public final class MAcctSchemaElement extends X_C_AcctSchema_Element
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
+		if (!success)
+			return success;
 		//	Update Account Info
 		StringBuilder msguvd = new StringBuilder("AD_Client_ID=").append(getAD_Client_ID());
 		MAccount.updateValueDescription(getCtx(),msguvd.toString(), get_TrxName());

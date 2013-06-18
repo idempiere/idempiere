@@ -1232,9 +1232,14 @@ public abstract class PO
 		{
 			for (int i1 = 0; i1 < from.m_oldValues.length; i1++)
 			{
-				if (! from.p_info.isAllowCopy(i1))
-					continue;
 				String colName = from.p_info.getColumnName(i1);
+				MColumn column = MColumn.get(from.getCtx(), from.p_info.getAD_Column_ID(colName));
+				if (   column.isVirtualColumn()
+					|| column.isKey()		//	KeyColumn
+					|| column.isUUIDColumn() // IDEMPIERE-67
+					|| column.isStandardColumn()
+					|| ! column.isAllowCopy())
+					continue;
 				for (int i2 = 0; i2 < to.m_oldValues.length; i2++)
 				{
 					if (to.p_info.getColumnName(i2).equals(colName))
@@ -1249,7 +1254,13 @@ public abstract class PO
 		{
 			for (int i = 0; i < from.m_oldValues.length; i++)
 			{
-				if (! from.p_info.isAllowCopy(i))
+				String colName = from.p_info.getColumnName(i);
+				MColumn column = MColumn.get(from.getCtx(), from.p_info.getAD_Column_ID(colName));
+				if (   column.isVirtualColumn()
+					|| column.isKey()		//	KeyColumn
+					|| column.isUUIDColumn()
+					|| column.isStandardColumn()
+					|| ! column.isAllowCopy())
 					continue;
 				to.m_newValues[i] = from.m_oldValues[i];
 			}

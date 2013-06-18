@@ -66,6 +66,8 @@ public class MForm extends X_AD_Form
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		if (newRecord)
 		{
 			int AD_Role_ID = Env.getAD_Role_ID(getCtx());

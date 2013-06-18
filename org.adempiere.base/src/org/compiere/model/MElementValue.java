@@ -244,6 +244,8 @@ public class MElementValue extends X_C_ElementValue
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		if (newRecord)
 		{
 			// afalcone [Bugs #1837219]

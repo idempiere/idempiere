@@ -47,7 +47,7 @@ public class MColumn extends X_AD_Column
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3366954463322356334L;
+	private static final long serialVersionUID = 2344447703630569514L;
 
 	/**
 	 * 	Get MColumn from Cache
@@ -150,6 +150,7 @@ public class MColumn extends X_AD_Column
 		if (columnName.equals("AD_Client_ID") 
 			|| columnName.equals("AD_Org_ID")
 			|| columnName.equals("IsActive")
+			|| columnName.equals("Processing")
 			|| columnName.equals("Created")
 			|| columnName.equals("CreatedBy")
 			|| columnName.equals("Updated")
@@ -159,6 +160,14 @@ public class MColumn extends X_AD_Column
 		return false;
 	}	//	isStandardColumn
 	
+	/**
+	 * 	Is UUID Column
+	 *	@return true for UUID column
+	 */
+	public boolean isUUIDColumn() {
+		return getColumnName().equals(PO.getUUIDColumnName(getAD_Table().getTableName()));
+	}
+
 	/**
 	 * 	Is Virtual Column
 	 *	@return true if virtual column
@@ -273,17 +282,18 @@ public class MColumn extends X_AD_Column
 		if (isAlwaysUpdateable() && !isUpdateable())
 			setIsAlwaysUpdateable(false);
 		//	Encrypted
+		String colname = getColumnName();
 		if (isEncrypted()) 
 		{
 			int dt = getAD_Reference_ID();
 			if (isKey() || isParent() || isStandardColumn()
-				|| isVirtualColumn() || isIdentifier() || isTranslated()
+				|| isVirtualColumn() || isIdentifier() || isTranslated() || isUUIDColumn()
 				|| DisplayType.isLookup(dt) || DisplayType.isLOB(dt)
-				|| "DocumentNo".equalsIgnoreCase(getColumnName())
-				|| "Value".equalsIgnoreCase(getColumnName())
-				|| "Name".equalsIgnoreCase(getColumnName()))
+				|| "DocumentNo".equalsIgnoreCase(colname)
+				|| "Value".equalsIgnoreCase(colname)
+				|| "Name".equalsIgnoreCase(colname))
 			{
-				log.warning("Encryption not sensible - " + getColumnName());
+				log.warning("Encryption not sensible - " + colname);
 				setIsEncrypted(false);
 			}
 		}	
@@ -300,11 +310,10 @@ public class MColumn extends X_AD_Column
 		}
 		
 		// Validations for IsAllowCopy - some columns must never be set as allowed copying
-		String colname = getColumnName();
 		if (isAllowCopy()) {
 			if (   isKey()
-				|| getColumnSQL() != null
-				|| colname.equals(PO.getUUIDColumnName(getAD_Table().getTableName()))
+				|| isVirtualColumn()
+				|| isUUIDColumn()
 				|| isStandardColumn()
 			)
 				setIsAllowCopy(false);
@@ -345,6 +354,8 @@ public class MColumn extends X_AD_Column
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		//	Update Fields
 		if (!newRecord)
 		{

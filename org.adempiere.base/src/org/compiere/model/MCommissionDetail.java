@@ -115,6 +115,8 @@ public class MCommissionDetail extends X_C_CommissionDetail
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		if (!newRecord)
 			updateAmtHeader();
 		return success;

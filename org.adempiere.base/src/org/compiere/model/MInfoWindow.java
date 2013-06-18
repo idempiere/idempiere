@@ -59,14 +59,20 @@ public class MInfoWindow extends X_AD_InfoWindow
 	}	//	MInfoWindow
 
 	public static MInfoWindow get(String tableName, String trxName) {
-		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_InfoWindow.Table_ID), I_AD_InfoWindow.COLUMNNAME_AD_Table_ID+"=? AND IsValid='Y' ", null);
+		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), MInfoWindow.Table_ID), MInfoWindow.COLUMNNAME_AD_Table_ID+"=? AND IsValid='Y' ", null);
 		MTable table = MTable.get(Env.getCtx(), tableName);
 		if (table != null) {
-			return query.setParameters(table.getAD_Table_ID())
+			List<MInfoWindow> iws = query.setParameters(table.getAD_Table_ID())
 					.setOrderBy("AD_Client_ID Desc, AD_Org_ID Desc, IsDefault Desc, AD_InfoWindow_ID Desc")
 					.setOnlyActiveRecords(true)
 					.setApplyAccessFilter(true)
-					.first();
+					.list();
+			// verify role has access and return the first with access / IDEMPIERE-893
+			for (MInfoWindow iw : iws) {
+				Boolean access = MRole.getDefault().getInfoAccess(iw.getAD_InfoWindow_ID());
+				if (access != null && access.booleanValue())
+					return iw;
+			}
 		}
 		return null;
 	}
@@ -130,6 +136,8 @@ public class MInfoWindow extends X_AD_InfoWindow
 
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (!success)
+			return success;
 		if (newRecord)	//	Add to all automatic roles
 		{
 			MRole[] roles = MRole.getOf(getCtx(), "IsManual='N'");

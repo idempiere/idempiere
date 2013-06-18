@@ -152,6 +152,8 @@ import org.compiere.util.Env;
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		updateHeader();
 		return success;
 	}	//	afterSave
@@ -163,6 +165,8 @@ import org.compiere.util.Env;
 	 */
 	protected boolean afterDelete (boolean success)
 	{
+		if (!success)
+			return success;
 		updateHeader();
 		if (getC_Payment_ID() != 0 )
 		{

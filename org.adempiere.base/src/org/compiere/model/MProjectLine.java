@@ -240,6 +240,8 @@ public class MProjectLine extends X_C_ProjectLine
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		updateHeader();
 		return success;
 	}	//	afterSave
@@ -252,6 +254,8 @@ public class MProjectLine extends X_C_ProjectLine
 	 */
 	protected boolean afterDelete (boolean success)
 	{
+		if (!success)
+			return success;
 		updateHeader();
 		return success;
 	}	//	afterDelete

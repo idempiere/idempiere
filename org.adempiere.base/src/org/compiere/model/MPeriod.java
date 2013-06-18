@@ -613,6 +613,8 @@ public class MPeriod extends X_C_Period
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		if (newRecord)
 		{
 		//	SELECT Value FROM AD_Ref_List WHERE AD_Reference_ID=183

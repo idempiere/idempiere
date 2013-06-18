@@ -16,25 +16,39 @@
  *****************************************************************************/
 package org.adempiere.webui.process;
 
-import java.io.*;
-import java.sql.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.*;
+import java.util.logging.Level;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.SimplePDFViewer;
-import org.compiere.model.*;
-import org.compiere.print.*;
+import org.compiere.model.MClient;
+import org.compiere.model.MInvoice;
+import org.compiere.model.MMailText;
+import org.compiere.model.MQuery;
+import org.compiere.model.MUser;
+import org.compiere.model.MUserMail;
+import org.compiere.model.PrintInfo;
+import org.compiere.print.MPrintFormat;
+import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
-import org.compiere.util.*;
-import org.zkoss.zk.ui.util.Clients;
+import org.compiere.util.AdempiereUserError;
+import org.compiere.util.DB;
+import org.compiere.util.EMail;
+import org.compiere.util.Env;
+import org.compiere.util.Ini;
+import org.compiere.util.Language;
 
 /**
- *	Print Invoices on Paperor send PDFs
+ *	Print Invoices on Paper or send PDFs
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: InvoicePrint.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
@@ -48,8 +62,8 @@ public class InvoicePrint extends SvrProcess
 	
 	private Timestamp	m_dateInvoiced_From = null;
 	private Timestamp	m_dateInvoiced_To = null;
-	private int			m_C_BPartner_ID = 0;
-	private int			m_C_Invoice_ID = 0;
+	private int		m_C_BPartner_ID = 0;
+	private int		m_C_Invoice_ID = 0;
 	private String		m_DocumentNo_From = null;
 	private String		m_DocumentNo_To = null;
 
@@ -92,7 +106,7 @@ public class InvoicePrint extends SvrProcess
 	}	//	prepare
 
 	/**
-	 *  Perrform process.
+	 *  Perform process.
 	 *  @return Message
 	 *  @throws Exception
 	 */
@@ -101,7 +115,7 @@ public class InvoicePrint extends SvrProcess
 		//	Need to have Template
 		if (p_EMailPDF && p_R_MailText_ID == 0)
 			throw new AdempiereUserError ("@NotFound@: @R_MailText_ID@");
-		log.info ("C_BPartner_ID=" + m_C_BPartner_ID
+		if (log.isLoggable(Level.INFO)) log.info ("C_BPartner_ID=" + m_C_BPartner_ID
 			+ ", C_Invoice_ID=" + m_C_Invoice_ID
 			+ ", EmailPDF=" + p_EMailPDF + ",R_MailText_ID=" + p_R_MailText_ID
 			+ ", DateInvoiced=" + m_dateInvoiced_From + "-" + m_dateInvoiced_To
@@ -123,7 +137,7 @@ public class InvoicePrint extends SvrProcess
 		MClient client = MClient.get(getCtx());
 		
 		//	Get Info
-		StringBuffer sql = new StringBuffer (
+		StringBuilder sql = new StringBuilder (
 			"SELECT i.C_Invoice_ID,bp.AD_Language,c.IsMultiLingualDocument,"		//	1..3
 			//	Prio: 1. BPartner 2. DocType, 3. PrintFormat (Org)	//	see ReportCtl+MInvoice
 			+ " COALESCE(bp.Invoice_PrintFormat_ID, dt.AD_PrintFormat_ID, pf.Invoice_PrintFormat_ID),"	//	4 
@@ -275,7 +289,7 @@ public class InvoicePrint extends SvrProcess
 				//	Engine
 				PrintInfo info = new PrintInfo(
 					DocumentNo,
-					X_C_Invoice.Table_ID,
+					MInvoice.Table_ID,
 					C_Invoice_ID,
 					C_BPartner_ID);
 				info.setCopies(copies);
@@ -359,7 +373,6 @@ public class InvoicePrint extends SvrProcess
 				File outFile = File.createTempFile("InvoicePrint", ".pdf");					
 				AEnv.mergePdf(pdfList, outFile);
 
-				Clients.showBusy(null, null);
 				Window win = new SimplePDFViewer(this.getName(), new FileInputStream(outFile));
 				win.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 				SessionManager.getAppDesktop().showWindow(win, "center");
@@ -367,7 +380,6 @@ public class InvoicePrint extends SvrProcess
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}
 		} else if (pdfList.size() > 0) {
-			Clients.clearBusy();
 			try {
 				Window win = new SimplePDFViewer(this.getName(), new FileInputStream(pdfList.get(0)));
 				win.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);

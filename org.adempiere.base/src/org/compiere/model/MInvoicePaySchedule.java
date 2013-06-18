@@ -227,6 +227,8 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		if (is_ValueChanged("DueAmt"))
 		{
 			log.fine("afterSave");

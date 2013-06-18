@@ -397,6 +397,8 @@ public class MAttributeSet extends X_M_AttributeSet
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		//	Set Instance Attribute
+		if (!success)
+			return success;
 		if (!isInstanceAttribute())
 		{
 			StringBuilder sql = new StringBuilder("UPDATE M_AttributeSet mas")

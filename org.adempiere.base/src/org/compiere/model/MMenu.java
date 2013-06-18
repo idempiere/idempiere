@@ -143,6 +143,8 @@ public class MMenu extends X_AD_Menu
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		if (!success)
+			return success;
 		if (newRecord)
 			insert_Tree(MTree_Base.TREETYPE_Menu);
 		return success;
