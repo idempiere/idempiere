@@ -345,7 +345,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		{
 			Tabpanel panel = (Tabpanel) child;
 			Component component = panel.getFirstChild();
-			Object att = component.getAttribute(WINDOWNO_ATTRIBUTE);
+			Object att = component != null ? component.getAttribute(WINDOWNO_ATTRIBUTE) : null;
 			if (att != null && (att instanceof Integer))
 			{
 				if (windowNo == (Integer)att)

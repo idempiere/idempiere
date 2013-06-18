@@ -48,6 +48,45 @@ public class AdempiereIdGenerator implements IdGenerator {
 	public String nextComponentUuid(Desktop desktop, Component comp, ComponentInfo compInfo) {
 		buildLocatorAttribute(comp);
 		
+		String uuid = comp.getId();
+		boolean useIdSpace = true;
+		if (Util.isEmpty(uuid)) {
+			useIdSpace = false;
+			String attribute = comp.getWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME);
+			if (!Util.isEmpty(attribute)) {
+				String widgetName = getWidgetName(comp.getWidgetClass());
+				uuid = widgetName+"0"+attribute;
+			}
+		}
+		
+		if (Util.isEmpty(uuid)) {
+			uuid = getWidgetName(comp.getWidgetClass());
+		}
+				
+		StringBuilder builder = new StringBuilder(uuid);
+		if (useIdSpace) {
+			Component parent = comp.getParent();
+			while (parent != null) {
+				if (parent instanceof IdSpace) {
+					builder.insert(0, "_");
+					builder.insert(0, parent.getUuid());
+					break;
+				} else {
+					parent = parent.getParent();
+				}
+			}
+		} else {
+			if (comp.getParent() != null) {
+				builder.insert(0, "_");
+				builder.insert(0, comp.getParent().getUuid());
+			}
+		}
+		
+		uuid = escapeId(builder.toString());
+		if (desktop.getComponentByUuidIfAny(uuid) == null) { // look to avoid dups
+			return uuid;
+		}
+		
 		String number;
         if ((number = (String)desktop.getAttribute("Id_Num")) == null) {
             number = "0";
@@ -56,7 +95,8 @@ public class AdempiereIdGenerator implements IdGenerator {
         int i = Integer.parseInt(number);
         i++;// Start from 1
         desktop.setAttribute("Id_Num", String.valueOf(i));
-        return "t_" + i;
+        
+        return uuid + "_" + i;
 	}
 
 	private static String getWidgetName(String widgetClass) {
