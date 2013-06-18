@@ -277,7 +277,7 @@ public final class Msg
 		//
 		if (retStr == null || retStr.length() == 0)
 		{
-			if (s_log.isLoggable(Level.INFO)) s_log.info("NOT found: " + AD_Message);
+			s_log.warning("NOT found: " + AD_Message);
 			return AD_Message;
 		}
 
@@ -434,7 +434,7 @@ public final class Msg
 		}
 		catch (ClassNotFoundException e)
 		{
-			if (s_log.isLoggable(Level.FINER))s_log.log(Level.FINER, "Class not found: " + className);
+			s_log.warning("Class not found: " + className);
 		}
 		catch (Exception e)
 		{
