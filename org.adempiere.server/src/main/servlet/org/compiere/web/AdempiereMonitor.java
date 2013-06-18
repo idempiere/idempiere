@@ -879,7 +879,10 @@ public class AdempiereMonitor extends HttpServlet
 		info = db.getDescription();
 		line.addElement(new th().addElement(info));
 		line.addElement(new td().addElement(cc.getConnectionURL()));
-//		line.addElement(new td().addElement(system.getDBInstance()));
+		table.addElement(line);
+		line = new tr();
+		line.addElement(new th().addElement("DB Connection Pool"));
+		line.addElement(new td().addElement(cc.getDatabase().getStatus()));
 		table.addElement(line);
 		//	Processors/Support
 		line = new tr();

@@ -635,13 +635,19 @@ public class CLogMgt
 			ctx = Env.getCtx();
 		//  Envoronment
 		CConnection cc = CConnection.get();
-		sb.append(NL)
-			.append("=== Environment === ")
+		sb.append(NL).append(NL)
+			.append("=== Environment === ").append(NL)
 			.append(Adempiere.getCheckSum()).append(NL)
 			.append(Adempiere.getSummaryAscii()).append(NL)
 			.append(getLocalHost()).append(NL)
 			.append(cc.getName() + " " + cc.getDbUid() + "@" + cc.getConnectionURL()).append(NL)
 			.append(cc.getInfo()).append(NL);
+		
+		//connection pool
+		sb.append(NL)
+			.append("=== DB Connection Pool === ").append(NL)
+			.append(cc.getDatabase().getStatus().replace(" , ", NL)).append(NL);
+		
 		//  Context
 		sb.append(NL)
 			.append("=== Context ===").append(NL);
@@ -660,6 +666,7 @@ public class CLogMgt
 			String value = System.getProperty(key);
 			sb.append(key).append("=").append(value).append(NL);
 		}
+		
 		return sb;
 	}   //  getInfoDetail
 
