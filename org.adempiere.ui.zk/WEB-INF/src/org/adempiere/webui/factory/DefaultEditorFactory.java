@@ -103,7 +103,7 @@ public class DefaultEditorFactory implements IEditorFactory {
         }
 
         /** Text */
-        else if (displayType == DisplayType.Text || displayType == DisplayType.Memo || displayType == DisplayType.TextLong)
+        else if (displayType == DisplayType.Text || displayType == DisplayType.Memo || displayType == DisplayType.TextLong || displayType == DisplayType.ID)
         {
             editor = new WStringEditor(gridField, tableEditor);
         }
@@ -127,8 +127,7 @@ public class DefaultEditorFactory implements IEditorFactory {
 
         /** Table Direct */
         else if (displayType == DisplayType.TableDir ||
-                displayType == DisplayType.Table || displayType == DisplayType.List
-                || displayType == DisplayType.ID )
+                displayType == DisplayType.Table || displayType == DisplayType.List)
         {
             editor = new WTableDirEditor(gridField);
         }
