@@ -49,6 +49,7 @@ public class ADTreePanel extends Panel implements EventListener<Event>
     private ToolBarButton expandToggle; // Elaine 2009/02/27 - expand tree
 	private int m_windowno = -1;
 	private int m_tabno = -1;
+	private int AD_Tree_ID = -1;
     	
     public ADTreePanel()
     {
@@ -66,10 +67,16 @@ public class ADTreePanel extends Panel implements EventListener<Event>
      * @param AD_Tree_ID
      * @param windowNo
      */
-    public void initTree(int AD_Tree_ID, int windowNo) 
+    public boolean initTree(int AD_Tree_ID, int windowNo) 
     {
-    	SimpleTreeModel.initADTree(tree, AD_Tree_ID, windowNo);
-    	pnlSearch.initialise();
+    	if (this.AD_Tree_ID != AD_Tree_ID)
+    	{
+	    	this.AD_Tree_ID = AD_Tree_ID;
+	    	SimpleTreeModel.initADTree(tree, AD_Tree_ID, windowNo);
+	    	pnlSearch.initialise();
+	    	return true;
+    	}
+    	return false;
     }
     
     private void init()

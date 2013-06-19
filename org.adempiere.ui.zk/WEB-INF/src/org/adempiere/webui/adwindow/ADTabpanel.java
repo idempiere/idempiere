@@ -606,10 +606,10 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         	if (gridTab.getRecord_ID() >= 0) {
         		if (AD_Tree_ID != 0) {
         			treePanel.initTree(AD_Tree_ID, windowNo);
-        			setSelectedNode(gridTab.getRecord_ID());
+        			Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
         		} else if (AD_Tree_ID_Default != 0) {
         			treePanel.initTree(AD_Tree_ID_Default, windowNo);
-        			setSelectedNode(gridTab.getRecord_ID());
+        			Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
         		}
         	} else {
         		treePanel.getTree().clear();
@@ -794,6 +794,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         }
 
         Events.sendEvent(this, new Event(ON_DYNAMIC_DISPLAY_EVENT, this));
+        Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
         if (logger.isLoggable(Level.CONFIG)) logger.config(gridTab.toString() + " - fini - " + (col<=0 ? "complete" : "seletive"));
     }   //  dynamicDisplay
 
@@ -954,7 +955,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         }
 
         if (gridTab.getRecord_ID() > 0 && gridTab.isTreeTab() && treePanel != null) {
-        	setSelectedNode(gridTab.getRecord_ID());
+        	Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
         }
         
         Event event = new Event(ON_ACTIVATE_EVENT, this, activate);
@@ -1003,7 +1004,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     		navigateTo((DefaultTreeNode<MTreeNode>)item.getValue());
     	}
     	else if (ON_DEFER_SET_SELECTED_NODE.equals(event.getName())) {
-    		if (gridTab.getRecord_ID() > 0 && gridTab.isTreeTab() && treePanel != null) {
+    		if (gridTab.getRecord_ID() >= 0 && gridTab.isTreeTab() && treePanel != null) {
             	setSelectedNode(gridTab.getRecord_ID());
             }
     	}
@@ -1196,8 +1197,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         			{
         				if (AD_Tree_ID != 0)
         				{
-                			treePanel.initTree(AD_Tree_ID, windowNo);
-                    		setSelectedNode(gridTab.getRecord_ID());
+                			if (treePanel.initTree(AD_Tree_ID, windowNo))
+                				Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
+                			else
+                				setSelectedNode(gridTab.getRecord_ID());
+                			
                 		}   
         				else
         				{
