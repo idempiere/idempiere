@@ -54,7 +54,7 @@ public class MSequence extends X_AD_Sequence
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -631878634759124313L;
+	private static final long serialVersionUID = 7331047665037991960L;
 
 	/** Log Level for Next ID Call					*/
 	private static final Level LOGLEVEL = Level.ALL;
@@ -323,7 +323,7 @@ public class MSequence extends X_AD_Sequence
 		return getDocumentNoFromSeq(seq, trxName, po);
 	}	//	getDocumentNo
 
-	private static String getDocumentNoFromSeq(MSequence seq, String trxName, PO po) {
+	public static String getDocumentNoFromSeq(MSequence seq, String trxName, PO po) {
 		//	Check AdempiereSys
 		boolean adempiereSys = false;
 		if (Ini.isClient()) 
