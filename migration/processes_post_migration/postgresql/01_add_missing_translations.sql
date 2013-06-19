@@ -65,5 +65,3 @@ $func$ LANGUAGE plpgsql;
 
 select add_missing_translations();
 
-commit;
-

@@ -486,6 +486,7 @@ public abstract class Convert
 			"AD_CHANGELOG",
 			"AD_DOCUMENT_ACTION_ACCESS",
 			"AD_FORM_ACCESS",
+			"AD_INFOWINDOW_ACCESS",
 			"AD_ISSUE",
 			"AD_LDAPPROCESSORLOG",
 			"AD_PACKAGE_IMP",

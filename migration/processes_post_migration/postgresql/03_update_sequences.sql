@@ -126,4 +126,3 @@ $func$ LANGUAGE plpgsql;
 
 select update_sequences();
 
-commit;

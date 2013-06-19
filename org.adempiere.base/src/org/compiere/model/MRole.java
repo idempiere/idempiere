@@ -485,6 +485,16 @@ public final class MRole extends X_AD_Role
 			+ " AND da.C_DocType_ID=doctype.C_DocType_ID AND da.AD_Ref_List_ID=action.AD_Ref_List_ID) "
 			+ "WHERE (da.C_DocType_ID IS NULL AND da.AD_Ref_List_ID IS NULL)) ";
 
+		String sqlInfo = "INSERT INTO AD_InfoWindow_Access "
+				+ "(AD_InfoWindow_ID, AD_Role_ID,"
+				+ " AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy) "
+				+ "SELECT i.AD_InfoWindow_ID," + getAD_Role_ID() + ","
+				+ getAD_Client_ID() + "," + getAD_Org_ID() + ",'Y',SysDate," 
+				+ getUpdatedBy() + ", SysDate," + getUpdatedBy()
+				+ " FROM AD_InfoWindow i LEFT JOIN AD_InfoWindow_Access ia ON "
+				+ "(ia.AD_Role_ID=" + getAD_Role_ID()
+				+ " AND i.AD_InfoWindow_ID = ia.AD_InfoWindow_ID) "
+				+ "WHERE i.AD_Client_ID IN (0," + getAD_Client_ID() + ") AND ia.AD_InfoWindow_ID IS NULL";
 
 		/**
 		 *	Fill AD_xx_Access
@@ -525,13 +535,15 @@ public final class MRole extends X_AD_Role
 		int form = DB.executeUpdateEx(sqlForm + roleAccessLevel, get_TrxName());
 		int wf = DB.executeUpdateEx(sqlWorkflow + roleAccessLevel, get_TrxName());
 		int docact = DB.executeUpdateEx(sqlDocAction, get_TrxName());
-		
+		int info = DB.executeUpdateEx(sqlInfo, get_TrxName());
+
 		loadAccess(true);
 		return "@AD_Window_ID@ #" + win 
 			+ " -  @AD_Process_ID@ #" + proc
 			+ " -  @AD_Form_ID@ #" + form
 			+ " -  @AD_Workflow_ID@ #" + wf
-			+ " -  @DocAction@ #" + docact;
+			+ " -  @DocAction@ #" + docact
+			+ " -  @AD_InfoWindow_ID@ #" + info;
 		
 	}	//	createAccessRecords
 
@@ -546,13 +558,14 @@ public final class MRole extends X_AD_Role
 		int formDel = DB.executeUpdateEx("DELETE FROM AD_Form_Access" + whereDel, get_TrxName());
 		int wfDel = DB.executeUpdateEx("DELETE FROM AD_WorkFlow_Access" + whereDel, get_TrxName());
 		int docactDel = DB.executeUpdateEx("DELETE FROM AD_Document_Action_Access" + whereDel, get_TrxName());
-		
+		int infoDel = DB.executeUpdateEx("DELETE FROM AD_InfoWindow_Access" + whereDel, get_TrxName());
 
 		if (log.isLoggable(Level.FINE)) log.fine("AD_Window_Access=" + winDel
 			+ ", AD_Process_Access=" + procDel
 			+ ", AD_Form_Access=" + formDel
 			+ ", AD_Workflow_Access=" + wfDel
-			+ ", AD_Document_Action_Access=" + docactDel);
+			+ ", AD_Document_Action_Access=" + docactDel
+			+ ", AD_InfoWindow_Access=" + infoDel);
 	}
 	
 	/**
@@ -644,6 +657,8 @@ public final class MRole extends X_AD_Role
 	private HashMap<Integer,Boolean>	m_workflowAccess = null;
 	/**	Form Access				*/
 	private HashMap<Integer,Boolean>	m_formAccess = null;
+	/**	Info Windows			*/
+	private HashMap<Integer, Boolean> m_infoAccess;
 
 	/**
 	 * 	Set Logged in user
@@ -2784,7 +2799,6 @@ public final class MRole extends X_AD_Role
 	}
 	
 	private int m_includedSeqNo = -1;
-	private HashMap<Integer, Boolean> m_infoAccess;
 	
 	/**
 	 * Merge permissions access 
