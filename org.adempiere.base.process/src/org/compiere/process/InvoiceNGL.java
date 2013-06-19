@@ -260,6 +260,19 @@ public class InvoiceNGL extends SvrProcess
 			if (invoice.getC_Currency_ID() == as.getC_Currency_ID())
 				continue;
 			//
+			if (AD_Org_ID == 0)		//	invoice org id
+				AD_Org_ID = gl.getAD_Org_ID();
+			//	Change in Org
+			if (AD_Org_ID != gl.getAD_Org_ID())
+			{
+				createBalancing (asDefaultAccts, journal, drTotal, crTotal, AD_Org_ID, (i+1) * 10);
+				//
+				AD_Org_ID = gl.getAD_Org_ID();
+				drTotal = Env.ZERO;
+				crTotal = Env.ZERO;
+				journal = null;
+			}
+			//
 			if (journal == null)
 			{
 				journal = new MJournal (batch);
@@ -288,19 +301,6 @@ public class InvoiceNGL extends SvrProcess
 			line.setAmtSourceCr (cr);
 			line.setAmtAcctCr (cr);
 			line.saveEx();
-			//
-			if (AD_Org_ID == 0)		//	invoice org id
-				AD_Org_ID = gl.getAD_Org_ID();
-			//	Change in Org
-			if (AD_Org_ID != gl.getAD_Org_ID())
-			{
-				createBalancing (asDefaultAccts, journal, drTotal, crTotal, AD_Org_ID, (i+1) * 10);
-				//
-				AD_Org_ID = gl.getAD_Org_ID();
-				drTotal = Env.ZERO;
-				crTotal = Env.ZERO;
-				journal = null;
-			}
 		}
 		createBalancing (asDefaultAccts, journal, drTotal, crTotal, AD_Org_ID, (list.size()+1) * 10);
 		
