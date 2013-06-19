@@ -772,7 +772,14 @@ public class MLookupFactory
 		return lInfo;
 	}	//	getLookup_TableDir
 
-	private static StringBuilder getDisplayColumn(Language language, String TableName, ArrayList<LookupDisplayColumn> list) {
+	private static StringBuilder getDisplayColumn(Language language,
+			String tableName, ArrayList<LookupDisplayColumn> list) {
+		return getDisplayColumn(language, tableName, list, null);
+	}
+
+	private static StringBuilder getDisplayColumn(Language language,
+			String TableName, ArrayList<LookupDisplayColumn> list,
+			String baseTable) {
 		StringBuilder displayColumn = new StringBuilder();
 		int size = list.size();
 		//  Get Display Column
@@ -787,7 +794,8 @@ public class MLookupFactory
 			displayColumn.append("NVL(");
 
 			//  translated
-			if (ldc.IsTranslated && !Env.isBaseLanguage(language, TableName) && !ldc.IsVirtual)
+			if (ldc.IsTranslated && !Env.isBaseLanguage(language, TableName) && !ldc.IsVirtual
+				&& baseTable != null && !(TableName+"_Trl").equalsIgnoreCase(baseTable))
 			{
 				displayColumn.append(TableName).append("_Trl.").append(ldc.ColumnName);
 			}
@@ -886,11 +894,12 @@ public class MLookupFactory
 		//
 		StringBuilder embedSQL = new StringBuilder("SELECT ");
 
-		StringBuilder displayColumn = getDisplayColumn(language, TableName, list);
+		StringBuilder displayColumn = getDisplayColumn(language, TableName, list, BaseTable);
 		embedSQL.append(displayColumn.toString());
 		embedSQL.append(" FROM ").append(TableName);
 		//  Translation
-		if (isTranslated && !Env.isBaseLanguage(language, TableName))
+		if (   isTranslated && !Env.isBaseLanguage(language, TableName)
+			&& !(TableName+"_Trl").equalsIgnoreCase(BaseTable))  // IDEMPIERE-1070
 		{
 			embedSQL.append(" INNER JOIN ").append(TableName).append("_TRL ON (")
 				.append(TableName).append(".").append(KeyColumn)
