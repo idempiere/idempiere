@@ -622,14 +622,14 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
 	private void loadToolbarButtons() {
 		//get extra toolbar process buttons
-        MToolBarButton[] mToolbarButtons = MToolBarButton.getOfTab(gridTab.getAD_Tab_ID(), null);
+        MToolBarButton[] mToolbarButtons = MToolBarButton.getProcessButtonOfTab(gridTab.getAD_Tab_ID(), null);
         for(MToolBarButton mToolbarButton : mToolbarButtons) {
         	ToolbarProcessButton toolbarProcessButton = new ToolbarProcessButton(mToolbarButton, this, windowPanel, windowNo);
         	toolbarProcessButtons.add(toolbarProcessButton);
         }
         
         if (toolbarProcessButtons.size() > 0) {
-        	int ids[] = MToolBarButtonRestrict.getOfTab(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), gridTab.getAD_Tab_ID(), null);
+        	int ids[] = MToolBarButtonRestrict.getProcessButtonOfTab(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), gridTab.getAD_Tab_ID(), null);
         	if (ids != null && ids.length > 0) {
         		for(int id : ids) {
         			X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(Env.getCtx(), id, null);

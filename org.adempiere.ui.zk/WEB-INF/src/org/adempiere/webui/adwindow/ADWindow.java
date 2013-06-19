@@ -18,6 +18,10 @@
 package org.adempiere.webui.adwindow;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.adempiere.webui.desktop.IDesktop;
@@ -25,7 +29,11 @@ import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MImage;
 import org.compiere.model.MQuery;
+import org.compiere.model.MRole;
+import org.compiere.model.MToolBarButtonRestrict;
+import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Component;
 
@@ -51,6 +59,10 @@ public class ADWindow extends AbstractUIPart
 	
 	private static final CCache<Integer, AImage> imageCache = new CCache<Integer, AImage>(null, "WindowImageCache", 5, false);
     
+	private Map<Integer, List<String>> tabToolbarRestricMap = new HashMap<Integer, List<String>>();
+	
+	private List<String> windowToolbarRestrictList = null;
+	
 	/**
 	 * 
 	 * @param ctx
@@ -147,6 +159,44 @@ public class ADWindow extends AbstractUIPart
 	 */
 	public ADWindowContent getADWindowContent() {
 		return windowContent;
+	}
+	
+	public List<String> getTabToolbarRestrictList(int AD_Tab_ID) {
+		List<String> tabRestrictList = tabToolbarRestricMap.get(AD_Tab_ID);
+        if (tabRestrictList == null) {
+        	tabRestrictList = new ArrayList<String>();
+        	tabToolbarRestricMap.put(AD_Tab_ID, tabRestrictList);
+        	int[] restrictionList = MToolBarButtonRestrict.getOfTab(Env.getCtx(), MRole.getDefault().getAD_Role_ID(), 
+        			adWindowId, AD_Tab_ID, null);
+    		
+			for (int i = 0; i < restrictionList.length; i++)
+			{
+				int ToolBarButton_ID= restrictionList[i];
+
+				X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(Env.getCtx(), ToolBarButton_ID, null);
+				String restrictName = ADWindowToolbar.BTNPREFIX + tbt.getComponentName();
+				tabRestrictList.add(restrictName);
+			}
+        }
+        return tabRestrictList;
+	}
+	
+	public List<String> getWindowToolbarRestrictList() {		
+		if (windowToolbarRestrictList == null) {
+			//load window restriction
+			windowToolbarRestrictList = new ArrayList<String>();
+	        int[] restrictionList = MToolBarButtonRestrict.getOfWindow(Env.getCtx(), MRole.getDefault().getAD_Role_ID(), adWindowId, false, null);
+	
+			for (int i = 0; i < restrictionList.length; i++)
+			{
+				int ToolBarButton_ID= restrictionList[i];
+	
+				X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(Env.getCtx(), ToolBarButton_ID, null);
+				String restrictName = ADWindowToolbar.BTNPREFIX + tbt.getComponentName();
+				windowToolbarRestrictList.add(restrictName);		
+			}	// All restrictions
+		}
+		return windowToolbarRestrictList;
 	}
 	
 	/**

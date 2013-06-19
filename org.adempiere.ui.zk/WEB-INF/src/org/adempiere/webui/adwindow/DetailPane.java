@@ -4,6 +4,7 @@
 package org.adempiere.webui.adwindow;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.adempiere.webui.LayoutUtils;
@@ -45,6 +46,14 @@ import org.zkoss.zul.Toolbar;
  */
 public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 
+	private static final String BTN_PROCESS_ID = "BtnProcess";
+
+	private static final String BTN_DELETE_ID = "BtnDelete";
+
+	private static final String BTN_EDIT_ID = "BtnEdit";
+
+	private static final String BTN_NEW_ID = "BtnNew";
+
 	private static final String TABBOX_ONSELECT_ATTRIBUTE = "detailpane.tabbox.onselect";
 
 	public static final String ON_POST_SELECT_TAB_EVENT = "onPostSelectTab";
@@ -82,7 +91,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	public static final String ON_NEW_EVENT = "onNew";
 
 	public static final String ON_EDIT_EVENT = "onEdit";
-	
+
 	public DetailPane() {
 		tabbox = new Tabbox();
 		tabbox.setParent(this);
@@ -105,6 +114,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		addEventListener(LayoutUtils.ON_REDRAW_EVENT, this);		
 				
 		setId("detailPane");
+		
 	}
 	
 	/**
@@ -245,7 +255,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		
 		button = new ToolBarButton();		
 		button.setImage(ThemeManager.getThemeResource(NEW_IMAGE));
-		button.setId("BtnNew");
+		button.setId(BTN_NEW_ID);
 		toolbar.appendChild(button);
 		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
@@ -257,7 +267,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		
 		button = new ToolBarButton();
 		button.setImage(ThemeManager.getThemeResource(EDIT_IMAGE));
-		button.setId("BtnEdit");
+		button.setId(BTN_EDIT_ID);
 		toolbar.appendChild(button);
 		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
@@ -269,7 +279,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		
 		button = new ToolBarButton();
 		button.setImage(ThemeManager.getThemeResource(DELETE_IMAGE));
-		button.setId("BtnDelete");
+		button.setId(BTN_DELETE_ID);
 		toolbar.appendChild(button);
 		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
@@ -283,7 +293,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		if (!tabPanel.getGridTab().isSortTab()) {
 			button = new ToolBarButton();
 			button.setImage(ThemeManager.getThemeResource(PROCESS_IMAGE));
-			button.setId("BtnProcess");
+			button.setId(BTN_PROCESS_ID);
 			toolbar.appendChild(button);
 			button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 				@Override
@@ -542,21 +552,30 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         }
         boolean enableNew = !changed && insertRecord && !adtab.getGridTab().isSortTab();
         boolean enableDelete = !changed && !readOnly && !adtab.getGridTab().isSortTab();
-        String newImage = ThemeManager.getThemeResource(NEW_IMAGE);
-        String deleteImage = ThemeManager.getThemeResource(DELETE_IMAGE);
-        String editImage = ThemeManager.getThemeResource(EDIT_IMAGE);
+        
+        ADWindow adwindow = ADWindow.findADWindow(this);
+        List<String> tabRestrictList = adwindow.getTabToolbarRestrictList(adtab.getGridTab().getAD_Tab_ID());
+        List<String> windowRestrictList = adwindow.getWindowToolbarRestrictList();
+        
         for(Component c : toolbar.getChildren()) {
         	if (c instanceof ToolBarButton) {
         		ToolBarButton btn = (ToolBarButton) c;
-        		if (newImage.equals(btn.getImage())) {
+        		if (BTN_NEW_ID.equals(btn.getId())) {
         			btn.setDisabled(!enableNew);
-        		} else if (deleteImage.equals(btn.getImage())) {
+        		} else if (BTN_DELETE_ID.equals(btn.getId())) {
         			btn.setDisabled(!enableDelete);
-        		} else if (editImage.equals(btn.getImage())) {
+        		} else if (BTN_EDIT_ID.equals(btn.getId())) {
         			btn.setDisabled(false);
         		}
+        		if (windowRestrictList.contains(btn.getId())) {
+        			btn.setVisible(false);
+        		} else if (tabRestrictList.contains(btn.getId())) {
+        			btn.setVisible(false);
+        		} else {
+        			btn.setVisible(true);
+        		}
         	}        	
-        }
+        }               
 	}
 	
 	private void updateProcessToolbar() {

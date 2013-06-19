@@ -35,6 +35,7 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 			+ " AND AD_Client_ID IN (0, ?)"
 			+ " AND (AD_Role_ID IS NULL OR AD_Role_ID = ?)"	
 			+ " AND (AD_Window_ID IS NULL OR (Action='W' AND AD_Window_ID=?))"
+			+ " AND AD_Tab_ID IS NULL"
 			+ " AND AD_ToolBarButton_ID IN" 
 			+ " (SELECT AD_ToolBarButton_ID FROM AD_ToolBarButton WHERE AD_Tab_ID IS NULL AND IsActive='Y' AND Action=?)";
 	
@@ -45,7 +46,7 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 			+ " AND AD_ToolBarButton_ID IN" 
 			+ " (SELECT AD_ToolBarButton_ID FROM AD_ToolBarButton WHERE AD_Tab_ID IS NULL AND IsActive='Y' AND Action=?)";
 
-	private static final String GET_OF_TAB_SQL = "SELECT AD_ToolBarButton_ID FROM AD_ToolBarButtonRestrict WHERE IsActive = 'Y'"
+	private static final String GET_PROCESS_BUTTON_OF_TAB_SQL = "SELECT AD_ToolBarButton_ID FROM AD_ToolBarButtonRestrict WHERE IsActive = 'Y'"
 			+ " AND AD_Client_ID IN (0, ?)"
 			+ " AND (AD_Role_ID IS NULL OR AD_Role_ID = ?)"	
 			+ " AND Action='W'"
@@ -53,6 +54,13 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 			+ " (SELECT AD_ToolBarButton_ID FROM AD_ToolBarButton WHERE AD_Tab_ID=?" 
 			+ " AND AD_Process_ID IS NOT NULL AND IsActive='Y' AND Action='W')";
 
+	private static final String GET_OF_TAB_SQL = "SELECT AD_ToolBarButton_ID FROM AD_ToolBarButtonRestrict WHERE IsActive = 'Y'"
+			+ " AND AD_Client_ID IN (0, ?)"
+			+ " AND (AD_Role_ID IS NULL OR AD_Role_ID = ?)"	
+			+ " AND AD_Window_ID=?"
+			+ " AND AD_Tab_ID=?"
+			+ " AND AD_ToolBarButton_ID IN" 
+			+ " (SELECT AD_ToolBarButton_ID FROM AD_ToolBarButton WHERE AD_Process_ID IS NULL AND IsActive='Y')";
 	/**
 	 * 
 	 */
@@ -100,10 +108,27 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	}	//	getOfWindow
 	
 	/** 
-	 * Returns a list of restrictions to be applied according to the role, the window of the form ...
+	 * Returns a list of restrictions to be applied according to the role, the tab of the window ...
 	 * @param ctx
 	 * @param AD_Role_ID
 	 * @param AD_Window_ID
+	 * @param AD_Tab_ID
+	 * @param trxName
+	 **/
+	public static int[] getOfTab(Properties ctx, int AD_Role_ID, int AD_Window_ID, int AD_Tab_ID, String trxName)
+	{		
+		if (s_log.isLoggable(Level.INFO)) s_log.info("sql="+GET_OF_TAB_SQL);
+		
+		int[] ids = DB.getIDsEx(trxName, GET_OF_TAB_SQL, Env.getAD_Client_ID(ctx), AD_Role_ID, AD_Window_ID, AD_Tab_ID);
+
+		return ids;
+	}	//	getOfWindow
+	
+	/** 
+	 * Returns a list of restrictions to be applied according to the role, the report/process ...
+	 * @param ctx
+	 * @param AD_Role_ID
+	 * @param AD_Process_ID
 	 * @param trxName
 	 **/
 	public static int[] getOfReport(Properties ctx, int AD_Role_ID, int AD_Process_ID, String trxName)
@@ -115,12 +140,18 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 		return ids;
 	}	//	getOf
 	
-	/** Returns a list of restrictions to be applied according to the role for ad_tab toolbar buttons **/
-	public static int[] getOfTab(Properties ctx, int AD_Role_ID, int AD_Tab_ID, String trxName)
+	/** 
+	 * Returns a list of restrictions to be applied according to the role for tab process toolbar buttons
+	 * @param ctx
+	 * @param AD_Role_ID
+	 * @param AD_Tab_ID
+	 * @param trxName 
+	 **/
+	public static int[] getProcessButtonOfTab(Properties ctx, int AD_Role_ID, int AD_Tab_ID, String trxName)
 	{
-		if (s_log.isLoggable(Level.INFO)) s_log.info("sql="+GET_OF_TAB_SQL);
+		if (s_log.isLoggable(Level.INFO)) s_log.info("sql="+GET_PROCESS_BUTTON_OF_TAB_SQL);
 		
-		int[] ids = DB.getIDsEx(trxName, GET_OF_TAB_SQL, Env.getAD_Client_ID(ctx), AD_Role_ID, AD_Tab_ID);
+		int[] ids = DB.getIDsEx(trxName, GET_PROCESS_BUTTON_OF_TAB_SQL, Env.getAD_Client_ID(ctx), AD_Role_ID, AD_Tab_ID);
 
 		return ids;
 	}	//	getOfTab

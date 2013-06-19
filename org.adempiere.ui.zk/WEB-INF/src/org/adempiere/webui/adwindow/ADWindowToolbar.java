@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.IServiceHolder;
@@ -36,10 +35,9 @@ import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
+import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.model.MToolBarButton;
-import org.compiere.model.MToolBarButtonRestrict;
-import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -73,7 +71,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	 */
 	private static final long serialVersionUID = 3390505814516682801L;
 
-	private static final String BTNPREFIX = "Btn";
+	public static final String BTNPREFIX = "Btn";
 
     private static CLogger log = CLogger.getCLogger(ADWindowToolbar.class);
 
@@ -577,22 +575,12 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
 		if (ToolBarMenuRestictionLoaded)
 			return;
-		Properties m_ctx = Env.getCtx();
+		
+		ADWindow adwindow = ADWindow.findADWindow(this);
+		List<String> restrictionList = adwindow.getWindowToolbarRestrictList();
 
-		int ToolBarButton_ID = 0;
-
-		int[] restrictionList = MToolBarButtonRestrict.getOfWindow(m_ctx, MRole.getDefault().getAD_Role_ID(), AD_Window_ID, false, null);
-		if (log.isLoggable(Level.INFO))
-			log.info("restrictionList="+restrictionList.toString());
-
-		for (int i = 0; i < restrictionList.length; i++)
+		for (String restrictName : restrictionList)
 		{
-			ToolBarButton_ID= restrictionList[i];
-
-			X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(m_ctx, ToolBarButton_ID, null);
-			String restrictName = BTNPREFIX + tbt.getComponentName();
-			if (log.isLoggable(Level.CONFIG)) log.config("tbt="+tbt.getAD_ToolBarButton_ID() + " / " + restrictName);
-
 			for (Component p = this.getFirstChild(); p != null; p = p.getNextSibling()) {
 				if (p instanceof ToolBarButton) {
 					if ( restrictName.equals(((ToolBarButton)p).getName()) ) {
@@ -655,6 +643,33 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void dynamicDisplay() {
 		for(ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons) {
 			toolbarCustomBtn.dynamicDisplay();
+		}
+		
+		ADWindow adwindow = ADWindow.findADWindow(this);
+		GridTab gridTab = adwindow.getADWindowContent().getActiveGridTab();
+		if (gridTab != null) {
+			int AD_Tab_ID = gridTab.getAD_Tab_ID();
+			List<String> restrictionList = adwindow.getTabToolbarRestrictList(AD_Tab_ID);
+		
+			for (Component p = this.getFirstChild(); p != null; p = p.getNextSibling()) {
+				if (p instanceof ToolBarButton) {
+					if (!p.isVisible())
+						p.setVisible(true);
+				}
+			}
+			
+			for (String restrictName : restrictionList)
+			{
+				for (Component p = this.getFirstChild(); p != null; p = p.getNextSibling()) {
+					if (p instanceof ToolBarButton) {
+						if ( restrictName.equals(((ToolBarButton)p).getName()) ) {
+							p.setVisible(false);
+							break;
+						}
+					}
+				}
+
+			}
 		}
 	}
 

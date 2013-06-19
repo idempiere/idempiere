@@ -49,10 +49,10 @@ public class MToolBarButton extends X_AD_ToolBarButton {
 		super(ctx, rs, trxName);
 	}
 
-	public static MToolBarButton[] getOfTab(int AD_Tab_ID, String trxName) {
+	public static MToolBarButton[] getProcessButtonOfTab(int AD_Tab_ID, String trxName) {
 		MToolBarButton[] buttons = new MToolBarButton[0];
 		
-		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), Table_ID), "AD_Tab_ID=? AND Action=?", trxName);
+		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), Table_ID), "AD_Tab_ID=? AND Action=? AND AD_Process_ID IS NOT NULL", trxName);
 		List<MToolBarButton> list = query.setParameters(AD_Tab_ID, "W").setOnlyActiveRecords(true)
 				.setOrderBy("SeqNo").list();
 		if (list != null && !list.isEmpty()) {
