@@ -10,6 +10,7 @@
 	import org.compiere.util.Env;
 	
 	Env.setContext(Env.getCtx(), "#ZK_Toolbar_Button_Size", "24");	
+	Env.setContext(Env.getCtx(), "#ZK_BROWSER_TITLE", "iDempiere");
 ]]>
 </zscript>
 </zk>

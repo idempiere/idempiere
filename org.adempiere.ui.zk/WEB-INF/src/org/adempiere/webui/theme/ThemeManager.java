@@ -84,7 +84,8 @@ public final class ThemeManager {
 	 * @return title text for the browser window
 	 */
 	public static String getBrowserTitle() {
-		return MSysConfig.getValue(MSysConfig.ZK_BROWSER_TITLE, AdempiereWebUI.APP_NAME);
+		String s = Env.getContext(Env.getCtx(), "#ZK_BROWSER_TITLE");
+		return Util.isEmpty(s) ? MSysConfig.getValue(MSysConfig.ZK_BROWSER_TITLE, AdempiereWebUI.APP_NAME) : s;
 	}
 
 	/**
