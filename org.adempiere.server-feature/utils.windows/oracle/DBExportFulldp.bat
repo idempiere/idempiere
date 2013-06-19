@@ -1,8 +1,8 @@
 @Echo	Adempiere Full Database Export 	$Revision: 1.6 $
 
 @Rem $Id: DBExportFull.bat,v 1.6 2005/04/27 17:45:01 jjanke Exp $
-
-@Echo Saving database %1@%ADEMPIERE_DB_NAME% to %IDEMPIERE_HOME%\data\ExpDatFull.dmp
+@set Date=%date:~6,4%%date:~3,2%%date:~0,2%_%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%
+@Echo Saving database %1@%ADEMPIERE_DB_NAME% to %IDEMPIERE_HOME%\data\ExpDatFull_%Date%.dmp
 
 @if (%IDEMPIERE_HOME%) == () goto environment
 @if (%ADEMPIERE_DB_NAME%) == () goto environment
@@ -16,10 +16,10 @@
 @echo -------------------------------------
 @sqlplus %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\CreateDataPumpDir.sql %IDEMPIERE_HOME%\data
 
-@expdp %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDatFull.dmp LOGFILE=ExpDatFull.log EXCLUDE=STATISTICS FULL=Y
+@expdp %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDatFull_%Date%.dmp LOGFILE=ExpDatFull_%Date%.log EXCLUDE=STATISTICS FULL=Y
 
 @cd %IDEMPIERE_HOME%\data
-@jar cvfM data\ExpDatFull.jar ExpDatFull.dmp  ExpDatFull.log
+@jar cvfM data\ExpDatFull.jar ExpDatFull_%Date%.dmp  ExpDatFull_%Date%.log
 
 @goto end
 

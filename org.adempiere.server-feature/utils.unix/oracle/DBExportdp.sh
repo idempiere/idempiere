@@ -4,8 +4,8 @@ echo	Adempiere Database Export 	$Revision: 1.5 $
 
 # $Id: DBExport.sh,v 1.5 2005/12/20 07:12:17 jjanke Exp $
 
-echo Saving database $1@$ADEMPIERE_DB_NAME to $IDEMPIERE_HOME/data/ExpDat.dmp
 DATE=`date +%Y%m%d_%H%M%S`
+echo Saving database $1@$ADEMPIERE_DB_NAME to $IDEMPIERE_HOME/data/ExpDat_$DATE.dmp
 
 if [ $# -eq 0 ] 
   then
