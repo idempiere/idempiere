@@ -424,6 +424,7 @@ public class MMatchPO extends X_M_MatchPO
 							matchInv.setM_AttributeSetInstance_ID(mpo.getM_AttributeSetInstance_ID());
 							matchInv.setQty(mpo.getQty());
 							matchInv.setDateTrx(dateTrx);
+							matchInv.setProcessed(true);
 							if (!matchInv.save())
 							{
 								if (savepoint != null)
