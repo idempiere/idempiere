@@ -1752,7 +1752,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	boolean newrecod = adTabbox.getSelectedGridTab().isNew();
     	if (dirtyTabpanel != null && dirtyTabpanel.getGridTab().isSortTab())
     	{
-    		dirtyTabpanel.refresh();
+    		adTabbox.dataIgnore();
     		toolbar.enableIgnore(false);
     	}
     	else
@@ -1828,53 +1828,30 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			onSave0(onSaveEvent, onNavigationEvent, newRecord, wasChanged, callback);
 			return;
     	}
-    	if (dirtyTabpanel instanceof ADSortTab)
-    	{
-    		ADSortTab sortTab = (ADSortTab) dirtyTabpanel;
-    		sortTab.saveData();
+    	if (!Util.isEmpty(dirtyTabpanel.getGridTab().getCommitWarning()) ||
+			(!Env.isAutoCommit(ctx, curWindowNo) && onNavigationEvent))
+		{
+			FDialog.ask(curWindowNo, this.getComponent(), "SaveChanges?", dirtyTabpanel.getGridTab().getCommitWarning(), new Callback<Boolean>() {
 
-    		if (!onNavigationEvent)
-    		{
-	    		toolbar.enableSave(sortTab.isChanged());	//	set explicitly
-	    		toolbar.enableIgnore(sortTab.isChanged());
-    		}
-    		if (!sortTab.isChanged()) {
-    			if (sortTab == adTabbox.getSelectedTabpanel()) {
-    				statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Saved"));
-    			} else {
-    				adTabbox.setDetailPaneStatusMessage(Msg.getMsg(Env.getCtx(), "Saved"), false);
-    			}
-    		}
-    		if (callback != null)
-    			callback.onCallback(true);
-    	}
-    	else
-    	{
-    		if (!Util.isEmpty(dirtyTabpanel.getGridTab().getCommitWarning()) ||
-    			(!Env.isAutoCommit(ctx, curWindowNo) && onNavigationEvent))
-    		{
-    			FDialog.ask(curWindowNo, this.getComponent(), "SaveChanges?", dirtyTabpanel.getGridTab().getCommitWarning(), new Callback<Boolean>() {
-
-					@Override
-					public void onCallback(Boolean result)
+				@Override
+				public void onCallback(Boolean result)
+				{
+					if (result)
 					{
-						if (result)
-						{
-							onSave0(onSaveEvent, onNavigationEvent, newRecord, wasChanged, callback);
-						}
-						else
-						{
-							if (callback != null)
-				    			callback.onCallback(false);
-						}
+						onSave0(onSaveEvent, onNavigationEvent, newRecord, wasChanged, callback);
 					}
-				});
-    		}
-    		else
-    		{
-    			onSave0(onSaveEvent, onNavigationEvent, newRecord, wasChanged, callback);
-    		}
-    	}
+					else
+					{
+						if (callback != null)
+			    			callback.onCallback(false);
+					}
+				}
+			});
+		}
+		else
+		{
+			onSave0(onSaveEvent, onNavigationEvent, newRecord, wasChanged, callback);
+		}
     }
 
 	private void onSave0(boolean onSaveEvent, boolean navigationEvent,
@@ -1888,7 +1865,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			if (callback != null)
 				callback.onCallback(false);
 			return;
-		} else if (!onSaveEvent && dirtyTabpanel != null) //need manual refresh
+		} else if (!onSaveEvent && dirtyTabpanel != null && !(dirtyTabpanel instanceof ADSortTab)) //need manual refresh
 		{
 			dirtyTabpanel.getGridTab().setCurrentRow(dirtyTabpanel.getGridTab().getCurrentRow());
 		}
@@ -1902,6 +1879,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		if (dirtyTabpanel2 != null && dirtyTabpanel2 != dirtyTabpanel) {
 			onSave(onSaveEvent, navigationEvent, callback);
 			return;
+		} else if (dirtyTabpanel instanceof ADSortTab) {
+			ADSortTab sortTab = (ADSortTab) dirtyTabpanel;
+			if (!sortTab.isChanged()) {
+    			if (sortTab == adTabbox.getSelectedTabpanel()) {
+    				statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Saved"));
+    			} else {
+    				adTabbox.setDetailPaneStatusMessage(Msg.getMsg(Env.getCtx(), "Saved"), false);
+    			}
+    		}
 		}
 
 		if (wasChanged) {

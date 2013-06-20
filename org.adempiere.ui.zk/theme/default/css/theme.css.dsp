@@ -767,6 +767,17 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	display: inline-block;
 }
 
+.adwindow-detailpane-toolbar .z-toolbar-body .docstatus-normal,  
+.adwindow-detailpane-toolbar .z-toolbar-body .docstatus-error {
+	padding-left: 4px;
+	margin-top: 2px;
+}
+
+.adwindow-detailpane-toolbar .z-toolbar-body .docstatus-normal .z-label,
+.adwindow-detailpane-toolbar .z-toolbar-body .docstatus-error .z-label {
+	font-size: ${c:property('org.zkoss.zul.theme.fontSizeM')};
+}
+
 .adwindow-detailpane-message {
 	float: right;
 }
@@ -933,8 +944,8 @@ input:focus, textarea:focus, .z-combobox-inp:focus, z-datebox-inp:focus {
 <%-- menu tree cell --%>
 .menu-treecell-cnt div {
 	border: 0; margin: 0; padding: 0;
-	font-family: ${fontFamilyC};
-	font-size: ${fontSizeM}; 
+	font-family: ${c:property('org.zkoss.zul.theme.fontFamilyC')};
+	font-size: ${c:property('org.zkoss.zul.theme.fontSizeM')}; 
 	font-weight: normal;
     overflow-x: hidden;
     white-space: nowrap;
@@ -1094,15 +1105,15 @@ span.z-tab-text {
 div.z-tree-body td.menu-tree-cell {
 	cursor: pointer;
 	padding: 0 2px;
-   	font-size: ${fontSizeM};
+   	font-size: ${c:property('org.zkoss.zul.theme.fontSizeM')};
    	font-weight: normal;
    	overflow: visible;
 }
 
 div.menu-tree-cell-cnt {
 	border: 0; margin: 0; padding: 0;
-	font-family: ${fontFamilyC};
-	font-size: ${fontSizeM}; font-weight: normal;
+	font-family: ${c:property('org.zkoss.zul.theme.fontFamilyC')};
+	font-size: ${c:property('org.zkoss.zul.theme.fontSizeM')}; font-weight: normal;
     white-space:nowrap
 }
 
@@ -1118,17 +1129,17 @@ td.menu-tree-cell-disd a:visited, td.menu-tree-cell-disd a:hover {
 
 div.z-dottree-body td.menu-tree-cell {
 	cursor: pointer; padding: 0 2px;
-	font-size: ${fontSizeM}; font-weight: normal; overflow: visible;
+	font-size: ${c:property('org.zkoss.zul.theme.fontSizeM')}; font-weight: normal; overflow: visible;
 }
 
 div.z-filetree-body td.menu-tree-cell {
 	cursor: pointer; padding: 0 2px;
-	font-size: ${fontSizeM}; font-weight: normal; overflow: visible;
+	font-size: ${c:property('org.zkoss.zul.theme.fontSizeM')}; font-weight: normal; overflow: visible;
 }
 
 div.z-vfiletree-body td.menu-tree-cell {
 	cursor: pointer; padding: 0 2px;
-	font-size: ${fontSizeM}; font-weight: normal; overflow: visible;
+	font-size: ${c:property('org.zkoss.zul.theme.fontSizeM')}; font-weight: normal; overflow: visible;
 }
 
 div.simileAjax-bubble-container {

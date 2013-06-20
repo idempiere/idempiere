@@ -479,7 +479,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	 * Set tab change status.
 	 * @param value
 	 */
-	private void setIsChanged(boolean value) {
+	public void setIsChanged(boolean value) {
 		isChanged = value;
 		if (adWindowPanel != null) {
 			adWindowPanel.getToolbar().enableSave(value);
