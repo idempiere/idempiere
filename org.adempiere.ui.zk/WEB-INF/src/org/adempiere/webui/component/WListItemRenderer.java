@@ -39,6 +39,7 @@ import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MImage;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Language;
 import org.compiere.util.MSort;
 import org.compiere.util.Util;
 import org.zkoss.image.AImage;
@@ -254,9 +255,11 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 				}
 				else
 				{
-					DecimalFormat format = (field instanceof BigDecimal || field instanceof Double || field instanceof Float)
-						? DisplayType.getNumberFormat(DisplayType.Amount, AEnv.getLanguage(Env.getCtx()))
-					    : DisplayType.getNumberFormat(DisplayType.Integer, AEnv.getLanguage(Env.getCtx()));
+					Language lang = AEnv.getLanguage(Env.getCtx());
+					int displayType = (field instanceof BigDecimal || field instanceof Double || field instanceof Float)
+							? DisplayType.Amount
+						    : DisplayType.Integer;
+					DecimalFormat format = DisplayType.getNumberFormat(displayType, lang);
 
 					// set cell value to allow sorting
 					listcell.setValue(field.toString());
@@ -264,6 +267,8 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 					if (isCellEditable)
 					{
 						NumberBox numberbox = new NumberBox(false);
+						numberbox.getDecimalbox().setFormat(format.toPattern());
+						numberbox.getDecimalbox().setLocale(lang.getLocale());
 						numberbox.setFormat(format);
 						numberbox.setValue(field);
 //						numberbox.setWidth("100px");
