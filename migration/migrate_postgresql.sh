@@ -28,7 +28,7 @@ do
 	ls $DIR/postgresql/*.sql | while read file; do
            echo "SELECT '`basename "$file"`' AS Filename;"
            echo
-           cat "$file" | dos2unix | sed 's/commit[ ]*;//I'
+           cat "$file" | dos2unix | sed 's/[Cc][Oo][Mm][Mm][Ii][Tt][ ]*;//'
            echo
            echo
         done
@@ -39,7 +39,7 @@ then
    ls $DIRINI/../processes_post_migration/postgresql/*.sql | while read file; do
       echo "SELECT '`basename $file`' AS Filename;"
       echo
-      cat $file | dos2unix | sed 's/commit[ ]*;//I'
+      cat $file | dos2unix | sed 's/[Cc][Oo][Mm][Mm][Ii][Tt][ ]*;//'
       echo
       echo
    done
@@ -49,7 +49,7 @@ then
    ls $DIRINI/../my_processes_post_migration/postgresql/*.sql | while read file; do
       echo "SELECT '`basename "$file"`' AS Filename;"
       echo
-      cat "$file" | dos2unix | sed 's/commit[ ]*;//I'
+      cat "$file" | dos2unix | sed 's/[Cc][Oo][Mm][Mm][Ii][Tt][ ]*;//'
       echo
       echo
    done
