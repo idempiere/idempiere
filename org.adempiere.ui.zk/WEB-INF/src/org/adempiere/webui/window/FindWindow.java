@@ -102,6 +102,7 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Tab;
@@ -119,7 +120,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2452116093966974927L;
+	private static final long serialVersionUID = -5019862772740854656L;
 
 	// values and label for history combo
 	private static final String HISTORY_DAY_ALL = "All";
@@ -471,11 +472,19 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listhead.appendChild(lstHRightBracket);
         advancedPanel.appendChild(listhead);
         advancedPanel.setVflex(true);
+        
+        
 
         Borderlayout layout = new Borderlayout();
         layout.setHflex("1");
         layout.setVflex("1");
         winAdvanced.appendChild(layout);
+        
+        North north =new North();
+        layout.appendChild(north);        
+        north.appendChild(toolBar);
+       
+        toolBar.setVflex("0");
 
         Center center = new Center();
         layout.appendChild(center);

@@ -4,7 +4,8 @@ echo	Adempiere Full Database Export 	$Revision: 1.3 $
 
 # $Id: DBExportFull.sh,v 1.3 2005/01/22 21:59:15 jjanke Exp $
 
-echo Saving database $1@$ADEMPIERE_DB_NAME to $IDEMPIERE_HOME/data/ExpDatFull.dmp
+DATE=`date +%Y%m%d_%H%M%S`
+echo Saving database $1@$ADEMPIERE_DB_NAME to $IDEMPIERE_HOME/data/ExpDatFull_$DATE.dmp
 
 if [ $# -eq 0 ] 
   then
@@ -27,8 +28,8 @@ sqlplus $1@$ADEMPIERE_DB_SERVER/$ADEMPIERE_DB_NAME @$IDEMPIERE_HOME/utils/$ADEMP
 chgrp dba $IDEMPIERE_HOME/data
 chmod 770 $IDEMPIERE_HOME/data
 
-expdp $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDatFull.dmp LOGFILE=ExpDatFull.log EXCLUDE=STATISTICS FULL=Y
+expdp $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDatFull_$DATE.dmp LOGFILE=ExpDatFull_$DATE.log EXCLUDE=STATISTICS FULL=Y
 
 cd $IDEMPIERE_HOME/data
-jar cvfM ExpDatFull.jar ExpDatFull.dmp  ExpDatFull.log
+jar cvfM ExpDatFull.jar ExpDatFull_$DATE.dmp  ExpDatFull_$DATE.log
 

@@ -406,6 +406,7 @@ public class DataEngine
 						.append(lookupSQL).append(" AS ").append(ColumnName).append(",");
 					groupByColumns.add(m_synonym+display);
 					groupByColumns.add(lookupSQL);
+					orderName = m_synonym + display;
 					//
 					TableReference tr = getTableReference(AD_Reference_Value_ID);
 					String foreignColumnName = tr.KeyColumn;

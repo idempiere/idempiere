@@ -4,7 +4,8 @@ echo	Adempiere Database Export 	$Revision: 1.5 $
 
 # $Id: DBExport.sh,v 1.5 2005/12/20 07:12:17 jjanke Exp $
 
-echo Saving database $1@$ADEMPIERE_DB_NAME to $IDEMPIERE_HOME/data/ExpDat.dmp
+DATE=`date +%Y%m%d_%H%M%S`
+echo Saving database $1@$ADEMPIERE_DB_NAME to $IDEMPIERE_HOME/data/ExpDat_$DATE.dmp
 
 if [ $# -eq 0 ] 
   then
@@ -31,7 +32,7 @@ chgrp dba $IDEMPIERE_HOME/data
 chmod 770 $IDEMPIERE_HOME/data
 
 # Export
-expdp $1/$2@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDat.dmp LOGFILE=ExpDat.log EXCLUDE=STATISTICS SCHEMAS=$1
+expdp $1/$2@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDat_$DATE.dmp LOGFILE=ExpDat_$DATE.log EXCLUDE=STATISTICS SCHEMAS=$1
 
 cd $IDEMPIERE_HOME/data
-jar cvfM ExpDat.jar ExpDat.dmp ExpDat.log
+jar cvfM ExpDat.jar ExpDat_$DATE.dmp ExpDat_$DATE.log

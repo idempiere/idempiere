@@ -634,10 +634,11 @@ public class MLookupFactory
 		}
 
 		StringBuilder embedSQL = new StringBuilder("SELECT ");
-
+		boolean translated = false; 
 		//	Translated
 		if (IsTranslated && !Env.isBaseLanguage(language, TableName))
 		{
+			translated = true;
 			if (isValueDisplayed)
 				embedSQL.append(TableNameAlias).append(".Value||'-'||");
 			embedSQL.append(TableName).append("_Trl.").append(DisplayColumn);
@@ -660,16 +661,19 @@ public class MLookupFactory
 		}
 
 		embedSQL.append(" WHERE ");
+		
+		int Column_ID = MColumn.getColumn_ID(BaseTable, BaseColumn);
+		MColumn column = MColumn.get(Env.getCtx(), Column_ID);
 		// If is not virtual column - teo_sarca [ 1739530 ]
-		if (! BaseColumn.trim().startsWith("("))
+		if (!column.isVirtualColumn())
 		{
 			embedSQL.append(BaseTable).append(".").append(BaseColumn);
+			embedSQL.append("=").append(TableNameAlias).append(".").append(KeyColumn);
+		} else if (translated) {
+			embedSQL.append(TableNameAlias).append(".").append(BaseColumn).append("=").append(column.getColumnSQL());
+		} else {
+			embedSQL.append(BaseColumn).append("=").append(column.getColumnSQL());
 		}
-		else
-		{
-			embedSQL.append(BaseColumn);
-		}
-		embedSQL.append("=").append(TableNameAlias).append(".").append(KeyColumn);
 
 		return embedSQL.toString();
 	}	//	getLookup_TableEmbed
@@ -772,7 +776,14 @@ public class MLookupFactory
 		return lInfo;
 	}	//	getLookup_TableDir
 
-	private static StringBuilder getDisplayColumn(Language language, String TableName, ArrayList<LookupDisplayColumn> list) {
+	private static StringBuilder getDisplayColumn(Language language,
+			String tableName, ArrayList<LookupDisplayColumn> list) {
+		return getDisplayColumn(language, tableName, list, null);
+	}
+
+	private static StringBuilder getDisplayColumn(Language language,
+			String TableName, ArrayList<LookupDisplayColumn> list,
+			String baseTable) {
 		StringBuilder displayColumn = new StringBuilder();
 		int size = list.size();
 		//  Get Display Column
@@ -787,7 +798,8 @@ public class MLookupFactory
 			displayColumn.append("NVL(");
 
 			//  translated
-			if (ldc.IsTranslated && !Env.isBaseLanguage(language, TableName) && !ldc.IsVirtual)
+			if (ldc.IsTranslated && !Env.isBaseLanguage(language, TableName) && !ldc.IsVirtual
+				&& baseTable != null && !(TableName+"_Trl").equalsIgnoreCase(baseTable))
 			{
 				displayColumn.append(TableName).append("_Trl.").append(ldc.ColumnName);
 			}
@@ -886,11 +898,12 @@ public class MLookupFactory
 		//
 		StringBuilder embedSQL = new StringBuilder("SELECT ");
 
-		StringBuilder displayColumn = getDisplayColumn(language, TableName, list);
+		StringBuilder displayColumn = getDisplayColumn(language, TableName, list, BaseTable);
 		embedSQL.append(displayColumn.toString());
 		embedSQL.append(" FROM ").append(TableName);
 		//  Translation
-		if (isTranslated && !Env.isBaseLanguage(language, TableName))
+		if (   isTranslated && !Env.isBaseLanguage(language, TableName)
+			&& !(TableName+"_Trl").equalsIgnoreCase(BaseTable))  // IDEMPIERE-1070
 		{
 			embedSQL.append(" INNER JOIN ").append(TableName).append("_TRL ON (")
 				.append(TableName).append(".").append(KeyColumn)

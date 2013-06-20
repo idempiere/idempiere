@@ -2,7 +2,8 @@
 
 @Rem $Id: DBExport.bat,v 1.8 2005/04/27 17:45:01 jjanke Exp $
 @Rem 
-@Echo Saving database %1@%ADEMPIERE_DB_NAME% to %IDEMPIERE_HOME%\data\ExpDat.dmp
+@set Date=%date:~6,4%%date:~3,2%%date:~0,2%_%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%
+@Echo Saving database %1@%ADEMPIERE_DB_NAME% to %IDEMPIERE_HOME%\data\ExpDat_%Date%.dmp
 
 @if (%IDEMPIERE_HOME%) == () goto environment
 @if (%ADEMPIERE_DB_NAME%) == () goto environment
@@ -20,11 +21,10 @@
 @sqlplus %3@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\CreateDataPumpDir.sql %IDEMPIERE_HOME%\data
 
 @Rem The Export
-@expdp %1/%2@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDat.dmp LOGFILE=ExpDat.log EXCLUDE=STATISTICS SCHEMAS=%1
+@expdp %1/%2@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDat_%Date%.dmp LOGFILE=ExpDat_%Date%.log EXCLUDE=STATISTICS SCHEMAS=%1
 
 @cd %IDEMPIERE_HOME%\Data
-@copy ExpDat.jar ExpDatOld.jar
-@jar cvfM ExpDat.jar ExpDat.dmp ExpDat.log
+@jar cvfM ExpDat.jar ExpDat_%Date%.dmp ExpDat_%Date%.log
 
 @goto end
 
