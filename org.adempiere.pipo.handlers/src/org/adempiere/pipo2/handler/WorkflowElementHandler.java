@@ -56,6 +56,7 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		List<String> excludes = defaultExcludeList(X_AD_Workflow.Table_Name);
+		excludes.add("AD_WF_Node_ID");
 
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx.ctx, entitytype)) {
@@ -119,10 +120,11 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 		if (!element.defer && !element.skip && element.recordId > 0) {
 			//set start node
-			String value = getStringValue(element, "AD_WF_Node.Value");
+			String value = getStringValue(element, "AD_WF_Node_ID");
 			if (value != null && value.trim().length() > 0) {
 				MWorkflow m_Workflow = new MWorkflow(ctx.ctx, element.recordId, getTrxName(ctx));
-				int id = findIdByColumnAndParentId(ctx, "AD_WF_Node", "Value", value, "AD_Workflow", m_Workflow.getAD_Workflow_ID());
+				PoFiller filler = new PoFiller(ctx, m_Workflow, element, this);
+				int id = filler.setTableReference("AD_WF_Node_ID");
 				if (id <= 0) {
 					log.warning("Failed to resolve start node reference for workflow element. Workflow="
 							+ m_Workflow.getName() + " StartNode=" + value);
