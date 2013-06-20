@@ -235,10 +235,9 @@ public class DunningPrint extends SvrProcess
 			else
 			{
 				if (re != null) {
-					re.print ();
+					pdfList.add(re.getPDF());					
 					count++;
 					printed = true;
-					pdfList.add(re.getPDF());					
 				}
 				
 					
