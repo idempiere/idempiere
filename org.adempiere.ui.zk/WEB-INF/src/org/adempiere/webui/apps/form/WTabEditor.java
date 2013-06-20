@@ -245,9 +245,10 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
         		else
         		{
         			Group rowg = new Group(fieldGroup);
-        			Cell cell = new Cell();
-        			cell.setColspan(numCols);
-        			rowg.appendChild(cell);
+        			Cell cell = (Cell) rowg.getFirstChild();
+        			cell.setSclass("z-group-inner");
+        			cell.setColspan(numCols+1);
+//        			rowg.appendChild(cell);
         			if (X_AD_FieldGroup.FIELDGROUPTYPE_Tab.equals(gridField.getFieldGroupType()) || gridField.getIsCollapsedByDefault())
         			{
         				rowg.setOpen(false);
@@ -414,7 +415,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		Group group = new Group(Msg.getMsg(Env.getCtx(), "Property"));
 		Cell cell = (Cell) group.getFirstChild();
 		cell.setSclass("z-group-inner");
-		cell.setColspan(1);
+		cell.setColspan(2);
 		group.setOpen(true);
 		rows.appendChild(group);
 		
