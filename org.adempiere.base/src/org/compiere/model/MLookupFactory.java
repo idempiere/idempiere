@@ -634,10 +634,11 @@ public class MLookupFactory
 		}
 
 		StringBuilder embedSQL = new StringBuilder("SELECT ");
-
+		boolean translated = false; 
 		//	Translated
 		if (IsTranslated && !Env.isBaseLanguage(language, TableName))
 		{
+			translated = true;
 			if (isValueDisplayed)
 				embedSQL.append(TableNameAlias).append(".Value||'-'||");
 			embedSQL.append(TableName).append("_Trl.").append(DisplayColumn);
@@ -660,16 +661,19 @@ public class MLookupFactory
 		}
 
 		embedSQL.append(" WHERE ");
+		
+		int Column_ID = MColumn.getColumn_ID(BaseTable, BaseColumn);
+		MColumn column = MColumn.get(Env.getCtx(), Column_ID);
 		// If is not virtual column - teo_sarca [ 1739530 ]
-		if (! BaseColumn.trim().startsWith("("))
+		if (!column.isVirtualColumn())
 		{
 			embedSQL.append(BaseTable).append(".").append(BaseColumn);
+			embedSQL.append("=").append(TableNameAlias).append(".").append(KeyColumn);
+		} else if (translated) {
+			embedSQL.append(TableNameAlias).append(".").append(BaseColumn).append("=").append(column.getColumnSQL());
+		} else {
+			embedSQL.append(BaseColumn).append("=").append(column.getColumnSQL());
 		}
-		else
-		{
-			embedSQL.append(BaseColumn);
-		}
-		embedSQL.append("=").append(TableNameAlias).append(".").append(KeyColumn);
 
 		return embedSQL.toString();
 	}	//	getLookup_TableEmbed
