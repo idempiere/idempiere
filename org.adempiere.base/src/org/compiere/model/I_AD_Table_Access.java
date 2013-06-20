@@ -143,32 +143,6 @@ public interface I_AD_Table_Access
 	  */
 	public boolean isActive();
 
-    /** Column name IsCanExport */
-    public static final String COLUMNNAME_IsCanExport = "IsCanExport";
-
-	/** Set Can Export.
-	  * Users with this role can export data
-	  */
-	public void setIsCanExport (boolean IsCanExport);
-
-	/** Get Can Export.
-	  * Users with this role can export data
-	  */
-	public boolean isCanExport();
-
-    /** Column name IsCanReport */
-    public static final String COLUMNNAME_IsCanReport = "IsCanReport";
-
-	/** Set Can Report.
-	  * Users with this role can create reports
-	  */
-	public void setIsCanReport (boolean IsCanReport);
-
-	/** Get Can Report.
-	  * Users with this role can create reports
-	  */
-	public boolean isCanReport();
-
     /** Column name IsExclude */
     public static final String COLUMNNAME_IsExclude = "IsExclude";
 

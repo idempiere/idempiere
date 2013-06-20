@@ -75,9 +75,9 @@ public class MTableAccess extends X_AD_Table_Access
 		if (ACCESSTYPERULE_Accessing.equals(getAccessTypeRule()))
 			sb.append("-ReadOnly=").append(isReadOnly());
 		else if (ACCESSTYPERULE_Exporting.equals(getAccessTypeRule()))
-			sb.append("-CanExport=").append(isCanExport());
+			sb.append("-CanExport=").append(!isExclude());
 		else if (ACCESSTYPERULE_Reporting.equals(getAccessTypeRule()))
-			sb.append("-CanReport=").append(isCanReport());
+			sb.append("-CanReport=").append(!isExclude());
 		sb.append("]");
 		return sb.toString();
 	}	//	toString
@@ -97,9 +97,9 @@ public class MTableAccess extends X_AD_Table_Access
 		if (ACCESSTYPERULE_Accessing.equals(getAccessTypeRule()))
 			sb.append(" - ").append(Msg.translate(ctx, "IsReadOnly")).append("=").append(isReadOnly());
 		else if (ACCESSTYPERULE_Exporting.equals(getAccessTypeRule()))
-			sb.append(" - ").append(Msg.translate(ctx, "IsCanExport")).append("=").append(isCanExport());
+			sb.append(" - ").append(Msg.translate(ctx, "CanExport")).append("=").append(!isExclude());
 		else if (ACCESSTYPERULE_Reporting.equals(getAccessTypeRule()))
-			sb.append(" - ").append(Msg.translate(ctx, "IsCanReport")).append("=").append(isCanReport());
+			sb.append(" - ").append(Msg.translate(ctx, "CanReport")).append("=").append(!isExclude());
 		sb.append(" - ").append(isExclude() ?  ex : in);
 		return sb.toString();
 	}	//	toStringX

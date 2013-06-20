@@ -1,0 +1,24 @@
+-- Jun 20, 2013 11:45:39 AM MYT
+-- IDEMPIERE-1042 Role Data Access
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2013-06-20 11:45:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8320
+;
+
+-- Jun 20, 2013 11:45:50 AM MYT
+-- IDEMPIERE-1042 Role Data Access
+UPDATE AD_Field SET IsActive='N',Updated=TO_DATE('2013-06-20 11:45:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8321
+;
+
+-- Jun 20, 2013 11:46:19 AM MYT
+-- IDEMPIERE-1042 Role Data Access
+UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2013-06-20 11:46:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=9970
+;
+
+-- Jun 20, 2013 11:46:39 AM MYT
+-- IDEMPIERE-1042 Role Data Access
+UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2013-06-20 11:46:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=9971
+;
+
+
+SELECT register_migration_script('201306200400_IDEMPIERE-1042.sql') FROM dual
+;
+

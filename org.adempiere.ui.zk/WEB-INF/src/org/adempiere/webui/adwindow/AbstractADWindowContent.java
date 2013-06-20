@@ -2371,8 +2371,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	@Override
 	public void onExport() {
-		ExportAction action = new ExportAction(this);
-		action.export();
+		int AD_Table_ID=getActiveGridTab().getAD_Table_ID();
+		final boolean isCanExport=MRole.getDefault().isCanExport(AD_Table_ID);
+		if (!isCanExport) {
+			FDialog.error(curWindowNo, parent, "AccessCannotExport");
+			return;
+		} else {
+			ExportAction action = new ExportAction(this);
+			action.export();
+		}
 	}
 
 	@Override

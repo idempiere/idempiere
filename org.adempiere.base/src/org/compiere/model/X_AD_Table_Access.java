@@ -30,7 +30,7 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130425L;
+	private static final long serialVersionUID = 20130620L;
 
     /** Standard Constructor */
     public X_AD_Table_Access (Properties ctx, int AD_Table_Access_ID, String trxName)
@@ -42,8 +42,6 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 // A
 			setAD_Role_ID (0);
 			setAD_Table_ID (0);
-			setIsCanExport (false);
-			setIsCanReport (false);
 			setIsExclude (true);
 // Y
 			setIsReadOnly (false);
@@ -181,54 +179,6 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Table_ID()));
     }
-
-	/** Set Can Export.
-		@param IsCanExport 
-		Users with this role can export data
-	  */
-	public void setIsCanExport (boolean IsCanExport)
-	{
-		set_Value (COLUMNNAME_IsCanExport, Boolean.valueOf(IsCanExport));
-	}
-
-	/** Get Can Export.
-		@return Users with this role can export data
-	  */
-	public boolean isCanExport () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsCanExport);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Can Report.
-		@param IsCanReport 
-		Users with this role can create reports
-	  */
-	public void setIsCanReport (boolean IsCanReport)
-	{
-		set_Value (COLUMNNAME_IsCanReport, Boolean.valueOf(IsCanReport));
-	}
-
-	/** Get Can Report.
-		@return Users with this role can create reports
-	  */
-	public boolean isCanReport () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsCanReport);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
 
 	/** Set Exclude.
 		@param IsExclude 

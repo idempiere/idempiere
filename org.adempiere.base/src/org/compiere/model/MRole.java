@@ -1197,7 +1197,8 @@ public final class MRole extends X_AD_Role
 		}
 		if (!isTableAccess(AD_Table_ID, true))	//	No R/O Access to Table
 			return false;
-		//
+		
+		//default to negative list, can report on all tables
 		boolean canReport = true;
 		for (int i = 0; i < m_tableAccess.length; i++)
 		{
@@ -1207,19 +1208,18 @@ public final class MRole extends X_AD_Role
 			{
 				if (m_tableAccess[i].getAD_Table_ID() == AD_Table_ID)
 				{
-					canReport = m_tableAccess[i].isCanReport();
-					if (log.isLoggable(Level.FINE)) log.fine("Exclude " + AD_Table_ID + " - " + canReport);
-					return canReport;
+					if (log.isLoggable(Level.FINE)) log.fine("Exclude " + AD_Table_ID);
+					return false;
 				}
 			}
 			else									//	Include
 			{
+				//positive list, can report ONLY on included tables
 				canReport = false;
 				if (m_tableAccess[i].getAD_Table_ID() == AD_Table_ID)
 				{
-					canReport = m_tableAccess[i].isCanReport();
-					if (log.isLoggable(Level.FINE)) log.fine("Include " + AD_Table_ID + " - " + canReport);
-					return canReport;
+					if (log.isLoggable(Level.FINE)) log.fine("Include " + AD_Table_ID);
+					return true;
 				}
 			}
 		}	//	for all Table Access
@@ -1243,7 +1243,8 @@ public final class MRole extends X_AD_Role
 			return false;
 		if (!isCanReport (AD_Table_ID))			//	We cannot Export if we cannot report
 			return false;
-		//
+		
+		//default to negative list, can report on all tables
 		boolean canExport = true;
 		for (int i = 0; i < m_tableAccess.length; i++)
 		{
@@ -1251,16 +1252,21 @@ public final class MRole extends X_AD_Role
 				continue;
 			if (m_tableAccess[i].isExclude())		//	Exclude
 			{
-				canExport = m_tableAccess[i].isCanExport();
-				if (log.isLoggable(Level.FINE)) log.fine("Exclude " + AD_Table_ID + " - " + canExport);
-				return canExport;
+				if (m_tableAccess[i].getAD_Table_ID() == AD_Table_ID)
+				{
+					if (log.isLoggable(Level.FINE)) log.fine("Exclude " + AD_Table_ID);
+					return false;
+				}
 			}
 			else									//	Include
 			{
+				//positive list, can export ONLY on included tables
 				canExport = false;
-				canExport = m_tableAccess[i].isCanExport();
-				if (log.isLoggable(Level.FINE)) log.fine("Include " + AD_Table_ID + " - " + canExport);
-				return canExport;
+				if (m_tableAccess[i].getAD_Table_ID() == AD_Table_ID)
+				{
+					if (log.isLoggable(Level.FINE)) log.fine("Include " + AD_Table_ID);
+					return true;
+				}
 			}
 		}	//	for all Table Access
 		if (log.isLoggable(Level.FINE)) log.fine(AD_Table_ID + " - " + canExport);
@@ -1278,7 +1284,8 @@ public final class MRole extends X_AD_Role
 		if (!isTableAccessLevel (AD_Table_ID, ro))	//	Role Based Access
 			return false;
 		loadTableAccess(false);
-		//
+		
+		//default to negative list, can access on all tables
 		boolean hasAccess = true;	//	assuming exclusive rule
 		for (int i = 0; i < m_tableAccess.length; i++)
 		{
@@ -1303,6 +1310,7 @@ public final class MRole extends X_AD_Role
 			//	If you Include Access to a table and select Read Only, 
 			//	you can only read data (otherwise full access).
 			{
+				//positive list, can access ONLY on included tables
 				hasAccess = false;
 				if (m_tableAccess[i].getAD_Table_ID() == AD_Table_ID)
 				{
@@ -2846,12 +2854,6 @@ public final class MRole extends X_AD_Role
 					if (found && override)
 					{
 						// stronger permissions first
-						if (ta2.isCanReport())
-							ta1.setIsCanExport(true);
-						if (ta2.isCanReport())
-							ta1.setIsCanReport(true);
-						if (!ta2.isReadOnly())
-							ta1.setIsCanExport(false);
 						if (!ta2.isExclude())
 							ta1.setIsExclude(false);
 					}

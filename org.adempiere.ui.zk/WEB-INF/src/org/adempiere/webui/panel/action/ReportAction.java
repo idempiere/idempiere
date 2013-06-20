@@ -94,7 +94,8 @@ public class ReportAction implements EventListener<Event>
 	
 	public void show() 
 	{
-		final boolean isCanExport=MRole.getDefault().isCanExport();
+		int AD_Table_ID=panel.getActiveGridTab().getAD_Table_ID();
+		final boolean isCanExport=MRole.getDefault().isCanExport(AD_Table_ID);
 		if(winReport == null)
 		{
 			winReport = new Window();
