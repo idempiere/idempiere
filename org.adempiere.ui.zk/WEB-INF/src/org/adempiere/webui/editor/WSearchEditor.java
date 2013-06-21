@@ -893,6 +893,13 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 	}
 
+	@Override
+	public void setTableEditor(boolean b) {
+		super.setTableEditor(b);
+		getComponent().setTableEditorMode(b);
+	}
+
+
 	/**
 	 * @param windowNo
 	 * @return WSearchEditor

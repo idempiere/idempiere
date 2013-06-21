@@ -317,5 +317,9 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 		getComponent().getTextbox().setReadonly(true);
 	}
 
-
+	@Override
+	public void setTableEditor(boolean b) {
+		super.setTableEditor(b);
+		getComponent().setTableEditorMode(b);
+	}
 }

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import org.adempiere.webui.component.Label;
+import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuOuter;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.AbstractComponent;
@@ -205,5 +206,19 @@ public final class LayoutUtils {
 			parent = parent.getParent();
 		}
 		return true;
+	}
+
+	public static void removeSclass(String cls, HtmlBasedComponent target) {
+		String sclass = target.getSclass();
+		if (Util.isEmpty(sclass))
+			return;
+		
+		sclass = " " + sclass + " ";
+		cls = " " + cls + " ";
+		if (sclass.indexOf(cls) >= 0) {
+			sclass.replace(cls, "");
+			sclass = sclass.trim();
+			target.setSclass(sclass);
+		}
 	}
 }

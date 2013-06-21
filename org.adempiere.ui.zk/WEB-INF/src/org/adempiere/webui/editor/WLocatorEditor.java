@@ -514,4 +514,12 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
     {
         return LISTENER_EVENTS;
     }
+
+	@Override
+	public void setTableEditor(boolean b) {
+		super.setTableEditor(b);
+		getComponent().setTableEditorMode(b);
+	}
+    
+    
 }

@@ -243,5 +243,10 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 		return value == null;
 	}
 
-	
+	@Override
+	public void setTableEditor(boolean b) {
+		super.setTableEditor(b);
+		getComponent().setTableEditorMode(b);
+	}
+
 }

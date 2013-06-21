@@ -78,7 +78,7 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
      */
     public WNumberEditor(boolean tableEditor, GridField gridField)
     {
-        super(new NumberBox(gridField.getDisplayType() == DisplayType.Integer),
+        super(new NumberBox(gridField.getDisplayType() == DisplayType.Integer, tableEditor),
                 gridField);
         this.displayType = gridField.getDisplayType();
         this.tableEditor = tableEditor;
@@ -246,4 +246,11 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 			WFieldRecordInfo.start(gridField);
 		}
 	}
+
+	@Override
+	public void setTableEditor(boolean b) {
+		super.setTableEditor(b);
+		getComponent().setTableEditorMode(b);
+	}
+       
 }

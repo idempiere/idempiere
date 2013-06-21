@@ -231,4 +231,12 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 				ValuePreference.start (getComponent(), this.getGridField(), getValue());
 		}
 	}
+
+	@Override
+	public void setTableEditor(boolean b) {
+		super.setTableEditor(b);
+		getComponent().setTableEditorMode(b);
+	}
+    
+    
 }

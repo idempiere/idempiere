@@ -19,7 +19,6 @@ import org.adempiere.webui.LayoutUtils;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hlayout;
 
 /**
  * @author Low Heng Sin
@@ -33,6 +32,7 @@ public class EditorBox extends Div {
 			this);
 	protected Textbox txt;
 	protected Button btn;
+//	private Hlayout hlayout;
 
 	public EditorBox() {
 		initComponents();
@@ -54,20 +54,18 @@ public class EditorBox extends Div {
 	}
 
 	private void initComponents() {
-		Hlayout hlayout = new Hlayout();
-		this.appendChild(hlayout);
-		hlayout.setHflex("1");
+//		hlayout = new Hlayout();
+//		hlayout.setHflex("1");
 		txt = new Textbox();
-		hlayout.appendChild(txt);
-		txt.setHflex("1");
-
+		appendChild(txt);
 		btn = new Button();
 		btn.setTabindex(-1);
-		btn.setSclass("editor-button");
 		btn.setHflex("0");
-		hlayout.appendChild(btn);
-
+		btn.setSclass("editor-button");
+		appendChild(btn);
+		
 		LayoutUtils.addSclass("editor-box", this);
+		setTableEditorMode(false);
 	}
 
 	/**
@@ -99,10 +97,11 @@ public class EditorBox extends Div {
 		btn.setEnabled(enabled);
 		btn.setVisible(enabled);
 		if (enabled) {
-			btn.setSclass("editor-button");
-			btn.setParent(this.getFirstChild());
+			if (btn.getParent() != txt.getParent())
+				btn.setParent(txt.getParent());
 		} else {
-			btn.detach();
+			if (btn.getParent() != null)
+				btn.detach();
 		}
 	}
 
@@ -144,5 +143,20 @@ public class EditorBox extends Div {
 	 */
 	public Button getButton() {
 		return btn;
+	}
+	
+	public void setTableEditorMode(boolean flag) {
+		if (flag) {
+			txt.setHflex("0");
+			setHflex("0");
+			LayoutUtils.addSclass("grid-editor-input", txt);
+			LayoutUtils.addSclass("grid-editor-button", btn);
+		} else {
+			txt.setHflex("1");
+			setHflex("1");
+			LayoutUtils.removeSclass("grid-editor-input", txt);
+			LayoutUtils.removeSclass("grid-editor-button", btn);
+		}
+			
 	}
 }

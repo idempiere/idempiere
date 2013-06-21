@@ -988,54 +988,74 @@ span.z-tree-tee, span.z-tree-last, span.z-tree-firstspacer {
 	padding: 0px; 
 	margin: 0px; 
 	background-color: transparent;
-	width: 100%;
-}
-
-.editor-box table {
-	border: none; 
-	padding: 0px; 
-	margin: 0px;
-	width: 100%;
-	border: none;
-}
-
-.editor-box tr {
-	width: 100%; 
-	border: none; 
-	padding: 0px; 
-	margin: 0px; 
-	white-space:nowrap; 
-}
-
-.editor-box td {
-	border: none; 
-	padding: 0px; 
-	margin: 0px;
 }
 
 .editor-box .z-textbox {
-	display: inline; 
-	width: 99%;
+	display: inline-block; 
+	border-right-color: transparent;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 0px;
 }
 
+.editor-box .z-textbox:focus {
+	border: 1px solid #0000ff;
+}
+	
 .editor-button {
-	padding: 0px 2px;
+	padding: 0px;
 	margin: 0px;
-	border-radius: 2px;
+	display: inline-block;
+	background-color: transparent;
+	background-image: none;
+	width: 19px;
+	height: 20px;
+	border: 1px solid #e6e6e6;
+	border-top-color: #b2b2b2;
+	border-left-width: 0px;
+	border-radius: 0 2px 2px 0;
+}
+
+.editor-button :hover {
+	background-color: #ddd;
 }
 
 .editor-button img {
-	vertical-align: middle;
-	text-align: center;
+	vertical-align: top;
+	text-align: left;
 	width: 16px;
 	height: 16px;
+	padding: 2px 1px;
 }
 
-.editor-button-column {
+
+.editor-box .grid-editor-input.z-textbox {
+	width: 90%;
+}
+
+.grid-editor-button {
+}
+
+.grid-editor-button img {
 }
 
 .number-box {
-	display: inline-block; white-space:nowrap;
+	display: inline-block; 
+	white-space:nowrap;
+}
+
+.number-box .z-decimalbox {
+	display: inline-block; 
+	border-right-color: transparent;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 0px;
+}
+
+.number-box .grid-editor-input.z-decimalbox {
+	width: 80%;
+}
+
+.number-box .z-decimalbox:focus {
+	border: 1px solid #0000ff;
 }
 
 .datetime-box {

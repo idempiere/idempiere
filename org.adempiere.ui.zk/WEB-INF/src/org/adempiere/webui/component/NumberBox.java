@@ -31,7 +31,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Vbox;
 
@@ -61,29 +60,30 @@ public class NumberBox extends Div
 
 	private Popup popup;
     
+	public NumberBox(boolean integral)
+	{
+		this(integral, false);
+	}
+	
     /**
      * 
      * @param integral
      */
-    public NumberBox(boolean integral)
+    public NumberBox(boolean integral, boolean tableEditor)
     {
         super();
         this.integral = integral;
-        init();
+        init(tableEditor);
     }
     
-    private void init()
+    private void init(boolean tableEditor)
     {
-    	Hlayout hlayout = new Hlayout();
-    	hlayout.setHflex("1");
-    	appendChild(hlayout);
-
 		decimalBox = new Decimalbox();
     	if (integral)
     		decimalBox.setScale(0);
     	decimalBox.setStyle("display: inline-block;text-align:right");
     	decimalBox.setHflex("1");
-    	hlayout.appendChild(decimalBox);
+    	appendChild(decimalBox);
 		
 		btn = new Button();
         btn.setImage(ThemeManager.getThemeResource("images/Calculator16.png"));
@@ -93,14 +93,15 @@ public class NumberBox extends Div
 				"} catch(error) {}");
 
 		LayoutUtils.addSclass("editor-button", btn);
-		hlayout.appendChild(btn);
+		appendChild(btn);
         
         popup = getCalculatorPopup();
         appendChild(popup);
         btn.setPopup(popup);
         btn.setStyle("text-align: center;");        
      
-        LayoutUtils.addSclass(".number-box", this);	     
+        LayoutUtils.addSclass("number-box", this);	     
+        LayoutUtils.addSclass("editor-box", this);
     }
     
     /**
@@ -432,5 +433,20 @@ public class NumberBox extends Div
 	public Button getButton()
 	{
 		return btn;
+	}
+	
+	public void setTableEditorMode(boolean flag) {
+		if (flag) {
+			decimalBox.setHflex("0");
+			setHflex("0");
+			LayoutUtils.addSclass("grid-editor-input", decimalBox);
+			LayoutUtils.addSclass("grid-editor-button", btn);
+		} else {
+			decimalBox.setHflex("1");
+			setHflex("1");
+			LayoutUtils.removeSclass("grid-editor-input", decimalBox);
+			LayoutUtils.removeSclass("grid-editor-button", btn);
+		}
+			
 	}
 }
