@@ -13,20 +13,16 @@
  *****************************************************************************/
 package org.adempiere.webui;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.http.HttpSession;
 
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
-import org.apache.commons.codec.binary.Base64;
-import org.zkoss.zk.au.out.AuScript;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Applet;
 import org.zkoss.zul.Div;
 
 /**
@@ -40,37 +36,47 @@ public class LabelAppletWindow extends Window implements EventListener<Event>
 	 * 
 	 */
 	private static final long serialVersionUID = -8980224912104404397L;
-
+	
 	public LabelAppletWindow(List<byte[]> list) 
 	{
 		super();
-		String uuid = UUID.randomUUID().toString();
-		HttpSession session = (HttpSession) Executions.getCurrent().getDesktop().getSession().getNativeSession();
-		session.setAttribute(uuid, list);
+		
 		Div div = new Div();
 		appendChild(div);
+		
+		Applet applet = new Applet();
+		applet.setCode("PrintLabelApplet.class");
+		applet.setArchive("labelapplet.jar");
+		applet.setWidth("0");
+		applet.setHeight("0");
+		applet.setParam("size", list.size() + "");
+
+		File tempFile = null;
+		FileOutputStream fos = null;
+		for(int i = 0; i < list.size(); i++)
+		{
+			try
+			{
+				tempFile = File.createTempFile("lblapp", Long.toString(System.nanoTime()));
+				fos = new FileOutputStream(tempFile);
+				applet.setParam("file_" + i, tempFile.getAbsolutePath());
+				fos.write(list.get(i));
+				fos.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		div.appendChild(applet);
 		
 		ToolBarButton link = new ToolBarButton();
 		link.setLabel("Click here to close this popup after printing is completed.");
 		link.addEventListener(Events.ON_CLICK, this);
 		appendChild(link);
 		
-		this.setBorder("normal");
-		
-		StringBuffer appletTag = new StringBuffer();
-		appletTag.append("<applet code='PrintLabelApplet.class' archive='labelapplet.jar' width=0 height=0>");
-		appletTag.append("<param name='key' value='" + uuid + "'>");
-		appletTag.append("<param name='size' value='" + list.size() + "'>");
-		
-		for(int i = 0; i < list.size(); i++)
-			appletTag.append("<param name='data_" + i + "' value='" + Base64.encodeBase64(list.get(i)) + "'>");
-		
-		appletTag.append("</applet>");
-		
-		String script = "document.getElementById('" + div.getUuid() + "').innerHTML=\"" + appletTag.toString() + "\";";
-		Clients.response(new AuScript(div, script));		
+		this.setBorder("normal");		
 	}
-
+	
 	public void onEvent(Event event) throws Exception 
 	{
 		if (Events.ON_CLICK.equals(event.getName()))
