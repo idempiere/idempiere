@@ -348,7 +348,7 @@ public class WAllocation extends Allocation
 		//  Charge
 		AD_Column_ID = 61804;    //  C_AllocationLine.C_Charge_ID
 		MLookup lookupCharge = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
-		chargePick = new WTableDirEditor("C_Charge_ID", true, false, true, lookupCharge);
+		chargePick = new WTableDirEditor("C_Charge_ID", false, false, true, lookupCharge);
 		chargePick.setValue(new Integer(m_C_Charge_ID));
 		chargePick.addValueChangeListener(this);
 	}   //  dynInit
@@ -447,7 +447,7 @@ public class WAllocation extends Allocation
 		String name = e.getPropertyName();
 		Object value = e.getNewValue();
 		if (log.isLoggable(Level.CONFIG)) log.config(name + "=" + value);
-		if (value == null)
+		if (value == null && !name.equals("C_Charge_ID"))
 			return;
 		
 		// Organization
@@ -460,7 +460,7 @@ public class WAllocation extends Allocation
 		//		Charge
 		else if (name.equals("C_Charge_ID") )
 		{
-			m_C_Charge_ID = ((Integer) value).intValue();
+			m_C_Charge_ID = value!=null? ((Integer) value).intValue() : 0;
 			
 			setAllocateButton();
 		}
