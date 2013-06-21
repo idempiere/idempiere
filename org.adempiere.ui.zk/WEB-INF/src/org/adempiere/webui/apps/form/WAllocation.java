@@ -447,7 +447,7 @@ public class WAllocation extends Allocation
 		String name = e.getPropertyName();
 		Object value = e.getNewValue();
 		if (log.isLoggable(Level.CONFIG)) log.config(name + "=" + value);
-		if (value == null)
+		if (value == null && !name.equals("C_Charge_ID"))
 			return;
 		
 		// Organization
@@ -460,7 +460,7 @@ public class WAllocation extends Allocation
 		//		Charge
 		else if (name.equals("C_Charge_ID") )
 		{
-			m_C_Charge_ID = ((Integer) value).intValue();
+			m_C_Charge_ID = value!=null? ((Integer) value).intValue() : 0;
 			
 			setAllocateButton();
 		}
