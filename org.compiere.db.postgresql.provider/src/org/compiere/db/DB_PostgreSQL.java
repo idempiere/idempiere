@@ -18,7 +18,12 @@
  *****************************************************************************/
 package org.compiere.db;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
@@ -48,6 +53,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Ini;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
+import org.jfree.io.IOUtils;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -65,7 +71,9 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class DB_PostgreSQL implements AdempiereDatabase
 {
 
-    public Convert getConvert() {
+    private static final String POOL_PROPERTIES = "pool.properties";
+
+	public Convert getConvert() {
 		return m_convert;
 	}
 
@@ -304,6 +312,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
             sb.append(" , # Orphaned Connections: ").append(m_ds.getNumUnclosedOrphanedConnections());
             sb.append(" , # Min Pool Size: ").append(m_ds.getMinPoolSize());
             sb.append(" , # Max Pool Size: ").append(m_ds.getMaxPoolSize());
+            sb.append(" , # Max Statements Cache Per Session: ").append(m_ds.getMaxStatementsPerConnection());
             sb.append(" , # Active Transactions: ").append(Trx.getActiveTransactions().length);
         }
         catch (Exception e)
@@ -625,7 +634,22 @@ public class DB_PostgreSQL implements AdempiereDatabase
         return conn;
 	}	//	getCachedConnection
 
-
+	private String getFileName ()
+	{
+		//
+		String base = null;
+		if (Ini.isClient())
+			base = System.getProperty("user.home");
+		else
+			base = Ini.getAdempiereHome();
+		
+		if (base != null && !base.endsWith(File.separator))
+			base += File.separator;
+		
+		//
+		return base + getName() + File.separator + POOL_PROPERTIES;
+	}	//	getFileName
+		
 	/**
 	 * 	Create DataSource (Client)
 	 *	@param connection connection
@@ -636,23 +660,79 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		if (m_ds != null)
 			return m_ds;
 
-		//try fragment contributed properties then default properties
-		URL url = Ini.isClient()
-    		? PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/client.properties")
-    		: PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/server.properties");
-    	if (url == null)
-    	{
-    		url = Ini.isClient()
-    			? PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/client.default.properties")
-    			: PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/server.default.properties");
-    	}
+		InputStream inputStream = null;
+		
+		//check property file from home
+		String propertyFilename = getFileName();
+		File propertyFile = null;
+		if (!Util.isEmpty(propertyFilename))
+		{
+			propertyFile = new File(propertyFilename);
+			if (propertyFile.exists() && propertyFile.canRead())
+			{
+				try {
+					inputStream = new FileInputStream(propertyFile);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		//fall back to default config
+		URL url = null;
+		if (inputStream == null)
+		{
+			propertyFile = null;
+			url = Ini.isClient()
+	    			? PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/client.default.properties")
+	    			: PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/server.default.properties");
+	    	
+	    	try {
+				inputStream = url.openStream();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}						
+		}
+		
 		Properties poolProperties = new Properties();
 		try {
-			poolProperties.load(url.openStream());
+			poolProperties.load(inputStream);
+			inputStream.close();
+			inputStream = null;
 		} catch (IOException e) {
 			throw new DBException(e);
 		}
 
+		//auto create property file at home folder from default config
+		if (propertyFile == null)			
+		{
+			String directoryName = propertyFilename.substring(0,  propertyFilename.length() - (POOL_PROPERTIES.length()+1));
+			File dir = new File(directoryName);
+			if (!dir.exists())
+				dir.mkdir();
+			propertyFile = new File(propertyFilename);
+			try {
+				FileOutputStream fos = new FileOutputStream(propertyFile);
+				inputStream = url.openStream();
+				IOUtils.getInstance().copyStreams(inputStream, fos);
+				fos.close();
+				inputStream.close();
+				inputStream = null;
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		if (inputStream != null)
+		{
+			try {
+				inputStream.close();
+			} catch (IOException e) {}
+		}
+		
 		int idleConnectionTestPeriod = getIntProperty(poolProperties, "IdleConnectionTestPeriod", 1200);
 		int acquireRetryAttempts = getIntProperty(poolProperties, "AcquireRetryAttempts", 2);
 		int maxIdleTimeExcessConnections = getIntProperty(poolProperties, "MaxIdleTimeExcessConnections", 1200);
@@ -667,7 +747,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
             System.setProperty("com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
             //System.setProperty("com.mchange.v2.log.FallbackMLog.DEFAULT_CUTOFF_LEVEL", "ALL");
             ComboPooledDataSource cpds = new ComboPooledDataSource();
-            cpds.setDataSourceName("AdempiereDS");
+            cpds.setDataSourceName("iDempiereDS");
             cpds.setDriverClass(DRIVER);
             //loads the jdbc driver
             cpds.setJdbcUrl(getConnectionURL(connection));
@@ -704,6 +784,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
                 cpds.setMinPoolSize(minPoolSize);
                 cpds.setMaxPoolSize(maxPoolSize);
                 m_maxbusyconnections = (int) (maxPoolSize * 0.9);
+                
+                //statement pooling
+                int maxStatementsPerConnection = getIntProperty(poolProperties, "MaxStatementsPerConnection", 0);
+                if (maxStatementsPerConnection > 0)
+                	cpds.setMaxStatementsPerConnection(maxStatementsPerConnection);
             }
 
             if (unreturnedConnectionTimeout > 0)
