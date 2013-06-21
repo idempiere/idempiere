@@ -1,0 +1,25 @@
+<project name="labelapplet" basedir="." default="sign">
+	<target name="build">
+		<mkdir dir="bin"/>
+		<javac srcdir="WEB-INF/src" 
+			destdir="bin" 
+	        debug="on"
+			listfiles="yes"
+			excludes="**/fi/**, **/metainfo/**, **/org/**, **/web/**"/>
+	</target>
+	
+	<target name="jar" depends="build">
+		<jar destfile="labelapplet.jar" basedir="bin">
+			<manifest>
+				<attribute name="Built-By" value="Trek Global"/>
+			</manifest>
+		</jar>
+	</target>	
+	
+	<target name="sign" depends="jar">
+		<signjar alias="labelapplet" 
+			storepass="labelapplet" 
+			jar="labelapplet.jar" 
+			keystore="labelappletkeystore"/>
+	</target>	
+</project>
