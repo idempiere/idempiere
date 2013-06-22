@@ -321,7 +321,8 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		}
 		//	Mark as Inactive
 		setIsActive(false);		//	updated DB for line delete/process
-		
+		this.saveEx();
+
 		//	Unlink
 		getLines(true);
 		if (!updateBP(true)) 
