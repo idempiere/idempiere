@@ -407,21 +407,23 @@ public final class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		}
 		
 		// Stop the Document Workflow if invoice to allocate is as paid
-		for (MAllocationLine line :m_lines)
-		{	
-			if (line.getC_Invoice_ID() != 0)
-			{
-				StringBuilder whereClause = new StringBuilder(I_C_Invoice.COLUMNNAME_C_Invoice_ID).append("=? AND ") 
-								   .append(I_C_Invoice.COLUMNNAME_IsPaid).append("=? AND ")
-								   .append(I_C_Invoice.COLUMNNAME_DocStatus).append(" NOT IN (?,?)");
-				boolean InvoiceIsPaid = new Query(getCtx(), I_C_Invoice.Table_Name, whereClause.toString(), get_TrxName())
-				.setClient_ID()
-				.setParameters(line.getC_Invoice_ID(), "Y", X_C_Invoice.DOCSTATUS_Voided, X_C_Invoice.DOCSTATUS_Reversed)
-				.match();
-				if(InvoiceIsPaid && line.getAmount().signum() > 0)
-					throw new  AdempiereException("@ValidationError@ @C_Invoice_ID@ @IsPaid@");
-			}
-		}	
+		if (!isReversal()) {
+			for (MAllocationLine line :m_lines)
+			{	
+				if (line.getC_Invoice_ID() != 0)
+				{
+					StringBuilder whereClause = new StringBuilder(I_C_Invoice.COLUMNNAME_C_Invoice_ID).append("=? AND ") 
+									   .append(I_C_Invoice.COLUMNNAME_IsPaid).append("=? AND ")
+									   .append(I_C_Invoice.COLUMNNAME_DocStatus).append(" NOT IN (?,?)");
+					boolean InvoiceIsPaid = new Query(getCtx(), I_C_Invoice.Table_Name, whereClause.toString(), get_TrxName())
+					.setClient_ID()
+					.setParameters(line.getC_Invoice_ID(), "Y", X_C_Invoice.DOCSTATUS_Voided, X_C_Invoice.DOCSTATUS_Reversed)
+					.match();
+					if (InvoiceIsPaid && line.getAmount().signum() > 0)
+						throw new  AdempiereException("@ValidationError@ @C_Invoice_ID@ @IsPaid@");
+				}
+			}	
+		}
 		
 		//	Add up Amounts & validate
 		BigDecimal approval = Env.ZERO;

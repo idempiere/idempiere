@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
@@ -110,6 +111,8 @@ public class AllocationReset extends SvrProcess
 			MAllocationHdr hdr = new MAllocationHdr(getCtx(), p_C_AllocationHdr_ID, m_trx.getTrxName());
 			if (delete(hdr))
 				count++;
+			else
+				throw new AdempiereException("Cannot delete");
 			m_trx.close();
 			StringBuilder msgreturn = new StringBuilder("@Deleted@ #").append(count);
 			return msgreturn.toString();
