@@ -450,13 +450,15 @@ public class GridField
 				keyColumn = "AD_EntityType_ID";
 			if (!keyColumn.endsWith("_ID"))
 				keyColumn += "_ID";			//	AD_Language_ID
-			int Record_ID = Env.getContextAsInt(ctx, m_vo.WindowNo, m_vo.TabNo, keyColumn);
-			int AD_Table_ID = m_vo.AD_Table_ID;
-			if (!MRole.getDefault(ctx, false).canUpdate(
-				AD_Client_ID, AD_Org_ID, AD_Table_ID, Record_ID, false))
-				return false;
-			if (!MRole.getDefault(ctx, false).isColumnAccess(AD_Table_ID, m_vo.AD_Column_ID, false))
-				return false;
+			if (getGridTab() != null) {
+				int Record_ID = Env.getContextAsInt(ctx, m_vo.WindowNo, m_vo.TabNo, keyColumn);
+				int AD_Table_ID = m_vo.AD_Table_ID;
+				if (!MRole.getDefault(ctx, false).canUpdate(
+					AD_Client_ID, AD_Org_ID, AD_Table_ID, Record_ID, false))
+					return false;
+				if (!MRole.getDefault(ctx, false).isColumnAccess(AD_Table_ID, m_vo.AD_Column_ID, false))
+					return false;
+			}
 		}
 			
 		//  Do we have a readonly rule
@@ -487,7 +489,7 @@ public class GridField
 			return true;
 		// BF [ 2910368 ]
 		// Record is not Active
-		if (checkContext && !Env.getContext(ctx, m_vo.WindowNo,m_vo.TabNo, "IsActive").equals("Y"))
+		if (checkContext && getGridTab() != null && !Env.getContext(ctx, m_vo.WindowNo,m_vo.TabNo, "IsActive").equals("Y"))
 			return false;
 
 		//  ultimately visibility decides
