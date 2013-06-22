@@ -414,18 +414,15 @@ public class ReportStarter implements ProcessCall, ClientProcess
         String jasperName = data.getJasperName();
         String name =  jasperReport.getName();
         File reportDir = data.getReportDir();
-
+        
         String resourcePath = reportDir.getAbsolutePath();
-        String reportdir = reportPath.substring(0, reportPath.lastIndexOf("/"));
         if (!resourcePath.endsWith("/") && !resourcePath.endsWith("\\"));
         {
         	resourcePath = resourcePath + "/";
-        	reportdir = reportdir + "/";
         }
         params.put("SUBREPORT_DIR", resourcePath);
         params.put("RESOURCE_DIR", resourcePath);
-        params.put("REPORT_DIR", reportdir);
-
+        
         if (jasperReport != null && pi.getTable_ID() > 0 && Record_ID <= 0 && pi.getRecord_IDs() != null && pi.getRecord_IDs().length > 0)
         {
         	try
