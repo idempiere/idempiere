@@ -80,4 +80,8 @@ public class ToolbarCustomButton implements EventListener<Event>, Evaluatee {
 		boolean visible = Evaluator.evaluateLogic(this, displayLogic);
 		toolbarButton.setVisible(visible);
 	}
+	
+	public Toolbarbutton getToolbarbutton() {
+		return toolbarButton;
+	}
 }

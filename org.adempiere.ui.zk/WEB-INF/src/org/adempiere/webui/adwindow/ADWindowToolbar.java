@@ -54,6 +54,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Space;
+import org.zkoss.zul.Toolbarbutton;
 
 /**
  *
@@ -641,8 +642,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	}
 
 	public void dynamicDisplay() {
+		List<Toolbarbutton> customButtons = new ArrayList<Toolbarbutton>();
 		for(ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons) {
 			toolbarCustomBtn.dynamicDisplay();
+			customButtons.add(toolbarCustomBtn.getToolbarbutton());
 		}
 		
 		ADWindow adwindow = ADWindow.findADWindow(this);
@@ -653,7 +656,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		
 			for (Component p = this.getFirstChild(); p != null; p = p.getNextSibling()) {
 				if (p instanceof ToolBarButton) {
-					if (!p.isVisible())
+					if (!customButtons.contains(p) && !p.isVisible())
 						p.setVisible(true);
 				}
 			}
