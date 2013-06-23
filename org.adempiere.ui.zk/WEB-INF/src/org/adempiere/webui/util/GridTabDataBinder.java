@@ -15,6 +15,7 @@ package org.adempiere.webui.util;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -127,10 +128,10 @@ public class GridTabDataBinder implements ValueChangeListener {
             if ( e.getPropertyName().equals("S_ResourceAssignment_ID") )
             {
                 GridField mField = gridTab.getField(col);
-                if (mField != null && mField.getCallout().length() > 0)
-                {
+				if (mField != null && (mField.getCallout().length() > 0
+						|| Core.findCallout(gridTab.getTableName(), mField.getColumnName()).size()>0)) {
                     gridTab.processFieldChange(mField);     //  Dependencies & Callout
-                }
+				}
             }
             
 			if (newValues != null && newValues.length > 0)

@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.adempiere.base.Core;
 import org.adempiere.model.MTabCustomization;
 import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.apps.AEnv;
@@ -717,8 +718,9 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
         	GridField changedField = gridTab.getField(col);
             String columnName = changedField.getColumnName();
             ArrayList<?> dependants = gridTab.getDependantFields(columnName);
-            if (dependants.size() == 0 && changedField.getCallout().length() > 0)
-            {
+			if ( ! (   dependants.size() > 0
+					|| changedField.getCallout().length() > 0
+					|| Core.findCallout(gridTab.getTableName(), columnName).size() > 0)) {
                 return;
             }
         }

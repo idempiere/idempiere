@@ -679,8 +679,9 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
             ArrayList<?> dependants = gridTab.getDependantFields(columnName);
             if (logger.isLoggable(Level.CONFIG)) logger.config("(" + gridTab.toString() + ") "
             			+ columnName + " - Dependents=" + dependants.size());
-            if (dependants.size() == 0 && changedField.getCallout().length() > 0)
-            {
+			if ( ! (   dependants.size() > 0
+					|| changedField.getCallout().length() > 0
+					|| Core.findCallout(gridTab.getTableName(), columnName).size() > 0)) {
                 return;
             }
         }

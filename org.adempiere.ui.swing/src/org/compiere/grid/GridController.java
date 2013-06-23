@@ -987,8 +987,9 @@ public class GridController extends CPanel
 			if (log.isLoggable(Level.CONFIG)) log.config("(" + m_mTab.toString() + ") "
 				+ columnName + " - Dependents=" + dependants.size());
 			//	No Dependents and no Callout - Set just Background
-			if (dependants.size() == 0 && changedField.getCallout().length() > 0)
-			{
+			if ( ! (   dependants.size() > 0
+					|| changedField.getCallout().length() > 0
+					|| Core.findCallout(m_mTab.getTableName(), columnName).size() > 0)) {
 				Component[] comp = vPanel.getComponentsRecursive();
 				for (int i = 0; i < comp.length; i++)
 				{
@@ -1284,8 +1285,10 @@ public class GridController extends CPanel
 			if (e.getPropertyName().equals("S_ResourceAssignment_ID"))
 			{
 				GridField mField = m_mTab.getField(col);
-				if (mField != null && mField.getCallout().length() > 0)
+				if (mField != null && (mField.getCallout().length() > 0
+						|| Core.findCallout(m_mTab.getTableName(), mField.getColumnName()).size()>0)) {
 					m_mTab.processFieldChange(mField);     //  Dependencies & Callout
+				}
 			}
 
 			if (newValues != null && newValues.length > 0)
