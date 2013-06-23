@@ -524,6 +524,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				lookup.getDirect(new Integer(result), false, true);
 				setValue(new Integer(result));
 				actionCombo (new Integer(result));      //  data binding
+				lookup.refresh();
 
 				//setValue(getValue());				
 			}
