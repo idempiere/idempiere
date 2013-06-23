@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Window;
@@ -31,6 +32,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.MField;
+import org.compiere.model.MLookup;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
@@ -60,7 +62,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4121297375382998263L;
+	private static final long serialVersionUID = -949213040088881469L;
 
 	public static final String QUICK_ENTRY_MODE = "_QUICK_ENTRY_MODE_";
 
@@ -282,6 +284,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 				}
 				initialValues.add(editor.getValue());
 			}
+			dynamicDisplay();
 			return true;
 		}
 
@@ -303,6 +306,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 			initialValues.add(editor.getValue());
 		}
 
+		dynamicDisplay();
 		return true;
 	}	//	loadRecord
 
@@ -458,26 +462,47 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 			int idx = quickEditors.indexOf(evt.getSource());
 			if (idx >= 0) {
 				GridField field = quickFields.get(idx);
+				GridTab gridTab = field.getGridTab();
+				String columnName = field.getColumnName();
 				// process dependencies and callouts for the changed field
-				field.getGridTab().setValue(field, evt.getNewValue());
-				field.getGridTab().processFieldChange(field);
-				if (!field.getCallout().isEmpty()) {
-					refresh();
-				}
+				field.setValue(evt.getNewValue(), false);
+				gridTab.processFieldChange(field);
+	            // Refresh the list on dependant fields
+	            ArrayList<GridField> dependants = gridTab.getDependantFields(columnName);
+	    		for (GridField dependentField : dependants)
+	    		{
+	    			//  if the field has a lookup
+	    			if (dependentField != null && dependentField.getLookup() instanceof MLookup)
+	    			{
+	    				MLookup mLookup = (MLookup)dependentField.getLookup();
+	    				//  if the lookup is dynamic (i.e. contains this columnName as variable)
+	    				if (mLookup.getValidation().indexOf("@"+columnName+"@") != -1)
+	    				{
+	    					mLookup.refresh();
+	    				}
+	    			}
+	    		}   //  for all dependent fields
+				if (   dependants.size() > 0
+					|| field.getCallout().length() > 0
+					|| Core.findCallout(gridTab.getTableName(), columnName).size() > 0) {
+					dynamicDisplay();
+	            }
 			}
 		}
 	}
-	
+
 	/**
 	 *	refresh all fields
 	 */
-	public void refresh()
+	public void dynamicDisplay()
 	{
 		for (int idxf = 0; idxf < quickFields.size(); idxf++) {
 			GridField field = quickFields.get(idxf);
 			WEditor editor = quickEditors.get(idxf);
 			editor.setValue(field.getValue());
+			editor.setReadWrite(field.isEditable(true));
+			editor.setVisible(field.isDisplayed(true));
 		}
-	}//refresh
+	} // dynamicDisplay
 
 } // WQuickEntry

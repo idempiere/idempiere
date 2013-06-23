@@ -676,7 +676,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         {
             GridField changedField = gridTab.getField(col);
             String columnName = changedField.getColumnName();
-            ArrayList<?> dependants = gridTab.getDependantFields(columnName);
+            ArrayList<GridField> dependants = gridTab.getDependantFields(columnName);
             if (logger.isLoggable(Level.CONFIG)) logger.config("(" + gridTab.toString() + ") "
             			+ columnName + " - Dependents=" + dependants.size());
 			if ( ! (   dependants.size() > 0
@@ -1144,11 +1144,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
             }
 
             // Refresh the list on dependant fields
-    		ArrayList<GridField> list = gridTab.getDependantFields(mField.getColumnName());
-    		for (int i = 0; i < list.size(); i++)
+    		for (GridField dependentField : gridTab.getDependantFields(mField.getColumnName()))
     		{
-    			GridField dependentField = list.get(i);
-    		//	log.trace(log.l5_DData, "Dependent Field", dependentField==null ? "null" : dependentField.getColumnName());
     			//  if the field has a lookup
     			if (dependentField != null && dependentField.getLookup() instanceof MLookup)
     			{

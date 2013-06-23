@@ -2668,23 +2668,18 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	private void processDependencies (GridField changedField)
 	{
 		String columnName = changedField.getColumnName();
-	//	log.trace(log.l4_Data, "Changed Column", columnName);
 
 		//  when column name is not in list of DependentOn fields - fini
 		if (!hasDependants(columnName))
 			return;
 
 		//  Get dependent MFields (may be because of display or dynamic lookup)
-		ArrayList<GridField> list = getDependantFields(columnName);
-		for (int i = 0; i < list.size(); i++)
+		for (GridField dependentField : getDependantFields(columnName))
 		{
-			GridField dependentField = (GridField)list.get(i);
-		//	log.trace(log.l5_DData, "Dependent Field", dependentField==null ? "null" : dependentField.getColumnName());
 			//  if the field has a lookup
 			if (dependentField != null && dependentField.getLookup() instanceof MLookup)
 			{
 				MLookup mLookup = (MLookup)dependentField.getLookup();
-			//	log.trace(log.l6_Database, "Lookup Validation", mLookup.getValidation());
 				//  if the lookup is dynamic (i.e. contains this columnName as variable)
 				if (mLookup.getValidation().indexOf("@"+columnName+"@") != -1)
 				{
