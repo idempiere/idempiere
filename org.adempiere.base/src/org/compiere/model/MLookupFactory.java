@@ -360,8 +360,13 @@ public class MLookupFactory
 	static private MLookupInfo getLookup_Table (Properties ctx, Language language,
 		int WindowNo, int AD_Reference_Value_ID)
 	{
-		//	Try cache - assume no language change
-		StringBuilder key = new StringBuilder().append(Env.getAD_Client_ID(ctx)).append("|").append(String.valueOf(AD_Reference_Value_ID));
+		String lang;
+		if (language == null) {
+			lang = Env.getAD_Language(Env.getCtx());
+		} else {
+			lang = language.getAD_Language();
+		}
+		StringBuilder key = new StringBuilder().append(Env.getAD_Client_ID(ctx)).append("|").append(lang).append("|").append(String.valueOf(AD_Reference_Value_ID));
 		MLookupInfo retValue = (MLookupInfo)s_cacheRefTable.get(key.toString());
 		if (retValue != null)
 		{
