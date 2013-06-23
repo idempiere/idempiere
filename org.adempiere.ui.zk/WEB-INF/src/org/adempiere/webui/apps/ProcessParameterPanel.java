@@ -29,6 +29,7 @@ import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
+import org.adempiere.webui.editor.IZoomableEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
 import org.adempiere.webui.editor.WebEditorFactory;
@@ -54,6 +55,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.impl.XulElement;
 
 /**
  * Process Parameter Panel, based on existing ProcessParameter dialog. -
@@ -68,7 +70,8 @@ public class ProcessParameterPanel extends Panel implements
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7163263872945366389L;
+	private static final long serialVersionUID = -5996487688479454715L;
+
 	private String width;
 
 	/**
@@ -291,9 +294,25 @@ public class ProcessParameterPanel extends Panel implements
 		editor.fillHorizontal();
 		// setup editor context menu
 		WEditorPopupMenu popupMenu = editor.getPopupMenu();
-		if (popupMenu != null) {
-			popupMenu.addMenuListener((ContextMenuListener) editor);
+		if (popupMenu != null)
+		{
+			popupMenu.addMenuListener((ContextMenuListener)editor);
+			popupMenu.setId(mField.getColumnName()+"-popup");
 			this.appendChild(popupMenu);
+			if (!mField.isFieldOnly())
+			{
+				Label label = editor.getLabel();
+				if (popupMenu.isZoomEnabled() && editor instanceof IZoomableEditor)
+				{
+					label.addEventListener(Events.ON_CLICK, new ZoomListener((IZoomableEditor) editor));
+				}
+
+				popupMenu.addContextElement(label);
+				if (editor.getComponent() instanceof XulElement) 
+				{
+					popupMenu.addContextElement((XulElement) editor.getComponent());
+				}
+			}        				        				
 		}
 		//
 		m_wEditors.add(editor); // add to Editors
@@ -634,6 +653,7 @@ public class ProcessParameterPanel extends Panel implements
 					m_wEditors2.get(i).setVisible(false);
 				}
 			}
+        	editor.updateLabelStyle();
 		}
 	}
 
@@ -661,5 +681,21 @@ public class ProcessParameterPanel extends Panel implements
 		m_processInfo = processInfo;
 	}
 
-} // ProcessParameterPanel
+	static class ZoomListener implements EventListener<Event> {
 
+		private IZoomableEditor searchEditor;
+
+		ZoomListener(IZoomableEditor editor) {
+			searchEditor = editor;
+		}
+
+		public void onEvent(Event event) throws Exception {
+			if (Events.ON_CLICK.equals(event.getName())) {
+				searchEditor.actionZoom();
+			}
+
+		}
+
+	}
+
+} // ProcessParameterPanel

@@ -94,13 +94,13 @@ public abstract class CreateFromBatch extends CreateFrom
 	throws SQLException
 	{
 		//  Get StatementDate
-		Timestamp ts = (Timestamp) getGridTab().getValue("StatementDate");
-		if (ts == null)
-			ts = new Timestamp(System.currentTimeMillis());
+		//Timestamp ts = (Timestamp) getGridTab().getValue("StatementDate");
+		//if (ts == null)
+			//ts = new Timestamp(System.currentTimeMillis());
 
 		int index = 1;
 		
-		pstmt.setTimestamp(index++, ts);		
+		//pstmt.setTimestamp(index++, ts);		
 		pstmt.setInt(index++, BankAccount != null ? (Integer) BankAccount : (Integer) getGridTab().getValue("C_BankAccount_ID"));
 		
 		if(DocType != null)

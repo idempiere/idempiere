@@ -23,11 +23,11 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
-import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintFormat;
@@ -36,7 +36,9 @@ import org.compiere.model.I_AD_Reference;
 import org.compiere.model.I_AD_ReportView;
 import org.compiere.model.I_AD_Val_Rule;
 import org.compiere.model.I_AD_Workflow;
+import org.compiere.model.MAttachment;
 import org.compiere.model.Query;
+import org.compiere.model.X_AD_Attachment;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Process;
@@ -119,6 +121,17 @@ public class ProcessElementHandler extends AbstractElementHandler {
 		AttributesImpl atts = new AttributesImpl();
 
 		try {
+			// Export attachment if necessary
+			MAttachment attachment = m_Process.getAttachment();
+			if (attachment != null && attachment.get_ID() > 0) {
+				ElementHandler handler = ctx.packOut.getHandler(X_AD_Attachment.Table_Name);
+				try {
+					handler.packOut(ctx.packOut, document, null, attachment.getAD_Attachment_ID());
+				} catch (Exception e) {
+					throw new SAXException(e);
+				}
+			}
+
 			if (m_Process.isReport() && m_Process.getAD_ReportView_ID() > 0)
 			{
 				ElementHandler handler = packOut.getHandler(I_AD_ReportView.Table_Name);

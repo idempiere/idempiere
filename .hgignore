@@ -93,6 +93,7 @@ syntax: regexp
 ^org\.apache\.ecs/bin/.*$
 ^keystore/.*$
 ^log/.*$
+^PostgreSQL/.*$
 ^.*\.log$
 ^Adempiere.properties$
 ^idempiere.properties$

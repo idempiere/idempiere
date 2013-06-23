@@ -566,7 +566,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	 * @return boolean
 	 */
 	protected boolean isShowPreference() {
-		return MRole.getDefault().isShowPreference() && gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn();
+		return MRole.getDefault().isShowPreference() && gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn()
+				&& gridTab != null; // don't show preference for process parameters
 	}
 
 	/**

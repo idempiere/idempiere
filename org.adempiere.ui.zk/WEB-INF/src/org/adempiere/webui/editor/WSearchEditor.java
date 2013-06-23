@@ -27,9 +27,11 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.adwindow.ADWindowContent;
 import org.adempiere.webui.adwindow.IFieldEditorContainer;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Searchbox;
@@ -90,6 +92,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 	private static final String IN_PROGRESS_IMAGE = "~./zk/img/progress3.gif";
 	
+	private ADWindow adwindow;
+
 	public WSearchEditor (GridField gridField)
 	{
 		super(new CustomSearchBox(), gridField);
@@ -504,6 +508,11 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		vqe.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
+				if (adwindow != null)
+				{
+					adwindow.getADWindowContent().hideBusyMask();
+					adwindow = null;
+				}
 				// get result
 				int result = vqe.getRecord_ID();
 
@@ -520,8 +529,16 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			}
 		});
 
-		vqe.setVisible(true);
-		AEnv.showWindow(vqe);		
+		vqe.setSizable(true);
+		adwindow = ADWindow.findADWindow(getComponent());
+		if (adwindow != null) {
+			ADWindowContent content = adwindow.getADWindowContent();				
+			content.getComponent().getParent().appendChild(vqe);
+			content.showBusyMask(vqe);
+			LayoutUtils.openOverlappedWindow(content.getComponent().getParent(), vqe, "middle_center");
+		} else {
+			AEnv.showWindow(vqe);
+		}
 	}	//	actionQuickEntry
 
 	private void actionButton(String queryValue)
