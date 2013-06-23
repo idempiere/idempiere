@@ -31,6 +31,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.MField;
+import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -235,7 +236,22 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 					id = Env.getContextAsInt(Env.getCtx(), parent_WindowNo, columnname);
 				}
 			}
-
+			MQuery query = new MQuery(gridtab.getAD_Table_ID());
+			if (id == 0) {	//new record			
+				query.addRestriction("1=2");
+				gridtab.setQuery(query);
+				gridtab.query(false);
+				if (gridtab.isInsertRecord())
+					gridtab.dataNew(false);
+			}
+			else{ //update record
+				if (gridtab.getTabNo() == 0)
+					query.addRestriction(gridtab.getKeyColumnName(),"=",id);
+				gridtab.setQuery(query);
+				gridtab.query(false);
+			}
+			quickTabs.set(idxt, gridtab);
+			
 			MTable table = MTable.get(Env.getCtx(), gridtab.getTableName());
 			PO po = table.getPO(id, null);
 			if (idxt > 0) {
@@ -443,10 +459,25 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 			if (idx >= 0) {
 				GridField field = quickFields.get(idx);
 				// process dependencies and callouts for the changed field
-				field.setValue(evt.getNewValue(), true);
+				field.getGridTab().setValue(field, evt.getNewValue());
 				field.getGridTab().processFieldChange(field);
+				if (!field.getCallout().isEmpty()) {
+					refresh();
+				}
 			}
 		}
 	}
+	
+	/**
+	 *	refresh all fields
+	 */
+	public void refresh()
+	{
+		for (int idxf = 0; idxf < quickFields.size(); idxf++) {
+			GridField field = quickFields.get(idxf);
+			WEditor editor = quickEditors.get(idxf);
+			editor.setValue(field.getValue());
+		}
+	}//refresh
 
 } // WQuickEntry
