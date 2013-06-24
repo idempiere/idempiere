@@ -988,17 +988,24 @@ span.z-tree-tee, span.z-tree-last, span.z-tree-firstspacer {
 	padding: 0px; 
 	margin: 0px; 
 	background-color: transparent;
+	position: relative;
 }
 
-.editor-box .z-textbox {
-	display: inline-block; 
-	border-right-color: transparent;
-	border-top-right-radius: 0px;
-	border-bottom-right-radius: 0px;
+.editor-input {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box; /* Firefox */
+	display: inline-block;
+	padding-right: 22px; 
+	width: 100%;
+	height: 21px;
 }
 
-.editor-box .z-textbox:focus {
+.editor-input:focus {
 	border: 1px solid #0000ff;
+}
+
+.editor-input-disd {
+	padding-right: 0px !important;
 }
 	
 .editor-button {
@@ -1008,11 +1015,11 @@ span.z-tree-tee, span.z-tree-last, span.z-tree-firstspacer {
 	background-color: transparent;
 	background-image: none;
 	width: 19px;
-	height: 20px;
-	border: 1px solid #e6e6e6;
-	border-top-color: #b2b2b2;
-	border-left-width: 0px;
-	border-radius: 0 2px 2px 0;
+	height: 18px;
+	border: none;
+	position: absolute;
+	right: 2px;
+	top: 1px;
 }
 
 .editor-button :hover {
@@ -1024,12 +1031,11 @@ span.z-tree-tee, span.z-tree-last, span.z-tree-firstspacer {
 	text-align: left;
 	width: 16px;
 	height: 16px;
-	padding: 2px 1px;
+	padding: 1px 1px;
 }
 
 
 .editor-box .grid-editor-input.z-textbox {
-	width: 90%;
 }
 
 .grid-editor-button {
@@ -1043,19 +1049,7 @@ span.z-tree-tee, span.z-tree-last, span.z-tree-firstspacer {
 	white-space:nowrap;
 }
 
-.number-box .z-decimalbox {
-	display: inline-block; 
-	border-right-color: transparent;
-	border-top-right-radius: 0px;
-	border-bottom-right-radius: 0px;
-}
-
 .number-box .grid-editor-input.z-decimalbox {
-	width: 80%;
-}
-
-.number-box .z-decimalbox:focus {
-	border: 1px solid #0000ff;
 }
 
 .datetime-box {
@@ -1325,11 +1319,27 @@ tbody.z-grid-empty-body td {
 }
 
 i.grid-combobox-editor {
-	width: 96% !important;
+	width: 99% !important;
+	position: relative;
 }
 
 .grid-combobox-editor input {
-	width: 85% !important;
+	width: 100% !important;
+	padding-right: 22px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box; /* Firefox */
+	height: 21px;
+}
+
+.grid-combobox-editor .z-combobox-btn {
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	border-radius: 0px 0px;
+}
+
+.grid-combobox-editor.z-combobox-focus .z-combobox-btn {
+	border-left: 1px solid #0000ff;
 }
 
 .embedded-dialog {

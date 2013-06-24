@@ -82,7 +82,8 @@ public class NumberBox extends Div
     	if (integral)
     		decimalBox.setScale(0);
     	decimalBox.setStyle("display: inline-block;text-align:right");
-    	decimalBox.setHflex("1");
+    	decimalBox.setHflex("0");
+    	decimalBox.setSclass("editor-input");
     	appendChild(decimalBox);
 		
 		btn = new Button();
@@ -385,11 +386,22 @@ public class NumberBox extends Div
 	     decimalBox.setReadonly(!enabled);
 	     btn.setEnabled(enabled);
 	     if (enabled)
+	     {
+	    	 if (btn.getParent() != decimalBox.getParent())
+	    		 btn.setParent(decimalBox.getParent());
 	    	 btn.setPopup(popup);
+	     }
 	     else 
 	     {
 	    	 Popup p = null;
 	    	 btn.setPopup(p);
+	    	 if (btn.getParent() != null)
+	    		 btn.detach();
+	     }
+	     if (enabled) {
+	    	 LayoutUtils.removeSclass("editor-input-disd", decimalBox);
+	     } else {
+	    	 LayoutUtils.addSclass("editor-input-disd", decimalBox);
 	     }
 	}
 	
@@ -437,12 +449,10 @@ public class NumberBox extends Div
 	
 	public void setTableEditorMode(boolean flag) {
 		if (flag) {
-			decimalBox.setHflex("0");
 			setHflex("0");
 			LayoutUtils.addSclass("grid-editor-input", decimalBox);
 			LayoutUtils.addSclass("grid-editor-button", btn);
 		} else {
-			decimalBox.setHflex("1");
 			setHflex("1");
 			LayoutUtils.removeSclass("grid-editor-input", decimalBox);
 			LayoutUtils.removeSclass("grid-editor-button", btn);

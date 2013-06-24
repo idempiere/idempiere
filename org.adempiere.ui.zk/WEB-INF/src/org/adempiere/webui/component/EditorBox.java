@@ -32,7 +32,6 @@ public class EditorBox extends Div {
 			this);
 	protected Textbox txt;
 	protected Button btn;
-//	private Hlayout hlayout;
 
 	public EditorBox() {
 		initComponents();
@@ -54,9 +53,9 @@ public class EditorBox extends Div {
 	}
 
 	private void initComponents() {
-//		hlayout = new Hlayout();
-//		hlayout.setHflex("1");
 		txt = new Textbox();
+		txt.setSclass("editor-input");
+		txt.setHflex("0");
 		appendChild(txt);
 		btn = new Button();
 		btn.setTabindex(-1);
@@ -103,6 +102,11 @@ public class EditorBox extends Div {
 			if (btn.getParent() != null)
 				btn.detach();
 		}
+		if (enabled) {
+			LayoutUtils.removeSclass("editor-input-disd", txt);
+		} else {
+			LayoutUtils.addSclass("editor-input-disd", txt);
+		}
 	}
 
 	/**
@@ -147,12 +151,10 @@ public class EditorBox extends Div {
 	
 	public void setTableEditorMode(boolean flag) {
 		if (flag) {
-			txt.setHflex("0");
 			setHflex("0");
 			LayoutUtils.addSclass("grid-editor-input", txt);
 			LayoutUtils.addSclass("grid-editor-button", btn);
 		} else {
-			txt.setHflex("1");
 			setHflex("1");
 			LayoutUtils.removeSclass("grid-editor-input", txt);
 			LayoutUtils.removeSclass("grid-editor-button", btn);

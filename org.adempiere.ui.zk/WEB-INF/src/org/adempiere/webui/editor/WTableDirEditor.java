@@ -319,6 +319,7 @@ ContextMenuListener, IZoomableEditor
 	@Override
 	public void setReadWrite(boolean readWrite) {
 		getComponent().setEnabled(readWrite);
+		getComponent().setButtonVisible(readWrite);
 	}
 
 	private void refreshList()
