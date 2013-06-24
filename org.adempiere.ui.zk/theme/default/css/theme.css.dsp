@@ -1107,7 +1107,8 @@ tr.z-group {
 	font-family: Helvetica,Arial,sans-serif;
 }
 
-.z-textbox-readonly, .z-intbox-readonly, .z-longbox-readonly, .z-doublebox-readonly, .z-decimalbox-readonly, .z-datebox-readonly {
+.z-textbox-readonly, .z-intbox-readonly, .z-longbox-readonly, .z-doublebox-readonly, 
+.z-decimalbox-readonly, .z-datebox-readonly, .z-timebox-readonly {
 	background-color: #F0F0F0;
 }
 
