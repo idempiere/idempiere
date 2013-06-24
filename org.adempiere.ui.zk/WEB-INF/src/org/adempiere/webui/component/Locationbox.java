@@ -27,11 +27,25 @@ public class Locationbox extends EditorBox
 	public Locationbox()
     {
          super();
+         txt.setReadonly(true);
     }
 
      public Locationbox(String text)
      {
-         super();
+         this();
          setText(text);
      }
+
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		txt.setReadonly(true);
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return btn.isEnabled();
+	}
+     
+     
 }

@@ -1108,7 +1108,7 @@ tr.z-group {
 }
 
 .z-textbox-readonly, .z-intbox-readonly, .z-longbox-readonly, .z-doublebox-readonly, 
-.z-decimalbox-readonly, .z-datebox-readonly, .z-timebox-readonly {
+.z-decimalbox-readonly, .z-datebox-readonly, .z-timebox-readonly, .editor-input-disd {
 	background-color: #F0F0F0;
 }
 
