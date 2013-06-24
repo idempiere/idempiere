@@ -84,6 +84,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 
 	private static final int MIN_NUMERIC_COL_WIDTH = 130;
 
+	private static final String ATTR_ON_POST_SELECTED_ROW_CHANGED = "org.adempiere.webui.adwindow.GridView.onPostSelectedRowChanged";
+
 	private Grid listbox = null;
 
 	private int pageSize = DEFAULT_PAGE_SIZE;
@@ -324,7 +326,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 				}
 			} else if (rowIndex == renderer.getCurrentRowIndex()){
 				if (modeless && !renderer.isEditing())
-					Events.echoEvent("onPostSelectedRowChanged", this, null);
+					echoOnPostSelectedRowChanged();
 				return;
 			} else {
 				if (renderer.isEditing()) {
@@ -348,12 +350,22 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 				gridFooter.setVisible(true);
 			}
 			if (rowIndex >= 0 && pgIndex >= 0) {
-				Events.echoEvent("onPostSelectedRowChanged", this, null);
+				echoOnPostSelectedRowChanged();
 			}
 		} else {
 			if (rowIndex >= 0) {
-				Events.echoEvent("onPostSelectedRowChanged", this, null);
+				echoOnPostSelectedRowChanged();
 			}
+		}
+	}
+
+	/**
+	 * 
+	 */
+	protected void echoOnPostSelectedRowChanged() {
+		if (getAttribute(ATTR_ON_POST_SELECTED_ROW_CHANGED) == null) {
+			setAttribute(ATTR_ON_POST_SELECTED_ROW_CHANGED, Boolean.TRUE);
+			Events.echoEvent("onPostSelectedRowChanged", this, null);
 		}
 	}
 
@@ -567,6 +579,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 	 * Event after the current selected row change
 	 */
 	public void onPostSelectedRowChanged() {
+		removeAttribute(ATTR_ON_POST_SELECTED_ROW_CHANGED);
 		if (listbox.getRows().getChildren().isEmpty())
 			return;
 
