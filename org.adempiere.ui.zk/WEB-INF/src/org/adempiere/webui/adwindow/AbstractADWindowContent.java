@@ -911,6 +911,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		getComponent().getParent().appendChild(win);
 		showBusyMask(win);		
 		LayoutUtils.openOverlappedWindow(getComponent(), win, "middle_center");
+		win.focus();
 	}
 
     public void onChat()
@@ -2607,7 +2608,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		if (mask != null && mask.getParent() != null) {
 			mask.detach();
 			StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
-			script.append(getComponent().getParent().getUuid()).append("');w.busy=false;");
+			script.append(getComponent().getParent().getUuid()).append("');if(w) w.busy=false;");
 			Clients.response(new AuScript(script.toString()));
 		}
 	}

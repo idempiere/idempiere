@@ -13,11 +13,12 @@ zk.override(zk.Widget.prototype, "canActivate",
 	    	}
 			var wgt = this;
 			while (wgt) {
-				if (wgt.busy) {
+				if (wgt.busy) {					
 					if (wgt.busy.className == 'zul.wnd.Window') {
 						if (zUtl.isAncestor(wgt.busy, this)) {
 							return true;
 						} else {
+							jq.focusOut();
 							wgt.busy.focus(0);
 							return false;
 						}				 		
