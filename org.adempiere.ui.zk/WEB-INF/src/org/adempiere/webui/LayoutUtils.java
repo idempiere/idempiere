@@ -216,7 +216,7 @@ public final class LayoutUtils {
 		sclass = " " + sclass + " ";
 		cls = " " + cls + " ";
 		if (sclass.indexOf(cls) >= 0) {
-			sclass.replace(cls, "");
+			sclass = sclass.replace(cls, " ");
 			sclass = sclass.trim();
 			target.setSclass(sclass);
 		}
