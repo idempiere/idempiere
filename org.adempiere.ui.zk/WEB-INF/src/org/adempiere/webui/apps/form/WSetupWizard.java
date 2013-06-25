@@ -85,6 +85,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	//
 	private Tree			wfnodeTree;
 	private Treeitem 		prevti = null;
+	private Treeitem 		firstti = null;
 
 	private Label			pretitleLabel	= new Label(Msg.getMsg(Env.getCtx(), "SetupTask"));
 	private Label			titleLabel	= new Label();
@@ -150,14 +151,16 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 				if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT)) 
 				{
 					Treeitem ti = wfnodeTree.getSelectedItem();
-					if (ti.getAttribute("AD_Workflow_ID") != null) {
-						// MWorkflow
-						int wfid = (Integer) ti.getAttribute("AD_Workflow_ID");
-						SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Workflow, wfid);
-					} else if (ti.getAttribute("AD_WF_Node_ID") != null) {
-						// MWFNode
-						int nodeid = (Integer) ti.getAttribute("AD_WF_Node_ID");
-						SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Node, nodeid);
+					if (ti != null) {
+						if (ti.getAttribute("AD_Workflow_ID") != null) {
+							// MWorkflow
+							int wfid = (Integer) ti.getAttribute("AD_Workflow_ID");
+							SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Workflow, wfid);
+						} else if (ti.getAttribute("AD_WF_Node_ID") != null) {
+							// MWFNode
+							int nodeid = (Integer) ti.getAttribute("AD_WF_Node_ID");
+							SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Node, nodeid);
+						}
 					}
 				}
 				else
@@ -192,11 +195,12 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	}
 
 	protected void addWfEntry(MWorkflow wfwizard) {
-		/* TODO: Color of workflow according to wizard status */
 		allFinished = true;
 		Treechildren treeChildren = wfnodeTree.getTreechildren();
 		Treeitem treeitemwf = new Treeitem();
 		treeChildren.appendChild(treeitemwf);
+		if (firstti == null)
+			firstti = treeitemwf;
 
 		Label wizardLabel = new Label(wfwizard.getName(true));
 		wizardLabel.setStyle(WIZARD_LABEL_STYLE);
@@ -431,11 +435,9 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		east.setAutoscroll(true);
 
 		setNotesPanelVisible(false);
-		
-		MWorkflow wf = MWorkflow.get(Env.getCtx(), getWfWizards().get(0).get_ID());
-		showInRightPanel(wf.getAD_Workflow_ID(), 0);
 
-
+		wfnodeTree.setSelectedItem(firstti);
+		showItem(firstti);
 	}	//	jbInit
 
 	private void refreshProgress() {
