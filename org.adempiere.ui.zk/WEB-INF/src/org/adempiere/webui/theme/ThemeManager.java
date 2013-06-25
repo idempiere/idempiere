@@ -16,6 +16,7 @@ package org.adempiere.webui.theme;
 import java.io.IOException;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.compiere.Adempiere;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
 import org.compiere.model.MSysConfig;
@@ -143,5 +144,13 @@ public final class ThemeManager {
 		} else {
 			return null;
 		}
+	}
+	
+	/**
+	 * @return trademark text for standard report footer
+	 */
+	public static String getStandardReportFooterTrademarkText() {
+		String s = Env.getContext(Env.getCtx(), "#ZK_STANDARD_REPORT_FOOTER_TRADEMARK_TEXT");
+		return Util.isEmpty(s) ? Adempiere.ADEMPIERE_R : s;
 	}
 }
