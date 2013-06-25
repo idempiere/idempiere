@@ -113,7 +113,7 @@ public class EditorBox extends Div {
 	 * @return boolean
 	 */
 	public boolean isEnabled() {
-		return !txt.isReadonly();
+		return btn.isEnabled();
 	}
 
 	/**
