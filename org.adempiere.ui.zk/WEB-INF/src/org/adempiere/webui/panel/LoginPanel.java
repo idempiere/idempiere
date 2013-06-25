@@ -99,7 +99,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9091534075824025355L;
+	private static final long serialVersionUID = -3317111366328505399L;
 
 	private static LogAuthFailure logAuthFailure = new LogAuthFailure();
 
@@ -110,6 +110,7 @@ public class LoginPanel extends Window implements EventListener<Event>
     protected Label lblUserId;
     protected Label lblPassword;
     protected Label lblLanguage;
+    protected Label lblLogin;    
     protected Textbox txtUserId;
     protected Textbox txtPassword;
     protected Combobox lstLanguage;
@@ -204,9 +205,9 @@ public class LoginPanel extends Window implements EventListener<Event>
 	protected void createUI() {
 		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
-    	Label label = new Label(Msg.getMsg(Env.getCtx(), "Login"));
-    	label.setSclass(ITheme.LOGIN_BOX_HEADER_TXT_CLASS);
-    	div.appendChild(label);
+    	lblLogin = new Label(Msg.getMsg(Env.getCtx(), "Login"));
+    	lblLogin.setSclass(ITheme.LOGIN_BOX_HEADER_TXT_CLASS);
+    	div.appendChild(lblLogin);
     	this.appendChild(div);
 
     	Table table = new Table();
@@ -491,6 +492,7 @@ public class LoginPanel extends Window implements EventListener<Event>
     	chkRememberMe.setLabel(Msg.getMsg(language, "RememberMe"));
     	chkSelectRole.setLabel(Msg.getMsg(language, "SelectRole"));
     	btnResetPassword.setLabel(Msg.getMsg(language, "ForgotMyPassword"));
+    	lblLogin.setValue(Msg.getMsg(language, "Login"));
     	pnlButtons.getButton(ConfirmPanel.A_OK).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_OK)));
     	pnlButtons.getButton(ConfirmPanel.A_HELP).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_HELP)));
     }
