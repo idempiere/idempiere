@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -80,7 +79,6 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MUserQuery;
-import org.compiere.model.X_AD_Column;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -120,7 +118,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5019862772740854656L;
+	private static final long serialVersionUID = 3901459797939709594L;
 
 	// values and label for history combo
 	private static final String HISTORY_DAY_ALL = "All";
@@ -163,14 +161,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     //
     /** List of WEditors            */
     private ArrayList<WEditor>          m_sEditors = new ArrayList<WEditor>();
-    /** Target Fields with AD_Column_ID as key  */
-    private Hashtable<Integer,GridField>    m_targetFields = new Hashtable<Integer,GridField>();
     /** For Grid Controller         */
     public static final int     TABNO = 99;
     /** Length of Fields on first tab   */
     public static final int     FIELDLENGTH = 20;
-	/** Reference ID for Yes/No	*/
-	public static final int		AD_REFERENCE_ID_YESNO = REFERENCE_YESNO;
 
     private int m_AD_Tab_ID = 0;
 	private MUserQuery[] userQueries;
@@ -615,53 +609,53 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         {
             GridField mField = m_findFields[i];
 
-			// Make Yes-No searchable as list
-			if (mField.getVO().displayType == DisplayType.YesNo)
-			{
-				GridFieldVO vo = mField.getVO();
-				GridFieldVO ynvo = vo.clone(vo.ctx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
-				ynvo.IsDisplayed = true;
-				ynvo.displayType = DisplayType.List;
-				ynvo.AD_Reference_Value_ID = AD_REFERENCE_ID_YESNO;
+            if (mField.isSelectionColumn()) {
+    			if (mField.getVO().displayType == DisplayType.YesNo) {
+    				// Make Yes-No searchable as list
+    				GridFieldVO vo = mField.getVO();
+    				GridFieldVO ynvo = vo.clone(vo.ctx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
+    				ynvo.IsDisplayed = true;
+    				ynvo.displayType = DisplayType.List;
+    				ynvo.AD_Reference_Value_ID = REFERENCE_YESNO;
 
-				ynvo.lookupInfo = MLookupFactory.getLookupInfo (ynvo.ctx, ynvo.WindowNo, ynvo.AD_Column_ID, ynvo.displayType,
-						Env.getLanguage(ynvo.ctx), ynvo.ColumnName, ynvo.AD_Reference_Value_ID,
-						ynvo.IsParent, ynvo.ValidationCode);
+    				ynvo.lookupInfo = MLookupFactory.getLookupInfo (ynvo.ctx, ynvo.WindowNo, ynvo.AD_Column_ID, ynvo.displayType,
+    						Env.getLanguage(ynvo.ctx), ynvo.ColumnName, ynvo.AD_Reference_Value_ID,
+    						ynvo.IsParent, ynvo.ValidationCode);
 
-				GridField ynfield = new GridField(ynvo);
+    				GridField ynfield = new GridField(ynvo);
 
-				// replace the original field by the YN List field
-				m_findFields[i] = ynfield;
-				mField = ynfield;
-			}
+    				// replace the original field by the YN List field
+    				m_findFields[i] = ynfield;
+    				mField = ynfield;
+    			} else if  ( mField.getVO().displayType == DisplayType.Button ) {
+    				// Make Buttons searchable
+    				GridFieldVO vo = mField.getVO();
+    				if ( vo.AD_Reference_Value_ID > 0 )
+    				{
+    					GridFieldVO postedvo = vo.clone(vo.ctx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
+    					postedvo.IsDisplayed = true;
+    					postedvo.displayType = DisplayType.List;
 
-			// Make Buttons searchable
-			if  ( mField.getVO().displayType == DisplayType.Button )
-			{
-				GridFieldVO vo = mField.getVO();
-				if ( vo.AD_Reference_Value_ID > 0 )
-				{
-					GridFieldVO postedvo = vo.clone(vo.ctx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
-					postedvo.IsDisplayed = true;
-					postedvo.displayType = DisplayType.List;
+    					postedvo.lookupInfo = MLookupFactory.getLookupInfo (postedvo.ctx, postedvo.WindowNo, postedvo.AD_Column_ID, postedvo.displayType,
+    							Env.getLanguage(postedvo.ctx), postedvo.ColumnName, postedvo.AD_Reference_Value_ID,
+    							postedvo.IsParent, postedvo.ValidationCode);
 
-					postedvo.lookupInfo = MLookupFactory.getLookupInfo (postedvo.ctx, postedvo.WindowNo, postedvo.AD_Column_ID, postedvo.displayType,
-							Env.getLanguage(postedvo.ctx), postedvo.ColumnName, postedvo.AD_Reference_Value_ID,
-							postedvo.IsParent, postedvo.ValidationCode);
+    					GridField postedfield = new GridField(postedvo);
 
-					GridField postedfield = new GridField(postedvo);
-
-					// replace the original field by the Posted List field
-					m_findFields[i] = postedfield;
-					mField = postedfield;
-				}
-			}
-
-            if (mField.isSelectionColumn())
+    					// replace the original field by the Posted List field
+    					m_findFields[i] = postedfield;
+    					mField = postedfield;
+    				}
+    			} else {
+    				// clone the field and clean gridtab - IDEMPIERE-1105
+    		        GridField findField = (GridField) mField.clone(m_findCtx);        
+    		        findField.setGridTab(null);
+					m_findFields[i] = findField;
+    				mField = findField;
+    			}
             	gridFieldList.add(mField); 
+            } // isSelectionColumn
 
-            //  TargetFields
-            m_targetFields.put (new Integer(mField.getAD_Column_ID()), mField);
         }   //  for all target tab fields
 
        
@@ -1324,7 +1318,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             //
             GridField field = getTargetMField(ColumnName);
             if(field == null) continue; // Elaine 2008/07/29
-            boolean isProductCategoryField = isProductCategoryField(field.getAD_Column_ID());
+            boolean isProductCategoryField = isProductCategoryField(field.getColumnName());
             String ColumnSQL = field.getColumnSQL(false);
             // Left brackets
             Listbox listLeftBracket = (Listbox)row.getFellow("listLeftBracket"+row.getId());
@@ -1755,7 +1749,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 	value = SecureEngine.encrypt(value, Env.getAD_Client_ID(Env.getCtx()));
                 }
                 
-                boolean isProductCategoryField = isProductCategoryField(field.getAD_Column_ID());
+                boolean isProductCategoryField = isProductCategoryField(field.getColumnName());
                 StringBuilder ColumnSQL = new StringBuilder(field.getColumnSQL(false));
                 //
                 // Be more permissive for String columns
@@ -1847,10 +1841,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         DB.close(m_pstmt);
         m_pstmt = null;
         
-        //  TargetFields
-        if (m_targetFields != null)
-            m_targetFields.clear();
-        m_targetFields = null;
         //
         super.dispose();
         
@@ -1951,16 +1941,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
     /**
      * Checks the given column.
-     * @param columnId
+     * @param columnName
      * @return true if the column is a product category column
     **/
-    private boolean isProductCategoryField(int columnId) {
-        X_AD_Column col = new X_AD_Column(Env.getCtx(), columnId, null);
-        if (col.get_ID() == 0) {
-            return false; // column not found...
-        }
-        return MProduct.COLUMNNAME_M_Product_Category_ID.equals(col.getColumnName());
-
+    private boolean isProductCategoryField(String columnName) {
+        return MProduct.COLUMNNAME_M_Product_Category_ID.equals(columnName);
     }   //  isProductCategoryField
 
     /**
@@ -1973,15 +1958,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         //if a node with this id is found later in the search we have a loop in the tree
         int subTreeRootParentId = 0;
         StringBuilder retString = new StringBuilder(" M_Product_Category_ID IN (");
-        String sql = " SELECT M_Product_Category_ID, M_Product_Category_Parent_ID FROM M_Product_Category";
+        String sql = "SELECT M_Product_Category_ID, M_Product_Category_Parent_ID FROM M_Product_Category WHERE AD_Client_ID=? AND IsActive='Y'";
         final Vector<SimpleTreeNode> categories = new Vector<SimpleTreeNode>(100);
-        Statement stmt = null;
+        PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            stmt = DB.createStatement();
-            rs = stmt.executeQuery(sql);
+            pstmt = DB.prepareStatement(sql, null);
+            pstmt.setInt(1, Env.getAD_Client_ID(Env.getCtx()));
+            rs = pstmt.executeQuery();
             while (rs.next()) {
-                if(rs.getInt(1)==productCategoryId) {
+                if (rs.getInt(1) == productCategoryId) {
                     subTreeRootParentId = rs.getInt(2);
                 }
                 categories.add(new SimpleTreeNode(rs.getInt(1), rs.getInt(2)));
@@ -1996,9 +1982,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             retString = new StringBuilder();
         }
         finally{
-        	DB.close(rs,stmt);
-        	rs = null;
-        	stmt = null;
+        	DB.close(rs, pstmt);
+        	rs = null; pstmt = null;
         }
         return retString.toString();
 
