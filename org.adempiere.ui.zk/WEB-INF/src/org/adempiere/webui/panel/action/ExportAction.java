@@ -173,7 +173,6 @@ public class ExportAction implements EventListener<Event>
 			exportFile();
 		else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
 			panel.hideBusyMask();			
-			panel.getComponent().invalidate();
 		}
 	}
 

@@ -24,7 +24,8 @@
       this.timeout = timeout;
     },
     _schedule: function() {
-      if (this.failures < 100) {
+      if (this.failures < 20) {
+    	this._req = null;
         setTimeout(this.proxy(this._send), this.delay);
       } else {
         this.stop();

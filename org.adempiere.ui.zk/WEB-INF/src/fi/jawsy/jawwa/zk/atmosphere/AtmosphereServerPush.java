@@ -222,7 +222,7 @@ public class AtmosphereServerPush implements ServerPush {
         boolean suspend = !desktopCtrl.scheduledServerPush();
         if (suspend) {
 		  	if (!resource.isSuspended()) {
-		  		resource.suspend(-1, true);
+		  		resource.suspend(-1, false);
 		  	}
 		  	this.resource.set(resource);
 		  	
