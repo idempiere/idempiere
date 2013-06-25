@@ -301,8 +301,12 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 			int idxt = quickTabs.indexOf(field.getGridTab());
 			PO po = quickPOs.get(idxt);
 			Object value = po.get_Value(field.getColumnName());
-			editor.setValue(value);
-			field.setValue(value, false);
+			if (value != null) {
+				editor.setValue(value);
+				field.setValue(value, false);
+			} else {
+				editor.dynamicDisplay();
+			}
 			initialValues.add(editor.getValue());
 		}
 
