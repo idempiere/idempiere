@@ -209,7 +209,7 @@ public class MImage extends X_AD_Image
 				url = getClass().getResource(str);
 			//
 			if (url == null)
-				log.warning("Not found: " + str);
+				if (log.isLoggable(Level.INFO)) log.info("Not found as resource: " + str);
 		}
 		catch (Exception e)
 		{
