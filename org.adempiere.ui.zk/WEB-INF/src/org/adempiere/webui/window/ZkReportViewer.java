@@ -346,12 +346,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		center.appendChild(iframe);
 		
 		South south = new South();
-		south.setHeight("22px");
+		south.setHeight("34px");
 		layout.appendChild(south);
 		reportLink = new A();
 		reportLink.setTarget("_blank");
 		Div linkDiv = new Div();
-		linkDiv.setStyle("width:100%; height: 20px");
+		linkDiv.setStyle("width:100%; height: 30px; padding-top: 2px;");
 		linkDiv.appendChild(reportLink);
 		south.appendChild(linkDiv);
 		//m_WindowNo
