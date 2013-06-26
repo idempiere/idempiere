@@ -127,4 +127,9 @@ public class WUrlEditor extends WEditor implements ContextMenuListener
 	}
 
 
+	@Override
+	public void setTableEditor(boolean b) {
+		super.setTableEditor(b);
+		getComponent().setTableEditorMode(b);
+	}	
 }

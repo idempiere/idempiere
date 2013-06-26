@@ -20,7 +20,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hlayout;
 
 /**
  * URL Box
@@ -52,12 +51,10 @@ public class Urlbox extends Div
     }
     
     private void initComponents() {
-		Hlayout hlayout = new Hlayout();
-		this.appendChild(hlayout);
-		hlayout.setHflex("1");
 		txt = new Textbox();
-		hlayout.appendChild(txt);
-		txt.setHflex("1");
+		appendChild(txt);
+		txt.setHflex("0");
+		txt.setSclass("editor-input");
 
 		btn = new A();
 		btn.setTarget("_blank");
@@ -65,9 +62,10 @@ public class Urlbox extends Div
 		btn.setSclass("editor-button");
 		btn.setZclass("z-button-os");
 		btn.setHflex("0");
-		hlayout.appendChild(btn);
+		appendChild(btn);
 
 		LayoutUtils.addSclass("editor-box", this);
+		setTableEditorMode(false);
 	}
     
     /**
@@ -112,6 +110,11 @@ public class Urlbox extends Div
 	
 	public void setEnabled(boolean enabled) {
     	txt.setReadonly(!enabled);
+    	if (enabled) {
+			LayoutUtils.removeSclass("editor-input-disd", txt);
+		} else {
+			LayoutUtils.addSclass("editor-input-disd", txt);
+		}
 	}
 	
 	/**
@@ -152,5 +155,18 @@ public class Urlbox extends Div
 	 */
 	public A getButton() {
 		return btn;
+	}
+	
+	public void setTableEditorMode(boolean flag) {
+		if (flag) {
+			setHflex("0");
+			LayoutUtils.addSclass("grid-editor-input", txt);
+			LayoutUtils.addSclass("grid-editor-button", btn);
+		} else {
+			setHflex("1");
+			LayoutUtils.removeSclass("grid-editor-input", txt);
+			LayoutUtils.removeSclass("grid-editor-button", btn);
+		}
+			
 	}
 }
