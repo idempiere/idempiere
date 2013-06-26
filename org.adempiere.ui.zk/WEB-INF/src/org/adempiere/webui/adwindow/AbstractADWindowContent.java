@@ -348,9 +348,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             if (tab == 0 && gridTab == null && m_findCancelled)
             	return false;
         }
-        Env.setContext(ctx, curWindowNo, "WindowName", gridWindow.getName());
-        Env.setContext(ctx, curWindowNo, "AD_Window_ID", gridWindow.getAD_Window_ID());
-        Env.setContext(ctx, curWindowNo, "AD_Window_UU", gridWindow.getAD_Window_UU());
+        // WindowName variable preserved for backward compatibility
+        // please consider it as DEPRECATED and use _WinInfo_WindowName instead 
+        Env.setContext(ctx, curWindowNo, "WindowName", gridWindow.getName()); // deprecated
+        Env.setContext(ctx, curWindowNo, "_WinInfo_WindowName", gridWindow.getName());
+        Env.setContext(ctx, curWindowNo, "_WinInfo_AD_Window_ID", gridWindow.getAD_Window_ID());
+        Env.setContext(ctx, curWindowNo, "_WinInfo_AD_Window_UU", gridWindow.getAD_Window_UU());
 
         if (gridTab != null)
         	gridTab.getTableModel().setChanged(false);

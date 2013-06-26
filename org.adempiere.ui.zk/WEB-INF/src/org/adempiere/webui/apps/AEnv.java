@@ -646,7 +646,7 @@ public final class AEnv
 	{
 		StringBuilder sb = new StringBuilder();
 		if (WindowNo > 0){
-			sb.append(Env.getContext(ctx, WindowNo, "WindowName", false)).append("  ");
+			sb.append(Env.getContext(ctx, WindowNo, "_WinInfo_WindowName", false)).append("  ");
 			final String documentNo = Env.getContext(ctx, WindowNo, "DocumentNo", false);
 			final String value = Env.getContext(ctx, WindowNo, "Value", false);
 			final String name = Env.getContext(ctx, WindowNo, "Name", false);
@@ -710,7 +710,7 @@ public final class AEnv
 	public static String getDialogHeader(Properties ctx, int windowNo) {
 		StringBuilder sb = new StringBuilder();
 		if (windowNo > 0){
-			sb.append(Env.getContext(ctx, windowNo, "WindowName", false)).append("  ");
+			sb.append(Env.getContext(ctx, windowNo, "_WinInfo_WindowName", false)).append("  ");
 			final String documentNo = Env.getContext(ctx, windowNo, "DocumentNo", false);
 			final String value = Env.getContext(ctx, windowNo, "Value", false);
 			final String name = Env.getContext(ctx, windowNo, "Name", false);

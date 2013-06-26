@@ -321,7 +321,7 @@ public class FormFrame extends CFrame
 	{
 		if (log.isLoggable(Level.INFO)) log.info("AD_Form_ID=" + AD_Form_ID + " - Class=" + className);
 		Properties ctx = Env.getCtx();
-		Env.setContext(ctx, m_WindowNo, "WindowName", name);
+		Env.setContext(ctx, m_WindowNo, "_WinInfo_WindowName", name);
 		setTitle(Env.getHeader(ctx, m_WindowNo));
 		this.gridTab = gridTab;
 

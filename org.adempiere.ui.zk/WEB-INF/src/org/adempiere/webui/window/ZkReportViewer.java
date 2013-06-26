@@ -355,7 +355,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		linkDiv.appendChild(reportLink);
 		south.appendChild(linkDiv);
 		//m_WindowNo
-		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), m_reportEngine.getWindowNo(), "AD_Window_ID", true);
+		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), m_reportEngine.getWindowNo(), "_WinInfo_AD_Window_ID", true);
 		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
 		updateToolbarAccess(AD_Window_ID, AD_Process_ID);
 		
