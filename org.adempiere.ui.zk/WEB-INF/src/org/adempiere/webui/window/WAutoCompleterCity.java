@@ -222,10 +222,10 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 
 	public void onEvent(Event event) throws Exception 
 	{
-		System.out.println("Event: " + event.getName());
-		event.toString();
+		//System.out.println("Event: " + event.getName());
+		//event.toString();
 		int index = this.getSelectedIndex();
-		System.out.println("Index = " +index	);
+		//System.out.println("Index = " +index	);
 		if (index>=0)
 		{
 			CityVO city = (CityVO) m_citiesShow.get(index);
