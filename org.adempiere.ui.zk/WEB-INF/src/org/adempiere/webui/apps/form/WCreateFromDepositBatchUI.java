@@ -42,6 +42,7 @@ import org.compiere.grid.CreateFromDepositBatch;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MColumn;
+import org.compiere.model.MDepositBatch;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
@@ -170,7 +171,14 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, 3499, DisplayType.Search);
 		bPartnerLookup = new WSearchEditor ("C_BPartner_ID", false, false, true, lookup);
 		
-		Timestamp date = Env.getContextAsDate(Env.getCtx(), p_WindowNo, MBankStatement.COLUMNNAME_StatementDate);
+		Timestamp date = null;
+		if (getGridTab().getAD_Table_ID() == MBankStatement.Table_ID) {
+			date = Env.getContextAsDate(Env.getCtx(), p_WindowNo, MBankStatement.COLUMNNAME_StatementDate);
+		} else if (getGridTab().getAD_Table_ID() == MDepositBatch.Table_ID) {
+			date = Env.getContextAsDate(Env.getCtx(), p_WindowNo, MDepositBatch.COLUMNNAME_DateDoc);
+		} else {
+			date = new Timestamp(System.currentTimeMillis());
+		}
 		dateToField.setValue(date);
 		
 		loadBankAccount();

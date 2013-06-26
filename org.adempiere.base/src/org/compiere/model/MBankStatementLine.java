@@ -206,9 +206,6 @@ import org.compiere.util.Msg;
 		if (amt.compareTo(getChargeAmt()) != 0)
 			setChargeAmt (amt);
 		//
-		// IDEMPIERE-480
-		setDateAcct(getParent().getDateAcct());
-
 		return true;
 	}	//	beforeSave
 	
