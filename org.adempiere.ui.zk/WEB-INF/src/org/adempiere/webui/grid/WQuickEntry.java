@@ -469,7 +469,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 				GridTab gridTab = field.getGridTab();
 				String columnName = field.getColumnName();
 				// process dependencies and callouts for the changed field
-				field.setValue(evt.getNewValue(), false);
+				field.getGridTab().setValue(field, evt.getNewValue());
 				gridTab.processFieldChange(field);
 	            // Refresh the list on dependant fields
 	            ArrayList<GridField> dependants = gridTab.getDependantFields(columnName);
