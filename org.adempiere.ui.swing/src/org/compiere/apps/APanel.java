@@ -907,7 +907,7 @@ public final class APanel extends CPanel
 				tabPanel.addTab(m_mWorkbench.getName(wb), m_mWorkbench.getIcon(wb), window, m_mWorkbench.getDescription(wb));
 			}
 			//  Used for Env.getHeader
-			Env.setContext(m_ctx, m_curWindowNo, "WindowName", m_mWorkbench.getName(wb));
+			Env.setContext(m_ctx, m_curWindowNo, "_WinInfo_WindowName", m_mWorkbench.getName(wb));
 
 		}   //  Workbench Loop
 

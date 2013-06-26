@@ -1250,7 +1250,7 @@ public final class Env
 	{
 		StringBuilder sb = new StringBuilder();
 		if (WindowNo > 0){
-			sb.append(getContext(ctx, WindowNo, "WindowName", false)).append("  ");
+			sb.append(getContext(ctx, WindowNo, "_WinInfo_WindowName", false)).append("  ");
 			final String documentNo = getContext(ctx, WindowNo, "DocumentNo", false);
 			final String value = getContext(ctx, WindowNo, "Value", false);
 			final String name = getContext(ctx, WindowNo, "Name", false);

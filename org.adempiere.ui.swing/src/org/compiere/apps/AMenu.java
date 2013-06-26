@@ -176,7 +176,7 @@ public final class AMenu extends CFrame
 		treePanel.initTree(AD_Tree_ID);
 
 		//	Translate
-		Env.setContext(m_ctx, m_WindowNo, "WindowName", Msg.getMsg(m_ctx, "Menu"));
+		Env.setContext(m_ctx, m_WindowNo, "_WinInfo_WindowName", Msg.getMsg(m_ctx, "Menu"));
 		setTitle(Env.getHeader(m_ctx, m_WindowNo));
 
 		progressBar.setString(Msg.getMsg(m_ctx, "SelectProgram"));
