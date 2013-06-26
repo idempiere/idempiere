@@ -341,7 +341,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 	            	Comboitem item = (Comboitem) comp;
 	            	if (item.getLabel().equals(value))
 	            	{
-	    				String type = item.getContent();
+	    				String type = cmbSearch.getContent(item);
 	    				if (!Util.isEmpty(type))
 	    					selectTreeitem(value+"."+type);
 	    				else
@@ -370,7 +370,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         			{
         				Comboitem item = (Comboitem) comp;
         				String value = item.getLabel();
-        				String type = item.getContent();
+        				String type = cmbSearch.getContent(item);
         				if (!Util.isEmpty(type))
         					selectTreeitem(value+"."+type);
         				else

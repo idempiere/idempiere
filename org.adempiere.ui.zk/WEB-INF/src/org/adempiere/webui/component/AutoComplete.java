@@ -18,6 +18,7 @@
 package org.adempiere.webui.component;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.zkoss.zk.ui.event.InputEvent;
@@ -36,7 +37,7 @@ public class AutoComplete extends Combobox
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6440285742490532737L;
+	private static final long serialVersionUID = 8350448733668388572L;
 
 	/** comboItems	All menu labels	 */
 	private String[] comboItems;
@@ -47,6 +48,8 @@ public class AutoComplete extends Combobox
 	private String[] images;
 
 	private String[] contents;
+
+	private HashMap<Comboitem, String> mapItems = new HashMap<Comboitem, String>();
 
 	/**
 	 * Set menu labels
@@ -134,6 +137,7 @@ public class AutoComplete extends Combobox
 	{
 		if (comboItems == null || val == null) {
 			super.getChildren().clear();
+			mapItems.clear();
 			return;
 		}
 		
@@ -171,7 +175,7 @@ public class AutoComplete extends Combobox
 				}
 				if (contents != null && i < contents.length && contents[i] != null && contents[i].trim().length() > 0)
 				{
-					comboitem.setContent(contents[i]);
+					mapItems.put(comboitem, contents[i]);
 				}
 			}
 		}
@@ -179,5 +183,10 @@ public class AutoComplete extends Combobox
 	      it.next();
 	      it.remove();
 	    }		
+	}
+
+	public String getContent(Comboitem item)
+	{		
+		return mapItems.get(item);
 	}
 }
