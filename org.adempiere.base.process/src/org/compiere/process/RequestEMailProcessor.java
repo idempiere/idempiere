@@ -53,31 +53,31 @@ import org.compiere.util.EMailAuthenticator;
  */
 public class RequestEMailProcessor extends SvrProcess
 {
-	private String	p_IMAPHost = null;
-	private String	p_IMAPUser = null;
-	private String	p_IMAPPwd = null;
-	private String	p_RequestFolder = null;
-	private String	p_InboxFolder = null;
-	private String	p_ErrorFolder = null;
-	private int C_BPartner_ID = 0;
-	private int AD_User_ID = 0;
-	private int AD_Role_ID = 0;
-	private int SalesRep_ID = 0;
-	private int R_RequestType_ID = 0;
-	private String p_DefaultPriority = null;
-	private String p_DefaultConfidentiality = null;
+	protected String	p_IMAPHost = null;
+	protected String	p_IMAPUser = null;
+	protected String	p_IMAPPwd = null;
+	protected String	p_RequestFolder = null;
+	protected String	p_InboxFolder = null;
+	protected String	p_ErrorFolder = null;
+	protected int C_BPartner_ID = 0;
+	protected int AD_User_ID = 0;
+	protected int AD_Role_ID = 0;
+	protected int SalesRep_ID = 0;
+	protected int R_RequestType_ID = 0;
+	protected String p_DefaultPriority = null;
+	protected String p_DefaultConfidentiality = null;
 
-	private int noProcessed = 0;
-	private int noRequest = 0;
-	private int noError = 0;
+	protected int noProcessed = 0;
+	protected int noRequest = 0;
+	protected int noError = 0;
 	/**	Session				*/
-	private Session 	m_session = null;
+	protected Session 	m_session = null;
 	/**	Store				*/
-	private Store 		m_store = null;
+	protected Store 		m_store = null;
 	/**	Process Error				*/
-	private static final int		ERROR = 0;
+	protected static final int		ERROR = 0;
 	/**	Process Request				*/
-	private static final int		REQUEST = 1;
+	protected static final int		REQUEST = 1;
 	/**	Process Workflow			*/
 	// private static final int		WORKFLOW = 2;
 	/**	Process Delivery Confirm	*/
@@ -171,7 +171,7 @@ public class RequestEMailProcessor extends SvrProcess
 	 *	@return Session
 	 *	@throws Exception
 	 */
-	private Session getSession() throws Exception
+	protected Session getSession() throws Exception
 	{
 		if (m_session != null)
 			return m_session;
@@ -196,7 +196,7 @@ public class RequestEMailProcessor extends SvrProcess
 	 *	@return Store
 	 *	@throws Exception
 	 */
-	private Store getStore() throws Exception
+	protected Store getStore() throws Exception
 	{
 		if (m_store != null)
 			return m_store;
@@ -217,7 +217,7 @@ public class RequestEMailProcessor extends SvrProcess
 	 *	@return number of processed
 	 *	@throws Exception
 	 */
-	private void processInBox() throws Exception
+	protected void processInBox() throws Exception
 	{
 		//	Folder
 		Folder folder;
@@ -331,7 +331,7 @@ public class RequestEMailProcessor extends SvrProcess
 	 *	@return Type of Message
 	 * @throws MessagingException 
 	 */
-	private boolean createRequest(Message msg) throws MessagingException, SQLException {
+	protected boolean createRequest(Message msg) throws MessagingException, SQLException {
 		// Assign from variable
 		Address[] from = msg.getFrom();
 		String fromAddress;
@@ -563,7 +563,7 @@ public class RequestEMailProcessor extends SvrProcess
 		}
 	}
 
-	private boolean updateRequest(int request_upd, Message msg) throws MessagingException, SQLException {
+	protected boolean updateRequest(int request_upd, Message msg) throws MessagingException, SQLException {
 		MRequest requp = new MRequest(getCtx(), request_upd, get_TrxName());
 		// Body as result
 		Address[] from = msg.getFrom();
@@ -578,7 +578,7 @@ public class RequestEMailProcessor extends SvrProcess
 	 *	@return Type of Message
 	 *	@throws Exception
 	 */
-	private int processMessage (Message msg) throws Exception
+	protected int processMessage (Message msg) throws Exception
 	{
 		dumpEnvelope (msg);
 		dumpBody (msg);
@@ -617,7 +617,7 @@ public class RequestEMailProcessor extends SvrProcess
 	 *	@param msg message
 	 *	@return subject or ""
 	 */
-	private String getSubject (Message msg)
+	protected String getSubject (Message msg)
 	{
 		try
 		{
@@ -637,7 +637,7 @@ public class RequestEMailProcessor extends SvrProcess
 	 *	@param msg Message
 	 *	@return message or ""
 	 */
-	private String getMessage (Part msg)
+	protected String getMessage (Part msg)
 	{
 		StringBuilder sb = new StringBuilder();
 		try
@@ -722,7 +722,7 @@ public class RequestEMailProcessor extends SvrProcess
 	 *	@param msg message
 	 *	@return delivery info or null
 	 */
-	private String getDeliveryReport (Part msg)
+	protected String getDeliveryReport (Part msg)
 	{
 		try
 		{
@@ -767,7 +767,7 @@ public class RequestEMailProcessor extends SvrProcess
 	 *	@return info or null
 	 *	@throws Exception
 	 */
-	private String getDeliveredReportDetail (Part part) throws Exception
+	protected String getDeliveredReportDetail (Part part) throws Exception
 	{
 		Object content = part.getContent();
 		if (content == null)
@@ -820,7 +820,7 @@ public class RequestEMailProcessor extends SvrProcess
 	 *	@param m message
 	 *	@throws Exception
 	 */
-	private void dumpEnvelope(Message m) throws Exception
+	protected void dumpEnvelope(Message m) throws Exception
 	{
 		printOut("-----------------------------------------------------------------");
 		Address[] a;
@@ -938,7 +938,7 @@ public class RequestEMailProcessor extends SvrProcess
 	 *	@param p
 	 *	@throws Exception
 	 */
-	private void dumpBody (Part p) throws Exception
+	protected void dumpBody (Part p) throws Exception
 	{
 		//	http://www.iana.org/assignments/media-types/
 		printOut("=================================================================");
@@ -1015,7 +1015,7 @@ public class RequestEMailProcessor extends SvrProcess
 	 * 	Print
 	 *	@param s string
 	 */
-	private void printOut(String s)
+	protected void printOut(String s)
 	{
 	//    System.out.print(indentStr.substring(0, level * 2));
 		// System.out.println(s);
