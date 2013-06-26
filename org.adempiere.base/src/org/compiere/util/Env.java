@@ -49,6 +49,7 @@ import org.adempiere.base.Core;
 import org.adempiere.base.IResourceFinder;
 import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ServerContextProvider;
+import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.I_AD_Window;
@@ -73,6 +74,8 @@ import org.compiere.process.SvrProcess;
  */
 public final class Env
 {
+	public static final String STANDARD_REPORT_FOOTER_TRADEMARK_TEXT = "#STANDARD_REPORT_FOOTER_TRADEMARK_TEXT";
+
 	public static final String AD_ROLE_ID = "#AD_Role_ID";
 
 	public static final String AD_USER_ID = "#AD_User_ID";
@@ -1770,6 +1773,14 @@ public final class Env
 	public static ProcessInfo getProcessInfo(Properties ctx)
 	{
 		return (ProcessInfo) ctx.get(SvrProcess.PROCESS_INFO_CTX_KEY);
+	}
+	
+	/**
+	 * @return trademark text for standard report footer
+	 */
+	public static String getStandardReportFooterTrademarkText() {
+		String s = Env.getContext(Env.getCtx(), STANDARD_REPORT_FOOTER_TRADEMARK_TEXT);
+		return Util.isEmpty(s) ? Adempiere.ADEMPIERE_R : s;
 	}
 	
 	/**************************************************************************

@@ -34,7 +34,6 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -337,7 +336,7 @@ public abstract class AbstractExcelExporter
 		header.setRight(HSSFHeader.page()+ " / "+HSSFHeader.numPages());
 		// Sheet Footer
 		HSSFFooter footer = sheet.getFooter();
-		footer.setLeft(Adempiere.ADEMPIERE_R);
+		footer.setLeft(Env.getStandardReportFooterTrademarkText());
 		footer.setCenter(Env.getHeader(getCtx(), 0));
 		Timestamp now = new Timestamp(System.currentTimeMillis());
 		footer.setRight(DisplayType.getDateFormat(DisplayType.DateTime, getLanguage()).format(now));

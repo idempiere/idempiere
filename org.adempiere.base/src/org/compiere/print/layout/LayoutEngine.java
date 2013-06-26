@@ -46,7 +46,6 @@ import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.attribute.DocAttributeSet;
 
-import org.compiere.Adempiere;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
@@ -961,7 +960,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		font = tf.getPageFooter_Font();
 		color = tf.getPageFooterFG_Color();
 		//
-		element = new StringElement(Adempiere.ADEMPIERE_R, font, color, null, true);
+		element = new StringElement(Env.getStandardReportFooterTrademarkText(), font, color, null, true);
 		/** You can use the following to customize reports for your product name  */
 	//	element = new StringElement(Adempiere.NAME, font, color, null, true);
 		element.layout (m_footer.width, 0, true, MPrintFormatItem.FIELDALIGNMENTTYPE_LeadingLeft);

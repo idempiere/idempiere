@@ -41,7 +41,6 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
 import org.adempiere.webui.util.UserPreference;
-import org.compiere.Adempiere;
 import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
@@ -132,8 +131,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     public void onCreate()
     {
         this.getPage().setTitle(ThemeManager.getBrowserTitle());
-        
-        Adempiere.ADEMPIERE_R = ThemeManager.getStandardReportFooterTrademarkText();
         
         SessionManager.setSessionApplication(this);
         Session session = Executions.getCurrent().getDesktop().getSession();
