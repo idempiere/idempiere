@@ -15,13 +15,37 @@
   jawwa.atmosphere.ServerPush = zk.$extends(zk.Object, {
     desktop: null,
     active: false,
-    timeout: 300000,
-    delay: 100,
+    delay: 250,
     failures: 0,
-
+    timeout: 0,
+    ajaxOptions: {
+        url: zk.ajaxURI("/comet", {au: true}),
+        type: "GET",
+        cache: false,
+        async: true,
+        global: false,
+        data: null,
+        dataType: "text" 
+    },
     $init: function(desktop, timeout) {
       this.desktop = desktop;
       this.timeout = timeout;
+      this.ajaxOptions.data = { dtid: this.desktop.id };
+      this.ajaxOptions.timeout = this.timeout;
+      var me = this;
+      this.ajaxOptions.error = function(jqxhr, textStatus, errorThrown) {
+          if (typeof console == "object") {
+        	  console.error(textStatus);
+              console.error(errorThrown);
+          }
+          me.failures += 1;
+          me._schedule();
+      };
+      this.ajaxOptions.success = function(data) {
+          zAu.cmd0.echo(this.desktop);
+          me.failures = 0;
+          me._schedule();
+      };
     },
     _schedule: function() {
       if (this.failures < 20) {
@@ -35,34 +59,7 @@
       if (!this.active)
         return;
 
-      var me = this;
-      var jqxhr = $.ajax({
-        url: zk.ajaxURI("/comet", {
-          au: true
-        }),
-        type: "GET",
-        cache: false,
-        async: true,
-        global: false,
-        data: {
-          dtid: this.desktop.id
-        },
-        accepts: "text/plain",
-        dataType: "text",
-        timeout: me.timeout,
-        error: function(jqxhr, textStatus, errorThrown) {
-          if (typeof console == "object") {
-            console.error(errorThrown);
-          }
-          me.failures += 1;
-          me._schedule();
-        },
-        success: function(data) {
-          zAu.cmd0.echo(me.desktop);
-          me.failures = 0;
-          me._schedule();
-        }
-      });
+      var jqxhr = $.ajax(this.ajaxOptions);
       this._req = jqxhr;
     },
     start: function() {

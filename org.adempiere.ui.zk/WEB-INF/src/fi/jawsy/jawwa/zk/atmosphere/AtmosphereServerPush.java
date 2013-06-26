@@ -49,7 +49,7 @@ public class AtmosphereServerPush implements ServerPush {
 
     private static final String ON_ACTIVATE_DESKTOP = "onActivateDesktop";
 
-	public static final int DEFAULT_TIMEOUT = 1000 * 60 * 5;
+	public static final int DEFAULT_TIMEOUT = 1000 * 60 * 2;
 
     private final AtomicReference<Desktop> desktop = new AtomicReference<Desktop>();
 
@@ -181,8 +181,7 @@ public class AtmosphereServerPush implements ServerPush {
         }
 
         log.debug("Starting server push for " + desktop);
-        int clientTimeout = timeout + 1000 * 60;
-        Clients.response("jawwa.atmosphere.serverpush", new AuScript(null, "jawwa.atmosphere.startServerPush('" + desktop.getId() + "', " + clientTimeout
+        Clients.response("jawwa.atmosphere.serverpush", new AuScript(null, "jawwa.atmosphere.startServerPush('" + desktop.getId() + "', " + timeout
                 + ");"));
     }
 
