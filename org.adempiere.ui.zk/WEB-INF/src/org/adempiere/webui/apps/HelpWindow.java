@@ -1,4 +1,21 @@
+/******************************************************************************
+ * Copyright (C) 2012 Trek Global                                             *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *****************************************************************************/
+
 package org.adempiere.webui.apps;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Window;
@@ -20,12 +37,13 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Html;
 
 public class HelpWindow extends Window {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3474696533193340582L;
+	private static final long serialVersionUID = -7353411576541612026L;
+
 	private GridWindow gridWindow;
+	private String winpref;
 	
 	public HelpWindow(GridWindow gridWindow)
 	{
@@ -83,9 +101,16 @@ public class HelpWindow extends Window {
 		td td = new td();
 		td.setClass("help-window-title");
 		tr.addElement(td);
+		// generate a unique win prefix id for this help window
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("ddHHmmss");
+		String dt = sdf.format(cal.getTime());
+		winpref = "Win"+dt;
+		td.addElement(new a().setName(winpref));
 		StringBuilder title = new StringBuilder(Msg.getMsg(Env.getCtx(), "Window")).append(": ").append(gridWindow.getName());
 		h3 h3 = new h3(title.toString());
 		td.addElement(h3);
+		
 		
 		tr = new tr();
 		table.addElement(tr);
@@ -136,7 +161,7 @@ public class HelpWindow extends Window {
 		td = new td();
 		td.setClass("help-window-tabs");
 		tr.addElement(td);
-		td.addElement(new a().setName("Tabs"));
+		td.addElement(new a().setName(winpref+"Tabs"));
 		h4 h4 = new h4("Tabs");
 		td.addElement(h4);
 		
@@ -187,7 +212,7 @@ public class HelpWindow extends Window {
 			tr.addElement(td);			
 
 			GridTab tab = gridWindow.getTab(i);
-			td.addElement(new a("#Tab"+i).addElement(tab.getName()));
+			td.addElement(new a("#"+winpref+"Tab"+i).addElement(tab.getName()));
 		}
 		
 		return table;
@@ -256,11 +281,11 @@ public class HelpWindow extends Window {
 		td.setClass("help-window-tab-name");
 		td.setWidth("40%");
 		tr.addElement(td);
-		td.addElement(new a().setName("Tab" + tabIndex));
+		td.addElement(new a().setName(winpref+"Tab" + tabIndex));
 		h3 h3 = new h3(Msg.getMsg(Env.getCtx(), "Tab") + ": " + tab.getName());
 		td.addElement(h3);
 		td.addElement(WebDoc.NBSP).addElement(WebDoc.NBSP);
-		td.addElement(new a("#Tabs").addElement("..").addAttribute("title", "Up one level"));
+		td.addElement(new a("#"+winpref).addElement("..").addAttribute("title", "Up one level"));
 		
 		td = new td();
 		td.setClass("help-window-tab-description");
@@ -306,7 +331,7 @@ public class HelpWindow extends Window {
 				
 		td td = new td();
 		tr.addElement(td);
-		td.addElement(new a().setName("Fields"+tabIndex));
+		td.addElement(new a().setName(winpref+"Fields"+tabIndex));
 		h4 h4 = new h4("Fields");
 		td.addElement(h4);
 		
@@ -339,7 +364,7 @@ public class HelpWindow extends Window {
 			{
 				if (j > 0)
 					p.addElement(WebDoc.NBSP);
-				p.addElement(new a("#Field" + tabIndex + "-" + j, hdr));
+				p.addElement(new a("#"+winpref+"Field" + tabIndex + "-" + j, hdr));
 			}
 		}
 		
@@ -364,11 +389,11 @@ public class HelpWindow extends Window {
 				
 		td td = new td();
 		tr.addElement(td);
-		td.addElement(new a().setName("Field" + tabIndex + "-" + fieldIndex));
+		td.addElement(new a().setName(winpref+"Field" + tabIndex + "-" + fieldIndex));
 		h4 h4 = new h4(Msg.getMsg(Env.getCtx(), "Field") + ": " + field.getHeader());
 		td.addElement(h4);
 		td.addElement(WebDoc.NBSP).addElement(WebDoc.NBSP);
-		td.addElement(new a("#Fields"+tabIndex).addElement("..").addAttribute("title", "Up one level"));
+		td.addElement(new a("#"+winpref+"Tab"+tabIndex).addElement("..").addAttribute("title", "Up one level"));
 		
 		tr = new tr();
 		table.addElement(tr);
