@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AlertProcessor
  *  @author iDempiere (generated) 
- *  @version Release 1.0b - $Id$ */
+ *  @version Release 1.0c - $Id$ */
 public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130425L;
+	private static final long serialVersionUID = 20130626L;
 
     /** Standard Constructor */
     public X_AD_AlertProcessor (Properties ctx, int AD_AlertProcessor_ID, String trxName)

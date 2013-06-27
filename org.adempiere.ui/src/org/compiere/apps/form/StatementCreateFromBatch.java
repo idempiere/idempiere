@@ -106,14 +106,8 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 			Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode, GridTab gridTab)
 	throws SQLException
 	{
-		//  Get StatementDate
-		Timestamp ts = (Timestamp) gridTab.getValue("StatementDate");
-		if (ts == null)
-			ts = new Timestamp(System.currentTimeMillis());
-
 		int index = 1;
 		
-		pstmt.setTimestamp(index++, ts);		
 		pstmt.setInt(index++, BankAccount != null ? (Integer) BankAccount : (Integer) gridTab.getValue("C_BankAccount_ID"));
 		
 		if(DocType != null)
@@ -182,7 +176,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT py.C_DepositBatch_ID, db.DocumentNo, db.DateDeposit, db.C_BankAccount_ID, ba.AccountNo,");
-		sql.append("SUM(currencyConvert(p.PayAmt,p.C_Currency_ID,ba.C_Currency_ID,?,null,p.AD_Client_ID,p.AD_Org_ID)) AS amount,");
+		sql.append("SUM(currencyConvert(p.PayAmt,p.C_Currency_ID,ba.C_Currency_ID,p.DateAcct,p.C_ConversionType_ID,p.AD_Client_ID,p.AD_Org_ID)) AS amount,");
 		sql.append("SUM(p.PayAmt) AS amountoriginal");
 		sql.append(" FROM C_BankAccount ba");
 		sql.append(" INNER JOIN C_Payment_v p ON (p.C_BankAccount_ID=ba.C_BankAccount_ID)");
@@ -251,7 +245,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT p.DateTrx,p.C_Payment_ID,p.DocumentNo, p.C_Currency_ID,c.ISO_Code, p.PayAmt,");
-		sql.append("currencyConvert(p.PayAmt,p.C_Currency_ID,ba.C_Currency_ID,?,null,p.AD_Client_ID,p.AD_Org_ID), bp.Name ");
+		sql.append("currencyConvert(p.PayAmt,p.C_Currency_ID,ba.C_Currency_ID,p.DateAcct,p.C_ConversionType_ID,p.AD_Client_ID,p.AD_Org_ID), bp.Name ");
 		sql.append(" FROM C_BankAccount ba");
 		sql.append(" INNER JOIN C_Payment_v p ON (p.C_BankAccount_ID=ba.C_BankAccount_ID)");
 		sql.append(" INNER JOIN C_Currency c ON (p.C_Currency_ID=c.C_Currency_ID)");
@@ -263,10 +257,6 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		sql.append(" AND p.DocStatus IN ('CO','CL','RE','VO') AND p.PayAmt<>0");
 		sql.append(" AND p.C_BankAccount_ID=?");
 		sql.append(" AND NOT EXISTS (SELECT * FROM C_BankStatementLine l WHERE p.C_Payment_ID=l.C_Payment_ID AND l.StmtAmt <> 0)");
-		
-		Timestamp ts = (Timestamp) gridTab.getValue("StatementDate");
-		if(ts == null)
-			ts = new Timestamp(System.currentTimeMillis());
 
 		//  Lines
 		for(int i = 0; i < miniTable.getRowCount(); i++)
@@ -288,24 +278,26 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 				try
 				{
 					pstmt = DB.prepareStatement(sql.toString(), trxName);
-					pstmt.setTimestamp(1, ts);
-					pstmt.setInt(2, C_DepositBatch_ID);
-					pstmt.setInt(3, C_BankAccount_ID);
+					pstmt.setInt(1, C_DepositBatch_ID);
+					pstmt.setInt(2, C_BankAccount_ID);
 					rs = pstmt.executeQuery();
 					while(rs.next())
 					{
+						Timestamp DateTrx = rs.getTimestamp(1);
 						int C_Payment_ID = rs.getInt(2);
 						int C_Currency_ID = rs.getInt(4);
-						BigDecimal TrxAmt = rs.getBigDecimal(6); //  PayAmt
+						BigDecimal TrxAmt = rs.getBigDecimal(7); //  ConvertedPayAmt
 						
 						if (log.isLoggable(Level.FINE)) log.fine("Line Date=" + trxDate + ", Payment=" + C_Payment_ID + ", Currency=" + C_Currency_ID + ", Amt=" + TrxAmt);
 						//	
 						MBankStatementLine bsl = new MBankStatementLine (bs);
-						bsl.setStatementLineDate(trxDate);
+						bsl.setStatementLineDate(DateTrx);
 						bsl.setPayment(new MPayment(Env.getCtx(), C_Payment_ID, trxName));
+						bsl.setTrxAmt(TrxAmt);
+						bsl.setStmtAmt(TrxAmt);
+						bsl.setC_Currency_ID(bs.getBankAccount().getC_Currency_ID()); 
 						if (!bsl.save())
 							log.log(Level.SEVERE, "Line not created #" + i);
-							
 					}
 				}
 				catch(SQLException e)

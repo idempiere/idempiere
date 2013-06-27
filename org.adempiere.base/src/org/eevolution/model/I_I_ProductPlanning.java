@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_ProductPlanning
  *  @author iDempiere (generated) 
- *  @version Release 1.0b
+ *  @version Release 1.0c
  */
 @SuppressWarnings("all")
 public interface I_I_ProductPlanning 

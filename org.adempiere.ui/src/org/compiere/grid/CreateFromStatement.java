@@ -143,7 +143,7 @@ public abstract class CreateFromStatement extends CreateFromBatch
 				
 				bsl.setTrxAmt(TrxAmt);
 				bsl.setStmtAmt(TrxAmt);
-				bsl.setC_Currency_ID(C_Currency_ID); 
+				bsl.setC_Currency_ID(bs.getBankAccount().getC_Currency_ID()); 
 				
 				if (!bsl.save())
 					log.log(Level.SEVERE, "Line not created #" + i);

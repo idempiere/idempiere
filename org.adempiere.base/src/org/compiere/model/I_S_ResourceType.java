@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for S_ResourceType
  *  @author iDempiere (generated) 
- *  @version Release 1.0b
+ *  @version Release 1.0c
  */
 public interface I_S_ResourceType 
 {

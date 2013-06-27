@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_CtxHelp
  *  @author iDempiere (generated) 
- *  @version Release 1.0b - $Id$ */
+ *  @version Release 1.0c - $Id$ */
 public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130425L;
+	private static final long serialVersionUID = 20130626L;
 
     /** Standard Constructor */
     public X_AD_CtxHelp (Properties ctx, int AD_CtxHelp_ID, String trxName)

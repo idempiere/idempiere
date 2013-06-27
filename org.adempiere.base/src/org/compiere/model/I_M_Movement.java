@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Movement
  *  @author iDempiere (generated) 
- *  @version Release 1.0b
+ *  @version Release 1.0c
  */
 public interface I_M_Movement 
 {
@@ -146,7 +146,7 @@ public interface I_M_Movement
 	  */
 	public int getC_BPartner_Location_ID();
 
-	public I_C_Location getC_BPartner_Location() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
     public static final String COLUMNNAME_C_Campaign_ID = "C_Campaign_ID";
