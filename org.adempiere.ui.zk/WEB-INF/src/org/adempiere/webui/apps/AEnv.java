@@ -548,18 +548,27 @@ public final class AEnv
     		return false;
 
     	Object n = execution.getNativeRequest();
-    	boolean supported = false;
     	if (n instanceof ServletRequest) {
-    		String userAgent = Servlets.getUserAgent((ServletRequest) n);
-    		if (userAgent.indexOf("Firefox") >= 0) {
-    			supported = true;
-    		} else if (userAgent.indexOf("AppleWebKit") >= 0) {
-    			if (userAgent.indexOf("Chrome") >= 0 || userAgent.indexOf("Safari") >= 0) {
-    				supported = true;
-    			}
+    		Double version = Servlets.getBrowser((ServletRequest) n, "ff");
+    		if (version != null) {
+    			return true;
     		}
+    		
+    		version = Servlets.getBrowser((ServletRequest) n, "chrome");
+    		if (version != null) {
+    			return true;
+    		}
+    		
+    		version = Servlets.getBrowser((ServletRequest) n, "webkit");
+    		if (version != null) {
+    			return true;
+    		}
+    		
+    		version = Servlets.getBrowser((ServletRequest) n, "ie");
+    		if (version != null && version.intValue() >= 8)
+    			return true;
     	}
-    	return supported;
+    	return false;
     }
 
     /**

@@ -21,18 +21,6 @@ Copyright (C) 2009 Idalica Corporation
 	<toolbarbutton href="http://www.zkoss.org" image="http://www.zkoss.org/img/zkpowered_s.png"
 		tooltiptext="Powered by Zk" target="_blank"
 		/>
-	<button href="http://www.mozilla.com/firefox" id="getFirefox"
-		image="http://sfx-images.mozilla.org/affiliates/Buttons/firefox3/110x32_get_ffx.png"
-		target="_blank"
-		/>
-	<button href="http://www.idempiere.org" image="images/iD32.png"
-		tooltiptext="iDempiere Community" style="height:32px; width:32px" target="_blank"/>
 </div>
-
-<zscript if="${desktop.execution.serverName == &quot;ip-10-8-0-1.ec2.internal&quot; or desktop.execution.serverName.startsWith(&quot;demo.&quot;)}">
-<![CDATA[
-	getFirefox.setHref("http://www.mozilla.com/?from=sfx&uid=0&t=306");
-]]>
-</zscript>
 
 </zk>
