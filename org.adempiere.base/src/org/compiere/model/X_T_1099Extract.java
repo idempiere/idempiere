@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_1099Extract
  *  @author iDempiere (generated) 
- *  @version Release 1.0b - $Id$ */
+ *  @version Release 1.0c - $Id$ */
 public class X_T_1099Extract extends PO implements I_T_1099Extract, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130425L;
+	private static final long serialVersionUID = 20130626L;
 
     /** Standard Constructor */
     public X_T_1099Extract (Properties ctx, int T_1099Extract_ID, String trxName)
