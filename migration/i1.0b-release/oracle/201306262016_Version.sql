@@ -4,6 +4,9 @@ UPDATE AD_SYSTEM
  WHERE ad_system_id = 0 AND ad_client_id = 0
 ;
 
+COMMIT
+;
+
 SELECT register_migration_script('201306262016_Version.sql') FROM dual
 ;
 
