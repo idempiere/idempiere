@@ -125,18 +125,6 @@ public class Util {
 				parse.addToBody("<hr/>" + newval);
 			if (log.isLoggable(Level.CONFIG)) log.config("Cell value " + cell_value + " evaluated to " + newval);
 			return newval;
-		} else if (cell_value.startsWith("@") && cell_value.endsWith("@")) {
-			int posdot = cell_value.indexOf(".");
-			if (posdot >= 0) {
-				cell_value = cell_value.toLowerCase();
-			}
-			String newval = Env.getContext(ctx, windowNo, cell_value.substring(1, cell_value.length()-1));
-			if (newval == null)
-				return cell_value;
-			if (parse != null)
-				parse.addToBody("<hr/>" + newval);
-			if (log.isLoggable(Level.CONFIG)) log.config("Cell value " + cell_value + " evaluated to " + newval);
-			return newval;
 		} else if ((cell_value.toLowerCase().startsWith("@random_number(") || cell_value.toLowerCase().startsWith("@random_string("))
 				&& cell_value.endsWith(")")) {
 			// allow @RANDOM_NUMBER(PREFIX,SUFFIX,LENGTH,DECIMALS)@ in column value
@@ -193,6 +181,26 @@ public class Util {
 				randomstr.append(suffix);
 			String newval = randomstr.toString();
 			if (newval == null)
+				return cell_value;
+			if (parse != null)
+				parse.addToBody("<hr/>" + newval);
+			if (log.isLoggable(Level.CONFIG)) log.config("Cell value " + cell_value + " evaluated to " + newval);
+			return newval;
+		} else if (cell_value.startsWith("@") && cell_value.endsWith("@")) {
+			int posdot = cell_value.indexOf(".");
+			if (posdot >= 0) {
+				cell_value = cell_value.toLowerCase();
+			}
+			String newval = Env.getContext(ctx, windowNo, cell_value.substring(1, cell_value.length()-1));
+			if (newval == null)
+				return cell_value;
+			if (parse != null)
+				parse.addToBody("<hr/>" + newval);
+			if (log.isLoggable(Level.CONFIG)) log.config("Cell value " + cell_value + " evaluated to " + newval);
+			return newval;
+		} else if (cell_value.matches(".*@.*@.*")) {
+			String newval = Env.parseContext(ctx, windowNo, cell_value, false, false);
+			if (newval == null || newval.length() == 0)
 				return cell_value;
 			if (parse != null)
 				parse.addToBody("<hr/>" + newval);

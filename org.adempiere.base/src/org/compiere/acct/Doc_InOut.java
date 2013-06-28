@@ -419,7 +419,7 @@ public class Doc_InOut extends Doc
 	                    }
 	                    else
 	                    {
-	                    	p_Error = "Resubmit - No Costs for " + product.getName();
+	                    	p_Error = "Resubmit - No Costs for " + product.getName() + " (required order line)";
 	                        log.log(Level.WARNING, p_Error);
 	                        return null;
 	                    }

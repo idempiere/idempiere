@@ -26,6 +26,8 @@
 
 package org.idempiere.fitnesse.fixture;
 
+import java.util.Properties;
+
 import org.compiere.model.MSession;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
@@ -54,6 +56,7 @@ public class Login extends TableFixture {
 		if (adempiereInstance == null) {
 			adempiereInstance = Static_iDempiereInstance.getInstance();
 		}
+		Properties ctx = adempiereInstance.getAdempiereService().getCtx();
 		boolean isErrorExpected = "*Login*Error*".equalsIgnoreCase(getText(rows-1, 0));
 		String msgerror = getText(rows-1, 1);
 		for (int i = 0; i < rows; i++) {
@@ -116,7 +119,7 @@ public class Login extends TableFixture {
 				else {
 					String msg = modelLogin();
 					if (msg == null || msg.length() == 0) {
-						MSession.get (Env.getCtx(), true);//	Start Session
+						MSession.get (ctx, true);//	Start Session
 						if (isErrorExpected) {
 							wrong(rows-1, 0);
 							wrong(rows-1, 1);
