@@ -407,7 +407,7 @@ public class DashboardController implements EventListener<Event> {
 	    		}
 	    		dashboardLayout.appendChild(maximizedHolder);
 	    		maximizedHolder.appendChild(panel);
-	    		panel.setSclass("");
+	    		panel.setSclass("dashboard-widget dashboard-widget-max");
 	    	} else {
 	    		maximizedHolder.detach();
 	    		panel.detach();

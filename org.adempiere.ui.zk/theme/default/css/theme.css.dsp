@@ -594,6 +594,11 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	width: 92%;	
 }
 
+.dashboard-widget-max {
+	margin: auto;
+	width: auto;	
+}
+
 .dashboard-report-iframe {
 	min-height:300px; 
 	border: 1px solid lightgray; 
@@ -625,7 +630,6 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .recentitems-box A {
 	display: block;
-	width: 100%;
 	padding: 2px 0px;
 }
 	
