@@ -1807,3 +1807,53 @@ table.z-vbox > tbody > tr > td > table {
 .help-window-content-l tr:hover td {
   background-color: #eee; 
 }
+
+<%-- payment rule --%>
+.payment-rule-editor {
+	display: inline-block;
+	border: none; 
+	padding: 0px; 
+	margin: 0px; 
+	background-color: transparent;
+	position: relative;
+}
+.payment-rule-editor .z-combobox {
+	width: 100%;
+}
+.payment-rule-editor .z-combobox-inp {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box; /* Firefox */
+	display: inline-block;
+	padding-right: 44px; 
+	width: 100%;
+	height: 21px;
+}
+.payment-rule-editor .z-combobox-inp:focus {
+	border: 1px solid #0000ff;
+}
+.payment-rule-editor .z-combobox-inp.editor-input-disd {
+	padding-right: 22px !important;
+}
+.payment-rule-editor .z-combobox-btn {
+	padding: 0px;
+	margin: 0px;
+	display: inline-block;
+	border: none;
+	position: absolute;
+	right: 22px;
+	top: 1px;
+}
+.payment-rule-editor .z-combobox.no-button .z-combobox-btn {
+	right: 1px;
+}
+.payment-rule-editor .z-combobox .z-combobox-btn-over {
+	background-color: #ddd;
+	background-position: 0px 0px;
+}
+.payment-rule-editor .editor-button {
+	border-radius: 0px;
+}
+.payment-rule-editor .editor-button :hover {
+	border-radius: 0px;
+	background-color: #ddd;
+}
