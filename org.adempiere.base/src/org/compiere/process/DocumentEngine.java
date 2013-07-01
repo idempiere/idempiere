@@ -48,6 +48,7 @@ import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.eevolution.model.I_DD_Order;
 import org.eevolution.model.I_HR_Process;
 import org.eevolution.model.I_PP_Cost_Collector;
@@ -489,6 +490,12 @@ public class DocumentEngine implements DocAction
 			return false;
 
 		String error = DocumentEngine.postImmediate(Env.getCtx(), m_document.getAD_Client_ID(), m_document.get_Table_ID(), m_document.get_ID(), true, m_document.get_TrxName());
+		if (ACTION_Post.equals(m_action)) {
+			// forced post via process - throw exception to inform the caller about the error
+			if (! Util.isEmpty(error)) {
+				throw new AdempiereException(error);
+			}
+		}
 		return (error == null);
 	}	//	postIt
 

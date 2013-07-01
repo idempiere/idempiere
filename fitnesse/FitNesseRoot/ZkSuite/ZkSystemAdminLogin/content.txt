@@ -3,7 +3,7 @@
 '''start firefox,chrome or phantomjs'''
 |''start spider with''|firefox|
 |''shutdown browser automatically''|false|
-|''get url''|http://localhost:8080/webui/index.zul|
+|''get url''|http://localhost:${ADEMPIERE_WEB_PORT}/webui/index.zul|
 
 |''wait response''|
 
