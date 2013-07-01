@@ -351,6 +351,8 @@ public class Doc_MatchInv extends Doc
 		if (m_invoiceLine != null && m_invoiceLine.get_ID() > 0 
 			&& m_receiptLine != null && m_receiptLine.get_ID() > 0)
 		{
+			MMatchInv matchInv = (MMatchInv)getPO();
+			
 			BigDecimal LineNetAmt = m_invoiceLine.getLineNetAmt();
 			BigDecimal multiplier = getQty()
 				.divide(m_invoiceLine.getQtyInvoiced(), 12, BigDecimal.ROUND_HALF_UP)
@@ -358,8 +360,6 @@ public class Doc_MatchInv extends Doc
 			if (multiplier.compareTo(Env.ONE) != 0)
 				LineNetAmt = LineNetAmt.multiply(multiplier);
 	
-			// Source from Doc_MatchInv.createFacts(MAcctSchema)
-			//	Cost Detail Record - data from Expense/IncClearing (CR) record
 			// MZ Goodwill
 			// Create Cost Detail Matched Invoice using Total Amount and Total Qty based on InvoiceLine
 			MMatchInv[] mInv = MMatchInv.getInvoiceLine(getCtx(), m_invoiceLine.getC_InvoiceLine_ID(), getTrxName());
@@ -367,7 +367,7 @@ public class Doc_MatchInv extends Doc
 			BigDecimal tAmt = Env.ZERO;
 			for (int i = 0 ; i < mInv.length ; i++)
 			{
-				if (mInv[i].isPosted() && mInv[i].getM_MatchInv_ID() != get_ID())
+				if (mInv[i].isPosted() && mInv[i].getM_MatchInv_ID() != get_ID() && mInv[i].getM_AttributeSetInstance_ID() == matchInv.getM_AttributeSetInstance_ID())
 				{
 					tQty = tQty.add(mInv[i].getQty());
 					multiplier = mInv[i].getQty()
@@ -397,8 +397,7 @@ public class Doc_MatchInv extends Doc
 				tQty = tQty.add(getQty().negate()); //	Qty is set to negative value
 			else
 				tQty = tQty.add(getQty());
-			
-			MMatchInv matchInv = (MMatchInv)getPO();
+						
 			// Set Total Amount and Total Quantity from Matched Invoice 
 			if (!MCostDetail.createInvoice(as, getAD_Org_ID(), 
 					getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
