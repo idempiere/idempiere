@@ -49,6 +49,7 @@ public class PrintPaperElementHandler extends AbstractElementHandler {
 			int id = findIdByName(ctx, "AD_PrintPaper", printPaperName);
 	
 			printPaper = new X_AD_PrintPaper(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
+			printPaper.setName(printPaperName);
 		}
 		PoFiller filler = new PoFiller(ctx, printPaper, element, this);
 
