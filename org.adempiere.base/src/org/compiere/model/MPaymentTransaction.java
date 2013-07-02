@@ -656,4 +656,17 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 
 		return MPaymentTransaction.getAllIDs(Table_Name, whereClause.toString(), trxName);
 	}
+	
+	/**
+	 * 	String Representation
+	*	@return info
+	*/
+	public String toString ()
+	{
+		StringBuilder sb = new StringBuilder ("MPaymentTransaction[");
+		sb.append(get_ID()).append("-")
+			.append(",Receipt=").append(isReceipt())
+			.append(",PayAmt=").append(getPayAmt());
+		return sb.toString ();
+	}	//	toString
 }
