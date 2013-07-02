@@ -1143,6 +1143,11 @@ public class DocLine
 	}   //  getReversalLine_ID
 	//end AZ Goodwill
 	
+	public PO getPO() 
+	{
+		return p_po;
+	}
+	
 	/**
 	 *  String representation
 	 *  @return String

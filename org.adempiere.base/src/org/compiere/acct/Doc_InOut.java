@@ -18,9 +18,14 @@ package org.compiere.acct;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.compiere.model.I_M_InOutLine;
+import org.compiere.model.I_M_RMA;
+import org.compiere.model.I_M_RMALine;
+import org.compiere.model.MConversionRate;
 import org.compiere.model.MTax;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MAccount;
@@ -33,6 +38,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.ProductCost;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *  Post Shipment/Receipt Documents.
@@ -597,6 +603,13 @@ public class Doc_InOut extends Doc
 					}
 				}
 			}
+			
+			String costingError = createVendorRMACostDetail(as);
+			if (!Util.isEmpty(costingError))
+			{
+				p_Error = costingError;
+				return null;
+			}
 		}	//	Purchasing Return
 		else
 		{
@@ -613,4 +626,84 @@ public class Doc_InOut extends Doc
 		return m_Reversal_ID !=0 && line.getReversalLine_ID() != 0;
 	}
 
+	private String createVendorRMACostDetail(MAcctSchema as)
+	{		
+		MOrderLine origianlOrderLine = null;
+		
+		MInOut inOut = (MInOut) getPO();
+		
+		for (int i = 0; i < p_lines.length; i++)
+		{
+			DocLine line = p_lines[i];
+			MInOutLine ioLine = (MInOutLine) line.getPO();
+			I_M_RMALine rmaLine = ioLine.getM_RMALine();
+		
+			BigDecimal poCost = rmaLine != null ? rmaLine.getAmt() : BigDecimal.ZERO;
+			I_M_InOutLine originalInOutLine = rmaLine != null ? rmaLine.getM_InOutLine() : null;
+			if (originalInOutLine != null && originalInOutLine.getC_OrderLine_ID() > 0)
+			{
+				origianlOrderLine = (MOrderLine) originalInOutLine.getC_OrderLine();
+				//	Goodwill: Correct included Tax
+		    	int C_Tax_ID = origianlOrderLine.getC_Tax_ID();
+		    	if (origianlOrderLine.isTaxIncluded() && C_Tax_ID != 0)
+				{
+					MTax tax = MTax.get(getCtx(), C_Tax_ID);
+					if (!tax.isZeroTax())
+					{
+						int stdPrecision = MCurrency.getStdPrecision(getCtx(), origianlOrderLine.getC_Currency_ID());
+						BigDecimal costTax = tax.calculateTax(poCost, true, stdPrecision);
+						if (log.isLoggable(Level.FINE)) log.fine("Costs=" + poCost + " - Tax=" + costTax);
+						poCost = poCost.subtract(costTax);
+					}
+				}	//	correct included Tax
+		    	poCost = poCost.multiply(line.getQty());	//	Returned so far
+		    	BigDecimal tAmt = poCost;		    			    	
+		    	BigDecimal tQty = line.getQty();
+		    	
+		    	I_M_RMA rma = rmaLine.getM_RMA();
+				if (rma.getC_Currency_ID() != as.getC_Currency_ID())
+				{
+					Timestamp dateAcct = inOut.getDateAcct();
+					//
+					BigDecimal rate = MConversionRate.getRate(
+						rma.getC_Currency_ID(), as.getC_Currency_ID(),
+						dateAcct, 0,
+						rmaLine.getAD_Client_ID(), rmaLine.getAD_Org_ID());
+					if (rate == null)
+					{
+						return "Vendor RMA not convertible - " + as.getName();
+					}
+					poCost = poCost.multiply(rate);
+					if (poCost.scale() > as.getCostingPrecision())
+						poCost = poCost.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
+					tAmt = tAmt.multiply(rate);
+					if (tAmt.scale() > as.getCostingPrecision())
+						tAmt = tAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);			
+				}
+			
+				// Set Total Amount and Total Quantity from rma line 
+				if (!MCostDetail.createShipment(as, line.getAD_Org_ID(), line.getM_Product_ID(), 
+						line.getM_AttributeSetInstance_ID(), line.get_ID(), 0, tAmt, tQty, 
+						line.getDescription(), false, getTrxName()))
+				{
+					return "SaveError";
+				}
+			}
+			else
+			{
+				//no rma line linkage, fallback to current cost
+				poCost = line.getProductCosts(as, line.getAD_Org_ID(), false);
+				BigDecimal tAmt = poCost.negate();		    			    	
+		    	BigDecimal tQty = line.getQty();
+				if (!MCostDetail.createShipment(as, line.getAD_Org_ID(), line.getM_Product_ID(), 
+						line.getM_AttributeSetInstance_ID(), line.get_ID(), 0, tAmt, tQty, 
+						line.getDescription(), false, getTrxName()))
+				{
+					return "SaveError";
+				}
+			}
+		}				
+		// end MZ
+		return "";
+	}
 }   //  Doc_InOut
