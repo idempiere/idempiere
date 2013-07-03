@@ -628,7 +628,7 @@ public class Doc_InOut extends Doc
 
 	private String createVendorRMACostDetail(MAcctSchema as)
 	{		
-		MOrderLine origianlOrderLine = null;
+		MOrderLine originalOrderLine = null;
 		
 		MInOut inOut = (MInOut) getPO();
 		
@@ -642,15 +642,15 @@ public class Doc_InOut extends Doc
 			I_M_InOutLine originalInOutLine = rmaLine != null ? rmaLine.getM_InOutLine() : null;
 			if (originalInOutLine != null && originalInOutLine.getC_OrderLine_ID() > 0)
 			{
-				origianlOrderLine = (MOrderLine) originalInOutLine.getC_OrderLine();
+				originalOrderLine = (MOrderLine) originalInOutLine.getC_OrderLine();
 				//	Goodwill: Correct included Tax
-		    	int C_Tax_ID = origianlOrderLine.getC_Tax_ID();
-		    	if (origianlOrderLine.isTaxIncluded() && C_Tax_ID != 0)
+		    	int C_Tax_ID = originalOrderLine.getC_Tax_ID();
+		    	if (originalOrderLine.isTaxIncluded() && C_Tax_ID != 0)
 				{
 					MTax tax = MTax.get(getCtx(), C_Tax_ID);
 					if (!tax.isZeroTax())
 					{
-						int stdPrecision = MCurrency.getStdPrecision(getCtx(), origianlOrderLine.getC_Currency_ID());
+						int stdPrecision = MCurrency.getStdPrecision(getCtx(), originalOrderLine.getC_Currency_ID());
 						BigDecimal costTax = tax.calculateTax(poCost, true, stdPrecision);
 						if (log.isLoggable(Level.FINE)) log.fine("Costs=" + poCost + " - Tax=" + costTax);
 						poCost = poCost.subtract(costTax);
