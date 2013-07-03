@@ -184,9 +184,19 @@ public class Doc_InOut extends Doc
 						MProduct product = line.getProduct();
 						if (product.isStocked())
 						{
-							p_Error = "No Costs for " + line.getProduct().getName();
-							log.log(Level.WARNING, p_Error);
-							return null;
+							//ok if we have purchased zero cost item from vendor before
+							int count = DB.getSQLValue(null, "SELECT Count(*) FROM M_CostDetail WHERE M_Product_ID=? AND Processed='Y' AND Amt=0.00 AND Qty > 0 AND (C_OrderLine_ID > 0 OR C_InvoiceLine_ID > 0)", 
+									product.getM_Product_ID());
+							if (count > 0)
+							{
+								costs = BigDecimal.ZERO;
+							}
+							else
+							{
+								p_Error = "No Costs for " + line.getProduct().getName();
+								log.log(Level.WARNING, p_Error);
+								return null;
+							}
 						}
 						else	//	ignore service
 							continue;
@@ -387,6 +397,7 @@ public class Doc_InOut extends Doc
 				DocLine line = p_lines[i];
 				BigDecimal costs = null;
 				MProduct product = line.getProduct();
+				MOrderLine orderLine = null;
 				if (!isReversal(line))
 				{
 					//get costing method for product
@@ -399,7 +410,7 @@ public class Doc_InOut extends Doc
 						// Low - check if c_orderline_id is valid
 						if (C_OrderLine_ID > 0)
 						{
-						    MOrderLine orderLine = new MOrderLine (getCtx(), C_OrderLine_ID, getTrxName());
+						    orderLine = new MOrderLine (getCtx(), C_OrderLine_ID, getTrxName());
 						    // Elaine 2008/06/26
 						    C_Currency_ID = orderLine.getC_Currency_ID();
 						    //
@@ -424,7 +435,7 @@ public class Doc_InOut extends Doc
 						    costs = costs.multiply(line.getQty());
 	                    }
 	                    else
-	                    {
+	                    {	                    	
 	                    	p_Error = "Resubmit - No Costs for " + product.getName() + " (required order line)";
 	                        log.log(Level.WARNING, p_Error);
 	                        return null;
@@ -438,9 +449,17 @@ public class Doc_InOut extends Doc
 					
 					if (costs == null || costs.signum() == 0)
 					{
-						p_Error = "Resubmit - No Costs for " + product.getName();
-						log.log(Level.WARNING, p_Error);
-						return null;
+						//ok if purchase price is actually zero 
+						if (orderLine != null && orderLine.getPriceActual().signum() == 0)
+                    	{
+							costs = BigDecimal.ZERO;
+                    	}
+						else
+						{
+							p_Error = "Resubmit - No Costs for " + product.getName();
+							log.log(Level.WARNING, p_Error);
+							return null;
+						}
 					}
 				} 
 				else
