@@ -18,14 +18,11 @@ package org.compiere.acct;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.compiere.model.I_M_InOutLine;
-import org.compiere.model.I_M_RMA;
 import org.compiere.model.I_M_RMALine;
-import org.compiere.model.MConversionRate;
 import org.compiere.model.MTax;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MAccount;
@@ -550,7 +547,33 @@ public class Doc_InOut extends Doc
 				MProduct product = line.getProduct();
 				if (!isReversal(line))
 				{
-					costs = line.getProductCosts(as, line.getAD_Org_ID(), false);	//	current costs
+					MInOutLine ioLine = (MInOutLine) line.getPO();
+					I_M_RMALine rmaLine = ioLine.getM_RMALine();
+					costs = rmaLine != null ? rmaLine.getAmt() : BigDecimal.ZERO;
+					I_M_InOutLine originalInOutLine = rmaLine != null ? rmaLine.getM_InOutLine() : null;
+					if (originalInOutLine != null && originalInOutLine.getC_OrderLine_ID() > 0)
+					{
+						MOrderLine originalOrderLine = (MOrderLine) originalInOutLine.getC_OrderLine();
+						//	Goodwill: Correct included Tax
+				    	int C_Tax_ID = originalOrderLine.getC_Tax_ID();
+				    	if (originalOrderLine.isTaxIncluded() && C_Tax_ID != 0)
+						{
+							MTax tax = MTax.get(getCtx(), C_Tax_ID);
+							if (!tax.isZeroTax())
+							{
+								int stdPrecision = MCurrency.getStdPrecision(getCtx(), originalOrderLine.getC_Currency_ID());
+								BigDecimal costTax = tax.calculateTax(costs, true, stdPrecision);
+								if (log.isLoggable(Level.FINE)) log.fine("Costs=" + costs + " - Tax=" + costTax);
+								costs = costs.subtract(costTax);
+							}
+						}	//	correct included Tax
+				    	costs = costs.multiply(line.getQty());
+				    	costs = costs.negate();
+					}
+					else
+					{
+						costs = line.getProductCosts(as, line.getAD_Org_ID(), false);	//	current costs
+					}
 					if (costs == null || costs.signum() == 0)
 					{
 						p_Error = "Resubmit - No Costs for " + product.getName();
@@ -560,7 +583,8 @@ public class Doc_InOut extends Doc
 				}
 				else
 				{
-					costs = BigDecimal.ZERO;
+					//update below
+					costs = Env.ONE;
 				}
 				//  NotInvoicedReceipt				DR
 				// Elaine 2008/06/26
@@ -621,14 +645,15 @@ public class Doc_InOut extends Doc
 						return null;
 					}
 				}
+				
+				String costingError = createVendorRMACostDetail(as, line, costs);
+				if (!Util.isEmpty(costingError))
+				{
+					p_Error = costingError;
+					return null;
+				}
 			}
-			
-			String costingError = createVendorRMACostDetail(as);
-			if (!Util.isEmpty(costingError))
-			{
-				p_Error = costingError;
-				return null;
-			}
+						
 		}	//	Purchasing Return
 		else
 		{
@@ -645,84 +670,20 @@ public class Doc_InOut extends Doc
 		return m_Reversal_ID !=0 && line.getReversalLine_ID() != 0;
 	}
 
-	private String createVendorRMACostDetail(MAcctSchema as)
+	private String createVendorRMACostDetail(MAcctSchema as, DocLine line, BigDecimal costs)
 	{		
-		MOrderLine originalOrderLine = null;
-		
-		MInOut inOut = (MInOut) getPO();
-		
-		for (int i = 0; i < p_lines.length; i++)
+		BigDecimal tQty = line.getQty();
+		BigDecimal tAmt = costs;
+		if (tAmt.signum() != tQty.signum())
 		{
-			DocLine line = p_lines[i];
-			MInOutLine ioLine = (MInOutLine) line.getPO();
-			I_M_RMALine rmaLine = ioLine.getM_RMALine();
-		
-			BigDecimal poCost = rmaLine != null ? rmaLine.getAmt() : BigDecimal.ZERO;
-			I_M_InOutLine originalInOutLine = rmaLine != null ? rmaLine.getM_InOutLine() : null;
-			if (originalInOutLine != null && originalInOutLine.getC_OrderLine_ID() > 0)
-			{
-				originalOrderLine = (MOrderLine) originalInOutLine.getC_OrderLine();
-				//	Goodwill: Correct included Tax
-		    	int C_Tax_ID = originalOrderLine.getC_Tax_ID();
-		    	if (originalOrderLine.isTaxIncluded() && C_Tax_ID != 0)
-				{
-					MTax tax = MTax.get(getCtx(), C_Tax_ID);
-					if (!tax.isZeroTax())
-					{
-						int stdPrecision = MCurrency.getStdPrecision(getCtx(), originalOrderLine.getC_Currency_ID());
-						BigDecimal costTax = tax.calculateTax(poCost, true, stdPrecision);
-						if (log.isLoggable(Level.FINE)) log.fine("Costs=" + poCost + " - Tax=" + costTax);
-						poCost = poCost.subtract(costTax);
-					}
-				}	//	correct included Tax
-		    	poCost = poCost.multiply(line.getQty());	//	Returned so far
-		    	BigDecimal tAmt = poCost;		    			    	
-		    	BigDecimal tQty = line.getQty();
-		    	
-		    	I_M_RMA rma = rmaLine.getM_RMA();
-				if (rma.getC_Currency_ID() != as.getC_Currency_ID())
-				{
-					Timestamp dateAcct = inOut.getDateAcct();
-					//
-					BigDecimal rate = MConversionRate.getRate(
-						rma.getC_Currency_ID(), as.getC_Currency_ID(),
-						dateAcct, 0,
-						rmaLine.getAD_Client_ID(), rmaLine.getAD_Org_ID());
-					if (rate == null)
-					{
-						return "Vendor RMA not convertible - " + as.getName();
-					}
-					poCost = poCost.multiply(rate);
-					if (poCost.scale() > as.getCostingPrecision())
-						poCost = poCost.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
-					tAmt = tAmt.multiply(rate);
-					if (tAmt.scale() > as.getCostingPrecision())
-						tAmt = tAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);			
-				}
-			
-				// Set Total Amount and Total Quantity from rma line 
-				if (!MCostDetail.createShipment(as, line.getAD_Org_ID(), line.getM_Product_ID(), 
-						line.getM_AttributeSetInstance_ID(), line.get_ID(), 0, tAmt, tQty, 
-						line.getDescription(), false, getTrxName()))
-				{
-					return "SaveError";
-				}
-			}
-			else
-			{
-				//no rma line linkage, fallback to current cost
-				poCost = line.getProductCosts(as, line.getAD_Org_ID(), false);
-				BigDecimal tAmt = poCost.negate();		    			    	
-		    	BigDecimal tQty = line.getQty();
-				if (!MCostDetail.createShipment(as, line.getAD_Org_ID(), line.getM_Product_ID(), 
-						line.getM_AttributeSetInstance_ID(), line.get_ID(), 0, tAmt, tQty, 
-						line.getDescription(), false, getTrxName()))
-				{
-					return "SaveError";
-				}
-			}
-		}				
-		// end MZ
+			tAmt = tAmt.negate();
+		}
+		if (!MCostDetail.createShipment(as, line.getAD_Org_ID(), line.getM_Product_ID(), 
+				line.getM_AttributeSetInstance_ID(), line.get_ID(), 0, tAmt, tQty, 
+				line.getDescription(), false, getTrxName()))
+		{
+			return "SaveError";
+		}
 		return "";
 	}
 }   //  Doc_InOut
