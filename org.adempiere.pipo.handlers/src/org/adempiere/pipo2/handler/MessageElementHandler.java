@@ -46,9 +46,11 @@ public class MessageElementHandler extends AbstractElementHandler {
 		if (isProcessElement(ctx.ctx, entitytype)) {			
 			MMessage mMessage = findPO(ctx, element);
 			if (mMessage == null) {				
-				String value = getStringValue(element, "Value");
-				int id = findIdByColumn(ctx, "AD_Message", "value", value);
-
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					String value = getStringValue(element, "Value");
+					id = findIdByColumn(ctx, "AD_Message", "value", value);
+				}
 				mMessage = new MMessage(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
 			PoFiller filler = new PoFiller(ctx, mMessage, element, this);

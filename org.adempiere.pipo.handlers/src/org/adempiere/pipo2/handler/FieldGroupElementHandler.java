@@ -58,7 +58,10 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 			X_AD_FieldGroup fieldGroup = findPO(ctx, element);
 			if (fieldGroup == null)
 			{
-				int id = findIdByColumn(ctx, X_AD_FieldGroup.Table_Name, X_AD_FieldGroup.COLUMNNAME_Name, name);
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					id = findIdByColumn(ctx, X_AD_FieldGroup.Table_Name, X_AD_FieldGroup.COLUMNNAME_Name, name);
+				}
 				fieldGroup = new X_AD_FieldGroup(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
 			PoFiller pf = new PoFiller(ctx, fieldGroup, element, this);

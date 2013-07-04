@@ -64,7 +64,10 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 				return;
 			}
 
-			int id = DB.getSQLValue(getTrxName(ctx), "SELECT AD_Attachment_ID FROM AD_Attachment WHERE Record_ID="+Record_ID+" AND AD_Table_ID="+AD_Table_ID);
+			int id = 0;
+			if (!hasUUIDKey(ctx, element)) {
+				DB.getSQLValue(getTrxName(ctx), "SELECT AD_Attachment_ID FROM AD_Attachment WHERE Record_ID="+Record_ID+" AND AD_Table_ID="+AD_Table_ID);
+			}
 			mAttachment = new MAttachment(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			if (mAttachment.is_new()) {
 				mAttachment.setAD_Table_ID(AD_Table_ID);

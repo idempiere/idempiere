@@ -94,7 +94,10 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 					return;
 				}
 
-				int AD_WF_NodeNext_ID = DB.getSQLValue(getTrxName(ctx), "SELECT AD_WF_NodeNext_ID FROM AD_WF_NodeNext WHERE AD_WF_Node_ID=? and AD_WF_NEXT_ID =?", wfNodeId, AD_WF_Next_ID);
+				int AD_WF_NodeNext_ID = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					AD_WF_NodeNext_ID = DB.getSQLValue(getTrxName(ctx), "SELECT AD_WF_NodeNext_ID FROM AD_WF_NodeNext WHERE AD_WF_Node_ID=? and AD_WF_NEXT_ID =?", wfNodeId, AD_WF_Next_ID);
+				}
 
 				mWFNodeNext = new MWFNodeNext(ctx.ctx, AD_WF_NodeNext_ID, getTrxName(ctx));
 				mWFNodeNext.setAD_WF_Node_ID(wfNodeId);

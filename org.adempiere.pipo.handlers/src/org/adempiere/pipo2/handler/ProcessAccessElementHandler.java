@@ -66,9 +66,11 @@ public class ProcessAccessElementHandler extends AbstractElementHandler {
 				element.unresolved = "AD_Process_ID " + (processElement.contents != null ? processElement.contents.toString() : "");
 				return;
 			}
-
-			Query query = new Query(ctx.ctx, "AD_Process_Access", "AD_Role_ID=? and AD_Process_ID=?", getTrxName(ctx));
-			po = query.setParameters(new Object[]{roleid, processid}).first();
+			
+			if (!hasUUIDKey(ctx, element)) {
+				Query query = new Query(ctx.ctx, "AD_Process_Access", "AD_Role_ID=? and AD_Process_ID=?", getTrxName(ctx));
+				po = query.setParameters(new Object[]{roleid, processid}).first();
+			}
 			if (po == null)
 			{
 				po = new X_AD_Process_Access(ctx.ctx, 0, getTrxName(ctx));

@@ -59,7 +59,10 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 					AD_Reference_ID = ReferenceUtils.resolveReference(ctx.ctx, referenceElement, getTrxName(ctx));
 				}
 
-				int AD_Ref_List_ID = findIdByColumnAndParentId(ctx, "AD_Ref_List", "Value", value, "AD_Reference", AD_Reference_ID);
+				int AD_Ref_List_ID = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					AD_Ref_List_ID = findIdByColumnAndParentId(ctx, "AD_Ref_List", "Value", value, "AD_Reference", AD_Reference_ID);
+				}
 				mRefList = new X_AD_Ref_List(ctx.ctx, AD_Ref_List_ID, getTrxName(ctx));
 			}
 

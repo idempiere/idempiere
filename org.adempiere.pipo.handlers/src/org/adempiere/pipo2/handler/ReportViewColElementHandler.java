@@ -90,7 +90,10 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 				sql.append(" AND FunctionColumn = ?");
 				sql.append(" AND AD_ReportView_ID = ?");
 
-				int id = DB.getSQLValue(getTrxName(ctx), sql.toString(), functionColumn, AD_ReportView_ID);
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					id = DB.getSQLValue(getTrxName(ctx), sql.toString(), functionColumn, AD_ReportView_ID);
+				}
 				mReportviewCol = new X_AD_ReportView_Col(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mReportviewCol.setAD_ReportView_ID(AD_ReportView_ID);
 				if (AD_Column_ID > 0) {

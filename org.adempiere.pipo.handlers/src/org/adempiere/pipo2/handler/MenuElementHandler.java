@@ -59,8 +59,11 @@ public class MenuElementHandler extends AbstractElementHandler {
 
 		X_AD_Menu mMenu = findPO(ctx, element);
 		if (mMenu == null) {
-			String menuName = getStringValue(element, "Name");
-			int menuId = findIdByColumn(ctx, "AD_Menu", "Name", menuName);
+			int menuId = 0;
+			if (!hasUUIDKey(ctx, element)) {
+				String menuName = getStringValue(element, "Name");
+				menuId = findIdByColumn(ctx, "AD_Menu", "Name", menuName);
+			}
 			mMenu = new X_AD_Menu(ctx.ctx, menuId > 0 ? menuId : 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, mMenu, element, this);

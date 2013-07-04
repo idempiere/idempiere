@@ -66,10 +66,12 @@ public class FormAccessElementHandler extends AbstractElementHandler {
 				return;
 			}
 
-			Query query = new Query(ctx.ctx, "AD_Form_Access", "AD_Form_ID = ? AND AD_Role_ID = ?", getTrxName(ctx));
-			po = query.setParameters(new Object[]{AD_Form_ID, AD_Role_ID})
-					.setClient_ID()
-					.<MFormAccess>first();
+			if (!hasUUIDKey(ctx, element)) {
+				Query query = new Query(ctx.ctx, "AD_Form_Access", "AD_Form_ID = ? AND AD_Role_ID = ?", getTrxName(ctx));
+				po = query.setParameters(new Object[]{AD_Form_ID, AD_Role_ID})
+						.setClient_ID()
+						.<MFormAccess>first();
+			}
 			if (po == null)
 			{
 				po = new MFormAccess(ctx.ctx, 0, getTrxName(ctx));

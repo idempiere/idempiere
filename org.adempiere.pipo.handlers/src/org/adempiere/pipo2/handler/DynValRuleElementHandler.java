@@ -48,7 +48,10 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 			X_AD_Val_Rule mValRule = findPO(ctx, element);
 			if (mValRule == null)
 			{
-				int id = findIdByColumn(ctx, "AD_Val_Rule", "Name", name);
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					id = findIdByColumn(ctx, "AD_Val_Rule", "Name", name);
+				}
 				mValRule = new X_AD_Val_Rule(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
 			if (mValRule.getAD_Val_Rule_ID() == 0 && isOfficialId(element, "AD_Val_Rule_ID"))

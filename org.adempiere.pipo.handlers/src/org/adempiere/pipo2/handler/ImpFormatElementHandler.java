@@ -56,7 +56,10 @@ public class ImpFormatElementHandler extends AbstractElementHandler {
 
 		X_AD_ImpFormat mImpFormat = findPO(ctx, element);
 		if (mImpFormat == null) {
-			int id = findIdByName(ctx, "AD_ImpFormat", name);
+			int id = 0;
+			if (!hasUUIDKey(ctx, element)) {
+				id = findIdByName(ctx, "AD_ImpFormat", name);
+			}
 			mImpFormat = new X_AD_ImpFormat(ctx.ctx, id > 0 ? id : 0,
 					getTrxName(ctx));
 		}

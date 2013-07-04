@@ -85,11 +85,14 @@ public class TabElementHandler extends AbstractElementHandler {
 					return;
 				}
 
-				String sql = "SELECT AD_Tab_ID FROM AD_Tab where AD_Window_ID = ? "
-						+ " AND Name = ?"
-						+ " AND AD_Table_ID = ?";
-
-				int id = DB.getSQLValue(getTrxName(ctx), sql, windowId, name, tableId);
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					String sql = "SELECT AD_Tab_ID FROM AD_Tab where AD_Window_ID = ? "
+							+ " AND Name = ?"
+							+ " AND AD_Table_ID = ?";
+	
+					id = DB.getSQLValue(getTrxName(ctx), sql, windowId, name, tableId);
+				}
 				mTab = new MTab(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mTab.setAD_Table_ID(tableId);
 				mTab.setName(name);

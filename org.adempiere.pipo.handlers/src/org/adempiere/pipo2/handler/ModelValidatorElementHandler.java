@@ -37,7 +37,10 @@ public class ModelValidatorElementHandler extends AbstractElementHandler{
 
 			X_AD_ModelValidator validator = findPO(ctx, element);
 			if (validator == null) {
-				int id = findIdByColumn(ctx, X_AD_ModelValidator.Table_Name, X_AD_ModelValidator.COLUMNNAME_Name, name, /*ignorecase=*/true);
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					id = findIdByColumn(ctx, X_AD_ModelValidator.Table_Name, X_AD_ModelValidator.COLUMNNAME_Name, name, /*ignorecase=*/true);
+				}
 				validator = new X_AD_ModelValidator(ctx.ctx, id, getTrxName(ctx));
 			}
 			List<String> excludes = defaultExcludeList(X_AD_ModelValidator.Table_Name);

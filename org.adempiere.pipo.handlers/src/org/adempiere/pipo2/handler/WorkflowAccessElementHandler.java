@@ -67,8 +67,10 @@ public class WorkflowAccessElementHandler extends AbstractElementHandler {
 				element.unresolved = "AD_Workflow_ID";
 			}
 
-			Query query = new Query(ctx.ctx, "AD_Workflow_Access", "AD_Role_ID=? and AD_Workflow_ID=?", getTrxName(ctx));
-			po = query.setParameters(new Object[]{roleid, workflowid}).first();
+			if (!hasUUIDKey(ctx, element)) {
+				Query query = new Query(ctx.ctx, "AD_Workflow_Access", "AD_Role_ID=? and AD_Workflow_ID=?", getTrxName(ctx));
+				po = query.setParameters(new Object[]{roleid, workflowid}).first();
+			}
 			if (po == null) {
 				po = new MWorkflowAccess(ctx.ctx, 0, getTrxName(ctx));
 				po.setAD_Role_ID(roleid);
