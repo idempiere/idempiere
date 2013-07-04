@@ -1482,9 +1482,9 @@ public class MCost extends X_M_Cost
 	public void setWeightedAverage (BigDecimal amt, BigDecimal qty)
 	{
 		//amount must follow the sign of qty
-		if (amt.signum() != 0 && amt.signum() != qty.signum())
+		if (amt.signum() != 0 && qty.signum() != 0 && amt.signum() != qty.signum())
 		{
-			amt = amt.multiply(BigDecimal.valueOf(-1.00d));
+			amt = amt.negate();
 		}
 		
 		if (getCurrentQty().add(qty).signum() < 0)
