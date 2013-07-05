@@ -22,10 +22,10 @@ import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -63,16 +63,11 @@ public class Trx
 	 *	@param createNew if false, null is returned if not found
 	 *	@return Transaction or null
 	 */
-	public static synchronized Trx get (String trxName, boolean createNew)
+	public static Trx get (String trxName, boolean createNew)
 	{
 		if (trxName == null || trxName.length() == 0)
 			throw new IllegalArgumentException ("No Transaction Name");
 
-		if (s_cache == null)
-		{
-			s_cache = new HashMap<String,Trx>(10);
-		}
-		
 		Trx retValue = (Trx)s_cache.get(trxName);
 		if (retValue == null && createNew)
 		{
@@ -83,9 +78,9 @@ public class Trx
 	}	//	get
 	
 	/**	Transaction Cache					*/
-	private static Map<String,Trx> 	s_cache = null;	//	create change listener
+	private static final Map<String,Trx> s_cache = new ConcurrentHashMap<String, Trx>(); 
 	
-	private static Trx.TrxMonitor s_monitor = new Trx.TrxMonitor();
+	private static final Trx.TrxMonitor s_monitor = new Trx.TrxMonitor();
 	
 	private List<TrxEventListener> listeners = new ArrayList<TrxEventListener>();
 
@@ -171,7 +166,7 @@ public class Trx
 	 *  @param createNew if true, create new connection if the trx does not have one created yet
 	 *	@return connection
 	 */
-	public Connection getConnection(boolean createNew)
+	public synchronized Connection getConnection(boolean createNew)
 	{
 		if (log.isLoggable(Level.ALL))log.log(Level.ALL, "Active=" + isActive() + ", Connection=" + m_connection);
 
@@ -179,7 +174,7 @@ public class Trx
 		{
 			if (createNew)
 			{
-				if (s_cache == null || !s_cache.containsKey(m_trxName))
+				if (!s_cache.containsKey(m_trxName))
 				{
 					new Exception("Illegal to getConnection for Trx that is not register.").printStackTrace();
 					return null;
@@ -272,7 +267,7 @@ public class Trx
 	 *  @param throwException if true, re-throws exception
 	 *	@return true if success, false if failed or transaction already rollback
 	 */
-	public boolean rollback(boolean throwException) throws SQLException
+	public synchronized boolean rollback(boolean throwException) throws SQLException
 	{
 		//local
 		try
@@ -351,7 +346,7 @@ public class Trx
 	 * @param throwException if true, re-throws exception
 	 * @return true if success
 	 **/
-	public boolean commit(boolean throwException) throws SQLException
+	public synchronized boolean commit(boolean throwException) throws SQLException
 	{
 		//local
 		try
@@ -410,8 +405,7 @@ public class Trx
 	 */
 	public synchronized boolean close()
 	{
-		if (s_cache != null)
-			s_cache.remove(getTrxName());
+		s_cache.remove(getTrxName());
 		
 		//local
 		if (m_connection == null)
@@ -459,7 +453,7 @@ public class Trx
 	 * @return Savepoint
 	 * @throws SQLException
 	 */
-	public Savepoint setSavepoint(String name) throws SQLException {
+	public synchronized Savepoint setSavepoint(String name) throws SQLException {
 		if (m_connection == null) 
 			getConnection();
 		
@@ -479,7 +473,7 @@ public class Trx
 	 * @throws SQLException
 	 * @see {@link Connection#releaseSavepoint(Savepoint)}
 	 */
-	public void releaseSavepoint(Savepoint savepoint) throws SQLException
+	public synchronized void releaseSavepoint(Savepoint savepoint) throws SQLException
 	{
 		if (DB.isOracle())
 		{
@@ -519,9 +513,6 @@ public class Trx
 	 */
 	public static Trx[] getActiveTransactions()
 	{
-		if (s_cache == null)
-			return new Trx[0];
-
 		Collection<Trx> collections = s_cache.values();
 		Trx[] trxs = new Trx[collections.size()];
 		collections.toArray(trxs);
@@ -626,11 +617,15 @@ public class Trx
 	 * @param listener
 	 */
 	public void addTrxEventListener(TrxEventListener listener) {
-		listeners.add(listener);
+		synchronized (listeners) {
+			listeners.add(listener);
+		}		
 	}
 	
 	public boolean removeTrxEventListener(TrxEventListener listener) {
-		return listeners.remove(listener);
+		synchronized (listeners) {
+			return listeners.remove(listener);
+		}
 	}
 	
 	static class TrxMonitor implements Runnable
@@ -638,7 +633,7 @@ public class Trx
 
 		public void run()
 		{
-			if (Trx.s_cache != null && !Trx.s_cache.isEmpty())
+			if (!Trx.s_cache.isEmpty())
 			{
 				Trx[] trxs = Trx.s_cache.values().toArray(new Trx[0]);
 				for(int i = 0; i < trxs.length; i++)
