@@ -334,6 +334,15 @@ public interface I_AD_Table
 
 	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException;
 
+    /** Column name Processing */
+    public static final String COLUMNNAME_Processing = "Processing";
+
+	/** Set Process Now	  */
+	public void setProcessing (boolean Processing);
+
+	/** Get Process Now	  */
+	public boolean isProcessing();
+
     /** Column name ReplicationType */
     public static final String COLUMNNAME_ReplicationType = "ReplicationType";
 

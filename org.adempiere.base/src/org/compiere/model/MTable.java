@@ -210,6 +210,8 @@ public class MTable extends X_AD_Table
 	private Map<String, Integer> m_columnNameMap;
 	/** ad_column_id to index map **/
 	private Map<Integer, Integer> m_columnIdMap;
+	/** View Components		*/
+	private MViewComponent[]	m_viewComponents = null;
 
 	/**
 	 * 	Get Columns
@@ -623,6 +625,29 @@ public class MTable extends X_AD_Table
 	public Query createQuery(String whereClause, String trxName)
 	{
 		return new Query(this.getCtx(), this, whereClause, trxName);
+	}
+	
+	/**
+	 * 	Get view components
+	 *  @param reload reload data
+	 *	@return array of view component
+	 */
+	public MViewComponent[] getViewComponent(boolean reload)
+	{
+		if (!isView() || !isActive())
+			return null;
+		
+		if (m_viewComponents != null && !reload)
+			return m_viewComponents;
+		
+		Query query = new Query(getCtx(), MViewComponent.Table_Name, MViewComponent.COLUMNNAME_AD_Table_ID + "=?", get_TrxName());
+		query.setParameters(getAD_Table_ID());
+		query.setOnlyActiveRecords(true);
+		List<MTableIndex> list = query.<MTableIndex>list();
+		
+		m_viewComponents = new MViewComponent[list.size()];
+		list.toArray(m_viewComponents);
+		return m_viewComponents;
 	}
 
 	/**
