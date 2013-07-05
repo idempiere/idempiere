@@ -63,12 +63,14 @@ public class WindowElementHandler extends AbstractElementHandler {
 		if (isProcessElement(ctx.ctx, entitytype)) {
 			MWindow mWindow = findPO(ctx, element);
 			if (mWindow == null) {
+				int id = 0;
 				String name = getStringValue(element, "Name", excludes);
-				int id = findIdByName(ctx, "AD_Window", name);
-				if (id > 0 && windows.contains(id)) {
-					return;
+				if (!hasUUIDKey(ctx, element)) {
+					id = findIdByName(ctx, "AD_Window", name);
+					if (id > 0 && windows.contains(id)) {
+						return;
+					}
 				}
-	
 				mWindow = new MWindow(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mWindow.setName(name);
 			} else {

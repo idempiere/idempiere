@@ -232,7 +232,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
 		borderlayout.setHflex("1");
-		borderlayout.setVflex("min");
+		borderlayout.setVflex("1");
 		
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");
@@ -252,6 +252,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		this.setClosable(true);
 		this.setBorder("normal");
 		this.setWidth("260px");
+		this.setHeight("300px"); // required fixed height for ZK to auto adjust the position based on available space
 		this.setShadow(true);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		this.setSizable(true); // Elaine 2009/02/02 - window set to resizable

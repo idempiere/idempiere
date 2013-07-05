@@ -61,11 +61,11 @@ public class WorkflowProcessor extends AdempiereServer
 	}	//	WorkflowProcessor
 	
 	/**	The Concrete Model			*/
-	private	MWorkflowProcessor	m_model = null;
+	protected	MWorkflowProcessor	m_model = null;
 	/**	Last Summary				*/
-	private StringBuffer 		m_summary = new StringBuffer();
+	protected StringBuffer 		m_summary = new StringBuffer();
 	/** Client onfo					*/
-	private MClient 			m_client = null;
+	protected MClient 			m_client = null;
 	
 	/**
 	 * 	Work
@@ -90,7 +90,7 @@ public class WorkflowProcessor extends AdempiereServer
 	/**
 	 * 	Continue Workflow After Sleep
 	 */
-	private void wakeup()
+	protected void wakeup()
 	{
 		String sql = "SELECT * "
 			+ "FROM AD_WF_Activity a "
@@ -135,7 +135,7 @@ public class WorkflowProcessor extends AdempiereServer
 	/**
 	 * 	Set/Increase Priority dynamically
 	 */
-	private void dynamicPriority()
+	protected void dynamicPriority()
 	{
 		//	suspened activities with dynamic priority node
 		String sql = "SELECT * "
@@ -184,7 +184,7 @@ public class WorkflowProcessor extends AdempiereServer
 	/**
 	 * 	Send Alerts
 	 */
-	private void sendAlerts()
+	protected void sendAlerts()
 	{
 		//	Alert over Priority
 		if (m_model.getAlertOverPriority() > 0)
@@ -350,7 +350,7 @@ public class WorkflowProcessor extends AdempiereServer
 	 *  @param toSupervisor true if to Supervisor
 	 * 	@return number of mails sent
 	 */
-	private int sendEmail (MWFActivity activity, String AD_Message,
+	protected int sendEmail (MWFActivity activity, String AD_Message,
 		boolean toProcess, boolean toSupervisor)
 	{
 		if (m_client == null || m_client.getAD_Client_ID() != activity.getAD_Client_ID())
@@ -429,7 +429,7 @@ public class WorkflowProcessor extends AdempiereServer
 	 *	@param pdf optional pdf
 	 *	@return number of mail sent
 	 */
-	private int sendAlertToResponsible (MWFResponsible responsible, 
+	protected int sendAlertToResponsible (MWFResponsible responsible, 
 		ArrayList<Integer> list, MWFProcess process,
 		String subject, String message, File pdf)
 	{

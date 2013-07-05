@@ -15,12 +15,12 @@
 |''window''|${windowId}|''click toolbar''|!-BtnSave-!|
 |''wait response''|
 |''window message''|${windowId}|is|!-Record saved-!|
-|''window''|${windowId}|''click detail toolbar''|!-BtnNew-!|
+|''window''|${windowId}|''click detail toolbar''|!-BtnEdit-!|
 |''wait response''|
 |''text of''|${windowId} $recordInfo|is|!-+*1/1-!|
 |''window''|${windowId}|''click toolbar''|!-BtnParentRecord-!|
 |''wait response''|
-|''window''|${windowId}|''click process button''|!-CreateFrom-!|
+|''click''|${windowId} $Production $CreateFrom|
 |''wait response''|
 |''click''|${windowId} @window[title="Create Production"] $Ok|
 |''wait response''|

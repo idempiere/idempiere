@@ -61,7 +61,10 @@ public class EntityTypeElementHandler extends AbstractElementHandler{
 			X_AD_EntityType m_EntityType = findPO(ctx, element);
 			
 			if (m_EntityType == null) {
-				int id = findIdByColumn(ctx, X_AD_EntityType.Table_Name, X_AD_EntityType.COLUMNNAME_Name, name, /*ignorecase=*/true);
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					id = findIdByColumn(ctx, X_AD_EntityType.Table_Name, X_AD_EntityType.COLUMNNAME_Name, name, /*ignorecase=*/true);
+				}
 				m_EntityType = new X_AD_EntityType(ctx.ctx, id, getTrxName(ctx));
 			}
 			

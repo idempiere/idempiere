@@ -60,7 +60,10 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 
 			X_AD_Reference mReference = findPO(ctx, element);
 			if (mReference == null) {
-				int id = findIdByName(ctx, "AD_Reference", name);
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					id = findIdByName(ctx, "AD_Reference", name);
+				}
 				mReference = new X_AD_Reference(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
 			List<String> excludes = defaultExcludeList(X_AD_Reference.Table_Name);

@@ -63,11 +63,14 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 
 			MWorkflow mWorkflow = findPO(ctx, element);
 			if (mWorkflow == null) {
+				int id = 0;
 				String workflowValue = getStringValue(element, "Value", excludes);
-				int id = findIdByColumn(ctx, "AD_Workflow", "Value", workflowValue);
-				if (id > 0 && workflows.contains(id)) {
-					element.skip = true;
-					return;
+				if (!hasUUIDKey(ctx, element)) {
+					id = findIdByColumn(ctx, "AD_Workflow", "Value", workflowValue);
+					if (id > 0 && workflows.contains(id)) {
+						element.skip = true;
+						return;
+					}
 				}
 	
 				mWorkflow = new MWorkflow(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));

@@ -48,18 +48,17 @@ import org.compiere.model.MIMPProcessorLog;
 public class ReplicationProcessor extends AdempiereServer {
 	
 	/**	Last Summary				*/
-	private StringBuffer 		m_summary = new StringBuffer();
+	protected StringBuffer 		m_summary = new StringBuffer();
 	
 	/** Client info					*/
-	@SuppressWarnings("unused")
-	private MClient 			m_client = null;
+	protected MClient 			m_client = null;
 	
-	private MIMPProcessor mImportProcessor = null;
+	protected MIMPProcessor mImportProcessor = null;
 	
 	/**
 	 * flag showing if process is working!
 	 */
-	private boolean isProcessRunning = false;
+	protected boolean isProcessRunning = false;
 	
 	
 	/*protected ReplicationProcessor(MIMPProcessor model, int initialNap) {
@@ -75,10 +74,10 @@ public class ReplicationProcessor extends AdempiereServer {
 	}*/
 	
 	public ReplicationProcessor(AdempiereProcessor model, int initialNap) {
-	super (model, initialNap);
-	mImportProcessor = (MIMPProcessor)model;
-	m_client = MClient.get(mImportProcessor.getCtx(), mImportProcessor.getAD_Client_ID());
-}
+		super (model, initialNap);
+		mImportProcessor = (MIMPProcessor)model;
+		m_client = MClient.get(mImportProcessor.getCtx(), mImportProcessor.getAD_Client_ID());
+	}
 	public ReplicationProcessor(AdempiereProcessor model) {
 		super (model, 30);
 		mImportProcessor =(MIMPProcessor)model;

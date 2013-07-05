@@ -67,22 +67,26 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 				if (AD_Reference_ID <= 0 && isOfficialId(element, "AD_Reference_ID"))
 					AD_Reference_ID = getIntValue(element, "AD_Reference_ID");
 
-				String sql = "SELECT * FROM AD_Ref_Table WHERE AD_Reference_ID = ?";
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				try {
-					pstmt = DB.prepareStatement(sql, getTrxName(ctx));
-					pstmt.setInt(1, AD_Reference_ID);
-					rs = pstmt.executeQuery();
-					if (rs.next()) {
-						refTable = new X_AD_Ref_Table(ctx.ctx, rs, getTrxName(ctx));
-					} else {
-						refTable = new X_AD_Ref_Table(ctx.ctx, 0, getTrxName(ctx));
+				if (!hasUUIDKey(ctx, element)) {
+					String sql = "SELECT * FROM AD_Ref_Table WHERE AD_Reference_ID = ?";
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+					try {
+						pstmt = DB.prepareStatement(sql, getTrxName(ctx));
+						pstmt.setInt(1, AD_Reference_ID);
+						rs = pstmt.executeQuery();
+						if (rs.next()) {
+							refTable = new X_AD_Ref_Table(ctx.ctx, rs, getTrxName(ctx));
+						} else {
+							refTable = new X_AD_Ref_Table(ctx.ctx, 0, getTrxName(ctx));
+						}
+					} catch (Exception e) {
+						throw new DatabaseAccessException(e.getLocalizedMessage(), e);
+					} finally {
+						DB.close(rs, pstmt);
 					}
-				} catch (Exception e) {
-					throw new DatabaseAccessException(e.getLocalizedMessage(), e);
-				} finally {
-					DB.close(rs, pstmt);
+				} else {
+					refTable = new X_AD_Ref_Table(ctx.ctx, 0, getTrxName(ctx));
 				}
 			}
 			String action = refTable.is_new() ? "New" : "Update";

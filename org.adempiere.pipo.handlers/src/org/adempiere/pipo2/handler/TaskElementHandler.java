@@ -50,8 +50,11 @@ public class TaskElementHandler extends AbstractElementHandler {
 
 			MTask mTask = findPO(ctx, element);
 			if (mTask == null) {
-				String name = getStringValue(element, "Name");
-				int id = findIdByName(ctx, "AD_Task", name);
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					String name = getStringValue(element, "Name");
+					id = findIdByName(ctx, "AD_Task", name);
+				}
 				mTask = new MTask(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
 			

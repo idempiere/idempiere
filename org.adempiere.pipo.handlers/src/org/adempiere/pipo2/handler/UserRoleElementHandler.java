@@ -73,8 +73,10 @@ public class UserRoleElementHandler extends AbstractElementHandler {
 			Element orgElement = element.properties.get(I_AD_User_Roles.COLUMNNAME_AD_Org_ID);
 			orgid = ReferenceUtils.resolveReference(ctx.ctx, orgElement, getTrxName(ctx));
 
-			Query query = new Query(ctx.ctx, "AD_User_Roles", "AD_User_ID = ? AND AD_Role_ID = ? AND AD_Org_ID = ?", getTrxName(ctx));
-			po = query.setParameters(new Object[]{userid, roleid, orgid}).first();
+			if (!hasUUIDKey(ctx, element)) {
+				Query query = new Query(ctx.ctx, "AD_User_Roles", "AD_User_ID = ? AND AD_Role_ID = ? AND AD_Org_ID = ?", getTrxName(ctx));
+				po = query.setParameters(new Object[]{userid, roleid, orgid}).first();
+			}
 			if (po == null) {
 				po = new X_AD_User_Roles(ctx.ctx, 0, getTrxName(ctx));
 				po.setAD_Org_ID(orgid);

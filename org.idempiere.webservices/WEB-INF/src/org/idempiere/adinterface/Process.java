@@ -14,6 +14,7 @@ import javax.xml.namespace.QName;
 import net.sf.compilo.report.ReportProcessor;
 import net.sf.jasperreports.engine.JasperPrint;
 
+import org.adempiere.util.ProcessUtil;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -288,7 +289,14 @@ public class Process {
 		}
 		
 		boolean processOK = false;
-		boolean jasperreport = (process != null && process.getClassname()!=null && process.getClassname().indexOf( "net.sf.compilo.report.ReportStarter" ) >=0 );
+		boolean jasperreport =
+				(process != null
+				 && (process.getJasperReport() != null
+				     || (process.getClassname() != null
+				         && process.getClassname().indexOf(ProcessUtil.JASPER_STARTER_CLASS) >= 0
+				        )
+				    )
+				);
 		
 		if (jasperreport)
 		{

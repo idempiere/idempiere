@@ -69,7 +69,9 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 					return;
 				}
 
-				id = findIdByColumnAndParentId(ctx, "AD_Process_Para", "ColumnName", name, "AD_Process", masterId);
+				if (!hasUUIDKey(ctx, element)) {
+					id = findIdByColumnAndParentId(ctx, "AD_Process_Para", "ColumnName", name, "AD_Process", masterId);
+				}
 				mProcessPara = new X_AD_Process_Para(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mProcessPara.setAD_Process_ID(masterId);
 				excludes.add(I_AD_Process_Para.COLUMNNAME_AD_Process_ID);

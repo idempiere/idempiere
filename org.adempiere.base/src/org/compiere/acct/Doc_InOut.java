@@ -21,6 +21,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.compiere.model.I_M_InOutLine;
+import org.compiere.model.I_M_RMALine;
 import org.compiere.model.MTax;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MAccount;
@@ -33,6 +35,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.ProductCost;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *  Post Shipment/Receipt Documents.
@@ -178,9 +181,19 @@ public class Doc_InOut extends Doc
 						MProduct product = line.getProduct();
 						if (product.isStocked())
 						{
-							p_Error = "No Costs for " + line.getProduct().getName();
-							log.log(Level.WARNING, p_Error);
-							return null;
+							//ok if we have purchased zero cost item from vendor before
+							int count = DB.getSQLValue(null, "SELECT Count(*) FROM M_CostDetail WHERE M_Product_ID=? AND Processed='Y' AND Amt=0.00 AND Qty > 0 AND (C_OrderLine_ID > 0 OR C_InvoiceLine_ID > 0)", 
+									product.getM_Product_ID());
+							if (count > 0)
+							{
+								costs = BigDecimal.ZERO;
+							}
+							else
+							{
+								p_Error = "No Costs for " + line.getProduct().getName();
+								log.log(Level.WARNING, p_Error);
+								return null;
+							}
 						}
 						else	//	ignore service
 							continue;
@@ -381,6 +394,7 @@ public class Doc_InOut extends Doc
 				DocLine line = p_lines[i];
 				BigDecimal costs = null;
 				MProduct product = line.getProduct();
+				MOrderLine orderLine = null;
 				if (!isReversal(line))
 				{
 					//get costing method for product
@@ -393,7 +407,7 @@ public class Doc_InOut extends Doc
 						// Low - check if c_orderline_id is valid
 						if (C_OrderLine_ID > 0)
 						{
-						    MOrderLine orderLine = new MOrderLine (getCtx(), C_OrderLine_ID, getTrxName());
+						    orderLine = new MOrderLine (getCtx(), C_OrderLine_ID, getTrxName());
 						    // Elaine 2008/06/26
 						    C_Currency_ID = orderLine.getC_Currency_ID();
 						    //
@@ -418,8 +432,8 @@ public class Doc_InOut extends Doc
 						    costs = costs.multiply(line.getQty());
 	                    }
 	                    else
-	                    {
-	                    	p_Error = "Resubmit - No Costs for " + product.getName();
+	                    {	                    	
+	                    	p_Error = "Resubmit - No Costs for " + product.getName() + " (required order line)";
 	                        log.log(Level.WARNING, p_Error);
 	                        return null;
 	                    }
@@ -432,9 +446,17 @@ public class Doc_InOut extends Doc
 					
 					if (costs == null || costs.signum() == 0)
 					{
-						p_Error = "Resubmit - No Costs for " + product.getName();
-						log.log(Level.WARNING, p_Error);
-						return null;
+						//ok if purchase price is actually zero 
+						if (orderLine != null && orderLine.getPriceActual().signum() == 0)
+                    	{
+							costs = BigDecimal.ZERO;
+                    	}
+						else
+						{
+							p_Error = "Resubmit - No Costs for " + product.getName();
+							log.log(Level.WARNING, p_Error);
+							return null;
+						}
 					}
 				} 
 				else
@@ -525,7 +547,33 @@ public class Doc_InOut extends Doc
 				MProduct product = line.getProduct();
 				if (!isReversal(line))
 				{
-					costs = line.getProductCosts(as, line.getAD_Org_ID(), false);	//	current costs
+					MInOutLine ioLine = (MInOutLine) line.getPO();
+					I_M_RMALine rmaLine = ioLine.getM_RMALine();
+					costs = rmaLine != null ? rmaLine.getAmt() : BigDecimal.ZERO;
+					I_M_InOutLine originalInOutLine = rmaLine != null ? rmaLine.getM_InOutLine() : null;
+					if (originalInOutLine != null && originalInOutLine.getC_OrderLine_ID() > 0)
+					{
+						MOrderLine originalOrderLine = (MOrderLine) originalInOutLine.getC_OrderLine();
+						//	Goodwill: Correct included Tax
+				    	int C_Tax_ID = originalOrderLine.getC_Tax_ID();
+				    	if (originalOrderLine.isTaxIncluded() && C_Tax_ID != 0)
+						{
+							MTax tax = MTax.get(getCtx(), C_Tax_ID);
+							if (!tax.isZeroTax())
+							{
+								int stdPrecision = MCurrency.getStdPrecision(getCtx(), originalOrderLine.getC_Currency_ID());
+								BigDecimal costTax = tax.calculateTax(costs, true, stdPrecision);
+								if (log.isLoggable(Level.FINE)) log.fine("Costs=" + costs + " - Tax=" + costTax);
+								costs = costs.subtract(costTax);
+							}
+						}	//	correct included Tax
+				    	costs = costs.multiply(line.getQty());
+				    	costs = costs.negate();
+					}
+					else
+					{
+						costs = line.getProductCosts(as, line.getAD_Org_ID(), false);	//	current costs
+					}
 					if (costs == null || costs.signum() == 0)
 					{
 						p_Error = "Resubmit - No Costs for " + product.getName();
@@ -535,7 +583,8 @@ public class Doc_InOut extends Doc
 				}
 				else
 				{
-					costs = BigDecimal.ZERO;
+					//update below
+					costs = Env.ONE;
 				}
 				//  NotInvoicedReceipt				DR
 				// Elaine 2008/06/26
@@ -596,7 +645,15 @@ public class Doc_InOut extends Doc
 						return null;
 					}
 				}
+				
+				String costingError = createVendorRMACostDetail(as, line, costs);
+				if (!Util.isEmpty(costingError))
+				{
+					p_Error = costingError;
+					return null;
+				}
 			}
+						
 		}	//	Purchasing Return
 		else
 		{
@@ -613,4 +670,20 @@ public class Doc_InOut extends Doc
 		return m_Reversal_ID !=0 && line.getReversalLine_ID() != 0;
 	}
 
+	private String createVendorRMACostDetail(MAcctSchema as, DocLine line, BigDecimal costs)
+	{		
+		BigDecimal tQty = line.getQty();
+		BigDecimal tAmt = costs;
+		if (tAmt.signum() != tQty.signum())
+		{
+			tAmt = tAmt.negate();
+		}
+		if (!MCostDetail.createShipment(as, line.getAD_Org_ID(), line.getM_Product_ID(), 
+				line.getM_AttributeSetInstance_ID(), line.get_ID(), 0, tAmt, tQty, 
+				line.getDescription(), false, getTrxName()))
+		{
+			return "SaveError";
+		}
+		return "";
+	}
 }   //  Doc_InOut

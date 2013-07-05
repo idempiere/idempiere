@@ -32,4 +32,8 @@ Import-Package: javax.jms;version="1.1.0",
  org.restlet.service,
  org.restlet.util
 Export-Package: org.adempiere.server,
- org.compiere.server
+ org.compiere.ldap,
+ org.compiere.server,
+ org.idempiere.server.factory
+Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/acctprocessorfactory.xml, OSGI-INF/alertprocessorfactory.xml, OSGI-INF/ldapprocessorfactory.xml, OSGI-INF/requestprocessorfactory.xml, OSGI-INF/schedulerfactory.xml, OSGI-INF/workflowprocessorfactory.xml

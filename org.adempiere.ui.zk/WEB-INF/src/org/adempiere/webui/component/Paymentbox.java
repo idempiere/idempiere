@@ -21,7 +21,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hlayout;
 
 /**
  * 
@@ -52,20 +51,17 @@ public class Paymentbox extends Div {
 	}
 	
 	private void initComponents() {
-		Hlayout hlayout = new Hlayout();
-		this.appendChild(hlayout);
-		hlayout.setHflex("1");
 		combo = new Combobox();
-		hlayout.appendChild(combo);
-		combo.setHflex("1");
+		appendChild(combo);
+		combo.setHflex("0");
 
 		btn = new Button();
 		btn.setTabindex(-1);
 		btn.setSclass("editor-button");
 		btn.setHflex("0");
-		hlayout.appendChild(btn);
+		appendChild(btn);
 
-		LayoutUtils.addSclass("editor-box", this);
+		LayoutUtils.addSclass("payment-rule-editor", this);
 	}
 	
 	public Combobox getCombobox() {
@@ -81,19 +77,31 @@ public class Paymentbox extends Div {
 	}
 	
 	public void setEnabled(boolean isComboEnabled, boolean isBtnEnabled) {
-		combo.setReadonly(!isComboEnabled);
+		combo.setEnabled(isComboEnabled);
+		combo.setButtonVisible(isComboEnabled);
 		btn.setEnabled(isBtnEnabled);
 		btn.setVisible(isBtnEnabled);
 		if (isBtnEnabled) {
-			btn.setSclass("editor-button");
-			btn.setParent(this.getFirstChild());
+			if (btn.getParent() != combo.getParent())
+				btn.setParent(combo.getParent());
 		} else {
-			btn.detach();
+			if (btn.getParent() != null)
+				btn.detach();
+		}
+		if (isComboEnabled) {
+			LayoutUtils.removeSclass("editor-input-disd", combo);
+		} else {
+			LayoutUtils.addSclass("editor-input-disd", combo);
+		}
+		if (btn.getParent() == null) {
+			LayoutUtils.addSclass("no-button", combo);
+		} else {
+			LayoutUtils.removeSclass("no-button", combo);
 		}
 	}
 	
 	public boolean isEnabled() {
-		return !combo.isReadonly();
+		return combo.isEnabled();
 	}
 	
 	public boolean addEventListener(String evtnm, EventListener<?> listener) {
@@ -110,5 +118,5 @@ public class Paymentbox extends Div {
 	
 	public Button getButton() {
 		return btn;
-	}
+	}	
 }

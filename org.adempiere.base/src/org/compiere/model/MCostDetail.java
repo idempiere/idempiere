@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.acct.Doc;
 import org.compiere.model.X_M_CostHistory;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -51,6 +52,12 @@ public class MCostDetail extends X_M_CostDetail
 	 */
 	private static final long serialVersionUID = -448632684360931078L;
 
+	private static final String INOUTLINE_DOCBASETYPE_SQL =
+		    "SELECT c.DocBaseType From M_InOut io " +
+			"INNER JOIN M_InOutLine iol ON io.M_InOut_ID=iol.M_InOut_ID " +
+			"INNER JOIN C_DocType c ON io.C_DocType_ID=c.C_DocType_ID " +
+			"WHERE iol.M_InOutLine_ID=?";
+			
 	/**
 	 * 	Create New Order Cost Detail for Purchase Orders.
 	 * 	Called from Doc_MatchPO
@@ -678,6 +685,20 @@ public class MCostDetail extends X_M_CostDetail
 	}	//	isShipment
 	
 	/**
+	 * @return true if return to vendor
+	 */
+	public boolean isVendorRMA()
+	{
+		if (!isSOTrx() && getM_InOutLine_ID() > 0)
+		{
+			String docBaseType = DB.getSQLValueString((String)null, 
+					INOUTLINE_DOCBASETYPE_SQL, getM_InOutLine_ID());
+			return Doc.DOCTYPE_MatShipment.equals(docBaseType);
+		}
+		return false;
+	}
+	
+	/**
 	 * 	Is this a Delta Record (previously processed)?
 	 *	@return true if delta is not null
 	 */
@@ -1036,22 +1057,26 @@ public class MCostDetail extends X_M_CostDetail
 			|| getPP_Cost_Collector_ID() != 0)
 		{
 			boolean addition = qty.signum() > 0;
+			boolean isVendorRMA = isVendorRMA();
 			//
 			if (ce.isAverageInvoice())
 			{
-				if (addition)
+				if (!isVendorRMA)
 				{
-					cost.setWeightedAverage(amt, qty);
-					//shouldn't accumulate reversal of customer shipment qty and amt
-					if (isShipment())
+					if (addition)
 					{
-						cost.setCumulatedQty(history.getOldCQty());
-						cost.setCumulatedAmt(history.getOldCAmt());
+						cost.setWeightedAverage(amt, qty);
+						//shouldn't accumulate reversal of customer shipment qty and amt
+						if (isShipment())
+						{
+							cost.setCumulatedQty(history.getOldCQty());
+							cost.setCumulatedAmt(history.getOldCAmt());
+						}
 					}
+					else
+						cost.setCurrentQty(cost.getCurrentQty().add(qty));
+					if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - AverageInv - " + cost);
 				}
-				else
-					cost.setCurrentQty(cost.getCurrentQty().add(qty));
-				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - AverageInv - " + cost);
 			}
 			else if (ce.isAveragePO())
 			{
@@ -1059,51 +1084,63 @@ public class MCostDetail extends X_M_CostDetail
 				{
 					cost.setWeightedAverage(amt, qty);
 					//shouldn't accumulate reversal of customer shipment qty and amt
-					if (isShipment())
+					if (isShipment() && !isVendorRMA())
 					{
 						cost.setCumulatedQty(history.getOldCQty());
 						cost.setCumulatedAmt(history.getOldCAmt());
 					}
 				}
 				else
-					cost.setCurrentQty(cost.getCurrentQty().add(qty));
+				{
+					if (isVendorRMA)
+					{
+						cost.setWeightedAverage(amt, qty);
+					}
+					else
+					{
+						cost.setCurrentQty(cost.getCurrentQty().add(qty));
+					}
+				}
 				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - AveragePO - " + cost);
 			}
 			else if (ce.isFifo() || ce.isLifo())
 			{
-				if (addition)
+				if (!isVendorRMA)
 				{
-					//	Real ASI - costing level Org
-					MCostQueue cq = MCostQueue.get(product, getM_AttributeSetInstance_ID(), 
-						as, Org_ID, ce.getM_CostElement_ID(), get_TrxName());
-					cq.setCosts(amt, qty, precision);
-					cq.saveEx();
+					if (addition)
+					{
+						//	Real ASI - costing level Org
+						MCostQueue cq = MCostQueue.get(product, getM_AttributeSetInstance_ID(), 
+							as, Org_ID, ce.getM_CostElement_ID(), get_TrxName());
+						cq.setCosts(amt, qty, precision);
+						cq.saveEx();
+					}
+					else
+					{
+						//	Adjust Queue - costing level Org/ASI
+						MCostQueue.adjustQty(product, M_ASI_ID, 
+							as, Org_ID, ce, qty.negate(), get_TrxName());
+					}
+					//	Get Costs - costing level Org/ASI
+					MCostQueue[] cQueue = MCostQueue.getQueue(product, M_ASI_ID, 
+						as, Org_ID, ce, get_TrxName());
+					if (cQueue != null && cQueue.length > 0)
+						cost.setCurrentCostPrice(cQueue[0].getCurrentCostPrice());
+					cost.setCurrentQty(cost.getCurrentQty().add(qty));
+					if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - FiFo/Lifo - " + cost);
 				}
-				else
-				{
-					//	Adjust Queue - costing level Org/ASI
-					MCostQueue.adjustQty(product, M_ASI_ID, 
-						as, Org_ID, ce, qty.negate(), get_TrxName());
-				}
-				//	Get Costs - costing level Org/ASI
-				MCostQueue[] cQueue = MCostQueue.getQueue(product, M_ASI_ID, 
-					as, Org_ID, ce, get_TrxName());
-				if (cQueue != null && cQueue.length > 0)
-					cost.setCurrentCostPrice(cQueue[0].getCurrentCostPrice());
-				cost.setCurrentQty(cost.getCurrentQty().add(qty));
-				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - FiFo/Lifo - " + cost);
 			}
-			else if (ce.isLastInvoice())
+			else if (ce.isLastInvoice() && !isVendorRMA)
 			{
 				cost.setCurrentQty(cost.getCurrentQty().add(qty));
 				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - LastInv - " + cost);
 			}
-			else if (ce.isLastPOPrice())
+			else if (ce.isLastPOPrice() && !isVendorRMA)
 			{
 				cost.setCurrentQty(cost.getCurrentQty().add(qty));
 				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - LastPO - " + cost);
 			}
-			else if (ce.isStandardCosting())
+			else if (ce.isStandardCosting() && !isVendorRMA)
 			{
 				if (addition)
 				{
@@ -1123,7 +1160,7 @@ public class MCostDetail extends X_M_CostDetail
 				}
 				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - Standard - " + cost);
 			}
-			else if (ce.isUserDefined())
+			else if (ce.isUserDefined() && !isVendorRMA)
 			{
 				//	Interface
 				if (addition)

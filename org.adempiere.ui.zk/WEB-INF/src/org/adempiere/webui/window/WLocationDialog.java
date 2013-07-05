@@ -190,6 +190,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		initLocation();
 		//               
 		this.setWidth("350px");
+		this.setHeight("360px"); // required fixed height for ZK to auto adjust the position based on available space
 		this.setSclass("popup-dialog");
 		this.setClosable(true);
 		this.setBorder("normal");
@@ -336,7 +337,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
 		borderlayout.setHflex("1");
-		borderlayout.setVflex("min");
+		borderlayout.setVflex("1");
 		
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");

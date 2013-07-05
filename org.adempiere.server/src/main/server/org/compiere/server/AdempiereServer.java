@@ -20,22 +20,15 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.ldap.LdapProcessor;
 import org.compiere.model.AdempiereProcessor;
 import org.compiere.model.AdempiereProcessor2;
 import org.compiere.model.AdempiereProcessorLog;
-import org.compiere.model.MAcctProcessor;
-import org.compiere.model.MAlertProcessor;
 import org.compiere.model.MClient;
-import org.compiere.model.MLdapProcessor;
-import org.compiere.model.MRequestProcessor;
 import org.compiere.model.MSchedule;
-import org.compiere.model.MScheduler;
 import org.compiere.model.MSystem;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
-import org.compiere.wf.MWorkflowProcessor;
 
 /**
  *	Adempiere Server Base
@@ -45,31 +38,6 @@ import org.compiere.wf.MWorkflowProcessor;
  */
 public abstract class AdempiereServer implements Runnable 
 {
-	/**
-	 * 	Create New Server Thead
-	 *	@param model model
-	 *	@return server tread or null
-	 */
-	public static AdempiereServer create (AdempiereProcessor model)
-	{
-		if (! isOKtoRunOnIP(model))
-			return null;
-		if (model instanceof MRequestProcessor)
-			return new RequestProcessor ((MRequestProcessor)model);
-		if (model instanceof MWorkflowProcessor)
-			return new WorkflowProcessor ((MWorkflowProcessor)model);
-		if (model instanceof MAcctProcessor)
-			return new AcctProcessor ((MAcctProcessor)model);
-		if (model instanceof MAlertProcessor)
-			return new AlertProcessor ((MAlertProcessor)model);
-		if (model instanceof MScheduler)
-			return new Scheduler ((MScheduler)model);
-		if (model instanceof MLdapProcessor)
-			return new LdapProcessor((MLdapProcessor)model);
-		//
-		throw new IllegalArgumentException("Unknown Processor");
-	}	//	 create
-
 
 	/**************************************************************************
 	 * 	Server Base Class

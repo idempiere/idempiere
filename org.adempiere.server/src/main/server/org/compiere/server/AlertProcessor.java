@@ -72,13 +72,13 @@ public class AlertProcessor extends AdempiereServer
 	}	//	AlertProcessor
 
 	/**	The Concrete Model			*/
-	private MAlertProcessor		m_model = null;
+	protected MAlertProcessor		m_model = null;
 	/**	Last Summary				*/
-	private StringBuffer 		m_summary = new StringBuffer();
+	protected StringBuffer 		m_summary = new StringBuffer();
 	/**	Last Error Msg				*/
-	private StringBuffer 		m_errors = new StringBuffer();
+	protected StringBuffer 		m_errors = new StringBuffer();
 	/** Client info					*/
-	private MClient 			m_client = null;
+	protected MClient 			m_client = null;
 
 	/**
 	 * 	Work
@@ -119,7 +119,7 @@ public class AlertProcessor extends AdempiereServer
 	 *	@param alert alert
 	 *	@return true if processed
 	 */
-	private boolean processAlert (MAlert alert)
+	protected boolean processAlert (MAlert alert)
 	{
 		if (!alert.isValid())
 			return false;
@@ -240,7 +240,7 @@ public class AlertProcessor extends AdempiereServer
 	 * @param attachments 
 	 * @return how many email were sent
 	 */
-	private int notifyUsers(Collection<Integer> users, String subject, String message, Collection<File> attachments)
+	protected int notifyUsers(Collection<Integer> users, String subject, String message, Collection<File> attachments)
 	{
 		int countMail = 0;
 		for (int user_id : users) {
@@ -289,7 +289,7 @@ public class AlertProcessor extends AdempiereServer
 	 * @return data
 	 * @throws Exception
 	 */
-	private ArrayList<ArrayList<Object>> getData (String sql, String trxName) throws Exception
+	protected ArrayList<ArrayList<Object>> getData (String sql, String trxName) throws Exception
 	{
 		ArrayList<ArrayList<Object>> data = new ArrayList<ArrayList<Object>>();
 		PreparedStatement pstmt = null;
@@ -351,7 +351,7 @@ public class AlertProcessor extends AdempiereServer
 	 * @return list of rows & values
 	 * @throws Exception
 	 */
-	private String getPlainTextReport(MAlertRule rule, String sql, String trxName, Collection<File> attachments)
+	protected String getPlainTextReport(MAlertRule rule, String sql, String trxName, Collection<File> attachments)
 	throws Exception
 	{
 		StringBuilder result = new StringBuilder();
@@ -407,7 +407,7 @@ public class AlertProcessor extends AdempiereServer
 	 * @return summary message to be added into mail content
 	 * @throws Exception
 	 */
-	private String getExcelReport(MAlertRule rule, String sql, String trxName, Collection<File> attachments)
+	protected String getExcelReport(MAlertRule rule, String sql, String trxName, Collection<File> attachments)
 	throws Exception
 	{
 		ArrayList<ArrayList<Object>> data = getData(sql, trxName);

@@ -9,14 +9,13 @@ import java.util.Properties;
 
 import org.adempiere.server.IServerFactory;
 import org.compiere.model.MIMPProcessor;
-import org.compiere.server.AdempiereServer;
 import org.compiere.server.ReplicationProcessor;
 
 /**
  * @author hengsin
  *
  */
-public class ReplicationServerFactory implements IServerFactory {
+public class ReplicationServerFactory implements IServerFactory<ReplicationProcessor, MIMPProcessor> {
 
 	/**
 	 * default constructor 
@@ -28,17 +27,21 @@ public class ReplicationServerFactory implements IServerFactory {
 	 * @see org.adempiere.server.IServerFactory#create()
 	 */
 	@Override
-	public AdempiereServer[] create(Properties ctx) {
-		List<AdempiereServer> list = new ArrayList<AdempiereServer>();
+	public ReplicationProcessor[] create(Properties ctx) {
+		List<ReplicationProcessor> list = new ArrayList<ReplicationProcessor>();
 		MIMPProcessor[] importModels = MIMPProcessor.getActive(ctx);
-		for (int i = 0; i < importModels.length; i++)
+		for (MIMPProcessor lp : importModels)
 		{
-			MIMPProcessor lp = importModels[i];
-			AdempiereServer server = new ReplicationProcessor(lp);
+			ReplicationProcessor server = new ReplicationProcessor(lp);
 			list.add(server);
 		}
-		AdempiereServer[] servers = list.toArray(new AdempiereServer[0]);
+		ReplicationProcessor[] servers = list.toArray(new ReplicationProcessor[0]);
 		return servers;
+	}
+
+	@Override
+	public Class<MIMPProcessor> getProcessorClass() {
+		return MIMPProcessor.class;
 	}
 
 }

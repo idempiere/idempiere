@@ -81,7 +81,7 @@ public class AdempiereActivator implements BundleActivator, ServiceTrackerCustom
 			
 			String where = "Name=? AND PK_Version LIKE ?";
 			Query q = new Query(Env.getCtx(), X_AD_Package_Imp.Table_Name,
-					where.toString(), trxName);
+					where.toString(), null);
 			q.setParameters(new Object[] { getName(), version + "%" });
 			X_AD_Package_Imp pkg = q.first();
 			if (pkg == null) {
