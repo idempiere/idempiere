@@ -41,6 +41,7 @@ import org.compiere.acct.Fact;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Util;
 import org.osgi.service.event.Event;
 
 /**
@@ -79,7 +80,7 @@ public class ModelValidationEngine
 	/** Engine Singleton				*/
 	private static ModelValidationEngine s_engine = null;
 	/* flag to indicate a missing model validation class */
-	private static String missingModelValidationMessage = null;
+	private static String missingModelValidationMessage = "";
 
 
 	/**************************************************************************
@@ -159,7 +160,7 @@ public class ModelValidationEngine
 
 			if (validator == null)
 			{
-				missingModelValidationMessage = missingModelValidationMessage +
+				missingModelValidationMessage = missingModelValidationMessage + " Missing class " + className +
 						 (client != null ? (" on client " + client.getName()) : " global") + '\n';
 			}
 			else
@@ -273,7 +274,7 @@ public class ModelValidationEngine
 		if (AD_User_ID == 0 && AD_Role_ID == 0)
 			; // don't validate for user system on role system
 		else
-			if (missingModelValidationMessage != null) {
+			if (! Util.isEmpty(missingModelValidationMessage)) {
 				MSystem system = MSystem.get(Env.getCtx());
 				if (system.isFailOnMissingModelValidator())
 					return missingModelValidationMessage;
