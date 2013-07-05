@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
 
@@ -30,7 +31,7 @@ public class MReplicationRun extends X_AD_Replication_Run
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2619966943083677072L;
+	private static final long serialVersionUID = 7609847179225634980L;
 
 	/**
 	 * 	Create new Run
@@ -45,6 +46,11 @@ public class MReplicationRun extends X_AD_Replication_Run
 		setName (dateRun.toString());
 		super.setIsReplicated (false);
 	}	//	MReplicationRun
+
+	public MReplicationRun (Properties ctx, ResultSet rs, String trxName)
+	{
+		super (ctx, rs, trxName);
+	}
 
 	/**
 	 * 	Set Replication Flag

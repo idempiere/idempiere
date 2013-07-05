@@ -231,7 +231,7 @@ public class CustomizeGridViewPanel extends Panel
 		Div div = new Div();
 		div.setStyle("margin-top:5px");
 		div.appendChild(chkSaveWidth);
-		chkSaveWidth.setLabel("Save Column Width");
+		chkSaveWidth.setLabel(Msg.getMsg(Env.getCtx(), "SaveColumnWidth"));
 		centerPanel.appendChild(div);
 		
 		center.appendChild(centerPanel);
@@ -296,14 +296,20 @@ public class CustomizeGridViewPanel extends Panel
 	{
 		yesModel.removeAllElements();
 		noModel.removeAllElements();		
-	
-		String sql = "SELECT t.AD_Field_ID,t.Name,t.SeqNoGrid,AD_Client_ID, AD_Org_ID FROM AD_Field t WHERE t.AD_Tab_ID=? AND t.IsDisplayedGrid ='Y' ORDER BY 3,2";
+		boolean baseLanguage = Env.isBaseLanguage(Env.getCtx(), "AD_Field");
+		String sql;
+		if (baseLanguage)
+			sql = "SELECT t.AD_Field_ID,t.Name,t.SeqNoGrid,AD_Client_ID, AD_Org_ID FROM AD_Field t WHERE t.AD_Tab_ID=? AND t.IsDisplayedGrid ='Y' AND t.IsActive='Y' ORDER BY 3,2";
+		else
+			sql = "SELECT t.AD_Field_ID,trl.Name,t.SeqNoGrid,t.AD_Client_ID, t.AD_Org_ID FROM AD_Field t JOIN AD_Field_Trl trl ON (t.AD_Field_ID = trl.AD_Field_ID)"
+					+ " WHERE t.AD_Tab_ID=? AND t.IsDisplayedGrid ='Y' AND t.IsActive='Y' AND trl.AD_Language=? ORDER BY 3,2";
 		PreparedStatement  pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_AD_Tab_ID);
+			pstmt.setString(2, Env.getAD_Language(Env.getCtx()));
 			rs = pstmt.executeQuery();
 
 			HashMap<Integer, ListElement> curTabSel = new HashMap<Integer, CustomizeGridViewPanel.ListElement>();

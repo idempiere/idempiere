@@ -37,7 +37,7 @@ public class MReportColumnSet extends X_PA_ReportColumnSet
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8636368829160472883L;
+	private static final long serialVersionUID = -3496781398287709753L;
 
 	/**
 	 * 	Constructor
@@ -54,6 +54,11 @@ public class MReportColumnSet extends X_PA_ReportColumnSet
 		else
 			loadColumns();
 	}	//	MReportColumnSet
+	
+	public MReportColumnSet (Properties ctx, ResultSet rs, String trxName)
+	{
+		super (ctx, rs, trxName);
+	}
 
 	/** Contained Columns		*/
 	private MReportColumn[]	m_columns = null;
