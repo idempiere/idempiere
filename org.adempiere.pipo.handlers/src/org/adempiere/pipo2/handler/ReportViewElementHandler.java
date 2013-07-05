@@ -57,8 +57,11 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 		
 		X_AD_ReportView mReportview = findPO(ctx, element);
 		if (mReportview == null) {
-			String name = getStringValue(element, "Name");
-			int id = findIdByName(ctx, "AD_ReportView", name);
+			int id = 0;
+			if (!hasUUIDKey(ctx, element)) {
+				String name = getStringValue(element, "Name");
+				id = findIdByName(ctx, "AD_ReportView", name);
+			}
 			mReportview = new X_AD_ReportView(ctx.ctx, id, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, mReportview, element, this);

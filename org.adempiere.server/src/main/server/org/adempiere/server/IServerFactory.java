@@ -15,6 +15,7 @@ package org.adempiere.server;
 
 import java.util.Properties;
 
+import org.compiere.model.AdempiereProcessor;
 import org.compiere.server.AdempiereServer;
 
 /**
@@ -22,8 +23,18 @@ import org.compiere.server.AdempiereServer;
  * @author hengsin
  *
  */
-public interface IServerFactory {
+public interface IServerFactory<S extends AdempiereServer, M extends AdempiereProcessor> {
 	
-	// Class implementing this method must take into account if the server can be ran on this IP
-	public AdempiereServer[] create (Properties ctx);
+	/**
+	 * @param ctx
+	 * @return list of AdempiereServer
+	 */
+	public S[] create (Properties ctx);
+	
+	/**
+	 * The Adempiere Server Manager will used this to avoid running duplicate server for the same 
+	 * AdempiereProcessor model.
+	 * @return Fully qualified AdempiereProcessor model class name
+	 */
+	public Class<M> getProcessorClass();
 }

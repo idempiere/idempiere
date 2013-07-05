@@ -60,10 +60,12 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 			Element orgElement = element.properties.get("AD_Org_ID");
 			int orgId = ReferenceUtils.resolveReference(ctx.ctx, orgElement, getTrxName(ctx));
 
-			Query query = new Query(ctx.ctx, "AD_Role_OrgAccess", "AD_Role_ID=? and AD_Org_ID=?", getTrxName(ctx));
-			po = query.setParameters(new Object[]{roleId, orgId})
-									.setClient_ID()
-									.<X_AD_Role_OrgAccess>first();
+			if (!hasUUIDKey(ctx, element)) {
+				Query query = new Query(ctx.ctx, "AD_Role_OrgAccess", "AD_Role_ID=? and AD_Org_ID=?", getTrxName(ctx));
+				po = query.setParameters(new Object[]{roleId, orgId})
+										.setClient_ID()
+										.<X_AD_Role_OrgAccess>first();
+			}
 
 			if (po == null) {
 				po = new X_AD_Role_OrgAccess(ctx.ctx, 0, getTrxName(ctx));

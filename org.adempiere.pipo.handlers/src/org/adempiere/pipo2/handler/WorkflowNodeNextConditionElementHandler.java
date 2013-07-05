@@ -78,9 +78,12 @@ public class WorkflowNodeNextConditionElementHandler extends
 					return;
 				}
 
-				int seqNo = getIntValue(element, "SeqNo");
-				String sql = "SELECT AD_WF_NextCondition_ID FROM AD_WF_NextCondition WHERE AD_WF_NodeNext_ID =? AND SeqNo=?";
-				int id = DB.getSQLValue(getTrxName(ctx), sql, new Object[] {wfNodeNextId, seqNo});
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					int seqNo = getIntValue(element, "SeqNo");
+					String sql = "SELECT AD_WF_NextCondition_ID FROM AD_WF_NextCondition WHERE AD_WF_NodeNext_ID =? AND SeqNo=?";
+					id = DB.getSQLValue(getTrxName(ctx), sql, new Object[] {wfNodeNextId, seqNo});
+				}
 
 				mWFNodeNextCondition = new MWFNextCondition(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mWFNodeNextCondition.setAD_WF_NodeNext_ID(wfNodeNextId);

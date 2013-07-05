@@ -46,9 +46,12 @@ public class PrintPaperElementHandler extends AbstractElementHandler {
 
 		if (printPaper == null) {
 			String printPaperName = getStringValue(element, "Name", excludes);
-			int id = findIdByName(ctx, "AD_PrintPaper", printPaperName);
-	
+			int id = 0;
+			if (!hasUUIDKey(ctx, element)) {
+				id = findIdByName(ctx, "AD_PrintPaper", printPaperName);
+			}
 			printPaper = new X_AD_PrintPaper(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
+			printPaper.setName(printPaperName);
 		}
 		PoFiller filler = new PoFiller(ctx, printPaper, element, this);
 

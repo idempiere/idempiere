@@ -64,8 +64,11 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler {
 				return;
 			}
 
-			String name = getStringValue(element, "Name");
-			int id = findIdByNameAndParentId(ctx, "AD_PrintFormatItem", name, "AD_PrintFormat", parentId);
+			int id = 0;
+			if (!hasUUIDKey(ctx, element)) {
+				String name = getStringValue(element, "Name");
+				id = findIdByNameAndParentId(ctx, "AD_PrintFormatItem", name, "AD_PrintFormat", parentId);
+			}
 			mPrintFormatItem = new X_AD_PrintFormatItem(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			mPrintFormatItem.setAD_PrintFormat_ID(parentId);
 			excludes.add(I_AD_PrintFormatItem.COLUMNNAME_AD_PrintFormat_ID);

@@ -67,8 +67,10 @@ public class TaskAccessElementHandler extends AbstractElementHandler {
 				return;
 			}
 
-			Query query = new Query(ctx.ctx, "AD_Task_Access", "AD_Role_ID=? and AD_Task_ID=?", getTrxName(ctx));
-			po = query.setParameters(new Object[]{roleid, taskid}).first();
+			if (!hasUUIDKey(ctx, element)) {
+				Query query = new Query(ctx.ctx, "AD_Task_Access", "AD_Role_ID=? and AD_Task_ID=?", getTrxName(ctx));
+				po = query.setParameters(new Object[]{roleid, taskid}).first();
+			}
 			if (po == null){
 				po = new X_AD_Task_Access(ctx.ctx, 0, getTrxName(ctx));
 				po.setAD_Role_ID(roleid);

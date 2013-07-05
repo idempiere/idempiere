@@ -159,7 +159,7 @@ public class ZkFixture extends SpiderFixture {
 		Widget widget = new Widget(locator + " @textbox");
 		WebElement element = widget.findElement(webDriver);
 		element.click();
-		widget.execute(webDriver, "setValue('"+value+"')");
+		widget.execute(webDriver, "setValue(\""+value+"\")");
 		widget.execute(webDriver, "fireOnChange()");
 	}
 	

@@ -69,7 +69,10 @@ public class RoleElementHandler extends AbstractElementHandler {
 		MRole mRole = findPO(ctx, element);
 		if (mRole == null) {
 			String name = getStringValue(element, "Name", excludes);
-			int id = findIdByName(ctx, "AD_Role", name);
+			int id = 0;
+			if (!hasUUIDKey(ctx, element)) {
+				id = findIdByName(ctx, "AD_Role", name);
+			}
 			mRole = new MRole(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			mRole.setName(name);
 		}

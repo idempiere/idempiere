@@ -18,6 +18,7 @@ package org.compiere.print;
 
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.sql.ResultSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -39,7 +40,7 @@ public class MPrintFont extends X_AD_PrintFont
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4721840631004326810L;
+	private static final long serialVersionUID = -2986160498367260541L;
 
 	/**
 	 *	Constructor
@@ -53,6 +54,11 @@ public class MPrintFont extends X_AD_PrintFont
 		if (AD_PrintFont_ID == 0)
 			setIsDefault(false);
 	}	//	MPrintFont
+	
+	public MPrintFont(Properties ctx, ResultSet rs, String trxName)
+	{
+		super (ctx, rs, trxName);
+	}
 
 	/** Font cached					*/
 	private Font 	m_cacheFont = null;

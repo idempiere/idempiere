@@ -574,7 +574,25 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	}
     	return po;
     }
+    
+    protected boolean hasUUIDKey(PIPOContext ctx, Element element) {
+    	String tableName = element.getElementValue();
+    	String uuidColumn = PO.getUUIDColumnName(tableName);
+    	String uuid = element.properties.get(uuidColumn).contents.toString();
+    	return (uuid != null && uuid.trim().length() == 36);
+    }
 
+    protected String getUUIDKey(PIPOContext ctx, Element element) {
+    	String tableName = element.getElementValue();
+    	String uuidColumn = PO.getUUIDColumnName(tableName);
+    	if (element.properties.containsKey(uuidColumn)) {
+    		String uuid = element.properties.get(uuidColumn).contents.toString();
+    		if (uuid != null && uuid.trim().length() == 36)
+    			return uuid.trim();
+    	}
+    	return null;
+    }
+    	
     /**
      *
      * @param atts

@@ -290,6 +290,8 @@ public class MCost extends X_M_Cost
 			if (retValue == null || retValue.signum() == 0)
 				retValue = getLastPOPrice(product, M_ASI_ID, Org_ID, as.getC_Currency_ID());
 		}
+		else if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
+			;
 		else if (MCostElement.COSTINGMETHOD_UserDefined.equals(costingMethod))
 			;
 		else
@@ -1480,9 +1482,9 @@ public class MCost extends X_M_Cost
 	public void setWeightedAverage (BigDecimal amt, BigDecimal qty)
 	{
 		//amount must follow the sign of qty
-		if (amt.signum() != 0 && amt.signum() != qty.signum())
+		if (amt.signum() != 0 && qty.signum() != 0 && amt.signum() != qty.signum())
 		{
-			amt = amt.multiply(BigDecimal.valueOf(-1.00d));
+			amt = amt.negate();
 		}
 		
 		if (getCurrentQty().add(qty).signum() < 0)

@@ -74,10 +74,12 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 				}
 
 				String workflowNodeValue = getStringValue(element, "Value", excludes);
-				StringBuilder sqlB = new StringBuilder(
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					StringBuilder sqlB = new StringBuilder(
 						"SELECT AD_WF_Node_ID FROM AD_WF_Node WHERE AD_Workflow_ID=? and Value =?");
-
-				int id = DB.getSQLValue(getTrxName(ctx), sqlB.toString(), workflowId, workflowNodeValue);
+					id = DB.getSQLValue(getTrxName(ctx), sqlB.toString(), workflowId, workflowNodeValue);
+				}
 				mWFNode = new MWFNode(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 				mWFNode.setValue(workflowNodeValue);
 				mWFNode.setAD_Workflow_ID(workflowId);

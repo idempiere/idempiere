@@ -55,8 +55,11 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 		
 		X_AD_PrintFormat mPrintFormat = findPO(ctx, element);
 		if (mPrintFormat == null) {
-			String name = getStringValue(element, "Name");
-			int id = findIdByColumn(ctx, "AD_PrintFormat", "Name", name);
+			int id = 0;
+			if (!hasUUIDKey(ctx, element)) {
+				String name = getStringValue(element, "Name");
+				id = findIdByColumn(ctx, "AD_PrintFormat", "Name", name);
+			}
 			mPrintFormat = new X_AD_PrintFormat(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, mPrintFormat, element, this);

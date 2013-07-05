@@ -91,6 +91,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		Panelchildren recentItemsContent = new Panelchildren();
 		panel.appendChild(recentItemsContent);
 		bxRecentItems = new Vbox();
+		bxRecentItems.setHflex("1");
 		this.setSclass("recentitems-box");
 		recentItemsContent.appendChild(bxRecentItems);
 		createRecentItemsPanel();
@@ -238,6 +239,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 			btnrecentItem.addEventListener(Events.ON_CLICK, this);
 			btnrecentItem.addEventListener(Events.ON_DROP, this);
 			btnrecentItem.setSclass("menu-href");
+			btnrecentItem.setHflex("1");
 			
 			riShown++;
 			if (riShown >= maxri)

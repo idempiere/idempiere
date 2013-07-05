@@ -58,16 +58,18 @@ public class TableElementHandler extends AbstractElementHandler {
 
 			MTable mTable = findPO(ctx, element);
 			if (mTable == null) {
+				int id = 0;
 				String tableName = getStringValue(element, "TableName", excludes);
-
-				int id = packIn.getTableId(tableName);
-				if (id <= 0) {
-					id = findIdByColumn(ctx, "AD_Table", "TableName", tableName);
-					if (id > 0)
-						packIn.addTable(tableName, id);
-				}
-				if (id > 0 && isTableProcess(ctx, id)) {
-					return;
+				if (!hasUUIDKey(ctx, element)) {
+					id = packIn.getTableId(tableName);
+					if (id <= 0) {
+						id = findIdByColumn(ctx, "AD_Table", "TableName", tableName);
+						if (id > 0)
+							packIn.addTable(tableName, id);
+					}
+					if (id > 0 && isTableProcess(ctx, id)) {
+						return;
+					}
 				}
 
 				mTable = new MTable(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));

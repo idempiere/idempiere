@@ -37,7 +37,7 @@ public class MReportLineSet extends X_PA_ReportLineSet
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2540937629148624046L;
+	private static final long serialVersionUID = 6882950634644885097L;
 
 	/**
 	 * 	Constructor
@@ -54,6 +54,11 @@ public class MReportLineSet extends X_PA_ReportLineSet
 		else
 			loadLines();
 	}	//	MReportLineSet
+	
+	public MReportLineSet (Properties ctx, ResultSet rs, String trxName)
+	{
+		super (ctx, rs, trxName);
+	}
 
 	/**	Contained Lines			*/
 	private MReportLine[]	m_lines = null;

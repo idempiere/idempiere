@@ -2,19 +2,23 @@ This test creates a new tenant in the database.
 
 !include TestLoginSystem
 
-!|Run Process|
-|*ProcessValue*       |InitialClientSetup                                          |
-|ClientName               |Prueba                                                      |
-|OrgName                  |Prueba                                                      |
-|AdminUserName            |PruebaAdmin                                                 |
-|NormalUserName           |PruebaUser                                                  |
-|C_Currency_ID            |230                                                         |
-|C_Country_ID             |156                                                         |
-|CityName                 |Bogotá                                                      |
-|IsUseBPDimension         |Y                                                           |
-|IsUseProductDimension    |Y                                                           |
-|IsUseProjectDimension    |Y                                                           |
-|IsUseCampaignDimension   |N                                                           |
-|IsUseSalesRegionDimension|N                                                           |
-|CoAFile                  |/home/carlos/hgAdempiere/adempiere361/data/import/AccountingUS.csv|
-|*Run*                |                                                            |
+!|Set Variable                                  |
+|@random_string@|@random_string(,,6)|
+
+
+!|Run Process                                                                                           |
+|*ProcessValue*           |InitialClientSetup                                                           |
+|ClientName               |TestClient @random_string@                                                   |
+|OrgName                  |TestOrg @random_string@                                                      |
+|AdminUserName            |@random_string@Admin                                                         |
+|NormalUserName           |@random_string@User                                                          |
+|C_Currency_ID            |230                                                                          |
+|C_Country_ID             |156                                                                          |
+|CityName                 |Bogotá                                                                       |
+|IsUseBPDimension         |Y                                                                            |
+|IsUseProductDimension    |Y                                                                            |
+|IsUseProjectDimension    |Y                                                                            |
+|IsUseCampaignDimension   |N                                                                            |
+|IsUseSalesRegionDimension|N                                                                            |
+|CoAFile                  |${fitnesse_home}/../org.adempiere.server-feature/data/import/AccountingUS.csv|
+|*Run*                    |                                                                             |

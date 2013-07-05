@@ -39,7 +39,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3136835982476528825L;
+	private static final long serialVersionUID = 8722189788479132158L;
 
 	public MPaymentTransaction(Properties ctx, int C_PaymentTransaction_ID, String trxName) {
 		super(ctx, C_PaymentTransaction_ID, trxName);
@@ -656,4 +656,17 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 
 		return MPaymentTransaction.getAllIDs(Table_Name, whereClause.toString(), trxName);
 	}
+	
+	/**
+	 * 	String Representation
+	*	@return info
+	*/
+	public String toString ()
+	{
+		StringBuilder sb = new StringBuilder ("MPaymentTransaction[");
+		sb.append(get_ID()).append("-")
+			.append(",Receipt=").append(isReceipt())
+			.append(",PayAmt=").append(getPayAmt());
+		return sb.toString ();
+	}	//	toString
 }

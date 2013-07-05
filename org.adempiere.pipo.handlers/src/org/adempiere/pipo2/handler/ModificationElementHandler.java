@@ -52,7 +52,10 @@ public class ModificationElementHandler extends AbstractElementHandler{
 
 			X_AD_Modification modification = findPO(ctx, element);
 			if (modification == null) {
-				int id = findIdByColumn(ctx, X_AD_Modification.Table_Name, X_AD_Modification.COLUMNNAME_Name, name, /*ignorecase=*/true);
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					id = findIdByColumn(ctx, X_AD_Modification.Table_Name, X_AD_Modification.COLUMNNAME_Name, name, /*ignorecase=*/true);
+				}
 				modification = new X_AD_Modification(ctx.ctx, id, getTrxName(ctx));
 			}
 			List<String> excludes = defaultExcludeList(X_AD_Modification.Table_Name);

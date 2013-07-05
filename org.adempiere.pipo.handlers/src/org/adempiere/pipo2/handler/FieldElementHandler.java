@@ -100,11 +100,14 @@ public class FieldElementHandler extends AbstractElementHandler {
 			MField mField = findPO(ctx, element);
 			if (mField == null)
 			{
-				StringBuffer sqlB = new StringBuffer(
-						"select AD_Field_ID from AD_Field where AD_Column_ID = ")
-						.append(AD_Column_ID)
-						.append(" and AD_Tab_ID = ?");
-				int id = DB.getSQLValue(getTrxName(ctx), sqlB.toString(), tabid);
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					StringBuffer sqlB = new StringBuffer(
+							"select AD_Field_ID from AD_Field where AD_Column_ID = ")
+							.append(AD_Column_ID)
+							.append(" and AD_Tab_ID = ?");
+					id = DB.getSQLValue(getTrxName(ctx), sqlB.toString(), tabid);
+				}
 				mField = new MField(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 				if (mField.is_new()) {
 					mField.setAD_Column_ID(AD_Column_ID);

@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
 
@@ -30,7 +31,7 @@ public class MReplication extends X_AD_Replication
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7363193371925559167L;
+	private static final long serialVersionUID = -562186299848949607L;
 
 	/**
 	 * 	Load Constructor
@@ -41,6 +42,11 @@ public class MReplication extends X_AD_Replication
 	{
 		super (ctx, AD_Replication_ID, trxName);
 	}	//	MReplication
+	
+	public MReplication (Properties ctx, ResultSet rs, String trxName)
+	{
+		super (ctx, rs, trxName);
+	}
 
 	/**
 	 *	Public Access

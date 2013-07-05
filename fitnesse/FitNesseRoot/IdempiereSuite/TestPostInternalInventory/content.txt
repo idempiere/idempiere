@@ -4,43 +4,49 @@ https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2713724&group_id=17
 
 !include -c TestLoginGardenAdmin
 
+!|Set Variable                                                                                                      |
+|@InventoryLevelBefore@       |@SQL=select sum(qtyonhand) from m_storage where m_product_id=141 and m_locator_id=101|
+|@ExpectedInventoryLevelAfter@|@SQL=SELECT @InventoryLevelBefore@-2 FROM dual                                       |
+
 Create the internal use document
 
-!|Create Record|
-|*Table*|M_Inventory          |
+!|Create Record                      |
+|*Table*       |M_Inventory          |
 |ad_org_id     |11                   |
-|c_doctype_id  |144                  |
+|c_doctype_id  |200000               |
 |m_warehouse_id|103                  |
-|movementdate  |2009-03-26 00:00:00.0|
-|*Save*|         |
+|movementdate  |2013-06-26 00:00:00.0|
+|*Save*        |                     |
 
 Create internal use line
 
-!|Create Record|
-|*Table*|M_InventoryLine                                                                                                  |
-|M_Inventory_ID|@M_Inventory.M_Inventory_ID@                                                                                     |
-|ad_org_id     |@M_Inventory.AD_Org_ID@                                                                                          |
-|m_locator_id  |101                                                                                                              |
-|m_product_id  |141                                                                                                              |
-|c_charge_id   |101                                                                                                              |
-|qtyinternaluse|@SQL=select sum(qtyonhand) from m_storage where m_product_id=141 and m_locator_id=101 and m_attributesetinstance_id=0|
-|qtybook|@SQL=select sum(qtyonhand) from m_storage where m_product_id=141 and m_locator_id=101 and m_attributesetinstance_id=0|
-|*Save*|         |
+!|Create Record                             |
+|*Table*       |M_InventoryLine             |
+|M_Inventory_ID|@M_Inventory.M_Inventory_ID@|
+|ad_org_id     |@M_Inventory.AD_Org_ID@     |
+|m_locator_id  |101                         |
+|m_product_id  |141                         |
+|c_charge_id   |101                         |
+|qtyinternaluse|2                           |
+|*Save*        |                            |
 
 Complete the internal use
 
-!|Run Process|
-|*ProcessValue*|M_Inventory Process     |
+!|Run Process                               |
+|*ProcessValue*|M_Inventory Process         |
 |*RecordID*    |@M_Inventory.M_Inventory_ID@|
-|*DocAction*   |CO                  |
-|*Run*|                    |
+|*DocAction*   |CO                          |
+|*Run*         |                            |
+
+!|Assert Variable                                                                                                   |
+|@ExpectedInventoryLevelAfter@|@SQL=select sum(qtyonhand) from m_storage where m_product_id=141 and m_locator_id=101|
 
 Post
 
-!|Set DocAction|
-|*Table* |M_Inventory|
-|M_Inventory_ID|@M_Inventory.M_Inventory_ID@                                                                                     |
-|docAction   |PO       |
-|*Save*|         |
+!|Set DocAction                             |
+|*Table*       |M_Inventory                 |
+|M_Inventory_ID|@M_Inventory.M_Inventory_ID@|
+|docAction     |PO                          |
+|*Save*        |                            |
 
 Check the postings

@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.util.ProcessUtil;
 import org.compiere.model.Lookup;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstanceLog;
@@ -172,7 +173,14 @@ public class RunProcess extends TableFixture {
 				if (recordID >0)
 					pi.setRecord_ID(recordID);
 				boolean processOK = false;
-				boolean jasperreport = (process != null && process.getClassname()!=null && process.getClassname().indexOf( "net.sf.compilo.report.ReportStarter" ) >=0 );
+				boolean jasperreport =
+						(process != null
+						 && (process.getJasperReport() != null
+						     || (process.getClassname() != null
+						         && process.getClassname().indexOf(ProcessUtil.JASPER_STARTER_CLASS) >= 0
+						        )
+						    )
+						);
 				//	Start
 				if (process.isWorkflow())
 				{
@@ -191,6 +199,7 @@ public class RunProcess extends TableFixture {
 						    	if (table != null) {
 							    	PO po = table.getPO(recordID, null);
 							    	if (!docAction.equals(po.get_Value("DocStatus"))) {
+										getCell(i, 1).addToBody("<br>Expected " + docAction + "<br>Received " + po.get_Value("DocStatus"));
 										boolean ok = Util.evaluateError(Msg.parseTranslation(ctx, pi.getSummary()), msgerror1, isErrorExpected); 	
 							    		if (ok) {
 							    			right(getCell(i, 1));
@@ -306,7 +315,7 @@ public class RunProcess extends TableFixture {
 				if (pil.getP_Number() != null)
 					getCell(i, 1).addToBody(pil.getP_Number() + " \t");
 				if (pil.getP_Msg() != null)
-					getCell(i, 1).addToBody(Msg.parseTranslation(Env.getCtx(), pil.getP_Msg()).replaceAll("\\n", "<br>"));
+					getCell(i, 1).addToBody(Msg.parseTranslation(adempiereInstance.getAdempiereService().getCtx(), pil.getP_Msg()).replaceAll("\\n", "<br>"));
 			}
 		}
 	}

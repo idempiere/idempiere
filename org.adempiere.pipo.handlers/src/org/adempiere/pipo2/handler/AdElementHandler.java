@@ -56,7 +56,10 @@ public class AdElementHandler extends AbstractElementHandler {
 
 			M_Element mElement = findPO(ctx, element);
 			if (mElement == null) {
-				int id = findIdByColumn(ctx, X_AD_Element.Table_Name, X_AD_Element.COLUMNNAME_ColumnName, ColumnName, /*ignorecase=*/true);
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					id = findIdByColumn(ctx, X_AD_Element.Table_Name, X_AD_Element.COLUMNNAME_ColumnName, ColumnName, /*ignorecase=*/true);
+				}
 				mElement = new M_Element(ctx.ctx, id, getTrxName(ctx));
 			}
 			List<String> excludes = defaultExcludeList(X_AD_Element.Table_Name);

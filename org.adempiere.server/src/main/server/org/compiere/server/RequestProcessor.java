@@ -57,11 +57,11 @@ public class RequestProcessor extends AdempiereServer
 	}	//	RequestProcessor
 	
 	/**	The Concrete Model			*/
-	private MRequestProcessor	m_model = null;
+	protected MRequestProcessor	m_model = null;
 	/**	Last Summary				*/
-	private StringBuffer 		m_summary = new StringBuffer();
+	protected StringBuffer 		m_summary = new StringBuffer();
 	/** Client onfo					*/
-	private MClient 			m_client = null;
+	protected MClient 			m_client = null;
 
 	/**************************************************************************
 	 * 	Do the actual Work
@@ -90,7 +90,7 @@ public class RequestProcessor extends AdempiereServer
 	 *  Process requests.
 	 *  Scheduled - are they due?
 	 */
-	private void processRequests ()
+	protected void processRequests ()
 	{
 		/**
 		 *  Due Requests
@@ -368,7 +368,7 @@ public class RequestProcessor extends AdempiereServer
 	 *  @param AD_Message message
 	 *  @return true if sent
 	 */
-	private boolean sendEmail (MRequest request, String AD_Message)
+	protected boolean sendEmail (MRequest request, String AD_Message)
 	{
 		//  Alert: Request {0} overdue
 		String subject = Msg.getMsg(m_client.getAD_Language(), AD_Message, 
@@ -382,7 +382,7 @@ public class RequestProcessor extends AdempiereServer
 	 *  @param request request
 	 * 	@return true if saved
 	 */
-	private boolean escalate (MRequest request)
+	protected boolean escalate (MRequest request)
 	{
 		//  Get Supervisor
 		MUser supervisor = request.getSalesRep();	//	self
@@ -424,7 +424,7 @@ public class RequestProcessor extends AdempiereServer
 	/**************************************************************************
 	 * 	Process Request Status
 	 */
-	private void processStatus()
+	protected void processStatus()
 	{
 		int count = 0;
 		//	Requests with status with after timeout
@@ -482,7 +482,7 @@ public class RequestProcessor extends AdempiereServer
 	/**
 	 * 	Create ECR
 	 */
-	private void processECR()
+	protected void processECR()
 	{
 		//	Get Requests with Request Type-AutoChangeRequest and Group with info
 		String sql = "SELECT * FROM R_Request r "
@@ -543,7 +543,7 @@ public class RequestProcessor extends AdempiereServer
 	/**************************************************************************
 	 *	Create Reauest / Updates from EMail
 	 */
-	private void processEMail ()
+	protected void processEMail ()
 	{
 	//	m_summary.append("Mail #").append(count)
 	//		.append(" - ");
@@ -553,7 +553,7 @@ public class RequestProcessor extends AdempiereServer
 	/**************************************************************************
 	 * 	Allocate Sales Rep
 	 */
-	private void findSalesRep ()
+	protected void findSalesRep ()
 	{
 		int changed = 0;
 		int notFound = 0;
@@ -614,7 +614,7 @@ public class RequestProcessor extends AdempiereServer
 	 *  @param request request
 	 *  @return SalesRep_ID user
 	 */
-	private int findSalesRep (MRequest request)
+	protected int findSalesRep (MRequest request)
 	{
 		String QText = request.getSummary();
 		if (QText == null)

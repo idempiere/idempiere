@@ -69,14 +69,14 @@ public class Scheduler extends AdempiereServer
 	}	//	Scheduler
 
 	/**	The Concrete Model			*/
-	private MScheduler			m_model = null;
+	protected MScheduler			m_model = null;
 	/**	Last Summary				*/
-	private StringBuffer 		m_summary = new StringBuffer();
+	protected StringBuffer 		m_summary = new StringBuffer();
 	/** Transaction					*/
-	private Trx					m_trx = null;
+	protected Trx					m_trx = null;
 
 	// ctx for the report/process
-	Properties m_schedulerctx = new Properties();
+	protected Properties m_schedulerctx = new Properties();
 
 	/**
 	 * 	Work
@@ -148,7 +148,7 @@ public class Scheduler extends AdempiereServer
 	 *	@return summary
 	 *	@throws Exception
 	 */
-	private String runProcess(MProcess process) throws Exception
+	protected String runProcess(MProcess process) throws Exception
 	{
 		if (log.isLoggable(Level.INFO)) log.info(process.toString());
 		
@@ -278,7 +278,7 @@ public class Scheduler extends AdempiereServer
 		return pi.getSummary();
 	}	//	runProcess
 
-	private int getAD_User_ID() {
+	protected int getAD_User_ID() {
 		int AD_User_ID;
 		if (m_model.getSupervisor_ID() > 0)
 			AD_User_ID = m_model.getSupervisor_ID();
@@ -295,7 +295,7 @@ public class Scheduler extends AdempiereServer
 	 * 	Fill Parameter
 	 *	@param pInstance process instance
 	 */
-	private void fillParameter(MPInstance pInstance)
+	protected void fillParameter(MPInstance pInstance)
 	{
 		MSchedulerPara[] sParams = m_model.getParameters (false);
 		MPInstancePara[] iParams = pInstance.getParameters();

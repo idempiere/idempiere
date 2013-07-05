@@ -50,7 +50,10 @@ public class FormElementHandler extends AbstractElementHandler {
 			MForm mForm = findPO(ctx, element);
 			if (mForm == null) {
 				String name = getStringValue(element, "Name");
-				int id = findIdByName(ctx, "AD_Form", name);
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					id = findIdByName(ctx, "AD_Form", name);
+				}
 				mForm = new MForm(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
 			PoFiller filler = new PoFiller(ctx, mForm, element, this);

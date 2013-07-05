@@ -65,15 +65,15 @@ Check the inventory level after the document
 |@ExpectedInventoryLevelAfter@|@SQL=SELECT SUM(s.qtyonhand) FROM m_storage s, m_locator l, m_warehouse w WHERE s.m_product_id=133 AND s.m_locator_id = l.m_locator_id AND l.m_warehouse_id=w.m_warehouse_id AND w.m_warehouse_id=103|
 
 
-Check the bp balance after the document
+Check the bp balance after the document (with the new cash payment is applied immediately so there must not be variance on the bp balance)
 
 !|Assert Record|
 |*Table*            |C_bpartner                                                                   |
 |*Where*            |c_bpartner_id=120                                                            |
 |*Read*             |                                                                             |
 |actuallifetimevalue|@SQL=SELECT @C_bpartner.actuallifetimevalue@ + @c_order.grandtotal@ FROM DUAL|
-|so_creditused      |@SQL=SELECT @C_bpartner.so_creditused@ + @c_order.grandtotal@ FROM DUAL      |
-|totalopenbalance   |@SQL=SELECT @C_bpartner.totalopenbalance@ + @c_order.grandtotal@ FROM DUAL   |
+|so_creditused      |@SQL=SELECT @C_bpartner.so_creditused@ FROM DUAL                             |
+|totalopenbalance   |@SQL=SELECT @C_bpartner.totalopenbalance@ FROM DUAL                          |
 
 Check existance of shipment
 
@@ -123,17 +123,14 @@ Check existance of invoice
 |qtyinvoiced   |                        |
 |linenetamt    |                        |
 
-Check existance of cash journal line
+Check existance of cash payment (now on payment table)
 
 !|Read Record|
-|*Table*     |C_CashLine              |
+|*Table*     |C_Payment               |
 |C_Invoice_id|@C_Invoice.C_Invoice_id@|
 |*Read*      |                        |
-|line        |                        |
-|c_cash_id   |                        |
-|line        |                        |
+|documentno  |                        |
 |description |                        |
 |amount      |                        |
-|isgenerated |                        |
 |processed   |                        |
 

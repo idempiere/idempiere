@@ -62,7 +62,10 @@ public class ProcessElementHandler extends AbstractElementHandler {
 				String value = getStringValue(element, "Value");
 
 				// Get New process.
-				int id = findIdByColumn(ctx, "AD_Process", "Value", value);
+				int id = 0;
+				if (!hasUUIDKey(ctx, element)) {
+					id = findIdByColumn(ctx, "AD_Process", "Value", value);
+				}
 				mProcess = new X_AD_Process(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
 			}
 			
