@@ -171,7 +171,6 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		south.setHeight("22%");
 		//south.setWidth("45%");
 		acknowledged.setParent(rightCell);
-		//acknowledged.setVisible(false);
 		//acknowledged.setHflex("6");
 		acknowledged.setLabel(Msg.getMsg(Env.getCtx(),"Acknowledge"));
 		acknowledged.addEventListener("onClick", this);
