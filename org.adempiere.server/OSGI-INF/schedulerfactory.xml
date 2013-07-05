@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.idempiere.server.factory.defaultscheduler">
+   <implementation class="org.idempiere.server.factory.DefaultSchedulerFactory"/>
+   <property name="service.ranking" type="Integer" value="0"/>
+   <service>
+      <provide interface="org.adempiere.server.IServerFactory"/>
+   </service>
+</scr:component>

@@ -69,30 +69,30 @@ public class EMailProcessor
 	}	//	EMail
 
 	/**	EMail Host Parameter		*/
-	private String	m_host = null;
+	protected String	m_host = null;
 	/**	EMail User Parameter		*/
-	private String	m_user = null;
+	protected String	m_user = null;
 	/**	Password Parameter			*/
-	private String	m_pass = null;
+	protected String	m_pass = null;
 	
 	/**	Session				*/
-	private Session 	m_session = null;
+	protected Session 	m_session = null;
 	/**	Store				*/
-	private Store 		m_store = null;
+	protected Store 		m_store = null;
 
 	
 	/**	Logger			*/
 	protected CLogger	log = CLogger.getCLogger(getClass());
 	
 	/**	Process Error				*/
-	private static final int		ERROR = 0;
+	protected static final int		ERROR = 0;
 	/**	Process Request				*/
-	private static final int		REQUEST = 1;
+	protected static final int		REQUEST = 1;
 	/**	Process Workflow			*/
-	private static final int		WORKFLOW = 2;
+	protected static final int		WORKFLOW = 2;
 	
 	/**	Process Delivery Confirm	*/
-	private static final int		DELIVERY = 9;
+	protected static final int		DELIVERY = 9;
 	
 	/**
 	 * 	Process Messages in InBox
@@ -130,7 +130,7 @@ public class EMailProcessor
 	 *	@return Session
 	 *	@throws Exception
 	 */
-	private Session getSession() throws Exception
+	protected Session getSession() throws Exception
 	{
 		if (m_session != null)
 			return m_session;
@@ -155,7 +155,7 @@ public class EMailProcessor
 	 *	@return Store
 	 *	@throws Exception
 	 */
-	private Store getStore() throws Exception
+	protected Store getStore() throws Exception
 	{
 		if (m_store != null)
 			return m_store;
@@ -177,7 +177,7 @@ public class EMailProcessor
 	 *	@return number of processed
 	 *	@throws Exception
 	 */
-	private int processInBox() throws Exception
+	protected int processInBox() throws Exception
 	{
 		//	Folder
 		Folder folder;
@@ -276,7 +276,7 @@ public class EMailProcessor
 	 *	@return Type of Message
 	 *	@throws Exception
 	 */
-	private int processMessage (Message msg) throws Exception
+	protected int processMessage (Message msg) throws Exception
 	{
 		dumpEnvelope (msg);
 		dumpBody (msg);
@@ -301,7 +301,7 @@ public class EMailProcessor
 	 *	@param msg message
 	 *	@return subject or ""
 	 */
-	private String getSubject (Message msg)
+	protected String getSubject (Message msg)
 	{
 		try
 		{
@@ -321,7 +321,7 @@ public class EMailProcessor
 	 *	@param msg Message
 	 *	@return message or ""
 	 */
-	private String getMessage (Part msg)
+	protected String getMessage (Part msg)
 	{
 		StringBuilder sb = new StringBuilder();
 		try
@@ -406,7 +406,7 @@ public class EMailProcessor
 	 *	@param msg message
 	 *	@return delivery info or null
 	 */
-	private String getDeliveryReport (Part msg)
+	protected String getDeliveryReport (Part msg)
 	{
 		try
 		{
@@ -451,7 +451,7 @@ public class EMailProcessor
 	 *	@return info or null
 	 *	@throws Exception
 	 */
-	private String getDeliveredReportDetail (Part part) throws Exception
+	protected String getDeliveredReportDetail (Part part) throws Exception
 	{
 		Object content = part.getContent();
 		if (content == null)
@@ -504,7 +504,7 @@ public class EMailProcessor
 	 *	@param m message
 	 *	@throws Exception
 	 */
-	private void dumpEnvelope(Message m) throws Exception
+	protected void dumpEnvelope(Message m) throws Exception
 	{
 		printOut("-----------------------------------------------------------------");
 		Address[] a;
@@ -613,7 +613,7 @@ public class EMailProcessor
 	 *	@param p
 	 *	@throws Exception
 	 */
-	private void dumpBody (Part p) throws Exception
+	protected void dumpBody (Part p) throws Exception
 	{
 		//	http://www.iana.org/assignments/media-types/
 		printOut("=================================================================");
@@ -688,7 +688,7 @@ public class EMailProcessor
 	 * 	Print
 	 *	@param s string
 	 */
-	private static void printOut(String s)
+	protected static void printOut(String s)
 	{
 	//    System.out.print(indentStr.substring(0, level * 2));
 		System.out.println(s);

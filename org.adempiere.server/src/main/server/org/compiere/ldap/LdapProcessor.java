@@ -46,13 +46,13 @@ public class LdapProcessor extends AdempiereServer
 	}	//	LdapProcessor
 
 	/**	The Concrete Model			*/
-	private MLdapProcessor		m_model = null;
+	protected MLdapProcessor		m_model = null;
 	/**	Last Summary				*/
-	private StringBuffer 		m_summary = new StringBuffer();
+	protected StringBuffer 		m_summary = new StringBuffer();
 	/** Server Socket				*/
-	private ServerSocket 		m_serverSocket = null;
+	protected ServerSocket 		m_serverSocket = null;
 	/** Counter						*/
-	private int					m_counter = 0;
+	protected int					m_counter = 0;
 
 	
 	/**

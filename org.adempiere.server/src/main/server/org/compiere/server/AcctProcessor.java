@@ -56,13 +56,13 @@ public class AcctProcessor extends AdempiereServer
 	}	//	AcctProcessor
 
 	/**	The Concrete Model			*/
-	private MAcctProcessor		m_model = null;
+	protected MAcctProcessor		m_model = null;
 	/**	Last Summary				*/
-	private StringBuffer 		m_summary = new StringBuffer();
+	protected StringBuffer 		m_summary = new StringBuffer();
 	/** Client onfo					*/
-	private MClient 			m_client = null;
+	protected MClient 			m_client = null;
 	/**	Accounting Schemata			*/
-	private MAcctSchema[] 		m_ass = null;
+	protected MAcctSchema[] 		m_ass = null;
 
 	/**
 	 * 	Work

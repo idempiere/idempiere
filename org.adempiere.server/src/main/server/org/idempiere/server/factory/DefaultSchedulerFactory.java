@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 2010 Heng Sin Low                							  *
+ * Copyright (C) 2013 Heng Sin Low                                            *
+ * Copyright (C) 2013 Trek Global                 							  *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -11,30 +11,43 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.server;
+package org.idempiere.server.factory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
-import org.compiere.model.AdempiereProcessor;
-import org.compiere.server.AdempiereServer;
+import org.adempiere.server.IServerFactory;
+import org.compiere.model.MScheduler;
+import org.compiere.server.Scheduler;
 
 /**
- *
  * @author hengsin
  *
  */
-public interface IServerFactory<S extends AdempiereServer, M extends AdempiereProcessor> {
-	
+public class DefaultSchedulerFactory implements IServerFactory<Scheduler, MScheduler> {
+
 	/**
-	 * @param ctx
-	 * @return list of AdempiereServer
+	 * default constructor 
 	 */
-	public S[] create (Properties ctx);
-	
-	/**
-	 * The Adempiere Server Manager will used this to avoid running duplicate server for the same 
-	 * AdempiereProcessor model.
-	 * @return Fully qualified AdempiereProcessor model class name
-	 */
-	public Class<M> getProcessorClass();
+	public DefaultSchedulerFactory() {
+	}
+
+	@Override
+	public Scheduler[] create(Properties ctx) {
+		MScheduler[] schedulerModels = MScheduler.getActive(ctx);
+		List<Scheduler> list = new ArrayList<Scheduler>();
+		for (MScheduler pModel : schedulerModels)
+		{
+			Scheduler server = new Scheduler(pModel);
+			list.add(server);
+		}
+		return list.toArray(new Scheduler[0]);
+	}
+
+	@Override
+	public Class<MScheduler> getProcessorClass() {
+		return MScheduler.class;
+	}
+
 }

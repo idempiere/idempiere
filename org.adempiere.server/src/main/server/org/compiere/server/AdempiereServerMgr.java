@@ -27,15 +27,10 @@ import java.util.logging.Level;
 import org.adempiere.base.Service;
 import org.adempiere.server.IServerFactory;
 import org.compiere.Adempiere;
-import org.compiere.model.MAcctProcessor;
-import org.compiere.model.MAlertProcessor;
-import org.compiere.model.MLdapProcessor;
-import org.compiere.model.MRequestProcessor;
-import org.compiere.model.MScheduler;
+import org.compiere.model.AdempiereProcessor;
 import org.compiere.model.MSession;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
-import org.compiere.wf.MWorkflowProcessor;
 
 /**
  *	Adempiere Server Manager
@@ -105,100 +100,36 @@ public class AdempiereServerMgr
 	 * 	Start Environment
 	 *	@return true if started
 	 */
+	@SuppressWarnings("rawtypes")
 	public boolean startServers()
 	{
 		log.info("");
 		int noServers = 0;
 		m_servers=new ArrayList<ServerWrapper>();
-		//	Accounting
-		MAcctProcessor[] acctModels = MAcctProcessor.getActive(m_ctx);
-		for (int i = 0; i < acctModels.length; i++)
-		{
-			MAcctProcessor pModel = acctModels[i];
-			AdempiereServer server = AdempiereServer.create(pModel);
-			if (server != null) {
-//				server.start();
-//				server.setPriority(Thread.NORM_PRIORITY-2);
-				m_servers.add(new ServerWrapper(server));
-			}
-		}		
-		//	Request
-		MRequestProcessor[] requestModels = MRequestProcessor.getActive(m_ctx);
-		for (int i = 0; i < requestModels.length; i++)
-		{
-			MRequestProcessor pModel = requestModels[i];
-			AdempiereServer server = AdempiereServer.create(pModel);
-			if (server != null) {
-//				server.start();
-//				server.setPriority(Thread.NORM_PRIORITY-2);
-				m_servers.add(new ServerWrapper(server));
-			}
-		}
-		//	Workflow
-		MWorkflowProcessor[] workflowModels = MWorkflowProcessor.getActive(m_ctx);
-		for (int i = 0; i < workflowModels.length; i++)
-		{
-			MWorkflowProcessor pModel = workflowModels[i];
-			AdempiereServer server = AdempiereServer.create(pModel);
-			if (server != null) {
-//				server.start();
-//				server.setPriority(Thread.NORM_PRIORITY-2);
-				m_servers.add(new ServerWrapper(server));
-			}
-		}		
-		//	Alert
-		MAlertProcessor[] alertModels = MAlertProcessor.getActive(m_ctx);
-		for (int i = 0; i < alertModels.length; i++)
-		{
-			MAlertProcessor pModel = alertModels[i];
-			AdempiereServer server = AdempiereServer.create(pModel);
-			if (server != null) {
-//				server.start();
-//				server.setPriority(Thread.NORM_PRIORITY-2);
-				m_servers.add(new ServerWrapper(server));
-			}
-		}		
-		//	Scheduler
-		MScheduler[] schedulerModels = MScheduler.getActive(m_ctx);
-		for (int i = 0; i < schedulerModels.length; i++)
-		{
-			MScheduler pModel = schedulerModels[i];
-			AdempiereServer server = AdempiereServer.create(pModel);
-			if (server != null) {
-//				server.start();
-//				server.setPriority(Thread.NORM_PRIORITY-2);
-				m_servers.add(new ServerWrapper(server));
-			}
-		}		
-		//	LDAP
-		MLdapProcessor[] ldapModels = MLdapProcessor.getActive(m_ctx);
-		for (int i = 0; i < ldapModels.length; i++)
-		{
-			MLdapProcessor lp = ldapModels[i];
-			AdempiereServer server = AdempiereServer.create(lp);
-			if (server != null) {
-//				server.start();
-//				server.setPriority(Thread.NORM_PRIORITY-1);
-				m_servers.add(new ServerWrapper(server));
-			}
-		}
 		
 		//osgi server
 		List<IServerFactory> serverFactoryList = Service.locator().list(IServerFactory.class).getServices();
 		if (serverFactoryList != null && !serverFactoryList.isEmpty())
 		{
+			List<String> processed = new ArrayList<String>();
 			for(IServerFactory factory : serverFactoryList )
 			{
-				AdempiereServer[] servers = factory.create(m_ctx);
-				if (servers != null && servers.length > 0)
+				String name = factory.getProcessorClass().getName();
+				if (!processed.contains(name))
 				{
-					for (AdempiereServer server : servers)
+					processed.add(name);
+					AdempiereServer[] servers = factory.create(m_ctx);
+					if (servers != null && servers.length > 0)
 					{
-//						server.start();
-//						server.setPriority(Thread.NORM_PRIORITY-1);
-						m_servers.add(new ServerWrapper(server));						
-					}
-				}				
+						for (AdempiereServer server : servers)
+						{
+							AdempiereProcessor model = server.getModel();
+							if (AdempiereServer.isOKtoRunOnIP(model)) {
+								m_servers.add(new ServerWrapper(server));
+							}
+						}
+					}				
+				}
 			}
 		}
 		
