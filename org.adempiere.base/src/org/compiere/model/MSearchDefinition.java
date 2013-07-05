@@ -47,7 +47,7 @@ public class MSearchDefinition extends X_AD_SearchDefinition {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2448668218372939766L;
+	private static final long serialVersionUID = -5366274782950561962L;
 	/** Constant for the searchtype table */
 	public static final String SEARCHTYPE_TABLE = "T";
 	/** Constant for the searchtype query */
@@ -65,6 +65,10 @@ public class MSearchDefinition extends X_AD_SearchDefinition {
 	 */
 	public MSearchDefinition(Properties ctx, int AD_SearchDefinition_ID, String trxName) {
 		super(ctx, AD_SearchDefinition_ID, trxName);
+	}
+	
+	public MSearchDefinition(Properties ctx, ResultSet rs, String trxName) {
+		super (ctx, rs, trxName);
 	}
 
 	/**

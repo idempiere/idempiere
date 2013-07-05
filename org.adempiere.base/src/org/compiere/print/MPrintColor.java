@@ -18,6 +18,7 @@ package org.compiere.print;
 
 import java.awt.Color;
 import java.awt.SystemColor;
+import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -36,11 +37,10 @@ import org.compiere.util.Util;
  */
 public class MPrintColor extends X_AD_PrintColor
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8352503254165120016L;
+	private static final long serialVersionUID = -5611659311562283304L;
 
 	/**************************************************************************
 	 * 	Create Color in Database and save
@@ -138,6 +138,11 @@ public class MPrintColor extends X_AD_PrintColor
 		if (AD_PrintColor_ID == 0)
 			setIsDefault(false);
 	}	//	MPrintColor
+	
+	public MPrintColor(Properties ctx, ResultSet rs, String trxName)
+	{
+		super (ctx, rs, trxName);
+	}
 
 	/**	Color cached				*/
 	private Color	m_cacheColor = null;

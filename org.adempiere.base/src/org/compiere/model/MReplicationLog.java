@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.sql.ResultSet;
 import java.util.Properties;
 
 /**
@@ -30,7 +31,7 @@ public class MReplicationLog extends X_AD_Replication_Log
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5188563816312329819L;
+	private static final long serialVersionUID = -8815834636981996509L;
 
 	/**
 	 * 	Create new Log
@@ -47,5 +48,10 @@ public class MReplicationLog extends X_AD_Replication_Log
 		setIsReplicated(false);
 		setP_Msg(P_Msg);
 	}	//	MReplicationLog
-
+	
+	public MReplicationLog(Properties ctx, ResultSet rs, String trxName)
+	{
+		super (ctx, rs, trxName);
+	}
+	
 }	//	MReplicationLog

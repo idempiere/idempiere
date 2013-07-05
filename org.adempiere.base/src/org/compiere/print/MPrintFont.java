@@ -40,7 +40,7 @@ public class MPrintFont extends X_AD_PrintFont
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4721840631004326810L;
+	private static final long serialVersionUID = -2986160498367260541L;
 
 	/**
 	 *	Constructor

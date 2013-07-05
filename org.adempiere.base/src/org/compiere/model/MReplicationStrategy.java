@@ -17,6 +17,7 @@
 
 package org.compiere.model;
 
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -34,10 +35,10 @@ import org.compiere.util.CLogger;
  */
 public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 
-        /**
-         * 
-         */
-        private static final long serialVersionUID = -3017484140206284805L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7231926756021012730L;
 	public static final int REPLICATION_TABLE =0;
 	public static final int REPLICATION_DOCUMENT =1;
 	
@@ -56,7 +57,11 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	public MReplicationStrategy(Properties ctx, int AD_ReplicationStrategy_ID, String trxName) {
 		super(ctx, AD_ReplicationStrategy_ID, trxName);
 	}
-	
+
+	public MReplicationStrategy(Properties ctx, ResultSet rs, String trxName) {
+		super (ctx, rs, trxName);
+	}
+
 	/**
 	 * @return the list the X_AD_ReplicationTable
 	 */
