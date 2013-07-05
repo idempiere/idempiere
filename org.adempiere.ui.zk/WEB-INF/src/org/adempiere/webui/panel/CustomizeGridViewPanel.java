@@ -309,7 +309,8 @@ public class CustomizeGridViewPanel extends Panel
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_AD_Tab_ID);
-			pstmt.setString(2, Env.getAD_Language(Env.getCtx()));
+			if (!baseLanguage)
+				pstmt.setString(2, Env.getAD_Language(Env.getCtx()));
 			rs = pstmt.executeQuery();
 
 			HashMap<Integer, ListElement> curTabSel = new HashMap<Integer, CustomizeGridViewPanel.ListElement>();
