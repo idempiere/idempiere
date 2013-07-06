@@ -92,11 +92,18 @@ public class WFEditor extends ADForm {
 		Borderlayout layout = new Borderlayout();
 		layout.setStyle("width: 100%; height: 100%; position: absolute;");
 		appendChild(layout);
-
-		String sql = MRole.getDefault().addAccessSQL(
-				"SELECT AD_Workflow_ID, Name FROM AD_Workflow ORDER BY 2",
+		String sql="";
+		boolean isBaseLanguage = Env.isBaseLanguage(Env.getCtx(), "AD_Workflow");
+		if (isBaseLanguage) 
+			sql = MRole.getDefault().addAccessSQL(
+				"SELECT AD_Workflow_ID, Name FROM AD_Workflow WHERE IsActive = 'Y' ORDER BY 2",
 				"AD_Workflow", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);	//	all
-			KeyNamePair[] pp = DB.getKeyNamePairs(sql, true);
+		else
+			sql = MRole.getDefault().addAccessSQL(
+					"SELECT AD_Workflow.AD_Workflow_ID, AD_Workflow_Trl.Name FROM AD_Workflow INNER JOIN AD_Workflow_Trl ON (AD_Workflow.AD_Workflow_ID=AD_Workflow_Trl.AD_Workflow_ID) "
+					+ " WHERE AD_Workflow.IsActive = 'Y' AND AD_Workflow_Trl.AD_Language='"+Env.getAD_Language(Env.getCtx())+"' ORDER BY 2","AD_Workflow", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);	//	all
+		
+		KeyNamePair[] pp = DB.getKeyNamePairs(sql, true);
 
 		workflowList = ListboxFactory.newDropdownListbox();
 		for (KeyNamePair knp : pp) {
