@@ -92,17 +92,16 @@ public class WFEditor extends ADForm {
 		Borderlayout layout = new Borderlayout();
 		layout.setStyle("width: 100%; height: 100%; position: absolute;");
 		appendChild(layout);
-		String sql="";
+		String sql;
 		boolean isBaseLanguage = Env.isBaseLanguage(Env.getCtx(), "AD_Workflow");
-		if (isBaseLanguage) 
+		if (isBaseLanguage)
 			sql = MRole.getDefault().addAccessSQL(
-				"SELECT AD_Workflow_ID, Name FROM AD_Workflow WHERE IsActive = 'Y' ORDER BY 2",
+				"SELECT AD_Workflow_ID, Name FROM AD_Workflow WHERE IsActive='Y' ORDER BY 2",
 				"AD_Workflow", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);	//	all
 		else
 			sql = MRole.getDefault().addAccessSQL(
 					"SELECT AD_Workflow.AD_Workflow_ID, AD_Workflow_Trl.Name FROM AD_Workflow INNER JOIN AD_Workflow_Trl ON (AD_Workflow.AD_Workflow_ID=AD_Workflow_Trl.AD_Workflow_ID) "
-					+ " WHERE AD_Workflow.IsActive = 'Y' AND AD_Workflow_Trl.AD_Language='"+Env.getAD_Language(Env.getCtx())+"' ORDER BY 2","AD_Workflow", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);	//	all
-		
+					+ " WHERE AD_Workflow.IsActive='Y' AND AD_Workflow_Trl.AD_Language='"+Env.getAD_Language(Env.getCtx())+"' ORDER BY 2","AD_Workflow", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);	//	all
 		KeyNamePair[] pp = DB.getKeyNamePairs(sql, true);
 
 		workflowList = ListboxFactory.newDropdownListbox();
@@ -385,7 +384,7 @@ public class WFEditor extends ADForm {
 					addMenuItem(popupMenu, Msg.getMsg(Env.getCtx(), "Properties"), node, WFPopupItem.WFPOPUPITEM_PROPERTIES);
 					// Delete node
 					String title = Msg.getMsg(Env.getCtx(), "DeleteNode") +
-						": " + node.getName();
+						": " + node.getName(true);
 					addMenuItem(popupMenu, title, node, WFPopupItem.WFPOPUPITEM_DELETENODE);
 				}
 				MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
@@ -419,7 +418,7 @@ public class WFEditor extends ADForm {
 					if (!found)
 					{
 						String title = Msg.getMsg(Env.getCtx(), "AddLine")
-							+ ": " + node.getName() + " -> " + nn.getName();
+							+ ": " + node.getName(true) + " -> " + nn.getName(true);
 						addMenuItem(popupMenu, title, node, nn.getAD_WF_Node_ID());
 					}
 				}
@@ -430,7 +429,7 @@ public class WFEditor extends ADForm {
 						continue;
 					MWFNode next = MWFNode.get(Env.getCtx(), line.getAD_WF_Next_ID());
 					String title = Msg.getMsg(Env.getCtx(), "DeleteLine")
-						+ ": " + node.getName() + " -> " + next.getName();
+						+ ": " + node.getName(true) + " -> " + next.getName(true);
 					addMenuItem(popupMenu, title, line);
 				}
 				popupMenu.setPage(target.getPage());
