@@ -368,7 +368,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
      */
     protected boolean isProcessElement(Properties ctx, String entityType) {
     	if ("D".equals(entityType) || "C".equals(entityType)) {
-    		return "true".equalsIgnoreCase(getUpdateMode(ctx));
+    		return "Y".equalsIgnoreCase(getUpdateMode(ctx));
     	} else {
     		return true;
     	}
