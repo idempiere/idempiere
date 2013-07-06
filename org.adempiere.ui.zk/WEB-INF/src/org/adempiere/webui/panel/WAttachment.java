@@ -664,11 +664,11 @@ public class WAttachment extends Window implements EventListener<Event>
 			{
 				if (result)
 				{
-					if (m_attachment.deleteEntry(index)){
+					if (m_attachment.deleteEntry(index)) {
 						cbContent.removeItemAt(index);
 						clearPreview();
-						autoPreview(index-1, true);
-					}						
+						autoPreview (cbContent.getSelectedIndex(), true);
+					}
 
 					m_change = true;
 				}				
