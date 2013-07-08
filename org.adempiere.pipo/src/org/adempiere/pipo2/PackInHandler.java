@@ -191,9 +191,9 @@ public class PackInHandler extends DefaultHandler {
 				packageInst.saveEx();
 			}
 
-			m_ctx.ctx.put("AD_Package_Imp_ID", String.valueOf(AD_Package_Imp_ID));
-			m_ctx.ctx.put("UpdateMode", m_updateDictionary);
-			m_ctx.ctx.put("PackageDirectory", packageDirectory);
+			Env.setContext(m_ctx.ctx, "AD_Package_Imp_ID", String.valueOf(AD_Package_Imp_ID));
+			Env.setContext(m_ctx.ctx, "UpdateMode", m_updateDictionary);
+			Env.setContext(m_ctx.ctx, "PackageDirectory", packageDirectory);
 			m_ctx.packIn = packIn;
 		} else {
 			Element e = new Element(uri, localName, qName, new AttributesImpl(atts));
