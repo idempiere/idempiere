@@ -16,12 +16,18 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.math.BigDecimal;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MTable;
 import org.compiere.model.MViewColumn;
 import org.compiere.model.MViewComponent;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 
 public class DatabaseViewValidate extends SvrProcess {
 
@@ -40,6 +46,40 @@ public class DatabaseViewValidate extends SvrProcess {
 		log.info(table.toString());
 		if (!table.isView() || !table.isActive())
 			throw new AdempiereException(Msg.getMsg(getCtx(), "NotActiveDatabaseView"));
+		
+		Trx trx = Trx.get(get_TrxName(), true);
+		DatabaseMetaData md = trx.getConnection().getMetaData();
+		String tableName = table.getTableName();
+		if (md.storesUpperCaseIdentifiers())
+			tableName = tableName.toUpperCase();
+		else if (md.storesLowerCaseIdentifiers())
+			tableName = tableName.toLowerCase();
+		
+		String catalog = null;
+		String schema = null;
+		String[] types = {"VIEW"};
+		boolean found = false;
+		ArrayList<String> viewColumnNames = new ArrayList<String>();
+		
+		ResultSet rs = md.getTables(catalog, schema, tableName, types);
+		while (rs.next())
+		{
+			String dbViewName = rs.getString("TABLE_NAME");			
+			if (dbViewName == null)
+				continue;
+			if (table.getTableName().equalsIgnoreCase(dbViewName))
+			{
+				found = true;
+				viewColumnNames.clear();
+				
+				ResultSet rs2 = md.getColumns(rs.getString("TABLE_CAT"), rs.getString("TABLE_SCHEM"), dbViewName, null);
+				while (rs2.next())
+					viewColumnNames.add(rs2.getString("COLUMN_NAME"));
+				rs2.close();
+			}
+		}
+		rs.close();
+		trx.close();
 
 		StringBuilder sb = new StringBuilder("CREATE OR REPLACE VIEW ").append(table.getTableName());
 		//
@@ -47,6 +87,7 @@ public class DatabaseViewValidate extends SvrProcess {
 		if (m_vcs == null || m_vcs.length == 0)
 			throw new AdempiereException(Msg.getMsg(getCtx(), "NoViewComponentsSpecified"));
 
+		boolean modified = false;
 		MViewColumn[] vCols = null;
 		for (int i = 0; i < m_vcs.length; i++)
 		{
@@ -58,11 +99,18 @@ public class DatabaseViewValidate extends SvrProcess {
 				vCols = vc.getColumns(true);
 				if (vCols == null || vCols.length == 0)
 					throw new AdempiereException(Msg.getMsg(getCtx(), "NoViewColumnsSpecified"));
+				
+				if (viewColumnNames.size() > vCols.length)
+					modified = true;
+				
 				boolean right = false;
 				for (int j = 0; j < vCols.length; j++)
 				{
 					if (vCols[j].getColumnName().equals("*"))
+					{
+						modified = true;
 						break;
+					}
 					if (j == 0)
 					{
 						sb.append("(");
@@ -71,6 +119,12 @@ public class DatabaseViewValidate extends SvrProcess {
 					else
 						sb.append(", ");
 					sb.append(vCols[j].getColumnName());
+					
+					if (!modified && j < viewColumnNames.size())
+					{
+						if (!viewColumnNames.get(j).equalsIgnoreCase(vCols[j].getColumnName()))
+							modified = true;
+					}
 				}
 
 				if (right)
@@ -81,8 +135,15 @@ public class DatabaseViewValidate extends SvrProcess {
 			sb.append(vc.getSelect(false, vCols));
 		}
 
-		int rvalue = DB.executeUpdate("DROP VIEW " + table.getTableName(), (Object[]) null, true, get_TrxName());							
-		rvalue = DB.executeUpdate(sb.toString(), (Object[]) null, true, get_TrxName());
+		if (found && modified)
+		{
+			String sql = "DROP VIEW " + table.getTableName();
+			int rvalue = DB.executeUpdate(sql, (Object[]) null, true, get_TrxName());
+			addLog(0, null, new BigDecimal(rvalue), sql);
+		}
+		String sql = sb.toString();
+		int rvalue = DB.executeUpdate(sql, (Object[]) null, true, get_TrxName());
+		addLog(0, null, new BigDecimal(rvalue), sql);
 		if(rvalue == -1)
 			throw new AdempiereException(Msg.getMsg(getCtx(), "FailedCreateOrReplaceView"));
 		else

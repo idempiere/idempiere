@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.math.BigDecimal;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 
@@ -83,11 +84,13 @@ public class TableIndexValidate extends SvrProcess {
 			throw new AdempiereException(Msg.getMsg(getCtx(), "NoIndexColumnsSpecified"));
 		else if (!found)
 		{
-			int rvalue = DB.executeUpdate(index.getDDL(), (Object[]) null, true, get_TrxName());
+			String sql = index.getDDL();
+			int rvalue = DB.executeUpdate(sql, (Object[]) null, true, get_TrxName());
+			addLog(0, null, new BigDecimal(rvalue), sql);
 			if (rvalue == -1)
 				throw new AdempiereException(Msg.getMsg(getCtx(), "Failed to create index"));
 			else
-				return Msg.getMsg(getCtx(), "CreatedIndexSuccess");			
+				return Msg.getMsg(getCtx(), "CreatedIndexSuccess");
 		}
 		else
 		{
@@ -135,8 +138,13 @@ public class TableIndexValidate extends SvrProcess {
 			
 			if (modified)
 			{
-				int rvalue = DB.executeUpdate("DROP INDEX " + index.getName(), (Object[]) null, true, get_TrxName());							
-				rvalue = DB.executeUpdate(index.getDDL(), (Object[]) null, true, get_TrxName());
+				String sql = "DROP INDEX " + index.getName();
+				int rvalue = DB.executeUpdate(sql, (Object[]) null, true, get_TrxName());
+				addLog(0, null, new BigDecimal(rvalue), sql);
+				
+				sql = index.getDDL();
+				rvalue = DB.executeUpdate(sql, (Object[]) null, true, get_TrxName());
+				addLog(0, null, new BigDecimal(rvalue), sql);
 				if(rvalue == -1)
 					throw new AdempiereException(Msg.getMsg(getCtx(), "FailedModifyIndex"));
 				else

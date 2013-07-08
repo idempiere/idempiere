@@ -1,6 +1,6 @@
 -- Jul 3, 2013 6:53:04 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,LoadSeq,AD_Window_ID,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,IsCentrallyMaintained,IsDeleteable,TableName,Description,Name,IsActive,AD_Org_ID,CreatedBy,Updated,UpdatedBy,Created,AD_Client_ID,IsUseLuceneIndex) VALUES ('N','4','c89ccd3a-3fb0-426d-802c-b4e621c7df5f',55,100,200085,'N','N','Y','D','L','Y','Y','AD_TableIndex','Index definition for table','Table Index','Y',0,100,TO_DATE('2013-07-03 18:53:00','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-07-03 18:53:00','YYYY-MM-DD HH24:MI:SS'),0,'N')
+INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,LoadSeq,AD_Window_ID,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,IsCentrallyMaintained,IsDeleteable,TableName,Description,Name,IsActive,AD_Org_ID,CreatedBy,Updated,UpdatedBy,Created,AD_Client_ID) VALUES ('N','4','c89ccd3a-3fb0-426d-802c-b4e621c7df5f',55,100,200085,'N','N','Y','D','L','Y','Y','AD_TableIndex','Index definition for table','Table Index','Y',0,100,TO_DATE('2013-07-03 18:53:00','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-07-03 18:53:00','YYYY-MM-DD HH24:MI:SS'),0)
 ;
 
 -- Jul 3, 2013 6:53:04 PM SGT
@@ -10,7 +10,7 @@ INSERT INTO AD_Table_Trl (AD_Language,AD_Table_ID, Name, IsTranslated,AD_Client_
 
 -- Jul 3, 2013 6:58:42 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,AD_Val_Rule_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200085,210512,'Y','N','N','N',10,'N',19,129,'N','N','Y','21b0f765-a7da-4572-ad41-50a85e88c263','N','AD_Client_ID','Client/Tenant for this installation.','A Client is a company or a legal entity. You cannot share data between Clients. Tenant is a synonym for Client.','Client','N',TO_DATE('2013-07-03 18:58:41','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:41','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',102,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,AD_Val_Rule_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200085,210512,'Y','N','N','N',10,'N',19,129,'N','N','Y','21b0f765-a7da-4572-ad41-50a85e88c263','N','AD_Client_ID','Client/Tenant for this installation.','A Client is a company or a legal entity. You cannot share data between Clients. Tenant is a synonym for Client.','Client','N',TO_DATE('2013-07-03 18:58:41','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:41','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',102)
 ;
 
 -- Jul 3, 2013 6:58:42 PM SGT
@@ -20,7 +20,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 6:58:43 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200085,210513,'Y','N','N','N',10,'N',19,'N','N','Y','1916264e-841b-46d8-be38-66d3ac675281','N','AD_Org_ID','Organizational entity within client','An organization is a unit of your client or legal entity - examples are store, department. You can share data between organizations.','Organization','N',TO_DATE('2013-07-03 18:58:42','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:42','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',113,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200085,210513,'Y','N','N','N',10,'N',19,'N','N','Y','1916264e-841b-46d8-be38-66d3ac675281','N','AD_Org_ID','Organizational entity within client','An organization is a unit of your client or legal entity - examples are store, department. You can share data between organizations.','Organization','N',TO_DATE('2013-07-03 18:58:42','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:42','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',113)
 ;
 
 -- Jul 3, 2013 6:58:43 PM SGT
@@ -40,7 +40,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Jul 3, 2013 6:58:46 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200085,210514,'Y','N','N','N',10,'N',13,'Y','N','Y','603543fc-ff15-4411-b5d8-3922b07037f9','N','AD_TableIndex_ID','Table Index','N',TO_DATE('2013-07-03 18:58:43','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:43','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202542,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200085,210514,'Y','N','N','N',10,'N',13,'Y','N','Y','603543fc-ff15-4411-b5d8-3922b07037f9','N','AD_TableIndex_ID','Table Index','N',TO_DATE('2013-07-03 18:58:43','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:43','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202542)
 ;
 
 -- Jul 3, 2013 6:58:46 PM SGT
@@ -60,7 +60,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Jul 3, 2013 6:58:48 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',1.00,200085,210515,'N','N','N','N',36,'N',10,'N','N','Y','69c905af-a257-4e8f-91df-b72ebcfd4f36','Y','AD_TableIndex_UU','AD_TableIndex_UU','N',TO_DATE('2013-07-03 18:58:46','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:46','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202543,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',1.00,200085,210515,'N','N','N','N',36,'N',10,'N','N','Y','69c905af-a257-4e8f-91df-b72ebcfd4f36','Y','AD_TableIndex_UU','AD_TableIndex_UU','N',TO_DATE('2013-07-03 18:58:46','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:46','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202543)
 ;
 
 -- Jul 3, 2013 6:58:48 PM SGT
@@ -70,10 +70,10 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 6:58:49 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200085,210516,53222,'N','N','N',0,'N',1,'N',17,'N','N','Y','934a25af-c8b5-4dc8-944d-2d44017871fa','Y','ConfigurationLevel','Configuration Level for this parameter','S','Configuration Level for this parameter
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200085,210516,53222,'N','N','N',0,'N',1,'N',17,'N','N','Y','934a25af-c8b5-4dc8-944d-2d44017871fa','Y','ConfigurationLevel','Configuration Level for this parameter','S','Configuration Level for this parameter
 S - just allowed system configuration
 C - client configurable parameter
-O - org configurable parameter','Configuration Level','Y',TO_DATE('2013-07-03 18:58:48','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:48','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',53229,'N')
+O - org configurable parameter','Configuration Level','Y',TO_DATE('2013-07-03 18:58:48','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:48','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',53229)
 ;
 
 -- Jul 3, 2013 6:58:49 PM SGT
@@ -83,7 +83,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 6:58:50 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200085,210517,'Y','N','N','N',7,'N',16,'N','N','Y','d90e944c-a771-4b39-add2-7ddf36776f7d','N','Created','Date this record was created','The Created field indicates the date that this record was created.','Created','N',TO_DATE('2013-07-03 18:58:49','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:49','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',245,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200085,210517,'Y','N','N','N',7,'N',16,'N','N','Y','d90e944c-a771-4b39-add2-7ddf36776f7d','N','Created','Date this record was created','The Created field indicates the date that this record was created.','Created','N',TO_DATE('2013-07-03 18:58:49','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:49','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',245)
 ;
 
 -- Jul 3, 2013 6:58:50 PM SGT
@@ -93,7 +93,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 6:58:51 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200085,210518,110,'Y','N','N','N',10,'N',18,'N','N','Y','c93581a4-96ce-45f7-af1a-ba3e7cd57d4c','N','CreatedBy','User who created this records','The Created By field indicates the user who created this record.','Created By','N',TO_DATE('2013-07-03 18:58:50','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:50','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',246,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200085,210518,110,'Y','N','N','N',10,'N',18,'N','N','Y','c93581a4-96ce-45f7-af1a-ba3e7cd57d4c','N','CreatedBy','User who created this records','The Created By field indicates the user who created this record.','Created By','N',TO_DATE('2013-07-03 18:58:50','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:50','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',246)
 ;
 
 -- Jul 3, 2013 6:58:51 PM SGT
@@ -103,7 +103,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 6:58:52 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200085,210519,'N','N','N','N',255,'Y',10,'N','N','Y','9a6dadf3-71fb-4796-a5bd-835768bc388c','Y','Description','Optional short description of the record','A description is limited to 255 characters.','Description','Y',TO_DATE('2013-07-03 18:58:51','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:51','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',275,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200085,210519,'N','N','N','N',255,'Y',10,'N','N','Y','9a6dadf3-71fb-4796-a5bd-835768bc388c','Y','Description','Optional short description of the record','A description is limited to 255 characters.','Description','Y',TO_DATE('2013-07-03 18:58:51','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:51','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',275)
 ;
 
 -- Jul 3, 2013 6:58:52 PM SGT
@@ -113,9 +113,9 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 6:58:53 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,ReadOnlyLogic,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',1.000000000000,200085,210520,389,'Y','N','N',0,'N',40,'N',18,'N','@EntityType@=D','N','Y','0fc3aef4-eb58-4fe8-9402-a8ba7fb58871','Y','EntityType','Dictionary Entity Type; Determines ownership and synchronization','U','The Entity Types "Dictionary", "iDempiere" and "Application" might be automatically synchronized and customizations deleted or overwritten.  
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,ReadOnlyLogic,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',1.000000000000,200085,210520,389,'Y','N','N',0,'N',40,'N',18,'N','@EntityType@=D','N','Y','0fc3aef4-eb58-4fe8-9402-a8ba7fb58871','Y','EntityType','Dictionary Entity Type; Determines ownership and synchronization','U','The Entity Types "Dictionary", "iDempiere" and "Application" might be automatically synchronized and customizations deleted or overwritten.  
 
-For customizations, copy the entity and select "User"!','Entity Type','Y',TO_DATE('2013-07-03 18:58:52','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:52','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',1682,'N')
+For customizations, copy the entity and select "User"!','Entity Type','Y',TO_DATE('2013-07-03 18:58:52','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:52','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',1682)
 ;
 
 -- Jul 3, 2013 6:58:53 PM SGT
@@ -125,10 +125,10 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 6:58:54 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200085,210521,'Y','N','N','N',1,'N',20,'N','N','Y','8560d0b3-56ff-4429-b972-d70978d16423','Y','IsActive','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200085,210521,'Y','N','N','N',1,'N',20,'N','N','Y','8560d0b3-56ff-4429-b972-d70978d16423','Y','IsActive','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
 There are two reasons for de-activating and not deleting records:
 (1) The system requires the record for audit purposes.
-(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.','Active','N',TO_DATE('2013-07-03 18:58:53','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:53','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',348,'N')
+(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.','Active','N',TO_DATE('2013-07-03 18:58:53','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:53','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',348)
 ;
 
 -- Jul 3, 2013 6:58:54 PM SGT
@@ -138,7 +138,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 6:58:55 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200085,210522,'Y','N','Y',1,'N',50,'Y',10,'N','N','Y','1a9d667d-6db0-4e3d-a878-b6ef76be0415','Y','Name','Alphanumeric identifier of the entity','The name of an entity (record) is used as an default search option in addition to the search key. The name is up to 60 characters in length.','Name','Y',TO_DATE('2013-07-03 18:58:54','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:54','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',469,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200085,210522,'Y','N','Y',1,'N',50,'Y',10,'N','N','Y','1a9d667d-6db0-4e3d-a878-b6ef76be0415','Y','Name','Alphanumeric identifier of the entity','The name of an entity (record) is used as an default search option in addition to the search key. The name is up to 60 characters in length.','Name','Y',TO_DATE('2013-07-03 18:58:54','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:54','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',469)
 ;
 
 -- Jul 3, 2013 6:58:55 PM SGT
@@ -148,7 +148,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 6:58:56 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200085,210523,'Y','N','N','N',7,'N',16,'N','N','Y','6715646e-5b5e-466f-900d-9419010113cd','N','Updated','Date this record was updated','The Updated field indicates the date that this record was updated.','Updated','N',TO_DATE('2013-07-03 18:58:55','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:55','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',607,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200085,210523,'Y','N','N','N',7,'N',16,'N','N','Y','6715646e-5b5e-466f-900d-9419010113cd','N','Updated','Date this record was updated','The Updated field indicates the date that this record was updated.','Updated','N',TO_DATE('2013-07-03 18:58:55','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:55','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',607)
 ;
 
 -- Jul 3, 2013 6:58:56 PM SGT
@@ -158,7 +158,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 6:58:57 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200085,210524,110,'Y','N','N','N',10,'N',18,'N','N','Y','76a3d4ac-b5d7-4f4b-a82a-ace273f13058','N','UpdatedBy','User who updated this records','The Updated By field indicates the user who updated this record.','Updated By','N',TO_DATE('2013-07-03 18:58:56','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:56','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',608,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200085,210524,110,'Y','N','N','N',10,'N',18,'N','N','Y','76a3d4ac-b5d7-4f4b-a82a-ace273f13058','N','UpdatedBy','User who updated this records','The Updated By field indicates the user who updated this record.','Updated By','N',TO_DATE('2013-07-03 18:58:56','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:56','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',608)
 ;
 
 -- Jul 3, 2013 6:58:57 PM SGT
@@ -168,8 +168,8 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 6:58:58 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200085,210525,'Y','N','N','N',255,'Y',10,'N','N','Y','4f73a9a9-0eb9-4b57-a62f-2a75886e9286','Y','Value','Search key for the record in the format required - must be unique','A search key allows you a fast method of finding a particular record.
-If you leave the search key empty, the system automatically creates a numeric number.  The document sequence used for this fallback number is defined in the "Maintain Sequence" window with the name "DocumentNo_<TableName>", where TableName is the actual name of the table (e.g. C_Order).','Search Key','Y',TO_DATE('2013-07-03 18:58:57','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:57','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',620,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200085,210525,'Y','N','N','N',255,'Y',10,'N','N','Y','4f73a9a9-0eb9-4b57-a62f-2a75886e9286','Y','Value','Search key for the record in the format required - must be unique','A search key allows you a fast method of finding a particular record.
+If you leave the search key empty, the system automatically creates a numeric number.  The document sequence used for this fallback number is defined in the "Maintain Sequence" window with the name "DocumentNo_<TableName>", where TableName is the actual name of the table (e.g. C_Order).','Search Key','Y',TO_DATE('2013-07-03 18:58:57','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 18:58:57','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',620)
 ;
 
 -- Jul 3, 2013 6:58:58 PM SGT
@@ -199,7 +199,7 @@ DELETE FROM AD_Column WHERE AD_Column_ID=210525
 
 -- Jul 3, 2013 7:00:19 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200085,210526,'Y','N','N',0,'Y',22,'N',19,'N','N','Y','34c8ec21-088d-4a68-8004-8c288705fafe','N','AD_Table_ID','Database Table information','The Database Table provides the information of the table definition','Table','Y',TO_DATE('2013-07-03 19:00:18','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:00:18','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',126,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200085,210526,'Y','N','N',0,'Y',22,'N',19,'N','N','Y','34c8ec21-088d-4a68-8004-8c288705fafe','N','AD_Table_ID','Database Table information','The Database Table provides the information of the table definition','Table','Y',TO_DATE('2013-07-03 19:00:18','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:00:18','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',126)
 ;
 
 -- Jul 3, 2013 7:00:19 PM SGT
@@ -209,7 +209,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:01:13 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200085,210527,'N','N','N',0,'N',2000,'N',14,'N','N','Y','053e9a0c-0549-4219-b638-ef4f7e8d81c5','Y','Help','Comment or Hint','The Help field contains a hint, comment or help about the use of this item.','Comment/Help','Y',TO_DATE('2013-07-03 19:01:12','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:01:12','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',326,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200085,210527,'N','N','N',0,'N',2000,'N',14,'N','N','Y','053e9a0c-0549-4219-b638-ef4f7e8d81c5','Y','Help','Comment or Hint','The Help field contains a hint, comment or help about the use of this item.','Comment/Help','Y',TO_DATE('2013-07-03 19:01:12','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:01:12','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',326)
 ;
 
 -- Jul 3, 2013 7:01:13 PM SGT
@@ -229,7 +229,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Jul 3, 2013 7:03:14 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,DefaultValue,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200085,210528,'Y','N','N',0,'N',1,'N',20,'N','N','Y','40964cdd-d92a-4594-aa4a-a809ee6d149e','Y','IsCreateConstraint','N','Create Constraint','Y',TO_DATE('2013-07-03 19:03:14','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:03:14','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202544,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,DefaultValue,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200085,210528,'Y','N','N',0,'N',1,'N',20,'N','N','Y','40964cdd-d92a-4594-aa4a-a809ee6d149e','Y','IsCreateConstraint','N','Create Constraint','Y',TO_DATE('2013-07-03 19:03:14','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:03:14','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202544)
 ;
 
 -- Jul 3, 2013 7:03:15 PM SGT
@@ -249,7 +249,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Jul 3, 2013 7:03:49 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,DefaultValue,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200085,210529,'Y','N','N',0,'N',1,'N',20,'N','N','Y','1c0df81e-2164-4e68-a9de-3278c77aac70','Y','IsUnique','N','Unique','Y',TO_DATE('2013-07-03 19:03:48','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:03:48','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202545,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,DefaultValue,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200085,210529,'Y','N','N',0,'N',1,'N',20,'N','N','Y','1c0df81e-2164-4e68-a9de-3278c77aac70','Y','IsUnique','N','Unique','Y',TO_DATE('2013-07-03 19:03:48','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:03:48','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202545)
 ;
 
 -- Jul 3, 2013 7:03:49 PM SGT
@@ -259,7 +259,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:04:21 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200085,210530,'N','N','N',0,'N',1,'N',28,'N','N','Y','6d83088c-45f3-4a63-9667-7124feb4bff7','Y','Processing','Process Now','N',TO_DATE('2013-07-03 19:04:20','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:04:20','YYYY-MM-DD HH24:MI:SS'),100,'Y','N',0,'D','N',524,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200085,210530,'N','N','N',0,'N',1,'N',28,'N','N','Y','6d83088c-45f3-4a63-9667-7124feb4bff7','Y','Processing','Process Now','N',TO_DATE('2013-07-03 19:04:20','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:04:20','YYYY-MM-DD HH24:MI:SS'),100,'Y','N',0,'D','N',524)
 ;
 
 -- Jul 3, 2013 7:04:21 PM SGT
@@ -274,7 +274,7 @@ CREATE TABLE AD_TableIndex (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(1
 
 -- Jul 3, 2013 7:05:52 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,LoadSeq,AD_Window_ID,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,IsCentrallyMaintained,IsDeleteable,TableName,Description,Name,IsActive,AD_Org_ID,CreatedBy,Updated,UpdatedBy,Created,AD_Client_ID,IsUseLuceneIndex) VALUES ('N','4','76a1578c-f93b-43b0-90e8-459f1b275cbd',55,100,200086,'N','N','Y','D','L','Y','Y','AD_IndexColumn','Index definition for column','Table Index Column','Y',0,100,TO_DATE('2013-07-03 19:05:51','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-07-03 19:05:51','YYYY-MM-DD HH24:MI:SS'),0,'N')
+INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,LoadSeq,AD_Window_ID,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,IsCentrallyMaintained,IsDeleteable,TableName,Description,Name,IsActive,AD_Org_ID,CreatedBy,Updated,UpdatedBy,Created,AD_Client_ID) VALUES ('N','4','76a1578c-f93b-43b0-90e8-459f1b275cbd',55,100,200086,'N','N','Y','D','L','Y','Y','AD_IndexColumn','Index definition for column','Table Index Column','Y',0,100,TO_DATE('2013-07-03 19:05:51','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-07-03 19:05:51','YYYY-MM-DD HH24:MI:SS'),0)
 ;
 
 -- Jul 3, 2013 7:05:52 PM SGT
@@ -282,7 +282,7 @@ INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,LoadSeq,AD_Windo
 INSERT INTO AD_Table_Trl (AD_Language,AD_Table_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Table_Trl_UU ) SELECT l.AD_Language,t.AD_Table_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Table t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Table_ID=200086 AND NOT EXISTS (SELECT * FROM AD_Table_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Table_ID=t.AD_Table_ID)
 ;
 
--- Jul 3, 2013 7:05:53 PM SGT
+/*-- Jul 3, 2013 7:05:53 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
 INSERT INTO AD_Sequence (StartNewYear,IsTableID,IsAudited,IsAutoSequence,AD_Sequence_ID,Description,Name,IncrementNo,AD_Sequence_UU,AD_Org_ID,Created,CreatedBy,UpdatedBy,Updated,IsActive,StartNo,CurrentNextSys,CurrentNext,AD_Client_ID) VALUES ('N','Y','N','Y',200084,'Table AD_IndexColumn','AD_IndexColumn',1,'27cb5ee0-fd88-49df-9b2f-130df6edf7a9',0,TO_DATE('2013-07-03 19:05:52','YYYY-MM-DD HH24:MI:SS'),100,100,TO_DATE('2013-07-03 19:05:52','YYYY-MM-DD HH24:MI:SS'),'Y',1000000,200000,1000000,0)
 ;
@@ -290,11 +290,11 @@ INSERT INTO AD_Sequence (StartNewYear,IsTableID,IsAudited,IsAutoSequence,AD_Sequ
 -- Jul 3, 2013 7:05:53 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
 CREATE SEQUENCE AD_INDEXCOLUMN_SQ INCREMENT BY 1 MINVALUE 1000000 MAXVALUE 2147483647 START WITH 1000000
-;
+;*/
 
 -- Jul 3, 2013 7:06:15 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,AD_Val_Rule_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200086,210531,'Y','N','N','N',10,'N',19,129,'N','N','Y','68bb6535-69c1-4fdb-9547-972db5e0f151','N','AD_Client_ID','Client/Tenant for this installation.','A Client is a company or a legal entity. You cannot share data between Clients. Tenant is a synonym for Client.','Client','N',TO_DATE('2013-07-03 19:06:14','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:14','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',102,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,AD_Val_Rule_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200086,210531,'Y','N','N','N',10,'N',19,129,'N','N','Y','68bb6535-69c1-4fdb-9547-972db5e0f151','N','AD_Client_ID','Client/Tenant for this installation.','A Client is a company or a legal entity. You cannot share data between Clients. Tenant is a synonym for Client.','Client','N',TO_DATE('2013-07-03 19:06:14','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:14','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',102)
 ;
 
 -- Jul 3, 2013 7:06:15 PM SGT
@@ -304,7 +304,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:06:16 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200086,210532,'Y','N','N','N',10,'N',19,'N','N','Y','84c0705e-bd01-43ce-8d29-d8d30a234a48','N','AD_Org_ID','Organizational entity within client','An organization is a unit of your client or legal entity - examples are store, department. You can share data between organizations.','Organization','N',TO_DATE('2013-07-03 19:06:15','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:15','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',113,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200086,210532,'Y','N','N','N',10,'N',19,'N','N','Y','84c0705e-bd01-43ce-8d29-d8d30a234a48','N','AD_Org_ID','Organizational entity within client','An organization is a unit of your client or legal entity - examples are store, department. You can share data between organizations.','Organization','N',TO_DATE('2013-07-03 19:06:15','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:15','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',113)
 ;
 
 -- Jul 3, 2013 7:06:16 PM SGT
@@ -324,7 +324,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Jul 3, 2013 7:06:18 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200086,210533,'Y','N','N','N',10,'N',13,'Y','N','Y','6d99ad79-3b0c-4c78-96fa-1215cfbaff26','N','AD_IndexColumn_ID','Table Index Column','N',TO_DATE('2013-07-03 19:06:16','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:16','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202546,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200086,210533,'Y','N','N','N',10,'N',13,'Y','N','Y','6d99ad79-3b0c-4c78-96fa-1215cfbaff26','N','AD_IndexColumn_ID','Table Index Column','N',TO_DATE('2013-07-03 19:06:16','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:16','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202546)
 ;
 
 -- Jul 3, 2013 7:06:18 PM SGT
@@ -344,7 +344,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Jul 3, 2013 7:06:20 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',1.00,200086,210534,'N','N','N','N',36,'N',10,'N','N','Y','71a6ed2c-7d27-4011-8eeb-50f3efaceeed','Y','AD_IndexColumn_UU','AD_IndexColumn_UU','N',TO_DATE('2013-07-03 19:06:18','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:18','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202547,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',1.00,200086,210534,'N','N','N','N',36,'N',10,'N','N','Y','71a6ed2c-7d27-4011-8eeb-50f3efaceeed','Y','AD_IndexColumn_UU','AD_IndexColumn_UU','N',TO_DATE('2013-07-03 19:06:18','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:18','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202547)
 ;
 
 -- Jul 3, 2013 7:06:20 PM SGT
@@ -354,10 +354,10 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:06:21 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200086,210535,53222,'N','N','N',0,'N',1,'N',17,'N','N','Y','18aedcc5-752f-42d6-a7ed-a559e7f3eb03','Y','ConfigurationLevel','Configuration Level for this parameter','S','Configuration Level for this parameter
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200086,210535,53222,'N','N','N',0,'N',1,'N',17,'N','N','Y','18aedcc5-752f-42d6-a7ed-a559e7f3eb03','Y','ConfigurationLevel','Configuration Level for this parameter','S','Configuration Level for this parameter
 S - just allowed system configuration
 C - client configurable parameter
-O - org configurable parameter','Configuration Level','Y',TO_DATE('2013-07-03 19:06:20','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:20','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',53229,'N')
+O - org configurable parameter','Configuration Level','Y',TO_DATE('2013-07-03 19:06:20','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:20','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',53229)
 ;
 
 -- Jul 3, 2013 7:06:21 PM SGT
@@ -367,7 +367,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:06:22 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200086,210536,'Y','N','N','N',7,'N',16,'N','N','Y','8822100b-5efc-43ce-b691-51a7da7fd236','N','Created','Date this record was created','The Created field indicates the date that this record was created.','Created','N',TO_DATE('2013-07-03 19:06:21','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:21','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',245,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200086,210536,'Y','N','N','N',7,'N',16,'N','N','Y','8822100b-5efc-43ce-b691-51a7da7fd236','N','Created','Date this record was created','The Created field indicates the date that this record was created.','Created','N',TO_DATE('2013-07-03 19:06:21','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:21','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',245)
 ;
 
 -- Jul 3, 2013 7:06:22 PM SGT
@@ -377,7 +377,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:06:23 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200086,210537,110,'Y','N','N','N',10,'N',18,'N','N','Y','ad56469f-ba68-4c78-884d-5e0caefab100','N','CreatedBy','User who created this records','The Created By field indicates the user who created this record.','Created By','N',TO_DATE('2013-07-03 19:06:22','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:22','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',246,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200086,210537,110,'Y','N','N','N',10,'N',18,'N','N','Y','ad56469f-ba68-4c78-884d-5e0caefab100','N','CreatedBy','User who created this records','The Created By field indicates the user who created this record.','Created By','N',TO_DATE('2013-07-03 19:06:22','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:22','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',246)
 ;
 
 -- Jul 3, 2013 7:06:23 PM SGT
@@ -387,7 +387,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:06:24 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200086,210538,'N','N','N','N',255,'Y',10,'N','N','Y','9d2b6b14-6b61-4818-83bf-88b6d19084e9','Y','Description','Optional short description of the record','A description is limited to 255 characters.','Description','Y',TO_DATE('2013-07-03 19:06:23','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:23','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',275,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200086,210538,'N','N','N','N',255,'Y',10,'N','N','Y','9d2b6b14-6b61-4818-83bf-88b6d19084e9','Y','Description','Optional short description of the record','A description is limited to 255 characters.','Description','Y',TO_DATE('2013-07-03 19:06:23','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:23','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',275)
 ;
 
 -- Jul 3, 2013 7:06:24 PM SGT
@@ -397,9 +397,9 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:06:25 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,ReadOnlyLogic,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',1.000000000000,200086,210539,389,'Y','N','N',0,'N',40,'N',18,'N','@EntityType@=D','N','Y','3ad40197-d654-4c07-8aa3-9c5ad252c0c3','Y','EntityType','Dictionary Entity Type; Determines ownership and synchronization','U','The Entity Types "Dictionary", "iDempiere" and "Application" might be automatically synchronized and customizations deleted or overwritten.  
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,ReadOnlyLogic,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',1.000000000000,200086,210539,389,'Y','N','N',0,'N',40,'N',18,'N','@EntityType@=D','N','Y','3ad40197-d654-4c07-8aa3-9c5ad252c0c3','Y','EntityType','Dictionary Entity Type; Determines ownership and synchronization','U','The Entity Types "Dictionary", "iDempiere" and "Application" might be automatically synchronized and customizations deleted or overwritten.  
 
-For customizations, copy the entity and select "User"!','Entity Type','Y',TO_DATE('2013-07-03 19:06:24','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:24','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',1682,'N')
+For customizations, copy the entity and select "User"!','Entity Type','Y',TO_DATE('2013-07-03 19:06:24','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:24','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',1682)
 ;
 
 -- Jul 3, 2013 7:06:25 PM SGT
@@ -409,10 +409,10 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:06:26 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200086,210540,'Y','N','N','N',1,'N',20,'N','N','Y','dd0ab746-552e-44f7-bbb5-5058da7ed707','Y','IsActive','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200086,210540,'Y','N','N','N',1,'N',20,'N','N','Y','dd0ab746-552e-44f7-bbb5-5058da7ed707','Y','IsActive','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
 There are two reasons for de-activating and not deleting records:
 (1) The system requires the record for audit purposes.
-(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.','Active','N',TO_DATE('2013-07-03 19:06:25','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:25','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',348,'N')
+(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.','Active','N',TO_DATE('2013-07-03 19:06:25','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:25','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',348)
 ;
 
 -- Jul 3, 2013 7:06:26 PM SGT
@@ -422,7 +422,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:06:27 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200086,210541,'Y','N','Y',1,'N',50,'Y',10,'N','N','Y','d60acaf9-9742-4d16-b9e0-e7b9a22ccae5','Y','Name','Alphanumeric identifier of the entity','The name of an entity (record) is used as an default search option in addition to the search key. The name is up to 60 characters in length.','Name','Y',TO_DATE('2013-07-03 19:06:26','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:26','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',469,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200086,210541,'Y','N','Y',1,'N',50,'Y',10,'N','N','Y','d60acaf9-9742-4d16-b9e0-e7b9a22ccae5','Y','Name','Alphanumeric identifier of the entity','The name of an entity (record) is used as an default search option in addition to the search key. The name is up to 60 characters in length.','Name','Y',TO_DATE('2013-07-03 19:06:26','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:26','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',469)
 ;
 
 -- Jul 3, 2013 7:06:27 PM SGT
@@ -432,7 +432,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:06:28 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200086,210542,'Y','N','N','N',7,'N',16,'N','N','Y','9fc65a0c-d8d4-4ff1-9f47-c17cf919f3bd','N','Updated','Date this record was updated','The Updated field indicates the date that this record was updated.','Updated','N',TO_DATE('2013-07-03 19:06:27','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:27','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',607,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200086,210542,'Y','N','N','N',7,'N',16,'N','N','Y','9fc65a0c-d8d4-4ff1-9f47-c17cf919f3bd','N','Updated','Date this record was updated','The Updated field indicates the date that this record was updated.','Updated','N',TO_DATE('2013-07-03 19:06:27','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:27','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',607)
 ;
 
 -- Jul 3, 2013 7:06:28 PM SGT
@@ -442,7 +442,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:06:29 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200086,210543,110,'Y','N','N','N',10,'N',18,'N','N','Y','f2abf5e6-b75d-45fd-ba8b-3e996a980cfd','N','UpdatedBy','User who updated this records','The Updated By field indicates the user who updated this record.','Updated By','N',TO_DATE('2013-07-03 19:06:28','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:28','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',608,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200086,210543,110,'Y','N','N','N',10,'N',18,'N','N','Y','f2abf5e6-b75d-45fd-ba8b-3e996a980cfd','N','UpdatedBy','User who updated this records','The Updated By field indicates the user who updated this record.','Updated By','N',TO_DATE('2013-07-03 19:06:28','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:28','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',608)
 ;
 
 -- Jul 3, 2013 7:06:29 PM SGT
@@ -452,8 +452,8 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:06:30 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200086,210544,'Y','N','N','N',255,'Y',10,'N','N','Y','d0068aa5-3761-4a68-b758-3792f6f05ae5','Y','Value','Search key for the record in the format required - must be unique','A search key allows you a fast method of finding a particular record.
-If you leave the search key empty, the system automatically creates a numeric number.  The document sequence used for this fallback number is defined in the "Maintain Sequence" window with the name "DocumentNo_<TableName>", where TableName is the actual name of the table (e.g. C_Order).','Search Key','Y',TO_DATE('2013-07-03 19:06:29','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:29','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',620,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200086,210544,'Y','N','N','N',255,'Y',10,'N','N','Y','d0068aa5-3761-4a68-b758-3792f6f05ae5','Y','Value','Search key for the record in the format required - must be unique','A search key allows you a fast method of finding a particular record.
+If you leave the search key empty, the system automatically creates a numeric number.  The document sequence used for this fallback number is defined in the "Maintain Sequence" window with the name "DocumentNo_<TableName>", where TableName is the actual name of the table (e.g. C_Order).','Search Key','Y',TO_DATE('2013-07-03 19:06:29','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:06:29','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',620)
 ;
 
 -- Jul 3, 2013 7:06:30 PM SGT
@@ -503,7 +503,7 @@ DELETE FROM AD_Column WHERE AD_Column_ID=210544
 
 -- Jul 3, 2013 7:07:35 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,AD_Val_Rule_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200086,210545,'Y','N','N',0,'Y',22,'N',19,100,'N','N','Y','559557d9-3df4-4a49-a127-bd0f9af04dff','N','AD_Column_ID','Column in the table','Link to the database column of the table','Column','Y',TO_DATE('2013-07-03 19:07:35','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:07:35','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',104,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,AD_Val_Rule_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200086,210545,'Y','N','N',0,'Y',22,'N',19,100,'N','N','Y','559557d9-3df4-4a49-a127-bd0f9af04dff','N','AD_Column_ID','Column in the table','Link to the database column of the table','Column','Y',TO_DATE('2013-07-03 19:07:35','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:07:35','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',104)
 ;
 
 -- Jul 3, 2013 7:07:35 PM SGT
@@ -518,7 +518,7 @@ UPDATE AD_Column SET IsParent='N',Updated=TO_DATE('2013-07-03 19:08:15','YYYY-MM
 
 -- Jul 3, 2013 7:08:44 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200086,210546,'Y','N','N',0,'Y',10,'N',19,'N','N','Y','acf67ad3-8ad7-4843-bb18-805f10efc6b8','N','AD_TableIndex_ID','Table Index','Y',TO_DATE('2013-07-03 19:08:40','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:08:40','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202542,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200086,210546,'Y','N','N',0,'Y',10,'N',19,'N','N','Y','acf67ad3-8ad7-4843-bb18-805f10efc6b8','N','AD_TableIndex_ID','Table Index','Y',TO_DATE('2013-07-03 19:08:40','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:08:40','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202542)
 ;
 
 -- Jul 3, 2013 7:08:44 PM SGT
@@ -528,8 +528,8 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:08:55 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200086,210547,'N','N','N',0,'N',255,'N',10,'N','N','Y','cf641b8b-2221-4904-bf42-1b5376398ed6','Y','ColumnSQL','Virtual Column (r/o)','You can define virtual columns (not stored in the database). If defined, the Column name is the synonym of the SQL expression defined here. The SQL expression must be valid.<br>
-Example: "Updated-Created" would list the age of the entry in days','Column SQL','Y',TO_DATE('2013-07-03 19:08:54','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:08:54','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',2699,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200086,210547,'N','N','N',0,'N',255,'N',10,'N','N','Y','cf641b8b-2221-4904-bf42-1b5376398ed6','Y','ColumnSQL','Virtual Column (r/o)','You can define virtual columns (not stored in the database). If defined, the Column name is the synonym of the SQL expression defined here. The SQL expression must be valid.<br>
+Example: "Updated-Created" would list the age of the entry in days','Column SQL','Y',TO_DATE('2013-07-03 19:08:54','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:08:54','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',2699)
 ;
 
 -- Jul 3, 2013 7:08:55 PM SGT
@@ -539,7 +539,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:09:44 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200086,210548,'N','N','N',0,'N',22,'N',11,'N','N','Y','03852aaf-50be-4c82-b1a6-e2a29e3ca9b9','Y','SeqNo','Method of ordering records; lowest number comes first','The Sequence indicates the order of records','Sequence','Y',TO_DATE('2013-07-03 19:09:43','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:09:43','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',566,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200086,210548,'N','N','N',0,'N',22,'N',11,'N','N','Y','03852aaf-50be-4c82-b1a6-e2a29e3ca9b9','Y','SeqNo','Method of ordering records; lowest number comes first','The Sequence indicates the order of records','Sequence','Y',TO_DATE('2013-07-03 19:09:43','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:09:43','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',566)
 ;
 
 -- Jul 3, 2013 7:09:44 PM SGT
@@ -554,7 +554,7 @@ CREATE TABLE AD_IndexColumn (AD_Client_ID NUMBER(10) NOT NULL, AD_Column_ID NUMB
 
 -- Jul 3, 2013 7:10:56 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,LoadSeq,AD_Window_ID,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,IsCentrallyMaintained,IsDeleteable,TableName,Description,Name,IsActive,AD_Org_ID,CreatedBy,Updated,UpdatedBy,Created,AD_Client_ID,IsUseLuceneIndex) VALUES ('N','4','9562e6b3-63d2-4f97-8586-c21fee0f96dd',55,100,200087,'N','N','Y','D','L','Y','Y','AD_ViewComponent',NULL,'Database View Component','Y',0,100,TO_DATE('2013-07-03 19:10:55','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-07-03 19:10:55','YYYY-MM-DD HH24:MI:SS'),0,'N')
+INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,LoadSeq,AD_Window_ID,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,IsCentrallyMaintained,IsDeleteable,TableName,Description,Name,IsActive,AD_Org_ID,CreatedBy,Updated,UpdatedBy,Created,AD_Client_ID) VALUES ('N','4','9562e6b3-63d2-4f97-8586-c21fee0f96dd',55,100,200087,'N','N','Y','D','L','Y','Y','AD_ViewComponent',NULL,'Database View Component','Y',0,100,TO_DATE('2013-07-03 19:10:55','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-07-03 19:10:55','YYYY-MM-DD HH24:MI:SS'),0)
 ;
 
 -- Jul 3, 2013 7:10:56 PM SGT
@@ -562,7 +562,7 @@ INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,LoadSeq,AD_Windo
 INSERT INTO AD_Table_Trl (AD_Language,AD_Table_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Table_Trl_UU ) SELECT l.AD_Language,t.AD_Table_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Table t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Table_ID=200087 AND NOT EXISTS (SELECT * FROM AD_Table_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Table_ID=t.AD_Table_ID)
 ;
 
--- Jul 3, 2013 7:10:56 PM SGT
+/*-- Jul 3, 2013 7:10:56 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
 INSERT INTO AD_Sequence (StartNewYear,IsTableID,IsAudited,IsAutoSequence,AD_Sequence_ID,Description,Name,IncrementNo,AD_Sequence_UU,AD_Org_ID,Created,CreatedBy,UpdatedBy,Updated,IsActive,StartNo,CurrentNextSys,CurrentNext,AD_Client_ID) VALUES ('N','Y','N','Y',200085,'Table AD_ViewComponent','AD_ViewComponent',1,'726b9fac-628f-4312-8c27-1f334e16511f',0,TO_DATE('2013-07-03 19:10:56','YYYY-MM-DD HH24:MI:SS'),100,100,TO_DATE('2013-07-03 19:10:56','YYYY-MM-DD HH24:MI:SS'),'Y',1000000,200000,1000000,0)
 ;
@@ -570,11 +570,11 @@ INSERT INTO AD_Sequence (StartNewYear,IsTableID,IsAudited,IsAutoSequence,AD_Sequ
 -- Jul 3, 2013 7:10:57 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
 CREATE SEQUENCE AD_VIEWCOMPONENT_SQ INCREMENT BY 1 MINVALUE 1000000 MAXVALUE 2147483647 START WITH 1000000
-;
+;*/
 
 -- Jul 3, 2013 7:11:05 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,AD_Val_Rule_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200087,210549,'Y','N','N','N',10,'N',19,129,'N','N','Y','3defad9b-113a-420a-a789-e712f37994d1','N','AD_Client_ID','Client/Tenant for this installation.','A Client is a company or a legal entity. You cannot share data between Clients. Tenant is a synonym for Client.','Client','N',TO_DATE('2013-07-03 19:11:04','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:04','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',102,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,AD_Val_Rule_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200087,210549,'Y','N','N','N',10,'N',19,129,'N','N','Y','3defad9b-113a-420a-a789-e712f37994d1','N','AD_Client_ID','Client/Tenant for this installation.','A Client is a company or a legal entity. You cannot share data between Clients. Tenant is a synonym for Client.','Client','N',TO_DATE('2013-07-03 19:11:04','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:04','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',102)
 ;
 
 -- Jul 3, 2013 7:11:05 PM SGT
@@ -584,7 +584,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:11:06 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200087,210550,'Y','N','N','N',10,'N',19,'N','N','Y','23d2d3ee-9f79-4498-9ba2-46caaa040f50','N','AD_Org_ID','Organizational entity within client','An organization is a unit of your client or legal entity - examples are store, department. You can share data between organizations.','Organization','N',TO_DATE('2013-07-03 19:11:05','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:05','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',113,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200087,210550,'Y','N','N','N',10,'N',19,'N','N','Y','23d2d3ee-9f79-4498-9ba2-46caaa040f50','N','AD_Org_ID','Organizational entity within client','An organization is a unit of your client or legal entity - examples are store, department. You can share data between organizations.','Organization','N',TO_DATE('2013-07-03 19:11:05','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:05','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',113)
 ;
 
 -- Jul 3, 2013 7:11:06 PM SGT
@@ -604,7 +604,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Jul 3, 2013 7:11:08 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200087,210551,'Y','N','N','N',10,'N',13,'Y','N','Y','70e76a1c-33bf-4cd2-911c-586962795ff4','N','AD_ViewComponent_ID','Database View Component','N',TO_DATE('2013-07-03 19:11:06','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:06','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202548,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200087,210551,'Y','N','N','N',10,'N',13,'Y','N','Y','70e76a1c-33bf-4cd2-911c-586962795ff4','N','AD_ViewComponent_ID','Database View Component','N',TO_DATE('2013-07-03 19:11:06','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:06','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202548)
 ;
 
 -- Jul 3, 2013 7:11:08 PM SGT
@@ -624,7 +624,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Jul 3, 2013 7:11:10 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',1.00,200087,210552,'N','N','N','N',36,'N',10,'N','N','Y','8699a93b-91a5-423c-92f3-7921c56cece3','Y','AD_ViewComponent_UU','AD_ViewComponent_UU','N',TO_DATE('2013-07-03 19:11:08','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:08','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202549,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',1.00,200087,210552,'N','N','N','N',36,'N',10,'N','N','Y','8699a93b-91a5-423c-92f3-7921c56cece3','Y','AD_ViewComponent_UU','AD_ViewComponent_UU','N',TO_DATE('2013-07-03 19:11:08','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:08','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202549)
 ;
 
 -- Jul 3, 2013 7:11:10 PM SGT
@@ -634,10 +634,10 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:11:11 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200087,210553,53222,'N','N','N',0,'N',1,'N',17,'N','N','Y','b0f0f103-90e9-49ea-8e7f-4dc8a55d13a0','Y','ConfigurationLevel','Configuration Level for this parameter','S','Configuration Level for this parameter
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200087,210553,53222,'N','N','N',0,'N',1,'N',17,'N','N','Y','b0f0f103-90e9-49ea-8e7f-4dc8a55d13a0','Y','ConfigurationLevel','Configuration Level for this parameter','S','Configuration Level for this parameter
 S - just allowed system configuration
 C - client configurable parameter
-O - org configurable parameter','Configuration Level','Y',TO_DATE('2013-07-03 19:11:10','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:10','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',53229,'N')
+O - org configurable parameter','Configuration Level','Y',TO_DATE('2013-07-03 19:11:10','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:10','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',53229)
 ;
 
 -- Jul 3, 2013 7:11:11 PM SGT
@@ -647,7 +647,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:11:12 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200087,210554,'Y','N','N','N',7,'N',16,'N','N','Y','bfe21c8c-2773-4122-a358-4aacdabcdc9c','N','Created','Date this record was created','The Created field indicates the date that this record was created.','Created','N',TO_DATE('2013-07-03 19:11:11','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:11','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',245,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200087,210554,'Y','N','N','N',7,'N',16,'N','N','Y','bfe21c8c-2773-4122-a358-4aacdabcdc9c','N','Created','Date this record was created','The Created field indicates the date that this record was created.','Created','N',TO_DATE('2013-07-03 19:11:11','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:11','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',245)
 ;
 
 -- Jul 3, 2013 7:11:12 PM SGT
@@ -657,7 +657,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:11:13 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200087,210555,110,'Y','N','N','N',10,'N',18,'N','N','Y','e4e184cb-55ac-4653-bed9-c12444557a29','N','CreatedBy','User who created this records','The Created By field indicates the user who created this record.','Created By','N',TO_DATE('2013-07-03 19:11:12','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:12','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',246,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200087,210555,110,'Y','N','N','N',10,'N',18,'N','N','Y','e4e184cb-55ac-4653-bed9-c12444557a29','N','CreatedBy','User who created this records','The Created By field indicates the user who created this record.','Created By','N',TO_DATE('2013-07-03 19:11:12','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:12','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',246)
 ;
 
 -- Jul 3, 2013 7:11:13 PM SGT
@@ -667,7 +667,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:11:14 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200087,210556,'N','N','N','N',255,'Y',10,'N','N','Y','3c95235c-064a-4e60-a808-8fb68b7fbbe9','Y','Description','Optional short description of the record','A description is limited to 255 characters.','Description','Y',TO_DATE('2013-07-03 19:11:13','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:13','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',275,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200087,210556,'N','N','N','N',255,'Y',10,'N','N','Y','3c95235c-064a-4e60-a808-8fb68b7fbbe9','Y','Description','Optional short description of the record','A description is limited to 255 characters.','Description','Y',TO_DATE('2013-07-03 19:11:13','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:13','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',275)
 ;
 
 -- Jul 3, 2013 7:11:14 PM SGT
@@ -677,9 +677,9 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:11:14 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,ReadOnlyLogic,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',1.000000000000,200087,210557,389,'Y','N','N',0,'N',40,'N',18,'N','@EntityType@=D','N','Y','2c5540c2-f38e-47d8-8c78-b85294981c08','Y','EntityType','Dictionary Entity Type; Determines ownership and synchronization','U','The Entity Types "Dictionary", "iDempiere" and "Application" might be automatically synchronized and customizations deleted or overwritten.  
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,ReadOnlyLogic,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',1.000000000000,200087,210557,389,'Y','N','N',0,'N',40,'N',18,'N','@EntityType@=D','N','Y','2c5540c2-f38e-47d8-8c78-b85294981c08','Y','EntityType','Dictionary Entity Type; Determines ownership and synchronization','U','The Entity Types "Dictionary", "iDempiere" and "Application" might be automatically synchronized and customizations deleted or overwritten.  
 
-For customizations, copy the entity and select "User"!','Entity Type','Y',TO_DATE('2013-07-03 19:11:14','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:14','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',1682,'N')
+For customizations, copy the entity and select "User"!','Entity Type','Y',TO_DATE('2013-07-03 19:11:14','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:14','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',1682)
 ;
 
 -- Jul 3, 2013 7:11:15 PM SGT
@@ -689,10 +689,10 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:11:16 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200087,210558,'Y','N','N','N',1,'N',20,'N','N','Y','7081420e-1b11-41c9-bd59-3d5a37f921e5','Y','IsActive','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200087,210558,'Y','N','N','N',1,'N',20,'N','N','Y','7081420e-1b11-41c9-bd59-3d5a37f921e5','Y','IsActive','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
 There are two reasons for de-activating and not deleting records:
 (1) The system requires the record for audit purposes.
-(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.','Active','N',TO_DATE('2013-07-03 19:11:15','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:15','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',348,'N')
+(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.','Active','N',TO_DATE('2013-07-03 19:11:15','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:15','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',348)
 ;
 
 -- Jul 3, 2013 7:11:16 PM SGT
@@ -702,7 +702,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:11:17 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200087,210559,'Y','N','Y',1,'N',50,'Y',10,'N','N','Y','0de7e965-9ad4-43ac-bb17-55d4af26c27c','Y','Name','Alphanumeric identifier of the entity','The name of an entity (record) is used as an default search option in addition to the search key. The name is up to 60 characters in length.','Name','Y',TO_DATE('2013-07-03 19:11:16','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:16','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',469,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200087,210559,'Y','N','Y',1,'N',50,'Y',10,'N','N','Y','0de7e965-9ad4-43ac-bb17-55d4af26c27c','Y','Name','Alphanumeric identifier of the entity','The name of an entity (record) is used as an default search option in addition to the search key. The name is up to 60 characters in length.','Name','Y',TO_DATE('2013-07-03 19:11:16','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:16','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',469)
 ;
 
 -- Jul 3, 2013 7:11:17 PM SGT
@@ -712,7 +712,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:11:17 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200087,210560,'Y','N','N','N',7,'N',16,'N','N','Y','4e14741d-8cbf-4cba-9dc2-7fdbf36f2d28','N','Updated','Date this record was updated','The Updated field indicates the date that this record was updated.','Updated','N',TO_DATE('2013-07-03 19:11:17','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:17','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',607,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200087,210560,'Y','N','N','N',7,'N',16,'N','N','Y','4e14741d-8cbf-4cba-9dc2-7fdbf36f2d28','N','Updated','Date this record was updated','The Updated field indicates the date that this record was updated.','Updated','N',TO_DATE('2013-07-03 19:11:17','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:17','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',607)
 ;
 
 -- Jul 3, 2013 7:11:18 PM SGT
@@ -722,7 +722,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:11:18 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200087,210561,110,'Y','N','N','N',10,'N',18,'N','N','Y','6a777b92-100b-4bf9-9efe-824b6e780da1','N','UpdatedBy','User who updated this records','The Updated By field indicates the user who updated this record.','Updated By','N',TO_DATE('2013-07-03 19:11:18','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:18','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',608,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200087,210561,110,'Y','N','N','N',10,'N',18,'N','N','Y','6a777b92-100b-4bf9-9efe-824b6e780da1','N','UpdatedBy','User who updated this records','The Updated By field indicates the user who updated this record.','Updated By','N',TO_DATE('2013-07-03 19:11:18','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:18','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',608)
 ;
 
 -- Jul 3, 2013 7:11:18 PM SGT
@@ -732,8 +732,8 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:11:19 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200087,210562,'Y','N','N','N',255,'Y',10,'N','N','Y','5bff915c-a679-4c73-a55b-38987f0bb52f','Y','Value','Search key for the record in the format required - must be unique','A search key allows you a fast method of finding a particular record.
-If you leave the search key empty, the system automatically creates a numeric number.  The document sequence used for this fallback number is defined in the "Maintain Sequence" window with the name "DocumentNo_<TableName>", where TableName is the actual name of the table (e.g. C_Order).','Search Key','Y',TO_DATE('2013-07-03 19:11:18','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:18','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',620,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200087,210562,'Y','N','N','N',255,'Y',10,'N','N','Y','5bff915c-a679-4c73-a55b-38987f0bb52f','Y','Value','Search key for the record in the format required - must be unique','A search key allows you a fast method of finding a particular record.
+If you leave the search key empty, the system automatically creates a numeric number.  The document sequence used for this fallback number is defined in the "Maintain Sequence" window with the name "DocumentNo_<TableName>", where TableName is the actual name of the table (e.g. C_Order).','Search Key','Y',TO_DATE('2013-07-03 19:11:18','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:11:18','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',620)
 ;
 
 -- Jul 3, 2013 7:11:19 PM SGT
@@ -763,7 +763,7 @@ DELETE FROM AD_Column WHERE AD_Column_ID=210562
 
 -- Jul 3, 2013 7:12:02 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200087,210563,'Y','N','N',0,'Y',22,'N',19,'N','N','Y','3098139e-c0f6-4155-85de-cba585caaa3f','N','AD_Table_ID','Database Table information','The Database Table provides the information of the table definition','Table','Y',TO_DATE('2013-07-03 19:12:01','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:12:01','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',126,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200087,210563,'Y','N','N',0,'Y',22,'N',19,'N','N','Y','3098139e-c0f6-4155-85de-cba585caaa3f','N','AD_Table_ID','Database Table information','The Database Table provides the information of the table definition','Table','Y',TO_DATE('2013-07-03 19:12:01','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:12:01','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',126)
 ;
 
 -- Jul 3, 2013 7:12:02 PM SGT
@@ -773,7 +773,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:12:15 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200087,210564,'N','N','N',0,'N',2000,'N',14,'N','N','Y','7dd25cf6-7ee1-4024-8469-8b83e17c3f44','Y','Help','Comment or Hint','The Help field contains a hint, comment or help about the use of this item.','Comment/Help','Y',TO_DATE('2013-07-03 19:12:14','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:12:14','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',326,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200087,210564,'N','N','N',0,'N',2000,'N',14,'N','N','Y','7dd25cf6-7ee1-4024-8469-8b83e17c3f44','Y','Help','Comment or Hint','The Help field contains a hint, comment or help about the use of this item.','Comment/Help','Y',TO_DATE('2013-07-03 19:12:14','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:12:14','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',326)
 ;
 
 -- Jul 3, 2013 7:12:15 PM SGT
@@ -783,7 +783,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:12:50 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200087,210565,'N','N','N',0,'N',2000,'N',14,'N','N','Y','7401a1bb-6efe-44c7-ae9a-9ae596593123','Y','OtherClause','Other SQL Clause','Any other complete clause like GROUP BY, HAVING, ORDER BY, etc. after WHERE clause.','Other SQL Clause','Y',TO_DATE('2013-07-03 19:12:49','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:12:49','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',2642,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200087,210565,'N','N','N',0,'N',2000,'N',14,'N','N','Y','7401a1bb-6efe-44c7-ae9a-9ae596593123','Y','OtherClause','Other SQL Clause','Any other complete clause like GROUP BY, HAVING, ORDER BY, etc. after WHERE clause.','Other SQL Clause','Y',TO_DATE('2013-07-03 19:12:49','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:12:49','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',2642)
 ;
 
 -- Jul 3, 2013 7:12:50 PM SGT
@@ -803,7 +803,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Jul 3, 2013 7:13:40 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200087,210566,53290,'N','N','N',0,'N',10,'N',18,'N','N','Y','84d5e699-596f-4e0b-b8bc-900e70632a94','Y','Referenced_Table_ID','Referenced Table','Y',TO_DATE('2013-07-03 19:13:40','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:13:40','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202550,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200087,210566,53290,'N','N','N',0,'N',10,'N',18,'N','N','Y','84d5e699-596f-4e0b-b8bc-900e70632a94','Y','Referenced_Table_ID','Referenced Table','Y',TO_DATE('2013-07-03 19:13:40','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:13:40','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202550)
 ;
 
 -- Jul 3, 2013 7:13:40 PM SGT
@@ -813,7 +813,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:13:49 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200087,210567,'N','N','N',0,'N',22,'N',11,'N','N','Y','7af1b351-f155-4f36-bc25-fa301d23a62c','Y','SeqNo','Method of ordering records; lowest number comes first','The Sequence indicates the order of records','Sequence','Y',TO_DATE('2013-07-03 19:13:48','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:13:48','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',566,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200087,210567,'N','N','N',0,'N',22,'N',11,'N','N','Y','7af1b351-f155-4f36-bc25-fa301d23a62c','Y','SeqNo','Method of ordering records; lowest number comes first','The Sequence indicates the order of records','Sequence','Y',TO_DATE('2013-07-03 19:13:48','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:13:48','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',566)
 ;
 
 -- Jul 3, 2013 7:13:49 PM SGT
@@ -823,7 +823,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:14:00 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200087,210568,'N','N','N',0,'N',2000,'N',14,'N','N','Y','c599559e-b0eb-451e-bbaf-ecb66c06bb8e','Y','WhereClause','Fully qualified SQL WHERE clause','The Where Clause indicates the SQL WHERE clause to use for record selection. The WHERE clause is added to the query. Fully qualified means "tablename.columnname".','Sql WHERE','Y',TO_DATE('2013-07-03 19:13:59','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:13:59','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',630,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200087,210568,'N','N','N',0,'N',2000,'N',14,'N','N','Y','c599559e-b0eb-451e-bbaf-ecb66c06bb8e','Y','WhereClause','Fully qualified SQL WHERE clause','The Where Clause indicates the SQL WHERE clause to use for record selection. The WHERE clause is added to the query. Fully qualified means "tablename.columnname".','Sql WHERE','Y',TO_DATE('2013-07-03 19:13:59','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:13:59','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',630)
 ;
 
 -- Jul 3, 2013 7:14:00 PM SGT
@@ -833,7 +833,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:14:35 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200087,210569,'N','N','N',0,'N',2000,'N',14,'N','N','Y','afd5acbd-0e28-4491-9674-eb15aa81a784','Y','FromClause','SQL FROM clause','The Select Clause indicates the SQL FROM clause to use for selecting the record for a measure calculation. It can have JOIN clauses. Do not include the FROM itself.','Sql FROM','Y',TO_DATE('2013-07-03 19:14:35','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:14:35','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',2101,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200087,210569,'N','N','N',0,'N',2000,'N',14,'N','N','Y','afd5acbd-0e28-4491-9674-eb15aa81a784','Y','FromClause','SQL FROM clause','The Select Clause indicates the SQL FROM clause to use for selecting the record for a measure calculation. It can have JOIN clauses. Do not include the FROM itself.','Sql FROM','Y',TO_DATE('2013-07-03 19:14:35','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:14:35','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',2101)
 ;
 
 -- Jul 3, 2013 7:14:35 PM SGT
@@ -848,7 +848,7 @@ CREATE TABLE AD_ViewComponent (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBE
 
 -- Jul 3, 2013 7:15:19 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,LoadSeq,AD_Window_ID,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,IsCentrallyMaintained,IsDeleteable,TableName,Name,IsActive,AD_Org_ID,CreatedBy,Updated,UpdatedBy,Created,AD_Client_ID,IsUseLuceneIndex) VALUES ('N','4','2935adf3-6380-4faf-9a50-671fa508ae30',55,100,200088,'N','N','Y','D','L','Y','Y','AD_ViewColumn','Database View Column','Y',0,100,TO_DATE('2013-07-03 19:15:18','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-07-03 19:15:18','YYYY-MM-DD HH24:MI:SS'),0,'N')
+INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,LoadSeq,AD_Window_ID,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,IsCentrallyMaintained,IsDeleteable,TableName,Name,IsActive,AD_Org_ID,CreatedBy,Updated,UpdatedBy,Created,AD_Client_ID) VALUES ('N','4','2935adf3-6380-4faf-9a50-671fa508ae30',55,100,200088,'N','N','Y','D','L','Y','Y','AD_ViewColumn','Database View Column','Y',0,100,TO_DATE('2013-07-03 19:15:18','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-07-03 19:15:18','YYYY-MM-DD HH24:MI:SS'),0)
 ;
 
 -- Jul 3, 2013 7:15:19 PM SGT
@@ -856,7 +856,7 @@ INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,LoadSeq,AD_Windo
 INSERT INTO AD_Table_Trl (AD_Language,AD_Table_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Table_Trl_UU ) SELECT l.AD_Language,t.AD_Table_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Table t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Table_ID=200088 AND NOT EXISTS (SELECT * FROM AD_Table_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Table_ID=t.AD_Table_ID)
 ;
 
--- Jul 3, 2013 7:15:20 PM SGT
+/*-- Jul 3, 2013 7:15:20 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
 INSERT INTO AD_Sequence (StartNewYear,IsTableID,IsAudited,IsAutoSequence,AD_Sequence_ID,Description,Name,IncrementNo,AD_Sequence_UU,AD_Org_ID,Created,CreatedBy,UpdatedBy,Updated,IsActive,StartNo,CurrentNextSys,CurrentNext,AD_Client_ID) VALUES ('N','Y','N','Y',200086,'Table AD_ViewColumn','AD_ViewColumn',1,'4b0c63f9-5963-42dc-877b-90c33342e867',0,TO_DATE('2013-07-03 19:15:19','YYYY-MM-DD HH24:MI:SS'),100,100,TO_DATE('2013-07-03 19:15:19','YYYY-MM-DD HH24:MI:SS'),'Y',1000000,200000,1000000,0)
 ;
@@ -864,11 +864,11 @@ INSERT INTO AD_Sequence (StartNewYear,IsTableID,IsAudited,IsAutoSequence,AD_Sequ
 -- Jul 3, 2013 7:15:20 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
 CREATE SEQUENCE AD_VIEWCOLUMN_SQ INCREMENT BY 1 MINVALUE 1000000 MAXVALUE 2147483647 START WITH 1000000
-;
+;*/
 
 -- Jul 3, 2013 7:15:28 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,AD_Val_Rule_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200088,210570,'Y','N','N','N',10,'N',19,129,'N','N','Y','dc75ca98-f7df-44e8-b13a-a63ccd49ff6b','N','AD_Client_ID','Client/Tenant for this installation.','A Client is a company or a legal entity. You cannot share data between Clients. Tenant is a synonym for Client.','Client','N',TO_DATE('2013-07-03 19:15:27','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:27','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',102,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,AD_Val_Rule_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200088,210570,'Y','N','N','N',10,'N',19,129,'N','N','Y','dc75ca98-f7df-44e8-b13a-a63ccd49ff6b','N','AD_Client_ID','Client/Tenant for this installation.','A Client is a company or a legal entity. You cannot share data between Clients. Tenant is a synonym for Client.','Client','N',TO_DATE('2013-07-03 19:15:27','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:27','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',102)
 ;
 
 -- Jul 3, 2013 7:15:28 PM SGT
@@ -878,7 +878,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:15:29 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200088,210571,'Y','N','N','N',10,'N',19,'N','N','Y','e02bbee2-27b1-43ae-b7e1-6939a6b192d7','N','AD_Org_ID','Organizational entity within client','An organization is a unit of your client or legal entity - examples are store, department. You can share data between organizations.','Organization','N',TO_DATE('2013-07-03 19:15:28','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:28','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',113,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200088,210571,'Y','N','N','N',10,'N',19,'N','N','Y','e02bbee2-27b1-43ae-b7e1-6939a6b192d7','N','AD_Org_ID','Organizational entity within client','An organization is a unit of your client or legal entity - examples are store, department. You can share data between organizations.','Organization','N',TO_DATE('2013-07-03 19:15:28','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:28','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',113)
 ;
 
 -- Jul 3, 2013 7:15:29 PM SGT
@@ -898,7 +898,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Jul 3, 2013 7:15:31 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200088,210572,'Y','N','N','N',10,'N',13,'Y','N','Y','c302370a-ab11-4a10-857c-5d1f2f48a6f9','N','AD_ViewColumn_ID','Database View Column','N',TO_DATE('2013-07-03 19:15:29','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:29','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202551,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200088,210572,'Y','N','N','N',10,'N',13,'Y','N','Y','c302370a-ab11-4a10-857c-5d1f2f48a6f9','N','AD_ViewColumn_ID','Database View Column','N',TO_DATE('2013-07-03 19:15:29','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:29','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202551)
 ;
 
 -- Jul 3, 2013 7:15:31 PM SGT
@@ -918,7 +918,7 @@ INSERT INTO AD_Element_Trl (AD_Language,AD_Element_ID, Help,PO_Description,PO_He
 
 -- Jul 3, 2013 7:15:32 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',1.00,200088,210573,'N','N','N','N',36,'N',10,'N','N','Y','3c56994d-7121-41d8-a08f-8cf19d8d8a61','Y','AD_ViewColumn_UU','AD_ViewColumn_UU','N',TO_DATE('2013-07-03 19:15:31','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:31','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202552,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',1.00,200088,210573,'N','N','N','N',36,'N',10,'N','N','Y','3c56994d-7121-41d8-a08f-8cf19d8d8a61','Y','AD_ViewColumn_UU','AD_ViewColumn_UU','N',TO_DATE('2013-07-03 19:15:31','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:31','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202552)
 ;
 
 -- Jul 3, 2013 7:15:32 PM SGT
@@ -928,10 +928,10 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:15:33 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200088,210574,53222,'N','N','N',0,'N',1,'N',17,'N','N','Y','abb33d78-99c2-4acd-986e-b90616296e9d','Y','ConfigurationLevel','Configuration Level for this parameter','S','Configuration Level for this parameter
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200088,210574,53222,'N','N','N',0,'N',1,'N',17,'N','N','Y','abb33d78-99c2-4acd-986e-b90616296e9d','Y','ConfigurationLevel','Configuration Level for this parameter','S','Configuration Level for this parameter
 S - just allowed system configuration
 C - client configurable parameter
-O - org configurable parameter','Configuration Level','Y',TO_DATE('2013-07-03 19:15:32','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:32','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',53229,'N')
+O - org configurable parameter','Configuration Level','Y',TO_DATE('2013-07-03 19:15:32','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:32','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',53229)
 ;
 
 -- Jul 3, 2013 7:15:33 PM SGT
@@ -941,7 +941,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:15:35 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200088,210575,'Y','N','N','N',7,'N',16,'N','N','Y','a5ebf6f3-1231-4b02-8672-827ef5dd03a9','N','Created','Date this record was created','The Created field indicates the date that this record was created.','Created','N',TO_DATE('2013-07-03 19:15:33','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:33','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',245,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200088,210575,'Y','N','N','N',7,'N',16,'N','N','Y','a5ebf6f3-1231-4b02-8672-827ef5dd03a9','N','Created','Date this record was created','The Created field indicates the date that this record was created.','Created','N',TO_DATE('2013-07-03 19:15:33','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:33','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',245)
 ;
 
 -- Jul 3, 2013 7:15:35 PM SGT
@@ -951,7 +951,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:15:35 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200088,210576,110,'Y','N','N','N',10,'N',18,'N','N','Y','7edda7bd-722c-49a2-96fc-61baee3cb98c','N','CreatedBy','User who created this records','The Created By field indicates the user who created this record.','Created By','N',TO_DATE('2013-07-03 19:15:35','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:35','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',246,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200088,210576,110,'Y','N','N','N',10,'N',18,'N','N','Y','7edda7bd-722c-49a2-96fc-61baee3cb98c','N','CreatedBy','User who created this records','The Created By field indicates the user who created this record.','Created By','N',TO_DATE('2013-07-03 19:15:35','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:35','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',246)
 ;
 
 -- Jul 3, 2013 7:15:36 PM SGT
@@ -961,7 +961,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:15:36 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200088,210577,'N','N','N','N',255,'Y',10,'N','N','Y','084c2669-a6aa-46f7-81a0-7c2f5ff062eb','Y','Description','Optional short description of the record','A description is limited to 255 characters.','Description','Y',TO_DATE('2013-07-03 19:15:36','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:36','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',275,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200088,210577,'N','N','N','N',255,'Y',10,'N','N','Y','084c2669-a6aa-46f7-81a0-7c2f5ff062eb','Y','Description','Optional short description of the record','A description is limited to 255 characters.','Description','Y',TO_DATE('2013-07-03 19:15:36','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:36','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',275)
 ;
 
 -- Jul 3, 2013 7:15:36 PM SGT
@@ -971,9 +971,9 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:15:37 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,ReadOnlyLogic,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',1.000000000000,200088,210578,389,'Y','N','N',0,'N',40,'N',18,'N','@EntityType@=D','N','Y','31bf3f2b-d0ce-456a-93cb-ff857569fec3','Y','EntityType','Dictionary Entity Type; Determines ownership and synchronization','U','The Entity Types "Dictionary", "iDempiere" and "Application" might be automatically synchronized and customizations deleted or overwritten.  
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,ReadOnlyLogic,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,DefaultValue,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',1.000000000000,200088,210578,389,'Y','N','N',0,'N',40,'N',18,'N','@EntityType@=D','N','Y','31bf3f2b-d0ce-456a-93cb-ff857569fec3','Y','EntityType','Dictionary Entity Type; Determines ownership and synchronization','U','The Entity Types "Dictionary", "iDempiere" and "Application" might be automatically synchronized and customizations deleted or overwritten.  
 
-For customizations, copy the entity and select "User"!','Entity Type','Y',TO_DATE('2013-07-03 19:15:37','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:37','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',1682,'N')
+For customizations, copy the entity and select "User"!','Entity Type','Y',TO_DATE('2013-07-03 19:15:37','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:37','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',1682)
 ;
 
 -- Jul 3, 2013 7:15:37 PM SGT
@@ -983,10 +983,10 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:15:38 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200088,210579,'Y','N','N','N',1,'N',20,'N','N','Y','ae609f7b-598c-464a-8fac-12156892c15e','Y','IsActive','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200088,210579,'Y','N','N','N',1,'N',20,'N','N','Y','ae609f7b-598c-464a-8fac-12156892c15e','Y','IsActive','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
 There are two reasons for de-activating and not deleting records:
 (1) The system requires the record for audit purposes.
-(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.','Active','N',TO_DATE('2013-07-03 19:15:37','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:37','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',348,'N')
+(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.','Active','N',TO_DATE('2013-07-03 19:15:37','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:37','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',348)
 ;
 
 -- Jul 3, 2013 7:15:38 PM SGT
@@ -996,7 +996,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:15:39 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200088,210580,'Y','N','Y',1,'N',50,'Y',10,'N','N','Y','cedf8d05-1580-4528-b126-7d1ba5faeb12','Y','Name','Alphanumeric identifier of the entity','The name of an entity (record) is used as an default search option in addition to the search key. The name is up to 60 characters in length.','Name','Y',TO_DATE('2013-07-03 19:15:38','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:38','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',469,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200088,210580,'Y','N','Y',1,'N',50,'Y',10,'N','N','Y','cedf8d05-1580-4528-b126-7d1ba5faeb12','Y','Name','Alphanumeric identifier of the entity','The name of an entity (record) is used as an default search option in addition to the search key. The name is up to 60 characters in length.','Name','Y',TO_DATE('2013-07-03 19:15:38','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:38','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',469)
 ;
 
 -- Jul 3, 2013 7:15:39 PM SGT
@@ -1006,7 +1006,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:15:40 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200088,210581,'Y','N','N','N',7,'N',16,'N','N','Y','d4b07f69-7785-4f19-bb48-4bbc0a3f106f','N','Updated','Date this record was updated','The Updated field indicates the date that this record was updated.','Updated','N',TO_DATE('2013-07-03 19:15:39','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:39','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',607,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200088,210581,'Y','N','N','N',7,'N',16,'N','N','Y','d4b07f69-7785-4f19-bb48-4bbc0a3f106f','N','Updated','Date this record was updated','The Updated field indicates the date that this record was updated.','Updated','N',TO_DATE('2013-07-03 19:15:39','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:39','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',607)
 ;
 
 -- Jul 3, 2013 7:15:40 PM SGT
@@ -1016,7 +1016,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:15:41 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200088,210582,110,'Y','N','N','N',10,'N',18,'N','N','Y','28247fc0-72a8-4bc4-97cb-6e458a1f4d66','N','UpdatedBy','User who updated this records','The Updated By field indicates the user who updated this record.','Updated By','N',TO_DATE('2013-07-03 19:15:40','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:40','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',608,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200088,210582,110,'Y','N','N','N',10,'N',18,'N','N','Y','28247fc0-72a8-4bc4-97cb-6e458a1f4d66','N','UpdatedBy','User who updated this records','The Updated By field indicates the user who updated this record.','Updated By','N',TO_DATE('2013-07-03 19:15:40','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:40','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',608)
 ;
 
 -- Jul 3, 2013 7:15:41 PM SGT
@@ -1026,8 +1026,8 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:15:42 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES ('N',0,200088,210583,'Y','N','N','N',255,'Y',10,'N','N','Y','83ab8685-90cd-4a0e-bfd4-33321881a5eb','Y','Value','Search key for the record in the format required - must be unique','A search key allows you a fast method of finding a particular record.
-If you leave the search key empty, the system automatically creates a numeric number.  The document sequence used for this fallback number is defined in the "Maintain Sequence" window with the name "DocumentNo_<TableName>", where TableName is the actual name of the table (e.g. C_Order).','Search Key','Y',TO_DATE('2013-07-03 19:15:42','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:42','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',620,'N')
+INSERT INTO AD_Column (IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES ('N',0,200088,210583,'Y','N','N','N',255,'Y',10,'N','N','Y','83ab8685-90cd-4a0e-bfd4-33321881a5eb','Y','Value','Search key for the record in the format required - must be unique','A search key allows you a fast method of finding a particular record.
+If you leave the search key empty, the system automatically creates a numeric number.  The document sequence used for this fallback number is defined in the "Maintain Sequence" window with the name "DocumentNo_<TableName>", where TableName is the actual name of the table (e.g. C_Order).','Search Key','Y',TO_DATE('2013-07-03 19:15:42','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:15:42','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',620)
 ;
 
 -- Jul 3, 2013 7:15:42 PM SGT
@@ -1067,7 +1067,7 @@ DELETE FROM AD_Column WHERE AD_Column_ID=210583
 
 -- Jul 3, 2013 7:16:32 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200088,210584,'Y','N','N',0,'Y',10,'N',19,'N','N','Y','dac5a3a6-52b1-4dfa-8032-38707b765d94','N','AD_ViewComponent_ID','Database View Component','Y',TO_DATE('2013-07-03 19:16:31','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:16:31','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202548,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200088,210584,'Y','N','N',0,'Y',10,'N',19,'N','N','Y','dac5a3a6-52b1-4dfa-8032-38707b765d94','N','AD_ViewComponent_ID','Database View Component','Y',TO_DATE('2013-07-03 19:16:31','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:16:31','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202548)
 ;
 
 -- Jul 3, 2013 7:16:32 PM SGT
@@ -1077,7 +1077,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:17:29 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200088,210585,'N','N','N',0,'N',30,'Y',10,'N','N','Y','14ce970a-593a-4263-aa73-623d207133fd','Y','ColumnName','Name of the column in the database','The Column Name indicates the name of a column on a table as defined in the database.','DB Column Name','Y',TO_DATE('2013-07-03 19:17:29','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:17:29','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',228,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200088,210585,'N','N','N',0,'N',30,'Y',10,'N','N','Y','14ce970a-593a-4263-aa73-623d207133fd','Y','ColumnName','Name of the column in the database','The Column Name indicates the name of a column on a table as defined in the database.','DB Column Name','Y',TO_DATE('2013-07-03 19:17:29','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:17:29','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',228)
 ;
 
 -- Jul 3, 2013 7:17:30 PM SGT
@@ -1087,8 +1087,8 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:17:40 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200088,210586,'N','N','N',0,'N',255,'N',10,'N','N','Y','b76c8658-020a-4b4a-a3ed-5a270c29af9e','Y','ColumnSQL','Virtual Column (r/o)','You can define virtual columns (not stored in the database). If defined, the Column name is the synonym of the SQL expression defined here. The SQL expression must be valid.<br>
-Example: "Updated-Created" would list the age of the entry in days','Column SQL','Y',TO_DATE('2013-07-03 19:17:39','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:17:39','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',2699,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200088,210586,'N','N','N',0,'N',255,'N',10,'N','N','Y','b76c8658-020a-4b4a-a3ed-5a270c29af9e','Y','ColumnSQL','Virtual Column (r/o)','You can define virtual columns (not stored in the database). If defined, the Column name is the synonym of the SQL expression defined here. The SQL expression must be valid.<br>
+Example: "Updated-Created" would list the age of the entry in days','Column SQL','Y',TO_DATE('2013-07-03 19:17:39','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:17:39','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',2699)
 ;
 
 -- Jul 3, 2013 7:17:40 PM SGT
@@ -1098,7 +1098,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Jul 3, 2013 7:18:04 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200088,210587,'N','N','N',0,'N',2000,'N',14,'N','N','Y','db94c9e1-7eab-4544-a37d-56865484be28','Y','Help','Comment or Hint','The Help field contains a hint, comment or help about the use of this item.','Comment/Help','Y',TO_DATE('2013-07-03 19:18:04','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:18:04','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',326,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200088,210587,'N','N','N',0,'N',2000,'N',14,'N','N','Y','db94c9e1-7eab-4544-a37d-56865484be28','Y','Help','Comment or Hint','The Help field contains a hint, comment or help about the use of this item.','Comment/Help','Y',TO_DATE('2013-07-03 19:18:04','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:18:04','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',326)
 ;
 
 -- Jul 3, 2013 7:18:04 PM SGT
@@ -1248,7 +1248,7 @@ UPDATE AD_Ref_List SET Value='V',Updated=TO_DATE('2013-07-03 19:22:06','YYYY-MM-
 
 -- Jul 3, 2013 7:22:38 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200088,210588,200070,'N','N','N',0,'N',1,'N',17,'N','N','Y','da572b1d-90e6-405e-a039-d7ed9be9ca0a','Y','DBDataType','Database Data Type','Y',TO_DATE('2013-07-03 19:22:38','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:22:38','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202553,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,AD_Reference_Value_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200088,210588,200070,'N','N','N',0,'N',1,'N',17,'N','N','Y','da572b1d-90e6-405e-a039-d7ed9be9ca0a','Y','DBDataType','Database Data Type','Y',TO_DATE('2013-07-03 19:22:38','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-03 19:22:38','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202553)
 ;
 
 -- Jul 3, 2013 7:22:38 PM SGT
@@ -1944,7 +1944,7 @@ INSERT INTO AD_Field_Trl (AD_Language,AD_Field_ID, Help,Description,Name, IsTran
 
 -- Jul 4, 2013 2:46:51 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200087,210589,'N','N','N',0,'N',1,'N',28,'N','N','Y','a77c432c-7114-4fc6-9270-2210e7bab9bb','Y','Processing','Process Now','N',TO_DATE('2013-07-04 14:46:50','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-04 14:46:50','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',524,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200087,210589,'N','N','N',0,'N',1,'N',28,'N','N','Y','a77c432c-7114-4fc6-9270-2210e7bab9bb','Y','Processing','Process Now','N',TO_DATE('2013-07-04 14:46:50','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-04 14:46:50','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',524)
 ;
 
 -- Jul 4, 2013 2:46:51 PM SGT
@@ -2445,7 +2445,7 @@ UPDATE AD_Process SET Classname='org.adempiere.process.TableIndexValidate',Updat
 
 -- Jul 4, 2013 3:21:11 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,200085,210590,'N','N','N',0,'N',22,'N',19,'N','N','Y','3eba565e-3cf6-4a25-9e8b-bdc6cc2dfa43','Y','AD_Message_ID','System Message','Information and Error messages','Message','Y',TO_DATE('2013-07-04 15:21:09','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-04 15:21:09','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',1752,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,200085,210590,'N','N','N',0,'N',22,'N',19,'N','N','Y','3eba565e-3cf6-4a25-9e8b-bdc6cc2dfa43','Y','AD_Message_ID','System Message','Information and Error messages','Message','Y',TO_DATE('2013-07-04 15:21:09','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-04 15:21:09','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',1752)
 ;
 
 -- Jul 4, 2013 3:21:11 PM SGT
@@ -2567,7 +2567,7 @@ ALTER TABLE AD_ViewComponent DROP COLUMN Processing;
 
 -- Jul 4, 2013 5:03:54 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Process_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsUseLuceneIndex) VALUES (0,'N',0,100,210591,'N','N','N',0,'N',1,'N',28,'N',200056,'N','Y','7b16c295-4c32-4812-955e-695a99d8724f','Y','Processing','Process Now','N',TO_DATE('2013-07-04 17:03:53','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-04 17:03:53','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',524,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,AD_Process_ID,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',0,100,210591,'N','N','N',0,'N',1,'N',28,'N',200056,'N','Y','7b16c295-4c32-4812-955e-695a99d8724f','Y','Processing','Process Now','N',TO_DATE('2013-07-04 17:03:53','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2013-07-04 17:03:53','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',524)
 ;
 
 -- Jul 4, 2013 5:03:55 PM SGT
