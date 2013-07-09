@@ -578,7 +578,10 @@ public abstract class AbstractElementHandler implements ElementHandler {
     protected boolean hasUUIDKey(PIPOContext ctx, Element element) {
     	String tableName = element.getElementValue();
     	String uuidColumn = PO.getUUIDColumnName(tableName);
-    	String uuid = element.properties.get(uuidColumn).contents.toString();
+    	String uuid = null;
+    	if (element.properties.containsKey(uuidColumn)) {
+    		uuid = element.properties.get(uuidColumn).contents.toString();
+    	}
     	return (uuid != null && uuid.trim().length() == 36);
     }
 
