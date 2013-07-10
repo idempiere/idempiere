@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -314,6 +315,7 @@ public class GridTabVO implements Evaluatee, Serializable
 			pstmt = null;
 		}		
 		
+		Collections.sort(mTabVO.Fields, new GridFieldVO.SeqNoComparator());
 		mTabVO.initFields = true;
 		
 		return mTabVO.Fields.size() != 0;

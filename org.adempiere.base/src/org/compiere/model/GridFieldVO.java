@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -65,6 +66,7 @@ public class GridFieldVO implements Serializable
 				.append(" ORDER BY IsDisplayed DESC, SeqNo");
 		return sql.toString();
 	}   //  getSQL
+
 
 	/**
 	 *  Create Field Value Object
@@ -112,6 +114,8 @@ public class GridFieldVO implements Serializable
 					vo.IsDisplayed = "Y".equals(rs.getString (i));
 				else if (columnName.equalsIgnoreCase("IsDisplayedGrid"))
 					vo.IsDisplayedGrid = "Y".equals(rs.getString (i));
+				else if (columnName.equalsIgnoreCase("SeqNo"))
+					vo.SeqNo = rs.getInt (i);
 				else if (columnName.equalsIgnoreCase("SeqNoGrid"))
 					vo.SeqNoGrid = rs.getInt (i);
 				else if (columnName.equalsIgnoreCase("DisplayLogic"))
@@ -275,7 +279,11 @@ public class GridFieldVO implements Serializable
 				if (userDef.getNumLines() > 0)
 					vo.NumLines=userDef.getNumLines();
 				if (userDef.getIsToolbarButton() != null)
-					vo.IsToolbarButton  = "Y".equals(userDef.getIsToolbarButton());		
+					vo.IsToolbarButton  = "Y".equals(userDef.getIsToolbarButton());
+				//IDEMPIERE-1120 Implement Field SeqNo customization
+				if (userDef.getSeqNo() > 0)
+				    vo.SeqNo = userDef.getSeqNo();
+
 			}
 		}
 		//
@@ -491,8 +499,10 @@ public class GridFieldVO implements Serializable
 	public boolean      IsDisplayed = false;
 	/**	Displayed Grid		*/
 	public boolean      IsDisplayedGrid = false;
+	/** Position     	*/
+	public int			SeqNo = 0;
 	/** Grid Display sequence	*/
-	public int	SeqNoGrid = 0;
+	public int			SeqNoGrid = 0;
 	/**	Dislay Logic	*/
 	public String       DisplayLogic = "";
 	/**	Default Value	*/
@@ -684,6 +694,7 @@ public class GridFieldVO implements Serializable
 		clone.IsDisplayed = IsDisplayed;
 		clone.IsDisplayedGrid = IsDisplayedGrid;
 		clone.AD_Field_ID = AD_Field_ID;
+		clone.SeqNo = SeqNo;
 		clone.SeqNoGrid = SeqNoGrid;
 		clone.DisplayLogic = DisplayLogic;
 		clone.DefaultValue = DefaultValue;
@@ -741,4 +752,16 @@ public class GridFieldVO implements Serializable
 		return sb.toString ();
 	}	//	toString
 	
-}   //  MFieldVO
+	/**
+	 * 
+	 * @author a42niem
+	 * IDEMPIERE-1120 Implement Field SeqNo customization
+	 */
+	public static class SeqNoComparator implements Comparator<GridFieldVO> {
+		@Override
+		public int compare(GridFieldVO gf1, GridFieldVO gf2) {
+			return (new Integer(gf1.SeqNo)).compareTo(new Integer(gf2.SeqNo));
+		}
+	}
+
+}   //  GridFieldVO

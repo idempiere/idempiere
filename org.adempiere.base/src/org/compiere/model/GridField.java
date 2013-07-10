@@ -28,6 +28,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -1782,6 +1783,7 @@ public class GridField
 					AD_Window_ID, AD_Tab_ID, readOnly, rs);
 				listVO.add(vo);
 			}
+			Collections.sort(listVO, new GridFieldVO.SeqNoComparator());
 		}
 		catch (Exception e)
 		{
