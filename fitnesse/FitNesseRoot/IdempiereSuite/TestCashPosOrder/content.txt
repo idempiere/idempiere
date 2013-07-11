@@ -131,6 +131,5 @@ Check existance of cash payment (now on payment table)
 |*Read*      |                        |
 |documentno  |                        |
 |description |                        |
-|amount      |                        |
 |processed   |                        |
 

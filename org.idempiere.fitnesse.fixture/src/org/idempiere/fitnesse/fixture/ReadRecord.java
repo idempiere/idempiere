@@ -66,7 +66,7 @@ public class ReadRecord extends TableFixture {
 		MTable table = null;
 		POInfo poinfo = null;
 		boolean alreadyread = false;
-		String whereclause = new String("");
+		StringBuilder whereclause = new StringBuilder();
 		boolean isErrorExpected = false;
 		for (int i = 0; i < rows; i++) {
 			String cell_title = getText(i, 0);
@@ -90,7 +90,7 @@ public class ReadRecord extends TableFixture {
 					exception(getCell(i, 1), new Exception("*Where* must be defined in second row"));
 					return;
 				}
-				whereclause = cell_value;
+				whereclause.append(cell_value);
 			} else if (cell_title.equalsIgnoreCase("*Read*") || cell_title.equalsIgnoreCase("*Read*Error*")) {
 				if (! tableOK) {
 					getCell(i, 1).addToBody("Table " + tableName + " does not exist");
@@ -103,6 +103,8 @@ public class ReadRecord extends TableFixture {
 					wrong(i, 1);
 					return;
 				}
+				whereclause.insert(0, "(");
+				whereclause.append(") AND AD_Client_ID IN (0,").append(Env.getAD_Client_ID(ctx)).append(")");
 				String sql = "SELECT * FROM " + tableName + " WHERE " + whereclause;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
@@ -170,15 +172,21 @@ public class ReadRecord extends TableFixture {
 					if (! alreadyread) {
 						// not read yet - add value to where clause
 						String value_evaluated = Util.evaluate(ctx, windowNo, cell_value, getCell(i, 1));
-						if (whereclause.length() > 0)
-							whereclause = whereclause + " AND ";
-						whereclause = whereclause + cell_title + "=" + value_evaluated;
+						if (whereclause.length() > 0) {
+							whereclause.insert(0, "(");
+							whereclause.append(") AND ");
+						}
+						whereclause.append(cell_title).append("=").append(value_evaluated);
 					} else {
 						// already read, show the value of context variable
 						if (gpo != null) {
-							Object result = gpo.get_Value(cell_title);
-							if (result != null)
-								getCell(i, 1).addToBody(result.toString());
+							if (poinfo.getColumnIndex(cell_title) < 0) {
+								wrong(i, 0);
+							} else {
+								Object result = gpo.get_Value(cell_title);
+								if (result != null)
+									getCell(i, 1).addToBody(result.toString());
+							}
 						}
 					}
 				}

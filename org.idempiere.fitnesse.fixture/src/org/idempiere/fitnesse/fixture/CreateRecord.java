@@ -30,9 +30,12 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Properties;
 
+import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
+import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.ValueNamePair;
 
@@ -65,6 +68,7 @@ public class CreateRecord extends TableFixture {
 		boolean tableOK = false;
 		boolean columnsOK = true;
 		boolean isErrorExpected = "*Save*Error*".equalsIgnoreCase(getText(rows-1, 0));
+		String msgerror1 = getText(rows-1, 1);
 		MTable table = null;
 		POInfo poinfo = null;
 
@@ -145,7 +149,7 @@ public class CreateRecord extends TableFixture {
 					columnName = cell_title;
 					int idxcol = gpo.get_ColumnIndex(columnName);
 					if (idxcol < 0) {
-						wrong(i,1);
+						wrong(i,0);
 						// column does not exist in dictionary - anyways try custom column in case it exists in table
 						gpo.set_CustomColumnReturningBoolean(columnName, cell_value);
 					} else {
@@ -153,8 +157,16 @@ public class CreateRecord extends TableFixture {
 						String value_evaluated = Util.evaluate(ctx, windowNo, cell_value, getCell(i, 1));
 						// set value according to class
 						Object value = null;
-						if (value_evaluated == null || value_evaluated.length() == 0) {
+						if (org.compiere.util.Util.isEmpty(cell_value)) {
 							value = null;
+						} else if (org.compiere.util.Util.isEmpty(value_evaluated)) {
+							boolean ok = Util.evaluateError("Data not found",msgerror1,isErrorExpected);
+							if (ok)
+								right(i,1);
+							else
+								wrong(i,1);
+							columnsOK = false;
+							continue;
 						} else if (columnClass == Boolean.class) {
 							if ("Y".equalsIgnoreCase(value_evaluated) || "true".equalsIgnoreCase(value_evaluated))
 								value = new Boolean(true);
@@ -166,7 +178,27 @@ public class CreateRecord extends TableFixture {
 							}
 						} else if (columnClass == Integer.class) {
 							try {
-								value = Integer.parseInt(value_evaluated);
+								Integer intid = Integer.parseInt(value_evaluated);
+								MColumn column = table.getColumn(cell_title);
+								if (intid > 0 && (DisplayType.isID(column.getAD_Reference_ID()) || column.getAD_Reference_ID() != DisplayType.ID)) {
+									// Evaluate the ID is from the actual client or system
+									String foreignTable = column.getReferenceTableName();
+									if (foreignTable != null) {
+										int foreignClient = DB.getSQLValueEx(null,
+												"SELECT AD_Client_ID FROM " + foreignTable + " WHERE " + foreignTable + "_ID=?",
+												intid);
+										if (foreignClient != 0 && foreignClient != Env.getAD_Client_ID(ctx)) {
+											boolean ok = Util.evaluateError("Data not found", msgerror1, isErrorExpected);
+											if (ok)
+												right(i, 1);
+											else
+												wrong(i, 1);
+											columnsOK = false;
+											continue;
+										}
+									}									
+								}
+								value = intid;
 							} catch (NumberFormatException e) {
 								exception(getCell(i, 1), e);
 								continue;
