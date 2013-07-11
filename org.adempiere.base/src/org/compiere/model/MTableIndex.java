@@ -37,7 +37,7 @@ public class MTableIndex extends X_AD_TableIndex {
 	 */
 	public static MTableIndex[] get(MTable table)
 	{
-		Query query = new Query(table.getCtx(), table, MTableIndex.COLUMNNAME_AD_Table_ID + "=?", table.get_TrxName());
+		Query query = new Query(table.getCtx(), MTableIndex.Table_Name, MTableIndex.COLUMNNAME_AD_Table_ID + "=?", table.get_TrxName());
 		query.setParameters(table.getAD_Table_ID());
 		query.setOnlyActiveRecords(true);
 		List<MTableIndex> list = query.<MTableIndex>list();
