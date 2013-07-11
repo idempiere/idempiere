@@ -30,6 +30,7 @@ import java.util.Properties;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 import fitnesse.fixtures.TableFixture;
 
@@ -65,7 +66,7 @@ public class DeleteRecord extends TableFixture {
 		MTable table = null;
 
 		boolean alreadyread = false;
-		StringBuilder whereclause = new StringBuilder("");
+		StringBuilder whereclause = new StringBuilder();
 		boolean isErrorExpected = false;
 		String msgerror = null;
 		
@@ -105,6 +106,8 @@ public class DeleteRecord extends TableFixture {
 					wrong(i, 1);
 					return;
 				}
+				whereclause.insert(0, "(");
+				whereclause = whereclause.append(") AND AD_Client_ID=").append(Env.getAD_Client_ID(ctx));
 				String sql = "SELECT * FROM " + tableName + " WHERE "+ whereclause;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
@@ -159,8 +162,10 @@ public class DeleteRecord extends TableFixture {
 					String value_evaluated = Util.evaluate(ctx, windowNo,cell_value, getCell(i, 1));
 					if (!alreadyread) {
 						// not read yet - add value to where clause						
-						if (whereclause.length() > 0)
-							whereclause.append(" AND ");
+						if (whereclause.length() > 0) {
+							whereclause.insert(0, "(");
+							whereclause.append(") AND ");
+						}
 						whereclause.append(cell_title).append("=").append(value_evaluated);
 					}
 				}

@@ -66,7 +66,7 @@ public class AssertRecord extends TableFixture {
 		MTable table = null;
 		POInfo poinfo = null;
 		boolean alreadyread = false;
-		StringBuilder whereclause = new StringBuilder("");
+		StringBuilder whereclause = new StringBuilder();
 		boolean isErrorExpected = false;
 		for (int i = 0; i < rows; i++) {
 			String cell_title = getText(i, 0);
@@ -104,6 +104,8 @@ public class AssertRecord extends TableFixture {
 					wrong(i, 1);
 					return;
 				}
+				whereclause.insert(0, "(");
+				whereclause.append(") AND AD_Client_ID IN (0,").append(Env.getAD_Client_ID(ctx)).append(")");
 				String sql = "SELECT * FROM " + tableName + " WHERE " + whereclause;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
@@ -166,28 +168,34 @@ public class AssertRecord extends TableFixture {
 					if (! alreadyread) {
 						// not read yet - add value to where clause
 						String value_evaluated = Util.evaluate(ctx, windowNo, cell_value, getCell(i, 1));
-						if (whereclause.length() > 0)
-							whereclause.append(" AND ");
+						if (whereclause.length() > 0) {
+							whereclause.insert(0, "(");
+							whereclause.append(") AND ");
+						}
 						whereclause.append(cell_title).append("=").append(value_evaluated);
 					} else {
 						// already read, compare the value of db with the context variable or formula
 						String title_evaluated = "";
 						if (gpo != null) {
-							Object result = gpo.get_Value(cell_title);
-							if (result != null) {
-								getCell(i, 0).addToBody("<hr/>" + result.toString());
-								title_evaluated = result.toString();
-							}
-
-							String value_evaluated = cell_value;
-							if (cell_value.startsWith("@")) {
-								value_evaluated = Util.evaluate(ctx, windowNo,cell_value, getCell(i, 1));
-							}
-
-							if (title_evaluated.equals(value_evaluated)) {
-								right(i, 1);
+							if (poinfo.getColumnIndex(cell_title) < 0) {
+								wrong(i, 0);
 							} else {
-								wrong(i, 1);
+								Object result = gpo.get_Value(cell_title);
+								if (result != null) {
+									getCell(i, 0).addToBody("<hr/>" + result.toString());
+									title_evaluated = result.toString();
+								}
+
+								String value_evaluated = cell_value;
+								if (cell_value.startsWith("@")) {
+									value_evaluated = Util.evaluate(ctx, windowNo,cell_value, getCell(i, 1));
+								}
+
+								if (title_evaluated.equals(value_evaluated)) {
+									right(i, 1);
+								} else {
+									wrong(i, 1);
+								}
 							}
 						}
 					}

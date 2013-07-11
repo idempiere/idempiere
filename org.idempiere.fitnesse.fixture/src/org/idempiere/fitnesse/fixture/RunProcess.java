@@ -44,6 +44,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -293,11 +294,27 @@ public class RunProcess extends TableFixture {
 						exception(getCell(i, 1), e);
 						continue;
 					}
-				}
-				else if (parameterName.equalsIgnoreCase("*DocAction*"))
-					docAction = value_evaluated;
-				else
-					fmap.put(parameterName, value_evaluated);
+				} else {
+					if (parameterName.equalsIgnoreCase("*DocAction*")) {
+						docAction = value_evaluated;
+					} else {
+						String param = DB.getSQLValueStringEx(null,
+								"SELECT ColumnName " +
+								"FROM AD_Process_Para " +
+								"WHERE IsActive='Y' AND AD_Process_ID=? AND LOWER(ColumnName)=?",
+								process.getAD_Process_ID(), parameterName.toLowerCase());
+						if (param == null) {
+							boolean ok = Util.evaluateError(msgerror1,"Parameter Not Found", isErrorExpected); 
+							if (ok) {
+								right(getCell(i, 1));								
+							} else {
+								exception(getCell(i, 1), new Exception("Parameter Not Found"));								
+							}
+						} else {
+							fmap.put(param, value_evaluated);
+						}
+					}
+				}	
 			}
 		}
 
