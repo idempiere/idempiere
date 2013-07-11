@@ -691,7 +691,7 @@ public class MColumn extends X_AD_Column
 				if (rt != null)
 					foreignTable = rt.getAD_Table().getTableName();
 			}
-		} else 	if (DisplayType.List == refid) {
+		} else 	if (DisplayType.List == refid || DisplayType.Payment == refid) {
 			foreignTable = "AD_Ref_List";
 		} else if (DisplayType.Location == refid) {
 			foreignTable = "C_Location";
