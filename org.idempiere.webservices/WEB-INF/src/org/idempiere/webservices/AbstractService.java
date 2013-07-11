@@ -229,7 +229,7 @@ public class AbstractService {
 		req.setAttribute("MWebServiceType", m_webservicetype);
 		
 		// Check if role has access on web-service
-        String hasAccess = DB.getSQLValueString(null, ROLE_ACCESS_SQL,
+        String hasAccess = DB.getSQLValueStringEx(null, ROLE_ACCESS_SQL,
                 Env.getAD_Role_ID( m_cs.getCtx()),
                 m_webservicetype.get_ID());
 
