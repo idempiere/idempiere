@@ -165,7 +165,7 @@ public class UpdateRecord extends TableFixture {
 						whereclause.append(cell_title).append("=").append(value_evaluated);
 					} else {
 						if (gpo != null) {
-							if (gpo.set_ValueOfColumnReturningBoolean(cell_title, cell_value)) {
+							if (gpo.set_ValueOfColumnReturningBoolean(cell_title, value_evaluated)) {
 								if (isErrorExpected) {
 									wrong(getCell(i, 1));
 								} else {
