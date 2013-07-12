@@ -323,8 +323,12 @@ public class MProcess extends X_AD_Process
 	private boolean startClass (ProcessInfo pi, Trx trx, boolean managedTrx)
 	{
 		if (log.isLoggable(Level.INFO)) log.info(pi.getClassName());
-		
-		return ProcessUtil.startJavaProcess(getCtx(), pi, trx, managedTrx);
+
+		if (pi.getClassName().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
+			return ProcessUtil.startScriptProcess(getCtx(), pi, trx);
+		} else {
+			return ProcessUtil.startJavaProcess(getCtx(), pi, trx, managedTrx);
+		}
 	}   //  startClass
 
 	

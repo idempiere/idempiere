@@ -64,6 +64,8 @@ import org.idempiere.webservices.fault.IdempiereServiceFault;
  */
 public class AbstractService {
 
+	private static final String ROLE_ACCESS_SQL = "SELECT IsActive FROM WS_WebServiceTypeAccess WHERE AD_Role_ID=? "
+	        + "AND WS_WebServiceType_ID=?";
 	private static final String COMPIERE_SERVICE = "CompiereService";
 	@Resource
 	protected WebServiceContext ctx;
@@ -225,7 +227,17 @@ public class AbstractService {
 			return "Service type " + serviceTypeValue + " not configured";
 
 		req.setAttribute("MWebServiceType", m_webservicetype);
+		
+		// Check if role has access on web-service
+        String hasAccess = DB.getSQLValueStringEx(null, ROLE_ACCESS_SQL,
+                Env.getAD_Role_ID( m_cs.getCtx()),
+                m_webservicetype.get_ID());
 
+        if (!"Y".equals(hasAccess))
+        {
+            return "Web Service Error: Login role does not have access to the service type";
+        }
+        
 		String ret=invokeLoginValidator(null, m_cs.getCtx(), m_webservicetype, IWSValidator.TIMING_ON_AUTHORIZATION);
 		if(ret!=null && ret.length()>0)
 			return ret;
