@@ -276,6 +276,9 @@ public final class WAccountDialog extends Window
 		GridWindowVO wVO = AEnv.getMWindowVO (m_WindowNo, AD_Window_ID, 0);
 		if (wVO == null)
 			return false;
+		// Force window/tab to be read-only
+		wVO.WindowType = GridWindowVO.WINDOWTYPE_QUERY;
+		wVO.Tabs.get(0).IsReadOnly = true;
 		m_mWindow = new GridWindow (wVO);
 		m_mTab = m_mWindow.getTab(0);
 		// Make sure is the tab is loaded - teo_sarca [ 1659124 ]
