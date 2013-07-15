@@ -19,6 +19,7 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MIndexColumn;
@@ -43,8 +44,14 @@ public class TableIndexValidate extends SvrProcess {
 		MTableIndex index = new MTableIndex(getCtx(), p_AD_TableIndex_ID, get_TrxName());
 		log.info(index.toString());
 		
-		Trx trx = Trx.get(get_TrxName(), true);
+		return validateTableIndex(getCtx(), index, get_TrxName(), getProcessInfo());
+	}
+	
+	public static String validateTableIndex(Properties ctx, MTableIndex index, String trxName, ProcessInfo pi) throws Exception 
+	{
+		Trx trx = Trx.get(trxName, true);
 		DatabaseMetaData md = trx.getConnection().getMetaData();
+		
 		String tableName = index.getTableName();
 		if (md.storesUpperCaseIdentifiers())
 			tableName = tableName.toUpperCase();
@@ -54,6 +61,7 @@ public class TableIndexValidate extends SvrProcess {
 		String catalog = "REFERENCE";
 		String schema = null;
 		String[] indexColsFromDB = new String[30];
+		String[] ascOrDescColsFromDB = new String[30];
 		int numIndexColsFromDB = 0;
 		boolean indexNUniqueInDB = true;
 		boolean found = false;
@@ -70,7 +78,10 @@ public class TableIndexValidate extends SvrProcess {
 				String columnName = rs.getString("COLUMN_NAME");
 				int pos = (rs.getShort("ORDINAL_POSITION"));				
 				if (pos > 0)
+				{
 					indexColsFromDB[pos-1] = columnName;
+					ascOrDescColsFromDB[pos-1] = rs.getString("ASC_OR_DESC");
+				}
 				indexNUniqueInDB = rs.getBoolean("NON_UNIQUE");
 			}
 		}
@@ -81,16 +92,16 @@ public class TableIndexValidate extends SvrProcess {
 		boolean modified = false;
 		
 		if (indexCols.length <= 0)
-			throw new AdempiereException(Msg.getMsg(getCtx(), "NoIndexColumnsSpecified"));
+			throw new AdempiereException(Msg.getMsg(ctx, "NoIndexColumnsSpecified"));
 		else if (!found)
 		{
 			String sql = index.getDDL();
-			int rvalue = DB.executeUpdate(sql, (Object[]) null, true, get_TrxName());
-			addLog(0, null, new BigDecimal(rvalue), sql);
+			int rvalue = DB.executeUpdate(sql, (Object[]) null, true, trxName);
+			pi.addLog(0, null, new BigDecimal(rvalue), sql);
 			if (rvalue == -1)
-				throw new AdempiereException(Msg.getMsg(getCtx(), "Failed to create index"));
+				throw new AdempiereException(Msg.getMsg(ctx, "Failed to create index"));
 			else
-				return Msg.getMsg(getCtx(), "CreatedIndexSuccess");
+				return Msg.getMsg(ctx, "CreatedIndexSuccess");
 		}
 		else
 		{
@@ -111,9 +122,18 @@ public class TableIndexValidate extends SvrProcess {
 			{
 				for (int j = 0; j < indexCols.length; j++)
 				{
+					String indexColFromDBWithAscOrDesc = indexColsFromDB[j];
+					String ascOrDesc = ascOrDescColsFromDB[j];
+					if (ascOrDesc != null && ascOrDesc.equals("D"))
+						indexColFromDBWithAscOrDesc = indexColFromDBWithAscOrDesc + " DESC";
+					else if (ascOrDesc != null && ascOrDesc.equals("A"))
+						indexColFromDBWithAscOrDesc = indexColFromDBWithAscOrDesc + " ASC";
+					
 					/*what if they are returned in a diff sequence ?*/
-					if (indexCols[j].getColumnName().equalsIgnoreCase(indexColsFromDB[j]))						
-						continue;					
+					if (indexCols[j].getColumnName().equalsIgnoreCase(indexColsFromDB[j]))
+						continue;
+					else if (indexCols[j].getColumnName().equalsIgnoreCase(indexColFromDBWithAscOrDesc))
+						continue;
 					else if ((indexColsFromDB[j].startsWith("\"")) && (indexColsFromDB[j].endsWith("\"")))
 					{
 						/* EDB returns varchar index columns wrapped with double quotes, hence comparing
@@ -139,19 +159,19 @@ public class TableIndexValidate extends SvrProcess {
 			if (modified)
 			{
 				String sql = "DROP INDEX " + index.getName();
-				int rvalue = DB.executeUpdate(sql, (Object[]) null, true, get_TrxName());
-				addLog(0, null, new BigDecimal(rvalue), sql);
+				int rvalue = DB.executeUpdate(sql, (Object[]) null, true, trxName);
+				pi.addLog(0, null, new BigDecimal(rvalue), sql);
 				
 				sql = index.getDDL();
-				rvalue = DB.executeUpdate(sql, (Object[]) null, true, get_TrxName());
-				addLog(0, null, new BigDecimal(rvalue), sql);
+				rvalue = DB.executeUpdate(sql, (Object[]) null, true, trxName);
+				pi.addLog(0, null, new BigDecimal(rvalue), sql);
 				if(rvalue == -1)
-					throw new AdempiereException(Msg.getMsg(getCtx(), "FailedModifyIndex"));
+					throw new AdempiereException(Msg.getMsg(ctx, "FailedModifyIndex"));
 				else
-					return Msg.getMsg(getCtx(), "ModifiedIndexSuccess");
+					return Msg.getMsg(ctx, "ModifiedIndexSuccess");
 			}
 			else
-				return Msg.getMsg(getCtx(), "NoChangesToIndex");
+				return Msg.getMsg(ctx, "NoChangesToIndex");
 		}
 	}
 }
