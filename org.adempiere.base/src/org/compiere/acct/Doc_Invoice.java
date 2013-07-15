@@ -896,7 +896,7 @@ public class Doc_Invoice extends Doc
 			String costingMethod = pc.getProduct().getCostingMethod(as);
 			MAccount account = null;
 			if (X_M_Cost.COSTINGMETHOD_AverageInvoice.equals(costingMethod) || X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod)) {
-				account = zeroQty ? pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as) : pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+				account = zeroQty ? pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as) : pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 			} else {
 				account = pc.getAccount(ProductCost.ACCTTYPE_P_CostAdjustment, as);
 			}
