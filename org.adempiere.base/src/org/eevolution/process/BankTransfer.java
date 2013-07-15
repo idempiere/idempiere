@@ -40,11 +40,11 @@ public class BankTransfer extends SvrProcess
 	private String 		p_DocumentNo= "";				// Document No
 	private String 		p_Description= "";				// Description
 	private int 		p_C_BPartner_ID = 0;   			// Business Partner to be used as bridge
-	private int			p_C_Currency_ID = 0;			// Payment Currency
+	private int		p_C_Currency_ID = 0;			// Payment Currency
 	private int 		p_C_ConversionType_ID = 0;		// Payment Conversion Type
-	private int			p_C_Charge_ID = 0;				// Charge to be used as bridge
+	private int		p_C_Charge_ID = 0;				// Charge to be used as bridge
 
-	private BigDecimal 	p_Amount = Env.ZERO;  	// Amount to be transfered between the accounts
+	private BigDecimal 	p_Amount = Env.ZERO;  			// Amount to be transfered between the accounts
 	private int 		p_From_C_BankAccount_ID = 0;	// Bank Account From
 	private int 		p_To_C_BankAccount_ID= 0;		// Bank Account To
 	private Timestamp	p_StatementDate = null;  		// Date Statement
@@ -153,7 +153,7 @@ public class BankTransfer extends SvrProcess
 		paymentBankFrom.setC_BPartner_ID (p_C_BPartner_ID);
 		paymentBankFrom.setC_Currency_ID(p_C_Currency_ID);
 		if (p_C_ConversionType_ID > 0)
-		paymentBankFrom.setC_ConversionType_ID(p_C_ConversionType_ID);	
+			paymentBankFrom.setC_ConversionType_ID(p_C_ConversionType_ID);	
 		paymentBankFrom.setPayAmt(p_Amount);
 		paymentBankFrom.setOverUnderAmt(Env.ZERO);
 		paymentBankFrom.setC_DocType_ID(false);
@@ -164,7 +164,11 @@ public class BankTransfer extends SvrProcess
 			throw new IllegalStateException("Payment Process Failed: " + paymentBankFrom + " - " + paymentBankFrom.getProcessMsg());
 		}
 		paymentBankFrom.saveEx();
-		
+		addLog(paymentBankFrom.getC_Payment_ID(), paymentBankFrom.getDateTrx(),
+				null, paymentBankFrom.getC_DocType().getName() + " " + paymentBankFrom.getDocumentNo(),
+				MPayment.Table_ID, paymentBankFrom.getC_Payment_ID());
+		m_created++;
+
 		MPayment paymentBankTo = new MPayment(getCtx(), 0 ,  get_TrxName());
 		paymentBankTo.setC_BankAccount_ID(mBankTo.getC_BankAccount_ID());
 		paymentBankTo.setDocumentNo(p_DocumentNo);
@@ -186,6 +190,9 @@ public class BankTransfer extends SvrProcess
 			throw new IllegalStateException("Payment Process Failed: " + paymentBankTo + " - " + paymentBankTo.getProcessMsg());
 		}
 		paymentBankTo.saveEx();
+		addLog(paymentBankTo.getC_Payment_ID(), paymentBankTo.getDateTrx(),
+				null, paymentBankTo.getC_DocType().getName() + " " + paymentBankTo.getDocumentNo(),
+				MPayment.Table_ID, paymentBankTo.getC_Payment_ID());
 		m_created++;
 		return;
 
