@@ -20,12 +20,15 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AverageCostingZeroQtyException;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
+import org.compiere.model.MConversionRate;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MInvoice;
@@ -33,8 +36,10 @@ import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MLandedCostAllocation;
 import org.compiere.model.MTax;
 import org.compiere.model.ProductCost;
+import org.compiere.model.X_M_Cost;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Trx;
 
 /**
  *  Post Invoice Documents.
@@ -835,22 +840,8 @@ public class Doc_Invoice extends Doc
 			if (line.getDescription() != null)
 				desc += " - " + line.getDescription();
 
-			//	Accounting
-			ProductCost pc = new ProductCost (Env.getCtx(),
-				lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(), getTrxName());
-			BigDecimal drAmt = null;
-			BigDecimal crAmt = null;
-			if (dr)
-				drAmt = lca.getAmt();
-			else
-				crAmt = lca.getAmt();
-			FactLine fl = fact.createLine (line, pc.getAccount(ProductCost.ACCTTYPE_P_CostAdjustment, as),
-				getC_Currency_ID(), drAmt, crAmt);
-			fl.setDescription(desc);
-			fl.setM_Product_ID(lca.getM_Product_ID());
-
 			//	Cost Detail - Convert to AcctCurrency
-			/*
+			
 			BigDecimal allocationAmt =  lca.getAmt();
 			if (getC_Currency_ID() != as.getC_Currency_ID())
 				allocationAmt = MConversionRate.convert(getCtx(), allocationAmt,
@@ -861,15 +852,58 @@ public class Doc_Invoice extends Doc
 				allocationAmt = allocationAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
 			if (!dr)
 				allocationAmt = allocationAmt.negate();
-			// AZ Goodwill
-			// use createInvoice to create/update non Material Cost Detail			
-			MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
-					lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
-					C_InvoiceLine_ID, lca.getM_CostElement_ID(),
-					allocationAmt, lca.getQty(),
-					desc, getTrxName());
-			*/
-			// end AZ
+
+			Trx trx = Trx.get(getTrxName(), false);
+			Savepoint savepoint = null;
+			boolean zeroQty = false;
+			try {
+				savepoint = trx.setSavepoint(null);
+				
+				if (!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
+						lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
+						C_InvoiceLine_ID, lca.getM_CostElement_ID(),
+						allocationAmt, lca.getQty(),
+						desc, getTrxName())) {
+					throw new RuntimeException("Failed to create cost detail record.");
+				}				
+			} catch (SQLException e) {
+				throw new RuntimeException(e.getLocalizedMessage(), e);
+			} catch (AverageCostingZeroQtyException e) {
+				zeroQty = true;
+				try {
+					trx.rollback(savepoint);
+					savepoint = null;
+				} catch (SQLException e1) {
+					throw new RuntimeException(e1.getLocalizedMessage(), e1);
+				}
+			} finally {
+				if (savepoint != null) {
+					try {
+						trx.releaseSavepoint(savepoint);
+					} catch (SQLException e) {}
+				}
+			}
+			
+			// Accounting
+			ProductCost pc = new ProductCost (Env.getCtx(),
+				lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(), getTrxName());
+			BigDecimal drAmt = null;
+			BigDecimal crAmt = null;
+			if (dr)
+				drAmt = lca.getAmt();
+			else
+				crAmt = lca.getAmt();
+			String costingMethod = pc.getProduct().getCostingMethod(as);
+			MAccount account = null;
+			if (X_M_Cost.COSTINGMETHOD_AverageInvoice.equals(costingMethod) || X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod)) {
+				account = zeroQty ? pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as) : pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			} else {
+				account = pc.getAccount(ProductCost.ACCTTYPE_P_CostAdjustment, as);
+			}
+			
+			FactLine fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
+			fl.setDescription(desc);
+			fl.setM_Product_ID(lca.getM_Product_ID());
 		}
 
 		if (log.isLoggable(Level.CONFIG)) log.config("Created #" + lcas.length);

@@ -151,11 +151,13 @@ public class MCostDetail extends X_M_CostDetail
 			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
 			.append(" AND C_InvoiceLine_ID=").append(C_InvoiceLine_ID)
 			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())			
-			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
+			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID)
+			.append(" AND Coalesce(M_CostElement_ID,0)=").append(M_CostElement_ID);
+		
 		int no = DB.executeUpdate(sql.toString(), trxName);
 		if (no != 0)
 			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
-		MCostDetail cd = get (as.getCtx(), "C_InvoiceLine_ID=?", 
+		MCostDetail cd = get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
 			C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
 		if (cd == null)		//	createNew
@@ -796,7 +798,20 @@ public class MCostDetail extends X_M_CostDetail
 		else
 		{
 			MCostElement ce = MCostElement.get(getCtx(), getM_CostElement_ID());
-			ok = process (as, product, ce, Org_ID, M_ASI_ID);
+			if (ce.getCostingMethod() == null) 
+			{
+				MCostElement[] ces = MCostElement.getCostingMethods(this);
+				for (MCostElement costingElement : ces)
+				{
+					ok = process (as, product, costingElement, Org_ID, M_ASI_ID);
+					if (!ok)
+						break;
+				}
+			}
+			else
+			{
+				ok = process (as, product, ce, Org_ID, M_ASI_ID);
+			}
 		}
 		
 		//	Save it
@@ -859,6 +874,14 @@ public class MCostDetail extends X_M_CostDetail
 			amt = getAmt();
 		}
 		// end MZ
+
+		boolean costAdjustment = false;
+		//landed cost adjustment
+		if (this.getM_CostElement_ID() > 0 && this.getM_CostElement_ID() != ce.getM_CostElement_ID() && getC_InvoiceLine_ID() > 0)
+		{
+			qty = BigDecimal.ZERO;
+			costAdjustment = true;
+		}
 		
 		int precision = as.getCostingPrecision();
 		BigDecimal price = amt;
@@ -942,6 +965,10 @@ public class MCostDetail extends X_M_CostDetail
 				cost.setWeightedAverage(amt, qty);
 				if (log.isLoggable(Level.FINER)) log.finer("Inv - AverageInv - " + cost);
 			}
+			else if (ce.isAveragePO() && costAdjustment)
+			{
+				cost.setWeightedAverage(amt, qty);
+			}
 			else if (ce.isFifo()
 				|| ce.isLifo())
 			{
@@ -958,7 +985,7 @@ public class MCostDetail extends X_M_CostDetail
 				cost.add(amt, qty);
 				if (log.isLoggable(Level.FINER)) log.finer("Inv - FiFo/LiFo - " + cost);
 			}
-			else if (ce.isLastInvoice())
+			else if (ce.isLastInvoice() && !costAdjustment)
 			{
 				if (!isReturnTrx)
 				{
@@ -973,7 +1000,7 @@ public class MCostDetail extends X_M_CostDetail
 				cost.add(amt, qty);
 				if (log.isLoggable(Level.FINER)) log.finer("Inv - LastInv - " + cost);
 			}
-			else if (ce.isStandardCosting())
+			else if (ce.isStandardCosting() && !costAdjustment)
 			{
 				// Update cost record only if it is zero
 				if (cost.getCurrentCostPrice().signum() == 0
@@ -996,54 +1023,7 @@ public class MCostDetail extends X_M_CostDetail
 				//	Interface
 				cost.add(amt, qty);
 				if (log.isLoggable(Level.FINER)) log.finer("Inv - UserDef - " + cost);
-			}
-			/*
-			else if (!ce.isCostingMethod())		//	Cost Adjustments
-			{
-				// AZ Goodwill
-				//get costing method for product
-				String costingMethod = product.getCostingMethod(as);				
-				if (MAcctSchema.COSTINGMETHOD_AveragePO.equals(costingMethod) ||
-					MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(costingMethod))
-				{
-					//	Problem with Landed Costs: certain cost element may not occur in every purchases, 
-					//  causing the average calculation of that cost element wrongly took the current qty.
-					//  
-					//  Solution:
-					//  Make sure the current qty is reflecting the actual qty in storage
-					//
-					StringBuilder sql = new StringBuilder("SELECT COALESCE(SUM(QtyOnHand),0) FROM M_StorageOnHand")					
-						.append(" WHERE AD_Client_ID=").append(cost.getAD_Client_ID())
-						.append(" AND M_Product_ID=").append(cost.getM_Product_ID());
-					//Costing Level
-					String CostingLevel = product.getCostingLevel(as);			
-					if (MAcctSchema.COSTINGLEVEL_Organization.equals(CostingLevel))
-						sql.append(" AND AD_Org_ID=").append(cost.getAD_Org_ID());
-					else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
-						sql.append(" AND M_AttributeSetInstance_ID=").append(M_ASI_ID);	
-					//
-					BigDecimal qtyOnhand = DB.getSQLValueBD(get_TrxName(), sql.toString());					
-					if (qtyOnhand.signum() != 0)
-					{
-						BigDecimal oldSum = cost.getCurrentCostPrice().multiply(cost.getCurrentQty());
-						BigDecimal sumAmt = oldSum.add(amt);	//	amt is total already
-						BigDecimal costs = sumAmt.divide(qtyOnhand, precision, BigDecimal.ROUND_HALF_UP);
-						cost.setCurrentCostPrice(costs);
-					}
-					cost.setCumulatedAmt(cost.getCumulatedAmt().add(amt));
-					cost.setCumulatedQty(cost.getCumulatedQty().add(qty));
-					cost.setCurrentQty(qtyOnhand);						
-				}
-				else //original logic from Compiere
-				{
-					BigDecimal cCosts = cost.getCurrentCostPrice().add(amt);
-					cost.setCurrentCostPrice(cCosts);
-					cost.add(amt, qty);
-				}
-				// end AZ
-				if (log.isLoggable(Level.FINER)) log.finer("Inv - Landed Costs - " + cost);
-			}
-			 */
+			}			
 		//	else
 		//		log.warning("Inv - " + ce + " - " + cost);
 		}
@@ -1177,53 +1157,6 @@ public class MCostDetail extends X_M_CostDetail
 			else
 				log.warning("QtyAdjust - " + ce + " - " + cost);
 			
-			//AZ Goodwill
-			//Also update Landed Costs to reflect the actual qty in storage
-			/*
-			String costingMethod = ce.getCostingMethod();
-			if (MAcctSchema.COSTINGMETHOD_AveragePO.equals(costingMethod) ||
-				MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(costingMethod))
-			{				
-				MCostElement[] lce = MCostElement.getNonCostingMethods(this);
-				if (lce.length > 0)
-				{					
-					StringBuilder sql = new StringBuilder("SELECT COALESCE(SUM(QtyOnHand),0) FROM M_StorageOnHand")					
-						.append(" WHERE AD_Client_ID=").append(cost.getAD_Client_ID())
-						.append(" AND M_Product_ID=").append(cost.getM_Product_ID());
-					//Costing Level
-					String CostingLevel = product.getCostingLevel(as);
-					if (MAcctSchema.COSTINGLEVEL_Organization.equals(CostingLevel))
-						sql.append(" AND AD_Org_ID=").append(cost.getAD_Org_ID());
-					else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
-						sql.append(" AND M_AttributeSetInstance_ID=").append(M_ASI_ID);	
-					//
-					BigDecimal qtyOnhand = DB.getSQLValueBD(get_TrxName(), sql.toString());
-					for (int i = 0 ; i < lce.length ; i++)
-					{
-						MCost lCost = MCost.get(getCtx(), cost.getAD_Client_ID(), cost.getAD_Org_ID(), 
-							cost.getM_Product_ID(), cost.getM_CostType_ID(), cost.getC_AcctSchema_ID(), 
-							lce[i].getM_CostElement_ID(), cost.getM_AttributeSetInstance_ID(), get_TrxName());
-						if (lCost != null)
-						{
-							if (qtyOnhand.signum() != 0)
-							{
-								// new average cost
-								BigDecimal oldSum = lCost.getCurrentCostPrice().multiply(lCost.getCurrentQty());
-								BigDecimal costs = oldSum.divide(qtyOnhand, precision, BigDecimal.ROUND_HALF_UP);
-								lCost.setCurrentCostPrice(costs);	
-							}
-							lCost.setCurrentQty(qtyOnhand);
-							if (!lCost.save())
-							{
-								log.warning("Update Landed Costs (Qty) fail: " + lce + " - " + lCost);
-								return false;
-							}
-						}
-					}					
-				}//end-if
-			}
-			*/
-			//end AZ
 		}
 		else	//	unknown or no id
 		{
