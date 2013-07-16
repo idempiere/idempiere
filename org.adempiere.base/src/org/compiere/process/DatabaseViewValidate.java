@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MTable;
@@ -47,7 +48,12 @@ public class DatabaseViewValidate extends SvrProcess {
 		if (!table.isView() || !table.isActive())
 			throw new AdempiereException(Msg.getMsg(getCtx(), "NotActiveDatabaseView"));
 		
-		Trx trx = Trx.get(get_TrxName(), true);
+		return validateDatabaseView(getCtx(), table, get_TrxName(), getProcessInfo());
+	}
+	
+	public static String validateDatabaseView(Properties ctx, MTable table, String trxName, ProcessInfo pi) throws Exception 
+	{		
+		Trx trx = Trx.get(trxName, true);
 		DatabaseMetaData md = trx.getConnection().getMetaData();
 		String tableName = table.getTableName();
 		if (md.storesUpperCaseIdentifiers())
@@ -85,7 +91,7 @@ public class DatabaseViewValidate extends SvrProcess {
 		//
 		MViewComponent[] m_vcs = table.getViewComponent(true);
 		if (m_vcs == null || m_vcs.length == 0)
-			throw new AdempiereException(Msg.getMsg(getCtx(), "NoViewComponentsSpecified"));
+			throw new AdempiereException(Msg.getMsg(ctx, "NoViewComponentsSpecified"));
 
 		boolean modified = false;
 		MViewColumn[] vCols = null;
@@ -98,7 +104,7 @@ public class DatabaseViewValidate extends SvrProcess {
 			{
 				vCols = vc.getColumns(true);
 				if (vCols == null || vCols.length == 0)
-					throw new AdempiereException(Msg.getMsg(getCtx(), "NoViewColumnsSpecified"));
+					throw new AdempiereException(Msg.getMsg(ctx, "NoViewColumnsSpecified"));
 				
 				if (viewColumnNames.size() > vCols.length)
 					modified = true;
@@ -138,15 +144,17 @@ public class DatabaseViewValidate extends SvrProcess {
 		if (found && modified)
 		{
 			String sql = "DROP VIEW " + table.getTableName();
-			int rvalue = DB.executeUpdate(sql, (Object[]) null, true, get_TrxName());
-			addLog(0, null, new BigDecimal(rvalue), sql);
+			int rvalue = DB.executeUpdate(sql, (Object[]) null, true, trxName);
+			if (pi != null)
+				pi.addLog(0, null, new BigDecimal(rvalue), sql);
 		}
 		String sql = sb.toString();
-		int rvalue = DB.executeUpdate(sql, (Object[]) null, true, get_TrxName());
-		addLog(0, null, new BigDecimal(rvalue), sql);
+		int rvalue = DB.executeUpdate(sql, (Object[]) null, true, trxName);
+		if (pi != null)
+			pi.addLog(0, null, new BigDecimal(rvalue), sql);
 		if(rvalue == -1)
-			throw new AdempiereException(Msg.getMsg(getCtx(), "FailedCreateOrReplaceView"));
+			throw new AdempiereException(Msg.getMsg(ctx, "FailedCreateOrReplaceView"));
 		else
-			return Msg.getMsg(getCtx(), "CreatedOrReplacedViewSuccess");
+			return Msg.getMsg(ctx, "CreatedOrReplacedViewSuccess");
 	}
 }

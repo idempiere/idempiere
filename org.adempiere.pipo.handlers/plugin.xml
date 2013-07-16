@@ -188,6 +188,22 @@
             class="org.adempiere.pipo2.handler.ModificationElementHandler"
             id="AD_Modification">
       </handler>
+      <handler
+            class="org.adempiere.pipo2.handler.TableIndexElementHandler"
+            id="AD_TableIndex">
+      </handler>
+      <handler
+            class="org.adempiere.pipo2.handler.IndexColumnElementHandler"
+            id="AD_IndexColumn">
+      </handler>
+            <handler
+            class="org.adempiere.pipo2.handler.ViewComponentElementHandler"
+            id="AD_ViewComponent">
+      </handler>
+      <handler
+            class="org.adempiere.pipo2.handler.ViewColumnElementHandler"
+            id="AD_ViewColumn">
+      </handler>            
    </extension>
 
 </plugin>

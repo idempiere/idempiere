@@ -97,7 +97,8 @@ public class TableIndexValidate extends SvrProcess {
 		{
 			String sql = index.getDDL();
 			int rvalue = DB.executeUpdate(sql, (Object[]) null, true, trxName);
-			pi.addLog(0, null, new BigDecimal(rvalue), sql);
+			if (pi != null)
+				pi.addLog(0, null, new BigDecimal(rvalue), sql);
 			if (rvalue == -1)
 				throw new AdempiereException(Msg.getMsg(ctx, "Failed to create index"));
 			else
@@ -160,11 +161,13 @@ public class TableIndexValidate extends SvrProcess {
 			{
 				String sql = "DROP INDEX " + index.getName();
 				int rvalue = DB.executeUpdate(sql, (Object[]) null, true, trxName);
-				pi.addLog(0, null, new BigDecimal(rvalue), sql);
+				if (pi != null)
+					pi.addLog(0, null, new BigDecimal(rvalue), sql);
 				
 				sql = index.getDDL();
 				rvalue = DB.executeUpdate(sql, (Object[]) null, true, trxName);
-				pi.addLog(0, null, new BigDecimal(rvalue), sql);
+				if (pi != null)
+					pi.addLog(0, null, new BigDecimal(rvalue), sql);
 				if(rvalue == -1)
 					throw new AdempiereException(Msg.getMsg(ctx, "FailedModifyIndex"));
 				else
