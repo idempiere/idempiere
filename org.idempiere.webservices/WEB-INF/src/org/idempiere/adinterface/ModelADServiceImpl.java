@@ -944,7 +944,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 							sqlBuilder.append(" ot.").append(colName).append(" Is Null AND ");
 						} else if (holderPo.get_Value(colName) == null) {
 							return rollbackAndSetError(trx, resp, ret, true, "Web service type " + m_webservicetype.getValue()
-									+ ": Record Identifiier column " + colName + " must be set");
+									+ ": Record Identifier column " + colName + " must be set");
 						} else {
 							sqlBuilder.append(" ot.").append(colName).append("=? AND ");
 							sqlParaList.add(holderPo.get_Value(colName));
