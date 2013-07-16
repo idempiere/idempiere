@@ -1,7 +1,7 @@
+|IdempiereSuite.TestCashPosOrder||22:32:07 mié, jul 10, 2013|
 |IdempiereSuite.TestInitialClientSetup||17:03:35 vie, jun 28, 2013|
 |IdempiereSuite.TestPostInternalInventory||15:31:05 vie, jun 28, 2013|
 |IdempiereSuite.TestCreateReference||14:44:52 vie, jun 28, 2013|
-|IdempiereSuite.TestCashPosOrder||14:42:20 vie, jun 28, 2013|
 |ZkSuite.ZkGardenAdminLogin||13:02:13 vie, jun 28, 2013|
 |ZkSuite.ZkSystemAdminLogin||13:00:38 vie, jun 28, 2013|
 |||12:04:00 jue, dic 20, 2012|

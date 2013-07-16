@@ -119,6 +119,8 @@ public class Util {
 			String tablename = cell_value.substring(5, pos_opsqb);
 			String where = cell_value.substring(pos_opsqb+1, pos_clsqb);
 			String whereParsed = Env.parseContext(ctx, windowNo, where, false);
+			if (ctx != null)
+				whereParsed = "(" + whereParsed + ") AND AD_Client_ID IN (0,"+Env.getAD_Client_ID(ctx)+")";
 			String columnname = cell_value.substring(pos_clsqb+2);
 			String newval = DB.getSQLValueStringEx(null, "SELECT " + columnname + " FROM " + tablename + " WHERE " + whereParsed);
 			if (parse != null)

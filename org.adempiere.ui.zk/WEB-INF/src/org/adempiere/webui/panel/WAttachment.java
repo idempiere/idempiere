@@ -389,6 +389,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		{
 			bSave.setEnabled(false);
 			bDelete.setEnabled(false);
+			sizeLabel.setText("");
 			return false;
 		}
 	}
@@ -453,7 +454,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	{
 		String fileName = null;
 
-		if (cbContent.getItemCount() > index)
+		if (index>=0 && cbContent.getItemCount() > index)
 		{
 			ListItem listitem = cbContent.getItemAtIndex(index);
 			fileName = (String)listitem.getValue();
@@ -663,8 +664,11 @@ public class WAttachment extends Window implements EventListener<Event>
 			{
 				if (result)
 				{
-					if (m_attachment.deleteEntry(index))
+					if (m_attachment.deleteEntry(index)) {
 						cbContent.removeItemAt(index);
+						clearPreview();
+						autoPreview (cbContent.getSelectedIndex(), true);
+					}
 
 					m_change = true;
 				}				

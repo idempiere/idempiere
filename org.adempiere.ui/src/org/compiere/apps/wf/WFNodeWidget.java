@@ -76,7 +76,7 @@ public class WFNodeWidget extends Widget {
         	}
         	if (image != null) {
         		imageWidget = new ImageWidget(scene, image);
-        		imageWidget.setToolTipText(node.getName());
+        		imageWidget.setToolTipText(node.getName(true));
         		addChild(imageWidget);
         	}
         }
@@ -97,7 +97,7 @@ public class WFNodeWidget extends Widget {
 	        	titleWidget.addChild (titleIcon);
 	        }
 
-	        String titleText = node.getName();
+	        String titleText = node.getName(true);
 	        if (titleText.length() > 20)
 	        	titleText = titleText.substring(0, 20) + "...";
 	        LabelWidget titleTextWidget = new LabelWidget (scene, titleText);

@@ -368,7 +368,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
      */
     protected boolean isProcessElement(Properties ctx, String entityType) {
     	if ("D".equals(entityType) || "C".equals(entityType)) {
-    		return "true".equalsIgnoreCase(getUpdateMode(ctx));
+    		return "Y".equalsIgnoreCase(getUpdateMode(ctx));
     	} else {
     		return true;
     	}
@@ -578,7 +578,10 @@ public abstract class AbstractElementHandler implements ElementHandler {
     protected boolean hasUUIDKey(PIPOContext ctx, Element element) {
     	String tableName = element.getElementValue();
     	String uuidColumn = PO.getUUIDColumnName(tableName);
-    	String uuid = element.properties.get(uuidColumn).contents.toString();
+    	String uuid = null;
+    	if (element.properties.containsKey(uuidColumn)) {
+    		uuid = element.properties.get(uuidColumn).contents.toString();
+    	}
     	return (uuid != null && uuid.trim().length() == 36);
     }
 

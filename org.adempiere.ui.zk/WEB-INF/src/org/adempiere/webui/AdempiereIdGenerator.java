@@ -88,13 +88,14 @@ public class AdempiereIdGenerator implements IdGenerator {
 		}
 		
 		String number;
-        if ((number = (String)desktop.getAttribute("Id_Num")) == null) {
+		IdSpace idspace = comp.getSpaceOwner();
+        if ((number = (String)idspace.getAttribute("uid.sequence")) == null) {
             number = "0";
-            desktop.setAttribute("Id_Num", number);
+            idspace.setAttribute("uid.sequence", number);
         }
         int i = Integer.parseInt(number);
         i++;// Start from 1
-        desktop.setAttribute("Id_Num", String.valueOf(i));
+        idspace.setAttribute("uid.sequence", String.valueOf(i));
         
         return uuid + "_" + i;
 	}

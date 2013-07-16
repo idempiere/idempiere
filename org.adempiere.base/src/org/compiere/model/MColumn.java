@@ -681,18 +681,32 @@ public class MColumn extends X_AD_Column
 
 	public String getReferenceTableName() {
 		String foreignTable = null;
-		if (DisplayType.TableDir == getAD_Reference_ID()
-			|| (DisplayType.Search == getAD_Reference_ID() && getAD_Reference_Value_ID() == 0)) {
+		int refid = getAD_Reference_ID();
+		if (DisplayType.TableDir == refid || (DisplayType.Search == refid && getAD_Reference_Value_ID() == 0)) {
 			foreignTable = getColumnName().substring(0, getColumnName().length()-3);
-		} else 	if (DisplayType.Table == getAD_Reference_ID() || DisplayType.Search == getAD_Reference_ID()) {
+		} else 	if (DisplayType.Table == refid || DisplayType.Search == refid) {
 			X_AD_Reference ref = new X_AD_Reference(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
 			if (X_AD_Reference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
 				MRefTable rt = new MRefTable(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
 				if (rt != null)
 					foreignTable = rt.getAD_Table().getTableName();
 			}
-		} else 	if (DisplayType.List == getAD_Reference_ID()) {
+		} else 	if (DisplayType.List == refid || DisplayType.Payment == refid) {
 			foreignTable = "AD_Ref_List";
+		} else if (DisplayType.Location == refid) {
+			foreignTable = "C_Location";
+		} else if (DisplayType.Account == refid) {
+			foreignTable = "C_ValidCombination";
+		} else if (DisplayType.Locator == refid) {
+			foreignTable = "M_Locator";
+		} else if (DisplayType.PAttribute == refid) {
+			foreignTable = "M_AttributeSetInstance";
+		} else if (DisplayType.Assignment == refid) {
+			foreignTable = "S_ResourceAssignment";
+		} else if (DisplayType.Image == refid) {
+			foreignTable = "AD_Image";
+		} else if (DisplayType.Color == refid) {
+			foreignTable = "AD_Color";
 		}
 
 		return foreignTable;
