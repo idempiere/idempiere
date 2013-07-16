@@ -216,7 +216,7 @@ public class HelpController
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Process))
         	{
-        		MProcess process = new MProcess(Env.getCtx(), recordId, null);
+        		MProcess process = MProcess.get(Env.getCtx(), recordId);
         		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Process")) {
 
 					nameMsg = process.get_Translation("Name");
@@ -323,41 +323,24 @@ public class HelpController
 				}
         	}
     	 else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Workflow)) {
-			MWorkflow workflow = new MWorkflow(Env.getCtx(), recordId, null);
+    		 MWorkflow workflow = MWorkflow.get(Env.getCtx(), recordId);
 
-			if (!Env.getLoginLanguage(Env.getCtx()).isBaseLanguage()) {
+    		 boolean trl = !Env.getLoginLanguage(Env.getCtx()).isBaseLanguage();
 
-				nameMsg = workflow.get_Translation("Name");
+    		 nameMsg = workflow.getName(trl);
 
-				if (workflow != null && nameMsg != null
-						&& nameMsg.length() != 0) {
-					sb.append("<br><br>\n<b>" + nameMsg + "</b>");
+    		 if (workflow != null && nameMsg != null
+    				 && nameMsg.length() != 0) {
+    			 sb.append("<br><br>\n<b>" + nameMsg + "</b>");
 
-					descMsg = workflow.get_Translation("Description");
-					if (descMsg != null && descMsg.length() != 0)
-						sb.append("<br><br>\n<i>" + descMsg + "</i>");
+    			 descMsg = workflow.getDescription(trl);
+    			 if (descMsg != null && descMsg.length() != 0)
+    				 sb.append("<br><br>\n<i>" + descMsg + "</i>");
 
-					helpMsg = workflow.get_Translation("Help");
-					if (helpMsg != null && helpMsg.length() != 0)
-						sb.append("<br><br>\n" + helpMsg);
-				}
-			} else {
-
-				if (workflow != null && workflow.getName() != null
-						&& workflow.getName().length() != 0) {
-					sb.append("<br><br>\n<b>" + workflow.getName() + "</b>");
-
-					if (workflow.getDescription() != null
-							&& workflow.getDescription().length() != 0)
-						sb.append("<br><br>\n<i>"
-								+ workflow.getDescription() + "</i>");
-
-					if (workflow.getHelp() != null
-							&& workflow.getHelp().length() != 0)
-						sb.append("<br><br>\n" + workflow.getHelp());
-				}
-
-			}
+    			 helpMsg = workflow.getHelp(trl);
+    			 if (helpMsg != null && helpMsg.length() != 0)
+    				 sb.append("<br><br>\n" + helpMsg);
+    		 }
 
 		} else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Task)) {
 			MTask task = new MTask(Env.getCtx(), recordId, null);
@@ -395,40 +378,25 @@ public class HelpController
 				}
 			}
 		} else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Node)) {
-			MWFNode node = new MWFNode(Env.getCtx(), recordId, null);
+			MWFNode node = MWFNode.get(Env.getCtx(), recordId);
 
-			if (!Env.getLoginLanguage(Env.getCtx()).isBaseLanguage()) {
-				
-				nameMsg = node.get_Translation("Name");
+			boolean trl = !Env.getLoginLanguage(Env.getCtx()).isBaseLanguage();
 
-				if (node != null && nameMsg != null
-						&& nameMsg.length() != 0) {
-					sb.append("<br><br>\n<b>" + nameMsg + "</b>");
+			nameMsg = node.getName(trl);
 
-					descMsg = node.get_Translation("Description");
-					if (descMsg != null && descMsg.length() != 0)
-						sb.append("<br><br>\n<i>" + descMsg + "</i>");
+			if (node != null && nameMsg != null
+					&& nameMsg.length() != 0) {
+				sb.append("<br><br>\n<b>" + nameMsg + "</b>");
 
-					helpMsg = node.get_Translation("Help");
-					if (helpMsg != null && helpMsg.length() != 0)
-						sb.append("<br><br>\n" + helpMsg);
-				}
+				descMsg = node.getDescription(trl);
+				if (descMsg != null && descMsg.length() != 0)
+					sb.append("<br><br>\n<i>" + descMsg + "</i>");
 
-			} else {
-				if (node != null && node.getName() != null
-						&& node.getName().length() != 0) {
-					sb.append("<br><br>\n<b>" + node.getName() + "</b>");
-
-					if (node.getDescription() != null
-							&& node.getDescription().length() != 0)
-						sb.append("<br><br>\n<i>" + node.getDescription()
-								+ "</i>");
-
-					if (node.getHelp() != null
-							&& node.getHelp().length() != 0)
-						sb.append("<br><br>\n" + node.getHelp());
-				}
+				helpMsg = node.getHelp(trl);
+				if (helpMsg != null && helpMsg.length() != 0)
+					sb.append("<br><br>\n" + helpMsg);
 			}
+
 		  }
     	}
 	

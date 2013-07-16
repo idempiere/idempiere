@@ -89,8 +89,6 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	public MRfQLineQty (Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
-		if (get_ID() > 0)
-			s_cache.put (new Integer (get_ID()), this);
 	}	//	MRfQLineQty
 	
 	/**
