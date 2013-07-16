@@ -93,6 +93,9 @@ public class AbstractService {
 		
 		Login login = new Login(m_cs.getCtx());
 		KeyNamePair[] clients = login.getClients(loginRequest.getUser(), loginRequest.getPass());
+		if (clients == null)
+			return "Error login - User invalid";
+
 		boolean okclient = false;
 		KeyNamePair selectedClient = null;
 		for (KeyNamePair client : clients) {
