@@ -46,7 +46,7 @@ public class GridFieldVO implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6098724121324445114L;
+	private static final long serialVersionUID = -767158053380874050L;
 
 	/**
 	 *  Return the SQL statement used for the MFieldVO.create
