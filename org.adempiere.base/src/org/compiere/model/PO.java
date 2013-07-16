@@ -4423,26 +4423,24 @@ public abstract class PO
 			if ("DBExecuteError".equals(msg))
 				info = "DBExecuteError:" + info;
 			//	Unique Constraint
-			if (DBException.isUniqueContraintError(CLogger.retrieveException()))
+			Exception e = CLogger.retrieveException();
+			if (DBException.isUniqueContraintError(e))
 			{
 				boolean found = false;
+				String dbIndexName = DB.getDatabase().getNameOfUniqueConstraintError(e);
+				if (log.isLoggable(Level.FINE)) log.fine("dbIndexName=" + dbIndexName);
 				MTableIndex[] indexes = MTableIndex.get(MTable.get(getCtx(), get_Table_ID()));
 				for (MTableIndex index : indexes)
 				{
-					String indexName = index.getName().toLowerCase();
-					if (DB.isPostgreSQL())
-						indexName = "\"" + indexName + "\"";
-					else 
-						indexName = "." + indexName + ")";
-					if (info.toLowerCase().contains(indexName))
+					if (dbIndexName.equalsIgnoreCase(index.getName()))
 					{
 						if (index.getAD_Message_ID() > 0)
 						{
 							MMessage message = MMessage.get(getCtx(), index.getAD_Message_ID());
-							log.saveError("SaveError", message.getMsgText());
+							log.saveError("SaveError", Msg.getMsg(getCtx(), message.getValue()));
 							found = true;
-							break;
 						}
+						break;
 					}
 				}
 				

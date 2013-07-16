@@ -338,6 +338,8 @@ public interface AdempiereDatabase
 	 * @return true if lock is granted
 	 */
 	public boolean forUpdate(PO po, int timeout);
+	
+	public String getNameOfUniqueConstraintError(Exception e);
 
 }   //  AdempiereDatabase
 

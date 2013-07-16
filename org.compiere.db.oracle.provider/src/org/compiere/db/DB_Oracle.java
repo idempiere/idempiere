@@ -1380,4 +1380,16 @@ public class DB_Oracle implements AdempiereDatabase
 		}
 		return false;
 	}
+
+	@Override
+	public String getNameOfUniqueConstraintError(Exception e) {
+		String info = e.getMessage();
+		int fromIndex = info.indexOf(".");
+		if (fromIndex == -1)
+			return info;
+		int toIndex = info.indexOf(")", fromIndex + 1);
+		if (toIndex == -1)
+			return info;
+		return info.substring(fromIndex + 1, toIndex);
+	}	
 }   //  DB_Oracle
