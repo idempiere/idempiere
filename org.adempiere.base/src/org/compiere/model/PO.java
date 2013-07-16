@@ -1276,7 +1276,7 @@ public abstract class PO
 	protected void load (int ID, String trxName)
 	{
 		if (log.isLoggable(Level.FINEST)) log.finest("ID=" + ID);
-		if (ID > 0)
+		if (ID > 0 || (ID == 0 && MTable.isZeroIDTable(get_TableName())))
 		{
 			setKeyInfo();
 			m_IDs = new Object[] {new Integer(ID)};
