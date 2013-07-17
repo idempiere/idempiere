@@ -45,6 +45,7 @@ import javax.xml.ws.WebServiceContext;
 import org.apache.xmlbeans.StringEnumAbstractBase.Table;
 import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
+import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRefTable;
 import org.compiere.model.MRole;
@@ -57,7 +58,9 @@ import org.compiere.model.X_WS_WebServiceFieldInput;
 import org.compiere.model.X_WS_WebService_Para;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
@@ -1071,11 +1074,38 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 						"LookupResolutionFailed"));
 			}
 			
-			String sql = ADLookup.getDirectAccessSQL(lookup, lookupValue.toUpperCase());
-			int id = DB.getSQLValue(localTrxName, sql); 
-			if (id > 0)
-				value = id;
-
+			int AD_Reference_ID = 0;
+			if(lookup instanceof MLookup){
+				AD_Reference_ID = ((MLookup)lookup).getDisplayType();
+			}
+			
+			if(AD_Reference_ID==DisplayType.List)
+			{
+				if (lookup.getSize() == 0)
+					lookup.refresh();
+				Object[] list = lookup.getData(true, true, true, false,false).toArray(); // IDEMPIERE 90
+	
+				for (Object pair : list) {
+					if (pair instanceof KeyNamePair) {
+						KeyNamePair p = (KeyNamePair) pair;
+						if (p.getName().equalsIgnoreCase(lookupValue)) {
+							value = p.getID();
+							break;
+						}
+					} else {
+						ValueNamePair p = (ValueNamePair) pair;
+						if (p.getName().equalsIgnoreCase(lookupValue)) {
+							value = p.getValue();
+							break;
+						}
+					}
+				}
+			}else{
+				String sql = ADLookup.getDirectAccessSQL(lookup, lookupValue.toUpperCase());
+				int id = DB.getSQLValue(localTrxName, sql); 
+				if (id > 0)
+					value = id;
+			}
 			if (value == null) {
 				throw new IdempiereServiceFault(" Invalid Lookup value:" + lookupValue, new QName("LookupResolutionFailed"));
 			}
