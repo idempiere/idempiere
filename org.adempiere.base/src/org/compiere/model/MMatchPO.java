@@ -59,8 +59,7 @@ public class MMatchPO extends X_M_MatchPO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7189366329684552916L;
-
+	private static final long serialVersionUID = -3669451656879485463L;
 
 	/**
 	 * 	Get PO Match with order/invoice
@@ -446,6 +445,7 @@ public class MMatchPO extends X_M_MatchPO
 								s_log.fine(msg);
 								continue;
 							}
+							mpo.setMatchInvCreated(matchInv);
 							if (savepoint != null) 
 							{
 								try {
@@ -549,7 +549,19 @@ public class MMatchPO extends X_M_MatchPO
 		return retValue;
 	}	//	create
 	
-	
+
+	private MMatchInv m_matchInv;
+	/**
+	 * Register the match inv created for immediate accounting purposes
+	 * @param matchInv
+	 */
+	public void setMatchInvCreated(MMatchInv matchInv) {
+		m_matchInv = matchInv;
+	}
+	public MMatchInv getMatchInvCreated() {
+		return m_matchInv;
+	}
+
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MMatchPO.class);
 
