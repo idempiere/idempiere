@@ -3822,10 +3822,14 @@ public class GridTable extends AbstractTableModel
 		MTable table = MTable.get (m_ctx, m_AD_Table_ID);
 		PO po = null;
 		int Record_ID = getKeyID(row);
-		if (Record_ID != -1)
-			po = table.getPO(Record_ID, m_trxName);
-		else	//	Multi - Key
-			po = table.getPO(getWhereClause(getDataAtRow(row)), m_trxName);
+		if (Record_ID == 0 && MTable.isZeroIDTable(getTableName())) {
+			po = new Query(Env.getCtx(), table, getKeyColumnName()+"=0", null).first();
+		} else {
+			if (Record_ID != -1)
+				po = table.getPO(Record_ID, m_trxName);
+			else	//	Multi - Key
+				po = table.getPO(getWhereClause(getDataAtRow(row)), m_trxName);
+		}
 		return po;
 	}
 
