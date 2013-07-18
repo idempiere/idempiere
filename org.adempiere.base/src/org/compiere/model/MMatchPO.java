@@ -551,24 +551,15 @@ public class MMatchPO extends X_M_MatchPO
 	
 
 	private MMatchInv m_matchInv;
-
 	/**
 	 * Register the match inv created for immediate accounting purposes
 	 * @param matchInv
 	 */
-	private void setMatchInvCreated(MMatchInv matchInv) {
+	public void setMatchInvCreated(MMatchInv matchInv) {
 		m_matchInv = matchInv;
 	}
-
-	/**
-	 * Get the match inv created for immediate accounting purposes
-	 * Is cleared after read, so if you read twice second time it returns null
-	 * @param matchInv
-	 */
 	public MMatchInv getMatchInvCreated() {
-		MMatchInv tmp = m_matchInv;
-		m_matchInv = null;
-		return tmp;
+		return m_matchInv;
 	}
 
 	/**	Static Logger	*/

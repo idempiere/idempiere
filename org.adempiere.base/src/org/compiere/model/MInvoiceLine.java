@@ -52,7 +52,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6157080330492848409L;
+	private static final long serialVersionUID = -5113860437274708398L;
 
 	/**
 	 * 	Get Invoice Line referencing InOut Line
@@ -77,29 +77,6 @@ public class MInvoiceLine extends X_C_InvoiceLine
 
 		return retValue;
 	}	//	getOfInOutLine
-
-	/**
-	 * 	Get Invoice Line referencing InOut Line - from MatchInv
-	 *	@param sLine shipment line
-	 *	@return (first) invoice line
-	 */
-	public static MInvoiceLine getOfInOutLineFromMatchInv(MInOutLine sLine) {
-		if (sLine == null)
-			return null;
-		final String whereClause = "C_InvoiceLine_ID IN (SELECT C_InvoiceLine_ID FROM M_MatchInv WHERE M_InOutLine_ID=?)";
-		List<MInvoiceLine> list = new Query(sLine.getCtx(),I_C_InvoiceLine.Table_Name,whereClause,sLine.get_TrxName())
-		.setParameters(sLine.getM_InOutLine_ID())
-		.list();
-		
-		MInvoiceLine retValue = null;
-		if (list.size() > 0) {
-			retValue = list.get(0);
-			if (list.size() > 1)
-				s_log.warning("More than one C_InvoiceLine of " + sLine);
-		}
-
-		return retValue;
-	}
 
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MInvoiceLine.class);
@@ -1076,9 +1053,9 @@ public class MInvoiceLine extends X_C_InvoiceLine
 					// end MZ
 					if (base.signum() != 0)
 					{
-						BigDecimal result = getLineNetAmt().multiply(base);
-						result = result.divide(total, BigDecimal.ROUND_HALF_UP);
-						lca.setAmt(result.doubleValue(), getPrecision());
+						double result = getLineNetAmt().multiply(base).doubleValue();
+						result /= total.doubleValue();
+						lca.setAmt(result, getPrecision());
 					}
 					if (!lca.save()){
 						msgreturn = new StringBuilder("Cannot save line Allocation = ").append(lca);
@@ -1102,8 +1079,6 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				lca.setM_Product_ID(iol.getM_Product_ID());
 				lca.setM_AttributeSetInstance_ID(iol.getM_AttributeSetInstance_ID());
 				BigDecimal base = iol.getBase(lc.getLandedCostDistribution()); 
-				if (base.signum() == 0)
-					return "Base value is 0 - " + lc.getLandedCostDistribution();
 				lca.setBase(base);
 				lca.setAmt(getLineNetAmt());
 				// MZ Goodwill
@@ -1199,9 +1174,9 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			// end MZ
 			if (base.signum() != 0)
 			{
-				BigDecimal result = getLineNetAmt().multiply(base);
-				result = result.divide(total, BigDecimal.ROUND_HALF_UP);
-				lca.setAmt(result.doubleValue(), getPrecision());
+				double result = getLineNetAmt().multiply(base).doubleValue();
+				result /= total.doubleValue();
+				lca.setAmt(result, getPrecision());
 			}
 			if (!lca.save()){
 				msgreturn = new StringBuilder("Cannot save line Allocation = ").append(lca);
