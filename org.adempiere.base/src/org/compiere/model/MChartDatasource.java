@@ -118,6 +118,17 @@ public class MChartDatasource extends X_AD_ChartDatasource {
 			sql += category + "<=TRUNC(" + DB.TO_DATE(new Timestamp(endDate.getTime())) + ", '" + unit + "') ";
 		}
 		
+		int startIndex=0;
+		if ((startIndex = sql.indexOf('@')) != -1){
+			String variable = sql.substring(startIndex);
+			int endIndex = variable.indexOf('@',1);
+			if(endIndex != -1){
+				variable = variable.substring(0,endIndex+1);
+				String val = Env.getContext(getCtx(), variable.replace('@',' ').trim());
+				sql=sql.replaceFirst(variable, val);
+			}
+		}
+		
 		MRole role = MRole.getDefault(getCtx(), false);
 		sql = role.addAccessSQL(sql, null, true, false);
 		
