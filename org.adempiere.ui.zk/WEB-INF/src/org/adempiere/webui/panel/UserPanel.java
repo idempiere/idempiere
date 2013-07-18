@@ -17,13 +17,16 @@
 
 package org.adempiere.webui.panel;
 
+
 import java.util.Properties;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Messagebox;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.FeedbackManager;
+import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.WPreference;
 import org.compiere.model.MClient;
 import org.compiere.model.MOrg;
@@ -136,14 +139,34 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     		return "*";
     	}
     }
-
 	public void onEvent(Event event) throws Exception {
 		if (event == null)
 			return;
 
 		if (logout == event.getTarget())
         {
-            SessionManager.logoutSession();
+			component.addEventListener("onLogout", new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					SessionManager.logoutSession();
+				}
+			});				
+			
+			if (SessionManager.getAppDesktop().isPendingWindow()) {
+				FDialog.ask(0, component, "ProceedWithTask?", new Callback<Boolean>() {
+
+					@Override
+					public void onCallback(Boolean result)
+					{
+						if (result)
+						{
+							Events.echoEvent(new Event("onLogout", component));
+						}
+					}
+				});
+			} else {
+	            SessionManager.logoutSession();
+			}
         }
 		else if (lblUserNameValue == event.getTarget())
 		{
@@ -153,8 +176,29 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		}
 		else if (changeRole == event.getTarget())
 		{
-			MUser user = MUser.get(ctx);
-			SessionManager.changeRole(user);
+			component.addEventListener("onChangeRole", new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					MUser user = MUser.get(ctx);
+					SessionManager.changeRole(user);
+				}
+			});
+			if (SessionManager.getAppDesktop().isPendingWindow()) {
+				FDialog.ask(0, component, "ProceedWithTask?", new Callback<Boolean>() {
+
+					@Override
+					public void onCallback(Boolean result)
+					{
+						if (result)
+						{
+							Events.echoEvent(new Event("onChangeRole", component));
+						}
+					}
+				});
+			} else {
+				MUser user = MUser.get(ctx);
+				SessionManager.changeRole(user);
+			}
 		}
 		else if (preference == event.getTarget())
 		{

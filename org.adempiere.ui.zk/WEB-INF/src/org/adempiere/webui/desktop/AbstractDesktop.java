@@ -295,4 +295,9 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 		win.setPage(page);
    		win.doHighlighted();
    	}   	
+
+    protected List<Object> getWindows(){
+    	return windows;
+    }
+
 }
