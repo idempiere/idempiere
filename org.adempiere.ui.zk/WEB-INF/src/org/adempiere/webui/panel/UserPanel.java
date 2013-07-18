@@ -17,7 +17,6 @@
 
 package org.adempiere.webui.panel;
 
-
 import java.util.Properties;
 
 import org.adempiere.util.Callback;
@@ -66,7 +65,10 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 
 	protected Component component;
 
-    public UserPanel()
+	private static final String ON_DEFER_CHANGE_ROLE = "onDeferChangeRole";
+	private static final String ON_DEFER_LOGOUT = "onDeferLogout";
+
+	public UserPanel()
     {
     	super();
         this.ctx = Env.getCtx();
@@ -106,6 +108,9 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     	
     	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
     	component.addEventListener("onEmailSupport", this);
+
+    	component.addEventListener(ON_DEFER_LOGOUT, this);
+    	component.addEventListener(ON_DEFER_CHANGE_ROLE, this);
     }
 
     private String getUserName()
@@ -139,19 +144,13 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     		return "*";
     	}
     }
+
 	public void onEvent(Event event) throws Exception {
 		if (event == null)
 			return;
 
 		if (logout == event.getTarget())
         {
-			component.addEventListener("onLogout", new EventListener<Event>() {
-				@Override
-				public void onEvent(Event event) throws Exception {
-					SessionManager.logoutSession();
-				}
-			});				
-			
 			if (SessionManager.getAppDesktop().isPendingWindow()) {
 				FDialog.ask(0, component, "ProceedWithTask?", new Callback<Boolean>() {
 
@@ -160,12 +159,12 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 					{
 						if (result)
 						{
-							Events.echoEvent(new Event("onLogout", component));
+							Events.echoEvent(ON_DEFER_LOGOUT, component, null);
 						}
 					}
 				});
 			} else {
-	            SessionManager.logoutSession();
+				Events.echoEvent(ON_DEFER_LOGOUT, component, null);
 			}
         }
 		else if (lblUserNameValue == event.getTarget())
@@ -176,13 +175,6 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		}
 		else if (changeRole == event.getTarget())
 		{
-			component.addEventListener("onChangeRole", new EventListener<Event>() {
-				@Override
-				public void onEvent(Event event) throws Exception {
-					MUser user = MUser.get(ctx);
-					SessionManager.changeRole(user);
-				}
-			});
 			if (SessionManager.getAppDesktop().isPendingWindow()) {
 				FDialog.ask(0, component, "ProceedWithTask?", new Callback<Boolean>() {
 
@@ -191,13 +183,12 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 					{
 						if (result)
 						{
-							Events.echoEvent(new Event("onChangeRole", component));
+							Events.echoEvent(ON_DEFER_CHANGE_ROLE, component, null);
 						}
 					}
 				});
 			} else {
-				MUser user = MUser.get(ctx);
-				SessionManager.changeRole(user);
+				Events.echoEvent(ON_DEFER_CHANGE_ROLE, component, null);
 			}
 		}
 		else if (preference == event.getTarget())
@@ -246,6 +237,16 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 				}
 			}
 		}
+		else if (ON_DEFER_LOGOUT.equals(event.getName()))
+		{
+			SessionManager.logoutSession();
+		}
+		else if (ON_DEFER_CHANGE_ROLE.equals(event.getName()))
+		{
+			MUser user = MUser.get(ctx);
+			SessionManager.changeRole(user);
+		}
+
 	}
 
 	@Override

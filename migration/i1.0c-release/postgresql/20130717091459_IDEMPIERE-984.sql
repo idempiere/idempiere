@@ -9,3 +9,4 @@ INSERT INTO AD_Message_Trl (AD_Language,AD_Message_ID, MsgText,MsgTip, IsTransla
 ;
 
 SELECT register_migration_script('20130717091459_IDEMPIERE-984.sql') FROM dual
+;
