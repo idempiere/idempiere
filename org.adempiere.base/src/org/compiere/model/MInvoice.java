@@ -1849,7 +1849,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 							return DocAction.STATUS_Invalid;
 						}
 						matchPO++;
-						if (!po.isPosted())
+						if (!po.isPosted() && po.getM_InOutLine_ID() > 0) // match po don't post if receipt is not assigned, and it doesn't create avg po record
 							addDocsPostProcess(po);
 					}
 				}

@@ -126,12 +126,17 @@ public class Doc_MatchPO extends Doc
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		//
 		if (getM_Product_ID() == 0		//  Nothing to do if no Product
-			|| getQty().signum() == 0
-			|| m_M_InOutLine_ID == 0)	//  No posting if not matched to Shipment
+			|| getQty().signum() == 0)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("No Product/Qty - M_Product_ID=" + getM_Product_ID()
 				+ ",Qty=" + getQty());
 			return facts;
+		}
+
+		if (m_M_InOutLine_ID == 0)	//  No posting if not matched to Shipment
+		{
+			p_Error = "No posting if not matched to Shipment";
+			return null;
 		}
 
 		//  create Fact Header
