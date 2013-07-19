@@ -20,6 +20,8 @@ import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,6 +49,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 
 	private String m_tableName;
 
+	@SuppressWarnings("unused")
 	private boolean m_distributed;
 	
 	public CCache (String name, int initialCapacity)
@@ -87,7 +90,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 */
 	public CCache (String tableName, String name, int initialCapacity, int expireMinutes, boolean distributed)
 	{
-//		super(initialCapacity);
 		m_name = name;
 		m_tableName = tableName;
 		setExpireMinutes(expireMinutes);
@@ -98,6 +100,10 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 			if (provider != null) {
 				nullList = provider.getSet(name);
 			}
+		} 
+		
+		if (nullList == null) {
+			nullList = Collections.synchronizedSet(new HashSet<K>());
 		}
 	}	//	CCache
 
@@ -181,7 +187,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 */
 	public int reset()
 	{
-		int no = cache.size();
+		int no = cache.size()+nullList.size();
 		clear();
 		return no;
 	}	//	reset
@@ -229,6 +235,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		}
 		//	Clear
 		cache.clear();
+		nullList.clear();
 		if (m_expire != 0)
 		{
 			long addMS = 60000L * m_expire;
@@ -244,14 +251,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	public boolean containsKey(Object key)
 	{
 		expire();
-		if (nullList != null)
-		{
-			return cache.containsKey(key) || nullList.contains(key);
-		}
-		else
-		{
-			return cache.containsKey(key);
-		}
+		return cache.containsKey(key) || nullList.contains(key);
 	}	//	containsKey
 
 	/**
@@ -264,6 +264,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}	//	containsValue
 
 	/**
+	 *  The return entry set exclude entries that contains null value
 	 *	@see java.util.Map#entrySet()
 	 */
 	public Set<Map.Entry<K,V>> entrySet()
@@ -291,11 +292,12 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	{
 		expire();
 		m_justReset = false;
-		if (value == null && m_distributed && nullList != null) {
+		if (value == null) {
 			cache.remove(key);
-			if (!nullList.contains(key))
-				nullList.add(key);
+			nullList.add(key);
 			return null;
+		} else if (!nullList.isEmpty()) {
+			nullList.remove(key);
 		}
 		return cache.put (key, value);
 	}	// put
@@ -317,10 +319,11 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	public boolean isEmpty()
 	{
 		expire();
-		return cache.isEmpty();
+		return cache.isEmpty() && nullList.isEmpty();
 	}	// isEmpty
 
 	/**
+	 * The return key set excludes key that map to null value
 	 *	@see java.util.Map#keySet()
 	 */
 	public Set<K> keySet()
@@ -335,7 +338,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	public int size()
 	{
 		expire();
-		return cache.size();
+		return cache.size()+nullList.size();
 	}	//	size
 
 	/**
@@ -345,10 +348,11 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 */
 	public int sizeNoExpire()
 	{
-		return cache.size();
+		return cache.size()+nullList.size();
 	}	//	size
 
 	/**
+	 *  The return values collection exclude null value entries
 	 *	@see java.util.Map#values()
 	 */
 	public Collection<V> values()
@@ -383,6 +387,9 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 
 	@Override
 	public V remove(Object key) {
+		if (!nullList.isEmpty()) {
+			if (nullList.remove(key)) return null;
+		}
 		return cache.remove(key);
 	}
 
@@ -391,6 +398,9 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		if (recordId <= 0)
 			return reset();
 				
+		if (!nullList.isEmpty()) {
+			if (nullList.remove(recordId)) return 1;
+		}
 		V removed = cache.remove(recordId);
 		return removed != null ? 1 : 0;
 	}
