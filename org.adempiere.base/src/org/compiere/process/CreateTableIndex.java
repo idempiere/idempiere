@@ -65,8 +65,8 @@ public class CreateTableIndex extends SvrProcess {
 	private void processDatabase(DatabaseMetaData md) throws Exception 
 	{
 		String tableName = null;		
-		String catalog = null;
-		String schema = null;
+		String catalog = DB.getDatabase().getCatalog();
+		String schema = DB.getDatabase().getSchema();		
 		String[] types = {"TABLE"};
 		
 		ResultSet rs = md.getTables(catalog, schema, tableName, types);
@@ -86,8 +86,8 @@ public class CreateTableIndex extends SvrProcess {
 	private void processDatabaseTable(DatabaseMetaData md, MTable table) throws Exception 
 	{
 		Hashtable<String, DatabaseTableIndex> htIndexes = new Hashtable<String, DatabaseTableIndex>();
-		String catalog = "REFERENCE";
-		String schema = null;
+		String catalog = DB.getDatabase().getCatalog();
+		String schema = DB.getDatabase().getSchema();
 		
 		String tableName = table.getTableName();		
 		if (md.storesUpperCaseIdentifiers())
@@ -130,8 +130,8 @@ public class CreateTableIndex extends SvrProcess {
 	
 	private void processTableIndex(DatabaseMetaData md, MTable table, Hashtable<String, DatabaseTableIndex> htIndexes) throws Exception 
 	{
-		String catalog = null;
-		String schema = null;
+		String catalog = DB.getDatabase().getCatalog();
+		String schema = DB.getDatabase().getSchema();
 		
 		String tableName = table.getTableName();		
 		if (md.storesUpperCaseIdentifiers())
@@ -186,7 +186,7 @@ public class CreateTableIndex extends SvrProcess {
 					String dbIndexColumn = dbTableIndex.columns[i];
 					if (dbIndexColumn == null)
 						break;
-					int AD_Column_ID = DB.getSQLValue(get_TrxName(), getColumnIDSql, table.getAD_Table_ID(), dbIndexColumn.toLowerCase());
+					int AD_Column_ID = DB.getSQLValue(null, getColumnIDSql, table.getAD_Table_ID(), dbIndexColumn.toLowerCase());
 					String columnName = dbIndexColumn;
 					
 					if (AD_Column_ID > 0)
