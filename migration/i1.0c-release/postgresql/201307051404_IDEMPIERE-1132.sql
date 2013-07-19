@@ -282,15 +282,10 @@ INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,LoadSeq,AD_Windo
 INSERT INTO AD_Table_Trl (AD_Language,AD_Table_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Table_Trl_UU ) SELECT l.AD_Language,t.AD_Table_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Table t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Table_ID=200086 AND NOT EXISTS (SELECT * FROM AD_Table_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Table_ID=t.AD_Table_ID)
 ;
 
-/*-- Jul 3, 2013 7:05:53 PM SGT
+-- Jul 3, 2013 7:05:53 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
 INSERT INTO AD_Sequence (StartNewYear,IsTableID,IsAudited,IsAutoSequence,AD_Sequence_ID,Description,Name,IncrementNo,AD_Sequence_UU,AD_Org_ID,Created,CreatedBy,UpdatedBy,Updated,IsActive,StartNo,CurrentNextSys,CurrentNext,AD_Client_ID) VALUES ('N','Y','N','Y',200084,'Table AD_IndexColumn','AD_IndexColumn',1,'27cb5ee0-fd88-49df-9b2f-130df6edf7a9',0,TO_TIMESTAMP('2013-07-03 19:05:52','YYYY-MM-DD HH24:MI:SS'),100,100,TO_TIMESTAMP('2013-07-03 19:05:52','YYYY-MM-DD HH24:MI:SS'),'Y',1000000,200000,1000000,0)
 ;
-
--- Jul 3, 2013 7:05:53 PM SGT
--- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-CREATE SEQUENCE AD_INDEXCOLUMN_SQ INCREMENT 1 MINVALUE 1000000 MAXVALUE 2147483647 START 1000000
-;*/
 
 -- Jul 3, 2013 7:06:15 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
@@ -562,15 +557,10 @@ INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,LoadSeq,AD_Windo
 INSERT INTO AD_Table_Trl (AD_Language,AD_Table_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Table_Trl_UU ) SELECT l.AD_Language,t.AD_Table_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Table t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Table_ID=200087 AND NOT EXISTS (SELECT * FROM AD_Table_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Table_ID=t.AD_Table_ID)
 ;
 
-/*-- Jul 3, 2013 7:10:57 PM SGT
+-- Jul 3, 2013 7:10:57 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
 INSERT INTO AD_Sequence (StartNewYear,IsTableID,IsAudited,IsAutoSequence,AD_Sequence_ID,Description,Name,IncrementNo,AD_Sequence_UU,AD_Org_ID,Created,CreatedBy,UpdatedBy,Updated,IsActive,StartNo,CurrentNextSys,CurrentNext,AD_Client_ID) VALUES ('N','Y','N','Y',200085,'Table AD_ViewComponent','AD_ViewComponent',1,'726b9fac-628f-4312-8c27-1f334e16511f',0,TO_TIMESTAMP('2013-07-03 19:10:56','YYYY-MM-DD HH24:MI:SS'),100,100,TO_TIMESTAMP('2013-07-03 19:10:56','YYYY-MM-DD HH24:MI:SS'),'Y',1000000,200000,1000000,0)
 ;
-
--- Jul 3, 2013 7:10:57 PM SGT
--- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-CREATE SEQUENCE AD_VIEWCOMPONENT_SQ INCREMENT 1 MINVALUE 1000000 MAXVALUE 2147483647 START 1000000
-;*/
 
 -- Jul 3, 2013 7:11:05 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
@@ -856,15 +846,10 @@ INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,LoadSeq,AD_Windo
 INSERT INTO AD_Table_Trl (AD_Language,AD_Table_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Table_Trl_UU ) SELECT l.AD_Language,t.AD_Table_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Table t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Table_ID=200088 AND NOT EXISTS (SELECT * FROM AD_Table_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Table_ID=t.AD_Table_ID)
 ;
 
-/*-- Jul 3, 2013 7:15:20 PM SGT
+-- Jul 3, 2013 7:15:20 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
 INSERT INTO AD_Sequence (StartNewYear,IsTableID,IsAudited,IsAutoSequence,AD_Sequence_ID,Description,Name,IncrementNo,AD_Sequence_UU,AD_Org_ID,Created,CreatedBy,UpdatedBy,Updated,IsActive,StartNo,CurrentNextSys,CurrentNext,AD_Client_ID) VALUES ('N','Y','N','Y',200086,'Table AD_ViewColumn','AD_ViewColumn',1,'4b0c63f9-5963-42dc-877b-90c33342e867',0,TO_TIMESTAMP('2013-07-03 19:15:19','YYYY-MM-DD HH24:MI:SS'),100,100,TO_TIMESTAMP('2013-07-03 19:15:19','YYYY-MM-DD HH24:MI:SS'),'Y',1000000,200000,1000000,0)
 ;
-
--- Jul 3, 2013 7:15:20 PM SGT
--- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
-CREATE SEQUENCE AD_VIEWCOLUMN_SQ INCREMENT 1 MINVALUE 1000000 MAXVALUE 2147483647 START 1000000
-;*/
 
 -- Jul 3, 2013 7:15:28 PM SGT
 -- IDEMPIERE-1132 Improve AD_Index; AD_View; foreign keys management
