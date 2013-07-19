@@ -1216,14 +1216,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         	}else if(e.isInserting() && gridTab.getRecord_ID() < 0 && gridTab.getTabLevel() > 0 )
         	{		
     			int AD_Tree_ID = Integer.parseInt(gridTab.getParentTab().getValue("AD_Tree_ID").toString());
-    			MTreeNode root = new MTree (Env.getCtx(), AD_Tree_ID, true, true, null).getRoot();
-    			SimpleTreeModel treeModel = SimpleTreeModel.createFrom(root);
-    			try {
-    				treePanel.getTree().setItemRenderer(treeModel);
-    				treePanel.getTree().setModel(treeModel);
-    			} catch (Exception treeExc) {
-    				logger.log(Level.SEVERE, "Failed to setup tree");
-    			}
+    			treePanel.initTree(AD_Tree_ID, windowNo);
     		}
         }
         if (listPanel.isVisible()) {

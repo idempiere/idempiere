@@ -20,7 +20,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -50,6 +49,8 @@ public class UUIDGenerator extends SvrProcess {
 
 	private String tableName;
 
+	private boolean isFillUUID = false;
+
 	/**	Logger							*/
 	private static CLogger log = CLogger.getCLogger(UUIDGenerator.class);
 
@@ -63,6 +64,8 @@ public class UUIDGenerator extends SvrProcess {
 				;
 			else if (param.getParameterName().equals("TableName"))
 				tableName = param.getParameter().toString();
+			else if (param.getParameterName().equals("IsFillUUID"))
+				isFillUUID = param.getParameterAsBoolean();
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + param.getParameterName());
 		}
@@ -79,7 +82,7 @@ public class UUIDGenerator extends SvrProcess {
 			tableName = tableName.trim();
 		if (!tableName.endsWith("%"))
 			tableName = tableName + "%";
-		String sql = "SELECT AD_Table_ID, TableName FROM AD_Table WHERE TableName LIKE ? AND IsView = 'N' AND IsActive='Y'";
+		String sql = "SELECT AD_Table_ID, TableName FROM AD_Table WHERE TableName LIKE ? AND IsView = 'N' AND IsActive='Y' ORDER BY TableName";
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		int count = 0;
@@ -122,8 +125,16 @@ public class UUIDGenerator extends SvrProcess {
 					syncColumn(mColumn);
 
 					//update db
-					// COMMENT NEXT LINE ON RELEASE WORK
-					updateUUID(mColumn, null);
+					if (isFillUUID) {
+						// COMMENT NEXT LINE ON RELEASE WORK
+						updateUUID(mColumn, null);
+					}
+				} else {
+					if (isFillUUID) {
+						MColumn mColumn = MColumn.get(getCtx(), AD_Column_ID);
+						// COMMENT NEXT LINE ON RELEASE WORK
+						updateUUID(mColumn, null);
+					}
 				}
 				
 				/*
@@ -148,16 +159,21 @@ public class UUIDGenerator extends SvrProcess {
 
 	public static void updateUUID(MColumn column, String trxName) {
 		MTable table = (MTable) column.getAD_Table();
-		int AD_Column_ID = DB.getSQLValue(null, "SELECT AD_Column_ID FROM AD_Column WHERE AD_Table_ID=? AND ColumnName=?", table.getAD_Table_ID(), table.getTableName()+"_ID");
+		if (table.getTableName().startsWith("T_")) {
+			// don't update UUID for temporary tables
+			return;
+		}
+		int AD_Column_ID = 0;
 		StringBuilder sql = new StringBuilder("SELECT ");
 		String keyColumn = null;
-		List<String> compositeKeys = null;
-		if (AD_Column_ID > 0) {
-			keyColumn = table.getTableName()+"_ID";
-		} else {
-			compositeKeys = Arrays.asList(table.getKeyColumns());
+		String[] compositeKeys = table.getKeyColumns();
+		if (compositeKeys == null || compositeKeys.length == 1) {
+			keyColumn = compositeKeys[0];
+			AD_Column_ID = table.getColumn(keyColumn).getAD_Column_ID();
+			compositeKeys = null;
 		}
-		if ((compositeKeys == null || compositeKeys.size() == 0) && keyColumn == null) {
+		if ((compositeKeys == null || compositeKeys.length == 0) && keyColumn == null) {
+			// TODO: Update using rowid for oracle or ctid for postgresql
 			log.warning("Cannot update orphan table " + table.getTableName() + " (not ID neither parents)");
 			return;
 		}

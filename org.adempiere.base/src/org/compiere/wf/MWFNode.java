@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MColumn;
 import org.compiere.model.Query;
@@ -104,9 +105,10 @@ public class MWFNode extends X_AD_WF_Node
 			setXPosition (0);
 			setYPosition (0);
 		}
-		//	Save to Cache
-		if (get_ID() != 0)
-			s_cache.put (new Integer(getAD_WF_Node_ID()), this);
+		if (getAD_WF_Node_ID() > 0) {
+			loadNext();
+			loadTrl();
+		}
 	}	//	MWFNode
 
 	/**
@@ -137,7 +139,14 @@ public class MWFNode extends X_AD_WF_Node
 		loadNext();
 		loadTrl();
 		//	Save to Cache
-		s_cache.put (get_ID(), this);
+		Integer key = null;
+		try {
+			key = new Integer (rs.getInt("AD_WF_Node_ID"));
+		} catch (SQLException e) {
+			throw new AdempiereException(e);
+		}
+		if (key != null && trxName == null && !s_cache.containsKey(key))
+			s_cache.put (key, this);
 	}	//	MWFNode
 
 	

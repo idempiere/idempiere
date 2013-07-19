@@ -216,7 +216,7 @@ public class HelpController
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Process))
         	{
-        		MProcess process = new MProcess(Env.getCtx(), recordId, null);
+        		MProcess process = MProcess.get(Env.getCtx(), recordId);
         		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Process")) {
 
 					nameMsg = process.get_Translation("Name");
@@ -322,50 +322,84 @@ public class HelpController
 					}
 				}
         	}
-        	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Workflow))
-        	{
-        		MWorkflow workflow = new MWorkflow(Env.getCtx(), recordId, null);
-    			if (workflow != null && workflow.getName() != null && workflow.getName().length() != 0)
-    			{
-    				sb.append("<br><br>\n<b>" + workflow.getName() + "</b>");
-    				
-    				if (workflow.getDescription() != null && workflow.getDescription().length() != 0)
-    					sb.append("<br><br>\n<i>" + workflow.getDescription() + "</i>");
-    				
-    				if (workflow.getHelp() != null && workflow.getHelp().length() != 0)
-    					sb.append("<br><br>\n" + workflow.getHelp());
-    			}
-        	}
-        	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Task))
-        	{
-        		MTask task = new MTask(Env.getCtx(), recordId, null);
-    			if (task != null && task.getName() != null && task.getName().length() != 0)
-    			{
-    				sb.append("<br><br>\n<b>" + task.getName() + "</b>");
-    				
-    				if (task.getDescription() != null && task.getDescription().length() != 0)
-    					sb.append("<br><br>\n<i>" + task.getDescription() + "</i>");
-    				
-    				if (task.getHelp() != null && task.getHelp().length() != 0)
-    					sb.append("<br><br>\n" + task.getHelp());
-    			}
-        	}
-        	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Node))
-        	{
-        		MWFNode node = new MWFNode(Env.getCtx(), recordId, null);
-    			if (node != null && node.getName() != null && node.getName().length() != 0)
-    			{
-    				sb.append("<br><br>\n<b>" + node.getName() + "</b>");
-    				
-    				if (node.getDescription() != null && node.getDescription().length() != 0)
-    					sb.append("<br><br>\n<i>" + node.getDescription() + "</i>");
-    				
-    				if (node.getHelp() != null && node.getHelp().length() != 0)
-    					sb.append("<br><br>\n" + node.getHelp());
-    			}
-        	}
-    	}
+    	 else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Workflow)) {
+    		 MWorkflow workflow = MWorkflow.get(Env.getCtx(), recordId);
 
+    		 boolean trl = !Env.getLoginLanguage(Env.getCtx()).isBaseLanguage();
+
+    		 nameMsg = workflow.getName(trl);
+
+    		 if (workflow != null && nameMsg != null
+    				 && nameMsg.length() != 0) {
+    			 sb.append("<br><br>\n<b>" + nameMsg + "</b>");
+
+    			 descMsg = workflow.getDescription(trl);
+    			 if (descMsg != null && descMsg.length() != 0)
+    				 sb.append("<br><br>\n<i>" + descMsg + "</i>");
+
+    			 helpMsg = workflow.getHelp(trl);
+    			 if (helpMsg != null && helpMsg.length() != 0)
+    				 sb.append("<br><br>\n" + helpMsg);
+    		 }
+
+		} else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Task)) {
+			MTask task = new MTask(Env.getCtx(), recordId, null);
+
+			if (!Env.getLoginLanguage(Env.getCtx()).isBaseLanguage()) {
+
+				nameMsg = task.get_Translation("Name");
+
+				if (task != null && nameMsg != null
+						&& nameMsg.length() != 0) {
+					sb.append("<br><br>\n<b>" + nameMsg + "</b>");
+
+					descMsg = task.get_Translation("Description");
+					if (descMsg != null && descMsg.length() != 0)
+						sb.append("<br><br>\n<i>" + descMsg + "</i>");
+
+					helpMsg = task.get_Translation("Help");
+					if (helpMsg != null && helpMsg.length() != 0)
+						sb.append("<br><br>\n" + helpMsg);
+				}
+			} else {
+
+				if (task != null && task.getName() != null
+						&& task.getName().length() != 0) {
+					sb.append("<br><br>\n<b>" + task.getName() + "</b>");
+
+					if (task.getDescription() != null
+							&& task.getDescription().length() != 0)
+						sb.append("<br><br>\n<i>" + task.getDescription()
+								+ "</i>");
+
+					if (task.getHelp() != null
+							&& task.getHelp().length() != 0)
+						sb.append("<br><br>\n" + task.getHelp());
+				}
+			}
+		} else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Node)) {
+			MWFNode node = MWFNode.get(Env.getCtx(), recordId);
+
+			boolean trl = !Env.getLoginLanguage(Env.getCtx()).isBaseLanguage();
+
+			nameMsg = node.getName(trl);
+
+			if (node != null && nameMsg != null
+					&& nameMsg.length() != 0) {
+				sb.append("<br><br>\n<b>" + nameMsg + "</b>");
+
+				descMsg = node.getDescription(trl);
+				if (descMsg != null && descMsg.length() != 0)
+					sb.append("<br><br>\n<i>" + descMsg + "</i>");
+
+				helpMsg = node.getHelp(trl);
+				if (helpMsg != null && helpMsg.length() != 0)
+					sb.append("<br><br>\n" + helpMsg);
+			}
+
+		  }
+    	}
+	
     	sb.append("</div>\n</body>\n</html>");
     	
     	htmlContextHelp.setContent(sb.toString());
@@ -519,6 +553,7 @@ public class HelpController
         	finally 
         	{
     			DB.close(rs, pstmt);
+    			rs=null; pstmt=null; 
     		}
     	}
     	

@@ -2931,4 +2931,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			LayoutUtils.openEmbeddedWindow(getComponent().getParent(), findWindow, "overlap");
 		}
 	}
+
+	public boolean isPendingChanges() {
+		return boolChanges;
+	}
+
 }

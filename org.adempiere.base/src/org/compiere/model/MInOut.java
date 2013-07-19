@@ -1605,16 +1605,12 @@ public class MInOut extends X_M_InOut implements DocAction
 							iLine.saveEx();	//	update matched invoice with ASI
 							inv.setM_AttributeSetInstance_ID(sLine.getM_AttributeSetInstance_ID());
 						}
-						boolean isNewMatchInv = false;
-						if (inv.get_ID() == 0)
-							isNewMatchInv = true;
 						if (!inv.save(get_TrxName()))
 						{
 							m_processMsg = CLogger.retrieveErrorString("Could not create Inv Matching");
 							return DocAction.STATUS_Invalid;
 						}
-						if (isNewMatchInv)
-							addDocsPostProcess(inv);
+						addDocsPostProcess(inv);
 					}
 				}
 
@@ -1625,16 +1621,17 @@ public class MInOut extends X_M_InOut implements DocAction
 					//	Ship - PO
 					MMatchPO po = MMatchPO.create (null, sLine, getMovementDate(), matchQty);
 					if (po != null) {
-						boolean isNewMatchPO = false;
-						if (po.get_ID() == 0)
-							isNewMatchPO = true;
 						if (!po.save(get_TrxName()))
 						{
 							m_processMsg = "Could not create PO Matching";
 							return DocAction.STATUS_Invalid;
 						}
-						if (isNewMatchPO)
+						if (!po.isPosted())
 							addDocsPostProcess(po);
+						MMatchInv matchInvCreated = po.getMatchInvCreated();
+						if (matchInvCreated != null) {
+							addDocsPostProcess(matchInvCreated);
+						}
 					}
 					//	Update PO with ASI
 					if (   oLine != null && oLine.getM_AttributeSetInstance_ID() == 0
@@ -1655,15 +1652,12 @@ public class MInOut extends X_M_InOut implements DocAction
 						MMatchPO po = MMatchPO.create (iLine, sLine,
 							getMovementDate(), matchQty);
 						if (po != null) {
-							boolean isNewMatchPO = false;
-							if (po.get_ID() == 0)
-								isNewMatchPO = true;
 							if (!po.save(get_TrxName()))
 							{
 								m_processMsg = "Could not create PO(Inv) Matching";
 								return DocAction.STATUS_Invalid;
 							}
-							if (isNewMatchPO)
+							if (!po.isPosted())
 								addDocsPostProcess(po);
 						}
 						

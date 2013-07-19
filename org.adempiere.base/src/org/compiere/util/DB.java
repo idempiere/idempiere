@@ -844,6 +844,8 @@ public final class DB
 			pstmt.setTimestamp(index, (Timestamp)param);
 		else if (param instanceof Boolean)
 			pstmt.setString(index, ((Boolean)param).booleanValue() ? "Y" : "N");
+		else if (param instanceof byte[])
+			pstmt.setBytes(index, (byte[]) param);
 		else
 			throw new DBException("Unknown parameter type "+index+" - "+param);
 	}

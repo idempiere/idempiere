@@ -85,8 +85,6 @@ public class MRfQLine extends X_C_RfQLine
 	public MRfQLine (Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
-		if (get_ID() > 0)
-			s_cache.put(new Integer(get_ID()), this);
 	}	//	MRfQLine
 
 	/**

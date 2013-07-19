@@ -28,6 +28,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AverageCostingNegativeQtyException;
+import org.adempiere.exceptions.AverageCostingZeroQtyException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
@@ -1485,6 +1486,13 @@ public class MCost extends X_M_Cost
 		if (amt.signum() != 0 && qty.signum() != 0 && amt.signum() != qty.signum())
 		{
 			amt = amt.negate();
+		}
+		
+		//can't do cost adjustment if there's no stock left
+		if (qty.signum() == 0 && getCurrentQty().signum() <= 0)
+		{
+			throw new AverageCostingZeroQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
+					+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
 		}
 		
 		if (getCurrentQty().add(qty).signum() < 0)

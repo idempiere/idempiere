@@ -651,8 +651,12 @@ public class MInOutLine extends X_M_InOutLine
 			MInvoiceLine m_il = MInvoiceLine.getOfInOutLine(this);
 			if (m_il == null)
 			{
-				log.severe("No Invoice Line for: " + this.toString());
-				return Env.ZERO;
+				m_il = MInvoiceLine.getOfInOutLineFromMatchInv(this);
+				if (m_il == null)
+				{
+					log.severe("No Invoice Line for: " + this.toString());
+					return Env.ZERO;
+				}
 			}
 			return this.getMovementQty().multiply(m_il.getPriceActual());  // Actual delivery
 		}

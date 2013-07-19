@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project name="idempiere-composite2" soapui-version="3.5.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="compositeInterfaceSoapBinding" type="wsdl" bindingName="{http://idempiere.org/ADInterface/1_0}compositeInterfaceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:9191/ADInterface/services/compositeInterface?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:9191/ADInterface/services/compositeInterface?wsdl"><con:part><con:url>http://localhost:9191/ADInterface/services/compositeInterface?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="compositeInterface" targetNamespace="http://idempiere.org/ADInterface/1_0" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://idempiere.org/ADInterface/1_0" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<con:soapui-project name="idempiere-composite2" soapui-version="4.5.1" activeEnvironment="Default" abortOnError="false" runType="SEQUENTIAL" resourceRoot="" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="compositeInterfaceSoapBinding" type="wsdl" bindingName="{http://idempiere.org/ADInterface/1_0}compositeInterfaceSoapBinding" soapVersion="1_1" anonymous="optional" definition="https://localhost:8443/ADInterface/services/compositeInterface?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="https://localhost:8443/ADInterface/services/compositeInterface?wsdl"><con:part><con:url>https://localhost:8443/ADInterface/services/compositeInterface?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="compositeInterface" targetNamespace="http://idempiere.org/ADInterface/1_0" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://idempiere.org/ADInterface/1_0" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <wsdl:types>
     <xsd:schema elementFormDefault="qualified" targetNamespace="http://idempiere.org/ADInterface/1_0">
       <xsd:element name="WindowTabData" type="tns:WindowTabData"/>
@@ -382,277 +382,270 @@
   </wsdl:binding>
   <wsdl:service name="compositeInterface">
     <wsdl:port binding="tns:compositeInterfaceSoapBinding" name="CompositeServiceImplPort">
-      <soap:address location="http://localhost:9191/ADInterface/services/compositeInterface"/>
+      <soap:address location="https://localhost:8443/ADInterface/services/compositeInterface"/>
     </wsdl:port>
   </wsdl:service>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:9191/ADInterface/services/compositeInterface</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="compositeOperation" bindingOperationName="compositeOperation" type="Request-Response" outputName="compositeOperationResponse" inputName="compositeOperation" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:9191/ADInterface/services/compositeInterface</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:_0="http://idempiere.org/ADInterface/1_0">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>https://localhost:8443/ADInterface/services/compositeInterface</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="compositeOperation" bindingOperationName="compositeOperation" type="Request-Response" outputName="compositeOperationResponse" inputName="compositeOperation" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>https://localhost:8443/ADInterface/services/compositeInterface</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:_0="http://idempiere.org/ADInterface/1_0">
    <soapenv:Header/>
    <soapenv:Body>
       <_0:compositeOperation>
          <_0:CompositeRequest>
             <_0:ADLoginRequest>
                <_0:user>WebService</_0:user>
-		<_0:pass>WebService</_0:pass>
-		<_0:lang>en_US</_0:lang>
-		<_0:ClientID>11</_0:ClientID>
-		<_0:RoleID>50004</_0:RoleID>
-		<_0:OrgID>11</_0:OrgID>
-		<_0:WarehouseID>103</_0:WarehouseID>
-		<_0:stage>9</_0:stage>
+               <_0:pass>WebService</_0:pass>
+               <_0:lang>en_US</_0:lang>
+               <_0:ClientID>11</_0:ClientID>
+               <_0:RoleID>50004</_0:RoleID>
+               <_0:OrgID>11</_0:OrgID>
+               <_0:WarehouseID>103</_0:WarehouseID>
+               <_0:stage>9</_0:stage>
             </_0:ADLoginRequest>
             <_0:serviceType>SyncOrder</_0:serviceType>
             <_0:operations>
                <_0:operation preCommit="false" postCommit="false">
-			<_0:TargetPort>createUpdateData</_0:TargetPort>
-				<_0:ModelCRUD>
-               				<_0:serviceType>CreateBPartner</_0:serviceType>
-              				 <_0:TableName>C_BPartner</_0:TableName>
-              				 <_0:RecordID>0</_0:RecordID>
-              				 <_0:Action>CreateUpdate</_0:Action>
-               				<_0:DataRow>
-		  				<_0:field column="Name">
-                      					<_0:val>Trek Global</_0:val>
-                  				</_0:field>
-		  				<_0:field column="email">
-                      					<_0:val>dpansheriya@trekglobal.com</_0:val>
-                  				</_0:field>
-		  				<_0:field column="TaxID">
-                      					<_0:val>830.085.359-4</_0:val>
-                  				</_0:field>
-		  				<_0:field column="IsVendor">
-                      					<_0:val>Y</_0:val>
-                  				</_0:field>
-		  				<_0:field column="IsCustomer">
-                      					<_0:val>N</_0:val>
-                  				</_0:field>
-		  				<_0:field column="IsTaxExempt">
-                      					<_0:val>N</_0:val>
-                  				</_0:field>
-		  				<_0:field column="C_BP_Group_ID">
-                      					<_0:val>104</_0:val>
-                  				</_0:field>
-               				</_0:DataRow>
-            			</_0:ModelCRUD>
-		</_0:operation>
-		<_0:operation preCommit="false" postCommit="false">
-			<_0:TargetPort>createUpdateData</_0:TargetPort>
-				<_0:ModelCRUD>
-               				<_0:serviceType>CreateUpdateUser</_0:serviceType>
-              				 <_0:TableName>AD_User</_0:TableName>
-              				 <_0:RecordID>0</_0:RecordID>
-              				 <_0:Action>CreateUpdate</_0:Action>
-               				<_0:DataRow>
-		  				<_0:field column="Name">
-                      					<_0:val>Deepak Pansheriya</_0:val>
-                  				</_0:field>
-		  				<_0:field column="EMail">
-                      					<_0:val>dpansheriya@trekglobal.com</_0:val>
-                  				</_0:field>
-		  				<_0:field column="C_BPartner_ID">
-                      					<_0:val>@C_BPartner.C_BPartner_ID</_0:val>
-                  				</_0:field>
-		  				<_0:field column="Phone">
-                      					<_0:val>9228785734</_0:val>
-                  				</_0:field>
-               				</_0:DataRow>
-            			</_0:ModelCRUD>
-		</_0:operation>
-		<_0:operation preCommit="false" postCommit="false">
-			<_0:TargetPort>createUpdateData</_0:TargetPort>
-				<_0:ModelCRUD>
-               				<_0:serviceType>CreateUpdateLocation1</_0:serviceType>
-              				 <_0:TableName>C_Location</_0:TableName>
-              				 <_0:RecordID>0</_0:RecordID>
-              				 <_0:Action>CreateUpdate</_0:Action>
-               				<_0:DataRow>
-		  				<_0:field column="C_Country_ID" lval="United States"/>
-		  				<_0:field column="Address1">
-                      					<_0:val>1625 Cowboy Chaps Place</_0:val>
-                  				</_0:field>
-						<_0:field column="Address2">
-                      					<_0:val></_0:val>
-                  				</_0:field>
-						<_0:field column="C_Region_ID" lval="NV"/>
-		  				<_0:field column="RegionName">
-                      					<_0:val>NV</_0:val>
-                  				</_0:field>
-						<_0:field column="Postal">
-                      					<_0:val>89002</_0:val>
-                  				</_0:field>
-						<_0:field column="City">
-                      					<_0:val>Henderson</_0:val>
-                  				</_0:field>
-               				</_0:DataRow>
-            			</_0:ModelCRUD>
-		</_0:operation>
-		<_0:operation preCommit="false" postCommit="false">
-			<_0:TargetPort>createUpdateData</_0:TargetPort>
-				<_0:ModelCRUD>
-               				<_0:serviceType>CreateUpdateBPLocation</_0:serviceType>
-              				 <_0:TableName>C_BPartner_Location</_0:TableName>
-              				 <_0:RecordID>0</_0:RecordID>
-              				 <_0:Action>CreateUpdate</_0:Action>
-               				<_0:DataRow>
-		  				<_0:field column="C_BPartner_ID">
-                      					<_0:val>@C_BPartner.C_BPartner_ID</_0:val>
-                  				</_0:field>
-		  				<_0:field column="C_Location_ID">
-                      					<_0:val>@C_Location.C_Location_ID</_0:val>
-                  				</_0:field>
-		  				<_0:field column="IsShipTo">
-                      					<_0:val>True</_0:val>
-                  				</_0:field>
-		  				<_0:field column="IsBillTo">
-                      					<_0:val>True</_0:val>
-                  				</_0:field>
-               				</_0:DataRow>
-            			</_0:ModelCRUD>
-		</_0:operation>
-		<_0:operation preCommit="false" postCommit="false">
-			<_0:TargetPort>createUpdateData</_0:TargetPort>
-				<_0:ModelCRUD>
-               				<_0:serviceType>CreateUpdateUser</_0:serviceType>
-              				 <_0:TableName>AD_User</_0:TableName>
-              				 <_0:RecordID>0</_0:RecordID>
-              				 <_0:Action>CreateUpdate</_0:Action>
-               				<_0:DataRow>
-		  				<_0:field column="EMail">
-                      					<_0:val>dpansheriya@trekglobal.com</_0:val>
-                  				</_0:field>
-		  				<_0:field column="C_BPartner_ID">
-                      					<_0:val>@C_BPartner.C_BPartner_ID</_0:val>
-                  				</_0:field>
-		  				<_0:field column="C_BPartner_Location_ID">
-                      					<_0:val>@C_BPartner_Location.C_BPartner_Location_ID</_0:val>
-                  				</_0:field>
-               				</_0:DataRow>
-            			</_0:ModelCRUD>
-		</_0:operation>
-        <_0:operation preCommit="false" postCommit="false">
                   <_0:TargetPort>createUpdateData</_0:TargetPort>
                   <_0:ModelCRUD>
-                     <_0:serviceType>createOrderRecord</_0:serviceType>
-		     <_0:TableName>C_Order</_0:TableName>
-		     <_0:RecordID>0</_0:RecordID>
-		     <_0:Action>CreateUpdate</_0:Action>
+                     <_0:serviceType>CreateBPartner</_0:serviceType>
+                     <_0:TableName>C_BPartner</_0:TableName>
+                     <_0:RecordID>0</_0:RecordID>
+                     <_0:Action>CreateUpdate</_0:Action>
                      <_0:DataRow>
-			<_0:field column="M_Warehouse_ID">
-				<_0:val>50001</_0:val>
-			</_0:field>
-			<_0:field column="DocumentNo">
-				<_0:val>DEEPTEST03</_0:val>
-			</_0:field>
-			<_0:field column="AD_User_ID">
-				<_0:val>@AD_User.AD_User_ID</_0:val>
-			</_0:field>
-			<_0:field column="C_BPartner_ID">
-				<_0:val>@C_BPartner.C_BPartner_ID</_0:val>
-			</_0:field>
-			<_0:field column="C_BPartner_Location_ID">
-				<_0:val>@C_BPartner_Location.C_BPartner_Location_ID</_0:val>
-			</_0:field>
-			<_0:field column="Bill_BPartner_ID">
-				<_0:val>@C_BPartner.C_BPartner_ID</_0:val>
-			</_0:field>
-			<_0:field column="Bill_Location_ID">
-				<_0:val>@C_BPartner_Location.C_BPartner_Location_ID</_0:val>
-			</_0:field>
-			<_0:field column="C_DocTypeTarget_ID">
-				<_0:val>132</_0:val>
-			</_0:field>
-							
-			<_0:field column="FreightCostRule" lval="Freight included"/>
-			<_0:field column="FreightAmt">
-				<_0:val>6</_0:val>
-			</_0:field>
+                        <_0:field column="Name">
+                           <_0:val>Trek Global</_0:val>
+                        </_0:field>
+                        <_0:field column="TaxID">
+                           <_0:val>830.085.359-4</_0:val>
+                        </_0:field>
+                        <_0:field column="IsVendor">
+                           <_0:val>Y</_0:val>
+                        </_0:field>
+                        <_0:field column="IsCustomer">
+                           <_0:val>N</_0:val>
+                        </_0:field>
+                        <_0:field column="IsTaxExempt">
+                           <_0:val>N</_0:val>
+                        </_0:field>
+                        <_0:field column="C_BP_Group_ID">
+                           <_0:val>104</_0:val>
+                        </_0:field>
                      </_0:DataRow>
                   </_0:ModelCRUD>
                </_0:operation>
-		<_0:operation preCommit="true" postCommit="false">
-			<_0:TargetPort>createUpdateData</_0:TargetPort>
-				<_0:ModelCRUD>
-					<_0:serviceType>CreateOrderLine</_0:serviceType>
-					<_0:TableName>C_OrderLine</_0:TableName>
-					<_0:RecordID>0</_0:RecordID>
-					<_0:Action>CreateUpdate</_0:Action>
-					<_0:DataRow>
-						<_0:field column="AD_Org_ID">
-							<_0:val>11</_0:val>
-						</_0:field>
-						<_0:field column="AD_Client_ID">
-							<_0:val>11</_0:val>
-						</_0:field>
-
-						<_0:field column="C_Order_ID">
-							<_0:val>@C_Order.C_Order_ID</_0:val>
-						</_0:field>
-						<_0:field column="M_Product_ID">
-							<_0:val>140</_0:val>
-						</_0:field>
-						<_0:field column="QtyEntered">
-							<_0:val>1</_0:val>
-						</_0:field>
-						<_0:field column="QtyOrdered">
-							<_0:val>1</_0:val>
-						</_0:field>
-						<_0:field column="Line">
-							<_0:val>10</_0:val>
-						</_0:field>
-						<_0:field column="PriceEntered">
-							<_0:val>12</_0:val>
-						</_0:field>
-						<_0:field column="PriceActual">
-							<_0:val>13</_0:val>
-						</_0:field>
-					</_0:DataRow>
-				</_0:ModelCRUD>
-			</_0:operation>
-						
-			<_0:operation preCommit="false" postCommit="false">
-				<_0:TargetPort>createUpdateData</_0:TargetPort>
-					<_0:ModelCRUD>
-						<_0:serviceType>CreateOrderLine</_0:serviceType>
-						<_0:TableName>C_OrderLine</_0:TableName>
-						<_0:RecordID>0</_0:RecordID>
-						<_0:Action>CreateUpdate</_0:Action>
-						<_0:DataRow>
-							<_0:field column="C_Order_ID">
-								<_0:val>@C_Order.C_Order_ID</_0:val>
-							</_0:field>
-							<_0:field column="M_Product_ID">
-								<_0:val>123</_0:val>
-							</_0:field>
-							<_0:field column="QtyEntered">
-								<_0:val>2</_0:val>
-							</_0:field>
-							<_0:field column="QtyOrdered">
-								<_0:val>2</_0:val>
-							</_0:field>
-							<_0:field column="Line">
-								<_0:val>10</_0:val>
-							</_0:field>
-							<_0:field column="PriceEntered">
-								<_0:val>14</_0:val>
-							</_0:field>
-							<_0:field column="PriceActual">
-								<_0:val>15</_0:val>
-							</_0:field>
-						</_0:DataRow>
-					</_0:ModelCRUD>
-				</_0:operation>
-
-				<_0:operation preCommit="true" postCommit="true">
-					<_0:TargetPort>setDocAction</_0:TargetPort>
-					<_0:ModelSetDocAction>
-			                     <_0:serviceType>CompleteOrder</_0:serviceType>
-			                     <_0:tableName>C_Order</_0:tableName>
-			                     <_0:recordID>0</_0:recordID>
-			                     <_0:recordIDVariable>@C_Order.C_Order_ID</_0:recordIDVariable>
-			                     <_0:docAction>CO</_0:docAction>
-			                 </_0:ModelSetDocAction>
-				</_0:operation>
+               <_0:operation preCommit="false" postCommit="false">
+                  <_0:TargetPort>createUpdateData</_0:TargetPort>
+                  <_0:ModelCRUD>
+                     <_0:serviceType>CreateUpdateUser</_0:serviceType>
+                     <_0:TableName>AD_User</_0:TableName>
+                     <_0:RecordID>0</_0:RecordID>
+                     <_0:Action>CreateUpdate</_0:Action>
+                     <_0:DataRow>
+                        <_0:field column="Name">
+                           <_0:val>Deepak Pansheriya</_0:val>
+                        </_0:field>
+                        <_0:field column="EMail">
+                           <_0:val>dpansheriya@trekglobal.com</_0:val>
+                        </_0:field>
+                        <_0:field column="C_BPartner_ID">
+                           <_0:val>@C_BPartner.C_BPartner_ID</_0:val>
+                        </_0:field>
+                        <_0:field column="Phone">
+                           <_0:val>9228785734</_0:val>
+                        </_0:field>
+                     </_0:DataRow>
+                  </_0:ModelCRUD>
+               </_0:operation>
+               <_0:operation preCommit="false" postCommit="false">
+                  <_0:TargetPort>createUpdateData</_0:TargetPort>
+                  <_0:ModelCRUD>
+                     <_0:serviceType>CreateUpdateLocation1</_0:serviceType>
+                     <_0:TableName>C_Location</_0:TableName>
+                     <_0:RecordID>0</_0:RecordID>
+                     <_0:Action>CreateUpdate</_0:Action>
+                     <_0:DataRow>
+                        <_0:field column="C_Country_ID" lval="United States"/>
+                        <_0:field column="Address1">
+                           <_0:val>1625 Cowboy Chaps Place</_0:val>
+                        </_0:field>
+                        <_0:field column="Address2">
+                           <_0:val/>
+                        </_0:field>
+                        <_0:field column="C_Region_ID" lval="NV"/>
+                        <_0:field column="RegionName">
+                           <_0:val>NV</_0:val>
+                        </_0:field>
+                        <_0:field column="Postal">
+                           <_0:val>89002</_0:val>
+                        </_0:field>
+                        <_0:field column="City">
+                           <_0:val>Henderson</_0:val>
+                        </_0:field>
+                     </_0:DataRow>
+                  </_0:ModelCRUD>
+               </_0:operation>
+               <_0:operation preCommit="false" postCommit="false">
+                  <_0:TargetPort>createUpdateData</_0:TargetPort>
+                  <_0:ModelCRUD>
+                     <_0:serviceType>CreateUpdateBPLocation</_0:serviceType>
+                     <_0:TableName>C_BPartner_Location</_0:TableName>
+                     <_0:RecordID>0</_0:RecordID>
+                     <_0:Action>CreateUpdate</_0:Action>
+                     <_0:DataRow>
+                        <_0:field column="C_BPartner_ID">
+                           <_0:val>@C_BPartner.C_BPartner_ID</_0:val>
+                        </_0:field>
+                        <_0:field column="C_Location_ID">
+                           <_0:val>@C_Location.C_Location_ID</_0:val>
+                        </_0:field>
+                        <_0:field column="IsShipTo">
+                           <_0:val>True</_0:val>
+                        </_0:field>
+                        <_0:field column="IsBillTo">
+                           <_0:val>True</_0:val>
+                        </_0:field>
+                     </_0:DataRow>
+                  </_0:ModelCRUD>
+               </_0:operation>
+               <_0:operation preCommit="false" postCommit="false">
+                  <_0:TargetPort>createUpdateData</_0:TargetPort>
+                  <_0:ModelCRUD>
+                     <_0:serviceType>CreateUpdateUser</_0:serviceType>
+                     <_0:TableName>AD_User</_0:TableName>
+                     <_0:RecordID>0</_0:RecordID>
+                     <_0:Action>CreateUpdate</_0:Action>
+                     <_0:DataRow>
+                        <_0:field column="EMail">
+                           <_0:val>dpansheriya@trekglobal.com</_0:val>
+                        </_0:field>
+                        <_0:field column="C_BPartner_ID">
+                           <_0:val>@C_BPartner.C_BPartner_ID</_0:val>
+                        </_0:field>
+                        <_0:field column="C_BPartner_Location_ID">
+                           <_0:val>@C_BPartner_Location.C_BPartner_Location_ID</_0:val>
+                        </_0:field>
+                     </_0:DataRow>
+                  </_0:ModelCRUD>
+               </_0:operation>
+               <_0:operation preCommit="false" postCommit="false">
+                  <_0:TargetPort>createUpdateData</_0:TargetPort>
+                  <_0:ModelCRUD>
+                     <_0:serviceType>createOrderRecord</_0:serviceType>
+                     <_0:TableName>C_Order</_0:TableName>
+                     <_0:RecordID>0</_0:RecordID>
+                     <_0:Action>CreateUpdate</_0:Action>
+                     <_0:DataRow>
+                        <_0:field column="M_Warehouse_ID">
+                           <_0:val>50001</_0:val>
+                        </_0:field>
+                        <_0:field column="DocumentNo">
+                           <_0:val>DEEPTEST03</_0:val>
+                        </_0:field>
+                        <_0:field column="AD_User_ID">
+                           <_0:val>@AD_User.AD_User_ID</_0:val>
+                        </_0:field>
+                        <_0:field column="C_BPartner_ID">
+                           <_0:val>@C_BPartner.C_BPartner_ID</_0:val>
+                        </_0:field>
+                        <_0:field column="C_BPartner_Location_ID">
+                           <_0:val>@C_BPartner_Location.C_BPartner_Location_ID</_0:val>
+                        </_0:field>
+                        <_0:field column="Bill_BPartner_ID">
+                           <_0:val>@C_BPartner.C_BPartner_ID</_0:val>
+                        </_0:field>
+                        <_0:field column="Bill_Location_ID">
+                           <_0:val>@C_BPartner_Location.C_BPartner_Location_ID</_0:val>
+                        </_0:field>
+                        <_0:field column="C_DocTypeTarget_ID">
+                           <_0:val>132</_0:val>
+                        </_0:field>
+                        <_0:field column="FreightCostRule" lval="Freight included"/>
+                        <_0:field column="FreightAmt">
+                           <_0:val>6</_0:val>
+                        </_0:field>
+                     </_0:DataRow>
+                  </_0:ModelCRUD>
+               </_0:operation>
+               <_0:operation preCommit="true" postCommit="false">
+                  <_0:TargetPort>createUpdateData</_0:TargetPort>
+                  <_0:ModelCRUD>
+                     <_0:serviceType>CreateOrderLine</_0:serviceType>
+                     <_0:TableName>C_OrderLine</_0:TableName>
+                     <_0:RecordID>0</_0:RecordID>
+                     <_0:Action>CreateUpdate</_0:Action>
+                     <_0:DataRow>
+                        <_0:field column="AD_Org_ID">
+                           <_0:val>11</_0:val>
+                        </_0:field>
+                        <_0:field column="AD_Client_ID">
+                           <_0:val>11</_0:val>
+                        </_0:field>
+                        <_0:field column="C_Order_ID">
+                           <_0:val>@C_Order.C_Order_ID</_0:val>
+                        </_0:field>
+                        <_0:field column="M_Product_ID">
+                           <_0:val>140</_0:val>
+                        </_0:field>
+                        <_0:field column="QtyEntered">
+                           <_0:val>1</_0:val>
+                        </_0:field>
+                        <_0:field column="QtyOrdered">
+                           <_0:val>1</_0:val>
+                        </_0:field>
+                        <_0:field column="Line">
+                           <_0:val>10</_0:val>
+                        </_0:field>
+                        <_0:field column="PriceEntered">
+                           <_0:val>12</_0:val>
+                        </_0:field>
+                        <_0:field column="PriceActual">
+                           <_0:val>13</_0:val>
+                        </_0:field>
+                     </_0:DataRow>
+                  </_0:ModelCRUD>
+               </_0:operation>
+               <_0:operation preCommit="false" postCommit="false">
+                  <_0:TargetPort>createUpdateData</_0:TargetPort>
+                  <_0:ModelCRUD>
+                     <_0:serviceType>CreateOrderLine</_0:serviceType>
+                     <_0:TableName>C_OrderLine</_0:TableName>
+                     <_0:RecordID>0</_0:RecordID>
+                     <_0:Action>CreateUpdate</_0:Action>
+                     <_0:DataRow>
+                        <_0:field column="C_Order_ID">
+                           <_0:val>@C_Order.C_Order_ID</_0:val>
+                        </_0:field>
+                        <_0:field column="M_Product_ID">
+                           <_0:val>123</_0:val>
+                        </_0:field>
+                        <_0:field column="QtyEntered">
+                           <_0:val>2</_0:val>
+                        </_0:field>
+                        <_0:field column="QtyOrdered">
+                           <_0:val>2</_0:val>
+                        </_0:field>
+                        <_0:field column="Line">
+                           <_0:val>10</_0:val>
+                        </_0:field>
+                        <_0:field column="PriceEntered">
+                           <_0:val>14</_0:val>
+                        </_0:field>
+                        <_0:field column="PriceActual">
+                           <_0:val>15</_0:val>
+                        </_0:field>
+                     </_0:DataRow>
+                  </_0:ModelCRUD>
+               </_0:operation>
+               <_0:operation preCommit="true" postCommit="true">
+                  <_0:TargetPort>setDocAction</_0:TargetPort>
+                  <_0:ModelSetDocAction>
+                     <_0:serviceType>CompleteOrder</_0:serviceType>
+                     <_0:tableName>C_Order</_0:tableName>
+                     <_0:recordID>0</_0:recordID>
+                     <_0:recordIDVariable>@C_Order.C_Order_ID</_0:recordIDVariable>
+                     <_0:docAction>CO</_0:docAction>
+                  </_0:ModelSetDocAction>
+               </_0:operation>
             </_0:operations>
          </_0:CompositeRequest>
       </_0:compositeOperation>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://idempiere.org/ADInterface/1_0/CompositeService/compositeOperation"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/></con:soapui-project>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://idempiere.org/ADInterface/1_0/CompositeService/compositeOperation"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/></con:soapui-project>

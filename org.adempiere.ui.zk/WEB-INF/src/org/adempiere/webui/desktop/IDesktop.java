@@ -204,4 +204,6 @@ public interface IDesktop extends UIPart {
 	public void updateHelpContext(String ctxType, int recordId);
 	
 	public void updateHelpTooltip(GridField gridField);
+
+	public boolean isPendingWindow();
 }

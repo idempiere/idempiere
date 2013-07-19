@@ -18,6 +18,7 @@
 package org.adempiere.webui.desktop;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -26,6 +27,7 @@ import org.adempiere.base.event.IEventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.model.MBroadcastMessage;
 import org.adempiere.util.ServerContext;
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessDialog;
@@ -593,4 +595,19 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		super.openTask(taskId);
 		updateHelpContext(X_AD_CtxHelp.CTXTYPE_Task, taskId);
 	}
+
+    public boolean isPendingWindow() {
+        List<Object> windows = getWindows();
+        if (windows != null) {
+        	for (int idx = 0; idx < windows.size(); idx++) {
+                Object ad = windows.get(idx);
+                if (ad != null && ad instanceof ADWindow) {
+                	if ( ((ADWindow)ad).getADWindowContent().isPendingChanges()) {
+                		return true;
+                	}
+                }
+        	}
+        }
+        return false;
+    }
 }

@@ -1807,17 +1807,13 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					matchQty = receiptLine.getMovementQty();
 
 				MMatchInv inv = new MMatchInv(line, getDateInvoiced(), matchQty);
-				boolean isNewMatchInv = false;
-				if (inv.get_ID() == 0)
-					isNewMatchInv = true;
 				if (!inv.save(get_TrxName()))
 				{
 					m_processMsg = CLogger.retrieveErrorString("Could not create Invoice Matching");
 					return DocAction.STATUS_Invalid;
 				}
 				matchInv++;
-				if (isNewMatchInv)
-					addDocsPostProcess(inv);
+				addDocsPostProcess(inv);
 			}
 					
 			//	Update Order Line
@@ -1845,18 +1841,15 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					BigDecimal matchQty = line.getQtyInvoiced();
 					MMatchPO po = MMatchPO.create (line, null,
 						getDateInvoiced(), matchQty);
-					boolean isNewMatchPO = false;
 					if (po != null) 
 					{
-						if (po.get_ID() == 0)
-							isNewMatchPO = true;
 						if (!po.save(get_TrxName()))
 						{
 							m_processMsg = "Could not create PO Matching";
 							return DocAction.STATUS_Invalid;
 						}
 						matchPO++;
-						if (isNewMatchPO)
+						if (!po.isPosted() && po.getM_InOutLine_ID() > 0) // match po don't post if receipt is not assigned, and it doesn't create avg po record
 							addDocsPostProcess(po);
 					}
 				}

@@ -85,7 +85,8 @@ public class ReferenceUtils {
 	public static String getTableReference(String tableName, String searchColumn, int id, AttributesImpl atts)
 	{
 		String keyColumn = tableName + "_ID";
-		if (id > 0 && id <= PackOut.MAX_OFFICIAL_ID)
+		if (   (id > 0 && id <= PackOut.MAX_OFFICIAL_ID)
+			|| (id == 0 && MTable.isZeroIDTable(tableName)))
 		{
 			//official id
 			atts.addAttribute("", "", "reference", "CDATA", "id");
