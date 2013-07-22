@@ -66,6 +66,7 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.MZoomCondition;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CMenuItem;
 import org.compiere.swing.CTextField;
@@ -1455,6 +1456,10 @@ public class VLookup extends JComponent
 		}
 
 		int	AD_Window_ID = m_lookup.getZoom(zoomQuery);
+		
+		int zoomId = MZoomCondition.findZoomWindowByWindowId(AD_Window_ID, zoomQuery);
+		if (zoomId > 0) AD_Window_ID = zoomId;
+		
 		//
 		if (log.isLoggable(Level.INFO)) log.info(m_columnName + " - AD_Window_ID=" + AD_Window_ID
 			+ " - Query=" + zoomQuery + " - Value=" + value);

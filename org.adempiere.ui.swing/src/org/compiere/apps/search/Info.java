@@ -816,6 +816,7 @@ public abstract class Info extends CDialog
 	{
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		final AWindow frame = new AWindow(null);
+//		AD_Window_ID = AEnv.specialZoom (AD_Window_ID, -1, zoomQuery, ""); // ZoomCondition TODO
 		if (!frame.initWindow(AD_Window_ID, zoomQuery))
 			return;
 		AEnv.addToWindowManager(frame);
