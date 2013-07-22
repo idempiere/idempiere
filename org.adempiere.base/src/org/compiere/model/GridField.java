@@ -884,7 +884,15 @@ public class GridField
 	   if( m_vo.TabNo == 0)
 	    	return Env.getContext (ctx, m_vo.WindowNo, variableName, true);
 	    else
-		return Env.getContext (ctx, m_vo.WindowNo, m_vo.TabNo, variableName, false, true);
+	    {
+	    	boolean tabOnly = false;
+	    	if (variableName.startsWith("~")) 
+	    	{
+	    		variableName = variableName.substring(1);
+	    		tabOnly = true;
+	    	}
+	    	return Env.getContext (ctx, m_vo.WindowNo, m_vo.TabNo, variableName, tabOnly, true);
+	    }
 	}	//	get_ValueAsString
 
 
