@@ -26,6 +26,7 @@ import org.compiere.model.MOrder;
 import org.compiere.model.MPayment;
 import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.MPaymentTransaction;
+import org.compiere.model.MPaymentValidate;
 import org.compiere.process.DocAction;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -392,16 +393,16 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		return true;
 	}
 	
-	public boolean processOnline(String CCType, String CCNumber, String CCExp)
+	public boolean processOnline(String CCType, String CCNumber, String CCVV, String CCExp)
 	{
-		return processOnline(CCType, CCNumber, CCExp, 0);
+		return processOnline(CCType, CCNumber, CCVV, CCExp, 0);
 	}
 	
-	public boolean processOnline(String CCType, String CCNumber, String CCExp, int C_PaymentProcessor_ID)
+	public boolean processOnline(String CCType, String CCNumber, String CCVV, String CCExp, int C_PaymentProcessor_ID)
 	{
 		processMsg = null;
 		boolean error = false;
-
+		
 		int C_Order_ID = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_Order_ID");
 		int C_Invoice_ID = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_Invoice_ID");
 		if (C_Invoice_ID == 0 && m_DocStatus.equals(MInvoice.DOCSTATUS_Completed))
@@ -430,7 +431,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		
 		MPaymentTransaction mpt = new MPaymentTransaction(Env.getCtx(), 0, null);
 		mpt.setAD_Org_ID(m_AD_Org_ID);
-		mpt.setCreditCard(MPayment.TRXTYPE_Sales, CCType, CCNumber, "", CCExp);
+		mpt.setCreditCard(MPayment.TRXTYPE_Sales, CCType, CCNumber, CCVV != null ? CCVV : "", CCExp);
 		mpt.setAmount(m_C_Currency_ID, payAmount);
 		mpt.setC_PaymentProcessor_ID(C_PaymentProcessor_ID);
 		mpt.setPaymentProcessor();
@@ -461,10 +462,20 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		mpt.setC_Invoice_ID(C_Invoice_ID);
 		mpt.setDateTrx(m_DateAcct);
 		setCustomizeValues(mpt);
+		
+		// validate credit card
+		String msg = validateCreditCard(CCType, CCNumber, CCVV != null ? CCVV : "", CCExp, mpt.getC_BP_BankAccount_ID(), mpt.getCustomerPaymentProfileID());
+		if (msg != null && msg.trim().length() > 0)
+		{
+			processMsg = Msg.getMsg(Env.getCtx(), msg);
+			return false;
+		}
+		
 		if (!mpt.save()) {
 			processMsg = Msg.getMsg(Env.getCtx(), "PaymentNotCreated");
 			return false;
 		} else {
+			mpt.setCreditCardVV(CCVV != null ? CCVV : "");
 			approved = mpt.processOnline();
 			mpt.saveEx();
 			
@@ -506,5 +517,24 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	@Override
 	public boolean isApproved() {
 		return m_mPayment.isApproved();
+	}
+	
+	public String validateCreditCard(String CCType, String CCNumber, String CCVV, String CCExp, int C_BP_BankAccount_ID, String CustomerPaymentProfileID) throws IllegalArgumentException {
+		String msg = null;
+		if (C_BP_BankAccount_ID != 0 || (CustomerPaymentProfileID != null && CustomerPaymentProfileID.length() > 0))
+			return msg;
+		msg = MPaymentValidate.validateCreditCardNumber(CCNumber, CCType);
+		if (msg != null && msg.length() > 0)
+			return Msg.getMsg(Env.getCtx(), msg);
+		msg = MPaymentValidate.validateCreditCardExp(MPaymentValidate.getCreditCardExpMM(CCExp), MPaymentValidate.getCreditCardExpYY(CCExp));
+		if (msg != null && msg.length() > 0)
+			return Msg.getMsg(Env.getCtx(), msg);
+		if (CCVV != null && CCVV.length() > 0)
+		{
+			msg = MPaymentValidate.validateCreditCardVV(CCVV, CCType);
+			if (msg != null && msg.length() > 0)
+				return Msg.getMsg(Env.getCtx(), msg);
+		}
+		return msg;
 	}
 }

@@ -75,9 +75,13 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 	
 	public void init() {
 		Grid kLayout = GridFactory.newGridLayout();
-		window.getPanel().appendChild(kLayout);
+		window.getPanel().appendChild(kLayout);		
+		kNumberField.setMaxlength(16);
 		kNumberField.setCols(16);
+		
+		kExpField.setMaxlength(4);
 		kExpField.setCols(4);
+		kApprovalField.setMaxlength(4);
 		kApprovalField.setCols(4);
 		kApprovalField.setType("password");
 		kTypeLabel.setText(Msg.translate(Env.getCtx(), "CreditCardType"));
@@ -291,7 +295,7 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		ValueNamePair vp = kTypeCombo.getSelectedItem().toValueNamePair();
 		String CCType = vp.getValue();
 		
-		boolean ok = processOnline(CCType, kNumberField.getText(), kExpField.getText());
+		boolean ok = processOnline(CCType, kNumberField.getText(), kApprovalField.getText(), kExpField.getText());
 		if (!ok)
 			FDialog.error(getWindowNo(), window, "PaymentNotProcessed", processMsg);
 		else 
