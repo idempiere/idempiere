@@ -102,6 +102,12 @@ public class GridField
 	
 	private GridTab m_gridTab;
 	
+	/** 
+	 * Use by lookup editor to indicate setting of new value is in progress.
+	 * GridTab.processDependentFields will check this flag to avoid clearing of lookup field value that just have been set.
+	 **/ 
+	private boolean m_lookupEditorSettingValue = false;
+	
 	/**
 	 *  Dispose
 	 */
@@ -2050,6 +2056,22 @@ public class GridField
 			throw new IllegalStateException(e.getLocalizedMessage(), e);
 		}
 		
+	}
+	
+	/**
+	 * @param b
+	 */
+	public void setLookupEditorSettingValue(boolean b)
+	{
+		m_lookupEditorSettingValue = b;
+	}
+	
+	/**
+	 * @return true if the setting value of this field by UI is in progress 
+	 */
+	public boolean isLookupEditorSettingValue()
+	{
+		return m_lookupEditorSettingValue;
 	}
 
 }   //  GridField

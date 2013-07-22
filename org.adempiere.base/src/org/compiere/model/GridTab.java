@@ -2676,8 +2676,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//  Get dependent MFields (may be because of display or dynamic lookup)
 		for (GridField dependentField : getDependantFields(columnName))
 		{
+			if (dependentField == null || dependentField.isLookupEditorSettingValue()) continue;
+			
 			//  if the field has a lookup
-			if (dependentField != null && dependentField.getLookup() instanceof MLookup)
+			if (dependentField.getLookup() instanceof MLookup)
 			{
 				MLookup mLookup = (MLookup)dependentField.getLookup();
 				//  if the lookup is dynamic (i.e. contains this columnName as variable)
