@@ -30,7 +30,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20130717L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -429,6 +429,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public static final String DOCSUBTYPEINV_PhysicalInventory = "PI";
 	/** Internal Use Inventory = IU */
 	public static final String DOCSUBTYPEINV_InternalUseInventory = "IU";
+	/** Cost Adjustment = CA */
+	public static final String DOCSUBTYPEINV_CostAdjustment = "CA";
 	/** Set Inv Sub Type.
 		@param DocSubTypeInv 
 		Inventory Sub Type

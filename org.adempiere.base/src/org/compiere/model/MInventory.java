@@ -412,6 +412,21 @@ public class MInventory extends X_M_Inventory implements DocAction
 				qtyDiff = line.getQtyInternalUse().negate();
 			else if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv))
 				qtyDiff = line.getQtyCount().subtract(line.getQtyBook());
+			else if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(docSubTypeInv))
+			{
+				if (!isReversal())
+				{
+					BigDecimal currentCost = line.getCurrentCostPrice();
+					MClient client = MClient.get(getCtx(), getAD_Client_ID());
+					MAcctSchema as = client.getAcctSchema();
+					MCost cost = product.getCostingRecord(as, getAD_Org_ID(), line.getM_AttributeSetInstance_ID(), getCostingMethod());
+					if (cost != null && cost.getCurrentCostPrice().compareTo(currentCost) != 0) 
+					{
+						m_processMsg = "Current Cost for Line " + line.getLine() + " have changed.";
+						return DocAction.STATUS_Invalid; 
+					}
+				}
+			}
 
 			//If Quantity Count minus Quantity Book = Zero, then no change in Inventory
 			if (qtyDiff.signum() == 0)

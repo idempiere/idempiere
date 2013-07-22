@@ -346,7 +346,33 @@ public class MInventoryLine extends X_M_InventoryLine
 				log.saveError("Quantity", Msg.getElement(getCtx(), COLUMNNAME_QtyInternalUse));
 				return false;
 			}
-
+		} else if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(docSubTypeInv)) {
+			if (getNewCostPrice().signum() == 0) {
+				log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_NewCostPrice));
+				return false;
+			}
+			
+			int M_ASI_ID = getM_AttributeSetInstance_ID();
+			MProduct product = getProduct();
+			MClient client = MClient.get(getCtx());
+			MAcctSchema as = client.getAcctSchema();
+			String costingLevel = product.getCostingLevel(as);
+			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel)) {				
+				if (M_ASI_ID == 0) {
+					log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_M_AttributeSetInstance_ID));
+					return false;
+				}
+			}
+			
+			String costingMethod = getParent().getCostingMethod();
+			int AD_Org_ID = getAD_Org_ID();
+			MCost cost = product.getCostingRecord(as, AD_Org_ID, M_ASI_ID, costingMethod);					
+			if (cost == null) {
+				if (!MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod)) {
+					log.saveError("NoCostingRecord", "");
+					return false;
+				}
+			}
 		} else {
 			log.saveError("Error", "Document inventory subtype not configured, cannot complete");
 			return false;

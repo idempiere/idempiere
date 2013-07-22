@@ -32,7 +32,7 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20130717L;
 
     /** Standard Constructor */
     public X_M_InventoryLine (Properties ctx, int M_InventoryLine_ID, String trxName)
@@ -109,6 +109,26 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Current Cost Price.
+		@param CurrentCostPrice 
+		The currently used cost price
+	  */
+	public void setCurrentCostPrice (BigDecimal CurrentCostPrice)
+	{
+		set_ValueNoCheck (COLUMNNAME_CurrentCostPrice, CurrentCostPrice);
+	}
+
+	/** Get Current Cost Price.
+		@return The currently used cost price
+	  */
+	public BigDecimal getCurrentCostPrice () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CurrentCostPrice);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Description.
@@ -327,6 +347,26 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set New Cost Price.
+		@param NewCostPrice 
+		New current cost price after processing of M_CostDetail
+	  */
+	public void setNewCostPrice (BigDecimal NewCostPrice)
+	{
+		set_Value (COLUMNNAME_NewCostPrice, NewCostPrice);
+	}
+
+	/** Get New Cost Price.
+		@return New current cost price after processing of M_CostDetail
+	  */
+	public BigDecimal getNewCostPrice () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_NewCostPrice);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Processed.

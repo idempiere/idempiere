@@ -93,6 +93,19 @@ public interface I_M_InventoryLine
 	  */
 	public int getCreatedBy();
 
+    /** Column name CurrentCostPrice */
+    public static final String COLUMNNAME_CurrentCostPrice = "CurrentCostPrice";
+
+	/** Set Current Cost Price.
+	  * The currently used cost price
+	  */
+	public void setCurrentCostPrice (BigDecimal CurrentCostPrice);
+
+	/** Get Current Cost Price.
+	  * The currently used cost price
+	  */
+	public BigDecimal getCurrentCostPrice();
+
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -226,6 +239,19 @@ public interface I_M_InventoryLine
 	public int getM_Product_ID();
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name NewCostPrice */
+    public static final String COLUMNNAME_NewCostPrice = "NewCostPrice";
+
+	/** Set New Cost Price.
+	  * New current cost price after processing of M_CostDetail
+	  */
+	public void setNewCostPrice (BigDecimal NewCostPrice);
+
+	/** Get New Cost Price.
+	  * New current cost price after processing of M_CostDetail
+	  */
+	public BigDecimal getNewCostPrice();
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";
