@@ -557,6 +557,7 @@
                         <_0:field column="C_DocTypeTarget_ID">
                            <_0:val>132</_0:val>
                         </_0:field>
+                        <_0:field column="FreightCostRule" lval="Freight included"/>
                         <_0:field column="FreightAmt">
                            <_0:val>6</_0:val>
                         </_0:field>

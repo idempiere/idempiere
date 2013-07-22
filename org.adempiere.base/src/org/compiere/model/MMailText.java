@@ -23,6 +23,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  * 	Request Mail Template Model.
@@ -216,7 +217,13 @@ public class MMailText extends X_R_MailText
 			return msgreturn.toString();	//	keep for next
 		}	
 		//
-		Object value = po.get_Value(index);
+		MColumn col = MColumn.get(Env.getCtx(), po.get_TableName(), variable);
+		Object value = null;
+		if (col != null && col.isSecure()) {
+			value = "********";
+		} else {
+			value = po.get_Value(index);
+		}
 		if (value == null)
 			return "";
 		return value.toString();

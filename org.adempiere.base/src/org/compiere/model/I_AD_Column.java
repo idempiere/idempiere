@@ -441,6 +441,19 @@ public interface I_AD_Column
 	  */
 	public boolean isParent();
 
+    /** Column name IsSecure */
+    public static final String COLUMNNAME_IsSecure = "IsSecure";
+
+	/** Set Secure content.
+	  * Defines whether content must be treated as secure
+	  */
+	public void setIsSecure (boolean IsSecure);
+
+	/** Get Secure content.
+	  * Defines whether content must be treated as secure
+	  */
+	public boolean isSecure();
+
     /** Column name IsSelectionColumn */
     public static final String COLUMNNAME_IsSelectionColumn = "IsSelectionColumn";
 

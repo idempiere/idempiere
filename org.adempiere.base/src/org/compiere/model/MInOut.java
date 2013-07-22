@@ -1628,6 +1628,10 @@ public class MInOut extends X_M_InOut implements DocAction
 						}
 						if (!po.isPosted())
 							addDocsPostProcess(po);
+						MMatchInv matchInvCreated = po.getMatchInvCreated();
+						if (matchInvCreated != null) {
+							addDocsPostProcess(matchInvCreated);
+						}
 					}
 					//	Update PO with ASI
 					if (   oLine != null && oLine.getM_AttributeSetInstance_ID() == 0

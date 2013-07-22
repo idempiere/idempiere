@@ -47,7 +47,7 @@ public class MColumn extends X_AD_Column
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2344447703630569514L;
+	private static final long serialVersionUID = 4321132594207949196L;
 
 	/**
 	 * 	Get MColumn from Cache
@@ -65,6 +65,19 @@ public class MColumn extends X_AD_Column
 		if (retValue.get_ID () != 0)
 			s_cache.put (key, retValue);
 		return retValue;
+	}	//	get
+
+	/**
+	 * 	Get MColumn given TableName and ColumnName
+	 *	@param ctx context
+	 * 	@param TableName
+	 * 	@param ColumnName
+	 *	@return MColumn
+	 */
+	public static MColumn get (Properties ctx, String tableName, String columnName)
+	{
+		MTable table = MTable.get(ctx, tableName);
+		return  table.getColumn(columnName);
 	}	//	get
 
 	/**

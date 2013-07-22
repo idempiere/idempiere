@@ -32,7 +32,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20130705L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -59,6 +59,8 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 			setIsKey (false);
 			setIsMandatory (false);
 			setIsParent (false);
+			setIsSecure (false);
+// N
 			setIsSelectionColumn (false);
 			setIsToolbarButton (true);
 // Y
@@ -677,6 +679,30 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public boolean isParent () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsParent);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Secure content.
+		@param IsSecure 
+		Defines whether content must be treated as secure
+	  */
+	public void setIsSecure (boolean IsSecure)
+	{
+		set_Value (COLUMNNAME_IsSecure, Boolean.valueOf(IsSecure));
+	}
+
+	/** Get Secure content.
+		@return Defines whether content must be treated as secure
+	  */
+	public boolean isSecure () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsSecure);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

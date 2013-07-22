@@ -54,6 +54,7 @@ import org.compiere.db.CConnection;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.I_AD_Window;
 import org.compiere.model.MClient;
+import org.compiere.model.MColumn;
 import org.compiere.model.MLookupCache;
 import org.compiere.model.MRole;
 import org.compiere.model.MSession;
@@ -1459,9 +1460,9 @@ public final class Env
 				token = token.substring(0, f);
 			}
 
+			Properties ctx = po != null ? po.getCtx() : Env.getCtx();
 			if (token.startsWith("#") || token.startsWith("$")) {
 				//take from context
-				Properties ctx = po != null ? po.getCtx() : Env.getCtx();
 				String v = Env.getContext(ctx, token);
 				if (v != null && v.length() > 0)
 					outStr.append(v);
@@ -1476,8 +1477,13 @@ public final class Env
 							int tblIndex = format.indexOf(".");
 							String table = tblIndex > 0 ? format.substring(0, tblIndex) : token.substring(0, token.length() - 3);
 							String column = tblIndex > 0 ? format.substring(tblIndex + 1) : format;
-							outStr.append(DB.getSQLValueString(trxName,
-									"SELECT " + column + " FROM " + table + " WHERE " + table + "_ID = ?", (Integer)v));
+							MColumn col = MColumn.get(ctx, table, column);
+							if (col != null && col.isSecure()) {
+								outStr.append("********");
+							} else {
+								outStr.append(DB.getSQLValueString(trxName,
+										"SELECT " + column + " FROM " + table + " WHERE " + table + "_ID = ?", (Integer)v));
+							}
 						} else if (v instanceof Date) {
 							SimpleDateFormat df = new SimpleDateFormat(format);
 							outStr.append(df.format((Date)v));

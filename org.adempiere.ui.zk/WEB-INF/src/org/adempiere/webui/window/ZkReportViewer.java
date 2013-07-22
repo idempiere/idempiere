@@ -31,6 +31,7 @@ import javax.activation.FileDataSource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.DBException;
 import org.adempiere.pdf.Document;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
@@ -125,7 +126,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 344552813342946104L;
+	private static final long serialVersionUID = 6208607687967139151L;
 
 	/** Window No					*/
 	private int                 m_WindowNo = -1;
@@ -296,6 +297,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		bFind.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Find")));
 		toolBar.appendChild(bFind);
 		bFind.addEventListener(Events.ON_CLICK, this);
+		if (getAD_Tab_ID(m_reportEngine.getPrintFormat().getAD_Table_ID()) <= 0) {
+			bFind.setVisible(false); // IDEMPIERE-1185
+		}
 		
 		toolBar.appendChild(new Separator("vertical"));
 		
@@ -421,6 +425,22 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		init = true;
 	}
 
+	/**
+	 * Get the maintenance tab of the table associated to the report engine
+	 * @return AD_Tab_ID or -1 if not found
+	 */
+	private int getAD_Tab_ID(int AD_Table_ID) {
+		// Get Find Tab Info
+		final String sql = "SELECT t.AD_Tab_ID "
+				+ "FROM AD_Tab t"
+				+ " INNER JOIN AD_Window w ON (t.AD_Window_ID=w.AD_Window_ID)"
+				+ " INNER JOIN AD_Table tt ON (t.AD_Table_ID=tt.AD_Table_ID) "
+				+ "WHERE tt.AD_Table_ID=? "
+				+ "ORDER BY w.IsDefault DESC, t.SeqNo, ABS (tt.AD_Window_ID-t.AD_Window_ID)";
+		int AD_Tab_ID = DB.getSQLValueEx(null, sql, AD_Table_ID);
+		return AD_Tab_ID;
+	}
+
 	private void renderReport() throws Exception {
 		media = null;
 		Listitem selected = previewType.getSelectedItem();
@@ -448,8 +468,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			m_reportEngine.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(Executions.getCurrent().getContextPath(), "rp", this.getUuid()));
 			media = new AMedia(file.getName(), "html", "text/html", file, false);
 			
-			labelDrill.setVisible(true);
-			comboDrill.setVisible(true);
+			if (comboDrill.getItemCount() > 1) {
+				labelDrill.setVisible(true);
+				comboDrill.setVisible(true);
+			}
 		} else if ("XLS".equals(previewType.getSelectedItem().getValue())) {
 			String path = System.getProperty("java.io.tmpdir");
 			String prefix = makePrefix(m_reportEngine.getName());
@@ -1008,20 +1030,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	 */
 	private void cmd_find()
 	{
-		int AD_Table_ID = m_reportEngine.getPrintFormat().getAD_Table_ID();
-		
 		String title = null; 
 		String tableName = null;
 
-		//	Get Find Tab Info
-		String sql = "SELECT t.AD_Tab_ID "
-			//	,w.Name, t.Name, w.IsDefault, t.SeqNo, ABS (tt.AD_Window_ID-t.AD_Window_ID)
-			+ "FROM AD_Tab t"
-			+ " INNER JOIN AD_Window w ON (t.AD_Window_ID=w.AD_Window_ID)"
-			+ " INNER JOIN AD_Table tt ON (t.AD_Table_ID=tt.AD_Table_ID) "
-			+ "WHERE tt.AD_Table_ID=? "
-			+ "ORDER BY w.IsDefault DESC, t.SeqNo, ABS (tt.AD_Window_ID-t.AD_Window_ID)";
-		int AD_Tab_ID = DB.getSQLValue(null, sql, AD_Table_ID);
+		int AD_Table_ID = m_reportEngine.getPrintFormat().getAD_Table_ID();
+		int AD_Tab_ID = getAD_Tab_ID(AD_Table_ID);
 		// ASP
 		MClient client = MClient.get(Env.getCtx());
 		String ASPFilter = "";
@@ -1060,10 +1073,13 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				+ "             AND ce.AD_Field_ID IS NULL "
 				+ "             AND ce.ASP_Status = 'H')"; // Hide
 		//
-		sql = "SELECT Name, TableName FROM AD_Tab_v WHERE AD_Tab_ID=? " + ASPFilter;
-		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Tab"))
+		String sql = null;
+		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Tab")) {
 			sql = "SELECT Name, TableName FROM AD_Tab_vt WHERE AD_Tab_ID=?"
-				+ " AND AD_Language='" + Env.getAD_Language(Env.getCtx()) + "' " + ASPFilter;
+					+ " AND AD_Language='" + Env.getAD_Language(Env.getCtx()) + "' " + ASPFilter;
+		} else {
+			sql = "SELECT Name, TableName FROM AD_Tab_v WHERE AD_Tab_ID=? " + ASPFilter;
+		}
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -1080,7 +1096,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			throw new DBException(e);
 		}
 		finally
 		{
