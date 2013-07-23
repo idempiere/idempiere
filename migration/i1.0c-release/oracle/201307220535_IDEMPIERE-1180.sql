@@ -1,3 +1,6 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
 -- Jul 16, 2013 5:16:03 PM MYT
 -- IDEMPIERE-1180 Cost Adjustment Document for Standard and Average Costing
 INSERT INTO AD_Val_Rule (Code,AD_Val_Rule_ID,EntityType,Name,Type,AD_Val_Rule_UU,CreatedBy,UpdatedBy,Updated,Created,IsActive,AD_Org_ID,AD_Client_ID) VALUES ('AD_Ref_List.Value in (''A'',''I'',''S'')',200048,'D','M_Inventory CostingMethod','S','33ab6d88-3a3e-4ef8-b46c-71e90a2e0e45',100,100,TO_DATE('2013-07-16 17:15:58','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2013-07-16 17:15:58','YYYY-MM-DD HH24:MI:SS'),'Y',0,0)
