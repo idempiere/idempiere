@@ -1501,6 +1501,7 @@ public class GridTable extends AbstractTableModel
 			{
 				log.log(Level.SEVERE, "Persistency Issue - " 
 					+ m_tableName + ": " + e.getLocalizedMessage(), e);
+				log.saveError("Error", e.getLocalizedMessage());
 				return SAVE_ERROR;
 			}
 		}

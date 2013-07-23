@@ -702,7 +702,7 @@ public class MSequence extends X_AD_Sequence
 
 		if (tableID && SYSTEM_NATIVE_SEQUENCE)
 		{
-			int next_id = DB.getSQLValue(trxName, "SELECT CurrentNext FROM AD_Sequence WHERE Name=? AND IsActive='Y' AND IsTableID='Y' AND IsAutoSequence='Y'", TableName);
+			int next_id = DB.getSQLValueEx(trxName, "SELECT CurrentNext FROM AD_Sequence WHERE Name=? AND IsActive='Y' AND IsTableID='Y' AND IsAutoSequence='Y'", TableName);
 			if (next_id == -1)
 			{
 				MSequence seq = new MSequence (ctx, 0, trxName);
@@ -793,7 +793,7 @@ public class MSequence extends X_AD_Sequence
 		}
 		catch (Exception e)
 		{
-			s_log.log(Level.SEVERE, "get", e);
+			throw new DBException(e);
 		}
 		finally
 		{
