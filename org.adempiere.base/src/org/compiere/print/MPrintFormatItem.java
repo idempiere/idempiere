@@ -625,6 +625,9 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		if (!isPrinted()) {
+			setIsOrderBy(false);
+		}
 		//	Order
 		if (!isOrderBy())
 		{
