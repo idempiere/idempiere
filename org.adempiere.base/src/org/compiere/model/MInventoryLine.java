@@ -373,6 +373,7 @@ public class MInventoryLine extends X_M_InventoryLine
 					return false;
 				}
 			}
+			setM_Locator_ID(0);
 		} else {
 			log.saveError("Error", "Document inventory subtype not configured, cannot complete");
 			return false;
