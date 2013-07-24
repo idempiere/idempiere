@@ -156,9 +156,6 @@ public class TableElementHandler extends AbstractElementHandler {
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			trx.rollback();
 			return 0;
-		} finally {
-			if (trx != null)
-				trx.close();
 		}
 
 		return 1;

@@ -15,6 +15,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.MIndexColumn;
+import org.compiere.model.MMessage;
 import org.compiere.model.MTableIndex;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.process.TableIndexValidate;
@@ -100,9 +101,6 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			trx.rollback();
 			return 0;
-		} finally {
-			if (trx != null)
-				trx.close();
 		}
 
 		return 1;
@@ -126,6 +124,14 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 		}
 		
 		if (createElement) {
+			if (m_TableIndex.getAD_Message_ID() > 0) {
+				try {
+					ctx.packOut.getHandler(MMessage.Table_Name).packOut(ctx.packOut, document, ctx.logDocument, m_TableIndex.getAD_Message_ID());
+				} catch (Exception e) {
+					throw new SAXException(e);
+				}
+			}
+			
 			addTypeName(atts, "table");
 			document.startElement("", "", MTableIndex.Table_Name, atts);
 			createTableIndexBinding(ctx, document, m_TableIndex);

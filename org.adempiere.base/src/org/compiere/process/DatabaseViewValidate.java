@@ -85,7 +85,6 @@ public class DatabaseViewValidate extends SvrProcess {
 			}
 		}
 		rs.close();
-		trx.close();
 
 		StringBuilder sb = new StringBuilder("CREATE OR REPLACE VIEW ").append(table.getTableName());
 		//

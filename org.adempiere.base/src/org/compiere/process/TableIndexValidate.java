@@ -86,7 +86,6 @@ public class TableIndexValidate extends SvrProcess {
 			}
 		}
 		rs.close();
-		trx.close();
 		
 		MIndexColumn[] indexCols = index.getColumns(true);
 		boolean modified = false;
