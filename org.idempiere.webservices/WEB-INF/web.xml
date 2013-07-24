@@ -9,6 +9,7 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 			classpath:/META-INF/cxf/services.xml
+			classpath:/META-INF/cxf/rest-context.xml
 		</param-value>
 	</context-param>
 

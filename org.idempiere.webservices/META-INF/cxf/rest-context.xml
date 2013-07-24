@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxrs
+http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+	<!-- JAX-RS -->
+	<jaxrs:server id="idempiereRest" address="/rest">
+		<jaxrs:serviceBeans>
+			<ref bean="ModelADServiceBean" />
+			<ref bean="CompositeServiceBean" />
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<ref bean="xmlBeansProvider" />
+		</jaxrs:providers>
+	</jaxrs:server>
+
+	<bean id="ModelADServiceBean" class="org.idempiere.adinterface.ModelADServiceImpl" />
+	<bean id="CompositeServiceBean" class="com.trekglobal.ws.CompositeServiceImpl" />
+
+	<bean id="xmlBeansProvider"
+		class="org.apache.cxf.jaxrs.provider.xmlbeans.XMLBeansElementProvider" />
+</beans>

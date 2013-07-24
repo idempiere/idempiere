@@ -25,6 +25,7 @@ import java.util.Properties;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
@@ -68,7 +69,10 @@ public class AbstractService {
 	        + "AND WS_WebServiceType_ID=?";
 	private static final String COMPIERE_SERVICE = "CompiereService";
 	@Resource
-	protected WebServiceContext ctx;
+	protected WebServiceContext jaxwsContext; //soap context
+	
+	@Context
+	protected org.apache.cxf.jaxrs.ext.MessageContext jaxrsContext ; //rest context
 
 	/**
 	 * Login to web Services
@@ -193,8 +197,6 @@ public class AbstractService {
 	 */
 	protected String authenticate(String webServiceValue, String methodValue, String serviceTypeValue, CompiereService m_cs) {
 
-		HttpServletRequest req = (HttpServletRequest) ctx.getMessageContext().get(MessageContext.SERVLET_REQUEST);
-		
 		MWebService m_webservice = MWebService.get(m_cs.getCtx(), webServiceValue);
 		if (m_webservice == null || !m_webservice.isActive())
 			return "Web Service " + webServiceValue + " not registered";
@@ -229,7 +231,7 @@ public class AbstractService {
 		if (m_webservicetype == null)
 			return "Service type " + serviceTypeValue + " not configured";
 
-		req.setAttribute("MWebServiceType", m_webservicetype);
+		getHttpServletRequest().setAttribute("MWebServiceType", m_webservicetype);
 		
 		// Check if role has access on web-service
         String hasAccess = DB.getSQLValueStringEx(null, ROLE_ACCESS_SQL,
@@ -271,7 +273,9 @@ public class AbstractService {
 	 * @return Compiere Service object for current request
 	 */
 	protected CompiereService getCompiereService() {
-		HttpServletRequest req = (HttpServletRequest) ctx.getMessageContext().get(MessageContext.SERVLET_REQUEST);
+		
+		HttpServletRequest req = getHttpServletRequest();
+		
 		CompiereService m_cs = (CompiereService) req.getAttribute(COMPIERE_SERVICE);
 		if (m_cs == null) {
 			m_cs = new CompiereService();
@@ -285,9 +289,8 @@ public class AbstractService {
 	 * @return
 	 */
 	protected MWebServiceType getWebServiceType() {
-		HttpServletRequest req = (HttpServletRequest) ctx.getMessageContext().get(MessageContext.SERVLET_REQUEST);
 
-		return (MWebServiceType) req.getAttribute("MWebServiceType");
+		return (MWebServiceType) getHttpServletRequest().getAttribute("MWebServiceType");
 
 	}
 	
@@ -296,7 +299,7 @@ public class AbstractService {
 	 * @return
 	 */
 	protected Map<String, Object> getRequestCtx() {
-		HttpServletRequest req = (HttpServletRequest) ctx.getMessageContext().get(MessageContext.SERVLET_REQUEST);
+		HttpServletRequest req = getHttpServletRequest();
 
 		@SuppressWarnings("unchecked")
 		Map<String,Object> reqCtx= (Map<String,Object>)req.getAttribute("RequestCtx");
@@ -631,5 +634,18 @@ public class AbstractService {
 		return null;
 	}
 
+	/**
+	 * Get HttpServletRequest object
+	 * @return HttpServletRequest
+	 */
+	private HttpServletRequest getHttpServletRequest() {
+		HttpServletRequest req;
+		if (jaxrsContext != null) {
+			req = (HttpServletRequest) jaxrsContext.getHttpServletRequest();
+		} else
+			req = (HttpServletRequest) jaxwsContext.getMessageContext().get(
+					MessageContext.SERVLET_REQUEST);
+		return req;
+	}
 	
 }

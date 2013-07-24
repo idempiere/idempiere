@@ -87,7 +87,8 @@ public class CompositeServiceImpl extends AbstractService implements CompositeSe
 				return ret;
 			}
 	
-			ModelADServiceImpl modelADService = new ModelADServiceImpl(ctx);
+			ModelADServiceImpl modelADService = new ModelADServiceImpl(jaxwsContext, jaxrsContext);
+			
 	
 			String trxName = Trx.createTrxName(webServiceName);
 	

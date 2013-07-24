@@ -42,6 +42,7 @@ import javax.jws.WebService;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceContext;
 
+import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.xmlbeans.StringEnumAbstractBase.Table;
 import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
@@ -147,9 +148,10 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		log.info("Creating session object ADService");
 	}
 	
-	public ModelADServiceImpl(WebServiceContext ctx)
+	public ModelADServiceImpl(WebServiceContext soapContext,  MessageContext jaxrsContext)
 	{
-		this.ctx =ctx;
+		this.jaxwsContext = soapContext;
+		this.jaxrsContext = jaxrsContext;
 		
 		log.info("Creating session object ADService");
 	}
