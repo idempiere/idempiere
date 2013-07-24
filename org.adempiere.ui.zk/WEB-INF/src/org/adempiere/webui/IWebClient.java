@@ -33,6 +33,10 @@ public interface IWebClient {
 	 * logout
 	 */
 	public void logout();
+	/**
+	 * logout after browser destroyed
+	 */
+	public void logoutAfterTabDestroyed();
 
 	/**
 	 * 

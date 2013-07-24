@@ -38,6 +38,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.impl.LabelImageElement;
@@ -76,7 +77,9 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 
     protected void onCreate()
     {
-    	lblUserNameValue = (Label) component.getFellowIfAny("loginUserAndRole", true);
+    	String s = Msg.getMsg(Env.getCtx(), "CloseTabFromBrowser?").replace("\n", "<br>");
+    	Clients.confirmClose(s);
+      	lblUserNameValue = (Label) component.getFellowIfAny("loginUserAndRole", true);
     	lblUserNameValue.setValue(getUserName() + "@" + getClientName() + "." + getOrgName()+"/"+this.getRoleName());
     	lblUserNameValue.addEventListener(Events.ON_CLICK, this);
 

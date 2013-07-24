@@ -411,6 +411,17 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         //redirect to login page
         Executions.sendRedirect("index.zul");
     }
+    public void logoutAfterTabDestroyed(){
+       	Session session = logout0();
+
+    	//clear context, invalidate session
+    	Env.getCtx().clear();
+    	session.invalidate();
+            	
+        //redirect to login page
+        Executions.sendRedirect("index.zul");
+    }
+    
 
 	protected Session logout0() {
 		Session session = Executions.getCurrent().getDesktop().getSession();
