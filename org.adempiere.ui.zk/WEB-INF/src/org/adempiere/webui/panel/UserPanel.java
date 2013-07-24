@@ -79,7 +79,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     {
     	String s = Msg.getMsg(Env.getCtx(), "CloseTabFromBrowser?").replace("\n", "<br>");
     	Clients.confirmClose(s);
-      	lblUserNameValue = (Label) component.getFellowIfAny("loginUserAndRole", true);
+    	lblUserNameValue = (Label) component.getFellowIfAny("loginUserAndRole", true);
     	lblUserNameValue.setValue(getUserName() + "@" + getClientName() + "." + getOrgName()+"/"+this.getRoleName());
     	lblUserNameValue.addEventListener(Events.ON_CLICK, this);
 
@@ -242,11 +242,13 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		}
 		else if (ON_DEFER_LOGOUT.equals(event.getName()))
 		{
+			Clients.confirmClose(null);
 			SessionManager.logoutSession();
 		}
 		else if (ON_DEFER_CHANGE_ROLE.equals(event.getName()))
 		{
 			MUser user = MUser.get(ctx);
+			Clients.confirmClose(null);
 			SessionManager.changeRole(user);
 		}
 

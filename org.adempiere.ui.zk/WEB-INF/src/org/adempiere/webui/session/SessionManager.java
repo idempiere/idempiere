@@ -100,6 +100,7 @@ public class SessionManager
     	if (app != null)
     		app.logout();
     }
+
     public static void logoutSessionAfterBrowserDestroyed()
     {
     	IWebClient app = getSessionApplication();
