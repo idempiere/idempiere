@@ -120,111 +120,29 @@ public class ColumnSync extends SvrProcess
 			DB.close(rs);
 			rs = null;
 		
+			boolean isNoTable = noColumns == 0;
 			//	No Table
-			if (noColumns == 0)
+			if (isNoTable)
 				sql = table.getSQLCreate ();
 			//	No existing column
 			else if (sql == null)
 				sql = column.getSQLAdd(table);
 			
-			// foreign key
-			if (!column.isKey() && !column.getColumnName().equals(PO.getUUIDColumnName(table.getTableName())))
+			if (isNoTable)
 			{
-				int refid = column.getAD_Reference_ID();
-				if (refid != DisplayType.List && refid != DisplayType.Payment)
+				MColumn[] cols = table.getColumns(false);
+				for (MColumn col : cols)
 				{
-					String referenceTableName = column.getReferenceTableName();
-					if (referenceTableName != null)
-					{
-						Hashtable<String, DatabaseKey> htForeignKeys = new Hashtable<String, DatabaseKey>();
-						
-						if (md.storesUpperCaseIdentifiers())
-							referenceTableName = referenceTableName.toUpperCase();
-						else if (md.storesLowerCaseIdentifiers())
-							referenceTableName = referenceTableName.toLowerCase();
-						
-						rs = md.getCrossReference(catalog, schema, referenceTableName, catalog, schema, tableName);
-						while (rs.next())
-						{
-							String dbFKName = rs.getString("FK_NAME");			
-							if (dbFKName == null)
-								continue;
-							
-							String dbFKTable = rs.getString("FKTABLE_NAME");
-				
-							String key = dbFKName.toLowerCase();
-							DatabaseKey dbForeignKey = htForeignKeys.get(key);
-							if (dbForeignKey == null)
-								dbForeignKey = new DatabaseKey(dbFKName, dbFKTable, new String[30]);
-										
-							String columnName = rs.getString("FKCOLUMN_NAME");
-							int pos = (rs.getShort("KEY_SEQ"));				
-							if (pos > 0)
-								dbForeignKey.getKeyColumns()[pos-1] = columnName;
-							
-							htForeignKeys.put(key, dbForeignKey);
-						}
-						rs.close();
-						
-						Enumeration<String> en = htForeignKeys.keys();
-						while (en.hasMoreElements())
-						{
-							String key = en.nextElement();
-							DatabaseKey dbForeignKey = htForeignKeys.get(key);
-							if (dbForeignKey.getKeyColumns()[1] != null)
-								htForeignKeys.remove(key);
-						}
-						
-						StringBuilder fkConstraintSql = new StringBuilder();
-						boolean modified = false;
-						en = htForeignKeys.keys();
-						while (en.hasMoreElements())
-						{
-							String key = en.nextElement();
-							DatabaseKey dbForeignKey = htForeignKeys.get(key);
-							if (dbForeignKey.getKeyColumns()[0].equalsIgnoreCase(column.getColumnName()))
-							{
-								DatabaseKey primaryKey = CreateForeignKey.getPrimaryKey(md, dbForeignKey.getKeyTable());
-								if (primaryKey != null)
-								{
-									StringBuilder fkConstraint = new StringBuilder();
-									fkConstraint.append("CONSTRAINT ").append(dbForeignKey.getKeyName());
-									fkConstraint.append(" FOREIGN KEY (").append(column.getColumnName()).append(") REFERENCES ");
-									fkConstraint.append(primaryKey.getKeyTable()).append("(").append(primaryKey.getKeyColumns()[0]);
-									for (int i = 1; i < primaryKey.getKeyColumns().length; i++)
-									{
-										if (primaryKey.getKeyColumns()[i] == null)
-											break;
-										fkConstraint.append(", ").append(primaryKey.getKeyColumns()[i]);
-									}
-									fkConstraint.append(")");
-									
-									fkConstraintSql.append(DB.SQLSTATEMENT_SEPARATOR);
-									fkConstraintSql.append("ALTER TABLE ").append(table.getTableName());
-									fkConstraintSql.append(" MODIFY ");
-									fkConstraintSql.append(fkConstraint);
-								}
-								modified = true;
-								break;
-							}
-						}
-						
-						if (!modified)
-						{
-							String fkConstraint = CreateForeignKey.getForeignKeyConstraint(md, table, column);
-							if (fkConstraint != null && fkConstraint.length() > 0)
-							{
-								fkConstraintSql.append(DB.SQLSTATEMENT_SEPARATOR);
-								fkConstraintSql.append("ALTER TABLE ").append(table.getTableName());
-								fkConstraintSql.append(" ADD ");
-								fkConstraintSql.append(fkConstraint);
-							}
-						}
-						
-						if (fkConstraintSql != null && fkConstraintSql.length() > 0)
-							sql += fkConstraintSql.toString();
-					}
+					String fkConstraintSql = getForeignKeyConstraintSql(md, catalog, schema, tableName, table, col);
+					if (fkConstraintSql != null && fkConstraintSql.length() > 0)
+						sql += fkConstraintSql;
 				}
+			}
+			else
+			{
+				String fkConstraintSql = getForeignKeyConstraintSql(md, catalog, schema, tableName, table, column);
+				if (fkConstraintSql != null && fkConstraintSql.length() > 0)
+					sql += fkConstraintSql;
 			}
 			
 			int no = 0;
@@ -264,5 +182,106 @@ public class ColumnSync extends SvrProcess
 			}
 		}
 	}	//	doIt
+	
+	private String getForeignKeyConstraintSql(DatabaseMetaData md, String catalog, String schema, String tableName, MTable table, MColumn column) throws Exception
+	{
+		StringBuilder fkConstraintSql = new StringBuilder();
+		
+		if (!column.isKey() && !column.getColumnName().equals(PO.getUUIDColumnName(table.getTableName())))
+		{
+			int refid = column.getAD_Reference_ID();
+			if (refid != DisplayType.List && refid != DisplayType.Payment)
+			{
+				String referenceTableName = column.getReferenceTableName();
+				if (referenceTableName != null)
+				{
+					Hashtable<String, DatabaseKey> htForeignKeys = new Hashtable<String, DatabaseKey>();
+					
+					if (md.storesUpperCaseIdentifiers())
+						referenceTableName = referenceTableName.toUpperCase();
+					else if (md.storesLowerCaseIdentifiers())
+						referenceTableName = referenceTableName.toLowerCase();
+					
+					ResultSet rs = md.getCrossReference(catalog, schema, referenceTableName, catalog, schema, tableName);
+					while (rs.next())
+					{
+						String dbFKName = rs.getString("FK_NAME");			
+						if (dbFKName == null)
+							continue;
+						
+						String dbFKTable = rs.getString("FKTABLE_NAME");
+			
+						String key = dbFKName.toLowerCase();
+						DatabaseKey dbForeignKey = htForeignKeys.get(key);
+						if (dbForeignKey == null)
+							dbForeignKey = new DatabaseKey(dbFKName, dbFKTable, new String[30]);
+									
+						String columnName = rs.getString("FKCOLUMN_NAME");
+						int pos = (rs.getShort("KEY_SEQ"));				
+						if (pos > 0)
+							dbForeignKey.getKeyColumns()[pos-1] = columnName;
+						
+						htForeignKeys.put(key, dbForeignKey);
+					}
+					rs.close();
+					
+					Enumeration<String> en = htForeignKeys.keys();
+					while (en.hasMoreElements())
+					{
+						String key = en.nextElement();
+						DatabaseKey dbForeignKey = htForeignKeys.get(key);
+						if (dbForeignKey.getKeyColumns()[1] != null)
+							htForeignKeys.remove(key);
+					}
+					
+					boolean modified = false;
+					en = htForeignKeys.keys();
+					while (en.hasMoreElements())
+					{
+						String key = en.nextElement();
+						DatabaseKey dbForeignKey = htForeignKeys.get(key);
+						if (dbForeignKey.getKeyColumns()[0].equalsIgnoreCase(column.getColumnName()))
+						{
+							DatabaseKey primaryKey = CreateForeignKey.getPrimaryKey(md, dbForeignKey.getKeyTable());
+							if (primaryKey != null)
+							{
+								StringBuilder fkConstraint = new StringBuilder();
+								fkConstraint.append("CONSTRAINT ").append(dbForeignKey.getKeyName());
+								fkConstraint.append(" FOREIGN KEY (").append(column.getColumnName()).append(") REFERENCES ");
+								fkConstraint.append(primaryKey.getKeyTable()).append("(").append(primaryKey.getKeyColumns()[0]);
+								for (int i = 1; i < primaryKey.getKeyColumns().length; i++)
+								{
+									if (primaryKey.getKeyColumns()[i] == null)
+										break;
+									fkConstraint.append(", ").append(primaryKey.getKeyColumns()[i]);
+								}
+								fkConstraint.append(")");
+								
+								fkConstraintSql.append(DB.SQLSTATEMENT_SEPARATOR);
+								fkConstraintSql.append("ALTER TABLE ").append(table.getTableName());
+								fkConstraintSql.append(" MODIFY ");
+								fkConstraintSql.append(fkConstraint);
+							}
+							modified = true;
+							break;
+						}
+					}
+					
+					if (!modified)
+					{
+						String fkConstraint = CreateForeignKey.getForeignKeyConstraint(md, table, column);
+						if (fkConstraint != null && fkConstraint.length() > 0)
+						{
+							fkConstraintSql.append(DB.SQLSTATEMENT_SEPARATOR);
+							fkConstraintSql.append("ALTER TABLE ").append(table.getTableName());
+							fkConstraintSql.append(" ADD ");
+							fkConstraintSql.append(fkConstraint);
+						}
+					}
+				}
+			}
+		}
+		return fkConstraintSql.toString();
+	}
 
 }	//	ColumnSync
