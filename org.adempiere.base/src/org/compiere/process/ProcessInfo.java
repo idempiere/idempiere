@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -140,6 +141,8 @@ public class ProcessInfo implements Serializable
 	/** Row count */
 	private int m_rowCount;
 
+	private transient PO m_po = null;
+	
 	/**
 	 *  String representation
 	 *  @return String representation
@@ -773,4 +776,11 @@ public class ProcessInfo implements Serializable
 		return m_rowCount;
 	}
 
+	public void setPO(PO po) {
+		m_po = po;
+	}
+	
+	public PO getPO() {
+		return m_po;
+	}
 }   //  ProcessInfo
