@@ -21,14 +21,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
+import org.compiere.process.ProcessInfo;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.ValueNamePair;
+import org.compiere.wf.MWorkflow;
 
 
 /**
@@ -130,6 +135,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	private MInventory				m_inventoryTo = null;
 	/**	Physical Inventory Info	*/
 	private String					m_inventoryInfo = null;
+	private List<MInventory>		m_inventoryDoc = null;			
 
 	/**
 	 * 	Get Lines
@@ -372,6 +378,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			approveIt();
 		if (log.isLoggable(Level.INFO)) log.info("completeIt - " + toString());
 		//
+		m_inventoryDoc = new ArrayList<MInventory>();
 		MMovement move = new MMovement (getCtx(), getM_Movement_ID(), get_TrxName());
 		MMovementLineConfirm[] lines = getLines(false);
 		for (int i = 0; i < lines.length; i++)
@@ -400,24 +407,51 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 					log.log(Level.SEVERE, "completeIt - Scrapped=" + confirm.getScrappedQty()
 						+ " - Difference=" + confirm.getDifferenceQty());
 					
-					m_processMsg = "Differnce Doc not created";
+					if (m_processMsg == null)
+						m_processMsg = "Differnce Doc not created";
 					return DocAction.STATUS_Invalid;
 				}
 			}
 		}	//	for all lines
 		
+		//complete movement
+		setProcessed(true);
+		saveEx();
+		ProcessInfo processInfo = MWorkflow.runDocumentActionWorkflow(move, DocAction.ACTION_Complete);
+		if (processInfo.isError()) 
+		{
+			m_processMsg = processInfo.getSummary();
+			setProcessed(false);
+			return DocAction.STATUS_Invalid;
+		}
+				
 		if (m_inventoryInfo != null)
 		{
+			//complete inventory doc
+			for(MInventory inventory : m_inventoryDoc)
+			{
+				processInfo = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
+				if (processInfo.isError()) 
+				{
+					m_processMsg = processInfo.getSummary();
+					setProcessed(false);
+					return DocAction.STATUS_Invalid;
+				}
+			}
+			
 			m_processMsg = " @M_Inventory_ID@: " + m_inventoryInfo;
 			addDescription(Msg.translate(getCtx(), "M_Inventory_ID") 
 				+ ": " + m_inventoryInfo);
-		}
+		}				
+		
+		m_inventoryDoc = null;
 		
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
 		{
 			m_processMsg = valid;
+			setProcessed(false);
 			return DocAction.STATUS_Invalid;
 		}
 		
@@ -451,9 +485,10 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 				MWarehouse wh = MWarehouse.get(getCtx(), loc.getM_Warehouse_ID());
 				m_inventoryFrom = new MInventory (wh, get_TrxName());
 				m_inventoryFrom.setDescription(Msg.translate(getCtx(), "M_MovementConfirm_ID") + " " + getDocumentNo());
+				setInventoryDocType(m_inventoryFrom);
 				if (!m_inventoryFrom.save(get_TrxName()))
 				{
-					m_processMsg += "Inventory not created";
+					updateProcessMsg("Inventory not created");
 					return false;
 				}
 				//	First Inventory
@@ -464,6 +499,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 				}
 				else
 					m_inventoryInfo += "," + m_inventoryFrom.getDocumentNo();
+				m_inventoryDoc.add(m_inventoryFrom);
 			}
 			
 			if (log.isLoggable(Level.INFO)) log.info("createDifferenceDoc - Difference=" + confirm.getDifferenceQty());
@@ -473,7 +509,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			line.setDescription(Msg.translate(getCtx(), "DifferenceQty"));
 			if (!line.save(get_TrxName()))
 			{
-				m_processMsg += "Inventory Line not created";
+				updateProcessMsg("Inventory Line not created");
 				return false;
 			}
 			confirm.setM_InventoryLine_ID(line.getM_InventoryLine_ID());
@@ -493,9 +529,10 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 				MWarehouse wh = MWarehouse.get(getCtx(), loc.getM_Warehouse_ID());
 				m_inventoryTo = new MInventory (wh, get_TrxName());
 				m_inventoryTo.setDescription(Msg.translate(getCtx(), "M_MovementConfirm_ID") + " " + getDocumentNo());
+				setInventoryDocType(m_inventoryTo);
 				if (!m_inventoryTo.save(get_TrxName()))
-				{
-					m_processMsg += "Inventory not created";
+				{				
+					updateProcessMsg("Inventory not created");
 					return false;
 				}
 				//	First Inventory
@@ -506,6 +543,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 				}
 				else
 					m_inventoryInfo += "," + m_inventoryTo.getDocumentNo();
+				m_inventoryDoc.add(m_inventoryTo);
 			}
 			
 			if (log.isLoggable(Level.INFO)) log.info("createDifferenceDoc - Scrapped=" + confirm.getScrappedQty());
@@ -515,7 +553,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			line.setDescription(Msg.translate(getCtx(), "ScrappedQty"));
 			if (!line.save(get_TrxName()))
 			{
-				m_processMsg += "Inventory Line not created";
+				updateProcessMsg("Inventory Line not created");
 				return false;
 			}
 			confirm.setM_InventoryLine_ID(line.getM_InventoryLine_ID());
@@ -523,6 +561,36 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		
 		return true;
 	}	//	createDifferenceDoc
+
+
+	/**
+	 * 
+	 */
+	private void updateProcessMsg(String msg) {
+		if (m_processMsg != null)
+			m_processMsg = m_processMsg + " " + msg;
+		else
+			m_processMsg = msg;
+		ValueNamePair error = CLogger.retrieveError();
+		if (error != null)
+			m_processMsg = m_processMsg + ": " + Msg.getMsg(Env.getCtx(), error.getValue()) + " " + error.getName();
+	}
+
+
+	/**
+	 * @param inventory 
+	 */
+	private void setInventoryDocType(MInventory inventory) {
+		MDocType[] doctypes = MDocType.getOfDocBaseType(Env.getCtx(), X_C_DocType.DOCBASETYPE_MaterialPhysicalInventory);
+		for(MDocType doctype : doctypes)
+		{
+			if (X_C_DocType.DOCSUBTYPEINV_PhysicalInventory.equals(doctype.getDocSubTypeInv()))
+			{
+				inventory.setC_DocType_ID(doctype.getC_DocType_ID());
+				break;
+			}
+		}
+	}
 
 	/**
 	 * 	Void Document.
