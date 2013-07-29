@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
+import org.adempiere.exceptions.DBException;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -910,7 +911,7 @@ public class MUser extends X_AD_User
 					"SELECT COUNT(*) FROM AD_User WHERE Password IS NOT NULL AND EMail=? AND AD_Client_ID=? AND AD_User_ID!=?",
 					getEMail(), getAD_Client_ID(), getAD_User_ID());
 			if (cnt > 0) {
-				log.saveError("SaveError", Msg.getMsg(getCtx(), "SaveErrorNotUnique", true) + Msg.getElement(getCtx(), COLUMNNAME_EMail));
+				log.saveError("SaveError", Msg.getMsg(getCtx(), DBException.SAVE_ERROR_NOT_UNIQUE_MSG, true) + Msg.getElement(getCtx(), COLUMNNAME_EMail));
 				return false;
 			}
 		}

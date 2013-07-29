@@ -36,6 +36,9 @@ import org.compiere.util.DB;
  */
 public class DBException extends AdempiereException
 {
+	public static final String DATABASE_OPERATION_TIMEOUT_MSG = "DatabaseOperationTimeout";
+	public static final String DELETE_ERROR_DEPENDENT_MSG = "DeleteErrorDependent";
+	public static final String SAVE_ERROR_NOT_UNIQUE_MSG = "SaveErrorNotUnique";
 	/**
 	 * 
 	 */
@@ -197,5 +200,20 @@ public class DBException extends AdempiereException
     	if (DB.isPostgreSQL())
     		return isSQLState(e, "57014");
     	return isErrorCode(e, 1013);
+    }
+    
+    /**
+     * @param e
+     */
+    public static String getDefaultDBExceptionMessage(Exception e) {
+    	if (isUniqueContraintError(e)) {
+    		return SAVE_ERROR_NOT_UNIQUE_MSG;
+    	} else if (isChildRecordFoundError(e)) {
+    		return DELETE_ERROR_DEPENDENT_MSG;
+    	} else if (isTimeout(e)) {
+    		return DATABASE_OPERATION_TIMEOUT_MSG;
+    	} else {
+    		return null;
+    	}
     }
 }	//	DBException

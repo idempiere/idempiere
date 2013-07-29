@@ -1040,7 +1040,8 @@ public final class DB
 			else
 			{
 				log.log(Level.SEVERE, cs.getSql() + " [" + trxName + "]", e);
-				log.saveError ("DBExecuteError", e);
+				String msg = DBException.getDefaultDBExceptionMessage(e);
+				log.saveError (msg != null ? msg : "DBExecuteError", e);
 			}
 		//	throw new DBException(e);
 		}

@@ -60,6 +60,7 @@ import org.compiere.util.MSort;
 import org.compiere.util.Msg;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -2029,10 +2030,11 @@ public class GridTable extends AbstractTableModel
 		{
 
 			String msg = "SaveError";
-			if (DBException.isUniqueContraintError(e))		//	Unique Constraint
+			String dbException = DBException.getDefaultDBExceptionMessage(e); 
+			if (!Util.isEmpty(dbException))
 			{
-				log.log(Level.SEVERE, "Key Not Unique", e);
-				msg = "SaveErrorNotUnique";
+				log.log(Level.SEVERE, dbException, e);
+				msg = dbException;
 			}
 			else
 				log.log(Level.SEVERE, select.toString(), e);
@@ -2175,9 +2177,6 @@ public class GridTable extends AbstractTableModel
 				info = ppE.getName();
 				if ("DBExecuteError".equals(msg))
 					info = "DBExecuteError:" + info;
-				//	Unique Constraint
-				if (DBException.isUniqueContraintError(CLogger.retrieveException()))
-					msg = "SaveErrorNotUnique";
 			}
 			fireDataStatusEEvent(msg, info, true);
 			return SAVE_ERROR;
@@ -2668,8 +2667,9 @@ public class GridTable extends AbstractTableModel
 			{
 				log.log(Level.SEVERE, sql.toString(), e);
 				String msg = "DeleteError";
-				if (DBException.isChildRecordFoundError(e))
-					msg = "DeleteErrorDependent";
+				String dbMsg = DBException.getDefaultDBExceptionMessage(e);
+				if (!Util.isEmpty(dbMsg))
+					msg = dbMsg;
 				fireDataStatusEEvent(msg, e.getLocalizedMessage(), true);
 				return false;
 			}
