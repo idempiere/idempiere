@@ -319,7 +319,6 @@ public class SessionContextListener implements ExecutionInit,
 		
 		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
     	{
-			SessionManager.logoutSessionAfterBrowserDestroyed();
 			setupExecutionContextFromSession(Executions.getCurrent());
     	}
 		int AD_Session_ID = Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID");
@@ -340,6 +339,7 @@ public class SessionContextListener implements ExecutionInit,
 		        mSession.setProcessed(true);
 		        mSession.saveEx();
 			}
+			SessionManager.logoutSessionAfterBrowserDestroyed();
 		}
 	}
 

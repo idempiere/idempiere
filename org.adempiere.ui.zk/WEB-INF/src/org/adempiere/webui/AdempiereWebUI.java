@@ -417,9 +417,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	//clear context, invalidate session
     	Env.getCtx().clear();
     	session.invalidate();
-            	
-        //redirect to login page
-        Executions.sendRedirect("index.zul");
     }
     
 
