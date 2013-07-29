@@ -46,7 +46,7 @@ public class VCheckBox extends CCheckBox
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9199643773556184995L;
+	private static final long serialVersionUID = -3840182999009176708L;
 
 	/******************************************************************************
 	 *	Mouse Listener
@@ -262,5 +262,14 @@ public class VCheckBox extends CCheckBox
 	{
 		m_savedMnemonic = savedMnemonic;
 	}	//	getSavedMnemonic
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return this;
+	}	//	getFocusableComponent
 
 }	//	VCheckBox

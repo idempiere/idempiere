@@ -65,7 +65,7 @@ public class VAssignment extends JComponent
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1362298262975012883L;
+	private static final long serialVersionUID = 4270887524258628077L;
 
 	/**
 	 *	Mouse Listener
@@ -280,6 +280,25 @@ public class VAssignment extends JComponent
 	{
 		m_text.requestFocus ();
 	}	//	requestFocus
+	
+	/**
+	 * 	Request Focus In Window
+	 *	@return focus request
+	 */
+	@Override
+	public boolean requestFocusInWindow()
+	{
+		return m_text.requestFocusInWindow();
+	}	//	requestFocusInWindow
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return m_text;
+	}	//	getFocusComponent
 
 	/**************************************************************************
 	 * 	Set/lookup Value

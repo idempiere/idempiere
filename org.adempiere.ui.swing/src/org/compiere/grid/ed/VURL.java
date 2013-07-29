@@ -64,7 +64,7 @@ public class VURL extends JComponent
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3023749380845372419L;
+	private static final long serialVersionUID = 8055870820325408717L;
 
 	/******************************************************************************
 	 *	Mouse Listener
@@ -506,5 +506,32 @@ public class VURL extends JComponent
 		setText(getText());		//	obscure
 	}	//	focus Lost
 
+	/**
+	 * 	Request Focus
+	 */
+	@Override
+	public void requestFocus()
+	{
+		m_text.requestFocus();
+	}	//	requestFocus
+
+	/**
+	 * 	Request Focus In Window
+	 *	@return focus request
+	 */
+	@Override
+	public boolean requestFocusInWindow()
+	{
+		return m_text.requestFocusInWindow();
+	}	//	requestFocusInWindow
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return m_text;
+	}	//	getFocusComponent
 	
 }	//	VURL

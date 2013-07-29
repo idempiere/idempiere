@@ -17,6 +17,7 @@
 package org.compiere.grid.ed;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -51,7 +52,7 @@ public class VColor extends CButton
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3881508174949938138L;
+	private static final long serialVersionUID = -8272165162228993219L;
 
 	/**
 	 *  Constructor
@@ -358,4 +359,13 @@ public class VColor extends CButton
 		m_mTab.setValue("Blue" + add,   new BigDecimal(c.getBlue()));
 	}   //  setColor
 
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return this;
+	}	//	getFocusableComponent
+	
 }   //  VColor

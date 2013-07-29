@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.grid.ed;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -45,7 +46,7 @@ public final class VPassword extends CPassword
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1659042515884579907L;
+	private static final long serialVersionUID = -5450930268559211811L;
 
 	/**
 	 *	IDE Bean Constructor for 30 character updateable field
@@ -198,6 +199,15 @@ public final class VPassword extends CPassword
 	public GridField getField() {
 		return m_mField;
 	}
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return this;
+	}	//	getFocusableComponent
 
 	@Override
 	public void focusGained(FocusEvent e) {

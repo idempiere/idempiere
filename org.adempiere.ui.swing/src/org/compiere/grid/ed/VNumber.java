@@ -75,8 +75,8 @@ public final class VNumber extends JComponent
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1473227631807352033L;
-
+	private static final long serialVersionUID = -1826388236069159130L;
+	
 	/**	Number of Columns (12)		*/
 	public final static int SIZE = 12;
 	/** Automatically pop up calculator */
@@ -398,6 +398,25 @@ public final class VNumber extends JComponent
 	{
 		m_text.requestFocus ();
 	}	//	requestFocus
+	
+	/**
+	 * 	Request Focus In Window
+	 *	@return focus request
+	 */
+	@Override
+	public boolean requestFocusInWindow()
+	{
+		return m_text.requestFocusInWindow();
+	}	//	requestFocusInWindow
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return m_text;
+	}	//	getFocusComponent
 	
 	/**
 	 *  Property Change Listener

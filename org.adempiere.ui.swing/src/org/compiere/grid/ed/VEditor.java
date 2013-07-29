@@ -17,6 +17,7 @@
 package org.compiere.grid.ed;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
@@ -102,5 +103,11 @@ public interface VEditor extends CEditor, PropertyChangeListener
 	 *  Dispose
 	 */
 	public void dispose();
+	
+	/**
+	 * 	Get Focusable Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent();
 
 }	//	VEditor

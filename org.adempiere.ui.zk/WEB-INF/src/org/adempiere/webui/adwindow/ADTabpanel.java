@@ -118,6 +118,11 @@ import org.zkoss.zul.impl.XulElement;
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
 DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3103263515116231658L;
+
 	private static final String ON_SAVE_OPEN_PREFERENCE_EVENT = "onSaveOpenPreference";
 
 	public static final String ON_POST_INIT_EVENT = "onPostInit";
@@ -126,11 +131,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
 	public static final String ON_DYNAMIC_DISPLAY_EVENT = "onDynamicDisplay";
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6082680802978974909L;
-
 	private static final String ON_DEFER_SET_SELECTED_NODE = "onDeferSetSelectedNode";
 	
 	private static final CLogger logger;
@@ -186,6 +186,9 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	private boolean detailPaneMode;
 
 	private int tabNo;
+	
+	/** DefaultFocusField		*/
+	private WEditor	defaultFocusField = null;
 
 	public static final String ON_TOGGLE_EVENT = "onToggle";
 	
@@ -545,6 +548,10 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         			{
         				editor.addValueChangeListener(dataBinder);
         			}
+        			
+        			//	Default Focus
+        			if (defaultFocusField == null && field.isDefaultFocus())
+        				defaultFocusField = editor;
 
         			//stretch component to fill grid cell
         			editor.fillHorizontal();
@@ -977,11 +984,20 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
      */
     public void focusToFirstEditor(boolean checkCurrent) {
 		WEditor toFocus = null;
-		for (WEditor editor : editors) {
-			if (editor.isVisible() && editor.isReadWrite() && editor.getComponent().getParent() != null
-				&& !(editor instanceof WImageEditor)) {
-				toFocus = editor;
-				break;
+		
+		if (defaultFocusField != null 
+				&& defaultFocusField.isVisible() && defaultFocusField.isReadWrite() && defaultFocusField.getComponent().getParent() != null
+				&& !(defaultFocusField instanceof WImageEditor)) {
+			toFocus = defaultFocusField;
+		}
+		else
+		{		
+			for (WEditor editor : editors) {
+				if (editor.isVisible() && editor.isReadWrite() && editor.getComponent().getParent() != null
+					&& !(editor instanceof WImageEditor)) {
+					toFocus = editor;
+					break;
+				}
 			}
 		}
 		if (toFocus != null) {

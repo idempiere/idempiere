@@ -23,7 +23,7 @@ CREATE OR REPLACE VIEW AD_FIELD_VT AS
 	f.seqnogrid,
 	c.seqnoselection, f.xposition, f.columnspan, f.numlines, 
   COALESCE(f.istoolbarbutton , c.istoolbarbutton ) As istoolbarbutton,
-  c.FormatPattern
+  c.FormatPattern, f.IsDefaultFocus 
   FROM AD_FIELD f 
    INNER JOIN AD_FIELD_TRL trl ON (f.AD_Field_ID = trl.AD_Field_ID)
     INNER JOIN AD_TAB t ON (f.AD_Tab_ID = t.AD_Tab_ID)

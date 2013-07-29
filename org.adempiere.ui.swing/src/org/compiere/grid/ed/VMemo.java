@@ -58,7 +58,7 @@ public class VMemo extends CTextArea
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7168406072766858933L;
+	private static final long serialVersionUID = -1544247709358693141L;
 
 	/**
 	 *	Mouse Listener
@@ -294,6 +294,15 @@ public class VMemo extends CTextArea
 	public GridField getField() {
 		return m_mField;
 	}
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return this;
+	}	//	getFocusableComponent
 
 
 private class CInputVerifier extends InputVerifier {

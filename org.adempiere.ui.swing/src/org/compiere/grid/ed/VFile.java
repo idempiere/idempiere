@@ -18,6 +18,7 @@ package org.compiere.grid.ed;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -58,7 +59,7 @@ public class VFile extends JComponent
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4665930745414194731L;
+	private static final long serialVersionUID = 1381828235230540932L;
 
 	/******************************************************************************
 	 *	Mouse Listener for Popup Menu
@@ -376,6 +377,34 @@ public class VFile extends JComponent
 	{
 		return m_field;
 	}   //  getField
+	
+	/**
+	 * 	Request Focus
+	 */
+	@Override
+	public void requestFocus()
+	{
+		m_text.requestFocus();
+	}	//	requestFocus
+
+	/**
+	 * 	Request Focus In Window
+	 *	@return focus request
+	 */
+	@Override
+	public boolean requestFocusInWindow()
+	{
+		return m_text.requestFocusInWindow();
+	}	//	requestFocusInWindow
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return m_text;
+	}	//	getFocusComponent
 	
 	public void keyPressed(KeyEvent e) {
 	}

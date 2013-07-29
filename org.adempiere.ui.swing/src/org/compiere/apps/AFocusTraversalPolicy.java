@@ -23,6 +23,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.LayoutFocusTraversalPolicy;
 
+import org.compiere.grid.VPanel;
+import org.compiere.grid.ed.VEditor;
 import org.compiere.swing.CEditor;
 
 
@@ -37,7 +39,7 @@ public class AFocusTraversalPolicy extends LayoutFocusTraversalPolicy
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5082175252327849893L;
+	private static final long serialVersionUID = 6803932792562494878L;
 
 	/**
 	 *  Get singleton
@@ -78,6 +80,26 @@ public class AFocusTraversalPolicy extends LayoutFocusTraversalPolicy
 		return c;
 	}	//	getDefaultComponent
 
+	/**
+	 * 	Get First Component
+	 *	@param aContainer container
+	 *	@return first component to focus
+	 */
+	@Override
+	public Component getFirstComponent(Container aContainer)
+	{
+		Component c = null;
+		if (aContainer instanceof VPanel)
+		{
+			VEditor editor = ((VPanel)aContainer).getDefaultFocus();
+			if (editor != null && editor.isReadWrite())
+				c = editor.getFocusableComponent();
+			if (c != null)
+				return c;
+		}
+	    return super.getFirstComponent(aContainer);
+	}	//	getFirstComponent
+	
 	/**
 	 * Determines whether the specified <code>Component</code>
 	 * is an acceptable choice as the new focus owner.

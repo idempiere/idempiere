@@ -59,7 +59,7 @@ public class VLocation extends JComponent
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -288409058154703379L;
+	private static final long serialVersionUID = -8952858645752621513L;
 
 	/**
 	 *	Mouse Listener for Popup Menu
@@ -295,6 +295,25 @@ public class VLocation extends JComponent
 	{
 		m_text.requestFocus ();
 	}	//	requestFocus
+	
+	/**
+	 * 	Request Focus In Window
+	 *	@return focus request
+	 */
+	@Override
+	public boolean requestFocusInWindow()
+	{
+		return m_text.requestFocusInWindow();
+	}	//	requestFocusInWindow
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return m_text;
+	}	//	getFocusComponent
 
 	/**
 	 *  Property Change Listener

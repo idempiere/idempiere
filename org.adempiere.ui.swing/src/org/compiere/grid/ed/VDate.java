@@ -68,7 +68,7 @@ public class VDate extends JComponent
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5265412413586160999L;
+	private static final long serialVersionUID = 6876765074500243476L;
 
 	/*****************************************************************************
 	 *	Mouse Listener for Popup Menu
@@ -322,6 +322,25 @@ public class VDate extends JComponent
 	{
 		m_text.requestFocus ();
 	}	//	requestFocus
+	
+	/**
+	 * 	Request Focus In Window
+	 *	@return focus request
+	 */
+	@Override
+	public boolean requestFocusInWindow()
+	{
+		return m_text.requestFocusInWindow();
+	}	//	requestFocusInWindow
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return m_text;
+	}	//	getFocusComponent
 
 	/**
 	 *	Set Editor to value

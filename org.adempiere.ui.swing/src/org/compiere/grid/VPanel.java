@@ -19,6 +19,7 @@ package org.compiere.grid;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FocusTraversalPolicy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,7 @@ import net.miginfocom.layout.LayoutCallback;
 import net.miginfocom.swing.MigLayout;
 
 import org.adempiere.plaf.AdempierePLAF;
+import org.compiere.apps.AFocusTraversalPolicy;
 import org.compiere.apps.APanel;
 import org.compiere.grid.ed.VButton;
 import org.compiere.grid.ed.VCheckBox;
@@ -124,6 +126,10 @@ public final class VPanel extends CTabbedPane
 	private String              m_oldFieldGroup = null;
 	/** Previous Field Group Type */
 	private String              m_oldFieldGroupType = null;
+	/** DefaultFocusField		*/
+	private VEditor				m_defaultFocusField = null;
+	/** Focus Traversal Policy	*/
+	private static FocusTraversalPolicy s_focusPolicy = null;
 	//[ 1757088 ]  	
 	private java.util.Hashtable<String, JPanel> m_tablist = new java.util.Hashtable<String, JPanel>();
 	private java.util.Hashtable<Integer, CollapsiblePanel> m_tabincludelist = new java.util.Hashtable<Integer, CollapsiblePanel>();
@@ -357,6 +363,16 @@ public final class VPanel extends CTabbedPane
 			label.setLabelFor(field);
 			//else if (mField.isCreateMnemonic())
 				//setMnemonic(editor, mField.getMnemonic());
+			
+			//	Default Focus
+			if (m_defaultFocusField == null && mField.isDefaultFocus())
+			{
+				m_defaultFocusField = editor;
+				if (s_focusPolicy == null)
+					s_focusPolicy = new AFocusTraversalPolicy();
+				setFocusTraversalPolicy(s_focusPolicy);
+				setFocusTraversalPolicyProvider(true);
+			}
 		}
 	}	//	addField
 
@@ -728,5 +744,27 @@ public final class VPanel extends CTabbedPane
 			includedTabList.put(detail.getMTab().getAD_Tab_ID(), detail);
 	}
 
+	/**
+	 * 	Get Default Focus Field
+	 *	@return field if defined
+	 */
+	public VEditor getDefaultFocus()
+	{
+		return m_defaultFocusField;
+	}	//	getDefaultFocus
 	
+	/**
+	 * 	Request Focus In Window
+	 *	@return focus request
+	 */
+	@Override
+	public boolean requestFocusInWindow()
+	{
+		if (m_defaultFocusField != null)
+		{
+			if (m_defaultFocusField.isReadWrite())
+				return m_defaultFocusField.getFocusableComponent().requestFocusInWindow();
+		}
+	    return super.requestFocusInWindow();
+	}
 }	//	VPanel

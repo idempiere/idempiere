@@ -108,7 +108,7 @@ public class VLookup extends JComponent
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8609913311212365705L;
+	private static final long serialVersionUID = 3156026335667188091L;
 
 	/*****************************************************************************
 	 *	Mouse Listener for Popup Menu
@@ -296,6 +296,11 @@ public class VLookup extends JComponent
 				m_buttonSL.setToolTipText(Msg.getMsg(Env.getCtx(), "ShortListShortListItems"));
 				ActionMap am = m_combo.getActionMap();
 				am.put("shortlist", new AbstractAction() {
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 371998095806934367L;
+
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						actionShortList();
@@ -526,7 +531,9 @@ public class VLookup extends JComponent
 	 */
 	public boolean isReadWrite()
 	{
-		return m_combo.isReadWrite();
+		if (m_combo != null)
+			return m_combo.isReadWrite();
+		return true;
 	}	//	isReadWrite
 
 	/**
@@ -588,7 +595,29 @@ public class VLookup extends JComponent
 		else
 			m_text.requestFocus ();
 	}	//	requestFocus
-
+	
+	/**
+	 * 	Request Focus In Window
+	 *	@return focus request
+	 */
+	@Override
+	public boolean requestFocusInWindow()
+	{
+		if (m_lookup != null && m_lookup.getDisplayType() != DisplayType.Search)
+			return m_combo.requestFocusInWindow();
+		return m_text.requestFocusInWindow();
+	}	//	requestFocusInWindow
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		if (m_lookup != null && m_lookup.getDisplayType() != DisplayType.Search)
+			return m_combo;
+		return m_text;
+	}	//	getFocusComponent
 
 	/**
 	 *  Set Editor to value

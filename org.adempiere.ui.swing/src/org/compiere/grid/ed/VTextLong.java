@@ -55,12 +55,10 @@ import org.compiere.util.Msg;
 public class VTextLong extends CTextPane
 	implements VEditor, KeyListener, ActionListener, FocusListener
 {
-	/*****************************************************************************/
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6484690202241390248L;
+	private static final long serialVersionUID = 7954461878765188455L;
 
 	/**
 	 *	Mouse Listener
@@ -277,5 +275,13 @@ public class VTextLong extends CTextPane
 		m_setting = false;
 	}
 
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return this;
+	}	//	getFocusableComponent
 
 }	//	VTextLong

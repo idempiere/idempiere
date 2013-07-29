@@ -70,7 +70,7 @@ public class VLocator extends JComponent
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1953277256988665242L;
+	private static final long serialVersionUID = -8164788185893073951L;
 
 	/**
 	 *	Mouse Listener for Popup Menu
@@ -277,6 +277,25 @@ public class VLocator extends JComponent
 	{
 		m_text.requestFocus ();
 	}	//	requestFocus
+	
+	/**
+	 * 	Request Focus In Window
+	 *	@return focus request
+	 */
+	@Override
+	public boolean requestFocusInWindow()
+	{
+		return m_text.requestFocusInWindow();
+	}	//	requestFocusInWindow
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return m_text;
+	}	//	getFocusComponent
 
 	/**
 	 *	Set Editor to value

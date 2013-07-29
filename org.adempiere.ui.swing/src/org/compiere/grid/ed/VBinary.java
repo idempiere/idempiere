@@ -17,6 +17,7 @@
 package org.compiere.grid.ed;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -46,7 +47,7 @@ public class VBinary extends JButton
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 298576564679201761L;
+	private static final long serialVersionUID = -1940719045449193395L;
 
 	/**
 	 *  Binary Editor
@@ -273,5 +274,14 @@ public class VBinary extends JButton
 	public GridField getField() {
 		return m_mField;
 	}
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return this;
+	}	//	getFocusComponent
 	
 }	//	VBinary

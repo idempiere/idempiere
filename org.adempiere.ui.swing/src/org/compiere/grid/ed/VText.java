@@ -52,10 +52,11 @@ import org.compiere.util.Msg;
 public class VText extends CTextArea
 	implements VEditor, KeyListener, ActionListener, FocusListener
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 437954563775941704L;
+	private static final long serialVersionUID = 189322325798427286L;
 
 	/**
 	 *	Mouse Listener
@@ -267,5 +268,14 @@ public class VText extends CTextArea
 		catch (PropertyVetoException pve)	{}
 		m_setting = false;
 	}
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return this;
+	}	//	getFocusableComponent
 
 }	//	VText

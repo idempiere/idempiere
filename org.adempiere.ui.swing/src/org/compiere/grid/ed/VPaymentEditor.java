@@ -14,6 +14,7 @@
 package org.compiere.grid.ed;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -50,7 +51,8 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1840246214698245287L;
+	private static final long serialVersionUID = 8092151387928370770L;
+	
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(VPaymentEditor.class);
 	/** Search: The Button to open Editor   */
@@ -208,7 +210,9 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 
 	@Override
 	public boolean isReadWrite() {
-		return m_combo.isReadWrite();
+		if (m_combo != null)
+			return m_combo.isReadWrite();
+		return true;
 	}
 
 	@Override
@@ -232,6 +236,25 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 		if (m_lookup != null)
 			m_combo.requestFocus ();
 	}
+	
+	/**
+	 * 	Request Focus In Window
+	 *	@return focus request
+	 */
+	@Override
+	public boolean requestFocusInWindow()
+	{
+		return m_combo.requestFocusInWindow();
+	}	//	requestFocusInWindow
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return m_combo;
+	}	//	getFocusComponent
 
 	@Override
 	public void setValue(Object value) {

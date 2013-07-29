@@ -17,6 +17,7 @@
 package org.compiere.grid.ed;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,7 +46,7 @@ public class VImage extends JButton
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 368261613546756534L;
+	private static final long serialVersionUID = 2061377580245794385L;
 
 	/**
 	 *  Image Editor
@@ -255,5 +256,14 @@ public class VImage extends JButton
 	public GridField getField() {
 		return m_mField;
 	}
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return this;
+	}	//	getFocusableComponent
 	
 }   //  VImage

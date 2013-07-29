@@ -21,6 +21,7 @@ import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
 import static org.compiere.model.SystemIDs.REFERENCE_POSTED;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.sql.PreparedStatement;
@@ -61,7 +62,7 @@ public final class VButton extends CButton
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 567682963060073664L;
+	private static final long serialVersionUID = 148906133238037062L;
 
 	/**
 	 *	Constructor
@@ -389,5 +390,14 @@ public final class VButton extends CButton
 	{
 		m_savedMnemonic = savedMnemonic;
 	}	//	getSavedMnemonic
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return this;
+	}	//	getFocusableComponent
 
 }	//	VButton

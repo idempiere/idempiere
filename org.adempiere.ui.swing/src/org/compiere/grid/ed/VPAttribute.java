@@ -67,7 +67,7 @@ public class VPAttribute extends JComponent
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1823370077523962901L;
+	private static final long serialVersionUID = 3632142379826093036L;
 
 	/**
 	 *	Mouse Listener
@@ -492,5 +492,33 @@ public class VPAttribute extends JComponent
 		if (evt.getPropertyName().equals(org.compiere.model.GridField.PROPERTY))
 			setValue(evt.getNewValue());
 	}   //  propertyChange
+	
+	/**
+	 * 	Request Focus
+	 */
+	@Override
+	public void requestFocus()
+	{
+		m_text.requestFocus();
+	}	//	requestFocus
+
+	/**
+	 * 	Request Focus In Window
+	 *	@return focus request
+	 */
+	@Override
+	public boolean requestFocusInWindow()
+	{
+		return m_text.requestFocusInWindow();
+	}	//	requestFocusInWindow
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return m_text;
+	}	//	getFocusComponent
 
 }	//	VPAttribute

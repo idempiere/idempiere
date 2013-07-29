@@ -57,11 +57,11 @@ import org.compiere.util.Msg;
  */
 public final class VString extends CTextField
 	implements VEditor, ActionListener, FocusListener
-{
+{	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8487860095322876086L;
+	private static final long serialVersionUID = 4537820279343591025L;
 	
 	/** Max Display Length - 60 */
 	public static final int MAXDISPLAY_LENGTH = org.compiere.model.GridField.MAXDISPLAY_LENGTH;
@@ -427,5 +427,14 @@ public final class VString extends CTextField
 		m_stdFont = f;
 		m_obscureFont = new Font("SansSerif", Font.ITALIC, m_stdFont.getSize());
 	}
+	
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return this;
+	}	//	getFocusableComponent
 	
 }	//	VString
