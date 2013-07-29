@@ -390,7 +390,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 				m_processMsg = "ShipLine not saved - " + confirm;
 				return DocAction.STATUS_Invalid;
 			}
-			if (confirm.isFullyConfirmed())
+			if (confirm.isFullyConfirmed() && confirm.getScrappedQty().signum() == 0)
 			{
 				confirm.setProcessed(true);
 				confirm.saveEx(get_TrxName());
