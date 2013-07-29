@@ -323,15 +323,6 @@ public interface AdempiereDatabase
 	public String addPagingSQL(String sql, int start, int end);
 	
 	/**
-	 * set statement/query timeout for connection
-	 * @param conn
-	 * @param timeout
-	 * @return original timeout setting
-	 * @throws SQLException
-	 */
-	public int setStatementTimeout(Connection conn, int timeout) throws SQLException;
-	
-	/**
 	 * Lock PO for update
 	 * @param po
 	 * @param timeout

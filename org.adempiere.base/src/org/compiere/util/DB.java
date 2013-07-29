@@ -1017,17 +1017,13 @@ public final class DB
 		CPreparedStatement cs = ProxyFactory.newCPreparedStatement(ResultSet.TYPE_FORWARD_ONLY,
 			ResultSet.CONCUR_UPDATABLE, sql, trxName);	//	converted in call
 
-		int currentTimeout = -1;
 		try
 		{
 			setParameters(cs, params);
 			//set timeout
 			if (timeOut > 0)
 			{
-				if (DB.isPostgreSQL())
-					currentTimeout = DB.getDatabase().setStatementTimeout(cs.getConnection(), timeOut);				
-				else
-					cs.setQueryTimeout(timeOut);
+				cs.setQueryTimeout(timeOut);
 			}
 			no = cs.executeUpdate();
 			//	No Transaction - Commit
@@ -1050,14 +1046,6 @@ public final class DB
 		}
 		finally
 		{
-			if (DB.isPostgreSQL() && timeOut > 0)
-			{
-				try
-				{
-					DB.getDatabase().setStatementTimeout(cs.getConnection(), currentTimeout);
-				}
-				catch (SQLException e) {}
-			}
 			//  Always close cursor
 			close(cs);
 			cs = null;
@@ -1097,52 +1085,11 @@ public final class DB
 		CPreparedStatement cs = ProxyFactory.newCPreparedStatement(ResultSet.TYPE_FORWARD_ONLY,
 			ResultSet.CONCUR_UPDATABLE, sql, trxName);	//	converted in call
 
-		boolean autoCommit = false;
-		int currentTimeout = 0;
 		try
 		{
-			autoCommit = cs.getConnection().getAutoCommit();
 			setParameters(cs, params);
 			if (timeOut > 0)
 			{
-				if (DB.isPostgreSQL())
-				{
-					Statement timeoutStatement = null;
-					try
-					{
-						Connection conn = cs.getConnection();
-						if (autoCommit)
-						{
-							conn.setAutoCommit(false);
-						}
-						else
-						{
-							ResultSet rs = null;
-							try
-							{
-								rs = conn.createStatement().executeQuery("select current_setting('statement_timeout')");
-								if (rs.next())
-									currentTimeout = rs.getInt(1);
-							}
-							finally
-							{
-								close(rs.getStatement());
-								close(rs);rs = null;
-							}
-						}
-						timeoutStatement = conn.createStatement();
-						timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( timeOut * 1000 ));
-						if (log.isLoggable(Level.FINEST))
-						{
-							log.finest("Set statement timeout to " + timeOut);
-						}
-					} catch (SQLException e) {}
-					finally{
-						DB.close(timeoutStatement);
-						timeoutStatement = null;
-					}
-				}
-				else
 				{
 					cs.setQueryTimeout(timeOut);
 				}
@@ -1160,43 +1107,6 @@ public final class DB
 		}
 		finally
 		{
-			if (DB.isPostgreSQL() && timeOut > 0)
-			{
-				Statement timeoutStatement = null;
-				try {					
-					if (autoCommit)
-					{
-						cs.getConnection().setAutoCommit(true);
-					}
-					else
-					{
-						if (currentTimeout > 0)
-						{
-							timeoutStatement = cs.getConnection().createStatement();
-							timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( currentTimeout * 1000 ));
-							if (log.isLoggable(Level.FINEST))
-							{
-								log.finest("Reset statement timeout to " + currentTimeout);
-							}
-						}
-						else
-						{
-							timeoutStatement = cs.getConnection().createStatement();
-							timeoutStatement.execute("SET LOCAL statement_timeout TO Default");
-							if (log.isLoggable(Level.FINEST))
-							{
-								log.finest("Reset statement timeout to default");
-							}
-
-						}
-					}
-				} catch (SQLException e) {
-				}
-				finally{
-						close(timeoutStatement);
-						timeoutStatement = null;
-				}
-			}
 			close(cs);
 			cs = null;
 		}

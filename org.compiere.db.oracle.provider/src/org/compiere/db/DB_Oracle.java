@@ -1320,12 +1320,6 @@ public class DB_Oracle implements AdempiereDatabase
 	}
 
 	@Override
-	public int setStatementTimeout(Connection conn, int timeout) throws SQLException {
-		//not supported by oracle
-		return -1;
-	}
-	
-	@Override
 	public boolean forUpdate(PO po, int timeout) {
     	//only can lock for update if using trx
     	if (po.get_TrxName() == null)

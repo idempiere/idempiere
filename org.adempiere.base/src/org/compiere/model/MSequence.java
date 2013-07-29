@@ -143,13 +143,7 @@ public class MSequence extends X_AD_Sequence
 					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 				pstmt.setString(1, TableName);
 				//
-				//postgresql use special syntax instead of the setQueryTimeout method
-				if (DB.isPostgreSQL())
-				{
-					timeoutStatement = conn.createStatement();
-					timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( QUERY_TIME_OUT * 1000 ));
-				}
-				else if (DB.getDatabase().isQueryTimeoutSupported())
+				if (DB.getDatabase().isQueryTimeoutSupported())
 				{
 					pstmt.setQueryTimeout(QUERY_TIME_OUT);
 				}
@@ -434,13 +428,7 @@ public class MSequence extends X_AD_Sequence
 			}
 
 			//
-			//postgresql use special syntax instead of the setQueryTimeout method
-			if (DB.isPostgreSQL())
-			{
-				timeoutStatement = conn.createStatement();
-				timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( QUERY_TIME_OUT * 1000 ));
-			}
-			else if (DB.getDatabase().isQueryTimeoutSupported())
+			if (DB.getDatabase().isQueryTimeoutSupported())
 			{
 				pstmt.setQueryTimeout(QUERY_TIME_OUT);
 			}
