@@ -24,7 +24,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -127,7 +126,6 @@ public class MSequence extends X_AD_Sequence
 		}
 
 		Connection conn = null;
-		Statement timeoutStatement = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		for (int i = 0; i < 3; i++)
@@ -261,8 +259,6 @@ public class MSequence extends X_AD_Sequence
 			{
 				DB.close(rs, pstmt);
 				pstmt = null;rs = null;
-				DB.close(timeoutStatement);
-				timeoutStatement = null;
 				
 				if (conn != null)
 				{
@@ -378,7 +374,6 @@ public class MSequence extends X_AD_Sequence
 		int docOrg_ID = 0;
 		int next = -1;
 
-		Statement timeoutStatement = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -505,8 +500,6 @@ public class MSequence extends X_AD_Sequence
 		{
 			DB.close(rs, pstmt);
 			pstmt = null;rs = null;
-			DB.close(timeoutStatement);
-			timeoutStatement = null;
 			//	Finish
 			try
 			{
