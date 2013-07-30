@@ -509,7 +509,9 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 		to.set_ValueOfColumn("Password", newPassword); // will be hashed and validate on saveEx
     	mailText.setUser(to);
 		String message = mailText.getMailText(true);
+		Env.setContext(m_ctx, "#NewPassword", newPassword);
 		message = Env.parseVariable(message, to, to.get_TrxName(), true);
+		Env.setContext(m_ctx, "#NewPassword", "");
 		EMail email = client.createEMail(to.getEMail(), mailText.getMailHeader(), message, mailText.isHtml());
 		if (mailText.isHtml())
 			email.setMessageHTML(mailText.getMailHeader(), message);
