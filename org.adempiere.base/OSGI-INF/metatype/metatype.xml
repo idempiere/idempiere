@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
+	
+	<OCD description="Request Service" name="Request Service" id="org.adempiere.base.event.request.service">   
+    	<AD name="Ignore Request Types"  id="ignoreRequestTypes" required="true" type="String" default=""/>   
+	</OCD>
+	
+	<Designate pid="org.adempiere.base.event.request.service">
+    	<Object ocdref="org.adempiere.base.event.request.service"/>
+	</Designate>
+  
+</metatype:MetaData>

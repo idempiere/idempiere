@@ -20,6 +20,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
@@ -28,6 +30,7 @@ import org.compiere.model.MClient;
 import org.compiere.model.MNote;
 import org.compiere.model.MRequest;
 import org.compiere.model.MRequestAction;
+import org.compiere.model.MRequestType;
 import org.compiere.model.MRequestUpdate;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
@@ -37,6 +40,9 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.osgi.service.event.Event;
 
 /**
@@ -44,7 +50,7 @@ import org.osgi.service.event.Event;
  * @author Nur Yasmin
  *
  */
-public class RequestEventHandler extends AbstractEventHandler 
+public class RequestEventHandler extends AbstractEventHandler implements ManagedService
 {
 	private static CLogger s_log = CLogger.getCLogger (RequestEventHandler.class);
 	
@@ -71,6 +77,11 @@ public class RequestEventHandler extends AbstractEventHandler
 			if (po.get_TableName().equals(I_R_Request.Table_Name))
 			{
 				MRequest r = (MRequest) po;
+				
+				MRequestType rt = r.getRequestType();
+				if (ignoreRequestTypes.contains(rt.getName()))
+					return;
+				
 				if (topic.equals(IEventTopics.PO_BEFORE_NEW) || topic.equals(IEventTopics.PO_BEFORE_CHANGE))
 					beforeSaveRequest(r, topic.equals(IEventTopics.PO_BEFORE_NEW));
 				else if (topic.equals(IEventTopics.PO_AFTER_NEW) || topic.equals(IEventTopics.PO_AFTER_CHANGE))
@@ -89,7 +100,7 @@ public class RequestEventHandler extends AbstractEventHandler
 		registerTableEvent(IEventTopics.PO_AFTER_CHANGE, I_R_Request.Table_Name);
 	}
 	
-	public static String beforeSaveRequest(MRequest r, boolean newRecord)
+	private String beforeSaveRequest(MRequest r, boolean newRecord)
 	{
 		//	New
 		if (newRecord)
@@ -208,7 +219,7 @@ public class RequestEventHandler extends AbstractEventHandler
 		return null;
 	}
 	
-	public static String afterSaveRequest(MRequest r, boolean newRecord)
+	private String afterSaveRequest(MRequest r, boolean newRecord)
 	{
 		//	Initial Mail
 		if (newRecord)
@@ -223,7 +234,7 @@ public class RequestEventHandler extends AbstractEventHandler
 	 *	@param columnName column
 	 *	@return true if changes
 	 */
-	public static boolean checkChange (MRequest r, MRequestAction ra, String columnName)
+	public boolean checkChange (MRequest r, MRequestAction ra, String columnName)
 	{
 		if (r.is_ValueChanged(columnName))
 		{
@@ -242,7 +253,7 @@ public class RequestEventHandler extends AbstractEventHandler
 	 * 	Send Update EMail/Notices
 	 * 	@param list list of changes
 	 */
-	public static void sendNotices(MRequest r, ArrayList<String> list)
+	private void sendNotices(MRequest r, ArrayList<String> list)
 	{
 		//	Subject
 		String subject = Msg.translate(r.getCtx(), "R_Request_ID") 
@@ -393,7 +404,7 @@ public class RequestEventHandler extends AbstractEventHandler
 	 * 	@param serverAddress server address
 	 *	@return Mail Trailer
 	 */
-	public static String getMailTrailer(MRequest r, String serverAddress)
+	private String getMailTrailer(MRequest r, String serverAddress)
 	{
 		StringBuffer sb = new StringBuffer("\n").append(MRequest.SEPARATOR)
 			.append(Msg.translate(r.getCtx(), "R_Request_ID"))
@@ -404,4 +415,22 @@ public class RequestEventHandler extends AbstractEventHandler
 			sb.append(" from ").append(serverAddress);
 		return sb.toString();
 	}	//	getMailTrailer
+
+	public static final String IGNORE_REQUEST_TYPES = "ignoreRequestTypes";
+	private static ArrayList<String> ignoreRequestTypes = new ArrayList<String>();
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public void updated(Dictionary properties) throws ConfigurationException {
+		if (properties != null) {
+			String p = (String) properties.get(IGNORE_REQUEST_TYPES);
+			if (!Util.isEmpty(p)) {
+				ignoreRequestTypes.clear();
+				
+				StringTokenizer st = new StringTokenizer(p, ";");
+				while (st.hasMoreTokens())
+					ignoreRequestTypes.add(st.nextToken().trim());
+			}
+		}
+	}
 }
