@@ -1239,7 +1239,7 @@ public class DB_Oracle implements AdempiereDatabase
     }
 
 	public int getNextID(String Name) {
-		int m_sequence_id = DB.getSQLValue(null, "SELECT "+Name.toUpperCase()+".nextval FROM DUAL");
+		int m_sequence_id = DB.getSQLValueEx(null, "SELECT "+Name.toUpperCase()+".nextval FROM DUAL");
 		return m_sequence_id;
 	}
 
@@ -1319,12 +1319,6 @@ public class DB_Oracle implements AdempiereDatabase
 		return b;
 	}
 
-	@Override
-	public int setStatementTimeout(Connection conn, int timeout) throws SQLException {
-		//not supported by oracle
-		return -1;
-	}
-	
 	@Override
 	public boolean forUpdate(PO po, int timeout) {
     	//only can lock for update if using trx

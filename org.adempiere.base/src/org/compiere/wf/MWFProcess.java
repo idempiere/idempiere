@@ -108,6 +108,8 @@ public class MWFProcess extends X_AD_WF_Process
 		//	Document
 		setAD_Table_ID(wf.getAD_Table_ID());
 		setRecord_ID(pi.getRecord_ID());
+		if (pi.getPO() != null)
+			m_po = pi.getPO();
 		if (getPO() == null)
 		{
 			setTextMsg("No PO with ID=" + pi.getRecord_ID());

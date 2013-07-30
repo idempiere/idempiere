@@ -948,7 +948,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
 	public int getNextID(String name) {
 
-		int m_sequence_id = DB.getSQLValue(null, "SELECT nextval('"+name.toLowerCase()+"')");
+		int m_sequence_id = DB.getSQLValueEx(null, "SELECT nextval('"+name.toLowerCase()+"')");
 		return m_sequence_id;
 	}
 
@@ -1037,46 +1037,6 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	}
 
 	@Override
-	public int setStatementTimeout(Connection conn, int timeOut) throws SQLException {
-		int currentTimeout = 0;		
-		boolean autoCommit = conn.getAutoCommit();
-		ResultSet rs = null;
-		try
-		{
-			rs = conn.createStatement().executeQuery("select extract(epoch from current_setting('statement_timeout')::interval)*1000");
-			if (rs.next()) {
-				currentTimeout = rs.getInt(1) / 1000;
-			}
-		}
-		finally
-		{
-			if (rs != null)
-				DB.close(rs.getStatement());
-			DB.close(rs);
-			rs = null;
-		}
-		
-		Statement timeoutStatement = null;
-		try
-		{
-			timeoutStatement = conn.createStatement();
-			String sql = "SET " + (autoCommit ? "SESSION" : "LOCAL") + " statement_timeout TO " + ( timeOut > 0 ? Integer.toString(timeOut * 1000) : " DEFAULT ");
-			timeoutStatement.execute(sql);
-		}
-		finally
-		{
-			DB.close(timeoutStatement);
-			timeoutStatement = null;
-		}
-		
-		if (log.isLoggable(Level.FINEST))
-		{
-			log.finest("Set statement timeout to " + timeOut);
-		}
-		return currentTimeout;
-	}
-	
-	@Override
 	public boolean forUpdate(PO po, int timeout) {
     	//only can lock for update if using trx
     	if (po.get_TrxName() == null)
@@ -1110,14 +1070,13 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
 			PreparedStatement stmt = null;
 			ResultSet rs = null;
-			int currentTimeout = -1;
 			try {
 				stmt = DB.prepareStatement(sqlBuffer.toString(),
 					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE, po.get_TrxName());
 				for(int i = 0; i < keyColumns.length; i++) {
 					stmt.setObject(i+1, parameters[i]);
 				}
-				currentTimeout = setStatementTimeout(stmt.getConnection(), (timeout > 0 ? timeout : LOCK_TIME_OUT));
+				stmt.setQueryTimeout(timeout > 0 ? timeout : LOCK_TIME_OUT);
 				
 				rs = stmt.executeQuery();
 				if (rs.next()) {
@@ -1129,9 +1088,6 @@ public class DB_PostgreSQL implements AdempiereDatabase
 				if (log.isLoggable(Level.INFO))log.log(Level.INFO, e.getLocalizedMessage(), e);
 				throw new DBException("Could not lock record for " + po.toString() + " caused by " + e.getLocalizedMessage());
 			} finally {
-				try {
-					if(stmt!=null)setStatementTimeout(stmt.getConnection(), currentTimeout);
-				} catch (SQLException e) {}
 				DB.close(rs, stmt);
 				rs = null;stmt = null;
 			}			

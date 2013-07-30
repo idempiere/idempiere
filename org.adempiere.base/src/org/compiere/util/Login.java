@@ -1363,7 +1363,7 @@ public class Login
                    .append(" WHERE ur.IsActive='Y'")
                    .append(" AND u.IsActive='Y'")
                    .append(" AND cli.IsActive='Y'")
-                   .append(" AND ur.AD_User_ID=?");
+                   .append(" AND ur.AD_User_ID=? ORDER BY cli.Name");
 			      PreparedStatement pstmt=null;
 			      ResultSet rs=null;
 			      try{
@@ -1496,7 +1496,9 @@ public class Login
 		else
 			sql.append("COALESCE(u.LDAPUser,u.Name)=?");
 		sql.append(" AND r.IsMasterRole='N'");
-		sql.append(" AND u.IsActive='Y'").append(" AND EXISTS (SELECT * FROM AD_Client c WHERE u.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
+		sql.append(" AND u.IsActive='Y' AND EXISTS (SELECT * FROM AD_Client c WHERE u.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
+		// don't show roles without org access
+		sql.append(" AND (r.isaccessallorgs='Y' OR EXISTS (SELECT 1 FROM AD_Role_OrgAccess ro WHERE ro.AD_Role_ID=r.AD_Role_ID AND ro.IsActive='Y'))");
 		sql.append(" ORDER BY r.Name");
 
 		PreparedStatement pstmt = null;
@@ -1565,7 +1567,7 @@ public class Login
                          .append(" WHERE ur.IsActive='Y'")
                          .append(" AND cli.IsActive='Y'")
                          .append(" AND u.IsActive='Y'")
-                         .append(" AND u.AD_User_ID=?");
+                         .append(" AND u.AD_User_ID=? ORDER BY cli.Name");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {

@@ -118,8 +118,6 @@ public abstract class PaymentProcessor
 	 */
 	public String validate() throws IllegalArgumentException {
 		String msg = null;
-		if (p_mp.getC_BP_BankAccount_ID() != 0 || p_mp.getCustomerPaymentProfileID() != null)
-			return msg;		
 		if (MPayment.TENDERTYPE_CreditCard.equals(p_mp.getTenderType())) {
 			msg = validateCreditCard();
 		} else if (MPayment.TENDERTYPE_Check.equals(p_mp.getTenderType())) {
@@ -143,7 +141,10 @@ public abstract class PaymentProcessor
 	}
 
 	public String validateCreditCard() throws IllegalArgumentException {
-		String msg = MPaymentValidate.validateCreditCardNumber(p_mp.getCreditCardNumber(), p_mp.getCreditCardType());
+		String msg = null;
+		if (p_mp.getC_BP_BankAccount_ID() != 0 || (p_mp.getCustomerPaymentProfileID() != null && p_mp.getCustomerPaymentProfileID().length() > 0))
+			return msg;
+		msg = MPaymentValidate.validateCreditCardNumber(p_mp.getCreditCardNumber(), p_mp.getCreditCardType());
 		if (msg != null && msg.length() > 0)
 			throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), msg));
 		msg = MPaymentValidate.validateCreditCardExp(p_mp.getCreditCardExpMM(), p_mp.getCreditCardExpYY());

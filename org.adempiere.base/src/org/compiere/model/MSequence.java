@@ -24,7 +24,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -127,7 +126,6 @@ public class MSequence extends X_AD_Sequence
 		}
 
 		Connection conn = null;
-		Statement timeoutStatement = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		for (int i = 0; i < 3; i++)
@@ -143,13 +141,7 @@ public class MSequence extends X_AD_Sequence
 					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 				pstmt.setString(1, TableName);
 				//
-				//postgresql use special syntax instead of the setQueryTimeout method
-				if (DB.isPostgreSQL())
-				{
-					timeoutStatement = conn.createStatement();
-					timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( QUERY_TIME_OUT * 1000 ));
-				}
-				else if (DB.getDatabase().isQueryTimeoutSupported())
+				if (DB.getDatabase().isQueryTimeoutSupported())
 				{
 					pstmt.setQueryTimeout(QUERY_TIME_OUT);
 				}
@@ -267,8 +259,6 @@ public class MSequence extends X_AD_Sequence
 			{
 				DB.close(rs, pstmt);
 				pstmt = null;rs = null;
-				DB.close(timeoutStatement);
-				timeoutStatement = null;
 				
 				if (conn != null)
 				{
@@ -384,7 +374,6 @@ public class MSequence extends X_AD_Sequence
 		int docOrg_ID = 0;
 		int next = -1;
 
-		Statement timeoutStatement = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -434,13 +423,7 @@ public class MSequence extends X_AD_Sequence
 			}
 
 			//
-			//postgresql use special syntax instead of the setQueryTimeout method
-			if (DB.isPostgreSQL())
-			{
-				timeoutStatement = conn.createStatement();
-				timeoutStatement.execute("SET LOCAL statement_timeout TO " + ( QUERY_TIME_OUT * 1000 ));
-			}
-			else if (DB.getDatabase().isQueryTimeoutSupported())
+			if (DB.getDatabase().isQueryTimeoutSupported())
 			{
 				pstmt.setQueryTimeout(QUERY_TIME_OUT);
 			}
@@ -517,8 +500,6 @@ public class MSequence extends X_AD_Sequence
 		{
 			DB.close(rs, pstmt);
 			pstmt = null;rs = null;
-			DB.close(timeoutStatement);
-			timeoutStatement = null;
 			//	Finish
 			try
 			{
@@ -702,7 +683,7 @@ public class MSequence extends X_AD_Sequence
 
 		if (tableID && SYSTEM_NATIVE_SEQUENCE)
 		{
-			int next_id = DB.getSQLValue(trxName, "SELECT CurrentNext FROM AD_Sequence WHERE Name=? AND IsActive='Y' AND IsTableID='Y' AND IsAutoSequence='Y'", TableName);
+			int next_id = DB.getSQLValueEx(trxName, "SELECT CurrentNext FROM AD_Sequence WHERE Name=? AND IsActive='Y' AND IsTableID='Y' AND IsAutoSequence='Y'", TableName);
 			if (next_id == -1)
 			{
 				MSequence seq = new MSequence (ctx, 0, trxName);
@@ -793,7 +774,7 @@ public class MSequence extends X_AD_Sequence
 		}
 		catch (Exception e)
 		{
-			s_log.log(Level.SEVERE, "get", e);
+			throw new DBException(e);
 		}
 		finally
 		{

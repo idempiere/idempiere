@@ -18,8 +18,8 @@ package org.compiere.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -93,7 +93,7 @@ public class CacheMgt
 		
 		if (map == null)
 		{
-			map = new HashMap<K, V>();
+			map = new ConcurrentHashMap<K, V>();
 		}		
 		return map;
 	}	//	register

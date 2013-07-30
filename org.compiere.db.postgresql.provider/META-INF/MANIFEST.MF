@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.compiere.db.postgresql.provider;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
- postgresql.jar,
+ postgresql-9.2-1004.jdbc4.jar,
  c3p0-0.9.2.jar,
  mchange-commons-java-0.2.3.3.jar
 Require-Bundle: org.adempiere.base;bundle-version="1.0.0",

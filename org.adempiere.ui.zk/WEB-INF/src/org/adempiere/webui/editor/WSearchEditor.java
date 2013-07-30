@@ -449,35 +449,37 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	{
 		if (log.isLoggable(Level.FINE))
 			log.fine("Value=" + value);
-		
-		ValueChangeEvent evt = new ValueChangeEvent(this, this.getColumnName(), getValue(), value);
-		// -> ADTabpanel - valuechange
-		fireValueChange(evt);
-
-		//  is the value updated ?
-		boolean updated = false;
-		if (value instanceof Object[] && ((Object[])value).length > 0)
+	
+		try 
 		{
-			value = ((Object[])value)[0];
-		}
-
-		if (value == null && getValue() == null)
-			updated = true;
-		else if (value != null && value.equals(getValue()))
-			updated = true;
-		if (!updated)
-		{
-			setValue(value);
-			if (gridTab != null && gridField != null) {
-				if (value == null && gridField.getValue() != null) {
-					gridTab.setValue(gridField, value);
-				} else if (value != null && gridField.getValue() == null) {
-					gridTab.setValue(gridField, value);
-				} else if (value != null && !value.equals(gridField.getValue())) {
-					gridTab.setValue(gridField, value);
-				}
+			if (gridField != null)
+				gridField.setLookupEditorSettingValue(true);
+			
+			ValueChangeEvent evt = new ValueChangeEvent(this, this.getColumnName(), getValue(), value);
+			// -> ADTabpanel - valuechange
+			fireValueChange(evt);
+	
+			//  is the value updated ?
+			boolean updated = false;
+			if (value instanceof Object[] && ((Object[])value).length > 0)
+			{
+				value = ((Object[])value)[0];
 			}
-		}				
+	
+			if (value == null && getValue() == null)
+				updated = true;
+			else if (value != null && value.equals(getValue()))
+				updated = true;
+			if (!updated)
+			{
+				setValue(value);
+			}				
+		} 
+		finally 
+		{
+			if (gridField != null)
+				gridField.setLookupEditorSettingValue(false);
+		}
 		
 	}	//	actionCombo
 

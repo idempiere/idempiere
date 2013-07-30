@@ -106,6 +106,27 @@ public class MCostElement extends X_M_CostElement
 	}	//	getMaterialCostElement
 	
 	/**
+	 * 	Get first Material Cost Element
+	 *	@param ctx context
+	 *	@param CostingMethod costing method
+	 *	@return Cost Element or null
+	 */
+	public static MCostElement getMaterialCostElement(Properties ctx, String CostingMethod, int AD_Org_ID)
+	{
+		final String whereClause = "AD_Client_ID=? AND CostingMethod=? AND CostElementType=? AND AD_Org_ID In (0, ?)";
+		List<MCostElement> list = new Query(ctx, I_M_CostElement.Table_Name, whereClause, null)
+		.setParameters(Env.getAD_Client_ID(ctx),CostingMethod,COSTELEMENTTYPE_Material,AD_Org_ID)
+		.setOrderBy(I_M_CostElement.COLUMNNAME_AD_Org_ID + " Desc")
+		.list();
+		MCostElement retValue = null;
+		if (list.size() > 0)
+			retValue = list.get(0);
+		if (list.size() > 1)
+			if (s_log.isLoggable(Level.INFO)) s_log.info("More then one Material Cost Element for CostingMethod=" + CostingMethod);
+		return retValue;
+	}	//	getMaterialCostElement
+	
+	/**
 	 * 	Get active Material Cost Element for client 
 	 *	@param po parent
 	 *	@return cost element array

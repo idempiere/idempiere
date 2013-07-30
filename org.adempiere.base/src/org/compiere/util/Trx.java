@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
 import org.compiere.model.PO;
 
@@ -368,6 +369,11 @@ public class Trx
 				m_active = false;
 				fireAfterCommitEvent(false);
 				throw e;
+			}
+			else
+			{
+				String msg = DBException.getDefaultDBExceptionMessage(e);
+				log.saveError(msg != null ? msg : e.getLocalizedMessage(), e);
 			}
 		}
 		m_active = false;

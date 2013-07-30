@@ -133,6 +133,19 @@ public interface I_M_Inventory
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
+    /** Column name CostingMethod */
+    public static final String COLUMNNAME_CostingMethod = "CostingMethod";
+
+	/** Set Costing Method.
+	  * Indicates how Costs will be calculated
+	  */
+	public void setCostingMethod (String CostingMethod);
+
+	/** Get Costing Method.
+	  * Indicates how Costs will be calculated
+	  */
+	public String getCostingMethod();
+
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
 

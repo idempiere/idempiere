@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.DBException;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -276,7 +277,7 @@ public class MColumn extends X_AD_Column
 					new Object[] {getAD_Table_ID(), getAD_Column_ID(), getSeqNo()});
 			if (cnt>0)
 			{
-				log.saveError("SaveErrorNotUnique", Msg.getElement(getCtx(), COLUMNNAME_SeqNo));
+				log.saveError(DBException.SAVE_ERROR_NOT_UNIQUE_MSG, Msg.getElement(getCtx(), COLUMNNAME_SeqNo));
 				return false;
 			}
 		}

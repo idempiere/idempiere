@@ -339,6 +339,7 @@ public class SessionContextListener implements ExecutionInit,
 		        mSession.setProcessed(true);
 		        mSession.saveEx();
 			}
+			SessionManager.logoutSessionAfterBrowserDestroyed();
 		}
 	}
 

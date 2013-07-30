@@ -86,7 +86,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -208259686238044047L;
+	private static final long serialVersionUID = 6505634026383902627L;
 
 	private static final String SAVED_CONTEXT = "saved.context";
 	
@@ -411,6 +411,14 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         //redirect to login page
         Executions.sendRedirect("index.zul");
     }
+    public void logoutAfterTabDestroyed(){
+       	Session session = logout0();
+
+    	//clear context, invalidate session
+    	Env.getCtx().clear();
+    	session.invalidate();
+    }
+    
 
 	protected Session logout0() {
 		Session session = Executions.getCurrent().getDesktop().getSession();

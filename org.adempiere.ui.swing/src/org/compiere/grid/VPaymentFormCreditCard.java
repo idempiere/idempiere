@@ -274,7 +274,7 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 		ValueNamePair vp = (ValueNamePair)kTypeCombo.getSelectedItem();
 		String CCType = vp.getValue();
 		
-		boolean ok = processOnline(CCType, kNumberField.getText(), kExpField.getText());
+		boolean ok = processOnline(CCType, kNumberField.getText(), kApprovalField.getText(), kExpField.getText());
 		if (!ok)
 			ADialog.error(getWindowNo(), dialog, "PaymentError", processMsg);
 		else 

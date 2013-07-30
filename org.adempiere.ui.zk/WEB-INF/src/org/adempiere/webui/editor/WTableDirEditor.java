@@ -399,10 +399,17 @@ ContextMenuListener, IZoomableEditor
     			onselecting = true;
 		        Object newValue = getValue();
 		        if (isValueChange(newValue)) {
-			        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
-			        super.fireValueChange(changeEvent);
-			        oldValue = newValue;
-	    			getComponent().setValue(newValue);
+		        	try {
+		        		if (gridField != null) 
+		        			gridField.setLookupEditorSettingValue(true);
+				        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
+				        super.fireValueChange(changeEvent);
+				        oldValue = newValue;
+		    			getComponent().setValue(newValue);
+		        	} finally {
+		        		if (gridField != null) 
+		        			gridField.setLookupEditorSettingValue(false);
+		        	}
 		        }
     		} finally {
     			onselecting = false;
@@ -422,9 +429,16 @@ ContextMenuListener, IZoomableEditor
     			{
     				Object newValue = getValue();
     				if (isValueChange(newValue)) {
-	    				ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
-	    		        super.fireValueChange(changeEvent);
-	    		        oldValue = newValue;
+    					try {
+    		        		if (gridField != null) 
+    		        			gridField.setLookupEditorSettingValue(true);
+		    				ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
+		    		        super.fireValueChange(changeEvent);
+		    		        oldValue = newValue;
+    					} finally {
+    						if (gridField != null) 
+    		        			gridField.setLookupEditorSettingValue(false);
+    					}
     				}
     			}
     		}

@@ -100,6 +100,13 @@ public class SessionManager
     	if (app != null)
     		app.logout();
     }
+
+    public static void logoutSessionAfterBrowserDestroyed()
+    {
+    	IWebClient app = getSessionApplication();
+    	if (app != null)
+    		app.logoutAfterTabDestroyed();
+    }
     
     public static void changeRole(MUser user){
     	IWebClient app = getSessionApplication();

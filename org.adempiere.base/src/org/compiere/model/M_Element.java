@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.DBException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -192,7 +193,7 @@ public class M_Element extends X_AD_Element
 				sql.append(" AND AD_Element_ID<>").append(get_ID()); 
 			int no = DB.getSQLValue(null, sql.toString(), columnName.toUpperCase());
 			if (no > 0) {
-				log.saveError("SaveErrorNotUnique", Msg.getElement(getCtx(), COLUMNNAME_ColumnName));
+				log.saveError(DBException.SAVE_ERROR_NOT_UNIQUE_MSG, Msg.getElement(getCtx(), COLUMNNAME_ColumnName));
 				return false;
 			}
 		}

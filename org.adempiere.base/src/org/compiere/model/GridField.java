@@ -102,6 +102,12 @@ public class GridField
 	
 	private GridTab m_gridTab;
 	
+	/** 
+	 * Use by lookup editor to indicate setting of new value is in progress.
+	 * GridTab.processDependentFields will check this flag to avoid clearing of lookup field value that just have been set.
+	 **/ 
+	private boolean m_lookupEditorSettingValue = false;
+	
 	/**
 	 *  Dispose
 	 */
@@ -884,7 +890,15 @@ public class GridField
 	   if( m_vo.TabNo == 0)
 	    	return Env.getContext (ctx, m_vo.WindowNo, variableName, true);
 	    else
-		return Env.getContext (ctx, m_vo.WindowNo, m_vo.TabNo, variableName, false, true);
+	    {
+	    	boolean tabOnly = false;
+	    	if (variableName.startsWith("~")) 
+	    	{
+	    		variableName = variableName.substring(1);
+	    		tabOnly = true;
+	    	}
+	    	return Env.getContext (ctx, m_vo.WindowNo, m_vo.TabNo, variableName, tabOnly, true);
+	    }
 	}	//	get_ValueAsString
 
 
@@ -1997,15 +2011,14 @@ public class GridField
 	{
 		if (m_gridTab == null)
 			return false;
-		// this functionality must preserve the value of the parent tab JUST when is an included tab
-		// not included tabs can have Processed fields and is valid to add records in details on these cases
-		// like the Payment Schedule tab on Invoice (Customer) window
-		if (!m_gridTab.isIncluded())
-			return false;
 		GridTab parentTab = m_gridTab.getParentTab();
-		if (parentTab == null)
-			return false;
-		return parentTab.getField(columnName) != null;
+		while (parentTab != null)
+		{
+			if (parentTab.getField(columnName) != null)
+				return true;
+			parentTab = parentTab.getParentTab();
+		}
+		return false; 
 	}
 	
 	/**
@@ -2052,6 +2065,22 @@ public class GridField
 			throw new IllegalStateException(e.getLocalizedMessage(), e);
 		}
 		
+	}
+	
+	/**
+	 * @param b
+	 */
+	public void setLookupEditorSettingValue(boolean b)
+	{
+		m_lookupEditorSettingValue = b;
+	}
+	
+	/**
+	 * @return true if the setting value of this field by UI is in progress 
+	 */
+	public boolean isLookupEditorSettingValue()
+	{
+		return m_lookupEditorSettingValue;
 	}
 
 }   //  GridField

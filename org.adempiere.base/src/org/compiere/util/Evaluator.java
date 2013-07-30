@@ -171,6 +171,10 @@ public class Evaluator
 				firstEval = defaultValue;
 			}
 		}
+		//NPE sanity check
+		if (firstEval == null)
+			firstEval = "";
+		
 		firstEval = firstEval.replace('\'', ' ').replace('"', ' ').trim();	//	strip ' and "
 
 		//	Comperator
@@ -283,6 +287,8 @@ public class Evaluator
 			String variable = s.substring(0, pos);
 			s = s.substring(pos+1);
 		//	log.fine( variable);
+			if (variable.startsWith("~")) 
+				variable = variable.substring(1);
 			list.add(variable);
 		}
 	}   //  parseDepends

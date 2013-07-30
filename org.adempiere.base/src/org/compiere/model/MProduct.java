@@ -869,4 +869,34 @@ public class MProduct extends X_M_Product
 		}
 		return costingMethod;
 	}
+	
+	public MCost getCostingRecord(MAcctSchema as, int AD_Org_ID, int M_ASI_ID)
+	{
+		return getCostingRecord(as, AD_Org_ID, M_ASI_ID, getCostingMethod(as));
+	}
+	
+	public MCost getCostingRecord(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod)
+	{
+		
+		String costingLevel = getCostingLevel(as);
+		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
+		{
+			AD_Org_ID = 0;
+			M_ASI_ID = 0;
+		}
+		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
+			M_ASI_ID = 0;
+		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
+		{
+			AD_Org_ID = 0;
+			if (M_ASI_ID == 0)
+				return null;
+		}
+		MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), costingMethod, AD_Org_ID);
+		if (ce == null) {
+			return null;
+		}
+		MCost cost = MCost.get(this, M_ASI_ID, as, AD_Org_ID, ce.getM_CostElement_ID(), (String)null);
+		return cost.is_new() ? null : cost;
+	}
 }	//	MProduct

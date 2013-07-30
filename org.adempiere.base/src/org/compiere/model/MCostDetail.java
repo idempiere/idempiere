@@ -1037,13 +1037,22 @@ public class MCostDetail extends X_M_CostDetail
 			|| getPP_Cost_Collector_ID() != 0)
 		{
 			boolean addition = qty.signum() > 0;
+			boolean adjustment = getM_InventoryLine_ID() > 0 && qty.signum() == 0 && amt.signum() != 0;
 			boolean isVendorRMA = isVendorRMA();
 			//
 			if (ce.isAverageInvoice())
 			{
 				if (!isVendorRMA)
 				{
-					if (addition)
+					if (adjustment)
+					{
+						String costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
+						if (MCostElement.COSTINGMETHOD_AverageInvoice.equals(costingMethod))
+						{
+							cost.setWeightedAverage(amt.multiply(cost.getCurrentQty()), qty);
+						}
+					}
+					else if (addition)
 					{
 						cost.setWeightedAverage(amt, qty);
 						//shouldn't accumulate reversal of customer shipment qty and amt
@@ -1060,8 +1069,16 @@ public class MCostDetail extends X_M_CostDetail
 			}
 			else if (ce.isAveragePO())
 			{
-				if (addition)
+				if (adjustment)
 				{
+					String costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
+					if (MCostElement.COSTINGMETHOD_AveragePO.equals(costingMethod))
+					{
+						cost.setWeightedAverage(amt.multiply(cost.getCurrentQty()), qty);
+					}
+				}
+				else if (addition)
+				{					
 					cost.setWeightedAverage(amt, qty);
 					//shouldn't accumulate reversal of customer shipment qty and amt
 					if (isShipment() && !isVendorRMA())
@@ -1085,7 +1102,7 @@ public class MCostDetail extends X_M_CostDetail
 			}
 			else if (ce.isFifo() || ce.isLifo())
 			{
-				if (!isVendorRMA)
+				if (!isVendorRMA && !adjustment)
 				{
 					if (addition)
 					{
@@ -1110,19 +1127,28 @@ public class MCostDetail extends X_M_CostDetail
 					if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - FiFo/Lifo - " + cost);
 				}
 			}
-			else if (ce.isLastInvoice() && !isVendorRMA)
+			else if (ce.isLastInvoice() && !isVendorRMA && !adjustment)
 			{
 				cost.setCurrentQty(cost.getCurrentQty().add(qty));
 				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - LastInv - " + cost);
 			}
-			else if (ce.isLastPOPrice() && !isVendorRMA)
+			else if (ce.isLastPOPrice() && !isVendorRMA && !adjustment)
 			{
 				cost.setCurrentQty(cost.getCurrentQty().add(qty));
 				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - LastPO - " + cost);
 			}
 			else if (ce.isStandardCosting() && !isVendorRMA)
 			{
-				if (addition)
+				if (adjustment)
+				{
+					String costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
+					if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
+					{
+						cost.add(amt.multiply(cost.getCurrentQty()), qty);					
+						cost.setCurrentCostPrice(cost.getCurrentCostPrice().add(amt));
+					}
+				}
+				else if (addition)
 				{
 					cost.add(amt, qty);
 					//	Initial
@@ -1140,7 +1166,7 @@ public class MCostDetail extends X_M_CostDetail
 				}
 				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - Standard - " + cost);
 			}
-			else if (ce.isUserDefined() && !isVendorRMA)
+			else if (ce.isUserDefined() && !isVendorRMA && !adjustment)
 			{
 				//	Interface
 				if (addition)
@@ -1151,7 +1177,7 @@ public class MCostDetail extends X_M_CostDetail
 			}
 			else if (!ce.isCostingMethod())
 			{
-			//	Should not happen
+				//Should not happen
 				if (log.isLoggable(Level.FINER)) log.finer("QtyAdjust - ?none? - " + cost);
 			}
 			else

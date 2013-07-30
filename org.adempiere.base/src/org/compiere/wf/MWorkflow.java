@@ -27,11 +27,16 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
+import org.compiere.model.MColumn;
 import org.compiere.model.MMenu;
 import org.compiere.model.MProduct;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Workflow;
+import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ServerProcessCtl;
 import org.compiere.process.StateEngine;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -951,4 +956,27 @@ public class MWorkflow extends X_AD_Workflow
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param po
+	 * @param docAction
+	 * @return ProcessInfo
+	 */
+	public static ProcessInfo runDocumentActionWorkflow(PO po, String docAction)
+	{		
+		int AD_Table_ID = po.get_Table_ID();
+		MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
+		MColumn column = table.getColumn("DocAction");
+		if (column == null)
+			return null;
+		if (!docAction.equals(po.get_Value(column.getColumnName())))
+		{
+			po.set_ValueOfColumn(column.getColumnName(), docAction);
+		}
+		ProcessInfo processInfo = new ProcessInfo (((DocAction)po).getDocumentInfo(),column.getAD_Process_ID(),po.get_Table_ID(),po.get_ID());
+		processInfo.setTransactionName(po.get_TrxName());
+		processInfo.setPO(po);
+		ServerProcessCtl.process(processInfo, Trx.get(processInfo.getTransactionName(), false));
+		return processInfo;
+	}
 }	//	MWorkflow_ID

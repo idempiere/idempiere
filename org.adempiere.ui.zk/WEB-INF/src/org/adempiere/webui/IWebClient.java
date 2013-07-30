@@ -35,6 +35,11 @@ public interface IWebClient {
 	public void logout();
 
 	/**
+	 * logout after browser destroyed
+	 */
+	public void logoutAfterTabDestroyed();
+
+	/**
 	 * 
 	 * @return IDesktop
 	 */

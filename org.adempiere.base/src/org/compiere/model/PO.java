@@ -1963,7 +1963,6 @@ public abstract class PO
 	 * 	To reload call load() - not updated
 	 *  @return true if saved
 	 */
-	@SuppressWarnings("unused")
 	public boolean save()
 	{
 		CLogger.resetLast();
@@ -2061,7 +2060,8 @@ public abstract class PO
 		catch (Exception e)
 		{
 			log.log(Level.WARNING, "beforeSave - " + toString(), e);
-			log.saveError("Error", e, false);
+			String msg = DBException.getDefaultDBExceptionMessage(e);
+			log.saveError(msg != null ? msg : "Error", e, false);
 			if (localTrx != null)
 			{
 				localTrx.rollback();
@@ -2141,9 +2141,11 @@ public abstract class PO
 				}
 			}
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			log.log(Level.WARNING, "afterSave - " + toString(), e);
+			String msg = DBException.getDefaultDBExceptionMessage(e);
+			log.saveError(msg != null ? msg : "Error", e);
 			if (localTrx != null)
 			{
 				localTrx.rollback();
@@ -3112,6 +3114,8 @@ public abstract class PO
 		}
 
 		Trx localTrx = null;
+		Trx trx = null;
+		Savepoint savepoint = null;
 		boolean success = false;
 		try
 		{
@@ -3123,140 +3127,228 @@ public abstract class PO
 				localTrx = Trx.get(localTrxName, true);
 				m_trxName = localTrxName;
 			}
-
-		try
-		{
-			if (!beforeDelete())
+			else
 			{
-				log.warning("beforeDelete failed");
+				trx = Trx.get(m_trxName, false);
+				if (trx == null)
+				{
+					// Using a trx that was previously closed or never opened
+					// Creating and starting the transaction right here, but please note
+					// that this is not a good practice
+					trx = Trx.get(m_trxName, true);
+					log.severe("Transaction closed or never opened ("+m_trxName+") => starting now --> " + toString());
+				}
+			}
+			
+			try
+			{
+				// If not a localTrx we need to set a savepoint for rollback
+				if (localTrx == null)
+					savepoint = trx.setSavepoint(null);
+				
+				if (!beforeDelete())
+				{
+					log.warning("beforeDelete failed");
+					if (localTrx != null) 
+					{
+						localTrx.rollback();
+					}
+					else if (savepoint != null)
+					{
+						try {
+							trx.rollback(savepoint);
+						} catch (SQLException e) {}
+						savepoint = null;
+					}
+					return false;
+				}
+			}
+			catch (Exception e)
+			{
+				log.log(Level.WARNING, "beforeDelete", e);
+				String msg = DBException.getDefaultDBExceptionMessage(e);
+				log.saveError(msg != null ? msg : "Error", e, false);
+				if (localTrx != null) 
+				{
+					localTrx.rollback();
+				}
+				else if (savepoint != null)
+				{
+					try {
+						trx.rollback(savepoint);
+					} catch (SQLException e1) {}
+					savepoint = null;
+				}
 				return false;
 			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.WARNING, "beforeDelete", e);
-			log.saveError("Error", e, false);
-		//	throw new DBException(e);
-			return false;
-		}
-		//	Delete Restrict AD_Table_ID/Record_ID (Requests, ..)
-		String errorMsg = PO_Record.exists(AD_Table_ID, Record_ID, m_trxName);
-		if (errorMsg != null)
-		{
-			log.saveError("CannotDelete", errorMsg);
-			return false;
-		}
-		// Call ModelValidators TYPE_DELETE
-		errorMsg = ModelValidationEngine.get().fireModelChange
-			(this, isReplication() ? ModelValidator.TYPE_BEFORE_DELETE_REPLICATION : ModelValidator.TYPE_DELETE);
-		setReplication(false); // @Trifon
-		if (errorMsg != null)
-		{
-			log.saveError("Error", errorMsg);
-			return false;
-		}
-
-		//
-		deleteTranslations(localTrxName);
-		//	Delete Cascade AD_Table_ID/Record_ID (Attachments, ..)
-		PO_Record.deleteCascade(AD_Table_ID, Record_ID, localTrxName);
-
-		//	The Delete Statement
-		StringBuilder sql = new StringBuilder ("DELETE FROM ") //jz why no FROM??
-			.append(p_info.getTableName())
-			.append(" WHERE ")
-			.append(get_WhereClause(true));
-		int no = 0;
-		if (isUseTimeoutForUpdate())
-			no = DB.executeUpdateEx(sql.toString(), localTrxName, QUERY_TIME_OUT);
-		else
-			no = DB.executeUpdate(sql.toString(), localTrxName);
-		success = no == 1;
-
-		//	Save ID
-		m_idOld = get_ID();
-		//
-		if (!success)
-		{
-			log.warning("Not deleted");
-			if (localTrx != null)
-				localTrx.rollback();
-		}
-		else
-		{
-			if (success)
+			//	Delete Restrict AD_Table_ID/Record_ID (Requests, ..)
+			String errorMsg = PO_Record.exists(AD_Table_ID, Record_ID, m_trxName);
+			if (errorMsg != null)
 			{
-				if( p_info.isChangeLog())
+				log.saveError("CannotDelete", errorMsg);
+				if (localTrx != null) 
 				{
-					//	Change Log
-					MSession session = MSession.get (p_ctx, false);
-					if (session == null)
-						log.fine("No Session found");
-					else if (m_IDs.length == 1)
-					{
-						int AD_ChangeLog_ID = 0;
-						int size = get_ColumnCount();
-						for (int i = 0; i < size; i++)
-						{
-							Object value = m_oldValues[i];
-							if (value != null
-								&& p_info.isAllowLogging(i)		//	logging allowed
-								&& !p_info.isEncrypted(i)		//	not encrypted
-								&& !p_info.isVirtualColumn(i)	//	no virtual column
-								&& !"Password".equals(p_info.getColumnName(i))
-								)
-							{
-								// change log on delete
-								MChangeLog cLog = session.changeLog (
-									m_trxName != null ? m_trxName : localTrxName, AD_ChangeLog_ID,
-									AD_Table_ID, p_info.getColumn(i).AD_Column_ID,
-									Record_ID, getAD_Client_ID(), getAD_Org_ID(), value, null, MChangeLog.EVENTCHANGELOG_Delete);
-								if (cLog != null)
-									AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
-							}
-						}	//   for all fields
-					}
+					localTrx.rollback();
+				}
+				else if (savepoint != null)
+				{
+					try {
+						trx.rollback(savepoint);
+					} catch (SQLException e) {}
+					savepoint = null;
+				}
+				return false;
+			}
+			// Call ModelValidators TYPE_DELETE
+			errorMsg = ModelValidationEngine.get().fireModelChange
+				(this, isReplication() ? ModelValidator.TYPE_BEFORE_DELETE_REPLICATION : ModelValidator.TYPE_DELETE);
+			setReplication(false); // @Trifon
+			if (errorMsg != null)
+			{
+				log.saveError("Error", errorMsg);
+				if (localTrx != null) 
+				{
+					localTrx.rollback();
+				}
+				else if (savepoint != null)
+				{
+					try {
+						trx.rollback(savepoint);
+					} catch (SQLException e) {}
+					savepoint = null;
+				}
+				return false;
+			}
 
-					//	Housekeeping
-					m_IDs[0] = I_ZERO;
-					if (m_trxName == null)
-						log.fine("complete");
-					else
-						if (log.isLoggable(Level.FINE)) log.fine("[" + m_trxName + "] - complete");
-					m_attachment = null;
+			try 
+			{
+				//
+				deleteTranslations(localTrxName);
+				//	Delete Cascade AD_Table_ID/Record_ID (Attachments, ..)
+				PO_Record.deleteCascade(AD_Table_ID, Record_ID, localTrxName);
+		
+				//	The Delete Statement
+				StringBuilder sql = new StringBuilder ("DELETE FROM ") //jz why no FROM??
+					.append(p_info.getTableName())
+					.append(" WHERE ")
+					.append(get_WhereClause(true));
+				int no = 0;
+				if (isUseTimeoutForUpdate())
+					no = DB.executeUpdateEx(sql.toString(), localTrxName, QUERY_TIME_OUT);
+				else
+					no = DB.executeUpdate(sql.toString(), localTrxName);
+				success = no == 1;
+			}
+			catch (Exception e)
+			{
+				String msg = DBException.getDefaultDBExceptionMessage(e);
+				log.saveError(msg != null ? msg : e.getLocalizedMessage(), e);
+				success = false;
+			}
+	
+			//	Save ID
+			m_idOld = get_ID();
+			//
+			if (!success)
+			{
+				log.warning("Not deleted");
+				if (localTrx != null) 
+				{
+					localTrx.rollback();
+				}
+				else if (savepoint != null)
+				{
+					try {
+						trx.rollback(savepoint);
+					} catch (SQLException e) {}
+					savepoint = null;
 				}
 			}
 			else
 			{
-				log.warning("Not deleted");
+				if (success)
+				{
+					if( p_info.isChangeLog())
+					{
+						//	Change Log
+						MSession session = MSession.get (p_ctx, false);
+						if (session == null)
+							log.fine("No Session found");
+						else if (m_IDs.length == 1)
+						{
+							int AD_ChangeLog_ID = 0;
+							int size = get_ColumnCount();
+							for (int i = 0; i < size; i++)
+							{
+								Object value = m_oldValues[i];
+								if (value != null
+									&& p_info.isAllowLogging(i)		//	logging allowed
+									&& !p_info.isEncrypted(i)		//	not encrypted
+									&& !p_info.isVirtualColumn(i)	//	no virtual column
+									&& !"Password".equals(p_info.getColumnName(i))
+									)
+								{
+									// change log on delete
+									MChangeLog cLog = session.changeLog (
+										m_trxName != null ? m_trxName : localTrxName, AD_ChangeLog_ID,
+										AD_Table_ID, p_info.getColumn(i).AD_Column_ID,
+										Record_ID, getAD_Client_ID(), getAD_Org_ID(), value, null, MChangeLog.EVENTCHANGELOG_Delete);
+									if (cLog != null)
+										AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
+								}
+							}	//   for all fields
+						}
+	
+						//	Housekeeping
+						m_IDs[0] = I_ZERO;
+						if (m_trxName == null)
+							log.fine("complete");
+						else
+							if (log.isLoggable(Level.FINE)) log.fine("[" + m_trxName + "] - complete");
+						m_attachment = null;
+					}
+				}
+				else
+				{
+					log.warning("Not deleted");
+				}
 			}
-		}
-
-		try
-		{
-			success = afterDelete (success);
-		}
-		catch (Exception e)
-		{
-			log.log(Level.WARNING, "afterDelete", e);
-			log.saveError("Error", e, false);
-			success = false;
-		//	throw new DBException(e);
-		}
-
-		// Call ModelValidators TYPE_AFTER_DELETE - teo_sarca [ 1675490 ]
-		if (success) {
-			errorMsg = ModelValidationEngine.get().fireModelChange(this, ModelValidator.TYPE_AFTER_DELETE);
-			if (errorMsg != null) {
-				log.saveError("Error", errorMsg);
+	
+			try
+			{
+				success = afterDelete (success);
+			}
+			catch (Exception e)
+			{
+				log.log(Level.WARNING, "afterDelete", e);
+				String msg = DBException.getDefaultDBExceptionMessage(e);
+				log.saveError(msg != null ? msg : "Error", e, false);
 				success = false;
+			//	throw new DBException(e);
 			}
-		}
+	
+			// Call ModelValidators TYPE_AFTER_DELETE - teo_sarca [ 1675490 ]
+			if (success) {
+				errorMsg = ModelValidationEngine.get().fireModelChange(this, ModelValidator.TYPE_AFTER_DELETE);
+				if (errorMsg != null) {
+					log.saveError("Error", errorMsg);
+					success = false;
+				}
+			}
 
 			if (!success)
 			{
-				if (localTrx != null)
+				if (localTrx != null) 
+				{
 					localTrx.rollback();
+				}
+				else if (savepoint != null)
+				{
+					try {
+						trx.rollback(savepoint);
+					} catch (SQLException e) {}
+					savepoint = null;
+				}
 			}
 			else
 			{
@@ -3265,25 +3357,26 @@ public abstract class PO
 					try {
 						localTrx.commit(true);
 					} catch (SQLException e) {
-						log.saveError("Error", e);
+						String msg = DBException.getDefaultDBExceptionMessage(e);
+						log.saveError(msg != null ? msg : "Error", e);
 						success = false;
 					}
 				}
 			}
 
-		//	Reset
-		if (success)
-		{
-			//osgi event handler
-			Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this);
-			EventManager.getInstance().postEvent(event);
-
-			m_idOld = 0;
-			int size = p_info.getColumnCount();
-			m_oldValues = new Object[size];
-			m_newValues = new Object[size];
-			CacheMgt.get().reset(p_info.getTableName());
-		}
+			//	Reset
+			if (success)
+			{
+				//osgi event handler
+				Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this);
+				EventManager.getInstance().postEvent(event);
+	
+				m_idOld = 0;
+				int size = p_info.getColumnCount();
+				m_oldValues = new Object[size];
+				m_newValues = new Object[size];
+				CacheMgt.get().reset(p_info.getTableName());
+			}
 		}
 		finally
 		{
@@ -3292,8 +3385,20 @@ public abstract class PO
 				localTrx.close();
 				m_trxName = null;
 			}
+			else
+			{
+				if (savepoint != null)
+				{
+					try {
+						trx.releaseSavepoint(savepoint);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+				savepoint = null;
+				trx = null;
+			}
 		}
-	//	log.info("" + success);
 		return success;
 	}	//	delete
 

@@ -148,10 +148,9 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Calculate Difference = Target - Confirmed - Scrapped
+		//	Calculate Difference = Target - Confirmed
 		BigDecimal difference = getTargetQty();
 		difference = difference.subtract(getConfirmedQty());
-		difference = difference.subtract(getScrappedQty());
 		setDifferenceQty(difference);
 		//
 		return true;

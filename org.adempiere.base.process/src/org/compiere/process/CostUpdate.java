@@ -19,17 +19,27 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 
+import org.compiere.model.I_C_DocType;
+import org.compiere.model.I_M_Inventory;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MCost;
 import org.compiere.model.MCostElement;
+import org.compiere.model.MDocType;
+import org.compiere.model.MInventory;
+import org.compiere.model.MInventoryLine;
 import org.compiere.model.MProduct;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Standard Cost Update
@@ -47,6 +57,8 @@ public class CostUpdate extends SvrProcess
 	private String	p_SetStandardCostTo = null;
 	/** PLV						*/
 	private int 	p_M_PriceList_Version_ID = 0;
+	
+	private int 	p_C_DocType_ID = 0;
 	
 	
 	private static final String	TO_AveragePO = "A";
@@ -67,6 +79,7 @@ public class CostUpdate extends SvrProcess
 	private MAcctSchema[]	m_ass = null;
 	/** Map of Cost Elements		*/
 	private HashMap<String,MCostElement>	m_ces = new HashMap<String,MCostElement>();
+	private MDocType m_docType = null;
 	
 	
 	/**
@@ -89,6 +102,8 @@ public class CostUpdate extends SvrProcess
 				p_SetStandardCostTo = (String)para[i].getParameter();
 			else if (name.equals("M_PriceList_Version_ID"))
 				p_M_PriceList_Version_ID = para[i].getParameterAsInt();
+			else if (name.equals("C_DocType_ID"))
+				p_C_DocType_ID = para[i].getParameterAsInt();
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);		
 		}
@@ -113,6 +128,13 @@ public class CostUpdate extends SvrProcess
 		if (p_SetFutureCostTo.length() == 0 && p_SetStandardCostTo.length() == 0)
 		{
 			return "-";
+		}
+		if (!Util.isEmpty(p_SetStandardCostTo)) 
+		{
+			if (p_C_DocType_ID <= 0)
+				throw new AdempiereUserError ("@FillMandatory@  @C_DocType_ID@");
+			else
+				m_docType = MDocType.get(getCtx(), p_C_DocType_ID);
 		}
 		//	PLV required
 		if (p_M_PriceList_Version_ID == 0
@@ -253,13 +275,17 @@ public class CostUpdate extends SvrProcess
 		ResultSet rs = null;
 		try
 		{
+			List<MInventoryLine> lines = new ArrayList<MInventoryLine>();
+			MClient client = MClient.get(getCtx());
+			MAcctSchema primarySchema = client.getAcctSchema();
+			MInventory inventoryDoc = null;
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, m_ce.getM_CostElement_ID());
 			if (p_M_Product_Category_ID != 0)
 				pstmt.setInt (2, p_M_Product_Category_ID);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
-			{
+			{				
 				MCost cost = new MCost (getCtx(), rs, get_TrxName());
 				for (int i = 0; i < m_ass.length; i++)
 				{
@@ -267,15 +293,65 @@ public class CostUpdate extends SvrProcess
 					if (m_ass[i].getC_AcctSchema_ID() == cost.getC_AcctSchema_ID() 
 						&& m_ass[i].getM_CostType_ID() == cost.getM_CostType_ID())
 					{
-						if (update (cost))
-							counter++;
+						if (m_ass[i].getC_AcctSchema_ID() == primarySchema.getC_AcctSchema_ID()) 
+						{
+							if (update (cost, lines))
+								counter++;
+						}
+						else
+						{
+							if (update (cost, null))
+								counter++;
+						}
 					}
+				}
+			}
+			if (lines.size() > 0) 
+			{
+				inventoryDoc = new MInventory(getCtx(), 0, get_TrxName());
+				inventoryDoc.setC_DocType_ID(p_C_DocType_ID);
+				inventoryDoc.setCostingMethod(MCostElement.COSTINGMETHOD_StandardCosting);
+				inventoryDoc.setDocAction(DocAction.ACTION_Complete);
+				inventoryDoc.saveEx();
+				
+				for(MInventoryLine line : lines)
+				{
+					line.setM_Inventory_ID(inventoryDoc.getM_Inventory_ID());
+					line.saveEx();
+				}
+				
+				if (!DocumentEngine.processIt(inventoryDoc, DocAction.ACTION_Complete)) 
+				{
+					StringBuilder msg = new StringBuilder();
+					msg.append(Msg.getMsg(getCtx(), "ProcessFailed")).append(": ");
+					if (Env.isBaseLanguage(getCtx(), I_C_DocType.Table_Name))
+						msg.append(m_docType.getName());
+					else
+						msg.append(m_docType.get_Translation(I_C_DocType.COLUMNNAME_Name));
+					throw new AdempiereUserError(msg.toString());
+				}
+				else
+				{
+					inventoryDoc.saveEx();
+					StringBuilder msg = new StringBuilder();
+					if (Env.isBaseLanguage(getCtx(), I_C_DocType.Table_Name))
+						msg.append(m_docType.getName()).append(" ").append(inventoryDoc.getDocumentNo());
+					else
+						msg.append(m_docType.get_Translation(I_C_DocType.COLUMNNAME_Name)).append(" ").append(inventoryDoc.getDocumentNo());
+					addLog(getAD_PInstance_ID(), null, null, msg.toString(), I_M_Inventory.Table_ID, inventoryDoc.getM_Inventory_ID());
 				}
 			}
 		}
 		catch (Exception e)
 		{
-			log.log (Level.SEVERE, sql, e);
+			if (e instanceof RuntimeException) 
+			{
+				throw (RuntimeException)e;
+			}
+			else
+			{
+				throw new RuntimeException(e);
+			}
 		}
 		finally
 		{
@@ -291,10 +367,11 @@ public class CostUpdate extends SvrProcess
 	/**
 	 * 	Update Cost Records
 	 *	@param cost cost
+	 * @param inventoryDoc 
 	 *	@return true if updated
 	 *	@throws Exception
 	 */
-	private boolean update (MCost cost) throws Exception
+	private boolean update (MCost cost, List<MInventoryLine> lines) throws Exception
 	{
 		boolean updated = false;
 		if (p_SetFutureCostTo.equals(p_SetStandardCostTo))
@@ -302,21 +379,37 @@ public class CostUpdate extends SvrProcess
 			BigDecimal costs = getCosts(cost, p_SetFutureCostTo);
 			if (costs != null && costs.signum() != 0)
 			{
-				cost.setFutureCostPrice(costs);
-				cost.setCurrentCostPrice(costs);
+				cost.setFutureCostPrice(costs);				
 				updated = true;
+			}
+			if (lines != null)
+			{
+				MInventoryLine line = new MInventoryLine(getCtx(), 0, get_TrxName());
+				line.setM_Product_ID(cost.getM_Product_ID());
+				line.setCurrentCostPrice(cost.getCurrentCostPrice());
+				line.setNewCostPrice(costs);
+				line.setM_Locator_ID(0);
+				lines.add(line);
 			}
 		}
 		else
 		{
 			if (p_SetStandardCostTo.length() > 0)
 			{
-				BigDecimal costs = getCosts(cost, p_SetStandardCostTo);
-				if (costs != null && costs.signum() != 0)
+				if (lines != null)
 				{
-					cost.setCurrentCostPrice(costs);
-					updated = true;
-				}
+					BigDecimal costs = getCosts(cost, p_SetStandardCostTo);
+					if (costs != null && costs.signum() != 0)
+					{
+						MInventoryLine line = new MInventoryLine(getCtx(), 0, get_TrxName());
+						line.setM_Product_ID(cost.getM_Product_ID());
+						line.setCurrentCostPrice(cost.getCurrentCostPrice());
+						line.setNewCostPrice(costs);
+						line.setM_Locator_ID(0);
+						lines.add(line);
+						updated = true;
+					}
+				}				
 			}
 			if (p_SetFutureCostTo.length() > 0)
 			{

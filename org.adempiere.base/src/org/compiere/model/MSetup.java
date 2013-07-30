@@ -683,11 +683,15 @@ public final class MSetup
 		createDocType("Material Movement", Msg.getElement(m_ctx, "M_Movement_ID", false),
 			MDocType.DOCBASETYPE_MaterialMovement, null, 0, 0, 610000, GL_MM, false);
 		createDocType("Physical Inventory", Msg.getElement(m_ctx, "M_Inventory_ID", false), 
-			MDocType.DOCBASETYPE_MaterialPhysicalInventory, null, 0, 0, 620000, GL_MM, false);
+			MDocType.DOCBASETYPE_MaterialPhysicalInventory, MDocType.DOCSUBTYPEINV_PhysicalInventory, 0, 0, 620000, GL_MM, false);
 		createDocType("Material Production", Msg.getElement(m_ctx, "M_Production_ID", false), 
 			MDocType.DOCBASETYPE_MaterialProduction, null, 0, 0, 630000, GL_MM, false);
 		createDocType("Project Issue", Msg.getElement(m_ctx, "C_ProjectIssue_ID", false), 
 			MDocType.DOCBASETYPE_ProjectIssue, null, 0, 0, 640000, GL_MM, false);
+		createDocType("Internal Use Inventory", "Internal Use Inventory", 
+				MDocType.DOCBASETYPE_MaterialPhysicalInventory, MDocType.DOCSUBTYPEINV_InternalUseInventory, 0, 0, 650000, GL_MM, false);
+		createDocType("Cost Adjustment", "Cost Adjustment", 
+				MDocType.DOCBASETYPE_MaterialPhysicalInventory, MDocType.DOCSUBTYPEINV_CostAdjustment, 0, 0, 660000, GL_MM, false);
 
 		//  Order Entry
 		createDocType("Binding offer", "Quotation", 
@@ -891,7 +895,16 @@ public final class MSetup
 		if (PrintName != null && PrintName.length() > 0)
 			dt.setPrintName(PrintName);	//	Defaults to Name
 		if (DocSubTypeSO != null)
-			dt.setDocSubTypeSO(DocSubTypeSO);
+		{
+			if (MDocType.DOCBASETYPE_MaterialPhysicalInventory.equals(DocBaseType))
+			{
+				dt.setDocSubTypeInv(DocSubTypeSO);
+			}
+			else
+			{
+				dt.setDocSubTypeSO(DocSubTypeSO);
+			}
+		}
 		if (C_DocTypeShipment_ID != 0)
 			dt.setC_DocTypeShipment_ID(C_DocTypeShipment_ID);
 		if (C_DocTypeInvoice_ID != 0)
