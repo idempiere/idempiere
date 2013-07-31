@@ -350,6 +350,7 @@ public class GridWindowVO implements Serializable
 		{
 			clone = new GridWindowVO(ctx, windowNo);
 			clone.AD_Window_ID = AD_Window_ID;
+			clone.AD_Window_UU = AD_Window_UU;
 			clone.Name = Name;
 			clone.Description = Description;
 			clone.Help = Help;
