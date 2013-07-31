@@ -96,6 +96,10 @@
 	margin: -3px;
 	padding-top: 5px;
 }
+.calendar-toolbar .z-toolbarbutton img {
+	height: 16px;
+	width: 16px;
+}
 .gecko2 .calendar-toolbar {
 	margin: -3px;
 }

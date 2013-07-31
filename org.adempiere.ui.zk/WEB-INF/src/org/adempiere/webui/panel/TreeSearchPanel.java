@@ -144,6 +144,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         cmbSearch = new AutoComplete();
         cmbSearch.setAutodrop(true);
        	cmbSearch.setId("treeSearchCombo");
+       	cmbSearch.setSclass("tree-search-combo");
       
         cmbSearch.addEventListener(Events.ON_OK, this);
         cmbSearch.addEventListener(Events.ON_SELECT, new EventListener<SelectEvent<Comboitem,Object>>() {

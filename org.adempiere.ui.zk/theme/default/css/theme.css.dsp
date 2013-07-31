@@ -137,10 +137,32 @@ html,body {
 .menu-href img {
 	padding: 2px;
 	padding-right: 4px;
+	width: 16px;
+	height: 16px;
+}
+
+.menu-href-newbtn img {
+	width: 10px;
+	height: 10px;
+}
+
+.window-container-toolbar-btn .z-toolbarbutton-cnt img {
+	width: 22px;
+	height: 22px;
+}
+
+.tree-search-combo .z-comboitem-img img {
+	width: 16px;
+	height: 16px;
 }
 
 .fav-new-btn {
 	margin-left: 4px;
+}
+
+.fav-new-btn img {
+	height: 16px;
+	width: 16px;
 }
 
 .disableFilter img {
@@ -170,6 +192,11 @@ html,body {
 	background-color: transparent; 
 	display:inline-block; 
 	width: 22px; 
+	height: 22px;
+}
+
+.breadcrumb-toolbar-button img {
+	width: 22px;
 	height: 22px;
 }
 
@@ -622,6 +649,10 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	width: 100%;
 }
 
+.favourites-box .z-toolbar-start {
+	float: right;
+}
+
 .recentitems-box {
 	width: 90%;
 	margin: auto;
@@ -631,6 +662,10 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 .recentitems-box A {
 	display: block;
 	padding: 2px 0px;
+}
+
+.recentitems-box .z-toolbar-start {
+	float: right;
 }
 	
 .views-box {
@@ -646,6 +681,11 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 .views-box .z-toolbarbutton {
 	width: 100%;
 	padding: 2px 0px;
+}
+
+.views-box .link img {
+	height: 16px;
+	width: 16px;
 }
 
 .activities-box {
@@ -769,6 +809,11 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 .adwindow-detailpane-toolbar .z-toolbarbutton {
 	float: left;
 	display: inline-block;
+}
+
+.adwindow-detailpane-toolbar .z-toolbarbutton img {
+	width: 16px;
+	height: 16px;
 }
 
 .adwindow-detailpane-toolbar .z-toolbar-body .docstatus-normal,  
@@ -1543,6 +1588,10 @@ font-size: 0;
 	padding: 1px 4px 1px 4px;
 }
 
+.menu-search-toggle-on img, .menu-search-toggle-off img {
+	height: 16px;
+	width: 16px;
+} 
 <%-- workaround for http://jira.idempiere.com/browse/IDEMPIERE-692 --%>
 .z-combobox-pp {
 	max-height: 200px;
@@ -1593,6 +1642,11 @@ table.z-vbox > tbody > tr > td > table {
 	margin: auto; 
 	position: relative; 
 	width: 120px !important;
+}
+
+.performance-indicator img {
+	height: 120px;
+	width: 120px;
 }
 
 .window-view-pi .performance-indicator {
