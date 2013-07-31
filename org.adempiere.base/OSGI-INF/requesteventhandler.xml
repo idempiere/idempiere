@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.adempiere.base.event.RequestEventHandler">
    <implementation class="org.adempiere.base.event.RequestEventHandler"/>
-   <reference bind="bindEventManager" cardinality="1..1" interface="org.adempiere.base.event.IEventManager" name="IEventManager" policy="static" unbind="unbindEventManager"/>e.base.event.RequestSendEMailEventHandler"/>
+   <reference bind="bindEventManager" cardinality="1..1" interface="org.adempiere.base.event.IEventManager" name="IEventManager" policy="static" unbind="unbindEventManager"/>
 </scr:component>
 
