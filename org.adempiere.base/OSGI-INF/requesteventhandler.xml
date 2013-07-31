@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" configuration-policy="require" name="org.adempiere.base.event.RequestEventHandler">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" configuration-policy="optional" name="org.adempiere.base.event.RequestEventHandler">
    <implementation class="org.adempiere.base.event.RequestEventHandler"/>
    <reference bind="bindEventManager" cardinality="1..1" interface="org.adempiere.base.event.IEventManager" name="IEventManager" policy="static" unbind="unbindEventManager"/>
    <service>

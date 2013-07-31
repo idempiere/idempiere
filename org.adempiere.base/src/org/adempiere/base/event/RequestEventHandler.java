@@ -410,7 +410,8 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 			.append(Msg.translate(r.getCtx(), "R_Request_ID"))
 			.append(": ").append(r.getDocumentNo())
 			.append("  ").append(r.getMailTag())
-			.append("\nSent by AdempiereMail");
+			.append("\n")
+			.append(Msg.getMsg(r.getCtx(), "RequestSentBy"));
 		if (serverAddress != null)
 			sb.append(" from ").append(serverAddress);
 		return sb.toString();
