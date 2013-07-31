@@ -92,5 +92,7 @@ public interface IEventTopics {
 	public static final String PREF_AFTER_LOAD = "adempiere/pref/afterLoad";
 	
 	public static final String BROADCAST_MESSAGE = "idempiere/broadcastMsg";
+	
+	public static final String REQUEST_SEND_EMAIL = "idempiere/requestSendEMail";
 }
 

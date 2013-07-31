@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.adempiere.pipo.dictionary.service">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.adempiere.pipo.srv.PipoDictionaryService">
    <implementation class="org.adempiere.pipo.srv.PipoDictionaryService"/>
    <service>
       <provide interface="org.adempiere.base.IDictionaryService"/>

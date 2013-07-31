@@ -15,7 +15,6 @@ package org.idempiere.hazelcast.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
@@ -75,20 +74,45 @@ public class Activator implements BundleActivator {
 		future = executor.submit(new Runnable() {			
 			@Override
 			public void run() {
-				String dataArea = System.getProperty("osgi.install.area");
+				File file = null;
+				//try idempiere home
+				String dataArea = System.getProperty("IDEMPIERE_HOME");
 				if (dataArea != null && dataArea.trim().length() > 0) {
 					try {
-						URL url = new URL(dataArea);
-						File file = new File(url.getPath(), "hazelcast.xml");
-						if (file.exists()) {
-							try {
-								Config config = new FileSystemXmlConfig(file);
-								hazelcastInstance = Hazelcast.newHazelcastInstance(config);
-								return;
-							} catch (FileNotFoundException e) {}
-						} 
-					} catch (MalformedURLException e1) {
+						file = new File(dataArea, "hazelcast.xml");
+						if (!file.exists())
+							file = null;
+					} catch (Exception e) {}
+				}
+				//try working directory
+				if (file == null) {
+					dataArea = System.getProperty("user.dir");
+					if (dataArea != null && dataArea.trim().length() > 0) {
+						try {
+							file = new File(dataArea, "hazelcast.xml");
+							if (!file.exists())
+								file = null;
+						} catch (Exception e) {}
 					}
+				}				
+				//try osgi install area
+				if (file == null) {
+					dataArea = System.getProperty("osgi.install.area");
+					if (dataArea != null && dataArea.trim().length() > 0) {
+						try {
+							URL url = new URL(dataArea);
+							file = new File(url.getPath(), "hazelcast.xml");
+							if (!file.exists())
+								file = null;
+						} catch (Exception e) {}
+					}
+				}
+				if (file != null && file.exists()) {
+					try {
+						Config config = new FileSystemXmlConfig(file);
+						hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+						return;
+					} catch (FileNotFoundException e) {}
 				}
 				hazelcastInstance = Hazelcast.newHazelcastInstance(null);		
 			}

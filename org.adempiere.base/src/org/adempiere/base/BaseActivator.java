@@ -42,6 +42,7 @@ import org.osgi.util.tracker.ServiceTracker;
 public class BaseActivator implements BundleActivator {
 
 	private static BundleContext bundleContext = null;
+	private ComponentBlackListService blacklistService;
 
 	/**
 	 * default constructor
@@ -58,6 +59,8 @@ public class BaseActivator implements BundleActivator {
 		loadInitProperties(Adempiere.getAdempiereHome());
 		bundleContext = context;
 		context.registerService(CommandProvider.class.getName(), new StackTraceCommand(), null);
+		
+		blacklistService = new ComponentBlackListService(context);
 	}
 	
 	/* 
@@ -114,6 +117,10 @@ public class BaseActivator implements BundleActivator {
 			}
 		}
 		trackerCache.clear();
+		if (blacklistService != null) {
+			blacklistService.stop(context);
+			blacklistService = null;
+		}
 		Adempiere.stop();
 	}
 

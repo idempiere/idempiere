@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" configuration-policy="optional" name="org.adempiere.base.event.RequestEventHandler">
+   <implementation class="org.adempiere.base.event.RequestEventHandler"/>
+   <reference bind="bindEventManager" cardinality="1..1" interface="org.adempiere.base.event.IEventManager" name="IEventManager" policy="static" unbind="unbindEventManager"/>
+   <service>
+      <provide interface="org.osgi.service.cm.ManagedService"/>
+      <provide interface="org.adempiere.base.event.RequestEventHandler"/>
+   </service>
+   <property name="service.pid" type="String" value="org.adempiere.base.event.RequestEventHandler"/>
+</scr:component>

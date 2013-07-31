@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2013 Elaine Tan                                              *
+ * Copyright (C) 2013 Nur Yasmin                                              *
  * Copyright (C) 2013 Trek Global
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
@@ -11,8 +11,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-
-package org.compiere.model;
+package org.adempiere.base.event;
 
 import static org.compiere.model.SystemIDs.MESSAGE_REQUESTUPDATE;
 
@@ -21,75 +20,87 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 
-import org.adempiere.base.event.EventManager;
-import org.adempiere.base.event.RequestSendEMailEventData;
 import org.adempiere.exceptions.DBException;
+import org.compiere.model.I_R_Request;
+import org.compiere.model.MClient;
+import org.compiere.model.MNote;
+import org.compiere.model.MRequest;
+import org.compiere.model.MRequestAction;
+import org.compiere.model.MRequestType;
+import org.compiere.model.MRequestUpdate;
+import org.compiere.model.MUser;
+import org.compiere.model.PO;
+import org.compiere.model.X_AD_User;
+import org.compiere.model.X_R_Request;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.osgi.service.event.Event;
-import org.osgi.service.event.EventHandler;
 
 /**
- * 
- * @author Elaine
+ * Request event handler
+ * @author Nur Yasmin
  *
  */
-public class RequestValidator implements ModelValidator, EventHandler
+public class RequestEventHandler extends AbstractEventHandler implements ManagedService
 {
-	public static final String ON_REQUEST_SEND_EMAIL_TOPIC = "onRequestSendEMail";
-	
-	private static CLogger s_log = CLogger.getCLogger (RequestValidator.class);
-	
-	private int m_AD_Client_ID;
+	private static CLogger s_log = CLogger.getCLogger (RequestEventHandler.class);
 	
 	@Override
-	public void initialize(ModelValidationEngine engine, MClient client) 
+	protected void doHandleEvent(Event event) 
 	{
-		if (client != null)
-			m_AD_Client_ID = client.getAD_Client_ID();
-		engine.addModelChange(I_R_Request.Table_Name, this);
-		
-		if (EventManager.getInstance() != null)
-			EventManager.getInstance().register(ON_REQUEST_SEND_EMAIL_TOPIC, this);
-	}
-
-	@Override
-	public int getAD_Client_ID() 
-	{
-		return m_AD_Client_ID;
-	}
-
-	@Override
-	public String login(int AD_Org_ID, int AD_Role_ID, int AD_User_ID) 
-	{
-		return null;
-	}
-
-	@Override
-	public String modelChange(PO po, int type) throws Exception 
-	{
-		if (po instanceof MRequest ) 
+		String topic = event.getTopic();
+		if (topic.equals(IEventTopics.REQUEST_SEND_EMAIL)) 
 		{
-			MRequest r = (MRequest) po;			
-			if (type == TYPE_BEFORE_NEW || type == TYPE_BEFORE_CHANGE)
-				beforeSaveRequest(r, type == TYPE_BEFORE_NEW);
-			else if (type == TYPE_AFTER_NEW || type == TYPE_AFTER_CHANGE)
-				afterSaveRequest(r, type == TYPE_AFTER_NEW);
+			RequestSendEMailEventData eventData = (RequestSendEMailEventData) event.getProperty(EventManager.EVENT_DATA);
+			if (!eventData.getClient().sendEMail(eventData.getFrom(), eventData.getTo(), eventData.getSubject(), eventData.getMessage(), eventData.getAttachment()))
+			{
+				int AD_Message_ID = MESSAGE_REQUESTUPDATE;
+				MNote note = new MNote(Env.getCtx(), AD_Message_ID, eventData.getTo().getAD_User_ID(),
+						X_R_Request.Table_ID, eventData.getRequestID(), 
+						eventData.getSubject(), eventData.getMessage(), null);
+				note.save();
+			}
 		}
-		return null;
+		else if (topic.equals(IEventTopics.PO_BEFORE_NEW) || topic.equals(IEventTopics.PO_BEFORE_CHANGE)
+				|| topic.equals(IEventTopics.PO_AFTER_NEW) || topic.equals(IEventTopics.PO_AFTER_CHANGE)) 
+		{
+			PO po = getPO(event);
+			if (po.get_TableName().equals(I_R_Request.Table_Name))
+			{
+				MRequest r = (MRequest) po;
+				
+				MRequestType rt = r.getRequestType();
+				if (ignoreRequestTypes.contains(rt.getName()))
+					return;
+				
+				if (topic.equals(IEventTopics.PO_BEFORE_NEW) || topic.equals(IEventTopics.PO_BEFORE_CHANGE))
+					beforeSaveRequest(r, topic.equals(IEventTopics.PO_BEFORE_NEW));
+				else if (topic.equals(IEventTopics.PO_AFTER_NEW) || topic.equals(IEventTopics.PO_AFTER_CHANGE))
+					afterSaveRequest(r, topic.equals(IEventTopics.PO_AFTER_NEW));
+			}
+		}
 	}
 
 	@Override
-	public String docValidate(PO po, int timing) 
+	protected void initialize() 
 	{
-		return null;
+		registerEvent(IEventTopics.REQUEST_SEND_EMAIL);
+		registerTableEvent(IEventTopics.PO_BEFORE_NEW, I_R_Request.Table_Name);
+		registerTableEvent(IEventTopics.PO_BEFORE_CHANGE, I_R_Request.Table_Name);
+		registerTableEvent(IEventTopics.PO_AFTER_NEW, I_R_Request.Table_Name);
+		registerTableEvent(IEventTopics.PO_AFTER_CHANGE, I_R_Request.Table_Name);
 	}
 	
-	public static String beforeSaveRequest(MRequest r, boolean newRecord)
+	private String beforeSaveRequest(MRequest r, boolean newRecord)
 	{
 		//	New
 		if (newRecord)
@@ -208,7 +219,7 @@ public class RequestValidator implements ModelValidator, EventHandler
 		return null;
 	}
 	
-	public static String afterSaveRequest(MRequest r, boolean newRecord)
+	private String afterSaveRequest(MRequest r, boolean newRecord)
 	{
 		//	Initial Mail
 		if (newRecord)
@@ -223,7 +234,7 @@ public class RequestValidator implements ModelValidator, EventHandler
 	 *	@param columnName column
 	 *	@return true if changes
 	 */
-	public static boolean checkChange (MRequest r, MRequestAction ra, String columnName)
+	public boolean checkChange (MRequest r, MRequestAction ra, String columnName)
 	{
 		if (r.is_ValueChanged(columnName))
 		{
@@ -237,12 +248,12 @@ public class RequestValidator implements ModelValidator, EventHandler
 		}
 		return false;
 	}	//	checkChange
-
+	
 	/**
 	 * 	Send Update EMail/Notices
 	 * 	@param list list of changes
 	 */
-	public static void sendNotices(MRequest r, ArrayList<String> list)
+	private void sendNotices(MRequest r, ArrayList<String> list)
 	{
 		//	Subject
 		String subject = Msg.translate(r.getCtx(), "R_Request_ID") 
@@ -362,7 +373,7 @@ public class RequestValidator implements ModelValidator, EventHandler
 					|| X_AD_User.NOTIFICATIONTYPE_EMailPlusNotice.equals(NotificationType))
 				{
 					RequestSendEMailEventData eventData = new RequestSendEMailEventData(client, from, to, subject, message.toString(), pdf, r.getR_Request_ID());
-					Event event = EventManager.newEvent(ON_REQUEST_SEND_EMAIL_TOPIC, eventData);
+					Event event = EventManager.newEvent(IEventTopics.REQUEST_SEND_EMAIL, eventData);
 					EventManager.getInstance().postEvent(event);
 				}
 				//	Send Note
@@ -393,30 +404,33 @@ public class RequestValidator implements ModelValidator, EventHandler
 	 * 	@param serverAddress server address
 	 *	@return Mail Trailer
 	 */
-	public static String getMailTrailer(MRequest r, String serverAddress)
+	private String getMailTrailer(MRequest r, String serverAddress)
 	{
 		StringBuffer sb = new StringBuffer("\n").append(MRequest.SEPARATOR)
 			.append(Msg.translate(r.getCtx(), "R_Request_ID"))
 			.append(": ").append(r.getDocumentNo())
 			.append("  ").append(r.getMailTag())
-			.append("\nSent by AdempiereMail");
+			.append("\n")
+			.append(Msg.getMsg(r.getCtx(), "RequestSentBy"));
 		if (serverAddress != null)
 			sb.append(" from ").append(serverAddress);
 		return sb.toString();
 	}	//	getMailTrailer
 
+	public static final String IGNORE_REQUEST_TYPES = "ignoreRequestTypes";
+	private static ArrayList<String> ignoreRequestTypes = new ArrayList<String>();
+	
+	@SuppressWarnings("rawtypes")
 	@Override
-	public void handleEvent(Event event) {
-		if (event.getTopic() == ON_REQUEST_SEND_EMAIL_TOPIC)
-		{
-			RequestSendEMailEventData eventData = (RequestSendEMailEventData) event.getProperty(EventManager.EVENT_DATA);
-			if (!eventData.getClient().sendEMail(eventData.getFrom(), eventData.getTo(), eventData.getSubject(), eventData.getMessage(), eventData.getAttachment()))
-			{
-				int AD_Message_ID = MESSAGE_REQUESTUPDATE;
-				MNote note = new MNote(Env.getCtx(), AD_Message_ID, eventData.getTo().getAD_User_ID(),
-						X_R_Request.Table_ID, eventData.getRequestID(), 
-						eventData.getSubject(), eventData.getMessage(), null);
-				note.save();
+	public void updated(Dictionary properties) throws ConfigurationException {
+		if (properties != null) {
+			String p = (String) properties.get(IGNORE_REQUEST_TYPES);
+			if (!Util.isEmpty(p)) {
+				ignoreRequestTypes.clear();
+				
+				StringTokenizer st = new StringTokenizer(p, ";");
+				while (st.hasMoreTokens())
+					ignoreRequestTypes.add(st.nextToken().trim());
 			}
 		}
 	}
