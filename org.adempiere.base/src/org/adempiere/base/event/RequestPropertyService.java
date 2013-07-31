@@ -23,7 +23,6 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.event.RequestEventHandler;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
 import org.compiere.util.Util;
@@ -65,7 +64,7 @@ public class RequestPropertyService {
 				String ignoreRequesTypes = p.getProperty(RequestEventHandler.IGNORE_REQUEST_TYPES);
 				
 				if (!Util.isEmpty(ignoreRequesTypes)) {
-					Configuration configuration = service.getConfiguration("org.adempiere.base.event.request.service");
+					Configuration configuration = service.getConfiguration(RequestEventHandler.class.getName());
 					if (configuration.getProperties() == null) {
 						Dictionary<String, Object> map = new Hashtable<String, Object>();
 						map.put(RequestEventHandler.IGNORE_REQUEST_TYPES, ignoreRequesTypes);

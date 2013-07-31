@@ -276,7 +276,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 	protected boolean isFolder(Treeitem treeItem) {
 		List<Component> list = treeItem.getChildren();
 		for (Component c : list) {
-			if (c instanceof Treechildren && ((Treechildren)c).getChildren().size() > 1) {
+			if (c instanceof Treechildren && ((Treechildren)c).getChildren().size() > 0) {
 				return true;
 			}
 		}
