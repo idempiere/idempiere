@@ -61,6 +61,8 @@ public class CompositeADTabbox extends AbstractADTabbox
 	public static final String AD_TABBOX_ON_EDIT_DETAIL_ATTRIBUTE = "ADTabbox.onEditDetail";
 
 	private static final String ON_POST_TAB_SELECTION_CHANGED_EVENT = "onPostTabSelectionChanged";
+	
+	private static final String ON_TAB_SELECTION_CHANGED_ECHO_EVENT = "onTabSelectionChangedEcho";
 
 	public static final String ON_SELECTION_CHANGED_EVENT = "onSelectionChanged";
 	
@@ -213,6 +215,13 @@ public class CompositeADTabbox extends AbstractADTabbox
 			@Override
 			public void onEvent(Event event) throws Exception {
 				onPostTabSelectionChanged((Boolean)event.getData());
+			}
+		});
+    	
+    	layout.addEventListener(ON_TAB_SELECTION_CHANGED_ECHO_EVENT, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				onTabSelectionChangedEcho((Boolean)event.getData());
 			}
 		});
     	    	
@@ -437,16 +446,13 @@ public class CompositeADTabbox extends AbstractADTabbox
 		headerTab.setDetailPaneMode(false);
 		getBreadCrumb().getFirstChild().setVisible(false);
 		
-		Events.echoEvent(new Event(ON_POST_TAB_SELECTION_CHANGED_EVENT, layout, oldIndex > newIndex));
+		Events.postEvent(new Event(ON_POST_TAB_SELECTION_CHANGED_EVENT, layout, oldIndex > newIndex));
 	}
 
 	private void onPostTabSelectionChanged(Boolean back) {
-		if (headerTab instanceof ADTabpanel) {
-			DetailPane detailPane = headerTab.getDetailPane();
-			if (detailPane == null) {
-				detailPane = createDetailPane();
-			} 
-			
+		if (headerTab instanceof ADTabpanel && !headerTab.getGridTab().isSortTab()) {
+			 			
+			List<Object[]> list = new ArrayList<Object[]>();
 			int tabIndex = -1;
 			int currentLevel = headerTab.getTabLevel();
 			for (int i = selectedIndex + 1; i< tabPanelList.size(); i++) {
@@ -459,28 +465,53 @@ public class CompositeADTabbox extends AbstractADTabbox
 		    		}
 					if (tabPanel.getParent() != null) tabPanel.detach();
 					tabIndex++;
-					detailPane.setADTabpanel(tabIndex, tabPanel, tabLabel);
+					Object[] value = new Object[]{tabIndex, tabPanel, tabLabel, Boolean.TRUE};
+					list.add(value);
 					tabPanel.setDetailPaneMode(true);
 				} else if (tabLevel > currentLevel ){
 					tabIndex++;
-					detailPane.setADTabpanel(tabIndex, tabPanel, tabLabel, false);
+					Object[] value = new Object[]{tabIndex, tabPanel, tabLabel, Boolean.FALSE};
+					list.add(value);
 		    		tabPanel.setDetailPaneMode(true);
 		    	} else {
 		    		break;
 		    	}
 			}
 			
-			if (detailPane.getTabcount() > 0 && !headerTab.getGridTab().isSortTab()) {
-				detailPane.setVflex("true");
-				detailPane.setSelectedIndex(0);
-				if (headerTab.getDetailPane() == null) {
-					headerTab.setDetailPane(detailPane);
-				} 
+			if (!list.isEmpty()) {
+				DetailPane detailPane = headerTab.getDetailPane();
+				if (detailPane == null) {
+					detailPane = createDetailPane();
+				}
+				for (Object[] value : list) {
+					Boolean b = (Boolean) value[3];
+					if (b.booleanValue())
+						detailPane.setADTabpanel((Integer)value[0], (IADTabpanel)value[1], (ADTabLabel)value[2]);
+					else
+						detailPane.setADTabpanel((Integer)value[0], (IADTabpanel)value[1], (ADTabLabel)value[2], false);
+				}
+				if (detailPane.getTabcount() > 0) {
+					detailPane.setVflex("true");
+					detailPane.setSelectedIndex(0);
+					if (headerTab.getDetailPane() == null) {
+						headerTab.setDetailPane(detailPane);
+					} 
+				}
+			}
+			
+			Events.echoEvent(new Event(ON_TAB_SELECTION_CHANGED_ECHO_EVENT, layout, back));
+		}		        
+	}
+	
+	private void onTabSelectionChangedEcho(Boolean back) {
+		if (headerTab instanceof ADTabpanel) {
+			DetailPane detailPane = headerTab.getDetailPane();
+			
+			if (detailPane != null && detailPane.getTabcount() > 0) {
 				activateDetailIfVisible();
 			}
 		}
-		
-        updateBreadCrumb();
+		updateBreadCrumb();
         getBreadCrumb().getFirstChild().setVisible(true);
         
         updateTabState();
