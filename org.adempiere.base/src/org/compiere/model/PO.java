@@ -4518,19 +4518,19 @@ public abstract class PO
 	    log = CLogger.getCLogger(getClass());
 	}
 	
-	public void setAttribute(String columnName, Object value) {
+	public void set_Attribute(String columnName, Object value) {
 		if (m_attributes == null)
 			m_attributes = new HashMap<String, Object>();
 		m_attributes.put(columnName, value);
 	}
 	
-	public Object getAttribute(String columnName) {
+	public Object get_Attribute(String columnName) {
 		if (m_attributes != null)
 			return m_attributes.get(columnName);
 		return null;
 	}
 	
-	public HashMap<String,Object> getAttributes() {
+	public HashMap<String,Object> get_Attributes() {
 		return m_attributes;
 	}
 }   //  PO
