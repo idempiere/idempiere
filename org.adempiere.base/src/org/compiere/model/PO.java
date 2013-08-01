@@ -105,7 +105,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8742545079591136114L;
+	private static final long serialVersionUID = -341748204028700040L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -251,7 +251,9 @@ public abstract class PO
 	private int					m_idOld = 0;
 	/** Custom Columns 				*/
 	private HashMap<String,String>	m_custom = null;
-
+	/** Attributes	 				*/
+	private HashMap<String,Object>	m_attributes = null;
+	
 	/** Zero Integer				*/
 	protected static final Integer I_ZERO = new Integer(0);
 	/** Accounting Columns			*/
@@ -4514,5 +4516,21 @@ public abstract class PO
 	    // default deserialization
 	    ois.defaultReadObject();
 	    log = CLogger.getCLogger(getClass());
+	}
+	
+	public void setAttribute(String columnName, Object value) {
+		if (m_attributes == null)
+			m_attributes = new HashMap<String, Object>();
+		m_attributes.put(columnName, value);
+	}
+	
+	public Object getAttribute(String columnName) {
+		if (m_attributes != null)
+			return m_attributes.get(columnName);
+		return null;
+	}
+	
+	public HashMap<String,Object> getAttributes() {
+		return m_attributes;
 	}
 }   //  PO
