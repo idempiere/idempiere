@@ -319,7 +319,7 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		
 /*		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT CompanyName, ContactName, PhoneNumber, EMail, C_Location_ID ");
-		sql.append("FROM X_ShippingSenderInfo_V ");
+		sql.append("FROM M_ShippingSenderInfo_V ");
 		sql.append("WHERE M_ShippingTransaction_ID = ?");
 		
 		PreparedStatement pstmt = null;
@@ -355,8 +355,8 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		    MWarehouse warehouse = new MWarehouse(getCtx(), getM_Warehouse_ID(), get_TrxName());
 		    
 			partyInfo = new PartyInfo();
-			partyInfo.setCompanyName(sender.getDescription());						
-		    partyInfo.setContactName(senderContact.getDescription());
+			partyInfo.setCompanyName(sender.getName());						
+		    partyInfo.setContactName(senderContact.getName());
 		    partyInfo.setPhoneNumber(sender.getInfo().getPhone());
 			partyInfo.setEmail(senderContact.getEMail());
 			partyInfo.setLocationId(warehouse.getC_Location_ID());
@@ -376,7 +376,7 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		
 /*		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT CompanyName, ContactName, PhoneNumber, EMail, C_Location_ID ");
-		sql.append("FROM X_ShippingRecipientInfo_V ");
+		sql.append("FROM M_ShippingRecipientInfo_V ");
 		sql.append("WHERE M_ShippingTransaction_ID = ?");
 		
 		PreparedStatement pstmt = null;

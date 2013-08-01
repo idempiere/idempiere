@@ -40,7 +40,7 @@ public class MRegistration extends X_A_Registration
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5178339895228217372L;
+	private static final long serialVersionUID = -2301393326847864746L;
 
 	/**
 	 * 	Standard Constructor
@@ -91,7 +91,7 @@ public class MRegistration extends X_A_Registration
 	 * 	Get All Attributes
 	 *	@return Registration Attributes
 	 */
-	public MRegistrationAttribute[] getAttributes()
+	public MRegistrationAttribute[] getRegistrationAttributes()
 	{
 		if (m_allAttributes == null)
 			m_allAttributes = MRegistrationAttribute.getAll(getCtx());
@@ -201,7 +201,7 @@ public class MRegistration extends X_A_Registration
 			saveEx();
 		int count = 0;
 		//	read values for all attributes
-		MRegistrationAttribute[] attributes = getAttributes();
+		MRegistrationAttribute[] attributes = getRegistrationAttributes();
 		for (int i = 0; i < attributes.length; i++)
 		{
 			MRegistrationAttribute attribute = attributes[i];
