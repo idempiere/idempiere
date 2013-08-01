@@ -188,8 +188,10 @@ public class CompositeADTabbox extends AbstractADTabbox
 		if (formView && headerTab.isGridView()) {
 			headerTab.switchRowPresentation();
 		}
-
-		headerTab.getGridTab().setCurrentRow(row, true);
+		
+		if (!headerTab.getGridTab().isSortTab())
+			headerTab.getGridTab().setCurrentRow(row, true);
+		
 		if (headerTab.isGridView()) {
 			if (headerTab.getGridTab().isNew() || headerTab.needSave(true, false)) {
 				headerTab.getGridView().onEditCurrentRow();
@@ -450,8 +452,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 	}
 
 	private void onPostTabSelectionChanged(Boolean back) {
-		if (headerTab instanceof ADTabpanel && !headerTab.getGridTab().isSortTab()) {
-			 			
+		if (headerTab instanceof ADTabpanel && !headerTab.getGridTab().isSortTab()) {			 			
 			List<Object[]> list = new ArrayList<Object[]>();
 			int tabIndex = -1;
 			int currentLevel = headerTab.getTabLevel();
@@ -483,10 +484,9 @@ public class CompositeADTabbox extends AbstractADTabbox
 				if (headerTab.getDetailPane() == null) {
 					headerTab.setDetailPane(detailPane);
 				} 
-			}
-			
-			Events.echoEvent(new Event(ON_TAB_SELECTION_CHANGED_ECHO_EVENT, layout, back));
-		}		        
+			}						
+		}	
+		Events.echoEvent(new Event(ON_TAB_SELECTION_CHANGED_ECHO_EVENT, layout, back));
 	}
 	
 	private void onTabSelectionChangedEcho(Boolean back) {
@@ -514,8 +514,22 @@ public class CompositeADTabbox extends AbstractADTabbox
 						tabPanel.setDetailPaneMode(true);
 						detailPane.setADTabpanel(tabIndex, tabPanel, tabLabel, enable.booleanValue());
 					}
-					detailPane.setSelectedIndex(0);
-					activateDetailIfVisible();
+					if (back == null || !back.booleanValue()) {
+						detailPane.setSelectedIndex(0);
+						activateDetailIfVisible();
+					} else {
+						if (((ADTabpanel) headerTab).isDetailVisible()) {
+							IADTabpanel selectDetailPanel = detailPane.getSelectedADTabpanel();
+							if (!selectDetailPanel.isVisible()) {							
+								selectDetailPanel.setVisible(true);
+							}
+							if (!selectDetailPanel.isGridView()) {
+								selectDetailPanel.switchRowPresentation();	
+							}
+							if (selectDetailPanel instanceof ADTabpanel)
+								((ADTabpanel)selectDetailPanel).activated = true;
+						}
+					}
 				}				
 			}
 		}
@@ -780,8 +794,9 @@ public class CompositeADTabbox extends AbstractADTabbox
 		} else {
 			tabPanel.query(false, 0, 0);
 		}
-		if (!tabPanel.isVisible())
+		if (!tabPanel.isVisible()) {
 			tabPanel.setVisible(true);
+		}
 		if (!tabPanel.isGridView()) {
 			tabPanel.switchRowPresentation();	
 		}
@@ -791,7 +806,12 @@ public class CompositeADTabbox extends AbstractADTabbox
 			headerTab.getDetailPane().updateToolbar(false, true);
 		} else {
 			tabPanel.dynamicDisplay(0);
-		}
+			RowRenderer<Object[]> renderer = tabPanel.getGridView().getListbox().getRowRenderer();
+			GridTabRowRenderer gtr = (GridTabRowRenderer)renderer;
+			Row row = gtr.getCurrentRow();
+			if (row != null)	
+				gtr.setCurrentRow(row);
+		}				
 	}
 	
 	private void showLastError() {
