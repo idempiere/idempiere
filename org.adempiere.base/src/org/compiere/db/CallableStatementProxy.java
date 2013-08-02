@@ -13,13 +13,12 @@
 package org.compiere.db;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.CStatementVO;
-import org.compiere.util.DB;
 import org.compiere.util.Trx;
+import org.idempiere.db.util.AutoCommitConnectionBroker;
 
 /**
  * Dynamic proxy for the CCallableStatement
@@ -51,10 +50,7 @@ public class CallableStatementProxy extends PreparedStatementProxy {
             }
             else
             {
-                if (p_vo.getResultSetConcurrency() == ResultSet.CONCUR_UPDATABLE)
-                    m_conn = DB.getConnectionRW ();
-                else
-                    m_conn = DB.getConnectionRO();
+            	m_conn = AutoCommitConnectionBroker.getConnection();
                 conn = m_conn;
             }
             if (conn == null)

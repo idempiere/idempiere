@@ -31,6 +31,7 @@ import org.compiere.util.CStatementVO;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Trx;
+import org.idempiere.db.util.AutoCommitConnectionBroker;
 
 /**
  *
@@ -152,10 +153,7 @@ public class StatementProxy implements InvocationHandler {
 			}
 			else
 			{
-				if (p_vo.getResultSetConcurrency() == ResultSet.CONCUR_UPDATABLE)
-					m_conn = DB.getConnectionRW ();
-				else
-					m_conn = DB.getConnectionRO();
+				m_conn = AutoCommitConnectionBroker.getConnection();
 				conn = m_conn;
 			}
 			if (conn == null)
@@ -183,12 +181,7 @@ public class StatementProxy implements InvocationHandler {
 		} finally {
 			if (m_conn != null)
 			{
-				try 
-				{
-					m_conn.close();
-				}
-				catch (Exception e)
-				{}
+				AutoCommitConnectionBroker.releaseConnection(m_conn);
 			}
 			m_conn = null;
 			p_stmt = null;
