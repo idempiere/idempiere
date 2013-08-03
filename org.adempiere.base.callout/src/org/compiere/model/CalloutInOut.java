@@ -425,6 +425,13 @@ public class CalloutInOut extends CalloutEngine
 			//
 			mTab.setValue("C_UOM_ID", new Integer(ol.getC_UOM_ID()));
 			BigDecimal MovementQty = ol.getQtyOrdered().subtract(ol.getQtyDelivered());
+			BigDecimal runningqty = DB.getSQLValueBDEx(null, "SELECT SUM(MovementQty) FROM M_InOutLine WHERE M_InOut_ID=? AND M_InOutLine_ID!=? AND C_OrderLine_ID=?",
+					Env.getContextAsInt(ctx, WindowNo, "M_InOut_ID"),
+					Env.getContextAsInt(ctx, WindowNo, "M_InOutLine_ID"),
+					ol.get_ID());
+			if (runningqty != null) {
+				MovementQty = MovementQty.subtract(runningqty); // IDEMPIERE-1140
+			}
 			mTab.setValue("MovementQty", MovementQty);
 			BigDecimal QtyEntered = MovementQty;
 			if (ol.getQtyEntered().compareTo(ol.getQtyOrdered()) != 0)
@@ -693,6 +700,12 @@ public class CalloutInOut extends CalloutEngine
 				if (log.isLoggable(Level.FINE)) log.fine("Selected M_Locator_ID=" + selectedM_Locator_ID);
 				mTab.setValue("M_Locator_ID", new Integer (selectedM_Locator_ID));
 			}
+		}
+		MAttributeSetInstance asi = MAttributeSetInstance.get(ctx, M_ASI_ID.intValue(), 0);
+		if (asi.getSerNo() != null) {
+			// serialized ASI - force qty yo 1 - IDEMPIERE-1140
+			mTab.setValue("MovementQty", Env.ONE);
+			mTab.setValue("QtyEntered", Env.ONE);
 		}
 		return "";
 	}	//	asi
