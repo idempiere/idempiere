@@ -2856,7 +2856,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		ProcessInfoLog m_logs[] = pi.getLogs();
 		statusBar.setStatusLine(pi.getSummary(), pi.isError(),m_logs);
 		if (m_logs != null) {
-			ProcessInfoDialog dialog = new ProcessInfoDialog(AEnv.getDialogHeader(ctx, curWindowNo),Env.getHeader(ctx, curWindowNo), m_logs);
+			ProcessInfoDialog dialog = new ProcessInfoDialog(AEnv.getDialogHeader(ctx, curWindowNo),AEnv.getDialogHeader(ctx, curWindowNo), m_logs);
 			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
