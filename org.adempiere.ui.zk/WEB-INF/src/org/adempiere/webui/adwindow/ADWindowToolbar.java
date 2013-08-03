@@ -612,9 +612,9 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 						label = mToolBarButton.getName();
 					}
 					if (tooltipKey.equals(tooltiptext)) {
-						tooltiptext = null;
+						tooltipKey = null;
 					}
-					ToolBarButton btn = createButton(mToolBarButton.getComponentName(), null, tooltiptext);
+					ToolBarButton btn = createButton(mToolBarButton.getComponentName(), null, tooltipKey);
 					btn.removeEventListener(Events.ON_CLICK, this);
 					btn.setId(mToolBarButton.getName());
 					btn.setDisabled(false);

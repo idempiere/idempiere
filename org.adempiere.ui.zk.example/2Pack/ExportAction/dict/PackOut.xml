@@ -10,11 +10,11 @@
         <DisplayLogic/>
         <IsActive>true</IsActive>
         <IsCustomization>true</IsCustomization>
-        <Name>Export Action</Name>
+        <Name>Export</Name>
         <KeyStroke_KeyCode>0</KeyStroke_KeyCode>
         <KeyStroke_Modifiers>0</KeyStroke_Modifiers>
         <AD_ToolBarButton_UU>09c20701-b692-44a1-9480-72a1cf8a0bf3</AD_ToolBarButton_UU>
-        <ComponentName>Export</ComponentName>
+        <ComponentName>ExportExample</ComponentName>
         <ActionName/>
         <ActionClassName>org.adempiere.ui.zk.example.action.export</ActionClassName>
     </AD_ToolBarButton>
@@ -22,11 +22,22 @@
         <AD_Client_ID>0</AD_Client_ID>
         <AD_Org_ID>0</AD_Org_ID>
         <MsgType>I</MsgType>
-        <MsgText>Export</MsgText>
+        <MsgText>Export Example</MsgText>
         <MsgTip/>
         <EntityType>U</EntityType>
         <AD_Message_UU>b9d8b3d7-34d7-4f18-aed9-c19f9ed8f28a</AD_Message_UU>
         <Value>org.adempiere.ui.zk.example.action.export.tooltip</Value>
+        <IsActive>true</IsActive>
+    </AD_Message>
+    <AD_Message type="table">
+        <AD_Client_ID>0</AD_Client_ID>
+        <AD_Org_ID>0</AD_Org_ID>
+        <MsgType>I</MsgType>
+        <MsgText>Export Example</MsgText>
+        <MsgTip/>
+        <EntityType>U</EntityType>
+        <AD_Message_UU>9099992f-776f-4efb-bcc6-dbffd65a8f19</AD_Message_UU>
+        <Value>org.adempiere.ui.zk.example.action.export.label</Value>
         <IsActive>true</IsActive>
     </AD_Message>
 </idempiere>

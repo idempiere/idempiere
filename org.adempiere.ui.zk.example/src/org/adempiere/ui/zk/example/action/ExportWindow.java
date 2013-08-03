@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.adempiere.base.IGridTabExporter;
-import org.adempiere.base.Service;
+import org.adempiere.base.equinox.EquinoxExtensionLocator;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.adwindow.ADWindowContent;
 import org.adempiere.webui.adwindow.IADTabbox;
@@ -65,7 +65,7 @@ public class ExportWindow extends Window implements EventListener<Event> {
 		
 		exporterMap = new HashMap<String, IGridTabExporter>();
 		extensionMap = new HashMap<String, String>();
-		List<IGridTabExporter> exporterList = Service.locator().list(IGridTabExporter.class).getServices();
+		List<IGridTabExporter> exporterList = EquinoxExtensionLocator.instance().list(IGridTabExporter.class).getExtensions();
 		for(IGridTabExporter exporter : exporterList)
 		{
 			String extension = exporter.getFileExtension();

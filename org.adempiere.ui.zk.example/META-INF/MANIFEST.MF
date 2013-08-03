@@ -7,6 +7,7 @@ Bundle-Activator: org.adempiere.ui.zk.example.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.adempiere.base,
+ org.adempiere.base.equinox,
  org.adempiere.exceptions,
  org.adempiere.plugin.utils,
  org.adempiere.webui.action,
