@@ -264,6 +264,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         toolbar.appendChild(max);
         max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
         max.addEventListener(Events.ON_CLICK, this);
+        max.setSclass("window-container-toolbar-btn");
         max.setStyle("cursor: pointer; border: 1px solid transparent; padding: 2px;");
         
         return layout;

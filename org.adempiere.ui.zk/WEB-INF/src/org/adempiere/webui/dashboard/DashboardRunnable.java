@@ -84,7 +84,8 @@ public class DashboardRunnable implements Runnable, Serializable
 
 	public void run()
 	{
-		if (dashboardPanels != null && desktop != null && desktop.get() != null)
+		if (dashboardPanels != null && desktop != null && desktop.get() != null
+				&& desktop.get().isAlive() && desktop.get().isServerPushEnabled())
 		{
 			Locales.setThreadLocal(locale);
 			try {

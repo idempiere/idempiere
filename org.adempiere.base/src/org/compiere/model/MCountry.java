@@ -58,8 +58,7 @@ public final class MCountry extends X_C_Country
 	 */
 	public static MCountry get (Properties ctx, int C_Country_ID)
 	{
-		if (s_countries == null || s_countries.size() == 0)
-			loadAllCountries(ctx);
+		loadAllCountriesIfNeeded(ctx);
 		String key = String.valueOf(C_Country_ID);
 		MCountry c = (MCountry)s_countries.get(key);
 		if (c != null)
@@ -80,8 +79,7 @@ public final class MCountry extends X_C_Country
 	 */
 	public static MCountry getDefault (Properties ctx)
 	{
-		if (s_countries == null || s_countries.size() == 0)
-			loadAllCountries(ctx);
+		loadAllCountriesIfNeeded(ctx);
 		return s_default;
 	}	//	get
 
@@ -92,14 +90,19 @@ public final class MCountry extends X_C_Country
 	 */
 	public static MCountry[] getCountries(Properties ctx)
 	{
-		if (s_countries == null || s_countries.size() == 0)
-			loadAllCountries(ctx);
+		loadAllCountriesIfNeeded(ctx);
 		MCountry[] retValue = new MCountry[s_countries.size()];
 		s_countries.values().toArray(retValue);
 		Arrays.sort(retValue, new MCountry(ctx, 0, null));
 		return retValue;
 	}	//	getCountries
 
+	private static synchronized void loadAllCountriesIfNeeded(Properties ctx) {
+		if (s_countries == null || s_countries.isEmpty()) {
+			loadAllCountries(ctx);
+		}
+	}
+	
 	/**
 	 * 	Load Countries.
 	 * 	Set Default Language to Client Language

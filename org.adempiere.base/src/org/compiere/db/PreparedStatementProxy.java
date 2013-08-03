@@ -24,6 +24,7 @@ import org.compiere.util.CCachedRowSet;
 import org.compiere.util.CStatementVO;
 import org.compiere.util.DB;
 import org.compiere.util.Trx;
+import org.idempiere.db.util.AutoCommitConnectionBroker;
 
 /**
  * Dynamic proxy for the CPreparedStatement interface 
@@ -60,10 +61,7 @@ public class PreparedStatementProxy extends StatementProxy {
 			if (trx != null) {
 				conn = trx.getConnection();
 			} else {
-				if (p_vo.getResultSetConcurrency() == ResultSet.CONCUR_UPDATABLE)
-					m_conn = DB.getConnectionRW();
-				else
-					m_conn = DB.getConnectionRO();
+				m_conn = AutoCommitConnectionBroker.getConnection();
 				conn = m_conn;
 			}
 			if (conn == null)

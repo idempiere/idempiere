@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.webui.apps.AEnv;
@@ -37,7 +35,6 @@ import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.ZkReportViewerProvider;
-import org.compiere.Adempiere;
 import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MDashboardContent;
 import org.compiere.model.MDashboardPreference;
@@ -71,6 +68,7 @@ import org.zkoss.zul.Include;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.Timer;
 import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Vlayout;
@@ -90,7 +88,7 @@ public class DashboardController implements EventListener<Event> {
 	private Anchorlayout dashboardLayout;
 	private Anchorchildren maximizedHolder;	
 	private DashboardRunnable dashboardRunnable;
-	private ScheduledFuture<?> dashboardFuture;
+	private Timer dashboardTimer;
 	
 	private final static int DEFAULT_DASHBOARD_WIDTH = 95;
 	
@@ -386,7 +384,18 @@ public class DashboardController implements EventListener<Event> {
 
 			// default Update every one minutes
 			int interval = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_REFRESH_INTERVAL, 60000);
-	    	dashboardFuture = Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(dashboardRunnable, interval, interval, TimeUnit.MILLISECONDS);    		
+			dashboardTimer = new Timer();
+			dashboardTimer.setDelay(interval);
+			dashboardTimer.setRepeats(true);
+			dashboardTimer.addEventListener(Events.ON_TIMER, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					if (dashboardRunnable != null && !dashboardRunnable.isEmpty()) {
+						dashboardRunnable.run();
+					}
+				}
+			});
+			dashboardTimer.setPage(parent.getPage());
 		}
 	}
 
@@ -596,15 +605,11 @@ public class DashboardController implements EventListener<Event> {
 	 * @param desktop
 	 */
 	public void onSetPage(Page page, Desktop desktop) {
-		if (dashboardFuture != null && !dashboardFuture.isDone()) {
-			dashboardFuture.cancel(true);
-			Adempiere.getThreadPoolExecutor().remove((Runnable) dashboardFuture);
+		if (dashboardTimer != null) {
 			
 			DashboardRunnable tmp = dashboardRunnable;			
 			dashboardRunnable = new DashboardRunnable(tmp, desktop);
-			// default Update every one minutes
-			int interval = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_REFRESH_INTERVAL, 60000);
-			dashboardFuture = Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(dashboardRunnable, interval, interval, TimeUnit.MILLISECONDS);
+			dashboardTimer.setPage(page);
 		}
 	}
 	
@@ -612,10 +617,9 @@ public class DashboardController implements EventListener<Event> {
 	 * clean up for logout
 	 */
 	public void onLogOut() {
-		if (dashboardFuture != null && !dashboardFuture.isDone()) {
-			dashboardFuture.cancel(true);
-			Adempiere.getThreadPoolExecutor().remove((Runnable) dashboardFuture);
-			dashboardFuture = null;
+		if (dashboardTimer != null) {
+			dashboardTimer.detach();
+			dashboardTimer = null;
 		}
 		if (dashboardRunnable != null) {			
 			dashboardRunnable = null;

@@ -92,6 +92,7 @@ import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
@@ -177,7 +178,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
 	private GridTabDataBinder dataBinder;
 
-	private boolean activated = false;
+	protected boolean activated = false;
 
 	private Group currentGroup;
 
@@ -1533,9 +1534,15 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		    	}	    		    	
 	    	} else if (tabPanel != null && !tabPanel.getGridTab().isCurrent()) {
 	    		tabPanel.activate(true);
+	    	} else if (tabPanel != null && tabPanel.isGridView()) {
+	    		//ensure row indicator is not lost
+    			RowRenderer<Object[]> renderer = tabPanel.getGridView().getListbox().getRowRenderer();
+    			GridTabRowRenderer gtr = (GridTabRowRenderer)renderer;
+    			org.zkoss.zul.Row row = gtr.getCurrentRow();
+    			if (row != null)	
+    				gtr.setCurrentRow(row);
 	    	}
-		}
-		
+		}		
 	}
 	
 	/**

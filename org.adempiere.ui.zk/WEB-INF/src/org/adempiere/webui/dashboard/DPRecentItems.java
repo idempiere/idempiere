@@ -101,14 +101,14 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 
 		Image imgr = new Image(ThemeManager.getThemeResource("images/Refresh24.png"));
 		recentItemsToolbar.appendChild(imgr);
-		imgr.setStyle("text-align: right; cursor: pointer;");
+		imgr.setStyle("text-align: right; cursor: pointer; width:24px; height:24px;");
 		imgr.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Refresh")));
 		imgr.addEventListener(Events.ON_CLICK, this);
 		//
 
 		Image img = new Image(ThemeManager.getThemeResource("images/Delete24.png"));
 		recentItemsToolbar.appendChild(img);
-		img.setStyle("text-align: right;");
+		img.setStyle("text-align: right; width:24px; height:24px;");
 		img.setDroppable(DELETE_RECENTITEMS_DROPPABLE);
 		img.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Delete")));
 		img.addEventListener(Events.ON_DROP, this);
