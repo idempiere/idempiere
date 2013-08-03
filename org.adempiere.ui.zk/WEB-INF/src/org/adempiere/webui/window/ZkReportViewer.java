@@ -198,7 +198,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
 		m_isCanExport = MRole.getDefault().isCanExport(m_AD_Table_ID);
 		
-		setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report") + ": " + m_reportEngine.getName() + "  " + Env.getHeader(Env.getCtx(), 0)));
+		setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report") + ": " + m_reportEngine.getName()));
 	}
 	
 	
@@ -653,7 +653,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private void revalidate()
 	{
 		//	Report Info
-		setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report") + ": " + m_reportEngine.getName() + "  " + Env.getHeader(Env.getCtx(), 0)));
+		setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report") + ": " + m_reportEngine.getName()));
 		StringBuilder sb = new StringBuilder ();
 		sb.append(Msg.getMsg(Env.getCtx(), "DataCols")).append("=")
 			.append(m_reportEngine.getColumnCount())
