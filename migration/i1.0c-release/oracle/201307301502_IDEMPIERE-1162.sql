@@ -8,7 +8,7 @@ UPDATE R_MailText SET MailText='Dear @Name@,
 You are receiving this email because you (or somebody pretending to be you) said you have lost your iDempiere password.
 
 To access your iDempiere, use the temporary password from @AD_Client_ID<Name>@ below:
-@#NewPassword@
+'||chr(64)||'#NewPassword@
 
 Once you login, you will be directed to change password screen. Please change your password to something you can remember.
 
