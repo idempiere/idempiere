@@ -660,7 +660,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 	        	if (detailTab != null) {
 		        	//check data action
 	        		String uuid = (String) execution.getAttribute(CompositeADTabbox.class.getName()+".dataAction");
-	        		if (uuid != null && uuid.equals(detailTab.getUuid())) {
+	        		if (uuid != null && uuid.equals(detailTab.getUuid()) && detailTab.getGridTab().isCurrent()) {
 	        			//refresh current row
 	        			detailTab.getGridTab().dataRefresh(false);
 	        			//keep focus
