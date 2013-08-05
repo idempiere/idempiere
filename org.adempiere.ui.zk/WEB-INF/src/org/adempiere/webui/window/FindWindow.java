@@ -1019,7 +1019,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 	if (listbox.getId().equals(listColumn.getId()))
                 	{
                 		ListItem column = listColumn.getSelectedItem();
-                		if (column != null)
+                		if (column != null && column.getValue().toString().length() > 0)
                 		{
                 			addOperators(column, listOperator);
                 		}
