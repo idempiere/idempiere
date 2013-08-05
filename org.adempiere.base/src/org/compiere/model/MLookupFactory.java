@@ -783,7 +783,7 @@ public class MLookupFactory
 
 	private static StringBuilder getDisplayColumn(Language language,
 			String tableName, ArrayList<LookupDisplayColumn> list) {
-		return getDisplayColumn(language, tableName, list, null);
+		return getDisplayColumn(language, tableName, list, tableName);
 	}
 
 	private static StringBuilder getDisplayColumn(Language language,
