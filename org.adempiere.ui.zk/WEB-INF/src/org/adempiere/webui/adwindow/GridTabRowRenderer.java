@@ -27,6 +27,7 @@ import org.adempiere.webui.component.Urlbox;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
+import org.adempiere.webui.editor.WImageEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
@@ -89,6 +90,9 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	private int currentRowIndex = -1;
 	private AbstractADWindowContent m_windowPanel;
 	private ActionListener buttonListener;
+	
+	/** DefaultFocusField		*/
+	private WEditor	defaultFocusField = null;
 
 	/**
 	 *
@@ -384,6 +388,10 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
     			editor.getComponent().setWidgetOverride("fieldHelp", HelpController.escapeJavascriptContent(gridPanelFields[i].getHelp()));
     			editor.getComponent().setWidgetListener("onFocus", "zWatch.fire('onFieldTooltip', this, null, this.fieldHeader(), this.fieldDescription(), this.fieldHelp());");
     			editor.getComponent().setWidgetListener("onBlur", "zWatch.fire('onFieldTooltip', this);");
+    			
+    			//	Default Focus
+    			if (defaultFocusField == null && gridPanelFields[i].isDefaultFocus())
+    				defaultFocusField = editor;
 			}
 			
 			if (!gridPanelFields[i].isDisplayedGrid() || gridPanelFields[i].isToolbarButton()) {
@@ -585,14 +593,22 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		if (currentRow != null && currentRow.getParent() != null) {
 			WEditor toFocus = null;
 			WEditor firstEditor = null;
-			for (WEditor editor : getEditors()) {
-				if (editor.isVisible() && editor.getComponent().getParent() != null) {
-					if (editor.isReadWrite()) {
-						toFocus = editor;
-						break;
+			if (defaultFocusField != null 
+					&& defaultFocusField.isVisible() && defaultFocusField.isReadWrite() && defaultFocusField.getComponent().getParent() != null
+					&& !(defaultFocusField instanceof WImageEditor)) {
+				toFocus = defaultFocusField;
+			}
+			else
+			{
+				for (WEditor editor : getEditors()) {
+					if (editor.isVisible() && editor.getComponent().getParent() != null) {
+						if (editor.isReadWrite()) {
+							toFocus = editor;
+							break;
+						}
+						if (firstEditor == null)
+							firstEditor = editor;
 					}
-					if (firstEditor == null)
-						firstEditor = editor;
 				}
 			}
 			if (toFocus != null) {
