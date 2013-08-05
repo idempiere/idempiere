@@ -78,6 +78,7 @@ import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.IdSpace;
@@ -127,9 +128,9 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
 	public static final String ON_DYNAMIC_DISPLAY_EVENT = "onDynamicDisplay";
 	
-	public static final String ON_DEFER_DYNAMIC_DISPLAY_EVENT = "onDeferDynamicDisplay";
+	public static final String ON_DYNAMIC_DISPLAY_CALL_EVENT = "onDynamicDisplayCall";
 	
-	public static final String ON_DEFER_DYNAMIC_DISPLAY_EVENT_ATTR = "onDeferDynamicDisplay.Event.Posted";
+	public static final String ON_DYNAMIC_DISPLAY_CALL_EVENT_ATTR = "onDynamicDisplayCall.Event.Posted";
 	
 	/**
 	 * 
@@ -223,7 +224,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		});
         addEventListener(ON_POST_INIT_EVENT, this);
         addEventListener(ON_SAVE_OPEN_PREFERENCE_EVENT, this);
-        addEventListener(ON_DEFER_DYNAMIC_DISPLAY_EVENT, this);
+        addEventListener(ON_DYNAMIC_DISPLAY_CALL_EVENT, this);
     }
 
     private void initComponents()
@@ -666,16 +667,16 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		//0 and -1 is same
 		if (col < 0)
 			col = 0;
-		if (getAttribute(ON_DEFER_DYNAMIC_DISPLAY_EVENT_ATTR+"_"+col) == null) 
+		Execution exec = Executions.getCurrent();
+		if (exec.getAttribute(ON_DYNAMIC_DISPLAY_CALL_EVENT_ATTR+"_"+col) == null) 
 		{
-			setAttribute(ON_DEFER_DYNAMIC_DISPLAY_EVENT_ATTR+"_"+col, Boolean.TRUE);
-			Events.postEvent(ON_DEFER_DYNAMIC_DISPLAY_EVENT, this, col);
+			exec.setAttribute(ON_DYNAMIC_DISPLAY_CALL_EVENT_ATTR+"_"+col, Boolean.TRUE);
+			Events.sendEvent(ON_DYNAMIC_DISPLAY_CALL_EVENT, this, col);
 		}
 	}
 		
-    private void onDeferDynamicDisplay (int col)
+    private void onDynamicDisplayCall (int col)
     {
-    	removeAttribute(ON_DEFER_DYNAMIC_DISPLAY_EVENT_ATTR+"_"+col);
         if (!gridTab.isOpen())
         {
             return;
@@ -1080,9 +1081,9 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     			Env.getCtx().setProperty("P"+windowId+"|"+adTabId+"|DetailPane.IsOpen", value ? "Y" : "N");
     		}
     	}
-    	else if (event.getName().equals(ON_DEFER_DYNAMIC_DISPLAY_EVENT)) {
+    	else if (event.getName().equals(ON_DYNAMIC_DISPLAY_CALL_EVENT)) {
     		Integer col = (Integer) event.getData();
-    		onDeferDynamicDisplay(col);
+    		onDynamicDisplayCall(col);
     	}
     }
 
