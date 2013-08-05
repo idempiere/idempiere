@@ -55,6 +55,8 @@ public class TranslationHandler extends DefaultHandler
 	private String			m_updateSQL = null;
 	/** Current ID						*/
 	private String			m_curID = null;
+	/** Current UUID						*/
+	private String			m_curUUID = null;
 	/** Translated Flag					*/
 	private String			m_trl = null;
 	/** Current ColumnName				*/
@@ -97,6 +99,7 @@ public class TranslationHandler extends DefaultHandler
 		else if (qName.equals(Translation.XML_ROW_TAG))
 		{
 			m_curID = attributes.getValue(Translation.XML_ROW_ATTRIBUTE_ID);
+			m_curUUID = attributes.getValue(Translation.XML_ROW_ATTRIBUTE_UUID);
 			m_trl = attributes.getValue(Translation.XML_ROW_ATTRIBUTE_TRANSLATED);
 		//	log.finest( "ID=" + m_curID);
 			m_sql = new StringBuffer();
@@ -154,8 +157,15 @@ public class TranslationHandler extends DefaultHandler
 					m_sql.append(",IsTranslated='Y'");
 			}
 			//	Where section
-			m_sql.append(" WHERE ")
-				.append(m_TableName).append("_ID=").append(m_curID);
+			m_sql.append(" WHERE ");
+			if (m_curUUID != null) {
+				StringBuilder sql = new StringBuilder("SELECT ").append(m_TableName).append("_ID").append(" FROM ").append(m_TableName)
+						.append(" WHERE ").append(m_TableName).append("_UU =?");
+				int ID = DB.getSQLValueEx(null, sql.toString(), m_curUUID);
+				m_sql.append(m_TableName).append("_ID=").append(ID);
+			} else {
+				m_sql.append(m_TableName).append("_ID=").append(m_curID);
+			}
 			if (!m_isBaseLanguage)
 				m_sql.append(" AND AD_Language='").append(m_AD_Language).append("'");
 			if (m_AD_Client_ID >= 0)
