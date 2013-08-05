@@ -61,7 +61,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4515887660012047223L;
+	private static final long serialVersionUID = 2826550741107576964L;
 
 	/**
 	 *	Public Constructor.
@@ -1156,6 +1156,16 @@ public class MPrintFormat extends X_AD_PrintFormat
 		return DB.getSQLValue(null, sql, formatName, AD_Table_ID, AD_Client_ID);
 	}
 	//end vpj-cd e-evolution
+
+	/**
+ 	 * @param AD_Table_ID
+ 	 * @param AD_Client_ID use -1 to retrieve from all client
+ 	 * @param trxName
+ 	 */
+	public static RowSet getAccessiblePrintFormats (int AD_Table_ID, int AD_Client_ID, String trxName)
+	{
+		return getAccessiblePrintFormats(AD_Table_ID, -1, AD_Client_ID, trxName);
+	}
 
 	/**
 	 * @param AD_Table_ID
