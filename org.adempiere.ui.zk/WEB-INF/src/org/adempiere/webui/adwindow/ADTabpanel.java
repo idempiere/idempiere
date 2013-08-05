@@ -667,10 +667,14 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		//0 and -1 is same
 		if (col < 0)
 			col = 0;
+		int currentRow = getGridTab().isSortTab() ? 0 : getGridTab().getCurrentRow();
 		Execution exec = Executions.getCurrent();
-		if (exec.getAttribute(ON_DYNAMIC_DISPLAY_CALL_EVENT_ATTR+"_"+col) == null) 
+		StringBuilder builder = new StringBuilder(ON_DYNAMIC_DISPLAY_CALL_EVENT_ATTR).append("_")
+				.append(col).append("_").append(currentRow);
+		String key = builder.toString();
+		if (exec.getAttribute(key) == null) 
 		{
-			exec.setAttribute(ON_DYNAMIC_DISPLAY_CALL_EVENT_ATTR+"_"+col, Boolean.TRUE);
+			exec.setAttribute(key, Boolean.TRUE);
 			Events.sendEvent(ON_DYNAMIC_DISPLAY_CALL_EVENT, this, col);
 		}
 	}
