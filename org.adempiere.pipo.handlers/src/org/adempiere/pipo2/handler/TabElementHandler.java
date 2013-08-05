@@ -140,6 +140,7 @@ public class TabElementHandler extends AbstractElementHandler {
 				return;
 			}
 
+			element.recordId = mTab.get_ID();
 			if (mTab.is_new() || mTab.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Tab.Table_Name,
 						X_AD_Tab.Table_ID);
@@ -185,6 +186,13 @@ public class TabElementHandler extends AbstractElementHandler {
 			addTypeName(atts, "table");
 			document.startElement("","",I_AD_Tab.Table_Name,atts);
 			createTabBinding(ctx,document,m_Tab);
+
+			packOut.getCtx().ctx.put("Table_Name",X_AD_Tab.Table_Name);
+			try {
+				new CommonTranslationHandler().packOut(packOut,document,null,m_Tab.get_ID());
+			} catch(Exception e) {
+				if (log.isLoggable(Level.INFO)) log.info(e.toString());
+			}
 		}
 
 		//Fields tags.

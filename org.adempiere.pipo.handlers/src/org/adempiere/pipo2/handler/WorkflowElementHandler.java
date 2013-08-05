@@ -86,7 +86,7 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 				element.unresolved = notfounds.toString();
 				return;
 			}
-			
+			element.recordId = mWorkflow.get_ID();
 			if (mWorkflow.is_new() || mWorkflow.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Workflow.Table_Name,
 						X_AD_Workflow.Table_ID);
@@ -103,7 +103,6 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 					logImportDetail(ctx,impDetail, 1, mWorkflow.getName(), mWorkflow
 							.get_ID(), action);
 					workflows.add(mWorkflow.getAD_Workflow_ID());
-					element.recordId = mWorkflow.getAD_Workflow_ID();
 				} else {
 					log.info("m_Workflow save failure");
 					logImportDetail(ctx, impDetail, 0, mWorkflow.getName(), mWorkflow
@@ -160,7 +159,7 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 				X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID);
 		if (workflows.contains(AD_Workflow_ID))
 			return;
-
+		PackOut packOut = ctx.packOut;
 		workflows.add(AD_Workflow_ID);
 		int ad_wf_nodenext_id = 0;
 		int ad_wf_nodenextcondition_id = 0;
@@ -179,6 +178,13 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 			atts.addAttribute("", "", "type-name", "CDATA", "ad.workflow");
 			document.startElement("", "", I_AD_Workflow.Table_Name, atts);
 			createWorkflowBinding(ctx, document, m_Workflow);
+
+			packOut.getCtx().ctx.put("Table_Name",I_AD_Workflow.Table_Name);
+			try {
+				new CommonTranslationHandler().packOut(packOut,document,null,m_Workflow.get_ID());
+			} catch(Exception e) {
+				if (log.isLoggable(Level.INFO)) log.info(e.toString());
+			}
 		}
 
 		String sql = "SELECT AD_WF_Node_ID FROM AD_WF_Node WHERE AD_Workflow_ID = "

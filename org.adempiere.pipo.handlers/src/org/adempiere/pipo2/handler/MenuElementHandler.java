@@ -79,7 +79,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 			element.unresolved = notFounds.toString();
 			return;
 		}
-
+		element.recordId = mMenu.get_ID();
 		if (!mMenu.is_new() && !mMenu.is_Changed())
 			return;
 
@@ -211,6 +211,15 @@ public class MenuElementHandler extends AbstractElementHandler {
 			addTypeName(atts, "table");
 			document.startElement("", "", I_AD_Menu.Table_Name, atts);
 			createMenuBinding(ctx, document, m_Menu);
+
+			PackOut packOut = ctx.packOut;
+			packOut.getCtx().ctx.put("Table_Name",X_AD_Menu.Table_Name);
+			try {
+				new CommonTranslationHandler().packOut(packOut,document,null,m_Menu.get_ID());
+			} catch(Exception e) {
+				if (log.isLoggable(Level.INFO)) log.info(e.toString());
+			}
+
 			createModule(ctx, document, AD_Menu_ID);
 			document.endElement("", "", I_AD_Menu.Table_Name);
 		}
@@ -260,6 +269,14 @@ public class MenuElementHandler extends AbstractElementHandler {
 				addTypeName(atts, "table");
 				document.startElement("", "", I_AD_Menu.Table_Name, atts);
 				createMenuBinding(ctx, document, m_Menu);
+
+				packOut.getCtx().ctx.put("Table_Name",X_AD_Menu.Table_Name);
+				try {
+					new CommonTranslationHandler().packOut(packOut,document,null,m_Menu.get_ID());
+				} catch(Exception e) {
+					if (log.isLoggable(Level.INFO)) log.info(e.toString());
+				}
+
 				if (rs.getInt("AD_WINDOW_ID") > 0
 						|| rs.getInt("AD_WORKFLOW_ID") > 0
 						|| rs.getInt("AD_TASK_ID") > 0

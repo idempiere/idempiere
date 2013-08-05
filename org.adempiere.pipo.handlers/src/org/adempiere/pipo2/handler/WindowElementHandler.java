@@ -90,7 +90,7 @@ public class WindowElementHandler extends AbstractElementHandler {
 				element.unresolved = notfounds.toString();
 				return;
 			}
-			
+			element.recordId = mWindow.get_ID();
 			if (mWindow.is_new() || mWindow.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Window.Table_Name,
 						X_AD_Window.Table_ID);
@@ -104,7 +104,6 @@ public class WindowElementHandler extends AbstractElementHandler {
 				if (mWindow.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mWindow.getName(), mWindow
 							.get_ID(), action);
-					element.recordId = mWindow.getAD_Window_ID();
 					windows.add(mWindow.getAD_Window_ID());
 				} else {
 					logImportDetail(ctx, impDetail, 0, mWindow.getName(), mWindow
@@ -164,6 +163,12 @@ public class WindowElementHandler extends AbstractElementHandler {
 			addTypeName(atts, "table");
 			document.startElement("", "", I_AD_Window.Table_Name, atts);
 			createWindowBinding(ctx, document, m_Window);
+			packOut.getCtx().ctx.put("Table_Name",X_AD_Window.Table_Name);
+			try {
+				new CommonTranslationHandler().packOut(packOut,document,null,m_Window.get_ID());
+			} catch(Exception e) {
+				if (log.isLoggable(Level.INFO)) log.info(e.toString());
+			}
 		}
 		// Tab Tag
 		String sql = "SELECT AD_Tab_ID, AD_Table_ID FROM AD_TAB WHERE AD_WINDOW_ID = "

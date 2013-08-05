@@ -370,6 +370,10 @@ public class MColumn extends X_AD_Column
 	{
 		if (!success)
 			return success;
+
+		/* Fields must inherit translation from element, not from column
+		 * changing it here is useless as SynchronizeTerminology get trl from column */
+		/*
 		//	Update Fields
 		if (!newRecord)
 		{
@@ -387,6 +391,8 @@ public class MColumn extends X_AD_Column
 				if (log.isLoggable(Level.FINE)) log.fine("afterSave - Fields updated #" + no);
 			}
 		}
+		*/
+
 		return success;
 	}	//	afterSave
 	

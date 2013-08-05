@@ -18,6 +18,7 @@ package org.adempiere.pipo2.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -55,6 +56,11 @@ public class MessageElementHandler extends AbstractElementHandler {
 			}
 			PoFiller filler = new PoFiller(ctx, mMessage, element, this);
 			List<String> excludes = defaultExcludeList(X_AD_Message.Table_Name);
+
+			if (messages.contains(mMessage.getAD_Message_ID())) {
+				element.skip = true;
+				return;
+			}
 						
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
@@ -62,7 +68,7 @@ public class MessageElementHandler extends AbstractElementHandler {
 				element.unresolved = notfounds.toString();
 				return;
 			}
-
+			element.recordId = mMessage.getAD_Message_ID();
 			if (mMessage.is_new() || mMessage.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Message.Table_Name,
 						X_AD_Message.Table_ID);
@@ -102,7 +108,6 @@ public class MessageElementHandler extends AbstractElementHandler {
 		messages.add(AD_Message_ID);
 		AttributesImpl atts = new AttributesImpl();
 		X_AD_Message m_Message = new X_AD_Message (ctx.ctx, AD_Message_ID, null);
-
 		if (ctx.packOut.getFromDate() != null) {
 			if (m_Message.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
 				return;
@@ -112,6 +117,15 @@ public class MessageElementHandler extends AbstractElementHandler {
 		addTypeName(atts, "table");
 		document.startElement("","",I_AD_Message.Table_Name,atts);
 		createMessageBinding(ctx,document,m_Message);
+
+		PackOut packOut = ctx.packOut;
+		packOut.getCtx().ctx.put("Table_Name",X_AD_Message.Table_Name);
+		try {
+			new CommonTranslationHandler().packOut(packOut,document,null,m_Message.get_ID());
+		} catch(Exception e) {
+			if (log.isLoggable(Level.INFO)) log.info(e.toString());
+		}
+
 		document.endElement("","",I_AD_Message.Table_Name);
 	}
 
