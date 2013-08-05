@@ -206,6 +206,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
 	private Properties m_findCtx;
 	
+	private static final String ON_POST_VISIBLE_ATTR = "onPostVisible.Event.Posted";
 
     /**
      * FindPanel Constructor
@@ -2157,6 +2158,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     }
 
 	public void OnPostVisible() {
+		removeAttribute(ON_POST_VISIBLE_ATTR);
 		if (m_sEditors.size() > 0)
 			Clients.response(new AuFocus(m_sEditors.get(0).getComponent()));
 	}
@@ -2180,7 +2182,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	public boolean setVisible(boolean visible) {
 		boolean ret = super.setVisible(visible);
 		if (visible) {
-			Events.echoEvent("OnPostVisible", this, null);
+			if (getAttribute(ON_POST_VISIBLE_ATTR) == null) {
+				setAttribute(ON_POST_VISIBLE_ATTR, Boolean.TRUE);
+				Events.echoEvent("OnPostVisible", this, null);
+			}
 		} else {
 			//auto detach
 			detach();

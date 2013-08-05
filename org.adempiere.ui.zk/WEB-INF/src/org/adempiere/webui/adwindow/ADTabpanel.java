@@ -127,12 +127,18 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
 	public static final String ON_DYNAMIC_DISPLAY_EVENT = "onDynamicDisplay";
 	
+	public static final String ON_DEFER_DYNAMIC_DISPLAY_EVENT = "onDeferDynamicDisplay";
+	
+	public static final String ON_DEFER_DYNAMIC_DISPLAY_EVENT_ATTR = "onDeferDynamicDisplay.Event.Posted";
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6082680802978974909L;
 
 	private static final String ON_DEFER_SET_SELECTED_NODE = "onDeferSetSelectedNode";
+	
+	private static final String ON_DEFER_SET_SELECTED_NODE_ATTR = "onDeferSetSelectedNode.Event.Posted";
 	
 	private static final CLogger logger;
 
@@ -217,6 +223,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		});
         addEventListener(ON_POST_INIT_EVENT, this);
         addEventListener(ON_SAVE_OPEN_PREFERENCE_EVENT, this);
+        addEventListener(ON_DEFER_DYNAMIC_DISPLAY_EVENT, this);
     }
 
     private void initComponents()
@@ -654,8 +661,21 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	 * @param col
 	 */
 	@Override
-    public void dynamicDisplay (int col)
+	public void dynamicDisplay (int col)
+	{
+		//0 and -1 is same
+		if (col < 0)
+			col = 0;
+		if (getAttribute(ON_DEFER_DYNAMIC_DISPLAY_EVENT_ATTR+"_"+col) == null) 
+		{
+			setAttribute(ON_DEFER_DYNAMIC_DISPLAY_EVENT_ATTR+"_"+col, Boolean.TRUE);
+			Events.postEvent(ON_DEFER_DYNAMIC_DISPLAY_EVENT, this, col);
+		}
+	}
+		
+    private void onDeferDynamicDisplay (int col)
     {
+    	removeAttribute(ON_DEFER_DYNAMIC_DISPLAY_EVENT_ATTR+"_"+col);
         if (!gridTab.isOpen())
         {
             return;
@@ -796,10 +816,17 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         }
 
         Events.sendEvent(this, new Event(ON_DYNAMIC_DISPLAY_EVENT, this));
-        Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
+        echoDeferSetSelectedNodeEvent();
         if (logger.isLoggable(Level.CONFIG)) logger.config(gridTab.toString() + " - fini - " + (col<=0 ? "complete" : "seletive"));
     }   //  dynamicDisplay
 
+	private void echoDeferSetSelectedNodeEvent() {
+		if (getAttribute(ON_DEFER_SET_SELECTED_NODE_ATTR) == null) {
+        	setAttribute(ON_DEFER_SET_SELECTED_NODE_ATTR, Boolean.TRUE);
+        	Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
+        }
+	}
+	
     /**
      * @return String
      */
@@ -957,7 +984,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         }
 
         if (gridTab.getRecord_ID() > 0 && gridTab.isTreeTab() && treePanel != null) {
-        	Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
+        	echoDeferSetSelectedNodeEvent();
         }
         
         Event event = new Event(ON_ACTIVATE_EVENT, this, activate);
@@ -1006,6 +1033,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     		navigateTo((DefaultTreeNode<MTreeNode>)item.getValue());
     	}
     	else if (ON_DEFER_SET_SELECTED_NODE.equals(event.getName())) {
+    		removeAttribute(ON_DEFER_SET_SELECTED_NODE_ATTR);
     		if (gridTab.getRecord_ID() >= 0 && gridTab.isTreeTab() && treePanel != null) {
             	setSelectedNode(gridTab.getRecord_ID());
             }
@@ -1051,6 +1079,10 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     			//update current context
     			Env.getCtx().setProperty("P"+windowId+"|"+adTabId+"|DetailPane.IsOpen", value ? "Y" : "N");
     		}
+    	}
+    	else if (event.getName().equals(ON_DEFER_DYNAMIC_DISPLAY_EVENT)) {
+    		Integer col = (Integer) event.getData();
+    		onDeferDynamicDisplay(col);
     	}
     }
 
@@ -1197,7 +1229,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         				if (AD_Tree_ID != 0)
         				{
                 			if (treePanel.initTree(AD_Tree_ID, windowNo))
-                				Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
+                				echoDeferSetSelectedNodeEvent();
                 			else
                 				setSelectedNode(gridTab.getRecord_ID());
                 			
@@ -1282,7 +1314,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 				int[] path = model.getPath(treeNode);
 				Treeitem ti = treePanel.getTree().renderItemByPath(path);
 				if (ti.getPage() == null) {
-					Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
+					echoDeferSetSelectedNodeEvent();
 				}
 
 				boolean changed = false;

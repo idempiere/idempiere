@@ -29,6 +29,7 @@ import org.zkoss.zk.ui.util.Clients;
  */
 public class DPPerformance extends DashboardPanel {
 
+	private static final String ON_POST_RENDER_ATTR = "onPostRender.Event.Posted";
 	/**
 	 * 
 	 */
@@ -53,22 +54,31 @@ public class DPPerformance extends DashboardPanel {
 	
 	public void refresh(ServerPushTemplate template) {
 		super.refresh(template);
-		if (Executions.getCurrent() != null)
-			Events.echoEvent("onPostRender", this, null);
+		if (Executions.getCurrent() != null) {
+			if (this.getAttribute(ON_POST_RENDER_ATTR) == null) {
+				setAttribute(ON_POST_RENDER_ATTR, Boolean.TRUE);
+				Events.echoEvent("onPostRender", this, null);
+			}
+		}
 	}
 	
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
 		super.onPageAttached(newpage, oldpage);
 		if (newpage != null) {
-			if (Executions.getCurrent() != null)
-				Events.echoEvent("onPostRender", this, null);
+			if (Executions.getCurrent() != null) {
+				if (this.getAttribute(ON_POST_RENDER_ATTR) == null) {
+					setAttribute(ON_POST_RENDER_ATTR, Boolean.TRUE);
+					Events.echoEvent("onPostRender", this, null);
+				}
+			}
 		}
 	}
 
 	//adjust window height to match grid height
 	public void onPostRender() 
 	{
+		removeAttribute(ON_POST_RENDER_ATTR);
 		if (this.getFirstChild() != null)
 		{
 			Component grid = this.getFirstChild().getFirstChild();
