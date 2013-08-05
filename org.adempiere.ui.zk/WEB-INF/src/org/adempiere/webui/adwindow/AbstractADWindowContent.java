@@ -2432,6 +2432,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		final IADTabpanel adtabPanel = findADTabpanel(wButton);
 		boolean startWOasking = false;
+		if (adtabPanel == null) {
+			return;
+		}
 		final int table_ID = adtabPanel.getGridTab().getAD_Table_ID();
 
 		//	Record_ID

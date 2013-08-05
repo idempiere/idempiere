@@ -792,7 +792,16 @@ public class CompositeADTabbox extends AbstractADTabbox
 		if (headerTab.getGridTab().isNew()) {
 			tabPanel.resetDetailForNewParentRecord();
 		} else {
+			//maintain detail row position if possible 
+			int currentRow = -1;
+			if (!tabPanel.getGridTab().isSortTab()) {
+				currentRow = tabPanel.getGridTab().getCurrentRow();
+			}
 			tabPanel.query(false, 0, 0);
+			if (currentRow >= 0 && currentRow != tabPanel.getGridTab().getCurrentRow() 
+				&& currentRow < tabPanel.getGridTab().getRowCount()) {
+				tabPanel.getGridTab().setCurrentRow(currentRow, false);
+			}
 		}
 		if (!tabPanel.isVisible()) {
 			tabPanel.setVisible(true);
