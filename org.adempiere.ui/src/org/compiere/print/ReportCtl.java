@@ -155,11 +155,11 @@ public class ReportCtl
 			return startDocumentPrint(ReportEngine.DUNNING, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
 	   else if (pi.getAD_Process_ID() == PROCESS_RPT_FINREPORT			//	Financial Report
 			|| pi.getAD_Process_ID() == PROCESS_RPT_FINSTATEMENT)			//	Financial Statement
-		   return startFinReport (pi);
+		   return startFinReport (pi, WindowNo);
 		/********************
 		 *	Standard Report
 		 *******************/
-		return startStandardReport (pi);
+		return startStandardReport (pi, WindowNo);
 	}	//	create
 
 	/**************************************************************************
@@ -169,10 +169,10 @@ public class ReportCtl
 	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if OK
 	 */
-	static public boolean startStandardReport (ProcessInfo pi, boolean IsDirectPrint)
+	static public boolean startStandardReport (ProcessInfo pi, int WindowNo, boolean IsDirectPrint)
 	{
 		pi.setPrintPreview(!IsDirectPrint);
-		return startStandardReport(pi);
+		return startStandardReport(pi, WindowNo);
 	}
 
 	/**************************************************************************
@@ -187,7 +187,7 @@ public class ReportCtl
 	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if OK
 	 */
-	static public boolean startStandardReport (ProcessInfo pi)
+	static public boolean startStandardReport (ProcessInfo pi, int WindowNo)
 	{
 		ReportEngine re = null;
 		//
@@ -202,6 +202,7 @@ public class ReportCtl
 			MQuery query = MQuery.get (ctx, pi.getAD_PInstance_ID(), TableName);
 			PrintInfo info = new PrintInfo(pi);
 			re = new ReportEngine(ctx, format, query, info);
+			re.setWindowNo(WindowNo);
 			createOutput(re, pi.isPrintPreview(), null);
 			return true;
 		}
@@ -214,6 +215,7 @@ public class ReportCtl
 				pi.setSummary("No ReportEngine");
 				return false;
 			}
+			re.setWindowNo(WindowNo);
 		}
 
 		createOutput(re, pi.isPrintPreview(), null);
@@ -225,7 +227,7 @@ public class ReportCtl
 	 *  @param pi Process Info
 	 *  @return true if OK
 	 */
-	static public boolean startFinReport (ProcessInfo pi)
+	static public boolean startFinReport (ProcessInfo pi, int WindowNo)
 	{
 		@SuppressWarnings("unused")
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
@@ -246,6 +248,7 @@ public class ReportCtl
 		PrintInfo info = new PrintInfo(pi);
 
 		ReportEngine re = new ReportEngine(Env.getCtx(), format, query, info);
+		re.setWindowNo(WindowNo);
 		createOutput(re, pi.isPrintPreview(), null);
 		return true;
 	}	//	startFinReport
@@ -311,6 +314,7 @@ public class ReportCtl
 		{
 			throw new AdempiereException("NoDocPrintFormat");
 		}
+		re.setWindowNo(WindowNo);
 		if (customPrintFormat!=null) {
 			// Use custom print format if available
 			re.setPrintFormat(customPrintFormat);

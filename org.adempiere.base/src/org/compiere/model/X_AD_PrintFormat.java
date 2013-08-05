@@ -30,7 +30,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20130801L;
 
     /** Standard Constructor */
     public X_AD_PrintFormat (Properties ctx, int AD_PrintFormat_ID, String trxName)
@@ -284,6 +284,34 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	public int getAD_Table_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
+			.getPO(getAD_Window_ID(), get_TrxName());	}
+
+	/** Set Window.
+		@param AD_Window_ID 
+		Data entry or display window
+	  */
+	public void setAD_Window_ID (int AD_Window_ID)
+	{
+		if (AD_Window_ID < 1) 
+			set_Value (COLUMNNAME_AD_Window_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
+	}
+
+	/** Get Window.
+		@return Data entry or display window
+	  */
+	public int getAD_Window_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

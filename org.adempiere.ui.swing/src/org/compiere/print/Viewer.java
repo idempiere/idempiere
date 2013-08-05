@@ -429,6 +429,10 @@ public class Viewer extends CFrame
 		comboReport.removeActionListener(this);
 		comboReport.removeAllItems();
 		KeyNamePair selectValue = null;
+		
+		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), m_reportEngine.getWindowNo(), "_WinInfo_AD_Window_ID", true);
+		if (AD_Window_ID == 0)
+			AD_Window_ID = Env.getZoomWindowID(m_reportEngine.getQuery());
 		//	fill Report Options
 		String sql = MRole.getDefault().addAccessSQL(
 			"SELECT AD_PrintFormat_ID, Name, Description "
@@ -437,6 +441,7 @@ public class Viewer extends CFrame
 				//Added Lines by Armen
 				+ "AND IsActive='Y' "
 				//End of Added Lines
+				+ (AD_Window_ID > 0 ? "AND (AD_Window_ID=? OR AD_Window_ID IS NULL) " : "")
 				+ "ORDER BY Name",
 			"AD_PrintFormat", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 		int AD_Table_ID = m_reportEngine.getPrintFormat().getAD_Table_ID();
@@ -446,6 +451,8 @@ public class Viewer extends CFrame
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, AD_Table_ID);
+			if (AD_Window_ID > 0)
+				pstmt.setInt(2, AD_Window_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{

@@ -89,7 +89,7 @@ public class ReportAction implements EventListener<Event>
 	public ReportAction(AbstractADWindowContent panel)
 	{
 		this.panel = panel;		
-		getPrintFormats(panel.getActiveGridTab().getAD_Table_ID());
+		getPrintFormats(panel.getActiveGridTab().getAD_Table_ID(), panel.getActiveGridTab().getAD_Window_ID());
 	}
 	
 	public void show() 
@@ -447,12 +447,12 @@ public class ReportAction implements EventListener<Event>
 		}
 	}
 	
-	private void getPrintFormats(int AD_Table_ID)
+	private void getPrintFormats(int AD_Table_ID, int AD_Window_ID)
 	{
 		printFormatList.clear();
 		
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		RowSet rowSet = MPrintFormat.getAccessiblePrintFormats(AD_Table_ID, -1, null);
+		RowSet rowSet = MPrintFormat.getAccessiblePrintFormats(AD_Table_ID, AD_Window_ID, -1, null);
 		KeyNamePair pp = null;
 		try
 		{

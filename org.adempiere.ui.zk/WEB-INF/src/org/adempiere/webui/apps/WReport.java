@@ -100,8 +100,12 @@ public class WReport implements EventListener<Event> {
 		this.WindowNo = WindowNo;
 		this.whereExtended = whereExtended;
 
+		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), WindowNo, "_WinInfo_AD_Window_ID", true);
+		if (AD_Window_ID == 0)
+			AD_Window_ID = Env.getZoomWindowID(query);
+		
 		//	See What is there
-		getPrintFormats (AD_Table_ID);
+		getPrintFormats (AD_Table_ID, AD_Window_ID);
 	}	//	AReport
 
 	/**	The Query						*/
@@ -124,10 +128,10 @@ public class WReport implements EventListener<Event> {
 	 * 	@param AD_Table_ID table
 	 *  @param invoker component to display popup (optional)
 	 */
-	private void getPrintFormats (int AD_Table_ID)
+	private void getPrintFormats (int AD_Table_ID, int AD_Window_ID)
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		RowSet rowSet = MPrintFormat.getAccessiblePrintFormats(AD_Table_ID, -1, null);
+		RowSet rowSet = MPrintFormat.getAccessiblePrintFormats(AD_Table_ID, AD_Window_ID, -1, null);
 		KeyNamePair pp = null;
 		try
 		{
