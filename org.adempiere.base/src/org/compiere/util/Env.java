@@ -56,8 +56,11 @@ import org.compiere.model.I_AD_Window;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookupCache;
+import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSession;
+import org.compiere.model.MTable;
+import org.compiere.model.MZoomCondition;
 import org.compiere.model.PO;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.SvrProcess;
@@ -1788,6 +1791,83 @@ public final class Env
 		String s = Env.getContext(Env.getCtx(), STANDARD_REPORT_FOOTER_TRADEMARK_TEXT);
 		return Util.isEmpty(s) ? Adempiere.ADEMPIERE_R : s;
 	}
+	
+	public static int getZoomWindowID(MQuery query)
+	{
+		int AD_Window_ID = MZoomCondition.findZoomWindow(query);
+		if (AD_Window_ID <= 0)
+		{
+			String TableName = query.getTableName();
+			int PO_Window_ID = 0;
+			String sql = "SELECT AD_Window_ID, PO_Window_ID FROM AD_Table WHERE TableName=?";
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
+			{
+				pstmt = DB.prepareStatement(sql, null);
+				pstmt.setString(1, TableName);
+				rs = pstmt.executeQuery();
+				if (rs.next())
+				{
+					AD_Window_ID = rs.getInt(1);
+					PO_Window_ID = rs.getInt(2);
+				}
+			}
+			catch (SQLException e)
+			{
+				log.log(Level.SEVERE, sql, e);
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
+			}
+			//  Nothing to Zoom to
+			if (AD_Window_ID == 0)
+				return AD_Window_ID;
+	
+			//	PO Zoom ?
+			boolean isSOTrx = true;
+			if (PO_Window_ID != 0)
+			{
+				isSOTrx = DB.isSOTrx(TableName, query.getWhereClause(false));
+				if (!isSOTrx)
+					AD_Window_ID = PO_Window_ID;
+			}
+
+			if (log.isLoggable(Level.CONFIG)) log.config(query + " (IsSOTrx=" + isSOTrx + ")");
+		}
+		return AD_Window_ID;
+	}
+	
+	public static int getZoomWindowID(int AD_Table_ID, int Record_ID)
+	{
+		int AD_Window_ID = MZoomCondition.findZoomWindowByTableId(AD_Table_ID, Record_ID);
+		MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
+		if (AD_Window_ID <= 0)
+		{
+			AD_Window_ID = table.getAD_Window_ID();
+			//  Nothing to Zoom to
+			if (AD_Window_ID == 0)
+				return AD_Window_ID;
+			
+			//	PO Zoom ?
+			boolean isSOTrx = true;
+			if (table.getPO_Window_ID() != 0)
+			{
+				String whereClause = table.getTableName() + "_ID=" + Record_ID;
+				isSOTrx = DB.isSOTrx(table.getTableName(), whereClause);
+				if (!isSOTrx)
+					AD_Window_ID = table.getPO_Window_ID();
+			}
+
+			if (log.isLoggable(Level.CONFIG)) log.config(table.getTableName() + " - Record_ID=" + Record_ID + " (IsSOTrx=" + isSOTrx + ")");
+		}
+		return AD_Window_ID;
+	}
+	
+	
 	
 	/**************************************************************************
 	 *  Static Variables

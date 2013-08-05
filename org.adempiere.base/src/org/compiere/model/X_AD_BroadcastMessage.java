@@ -30,7 +30,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20130716L;
 
     /** Standard Constructor */
     public X_AD_BroadcastMessage (Properties ctx, int AD_BroadcastMessage_ID, String trxName)
@@ -171,8 +171,12 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	public static final int BROADCASTFREQUENCY_AD_Reference_ID=200020;
 	/** Just Once = J */
 	public static final String BROADCASTFREQUENCY_JustOnce = "J";
-	/** Until Expiration = U */
-	public static final String BROADCASTFREQUENCY_UntilExpiration = "U";
+	/** Until Expiration = E */
+	public static final String BROADCASTFREQUENCY_UntilExpiration = "E";
+	/** Until Acknowledge = A */
+	public static final String BROADCASTFREQUENCY_UntilAcknowledge = "A";
+	/** Until Expiration or Acknowledge = O */
+	public static final String BROADCASTFREQUENCY_UntilExpirationOrAcknowledge = "O";
 	/** Set Broadcast Frequency.
 		@param BroadcastFrequency 
 		How Many Times Message Should be Broadcasted

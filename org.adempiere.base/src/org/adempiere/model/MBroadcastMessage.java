@@ -29,11 +29,11 @@ import org.compiere.util.Env;
  */
 public class MBroadcastMessage extends X_AD_BroadcastMessage
 {
-
     /**
-     * 
-     */
-    private static final long serialVersionUID = -6390563897422379468L;
+	 * 
+	 */
+	private static final long serialVersionUID = 1908264699133879072L;
+
     static private CCache<Integer,MBroadcastMessage> s_cache = new CCache<Integer,MBroadcastMessage>("AD_BroadcastMessage", 30, 60);
 
     public MBroadcastMessage(Properties ctx, int AD_BroadcastMessage_ID,
@@ -98,5 +98,22 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage
 		}
     	return false;
     }
+    
+    /**************************************************************************
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return save
+	 */
+	protected boolean beforeSave (boolean newRecord)
+	{
+		if (BROADCASTTYPE_Immediate.equals(getBroadcastType())) {
+			setBroadcastFrequency(BROADCASTFREQUENCY_JustOnce);
+		}
+		boolean logack =
+			(   BROADCASTFREQUENCY_UntilAcknowledge.equals(getBroadcastFrequency())
+			 || BROADCASTFREQUENCY_UntilExpirationOrAcknowledge.equals(getBroadcastFrequency()));
+		setLogAcknowledge(logack);
+		return true;
+	}
     
 }
