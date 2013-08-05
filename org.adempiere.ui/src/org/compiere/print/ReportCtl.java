@@ -169,6 +169,19 @@ public class ReportCtl
 	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if OK
 	 */
+	static public boolean startStandardReport (ProcessInfo pi, boolean IsDirectPrint)
+	{
+		return startStandardReport(pi, -1, IsDirectPrint);
+	}
+	
+	/**************************************************************************
+	 *	Start Standard Report.
+	 *  - Get Table Info & submit
+	 *  @param pi Process Info
+	 *  @param WindowNo The windows number which invoked the printing
+	 *  @param IsDirectPrint if true, prints directly - otherwise View
+	 *  @return true if OK
+	 */
 	static public boolean startStandardReport (ProcessInfo pi, int WindowNo, boolean IsDirectPrint)
 	{
 		pi.setPrintPreview(!IsDirectPrint);
@@ -184,6 +197,24 @@ public class ReportCtl
 	 *  <li>process information (AD_Process.AD_PrintFormat_ID, AD_Process.AD_ReportView_ID)
 	 *  </ol>
 	 *  @param pi Process Info
+	 *  @param IsDirectPrint if true, prints directly - otherwise View
+	 *  @return true if OK
+	 */
+	static public boolean startStandardReport (ProcessInfo pi)
+	{
+		return startStandardReport(pi, -1);
+	}
+	
+	/**************************************************************************
+	 *	Start Standard Report.
+	 *  - Get Table Info & submit.<br>
+	 *  A report can be created from:
+	 *  <ol>
+	 *  <li>attached MPrintFormat, if any (see {@link ProcessInfo#setTransientObject(Object)}, {@link ProcessInfo#setSerializableObject(java.io.Serializable)}
+	 *  <li>process information (AD_Process.AD_PrintFormat_ID, AD_Process.AD_ReportView_ID)
+	 *  </ol>
+	 *  @param pi Process Info
+	 *  @param WindowNo The windows number which invoked the printing
 	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if OK
 	 */
@@ -225,6 +256,17 @@ public class ReportCtl
 	/**
 	 *	Start Financial Report.
 	 *  @param pi Process Info
+	 *  @return true if OK
+	 */
+	static public boolean startFinReport (ProcessInfo pi)
+	{
+		return startFinReport(pi, -1);
+	}
+	
+	/**
+	 *	Start Financial Report.
+	 *  @param pi Process Info
+	 *  @param WindowNo The windows number which invoked the printing
 	 *  @return true if OK
 	 */
 	static public boolean startFinReport (ProcessInfo pi, int WindowNo)
