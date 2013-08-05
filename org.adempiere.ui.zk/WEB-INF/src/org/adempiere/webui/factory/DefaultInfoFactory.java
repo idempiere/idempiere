@@ -35,6 +35,7 @@ import org.adempiere.webui.panel.InfoPaymentPanel;
 import org.adempiere.webui.panel.InfoProductPanel;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
+import org.compiere.model.MDocType;
 import org.compiere.model.MInfoWindow;
 import org.compiere.util.Env;
 
@@ -49,11 +50,12 @@ public class DefaultInfoFactory implements IInfoFactory {
 	public InfoPanel create(int WindowNo, String tableName, String keyColumn,
 			String value, boolean multiSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup) {
 		InfoPanel info = null;
+		setSOTrxBasedOnDocType(WindowNo);
 
         if (tableName.equals("C_BPartner")) {
         	info = new InfoBPartnerWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup);
         	if (!info.loadedOK()) {
-        		info = new InfoBPartnerPanel (value,WindowNo, !Env.getContext(Env.getCtx(),"IsSOTrx").equals("N"),
+        		info = new InfoBPartnerPanel (value,WindowNo, !Env.getContext(Env.getCtx(), WindowNo, "IsSOTrx").equals("N"),
         				multiSelection, whereClause, lookup);
         	}
         } else if (tableName.equals("M_Product")) {
@@ -123,7 +125,8 @@ public class DefaultInfoFactory implements IInfoFactory {
 			String keyColumn, String queryValue, boolean multiSelection,
 			String whereClause, int AD_InfoWindow_ID) {
 		InfoPanel info = null;
-		
+		setSOTrxBasedOnDocType(lookup.getWindowNo());
+
 		String col = lookup.getColumnName();		//	fully qualified name
 
 		if (col.indexOf('.') != -1)
@@ -180,6 +183,14 @@ public class DefaultInfoFactory implements IInfoFactory {
 			return (InfoWindow) info;
 		else
 			return null;
+	}
+
+	private void setSOTrxBasedOnDocType(int WindowNo) {
+		int C_DocType_ID = Env.getContextAsInt(Env.getCtx(), WindowNo, "C_DocType_ID");
+		if (C_DocType_ID != 0) {
+			MDocType dt = MDocType.get (Env.getCtx(), C_DocType_ID);
+			Env.setContext(Env.getCtx(), WindowNo, "IsSOTrx", dt.isSOTrx () ? "Y": "N");
+		}
 	}
 
 }
