@@ -74,8 +74,12 @@ public class BroadcastMsgUtil
 				int[] userIDs = DB.getIDsEx(null, sql);
 
 				for (int userID : userIDs) {
+					MUser user = MUser.get(Env.getCtx(), userID);
+					if (! user.isActive())
+							continue;
 					MNote note = new MNote(Env.getCtx(), 0, trxName);
-					note.setClientOrg(MUser.get(Env.getCtx(), userID).getAD_Client_ID(), 0);
+					if (MBroadcastMessage.TARGET_Everybody.equals(mbMessage.getTarget()))
+						note.setClientOrg(user.getAD_Client_ID(), 0);
 					note.setAD_BroadcastMessage_ID(messageID);
 					note.setAD_User_ID(userID);
 					note.setAD_Message_ID(0);
