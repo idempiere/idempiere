@@ -1559,19 +1559,46 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 				@Override
 				public void onCallback(Boolean result) {
-					adTabbox.getSelectedGridTab().dataRefreshAll(fireEvent, true);
-			        adTabbox.getSelectedTabpanel().dynamicDisplay(0);
-			        focusToActivePanel();
+					afterRefresh(fireEvent);
 				}
 			});
     	}
     	else
     	{
-    		adTabbox.getSelectedGridTab().dataRefreshAll(fireEvent, true);
-	        adTabbox.getSelectedTabpanel().dynamicDisplay(0);
-	        focusToActivePanel();
+    		afterRefresh(fireEvent);
     	}
     }
+
+	/**
+	 * @param fireEvent
+	 */
+	protected void afterRefresh(final boolean fireEvent) {
+		IADTabpanel headerTab = adTabbox.getSelectedTabpanel();
+		IADTabpanel detailTab = adTabbox.getSelectedDetailADTabpanel();
+		if (headerTab instanceof ADTabpanel)
+		{
+			((ADTabpanel) headerTab).toggleDynamicDisplay(false);
+		}
+		if (detailTab != null && detailTab instanceof ADTabpanel)
+		{
+			((ADTabpanel) detailTab).toggleDynamicDisplay(false);
+		}
+		adTabbox.getSelectedGridTab().dataRefreshAll(fireEvent, true);
+		if (headerTab instanceof ADTabpanel)
+		{
+			((ADTabpanel) headerTab).toggleDynamicDisplay(true);
+		}
+		if (detailTab != null && detailTab instanceof ADTabpanel)
+		{
+			((ADTabpanel) detailTab).toggleDynamicDisplay(true);
+		}
+		headerTab.dynamicDisplay(0);
+		if (detailTab != null)
+		{
+			detailTab.dynamicDisplay(0);
+		}
+		focusToActivePanel();
+	}
 
     /**
      * @see ToolbarListener#onRefresh()
