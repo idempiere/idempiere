@@ -222,7 +222,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		//enable full interface, relook into this when doing preference
 		Env.setContext(ctx, "#ShowTrl", true);
 		Env.setContext(ctx, "#ShowAcct", MRole.getDefault().isShowAcct());
-		Env.setContext(ctx, "#ShowAdvanced", true);
 
 		// to reload preferences when the user refresh the browser
 		userPreference = loadUserPreference(Env.getAD_User_ID(ctx));

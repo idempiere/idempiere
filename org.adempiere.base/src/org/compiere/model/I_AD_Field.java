@@ -313,6 +313,15 @@ public interface I_AD_Field
 	  */
 	public boolean isActive();
 
+    /** Column name IsAdvancedField */
+    public static final String COLUMNNAME_IsAdvancedField = "IsAdvancedField";
+
+	/** Set IsAdvancedField	  */
+	public void setIsAdvancedField (boolean IsAdvancedField);
+
+	/** Get IsAdvancedField	  */
+	public boolean isAdvancedField();
+
     /** Column name IsAllowCopy */
     public static final String COLUMNNAME_IsAllowCopy = "IsAllowCopy";
 

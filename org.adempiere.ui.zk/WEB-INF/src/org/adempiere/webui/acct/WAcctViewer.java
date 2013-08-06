@@ -722,8 +722,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		bExport.setVisible(tabResult.isSelected());
 		bZoom.setVisible(tabResult.isSelected());
 
-		if (Ini.isPropertyBool(Ini.P_SHOW_ADVANCED))
-			forcePost.setVisible(visible);
+		forcePost.setVisible(visible);
 	}   //  stateChanged
 
 	/**

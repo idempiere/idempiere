@@ -461,8 +461,7 @@ public class AcctViewer extends CFrame
 		boolean visible = m_data.documentQuery && tabbedPane.getSelectedIndex() == 1;
 		bRePost.setVisible(visible);
 		bExport.setVisible(tabbedPane.getSelectedIndex() == 1);
-		if (Ini.isPropertyBool(Ini.P_SHOW_ADVANCED))
-			forcePost.setVisible(visible);
+		forcePost.setVisible(visible);
 	}   //  stateChanged
 
 
