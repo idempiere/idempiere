@@ -39,6 +39,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.compiere.Adempiere;
 import org.compiere.model.MLanguage;
+import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -46,6 +47,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -82,6 +84,8 @@ public class Translation
 	public static final String	XML_ROW_TAG = "row";
 	/** XML Row Attribute ID		*/
 	public static final String	XML_ROW_ATTRIBUTE_ID = "id";
+	/** XML Row Attribute UUID		*/
+	public static final String	XML_ROW_ATTRIBUTE_UUID = "uuid";
 	/** XML Row Attribute Translated	*/
 	public static final String	XML_ROW_ATTRIBUTE_TRANSLATED = "trl";
 
@@ -165,6 +169,7 @@ public class Translation
 		if (isBaseLanguage)
 			tableName =  Base_Table;
 		String keyColumn = Base_Table + "_ID";
+		String uuidColumn = MTable.getUUIDColumnName(Base_Table);
 		String[] trlColumns = getTrlColumns (Base_Table);
 		//
 		StringBuffer sql = null;
@@ -193,6 +198,7 @@ public class Translation
 			else
 				sql.append("t.IsTranslated,");
 			sql.append("t.").append(keyColumn);				//	2
+			sql.append(", o.").append(uuidColumn);			//	3
 			//
 			for (int i = 0; i < trlColumns.length; i++)
 				sql.append(", t.").append(trlColumns[i])
@@ -224,7 +230,13 @@ public class Translation
 			while (rs.next())
 			{
 				Element row = document.createElement (XML_ROW_TAG);
-				row.setAttribute(XML_ROW_ATTRIBUTE_ID, String.valueOf(rs.getInt(2)));	//	KeyColumn
+				int keyid = rs.getInt(2);
+				String uuid = rs.getString(3);
+				if (keyid <= MTable.MAX_OFFICIAL_ID || Util.isEmpty(uuid)) {
+					row.setAttribute(XML_ROW_ATTRIBUTE_ID, String.valueOf(keyid));	//	KeyColumn
+				} else {
+					row.setAttribute(XML_ROW_ATTRIBUTE_UUID, String.valueOf(uuid));	//	UUIDColumn
+				}
 				row.setAttribute(XML_ROW_ATTRIBUTE_TRANSLATED, rs.getString(1));		//	IsTranslated
 				for (int i = 0; i < trlColumns.length; i++)
 				{

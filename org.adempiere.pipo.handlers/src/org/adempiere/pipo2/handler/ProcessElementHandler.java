@@ -18,6 +18,7 @@ package org.adempiere.pipo2.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -82,6 +83,7 @@ public class ProcessElementHandler extends AbstractElementHandler {
 				return;
 			}
 
+			element.recordId = mProcess.get_ID();
 			if (mProcess.is_new() || mProcess.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Process.Table_Name,
 						X_AD_Process.Table_ID);
@@ -96,7 +98,6 @@ public class ProcessElementHandler extends AbstractElementHandler {
 				if (mProcess.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mProcess.getName(), mProcess
 							.get_ID(), action);
-					element.recordId = mProcess.getAD_Process_ID();
 				} else {
 					logImportDetail(ctx, impDetail, 0, mProcess.getName(), mProcess
 							.get_ID(), action);
@@ -159,9 +160,17 @@ public class ProcessElementHandler extends AbstractElementHandler {
 			}
 
 			if (createElement) {
-			addTypeName(atts, "table");
-			document.startElement("", "", I_AD_Process.Table_Name, atts);
-			createProcessBinding(ctx, document, m_Process);
+				addTypeName(atts, "table");
+				document.startElement("", "", I_AD_Process.Table_Name, atts);
+				createProcessBinding(ctx, document, m_Process);
+
+				packOut.getCtx().ctx.put("Table_Name",I_AD_Process.Table_Name);
+				try {
+					new CommonTranslationHandler().packOut(packOut,document,null,m_Process.get_ID());
+				} catch(Exception e) {
+					if (log.isLoggable(Level.INFO)) log.info(e.toString());
+				}
+
 			}
 
 			Query query = new Query(ctx.ctx, "AD_Process_PARA", "AD_Process_ID = ?", getTrxName(ctx));

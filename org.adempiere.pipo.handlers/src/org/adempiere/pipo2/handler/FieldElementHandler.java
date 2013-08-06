@@ -17,6 +17,7 @@
 package org.adempiere.pipo2.handler;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -134,7 +135,7 @@ public class FieldElementHandler extends AbstractElementHandler {
 				element.unresolved = notfounds.toString();
 				return;
 			}
-
+			element.recordId = mField.getAD_Field_ID();
 			if (mField.is_new() || mField.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Field.Table_Name,
 						X_AD_Field.Table_ID);
@@ -150,7 +151,6 @@ public class FieldElementHandler extends AbstractElementHandler {
 				if (mField.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mField.getName(), mField
 							.get_ID(), action);
-					element.recordId = mField.getAD_Field_ID();
 				} else {
 					logImportDetail(ctx, impDetail, 0, mField.getName(), mField
 							.get_ID(), action);
@@ -172,7 +172,6 @@ public class FieldElementHandler extends AbstractElementHandler {
 		X_AD_Field m_Field = new X_AD_Field(ctx.ctx, AD_Field_ID, null);
 
 		PackOut packOut = ctx.packOut;
-
 		try
 		{
 			if(m_Field.getAD_FieldGroup_ID() > 0)
@@ -202,6 +201,13 @@ public class FieldElementHandler extends AbstractElementHandler {
 		addTypeName(atts, "table");
 		document.startElement("", "", X_AD_Field.Table_Name, atts);
 		createFieldBinding(ctx, document, m_Field);
+		packOut.getCtx().ctx.put("Table_Name",X_AD_Field.Table_Name);
+		try {
+			new CommonTranslationHandler().packOut(packOut,document,null,m_Field.get_ID());
+		} catch(Exception e) {
+			if (log.isLoggable(Level.INFO)) log.info(e.toString());
+		}
+
 		document.endElement("", "", X_AD_Field.Table_Name);
 	}
 

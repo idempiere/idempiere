@@ -40,6 +40,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
 import org.compiere.model.MClient;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
 import org.compiere.util.Trx;
@@ -296,6 +297,7 @@ public class PackOut
 	private void initContext() {
 		if (trxName != null)
 			pipoContext.trx = Trx.get(trxName, true);
+		pipoContext.ctx.setProperty("isHandleTranslations", MSysConfig.getValue(MSysConfig.TWOPACK_HANDLE_TRANSLATIONS));
 		pipoContext.packOut = this;
 	}
 

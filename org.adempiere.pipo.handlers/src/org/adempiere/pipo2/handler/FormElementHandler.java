@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -69,7 +70,7 @@ public class FormElementHandler extends AbstractElementHandler {
 				element.unresolved = notfounds.toString();
 				return;
 			}
-
+			element.recordId = mForm.get_ID();
 			if (mForm.is_new() || mForm.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Form.Table_Name,
 						X_AD_Form.Table_ID);
@@ -116,6 +117,15 @@ public class FormElementHandler extends AbstractElementHandler {
 		addTypeName(atts, "table");
 		document.startElement("","",I_AD_Form.Table_Name,atts);
 		createFormBinding(ctx, document, m_Form);
+
+		PackOut packOut = ctx.packOut;
+		packOut.getCtx().ctx.put("Table_Name",X_AD_Form.Table_Name);
+		try {
+			new CommonTranslationHandler().packOut(packOut,document,null,m_Form.get_ID());
+		} catch(Exception e) {
+			if (log.isLoggable(Level.INFO)) log.info(e.toString());
+		}
+
 		document.endElement("","",I_AD_Form.Table_Name);
 	}
 

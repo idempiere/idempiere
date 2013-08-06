@@ -17,6 +17,7 @@
 package org.adempiere.pipo2.handler;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -89,6 +90,7 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 				return;
 			}
 
+			element.recordId = mProcessPara.get_ID();
 			if (mProcessPara.is_new() || mProcessPara.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Process_Para.Table_Name,
 						X_AD_Process_Para.Table_ID);
@@ -143,6 +145,15 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Process_Para.Table_Name, atts);
 		createProcessParaBinding(ctx, document, m_Processpara);
+
+		PackOut packOut = ctx.packOut;
+		packOut.getCtx().ctx.put("Table_Name",I_AD_Process_Para.Table_Name);
+		try {
+			new CommonTranslationHandler().packOut(packOut,document,null,m_Processpara.get_ID());
+		} catch(Exception e) {
+			if (log.isLoggable(Level.INFO)) log.info(e.toString());
+		}
+
 		document.endElement("", "", I_AD_Process_Para.Table_Name);
 	}
 

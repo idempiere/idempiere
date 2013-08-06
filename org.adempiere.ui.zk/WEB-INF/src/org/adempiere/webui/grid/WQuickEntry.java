@@ -23,6 +23,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WLocationEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
@@ -466,11 +467,18 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 			int idx = quickEditors.indexOf(evt.getSource());
 			if (idx >= 0) {
 				GridField field = quickFields.get(idx);
+				WEditor editor = quickEditors.get(idx);
 				GridTab gridTab = field.getGridTab();
 				String columnName = field.getColumnName();
 				// process dependencies and callouts for the changed field
-				field.getGridTab().setValue(field, evt.getNewValue());
-				gridTab.processFieldChange(field);
+				if (evt.getSource() instanceof WLocationEditor && evt.getNewValue() == null && editor.getValue() != null) {
+					// ignore first call of WLocationEditor valuechange set to null
+					// it will be called later with correct value
+					// see WLocationEditor firing twice ValueChangeEvent (first with null and then with value)
+				} else {
+					field.setValue(evt.getNewValue(), field.getGridTab().getTableModel().isInserting());
+					gridTab.processFieldChange(field);
+				}
 	            // Refresh the list on dependant fields
 	            ArrayList<GridField> dependants = gridTab.getDependantFields(columnName);
 	    		for (GridField dependentField : dependants)

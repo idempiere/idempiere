@@ -62,6 +62,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WStringEditor;
+import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -73,7 +74,9 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridTab;
 import org.compiere.model.MColumn;
+import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MLookupInfo;
 import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -1019,7 +1022,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 	if (listbox.getId().equals(listColumn.getId()))
                 	{
                 		ListItem column = listColumn.getSelectedItem();
-                		if (column != null)
+                		if (column != null && column.getValue().toString().length() > 0)
                 		{
                 			addOperators(column, listOperator);
                 		}
@@ -1663,18 +1666,24 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         {
             editor = new WNumberEditor(findField);
 		}
-        else if (findField.getDisplayType() == DisplayType.Button)
+        else if (findField.getDisplayType() == DisplayType.Button)        	
         {
-        	if (columnName.endsWith("_ID"))
-        	{
-                editor = new WNumberEditor(findField);
-        	} else {
-                editor = new WStringEditor(findField);
-        	}
+			if (findField.getAD_Reference_Value_ID() > 0) {		
+				MLookupInfo info = MLookupFactory.getLookup_List(Env.getLanguage(Env.getCtx()), findField.getAD_Reference_Value_ID());
+				MLookup mLookup = new MLookup(info, 0);
+				editor = new WTableDirEditor(columnName, false,false, true, mLookup);
+        		findField.addPropertyChangeListener(editor);
+
+			} else {
+				if (columnName.endsWith("_ID")) {
+					editor = new WNumberEditor(findField);
+				} else {
+					editor = new WStringEditor(findField);
+				}
+			}
         }
         else
         {
-        	
         	//reload lookupinfo for find window
         	if (DisplayType.isLookup(findField.getDisplayType()) ) 
         	{        		
