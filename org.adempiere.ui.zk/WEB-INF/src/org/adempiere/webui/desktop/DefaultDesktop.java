@@ -602,7 +602,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         if (windows != null) {
         	for (int idx = 0; idx < windows.size(); idx++) {
                 Object ad = windows.get(idx);
-                if (ad != null && ad instanceof ADWindow) {
+                if (ad != null && ad instanceof ADWindow && ((ADWindow)ad).getADWindowContent() != null) {
                 	if ( ((ADWindow)ad).getADWindowContent().isPendingChanges()) {
                 		return true;
                 	}

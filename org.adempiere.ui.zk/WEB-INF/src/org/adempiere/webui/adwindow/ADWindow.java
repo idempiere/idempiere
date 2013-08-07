@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MImage;
@@ -88,7 +90,12 @@ public class ADWindow extends AbstractUIPart
          this.adWindowId = adWindowId;
          windowNo = SessionManager.getAppDesktop().registerWindow(this);
          this.query = query;
-         init();
+         try {
+             init();
+         } catch (Exception e) {
+        	 SessionManager.getAppDesktop().unregisterWindow(windowNo);
+        	 throw new ApplicationException(e.getMessage(), e);
+         }
     }
     
     private void init()
