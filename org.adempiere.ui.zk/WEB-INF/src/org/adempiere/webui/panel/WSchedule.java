@@ -137,7 +137,7 @@ public class WSchedule extends Window implements EventListener<Event>
 	{
 		this.getChildren().clear();
 				
-		calendarContainer = Executions.createComponents(ThemeManager.getThemeResource("/zul/calendar/calendar.zul"), this, null);
+		calendarContainer = Executions.createComponents(ThemeManager.getThemeResource("zul/calendar/calendar.zul"), this, null);
 		
 		borderlayout = (Borderlayout) calendarContainer.getFellow("main");
 		borderlayout.setStyle("position: absolute; width: 98%; margin: auto;");
