@@ -12,6 +12,7 @@
  *****************************************************************************/
 package org.adempiere.webui.component;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -156,6 +157,15 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 				tr.setDroppable("true");
 				tr.addEventListener(Events.ON_DROP, this);
 			}
+
+			// Color
+			final MTreeNode mNode = (MTreeNode)  ((DefaultTreeNode<?>) node).getData();
+			Color color = mNode.getColor();
+			if (color != null){				
+				String hex = ZkCssHelper.createHexColorString(color);
+				ZkCssHelper.appendStyle(tc, "color: #" + hex);
+			}
+			// End color
 		}else{
 			tr = ti.getTreerow(); 
 			tr.getChildren().clear();
