@@ -158,7 +158,6 @@ public final class Preference extends CDialog
 	private CCheckBox storePassword = new CCheckBox();
 	private CCheckBox showTrl = new CCheckBox();
 	private CCheckBox showAcct = new CCheckBox();
-	private CCheckBox showAdvanced = new CCheckBox();
 	private CCheckBox cacheWindow = new CCheckBox();
 	private CLabel lPrinter = new CLabel();
 	private CPrinter fPrinter = new CPrinter();
@@ -234,8 +233,6 @@ public final class Preference extends CDialog
 		showTrl.setToolTipText(Msg.getMsg(Env.getCtx(), "ShowTrlTab", false));
 		showAcct.setText(Msg.getMsg(Env.getCtx(), "ShowAcctTab", true));
 		showAcct.setToolTipText(Msg.getMsg(Env.getCtx(), "ShowAcctTab", false));
-		showAdvanced.setText(Msg.getMsg(Env.getCtx(), "ShowAdvancedTab", true));
-		showAdvanced.setToolTipText(Msg.getMsg(Env.getCtx(), "ShowAdvancedTab", false));
 		cacheWindow.setText(Msg.getMsg(Env.getCtx(), "CacheWindow", true));
 		cacheWindow.setToolTipText(Msg.getMsg(Env.getCtx(), "CacheWindow", false));
 		lPrinter.setText(Msg.getMsg(Env.getCtx(), "Printer"));
@@ -272,7 +269,6 @@ public final class Preference extends CDialog
 		windowPanel.setLayout(new GridLayout(4, 2));
 		windowPanel.add(showAcct);showAcct.setBorder(insetBorder);
 		windowPanel.add(showTrl);showTrl.setBorder(insetBorder);
-		windowPanel.add(showAdvanced);showAdvanced.setBorder(insetBorder);
 		windowPanel.add(autoCommit);autoCommit.setBorder(insetBorder);
 		windowPanel.add(autoNew);autoNew.setBorder(insetBorder);
 		windowPanel.add(cacheWindow);cacheWindow.setBorder(insetBorder);
@@ -495,7 +491,6 @@ public final class Preference extends CDialog
 		}
 		//	Show Trl/Advanced Tab
 		showTrl.setSelected(Ini.isPropertyBool(Ini.P_SHOW_TRL));
-		showAdvanced.setSelected(Ini.isPropertyBool(Ini.P_SHOW_ADVANCED));
 		
 		cacheWindow.setSelected(Ini.isCacheWindow());
 		
@@ -571,9 +566,6 @@ public final class Preference extends CDialog
 		//	Show Trl Tab
 		Ini.setProperty(Ini.P_SHOW_TRL, (showTrl.isSelected()));
 		Env.setContext(Env.getCtx(), "#ShowTrl", (showTrl.isSelected()));
-		//	Show Advanced Tab
-		Ini.setProperty(Ini.P_SHOW_ADVANCED, (showAdvanced.isSelected()));
-		Env.setContext(Env.getCtx(), "#ShowAdvanced", (showAdvanced.isSelected()));
 		
 		Ini.setProperty(Ini.P_CACHE_WINDOW, cacheWindow.isSelected());
 		

@@ -838,7 +838,7 @@ public class Login
 		else
 			Env.setContext(m_ctx, "#ShowAcct", "N");
 		Env.setContext(m_ctx, "#ShowTrl", Ini.getProperty(Ini.P_SHOW_TRL));
-		Env.setContext(m_ctx, "#ShowAdvanced", Ini.getProperty(Ini.P_SHOW_ADVANCED));
+		Env.setContext(m_ctx, "#ShowAdvanced", MRole.getDefault().isAccessAdvanced());
 
 		String retValue = "";
 		int AD_Client_ID = Env.getContextAsInt(m_ctx, "#AD_Client_ID");

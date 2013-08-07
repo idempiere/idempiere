@@ -469,11 +469,6 @@ UPDATE AD_Field SET SeqNo=60, IsDisplayed='Y', XPosition=1, ColumnSpan=3, NumLin
 UPDATE AD_Field SET SeqNo=70, IsDisplayed='Y', XPosition=1, ColumnSpan=2,Updated=TO_TIMESTAMP('2013-07-19 17:12:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=201831
 ;
 
--- Jul 22, 2013 11:48:27 AM MYT
--- IDEMPIERE-1042 Role Data Access
-UPDATE AD_SysConfig SET Value='IDEMPIERE-528 Determine Zoom window depending on record',Updated=TO_TIMESTAMP('2013-07-22 11:48:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_SysConfig_ID=50003
-;
-
 -- Jul 22, 2013 11:50:07 AM MYT
 -- IDEMPIERE-528 Determine Zoom window depending on record
 INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID) VALUES (0,'N',1,200066,210660,'Y','N','Y',0,'N',60,'Y',10,'N','N','Y','45deb4e7-a2a4-4aa5-9f32-05c2066e72cd','Y','Name','Alphanumeric identifier of the entity','The name of an entity (record) is used as an default search option in addition to the search key. The name is up to 60 characters in length.','Name','Y',TO_TIMESTAMP('2013-07-22 11:50:03','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_TIMESTAMP('2013-07-22 11:50:03','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',469)

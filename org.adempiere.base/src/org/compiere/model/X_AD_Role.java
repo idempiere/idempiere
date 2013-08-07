@@ -32,7 +32,7 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20130801L;
 
     /** Standard Constructor */
     public X_AD_Role (Properties ctx, int AD_Role_ID, String trxName)
@@ -553,6 +553,27 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set IsAccessAdvanced .
+		@param IsAccessAdvanced IsAccessAdvanced 	  */
+	public void setIsAccessAdvanced (boolean IsAccessAdvanced)
+	{
+		set_Value (COLUMNNAME_IsAccessAdvanced, Boolean.valueOf(IsAccessAdvanced));
+	}
+
+	/** Get IsAccessAdvanced .
+		@return IsAccessAdvanced 	  */
+	public boolean isAccessAdvanced () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsAccessAdvanced);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Access all Orgs.

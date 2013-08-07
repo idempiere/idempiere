@@ -56,14 +56,24 @@ public class GridFieldVO implements Serializable
 	public static String getSQL (Properties ctx)
 	{
 		//	IsActive is part of View
+		MRole role = MRole.getDefault(ctx, true);
+		String advancedFilter=" AND IsAdvancedField='N' ";
 		StringBuilder sql;
-		if (!Env.isBaseLanguage(ctx, "AD_Tab"))
+		if (!Env.isBaseLanguage(ctx, "AD_Tab")){
 			sql = new StringBuilder("SELECT * FROM AD_Field_vt WHERE AD_Tab_ID=?")
-				.append(" AND AD_Language='" + Env.getAD_Language(ctx) + "'")
-				.append(" ORDER BY IsDisplayed DESC, SeqNo");
-		else
-			sql = new StringBuilder("SELECT * FROM AD_Field_v WHERE AD_Tab_ID=?")
-				.append(" ORDER BY IsDisplayed DESC, SeqNo");
+				.append(" AND AD_Language='" + Env.getAD_Language(ctx) + "'");
+			if (!role.isAccessAdvanced()) {
+				sql.append(advancedFilter);
+			}
+			sql.append(" ORDER BY IsDisplayed DESC, SeqNo");
+		}
+		else{
+			sql = new StringBuilder("SELECT * FROM AD_Field_v WHERE AD_Tab_ID=?");
+			if (!role.isAccessAdvanced()) {
+				sql.append(advancedFilter);
+			}
+			sql.append(" ORDER BY IsDisplayed DESC, SeqNo");
+		}
 		return sql.toString();
 	}   //  getSQL
 

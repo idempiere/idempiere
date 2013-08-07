@@ -182,7 +182,8 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		for(int i=0; i<mbMessages.size(); i++){
 			if(!mbMessages.get(i).getBroadcastType().equals(MBroadcastMessage.BROADCASTTYPE_Immediate)){
 				MNote note = getMNote(mbMessages.get(i));
-				hashMessages.put(mbMessages.get(i).get_ID(), note.isProcessed());
+				if (note!=null)
+					hashMessages.put(mbMessages.get(i).get_ID(), note.isProcessed());
 			}else{
 				hashMessages.put(mbMessages.get(i).get_ID(), false);
 			}
