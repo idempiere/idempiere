@@ -104,7 +104,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 		setTitle(Msg.getMsg(ctx,"Calendar"));
 		setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 		
-		Component component = Executions.createComponents(ThemeManager.getThemeResource("/zul/calendar/calendar.zul"), this, null);
+		Component component = Executions.createComponents(ThemeManager.getThemeResource("zul/calendar/calendar.zul"), this, null);
 
 		Borderlayout borderlayout = (Borderlayout) component.getFellow("main");
 		borderlayout.setStyle("position: absolute");
