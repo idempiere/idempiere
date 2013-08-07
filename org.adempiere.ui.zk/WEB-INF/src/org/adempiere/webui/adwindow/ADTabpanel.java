@@ -78,7 +78,6 @@ import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.IdSpace;
@@ -127,11 +126,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	public static final String ON_SWITCH_VIEW_EVENT = "onSwitchView";
 
 	public static final String ON_DYNAMIC_DISPLAY_EVENT = "onDynamicDisplay";
-	
-	public static final String ON_DYNAMIC_DISPLAY_CALL_EVENT = "onDynamicDisplayCall";
-	
-	public static final String ON_DYNAMIC_DISPLAY_CALL_EVENT_ATTR = "onDynamicDisplayCall.Event.Posted";
-	
 	/**
 	 * 
 	 */
@@ -224,7 +218,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		});
         addEventListener(ON_POST_INIT_EVENT, this);
         addEventListener(ON_SAVE_OPEN_PREFERENCE_EVENT, this);
-        addEventListener(ON_DYNAMIC_DISPLAY_CALL_EVENT, this);
     }
 
     private void initComponents()
@@ -658,50 +651,12 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	}
 
 	/**
-	 * Turn on/off the processing of dynamic display call for current execution cycle.
-	 * The system will ignore duplicate dynamic display request within the same execution cycle,
-	 * this method can be use to alter that.
-	 * @param enable
-	 */
-	public void toggleDynamicDisplay(boolean enable) {
-		Execution exec = Executions.getCurrent();
-		int currentRow = getGridTab().isSortTab() ? 0 : getGridTab().getCurrentRow();
-		StringBuilder builder = new StringBuilder(ON_DYNAMIC_DISPLAY_CALL_EVENT_ATTR)
-		 	.append("_").append(getUuid())
-			.append("_").append(0)
-			.append("_").append(currentRow);
-		if (enable)
-			exec.removeAttribute(builder.toString());
-		else
-			exec.setAttribute(builder.toString(), Boolean.TRUE);
-	}
-	
-	/**
-	 * Validate display properties of fields of current row
+	 * Validate display properties of fields of current row.
 	 * @param col
 	 */
 	@Override
 	public void dynamicDisplay (int col)
 	{
-		//0 and -1 is same
-		if (col < 0)
-			col = 0;
-		int currentRow = getGridTab().isSortTab() ? 0 : getGridTab().getCurrentRow();
-		Execution exec = Executions.getCurrent();
-		StringBuilder builder = new StringBuilder(ON_DYNAMIC_DISPLAY_CALL_EVENT_ATTR)
-			 	.append("_").append(getUuid())
-				.append("_").append(col)
-				.append("_").append(currentRow);
-		String key = builder.toString();
-		if (exec.getAttribute(key) == null) 
-		{
-			exec.setAttribute(key, Boolean.TRUE);
-			Events.sendEvent(ON_DYNAMIC_DISPLAY_CALL_EVENT, this, col);
-		}
-	}
-		
-    private void onDynamicDisplayCall (int col)
-    {
         if (!gridTab.isOpen())
         {
             return;
@@ -1105,10 +1060,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     			//update current context
     			Env.getCtx().setProperty("P"+windowId+"|"+adTabId+"|DetailPane.IsOpen", value ? "Y" : "N");
     		}
-    	}
-    	else if (event.getName().equals(ON_DYNAMIC_DISPLAY_CALL_EVENT)) {
-    		Integer col = (Integer) event.getData();
-    		onDynamicDisplayCall(col);
     	}
     }
 
