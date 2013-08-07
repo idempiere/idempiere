@@ -1559,20 +1559,20 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 				@Override
 				public void onCallback(Boolean result) {
-					afterRefresh(fireEvent);
+					doOnRefresh(fireEvent);
 				}
 			});
     	}
     	else
     	{
-    		afterRefresh(fireEvent);
+    		doOnRefresh(fireEvent);
     	}
     }
 
 	/**
 	 * @param fireEvent
 	 */
-	protected void afterRefresh(final boolean fireEvent) {
+	protected void doOnRefresh(final boolean fireEvent) {
 		IADTabpanel headerTab = adTabbox.getSelectedTabpanel();
 		IADTabpanel detailTab = adTabbox.getSelectedDetailADTabpanel();
 		adTabbox.getSelectedGridTab().dataRefreshAll(fireEvent, true);
