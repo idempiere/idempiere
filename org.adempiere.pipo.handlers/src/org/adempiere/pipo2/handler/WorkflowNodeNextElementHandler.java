@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
@@ -40,6 +41,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
+
+	private List<Integer> nexts = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 		List<String> excludes = defaultExcludeList(MWFNodeNext.Table_Name);
@@ -145,6 +148,9 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
 		int ad_wf_nodenext_id = Env.getContextAsInt(ctx.ctx, "AD_WF_NodeNext_ID");
+		if (nexts.contains(ad_wf_nodenext_id))
+			return;
+		nexts.add(ad_wf_nodenext_id);
 		MWFNodeNext m_WF_NodeNext = new MWFNodeNext(
 				ctx.ctx, ad_wf_nodenext_id, null);
 		if (ctx.packOut.getFromDate() != null) {

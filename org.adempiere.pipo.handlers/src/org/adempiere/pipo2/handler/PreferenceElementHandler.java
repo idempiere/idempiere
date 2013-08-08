@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
@@ -38,6 +39,8 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class PreferenceElementHandler extends AbstractElementHandler {
 
+	private List<Integer>processedPreferences = new ArrayList<Integer>();
+	
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 
@@ -109,6 +112,11 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_Preference_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Preference.COLUMNNAME_AD_Preference_ID);
+		if (processedPreferences.contains(AD_Preference_ID))
+			return;
+		
+		processedPreferences.add(AD_Preference_ID);
+		
 		X_AD_Preference m_Preference = new X_AD_Preference(ctx.ctx,
 				AD_Preference_ID, getTrxName(ctx));
 		

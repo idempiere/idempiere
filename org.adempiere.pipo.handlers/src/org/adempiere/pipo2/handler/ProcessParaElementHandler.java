@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -40,6 +41,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class ProcessParaElementHandler extends AbstractElementHandler {
+
+	private List<Integer> processparas = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
@@ -123,6 +126,9 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_Process_Para_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Process_Para.COLUMNNAME_AD_Process_Para_ID);
+		if (processparas.contains(AD_Process_Para_ID))
+			return;
+		processparas.add(AD_Process_Para_ID);
 		X_AD_Process_Para m_Processpara = new X_AD_Process_Para(ctx.ctx,
 				AD_Process_Para_ID, getTrxName(ctx));
 

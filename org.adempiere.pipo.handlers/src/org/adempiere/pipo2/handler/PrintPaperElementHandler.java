@@ -17,6 +17,7 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
@@ -36,6 +37,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class PrintPaperElementHandler extends AbstractElementHandler {
+
+	private List<Integer> papers = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
@@ -92,6 +95,9 @@ public class PrintPaperElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_PrintPaper_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_PrintPaper.COLUMNNAME_AD_PrintPaper_ID);
+		if (papers.contains(AD_PrintPaper_ID))
+			return;
+		papers.add(AD_PrintPaper_ID);
 		X_AD_PrintPaper printPaper = new X_AD_PrintPaper(ctx.ctx,
 				AD_PrintPaper_ID, null);
 

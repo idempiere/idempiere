@@ -17,6 +17,7 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -39,6 +40,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class PrintFormatItemElementHandler extends AbstractElementHandler {
+
+	private List<Integer> formatitems = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
@@ -143,6 +146,9 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_PrintFormatItem_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_PrintFormatItem.COLUMNNAME_AD_PrintFormatItem_ID);
+		if (formatitems.contains(AD_PrintFormatItem_ID))
+			return;
+		formatitems.add(AD_PrintFormatItem_ID);
 		X_AD_PrintFormatItem m_PrintFormatItem = new X_AD_PrintFormatItem(ctx.ctx,
 				AD_PrintFormatItem_ID, null);
 

@@ -17,6 +17,7 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -42,6 +43,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class WorkflowNodeElementHandler extends AbstractElementHandler {
+
+	private List<Integer> nodes = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
@@ -131,6 +134,9 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_WF_Node_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID);
+		if (nodes.contains(AD_WF_Node_ID))
+			return;
+		nodes.add(AD_WF_Node_ID);
 		AttributesImpl atts = new AttributesImpl();
 		MWFNode m_WF_Node = new MWFNode(ctx.ctx, AD_WF_Node_ID,
 				getTrxName(ctx));

@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
@@ -39,6 +40,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class ReportViewColElementHandler extends AbstractElementHandler {
+
+	private List<Integer> viewcols = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
@@ -148,6 +151,10 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_ReportView_Col_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_ReportView_Col.COLUMNNAME_AD_ReportView_Col_ID);
+		if (viewcols.contains(AD_ReportView_Col_ID))
+			return;
+
+		viewcols.add(AD_ReportView_Col_ID);
 		X_AD_ReportView_Col m_Reportview_Col = new X_AD_ReportView_Col(ctx.ctx,
 				AD_ReportView_Col_ID, getTrxName(ctx));
 		
