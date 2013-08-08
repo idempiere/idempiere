@@ -151,6 +151,7 @@ public class FieldElementHandler extends AbstractElementHandler {
 				if (mField.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mField.getName(), mField
 							.get_ID(), action);
+					element.recordId = mField.getAD_Field_ID();
 				} else {
 					logImportDetail(ctx, impDetail, 0, mField.getName(), mField
 							.get_ID(), action);

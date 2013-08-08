@@ -96,6 +96,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 			try {
 				logImportDetail(ctx, impDetail, 1, mMenu.getName(), mMenu
 						.get_ID(), action);
+				element.recordId = mMenu.get_ID();
 			} catch (SAXException e) {
 				if (log.isLoggable(Level.INFO)) log.info("setmenu:" + e);
 			}

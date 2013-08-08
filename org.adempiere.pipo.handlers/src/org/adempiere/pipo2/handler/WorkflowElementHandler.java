@@ -103,6 +103,7 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 					logImportDetail(ctx,impDetail, 1, mWorkflow.getName(), mWorkflow
 							.get_ID(), action);
 					workflows.add(mWorkflow.getAD_Workflow_ID());
+					element.recordId = mWorkflow.get_ID();
 				} else {
 					log.info("m_Workflow save failure");
 					logImportDetail(ctx, impDetail, 0, mWorkflow.getName(), mWorkflow

@@ -51,7 +51,7 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 			// NOTE Postgres needs to commit DDL statements
 			// add a SQL command just with COMMIT if you want to simulate the Oracle behavior (commit on DDL)
 			
-			// It is also recommended on postgres to add a COMMIT before any SQL statement that can fail
+			// It is also necessary on postgres to add a COMMIT before any SQL statement that can fail
 			// for example a create index where is possible the index already exists
 
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));

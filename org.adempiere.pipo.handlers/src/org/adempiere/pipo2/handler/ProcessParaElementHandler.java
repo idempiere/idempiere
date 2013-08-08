@@ -105,6 +105,7 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 				if (mProcessPara.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mProcessPara.getColumnName(),
 							mProcessPara.get_ID(), action);
+					element.recordId = mProcessPara.get_ID();
 				} else {
 					logImportDetail(ctx, impDetail, 0, mProcessPara.getColumnName(),
 							mProcessPara.get_ID(), action);

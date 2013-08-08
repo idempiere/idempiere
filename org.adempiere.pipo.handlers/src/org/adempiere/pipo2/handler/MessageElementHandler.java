@@ -86,6 +86,7 @@ public class MessageElementHandler extends AbstractElementHandler {
 				if (mMessage.save(getTrxName(ctx)) == true){
 					logImportDetail (ctx, impDetail, 1, mMessage.getValue(), mMessage.get_ID(),action);
 					messages.add(mMessage.getAD_Message_ID());
+					element.recordId = mMessage.getAD_Message_ID();
 				}
 				else{
 					logImportDetail (ctx, impDetail, 0, mMessage.getValue(), mMessage.get_ID(),action);

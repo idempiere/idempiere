@@ -128,6 +128,7 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler {
 			if (mPrintFormatItem.save(getTrxName(ctx)) == true) {
 				logImportDetail(ctx, impDetail, 1, mPrintFormatItem.getName(),
 						mPrintFormatItem.get_ID(), action);
+				element.recordId = mPrintFormatItem.get_ID();
 			} else {
 				logImportDetail(ctx, impDetail, 0, mPrintFormatItem.getName(),
 						mPrintFormatItem.get_ID(), action);

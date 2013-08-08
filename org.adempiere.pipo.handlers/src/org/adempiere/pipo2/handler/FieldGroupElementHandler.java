@@ -99,6 +99,7 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 					logImportDetail(ctx, impDetail, 1, fieldGroup.getName(),
 							fieldGroup.get_ID(), action);
 					processedFieldGroups.add(fieldGroup.getAD_FieldGroup_ID());
+					element.recordId = fieldGroup.getAD_FieldGroup_ID();
 	
 				} else {
 					logImportDetail(ctx, impDetail, 0, fieldGroup.getName(),

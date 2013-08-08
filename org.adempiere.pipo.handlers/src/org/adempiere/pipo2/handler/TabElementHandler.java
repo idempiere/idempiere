@@ -154,7 +154,7 @@ public class TabElementHandler extends AbstractElementHandler {
 				}
 				if (mTab.save(getTrxName(ctx)) == true){
 					logImportDetail (ctx, impDetail, 1, mTab.getName(), mTab.get_ID(),action);
-					element.recordId = mTab.getAD_Tab_ID();
+					element.recordId = mTab.get_ID();
 				} else {
 					logImportDetail (ctx, impDetail, 0, mTab.getName(), mTab.get_ID(),action);
 					throw new POSaveFailedException("Failed to save Tab " + mTab.getName());

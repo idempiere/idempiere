@@ -112,6 +112,7 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 					log.info("m_WFNode save success");
 					logImportDetail(ctx, impDetail, 1, mWFNode.getName(), mWFNode
 							.get_ID(), action);
+					element.recordId = mWFNode.get_ID();
 				} else {
 					log.info("m_WFNode save failure");
 					logImportDetail(ctx, impDetail, 0, mWFNode.getName(), mWFNode

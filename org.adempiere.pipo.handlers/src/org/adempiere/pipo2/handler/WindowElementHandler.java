@@ -105,6 +105,7 @@ public class WindowElementHandler extends AbstractElementHandler {
 					logImportDetail(ctx, impDetail, 1, mWindow.getName(), mWindow
 							.get_ID(), action);
 					windows.add(mWindow.getAD_Window_ID());
+					element.recordId = mWindow.get_ID();
 				} else {
 					logImportDetail(ctx, impDetail, 0, mWindow.getName(), mWindow
 							.get_ID(), action);

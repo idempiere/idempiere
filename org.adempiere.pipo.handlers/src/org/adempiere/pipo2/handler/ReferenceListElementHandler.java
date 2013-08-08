@@ -92,6 +92,7 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 				if (mRefList.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mRefList.getName(),
 							mRefList.get_ID(), action);
+					element.recordId = mRefList.get_ID();
 				} else {
 					logImportDetail(ctx, impDetail, 0, mRefList.getName(),
 							mRefList.get_ID(), action);

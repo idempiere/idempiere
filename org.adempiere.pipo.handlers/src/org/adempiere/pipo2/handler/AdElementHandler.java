@@ -78,7 +78,6 @@ public class AdElementHandler extends AbstractElementHandler {
 				element.unresolved = notfounds.toString();
 				return;
 			}
-			element.recordId = mElement.getAD_Element_ID();	
 			if (mElement.is_new() || mElement.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Element.Table_Name, X_AD_Element.Table_ID);
 				if (!mElement.is_new()) {				
@@ -100,6 +99,7 @@ public class AdElementHandler extends AbstractElementHandler {
 					throw new POSaveFailedException("Failed to save Element " + mElement.getName());
 				}
 			}
+			element.recordId = mElement.getAD_Element_ID();	
 		} else {
 			element.skip = true;
 		}

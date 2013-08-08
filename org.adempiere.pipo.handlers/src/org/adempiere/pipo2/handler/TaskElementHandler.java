@@ -81,6 +81,7 @@ public class TaskElementHandler extends AbstractElementHandler {
 				if (mTask.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mTask.getName(), mTask.get_ID(),
 							action);
+					element.recordId = mTask.get_ID();
 				} else {
 					logImportDetail(ctx, impDetail, 0, mTask.getName(), mTask.get_ID(),
 							action);

@@ -96,6 +96,7 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 					logImportDetail(ctx, impDetail, 1, mReference.getName(),
 							mReference.get_ID(), action);
 					references.add(mReference.getAD_Reference_ID());
+					element.recordId = mReference.getAD_Reference_ID();
 				} else {
 					logImportDetail(ctx, impDetail, 0, mReference.getName(),
 							mReference.get_ID(), action);
