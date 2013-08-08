@@ -16,16 +16,15 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Preference;
@@ -39,8 +38,6 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class PreferenceElementHandler extends AbstractElementHandler {
 
-	private List<Integer>processedPreferences = new ArrayList<Integer>();
-	
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 
@@ -112,11 +109,9 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_Preference_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Preference.COLUMNNAME_AD_Preference_ID);
-		if (processedPreferences.contains(AD_Preference_ID))
+		if (ctx.packOut.isExported(X_AD_Preference.COLUMNNAME_AD_Preference_ID+"|"+AD_Preference_ID))
 			return;
-		
-		processedPreferences.add(AD_Preference_ID);
-		
+
 		X_AD_Preference m_Preference = new X_AD_Preference(ctx.ctx,
 				AD_Preference_ID, getTrxName(ctx));
 		

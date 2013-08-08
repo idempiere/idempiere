@@ -114,11 +114,9 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int Reference_id = Env.getContextAsInt(ctx.ctx,
 				X_AD_Reference.COLUMNNAME_AD_Reference_ID);
-
-		if (references.contains(Reference_id))
+		if (ctx.packOut.isExported(X_AD_Reference.COLUMNNAME_AD_Reference_ID+"|"+Reference_id))
 			return;
 
-		references.add(Reference_id);
 		AttributesImpl atts = new AttributesImpl();
 
 		X_AD_Reference m_Reference = new X_AD_Reference(ctx.ctx, Reference_id, getTrxName(ctx));

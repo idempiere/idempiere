@@ -85,6 +85,7 @@ public class MessageElementHandler extends AbstractElementHandler {
 				}
 				if (mMessage.save(getTrxName(ctx)) == true){
 					logImportDetail (ctx, impDetail, 1, mMessage.getValue(), mMessage.get_ID(),action);
+					messages.add(mMessage.getAD_Message_ID());
 				}
 				else{
 					logImportDetail (ctx, impDetail, 0, mMessage.getValue(), mMessage.get_ID(),action);
@@ -103,9 +104,9 @@ public class MessageElementHandler extends AbstractElementHandler {
 	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
 		int AD_Message_ID = Env.getContextAsInt(ctx.ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Message_ID);
-		if (messages.contains(AD_Message_ID))
+		if (ctx.packOut.isExported(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Message_ID+"|"+AD_Message_ID))
 			return;
-		messages.add(AD_Message_ID);
+
 		AttributesImpl atts = new AttributesImpl();
 		X_AD_Message m_Message = new X_AD_Message (ctx.ctx, AD_Message_ID, null);
 		if (ctx.packOut.getFromDate() != null) {

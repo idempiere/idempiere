@@ -157,10 +157,9 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_Workflow_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID);
-		if (workflows.contains(AD_Workflow_ID))
+		if (ctx.packOut.isExported(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID+"|"+AD_Workflow_ID))
 			return;
 		PackOut packOut = ctx.packOut;
-		workflows.add(AD_Workflow_ID);
 		int ad_wf_nodenext_id = 0;
 		int ad_wf_nodenextcondition_id = 0;
 		AttributesImpl atts = new AttributesImpl();

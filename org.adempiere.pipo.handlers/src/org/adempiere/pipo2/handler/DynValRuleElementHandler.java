@@ -16,16 +16,15 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Val_Rule;
@@ -37,8 +36,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class DynValRuleElementHandler extends AbstractElementHandler {
-
-	private List<Integer> rules = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 		String entitytype = getStringValue(element, "EntityType");
@@ -99,9 +96,8 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 	protected void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
 		int AD_Val_Rule_ID = Env.getContextAsInt(ctx.ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID);
-		if (rules.contains(AD_Val_Rule_ID))
+		if (ctx.packOut.isExported(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID+"|"+AD_Val_Rule_ID))
 			return;
-		rules.add(AD_Val_Rule_ID);
 		X_AD_Val_Rule m_ValRule = new X_AD_Val_Rule (ctx.ctx, AD_Val_Rule_ID, null);
 
 		if (ctx.packOut.getFromDate() != null) {

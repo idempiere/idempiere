@@ -16,16 +16,15 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
@@ -39,8 +38,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class ImpFormatRowElementHandler extends AbstractElementHandler {
-
-	private List<Integer> formatrows = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 
@@ -154,9 +151,9 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
 		int AD_ImpFormat_Row_ID = Env.getContextAsInt(ctx.ctx, X_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_Row_ID);
-		if (formatrows.contains(AD_ImpFormat_Row_ID))
+		if (ctx.packOut.isExported(X_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_Row_ID+"|"+AD_ImpFormat_Row_ID))
 			return;
-		formatrows.add(AD_ImpFormat_Row_ID);
+
 		X_AD_ImpFormat_Row m_ImpFormat_Row = new X_AD_ImpFormat_Row (ctx.ctx, AD_ImpFormat_Row_ID, getTrxName(ctx));
 		
 		if (ctx.packOut.getFromDate() != null) {

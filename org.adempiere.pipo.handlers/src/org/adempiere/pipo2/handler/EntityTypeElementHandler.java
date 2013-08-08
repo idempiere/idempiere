@@ -120,12 +120,9 @@ public class EntityTypeElementHandler extends AbstractElementHandler{
 
 	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
 		int AD_ElementType_ID = Env.getContextAsInt(ctx.ctx, X_AD_EntityType.COLUMNNAME_AD_EntityType_ID);
-		
-		if(entityTypes.contains(AD_ElementType_ID))
+		if (ctx.packOut.isExported(X_AD_EntityType.COLUMNNAME_AD_EntityType_ID+"|"+AD_ElementType_ID))
 			return;
-		entityTypes.add(AD_ElementType_ID);
-		
-		
+
 		PackOut packOut = ctx.packOut;
 		
 		boolean createElement = true;

@@ -203,6 +203,8 @@ public class MenuElementHandler extends AbstractElementHandler {
 	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
 		int AD_Menu_ID = Env.getContextAsInt(ctx.ctx, "AD_Menu_ID");
+		if (ctx.packOut.isExported("AD_Menu_ID"+"|"+AD_Menu_ID))
+			return;
 		X_AD_Menu m_Menu = new X_AD_Menu(ctx.ctx, AD_Menu_ID, null);
 		if (m_Menu.isSummary() == false) {
 			createApplication(ctx, document, AD_Menu_ID);

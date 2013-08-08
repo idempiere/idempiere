@@ -114,11 +114,8 @@ public class AdElementHandler extends AbstractElementHandler {
 
 		int adElement_id = Env.getContextAsInt(ctx.ctx,
 				X_AD_Element.COLUMNNAME_AD_Element_ID);
-
-		if (processedElements.contains(adElement_id))
+		if (ctx.packOut.isExported(X_AD_Element.COLUMNNAME_AD_Element_ID+"|"+adElement_id))
 			return;
-
-		processedElements.add(adElement_id);
 
 		X_AD_Element mAdElement = new X_AD_Element(ctx.ctx, adElement_id, null);
 		if (ctx.packOut.getFromDate() != null) {

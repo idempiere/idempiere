@@ -16,16 +16,15 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
@@ -44,8 +43,6 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class WorkflowNodeNextConditionElementHandler extends
 		AbstractElementHandler {
-
-	private List<Integer> nextconds = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
@@ -157,9 +154,9 @@ public class WorkflowNodeNextConditionElementHandler extends
 	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
 		int ad_wf_nodenextcondition_id = Env.getContextAsInt(ctx.ctx, "AD_WF_NextCondition_ID");
-		if (nextconds.contains(ad_wf_nodenextcondition_id))
+		if (ctx.packOut.isExported("AD_WF_NextCondition_ID"+"|"+ad_wf_nodenextcondition_id))
 			return;
-		nextconds.add(ad_wf_nodenextcondition_id);
+
 		MWFNextCondition m_WF_NodeNextCondition = new MWFNextCondition(
 				ctx.ctx, ad_wf_nodenextcondition_id, null);
 		if (ctx.packOut.getFromDate() != null) {

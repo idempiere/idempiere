@@ -120,11 +120,8 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 
 		int fieldGroup_id = Env.getContextAsInt(ctx.ctx,
 				X_AD_FieldGroup.COLUMNNAME_AD_FieldGroup_ID);
-
-		if (processedFieldGroups.contains(fieldGroup_id))
+		if (ctx.packOut.isExported(X_AD_FieldGroup.COLUMNNAME_AD_FieldGroup_ID+"|"+fieldGroup_id))
 			return;
-
-		processedFieldGroups.add(fieldGroup_id);
 
 		X_AD_FieldGroup fieldGroup = new X_AD_FieldGroup(ctx.ctx, fieldGroup_id, null);
 

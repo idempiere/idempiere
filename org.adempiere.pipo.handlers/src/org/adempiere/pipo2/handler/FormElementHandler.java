@@ -17,17 +17,16 @@
 package org.adempiere.pipo2.handler;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Form;
@@ -40,8 +39,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class FormElementHandler extends AbstractElementHandler {
-
-	private List<Integer> forms = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 		List<String> excludes = defaultExcludeList(X_AD_Form.Table_Name);
@@ -102,9 +99,9 @@ public class FormElementHandler extends AbstractElementHandler {
 	protected void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
 		int AD_Form_ID = Env.getContextAsInt(ctx.ctx, "AD_Form_ID");
-		if (forms.contains(AD_Form_ID)) return;
+		if (ctx.packOut.isExported("AD_Form_ID"+"|"+AD_Form_ID))
+			return;
 
-		forms.add(AD_Form_ID);
 		X_AD_Form m_Form = new X_AD_Form (ctx.ctx, AD_Form_ID, null);
 
 		if (ctx.packOut.getFromDate() != null) {

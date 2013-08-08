@@ -16,18 +16,17 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
-import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
@@ -44,8 +43,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class FieldElementHandler extends AbstractElementHandler {
-
-	private List<Integer> processedFields = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
@@ -172,11 +169,8 @@ public class FieldElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_Field_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Field.COLUMNNAME_AD_Field_ID);
-
-		if (processedFields.contains(AD_Field_ID))
+		if (ctx.packOut.isExported(X_AD_Field.COLUMNNAME_AD_Field_ID+"|"+AD_Field_ID))
 			return;
-
-		processedFields.add(AD_Field_ID);
 
 		X_AD_Field m_Field = new X_AD_Field(ctx.ctx, AD_Field_ID, null);
 

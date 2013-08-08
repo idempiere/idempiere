@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -454,4 +455,13 @@ public class PackOut
 	public void setCtx(Properties ctx) {
 		pipoContext.ctx = ctx;
 	}
+
+	private List<String> processedRecords = new ArrayList<String>();
+	public boolean isExported(String key) {
+		if (processedRecords.contains(key))
+			return true;
+		processedRecords.add(key);
+		return false;
+	}
+
 }	//	PackOut

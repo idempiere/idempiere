@@ -18,7 +18,6 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -26,11 +25,11 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
-import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
@@ -50,8 +49,6 @@ import org.xml.sax.helpers.AttributesImpl;
 public class TabElementHandler extends AbstractElementHandler {
 
 	private FieldElementHandler fieldHandler = new FieldElementHandler();
-
-	private List<Integer> tabs = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 		List<String> excludes = defaultExcludeList(X_AD_Tab.Table_Name);
@@ -176,9 +173,8 @@ public class TabElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		PackOut packOut = ctx.packOut;
 		int AD_Tab_ID = Env.getContextAsInt(ctx.ctx, "AD_Tab_ID");
-		if (tabs.contains(AD_Tab_ID))
+		if (ctx.packOut.isExported("AD_Tab_ID"+"|"+AD_Tab_ID))
 			return;
-		tabs.add(AD_Tab_ID);
 
 		boolean createElement = true;
 		X_AD_Tab m_Tab = new X_AD_Tab (ctx.ctx, AD_Tab_ID, getTrxName(ctx));

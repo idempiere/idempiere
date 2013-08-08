@@ -112,12 +112,9 @@ public class ModificationElementHandler extends AbstractElementHandler{
 	
 	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
 		int ad_modification_id = Env.getContextAsInt(ctx.ctx, X_AD_Modification.COLUMNNAME_AD_Modification_ID);
-		
-		if (modifications.contains(ad_modification_id))
+		if (ctx.packOut.isExported(X_AD_Modification.COLUMNNAME_AD_Modification_ID+"|"+ad_modification_id))
 			return;
-		
-		modifications.add(ad_modification_id);
-		
+
 		X_AD_Modification modification = new X_AD_Modification(ctx.ctx, ad_modification_id, null);
 		
 		if (ctx.packOut.getFromDate() != null) {

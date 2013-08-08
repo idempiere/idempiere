@@ -110,6 +110,8 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_Ref_List_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID);
+		if (ctx.packOut.isExported(X_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID+"|"+AD_Ref_List_ID))
+			return;
 		X_AD_Ref_List m_Ref_List = new X_AD_Ref_List(ctx.ctx, AD_Ref_List_ID,
 				getTrxName(ctx));
 		if (ctx.packOut.getFromDate() != null) {

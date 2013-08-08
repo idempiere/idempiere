@@ -20,7 +20,6 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -49,8 +48,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class ColumnElementHandler extends AbstractElementHandler {
-
-	private List<Integer> processedColumns = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
@@ -300,11 +297,8 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_Column_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Column.COLUMNNAME_AD_Column_ID);
-
-		if (processedColumns.contains(AD_Column_ID))
+		if (ctx.packOut.isExported(X_AD_Column.COLUMNNAME_AD_Column_ID+"|"+AD_Column_ID))
 			return;
-
-		processedColumns.add(AD_Column_ID);
 
 		AttributesImpl atts = new AttributesImpl();
 		X_AD_Column m_Column = new X_AD_Column(ctx.ctx, AD_Column_ID,

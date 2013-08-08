@@ -122,6 +122,8 @@ public class WindowElementHandler extends AbstractElementHandler {
 	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
 		int AD_Window_ID = Env.getContextAsInt(ctx.ctx, "AD_Window_ID");
+		if (ctx.packOut.isExported("AD_Window_ID"+"|"+AD_Window_ID))
+			return;
 		PackOut packOut = ctx.packOut;
 
 		boolean createElement = true;
