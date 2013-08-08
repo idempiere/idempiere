@@ -2006,6 +2006,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		            adTabbox.getSelectedTabpanel().dynamicDisplay(0);
 		            focusToActivePanel();
+		            MRecentItem.publishChangedEvent(Env.getAD_User_ID(ctx));
 				}
 	        }
 		});
@@ -2175,6 +2176,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 							adTabbox.getSelectedTabpanel().dynamicDisplay(0);
 
 				            messagePanel.dispose();
+				            MRecentItem.publishChangedEvent(Env.getAD_User_ID(ctx));
 				        } else {
 							logger.fine("cancel");
 						}
