@@ -276,8 +276,14 @@ public class MRecentItem extends X_AD_RecentItem
 	}
 
 	public String getLabel() {
-		MWindow win = new MWindow(getCtx(), getAD_Window_ID(), null);
-		String windowName = win.get_Translation("Name");
+		String windowName;
+		MUserDefWin userDef = MUserDefWin.getBestMatch(getCtx(), getAD_Window_ID());
+		if (userDef != null) {
+			windowName = userDef.getName();
+		} else {
+			MWindow win = new MWindow(getCtx(), getAD_Window_ID(), null);
+			windowName = win.get_Translation("Name");
+		}
 		MTable table = MTable.get(getCtx(), getAD_Table_ID());
 		PO po = table.getPO(getRecord_ID(), null);
 		if (po == null) {
