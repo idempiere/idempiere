@@ -80,8 +80,6 @@ public class UUIDGenerator extends SvrProcess {
 			tableName = "%";
 		else
 			tableName = tableName.trim();
-		if (!tableName.endsWith("%"))
-			tableName = tableName + "%";
 		String sql = "SELECT AD_Table_ID, TableName FROM AD_Table WHERE TableName LIKE ? AND IsView = 'N' AND IsActive='Y' ORDER BY TableName";
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -219,6 +217,7 @@ public class UUIDGenerator extends SvrProcess {
 			while (rs.next()) {
 				if (AD_Column_ID > 0) {
 					int recordId = rs.getInt(1);
+					// this line is to avoid users generating official UUIDs - comment it to do official migration script work
 					if (recordId > MTable.MAX_OFFICIAL_ID) {
 						UUID uuid = UUID.randomUUID();
 						DB.executeUpdateEx(updateSQL.toString(),new Object[]{uuid.toString(), recordId}, trx.getTrxName());

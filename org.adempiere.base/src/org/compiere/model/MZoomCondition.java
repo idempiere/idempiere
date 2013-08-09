@@ -111,15 +111,23 @@ public class MZoomCondition extends X_AD_ZoomCondition
 	 */
 	public static int findZoomWindowByWindowId(int AD_Window_ID, MQuery query)
 	{
-		GridWindow window = GridWindow.get(Env.getCtx(), -1, AD_Window_ID);
-		if (window == null || window.getTabCount() == 0)
-			return 0;
-		
-		if (window.getTab(0).getTableName().equals(query.getZoomTableName())) {
-			return findZoomWindowByTableId(window.getTab(0).getAD_Table_ID(), query);
+		int tableID = DB.getSQLValueEx(null,
+				"SELECT t.AD_Table_ID " +
+				    "FROM AD_Tab tab JOIN AD_Table t ON t.AD_Table_ID=tab.AD_Table_ID " +
+				    "WHERE t.IsActive='Y' AND tab.IsActive='Y' AND tab.AD_Window_ID=? " +
+				    "ORDER BY tab.SeqNo",
+				AD_Window_ID);
+		String tableName = null;
+		if (tableID > 0) {
+			tableName = MTable.get(Env.getCtx(), tableID).getTableName();
 		}
-		else
-		{
+
+		if (tableName != null && tableName.equals(query.getZoomTableName())) {
+			return findZoomWindowByTableId(tableID, query);
+		} else {
+			GridWindow window = GridWindow.get(Env.getCtx(), -1, AD_Window_ID);
+			if (window == null || window.getTabCount() == 0)
+				return 0;
 			//resolve zoom to detail
 			int size = window.getTabCount();
 			GridTab gTab = null;
@@ -202,7 +210,7 @@ public class MZoomCondition extends X_AD_ZoomCondition
 			.append(" WHERE ")
 			.append(whereClause)
 			.append(" AND ")
-			.append(getWhereClause());
+			.append(Env.parseContext(Env.getCtx(), 0, getWhereClause(), false, true));
 		
 		int no = DB.getSQLValue(null, builder.toString());		
 		return no == 1;

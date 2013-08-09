@@ -114,16 +114,31 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     	this.newEnabled = newRecord;
     	this.updateEnabled = updateRecord; // Elaine 2009/02/16 - update record
     	this.showLocation = showLocation;
-    	if (lookup != null) {
+
+    	String tableName = null;
+    	if (lookup != null && lookup.getColumnName() != null)
+    		tableName = lookup.getColumnName().substring(0, lookup.getColumnName().indexOf("."));
+
+		if (lookup != null) {
     		int winID = lookup.getZoom();
     		Boolean canAccess = MRole.getDefault().getWindowAccess(winID);
     		if (winID <= 0 || canAccess == null || ! canAccess) {
     	    	this.zoomEnabled = false;
     	    	this.newEnabled = false;
     	    	this.updateEnabled = false;
+
+    			// check possible zoom conditions to enable back zoom
+    			for (int zoomCondWinID : 
+    				DB.getIDsEx(null, 
+    						"SELECT AD_Window_ID FROM AD_ZoomCondition WHERE IsActive='Y' AND AD_Table_ID IN (SELECT AD_Table_ID FROM AD_Table WHERE TableName=?)",
+    						tableName)) {
+    	    		Boolean canAccessZoom = MRole.getDefault().getWindowAccess(zoomCondWinID);
+    	    		if (canAccessZoom != null && canAccessZoom) {
+    	    	    	this.zoomEnabled = true;
+    	    			break;
+    	    		}
+    			}
     		} else {
-    			int posPoint = lookup.getColumnName().indexOf(".");
-    			String tableName = lookup.getColumnName().substring(0, posPoint);
     			int cnt = DB.getSQLValueEx(null,
     					"SELECT COUNT(*) "
     							+ "FROM   AD_Field f "
