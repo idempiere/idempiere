@@ -23,7 +23,7 @@ INSERT INTO AD_Ref_List_Trl (AD_Language,AD_Ref_List_ID, Description,Name, IsTra
 
 -- Jul 16, 2013 5:56:21 PM COT
 -- IDEMPIERE-1138 Broadcast Message Problems
-INSERT INTO AD_Ref_List (AD_Ref_List_ID,AD_Reference_ID,Description,Name,AD_Ref_List_UU,Value,Created,CreatedBy,Updated,UpdatedBy,IsActive,AD_Org_ID,AD_Client_ID,EntityType) VALUES (200157,200020,'Repeat it until the message expires or until it has been acknowledged, whatever happens first','Until Expiration or Acknowledge','aa345f63-dfbe-4d18-aae4-e5ed06cd4407','O',TO_DATE('2013-07-16 17:56:21','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-07-16 17:56:21','YYYY-MM-DD HH24:MI:SS'),100,'Y',0,0,'U')
+INSERT INTO AD_Ref_List (AD_Ref_List_ID,AD_Reference_ID,Description,Name,AD_Ref_List_UU,Value,Created,CreatedBy,Updated,UpdatedBy,IsActive,AD_Org_ID,AD_Client_ID,EntityType) VALUES (200157,200020,'Repeat it until the message expires or until it has been acknowledged, whatever happens first','Until Expiration or Acknowledge','aa345f63-dfbe-4d18-aae4-e5ed06cd4407','O',TO_DATE('2013-07-16 17:56:21','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-07-16 17:56:21','YYYY-MM-DD HH24:MI:SS'),100,'Y',0,0,'D')
 ;
 
 -- Jul 16, 2013 5:56:21 PM COT
