@@ -193,6 +193,20 @@ public class MWarehouse extends X_M_Warehouse
 			log.warning("No default locator for " + getName());
 			return locators[0];
 		}
+		else
+		{
+			String whereClause = "M_Warehouse_ID=?";
+			List<MLocator> list = new Query(getCtx(), I_M_Locator.Table_Name, whereClause, null)
+											.setParameters(getM_Warehouse_ID())
+											.setOnlyActiveRecords(false).list();
+			if (!list.isEmpty()) 
+			{
+				if (log.isLoggable(Level.INFO))
+					log.info("All locator is inactive for " + getName());
+				//Do not auto create if there are inactive locator since that could trigger unique key exception
+				return null;
+			}
+		}	
 		//	No Locator - create one
 		MLocator loc = new MLocator (this, "Standard");
 		loc.setIsDefault(true);
