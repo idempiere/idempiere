@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.ListItem;
@@ -33,9 +32,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
-import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
-import org.compiere.model.MTable;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -445,15 +442,7 @@ public class WFEditor extends ADForm {
 	private void zoom()
 	{
 		if (m_workflowId > 0) {
-			int AD_Window_ID = MTable.get(Env.getCtx(), MWorkflow.Table_ID).getAD_Window_ID();
-
-			if (AD_Window_ID <= 0) {
-				throw new AdempiereException("@NotFound@ @AD_Window_ID@");
-			}
-
-			MQuery query = null;
-			query = MQuery.getEqualQuery("AD_Workflow_ID", m_workflowId);
-			AEnv.zoom(AD_Window_ID, query);
+			AEnv.zoom(MWorkflow.Table_ID, m_workflowId);
 		}
 	}	//	zoom
 

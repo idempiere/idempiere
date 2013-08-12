@@ -387,10 +387,19 @@ public final class AEnv
         	zoomQuery.setRecordCount(1);    //  guess
         }
         int windowId = lookup.getZoom(zoomQuery);
-        int zoomId = MZoomCondition.findZoomWindowByWindowId(windowId, zoomQuery);
-        zoom(zoomId > 0 ? zoomId : windowId, zoomQuery);
+        zoom(windowId, zoomQuery);
     }
 
+    /**
+     * open zoom window with query
+     * @param AD_Window_ID
+     * @param query
+     */
+    public static void showZoomWindow(int AD_Window_ID, MQuery query)
+    {
+    	SessionManager.getAppDesktop().showZoomWindow(AD_Window_ID, query);
+    }
+    
 	/**
 	 * Zoom to a window with the provided window id and filters according to the
 	 * query
@@ -399,7 +408,8 @@ public final class AEnv
 	 */
 	public static void zoom(int AD_Window_ID, MQuery query)
 	{
-		SessionManager.getAppDesktop().showZoomWindow(AD_Window_ID, query);
+		int zoomId = MZoomCondition.findZoomWindowByWindowId(AD_Window_ID, query);
+        showZoomWindow(zoomId > 0 ? zoomId : AD_Window_ID, query);
 	}
 
 	public static void showWindow(Window win)
@@ -421,7 +431,7 @@ public final class AEnv
 		if (AD_Window_ID == 0)
 			return;
 
-		zoom(AD_Window_ID, query);
+		showZoomWindow(AD_Window_ID, query);
 	}
 
 	/**
