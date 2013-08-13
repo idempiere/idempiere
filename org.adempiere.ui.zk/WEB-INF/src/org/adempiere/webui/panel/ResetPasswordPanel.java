@@ -492,7 +492,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     
     protected boolean sendEmail(MUser to, String newPassword)
     {
-    	MClient client = MClient.get(m_ctx, to.getAD_Client_ID());
+    	MClient client = MClient.get(m_ctx, 0);//change by: IDEMPIERE-1267 Temp password from "Forgot My Password" does not work
     	
     	StringBuilder sql = new StringBuilder("SELECT R_MailText_ID ");
     	sql.append("FROM R_MailText ");
