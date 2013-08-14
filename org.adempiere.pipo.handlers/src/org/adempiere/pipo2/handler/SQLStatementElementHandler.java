@@ -16,9 +16,9 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.logging.Level;
 
@@ -33,6 +33,7 @@ import org.adempiere.pipo2.SQLElementParameters;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Trx;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -46,13 +47,17 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 		String sql = getStringValue(element, "statement");
 		if (sql.endsWith(";") && !(sql.toLowerCase().endsWith("end;")))
 			sql = sql.substring(0, sql.length() - 1);
+		Savepoint savepoint = null;
 		PreparedStatement pstmt = null;
 		try {
 			// NOTE Postgres needs to commit DDL statements
-			// add a SQL command just with COMMIT if you want to simulate the Oracle behavior (commit on DDL)
-			
-			// It is also necessary on postgres to add a COMMIT before any SQL statement that can fail
-			// for example a create index where is possible the index already exists
+			// add a SQL command just with COMMIT if you want to simulate the Oracle behavior (commit on DDL)			
+			// Use savepoint here so that SQL exception would not rollback the whole process
+			if (DB.isPostgreSQL())
+			{
+				Trx trx = Trx.get(getTrxName(ctx), true);
+				savepoint = trx.setSavepoint(null);
+			}
 
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
 			if (DBType.equals("ALL")) {
@@ -89,14 +94,13 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 		} catch (Exception e)	{
 			if (DB.isPostgreSQL()) {
 				// rollback immediately postgres on exception to avoid a wrong SQL stop the whole process
-				if (pstmt != null) {
-					Connection m_con = null;
+				if (savepoint != null) 
+				{
+					Trx trx = Trx.get(getTrxName(ctx), false);
 					try {
-						m_con = pstmt.getConnection();
-						if (m_con != null && !m_con.getAutoCommit())
-							m_con.rollback();
-					} catch (SQLException ex) {
-					}
+						trx.rollback(savepoint);
+					} catch (SQLException e1) {}
+					savepoint = null;
 				}
 			}
 			log.log(Level.SEVERE,"SQLSatement", e);
@@ -106,6 +110,12 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 		} finally {
 			DB.close(pstmt);
 			pstmt = null;
+			if (savepoint != null) {
+				Trx trx = Trx.get(getTrxName(ctx), false);
+				try {
+					trx.releaseSavepoint(savepoint);
+				} catch (SQLException e) {}
+			}
 		}
 	}
 
