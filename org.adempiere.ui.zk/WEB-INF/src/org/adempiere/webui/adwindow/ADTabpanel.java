@@ -668,11 +668,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     			collapsedGroups.add(group);
     	}
 
-        for (WEditor comp : editors)
-        {
-        	comp.updateLabelStyle();
-        }
-        
         //  Selective
         if (col > 0)
         {
@@ -683,7 +678,12 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
             			+ columnName + " - Dependents=" + dependants.size());
 			if ( ! (   dependants.size() > 0
 					|| changedField.getCallout().length() > 0
-					|| Core.findCallout(gridTab.getTableName(), columnName).size() > 0)) {
+					|| Core.findCallout(gridTab.getTableName(), columnName).size() > 0)) 
+			{
+				for (WEditor comp : editors)
+				{
+					comp.updateLabelStyle();
+				}
                 return;
             }
         }
@@ -719,6 +719,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
                     comp.setVisible(false);
                 }
             }
+            comp.updateLabelStyle();
         }   //  all components
 
         //hide row if all editor within the row is invisible
