@@ -612,54 +612,53 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         for (int i = 0; i < m_findFields.length; i++)
         {
             GridField mField = m_findFields[i];
+            
+			if (mField.getVO().displayType == DisplayType.YesNo) {
+				// Make Yes-No searchable as list
+				GridFieldVO vo = mField.getVO();
+				GridFieldVO ynvo = vo.clone(vo.ctx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
+				ynvo.IsDisplayed = true;
+				ynvo.displayType = DisplayType.List;
+				ynvo.AD_Reference_Value_ID = REFERENCE_YESNO;
 
-            if (mField.isSelectionColumn()) {
-    			if (mField.getVO().displayType == DisplayType.YesNo) {
-    				// Make Yes-No searchable as list
-    				GridFieldVO vo = mField.getVO();
-    				GridFieldVO ynvo = vo.clone(vo.ctx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
-    				ynvo.IsDisplayed = true;
-    				ynvo.displayType = DisplayType.List;
-    				ynvo.AD_Reference_Value_ID = REFERENCE_YESNO;
+				ynvo.lookupInfo = MLookupFactory.getLookupInfo (ynvo.ctx, ynvo.WindowNo, ynvo.AD_Column_ID, ynvo.displayType,
+						Env.getLanguage(ynvo.ctx), ynvo.ColumnName, ynvo.AD_Reference_Value_ID,
+						ynvo.IsParent, ynvo.ValidationCode);
 
-    				ynvo.lookupInfo = MLookupFactory.getLookupInfo (ynvo.ctx, ynvo.WindowNo, ynvo.AD_Column_ID, ynvo.displayType,
-    						Env.getLanguage(ynvo.ctx), ynvo.ColumnName, ynvo.AD_Reference_Value_ID,
-    						ynvo.IsParent, ynvo.ValidationCode);
+				GridField ynfield = new GridField(ynvo);
 
-    				GridField ynfield = new GridField(ynvo);
+				// replace the original field by the YN List field
+				m_findFields[i] = ynfield;
+				mField = ynfield;
+			} else if  ( mField.getVO().displayType == DisplayType.Button ) {
+				// Make Buttons searchable
+				GridFieldVO vo = mField.getVO();
+				if ( vo.AD_Reference_Value_ID > 0 )
+				{
+					GridFieldVO postedvo = vo.clone(vo.ctx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
+					postedvo.IsDisplayed = true;
+					postedvo.displayType = DisplayType.List;
 
-    				// replace the original field by the YN List field
-    				m_findFields[i] = ynfield;
-    				mField = ynfield;
-    			} else if  ( mField.getVO().displayType == DisplayType.Button ) {
-    				// Make Buttons searchable
-    				GridFieldVO vo = mField.getVO();
-    				if ( vo.AD_Reference_Value_ID > 0 )
-    				{
-    					GridFieldVO postedvo = vo.clone(vo.ctx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
-    					postedvo.IsDisplayed = true;
-    					postedvo.displayType = DisplayType.List;
+					postedvo.lookupInfo = MLookupFactory.getLookupInfo (postedvo.ctx, postedvo.WindowNo, postedvo.AD_Column_ID, postedvo.displayType,
+							Env.getLanguage(postedvo.ctx), postedvo.ColumnName, postedvo.AD_Reference_Value_ID,
+							postedvo.IsParent, postedvo.ValidationCode);
 
-    					postedvo.lookupInfo = MLookupFactory.getLookupInfo (postedvo.ctx, postedvo.WindowNo, postedvo.AD_Column_ID, postedvo.displayType,
-    							Env.getLanguage(postedvo.ctx), postedvo.ColumnName, postedvo.AD_Reference_Value_ID,
-    							postedvo.IsParent, postedvo.ValidationCode);
+					GridField postedfield = new GridField(postedvo);
 
-    					GridField postedfield = new GridField(postedvo);
-
-    					// replace the original field by the Posted List field
-    					m_findFields[i] = postedfield;
-    					mField = postedfield;
-    				}
-    			} else {
-    				// clone the field and clean gridtab - IDEMPIERE-1105
-    		        GridField findField = (GridField) mField.clone(m_findCtx);        
-    		        findField.setGridTab(null);
-					m_findFields[i] = findField;
-    				mField = findField;
-    			}
+					// replace the original field by the Posted List field
+					m_findFields[i] = postedfield;
+					mField = postedfield;
+				}
+			} else {
+				// clone the field and clean gridtab - IDEMPIERE-1105
+		        GridField findField = (GridField) mField.clone(m_findCtx);        
+		        findField.setGridTab(null);
+				m_findFields[i] = findField;
+				mField = findField;
+			}
+			if (mField.isSelectionColumn()) {
             	gridFieldList.add(mField); 
             } // isSelectionColumn
-
         }   //  for all target tab fields
 
        
