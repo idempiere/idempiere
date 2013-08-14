@@ -432,6 +432,15 @@ public class GridField
 			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " NO - TabRO=" + m_vo.tabReadOnly + ", FieldRO=" + m_vo.IsReadOnly);
 			return false;
 		}
+		
+		//check tab context
+		if (checkContext && getGridTab() != null)
+		{
+			if (getGridTab().isReadOnly())
+			{
+				return false;
+			}
+		}
 
 		//	Not Updateable - only editable if new updateable row
 		if (!m_vo.IsUpdateable && !m_inserting)
