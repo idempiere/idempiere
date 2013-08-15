@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *  Zoom Condition model
@@ -102,7 +103,11 @@ public class MZoomCondition extends X_AD_ZoomCondition
 	public static int findZoomWindow(MQuery query)
 	{
 		String tableName = query.getTableName();
+		if (Util.isEmpty(tableName))
+			return 0;
 		MTable table = MTable.get(Env.getCtx(), tableName);
+		if (table == null)
+			return 0;
 		return findZoomWindowByTableId(table.getAD_Table_ID(), query);
 	}
 	
