@@ -176,5 +176,6 @@ public interface IADTabbox extends UIPart {
 	/**
 	 * @return true if all the tabs of detail pane have been linked up with adtabpanel
 	 */
-	boolean isDetailPaneLoaded();
+	public boolean isDetailPaneLoaded();
+	
 }

@@ -492,5 +492,9 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	
 	public ToolBarButton getPreviousButton() {
 		return btnPrevious;
-	}	
+	}
+	
+	public boolean isEmpty() {
+		return layout == null || layout.getChildren().isEmpty();
+	}
 }
