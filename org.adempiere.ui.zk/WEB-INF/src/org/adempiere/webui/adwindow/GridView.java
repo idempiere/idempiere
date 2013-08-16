@@ -82,7 +82,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 
 	private static final int MIN_COMBOBOX_WIDTH = 160;
 
-	private static final int MIN_NUMERIC_COL_WIDTH = 130;
+	private static final int MIN_NUMERIC_COL_WIDTH = 120;
 
 	private static final String ATTR_ON_POST_SELECTED_ROW_CHANGED = "org.adempiere.webui.adwindow.GridView.onPostSelectedRowChanged";
 
@@ -166,7 +166,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 	protected void createListbox() {
 		listbox = new Grid();
 		listbox.setEmptyMessage(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "FindZeroRecords")));
-		listbox.setSizedByContent(true);
+		listbox.setSizedByContent(false);				
 		listbox.setVflex("1");
 		listbox.setHflex("1");
 		listbox.setSclass("adtab-grid");
@@ -296,7 +296,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 			refreshing = true;
 			listbox.setModel(listModel);
 			updateListIndex();
-			refreshing = false;
+			refreshing = false;			
 		}
 	}
 
@@ -424,34 +424,53 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 				if (columnWidthMap != null && columnWidthMap.get(gridField[i].getAD_Field_ID()) != null) {
 					column.setWidth(columnWidthMap.get(gridField[i].getAD_Field_ID()));
 				} else {
-					int l = DisplayType.isNumeric(gridField[i].getDisplayType())
-						? 120 : gridField[i].getDisplayLength() * 9;
-					//special treatment for line
-					if (DisplayType.isNumeric(gridField[i].getDisplayType()) && "Line".equals(gridField[i].getColumnName()))
-					{
-						l = 60;
-					}
-					else
-					{
-						if (gridField[i].getHeader().length() * 9 > l)
-							l = gridField[i].getHeader().length() * 9;
-						if (l > MAX_COLUMN_WIDTH)
-							l = MAX_COLUMN_WIDTH;
-						else if ( l < MIN_COLUMN_WIDTH)
-							l = MIN_COLUMN_WIDTH;
-						if (gridField[i].getDisplayType() == DisplayType.Table || gridField[i].getDisplayType() == DisplayType.TableDir)
+					if (gridField[i].getDisplayType()==DisplayType.YesNo) {
+						//safe to use minimum width for checkbox
+						column.setHflex("min");
+					} else if (DisplayType.isNumeric(gridField[i].getDisplayType()) && "Line".equals(gridField[i].getColumnName())) {
+						//special treatment for line
+						column.setHflex("min");
+					} else {
+						int estimatedWidth = 0;
+						if (DisplayType.isNumeric(gridField[i].getDisplayType()))
+							estimatedWidth = MIN_NUMERIC_COL_WIDTH;
+						else if (DisplayType.isLookup(gridField[i].getDisplayType()))
+							estimatedWidth = MIN_COMBOBOX_WIDTH;
+						else if (DisplayType.isText(gridField[i].getDisplayType()))
+							estimatedWidth = gridField[i].getDisplayLength() * 8;
+						else
+							estimatedWidth = MIN_COLUMN_WIDTH;
+					
+						int headerWidth = (gridField[i].getHeader().length()+2) * 8;
+						if (headerWidth > estimatedWidth)
+							estimatedWidth = headerWidth;
+						
+						if (DisplayType.isLookup(gridField[i].getDisplayType()))
 						{
-							if (l < MIN_COMBOBOX_WIDTH)
-								l = MIN_COMBOBOX_WIDTH;
+							if (headerWidth > MIN_COMBOBOX_WIDTH)
+								column.setHflex("min");
 						}
 						else if (DisplayType.isNumeric(gridField[i].getDisplayType()))
 						{
-							if (l < MIN_NUMERIC_COL_WIDTH)
-								l = MIN_NUMERIC_COL_WIDTH;
+							if (headerWidth > MIN_NUMERIC_COL_WIDTH)
+								column.setHflex("min");
+						}
+						else if (!DisplayType.isText(gridField[i].getDisplayType()))
+						{
+							if (headerWidth > MIN_COLUMN_WIDTH)
+								column.setHflex("min");
+						}
+						
+						//set estimated width if not using hflex=min
+						if (!"min".equals(column.getHflex())) {
+							if (estimatedWidth > MAX_COLUMN_WIDTH)
+								estimatedWidth = MAX_COLUMN_WIDTH;
+							else if ( estimatedWidth < MIN_COLUMN_WIDTH)
+								estimatedWidth = MIN_COLUMN_WIDTH;
+							column.setWidth(Integer.toString(estimatedWidth) + "px");
 						}
 					}
-					column.setWidth(Integer.toString(l) + "px");
-				}
+				} 
 				columns.appendChild(column);
 			}
 		}
