@@ -79,16 +79,7 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, String trxName)
 	{
-		//	Delete Unprocessed zero Differences
-		StringBuilder sql = new StringBuilder("DELETE M_CostDetail ")
-			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
-			.append(" AND C_OrderLine_ID=").append(C_OrderLine_ID)
-			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())
-			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
-		int no = DB.executeUpdate(sql.toString(), trxName);
-		if (no != 0)
-			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
-		MCostDetail cd = get (as.getCtx(), "C_OrderLine_ID=?", 
+		MCostDetail cd = get (as.getCtx(), "C_OrderLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
 			C_OrderLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
 		if (cd == null)		//	createNew
@@ -101,10 +92,20 @@ public class MCostDetail extends X_M_CostDetail
 		}
 		else
 		{
-			// MZ Goodwill
-			// set deltaAmt=Amt, deltaQty=qty, and set Cost Detail for Amt and Qty	 
-			cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
-			cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			if (cd.isProcessed())
+			{
+				// MZ Goodwill
+				// set deltaAmt=Amt, deltaQty=qty, and set Cost Detail for Amt and Qty	 
+				cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
+				cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			}
+			else
+			{
+				cd.setDeltaAmt(BigDecimal.ZERO);
+				cd.setDeltaQty(BigDecimal.ZERO);
+				cd.setAmt(Amt);
+				cd.setQty(Qty);
+			}
 			if (cd.isDelta())
 			{
 				cd.setProcessed(false);
@@ -112,7 +113,7 @@ public class MCostDetail extends X_M_CostDetail
 				cd.setQty(Qty);
 			}
 			// end MZ
-			else
+			else if (cd.isProcessed())
 				return true;	//	nothing to do
 		}
 		boolean ok = cd.save();
@@ -146,17 +147,6 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, String trxName)
 	{
-		//	Delete Unprocessed zero Differences
-		StringBuilder sql = new StringBuilder("DELETE M_CostDetail ")
-			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
-			.append(" AND C_InvoiceLine_ID=").append(C_InvoiceLine_ID)
-			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())			
-			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID)
-			.append(" AND Coalesce(M_CostElement_ID,0)=").append(M_CostElement_ID);
-		
-		int no = DB.executeUpdate(sql.toString(), trxName);
-		if (no != 0)
-			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
 		MCostDetail cd = get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
 			C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
@@ -170,10 +160,20 @@ public class MCostDetail extends X_M_CostDetail
 		}
 		else
 		{
-			// MZ Goodwill
-			// set deltaAmt=Amt, deltaQty=qty, and set Cost Detail for Amt and Qty	 
-			cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
-			cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			if (cd.isProcessed())
+			{
+				// MZ Goodwill
+				// set deltaAmt=Amt, deltaQty=qty, and set Cost Detail for Amt and Qty	 
+				cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
+				cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			}
+			else
+			{
+				cd.setDeltaAmt(BigDecimal.ZERO);
+				cd.setDeltaQty(BigDecimal.ZERO);
+				cd.setAmt(Amt);
+				cd.setQty(Qty);
+			}
 			if (cd.isDelta())
 			{
 				cd.setProcessed(false);
@@ -181,7 +181,7 @@ public class MCostDetail extends X_M_CostDetail
 				cd.setQty(Qty);
 			}
 			// end MZ
-			else
+			else if (cd.isProcessed())
 				return true;	//	nothing to do
 		}
 		boolean ok = cd.save();
@@ -215,16 +215,7 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, boolean IsSOTrx, String trxName)
 	{
-		//	Delete Unprocessed zero Differences
-		StringBuilder sql = new StringBuilder("DELETE M_CostDetail ")
-			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
-			.append(" AND M_InOutLine_ID=").append(M_InOutLine_ID)
-			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())
-			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
-		int no = DB.executeUpdate(sql.toString(), trxName);
-		if (no != 0)
-			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
-		MCostDetail cd = get (as.getCtx(), "M_InOutLine_ID=?", 
+		MCostDetail cd = get (as.getCtx(), "M_InOutLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
 			M_InOutLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
 		if (cd == null)		//	createNew
@@ -238,10 +229,20 @@ public class MCostDetail extends X_M_CostDetail
 		}
 		else
 		{
-			// MZ Goodwill
-		  // set deltaAmt=Amt, deltaQty=qty, and set Cost Detail for Amt and Qty	 
-			cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
-			cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			if (cd.isProcessed())
+			{
+				// MZ Goodwill
+			    // set deltaAmt=Amt, deltaQty=qty, and set Cost Detail for Amt and Qty	 
+				cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
+				cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			}
+			else
+			{
+				cd.setDeltaAmt(BigDecimal.ZERO);
+				cd.setDeltaQty(BigDecimal.ZERO);
+				cd.setAmt(Amt);
+				cd.setQty(Qty);
+			}
 			if (cd.isDelta())
 			{
 				cd.setProcessed(false);
@@ -249,7 +250,7 @@ public class MCostDetail extends X_M_CostDetail
 				cd.setQty(Qty);
 			}
 			// end MZ
-			else
+			else if (cd.isProcessed())
 				return true;	//	nothing to do
 		}
 		boolean ok = cd.save();
@@ -282,16 +283,7 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, String trxName)
 	{
-		//	Delete Unprocessed zero Differences
-		StringBuilder sql = new StringBuilder("DELETE M_CostDetail ")
-			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
-			.append(" AND M_InventoryLine_ID=").append(M_InventoryLine_ID)
-			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())
-			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
-		int no = DB.executeUpdate(sql.toString(), trxName);
-		if (no != 0)
-			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
-		MCostDetail cd = get (as.getCtx(), "M_InventoryLine_ID=?", 
+		MCostDetail cd = get (as.getCtx(), "M_InventoryLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
 			M_InventoryLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
 		if (cd == null)		//	createNew
@@ -304,10 +296,20 @@ public class MCostDetail extends X_M_CostDetail
 		}
 		else
 		{
-			// MZ Goodwill
-			// set deltaAmt=Amt, deltaQty=qty, and set Cost Detail for Amt and Qty	
-			cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
-			cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			if (cd.isProcessed())
+			{
+				// MZ Goodwill
+				// set deltaAmt=Amt, deltaQty=qty, and set Cost Detail for Amt and Qty	
+				cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
+				cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			}
+			else
+			{
+				cd.setDeltaAmt(BigDecimal.ZERO);
+				cd.setDeltaQty(BigDecimal.ZERO);
+				cd.setAmt(Amt);
+				cd.setQty(Qty);
+			}
 			if (cd.isDelta())
 			{
 				cd.setProcessed(false);
@@ -315,7 +317,7 @@ public class MCostDetail extends X_M_CostDetail
 				cd.setQty(Qty);
 			}
 			// end MZ
-			else
+			else if (cd.isProcessed())
 				return true;	//	nothing to do
 		}
 		boolean ok = cd.save();
@@ -349,18 +351,8 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal Amt, BigDecimal Qty, boolean from,
 		String Description, String trxName)
 	{
-		//	Delete Unprocessed zero Differences
-		StringBuilder sql = new StringBuilder("DELETE M_CostDetail ")
-			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
-			.append(" AND M_MovementLine_ID=").append(M_MovementLine_ID) 
-			.append(" AND IsSOTrx=").append((from ? "'Y'" : "'N'"))
-			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())
-			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
-		int no = DB.executeUpdate(sql.toString(), trxName);
-		if (no != 0)
-			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
 		StringBuilder msget = new StringBuilder( "M_MovementLine_ID=? AND IsSOTrx=") 
-				.append((from ? "'Y'" : "'N'"));
+				.append((from ? "'Y'" : "'N'")).append(" AND Coalesce(M_CostElement_ID,0)=").append(M_CostElement_ID);
 		MCostDetail cd = get (as.getCtx(),msget.toString(), 
 			M_MovementLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
@@ -375,10 +367,20 @@ public class MCostDetail extends X_M_CostDetail
 		}
 		else
 		{
-			// MZ Goodwill
-			// set deltaAmt=Amt, deltaQty=qty, and set Cost Detail for Amt and Qty	
-			cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
-			cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			if (cd.isProcessed())
+			{
+				// MZ Goodwill
+				// set deltaAmt=Amt, deltaQty=qty, and set Cost Detail for Amt and Qty	
+				cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
+				cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			}
+			else
+			{
+				cd.setDeltaAmt(BigDecimal.ZERO);
+				cd.setDeltaQty(BigDecimal.ZERO);
+				cd.setAmt(Amt);
+				cd.setQty(Qty);
+			}
 			if (cd.isDelta())
 			{
 				cd.setProcessed(false);
@@ -386,7 +388,7 @@ public class MCostDetail extends X_M_CostDetail
 				cd.setQty(Qty);
 			}
 			// end MZ
-			else
+			else if (cd.isProcessed())
 				return true;	//	nothing to do
 		}
 		boolean ok = cd.save();
@@ -419,16 +421,7 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, String trxName)
 	{
-		//	Delete Unprocessed zero Differences
-		StringBuilder sql = new StringBuilder("DELETE M_CostDetail ")
-			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
-			.append(" AND M_ProductionLine_ID=").append(M_ProductionLine_ID)
-			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())
-			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID);
-		int no = DB.executeUpdate(sql.toString(), trxName);
-		if (no != 0)
-			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
-		MCostDetail cd = get (as.getCtx(), "M_ProductionLine_ID=?", 
+		MCostDetail cd = get (as.getCtx(), "M_ProductionLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
 			M_ProductionLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
 		if (cd == null)		//	createNew
@@ -441,10 +434,20 @@ public class MCostDetail extends X_M_CostDetail
 		}
 		else
 		{
-			// MZ Goodwill
-			// set deltaAmt=Amt, deltaQty=qty, and set Cost Detail for Amt and Qty	 
-			cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
-			cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			if (cd.isProcessed())
+			{
+				// MZ Goodwill
+				// set deltaAmt=Amt, deltaQty=qty, and set Cost Detail for Amt and Qty	 
+				cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
+				cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			}
+			else
+			{
+				cd.setDeltaAmt(BigDecimal.ZERO);
+				cd.setDeltaQty(BigDecimal.ZERO);
+				cd.setAmt(Amt);
+				cd.setQty(Qty);
+			}
 			if (cd.isDelta())
 			{
 				cd.setProcessed(false);
@@ -452,7 +455,7 @@ public class MCostDetail extends X_M_CostDetail
 				cd.setQty(Qty);
 			}
 			// end MZ
-			else
+			else if (cd.isProcessed())
 				return true;	//	nothing to do
 		}
 		boolean ok = cd.save();
@@ -483,17 +486,6 @@ public class MCostDetail extends X_M_CostDetail
 			BigDecimal Amt, BigDecimal Qty,
 			String Description, String trxName)
 	{
-		//	Delete Unprocessed zero Differences
-		StringBuilder sql = new StringBuilder("DELETE M_CostDetail ")
-			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
-			.append(" AND M_MatchInv_ID=").append(M_MatchInv_ID)
-			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())			
-			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID)
-			.append(" AND Coalesce(M_CostElement_ID,0)=").append(M_CostElement_ID);
-		
-		int no = DB.executeUpdate(sql.toString(), trxName);
-		if (no != 0)
-			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
 		MCostDetail cd = get (as.getCtx(), "M_MatchInv_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
 				M_MatchInv_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
@@ -507,15 +499,25 @@ public class MCostDetail extends X_M_CostDetail
 		}
 		else
 		{
-			cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
-			cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			if (cd.isProcessed())
+			{
+				cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
+				cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			}
+			else
+			{
+				cd.setDeltaAmt(BigDecimal.ZERO);
+				cd.setDeltaQty(BigDecimal.ZERO);
+				cd.setAmt(Amt);
+				cd.setQty(Qty);
+			}
 			if (cd.isDelta())
 			{
 				cd.setProcessed(false);
 				cd.setAmt(Amt);
 				cd.setQty(Qty);
 			}
-			else
+			else if (cd.isProcessed())
 				return true;	//	nothing to do
 		}
 		boolean ok = cd.save();
@@ -938,12 +940,16 @@ public class MCostDetail extends X_M_CostDetail
 		}
 		// end MZ
 
+		//determine whether this is cost only adjustment entry
 		boolean costAdjustment = false;
-		//landed cost adjustment
-		if (this.getM_CostElement_ID() > 0 && this.getM_CostElement_ID() != ce.getM_CostElement_ID() && getC_InvoiceLine_ID() > 0)
+		if (this.getM_CostElement_ID() > 0 && this.getM_CostElement_ID() != ce.getM_CostElement_ID())
 		{
-			qty = BigDecimal.ZERO;
-			costAdjustment = true;
+			MCostElement thisCostElement = MCostElement.get(getCtx(), getM_CostElement_ID());
+			if (thisCostElement.getCostingMethod() == null && ce.getCostingMethod() != null)
+			{
+				qty = BigDecimal.ZERO;
+				costAdjustment = true;
+			}
 		}
 		
 		int precision = as.getCostingPrecision();
@@ -973,7 +979,7 @@ public class MCostDetail extends X_M_CostDetail
 				cost.setWeightedAverage(amt, qty);
 				if (log.isLoggable(Level.FINER)) log.finer("PO - AveragePO - " + cost);
 			}
-			else if (ce.isLastPOPrice())
+			else if (ce.isLastPOPrice() && !costAdjustment)
 			{
 				if(!isReturnTrx)
 				{
@@ -988,7 +994,7 @@ public class MCostDetail extends X_M_CostDetail
 				cost.add(amt, qty);
 				if (log.isLoggable(Level.FINER)) log.finer("PO - LastPO - " + cost);
 			}
-			else if (ce.isStandardCosting())
+			else if (ce.isStandardCosting() && !costAdjustment)
 			{								
 				// Update cost record only if it is zero
 				if (cost.getCurrentCostPrice().signum() == 0
@@ -1090,7 +1096,13 @@ public class MCostDetail extends X_M_CostDetail
 		//	else
 		//		log.warning("Inv - " + ce + " - " + cost);
 		}
-		
+		else if (getM_InOutLine_ID() != 0 && costAdjustment)
+		{
+			if (ce.isAverageInvoice())
+			{
+				cost.setWeightedAverage(amt, qty);
+			}
+		}
 		//	*** Qty Adjustment Detail Record ***
 		else if (getM_InOutLine_ID() != 0 		//	AR Shipment Detail Record  
 			|| getM_MovementLine_ID() != 0 

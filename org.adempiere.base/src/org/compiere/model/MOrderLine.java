@@ -782,6 +782,46 @@ public class MOrderLine extends X_C_OrderLine
 		super.setQtyOrdered(QtyOrdered);
 	}	//	setQtyOrdered
 
+	/**
+	 * 	Get Base value for Cost Distribution
+	 *	@param CostDistribution cost Distribution
+	 *	@return base number
+	 */
+	public BigDecimal getBase (String CostDistribution)
+	{
+		if (MLandedCost.LANDEDCOSTDISTRIBUTION_Costs.equals(CostDistribution))
+		{
+			return this.getQtyOrdered().multiply(getPriceActual());  // Actual delivery
+		}
+		else if (MLandedCost.LANDEDCOSTDISTRIBUTION_Line.equals(CostDistribution))
+			return Env.ONE;
+		else if (MLandedCost.LANDEDCOSTDISTRIBUTION_Quantity.equals(CostDistribution))
+			return getQtyOrdered();
+		else if (MLandedCost.LANDEDCOSTDISTRIBUTION_Volume.equals(CostDistribution))
+		{
+			MProduct product = getProduct();
+			if (product == null)
+			{
+				log.severe("No Product");
+				return Env.ZERO;
+			}
+			return getQtyOrdered().multiply(product.getVolume());
+		}
+		else if (MLandedCost.LANDEDCOSTDISTRIBUTION_Weight.equals(CostDistribution))
+		{
+			MProduct product = getProduct();
+			if (product == null)
+			{
+				log.severe("No Product");
+				return Env.ZERO;
+			}
+			return getQtyOrdered().multiply(product.getWeight());
+		}
+		//
+		log.severe("Invalid Criteria: " + CostDistribution);
+		return Env.ZERO;
+	}	//	getBase
+	
 	/**************************************************************************
 	 * 	Before Save
 	 *	@param newRecord

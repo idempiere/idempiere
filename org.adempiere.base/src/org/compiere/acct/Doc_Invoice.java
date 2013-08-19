@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AverageCostingZeroQtyException;
+import org.compiere.model.I_M_InOutLine;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
@@ -34,6 +35,7 @@ import org.compiere.model.MCurrency;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MLandedCostAllocation;
+import org.compiere.model.MOrderLandedCostAllocation;
 import org.compiere.model.MTax;
 import org.compiere.model.ProductCost;
 import org.compiere.model.X_M_Cost;
@@ -840,70 +842,164 @@ public class Doc_Invoice extends Doc
 			if (line.getDescription() != null)
 				desc += " - " + line.getDescription();
 
-			//	Cost Detail - Convert to AcctCurrency
-			
-			BigDecimal allocationAmt =  lca.getAmt();
-			if (getC_Currency_ID() != as.getC_Currency_ID())
-				allocationAmt = MConversionRate.convert(getCtx(), allocationAmt,
-					getC_Currency_ID(), as.getC_Currency_ID(),
-					getDateAcct(), getC_ConversionType_ID(),
-					getAD_Client_ID(), getAD_Org_ID());
-			if (allocationAmt.scale() > as.getCostingPrecision())
-				allocationAmt = allocationAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
-			if (!dr)
-				allocationAmt = allocationAmt.negate();
-
-			Trx trx = Trx.get(getTrxName(), false);
-			Savepoint savepoint = null;
-			boolean zeroQty = false;
-			try {
-				savepoint = trx.setSavepoint(null);
-				
-				if (!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
-						lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
-						C_InvoiceLine_ID, lca.getM_CostElement_ID(),
-						allocationAmt, lca.getQty(),
-						desc, getTrxName())) {
-					throw new RuntimeException("Failed to create cost detail record.");
-				}				
-			} catch (SQLException e) {
-				throw new RuntimeException(e.getLocalizedMessage(), e);
-			} catch (AverageCostingZeroQtyException e) {
-				zeroQty = true;
-				try {
-					trx.rollback(savepoint);
-					savepoint = null;
-				} catch (SQLException e1) {
-					throw new RuntimeException(e1.getLocalizedMessage(), e1);
-				}
-			} finally {
-				if (savepoint != null) {
-					try {
-						trx.releaseSavepoint(savepoint);
-					} catch (SQLException e) {}
-				}
-			}
-			
-			// Accounting
-			ProductCost pc = new ProductCost (Env.getCtx(),
-				lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(), getTrxName());
+			// Accounting			
 			BigDecimal drAmt = null;
 			BigDecimal crAmt = null;
-			if (dr)
-				drAmt = lca.getAmt();
-			else
-				crAmt = lca.getAmt();
-			String costingMethod = pc.getProduct().getCostingMethod(as);
 			MAccount account = null;
-			if (X_M_Cost.COSTINGMETHOD_AverageInvoice.equals(costingMethod) || X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod)) {
-				account = zeroQty ? pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as) : pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-			} else {
-				account = pc.getAccount(ProductCost.ACCTTYPE_P_CostAdjustment, as);
-			}
+			ProductCost pc = new ProductCost (Env.getCtx(),
+					lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(), getTrxName());
+			String costingMethod = pc.getProduct().getCostingMethod(as);
+			if (X_M_Cost.COSTINGMETHOD_AverageInvoice.equals(costingMethod) || X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod))
+			{
 			
-			FactLine fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
-			fl.setDescription(desc);
-			fl.setM_Product_ID(lca.getM_Product_ID());
+				//	Convert to AcctCurrency			
+				BigDecimal allocationAmt =  lca.getAmt();
+				if (getC_Currency_ID() != as.getC_Currency_ID())
+					allocationAmt = MConversionRate.convert(getCtx(), allocationAmt,
+						getC_Currency_ID(), as.getC_Currency_ID(),
+						getDateAcct(), getC_ConversionType_ID(),
+						getAD_Client_ID(), getAD_Org_ID());
+				if (allocationAmt.scale() > as.getCostingPrecision())
+					allocationAmt = allocationAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);			
+							
+				BigDecimal estimatedAmt = BigDecimal.ZERO;
+				if (lca.getM_InOutLine_ID() > 0)
+				{
+					I_M_InOutLine iol = lca.getM_InOutLine();
+					if (iol.getC_OrderLine_ID() > 0)
+					{
+						MOrderLandedCostAllocation[] allocations = MOrderLandedCostAllocation.getOfOrderLine(iol.getC_OrderLine_ID(), getTrxName());
+						for(MOrderLandedCostAllocation allocation : allocations)
+						{
+							if (allocation.getC_OrderLandedCost().getM_CostElement_ID() != lca.getM_CostElement_ID())
+								continue;
+							
+							BigDecimal amt = allocation.getAmt();
+							BigDecimal qty = allocation.getQty();
+							if (qty.compareTo(iol.getMovementQty()) != 0)
+							{
+								amt = amt.multiply(iol.getMovementQty()).divide(qty, BigDecimal.ROUND_HALF_UP);
+							}
+							estimatedAmt = estimatedAmt.add(amt); 
+						}
+					}
+				}
+				
+				BigDecimal costAdjustmentAmt = allocationAmt;
+				if (estimatedAmt.signum() > 0)
+				{
+					//get other allocation amt
+					StringBuilder sql = new StringBuilder("SELECT Sum(Amt) FROM C_LandedCostAllocation WHERE M_InOutLine_ID=? ")
+						.append("AND C_LandedCostAllocation_ID<>? ")
+						.append("AND M_CostElement_ID=? ")
+						.append("AND AD_Client_ID=? ");
+					BigDecimal otherAmt = DB.getSQLValueBD(getTrxName(), sql.toString(), lca.getM_InOutLine_ID(), lca.getC_LandedCostAllocation_ID(), 
+							lca.getM_CostElement_ID(), lca.getAD_Client_ID());
+					if (otherAmt != null) 
+					{
+						estimatedAmt = estimatedAmt.subtract(otherAmt);
+						if (allocationAmt.signum() < 0)
+						{
+							//add back since the sum above would include the original trx
+							estimatedAmt = estimatedAmt.add(allocationAmt.negate());
+						}
+					}				
+					if (estimatedAmt.signum() > 0)
+					{
+						if (allocationAmt.signum() > 0)
+							costAdjustmentAmt = allocationAmt.subtract(estimatedAmt);
+						else if (allocationAmt.signum() < 0)
+							costAdjustmentAmt = allocationAmt.add(estimatedAmt);
+					}
+				}
+				
+				if (!dr)
+					costAdjustmentAmt = costAdjustmentAmt.negate();
+	
+				Trx trx = Trx.get(getTrxName(), false);
+				Savepoint savepoint = null;
+				boolean zeroQty = false;
+				try {
+					savepoint = trx.setSavepoint(null);
+					
+					if (!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
+							lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
+							C_InvoiceLine_ID, lca.getM_CostElement_ID(),
+							costAdjustmentAmt, lca.getQty(),
+							desc, getTrxName())) {
+						throw new RuntimeException("Failed to create cost detail record.");
+					}				
+				} catch (SQLException e) {
+					throw new RuntimeException(e.getLocalizedMessage(), e);
+				} catch (AverageCostingZeroQtyException e) {
+					zeroQty = true;
+					try {
+						trx.rollback(savepoint);
+						savepoint = null;
+					} catch (SQLException e1) {
+						throw new RuntimeException(e1.getLocalizedMessage(), e1);
+					}
+				} finally {
+					if (savepoint != null) {
+						try {
+							trx.releaseSavepoint(savepoint);
+						} catch (SQLException e) {}
+					}
+				}
+								
+				boolean reversal = false;
+				if (allocationAmt.signum() < 0) //reversal
+				{
+					allocationAmt = allocationAmt.negate();
+					reversal = true;
+				}
+				
+				if (allocationAmt.signum() > 0)
+				{
+					int compare = allocationAmt.compareTo(estimatedAmt);
+					if (compare > 0)
+					{
+						drAmt = dr ? (reversal ? null : estimatedAmt): (reversal ? estimatedAmt : null);
+						crAmt = dr ? (reversal ? estimatedAmt : null): (reversal ? null : estimatedAmt);						
+						account = pc.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+						FactLine fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
+						fl.setDescription(desc);
+						fl.setM_Product_ID(lca.getM_Product_ID());
+						fl.setQty(line.getQty());
+						
+						BigDecimal overAmt = allocationAmt.subtract(estimatedAmt);
+						drAmt = dr ? (reversal ? null : overAmt) : (reversal ? overAmt : null);
+						crAmt = dr ? (reversal ? overAmt : null) : (reversal ? null : overAmt);
+						account = zeroQty ? pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as) : pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+						fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
+						fl.setDescription(desc);
+						fl.setM_Product_ID(lca.getM_Product_ID());
+						fl.setQty(line.getQty());
+					}
+					else if (compare < 0)
+					{
+						drAmt = dr ? (reversal ? null : allocationAmt) : (reversal ? allocationAmt : null);
+						crAmt = dr ? (reversal ? allocationAmt : null) : (reversal ? null : allocationAmt);
+						account = pc.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+						FactLine fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
+						fl.setDescription(desc);
+						fl.setM_Product_ID(lca.getM_Product_ID());
+						fl.setQty(line.getQty());
+					}
+				}
+			} 
+			else 
+			{
+				if (dr)
+					drAmt = lca.getAmt();
+				else
+					crAmt = lca.getAmt();
+				account = pc.getAccount(ProductCost.ACCTTYPE_P_CostAdjustment, as);
+				FactLine fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
+				fl.setDescription(desc);
+				fl.setM_Product_ID(lca.getM_Product_ID());
+				fl.setQty(line.getQty());
+			}
 		}
 
 		if (log.isLoggable(Level.CONFIG)) log.config("Created #" + lcas.length);
@@ -951,5 +1047,5 @@ public class Doc_Invoice extends Doc
 		int no = DB.executeUpdate(sql.toString(), getTrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Updated=" + no);
 	}	//	updateProductPO
-
+	
 }   //  Doc_Invoice

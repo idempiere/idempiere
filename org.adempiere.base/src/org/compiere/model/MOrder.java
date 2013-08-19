@@ -1994,6 +1994,17 @@ public class MOrder extends X_C_Order implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 
+		//landed cost
+		if (!isSOTrx())
+		{
+			String error = landedCostAllocation();
+			if (!Util.isEmpty(error))
+			{
+				m_processMsg = error;
+				return DocAction.STATUS_Invalid;
+			}
+		}
+		
 		// Set the definite document number after completed (if needed)
 		setDefiniteDocumentNo();
 
@@ -2006,6 +2017,17 @@ public class MOrder extends X_C_Order implements DocAction
 	
 	
 	
+	private String landedCostAllocation() {
+		MOrderLandedCost[] landedCosts = MOrderLandedCost.getOfOrder(getC_Order_ID(), get_TrxName());
+		for(MOrderLandedCost landedCost : landedCosts) {
+			String error = landedCost.distributeLandedCost();
+			if (!Util.isEmpty(error))
+				return error;
+		}
+		return "";
+	}
+
+
 	private String createPOSPayments() {
 
 		// Just for POS order with payment rule mixed

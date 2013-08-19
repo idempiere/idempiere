@@ -1140,6 +1140,8 @@ public final class FactLine extends X_Fact_Acct
 				setC_Tax_ID(fact.getC_Tax_ID());
 				//	Org for cross charge
 				setAD_Org_ID (fact.getAD_Org_ID());
+				if (fact.getQty() != null)
+					setQty(fact.getQty().negate());
 			}
 			else
 				log.warning(new StringBuilder("Not Found (try later) ")

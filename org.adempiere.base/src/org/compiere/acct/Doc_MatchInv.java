@@ -20,10 +20,15 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AverageCostingZeroQtyException;
+import org.compiere.model.I_C_Order;
+import org.compiere.model.I_C_OrderLine;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
@@ -34,6 +39,7 @@ import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
+import org.compiere.model.MOrderLandedCostAllocation;
 import org.compiere.model.ProductCost;
 import org.compiere.model.X_M_Cost;
 import org.compiere.util.Env;
@@ -238,14 +244,7 @@ public class Doc_MatchInv extends Doc
 				as.getC_Currency_ID(), null, LineNetAmt);
 			cr.setQty(getQty().multiply(multiplier).negate());
 		}
-		cr.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
-		cr.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
-		cr.setC_Project_ID(m_invoiceLine.getC_Project_ID());
-		cr.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
-		cr.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
-		cr.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
-		cr.setUser1_ID(m_invoiceLine.getUser1_ID());
-		cr.setUser2_ID(m_invoiceLine.getUser2_ID());
+		updateFactLine(cr);
 
 		//AZ Goodwill
 		//Desc: Source Not Balanced problem because Currency is Difference - PO=CNY but AP=USD
@@ -315,15 +314,7 @@ public class Doc_MatchInv extends Doc
 		FactLine pv = fact.createLine(null,
 			m_pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as),
 			as.getC_Currency_ID(), ipv);
-		pv.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
-		pv.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
-		pv.setC_Project_ID(m_invoiceLine.getC_Project_ID());
-		pv.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
-		pv.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
-		pv.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
-		pv.setUser1_ID(m_invoiceLine.getUser1_ID());
-		pv.setUser2_ID(m_invoiceLine.getUser2_ID());
-		pv.setM_Product_ID(m_invoiceLine.getM_Product_ID());
+		updateFactLine(pv);
 		
 		MMatchInv matchInv = (MMatchInv)getPO();
 		Trx trx = Trx.get(getTrxName(), false);
@@ -363,26 +354,10 @@ public class Doc_MatchInv extends Doc
 			FactLine line = fact.createLine(null,
 					m_pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as),
 					as.getC_Currency_ID(), ipv.negate());
-			line.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
-			line.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
-			line.setC_Project_ID(m_invoiceLine.getC_Project_ID());
-			line.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
-			line.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
-			line.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
-			line.setUser1_ID(m_invoiceLine.getUser1_ID());
-			line.setUser2_ID(m_invoiceLine.getUser2_ID());
-			line.setM_Product_ID(m_invoiceLine.getM_Product_ID());
+			updateFactLine(line);
 			
 			line = fact.createLine(null, account, as.getC_Currency_ID(), ipv);
-			line.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
-			line.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
-			line.setC_Project_ID(m_invoiceLine.getC_Project_ID());
-			line.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
-			line.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
-			line.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
-			line.setUser1_ID(m_invoiceLine.getUser1_ID());
-			line.setUser2_ID(m_invoiceLine.getUser2_ID());
-			line.setM_Product_ID(m_invoiceLine.getM_Product_ID());
+			updateFactLine(line);
 		}
 	}
 
@@ -464,10 +439,79 @@ public class Doc_MatchInv extends Doc
 			{
 				return "Failed to create cost detail record";
 			}
+			
+			Map<Integer, BigDecimal> landedCostMap = new LinkedHashMap<Integer, BigDecimal>();
+			I_C_OrderLine orderLine = m_receiptLine.getC_OrderLine();
+			if (orderLine == null)
+				return "";
+			
+			int C_OrderLine_ID = orderLine.getC_OrderLine_ID();
+			MOrderLandedCostAllocation[] allocations = MOrderLandedCostAllocation.getOfOrderLine(C_OrderLine_ID, getTrxName());
+			for(MOrderLandedCostAllocation allocation : allocations) 
+			{
+				BigDecimal totalAmt = allocation.getAmt();
+				BigDecimal totalQty = allocation.getQty();
+				BigDecimal amt = totalAmt.multiply(tQty).divide(totalQty, BigDecimal.ROUND_HALF_UP);			
+				if (orderLine.getC_Currency_ID() != as.getC_Currency_ID())
+				{
+					I_C_Order order = orderLine.getC_Order();
+					Timestamp dateAcct = order.getDateAcct();
+					BigDecimal rate = MConversionRate.getRate(
+						order.getC_Currency_ID(), as.getC_Currency_ID(),
+						dateAcct, order.getC_ConversionType_ID(),
+						order.getAD_Client_ID(), order.getAD_Org_ID());
+					if (rate == null)
+					{
+						p_Error = "Purchase Order not convertible - " + as.getName();
+						return null;
+					}
+					amt = amt.multiply(rate);
+					if (amt.scale() > as.getCostingPrecision())
+						amt = amt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
+				}
+				int elementId = allocation.getC_OrderLandedCost().getM_CostElement_ID();
+				BigDecimal elementAmt = landedCostMap.get(elementId);
+				if (elementAmt == null) 
+				{
+					elementAmt = amt;								
+				}
+				else
+				{
+					elementAmt = elementAmt.add(amt);
+				}
+				landedCostMap.put(elementId, elementAmt);
+			}
+			
+			for(Integer elementId : landedCostMap.keySet())
+			{
+				BigDecimal amt = landedCostMap.get(elementId);
+				if (!MCostDetail.createShipment(as, getAD_Org_ID(), 
+					getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
+					m_receiptLine.getM_InOutLine_ID(), elementId,
+					amt, tQty,	getDescription(), false, getTrxName()))
+				{
+					return "Failed to create cost detail record";
+				}
+			}
 			// end MZ
 		}
 		
 		return "";
 	}
-		
+	
+	/**
+	 * @param factLine
+	 */
+	protected void updateFactLine(FactLine factLine) {
+		factLine.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
+		factLine.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
+		factLine.setC_Project_ID(m_invoiceLine.getC_Project_ID());
+		factLine.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
+		factLine.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
+		factLine.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
+		factLine.setUser1_ID(m_invoiceLine.getUser1_ID());
+		factLine.setUser2_ID(m_invoiceLine.getUser2_ID());
+		factLine.setM_Product_ID(m_invoiceLine.getM_Product_ID());
+		factLine.setQty(getQty());
+	}
 }   //  Doc_MatchInv

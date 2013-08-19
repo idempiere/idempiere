@@ -161,8 +161,10 @@ public class ProductCost
 	public static final int ACCTTYPE_P_Overhead = 21;	
 	/** Outside Processing  */
 	public static final int ACCTTYPE_P_Scrap = 22;	
-	/** Outside Processing  */
-	public static final int ACCTTYPE_P_AverageCostVariance = 23;	
+	/** Average costing variance  */
+	public static final int ACCTTYPE_P_AverageCostVariance = 23;
+	/** Landed cost clearing **/
+	public static final int ACCTTYPE_P_LandedCostClearing = 24;
 
 	/**
 	 *  Line Account from Product
@@ -173,7 +175,7 @@ public class ProductCost
 	 */
 	public MAccount getAccount(int AcctType, MAcctSchema as)
 	{
-		if (AcctType < 1 || AcctType > 23)
+		if (AcctType < ACCTTYPE_P_Revenue || AcctType > ACCTTYPE_P_LandedCostClearing)
 			return null;
 
 		//  No Product - get Default from Product Category
@@ -187,7 +189,8 @@ public class ProductCost
 			+ "P_WIP_Acct,P_MethodChangeVariance_Acct,P_UsageVariance_Acct,"	//  11.12.13
 			+ "P_RateVariance_Acct,P_MixVariance_Acct,P_FloorStock_Acct," 	//  14.15.16
 			+ "P_CostOfProduction_Acct,P_Labor_Acct,P_Burden_Acct,P_OutsideProcessing_Acct,"	//  17.18,19,20
-			+ "P_Overhead_Acct,P_Scrap_Acct,P_AverageCostVariance_Acct "	//  21,23
+			+ "P_Overhead_Acct,P_Scrap_Acct,P_AverageCostVariance_Acct,"	//  21,23
+			+ "P_LandedCostClearing_Acct "									//  24
 			+ "FROM M_Product_Acct "
 			+ "WHERE M_Product_ID=? AND C_AcctSchema_ID=?";
 		//
@@ -225,7 +228,7 @@ public class ProductCost
 	 */
 	public MAccount getAccountDefault (int AcctType, MAcctSchema as)
 	{
-		if (AcctType < 1 || AcctType > 23)
+		if (AcctType < ACCTTYPE_P_Revenue || AcctType > ACCTTYPE_P_LandedCostClearing)
 			return null;
 
 		String sql = "SELECT P_Revenue_Acct, P_Expense_Acct, P_Asset_Acct, P_Cogs_Acct, "
@@ -235,7 +238,8 @@ public class ProductCost
 			+ "P_WIP_Acct,P_MethodChangeVariance_Acct,P_UsageVariance_Acct,"		//  11.12.13
 			+ "P_RateVariance_Acct,P_MixVariance_Acct,P_FloorStock_Acct," 			//  14.15.16
 			+ "P_CostOfProduction_Acct,P_Labor_Acct,P_Burden_Acct,P_OutsideProcessing_Acct,"		//  17.18,19,20
-			+ "P_Overhead_Acct,P_Scrap_Acct,P_AverageCostVariance_Acct "			//  21,23
+			+ "P_Overhead_Acct,P_Scrap_Acct,P_AverageCostVariance_Acct,"			//  21,23
+			+ "P_LandedCostClearing_Acct "											//  24
 			+ "FROM M_Product_Category pc, M_Product_Category_Acct pca "
 			+ "WHERE pc.M_Product_Category_ID=pca.M_Product_Category_ID"
 			+ " AND pca.C_AcctSchema_ID=? "

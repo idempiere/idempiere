@@ -32,7 +32,7 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20130813L;
 
     /** Standard Constructor */
     public X_C_LandedCostAllocation (Properties ctx, int C_LandedCostAllocation_ID, String trxName)
@@ -242,6 +242,34 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	public int getM_CostElement_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostElement_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_Name)
+			.getPO(getM_InOutLine_ID(), get_TrxName());	}
+
+	/** Set Shipment/Receipt Line.
+		@param M_InOutLine_ID 
+		Line on Shipment or Receipt document
+	  */
+	public void setM_InOutLine_ID (int M_InOutLine_ID)
+	{
+		if (M_InOutLine_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, Integer.valueOf(M_InOutLine_ID));
+	}
+
+	/** Get Shipment/Receipt Line.
+		@return Line on Shipment or Receipt document
+	  */
+	public int getM_InOutLine_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLine_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

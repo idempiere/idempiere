@@ -30,7 +30,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20130819L;
 
     /** Standard Constructor */
     public X_C_AcctSchema_Default (Properties ctx, int C_AcctSchema_Default_ID, String trxName)
@@ -834,6 +834,31 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	public int getPJ_WIP_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PJ_WIP_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_C_ValidCombination getP_LandedCostClearing_A() throws RuntimeException
+    {
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
+			.getPO(getP_LandedCostClearing_Acct(), get_TrxName());	}
+
+	/** Set Landed Cost Clearing.
+		@param P_LandedCostClearing_Acct 
+		Product Landed Cost Clearing Account
+	  */
+	public void setP_LandedCostClearing_Acct (int P_LandedCostClearing_Acct)
+	{
+		set_Value (COLUMNNAME_P_LandedCostClearing_Acct, Integer.valueOf(P_LandedCostClearing_Acct));
+	}
+
+	/** Get Landed Cost Clearing.
+		@return Product Landed Cost Clearing Account
+	  */
+	public int getP_LandedCostClearing_Acct () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_P_LandedCostClearing_Acct);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

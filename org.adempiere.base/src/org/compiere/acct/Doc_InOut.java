@@ -17,12 +17,14 @@
 package org.compiere.acct;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.compiere.model.I_M_InOutLine;
 import org.compiere.model.I_M_RMALine;
+import org.compiere.model.MOrderLandedCostAllocation;
 import org.compiere.model.MTax;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MAccount;
@@ -395,15 +397,27 @@ public class Doc_InOut extends Doc
 				BigDecimal costs = null;
 				MProduct product = line.getProduct();
 				MOrderLine orderLine = null;
+				BigDecimal landedCost = BigDecimal.ZERO;
+				String costingMethod = product.getCostingMethod(as);
 				if (!isReversal(line))
-				{
-					//get costing method for product
-					String costingMethod = product.getCostingMethod(as);
+				{					
+					int C_OrderLine_ID = line.getC_OrderLine_ID();
+					if (C_OrderLine_ID > 0)
+					{
+						MOrderLandedCostAllocation[] allocations = MOrderLandedCostAllocation.getOfOrderLine(C_OrderLine_ID, getTrxName());
+						for(MOrderLandedCostAllocation allocation : allocations) 
+						{														
+							BigDecimal totalAmt = allocation.getAmt();
+							BigDecimal totalQty = allocation.getQty();
+							BigDecimal amt = totalAmt.multiply(line.getQty()).divide(totalQty, RoundingMode.HALF_UP);
+							landedCost = landedCost.add(amt);							
+						}
+					}
+					//get costing method for product					
 					if (MAcctSchema.COSTINGMETHOD_AveragePO.equals(costingMethod) ||
 						MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(costingMethod) ||
 						MAcctSchema.COSTINGMETHOD_LastPOPrice.equals(costingMethod) )
-					{
-						int C_OrderLine_ID = line.getC_OrderLine_ID();
+					{						
 						// Low - check if c_orderline_id is valid
 						if (C_OrderLine_ID > 0)
 						{
@@ -457,7 +471,7 @@ public class Doc_InOut extends Doc
 							log.log(Level.WARNING, p_Error);
 							return null;
 						}
-					}
+					}										
 				} 
 				else
 				{
@@ -476,12 +490,14 @@ public class Doc_InOut extends Doc
 
 				}
 
-
-				// Elaine 2008/06/26
-				/*dr = fact.createLine(line, assets,
-					as.getC_Currency_ID(), costs, null);*/
+				BigDecimal drAsset = costs;
+				if (landedCost.signum() != 0 && (MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(costingMethod)
+					|| MAcctSchema.COSTINGMETHOD_AveragePO.equals(costingMethod)))
+				{
+					drAsset = drAsset.add(landedCost);
+				}
 				dr = fact.createLine(line, assets,
-					C_Currency_ID, costs, null);
+					C_Currency_ID, drAsset, null);
 				//
 				if (dr == null)
 				{
@@ -504,10 +520,6 @@ public class Doc_InOut extends Doc
 				}
 
 				//  NotInvoicedReceipt				CR
-				// Elaine 2008/06/26
-				/*cr = fact.createLine(line,
-					getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
-					as.getC_Currency_ID(), null, costs);*/
 				cr = fact.createLine(line,
 					getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
 					C_Currency_ID, null, costs);
@@ -530,6 +542,38 @@ public class Doc_InOut extends Doc
 					{
 						p_Error = "Original Receipt not posted yet";
 						return null;
+					}
+				}
+				if (!fact.isAcctBalanced())
+				{
+					if (isReversal(line))
+					{
+						dr = fact.createLine(line,
+								line.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as),
+								C_Currency_ID, Env.ONE, (BigDecimal)null);
+						if (!dr.updateReverseLine (MInOut.Table_ID,
+								m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
+						{
+							p_Error = "Original Receipt not posted yet";
+							return null;
+						}
+					}
+					else if (landedCost.signum() != 0)
+					{
+						cr = fact.createLine(line,
+								line.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as),
+								C_Currency_ID, null, landedCost);
+						//
+						if (cr == null)
+						{
+							p_Error = "CR not created: " + line;
+							log.log(Level.WARNING, p_Error);
+							return null;
+						}
+						cr.setM_Locator_ID(line.getM_Locator_ID());
+						cr.setLocationFromBPartner(getC_BPartner_Location_ID(), true);   //  from Loc
+						cr.setLocationFromLocator(line.getM_Locator_ID(), false);   //  to Loc
+						cr.setQty(line.getQty().negate());
 					}
 				}
 			}

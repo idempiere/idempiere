@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for C_LandedCostAllocation
+/** Generated Interface for C_OrderLandedCostAllocation
  *  @author iDempiere (generated) 
  *  @version Release 1.0c
  */
-public interface I_C_LandedCostAllocation 
+public interface I_C_OrderLandedCostAllocation 
 {
 
-    /** TableName=C_LandedCostAllocation */
-    public static final String Table_Name = "C_LandedCostAllocation";
+    /** TableName=C_OrderLandedCostAllocation */
+    public static final String Table_Name = "C_OrderLandedCostAllocation";
 
-    /** AD_Table_ID=760 */
-    public static final int Table_ID = 760;
+    /** AD_Table_ID=1000001 */
+    public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -88,42 +88,49 @@ public interface I_C_LandedCostAllocation
 	  */
 	public BigDecimal getBase();
 
-    /** Column name C_InvoiceLine_ID */
-    public static final String COLUMNNAME_C_InvoiceLine_ID = "C_InvoiceLine_ID";
+    /** Column name C_OrderLandedCostAllocation_ID */
+    public static final String COLUMNNAME_C_OrderLandedCostAllocation_ID = "C_OrderLandedCostAllocation_ID";
 
-	/** Set Invoice Line.
-	  * Invoice Detail Line
+	/** Set Estimated Landed Cost Allocation	  */
+	public void setC_OrderLandedCostAllocation_ID (int C_OrderLandedCostAllocation_ID);
+
+	/** Get Estimated Landed Cost Allocation	  */
+	public int getC_OrderLandedCostAllocation_ID();
+
+    /** Column name C_OrderLandedCostAllocation_UU */
+    public static final String COLUMNNAME_C_OrderLandedCostAllocation_UU = "C_OrderLandedCostAllocation_UU";
+
+	/** Set C_OrderLandedCostAllocation_UU	  */
+	public void setC_OrderLandedCostAllocation_UU (String C_OrderLandedCostAllocation_UU);
+
+	/** Get C_OrderLandedCostAllocation_UU	  */
+	public String getC_OrderLandedCostAllocation_UU();
+
+    /** Column name C_OrderLandedCost_ID */
+    public static final String COLUMNNAME_C_OrderLandedCost_ID = "C_OrderLandedCost_ID";
+
+	/** Set Estimated Landed Cost	  */
+	public void setC_OrderLandedCost_ID (int C_OrderLandedCost_ID);
+
+	/** Get Estimated Landed Cost	  */
+	public int getC_OrderLandedCost_ID();
+
+	public org.compiere.model.I_C_OrderLandedCost getC_OrderLandedCost() throws RuntimeException;
+
+    /** Column name C_OrderLine_ID */
+    public static final String COLUMNNAME_C_OrderLine_ID = "C_OrderLine_ID";
+
+	/** Set Purchase Order Line.
+	  * Purchase Order Line
 	  */
-	public void setC_InvoiceLine_ID (int C_InvoiceLine_ID);
+	public void setC_OrderLine_ID (int C_OrderLine_ID);
 
-	/** Get Invoice Line.
-	  * Invoice Detail Line
+	/** Get Purchase Order Line.
+	  * Purchase Order Line
 	  */
-	public int getC_InvoiceLine_ID();
+	public int getC_OrderLine_ID();
 
-	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
-
-    /** Column name C_LandedCostAllocation_ID */
-    public static final String COLUMNNAME_C_LandedCostAllocation_ID = "C_LandedCostAllocation_ID";
-
-	/** Set Landed Cost Allocation.
-	  * Allocation for Land Costs
-	  */
-	public void setC_LandedCostAllocation_ID (int C_LandedCostAllocation_ID);
-
-	/** Get Landed Cost Allocation.
-	  * Allocation for Land Costs
-	  */
-	public int getC_LandedCostAllocation_ID();
-
-    /** Column name C_LandedCostAllocation_UU */
-    public static final String COLUMNNAME_C_LandedCostAllocation_UU = "C_LandedCostAllocation_UU";
-
-	/** Set C_LandedCostAllocation_UU	  */
-	public void setC_LandedCostAllocation_UU (String C_LandedCostAllocation_UU);
-
-	/** Get C_LandedCostAllocation_UU	  */
-	public String getC_LandedCostAllocation_UU();
+	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -141,65 +148,31 @@ public interface I_C_LandedCostAllocation
 	  */
 	public int getCreatedBy();
 
-    /** Column name M_AttributeSetInstance_ID */
-    public static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
+    /** Column name IsActive */
+    public static final String COLUMNNAME_IsActive = "IsActive";
 
-	/** Set Attribute Set Instance.
-	  * Product Attribute Set Instance
+	/** Set Active.
+	  * The record is active in the system
 	  */
-	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID);
+	public void setIsActive (boolean IsActive);
 
-	/** Get Attribute Set Instance.
-	  * Product Attribute Set Instance
+	/** Get Active.
+	  * The record is active in the system
 	  */
-	public int getM_AttributeSetInstance_ID();
+	public boolean isActive();
 
-	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
+    /** Column name Processed */
+    public static final String COLUMNNAME_Processed = "Processed";
 
-    /** Column name M_CostElement_ID */
-    public static final String COLUMNNAME_M_CostElement_ID = "M_CostElement_ID";
-
-	/** Set Cost Element.
-	  * Product Cost Element
+	/** Set Processed.
+	  * The document has been processed
 	  */
-	public void setM_CostElement_ID (int M_CostElement_ID);
+	public void setProcessed (boolean Processed);
 
-	/** Get Cost Element.
-	  * Product Cost Element
+	/** Get Processed.
+	  * The document has been processed
 	  */
-	public int getM_CostElement_ID();
-
-	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException;
-
-    /** Column name M_InOutLine_ID */
-    public static final String COLUMNNAME_M_InOutLine_ID = "M_InOutLine_ID";
-
-	/** Set Shipment/Receipt Line.
-	  * Line on Shipment or Receipt document
-	  */
-	public void setM_InOutLine_ID (int M_InOutLine_ID);
-
-	/** Get Shipment/Receipt Line.
-	  * Line on Shipment or Receipt document
-	  */
-	public int getM_InOutLine_ID();
-
-	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
-
-    /** Column name M_Product_ID */
-    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
-
-	/** Set Product.
-	  * Product, Service, Item
-	  */
-	public void setM_Product_ID (int M_Product_ID);
-
-	/** Get Product.
-	  * Product, Service, Item
-	  */
-	public int getM_Product_ID();
-
-	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+	public boolean isProcessed();
 
     /** Column name Qty */
     public static final String COLUMNNAME_Qty = "Qty";

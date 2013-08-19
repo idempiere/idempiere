@@ -1067,6 +1067,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 					MInOutLine iol = (MInOutLine)list.get(i);
 					MLandedCostAllocation lca = new MLandedCostAllocation (this, lc.getM_CostElement_ID());
 					lca.setM_Product_ID(iol.getM_Product_ID());
+					lca.setM_InOutLine_ID(iol.getM_InOutLine_ID());
 					lca.setM_AttributeSetInstance_ID(iol.getM_AttributeSetInstance_ID());
 					BigDecimal base = iol.getBase(lc.getLandedCostDistribution());
 					lca.setBase(base);
@@ -1101,6 +1102,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				MLandedCostAllocation lca = new MLandedCostAllocation (this, lc.getM_CostElement_ID());
 				lca.setM_Product_ID(iol.getM_Product_ID());
 				lca.setM_AttributeSetInstance_ID(iol.getM_AttributeSetInstance_ID());
+				lca.setM_InOutLine_ID(iol.getM_InOutLine_ID());
 				BigDecimal base = iol.getBase(lc.getLandedCostDistribution()); 
 				if (base.signum() == 0)
 					return "Base value is 0 - " + lc.getLandedCostDistribution();
@@ -1191,6 +1193,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			MLandedCostAllocation lca = new MLandedCostAllocation (this, lcs[0].getM_CostElement_ID());
 			lca.setM_Product_ID(iol.getM_Product_ID());
 			lca.setM_AttributeSetInstance_ID(iol.getM_AttributeSetInstance_ID());
+			lca.setM_InOutLine_ID(iol.getM_InOutLine_ID());
 			BigDecimal base = iol.getBase(LandedCostDistribution);
 			lca.setBase(base);
 			// MZ Goodwill

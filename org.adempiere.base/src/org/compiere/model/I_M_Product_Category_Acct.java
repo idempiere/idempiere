@@ -261,6 +261,21 @@ public interface I_M_Product_Category_Acct
 
 	public I_C_ValidCombination getP_InvoicePriceVariance_A() throws RuntimeException;
 
+    /** Column name P_LandedCostClearing_Acct */
+    public static final String COLUMNNAME_P_LandedCostClearing_Acct = "P_LandedCostClearing_Acct";
+
+	/** Set Landed Cost Clearing.
+	  * Product Landed Cost Clearing Account
+	  */
+	public void setP_LandedCostClearing_Acct (int P_LandedCostClearing_Acct);
+
+	/** Get Landed Cost Clearing.
+	  * Product Landed Cost Clearing Account
+	  */
+	public int getP_LandedCostClearing_Acct();
+
+	public I_C_ValidCombination getP_LandedCostClearing_A() throws RuntimeException;
+
     /** Column name P_PurchasePriceVariance_Acct */
     public static final String COLUMNNAME_P_PurchasePriceVariance_Acct = "P_PurchasePriceVariance_Acct";
 
