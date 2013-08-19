@@ -23,10 +23,9 @@ import java.util.EventObject;
 public class StateChangeEvent extends EventObject {
 
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 8536782772491762290L;
-	@SuppressWarnings("unused")
 	private int eventType;
 
 	/**
@@ -45,5 +44,10 @@ public class StateChangeEvent extends EventObject {
 	public final static int DATA_DELETE = 3;
 	public final static int DATA_SAVE = 4;
 	public final static int DATA_IGNORE = 5;
+	public final static int DATA_QUERY = 6;
+	
+	public int getEventType() {
+		return eventType;
+	}
 
 }

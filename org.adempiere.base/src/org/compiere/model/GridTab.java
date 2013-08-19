@@ -145,10 +145,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		m_mTable = new GridTable (m_vo.ctx, m_vo.AD_Table_ID, m_vo.TableName, m_vo.WindowNo, m_vo.TabNo, true, virtual);
 		m_mTable.setReadOnly(m_vo.IsReadOnly || m_vo.IsView);
 		m_mTable.setDeleteable(m_vo.IsDeleteable);
-		//  Load Tab
-		//initTab(false);
+		
+		selection = new ArrayList<Integer>();
 	}	//	GridTab
-
+	
 	/** Value Object                    */
 	private GridTabVO          	m_vo;
 
@@ -210,6 +210,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	private String m_parsedWhere;
 
+	//Contains currently selected rows
+	private ArrayList<Integer> selection = null;
+	
 	// Context property names:
 	public static final String CTX_KeyColumnName = "_TabInfo_KeyColumnName";
 	public static final String CTX_LinkColumnName = "_TabInfo_LinkColumnName";
@@ -616,6 +619,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 		Env.clearTabContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo);
 		
+		selection.clear();
+		
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo
 			+ " - Only Current Rows=" + onlyCurrentRows
 			+ ", Days=" + onlyCurrentDays + ", Detail=" + isDetail());
@@ -745,6 +750,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		}
 		//  Go to Record 0
 		setCurrentRow(0, true);
+		
+		fireStateChangeEvent(new StateChangeEvent(this, StateChangeEvent.DATA_QUERY));
 	}	//	query
 
 	/**
@@ -937,6 +944,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public void dataRefreshAll (boolean fireEvent, boolean retainedCurrentRow)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo);
+		selection.clear();
 		/** @todo does not work with alpha key */
 		int keyNo = m_mTable.getKeyID(m_currentRow);
 		m_mTable.dataRefreshAll(fireEvent, retainedCurrentRow ? m_currentRow : -1);
@@ -1175,6 +1183,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (isDetail() && m_parentNeedSave)
 			return false;
 
+		if (!selection.isEmpty())
+			clearSelection();
+		
 		/**
 		 * temporary set currentrow to point to the new row to ensure even cause by m_mTable.dataNew
 		 * is handle properly.
@@ -1196,7 +1207,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			getField(i).refreshLookup();
 			getField(i).validateValue();
 		}
-		m_mTable.setChanged(false);
+		m_mTable.setChanged(false);		
 
 		fireStateChangeEvent(new StateChangeEvent(this, StateChangeEvent.DATA_NEW));
 		return retValue;
@@ -1211,6 +1222,19 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - row=" + m_currentRow);
 		boolean retValue = m_mTable.dataDelete(m_currentRow);
 		setCurrentRow(m_currentRow, true);
+		if (!selection.isEmpty()) 
+		{
+			List<Integer> tmp = new ArrayList<Integer>();
+			for(Integer i : selection)
+			{
+				if (i.intValue() == m_currentRow)
+					continue;
+				else if (i.intValue() > m_currentRow)
+					tmp.add(i.intValue()-1);
+				else
+					tmp.add(i);
+			}
+		}
 		fireStateChangeEvent(new StateChangeEvent(this, StateChangeEvent.DATA_DELETE));
 		return retValue;
 	}   //  dataDelete
@@ -3201,5 +3225,34 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	public boolean isNew() {
 		return isOpen() && getCurrentRow() >= 0 && getCurrentRow() == m_mTable.getNewRow();
+	}
+
+	public void addToSelection(int rowIndex) {
+		selection.add(rowIndex);
+	}
+
+	public boolean removeFromSelection(int rowIndex) {
+		return selection.remove((Integer)rowIndex);
+	}
+	
+	public int[] getSelection() 
+	{
+		int[] selected = new int[selection.size()];
+		int i = 0;
+		for(Integer row : selection) 
+		{
+			selected[i++] = row.intValue();
+		}
+		return selected;
+	}
+	
+	public boolean isSelected(int rowIndex)
+	{
+		return selection.contains((Integer)rowIndex);		
+	}
+	
+	public void clearSelection()
+	{
+		selection.clear();
 	}
 }	//	GridTab
