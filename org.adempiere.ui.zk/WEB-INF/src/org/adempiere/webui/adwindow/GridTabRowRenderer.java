@@ -44,6 +44,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -69,6 +70,7 @@ import org.zkoss.zul.impl.XulElement;
  */
 public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt, RendererCtrl, EventListener<Event> {
 
+	public static final String GRID_ROW_INDEX_ATTR = "grid.row.index";
 	private static final String CELL_DIV_STYLE = "border: none; height: 100%; cursor: pointer; ";
 	private static final String CELL_DIV_STYLE_ALIGN_CENTER = CELL_DIV_STYLE + "text-align:center; ";
 	private static final String CELL_DIV_STYLE_ALIGN_RIGHT = CELL_DIV_STYLE + "text-align:right; ";
@@ -195,7 +197,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			WButtonEditor editor = new WButtonEditor(gridField, rowIndex);
 			editor.setValue(gridTab.getValue(rowIndex, gridField.getColumnName()));
 			editor.setReadWrite(gridField.isEditable(gridRowCtx, true,true));
-			editor.getComponent().setAttribute("grid.row.index", rowIndex);
+			editor.getComponent().setAttribute(GRID_ROW_INDEX_ATTR, rowIndex);
 			editor.addActionListener(buttonListener);
 			component = editor.getComponent();
 		} else {
@@ -365,12 +367,28 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		}
 
 		Cell cell = new Cell();
+		cell.setWidth("28px");
+		cell.setTooltiptext(Msg.getMsg(Env.getCtx(), "Select"));
+		Checkbox selection = new Checkbox();
+		selection.setAttribute(GRID_ROW_INDEX_ATTR, rowIndex);
+		selection.setChecked(gridTab.isSelected(rowIndex));
+		cell.setStyle("background-color: transparent !important;");
+		selection.addEventListener(Events.ON_CHECK, this);
+		
+		if (!selection.isChecked()) {
+			if (gridPanel.selectAll.isChecked()) {
+				gridPanel.selectAll.setChecked(false);
+			}
+		}
+		
+		cell.appendChild(selection);
+		row.appendChild(cell);
+		
+		cell = new Cell();
 		cell.setWidth("18px");
 		cell.addEventListener(Events.ON_CLICK, this);
 		cell.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "EditRecord")));
 		
-		//TODO: checkbox for selection and batch action ( delete, export, complete, etc )
-//		cell.appendChild(new Checkbox());
 		row.appendChild(cell);
 		
 		int colIndex = -1;
@@ -424,8 +442,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			div.setWidth("100%");
 			div.setAttribute("columnName", gridPanelFields[i].getColumnName());
 			div.addEventListener(Events.ON_CLICK, rowListener);
-			div.addEventListener(Events.ON_DOUBLE_CLICK, rowListener);
-			row.addEventListener(Events.ON_CLICK, rowListener);			
+			div.addEventListener(Events.ON_DOUBLE_CLICK, rowListener);						
 			row.appendChild(div);
 		}
 
@@ -434,6 +451,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		}
 		
 		row.setStyle("cursor:pointer");
+		row.addEventListener(Events.ON_CLICK, rowListener);
 		row.addEventListener(Events.ON_OK, rowListener);
 	}
 
@@ -442,14 +460,14 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 */
 	public void setCurrentRow(Row row) {
 		if (currentRow != null && currentRow.getParent() != null && currentRow != row) {
-			Cell cell = (Cell) currentRow.getFirstChild();
+			Cell cell = (Cell) currentRow.getChildren().get(1);
 			if (cell != null) {
 				cell.setStyle("background-color: transparent");
 				cell.setSclass("row-indicator");
 			}
 		}
 		currentRow = row;
-		Cell cell = (Cell) currentRow.getFirstChild();
+		Cell cell = (Cell) currentRow.getChildren().get(1);
 		if (cell != null) {
 			cell.setSclass("row-indicator-seld");
 		}
@@ -494,8 +512,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			GridField[] gridPanelFields = gridPanel.getFields();
 			int columnCount = gridPanelFields.length;
 			org.zkoss.zul.Columns columns = grid.getColumns();
-			//skip indicator column
-			int colIndex = 0;
+			//skip selection and indicator column
+			int colIndex = 1;
 			for (int i = 0; i < columnCount; i++) {
 				if (!gridPanelFields[i].isDisplayedGrid() || gridPanelFields[i].isToolbarButton()) {
 					continue;
@@ -677,6 +695,9 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 
 		public void onEvent(Event event) throws Exception {
 			if (Events.ON_CLICK.equals(event.getName())) {
+				if (Executions.getCurrent().getAttribute("gridView.onSelectRow") != null)
+					return;
+				System.out.println(event);
 				Event evt = new Event(Events.ON_CLICK, _grid, event.getTarget());
 				Events.sendEvent(_grid, evt);
 				evt.stopPropagation();
@@ -711,7 +732,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		buttonListener = new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				WButtonEditor editor = (WButtonEditor) event.getSource();
-				Integer rowIndex = (Integer) editor.getComponent().getAttribute("grid.row.index");
+				Integer rowIndex = (Integer) editor.getComponent().getAttribute(GRID_ROW_INDEX_ATTR);
 				if (rowIndex != null) {
 					int newRowIndex = gridTab.navigate(rowIndex);
 					if (newRowIndex == rowIndex) {
@@ -732,6 +753,10 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				Events.sendEvent(gridPanel, new Event(DetailPane.ON_EDIT_EVENT, gridPanel));
 			else
 				Events.sendEvent(event.getTarget().getParent(), event);
+		} else if (event.getTarget() instanceof Checkbox) {
+			Executions.getCurrent().setAttribute("gridView.onSelectRow", Boolean.TRUE);
+			Checkbox checkBox = (Checkbox) event.getTarget();
+			Events.sendEvent(gridPanel, new Event("onSelectRow", gridPanel, checkBox));
 		}
 	}
 }

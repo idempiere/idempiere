@@ -416,8 +416,17 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
     public void enableDelete(boolean enabled)
     {
-        this.btnDelete.setDisabled(!enabled);
-        this.btnDeleteSelection.setDisabled(!enabled);
+        this.btnDelete.setDisabled(!enabled);        
+    }
+    
+    public boolean isDeleteEnable()
+    {
+    	return !btnDelete.isDisabled();
+    }
+    
+    public void enableDeleteSelection(boolean enabled)
+    {
+    	this.btnDeleteSelection.setDisabled(!enabled);
     }
 
     public void enableIgnore(boolean enabled)

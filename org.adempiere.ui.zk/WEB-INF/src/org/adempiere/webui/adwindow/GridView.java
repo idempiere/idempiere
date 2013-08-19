@@ -26,6 +26,7 @@ import org.adempiere.base.Core;
 import org.adempiere.model.MTabCustomization;
 import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Grid;
@@ -36,6 +37,8 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.StateChangeEvent;
+import org.compiere.model.StateChangeListener;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -63,7 +66,7 @@ import org.zkoss.zul.event.ZulEvents;
  * @author Low Heng Sin
  *
  */
-public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFieldEditorContainer
+public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFieldEditorContainer, StateChangeListener
 {
 	private static final String HEADER_GRID_STYLE = "border: none; margin:0; padding: 0;";
 
@@ -121,6 +124,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 
 	private boolean detailPaneMode;
 
+	protected Checkbox selectAll;
+
 	public GridView()
 	{
 		this(0);
@@ -161,6 +166,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		
 		setStyle(HEADER_GRID_STYLE);
 		gridFooter.setStyle(HEADER_GRID_STYLE);
+		
+		addEventListener("onSelectRow", this);
 	}
 
 	protected void createListbox() {
@@ -199,6 +206,9 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 	{
 		if (init) return;
 
+		if (this.gridTab != null)
+			this.gridTab.removeStateChangeListener(this);
+		
 		setupFields(gridTab);
 
 		setupColumns();
@@ -211,6 +221,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 
 	private void setupFields(GridTab gridTab) {		
 		this.gridTab = gridTab;		
+		gridTab.addStateChangeListener(this);
+		
 		tableModel = gridTab.getTableModel();
 		columnWidthMap = new HashMap<Integer, String>();
 		GridField[] tmpFields = ((GridTable)tableModel).getFields();
@@ -393,15 +405,29 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		if (!AEnv.isTablet())
 		{
 			Frozen frozen = new Frozen();
-			frozen.setColumns(1);
+			//freeze selection and indicator column
+			frozen.setColumns(2);
 			listbox.appendChild(frozen);
 		}
+		
+		org.zkoss.zul.Column selection = new Column();
+		selection.setWidth("28px");
+		try{
+			selection.setSort("none");
+		} catch (Exception e) {}
+		selection.setStyle("border-right: none");
+		selectAll = new Checkbox();
+		selection.appendChild(selectAll);
+		selectAll.setId("selectAll");
+		selectAll.addEventListener(Events.ON_CHECK, this);
+		columns.appendChild(selection);
 		
 		org.zkoss.zul.Column indicator = new Column();				
 		indicator.setWidth("18px");
 		try {
 			indicator.setSort("none");
-		} catch (Exception e) {} 
+		} catch (Exception e) {}
+		indicator.setStyle("border-left: none");
 		columns.appendChild(indicator);
 		listbox.appendChild(columns);
 		columns.setSizable(true);
@@ -584,8 +610,74 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 			{
 				listModel.setPage(pgNo);
 				onSelectedRowChange(0);
+				gridTab.clearSelection();
 			}
 		}
+		else if (event.getTarget() == selectAll)
+		{
+			toggleSelectionForAll(selectAll.isChecked());
+		}
+		else if (event.getName().equals("onSelectRow"))
+		{
+			Checkbox checkbox = (Checkbox) event.getData();
+			int rowIndex = (Integer) checkbox.getAttribute(GridTabRowRenderer.GRID_ROW_INDEX_ATTR);			
+			if (checkbox.isChecked())
+			{
+				gridTab.addToSelection(rowIndex);
+				if (!selectAll.isChecked() && isAllSelected())
+				{
+					selectAll.setChecked(true);
+				}
+			}
+			else
+			{
+				gridTab.removeFromSelection(rowIndex);
+				if (selectAll.isChecked())
+					selectAll.setChecked(false);
+			}
+		}
+	}
+
+	private boolean isAllSelected() {
+		org.zkoss.zul.Rows rows = listbox.getRows();
+		List<Component> childs = rows.getChildren();
+		boolean all = false;
+		for(Component comp : childs) {
+			org.zkoss.zul.Row row = (org.zkoss.zul.Row) comp;
+			Component firstChild = row.getFirstChild();
+			if (firstChild instanceof Cell) {
+				firstChild = firstChild.getFirstChild();
+			}
+			if (firstChild instanceof Checkbox) {
+				Checkbox checkbox = (Checkbox) firstChild;
+				if (!checkbox.isChecked())
+					return false;
+				else
+					all = true;
+			}
+		}
+		return all;
+	}
+
+	private void toggleSelectionForAll(boolean b) {
+		org.zkoss.zul.Rows rows = listbox.getRows();
+		List<Component> childs = rows.getChildren();
+		for(Component comp : childs) {
+			org.zkoss.zul.Row row = (org.zkoss.zul.Row) comp;
+			Component firstChild = row.getFirstChild();
+			if (firstChild instanceof Cell) {
+				firstChild = firstChild.getFirstChild();
+			}
+			if (firstChild instanceof Checkbox) {
+				Checkbox checkbox = (Checkbox) firstChild;
+				checkbox.setChecked(b);
+				int rowIndex = (Integer) checkbox.getAttribute(GridTabRowRenderer.GRID_ROW_INDEX_ATTR);
+				if (b)
+					gridTab.addToSelection(rowIndex);
+				else
+					gridTab.removeFromSelection(rowIndex);
+			}
+		}		
 	}
 
 	private void onSelectedRowChange(int index) {
@@ -901,6 +993,23 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 	public void focusToNextEditor(WEditor ref) {
 		if (renderer.isEditing()) {
 			renderer.focusToNextEditor(ref);
+		}
+	}
+
+	@Override
+	public void stateChange(StateChangeEvent event) {
+		switch(event.getEventType()) {
+			case StateChangeEvent.DATA_NEW:
+			case StateChangeEvent.DATA_QUERY:
+			case StateChangeEvent.DATA_REFRESH_ALL:
+				if (selectAll.isChecked())
+					selectAll.setChecked(false);
+				break;
+			case StateChangeEvent.DATA_DELETE:
+			case StateChangeEvent.DATA_IGNORE:
+				if (!selectAll.isChecked() && isAllSelected())
+					selectAll.setChecked(true);
+				break;
 		}
 	}
 }

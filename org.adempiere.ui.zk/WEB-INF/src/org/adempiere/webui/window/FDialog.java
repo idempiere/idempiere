@@ -289,6 +289,11 @@ public class FDialog
     	return ask(windowNo, comp, adMessage, (Callback<Boolean>)null);
     }
     
+    public static boolean ask(int windowNo, Component comp, String adMessage, final Callback<Boolean> callback)
+    {
+    	return ask(AEnv.getDialogHeader(Env.getCtx(), windowNo), windowNo, comp, adMessage, callback);
+    }
+    
 	/**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
@@ -299,7 +304,7 @@ public class FDialog
 	 *	@return true, if OK
 	 */
     
-    public static boolean ask(int windowNo, Component comp, String adMessage, final Callback<Boolean> callback)
+    public static boolean ask(String title, int windowNo, Component comp, String adMessage, final Callback<Boolean> callback)
     {
     	Callback<Integer> msgCallback = null;
     	if (callback != null) 
@@ -313,7 +318,7 @@ public class FDialog
 			};
     	}
     	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
-        int response = Messagebox.showDialog(s, AEnv.getDialogHeader(Env.getCtx(), windowNo), 
+        int response = Messagebox.showDialog(s, title, 
         		Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, msgCallback, (msgCallback == null));
 
         return (response == Messagebox.OK);
