@@ -32,7 +32,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20130801L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -447,6 +447,27 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set IsAdvancedField.
+		@param IsAdvancedField IsAdvancedField	  */
+	public void setIsAdvancedField (boolean IsAdvancedField)
+	{
+		set_Value (COLUMNNAME_IsAdvancedField, Boolean.valueOf(IsAdvancedField));
+	}
+
+	/** Get IsAdvancedField.
+		@return IsAdvancedField	  */
+	public boolean isAdvancedField () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsAdvancedField);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** IsAllowCopy AD_Reference_ID=319 */

@@ -128,9 +128,6 @@ public final class Ini implements Serializable
 	/** Show Acct Tabs			*/
 	public static final String  P_SHOW_ACCT =		"ShowAcct";
 	private static final boolean DEFAULT_SHOW_ACCT = true;
-	/** Show Advanced Tabs		*/
-	public static final String  P_SHOW_ADVANCED =	"ShowAdvanced";
-	private static final boolean DEFAULT_SHOW_ADVANCED = true;
 	/** Show Translation Tabs	*/
 	public static final String  P_SHOW_TRL =		"ShowTrl";
 	private static final boolean DEFAULT_SHOW_TRL =	false;
@@ -196,7 +193,7 @@ public final class Ini implements Serializable
 		P_UI_LOOK, P_UI_THEME, /* P_UI_FLAT,*/
 		P_A_COMMIT, P_A_LOGIN, P_A_NEW,
 		P_ADEMPIERESYS, P_LOGMIGRATIONSCRIPT, P_SHOW_ACCT, P_SHOW_TRL,
-		P_SHOW_ADVANCED, P_CACHE_WINDOW,
+		P_CACHE_WINDOW,
 		P_CONTEXT, P_TEMP_DIR,
 		P_ROLE, P_CLIENT, P_ORG, P_PRINTER, P_WAREHOUSE, P_TODAY,
 		P_PRINTPREVIEW,
@@ -214,7 +211,7 @@ public final class Ini implements Serializable
 		DEFAULT_UI_LOOK, DEFAULT_UI_THEME, /* DEFAULT_UI_FLAT?"Y":"N", */
 		DEFAULT_A_COMMIT?"Y":"N", DEFAULT_A_LOGIN?"Y":"N", DEFAULT_A_NEW?"Y":"N",
 		DEFAULT_ADEMPIERESYS?"Y":"N", DEFAULT_LOGMIGRATIONSCRIPT?"Y":"N", DEFAULT_SHOW_ACCT?"Y":"N", DEFAULT_SHOW_TRL?"Y":"N",
-		DEFAULT_SHOW_ADVANCED?"Y":"N", DEFAULT_CACHE_WINDOW?"Y":"N",
+		DEFAULT_CACHE_WINDOW?"Y":"N",
 		DEFAULT_CONTEXT, DEFAULT_TEMP_DIR,
 		DEFAULT_ROLE, DEFAULT_CLIENT, DEFAULT_ORG, DEFAULT_PRINTER, DEFAULT_WAREHOUSE, DEFAULT_TODAY.toString(),
 		DEFAULT_PRINTPREVIEW?"Y":"N",

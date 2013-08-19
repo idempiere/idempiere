@@ -18,18 +18,17 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
-import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintFormat;
@@ -47,8 +46,6 @@ import org.xml.sax.helpers.AttributesImpl;
 public class ReportViewElementHandler extends AbstractElementHandler {
 
 	private ReportViewColElementHandler columnHandler = new ReportViewColElementHandler();
-
-	private List<Integer> views = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
@@ -104,10 +101,9 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		PackOut packOut = ctx.packOut;
 		int AD_ReportView_ID = Env.getContextAsInt(ctx.ctx, "AD_ReportView_ID");
-		if (views.contains(AD_ReportView_ID))
+		if (ctx.packOut.isExported("AD_ReportView_ID"+"|"+AD_ReportView_ID))
 			return;
 
-		views.add(AD_ReportView_ID);
 		AttributesImpl atts = new AttributesImpl();
 		X_AD_ReportView m_Reportview = new X_AD_ReportView(ctx.ctx, AD_ReportView_ID, getTrxName(ctx));
 

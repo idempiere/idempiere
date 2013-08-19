@@ -370,13 +370,26 @@ public class GridTabVO implements Evaluatee, Serializable
 				+ "             AND ce.AD_Field_ID IS NULL "
 				+ "             AND ce.ASP_Status = 'H')"; // Hide
 		//  View only returns IsActive='Y'
-		String sql = "SELECT * FROM AD_Tab_v WHERE AD_Window_ID=?"
-			+ ASPFilter + " ORDER BY SeqNo";
-		if (!Env.isBaseLanguage(ctx, "AD_Window"))
-			sql = "SELECT * FROM AD_Tab_vt WHERE AD_Window_ID=?"
-				+ " AND AD_Language='" + Env.getAD_Language(ctx) + "'"
-				+ ASPFilter + " ORDER BY SeqNo";
-		return sql;
+		MRole role = MRole.getDefault(ctx, true);
+		String advancedFilter=" AND IsAdvancedTab='N' ";
+		StringBuilder sql;
+		if (!Env.isBaseLanguage(ctx, "AD_Window")) {
+			sql = new StringBuilder( "SELECT * FROM AD_Tab_vt WHERE AD_Window_ID=?");
+			sql.append(" AND AD_Language='" + Env.getAD_Language(ctx) + "'")
+				.append(ASPFilter);
+			if (!role.isAccessAdvanced()) {
+				sql.append(advancedFilter);
+			}
+			sql.append(" ORDER BY SeqNo");
+		}else{
+			sql =  new StringBuilder("SELECT * FROM AD_Tab_v WHERE AD_Window_ID=?");
+			sql.append(ASPFilter) ;
+			if (!role.isAccessAdvanced()) {
+				sql.append(advancedFilter);
+			}
+			sql.append(" ORDER BY SeqNo");
+		}
+		return sql.toString();
 	}   //  getSQL
 	
 	

@@ -21,10 +21,10 @@ import java.util.List;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
@@ -148,6 +148,9 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_ReportView_Col_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_ReportView_Col.COLUMNNAME_AD_ReportView_Col_ID);
+		if (ctx.packOut.isExported(X_AD_ReportView_Col.COLUMNNAME_AD_ReportView_Col_ID+"|"+AD_ReportView_Col_ID))
+			return;
+
 		X_AD_ReportView_Col m_Reportview_Col = new X_AD_ReportView_Col(ctx.ctx,
 				AD_ReportView_Col_ID, getTrxName(ctx));
 		

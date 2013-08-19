@@ -85,9 +85,13 @@ public class AReport implements ActionListener
 		m_query = query;
 		this.parent = parent;
 		this.WindowNo = WindowNo;
+		
+		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), WindowNo, "_WinInfo_AD_Window_ID", true);
+		if (AD_Window_ID == 0)
+			AD_Window_ID = Env.getZoomWindowID(query);
 
 		//	See What is there
-		getPrintFormats (AD_Table_ID, invoker);
+		getPrintFormats (AD_Table_ID, AD_Window_ID, invoker);
 	}	//	AReport
 
 	/**
@@ -115,9 +119,13 @@ public class AReport implements ActionListener
 		this.parent = parent;
 		this.WindowNo = WindowNo;
 		this.m_whereExtended = whereExtended;
+		
+		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), WindowNo, "_WinInfo_AD_Window_ID", true);
+		if (AD_Window_ID == 0)
+			AD_Window_ID = Env.getZoomWindowID(query);
 
 		//	See What is there
-		getPrintFormats (AD_Table_ID, invoker);
+		getPrintFormats (AD_Table_ID, AD_Window_ID, invoker);
 	}	//	AReport
 
 	/**	The Query						*/
@@ -141,10 +149,10 @@ public class AReport implements ActionListener
 	 * 	@param AD_Table_ID table
 	 *  @param invoker component to display popup (optional)
 	 */
-	private void getPrintFormats (int AD_Table_ID, JComponent invoker)
+	private void getPrintFormats (int AD_Table_ID, int AD_Window_ID, JComponent invoker)
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		RowSet rowSet = MPrintFormat.getAccessiblePrintFormats(AD_Table_ID, -1, null);
+		RowSet rowSet = MPrintFormat.getAccessiblePrintFormats(AD_Table_ID, AD_Window_ID, -1, null);
 		KeyNamePair pp = null;
 		try
 		{

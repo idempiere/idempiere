@@ -312,7 +312,8 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		
 		//lstLocator.setModel(m_mLocator);
 		//lstLocator.setValue(m_M_Locator_ID);
-		lstLocator.setSelectedIndex(0);
+		if (lstLocator.getItemCount() > 0)
+			lstLocator.setSelectedIndex(0);
 		lstLocator.addEventListener(Events.ON_SELECT, this);
 		
 		displayLocator();

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Grid;
@@ -80,6 +81,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		{
 			log.log(Level.SEVERE, "", e);
 			setInitOK(false);
+			throw new AdempiereException(e.getMessage());
 		}
 		AEnv.showWindow(window);
 	}

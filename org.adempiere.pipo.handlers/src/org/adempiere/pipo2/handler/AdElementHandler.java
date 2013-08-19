@@ -78,7 +78,6 @@ public class AdElementHandler extends AbstractElementHandler {
 				element.unresolved = notfounds.toString();
 				return;
 			}
-			
 			if (mElement.is_new() || mElement.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Element.Table_Name, X_AD_Element.Table_ID);
 				if (!mElement.is_new()) {				
@@ -92,8 +91,6 @@ public class AdElementHandler extends AbstractElementHandler {
 					logImportDetail(ctx, impDetail, 1, mElement.getName(),
 							mElement.get_ID(), action);
 	
-					element.recordId = mElement.getAD_Element_ID();
-	
 					processedElements.add(mElement.getAD_Element_ID());
 	
 				} else {
@@ -102,6 +99,7 @@ public class AdElementHandler extends AbstractElementHandler {
 					throw new POSaveFailedException("Failed to save Element " + mElement.getName());
 				}
 			}
+			element.recordId = mElement.getAD_Element_ID();	
 		} else {
 			element.skip = true;
 		}
@@ -116,14 +114,10 @@ public class AdElementHandler extends AbstractElementHandler {
 
 		int adElement_id = Env.getContextAsInt(ctx.ctx,
 				X_AD_Element.COLUMNNAME_AD_Element_ID);
-
-		if (processedElements.contains(adElement_id))
+		if (ctx.packOut.isExported(X_AD_Element.COLUMNNAME_AD_Element_ID+"|"+adElement_id))
 			return;
 
-		processedElements.add(adElement_id);
-
 		X_AD_Element mAdElement = new X_AD_Element(ctx.ctx, adElement_id, null);
-
 		if (ctx.packOut.getFromDate() != null) {
 			if (mAdElement.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
 				return;
@@ -136,11 +130,10 @@ public class AdElementHandler extends AbstractElementHandler {
 		createAdElementBinding(ctx, document, mAdElement);
 
 		PackOut packOut = ctx.packOut;
-		try{
+		packOut.getCtx().ctx.put("Table_Name",X_AD_Element.Table_Name);
+		try {
 			new CommonTranslationHandler().packOut(packOut,document,null,mAdElement.get_ID());
-		}
-		catch(Exception e)
-		{
+		} catch(Exception e) {
 			if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		}
 

@@ -182,7 +182,8 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		for(int i=0; i<mbMessages.size(); i++){
 			if(!mbMessages.get(i).getBroadcastType().equals(MBroadcastMessage.BROADCASTTYPE_Immediate)){
 				MNote note = getMNote(mbMessages.get(i));
-				hashMessages.put(mbMessages.get(i).get_ID(), note.isProcessed());
+				if (note!=null)
+					hashMessages.put(mbMessages.get(i).get_ID(), note.isProcessed());
 			}else{
 				hashMessages.put(mbMessages.get(i).get_ID(), false);
 			}
@@ -293,15 +294,17 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		textMsgNo.setValue((currMsg+1)+"/"+noOfMsgs);
 		textMsgContent.setContent(mbMessage.getBroadcastMessage());
 		
-		if(!isTest && mbMessage.isLogAcknowledge() && broadcastFrequency.equals(MBroadcastMessage.BROADCASTFREQUENCY_UntilExpiration)){
+		if (!isTest && mbMessage.isLogAcknowledge()) {
 			boolean ack = hashMessages.get(mbMessage.get_ID());
     		acknowledged.setChecked(ack);
+			acknowledged.setVisible(true);	
+		} else if(mbMessage.isLogAcknowledge()) {
 			acknowledged.setVisible(true);
-		}else if((broadcastFrequency.equals(MBroadcastMessage.BROADCASTFREQUENCY_JustOnce))
-				|| (mbMessage.getBroadcastType().equals(MBroadcastMessage.BROADCASTTYPE_Immediate))){
+		} else if (   broadcastFrequency.equals(MBroadcastMessage.BROADCASTFREQUENCY_JustOnce)
+				    || mbMessage.getBroadcastType().equals(MBroadcastMessage.BROADCASTTYPE_Immediate)) {
 			acknowledged.setVisible(false);
 			hashMessages.put(mbMessages.get(currMsg).get_ID(), true);
-		}else{
+		} else {
 			acknowledged.setVisible(false);
 		}
 
@@ -315,18 +318,19 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 	public MNote getMNote(MBroadcastMessage mbMessage) {
 		MNote note =null;
 		if(!mbMessage.getBroadcastType().equals(MBroadcastMessage.BROADCASTTYPE_Immediate)){
-			String sql = "SELECT * FROM AD_Note WHERE AD_BroadcastMessage_ID = ? AND AD_User_ID = ?";
+			String sql = "SELECT * FROM AD_Note WHERE AD_BroadcastMessage_ID = ? AND AD_User_ID = ? AND AD_Client_ID = ?";
 			PreparedStatement pstmt = null;
 			ResultSet rs=null;
 			try {
 				pstmt = DB.prepareStatement(sql, null);
 				pstmt.setInt(1, mbMessage.get_ID());
 				pstmt.setInt(2, Env.getAD_User_ID(Env.getCtx()));
+				pstmt.setInt(3, Env.getAD_Client_ID(Env.getCtx()));
 				rs = pstmt.executeQuery();
 				if(rs.next())
 					note = new MNote(Env.getCtx(), rs, null);
 			} catch (Exception e) {
-				log.log(Level.SEVERE, "Note for the Mesaage Could not be retrieved ",e);
+				log.log(Level.SEVERE, "Note for the Message Could not be retrieved ",e);
 				throw new DBException(e);
 			}finally{
 				DB.close(rs, pstmt);
@@ -340,7 +344,8 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		super.onClose();
 		if (!isTest) {
 			if(mbMessages.size()==1){
-				if ((mbMessages.get(0).getBroadcastFrequency().equals("J"))
+				if ((mbMessages.get(0).getBroadcastFrequency().equals(MBroadcastMessage.BROADCASTFREQUENCY_JustOnce))
+						|| (mbMessages.get(0).getBroadcastFrequency().equals(MBroadcastMessage.BROADCASTFREQUENCY_UntilExpiration))
 						|| (mbMessages.get(0).getBroadcastType().equals(MBroadcastMessage.BROADCASTTYPE_Immediate))) {
 					hashMessages.put(mbMessages.get(0).get_ID(), true);
 				}
@@ -349,7 +354,10 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 			for (MBroadcastMessage mbMessage : mbMessages) {
 				if(!mbMessage.getBroadcastType().equals(MBroadcastMessage.BROADCASTTYPE_Immediate)){
 					MNote note = getMNote(mbMessage);
-					note.setProcessed(hashMessages.get(mbMessage.get_ID()));
+					if (mbMessage.getBroadcastFrequency().equals(MBroadcastMessage.BROADCASTFREQUENCY_UntilExpiration))
+						note.setProcessed(true);
+					else
+						note.setProcessed(hashMessages.get(mbMessage.get_ID()));
 					if(hashMessages.get(mbMessage.get_ID())){
 						acknowedgedMsgs.add(mbMessage);
 					}

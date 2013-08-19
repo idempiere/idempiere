@@ -37,6 +37,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
+import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -601,9 +602,12 @@ public class ModelClassGenerator
 		String columnName)
 	{
 		StringBuilder retValue = new StringBuilder();
-		retValue.append("\n\t/** ").append(columnName).append(" AD_Reference_ID=").append(AD_Reference_ID) .append(" */")
-			.append("\n\tpublic static final int ").append(columnName.toUpperCase())
-			.append("_AD_Reference_ID=").append(AD_Reference_ID).append(";");
+		if (AD_Reference_ID <= MTable.MAX_OFFICIAL_ID)
+		{
+			retValue.append("\n\t/** ").append(columnName).append(" AD_Reference_ID=").append(AD_Reference_ID) .append(" */")
+				.append("\n\tpublic static final int ").append(columnName.toUpperCase())
+				.append("_AD_Reference_ID=").append(AD_Reference_ID).append(";");
+		}
 		//
 		boolean found = false;
 		StringBuilder values = new StringBuilder("Reference_ID=")

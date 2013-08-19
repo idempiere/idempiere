@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *  Zoom Condition model
@@ -75,6 +76,9 @@ public class MZoomCondition extends X_AD_ZoomCondition
 
 	private static int findZoomWindowByTableId(int AD_Table_ID, MQuery query)
 	{
+		if (query == null)
+			return 0;
+		
 		MZoomCondition[] conditions = MZoomCondition.getConditions(AD_Table_ID);
 		if (conditions.length > 0)
 		{
@@ -99,7 +103,11 @@ public class MZoomCondition extends X_AD_ZoomCondition
 	public static int findZoomWindow(MQuery query)
 	{
 		String tableName = query.getTableName();
+		if (Util.isEmpty(tableName))
+			return 0;
 		MTable table = MTable.get(Env.getCtx(), tableName);
+		if (table == null)
+			return 0;
 		return findZoomWindowByTableId(table.getAD_Table_ID(), query);
 	}
 	
@@ -111,51 +119,66 @@ public class MZoomCondition extends X_AD_ZoomCondition
 	 */
 	public static int findZoomWindowByWindowId(int AD_Window_ID, MQuery query)
 	{
-		GridWindow window = GridWindow.get(Env.getCtx(), -1, AD_Window_ID);
-		if (window == null || window.getTabCount() == 0)
+		if (query == null)
 			return 0;
 		
-		if (window.getTab(0).getTableName().equals(query.getZoomTableName())) {
-			return findZoomWindowByTableId(window.getTab(0).getAD_Table_ID(), query);
+		int tableID = DB.getSQLValueEx(null,
+				"SELECT t.AD_Table_ID " +
+				    "FROM AD_Tab tab JOIN AD_Table t ON t.AD_Table_ID=tab.AD_Table_ID " +
+				    "WHERE t.IsActive='Y' AND tab.IsActive='Y' AND tab.AD_Window_ID=? " +
+				    "ORDER BY tab.SeqNo",
+				AD_Window_ID);
+		String tableName = null;
+		if (tableID > 0) {
+			tableName = MTable.get(Env.getCtx(), tableID).getTableName();
 		}
-		else
-		{
-			//resolve zoom to detail
-			int size = window.getTabCount();
-			GridTab gTab = null;
-			for(int i = 0; i < size; i++)
-			{
-				if (window.getTab(i).getTableName().equals(query.getZoomTableName()))
+
+		if (tableName != null && tableName.equals(query.getZoomTableName())) {
+			return findZoomWindowByTableId(tableID, query);
+		} else {
+			try {
+				GridWindow window = GridWindow.get(Env.getCtx(), -1, AD_Window_ID);
+				if (window == null || window.getTabCount() == 0)
+					return 0;
+				//resolve zoom to detail
+				int size = window.getTabCount();
+				GridTab gTab = null;
+				for(int i = 0; i < size; i++)
 				{
-					gTab = window.getTab(i);
-					break;
-				}
-			}
-			if (gTab != null)
-			{
-				window.initTab(gTab.getTabNo());				
-				GridTab parentTab = gTab.getParentTab();
-				int parentId = DB.getSQLValue(null, "SELECT " + gTab.getLinkColumnName() + " FROM " + gTab.getTableName() + " WHERE " + query.getWhereClause());
-				if (parentId <= 0)return 0;
-				
-				while (parentTab != null)
-				{					
-					window.initTab(parentTab.getTabNo());					
-					if (parentTab.getParentTab() != null)
+					if (window.getTab(i).getTableName().equals(query.getZoomTableName()))
 					{
-						parentId = DB.getSQLValue(null, "SELECT " + parentTab.getLinkColumnName() + " FROM " + parentTab.getTableName() + " WHERE " 
-								+ parentTab.getTableName()+"_ID="+parentId);
-						if (parentId <= 0) return 0;
-						parentTab = parentTab.getParentTab();
+						gTab = window.getTab(i);
+						break;
 					}
-					else
-					{
-						if (parentTab == window.getTab(0))
+				}
+				if (gTab != null)
+				{
+					window.initTab(gTab.getTabNo());				
+					GridTab parentTab = gTab.getParentTab();
+					int parentId = DB.getSQLValue(null, "SELECT " + gTab.getLinkColumnName() + " FROM " + gTab.getTableName() + " WHERE " + query.getWhereClause());
+					if (parentId <= 0)return 0;
+					
+					while (parentTab != null)
+					{					
+						window.initTab(parentTab.getTabNo());					
+						if (parentTab.getParentTab() != null)
 						{
-							return findZoomWindowByTableId(parentTab.getAD_Table_ID(), parentId);
+							parentId = DB.getSQLValue(null, "SELECT " + parentTab.getLinkColumnName() + " FROM " + parentTab.getTableName() + " WHERE " 
+									+ parentTab.getTableName()+"_ID="+parentId);
+							if (parentId <= 0) return 0;
+							parentTab = parentTab.getParentTab();
+						}
+						else
+						{
+							if (parentTab == window.getTab(0))
+							{
+								return findZoomWindowByTableId(parentTab.getAD_Table_ID(), parentId);
+							}
 						}
 					}
 				}
+			} finally {
+				Env.clearWinContext(-1);
 			}
 		}		
 		return 0;
@@ -202,7 +225,7 @@ public class MZoomCondition extends X_AD_ZoomCondition
 			.append(" WHERE ")
 			.append(whereClause)
 			.append(" AND ")
-			.append(getWhereClause());
+			.append(Env.parseContext(Env.getCtx(), 0, getWhereClause(), false, true));
 		
 		int no = DB.getSQLValue(null, builder.toString());		
 		return no == 1;

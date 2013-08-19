@@ -165,110 +165,107 @@ public class TableElementHandler extends AbstractElementHandler {
 			throws SAXException {
 
 		int AD_Table_ID = Env.getContextAsInt(ctx.ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID);
+		if (ctx.packOut.isExported(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID+"|"+AD_Table_ID))
+			return;
 		PackOut packOut = ctx.packOut;
-		boolean exported = isTableProcess(ctx, AD_Table_ID);
 		AttributesImpl atts = new AttributesImpl();
-		//Export table if not already done so
-		if (!exported){
-			boolean createElement = true;
-			X_AD_Table m_Table = new X_AD_Table (ctx.ctx, AD_Table_ID, null);
-			if (ctx.packOut.getFromDate() != null) {
-				if (m_Table.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-					createElement = false;
-				}
-			}
-			if (createElement) {
-				addTypeName(atts, "table");
-				document.startElement("","",I_AD_Table.Table_Name,atts);
-				createTableBinding(ctx,document,m_Table);
-			}
-
-			String sql = "SELECT * FROM AD_Column WHERE AD_Table_ID = ? "
-				+ " ORDER BY IsKey DESC, AD_Column_ID";  // Export key column as the first one
-
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-
-			try {
-				pstmt = DB.prepareStatement (sql, getTrxName(ctx));
-				pstmt.setInt(1, AD_Table_ID);
-				rs = pstmt.executeQuery();
-
-				while (rs.next()){
-					ElementHandler handler = packOut.getHandler("AD_Element");
-					handler.packOut(packOut,document,null,rs.getInt(X_AD_Column.COLUMNNAME_AD_Element_ID));
-
-					if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID)>0)
-					{
-						handler = packOut.getHandler("AD_Reference");
-						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID));
-					}
-
-					if (rs.getInt("AD_Reference_Value_ID")>0)
-					{
-						handler = packOut.getHandler("AD_Reference");
-						handler.packOut(packOut,document,null,rs.getInt("AD_Reference_Value_ID"));
-					}
-
-					if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID)>0)
-					{
-						handler = packOut.getHandler("AD_Process");
-						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID));
-					}
-
-					if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID)>0)
-					{
-						handler = packOut.getHandler("AD_Val_Rule");
-						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID));
-					}
-
-					createColumn(ctx, document, rs.getInt("AD_Column_ID"));
-				}
-			} catch (Exception e)	{
-				throw new AdempiereException(e);
-			} finally	{
-				DB.close(rs, pstmt);
-			}
-			
-			sql = "SELECT * FROM AD_TableIndex WHERE AD_Table_ID = ? ORDER BY AD_TableIndex_ID";
-			pstmt = null;
-			rs = null;
-			try {
-				pstmt = DB.prepareStatement (sql, getTrxName(ctx));
-				pstmt.setInt(1, AD_Table_ID);
-				rs = pstmt.executeQuery();
-
-				while (rs.next()) {
-					createTableIndex(ctx, document, rs.getInt(MTableIndex.COLUMNNAME_AD_TableIndex_ID));
-				}
-			} catch (Exception e)	{
-				throw new AdempiereException(e);
-			} finally	{
-				DB.close(rs, pstmt);
-			}
-			
-			sql = "SELECT * FROM AD_ViewComponent WHERE AD_Table_ID = ? ORDER BY SeqNo, AD_ViewComponent_ID";
-			pstmt = null;
-			rs = null;
-			try {
-				pstmt = DB.prepareStatement (sql, getTrxName(ctx));
-				pstmt.setInt(1, AD_Table_ID);
-				rs = pstmt.executeQuery();
-
-				while (rs.next()) {
-					createViewComponent(ctx, document, rs.getInt(MViewComponent.COLUMNNAME_AD_ViewComponent_ID));
-				}
-			} catch (Exception e)	{
-				throw new AdempiereException(e);
-			} finally	{
-				DB.close(rs, pstmt);
-			}
-			
-			if (createElement) {
-				document.endElement("","",X_AD_Table.Table_Name);
+		boolean createElement = true;
+		X_AD_Table m_Table = new X_AD_Table (ctx.ctx, AD_Table_ID, null);
+		if (ctx.packOut.getFromDate() != null) {
+			if (m_Table.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				createElement = false;
 			}
 		}
+		if (createElement) {
+			addTypeName(atts, "table");
+			document.startElement("","",I_AD_Table.Table_Name,atts);
+			createTableBinding(ctx,document,m_Table);
+		}
 
+		String sql = "SELECT * FROM AD_Column WHERE AD_Table_ID = ? "
+				+ " ORDER BY IsKey DESC, AD_Column_ID";  // Export key column as the first one
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			pstmt = DB.prepareStatement (sql, getTrxName(ctx));
+			pstmt.setInt(1, AD_Table_ID);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()){
+				ElementHandler handler = packOut.getHandler("AD_Element");
+				handler.packOut(packOut,document,null,rs.getInt(X_AD_Column.COLUMNNAME_AD_Element_ID));
+
+				if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID)>0)
+				{
+					handler = packOut.getHandler("AD_Reference");
+					handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID));
+				}
+
+				if (rs.getInt("AD_Reference_Value_ID")>0)
+				{
+					handler = packOut.getHandler("AD_Reference");
+					handler.packOut(packOut,document,null,rs.getInt("AD_Reference_Value_ID"));
+				}
+
+				if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID)>0)
+				{
+					handler = packOut.getHandler("AD_Process");
+					handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID));
+				}
+
+				if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID)>0)
+				{
+					handler = packOut.getHandler("AD_Val_Rule");
+					handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID));
+				}
+
+				createColumn(ctx, document, rs.getInt("AD_Column_ID"));
+			}
+		} catch (Exception e)	{
+			throw new AdempiereException(e);
+		} finally	{
+			DB.close(rs, pstmt);
+		}
+			
+		sql = "SELECT * FROM AD_TableIndex WHERE AD_Table_ID = ? ORDER BY AD_TableIndex_ID";
+		pstmt = null;
+		rs = null;
+		try {
+			pstmt = DB.prepareStatement (sql, getTrxName(ctx));
+			pstmt.setInt(1, AD_Table_ID);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				createTableIndex(ctx, document, rs.getInt(MTableIndex.COLUMNNAME_AD_TableIndex_ID));
+			}
+		} catch (Exception e)	{
+			throw new AdempiereException(e);
+		} finally	{
+			DB.close(rs, pstmt);
+		}
+		
+		sql = "SELECT * FROM AD_ViewComponent WHERE AD_Table_ID = ? ORDER BY SeqNo, AD_ViewComponent_ID";
+		pstmt = null;
+		rs = null;
+		try {
+			pstmt = DB.prepareStatement (sql, getTrxName(ctx));
+			pstmt.setInt(1, AD_Table_ID);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				createViewComponent(ctx, document, rs.getInt(MViewComponent.COLUMNNAME_AD_ViewComponent_ID));
+			}
+		} catch (Exception e)	{
+			throw new AdempiereException(e);
+		} finally	{
+			DB.close(rs, pstmt);
+		}
+		
+		if (createElement) {
+			document.endElement("","",X_AD_Table.Table_Name);
+		}
 	}
 
 	private void createColumn(PIPOContext ctx, TransformerHandler document, int AD_Column_ID) throws SAXException {

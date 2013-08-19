@@ -62,6 +62,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WStringEditor;
+import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -73,7 +74,9 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridTab;
 import org.compiere.model.MColumn;
+import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MLookupInfo;
 import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -206,6 +209,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
 	private Properties m_findCtx;
 	
+	private static final String ON_POST_VISIBLE_ATTR = "onPostVisible.Event.Posted";
 
     /**
      * FindPanel Constructor
@@ -608,54 +612,53 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         for (int i = 0; i < m_findFields.length; i++)
         {
             GridField mField = m_findFields[i];
+            
+			if (mField.getVO().displayType == DisplayType.YesNo) {
+				// Make Yes-No searchable as list
+				GridFieldVO vo = mField.getVO();
+				GridFieldVO ynvo = vo.clone(vo.ctx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
+				ynvo.IsDisplayed = true;
+				ynvo.displayType = DisplayType.List;
+				ynvo.AD_Reference_Value_ID = REFERENCE_YESNO;
 
-            if (mField.isSelectionColumn()) {
-    			if (mField.getVO().displayType == DisplayType.YesNo) {
-    				// Make Yes-No searchable as list
-    				GridFieldVO vo = mField.getVO();
-    				GridFieldVO ynvo = vo.clone(vo.ctx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
-    				ynvo.IsDisplayed = true;
-    				ynvo.displayType = DisplayType.List;
-    				ynvo.AD_Reference_Value_ID = REFERENCE_YESNO;
+				ynvo.lookupInfo = MLookupFactory.getLookupInfo (ynvo.ctx, ynvo.WindowNo, ynvo.AD_Column_ID, ynvo.displayType,
+						Env.getLanguage(ynvo.ctx), ynvo.ColumnName, ynvo.AD_Reference_Value_ID,
+						ynvo.IsParent, ynvo.ValidationCode);
 
-    				ynvo.lookupInfo = MLookupFactory.getLookupInfo (ynvo.ctx, ynvo.WindowNo, ynvo.AD_Column_ID, ynvo.displayType,
-    						Env.getLanguage(ynvo.ctx), ynvo.ColumnName, ynvo.AD_Reference_Value_ID,
-    						ynvo.IsParent, ynvo.ValidationCode);
+				GridField ynfield = new GridField(ynvo);
 
-    				GridField ynfield = new GridField(ynvo);
+				// replace the original field by the YN List field
+				m_findFields[i] = ynfield;
+				mField = ynfield;
+			} else if  ( mField.getVO().displayType == DisplayType.Button ) {
+				// Make Buttons searchable
+				GridFieldVO vo = mField.getVO();
+				if ( vo.AD_Reference_Value_ID > 0 )
+				{
+					GridFieldVO postedvo = vo.clone(vo.ctx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
+					postedvo.IsDisplayed = true;
+					postedvo.displayType = DisplayType.List;
 
-    				// replace the original field by the YN List field
-    				m_findFields[i] = ynfield;
-    				mField = ynfield;
-    			} else if  ( mField.getVO().displayType == DisplayType.Button ) {
-    				// Make Buttons searchable
-    				GridFieldVO vo = mField.getVO();
-    				if ( vo.AD_Reference_Value_ID > 0 )
-    				{
-    					GridFieldVO postedvo = vo.clone(vo.ctx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
-    					postedvo.IsDisplayed = true;
-    					postedvo.displayType = DisplayType.List;
+					postedvo.lookupInfo = MLookupFactory.getLookupInfo (postedvo.ctx, postedvo.WindowNo, postedvo.AD_Column_ID, postedvo.displayType,
+							Env.getLanguage(postedvo.ctx), postedvo.ColumnName, postedvo.AD_Reference_Value_ID,
+							postedvo.IsParent, postedvo.ValidationCode);
 
-    					postedvo.lookupInfo = MLookupFactory.getLookupInfo (postedvo.ctx, postedvo.WindowNo, postedvo.AD_Column_ID, postedvo.displayType,
-    							Env.getLanguage(postedvo.ctx), postedvo.ColumnName, postedvo.AD_Reference_Value_ID,
-    							postedvo.IsParent, postedvo.ValidationCode);
+					GridField postedfield = new GridField(postedvo);
 
-    					GridField postedfield = new GridField(postedvo);
-
-    					// replace the original field by the Posted List field
-    					m_findFields[i] = postedfield;
-    					mField = postedfield;
-    				}
-    			} else {
-    				// clone the field and clean gridtab - IDEMPIERE-1105
-    		        GridField findField = (GridField) mField.clone(m_findCtx);        
-    		        findField.setGridTab(null);
-					m_findFields[i] = findField;
-    				mField = findField;
-    			}
+					// replace the original field by the Posted List field
+					m_findFields[i] = postedfield;
+					mField = postedfield;
+				}
+			} else {
+				// clone the field and clean gridtab - IDEMPIERE-1105
+		        GridField findField = (GridField) mField.clone(m_findCtx);        
+		        findField.setGridTab(null);
+				m_findFields[i] = findField;
+				mField = findField;
+			}
+			if (mField.isSelectionColumn()) {
             	gridFieldList.add(mField); 
             } // isSelectionColumn
-
         }   //  for all target tab fields
 
        
@@ -1018,7 +1021,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 	if (listbox.getId().equals(listColumn.getId()))
                 	{
                 		ListItem column = listColumn.getSelectedItem();
-                		if (column != null)
+                		if (column != null && column.getValue().toString().length() > 0)
                 		{
                 			addOperators(column, listOperator);
                 		}
@@ -1662,18 +1665,24 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         {
             editor = new WNumberEditor(findField);
 		}
-        else if (findField.getDisplayType() == DisplayType.Button)
+        else if (findField.getDisplayType() == DisplayType.Button)        	
         {
-        	if (columnName.endsWith("_ID"))
-        	{
-                editor = new WNumberEditor(findField);
-        	} else {
-                editor = new WStringEditor(findField);
-        	}
+			if (findField.getAD_Reference_Value_ID() > 0) {		
+				MLookupInfo info = MLookupFactory.getLookup_List(Env.getLanguage(Env.getCtx()), findField.getAD_Reference_Value_ID());
+				MLookup mLookup = new MLookup(info, 0);
+				editor = new WTableDirEditor(columnName, false,false, true, mLookup);
+        		findField.addPropertyChangeListener(editor);
+
+			} else {
+				if (columnName.endsWith("_ID")) {
+					editor = new WNumberEditor(findField);
+				} else {
+					editor = new WStringEditor(findField);
+				}
+			}
         }
         else
         {
-        	
         	//reload lookupinfo for find window
         	if (DisplayType.isLookup(findField.getDisplayType()) ) 
         	{        		
@@ -2157,6 +2166,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     }
 
 	public void OnPostVisible() {
+		removeAttribute(ON_POST_VISIBLE_ATTR);
 		if (m_sEditors.size() > 0)
 			Clients.response(new AuFocus(m_sEditors.get(0).getComponent()));
 	}
@@ -2180,7 +2190,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	public boolean setVisible(boolean visible) {
 		boolean ret = super.setVisible(visible);
 		if (visible) {
-			Events.echoEvent("OnPostVisible", this, null);
+			if (getAttribute(ON_POST_VISIBLE_ATTR) == null) {
+				setAttribute(ON_POST_VISIBLE_ATTR, Boolean.TRUE);
+				Events.echoEvent("OnPostVisible", this, null);
+			}
 		} else {
 			//auto detach
 			detach();

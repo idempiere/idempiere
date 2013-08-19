@@ -38,15 +38,17 @@ public class AutoCommitConnectionBroker {
      */
     public static Connection getConnection() {
     	ConnectionReference connReference = threadLocalConnection.get();
-    	if (connReference != null) {
-    		connReference.referenceCount++;
-    		return connReference.connection;
-    	} else {
-    		Connection connection = DB.createConnection(true, false, Connection.TRANSACTION_READ_COMMITTED);
-    		connReference = new ConnectionReference(connection);
-    		threadLocalConnection.set(connReference);
-    		return connection;
-    	}
+    	try {
+			if (connReference != null && !connReference.connection.isClosed()) {
+				connReference.referenceCount++;
+				return connReference.connection;
+			} 
+		} catch (SQLException e) {}
+    	
+    	Connection connection = DB.createConnection(true, false, Connection.TRANSACTION_READ_COMMITTED);
+		connReference = new ConnectionReference(connection);
+		threadLocalConnection.set(connReference);
+		return connection;
     }
     
     /**

@@ -27,6 +27,7 @@ import org.adempiere.exceptions.DBException;
 import org.adempiere.model.MBroadcastMessage;
 import org.compiere.Adempiere;
 import org.compiere.model.MNote;
+import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -61,20 +62,24 @@ public class BroadcastMsgUtil
 			// get list of users based on rule
 			if (mbMessage.getTarget() != null) {
 				String sql = "SELECT DISTINCT(AD_User_ID) FROM AD_User_Roles WHERE IsActive='Y'";
-
 				// Role
 				if (mbMessage.getTarget().equals(MBroadcastMessage.TARGET_Role)) {
 					sql += " AND AD_Role_ID=" + mbMessage.getAD_Role_ID();
 				} else if (mbMessage.getTarget().equals(MBroadcastMessage.TARGET_User)) {
 					sql += " AND AD_User_ID=" + mbMessage.getAD_User_ID();
 				} else if (mbMessage.getTarget().equals(MBroadcastMessage.TARGET_Client)) {
-					sql += " AND ad_client_id = " + mbMessage.getNotification_Client_ID();
-				}
+					sql += " AND AD_Client_ID = " + Env.getAD_Client_ID(Env.getCtx());
+				} // else Everybody doesn't need additional filtering
 
 				int[] userIDs = DB.getIDsEx(null, sql);
 
 				for (int userID : userIDs) {
+					MUser user = MUser.get(Env.getCtx(), userID);
+					if (! user.isActive())
+							continue;
 					MNote note = new MNote(Env.getCtx(), 0, trxName);
+					if (MBroadcastMessage.TARGET_Everybody.equals(mbMessage.getTarget()))
+						note.setClientOrg(user.getAD_Client_ID(), 0);
 					note.setAD_BroadcastMessage_ID(messageID);
 					note.setAD_User_ID(userID);
 					note.setAD_Message_ID(0);
@@ -147,13 +152,17 @@ public class BroadcastMsgUtil
 	 * @param messageWindow
 	 */
 	public static void showPendingMessage(int AD_User_ID, IBroadcastMsgPopup messageWindow) {
-		String sql = "SELECT bm.AD_BroadcastMessage_ID "
-				+ " FROM AD_Note n INNER JOIN AD_BroadcastMessage bm ON (bm.AD_BroadcastMessage_ID=n.AD_BroadcastMessage_ID) "
-				+ " WHERE n.AD_User_ID=?"
-				+ " AND n.AD_Client_ID=?"
-				+ " AND (bm.BroadcastType='IL' OR bm.BroadcastType='L') "
-				+ " AND bm.isPublished='Y' AND n.processed = 'N'"
-				+ " AND ((bm.BroadcastFrequency='U' AND bm.Expired='N' AND (bm.expiration IS NULL OR bm.expiration > SYSDATE)) OR bm.BroadcastFrequency='J')";
+		String sql = ""
+				+ "SELECT bm.AD_BroadcastMessage_ID "
+				+ "FROM   AD_Note n "
+				+ "       INNER JOIN AD_BroadcastMessage bm "
+				+ "               ON ( bm.AD_BroadcastMessage_ID = n.AD_BroadcastMessage_ID ) "
+				+ "WHERE  n.AD_User_ID = ? "
+				+ "       AND n.AD_Client_ID = ? "
+				+ "       AND ( bm.BroadcastType = 'IL' OR bm.BroadcastType = 'L' ) "
+				+ "       AND bm.isPublished = 'Y' "
+				+ "       AND ( n.Processed = 'N' OR ( n.Processed = 'Y' AND bm.BroadcastFrequency = 'E' ) ) "
+				+ "       AND ( bm.Expired = 'N' AND ( bm.Expiration IS NULL OR bm.Expiration > SYSDATE ) ) ";
 
 		ArrayList<MBroadcastMessage> mbMessages = new ArrayList<MBroadcastMessage>();
 		PreparedStatement pstmt = null;

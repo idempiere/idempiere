@@ -349,9 +349,8 @@ public class CompositeADTabbox extends AbstractADTabbox
         
     	if (layout.getChildren().isEmpty()) {
     		layout.appendChild(tabPanel);
-    		headerTab = tabPanel;
-    		updateBreadCrumb();
-    	} else if (tabLabel.tabLevel <= 1) {
+    		headerTab = tabPanel;    		
+    	} else if (tabLabel.tabLevel == 1) {
     		if (headerTab.getDetailPane() == null) {
     			headerTab.setDetailPane(createDetailPane());
     		} else
@@ -360,7 +359,7 @@ public class CompositeADTabbox extends AbstractADTabbox
     		headerTab.getDetailPane().addADTabpanel(tabPanel, tabLabel);
     		tabPanel.setDetailPaneMode(true);
     		headerTab.getDetailPane().setVflex("true");
-    	} else {
+    	} else if (tabLabel.tabLevel > 1){
     		headerTab.getDetailPane().addADTabpanel(tabPanel, tabLabel, false);
     		tabPanel.setDetailPaneMode(true);
     		headerTab.getDetailPane().setVflex("true");
@@ -370,6 +369,18 @@ public class CompositeADTabbox extends AbstractADTabbox
         htmlComponent.setWidth("100%");
         
         tabPanel.getGridTab().addDataStatusListener(new SyncDataStatusListener(tabPanel));        
+	}
+
+	@Override
+	public boolean updateSelectedIndex(int oldIndex, int newIndex) {
+		boolean b = super.updateSelectedIndex(oldIndex, newIndex);
+		if (b) {
+			BreadCrumb breadcrumb = getBreadCrumb();
+			if (breadcrumb.isEmpty()) {
+				updateBreadCrumb();
+			}
+		}
+		return b;
 	}
 
 	private void activateDetailIfVisible() {
@@ -460,7 +471,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 				IADTabpanel tabPanel = tabPanelList.get(i);				
 				int tabLevel = tabPanel.getTabLevel();
 				ADTabListModel.ADTabLabel tabLabel = tabLabelList.get(i);
-				if ((tabLevel - currentLevel) == 1 || (tabLevel == 0 && currentLevel == 0)) {
+				if ((tabLevel - currentLevel) == 1) {
 					tabIndex++;
 					Object[] value = new Object[]{tabIndex, tabPanel, tabLabel, Boolean.TRUE};
 					list.add(value);
@@ -593,20 +604,39 @@ public class CompositeADTabbox extends AbstractADTabbox
 				}
 			}
 		}
-		for(int i = parentIndex+1; i < tabLabelList.size(); i++) {
-			if (i == selectedIndex) continue;
-			
-			tabLabel = tabLabelList.get(i);
-			if (tabLabel.tabLevel == headerTab.getTabLevel()) {
-				IADTabpanel adtab = tabPanelList.get(i);
-    			if (adtab.getDisplayLogic() != null && adtab.getDisplayLogic().trim().length() > 0) {
-    				if (!Evaluator.evaluateLogic(headerTab, adtab.getDisplayLogic())) {
-    					continue;
-    				}
-    			}
-				links.put(Integer.toString(i), tabLabel.label);
-			} else if (tabLabel.tabLevel < headerTab.getTabLevel()) {
-				break;
+		if (headerTab.getTabLevel() == 0)
+		{
+			for(int i = 0; i < tabLabelList.size(); i++) {
+				if (i == selectedIndex) continue;
+				tabLabel = tabLabelList.get(i);
+				if (tabLabel.tabLevel == headerTab.getTabLevel()) {
+					IADTabpanel adtab = tabPanelList.get(i);
+	    			if (adtab.getDisplayLogic() != null && adtab.getDisplayLogic().trim().length() > 0) {
+	    				if (!Evaluator.evaluateLogic(headerTab, adtab.getDisplayLogic())) {
+	    					continue;
+	    				}
+	    			}
+					links.put(Integer.toString(i), tabLabel.label);
+				} 
+			}
+		}
+		else
+		{
+			for(int i = parentIndex+1; i < tabLabelList.size(); i++) {
+				if (i == selectedIndex) continue;
+				
+				tabLabel = tabLabelList.get(i);
+				if (tabLabel.tabLevel == headerTab.getTabLevel()) {
+					IADTabpanel adtab = tabPanelList.get(i);
+	    			if (adtab.getDisplayLogic() != null && adtab.getDisplayLogic().trim().length() > 0) {
+	    				if (!Evaluator.evaluateLogic(headerTab, adtab.getDisplayLogic())) {
+	    					continue;
+	    				}
+	    			}
+					links.put(Integer.toString(i), tabLabel.label);
+				} else if (tabLabel.tabLevel < headerTab.getTabLevel()) {
+					break;
+				}
 			}
 		}
 		
@@ -660,7 +690,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 	        	if (detailTab != null) {
 		        	//check data action
 	        		String uuid = (String) execution.getAttribute(CompositeADTabbox.class.getName()+".dataAction");
-	        		if (uuid != null && uuid.equals(detailTab.getUuid())) {
+	        		if (uuid != null && uuid.equals(detailTab.getUuid()) && detailTab.getGridTab().isCurrent()) {
 	        			//refresh current row
 	        			detailTab.getGridTab().dataRefresh(false);
 	        			//keep focus
@@ -792,7 +822,16 @@ public class CompositeADTabbox extends AbstractADTabbox
 		if (headerTab.getGridTab().isNew()) {
 			tabPanel.resetDetailForNewParentRecord();
 		} else {
+			//maintain detail row position if possible 
+			int currentRow = -1;
+			if (!tabPanel.getGridTab().isSortTab()) {
+				currentRow = tabPanel.getGridTab().getCurrentRow();
+			}
 			tabPanel.query(false, 0, 0);
+			if (currentRow >= 0 && currentRow != tabPanel.getGridTab().getCurrentRow() 
+				&& currentRow < tabPanel.getGridTab().getRowCount()) {
+				tabPanel.getGridTab().setCurrentRow(currentRow, false);
+			}
 		}
 		if (!tabPanel.isVisible()) {
 			tabPanel.setVisible(true);

@@ -25,7 +25,7 @@ public class CalloutPackage extends CalloutEngine
         	String dutiesShipperAccount = null;
         	MInOut inout = new MInOut(ctx, inout_id, null);
 
-        	if (inout.getFreightCharges().equals(MInOut.FREIGHTCHARGES_Prepaid) || inout.getFreightCharges().equals(MInOut.FREIGHTCHARGES_PrepaidAndBill)) 
+        	if (MInOut.FREIGHTCHARGES_Prepaid.equals(inout.getFreightCharges()) || MInOut.FREIGHTCHARGES_PrepaidAndBill.equals(inout.getFreightCharges())) 
         	{
         		// 2. For charging to Velocity
         		// ** If M_InOut.FreightCharges In ( D_PP, E_PPB)  -- prepaid or prepaid and bill

@@ -101,6 +101,7 @@ public class ProcessParameterPanel extends Panel implements
 		this.width = width;
 		//
 		initComponent();
+		addEventListener("onDynamicDisplay", this);
 	} // ProcessParameterPanel
 
 	private void initComponent() {
@@ -566,6 +567,9 @@ public class ProcessParameterPanel extends Panel implements
     			}
     		}
     	}
+    	else if (event.getName().equals("onDynamicDisplay")) {
+    		dynamicDisplay();
+    	}
 	}
 
 	/**
@@ -623,7 +627,7 @@ public class ProcessParameterPanel extends Panel implements
 		else
 			Env.setContext(Env.getCtx(), m_WindowNo, name, value.toString());
 
-		dynamicDisplay();
+		Events.postEvent("onDynamicDisplay", this, (Object)null);
 	}
 
 	private void dynamicDisplay() {
@@ -653,6 +657,7 @@ public class ProcessParameterPanel extends Panel implements
 					m_wEditors2.get(i).setVisible(false);
 				}
 			}
+			editor.setMandatory(mField.isMandatory(true));
         	editor.updateLabelStyle();
 		}
 	}

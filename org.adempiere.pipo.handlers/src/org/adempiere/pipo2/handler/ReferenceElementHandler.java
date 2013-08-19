@@ -77,7 +77,7 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 				element.unresolved = notfounds.toString();
 				return;
 			}
-			
+			element.recordId = mReference.getAD_Reference_ID();
 			if (mReference.is_new() || mReference.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Reference.Table_Name,
 						X_AD_Reference.Table_ID);
@@ -115,11 +115,9 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int Reference_id = Env.getContextAsInt(ctx.ctx,
 				X_AD_Reference.COLUMNNAME_AD_Reference_ID);
-
-		if (references.contains(Reference_id))
+		if (ctx.packOut.isExported(X_AD_Reference.COLUMNNAME_AD_Reference_ID+"|"+Reference_id))
 			return;
 
-		references.add(Reference_id);
 		AttributesImpl atts = new AttributesImpl();
 
 		X_AD_Reference m_Reference = new X_AD_Reference(ctx.ctx, Reference_id, getTrxName(ctx));
@@ -130,11 +128,17 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 				createElement = false;
 			}
 		}
-
+		PackOut packOut = ctx.packOut;
+		packOut.getCtx().ctx.put("Table_Name",X_AD_Reference.Table_Name);
 		if (createElement) {
 			addTypeName(atts, "table");
 			document.startElement("", "", I_AD_Reference.Table_Name, atts);
 			createReferenceBinding(ctx, document, m_Reference);
+			try {
+				new CommonTranslationHandler().packOut(packOut,document,null,m_Reference.get_ID());
+			} catch(Exception e) {
+				if (log.isLoggable(Level.INFO)) log.info(e.toString());
+			}
 		}
 
 		if (m_Reference.getValidationType().compareTo("L") == 0) {

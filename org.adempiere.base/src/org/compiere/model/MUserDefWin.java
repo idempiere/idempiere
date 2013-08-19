@@ -108,9 +108,8 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	{
 		//  Check Cache
 		Integer key = new Integer(window_ID);
-		MUserDefWin retValue = (MUserDefWin)s_cache.get(key);
-		if (retValue != null)
-			return retValue;
+		if (s_cache.containsKey(key))
+			return s_cache.get(key);
 
 		// parameters
 		final int AD_Org_ID = Env.getAD_Org_ID(ctx);
@@ -122,8 +121,10 @@ public class MUserDefWin extends X_AD_UserDef_Win
 		
 		// candidates
 		MUserDefWin[] candidates = getAll(ctx, window_ID);
-		if (candidates == null)
+		if (candidates == null) {
+	    	s_cache.put(key, null);
 			return null;
+		}
 		final int size = candidates.length;
 		int[] weight = new int[size];
 		
@@ -177,10 +178,12 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	    }
 
 	    if (weight[maxindex] > -1) {
+			MUserDefWin retValue = null;
 	    	retValue=candidates[maxindex];
 	    	s_cache.put(key, retValue);
 	    	return retValue;
 	    } else {
+	    	s_cache.put(key, null);
 	    	return null;
 	    }
 	}

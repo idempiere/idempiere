@@ -61,7 +61,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1378114118642378625L;
+	private static final long serialVersionUID = 2826550741107576964L;
 
 	/**
 	 *	Public Constructor.
@@ -1158,20 +1158,31 @@ public class MPrintFormat extends X_AD_PrintFormat
 	//end vpj-cd e-evolution
 
 	/**
+ 	 * @param AD_Table_ID
+ 	 * @param AD_Client_ID use -1 to retrieve from all client
+ 	 * @param trxName
+ 	 */
+	public static RowSet getAccessiblePrintFormats (int AD_Table_ID, int AD_Client_ID, String trxName)
+	{
+		return getAccessiblePrintFormats(AD_Table_ID, -1, AD_Client_ID, trxName);
+	}
+
+	/**
 	 * @param AD_Table_ID
+	 * @param AD_Window_ID
 	 * @param AD_Client_ID use -1 to retrieve from all client
 	 * @param trxName
 	 */
-	public static RowSet getAccessiblePrintFormats (int AD_Table_ID, int AD_Client_ID, String trxName)
+	public static RowSet getAccessiblePrintFormats (int AD_Table_ID, int AD_Window_ID, int AD_Client_ID, String trxName)
 	{
 		RowSet rowSet = null;
 		String sql = "SELECT AD_PrintFormat_ID, Name, AD_Client_ID "
 			+ "FROM AD_PrintFormat "
 			+ "WHERE AD_Table_ID=? AND IsTableBased='Y' ";
+		if (AD_Window_ID > 0)
+			sql += "AND (AD_Window_ID=? OR AD_Window_ID IS NULL) ";
 		if (AD_Client_ID >= 0)
-		{
-			sql = sql + " AND AD_Client_ID = ? ";
-		}
+			sql += " AND AD_Client_ID = ? ";
 		sql = sql + "ORDER BY AD_Client_ID DESC, IsDefault DESC, Name"; //	Own First
 		//
 		sql = MRole.getDefault().addAccessSQL (
@@ -1180,9 +1191,12 @@ public class MPrintFormat extends X_AD_PrintFormat
 		try
 		{
 			pstmt = DB.prepareStatement(sql, trxName);
-			pstmt.setInt(1, AD_Table_ID);
+			int count = 1;
+			pstmt.setInt(count++, AD_Table_ID);
+			if (AD_Window_ID > 0)
+				pstmt.setInt(count++, AD_Window_ID);
 			if (AD_Client_ID >= 0)
-				pstmt.setInt(2, AD_Client_ID);
+				pstmt.setInt(count++, AD_Client_ID);
 			rowSet = pstmt.getRowSet();
 		}
 		catch (SQLException e)

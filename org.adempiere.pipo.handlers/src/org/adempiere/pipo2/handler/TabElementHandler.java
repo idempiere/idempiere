@@ -25,11 +25,11 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
-import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
@@ -140,6 +140,7 @@ public class TabElementHandler extends AbstractElementHandler {
 				return;
 			}
 
+			element.recordId = mTab.get_ID();
 			if (mTab.is_new() || mTab.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Tab.Table_Name,
 						X_AD_Tab.Table_ID);
@@ -153,7 +154,7 @@ public class TabElementHandler extends AbstractElementHandler {
 				}
 				if (mTab.save(getTrxName(ctx)) == true){
 					logImportDetail (ctx, impDetail, 1, mTab.getName(), mTab.get_ID(),action);
-					element.recordId = mTab.getAD_Tab_ID();
+					element.recordId = mTab.get_ID();
 				} else {
 					logImportDetail (ctx, impDetail, 0, mTab.getName(), mTab.get_ID(),action);
 					throw new POSaveFailedException("Failed to save Tab " + mTab.getName());
@@ -172,6 +173,8 @@ public class TabElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		PackOut packOut = ctx.packOut;
 		int AD_Tab_ID = Env.getContextAsInt(ctx.ctx, "AD_Tab_ID");
+		if (ctx.packOut.isExported("AD_Tab_ID"+"|"+AD_Tab_ID))
+			return;
 
 		boolean createElement = true;
 		X_AD_Tab m_Tab = new X_AD_Tab (ctx.ctx, AD_Tab_ID, getTrxName(ctx));
@@ -185,6 +188,13 @@ public class TabElementHandler extends AbstractElementHandler {
 			addTypeName(atts, "table");
 			document.startElement("","",I_AD_Tab.Table_Name,atts);
 			createTabBinding(ctx,document,m_Tab);
+
+			packOut.getCtx().ctx.put("Table_Name",X_AD_Tab.Table_Name);
+			try {
+				new CommonTranslationHandler().packOut(packOut,document,null,m_Tab.get_ID());
+			} catch(Exception e) {
+				if (log.isLoggable(Level.INFO)) log.info(e.toString());
+			}
 		}
 
 		//Fields tags.

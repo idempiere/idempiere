@@ -459,9 +459,14 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
      */
     public void setMandatory (boolean mandatory)
     {
-        this.mandatory = mandatory;
-        if (label != null)
-        	label.setMandatory(mandatory);
+    	if (this.mandatory != mandatory)
+    	{
+	        this.mandatory = mandatory;
+	        if (label != null)
+	        {
+	        	label.setMandatory(mandatory);
+	        }
+    	}
     }
 
     /**

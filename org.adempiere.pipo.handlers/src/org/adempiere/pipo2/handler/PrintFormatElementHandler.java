@@ -19,17 +19,16 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintFormat;
@@ -47,8 +46,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class PrintFormatElementHandler extends AbstractElementHandler {
-
-	private List<Integer> formats = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
@@ -103,10 +100,9 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_PrintFormat_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Package_Exp_Detail.COLUMNNAME_AD_PrintFormat_ID);
-
-		if (formats.contains(AD_PrintFormat_ID))
+		if (ctx.packOut.isExported(X_AD_Package_Exp_Detail.COLUMNNAME_AD_PrintFormat_ID+"|"+AD_PrintFormat_ID))
 			return;
-		formats.add(AD_PrintFormat_ID);
+
 		AttributesImpl atts = new AttributesImpl();
 
 		MPrintFormat m_Printformat = new MPrintFormat(ctx.ctx, AD_PrintFormat_ID, null);

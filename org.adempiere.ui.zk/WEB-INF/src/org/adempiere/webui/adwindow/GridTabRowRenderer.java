@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.adempiere.util.GridRowCtx;
+import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.NumberBox;
@@ -122,7 +123,6 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
             {
 				if (buttonListener != null)
 				{
-					((WButtonEditor)editor).removeActionListener(buttonListener);
 					((WButtonEditor)editor).addActionListener(buttonListener);	
 				}
 				else
@@ -289,7 +289,11 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				entry.getKey().removePropertyChangeListener(entry.getValue());
 				entry.getValue().removeValuechangeListener(dataBinder);
 				
-				div.appendChild(component);
+				if (component.getParent() == null || component.getParent() != div)
+					div.appendChild(component);
+				else if (!component.isVisible()) {
+					component.setVisible(true);
+				}
 			}
 		}
 
@@ -503,9 +507,13 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 
 				org.zkoss.zul.Column column = (org.zkoss.zul.Column) columns.getChildren().get(colIndex);
 				if (column.isVisible()) {
-					Cell div = (Cell) currentRow.getChildren().get(colIndex);
-					div.getChildren().clear();
+					Cell div = (Cell) currentRow.getChildren().get(colIndex);					
 					WEditor editor = getEditorCell(gridPanelFields[i]);
+					if (div.getChildren().isEmpty() || !(div.getChildren().get(0) instanceof Button))
+						div.getChildren().clear();
+					else if (!div.getChildren().isEmpty()) {
+						div.getChildren().get(0).setVisible(false);
+					}
 					div.appendChild(editor.getComponent());
 					WEditorPopupMenu popupMenu = editor.getPopupMenu();
 

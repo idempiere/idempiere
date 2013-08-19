@@ -466,10 +466,12 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				value = ((Object[])value)[0];
 			}
 	
-			if (value == null && getValue() == null)
+			if (value == null && getValue() == null) {
 				updated = true;
-			else if (value != null && value.equals(getValue()))
+			} else if (value != null && value.equals(getValue())) {
 				updated = true;
+				getComponent().setText(lookup.getDisplay(value));
+			}
 			if (!updated)
 			{
 				setValue(value);

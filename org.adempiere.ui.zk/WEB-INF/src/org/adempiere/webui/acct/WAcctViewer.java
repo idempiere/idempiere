@@ -62,7 +62,6 @@ import org.compiere.report.core.RModelExcelExporter;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
-import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -722,8 +721,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		bExport.setVisible(tabResult.isSelected());
 		bZoom.setVisible(tabResult.isSelected());
 
-		if (Ini.isPropertyBool(Ini.P_SHOW_ADVANCED))
-			forcePost.setVisible(visible);
+		forcePost.setVisible(visible);
 	}   //  stateChanged
 
 	/**

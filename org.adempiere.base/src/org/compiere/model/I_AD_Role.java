@@ -300,6 +300,15 @@ public interface I_AD_Role
 	  */
 	public String getDescription();
 
+    /** Column name IsAccessAdvanced */
+    public static final String COLUMNNAME_IsAccessAdvanced = "IsAccessAdvanced";
+
+	/** Set IsAccessAdvanced 	  */
+	public void setIsAccessAdvanced (boolean IsAccessAdvanced);
+
+	/** Get IsAccessAdvanced 	  */
+	public boolean isAccessAdvanced();
+
     /** Column name IsAccessAllOrgs */
     public static final String COLUMNNAME_IsAccessAllOrgs = "IsAccessAllOrgs";
 

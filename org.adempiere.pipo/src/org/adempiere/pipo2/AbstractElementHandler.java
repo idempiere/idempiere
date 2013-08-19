@@ -440,7 +440,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
      */
     protected boolean isHandleTranslations(Properties ctx) {
 
-    	return "true".equalsIgnoreCase(Env.getContext(ctx, "isHandleTranslations"));
+    	return "Y".equalsIgnoreCase(Env.getContext(ctx, "isHandleTranslations"));
     }
 
     /**

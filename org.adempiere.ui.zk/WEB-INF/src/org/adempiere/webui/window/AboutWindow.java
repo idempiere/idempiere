@@ -82,11 +82,11 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	private Checkbox bErrorsOnly;
 	private Listbox logTable;
 	private Tabbox tabbox;
-	private Tabpanels tabPanels;
+	protected Tabpanels tabPanels;
 	private Button btnDownload;
 	private Button btnErrorEmail;
 	private Button btnViewLog;
-	private Tab tabLog;
+	protected Tab tabLog;
 
 	private Button btnAdempiereLog;
 
@@ -119,6 +119,36 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		tabPanels.setHflex("1");
 		tabPanels.setVflex("1");
 
+		initTabs(tabs);
+
+		Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK); 
+		btnOk.addEventListener(Events.ON_CLICK, this);
+		
+		Borderlayout borderlayout = new Borderlayout();
+		this.appendChild(borderlayout);
+		borderlayout.setHflex("1");
+		borderlayout.setVflex("1");
+		
+		Center centerPane = new Center();
+		centerPane.setSclass("dialog-content");
+		centerPane.setAutoscroll(true);
+		borderlayout.appendChild(centerPane);
+		centerPane.appendChild(tabbox);
+
+		South southPane = new South();
+		southPane.setStyle("text-align: right");
+		southPane.setSclass("dialog-footer");
+		borderlayout.appendChild(southPane);
+		southPane.appendChild(btnOk);
+
+		this.setBorder("normal");
+		this.setWidth("600px");
+		this.setHeight("450px");
+		this.setShadow(true);
+		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+	}
+	
+	protected void initTabs(Tabs tabs) {
 		//about
 		Tab tab = new Tab();
 		tab.setLabel(Msg.getMsg(Env.getCtx(), "About"));
@@ -147,35 +177,9 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		tab.setParent(tabs);
 		tabPanel = createTrace();
 		tabPanel.setParent(tabPanels);
-
-		Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK); 
-		btnOk.addEventListener(Events.ON_CLICK, this);
-		
-		Borderlayout borderlayout = new Borderlayout();
-		this.appendChild(borderlayout);
-		borderlayout.setHflex("1");
-		borderlayout.setVflex("1");
-		
-		Center centerPane = new Center();
-		centerPane.setSclass("dialog-content");
-		centerPane.setAutoscroll(true);
-		borderlayout.appendChild(centerPane);
-		centerPane.appendChild(tabbox);
-
-		South southPane = new South();
-		southPane.setStyle("text-align: right");
-		southPane.setSclass("dialog-footer");
-		borderlayout.appendChild(southPane);
-		southPane.appendChild(btnOk);
-
-		this.setBorder("normal");
-		this.setWidth("600px");
-		this.setHeight("450px");
-		this.setShadow(true);
-		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 	}
 
-	private Tabpanel createTrace() {
+	protected Tabpanel createTrace() {
 		Tabpanel tabPanel = new Tabpanel();
 		Vbox vbox = new Vbox();
 		LayoutUtils.addSclass("about-trace-panel", vbox);
@@ -293,7 +297,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 			tabLog.setLabel(Msg.getMsg(Env.getCtx(), "TraceInfo") + " (" + data.size() + ")");
 	}
 
-	private Tabpanel createInfo() {
+	protected Tabpanel createInfo() {
 		Tabpanel tabPanel = new Tabpanel();
 		Div div = new Div();
 		LayoutUtils.addSclass("about-info-panel", div);
@@ -308,7 +312,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		return tabPanel;
 	}
 
-	private Tabpanel createCredit() {
+	protected Tabpanel createCredit() {
 		Tabpanel tabPanel = new Tabpanel();		
 		Div div = new Div();
 		LayoutUtils.addSclass("about-credit-panel", div);
@@ -428,7 +432,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		return tabPanel;
 	}
 
-	private Tabpanel createAbout() {
+	protected Tabpanel createAbout() {
 		Tabpanel tabPanel = new Tabpanel();
 
 		Vbox vb = new Vbox();

@@ -155,11 +155,11 @@ public class ReportCtl
 			return startDocumentPrint(ReportEngine.DUNNING, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
 	   else if (pi.getAD_Process_ID() == PROCESS_RPT_FINREPORT			//	Financial Report
 			|| pi.getAD_Process_ID() == PROCESS_RPT_FINSTATEMENT)			//	Financial Statement
-		   return startFinReport (pi);
+		   return startFinReport (pi, WindowNo);
 		/********************
 		 *	Standard Report
 		 *******************/
-		return startStandardReport (pi);
+		return startStandardReport (pi, WindowNo);
 	}	//	create
 
 	/**************************************************************************
@@ -171,8 +171,21 @@ public class ReportCtl
 	 */
 	static public boolean startStandardReport (ProcessInfo pi, boolean IsDirectPrint)
 	{
+		return startStandardReport(pi, -1, IsDirectPrint);
+	}
+	
+	/**************************************************************************
+	 *	Start Standard Report.
+	 *  - Get Table Info & submit
+	 *  @param pi Process Info
+	 *  @param WindowNo The windows number which invoked the printing
+	 *  @param IsDirectPrint if true, prints directly - otherwise View
+	 *  @return true if OK
+	 */
+	static public boolean startStandardReport (ProcessInfo pi, int WindowNo, boolean IsDirectPrint)
+	{
 		pi.setPrintPreview(!IsDirectPrint);
-		return startStandardReport(pi);
+		return startStandardReport(pi, WindowNo);
 	}
 
 	/**************************************************************************
@@ -189,6 +202,24 @@ public class ReportCtl
 	 */
 	static public boolean startStandardReport (ProcessInfo pi)
 	{
+		return startStandardReport(pi, -1);
+	}
+	
+	/**************************************************************************
+	 *	Start Standard Report.
+	 *  - Get Table Info & submit.<br>
+	 *  A report can be created from:
+	 *  <ol>
+	 *  <li>attached MPrintFormat, if any (see {@link ProcessInfo#setTransientObject(Object)}, {@link ProcessInfo#setSerializableObject(java.io.Serializable)}
+	 *  <li>process information (AD_Process.AD_PrintFormat_ID, AD_Process.AD_ReportView_ID)
+	 *  </ol>
+	 *  @param pi Process Info
+	 *  @param WindowNo The windows number which invoked the printing
+	 *  @param IsDirectPrint if true, prints directly - otherwise View
+	 *  @return true if OK
+	 */
+	static public boolean startStandardReport (ProcessInfo pi, int WindowNo)
+	{
 		ReportEngine re = null;
 		//
 		// Create Report Engine by using attached MPrintFormat (if any)
@@ -202,6 +233,7 @@ public class ReportCtl
 			MQuery query = MQuery.get (ctx, pi.getAD_PInstance_ID(), TableName);
 			PrintInfo info = new PrintInfo(pi);
 			re = new ReportEngine(ctx, format, query, info);
+			re.setWindowNo(WindowNo);
 			createOutput(re, pi.isPrintPreview(), null);
 			return true;
 		}
@@ -214,6 +246,7 @@ public class ReportCtl
 				pi.setSummary("No ReportEngine");
 				return false;
 			}
+			re.setWindowNo(WindowNo);
 		}
 
 		createOutput(re, pi.isPrintPreview(), null);
@@ -226,6 +259,17 @@ public class ReportCtl
 	 *  @return true if OK
 	 */
 	static public boolean startFinReport (ProcessInfo pi)
+	{
+		return startFinReport(pi, -1);
+	}
+	
+	/**
+	 *	Start Financial Report.
+	 *  @param pi Process Info
+	 *  @param WindowNo The windows number which invoked the printing
+	 *  @return true if OK
+	 */
+	static public boolean startFinReport (ProcessInfo pi, int WindowNo)
 	{
 		@SuppressWarnings("unused")
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
@@ -246,6 +290,7 @@ public class ReportCtl
 		PrintInfo info = new PrintInfo(pi);
 
 		ReportEngine re = new ReportEngine(Env.getCtx(), format, query, info);
+		re.setWindowNo(WindowNo);
 		createOutput(re, pi.isPrintPreview(), null);
 		return true;
 	}	//	startFinReport
@@ -311,6 +356,7 @@ public class ReportCtl
 		{
 			throw new AdempiereException("NoDocPrintFormat");
 		}
+		re.setWindowNo(WindowNo);
 		if (customPrintFormat!=null) {
 			// Use custom print format if available
 			re.setPrintFormat(customPrintFormat);

@@ -31,7 +31,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20130722L;
 
     /** Standard Constructor */
     public X_M_CostDetail (Properties ctx, int M_CostDetail_ID, String trxName)
@@ -515,6 +515,34 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	public int getM_InventoryLine_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InventoryLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_MatchInv getM_MatchInv() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_MatchInv)MTable.get(getCtx(), org.compiere.model.I_M_MatchInv.Table_Name)
+			.getPO(getM_MatchInv_ID(), get_TrxName());	}
+
+	/** Set Match Invoice.
+		@param M_MatchInv_ID 
+		Match Shipment/Receipt to Invoice
+	  */
+	public void setM_MatchInv_ID (int M_MatchInv_ID)
+	{
+		if (M_MatchInv_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_M_MatchInv_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_M_MatchInv_ID, Integer.valueOf(M_MatchInv_ID));
+	}
+
+	/** Get Match Invoice.
+		@return Match Shipment/Receipt to Invoice
+	  */
+	public int getM_MatchInv_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_MatchInv_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

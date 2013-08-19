@@ -40,12 +40,12 @@ import org.osgi.service.event.Event;
  */
 public class MRecentItem extends X_AD_RecentItem
 {
-	public static final String ON_RECENT_ITEM_CHANGED_TOPIC = "onRecentItemChanged";
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8337619537799431984L;
+	private static final long serialVersionUID = 6899554875745832L;
+
+	public static final String ON_RECENT_ITEM_CHANGED_TOPIC = "onRecentItemChanged";
 
 	/**	Recent Item Cache				*/
 	private static CCache<Integer,MRecentItem>	s_cache = new CCache<Integer,MRecentItem>(Table_Name, 10);
@@ -189,7 +189,7 @@ public class MRecentItem extends X_AD_RecentItem
 		publishChangedEvent(AD_User_ID);
 	}
 
-	private static void publishChangedEvent(int AD_User_ID) {
+	public static void publishChangedEvent(int AD_User_ID) {
 		IMessageService service = Service.locator().locate(IMessageService.class).getService();
 		if (service != null) {
 			ITopic<Integer> topic = service.getTopic(ON_RECENT_ITEM_CHANGED_TOPIC);
@@ -276,8 +276,14 @@ public class MRecentItem extends X_AD_RecentItem
 	}
 
 	public String getLabel() {
-		MWindow win = new MWindow(getCtx(), getAD_Window_ID(), null);
-		String windowName = win.get_Translation("Name");
+		String windowName;
+		MUserDefWin userDef = MUserDefWin.getBestMatch(getCtx(), getAD_Window_ID());
+		if (userDef != null) {
+			windowName = userDef.getName();
+		} else {
+			MWindow win = new MWindow(getCtx(), getAD_Window_ID(), null);
+			windowName = win.get_Translation("Name");
+		}
 		MTable table = MTable.get(getCtx(), getAD_Table_ID());
 		PO po = table.getPO(getRecord_ID(), null);
 		if (po == null) {

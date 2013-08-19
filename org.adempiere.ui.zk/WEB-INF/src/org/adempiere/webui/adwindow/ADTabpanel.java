@@ -119,10 +119,11 @@ import org.zkoss.zul.impl.XulElement;
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
 DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 {
+
 	/**
-	 * 
+	 * generated serial id
 	 */
-	private static final long serialVersionUID = 3103263515116231658L;
+	private static final long serialVersionUID = -6748431395547118246L;
 
 	private static final String ON_SAVE_OPEN_PREFERENCE_EVENT = "onSaveOpenPreference";
 
@@ -131,8 +132,9 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	public static final String ON_SWITCH_VIEW_EVENT = "onSwitchView";
 
 	public static final String ON_DYNAMIC_DISPLAY_EVENT = "onDynamicDisplay";
-	
 	private static final String ON_DEFER_SET_SELECTED_NODE = "onDeferSetSelectedNode";
+	
+	private static final String ON_DEFER_SET_SELECTED_NODE_ATTR = "onDeferSetSelectedNode.Event.Posted";
 	
 	private static final CLogger logger;
 
@@ -657,12 +659,12 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	}
 
 	/**
-	 * Validate display properties of fields of current row
+	 * Validate display properties of fields of current row.
 	 * @param col
 	 */
 	@Override
-    public void dynamicDisplay (int col)
-    {
+	public void dynamicDisplay (int col)
+	{
         if (!gridTab.isOpen())
         {
             return;
@@ -674,11 +676,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     			collapsedGroups.add(group);
     	}
 
-        for (WEditor comp : editors)
-        {
-        	comp.updateLabelStyle();
-        }
-        
         //  Selective
         if (col > 0)
         {
@@ -689,7 +686,12 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
             			+ columnName + " - Dependents=" + dependants.size());
 			if ( ! (   dependants.size() > 0
 					|| changedField.getCallout().length() > 0
-					|| Core.findCallout(gridTab.getTableName(), columnName).size() > 0)) {
+					|| Core.findCallout(gridTab.getTableName(), columnName).size() > 0)) 
+			{
+				for (WEditor comp : editors)
+				{
+					comp.updateLabelStyle();
+				}
                 return;
             }
         }
@@ -725,6 +727,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
                     comp.setVisible(false);
                 }
             }
+            comp.updateLabelStyle();
         }   //  all components
 
         //hide row if all editor within the row is invisible
@@ -803,10 +806,17 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         }
 
         Events.sendEvent(this, new Event(ON_DYNAMIC_DISPLAY_EVENT, this));
-        Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
+        echoDeferSetSelectedNodeEvent();
         if (logger.isLoggable(Level.CONFIG)) logger.config(gridTab.toString() + " - fini - " + (col<=0 ? "complete" : "seletive"));
     }   //  dynamicDisplay
 
+	private void echoDeferSetSelectedNodeEvent() {
+		if (getAttribute(ON_DEFER_SET_SELECTED_NODE_ATTR) == null) {
+        	setAttribute(ON_DEFER_SET_SELECTED_NODE_ATTR, Boolean.TRUE);
+        	Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
+        }
+	}
+	
     /**
      * @return String
      */
@@ -964,7 +974,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         }
 
         if (gridTab.getRecord_ID() > 0 && gridTab.isTreeTab() && treePanel != null) {
-        	Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
+        	echoDeferSetSelectedNodeEvent();
         }
         
         Event event = new Event(ON_ACTIVATE_EVENT, this, activate);
@@ -1022,6 +1032,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     		navigateTo((DefaultTreeNode<MTreeNode>)item.getValue());
     	}
     	else if (ON_DEFER_SET_SELECTED_NODE.equals(event.getName())) {
+    		removeAttribute(ON_DEFER_SET_SELECTED_NODE_ATTR);
     		if (gridTab.getRecord_ID() >= 0 && gridTab.isTreeTab() && treePanel != null) {
             	setSelectedNode(gridTab.getRecord_ID());
             }
@@ -1213,7 +1224,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         				if (AD_Tree_ID != 0)
         				{
                 			if (treePanel.initTree(AD_Tree_ID, windowNo))
-                				Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
+                				echoDeferSetSelectedNodeEvent();
                 			else
                 				setSelectedNode(gridTab.getRecord_ID());
                 			
@@ -1298,7 +1309,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 				int[] path = model.getPath(treeNode);
 				Treeitem ti = treePanel.getTree().renderItemByPath(path);
 				if (ti.getPage() == null) {
-					Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
+					echoDeferSetSelectedNodeEvent();
 				}
 
 				boolean changed = false;

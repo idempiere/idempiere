@@ -11,17 +11,16 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
+import org.compiere.model.MTable;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-
-import org.compiere.model.X_AD_Element;
 
 public class CommonTranslationHandler extends AbstractElementHandler implements ElementHandler {
 
@@ -288,10 +287,18 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 		return str.substring(1,  str.length()-1);
 	}
 
+	private boolean existTranslated(String Name)
+	{	
+		if (MTable.getTable_ID(Name+"_Trl")>0)
+			return true;
+		else
+			return false;
+	}
+
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
-		if("true".equals(packout.getCtx().ctx.getProperty("isHandleTranslations"))){
-			Env.setContext(packout.getCtx().ctx, CommonTranslationHandler.CONTEXT_KEY_PARENT_TABLE,X_AD_Element.Table_Name);
+		if("Y".equals(packout.getCtx().ctx.getProperty("isHandleTranslations")) && existTranslated(packout.getCtx().ctx.getProperty("Table_Name"))){
+			Env.setContext(packout.getCtx().ctx, CommonTranslationHandler.CONTEXT_KEY_PARENT_TABLE,packout.getCtx().ctx.getProperty("Table_Name"));
 			Env.setContext(packout.getCtx().ctx, CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_ID,recordId);
 			this.create(packout.getCtx(), packoutHandler);
 			packout.getCtx().ctx.remove(CommonTranslationHandler.CONTEXT_KEY_PARENT_TABLE);

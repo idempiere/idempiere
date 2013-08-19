@@ -289,7 +289,7 @@ public class MTax extends X_C_Tax
 				.setOnlyActiveRecords(true)
 				.list();
 			if (list.size() >= 1) {
-				log.saveError("Error", Msg.parseTranslation(getCtx(), "Only one @C_Tax_ID@ per @C_TaxCategory_ID@ can be marked as Default!"));
+				log.saveError("Error", Msg.parseTranslation(getCtx(), Msg.getMsg(Env.getCtx(),"OnlyOneTaxPerCategoryMarkedDefault")));
 				return false;
 			}
 		}

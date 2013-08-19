@@ -17,6 +17,7 @@
 package org.adempiere.pipo2.handler;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -77,7 +78,7 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 				element.unresolved = notfounds.toString();
 				return;
 			}
-
+			element.recordId = mRefList.get_ID();
 			if (mRefList.is_new() || mRefList.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Ref_List.Table_Name,
 						X_AD_Ref_List.Table_ID);
@@ -91,6 +92,7 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 				if (mRefList.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mRefList.getName(),
 							mRefList.get_ID(), action);
+					element.recordId = mRefList.get_ID();
 				} else {
 					logImportDetail(ctx, impDetail, 0, mRefList.getName(),
 							mRefList.get_ID(), action);
@@ -109,6 +111,8 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_Ref_List_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID);
+		if (ctx.packOut.isExported(X_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID+"|"+AD_Ref_List_ID))
+			return;
 		X_AD_Ref_List m_Ref_List = new X_AD_Ref_List(ctx.ctx, AD_Ref_List_ID,
 				getTrxName(ctx));
 		if (ctx.packOut.getFromDate() != null) {
@@ -120,6 +124,15 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Ref_List.Table_Name, atts);
 		createRefListBinding(ctx, document, m_Ref_List);
+
+		PackOut packOut = ctx.packOut;
+		packOut.getCtx().ctx.put("Table_Name",X_AD_Ref_List.Table_Name);
+		try {
+			new CommonTranslationHandler().packOut(packOut,document,null,m_Ref_List.get_ID());
+		} catch(Exception e) {
+			if (log.isLoggable(Level.INFO)) log.info(e.toString());
+		}
+
 		document.endElement("", "", I_AD_Ref_List.Table_Name);
 	}
 

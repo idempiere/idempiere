@@ -22,10 +22,10 @@ import java.util.List;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintPaper;
@@ -92,6 +92,9 @@ public class PrintPaperElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_PrintPaper_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_PrintPaper.COLUMNNAME_AD_PrintPaper_ID);
+		if (ctx.packOut.isExported(X_AD_PrintPaper.COLUMNNAME_AD_PrintPaper_ID+"|"+AD_PrintPaper_ID))
+			return;
+
 		X_AD_PrintPaper printPaper = new X_AD_PrintPaper(ctx.ctx,
 				AD_PrintPaper_ID, null);
 

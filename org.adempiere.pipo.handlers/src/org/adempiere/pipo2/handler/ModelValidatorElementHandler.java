@@ -99,12 +99,9 @@ public class ModelValidatorElementHandler extends AbstractElementHandler{
 	
 	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
 		int ad_modelvalidator_id = Env.getContextAsInt(ctx.ctx, X_AD_ModelValidator.COLUMNNAME_AD_ModelValidator_ID);
-		
-		if (validators.contains(ad_modelvalidator_id))
+		if (ctx.packOut.isExported(X_AD_ModelValidator.COLUMNNAME_AD_ModelValidator_ID+"|"+ad_modelvalidator_id))
 			return;
-		
-		validators.add(ad_modelvalidator_id);
-		
+
 		X_AD_ModelValidator validator = new X_AD_ModelValidator(ctx.ctx, ad_modelvalidator_id, null);
 		
 		if (ctx.packOut.getFromDate() != null) {

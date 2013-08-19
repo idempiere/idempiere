@@ -26,10 +26,10 @@ import java.util.logging.Level;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
@@ -297,6 +297,9 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int AD_Column_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Column.COLUMNNAME_AD_Column_ID);
+		if (ctx.packOut.isExported(X_AD_Column.COLUMNNAME_AD_Column_ID+"|"+AD_Column_ID))
+			return;
+
 		AttributesImpl atts = new AttributesImpl();
 		X_AD_Column m_Column = new X_AD_Column(ctx.ctx, AD_Column_ID,
 				getTrxName(ctx));

@@ -83,6 +83,8 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 				return;
 			}
 
+			element.recordId = fieldGroup.getAD_FieldGroup_ID();
+
 			if (fieldGroup.is_new() || fieldGroup.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_FieldGroup.Table_Name,
 						X_AD_FieldGroup.Table_ID);
@@ -96,10 +98,8 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 				if (fieldGroup.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, fieldGroup.getName(),
 							fieldGroup.get_ID(), action);
-	
-					element.recordId = fieldGroup.getAD_FieldGroup_ID();
-	
 					processedFieldGroups.add(fieldGroup.getAD_FieldGroup_ID());
+					element.recordId = fieldGroup.getAD_FieldGroup_ID();
 	
 				} else {
 					logImportDetail(ctx, impDetail, 0, fieldGroup.getName(),
@@ -121,11 +121,8 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 
 		int fieldGroup_id = Env.getContextAsInt(ctx.ctx,
 				X_AD_FieldGroup.COLUMNNAME_AD_FieldGroup_ID);
-
-		if (processedFieldGroups.contains(fieldGroup_id))
+		if (ctx.packOut.isExported(X_AD_FieldGroup.COLUMNNAME_AD_FieldGroup_ID+"|"+fieldGroup_id))
 			return;
-
-		processedFieldGroups.add(fieldGroup_id);
 
 		X_AD_FieldGroup fieldGroup = new X_AD_FieldGroup(ctx.ctx, fieldGroup_id, null);
 
@@ -138,16 +135,13 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_FieldGroup.Table_Name, atts);
-
 		createAdElementBinding(ctx, document, fieldGroup);
 
 		PackOut packOut = ctx.packOut;
-
-		try{
+		packOut.getCtx().ctx.put("Table_Name",X_AD_FieldGroup.Table_Name);
+		try {
 			new CommonTranslationHandler().packOut(packOut,document,null,fieldGroup.get_ID());
-		}
-		catch(Exception e)
-		{
+		} catch(Exception e) {
 			if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		}
 		document.endElement("", "", I_AD_FieldGroup.Table_Name);
@@ -169,7 +163,6 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx().ctx, X_AD_FieldGroup.COLUMNNAME_AD_FieldGroup_ID, recordId);
-
 		this.create(packout.getCtx(), packoutHandler);
 		packout.getCtx().ctx.remove(X_AD_FieldGroup.COLUMNNAME_AD_FieldGroup_ID);
 	}

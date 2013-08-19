@@ -18,17 +18,16 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
@@ -50,8 +49,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class RoleElementHandler extends AbstractElementHandler {
-
-	private List<Integer> roles = new ArrayList<Integer>();
 
 	private OrgRoleElementHandler orgHandler = new OrgRoleElementHandler();
 	private ProcessAccessElementHandler processHandler = new ProcessAccessElementHandler();
@@ -117,9 +114,8 @@ public class RoleElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		int Role_id = Env.getContextAsInt(ctx.ctx,
 				X_AD_Package_Exp_Detail.COLUMNNAME_AD_Role_ID);
-		if (roles.contains(Role_id))
+		if (ctx.packOut.isExported(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Role_ID+"|"+Role_id))
 			return;
-		roles.add(Role_id);
 
 		boolean createElement = true;
 		X_AD_Role m_Role = new X_AD_Role(ctx.ctx, Role_id, null);

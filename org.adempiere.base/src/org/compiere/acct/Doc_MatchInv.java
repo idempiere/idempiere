@@ -18,9 +18,12 @@ package org.compiere.acct;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AverageCostingZeroQtyException;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
@@ -32,7 +35,9 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.ProductCost;
+import org.compiere.model.X_M_Cost;
 import org.compiere.util.Env;
+import org.compiere.util.Trx;
 
 /**
  *  Post MatchInv Documents.
@@ -272,20 +277,7 @@ public class Doc_MatchInv extends Doc
 
 		//  Invoice Price Variance 	difference
 		BigDecimal ipv = cr.getAcctBalance().add(dr.getAcctBalance()).negate();
-		if (ipv.signum() != 0)
-		{
-			FactLine pv = fact.createLine(null,
-				m_pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as),
-				as.getC_Currency_ID(), ipv);
-			pv.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
-			pv.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
-			pv.setC_Project_ID(m_invoiceLine.getC_Project_ID());
-			pv.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
-			pv.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
-			pv.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
-			pv.setUser1_ID(m_invoiceLine.getUser1_ID());
-			pv.setUser2_ID(m_invoiceLine.getUser2_ID());
-		}
+		processInvoicePriceVariance(as, fact, ipv);
 		if (log.isLoggable(Level.FINE)) log.fine("IPV=" + ipv + "; Balance=" + fact.getSourceBalance());
 
 		String error = createMatchInvCostDetail(as);
@@ -309,6 +301,90 @@ public class Doc_MatchInv extends Doc
 
 		return facts;
 	}   //  createFact
+
+
+	/**
+	 * @param as
+	 * @param fact
+	 * @param ipv
+	 */
+	protected void processInvoicePriceVariance(MAcctSchema as, Fact fact,
+			BigDecimal ipv) {
+		if (ipv.signum() == 0) return;
+		
+		FactLine pv = fact.createLine(null,
+			m_pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as),
+			as.getC_Currency_ID(), ipv);
+		pv.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
+		pv.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
+		pv.setC_Project_ID(m_invoiceLine.getC_Project_ID());
+		pv.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
+		pv.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
+		pv.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
+		pv.setUser1_ID(m_invoiceLine.getUser1_ID());
+		pv.setUser2_ID(m_invoiceLine.getUser2_ID());
+		pv.setM_Product_ID(m_invoiceLine.getM_Product_ID());
+		
+		MMatchInv matchInv = (MMatchInv)getPO();
+		Trx trx = Trx.get(getTrxName(), false);
+		Savepoint savepoint = null;
+		boolean zeroQty = false;
+		try {
+			savepoint = trx.setSavepoint(null);
+			
+			if (!MCostDetail.createMatchInvoice(as, m_invoiceLine.getAD_Org_ID(),
+					m_invoiceLine.getM_Product_ID(), m_invoiceLine.getM_AttributeSetInstance_ID(),
+					matchInv.getM_MatchInv_ID(), 0,
+					ipv, BigDecimal.ZERO, "Invoice Price Variance", getTrxName())) {
+				throw new RuntimeException("Failed to create cost detail record.");
+			}				
+		} catch (SQLException e) {
+			throw new RuntimeException(e.getLocalizedMessage(), e);
+		} catch (AverageCostingZeroQtyException e) {
+			zeroQty = true;
+			try {
+				trx.rollback(savepoint);
+				savepoint = null;
+			} catch (SQLException e1) {
+				throw new RuntimeException(e1.getLocalizedMessage(), e1);
+			}
+		} finally {
+			if (savepoint != null) {
+				try {
+					trx.releaseSavepoint(savepoint);
+				} catch (SQLException e) {}
+			}
+		}
+		
+		String costingMethod = m_pc.getProduct().getCostingMethod(as);
+		if (X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod)) {
+			MAccount account = zeroQty ? m_pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as) : m_pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			
+			FactLine line = fact.createLine(null,
+					m_pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as),
+					as.getC_Currency_ID(), ipv.negate());
+			line.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
+			line.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
+			line.setC_Project_ID(m_invoiceLine.getC_Project_ID());
+			line.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
+			line.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
+			line.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
+			line.setUser1_ID(m_invoiceLine.getUser1_ID());
+			line.setUser2_ID(m_invoiceLine.getUser2_ID());
+			line.setM_Product_ID(m_invoiceLine.getM_Product_ID());
+			
+			line = fact.createLine(null, account, as.getC_Currency_ID(), ipv);
+			line.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
+			line.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
+			line.setC_Project_ID(m_invoiceLine.getC_Project_ID());
+			line.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
+			line.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
+			line.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
+			line.setUser1_ID(m_invoiceLine.getUser1_ID());
+			line.setUser2_ID(m_invoiceLine.getUser2_ID());
+			line.setM_Product_ID(m_invoiceLine.getM_Product_ID());
+		}
+	}
 
 	/** Verify if the posting involves two or more organizations
 	@return true if there are more than one org involved on the posting

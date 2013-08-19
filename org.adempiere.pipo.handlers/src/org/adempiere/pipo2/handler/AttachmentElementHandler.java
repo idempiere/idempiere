@@ -36,7 +36,6 @@ import org.compiere.model.X_AD_AttachmentNote;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -127,11 +126,8 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 
 
 		int AD_Attachment_ID = Env.getContextAsInt(ctx.ctx, "AD_Attachment_ID");
-
-		if (attachments.contains(AD_Attachment_ID))
+		if (ctx.packOut.isExported("AD_Attachment_ID"+"|"+AD_Attachment_ID))
 			return;
-
-		attachments.add(AD_Attachment_ID);
 
 		MAttachment mAttachment = new MAttachment(ctx.ctx, AD_Attachment_ID, getTrxName(ctx));
 

@@ -59,7 +59,6 @@ import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
@@ -461,8 +460,7 @@ public class AcctViewer extends CFrame
 		boolean visible = m_data.documentQuery && tabbedPane.getSelectedIndex() == 1;
 		bRePost.setVisible(visible);
 		bExport.setVisible(tabbedPane.getSelectedIndex() == 1);
-		if (Ini.isPropertyBool(Ini.P_SHOW_ADVANCED))
-			forcePost.setVisible(visible);
+		forcePost.setVisible(visible);
 	}   //  stateChanged
 
 

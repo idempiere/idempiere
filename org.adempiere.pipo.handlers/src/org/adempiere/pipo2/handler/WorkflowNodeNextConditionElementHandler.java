@@ -21,10 +21,10 @@ import java.util.List;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
@@ -154,6 +154,9 @@ public class WorkflowNodeNextConditionElementHandler extends
 	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
 		int ad_wf_nodenextcondition_id = Env.getContextAsInt(ctx.ctx, "AD_WF_NextCondition_ID");
+		if (ctx.packOut.isExported("AD_WF_NextCondition_ID"+"|"+ad_wf_nodenextcondition_id))
+			return;
+
 		MWFNextCondition m_WF_NodeNextCondition = new MWFNextCondition(
 				ctx.ctx, ad_wf_nodenextcondition_id, null);
 		if (ctx.packOut.getFromDate() != null) {

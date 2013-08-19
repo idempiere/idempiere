@@ -464,6 +464,69 @@ public class MCostDetail extends X_M_CostDetail
 		return ok;
 	}	//	createProduction
 	
+	/**
+	 * @param as
+	 * @param AD_Org_ID
+	 * @param M_Product_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param M_MatchInv_ID
+	 * @param M_CostElement_ID
+	 * @param Amt
+	 * @param Qty
+	 * @param Description
+	 * @param trxName
+	 * @return true if no error
+	 */
+	public static boolean createMatchInvoice (MAcctSchema as, int AD_Org_ID, 
+			int M_Product_ID, int M_AttributeSetInstance_ID,
+			int M_MatchInv_ID, int M_CostElement_ID, 
+			BigDecimal Amt, BigDecimal Qty,
+			String Description, String trxName)
+	{
+		//	Delete Unprocessed zero Differences
+		StringBuilder sql = new StringBuilder("DELETE M_CostDetail ")
+			.append("WHERE Processed='N' AND COALESCE(DeltaAmt,0)=0 AND COALESCE(DeltaQty,0)=0")
+			.append(" AND M_MatchInv_ID=").append(M_MatchInv_ID)
+			.append(" AND C_AcctSchema_ID =").append(as.getC_AcctSchema_ID())			
+			.append(" AND M_AttributeSetInstance_ID=").append(M_AttributeSetInstance_ID)
+			.append(" AND Coalesce(M_CostElement_ID,0)=").append(M_CostElement_ID);
+		
+		int no = DB.executeUpdate(sql.toString(), trxName);
+		if (no != 0)
+			if (s_log.isLoggable(Level.CONFIG)) s_log.config("Deleted #" + no);
+		MCostDetail cd = get (as.getCtx(), "M_MatchInv_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
+				M_MatchInv_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+		//
+		if (cd == null)		//	createNew
+		{
+			cd = new MCostDetail (as, AD_Org_ID, 
+				M_Product_ID, M_AttributeSetInstance_ID, 
+				M_CostElement_ID, 
+				Amt, Qty, Description, trxName);
+			cd.setM_MatchInv_ID(M_MatchInv_ID);
+		}
+		else
+		{
+			cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
+			cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			if (cd.isDelta())
+			{
+				cd.setProcessed(false);
+				cd.setAmt(Amt);
+				cd.setQty(Qty);
+			}
+			else
+				return true;	//	nothing to do
+		}
+		boolean ok = cd.save();
+		if (ok && !cd.isProcessed())
+		{
+			ok = cd.process();
+		}
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("(" + ok + ") " + cd);
+		return ok;
+	}	//	createMatchInvoice
+	
 	/**************************************************************************
 	 * 	Get Cost Detail
 	 *	@param ctx context
@@ -1183,6 +1246,13 @@ public class MCostDetail extends X_M_CostDetail
 			else
 				log.warning("QtyAdjust - " + ce + " - " + cost);
 			
+		}
+		else if (getM_MatchInv_ID() > 0)
+		{
+			if (ce.isAveragePO())
+			{
+				cost.setWeightedAverage(amt, qty);
+			}			
 		}
 		else	//	unknown or no id
 		{

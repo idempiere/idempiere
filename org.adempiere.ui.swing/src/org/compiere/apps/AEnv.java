@@ -31,7 +31,6 @@ import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -55,7 +54,6 @@ import org.compiere.model.MMenu;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
-import org.compiere.model.MZoomCondition;
 import org.compiere.process.DocumentEngine;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CFrame;
@@ -635,27 +633,12 @@ public final class AEnv
 	 */
 	public static void zoom (int AD_Table_ID, int Record_ID)
 	{
-		int AD_Window_ID = MZoomCondition.findZoomWindowByTableId(AD_Table_ID, Record_ID);
+		int AD_Window_ID = Env.getZoomWindowID(AD_Table_ID, Record_ID);
+		//  Nothing to Zoom to
+		if (AD_Window_ID == 0)
+			return;
+		
 		MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
-		if (AD_Window_ID <= 0)
-		{
-			AD_Window_ID = table.getAD_Window_ID();
-			//  Nothing to Zoom to
-			if (AD_Window_ID == 0)
-				return;
-	
-			//	PO Zoom ?
-			boolean isSOTrx = true;
-			if (table.getPO_Window_ID() != 0)
-			{
-				String whereClause = table.getTableName() + "_ID=" + Record_ID;
-				isSOTrx = DB.isSOTrx(table.getTableName(), whereClause);
-				if (!isSOTrx)
-					AD_Window_ID = table.getPO_Window_ID();
-			}
-			
-			if (log.isLoggable(Level.CONFIG)) log.config(table.getTableName() + " - Record_ID=" + Record_ID + " (IsSOTrx=" + isSOTrx + ")");
-		}
 		
 		AWindow frame = new AWindow(null);
 		if (!frame.initWindow(AD_Window_ID, MQuery.getEqualQuery(table.getTableName() + "_ID", Record_ID)))
@@ -681,50 +664,11 @@ public final class AEnv
 		if (query == null || query.getTableName() == null || query.getTableName().length() == 0)
 			return;
 		
-		int AD_Window_ID = MZoomCondition.findZoomWindow(query);
-		if (AD_Window_ID <= 0)
-		{
-			String TableName = query.getTableName();
-			int PO_Window_ID = 0;
-			String sql = "SELECT AD_Window_ID, PO_Window_ID FROM AD_Table WHERE TableName=?";
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try
-			{
-				pstmt = DB.prepareStatement(sql, null);
-				pstmt.setString(1, TableName);
-				rs = pstmt.executeQuery();
-				if (rs.next())
-				{
-					AD_Window_ID = rs.getInt(1);
-					PO_Window_ID = rs.getInt(2);
-				}
-			}
-			catch (SQLException e)
-			{
-				log.log(Level.SEVERE, sql, e);
-			}
-			finally
-			{
-				DB.close(rs, pstmt);
-				rs = null;
-				pstmt = null;
-			}
-			//  Nothing to Zoom to
-			if (AD_Window_ID == 0)
-				return;
-	
-			//	PO Zoom ?
-			boolean isSOTrx = true;
-			if (PO_Window_ID != 0)
-			{
-				isSOTrx = DB.isSOTrx(TableName, query.getWhereClause(false));
-				if (!isSOTrx)
-					AD_Window_ID = PO_Window_ID;
-			}
-
-			if (log.isLoggable(Level.CONFIG)) log.config(query + " (IsSOTrx=" + isSOTrx + ")");
-		}
+		int AD_Window_ID = Env.getZoomWindowID(query);
+		//  Nothing to Zoom to
+		if (AD_Window_ID == 0)
+			return;
+		
 		AWindow frame = new AWindow(null);
 		if (!frame.initWindow(AD_Window_ID, query))
 			return;

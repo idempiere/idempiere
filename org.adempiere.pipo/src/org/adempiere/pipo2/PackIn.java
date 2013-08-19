@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.CLogger;
@@ -153,6 +154,7 @@ public class PackIn {
 			context.trx = Trx.get(trxName, true);
 			context.packIn = this;
 			context.ctx = ctx;
+			context.ctx.setProperty("isHandleTranslations", MSysConfig.getValue(MSysConfig.TWOPACK_HANDLE_TRANSLATIONS));
 			handler.setCtx(context);
 			handler.setProcess(this);
 			SAXParserFactory factory = SAXParserFactory.newInstance();

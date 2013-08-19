@@ -17,16 +17,16 @@
 package org.adempiere.pipo2.handler;
 
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Task;
@@ -38,8 +38,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class TaskElementHandler extends AbstractElementHandler {
-
-	private List<Integer> tasks = new ArrayList<Integer>();
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
@@ -69,6 +67,7 @@ public class TaskElementHandler extends AbstractElementHandler {
 				return;
 			}
 			
+			element.recordId = mTask.get_ID();
 			if (mTask.is_new() || mTask.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Task.Table_Name,
 						X_AD_Task.Table_ID);
@@ -82,6 +81,7 @@ public class TaskElementHandler extends AbstractElementHandler {
 				if (mTask.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mTask.getName(), mTask.get_ID(),
 							action);
+					element.recordId = mTask.get_ID();
 				} else {
 					logImportDetail(ctx, impDetail, 0, mTask.getName(), mTask.get_ID(),
 							action);
@@ -99,9 +99,9 @@ public class TaskElementHandler extends AbstractElementHandler {
 	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
 		int AD_Task_ID = Env.getContextAsInt(ctx.ctx, "AD_Task_ID");
-		if (tasks.contains(AD_Task_ID))
+		if (ctx.packOut.isExported("AD_Task_ID"+"|"+AD_Task_ID))
 			return;
-		tasks.add(AD_Task_ID);
+
 		X_AD_Task m_Task = new X_AD_Task(ctx.ctx, AD_Task_ID, null);
 		if (ctx.packOut.getFromDate() != null) {
 			if (m_Task.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
@@ -112,6 +112,15 @@ public class TaskElementHandler extends AbstractElementHandler {
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Task.Table_Name, atts);
 		createTaskBinding(ctx, document, m_Task);
+
+		PackOut packOut = ctx.packOut;
+		packOut.getCtx().ctx.put("Table_Name",I_AD_Task.Table_Name);
+		try {
+			new CommonTranslationHandler().packOut(packOut,document,null,m_Task.get_ID());
+		} catch(Exception e) {
+			if (log.isLoggable(Level.INFO)) log.info(e.toString());
+		}
+
 		document.endElement("", "", I_AD_Task.Table_Name);
 
 	}
