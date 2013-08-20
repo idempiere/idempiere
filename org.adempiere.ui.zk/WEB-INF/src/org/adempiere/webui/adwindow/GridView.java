@@ -471,20 +471,24 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 						if (headerWidth > estimatedWidth)
 							estimatedWidth = headerWidth;
 						
-						if (DisplayType.isLookup(gridField[i].getDisplayType()))
+						//hflex=min for first column not working well
+						if (i > 0)
 						{
-							if (headerWidth > MIN_COMBOBOX_WIDTH)
-								column.setHflex("min");
-						}
-						else if (DisplayType.isNumeric(gridField[i].getDisplayType()))
-						{
-							if (headerWidth > MIN_NUMERIC_COL_WIDTH)
-								column.setHflex("min");
-						}
-						else if (!DisplayType.isText(gridField[i].getDisplayType()))
-						{
-							if (headerWidth > MIN_COLUMN_WIDTH)
-								column.setHflex("min");
+							if (DisplayType.isLookup(gridField[i].getDisplayType()))
+							{
+								if (headerWidth > MIN_COMBOBOX_WIDTH)
+									column.setHflex("min");
+							}
+							else if (DisplayType.isNumeric(gridField[i].getDisplayType()))
+							{
+								if (headerWidth > MIN_NUMERIC_COL_WIDTH)
+									column.setHflex("min");
+							}
+							else if (!DisplayType.isText(gridField[i].getDisplayType()))
+							{
+								if (headerWidth > MIN_COLUMN_WIDTH)
+									column.setHflex("min");
+							}
 						}
 						
 						//set estimated width if not using hflex=min
