@@ -697,7 +697,6 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			if (Events.ON_CLICK.equals(event.getName())) {
 				if (Executions.getCurrent().getAttribute("gridView.onSelectRow") != null)
 					return;
-				System.out.println(event);
 				Event evt = new Event(Events.ON_CLICK, _grid, event.getTarget());
 				Events.sendEvent(_grid, evt);
 				evt.stopPropagation();
