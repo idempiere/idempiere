@@ -213,6 +213,8 @@ UPDATE AD_Field SET SeqNoGrid=380,IsDisplayedGrid='Y' WHERE AD_Field_ID=200835
 UPDATE AD_Field SET SeqNoGrid=390,IsDisplayedGrid='Y' WHERE AD_Field_ID=200836
 ;
 
+DROP VIEW ad_field_v;
+
 CREATE OR REPLACE VIEW ad_field_v AS 
  SELECT t.ad_window_id, f.ad_tab_id, f.ad_field_id, tbl.ad_table_id, f.ad_column_id, 
  f.name, f.description, f.help, f.isdisplayed, f.displaylogic, f.displaylength, f.seqno, 
@@ -243,6 +245,8 @@ CREATE OR REPLACE VIEW ad_field_v AS
    JOIN ad_table tbl ON c.ad_table_id = tbl.ad_table_id
    LEFT JOIN ad_val_rule vr ON vr.ad_val_rule_id = COALESCE(f.ad_val_rule_id, c.ad_val_rule_id)
   WHERE f.isactive = 'Y'::bpchar AND c.isactive = 'Y'::bpchar;
+
+DROP VIEW ad_field_vt;
 
 CREATE OR REPLACE VIEW ad_field_vt AS 
  SELECT trl.ad_language, t.ad_window_id, f.ad_tab_id, f.ad_field_id, tbl.ad_table_id, f.ad_column_id, trl.name, trl.description, 
