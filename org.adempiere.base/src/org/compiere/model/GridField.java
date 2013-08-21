@@ -434,7 +434,8 @@ public class GridField
 		}
 		
 		//check tab context
-		if (checkContext && getGridTab() != null)
+		if (checkContext && getGridTab() != null &&
+			! "Y".equals(Env.getContext(Env.getCtx(), getWindowNo(), "_QUICK_ENTRY_MODE_")))
 		{
 			if (getGridTab().isReadOnly())
 			{
