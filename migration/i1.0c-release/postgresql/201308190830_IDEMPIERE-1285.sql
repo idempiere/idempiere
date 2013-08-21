@@ -633,7 +633,7 @@ ALTER TABLE C_OrderLandedCostAllocation ADD COLUMN C_OrderLandedCostAllocation_U
 
 -- Aug 19, 2013 2:20:52 PM MYT
 -- IDEMPIERE-1285 Estimated Landed Cost for PO
-ALTER TABLE C_OrderLandedCostAllocation ADD CONSTRAINT C_OrderLandedCostAllocation_uu_idx UNIQUE (C_OrderLandedCostAllocation_UU)
+ALTER TABLE C_OrderLandedCostAllocation ADD CONSTRAINT C_OrderLandedCostAlloc_uu_idx UNIQUE (C_OrderLandedCostAllocation_UU)
 ;
 
 -- Aug 19, 2013 2:20:52 PM MYT
