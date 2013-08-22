@@ -49,17 +49,18 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TEXTLONG;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIME;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_URL;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_YES_NO;
-
-import org.adempiere.base.IDisplayTypeFactory;
-import org.adempiere.base.Service;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_CHART;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
-import java.util.List;
+
+import org.adempiere.base.IDisplayTypeFactory;
+import org.adempiere.base.Service;
 
 /**
  *	System Display Types.
@@ -141,6 +142,8 @@ public final class DisplayType
 	//	Candidates:
 	/** Display Type 200012	Payment	*/
 	public static final int Payment  = REFERENCE_DATATYPE_PAYMENT;
+	
+	public static final int Chart = REFERENCE_DATATYPE_CHART;
 
 	/**
 	 *	- New Display Type

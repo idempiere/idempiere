@@ -18,6 +18,7 @@ import org.compiere.grid.ed.VAccount;
 import org.compiere.grid.ed.VAssignment;
 import org.compiere.grid.ed.VBinary;
 import org.compiere.grid.ed.VButton;
+import org.compiere.grid.ed.VChart;
 import org.compiere.grid.ed.VCheckBox;
 import org.compiere.grid.ed.VColor;
 import org.compiere.grid.ed.VDate;
@@ -292,6 +293,13 @@ public class DefaultEditorFactory implements IEditorFactory {
 		{
 			VPaymentEditor p = new VPaymentEditor (mField, columnName, mandatory, readOnly, updateable, (MPaymentLookup) mField.getLookup());
 			editor = p;
+		}
+		
+		// Chart
+		else if (displayType == DisplayType.Chart )
+		{
+			VChart chart = new VChart(mField.getAD_Chart_ID(), WindowNo);
+			editor = chart;	
 		}
 
 		return editor;

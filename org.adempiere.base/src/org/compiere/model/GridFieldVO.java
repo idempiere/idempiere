@@ -48,6 +48,8 @@ public class GridFieldVO implements Serializable
 	 */
 	private static final long serialVersionUID = 7595228091613559685L;
 
+	
+
 	/**
 	 *  Return the SQL statement used for the MFieldVO.create
 	 *  @param ctx context
@@ -223,6 +225,8 @@ public class GridFieldVO implements Serializable
 					vo.NumLines=rs.getInt(i);
 				else if (columnName.equalsIgnoreCase("IsToolbarButton"))
 					vo.IsToolbarButton  = "Y".equals(rs.getString(i));
+				else if (columnName.equalsIgnoreCase("AD_Chart_ID"))
+					vo.AD_Chart_ID = rs.getInt (i);
 			}
 			if (vo.Header == null)
 				vo.Header = vo.ColumnName;
@@ -613,6 +617,8 @@ public class GridFieldVO implements Serializable
 	/** Toolbar Button **/
 	public boolean IsToolbarButton = false;
 	
+	public int AD_Chart_ID = 0;
+	
 	/**
 	 *  Set Context including contained elements
 	 *  @param newCtx new context
@@ -713,6 +719,7 @@ public class GridFieldVO implements Serializable
 		clone.DefaultValue = DefaultValue;
 		clone.IsMandatory = IsMandatory;
 		clone.IsReadOnly = IsReadOnly;
+		clone.AD_Chart_ID = AD_Chart_ID;
 		clone.IsUpdateable = IsUpdateable;
 		clone.IsAlwaysUpdateable = IsAlwaysUpdateable;
 		clone.IsHeading = IsHeading;

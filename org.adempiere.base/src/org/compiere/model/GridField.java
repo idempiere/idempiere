@@ -1013,6 +1013,16 @@ public class GridField
 	{
 		return m_vo.AD_Window_ID;
 	}
+	
+	/** get AD_Chart_ID
+	 * @return chart id
+	 */
+	public int getAD_Chart_ID()
+	{
+		return m_vo.AD_Chart_ID;
+	}
+	
+	
 	/**
 	 * 	Get Window No
 	 *	@return window no
