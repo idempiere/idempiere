@@ -1389,6 +1389,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
         boolean changed = e.isChanged() || e.isInserting();
         boolean readOnly = adTabbox.getSelectedGridTab().isReadOnly();
+        boolean processed = adTabbox.getSelectedGridTab().isProcessed();
         boolean insertRecord = !readOnly;
         if (!detailTab)
         {
@@ -1401,7 +1402,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        }
 	        toolbar.enableNew(!changed && insertRecord && !tabPanel.getGridTab().isSortTab());
 	        toolbar.enableRefresh(!changed);
-	        toolbar.enableDelete(!changed && !readOnly && !tabPanel.getGridTab().isSortTab());
+	        toolbar.enableDelete(!changed && !readOnly && !tabPanel.getGridTab().isSortTab() && !processed);
 	        //
 	        if (readOnly && adTabbox.getSelectedGridTab().isAlwaysUpdateField())
 	        {
