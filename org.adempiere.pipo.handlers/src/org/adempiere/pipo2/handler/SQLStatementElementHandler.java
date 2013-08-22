@@ -49,15 +49,13 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 			sql = sql.substring(0, sql.length() - 1);
 		Savepoint savepoint = null;
 		PreparedStatement pstmt = null;
+		X_AD_Package_Imp_Detail impDetail = null;
 		try {
 			// NOTE Postgres needs to commit DDL statements
 			// add a SQL command just with COMMIT if you want to simulate the Oracle behavior (commit on DDL)			
 			// Use savepoint here so that SQL exception would not rollback the whole process
-			if (DB.isPostgreSQL())
-			{
-				Trx trx = Trx.get(getTrxName(ctx), true);
-				savepoint = trx.setSavepoint(null);
-			}
+			Trx trx = Trx.get(getTrxName(ctx), true);
+			savepoint = trx.setSavepoint(null);
 
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
 			if (DBType.equals("ALL")) {
@@ -86,27 +84,23 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 					DB.close(stmt);
 					stmt = null;
 				}
-			}
-			
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, "",
-					0);
-			logImportDetail (ctx, impDetail, 1, "SQLStatement",1,"Execute");
+			}						
 		} catch (Exception e)	{
-			if (DB.isPostgreSQL()) {
-				// rollback immediately postgres on exception to avoid a wrong SQL stop the whole process
-				if (savepoint != null) 
-				{
-					Trx trx = Trx.get(getTrxName(ctx), false);
-					try {
-						trx.rollback(savepoint);
-					} catch (SQLException e1) {}
-					savepoint = null;
+			// rollback immediately on exception to avoid a wrong SQL stop the whole process
+			if (savepoint != null) 
+			{
+				Trx trx = Trx.get(getTrxName(ctx), false);
+				try {					
+					if (trx.getConnection() != null)
+						trx.getConnection().rollback(savepoint);					
+				} catch (SQLException e1) {
+					//a rollback or commit have happens making the savepoint becomes invalid.
+					//rollback trx to continue
+					trx.rollback();
 				}
+				savepoint = null;
 			}
 			log.log(Level.SEVERE,"SQLSatement", e);
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, "",
-					0);
-			logImportDetail (ctx, impDetail, 0, "SQLStatement",1,"Execute");
 		} finally {
 			DB.close(pstmt);
 			pstmt = null;
@@ -114,9 +108,18 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 				Trx trx = Trx.get(getTrxName(ctx), false);
 				try {
 					trx.releaseSavepoint(savepoint);
-				} catch (SQLException e) {}
+				} catch (SQLException e) {
+					if (DB.isPostgreSQL()) {
+						//a commit or rollback have happens that make the savepoint invalid.
+						//need to call rollback to continue
+						trx.commit();						
+					}
+				}
 			}
 		}
+		impDetail = createImportDetail(ctx, element.qName, "",
+				0);
+		logImportDetail (ctx, impDetail, 1, "SQLStatement",1,"Execute");
 	}
 
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
