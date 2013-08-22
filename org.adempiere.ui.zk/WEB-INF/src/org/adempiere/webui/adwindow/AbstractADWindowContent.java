@@ -1387,7 +1387,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
         boolean changed = e.isChanged() || e.isInserting();
         boolean readOnly = adTabbox.getSelectedGridTab().isReadOnly();
-        boolean processed = "Y".equals(Env.getContext(Env.getCtx(), getWindowNo(), "Processed", true));
+        boolean processed = adTabbox.getSelectedGridTab().isProcessed();
         boolean insertRecord = !readOnly;
         if (!detailTab)
         {
@@ -1410,7 +1410,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         }
         else
         {
-        	adTabbox.updateDetailPaneToolbar(changed, readOnly || processed);
+        	adTabbox.updateDetailPaneToolbar(changed, readOnly);
         }
         toolbar.enableIgnore(adTabbox.needSave(true, false) ||
         		adTabbox.getSelectedGridTab().isNew() ||

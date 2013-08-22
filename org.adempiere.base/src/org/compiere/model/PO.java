@@ -2646,10 +2646,10 @@ public abstract class PO
 			else
 			{
 				if (m_trxName == null)
-					log.log(Level.WARNING, "#" + no
+					log.log(Level.WARNING, "Update return " + no + " instead of 1"
 						+ " - " + p_info.getTableName() + "." + where);
 				else
-					log.log(Level.WARNING, "#" + no
+					log.log(Level.WARNING, "Update return " + no + " instead of 1"
 						+ " - [" + m_trxName + "] - " + p_info.getTableName() + "." + where);
 			}
 			return ok;
