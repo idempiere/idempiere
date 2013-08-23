@@ -1,6 +1,7 @@
 package org.compiere.grid.ed;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
@@ -20,6 +21,10 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.entity.CategoryItemEntity;
 import org.jfree.chart.entity.ChartEntity;
 import org.jfree.chart.entity.PieSectionEntity;
+import org.jfree.chart.entity.XYItemEntity;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.time.TimeSeriesDataItem;
 
 public class VChart extends CPanel implements ChartMouseListener, VEditor {
 	
@@ -51,7 +56,6 @@ public class VChart extends CPanel implements ChartMouseListener, VEditor {
 		if (chartPanel != null)
 			remove(chartPanel);
 	
-		chartModel.loadData();
 		chartPanel = new ChartPanel(chart);
 		Dimension size = getSize();
 		size.height= chartModel.getWinHeight();
@@ -91,7 +95,7 @@ public class VChart extends CPanel implements ChartMouseListener, VEditor {
 			{
 				ChartEntity entity = event.getEntity();
 				String key = null;
-				String category = null;
+				String seriesName = null;
 				if (entity instanceof CategoryItemEntity)
 				{
 					CategoryItemEntity item = ((CategoryItemEntity)entity);
@@ -100,7 +104,7 @@ public class VChart extends CPanel implements ChartMouseListener, VEditor {
 					if (colKey != null && rowKey !=null)
 					{
 						key = colKey.toString();
-						category = rowKey.toString();
+						seriesName = rowKey.toString();
 					}
 				}
 				else if (entity instanceof PieSectionEntity)
@@ -111,11 +115,24 @@ public class VChart extends CPanel implements ChartMouseListener, VEditor {
 						key = sectionKey.toString();
 					}
 				}
+				if (entity instanceof XYItemEntity)
+				{
+					XYItemEntity item = ((XYItemEntity)entity);
+					if ( item.getDataset() instanceof TimeSeriesCollection )
+					{
+						TimeSeriesCollection data = (TimeSeriesCollection) item.getDataset();
+						TimeSeries series = data.getSeries(item.getSeriesIndex());
+						TimeSeriesDataItem dataitem = series.getDataItem(item.getItem());
+						seriesName = series.getKey().toString();
+						key = dataitem.getPeriod().toString();
+					}
+				}
 				
 				if ( key == null )
 					return;
 				
-				MQuery query = chartModel.getQuery("null".equals(category) ? key : category + "__" + key);
+				MQuery query = chartModel.getQuery(seriesName == null ? key : seriesName+"__"+key);
+				
 				if (query != null)
 					AEnv.zoom(query);
 		
@@ -159,5 +176,14 @@ public class VChart extends CPanel implements ChartMouseListener, VEditor {
 	
 	@Override
 	public GridField getField() { return null; }
+
+	/**
+	 * 	Get Focus Component
+	 *	@return component
+	 */
+	public Component getFocusableComponent()
+	{
+		return this;
+	}	//	getFocusComponent
 
 }

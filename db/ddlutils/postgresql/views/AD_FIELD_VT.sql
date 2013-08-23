@@ -17,7 +17,7 @@ f.included_tab_id, fg.fieldgrouptype, fg.iscollapsedbydefault,
 COALESCE(f.infofactoryclass, c.infofactoryclass) AS infofactoryclass, c.isautocomplete, 
 COALESCE(f.isallowcopy, c.isallowcopy) AS isallowcopy, f.isdisplayedgrid, f.seqnogrid, c.seqnoselection, 
 f.xposition, f.columnspan, f.numlines, COALESCE(f.istoolbarbutton, c.istoolbarbutton) AS istoolbarbutton, 
-c.formatpattern, f.isadvancedfield, f.IsDefaultFocus
+c.formatpattern, f.isadvancedfield, f.IsDefaultFocus, c.AD_Chart_ID
    FROM ad_field f
    JOIN ad_field_trl trl ON f.ad_field_id = trl.ad_field_id
    JOIN ad_tab t ON f.ad_tab_id = t.ad_tab_id
