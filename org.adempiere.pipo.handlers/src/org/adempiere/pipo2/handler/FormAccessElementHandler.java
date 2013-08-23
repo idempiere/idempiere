@@ -26,9 +26,7 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PoFiller;
-import org.adempiere.pipo2.ReferenceUtils;
 import org.compiere.model.I_AD_Form_Access;
-import org.compiere.model.I_AD_Role;
 import org.compiere.model.MFormAccess;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Form;
@@ -45,42 +43,7 @@ public class FormAccessElementHandler extends AbstractElementHandler {
 
 		MFormAccess po = findPO(ctx, element);
 		if (po == null) {
-			int AD_Role_ID = 0;
-			if (getParentId(element, I_AD_Role.Table_Name) > 0) {
-				AD_Role_ID = getParentId(element, I_AD_Role.Table_Name);
-			} else {
-				AD_Role_ID = ReferenceUtils.resolveReference(ctx.ctx, element.properties.get("AD_Role_ID"), getTrxName(ctx));
-			}
-			if (AD_Role_ID <= 0)
-			{
-				element.defer = true;
-				element.unresolved = "AD_Role_ID";
-				return;
-			}
-
-			int AD_Form_ID = ReferenceUtils.resolveReference(ctx.ctx, element.properties.get("AD_Form_ID"), getTrxName(ctx));
-			if (AD_Form_ID <= 0)
-			{
-				element.defer = true;
-				element.unresolved = "AD_Form_ID";
-				return;
-			}
-
-			if (!hasUUIDKey(ctx, element)) {
-				Query query = new Query(ctx.ctx, "AD_Form_Access", "AD_Form_ID = ? AND AD_Role_ID = ?", getTrxName(ctx));
-				po = query.setParameters(new Object[]{AD_Form_ID, AD_Role_ID})
-						.setClient_ID()
-						.<MFormAccess>first();
-			}
-			if (po == null)
-			{
-				po = new MFormAccess(ctx.ctx, 0, getTrxName(ctx));
-				po.setAD_Form_ID(AD_Form_ID);
-				po.setAD_Role_ID(AD_Role_ID);
-			}
-
-			excludes.add("AD_Form_ID");
-			excludes.add("AD_Role_ID");
+			po = new MFormAccess(ctx.ctx, 0, getTrxName(ctx));
 		}
 
 		PoFiller filler = new PoFiller(ctx, po, element, this);
@@ -112,6 +75,8 @@ public class FormAccessElementHandler extends AbstractElementHandler {
 					return;
 				}
 			}
+			
+			verifyPackOutRequirement(po);
 			
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");

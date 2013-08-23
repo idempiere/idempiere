@@ -57,19 +57,8 @@ public class ProcessElementHandler extends AbstractElementHandler {
 		if (isProcessElement(ctx.ctx, entitytype)) {
 			X_AD_Process mProcess = findPO(ctx, element);
 			if (mProcess == null) {
-				String value = getStringValue(element, "Value");
-
-				// Get New process.
-				int id = 0;
-				if (!hasUUIDKey(ctx, element)) {
-					id = findIdByColumn(ctx, "AD_Process", "Value", value);
-				}
-				mProcess = new X_AD_Process(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mProcess = new X_AD_Process(ctx.ctx, 0, getTrxName(ctx));
 			}
-			
-			if (mProcess.getAD_Process_ID() == 0 && isOfficialId(element, "AD_Process_ID"))
-				mProcess.setAD_Process_ID(Integer.parseInt(getStringValue(element, "AD_Process_ID")));
-
 			PoFiller filler = new PoFiller(ctx, mProcess, element, this);
 			List<String> excludes = defaultExcludeList(X_AD_Process.Table_Name);
 
@@ -158,6 +147,7 @@ public class ProcessElementHandler extends AbstractElementHandler {
 			}
 
 			if (createElement) {
+				verifyPackOutRequirement(m_Process);
 				addTypeName(atts, "table");
 				document.startElement("", "", I_AD_Process.Table_Name, atts);
 				createProcessBinding(ctx, document, m_Process);

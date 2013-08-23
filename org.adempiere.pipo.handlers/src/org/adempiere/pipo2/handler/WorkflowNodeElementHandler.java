@@ -28,13 +28,10 @@ import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
-import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_WF_Node;
-import org.compiere.model.I_AD_Workflow;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_WF_Node;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWorkflow;
@@ -61,31 +58,7 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 
 			MWFNode mWFNode = findPO(ctx, element);
 			if (mWFNode == null) {
-				int workflowId = 0;
-				Element wfElement = element.properties.get(I_AD_WF_Node.COLUMNNAME_AD_Workflow_ID);
-				if (getParentId(element, I_AD_Workflow.Table_Name) > 0) {
-					workflowId = getParentId(element, I_AD_Workflow.Table_Name);
-				} else {
-					workflowId = ReferenceUtils.resolveReference(ctx.ctx, wfElement, getTrxName(ctx));
-				}
-				if (workflowId <= 0) {
-					element.defer = true;
-					element.unresolved = "AD_Workflow: " + wfElement.contents;
-					return;
-				}
-
-				String workflowNodeValue = getStringValue(element, "Value", excludes);
-				int id = 0;
-				if (!hasUUIDKey(ctx, element)) {
-					StringBuilder sqlB = new StringBuilder(
-						"SELECT AD_WF_Node_ID FROM AD_WF_Node WHERE AD_Workflow_ID=? and Value =?");
-					id = DB.getSQLValue(getTrxName(ctx), sqlB.toString(), workflowId, workflowNodeValue);
-				}
-				mWFNode = new MWFNode(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
-				mWFNode.setValue(workflowNodeValue);
-				mWFNode.setAD_Workflow_ID(workflowId);
-				excludes.add(I_AD_WF_Node.COLUMNNAME_AD_Workflow_ID);
-				excludes.add("Value");
+				mWFNode = new MWFNode(ctx.ctx, 0, getTrxName(ctx));
 			}
 
 			PoFiller filler = new PoFiller(ctx, mWFNode, element, this);
@@ -100,8 +73,6 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_WF_Node.Table_Name,
 						X_AD_WF_Node.Table_ID);
 				String action = null;
-				if (mWFNode.getAD_WF_Node_ID() == 0 && isOfficialId(element, "AD_WF_Node_ID"))
-					mWFNode.setAD_WF_Node_ID(getIntValue(element, "AD_WF_Node_ID"));
 				if (!mWFNode.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_WF_Node.Table_Name, mWFNode);
 					action = "Update";
@@ -143,6 +114,7 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 				return;
 			}
 		}
+		verifyPackOutRequirement(m_WF_Node);
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_WF_Node.Table_Name, atts);
 		createWorkflowNodeBinding(ctx, document, m_WF_Node);

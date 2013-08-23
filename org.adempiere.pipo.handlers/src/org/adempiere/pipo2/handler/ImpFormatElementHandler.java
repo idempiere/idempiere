@@ -49,24 +49,12 @@ public class ImpFormatElementHandler extends AbstractElementHandler {
 			throws SAXException {
 		
 		List<String> excludes = defaultExcludeList(X_AD_ImpFormat.Table_Name);
-		String name = getStringValue(element, "Name");
 
 		X_AD_ImpFormat mImpFormat = findPO(ctx, element);
 		if (mImpFormat == null) {
-			int id = 0;
-			if (!hasUUIDKey(ctx, element)) {
-				id = findIdByName(ctx, "AD_ImpFormat", name);
-			}
-			mImpFormat = new X_AD_ImpFormat(ctx.ctx, id > 0 ? id : 0,
-					getTrxName(ctx));
+			mImpFormat = new X_AD_ImpFormat(ctx.ctx, 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, mImpFormat, element, this);
-
-		if (mImpFormat.getAD_ImpFormat_ID() == 0 && isOfficialId(element, "AD_ImpFormat_ID"))
-		{
-			filler.setInteger("AD_ImpFormat_ID");
-		}
-		
 		List<String> notfounds = filler.autoFill(excludes);
 		if (notfounds.size() > 0) {
 			element.defer = true;
@@ -116,6 +104,7 @@ public class ImpFormatElementHandler extends AbstractElementHandler {
 		}
 
 		if (createElement) {
+			verifyPackOutRequirement(m_ImpFormat);
 			addTypeName(atts, "table");
 			document.startElement("", "", I_AD_ImpFormat.Table_Name, atts);
 			createImpFormatBinding(ctx, document, m_ImpFormat);

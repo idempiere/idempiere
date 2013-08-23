@@ -47,12 +47,7 @@ public class MessageElementHandler extends AbstractElementHandler {
 		if (isProcessElement(ctx.ctx, entitytype)) {			
 			MMessage mMessage = findPO(ctx, element);
 			if (mMessage == null) {				
-				int id = 0;
-				if (!hasUUIDKey(ctx, element)) {
-					String value = getStringValue(element, "Value");
-					id = findIdByColumn(ctx, "AD_Message", "value", value);
-				}
-				mMessage = new MMessage(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mMessage = new MMessage(ctx.ctx, 0, getTrxName(ctx));
 			}
 			PoFiller filler = new PoFiller(ctx, mMessage, element, this);
 			List<String> excludes = defaultExcludeList(X_AD_Message.Table_Name);
@@ -73,9 +68,6 @@ public class MessageElementHandler extends AbstractElementHandler {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Message.Table_Name,
 						X_AD_Message.Table_ID);
 				String action = null;
-				if (mMessage.getAD_Message_ID() == 0 && isOfficialId(element, "AD_Message_ID"))
-					filler.setInteger("AD_Message_ID");
-	
 				if (!mMessage.is_new()){
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Message.Table_Name, mMessage);
 					action = "Update";
@@ -116,6 +108,8 @@ public class MessageElementHandler extends AbstractElementHandler {
 			}
 		}
 
+		verifyPackOutRequirement(m_Message);
+		
 		addTypeName(atts, "table");
 		document.startElement("","",I_AD_Message.Table_Name,atts);
 		createMessageBinding(ctx,document,m_Message);

@@ -48,17 +48,9 @@ public class TaskElementHandler extends AbstractElementHandler {
 
 			MTask mTask = findPO(ctx, element);
 			if (mTask == null) {
-				int id = 0;
-				if (!hasUUIDKey(ctx, element)) {
-					String name = getStringValue(element, "Name");
-					id = findIdByName(ctx, "AD_Task", name);
-				}
-				mTask = new MTask(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mTask = new MTask(ctx.ctx, 0, getTrxName(ctx));
 			}
 			
-			if (mTask.getAD_Task_ID() == 0 && isOfficialId(element, "AD_Task_ID"))
-				mTask.setAD_Task_ID(getIntValue(element, "AD_Task_ID"));
-						
 			PoFiller filler = new PoFiller(ctx, mTask, element, this);
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
@@ -108,6 +100,7 @@ public class TaskElementHandler extends AbstractElementHandler {
 				return;
 			}
 		}
+		verifyPackOutRequirement(m_Task);
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Task.Table_Name, atts);

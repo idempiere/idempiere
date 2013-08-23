@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 public class PoFiller{
 
@@ -134,29 +136,6 @@ public class PoFiller{
 			po.set_ValueNoCheck(qName, bd);
 	}
 
-	public static int findTableReference(PIPOContext ctx, AbstractElementHandler handler, Element element, String qName) {
-		Element propertyElement = element.properties.get(qName);
-		if (propertyElement == null)
-			return 0;
-
-		int id = 0;
-		String value = propertyElement.contents.toString();
-		if (value != null && value.trim().length() > 0)
-		{
-			String[] names = qName.split("[.]");
-			if (names.length < 2)
-				return 0;
-			String columnName = names[0];
-			if (names.length != 3)
-				columnName = columnName + "_ID";
-			String tableName = names.length == 3 ? names[1] : names[0];
-			String searchColumn = names.length == 3 ? names[2] : names[1];
-
-			id = handler.findIdByColumn(ctx, tableName, searchColumn, value.trim());
-		}
-		return id;
-	}
-
 	/**
 	 *
 	 * @param qName
@@ -236,7 +215,7 @@ public class PoFiller{
 					continue;
 			}
 			Element e = element.properties.get(qName);
-			if (ReferenceUtils.isTableLookup(e) || ReferenceUtils.isUUIDLookup(e)) {
+			if (ReferenceUtils.isLookup(e)) {
 				int id = setTableReference(qName);
 				if (id < 0) {
 					notFounds.add(qName);
@@ -245,6 +224,17 @@ public class PoFiller{
 				int index = info.getColumnIndex(qName);
 				if (index < 0)
 					continue;
+				
+				//only import official id
+				if (qName.equalsIgnoreCase(po.get_TableName()+"_ID")) {
+					String value = e != null ? e.contents.toString() : null;
+					Integer i = !Util.isEmpty(value) ? new Integer(value) : null;
+					if (i != null && i.intValue() > 0 && i.intValue() <= MTable.MAX_OFFICIAL_ID) {
+						setInteger(qName);
+					}
+					continue;
+				}
+				
 				if (info.getColumnClass(index) == Boolean.class) {
 					setBoolean(qName);
 				} else if (info.getColumnClass(index) == BigDecimal.class){

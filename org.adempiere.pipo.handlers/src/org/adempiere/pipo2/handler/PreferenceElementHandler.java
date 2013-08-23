@@ -77,9 +77,6 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 			}
 		}
 				
-		if (mPreference.get_ID() == 0 && isOfficialId(element, "AD_Preference_ID"))
-			mPreference.setAD_Preference_ID(Integer.parseInt(getStringValue(element, "AD_Preference_ID")));
-
 		if (mPreference.is_new() || mPreference.is_Changed()) {
 			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Preference.Table_Name,
 					X_AD_Preference.Table_ID);
@@ -120,6 +117,8 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 				return;
 			}
 		}
+		
+		verifyPackOutRequirement(m_Preference);
 		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");

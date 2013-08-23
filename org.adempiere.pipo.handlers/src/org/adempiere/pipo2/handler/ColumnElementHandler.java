@@ -64,23 +64,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 
 			MColumn mColumn = findPO(ctx, element);
 			if (mColumn == null) {
-				int tableid = 0;
-				if (getParentId(element, I_AD_Table.Table_Name) > 0) {
-					tableid = getParentId(element, I_AD_Table.Table_Name);
-				} else {
-					mColumn = new MColumn(ctx.ctx, 0, getTrxName(ctx));
-					PoFiller filler = new PoFiller(ctx, mColumn, element, this);
-					filler.setTableReference("AD_Table_ID");
-					tableid = mColumn.getAD_Table_ID();
-				}
-				int AD_Column_ID = 0;
-				if (!hasUUIDKey(ctx, element)) {
-					AD_Column_ID = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", columnName, "AD_Table", tableid, /*ignorecase=*/true);
-				}
-				mColumn = new MColumn(ctx.ctx, AD_Column_ID > 0 ? AD_Column_ID : 0, getTrxName(ctx));
-				if (mColumn.getAD_Column_ID() == 0 && isOfficialId(element, "AD_Column_ID")) {
-					mColumn.setAD_Column_ID(getIntValue(element, "AD_Column_ID"));
-				}
+				mColumn = new MColumn(ctx.ctx, 0, getTrxName(ctx));
 			}
 
 			mColumn.setColumnName(columnName);
@@ -310,6 +294,8 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			}
 		}
 
+		verifyPackOutRequirement(m_Column);
+		
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Column.Table_Name, atts);
 		createColumnBinding(ctx, document, m_Column);
@@ -327,7 +313,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 
 		filler.addString("IsSyncDatabase", "Y", new AttributesImpl());
 		filler.addTableReference("AD_Table", "TableName", new AttributesImpl());
-		filler.addTableReference("AD_Reference_Value_ID", "AD_Reference", "Name", new AttributesImpl());
+		filler.addTableReference("AD_Reference_Value_ID", "AD_Reference", new AttributesImpl());
 
 		excludes.add("IsSyncDatabase");
 		excludes.add("AD_Table_ID");

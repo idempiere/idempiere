@@ -59,20 +59,9 @@ public class MenuElementHandler extends AbstractElementHandler {
 
 		X_AD_Menu mMenu = findPO(ctx, element);
 		if (mMenu == null) {
-			int menuId = 0;
-			if (!hasUUIDKey(ctx, element)) {
-				String menuName = getStringValue(element, "Name");
-				menuId = findIdByColumn(ctx, "AD_Menu", "Name", menuName);
-			}
-			mMenu = new X_AD_Menu(ctx.ctx, menuId > 0 ? menuId : 0, getTrxName(ctx));
+			mMenu = new X_AD_Menu(ctx.ctx, 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, mMenu, element, this);
-
-		if (mMenu.getAD_Menu_ID() == 0 && isOfficialId(element, "AD_Menu_ID"))
-		{
-			filler.setInteger("AD_Menu_ID");
-		}
-
 		List<String> notFounds = filler.autoFill(excludes);
 		if (notFounds.size() > 0) {
 			element.defer = true;
@@ -112,86 +101,83 @@ public class MenuElementHandler extends AbstractElementHandler {
 		Element parentElement = element.properties.get("Parent_ID");
 		int parentId = 0;
 		if (parentElement != null) {
-			if (ReferenceUtils.isIDLookup(parentElement) || ReferenceUtils.isUUIDLookup(parentElement)) {
-				parentId = ReferenceUtils.resolveReference(ctx.ctx, parentElement, getTrxName(ctx));
-			} else {
-				String parent = getStringValue(element, "Parent_ID");
-				parentId = findIdByName(ctx, "AD_Menu", parent);
-			}
+			parentId = ReferenceUtils.resolveReference(ctx.ctx, parentElement, getTrxName(ctx));
 		}
 
-		StringBuffer updateSQL = null;
-		int AD_Tree_ID = getDefaultMenuTreeId();
-		String sql = "SELECT count(Parent_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID = "+AD_Tree_ID
-				+ " AND Node_ID = " + mMenu.getAD_Menu_ID();
-		int countRecords = DB.getSQLValue(getTrxName(ctx), sql);
-		if (countRecords > 0) {
-			sql = "select * from AD_TREENODEMM where AD_Tree_ID = "+AD_Tree_ID+" and "
-							+ " Node_ID =?";
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try {
-				pstmt = DB.prepareStatement(sql,
-						getTrxName(ctx));
-				pstmt.setInt(1, mMenu.getAD_Menu_ID());
-				rs = pstmt.executeQuery();
-				if (rs.next()) {
-
-					String colValue = null;
-					ResultSetMetaData meta = rs.getMetaData();
-					int columns = meta.getColumnCount();
-					int tableID = X_AD_TreeNodeMM.Table_ID;
-
-					for (int q = 1; q <= columns; q++) {
-
-						String colName = meta.getColumnName(q).toUpperCase();
-						sql = "SELECT AD_Column_ID FROM AD_column WHERE Upper(ColumnName) = ? AND AD_Table_ID = ?";
-						int columnID = DB.getSQLValue(getTrxName(ctx), sql, colName, tableID);
-						sql = "SELECT AD_Reference_ID FROM AD_COLUMN WHERE AD_Column_ID = ?";
-						int referenceID = DB.getSQLValue(getTrxName(ctx), sql, columnID);
-						if (referenceID == 20 || referenceID == 28)
-							if (rs.getObject(q).equals("Y"))
-								colValue = "true";
+		if (parentId > 0) {
+			StringBuffer updateSQL = null;
+			int AD_Tree_ID = getDefaultMenuTreeId();
+			String sql = "SELECT count(Parent_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID = "+AD_Tree_ID
+					+ " AND Node_ID = " + mMenu.getAD_Menu_ID();
+			int countRecords = DB.getSQLValue(getTrxName(ctx), sql);
+			if (countRecords > 0) {
+				sql = "select * from AD_TREENODEMM where AD_Tree_ID = "+AD_Tree_ID+" and "
+								+ " Node_ID =?";
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				try {
+					pstmt = DB.prepareStatement(sql,
+							getTrxName(ctx));
+					pstmt.setInt(1, mMenu.getAD_Menu_ID());
+					rs = pstmt.executeQuery();
+					if (rs.next()) {
+	
+						String colValue = null;
+						ResultSetMetaData meta = rs.getMetaData();
+						int columns = meta.getColumnCount();
+						int tableID = X_AD_TreeNodeMM.Table_ID;
+	
+						for (int q = 1; q <= columns; q++) {
+	
+							String colName = meta.getColumnName(q).toUpperCase();
+							sql = "SELECT AD_Column_ID FROM AD_column WHERE Upper(ColumnName) = ? AND AD_Table_ID = ?";
+							int columnID = DB.getSQLValue(getTrxName(ctx), sql, colName, tableID);
+							sql = "SELECT AD_Reference_ID FROM AD_COLUMN WHERE AD_Column_ID = ?";
+							int referenceID = DB.getSQLValue(getTrxName(ctx), sql, columnID);
+							if (referenceID == 20 || referenceID == 28)
+								if (rs.getObject(q).equals("Y"))
+									colValue = "true";
+								else
+									colValue = "false";
 							else
-								colValue = "false";
-						else
-						{
-							Object obj = rs.getObject(q);
-							colValue = obj == null ? "" : obj.toString();
+							{
+								Object obj = rs.getObject(q);
+								colValue = obj == null ? "" : obj.toString();
+							}
+	
+							X_AD_Package_Imp_Backup backup = new X_AD_Package_Imp_Backup(ctx.ctx, 0, getTrxName(ctx));
+							backup.setAD_Package_Imp_Detail_ID(impDetail.getAD_Package_Imp_Detail_ID());
+							backup.setAD_Package_Imp_ID(getPackageImpId(ctx.ctx));
+							backup.setAD_Table_ID(tableID);
+							backup.setAD_Column_ID(columnID);
+							backup.setAD_Reference_ID(referenceID);
+							backup.setColValue(colValue);
+							backup.saveEx();
 						}
-
-						X_AD_Package_Imp_Backup backup = new X_AD_Package_Imp_Backup(ctx.ctx, 0, getTrxName(ctx));
-						backup.setAD_Package_Imp_Detail_ID(impDetail.getAD_Package_Imp_Detail_ID());
-						backup.setAD_Package_Imp_ID(getPackageImpId(ctx.ctx));
-						backup.setAD_Table_ID(tableID);
-						backup.setAD_Column_ID(columnID);
-						backup.setAD_Reference_ID(referenceID);
-						backup.setColValue(colValue);
-						backup.saveEx();
+	
 					}
-
+	
+				} catch (Exception e) {
+					throw new DBException(e);
+				} finally {
+					DB.close(rs, pstmt);
 				}
-
-			} catch (Exception e) {
-				throw new DBException(e);
-			} finally {
-				DB.close(rs, pstmt);
+	
+				updateSQL = new StringBuffer("UPDATE AD_TREENODEMM ").append(
+						"SET Parent_ID = " + parentId).append(
+						" , SeqNo = " + getStringValue(element, "SeqNo")).append(
+						" WHERE AD_Tree_ID = "+AD_Tree_ID).append(
+						" AND Node_ID = " + mMenu.getAD_Menu_ID());
+			} else {
+				updateSQL = new StringBuffer("Insert INTO AD_TREENODEMM").append(
+						"(AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy, ").append(
+						"Parent_ID, SeqNo, AD_Tree_ID, Node_ID)").append(
+						"VALUES(0, 0, 0, 0, ").append(
+						parentId + "," + getStringValue(element, "SeqNo") + ", "+AD_Tree_ID+", "
+								+ mMenu.getAD_Menu_ID() + ")");
 			}
-
-			updateSQL = new StringBuffer("UPDATE AD_TREENODEMM ").append(
-					"SET Parent_ID = " + parentId).append(
-					" , SeqNo = " + getStringValue(element, "SeqNo")).append(
-					" WHERE AD_Tree_ID = "+AD_Tree_ID).append(
-					" AND Node_ID = " + mMenu.getAD_Menu_ID());
-		} else {
-			updateSQL = new StringBuffer("Insert INTO AD_TREENODEMM").append(
-					"(AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy, ").append(
-					"Parent_ID, SeqNo, AD_Tree_ID, Node_ID)").append(
-					"VALUES(0, 0, 0, 0, ").append(
-					parentId + "," + getStringValue(element, "SeqNo") + ", "+AD_Tree_ID+", "
-							+ mMenu.getAD_Menu_ID() + ")");
+			DB.executeUpdate(updateSQL.toString(), getTrxName(ctx));
 		}
-		DB.executeUpdate(updateSQL.toString(), getTrxName(ctx));
 	}
 
 	private int getDefaultMenuTreeId() {
@@ -210,6 +196,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 		if (m_Menu.isSummary() == false) {
 			createApplication(ctx, document, AD_Menu_ID);
 		} else {
+			verifyPackOutRequirement(m_Menu);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
 			document.startElement("", "", I_AD_Menu.Table_Name, atts);
@@ -237,7 +224,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 		String sql = "SELECT Parent_ID FROM AD_TreeNoDemm WHERE AD_Tree_ID = "+AD_Tree_ID+" and Node_ID=?";
 		int id = DB.getSQLValue(null, sql, m_Menu.getAD_Menu_ID());
 		if (id > 0) {
-			filler.addTableReference("Parent_ID", "AD_Menu", "Name", id, new AttributesImpl());
+			filler.addTableReference("Parent_ID", "AD_Menu", id, new AttributesImpl());
 		}
 		sql = "SELECT SeqNo FROM AD_TreeNoDemm WHERE AD_Tree_ID = "+AD_Tree_ID+" and Node_ID=?";
 		int seqNo = DB.getSQLValue(null, sql, m_Menu.getAD_Menu_ID());
@@ -266,8 +253,8 @@ public class MenuElementHandler extends AbstractElementHandler {
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 
-				X_AD_Menu m_Menu = new X_AD_Menu(ctx.ctx, rs.getInt("AD_Menu_ID"),
-						null);
+				X_AD_Menu m_Menu = new X_AD_Menu(ctx.ctx, rs.getInt("AD_Menu_ID"), null);
+				verifyPackOutRequirement(m_Menu);
 				AttributesImpl atts = new AttributesImpl();
 				addTypeName(atts, "table");
 				document.startElement("", "", I_AD_Menu.Table_Name, atts);
@@ -344,6 +331,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 				// Menu tag Start.
 				X_AD_Menu m_Menu = new X_AD_Menu(ctx.ctx, rs.getInt("AD_Menu_ID"),
 						null);
+				verifyPackOutRequirement(m_Menu);
 				AttributesImpl atts = new AttributesImpl();
 				addTypeName(atts, "table");
 				document.startElement("", "", I_AD_Menu.Table_Name, atts);

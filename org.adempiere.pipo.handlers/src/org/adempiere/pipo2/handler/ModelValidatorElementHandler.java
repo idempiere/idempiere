@@ -31,22 +31,14 @@ public class ModelValidatorElementHandler extends AbstractElementHandler{
 		String action = null;
 
 		String entitytype = getStringValue(element, "EntityType");
-		String name = getStringValue(element, "Name");
 
 		if (isProcessElement(ctx.ctx, entitytype)) {
 
 			X_AD_ModelValidator validator = findPO(ctx, element);
 			if (validator == null) {
-				int id = 0;
-				if (!hasUUIDKey(ctx, element)) {
-					id = findIdByColumn(ctx, X_AD_ModelValidator.Table_Name, X_AD_ModelValidator.COLUMNNAME_Name, name, /*ignorecase=*/true);
-				}
-				validator = new X_AD_ModelValidator(ctx.ctx, id, getTrxName(ctx));
+				validator = new X_AD_ModelValidator(ctx.ctx, 0, getTrxName(ctx));
 			}
 			List<String> excludes = defaultExcludeList(X_AD_ModelValidator.Table_Name);
-			if (validator.getAD_ModelValidator_ID() == 0 && isOfficialId(element, "AD_ModelValidator_ID"))
-				validator.setAD_ModelValidator_ID(getIntValue(element, "AD_ModelValidator_ID"));
-			
 			if (validators.contains(validator.getAD_ModelValidator_ID())) {
 				element.skip = true;
 				return;
@@ -91,8 +83,6 @@ public class ModelValidatorElementHandler extends AbstractElementHandler{
 
 	@Override
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	
 
@@ -110,6 +100,8 @@ public class ModelValidatorElementHandler extends AbstractElementHandler{
 			}
 		}
 
+		verifyPackOutRequirement(validator);
+		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("", "", "AD_ModelValidator", atts);

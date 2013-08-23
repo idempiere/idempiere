@@ -54,17 +54,9 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 		
 		X_AD_ReportView mReportview = findPO(ctx, element);
 		if (mReportview == null) {
-			int id = 0;
-			if (!hasUUIDKey(ctx, element)) {
-				String name = getStringValue(element, "Name");
-				id = findIdByName(ctx, "AD_ReportView", name);
-			}
-			mReportview = new X_AD_ReportView(ctx.ctx, id, getTrxName(ctx));
+			mReportview = new X_AD_ReportView(ctx.ctx, 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, mReportview, element, this);
-		if (mReportview.getAD_ReportView_ID() == 0 && isOfficialId(element, "AD_ReportView_ID"))
-			mReportview.setAD_ReportView_ID(getIntValue(element, "AD_ReportView_ID"));
-		
 		List<String> notfound = filler.autoFill(excludes);
 		if (notfound.size() > 0) {
 			element.defer = true;
@@ -123,6 +115,7 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 		}
 
 		if (createElement) {
+			verifyPackOutRequirement(m_Reportview);
 			addTypeName(atts, "table");
 			document.startElement("", "", I_AD_ReportView.Table_Name, atts);
 			createReportViewBinding(ctx, document, m_Reportview);

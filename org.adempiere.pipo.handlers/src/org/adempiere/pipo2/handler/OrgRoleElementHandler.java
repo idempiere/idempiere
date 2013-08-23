@@ -26,8 +26,6 @@ import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
-import org.adempiere.pipo2.ReferenceUtils;
-import org.compiere.model.I_AD_Role;
 import org.compiere.model.I_AD_Role_OrgAccess;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Role;
@@ -43,37 +41,7 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 
 		X_AD_Role_OrgAccess po = findPO(ctx, element);
 		if (po == null) {
-			int roleId = 0;
-			if (getParentId(element, I_AD_Role.Table_Name) > 0) {
-				roleId = getParentId(element, I_AD_Role.Table_Name);
-			} else {
-				Element roleElement = element.properties.get("AD_Role_ID");
-				roleId = ReferenceUtils.resolveReference(ctx.ctx, roleElement, getTrxName(ctx));
-			}
-			
-			if (roleId <= 0) {
-				element.defer = true;
-				element.unresolved = "AD_Role_ID";
-				return;
-			}
-
-			Element orgElement = element.properties.get("AD_Org_ID");
-			int orgId = ReferenceUtils.resolveReference(ctx.ctx, orgElement, getTrxName(ctx));
-
-			if (!hasUUIDKey(ctx, element)) {
-				Query query = new Query(ctx.ctx, "AD_Role_OrgAccess", "AD_Role_ID=? and AD_Org_ID=?", getTrxName(ctx));
-				po = query.setParameters(new Object[]{roleId, orgId})
-										.setClient_ID()
-										.<X_AD_Role_OrgAccess>first();
-			}
-
-			if (po == null) {
-				po = new X_AD_Role_OrgAccess(ctx.ctx, 0, getTrxName(ctx));
-				po.setAD_Org_ID(orgId);
-				po.setAD_Role_ID(roleId);
-			}
-			excludes.add("AD_Org_ID");
-			excludes.add("AD_Role_ID");
+			po = new X_AD_Role_OrgAccess(ctx.ctx, 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, po, element, this);
 
@@ -103,6 +71,8 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 				}
 			}
 			
+			verifyPackOutRequirement(po);
+			
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
 			document.startElement("", "", I_AD_Role_OrgAccess.Table_Name, atts);
@@ -114,17 +84,8 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 	private void createOrgAccessBinding(PIPOContext ctx, TransformerHandler document,
 			X_AD_Role_OrgAccess po) {
 		PoExporter filler = new PoExporter(ctx, document, po);
-		AttributesImpl orgRefAtts = new AttributesImpl();
-		String orgReference = ReferenceUtils.getTableReference("AD_Org", "Name", po.getAD_Org_ID(), orgRefAtts);
-		filler.addString("AD_Org_ID", orgReference, orgRefAtts);
-
-		AttributesImpl roleRefAtts = new AttributesImpl();
-		String roleReference = ReferenceUtils.getTableReference("AD_Role", "Name", po.getAD_Role_ID(), roleRefAtts);
-		filler.addString("AD_Role_ID", roleReference, roleRefAtts);
 
 		List<String> excludes = defaultExcludeList(X_AD_Role_OrgAccess.Table_Name);
-		excludes.add("AD_Org_ID");
-		excludes.add("AD_Role_ID");
 		filler.export(excludes);
 	}
 

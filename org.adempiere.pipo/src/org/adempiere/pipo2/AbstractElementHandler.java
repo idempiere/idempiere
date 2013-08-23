@@ -29,6 +29,8 @@ import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.compiere.model.MColumn;
+import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
 import org.compiere.model.Query;
@@ -37,6 +39,7 @@ import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -54,43 +57,6 @@ public abstract class AbstractElementHandler implements ElementHandler {
 
 	protected CLogger log = CLogger.getCLogger(getClass());
 
-	/**
-	 * Get ID from Name for a table.
-	 *
-	 * @param tableName
-	 * @param name
-	 *
-	 */
-	public int findIdByName (PIPOContext ctx, String tableName, String name) {
-		return IDFinder.findIdByName(tableName, name, getClientId(ctx.ctx), getTrxName(ctx));
-	}
-
-	/**
-	 * Get ID from column value for a table.
-	 *
-	 * @param tableName
-	 * @param columName
-	 * @param name
-	 */
-	public int findIdByColumn (PIPOContext ctx, String tableName, String columnName, Object value, boolean ignorecase) {
-		int id = 0;
-		if ("AD_Table".equals(tableName) && "TableName".equals(columnName) && value != null) {
-			id = ctx.packIn.getTableId(value.toString());
-			if (id <= 0) {
-				id = IDFinder.findIdByColumn(tableName, columnName, value, getClientId(ctx.ctx), ignorecase, getTrxName(ctx));
-				if (id > 0) {
-					ctx.packIn.addTable(value.toString(), id);
-				}
-			}
-		} else {
-			id = IDFinder.findIdByColumn(tableName, columnName, value, getClientId(ctx.ctx), ignorecase, getTrxName(ctx));
-		}
-		return id;
-	}
-
-	public int findIdByColumn (PIPOContext ctx, String tableName, String columnName, Object value) {
-		return findIdByColumn (ctx, tableName, columnName, value, false);
-	}
 	/**
 	 * @param ctx
 	 * @param type
@@ -137,58 +103,6 @@ public abstract class AbstractElementHandler implements ElementHandler {
     }
 
     /**
-	 * Get ID from Name for a table with a parent name reference.
-	 *
-	 * @param tableName
-	 * @param name
-	 * @param tableNameMaster
-	 * @param nameMaster
-	 */
-	public int findIdByNameAndParentName (PIPOContext ctx, String tableName, String name, String tableNameMaster, String nameMaster) {
-		return IDFinder.findIdByNameAndParentName(tableName, name, tableNameMaster, nameMaster, getClientId(ctx.ctx), getTrxName(ctx));
-	}
-
-    /**
-     * Get ID from column value for a table with a parent id reference.
-     *
-     * @param tableName
-     * @param name
-     * @param tableNameMaster
-     * @param nameMaster
-     */
-
-	public int findIdByColumnAndParentId (PIPOContext ctx, String tableName, String columnName, String name, String tableNameMaster, int masterID) {
-		return IDFinder.findIdByColumnAndParentId(tableName, columnName, name, tableNameMaster, masterID, getClientId(ctx.ctx), 
-				getTrxName(ctx));
-	}
-
-	/**
-     * Get ID from column value for a table with a parent id reference.
-     *
-     * @param tableName
-     * @param name
-     * @param tableNameMaster
-     * @param nameMaster
-     * @param ignoreCase
-     */
-	public int findIdByColumnAndParentId (PIPOContext ctx, String tableName, String columnName, String name, String tableNameMaster, int masterID, boolean ignoreCase) {
-		return IDFinder.findIdByColumnAndParentId(tableName, columnName, name, tableNameMaster, masterID, getClientId(ctx.ctx), 
-				ignoreCase, getTrxName(ctx));
-	}
-	
-	/**
-	 * Get ID from Name for a table with a parent reference ID.
-	 *
-	 * @param tableName
-	 * @param name
-	 * @param tableNameMaster
-	 * @param masterID
-	 */
-	public int findIdByNameAndParentId (PIPOContext ctx, String tableName, String name, String tableNameMaster, int masterID) {
-		return IDFinder.findIdByNameAndParentId(tableName, name, tableNameMaster, masterID, getClientId(ctx.ctx), getTrxName(ctx));
-	}
-
-    /**
      *	Make backup copy of record.
      *
      *      @param tablename
@@ -200,7 +114,8 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	public void backupRecord(PIPOContext ctx, int AD_Package_Imp_Detail_ID, String tableName,PO from){
 
     	// Create new record
-    	int tableID = findIdByColumn(ctx, "AD_Table", "TableName", tableName);
+		MTable mTable = MTable.get(ctx.ctx, tableName);
+    	int tableID = mTable.getAD_Table_ID();    			
 		POInfo poInfo = POInfo.getPOInfo(ctx.ctx, tableID);
 
 		PreparedStatement pstmtReferenceId = DB.prepareStatement("SELECT AD_Reference_ID FROM AD_COLUMN WHERE AD_Column_ID = ?", getTrxName(ctx));
@@ -210,7 +125,8 @@ public abstract class AbstractElementHandler implements ElementHandler {
 			for (int i = 0; i < poInfo.getColumnCount(); i++){
 
 				if (from.is_ValueChanged(i)) {
-					int columnID =findIdByColumnAndParentId (ctx, "AD_Column", "ColumnName", poInfo.getColumnName(i), "AD_Table", tableID);
+					MColumn mColumn = mTable.getColumn(poInfo.getColumnName(i));
+					int columnID = mColumn.getAD_Column_ID();
 	
 					int referenceID=0;
 	
@@ -456,7 +372,6 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	excludes.add("createdby");
     	excludes.add("updated");
     	excludes.add("updatedby");
-    	excludes.add(tableName + "_ID");
     	return excludes;
     }
 
@@ -559,7 +474,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	String idColumn = tableName + "_ID";
     	if (element.properties.containsKey(uuidColumn)) {
     		String uuid = element.properties.get(uuidColumn).contents.toString();
-    		if (uuid != null && uuid.trim().length() == 36) {
+    		if (uuid != null && uuid.trim().length() == 36) {    			
     			Query query = new Query(ctx.ctx, tableName, uuidColumn+"=?", getTrxName(ctx));
     			po = query.setParameters(uuid.trim()).firstOnly();
     		}
@@ -574,8 +489,8 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	}
     	return po;
     }
-    
-    protected boolean hasUUIDKey(PIPOContext ctx, Element element) {
+
+	protected boolean hasUUIDKey(PIPOContext ctx, Element element) {
     	String tableName = element.getElementValue();
     	String uuidColumn = PO.getUUIDColumnName(tableName);
     	String uuid = null;
@@ -603,5 +518,13 @@ public abstract class AbstractElementHandler implements ElementHandler {
      */
     protected void addTypeName(AttributesImpl atts, String typeName) {
     	atts.addAttribute("", "", "type", "CDATA", typeName);
+    }
+    
+    protected void verifyPackOutRequirement(PO po) {
+    	String uidColumn = po.getUUIDColumnName();
+    	String[] keys = po.get_KeyColumns();
+    	if (Util.isEmpty((String)po.get_Value(uidColumn)) && (keys == null || keys.length != 1 || po.get_ID() > MTable.MAX_OFFICIAL_ID)) {
+			throw new IllegalStateException("2Pack doesn't work with record without official Id and UUID");
+		}
     }
 }
