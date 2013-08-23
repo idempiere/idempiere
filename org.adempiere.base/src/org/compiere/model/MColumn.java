@@ -727,6 +727,8 @@ public class MColumn extends X_AD_Column
 			foreignTable = "AD_Image";
 		} else if (DisplayType.Color == refid) {
 			foreignTable = "AD_Color";
+		} else if (DisplayType.Chart == refid) {
+			foreignTable = "AD_Chart";
 		}
 
 		return foreignTable;

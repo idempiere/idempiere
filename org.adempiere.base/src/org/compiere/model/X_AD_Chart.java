@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,15 +21,15 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_Chart
- *  @author Adempiere (generated) 
- *  @version 1.03 - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0c - $Id$ */
 public class X_AD_Chart extends PO implements I_AD_Chart, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120608L;
+	private static final long serialVersionUID = 20130823L;
 
     /** Standard Constructor */
     public X_AD_Chart (Properties ctx, int AD_Chart_ID, String trxName)
@@ -97,6 +97,20 @@ public class X_AD_Chart extends PO implements I_AD_Chart, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set AD_Chart_UU.
+		@param AD_Chart_UU AD_Chart_UU	  */
+	public void setAD_Chart_UU (String AD_Chart_UU)
+	{
+		set_ValueNoCheck (COLUMNNAME_AD_Chart_UU, AD_Chart_UU);
+	}
+
+	/** Get AD_Chart_UU.
+		@return AD_Chart_UU	  */
+	public String getAD_Chart_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Chart_UU);
+	}
+
 	/** ChartOrientation AD_Reference_ID=53375 */
 	public static final int CHARTORIENTATION_AD_Reference_ID=53375;
 	/** Horizontal = H */
@@ -149,7 +163,7 @@ public class X_AD_Chart extends PO implements I_AD_Chart, I_Persistent
 	public static final String CHARTTYPE_RingChart = "RC";
 	/** Set Chart Type.
 		@param ChartType 
-		Type fo chart to render
+		Type of chart to render
 	  */
 	public void setChartType (String ChartType)
 	{
@@ -158,7 +172,7 @@ public class X_AD_Chart extends PO implements I_AD_Chart, I_Persistent
 	}
 
 	/** Get Chart Type.
-		@return Type fo chart to render
+		@return Type of chart to render
 	  */
 	public String getChartType () 
 	{

@@ -56,6 +56,7 @@ public class WChartEditor extends WEditor
 {
     private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     
+	@SuppressWarnings("unused")
 	private static final CLogger logger;
     
     static
@@ -161,7 +162,7 @@ public class WChartEditor extends WEditor
 				count++;
 			}
 
-			myImage.addEventListener(Events.ON_CLICK, new EventListener() {
+			myImage.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
 					MouseEvent me = (MouseEvent) event;
 					String areaId = me.getArea();
@@ -189,7 +190,6 @@ public class WChartEditor extends WEditor
     
     private void init()
     {
-    	AImage img = null;
     }
 
      @Override

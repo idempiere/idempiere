@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ChartDatasource
- *  @author Adempiere (generated) 
- *  @version 1.03 - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0c - $Id$ */
 public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20120608L;
+	private static final long serialVersionUID = 20130823L;
 
     /** Standard Constructor */
     public X_AD_ChartDatasource (Properties ctx, int AD_ChartDatasource_ID, String trxName)
@@ -40,6 +40,7 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
         {
 			setAD_ChartDatasource_ID (0);
 			setAD_Chart_ID (0);
+			setCategoryColumn (null);
 			setEntityType (null);
 // U
 			setFromClause (null);
@@ -98,9 +99,23 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 		return ii.intValue();
 	}
 
-	public I_AD_Chart getAD_Chart() throws RuntimeException
+	/** Set AD_ChartDatasource_UU.
+		@param AD_ChartDatasource_UU AD_ChartDatasource_UU	  */
+	public void setAD_ChartDatasource_UU (String AD_ChartDatasource_UU)
+	{
+		set_ValueNoCheck (COLUMNNAME_AD_ChartDatasource_UU, AD_ChartDatasource_UU);
+	}
+
+	/** Get AD_ChartDatasource_UU.
+		@return AD_ChartDatasource_UU	  */
+	public String getAD_ChartDatasource_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_ChartDatasource_UU);
+	}
+
+	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException
     {
-		return (I_AD_Chart)MTable.get(getCtx(), I_AD_Chart.Table_Name)
+		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_Name)
 			.getPO(getAD_Chart_ID(), get_TrxName());	}
 
 	/** Set Chart.
@@ -123,9 +138,9 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 		return ii.intValue();
 	}
 
-	public I_AD_Table getAD_Table() throws RuntimeException
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
-		return (I_AD_Table)MTable.get(getCtx(), I_AD_Table.Table_Name)
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
 			.getPO(getAD_Table_ID(), get_TrxName());	}
 
 	/** Set Table.

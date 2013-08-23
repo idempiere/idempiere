@@ -932,6 +932,7 @@ public class DB_Oracle implements AdempiereDatabase
                 case DisplayType.Table:
                 case DisplayType.TableDir:
                 case DisplayType.Image:
+                case DisplayType.Chart:
                     retValue = "NUMBER(10)";
                     break;
 

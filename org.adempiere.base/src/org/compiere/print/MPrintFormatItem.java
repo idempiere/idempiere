@@ -479,7 +479,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 					|| ColumnName.equals("IsActive")
 					|| displayType == DisplayType.Button || displayType == DisplayType.Binary
 					|| displayType == DisplayType.ID || displayType == DisplayType.Image
-					|| displayType == DisplayType.RowID
+					|| displayType == DisplayType.RowID || displayType == DisplayType.Chart
 					|| seqNo == 0 )
 				{
 					pfi.setIsPrinted(false);
@@ -565,7 +565,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 				//
 				if (displayType == DisplayType.Button || displayType == DisplayType.Binary
 					|| displayType == DisplayType.ID || displayType == DisplayType.Image
-					|| displayType == DisplayType.RowID
+					|| displayType == DisplayType.RowID || displayType == DisplayType.Chart
 					|| seqNo == 0)
 				{
 					pfi.setIsPrinted(false);

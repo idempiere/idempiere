@@ -117,18 +117,11 @@ public class MChartDatasource extends X_AD_ChartDatasource {
 			sql += category + ">=TRUNC(" + DB.TO_DATE(new Timestamp(startDate.getTime())) + ", '" + unit + "') AND ";
 			sql += category + "<=TRUNC(" + DB.TO_DATE(new Timestamp(endDate.getTime())) + ", '" + unit + "') ";
 		}
-		
-		int startIndex=0;
-		if ((startIndex = sql.indexOf('@')) != -1){
-			String variable = sql.substring(startIndex);
-			int endIndex = variable.indexOf('@',1);
-			if(endIndex != -1){
-				variable = variable.substring(0,endIndex+1);
-				String val = Env.getContext(getCtx(), variable.replace('@',' ').trim());
-				sql=sql.replaceFirst(variable, val);
-			}
+
+		if (sql.indexOf('@') >= 0) {
+			sql = Env.parseContext(getCtx(), 0, sql, false, true);
 		}
-		
+
 		MRole role = MRole.getDefault(getCtx(), false);
 		sql = role.addAccessSQL(sql, null, true, false);
 		
@@ -254,26 +247,6 @@ public class MChartDatasource extends X_AD_ChartDatasource {
 		return cal.getTime();
 	}
 
-	private String formatDate(Date date, String timeUnit)
-	{
-		String key = null;
-		String unitFormat = "yyyy-MM-dd";
-		 if ( timeUnit.equals(MChart.TIMEUNIT_Week))
-			unitFormat = "yyyy-w";
-		else if ( timeUnit.equals(MChart.TIMEUNIT_Month))
-			unitFormat = "yyyy-MMM";
-		else if ( timeUnit.equals(MChart.TIMEUNIT_Quarter))
-				unitFormat = "yyyy-MM";
-		else if ( timeUnit.equals(MChart.TIMEUNIT_Year))
-					unitFormat = "yyyy";
-		 SimpleDateFormat format = new SimpleDateFormat(unitFormat);
-		 key = format.format(date);
-		 if ( timeUnit.equals(MChart.TIMEUNIT_Quarter) )
-			 key = convertToQuarter(format.format(date));
-		 
-		 return key;
-	}
-	
 	/**
 	 * Convert date formatted as yyyy-MM to yyyy-QQ
 	 * @param month

@@ -123,7 +123,7 @@ public class DefaultEditorFactory implements IEditorFactory {
         /** Chart */
         else if(displayType == DisplayType.Chart)
         {
-        	editor = new WChartEditor(gridField, gridTab.getWindowNo());
+        	editor = new WChartEditor(gridField, (gridTab == null ? 0 : gridTab.getWindowNo()));
         }
 
         /**  Button */

@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ChartDatasource
- *  @author Adempiere (generated) 
- *  @version 360LTS.013
+ *  @author iDempiere (generated) 
+ *  @version Release 1.0c
  */
 public interface I_AD_ChartDatasource 
 {
@@ -31,7 +31,7 @@ public interface I_AD_ChartDatasource
     public static final String Table_Name = "AD_ChartDatasource";
 
     /** AD_Table_ID=53282 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    public static final int Table_ID = 53282;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -50,6 +50,15 @@ public interface I_AD_ChartDatasource
 	/** Get Chart Datasource	  */
 	public int getAD_ChartDatasource_ID();
 
+    /** Column name AD_ChartDatasource_UU */
+    public static final String COLUMNNAME_AD_ChartDatasource_UU = "AD_ChartDatasource_UU";
+
+	/** Set AD_ChartDatasource_UU	  */
+	public void setAD_ChartDatasource_UU (String AD_ChartDatasource_UU);
+
+	/** Get AD_ChartDatasource_UU	  */
+	public String getAD_ChartDatasource_UU();
+
     /** Column name AD_Chart_ID */
     public static final String COLUMNNAME_AD_Chart_ID = "AD_Chart_ID";
 
@@ -59,7 +68,7 @@ public interface I_AD_ChartDatasource
 	/** Get Chart	  */
 	public int getAD_Chart_ID();
 
-	public I_AD_Chart getAD_Chart() throws RuntimeException;
+	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -72,13 +81,13 @@ public interface I_AD_ChartDatasource
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
-	/** Set Organisation.
-	  * Organisational entity within client
+	/** Set Organization.
+	  * Organizational entity within client
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
-	/** Get Organisation.
-	  * Organisational entity within client
+	/** Get Organization.
+	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
 
@@ -95,7 +104,7 @@ public interface I_AD_ChartDatasource
 	  */
 	public int getAD_Table_ID();
 
-	public I_AD_Table getAD_Table() throws RuntimeException;
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name CategoryColumn */
     public static final String COLUMNNAME_CategoryColumn = "CategoryColumn";

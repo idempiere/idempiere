@@ -157,7 +157,7 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 	public static final String CHARTTYPE_WaterfallChart = "WC";
 	/** Set Chart Type.
 		@param ChartType 
-		Type fo chart to render
+		Type of chart to render
 	  */
 	public void setChartType (String ChartType)
 	{
@@ -166,7 +166,7 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 	}
 
 	/** Get Chart Type.
-		@return Type fo chart to render
+		@return Type of chart to render
 	  */
 	public String getChartType () 
 	{

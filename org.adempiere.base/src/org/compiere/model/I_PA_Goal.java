@@ -96,12 +96,12 @@ public interface I_PA_Goal
     public static final String COLUMNNAME_ChartType = "ChartType";
 
 	/** Set Chart Type.
-	  * Type fo chart to render
+	  * Type of chart to render
 	  */
 	public void setChartType (String ChartType);
 
 	/** Get Chart Type.
-	  * Type fo chart to render
+	  * Type of chart to render
 	  */
 	public String getChartType();
 
