@@ -53,18 +53,10 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 		if (isProcessElement(ctx.ctx, entitytype)) {			
 			MTableIndex mTableIndex = findPO(ctx, element);
 			if (mTableIndex == null) {
-				int id = 0;
-				if (!hasUUIDKey(ctx, element)) {
-					String name = getStringValue(element, "Name");
-					id = findIdByColumn(ctx, "AD_TableIndex_ID", "Name", name, true);
-				}
-				mTableIndex = new MTableIndex(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mTableIndex = new MTableIndex(ctx.ctx, 0, getTrxName(ctx));
 			}
 			PoFiller filler = new PoFiller(ctx, mTableIndex, element, this);
-			List<String> excludes = defaultExcludeList(MTableIndex.Table_Name);
-			if (mTableIndex.getAD_TableIndex_ID() == 0 && isOfficialId(element, "AD_TableIndex_ID"))
-				mTableIndex.setAD_TableIndex_ID(getIntValue(element, "AD_TableIndex_ID"));
-			
+			List<String> excludes = defaultExcludeList(MTableIndex.Table_Name);			
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
@@ -151,6 +143,7 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 				}
 			}
 			
+			verifyPackOutRequirement(m_TableIndex);
 			addTypeName(atts, "table");
 			document.startElement("", "", MTableIndex.Table_Name, atts);
 			createTableIndexBinding(ctx, document, m_TableIndex);

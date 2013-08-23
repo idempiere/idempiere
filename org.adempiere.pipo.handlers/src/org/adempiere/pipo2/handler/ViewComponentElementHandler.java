@@ -48,18 +48,10 @@ public class ViewComponentElementHandler extends AbstractElementHandler {
 		if (isProcessElement(ctx.ctx, entitytype)) {			
 			MViewComponent mViewComponent = findPO(ctx, element);
 			if (mViewComponent == null) {
-				int id = 0;
-				if (!hasUUIDKey(ctx, element)) {
-					String name = getStringValue(element, "Name");
-					id = findIdByColumn(ctx, "AD_ViewComponent_ID", "Name", name, true);
-				}
-				mViewComponent = new MViewComponent(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mViewComponent = new MViewComponent(ctx.ctx, 0, getTrxName(ctx));
 			}
 			PoFiller filler = new PoFiller(ctx, mViewComponent, element, this);
 			List<String> excludes = defaultExcludeList(MViewComponent.Table_Name);
-			if (mViewComponent.getAD_ViewComponent_ID() == 0 && isOfficialId(element, "AD_ViewComponent_ID"))
-				mViewComponent.setAD_ViewComponent_ID(getIntValue(element, "AD_ViewComponent_ID"));
-			
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
@@ -111,6 +103,7 @@ public class ViewComponentElementHandler extends AbstractElementHandler {
 		}
 		
 		if (createElement) {
+			verifyPackOutRequirement(m_ViewComponent);
 			addTypeName(atts, "table");
 			document.startElement("", "", MViewComponent.Table_Name, atts);
 			createViewComponentBinding(ctx, document, m_ViewComponent);
