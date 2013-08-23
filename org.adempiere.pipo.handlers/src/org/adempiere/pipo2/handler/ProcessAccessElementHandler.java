@@ -26,9 +26,7 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PoFiller;
-import org.adempiere.pipo2.ReferenceUtils;
 import org.compiere.model.I_AD_Process_Access;
-import org.compiere.model.I_AD_Role;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Process;
 import org.compiere.model.X_AD_Process_Access;
@@ -40,45 +38,11 @@ import org.xml.sax.helpers.AttributesImpl;
 public class ProcessAccessElementHandler extends AbstractElementHandler {
 
 	public void startElement(PIPOContext ctx, Element element) throws SAXException {
-		int roleid =0;
-		int processid =0;
 		List<String> excludes = defaultExcludeList(X_AD_Process_Access.Table_Name);
 
 		X_AD_Process_Access po = findPO(ctx, element);
 		if (po == null) {
-			if (getParentId(element, I_AD_Role.Table_Name) > 0) {
-				roleid = getParentId(element, I_AD_Role.Table_Name);
-			} else {
-				Element roleElement = element.properties.get("AD_Role_ID");
-				roleid = ReferenceUtils.resolveReference(ctx.ctx, roleElement, getTrxName(ctx));
-			}
-			
-			if (roleid <= 0) {
-				element.defer = true;
-				element.unresolved = "AD_Role_ID";
-				return;
-			}
-
-			Element processElement = element.properties.get(I_AD_Process_Access.COLUMNNAME_AD_Process_ID);
-			processid = ReferenceUtils.resolveReference(ctx.ctx, processElement, getTrxName(ctx));
-			if (processid <= 0) {
-				element.defer = true;
-				element.unresolved = "AD_Process_ID " + (processElement.contents != null ? processElement.contents.toString() : "");
-				return;
-			}
-			
-			if (!hasUUIDKey(ctx, element)) {
-				Query query = new Query(ctx.ctx, "AD_Process_Access", "AD_Role_ID=? and AD_Process_ID=?", getTrxName(ctx));
-				po = query.setParameters(new Object[]{roleid, processid}).first();
-			}
-			if (po == null)
-			{
-				po = new X_AD_Process_Access(ctx.ctx, 0, getTrxName(ctx));
-				po.setAD_Process_ID(processid);
-				po.setAD_Role_ID(roleid);
-			}
-			excludes.add(I_AD_Process_Access.COLUMNNAME_AD_Role_ID);
-			excludes.add(I_AD_Process_Access.COLUMNNAME_AD_Process_ID);
+			po = new X_AD_Process_Access(ctx.ctx, 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, po, element, this);
 		List<String> notfounds = filler.autoFill(excludes);
@@ -109,6 +73,8 @@ public class ProcessAccessElementHandler extends AbstractElementHandler {
 					return;
 				}
 			}
+			
+			verifyPackOutRequirement(po);
 			
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");

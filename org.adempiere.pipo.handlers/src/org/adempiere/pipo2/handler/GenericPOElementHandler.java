@@ -19,7 +19,6 @@ package org.adempiere.pipo2.handler;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -36,15 +35,10 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
-import org.adempiere.pipo2.ReferenceUtils;
-import org.compiere.model.MColumn;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
-import org.compiere.model.POInfo;
-import org.compiere.model.Query;
 import org.compiere.util.DB;
-import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -71,117 +65,11 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 
 		PO po = findPO(ctx, element);
 		if (po == null) {
-	    	String uuidColumn = PO.getUUIDColumnName(tableName);
-	    	String idColumn = tableName + "_ID";
     		MTable table = MTable.get(ctx.ctx, tableName);
-	    	if ((!element.properties.containsKey(uuidColumn) || element.properties.get(uuidColumn).contents == null || element.properties.get(uuidColumn).contents.toString().trim().length() == 0) 
-	    		&& (!element.properties.containsKey(idColumn) || element.properties.get(idColumn).contents == null || element.properties.get(idColumn).contents.toString().trim().length() == 0)) {
-				POInfo info = POInfo.getPOInfo(ctx.ctx, table.getAD_Table_ID());
-				MColumn columns[] = table.getColumns(false);
-				StringBuilder whereClause = new StringBuilder();
-				List<Object> parameters = new ArrayList<Object>();
-				boolean search = true;
-				for(int i = 0; i < columns.length; i++) {
-					MColumn column = columns[i];
-					if (column.isParent()) {
-						int parentId = 0;
-						String parentTableName = null;
-						if (column.getAD_Reference_ID() == DisplayType.TableDir) {
-							parentTableName = column.getColumnName().substring(0, column.getColumnName().length() - 3);
-						} else {
-							String searchColumn = info.getColumnLookup(i).getColumnName();
-							parentTableName = searchColumn.substring(0, searchColumn.indexOf("."));
-						}
-		
-						Element parent = element.parent;
-						while (parent != null) {
-							if (parent.getElementValue().equalsIgnoreCase(parentTableName)) {
-								parentId = parent.recordId;
-								break;
-							}
-							parent = parent.parent;
-						}
-								
-						if (parentId == 0) {
-							Element parentElement = element.properties.get(column.getColumnName());
-							if (parentElement != null) {
-								parentId = ReferenceUtils.resolveReference(ctx.ctx, parentElement, getTrxName(ctx));
-							}
-						}
-						if (parentId > 0) {
-							if (whereClause.length() > 0)
-								whereClause.append(" AND ");
-							whereClause.append(column.getColumnName()).append(" = ?");
-							parameters.add(parentId);
-						} else {
-							search = false;
-							break;
-						}
-					} else if (column.isIdentifier()) {
-						if (whereClause.length() > 0)
-							whereClause.append(" AND ");
-						whereClause.append(column.getColumnName()).append(" = ? ");
-						
-						String refTableName = null;
-						if (column.getAD_Reference_ID() == DisplayType.TableDir) {
-							refTableName = column.getColumnName().substring(0, column.getColumnName().length() - 3);
-						} else if (column.getAD_Reference_ID() == DisplayType.Table ||
-								column.getAD_Reference_ID() == DisplayType.Search) {
-							String searchColumn = info.getColumnLookup(i).getColumnName();
-							refTableName = searchColumn.substring(0, searchColumn.indexOf("."));
-						}
-							
-						if (refTableName == null) {
-							parameters.add(getStringValue(element, column.getColumnName()));
-						} else {
-							int refId = 0;
-							Element parent = element.parent;
-							while (parent != null) {
-								if (parent.getElementValue().equalsIgnoreCase(refTableName)) {
-									refId = parent.recordId;
-									break;
-								}
-								parent = parent.parent;
-							}
-									
-							if (refId == 0) {
-								Element refElement = element.properties.get(column.getColumnName());
-								if (refElement != null) {
-									refId = ReferenceUtils.resolveReference(ctx.ctx, refElement, getTrxName(ctx));
-								}
-							}
-							if (refId > 0) {
-								parameters.add(refId);
-							} else {
-								search = false;
-								break;
-							}
-						}
-					}
-				}
-				if (whereClause.length() > 0 && search) {
-					Query query = new Query(ctx.ctx, table, whereClause.toString(), getTrxName(ctx));
-					po = query.setParameters(parameters).setApplyAccessFilter(true).first();
-				}
-	    	}
-			if (po == null) {
-				po = table.getPO(0, getTrxName(ctx));
-			}
+			po = table.getPO(0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, po, element, this);
 		List<String> excludes = defaultExcludeList(tableName);
-		if (po.get_ID() == 0) {
-			Element idElement = element.properties.get(tableName + "_ID");
-			if (idElement != null && idElement.contents != null && idElement.contents.length() > 0) {
-				int id = 0;
-				try {
-					id = Integer.parseInt(idElement.contents.toString());
-					if (id > 0 && id <= PackOut.MAX_OFFICIAL_ID) {
-						po.set_ValueNoCheck(tableName + "_ID", id);
-					}
-				} catch (Exception e) {}
-			}
-		}
 		List<String> notfounds = filler.autoFill(excludes);
 		/* Verify if the table has entitytype and check dictionary maintenance */
 		int idxet = po.get_ColumnIndex("EntityType");
@@ -248,13 +136,11 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						}
 					}
 					if (createElement) {
+						verifyPackOutRequirement(po);
 						addTypeName(atts, "table");
 						document.startElement("","", tableName, atts);
 						PoExporter filler = new PoExporter(ctx, document, po);
 						filler.export(excludes, true);
-						if (po.get_ID() > 0 && po.get_ID() < 1000000) {
-							filler.add(tableName+"_ID", new AttributesImpl());
-						}
 					}
 				}
 
@@ -306,6 +192,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						}
 					}
 					if (createElement) {
+						verifyPackOutRequirement(po);
 						List<String> excludes = defaultExcludeList(tables[index]);
 						addTypeName(atts, "table");
 						document.startElement("", "", tables[index], atts);

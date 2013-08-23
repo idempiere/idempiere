@@ -47,20 +47,9 @@ public class FormElementHandler extends AbstractElementHandler {
 		if (isProcessElement(ctx.ctx, entitytype)) {			
 			MForm mForm = findPO(ctx, element);
 			if (mForm == null) {
-				String name = getStringValue(element, "Name");
-				int id = 0;
-				if (!hasUUIDKey(ctx, element)) {
-					id = findIdByName(ctx, "AD_Form", name);
-				}
-				mForm = new MForm(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mForm = new MForm(ctx.ctx, 0, getTrxName(ctx));
 			}
-			PoFiller filler = new PoFiller(ctx, mForm, element, this);
-			
-			if (mForm.getAD_Form_ID() == 0 && isOfficialId(element, "AD_Form_ID"))
-			{
-				filler.setInteger("AD_Form_ID");
-			}
-						
+			PoFiller filler = new PoFiller(ctx, mForm, element, this);			
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
@@ -111,6 +100,8 @@ public class FormElementHandler extends AbstractElementHandler {
 			}
 		}
 
+		verifyPackOutRequirement(m_Form);
+		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("","",I_AD_Form.Table_Name,atts);

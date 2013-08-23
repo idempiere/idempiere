@@ -26,13 +26,11 @@ import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
-import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_ImpFormat;
 import org.compiere.model.I_AD_ImpFormat_Row;
 import org.compiere.model.X_AD_ImpFormat_Row;
 import org.compiere.model.X_AD_Package_Imp_Detail;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -51,73 +49,9 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 
 		X_AD_ImpFormat_Row mImpFormatRow = findPO(ctx, element);
 		if (mImpFormatRow == null) {
-			int impFormatId = 0;
-			if (getParentId(element, I_AD_ImpFormat.Table_Name) > 0) {
-				impFormatId = getParentId(element, I_AD_ImpFormat.Table_Name);
-			} else {
-				Element e = element.properties.get(I_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_ID);
-				if (ReferenceUtils.isIDLookup(e) || ReferenceUtils.isUUIDLookup(e))
-					impFormatId = ReferenceUtils.resolveReference(ctx.ctx, e, getTrxName(ctx));
-				else
-					impFormatId = findIdByName(ctx, "AD_ImpFormat", e.contents.toString());
-			}
-
-			if (impFormatId <= 0) {
-				element.defer = true;
-				element.unresolved = "AD_ImpFormat_ID";
-				return;
-			}
-
-			Element tableElement = element.properties.get(I_AD_ImpFormat.COLUMNNAME_AD_Table_ID);
-			int tableId = 0;
-			if (ReferenceUtils.isIDLookup(tableElement) || ReferenceUtils.isUUIDLookup(tableElement)) {
-				tableId = ReferenceUtils.resolveReference(ctx.ctx, tableElement, getTrxName(ctx));
-			} else {
-				String tableName = getStringValue(element, I_AD_ImpFormat.COLUMNNAME_AD_Table_ID, excludes);
-
-				if (tableName != null && tableName.trim().length() > 0) {
-					tableId = findIdByColumn(ctx, "AD_Table", "TableName", tableName);
-				}
-				if (tableId <= 0) {
-					element.defer = true;
-					element.unresolved = "AD_Table_ID";
-					return;
-				}
-			}
-
-			Element columnElement = element.properties.get(I_AD_ImpFormat_Row.COLUMNNAME_AD_Column_ID);
-			int columnId = 0;
-			if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
-				columnId = ReferenceUtils.resolveReference(ctx.ctx, columnElement, getTrxName(ctx));
-			} else {
-				String columnName = getStringValue(element, I_AD_ImpFormat_Row.COLUMNNAME_AD_Column_ID, excludes);
-
-				if (columnName != null && columnName.trim().length() > 0) {
-					columnId  = findIdByColumnAndParentId (ctx, "AD_Column","ColumnName", columnName, "AD_Table", tableId);
-				}
-				if (columnId <= 0) {
-					element.defer = true;
-					element.unresolved = "AD_Column_ID";
-					return;
-				}
-			}
-
-			int id = 0;
-			if (!hasUUIDKey(ctx, element)) {
-				StringBuilder sqlB = new StringBuilder ("SELECT AD_ImpFormat_Row_ID FROM AD_ImpFormat_Row WHERE AD_Column_ID=? AND AD_ImpFormat_ID=?");
-				id = DB.getSQLValue(getTrxName(ctx),sqlB.toString(),columnId,impFormatId);
-			}
-			mImpFormatRow = new X_AD_ImpFormat_Row(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
-
-			mImpFormatRow.setAD_Column_ID(columnId);
-			mImpFormatRow.setAD_ImpFormat_ID(impFormatId);
+			mImpFormatRow = new X_AD_ImpFormat_Row(ctx.ctx, 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, mImpFormatRow, element, this);
-		if (mImpFormatRow.getAD_ImpFormat_Row_ID() == 0 && isOfficialId(element, "AD_ImpFormat_Row_ID"))
-		{
-			filler.setInteger("AD_ImpFormat_Row_ID");
-		}
-
 		List<String> notfounds = filler.autoFill(excludes);
 		if (notfounds.size() > 0) {
 			element.defer = true;
@@ -162,6 +96,8 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 			}
 		}
 		
+		verifyPackOutRequirement(m_ImpFormat_Row);
+		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("","",I_AD_ImpFormat_Row.Table_Name,atts);
@@ -173,11 +109,6 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 	{
 		PoExporter filler = new PoExporter(ctx, document, m_ImpFormat_Row);
 		List<String> excludes = defaultExcludeList(X_AD_ImpFormat_Row.Table_Name);
-
-		String sql = "SELECT AD_Table_ID FROM AD_Column WHERE AD_Column_ID=?";
-
-		int tableId = DB.getSQLValue(null, sql,m_ImpFormat_Row.getAD_Column_ID());
-		filler.addTableReference("AD_Table_ID", "AD_Table", "TableName", tableId, new AttributesImpl());
 
 		if (m_ImpFormat_Row.getAD_ImpFormat_Row_ID() <= PackOut.MAX_OFFICIAL_ID)
 		{

@@ -63,25 +63,13 @@ public class WindowElementHandler extends AbstractElementHandler {
 		if (isProcessElement(ctx.ctx, entitytype)) {
 			MWindow mWindow = findPO(ctx, element);
 			if (mWindow == null) {
-				int id = 0;
-				String name = getStringValue(element, "Name", excludes);
-				if (!hasUUIDKey(ctx, element)) {
-					id = findIdByName(ctx, "AD_Window", name);
-					if (id > 0 && windows.contains(id)) {
-						return;
-					}
-				}
-				mWindow = new MWindow(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
-				mWindow.setName(name);
+				mWindow = new MWindow(ctx.ctx, 0, getTrxName(ctx));
 			} else {
 				if (windows.contains(mWindow.getAD_Window_ID())) {
 					return;
 				}
 			}
 						
-			if (mWindow.getAD_Window_ID() == 0 && isOfficialId(element, "AD_Window_ID"))
-				mWindow.setAD_Window_ID(getIntValue(element, "AD_Window_ID"));
-									
 			PoFiller filler = new PoFiller(ctx, mWindow, element, this);
 			
 			List<String> notfounds = filler.autoFill(excludes);
@@ -162,6 +150,7 @@ public class WindowElementHandler extends AbstractElementHandler {
 		}
 
 		if (createElement) {
+			verifyPackOutRequirement(m_Window);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
 			document.startElement("", "", I_AD_Window.Table_Name, atts);

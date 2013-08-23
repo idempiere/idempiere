@@ -26,8 +26,6 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PoFiller;
-import org.adempiere.pipo2.ReferenceUtils;
-import org.compiere.model.I_AD_Role;
 import org.compiere.model.I_AD_Window_Access;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Role;
@@ -40,41 +38,11 @@ import org.xml.sax.helpers.AttributesImpl;
 public class WindowAccessElementHandler extends AbstractElementHandler {
 
 	public void startElement(PIPOContext ctx, Element element) throws SAXException {
-		int roleid =0;
-		int windowid =0;
 		List<String> excludes = defaultExcludeList(X_AD_Window_Access.Table_Name);
 
 		X_AD_Window_Access po = findPO(ctx, element);
 		if (po == null) {
-			if (getParentId(element, I_AD_Role.Table_Name) > 0) {
-				roleid = getParentId(element, I_AD_Role.Table_Name);
-			} else {
-				Element roleElement = element.properties.get(I_AD_Window_Access.COLUMNNAME_AD_Role_ID);
-				roleid = ReferenceUtils.resolveReference(ctx.ctx, roleElement, getTrxName(ctx));
-			}
-			if (roleid <= 0) {
-				element.defer = true;
-				element.unresolved = "AD_Role_ID";
-				return;
-			}
-
-			Element windowElement = element.properties.get(I_AD_Window_Access.COLUMNNAME_AD_Window_ID);
-			windowid = ReferenceUtils.resolveReference(ctx.ctx, windowElement, getTrxName(ctx));
-			if (windowid <= 0)  {
-				element.defer = true;
-				element.unresolved = "AD_Window_ID";
-				return;
-			}
-
-			if (!hasUUIDKey(ctx, element)) {
-				Query query = new Query(ctx.ctx, "AD_Window_Access", "AD_Role_ID=? and AD_Window_ID=?", getTrxName(ctx));
-				po = query.setParameters(new Object[]{roleid, windowid}).first();
-			}
-			if (po == null) {
-				po = new X_AD_Window_Access(ctx.ctx, 0, getTrxName(ctx));
-				po.setAD_Role_ID(roleid);
-				po.setAD_Window_ID(windowid);
-			}
+			po = new X_AD_Window_Access(ctx.ctx, 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, po, element, this);
 		List<String> notfounds = filler.autoFill(excludes);
@@ -101,6 +69,7 @@ public class WindowAccessElementHandler extends AbstractElementHandler {
 					return;
 				}
 			}
+			verifyPackOutRequirement(po);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
 			document.startElement("", "", I_AD_Window_Access.Table_Name, atts);

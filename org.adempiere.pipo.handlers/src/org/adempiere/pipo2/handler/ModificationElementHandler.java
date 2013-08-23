@@ -46,22 +46,14 @@ public class ModificationElementHandler extends AbstractElementHandler{
 		String action = null;
 
 		String entitytype = getStringValue(element, "EntityType");
-		String name = getStringValue(element, "Name");
 
 		if (isProcessElement(ctx.ctx, entitytype)) {
 
 			X_AD_Modification modification = findPO(ctx, element);
 			if (modification == null) {
-				int id = 0;
-				if (!hasUUIDKey(ctx, element)) {
-					id = findIdByColumn(ctx, X_AD_Modification.Table_Name, X_AD_Modification.COLUMNNAME_Name, name, /*ignorecase=*/true);
-				}
-				modification = new X_AD_Modification(ctx.ctx, id, getTrxName(ctx));
+				modification = new X_AD_Modification(ctx.ctx, 0, getTrxName(ctx));
 			}
 			List<String> excludes = defaultExcludeList(X_AD_Modification.Table_Name);
-			if (modification.getAD_Modification_ID() == 0 && isOfficialId(element, X_AD_Modification.COLUMNNAME_AD_Modification_ID))
-				modification.setAD_Modification_ID(getIntValue(element, X_AD_Modification.COLUMNNAME_AD_Modification_ID));
-			
 			if (modifications.contains(modification.getAD_Modification_ID())) {
 				element.skip = true;
 				return;
@@ -123,6 +115,8 @@ public class ModificationElementHandler extends AbstractElementHandler{
 			}
 		}
 
+		verifyPackOutRequirement(modification);
+		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("", "", X_AD_Modification.Table_Name, atts);

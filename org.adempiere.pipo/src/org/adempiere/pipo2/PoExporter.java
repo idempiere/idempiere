@@ -153,18 +153,18 @@ public class PoExporter {
 		addTextElement("IsActive", (Boolean)po.isActive() == true ? "true" : "false", atts);
 	}
 
-	public void addTableReference(String tableName, String searchColumn, AttributesImpl atts) {
+	public void addTableReference(String tableName, AttributesImpl atts) {
 		String columnName = tableName + "_ID";
-		addTableReference(columnName, tableName, searchColumn, atts);
+		addTableReference(columnName, tableName, atts);
 	}
 
-	public void addTableReference(String columnName, String tableName, String searchColumn, AttributesImpl atts) {
+	public void addTableReference(String columnName, String tableName, AttributesImpl atts) {
 		int id = po.get_Value(columnName) != null ? (Integer)po.get_Value(columnName) : 0;
-		addTableReference(columnName, tableName, searchColumn, id, atts);
+		addTableReference(columnName, tableName, id, atts);
 	}
 
-	public void addTableReference(String columnName, String tableName, String searchColumn, int id, AttributesImpl atts) {
-		String value = ReferenceUtils.getTableReference(tableName, searchColumn, id, atts);
+	public void addTableReference(String columnName, String tableName, int id, AttributesImpl atts) {
+		String value = ReferenceUtils.getTableReference(tableName, id, atts);
 		addString(columnName, value, atts);
 	}
 
@@ -219,85 +219,50 @@ public class PoExporter {
 				if (exclude)
 					continue;
 			}
+			
+			//only export official id
+			if (columnName.equalsIgnoreCase(info.getTableName()+"_ID")) {
+				int id = po.get_ID();
+				if (id > 0 && id <= MTable.MAX_OFFICIAL_ID) {
+					add(columnName, new AttributesImpl());
+				}
+				continue;
+			}
 
 			int displayType = info.getColumnDisplayType(i);
 			if (DisplayType.YesNo == displayType) {
 				add(columnName, false, new AttributesImpl());
 			} else if (DisplayType.TableDir == displayType || DisplayType.ID == displayType) {
 				String tableName = null;
-				String searchColumn = null;
 				if ("Record_ID".equalsIgnoreCase(columnName) && po.get_ColumnIndex("AD_Table_ID") >= 0) {
 					int AD_Table_ID = po.get_Value(po.get_ColumnIndex("AD_Table_ID")) != null
 							? (Integer)po.get_Value(po.get_ColumnIndex("AD_Table_ID")) : 0;
 					tableName = MTable.getTableName(ctx.ctx, AD_Table_ID);
-					searchColumn = tableName + "_ID";
 				} else if (po.get_TableName().equals("AD_TreeNode") && columnName.equals("Parent_ID")) {
 					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
 					int AD_Table_ID = DB.getSQLValue(po.get_TrxName(), "SELECT AD_Table_ID From AD_Tree WHERE AD_Tree_ID="+AD_Tree_ID);
 					tableName = MTable.getTableName(po.getCtx(), AD_Table_ID);
-					searchColumn = tableName+"_ID";
 				} else if (po.get_TableName().equals("AD_TreeNode") && columnName.equals("Node_ID")) {
 					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
 					int AD_Table_ID = DB.getSQLValue(po.get_TrxName(), "SELECT AD_Table_ID From AD_Tree WHERE AD_Tree_ID="+AD_Tree_ID);
 					tableName = MTable.getTableName(po.getCtx(), AD_Table_ID);
-					searchColumn = tableName+"_ID";
 				} else {
-					//remove _ID
-					searchColumn = columnName;
 					tableName = columnName.substring(0, columnName.length() - 3);
-					if (tableName.equalsIgnoreCase("ad_table")) {
-						searchColumn = "TableName";
-					} else if (tableName.equalsIgnoreCase("ad_column") || tableName.equalsIgnoreCase("ad_element")) {
-						searchColumn = "ColumnName";
-					}
 				}
-				if (searchColumn.endsWith("_ID")) {
-					int AD_Table_ID = MTable.getTable_ID(tableName);
-					POInfo pInfo = POInfo.getPOInfo(po.getCtx(), AD_Table_ID);
-					if (pInfo.getColumnIndex("Value") >= 0) {
-						searchColumn = "Value";
-					} else if (pInfo.getColumnIndex("Name") >= 0) {
-						searchColumn = "Name";
-					} else if (pInfo.getColumnIndex("DocumentNo") >= 0) {
-						searchColumn = "DocumentNo";
-					}
-				}
-				addTableReference(columnName, tableName, searchColumn, new AttributesImpl());
+				addTableReference(columnName, tableName, new AttributesImpl());
 			} else if (DisplayType.List == displayType) {
 				add(columnName, "", new AttributesImpl());
 			} else if (DisplayType.isLookup(displayType)) {
-				String searchColumn = null;
 				String tableName = null;
 				if ("Record_ID".equalsIgnoreCase(columnName) && po.get_ColumnIndex("AD_Table_ID") >= 0) {
 					int AD_Table_ID = po.get_Value(po.get_ColumnIndex("AD_Table_ID")) != null
 						? (Integer)po.get_Value(po.get_ColumnIndex("AD_Table_ID")) : 0;
 					tableName = MTable.getTableName(ctx.ctx, AD_Table_ID);
-					searchColumn = tableName + "_ID";
 				} else if (info.getColumnLookup(i) != null){
-					searchColumn = info.getColumnLookup(i).getColumnName();
-					tableName = searchColumn.substring(0, searchColumn.indexOf("."));
-					searchColumn = searchColumn.substring(searchColumn.indexOf(".")+1);
-				} else {
-					searchColumn = columnName;
-				}
-				if (searchColumn.endsWith("_ID")) {
-					if (tableName.equalsIgnoreCase("ad_table")) {
-						searchColumn = "TableName";
-					} else if (tableName.equalsIgnoreCase("ad_column") || tableName.equalsIgnoreCase("ad_element")){
-						searchColumn = "ColumnName";
-					} else {
-						int AD_Table_ID = MTable.getTable_ID(tableName);
-						POInfo pInfo = POInfo.getPOInfo(po.getCtx(), AD_Table_ID);
-						if (pInfo.getColumnIndex("Value") >= 0) {
-							searchColumn = "Value";
-						} else if (pInfo.getColumnIndex("Name") >= 0) {
-							searchColumn = "Name";
-						} else if (pInfo.getColumnIndex("DocumentNo") >= 0) {
-							searchColumn = "DocumentNo";
-						}
-					}
-				}
-				addTableReference(columnName, tableName, searchColumn, new AttributesImpl());
+					String lookupColumn = info.getColumnLookup(i).getColumnName();
+					tableName = lookupColumn.substring(0, lookupColumn.indexOf("."));
+				} 
+				addTableReference(columnName, tableName, new AttributesImpl());
 			} else if (DisplayType.isLOB(displayType)) {
 				addBlob(columnName);
 			} else if (columnName.equals(po.getUUIDColumnName()) && po.get_Value(columnName) == null) {

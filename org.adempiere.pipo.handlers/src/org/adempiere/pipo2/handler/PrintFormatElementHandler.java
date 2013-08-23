@@ -52,18 +52,10 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 		
 		X_AD_PrintFormat mPrintFormat = findPO(ctx, element);
 		if (mPrintFormat == null) {
-			int id = 0;
-			if (!hasUUIDKey(ctx, element)) {
-				String name = getStringValue(element, "Name");
-				id = findIdByColumn(ctx, "AD_PrintFormat", "Name", name);
-			}
-			mPrintFormat = new X_AD_PrintFormat(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
+			mPrintFormat = new X_AD_PrintFormat(ctx.ctx, 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, mPrintFormat, element, this);
 		List<String> excludes = defaultExcludeList(X_AD_PrintFormat.Table_Name);
-		if (mPrintFormat.getAD_PrintFormat_ID() == 0 && isOfficialId(element, "AD_PrintFormat_ID"))
-			mPrintFormat.setAD_PrintFormat_ID(getIntValue(element, "AD_PrintFormat_ID"));
-		
 		List<String> notfounds = filler.autoFill(excludes);
 		if (notfounds.size() > 0) {
 			element.defer = true;
@@ -143,6 +135,7 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 		}
 		
 		if (createElement) {
+			verifyPackOutRequirement(m_Printformat);
 			addTypeName(atts, "table");
 			document.startElement("", "", I_AD_PrintFormat.Table_Name, atts);
 			createPrintFormatBinding(ctx, document, m_Printformat);

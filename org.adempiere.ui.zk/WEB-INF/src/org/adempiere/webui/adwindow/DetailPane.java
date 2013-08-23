@@ -542,7 +542,9 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		Toolbar toolbar = (Toolbar) tabpanel.getFirstChild();
 		
 		IADTabpanel adtab = getADTabpanel(index);
-		if (adtab!=null && (adtab.getGridTab().isSortTab() || adtab.getGridTab().isReadOnly()))
+		if (adtab == null)
+			return;
+		if (adtab.getGridTab().isSortTab() || adtab.getGridTab().isReadOnly())
 			readOnly = true;
 		
 		boolean insertRecord = !readOnly;
@@ -554,6 +556,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         boolean enableDelete = !changed && !readOnly && !adtab.getGridTab().isSortTab();
         
         ADWindow adwindow = ADWindow.findADWindow(this);
+        if (adwindow == null)
+        	return;
         List<String> tabRestrictList = adwindow.getTabToolbarRestrictList(adtab.getGridTab().getAD_Tab_ID());
         List<String> windowRestrictList = adwindow.getWindowToolbarRestrictList();
         

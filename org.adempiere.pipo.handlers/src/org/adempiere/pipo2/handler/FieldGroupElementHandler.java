@@ -51,26 +51,16 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 		if (log.isLoggable(Level.INFO)) log.info(elementValue + " " + getStringValue(element, "Name"));
 
 		String entitytype = getStringValue(element, "EntityType");
-		String name = getStringValue(element, "Name");
 
 		if (isProcessElement(ctx.ctx, entitytype)) {
 
 			X_AD_FieldGroup fieldGroup = findPO(ctx, element);
 			if (fieldGroup == null)
 			{
-				int id = 0;
-				if (!hasUUIDKey(ctx, element)) {
-					id = findIdByColumn(ctx, X_AD_FieldGroup.Table_Name, X_AD_FieldGroup.COLUMNNAME_Name, name);
-				}
-				fieldGroup = new X_AD_FieldGroup(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
+				fieldGroup = new X_AD_FieldGroup(ctx.ctx, 0, getTrxName(ctx));
 			}
 			PoFiller pf = new PoFiller(ctx, fieldGroup, element, this);
 			List<String> excludes = defaultExcludeList(X_AD_FieldGroup.Table_Name);
-			if (fieldGroup.getAD_FieldGroup_ID() == 0 && isOfficialId(element, "AD_FieldGroup_ID"))
-			{
-				pf.setInteger("AD_FieldGroup_ID");
-			}
-
 			if (processedFieldGroups.contains(fieldGroup.getAD_FieldGroup_ID())) {
 				element.skip = true;
 				return;
@@ -132,6 +122,8 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 			}
 		}
 
+		verifyPackOutRequirement(fieldGroup);
+		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_FieldGroup.Table_Name, atts);

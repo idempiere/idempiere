@@ -27,14 +27,12 @@ import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
-import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.MAttachment;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_Attachment;
 import org.compiere.model.X_AD_AttachmentNote;
 import org.compiere.model.X_AD_Package_Imp_Detail;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -49,35 +47,9 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 
 		MAttachment mAttachment = findPO(ctx, element);
 		if (mAttachment == null) {
-			int AD_Table_ID = ReferenceUtils.resolveReference(ctx.ctx, element.properties.get("AD_Table_ID"), getTrxName(ctx));
-			if (AD_Table_ID <= 0) {
-				element.defer = true;
-				element.unresolved = "AD_Table_ID";
-				return;
-			}
-			Element recordElement = element.properties.get("Record_ID");
-			int Record_ID = ReferenceUtils.resolveReference(ctx.ctx, recordElement, getTrxName(ctx));
-			if (Record_ID <= 0) {
-				element.defer = true;
-				element.unresolved = "Record_ID";
-				return;
-			}
-
-			int id = 0;
-			if (!hasUUIDKey(ctx, element)) {
-				DB.getSQLValue(getTrxName(ctx), "SELECT AD_Attachment_ID FROM AD_Attachment WHERE Record_ID="+Record_ID+" AND AD_Table_ID="+AD_Table_ID);
-			}
-			mAttachment = new MAttachment(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
-			if (mAttachment.is_new()) {
-				mAttachment.setAD_Table_ID(AD_Table_ID);
-				mAttachment.setRecord_ID(Record_ID);
-			}
+			mAttachment = new MAttachment(ctx.ctx, 0, getTrxName(ctx));
 		}
 		List<String> excludes = defaultExcludeList(X_AD_Attachment.Table_Name);
-		excludes.add("AD_Table_ID");
-		excludes.add("Record_ID");
-		if (mAttachment.getAD_Attachment_ID() == 0 && isOfficialId(element, "AD_Attachment_ID"))
-			mAttachment.setAD_Attachment_ID(getIntValue(element, "AD_Attachment_ID"));
 
 		if (attachments.contains(mAttachment.getAD_Attachment_ID())) {
 			element.skip = true;
@@ -137,6 +109,8 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 			}
 		}
 
+		verifyPackOutRequirement(mAttachment);
+		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("", "", "AD_Attachment", atts);

@@ -26,7 +26,6 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PoFiller;
-import org.adempiere.pipo2.ReferenceUtils;
 import org.compiere.model.I_AD_User_Roles;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Role;
@@ -40,52 +39,11 @@ public class UserRoleElementHandler extends AbstractElementHandler {
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
-		int roleid =0;
-		int userid =0;
-		int orgid =0;
-
 		List<String> excludes = defaultExcludeList(X_AD_User_Roles.Table_Name);
 
 		X_AD_User_Roles po = findPO(ctx, element);
 		if (po == null) {
-			Element userElement = element.properties.get(I_AD_User_Roles.COLUMNNAME_AD_User_ID);
-			userid = ReferenceUtils.resolveReference(ctx.ctx, userElement, getTrxName(ctx));
-			if (userid <= 0) {
-				element.defer = true;
-				element.unresolved = "AD_User_ID " + (userElement.contents != null ? userElement.contents.toString() : "");
-				return;
-			}
-			if (getParentId(element, X_AD_Role.Table_Name) > 0) {
-				roleid = getParentId(element, X_AD_Role.Table_Name);
-			} else {
-				Element roleElement = element.properties.get("AD_Role_ID");
-				roleid = ReferenceUtils.resolveReference(ctx.ctx, roleElement,
-						getTrxName(ctx));
-			}
-			
-			if (roleid <= 0) 
-			{
-				element.defer = true;
-				element.unresolved = "AD_Role_ID";
-				return;
-			}
-
-			Element orgElement = element.properties.get(I_AD_User_Roles.COLUMNNAME_AD_Org_ID);
-			orgid = ReferenceUtils.resolveReference(ctx.ctx, orgElement, getTrxName(ctx));
-
-			if (!hasUUIDKey(ctx, element)) {
-				Query query = new Query(ctx.ctx, "AD_User_Roles", "AD_User_ID = ? AND AD_Role_ID = ? AND AD_Org_ID = ?", getTrxName(ctx));
-				po = query.setParameters(new Object[]{userid, roleid, orgid}).first();
-			}
-			if (po == null) {
-				po = new X_AD_User_Roles(ctx.ctx, 0, getTrxName(ctx));
-				po.setAD_Org_ID(orgid);
-				po.setAD_Role_ID(roleid);
-				po.setAD_User_ID(userid);
-			}
-			excludes.add(I_AD_User_Roles.COLUMNNAME_AD_User_ID);
-			excludes.add(I_AD_User_Roles.COLUMNNAME_AD_Role_ID);
-			excludes.add(I_AD_User_Roles.COLUMNNAME_AD_Org_ID);
+			po = new X_AD_User_Roles(ctx.ctx, 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, po, element, this);
 		List<String> notfounds = filler.autoFill(excludes);
@@ -116,6 +74,7 @@ public class UserRoleElementHandler extends AbstractElementHandler {
 					return;
 				}
 			}
+			verifyPackOutRequirement(po);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
 			document.startElement("", "", I_AD_User_Roles.Table_Name, atts);
@@ -127,15 +86,11 @@ public class UserRoleElementHandler extends AbstractElementHandler {
 	private void createUserAssignBinding(PIPOContext ctx,
 			TransformerHandler document, X_AD_User_Roles po) {
 		PoExporter filler = new PoExporter(ctx, document, po);
-		
-		AttributesImpl orgRefAtts = new AttributesImpl();
-		String orgReference = ReferenceUtils.getTableReference("AD_Org", "Name", po.getAD_Org_ID(), orgRefAtts);
-		filler.addString("AD_Org_ID", orgReference, orgRefAtts);
 
+		verifyPackOutRequirement(po);
 		List<String> excludes = defaultExcludeList(X_AD_User_Roles.Table_Name);
-		excludes.add("AD_Org_ID");
 
-		filler.export(excludes);
+		filler.export(excludes, true);
 	}
 
 	@Override

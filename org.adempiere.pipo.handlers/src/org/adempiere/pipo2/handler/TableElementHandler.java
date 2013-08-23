@@ -66,29 +66,9 @@ public class TableElementHandler extends AbstractElementHandler {
 
 			MTable mTable = findPO(ctx, element);
 			if (mTable == null) {
-				int id = 0;
-				String tableName = getStringValue(element, "TableName", excludes);
-				if (!hasUUIDKey(ctx, element)) {
-					id = packIn.getTableId(tableName);
-					if (id <= 0) {
-						id = findIdByColumn(ctx, "AD_Table", "TableName", tableName);
-						if (id > 0)
-							packIn.addTable(tableName, id);
-					}
-					if (id > 0 && isTableProcess(ctx, id)) {
-						return;
-					}
-				}
-
-				mTable = new MTable(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
-				mTable.setTableName(tableName);
+				mTable = new MTable(ctx.ctx, 0, getTrxName(ctx));
 			}
 						
-			if (mTable.getAD_Table_ID() == 0 && isOfficialId(element, "AD_Table_ID"))
-			{
-				mTable.setAD_Table_ID(getIntValue(element, "AD_Table_ID"));
-			}
-			
 			PoFiller filler = new PoFiller(ctx, mTable, element, this);
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
@@ -177,6 +157,7 @@ public class TableElementHandler extends AbstractElementHandler {
 			}
 		}
 		if (createElement) {
+			verifyPackOutRequirement(m_Table);
 			addTypeName(atts, "table");
 			document.startElement("","",I_AD_Table.Table_Name,atts);
 			createTableBinding(ctx,document,m_Table);
@@ -284,15 +265,6 @@ public class TableElementHandler extends AbstractElementHandler {
 		Env.setContext(ctx.ctx, MViewComponent.COLUMNNAME_AD_ViewComponent_ID, AD_ViewComponent_ID);
 		viewComponentHandler.create(ctx, document);
 		ctx.ctx.remove(MViewComponent.COLUMNNAME_AD_ViewComponent_ID);
-	}
-
-	private boolean isTableProcess(PIPOContext ctx, int AD_Table_ID) {
-		if (tables.contains(AD_Table_ID))
-			return true;
-		else {
-			tables.add(AD_Table_ID);
-			return false;
-		}
 	}
 
 	private void createTableBinding(PIPOContext ctx, TransformerHandler document, X_AD_Table m_Table)

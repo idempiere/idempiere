@@ -54,22 +54,14 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		String entitytype = getStringValue(element, "EntityType");
-		String name = getStringValue(element, "Name");
 
 		if (isProcessElement(ctx.ctx, entitytype)) {
 
 			X_AD_Reference mReference = findPO(ctx, element);
 			if (mReference == null) {
-				int id = 0;
-				if (!hasUUIDKey(ctx, element)) {
-					id = findIdByName(ctx, "AD_Reference", name);
-				}
-				mReference = new X_AD_Reference(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mReference = new X_AD_Reference(ctx.ctx, 0, getTrxName(ctx));
 			}
 			List<String> excludes = defaultExcludeList(X_AD_Reference.Table_Name);
-			if (mReference.getAD_Reference_ID() == 0 && isOfficialId(element, "AD_Reference_ID"))
-				mReference.setAD_Reference_ID(getIntValue(element, "AD_Reference_ID"));
-			
 			PoFiller filler = new PoFiller(ctx, mReference, element, this);
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
@@ -131,6 +123,7 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 		PackOut packOut = ctx.packOut;
 		packOut.getCtx().ctx.put("Table_Name",X_AD_Reference.Table_Name);
 		if (createElement) {
+			verifyPackOutRequirement(m_Reference);
 			addTypeName(atts, "table");
 			document.startElement("", "", I_AD_Reference.Table_Name, atts);
 			createReferenceBinding(ctx, document, m_Reference);

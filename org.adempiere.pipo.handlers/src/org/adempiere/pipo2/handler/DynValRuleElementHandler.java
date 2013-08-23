@@ -40,19 +40,11 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx.ctx, entitytype)) {
-			String name = getStringValue(element, "Name");
-			
 			X_AD_Val_Rule mValRule = findPO(ctx, element);
 			if (mValRule == null)
 			{
-				int id = 0;
-				if (!hasUUIDKey(ctx, element)) {
-					id = findIdByColumn(ctx, "AD_Val_Rule", "Name", name);
-				}
-				mValRule = new X_AD_Val_Rule(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
+				mValRule = new X_AD_Val_Rule(ctx.ctx, 0, getTrxName(ctx));
 			}
-			if (mValRule.getAD_Val_Rule_ID() == 0 && isOfficialId(element, "AD_Val_Rule_ID"))
-				mValRule.setAD_Val_Rule_ID(getIntValue(element, "AD_Val_Rule_ID"));
 
 			List<String> excludes = defaultExcludeList(X_AD_Val_Rule.Table_Name);
 
@@ -106,6 +98,8 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 			}
 		}
 
+		verifyPackOutRequirement(m_ValRule);
+		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("","",I_AD_Val_Rule.Table_Name, atts);

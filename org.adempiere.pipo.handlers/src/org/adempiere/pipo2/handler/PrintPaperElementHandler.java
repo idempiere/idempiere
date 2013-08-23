@@ -45,19 +45,9 @@ public class PrintPaperElementHandler extends AbstractElementHandler {
 		X_AD_PrintPaper printPaper = findPO(ctx, element);
 
 		if (printPaper == null) {
-			String printPaperName = getStringValue(element, "Name", excludes);
-			int id = 0;
-			if (!hasUUIDKey(ctx, element)) {
-				id = findIdByName(ctx, "AD_PrintPaper", printPaperName);
-			}
-			printPaper = new X_AD_PrintPaper(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
-			printPaper.setName(printPaperName);
+			printPaper = new X_AD_PrintPaper(ctx.ctx, 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, printPaper, element, this);
-
-		if (printPaper.getAD_PrintPaper_ID() == 0 && isOfficialId(element, "AD_PrintPaper_ID"))
-			filler.setInteger("AD_PrintPaper_ID");		
-
 		List<String> notfounds = filler.autoFill(excludes);
 		if (notfounds.size() > 0) {
 			element.defer = true;
@@ -104,6 +94,8 @@ public class PrintPaperElementHandler extends AbstractElementHandler {
 			}
 		}
 
+		verifyPackOutRequirement(printPaper);
+		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_PrintPaper.Table_Name, atts);

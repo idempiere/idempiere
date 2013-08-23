@@ -29,7 +29,6 @@ import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
-import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Role;
@@ -65,17 +64,8 @@ public class RoleElementHandler extends AbstractElementHandler {
 
 		MRole mRole = findPO(ctx, element);
 		if (mRole == null) {
-			String name = getStringValue(element, "Name", excludes);
-			int id = 0;
-			if (!hasUUIDKey(ctx, element)) {
-				id = findIdByName(ctx, "AD_Role", name);
-			}
-			mRole = new MRole(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
-			mRole.setName(name);
+			mRole = new MRole(ctx.ctx, 0, getTrxName(ctx));
 		}
-		
-		if (mRole.getAD_Role_ID() == 0 && isOfficialId(element, "AD_Role_ID"))
-			mRole.setAD_Role_ID(getIntValue(element, "AD_Role_ID"));
 		
 		PoFiller filler = new PoFiller(ctx, mRole, element, this);
 		List<String> notfounds = filler.autoFill(excludes);
@@ -126,6 +116,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 		}
 
 		if (createElement) {
+			verifyPackOutRequirement(m_Role);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
 			document.startElement("", "", I_AD_Role.Table_Name, atts);
@@ -330,14 +321,6 @@ public class RoleElementHandler extends AbstractElementHandler {
 		if (m_Role.getAD_Role_ID() <= PackOut.MAX_OFFICIAL_ID)
 	        filler.add("AD_Role_ID", new AttributesImpl());
 
-		if (m_Role.getC_Currency_ID() > 0) {
-			AttributesImpl currencyAtts = new AttributesImpl();
-			String value = ReferenceUtils.getTableReference("C_Currency", "ISO_Code", m_Role.getC_Currency_ID(), currencyAtts);
-			filler.addString("C_Currency_ID", value, currencyAtts);
-		} else
-			filler.addString("C_Currency_ID", "", new AttributesImpl());
-
-		excludes.add(X_AD_Role.COLUMNNAME_C_Currency_ID);
 		filler.export(excludes);
 	}
 

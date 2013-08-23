@@ -32,7 +32,6 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.compiere.model.I_AD_Ref_Table;
-import org.compiere.model.I_AD_Reference;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Ref_Table;
 import org.compiere.model.X_AD_Reference;
@@ -57,37 +56,7 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 
 			X_AD_Ref_Table refTable = findPO(ctx, element);
 			if (refTable == null) {
-				int AD_Reference_ID = 0;
-				if (getParentId(element, I_AD_Reference.Table_Name) > 0) {
-					AD_Reference_ID = getParentId(element, I_AD_Reference.Table_Name);
-				} else {
-					Element referenceElement = element.properties.get(I_AD_Ref_Table.COLUMNNAME_AD_Reference_ID);
-					AD_Reference_ID = ReferenceUtils.resolveReference(ctx.ctx, referenceElement, getTrxName(ctx));
-				}
-				if (AD_Reference_ID <= 0 && isOfficialId(element, "AD_Reference_ID"))
-					AD_Reference_ID = getIntValue(element, "AD_Reference_ID");
-
-				if (!hasUUIDKey(ctx, element)) {
-					String sql = "SELECT * FROM AD_Ref_Table WHERE AD_Reference_ID = ?";
-					PreparedStatement pstmt = null;
-					ResultSet rs = null;
-					try {
-						pstmt = DB.prepareStatement(sql, getTrxName(ctx));
-						pstmt.setInt(1, AD_Reference_ID);
-						rs = pstmt.executeQuery();
-						if (rs.next()) {
-							refTable = new X_AD_Ref_Table(ctx.ctx, rs, getTrxName(ctx));
-						} else {
-							refTable = new X_AD_Ref_Table(ctx.ctx, 0, getTrxName(ctx));
-						}
-					} catch (Exception e) {
-						throw new DatabaseAccessException(e.getLocalizedMessage(), e);
-					} finally {
-						DB.close(rs, pstmt);
-					}
-				} else {
-					refTable = new X_AD_Ref_Table(ctx.ctx, 0, getTrxName(ctx));
-				}
+				refTable = new X_AD_Ref_Table(ctx.ctx, 0, getTrxName(ctx));
 			}
 			String action = refTable.is_new() ? "New" : "Update";
 			PoFiller filler = new PoFiller(ctx, refTable, element, this);
@@ -97,24 +66,13 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 				element.unresolved = notfounds.toString();
 				return;
 			}
-			int tableId = refTable.getAD_Table_ID();
 			Element displayElement = element.properties.get("AD_Display");
-			int displayColumnId = 0;
-			if (ReferenceUtils.isIDLookup(displayElement) || ReferenceUtils.isUUIDLookup(displayElement)) {
-				displayColumnId = ReferenceUtils.resolveReference(ctx.ctx, displayElement, getTrxName(ctx));
-			} else {
-				displayColumnId = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", displayElement.contents.toString(), "AD_Table", tableId);
-			}
+			int displayColumnId = ReferenceUtils.resolveReference(ctx.ctx, displayElement, getTrxName(ctx));
 			refTable.setAD_Display(displayColumnId);
 
 
 			Element keyElement = element.properties.get("AD_Key");
-			int keyColumnId = 0;
-			if (ReferenceUtils.isIDLookup(keyElement) || ReferenceUtils.isUUIDLookup(keyElement)) {
-				keyColumnId = ReferenceUtils.resolveReference(ctx.ctx, keyElement, getTrxName(ctx));
-			} else {
-				keyColumnId = findIdByColumnAndParentId(ctx, "AD_Column", "ColumnName", keyElement.contents.toString(), "AD_Table", tableId);
-			}
+			int keyColumnId = ReferenceUtils.resolveReference(ctx.ctx, keyElement, getTrxName(ctx));
 			refTable.setAD_Key(keyColumnId);
 
 			if (refTable.is_new() || refTable.is_Changed()) {
@@ -160,6 +118,8 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 					}
 				}
 
+				verifyPackOutRequirement(refTable);
+				
 				AttributesImpl atts = new AttributesImpl();
 				addTypeName(atts, "table");
 				document.startElement("", "", X_AD_Ref_Table.Table_Name, atts);
@@ -175,8 +135,8 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 				excludes.add("ad_display");
 				excludes.add("ad_key");
 				filler.export(excludes);
-				filler.addTableReference("AD_Display", "AD_Column", "ColumnName", new AttributesImpl());
-				filler.addTableReference("AD_Key", "AD_Column", "ColumnName", new AttributesImpl());
+				filler.addTableReference("AD_Display", "AD_Column", new AttributesImpl());
+				filler.addTableReference("AD_Key", "AD_Column", new AttributesImpl());
 				
 				document.endElement("", "", X_AD_Ref_Table.Table_Name);
 			}

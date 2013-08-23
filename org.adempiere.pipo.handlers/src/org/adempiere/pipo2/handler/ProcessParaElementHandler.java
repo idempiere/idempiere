@@ -28,7 +28,6 @@ import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
-import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Element;
 import org.compiere.model.I_AD_Process;
@@ -54,33 +53,8 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 
 			X_AD_Process_Para mProcessPara = findPO(ctx, element);
 			if (mProcessPara == null) {
-				String name = getStringValue(element, "ColumnName");
-
-				int id = 0;
-				int masterId = 0;
-				if (getParentId(element, I_AD_Process.Table_Name) > 0) {
-					masterId = getParentId(element, I_AD_Process.Table_Name);
-				} else {
-					Element processElement = element.properties.get(I_AD_Process_Para.COLUMNNAME_AD_Process_ID);
-					masterId = ReferenceUtils.resolveReference(ctx.ctx, processElement, getTrxName(ctx));
-				}
-				if (masterId <= 0) {
-					element.defer = true;
-					element.unresolved = "AD_Process: " + getStringValue(element, I_AD_Process_Para.COLUMNNAME_AD_Process_ID);
-					return;
-				}
-
-				if (!hasUUIDKey(ctx, element)) {
-					id = findIdByColumnAndParentId(ctx, "AD_Process_Para", "ColumnName", name, "AD_Process", masterId);
-				}
-				mProcessPara = new X_AD_Process_Para(ctx.ctx, id > 0 ? id : 0, getTrxName(ctx));
-				mProcessPara.setAD_Process_ID(masterId);
-				excludes.add(I_AD_Process_Para.COLUMNNAME_AD_Process_ID);
+				mProcessPara = new X_AD_Process_Para(ctx.ctx, 0, getTrxName(ctx));
 			}
-
-			if (mProcessPara.getAD_Process_Para_ID() == 0 && isOfficialId(element, "AD_Process_Para_ID"))
-				mProcessPara.setAD_Process_Para_ID(Integer.parseInt(getStringValue(element, "AD_Process_Para_ID")));
-
 			PoFiller filler = new PoFiller(ctx, mProcessPara, element, this);
 
 			List<String> notfounds = filler.autoFill(excludes);
@@ -145,6 +119,9 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 				return;
 			}
 		}
+		
+		verifyPackOutRequirement(m_Processpara);
+		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Process_Para.Table_Name, atts);

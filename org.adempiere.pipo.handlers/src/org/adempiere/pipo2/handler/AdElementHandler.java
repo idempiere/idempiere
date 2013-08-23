@@ -50,21 +50,14 @@ public class AdElementHandler extends AbstractElementHandler {
 		String action = null;
 
 		String entitytype = getStringValue(element, "EntityType");
-		String ColumnName = getStringValue(element, "ColumnName");
 
 		if (isProcessElement(ctx.ctx, entitytype)) {
 
 			M_Element mElement = findPO(ctx, element);
 			if (mElement == null) {
-				int id = 0;
-				if (!hasUUIDKey(ctx, element)) {
-					id = findIdByColumn(ctx, X_AD_Element.Table_Name, X_AD_Element.COLUMNNAME_ColumnName, ColumnName, /*ignorecase=*/true);
-				}
-				mElement = new M_Element(ctx.ctx, id, getTrxName(ctx));
+				mElement = new M_Element(ctx.ctx, 0, getTrxName(ctx));
 			}
 			List<String> excludes = defaultExcludeList(X_AD_Element.Table_Name);
-			if (mElement.getAD_Element_ID() == 0 && isOfficialId(element, "AD_Element_ID"))
-				mElement.setAD_Element_ID(getIntValue(element, "AD_Element_ID"));
 			
 			if (processedElements.contains(mElement.getAD_Element_ID())) {
 				element.skip = true;
@@ -123,6 +116,8 @@ public class AdElementHandler extends AbstractElementHandler {
 				return;
 			}
 		}
+		
+		verifyPackOutRequirement(mAdElement);
 
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
