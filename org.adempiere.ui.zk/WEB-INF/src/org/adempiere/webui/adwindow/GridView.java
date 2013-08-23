@@ -425,11 +425,21 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 					column.setWidth(columnWidthMap.get(gridField[i].getAD_Field_ID()));
 				} else {
 					if (gridField[i].getDisplayType()==DisplayType.YesNo) {
-						//safe to use minimum width for checkbox
-						column.setHflex("min");
+						if (i > 0) {
+							column.setHflex("min");
+						} else {
+							int estimatedWidth=60;
+							int headerWidth = (gridField[i].getHeader().length()+2) * 8;
+							if (headerWidth > estimatedWidth)
+								estimatedWidth = headerWidth;
+							column.setWidth(estimatedWidth+"px");
+						}
 					} else if (DisplayType.isNumeric(gridField[i].getDisplayType()) && "Line".equals(gridField[i].getColumnName())) {
 						//special treatment for line
-						column.setHflex("min");
+						if (i > 0)
+							column.setHflex("min");
+						else
+							column.setWidth("60px");
 					} else {
 						int estimatedWidth = 0;
 						if (DisplayType.isNumeric(gridField[i].getDisplayType()))
