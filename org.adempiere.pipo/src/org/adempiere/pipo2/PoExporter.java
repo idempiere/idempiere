@@ -159,7 +159,7 @@ public class PoExporter {
 	}
 
 	public void addTableReference(String columnName, String tableName, AttributesImpl atts) {
-		int id = po.get_Value(columnName) != null ? (Integer)po.get_Value(columnName) : 0;
+		int id = po.get_Value(columnName) != null ? (Integer)po.get_Value(columnName) : -1;
 		addTableReference(columnName, tableName, id, atts);
 	}
 

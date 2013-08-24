@@ -312,7 +312,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			filler.add("AD_Column_ID", new AttributesImpl());
 
 		filler.addString("IsSyncDatabase", "Y", new AttributesImpl());
-		filler.addTableReference("AD_Table", "TableName", new AttributesImpl());
+		filler.addTableReference("AD_Table_ID", "TableName", new AttributesImpl());
 		filler.addTableReference("AD_Reference_Value_ID", "AD_Reference", new AttributesImpl());
 
 		excludes.add("IsSyncDatabase");
