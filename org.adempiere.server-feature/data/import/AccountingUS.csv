@@ -172,6 +172,7 @@
 51130,"Outside Processing (Subcontract)","Outside Processing Account","Expense",,"Yes","No","",5,,,,,,,,,,
 51200,"Product Expense","Default Service costs (I.e. not on inventory)","Expense",,"Yes","No","P_EXPENSE_ACCT",5,,,,,,,,,,
 51210,"Product Cost Adjustment","Product Cost Adjustments","Expense",,"Yes","No","P_COSTADJUSTMENT_ACCT",5,,,,,,,,,,
+51280,"Landed Cost Clearing","Default Landed Cost Clearing","Expense",,"Yes","No","P_LANDEDCOSTCLEARING_ACCT",5,,,,,,,,,,
 51290,"Product Inventory Clearing","Default Product costs (I.e. on inventory)","Expense",,"Yes","No","P_INVENTORYCLEARING_ACCT",5,,,,,,,,,,
 52000,"Services Purchases",,"Expense",,,"No",,5,,,,,,,,,,
 53000,"Sideline Purchases",,"Expense",,,"No",,5,,,,,,,,,,
