@@ -148,6 +148,21 @@ public interface I_AD_Chart
 	  */
 	public String getDomainLabel();
 
+    /** Column name EntityType */
+    public static final String COLUMNNAME_EntityType = "EntityType";
+
+	/** Set Entity Type.
+	  * Dictionary Entity Type;
+ Determines ownership and synchronization
+	  */
+	public void setEntityType (String EntityType);
+
+	/** Get Entity Type.
+	  * Dictionary Entity Type;
+ Determines ownership and synchronization
+	  */
+	public String getEntityType();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 

@@ -29,7 +29,7 @@ public class X_AD_Chart extends PO implements I_AD_Chart, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130823L;
+	private static final long serialVersionUID = 20130825L;
 
     /** Standard Constructor */
     public X_AD_Chart (Properties ctx, int AD_Chart_ID, String trxName)
@@ -41,6 +41,8 @@ public class X_AD_Chart extends PO implements I_AD_Chart, I_Persistent
 			setChartOrientation (null);
 // V
 			setChartType (null);
+			setEntityType (null);
+// U
 			setIsDisplayLegend (true);
 // 'Y'
 			setIsTimeSeries (false);
@@ -211,6 +213,26 @@ public class X_AD_Chart extends PO implements I_AD_Chart, I_Persistent
 	public String getDomainLabel () 
 	{
 		return (String)get_Value(COLUMNNAME_DomainLabel);
+	}
+
+	/** EntityType AD_Reference_ID=389 */
+	public static final int ENTITYTYPE_AD_Reference_ID=389;
+	/** Set Entity Type.
+		@param EntityType 
+		Dictionary Entity Type; Determines ownership and synchronization
+	  */
+	public void setEntityType (String EntityType)
+	{
+
+		set_Value (COLUMNNAME_EntityType, EntityType);
+	}
+
+	/** Get Entity Type.
+		@return Dictionary Entity Type; Determines ownership and synchronization
+	  */
+	public String getEntityType () 
+	{
+		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Display Legend.
