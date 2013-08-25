@@ -543,6 +543,11 @@ public abstract class Convert
 		// Don't log DELETE FROM Some_Table WHERE AD_Table_ID=? AND Record_ID=?
 		if (uppStmt.startsWith("DELETE FROM ") && uppStmt.endsWith(" WHERE AD_TABLE_ID=? AND RECORD_ID=?"))
 			return true;
+		// Don't log trl related statements - those will be created/maintained using synchronize terminology
+		if (uppStmt.matches("UPDATE .*_TRL SET .*"))
+			return true;
+		if (uppStmt.matches("INSERT INTO .*_TRL .*"))
+			return true;
 		for (int i = 0; i < dontLogTables.length; i++) {
 			if (uppStmt.startsWith("INSERT INTO " + dontLogTables[i] + " "))
 				return true;
