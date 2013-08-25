@@ -72,9 +72,9 @@ public class ReferenceUtils {
 			String value = Integer.toString(id);
 			return value;
 		}
-		else if (id == 0)
+		else if (id <= 0)
 		{
-			//no id, should never happen
+			//no id, -1 indicates it was read a null
 			atts.addAttribute("", "", "reference", "CDATA", "id");
 			return "";
 		}
