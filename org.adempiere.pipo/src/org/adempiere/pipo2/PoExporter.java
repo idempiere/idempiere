@@ -197,8 +197,8 @@ public class PoExporter {
 					if (!preservedOrg)
 						addString("AD_Org_ID", "@AD_Org_ID@", new AttributesImpl());
 					else {
-						addTableReference(X_AD_Client.Table_Name, "Value", new AttributesImpl());
-						addTableReference(X_AD_Org.Table_Name, "Value", new AttributesImpl());
+						addTableReference("AD_Client_ID", X_AD_Client.Table_Name, new AttributesImpl());
+						addTableReference("AD_Org_ID", X_AD_Org.Table_Name, new AttributesImpl());
 					}
 				}
 			}
