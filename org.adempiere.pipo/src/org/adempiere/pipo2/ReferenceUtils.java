@@ -4,12 +4,16 @@ import java.util.Properties;
 
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class ReferenceUtils {
 
+	@SuppressWarnings("unused")
+	private final static CLogger log = CLogger.getCLogger(ReferenceUtils.class);
+	
 	/**
 	 *
 	 * @param ctx
@@ -30,7 +34,10 @@ public class ReferenceUtils {
 			}
 			else if (isUUIDLookup(e))
 			{
-				return IDFinder.findIdByColumn(referenceKey, PO.getUUIDColumnName(referenceKey), value.trim(), Env.getAD_Client_ID(ctx), trxName);
+				String uuid = value.trim();
+				String target = Env.getAD_Client_ID(ctx) > 0 ? POFinder.getTargetUUID(ctx, referenceKey, uuid, trxName) : uuid;
+				int id = IDFinder.findIdByColumn(referenceKey, PO.getUUIDColumnName(referenceKey), target, Env.getAD_Client_ID(ctx), trxName);
+				return id;
 			}
 			else
 			{

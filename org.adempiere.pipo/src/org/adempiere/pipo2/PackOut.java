@@ -227,6 +227,7 @@ public class PackOut
 			.append("-")
 			.append(client.getName());
 		atts.addAttribute("", "", "Client", "CDATA", sb.toString());
+		atts.addAttribute("", "", "AD_Client_UU", "CDATA", client.getAD_Client_UU());
 
 		packoutHandler.startElement("","","idempiere",atts);
 		return packoutHandler;
