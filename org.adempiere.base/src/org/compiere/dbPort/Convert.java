@@ -455,6 +455,7 @@ public abstract class Convert
 		            File fileNameOr = File.createTempFile("migration_script_", "_oracle.sql");
 		            tempFileOr = new FileOutputStream(fileNameOr, true);
 		            writerOr = new BufferedWriter(new OutputStreamWriter(tempFileOr, "UTF8"));
+		            writerOr.append("SET SQLBLANKLINES ON\nSET DEFINE OFF\n\n");
 				}
 				writeLogMigrationScript(writerOr, oraStatement);
 			} catch (IOException e) {
