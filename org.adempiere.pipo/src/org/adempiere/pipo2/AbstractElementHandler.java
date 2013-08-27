@@ -33,7 +33,6 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
-import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp_Backup;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.CLogger;
@@ -468,26 +467,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
      * @return T
      */
     protected <T extends PO> T findPO(PIPOContext ctx, Element element) {
-    	T po = null;
-    	String tableName = element.getElementValue();
-    	String uuidColumn = PO.getUUIDColumnName(tableName);
-    	String idColumn = tableName + "_ID";
-    	if (element.properties.containsKey(uuidColumn)) {
-    		String uuid = element.properties.get(uuidColumn).contents.toString();
-    		if (uuid != null && uuid.trim().length() == 36) {    			
-    			Query query = new Query(ctx.ctx, tableName, uuidColumn+"=?", getTrxName(ctx));
-    			po = query.setParameters(uuid.trim()).firstOnly();
-    		}
-    	} 
-    	
-    	if (po == null && element.properties.containsKey(idColumn)) {
-    		String id = element.properties.get(idColumn).contents.toString();
-    		if (id != null && id.trim().length() > 0) {
-    			Query query = new Query(ctx.ctx, tableName, idColumn+"=?", getTrxName(ctx));
-    			po = query.setParameters(Integer.valueOf(id.trim())).firstOnly();
-    		}
-    	}
-    	return po;
+    	return POFinder.findPO(ctx, element);    			
     }
 
 	protected boolean hasUUIDKey(PIPOContext ctx, Element element) {
@@ -526,5 +506,5 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	if (Util.isEmpty((String)po.get_Value(uidColumn)) && (keys == null || keys.length != 1 || po.get_ID() > MTable.MAX_OFFICIAL_ID)) {
 			throw new IllegalStateException("2Pack doesn't work with record without official Id and UUID");
 		}
-    }
+    }        
 }

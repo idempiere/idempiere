@@ -455,6 +455,7 @@ public abstract class Convert
 		            File fileNameOr = File.createTempFile("migration_script_", "_oracle.sql");
 		            tempFileOr = new FileOutputStream(fileNameOr, true);
 		            writerOr = new BufferedWriter(new OutputStreamWriter(tempFileOr, "UTF8"));
+		            writerOr.append("SET SQLBLANKLINES ON\nSET DEFINE OFF\n\n");
 				}
 				writeLogMigrationScript(writerOr, oraStatement);
 			} catch (IOException e) {
@@ -542,6 +543,11 @@ public abstract class Convert
 			return true;
 		// Don't log DELETE FROM Some_Table WHERE AD_Table_ID=? AND Record_ID=?
 		if (uppStmt.startsWith("DELETE FROM ") && uppStmt.endsWith(" WHERE AD_TABLE_ID=? AND RECORD_ID=?"))
+			return true;
+		// Don't log trl related statements - those will be created/maintained using synchronize terminology
+		if (uppStmt.matches("UPDATE .*_TRL SET .*"))
+			return true;
+		if (uppStmt.matches("INSERT INTO .*_TRL .*"))
 			return true;
 		for (int i = 0; i < dontLogTables.length; i++) {
 			if (uppStmt.startsWith("INSERT INTO " + dontLogTables[i] + " "))

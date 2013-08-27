@@ -291,7 +291,7 @@ public class WPaymentEditor extends WEditor implements ListDataListener {
     	{
     		int windowNo = lookup == null ? 0 : lookup.getWindowNo();
     		Object newValue = getValue();
-    		if (newValue != null)
+    		if (newValue != null && getGridField().getGridTab() != null)
     		{
     			final IPaymentForm pf = WPaymentFormFactory.create(windowNo, getGridField().getGridTab(), (String) newValue);
     			if (pf != null)

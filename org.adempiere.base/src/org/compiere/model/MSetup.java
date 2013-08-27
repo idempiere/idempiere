@@ -226,6 +226,7 @@ public final class MSetup
 		admin.setUserLevel(MRole.USERLEVEL_ClientPlusOrganization);
 		admin.setPreferenceType(MRole.PREFERENCETYPE_Client);
 		admin.setIsShowAcct(true);
+		admin.setIsAccessAdvanced(true);
 		if (!admin.save())
 		{
 			String err = "Admin Role A NOT inserted";
@@ -252,6 +253,7 @@ public final class MSetup
 		MRole user = new MRole (m_ctx, 0, m_trx.getTrxName());
 		user.setClientOrg(m_client);
 		user.setName(name);
+		user.setIsAccessAdvanced(false);
 		if (!user.save())
 		{
 			String err = "User Role A NOT inserted";

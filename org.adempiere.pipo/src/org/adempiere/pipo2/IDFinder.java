@@ -22,9 +22,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.adempiere.pipo2.exception.DatabaseAccessException;
@@ -46,7 +46,7 @@ public class IDFinder {
 
 	private static CLogger log = CLogger.getCLogger(IDFinder.class);
 
-	private static Map<String, Integer>idCache = new HashMap<String, Integer>();
+	private static Map<String, Integer>idCache = new ConcurrentHashMap<String, Integer>(); 
 
 	/**
 	 * Get ID from column value for a table.
@@ -442,7 +442,7 @@ public class IDFinder {
 
 		return id;
 	}
-
+	
 	public static void clearIDCache() {
 		idCache.clear();
 	}

@@ -10,6 +10,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -230,7 +231,27 @@ public class PoFiller{
 					String value = e != null ? e.contents.toString() : null;
 					Integer i = !Util.isEmpty(value) ? new Integer(value) : null;
 					if (i != null && i.intValue() > 0 && i.intValue() <= MTable.MAX_OFFICIAL_ID) {
-						setInteger(qName);
+						if (po.get_ID() != i.intValue()) {
+							//make sure id have not been used by other client
+							int AD_Client_ID = Env.getAD_Client_ID(ctx.ctx); 
+							int tmp = DB.getSQLValue(ctx.trx.getTrxName(), 
+								"SELECT AD_Client_ID FROM " + po.get_TableName() + " WHERE " +
+								po.get_TableName() + "_ID=?", i.intValue());
+							if (tmp <= 0 || tmp == AD_Client_ID) {
+								setInteger(qName);
+							} 
+						}
+					}
+					continue;
+				} else if (qName.equals(po.getUUIDColumnName())) {
+					if (Env.getAD_Client_ID(ctx.ctx) > 0) {
+						String uuid = e != null ? e.contents.toString() : null;
+						if (!Util.isEmpty(uuid)) {
+							uuid = POFinder.getTargetUUID(ctx.ctx, po.get_TableName(), uuid, ctx.trx.getTrxName());
+							po.set_ValueNoCheck(qName, uuid);
+						}
+					} else {
+						setString(qName);
 					}
 					continue;
 				}
