@@ -20,24 +20,24 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for C_Location
+/** Generated Interface for C_AddressTransaction
  *  @author iDempiere (generated) 
  *  @version Release 1.0c
  */
-public interface I_C_Location 
+public interface I_C_AddressTransaction 
 {
 
-    /** TableName=C_Location */
-    public static final String Table_Name = "C_Location";
+    /** TableName=C_AddressTransaction */
+    public static final String Table_Name = "C_AddressTransaction";
 
-    /** AD_Table_ID=162 */
-    public static final int Table_ID = 162;
+    /** AD_Table_ID=200102 */
+    public static final int Table_ID = 200102;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 7 - System - Client - Org 
+    /** AccessLevel = 3 - Client - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(7);
+    BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
 
@@ -114,6 +114,24 @@ public interface I_C_Location
 	  */
 	public String getAddress4();
 
+    /** Column name C_AddressTransaction_ID */
+    public static final String COLUMNNAME_C_AddressTransaction_ID = "C_AddressTransaction_ID";
+
+	/** Set Address Transaction	  */
+	public void setC_AddressTransaction_ID (int C_AddressTransaction_ID);
+
+	/** Get Address Transaction	  */
+	public int getC_AddressTransaction_ID();
+
+    /** Column name C_AddressTransaction_UU */
+    public static final String COLUMNNAME_C_AddressTransaction_UU = "C_AddressTransaction_UU";
+
+	/** Set C_AddressTransaction_UU	  */
+	public void setC_AddressTransaction_UU (String C_AddressTransaction_UU);
+
+	/** Get C_AddressTransaction_UU	  */
+	public String getC_AddressTransaction_UU();
+
     /** Column name C_AddressValidation_ID */
     public static final String COLUMNNAME_C_AddressValidation_ID = "C_AddressValidation_ID";
 
@@ -124,36 +142,6 @@ public interface I_C_Location
 	public int getC_AddressValidation_ID();
 
 	public org.compiere.model.I_C_AddressValidation getC_AddressValidation() throws RuntimeException;
-
-    /** Column name C_City_ID */
-    public static final String COLUMNNAME_C_City_ID = "C_City_ID";
-
-	/** Set City.
-	  * City
-	  */
-	public void setC_City_ID (int C_City_ID);
-
-	/** Get City.
-	  * City
-	  */
-	public int getC_City_ID();
-
-	public org.compiere.model.I_C_City getC_City() throws RuntimeException;
-
-    /** Column name C_Country_ID */
-    public static final String COLUMNNAME_C_Country_ID = "C_Country_ID";
-
-	/** Set Country.
-	  * Country 
-	  */
-	public void setC_Country_ID (int C_Country_ID);
-
-	/** Get Country.
-	  * Country 
-	  */
-	public int getC_Country_ID();
-
-	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException;
 
     /** Column name C_Location_ID */
     public static final String COLUMNNAME_C_Location_ID = "C_Location_ID";
@@ -168,29 +156,7 @@ public interface I_C_Location
 	  */
 	public int getC_Location_ID();
 
-    /** Column name C_Location_UU */
-    public static final String COLUMNNAME_C_Location_UU = "C_Location_UU";
-
-	/** Set C_Location_UU	  */
-	public void setC_Location_UU (String C_Location_UU);
-
-	/** Get C_Location_UU	  */
-	public String getC_Location_UU();
-
-    /** Column name C_Region_ID */
-    public static final String COLUMNNAME_C_Region_ID = "C_Region_ID";
-
-	/** Set Region.
-	  * Identifies a geographical Region
-	  */
-	public void setC_Region_ID (int C_Region_ID);
-
-	/** Get Region.
-	  * Identifies a geographical Region
-	  */
-	public int getC_Region_ID();
-
-	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException;
+	public I_C_Location getC_Location() throws RuntimeException;
 
     /** Column name City */
     public static final String COLUMNNAME_City = "City";
@@ -204,6 +170,15 @@ public interface I_C_Location
 	  * Identifies a City
 	  */
 	public String getCity();
+
+    /** Column name Country */
+    public static final String COLUMNNAME_Country = "Country";
+
+	/** Set Country	  */
+	public void setCountry (String Country);
+
+	/** Get Country	  */
+	public String getCountry();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -260,31 +235,27 @@ public interface I_C_Location
 	  */
 	public String getPostal();
 
-    /** Column name Postal_Add */
-    public static final String COLUMNNAME_Postal_Add = "Postal_Add";
+    /** Column name Processed */
+    public static final String COLUMNNAME_Processed = "Processed";
 
-	/** Set Additional Zip.
-	  * Additional ZIP or Postal code
+	/** Set Processed.
+	  * The document has been processed
 	  */
-	public void setPostal_Add (String Postal_Add);
+	public void setProcessed (boolean Processed);
 
-	/** Get Additional Zip.
-	  * Additional ZIP or Postal code
+	/** Get Processed.
+	  * The document has been processed
 	  */
-	public String getPostal_Add();
+	public boolean isProcessed();
 
-    /** Column name RegionName */
-    public static final String COLUMNNAME_RegionName = "RegionName";
+    /** Column name Region */
+    public static final String COLUMNNAME_Region = "Region";
 
-	/** Set Region.
-	  * Name of the Region
-	  */
-	public void setRegionName (String RegionName);
+	/** Set Region	  */
+	public void setRegion (String Region);
 
-	/** Get Region.
-	  * Name of the Region
-	  */
-	public String getRegionName();
+	/** Get Region	  */
+	public String getRegion();
 
     /** Column name Result */
     public static final String COLUMNNAME_Result = "Result";
@@ -314,13 +285,4 @@ public interface I_C_Location
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name ValidateAddress */
-    public static final String COLUMNNAME_ValidateAddress = "ValidateAddress";
-
-	/** Set Validate Address	  */
-	public void setValidateAddress (String ValidateAddress);
-
-	/** Get Validate Address	  */
-	public String getValidateAddress();
 }

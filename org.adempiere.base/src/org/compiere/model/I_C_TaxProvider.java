@@ -20,26 +20,35 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for M_RMATax
+/** Generated Interface for C_TaxProvider
  *  @author iDempiere (generated) 
  *  @version Release 1.0c
  */
-public interface I_M_RMATax 
+public interface I_C_TaxProvider 
 {
 
-    /** TableName=M_RMATax */
-    public static final String Table_Name = "M_RMATax";
+    /** TableName=C_TaxProvider */
+    public static final String Table_Name = "C_TaxProvider";
 
-    /** AD_Table_ID=200055 */
-    public static final int Table_ID = 200055;
+    /** AD_Table_ID=200099 */
+    public static final int Table_ID = 200099;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 1 - Org 
+    /** AccessLevel = 3 - Client - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(1);
+    BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
+
+    /** Column name Account */
+    public static final String COLUMNNAME_Account = "Account";
+
+	/** Set Account	  */
+	public void setAccount (String Account);
+
+	/** Get Account	  */
+	public String getAccount();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -62,21 +71,6 @@ public interface I_M_RMATax
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name C_Tax_ID */
-    public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
-
-	/** Set Tax.
-	  * Tax identifier
-	  */
-	public void setC_Tax_ID (int C_Tax_ID);
-
-	/** Get Tax.
-	  * Tax identifier
-	  */
-	public int getC_Tax_ID();
-
-	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
-
     /** Column name C_TaxProvider_ID */
     public static final String COLUMNNAME_C_TaxProvider_ID = "C_TaxProvider_ID";
 
@@ -86,7 +80,34 @@ public interface I_M_RMATax
 	/** Get Tax Provider	  */
 	public int getC_TaxProvider_ID();
 
-	public org.compiere.model.I_C_TaxProvider getC_TaxProvider() throws RuntimeException;
+    /** Column name C_TaxProvider_UU */
+    public static final String COLUMNNAME_C_TaxProvider_UU = "C_TaxProvider_UU";
+
+	/** Set C_TaxProvider_UU	  */
+	public void setC_TaxProvider_UU (String C_TaxProvider_UU);
+
+	/** Get C_TaxProvider_UU	  */
+	public String getC_TaxProvider_UU();
+
+    /** Column name C_TaxProviderCfg_ID */
+    public static final String COLUMNNAME_C_TaxProviderCfg_ID = "C_TaxProviderCfg_ID";
+
+	/** Set Tax Provider Configuration	  */
+	public void setC_TaxProviderCfg_ID (int C_TaxProviderCfg_ID);
+
+	/** Get Tax Provider Configuration	  */
+	public int getC_TaxProviderCfg_ID();
+
+	public org.compiere.model.I_C_TaxProviderCfg getC_TaxProviderCfg() throws RuntimeException;
+
+    /** Column name CompanyCode */
+    public static final String COLUMNNAME_CompanyCode = "CompanyCode";
+
+	/** Set Company Code	  */
+	public void setCompanyCode (String CompanyCode);
+
+	/** Get Company Code	  */
+	public String getCompanyCode();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -117,81 +138,42 @@ public interface I_M_RMATax
 	  */
 	public boolean isActive();
 
-    /** Column name IsTaxIncluded */
-    public static final String COLUMNNAME_IsTaxIncluded = "IsTaxIncluded";
+    /** Column name License */
+    public static final String COLUMNNAME_License = "License";
 
-	/** Set Price includes Tax.
-	  * Tax is included in the price 
+	/** Set License	  */
+	public void setLicense (String License);
+
+	/** Get License	  */
+	public String getLicense();
+
+    /** Column name Name */
+    public static final String COLUMNNAME_Name = "Name";
+
+	/** Set Name.
+	  * Alphanumeric identifier of the entity
 	  */
-	public void setIsTaxIncluded (boolean IsTaxIncluded);
+	public void setName (String Name);
 
-	/** Get Price includes Tax.
-	  * Tax is included in the price 
+	/** Get Name.
+	  * Alphanumeric identifier of the entity
 	  */
-	public boolean isTaxIncluded();
+	public String getName();
 
-    /** Column name M_RMA_ID */
-    public static final String COLUMNNAME_M_RMA_ID = "M_RMA_ID";
+    /** Column name SeqNo */
+    public static final String COLUMNNAME_SeqNo = "SeqNo";
 
-	/** Set RMA.
-	  * Return Material Authorization
+	/** Set Sequence.
+	  * Method of ordering records;
+ lowest number comes first
 	  */
-	public void setM_RMA_ID (int M_RMA_ID);
+	public void setSeqNo (int SeqNo);
 
-	/** Get RMA.
-	  * Return Material Authorization
+	/** Get Sequence.
+	  * Method of ordering records;
+ lowest number comes first
 	  */
-	public int getM_RMA_ID();
-
-	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException;
-
-    /** Column name M_RMATax_UU */
-    public static final String COLUMNNAME_M_RMATax_UU = "M_RMATax_UU";
-
-	/** Set M_RMATax_UU	  */
-	public void setM_RMATax_UU (String M_RMATax_UU);
-
-	/** Get M_RMATax_UU	  */
-	public String getM_RMATax_UU();
-
-    /** Column name Processed */
-    public static final String COLUMNNAME_Processed = "Processed";
-
-	/** Set Processed.
-	  * The document has been processed
-	  */
-	public void setProcessed (boolean Processed);
-
-	/** Get Processed.
-	  * The document has been processed
-	  */
-	public boolean isProcessed();
-
-    /** Column name TaxAmt */
-    public static final String COLUMNNAME_TaxAmt = "TaxAmt";
-
-	/** Set Tax Amount.
-	  * Tax Amount for a document
-	  */
-	public void setTaxAmt (BigDecimal TaxAmt);
-
-	/** Get Tax Amount.
-	  * Tax Amount for a document
-	  */
-	public BigDecimal getTaxAmt();
-
-    /** Column name TaxBaseAmt */
-    public static final String COLUMNNAME_TaxBaseAmt = "TaxBaseAmt";
-
-	/** Set Tax base Amount.
-	  * Base for calculating the tax amount
-	  */
-	public void setTaxBaseAmt (BigDecimal TaxBaseAmt);
-
-	/** Get Tax base Amount.
-	  * Base for calculating the tax amount
-	  */
-	public BigDecimal getTaxBaseAmt();
+	public int getSeqNo();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -208,4 +190,13 @@ public interface I_M_RMATax
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name ValidateConnection */
+    public static final String COLUMNNAME_ValidateConnection = "ValidateConnection";
+
+	/** Set Validate Connection	  */
+	public void setValidateConnection (String ValidateConnection);
+
+	/** Get Validate Connection	  */
+	public String getValidateConnection();
 }

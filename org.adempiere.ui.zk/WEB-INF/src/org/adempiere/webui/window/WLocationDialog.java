@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -39,14 +40,17 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
+import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.compiere.model.GridField;
+import org.compiere.model.MAddressValidation;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MCountry;
 import org.compiere.model.MLocation;
 import org.compiere.model.MOrgInfo;
 import org.compiere.model.MRegion;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -57,6 +61,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Vbox;
@@ -83,7 +88,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8511642461845783366L;
+	private static final long serialVersionUID = -6213326035184139513L;
 	private static final String LABEL_STYLE = "white-space: nowrap;";
 	/** Logger          */
 	private static CLogger log = CLogger.getCLogger(WLocationDialog.class);
@@ -137,6 +142,12 @@ public class WLocationDialog extends Window implements EventListener<Event>
 
 	private Button toLink;
 	private Button toRoute;
+	
+	private Listbox lstAddressValidation;
+	private Button btnOnline;
+	private Textbox txtResult;
+	private Checkbox cbxValid;
+	
 	private GridField m_GridField = null;
 	private boolean onSaveError = false;
 	//END
@@ -262,6 +273,25 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		toRoute = new Button(TO_ROUTE);
 		LayoutUtils.addSclass("txt-btn", toRoute);
 		toRoute.addEventListener(Events.ON_CLICK,this);
+		
+		btnOnline = new Button(Msg.getElement(Env.getCtx(), "ValidateAddress"));
+		LayoutUtils.addSclass("txt-btn", btnOnline);
+		btnOnline.addEventListener(Events.ON_CLICK,this);
+		
+		txtResult = new Textbox();
+		txtResult.setCols(2);
+		txtResult.setRows(3);
+		txtResult.setHeight("100%");
+		txtResult.setReadonly(true);
+		
+		cbxValid = new Checkbox();
+		cbxValid.setText(Msg.getElement(Env.getCtx(), "IsValid"));
+		cbxValid.setDisabled(true);
+		
+		lstAddressValidation = new Listbox();
+		lstAddressValidation.setMold("select");
+		lstAddressValidation.setWidth("154px");
+		lstAddressValidation.setRows(0);		
 
 		mainPanel = GridFactory.newGridLayout();
 	}
@@ -349,6 +379,52 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		vbox.appendChild(mainPanel);
 		if (MLocation.LOCATION_MAPS_URL_PREFIX != null || MLocation.LOCATION_MAPS_ROUTE_PREFIX != null)
 			vbox.appendChild(pnlLinks);
+		
+		if (MSysConfig.getBooleanValue(MSysConfig.ADDRESS_VALIDATION, false, Env.getAD_Client_ID(Env.getCtx())))
+		{
+			Grid grid = GridFactory.newGridLayout();
+			vbox.appendChild(grid);
+			
+			columns = new Columns();
+			grid.appendChild(columns);
+			
+			Rows rows = new Rows();
+			grid.appendChild(rows);
+			
+			Row row = new Row();
+			rows.appendChild(row);
+			row.appendCellChild(lstAddressValidation, 2);
+			lstAddressValidation.setHflex("1");			
+			
+			MAddressValidation[] validations = MAddressValidation.getAddressValidation(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()), null);
+			for (MAddressValidation validation : validations)
+			{
+				ListItem li = lstAddressValidation.appendItem(validation.getName(), validation);
+				if (m_location.getC_AddressValidation_ID() == validation.getC_AddressValidation_ID())
+					lstAddressValidation.setSelectedItem(li);
+			}
+			
+			if (lstAddressValidation.getSelectedIndex() == -1 && lstAddressValidation.getChildren().size() > 0)
+				lstAddressValidation.setSelectedIndex(0);
+						
+			row = new Row();
+			rows.appendChild(row);
+			row.appendCellChild(txtResult, 2);
+			txtResult.setHflex("1");
+			txtResult.setText(m_location.getResult());
+			
+			row = new Row();
+			rows.appendChild(row);
+			row.appendChild(cbxValid);
+			cbxValid.setChecked(m_location.isValid());
+			Cell cell = new Cell();
+			cell.setColspan(1);
+			cell.setRowspan(1);
+			cell.appendChild(btnOnline);
+			cell.setAlign("right");
+			row.appendChild(cell);
+		}
+		
 		vbox.setVflex("1");
 		vbox.setHflex("1");
 
@@ -626,6 +702,92 @@ public class WLocationDialog extends Window implements EventListener<Event>
 				}
 			}
 		}
+		else if (btnOnline.equals(event.getTarget()))
+		{
+			btnOnline.setEnabled(false);
+			
+			onSaveError = false;
+			
+			inOKAction = true;
+			
+			if (m_location.getCountry().isHasRegion() && lstRegion.getSelectedItem() == null) {
+				if (txtCity.getC_Region_ID() > 0 && txtCity.getC_Region_ID() != m_location.getC_Region_ID()) {
+					m_location.setRegion(MRegion.get(Env.getCtx(), txtCity.getC_Region_ID()));
+					setRegion();
+				}
+			}
+			
+			String msg = validate_OK();
+			if (msg != null) {
+				onSaveError = true;
+				FDialog.error(0, this, "FillMandatory", Msg.parseTranslation(Env.getCtx(), msg), new Callback<Integer>() {					
+					@Override
+					public void onCallback(Integer result) {
+						Events.echoEvent("onSaveError", WLocationDialog.this, null);
+					}
+				});
+				inOKAction = false;
+				return;
+			}
+			
+			MLocation m_location = new MLocation(Env.getCtx(), 0, null);
+			m_location.setAddress1(txtAddress1.getValue());
+			m_location.setAddress2(txtAddress2.getValue());
+			m_location.setAddress3(txtAddress3.getValue());
+			m_location.setAddress4(txtAddress4.getValue());
+			m_location.setC_City_ID(txtCity.getC_City_ID()); 
+			m_location.setCity(txtCity.getValue());
+			m_location.setPostal(txtPostal.getValue());
+			//  Country/Region
+			MCountry country = (MCountry)lstCountry.getSelectedItem().getValue();
+			m_location.setCountry(country);
+			if (country.isHasRegion() && lstRegion.getSelectedItem() != null)
+			{
+				MRegion r = (MRegion)lstRegion.getSelectedItem().getValue();
+				m_location.setRegion(r);
+			}
+			else
+			{
+				m_location.setC_Region_ID(0);
+			}			
+				
+			MAddressValidation validation = lstAddressValidation.getSelectedItem().getValue();
+			if (validation == null && lstAddressValidation.getChildren().size() > 0)
+				validation = lstAddressValidation.getItemAtIndex(0).getValue();			
+			if (validation != null)
+			{
+				boolean ok = m_location.processOnline(validation.getC_AddressValidation_ID());
+				
+				txtResult.setText(m_location.getResult());
+				cbxValid.setChecked(m_location.isValid());
+				
+				List<?> list = lstAddressValidation.getChildren();
+				Iterator<?> iter = list.iterator();
+				while (iter.hasNext())
+				{
+					ListItem listitem = (ListItem)iter.next();
+					if (m_location.getC_AddressValidation().equals(listitem.getValue()))
+					{
+						lstAddressValidation.setSelectedItem(listitem);
+						break;
+					}
+				}
+				if (!ok)
+				{
+					onSaveError = true;
+					FDialog.error(0, this, "Error", m_location.getErrorMessage(), new Callback<Integer>() {					
+						@Override
+						public void onCallback(Integer result) {
+							Events.echoEvent("onSaveError", WLocationDialog.this, null);
+						}
+					});
+				}
+			}
+			
+			inOKAction = false;
+			
+			btnOnline.setEnabled(true);
+		}
 		//  Country Changed - display in new Format
 		else if (lstCountry.equals(event.getTarget()))
 		{
@@ -720,6 +882,13 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		{
 			m_location.setC_Region_ID(0);
 		}
+		
+		if (lstAddressValidation.getSelectedIndex() != -1)
+		{
+			MAddressValidation validation = (MAddressValidation) lstAddressValidation.getSelectedItem().getValue();
+			m_location.setC_AddressValidation_ID(validation.getC_AddressValidation_ID());
+		}
+		
 		//  Save changes
 		boolean success = false;
 		if (m_location.save())

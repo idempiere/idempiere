@@ -21,6 +21,9 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
+import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.model.ITaxProvider;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -37,7 +40,7 @@ public class MRMALine extends X_M_RMALine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3540322234762687347L;
+	private static final long serialVersionUID = 4358572588500923170L;
 
 	/**
 	 * 	Standard Constructor
@@ -410,7 +413,7 @@ public class MRMALine extends X_M_RMALine
 		return true;
 	}
     
-    private boolean updateOrderTax(boolean oldTax) 
+    protected boolean updateOrderTax(boolean oldTax) 
     {
 		MRMATax tax = MRMATax.get (this, getPrecision(), oldTax, get_TrxName());
 		if (tax != null) 
@@ -467,8 +470,15 @@ public class MRMALine extends X_M_RMALine
 
 		// Recalculate Tax for this Tax
 		if (!getParent().isProcessed())
-			if (!updateOrderTax(false))
+		{
+			MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
+	        MTaxProvider provider = new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName());
+			ITaxProvider calculator = Core.getTaxProvider(provider);
+			if (calculator == null)
+				throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+	    	if (!calculator.updateRMATax(provider, this))
 				return false;
+		}
 		
 		//	Update RMA Header
 		String sql = "UPDATE M_RMA "

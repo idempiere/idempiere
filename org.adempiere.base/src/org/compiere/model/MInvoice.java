@@ -23,14 +23,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoAddressException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
+import org.adempiere.model.ITaxProvider;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
@@ -66,7 +69,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1223767990636657474L;
+	private static final long serialVersionUID = -1061413366741817262L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -1577,67 +1580,16 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		DB.executeUpdateEx(msgdb.toString(), get_TrxName());
 		m_taxes = null;
 
-		//	Lines
-		BigDecimal totalLines = Env.ZERO;
-		ArrayList<Integer> taxList = new ArrayList<Integer>();
-		MInvoiceLine[] lines = getLines(false);
-		for (int i = 0; i < lines.length; i++)
+		MTaxProvider[] providers = getTaxProviders();
+		for (MTaxProvider provider : providers)
 		{
-			MInvoiceLine line = lines[i];
-			if (!taxList.contains(line.getC_Tax_ID()))
-			{
-				MInvoiceTax iTax = MInvoiceTax.get (line, getPrecision(), false, get_TrxName()); //	current Tax
-				if (iTax != null)
-				{
-					iTax.setIsTaxIncluded(isTaxIncluded());
-					if (!iTax.calculateTaxFromLines())
-						return false;
-					iTax.saveEx();
-					taxList.add(line.getC_Tax_ID());
-				}
-			}
-			totalLines = totalLines.add(line.getLineNetAmt());
+			ITaxProvider calculator = Core.getTaxProvider(provider);
+			if (calculator == null)
+				throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+			
+			if (!calculator.calculateInvoiceTaxTotal(provider, this))
+				return false;
 		}
-
-		//	Taxes
-		BigDecimal grandTotal = totalLines;
-		MInvoiceTax[] taxes = getTaxes(true);
-		for (int i = 0; i < taxes.length; i++)
-		{
-			MInvoiceTax iTax = taxes[i];
-			MTax tax = iTax.getTax();
-			if (tax.isSummary())
-			{
-				MTax[] cTaxes = tax.getChildTaxes(false);	//	Multiple taxes
-				for (int j = 0; j < cTaxes.length; j++)
-				{
-					MTax cTax = cTaxes[j];
-					BigDecimal taxAmt = cTax.calculateTax(iTax.getTaxBaseAmt(), isTaxIncluded(), getPrecision());
-					//
-					MInvoiceTax newITax = new MInvoiceTax(getCtx(), 0, get_TrxName());
-					newITax.setClientOrg(this);
-					newITax.setC_Invoice_ID(getC_Invoice_ID());
-					newITax.setC_Tax_ID(cTax.getC_Tax_ID());
-					newITax.setPrecision(getPrecision());
-					newITax.setIsTaxIncluded(isTaxIncluded());
-					newITax.setTaxBaseAmt(iTax.getTaxBaseAmt());
-					newITax.setTaxAmt(taxAmt);
-					newITax.saveEx(get_TrxName());
-					//
-					if (!isTaxIncluded())
-						grandTotal = grandTotal.add(taxAmt);
-				}
-				iTax.deleteEx(true, get_TrxName());
-			}
-			else
-			{
-				if (!isTaxIncluded())
-					grandTotal = grandTotal.add(iTax.getTaxAmt());
-			}
-		}
-		//
-		setTotalLines(totalLines);
-		setGrandTotal(grandTotal);
 		return true;
 	}	//	calculateTaxTotal
 
@@ -2681,4 +2633,59 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
 
+	/**
+	 * Get original order
+	 * @return order
+	 */
+	public MOrder getOriginalOrder()
+	{
+		if (getM_RMA_ID() > 0)
+		{
+			MRMA rma = new MRMA(getCtx(), getM_RMA_ID(), get_TrxName());
+			MOrder originalOrder = rma.getOriginalOrder();
+			if (originalOrder != null)
+				return originalOrder;
+			
+			MInvoice originalInvoice = rma.getOriginalInvoice();
+			if (originalInvoice.getC_Order_ID() > 0)
+			{
+				originalOrder = new MOrder(getCtx(), originalInvoice.getC_Order_ID(), get_TrxName());
+				if (originalOrder != null)
+					return originalOrder;
+			}
+		}
+		else if (getC_Order_ID() > 0)
+			return new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+		return null;
+	}
+
+	/**
+	 * Set process message
+	 * @param processMsg
+	 */
+	public void setProcessMessage(String processMsg)
+	{
+		m_processMsg = processMsg;
+	}
+	
+	/**
+	 * Get tax providers
+	 * @return array of tax provider
+	 */
+	public MTaxProvider[] getTaxProviders()
+	{
+		Hashtable<Integer, MTaxProvider> providers = new Hashtable<Integer, MTaxProvider>();
+		MInvoiceLine[] lines = getLines();
+		for (MInvoiceLine line : lines)
+		{
+            MTax tax = new MTax(line.getCtx(), line.getC_Tax_ID(), line.get_TrxName());
+            MTaxProvider provider = providers.get(tax.getC_TaxProvider_ID());
+            if (provider == null)
+            	providers.put(tax.getC_TaxProvider_ID(), new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName()));
+		}
+		
+		MTaxProvider[] retValue = new MTaxProvider[providers.size()];
+		providers.values().toArray(retValue);
+		return retValue;
+	}
 }	//	MInvoice

@@ -86,22 +86,6 @@ public interface I_C_Tax
 	  */
 	public int getC_Country_ID();
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
-
     /** Column name C_Region_ID */
     public static final String COLUMNNAME_C_Region_ID = "C_Region_ID";
 
@@ -116,21 +100,6 @@ public interface I_C_Tax
 	public int getC_Region_ID();
 
 	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException;
-
-    /** Column name C_TaxCategory_ID */
-    public static final String COLUMNNAME_C_TaxCategory_ID = "C_TaxCategory_ID";
-
-	/** Set Tax Category.
-	  * Tax Category
-	  */
-	public void setC_TaxCategory_ID (int C_TaxCategory_ID);
-
-	/** Get Tax Category.
-	  * Tax Category
-	  */
-	public int getC_TaxCategory_ID();
-
-	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException;
 
     /** Column name C_Tax_ID */
     public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
@@ -153,6 +122,48 @@ public interface I_C_Tax
 
 	/** Get C_Tax_UU	  */
 	public String getC_Tax_UU();
+
+    /** Column name C_TaxCategory_ID */
+    public static final String COLUMNNAME_C_TaxCategory_ID = "C_TaxCategory_ID";
+
+	/** Set Tax Category.
+	  * Tax Category
+	  */
+	public void setC_TaxCategory_ID (int C_TaxCategory_ID);
+
+	/** Get Tax Category.
+	  * Tax Category
+	  */
+	public int getC_TaxCategory_ID();
+
+	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException;
+
+    /** Column name C_TaxProvider_ID */
+    public static final String COLUMNNAME_C_TaxProvider_ID = "C_TaxProvider_ID";
+
+	/** Set Tax Provider	  */
+	public void setC_TaxProvider_ID (int C_TaxProvider_ID);
+
+	/** Get Tax Provider	  */
+	public int getC_TaxProvider_ID();
+
+	public org.compiere.model.I_C_TaxProvider getC_TaxProvider() throws RuntimeException;
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
