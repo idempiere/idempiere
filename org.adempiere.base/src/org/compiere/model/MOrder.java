@@ -23,17 +23,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoBillToAddressException;
 import org.adempiere.exceptions.BPartnerNoShipToAddressException;
 import org.adempiere.exceptions.FillMandatoryException;
+import org.adempiere.model.ITaxProvider;
 import org.adempiere.process.SalesOrderRateInquiryProcess;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
@@ -74,7 +76,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3958412751269036933L;
+	private static final long serialVersionUID = -5424713436299981736L;
 
 	/**
 	 * 	Create new Order by copying
@@ -1750,71 +1752,16 @@ public class MOrder extends X_C_Order implements DocAction
 		DB.executeUpdateEx("DELETE C_OrderTax WHERE C_Order_ID=" + getC_Order_ID(), get_TrxName());
 		m_taxes = null;
 		
-		//	Lines
-		BigDecimal totalLines = Env.ZERO;
-		ArrayList<Integer> taxList = new ArrayList<Integer>();
-		MOrderLine[] lines = getLines();
-		for (int i = 0; i < lines.length; i++)
+		MTaxProvider[] providers = getTaxProviders();
+		for (MTaxProvider provider : providers)
 		{
-			MOrderLine line = lines[i];
-			Integer taxID = new Integer(line.getC_Tax_ID());
-			if (!taxList.contains(taxID))
-			{
-				MOrderTax oTax = MOrderTax.get (line, getPrecision(), 
-					false, get_TrxName());	//	current Tax
-				oTax.setIsTaxIncluded(isTaxIncluded());
-				if (!oTax.calculateTaxFromLines())
-					return false;
-				if (!oTax.save(get_TrxName()))
-					return false;
-				taxList.add(taxID);
-			}
-			totalLines = totalLines.add(line.getLineNetAmt());
+			ITaxProvider calculator = Core.getTaxProvider(provider);
+			if (calculator == null)
+				throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+			
+			if (!calculator.calculateOrderTaxTotal(provider, this))
+				return false;
 		}
-		
-		//	Taxes
-		BigDecimal grandTotal = totalLines;
-		MOrderTax[] taxes = getTaxes(true);
-		for (int i = 0; i < taxes.length; i++)
-		{
-			MOrderTax oTax = taxes[i];
-			MTax tax = oTax.getTax();
-			if (tax.isSummary())
-			{
-				MTax[] cTaxes = tax.getChildTaxes(false);
-				for (int j = 0; j < cTaxes.length; j++)
-				{
-					MTax cTax = cTaxes[j];
-					BigDecimal taxAmt = cTax.calculateTax(oTax.getTaxBaseAmt(), isTaxIncluded(), getPrecision());
-					//
-					MOrderTax newOTax = new MOrderTax(getCtx(), 0, get_TrxName());
-					newOTax.setClientOrg(this);
-					newOTax.setC_Order_ID(getC_Order_ID());
-					newOTax.setC_Tax_ID(cTax.getC_Tax_ID());
-					newOTax.setPrecision(getPrecision());
-					newOTax.setIsTaxIncluded(isTaxIncluded());
-					newOTax.setTaxBaseAmt(oTax.getTaxBaseAmt());
-					newOTax.setTaxAmt(taxAmt);
-					if (!newOTax.save(get_TrxName()))
-						return false;
-					//
-					if (!isTaxIncluded())
-						grandTotal = grandTotal.add(taxAmt);
-				}
-				if (!oTax.delete(true, get_TrxName()))
-					return false;
-				if (!oTax.save(get_TrxName()))
-					return false;
-			}
-			else
-			{
-				if (!isTaxIncluded())
-					grandTotal = grandTotal.add(oTax.getTaxAmt());
-			}
-		}		
-		//
-		setTotalLines(totalLines);
-		setGrandTotal(grandTotal);
 		return true;
 	}	//	calculateTaxTotal
 	
@@ -2960,5 +2907,35 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		public StockInfo() {}
 		
+	}
+	
+	/**
+	 * Set process message
+	 * @param processMsg
+	 */
+	public void setProcessMessage(String processMsg)
+	{
+		m_processMsg = processMsg;
+	}
+	
+	/**
+	 * Get tax providers
+	 * @return array of tax provider
+	 */
+	public MTaxProvider[] getTaxProviders()
+	{
+		Hashtable<Integer, MTaxProvider> providers = new Hashtable<Integer, MTaxProvider>();
+		MOrderLine[] lines = getLines();
+		for (MOrderLine line : lines)
+		{
+            MTax tax = new MTax(line.getCtx(), line.getC_Tax_ID(), line.get_TrxName());
+            MTaxProvider provider = providers.get(tax.getC_TaxProvider_ID());
+            if (provider == null)
+            	providers.put(tax.getC_TaxProvider_ID(), new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName()));
+		}
+		
+		MTaxProvider[] retValue = new MTaxProvider[providers.size()];
+		providers.values().toArray(retValue);
+		return retValue;
 	}
 }	//	MOrder

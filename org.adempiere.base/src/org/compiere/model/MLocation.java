@@ -28,6 +28,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
 /**
@@ -49,8 +50,8 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8332515185354248079L;
-
+	private static final long serialVersionUID = -7522263181009070628L;
+	
 	// http://jira.idempiere.com/browse/IDEMPIERE-147
 	public static String LOCATION_MAPS_URL_PREFIX     = MSysConfig.getValue(MSysConfig.LOCATION_MAPS_URL_PREFIX);
 	public static String LOCATION_MAPS_ROUTE_PREFIX   = MSysConfig.getValue(MSysConfig.LOCATION_MAPS_ROUTE_PREFIX);
@@ -718,6 +719,99 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		address.append((getCountryName() != null ? getCountryName() : ""));
 
 		return address.toString().replace(" ", "+");
+	}
+	
+	/** Error Message						*/
+	private String				m_errorMessage = null;
+	
+	/**
+	 * Set error message
+	 * @param errorMessage
+	 */
+	public void setErrorMessage(String errorMessage)
+	{
+		m_errorMessage = errorMessage;
+	}
+	
+	/**
+	 * Get error message
+	 * @return error message
+	 */
+	public String getErrorMessage()
+	{
+		return m_errorMessage;
+	}
+	
+	/**
+	 * Perform online address validation
+	 * @param C_AddressValidation_ID
+	 * @return true if valid
+	 */
+	public boolean processOnline(int C_AddressValidation_ID)
+	{
+		setErrorMessage(null);
+		
+		Trx trx = Trx.get(Trx.createTrxName("avt-"), true);
+		boolean ok = false;
+		try
+		{			
+			MAddressTransaction at = createAddressTransaction(getCtx(), this, C_AddressValidation_ID, trx.getTrxName());
+			ok = at.processOnline();
+			at.saveEx();
+			
+			setC_AddressValidation_ID(at.getC_AddressValidation_ID());
+			setIsValid(at.isValid());
+			setResult(at.getResult());
+				
+			if (!ok)
+				setErrorMessage(at.getErrorMessage());
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, "processOnline", e);
+			setErrorMessage(Msg.getMsg(Env.getCtx(), "AddressNotProcessed") + ": " + e.getMessage());
+		}
+		finally
+		{		
+			if (trx != null)
+			{
+				trx.commit();
+				trx.close();
+			}
+		}
+
+		return ok;
+	}
+	
+	/**
+	 * Create address transaction instance
+	 * @param ctx
+	 * @param location
+	 * @param C_AddressValidation_ID
+	 * @param trxName
+	 * @return address transaction instance
+	 */
+	private static MAddressTransaction createAddressTransaction(Properties ctx, MLocation location, int C_AddressValidation_ID, String trxName)
+	{
+		MAddressTransaction at = new MAddressTransaction(ctx, 0, trxName);
+		at.setAD_Org_ID(location.getAD_Org_ID());
+		at.setAddress1(location.getAddress1());
+		at.setAddress2(location.getAddress2());
+		at.setAddress3(location.getAddress3());
+		at.setAddress4(location.getAddress4());
+		at.setC_AddressValidation_ID(C_AddressValidation_ID);
+		at.setC_Location_ID(location.getC_Location_ID());		
+		at.setCity(location.getCity());
+		if (location.getCountry() != null)
+			at.setCountry(location.getCountry().getCountryCode());
+		at.setIsActive(location.isActive());
+		at.setPostal(location.getPostal());
+		if (location.getRegion() != null)
+			at.setRegion(location.getRegion().getName());
+		else
+			at.setRegion(location.getRegionName());
+		at.saveEx();
+		return at;
 	}
 
 }	//	MLocation

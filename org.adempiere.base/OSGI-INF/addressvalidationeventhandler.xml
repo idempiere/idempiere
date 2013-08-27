@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" configuration-policy="optional" name="org.adempiere.base.event.AddressValidationEventHandler">
+   <implementation class="org.adempiere.base.event.AddressValidationEventHandler"/>
+   <reference bind="bindEventManager" cardinality="1..1" interface="org.adempiere.base.event.IEventManager" name="IEventManager" policy="static" unbind="unbindEventManager"/>
+</scr:component>

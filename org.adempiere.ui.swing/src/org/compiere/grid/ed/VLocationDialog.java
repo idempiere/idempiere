@@ -40,16 +40,20 @@ import org.compiere.apps.ADialog;
 import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.model.GridField;
+import org.compiere.model.MAddressValidation;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MCountry;
 import org.compiere.model.MLocation;
 import org.compiere.model.MOrgInfo;
 import org.compiere.model.MRegion;
+import org.compiere.model.MSysConfig;
 import org.compiere.swing.CButton;
+import org.compiere.swing.CCheckBox;
 import org.compiere.swing.CComboBoxEditable;
 import org.compiere.swing.CDialog;
 import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
+import org.compiere.swing.CTextArea;
 import org.compiere.swing.CTextField;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -87,7 +91,7 @@ public class VLocationDialog extends CDialog
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5915071456635949972L;
+	private static final long serialVersionUID = -5279612834653363233L;
 
 	/** Lookup result header */
 	private Object[] header = null;
@@ -216,6 +220,11 @@ public class VLocationDialog extends CDialog
 
 	private JButton toLink  	= new JButton();
 	private JButton toRoute 	= new JButton();
+	
+	private CComboBoxEditable lstAddressValidation	= new CComboBoxEditable();
+	private CButton btnOnline						= new CButton();
+	private CTextArea txtResult						= new CTextArea(3, 30);
+	private CCheckBox cbxValid 						= new CCheckBox();
 	//END
 
 	/**
@@ -249,6 +258,12 @@ public class VLocationDialog extends CDialog
 		if (MLocation.LOCATION_MAPS_ROUTE_PREFIX == null)
 			toRoute.setVisible(false);
 		//END
+		
+		btnOnline.setText(Msg.getElement(Env.getCtx(), "ValidateAddress"));
+		btnOnline.addActionListener(this);
+		
+		txtResult.setReadWrite(false);		
+		cbxValid.setReadWrite(false);
 		
 		//
 		confirmPanel.addActionListener(this);
@@ -388,6 +403,31 @@ public class VLocationDialog extends CDialog
 			if (!fCountry.getSelectedItem().equals(country))
 				fCountry.setSelectedItem(country);
 		}
+		
+		if (MSysConfig.getBooleanValue(MSysConfig.ADDRESS_VALIDATION, false, Env.getAD_Client_ID(Env.getCtx())))
+		{
+			addLine(line++, new CLabel(Msg.getElement(Env.getCtx(), "C_AddressValidation_ID")), lstAddressValidation);
+			
+			MAddressValidation[] validations = MAddressValidation.getAddressValidation(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()), null);
+			for (MAddressValidation validation : validations)
+			{
+				lstAddressValidation.addItem(validation);
+				if (m_location.getC_AddressValidation_ID() == validation.getC_AddressValidation_ID())
+					lstAddressValidation.setSelectedItem(validation);
+			}
+			
+			if (lstAddressValidation.getSelectedIndex() == -1 && lstAddressValidation.getItemCount() > 0)
+				lstAddressValidation.setSelectedIndex(0);
+			
+			addLine(line++, new CLabel(Msg.getElement(Env.getCtx(), "Result")), txtResult);
+			txtResult.setText(m_location.getResult());
+			
+			addLine(line++, new CLabel(Msg.getElement(Env.getCtx(), "IsValid")), cbxValid);
+			cbxValid.setSelected(m_location.isValid());
+			
+			addLine(line++, new JLabel(), btnOnline);
+		}
+		
 		//	Update UI
 		pack();
 	}	//	initLocation
@@ -534,6 +574,65 @@ public class VLocationDialog extends CDialog
 			}
 		}
 		//END
+		else if (e.getSource() == btnOnline)
+		{
+			btnOnline.setEnabled(false);
+			
+			inOKAction = true;
+			
+			if (m_location.getCountry().isHasRegion() && fRegion.getSelectedItem() == null) {
+				if (fCityAutoCompleter.getC_Region_ID() > 0 && fCityAutoCompleter.getC_Region_ID() != m_location.getC_Region_ID()) {
+					fRegion.setSelectedItem(MRegion.get(Env.getCtx(), fCityAutoCompleter.getC_Region_ID()));
+					m_location.setRegion(MRegion.get(Env.getCtx(), fCityAutoCompleter.getC_Region_ID()));
+				}
+			}
+			
+			String msg = validate_OK();
+			if (msg != null) {
+				ADialog.error(0, this, "FillMandatory", Msg.parseTranslation(Env.getCtx(), msg));
+				inOKAction = false;
+				return;
+			}
+			
+			MLocation m_location = new MLocation(Env.getCtx(), 0, null);
+			m_location.setAddress1(fAddress1.getText());
+			m_location.setAddress2(fAddress2.getText());
+			m_location.setAddress3(fAddress3.getText());
+			m_location.setAddress4(fAddress4.getText());
+			m_location.setCity(fCity.getText());
+			m_location.setC_City_ID(fCityAutoCompleter.getC_City_ID());
+			m_location.setPostal(fPostal.getText());
+			m_location.setPostal_Add(fPostalAdd.getText());
+			//  Country/Region
+			MCountry c = (MCountry)fCountry.getSelectedItem();
+			m_location.setCountry(c);
+			if (m_location.getCountry().isHasRegion())
+			{
+				MRegion r = (MRegion)fRegion.getSelectedItem();
+				m_location.setRegion(r);
+			}
+			else
+				m_location.setC_Region_ID(0);		
+				
+			MAddressValidation validation = (MAddressValidation) lstAddressValidation.getSelectedItem();
+			if (validation == null && lstAddressValidation.getItemCount() > 0)
+				validation = (MAddressValidation) lstAddressValidation.getItemAt(0);			
+			if (validation != null)
+			{
+				boolean ok = m_location.processOnline(validation.getC_AddressValidation_ID());
+				
+				txtResult.setText(m_location.getResult());
+				cbxValid.setSelected(m_location.isValid());				
+				lstAddressValidation.setSelectedItem(m_location.getC_AddressValidation());
+				
+				if (!ok)
+					ADialog.error(0, this, "Error", m_location.getErrorMessage());
+			}
+			
+			inOKAction = false;
+			
+			btnOnline.setEnabled(true);
+		}
 		else if (e.getSource() == fOnline)
 		{
 			
@@ -605,6 +704,13 @@ public class VLocationDialog extends CDialog
 		}
 		else
 			m_location.setC_Region_ID(0);
+		
+		if (lstAddressValidation.getSelectedIndex() != -1)
+		{
+			MAddressValidation validation = (MAddressValidation) lstAddressValidation.getSelectedItem();
+			m_location.setC_AddressValidation_ID(validation.getC_AddressValidation_ID());
+		}
+		
 		//	Save changes
 		boolean success = false;
 		if (m_location.save())

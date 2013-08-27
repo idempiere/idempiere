@@ -20,24 +20,24 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for M_RMATax
+/** Generated Interface for C_TaxProviderCfg
  *  @author iDempiere (generated) 
  *  @version Release 1.0c
  */
-public interface I_M_RMATax 
+public interface I_C_TaxProviderCfg 
 {
 
-    /** TableName=M_RMATax */
-    public static final String Table_Name = "M_RMATax";
+    /** TableName=C_TaxProviderCfg */
+    public static final String Table_Name = "C_TaxProviderCfg";
 
-    /** AD_Table_ID=200055 */
-    public static final int Table_ID = 200055;
+    /** AD_Table_ID=200098 */
+    public static final int Table_ID = 200098;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 1 - Org 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(1);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -62,31 +62,23 @@ public interface I_M_RMATax
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name C_Tax_ID */
-    public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
+    /** Column name C_TaxProviderCfg_ID */
+    public static final String COLUMNNAME_C_TaxProviderCfg_ID = "C_TaxProviderCfg_ID";
 
-	/** Set Tax.
-	  * Tax identifier
-	  */
-	public void setC_Tax_ID (int C_Tax_ID);
+	/** Set Tax Provider Configuration	  */
+	public void setC_TaxProviderCfg_ID (int C_TaxProviderCfg_ID);
 
-	/** Get Tax.
-	  * Tax identifier
-	  */
-	public int getC_Tax_ID();
+	/** Get Tax Provider Configuration	  */
+	public int getC_TaxProviderCfg_ID();
 
-	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
+    /** Column name C_TaxProviderCfg_UU */
+    public static final String COLUMNNAME_C_TaxProviderCfg_UU = "C_TaxProviderCfg_UU";
 
-    /** Column name C_TaxProvider_ID */
-    public static final String COLUMNNAME_C_TaxProvider_ID = "C_TaxProvider_ID";
+	/** Set C_TaxProviderCfg_UU	  */
+	public void setC_TaxProviderCfg_UU (String C_TaxProviderCfg_UU);
 
-	/** Set Tax Provider	  */
-	public void setC_TaxProvider_ID (int C_TaxProvider_ID);
-
-	/** Get Tax Provider	  */
-	public int getC_TaxProvider_ID();
-
-	public org.compiere.model.I_C_TaxProvider getC_TaxProvider() throws RuntimeException;
+	/** Get C_TaxProviderCfg_UU	  */
+	public String getC_TaxProviderCfg_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -104,6 +96,19 @@ public interface I_M_RMATax
 	  */
 	public int getCreatedBy();
 
+    /** Column name Description */
+    public static final String COLUMNNAME_Description = "Description";
+
+	/** Set Description.
+	  * Optional short description of the record
+	  */
+	public void setDescription (String Description);
+
+	/** Get Description.
+	  * Optional short description of the record
+	  */
+	public String getDescription();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -117,81 +122,27 @@ public interface I_M_RMATax
 	  */
 	public boolean isActive();
 
-    /** Column name IsTaxIncluded */
-    public static final String COLUMNNAME_IsTaxIncluded = "IsTaxIncluded";
+    /** Column name Name */
+    public static final String COLUMNNAME_Name = "Name";
 
-	/** Set Price includes Tax.
-	  * Tax is included in the price 
+	/** Set Name.
+	  * Alphanumeric identifier of the entity
 	  */
-	public void setIsTaxIncluded (boolean IsTaxIncluded);
+	public void setName (String Name);
 
-	/** Get Price includes Tax.
-	  * Tax is included in the price 
+	/** Get Name.
+	  * Alphanumeric identifier of the entity
 	  */
-	public boolean isTaxIncluded();
+	public String getName();
 
-    /** Column name M_RMA_ID */
-    public static final String COLUMNNAME_M_RMA_ID = "M_RMA_ID";
+    /** Column name TaxProviderClass */
+    public static final String COLUMNNAME_TaxProviderClass = "TaxProviderClass";
 
-	/** Set RMA.
-	  * Return Material Authorization
-	  */
-	public void setM_RMA_ID (int M_RMA_ID);
+	/** Set Tax Provider Class	  */
+	public void setTaxProviderClass (String TaxProviderClass);
 
-	/** Get RMA.
-	  * Return Material Authorization
-	  */
-	public int getM_RMA_ID();
-
-	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException;
-
-    /** Column name M_RMATax_UU */
-    public static final String COLUMNNAME_M_RMATax_UU = "M_RMATax_UU";
-
-	/** Set M_RMATax_UU	  */
-	public void setM_RMATax_UU (String M_RMATax_UU);
-
-	/** Get M_RMATax_UU	  */
-	public String getM_RMATax_UU();
-
-    /** Column name Processed */
-    public static final String COLUMNNAME_Processed = "Processed";
-
-	/** Set Processed.
-	  * The document has been processed
-	  */
-	public void setProcessed (boolean Processed);
-
-	/** Get Processed.
-	  * The document has been processed
-	  */
-	public boolean isProcessed();
-
-    /** Column name TaxAmt */
-    public static final String COLUMNNAME_TaxAmt = "TaxAmt";
-
-	/** Set Tax Amount.
-	  * Tax Amount for a document
-	  */
-	public void setTaxAmt (BigDecimal TaxAmt);
-
-	/** Get Tax Amount.
-	  * Tax Amount for a document
-	  */
-	public BigDecimal getTaxAmt();
-
-    /** Column name TaxBaseAmt */
-    public static final String COLUMNNAME_TaxBaseAmt = "TaxBaseAmt";
-
-	/** Set Tax base Amount.
-	  * Base for calculating the tax amount
-	  */
-	public void setTaxBaseAmt (BigDecimal TaxBaseAmt);
-
-	/** Get Tax base Amount.
-	  * Base for calculating the tax amount
-	  */
-	public BigDecimal getTaxBaseAmt();
+	/** Get Tax Provider Class	  */
+	public String getTaxProviderClass();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -208,4 +159,17 @@ public interface I_M_RMATax
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name URL */
+    public static final String COLUMNNAME_URL = "URL";
+
+	/** Set URL.
+	  * Full URL address - e.g. http://www.idempiere.org
+	  */
+	public void setURL (String URL);
+
+	/** Get URL.
+	  * Full URL address - e.g. http://www.idempiere.org
+	  */
+	public String getURL();
 }

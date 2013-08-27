@@ -20,11 +20,14 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.model.ITaxProvider;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
@@ -42,9 +45,9 @@ import org.compiere.util.Msg;
 public class MRMA extends X_M_RMA implements DocAction
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = -3310525910645254261L;
+	private static final long serialVersionUID = -6449007672684459651L;
 
 	/**
 	 * 	Standard Constructor
@@ -378,70 +381,16 @@ public class MRMA extends X_M_RMA implements DocAction
 		DB.executeUpdateEx("DELETE M_RMATax WHERE M_RMA_ID=" + getM_RMA_ID(), get_TrxName());
 		m_taxes = null;
 		
-		//	Lines
-		BigDecimal totalLines = Env.ZERO;
-		ArrayList<Integer> taxList = new ArrayList<Integer>();
-		MRMALine[] lines = getLines(false);
-		for (int i = 0; i < lines.length; i++)
+		MTaxProvider[] providers = getTaxProviders();
+		for (MTaxProvider provider : providers)
 		{
-			MRMALine line = lines[i];
-			Integer taxID = new Integer(line.getC_Tax_ID());
-			if (!taxList.contains(taxID))
-			{
-				MRMATax oTax = MRMATax.get (line, getPrecision(), 
-					false, get_TrxName());	//	current Tax
-				oTax.setIsTaxIncluded(isTaxIncluded());
-				if (!oTax.calculateTaxFromLines())
-					return false;
-				if (!oTax.save(get_TrxName()))
-					return false;
-				taxList.add(taxID);
-			}
-			totalLines = totalLines.add(line.getLineNetAmt());
+			ITaxProvider calculator = Core.getTaxProvider(provider);
+			if (calculator == null)
+				throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+			
+			if (!calculator.calculateRMATaxTotal(provider, this))
+				return false;
 		}
-		
-		//	Taxes
-		BigDecimal grandTotal = totalLines;
-		MRMATax[] taxes = getTaxes(true);
-		for (int i = 0; i < taxes.length; i++)
-		{
-			MRMATax oTax = taxes[i];
-			MTax tax = oTax.getTax();
-			if (tax.isSummary())
-			{
-				MTax[] cTaxes = tax.getChildTaxes(false);
-				for (int j = 0; j < cTaxes.length; j++)
-				{
-					MTax cTax = cTaxes[j];
-					BigDecimal taxAmt = cTax.calculateTax(oTax.getTaxBaseAmt(), isTaxIncluded(), getPrecision());
-					//
-					MRMATax newOTax = new MRMATax(getCtx(), 0, get_TrxName());
-					newOTax.setClientOrg(this);
-					newOTax.setM_RMA_ID(getM_RMA_ID());
-					newOTax.setC_Tax_ID(cTax.getC_Tax_ID());
-					newOTax.setPrecision(getPrecision());
-					newOTax.setIsTaxIncluded(isTaxIncluded());
-					newOTax.setTaxBaseAmt(oTax.getTaxBaseAmt());
-					newOTax.setTaxAmt(taxAmt);
-					if (!newOTax.save(get_TrxName()))
-						return false;
-					//
-					if (!isTaxIncluded())
-						grandTotal = grandTotal.add(taxAmt);
-				}
-				if (!oTax.delete(true, get_TrxName()))
-					return false;
-				if (!oTax.save(get_TrxName()))
-					return false;
-			}
-			else
-			{
-				if (!isTaxIncluded())
-					grandTotal = grandTotal.add(oTax.getTaxAmt());
-			}
-		}		
-		//
-		setAmt(grandTotal);
 		return true;
 	}
 
@@ -996,4 +945,33 @@ public class MRMA extends X_M_RMA implements DocAction
 			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
 
+	/**
+	 * Set process message
+	 * @param processMsg
+	 */
+	public void setProcessMessage(String processMsg)
+	{
+		m_processMsg = processMsg;
+	}
+	
+	/**
+	 * Get tax providers
+	 * @return array of tax provider
+	 */
+	public MTaxProvider[] getTaxProviders()
+	{
+		Hashtable<Integer, MTaxProvider> providers = new Hashtable<Integer, MTaxProvider>();
+		MRMALine[] lines = getLines(false);
+		for (MRMALine line : lines)
+		{
+            MTax tax = new MTax(line.getCtx(), line.getC_Tax_ID(), line.get_TrxName());
+            MTaxProvider provider = providers.get(tax.getC_TaxProvider_ID());
+            if (provider == null)
+            	providers.put(tax.getC_TaxProvider_ID(), new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName()));
+		}
+		
+		MTaxProvider[] retValue = new MTaxProvider[providers.size()];
+		providers.values().toArray(retValue);
+		return retValue;
+	}
 }	//	MRMA

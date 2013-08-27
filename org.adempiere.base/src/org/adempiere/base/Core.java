@@ -25,13 +25,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.model.IAddressValidation;
 import org.adempiere.model.IShipmentProcessor;
+import org.adempiere.model.ITaxProvider;
 import org.adempiere.model.MShipperFacade;
+import org.compiere.model.MAddressValidation;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MPaymentProcessor;
+import org.compiere.model.MTaxProvider;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PaymentInterface;
 import org.compiere.model.PaymentProcessor;
+import org.compiere.model.StandardTaxProvider;
 import org.compiere.process.ProcessCall;
 import org.compiere.util.CLogger;
 
@@ -193,6 +198,67 @@ public class Core {
 			IShipmentProcessor processor = factory.newShipmentProcessorInstance(className);
 			if (processor != null)
 				return processor;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Get address validation instance
+	 * @param validation
+	 * @return address validation instance or null if not found
+	 */
+	public static IAddressValidation getAddressValidation(MAddressValidation validation) 
+	{
+		String className = validation.getAddressValidationClass();
+		if (className == null || className.length() == 0) 
+		{
+			s_log.log(Level.SEVERE, "Address validation class not defined: " + validation);
+			return null;
+		}
+		
+		List<IAddressValidationFactory> factoryList = Service.locator().list(IAddressValidationFactory.class).getServices();
+		if (factoryList == null) 
+			return null;
+		for (IAddressValidationFactory factory : factoryList)
+		{
+			IAddressValidation processor = factory.newAddressValidationInstance(className);
+			if (processor != null)
+				return processor;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Get tax provider instance
+	 * @param provider
+	 * @return tax provider instance or null if not found
+	 */
+	public static ITaxProvider getTaxProvider(MTaxProvider provider) 
+	{
+		ITaxProvider calculator = null;
+		if (provider != null)
+		{
+			if (provider.getC_TaxProvider_ID() == 0)
+				return new StandardTaxProvider();
+			
+			String className = provider.getTaxProviderClass();
+			if (className == null || className.length() == 0) 
+			{
+				s_log.log(Level.SEVERE, "Tax provider class not defined: " + provider);
+				return null;
+			}
+			
+			List<ITaxProviderFactory> factoryList = Service.locator().list(ITaxProviderFactory.class).getServices();
+			if (factoryList == null) 
+				return null;
+			for (ITaxProviderFactory factory : factoryList)
+			{
+				calculator = factory.newTaxProviderInstance(className);
+				if (calculator != null)
+					return calculator;
+			}
 		}
 		
 		return null;

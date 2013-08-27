@@ -22,7 +22,10 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.ProductNotOnPriceListException;
+import org.adempiere.model.ITaxProvider;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -55,7 +58,7 @@ public class MOrderLine extends X_C_OrderLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7305265800857547603L;
+	private static final long serialVersionUID = -5740772832684028526L;
 
 	/**
 	 * 	Get Order Unreserved Qty
@@ -1038,7 +1041,7 @@ public class MOrderLine extends X_C_OrderLine
 	 * 
 	 * @author teo_sarca [ 1583825 ]
 	 */
-	private boolean updateOrderTax(boolean oldTax) {
+	protected boolean updateOrderTax(boolean oldTax) {
 		MOrderTax tax = MOrderTax.get (this, getPrecision(), oldTax, get_TrxName());
 		if (tax != null) {
 			if (!tax.calculateTaxFromLines())
@@ -1063,8 +1066,15 @@ public class MOrderLine extends X_C_OrderLine
 	{
 		//	Recalculate Tax for this Tax
 		if (!getParent().isProcessed())
-			if (!updateOrderTax(false))
+		{
+			MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
+	        MTaxProvider provider = new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName());
+			ITaxProvider calculator = Core.getTaxProvider(provider);
+			if (calculator == null)
+				throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+	    	if (!calculator.updateOrderTax(provider, this))
 				return false;
+		}
 		
 		//	Update Order Header
 		String sql = "UPDATE C_Order i"

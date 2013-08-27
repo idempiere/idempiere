@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.model.ITaxProvider;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -52,7 +54,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6157080330492848409L;
+	private static final long serialVersionUID = -8065144330439104363L;
 
 	/**
 	 * 	Get Invoice Line referencing InOut Line
@@ -912,7 +914,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	 *
 	 * @author teo_sarca [ 1583825 ]
 	 */
-	private boolean updateInvoiceTax(boolean oldTax) {
+	protected boolean updateInvoiceTax(boolean oldTax) {
 		MInvoiceTax tax = MInvoiceTax.get (this, getPrecision(), oldTax, get_TrxName());
 		if (tax != null) {
 			if (!tax.calculateTaxFromLines())
@@ -941,13 +943,12 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	{
 		if (!success)
 			return success;
-		if (!newRecord && is_ValueChanged("C_Tax_ID"))
-		{
-			//	Recalculate Tax for old Tax
-			if (!updateInvoiceTax(true))
-				return false;
-		}
-		return updateHeaderTax();
+		MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
+        MTaxProvider provider = new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName());
+		ITaxProvider calculator = Core.getTaxProvider(provider);
+		if (calculator == null)
+			throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+    	return calculator.recalculateTax(provider, this, newRecord);
 	}	//	afterSave
 
 	/**
@@ -975,14 +976,19 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	 *	Update Tax & Header
 	 *	@return true if header updated with tax
 	 */
-	private boolean updateHeaderTax()
+	protected boolean updateHeaderTax()
 	{
 		// Update header only if the document is not processed - teo_sarca BF [ 2317305 ]
 		if (isProcessed() && !is_ValueChanged(COLUMNNAME_Processed))
 			return true;
 
 		//	Recalculate Tax for this Tax
-		if (!updateInvoiceTax(false))
+        MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
+        MTaxProvider provider = new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName());
+		ITaxProvider calculator = Core.getTaxProvider(provider);
+		if (calculator == null)
+			throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+    	if (!calculator.updateInvoiceTax(provider, this))
 			return false;
 
 		//	Update Invoice Header
@@ -1357,5 +1363,4 @@ public class MInvoiceLine extends X_C_InvoiceLine
 							+" AND "+MMatchInv.COLUMNNAME_Processed+"=?";
 		return DB.getSQLValueBDEx(get_TrxName(), sql, getC_InvoiceLine_ID(), true);
 	}
-
 }	//	MInvoiceLine
