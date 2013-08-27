@@ -1,3 +1,6 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
 -- Aug 25, 2013 12:48:32 PM COT
 -- IDEMPIERE-1157 Adding functionality to add charts on the standard windows
 UPDATE AD_Column SET IsMandatory='N', IsToolbarButton='N',Updated=TO_DATE('2013-08-25 12:48:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=59701
