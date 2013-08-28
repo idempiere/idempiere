@@ -61,6 +61,7 @@ import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WNumberEditor;
+import org.adempiere.webui.editor.WPaymentEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
@@ -1707,6 +1708,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         editor.setReadWrite(enabled);
         editor.setVisible(enabled);
         editor.dynamicDisplay();
+        if (editor instanceof WPaymentEditor) {
+        	((WPaymentEditor)editor).getComponent().setEnabled(true, false);
+        }
         //
         return editor.getComponent();
 
