@@ -929,11 +929,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			reportFile = new File(REPORT_HOME, reportPath);
 		}
 
-		// Set org.compiere.report.path because it is used in reports which refer to subreports
-		if (reportFile != null)
-		{
-			System.setProperty("org.compiere.report.path", reportFile.getParentFile().getAbsolutePath());
-		}
 		return reportFile;
 	}
 
