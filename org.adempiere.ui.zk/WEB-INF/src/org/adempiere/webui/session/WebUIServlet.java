@@ -83,7 +83,7 @@ public class WebUIServlet extends DHtmlLayoutServlet
 
         logger = CLogger.getCLogger(WebUIServlet.class);
 
-        logger.log(Level.OFF, "iDempiere web ui service started successfully");
+        logger.log(Level.OFF, "iDempiere Web Client started successfully");
         /**
          * End iDempiere Start
          */
