@@ -181,11 +181,6 @@ INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Colu
 INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Column_Trl_UU ) SELECT l.AD_Language,t.AD_Column_ID, t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Column t WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Column_ID=210844 AND NOT EXISTS (SELECT * FROM AD_Column_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Column_ID=t.AD_Column_ID)
 ;
 
--- Aug 23, 2013 6:27:33 PM MYT
--- IDEMPIERE-1298 2Pack: Support copying of data from one client to another
-CREATE TABLE AD_Package_UUID_Map (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, AD_Package_UUID_Map_ID NUMBER(10) NOT NULL, AD_Package_UUID_Map_UU NVARCHAR2(36) NOT NULL, AD_Table_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, Source_UUID NVARCHAR2(36) NOT NULL, Target_UUID NVARCHAR2(36) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT AD_Package_UUID_Map_Key PRIMARY KEY (AD_Package_UUID_Map_ID))
-;
-
 -- Aug 23, 2013 6:27:55 PM MYT
 -- IDEMPIERE-1298 2Pack: Support copying of data from one client to another
 UPDATE AD_Column SET IsKey='N',Updated=TO_DATE('2013-08-23 18:27:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=210835
