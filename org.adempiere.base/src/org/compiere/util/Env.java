@@ -1474,18 +1474,29 @@ public final class Env
 			} else if (po != null) {
 				//take from po
 				Object v = po.get_Value(token);
+				MColumn colToken = MColumn.get(ctx, po.get_TableName(), token);
+				String foreignTable = colToken.getReferenceTableName();
 				if (v != null) {
 					if (format != null && format.length() > 0) {
-						if (v instanceof Integer && token.endsWith("_ID")) {
+						if (v instanceof Integer && (Integer) v > 0 && token.endsWith("_ID")) {
 							int tblIndex = format.indexOf(".");
-							String table = tblIndex > 0 ? format.substring(0, tblIndex) : token.substring(0, token.length() - 3);
-							String column = tblIndex > 0 ? format.substring(tblIndex + 1) : format;
-							MColumn col = MColumn.get(ctx, table, column);
-							if (col != null && col.isSecure()) {
-								outStr.append("********");
-							} else {
-								outStr.append(DB.getSQLValueString(trxName,
-										"SELECT " + column + " FROM " + table + " WHERE " + table + "_ID = ?", (Integer)v));
+							String tableName = null;
+							if (tblIndex > 0)
+								tableName = format.substring(0, tblIndex);
+							else
+								tableName = foreignTable;
+							MTable table = MTable.get(ctx, tableName);
+							if (table != null && tableName.equalsIgnoreCase(foreignTable)) {
+								String columnName = tblIndex > 0 ? format.substring(tblIndex + 1) : format;
+								MColumn column = table.getColumn(columnName);
+								if (column != null) {
+									if (column.isSecure()) {
+										outStr.append("********");
+									} else {
+										outStr.append(DB.getSQLValueString(trxName,
+												"SELECT " + columnName + " FROM " + tableName + " WHERE " + tableName + "_ID = ?", (Integer)v));
+									}
+								}
 							}
 						} else if (v instanceof Date) {
 							SimpleDateFormat df = new SimpleDateFormat(format);

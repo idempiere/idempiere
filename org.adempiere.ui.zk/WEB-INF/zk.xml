@@ -95,4 +95,9 @@
     	<name>org.zkoss.zul.borderlayout.animation.disabed</name>
     	<value>true</value>
 	</library-property>
+	
+	<preference>
+    	<name>org.zkoss.zk.ui.WebApp.name</name>
+    	<value>iDempiere</value>
+	</preference>
 </zk>
