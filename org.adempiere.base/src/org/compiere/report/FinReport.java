@@ -1533,7 +1533,13 @@ public class FinReport extends SvrProcess
 		String s = m_report.getWhereClause();
 		if (s != null && s.length() > 0)
 			insert.append(" AND ").append(s);
-		insert.append(m_parameterWhere); // IDEMPIERE-130
+		
+		// Exclude PA_ReportCube_ID parameter condition, PA_ReportCube_ID column does not exists in Fact_Acct table
+		String whereClause = m_parameterWhere.toString();
+		if (p_PA_ReportCube_ID > 0)
+			whereClause = whereClause.replaceAll(" AND PA_ReportCube_ID=" + p_PA_ReportCube_ID, "");
+		insert.append(whereClause); // IDEMPIERE-130
+		
 		//	Period restriction
 		FinReportPeriod frp = getPeriod (0);
 		insert.append(" AND TRUNC(DateAcct) ")
