@@ -26,6 +26,7 @@ package org.adempiere.webui.panel;
 import java.sql.Timestamp;
 import java.util.Properties;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ComboItem;
@@ -38,6 +39,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
+import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -47,6 +49,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
@@ -97,7 +100,11 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 
 	protected boolean m_show = true;
 
-    public RolePanel(Properties ctx, LoginWindow loginWindow, String userName, boolean show, KeyNamePair[] clientsKNPairs) {
+	private RolePanel component;
+
+	private static final String ON_DEFER_LOGOUT = "onDeferLogout";
+
+	public RolePanel(Properties ctx, LoginWindow loginWindow, String userName, boolean show, KeyNamePair[] clientsKNPairs) {
     	this.wndLogin = loginWindow;
     	m_ctx = ctx;
     	m_userName = userName;    	
@@ -349,6 +356,9 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         }
         setUserID();
         updateRoleList();
+
+        this.component = this;
+    	component.addEventListener(ON_DEFER_LOGOUT, this);
     }
 
     private void updateRoleList()
@@ -505,6 +515,11 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
             SessionManager.logoutSession();
             wndLogin.loginCancelled();
         }
+		else if (ON_DEFER_LOGOUT.equals(event.getName()))
+		{
+            SessionManager.logoutSession();
+            wndLogin.loginCancelled();
+		}
     }
     
     private void setUserID() {
@@ -572,16 +587,20 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 		Timestamp date = (Timestamp)lstDate.getValue();
 
 		String msg = login.loadPreferences(orgKNPair, warehouseKNPair, date, null);
-
-        if(!(msg == null || msg.length() == 0))
+        if (Util.isEmpty(msg))
         {
-        	throw new WrongValueException(msg);
+            msg = login.validateLogin(orgKNPair);
         }
-
-        msg = login.validateLogin(orgKNPair);
-		if (msg != null && msg.length() > 0)
+        if (! Util.isEmpty(msg))
 		{
-			throw new WrongValueException(msg);
+			Env.getCtx().clear();
+			FDialog.error(0, this, "Error", msg, new Callback<Integer>() {					
+				@Override
+				public void onCallback(Integer result) {
+					Events.echoEvent(new Event(ON_DEFER_LOGOUT, component));
+				}
+			});
+            return;
 		}
 
         wndLogin.loginCompleted();
