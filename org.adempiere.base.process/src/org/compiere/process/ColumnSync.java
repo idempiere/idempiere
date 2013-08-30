@@ -242,9 +242,13 @@ public class ColumnSync extends SvrProcess
 						DatabaseKey dbForeignKey = htForeignKeys.get(key);
 						if (dbForeignKey.getKeyColumns()[0].equalsIgnoreCase(column.getColumnName()))
 						{
-							DatabaseKey primaryKey = CreateForeignKey.getPrimaryKey(md, dbForeignKey.getKeyTable());
+							DatabaseKey primaryKey = CreateForeignKey.getPrimaryKey(md, referenceTableName);
 							if (primaryKey != null)
 							{
+								fkConstraintSql.append(DB.SQLSTATEMENT_SEPARATOR);
+								fkConstraintSql.append("ALTER TABLE ").append(table.getTableName());
+								fkConstraintSql.append(" DROP CONSTRAINT ").append(dbForeignKey.getKeyName());
+
 								StringBuilder fkConstraint = new StringBuilder();
 								fkConstraint.append("CONSTRAINT ").append(dbForeignKey.getKeyName());
 								fkConstraint.append(" FOREIGN KEY (").append(column.getColumnName()).append(") REFERENCES ");
@@ -256,10 +260,10 @@ public class ColumnSync extends SvrProcess
 									fkConstraint.append(", ").append(primaryKey.getKeyColumns()[i]);
 								}
 								fkConstraint.append(")");
-								
+																
 								fkConstraintSql.append(DB.SQLSTATEMENT_SEPARATOR);
 								fkConstraintSql.append("ALTER TABLE ").append(table.getTableName());
-								fkConstraintSql.append(" MODIFY ");
+								fkConstraintSql.append(" ADD ");
 								fkConstraintSql.append(fkConstraint);
 							}
 							modified = true;
