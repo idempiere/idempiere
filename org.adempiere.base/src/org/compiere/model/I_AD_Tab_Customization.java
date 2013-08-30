@@ -148,6 +148,15 @@ public interface I_AD_Tab_Customization
 	  */
 	public boolean isActive();
 
+    /** Column name IsDisplayedGrid */
+    public static final String COLUMNNAME_IsDisplayedGrid = "IsDisplayedGrid";
+
+	/** Set Show in Grid	  */
+	public void setIsDisplayedGrid (String IsDisplayedGrid);
+
+	/** Get Show in Grid	  */
+	public String getIsDisplayedGrid();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

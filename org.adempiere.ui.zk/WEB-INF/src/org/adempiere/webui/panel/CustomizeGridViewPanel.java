@@ -42,12 +42,13 @@ import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
-import org.compiere.model.GridTab;
+import org.compiere.model.MRefList;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.ValueNamePair;
 import org.zkoss.zhtml.Span;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.event.DropEvent;
@@ -58,6 +59,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Vbox;
 
@@ -71,11 +73,13 @@ public class CustomizeGridViewPanel extends Panel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3190425241947591357L;
+	private static final long serialVersionUID = 1592146462575454625L;
 
 	private Map<Integer, String> m_columnsWidth;
 	ArrayList<Integer> tableSeqs;
 	GridView gridPanel = null;
+	MTabCustomization m_tabcust;
+
 	/**
 	 *	Sort Tab Constructor
 	 *
@@ -91,7 +95,7 @@ public class CustomizeGridViewPanel extends Panel
 		m_AD_User_ID = AD_User_ID;
 		m_columnsWidth = columnsWidth;
 		tableSeqs = gridFieldIds;
-		this.setStyle("position : absolute;height: 460px; width:585px; margin: none; border: none;");
+		this.setStyle("position : absolute;height: 460px; width:600px; margin: none; border: none;");
 	}	//	
 
 	/**	Logger			*/
@@ -108,17 +112,18 @@ public class CustomizeGridViewPanel extends Panel
 	private Button bUp = new Button();
 	private Button bDown = new Button();
 	private Checkbox chkSaveWidth = new Checkbox();
+	private Label lblGridMode = new Label();
+	private Listbox lstGridMode = new Listbox();
+
 	//
 	SimpleListModel noModel = new SimpleListModel();
 	SimpleListModel yesModel = new SimpleListModel();
 	Listbox noList = new Listbox();
 	Listbox yesList = new Listbox();
 
-	private GridTab gridTab;
 	private boolean uiCreated;
 	private boolean m_saved = false;
 
-	
 	/**
 	 * 	Static Layout
 	 * 	@throws Exception
@@ -126,15 +131,13 @@ public class CustomizeGridViewPanel extends Panel
 	private void init() throws Exception
 	{
 		Borderlayout layout = new Borderlayout();
-		layout.setStyle("position: absolute; width: 584px; height: 100%; border: none; margin: none;");
+		layout.setStyle("position: absolute; width: 600px; height: 100%; border: none; margin: none;");
 		Panel centerPanel = new Panel();
 		centerPanel.setStyle("border: none; margin: none");
 		centerPanel.setHeight("100%");
 		Center center = new Center();
 		center.setStyle("border: none; margin: none");
 
-		noLabel.setValue("No");
-		yesLabel.setValue("Yes");
 		noLabel.setValue(Msg.getMsg(Env.getCtx(), "Available"));
 		yesLabel.setValue(Msg.getMsg(Env.getCtx(), "Selected"));
 
@@ -211,7 +214,7 @@ public class CustomizeGridViewPanel extends Panel
 		vbox.appendChild(bRemove);
 		span = new Span();
 		span.setParent(centerPanel);
-		span.setStyle("height: 90%; display: inline-block; width: 40px; border:none; margin: none;");
+		span.setStyle("height: 90%; display: inline-block; width: 50px; border:none; margin: none;");
 		span.appendChild(vbox);
 
 		span = new Span();
@@ -225,7 +228,7 @@ public class CustomizeGridViewPanel extends Panel
 		vbox.setStyle("border: none; margin: none");
 		span = new Span();
 		span.setParent(centerPanel);
-		span.setStyle("height: 90%; display: inline-block; width: 40px; border:none; margin: none;");
+		span.setStyle("height: 90%; display: inline-block; width: 50px; border:none; margin: none;");
 		span.appendChild(vbox);
 		
 		Div div = new Div();
@@ -233,7 +236,16 @@ public class CustomizeGridViewPanel extends Panel
 		div.appendChild(chkSaveWidth);
 		chkSaveWidth.setLabel(Msg.getMsg(Env.getCtx(), "SaveColumnWidth"));
 		centerPanel.appendChild(div);
-		
+
+		Separator sep = new Separator("vertical");
+		sep.setSpacing("200px");
+		div.appendChild(sep);
+		lblGridMode.setValue(Msg.getMsg(Env.getCtx(), "OpenInGridMode"));
+		div.appendChild(lblGridMode);
+		lstGridMode.setMold("select");		
+		div.appendChild(lstGridMode);
+		centerPanel.appendChild(div);
+
 		center.appendChild(centerPanel);
 		centerPanel.setVflex("1");
 		centerPanel.setHflex("1");
@@ -245,8 +257,6 @@ public class CustomizeGridViewPanel extends Panel
 		south.setHeight("35px");
 		south.setStyle("text-align: right;");
 		southPanel.setStyle("margin-top: 2px; margin-right: 4px");
-		@SuppressWarnings("unused")
-		String label = Msg.getMsg(Env.getCtx(), "save");
 		Button bOK = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
 		bOK.setId("Ok");
 		EventListener<Event> onClickListener = new EventListener<Event>()
@@ -263,7 +273,6 @@ public class CustomizeGridViewPanel extends Panel
 		};		
 		bOK.addActionListener(onClickListener);
 		southPanel.appendChild(bOK);
-		label = Msg.getMsg(Env.getCtx(), "Cancel");
 		Button btn = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL);
 		btn.setId("Cancel");
 		EventListener<Event> onClickCancelListener = new EventListener<Event>()
@@ -286,23 +295,21 @@ public class CustomizeGridViewPanel extends Panel
 
 		this.appendChild(layout);
 		
-	}	//	Init
+	}	//	init
 	
-	
-	/* (non-Javadoc)
-	 * @see org.compiere.grid.APanelTab#loadData()
-	 */
 	public void loadData()
 	{
+		m_tabcust = MTabCustomization.get(Env.getCtx(), m_AD_User_ID, m_AD_Tab_ID, null);
+
 		yesModel.removeAllElements();
 		noModel.removeAllElements();		
 		boolean baseLanguage = Env.isBaseLanguage(Env.getCtx(), "AD_Field");
 		String sql;
 		if (baseLanguage)
-			sql = "SELECT t.AD_Field_ID,t.Name,t.SeqNoGrid,AD_Client_ID, AD_Org_ID FROM AD_Field t WHERE t.AD_Tab_ID=? AND t.IsDisplayedGrid ='Y' AND t.IsActive='Y' ORDER BY 3,2";
+			sql = "SELECT f.AD_Field_ID,f.Name FROM AD_Field f WHERE f.AD_Tab_ID=? AND (f.IsDisplayed='Y' OR f.IsDisplayedGrid='Y') AND f.IsActive='Y' ORDER BY f.SeqNoGrid,f.Name,f.SeqNo";
 		else
-			sql = "SELECT t.AD_Field_ID,trl.Name,t.SeqNoGrid,t.AD_Client_ID, t.AD_Org_ID FROM AD_Field t JOIN AD_Field_Trl trl ON (t.AD_Field_ID = trl.AD_Field_ID)"
-					+ " WHERE t.AD_Tab_ID=? AND t.IsDisplayedGrid ='Y' AND t.IsActive='Y' AND trl.AD_Language=? ORDER BY 3,2";
+			sql = "SELECT f.AD_Field_ID,trl.Name FROM AD_Field f JOIN AD_Field_Trl trl ON (f.AD_Field_ID = trl.AD_Field_ID)"
+					+ " WHERE f.AD_Tab_ID=? AND (f.IsDisplayed='Y' OR f.IsDisplayedGrid='Y') AND f.IsActive='Y' AND trl.AD_Language=? ORDER BY f.SeqNoGrid,f.Name,f.SeqNo";
 		PreparedStatement  pstmt = null;
 		ResultSet rs = null;
 		try
@@ -318,9 +325,7 @@ public class CustomizeGridViewPanel extends Panel
 			{
 				int key = rs.getInt(1);
 				String name = rs.getString(2);
-				int AD_Client_ID = rs.getInt(4);
-				int AD_Org_ID = rs.getInt(5);
-				ListElement pp = new ListElement(key, name, AD_Client_ID, AD_Org_ID);
+				ListElement pp = new ListElement(key, name);
 				if (tableSeqs != null && tableSeqs.size() > 0 ) {
 					if (tableSeqs.contains(key)) {
 						curTabSel.put(key, pp);
@@ -361,6 +366,18 @@ public class CustomizeGridViewPanel extends Panel
 		yesList.setModel(yesModel);
 		noList.setItemRenderer(noModel);
 		noList.setModel(noModel);
+
+		ValueNamePair pp = new ValueNamePair(null, null);
+		lstGridMode.addItem(pp);
+		ValueNamePair[]  list = MRefList.getList(Env.getCtx(), MTabCustomization.ISDISPLAYEDGRID_AD_Reference_ID, false);
+		for (int i = 0;i < list.length; i++ ) { 
+			lstGridMode.addItem(list[i]);
+			if (m_tabcust != null && list[i].getValue().equals(m_tabcust.getIsDisplayedGrid()))
+				lstGridMode.setSelectedValueNamePair(list[i]);
+		}
+
+		if (m_tabcust != null && m_tabcust.getCustom().indexOf("px") > 0)
+			chkSaveWidth.setChecked(true);
 	}	//	loadData
 
 	/**
@@ -425,6 +442,7 @@ public class CustomizeGridViewPanel extends Panel
 			yesModel.add(endIndex, selObject);
 		}		
 	}
+
 	/**
 	 * 	Move within Yes List
 	 *	@param event event
@@ -491,12 +509,6 @@ public class CustomizeGridViewPanel extends Panel
 		}
 	}	//	migrateValueWithinYesList
 
-	
-
-
-	/** (non-Javadoc)
-	 * @see org.compiere.grid.APanelTab#saveData()
-	 */
 	public void saveData()
 	{
 		log.fine("");
@@ -509,10 +521,10 @@ public class CustomizeGridViewPanel extends Panel
 			ListElement pp = (ListElement)yesModel.getElementAt(i);
 			if (!pp.isUpdateable())
 				continue;
-			//index += 10;
-			
+
+			if (i > 0)
+				custom.append(",");
 			custom.append(pp.getKey());
-			custom.append(",");			
 		}
 		
 		if (chkSaveWidth.isSelected() && m_columnsWidth != null && !m_columnsWidth.isEmpty())
@@ -531,19 +543,23 @@ public class CustomizeGridViewPanel extends Panel
 				custom.append(width);
 			}
 		}
-		
-		MTabCustomization uc = MTabCustomization.get(Env.getCtx(), m_AD_User_ID, m_AD_Tab_ID, null);
-		if (uc != null && uc.getAD_Tab_Customization_ID() > 0) {
-			uc.setCustom(custom.toString());	
-		} else{
-			uc = new MTabCustomization(Env.getCtx(), 0, null);
-			uc.setAD_Tab_ID(m_AD_Tab_ID);
-			uc.set_ValueOfColumn("AD_User_ID", m_AD_User_ID);
-			uc.setCustom(custom.toString());			
+
+		String gridview = null;
+		if (lstGridMode.getSelectedItem() != null && lstGridMode.getSelectedItem().toString().length() > 0)
+			gridview = lstGridMode.getSelectedItem().toString();
+		if (m_tabcust != null && m_tabcust.getAD_Tab_Customization_ID() > 0) {
+			m_tabcust.setCustom(custom.toString());	
+			m_tabcust.setIsDisplayedGrid(gridview);
+		} else {
+			m_tabcust = new MTabCustomization(Env.getCtx(), 0, null);
+			m_tabcust.setAD_Tab_ID(m_AD_Tab_ID);
+			m_tabcust.set_ValueOfColumn("AD_User_ID", m_AD_User_ID);
+			m_tabcust.setCustom(custom.toString());
+			m_tabcust.setIsDisplayedGrid(gridview);
 		}
-		if (uc.getCustom() == null || uc.getCustom().trim().length() == 0)
+		if (m_tabcust.getCustom() == null || m_tabcust.getCustom().trim().length() == 0)
 		{
-			if (uc.is_new())
+			if (m_tabcust.is_new())
 			{
 				//no action needed
 				getParent().detach();
@@ -551,12 +567,12 @@ public class CustomizeGridViewPanel extends Panel
 			}
 			else
 			{
-				ok = uc.delete(true);
+				ok = m_tabcust.delete(true);
 			}
 		}
 		else
 		{
-			ok = uc.save();
+			ok = m_tabcust.save();
 		}
 		//
 		if(ok) {
@@ -577,36 +593,24 @@ public class CustomizeGridViewPanel extends Panel
 	 */
 	private static class ListElement extends NamePair {
 		/**
-		 *
+		 * 
 		 */
-		private static final long serialVersionUID = -5645910649588308798L;
+		private static final long serialVersionUID = -1717531470895073281L;
+
 		private int		m_key;
-		private int		m_AD_Client_ID;
-		private int		m_AD_Org_ID;
-		/** Initial selection flag */
 
 		private boolean	m_updateable;
 
-		public ListElement(int key, String name, int AD_Client_ID, int AD_Org_ID) {
+		public ListElement(int key, String name) {
 			super(name);
 			this.m_key = key;
-			this.m_AD_Client_ID = AD_Client_ID;
-			this.m_AD_Org_ID = AD_Org_ID;
 			this.m_updateable = true;
 		}
 		
 		public int getKey() {
 			return m_key;
 		}
-		
-		public int getAD_Client_ID() {
-			return m_AD_Client_ID;
-		}
-		
-		public int getAD_Org_ID() {
-			return m_AD_Org_ID;
-		}
-		
+
 		public boolean isUpdateable() {
 			return m_updateable;
 		}
@@ -630,9 +634,7 @@ public class CustomizeGridViewPanel extends Panel
 				return
 					li.getKey() == m_key
 					&& li.getName() != null
-					&& li.getName().equals(getName())
-					&& li.getAD_Client_ID() == m_AD_Client_ID
-					&& li.getAD_Org_ID() == m_AD_Org_ID;
+					&& li.getName().equals(getName());
 			}
 			return false;
 		}	//	equals
@@ -713,63 +715,16 @@ public class CustomizeGridViewPanel extends Panel
 		uiCreated = true;
 	}
 
-	public void dynamicDisplay(int i) {
-	}
-
-	public void editRecord(boolean b) {
-	}
-
-	public String getDisplayLogic() {
-		return gridTab.getDisplayLogic();
-	}
-
-	public GridTab getGridTab() {
-		return gridTab;
-	}
-
-	public int getTabLevel() {
-		return gridTab.getTabLevel();
-	}
-
-	public String getTitle() {
-		return gridTab.getName();
-	}
-
-	public boolean isCurrent() {
-		return gridTab != null ? gridTab.isCurrent() : false;
-	}
-
 	public void query() {
 		loadData();
 	}
 
-	public void query(boolean currentRows, int currentDays, int i) {
-		loadData();
-	}
-
-	public void refresh() {
-		loadData();
-	}
-
-	public void switchRowPresentation() {
-	}
-
-	public String get_ValueAsString(String variableName) {
-		return Env.getContext(Env.getCtx(), m_WindowNo, variableName);
-	}
-
-	public void afterSave(boolean onSaveEvent) {
-	}
-
-	public boolean onEnterKey() {
-		return false;
-	}
-	
 	public boolean isSaved() {
 		return m_saved;
 	}
+
 	public void setGridPanel(GridView gridPanel){
 		this.gridPanel = gridPanel;
 	}
-}	//ADSortTab
 
+}	//CustomizeGridViewPanel
