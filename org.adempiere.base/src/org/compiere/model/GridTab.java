@@ -42,6 +42,7 @@ import org.adempiere.base.Core;
 import org.adempiere.base.IColumnCallout;
 import org.adempiere.base.ServiceQuery;
 import org.adempiere.base.equinox.EquinoxExtensionLocator;
+import org.adempiere.model.MTabCustomization;
 import org.adempiere.util.ContextRunnable;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
@@ -1634,6 +1635,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public boolean isSingleRow()
 	{
+        MTabCustomization tabcust = MTabCustomization.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), getAD_Tab_ID(), null);
+        if (tabcust != null && tabcust.getIsDisplayedGrid() != null)
+        	return "N".equals(tabcust.getIsDisplayedGrid());
 		return m_vo.IsSingleRow;
 	}   //  isSingleRow;
 

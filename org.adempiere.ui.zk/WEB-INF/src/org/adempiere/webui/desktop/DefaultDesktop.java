@@ -27,6 +27,7 @@ import org.adempiere.base.event.IEventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.model.MBroadcastMessage;
 import org.adempiere.util.ServerContext;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
@@ -71,6 +72,7 @@ import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -164,7 +166,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 			@Override
 			public void onEvent(Event event) throws Exception {
 				OpenEvent oe = (OpenEvent) event;
-				updateMenuCollapsedPreference(!oe.isOpen());
+				updateMenuCollapsedPreference(!oe.isOpen());				
 			}			
 		});
         w.addEventListener(Events.ON_SWIPE, new EventListener<SwipeEvent>() {
@@ -192,6 +194,14 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 			public void onEvent(Event event) throws Exception {
 				OpenEvent oe = (OpenEvent) event;
 				updateHelpCollapsedPreference(!oe.isOpen());
+				HtmlBasedComponent comp = windowContainer.getComponent();
+				if (comp != null) {
+					if (oe.isOpen()) {
+						LayoutUtils.removeSclass("with-right-icon", comp);
+					} else {
+						LayoutUtils.addSclass("with-right-icon", comp);
+					}
+				}
 			}
 		});
 
@@ -210,7 +220,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		});
         
         boolean helpCollapsed= pref.isPropertyBool(UserPreference.P_HELP_COLLAPSED);
-        e.setOpen(!helpCollapsed);
+        e.setOpen(!helpCollapsed);        
+        Clients.evalJavaScript("$('.desktop-layout > div > .z-east-colpsd > .z-borderlayout-icon').attr('title', '" +
+        		Msg.getElement(Env.getCtx(), "AD_CtxHelp_ID") + "');");
+        
         
         helpController.render(e, this);
 
@@ -266,6 +279,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         max.addEventListener(Events.ON_CLICK, this);
         max.setSclass("window-container-toolbar-btn");
         max.setStyle("cursor: pointer; border: 1px solid transparent; padding: 2px;");
+        
+        if (!e.isOpen()) {
+        	LayoutUtils.addSclass("with-right-icon", windowContainer.getComponent());
+        }
         
         return layout;
     }

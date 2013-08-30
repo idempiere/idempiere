@@ -29,7 +29,7 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20130829L;
 
     /** Standard Constructor */
     public X_AD_Tab_Customization (Properties ctx, int AD_Tab_Customization_ID, String trxName)
@@ -172,5 +172,26 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	public String getCustom () 
 	{
 		return (String)get_Value(COLUMNNAME_Custom);
+	}
+
+	/** IsDisplayedGrid AD_Reference_ID=319 */
+	public static final int ISDISPLAYEDGRID_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISDISPLAYEDGRID_Yes = "Y";
+	/** No = N */
+	public static final String ISDISPLAYEDGRID_No = "N";
+	/** Set Show in Grid.
+		@param IsDisplayedGrid Show in Grid	  */
+	public void setIsDisplayedGrid (String IsDisplayedGrid)
+	{
+
+		set_Value (COLUMNNAME_IsDisplayedGrid, IsDisplayedGrid);
+	}
+
+	/** Get Show in Grid.
+		@return Show in Grid	  */
+	public String getIsDisplayedGrid () 
+	{
+		return (String)get_Value(COLUMNNAME_IsDisplayedGrid);
 	}
 }
