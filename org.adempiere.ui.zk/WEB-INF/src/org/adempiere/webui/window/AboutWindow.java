@@ -77,18 +77,18 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6573804051552633150L;
+	private static final long serialVersionUID = -305598686065143269L;
 
 	private Checkbox bErrorsOnly;
 	private Listbox logTable;
 	private Tabbox tabbox;
 	protected Tabpanels tabPanels;
-	private Button btnDownload;
-	private Button btnErrorEmail;
-	private Button btnViewLog;
+	protected Button btnDownload;
+	protected Button btnErrorEmail;
+	protected Button btnViewLog;
 	protected Tab tabLog;
 
-	private Button btnAdempiereLog;
+	protected Button btnAdempiereLog;
 
 	private Listbox levelListBox;
 
