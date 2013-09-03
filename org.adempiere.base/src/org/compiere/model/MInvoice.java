@@ -2397,7 +2397,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		reversal.setReversal(true);
 
 		//	Reverse Line Qty
-		MInvoiceLine[] rLines = reversal.getLines(false);
+		MInvoiceLine[] rLines = reversal.getLines(true);
 		for (int i = 0; i < rLines.length; i++)
 		{
 			MInvoiceLine rLine = rLines[i];

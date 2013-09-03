@@ -41,11 +41,10 @@ public class StandardTaxProvider implements ITaxProvider {
 			Integer taxID = new Integer(line.getC_Tax_ID());
 			if (!taxList.contains(taxID))
 			{
-				MOrderTax oTax = MOrderTax.get (line, order.getPrecision(), 
-					false, order.get_TrxName());	//	current Tax
-				if (oTax.getC_TaxProvider_ID() != 0) {
+				MTax tax = new MTax(order.getCtx(), taxID, order.get_TrxName());
+				if (tax.getC_TaxProvider_ID() != 0)
 					continue;
-				}
+				MOrderTax oTax = MOrderTax.get (line, order.getPrecision(), false, order.get_TrxName());	//	current Tax
 				oTax.setIsTaxIncluded(order.isTaxIncluded());
 				if (!oTax.calculateTaxFromLines())
 					return false;
@@ -126,13 +125,12 @@ public class StandardTaxProvider implements ITaxProvider {
 			totalLines = totalLines.add(line.getLineNetAmt());
 			if (!taxList.contains(line.getC_Tax_ID()))
 			{
+				MTax tax = new MTax(invoice.getCtx(), line.getC_Tax_ID(), invoice.get_TrxName());
+				if (tax.getC_TaxProvider_ID() != 0)
+					continue;
 				MInvoiceTax iTax = MInvoiceTax.get (line, invoice.getPrecision(), false, invoice.get_TrxName()); //	current Tax
 				if (iTax != null)
 				{
-					if (iTax.getC_TaxProvider_ID() != 0) {
-				    	continue;
-				    }
-
 					iTax.setIsTaxIncluded(invoice.isTaxIncluded());
 					if (!iTax.calculateTaxFromLines())
 						return false;
@@ -202,9 +200,13 @@ public class StandardTaxProvider implements ITaxProvider {
 	public boolean recalculateTax(MTaxProvider provider, MInvoiceLine line, boolean newRecord) {
 		if (!newRecord && line.is_ValueChanged(MInvoiceLine.COLUMNNAME_C_Tax_ID))
 		{
-			//	Recalculate Tax for old Tax
-			if (!line.updateInvoiceTax(true))
-				return false;
+			MTax mtax = new MTax(line.getCtx(), line.getC_Tax_ID(), line.get_TrxName());
+	    	if (mtax.getC_TaxProvider_ID() == 0)
+	    	{
+				//	Recalculate Tax for old Tax
+				if (!line.updateInvoiceTax(true))
+					return false;
+	    	}
 		}
 		return line.updateHeaderTax();
 	}
@@ -222,11 +224,10 @@ public class StandardTaxProvider implements ITaxProvider {
 			Integer taxID = new Integer(line.getC_Tax_ID());
 			if (!taxList.contains(taxID))
 			{
-				MRMATax oTax = MRMATax.get (line, rma.getPrecision(), 
-					false, rma.get_TrxName());	//	current Tax
-				if (oTax.getC_TaxProvider_ID() != 0) {
+				MTax tax = new MTax(rma.getCtx(), taxID, rma.get_TrxName());
+				if (tax.getC_TaxProvider_ID() != 0)
 					continue;
-				}
+				MRMATax oTax = MRMATax.get (line, rma.getPrecision(), false, rma.get_TrxName());	//	current Tax
 				oTax.setIsTaxIncluded(rma.isTaxIncluded());
 				if (!oTax.calculateTaxFromLines())
 					return false;
