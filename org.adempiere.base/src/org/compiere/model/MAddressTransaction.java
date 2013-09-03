@@ -82,7 +82,7 @@ public class MAddressTransaction extends X_C_AddressTransaction
 	{
 		setErrorMessage(null);
 
-		boolean processed = false;		
+		boolean processed = false;
 		try
 		{
 			IAddressValidation validation = Core.getAddressValidation(getMAddressValidation());
@@ -91,7 +91,7 @@ public class MAddressTransaction extends X_C_AddressTransaction
 			else
 			{
 				processed = validation.onlineValidate(getCtx(), this, get_TrxName());				
-				if (!processed)
+				if (!processed || !isValid())
 					setErrorMessage("From " + getMAddressValidation().getName() + ": " + getResult());
 			}
 		}
@@ -104,7 +104,7 @@ public class MAddressTransaction extends X_C_AddressTransaction
 		MOnlineTrxHistory history = new MOnlineTrxHistory(getCtx(), 0, get_TrxName());
 		history.setAD_Table_ID(MAddressTransaction.Table_ID);
 		history.setRecord_ID(getC_AddressTransaction_ID());
-		history.setIsError(!processed);
+		history.setIsError(!(processed && isValid()));
 		history.setProcessed(processed);
 		
 		StringBuilder msg = new StringBuilder();
