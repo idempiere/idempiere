@@ -855,6 +855,11 @@ public class MCostDetail extends X_M_CostDetail
 			for (int i = 0; i < ces.length; i++)
 			{
 				MCostElement ce = ces[i];
+				if (ce.isAverageInvoice() || ce.isAveragePO() || ce.isLifo() || ce.isFifo())
+				{
+					if (!product.isStocked())
+						continue;
+				}
 				ok = process (as, product, ce, Org_ID, M_ASI_ID);
 				if (!ok)
 					break;
@@ -868,6 +873,11 @@ public class MCostDetail extends X_M_CostDetail
 				MCostElement[] ces = MCostElement.getCostingMethods(this);
 				for (MCostElement costingElement : ces)
 				{
+					if (costingElement.isAverageInvoice() || costingElement.isAveragePO() || costingElement.isLifo() || costingElement.isFifo())
+					{
+						if (!product.isStocked())
+							continue;
+					}					
 					ok = process (as, product, costingElement, Org_ID, M_ASI_ID);
 					if (!ok)
 						break;
@@ -875,7 +885,15 @@ public class MCostDetail extends X_M_CostDetail
 			}
 			else
 			{
-				ok = process (as, product, ce, Org_ID, M_ASI_ID);
+				if (ce.isAverageInvoice() || ce.isAveragePO() || ce.isLifo() || ce.isFifo())
+				{
+					if (product.isStocked())
+						ok = process (as, product, ce, Org_ID, M_ASI_ID);
+				}
+				else
+				{
+					ok = process (as, product, ce, Org_ID, M_ASI_ID);
+				}
 			}
 		}
 		

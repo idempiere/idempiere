@@ -58,7 +58,7 @@ public class GridFieldVO implements Serializable
 	public static String getSQL (Properties ctx)
 	{
 		//	IsActive is part of View
-		MRole role = MRole.getDefault(ctx, true);
+		MRole role = MRole.getDefault(ctx, false);
 		String advancedFilter=" AND IsAdvancedField='N' ";
 		StringBuilder sql;
 		if (!Env.isBaseLanguage(ctx, "AD_Tab")){

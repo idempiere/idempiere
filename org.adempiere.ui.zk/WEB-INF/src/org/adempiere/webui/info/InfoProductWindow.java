@@ -350,6 +350,10 @@ public class InfoProductWindow extends InfoWindow {
 
 	private void onPAttributeClick() {
 		Integer productInteger = getSelectedRowKey();
+		if (productInteger == null) {
+			m_PAttributeButton.setEnabled(false);
+			return;
+		}
 		String productName = (String)contentPanel.getValueAt(contentPanel.getSelectedRow(), findColumnIndex("Name"));
 
 		if (productInteger == null || productInteger.intValue() == 0)
@@ -822,4 +826,13 @@ public class InfoProductWindow extends InfoWindow {
 		}
 		super.prepareTable(layout, from, where, orderBy);
 	}
+
+	@Override
+	protected void executeQuery() {
+		super.executeQuery();
+		if (m_PAttributeButton != null)
+			m_PAttributeButton.setEnabled(false);
+	}
+	
+	
 }

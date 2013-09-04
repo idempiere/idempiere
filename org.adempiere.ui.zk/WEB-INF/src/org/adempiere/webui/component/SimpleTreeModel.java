@@ -159,11 +159,14 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 			}
 
 			// Color
-			final MTreeNode mNode = (MTreeNode)  ((DefaultTreeNode<?>) node).getData();
-			Color color = mNode.getColor();
-			if (color != null){				
-				String hex = ZkCssHelper.createHexColorString(color);
-				ZkCssHelper.appendStyle(tc, "color: #" + hex);
+			Object data = ((DefaultTreeNode<?>) node).getData();
+			if (data instanceof MTreeNode) {
+				final MTreeNode mNode = (MTreeNode) data;
+				Color color = mNode.getColor();
+				if (color != null){				
+					String hex = ZkCssHelper.createHexColorString(color);
+					ZkCssHelper.appendStyle(tc, "color: #" + hex);
+				}				
 			}
 			// End color
 		}else{
