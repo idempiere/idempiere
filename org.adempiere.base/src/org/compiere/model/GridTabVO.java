@@ -370,7 +370,7 @@ public class GridTabVO implements Evaluatee, Serializable
 				+ "             AND ce.AD_Field_ID IS NULL "
 				+ "             AND ce.ASP_Status = 'H')"; // Hide
 		//  View only returns IsActive='Y'
-		MRole role = MRole.getDefault(ctx, true);
+		MRole role = MRole.getDefault(ctx, false);
 		String advancedFilter=" AND IsAdvancedTab='N' ";
 		StringBuilder sql;
 		if (!Env.isBaseLanguage(ctx, "AD_Window")) {

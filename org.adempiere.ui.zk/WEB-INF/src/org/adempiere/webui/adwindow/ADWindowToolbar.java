@@ -39,6 +39,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.model.MToolBarButton;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -68,9 +69,9 @@ import org.zkoss.zul.Toolbarbutton;
 public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 3390505814516682801L;
+	private static final long serialVersionUID = -367141745573893540L;
 
 	public static final String BTNPREFIX = "Btn";
 
@@ -118,7 +119,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	// Elaine 2008/12/04
 	/** Show Personal Lock								*/
 	public boolean isPersonalLock = MRole.getDefault().isPersonalLock();
-	private boolean isAllowProductInfo = MRole.getDefault().isAllow_Info_Product();
+	private boolean isAllowProductInfo = MRole.getDefault().canAccess_Info_Product();
 
 	private int windowNo = 0;
 
@@ -176,13 +177,19 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btnArchive = createButton("Archive", "Archive", "Archive");
         btnPrint = createButton("Print", "Print", "Print");
         btnPrint.setTooltiptext(btnPrint.getTooltiptext()+ "    Alt+P");
-        btnLock = createButton("Lock", "Lock", "Lock"); // Elaine 2008/12/04
-		btnLock.setVisible(isPersonalLock);
+        if (isPersonalLock) {
+            btnLock = createButton("Lock", "Lock", "Lock"); // Elaine 2008/12/04
+            btnLock.setDisabled(!isPersonalLock); // Elaine 2008/12/04
+    		btnLock.setVisible(isPersonalLock);
+        }
 		btnZoomAcross = createButton("ZoomAcross", "ZoomAcross", "ZoomAcross");
         btnActiveWorkflows = createButton("ActiveWorkflows", "WorkFlow", "WorkFlow");
         btnRequests = createButton("Requests", "Request", "Request");
-        btnProductInfo = createButton("ProductInfo", "Product", "InfoProduct");
-        btnProductInfo.setVisible(isAllowProductInfo);
+        if (isAllowProductInfo) {
+            btnProductInfo = createButton("ProductInfo", "Product", "InfoProduct");
+            btnProductInfo.setDisabled(!isAllowProductInfo); // Elaine 2008/07/22
+            btnProductInfo.setVisible(isAllowProductInfo);
+        }
 
         btnCustomize= createButton("Customize", "Customize", "Customize");
         btnCustomize.setDisabled(false);
@@ -199,9 +206,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
         btnActiveWorkflows.setDisabled(false); // Elaine 2008/07/17
         btnRequests.setDisabled(false); // Elaine 2008/07/22
-        btnProductInfo.setDisabled(!isAllowProductInfo); // Elaine 2008/07/22
         btnArchive.setDisabled(false); // Elaine 2008/07/28
-        btnLock.setDisabled(!isPersonalLock); // Elaine 2008/12/04
 
         if (MRole.getDefault().isCanExport())
         {
@@ -594,7 +599,20 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		}	// All restrictions
 
 		dynamicDisplay();
+		// If no workflow set for the table => disable btnWorkflow
+		if (!btnActiveWorkflows.isDisabled()) {
+			GridTab gridTab = adwindow.getADWindowContent().getActiveGridTab();
+			if (gridTab != null)
+				btnActiveWorkflows.setDisabled(!hasWorkflow(gridTab));
+		}
 		ToolBarMenuRestictionLoaded = true;
+	}
+
+	/** btnActiveWorkflow should be disabled when table has not workflow defined */
+	boolean hasWorkflow(GridTab gridTab)
+	{
+		String sql = "SELECT COUNT(*) FROM AD_Workflow WHERE IsActive='Y' AND AD_Table_ID=? AND AD_Client_ID IN (0,?)";
+		return (DB.getSQLValueEx(null, sql, gridTab.getAD_Table_ID(), Env.getAD_Client_ID(Env.getCtx())) > 0);
 	}
 
 	private void loadCustomButton(int AD_Window_ID) {

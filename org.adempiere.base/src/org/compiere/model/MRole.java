@@ -61,7 +61,7 @@ public final class MRole extends X_AD_Role
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1135628544466487086L;
+	private static final long serialVersionUID = 3608297024439006903L;
 
 	/**
 	 * 	Get Default (Client) Role
@@ -3146,6 +3146,25 @@ public final class MRole extends X_AD_Role
 		}	//	reload
 		Boolean retValue = m_infoAccess.get(AD_InfoWindow_ID);
 		return retValue;
+	}
+
+	private Boolean m_canAccess_Info_Product = null;
+
+	public boolean canAccess_Info_Product() {
+		if (m_canAccess_Info_Product == null) {
+			String sql = ""
+					+ "SELECT COUNT(*) "
+					+ "FROM   AD_InfoWindow iw "
+					+ "       JOIN AD_InfoWindow_Access iwa "
+					+ "         ON ( iwa.AD_InfoWindow_ID = iw.AD_InfoWindow_ID ) "
+					+ "WHERE  AD_Table_ID = ? "
+					+ "       AND iw.IsActive = 'Y' "
+					+ "       AND iwa.IsActive = 'Y' "
+					+ "       AND iwa.AD_Role_ID = ?";
+			int cnt = DB.getSQLValueEx(null, sql, I_M_Product.Table_ID, getAD_Role_ID());
+			m_canAccess_Info_Product = new Boolean(cnt > 0);
+		}
+		return m_canAccess_Info_Product.booleanValue();
 	}
 
 }	//	MRole

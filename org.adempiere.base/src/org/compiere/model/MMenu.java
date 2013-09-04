@@ -114,6 +114,8 @@ public class MMenu extends X_AD_Menu
 		//	Reset info
 		if (isSummary() && getAction() != null)
 			setAction(null);
+		if (isSummary() && isCentrallyMaintained())
+			setIsCentrallyMaintained(false);
 		String action = getAction();
 		if (action == null)
 			action = "";
