@@ -21,6 +21,7 @@
 
 package org.adempiere.webui.window;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -88,7 +89,8 @@ public class WLocationDialog extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6213326035184139513L;
+	private static final long serialVersionUID = 5368065537791919302L;
+	
 	private static final String LABEL_STYLE = "white-space: nowrap;";
 	/** Logger          */
 	private static CLogger log = CLogger.getCLogger(WLocationDialog.class);
@@ -147,6 +149,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 	private Button btnOnline;
 	private Textbox txtResult;
 	private Checkbox cbxValid;
+	private ArrayList<String> enabledCountryList = new ArrayList<String>();
 	
 	private GridField m_GridField = null;
 	private boolean onSaveError = false;
@@ -380,7 +383,19 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		if (MLocation.LOCATION_MAPS_URL_PREFIX != null || MLocation.LOCATION_MAPS_ROUTE_PREFIX != null)
 			vbox.appendChild(pnlLinks);
 		
-		if (MSysConfig.getBooleanValue(MSysConfig.ADDRESS_VALIDATION, false, Env.getAD_Client_ID(Env.getCtx())))
+		String addressValidation = MSysConfig.getValue(MSysConfig.ADDRESS_VALIDATION, null, Env.getAD_Client_ID(Env.getCtx()));
+		enabledCountryList.clear();
+		if (addressValidation != null && addressValidation.trim().length() > 0)
+		{
+			StringTokenizer st = new StringTokenizer(addressValidation, ";");
+			while (st.hasMoreTokens())
+			{
+				String token = st.nextToken().trim();
+				enabledCountryList.add(token);
+			}
+		}
+			
+		if (enabledCountryList.size() > 0)
 		{
 			Grid grid = GridFactory.newGridLayout();
 			vbox.appendChild(grid);
@@ -423,6 +438,23 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			cell.appendChild(btnOnline);
 			cell.setAlign("right");
 			row.appendChild(cell);
+			
+			if (!enabledCountryList.isEmpty())
+			{
+				boolean isEnabled = false;
+				if (m_location.getCountry() != null)
+				{
+					for (String enabledCountry : enabledCountryList)
+					{
+						if (enabledCountry.equals(m_location.getCountry().getCountryCode().trim()))
+						{
+							isEnabled = true;
+							break;
+						}
+					}
+				}
+				btnOnline.setEnabled(isEnabled);
+			}
 		}
 		
 		vbox.setVflex("1");
@@ -798,6 +830,24 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			m_location.setCity(null);
 			//  refresh
 			initLocation();
+			
+			if (!enabledCountryList.isEmpty())
+			{
+				boolean isEnabled = false;
+				if (c != null)
+				{
+					for (String enabledCountry : enabledCountryList)
+					{
+						if (enabledCountry.equals(c.getCountryCode().trim()))
+						{
+							isEnabled = true;
+							break;
+						}
+					}
+				}
+				btnOnline.setEnabled(isEnabled);
+			}
+			
 			inCountryAction = false;
 			lstCountry.focus();
 		}

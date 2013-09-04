@@ -23,6 +23,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -91,7 +92,7 @@ public class VLocationDialog extends CDialog
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5279612834653363233L;
+	private static final long serialVersionUID = 8870275797513554720L;
 
 	/** Lookup result header */
 	private Object[] header = null;
@@ -225,6 +226,7 @@ public class VLocationDialog extends CDialog
 	private CButton btnOnline						= new CButton();
 	private CTextArea txtResult						= new CTextArea(3, 30);
 	private CCheckBox cbxValid 						= new CCheckBox();
+	private ArrayList<String> enabledCountryList 	= new ArrayList<String>();
 	//END
 
 	/**
@@ -404,7 +406,19 @@ public class VLocationDialog extends CDialog
 				fCountry.setSelectedItem(country);
 		}
 		
-		if (MSysConfig.getBooleanValue(MSysConfig.ADDRESS_VALIDATION, false, Env.getAD_Client_ID(Env.getCtx())))
+		String addressValidation = MSysConfig.getValue(MSysConfig.ADDRESS_VALIDATION, null, Env.getAD_Client_ID(Env.getCtx()));
+		enabledCountryList.clear();
+		if (addressValidation != null && addressValidation.trim().length() > 0)
+		{
+			st = new StringTokenizer(addressValidation, ";");
+			while (st.hasMoreTokens())
+			{
+				String token = st.nextToken().trim();
+				enabledCountryList.add(token);
+			}
+		}
+		
+		if (enabledCountryList.size() > 0)
 		{
 			addLine(line++, new CLabel(Msg.getElement(Env.getCtx(), "C_AddressValidation_ID")), lstAddressValidation);
 			
@@ -426,6 +440,23 @@ public class VLocationDialog extends CDialog
 			cbxValid.setSelected(m_location.isValid());
 			
 			addLine(line++, new JLabel(), btnOnline);
+			
+			if (!enabledCountryList.isEmpty())
+			{
+				boolean isEnabled = false;
+				if (m_location.getCountry() != null)
+				{
+					for (String enabledCountry : enabledCountryList)
+					{
+						if (enabledCountry.equals(m_location.getCountry().getCountryCode().trim()))
+						{
+							isEnabled = true;
+							break;
+						}
+					}
+				}
+				btnOnline.setEnabled(isEnabled);
+			}
 		}
 		
 		//	Update UI
@@ -519,7 +550,25 @@ public class VLocationDialog extends CDialog
 			m_location.setCountry(c);
 
 			initLocation();
-			fCountry.requestFocus();	//	allows to use Keyboard selection
+			
+			if (!enabledCountryList.isEmpty())
+			{
+				boolean isEnabled = false;
+				if (c != null)
+				{
+					for (String enabledCountry : enabledCountryList)
+					{
+						if (enabledCountry.equals(c.getCountryCode().trim()))
+						{
+							isEnabled = true;
+							break;
+						}
+					}
+				}
+				btnOnline.setEnabled(isEnabled);
+			}
+			
+			fCountry.requestFocus();	//	allows to use Keyboard selection			
 			inCountryAction = false;
 		}
 		//		Region Changed 

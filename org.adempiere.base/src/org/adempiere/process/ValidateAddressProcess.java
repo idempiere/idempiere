@@ -14,11 +14,13 @@
 package org.adempiere.process;
 
 import java.sql.Timestamp;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAddressTransaction;
 import org.compiere.model.MLocation;
+import org.compiere.model.MSysConfig;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -57,6 +59,26 @@ public class ValidateAddressProcess extends SvrProcess
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "FillMandatory") + Msg.getElement(Env.getCtx(), MAddressTransaction.COLUMNNAME_C_AddressValidation_ID));
 
 		MLocation m_location = new MLocation(getCtx(), getRecord_ID(), get_TrxName());
+		
+		String addressValidation = MSysConfig.getValue(MSysConfig.ADDRESS_VALIDATION, null, m_location.getAD_Client_ID());
+		boolean isEnabled = false;
+		if (addressValidation != null && addressValidation.trim().length() > 0 && m_location.getCountry() != null)
+		{
+			StringTokenizer st = new StringTokenizer(addressValidation, ";");
+			while (st.hasMoreTokens())
+			{
+				String token = st.nextToken().trim();
+				if (token.equals(m_location.getCountry().getCountryCode().trim()))
+				{
+					isEnabled = true;
+					break;
+				}
+			}
+		}
+		
+		if (!isEnabled)
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AddressValidationNotEnabledForCountry"));
+		
 		boolean ok = m_location.processOnline(p_C_AddressValidation_ID);
 		m_location.saveEx();
 		

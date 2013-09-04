@@ -13,6 +13,8 @@
  *****************************************************************************/
 package org.adempiere.base.event;
 
+import java.util.StringTokenizer;
+
 import org.compiere.model.I_C_Location;
 import org.compiere.model.MAddressValidation;
 import org.compiere.model.MLocation;
@@ -36,16 +38,33 @@ public class AddressValidationEventHandler extends AbstractEventHandler {
 			if (po.get_TableName().equals(I_C_Location.Table_Name))
 			{
 				MLocation location = (MLocation) po;
-				if (MSysConfig.getBooleanValue(MSysConfig.ADDRESS_VALIDATION, false, location.getAD_Client_ID()))
+				
+				String addressValidation = MSysConfig.getValue(MSysConfig.ADDRESS_VALIDATION, null, location.getAD_Client_ID());
+				boolean isEnabled = false;
+				if (addressValidation != null && addressValidation.trim().length() > 0 && location.getCountry() != null)
 				{
-					MAddressValidation validation = null;
-					if (location.getC_AddressValidation_ID() > 0)
-						validation = new MAddressValidation(location.getCtx(), location.getC_AddressValidation_ID(), location.get_TrxName());
-					if (validation == null)
-						validation = MAddressValidation.getDefaultAddressValidation(location.getCtx(), location.getAD_Client_ID(), location.getAD_Org_ID(), location.get_TrxName());
-					if (validation != null)
-						location.processOnline(validation.getC_AddressValidation_ID());
+					StringTokenizer st = new StringTokenizer(addressValidation, ";");
+					while (st.hasMoreTokens())
+					{
+						String token = st.nextToken().trim();
+						if (token.equals(location.getCountry().getCountryCode().trim()))
+						{
+							isEnabled = true;
+							break;
+						}
+					}
 				}
+				
+				if (!isEnabled)
+					return;
+				
+				MAddressValidation validation = null;
+				if (location.getC_AddressValidation_ID() > 0)
+					validation = new MAddressValidation(location.getCtx(), location.getC_AddressValidation_ID(), location.get_TrxName());
+				if (validation == null)
+					validation = MAddressValidation.getDefaultAddressValidation(location.getCtx(), location.getAD_Client_ID(), location.getAD_Org_ID(), location.get_TrxName());
+				if (validation != null)
+					location.processOnline(validation.getC_AddressValidation_ID());
 			}
 		}
 	}
