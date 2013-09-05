@@ -2451,7 +2451,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//  Table Open?
 		if (!m_mTable.isOpen())
 		{
-			log.log (Level.SEVERE, "Table not open", new Exception("Table not open"));
+			if (targetRow >= 0)
+				log.log (Level.SEVERE, "Table not open", new Exception("Table not open"));
+			
 			return -1;
 		}
 		//  Row Count

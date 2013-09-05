@@ -591,7 +591,7 @@ public class MOrder extends X_C_Order implements DocAction
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID() > 0 ? getC_DocType_ID() : getC_DocTypeTarget_ID());
-		return dt.getName() + " " + getDocumentNo();
+		return dt.getNameTrl() + " " + getDocumentNo();
 	}	//	getDocumentInfo
 
 	/**

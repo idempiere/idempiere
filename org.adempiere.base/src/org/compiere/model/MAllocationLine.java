@@ -266,7 +266,7 @@ public class MAllocationLine extends X_C_AllocationLine
 				log.warning("C_BPartner_ID different - Invoice=" + getC_BPartner_ID() + " - Payment=" + payment.getC_BPartner_ID());
 			if (reverse)
 			{
-				if (!payment.isCashTrx())
+				if (!payment.isCashbookTrx())
 				{
 					payment.setIsAllocated(false);
 					payment.saveEx();

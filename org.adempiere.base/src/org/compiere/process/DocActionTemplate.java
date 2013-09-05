@@ -70,7 +70,7 @@ public class DocActionTemplate extends PO implements DocAction
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), 0);
-		return dt.getName() + " " + getDocumentNo();
+		return dt.getNameTrl() + " " + getDocumentNo();
 	}	//	getDocumentInfo
 
 	/**

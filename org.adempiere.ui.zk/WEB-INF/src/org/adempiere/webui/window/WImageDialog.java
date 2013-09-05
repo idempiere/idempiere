@@ -83,12 +83,15 @@ public class WImageDialog extends Window implements EventListener<Event>
 			m_mImage = MImage.get (Env.getCtx(), 0);
 		else
 		{
-			try {
-				AImage aImage = new AImage(m_mImage.getName(), m_mImage.getData());
-				
-				image.setContent(aImage);
-			} catch (Exception e) {
-				log.log(Level.WARNING, "load image", e);
+			if (m_mImage.getData()!=null)
+			{
+				try {
+					AImage aImage = new AImage(m_mImage.getName(), m_mImage.getData());
+					
+					image.setContent(aImage);
+				} catch (Exception e) {
+					log.log(Level.WARNING, "load image", e);
+				}
 			}
 		}
 		
@@ -183,8 +186,9 @@ public class WImageDialog extends Window implements EventListener<Event>
 			}
 			else if (m_mImage != null && m_mImage.getAD_Image_ID() > 0)
 			{
-				m_mImage.deleteEx(true);
-				m_mImage = null;
+				m_mImage.setBinaryData(null);
+				m_mImage.setName("-");
+				m_mImage.saveEx();
 			}
 			detach();
 		}
@@ -197,6 +201,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 		{
 			AImage img = null;
 			image.setContent(img);
+			fileButton.setLabel("-");
 		}
 	}
 	

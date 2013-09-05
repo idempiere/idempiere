@@ -219,7 +219,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		this.setMaximizable(true);
 		this.setWidth("700px");
 		this.setHeight("85%");
-		this.setTitle("Attachment");
+		this.setTitle(Msg.getMsg(Env.getCtx(), "Attachment"));
 		this.setClosable(true);
 		this.setSizable(true);
 		this.setBorder("normal");

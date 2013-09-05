@@ -289,6 +289,8 @@ public class Evaluator
 		//	log.fine( variable);
 			if (variable.startsWith("~")) 
 				variable = variable.substring(1);
+			if (variable.indexOf(".") > 0)
+				variable = variable.substring(0, variable.indexOf("."));
 			list.add(variable);
 		}
 	}   //  parseDepends
