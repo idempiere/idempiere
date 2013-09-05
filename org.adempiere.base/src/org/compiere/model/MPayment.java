@@ -2750,7 +2750,7 @@ public final class MPayment extends X_C_Payment
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		return dt.getName() + " " + getDocumentNo();
+		return dt.getNameTrl() + " " + getDocumentNo();
 	}	//	getDocumentInfo
 
 	/**

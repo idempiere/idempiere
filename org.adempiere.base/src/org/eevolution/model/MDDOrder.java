@@ -387,7 +387,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		return dt.getName() + " " + getDocumentNo();
+		return dt.getNameTrl() + " " + getDocumentNo();
 	}	//	getDocumentInfo
 
 	/**

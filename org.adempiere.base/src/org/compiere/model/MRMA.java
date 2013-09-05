@@ -203,7 +203,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		return dt.getName() + " " + getDocumentNo();
+		return dt.getNameTrl() + " " + getDocumentNo();
 	}	//	getDocumentInfo
 
 	/**

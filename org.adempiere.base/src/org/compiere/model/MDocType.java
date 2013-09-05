@@ -41,7 +41,7 @@ public class MDocType extends X_C_DocType
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2641885482012907072L;
+	private static final long serialVersionUID = -6556521509479670059L;
 
 	/**
 	 * Return the first Doc Type for this BaseType
@@ -357,4 +357,14 @@ public class MDocType extends X_C_DocType
 
         return relatedDocTypeId;
     }
+   
+	/**
+	 * 	Get translated doctype name
+	 *	@return Name if available translated
+	 */
+	public String getNameTrl()
+	{
+		return get_Translation (COLUMNNAME_Name, Env.getAD_Language(getCtx()));
+	}	//	getNameTrl
+
 }	//	MDocType
