@@ -44,6 +44,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
+import org.compiere.util.Util;
 
 /**
  *  Grid Field Model.
@@ -897,8 +898,17 @@ public class GridField
 	 */
 	public String get_ValueAsString (Properties ctx, String variableName)
 	{
-	   if( m_vo.TabNo == 0)
-	    	return Env.getContext (ctx, m_vo.WindowNo, variableName, true);
+		//ref column
+		String foreignColumn = "";
+		int f = variableName.indexOf('.');
+		if (f > 0) {
+			foreignColumn = variableName.substring(f+1, variableName.length());
+			variableName = variableName.substring(0, f);
+		}
+		
+		String value = null;
+		if( m_vo.TabNo == 0)
+	    	value = Env.getContext (ctx, m_vo.WindowNo, variableName, true);
 	    else
 	    {
 	    	boolean tabOnly = false;
@@ -907,8 +917,27 @@ public class GridField
 	    		variableName = variableName.substring(1);
 	    		tabOnly = true;
 	    	}
-	    	return Env.getContext (ctx, m_vo.WindowNo, m_vo.TabNo, variableName, tabOnly, true);
+	    	value = Env.getContext (ctx, m_vo.WindowNo, m_vo.TabNo, variableName, tabOnly, true);
 	    }
+		if (!Util.isEmpty(value) && !Util.isEmpty(foreignColumn) && variableName.endsWith("_ID")
+			&& getGridTab() != null) {
+			String refValue = "";
+			int id = 0;
+			try {
+				id = Integer.parseInt(value);
+			} catch (Exception e){}
+			if (id > 0) {
+				MColumn column = MColumn.get(ctx, getGridTab().getTableName(), variableName);
+				if (column != null) {
+					String foreignTable = column.getReferenceTableName();
+					refValue = DB.getSQLValueString(null,
+							"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE " 
+							+ foreignTable + "_ID = ?", id);
+				}
+			}
+			return refValue;
+		}
+		return value;
 	}	//	get_ValueAsString
 
 
