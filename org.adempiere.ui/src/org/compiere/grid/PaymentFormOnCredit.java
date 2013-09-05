@@ -23,6 +23,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.util.DB;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Env;
 
 /**
  * 
@@ -52,9 +53,21 @@ public abstract class PaymentFormOnCredit extends PaymentForm {
 		/**
 		 * 	Load Payment Terms
 		 */
+		String ad_language = Env.getAD_Language(Env.getCtx());
+		boolean isBaseLanguage = Env.isBaseLanguage(ad_language, "C_PaymentTerm");
+		StringBuilder sb = new StringBuilder();
+		if (isBaseLanguage) {
+			sb.append("SELECT p.C_PaymentTerm_ID, p.Name FROM C_PaymentTerm p")
+			  .append(" WHERE p.IsActive='Y' ORDER BY p.Name");
+		} else {
+			sb.append("SELECT p.C_PaymentTerm_ID, pt.Name FROM C_PaymentTerm p")
+			  .append(" JOIN C_PaymentTerm_Trl pt ON (p.C_PaymentTerm_ID=pt.C_PaymentTerm_ID AND pt.AD_Language='")
+			  .append(ad_language).append("')")
+			  .append(" WHERE p.IsActive='Y' ORDER BY p.Name");
+		}
+
 		String SQL = MRole.getDefault().addAccessSQL(
-			"SELECT C_PaymentTerm_ID, Name FROM C_PaymentTerm WHERE IsActive='Y' ORDER BY Name",
-			"C_PaymentTerm", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+				sb.toString(), "p", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
