@@ -920,6 +920,10 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         {
         	gridTab.resetDetailForNewParentRecord();
         }
+        else
+        {
+        	gridTab.setCurrentRow(-1, true);
+        }
     }
     
     /**
