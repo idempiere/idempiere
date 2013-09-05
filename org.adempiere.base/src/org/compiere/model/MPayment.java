@@ -200,13 +200,21 @@ public final class MPayment extends X_C_Payment
 	}	//	resetNew
 
 	/**
-	 * 	Is Cashbook Transfer Trx
+	 * 	Is Cash Trx
 	 *	@return true if Cash Trx
 	 */
 	public boolean isCashTrx()
 	{
 		return "X".equals(getTenderType());
 	}	//	isCashTrx
+	
+	/**
+	 * Is Cashbook Trx
+	 * @return true if this is a cashbook trx
+	 */
+	public boolean isCashbookTrx() {
+		return isCashTrx() && !MSysConfig.getBooleanValue(MSysConfig.CASH_AS_PAYMENT, true , getAD_Client_ID());
+	}
 	
 	/**************************************************************************
 	 *  Set Credit Card.
@@ -650,7 +658,7 @@ public final class MPayment extends X_C_Payment
 	{
 		// @Trifon - CashPayments
 		//if ( getTenderType().equals("X") ) {
-		if ( isCashTrx() && !MSysConfig.getBooleanValue(MSysConfig.CASH_AS_PAYMENT, true , getAD_Client_ID())) {
+		if ( isCashbookTrx()) {
 			// Cash Book Is mandatory
 			if ( getC_CashBook_ID() <= 0 ) {
 				log.saveError("Error", Msg.parseTranslation(getCtx(), "@Mandatory@: @C_CashBook_ID@"));
@@ -1965,7 +1973,7 @@ public final class MPayment extends X_C_Payment
 
 		// @Trifon - CashPayments
 		//if ( getTenderType().equals("X") ) {
-		if ( isCashTrx() && !MSysConfig.getBooleanValue(MSysConfig.CASH_AS_PAYMENT, true , getAD_Client_ID())) {
+		if ( isCashbookTrx()) {
 			// Create Cash Book entry
 			if ( getC_CashBook_ID() <= 0 ) {
 				log.saveError("Error", Msg.parseTranslation(getCtx(), "@Mandatory@: @C_CashBook_ID@"));
@@ -2047,7 +2055,8 @@ public final class MPayment extends X_C_Payment
 		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
 	}	//	completeIt
-	
+
+
 	/**
 	 * 	Set the definite document number after completed
 	 */
