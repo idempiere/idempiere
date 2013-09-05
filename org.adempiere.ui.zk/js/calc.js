@@ -96,7 +96,7 @@ function Calc()
 			var value = calcText.value;
 			if (separator != '.')
 			{
-				var re = new RegExp("[" + separator + "]");
+				var re = new RegExp("[" + separator + "]", "g");
 				value = value.replace(re,'.');
 			}
 			var result = "" + eval(value);
