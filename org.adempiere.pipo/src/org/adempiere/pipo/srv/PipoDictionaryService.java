@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import org.adempiere.base.IDictionaryService;
 import org.adempiere.pipo2.PackIn;
 import org.adempiere.pipo2.Zipper;
-import org.compiere.Adempiere;
 import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -30,7 +29,7 @@ public class PipoDictionaryService implements IDictionaryService {
 			packIn.setPackageName(context.getBundle().getSymbolicName());
 			packIn.setPackageVersion((String) context.getBundle().getHeaders().get("Bundle-Version"));
 			packIn.setUpdateDictionary(false);
-			packIn.setPackageDirectory(getPackageDir());
+//			packIn.setPackageDirectory(getPackageDir());
 
 			X_AD_Package_Imp_Proc adPackageImp = new X_AD_Package_Imp_Proc(Env.getCtx(),
 					0, trxName);
@@ -42,6 +41,8 @@ public class PipoDictionaryService implements IDictionaryService {
 
 			String dict_file = targetDir + File.separator + parentDir + File.separator
 					+ "dict" + File.separator + "PackOut.xml";
+			
+			packIn.setPackageDirectory(targetDir + File.separator + parentDir);
 
 			if (logger.isLoggable(Level.INFO)) logger.info("dict file->" + dict_file);
 
@@ -64,6 +65,7 @@ public class PipoDictionaryService implements IDictionaryService {
 
 	}
 
+	/*
 	private String getPackageDir() {
 
 		// Create Target directory if required
@@ -79,6 +81,6 @@ public class PipoDictionaryService implements IDictionaryService {
 			}
 		}
 		return result;
-	}
+	}*/
 
 }
