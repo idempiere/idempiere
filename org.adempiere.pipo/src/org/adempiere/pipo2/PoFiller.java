@@ -164,7 +164,8 @@ public class PoFiller{
 					return id;
 				} else if (id == 0) {
 					MColumn col = MColumn.get(ctx.ctx, po.get_TableName(), columnName);
-					if (MTable.isZeroIDTable(col.getReferenceTableName())) {
+					String refTableName = col.getReferenceTableName();
+					if (refTableName != null && MTable.isZeroIDTable(refTableName)) {
 						po.set_ValueNoCheck(columnName, id);
 						return id;
 					}
