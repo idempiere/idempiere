@@ -16,6 +16,7 @@ import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
+import org.compiere.model.MLanguage;
 import org.compiere.model.MTable;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -52,6 +53,10 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 			throw new SAXException();
 
 		String language = getStringValue(element, "AD_Language");
+		MLanguage lang = MLanguage.get(ctx.ctx, language);
+		// skip if not system installed language
+		if (! lang.isSystemLanguage())
+			return;
 
 		if (log.isLoggable(Level.INFO)) log.info(elementValue+" "+getStringValue(element, "Name"));
 
