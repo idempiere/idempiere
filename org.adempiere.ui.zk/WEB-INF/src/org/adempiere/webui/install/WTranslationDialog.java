@@ -46,7 +46,11 @@ import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ReaderInputStream;
 import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.apache.commons.io.FileUtils;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Target;
+import org.apache.tools.ant.taskdefs.Zip;
 import org.compiere.install.Translation;
 import org.compiere.install.TranslationController;
 import org.compiere.util.Env;
@@ -100,6 +104,7 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 	
 	private Button bExport = new Button();
 	private Button bImport = new Button();
+	private Button bExportZIP = new Button();
 	private Button bImportZIP = new Button();
 	
 	private Label lClient = new Label();
@@ -128,6 +133,8 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 		bExport.setStyle("text-align: right;");
 		bImport.setLabel(Msg.getMsg(Env.getCtx(), "Import"));
 		bImport.addActionListener(this);		
+		bExportZIP.setLabel(Msg.getMsg(Env.getCtx(), "ExportZIP"));
+		bExportZIP.addActionListener(this);	
 		bImportZIP.setLabel(Msg.getMsg(Env.getCtx(), "ImportZIP"));
 		bImportZIP.setUpload(AdempiereWebUI.getUploadSetting());
 		bImportZIP.addEventListener(Events.ON_UPLOAD, this);
@@ -152,8 +159,14 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 		row.appendChild(div);
 
 		div = new Div();
-		div.setStyle("text-align: center;");
+		div.setStyle("text-align: left;");
 		div.appendChild(bImport);
+		row.appendChild(div);
+
+		row = rows.newRow();
+		div = new Div();
+		div.setStyle("text-align: right;");
+		div.appendChild(bExportZIP);
 		row.appendChild(div);
 
 		div = new Div();
@@ -247,13 +260,17 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 			return;
 		}
 
-		final FolderBrowser directoryDialog = new FolderBrowser(true);
-		directoryDialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				callImportProcess(directoryDialog.getPath());
-			}
-		});
+		if ((e.getTarget() == bImport || e.getTarget() == bExport)) {
+			final FolderBrowser directoryDialog = new FolderBrowser(true);
+			directoryDialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					callImportProcess(directoryDialog.getPath());
+				}
+			});
+		} else if (e.getTarget() == bExportZIP) {
+			processExportZIP();
+		}
 	}   //  onEvent
 
 	private void callImportProcess(String directory) {
@@ -407,5 +424,49 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 		in.close();
 		out.close();
 	}	
+
+	private void processExportZIP() {
+	    File tempfolder;
+		try {
+			tempfolder = File.createTempFile(m_AD_Language.getValue(), ".trl");
+		    tempfolder.delete();
+		    tempfolder.mkdir();
+		} catch (IOException e1) {
+			throw new AdempiereException("Problem creating temp folder", e1);
+		}
+		// export to temp folder
+		callImportProcess(tempfolder.getPath());
+
+		// and now zip the exported files
+		File destZipFile = null;
+		try {
+			destZipFile = File.createTempFile(m_AD_Language.getValue() + "_trlExport_", ".zip");
+		} catch (Throwable e) {
+			throw new AdempiereException("Unable to create temp file", e);
+		}
+		destZipFile.delete();
+
+	    Zip zipper = new Zip();
+	    zipper.setDestFile(destZipFile);
+	    zipper.setBasedir(tempfolder);
+	    zipper.setUpdate(false);
+	    zipper.setCompress(true);
+	    zipper.setCaseSensitive(false);
+	    zipper.setFilesonly(true);
+	    zipper.setTaskName("zip");
+	    zipper.setTaskType("zip");
+	    zipper.setProject(new Project());
+	    zipper.setOwningTarget(new Target());
+	    zipper.execute();
+
+		try {
+			FileUtils.deleteDirectory(tempfolder);
+		} catch (IOException e) {}
+	    
+		MultiFileDownloadDialog downloadDialog = new MultiFileDownloadDialog(new File [] {destZipFile});
+		downloadDialog.setPage(getForm().getPage());
+		downloadDialog.setTitle(Msg.getMsg(Env.getCtx(), "ExportZIP"));
+		Events.postEvent(downloadDialog, new Event(MultiFileDownloadDialog.ON_SHOW));
+	}
 
 }
