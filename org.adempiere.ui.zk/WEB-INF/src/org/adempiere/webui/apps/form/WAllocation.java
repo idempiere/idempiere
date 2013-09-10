@@ -199,7 +199,7 @@ public class WAllocation extends Allocation
 		row = rows.newRow();
 		row.appendCellChild(bpartnerLabel.rightAlign());
 		bpartnerSearch.getComponent().setHflex("true");
-		row.appendCellChild(bpartnerSearch.getComponent(),1);
+		row.appendCellChild(bpartnerSearch.getComponent(),2);
 		row.appendCellChild(dateLabel.rightAlign());
 		row.appendCellChild(dateField.getComponent());
 		row.appendCellChild(organizationLabel.rightAlign());
@@ -211,16 +211,8 @@ public class WAllocation extends Allocation
 		currencyPick.getComponent().setHflex("true");
 		row.appendCellChild(currencyPick.getComponent(),1);		
 		row.appendCellChild(multiCurrency,2);		
-		row.appendCellChild(new Space(),1);
-		row.appendCellChild(new Space(),1);
-		
-		row = rows.newRow();
-		row.appendCellChild(new Space());
-		row.appendCellChild(autoWriteOff);
-		row.appendCellChild(new Space());
-		row.appendCellChild(new Space());
-		row.appendCellChild(new Space());
-		row.appendCellChild(new Space());
+		row.appendCellChild(autoWriteOff,2);
+		row.appendCellChild(new Space(),1);		
 		
 		South south = new South();
 		south.setStyle("border: none");
