@@ -51,7 +51,6 @@ public class ColumnElementHandler extends AbstractElementHandler {
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
-		int success = 0;
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx.ctx, entitytype)) {
 			if (isParentDefer(element, I_AD_Table.Table_Name)) {
@@ -78,8 +77,13 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				return;
 			}
 
-			if (!mColumn.is_new() && !mColumn.is_Changed())
+			if (!mColumn.is_new() && !mColumn.is_Changed()) {
+				boolean syncDatabase = "Y".equalsIgnoreCase(getStringValue(element, "IsSyncDatabase"));
+				if (syncDatabase) {
+					syncColumn(ctx, mColumn, "Sync", false);
+				}
 				return;
+			}
 
 			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Column.Table_Name, X_AD_Column.Table_ID);
 			String action = null;
@@ -156,23 +160,29 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			}
 
 			if (recreateColumn || syncDatabase) {
-				MTable table = new MTable(ctx.ctx, mColumn.getAD_Table_ID(), getTrxName(ctx));
-				if (!table.isView() && !mColumn.isVirtualColumn()) {
-					success = createColumn(ctx, table, mColumn, recreateColumn);
-
-					X_AD_Package_Imp_Detail  dbDetail = createImportDetail(ctx, "dbColumn", X_AD_Column.Table_Name, X_AD_Column.Table_ID);
-					if (success == 1) {
-						logImportDetail(ctx, dbDetail, 1, mColumn.getColumnName(),
-								mColumn.get_ID(), action);
-					} else {
-						logImportDetail(ctx, dbDetail, 0, mColumn.getColumnName(),
-								mColumn.get_ID(), action);
-						throw new DatabaseAccessException("Failed to create column or related constraint for " + mColumn.getColumnName());
-					}
-				}
+				syncColumn(ctx, mColumn, action, recreateColumn);
 			}
 		} else {
 			element.skip = true;
+		}
+	}
+
+	private void syncColumn(PIPOContext ctx, MColumn mColumn, String action,
+			boolean recreateColumn) throws SAXException {
+		int success = 0;
+		MTable table = new MTable(ctx.ctx, mColumn.getAD_Table_ID(), getTrxName(ctx));
+		if (!table.isView() && !mColumn.isVirtualColumn()) {
+			success = createColumn(ctx, table, mColumn, recreateColumn);
+
+			X_AD_Package_Imp_Detail  dbDetail = createImportDetail(ctx, "dbColumn", X_AD_Column.Table_Name, X_AD_Column.Table_ID);
+			if (success == 1) {
+				logImportDetail(ctx, dbDetail, 1, mColumn.getColumnName(),
+						mColumn.get_ID(), action);
+			} else {
+				logImportDetail(ctx, dbDetail, 0, mColumn.getColumnName(),
+						mColumn.get_ID(), action);
+				throw new DatabaseAccessException("Failed to create column or related constraint for " + mColumn.getColumnName());
+			}
 		}
 	}
 
