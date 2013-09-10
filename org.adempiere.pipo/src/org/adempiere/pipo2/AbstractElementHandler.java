@@ -306,11 +306,14 @@ public abstract class AbstractElementHandler implements ElementHandler {
      * @return string value
      */
     protected String getStringValue(Element element, String qName, List<String> excludes) {
-    	String name = qName;
-    	String s = element.properties.get(qName).contents.toString();
+    	if (element == null) return null;
+    	if (qName == null) return null;
+    	Element propertyElement = element.properties.get(qName);
+    	if (propertyElement == null || propertyElement.contents == null) return null;
+    	String s = propertyElement.contents.toString();
 
     	if (s != null && s.trim().length() > 0 && excludes != null) {
-    		excludes.add(name);
+    		excludes.add(qName);
     	}
     	return ((s == null || s.trim().length() == 0) ? null : s.trim());
     }
