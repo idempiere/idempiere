@@ -151,6 +151,12 @@ html,body {
 	height: 22px;
 }
 
+.window-container-toolbar-btn.context-help-btn .z-toolbarbutton-cnt img {
+	width: 16px;
+	height: 16px;
+	padding: 3px 3px;
+}
+
 .tree-search-combo .z-comboitem-img img {
 	width: 16px;
 	height: 16px;
@@ -494,10 +500,6 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 .desktop-tabbox .z-tabs .z-toolbar-tabs-body {
 	padding: 0px !important;
 	margin: 0px !important;
-}
-
-.desktop-tabbox.with-right-icon .z-tabs .z-toolbar-tabs-body {
-	margin-right: 12px !important; 
 }
 
 .desktop-tabbox .z-tabs .z-toolbar-tabs-body .z-toolbarbutton {
@@ -1914,37 +1916,4 @@ table.z-vbox > tbody > tr > td > table {
 .payment-rule-editor .editor-button :hover {
 	border-radius: 0px;
 	background-color: #ddd;
-}
-
-<%-- Context Help --%>
-.desktop-layout > div > .z-east-colpsd {
-	border: none;
-	width: 0px !important;
-	position: absolute;
-	overflow: visible;
-	padding: 0px !important;
-	margin: 0px !important;
-}
-
-.desktop-layout > div > .z-east-colpsd > .z-borderlayout-icon {
-	background-image: url(${c:encodeURL('/theme/default/images/Help16.png')}) !important;
-	background-position:center !important;
-	width: 16px;
-	height: 16px;
-	position: relative;
-	left: -20px;
-	background-size: 16px 16px;
-	margin-left: 0px !important;
-	margin-right: 0px !important;
-	margin-top: 4px !important;
-	padding: 3px !important;
-}
-
-.desktop-layout > div > .z-east-colpsd > .z-borderlayout-icon:hover {
-	background-color:#DDD !important;
-	-webkit-box-shadow:inset 0px 0px 3px #CCC;
-	-moz-box-shadow:inset 0px 0px 3px #CCC;	
-	-o-box-shadow:inset 0px 0px 3px #CCC;	
-	-ms-box-shadow:inset 0px 0px 3px #CCC;	
-	box-shadow:inset 0px 0px 3px #CCC;
 }
