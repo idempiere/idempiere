@@ -18,6 +18,7 @@ package org.compiere.process;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 
 /**
@@ -170,6 +171,43 @@ public class ProcessInfoParameter implements Serializable
 		return "Y".equals(m_Parameter_To);
 	}
 	
+	/**
+	 * Method getParameter as Timestamp
+	 * @return Object
+	 */
+	public Timestamp getParameterAsTimestamp()
+	{
+		if (m_Parameter == null)
+			return null;
+		if (m_Parameter instanceof Timestamp)
+			return (Timestamp) m_Parameter;
+		return null;
+	}	//	getParameterAsTimestamp
+
+	
+	/**
+	 * Method getParameter as String
+	 * @return Object
+	 */
+	public String getParameterAsString()
+	{
+		if (m_Parameter == null)
+			return null;
+		return m_Parameter.toString();
+	}	//	getParameterAsString
+	
+	/**
+	 * Method getParameter as BigDecimal
+	 * @return Object
+	 */
+	public BigDecimal getParameterAsBigDecimal ()
+	{
+		if (m_Parameter == null)
+			return null;
+		if (m_Parameter instanceof BigDecimal)
+			return (BigDecimal) m_Parameter;
+		return new BigDecimal(m_Parameter.toString());
+	}	//	getParameterAsBigDecimal	
 	
 	/**
 	 * Method getParameterName

@@ -361,6 +361,15 @@ public interface I_AD_Field
 	  */
 	public boolean isCentrallyMaintained();
 
+    /** Column name IsDefaultFocus */
+    public static final String COLUMNNAME_IsDefaultFocus = "IsDefaultFocus";
+
+	/** Set Default Focus	  */
+	public void setIsDefaultFocus (boolean IsDefaultFocus);
+
+	/** Get Default Focus	  */
+	public boolean isDefaultFocus();
+
     /** Column name IsDisplayed */
     public static final String COLUMNNAME_IsDisplayed = "IsDisplayed";
 

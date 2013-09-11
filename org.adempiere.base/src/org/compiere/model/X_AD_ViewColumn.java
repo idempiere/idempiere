@@ -29,7 +29,7 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130704L;
+	private static final long serialVersionUID = 20130826L;
 
     /** Standard Constructor */
     public X_AD_ViewColumn (Properties ctx, int AD_ViewColumn_ID, String trxName)
@@ -39,6 +39,7 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
         {
 			setAD_ViewColumn_ID (0);
 			setAD_ViewComponent_ID (0);
+			setColumnName (null);
 			setEntityType (null);
 // U
         } */

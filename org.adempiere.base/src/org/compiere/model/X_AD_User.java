@@ -31,7 +31,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20130826L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -52,6 +52,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 // 'N'
 			setIsNoPasswordReset (false);
 // 'N'
+			setIsSalesLead (false);
+// N
 			setName (null);
 			setNotificationType (null);
 // E
@@ -177,6 +179,48 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_Birthday);
 	}
 
+	public I_C_Location getBP_Location() throws RuntimeException
+    {
+		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_Name)
+			.getPO(getBP_Location_ID(), get_TrxName());	}
+
+	/** Set BP Address.
+		@param BP_Location_ID 
+		Address of the Business Partner
+	  */
+	public void setBP_Location_ID (int BP_Location_ID)
+	{
+		if (BP_Location_ID < 1) 
+			set_Value (COLUMNNAME_BP_Location_ID, null);
+		else 
+			set_Value (COLUMNNAME_BP_Location_ID, Integer.valueOf(BP_Location_ID));
+	}
+
+	/** Get BP Address.
+		@return Address of the Business Partner
+	  */
+	public int getBP_Location_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_BP_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set BP Name.
+		@param BPName BP Name	  */
+	public void setBPName (String BPName)
+	{
+		set_Value (COLUMNNAME_BPName, BPName);
+	}
+
+	/** Get BP Name.
+		@return BP Name	  */
+	public String getBPName () 
+	{
+		return (String)get_Value(COLUMNNAME_BPName);
+	}
+
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
     {
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
@@ -233,6 +277,34 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
+			.getPO(getC_Campaign_ID(), get_TrxName());	}
+
+	/** Set Campaign.
+		@param C_Campaign_ID 
+		Marketing Campaign
+	  */
+	public void setC_Campaign_ID (int C_Campaign_ID)
+	{
+		if (C_Campaign_ID < 1) 
+			set_Value (COLUMNNAME_C_Campaign_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Campaign_ID, Integer.valueOf(C_Campaign_ID));
+	}
+
+	/** Get Campaign.
+		@return Marketing Campaign
+	  */
+	public int getC_Campaign_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_C_Greeting getC_Greeting() throws RuntimeException
     {
 		return (org.compiere.model.I_C_Greeting)MTable.get(getCtx(), org.compiere.model.I_C_Greeting.Table_Name)
@@ -284,6 +356,34 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	public int getC_Job_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Job_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_C_Location getC_Location() throws RuntimeException
+    {
+		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_Name)
+			.getPO(getC_Location_ID(), get_TrxName());	}
+
+	/** Set Address.
+		@param C_Location_ID 
+		Location or Address
+	  */
+	public void setC_Location_ID (int C_Location_ID)
+	{
+		if (C_Location_ID < 1) 
+			set_Value (COLUMNNAME_C_Location_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Location_ID, Integer.valueOf(C_Location_ID));
+	}
+
+	/** Get Address.
+		@return Location or Address
+	  */
+	public int getC_Location_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -619,6 +719,30 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return false;
 	}
 
+	/** Set Sales Lead.
+		@param IsSalesLead 
+		This contact is a sales lead
+	  */
+	public void setIsSalesLead (boolean IsSalesLead)
+	{
+		set_Value (COLUMNNAME_IsSalesLead, Boolean.valueOf(IsSalesLead));
+	}
+
+	/** Get Sales Lead.
+		@return This contact is a sales lead
+	  */
+	public boolean isSalesLead () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsSalesLead);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Last Contact.
 		@param LastContact 
 		Date this individual was last contacted
@@ -668,6 +792,108 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	public String getLDAPUser () 
 	{
 		return (String)get_Value(COLUMNNAME_LDAPUser);
+	}
+
+	/** LeadSource AD_Reference_ID=53415 */
+	public static final int LEADSOURCE_AD_Reference_ID=53415;
+	/** Cold Call = CC */
+	public static final String LEADSOURCE_ColdCall = "CC";
+	/** Existing Customer = EC */
+	public static final String LEADSOURCE_ExistingCustomer = "EC";
+	/** Employee = EM */
+	public static final String LEADSOURCE_Employee = "EM";
+	/** Partner = PT */
+	public static final String LEADSOURCE_Partner = "PT";
+	/** Conference = CN */
+	public static final String LEADSOURCE_Conference = "CN";
+	/** Trade Show = TS */
+	public static final String LEADSOURCE_TradeShow = "TS";
+	/** Web Site = WS */
+	public static final String LEADSOURCE_WebSite = "WS";
+	/** Word of Mouth = WM */
+	public static final String LEADSOURCE_WordOfMouth = "WM";
+	/** Email = EL */
+	public static final String LEADSOURCE_Email = "EL";
+	/** Set Lead Source.
+		@param LeadSource 
+		The source of this lead/opportunity
+	  */
+	public void setLeadSource (String LeadSource)
+	{
+
+		set_Value (COLUMNNAME_LeadSource, LeadSource);
+	}
+
+	/** Get Lead Source.
+		@return The source of this lead/opportunity
+	  */
+	public String getLeadSource () 
+	{
+		return (String)get_Value(COLUMNNAME_LeadSource);
+	}
+
+	/** Set Lead Source Description.
+		@param LeadSourceDescription 
+		Additional information on the source of this lead/opportunity
+	  */
+	public void setLeadSourceDescription (String LeadSourceDescription)
+	{
+		set_Value (COLUMNNAME_LeadSourceDescription, LeadSourceDescription);
+	}
+
+	/** Get Lead Source Description.
+		@return Additional information on the source of this lead/opportunity
+	  */
+	public String getLeadSourceDescription () 
+	{
+		return (String)get_Value(COLUMNNAME_LeadSourceDescription);
+	}
+
+	/** LeadStatus AD_Reference_ID=53416 */
+	public static final int LEADSTATUS_AD_Reference_ID=53416;
+	/** New = N */
+	public static final String LEADSTATUS_New = "N";
+	/** Working = W */
+	public static final String LEADSTATUS_Working = "W";
+	/** Expired = E */
+	public static final String LEADSTATUS_Expired = "E";
+	/** Recycled = R */
+	public static final String LEADSTATUS_Recycled = "R";
+	/** Converted = C */
+	public static final String LEADSTATUS_Converted = "C";
+	/** Set Lead Status.
+		@param LeadStatus 
+		The status of this lead/opportunity in the sales cycle
+	  */
+	public void setLeadStatus (String LeadStatus)
+	{
+
+		set_Value (COLUMNNAME_LeadStatus, LeadStatus);
+	}
+
+	/** Get Lead Status.
+		@return The status of this lead/opportunity in the sales cycle
+	  */
+	public String getLeadStatus () 
+	{
+		return (String)get_Value(COLUMNNAME_LeadStatus);
+	}
+
+	/** Set Lead Status Description.
+		@param LeadStatusDescription 
+		Additional information on the status of this lead/opportunity
+	  */
+	public void setLeadStatusDescription (String LeadStatusDescription)
+	{
+		set_Value (COLUMNNAME_LeadStatusDescription, LeadStatusDescription);
+	}
+
+	/** Get Lead Status Description.
+		@return Additional information on the status of this lead/opportunity
+	  */
+	public String getLeadStatusDescription () 
+	{
+		return (String)get_Value(COLUMNNAME_LeadStatusDescription);
 	}
 
 	/** Set Name.
@@ -793,6 +1019,34 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+			.getPO(getSalesRep_ID(), get_TrxName());	}
+
+	/** Set Sales Representative.
+		@param SalesRep_ID 
+		Sales Representative or Company Agent
+	  */
+	public void setSalesRep_ID (int SalesRep_ID)
+	{
+		if (SalesRep_ID < 1) 
+			set_Value (COLUMNNAME_SalesRep_ID, null);
+		else 
+			set_Value (COLUMNNAME_SalesRep_ID, Integer.valueOf(SalesRep_ID));
+	}
+
+	/** Get Sales Representative.
+		@return Sales Representative or Company Agent
+	  */
+	public int getSalesRep_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SalesRep_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Salt.

@@ -30,7 +30,7 @@ public class X_AD_ViewComponent extends PO implements I_AD_ViewComponent, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130704L;
+	private static final long serialVersionUID = 20130826L;
 
     /** Standard Constructor */
     public X_AD_ViewComponent (Properties ctx, int AD_ViewComponent_ID, String trxName)
@@ -42,6 +42,7 @@ public class X_AD_ViewComponent extends PO implements I_AD_ViewComponent, I_Pers
 			setAD_ViewComponent_ID (0);
 			setEntityType (null);
 // U
+			setFromClause (null);
 			setName (null);
         } */
     }
