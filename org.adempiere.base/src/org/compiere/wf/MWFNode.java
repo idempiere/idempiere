@@ -64,7 +64,7 @@ public class MWFNode extends X_AD_WF_Node
 	 */
 	public static MWFNode get (Properties ctx, int AD_WF_Node_ID)
 	{
-		Integer key = new Integer (AD_WF_Node_ID);
+		String key = Env.getAD_Language(ctx) + "_" + AD_WF_Node_ID;
 		MWFNode retValue = (MWFNode) s_cache.get (key);
 		if (retValue != null)
 			return retValue;
@@ -75,7 +75,7 @@ public class MWFNode extends X_AD_WF_Node
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MWFNode>	s_cache	= new CCache<Integer,MWFNode> (Table_Name, 50);
+	private static CCache<String,MWFNode>	s_cache	= new CCache<String,MWFNode> (Table_Name, 50);
 	
 	
 	/**************************************************************************
@@ -139,9 +139,11 @@ public class MWFNode extends X_AD_WF_Node
 		loadNext();
 		loadTrl();
 		//	Save to Cache
-		Integer key = null;
+		String key = null;
 		try {
-			key = new Integer (rs.getInt("AD_WF_Node_ID"));
+			Integer wfnodeid = new Integer (rs.getInt("AD_WF_Node_ID"));
+			if (wfnodeid != null && wfnodeid.intValue() > 0)
+				key = Env.getAD_Language(ctx) + "_" + wfnodeid;
 		} catch (SQLException e) {
 			throw new AdempiereException(e);
 		}
