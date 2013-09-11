@@ -1193,6 +1193,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         	{
         		boolean refresh=true;      		
         		Treeitem item = treePanel.getTree().getSelectedItem();
+        		SimpleTreeModel model = (SimpleTreeModel)(TreeModel<?>) treePanel.getTree().getModel();
         		if (item != null)
         		{
         			@SuppressWarnings("unchecked")
@@ -1202,7 +1203,10 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
             			refresh = false;
             		}
 				}
- 
+        		if ("Saved".equals(e.getAD_Message()) && model.find(null, gridTab.getRecord_ID())==null) 
+        		{
+					addNewNode();
+				}
         		if (refresh)
         		{
         			int AD_Tree_ID = Env.getContextAsInt (Env.getCtx(), getWindowNo(), "AD_Tree_ID", true);
