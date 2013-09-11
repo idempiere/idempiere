@@ -121,6 +121,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
 
 		if (lookup != null) {
     		int winID = lookup.getZoom();
+    		int winIDPO = lookup.getZoom(false) ;
     		Boolean canAccess = MRole.getDefault().getWindowAccess(winID);
     		if (winID <= 0 || canAccess == null || ! canAccess) {
     	    	this.zoomEnabled = false;
@@ -144,13 +145,13 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     							+ "FROM   AD_Field f "
     							+ "       JOIN AD_Tab t "
     							+ "         ON ( t.AD_Tab_ID = f.AD_Tab_ID ) "
-    							+ "WHERE  t.AD_Window_ID = ? "
+    							+ "WHERE  t.AD_Window_ID IN (?,?) "
     							+ "       AND f.IsActive = 'Y' "
     							+ "       AND t.IsActive = 'Y' "
     							+ "       AND f.IsQuickEntry = 'Y' "
     							+ "       AND (t.TabLevel = 0 "
     							+ "          AND   t.AD_Table_ID IN (SELECT AD_Table_ID FROM AD_Table WHERE TableName = ? )) ",
-    					winID,tableName);
+    					winID,winIDPO,tableName);
     			if (cnt > 0) {
         	    	this.newEnabled = true;
         	    	this.updateEnabled = true;

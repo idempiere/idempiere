@@ -516,5 +516,12 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 			editor.setVisible(field.isDisplayed(true));
 		}
 	} // dynamicDisplay
+	
+	/**
+	 *	get size quickfields
+	 */
+	public int getQuickFields(){
+		return quickFields.size();
+	}// size of quickfields
 
 } // WQuickEntry
