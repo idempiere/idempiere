@@ -170,7 +170,7 @@ import org.compiere.util.Env;
 		updateHeader();
 		if (getC_Payment_ID() != 0 )
 		{
-			String sql = "UPDATE C_Payment p SET C_DepositBatch_ID= 0 WHERE p.C_Payment_ID=?";
+			String sql = "UPDATE C_Payment p SET C_DepositBatch_ID= Null WHERE p.C_Payment_ID=?";
 			DB.executeUpdateEx(sql, new Object[] {getC_Payment_ID()}, get_TrxName());
 		}
 		

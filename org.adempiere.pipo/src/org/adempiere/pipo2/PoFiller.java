@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
@@ -161,7 +162,14 @@ public class PoFiller{
 						po.set_ValueNoCheck(columnName, id);
 					}
 					return id;
-				}
+				} else if (id == 0) {
+					MColumn col = MColumn.get(ctx.ctx, po.get_TableName(), columnName);
+					String refTableName = col.getReferenceTableName();
+					if (refTableName != null && MTable.isZeroIDTable(refTableName)) {
+						po.set_ValueNoCheck(columnName, id);
+						return id;
+					}
+				}				
 				return -1;
 			} else {
 				return 0;

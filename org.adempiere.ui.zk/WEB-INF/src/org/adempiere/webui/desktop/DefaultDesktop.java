@@ -27,7 +27,6 @@ import org.adempiere.base.event.IEventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.model.MBroadcastMessage;
 import org.adempiere.util.ServerContext;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
@@ -103,6 +102,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private static final String IMAGES_UPARROW_PNG = "images/collapse-header.png";
 
 	private static final String IMAGES_DOWNARROW_PNG = "images/expand-header.png";
+	
+	private static final String IMAGES_CONTEXT_HELP_PNG = "images/Help16.png";
 
 	/**
 	 * generated serial version ID
@@ -133,6 +134,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private HelpController helpController;
 
 	private ToolBarButton max;
+	
+	private ToolBarButton contextHelp;
 
     public DefaultDesktop()
     {
@@ -196,11 +199,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 				updateHelpCollapsedPreference(!oe.isOpen());
 				HtmlBasedComponent comp = windowContainer.getComponent();
 				if (comp != null) {
-					if (oe.isOpen()) {
-						LayoutUtils.removeSclass("with-right-icon", comp);
-					} else {
-						LayoutUtils.addSclass("with-right-icon", comp);
-					}
+					contextHelp.setVisible(!oe.isOpen());
+					if (!oe.isOpen())
+						layout.getEast().setVisible(false);
 				}
 			}
 		});
@@ -220,11 +221,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		});
         
         boolean helpCollapsed= pref.isPropertyBool(UserPreference.P_HELP_COLLAPSED);
-        e.setOpen(!helpCollapsed);        
-        Clients.evalJavaScript("$('.desktop-layout > div > .z-east-colpsd > .z-borderlayout-icon').attr('title', '" +
-        		Msg.getElement(Env.getCtx(), "AD_CtxHelp_ID") + "');");
-        
-        
+        e.setVisible(!helpCollapsed);
+                
         helpController.render(e, this);
 
         Center windowArea = layout.getCenter();
@@ -273,6 +271,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 		ToolBar toolbar = new ToolBar();
         windowContainer.getComponent().appendChild(toolbar);
+                
         max = new ToolBarButton();
         toolbar.appendChild(max);
         max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
@@ -280,9 +279,13 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         max.setSclass("window-container-toolbar-btn");
         max.setStyle("cursor: pointer; border: 1px solid transparent; padding: 2px;");
         
-        if (!e.isOpen()) {
-        	LayoutUtils.addSclass("with-right-icon", windowContainer.getComponent());
-        }
+        contextHelp = new ToolBarButton();
+        toolbar.appendChild(contextHelp);
+        contextHelp.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
+        contextHelp.addEventListener(Events.ON_CLICK, this);
+        contextHelp.setSclass("window-container-toolbar-btn context-help-btn");
+        contextHelp.setStyle("cursor: pointer; border: 1px solid transparent; padding: 2px;");
+        contextHelp.setTooltiptext(Util.cleanAmp(Msg.getElement(Env.getCtx(), "AD_CtxHelp_ID")));
         
         return layout;
     }
@@ -330,6 +333,12 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         			layout.getNorth().setVisible(true);
         			max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
         		}
+        	}
+        	else if (comp == contextHelp)
+        	{
+        		layout.getEast().setVisible(true);
+        		layout.getEast().setOpen(true);
+        		contextHelp.setVisible(false);
         	}
         	else if(comp instanceof ToolBarButton)
             {

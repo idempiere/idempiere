@@ -386,8 +386,13 @@ public final class AEnv
         	zoomQuery.addRestriction(column, MQuery.EQUAL, value);
         	zoomQuery.setRecordCount(1);    //  guess
         }
-        int windowId = lookup.getZoom(zoomQuery);
-        zoom(windowId, zoomQuery);
+        if (value instanceof Integer && ((Integer) value).intValue() >= 0 && zoomQuery != null && zoomQuery.getZoomTableName() != null) {
+        	int tableId = MTable.getTable_ID(zoomQuery.getZoomTableName());
+        	zoom(tableId, ((Integer) value).intValue());
+        } else {
+        	int windowId = lookup.getZoom(zoomQuery);
+        	zoom(windowId, zoomQuery);
+        }
     }
 
     /**
