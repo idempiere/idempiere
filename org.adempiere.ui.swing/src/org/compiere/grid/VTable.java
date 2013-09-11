@@ -49,7 +49,8 @@ public final class VTable extends CTable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2655102084935019329L;
+	private static final long serialVersionUID = -3878986086328742243L;
+
 	private final static String PACK_ALL_COMMAND = CColumnControlButton.COLUMN_CONTROL_MARKER + "packAll";
 	
 	/**
@@ -197,4 +198,13 @@ public final class VTable extends CTable
 			.append(getModel()).append("]").toString();
 	}   //  toString
 	
+	/**
+	 * Sets the row selection interval. If the index is out of bounds we decrement it before setting the JTables row selection interval
+	 */
+	@Override
+	public void setRowSelectionInterval(int index0, int index1) {
+		super.setRowSelectionInterval(	index0 == getRowCount() && index0 > 0 ? --index0 : index0, 
+										index1 == getRowCount() && index1 > 0 ? --index1 : index1);
+	}
+
 }	//	VTable
