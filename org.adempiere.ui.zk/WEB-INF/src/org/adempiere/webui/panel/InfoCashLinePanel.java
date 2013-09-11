@@ -68,6 +68,7 @@ import org.zkoss.zul.Vbox;
 * @version	InfoCashLine.java Adempiere Swing UI 3.4.1
 */
 
+@Deprecated // IDEMPIERE-170 IDEMPIERE-325
 public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener, EventListener<Event>
 {
 	/**

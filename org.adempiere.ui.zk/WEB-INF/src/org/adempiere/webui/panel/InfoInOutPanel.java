@@ -69,6 +69,7 @@ import org.zkoss.zul.Vbox;
 * @version	InfoInOut.java Adempiere Swing UI 3.4.1
 */
 
+@Deprecated // replaced with InfoInOutWindow IDEMPIERE-325
 public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, EventListener<Event>
 {
 	/**

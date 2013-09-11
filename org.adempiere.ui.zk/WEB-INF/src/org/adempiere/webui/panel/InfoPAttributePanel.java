@@ -71,6 +71,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 	 * 	Called from InfoProduct,cmd_InfoPAttribute
 	 *	@param parent
 	 */
+	@SuppressWarnings("deprecation")
 	public InfoPAttributePanel(Object input)
 	{
 		super();
