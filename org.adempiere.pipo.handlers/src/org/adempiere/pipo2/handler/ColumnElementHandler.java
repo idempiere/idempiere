@@ -174,14 +174,16 @@ public class ColumnElementHandler extends AbstractElementHandler {
 		if (!table.isView() && !mColumn.isVirtualColumn()) {
 			success = createColumn(ctx, table, mColumn, recreateColumn);
 
-			X_AD_Package_Imp_Detail  dbDetail = createImportDetail(ctx, "dbColumn", X_AD_Column.Table_Name, X_AD_Column.Table_ID);
-			if (success == 1) {
-				logImportDetail(ctx, dbDetail, 1, mColumn.getColumnName(),
-						mColumn.get_ID(), action);
-			} else {
-				logImportDetail(ctx, dbDetail, 0, mColumn.getColumnName(),
-						mColumn.get_ID(), action);
-				throw new DatabaseAccessException("Failed to create column or related constraint for " + mColumn.getColumnName());
+			if (success != 0) {
+				X_AD_Package_Imp_Detail  dbDetail = createImportDetail(ctx, "dbColumn", X_AD_Column.Table_Name, X_AD_Column.Table_ID);
+				if (success == 1) {
+					logImportDetail(ctx, dbDetail, 1, mColumn.getColumnName(),
+							mColumn.get_ID(), action);
+				} else {
+					logImportDetail(ctx, dbDetail, 0, mColumn.getColumnName(),
+							mColumn.get_ID(), action);
+					throw new DatabaseAccessException("Failed to create column or related constraint for " + mColumn.getColumnName());
+				}
 			}
 		}
 	}
@@ -199,15 +201,11 @@ public class ColumnElementHandler extends AbstractElementHandler {
 	 */
 	private int createColumn(PIPOContext ctx, MTable table, MColumn column, boolean doAlter) {
 
-		int no = 0;
-
 		String sql = null;
 		ResultSet rst = null;
 		ResultSet rsc = null;
 		Connection conn = null;
 		Trx trx = Trx.get(getTrxName(ctx), true);
-		if (!trx.commit())
-			return 0;
 
 		try {
 			// Find Column in Database
@@ -251,27 +249,32 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			if (sql != null && sql.trim().length() > 0) {
 				log.info(sql);
 
+				//make it consistent for oracle and postgresql
+				if (!trx.commit())
+					return -1;
+				
 				if (sql.indexOf(DB.SQLSTATEMENT_SEPARATOR) == -1) {
-					no = DB.executeUpdate(sql, false, trx.getTrxName());
-					if (no == -1)
-						return 0;
+					int ret = DB.executeUpdate(sql, false, trx.getTrxName());
+					if (ret == -1)
+						return -1;
 				} else {
 					String statements[] = sql.split(DB.SQLSTATEMENT_SEPARATOR);
 					for (int i = 0; i < statements.length; i++) {
-						int count = DB.executeUpdate(statements[i], false,
+						int ret = DB.executeUpdate(statements[i], false,
 								trx.getTrxName());
-						if (count == -1) {
-							return 0;
+						if (ret == -1) {
+							return -1;
 						}
-						no += count;
 					}
 				}
+				trx.commit(true);
+			} else {
+				return 0;
 			}
-			trx.commit(true);
 		} catch (SQLException e) {
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			trx.rollback();
-			return 0;
+			return -1;
 		}
 		finally
 		{
