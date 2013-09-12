@@ -206,4 +206,6 @@ public interface IDesktop extends UIPart {
 	public void updateHelpTooltip(GridField gridField);
 
 	public boolean isPendingWindow();
+	
+	public void renderHomeTab();
 }

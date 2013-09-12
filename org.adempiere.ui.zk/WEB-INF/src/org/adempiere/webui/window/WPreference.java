@@ -13,21 +13,25 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WYesNoEditor;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.A;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
-
+import org.zkoss.zul.Window.Mode;
 /**
  *
  * @author hengsin
@@ -43,6 +47,9 @@ public class WPreference extends Popup implements EventListener<Event> {
 	private WYesNoEditor autoNew;
 	private WYesNoEditor adempiereSys;
 	private WYesNoEditor logMigrationScript;
+	private WGadgets gadgets;
+	private A addgadgets;
+	
 
 	public WPreference() {
 		super();
@@ -87,6 +94,13 @@ public class WPreference extends Popup implements EventListener<Event> {
 			logMigrationScript.setValue(Env.getCtx().getProperty("LogMigrationScript"));
 		}
 
+		div = new Div();
+		div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
+		addgadgets= new A();	
+		addgadgets.setLabel( Msg.translate(Env.getCtx(), "ManageGadgets"));
+		addgadgets.addEventListener(Events.ON_CLICK, this);
+		div.appendChild(addgadgets);
+		this.appendChild(div);
 		Separator separator = new Separator();
 		separator.setSpacing("20px");
 		div = new Div();
@@ -111,8 +125,25 @@ public class WPreference extends Popup implements EventListener<Event> {
 	}
 
 	public void onEvent(Event event) throws Exception {
-		if (Events.ON_CLICK.equals(event.getName())) {
-			onSave();
+		String nameEvent=event.getName();
+		Component com =event.getTarget();
+		
+		if (Events.ON_CLICK.equals(nameEvent)) {
+			if (com instanceof ToolBarButton) {
+				onSave();
+			}
+
+			if (com == addgadgets) {
+				gadgets = new WGadgets();
+				gadgets.setClosable(true);
+				gadgets.setSizable(true);
+				gadgets.setWidth("40%");
+				gadgets.setHeight("60%");
+				gadgets.setTitle( Msg.translate(Env.getCtx(), "DashboardGadgets"));
+				gadgets.setAttribute(Window.MODE_KEY, Mode.HIGHLIGHTED);
+				AEnv.showWindow(gadgets);
+				gadgets.focus();
+			}
 		}
 	}
 

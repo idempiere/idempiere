@@ -189,8 +189,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         boolean menuCollapsed= pref.isPropertyBool(UserPreference.P_MENU_COLLAPSED);
         w.setOpen(!menuCollapsed);
         
-        sideController.render(w, this, false);
-        
         East e = layout.getEast();
         e.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
 			@Override
@@ -302,14 +300,18 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		pref.savePreference();
 	}
 
-	private void renderHomeTab()
-	{
+	public void renderHomeTab()
+	{		
 		homeTab.getChildren().clear();		
 
 		//register as 0
         registerWindow(homeTab);
         
 		dashboardController.render(homeTab, this, true);
+	
+		West w = layout.getWest();
+		w.getChildren().clear();
+		sideController.render(w, this, false);
 		
 		Clients.response(new AuScript("$('.slimScroll .z-anchorlayout-body').slimScroll({height: '100%',railVisible: true, alwaysVisible: false});"));				
 	}

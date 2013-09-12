@@ -85,7 +85,7 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 		
 		return new Query(ctx, Table_Name, whereClause.toString(), null)
 		.setParameters(parameters)
-		.setOnlyActiveRecords(true)
+		.setOnlyActiveRecords(false)
 		.setApplyAccessFilter(true, false)
 		.setOrderBy(COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID+","+COLUMNNAME_Line);
 	}
