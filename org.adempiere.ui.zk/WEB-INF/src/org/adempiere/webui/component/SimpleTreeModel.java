@@ -167,6 +167,7 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 					String hex = ZkCssHelper.createHexColorString(color);
 					ZkCssHelper.appendStyle(tc, "color: #" + hex);
 				}				
+				ti.setTooltiptext(mNode.getDescription());
 			}
 			// End color
 		}else{
