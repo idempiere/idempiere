@@ -19,7 +19,7 @@ public class MDashboardContent extends X_PA_DashboardContent
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5425307033413466516L;
+	private static final long serialVersionUID = -1360395253302002667L;
 
 	public static int getForSessionColumnCount(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
 	{
@@ -56,9 +56,55 @@ public class MDashboardContent extends X_PA_DashboardContent
 		
 		return new Query(ctx, Table_Name, whereClause.toString(), null)
 		.setParameters(parameters)
-		.setOnlyActiveRecords(true)
+		.setOnlyActiveRecords(false)
 		.setApplyAccessFilter(true, false)
 		.setOrderBy(COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID+","+COLUMNNAME_Line);
+	}
+	
+	public static MDashboardContent[] getForUserList( int AD_User_ID, int AD_Role_ID)
+	{
+		List<MDashboardContent> list = getForUser( AD_User_ID, AD_Role_ID).list();
+		return list.toArray(new MDashboardContent[list.size()]);
+	}
+	
+	public static  Query getForUser( int AD_User_ID, int AD_Role_ID)
+	{
+      Properties ctx = Env.getCtx();
+      
+      int AD_Client_ID = Env.getAD_Client_ID(ctx);
+      List<Object> parameters = new ArrayList<Object>();
+		
+		StringBuilder whereClause = new StringBuilder();
+		
+		if (AD_Role_ID >= 0){			
+			whereClause.append(COLUMNNAME_AD_Role_ID).append("= ?");
+			whereClause.append(" OR ").append( COLUMNNAME_AD_Role_ID).append(" IS  NULL ");
+			parameters.add(AD_Role_ID);
+		}
+		
+		
+		
+		if(AD_User_ID >= 0){			
+			whereClause.append(" AND ").append(COLUMNNAME_AD_User_ID).append("= ?");
+			whereClause.append(" OR ").append( COLUMNNAME_AD_User_ID).append(" IS  NULL ");
+			parameters.add(AD_User_ID);
+		}
+		
+		if(AD_Client_ID >= 0){
+			whereClause.append(" AND ").append( COLUMNNAME_AD_Client_ID).append(" IN ( 0 ,?)");
+			parameters.add(AD_Client_ID);
+		}
+		
+		whereClause.append(" AND IsShowInLogin='Y'");
+		
+		Query query= new Query(ctx, Table_Name, whereClause.toString(), null);
+		if(parameters.size() > 0){
+		   query.setParameters(parameters);
+		}
+		query.setOnlyActiveRecords(true);
+		query.setApplyAccessFilter(true, false);
+		query.setOrderBy(COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID+","+COLUMNNAME_Line);
+		return query;
 	}
 	
 	public static MDashboardContent[] getForSession(int AD_User_ID, int AD_Role_ID)
