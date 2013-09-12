@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
@@ -1143,7 +1144,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		{
 			if (nodeID > 0 && logger.isLoggable(Level.WARNING))
 				logger.log(Level.WARNING, "Tab does not have ID with Node_ID=" + nodeID);
-			return;
+			if (gridTab.getCurrentRow() >= 0) 
+			{
+				gridTab.setCurrentRow(gridTab.getCurrentRow(), true);
+			}
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(),"RecordIsNotInCurrentSearch"));
 		}
 
 		//  Navigate to node row

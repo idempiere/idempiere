@@ -44,6 +44,7 @@ import org.compiere.util.Env;
  * @author hengsin
  *
  */
+@SuppressWarnings("deprecation")
 public class DefaultInfoFactory implements IInfoFactory {
 
 	@Override

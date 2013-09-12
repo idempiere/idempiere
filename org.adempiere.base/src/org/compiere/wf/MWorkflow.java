@@ -70,12 +70,13 @@ public class MWorkflow extends X_AD_Workflow
 	 */
 	public static MWorkflow get (Properties ctx, int AD_Workflow_ID)
 	{
-		MWorkflow retValue = (MWorkflow)s_cache.get(AD_Workflow_ID);
+		String key = Env.getAD_Language(ctx) + "_" + AD_Workflow_ID;
+		MWorkflow retValue = (MWorkflow)s_cache.get(key);
 		if (retValue != null)
 			return retValue;
 		retValue = new MWorkflow (ctx, AD_Workflow_ID, null);
 		if (retValue.get_ID() != 0)
-			s_cache.put(AD_Workflow_ID, retValue);
+			s_cache.put(key, retValue);
 		return retValue;
 	}	//	get
 	
@@ -144,7 +145,7 @@ public class MWorkflow extends X_AD_Workflow
 	
 	
 	/**	Single Cache					*/
-	private static CCache<Integer,MWorkflow>	s_cache = new CCache<Integer,MWorkflow>(Table_Name, 20);
+	private static CCache<String,MWorkflow>	s_cache = new CCache<String,MWorkflow>(Table_Name, 20);
 	/**	Document Value Cache			*/
 	private static CCache<String,MWorkflow[]>	s_cacheDocValue = new CCache<String,MWorkflow[]> (Table_Name, Table_Name+"_Document_Value", 5);
 	/**	Static Logger	*/

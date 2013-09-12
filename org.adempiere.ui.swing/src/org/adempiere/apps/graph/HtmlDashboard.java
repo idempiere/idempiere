@@ -170,7 +170,7 @@ public class HtmlDashboard extends JPanel implements MouseListener,
 						if (!Util.isEmpty(dc.getZulFilePath(), true))
 							continue;
 						//
-						appendToHome = dc.getHTML();
+						appendToHome = dc.get_Translation(MDashboardContent.COLUMNNAME_HTML);
 						String descriptionTrl = dp.get_Translation(MDashboardContent.COLUMNNAME_Description);
 						if (appendToHome != null) {
 							if (descriptionTrl != null)

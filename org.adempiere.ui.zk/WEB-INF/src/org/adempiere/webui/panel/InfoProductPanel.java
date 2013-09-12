@@ -94,6 +94,8 @@ import org.zkoss.zul.South;
  * @author Elaine
  * @version	InfoPayment.java Adempiere Swing UI 3.4.1
  */
+
+@Deprecated // replaced with InfoProductWindow IDEMPIERE-325
 public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 {
 	/**
