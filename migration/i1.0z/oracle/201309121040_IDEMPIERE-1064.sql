@@ -191,7 +191,7 @@ ALTER TABLE PA_DashboardContent_Access ADD CONSTRAINT UpdatedBy_PADashboardConte
 
 -- Sep 2, 2013 3:33:05 PM COT
 -- IDEMPIERE-1064 Control dashboard access by role
-INSERT INTO AD_Tab (ImportFields,Processing,IsSingleRow,AD_Window_ID,SeqNo,IsTranslationTab,IsSortTab,AD_Table_ID,HasTree,IsInfoTab,IsReadOnly,IsInsertRecord,IsAdvancedTab,TabLevel,AD_Tab_UU,EntityType,Name,AD_Tab_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,IsActive,AD_Client_ID) VALUES ('N','N','N',50007,30,'N','N',200106,'N','N','N','Y','N',0,'ba945c13-8246-4038-b67d-dc9305016713','D','Dashbaord Content Access',200112,0,TO_DATE('2013-09-02 15:33:04','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-09-02 15:33:04','YYYY-MM-DD HH24:MI:SS'),100,'Y',0)
+INSERT INTO AD_Tab (ImportFields,Processing,IsSingleRow,AD_Window_ID,SeqNo,IsTranslationTab,IsSortTab,AD_Table_ID,HasTree,IsInfoTab,IsReadOnly,IsInsertRecord,IsAdvancedTab,TabLevel,AD_Tab_UU,EntityType,Name,AD_Tab_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,IsActive,AD_Client_ID) VALUES ('N','N','N',50007,30,'N','N',200106,'N','N','N','Y','N',0,'ba945c13-8246-4038-b67d-dc9305016713','D','Dashboard Content Access',200112,0,TO_DATE('2013-09-02 15:33:04','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-09-02 15:33:04','YYYY-MM-DD HH24:MI:SS'),100,'Y',0)
 ;
 
 -- Sep 2, 2013 3:33:11 PM COT
