@@ -286,6 +286,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         contextHelp.setSclass("window-container-toolbar-btn context-help-btn");
         contextHelp.setStyle("cursor: pointer; border: 1px solid transparent; padding: 2px;");
         contextHelp.setTooltiptext(Util.cleanAmp(Msg.getElement(Env.getCtx(), "AD_CtxHelp_ID")));
+        contextHelp.setVisible(!e.isVisible());
         
         return layout;
     }
@@ -339,6 +340,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         		layout.getEast().setVisible(true);
         		layout.getEast().setOpen(true);
         		contextHelp.setVisible(false);
+        		updateHelpCollapsedPreference(false);
         	}
         	else if(comp instanceof ToolBarButton)
             {
