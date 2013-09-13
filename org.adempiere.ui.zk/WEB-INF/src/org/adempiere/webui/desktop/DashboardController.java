@@ -97,7 +97,7 @@ public class DashboardController implements EventListener<Event> {
 	
 	public DashboardController() {
 		dashboardLayout = new Anchorlayout();
-        dashboardLayout.setSclass("dashboard-layout");
+        dashboardLayout.setSclass("dashboard-layout slimScroll");
         dashboardLayout.setVflex("1");
         dashboardLayout.setHflex("1");
         
@@ -107,11 +107,9 @@ public class DashboardController implements EventListener<Event> {
 	}
 	
 	public void render(Component parent, IDesktop desktopImpl, boolean isShowInDashboard) {
-		dashboardLayout = new Anchorlayout();
 		parent.appendChild(dashboardLayout);
-        dashboardLayout.setSclass("slimScroll");
+		dashboardLayout.getChildren().clear();
         
-
         if (!dashboardLayout.getDesktop().isServerPushEnabled())
         	dashboardLayout.getDesktop().enableServerPush(true);
         
