@@ -141,11 +141,6 @@ UPDATE AD_Column SET EntityType='D',Updated=TO_TIMESTAMP('2013-09-02 15:20:56','
 UPDATE AD_Column SET EntityType='D',Updated=TO_TIMESTAMP('2013-09-02 15:21:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=210859
 ;
 
--- Sep 2, 2013 3:21:24 PM COT
--- IDEMPIERE-1064 Control dashboard access by role
-CREATE TABLE PA_DashboardContent_Access (AD_Client_ID NUMERIC(10) DEFAULT NULL , AD_Org_ID NUMERIC(10) DEFAULT NULL , AD_Role_ID NUMERIC(10) DEFAULT NULL , AD_User_ID NUMERIC(10) DEFAULT NULL , Created TIMESTAMP DEFAULT NULL , CreatedBy NUMERIC(10) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')), PA_DashboardContent_Access_ID NUMERIC(10) NOT NULL, PA_DashboardContent_Access_UU VARCHAR(36) DEFAULT NULL , PA_DashboardContent_ID NUMERIC(10) DEFAULT NULL , Updated TIMESTAMP DEFAULT NULL , UpdatedBy NUMERIC(10) DEFAULT NULL , CONSTRAINT PA_DashboardContent_Access_Key PRIMARY KEY (PA_DashboardContent_Access_ID), CONSTRAINT PA_DashboardContent_Access_Key PRIMARY KEY (PA_DashboardContent_Access_UU))
-;
-
 -- Sep 2, 2013 3:22:31 PM COT
 -- IDEMPIERE-1064 Control dashboard access by role
 UPDATE AD_Column SET IsKey='N',Updated=TO_TIMESTAMP('2013-09-02 15:22:31','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=210852
