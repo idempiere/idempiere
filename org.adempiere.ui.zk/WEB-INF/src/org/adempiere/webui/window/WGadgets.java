@@ -50,6 +50,7 @@ import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Vbox;
@@ -158,15 +159,17 @@ public class WGadgets extends Window implements  EventListener<Event>{
 		bRemove.setImage(ThemeManager.getThemeResource("images/Previous24.png"));
 		bRemove.addEventListener(Events.ON_CLICK, actionListener);
 
-		final EventListener<Event> crossListMouseListener = new DragListener();
-		yesList.addOnDropListener(crossListMouseListener);
-		noList.addOnDropListener(crossListMouseListener);
+		final EventListener<Event> moveListener = new MoveListener();
+		yesList.addOnDropListener(moveListener);
+		yesList.addDoubleClickListener(moveListener);
+		noList.addOnDropListener(moveListener);
+		noList.addDoubleClickListener(moveListener);
 		yesList.setItemDraggable(true);
 		yesList.setDroppable("true");
 		yesList.addEventListener(Events.ON_DROP, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				crossListMouseListener.onEvent(event);
+				moveListener.onEvent(event);
 			}
 		});
 		noList.setItemDraggable(true);
@@ -174,7 +177,7 @@ public class WGadgets extends Window implements  EventListener<Event>{
 		noList.addEventListener(Events.ON_DROP, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				crossListMouseListener.onEvent(event);
+				moveListener.onEvent(event);
 			}
 		});
 		
@@ -236,12 +239,14 @@ public class WGadgets extends Window implements  EventListener<Event>{
 		String query = " SELECT ct.PA_DashboardContent_ID, ct.Name "
 					+" FROM PA_DashboardContent ct"
 					+" WHERE ct.AD_Client_ID IN (0,?)"
+					+" AND ct.IsActive='Y'"
 					+" AND ct.PA_DashboardContent_ID NOT IN ("
 					+" SELECT pre.PA_DashboardContent_ID"
 					+" FROM PA_DashboardPreference pre"
-					+" WHERE pre.AD_Client_ID IN (0,?)"
+					+" WHERE pre.AD_Client_ID IN (0,?)"					
 					+" AND pre.AD_Role_ID = ?"
 					+" AND pre.AD_User_ID = ?"
+					+" AND pre.AD_Org_ID=0 "
 					+" AND pre.IsActive='Y') ";
 		
 		ResultSet rs = null;
@@ -272,6 +277,7 @@ public class WGadgets extends Window implements  EventListener<Event>{
 		String where=" AD_User_ID=?"
 				    +" AND AD_Role_ID=?"
 				    +" AND AD_Client_ID=?"
+				    +" AND AD_Org_ID=0"
 				    +" AND IsActive='Y'";
 		
 		Query query1 =new Query(ctx,MDashboardPreference.Table_Name, where, null);
@@ -282,8 +288,10 @@ public class WGadgets extends Window implements  EventListener<Event>{
 	    	for(int i = 0; i < preference.size() ; i++){
 	    		int ID = preference.get(i).getPA_DashboardContent_ID();
 	    		MDashboardContent content = new MDashboardContent(ctx, ID, null);
-	    		if (!dirtyList.containsKey(content.getPA_DashboardContent_ID())) {
-	    			yesItems.add(content);
+	    		if (content.isActive()) {
+		    		if (!dirtyList.containsKey(content.getPA_DashboardContent_ID())) {
+		    			yesItems.add(content);
+		    		}
 	    		}
 	    	}
 	    }
@@ -338,9 +346,10 @@ public class WGadgets extends Window implements  EventListener<Event>{
 			
 			MDashboardContent content = new MDashboardContent(Env.getCtx(),selObject.m_key, null);
 			String where=" AD_Client_ID=?"
-				    +" AND PA_DashboardContent_ID=?";
+				    +" AND PA_DashboardContent_ID=?" 
+					+" AND AD_Role_ID=? AND AD_User_ID=? AND AD_Org_ID=0";
 			Query query = new Query(ctx, MDashboardPreference.Table_Name, where, null);
-			query.setParameters(new Object[]{AD_Client_ID, content.getPA_DashboardContent_ID()});
+			query.setParameters(AD_Client_ID, content.getPA_DashboardContent_ID(), AD_Role_ID, AD_User_ID);
 			
 			MDashboardPreference pre = query.setOnlyActiveRecords(false).first();
 			
@@ -350,7 +359,7 @@ public class WGadgets extends Window implements  EventListener<Event>{
 					pre.setIsShowInDashboard(content.isShowInDashboard());
 				}else{
 					pre = new MDashboardPreference(Env.getCtx(), 0, null);
-					pre.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
+					pre.setAD_Org_ID(0);
 					pre.setAD_Role_ID(AD_Role_ID);
 					pre.set_ValueNoCheck("AD_User_ID",AD_User_ID);
 					pre.setColumnNo(content.getColumnNo());
@@ -363,8 +372,19 @@ public class WGadgets extends Window implements  EventListener<Event>{
 			}else{			 
 				if(pre != null){
 					pre.setIsActive(false);
-					dirtyList.put(pre.getPA_DashboardContent_ID(), pre);
+				}else{
+					pre = new MDashboardPreference(Env.getCtx(), 0, null);
+					pre.setAD_Org_ID(0);
+					pre.setAD_Role_ID(AD_Role_ID);
+					pre.set_ValueNoCheck("AD_User_ID",AD_User_ID);
+					pre.setColumnNo(content.getColumnNo());
+					pre.setIsCollapsedByDefault(content.isCollapsedByDefault());
+					pre.setIsShowInDashboard(content.isShowInDashboard());
+					pre.setLine(content.getLine());
+					pre.setPA_DashboardContent_ID(content.getPA_DashboardContent_ID());
+					pre.setIsActive(false);
 				}
+				dirtyList.put(pre.getPA_DashboardContent_ID(), pre);
 			}
 		}	
 		refresh();
@@ -491,13 +511,13 @@ public class WGadgets extends Window implements  EventListener<Event>{
 	 * @author eslatis
 	 *
 	 */
-	private class DragListener implements EventListener<Event>
+	private class MoveListener implements EventListener<Event>
 	{
 
 		/**
 		 * Creates a ADSortTab.DragListener.
 		 */
-		public DragListener()
+		public MoveListener()
 		{
 		}
 
@@ -526,13 +546,27 @@ public class WGadgets extends Window implements  EventListener<Event>{
 				
 				if (listFrom != listTo)
 				{
-					migrateLists (listFrom,listTo); //,endIndex);
+					migrateLists (listFrom,listTo);
 				}
 				else
 				{
 					//reordering not implemented
 					;
 				}
+			}
+			else if (event instanceof MouseEvent)
+			{
+				Listbox listFrom = null;
+				Listbox listTo = null;
+				
+				ListItem fromItem = (ListItem) event.getTarget();				
+				listFrom = (Listbox) fromItem.getListbox();
+				listTo = listFrom==yesList ? noList : yesList;
+				
+				if (!fromItem.isSelected())
+					fromItem.setSelected(true);
+				
+				migrateLists (listFrom,listTo);
 			}
 		}
 	}

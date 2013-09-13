@@ -56,7 +56,7 @@ public class MDashboardContent extends X_PA_DashboardContent
 		
 		return new Query(ctx, Table_Name, whereClause.toString(), null)
 		.setParameters(parameters)
-		.setOnlyActiveRecords(false)
+		.setOnlyActiveRecords(true)
 		.setApplyAccessFilter(true, false)
 		.setOrderBy(COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID+","+COLUMNNAME_Line);
 	}

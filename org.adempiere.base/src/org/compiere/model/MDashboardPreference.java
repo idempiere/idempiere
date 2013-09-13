@@ -35,7 +35,9 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 
 	public static int getForSessionColumnCount(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
 	{
-        int noOfCols = getForSessionQuery(isShowInDashboard, AD_User_ID, AD_Role_ID).aggregate("DISTINCT "+COLUMNNAME_ColumnNo, Query.AGGREGATE_COUNT, Integer.class);
+        int noOfCols = getForSessionQuery(isShowInDashboard, AD_User_ID, AD_Role_ID)
+        		.setOnlyActiveRecords(true)
+        		.aggregate("DISTINCT "+COLUMNNAME_ColumnNo, Query.AGGREGATE_COUNT, Integer.class);
         return noOfCols;
 	}
 	
@@ -51,7 +53,9 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 		
 		StringBuilder whereClause = new StringBuilder(COLUMNNAME_IsShowInDashboard).append("=?")
 			.append(" AND ").append(COLUMNNAME_AD_Role_ID).append("=?")
-			.append(" AND ").append(COLUMNNAME_AD_User_ID).append("=?");
+			.append(" AND ").append(COLUMNNAME_AD_User_ID).append("=?")
+			.append(" AND ").append(COLUMNNAME_AD_Org_ID).append("=0");
+		
 		
 		List<Object> parameters = new ArrayList<Object>();
 		parameters.add(isShowInDashboard);
@@ -60,7 +64,7 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 		
 		return new Query(ctx, Table_Name, whereClause.toString(), null)
 		.setParameters(parameters)
-		.setOnlyActiveRecords(true)
+		.setOnlyActiveRecords(false)
 		.setApplyAccessFilter(true, false)
 		.setOrderBy(COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID+","+COLUMNNAME_Line);
 	}
@@ -77,7 +81,8 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 		
 		StringBuilder whereClause = new StringBuilder()
 			.append(COLUMNNAME_AD_Role_ID).append("=?")
-			.append(" AND ").append(COLUMNNAME_AD_User_ID).append("=?");
+			.append(" AND ").append(COLUMNNAME_AD_User_ID).append("=?")
+			.append(" AND ").append(COLUMNNAME_AD_Org_ID).append("=0");
 		
 		List<Object> parameters = new ArrayList<Object>();
 		parameters.add(AD_Role_ID);

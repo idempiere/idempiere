@@ -129,16 +129,16 @@ public class DashboardController implements EventListener<Event> {
         	int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
         	int AD_Role_ID = Env.getAD_Role_ID(Env.getCtx());
         	
-        	MDashboardPreference[] dps = MDashboardPreference.getForSession(isShowInDashboard,AD_User_ID, AD_Role_ID);
+        	MDashboardPreference[] dps = MDashboardPreference.getForSession(AD_User_ID, AD_Role_ID);
         	MDashboardContent [] dcs =  MDashboardContentAccess.get(Env.getCtx(), AD_Role_ID, AD_User_ID, null,isShowInDashboard);
         	
         	if(dps.length == 0){
-        	    createDashboardPreference(AD_User_ID, AD_Role_ID,isShowInDashboard);
-        	    dps = MDashboardPreference.getForSession(isShowInDashboard,AD_User_ID, AD_Role_ID);
+        	    createDashboardPreference(AD_User_ID, AD_Role_ID,true);
+        	    createDashboardPreference(AD_User_ID, AD_Role_ID,false);
+        	    dps = MDashboardPreference.getForSession(AD_User_ID, AD_Role_ID);
         	}else{
-        		if(dps.length < dcs.length){
-        			updatePreferences(dps, dcs,Env.getCtx());
-        			dps = MDashboardPreference.getForSession(isShowInDashboard,AD_User_ID, AD_Role_ID);
+        		if(updatePreferences(dps, dcs,Env.getCtx())){        			
+        			dps = MDashboardPreference.getForSession(AD_User_ID, AD_Role_ID);
         		}
         	}
         	               
@@ -148,9 +148,11 @@ public class DashboardController implements EventListener<Event> {
             width = noOfCols <= 0 ? dashboardWidth : dashboardWidth / noOfCols;
             int extraWidth = 100 - (noOfCols <= 0 ? dashboardWidth : width * noOfCols) - (100 - dashboardWidth - 1);
             for (final MDashboardPreference dp : dps)            	
-			{            	            	
-            	
+			{            	            	            	
             	if(!dp.isActive())
+            		continue;
+            	
+            	if (dp.isShowInDashboard() != isShowInDashboard)
             		continue;
             	
             	MDashboardContent dc = new MDashboardContent(dp.getCtx(), dp.getPA_DashboardContent_ID(), dp.get_TrxName());
@@ -524,7 +526,7 @@ public class DashboardController implements EventListener<Event> {
 		for (MDashboardContent dc : dcs)
 		{
 			MDashboardPreference preference = new MDashboardPreference(Env.getCtx(), 0, null);
-			preference.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
+			preference.setAD_Org_ID(0);
 			preference.setAD_Role_ID(AD_Role_ID);
 			preference.set_ValueNoCheck("AD_User_ID", AD_User_ID);
 			preference.setColumnNo(dc.getColumnNo());
@@ -539,7 +541,8 @@ public class DashboardController implements EventListener<Event> {
 	}
 	
 	
-	public void updatePreferences(MDashboardPreference[] dps,MDashboardContent[] dcs, Properties ctx) {
+	private boolean updatePreferences(MDashboardPreference[] dps,MDashboardContent[] dcs, Properties ctx) {
+		boolean change = false;
 		for (int i = 0; i < dcs.length; i++) {
 			boolean isNew = true;
 			for (int j = 0; j < dps.length; j++) {
@@ -549,7 +552,7 @@ public class DashboardController implements EventListener<Event> {
 			}
 			if (isNew) {
 				MDashboardPreference preference = new MDashboardPreference(ctx,0, null);
-				preference.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
+				preference.setAD_Org_ID(0);
 				preference.setAD_Role_ID(Env.getAD_Role_ID(ctx));
 				preference.set_ValueNoCheck("AD_User_ID",Env.getAD_User_ID(ctx));
 				preference.setColumnNo(dcs[i].getColumnNo());
@@ -559,9 +562,10 @@ public class DashboardController implements EventListener<Event> {
 				preference.setPA_DashboardContent_ID(dcs[i].getPA_DashboardContent_ID());
 
 				preference.saveEx();
+				if (!change) change = true;
 			}
-
 		}
+		return change;
 	}
 	
 	private void saveDashboardPreference(Vlayout layout)
