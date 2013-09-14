@@ -151,7 +151,7 @@ UPDATE AD_Column SET IsKey='N',Updated=TO_DATE('2013-09-02 15:22:31','YYYY-MM-DD
 
 -- Sep 2, 2013 3:22:49 PM COT
 -- IDEMPIERE-1064 Control dashboard access by role
-CREATE TABLE PA_DashboardContent_Access (AD_Client_ID NUMBER(10) DEFAULT NULL , AD_Org_ID NUMBER(10) DEFAULT NULL , AD_Role_ID NUMBER(10) DEFAULT NULL , AD_User_ID NUMBER(10) DEFAULT NULL , Created DATE DEFAULT NULL , CreatedBy NUMBER(10) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')), PA_DashboardContent_Access_ID NUMBER(10) NOT NULL, PA_DashboardContent_Access_UU NVARCHAR2(36) DEFAULT NULL , PA_DashboardContent_ID NUMBER(10) DEFAULT NULL , Updated DATE DEFAULT NULL , UpdatedBy NUMBER(10) DEFAULT NULL , CONSTRAINT PA_DashboardContent_Access_Key PRIMARY KEY (PA_DashboardContent_Access_ID), CONSTRAINT PA_DashboardContent_Access__uu_idx UNIQUE (PA_DashboardContent_Access_UU))
+CREATE TABLE PA_DashboardContent_Access (AD_Client_ID NUMBER(10) DEFAULT NULL , AD_Org_ID NUMBER(10) DEFAULT NULL , AD_Role_ID NUMBER(10) DEFAULT NULL , AD_User_ID NUMBER(10) DEFAULT NULL , Created DATE DEFAULT NULL , CreatedBy NUMBER(10) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')), PA_DashboardContent_Access_ID NUMBER(10) NOT NULL, PA_DashboardContent_Access_UU NVARCHAR2(36) DEFAULT NULL , PA_DashboardContent_ID NUMBER(10) DEFAULT NULL , Updated DATE DEFAULT NULL , UpdatedBy NUMBER(10) DEFAULT NULL , CONSTRAINT PA_DashboardContent_Access_Key PRIMARY KEY (PA_DashboardContent_Access_ID), CONSTRAINT PADashboardContentAcces_UU_idx UNIQUE (PA_DashboardContent_Access_UU))
 ;
 
 -- Sep 2, 2013 3:22:49 PM COT
