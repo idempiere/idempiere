@@ -43,20 +43,15 @@ public class MDashboardContentAccess extends X_PA_DashboardContent_Access {
 		super(ctx, rs, trxName);
 	}
 	
-	public static MDashboardContent[] get (Properties ctx,int AD_Role, int AD_User, String trxname, boolean isShowinDashboard)
+	public static MDashboardContent[] get (Properties ctx,int AD_Role, int AD_User, String trxname)
 	{
 		
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
 		ArrayList<MDashboardContent> content =new ArrayList<MDashboardContent>() ;
 		List<Object> parameters = new ArrayList<Object>();
 		
-		if(isShowinDashboard){
-			parameters.add("Y");
-			parameters.add("Y");
-		}else{
-			parameters.add("N");
-			parameters.add("N");
-		}
+		parameters.add(AD_Client_ID);
+		parameters.add(AD_Client_ID);
 		
 		StringBuffer sql= new StringBuffer();
 		sql.append("SELECT PA_DashboardContent_ID,ColumnNo ")
@@ -64,32 +59,31 @@ public class MDashboardContentAccess extends X_PA_DashboardContent_Access {
 		   .append(" WHERE PA_DashboardContent_ID NOT IN (")
 		   .append("  SELECT PA_DashboardContent_ID ")
 		   .append("  FROM  PA_DashboardContent_Access" )
-		   .append("   WHERE IsActive='Y' )")
+		   .append("   WHERE IsActive='Y' AND AD_Client_ID IN (0, ?))")
 		   .append(" AND IsShowInLogin='Y'")
-		   .append(" AND IsActive='Y'")
-		   .append(" AND IsShowInDashboard=?")
+		   .append(" AND IsActive='Y' AND AD_Client_ID IN (0, ?)")
 		   .append(" UNION  ALL")
 		   .append(" SELECT ct.PA_DashboardContent_ID,ct.ColumnNo")
 		   .append(" FROM  PA_DashboardContent ct")
 		   .append(" INNER JOIN PA_DashboardContent_Access cta on (ct.PA_DashboardContent_ID = cta.PA_DashboardContent_ID)")
 		   .append(" WHERE cta.IsActive='Y'")
-		   .append(" AND ct.IsActive='Y'")
-		   .append(" AND ct.IsShowInDashboard=?");
+		   .append(" AND ct.IsActive='Y'");
 				
-		if(AD_Role > 0){
-			sql.append(" AND cta.AD_Role_ID = ?");			  
+		if(AD_Role >= 0){
+			sql.append(" AND coalesce(cta.AD_Role_ID, ?) = ?");			  
+			parameters.add(AD_Role);
 			parameters.add(AD_Role);
 		}
 		
-		if (AD_User > 0){
-			sql.append(" OR cta.AD_User_ID = ?");
+		if (AD_User >= 0){
+			sql.append(" AND coalesce(cta.AD_User_ID, ?) = ?");
+			parameters.add(AD_User);
 			parameters.add(AD_User);
 		}
 
-		if (AD_Client_ID > 0){
-			sql.append(" AND cta.AD_Client_ID in (0,?)");
-			parameters.add(AD_Client_ID);
-		}
+		sql.append(" AND cta.AD_Client_ID in (0,?)");
+		parameters.add(AD_Client_ID);
+		
         sql.append(" ORDER BY ColumnNo");
  
         PreparedStatement pstmt=null;

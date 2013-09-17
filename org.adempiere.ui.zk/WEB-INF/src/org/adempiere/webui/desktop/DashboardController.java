@@ -128,11 +128,10 @@ public class DashboardController implements EventListener<Event> {
         	int AD_Role_ID = Env.getAD_Role_ID(Env.getCtx());
         	
         	MDashboardPreference[] dps = MDashboardPreference.getForSession(AD_User_ID, AD_Role_ID);
-        	MDashboardContent [] dcs =  MDashboardContentAccess.get(Env.getCtx(), AD_Role_ID, AD_User_ID, null,isShowInDashboard);
+        	MDashboardContent [] dcs =  MDashboardContentAccess.get(Env.getCtx(), AD_Role_ID, AD_User_ID, null);
         	
         	if(dps.length == 0){
-        	    createDashboardPreference(AD_User_ID, AD_Role_ID,true);
-        	    createDashboardPreference(AD_User_ID, AD_Role_ID,false);
+        	    createDashboardPreference(AD_User_ID, AD_Role_ID);
         	    dps = MDashboardPreference.getForSession(AD_User_ID, AD_Role_ID);
         	}else{
         		if(updatePreferences(dps, dcs,Env.getCtx())){        			
@@ -518,9 +517,9 @@ public class DashboardController implements EventListener<Event> {
 		}
 	}
 	
-	private void createDashboardPreference(int AD_User_ID, int AD_Role_ID,boolean isshow)
+	private void createDashboardPreference(int AD_User_ID, int AD_Role_ID)
 	{
-		MDashboardContent[] dcs = MDashboardContentAccess.get(Env.getCtx(),AD_Role_ID, AD_User_ID, null,isshow);
+		MDashboardContent[] dcs = MDashboardContentAccess.get(Env.getCtx(),AD_Role_ID, AD_User_ID, null);
 		for (MDashboardContent dc : dcs)
 		{
 			MDashboardPreference preference = new MDashboardPreference(Env.getCtx(), 0, null);
@@ -542,6 +541,7 @@ public class DashboardController implements EventListener<Event> {
 	private boolean updatePreferences(MDashboardPreference[] dps,MDashboardContent[] dcs, Properties ctx) {
 		boolean change = false;
 		for (int i = 0; i < dcs.length; i++) {
+			
 			boolean isNew = true;
 			for (int j = 0; j < dps.length; j++) {
 				if (dps[j].getPA_DashboardContent_ID() == dcs[i].getPA_DashboardContent_ID()) {
@@ -560,6 +560,18 @@ public class DashboardController implements EventListener<Event> {
 				preference.setPA_DashboardContent_ID(dcs[i].getPA_DashboardContent_ID());
 
 				preference.saveEx();
+				if (!change) change = true;
+			}
+		}
+		for (int i = 0; i < dps.length; i++) {
+			boolean found = false;
+			for (int j = 0; j < dcs.length; j++) {
+				if (dcs[j].getPA_DashboardContent_ID() == dps[i].getPA_DashboardContent_ID()) {
+					found = true;
+				}
+			}
+			if (!found) {
+				dps[i].deleteEx(true);
 				if (!change) change = true;
 			}
 		}
