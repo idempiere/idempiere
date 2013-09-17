@@ -247,7 +247,18 @@ public class WGadgets extends Window implements  EventListener<Event>{
 					+" AND pre.AD_Role_ID = ?"
 					+" AND pre.AD_User_ID = ?"
 					+" AND pre.AD_Org_ID=0 "
-					+" AND pre.IsActive='Y') ";
+					+" AND pre.IsActive='Y') " 
+					+" AND (" 
+					+" ct.PA_DashboardContent_ID NOT IN ( SELECT PA_DashboardContent_ID "
+					+"  FROM  PA_DashboardContent_Access"
+					+"   WHERE IsActive='Y' AND AD_Client_ID IN (0, ?))" 
+					+" OR ct.PA_DashboardContent_ID IN ( SELECT cta.PA_DashboardContent_ID " 
+					+"  FROM PA_DashboardContent_Access cta "
+					+" WHERE cta.IsActive='Y'"
+					+" AND coalesce(cta.AD_Role_ID, ?) = ?"
+					+" AND coalesce(cta.AD_User_ID, ?) = ?"
+					+" AND cta.AD_Client_ID in (0,?) ) " 
+					+" )";
 		
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
@@ -258,6 +269,12 @@ public class WGadgets extends Window implements  EventListener<Event>{
 			pstmt.setInt(2, AD_CLient_ID);
 			pstmt.setInt(3, AD_Role_ID);
 			pstmt.setInt(4, AD_User_ID);
+			pstmt.setInt(5, AD_CLient_ID);
+			pstmt.setInt(6, AD_Role_ID);
+			pstmt.setInt(7, AD_Role_ID);
+			pstmt.setInt(8, AD_User_ID);
+			pstmt.setInt(9, AD_User_ID);
+			pstmt.setInt(10, AD_CLient_ID);
 			rs = pstmt.executeQuery();
 		
 			while (rs.next()) {
