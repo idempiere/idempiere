@@ -62,6 +62,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.MaximizeEvent;
 import org.zkoss.zul.Anchorchildren;
 import org.zkoss.zul.Anchorlayout;
+import org.zkoss.zul.Caption;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Include;
@@ -159,12 +160,13 @@ public class DashboardController implements EventListener<Event> {
 	        	}
 
 	        	Panel panel = new Panel();
+	        	Caption caption = new Caption(dc.get_Translation(MDashboardContent.COLUMNNAME_Name));
+	        	panel.appendChild(caption);
 	        	panel.setAttribute("PA_DashboardContent_ID", dp.getPA_DashboardContent_ID());
 	        	panel.setAttribute("PA_DashboardPreference_ID", dp.getPA_DashboardPreference_ID());
 	        	panelList.add(panel);
 	        	panel.addEventListener(Events.ON_MAXIMIZE, this);
 	        	panel.setSclass("dashboard-widget");
-	        	panel.setTitle(dc.get_Translation(MDashboardContent.COLUMNNAME_Name));
 	        	panel.setMaximizable(true);
 	        	
 	        	String description = dc.get_Translation(MDashboardContent.COLUMNNAME_Description);
@@ -176,7 +178,7 @@ public class DashboardController implements EventListener<Event> {
             	panel.addEventListener(Events.ON_OPEN, this);
             	
             	panel.setDroppable("true");
-            	panel.setDraggable("true");
+            	panel.getCaption().setDraggable("true");
             	panel.addEventListener(Events.ON_DROP, this);
 
 	        	panel.setBorder("normal");
@@ -455,11 +457,16 @@ public class DashboardController implements EventListener<Event> {
 			DropEvent de = (DropEvent) event;
     		Component dragged = de.getDragged();
         	
-    		if(dragged instanceof Panel)
+    		if(dragged instanceof Caption)
     		{
-    			Panel panel = (Panel) dragged;
-    			
-	        	if(comp instanceof Panel)
+    			Caption caption = (Caption) dragged;
+       			Panel panel = null;
+       			if (caption.getParent() instanceof Panel)
+       				panel = (Panel) caption.getParent();
+
+       			if (panel == null)
+    				;
+       			else if(comp instanceof Panel)
 	        	{
 	        		Panel target = (Panel) comp;
 	
