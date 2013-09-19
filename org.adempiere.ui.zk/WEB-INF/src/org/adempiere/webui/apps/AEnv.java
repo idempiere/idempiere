@@ -160,6 +160,21 @@ public final class AEnv
 		zoom(AD_Window_ID, MQuery.getEqualQuery(table.getKeyColumns()[0], Record_ID));
 	}	//	zoom
 
+	/*************************************************************************
+	 * 	Zoom
+	 *	@param AD_Table_ID
+	 *	@param Record_ID
+	 *	@param query
+	 */
+	public static void zoom (int AD_Table_ID, int Record_ID, MQuery query)
+	{
+		int AD_Window_ID = Env.getZoomWindowID(AD_Table_ID, Record_ID);
+		//  Nothing to Zoom to
+		if (AD_Window_ID == 0)
+			return;
+		zoom(AD_Window_ID, query);
+	}	//	zoom
+
 	/**
 	 *	Exit System
 	 *  @param status System exit status (usually 0 for no error)
@@ -388,7 +403,7 @@ public final class AEnv
         }
         if (value instanceof Integer && ((Integer) value).intValue() >= 0 && zoomQuery != null && zoomQuery.getZoomTableName() != null) {
         	int tableId = MTable.getTable_ID(zoomQuery.getZoomTableName());
-        	zoom(tableId, ((Integer) value).intValue());
+        	zoom(tableId, ((Integer) value).intValue(), zoomQuery);
         } else {
         	int windowId = lookup.getZoom(zoomQuery);
         	zoom(windowId, zoomQuery);

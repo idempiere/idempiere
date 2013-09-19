@@ -195,11 +195,18 @@ public class Doc_Inventory extends Doc
 			if (costAdjustment)
 			{				
 				product = line.getProduct();
-				String productCostingMethod = product.getCostingMethod(as);
-				costingLevel = product.getCostingLevel(as);
-				if (!docCostingMethod.equals(productCostingMethod))
+				if (!product.isStocked())
 				{
 					doPosting = false;
+				}
+				else
+				{
+					String productCostingMethod = product.getCostingMethod(as);
+					costingLevel = product.getCostingLevel(as);
+					if (!docCostingMethod.equals(productCostingMethod))
+					{
+						doPosting = false;
+					}
 				}
 			}
 			
