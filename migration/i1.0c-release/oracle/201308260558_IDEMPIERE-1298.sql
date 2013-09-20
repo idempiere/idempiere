@@ -1,8 +1,3 @@
--- Aug 23, 2013 6:08:39 PM MYT
--- IDEMPIERE-1297 2Pack: Remove code for the lookup of record and reference using business key
-UPDATE AD_SysConfig SET Value='IDEMPIERE-1298 2Pack: Support copying of data from one client to another',Updated=TO_DATE('2013-08-23 18:08:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_SysConfig_ID=50003
-;
-
 -- Aug 23, 2013 6:09:08 PM MYT
 -- IDEMPIERE-1298 2Pack: Support copying of data from one client to another
 INSERT INTO AD_Table (ImportTable,CopyColumnsFromTable,IsSecurityEnabled,AccessLevel,LoadSeq,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,AD_Table_UU,IsCentrallyMaintained,IsDeleteable,TableName,Description,Name,IsActive,AD_Org_ID,CreatedBy,Updated,UpdatedBy,Created,AD_Client_ID) VALUES ('N','N','N','2',0,200105,'Y','N','N','D','L','af0292e5-c824-47c2-b0cd-99ec92b9fc02','Y','Y','AD_Package_UUID_Map','UUID Mapping between client','UUID Mapping','Y',0,100,TO_DATE('2013-08-23 18:09:02','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2013-08-23 18:09:02','YYYY-MM-DD HH24:MI:SS'),0)
