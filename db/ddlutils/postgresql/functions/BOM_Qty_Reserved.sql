@@ -1,30 +1,4 @@
-/*
- *This file is part of Adempiere ERP Bazaar
- *http://www.adempiere.org
- *Copyright (C) 2006-2008 victor.perez@e-evolution.com, e-Evolution
- *This program is free software; you can redistribute it and/or
- *modify it under the terms of the GNU General Public License
- *as published by the Free Software Foundation; either version 2
- *of the License, or (at your option) any later version.
- *
- *This program is distributed in the hope that it will be useful,
- *but WITHOUT ANY WARRANTY; without even the implied warranty of
- *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *GNU General Public License for more details.
- *
- *You should have received a copy of the GNU General Public License
- *along with this program; if not, write to the Free Software
- *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.of 
- *	Return quantity reserved for BOM
- */
-CREATE OR REPLACE FUNCTION Bomqtyreserved
-(
-	p_Product_ID 		numeric,
-    p_Warehouse_ID		numeric,
-	p_Locator_ID		numeric	--	Only used, if warehouse is null
-)
-RETURNS numeric
-AS
+CREATE OR REPLACE FUNCTION bomqtyreserved (in p_product_id numeric, in p_warehouse_id numeric, in p_locator_id numeric) RETURNS numeric AS
 $BODY$
 DECLARE
 	v_Warehouse_ID			numeric;
@@ -50,7 +24,7 @@ BEGIN
 	IF (v_Warehouse_ID IS NULL) THEN
 		RETURN 0;
 	END IF;
---	DBMS_OUTPUT.PUT_LINE('Warehouse=' || v_Warehouse_ID);
+--	DBMS_OUTPUT.PUT_LINE(''Warehouse='' || v_Warehouse_ID);
 
 	--	Check, if product exists and if it is stocked
 	BEGIN
@@ -81,14 +55,15 @@ BEGIN
 	END IF;
 
 	--	Go though BOM
---	DBMS_OUTPUT.PUT_LINE('BOM');
+--	DBMS_OUTPUT.PUT_LINE(''BOM'');
 	FOR bom IN 
 	--	Get BOM Product info
-	SELECT bl.M_Product_ID AS M_ProductBOM_ID, CASE WHEN bl.IsQtyPercentage = 'N' THEN bl.QtyBOM ELSE bl.QtyBatch / 100 END AS BomQty , p.IsBOM , p.IsStocked, p.ProductType 
-		FROM PP_PRODUCT_BOM b
-			   INNER JOIN M_PRODUCT p ON (p.M_Product_ID=b.M_Product_ID)
-			   INNER JOIN PP_PRODUCT_BOMLINE bl ON (bl.PP_Product_BOM_ID=b.PP_Product_BOM_ID)
-		WHERE b.M_Product_ID = p_Product_ID
+		SELECT b.M_ProductBOM_ID, b.BOMQty, p.IsBOM, p.IsStocked, p.ProductType
+		FROM M_PRODUCT_BOM b, M_PRODUCT p
+		WHERE b.M_ProductBOM_ID=p.M_Product_ID
+		  AND b.M_Product_ID=p_Product_ID
+		  AND p.IsBOM='Y'
+		  AND p.IsVerified='Y'
 	LOOP
 		--	Stocked Items "leaf node"
 		IF (bom.ProductType = 'I' AND bom.IsStocked = 'Y') THEN
@@ -137,4 +112,6 @@ BEGIN
 	RETURN 0;
 END;
 $BODY$
-  LANGUAGE 'plpgsql' ;
+LANGUAGE 'plpgsql'
+;
+

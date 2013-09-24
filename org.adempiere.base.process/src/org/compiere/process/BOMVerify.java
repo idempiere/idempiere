@@ -38,6 +38,8 @@ public class BOMVerify extends SvrProcess
 	private int		p_M_Product_Category_ID = 0;
 	/** Re-Validate			*/
 	private boolean	p_IsReValidate = false;
+
+	private boolean	p_fromButton = false;
 	
 	/**	List of Products	*/
 	private ArrayList<MProduct>	 foundproducts = new ArrayList<MProduct>();
@@ -68,6 +70,7 @@ public class BOMVerify extends SvrProcess
 		}
 		if ( p_M_Product_ID == 0 )
 			p_M_Product_ID = getRecord_ID();
+		p_fromButton = (getRecord_ID() > 0);
 	}	//	prepare
 
 	/**
@@ -155,9 +158,12 @@ public class BOMVerify extends SvrProcess
 		MProductBOM[] productsBOMs = MProductBOM.getBOMLines(product);
 		boolean containsinvalid = false;
 		boolean invalid = false;
-		for (int i = 0; i < productsBOMs.length; i++)
+		int lines = 0;
+		for (MProductBOM productsBOM : productsBOMs)
 		{
-			MProductBOM productsBOM = productsBOMs[i];
+			if (! productsBOM.isActive())
+				continue;
+			lines++;
 			MProduct pp = new MProduct(getCtx(), productsBOM.getM_ProductBOM_ID(), get_TrxName());
 			if (!pp.isBOM()) {
 				if (log.isLoggable(Level.FINER)) log.finer(pp.getName());
@@ -173,7 +179,10 @@ public class BOMVerify extends SvrProcess
 				else if (foundproducts.contains(pp))
 				{
 					invalid = true;
-					addLog(0, null, null, product.getValue() + " recursively contains " + pp.getValue(), MProduct.Table_ID, product.getM_Product_ID());
+					if (p_fromButton)
+						addLog(0, null, null, product.getValue() + " recursively contains " + pp.getValue());
+					else
+						addLog(0, null, null, product.getValue() + " recursively contains " + pp.getValue(), MProduct.Table_ID, product.getM_Product_ID());
 				}
 				else
 				{
@@ -181,14 +190,19 @@ public class BOMVerify extends SvrProcess
 					{
 						containsinvalid = true;
 					}
-					
+
 				}
 			}
-
-			
-			
 		}
-		
+
+		if (lines == 0) {
+			invalid = true;
+			if (p_fromButton)
+				addLog(0, null, null, product.getValue() + " does not have lines");
+			else
+				addLog(0, null, null, product.getValue() + " does not have lines", MProduct.Table_ID, product.getM_Product_ID());
+		}
+
 		checkedproducts.add(product);
 		foundproducts.remove(product);
 		if (invalid)

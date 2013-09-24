@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
@@ -37,8 +38,7 @@ public class MProductBOM extends X_M_Product_BOM
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6029128559467083124L;
-
+	private static final long serialVersionUID = 2615029184168566124L;
 
 	/**
 	 * 	Get BOM Lines for Product
@@ -96,7 +96,7 @@ public class MProductBOM extends X_M_Product_BOM
 	}	//	MProductBOM
 
 	/**
-	 * 	Load Construvtor
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction
@@ -159,22 +159,51 @@ public class MProductBOM extends X_M_Product_BOM
 	{
 		if (!success)
 			return success;
-		//	Product Line was changed
-		if (newRecord || is_ValueChanged("M_ProductBOM_ID"))
+		MProduct product = new MProduct (getCtx(), getM_Product_ID(), get_TrxName());
+		if (get_TrxName() != null)
+			product.load(get_TrxName());
+		if (product.isVerified())
 		{
-			//	Invalidate BOM
-			MProduct product = new MProduct (getCtx(), getM_Product_ID(), get_TrxName());
-			if (get_TrxName() != null)
-				product.load(get_TrxName());
-			if (product.isVerified())
+			if (   newRecord 
+				|| is_ValueChanged("M_ProductBOM_ID") //	Product Line was changed
+				|| (is_ValueChanged("IsActive") && isActive())) // line was activated
 			{
+				//	Invalidate BOM
 				product.setIsVerified(false);
 				product.saveEx(get_TrxName());
 			}
-			//	Invalidate Products where BOM is used
-			
+			if (product.isVerified() && is_ValueChanged("IsActive") && !isActive()) {  // line was inactivated
+				if (! hasActiveComponents(getM_Product_ID())) {
+					product.setIsVerified(false);
+					product.saveEx(get_TrxName());
+				}
+			}
 		}
 		return success;
 	}	//	afterSave
+
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (!success)
+			return success;
+		MProduct product = new MProduct (getCtx(), getM_Product_ID(), get_TrxName());
+		if (get_TrxName() != null)
+			product.load(get_TrxName());
+		if (product.isVerified())
+		{
+			if (! hasActiveComponents(getM_Product_ID())) {
+				product.setIsVerified(false);
+				product.saveEx(get_TrxName());
+			}
+		}
+		return success;
+	}
 	
+	private boolean hasActiveComponents(int productID) {
+		int cnt = DB.getSQLValue(get_TrxName(),
+				"SELECT COUNT(*) FROM M_Product_BOM WHERE IsActive='Y' AND M_Product_ID=? AND M_Product_BOM_ID!=?",
+				productID, getM_Product_BOM_ID());
+		return cnt > 0;
+	}
+
 }	//	MProductBOM
