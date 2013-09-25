@@ -1299,59 +1299,15 @@ public class MCostDetail extends X_M_CostDetail
 		history.setNewCostPrice(cost.getCurrentCostPrice());
 		history.setNewCAmt(cost.getCumulatedAmt());
 		history.setNewCQty(cost.getCumulatedQty());
-		if (!history.save())
-			return false;
+		//save history if there are movement of qty or costprice
+		if (history.getNewQty().compareTo(history.getOldQty()) != 0 
+				|| history.getNewCostPrice().compareTo(history.getOldCostPrice()) != 0)
+		{
+			if (!history.save())
+				return false;
+		}
 		
 		return cost.save();
 	}	//	process
-	
-	// Elaine 2008/6/20	
-	protected boolean afterDelete (boolean success)
-	{
-		if(success)
-		{
-			// recalculate MCost			
-			boolean ok = false;
-			//	get costing level for product
-			MAcctSchema as = new MAcctSchema (getCtx(), getC_AcctSchema_ID(), null);
-			MProduct product = MProduct.get(getCtx(), getM_Product_ID());
-			String CostingLevel = product.getCostingLevel(as);
-			//	Org Element
-			int Org_ID = getAD_Org_ID();
-			int M_ASI_ID = getM_AttributeSetInstance_ID();
-			if (MAcctSchema.COSTINGLEVEL_Client.equals(CostingLevel))
-			{
-				Org_ID = 0;
-				M_ASI_ID = 0;
-			}
-			else if (MAcctSchema.COSTINGLEVEL_Organization.equals(CostingLevel))
-				M_ASI_ID = 0;
-			else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
-				Org_ID = 0;
-
-			//	Create Material Cost elements
-			if (getM_CostElement_ID() == 0)
-			{
-				MCostElement[] ces = MCostElement.getCostingMethods(this);
-				for (int i = 0; i < ces.length; i++)
-				{
-					MCostElement ce = ces[i];
-					ok = process (as, product, ce, Org_ID, M_ASI_ID);
-					if (!ok)
-						break;
-				}
-			}	//	Material Cost elements
-			else
-			{
-				MCostElement ce = MCostElement.get(getCtx(), getM_CostElement_ID());
-				ok = process (as, product, ce, Org_ID, M_ASI_ID);
-			}
-			
-			return ok;
-		}
-		
-		return super.afterDelete(success);
-	}
-	//
 	
 }	//	MCostDetail

@@ -24,7 +24,6 @@ import java.util.Properties;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
-import org.compiere.util.Env;
 
 /**
  *	Match Invoice (Receipt<>Invoice) Model.
@@ -304,35 +303,7 @@ public class MMatchInv extends X_M_MatchInv
 		{
 			// AZ Goodwill
 			deleteMatchInvCostDetail();
-			// end AZ
-			
-			// delete m_matchinv doesn't auto make m_matchpo invalid
-			//	Get Order and decrease invoices
-			/*
-			MInvoiceLine iLine = new MInvoiceLine (getCtx(), getC_InvoiceLine_ID(), get_TrxName());
-			int C_OrderLine_ID = iLine.getC_OrderLine_ID();
-			if (C_OrderLine_ID == 0)
-			{
-				MInOutLine ioLine = new MInOutLine (getCtx(), getM_InOutLine_ID(), get_TrxName());
-				C_OrderLine_ID = ioLine.getC_OrderLine_ID();
-			}
-			//	No Order Found
-			if (C_OrderLine_ID == 0)
-				return success;
-			//	Find MatchPO
-			MMatchPO[] mPO = MMatchPO.get(getCtx(), C_OrderLine_ID, 
-				getC_InvoiceLine_ID(), get_TrxName());
-			for (int i = 0; i < mPO.length; i++)
-			{
-				if (mPO[i].getM_InOutLine_ID() == 0)
-					mPO[i].delete(true);
-				else
-				{
-					mPO[i].setC_InvoiceLine_ID(null);
-					mPO[i].saveEx();
-				}
-			}
-			*/
+			// end AZ			
 		}
 		return success;
 	}	//	afterDelete
@@ -352,43 +323,11 @@ public class MMatchInv extends X_M_MatchInv
 				continue;
 			}
 			
-			// update/delete Cost Detail and recalculate Current Cost
-			MCostDetail cd = MCostDetail.get (getCtx(), "C_InvoiceLine_ID=?", 
-					getC_InvoiceLine_ID(), getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), get_TrxName());
+			MCostDetail cd = MCostDetail.get (getCtx(), "M_MatchInv_ID=?", 
+					getM_MatchInv_ID(), getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), get_TrxName());
 			if (cd != null)
 			{
-				if (cd.isProcessed())
-				{
-					MInOut receipt = (new MInOutLine(getCtx(),getM_InOutLine_ID(),get_TrxName())).getParent();
-					BigDecimal qty = getQty();
-					if (receipt.getMovementType().equals(MInOut.MOVEMENTTYPE_VendorReturns))
-						qty = getQty().negate();
-					//
-					BigDecimal price = null;
-					if (cd.getQty().compareTo(Env.ZERO) == 0) // avoid division by zero
-						price = Env.ZERO;
-					else
-						price = cd.getAmt().divide(cd.getQty(),12,BigDecimal.ROUND_HALF_UP);
-					cd.setDeltaAmt(price.multiply(qty.negate()));
-					cd.setDeltaQty(qty.negate());
-					cd.setProcessed(false);
-					//
-					cd.setAmt(price.multiply(cd.getQty().subtract(qty)));
-					cd.setQty(cd.getQty().subtract(qty));
-					if (!cd.isProcessed())
-					{
-						cd.process();
-					}
-					if (cd.getQty().compareTo(Env.ZERO) == 0)
-					{
-						cd.setProcessed(false);
-						cd.delete(true);
-					}
-				}
-				else
-				{
-					cd.delete(true);
-				}
+				cd.deleteEx(true);
 			}
 		}
 		

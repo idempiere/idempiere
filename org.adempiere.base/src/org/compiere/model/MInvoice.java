@@ -2238,6 +2238,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				accrual = true;
 			}
 			
+			if (!accrual)
+			{
+								
+			}
+			
 			if (accrual)
 				return reverseAccrualIt();
 			else
@@ -2331,52 +2336,36 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		//	Reverse/Delete Matching
 		if (!isSOTrx())
 		{
-			if (accrual) 
+			MMatchInv[] mInv = MMatchInv.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+			for (int i = 0; i < mInv.length; i++)
 			{
-				MMatchInv[] mInv = MMatchInv.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
-				for (int i = 0; i < mInv.length; i++)
+				if (mInv[i].getReversal_ID() > 0)
+					continue;
+				
+				if (!mInv[i].reverse(reversalDate)) 
 				{
-					if (!mInv[i].reverse(reversalDate)) 
+					m_processMsg = "Could not Reverse MatchInv";
+					return null;
+				}
+			}
+			MMatchPO[] mPO = MMatchPO.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+			for (int i = 0; i < mPO.length; i++)
+			{
+				if (mPO[i].getReversal_ID() > 0)
+					continue;
+				
+				if (mPO[i].getM_InOutLine_ID() == 0)
+				{
+					if (!mPO[i].reverse(reversalDate)) 
 					{
-						m_processMsg = "Could not Reverse MatchInv";
+						m_processMsg = "Could not Reverse MatchPO";
 						return null;
 					}
 				}
-				MMatchPO[] mPO = MMatchPO.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
-				for (int i = 0; i < mPO.length; i++)
+				else
 				{
-					if (mPO[i].getM_InOutLine_ID() == 0)
-					{
-						if (!mPO[i].reverse(reversalDate)) 
-						{
-							m_processMsg = "Could not Reverse MatchPO";
-							return null;
-						}
-					}
-					else
-					{
-						mPO[i].setC_InvoiceLine_ID(null);
-						mPO[i].saveEx(get_TrxName());
-					}
-				}
-			}
-			else
-			{
-				MMatchInv[] mInv = MMatchInv.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
-				for (int i = 0; i < mInv.length; i++)
-				{
-					mInv[i].deleteEx(true);
-				}
-				MMatchPO[] mPO = MMatchPO.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
-				for (int i = 0; i < mPO.length; i++)
-				{
-					if (mPO[i].getM_InOutLine_ID() == 0)
-						mPO[i].deleteEx(true);
-					else
-					{
-						mPO[i].setC_InvoiceLine_ID(null);
-						mPO[i].saveEx(get_TrxName());
-					}
+					mPO[i].setC_InvoiceLine_ID(null);
+					mPO[i].saveEx(get_TrxName());
 				}
 			}
 		}

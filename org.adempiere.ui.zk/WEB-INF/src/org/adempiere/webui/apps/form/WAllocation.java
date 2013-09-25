@@ -64,6 +64,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
@@ -199,9 +200,11 @@ public class WAllocation extends Allocation
 		row = rows.newRow();
 		row.appendCellChild(bpartnerLabel.rightAlign());
 		bpartnerSearch.getComponent().setHflex("true");
-		row.appendCellChild(bpartnerSearch.getComponent(),2);
-		row.appendCellChild(dateLabel.rightAlign());
-		row.appendCellChild(dateField.getComponent());
+		row.appendCellChild(bpartnerSearch.getComponent(),2);	
+		Hbox box = new Hbox();
+		box.appendChild(dateLabel.rightAlign());
+		box.appendChild(dateField.getComponent());
+		row.appendCellChild(box);
 		row.appendCellChild(organizationLabel.rightAlign());
 		organizationPick.getComponent().setHflex("true");
 		row.appendCellChild(organizationPick.getComponent(),1);
@@ -210,7 +213,7 @@ public class WAllocation extends Allocation
 		row.appendCellChild(currencyLabel.rightAlign(),1);
 		currencyPick.getComponent().setHflex("true");
 		row.appendCellChild(currencyPick.getComponent(),1);		
-		row.appendCellChild(multiCurrency,2);		
+		row.appendCellChild(multiCurrency,1);		
 		row.appendCellChild(autoWriteOff,2);
 		row.appendCellChild(new Space(),1);		
 		

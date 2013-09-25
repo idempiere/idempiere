@@ -1074,7 +1074,15 @@ public final class FactLine extends X_Fact_Acct
 		StringBuilder sql = new StringBuilder("SELECT * ")
 			.append("FROM Fact_Acct ")
 			.append("WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=?")
-			.append(" AND Line_ID=? AND Account_ID=?");
+			.append(" AND Account_ID=?");
+		if (Line_ID > 0) 
+		{
+			sql.append(" AND Line_ID=? ");
+		}
+		else
+		{
+			sql.append(" AND Line_ID IS NULL ");
+		}
 		// MZ Goodwill
 		// for Inventory Move
 		if (MMovement.Table_ID == AD_Table_ID)
@@ -1084,16 +1092,20 @@ public final class FactLine extends X_Fact_Acct
 		ResultSet rs = null;
 		try
 		{
+			int pindex=1;
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
-			pstmt.setInt(1, getC_AcctSchema_ID());
-			pstmt.setInt(2, AD_Table_ID);
-			pstmt.setInt(3, Record_ID);
-			pstmt.setInt(4, Line_ID);
-			pstmt.setInt(5, m_acct.getAccount_ID());
+			pstmt.setInt(pindex++, getC_AcctSchema_ID());
+			pstmt.setInt(pindex++, AD_Table_ID);
+			pstmt.setInt(pindex++, Record_ID);			
+			pstmt.setInt(pindex++, m_acct.getAccount_ID());
+			if (Line_ID > 0)
+			{
+				pstmt.setInt(pindex++, Line_ID);
+			}
 			// MZ Goodwill
 			// for Inventory Move
 			if (MMovement.Table_ID == AD_Table_ID)
-				pstmt.setInt(6, getM_Locator_ID());
+				pstmt.setInt(pindex++, getM_Locator_ID());
 			// end MZ
 			rs = pstmt.executeQuery();
 			if (rs.next())

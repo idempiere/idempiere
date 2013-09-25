@@ -75,6 +75,7 @@ public class Doc_MatchPO extends Doc
 
 	private ProductCost m_pc;
 	private int			m_M_AttributeSetInstance_ID = 0;
+	private MMatchPO m_matchPO;
 
 	/**
 	 *  Load Specific Document Details
@@ -83,19 +84,19 @@ public class Doc_MatchPO extends Doc
 	protected String loadDocumentDetails ()
 	{
 		setC_Currency_ID (Doc.NO_CURRENCY);
-		MMatchPO matchPO = (MMatchPO)getPO();
-		setDateDoc(matchPO.getDateTrx());
+		m_matchPO = (MMatchPO)getPO();
+		setDateDoc(m_matchPO.getDateTrx());
 		//
-		m_M_AttributeSetInstance_ID = matchPO.getM_AttributeSetInstance_ID();
-		setQty (matchPO.getQty());
+		m_M_AttributeSetInstance_ID = m_matchPO.getM_AttributeSetInstance_ID();
+		setQty (m_matchPO.getQty());
 		//
-		m_C_OrderLine_ID = matchPO.getC_OrderLine_ID();
+		m_C_OrderLine_ID = m_matchPO.getC_OrderLine_ID();
 		m_oLine = new MOrderLine (getCtx(), m_C_OrderLine_ID, getTrxName());
 		//
-		m_M_InOutLine_ID = matchPO.getM_InOutLine_ID();
+		m_M_InOutLine_ID = m_matchPO.getM_InOutLine_ID();
 		m_ioLine = new MInOutLine (getCtx(), m_M_InOutLine_ID, getTrxName());
 
-		m_C_InvoiceLine_ID = matchPO.getC_InvoiceLine_ID();
+		m_C_InvoiceLine_ID = m_matchPO.getC_InvoiceLine_ID();
 
 		//
 		m_pc = new ProductCost (Env.getCtx(),
@@ -252,79 +253,105 @@ public class Doc_MatchPO extends Doc
 
 		if (MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 		{
-			//	No Costs yet - no PPV
-			if (costs == null || costs.signum() == 0)
+			if (m_matchPO.getReversal_ID() > 0)
 			{
-				p_Error = "Resubmit - No Costs for " + product.getName();
-				log.log(Level.SEVERE, p_Error);
-				return null;
-			}
-
-			//	Difference
-			BigDecimal difference = totalCost.subtract(costs);
-			//	Nothing to post
-			if (difference.signum() == 0)
-			{
-				if (log.isLoggable(Level.FINE))log.log(Level.FINE, "No Cost Difference for M_Product_ID=" + getM_Product_ID());
-				return facts;
-			}
-
-			//  Product PPV
-			FactLine cr = fact.createLine(null,
-				m_pc.getAccount(ProductCost.ACCTTYPE_P_PPV, as),
-				as.getC_Currency_ID(), isReturnTrx ? difference.negate() : difference);
-			MAccount acct_cr = null;
-			if (cr != null)
-			{
-				cr.setQty(isReturnTrx ? getQty().negate() : getQty());
-				cr.setC_BPartner_ID(m_oLine.getC_BPartner_ID());
-				cr.setC_Activity_ID(m_oLine.getC_Activity_ID());
-				cr.setC_Campaign_ID(m_oLine.getC_Campaign_ID());
-				cr.setC_Project_ID(m_oLine.getC_Project_ID());
-				cr.setC_ProjectPhase_ID(m_oLine.getC_ProjectPhase_ID());
-				cr.setC_ProjectTask_ID(m_oLine.getC_ProjectTask_ID());
-				cr.setC_UOM_ID(m_oLine.getC_UOM_ID());
-				cr.setUser1_ID(m_oLine.getUser1_ID());
-				cr.setUser2_ID(m_oLine.getUser2_ID());
-				acct_cr = cr.getAccount(); // PPV Offset
-			}
-
-			//  PPV Offset
-			FactLine dr = fact.createLine(null,
-				getAccount(Doc.ACCTTYPE_PPVOffset, as),
-				as.getC_Currency_ID(), isReturnTrx ? difference : difference.negate());
-			MAccount acct_db = null;
-			if (dr != null)
-			{
-				dr.setQty(isReturnTrx ? getQty() : getQty().negate());
-				dr.setC_BPartner_ID(m_oLine.getC_BPartner_ID());
-				dr.setC_Activity_ID(m_oLine.getC_Activity_ID());
-				dr.setC_Campaign_ID(m_oLine.getC_Campaign_ID());
-				dr.setC_Project_ID(m_oLine.getC_Project_ID());
-				dr.setC_ProjectPhase_ID(m_oLine.getC_ProjectPhase_ID());
-				dr.setC_ProjectTask_ID(m_oLine.getC_ProjectTask_ID());
-				dr.setC_UOM_ID(m_oLine.getC_UOM_ID());
-				dr.setUser1_ID(m_oLine.getUser1_ID());
-				dr.setUser2_ID(m_oLine.getUser2_ID());
-				acct_db =  dr.getAccount(); // PPV
-			}
-
-			// Avoid usage of clearing accounts
-			// If both accounts Purchase Price Variance and Purchase Price Variance Offset are equal
-			// then remove the posting
-
-			if ((!as.isPostIfClearingEqual()) && acct_db!=null && acct_db.equals(acct_cr) && (!isInterOrg)) {
-
-				BigDecimal debit = dr.getAmtSourceDr();
-				BigDecimal credit = cr.getAmtSourceCr();
-
-				if (debit.compareTo(credit) == 0) {
-					fact.remove(dr);
+				//  Product PPV
+				FactLine cr = fact.createLine(null,
+					m_pc.getAccount(ProductCost.ACCTTYPE_P_PPV, as),
+					as.getC_Currency_ID(), Env.ONE);
+				if (!cr.updateReverseLine(MMatchPO.Table_ID, m_matchPO.getM_MatchPO_ID(), 0, Env.ONE)) 
+				{
 					fact.remove(cr);
+					cr = null;
 				}
-
+				if (cr != null)
+				{
+					//  PPV Offset
+					FactLine dr = fact.createLine(null,
+						getAccount(Doc.ACCTTYPE_PPVOffset, as), as.getC_Currency_ID(), Env.ONE);
+					if (!dr.updateReverseLine(MMatchPO.Table_ID, m_matchPO.getM_MatchPO_ID(), 0, Env.ONE)) 
+					{
+						p_Error = "Failed to create reversal entry for ACCTTYPE_PPVOffset";
+						return null;
+					}
+				}
 			}
-			// End Avoid usage of clearing accounts
+			else
+			{
+				//	No Costs yet - no PPV
+				if (costs == null || costs.signum() == 0)
+				{
+					p_Error = "Resubmit - No Costs for " + product.getName();
+					log.log(Level.SEVERE, p_Error);
+					return null;
+				}
+	
+				//	Difference
+				BigDecimal difference = totalCost.subtract(costs);
+				//	Nothing to post
+				if (difference.signum() == 0)
+				{
+					if (log.isLoggable(Level.FINE))log.log(Level.FINE, "No Cost Difference for M_Product_ID=" + getM_Product_ID());
+					return facts;
+				}
+	
+				//  Product PPV
+				FactLine cr = fact.createLine(null,
+					m_pc.getAccount(ProductCost.ACCTTYPE_P_PPV, as),
+					as.getC_Currency_ID(), isReturnTrx ? difference.negate() : difference);
+				MAccount acct_cr = null;
+				if (cr != null)
+				{
+					cr.setQty(isReturnTrx ? getQty().negate() : getQty());
+					cr.setC_BPartner_ID(m_oLine.getC_BPartner_ID());
+					cr.setC_Activity_ID(m_oLine.getC_Activity_ID());
+					cr.setC_Campaign_ID(m_oLine.getC_Campaign_ID());
+					cr.setC_Project_ID(m_oLine.getC_Project_ID());
+					cr.setC_ProjectPhase_ID(m_oLine.getC_ProjectPhase_ID());
+					cr.setC_ProjectTask_ID(m_oLine.getC_ProjectTask_ID());
+					cr.setC_UOM_ID(m_oLine.getC_UOM_ID());
+					cr.setUser1_ID(m_oLine.getUser1_ID());
+					cr.setUser2_ID(m_oLine.getUser2_ID());
+					acct_cr = cr.getAccount(); // PPV Offset
+				}
+	
+				//  PPV Offset
+				FactLine dr = fact.createLine(null,
+					getAccount(Doc.ACCTTYPE_PPVOffset, as),
+					as.getC_Currency_ID(), isReturnTrx ? difference : difference.negate());
+				MAccount acct_db = null;
+				if (dr != null)
+				{
+					dr.setQty(isReturnTrx ? getQty() : getQty().negate());
+					dr.setC_BPartner_ID(m_oLine.getC_BPartner_ID());
+					dr.setC_Activity_ID(m_oLine.getC_Activity_ID());
+					dr.setC_Campaign_ID(m_oLine.getC_Campaign_ID());
+					dr.setC_Project_ID(m_oLine.getC_Project_ID());
+					dr.setC_ProjectPhase_ID(m_oLine.getC_ProjectPhase_ID());
+					dr.setC_ProjectTask_ID(m_oLine.getC_ProjectTask_ID());
+					dr.setC_UOM_ID(m_oLine.getC_UOM_ID());
+					dr.setUser1_ID(m_oLine.getUser1_ID());
+					dr.setUser2_ID(m_oLine.getUser2_ID());
+					acct_db =  dr.getAccount(); // PPV
+				}
+				
+				// Avoid usage of clearing accounts
+				// If both accounts Purchase Price Variance and Purchase Price Variance Offset are equal
+				// then remove the posting
+	
+				if ((!as.isPostIfClearingEqual()) && acct_db!=null && acct_db.equals(acct_cr) && (!isInterOrg)) {
+	
+					BigDecimal debit = dr.getAmtSourceDr();
+					BigDecimal credit = cr.getAmtSourceCr();
+	
+					if (debit.compareTo(credit) == 0) {
+						fact.remove(dr);
+						fact.remove(cr);
+					}
+	
+				}
+				// End Avoid usage of clearing accounts
+			}
 
 			//
 			facts.add(fact);

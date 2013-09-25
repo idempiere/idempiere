@@ -2152,29 +2152,8 @@ public class MInOut extends X_M_InOut implements DocAction
 		//	Reverse/Delete Matching
 		if (!isSOTrx())
 		{
-			if (accrual) 
-			{
-				if (!reverseMatching(reversalDate))
-					return null;
-			}
-			else 
-			{
-				MMatchInv[] mInv = MMatchInv.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
-				for (int i = 0; i < mInv.length; i++)
-					mInv[i].deleteEx(true);
-				MMatchPO[] mPO = MMatchPO.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
-				for (int i = 0; i < mPO.length; i++)
-				{
-					if (mPO[i].getC_InvoiceLine_ID() == 0)
-						mPO[i].deleteEx(true);
-					else
-					{
-						mPO[i].setM_InOutLine_ID(0);
-						mPO[i].saveEx();
-	
-					}
-				}
-			}
+			if (!reverseMatching(reversalDate))
+				return null;			
 		}
 
 		//	Deep Copy
@@ -2262,7 +2241,10 @@ public class MInOut extends X_M_InOut implements DocAction
 	private boolean reverseMatching(Timestamp reversalDate) {
 		MMatchInv[] mInv = MMatchInv.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
 		for (MMatchInv mMatchInv : mInv)
-		{				
+		{		
+			if (mMatchInv.getReversal_ID() > 0)
+				continue;
+			
 			String description = mMatchInv.getDescription();
 			if (description == null || !description.endsWith("<-)"))
 			{
@@ -2276,6 +2258,9 @@ public class MInOut extends X_M_InOut implements DocAction
 		MMatchPO[] mMatchPOList = MMatchPO.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
 		for (MMatchPO mMatchPO : mMatchPOList) 
 		{
+			if (mMatchPO.getReversal_ID() > 0)
+				continue;
+			
 			String description = mMatchPO.getDescription();
 			if (description == null || !description.endsWith("<-)"))
 			{

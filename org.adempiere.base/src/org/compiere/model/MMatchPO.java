@@ -1032,10 +1032,6 @@ public class MMatchPO extends X_M_MatchPO
 		//	(Reserved in VMatch and MInOut.completeIt)
 		if (success && getC_OrderLine_ID() != 0)
 		{
-			// AZ Goodwill
-			deleteMatchPOCostDetail();
-			// end AZ
-			
 			MOrderLine orderLine = new MOrderLine (getCtx(), getC_OrderLine_ID(), get_TrxName());
 			if (getM_InOutLine_ID() != 0)
 				orderLine.setQtyDelivered(orderLine.getQtyDelivered().subtract(getQty()));
@@ -1136,58 +1132,6 @@ public class MMatchPO extends X_M_MatchPO
 			if (s_log.isLoggable(Level.INFO)) s_log.info("Success #" + success + " - Error #" + errors);
 	}	//	consolidate
 	
-	//AZ Goodwill
-	private String deleteMatchPOCostDetail()
-	{
-		// Get Account Schemas to delete MCostDetail
-		MAcctSchema[] acctschemas = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID());
-		for(int asn = 0; asn < acctschemas.length; asn++)
-		{
-			MAcctSchema as = acctschemas[asn];
-			
-			if (as.isSkipOrg(getAD_Org_ID()))
-			{
-				continue;
-			}
-			
-			// update/delete Cost Detail and recalculate Current Cost
-			MCostDetail cd = MCostDetail.get (getCtx(), "C_OrderLine_ID=?", 
-					getC_OrderLine_ID(), getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), get_TrxName());
-			if (cd != null)
-			{
-				if (cd.isProcessed())
-				{
-					if (cd.getQty().compareTo(Env.ZERO) > 0)
-					{
-						BigDecimal price = cd.getAmt().divide(cd.getQty(),12,BigDecimal.ROUND_HALF_UP);
-						cd.setDeltaAmt(price.multiply(getQty().negate()));
-						cd.setDeltaQty(getQty().negate());
-						cd.setProcessed(false);
-						//
-						cd.setAmt(price.multiply(cd.getQty().subtract(getQty())));
-						cd.setQty(cd.getQty().subtract(getQty()));
-						if (!cd.isProcessed())
-						{
-							cd.process();
-						}
-					}
-					//after process clean-up
-					if (cd.getQty().compareTo(Env.ZERO) == 0)
-					{
-						cd.setProcessed(false);
-						cd.delete(true);
-					}
-				}
-				else
-				{
-					cd.delete(true);
-				}
-			}
-		}
-		
-		return "";
-	}
-
 	/**
 	 * 	Reverse MatchPO.
 	 *  @param reversalDate
