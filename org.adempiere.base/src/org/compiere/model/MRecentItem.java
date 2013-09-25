@@ -299,7 +299,7 @@ public class MRecentItem extends X_AD_RecentItem
 		if (! Util.isEmpty(titleLogic)) { // default way
 			titleLogic = Env.parseVariable(titleLogic, po, null, false);
 			if (! Util.isEmpty(titleLogic))
-				recordIdentifier.append(titleLogic);
+				recordIdentifier.append(" ").append(titleLogic);
 		}
 		
 		if (recordIdentifier.length() == 0) {
