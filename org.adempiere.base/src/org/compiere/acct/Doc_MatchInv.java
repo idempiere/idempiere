@@ -72,6 +72,7 @@ public class Doc_MatchInv extends Doc
 	private MInOutLine		m_receiptLine = null;
 
 	private ProductCost		m_pc = null;
+	private MMatchInv m_matchInv;
 
 	/** Commitments			*/
 //	private DocLine[]		m_commitments = null;
@@ -83,21 +84,21 @@ public class Doc_MatchInv extends Doc
 	protected String loadDocumentDetails ()
 	{
 		setC_Currency_ID (Doc.NO_CURRENCY);
-		MMatchInv matchInv = (MMatchInv)getPO();
-		setDateDoc(matchInv.getDateTrx());
-		setQty (matchInv.getQty());
+		m_matchInv = (MMatchInv)getPO();
+		setDateDoc(m_matchInv.getDateTrx());
+		setQty (m_matchInv.getQty());
 		//	Invoice Info
-		int C_InvoiceLine_ID = matchInv.getC_InvoiceLine_ID();
+		int C_InvoiceLine_ID = m_matchInv.getC_InvoiceLine_ID();
 		m_invoiceLine = new MInvoiceLine (getCtx(), C_InvoiceLine_ID, getTrxName());
 		//		BP for NotInvoicedReceipts
 		int C_BPartner_ID = m_invoiceLine.getParent().getC_BPartner_ID();
 		setC_BPartner_ID(C_BPartner_ID);
 		//
-		int M_InOutLine_ID = matchInv.getM_InOutLine_ID();
+		int M_InOutLine_ID = m_matchInv.getM_InOutLine_ID();
 		m_receiptLine = new MInOutLine (getCtx(), M_InOutLine_ID, getTrxName());
 		//
 		m_pc = new ProductCost (Env.getCtx(),
-			getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(), getTrxName());
+			getM_Product_ID(), m_matchInv.getM_AttributeSetInstance_ID(), getTrxName());
 		m_pc.setQty(getQty());
 
 		return null;
@@ -171,18 +172,26 @@ public class Doc_MatchInv extends Doc
 			return null;
 		}
 		dr.setQty(getQty());
-	//	dr.setM_Locator_ID(m_receiptLine.getM_Locator_ID());
-	//	MInOut receipt = m_receiptLine.getParent();
-	//	dr.setLocationFromBPartner(receipt.getC_BPartner_Location_ID(), true);	//  from Loc
-	//	dr.setLocationFromLocator(m_receiptLine.getM_Locator_ID(), false);		//  to Loc
 		BigDecimal temp = dr.getAcctBalance();
 		//	Set AmtAcctCr/Dr from Receipt (sets also Project)
-		if (!dr.updateReverseLine (MInOut.Table_ID, 		//	Amt updated
-			m_receiptLine.getM_InOut_ID(), m_receiptLine.getM_InOutLine_ID(),
-			multiplier))
+		if (m_matchInv.getReversal_ID() > 0) 
 		{
-			p_Error = "Mat.Receipt not posted yet";
-			return null;
+			if (!dr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
+					m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+			{
+				p_Error = "Failed to create reversal entry";
+				return null;
+			}
+		}
+		else
+		{
+			if (!dr.updateReverseLine (MInOut.Table_ID, 		//	Amt updated
+				m_receiptLine.getM_InOut_ID(), m_receiptLine.getM_InOutLine_ID(),
+				multiplier))
+			{
+				p_Error = "Mat.Receipt not posted yet";
+				return null;
+			}
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("CR - Amt(" + temp + "->" + dr.getAcctBalance()
 			+ ") - " + dr.toString());
@@ -214,14 +223,26 @@ public class Doc_MatchInv extends Doc
 				cr.setAmtAcctCr(BigDecimal.ZERO);
 				cr.setAmtSourceCr(BigDecimal.ZERO);
 			}
-			cr.setQty(getQty().negate());
 			temp = cr.getAcctBalance();
-			//	Set AmtAcctCr/Dr from Invoice (sets also Project)
-			if (as.isAccrual() && !cr.updateReverseLine (MInvoice.Table_ID, 		//	Amt updated
-				m_invoiceLine.getC_Invoice_ID(), m_invoiceLine.getC_InvoiceLine_ID(), multiplier))
+			if (m_matchInv.getReversal_ID() > 0)
 			{
-				p_Error = "Invoice not posted yet";
-				return null;
+				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+				{
+					p_Error = "Failed to create reversal entry";
+					return null;
+				}
+			}
+			else
+			{
+				cr.setQty(getQty().negate());				
+				//	Set AmtAcctCr/Dr from Invoice (sets also Project)
+				if (!cr.updateReverseLine (MInvoice.Table_ID, 		//	Amt updated
+					m_invoiceLine.getC_Invoice_ID(), m_invoiceLine.getC_InvoiceLine_ID(), multiplier))
+				{
+					p_Error = "Invoice not posted yet";
+					return null;
+				}
 			}
 			if (log.isLoggable(Level.FINE)) log.fine("DR - Amt(" + temp + "->" + cr.getAcctBalance()
 				+ ") - " + cr.toString());
@@ -236,16 +257,31 @@ public class Doc_MatchInv extends Doc
 					invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
 			cr = fact.createLine (null, expense,
 				as.getC_Currency_ID(), null, LineNetAmt);
-			cr.setQty(getQty().multiply(multiplier).negate());
+			if (m_matchInv.getReversal_ID() > 0)
+			{
+				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+				{
+					p_Error = "Failed to create reversal entry";
+					return null;
+				}
+			}
+			else
+			{
+				cr.setQty(getQty().multiply(multiplier).negate());
+			}
 		}
-		cr.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
-		cr.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
-		cr.setC_Project_ID(m_invoiceLine.getC_Project_ID());
-		cr.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
-		cr.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
-		cr.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
-		cr.setUser1_ID(m_invoiceLine.getUser1_ID());
-		cr.setUser2_ID(m_invoiceLine.getUser2_ID());
+		if (m_matchInv.getReversal_ID() == 0) 
+		{
+			cr.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
+			cr.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
+			cr.setC_Project_ID(m_invoiceLine.getC_Project_ID());
+			cr.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
+			cr.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
+			cr.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
+			cr.setUser1_ID(m_invoiceLine.getUser1_ID());
+			cr.setUser2_ID(m_invoiceLine.getUser2_ID());
+		}
 
 		//AZ Goodwill
 		//Desc: Source Not Balanced problem because Currency is Difference - PO=CNY but AP=USD

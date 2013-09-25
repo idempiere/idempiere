@@ -835,6 +835,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 			rLine.setQtyBook (oLine.getQtyCount());		//	switch
 			rLine.setQtyCount (oLine.getQtyBook());
 			rLine.setQtyInternalUse (oLine.getQtyInternalUse().negate());		
+			rLine.setNewCostPrice(oLine.getCurrentCostPrice());
+			rLine.setCurrentCostPrice(oLine.getNewCostPrice());
 			
 			rLine.saveEx();
 
