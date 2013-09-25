@@ -202,6 +202,10 @@ public class WindowContainer extends AbstractUIPart
         return tab;
     }
 
+	public void setTabTitle(String title) {
+		setTabTitle(title, getSelectedTab());
+	}
+
 	public void setTabTitle(String title, org.zkoss.zul.Tab tab) {
 		title = title.replaceAll("[&]", "");
 		if (title.length() <= MAX_TITLE_LENGTH) 

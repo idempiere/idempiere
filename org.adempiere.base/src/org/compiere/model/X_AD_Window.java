@@ -30,7 +30,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20130925L;
 
     /** Standard Constructor */
     public X_AD_Window (Properties ctx, int AD_Window_ID, String trxName)
@@ -342,6 +342,20 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Title Logic.
+		@param TitleLogic Title Logic	  */
+	public void setTitleLogic (String TitleLogic)
+	{
+		set_Value (COLUMNNAME_TitleLogic, TitleLogic);
+	}
+
+	/** Get Title Logic.
+		@return Title Logic	  */
+	public String getTitleLogic () 
+	{
+		return (String)get_Value(COLUMNNAME_TitleLogic);
 	}
 
 	/** WindowType AD_Reference_ID=108 */

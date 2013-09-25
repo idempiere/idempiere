@@ -83,6 +83,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
+import org.compiere.model.MWindow;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
@@ -302,7 +303,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		boolean autoNew = Env.isAutoNew(ctx);
 		Env.setAutoNew(ctx, curWindowNo, autoNew);
 
-        
+        // WindowName variable preserved for backward compatibility
+        // please consider it as DEPRECATED and use _WinInfo_WindowName instead 
+        Env.setContext(ctx, curWindowNo, "WindowName", gridWindow.getName()); // deprecated
+        Env.setContext(ctx, curWindowNo, "_WinInfo_WindowName", gridWindow.getName());
+        Env.setContext(ctx, curWindowNo, "_WinInfo_AD_Window_ID", gridWindow.getAD_Window_ID());
+        Env.setContext(ctx, curWindowNo, "_WinInfo_AD_Window_UU", gridWindow.getAD_Window_UU());
 
         // Set SO/AutoNew for Window
         Env.setContext(ctx, curWindowNo, "IsSOTrx", gridWindow.isSOTrx());
@@ -338,12 +344,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             if (tab == 0 && gridTab == null && m_findCancelled)
             	return false;
         }
-        // WindowName variable preserved for backward compatibility
-        // please consider it as DEPRECATED and use _WinInfo_WindowName instead 
-        Env.setContext(ctx, curWindowNo, "WindowName", gridWindow.getName()); // deprecated
-        Env.setContext(ctx, curWindowNo, "_WinInfo_WindowName", gridWindow.getName());
-        Env.setContext(ctx, curWindowNo, "_WinInfo_AD_Window_ID", gridWindow.getAD_Window_ID());
-        Env.setContext(ctx, curWindowNo, "_WinInfo_AD_Window_UU", gridWindow.getAD_Window_UU());
 
         if (gridTab != null)
         	gridTab.getTableModel().setChanged(false);
@@ -1258,7 +1258,34 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        if (adTabbox.getSelectedGridTab() != null && adTabbox.getSelectedGridTab().isQueryActive())
 	            dbInfo = "[ " + dbInfo + " ]";
 	        breadCrumb.setStatusDB(dbInfo, e);
-    	} else if (adTabbox.getSelectedDetailADTabpanel() == null)
+
+	        String prefix = null;
+	        if (dbInfo.contains("*"))
+	        	prefix = "*";
+
+	        String titleLogic = null;
+	        int windowID = getADTab().getSelectedGridTab().getAD_Window_ID();
+	        if (windowID > 0) {
+	        	titleLogic = MWindow.get(Env.getCtx(), windowID).getTitleLogic();
+	        }
+	        String header = null;
+	        if (! Util.isEmpty(titleLogic)) {
+		        StringBuilder sb = new StringBuilder();
+		        if (prefix != null)
+		        	sb.append(prefix);
+				sb.append(Env.getContext(ctx, curWindowNo, "_WinInfo_WindowName", false)).append(": ");
+				titleLogic = Env.parseContext(Env.getCtx(), curWindowNo, titleLogic, false, true);
+        		sb.append(titleLogic);
+        		header = sb.toString().trim();
+        		if (header.endsWith(":"))
+        			header = header.substring(0, header.length()-1);
+	        }
+	        if (Util.isEmpty(header))
+	        	header = AEnv.getDialogHeader(Env.getCtx(), curWindowNo, prefix);
+
+	        SessionManager.getAppDesktop().setTabTitle(header);
+    	}
+    	else if (adTabbox.getSelectedDetailADTabpanel() == null)
     	{
     		return;
     	}
@@ -1689,6 +1716,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         if (adTabbox.getSelectedGridTab() == null)
             return;
 
+        clearTitleRelatedContext();
+
         onSave(false, false, new Callback<Boolean>() {
 
 			@Override
@@ -1769,6 +1798,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	}
     	else
     	{
+    		clearTitleRelatedContext();
+
 	        adTabbox.dataIgnore();
 	        toolbar.enableIgnore(false);
 	        if (newrecod) {
@@ -2792,6 +2823,44 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	public boolean isPendingChanges() {
 		return boolChanges;
+	}
+
+	private void clearTitleRelatedContext() {
+		// IDEMPIERE-1328
+		// clear the values for the tab header
+        String titleLogic = null;
+        int windowID = getADTab().getSelectedGridTab().getAD_Window_ID();
+        if (windowID > 0) {
+        	titleLogic = MWindow.get(Env.getCtx(), windowID).getTitleLogic();
+        }
+        if (titleLogic != null) {
+    		String token;
+    		String inStr = new String(titleLogic);
+
+    		int i = inStr.indexOf('@');
+    		while (i != -1)
+    		{
+    			inStr = inStr.substring(i+1, inStr.length());	// from first @
+
+    			int j = inStr.indexOf('@');						// next @
+    			if (j < 0)
+    			{
+    				logger.log(Level.SEVERE, "No second tag: " + inStr);
+    				return;						//	no second tag
+    			}
+
+    			token = inStr.substring(0, j);
+        		Env.setContext(ctx, curWindowNo, token, "");
+
+    			inStr = inStr.substring(j+1, inStr.length());	// from second @
+    			i = inStr.indexOf('@');
+    		}
+        } else {
+    		Env.setContext(ctx, curWindowNo, "DocumentNo", "");
+    		Env.setContext(ctx, curWindowNo, "Value", "");
+    		Env.setContext(ctx, curWindowNo, "Name", "");
+        }
+		
 	}
 
 }

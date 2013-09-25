@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.wf.MWFNode;
@@ -39,10 +40,34 @@ public class MWindow extends X_AD_Window
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7604318488890368565L;
+	private static final long serialVersionUID = 8966733945232755787L;
+
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MWindow.class);
-	
+
+	/**	Cache						*/
+	private static CCache<Integer,MWindow> s_cache = new CCache<Integer,MWindow>(Table_Name, 20);
+
+	/**
+	 * 	Get Window from Cache
+	 *	@param ctx context
+	 *	@param AD_Window_ID id
+	 *	@return MWindow
+	 */
+	public static MWindow get (Properties ctx, int AD_Window_ID)
+	{
+		Integer key = Integer.valueOf(AD_Window_ID);
+		MWindow retValue = s_cache.get (key);
+		if (retValue != null && retValue.getCtx() == ctx) {
+			return retValue;
+		}
+		retValue = new MWindow (ctx, AD_Window_ID, null);
+		if (retValue.get_ID () != 0) {
+			s_cache.put (key, retValue);
+		}
+		return retValue;
+	}	//	get
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

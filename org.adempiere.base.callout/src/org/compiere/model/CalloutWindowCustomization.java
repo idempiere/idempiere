@@ -44,7 +44,7 @@ public class CalloutWindowCustomization extends CalloutEngine
 
 		I_AD_UserDef_Win ud_win = GridTabWrapper.create(mTab, I_AD_UserDef_Win.class);
 		
-		MWindow window = new MWindow(Env.getCtx(),AD_Window_ID, null);
+		MWindow window = MWindow.get(Env.getCtx(),AD_Window_ID);
 		String lang = (String)mTab.getValue("AD_Language");
 
 		ud_win.setName(window.get_Translation("Name", lang));

@@ -29,6 +29,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
 import org.osgi.service.event.Event;
@@ -277,11 +278,11 @@ public class MRecentItem extends X_AD_RecentItem
 
 	public String getLabel() {
 		String windowName;
+		MWindow win = MWindow.get(getCtx(), getAD_Window_ID());
 		MUserDefWin userDef = MUserDefWin.getBestMatch(getCtx(), getAD_Window_ID());
 		if (userDef != null) {
 			windowName = userDef.getName();
 		} else {
-			MWindow win = new MWindow(getCtx(), getAD_Window_ID(), null);
 			windowName = win.get_Translation("Name");
 		}
 		MTable table = MTable.get(getCtx(), getAD_Table_ID());
@@ -291,20 +292,30 @@ public class MRecentItem extends X_AD_RecentItem
 			this.deleteEx(true, null);
 			return null;
 		}
-		String recordIdentifier = "";
-		if (po.get_ColumnIndex("DocumentNo") > 0)
-			recordIdentifier = recordIdentifier + "_" + po.get_ValueAsString("DocumentNo");
-		if (po.get_ColumnIndex("Value") > 0)
-			recordIdentifier = recordIdentifier + "_" + po.get_ValueAsString("Value");
-		if (po.get_ColumnIndex("Name") > 0)
-			recordIdentifier = recordIdentifier + "_" + po.get_ValueAsString("Name");
-		if (recordIdentifier.length() == 0)
-			recordIdentifier = "_" + po.toString();
-		if (recordIdentifier.length() == 0)
-			recordIdentifier = "_[" + po.get_ID() + "]";
-		if (recordIdentifier.length() == 0)
-			recordIdentifier = "_[no identifier]";
 
+		String titleLogic = win.getTitleLogic();
+		StringBuilder recordIdentifier = new StringBuilder("");
+
+		if (! Util.isEmpty(titleLogic)) { // default way
+			titleLogic = Env.parseVariable(titleLogic, po, null, false);
+			if (! Util.isEmpty(titleLogic))
+				recordIdentifier.append(titleLogic);
+		}
+		
+		if (recordIdentifier.length() == 0) {
+			if (po.get_ColumnIndex("DocumentNo") > 0)
+				recordIdentifier.append(" ").append(po.get_ValueAsString("DocumentNo"));
+			if (po.get_ColumnIndex("Value") > 0)
+				recordIdentifier.append(" ").append(po.get_ValueAsString("Value"));
+			if (po.get_ColumnIndex("Name") > 0)
+				recordIdentifier.append(" ").append(po.get_ValueAsString("Name"));
+			if (recordIdentifier.length() == 0)
+				recordIdentifier.append(" ").append(po.toString());
+			if (recordIdentifier.length() == 0)
+				recordIdentifier.append(" [").append(po.get_ID()).append("]");
+			if (recordIdentifier.length() == 0)
+				recordIdentifier.append(" [no identifier]");
+		}
 		return windowName + ": " + recordIdentifier.substring(1);
 	}
 

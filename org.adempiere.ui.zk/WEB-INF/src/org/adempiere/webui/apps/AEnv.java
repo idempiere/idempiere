@@ -668,12 +668,15 @@ public final class AEnv
 	 * Get title for dialog window
 	 * @param ctx
 	 * @param windowNo
+	 * @param prefix
 	 * @return dialog header
 	 */
-	public static String getDialogHeader(Properties ctx, int windowNo) {
+	public static String getDialogHeader(Properties ctx, int windowNo, String prefix) {
 		StringBuilder sb = new StringBuilder();
+		if (prefix != null)
+			sb.append(prefix);
 		if (windowNo > 0){
-			sb.append(Env.getContext(ctx, windowNo, "_WinInfo_WindowName", false)).append("  ");
+			sb.append(Env.getContext(ctx, windowNo, "_WinInfo_WindowName", false)).append(": ");
 			final String documentNo = Env.getContext(ctx, windowNo, "DocumentNo", false);
 			final String value = Env.getContext(ctx, windowNo, "Value", false);
 			final String name = Env.getContext(ctx, windowNo, "Name", false);
@@ -690,7 +693,13 @@ public final class AEnv
 		String header = sb.toString().trim();
 		if (header.length() == 0)
 			header = ThemeManager.getBrowserTitle();
+		if (header.endsWith(":"))
+			header = header.substring(0, header.length()-1);
 		return header;
+	}
+
+	public static String getDialogHeader(Properties ctx, int windowNo) {
+		return 	getDialogHeader(ctx, windowNo, null);
 	}
 	
 	/**

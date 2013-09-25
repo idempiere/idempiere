@@ -2630,7 +2630,7 @@ public final class APanel extends CPanel
 			size = new Dimension (0,0);
 		}
 		//
-		MWindow win = new MWindow(m_ctx, m_curTab.getAD_Window_ID(), null);
+		MWindow win = MWindow.get(m_ctx, m_curTab.getAD_Window_ID());
 		win.setWindowSize(size);
 		win.saveEx();
 	}	//	cmdWinSize

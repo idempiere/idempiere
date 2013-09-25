@@ -245,6 +245,15 @@ public interface I_AD_Window
 	/** Get Process Now	  */
 	public boolean isProcessing();
 
+    /** Column name TitleLogic */
+    public static final String COLUMNNAME_TitleLogic = "TitleLogic";
+
+	/** Set Title Logic	  */
+	public void setTitleLogic (String TitleLogic);
+
+	/** Get Title Logic	  */
+	public String getTitleLogic();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

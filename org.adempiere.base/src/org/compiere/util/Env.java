@@ -1473,46 +1473,47 @@ public final class Env
 					outStr.append("@"+token+"@");
 			} else if (po != null) {
 				//take from po
-				Object v = po.get_Value(token);
-				MColumn colToken = MColumn.get(ctx, po.get_TableName(), token);
-				String foreignTable = colToken.getReferenceTableName();
-				if (v != null) {
-					if (format != null && format.length() > 0) {
-						if (v instanceof Integer && (Integer) v > 0 && token.endsWith("_ID")) {
-							int tblIndex = format.indexOf(".");
-							String tableName = null;
-							if (tblIndex > 0)
-								tableName = format.substring(0, tblIndex);
-							else
-								tableName = foreignTable;
-							MTable table = MTable.get(ctx, tableName);
-							if (table != null && tableName.equalsIgnoreCase(foreignTable)) {
-								String columnName = tblIndex > 0 ? format.substring(tblIndex + 1) : format;
-								MColumn column = table.getColumn(columnName);
-								if (column != null) {
-									if (column.isSecure()) {
-										outStr.append("********");
-									} else {
-										outStr.append(DB.getSQLValueString(trxName,
-												"SELECT " + columnName + " FROM " + tableName + " WHERE " + tableName + "_ID = ?", (Integer)v));
+				if (po.get_ColumnIndex(token) >= 0) {
+					Object v = po.get_Value(token);
+					MColumn colToken = MColumn.get(ctx, po.get_TableName(), token);
+					String foreignTable = colToken.getReferenceTableName();
+					if (v != null) {
+						if (format != null && format.length() > 0) {
+							if (v instanceof Integer && (Integer) v > 0 && token.endsWith("_ID")) {
+								int tblIndex = format.indexOf(".");
+								String tableName = null;
+								if (tblIndex > 0)
+									tableName = format.substring(0, tblIndex);
+								else
+									tableName = foreignTable;
+								MTable table = MTable.get(ctx, tableName);
+								if (table != null && tableName.equalsIgnoreCase(foreignTable)) {
+									String columnName = tblIndex > 0 ? format.substring(tblIndex + 1) : format;
+									MColumn column = table.getColumn(columnName);
+									if (column != null) {
+										if (column.isSecure()) {
+											outStr.append("********");
+										} else {
+											outStr.append(DB.getSQLValueString(trxName,
+													"SELECT " + columnName + " FROM " + tableName + " WHERE " + tableName + "_ID = ?", (Integer)v));
+										}
 									}
 								}
+							} else if (v instanceof Date) {
+								SimpleDateFormat df = new SimpleDateFormat(format);
+								outStr.append(df.format((Date)v));
+							} else if (v instanceof Number) {
+								DecimalFormat df = new DecimalFormat(format);
+								outStr.append(df.format(((Number)v).doubleValue()));
+							} else {
+								MessageFormat mf = new MessageFormat(format);
+								outStr.append(mf.format(v));
 							}
-						} else if (v instanceof Date) {
-							SimpleDateFormat df = new SimpleDateFormat(format);
-							outStr.append(df.format((Date)v));
-						} else if (v instanceof Number) {
-							DecimalFormat df = new DecimalFormat(format);
-							outStr.append(df.format(((Number)v).doubleValue()));
 						} else {
-							MessageFormat mf = new MessageFormat(format);
-							outStr.append(mf.format(v));
+							outStr.append(v.toString());
 						}
-					} else {
-						outStr.append(v.toString());
 					}
-				}
-				else if (keepUnparseable) {
+				} else if (keepUnparseable) {
 					outStr.append("@"+token+"@");
 				}
 			}
