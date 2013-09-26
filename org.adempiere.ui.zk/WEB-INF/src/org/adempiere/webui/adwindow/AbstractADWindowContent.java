@@ -2792,7 +2792,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		Map<Integer, String> columnsWidth = new HashMap<Integer, String>();
 		ArrayList<Integer> gridFieldIds = new ArrayList<Integer>();
 		for (int i = 0; i < fields.length; i++) {
-			Column column = (Column) columnList.get(i+1);
+			Column column = (Column) columnList.get(i+2);
 			String width = column.getWidth();
 			columnsWidth.put(fields[i].getAD_Field_ID(), width);
 			gridFieldIds.add(fields[i].getAD_Field_ID());
