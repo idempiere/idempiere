@@ -2286,11 +2286,6 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				accrual = true;
 			}
 			
-			if (!accrual)
-			{
-								
-			}
-			
 			if (accrual)
 				return reverseAccrualIt();
 			else
