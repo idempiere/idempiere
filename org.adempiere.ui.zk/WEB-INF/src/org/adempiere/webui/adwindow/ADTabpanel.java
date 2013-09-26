@@ -51,7 +51,6 @@ import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.panel.HelpController;
 import org.adempiere.webui.util.GridTabDataBinder;
-import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
@@ -1305,9 +1304,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		if (recordId <= 0) return;
 		
 		//force on init render
-		if (TreeUtils.isOnInitRenderPosted(treePanel.getTree()) || treePanel.getTree().getTreechildren() == null) {
-			treePanel.getTree().onInitRender();
-		}
+		treePanel.getTree().onInitRender();
 
 		SimpleTreeModel model = (SimpleTreeModel)(TreeModel<?>) treePanel.getTree().getModel();
 		if (treePanel.getTree().getSelectedItem() != null) {

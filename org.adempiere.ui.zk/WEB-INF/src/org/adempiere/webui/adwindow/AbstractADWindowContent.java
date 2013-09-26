@@ -1420,6 +1420,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	            insertRecord = tabPanel.getGridTab().isInsertRecord();
 	        }
 	        toolbar.enableNew(!changed && insertRecord && !tabPanel.getGridTab().isSortTab());
+	        toolbar.enableCopy(!changed && insertRecord && !tabPanel.getGridTab().isSortTab() && adTabbox.getSelectedGridTab().getRowCount()>0);
 	        toolbar.enableRefresh(!changed);
 	        toolbar.enableDelete(!changed && !readOnly && !tabPanel.getGridTab().isSortTab() && !processed);
 	        toolbar.enableDeleteSelection(!changed && !readOnly && !tabPanel.getGridTab().isSortTab() && !processed && tabPanel.isGridView());
@@ -1466,6 +1467,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         if (e.getTotalRows() == 0 && insertRecord && !detailTab && !tabPanel.getGridTab().isSortTab())
         {
             toolbar.enableNew(true);
+            toolbar.enableCopy(false);
             toolbar.enableDelete(false);
             toolbar.enableDeleteSelection(false);
         }
@@ -1643,6 +1645,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			        {
 			            adTabbox.getSelectedTabpanel().dynamicDisplay(0);
 			            toolbar.enableNew(false);
+			            toolbar.enableCopy(false);
 			            toolbar.enableDelete(false);
 			            toolbar.enableDeleteSelection(false);
 			            breadCrumb.enableFirstNavigation(adTabbox.getSelectedGridTab().getCurrentRow() > 0);
@@ -1691,6 +1694,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         {
             adTabbox.getSelectedTabpanel().dynamicDisplay(0);
             toolbar.enableNew(false);
+            toolbar.enableCopy(false);
             toolbar.enableDelete(false);
             toolbar.enableDeleteSelection(false);
             breadCrumb.enableFirstNavigation(adTabbox.getSelectedGridTab().getCurrentRow() > 0);

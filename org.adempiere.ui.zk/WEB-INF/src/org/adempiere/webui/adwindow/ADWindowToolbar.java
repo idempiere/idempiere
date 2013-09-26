@@ -71,7 +71,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -367141745573893540L;
+	private static final long serialVersionUID = -5540268492066600133L;
 
 	public static final String BTNPREFIX = "Btn";
 
@@ -442,6 +442,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     public void enableNew(boolean enabled)
     {
         this.btnNew.setDisabled(!enabled);
+    }
+
+    public void enableCopy(boolean enabled)
+    {
         this.btnCopy.setDisabled(!enabled);
     }
 
