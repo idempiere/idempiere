@@ -216,6 +216,10 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         
 		MSession mSession = MSession.get (ctx, x_Forward_IP!=null ? x_Forward_IP : currSess.getRemoteAddr(),
 			currSess.getRemoteHost(), httpSess.getId() );
+		if (clientInfo.userAgent != null) {
+			mSession.setDescription(mSession.getDescription() + "\n" + clientInfo.toString());
+			mSession.saveEx();
+		}
 
 		 currSess.setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
 
