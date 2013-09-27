@@ -709,7 +709,7 @@ public final class FactLine extends X_Fact_Acct
 		
 		Timestamp convDate = getDateAcct();
 
-		if ( m_doc instanceof Doc_BankStatement )
+		if ( m_doc instanceof Doc_BankStatement || m_doc instanceof Doc_AllocationHdr )
 			convDate = m_docLine.getDateConv();				
 			
 		
