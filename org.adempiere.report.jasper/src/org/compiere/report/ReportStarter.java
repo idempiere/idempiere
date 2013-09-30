@@ -1253,7 +1253,14 @@ public class ReportStarter implements ProcessCall, ClientProcess
     	if (para != null) {
 			for (int i = 0; i < para.length; i++) {
 				if (para[i].getParameter_To() == null) {
-					params.put(para[i].getParameterName(), para[i].getParameter());
+					if (para[i].getParameterName().endsWith("_ID") && para[i].getParameter() instanceof BigDecimal)
+					{
+						params.put(para[i].getParameterName(), ((BigDecimal)para[i].getParameter()).intValue());
+					}
+					else
+					{
+						params.put(para[i].getParameterName(), para[i].getParameter());
+					}
 				} else {
 	                params.put( para[i].getParameterName()+"1", para[i].getParameter());
 	                params.put( para[i].getParameterName()+"2", para[i].getParameter_To());
