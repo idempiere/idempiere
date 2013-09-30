@@ -19,6 +19,8 @@ import java.util.List;
 
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
+import org.compiere.model.MSysConfig;
+import org.compiere.util.CLogger;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -31,11 +33,12 @@ import org.zkoss.zul.Div;
  *
  */
 public class LabelAppletWindow extends Window implements EventListener<Event> 
-{	
+{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8980224912104404397L;
+	private static final long serialVersionUID = -592770994381511142L;
+	private final static CLogger log = CLogger.getCLogger(LabelAppletWindow.class);
 	
 	public LabelAppletWindow(List<byte[]> list) 
 	{
@@ -57,7 +60,23 @@ public class LabelAppletWindow extends Window implements EventListener<Event>
 		{
 			try
 			{
-				tempFile = File.createTempFile("lblapp", Long.toString(System.nanoTime()));
+				File directory = null;
+				String tempFolder = MSysConfig.getValue(MSysConfig.ZK_PRINT_SHIPPING_LABEL_SHARED_TEMP_FOLDER, null);
+				if (tempFolder != null && tempFolder.trim().length() > 0)
+				{
+					directory = new File(tempFolder.trim());
+					if (!directory.exists())
+					{
+						log.severe("Directory doesn't exists " + tempFolder);
+						directory = null;
+					}
+					else if (!directory.canWrite())
+					{
+						log.severe("Directory cannot write " + tempFolder);
+						directory = null;
+					}
+				}
+				tempFile = File.createTempFile("lblapp", Long.toString(System.nanoTime()), directory);				
 				fos = new FileOutputStream(tempFile);
 				applet.setParam("file_" + i, tempFile.getAbsolutePath());
 				fos.write(list.get(i));

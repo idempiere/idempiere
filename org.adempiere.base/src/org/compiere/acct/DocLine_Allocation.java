@@ -17,8 +17,10 @@
 package org.compiere.acct;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import org.compiere.model.MAllocationLine;
+import org.compiere.model.MPayment;
 import org.compiere.util.DB;
 
 /**
@@ -154,4 +156,16 @@ public class DocLine_Allocation extends DocLine
 	{
 		return m_C_Charge_ID;
 	}
+	
+	@Override
+	public Timestamp getDateConv() 
+	{
+		if (getC_Payment_ID() > 0)
+		{
+			MPayment payment = new MPayment(p_po.getCtx(), getC_Payment_ID(), p_po.get_TrxName());
+			return payment.getDateAcct();  // use payment date
+		}
+		return super.getDateConv();
+	}
+	
 }	//	DocLine_Allocation

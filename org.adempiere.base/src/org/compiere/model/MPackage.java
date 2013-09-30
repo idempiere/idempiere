@@ -200,19 +200,22 @@ public class MPackage extends X_M_Package
 		setIsSaturdayDelivery(shipper.isSaturdayDelivery());
 		setTrackingInfo(shipper.getTrackingURL());
 
-		String shipperAccount = null;
-		String dutiesShipperAccount = null;
-		if (shipment.getFreightCharges().equals(MInOut.FREIGHTCHARGES_Prepaid) || shipment.getFreightCharges().equals(MInOut.FREIGHTCHARGES_PrepaidAndBill))
+		if (shipment.getFreightCharges() != null)
 		{
-			shipperAccount = ShippingUtil.getSenderShipperAccount(shipper.getM_Shipper_ID(), shipper.getAD_Org_ID());
-			dutiesShipperAccount = ShippingUtil.getSenderDutiesShipperAccount(shipper.getM_Shipper_ID(), shipper.getAD_Org_ID());
+			String shipperAccount = null;
+			String dutiesShipperAccount = null;
+			if (shipment.getFreightCharges().equals(MInOut.FREIGHTCHARGES_Prepaid) || shipment.getFreightCharges().equals(MInOut.FREIGHTCHARGES_PrepaidAndBill))
+			{
+				shipperAccount = ShippingUtil.getSenderShipperAccount(shipper.getM_Shipper_ID(), shipper.getAD_Org_ID());
+				dutiesShipperAccount = ShippingUtil.getSenderDutiesShipperAccount(shipper.getM_Shipper_ID(), shipper.getAD_Org_ID());
+			}
+			else
+				shipperAccount = shipment.getShipperAccount();
+			if (shipperAccount != null)
+				setShipperAccount(shipperAccount);
+			if (dutiesShipperAccount != null)
+				setDutiesShipperAccount(dutiesShipperAccount);
 		}
-		else
-			shipperAccount = shipment.getShipperAccount();
-		if (shipperAccount != null)
-			setShipperAccount(shipperAccount);
-		if (dutiesShipperAccount != null)
-			setDutiesShipperAccount(dutiesShipperAccount);
 	}	//	MPackage
 	
 	protected boolean beforeSave(boolean newRecord)
