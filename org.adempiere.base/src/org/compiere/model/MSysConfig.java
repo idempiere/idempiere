@@ -42,7 +42,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1880114058462268002L;
+	private static final long serialVersionUID = -3892258526681588068L;
 
 	public final static String PDF_FONT_DIR = "PDF_FONT_DIR";
 	public final static String TWOPACK_HANDLE_TRANSLATIONS = "2PACK_HANDLE_TRANSLATIONS";
