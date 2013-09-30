@@ -190,10 +190,10 @@ public class LoginServlet extends HttpServlet
 		//	Web User
 		WebUser wu = WebUser.get(request);
 		
-		// Handover Loginprodcess to general WebLogin Handler
-		// Frst set the URL from our current situation
+		// Handover Loginprocess to general WebLogin Handler
+		// First set the URL from our current situation
 		thisLogin.setForward (url);
-		// Also handover adressConfirm
+		// Also handover addressConfirm
 		thisLogin.setAddressConfirm (addressConfirm);
 		// Since Mode Usage is not consequent we will try to figure it out.
 		if (WebUtil.getParameter(request, "Mode")==null)
@@ -210,8 +210,12 @@ public class LoginServlet extends HttpServlet
 		if (!url.startsWith("/"))
 			url = "/" + url;
 		if (log.isLoggable(Level.INFO)) log.info("doPost - Forward to " + url);
-		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(url);
-		dispatcher.forward(request, response);
+		if (url.startsWith("/orderServlet")) {
+			response.sendRedirect(url.substring(1));
+		} else {
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(url);
+			dispatcher.forward(request, response);
+		}
 	}	//	doPost
 	
 }	//	LoginServlet
