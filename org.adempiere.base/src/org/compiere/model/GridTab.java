@@ -1160,6 +1160,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		}
 		//	Prevent New Where Main Record is processed
 		//	but not apply for TabLevel=0 - teo_sarca [ 1673902 ]
+		//  hengsin: together with readonly logic, the following validation create confusing situation for user.
+		//  i.e, if readonly logic enable the new button on toolbar, it will just does nothing due to the validation below.
+		//  better let everything decide using just the tab's readonly logic instead.
+		/*
 		if (m_vo.TabLevel > 0 && m_vo.TabNo > 0)
 		{
 			boolean processed = isProcessed();
@@ -1170,7 +1174,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				return false;
 			}
 			if (log.isLoggable(Level.FINEST)) log.finest("Processed=" + processed);
-		}
+		}*/
 
 		//hengsin, don't create new when parent is empty
 		if (isDetail() && m_parentNeedSave)
