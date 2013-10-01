@@ -2342,6 +2342,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					m_processMsg = "Could not Reverse MatchInv";
 					return null;
 				}
+				addDocsPostProcess(new MMatchInv(Env.getCtx(), mInv[i].getReversal_ID(), get_TrxName()));
 			}
 			MMatchPO[] mPO = MMatchPO.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 			for (int i = 0; i < mPO.length; i++)
@@ -2356,6 +2357,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 						m_processMsg = "Could not Reverse MatchPO";
 						return null;
 					}
+					addDocsPostProcess(new MMatchPO(Env.getCtx(), mPO[i].getReversal_ID(), get_TrxName()));
 				}
 				else
 				{
@@ -2404,6 +2406,9 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		//FR1948157
 		reversal.setReversal_ID(getC_Invoice_ID());
 		reversal.saveEx(get_TrxName());
+		//
+		reversal.docsPostProcess = this.docsPostProcess;
+		this.docsPostProcess = new ArrayList<PO>();
 		//
 		if (!reversal.processIt(DocAction.ACTION_Complete))
 		{

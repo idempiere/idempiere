@@ -174,7 +174,7 @@ public class Doc_MatchPO extends Doc
 		boolean isReturnTrx = inOut.getMovementType().equals(X_M_InOut.MOVEMENTTYPE_VendorReturns);
 
 		// calculate po cost
-		poCost = poCost.multiply(getQty());			//	Delivered so far
+		BigDecimal deliveredCost = poCost.multiply(getQty());			//	Delivered so far
 
 		Map<Integer, BigDecimal> landedCostMap = new LinkedHashMap<Integer, BigDecimal>();
 		BigDecimal landedCost = BigDecimal.ZERO;
@@ -216,7 +216,7 @@ public class Doc_MatchPO extends Doc
 			}
 			landedCostMap.put(elementId, elementAmt);
 		}		
-		BigDecimal totalCost = poCost.add(landedCost);
+		BigDecimal totalCost = deliveredCost.add(landedCost);
 		
 		//	Different currency
 		if (m_oLine.getC_Currency_ID() != as.getC_Currency_ID())
@@ -394,10 +394,25 @@ public class Doc_MatchPO extends Doc
 			MInOut inOut = m_ioLine.getParent(); 
 			boolean isReturnTrx = inOut.getMovementType().equals(X_M_InOut.MOVEMENTTYPE_VendorReturns);
 
+			// Create Cost Detail Matched PO using Total Amount and Total Qty based on OrderLine
+			MMatchPO[] mPO = MMatchPO.getOrderLine(getCtx(), m_oLine.getC_OrderLine_ID(), getTrxName());
+			BigDecimal tQty = Env.ZERO;
+			BigDecimal tAmt = Env.ZERO;
+			for (int i = 0 ; i < mPO.length ; i++)
+			{
+				if (mPO[i].getM_AttributeSetInstance_ID() == mMatchPO.getM_AttributeSetInstance_ID()
+					&& mPO[i].getM_MatchPO_ID() != mMatchPO.getM_MatchPO_ID())
+				{
+					BigDecimal qty = (isReturnTrx ? mPO[i].getQty().negate() : mPO[i].getQty()); 
+					tQty = tQty.add(qty);
+					tAmt = tAmt.add(poCost.multiply(qty));
+				}
+			}
+			
 			poCost = poCost.multiply(getQty());			//	Delivered so far
-			BigDecimal tAmt = isReturnTrx ? poCost.negate() : poCost;
-			BigDecimal tQty = isReturnTrx ? getQty().negate() : getQty();
-								
+			tAmt = tAmt.add(isReturnTrx ? poCost.negate() : poCost);
+			tQty = tQty.add(isReturnTrx ? getQty().negate() : getQty());
+			
 			// Set Total Amount and Total Quantity from Matched PO 
 			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
 					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),

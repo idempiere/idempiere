@@ -2213,6 +2213,9 @@ public class MInOut extends X_M_InOut implements DocAction
 		reversal.setReversal_ID(getM_InOut_ID());
 		reversal.saveEx(get_TrxName());
 		//
+		reversal.docsPostProcess = this.docsPostProcess;
+		this.docsPostProcess = new ArrayList<PO>();
+		//
 		if (!reversal.processIt(DocAction.ACTION_Complete)
 			|| !reversal.getDocStatus().equals(DocAction.STATUS_Completed))
 		{
@@ -2253,6 +2256,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					log.log(Level.SEVERE, "Failed to create reversal for match invoice " + mMatchInv.getDocumentNo());
 					return false;
 				}
+				addDocsPostProcess(new MMatchInv(Env.getCtx(), mMatchInv.getReversal_ID(), get_TrxName()));
 			}
 		}
 		MMatchPO[] mMatchPOList = MMatchPO.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
@@ -2269,6 +2273,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					log.log(Level.SEVERE, "Failed to create reversal for match purchase order " + mMatchPO.getDocumentNo());
 					return false;
 				}
+				addDocsPostProcess(new MMatchPO(Env.getCtx(), mMatchPO.getReversal_ID(), get_TrxName()));
 			}
 		}
 		return true;
