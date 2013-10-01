@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -87,6 +88,30 @@ public class MOrderLandedCost extends X_C_OrderLandedCost {
 	
 	public String distributeLandedCost() {
 		MOrderLandedCostAllocation[] lines = getLines("");
+		if (lines.length == 0) {
+			MOrder order = (MOrder) getC_Order();
+			MOrderLine[] orderLines = order.getLines();
+			if (orderLines.length > 0) {
+				List<MOrderLandedCostAllocation> list = new ArrayList<MOrderLandedCostAllocation>();
+				for(MOrderLine line : orderLines) {
+					if (line.getM_Product_ID() > 0) {
+						MOrderLandedCostAllocation allocation = new MOrderLandedCostAllocation(getCtx(), 0, get_TrxName());
+						allocation.setC_OrderLandedCost_ID(getC_OrderLandedCost_ID());
+						allocation.setC_OrderLine_ID(line.getC_OrderLine_ID());
+						allocation.setClientOrg(getAD_Client_ID(), getAD_Org_ID());
+						allocation.setAmt(BigDecimal.ZERO);
+						allocation.setBase(BigDecimal.ZERO);
+						allocation.setQty(BigDecimal.ZERO);
+						allocation.saveEx();
+						list.add(allocation);
+					}
+				}
+				if (list.size() > 0) {
+					lines = list.toArray(lines);
+				}
+			}
+		}
+		
 		if (lines.length == 1) {
 			MOrderLine orderLine = (MOrderLine) lines[0].getC_OrderLine();
 			BigDecimal base = orderLine.getBase(getLandedCostDistribution());
