@@ -172,7 +172,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
     		fout.close();
     		return downloadedFile;
     	} catch (FileNotFoundException e) {
-			if(reportLocation.indexOf("Subreport") == -1) // Only show the warning if it is not a subreport
+			if(reportLocation.indexOf("Subreport") == -1 && !reportLocation.endsWith(".properties")) // Only show the warning if it is not a subreport or properties
 				log.warning("404 not found: Report cannot be found on server "+ e.getMessage());
     		return null;
     	} catch (IOException e) {
@@ -424,7 +424,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         String resourcePath = reportDir.getAbsolutePath();
         if (!resourcePath.endsWith("/") && !resourcePath.endsWith("\\"));
         {
-        	resourcePath = resourcePath + "/";
+        	resourcePath = resourcePath + File.separator;
         }
         params.put("SUBREPORT_DIR", resourcePath);        
         if (reportPath.startsWith("http://") || reportPath.startsWith("https://")) {
@@ -515,7 +515,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			}
 			else if (reportPath.startsWith("resource:"))
 			{
-				subreports = getResourceSubreports(name+ "Subreport", reportPath, fileExtension);
+				String path = reportPath.substring(0, reportPath.length() +1 - (name+"."+fileExtension).length());
+				subreports = getResourceSubreports(name+ "Subreport", path, fileExtension);
 			}
 			else
 			{
@@ -585,26 +586,25 @@ public class ReportStarter implements ProcessCall, ClientProcess
 
             // Resources
             File resFile = null;
+            String bundleName = jasperReport.getResourceBundle();
+            if (bundleName == null) {
+            	// If bundle name is not set, use the same name as the report file (legacy behaviour)
+            	bundleName = jasperName;
+            }
             if (reportPath.startsWith("attachment:") && attachment != null) {
-            	resFile = getAttachmentResourceFile(jasperName, currLang);
+            	resFile = getAttachmentResourceFile(bundleName, currLang);
             } else if (reportPath.startsWith("resource:")) {
-                resFile = getResourcesForResourceFile(jasperName, currLang);
+                resFile = getResourceResourceFile("resource:" + bundleName, currLang);
+            } else if (reportPath.startsWith("http://") || reportPath.startsWith("https://")) {
+                resFile = getHttpResourceFile(reportPath, bundleName, currLang);
             } else {
-            	resFile = new File(jasperName+"_"+currLang.getLocale().getLanguage()+".properties");
-            	if (!resFile.exists()) {
-            		resFile = null;
-            	}
-            	if (resFile == null) {
-            		resFile = new File(jasperName+".properties");
-            		if (!resFile.exists()) {
-            			resFile = null;
-            		}
-            	}
+                resFile = getFileResourceFile(resourcePath, bundleName, currLang);
             }
             if (resFile!=null) {
                 try {
                     PropertyResourceBundle res = new PropertyResourceBundle( new FileInputStream(resFile));
                     params.put("RESOURCE", res);
+                    params.put(JRParameter.REPORT_RESOURCE_BUNDLE, res);
                 } catch (IOException e) {
                     ;
                 }
@@ -783,46 +783,112 @@ public class ReportStarter implements ProcessCall, ClientProcess
 
 	/**
      * Get .property resource file from process attachment
-     * @param jasperName
+     * @param bundleName
      * @param currLang
      * @return File
      */
-    private File getAttachmentResourceFile(String jasperName, Language currLang) {
-    	File resFile = null;
-    	MAttachmentEntry[] entries = attachment.getEntries();
-    	// try baseName + "_" + language
-    	String resname = jasperName + "_" + currLang.getLocale().getLanguage() + ".properties";
+    private File getAttachmentResourceFile(String bundleName, Language currLang) {
+		String resname = bundleName+"_"+currLang.getLocale().getLanguage()+"_"+currLang.getLocale().getCountry()+".properties";
+		File resFile = getAttachmentEntryFile(resname);
+		if (resFile == null) {
+			resname = bundleName+"_"+currLang.getLocale().getLanguage()+".properties";
+			resFile = getAttachmentEntryFile(resname);
+			if (resFile == null) {
+				resname = bundleName+".properties";
+				resFile = getAttachmentEntryFile(resname);
+			}
+		}
+		return resFile;
+	}
+
+	private File getAttachmentEntryFile(String resname) {
+		File fileattach = null;
+		MAttachmentEntry[] entries = attachment.getEntries();
         for( int i=0; i<entries.length; i++) {
             if (entries[i].getName().equals(resname)) {
-                resFile = getAttachmentEntryFile(entries[i]);
+            	fileattach = getAttachmentEntryFile(entries[i]);
                 break;
             }
         }
-        if (resFile==null) {
-            // try baseName only
-        	resname = jasperName + ".properties";
-            for( int i=0; i<entries.length; i++) {
-                if (entries[i].getName().equals(resname)) {
-                	resFile = getAttachmentEntryFile(entries[i]);
-                    break;
-                }
-            }
-        }
-		return resFile;
+		return fileattach;
 	}
 
 	/**
      * Get .property resource file from resources
-     * @param jasperName
+     * @param bundleName
      * @param currLang
      * @return File
      */
-    private File getResourcesForResourceFile(String jasperName, Language currLang) {
-    	File resFile = null;
+    private File getResourceResourceFile(String bundleName, Language currLang) {
+		String resname = bundleName+"_"+currLang.getLocale().getLanguage()+"_"+currLang.getLocale().getCountry()+".properties";
+		File resFile = null;
 		try {
-			resFile = getFileAsResource(jasperName+"_"+currLang.getLocale().getLanguage()+".properties");
+			resFile = getFileAsResource(resname);
 		} catch (Exception e) {
 			// ignore exception - file couldn't exist
+		}
+		if (resFile == null) {
+			resname = bundleName+"_"+currLang.getLocale().getLanguage()+".properties";
+			try {
+				resFile = getFileAsResource(resname);
+			} catch (Exception e) {
+				// ignore exception - file couldn't exist
+			}
+			if (resFile == null) {
+				resname = bundleName+".properties";
+				try {
+					resFile = getFileAsResource(resname);
+				} catch (Exception e) {
+					// ignore exception - file couldn't exist
+				}
+			}
+		}
+		return resFile;
+	}
+
+	/**
+     * Get .property resource file from http URL
+     * @param reportPath
+     * @param bundleName
+     * @param currLang
+     * @return File
+     */
+	private File getHttpResourceFile(String reportPath, String bundleName, Language currLang)
+	{
+		String remoteDir = reportPath.substring(0, reportPath.lastIndexOf("/"));
+		String resname = bundleName+"_"+currLang.getLocale().getLanguage()+"_"+currLang.getLocale().getCountry()+".properties";
+		File resFile = httpDownloadedReport(remoteDir + "/" + resname);
+		if (resFile == null) {
+			resname = bundleName+"_"+currLang.getLocale().getLanguage()+".properties";
+			resFile = httpDownloadedReport(remoteDir + "/" + resname);
+			if (resFile == null) {
+				resname = bundleName+".properties";
+				resFile = httpDownloadedReport(remoteDir + "/" + resname);
+			}
+		}
+		return resFile;
+	}
+
+	/**
+     * Get .property resource file from file://
+     * @param resourcePath
+     * @param bundleName
+     * @param currLang
+     * @return File
+     */
+	private File getFileResourceFile(String resourcePath, String bundleName, Language currLang) {
+    	String resname = bundleName+"_"+currLang.getLocale().getLanguage()+"_"+currLang.getLocale().getCountry()+".properties";
+		File resFile = new File(resourcePath, resname);
+		if (! resFile.exists()) {
+			resname = bundleName+"_"+currLang.getLocale().getLanguage()+".properties";
+			resFile = new File(resourcePath, resname);
+			if (! resFile.exists()) {
+				resname = bundleName+".properties";
+				resFile = new File(resourcePath, resname);
+				if (! resFile.exists()) {
+					resFile = null;
+				}
+			}
 		}
 		return resFile;
 	}
@@ -864,15 +930,13 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	private File[] getResourceSubreports(String reportName, String reportPath, String fileExtension)
 	{
 		ArrayList<File> subreports = new ArrayList<File>();
-		String remoteDir = reportPath.substring(0, reportPath.lastIndexOf("/"));
-
 		// Currently check hardcoded for max. 10 subreports
 		for(int i=1; i<10; i++)
 		{
 			// Check if subreport number i exists
 			File subreport = null;
 			try {
-				subreport = getFileAsResource(remoteDir + "/" + reportName + i + fileExtension);
+				subreport = getFileAsResource(reportPath + reportName + i + fileExtension);
 			} catch (Exception e) {
 				// just ignore it
 			}
@@ -960,18 +1024,31 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		if (log.isLoggable(Level.INFO)) log.info("localFile = " + localFile);
 		reportFile = new File(localFile);
 
+		boolean empty = true;
 		OutputStream out = null;
-		out = new FileOutputStream(reportFile);
-		if (out != null){
-			byte buf[]=new byte[1024];
-			int len;
-			while((len=inputStream.read(buf))>0)
-				out.write(buf,0,len);
-			out.close();
-			inputStream.close();
+		try {
+			out = new FileOutputStream(reportFile);
+			if (out != null){
+				byte buf[]=new byte[1024];
+				int len;
+				while((len=inputStream.read(buf))>0) {
+					empty = false;
+					out.write(buf,0,len);
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (out != null)
+				out.close();
+			if (inputStream != null)
+				inputStream.close();
 		}
 
-		return reportFile;
+		if (empty)
+			return null;
+		else
+			return reportFile;
 	}
 
 	/**
@@ -1176,10 +1253,24 @@ public class ReportStarter implements ProcessCall, ClientProcess
     	if (para != null) {
 			for (int i = 0; i < para.length; i++) {
 				if (para[i].getParameter_To() == null) {
-					params.put(para[i].getParameterName(), para[i].getParameter());
+					if (para[i].getParameterName().endsWith("_ID") && para[i].getParameter() instanceof BigDecimal) {
+						params.put(para[i].getParameterName(), ((BigDecimal)para[i].getParameter()).intValue());
+					} else {
+						params.put(para[i].getParameterName(), para[i].getParameter());
+					}
 				} else {
-	                params.put( para[i].getParameterName()+"1", para[i].getParameter());
-	                params.put( para[i].getParameterName()+"2", para[i].getParameter_To());
+					// range - from
+					if (para[i].getParameterName().endsWith("_ID") && para[i].getParameter() != null && para[i].getParameter() instanceof BigDecimal) {
+		                params.put( para[i].getParameterName()+"1", ((BigDecimal)para[i].getParameter()).intValue());
+					} else {
+		                params.put( para[i].getParameterName()+"1", para[i].getParameter());
+					}
+					// range - to
+					if (para[i].getParameterName().endsWith("_ID") && para[i].getParameter_To() instanceof BigDecimal) {
+		                params.put( para[i].getParameterName()+"2", ((BigDecimal)para[i].getParameter_To()).intValue());
+					} else {
+		                params.put( para[i].getParameterName()+"2", para[i].getParameter_To());
+					}
 				}
 			}
     	}

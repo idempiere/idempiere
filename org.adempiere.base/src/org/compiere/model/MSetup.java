@@ -1142,10 +1142,14 @@ public final class MSetup
 		createPreference("C_Country_ID", String.valueOf(C_Country_ID), 0);
 
 		//  Default Warehouse
+		MLocation locwh = new MLocation(m_ctx, C_Country_ID, C_Region_ID, City, m_trx.getTrxName());
+		locwh.setAddress1(address1);
+		locwh.setPostal(postal);
+		locwh.saveEx();
 		MWarehouse wh = new MWarehouse(m_ctx, 0, m_trx.getTrxName());
 		wh.setValue(defaultName);
 		wh.setName(defaultName);
-		wh.setC_Location_ID(loc.getC_Location_ID());
+		wh.setC_Location_ID(locwh.getC_Location_ID());
 		if (!wh.save())
 			log.log(Level.SEVERE, "Warehouse NOT inserted");
 

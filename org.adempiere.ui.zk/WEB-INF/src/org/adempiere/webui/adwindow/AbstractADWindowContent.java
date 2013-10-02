@@ -1173,7 +1173,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		{
 			Object value = Executions.getCurrent().removeAttribute(CompositeADTabbox.AD_TABBOX_ON_EDIT_DETAIL_ATTRIBUTE);
 			if (value != newTabpanel)
+			{
 				newTabpanel.query();
+			}
+			else 
+			{
+				//detail pane of the new header tab might need refresh
+				if (newTabpanel instanceof ADTabpanel)
+				{
+					ADTabpanel adtabpanel = (ADTabpanel) newTabpanel;
+					Events.echoEvent(ADTabpanel.ON_POST_INIT_EVENT, adtabpanel, null);
+				}
+			}				
 		}
 		else
 		{

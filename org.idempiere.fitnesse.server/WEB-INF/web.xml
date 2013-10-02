@@ -14,7 +14,7 @@
 	<!-- Slim Servlet -->
 	<servlet>
 		<servlet-name>SlimServlet</servlet-name>
-		<servlet-class>org.idemiere.fitnesse.server.slim.SlimServlet</servlet-class>
+		<servlet-class>org.idempiere.fitnesse.server.slim.SlimServlet</servlet-class>
 	</servlet>
 	
 	<servlet-mapping>

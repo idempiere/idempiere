@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="lib/ztl-2.0.0-SNAPSHOT.jar" sourcepath="lib/ztl-2.0.0-sources.jar"/>
-	<classpathentry kind="lib" path="/org.idempiere.fitnesse.server/lib/selenium-server-standalone-2.31.0.jar" sourcepath="/org.idempiere.fitnesse.server/lib/selenium-server-2.31.0-sources.jar"/>
+	<classpathentry kind="lib" path="/org.idempiere.fitnesse.server/lib/selenium-server-standalone-2.35.0.jar" sourcepath="/org.idempiere.fitnesse.server/lib/selenium-server-2.31.0-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

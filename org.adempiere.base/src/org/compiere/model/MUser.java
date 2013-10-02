@@ -37,6 +37,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Secure;
@@ -896,6 +897,15 @@ public class MUser extends X_AD_User
 		//	New Address invalidates verification
 		if (!newRecord && is_ValueChanged("EMail"))
 			setEMailVerifyDate(null);
+
+		// IDEMPIERE-1409
+		if (getEMail() != null && (newRecord || is_ValueChanged("EMail"))) {
+			if (! EMail.validate(getEMail())) {
+				log.saveError("SaveError", Msg.getMsg(getCtx(), "InvalidEMailFormat") + Msg.getElement(getCtx(), COLUMNNAME_EMail) + " - [" + getEMail() + "]");
+				return false;
+			}
+		}
+		
 		if (newRecord || super.getValue() == null || is_ValueChanged("Value"))
 			setValue(super.getValue());
 

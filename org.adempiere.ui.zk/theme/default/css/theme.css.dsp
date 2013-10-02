@@ -641,6 +641,10 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	width: auto;	
 }
 
+.dashboard-widget.dashboard-widget-max > .z-panel-body > .z-panelchildren {
+	overflow: auto;
+}
+
 .dashboard-report-iframe {
 	min-height:300px; 
 	border: 1px solid lightgray; 
