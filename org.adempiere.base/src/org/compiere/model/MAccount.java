@@ -574,7 +574,7 @@ public class MAccount extends X_C_ValidCombination
 				{
 					combiStr = "*";
 					descrStr = "*";
-					fullyQualified = false;
+					//fullyQualified = false; IDEMPIERE 159 - allow combination with org *
 				}
 			}
 			else if (MAcctSchemaElement.ELEMENTTYPE_Account.equals(element.getElementType()))

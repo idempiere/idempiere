@@ -191,10 +191,11 @@ public final class WAccountDialog extends Window
 		//
 		Caption caption = new Caption(Msg.getMsg(Env.getCtx(),"Parameter"));
 		parameterPanel.appendChild(caption);
-		parameterPanel.setHflex("1");
+		parameterPanel.setHflex("95");
 		parameterPanel.setStyle("background-color: transparent;");
 		toolBar.setOrient("vertical");
 		toolBar.setStyle("border: none; margin: 5px");
+		toolBar.setHflex("5");
 
 		bSave.setImage(ThemeManager.getThemeResource("images/Save24.png"));
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(),"AccountNewUpdate"));
