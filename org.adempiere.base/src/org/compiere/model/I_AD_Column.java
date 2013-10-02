@@ -296,6 +296,24 @@ public interface I_AD_Column
 	  */
 	public int getFieldLength();
 
+    /** Column name FKConstraintName */
+    public static final String COLUMNNAME_FKConstraintName = "FKConstraintName";
+
+	/** Set Constraint Name	  */
+	public void setFKConstraintName (String FKConstraintName);
+
+	/** Get Constraint Name	  */
+	public String getFKConstraintName();
+
+    /** Column name FKConstraintType */
+    public static final String COLUMNNAME_FKConstraintType = "FKConstraintType";
+
+	/** Set Constraint Type	  */
+	public void setFKConstraintType (String FKConstraintType);
+
+	/** Get Constraint Type	  */
+	public String getFKConstraintType();
+
     /** Column name FormatPattern */
     public static final String COLUMNNAME_FormatPattern = "FormatPattern";
 

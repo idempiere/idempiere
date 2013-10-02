@@ -32,7 +32,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130826L;
+	private static final long serialVersionUID = 20131001L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -461,6 +461,45 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Constraint Name.
+		@param FKConstraintName Constraint Name	  */
+	public void setFKConstraintName (String FKConstraintName)
+	{
+		set_Value (COLUMNNAME_FKConstraintName, FKConstraintName);
+	}
+
+	/** Get Constraint Name.
+		@return Constraint Name	  */
+	public String getFKConstraintName () 
+	{
+		return (String)get_Value(COLUMNNAME_FKConstraintName);
+	}
+
+	/** FKConstraintType AD_Reference_ID=200075 */
+	public static final int FKCONSTRAINTTYPE_AD_Reference_ID=200075;
+	/** Do Not Create = D */
+	public static final String FKCONSTRAINTTYPE_DoNotCreate = "D";
+	/** No Action = N */
+	public static final String FKCONSTRAINTTYPE_NoAction = "N";
+	/** Cascade = C */
+	public static final String FKCONSTRAINTTYPE_Cascade = "C";
+	/** Set Null = S */
+	public static final String FKCONSTRAINTTYPE_SetNull = "S";
+	/** Set Constraint Type.
+		@param FKConstraintType Constraint Type	  */
+	public void setFKConstraintType (String FKConstraintType)
+	{
+
+		set_Value (COLUMNNAME_FKConstraintType, FKConstraintType);
+	}
+
+	/** Get Constraint Type.
+		@return Constraint Type	  */
+	public String getFKConstraintType () 
+	{
+		return (String)get_Value(COLUMNNAME_FKConstraintType);
 	}
 
 	/** Set Format Pattern.

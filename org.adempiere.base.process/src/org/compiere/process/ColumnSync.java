@@ -210,11 +210,12 @@ public class ColumnSync extends SvrProcess
 							continue;
 						
 						String dbFKTable = rs.getString("FKTABLE_NAME");
+						short deleteRule = rs.getShort("DELETE_RULE");
 			
 						String key = dbFKName.toLowerCase();
 						DatabaseKey dbForeignKey = htForeignKeys.get(key);
 						if (dbForeignKey == null)
-							dbForeignKey = new DatabaseKey(dbFKName, dbFKTable, new String[30]);
+							dbForeignKey = new DatabaseKey(dbFKName, dbFKTable, new String[30], deleteRule);
 									
 						String columnName = rs.getString("FKCOLUMN_NAME");
 						int pos = (rs.getShort("KEY_SEQ"));				
@@ -248,23 +249,52 @@ public class ColumnSync extends SvrProcess
 								fkConstraintSql.append(DB.SQLSTATEMENT_SEPARATOR);
 								fkConstraintSql.append("ALTER TABLE ").append(table.getTableName());
 								fkConstraintSql.append(" DROP CONSTRAINT ").append(dbForeignKey.getKeyName());
-
-								StringBuilder fkConstraint = new StringBuilder();
-								fkConstraint.append("CONSTRAINT ").append(dbForeignKey.getKeyName());
-								fkConstraint.append(" FOREIGN KEY (").append(column.getColumnName()).append(") REFERENCES ");
-								fkConstraint.append(primaryKey.getKeyTable()).append("(").append(primaryKey.getKeyColumns()[0]);
-								for (int i = 1; i < primaryKey.getKeyColumns().length; i++)
+								
+								String dbDeleteRule = MColumn.FKCONSTRAINTTYPE_NoAction;
+								if (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyCascade)
+									dbDeleteRule = MColumn.FKCONSTRAINTTYPE_Cascade;
+								else if (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeySetNull)
+									dbDeleteRule = MColumn.FKCONSTRAINTTYPE_SetNull;
+								
+								String fkConstraintType = column.getFKConstraintType();
+								if (fkConstraintType == null)
+									fkConstraintType = dbDeleteRule;
+								if (fkConstraintType == null)
+									fkConstraintType = MColumn.FKCONSTRAINTTYPE_NoAction;
+								if (!fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_DoNotCreate))
 								{
-									if (primaryKey.getKeyColumns()[i] == null)
-										break;
-									fkConstraint.append(", ").append(primaryKey.getKeyColumns()[i]);
+									String fkConstraintName = column.getFKConstraintName();						
+									if (fkConstraintName == null || fkConstraintName.trim().length() == 0)
+										fkConstraintName = dbForeignKey.getKeyName();
+									
+									StringBuilder fkConstraint = new StringBuilder();
+									fkConstraint.append("CONSTRAINT ").append(fkConstraintName);
+									fkConstraint.append(" FOREIGN KEY (").append(column.getColumnName()).append(") REFERENCES ");
+									fkConstraint.append(primaryKey.getKeyTable()).append("(").append(primaryKey.getKeyColumns()[0]);
+									for (int i = 1; i < primaryKey.getKeyColumns().length; i++)
+									{
+										if (primaryKey.getKeyColumns()[i] == null)
+											break;
+										fkConstraint.append(", ").append(primaryKey.getKeyColumns()[i]);
+									}
+									fkConstraint.append(")");
+									
+									if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_NoAction))
+										;
+									else if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_Cascade))
+										fkConstraint.append(" ON DELETE CASCADE");
+									else if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_SetNull))
+										fkConstraint.append(" ON DELETE SET NULL");
+																	
+									fkConstraintSql.append(DB.SQLSTATEMENT_SEPARATOR);
+									fkConstraintSql.append("ALTER TABLE ").append(table.getTableName());
+									fkConstraintSql.append(" ADD ");
+									fkConstraintSql.append(fkConstraint);
+									
+									column.setFKConstraintName(fkConstraintName);
+									column.setFKConstraintType(fkConstraintType);
+									column.saveEx();
 								}
-								fkConstraint.append(")");
-																
-								fkConstraintSql.append(DB.SQLSTATEMENT_SEPARATOR);
-								fkConstraintSql.append("ALTER TABLE ").append(table.getTableName());
-								fkConstraintSql.append(" ADD ");
-								fkConstraintSql.append(fkConstraint);
 							}
 							modified = true;
 							break;

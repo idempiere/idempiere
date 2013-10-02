@@ -147,11 +147,12 @@ public class CreateForeignKey extends SvrProcess {
 					continue;
 				
 				String dbFKTable = rs.getString("FKTABLE_NAME");
+				short deleteRule = rs.getShort("DELETE_RULE");
 	
 				String key = dbFKName.toLowerCase();
 				DatabaseKey dbForeignKey = htForeignKeys.get(key);
 				if (dbForeignKey == null)
-					dbForeignKey = new DatabaseKey(dbFKName, dbFKTable, new String[30]);
+					dbForeignKey = new DatabaseKey(dbFKName, dbFKTable, new String[30], deleteRule);
 							
 				String columnName = rs.getString("FKCOLUMN_NAME");
 				int pos = (rs.getShort("KEY_SEQ"));				
@@ -192,19 +193,65 @@ public class CreateForeignKey extends SvrProcess {
 					{
 						String key = en.nextElement();
 						DatabaseKey dbForeignKey = htForeignKeys.get(key);
+						
+						String dbDeleteRule = MColumn.FKCONSTRAINTTYPE_NoAction;
+						if (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyCascade)
+							dbDeleteRule = MColumn.FKCONSTRAINTTYPE_Cascade;
+						else if (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeySetNull)
+							dbDeleteRule = MColumn.FKCONSTRAINTTYPE_SetNull;
+						
+						String fkConstraintType = column.getFKConstraintType();
+						if (fkConstraintType == null)
+							fkConstraintType = MColumn.FKCONSTRAINTTYPE_NoAction;
+						
 						if (dbForeignKey.getKeyColumns()[0].equalsIgnoreCase(column.getColumnName()))
 						{
-							addLog(Msg.getMsg(getCtx(), "CreateForeignKeyProcessColumn") + column.getColumnName());
-							addLog(column.getAD_Column_ID(), null, null, column.toString(), column.get_Table_ID(), column.getAD_Column_ID());
-							addLog(0, null, null, Msg.getMsg(getCtx(), "CreateForeignKeyProcessExists") + dbForeignKey.getKeyName());
-							modified = true;
-							break;
+							if (dbDeleteRule.equals(fkConstraintType))
+							{
+								addLog(Msg.getMsg(getCtx(), "CreateForeignKeyProcessColumn") + column.getColumnName());
+								addLog(column.getAD_Column_ID(), null, null, column.toString(), column.get_Table_ID(), column.getAD_Column_ID());
+								addLog(0, null, null, Msg.getMsg(getCtx(), "CreateForeignKeyProcessExists") + dbForeignKey.getKeyName());
+								modified = true;
+								column.setFKConstraintName(dbForeignKey.getKeyName());
+								column.setFKConstraintType(fkConstraintType);
+								column.saveEx();
+								break;
+							}
+							else if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_DoNotCreate))
+							{
+								addLog(Msg.getMsg(getCtx(), "CreateForeignKeyProcessColumn") + column.getColumnName());
+								addLog(column.getAD_Column_ID(), null, null, column.toString(), column.get_Table_ID(), column.getAD_Column_ID());
+								addLog(0, null, null, Msg.getMsg(getCtx(), "CreateForeignKeyProcessExists") + dbForeignKey.getKeyName());
+								
+								StringBuilder sql = new StringBuilder();
+								sql.append("ALTER TABLE ").append(table.getTableName());
+								sql.append(" DROP CONSTRAINT ").append(dbForeignKey.getKeyName());
+
+								Trx trx = Trx.get(Trx.createTrxName("CreateForeignKey"), true);
+								try {
+									int rvalue = DB.executeUpdate(sql.toString(), (Object[]) null, true, trx.getTrxName());
+									addLog(0, null, new BigDecimal(rvalue), sql.toString());
+								} catch (Exception e) {
+									addLog(Msg.getMsg(getCtx(), "Error") + e.getLocalizedMessage());
+									if (trx != null)
+										trx.rollback();
+								} finally {
+									if (trx != null)
+										trx.close();
+								}
+								
+								modified = true;
+								column.setFKConstraintName(dbForeignKey.getKeyName());
+								column.setFKConstraintType(fkConstraintType);
+								column.saveEx();
+								break;
+							}
 						}
 					}
 					
 					if (modified)
 						continue;
-					
+										
 					if (!column.isKey() && !column.getColumnName().equals(PO.getUUIDColumnName(table.getTableName())))
 					{
 						String fkConstraint = getForeignKeyConstraint(md, table, column);
@@ -263,11 +310,12 @@ public class CreateForeignKey extends SvrProcess {
 							continue;
 						
 						String dbFKTable = rs.getString("FKTABLE_NAME");
+						short deleteRule = rs.getShort("DELETE_RULE");
 			
 						String key = dbFKName.toLowerCase();
 						DatabaseKey dbForeignKey = htForeignKeys.get(key);
 						if (dbForeignKey == null)
-							dbForeignKey = new DatabaseKey(dbFKName, dbFKTable, new String[30]);
+							dbForeignKey = new DatabaseKey(dbFKName, dbFKTable, new String[30], deleteRule);
 									
 						String columnName = rs.getString("FKCOLUMN_NAME");
 						int pos = (rs.getShort("KEY_SEQ"));				
@@ -297,6 +345,8 @@ public class CreateForeignKey extends SvrProcess {
 							addLog(Msg.getMsg(getCtx(), "CreateForeignKeyProcessColumn") + column.getColumnName());
 							addLog(column.getAD_Column_ID(), null, null, column.toString(), column.get_Table_ID(), column.getAD_Column_ID());
 							addLog(0, null, null, Msg.getMsg(getCtx(), "CreateForeignKeyProcessExists") + dbForeignKey.getKeyName());
+							column.setFKConstraintName(dbForeignKey.getKeyName());
+							column.saveEx();
 							return;
 						}
 					}
@@ -342,6 +392,13 @@ public class CreateForeignKey extends SvrProcess {
 	{		
 		if (!column.isKey() && !column.getColumnName().equals(PO.getUUIDColumnName(table.getTableName())))
 		{
+			String fkConstraintType = column.getFKConstraintType();
+			if (fkConstraintType == null)
+				fkConstraintType = MColumn.FKCONSTRAINTTYPE_NoAction;
+			
+			if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_DoNotCreate))
+				return "";
+
 			int refid = column.getAD_Reference_ID();
 			if (refid != DisplayType.List && refid != DisplayType.Payment)
 			{
@@ -352,19 +409,24 @@ public class CreateForeignKey extends SvrProcess {
 					
 					if (primaryKey != null)
 					{
-						String columnName = column.getColumnName();
-						if (columnName.toUpperCase().endsWith("_ID"))
-							columnName = columnName.substring(0, columnName.length() - 3);
-						
-						StringBuilder constraintName = new StringBuilder();
-						constraintName.append(columnName.replace("_", ""));
-						constraintName.append("_");
-						constraintName.append(table.getTableName().replace("_", ""));
-						if (constraintName.length() > 30)
-							constraintName = new StringBuilder(constraintName.substring(0, 30));
+						String fkConstraintName = column.getFKConstraintName();						
+						if (fkConstraintName == null || fkConstraintName.trim().length() == 0)
+						{
+							String columnName = column.getColumnName();
+							if (columnName.toUpperCase().endsWith("_ID"))
+								columnName = columnName.substring(0, columnName.length() - 3);
+							
+							StringBuilder constraintName = new StringBuilder();
+							constraintName.append(columnName.replace("_", ""));
+							constraintName.append("_");
+							constraintName.append(table.getTableName().replace("_", ""));
+							if (constraintName.length() > 30)
+								constraintName = new StringBuilder(constraintName.substring(0, 30));
+							fkConstraintName = constraintName.toString();
+						}
 						
 						StringBuilder fkConstraint = new StringBuilder();
-						fkConstraint.append("CONSTRAINT ").append(constraintName);
+						fkConstraint.append("CONSTRAINT ").append(fkConstraintName);
 						fkConstraint.append(" FOREIGN KEY (").append(column.getColumnName()).append(") REFERENCES ");
 						fkConstraint.append(primaryKey.getKeyTable()).append("(").append(primaryKey.getKeyColumns()[0]);
 						for (int i = 1; i < primaryKey.getKeyColumns().length; i++)
@@ -374,6 +436,18 @@ public class CreateForeignKey extends SvrProcess {
 							fkConstraint.append(", ").append(primaryKey.getKeyColumns()[i]);
 						}
 						fkConstraint.append(")");
+						
+						if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_NoAction))
+							;
+						else if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_Cascade))
+							fkConstraint.append(" ON DELETE CASCADE");
+						else if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_SetNull))
+							fkConstraint.append(" ON DELETE SET NULL");
+						
+						column.setFKConstraintName(fkConstraintName);
+						column.setFKConstraintType(fkConstraintType);
+						column.saveEx();
+						
 						return fkConstraint.toString();
 					}
 				}
@@ -404,9 +478,10 @@ public class CreateForeignKey extends SvrProcess {
 				continue;
 			
 			String primaryKeyTableName = rs.getString("TABLE_NAME");
+			short deleteRule = -1;
 			
 			if (primaryKey == null)
-				primaryKey = new DatabaseKey(primaryKeyName, primaryKeyTableName, new String[30]);
+				primaryKey = new DatabaseKey(primaryKeyName, primaryKeyTableName, new String[30], deleteRule);
 			
 			String primaryKeyColumn = rs.getString("COLUMN_NAME");
 			int pos = (rs.getShort("KEY_SEQ"));				
