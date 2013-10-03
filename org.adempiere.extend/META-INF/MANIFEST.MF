@@ -12,5 +12,8 @@ Export-Package: compiere.model,
 Fragment-Host: org.adempiere.base;bundle-version="0.0.0"
 Eclipse-PatchFragment: true
 Import-Package: junit.framework;version="3.8.2",
+ org.junit;version="4.8.2",
+ org.junit.runner,
+ org.junit.runners;version="4.8.2",
  org.supercsv.io,
  org.supercsv.prefs
