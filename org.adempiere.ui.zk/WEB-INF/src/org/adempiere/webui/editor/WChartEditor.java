@@ -109,6 +109,7 @@ public class WChartEditor extends WEditor
 				Panelchildren pc = new Panelchildren();
 				panel.appendChild(pc);
 				pc.appendChild(myImage);
+				pc.setSclass("chart-field");
 			}
 
 			int count = 0;

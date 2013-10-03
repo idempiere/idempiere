@@ -1930,3 +1930,8 @@ table.z-vbox > tbody > tr > td > table {
 	border-radius: 0px;
 	background-color: #ddd;
 }
+
+.chart-field {
+	padding: 10px; 
+	border: 1px solid lightgray !important;
+}
