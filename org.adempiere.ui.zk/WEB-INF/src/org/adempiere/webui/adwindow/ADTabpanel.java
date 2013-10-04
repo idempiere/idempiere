@@ -1293,7 +1293,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		if (recordId <= 0) return;
 		
 		//force on init render
-		if (TreeUtils.isOnInitRenderPosted(treePanel.getTree()) || treePanel.getTree().getTreechildren() == null) {
+		if (TreeUtils.isOnInitRenderPosted(treePanel.getTree()) || treePanel.getTree().getTreechildren() == null
+			|| treePanel.getTree().getTreechildren().getItemCount() == 0) {
 			treePanel.getTree().onInitRender();
 		}
 
