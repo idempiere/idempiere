@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.graph.WGraph;
@@ -33,6 +34,7 @@ import org.adempiere.webui.apps.graph.WPerformanceDetail;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.dashboard.DashboardRunnable;
+import org.adempiere.webui.factory.IDashboardGadgetFactory;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -66,6 +68,7 @@ import org.zkoss.zk.ui.event.MaximizeEvent;
 import org.zkoss.zul.Anchorchildren;
 import org.zkoss.zul.Anchorlayout;
 import org.zkoss.zul.Caption;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Include;
@@ -249,12 +252,14 @@ public class DashboardController implements EventListener<Event> {
 	        	if(AD_Window_ID > 0)
 	        	{
 		        	int AD_Menu_ID = dc.getAD_Menu_ID();
+		        	Div div = new Div();
 					ToolBarButton btn = new ToolBarButton(String.valueOf(AD_Menu_ID));
 					I_AD_Menu menu = dc.getAD_Menu();
 					btn.setLabel(menu.getName());
 					btn.setAttribute("AD_Menu_ID", AD_Menu_ID);
 					btn.addEventListener(Events.ON_CLICK, this);
-					content.appendChild(btn);
+					div.appendChild(btn);
+					content.appendChild(div);
 					panelEmpty = false;
 	        	}
 	        	
@@ -300,6 +305,7 @@ public class DashboardController implements EventListener<Event> {
 	        	if(PA_Goal_ID > 0)
 	        	{
 	        		//link to open performance detail
+	        		Div div = new Div();
 	        		Toolbarbutton link = new Toolbarbutton();
 		            link.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
 		            link.setAttribute("PA_Goal_ID", PA_Goal_ID);
@@ -310,7 +316,8 @@ public class DashboardController implements EventListener<Event> {
 							new WPerformanceDetail(goal);
 						}
 		            });
-		            content.appendChild(link);
+		            div.appendChild(link);
+		            content.appendChild(div);
 
 		            String goalDisplay = dc.getGoalDisplay();
 		            MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
@@ -326,8 +333,16 @@ public class DashboardController implements EventListener<Event> {
 	        	if(url != null)
 	        	{
 		        	try {
-		                Component component = Executions.createComponents(url, content, null);
-		                if(component != null)
+		        		
+		                Component component = null;
+		                List<IDashboardGadgetFactory> f = Service.locator().list(IDashboardGadgetFactory.class).getServices();
+                        for (IDashboardGadgetFactory factory : f) {
+                                component = factory.getGadget(url.toString(),content);
+                                if(component != null)
+                                        break;
+                        }
+		                
+                        if(component != null)
 		                {
 		                	if (component instanceof Include)
 		                		component = component.getFirstChild();
