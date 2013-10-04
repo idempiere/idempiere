@@ -32,7 +32,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131004L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
@@ -80,6 +80,31 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_Name)
+			.getPO(getAD_Chart_ID(), get_TrxName());	}
+
+	/** Set Chart.
+		@param AD_Chart_ID Chart	  */
+	public void setAD_Chart_ID (int AD_Chart_ID)
+	{
+		if (AD_Chart_ID < 1) 
+			set_Value (COLUMNNAME_AD_Chart_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Chart_ID, Integer.valueOf(AD_Chart_ID));
+	}
+
+	/** Get Chart.
+		@return Chart	  */
+	public int getAD_Chart_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Chart_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
     {
@@ -364,6 +389,27 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return false;
 	}
 
+	/** Set IsShowinLogin.
+		@param IsShowinLogin IsShowinLogin	  */
+	public void setIsShowinLogin (boolean IsShowinLogin)
+	{
+		set_Value (COLUMNNAME_IsShowinLogin, Boolean.valueOf(IsShowinLogin));
+	}
+
+	/** Get IsShowinLogin.
+		@return IsShowinLogin	  */
+	public boolean isShowinLogin () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowinLogin);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Line No.
 		@param Line 
 		Unique line for this document
@@ -488,17 +534,17 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return (String)get_Value(COLUMNNAME_ProcessParameters);
 	}
 
-	/** Set ZUL File Path.
+	/** Set Gadget URI.
 		@param ZulFilePath 
-		Absolute path to zul file
+		URI for Dashboard Gadget
 	  */
 	public void setZulFilePath (String ZulFilePath)
 	{
 		set_Value (COLUMNNAME_ZulFilePath, ZulFilePath);
 	}
 
-	/** Get ZUL File Path.
-		@return Absolute path to zul file
+	/** Get Gadget URI.
+		@return URI for Dashboard Gadget
 	  */
 	public String getZulFilePath () 
 	{

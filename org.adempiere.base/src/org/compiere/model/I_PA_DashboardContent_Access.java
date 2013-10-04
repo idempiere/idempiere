@@ -92,19 +92,6 @@ public interface I_PA_DashboardContent_Access
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
-    /** Column name ColumnNo */
-    public static final String COLUMNNAME_ColumnNo = "ColumnNo";
-
-	/** Set Column No.
-	  * Dashboard content column number
-	  */
-	public void setColumnNo (int ColumnNo);
-
-	/** Get Column No.
-	  * Dashboard content column number
-	  */
-	public int getColumnNo();
-
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -133,54 +120,6 @@ public interface I_PA_DashboardContent_Access
 	  * The record is active in the system
 	  */
 	public boolean isActive();
-
-    /** Column name IsCollapsedByDefault */
-    public static final String COLUMNNAME_IsCollapsedByDefault = "IsCollapsedByDefault";
-
-	/** Set Collapsed By Default.
-	  * Flag to set the initial state of collapsible field group.
-	  */
-	public void setIsCollapsedByDefault (boolean IsCollapsedByDefault);
-
-	/** Get Collapsed By Default.
-	  * Flag to set the initial state of collapsible field group.
-	  */
-	public boolean isCollapsedByDefault();
-
-    /** Column name IsShowInDashboard */
-    public static final String COLUMNNAME_IsShowInDashboard = "IsShowInDashboard";
-
-	/** Set Show in Dashboard.
-	  * Show the dashlet in the dashboard
-	  */
-	public void setIsShowInDashboard (boolean IsShowInDashboard);
-
-	/** Get Show in Dashboard.
-	  * Show the dashlet in the dashboard
-	  */
-	public boolean isShowInDashboard();
-
-    /** Column name IsShowinLogin */
-    public static final String COLUMNNAME_IsShowinLogin = "IsShowinLogin";
-
-	/** Set IsShowinLogin	  */
-	public void setIsShowinLogin (boolean IsShowinLogin);
-
-	/** Get IsShowinLogin	  */
-	public boolean isShowinLogin();
-
-    /** Column name Line */
-    public static final String COLUMNNAME_Line = "Line";
-
-	/** Set Line No.
-	  * Unique line for this document
-	  */
-	public void setLine (int Line);
-
-	/** Get Line No.
-	  * Unique line for this document
-	  */
-	public int getLine();
 
     /** Column name PA_DashboardContent_Access_ID */
     public static final String COLUMNNAME_PA_DashboardContent_Access_ID = "PA_DashboardContent_Access_ID";

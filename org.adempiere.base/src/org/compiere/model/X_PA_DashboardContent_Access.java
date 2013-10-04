@@ -29,7 +29,7 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130903L;
+	private static final long serialVersionUID = 20131004L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent_Access (Properties ctx, int PA_DashboardContent_Access_ID, String trxName)
@@ -120,115 +120,6 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 	public int getAD_User_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Column No.
-		@param ColumnNo 
-		Dashboard content column number
-	  */
-	public void setColumnNo (int ColumnNo)
-	{
-		set_Value (COLUMNNAME_ColumnNo, Integer.valueOf(ColumnNo));
-	}
-
-	/** Get Column No.
-		@return Dashboard content column number
-	  */
-	public int getColumnNo () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ColumnNo);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Collapsed By Default.
-		@param IsCollapsedByDefault 
-		Flag to set the initial state of collapsible field group.
-	  */
-	public void setIsCollapsedByDefault (boolean IsCollapsedByDefault)
-	{
-		set_Value (COLUMNNAME_IsCollapsedByDefault, Boolean.valueOf(IsCollapsedByDefault));
-	}
-
-	/** Get Collapsed By Default.
-		@return Flag to set the initial state of collapsible field group.
-	  */
-	public boolean isCollapsedByDefault () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsCollapsedByDefault);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Show in Dashboard.
-		@param IsShowInDashboard 
-		Show the dashlet in the dashboard
-	  */
-	public void setIsShowInDashboard (boolean IsShowInDashboard)
-	{
-		set_Value (COLUMNNAME_IsShowInDashboard, Boolean.valueOf(IsShowInDashboard));
-	}
-
-	/** Get Show in Dashboard.
-		@return Show the dashlet in the dashboard
-	  */
-	public boolean isShowInDashboard () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsShowInDashboard);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set IsShowinLogin.
-		@param IsShowinLogin IsShowinLogin	  */
-	public void setIsShowinLogin (boolean IsShowinLogin)
-	{
-		set_Value (COLUMNNAME_IsShowinLogin, Boolean.valueOf(IsShowinLogin));
-	}
-
-	/** Get IsShowinLogin.
-		@return IsShowinLogin	  */
-	public boolean isShowinLogin () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsShowinLogin);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
-	public void setLine (int Line)
-	{
-		set_ValueNoCheck (COLUMNNAME_Line, Integer.valueOf(Line));
-	}
-
-	/** Get Line No.
-		@return Unique line for this document
-	  */
-	public int getLine () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

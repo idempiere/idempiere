@@ -41,6 +41,17 @@ public interface I_PA_DashboardContent
 
     /** Load Meta Data */
 
+    /** Column name AD_Chart_ID */
+    public static final String COLUMNNAME_AD_Chart_ID = "AD_Chart_ID";
+
+	/** Set Chart	  */
+	public void setAD_Chart_ID (int AD_Chart_ID);
+
+	/** Get Chart	  */
+	public int getAD_Chart_ID();
+
+	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException;
+
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -251,6 +262,15 @@ public interface I_PA_DashboardContent
 	  */
 	public boolean isShowInDashboard();
 
+    /** Column name IsShowinLogin */
+    public static final String COLUMNNAME_IsShowinLogin = "IsShowinLogin";
+
+	/** Set IsShowinLogin	  */
+	public void setIsShowinLogin (boolean IsShowinLogin);
+
+	/** Get IsShowinLogin	  */
+	public boolean isShowinLogin();
+
     /** Column name Line */
     public static final String COLUMNNAME_Line = "Line";
 
@@ -342,13 +362,13 @@ public interface I_PA_DashboardContent
     /** Column name ZulFilePath */
     public static final String COLUMNNAME_ZulFilePath = "ZulFilePath";
 
-	/** Set ZUL File Path.
-	  * Absolute path to zul file
+	/** Set Gadget URI.
+	  * URI for Dashboard Gadget
 	  */
 	public void setZulFilePath (String ZulFilePath);
 
-	/** Get ZUL File Path.
-	  * Absolute path to zul file
+	/** Get Gadget URI.
+	  * URI for Dashboard Gadget
 	  */
 	public String getZulFilePath();
 }

@@ -38,8 +38,10 @@ import org.adempiere.webui.factory.IDashboardGadgetFactory;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ChartRenderer;
 import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.model.I_AD_Menu;
+import org.compiere.model.MChart;
 import org.compiere.model.MDashboardContent;
 import org.compiere.model.MDashboardContentAccess;
 import org.compiere.model.MDashboardPreference;
@@ -368,6 +370,17 @@ public class DashboardController implements EventListener<Event> {
 					}
 	        	}
 
+	        	//chart
+	        	int AD_Chart_ID = dc.getAD_Chart_ID();
+	        	if (AD_Chart_ID > 0) {
+	        		Panel chartPanel = new Panel();
+	        		MChart chartModel = new MChart(Env.getCtx(), AD_Chart_ID, null);
+	        		ChartRenderer renderer = new ChartRenderer(chartModel);
+	        		renderer.render(chartPanel, 300);
+	        		content.appendChild(chartPanel);
+	        		panelEmpty = false;
+	        	}
+	        	
 	        	if (panelEmpty)
 	        		panel.detach();
 	        }
