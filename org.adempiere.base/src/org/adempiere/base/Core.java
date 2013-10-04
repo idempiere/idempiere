@@ -243,6 +243,12 @@ public class Core {
 			if (provider.getC_TaxProvider_ID() == 0)
 				return new StandardTaxProvider();
 			
+			if (!provider.isActive())
+			{
+				s_log.log(Level.SEVERE, "Tax provider is inactive: " + provider);
+				return null;
+			}
+			
 			String className = provider.getTaxProviderClass();
 			if (className == null || className.length() == 0) 
 			{
