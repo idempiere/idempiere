@@ -20,14 +20,13 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.TimeSeriesDataItem;
 import org.zkoss.image.AImage;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zul.Area;
 import org.zkoss.zul.Imagemap;
-import org.zkoss.zul.Panel;
-import org.zkoss.zul.Panelchildren;
 
 /**
  * @author Paul Bowden, Adaxa Pty Ltd
@@ -52,11 +51,10 @@ public class ChartRenderer {
 	 * @param panel
 	 * @param width
 	 */
-	public void render(Panel panel, int width) {
+	public void render(Component parent, int width, int height) {
 		JFreeChart chart = chartModel.createChart();
 		
 		ChartRenderingInfo info = new ChartRenderingInfo();
-		int height = chartModel.getWinHeight();
 		BufferedImage bi = chart.createBufferedImage(width, height,
 				BufferedImage.TRANSLUCENT, info);
 		try {
@@ -66,15 +64,7 @@ public class ChartRenderer {
 			Imagemap myImage = new Imagemap();
 
 			myImage.setContent(image);
-			if (panel.getPanelchildren() != null) {
-				panel.getPanelchildren().getChildren().clear();
-				panel.getPanelchildren().appendChild(myImage);
-			} else {
-				Panelchildren pc = new Panelchildren();
-				panel.appendChild(pc);
-				pc.appendChild(myImage);
-				pc.setSclass("chart-field");
-			}
+			parent.appendChild(myImage);
 
 			int count = 0;
 			for (Iterator<?> it = info.getEntityCollection().getEntities()

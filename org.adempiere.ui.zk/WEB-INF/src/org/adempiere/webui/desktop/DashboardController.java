@@ -62,6 +62,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.AfterSizeEvent;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -371,18 +372,32 @@ public class DashboardController implements EventListener<Event> {
 	        	}
 
 	        	//chart
-	        	int AD_Chart_ID = dc.getAD_Chart_ID();
+	        	final int AD_Chart_ID = dc.getAD_Chart_ID();
 	        	if (AD_Chart_ID > 0) {
-	        		Panel chartPanel = new Panel();
-	        		MChart chartModel = new MChart(Env.getCtx(), AD_Chart_ID, null);
-	        		ChartRenderer renderer = new ChartRenderer(chartModel);
-	        		renderer.render(chartPanel, 300);
+	        		final Div chartPanel = new Div();	        	
+	        		chartPanel.setSclass("chart-gadget");
+	        		final MChart chartModel = new MChart(Env.getCtx(), AD_Chart_ID, null);
 	        		content.appendChild(chartPanel);
-	        		panelEmpty = false;
+	        		panelEmpty = false;	        		
+	        		chartPanel.addEventListener(Events.ON_AFTER_SIZE, new EventListener<AfterSizeEvent>() {
+						@Override
+						public void onEvent(AfterSizeEvent event) throws Exception {
+			        		ChartRenderer renderer = new ChartRenderer(chartModel);
+			        		int width = event.getWidth()*90/100;
+			        		int height = event.getHeight();
+			        		//set normal height
+			        		if (height == 0) {
+			        			height = width * 85 / 100;
+			        			chartPanel.setHeight(height+"px");
+			        		}
+			        		chartPanel.getChildren().clear();
+			        		renderer.render(chartPanel, width, height);
+						}
+					});
 	        	}
 	        	
 	        	if (panelEmpty)
-	        		panel.detach();
+	        		panel.detach();	        	
 	        }
             
             if (dps.length == 0)

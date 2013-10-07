@@ -22,6 +22,7 @@ import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Panel;
+import org.zkoss.zul.Panelchildren;
 
 /**
  * This class is based on org.compiere.grid.ed.WImageEditor and WGraph written by Low Heng Sin.
@@ -50,7 +51,15 @@ public class WChartEditor extends WEditor
 
     private void createChart() {
         ChartRenderer renderer = new ChartRenderer(chartModel);
-        renderer.render(getComponent(), 400);
+        Panel panel = getComponent();
+        if (panel.getPanelchildren() != null) {
+			panel.getPanelchildren().getChildren().clear();
+		} else {
+			Panelchildren pc = new Panelchildren();
+			panel.appendChild(pc);
+			pc.setSclass("chart-field");
+		}
+        renderer.render(panel.getPanelchildren(), 400, chartModel.getWinHeight());
     }
     
     @Override
