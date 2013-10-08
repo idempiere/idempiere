@@ -42,6 +42,7 @@ import org.compiere.model.MTax;
 import org.compiere.model.ProductCost;
 import org.compiere.model.X_M_InOut;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *  Post MatchPO Documents.
@@ -184,7 +185,7 @@ public class Doc_MatchPO extends Doc
 		{
 			BigDecimal totalAmt = allocation.getAmt();
 			BigDecimal totalQty = allocation.getQty();
-			BigDecimal amt = totalAmt.multiply(m_ioLine.getMovementQty()).divide(totalQty, RoundingMode.HALF_UP);			
+			BigDecimal amt = totalAmt.multiply(m_ioLine.getMovementQty()).divide(totalQty, as.getCostingPrecision(), RoundingMode.HALF_UP);			
 			if (m_oLine.getC_Currency_ID() != as.getC_Currency_ID())
 			{
 				MOrder order = m_oLine.getParent();
@@ -202,7 +203,7 @@ public class Doc_MatchPO extends Doc
 				if (amt.scale() > as.getCostingPrecision())
 					amt = amt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
 			}
-			amt = amt.divide(getQty(), RoundingMode.HALF_UP);
+			amt = amt.divide(getQty(), as.getCostingPrecision(), RoundingMode.HALF_UP);
 			landedCost = landedCost.add(amt);
 			int elementId = allocation.getC_OrderLandedCost().getM_CostElement_ID();
 			BigDecimal elementAmt = landedCostMap.get(elementId);
@@ -413,6 +414,13 @@ public class Doc_MatchPO extends Doc
 			tAmt = tAmt.add(isReturnTrx ? poCost.negate() : poCost);
 			tQty = tQty.add(isReturnTrx ? getQty().negate() : getQty());
 			
+			if (mMatchPO.getReversal_ID() > 0) 
+			{
+				String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO, tQty);
+				if (!Util.isEmpty(error))
+					return error;
+			}
+			
 			// Set Total Amount and Total Quantity from Matched PO 
 			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
 					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
@@ -423,22 +431,35 @@ public class Doc_MatchPO extends Doc
 				return "SaveError";
 			}
 			
-			for(Integer elementId : landedCostMap.keySet())
+			if (mMatchPO.getReversal_ID() <= 0)
 			{
-				BigDecimal amt = landedCostMap.get(elementId);
-				amt = amt.multiply(tQty);
-				if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
-						getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
-						m_oLine.getC_OrderLine_ID(), elementId,
-						amt, tQty,			//	Delivered
-						m_oLine.getDescription(), getTrxName()))
-				{
-					return "SaveError";
-				}
+				String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO, tQty);
+				if (!Util.isEmpty(error))
+					return error;
 			}
 			// end MZ
 		}
 		return "";
+	}
+
+
+	private String createLandedCostAdjustments(MAcctSchema as,
+			Map<Integer, BigDecimal> landedCostMap, MMatchPO mMatchPO,
+			BigDecimal tQty) {
+		for(Integer elementId : landedCostMap.keySet())
+		{
+			BigDecimal amt = landedCostMap.get(elementId);
+			amt = amt.multiply(tQty);
+			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
+					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+					m_oLine.getC_OrderLine_ID(), elementId,
+					amt, tQty,			//	Delivered
+					m_oLine.getDescription(), getTrxName()))
+			{
+				return "SaveError";
+			}
+		}
+		return null;
 	}
 
 }   //  Doc_MatchPO
