@@ -109,6 +109,11 @@ public class PackInHandler extends DefaultHandler {
 		// idempiere
 		if (qName.equals("idempiere"))
 		{
+			String updateDictionary = atts.getValue("UpdateDictionary");
+			if (updateDictionary != null && updateDictionary.equalsIgnoreCase("true"))
+			{
+				m_updateDictionary = true;
+			}
 			if (log.isLoggable(Level.INFO)) log.info("idempiere updateMode="+m_updateDictionary);
 
 			//check client

@@ -88,11 +88,8 @@ public class PrintPaperElementHandler extends AbstractElementHandler {
 		X_AD_PrintPaper printPaper = new X_AD_PrintPaper(ctx.ctx,
 				AD_PrintPaper_ID, null);
 
-		if (ctx.packOut.getFromDate() != null) {
-			if (printPaper.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, printPaper))
+			return;
 
 		verifyPackOutRequirement(printPaper);
 		

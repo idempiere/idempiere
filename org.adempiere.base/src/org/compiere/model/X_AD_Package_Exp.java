@@ -31,7 +31,7 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131009L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp (Properties ctx, int AD_Package_Exp_ID, String trxName)
@@ -40,6 +40,8 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
       /** if (AD_Package_Exp_ID == 0)
         {
 			setAD_Package_Exp_ID (0);
+			setIsExportDictionaryEntity (false);
+// N
 			setName (null);
 			setPK_Version (null);
 			setProcessing (false);
@@ -208,6 +210,27 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
 	public String getInstructions () 
 	{
 		return (String)get_Value(COLUMNNAME_Instructions);
+	}
+
+	/** Set Export Dictionary Entity.
+		@param IsExportDictionaryEntity Export Dictionary Entity	  */
+	public void setIsExportDictionaryEntity (boolean IsExportDictionaryEntity)
+	{
+		set_Value (COLUMNNAME_IsExportDictionaryEntity, Boolean.valueOf(IsExportDictionaryEntity));
+	}
+
+	/** Get Export Dictionary Entity.
+		@return Export Dictionary Entity	  */
+	public boolean isExportDictionaryEntity () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsExportDictionaryEntity);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Name.

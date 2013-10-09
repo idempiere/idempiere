@@ -301,11 +301,8 @@ public class ColumnElementHandler extends AbstractElementHandler {
 		X_AD_Column m_Column = new X_AD_Column(ctx.ctx, AD_Column_ID,
 				getTrxName(ctx));
 
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Column.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_Column))
+			return;
 
 		verifyPackOutRequirement(m_Column);
 		

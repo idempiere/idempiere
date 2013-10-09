@@ -33,6 +33,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
+import org.compiere.model.X_AD_EntityType;
 import org.compiere.model.X_AD_Package_Imp_Backup;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.CLogger;
@@ -509,5 +510,20 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	if (Util.isEmpty((String)po.get_Value(uidColumn)) && (keys == null || keys.length != 1 || po.get_ID() > MTable.MAX_OFFICIAL_ID)) {
 			throw new IllegalStateException("2Pack doesn't work with record without official Id and UUID");
 		}
-    }        
+    }
+
+	protected boolean isPackOutElement(PIPOContext ctx, PO element) {
+		if (ctx.packOut.getFromDate() != null) {
+			if (element.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
+				return false;
+			}
+		}
+		if (!ctx.packOut.isExportDictionaryEntity() && element.get_ColumnIndex("EntityType") >= 0) {
+			Object entityType = element.get_Value("EntityType");
+			if (X_AD_EntityType.ENTITYTYPE_Dictionary.equals(entityType)) {
+				return false;
+			}
+		}
+		return true;
+	}        
 }

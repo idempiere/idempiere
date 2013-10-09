@@ -114,12 +114,8 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 
 		X_AD_Reference m_Reference = new X_AD_Reference(ctx.ctx, Reference_id, getTrxName(ctx));
 
-		boolean createElement = true;
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Reference.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				createElement = false;
-			}
-		}
+		boolean createElement = isPackOutElement(ctx, m_Reference);
+
 		PackOut packOut = ctx.packOut;
 		packOut.getCtx().ctx.put("Table_Name",X_AD_Reference.Table_Name);
 		if (createElement) {

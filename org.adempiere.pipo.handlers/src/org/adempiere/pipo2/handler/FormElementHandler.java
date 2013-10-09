@@ -94,11 +94,8 @@ public class FormElementHandler extends AbstractElementHandler {
 
 		X_AD_Form m_Form = new X_AD_Form (ctx.ctx, AD_Form_ID, null);
 
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Form.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_Form))
+			return;
 
 		verifyPackOutRequirement(m_Form);
 		

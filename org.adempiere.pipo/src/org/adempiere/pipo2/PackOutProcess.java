@@ -136,6 +136,7 @@ public class PackOutProcess extends SvrProcess
 					packOut.setFromDate((Timestamp) dateFromValue);
 				}
 				
+				packOut.setExportDictionaryEntity(packageExp.isExportDictionaryEntity());
 				packOut.export(packoutDirectory, null, packoutDocument, packoutItems, get_TrxName());
 				processedCount = packOut.getExportCount();
 				exportFile = packOut.getExportFile();

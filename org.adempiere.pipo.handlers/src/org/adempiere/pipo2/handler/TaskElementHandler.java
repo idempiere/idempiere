@@ -95,11 +95,8 @@ public class TaskElementHandler extends AbstractElementHandler {
 			return;
 
 		X_AD_Task m_Task = new X_AD_Task(ctx.ctx, AD_Task_ID, null);
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Task.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_Task))
+			return;
 		verifyPackOutRequirement(m_Task);
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");

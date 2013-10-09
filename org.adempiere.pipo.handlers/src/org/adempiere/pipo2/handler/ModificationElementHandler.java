@@ -109,11 +109,8 @@ public class ModificationElementHandler extends AbstractElementHandler{
 
 		X_AD_Modification modification = new X_AD_Modification(ctx.ctx, ad_modification_id, null);
 		
-		if (ctx.packOut.getFromDate() != null) {
-			if (modification.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, modification))
+			return;
 
 		verifyPackOutRequirement(modification);
 		

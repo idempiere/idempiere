@@ -138,13 +138,7 @@ public class ProcessElementHandler extends AbstractElementHandler {
 				handler.packOut(packOut,document,null,m_Process.getAD_Workflow_ID());
 			}
 
-			boolean createElement = true;
-
-			if (ctx.packOut.getFromDate() != null) {
-				if (m_Process.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-					createElement = false;
-				}
-			}
+			boolean createElement = isPackOutElement(ctx, m_Process);
 
 			if (createElement) {
 				verifyPackOutRequirement(m_Process);

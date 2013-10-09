@@ -120,12 +120,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 				if (AD_Client_ID != Env.getAD_Client_ID(ctx.ctx))
 					continue;
 				
-				boolean createElement = true;
-				if (ctx.packOut.getFromDate() != null) {
-					if (po.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-						createElement = false;
-					}
-				}
+				boolean createElement = isPackOutElement(ctx, po);
 
 				if (createElement) {
 					if (po.get_ID() > 0) {
@@ -177,12 +172,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 				if (AD_Client_ID != Env.getAD_Client_ID(ctx.ctx))
 					continue;
 
-				boolean createElement = true;
-				if (ctx.packOut.getFromDate() != null) {
-					if (po.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-						createElement = false;
-					}
-				}
+				boolean createElement = isPackOutElement(ctx, po);
 				if (createElement) {
 					if (po.get_ID() > 0) {
 						ElementHandler handler = ctx.packOut.getHandler(po.get_TableName());

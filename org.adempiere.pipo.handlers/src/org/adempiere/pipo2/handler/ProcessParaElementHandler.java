@@ -114,11 +114,8 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 			}
 		}
 
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Processpara.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_Processpara))
+			return;
 		
 		verifyPackOutRequirement(m_Processpara);
 		

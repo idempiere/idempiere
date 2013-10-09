@@ -94,11 +94,8 @@ public class ModelValidatorElementHandler extends AbstractElementHandler{
 
 		X_AD_ModelValidator validator = new X_AD_ModelValidator(ctx.ctx, ad_modelvalidator_id, null);
 		
-		if (ctx.packOut.getFromDate() != null) {
-			if (validator.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, validator))
+			return;
 
 		verifyPackOutRequirement(validator);
 		

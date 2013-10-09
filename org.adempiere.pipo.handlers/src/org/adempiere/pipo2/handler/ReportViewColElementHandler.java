@@ -94,11 +94,8 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 		X_AD_ReportView_Col m_Reportview_Col = new X_AD_ReportView_Col(ctx.ctx,
 				AD_ReportView_Col_ID, getTrxName(ctx));
 		
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Reportview_Col.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_Reportview_Col))
+			return;
 		
 		verifyPackOutRequirement(m_Reportview_Col);
 		

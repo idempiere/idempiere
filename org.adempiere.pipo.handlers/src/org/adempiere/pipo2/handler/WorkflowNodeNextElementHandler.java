@@ -95,11 +95,8 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 
 		MWFNodeNext m_WF_NodeNext = new MWFNodeNext(
 				ctx.ctx, ad_wf_nodenext_id, null);
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_WF_NodeNext.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_WF_NodeNext))
+			return;
 		verifyPackOutRequirement(m_WF_NodeNext);
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");

@@ -90,11 +90,8 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 
 		X_AD_ImpFormat_Row m_ImpFormat_Row = new X_AD_ImpFormat_Row (ctx.ctx, AD_ImpFormat_Row_ID, getTrxName(ctx));
 		
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_ImpFormat_Row.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_ImpFormat_Row))
+			return;
 		
 		verifyPackOutRequirement(m_ImpFormat_Row);
 		

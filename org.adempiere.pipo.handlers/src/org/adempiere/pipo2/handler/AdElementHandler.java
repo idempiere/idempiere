@@ -111,11 +111,8 @@ public class AdElementHandler extends AbstractElementHandler {
 			return;
 
 		X_AD_Element mAdElement = new X_AD_Element(ctx.ctx, adElement_id, null);
-		if (ctx.packOut.getFromDate() != null) {
-			if (mAdElement.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, mAdElement))
+			return;
 		
 		verifyPackOutRequirement(mAdElement);
 

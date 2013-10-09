@@ -115,13 +115,8 @@ public class WindowElementHandler extends AbstractElementHandler {
 			return;
 		PackOut packOut = ctx.packOut;
 
-		boolean createElement = true;
 		X_AD_Window m_Window = new X_AD_Window(ctx.ctx, AD_Window_ID, null);
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Window.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				createElement = false;
-			}
-		}
+		boolean createElement = isPackOutElement(ctx, m_Window);
 
 		//export color
 		if (m_Window.getAD_Color_ID() > 0) {

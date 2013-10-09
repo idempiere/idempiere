@@ -65,11 +65,8 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 		Query query = new Query(ctx.ctx, "AD_Role_OrgAccess", "AD_Role_ID=? and AD_Org_ID=?", getTrxName(ctx));
 		X_AD_Role_OrgAccess po = query.setParameters(new Object[]{AD_Role_ID, AD_Org_ID}).<X_AD_Role_OrgAccess>first();
 		if (po != null) {
-			if (ctx.packOut.getFromDate() != null) {
-				if (po.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-					return;
-				}
-			}
+			if (!isPackOutElement(ctx, po))
+				return;
 			
 			verifyPackOutRequirement(po);
 			
