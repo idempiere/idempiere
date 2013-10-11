@@ -297,6 +297,14 @@ public class PackInHandler extends DefaultHandler {
     		setupHandlers();
     	} else {
     		Element e = stack.pop();
+    		if (e.contents != null && e.contents.length() > 0) 
+    		{
+    			if (e.contents.toString().length() != e.contents.toString().trim().length())
+    			{
+    				String s = e.contents.toString().trim();
+    				e.contents = new StringBuffer(s);
+    			}
+    		}
     		if (stack.isEmpty())
     		{
     			try {
