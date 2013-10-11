@@ -48,9 +48,12 @@ public abstract class CreateFrom implements ICreateFrom
 	private String title;
 
 	private boolean initOK = false;
+	
+	protected boolean isSOTrx = false;
 
 	public CreateFrom(GridTab gridTab) {
 		this.gridTab = gridTab;
+		isSOTrx = (Boolean) gridTab.getField("isSoTrx").getValue();
 	}
 
 	public abstract boolean dynInit() throws Exception;
@@ -82,6 +85,7 @@ public abstract class CreateFrom implements ICreateFrom
 	{
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 
+		String isSOTrxParam = isSOTrx ? "Y":"N";
 		//	Display
 		StringBuffer display = new StringBuffer("o.DocumentNo||' - ' ||")
 			.append(DB.TO_CHAR("o.DateOrdered", DisplayType.Date, Env.getAD_Language(Env.getCtx())))
@@ -93,7 +97,7 @@ public abstract class CreateFrom implements ICreateFrom
 			column = "ol.QtyInvoiced";
 		StringBuffer sql = new StringBuffer("SELECT o.C_Order_ID,").append(display)
 			.append(" FROM C_Order o "
-			+ "WHERE o.C_BPartner_ID=? AND o.IsSOTrx='N' AND o.DocStatus IN ('CL','CO')"
+			+ "WHERE o.C_BPartner_ID=? AND o.IsSOTrx=? AND o.DocStatus IN ('CL','CO')"
 			+ " AND o.C_Order_ID IN "
 				  + "(SELECT ol.C_Order_ID FROM C_OrderLine ol"
 				  + " WHERE ol.QtyOrdered - ").append(column).append(" != 0) ");
@@ -109,10 +113,11 @@ public abstract class CreateFrom implements ICreateFrom
 		{
 			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, C_BPartner_ID);
+			pstmt.setString(2, isSOTrxParam);
 			if(sameWarehouseOnly)
 			{
 				//only active for material receipts
-				pstmt.setInt(2, getM_Warehouse_ID());
+				pstmt.setInt(3, getM_Warehouse_ID());
 			}
 			rs = pstmt.executeQuery();
 			while (rs.next())

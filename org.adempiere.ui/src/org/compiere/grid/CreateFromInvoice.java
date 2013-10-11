@@ -84,6 +84,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 	 */
 	protected ArrayList<KeyNamePair> loadShipmentData (int C_BPartner_ID)
 	{
+		String isSOTrxParam = isSOTrx ? "Y":"N";
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 
 		//	Display
@@ -92,23 +93,32 @@ public abstract class CreateFromInvoice extends CreateFrom
 		//
 		StringBuffer sql = new StringBuffer("SELECT s.M_InOut_ID,").append(display)
 			.append(" FROM M_InOut s "
-			+ "WHERE s.C_BPartner_ID=? AND s.IsSOTrx='N' AND s.DocStatus IN ('CL','CO')"
+			+ "WHERE s.C_BPartner_ID=? AND s.IsSOTrx=? AND s.DocStatus IN ('CL','CO')"
 			+ " AND s.M_InOut_ID IN "
-				+ "(SELECT sl.M_InOut_ID FROM M_InOutLine sl"
-				+ " LEFT OUTER JOIN M_MatchInv mi ON (sl.M_InOutLine_ID=mi.M_InOutLine_ID) "
-				+ " JOIN M_InOut s2 ON (sl.M_InOut_ID=s2.M_InOut_ID) "
-				+ " WHERE s2.C_BPartner_ID=? AND s2.IsSOTrx='N' AND s2.DocStatus IN ('CL','CO') "
-				+ "GROUP BY sl.M_InOut_ID,mi.M_InOutLine_ID,sl.MovementQty "
-				+ "HAVING (sl.MovementQty<>SUM(mi.Qty) AND mi.M_InOutLine_ID IS NOT NULL)"
-				+ " OR mi.M_InOutLine_ID IS NULL) "
-			+ "ORDER BY s.MovementDate");
+				+ "(SELECT sl.M_InOut_ID FROM M_InOutLine sl");
+			if(!isSOTrx)
+				sql.append(" LEFT OUTER JOIN M_MatchInv mi ON (sl.M_InOutLine_ID=mi.M_InOutLine_ID) "
+					+ " JOIN M_InOut s2 ON (sl.M_InOut_ID=s2.M_InOut_ID) "
+					+ " WHERE s2.C_BPartner_ID=? AND s2.IsSOTrx=? AND s2.DocStatus IN ('CL','CO') "
+					+ " GROUP BY sl.M_InOut_ID,sl.MovementQty,mi.M_InOutLine_ID"
+					+ " HAVING (sl.MovementQty<>SUM(mi.Qty) AND mi.M_InOutLine_ID IS NOT NULL)"
+					+ " OR mi.M_InOutLine_ID IS NULL ");
+			else
+				sql.append(" INNER JOIN M_InOut s2 ON (sl.M_InOut_ID=s2.M_InOut_ID)"
+					+ " LEFT JOIN C_InvoiceLine il ON sl.M_InOutLine_ID = il.M_InOutLine_ID"
+					+ " WHERE s2.C_BPartner_ID=? AND s2.IsSOTrx=? AND s2.DocStatus IN ('CL','CO')"
+					+ " GROUP BY sl.M_InOutLine_ID"
+					+ " HAVING sl.MovementQty - sum(COALESCE(il.QtyInvoiced,0)) > 0");
+			sql.append(") ORDER BY s.MovementDate");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, C_BPartner_ID);
-			pstmt.setInt(2, C_BPartner_ID);
+			pstmt.setString(2, isSOTrxParam);
+			pstmt.setInt(3, C_BPartner_ID);
+			pstmt.setString(4, isSOTrxParam);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -180,8 +190,12 @@ public abstract class CreateFromInvoice extends CreateFrom
 
 		//
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-		StringBuilder sql = new StringBuilder("SELECT "	//	QtyEntered
-			+ "l.MovementQty-SUM(NVL(mi.Qty, 0)), l.QtyEntered/l.MovementQty,"
+		StringBuilder sql = new StringBuilder("SELECT ");	//	QtyEntered
+		if(!isSOTrx)
+			sql.append("l.MovementQty-SUM(COALESCE(mi.Qty, 0)),");
+		else
+			sql.append("l.MovementQty-SUM(COALESCE(il.QtyInvoiced,0)),");
+		sql.append(" l.QtyEntered/l.MovementQty,"
 			+ " l.C_UOM_ID, COALESCE(uom.UOMSymbol, uom.Name),"			//  3..4
 			+ " l.M_Product_ID, p.Name, po.VendorProductNo, l.M_InOutLine_ID, l.Line,"        //  5..9
 			+ " l.C_OrderLine_ID " //  10
@@ -194,15 +208,22 @@ public abstract class CreateFromInvoice extends CreateFrom
 				.append(Env.getAD_Language(Env.getCtx())).append("')");
 
 		sql.append(" LEFT OUTER JOIN M_Product p ON (l.M_Product_ID=p.M_Product_ID)")
-			.append(" INNER JOIN M_InOut io ON (l.M_InOut_ID=io.M_InOut_ID)")
-			.append(" LEFT OUTER JOIN M_Product_PO po ON (l.M_Product_ID = po.M_Product_ID AND io.C_BPartner_ID = po.C_BPartner_ID)")
-			.append(" LEFT OUTER JOIN M_MatchInv mi ON (l.M_InOutLine_ID=mi.M_InOutLine_ID)")
+			.append(" INNER JOIN M_InOut io ON (l.M_InOut_ID=io.M_InOut_ID)");
+		if(!isSOTrx)
+			sql.append(" LEFT OUTER JOIN M_MatchInv mi ON (l.M_InOutLine_ID=mi.M_InOutLine_ID)");
+		else
+			sql.append(" LEFT JOIN C_InvoiceLine il ON l.M_InOutLine_ID = il.M_InOutLine_ID");
+		sql.append(" LEFT OUTER JOIN M_Product_PO po ON (l.M_Product_ID = po.M_Product_ID AND io.C_BPartner_ID = po.C_BPartner_ID)")
 
 			.append(" WHERE l.M_InOut_ID=? AND l.MovementQty<>0 ")
 			.append("GROUP BY l.MovementQty, l.QtyEntered/l.MovementQty, "
 				+ "l.C_UOM_ID, COALESCE(uom.UOMSymbol, uom.Name), "
-				+ "l.M_Product_ID, p.Name, po.VendorProductNo, l.M_InOutLine_ID, l.Line, l.C_OrderLine_ID ")
-			.append("ORDER BY l.Line");
+				+ "l.M_Product_ID, p.Name, po.VendorProductNo, l.M_InOutLine_ID, l.Line, l.C_OrderLine_ID ");
+		if(!isSOTrx)
+			sql.append(" HAVING l.MovementQty-SUM(COALESCE(mi.Qty, 0)) <>0");
+		else
+			sql.append(" HAVING l.MovementQty-SUM(COALESCE(il.QtyInvoiced,0)) <>0");
+		sql.append("ORDER BY l.Line");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -594,10 +615,10 @@ public abstract class CreateFromInvoice extends CreateFrom
 	    columnNames.add(Msg.translate(Env.getCtx(), "Quantity"));
 	    columnNames.add(Msg.translate(Env.getCtx(), "C_UOM_ID"));
 	    columnNames.add(Msg.translate(Env.getCtx(), "M_Product_ID"));
-	    columnNames.add(Msg.getElement(Env.getCtx(), "VendorProductNo", false));
-	    columnNames.add(Msg.getElement(Env.getCtx(), "C_Order_ID", false));
-	    columnNames.add(Msg.getElement(Env.getCtx(), "M_InOut_ID", false));
-	    columnNames.add(Msg.getElement(Env.getCtx(), "M_RMA_ID", false));
+	    columnNames.add(Msg.getElement(Env.getCtx(), "VendorProductNo", isSOTrx));
+	    columnNames.add(Msg.getElement(Env.getCtx(), "C_Order_ID", isSOTrx));
+	    columnNames.add(Msg.getElement(Env.getCtx(), "M_InOut_ID", isSOTrx));
+	    columnNames.add(Msg.getElement(Env.getCtx(), "M_RMA_ID", isSOTrx));
 
 	    return columnNames;
 	}

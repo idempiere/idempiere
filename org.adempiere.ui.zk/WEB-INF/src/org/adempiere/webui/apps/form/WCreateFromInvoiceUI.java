@@ -128,8 +128,8 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	protected void zkInit() throws Exception
 	{
 		bPartnerLabel.setText(Msg.getElement(Env.getCtx(), "C_BPartner_ID"));
-		orderLabel.setText(Msg.getElement(Env.getCtx(), "C_Order_ID", false));
-		shipmentLabel.setText(Msg.getElement(Env.getCtx(), "M_InOut_ID", false));
+		orderLabel.setText(Msg.getElement(Env.getCtx(), "C_Order_ID", isSOTrx));
+		shipmentLabel.setText(Msg.getElement(Env.getCtx(), "M_InOut_ID", isSOTrx));
         rmaLabel.setText(Msg.translate(Env.getCtx(), "M_RMA_ID"));
         
 		Borderlayout parameterLayout = new Borderlayout();
