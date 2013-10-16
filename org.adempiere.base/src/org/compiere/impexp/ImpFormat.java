@@ -154,7 +154,6 @@ public final class ImpFormat
 		{
 			m_tableUnique1 = "UPC";						//	UPC = unique
 			m_tableUnique2 = "Value";
-			// must validate both fields - if one is empty don't check
 			m_tableUniqueChild = "VendorProductNo";		//	Vendor No may not be unique !
 			m_tableUniqueParent = "BPartner_Value";		//			Makes it unique
 		}
