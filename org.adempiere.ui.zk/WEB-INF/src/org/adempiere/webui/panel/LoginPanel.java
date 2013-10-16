@@ -99,7 +99,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3317111366328505399L;
+	private static final long serialVersionUID = -3361823499124119753L;
 
 	private static LogAuthFailure logAuthFailure = new LogAuthFailure();
 
@@ -120,7 +120,8 @@ public class LoginPanel extends Window implements EventListener<Event>
     protected A btnResetPassword;
     protected ConfirmPanel pnlButtons; 
     protected boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
-
+    protected String validLstLanguage = null;
+    
     public LoginPanel(Properties ctx, LoginWindow loginWindow)
     {
         this.ctx = ctx;
@@ -379,6 +380,10 @@ public class LoginPanel extends Window implements EventListener<Event>
         
         btnResetPassword = new A(Msg.getMsg(Language.getBaseAD_Language(), "ForgotMyPassword"));
         btnResetPassword.setId("btnResetPassword");
+        
+        if (lstLanguage.getItems().size() > 0){
+        	validLstLanguage = (String)lstLanguage.getItems().get(0).getLabel();
+        }                 
    }
 
     public void onEvent(Event event)
@@ -395,9 +400,14 @@ public class LoginPanel extends Window implements EventListener<Event>
         }
         else if (event.getName().equals(Events.ON_SELECT))
         {
-            if(eventComp.getId().equals(lstLanguage.getId())) {
-            	String langName = (String) lstLanguage.getSelectedItem().getLabel();
-            	languageChanged(langName);
+            if(eventComp.getId().equals(lstLanguage.getId())) {            	            	
+            	if (lstLanguage.getSelectedItem() == null){
+            		lstLanguage.setValue(validLstLanguage);
+            	}else{
+            		validLstLanguage = lstLanguage.getSelectedItem().getLabel();
+            	}
+            	           	
+            	languageChanged(validLstLanguage);
             }
         }
         else if (event.getTarget() == btnResetPassword)

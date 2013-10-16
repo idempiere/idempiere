@@ -110,11 +110,8 @@ public class WorkflowNodeNextConditionElementHandler extends
 
 		MWFNextCondition m_WF_NodeNextCondition = new MWFNextCondition(
 				ctx.ctx, ad_wf_nodenextcondition_id, null);
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_WF_NodeNextCondition.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_WF_NodeNextCondition))
+			return;
 		verifyPackOutRequirement(m_WF_NodeNextCondition);
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");

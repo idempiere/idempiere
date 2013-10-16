@@ -125,8 +125,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	private static CLogger log = CLogger.getCLogger(ReportStarter.class);
 	private static File REPORT_HOME = null;
 
-	private static JasperPrint jasperPrint;
-
     static {
         String reportPath = System.getProperty("org.compiere.report.path");
         if (reportPath == null) {
@@ -749,9 +747,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
 					} catch (SQLException e) {
 					}
             	}
-            	if (virtualizer != null) {
-            		virtualizer.cleanup();
-            	}
             }
         }
 
@@ -762,11 +757,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
         reportResult( AD_PInstance_ID, null, trxName);
         return true;
     }
-
-	public static JasperPrint getJasperPrint()
-	{
-		return jasperPrint;
-	}
 
 	private String makePrefix(String name) {
 		StringBuilder prefix = new StringBuilder();

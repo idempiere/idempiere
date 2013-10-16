@@ -116,11 +116,8 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 
 		X_AD_FieldGroup fieldGroup = new X_AD_FieldGroup(ctx.ctx, fieldGroup_id, null);
 
-		if (ctx.packOut.getFromDate() != null) {
-			if (fieldGroup.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, fieldGroup))
+			return;
 
 		verifyPackOutRequirement(fieldGroup);
 		

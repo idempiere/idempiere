@@ -97,11 +97,8 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 			return;
 		X_AD_Ref_List m_Ref_List = new X_AD_Ref_List(ctx.ctx, AD_Ref_List_ID,
 				getTrxName(ctx));
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Ref_List.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_Ref_List))
+			return;
 		
 		verifyPackOutRequirement(m_Ref_List);
 		

@@ -149,13 +149,8 @@ public class TableElementHandler extends AbstractElementHandler {
 			return;
 		PackOut packOut = ctx.packOut;
 		AttributesImpl atts = new AttributesImpl();
-		boolean createElement = true;
 		X_AD_Table m_Table = new X_AD_Table (ctx.ctx, AD_Table_ID, null);
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Table.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				createElement = false;
-			}
-		}
+		boolean createElement = isPackOutElement(ctx, m_Table);
 		if (createElement) {
 			verifyPackOutRequirement(m_Table);
 			addTypeName(atts, "table");

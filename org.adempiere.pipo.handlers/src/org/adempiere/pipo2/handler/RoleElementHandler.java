@@ -107,13 +107,8 @@ public class RoleElementHandler extends AbstractElementHandler {
 		if (ctx.packOut.isExported(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Role_ID+"|"+Role_id))
 			return;
 
-		boolean createElement = true;
 		X_AD_Role m_Role = new X_AD_Role(ctx.ctx, Role_id, null);
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Role.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				createElement = false;
-			}
-		}
+		boolean createElement = isPackOutElement(ctx, m_Role);
 
 		if (createElement) {
 			verifyPackOutRequirement(m_Role);

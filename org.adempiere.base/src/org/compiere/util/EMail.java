@@ -26,8 +26,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -1097,14 +1095,20 @@ public final class EMail implements Serializable
 
 	/**
 	 * 	Validate format of an email address
-	 *  IDEMPIERE-1409 - based on http://examples.javacodegeeks.com/core-java/util/regex/matcher/validate-email-address-with-java-regular-expression-example/
+	 *  IDEMPIERE-1409
 	 *	@return true if email has proper format
 	 */
-	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-	private static Pattern pattern = Pattern.compile(EMAIL_PATTERN);
 	public static boolean validate(final String email) {
-		Matcher matcher = pattern.matcher(email);
-		return matcher.matches();
+		try
+		{
+			new InternetAddress (email, true);
+		}
+		catch (Exception e)
+		{
+			log.log(Level.WARNING, email + ": " + e.toString());
+			return false;
+		}
+		return true;
 	}
 
 	/**************************************************************************

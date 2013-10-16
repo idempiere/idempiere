@@ -103,11 +103,8 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 
 		MAttachment mAttachment = new MAttachment(ctx.ctx, AD_Attachment_ID, getTrxName(ctx));
 
-		if (ctx.packOut.getFromDate() != null) {
-			if (mAttachment.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, mAttachment))
+			return;
 
 		verifyPackOutRequirement(mAttachment);
 		

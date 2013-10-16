@@ -152,15 +152,10 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 		int ad_wf_nodenextcondition_id = 0;
 		AttributesImpl atts = new AttributesImpl();
 
-		boolean creatElement = true;
 		MWorkflow m_Workflow = new MWorkflow(ctx.ctx,
 						AD_Workflow_ID, null);
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Workflow.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				creatElement = false;
-			}
-		}
-		if (creatElement) {
+		boolean createElement = isPackOutElement(ctx, m_Workflow);
+		if (createElement) {
 			atts.addAttribute("", "", "type", "CDATA", "object");
 			atts.addAttribute("", "", "type-name", "CDATA", "ad.workflow");
 			document.startElement("", "", I_AD_Workflow.Table_Name, atts);
@@ -213,7 +208,7 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 			DB.close(rs, pstmt);
 			DB.close(nodeNextrs, psNodeNext);
 			DB.close(nodeNConditionrs,psNCondition);
-			if (creatElement) {
+			if (createElement) {
 				document.endElement("", "", MWorkflow.Table_Name);
 			}
 		}

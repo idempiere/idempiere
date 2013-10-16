@@ -102,11 +102,8 @@ public class MessageElementHandler extends AbstractElementHandler {
 
 		AttributesImpl atts = new AttributesImpl();
 		X_AD_Message m_Message = new X_AD_Message (ctx.ctx, AD_Message_ID, null);
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Message.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_Message))
+			return;
 
 		verifyPackOutRequirement(m_Message);
 		

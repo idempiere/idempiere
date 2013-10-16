@@ -81,6 +81,7 @@ public class PackOut
 	private String packoutDirectory;
 	private PIPOContext pipoContext = new PIPOContext();
 	private Timestamp fromDate;
+	private boolean isExportDictionaryEntity = false;
 
 	public static final int MAX_OFFICIAL_ID = MTable.MAX_OFFICIAL_ID;
 
@@ -218,6 +219,7 @@ public class PackOut
 		atts.addAttribute("","","CreatedDate","CDATA",packoutDocument.getCreated().toString());
 		atts.addAttribute("","","UpdatedDate","CDATA",packoutDocument.getUpdated().toString());
 		atts.addAttribute("","","PackOutVersion","CDATA",PackOutVersion);
+		atts.addAttribute("","","UpdateDictionary","CDATA", isExportDictionaryEntity ? "true" : "false");
 
 		MClient client = MClient.get(pipoContext.ctx);
 		StringBuffer sb = new StringBuffer ()
@@ -465,4 +467,11 @@ public class PackOut
 		return false;
 	}
 
+	public boolean isExportDictionaryEntity() {
+		return isExportDictionaryEntity;
+	}
+
+	public void setExportDictionaryEntity(boolean isExportDictionaryEntity) {
+		this.isExportDictionaryEntity = isExportDictionaryEntity;
+	}
 }	//	PackOut

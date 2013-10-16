@@ -67,11 +67,8 @@ public class WorkflowAccessElementHandler extends AbstractElementHandler {
 		Query query = new Query(ctx.ctx, "AD_Workflow_Access", "AD_Role_ID=? and AD_Workflow_ID=?", getTrxName(ctx));
 		po = query.setParameters(new Object[]{AD_Role_ID, AD_Workflow_ID}).first();
 		if (po != null) {
-			if (ctx.packOut.getFromDate() != null) {
-				if (po.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-					return;
-				}
-			}
+			if (!isPackOutElement(ctx, po))
+				return;
 			verifyPackOutRequirement(po);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");

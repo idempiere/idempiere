@@ -107,12 +107,7 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 			throw new RuntimeException(e);
 		}
 
-		boolean createElement = true;
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Reportview.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				createElement = false;
-			}
-		}
+		boolean createElement = isPackOutElement(ctx, m_Reportview);
 
 		if (createElement) {
 			verifyPackOutRequirement(m_Reportview);

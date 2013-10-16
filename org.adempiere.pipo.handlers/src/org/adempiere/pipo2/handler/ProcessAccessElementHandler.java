@@ -68,11 +68,8 @@ public class ProcessAccessElementHandler extends AbstractElementHandler {
 
 		if (po != null) {
 
-			if (ctx.packOut.getFromDate() != null) {
-				if (po.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-					return;
-				}
-			}
+			if (!isPackOutElement(ctx, po))
+				return;
 			
 			verifyPackOutRequirement(po);
 			

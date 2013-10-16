@@ -112,11 +112,8 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				X_AD_Ref_Table refTable = new X_AD_Ref_Table(ctx.ctx, rs, getTrxName(ctx));
-				if (ctx.packOut.getFromDate() != null) {
-					if (refTable.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-						return;
-					}
-				}
+				if (!isPackOutElement(ctx, refTable))
+					return;
 
 				verifyPackOutRequirement(refTable);
 				

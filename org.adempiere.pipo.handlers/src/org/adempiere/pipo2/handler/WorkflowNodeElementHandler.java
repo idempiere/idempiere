@@ -109,11 +109,8 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 		AttributesImpl atts = new AttributesImpl();
 		MWFNode m_WF_Node = new MWFNode(ctx.ctx, AD_WF_Node_ID,
 				getTrxName(ctx));
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_WF_Node.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_WF_Node))
+			return;
 		verifyPackOutRequirement(m_WF_Node);
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_WF_Node.Table_Name, atts);

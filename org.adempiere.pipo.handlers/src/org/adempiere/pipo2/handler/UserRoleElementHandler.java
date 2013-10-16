@@ -69,11 +69,8 @@ public class UserRoleElementHandler extends AbstractElementHandler {
 		X_AD_User_Roles po = query.setParameters(
 				new Object[] { AD_User_ID, AD_Role_ID, AD_Org_ID }).first();
 		if (po != null) {
-			if (ctx.packOut.getFromDate() != null) {
-				if (po.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-					return;
-				}
-			}
+			if (!isPackOutElement(ctx, po))
+				return;
 			verifyPackOutRequirement(po);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");

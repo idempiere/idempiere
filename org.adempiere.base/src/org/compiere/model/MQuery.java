@@ -87,7 +87,8 @@ public class MQuery implements Serializable
 				+ " AND pp.AD_Process_ID=i.AD_Process_ID"
 				+ " AND pp.ColumnName=ip.ParameterName"
 				+ " AND pp.IsActive='Y'"
-				+ " AND ip.AD_PInstance_ID=?";
+				+ " AND ip.AD_PInstance_ID=?"
+				+ " ORDER BY pp.SeqNo";
 		else
 			SQL = "SELECT ip.ParameterName,ip.P_String,ip.P_String_To, ip.P_Number,ip.P_Number_To,"
 				+ "ip.P_Date,ip.P_Date_To, ip.Info,ip.Info_To, "
@@ -99,7 +100,8 @@ public class MQuery implements Serializable
 				+ " AND pp.IsActive='Y'"
 				+ " AND pp.AD_Process_Para_ID=ppt.AD_Process_Para_ID"
 				+ " AND ip.AD_PInstance_ID=?"
-				+ " AND ppt.AD_Language=?";
+				+ " AND ppt.AD_Language=?"
+				+ " ORDER BY pp.SeqNo";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

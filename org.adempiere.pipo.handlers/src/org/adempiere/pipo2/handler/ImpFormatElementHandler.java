@@ -97,11 +97,8 @@ public class ImpFormatElementHandler extends AbstractElementHandler {
 		X_AD_ImpFormat m_ImpFormat = new X_AD_ImpFormat(ctx.ctx, import_id, null);
 
 		boolean createElement = true;
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_ImpFormat.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				createElement = false;
-			}
-		}
+		if (!isPackOutElement(ctx, m_ImpFormat))
+			createElement = false;
 
 		if (createElement) {
 			verifyPackOutRequirement(m_ImpFormat);

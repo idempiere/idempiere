@@ -175,6 +175,15 @@ public interface I_AD_Package_Exp
 	  */
 	public boolean isActive();
 
+    /** Column name IsExportDictionaryEntity */
+    public static final String COLUMNNAME_IsExportDictionaryEntity = "IsExportDictionaryEntity";
+
+	/** Set Export Dictionary Entity	  */
+	public void setIsExportDictionaryEntity (boolean IsExportDictionaryEntity);
+
+	/** Get Export Dictionary Entity	  */
+	public boolean isExportDictionaryEntity();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 

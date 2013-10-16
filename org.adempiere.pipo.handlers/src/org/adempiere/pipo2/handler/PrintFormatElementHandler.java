@@ -114,12 +114,7 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 			}
 		}
 		
-		boolean createElement = true;
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Printformat.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				createElement = false;
-			}
-		}
+		boolean createElement = isPackOutElement(ctx, m_Printformat);
 
 		int size = m_Printformat.getItemCount();
 		for(int i = 0; i < size; i++) {

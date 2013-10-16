@@ -92,11 +92,8 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 			return;
 		X_AD_Val_Rule m_ValRule = new X_AD_Val_Rule (ctx.ctx, AD_Val_Rule_ID, null);
 
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_ValRule.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_ValRule))
+			return;
 
 		verifyPackOutRequirement(m_ValRule);
 		

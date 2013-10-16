@@ -109,6 +109,11 @@ public class PackInHandler extends DefaultHandler {
 		// idempiere
 		if (qName.equals("idempiere"))
 		{
+			String updateDictionary = atts.getValue("UpdateDictionary");
+			if (updateDictionary != null && updateDictionary.equalsIgnoreCase("true"))
+			{
+				m_updateDictionary = true;
+			}
 			if (log.isLoggable(Level.INFO)) log.info("idempiere updateMode="+m_updateDictionary);
 
 			//check client
@@ -292,6 +297,14 @@ public class PackInHandler extends DefaultHandler {
     		setupHandlers();
     	} else {
     		Element e = stack.pop();
+    		if (e.contents != null && e.contents.length() > 0) 
+    		{
+    			if (e.contents.toString().length() != e.contents.toString().trim().length())
+    			{
+    				String s = e.contents.toString().trim();
+    				e.contents = new StringBuffer(s);
+    			}
+    		}
     		if (stack.isEmpty())
     		{
     			try {

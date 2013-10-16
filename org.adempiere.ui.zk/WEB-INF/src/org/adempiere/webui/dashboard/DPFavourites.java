@@ -134,7 +134,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 			}
 		}
 		
-		lblMsg = new Label("(Drag and drop menu item here)"); 
+		lblMsg = new Label(Msg.getMsg(Env.getCtx(), "DropMenuItemHere")); 
 		if(bxFav.getChildren().isEmpty()) bxFav.appendChild(lblMsg);
 	}
 

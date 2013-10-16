@@ -126,11 +126,8 @@ public class FieldElementHandler extends AbstractElementHandler {
 			throw new SAXException(e);
 		}
 
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Field.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_Field))
+			return;
 
 		verifyPackOutRequirement(m_Field);
 		

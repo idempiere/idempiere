@@ -96,11 +96,8 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler {
 		X_AD_PrintFormatItem m_PrintFormatItem = new X_AD_PrintFormatItem(ctx.ctx,
 				AD_PrintFormatItem_ID, null);
 
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_PrintFormatItem.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_PrintFormatItem))
+			return;
 
 		verifyPackOutRequirement(m_PrintFormatItem);
 		

@@ -108,13 +108,8 @@ public class TabElementHandler extends AbstractElementHandler {
 		if (ctx.packOut.isExported("AD_Tab_ID"+"|"+AD_Tab_ID))
 			return;
 
-		boolean createElement = true;
 		X_AD_Tab m_Tab = new X_AD_Tab (ctx.ctx, AD_Tab_ID, getTrxName(ctx));
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Tab.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				createElement = false;
-			}
-		}
+		boolean createElement = isPackOutElement(ctx, m_Tab);
 		if (createElement) {
 			verifyPackOutRequirement(m_Tab);
 			AttributesImpl atts = new AttributesImpl();

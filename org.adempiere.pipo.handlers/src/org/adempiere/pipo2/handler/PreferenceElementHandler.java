@@ -112,11 +112,8 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 		X_AD_Preference m_Preference = new X_AD_Preference(ctx.ctx,
 				AD_Preference_ID, getTrxName(ctx));
 		
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_Preference.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_Preference))
+			return;
 		
 		verifyPackOutRequirement(m_Preference);
 		
