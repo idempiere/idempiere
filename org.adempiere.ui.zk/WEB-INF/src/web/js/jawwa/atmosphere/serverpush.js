@@ -15,7 +15,7 @@
   jawwa.atmosphere.ServerPush = zk.$extends(zk.Object, {
     desktop: null,
     active: false,
-    delay: 250,
+    delay: 10,
     failures: 0,
     timeout: 0,
     ajaxOptions: {
@@ -34,17 +34,20 @@
       this.ajaxOptions.timeout = this.timeout;
       var me = this;
       this.ajaxOptions.error = function(jqxhr, textStatus, errorThrown) {
-          if (typeof console == "object") {
-        	  console.error(textStatus);
-              console.error(errorThrown);
-          }
-          me.failures += 1;
-          me._schedule();
+    	  if (textStatus != "timeout") {
+	          if (typeof console == "object") {
+	        	  console.error(textStatus);
+	              console.error(errorThrown);
+	          }
+	          me.failures += 1;
+    	  }
       };
       this.ajaxOptions.success = function(data) {
           zAu.cmd0.echo(this.desktop);
           me.failures = 0;
-          me._schedule();
+      };
+      this.ajaxOptions.complete = function() {
+    	  me._schedule();
       };
     },
     _schedule: function() {
@@ -68,8 +71,8 @@
       this._send();
     },
     stop: function() {
-      this.desktop._serverpush = null;
       this.active = false;
+      this.desktop._serverpush = null;      
       if (this._req) {
         this._req.abort();
         this._req = null;
