@@ -296,6 +296,7 @@ public class Doc_InOut extends Doc
 			for (int i = 0; i < p_lines.length; i++)
 			{
 				DocLine line = p_lines[i];
+				MProduct product = line.getProduct();
 				BigDecimal costs = null;
 				if (!isReversal(line)) 
 				{
@@ -306,7 +307,6 @@ public class Doc_InOut extends Doc
 	
 					if (costs == null || costs.signum() == 0)	//	zero costs OK
 					{
-						MProduct product = line.getProduct();
 						if (product.isStocked())
 						{
 							p_Error = "No Costs for " + line.getProduct().getName();
@@ -340,6 +340,10 @@ public class Doc_InOut extends Doc
 					if (!dr.updateReverseLine (MInOut.Table_ID,
 							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
 					{
+						if (! product.isStocked())	{ //	ignore service
+							fact.remove(dr);
+							continue;
+						}
 						p_Error = "Original Shipment/Receipt not posted yet";
 						return null;
 					}
@@ -502,6 +506,10 @@ public class Doc_InOut extends Doc
 					if (!dr.updateReverseLine (MInOut.Table_ID,
 							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
 					{
+						if (! product.isStocked())	{ //	ignore service
+							fact.remove(dr);
+							continue;
+						}
 						p_Error = "Original Receipt not posted yet";
 						return null;
 					}
@@ -615,6 +623,10 @@ public class Doc_InOut extends Doc
 					if (!dr.updateReverseLine (MInOut.Table_ID,
 							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
 					{
+						if (! product.isStocked())	{ //	ignore service
+							fact.remove(dr);
+							continue;
+						}
 						p_Error = "Original Receipt not posted yet";
 						return null;
 					}
