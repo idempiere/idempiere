@@ -14,7 +14,8 @@ AS
          0 AS qtyordered,
          s.datelastinventory,
          s.m_attributesetinstance_id,
-         s.m_storageonhand_uu AS m_storage_uu
+         s.m_storageonhand_uu AS m_storage_uu,
+         s.datematerialpolicy AS datematerialpolicy
   FROM   m_storageonhand s
   UNION ALL
   SELECT sr.m_product_id,
@@ -31,11 +32,12 @@ AS
          0                     AS qtyordered,
          sr.datelastinventory,
          sr.m_attributesetinstance_id,
-         sr.m_storagereservation_uu AS m_storage_uu
+         sr.m_storagereservation_uu AS m_storage_uu,
+         null as datematerialpolicy
   FROM   m_storagereservation sr
          JOIN m_warehouse w
            ON sr.m_warehouse_id = w.m_warehouse_id
-  WHERE  sr.issotrx = 'Y'
+  WHERE  sr.issotrx = 'Y' and sr.qty <> 0
   UNION ALL
   SELECT so.m_product_id,
          w.m_reservelocator_id AS m_locator_id,
@@ -51,9 +53,10 @@ AS
          so.qty                AS qtyordered,
          so.datelastinventory,
          so.m_attributesetinstance_id,
-         so.m_storagereservation_uu AS m_storage_uu
+         so.m_storagereservation_uu AS m_storage_uu,
+         null as datematerialpolicy
   FROM   m_storagereservation so
          JOIN m_warehouse w
            ON so.m_warehouse_id = w.m_warehouse_id
-  WHERE  so.issotrx = 'N'
+  WHERE  so.issotrx = 'N' and so.qty <> 0
 ;
