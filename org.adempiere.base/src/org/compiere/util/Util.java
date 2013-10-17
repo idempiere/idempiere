@@ -19,8 +19,10 @@ package org.compiere.util;
 import java.awt.Color;
 import java.awt.font.TextAttribute;
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -682,4 +684,13 @@ public class Util
 		/* */
 	}
 
+	public static Timestamp removeTime(Timestamp ts) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(ts);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return new Timestamp(cal.getTimeInMillis());
+    }
 }   //  Util

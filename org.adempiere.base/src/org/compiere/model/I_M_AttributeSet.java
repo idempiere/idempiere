@@ -353,4 +353,13 @@ public interface I_M_AttributeSet
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name UseGuaranteeDateForMPolicy */
+    public static final String COLUMNNAME_UseGuaranteeDateForMPolicy = "UseGuaranteeDateForMPolicy";
+
+	/** Set Use Guarantee Date for Material Policy	  */
+	public void setUseGuaranteeDateForMPolicy (boolean UseGuaranteeDateForMPolicy);
+
+	/** Get Use Guarantee Date for Material Policy	  */
+	public boolean isUseGuaranteeDateForMPolicy();
 }

@@ -803,6 +803,20 @@ public class MProduct extends X_M_Product
 	}
 	
 	/**
+	 * Check if use GuaranteeDate for Material Policy
+	 * @return
+	 */
+	public boolean isUseGuaranteeDateForMPolicy(){
+		MAttributeSet as = getAttributeSet();
+		if(as==null)
+			return false;
+		if(!as.isGuaranteeDate())
+			return false;
+		
+		return as.isUseGuaranteeDateForMPolicy();
+	}
+	
+	/**
 	 * Check if ASI is mandatory
 	 * @param isSOTrx is outgoing trx?
 	 * @return true if ASI is mandatory, false otherwise

@@ -160,7 +160,7 @@ public class InventoryCountUpdate extends SvrProcess
 						continue;
 					//	Save ASI
 					ma = new MInventoryLineMA (il, 
-						storage.getM_AttributeSetInstance_ID(), storage.getQtyOnHand());
+						storage.getM_AttributeSetInstance_ID(), storage.getQtyOnHand(),storage.getDateMaterialPolicy());
 					if (!ma.save())
 						;
 				}

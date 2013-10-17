@@ -19,12 +19,15 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 
 /**
@@ -139,8 +142,9 @@ public class MMovementLineMA extends X_M_MovementLineMA
 	 *	@param parent parent
 	 *	@param M_AttributeSetInstance_ID asi
 	 *	@param MovementQty qty
+	 *  @param DateMaterialPolicy
 	 */
-	public MMovementLineMA (MMovementLine parent, int M_AttributeSetInstance_ID, BigDecimal MovementQty)
+	public MMovementLineMA (MMovementLine parent, int M_AttributeSetInstance_ID, BigDecimal MovementQty,Timestamp DateMaterialPolicy)
 	{
 		this (parent.getCtx(), 0, parent.get_TrxName());
 		setClientOrg(parent);
@@ -148,7 +152,27 @@ public class MMovementLineMA extends X_M_MovementLineMA
 		//
 		setM_AttributeSetInstance_ID(M_AttributeSetInstance_ID);
 		setMovementQty(MovementQty);
+		if (DateMaterialPolicy == null)
+		{
+			if (M_AttributeSetInstance_ID > 0)
+			{
+				MAttributeSetInstance asi = new MAttributeSetInstance(parent.getCtx(), M_AttributeSetInstance_ID, parent.get_TrxName());
+				DateMaterialPolicy = asi.getCreated();
+			}
+			else
+			{
+				DateMaterialPolicy = parent.getParent().getMovementDate();
+			}
+		}
+		setDateMaterialPolicy(DateMaterialPolicy);
 	}	//	MMovementLineMA
+
+	@Override
+	public void setDateMaterialPolicy(Timestamp DateMaterialPolicy) {
+		if (DateMaterialPolicy != null)
+			DateMaterialPolicy = Util.removeTime(DateMaterialPolicy);
+		super.setDateMaterialPolicy(DateMaterialPolicy);
+	}
 	
 	/**
 	 * 	String Representation
@@ -164,4 +188,15 @@ public class MMovementLineMA extends X_M_MovementLineMA
 		return sb.toString ();
 	}	//	toString
 
+	public static MMovementLineMA addOrCreate(MMovementLine line, int M_AttributeSetInstance_ID, BigDecimal MovementQty, Timestamp DateMaterialPolicy)
+	{
+		Query query = new Query(Env.getCtx(), I_M_MovementLineMA.Table_Name, "M_MovementLine_ID=? AND M_AttributeSetInstance_ID=? AND DateMaterialPolicy=trunc(cast(? as date))", 
+					line.get_TrxName());
+		MMovementLineMA po = query.setParameters(line.getM_MovementLine_ID(), M_AttributeSetInstance_ID, DateMaterialPolicy).first();
+		if (po == null)
+			po = new MMovementLineMA(line, M_AttributeSetInstance_ID, MovementQty, DateMaterialPolicy);
+		else
+			po.setMovementQty(po.getMovementQty().add(MovementQty));
+		return po;
+	}
 }	//	MMovementLineMA

@@ -740,13 +740,35 @@ public class POInfo implements Serializable
 	 */
 	public StringBuilder buildSelect()
 	{
+		return buildSelect(false, false);
+	}
+	
+	/**
+	 * Build select clause
+	 * @param fullyQualified
+	 * @param noVirtualColumn
+	 * @return stringbuilder
+	 */
+	public StringBuilder buildSelect(boolean fullyQualified, boolean noVirtualColumn)
+	{
 		StringBuilder sql = new StringBuilder("SELECT ");
 		int size = getColumnCount();
+		int count = 0;
 		for (int i = 0; i < size; i++)
 		{
-			if (i != 0)
+			boolean virtual = isVirtualColumn(i);
+			if (virtual && noVirtualColumn)
+				continue;
+			
+			count++;
+			if (count > 1)
 				sql.append(",");
-			sql.append(getColumnSQL(i));	//	Normal and Virtual Column
+			String columnSQL = getColumnSQL(i);
+			if (fullyQualified && !virtual)
+				sql.append(getTableName()).append(".");
+			sql.append(columnSQL);	//	Normal and Virtual Column
+			if (fullyQualified && !virtual)
+				sql.append(" AS ").append(m_columns[i].ColumnName);
 		}
 		sql.append(" FROM ").append(getTableName());
 		return sql;

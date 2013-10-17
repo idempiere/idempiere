@@ -461,7 +461,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 								line.getM_Locator_ID(),
 								line.getM_Product_ID(), 
 								ma.getM_AttributeSetInstance_ID(), 
-								QtyMA.negate(), get_TrxName()))
+								QtyMA.negate(),ma.getDateMaterialPolicy(), get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
 							m_processMsg = "Cannot correct Inventory (MA) - " + lastError;
@@ -472,7 +472,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 						if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv))
 						{	
 							MStorageOnHand storage = MStorageOnHand.get(getCtx(), line.getM_Locator_ID(), 
-									line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(), get_TrxName());						
+									line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),ma.getDateMaterialPolicy(),get_TrxName());						
 							storage.setDateLastInventory(getMovementDate());
 							if (!storage.save(get_TrxName()))
 							{
@@ -507,12 +507,16 @@ public class MInventory extends X_M_Inventory implements DocAction
 				// Fallback
 				if (mtrx == null)
 				{
+					Timestamp dateMPolicy= getMovementDate();
+					I_M_AttributeSetInstance asi = line.getM_AttributeSetInstance();
+					dateMPolicy =asi.getCreated();
+					
 					//Fallback: Update Storage - see also VMatch.createMatchRecord
 					if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 							line.getM_Locator_ID(),
 							line.getM_Product_ID(), 
 							line.getM_AttributeSetInstance_ID(), 
-							qtyDiff,get_TrxName()))
+							qtyDiff,dateMPolicy,get_TrxName()))
 					{
 						String lastError = CLogger.retrieveErrorString("");
 						m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
@@ -523,7 +527,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 					if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv))
 					{	
 						MStorageOnHand storage = MStorageOnHand.get(getCtx(), line.getM_Locator_ID(), 
-								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), get_TrxName());						
+								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),dateMPolicy, get_TrxName());						
 
 						storage.setDateLastInventory(getMovementDate());
 						if (!storage.save(get_TrxName()))
@@ -602,40 +606,49 @@ public class MInventory extends X_M_Inventory implements DocAction
 			MProduct product = MProduct.get(getCtx(), line.getM_Product_ID());
 			if (qtyDiff.signum() > 0)	//	Incoming Trx
 			{
-				MAttributeSetInstance asi = null;
 				//auto balance negative on hand
-				MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
-						null, MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false, line.getM_Locator_ID(), get_TrxName());
+				MStorageOnHand[] storages = MStorageOnHand.getWarehouseNegative(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
+						null, MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), line.getM_Locator_ID(), get_TrxName(), true);
 				for (MStorageOnHand storage : storages)
 				{
 					if (storage.getQtyOnHand().signum() < 0)
 					{
-						asi = new MAttributeSetInstance(getCtx(), storage.getM_AttributeSetInstance_ID(), get_TrxName());
-						break;
+						BigDecimal maQty = qtyDiff;
+						if(maQty.compareTo(storage.getQtyOnHand().negate())>0)
+						{
+							maQty = storage.getQtyOnHand().negate();
+						}
+						
+						//backward compatibility: -ve in MA is incoming trx, +ve in MA is outgoing trx 
+						MInventoryLineMA lineMA =  new MInventoryLineMA(line, storage.getM_AttributeSetInstance_ID(), maQty.negate(), storage.getDateMaterialPolicy());
+						lineMA.saveEx();
+						
+						qtyDiff = qtyDiff.subtract(maQty);
+						if (qtyDiff.compareTo(Env.ZERO)==0)
+							break;
 					}
 				}
-				if (asi == null)
+				
+				if(qtyDiff.compareTo(Env.ZERO)>0)
 				{
-					asi = MAttributeSetInstance.create(getCtx(), product, get_TrxName());
-				}
-				line.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
-				needSave = true;
+					MInventoryLineMA lineMA =  MInventoryLineMA.addOrCreate(line, 0, qtyDiff.negate(), getMovementDate());
+					lineMA.saveEx();
+				}				
 			}
 			else	//	Outgoing Trx
 			{
 				String MMPolicy = product.getMMPolicy();
 				MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
-						null, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, line.getM_Locator_ID(), get_TrxName());
+						null, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, line.getM_Locator_ID(), get_TrxName(), true);
 
 				BigDecimal qtyToDeliver = qtyDiff.negate();
-
 				for (MStorageOnHand storage: storages)
 				{					
 					if (storage.getQtyOnHand().compareTo(qtyToDeliver) >= 0)
 					{
 						MInventoryLineMA ma = new MInventoryLineMA (line, 
 								storage.getM_AttributeSetInstance_ID(),
-								qtyToDeliver);
+								qtyToDeliver,storage.getDateMaterialPolicy());
 						ma.saveEx();		
 						qtyToDeliver = Env.ZERO;
 						if (log.isLoggable(Level.FINE)) log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);		
@@ -644,8 +657,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 					{	
 						MInventoryLineMA ma = new MInventoryLineMA (line, 
 								storage.getM_AttributeSetInstance_ID(),
-								storage.getQtyOnHand());
-						ma.saveEx();	
+								storage.getQtyOnHand(),storage.getDateMaterialPolicy());
+						ma.saveEx();
 						qtyToDeliver = qtyToDeliver.subtract(storage.getQtyOnHand());
 						if (log.isLoggable(Level.FINE)) log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);		
 					}
@@ -656,13 +669,9 @@ public class MInventory extends X_M_Inventory implements DocAction
 				//	No AttributeSetInstance found for remainder
 				if (qtyToDeliver.signum() != 0)
 				{
-					//deliver using new asi
-					MAttributeSetInstance asi = MAttributeSetInstance.create(getCtx(), product, get_TrxName());
-					int M_AttributeSetInstance_ID = asi.getM_AttributeSetInstance_ID();
-					MInventoryLineMA ma = new MInventoryLineMA (line, M_AttributeSetInstance_ID , qtyToDeliver);
-
-					ma.saveEx();
-					if (log.isLoggable(Level.FINE)) log.fine("##: " + ma);
+					MInventoryLineMA lineMA =  MInventoryLineMA.addOrCreate(line, 0, qtyToDeliver, getMovementDate());
+					lineMA.saveEx();
+					if (log.isLoggable(Level.FINE)) log.fine("##: " + lineMA);
 				}
 			}	//	outgoing Trx
 
@@ -849,7 +858,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 				{
 					MInventoryLineMA ma = new MInventoryLineMA (rLine, 
 							mas[j].getM_AttributeSetInstance_ID(),
-							mas[j].getMovementQty().negate());
+							mas[j].getMovementQty().negate(),mas[j].getDateMaterialPolicy());
 					ma.saveEx();
 				}
 			}

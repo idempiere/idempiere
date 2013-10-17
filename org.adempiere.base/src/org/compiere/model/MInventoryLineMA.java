@@ -19,12 +19,15 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 
 /**
@@ -138,8 +141,9 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 	 *	@param parent parent
 	 *	@param M_AttributeSetInstance_ID asi
 	 *	@param MovementQty qty
+	 *  @param DateMaterialPolicy
 	 */
-	public MInventoryLineMA (MInventoryLine parent, int M_AttributeSetInstance_ID, BigDecimal MovementQty)
+	public MInventoryLineMA (MInventoryLine parent, int M_AttributeSetInstance_ID, BigDecimal MovementQty,Timestamp DateMaterialPolicy)
 	{
 		this (parent.getCtx(), 0, parent.get_TrxName());
 		setClientOrg(parent);
@@ -147,8 +151,28 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 		//
 		setM_AttributeSetInstance_ID(M_AttributeSetInstance_ID);
 		setMovementQty(MovementQty);
+		if (DateMaterialPolicy == null)
+		{
+			if (M_AttributeSetInstance_ID > 0)
+			{
+				MAttributeSetInstance asi = new MAttributeSetInstance(parent.getCtx(), M_AttributeSetInstance_ID, parent.get_TrxName());
+				DateMaterialPolicy = asi.getCreated();
+			}
+			else
+			{
+				DateMaterialPolicy = parent.getParent().getMovementDate();
+			}
+		}
+		setDateMaterialPolicy(DateMaterialPolicy);
 	}	//	MInventoryLineMA
 	
+	@Override
+	public void setDateMaterialPolicy(Timestamp DateMaterialPolicy) {
+		if (DateMaterialPolicy != null)
+			DateMaterialPolicy = Util.removeTime(DateMaterialPolicy);
+		super.setDateMaterialPolicy(DateMaterialPolicy);
+	}
+
 	/**
 	 * 	String Representation
 	 *	@return info
@@ -163,4 +187,15 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 		return sb.toString ();
 	}	//	toString
 	
+	public static MInventoryLineMA addOrCreate(MInventoryLine line, int M_AttributeSetInstance_ID, BigDecimal MovementQty, Timestamp DateMaterialPolicy)
+	{
+		Query query = new Query(Env.getCtx(), I_M_InventoryLineMA.Table_Name, "M_InventoryLine_ID=? AND M_AttributeSetInstance_ID=? AND DateMaterialPolicy=trunc(cast(? as date))", 
+					line.get_TrxName());
+		MInventoryLineMA po = query.setParameters(line.getM_InventoryLine_ID(), M_AttributeSetInstance_ID, DateMaterialPolicy).first();
+		if (po == null)
+			po = new MInventoryLineMA(line, M_AttributeSetInstance_ID, MovementQty, DateMaterialPolicy);
+		else
+			po.setMovementQty(po.getMovementQty().add(MovementQty));
+		return po;
+	}
 }	//	MInventoryLineMA

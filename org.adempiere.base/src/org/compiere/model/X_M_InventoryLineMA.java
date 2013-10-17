@@ -19,6 +19,7 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -32,7 +33,7 @@ public class X_M_InventoryLineMA extends PO implements I_M_InventoryLineMA, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20130716L;
 
     /** Standard Constructor */
     public X_M_InventoryLineMA (Properties ctx, int M_InventoryLineMA_ID, String trxName)
@@ -73,6 +74,23 @@ public class X_M_InventoryLineMA extends PO implements I_M_InventoryLineMA, I_Pe
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** Set Date  Material Policy.
+		@param DateMaterialPolicy 
+		Time used for LIFO and FIFO Material Policy
+	  */
+	public void setDateMaterialPolicy (Timestamp DateMaterialPolicy)
+	{
+		set_Value (COLUMNNAME_DateMaterialPolicy, DateMaterialPolicy);
+	}
+
+	/** Get Date  Material Policy.
+		@return Time used for LIFO and FIFO Material Policy
+	  */
+	public Timestamp getDateMaterialPolicy () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateMaterialPolicy);
+	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
     {

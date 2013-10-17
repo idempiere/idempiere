@@ -495,4 +495,25 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	{
 		return (String)get_Value(COLUMNNAME_SerNoCharSOverwrite);
 	}
+
+	/** Set Use Guarantee Date for Material Policy.
+		@param UseGuaranteeDateForMPolicy Use Guarantee Date for Material Policy	  */
+	public void setUseGuaranteeDateForMPolicy (boolean UseGuaranteeDateForMPolicy)
+	{
+		set_Value (COLUMNNAME_UseGuaranteeDateForMPolicy, Boolean.valueOf(UseGuaranteeDateForMPolicy));
+	}
+
+	/** Get Use Guarantee Date for Material Policy.
+		@return Use Guarantee Date for Material Policy	  */
+	public boolean isUseGuaranteeDateForMPolicy () 
+	{
+		Object oo = get_Value(COLUMNNAME_UseGuaranteeDateForMPolicy);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
 }

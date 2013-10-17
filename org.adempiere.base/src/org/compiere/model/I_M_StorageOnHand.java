@@ -91,6 +91,19 @@ public interface I_M_StorageOnHand
 	  */
 	public Timestamp getDateLastInventory();
 
+    /** Column name DateMaterialPolicy */
+    public static final String COLUMNNAME_DateMaterialPolicy = "DateMaterialPolicy";
+
+	/** Set Date  Material Policy.
+	  * Time used for LIFO and FIFO Material Policy
+	  */
+	public void setDateMaterialPolicy (Timestamp DateMaterialPolicy);
+
+	/** Get Date  Material Policy.
+	  * Time used for LIFO and FIFO Material Policy
+	  */
+	public Timestamp getDateMaterialPolicy();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 

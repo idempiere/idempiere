@@ -78,6 +78,10 @@ public class Query
 	private boolean onlyActiveRecords = false;
 	private boolean onlyClient_ID = false;
 	private int onlySelection_ID = -1;
+	private boolean forUpdate = false;
+	private boolean noVirtualColumn = false;
+	private int queryTimeout = 0;
+	private List<String> joinClauseList = new ArrayList<String>();
 	
 	/**
 	 * 
@@ -211,6 +215,34 @@ public class Query
 	public Query setOnlySelection(int AD_PInstance_ID)
 	{
 		this.onlySelection_ID = AD_PInstance_ID;
+		return this;
+	}
+	
+	/**
+	 * Add FOR UPDATE clause
+	 * @param forUpdate
+	 */
+	public Query setForUpdate(boolean forUpdate)
+	{
+		this.forUpdate = forUpdate;
+		return this;
+	}
+	
+	public Query setNoVirtualColumn(boolean noVirtualColumn)
+	{
+		this.noVirtualColumn = noVirtualColumn;
+		return this;
+	}
+	
+	public Query setQueryTimeout(int seconds)
+	{
+		this.queryTimeout = seconds;
+		return this;
+	}
+	
+	public Query addJoinClause(String joinClause)
+	{
+		joinClauseList.add(joinClause);
 		return this;
 	}
 	
@@ -352,6 +384,8 @@ public class Query
 		}
 
 		StringBuilder selectClause = new StringBuilder("SELECT ");
+		if (!joinClauseList.isEmpty())
+			selectClause.append(table.getTableName()).append(".");
 		selectClause.append(keys[0]);
 		selectClause.append(" FROM ").append(table.getTableName());
 		String sql = buildSQL(selectClause, true);
@@ -561,6 +595,8 @@ public class Query
 		for (int i = 0; i < keys.length; i++) {
 			if (i > 0)
 				sqlBuffer.append(", ");
+			if (!joinClauseList.isEmpty())
+				sqlBuffer.append(table.getTableName()).append(".");
 			sqlBuffer.append(keys[i]);
 		}
 		sqlBuffer.append(" FROM ").append(table.getTableName());
@@ -642,7 +678,14 @@ public class Query
 			{
 				throw new IllegalStateException("No POInfo found for AD_Table_ID="+table.getAD_Table_ID());
 			}
-			selectClause = info.buildSelect();
+			selectClause = info.buildSelect(!joinClauseList.isEmpty(), noVirtualColumn);
+		}
+		if (!joinClauseList.isEmpty()) 
+		{
+			for(String joinClause : joinClauseList)
+			{
+				selectClause.append(" ").append(joinClause);
+			}
 		}
 		
 		StringBuilder whereBuffer = new StringBuilder(); 
@@ -656,12 +699,16 @@ public class Query
 		{
 			if (whereBuffer.length() > 0)
 				whereBuffer.append(" AND ");
+			if (!joinClauseList.isEmpty())
+				whereBuffer.append(table.getTableName()).append(".");
 			whereBuffer.append("IsActive=?");
 		}
 		if (this.onlyClient_ID) //red1
 		{
 			if (whereBuffer.length() > 0)
 				whereBuffer.append(" AND ");
+			if (!joinClauseList.isEmpty())
+				whereBuffer.append(table.getTableName()).append(".");
 			whereBuffer.append("AD_Client_ID=?");
 		}
 		if (this.onlySelection_ID > 0)
@@ -693,6 +740,8 @@ public class Query
 			MRole role = MRole.getDefault(this.ctx, false);
 			sql = role.addAccessSQL(sql, table.getTableName(), applyAccessFilterFullyQualified, applyAccessFilterRW);
 		}
+		if (forUpdate)
+			sql = sql + " FOR UPDATE";
 		if (log.isLoggable(Level.FINEST)) log.finest("TableName = "+table.getTableName()+"... SQL = " +sql); //red1  - to assist in debugging SQL
 		return sql;
 	}
@@ -718,6 +767,10 @@ public class Query
 			DB.setParameter(pstmt, i++, this.onlySelection_ID);
 			if (log.isLoggable(Level.FINEST)) log.finest("Parameter Selection AD_PInstance_ID = "+this.onlySelection_ID);
 		}
+		if (queryTimeout > 0)
+		{
+			pstmt.setQueryTimeout(queryTimeout);
+		}
 		return pstmt.executeQuery();
 	}
 	
@@ -734,6 +787,8 @@ public class Query
 		}
 
 		StringBuilder selectClause = new StringBuilder("SELECT ");
+		if (!joinClauseList.isEmpty())
+			selectClause.append(table.getTableName()).append(".");
 		selectClause.append(keys[0]);
 		selectClause.append(" FROM ").append(table.getTableName());
 		String sql = buildSQL(selectClause, true);

@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -64,7 +65,7 @@ public class InventoryCountCreate extends SvrProcess
 	
 	/** Inventory Line				*/
 	private MInventoryLine	m_line = null; 
-
+	private Timestamp oldDateMPolicy = null;
 	
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -160,8 +161,8 @@ public class InventoryCountCreate extends SvrProcess
 		}
 		
 		StringBuilder sql = new StringBuilder("SELECT s.M_Product_ID, s.M_Locator_ID, s.M_AttributeSetInstance_ID,");
-							   sql.append(" s.QtyOnHand, p.M_AttributeSet_ID ");
-							   sql.append("FROM M_Product p");
+							   sql.append(" s.QtyOnHand, p.M_AttributeSet_ID ,s.DateMaterialPolicy");
+							   sql.append(" FROM M_Product p");
 							   sql.append(" INNER JOIN M_StorageOnHand s ON (s.M_Product_ID=p.M_Product_ID)");
 							   sql.append(" INNER JOIN M_Locator l ON (s.M_Locator_ID=l.M_Locator_ID) ");
 							   sql.append("WHERE l.M_Warehouse_ID=?");
@@ -224,6 +225,8 @@ public class InventoryCountCreate extends SvrProcess
 				if (QtyOnHand == null)
 					QtyOnHand = Env.ZERO;
 				int M_AttributeSet_ID = rs.getInt(5);
+				
+				Timestamp dateMpolicy = rs.getTimestamp(6);
 				//
 				int compare = QtyOnHand.compareTo(Env.ZERO);
 		        if (p_QtyRange == null
@@ -233,7 +236,7 @@ public class InventoryCountCreate extends SvrProcess
 		            || (p_QtyRange.equals("N") && compare != 0))
 		        {
 					count += createInventoryLine (M_Locator_ID, M_Product_ID, 
-						M_AttributeSetInstance_ID, QtyOnHand, M_AttributeSet_ID);
+						M_AttributeSetInstance_ID, QtyOnHand, M_AttributeSet_ID,dateMpolicy);
 		        }
 			}
 		}
@@ -273,7 +276,7 @@ public class InventoryCountCreate extends SvrProcess
 	 *	@return lines added
 	 */
 	private int createInventoryLine (int M_Locator_ID, int M_Product_ID, 
-		int M_AttributeSetInstance_ID, BigDecimal QtyOnHand, int M_AttributeSet_ID)
+		int M_AttributeSetInstance_ID, BigDecimal QtyOnHand, int M_AttributeSet_ID,Timestamp dateMPolicy)
 	{
 		boolean oneLinePerASI = false;
 		if (M_AttributeSet_ID != 0)
@@ -301,7 +304,7 @@ public class InventoryCountCreate extends SvrProcess
 			if (QtyOnHand.signum() == 0)
 				return 0;
 			//	Same ASI (usually 0)
-			if (m_line.getM_AttributeSetInstance_ID() == M_AttributeSetInstance_ID)
+			if (m_line.getM_AttributeSetInstance_ID() == M_AttributeSetInstance_ID && ((dateMPolicy==null && oldDateMPolicy==null) || (dateMPolicy!=null && dateMPolicy.equals(oldDateMPolicy)) || (oldDateMPolicy!=null && oldDateMPolicy.equals(dateMPolicy))))
 			{
 				m_line.setQtyBook(m_line.getQtyBook().add(QtyOnHand));
 				m_line.setQtyCount(m_line.getQtyCount().add(QtyOnHand));
@@ -312,7 +315,7 @@ public class InventoryCountCreate extends SvrProcess
 			else if (m_line.getM_AttributeSetInstance_ID() != 0)
 			{
 				MInventoryLineMA ma = new MInventoryLineMA (m_line, 
-					m_line.getM_AttributeSetInstance_ID(), m_line.getQtyBook());
+					m_line.getM_AttributeSetInstance_ID(), m_line.getQtyBook(),oldDateMPolicy);
 				if (!ma.save())
 					;
 			}
@@ -320,9 +323,10 @@ public class InventoryCountCreate extends SvrProcess
 			m_line.setQtyBook(m_line.getQtyBook().add(QtyOnHand));
 			m_line.setQtyCount(m_line.getQtyCount().add(QtyOnHand));
 			m_line.saveEx();
+			
 			//
 			MInventoryLineMA ma = new MInventoryLineMA (m_line, 
-				M_AttributeSetInstance_ID, QtyOnHand);
+				M_AttributeSetInstance_ID, QtyOnHand,dateMPolicy);
 			if (!ma.save())
 				;
 			return 0;
@@ -331,6 +335,8 @@ public class InventoryCountCreate extends SvrProcess
 		m_line = new MInventoryLine (m_inventory, M_Locator_ID, 
 			M_Product_ID, M_AttributeSetInstance_ID, 
 			QtyOnHand, QtyOnHand);		//	book/count
+		
+		oldDateMPolicy = dateMPolicy;
 		if (m_line.save())
 			return 1;
 		return 0;

@@ -45,7 +45,7 @@ public class MStorageTest extends AdempiereTestCase
 		loc.saveEx();
 		//
 		BigDecimal targetQty = BigDecimal.valueOf(qtyOnHand).setScale(12, BigDecimal.ROUND_HALF_UP);
-		MStorageOnHand s1 = MStorageOnHand.getCreate(getCtx(), loc.get_ID(), product_id, 0, getTrxName());
+		MStorageOnHand s1 = MStorageOnHand.getCreate(getCtx(), loc.get_ID(), product_id, 0,null, getTrxName());
 		s1.setQtyOnHand(targetQty);
 		s1.saveEx();
 		//

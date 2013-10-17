@@ -18,10 +18,13 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Shipment Material Allocation
@@ -113,8 +116,9 @@ public class MInOutLineMA extends X_M_InOutLineMA
 	 *	@param parent parent
 	 *	@param M_AttributeSetInstance_ID asi
 	 *	@param MovementQty qty
+	 *  @param DateMaterialPolicy
 	 */
-	public MInOutLineMA (MInOutLine parent, int M_AttributeSetInstance_ID, BigDecimal MovementQty)
+	public MInOutLineMA (MInOutLine parent, int M_AttributeSetInstance_ID, BigDecimal MovementQty,Timestamp DateMaterialPolicy)
 	{
 		this (parent.getCtx(), 0, parent.get_TrxName());
 		setClientOrg(parent);
@@ -122,7 +126,27 @@ public class MInOutLineMA extends X_M_InOutLineMA
 		//
 		setM_AttributeSetInstance_ID(M_AttributeSetInstance_ID);
 		setMovementQty(MovementQty);
+		if (DateMaterialPolicy == null)
+		{
+			if (M_AttributeSetInstance_ID > 0)
+			{
+				MAttributeSetInstance asi = new MAttributeSetInstance(parent.getCtx(), M_AttributeSetInstance_ID, parent.get_TrxName());
+				DateMaterialPolicy = asi.getCreated();
+			}
+			else
+			{
+				DateMaterialPolicy = parent.getParent().getMovementDate();
+			}
+		}
+		setDateMaterialPolicy(DateMaterialPolicy);
 	}	//	MInOutLineMA
+
+	@Override
+	public void setDateMaterialPolicy(Timestamp DateMaterialPolicy) {
+		if (DateMaterialPolicy != null)
+			DateMaterialPolicy = Util.removeTime(DateMaterialPolicy);
+		super.setDateMaterialPolicy(DateMaterialPolicy);
+	}
 	
 	/**
 	 * 	String Representation
@@ -138,4 +162,16 @@ public class MInOutLineMA extends X_M_InOutLineMA
 		return sb.toString ();
 	}	//	toString
 	
+	public static MInOutLineMA addOrCreate(MInOutLine line, int M_AttributeSetInstance_ID, BigDecimal MovementQty, Timestamp DateMaterialPolicy)
+	{
+		Query query = new Query(Env.getCtx(), I_M_InOutLineMA.Table_Name, "M_InOutLine_ID=? AND M_AttributeSetInstance_ID=? AND DateMaterialPolicy=trunc(cast(? as date))", 
+					line.get_TrxName());
+		MInOutLineMA po = query.setParameters(line.getM_InOutLine_ID(), M_AttributeSetInstance_ID, DateMaterialPolicy).first();
+		if (po == null)
+			po = new MInOutLineMA(line, M_AttributeSetInstance_ID, MovementQty, DateMaterialPolicy);
+		else
+			po.setMovementQty(po.getMovementQty().add(MovementQty));
+		return po;
+	}
 }	//	MInOutLineMA
+

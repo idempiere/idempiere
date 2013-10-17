@@ -9,6 +9,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 
 public class MProductionLine extends X_M_ProductionLine {
@@ -89,8 +90,15 @@ public class MProductionLine extends X_M_ProductionLine {
 		if (log.isLoggable(Level.FINEST))	log.log(Level.FINEST, "asi Description is: " + asiString);
 		// create transactions for finished goods
 		if ( getMovementQty().compareTo(Env.ZERO) > 0 ) {
+			
+			Timestamp dateMPolicy = date;
+			if(getM_AttributeSetInstance_ID()>0){
+				dateMPolicy = asi.getCreated();
+			}
+			
+			dateMPolicy = Util.removeTime(dateMPolicy);
 			MProductionLineMA lineMA = new MProductionLineMA( this,
-					asi.get_ID(), getMovementQty());
+					asi.get_ID(), getMovementQty(),dateMPolicy);
 			if ( !lineMA.save(get_TrxName()) ) {
 				log.log(Level.SEVERE, "Could not save MA for " + toString());
 				errorString.append("Could not save MA for " + toString() + "\n" );
@@ -105,7 +113,7 @@ public class MProductionLine extends X_M_ProductionLine {
 				errorString.append("Could not save transaction for " + toString() + "\n");
 			}
 			MStorageOnHand storage = MStorageOnHand.getCreate(getCtx(), getM_Locator_ID(),
-					getM_Product_ID(), asi.get_ID(), get_TrxName());
+					getM_Product_ID(), asi.get_ID(),dateMPolicy, get_TrxName());
 			storage.changeQtyOnHand(getMovementQty(), true);
 			if ( !storage.save(get_TrxName()) )  {
 				log.log(Level.SEVERE, "Could not update storage for " + toString());
@@ -118,12 +126,11 @@ public class MProductionLine extends X_M_ProductionLine {
 		
 		// create transactions and update stock used in production
 		MStorageOnHand[] storages = MStorageOnHand.getAll( getCtx(), getM_Product_ID(),
-				getM_Locator_ID(), get_TrxName());
+				getM_Locator_ID(), get_TrxName(), true, 120);
 		
 		MProductionLineMA lineMA = null;
 		MTransaction matTrx = null;
 		BigDecimal qtyToMove = getMovementQty().negate();
-
 
 		for (int sl = 0; sl < storages.length; sl++) {
 
@@ -148,7 +155,7 @@ public class MProductionLine extends X_M_ProductionLine {
 				//storage matches specified ASI or is a costing asi (inc. 0)
 			    // This process will move negative stock on hand quantities
 				{
-					lineMA = MProductionLineMA.get(this,storages[sl].getM_AttributeSetInstance_ID());
+					lineMA = MProductionLineMA.get(this,storages[sl].getM_AttributeSetInstance_ID(),storages[sl].getDateMaterialPolicy());
 					lineMA.setMovementQty(lineMA.getMovementQty().add(lineQty.negate()));
 					if ( !lineMA.save(get_TrxName()) ) {
 						log.log(Level.SEVERE, "Could not save MA for " + toString());
@@ -192,16 +199,7 @@ public class MProductionLine extends X_M_ProductionLine {
 			}
 			else
 			{
-				MStorageOnHand storage = MStorageOnHand.get(Env.getCtx(), getM_Locator_ID(), getM_Product_ID(), 0, get_TrxName());
-				if (storage == null)
-				{
-					storage = new MStorageOnHand(Env.getCtx(), 0, get_TrxName());
-					storage.setM_Locator_ID(getM_Locator_ID());
-					storage.setM_Product_ID(getM_Product_ID());
-					storage.setM_AttributeSetInstance_ID(0);
-					storage.saveEx();
-					
-				}
+				MStorageOnHand storage = MStorageOnHand.getCreate(Env.getCtx(), getM_Locator_ID(), getM_Product_ID(), 0, date, get_TrxName(), true);
 				
 				BigDecimal lineQty = qtyToMove;
 				MAttributeSetInstance slASI = new MAttributeSetInstance(getCtx(),
@@ -217,10 +215,7 @@ public class MProductionLine extends X_M_ProductionLine {
 				//storage matches specified ASI or is a costing asi (inc. 0)
 			    // This process will move negative stock on hand quantities
 				{
-					//lineMA = new MProductionLineMA( this,
-					//		storage.getM_AttributeSetInstance_ID(),
-					//		lineQty.negate());
-					lineMA = MProductionLineMA.get(this,storage.getM_AttributeSetInstance_ID());
+					lineMA = MProductionLineMA.get(this,storage.getM_AttributeSetInstance_ID(),storage.getDateMaterialPolicy());
 					lineMA.setMovementQty(lineMA.getMovementQty().add(lineQty.negate()));
 					
 					if ( !lineMA.save(get_TrxName()) ) {

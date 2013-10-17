@@ -123,7 +123,7 @@ public class CalloutMovement extends CalloutEngine
 				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, "M_AttributeSetInstance_ID");
 				BigDecimal available = Env.ZERO;
 				if (M_AttributeSetInstance_ID > 0) {
-					MStorageOnHand oh = MStorageOnHand.get(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, null);
+					MStorageOnHand oh = MStorageOnHand.get(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, null,null);
 					if (oh != null)
 						available = oh.getQtyOnHand();
 				} else {

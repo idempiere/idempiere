@@ -1331,6 +1331,8 @@ public abstract class PO
 					pstmt.setInt(i+1, ((Integer)m_IDs[i]).intValue());
 				else if (oo instanceof Boolean)
 					pstmt.setString(i+1, ((Boolean) m_IDs[i] ? "Y" : "N"));
+				else if (oo instanceof Timestamp)
+					pstmt.setTimestamp(i+1, (Timestamp)m_IDs[i]);
 				else
 					pstmt.setString(i+1, m_IDs[i].toString());
 			}

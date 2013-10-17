@@ -163,9 +163,17 @@ public class MProjectIssue extends X_C_ProjectIssue
 		mTrx.setC_ProjectIssue_ID(getC_ProjectIssue_ID());
 		//
 		MLocator loc = MLocator.get(getCtx(), getM_Locator_ID());
+		
+		Timestamp dateMPolicy = getMovementDate();
+		
+		if(getM_AttributeSetInstance_ID()>0){
+			MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), getM_AttributeSetInstance_ID(), get_TrxName());
+			dateMPolicy = asi.getCreated();
+		}
+		
 		if (MStorageOnHand.add(getCtx(), loc.getM_Warehouse_ID(), getM_Locator_ID(), 
 				getM_Product_ID(), getM_AttributeSetInstance_ID(),
-				getMovementQty().negate(), get_TrxName()))
+				getMovementQty().negate(),dateMPolicy, get_TrxName()))
 		{
 			if (mTrx.save(get_TrxName()))
 			{
