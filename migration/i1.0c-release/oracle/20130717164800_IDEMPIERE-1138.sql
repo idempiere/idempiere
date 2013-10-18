@@ -93,6 +93,6 @@ UPDATE AD_Field SET Name='Broadcast Frequency', Description='How Many Times Mess
 ' WHERE AD_Column_ID=200984 AND IsCentrallyMaintained='Y'
 ;
 
-SELECT register_migration_script('20131707164800_IDEMPIERE-1138.sql') FROM dual
+SELECT register_migration_script('20130717164800_IDEMPIERE-1138.sql') FROM dual
 ;
 
