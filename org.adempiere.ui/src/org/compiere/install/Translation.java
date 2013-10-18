@@ -335,7 +335,7 @@ public class Translation
 			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID) "
 			+ "WHERE t.TableName=?"
 			+ " AND c.ColumnName NOT LIKE ? "
-			+ " AND c.AD_Reference_ID IN (10,14) "
+			+ " AND c.AD_Reference_ID IN (10,14,36) "
 			+ "ORDER BY IsMandatory DESC, ColumnName";
 		ArrayList<String> list = new ArrayList<String>();
 		try
