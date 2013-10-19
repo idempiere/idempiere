@@ -17,12 +17,6 @@
 	    <listener-class>org.adempiere.webui.util.LogEventInterceptor</listener-class>
 	</listener -->
 
-	<log>
-		<description>[Optional] Monitor i3-log.conf and register a
-			handler for the specified log-base</description>
-		<log-base></log-base>
-	</log>
-
 	<!--  false to use compress js which is much smaller. change to true if you need to debug -->
 	<client-config>
 		<debug-js>false</debug-js>
