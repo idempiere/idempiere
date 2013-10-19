@@ -4,11 +4,14 @@ import static org.compiere.model.MSysConfig.ZK_REPORT_JASPER_OUTPUT_TYPE;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.logging.Level;
 
+import javax.activation.FileDataSource;
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -21,15 +24,22 @@ import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MUser;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -41,6 +51,7 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.North;
+import org.zkoss.zul.Separator;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Toolbar;
 
@@ -48,22 +59,27 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2776405512345445561L;
+	private static final long serialVersionUID = -8378226782387071338L;
 
 	private JasperPrint jasperPrint;
 	private Listbox previewType = new Listbox();
 	private Iframe iframe;
 	private AMedia media;
 	private String defaultType;
+	private ToolBarButton bSendMail = new ToolBarButton();  // Added by Martin Augustine - Ntier software Services 09/10/2013
+	private File attachment = null;
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ZkJRViewer.class);
 	
 	/** Window No					*/
 	private int                 m_WindowNo = -1;
+
+	private String m_title; // local title - embedded windows clear the title
 	
 	public ZkJRViewer(JasperPrint jasperPrint, String title) {
 		super();
 		this.setTitle(title);
+		m_title = title;
 		this.jasperPrint = jasperPrint;
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		init();
@@ -83,6 +99,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		toolbar.setHeight("26px");
 
 		previewType.setMold("select");
+		attachment = null;  // Added by Martin Augustine - Ntier software Services 09/10/2013
 		if (isCanExport) {
 			previewType.appendItem("PDF", "PDF");
 			previewType.appendItem("HTML", "HTML");
@@ -119,7 +136,15 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 		toolbar.appendChild(previewType);
 		previewType.addEventListener(Events.ON_SELECT, this);
-		
+
+		// Added BY Martin - Ntier Software Services 09/10/2013
+		toolbar.appendChild(new Separator("vertical"));
+		bSendMail.setName("SendMail");  // ?? Msg
+		bSendMail.setImage(ThemeManager.getThemeResource("images/SendMail24.png"));
+		bSendMail.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "SendMail")));
+		toolbar.appendChild(bSendMail);
+		bSendMail.addEventListener(Events.ON_CLICK, this);
+
 		North north = new North();
 		layout.appendChild(north);
 		north.appendChild(toolbar);
@@ -165,6 +190,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		
 		if (e.getTarget() == previewType)
 			cmd_render();
+		else if (e.getTarget() == bSendMail)  // Added by Martin Augustine - Ntier software services 09/10/2013
+			cmd_sendMail();
 	}	//	actionPerformed
 
 	private void cmd_render() {
@@ -174,6 +201,29 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			throw new AdempiereException("Failed to render report", e);
 		}
 	}
+
+	// Added by Martin Augustine - Ntier Software Services 09/10/2013
+	private void cmd_sendMail()
+	{
+
+		if (attachment == null) {
+			try {
+				attachment = getPDF();
+			} catch (Exception e) {
+				FDialog.error(m_WindowNo, this, e.getLocalizedMessage(), m_title);
+				return;
+			}
+		}
+		String to = "";
+		MUser from = MUser.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
+		String subject = m_title;
+
+		WEMailDialog dialog = new WEMailDialog (Msg.getMsg(Env.getCtx(), "SendMail"),
+			from, to, subject, "", new FileDataSource(attachment));
+		AEnv.showWindow(dialog);
+
+	}	//	cmd_sendMail
+
 	public void onEvent(Event event) throws Exception {	
 		if(event.getName().equals(Events.ON_CLICK) || event.getName().equals(Events.ON_SELECT))
 			actionPerformed(event);
@@ -189,21 +239,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			reportType=selected.getValue();
 			if ( "PDF".equals( reportType ) ) 
 			{
-				String path = System.getProperty("java.io.tmpdir");
-				String prefix = makePrefix(jasperPrint.getName());
-				if (log.isLoggable(Level.FINE))
-				{
-					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				}
-				File file = File.createTempFile(prefix, ".pdf", new File(path));
-				LocalJasperReportsContext context = new LocalJasperReportsContext(DefaultJasperReportsContext.getInstance());
-				context.setClassLoader(JRPdfExporter.class.getClassLoader());
-				JRPdfExporter exporter = new JRPdfExporter(context);                    		
-	    		exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-	    		exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, file.getAbsolutePath());
-	    		exporter.exportReport();    		
-				media = new AMedia(getTitle(), "pdf", "application/pdf", file, true);
-							
+				attachment = getPDF();
+				media = new AMedia(m_title, "pdf", "application/pdf", attachment, true);
 				
 			} else if ("HTML".equals(reportType)) {
 				String path = System.getProperty("java.io.tmpdir");
@@ -223,7 +260,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		         HttpServletRequest request = (HttpServletRequest)Executions.getCurrent().getNativeRequest();
 		         exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, request.getContextPath()+"/images/report/");
 		 	     exporter.exportReport();			
-				media = new AMedia(getTitle(), "html", "text/html", file, false);
+				media = new AMedia(m_title, "html", "text/html", file, false);
 			} else if ("XLS".equals(reportType)) {
 				String path = System.getProperty("java.io.tmpdir");
 				String prefix = makePrefix(jasperPrint.getName());
@@ -240,7 +277,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, fos);
 				exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
 				exporterXLS.exportReport();			
-				media = new AMedia(getTitle(), "xls", "application/vnd.ms-excel", file, true);						
+				media = new AMedia(m_title, "xls", "application/vnd.ms-excel", file, true);						
 				
 			}else if ("CSV".equals(reportType)) {
 				String path = System.getProperty("java.io.tmpdir");
@@ -256,7 +293,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM,  fos);
 				exporter.exportReport();
 				
-				media = new AMedia(getTitle(), "csv", "application/csv", file, true);	
+				media = new AMedia(m_title, "csv", "application/csv", file, true);	
 			}
 		} finally {
 			Thread.currentThread().setContextClassLoader(cl);
@@ -266,6 +303,23 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		Events.echoEvent("onRenderReport", this, null);		
 	}
 	
+	private File getPDF() throws IOException, JRException {
+		String path = System.getProperty("java.io.tmpdir");
+		String prefix = makePrefix(jasperPrint.getName());
+		if (log.isLoggable(Level.FINE))
+		{
+			log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+		}
+		File file = new File(FileUtil.getTempMailName(prefix, ".pdf"));
+		LocalJasperReportsContext context = new LocalJasperReportsContext(DefaultJasperReportsContext.getInstance());
+		context.setClassLoader(JRPdfExporter.class.getClassLoader());
+		JRPdfExporter exporter = new JRPdfExporter(context);
+		exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+		exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, file.getAbsolutePath());
+		exporter.exportReport();
+		return file;
+	}
+
 	public void onRenderReport() {
 		iframe.setContent(media);
 	}
