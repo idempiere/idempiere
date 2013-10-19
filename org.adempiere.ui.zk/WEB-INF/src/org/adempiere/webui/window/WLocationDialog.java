@@ -223,16 +223,21 @@ public class WLocationDialog extends Window implements EventListener<Event>
 
 		txtAddress1 = new Textbox();
 		txtAddress1.setCols(20);
+		txtAddress1.setMaxlength(MLocation.getFieldLength(MLocation.COLUMNNAME_Address1));
 		txtAddress2 = new Textbox();
 		txtAddress2.setCols(20);
+		txtAddress2.setMaxlength(MLocation.getFieldLength(MLocation.COLUMNNAME_Address2));
 		txtAddress3 = new Textbox();
 		txtAddress3.setCols(20);
+		txtAddress3.setMaxlength(MLocation.getFieldLength(MLocation.COLUMNNAME_Address3));
 		txtAddress4 = new Textbox();
 		txtAddress4.setCols(20);
+		txtAddress4.setMaxlength(MLocation.getFieldLength(MLocation.COLUMNNAME_Address4));
 
 		//autocomplete City
 		txtCity = new WAutoCompleterCity(m_WindowNo);
 		txtCity.setCols(20);
+		txtCity.setMaxlength(MLocation.getFieldLength(MLocation.COLUMNNAME_City));
 		txtCity.setAutodrop(true);
 		txtCity.setAutocomplete(true);
 		txtCity.addEventListener(Events.ON_CHANGING, this);
@@ -240,8 +245,10 @@ public class WLocationDialog extends Window implements EventListener<Event>
 
 		txtPostal = new Textbox();
 		txtPostal.setCols(20);
+		txtPostal.setMaxlength(MLocation.getFieldLength(MLocation.COLUMNNAME_Postal));
 		txtPostalAdd = new Textbox();
 		txtPostalAdd.setCols(20);
+		txtPostalAdd.setMaxlength(MLocation.getFieldLength(MLocation.COLUMNNAME_Postal_Add));
 
 		lstRegion    = new Listbox();
 		lstRegion.setMold("select");
@@ -708,6 +715,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		m_location.setC_City_ID(txtCity.getC_City_ID()); 
 		m_location.setCity(txtCity.getValue());
 		m_location.setPostal(txtPostal.getValue());
+		m_location.setPostal_Add(txtPostalAdd.getValue());
 		//  Country/Region
 		MCountry country = (MCountry)lstCountry.getSelectedItem().getValue();
 		m_location.setCountry(country);
