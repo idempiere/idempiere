@@ -671,7 +671,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			.append(m_reportEngine.getRowCount());
 		statusBar.setStatusLine(sb.toString());
 		//
-		bWizard.setDisabled( (m_reportEngine.getPrintFormat() == null || m_reportEngine.getPrintFormat().getAD_Client_ID() == 0) );
+		bWizard.setDisabled(
+				(   m_reportEngine.getPrintFormat() == null
+				 || (m_reportEngine.getPrintFormat().getAD_Client_ID() == 0 && Env.getAD_Client_ID(Env.getCtx()) != 0)
+				 || m_reportEngine.getPrintFormat().isForm()));
 	}	//	revalidate
 
 	/**
