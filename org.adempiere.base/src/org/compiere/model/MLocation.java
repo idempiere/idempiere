@@ -50,8 +50,8 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7522263181009070628L;
-	
+	private static final long serialVersionUID = -8462972029898383163L;
+
 	// http://jira.idempiere.com/browse/IDEMPIERE-147
 	public static String LOCATION_MAPS_URL_PREFIX     = MSysConfig.getValue(MSysConfig.LOCATION_MAPS_URL_PREFIX);
 	public static String LOCATION_MAPS_ROUTE_PREFIX   = MSysConfig.getValue(MSysConfig.LOCATION_MAPS_ROUTE_PREFIX);
@@ -719,6 +719,15 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		address.append((getCountryName() != null ? getCountryName() : ""));
 
 		return address.toString().replace(" ", "+");
+	}
+	
+	public static int getFieldLength(String columnName) {
+		MTable loctable = MTable.get(Env.getCtx(), Table_ID);
+		MColumn column = loctable.getColumn(columnName);
+		if (column == null)
+			return -1;
+		else
+			return column.getFieldLength();
 	}
 	
 	/** Error Message						*/
