@@ -31,6 +31,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MImage;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.util.CCache;
@@ -63,6 +64,8 @@ public class ADWindow extends AbstractUIPart
 	private Map<Integer, List<String>> tabToolbarRestricMap = new HashMap<Integer, List<String>>();
 	
 	private List<String> windowToolbarRestrictList = null;
+	
+	private List<String> windowToolbarAdvancedList = null;
 	
 	/**
 	 * 
@@ -203,6 +206,21 @@ public class ADWindow extends AbstractUIPart
 			}	// All restrictions
 		}
 		return windowToolbarRestrictList;
+	}
+	
+	public List<String> getWindowAdvancedButtonList() {		
+		if (windowToolbarAdvancedList == null) {
+			//load window advance buttons
+			windowToolbarAdvancedList = new ArrayList<String>();			
+	        MToolBarButton[] buttons = MToolBarButton.getWindowAdvancedButtons();
+	
+			for (int i = 0; i < buttons.length; i++)
+			{
+				String restrictName = ADWindowToolbar.BTNPREFIX + buttons[i].getComponentName();
+				windowToolbarAdvancedList.add(restrictName);		
+			}	// All restrictions
+		}
+		return windowToolbarAdvancedList;
 	}
 	
 	/**

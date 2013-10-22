@@ -610,6 +610,23 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 			}
 
 		}	// All restrictions
+		
+		if (!MRole.getDefault().isAccessAdvanced())
+		{
+			List<String> advancedList = adwindow.getWindowAdvancedButtonList();
+			for (String advancedName : advancedList)
+			{
+				for (Component p = this.getFirstChild(); p != null; p = p.getNextSibling()) {
+					if (p instanceof ToolBarButton) {
+						if ( advancedName.equals(((ToolBarButton)p).getName()) ) {
+							this.removeChild(p);
+							break;
+						}
+					}
+				}
+
+			}	// All advanced btn
+		}
 
 		dynamicDisplay();
 		// If no workflow set for the table => disable btnWorkflow

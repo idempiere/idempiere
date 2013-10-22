@@ -74,4 +74,17 @@ public class MToolBarButton extends X_AD_ToolBarButton {
 		
 		return buttons;
 	}
+	
+	public static MToolBarButton[] getWindowAdvancedButtons() {
+		MToolBarButton[] buttons = new MToolBarButton[0];
+		
+		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), Table_ID), "Action=?" +
+				" AND IsAdvancedButton='Y' AND AD_Client_ID=0", null);
+		List<MToolBarButton> list = query.setParameters("W").setOnlyActiveRecords(true).list();
+		if (list != null && !list.isEmpty()) {
+			buttons = list.toArray(buttons);
+		}
+		
+		return buttons;
+	}
 }

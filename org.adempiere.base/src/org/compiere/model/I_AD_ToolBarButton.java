@@ -200,6 +200,19 @@ public interface I_AD_ToolBarButton
 	  */
 	public boolean isActive();
 
+    /** Column name IsAdvancedButton */
+    public static final String COLUMNNAME_IsAdvancedButton = "IsAdvancedButton";
+
+	/** Set Advanced Button.
+	  * This Button contains advanced Functionality
+	  */
+	public void setIsAdvancedButton (boolean IsAdvancedButton);
+
+	/** Get Advanced Button.
+	  * This Button contains advanced Functionality
+	  */
+	public boolean isAdvancedButton();
+
     /** Column name IsCustomization */
     public static final String COLUMNNAME_IsCustomization = "IsCustomization";
 
