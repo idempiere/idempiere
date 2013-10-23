@@ -89,7 +89,11 @@
     	<name>org.zkoss.zul.borderlayout.animation.disabed</name>
     	<value>true</value>
 	</library-property>
-	
+	<library-property>
+	    <name>org.zkoss.web.util.resource.dir</name>
+	    <value>/WEB-INF/cwr</value>
+	</library-property>
+		
 	<preference>
     	<name>org.zkoss.zk.ui.WebApp.name</name>
     	<value>iDempiere</value>

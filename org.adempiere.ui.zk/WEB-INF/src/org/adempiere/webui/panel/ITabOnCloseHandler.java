@@ -21,5 +21,7 @@ import org.adempiere.webui.component.Tabpanel;
  *
  */
 public interface ITabOnCloseHandler {
+	
+	/* NOTE onClose method must implement the actual closing of the tab */
 	public void onClose(Tabpanel tabPanel);
 }

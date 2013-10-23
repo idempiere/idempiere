@@ -73,11 +73,12 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace
     }
 
 	public void onClose() {
-		if (onCloseHandler != null)
+		if (onCloseHandler != null) {
 			onCloseHandler.onClose(this);
-		else {
+		} else {
 			Tab tab = this.getLinkedTab();
-			tab.close();
+			if (tab != null)
+				tab.close();
 		}
 	}
 	

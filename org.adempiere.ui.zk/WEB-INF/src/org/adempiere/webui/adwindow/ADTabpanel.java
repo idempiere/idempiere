@@ -311,22 +311,23 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		if (gridTab.isTreeTab())
 			AD_Tree_ID = MTree.getDefaultAD_Tree_ID (
 				Env.getAD_Client_ID(Env.getCtx()), gridTab.getKeyColumnName());
+
+		StringBuilder cssContent = new StringBuilder();
+		cssContent.append(".adtab-form-borderlayout .z-south-colpsd:before { ");
+		cssContent.append("content: \"");
+		cssContent.append(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Detail")));
+		cssContent.append("\"; ");
+		cssContent.append("position: relative; font-size: 12px; font-weight: bold; ");
+		cssContent.append("top: 3px; ");
+		cssContent.append("left: 4px; ");
+		cssContent.append("z-index: -1; ");
+		cssContent.append("} ");
+		Style style = new Style();
+		style.setContent(cssContent.toString());
+		appendChild(style);
+		
 		if (gridTab.isTreeTab() && AD_Tree_ID != 0)
 		{
-			StringBuilder cssContent = new StringBuilder();
-			cssContent.append(".adtab-form-borderlayout .z-south-colpsd:before { ");
-			cssContent.append("content: \"");
-			cssContent.append(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Detail")));
-			cssContent.append("\"; ");
-			cssContent.append("position: relative; font-size: 12px; font-weight: bold; ");
-			cssContent.append("top: 3px; ");
-			cssContent.append("left: 4px; ");
-			cssContent.append("z-index: -1; ");
-			cssContent.append("} ");
-			Style style = new Style();
-			style.setContent(cssContent.toString());
-			appendChild(style);
-			
 			Borderlayout layout = new Borderlayout();
 			layout.setParent(this);
 			layout.setSclass("adtab-form-borderlayout");
