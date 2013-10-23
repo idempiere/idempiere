@@ -842,7 +842,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		//	Get Column List from Tab
 		String sql = "SELECT AD_Column_ID " //, Name, IsDisplayed, SeqNo
 			+ "FROM AD_Field "
-			+ "WHERE AD_Tab_ID=(SELECT MIN(AD_Tab_ID) FROM AD_Tab WHERE AD_Table_ID=?)"
+			+ "WHERE IsActive='Y' AND AD_Tab_ID=(SELECT MIN(AD_Tab_ID) FROM AD_Tab WHERE AD_Table_ID=? AND IsActive='Y')"
 			+ " AND IsEncrypted='N' AND ObscureType IS NULL "
 			+ " AND AD_Column_ID NOT IN (SELECT pfi.AD_Column_ID FROM AD_PrintFormatItem pfi WHERE pfi.AD_PrintFormat_ID=? AND pfi.AD_Column_ID IS NOT NULL) "
 			+ "ORDER BY COALESCE(IsDisplayed,'N') DESC, SortNo, SeqNo, Name";
@@ -879,7 +879,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 			s_log.fine("From Table ...");
 			sql = "SELECT AD_Column_ID "
 				+ "FROM AD_Column "
-				+ "WHERE AD_Table_ID=? "
+				+ "WHERE IsActive='Y' AND AD_Table_ID=? "
 				+ " AND AD_Column_ID NOT IN (SELECT pfi.AD_Column_ID FROM AD_PrintFormatItem pfi WHERE pfi.AD_PrintFormat_ID=? AND pfi.AD_Column_ID IS NOT NULL) "
 				+ "ORDER BY IsIdentifier DESC, SeqNo, Name";
 			try
