@@ -24,6 +24,7 @@ import org.compiere.model.MScheduler;
 import org.compiere.model.MSchedulerPara;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * @author hengsin
@@ -88,6 +89,17 @@ public class WProcessParameter implements IFormController {
 							schedulerPara.setParameterDefault(para.getP_String());
 							if (para.getP_String_To() != null)
 								schedulerPara.setParameterToDefault(para.getP_String_To());
+						}
+						if (!Util.isEmpty(para.getInfo())) {
+							schedulerPara.setDescription(para.getInfo());
+						}
+						if (!Util.isEmpty(para.getInfo_To())) {
+							String s = schedulerPara.getDescription();
+							if (Util.isEmpty(s))
+								s = para.getInfo_To();
+							else
+								s = s + ", " + para.getInfo_To();
+							schedulerPara.setDescription(s);
 						}
 						break;
 					}
