@@ -66,6 +66,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Span;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Toolbarbutton;
 
@@ -198,6 +199,8 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 	public void onClose(Tabpanel tabPanel){
 		//IDEMPIERE-1457: On close, remove calendars away scm			
 		calendars.setModel(null);
+		Tab tab = tabPanel.getLinkedTab();
+		tab.close();
 	}
 
 	public void onEvent(Event e) throws Exception {
