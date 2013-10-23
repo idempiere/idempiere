@@ -310,43 +310,14 @@ public class Scheduler extends AdempiereServer
 					if (paraDesc != null && paraDesc.trim().length() > 0)
 						iPara.setInfo(sPara.getDescription());
 					String variable = sPara.getParameterDefault();
+					String toVariable = sPara.getParameterToDefault();
 					if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " = " + variable);
 					//	Value - Constant/Variable
-					Object value = variable;
-					if (variable == null
-						|| (variable != null && variable.length() == 0))
-						value = null;
-					else if (  variable.indexOf('@') != -1
-							&& variable.indexOf('@') != variable.lastIndexOf('@'))	//	we have a variable / BF [1926032]
-					{
-						//	Strip
-						int index = variable.indexOf('@');
-						String columnName = variable.substring(index+1);
-						index = columnName.indexOf('@');
-						if (index == -1)
-						{
-							log.warning(sPara.getColumnName()
-								+ " - cannot evaluate=" + variable);
-							break;
-						}
-						columnName = columnName.substring(0, index);
-						//	try Env
-						String env = Env.getContext(m_schedulerctx, columnName);
-						if (env == null || env.length() == 0)
-							env = Env.getContext(getCtx(), columnName);
-						if (env.length() == 0)
-						{
-							log.warning(sPara.getColumnName()
-								+ " - not in environment =" + columnName
-								+ "(" + variable + ")");
-							break;
-						}
-						else
-							value = env;
-					}	//	@variable@
+					Object value = parseVariable(sPara, variable);
+					Object toValue = toVariable != null ? parseVariable(sPara, toVariable) : null;
 
 					//	No Value
-					if (value == null)
+					if (value == null && toValue == null)
 					{
 						if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " - empty");
 						break;
@@ -358,31 +329,34 @@ public class Scheduler extends AdempiereServer
 						if (DisplayType.isNumeric(sPara.getDisplayType())
 							|| DisplayType.isID(sPara.getDisplayType()))
 						{
-							BigDecimal bd = null;
-							if (value instanceof BigDecimal)
-								bd = (BigDecimal)value;
-							else if (value instanceof Integer)
-								bd = new BigDecimal (((Integer)value).intValue());
-							else
-								bd = new BigDecimal (value.toString());
+							BigDecimal bd = toBigDecimal(value);
 							iPara.setP_Number(bd);
+							if (toValue != null)
+							{
+								bd = toBigDecimal(toValue);
+								iPara.setP_Number_To(bd);
+							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + bd + "=)");
 						}
 						else if (DisplayType.isDate(sPara.getDisplayType()))
 						{
-							Timestamp ts = null;
-							if (value instanceof Timestamp)
-								ts = (Timestamp)value;
-							else
-								ts = Timestamp.valueOf(value.toString());
+							Timestamp ts = toTimestamp(value);
 							iPara.setP_Date(ts);
+							if (toValue != null) {
+								ts = toTimestamp(toValue);
+								iPara.setP_Date_To(ts);
+							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + ts + "=)");
 						}
 						else
 						{
 							iPara.setP_String(value.toString());
+							if (toValue != null) 
+							{
+								iPara.setP_String_To(toValue.toString());
+							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable
 								+ " (=" + value + "=) " + value.getClass().getName());
@@ -402,6 +376,62 @@ public class Scheduler extends AdempiereServer
 			}	//	scheduler parameter loop
 		}	//	instance parameter loop
 	}	//	fillParameter
+
+	private Timestamp toTimestamp(Object value) {
+		Timestamp ts = null;
+		if (value instanceof Timestamp)
+			ts = (Timestamp)value;
+		else
+			ts = Timestamp.valueOf(value.toString());
+		return ts;
+	}
+
+	private BigDecimal toBigDecimal(Object value) {
+		BigDecimal bd = null;
+		if (value instanceof BigDecimal)
+			bd = (BigDecimal)value;
+		else if (value instanceof Integer)
+			bd = new BigDecimal (((Integer)value).intValue());
+		else
+			bd = new BigDecimal (value.toString());
+		return bd;
+	}
+
+	private Object parseVariable(MSchedulerPara sPara, String variable) {
+		Object value = variable;
+		if (variable == null
+			|| (variable != null && variable.length() == 0))
+			value = null;
+		else if (  variable.indexOf('@') != -1
+				&& variable.indexOf('@') != variable.lastIndexOf('@'))	//	we have a variable / BF [1926032]
+		{
+			//	Strip
+			int index = variable.indexOf('@');
+			String columnName = variable.substring(index+1);
+			index = columnName.indexOf('@');
+			if (index == -1)
+			{
+				log.warning(sPara.getColumnName()
+					+ " - cannot evaluate=" + variable);
+				return null;
+			}
+			columnName = columnName.substring(0, index);
+			//	try Env
+			String env = Env.getContext(m_schedulerctx, columnName);
+			if (env == null || env.length() == 0)
+				env = Env.getContext(getCtx(), columnName);
+			if (env.length() == 0)
+			{
+				log.warning(sPara.getColumnName()
+					+ " - not in environment =" + columnName
+					+ "(" + variable + ")");
+				return null;
+			}
+			else
+				value = env;
+		}	//	@variable@
+		return value;
+	}
 
 
 	/**

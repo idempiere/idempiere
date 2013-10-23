@@ -152,6 +152,19 @@ public interface I_AD_Scheduler_Para
 	  */
 	public String getParameterDefault();
 
+    /** Column name ParameterToDefault */
+    public static final String COLUMNNAME_ParameterToDefault = "ParameterToDefault";
+
+	/** Set Default To Parameter.
+	  * Default value of the to parameter
+	  */
+	public void setParameterToDefault (String ParameterToDefault);
+
+	/** Get Default To Parameter.
+	  * Default value of the to parameter
+	  */
+	public String getParameterToDefault();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

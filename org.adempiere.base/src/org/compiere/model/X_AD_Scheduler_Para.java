@@ -29,7 +29,7 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131023L;
 
     /** Standard Constructor */
     public X_AD_Scheduler_Para (Properties ctx, int AD_Scheduler_Para_ID, String trxName)
@@ -169,5 +169,22 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
 	public String getParameterDefault () 
 	{
 		return (String)get_Value(COLUMNNAME_ParameterDefault);
+	}
+
+	/** Set Default To Parameter.
+		@param ParameterToDefault 
+		Default value of the to parameter
+	  */
+	public void setParameterToDefault (String ParameterToDefault)
+	{
+		set_Value (COLUMNNAME_ParameterToDefault, ParameterToDefault);
+	}
+
+	/** Get Default To Parameter.
+		@return Default value of the to parameter
+	  */
+	public String getParameterToDefault () 
+	{
+		return (String)get_Value(COLUMNNAME_ParameterToDefault);
 	}
 }

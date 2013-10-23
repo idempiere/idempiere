@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.webui.component.Column;
@@ -454,7 +455,7 @@ public class ProcessParameterPanel extends Panel implements
 			MPInstancePara para = new MPInstancePara(Env.getCtx(),
 					m_processInfo.getAD_PInstance_ID(), i);
 			GridField mField = (GridField) m_mFields.get(i);
-			para.setParameterName(mField.getColumnName());
+			para.setParameterName(mField.getColumnName());			
 
 			// Date
 			if (result instanceof Timestamp || result2 instanceof Timestamp) {
@@ -509,6 +510,95 @@ public class ProcessParameterPanel extends Panel implements
 		return true;
 	} // saveParameters
 
+	/**
+	 * Get Parameter values without saving
+	 * 
+	 * @return list of parameter values
+	 */
+	public MPInstancePara[] getParameters() {
+		log.config("");
+
+		if (!validateParameters())
+			return new MPInstancePara[0];
+
+		List<MPInstancePara> paras = new ArrayList<MPInstancePara>();
+		
+		/**********************************************************************
+		 * Save Now
+		 */
+		for (int i = 0; i < m_mFields.size(); i++) {
+			// Get Values
+			WEditor editor = (WEditor) m_wEditors.get(i);
+			WEditor editor2 = (WEditor) m_wEditors2.get(i);
+			Object result = editor.getValue();
+			Object result2 = null;
+			if (editor2 != null)
+				result2 = editor2.getValue();
+
+			// Create Parameter
+			MPInstancePara para = new MPInstancePara(Env.getCtx(), 0, i);
+			GridField mField = (GridField) m_mFields.get(i);
+			para.setParameterName(mField.getColumnName());
+			para.setP_Date(null);
+			para.setP_Date_To(null);
+			para.setP_Number((BigDecimal)null);
+			para.setP_Number_To((BigDecimal)null);
+			para.setP_String(null);
+			para.setP_String_To(null);
+			
+			// Date
+			if (result instanceof Timestamp || result2 instanceof Timestamp) {
+				if (result instanceof Timestamp)
+					para.setP_Date((Timestamp) result);
+				if (editor2 != null && result2 != null && result2 instanceof Timestamp)
+					para.setP_Date_To((Timestamp) result2);
+			}
+			// Integer
+			else if (result instanceof Integer || result2 instanceof Integer) {
+				if (result != null && result instanceof Integer) {
+					Integer ii = (Integer) result;
+					para.setP_Number(ii.intValue());
+				}
+				if (editor2 != null && result2 != null && result2 instanceof Integer) {
+					Integer ii = (Integer) result2;
+					para.setP_Number_To(ii.intValue());
+				}
+			}
+			// BigDecimal
+			else if (result instanceof BigDecimal
+					|| result2 instanceof BigDecimal) {
+				if (result instanceof BigDecimal)
+					para.setP_Number((BigDecimal) result);
+				if (editor2 != null && result2 != null && result2 instanceof BigDecimal)
+					para.setP_Number_To((BigDecimal) result2);
+			}
+			// Boolean
+			else if (result instanceof Boolean) {
+				Boolean bb = (Boolean) result;
+				String value = bb.booleanValue() ? "Y" : "N";
+				para.setP_String(value);
+				// to does not make sense
+			}
+			// String
+			else {
+				if (result != null)
+					para.setP_String(result.toString());
+				if (editor2 != null && result2 != null)
+					para.setP_String_To(result2.toString());
+			}
+
+			// Info
+			para.setInfo(editor.getDisplay());
+			if (editor2 != null)
+				para.setInfo_To(editor2.getDisplay());
+			//
+			paras.add(para);
+		} // for every parameter
+
+		return paras.toArray(new MPInstancePara[0]);
+	} // saveParameters
+
+	
 	/**
 	 * Editor Listener
 	 * 
