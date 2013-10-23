@@ -312,6 +312,9 @@ UPDATE M_InventoryLineMA SET DateMaterialPolicy = (SELECT Date(i.MovementDate) F
 ALTER TABLE M_InventoryLineMA MODIFY DateMaterialPolicy NOT NULL
 ;
 
+ALTER TABLE M_InventoryLineMA DROP CONSTRAINT m_inventorylinema_pkey
+;
+
 ALTER TABLE M_InventoryLineMA ADD CONSTRAINT m_inventorylinema_pkey PRIMARY KEY(m_inventoryline_id, m_attributesetinstance_id, datematerialpolicy)
 ;
 
