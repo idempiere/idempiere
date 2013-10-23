@@ -30,7 +30,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
 
+import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.MSysConfig;
@@ -72,12 +74,12 @@ import org.zkoss.zul.Toolbarbutton;
  * @author Elaine
  *
  */
-public class CalendarWindow extends Window implements EventListener<Event> {
-
+public class CalendarWindow extends Window implements EventListener<Event>, ITabOnCloseHandler {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5620139733919619691L;
+	private static final long serialVersionUID = 1576992746053720647L;
+
 	private Calendars calendars;
 	private SimpleCalendarModel scm;
 	private Toolbarbutton btnRefresh;
@@ -185,6 +187,17 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 		calendars.addEventListener("onMouseOver", this);
 
 		SessionManager.getAppDesktop().showWindow(this);
+
+		// IDEMPIERE-1457: when show this window on tab, handle event close to remove calendars away scm
+		Component parentTab = this.getParent();
+		if (parentTab != null && parentTab.getClass().equals(Tabpanel.class)) {
+			((Tabpanel)parentTab).setOnCloseHandler(this);
+		}
+	}
+
+	public void onClose(Tabpanel tabPanel){
+		//IDEMPIERE-1457: On close, remove calendars away scm			
+		calendars.setModel(null);
 	}
 
 	public void onEvent(Event e) throws Exception {
@@ -231,7 +244,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 				ArrayList<ADCalendarEvent> events = DPCalendar.getEvents(R_RequestType_ID, Env.getCtx());
 				for (ADCalendarEvent event : events)
 					scm.add(event);
-				calendars.setModel(scm);
+
 				calendars.invalidate();
 				syncModel();
 			}
@@ -368,7 +381,7 @@ public class CalendarWindow extends Window implements EventListener<Event> {
 		ArrayList<ADCalendarEvent> events = DPCalendar.getEvents(R_RequestType_ID, Env.getCtx());
 		for (ADCalendarEvent event : events)
 			scm.add(event);
-		calendars.setModel(scm);
+
 		calendars.invalidate();
 		syncModel();
 	}

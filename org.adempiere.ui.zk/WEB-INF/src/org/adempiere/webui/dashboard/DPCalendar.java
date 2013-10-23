@@ -373,10 +373,15 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 
 	@Override
 	public void updateUI() {
-		scm = new SimpleCalendarModel();
+		if (scm == null) {
+			scm = new SimpleCalendarModel();
+			calendars.setModel(scm);
+		}
+
+		scm.clear();
 		for (ADCalendarEvent event : events)
 			scm.add(event);
-		calendars.setModel(scm);
+
 		calendars.invalidate();
 	}
 
