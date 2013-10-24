@@ -156,7 +156,7 @@ public class InfoProductWindow extends InfoWindow {
         /**	From Clause							*/
         String s_sqlFrom = " M_PRODUCT_STOCK_V ";
         /** Where Clause						*/
-        String s_sqlWhere = "Value = ?";
+        String s_sqlWhere = "M_Product_ID = ?";
         warehouseTbl = ListboxFactory.newDataTable();
         m_sqlWarehouse = warehouseTbl.prepareTable(s_layoutWarehouse, s_sqlFrom, s_sqlWhere, false, "M_PRODUCT_STOCK_V");
 		m_sqlWarehouse += " GROUP BY Warehouse";		
@@ -331,7 +331,7 @@ public class InfoProductWindow extends InfoWindow {
 
 					for(int i = 0; i < columnInfos.length; i++) {
 						if (columnInfos[i].getGridField() != null && columnInfos[i].getGridField().getColumnName().equals("Value")) {
-							refresh(contentPanel.getValueAt(row,i), M_Warehouse_ID, M_PriceList_Version_ID);
+							refresh(M_Warehouse_ID, M_PriceList_Version_ID);
 		        			contentBorderLayout.getSouth().setOpen(true);
 		        			break;
 						}
@@ -530,9 +530,9 @@ public class InfoProductWindow extends InfoWindow {
 	/**
 	 * 	Refresh Query
 	 */
-	private void refresh(Object obj, int M_Warehouse_ID, int M_PriceList_Version_ID)
+	private void refresh(int M_Warehouse_ID, int M_PriceList_Version_ID)
 	{
-		//int M_Product_ID = 0;
+		int m_M_Product_ID = getSelectedRowKey();
 		String sql = m_sqlWarehouse;
 		if (log.isLoggable(Level.FINEST)) log.finest(sql);
 		PreparedStatement pstmt = null;
@@ -540,7 +540,7 @@ public class InfoProductWindow extends InfoWindow {
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString(1, (String)obj);
+			pstmt.setInt(1, m_M_Product_ID);
 			rs = pstmt.executeQuery();
 			warehouseTbl.loadTable(rs);
 		}
@@ -554,7 +554,6 @@ public class InfoProductWindow extends InfoWindow {
 			rs = null; pstmt = null;
 		}
 
-		int m_M_Product_ID = getSelectedRowKey();
 		sql = "SELECT DocumentNote FROM M_Product WHERE M_Product_ID=?";
 		fieldDescription.setText(DB.getSQLValueString(null, sql, m_M_Product_ID));
 
