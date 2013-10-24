@@ -16,7 +16,7 @@ AS
          s.m_attributesetinstance_id,
          s.m_storageonhand_uu AS m_storage_uu
   FROM   m_storageonhand s
-  UNION
+  UNION ALL
   SELECT sr.m_product_id,
          w.m_reservelocator_id AS m_locator_id,
          sr.ad_client_id,
@@ -36,7 +36,7 @@ AS
          JOIN m_warehouse w
            ON sr.m_warehouse_id = w.m_warehouse_id
   WHERE  sr.issotrx = 'Y'
-  UNION
+  UNION ALL
   SELECT so.m_product_id,
          w.m_reservelocator_id AS m_locator_id,
          so.ad_client_id,
