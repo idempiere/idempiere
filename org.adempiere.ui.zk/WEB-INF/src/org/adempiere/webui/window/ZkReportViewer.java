@@ -21,20 +21,26 @@ import static org.compiere.model.SystemIDs.WINDOW_PRINTFORMAT;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.StringWriter;
+import java.lang.ref.WeakReference;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pdf.Document;
+import org.adempiere.util.ContextRunnable;
+import org.adempiere.util.ServerContext;
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Checkbox;
@@ -42,6 +48,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
@@ -54,6 +61,9 @@ import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.IServerPushCallback;
+import org.adempiere.webui.util.ServerPushTemplate;
+import org.compiere.Adempiere;
 import org.compiere.model.GridField;
 import org.compiere.model.MArchive;
 import org.compiere.model.MClient;
@@ -77,7 +87,9 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
@@ -177,6 +189,13 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 	private boolean init;
 	
+	private BusyDialog progressWindow;
+	private Mask mask;
+
+	private Future<?> future;
+	
+	private final static String ON_RENDER_REPORT_EVENT = "onRenderReport";
+	
 	//private static final String REPORT = "org.idempiere.ui.report";
 	
 	/**
@@ -199,6 +218,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		m_isCanExport = MRole.getDefault().isCanExport(m_AD_Table_ID);
 		
 		setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report") + ": " + m_reportEngine.getName()));
+		
+		addEventListener(ON_RENDER_REPORT_EVENT, this);
 	}
 	
 	
@@ -365,11 +386,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
 		updateToolbarAccess(AD_Window_ID, AD_Process_ID);
 		
-		try {
-			renderReport();
-		} catch (Exception e) {
-			throw new AdempiereException("Failed to render report", e);
-		}
+		postRenderReportEvent();
 				
 		iframe.setAutohide(true);
 
@@ -443,64 +460,49 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		return AD_Tab_ID;
 	}
 
-	private void renderReport() throws Exception {
+	private void renderReport() {
+		//prepare context for background thread
+		Properties context = ServerContext.getCurrentInstance();
+		if (context.get(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY) == null) {
+			Desktop desktop = this.getDesktop();
+			context.put(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(desktop));
+		}
+				
 		media = null;
 		Listitem selected = previewType.getSelectedItem();
 		if (selected == null || "PDF".equals(selected.getValue())) {
-			String path = System.getProperty("java.io.tmpdir");
-			String prefix = makePrefix(m_reportEngine.getName());
-			if (log.isLoggable(Level.FINE))
-			{
-				log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-			}
-			File file = File.createTempFile(prefix, ".pdf", new File(path));
-			m_reportEngine.createPDF(file);
-			media = new AMedia(file.getName(), "pdf", "application/pdf", file, true);
-			
-			labelDrill.setVisible(false);
-			comboDrill.setVisible(false);
+			future = Adempiere.getThreadPoolExecutor().submit(new PDFRendererRunnable(this));
 		} else if ("HTML".equals(previewType.getSelectedItem().getValue())) {
-			String path = System.getProperty("java.io.tmpdir");
-			String prefix = makePrefix(m_reportEngine.getName());
-			if (log.isLoggable(Level.FINE))
-			{
-				log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-			}
-			File file = File.createTempFile(prefix, ".html", new File(path));
-			m_reportEngine.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(Executions.getCurrent().getContextPath(), "rp", this.getUuid()));
-			media = new AMedia(file.getName(), "html", "text/html", file, false);
-			
-			if (comboDrill.getItemCount() > 1) {
-				labelDrill.setVisible(true);
-				comboDrill.setVisible(true);
-			}
-		} else if ("XLS".equals(previewType.getSelectedItem().getValue())) {
-			String path = System.getProperty("java.io.tmpdir");
-			String prefix = makePrefix(m_reportEngine.getName());
-			if (log.isLoggable(Level.FINE))
-			{
-				log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-			}
-			File file = File.createTempFile(prefix, ".xls", new File(path));
-			m_reportEngine.createXLS(file, AEnv.getLanguage(Env.getCtx()));
-			media = new AMedia(file.getName(), "xls", "application/vnd.ms-excel", file, true);
-			
-			labelDrill.setVisible(false);
-			comboDrill.setVisible(false);
-		}
-				
-		Events.echoEvent("onPreviewReport", this, null);
+			future = Adempiere.getThreadPoolExecutor().submit(new HTMLRendererRunnable(this));
+		} else if ("XLS".equals(previewType.getSelectedItem().getValue())) {			
+			future = Adempiere.getThreadPoolExecutor().submit(new XLSRendererRunnable(this));
+		}						
 	}
 
-	public void onPreviewReport() {
-		mediaVersion++;
-		String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());
-		iframe.setContent(media);
-		HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
-		if (url.startsWith(request.getContextPath() + "/"))
-			url = url.substring((request.getContextPath() + "/").length());
-		reportLink.setHref(url);
-		reportLink.setLabel(media.getName());
+	private void onPreviewReport() {
+		try {
+			if (future != null) {
+				try {
+					future.get();
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				} catch (ExecutionException e) {
+					throw new RuntimeException(e.getCause());
+				}
+			}
+			mediaVersion++;
+			String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());
+			iframe.setContent(media);
+			HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+			if (url.startsWith(request.getContextPath() + "/"))
+				url = url.substring((request.getContextPath() + "/").length());
+			reportLink.setHref(url);
+			reportLink.setLabel(media.getName());
+			revalidate();
+		} finally {
+			hideBusyDialog();
+			future = null;
+		}
 	}
 
 	private String makePrefix(String name) {
@@ -713,6 +715,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			m_ctx = null;
 			m_WindowNo = -1;
 		}
+		if (future != null && !future.isDone())
+		{
+			future.cancel(true);
+			future = null;
+		}
+			
 	}
 	
 	public void onEvent(Event event) throws Exception {
@@ -728,6 +736,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			m_reportEngine.setSummary(summary.isSelected());
 			cmd_report();
 		}		
+		else if (event.getName().equals(ON_RENDER_REPORT_EVENT))
+		{
+			onRenderReportEvent();
+		}
+	}
+
+	private void onRenderReportEvent() {
+    	renderReport();
 	}
 
 	/**************************************************************************
@@ -764,11 +780,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	}	//	actionPerformed
 	
 	private void cmd_render() {
-		try { 
-			renderReport();
-		} catch (Exception e) {
-			throw new AdempiereException("Failed to render report", e);
-		}		
+		postRenderReportEvent();		
 	}
 
 	/**
@@ -1029,15 +1041,15 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
 		m_reportEngine.setPrintFormat(pf);
 		
-		try {
-			renderReport();
-		} catch (Exception e) {
-			throw new AdempiereException("Failed to render report", e);
-		}
-
-		revalidate();
-
+		postRenderReportEvent();
 	}	//	cmd_report
+
+	private void postRenderReportEvent() {
+		showBusyDialog();
+		Events.echoEvent(ON_RENDER_REPORT_EVENT, this, null);
+	}
+
+
 
 	/**
 	 * 	Query Report
@@ -1137,12 +1149,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 					if (!find.isCancel())
 		            {
 		            	m_reportEngine.setQuery(find.getQuery());
-		            	try {
-		            		renderReport();
-		            	} catch (Exception e) {
-		        			throw new AdempiereException("Failed to render report", e);
-		        		}
-		            	revalidate();
+		            	postRenderReportEvent();
 		            }
 				}
 			});
@@ -1238,5 +1245,180 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 		ToolBarMenuRestictionLoaded = true;
 	}//updateToolBarAndMenuWithRestriction
+
+	private void showBusyDialog() {		
+		progressWindow = new BusyDialog();
+		progressWindow.setStyle("position: absolute;");
+		this.appendChild(progressWindow);
+		showBusyMask(progressWindow);
+		LayoutUtils.openOverlappedWindow(this, progressWindow, "middle_center");
+	}
 	
+	private Div getMask() {
+		if (mask == null) {
+			mask = new Mask();
+		}
+		return mask;
+	}
+	
+	private void showBusyMask(Window window) {
+		getParent().appendChild(getMask());
+		StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+		script.append(getParent().getUuid()).append("');");
+		if (window != null) {
+			script.append("var d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
+		} else {
+			script.append("w.busy=true;");
+		}
+		Clients.response(new AuScript(script.toString()));
+	}
+	
+	public void hideBusyMask() {
+		if (mask != null && mask.getParent() != null) {
+			mask.detach();
+			StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+			script.append(getParent().getUuid()).append("');w.busy=false;");
+			Clients.response(new AuScript(script.toString()));
+		}
+	}
+	
+	private void hideBusyDialog() {
+		hideBusyMask();
+		if (progressWindow != null) {
+			progressWindow.dispose();
+			progressWindow = null;
+		}
+	}
+	
+	static class PDFRendererRunnable extends ContextRunnable implements IServerPushCallback {
+
+		private ZkReportViewer viewer;
+
+		public PDFRendererRunnable(ZkReportViewer viewer) {
+			super();
+			this.viewer = viewer;
+		}
+
+		@Override
+		protected void doRun() {
+			try {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = viewer.makePrefix(viewer.m_reportEngine.getName());
+				if (log.isLoggable(Level.FINE))
+				{
+					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				}
+				File file = File.createTempFile(prefix, ".pdf", new File(path));
+				viewer.m_reportEngine.createPDF(file);
+				viewer.media = new AMedia(file.getName(), "pdf", "application/pdf", file, true);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException)
+					throw (RuntimeException)e;
+				else
+					throw new RuntimeException(e);
+			} finally {		
+				Desktop desktop = AEnv.getDesktop();
+				if (desktop != null && desktop.isAlive()) {
+					new ServerPushTemplate(desktop).executeAsync(this);
+				}
+			}
+		}
+
+		@Override
+		public void updateUI() {
+			viewer.labelDrill.setVisible(false);
+			viewer.comboDrill.setVisible(false);
+			viewer.onPreviewReport();
+		}
+		
+	}
+	
+	static class HTMLRendererRunnable extends ContextRunnable implements IServerPushCallback {
+
+		private ZkReportViewer viewer;
+		private String contextPath;
+		
+		public HTMLRendererRunnable(ZkReportViewer viewer) {
+			super();
+			this.viewer = viewer;
+			contextPath = Executions.getCurrent().getContextPath();
+		}
+
+		@Override
+		protected void doRun() {
+			try {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = viewer.makePrefix(viewer.m_reportEngine.getName());
+				if (log.isLoggable(Level.FINE))
+				{
+					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				}
+				File file = File.createTempFile(prefix, ".html", new File(path));
+				viewer.m_reportEngine.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(contextPath, "rp", viewer.getUuid()));
+				viewer.media = new AMedia(file.getName(), "html", "text/html", file, false);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException)
+					throw (RuntimeException)e;
+				else
+					throw new RuntimeException(e);
+			} finally {
+				Desktop desktop = AEnv.getDesktop();
+				if (desktop != null && desktop.isAlive()) {
+					new ServerPushTemplate(desktop).executeAsync(this);
+				}
+			}
+		}
+
+		@Override
+		public void updateUI() {						
+			if (viewer.comboDrill.getItemCount() > 1) {
+				viewer.labelDrill.setVisible(true);
+				viewer.comboDrill.setVisible(true);
+			}
+			viewer.onPreviewReport();
+		}		
+	}
+	
+	static class XLSRendererRunnable extends ContextRunnable  implements IServerPushCallback {
+
+		private ZkReportViewer viewer;
+
+		public XLSRendererRunnable(ZkReportViewer viewer) {
+			super();
+			this.viewer = viewer;
+		}
+
+		@Override
+		protected void doRun() {
+			try {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = viewer.makePrefix(viewer.m_reportEngine.getName());
+				if (log.isLoggable(Level.FINE))
+				{
+					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				}
+				File file = File.createTempFile(prefix, ".xls", new File(path));
+				viewer.m_reportEngine.createXLS(file, AEnv.getLanguage(Env.getCtx()));
+				viewer.media = new AMedia(file.getName(), "xls", "application/vnd.ms-excel", file, true);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException)
+					throw (RuntimeException)e;
+				else
+					throw new RuntimeException(e);
+			} finally {			
+				Desktop desktop = AEnv.getDesktop();
+				if (desktop != null && desktop.isAlive()) {
+					new ServerPushTemplate(desktop).executeAsync(this);
+				}
+			}
+		}
+
+		@Override
+		public void updateUI() {
+			viewer.labelDrill.setVisible(false);
+			viewer.comboDrill.setVisible(false);
+			viewer.onPreviewReport();
+		}
+		
+	}
 }
