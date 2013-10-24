@@ -23,6 +23,7 @@ import java.util.logging.Level;
 
 import org.compiere.apps.IStatusBar;
 import org.compiere.minigrid.IMiniTable;
+import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MOrder;
 import org.compiere.model.MRMA;
@@ -53,7 +54,12 @@ public abstract class CreateFrom implements ICreateFrom
 
 	public CreateFrom(GridTab gridTab) {
 		this.gridTab = gridTab;
-		isSOTrx = (Boolean) gridTab.getField("isSoTrx").getValue();
+		
+		GridField field = gridTab.getField("IsSOTrx"); 
+		if (field != null) 
+			isSOTrx = (Boolean) field.getValue(); 
+		else 
+			isSOTrx = "Y".equals(Env.getContext(Env.getCtx(), gridTab.getWindowNo(), "IsSOTrx"));
 	}
 
 	public abstract boolean dynInit() throws Exception;
