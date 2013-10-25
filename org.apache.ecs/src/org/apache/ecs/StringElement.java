@@ -16,10 +16,6 @@
  *****************************************************************************/
 package org.apache.ecs;
 
-import java.text.CharacterIterator;
-import java.text.StringCharacterIterator;
-
-
 /**
     This class is used to create a String element in ECS. A StringElement 
     has no tags wrapped around it, it is an Element without tags.
@@ -30,10 +26,11 @@ import java.text.StringCharacterIterator;
 */
 public class StringElement extends ConcreteElement implements Printable
 {
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1589031493456017832L;
+	private static final long serialVersionUID = -4270491831650738524L;
+
 	/**
         Basic constructor
     */
@@ -75,41 +72,6 @@ public class StringElement extends ConcreteElement implements Printable
         return this;
     }
 
-	/**
-	 * 	Set Tag Text
-	 *	@param text text
-	 *	@return Element
-	 */
-	public Element setTagText (String text)
-	{
-		if (text != null && text.length() > 0)
-		{
-	        StringCharacterIterator sci = new StringCharacterIterator(text);
-	        for (char c = sci.first(); c != CharacterIterator.DONE; c = sci.next())
-	        {
-				int ii = c;
-				if (ii > 255)
-				{
-					setFilterState(true);
-					break;
-				}
-	        }
-		}
-		return super.setTagText (text);
-	}	//	setTagText
-	
-	/**
-	 * 	Set Filter State - don't allow reset
-	 *	@param filter_state state
-	 *	@return this
-	 */
-	public Element setFilterState (boolean filter_state)
-	{
-		if (!getFilterState())
-			return super.setFilterState (filter_state);
-		return this;
-	}	//	setFilterState
-	
     /**
         Adds an Element to the element.
         @param  hashcode name of element for hash table
