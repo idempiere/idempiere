@@ -422,7 +422,7 @@ public class VLocationDialog extends CDialog
 		{
 			addLine(line++, new CLabel(Msg.getElement(Env.getCtx(), "C_AddressValidation_ID")), lstAddressValidation);
 			
-			MAddressValidation[] validations = MAddressValidation.getAddressValidation(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()), null);
+			MAddressValidation[] validations = MAddressValidation.getAddressValidation(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()), null);
 			for (MAddressValidation validation : validations)
 			{
 				lstAddressValidation.addItem(validation);

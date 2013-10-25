@@ -42,8 +42,8 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8929067871181338266L;
-
+	private static final long serialVersionUID = 4741060210080877182L;
+	
 	public final static String PDF_FONT_DIR = "PDF_FONT_DIR";
 	public final static String TWOPACK_HANDLE_TRANSLATIONS = "2PACK_HANDLE_TRANSLATIONS";
 	public static final String ZK_DESKTOP_CLASS = "ZK_DESKTOP_CLASS";
@@ -118,9 +118,10 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String ZK_MAX_UPLOAD_SIZE = "ZK_MAX_UPLOAD_SIZE";
 	public static final String CALENDAR_ALTERNATE_TIMEZONE = "CALENDAR_ALTERNATE_TIMEZONE";
 	public static final String ZK_REPORT_JASPER_OUTPUT_TYPE = "ZK_REPORT_JASPER_OUTPUT_TYPE";
-	public static final String ZK_PRINT_SHIPPING_LABEL_SHARED_TEMP_FOLDER = "ZK_PRINT_SHIPPING_LABEL_SHARED_TEMP_FOLDER";
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
 	public static final String TAX_SAVE_REQUEST_RESPONSE_LOG = "TAX_SAVE_REQUEST_RESPONSE_LOG";
+	public static final String ZK_PRINT_SHIPPING_LABEL_SHARED_TEMP_FOLDER = "ZK_PRINT_SHIPPING_LABEL_SHARED_TEMP_FOLDER";
+	public static final String ADDRESS_SAVE_REQUEST_RESPONSE_LOG = "ADDRESS_SAVE_REQUEST_RESPONSE_LOG";
 
 	/**
 	 * 	Standard Constructor

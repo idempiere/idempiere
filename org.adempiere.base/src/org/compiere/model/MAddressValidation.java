@@ -28,12 +28,12 @@ import org.compiere.util.DB;
  * @author Elaine
  *
  */
-public class MAddressValidation extends X_C_AddressValidation {
+public class MAddressValidation extends X_C_AddressValidation {	
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6593449454853401744L;
+	private static final long serialVersionUID = 8194097022422808757L;
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger(MAddressValidation.class);
@@ -42,13 +42,12 @@ public class MAddressValidation extends X_C_AddressValidation {
 	 * Get default address validation
 	 * @param ctx
 	 * @param AD_Client_ID
-	 * @param AD_Org_ID
 	 * @param trxName
 	 * @return address validation
 	 */
-	public static MAddressValidation getDefaultAddressValidation(Properties ctx, int AD_Client_ID, int AD_Org_ID, String trxName) 
+	public static MAddressValidation getDefaultAddressValidation(Properties ctx, int AD_Client_ID, String trxName) 
 	{
-		MAddressValidation[] validations = getAddressValidation(ctx, AD_Client_ID, AD_Org_ID, trxName);
+		MAddressValidation[] validations = getAddressValidation(ctx, AD_Client_ID, trxName);
 		if (validations.length == 0)
 			return null;
 		return validations[0];
@@ -58,11 +57,10 @@ public class MAddressValidation extends X_C_AddressValidation {
 	 * Get address validations
 	 * @param ctx
 	 * @param AD_Client_ID
-	 * @param AD_Org_ID
 	 * @param trxName
 	 * @return array of address validation
 	 */
-	public static MAddressValidation[] getAddressValidation(Properties ctx, int AD_Client_ID, int AD_Org_ID, String trxName) 
+	public static MAddressValidation[] getAddressValidation(Properties ctx, int AD_Client_ID, String trxName) 
 	{
 		ArrayList<MAddressValidation> list = new ArrayList<MAddressValidation>();
 		
@@ -73,7 +71,6 @@ public class MAddressValidation extends X_C_AddressValidation {
 		sql.append("AND tpc.IsActive = 'Y' ");
 		sql.append("AND tp.IsActive = 'Y' ");
 		sql.append("AND tp.AD_Client_ID = ? ");
-		sql.append("AND tp.AD_Org_ID IN (0, ?) ");
 		sql.append("ORDER BY tp.AD_Org_ID DESC, tp.SeqNo");
 		//
 		PreparedStatement pstmt = null;
@@ -82,7 +79,6 @@ public class MAddressValidation extends X_C_AddressValidation {
 		{
 			pstmt = DB.prepareStatement(sql.toString(), trxName);
 			pstmt.setInt(1, AD_Client_ID);
-			pstmt.setInt(2, AD_Org_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 				list.add(new MAddressValidation(ctx, rs, trxName));
@@ -97,12 +93,12 @@ public class MAddressValidation extends X_C_AddressValidation {
 			DB.close(rs, pstmt);
 			rs = null;
 			pstmt = null;
-		}
+		}		
 		//
 		if (list.size() == 0)
-			s_log.warning("find - not found - AD_Client_ID=" + AD_Client_ID + ", AD_Org_ID=" + AD_Org_ID);
+			s_log.warning("find - not found - AD_Client_ID=" + AD_Client_ID);
 		else
-			if (s_log.isLoggable(Level.FINE)) s_log.fine("find - #" + list.size() + " - AD_Client_ID=" + AD_Client_ID + ", AD_Org_ID=" + AD_Org_ID);
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("find - #" + list.size() + " - AD_Client_ID=" + AD_Client_ID);
 		MAddressValidation[] retValue = new MAddressValidation[list.size()];
 		list.toArray(retValue);
 		return retValue;

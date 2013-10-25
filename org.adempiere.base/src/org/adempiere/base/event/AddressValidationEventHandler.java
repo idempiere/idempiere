@@ -62,7 +62,7 @@ public class AddressValidationEventHandler extends AbstractEventHandler {
 				if (location.getC_AddressValidation_ID() > 0)
 					validation = new MAddressValidation(location.getCtx(), location.getC_AddressValidation_ID(), location.get_TrxName());
 				if (validation == null)
-					validation = MAddressValidation.getDefaultAddressValidation(location.getCtx(), location.getAD_Client_ID(), location.getAD_Org_ID(), location.get_TrxName());
+					validation = MAddressValidation.getDefaultAddressValidation(location.getCtx(), location.getAD_Client_ID(), location.get_TrxName());
 				if (validation != null)
 					location.processOnline(validation.getC_AddressValidation_ID());
 			}

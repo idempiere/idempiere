@@ -418,7 +418,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			row.appendCellChild(lstAddressValidation, 2);
 			lstAddressValidation.setHflex("1");			
 			
-			MAddressValidation[] validations = MAddressValidation.getAddressValidation(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()), null);
+			MAddressValidation[] validations = MAddressValidation.getAddressValidation(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()), null);
 			for (MAddressValidation validation : validations)
 			{
 				ListItem li = lstAddressValidation.appendItem(validation.getName(), validation);
