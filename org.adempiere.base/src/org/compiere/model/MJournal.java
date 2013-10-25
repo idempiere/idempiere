@@ -654,6 +654,19 @@ public class MJournal extends X_GL_Journal implements DocAction
 		if (DOCSTATUS_Drafted.equals(getDocStatus()) 
 			|| DOCSTATUS_Invalid.equals(getDocStatus()))
 		{
+			// set lines to 0
+			MJournalLine[] lines = getLines(false);
+			for (int i = 0; i < lines.length; i++) {
+				MJournalLine line = lines[i];
+				if (line.getAmtAcctDr().signum() != 0 || line.getAmtAcctCr().signum() != 0) {
+					line.setAmtAcctDr(Env.ZERO);
+					line.setAmtAcctCr(Env.ZERO);
+					line.setAmtSourceDr(Env.ZERO);
+					line.setAmtSourceCr(Env.ZERO);
+					line.setQty(Env.ZERO);
+					line.saveEx(get_TrxName());
+				}
+			}
 			setProcessed(true);
 			setDocAction(DOCACTION_None);
 			ok_to_void = true;

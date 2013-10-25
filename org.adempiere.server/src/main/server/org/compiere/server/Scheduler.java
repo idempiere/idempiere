@@ -196,85 +196,84 @@ public class Scheduler extends AdempiereServer
 				}
 			}
 		}
-		else
+		
+		// always notify recipients
+		Integer[] userIDs = m_model.getRecipientAD_User_IDs();
+		if (userIDs.length > 0) 
 		{
-			// notify recipients on success
-			Integer[] userIDs = m_model.getRecipientAD_User_IDs();
-			if (userIDs.length > 0) 
+			ProcessInfoUtil.setLogFromDB(pi);
+			for (int i = 0; i < userIDs.length; i++)
 			{
-				ProcessInfoUtil.setLogFromDB(pi);
-				for (int i = 0; i < userIDs.length; i++)
-				{
-					MUser user = new MUser(getCtx(), userIDs[i].intValue(), null);
-					boolean email = user.isNotificationEMail();
-					boolean notice = user.isNotificationNote();
+				MUser user = new MUser(getCtx(), userIDs[i].intValue(), null);
+				boolean email = user.isNotificationEMail();
+				boolean notice = user.isNotificationNote();
+				
+				File report = null;
+				if (isReport) {
+					//	Report
+					ReportEngine re = ReportEngine.get(m_schedulerctx, pi);
 					
-					File report = null;
-					if (isReport) {
-						//	Report
-						ReportEngine re = ReportEngine.get(m_schedulerctx, pi);
-						
-						if(process.getJasperReport() != null 
-								|| (re != null && re.getPrintFormat().getJasperProcess_ID() > 0))
-						{
-							// We have a Jasper Print Format
-							// ==============================
-							ProcessInfo jasperpi = new ProcessInfo ("", process.getAD_Process_ID());
-							jasperpi.setIsBatch(true);
-							ServerProcessCtl.process(jasperpi, null);
-							report = jasperpi.getPDFReport();
-						}
-						else
-						{
-							// Standard Print Format (Non-Jasper)
-							// ==================================
-							if (re == null)
-								return "Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
-								+ " - " + process.getName();
-							report = re.getPDF();
-						}
-					}
-					
-					if (notice) {
-						int AD_Message_ID = 441; // ProcessOK
-						if (isReport)
-							AD_Message_ID = 884; //	HARDCODED SchedulerResult
-						MNote note = new MNote(getCtx(), AD_Message_ID, userIDs[i].intValue(), null);
-						note.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
-						if (isReport) {
-							note.setTextMsg(m_model.getName());
-							note.setDescription(m_model.getDescription());
-							note.setRecord(AD_Table_ID, Record_ID);
-						} else {
-							note.setTextMsg(pi.getSummary());
-							// note.setDescription();
-							note.setRecord(MPInstance.Table_ID, pi.getAD_PInstance_ID());
-						}
-						if (note.save()) {
-							if (isReport) {
-								//	Attachment
-								MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
-								attachment.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
-								attachment.addEntry(report);
-								attachment.setTextMsg(m_model.getName());
-								attachment.saveEx();
-							}
-						}
-					}
-					
-					if (email)
+					if(process.getJasperReport() != null 
+							|| (re != null && re.getPrintFormat().getJasperProcess_ID() > 0))
 					{
-						MClient client = MClient.get(m_model.getCtx(), m_model.getAD_Client_ID());
+						// We have a Jasper Print Format
+						// ==============================
+						ProcessInfo jasperpi = new ProcessInfo ("", process.getAD_Process_ID());
+						jasperpi.setIsBatch(true);
+						ServerProcessCtl.process(jasperpi, null);
+						report = jasperpi.getPDFReport();
+					}
+					else
+					{
+						// Standard Print Format (Non-Jasper)
+						// ==================================
+						if (re == null)
+							return "Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
+							+ " - " + process.getName();
+						report = re.getPDF();
+					}
+				}
+				
+				if (notice) {
+					int AD_Message_ID = 441; // ProcessOK
+					if (isReport)
+						AD_Message_ID = 884; //	HARDCODED SchedulerResult
+					MNote note = new MNote(getCtx(), AD_Message_ID, userIDs[i].intValue(), null);
+					note.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
+					if (isReport) {
+						note.setTextMsg(m_model.getName());
+						note.setDescription(m_model.getDescription());
+						note.setRecord(AD_Table_ID, Record_ID);
+					} else {
+						note.setTextMsg(pi.getSummary());
+						// note.setDescription();
+						note.setRecord(MPInstance.Table_ID, pi.getAD_PInstance_ID());
+					}
+					if (note.save()) {
 						if (isReport) {
-							client.sendEMail(from, user, m_model.getName(), m_model.getDescription(), report);
-						} else {
-							client.sendEMail(from, user, process.getName(), pi.getSummary() + " " + pi.getLogInfo(), null);
+							//	Attachment
+							MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
+							attachment.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
+							attachment.addEntry(report);
+							attachment.setTextMsg(m_model.getName());
+							attachment.saveEx();
 						}
 					}
-					
 				}
+				
+				if (email)
+				{
+					MClient client = MClient.get(m_model.getCtx(), m_model.getAD_Client_ID());
+					if (isReport) {
+						client.sendEMail(from, user, m_model.getName(), m_model.getDescription(), report);
+					} else {
+						client.sendEMail(from, user, process.getName(), pi.getSummary() + " " + pi.getLogInfo(), null);
+					}
+				}
+				
 			}
 		}
+		
 		return pi.getSummary();
 	}	//	runProcess
 

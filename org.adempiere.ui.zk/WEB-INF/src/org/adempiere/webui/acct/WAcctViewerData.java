@@ -459,13 +459,13 @@ public class WAcctViewerData
 
 		//  Groups
 
-		if (group1 && sortBy1.length() > 0)
+		if ((group1 || group2 || group3 || group4) && sortBy1.length() > 0)
 			rm.setGroup(sortBy1);
 		
-		if (group2 && sortBy2.length() > 0)
+		if ((group2 || group3 || group4) && sortBy2.length() > 0)
 			rm.setGroup(sortBy2);
 		
-		if (group3 && sortBy3.length() > 0)
+		if ((group3 || group4) && sortBy3.length() > 0)
 			rm.setGroup(sortBy3);
 		
 		if (group4 && sortBy4.length() > 0)
