@@ -154,7 +154,7 @@ public final class ALogin extends CDialog
 	private GridBagLayout connectionLayout = new GridBagLayout();
 	private GridBagLayout defaultPanelLayout = new GridBagLayout();
 	private CLabel languageLabel = new CLabel();
-	private VComboBox languageCombo = new VComboBox(Language.getNames());
+	private VComboBox languageCombo = null;
 	private CLabel compileDate = new CLabel();
 	private CPanel southPanel = new CPanel();
 	private BorderLayout southLayout = new BorderLayout();
@@ -209,6 +209,10 @@ public final class ALogin extends CDialog
 		clientCombo.setName("clientCombo");
 		userTextField.setName("userTextField");
 		passwordField.setName("passwordField");
+
+		Env.getLoginLanguages(); // to fill the s_language array on Language
+		languageCombo = new VComboBox(Language.getNames());
+
 		//red1 - end -
 		titleLabel.setFont(new java.awt.Font("Serif", 2, 10));
 		titleLabel.setForeground(Color.blue);
