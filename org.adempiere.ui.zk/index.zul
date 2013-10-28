@@ -11,6 +11,13 @@ Copyright (C) 2007 Ashley G Ramdass.
 <?link rel="stylesheet" type="text/css" href="${themeStyleSheetByBrowser}"?>
 <?link rel="stylesheet" type="text/css" href="css/PAPanel.css"?>
 <zk>
+	<script>
+		zk.afterLoad(function() {
+			zk._Erbx.push = function(msg) {
+				if (console) console.log(msg);
+			}
+		});
+	</script>
     <include src="${themePreference}"/>
 	<window use="org.adempiere.webui.AdempiereWebUI"/>
 </zk>
