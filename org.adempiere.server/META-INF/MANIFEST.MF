@@ -22,6 +22,8 @@ Import-Package: javax.jms;version="1.1.0",
  org.apache.ecs,
  org.apache.ecs.xhtml,
  org.apache.poi.hssf.usermodel,
+ org.osgi.framework;version="1.6.0",
+ org.osgi.util.tracker;version="1.5.0",
  org.restlet,
  org.restlet.data,
  org.restlet.ext.servlet,
@@ -37,3 +39,4 @@ Export-Package: org.adempiere.server,
  org.idempiere.server.factory
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/acctprocessorfactory.xml, OSGI-INF/alertprocessorfactory.xml, OSGI-INF/ldapprocessorfactory.xml, OSGI-INF/requestprocessorfactory.xml, OSGI-INF/schedulerfactory.xml, OSGI-INF/workflowprocessorfactory.xml
+Bundle-Activator: org.adempiere.server.AdempiereServerActivator
