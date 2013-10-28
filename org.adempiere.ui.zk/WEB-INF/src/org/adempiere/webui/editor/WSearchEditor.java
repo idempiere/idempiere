@@ -974,7 +974,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		public void onPageAttached(Page newpage, Page oldpage) {
 			super.onPageAttached(newpage, oldpage);
 			if (newpage != null) {
-				String w = "var btn=jq('#'+this.parent.uuid+' @button').zk.$();";
+				String w = "try{var btn=jq('#'+this.parent.uuid+' @button').zk.$();}catch(err){}";
 				getTextbox().setWidgetListener("onChange", "try{"+w+"btn.setImage(\""
 						+ Executions.getCurrent().encodeURL(IN_PROGRESS_IMAGE)+"\");"
 						+ "btn.setDisabled(true, {adbs: false, skip: false});}catch(err){}");
