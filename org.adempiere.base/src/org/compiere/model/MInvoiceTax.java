@@ -68,9 +68,10 @@ public class MInvoiceTax extends X_C_InvoiceTax
 				return null;
 			C_Tax_ID = ((Integer)old).intValue();
 		}
-		if (!line.isDescription() && C_Tax_ID == 0)
+		if (C_Tax_ID == 0)
 		{
-			s_log.warning("C_Tax_ID=0");
+			if (!line.isDescription())
+				s_log.warning("C_Tax_ID=0");
 			return null;
 		}
 		

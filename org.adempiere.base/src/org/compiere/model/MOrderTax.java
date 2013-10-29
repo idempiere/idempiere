@@ -69,9 +69,10 @@ public class MOrderTax extends X_C_OrderTax
 			}
 			C_Tax_ID = ((Integer)old).intValue();
 		}
-		if (!line.isDescription() && C_Tax_ID == 0)
+		if (C_Tax_ID == 0)
 		{
-			s_log.fine("No Tax");
+			if (!line.isDescription())
+				s_log.fine("No Tax");
 			return null;
 		}
 		
