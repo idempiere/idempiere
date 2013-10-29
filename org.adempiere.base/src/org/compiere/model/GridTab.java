@@ -2313,17 +2313,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//  Info
 		StringBuilder info = new StringBuilder(getTableName());
 		
-		/* get UUID */
-		if (!e.isInserting() && e.getCurrentRow() >= 0 && e.getCurrentRow() < e.getTotalRows())
-		{
-			PO po = m_mTable.getPO(e.getCurrentRow());
-			if (po != null) {
-				String uuidcol = po.getUUIDColumnName();
-				String uuid = po.get_ValueAsString(uuidcol);
-				info.append("\n ").append(uuidcol).append("=").append(uuid);
-			}
-		}
-		
 		//  We have a key column
 		if (m_keyColumnName != null && m_keyColumnName.length() > 0)
 		{
@@ -2731,6 +2720,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	private List<String> activeCallouts = new ArrayList<String>();
 	private List<Callout> activeCalloutInstance = new ArrayList<Callout>();
+
+	private boolean m_updateWindowContext = true;
 
 	/**
 	 *
@@ -3235,6 +3226,16 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	public boolean isNew() {
 		return isOpen() && getCurrentRow() >= 0 && getCurrentRow() == m_mTable.getNewRow();
+	}
+	
+	public boolean isUpdateWindowContext() 
+	{
+		return m_updateWindowContext ;
+	}
+		
+	public void setUpdateWindowContext(boolean updateWindowContext)
+	{
+		m_updateWindowContext = updateWindowContext;
 	}
 
 	public void addToSelection(int rowIndex) {

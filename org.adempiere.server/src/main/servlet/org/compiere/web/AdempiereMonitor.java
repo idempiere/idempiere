@@ -300,8 +300,7 @@ public class AdempiereMonitor extends HttpServlet
 			{
 				if (reload) 
 				{
-					m_serverMgr.stopAll();
-					ok=m_serverMgr.startServers();
+					ok=m_serverMgr.reload();
 					this.createSummaryPage(request, response,true);
 					m_dirAccessList = getDirAcessList();
 				} else {

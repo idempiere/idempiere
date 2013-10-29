@@ -18,19 +18,27 @@ package org.compiere.server;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.base.Service;
+import org.adempiere.server.AdempiereServerActivator;
 import org.adempiere.server.IServerFactory;
 import org.compiere.Adempiere;
 import org.compiere.model.AdempiereProcessor;
 import org.compiere.model.MSession;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleListener;
+import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  *	Adempiere Server Manager
@@ -38,8 +46,10 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: AdempiereServerMgr.java,v 1.4 2006/10/09 00:23:26 jjanke Exp $
  */
-public class AdempiereServerMgr
+public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFactory<AdempiereServer, AdempiereProcessor>, IServerFactory<AdempiereServer, AdempiereProcessor>>, BundleListener
 {
+	private static ServiceTracker<IServerFactory<AdempiereServer, AdempiereProcessor>, IServerFactory<AdempiereServer, AdempiereProcessor>> serviceTracker;
+
 	/**
 	 * 	Get Adempiere Server Manager
 	 *	@return mgr
@@ -48,10 +58,11 @@ public class AdempiereServerMgr
 	{
 		if (m_serverMgr == null)
 		{
-			//	for faster subsequent calls
 			m_serverMgr = new AdempiereServerMgr();
-			m_serverMgr.startServers();
-			m_serverMgr.log.info(m_serverMgr.toString());
+			serviceTracker = new ServiceTracker<IServerFactory<AdempiereServer, AdempiereProcessor>, IServerFactory<AdempiereServer, AdempiereProcessor>>(AdempiereServerActivator.getBundleContext(), 
+					IServerFactory.class.getName(), m_serverMgr);
+			serviceTracker.open();
+			AdempiereServerActivator.getBundleContext().addBundleListener(m_serverMgr);
 		}
 		return m_serverMgr;
 	}	//	get
@@ -68,7 +79,8 @@ public class AdempiereServerMgr
 	{
 		super();
 		startEnvironment();
-	//	m_serverMgr.startServers();
+		m_servers=new ArrayList<ServerWrapper>();
+		processorClass = new HashSet<String>();
 	}	//	AdempiereServerMgr
 
 	/**	The Servers				*/
@@ -77,6 +89,8 @@ public class AdempiereServerMgr
 	private Properties		m_ctx = Env.getCtx();
 	/** Start					*/
 	private Timestamp		m_start = new Timestamp(System.currentTimeMillis());
+	
+	private Set<String> processorClass;
 
 	/**
 	 * 	Start Environment
@@ -100,42 +114,49 @@ public class AdempiereServerMgr
 	 * 	Start Environment
 	 *	@return true if started
 	 */
-	@SuppressWarnings("rawtypes")
-	public boolean startServers()
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public synchronized boolean reload()
 	{
 		log.info("");
-		int noServers = 0;
+		if (!stopAll())
+			return false;
+		
+		int noServers = 0;		
 		m_servers=new ArrayList<ServerWrapper>();
+		processorClass = new HashSet<String>();
 		
 		//osgi server
 		List<IServerFactory> serverFactoryList = Service.locator().list(IServerFactory.class).getServices();
 		if (serverFactoryList != null && !serverFactoryList.isEmpty())
 		{
-			List<String> processed = new ArrayList<String>();
 			for(IServerFactory factory : serverFactoryList )
 			{
-				String name = factory.getProcessorClass().getName();
-				if (!processed.contains(name))
-				{
-					processed.add(name);
-					AdempiereServer[] servers = factory.create(m_ctx);
-					if (servers != null && servers.length > 0)
-					{
-						for (AdempiereServer server : servers)
-						{
-							AdempiereProcessor model = server.getModel();
-							if (AdempiereServer.isOKtoRunOnIP(model)) {
-								m_servers.add(new ServerWrapper(server));
-							}
-						}
-					}				
-				}
+				createServers(factory);
 			}
 		}
 		
 		if (log.isLoggable(Level.FINE)) log.fine("#" + noServers);
 		return startAll();
 	}	//	startEnvironment
+
+	private void createServers(IServerFactory<AdempiereServer, AdempiereProcessor> factory) {
+		String name = factory.getProcessorClass().getName();
+		if (!processorClass.contains(name))
+		{
+			processorClass.add(name);
+			AdempiereServer[] servers = factory.create(m_ctx);
+			if (servers != null && servers.length > 0)
+			{
+				for (AdempiereServer server : servers)
+				{
+					AdempiereProcessor model = server.getModel();
+					if (AdempiereServer.isOKtoRunOnIP(model)) {
+						m_servers.add(new ServerWrapper(server));
+					}
+				}
+			}				
+		}
+	}
 
 	/**
 	 * 	Get Server Context
@@ -150,7 +171,7 @@ public class AdempiereServerMgr
 	 * 	Start all servers
 	 *	@return true if started
 	 */
-	public boolean startAll()
+	public synchronized boolean startAll()
 	{
 		log.info ("");
 		ServerWrapper[] servers = getInActive();
@@ -159,7 +180,7 @@ public class AdempiereServerMgr
 			ServerWrapper server = servers[i];
 			try
 			{
-				if (server.scheduleFuture != null || !server.scheduleFuture.isDone())
+				if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
 					continue;
 				//	Do start
 				//	replace
@@ -205,7 +226,7 @@ public class AdempiereServerMgr
 	 * 	@param serverID server ID
 	 *	@return true if started
 	 */
-	public boolean start (String serverID)
+	public synchronized boolean start (String serverID)
 	{
 		ServerWrapper server = getServer(serverID);
 		if (server == null)
@@ -231,7 +252,7 @@ public class AdempiereServerMgr
 	 * 	Stop all Servers
 	 *	@return true if stopped
 	 */
-	public boolean stopAll()
+	public synchronized boolean stopAll()
 	{
 		log.info ("");
 		ServerWrapper[] servers = getActive();
@@ -311,7 +332,7 @@ public class AdempiereServerMgr
 	 * 	@param serverID server ID
 	 *	@return true if interrupted
 	 */
-	public boolean stop (String serverID)
+	public synchronized boolean stop (String serverID)
 	{
 		ServerWrapper server = getServer(serverID);
 		if (server == null)
@@ -337,7 +358,7 @@ public class AdempiereServerMgr
 	/**
 	 * 	Destroy
 	 */
-	public void destroy ()
+	public synchronized void destroy ()
 	{
 		log.info ("");
 		stopAll();
@@ -348,7 +369,7 @@ public class AdempiereServerMgr
 	 * 	Get Active Servers
 	 *	@return array of active servers
 	 */
-	protected ServerWrapper[] getActive()
+	protected synchronized ServerWrapper[] getActive()
 	{
 		ArrayList<ServerWrapper> list = new ArrayList<ServerWrapper>();
 		for (int i = 0; i < m_servers.size(); i++)
@@ -366,7 +387,7 @@ public class AdempiereServerMgr
 	 * 	Get InActive Servers
 	 *	@return array of inactive servers
 	 */
-	protected ServerWrapper[] getInActive()
+	protected synchronized ServerWrapper[] getInActive()
 	{
 		ArrayList<ServerWrapper> list = new ArrayList<ServerWrapper>();
 		for (int i = 0; i < m_servers.size(); i++)
@@ -384,7 +405,7 @@ public class AdempiereServerMgr
 	 * 	Get all Servers
 	 *	@return array of servers
 	 */
-	public ServerWrapper[] getAll()
+	public synchronized ServerWrapper[] getAll()
 	{
 		ServerWrapper[] retValue = new ServerWrapper[m_servers.size()];
 		m_servers.toArray (retValue);
@@ -396,7 +417,7 @@ public class AdempiereServerMgr
 	 *	@param serverID server id
 	 *	@return server or null
 	 */
-	public ServerWrapper getServer (String serverID)
+	public synchronized ServerWrapper getServer (String serverID)
 	{
 		if (serverID == null)
 			return null;
@@ -436,7 +457,7 @@ public class AdempiereServerMgr
 	 * 	Get Number Servers
 	 *	@return no of servers
 	 */
-	public String getServerCount()
+	public synchronized String getServerCount()
 	{
 		int noRunning = 0;
 		int noStopped = 0;
@@ -496,5 +517,37 @@ public class AdempiereServerMgr
 			return scheduleFuture != null && scheduleFuture.isCancelled();
 		}
 		
+	}
+
+	@Override
+	public synchronized IServerFactory<AdempiereServer, AdempiereProcessor> addingService(
+			ServiceReference<IServerFactory<AdempiereServer, AdempiereProcessor>> reference) {
+		IServerFactory<AdempiereServer, AdempiereProcessor> factory = AdempiereServerActivator.getBundleContext().getService(reference);
+		createServers(factory);
+		startAll();
+		return factory;
+	}
+
+	@Override
+	public void modifiedService(
+			ServiceReference<IServerFactory<AdempiereServer, AdempiereProcessor>> reference,
+			IServerFactory<AdempiereServer, AdempiereProcessor> service) {
+	}
+
+	@Override
+	public void removedService(
+			ServiceReference<IServerFactory<AdempiereServer, AdempiereProcessor>> reference,
+			IServerFactory<AdempiereServer, AdempiereProcessor> service) {
+	}
+
+	@Override
+	public void bundleChanged(BundleEvent event) {
+		if (event.getType() == BundleEvent.STOPPED) {
+			if (serviceTracker != null)
+				serviceTracker.close();
+		} else if (event.getType() == BundleEvent.STARTED) {
+			if (serviceTracker != null)
+				serviceTracker.open();
+		}
 	}
 }	//	AdempiereServerMgr
