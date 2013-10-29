@@ -210,7 +210,8 @@ public final class ALogin extends CDialog
 		userTextField.setName("userTextField");
 		passwordField.setName("passwordField");
 
-		Env.getLoginLanguages(); // to fill the s_language array on Language
+		if (DB.isConnected())
+			Env.getLoginLanguages(); // to fill the s_language array on Language
 		languageCombo = new VComboBox(Language.getNames());
 
 		//red1 - end -
