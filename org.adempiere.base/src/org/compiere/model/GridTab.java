@@ -2289,17 +2289,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//  Info
 		StringBuilder info = new StringBuilder(getTableName());
 		
-		/* get UUID */
-		if (!e.isInserting() && e.getCurrentRow() >= 0 && e.getCurrentRow() < e.getTotalRows())
-		{
-			PO po = m_mTable.getPO(e.getCurrentRow());
-			if (po != null) {
-				String uuidcol = po.getUUIDColumnName();
-				String uuid = po.get_ValueAsString(uuidcol);
-				info.append("\n ").append(uuidcol).append("=").append(uuid);
-			}
-		}
-		
 		//  We have a key column
 		if (m_keyColumnName != null && m_keyColumnName.length() > 0)
 		{
