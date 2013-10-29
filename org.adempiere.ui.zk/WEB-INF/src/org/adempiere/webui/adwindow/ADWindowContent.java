@@ -25,6 +25,7 @@ package org.adempiere.webui.adwindow;
 
 import java.util.Properties;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
@@ -197,13 +198,43 @@ public class ADWindowContent extends AbstractADWindowContent
 	class TabOnCloseHanlder implements ITabOnCloseHandler {
 
 		public void onClose(Tabpanel tabPanel) {
+			if (ADWindowContent.this.getOnExitCallBack() == null){
+				OnCloseCallback onCloseCallback = new OnCloseCallback();
+				ADWindowContent.this.setOnExitCallBack(onCloseCallback);
+				onCloseCallback.setTabPanel(tabPanel);
+			}
 			if (ADWindowContent.this.onExit()) {				
-				Tab tab = tabPanel.getLinkedTab();
-				tab.close();
-				if (getWindowNo() > 0)
-					SessionManager.getAppDesktop().unregisterWindow(getWindowNo());
+				closeTab (tabPanel);
 			}
 		}
+	}
+	
+	class OnCloseCallback implements Callback<Boolean>{
+		Tabpanel tabPanel;
+		public Tabpanel getTabPanel() {
+			return tabPanel;
+		}
+		public void setTabPanel(Tabpanel tabPanel) {
+			this.tabPanel = tabPanel;
+		}
+		@Override
+		public void onCallback(Boolean result) {
+			if (result){
+				closeTab (tabPanel);
+			}
+			
+		}
+	}
+	
+	/**
+	 * close tab contain this window
+	 * @param tabPanel
+	 */
+	protected void closeTab (Tabpanel tabPanel) {
+		Tab tab = tabPanel.getLinkedTab();
+		tab.close();
+		if (getWindowNo() > 0)
+			SessionManager.getAppDesktop().unregisterWindow(getWindowNo());
 	}
 	
 	public static class ADWindowVlayout extends Vlayout implements IHelpContext {

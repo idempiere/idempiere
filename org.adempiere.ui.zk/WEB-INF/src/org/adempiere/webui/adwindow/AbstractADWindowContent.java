@@ -971,6 +971,20 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     }
 
     /**
+     * handle respond of user with close un save message.
+     * must set before call onExit
+     */
+    private Callback<Boolean> onExitCallBack;
+    
+    public Callback<Boolean> getOnExitCallBack() {
+		return onExitCallBack;
+	}
+
+	public void setOnExitCallBack(Callback<Boolean> onExitCallBack) {
+		this.onExitCallBack = onExitCallBack;
+	}
+
+	/**
      * @return boolean
      */
     public boolean onExit()
@@ -979,10 +993,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	{
     		return true;
     	}
-    	else
-    		FDialog.info(this.curWindowNo, null, "SaveBeforeClose");
-
-    	return false;
+    	else{
+    	
+    		FDialog.ask(curWindowNo, null, "CloseUnSave?", getOnExitCallBack());
+    		return false;
+    	}
+    	
     }
 
     /**
