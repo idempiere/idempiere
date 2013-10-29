@@ -1523,7 +1523,7 @@ public class GridField
 		else if (m_value instanceof Boolean)
 		{
 			backupValue(); // teo_sarca [ 1699826 ]
-			if (!isParentTabField())
+			if (!isParentTabField() && isUpdateWindowContext())
 			{
 				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.ColumnName, 
 					((Boolean)m_value).booleanValue());
@@ -1534,7 +1534,7 @@ public class GridField
 		else if (m_value instanceof Timestamp)
 		{
 			backupValue(); // teo_sarca [ 1699826 ]
-			if (!isParentTabField())
+			if (!isParentTabField() && isUpdateWindowContext())
 			{
 				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.ColumnName, (Timestamp)m_value);
 			}
@@ -1554,7 +1554,7 @@ public class GridField
 		else
 		{
 			backupValue(); // teo_sarca [ 1699826 ]
-			if (!isParentTabField())
+			if (!isParentTabField() && isUpdateWindowContext())
 			{
 				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.ColumnName, 
 					m_value==null ? null : m_value.toString());
@@ -2058,6 +2058,14 @@ public class GridField
 	private boolean isParentTabField()
 	{
 		return isParentTabField(m_vo.ColumnName);
+	}
+	
+	private boolean isUpdateWindowContext()
+	{
+		if (getGridTab() != null)
+			return getGridTab().isUpdateWindowContext();
+		
+		return true;
 	}
 	
 	/*IDEMPIERE-358*/

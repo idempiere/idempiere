@@ -533,6 +533,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		// Query first tab
 		if (tabIndex == 0)
 		{
+			gTab.setUpdateWindowContext(true);
 			m_queryInitiating = true;
 			getComponent().setVisible(false);
 		    initialQuery(query, gTab, new Callback<MQuery>() {
@@ -564,6 +565,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				}
 
 			});
+		}
+		else
+		{
+			gTab.setUpdateWindowContext(false);
 		}
 
 		if (gTab.isSortTab())
@@ -1149,8 +1154,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    return;
 		}
 
-
 		IADTabpanel newTabpanel = adTabbox.getSelectedTabpanel();
+		
+		//toggle window context update
+		if (newTabpanel.getGridTab() != null)
+			newTabpanel.getGridTab().setUpdateWindowContext(true);
+		if (oldTabIndex > newTabIndex && oldTabpanel.getGridTab() != null)
+			oldTabpanel.getGridTab().setUpdateWindowContext(false);
 
 		boolean activated = newTabpanel.isActivated();
 		if (oldTabpanel != null)

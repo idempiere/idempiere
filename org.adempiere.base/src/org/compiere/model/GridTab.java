@@ -2708,6 +2708,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	private List<String> activeCallouts = new ArrayList<String>();
 	private List<Callout> activeCalloutInstance = new ArrayList<Callout>();
 
+	private boolean m_updateWindowContext = true;
+
 	/**
 	 *
 	 * @return list of active call out for this tab
@@ -3211,5 +3213,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	public boolean isNew() {
 		return isOpen() && getCurrentRow() >= 0 && getCurrentRow() == m_mTable.getNewRow();
+	}
+	
+	public boolean isUpdateWindowContext() 
+	{
+		return m_updateWindowContext ;
+	}
+		
+	public void setUpdateWindowContext(boolean updateWindowContext)
+	{
+		m_updateWindowContext = updateWindowContext;
 	}
 }	//	GridTab
