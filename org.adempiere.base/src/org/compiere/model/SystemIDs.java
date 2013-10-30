@@ -121,6 +121,7 @@ public class SystemIDs
 	public final static int REFERENCE_POSTED = 234;
 	public final static int REFERENCE_YESNO = 319;
 	public final static int REFERENCE_WIZARDSTATUS = 200003;
+	public final static int REFERENCE_WFINSTANCE_STATE = 305;
 
 	public final static int TABLE_AD_TABLE = 100;
 	public final static int TABLE_AD_WF_PROCESS = 645;

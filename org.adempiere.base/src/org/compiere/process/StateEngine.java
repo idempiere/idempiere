@@ -16,7 +16,12 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import static org.compiere.model.SystemIDs.REFERENCE_WFINSTANCE_STATE;
+
+import org.compiere.model.MRefList;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 
 /**
@@ -119,22 +124,10 @@ public class StateEngine
 	public String getStateInfo()
 	{
 		String state = getState();	//	is overwritten to update
-		/**
-		int AD_Reference_ID = 305;
-		MRefList.getList(AD_Reference_ID, false);
-		**/
-		if (STATE_Running.equals(state))
-			return "Running";
-		else if (STATE_NotStarted.equals(state))
-			return "Not Started";
-		else if (STATE_Suspended.equals(state))
-			return "Suspended";
-		else if (STATE_Completed.equals(state))
-			return "Completed";
-		else if (STATE_Aborted.equals(state))
-			return "Aborted";
-		else if (STATE_Terminated.equals(state))
-			return "Terminated";
+		String stateName = MRefList.getListName(Env.getCtx(), REFERENCE_WFINSTANCE_STATE, state);
+		if (! Util.isEmpty(stateName))
+			return stateName;
+
 		return state;
 	}	//	getStateInfo
 
