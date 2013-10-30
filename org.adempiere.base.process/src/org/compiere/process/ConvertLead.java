@@ -68,7 +68,7 @@ public class ConvertLead extends SvrProcess {
 			bp.setName(lead.getName());
 		
 		bp.saveEx();
-		addLog("Business Partner created.");
+		addLog(bp.getC_BPartner_ID(), null, null, "@C_BPartner_ID@ @Created@", MBPartner.Table_ID, bp.getC_BPartner_ID());
 		
 		lead.setC_BPartner_ID(bp.getC_BPartner_ID());
 		
@@ -88,7 +88,7 @@ public class ConvertLead extends SvrProcess {
 			
 			lead.setC_BPartner_Location_ID(loc.getC_BPartner_Location_ID());
 			
-			addLog("Contact Location added.");
+			addLog("@C_BPartner_Location_ID@ @Created@");
 		}
 		
 		// company address
@@ -103,7 +103,7 @@ public class ConvertLead extends SvrProcess {
 			loc.setC_Location_ID(address.getC_Location_ID());
 			loc.saveEx();
 			
-			addLog("BP Address added.");
+			addLog("@C_Location_ID@ @Created@");
 		}
 		
 		if (p_createOpportunity )
@@ -139,14 +139,12 @@ public class ConvertLead extends SvrProcess {
 			
 			op.saveEx();
 			
-			addLog("Opportunity created.");
+			addLog(op.getC_Opportunity_ID(), null, null, "@C_Opportunity_ID@ @Created@", MOpportunity.Table_ID, op.getC_Opportunity_ID());
 		}
 		
 		lead.setIsSalesLead(false);
 		lead.setLeadStatus(MUser.LEADSTATUS_Converted);
 		lead.saveEx();
-		
-		addLog("Lead converted.");
 		
 		return "@OK@";
 	}
