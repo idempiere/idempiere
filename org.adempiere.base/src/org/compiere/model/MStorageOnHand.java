@@ -44,7 +44,12 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3649163126231150631L;
+	private static final long serialVersionUID = -9202148574984537051L;
+
+	public static MStorageOnHand get (Properties ctx, int M_Locator_ID, 
+			int M_Product_ID, int M_AttributeSetInstance_ID, String trxName) {
+		return get (ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, null, trxName);
+	}
 
 	/**
 	 * 	Get Storage Info
