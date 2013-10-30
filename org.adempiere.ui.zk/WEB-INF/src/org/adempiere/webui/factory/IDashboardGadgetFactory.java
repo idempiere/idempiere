@@ -13,6 +13,8 @@
  *****************************************************************************/
 package org.adempiere.webui.factory;
 
+import java.util.Map;
+
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -27,5 +29,5 @@ public interface IDashboardGadgetFactory {
      * @param parent
      * @return Component instance of DashboardPanel or null
      */
-    public Component getGadget(String uri, Component parent);
+    public Component getGadget(String uri, Component parent, Map<?, ?> args);
 }

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import org.compiere.util.CCache;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -24,15 +25,29 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.IntervalXYDataset;
 
 public class MChart extends X_AD_Chart {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8851465915516536910L;
+	private static final long serialVersionUID = 6001892625463139079L;
 	
 	private int windowNo=0;
 	private Dataset dataset;
 	private HashMap<String,MQuery> queries;
+	
+	private static CCache<Integer,MChart> s_cache = new CCache<Integer,MChart>("AD_Chart", 30, 60);
+ 	
+	public static MChart get (Properties ctx, int AD_Chart_ID)
+	{
+		Integer key = new Integer(AD_Chart_ID);
+		MChart retValue = (MChart)s_cache.get(key);
+		if (retValue == null)
+		{
+			retValue = new MChart (ctx, AD_Chart_ID, null);
+			s_cache.put(key, retValue);
+		}
+		
+		return retValue;
+	}	//	get
 
 	public MChart(Properties ctx, int AD_Chart_ID, String trxName) {
 		super(ctx, AD_Chart_ID, trxName);
