@@ -441,12 +441,12 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		//"images/InfoAccount16.png"
 
 		Groupbox groupDisplay = new Groupbox();
-		Caption capDisplay = new Caption("Display");
+		Caption capDisplay = new Caption(Msg.getMsg(Env.getCtx(), "Display"));
 		groupDisplay.appendChild(capDisplay);
 		groupDisplay.appendChild(displayPanel);
 
 		Groupbox groupSelection = new Groupbox();
-		Caption capSelection = new Caption("Selection");
+		Caption capSelection = new Caption(Msg.getMsg(Env.getCtx(), "Selection"));
 		groupSelection.appendChild(capSelection);
 		groupSelection.appendChild(selectionPanel);
 
