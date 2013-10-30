@@ -34,6 +34,7 @@ import org.compiere.model.MAssignmentSlot;
 import org.compiere.model.ScheduleUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.calendar.Calendars;
 import org.zkoss.calendar.event.CalendarsEvent;
@@ -66,7 +67,7 @@ public class WSchedule extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7714179510197450419L;
+	private static final long serialVersionUID = -4819513326165148245L;
 
 	@SuppressWarnings("unused")
 	private InfoSchedule infoSchedule;
@@ -292,7 +293,7 @@ public class WSchedule extends Window implements EventListener<Event>
 				divArrowClicked(true);
 		} else if (type.equals("onUpdateView")) {
 			String text = String.valueOf(event.getData());
-			int days = "Day".equals(text) ? 1: "5 Days".equals(text) ? 5: "Week".equals(text) ? 7: 0;
+			int days = Msg.getMsg(Env.getCtx(),"Day").equals(text) ? 1: Msg.getMsg(Env.getCtx(),"5Days").equals(text) ? 5: Msg.getMsg(Env.getCtx(),"Week" ).equals(text) ? 7: 0;
 			divTabClicked(days);
 		} else {
 			Events.sendEvent(this, event);
