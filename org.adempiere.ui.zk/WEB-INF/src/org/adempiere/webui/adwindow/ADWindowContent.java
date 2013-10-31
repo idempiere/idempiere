@@ -195,34 +195,18 @@ public class ADWindowContent extends AbstractADWindowContent
     	}
     }
 
-	class TabOnCloseHanlder implements ITabOnCloseHandler {
-
+	class TabOnCloseHanlder implements ITabOnCloseHandler, Callback<Boolean> {
+		private Tabpanel tabPanel;
 		public void onClose(Tabpanel tabPanel) {
-			if (ADWindowContent.this.getOnExitCallBack() == null){
-				OnCloseCallback onCloseCallback = new OnCloseCallback();
-				ADWindowContent.this.setOnExitCallBack(onCloseCallback);
-				onCloseCallback.setTabPanel(tabPanel);
-			}
-			if (ADWindowContent.this.onExit()) {				
-				closeTab (tabPanel);
-			}
-		}
-	}
-	
-	class OnCloseCallback implements Callback<Boolean>{
-		Tabpanel tabPanel;
-		public Tabpanel getTabPanel() {
-			return tabPanel;
-		}
-		public void setTabPanel(Tabpanel tabPanel) {
 			this.tabPanel = tabPanel;
+			ADWindowContent.this.onExit(this);
 		}
 		@Override
 		public void onCallback(Boolean result) {
 			if (result){
-				closeTab (tabPanel);
-			}
-			
+				closeTab (tabPanel);			
+			} 
+			this.tabPanel = null;
 		}
 	}
 	

@@ -970,33 +970,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	focusToActivePanel();
     }
 
-    /**
-     * handle respond of user with close un save message.
-     * must set before call onExit
-     */
-    private Callback<Boolean> onExitCallBack;
-    
-    public Callback<Boolean> getOnExitCallBack() {
-		return onExitCallBack;
-	}
-
-	public void setOnExitCallBack(Callback<Boolean> onExitCallBack) {
-		this.onExitCallBack = onExitCallBack;
-	}
-
 	/**
-     * @return boolean
+     * @param callback
      */
-    public boolean onExit()
+    public void onExit(Callback<Boolean> callback)
     {
     	if (!boolChanges)
     	{
-    		return true;
+    		callback.onCallback(Boolean.TRUE);
     	}
-    	else{
-    	
-    		FDialog.ask(curWindowNo, null, "CloseUnSave?", getOnExitCallBack());
-    		return false;
+    	else
+    	{
+    		FDialog.ask(curWindowNo, null, "CloseUnSave?", callback);
     	}
     	
     }
