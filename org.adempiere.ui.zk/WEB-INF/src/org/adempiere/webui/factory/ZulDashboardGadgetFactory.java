@@ -14,7 +14,6 @@
 package org.adempiere.webui.factory;
 
 import java.net.URL;
-import java.util.Map;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IResourceFinder;
@@ -29,12 +28,12 @@ import org.zkoss.zk.ui.Executions;
  */
 public class ZulDashboardGadgetFactory implements IDashboardGadgetFactory {
 	@Override
-	public Component getGadget(String uri, Component parent, Map<?, ?> args) {
+	public Component getGadget(String uri, Component parent) {
 		if (uri != null && uri.toLowerCase().endsWith(".zul")) {
 	        IResourceFinder rf = Core.getResourceFinder();
 	        URL url =  rf.getResource(uri);
 	        if(url!=null)
-	        	return Executions.createComponents(url.toString(), parent, args);
+	        	return Executions.createComponents(url.toString(), parent, null);
 		}
 		return null;
 	}

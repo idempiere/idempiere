@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
 
 /**
@@ -16,26 +15,11 @@ import org.compiere.util.Env;
  *
  */
 public class MDashboardContent extends X_PA_DashboardContent
-{	
+{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3565359682982006243L;
-	
-	private static CCache<Integer,MDashboardContent> s_cache = new CCache<Integer,MDashboardContent>("PA_DashboardContent_ID", 30, 60);
- 	
-	public static MDashboardContent get (Properties ctx, int PA_DashboardContent_ID)
-	{
-		Integer key = new Integer(PA_DashboardContent_ID);
-		MDashboardContent retValue = (MDashboardContent)s_cache.get(key);
-		if (retValue == null)
-		{
-			retValue = new MDashboardContent (ctx, PA_DashboardContent_ID, null);
-			s_cache.put(key, retValue);
-		}
-		
-		return retValue;
-	}	//	get
+	private static final long serialVersionUID = -1360395253302002667L;
 
 	public static int getForSessionColumnCount(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
 	{

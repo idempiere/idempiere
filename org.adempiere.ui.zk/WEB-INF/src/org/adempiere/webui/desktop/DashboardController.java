@@ -336,13 +336,11 @@ public class DashboardController implements EventListener<Event> {
 	        	if(url != null)
 	        	{
 		        	try {
-                        Map<String,Integer> map = new HashMap<String, Integer>();
-                        map.put("DCID", dc.getPA_DashboardContent_ID());
 		        		
 		                Component component = null;
 		                List<IDashboardGadgetFactory> f = Service.locator().list(IDashboardGadgetFactory.class).getServices();
                         for (IDashboardGadgetFactory factory : f) {
-                                component = factory.getGadget(url.toString(),content,map);
+                                component = factory.getGadget(url.toString(),content);
                                 if(component != null)
                                         break;
                         }
