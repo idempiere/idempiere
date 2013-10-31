@@ -2164,26 +2164,6 @@ UPDATE AD_Column SET AD_Reference_ID=11,Updated=TO_TIMESTAMP('2010-10-06 12:14:0
 INSERT INTO t_alter_column values('ad_chart','TimeScope','NUMERIC(10)',null,'NULL')
 ;
 
--- 06/10/2010 3:35:56 PM
--- Chart
-UPDATE AD_Chart SET WinHeight=200,Updated=TO_TIMESTAMP('2010-10-06 15:35:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Chart_ID=1000001
-;
-
--- 06/10/2010 4:28:42 PM
--- Chart
-UPDATE AD_Chart SET DomainLabel='Month', TimeUnit='M',Updated=TO_TIMESTAMP('2010-10-06 16:28:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Chart_ID=1000001
-;
-
--- 06/10/2010 4:29:40 PM
--- Chart
-UPDATE AD_Chart SET TimeScope=50,Updated=TO_TIMESTAMP('2010-10-06 16:29:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Chart_ID=1000001
-;
-
--- 06/10/2010 4:55:49 PM
--- Chart
-UPDATE AD_Chart SET ChartType='LC',Updated=TO_TIMESTAMP('2010-10-06 16:55:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Chart_ID=1000001
-;
-
 -- Jul 10, 2013 5:41:15 PM PDT
 -- Adaxa Charts
 INSERT INTO AD_Element (ColumnName,AD_Element_ID,Name,PrintName,AD_Element_UU,Created,Updated,AD_Org_ID,CreatedBy,UpdatedBy,IsActive,EntityType,AD_Client_ID) VALUES ('SeriesColumn',202566,'Series Column','Series Column','fd079cd3-7e36-4808-8158-ecb7ad70af2b',TO_TIMESTAMP('2013-07-10 17:41:13','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2013-07-10 17:41:13','YYYY-MM-DD HH24:MI:SS'),0,100,100,'Y','U',0)
