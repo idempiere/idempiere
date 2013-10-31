@@ -46,6 +46,16 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 */
 	private static final long serialVersionUID = -9202148574984537051L;
 
+	/**
+	 * 
+	 * @param ctx
+	 * @param M_Locator_ID
+	 * @param M_Product_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param trxName
+	 * @deprecated
+	 * @return MStorageOnHand
+	 */
 	public static MStorageOnHand get (Properties ctx, int M_Locator_ID, 
 			int M_Product_ID, int M_AttributeSetInstance_ID, String trxName) {
 		return get (ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, null, trxName);
@@ -71,13 +81,23 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			sqlWhere += "M_AttributeSetInstance_ID=?";
 	
 		if (dateMPolicy == null)
-			dateMPolicy = new Timestamp(new Date().getTime());
+		{
+			if (M_AttributeSetInstance_ID > 0)
+			{
+				MAttributeSetInstance asi = new MAttributeSetInstance(ctx, M_AttributeSetInstance_ID, trxName);
+				dateMPolicy = asi.getCreated();
+			}
+		}
+
+		if (dateMPolicy != null)
+			sqlWhere += " AND DateMaterialPolicy=trunc(cast(? as date))";
 		
-		sqlWhere += " AND DateMaterialPolicy=trunc(cast(? as date))";
-		
-		MStorageOnHand retValue = new Query(ctx, MStorageOnHand.Table_Name, sqlWhere, trxName)
-									.setParameters(M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, dateMPolicy)
-									.first(); 
+		Query query = new Query(ctx, MStorageOnHand.Table_Name, sqlWhere, trxName);
+		if (dateMPolicy != null)
+			query.setParameters(M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, dateMPolicy);
+		else
+			query.setParameters(M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID);									 
+		MStorageOnHand retValue = query.first();
 		
 		if (retValue == null) {
 			if (s_log.isLoggable(Level.FINE)) s_log.fine("Not Found - M_Locator_ID=" + M_Locator_ID 
@@ -625,6 +645,8 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		if (dateMPolicy == null)
 			dateMPolicy = new Timestamp(new Date().getTime());
 		
+		dateMPolicy = Util.removeTime(dateMPolicy);
+		
 		MStorageOnHand retValue = get(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID,dateMPolicy, trxName);
 		if (retValue != null)
 		{
@@ -644,7 +666,6 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		return retValue;
 	}	//	getCreate
 
-	
 	/**
 	 * 	Update Storage Info add.
 	 * 	Called from MProjectIssue
@@ -656,6 +677,28 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *	@param reservationAttributeSetInstance_ID reservation AS Instance
 	 *	@param diffQtyOnHand add on hand
 	 *	@param trxName transaction
+	 *  @deprecated
+	 *	@return true if updated
+	 */
+	public static boolean add (Properties ctx, int M_Warehouse_ID, int M_Locator_ID, 
+		int M_Product_ID, int M_AttributeSetInstance_ID,
+		BigDecimal diffQtyOnHand, String trxName)
+	{
+		return add(ctx, M_Warehouse_ID, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, diffQtyOnHand, null, trxName);
+	}
+	
+	/**
+	 * 	Update Storage Info add.
+	 * 	Called from MProjectIssue
+	 *	@param ctx context
+	 *	@param M_Warehouse_ID warehouse
+	 *	@param M_Locator_ID locator
+	 *	@param M_Product_ID product
+	 *	@param M_AttributeSetInstance_ID AS Instance
+	 *	@param reservationAttributeSetInstance_ID reservation AS Instance
+	 *	@param diffQtyOnHand add on hand
+	 *  @param dateMPolicy
+	 *	@param trxName transaction
 	 *	@return true if updated
 	 */
 	public static boolean add (Properties ctx, int M_Warehouse_ID, int M_Locator_ID, 
@@ -665,8 +708,23 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		if (diffQtyOnHand == null || diffQtyOnHand.signum() == 0)
 			return true;
 
+		if (dateMPolicy == null)
+		{
+			if (M_AttributeSetInstance_ID > 0)
+			{
+				MAttributeSetInstance asi = new MAttributeSetInstance(ctx, M_AttributeSetInstance_ID, trxName);
+				dateMPolicy = asi.getCreated();				
+			}
+			else
+			{
+				dateMPolicy = new Timestamp(System.currentTimeMillis());
+			}
+		}
+		
+		dateMPolicy = Util.removeTime(dateMPolicy);
+		
 		//	Get Storage
-		MStorageOnHand storage = getCreate (ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID,dateMPolicy, trxName, true, 120);
+		MStorageOnHand storage = getCreate (ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, dateMPolicy, trxName, true, 120);
 		//	Verify
 		if (storage.getM_Locator_ID() != M_Locator_ID 
 			&& storage.getM_Product_ID() != M_Product_ID
@@ -787,6 +845,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		setM_Locator_ID (locator.getM_Locator_ID());
 		setM_Product_ID (M_Product_ID);
 		setM_AttributeSetInstance_ID (M_AttributeSetInstance_ID);
+		dateMPolicy = Util.removeTime(dateMPolicy);
 		setDateMaterialPolicy(dateMPolicy);
 	}	//	MStorageOnHand
 
@@ -874,7 +933,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 * @param M_Warehouse_ID
 	 * @param M_AttributeSetInstance_ID
 	 * @param trxName
-	 * @return
+	 * @return QtyOnHand
 	 */
 	public static BigDecimal getQtyOnHand(int M_Product_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID, String trxName) {
 		StringBuilder sql = new StringBuilder();
@@ -899,6 +958,37 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		return qty;
 	}
 
+	/**
+	 * Get Quantity On Hand of Locator
+	 * @param M_Product_ID
+	 * @param M_Locator_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param trxName
+	 * @return QtyOnHand
+	 */
+	public static BigDecimal getQtyOnHandForLocator(int M_Product_ID, int M_Locator_ID, int M_AttributeSetInstance_ID, String trxName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT SUM(oh.QtyOnHand) FROM M_StorageOnHand oh")
+			.append(" WHERE oh.M_Product_ID=?")
+			.append(" AND oh.M_Locator_ID=?");
+
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(M_Product_ID);
+		params.add(M_Locator_ID);
+
+		// With ASI
+		if (M_AttributeSetInstance_ID != 0) {
+			sql.append(" AND oh.M_AttributeSetInstance_ID=?");
+			params.add(M_AttributeSetInstance_ID);
+		}
+
+		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
+		if (qty == null)
+			qty = Env.ZERO;
+
+		return qty;
+	}
+	
 	/**
 	 *	String Representation
 	 * 	@return info

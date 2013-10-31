@@ -509,7 +509,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 				{
 					Timestamp dateMPolicy= getMovementDate();
 					I_M_AttributeSetInstance asi = line.getM_AttributeSetInstance();
-					dateMPolicy =asi.getCreated();
+					if (asi != null)
+						dateMPolicy =asi.getCreated();
 					
 					//Fallback: Update Storage - see also VMatch.createMatchRecord
 					if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
