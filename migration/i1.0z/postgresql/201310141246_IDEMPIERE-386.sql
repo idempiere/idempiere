@@ -70,7 +70,7 @@ INSERT INTO AD_Field_Trl (AD_Language,AD_Field_ID, Help,Description,Name, IsTran
 
 -- Dec 25, 2012 11:22:03 AM IST
 -- IDEMPIERE-386 Redesign ASI usage for FIFO
-UPDATE AD_Field SET SeqNo=0,IsDisplayed='N' WHERE AD_Field_ID=201616
+UPDATE AD_Field SET SeqNo=0,IsDisplayed='N',SeqNoGrid=0,IsDisplayedGrid='N' WHERE AD_Field_ID=201616
 ;
 
 -- Dec 25, 2012 11:22:03 AM IST
@@ -481,17 +481,17 @@ AS
 
 -- Oct 16, 2013 5:48:19 PM MYT
 -- IDEMPIERE-386 Redesign ASI usage for FIFO
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsSecure) VALUES (0,'N',1,250,1003519,'N','N','N',0,'N',7,'N',16,'N','N','N','e7fac848-ba58-41ac-81f3-bac9f3c81e62','N','DateMaterialPolicy','Time used for LIFO and FIFO Material Policy','This field is used to record time used for LIFO and FIFO material policy','Date  Material Policy','N',TO_TIMESTAMP('2013-10-16 17:48:19','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_TIMESTAMP('2013-10-16 17:48:19','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202184,'N')
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Table_ID,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,AD_Reference_ID,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,AD_Element_ID,IsSecure) VALUES (0,'N',1,250,210887,'N','N','N',0,'N',7,'N',16,'N','N','N','e7fac848-ba58-41ac-81f3-bac9f3c81e62','N','DateMaterialPolicy','Time used for LIFO and FIFO Material Policy','This field is used to record time used for LIFO and FIFO material policy','Date  Material Policy','N',TO_TIMESTAMP('2013-10-16 17:48:19','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_TIMESTAMP('2013-10-16 17:48:19','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N',202184,'N')
 ;
 
 -- Oct 16, 2013 5:48:56 PM MYT
 -- IDEMPIERE-386 Redesign ASI usage for FIFO
-INSERT INTO AD_Field (SortNo,IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,AD_Column_ID,SeqNo,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,Help,Description,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,UpdatedBy,AD_Org_ID,Created,CreatedBy,Updated,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry,AD_Client_ID,ColumnSpan,NumLines,EntityType,IsAdvancedField,IsDefaultFocus) VALUES (0,'N',53244,0,'N','N',1003519,110,'Y',1002071,'N','This field is used to record time used for LIFO and FIFO material policy','Time used for LIFO and FIFO Material Policy','Date  Material Policy','cf628432-e15e-47fe-af1d-9803f5b155b8','Y','N',100,0,TO_TIMESTAMP('2013-10-16 17:48:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2013-10-16 17:48:56','YYYY-MM-DD HH24:MI:SS'),'Y','Y',110,1,'N',0,2,1,'D','N','N')
+INSERT INTO AD_Field (SortNo,IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,AD_Column_ID,SeqNo,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,Help,Description,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,UpdatedBy,AD_Org_ID,Created,CreatedBy,Updated,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry,AD_Client_ID,ColumnSpan,NumLines,EntityType,IsAdvancedField,IsDefaultFocus) VALUES (0,'N',53244,0,'N','N',210887,110,'Y',202534,'N','This field is used to record time used for LIFO and FIFO material policy','Time used for LIFO and FIFO Material Policy','Date  Material Policy','cf628432-e15e-47fe-af1d-9803f5b155b8','Y','N',100,0,TO_TIMESTAMP('2013-10-16 17:48:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2013-10-16 17:48:56','YYYY-MM-DD HH24:MI:SS'),'Y','Y',110,1,'N',0,2,1,'D','N','N')
 ;
 
 -- Oct 16, 2013 5:49:35 PM MYT
 -- IDEMPIERE-386 Redesign ASI usage for FIFO
-UPDATE AD_Field SET SeqNo=60, IsDisplayed='Y', XPosition=4,Updated=TO_TIMESTAMP('2013-10-16 17:49:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=1002071
+UPDATE AD_Field SET SeqNo=60, IsDisplayed='Y', XPosition=4,Updated=TO_TIMESTAMP('2013-10-16 17:49:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202534
 ;
 
 -- Oct 16, 2013 5:49:35 PM MYT
@@ -521,7 +521,7 @@ UPDATE AD_Field SET SeqNo=110,Updated=TO_TIMESTAMP('2013-10-16 17:49:35','YYYY-M
 
 -- Oct 16, 2013 5:50:26 PM MYT
 -- IDEMPIERE-386 Redesign ASI usage for FIFO
-UPDATE AD_Field SET SeqNoGrid=60,Updated=TO_TIMESTAMP('2013-10-16 17:50:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=1002071
+UPDATE AD_Field SET SeqNoGrid=60,Updated=TO_TIMESTAMP('2013-10-16 17:50:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202534
 ;
 
 -- Oct 16, 2013 5:50:35 PM MYT
@@ -576,7 +576,7 @@ UPDATE AD_Column SET AD_Reference_ID=15,Updated=TO_TIMESTAMP('2013-10-16 20:05:3
 
 -- Oct 16, 2013 8:06:41 PM MYT
 -- IDEMPIERE-386 Redesign ASI usage for FIFO
-UPDATE AD_Column SET AD_Reference_ID=15,Updated=TO_TIMESTAMP('2013-10-16 20:06:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=1003519
+UPDATE AD_Column SET AD_Reference_ID=15,Updated=TO_TIMESTAMP('2013-10-16 20:06:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=210887
 ;
 
 -- Oct 17, 2013 4:05:31 PM MYT
