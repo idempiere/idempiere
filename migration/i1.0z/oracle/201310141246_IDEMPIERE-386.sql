@@ -121,10 +121,10 @@ ALTER TABLE M_InOutLineMA ADD DateMaterialPolicy DATE DEFAULT NULL
 UPDATE M_InOutLineMA SET DateMaterialPolicy = (SELECT To_Date(io.MovementDate) FROM M_InOut io JOIN M_InOutLine iol ON (io.M_InOut_ID=iol.M_InOut_ID) WHERE iol.M_InOutLine_ID=M_InOutLineMA.M_InOutLine_ID) WHERE DateMaterialPolicy IS NULL
 ;
 
-ALTER TABLE M_InOutLineMA MODIFY COLUMN DateMaterialPolicy NOT NULL
+ALTER TABLE M_InOutLineMA MODIFY (DateMaterialPolicy DATE NOT NULL)
 ;
 
-ALTER TABLE M_InOutLineMA DROP CONSTRAINT m_inoutlinema_pkey
+ALTER TABLE M_InOutLineMA DROP CONSTRAINT m_inoutlinema_key
 ;
 
 ALTER TABLE M_InOutLineMA ADD CONSTRAINT m_inoutlinema_pkey PRIMARY KEY(m_inoutline_id, m_attributesetinstance_id, datematerialpolicy)
@@ -218,7 +218,7 @@ UPDATE M_MovementLineMA SET DateMaterialPolicy = (SELECT TO_Date(m.MovementDate)
 ALTER TABLE M_MovementLineMA MODIFY DateMaterialPolicy NOT NULL
 ;
 
-ALTER TABLE M_MovementLineMA DROP CONSTRAINT m_movementlinema_pkey
+ALTER TABLE M_MovementLineMA DROP CONSTRAINT m_movementlinema_key
 ;
 
 ALTER TABLE M_MovementLineMA ADD CONSTRAINT m_movementlinema_pkey PRIMARY KEY(m_movementline_id, m_attributesetinstance_id, datematerialpolicy)
@@ -306,13 +306,13 @@ UPDATE AD_Column SET EntityType='D',Updated=TO_DATE('2013-07-16 11:35:42','YYYY-
 ALTER TABLE M_InventoryLineMA ADD DateMaterialPolicy DATE DEFAULT NULL 
 ;
 
-UPDATE M_InventoryLineMA SET DateMaterialPolicy = (SELECT Date(i.MovementDate) FROM M_Inventory i JOIN M_InventoryLine il ON (i.M_Inventory_ID=il.M_Inventory_ID) WHERE il.M_InventoryLine_ID=M_InventoryLineMA.M_InventoryLine_ID) WHERE DateMaterialPolicy IS NULL
+UPDATE M_InventoryLineMA SET DateMaterialPolicy = (SELECT TO_Date(i.MovementDate) FROM M_Inventory i JOIN M_InventoryLine il ON (i.M_Inventory_ID=il.M_Inventory_ID) WHERE il.M_InventoryLine_ID=M_InventoryLineMA.M_InventoryLine_ID) WHERE DateMaterialPolicy IS NULL
 ;
 
 ALTER TABLE M_InventoryLineMA MODIFY DateMaterialPolicy NOT NULL
 ;
 
-ALTER TABLE M_InventoryLineMA DROP CONSTRAINT m_inventorylinema_pkey
+ALTER TABLE M_InventoryLineMA DROP CONSTRAINT m_inventorylinema_key
 ;
 
 ALTER TABLE M_InventoryLineMA ADD CONSTRAINT m_inventorylinema_pkey PRIMARY KEY(m_inventoryline_id, m_attributesetinstance_id, datematerialpolicy)
@@ -389,7 +389,7 @@ UPDATE M_ProductionLineMA SET DateMaterialPolicy = (SELECT TO_Date(p.MovementDat
 ALTER TABLE M_ProductionLineMA MODIFY DateMaterialPolicy NOT NULL
 ;
 
-ALTER TABLE M_ProductionLineMA DROP CONSTRAINT m_productionlinema_pkey
+ALTER TABLE M_ProductionLineMA DROP CONSTRAINT m_productionlinema_key
 ;
 
 ALTER TABLE M_ProductionLineMA ADD CONSTRAINT m_productionlinema_pkey PRIMARY KEY(m_productionline_id, m_attributesetinstance_id, datematerialpolicy)
@@ -414,6 +414,9 @@ ALTER TABLE M_StorageOnHand MODIFY DateMaterialPolicy NOT NULL
 ;
 
 ALTER TABLE m_storageonhand DROP CONSTRAINT m_storageonhand_pkey
+;
+
+DROP INDEX m_storageonhand_pkey
 ;
 
 ALTER TABLE M_StorageOnHand ADD CONSTRAINT M_StorageOnHand_pkey PRIMARY KEY (m_product_id , m_locator_id , m_attributesetinstance_id, DateMaterialPolicy )
