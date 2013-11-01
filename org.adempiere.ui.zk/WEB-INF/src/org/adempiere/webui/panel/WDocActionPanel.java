@@ -17,10 +17,12 @@
 
 package org.adempiere.webui.panel;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -33,6 +35,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
+import org.compiere.model.MClientInfo;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.process.DocOptions;
@@ -305,7 +308,32 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 			{
 				m_OKpressed = true;
 				setValue();
-				this.detach();
+				MClientInfo clientInfo = MClientInfo.get(Env.getCtx());
+				if(clientInfo.isConfirmOnDocClose() || clientInfo.isConfirmOnDocVoid())
+				{
+					final Window window = this;
+					String selected = lstDocAction.getSelectedItem().getValue().toString();
+					if((selected.equals(org.compiere.process.DocAction.ACTION_Close) && clientInfo.isConfirmOnDocClose())  
+						|| (selected.equals(org.compiere.process.DocAction.ACTION_Void) && clientInfo.isConfirmOnDocVoid()))
+					{
+						String docAction = lstDocAction.getSelectedItem().getLabel();
+						MessageFormat mf = new MessageFormat(Msg.getMsg(Env.getAD_Language(Env.getCtx()), "ConfirmOnDocAction"));
+						Object[] arguments = new Object[]{docAction};
+						FDialog.ask(0, this, mf.format(arguments), new Callback<Boolean>() {
+							@Override
+							public void onCallback(Boolean result) {
+								if(result)
+									window.detach();
+								else
+									return;
+							}
+						});
+					}
+					else
+						this.detach();
+				}
+				else
+					this.detach();
 			}
 			else if (confirmPanel.getButton("Cancel").equals(event.getTarget()))
 			{

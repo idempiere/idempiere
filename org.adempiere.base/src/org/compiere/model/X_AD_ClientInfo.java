@@ -568,6 +568,48 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_FY_StartDate);
 	}
 
+	/** Set Show Confirmation On Document Action Close.
+		@param IsConfirmOnDocClose Show Confirmation On Document Action Close	  */
+	public void setIsConfirmOnDocClose (boolean IsConfirmOnDocClose)
+	{
+		set_Value (COLUMNNAME_IsConfirmOnDocClose, Boolean.valueOf(IsConfirmOnDocClose));
+	}
+
+	/** Get Show Confirmation On Document Action Close.
+		@return Show Confirmation On Document Action Close	  */
+	public boolean isConfirmOnDocClose () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsConfirmOnDocClose);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Show Confirmation On Document Action Void.
+		@param IsConfirmOnDocVoid Show Confirmation On Document Action Void	  */
+	public void setIsConfirmOnDocVoid (boolean IsConfirmOnDocVoid)
+	{
+		set_Value (COLUMNNAME_IsConfirmOnDocVoid, Boolean.valueOf(IsConfirmOnDocVoid));
+	}
+
+	/** Get Show Confirmation On Document Action Void.
+		@return Show Confirmation On Document Action Void	  */
+	public boolean isConfirmOnDocVoid () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsConfirmOnDocVoid);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Discount calculated from Line Amounts.
 		@param IsDiscountLineAmt 
 		Payment Discount calculation does not include Taxes and Charges

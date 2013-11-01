@@ -356,6 +356,24 @@ public interface I_AD_ClientInfo
 	  */
 	public boolean isActive();
 
+    /** Column name IsConfirmOnDocClose */
+    public static final String COLUMNNAME_IsConfirmOnDocClose = "IsConfirmOnDocClose";
+
+	/** Set Show Confirmation On Document Action Close	  */
+	public void setIsConfirmOnDocClose (boolean IsConfirmOnDocClose);
+
+	/** Get Show Confirmation On Document Action Close	  */
+	public boolean isConfirmOnDocClose();
+
+    /** Column name IsConfirmOnDocVoid */
+    public static final String COLUMNNAME_IsConfirmOnDocVoid = "IsConfirmOnDocVoid";
+
+	/** Set Show Confirmation On Document Action Void	  */
+	public void setIsConfirmOnDocVoid (boolean IsConfirmOnDocVoid);
+
+	/** Get Show Confirmation On Document Action Void	  */
+	public boolean isConfirmOnDocVoid();
+
     /** Column name IsDiscountLineAmt */
     public static final String COLUMNNAME_IsDiscountLineAmt = "IsDiscountLineAmt";
 
