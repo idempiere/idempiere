@@ -20,7 +20,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Aug 19, 2013 11:35:50 AM MYT
 -- IDEMPIERE-1285 Estimated Landed Cost for PO
-ALTER TABLE C_AcctSchema_Default ADD COLUMN P_LandedCostClearing_Acct VARCHAR(22) DEFAULT NULL 
+ALTER TABLE C_AcctSchema_Default ADD COLUMN P_LandedCostClearing_Acct numeric(10) DEFAULT NULL 
 ;
 
 -- Aug 19, 2013 11:37:32 AM MYT
@@ -35,7 +35,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Aug 19, 2013 11:37:43 AM MYT
 -- IDEMPIERE-1285 Estimated Landed Cost for PO
-ALTER TABLE M_Product_Acct ADD COLUMN P_LandedCostClearing_Acct VARCHAR(22) DEFAULT NULL 
+ALTER TABLE M_Product_Acct ADD COLUMN P_LandedCostClearing_Acct numeric(10) DEFAULT NULL 
 ;
 
 -- Aug 19, 2013 11:38:40 AM MYT
@@ -50,7 +50,7 @@ INSERT INTO AD_Column_Trl (AD_Language,AD_Column_ID, Name, IsTranslated,AD_Clien
 
 -- Aug 19, 2013 11:38:57 AM MYT
 -- IDEMPIERE-1285 Estimated Landed Cost for PO
-ALTER TABLE M_Product_Category_Acct ADD COLUMN P_LandedCostClearing_Acct VARCHAR(22) DEFAULT NULL 
+ALTER TABLE M_Product_Category_Acct ADD COLUMN P_LandedCostClearing_Acct numeric(10) DEFAULT NULL 
 ;
 
 -- Aug 19, 2013 11:45:17 AM MYT
