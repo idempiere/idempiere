@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_StorageOnHand
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_M_StorageOnHand (Properties ctx, int M_StorageOnHand_ID, String trxName)
@@ -40,6 +40,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
       super (ctx, M_StorageOnHand_ID, trxName);
       /** if (M_StorageOnHand_ID == 0)
         {
+			setDateMaterialPolicy (new Timestamp( System.currentTimeMillis() ));
 			setM_AttributeSetInstance_ID (0);
 			setM_Locator_ID (0);
 			setM_Product_ID (0);
@@ -98,7 +99,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 	  */
 	public void setDateMaterialPolicy (Timestamp DateMaterialPolicy)
 	{
-		set_Value (COLUMNNAME_DateMaterialPolicy, DateMaterialPolicy);
+		set_ValueNoCheck (COLUMNNAME_DateMaterialPolicy, DateMaterialPolicy);
 	}
 
 	/** Get Date  Material Policy.

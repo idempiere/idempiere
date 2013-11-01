@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PasswordRule
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_AD_PasswordRule (Properties ctx, int AD_PasswordRule_ID, String trxName)

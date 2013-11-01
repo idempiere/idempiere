@@ -23,14 +23,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_Attribute_Value
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_AD_Attribute_Value (Properties ctx, int AD_Attribute_Value_ID, String trxName)

@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InventoryLineMA
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_M_InventoryLineMA extends PO implements I_M_InventoryLineMA, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130716L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_M_InventoryLineMA (Properties ctx, int M_InventoryLineMA_ID, String trxName)
@@ -81,7 +81,7 @@ public class X_M_InventoryLineMA extends PO implements I_M_InventoryLineMA, I_Pe
 	  */
 	public void setDateMaterialPolicy (Timestamp DateMaterialPolicy)
 	{
-		set_Value (COLUMNNAME_DateMaterialPolicy, DateMaterialPolicy);
+		set_ValueNoCheck (COLUMNNAME_DateMaterialPolicy, DateMaterialPolicy);
 	}
 
 	/** Get Date  Material Policy.

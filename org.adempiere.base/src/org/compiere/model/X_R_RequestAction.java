@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for R_RequestAction
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_R_RequestAction (Properties ctx, int R_RequestAction_ID, String trxName)

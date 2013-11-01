@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for RV_BPartner
  *  @author iDempiere (generated) 
- *  @version Release 1.0c
+ *  @version Release 2.0
  */
 public interface I_RV_BPartner 
 {

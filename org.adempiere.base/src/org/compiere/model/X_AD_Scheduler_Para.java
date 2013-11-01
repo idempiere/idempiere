@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_Scheduler_Para
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131023L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_AD_Scheduler_Para (Properties ctx, int AD_Scheduler_Para_ID, String trxName)

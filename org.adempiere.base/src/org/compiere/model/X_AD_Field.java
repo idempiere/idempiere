@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Field
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_AD_Field extends PO implements I_AD_Field, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130826L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -451,15 +451,15 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set IsAdvancedField.
-		@param IsAdvancedField IsAdvancedField	  */
+	/** Set Advanced Field.
+		@param IsAdvancedField Advanced Field	  */
 	public void setIsAdvancedField (boolean IsAdvancedField)
 	{
 		set_Value (COLUMNNAME_IsAdvancedField, Boolean.valueOf(IsAdvancedField));
 	}
 
-	/** Get IsAdvancedField.
-		@return IsAdvancedField	  */
+	/** Get Advanced Field.
+		@return Advanced Field	  */
 	public boolean isAdvancedField () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsAdvancedField);

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AddressValidation
  *  @author iDempiere (generated) 
- *  @version Release 1.0c
+ *  @version Release 2.0
  */
 public interface I_C_AddressValidation 
 {
@@ -62,6 +62,17 @@ public interface I_C_AddressValidation
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name C_AddressValidationCfg_ID */
+    public static final String COLUMNNAME_C_AddressValidationCfg_ID = "C_AddressValidationCfg_ID";
+
+	/** Set Address Validation Configuration	  */
+	public void setC_AddressValidationCfg_ID (int C_AddressValidationCfg_ID);
+
+	/** Get Address Validation Configuration	  */
+	public int getC_AddressValidationCfg_ID();
+
+	public org.compiere.model.I_C_AddressValidationCfg getC_AddressValidationCfg() throws RuntimeException;
+
     /** Column name C_AddressValidation_ID */
     public static final String COLUMNNAME_C_AddressValidation_ID = "C_AddressValidation_ID";
 
@@ -79,17 +90,6 @@ public interface I_C_AddressValidation
 
 	/** Get C_AddressValidation_UU	  */
 	public String getC_AddressValidation_UU();
-
-    /** Column name C_AddressValidationCfg_ID */
-    public static final String COLUMNNAME_C_AddressValidationCfg_ID = "C_AddressValidationCfg_ID";
-
-	/** Set Address Validation Configuration	  */
-	public void setC_AddressValidationCfg_ID (int C_AddressValidationCfg_ID);
-
-	/** Get Address Validation Configuration	  */
-	public int getC_AddressValidationCfg_ID();
-
-	public org.compiere.model.I_C_AddressValidationCfg getC_AddressValidationCfg() throws RuntimeException;
 
     /** Column name ConnectionKey */
     public static final String COLUMNNAME_ConnectionKey = "ConnectionKey";

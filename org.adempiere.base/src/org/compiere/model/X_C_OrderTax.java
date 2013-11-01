@@ -24,14 +24,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_OrderTax
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130820L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_C_OrderTax (Properties ctx, int C_OrderTax_ID, String trxName)

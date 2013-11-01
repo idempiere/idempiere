@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_Container
  *  @author iDempiere (generated) 
- *  @version Release 1.0c
+ *  @version Release 2.0
  */
 public interface I_CM_Container 
 {
@@ -240,12 +240,12 @@ public interface I_CM_Container
     public static final String COLUMNNAME_IsSecure = "IsSecure";
 
 	/** Set Secure content.
-	  * Defines whether content needs to get encrypted
+	  * Defines whether content must be treated as secure
 	  */
 	public void setIsSecure (boolean IsSecure);
 
 	/** Get Secure content.
-	  * Defines whether content needs to get encrypted
+	  * Defines whether content must be treated as secure
 	  */
 	public boolean isSecure();
 

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AddressTransaction
  *  @author iDempiere (generated) 
- *  @version Release 1.0c
+ *  @version Release 2.0
  */
 public interface I_C_AddressTransaction 
 {
@@ -48,19 +48,6 @@ public interface I_C_AddressTransaction
 	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
-
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within client
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within client
-	  */
-	public int getAD_Org_ID();
 
     /** Column name Address1 */
     public static final String COLUMNNAME_Address1 = "Address1";
@@ -114,6 +101,19 @@ public interface I_C_AddressTransaction
 	  */
 	public String getAddress4();
 
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within client
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within client
+	  */
+	public int getAD_Org_ID();
+
     /** Column name C_AddressTransaction_ID */
     public static final String COLUMNNAME_C_AddressTransaction_ID = "C_AddressTransaction_ID";
 
@@ -143,6 +143,19 @@ public interface I_C_AddressTransaction
 
 	public org.compiere.model.I_C_AddressValidation getC_AddressValidation() throws RuntimeException;
 
+    /** Column name City */
+    public static final String COLUMNNAME_City = "City";
+
+	/** Set City.
+	  * Identifies a City
+	  */
+	public void setCity (String City);
+
+	/** Get City.
+	  * Identifies a City
+	  */
+	public String getCity();
+
     /** Column name C_Location_ID */
     public static final String COLUMNNAME_C_Location_ID = "C_Location_ID";
 
@@ -157,19 +170,6 @@ public interface I_C_AddressTransaction
 	public int getC_Location_ID();
 
 	public I_C_Location getC_Location() throws RuntimeException;
-
-    /** Column name City */
-    public static final String COLUMNNAME_City = "City";
-
-	/** Set City.
-	  * Identifies a City
-	  */
-	public void setCity (String City);
-
-	/** Get City.
-	  * Identifies a City
-	  */
-	public String getCity();
 
     /** Column name Country */
     public static final String COLUMNNAME_Country = "Country";

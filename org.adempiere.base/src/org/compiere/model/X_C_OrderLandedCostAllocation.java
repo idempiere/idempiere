@@ -24,14 +24,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_OrderLandedCostAllocation
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLandedCostAllocation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130806L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_C_OrderLandedCostAllocation (Properties ctx, int C_OrderLandedCostAllocation_ID, String trxName)
@@ -182,9 +182,9 @@ public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLanded
 		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_Name)
 			.getPO(getC_OrderLine_ID(), get_TrxName());	}
 
-	/** Set Purchase Order Line.
+	/** Set Sales Order Line.
 		@param C_OrderLine_ID 
-		Purchase Order Line
+		Sales Order Line
 	  */
 	public void setC_OrderLine_ID (int C_OrderLine_ID)
 	{
@@ -194,8 +194,8 @@ public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLanded
 			set_ValueNoCheck (COLUMNNAME_C_OrderLine_ID, Integer.valueOf(C_OrderLine_ID));
 	}
 
-	/** Get Purchase Order Line.
-		@return Purchase Order Line
+	/** Get Sales Order Line.
+		@return Sales Order Line
 	  */
 	public int getC_OrderLine_ID () 
 	{

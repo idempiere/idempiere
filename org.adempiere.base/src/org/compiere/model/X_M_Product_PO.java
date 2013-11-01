@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_Product_PO
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_M_Product_PO (Properties ctx, int M_Product_PO_ID, String trxName)
@@ -41,7 +41,6 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
       /** if (M_Product_PO_ID == 0)
         {
 			setC_BPartner_ID (0);
-// 0
 			setIsCurrentVendor (true);
 // Y
 			setM_Product_ID (0);

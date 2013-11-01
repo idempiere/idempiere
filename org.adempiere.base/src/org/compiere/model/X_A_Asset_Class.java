@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for A_Asset_Class
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_A_Asset_Class (Properties ctx, int A_Asset_Class_ID, String trxName)

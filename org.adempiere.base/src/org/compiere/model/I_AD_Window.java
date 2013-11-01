@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Window
  *  @author iDempiere (generated) 
- *  @version Release 1.0c
+ *  @version Release 2.0
  */
 public interface I_AD_Window 
 {
@@ -248,10 +248,14 @@ public interface I_AD_Window
     /** Column name TitleLogic */
     public static final String COLUMNNAME_TitleLogic = "TitleLogic";
 
-	/** Set Title Logic	  */
+	/** Set Title Logic.
+	  * The result determines the title to be displayed for this window
+	  */
 	public void setTitleLogic (String TitleLogic);
 
-	/** Get Title Logic	  */
+	/** Get Title Logic.
+	  * The result determines the title to be displayed for this window
+	  */
 	public String getTitleLogic();
 
     /** Column name Updated */

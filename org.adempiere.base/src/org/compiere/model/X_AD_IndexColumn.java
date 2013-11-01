@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_IndexColumn
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130704L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_AD_IndexColumn (Properties ctx, int AD_IndexColumn_ID, String trxName)
@@ -37,7 +37,6 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
       super (ctx, AD_IndexColumn_ID, trxName);
       /** if (AD_IndexColumn_ID == 0)
         {
-			setAD_Column_ID (0);
 			setAD_IndexColumn_ID (0);
 			setAD_TableIndex_ID (0);
 			setEntityType (null);

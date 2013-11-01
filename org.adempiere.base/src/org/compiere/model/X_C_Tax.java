@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Tax
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_C_Tax extends PO implements I_C_Tax, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130820L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_C_Tax (Properties ctx, int C_Tax_ID, String trxName)
@@ -41,8 +41,8 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
       super (ctx, C_Tax_ID, trxName);
       /** if (C_Tax_ID == 0)
         {
-			setC_Tax_ID (0);
 			setC_TaxCategory_ID (0);
+			setC_Tax_ID (0);
 			setIsDefault (false);
 			setIsDocumentLevel (false);
 			setIsSalesTax (false);
@@ -162,43 +162,6 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Tax.
-		@param C_Tax_ID 
-		Tax identifier
-	  */
-	public void setC_Tax_ID (int C_Tax_ID)
-	{
-		if (C_Tax_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, Integer.valueOf(C_Tax_ID));
-	}
-
-	/** Get Tax.
-		@return Tax identifier
-	  */
-	public int getC_Tax_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Tax_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set C_Tax_UU.
-		@param C_Tax_UU C_Tax_UU	  */
-	public void setC_Tax_UU (String C_Tax_UU)
-	{
-		set_Value (COLUMNNAME_C_Tax_UU, C_Tax_UU);
-	}
-
-	/** Get C_Tax_UU.
-		@return C_Tax_UU	  */
-	public String getC_Tax_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_C_Tax_UU);
-	}
-
 	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException
     {
 		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_Name)
@@ -227,6 +190,29 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Tax.
+		@param C_Tax_ID 
+		Tax identifier
+	  */
+	public void setC_Tax_ID (int C_Tax_ID)
+	{
+		if (C_Tax_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, Integer.valueOf(C_Tax_ID));
+	}
+
+	/** Get Tax.
+		@return Tax identifier
+	  */
+	public int getC_Tax_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Tax_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_C_TaxProvider getC_TaxProvider() throws RuntimeException
     {
 		return (org.compiere.model.I_C_TaxProvider)MTable.get(getCtx(), org.compiere.model.I_C_TaxProvider.Table_Name)
@@ -250,6 +236,20 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_Tax_UU.
+		@param C_Tax_UU C_Tax_UU	  */
+	public void setC_Tax_UU (String C_Tax_UU)
+	{
+		set_Value (COLUMNNAME_C_Tax_UU, C_Tax_UU);
+	}
+
+	/** Get C_Tax_UU.
+		@return C_Tax_UU	  */
+	public String getC_Tax_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_Tax_UU);
 	}
 
 	/** Set Description.

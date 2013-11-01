@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for M_RelatedProduct
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_M_RelatedProduct extends PO implements I_M_RelatedProduct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_M_RelatedProduct (Properties ctx, int M_RelatedProduct_ID, String trxName)

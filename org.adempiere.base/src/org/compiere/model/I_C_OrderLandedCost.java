@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_OrderLandedCost
  *  @author iDempiere (generated) 
- *  @version Release 1.0c
+ *  @version Release 2.0
  */
 public interface I_C_OrderLandedCost 
 {
@@ -30,8 +30,8 @@ public interface I_C_OrderLandedCost
     /** TableName=C_OrderLandedCost */
     public static final String Table_Name = "C_OrderLandedCost";
 
-    /** AD_Table_ID=1000000 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=200103 */
+    public static final int Table_ID = 200103;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 

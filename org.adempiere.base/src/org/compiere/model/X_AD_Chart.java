@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_Chart
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_AD_Chart extends PO implements I_AD_Chart, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130825L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_AD_Chart (Properties ctx, int AD_Chart_ID, String trxName)

@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for C_AddressValidation
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_C_AddressValidation extends PO implements I_C_AddressValidation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130820L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_C_AddressValidation (Properties ctx, int C_AddressValidation_ID, String trxName)
@@ -37,8 +37,8 @@ public class X_C_AddressValidation extends PO implements I_C_AddressValidation, 
       super (ctx, C_AddressValidation_ID, trxName);
       /** if (C_AddressValidation_ID == 0)
         {
-			setC_AddressValidation_ID (0);
 			setC_AddressValidationCfg_ID (0);
+			setC_AddressValidation_ID (0);
 			setConnectionPassword (null);
 			setName (null);
 			setSeqNo (0);
@@ -74,6 +74,31 @@ public class X_C_AddressValidation extends PO implements I_C_AddressValidation, 
       return sb.toString();
     }
 
+	public org.compiere.model.I_C_AddressValidationCfg getC_AddressValidationCfg() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_AddressValidationCfg)MTable.get(getCtx(), org.compiere.model.I_C_AddressValidationCfg.Table_Name)
+			.getPO(getC_AddressValidationCfg_ID(), get_TrxName());	}
+
+	/** Set Address Validation Configuration.
+		@param C_AddressValidationCfg_ID Address Validation Configuration	  */
+	public void setC_AddressValidationCfg_ID (int C_AddressValidationCfg_ID)
+	{
+		if (C_AddressValidationCfg_ID < 1) 
+			set_Value (COLUMNNAME_C_AddressValidationCfg_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_AddressValidationCfg_ID, Integer.valueOf(C_AddressValidationCfg_ID));
+	}
+
+	/** Get Address Validation Configuration.
+		@return Address Validation Configuration	  */
+	public int getC_AddressValidationCfg_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_AddressValidationCfg_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Address Validation.
 		@param C_AddressValidation_ID Address Validation	  */
 	public void setC_AddressValidation_ID (int C_AddressValidation_ID)
@@ -106,31 +131,6 @@ public class X_C_AddressValidation extends PO implements I_C_AddressValidation, 
 	public String getC_AddressValidation_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_C_AddressValidation_UU);
-	}
-
-	public org.compiere.model.I_C_AddressValidationCfg getC_AddressValidationCfg() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AddressValidationCfg)MTable.get(getCtx(), org.compiere.model.I_C_AddressValidationCfg.Table_Name)
-			.getPO(getC_AddressValidationCfg_ID(), get_TrxName());	}
-
-	/** Set Address Validation Configuration.
-		@param C_AddressValidationCfg_ID Address Validation Configuration	  */
-	public void setC_AddressValidationCfg_ID (int C_AddressValidationCfg_ID)
-	{
-		if (C_AddressValidationCfg_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_C_AddressValidationCfg_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_C_AddressValidationCfg_ID, Integer.valueOf(C_AddressValidationCfg_ID));
-	}
-
-	/** Get Address Validation Configuration.
-		@return Address Validation Configuration	  */
-	public int getC_AddressValidationCfg_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_AddressValidationCfg_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Connection Key.

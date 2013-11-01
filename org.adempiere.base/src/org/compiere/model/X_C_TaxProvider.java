@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for C_TaxProvider
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_C_TaxProvider extends PO implements I_C_TaxProvider, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130820L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_C_TaxProvider (Properties ctx, int C_TaxProvider_ID, String trxName)
@@ -37,8 +37,8 @@ public class X_C_TaxProvider extends PO implements I_C_TaxProvider, I_Persistent
       super (ctx, C_TaxProvider_ID, trxName);
       /** if (C_TaxProvider_ID == 0)
         {
-			setC_TaxProvider_ID (0);
 			setC_TaxProviderCfg_ID (0);
+			setC_TaxProvider_ID (0);
 			setName (null);
 			setSeqNo (0);
 // 0
@@ -87,6 +87,45 @@ public class X_C_TaxProvider extends PO implements I_C_TaxProvider, I_Persistent
 		return (String)get_Value(COLUMNNAME_Account);
 	}
 
+	/** Set Company Code.
+		@param CompanyCode Company Code	  */
+	public void setCompanyCode (String CompanyCode)
+	{
+		set_Value (COLUMNNAME_CompanyCode, CompanyCode);
+	}
+
+	/** Get Company Code.
+		@return Company Code	  */
+	public String getCompanyCode () 
+	{
+		return (String)get_Value(COLUMNNAME_CompanyCode);
+	}
+
+	public org.compiere.model.I_C_TaxProviderCfg getC_TaxProviderCfg() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_TaxProviderCfg)MTable.get(getCtx(), org.compiere.model.I_C_TaxProviderCfg.Table_Name)
+			.getPO(getC_TaxProviderCfg_ID(), get_TrxName());	}
+
+	/** Set Tax Provider Configuration.
+		@param C_TaxProviderCfg_ID Tax Provider Configuration	  */
+	public void setC_TaxProviderCfg_ID (int C_TaxProviderCfg_ID)
+	{
+		if (C_TaxProviderCfg_ID < 1) 
+			set_Value (COLUMNNAME_C_TaxProviderCfg_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_TaxProviderCfg_ID, Integer.valueOf(C_TaxProviderCfg_ID));
+	}
+
+	/** Get Tax Provider Configuration.
+		@return Tax Provider Configuration	  */
+	public int getC_TaxProviderCfg_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxProviderCfg_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Tax Provider.
 		@param C_TaxProvider_ID Tax Provider	  */
 	public void setC_TaxProvider_ID (int C_TaxProvider_ID)
@@ -119,45 +158,6 @@ public class X_C_TaxProvider extends PO implements I_C_TaxProvider, I_Persistent
 	public String getC_TaxProvider_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_C_TaxProvider_UU);
-	}
-
-	public org.compiere.model.I_C_TaxProviderCfg getC_TaxProviderCfg() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_TaxProviderCfg)MTable.get(getCtx(), org.compiere.model.I_C_TaxProviderCfg.Table_Name)
-			.getPO(getC_TaxProviderCfg_ID(), get_TrxName());	}
-
-	/** Set Tax Provider Configuration.
-		@param C_TaxProviderCfg_ID Tax Provider Configuration	  */
-	public void setC_TaxProviderCfg_ID (int C_TaxProviderCfg_ID)
-	{
-		if (C_TaxProviderCfg_ID < 1) 
-			set_Value (COLUMNNAME_C_TaxProviderCfg_ID, null);
-		else 
-			set_Value (COLUMNNAME_C_TaxProviderCfg_ID, Integer.valueOf(C_TaxProviderCfg_ID));
-	}
-
-	/** Get Tax Provider Configuration.
-		@return Tax Provider Configuration	  */
-	public int getC_TaxProviderCfg_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxProviderCfg_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Company Code.
-		@param CompanyCode Company Code	  */
-	public void setCompanyCode (String CompanyCode)
-	{
-		set_Value (COLUMNNAME_CompanyCode, CompanyCode);
-	}
-
-	/** Get Company Code.
-		@return Company Code	  */
-	public String getCompanyCode () 
-	{
-		return (String)get_Value(COLUMNNAME_CompanyCode);
 	}
 
 	/** Set License.

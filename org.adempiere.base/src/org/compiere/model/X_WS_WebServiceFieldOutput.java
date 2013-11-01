@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceFieldOutput
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFieldOutput, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_WS_WebServiceFieldOutput (Properties ctx, int WS_WebServiceFieldOutput_ID, String trxName)

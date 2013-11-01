@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for C_Tax_Acct
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_C_Tax_Acct extends PO implements I_C_Tax_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_C_Tax_Acct (Properties ctx, int C_Tax_Acct_ID, String trxName)

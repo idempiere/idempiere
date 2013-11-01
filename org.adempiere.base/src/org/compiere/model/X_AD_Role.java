@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Role
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_AD_Role extends PO implements I_AD_Role, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130801L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_AD_Role (Properties ctx, int AD_Role_ID, String trxName)
@@ -555,15 +555,15 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	/** Set IsAccessAdvanced .
-		@param IsAccessAdvanced IsAccessAdvanced 	  */
+	/** Set Access Advanced .
+		@param IsAccessAdvanced Access Advanced 	  */
 	public void setIsAccessAdvanced (boolean IsAccessAdvanced)
 	{
 		set_Value (COLUMNNAME_IsAccessAdvanced, Boolean.valueOf(IsAccessAdvanced));
 	}
 
-	/** Get IsAccessAdvanced .
-		@return IsAccessAdvanced 	  */
+	/** Get Access Advanced .
+		@return Access Advanced 	  */
 	public boolean isAccessAdvanced () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsAccessAdvanced);

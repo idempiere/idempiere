@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Order
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_C_Order extends PO implements I_C_Order, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_C_Order (Properties ctx, int C_Order_ID, String trxName)
@@ -625,6 +625,31 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	public org.compiere.model.I_C_Opportunity getC_Opportunity() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Opportunity)MTable.get(getCtx(), org.compiere.model.I_C_Opportunity.Table_Name)
+			.getPO(getC_Opportunity_ID(), get_TrxName());	}
+
+	/** Set Sales Opportunity.
+		@param C_Opportunity_ID Sales Opportunity	  */
+	public void setC_Opportunity_ID (int C_Opportunity_ID)
+	{
+		if (C_Opportunity_ID < 1) 
+			set_Value (COLUMNNAME_C_Opportunity_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Opportunity_ID, Integer.valueOf(C_Opportunity_ID));
+	}
+
+	/** Get Sales Opportunity.
+		@return Sales Opportunity	  */
+	public int getC_Opportunity_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Opportunity_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Copy From.

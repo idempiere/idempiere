@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AddressTransaction
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130819L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_C_AddressTransaction (Properties ctx, int C_AddressTransaction_ID, String trxName)
@@ -202,6 +202,31 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 		return ii.intValue();
 	}
 
+	/** Set City.
+		@param City 
+		Identifies a City
+	  */
+	public void setCity (String City)
+	{
+		set_Value (COLUMNNAME_City, City);
+	}
+
+	/** Get City.
+		@return Identifies a City
+	  */
+	public String getCity () 
+	{
+		return (String)get_Value(COLUMNNAME_City);
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), getCity());
+    }
+
 	public I_C_Location getC_Location() throws RuntimeException
     {
 		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_Name)
@@ -229,31 +254,6 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 			 return 0;
 		return ii.intValue();
 	}
-
-	/** Set City.
-		@param City 
-		Identifies a City
-	  */
-	public void setCity (String City)
-	{
-		set_Value (COLUMNNAME_City, City);
-	}
-
-	/** Get City.
-		@return Identifies a City
-	  */
-	public String getCity () 
-	{
-		return (String)get_Value(COLUMNNAME_City);
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair() 
-    {
-        return new KeyNamePair(get_ID(), getCity());
-    }
 
 	/** Set Country.
 		@param Country Country	  */

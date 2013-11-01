@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_Window_Access
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_AD_Window_Access extends PO implements I_AD_Window_Access, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_AD_Window_Access (Properties ctx, int AD_Window_Access_ID, String trxName)

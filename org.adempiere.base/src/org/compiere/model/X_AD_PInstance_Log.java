@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for AD_PInstance_Log
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_AD_PInstance_Log (Properties ctx, int AD_PInstance_Log_ID, String trxName)

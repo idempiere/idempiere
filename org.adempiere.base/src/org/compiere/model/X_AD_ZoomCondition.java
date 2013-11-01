@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_ZoomCondition
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_AD_ZoomCondition extends PO implements I_AD_ZoomCondition, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130722L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_AD_ZoomCondition (Properties ctx, int AD_ZoomCondition_ID, String trxName)
@@ -147,6 +147,20 @@ public class X_AD_ZoomCondition extends PO implements I_AD_ZoomCondition, I_Pers
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_ZoomCondition_UU.
+		@param AD_ZoomCondition_UU AD_ZoomCondition_UU	  */
+	public void setAD_ZoomCondition_UU (String AD_ZoomCondition_UU)
+	{
+		set_Value (COLUMNNAME_AD_ZoomCondition_UU, AD_ZoomCondition_UU);
+	}
+
+	/** Get AD_ZoomCondition_UU.
+		@return AD_ZoomCondition_UU	  */
+	public String getAD_ZoomCondition_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_ZoomCondition_UU);
 	}
 
 	/** Set Description.

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AddressValidationCfg
  *  @author iDempiere (generated) 
- *  @version Release 1.0c
+ *  @version Release 2.0
  */
 public interface I_C_AddressValidationCfg 
 {
@@ -49,6 +49,15 @@ public interface I_C_AddressValidationCfg
 	  */
 	public int getAD_Client_ID();
 
+    /** Column name AddressValidationClass */
+    public static final String COLUMNNAME_AddressValidationClass = "AddressValidationClass";
+
+	/** Set Address Validation Class	  */
+	public void setAddressValidationClass (String AddressValidationClass);
+
+	/** Get Address Validation Class	  */
+	public String getAddressValidationClass();
+
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
@@ -61,15 +70,6 @@ public interface I_C_AddressValidationCfg
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
-
-    /** Column name AddressValidationClass */
-    public static final String COLUMNNAME_AddressValidationClass = "AddressValidationClass";
-
-	/** Set Address Validation Class	  */
-	public void setAddressValidationClass (String AddressValidationClass);
-
-	/** Get Address Validation Class	  */
-	public String getAddressValidationClass();
 
     /** Column name C_AddressValidationCfg_ID */
     public static final String COLUMNNAME_C_AddressValidationCfg_ID = "C_AddressValidationCfg_ID";

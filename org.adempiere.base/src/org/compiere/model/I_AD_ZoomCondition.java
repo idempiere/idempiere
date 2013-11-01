@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ZoomCondition
  *  @author iDempiere (generated) 
- *  @version Release 1.0c
+ *  @version Release 2.0
  */
 public interface I_AD_ZoomCondition 
 {
@@ -100,6 +100,15 @@ public interface I_AD_ZoomCondition
 
 	/** Get Zoom condition	  */
 	public int getAD_ZoomCondition_ID();
+
+    /** Column name AD_ZoomCondition_UU */
+    public static final String COLUMNNAME_AD_ZoomCondition_UU = "AD_ZoomCondition_UU";
+
+	/** Set AD_ZoomCondition_UU	  */
+	public void setAD_ZoomCondition_UU (String AD_ZoomCondition_UU);
+
+	/** Get AD_ZoomCondition_UU	  */
+	public String getAD_ZoomCondition_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

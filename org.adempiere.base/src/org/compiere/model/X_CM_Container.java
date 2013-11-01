@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_Container
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_CM_Container extends PO implements I_CM_Container, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_CM_Container (Properties ctx, int CM_Container_ID, String trxName)
@@ -323,7 +323,7 @@ public class X_CM_Container extends PO implements I_CM_Container, I_Persistent
 
 	/** Set Secure content.
 		@param IsSecure 
-		Defines whether content needs to get encrypted
+		Defines whether content must be treated as secure
 	  */
 	public void setIsSecure (boolean IsSecure)
 	{
@@ -331,7 +331,7 @@ public class X_CM_Container extends PO implements I_CM_Container, I_Persistent
 	}
 
 	/** Get Secure content.
-		@return Defines whether content needs to get encrypted
+		@return Defines whether content must be treated as secure
 	  */
 	public boolean isSecure () 
 	{

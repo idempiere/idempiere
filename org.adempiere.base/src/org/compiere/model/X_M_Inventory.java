@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Inventory
  *  @author iDempiere (generated) 
- *  @version Release 1.0c - $Id$ */
+ *  @version Release 2.0 - $Id$ */
 public class X_M_Inventory extends PO implements I_M_Inventory, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130717L;
+	private static final long serialVersionUID = 20131031L;
 
     /** Standard Constructor */
     public X_M_Inventory (Properties ctx, int M_Inventory_ID, String trxName)
@@ -51,7 +51,6 @@ public class X_M_Inventory extends PO implements I_M_Inventory, I_Persistent
 			setM_Inventory_ID (0);
 			setMovementDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
-			setM_Warehouse_ID (0);
 			setPosted (false);
 			setProcessed (false);
         } */

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_OrderLandedCostAllocation
  *  @author iDempiere (generated) 
- *  @version Release 1.0c
+ *  @version Release 2.0
  */
 public interface I_C_OrderLandedCostAllocation 
 {
@@ -30,8 +30,8 @@ public interface I_C_OrderLandedCostAllocation
     /** TableName=C_OrderLandedCostAllocation */
     public static final String Table_Name = "C_OrderLandedCostAllocation";
 
-    /** AD_Table_ID=1000001 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=200104 */
+    public static final int Table_ID = 200104;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -120,13 +120,13 @@ public interface I_C_OrderLandedCostAllocation
     /** Column name C_OrderLine_ID */
     public static final String COLUMNNAME_C_OrderLine_ID = "C_OrderLine_ID";
 
-	/** Set Purchase Order Line.
-	  * Purchase Order Line
+	/** Set Sales Order Line.
+	  * Sales Order Line
 	  */
 	public void setC_OrderLine_ID (int C_OrderLine_ID);
 
-	/** Get Purchase Order Line.
-	  * Purchase Order Line
+	/** Get Sales Order Line.
+	  * Sales Order Line
 	  */
 	public int getC_OrderLine_ID();
 

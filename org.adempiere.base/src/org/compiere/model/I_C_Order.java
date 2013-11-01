@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Order
  *  @author iDempiere (generated) 
- *  @version Release 1.0c
+ *  @version Release 2.0
  */
 public interface I_C_Order 
 {
@@ -326,6 +326,17 @@ public interface I_C_Order
 	  * Charge Amount
 	  */
 	public BigDecimal getChargeAmt();
+
+    /** Column name C_Opportunity_ID */
+    public static final String COLUMNNAME_C_Opportunity_ID = "C_Opportunity_ID";
+
+	/** Set Sales Opportunity	  */
+	public void setC_Opportunity_ID (int C_Opportunity_ID);
+
+	/** Get Sales Opportunity	  */
+	public int getC_Opportunity_ID();
+
+	public org.compiere.model.I_C_Opportunity getC_Opportunity() throws RuntimeException;
 
     /** Column name CopyFrom */
     public static final String COLUMNNAME_CopyFrom = "CopyFrom";
