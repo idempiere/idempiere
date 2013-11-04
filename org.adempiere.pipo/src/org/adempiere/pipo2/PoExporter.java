@@ -263,6 +263,9 @@ public class PoExporter {
 					tableName = lookupColumn.substring(0, lookupColumn.indexOf("."));
 				} 
 				addTableReference(columnName, tableName, new AttributesImpl());
+			} else if (DisplayType.Account == displayType) {
+				String tableName = "C_ValidCombination";
+				addTableReference(columnName, tableName, new AttributesImpl());
 			} else if (DisplayType.isLOB(displayType)) {
 				addBlob(columnName);
 			} else if (columnName.equals(po.getUUIDColumnName()) && po.get_Value(columnName) == null) {
