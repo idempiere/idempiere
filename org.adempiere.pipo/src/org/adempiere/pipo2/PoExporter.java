@@ -7,12 +7,12 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MTable;
+import org.compiere.model.MTree;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
 import org.compiere.model.X_AD_Client;
 import org.compiere.model.X_AD_Org;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -240,12 +240,12 @@ public class PoExporter {
 					tableName = MTable.getTableName(ctx.ctx, AD_Table_ID);
 				} else if (po.get_TableName().equals("AD_TreeNode") && columnName.equals("Parent_ID")) {
 					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
-					int AD_Table_ID = DB.getSQLValue(po.get_TrxName(), "SELECT AD_Table_ID From AD_Tree WHERE AD_Tree_ID="+AD_Tree_ID);
-					tableName = MTable.getTableName(po.getCtx(), AD_Table_ID);
+					MTree tree = new MTree(ctx.ctx, AD_Tree_ID, ctx.trx.getTrxName());
+					tableName = tree.getSourceTableName(true);
 				} else if (po.get_TableName().equals("AD_TreeNode") && columnName.equals("Node_ID")) {
 					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
-					int AD_Table_ID = DB.getSQLValue(po.get_TrxName(), "SELECT AD_Table_ID From AD_Tree WHERE AD_Tree_ID="+AD_Tree_ID);
-					tableName = MTable.getTableName(po.getCtx(), AD_Table_ID);
+					MTree tree = new MTree(ctx.ctx, AD_Tree_ID, ctx.trx.getTrxName());
+					tableName = tree.getSourceTableName(true);
 				} else {
 					tableName = columnName.substring(0, columnName.length() - 3);
 				}
@@ -262,6 +262,9 @@ public class PoExporter {
 					String lookupColumn = info.getColumnLookup(i).getColumnName();
 					tableName = lookupColumn.substring(0, lookupColumn.indexOf("."));
 				} 
+				addTableReference(columnName, tableName, new AttributesImpl());
+			} else if (DisplayType.Account == displayType) {
+				String tableName = "C_ValidCombination";
 				addTableReference(columnName, tableName, new AttributesImpl());
 			} else if (DisplayType.isLOB(displayType)) {
 				addBlob(columnName);
