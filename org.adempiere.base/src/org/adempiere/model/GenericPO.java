@@ -81,9 +81,12 @@ public class GenericPO extends PO {
 		super(new PropertiesWrapper(ctx, tableName), 0, trxName, rs);
 	}
 
-	private int tableID = 0;
-	
-	private String tableName = null;
+	/**
+	 * We must not use variable initializer here since the 2 variable below will be initialize inside
+	 * the initPO method called by the parent constructor.  
+	 */
+	private int tableID;	
+	private String tableName;
 
 	/** Load Meta Data */
 	protected POInfo initPO(Properties ctx) {
