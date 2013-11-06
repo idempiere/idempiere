@@ -96,11 +96,6 @@ public interface ToolbarListener
     public void onDelete();
 
     /**
-     * Delete selected record(s)
-     */
-    public void onDeleteSelection();
-
-    /**
      * Save current record
      */
     public void onSave();

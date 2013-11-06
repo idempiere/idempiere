@@ -79,7 +79,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
     private ToolBarButton btnIgnore;
 
-    private ToolBarButton btnHelp, btnNew, btnCopy, btnDelete, btnDeleteSelection, btnSave;
+    private ToolBarButton btnHelp, btnNew, btnCopy, btnDelete, btnSave;
 
     private ToolBarButton btnSaveAndCreate; // Elaine 2009/03/02 - Save & Create
 
@@ -155,7 +155,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btnCopy.setTooltiptext(btnCopy.getTooltiptext()+ "    Alt+C");
         btnDelete = createButton("Delete", "Delete", "Delete");
         btnDelete.setTooltiptext(btnDelete.getTooltiptext()+ "    Alt+D");
-        btnDeleteSelection = createButton("DeleteSelection", "DeleteSelection", "DeleteSelection");
         btnSave = createButton("Save", "Save", "Save");
         btnSave.setTooltiptext(btnSave.getTooltiptext()+ "    Alt+S");
         btnSaveAndCreate = createButton("SaveCreate", "SaveCreate", "SaveCreate");
@@ -429,11 +428,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     	return !btnDelete.isDisabled();
     }
     
-    public void enableDeleteSelection(boolean enabled)
-    {
-    	this.btnDeleteSelection.setDisabled(!enabled);
-    }
-
     public void enableIgnore(boolean enabled)
     {
         this.btnIgnore.setDisabled(!enabled);

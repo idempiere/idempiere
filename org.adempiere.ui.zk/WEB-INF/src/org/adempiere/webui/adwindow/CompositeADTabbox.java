@@ -18,6 +18,7 @@
 package org.adempiere.webui.adwindow;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -144,24 +145,66 @@ public class CompositeADTabbox extends AbstractADTabbox
 					});
 				}
 				else if (DetailPane.ON_DELETE_EVENT.equals(event.getName())) {
-					if (headerTab.getGridTab().isNew()) return;
-					
-					final IADTabpanel tabPanel = getSelectedDetailADTabpanel();
-					if (tabPanel != null && tabPanel.getGridTab().getRowCount() > 0
-						&& tabPanel.getGridTab().getCurrentRow() >= 0) {
-						FDialog.ask(tabPanel.getGridTab().getWindowNo(), null, "DeleteRecord?", new Callback<Boolean>() {
+					onDelete();
+				}
+			}
 
-							@Override
-							public void onCallback(Boolean result) {
-								if (!result) return;
-								if (!tabPanel.getGridTab().dataDelete()) {
-									showLastError();
-								} else {
-									adWindowPanel.onRefresh(false);
-								}
+			private void onDelete() {
+				if (headerTab.getGridTab().isNew()) return;
+				
+				final IADTabpanel tabPanel = getSelectedDetailADTabpanel();
+				if (tabPanel != null && tabPanel.getGridTab().getSelection().length > 0) {
+					onDeleteSelected(tabPanel);
+				}
+				else if (tabPanel != null && tabPanel.getGridTab().getRowCount() > 0
+					&& tabPanel.getGridTab().getCurrentRow() >= 0) {
+					FDialog.ask(tabPanel.getGridTab().getWindowNo(), null, "DeleteRecord?", new Callback<Boolean>() {
+
+						@Override
+						public void onCallback(Boolean result) {
+							if (!result) return;
+							if (!tabPanel.getGridTab().dataDelete()) {
+								showLastError();
+							} else {
+								adWindowPanel.onRefresh(false);
 							}
-						});
-					}
+						}
+					});
+				}
+			}
+
+			private void onDeleteSelected(final IADTabpanel tabPanel) {
+				if (tabPanel == null || tabPanel.getGridTab() == null) return;
+				
+				final int[] indices = tabPanel.getGridTab().getSelection();
+				if(indices.length > 0) {
+					StringBuilder sb = new StringBuilder();
+					sb.append(Env.getContext(Env.getCtx(), tabPanel.getGridTab().getWindowNo(), "_WinInfo_WindowName", false)).append(" - ")
+						.append(indices.length).append(" ").append(Msg.getMsg(Env.getCtx(), "Selected"));
+					FDialog.ask(sb.toString(), tabPanel.getGridTab().getWindowNo(), null,"DeleteSelection", new Callback<Boolean>() {
+						@Override
+						public void onCallback(Boolean result) {
+							if(result){
+								tabPanel.getGridTab().clearSelection();						
+								Arrays.sort(indices);
+								int offset = 0;
+								int count = 0;
+								for (int i = 0; i < indices.length; i++)
+								{
+									tabPanel.getGridTab().navigate(indices[i]-offset);
+									if (tabPanel.getGridTab().dataDelete())
+									{
+										offset++;
+										count++;
+									}
+								}
+								
+								tabPanel.refresh();
+								tabPanel.dynamicDisplay(0);
+								adWindowPanel.getStatusBar().setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted")+": "+count, false);								
+							}
+						}
+					});
 				}
 			}			
 		});

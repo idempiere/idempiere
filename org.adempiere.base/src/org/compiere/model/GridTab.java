@@ -3239,7 +3239,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	}
 
 	public void addToSelection(int rowIndex) {
-		selection.add(rowIndex);
+		if (!selection.contains(rowIndex))
+			selection.add(rowIndex);
 	}
 
 	public boolean removeFromSelection(int rowIndex) {
