@@ -959,14 +959,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	//Deepak-Enabling customize button IDEMPIERE-364
         if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
         	toolbar.enableCustomize(((ADTabpanel)adTabbox.getSelectedTabpanel()).isGridView());
-        if (adTabbox.getSelectedTabpanel().isGridView()) 
-        {
-        	toolbar.enableDeleteSelection(toolbar.isDeleteEnable());
-        }
-        else
-        {
-        	toolbar.enableDeleteSelection(false);
-        }
     	focusToActivePanel();
     }
 
@@ -1445,7 +1437,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        toolbar.enableCopy(!changed && insertRecord && !tabPanel.getGridTab().isSortTab() && adTabbox.getSelectedGridTab().getRowCount()>0);
 	        toolbar.enableRefresh(!changed);
 	        toolbar.enableDelete(!changed && !readOnly && !tabPanel.getGridTab().isSortTab() && !processed);
-	        toolbar.enableDeleteSelection(!changed && !readOnly && !tabPanel.getGridTab().isSortTab() && !processed && tabPanel.isGridView());
 	        //
 	        if (readOnly && adTabbox.getSelectedGridTab().isAlwaysUpdateField())
 	        {
@@ -1491,7 +1482,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             toolbar.enableNew(true);
             toolbar.enableCopy(false);
             toolbar.enableDelete(false);
-            toolbar.enableDeleteSelection(false);
         }
 
         //  Transaction info
@@ -1669,7 +1659,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			            toolbar.enableNew(false);
 			            toolbar.enableCopy(false);
 			            toolbar.enableDelete(false);
-			            toolbar.enableDeleteSelection(false);
 			            breadCrumb.enableFirstNavigation(adTabbox.getSelectedGridTab().getCurrentRow() > 0);
 			            breadCrumb.enableLastNavigation(adTabbox.getSelectedGridTab().getCurrentRow() + 1 < adTabbox.getSelectedGridTab().getRowCount());
 			            toolbar.enableTabNavigation(breadCrumb.hasParentLink(), adTabbox.getSelectedDetailADTabpanel() != null);
@@ -1718,7 +1707,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             toolbar.enableNew(false);
             toolbar.enableCopy(false);
             toolbar.enableDelete(false);
-            toolbar.enableDeleteSelection(false);
             breadCrumb.enableFirstNavigation(adTabbox.getSelectedGridTab().getCurrentRow() > 0);
             breadCrumb.enableLastNavigation(adTabbox.getSelectedGridTab().getCurrentRow() + 1 < adTabbox.getSelectedGridTab().getRowCount());
             toolbar.enableTabNavigation(false);
@@ -2047,6 +2035,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         {
             return;
         }
+        
+        //delete selected if it is grid view and row selection
+        final int[] indices = adTabbox.getSelectedGridTab().getSelection();
+		if (indices.length > 0 && adTabbox.getSelectedTabpanel().isGridView())
+		{
+			onDeleteSelected();
+			return;
+		}
 
         FDialog.ask(curWindowNo, null, "DeleteRecord?", new Callback<Boolean>() {
 
@@ -2067,10 +2063,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     }
 
     // Elaine 2008/12/01
-	/**
-	 * @see ToolbarListener#onDelete()
-	 */
-    public void onDeleteSelection()
+    private void onDeleteSelected()
 	{
     	if (adTabbox.getSelectedGridTab().isReadOnly() || !adTabbox.getSelectedTabpanel().isGridView())
         {

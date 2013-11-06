@@ -309,6 +309,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 			listbox.setModel(listModel);
 			updateListIndex();
 			refreshing = false;			
+			if (gridTab.getRowCount() == 0 && selectAll.isChecked())
+				selectAll.setChecked(false);
 		}
 	}
 
@@ -867,6 +869,9 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
         boolean noData = gridTab.getRowCount() == 0;
         List<WEditor> list =  renderer.getEditors();
         dynamicDisplayEditors(noData, list);   //  all components
+        
+        if (gridTab.getRowCount() == 0 && selectAll.isChecked())
+			selectAll.setChecked(false);        
 	}
 
 	private void dynamicDisplayEditors(boolean noData, List<WEditor> list) {
