@@ -12,6 +12,8 @@
 		<jar destfile="labelapplet.jar" basedir="bin">
 			<manifest>
 				<attribute name="Built-By" value="Trek Global"/>
+				<attribute name="Permissions" value="all-permissions" />
+				<attribute name="Codebase" value="*" />
 			</manifest>
 		</jar>
 	</target>	

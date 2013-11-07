@@ -13,14 +13,14 @@
  *****************************************************************************/
 package org.adempiere.webui;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
-import org.compiere.model.MSysConfig;
+import org.compiere.model.MArchive;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -54,33 +54,17 @@ public class LabelAppletWindow extends Window implements EventListener<Event>
 		applet.setHeight("0");
 		applet.setParam("size", list.size() + "");
 
-		File tempFile = null;
-		FileOutputStream fos = null;
 		for(int i = 0; i < list.size(); i++)
 		{
 			try
-			{
-				File directory = null;
-				String tempFolder = MSysConfig.getValue(MSysConfig.ZK_PRINT_SHIPPING_LABEL_SHARED_TEMP_FOLDER, null);
-				if (tempFolder != null && tempFolder.trim().length() > 0)
-				{
-					directory = new File(tempFolder.trim());
-					if (!directory.exists())
-					{
-						log.severe("Directory doesn't exists " + tempFolder);
-						directory = null;
-					}
-					else if (!directory.canWrite())
-					{
-						log.severe("Directory cannot write " + tempFolder);
-						directory = null;
-					}
-				}
-				tempFile = File.createTempFile("lblapp", Long.toString(System.nanoTime()), directory);				
-				fos = new FileOutputStream(tempFile);
-				applet.setParam("file_" + i, tempFile.getAbsolutePath());
-				fos.write(list.get(i));
-				fos.close();
+			{				
+				MArchive archive = new MArchive(Env.getCtx(), 0, null);
+				archive.setName("file_" + i);
+				archive.setBinaryData(list.get(i));
+				archive.saveEx();				
+				applet.setParam("file_" + i, archive.getAD_Archive_ID() + "");
+				if (log.isLoggable(Level.INFO))
+					log.info("file_" + i + "=" + archive.getAD_Archive_ID());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
