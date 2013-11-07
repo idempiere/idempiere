@@ -512,7 +512,7 @@ public class ImportAccount extends SvrProcess
 			.append("FROM I_ElementValue i")
 			.append(" INNER JOIN AD_Column c ON (i.AD_Column_ID=c.AD_Column_ID)")
 			.append(" INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID) ")
-			.append("WHERE i.I_IsImported='Y' AND Processing='Y'")
+			.append("WHERE i.I_IsImported='Y' AND i.Processing='Y'")
 			.append(" AND i.C_ElementValue_ID IS NOT NULL AND C_Element_ID=?");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
