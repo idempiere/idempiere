@@ -1,52 +1,44 @@
+<%@ page language="java" contentType="application/octet-stream"%>
 <%@ page trimDirectiveWhitespaces="true" %>
+<%@page import="org.compiere.model.MArchive"%>
+<%@page import="org.compiere.util.Env"%>
 <%@page import="java.io.ByteArrayOutputStream"%>
 <%@page import="java.io.FileInputStream"%>
 <%@page import="java.io.File"%>
 <%@page import="java.io.BufferedOutputStream"%>
 <%@page import="java.io.OutputStream"%>
-<%@ page language="java" contentType="application/octet-stream"%>
-<%
-	String filepath = request.getParameter("filepath");
-	if (filepath == null || filepath.trim().length() == 0 )
-		return;
-	
-	File file = new File(filepath);
-	if (file.exists()) 
-	{	
-		FileInputStream fis = null;
-		ByteArrayOutputStream baos = null;
-		byte[] data = null;
-		try
+<%	
+	try
+	{
+		String fileid = request.getParameter("fileid");
+		if (fileid == null || fileid.trim().length() == 0)
 		{
-			fis = new FileInputStream (file);
-			baos = new ByteArrayOutputStream();
-			byte[] buffer = new byte[1024*8];   //  8kB
-			int length = -1;
-			while ((length = fis.read(buffer)) != -1)
-				baos.write(buffer, 0, length);			
-			data = baos.toByteArray();
-			fis.close();
-			baos.close();
-			
-			response.setContentLength(data.length);
-			
-			OutputStream os = response.getOutputStream();
-			BufferedOutputStream bos = new BufferedOutputStream(os);
-			bos.write(data);
-			bos.flush();
-			bos.close();
-			
-			file.delete();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
 			response.setContentLength(0);
+			return;
+		}
+		
+		int AD_Archive_ID = Integer.parseInt(fileid);
+		if (AD_Archive_ID > 0)
+		{
+			MArchive archive = new MArchive(Env.getCtx(), AD_Archive_ID, null);
+			if (archive != null && archive.getAD_Archive_ID() > 0)
+			{
+				byte[] data = archive.getBinaryData();
+				response.setContentLength(data.length);
+				
+				OutputStream os = response.getOutputStream();
+				BufferedOutputStream bos = new BufferedOutputStream(os);
+				bos.write(data);
+				bos.flush();
+				bos.close();
+				
+				archive.delete(false);
+			}
 		}
 	}
-	else 
+	catch (Exception e)
 	{
-		System.out.println("file not found=" + filepath);
+		e.printStackTrace();
 		response.setContentLength(0);
 	}
 %>
