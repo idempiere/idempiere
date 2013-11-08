@@ -444,6 +444,8 @@ public class CreateForeignKey extends SvrProcess {
 						else if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_SetNull))
 							fkConstraint.append(" ON DELETE SET NULL");
 						
+						fkConstraint.append(" DEFERRABLE INITIALLY DEFERRED");
+						
 						column.setFKConstraintName(fkConstraintName);
 						column.setFKConstraintType(fkConstraintType);
 						column.saveEx();

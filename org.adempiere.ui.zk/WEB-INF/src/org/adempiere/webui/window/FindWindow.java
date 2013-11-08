@@ -269,6 +269,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         {
             return false;
         }
+                
+        if (!winMain.getComponent().getTabpanel(0).isVisible())
+        {
+        	winMain.getComponent().setSelectedIndex(1);
+        	onAdvanceTabSelected();
+        }
+        
         return true;
     }
     
@@ -676,6 +683,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	addSelectionColumn (field);
 		} 
         
+        if (m_sEditors.isEmpty()) {
+        	Tabpanel tabPanel = winMain.getComponent().getTabpanel(0);
+        	tabPanel.getLinkedTab().setVisible(false);
+        	tabPanel.setVisible(false);        	
+        }
+        
         gridFieldList = null;
         m_total = getNoOfRecords(null, false);
 
@@ -1072,16 +1085,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     		}
     		else if (event.getTarget() instanceof Tab) {
     			if (winMain.getComponent().getSelectedIndex() == 1) {
-    				fQueryName.setReadonly(false);
-    				btnSave.setDisabled(m_AD_Tab_ID <= 0);
-    				historyCombo.setSelectedItem(null);
-    				if (advancedPanel.getItems().size() == 0) {
-    					createFields();
-    				}
+    				onAdvanceTabSelected();
     			} else {
-    				fQueryName.setReadonly(true);
-    				btnSave.setDisabled(true);
-    				historyCombo.setDisabled(false);
+    				onSimpleTabSelected();
     			}
     		}
         }   //
@@ -1170,6 +1176,21 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
 
     }   //  onEvent
+
+	private void onSimpleTabSelected() {
+		fQueryName.setReadonly(true);
+		btnSave.setDisabled(true);
+		historyCombo.setDisabled(false);
+	}
+
+	private void onAdvanceTabSelected() {
+		fQueryName.setReadonly(false);
+		btnSave.setDisabled(m_AD_Tab_ID <= 0);
+		historyCombo.setSelectedItem(null);
+		if (advancedPanel.getItems().size() == 0) {
+			createFields();
+		}
+	}
 
     private void parseUserQuery(MUserQuery userQuery)
     {

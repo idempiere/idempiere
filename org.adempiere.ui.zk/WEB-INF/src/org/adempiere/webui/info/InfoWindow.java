@@ -469,21 +469,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		super.prepareTable(layout, from, where, orderBy);
 		if (m_sqlMain.indexOf("@") >= 0) {
 			String sql = Env.parseContext(infoContext, p_WindowNo, m_sqlMain, true);
-			if (sql == null || sql.length() == 9) {
+			if (sql == null || sql.length() == 0) {
 				log.severe("Failed to parsed sql. sql=" + m_sqlMain);
 			} else {
 				m_sqlMain = sql;
 			}
 		}
 		
-		if (infoWindow.isDistinct()) {
+		if (m_sqlMain.length() > 0 &&  infoWindow.isDistinct()) {
 			m_sqlMain = m_sqlMain.substring("SELECT ".length());
 			m_sqlMain = "SELECT DISTINCT " + m_sqlMain;			
 		}	
 		
 		if (m_sqlOrder != null && m_sqlOrder.indexOf("@") >= 0) {
 			String sql = Env.parseContext(infoContext, p_WindowNo, m_sqlOrder, false, false);
-			if (sql == null || sql.length() == 9) {
+			if (sql == null || sql.length() == 0) {
 				log.severe("Failed to parsed sql. sql=" + m_sqlOrder);
 			} else {
 				m_sqlOrder = sql;
