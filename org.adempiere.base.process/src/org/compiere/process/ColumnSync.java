@@ -286,6 +286,8 @@ public class ColumnSync extends SvrProcess
 									else if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_SetNull))
 										fkConstraint.append(" ON DELETE SET NULL");
 																	
+									fkConstraint.append(" DEFERRABLE INITIALLY DEFERRED");
+									
 									fkConstraintSql.append(DB.SQLSTATEMENT_SEPARATOR);
 									fkConstraintSql.append("ALTER TABLE ").append(table.getTableName());
 									fkConstraintSql.append(" ADD ");
