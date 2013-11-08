@@ -566,6 +566,8 @@ public abstract class Convert
 		return false;
 	}
 
+	private static String m_oldprm_COMMENT = "";
+
 	private static void writeLogMigrationScript(Writer w, String statement) throws IOException
 	{
 		boolean isUseCentralizedID = "Y".equals(MSysConfig.getValue(MSysConfig.DICTIONARY_ID_USE_CENTRALIZED_ID, "Y")); // defaults to Y
@@ -581,10 +583,14 @@ public abstract class Convert
 		w.append("-- ");
 		w.append(dateTimeText);
 		w.append("\n");
-		// log sysconfig comment
-		w.append("-- ");
-		w.append(prm_COMMENT);
-		w.append("\n");
+		if (prm_COMMENT != null && ! m_oldprm_COMMENT.equals(prm_COMMENT)) {
+			// log sysconfig comment
+			w.append("-- ");
+			w.append(prm_COMMENT);
+			w.append("\n");
+			if (w == writerPg)
+				m_oldprm_COMMENT = prm_COMMENT;
+		}
 		// log statement
 		w.append(statement);
 		// close statement
