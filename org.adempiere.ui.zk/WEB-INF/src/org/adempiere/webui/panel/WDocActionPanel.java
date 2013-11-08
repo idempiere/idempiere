@@ -305,13 +305,10 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		if (Events.ON_CLICK.equals(event.getName()))
 		{
 			if (confirmPanel.getButton("Ok").equals(event.getTarget()))
-			{
-				m_OKpressed = true;
-				setValue();
+			{				
 				MClientInfo clientInfo = MClientInfo.get(Env.getCtx());
 				if(clientInfo.isConfirmOnDocClose() || clientInfo.isConfirmOnDocVoid())
 				{
-					final Window window = this;
 					String selected = lstDocAction.getSelectedItem().getValue().toString();
 					if((selected.equals(org.compiere.process.DocAction.ACTION_Close) && clientInfo.isConfirmOnDocClose())  
 						|| (selected.equals(org.compiere.process.DocAction.ACTION_Void) && clientInfo.isConfirmOnDocVoid()))
@@ -323,17 +320,23 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 							@Override
 							public void onCallback(Boolean result) {
 								if(result)
-									window.detach();
+								{
+									setValueAndClose();
+								}
 								else
 									return;
 							}
 						});
 					}
 					else
-						this.detach();
+					{
+						setValueAndClose();
+					}
 				}
 				else
-					this.detach();
+				{
+					setValueAndClose();
+				}
 			}
 			else if (confirmPanel.getButton("Cancel").equals(event.getTarget()))
 			{
@@ -349,6 +352,12 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 				label.setValue(s_description[getSelectedIndex()]);
 			}
 		}
+	}
+
+	private void setValueAndClose() {
+		m_OKpressed = true;
+		setValue();
+		detach();
 	}
 
 	private void setValue()
