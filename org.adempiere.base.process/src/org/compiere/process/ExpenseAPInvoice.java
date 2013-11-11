@@ -225,7 +225,7 @@ public class ExpenseAPInvoice extends SvrProcess
 		//
 		m_noInvoices++;
 		addLog(invoice.get_ID(), invoice.getDateInvoiced(), 
-			invoice.getGrandTotal(), invoice.getDocumentNo());
+			invoice.getGrandTotal(), invoice.getDocumentNo(), invoice.get_Table_ID(), invoice.getC_Invoice_ID());
 	}	//	completeInvoice
 
 }	//	ExpenseAPInvoice
