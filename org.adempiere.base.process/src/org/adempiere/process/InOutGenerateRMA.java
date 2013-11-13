@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.I_C_InvoiceLine;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
@@ -112,7 +113,7 @@ public class InOutGenerateRMA extends SvrProcess
         }
         catch (Exception ex)
         {
-            log.log(Level.SEVERE, sql, ex);
+			throw new AdempiereException(ex);
         }
         finally
         {

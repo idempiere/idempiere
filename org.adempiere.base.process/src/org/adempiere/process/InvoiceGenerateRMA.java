@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MRMA;
@@ -107,7 +108,7 @@ public class InvoiceGenerateRMA extends SvrProcess
         }
         catch (Exception ex)
         {
-            log.log(Level.SEVERE, sql, ex);
+			throw new AdempiereException(ex);
         }
         finally
         {

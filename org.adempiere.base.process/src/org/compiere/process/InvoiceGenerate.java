@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MCurrency;
@@ -178,7 +179,7 @@ public class InvoiceGenerate extends SvrProcess
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, sql.toString(), e);
+			throw new AdempiereException(e);
 		}
 		return generate(pstmt);
 	}	//	doIt
@@ -324,7 +325,7 @@ public class InvoiceGenerate extends SvrProcess
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, "", e);
+			throw new AdempiereException(e);
 		}
 		finally
 		{

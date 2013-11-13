@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MClient;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
@@ -196,7 +197,7 @@ public class InOutGenerate extends SvrProcess
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, m_sql.toString(), e);
+			throw new AdempiereException(e);
 		}
 		return generate(pstmt);
 	}	//	doIt
@@ -396,7 +397,7 @@ public class InOutGenerate extends SvrProcess
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, m_sql.toString(), e);
+			throw new AdempiereException(e);
 		}
 		finally
 		{
