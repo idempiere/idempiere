@@ -118,6 +118,7 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String ZK_MAX_UPLOAD_SIZE = "ZK_MAX_UPLOAD_SIZE";
 	public static final String CALENDAR_ALTERNATE_TIMEZONE = "CALENDAR_ALTERNATE_TIMEZONE";
 	public static final String ZK_REPORT_JASPER_OUTPUT_TYPE = "ZK_REPORT_JASPER_OUTPUT_TYPE";
+	public static final String VALIDATE_MATCHING_TO_ORDERED_QTY = "VALIDATE_MATCHING_TO_ORDERED_QTY";
 
 	/**
 	 * 	Standard Constructor

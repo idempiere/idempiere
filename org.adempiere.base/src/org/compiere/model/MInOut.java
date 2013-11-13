@@ -758,6 +758,10 @@ public class MInOut extends X_M_InOut implements DocAction
 						line.setM_RMALine_ID(peer.getRef_RMALine_ID());
 				}
 			}
+			else if (!isSOTrx())
+			{
+				line.setQtyOverReceipt(fromLine.getQtyOverReceipt());
+			}
 			//
 			line.setProcessed(false);
 			if (line.save(get_TrxName()))
@@ -1287,7 +1291,6 @@ public class MInOut extends X_M_InOut implements DocAction
 			if (MovementType.charAt(1) == '-')	//	C- Customer Shipment - V- Vendor Return
 				Qty = Qty.negate();
 			BigDecimal QtySO = Env.ZERO;
-			BigDecimal QtyPO = Env.ZERO;
 
 			//	Update Order Line
 			MOrderLine oLine = null;
@@ -1298,8 +1301,6 @@ public class MInOut extends X_M_InOut implements DocAction
 					+ ", Delivered=" + oLine.getQtyDelivered());
 				if (isSOTrx())
 					QtySO = sLine.getMovementQty();
-				else
-					QtyPO = sLine.getMovementQty();
 			}
 
 
@@ -1334,6 +1335,27 @@ public class MInOut extends X_M_InOut implements DocAction
 					sameWarehouse = oLine.getM_Warehouse_ID()==getM_Warehouse_ID();
 				}
 				//
+				BigDecimal overReceipt = BigDecimal.ZERO;
+				if (!isSOTrx())
+				{						
+					if (!isReversal())
+					{
+						BigDecimal toDelivered = oLine.getQtyOrdered().subtract(oLine.getQtyDelivered());
+						if (sLine.getMovementQty().compareTo(toDelivered) > 0)
+							overReceipt = sLine.getMovementQty().subtract(toDelivered);
+						if (overReceipt.signum() != 0)
+						{
+							sLine.setQtyOverReceipt(overReceipt);
+							sLine.saveEx();
+						}
+					}
+					else
+					{
+						overReceipt = sLine.getQtyOverReceipt();
+					}
+				}					
+				BigDecimal orderedQtyToUpdate = sLine.getMovementQty().subtract(overReceipt);
+				//
 				if (sLine.getM_AttributeSetInstance_ID() == 0)
 				{
 					MInOutLineMA mas[] = MInOutLineMA.get(getCtx(),
@@ -1349,9 +1371,22 @@ public class MInOut extends X_M_InOut implements DocAction
 						if (sLine.getC_OrderLine_ID() != 0)
 						{
 							if (isSOTrx())
+							{
 								reservedDiff = ma.getMovementQty().negate();
+							}
 							else
-								orderedDiff = ma.getMovementQty().negate();
+							{
+								if (ma.getMovementQty().compareTo(orderedQtyToUpdate) >= 0)
+								{
+									orderedQtyToUpdate = orderedQtyToUpdate.subtract(ma.getMovementQty());
+									orderedDiff = ma.getMovementQty().negate();
+								}
+								else
+								{
+									orderedDiff = orderedQtyToUpdate.negate();
+									orderedQtyToUpdate = BigDecimal.ZERO;
+								}
+							}
 						}
 
 						//	Update Storage - see also VMatch.createMatchRecord
@@ -1435,7 +1470,7 @@ public class MInOut extends X_M_InOut implements DocAction
 				if (mtrx == null)
 				{
 					BigDecimal reservedDiff = sameWarehouse ? QtySO.negate() : Env.ZERO;
-					BigDecimal orderedDiff = sameWarehouse ? QtyPO.negate(): Env.ZERO;
+					BigDecimal orderedDiff = sameWarehouse ? orderedQtyToUpdate.negate(): Env.ZERO;
 
 					//	Fallback: Update Storage - see also VMatch.createMatchRecord
 					if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
@@ -1482,11 +1517,11 @@ public class MInOut extends X_M_InOut implements DocAction
 								return DocAction.STATUS_Invalid;
 							}
 						}
-						if (QtyPO.signum() != 0) {
+						if (orderedQtyToUpdate.signum() != 0) {
 							if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
 									sLine.getM_Product_ID(),
 									sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
-									QtyPO.negate(), false, get_TrxName()))
+									orderedQtyToUpdate.negate(), false, get_TrxName()))
 							{
 								m_processMsg = "Cannot correct Inventory Ordered [" + product.getValue() + "]";
 								return DocAction.STATUS_Invalid;
@@ -1509,7 +1544,12 @@ public class MInOut extends X_M_InOut implements DocAction
 
 			//	Correct Order Line
 			if (product != null && oLine != null)		//	other in VMatch.createMatchRecord
-				oLine.setQtyReserved(oLine.getQtyReserved().subtract(sLine.getMovementQty()));
+			{
+				if (isSOTrx())
+					oLine.setQtyReserved(oLine.getQtyReserved().subtract(sLine.getMovementQty()));
+				else
+					oLine.setQtyReserved(oLine.getQtyReserved().subtract(sLine.getMovementQty().subtract(sLine.getQtyOverReceipt())));
+			}
 
 			//	Update Sales Order Line
 			if (oLine != null)
@@ -2174,6 +2214,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			MInOutLine rLine = rLines[i];
 			rLine.setQtyEntered(rLine.getQtyEntered().negate());
 			rLine.setMovementQty(rLine.getMovementQty().negate());
+			rLine.setQtyOverReceipt(rLine.getQtyOverReceipt().negate());
 			rLine.setM_AttributeSetInstance_ID(sLines[i].getM_AttributeSetInstance_ID());
 			// Goodwill: store original (voided/reversed) document line
 			rLine.setReversalLine_ID(sLines[i].getM_InOutLine_ID());

@@ -911,17 +911,21 @@ public class MMatchPO extends X_M_MatchPO
 			
 			if (getC_OrderLine_ID() > 0)
 			{
-				MOrderLine line = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName());
-				BigDecimal invoicedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID > 0 and C_OrderLine_ID=?" , getC_OrderLine_ID());
-				if (invoicedQty != null && invoicedQty.compareTo(line.getQtyOrdered()) > 0)
+				boolean validateOrderedQty = MSysConfig.getBooleanValue(MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY, true, Env.getAD_Client_ID(Env.getCtx()));
+				if (validateOrderedQty)
 				{
-					throw new IllegalStateException("Total matched invoiced qty > ordered qty. MatchedInvoicedQty="+invoicedQty+", OrderedQty="+line.getQtyOrdered()+", Line="+line);
-				}
-				
-				BigDecimal deliveredQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE M_InOutLine_ID > 0 and C_OrderLine_ID=?" , getC_OrderLine_ID());
-				if (deliveredQty != null && deliveredQty.compareTo(line.getQtyOrdered()) > 0)
-				{
-					throw new IllegalStateException("Total matched delivered qty > ordered qty. MatchedDeliveredQty="+deliveredQty+", OrderedQty="+line.getQtyOrdered()+", Line="+line);
+					MOrderLine line = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName());
+					BigDecimal invoicedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID > 0 and C_OrderLine_ID=?" , getC_OrderLine_ID());
+					if (invoicedQty != null && invoicedQty.compareTo(line.getQtyOrdered()) > 0)
+					{
+						throw new IllegalStateException("Total matched invoiced qty > ordered qty. MatchedInvoicedQty="+invoicedQty+", OrderedQty="+line.getQtyOrdered()+", Line="+line);
+					}
+					
+					BigDecimal deliveredQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE M_InOutLine_ID > 0 and C_OrderLine_ID=?" , getC_OrderLine_ID());
+					if (deliveredQty != null && deliveredQty.compareTo(line.getQtyOrdered()) > 0)
+					{
+						throw new IllegalStateException("Total matched delivered qty > ordered qty. MatchedDeliveredQty="+deliveredQty+", OrderedQty="+line.getQtyOrdered()+", Line="+line);
+					}
 				}
 			}
 		}

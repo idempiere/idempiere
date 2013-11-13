@@ -32,7 +32,7 @@ public class X_M_InOutLine extends PO implements I_M_InOutLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130626L;
+	private static final long serialVersionUID = 20131113L;
 
     /** Standard Constructor */
     public X_M_InOutLine (Properties ctx, int M_InOutLine_ID, String trxName)
@@ -699,6 +699,26 @@ public class X_M_InOutLine extends PO implements I_M_InOutLine, I_Persistent
 	public BigDecimal getQtyEntered () 
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyEntered);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Over Receipt.
+		@param QtyOverReceipt 
+		Over Receipt Quantity
+	  */
+	public void setQtyOverReceipt (BigDecimal QtyOverReceipt)
+	{
+		set_Value (COLUMNNAME_QtyOverReceipt, QtyOverReceipt);
+	}
+
+	/** Get Over Receipt.
+		@return Over Receipt Quantity
+	  */
+	public BigDecimal getQtyOverReceipt () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyOverReceipt);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
