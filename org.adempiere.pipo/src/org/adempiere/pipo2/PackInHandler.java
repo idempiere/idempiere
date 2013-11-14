@@ -301,8 +301,12 @@ public class PackInHandler extends DefaultHandler {
     		{
     			if (e.contents.toString().length() != e.contents.toString().trim().length())
     			{
-    				String s = e.contents.toString().trim();
-    				e.contents = new StringBuffer(s);
+        			String trim = e.attributes.getValue("trim");
+        			if (!(trim != null && trim.equals("false")))
+        			{
+	    				String s = e.contents.toString().trim();
+	    				e.contents = new StringBuffer(s);
+        			}
     			}
     		}
     		if (stack.isEmpty())
