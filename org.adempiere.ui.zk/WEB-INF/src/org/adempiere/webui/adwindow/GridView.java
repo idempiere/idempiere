@@ -730,7 +730,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 					setFocusToField(columnOnClick);
 					columnOnClick = null;
 				} else {
-					renderer.focusToFirstEditor();
+					focusToFirstEditorIfNotDetailTab();
 				}
 			} else {
 				focusToRow(row);
@@ -761,6 +761,30 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		}
 	}
 
+	private void focusToFirstEditorIfNotDetailTab() {
+		ADTabpanel adtabpanel = null;
+		boolean setFocus = true;
+		Component parent = listbox.getParent();
+		while (parent != null) {
+			if (parent instanceof ADTabpanel) {
+				adtabpanel = (ADTabpanel) parent;
+				break;
+			}
+			parent = parent.getParent();
+		}					
+		if (adtabpanel != null)
+		{
+			ADWindow adwindow = ADWindow.findADWindow(adtabpanel);
+			if (adwindow != null) {
+				IADTabpanel selectedADTabpanel = adwindow.getADWindowContent().getADTab().getSelectedTabpanel();
+				if (selectedADTabpanel != adtabpanel)
+					setFocus = false;
+			}
+		}
+		if (setFocus)
+			renderer.focusToFirstEditor();
+	}
+
 	/**
 	 * scroll grid to the current focus row
 	 */
@@ -774,7 +798,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 				setFocusToField(columnOnClick);
 				columnOnClick = null;
 			} else {
-				renderer.focusToFirstEditor();
+				focusToFirstEditorIfNotDetailTab();
 			}
 		} else {
 			Component cmp = null;
