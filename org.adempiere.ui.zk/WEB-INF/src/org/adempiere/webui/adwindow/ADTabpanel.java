@@ -1410,7 +1410,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
 	@Override
 	public void focus() {
-		if (formContainer.isVisible())
+		if (form.isVisible())
 			this.focusToFirstEditor(true);
 		else
 			listPanel.focus();
