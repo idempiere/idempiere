@@ -46,6 +46,7 @@ import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.DatetimeBox;
 import org.adempiere.webui.component.Grid;
+import org.adempiere.webui.component.Group;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListCell;
 import org.adempiere.webui.component.ListHead;
@@ -99,6 +100,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
@@ -616,10 +618,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         log.config("");
         
         ArrayList<GridField> gridFieldList = new ArrayList<GridField>();
+        ArrayList<GridField> moreFieldList = new ArrayList<GridField>();
         //  Get Info from target Tab
         for (int i = 0; i < m_findFields.length; i++)
         {
             GridField mField = m_findFields[i];
+            boolean isDisplayed = mField.isDisplayed();
             
 			if (mField.getVO().displayType == DisplayType.YesNo) {
 				// Make Yes-No searchable as list
@@ -665,12 +669,40 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				mField = findField;
 			}
 			if (mField.isSelectionColumn()) {
-            	gridFieldList.add(mField); 
-            } // isSelectionColumn
+            	gridFieldList.add(mField); // isSelectionColumn 
+            } else {
+            	if (isDisplayed && mField.getDisplayType() != DisplayType.Button && !mField.getColumnName().equals("AD_Client_ID"))
+            		moreFieldList.add(mField);
+            }
         }   //  for all target tab fields
 
+        //show well known column or the first 2 column in the form if no selection columns have been defined 
+        if (gridFieldList.isEmpty() && !moreFieldList.isEmpty())
+        {
+        	for(GridField field:moreFieldList){
+        		if (field.getColumnName().equals("Value") || field.getColumnName().equals("Name") 
+        			|| field.getColumnName().equals("DocumentNo") || field.getColumnName().equals("Description"))
+        		{
+        			gridFieldList.add(field);        			
+        		}
+        	}
+        	if (gridFieldList.isEmpty()) {
+        		int i = 0;
+        		for(GridField field:moreFieldList){
+        			if(field.getColumnName().equals("AD_Client_ID") || field.getColumnName().equals("AD_Org_ID") 
+        					|| field.getDisplayType() == DisplayType.ID)
+        				continue;
+        			gridFieldList.add(field);
+        			i++;
+        			if (i == 2) break;
+        		}
+        	}
+        	for(GridField field:gridFieldList){
+        		moreFieldList.remove(field);
+        	}
+        }
        
-       // added comparator on sequence of selection column for IDEMPIERE-377
+        // added comparator on sequence of selection column for IDEMPIERE-377
         Collections.sort(gridFieldList, new Comparator<GridField>() {
 			@Override
 			public int compare(GridField o1, GridField o2) {
@@ -682,6 +714,20 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         for(GridField field:gridFieldList){
         	addSelectionColumn (field);
 		} 
+        
+        //add ... link to show the rest of the columns
+        if (!moreFieldList.isEmpty() && !gridFieldList.isEmpty()) {
+        	Group rowg = new Group("...");
+        	contentSimpleRows.appendChild(rowg);
+			Cell cell = (Cell) rowg.getFirstChild();
+			cell.setSclass("z-group-inner");
+			cell.setColspan(3);
+			cell.setAlign("left");
+        	for(GridField field:moreFieldList){
+            	addSelectionColumn (field, rowg);
+    		}
+        	rowg.setOpen(false);
+        }
         
         if (m_sEditors.isEmpty()) {
         	Tabpanel tabPanel = winMain.getComponent().getTabpanel(0);
@@ -983,6 +1029,15 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     **/
     public void addSelectionColumn(GridField mField)
     {
+    	addSelectionColumn(mField, null);
+    }
+    
+    /**
+     *  Add Selection Column to first Tab
+     *  @param mField field
+    **/
+    public void addSelectionColumn(GridField mField, Group group)
+    {
         if (log.isLoggable(Level.CONFIG)) log.config(mField.getHeader());
         int displayLength = mField.getDisplayLength();
         if (displayLength <= 0 || displayLength > FIELDLENGTH)
@@ -1010,6 +1065,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         panel.appendChild(label);
         panel.appendChild(fieldEditor);
         panel.appendChild(new Space());
+        if (group != null)
+        	panel.setGroup(group);
 
         contentSimpleRows.appendChild(panel);
         m_sEditors.add(editor);
