@@ -60,7 +60,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 /**
  *  PostgreSQL Database Port
  *
- *  @author      @author     Jorg Janke, Victor P�rez
+ *  @author      @author     Jorg Janke, Victor Perez
  *  @version    $Id: DB_PostgreSQL.java,v 1.23 2005/03/11 20:29:01 jjanke Exp $
  *  ---
  *  Modifications: removed static references to database connection and instead always
@@ -1100,8 +1100,12 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		String info = e.getMessage();
 		int fromIndex = info.indexOf("\"");
 		if (fromIndex == -1)
+			fromIndex = info.indexOf("\u00ab"); // quote for spanish postgresql message
+		if (fromIndex == -1)
 			return info;
 		int toIndex = info.indexOf("\"", fromIndex + 1);
+		if (toIndex == -1)
+			toIndex = info.indexOf("\u00bb", fromIndex + 1);
 		if (toIndex == -1)
 			return info;
 		return info.substring(fromIndex + 1, toIndex);
