@@ -25,6 +25,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
 
 /**
@@ -191,9 +192,15 @@ public class PrintDataElement implements Serializable
 		{
 			if (DisplayType.isNumeric(m_displayType)) {
 				retValue = DisplayType.getNumberFormat(m_displayType, language, m_formatPattern).format(m_value);
-			}
-			else if (DisplayType.isDate(m_displayType))
+			} else if (DisplayType.isDate(m_displayType)) {
 				retValue = DisplayType.getDateFormat(m_displayType, language, m_formatPattern).format(m_value);
+			} else if (m_value instanceof Boolean) {
+				if (m_value.toString().equals("true")) {
+					retValue = Msg.getMsg(Env.getCtx(), "Yes");
+				} else if (m_value.toString().equals("false")) {
+					retValue = Msg.getMsg(Env.getCtx(), "No");
+				}
+			}
 		}
 		return retValue;
 	}	//	getValueDisplay

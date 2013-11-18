@@ -1344,13 +1344,16 @@ public class MInOut extends X_M_InOut implements DocAction
 				{						
 					if (!isReversal())
 					{
-						BigDecimal toDelivered = oLine.getQtyOrdered().subtract(oLine.getQtyDelivered());
-						if (sLine.getMovementQty().compareTo(toDelivered) > 0)
-							overReceipt = sLine.getMovementQty().subtract(toDelivered);
-						if (overReceipt.signum() != 0)
+						if (oLine != null)
 						{
-							sLine.setQtyOverReceipt(overReceipt);
-							sLine.saveEx();
+							BigDecimal toDelivered = oLine.getQtyOrdered().subtract(oLine.getQtyDelivered());
+							if (sLine.getMovementQty().compareTo(toDelivered) > 0)
+								overReceipt = sLine.getMovementQty().subtract(toDelivered);
+							if (overReceipt.signum() != 0)
+							{
+								sLine.setQtyOverReceipt(overReceipt);
+								sLine.saveEx();
+							}
 						}
 					}
 					else
