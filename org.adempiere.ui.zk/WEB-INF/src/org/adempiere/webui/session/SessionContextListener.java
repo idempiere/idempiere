@@ -65,6 +65,19 @@ public class SessionContextListener implements ExecutionInit,
     	Session session = exec.getDesktop().getSession();
 		Properties ctx = (Properties)session.getAttribute(SESSION_CTX);
 		HttpSession httpSession = (HttpSession)session.getNativeSession();
+		//create empty context if there's no valid native session
+		if (httpSession == null)
+		{
+			ctx = new Properties();
+			ctx.put(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER, new ServerContextURLHandler() {
+				public void showURL(String url) {
+					SessionManager.getAppDesktop().showURL(url, true);
+				}
+			});
+			ServerContext.setCurrentInstance(ctx);
+			return;
+		}
+		
 		if (ctx != null)
 		{
 			//verify ctx
@@ -283,7 +296,7 @@ public class SessionContextListener implements ExecutionInit,
 		HttpSession httpSession = (HttpSession)session.getNativeSession();
 		//verify ctx
 		String cacheId = ctx.getProperty(SERVLET_SESSION_ID);
-		if (cacheId == null || !cacheId.equals(httpSession.getId()) )
+		if (cacheId == null || httpSession == null || !cacheId.equals(httpSession.getId()) )
 		{
 			return false;
 		}

@@ -282,7 +282,7 @@ public class ExpenseSOrder extends SvrProcess
 		if (!m_order.save())
 			throw new IllegalStateException("Cannot save Order");
 		m_noOrders++;
-		addLog (m_order.get_ID(), m_order.getDateOrdered(), m_order.getGrandTotal(), m_order.getDocumentNo());
+		addLog (m_order.get_ID(), m_order.getDateOrdered(), m_order.getGrandTotal(), m_order.getDocumentNo(), m_order.get_Table_ID(), m_order.getC_Order_ID());
 		m_order = null;
 	}	//	completeOrder
 

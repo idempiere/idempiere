@@ -18,6 +18,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,13 +63,11 @@ import org.zkoss.zul.Vlayout;
  * @author hengsin
  */
 public class WGadgets extends Window implements  EventListener<Event>{
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3652943562286386813L;
-	
-	
+	private static final long serialVersionUID = -4466888491090717617L;
+
 	// UI variables
 	protected Label noLabel = new Label();
 	protected Label yesLabel = new Label();
@@ -320,8 +320,17 @@ public class WGadgets extends Window implements  EventListener<Event>{
 			else
 				noItems.add(content);
 		}
+
+	    Collections.sort(yesItems, new DashboardNameComparator());
+	    Collections.sort(noItems, new DashboardNameComparator());
 	}
 	
+	class DashboardNameComparator implements Comparator<MDashboardContent> {
+	    public int compare(MDashboardContent dc1, MDashboardContent dc2) {
+	        return dc1.get_Translation("Name").compareTo(dc2.get_Translation("Name"));
+	    }
+    }
+
 	/**
 	 * @param event
 	 */
@@ -422,9 +431,9 @@ public class WGadgets extends Window implements  EventListener<Event>{
 			yesModel.removeAllElements();
 			for (int i=0 ; i < yesItems.size() ; i++) {				 
 				 int ID= yesItems.get(i).get_ID();
-				 String name = yesItems.get(i).getName();
+				 String name = yesItems.get(i).get_Translation("Name");
 				 yesList.addItem(new KeyNamePair(ID, name));
-				 yesModel.addElement(new ListElement(ID, name, yesItems.get(i).getName(), true, yesItems.get(i).getAD_Client_ID(), yesItems.get(i).getAD_Org_ID()));	
+				 yesModel.addElement(new ListElement(ID, name, yesItems.get(i).get_Translation("Name"), true, yesItems.get(i).getAD_Client_ID(), yesItems.get(i).getAD_Org_ID()));	
 			}
 		}
 		
@@ -432,9 +441,9 @@ public class WGadgets extends Window implements  EventListener<Event>{
 			noModel.removeAllElements();
 			for (int i=0 ; i < noItems.size() ; i++) {
 				 int ID= noItems.get(i).get_ID();
-				 String name = noItems.get(i).getName();
+				 String name = noItems.get(i).get_Translation("Name");
 				 noList.addItem(new KeyNamePair(ID, name));
-				 noModel.add(i,new ListElement(ID, name, noItems.get(i).getName(), false, noItems.get(i).getAD_Client_ID(), noItems.get(i).getAD_Org_ID()));
+				 noModel.add(i,new ListElement(ID, name, noItems.get(i).get_Translation("Name"), false, noItems.get(i).getAD_Client_ID(), noItems.get(i).getAD_Org_ID()));
 			}
 		}
 	}

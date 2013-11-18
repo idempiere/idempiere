@@ -74,6 +74,7 @@ public class Callout_AD_Column extends CalloutEngine
 					+ "       IsIdentifier, "
 					+ "       IsUpdateable, "
 					+ "       IsAlwaysUpdateable, "
+					+ "       FKConstraintType,"	
 					+ "       COUNT(*) "
 					+ "FROM   AD_Column "
 					+ "WHERE  ColumnName = ? "
@@ -86,7 +87,8 @@ public class Callout_AD_Column extends CalloutEngine
 					+ "          ReadOnlyLogic, "
 					+ "          IsIdentifier, "
 					+ "          IsUpdateable, "
-					+ "          IsAlwaysUpdateable "
+					+ "          IsAlwaysUpdateable, "
+					+ "          FKConstraintType "
 					+ "ORDER  BY COUNT(*) DESC ";
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
@@ -109,6 +111,7 @@ public class Callout_AD_Column extends CalloutEngine
 					column.setIsIdentifier("Y".equals(rs.getString(8)));
 					column.setIsUpdateable("Y".equals(rs.getString(9)));
 					column.setIsAlwaysUpdateable("Y".equals(rs.getString(10)));
+					column.setFKConstraintType(rs.getString(11));
 				}
 			}
 			catch (SQLException e)
