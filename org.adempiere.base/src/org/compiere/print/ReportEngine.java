@@ -560,11 +560,35 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			if (cssPrefix != null)
 				table.setClass(cssPrefix + "-table");
 			//
+			//
+			table.setNeedClosingTag(false);
+			PrintWriter w = new PrintWriter(writer);
+			if (onlyTable)
+				table.output(w);
+			else
+			{
+				XhtmlDocument doc = new XhtmlDocument();
+				doc.getHtml().setNeedClosingTag(false);
+				doc.getBody().setNeedClosingTag(false);
+				doc.appendBody(table);
+				if (extension != null && extension.getStyleURL() != null)
+				{
+					link l = new link(extension.getStyleURL(), "stylesheet", "text/css");
+					doc.appendHead(l);					
+				}
+				if (extension != null && extension.getScriptURL() != null)
+				{
+					script jslink = new script();
+					jslink.setLanguage("javascript");
+					jslink.setSrc(extension.getScriptURL());
+					doc.appendHead(jslink);
+				}
+				doc.output(w);
+			}
 			//	for all rows (-1 = header row)
 			for (int row = -1; row < m_printData.getRowCount(); row++)
 			{
 				tr tr = new tr();
-				table.addElement(tr);
 				if (row != -1)
 				{
 					m_printData.setRowIndex(row);					
@@ -693,29 +717,15 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						}
 					}	//	printed
 				}	//	for all columns
+				tr.output(w);
 			}	//	for all rows
 
-			//
-			PrintWriter w = new PrintWriter(writer);
-			if (onlyTable)
-				table.output(w);
-			else
+			w.println();
+			w.println("</table>");
+			if (!onlyTable)
 			{
-				XhtmlDocument doc = new XhtmlDocument();
-				doc.appendBody(table);
-				if (extension != null && extension.getStyleURL() != null)
-				{
-					link l = new link(extension.getStyleURL(), "stylesheet", "text/css");
-					doc.appendHead(l);					
-				}
-				if (extension != null && extension.getScriptURL() != null)
-				{
-					script jslink = new script();
-					jslink.setLanguage("javascript");
-					jslink.setSrc(extension.getScriptURL());
-					doc.appendHead(jslink);
-				}
-				doc.output(w);
+				w.println("</body>");
+				w.println("</html>");
 			}
 			w.flush();
 			w.close();
