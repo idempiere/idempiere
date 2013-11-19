@@ -20,15 +20,12 @@ package org.adempiere.webui.session;
 import java.lang.ref.WeakReference;
 import java.util.Properties;
 
-import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.IWebClient;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.desktop.IDesktop;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Desktop;
-import org.zkoss.zk.ui.Execution;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Session;
 
 /**
  * 
@@ -51,28 +48,11 @@ public class SessionManager
                 && !"".equals(adClientId) && !"".equals(adOrgId));
     }
     
-    private static Session getSession()
-    {
-    	Execution execution = Executions.getCurrent();
-    	Desktop desktop = null;
-    	if (execution != null)
-    	{
-    		desktop = execution.getDesktop();
-    	}
-    	else
-    	{
-    		@SuppressWarnings("unchecked")
-			WeakReference<Desktop> ref = (WeakReference<Desktop>) Env.getCtx().get(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY);
-    		desktop = ref != null ? ref.get() : null;
-    	}
-        return  desktop != null ? desktop.getSession() : null;
-    }
-    
     public static void setSessionApplication(IWebClient app)
     {
-        Session session = getSession();
-        if (session != null)
-        	session.setAttribute(SESSION_APPLICATION, new WeakReference<IWebClient>(app));
+    	Desktop desktop = AEnv.getDesktop();
+    	if (desktop != null)
+    		desktop.setAttribute(SESSION_APPLICATION, new WeakReference<IWebClient>(app));
     }
     
     public static IDesktop getAppDesktop()
@@ -83,12 +63,12 @@ public class SessionManager
     
     public static IWebClient getSessionApplication()
     {
-        Session session = getSession();
+    	Desktop desktop = AEnv.getDesktop();
         IWebClient app = null;
-        if (session != null) 
+        if (desktop != null) 
         {
         	@SuppressWarnings("unchecked")
-			WeakReference<IWebClient> wref = (WeakReference<IWebClient>) session.getAttribute(SESSION_APPLICATION); 
+			WeakReference<IWebClient> wref = (WeakReference<IWebClient>) desktop.getAttribute(SESSION_APPLICATION); 
         	app = wref != null ? wref.get() : null;
         }
         return app;
