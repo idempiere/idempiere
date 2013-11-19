@@ -18,8 +18,6 @@
 package org.adempiere.webui;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -53,23 +51,15 @@ import org.zkforge.keylistener.Keylistener;
 import org.zkoss.web.Attributes;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.au.out.AuScript;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Session;
-import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.impl.ExecutionCarryOver;
 import org.zkoss.zk.ui.sys.DesktopCache;
-import org.zkoss.zk.ui.sys.DesktopCtrl;
-import org.zkoss.zk.ui.sys.ExecutionCtrl;
-import org.zkoss.zk.ui.sys.ExecutionsCtrl;
 import org.zkoss.zk.ui.sys.SessionCtrl;
-import org.zkoss.zk.ui.sys.Visualizer;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Window;
 
@@ -99,8 +89,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     public static final String WIDGET_INSTANCE_NAME = "instanceName";
 
     private WLogin             loginDesktop;
-
-    private IDesktop           appDesktop;
 
     private ClientInfo		   clientInfo = new ClientInfo();
 
@@ -243,107 +231,15 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		keyListener.setCtrlKeys("@a@c@d@e@f@h@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter^u@u");
 		keyListener.setAutoBlur(false);
 		
-		@SuppressWarnings("unchecked")
-		WeakReference<IDesktop> desktopRef = (WeakReference<IDesktop>) currSess.getAttribute(APPLICATION_DESKTOP_KEY);
-		IDesktop d = desktopRef != null ? desktopRef.get() : null; 
-		if (d != null && d instanceof IDesktop)
-		{
-			@SuppressWarnings("unchecked")
-			WeakReference<ExecutionCarryOver> ecoRef = (WeakReference<ExecutionCarryOver>) currSess.getAttribute(EXECUTION_CARRYOVER_SESSION_KEY);;
-			ExecutionCarryOver eco = ecoRef != null ? ecoRef.get() : null; 
-			if (eco != null) {
-				//try restore
-				try {
-					appDesktop = (IDesktop) d;
-
-					ExecutionCarryOver current = new ExecutionCarryOver(this.getPage().getDesktop());
-					ExecutionCtrl ctrl = ExecutionsCtrl.getCurrentCtrl();
-					Visualizer vi = ctrl.getVisualizer();
-					eco.carryOver();
-					Collection<Component> rootComponents = new ArrayList<Component>();
-					try {
-						ctrl = ExecutionsCtrl.getCurrentCtrl();
-						((DesktopCtrl)Executions.getCurrent().getDesktop()).setVisualizer(vi);
-
-						//detach root component from old page						
-						Page page = appDesktop.getComponent().getPage();
-						if (page.getDesktop() != null) {
-							Collection<Component> collection = page.getRoots();
-							for(Component comp : collection) {
-								try {
-									comp.detach();
-									if (!(comp instanceof Keylistener) && !(comp instanceof AdempiereWebUI)) {
-										rootComponents.add(comp);
-									}
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-							appDesktop.getComponent().detach();
-							
-							DesktopCache desktopCache = ((SessionCtrl)currSess).getDesktopCache();
-							if (desktopCache != null)
-								desktopCache.removeDesktop(Executions.getCurrent().getDesktop());
-						} else {
-							appDesktop = null;
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-						appDesktop = null;
-					} finally {
-						eco.cleanup();
-						current.carryOver();
-					}
-
-					if (appDesktop != null) {
-						//re-attach root components
-						for (Component component : rootComponents) {
-							try {
-								component.setPage(this.getPage());
-							} catch (UiException e) {
-								// e.printStackTrace();
-								// an exception is thrown here when refreshing the page, it seems is harmless to catch and ignore it
-								// i.e.: org.zkoss.zk.ui.UiException: Not unique in the ID space of [Page z_kg_0]: zk_comp_2
-							}
-						}
-						appDesktop.setPage(this.getPage());
-						Clients.response(new AuScript("$('.slimScroll .z-anchorlayout-body').slimScroll({height: '100%',railVisible: true, alwaysVisible: false});"));
-						currSess.setAttribute(EXECUTION_CARRYOVER_SESSION_KEY, new WeakReference<ExecutionCarryOver>(current));
-					}
-					
-					currSess.setAttribute(ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(this.getPage().getDesktop()));
-					ctx.put(ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(this.getPage().getDesktop()));
-					ClientInfo sessionClientInfo = (ClientInfo) currSess.getAttribute(CLIENT_INFO);
-					if (sessionClientInfo != null) {
-						clientInfo = sessionClientInfo;
-					}
-				} catch (Throwable t) {
-					//restore fail
-					t.printStackTrace();					
-					appDesktop = null;
-					Collection<Component> roots = this.getPage().getRoots();
-					for(Component comp : roots) {
-						if (!(comp instanceof Keylistener) && !(comp instanceof AdempiereWebUI)) {
-							comp.detach();
-						}
-					}
-				}
-
-			}
-		}
-
-		if (appDesktop == null)
-		{
-			//create new desktop
-			createDesktop();
-			appDesktop.setClientInfo(clientInfo);
-			appDesktop.createPart(this.getPage());
-			currSess.setAttribute(APPLICATION_DESKTOP_KEY, new WeakReference<IDesktop>(appDesktop));
-			ExecutionCarryOver eco = new ExecutionCarryOver(this.getPage().getDesktop());
-			currSess.setAttribute(EXECUTION_CARRYOVER_SESSION_KEY, new WeakReference<ExecutionCarryOver>(eco));
-			currSess.setAttribute(ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(this.getPage().getDesktop()));
-			ctx.put(ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(this.getPage().getDesktop()));
-		}
+		//create new desktop
+		IDesktop appDesktop = createDesktop();
+		appDesktop.setClientInfo(clientInfo);
+		appDesktop.createPart(this.getPage());
+		ctx.put(ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(this.getPage().getDesktop()));
+		this.getPage().getDesktop().setAttribute(APPLICATION_DESKTOP_KEY, new WeakReference<IDesktop>(appDesktop));
+		
+		//track browser tab per session
+		SessionContextListener.addDesktopId(mSession.getAD_Session_ID(), getPage().getDesktop().getId());
 		
 		//ensure server push is on
 		if (!this.getPage().getDesktop().isServerPushEnabled())
@@ -381,9 +277,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	return keyListener;
     }
 
-    private void createDesktop()
+    private IDesktop createDesktop()
     {
-    	appDesktop = null;
+    	IDesktop appDesktop = null;
 		String className = MSysConfig.getValue(MSysConfig.ZK_DESKTOP_CLASS);
 		if ( className != null && className.trim().length() > 0)
 		{
@@ -400,6 +296,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		//fallback to default
 		if (appDesktop == null)
 			appDesktop = new DefaultDesktop();
+		
+		return appDesktop;
 	}
 
 	/* (non-Javadoc)
@@ -438,6 +336,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		}
 		
 		//stop background thread
+		IDesktop appDesktop = getAppDeskop();
 		if (appDesktop != null)
 			appDesktop.logout();
 
@@ -458,6 +357,18 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
      */
     public IDesktop getAppDeskop()
     {
+    	Desktop desktop = Executions.getCurrent() != null ? Executions.getCurrent().getDesktop() : null;
+    	IDesktop appDesktop = null;
+    	if (desktop != null)
+    	{
+    		@SuppressWarnings("unchecked")
+			WeakReference<IDesktop> ref = (WeakReference<IDesktop>) desktop.getAttribute(APPLICATION_DESKTOP_KEY);
+    		if (ref != null)
+    		{
+    			appDesktop = ref.get();
+    		}
+    	}
+    	 
     	return appDesktop;
     }
 
@@ -475,6 +386,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			clientInfo.desktopYOffset = c.getDesktopYOffset();
 			clientInfo.orientation = c.getOrientation();
 			clientInfo.timeZone = c.getTimeZone();
+			IDesktop appDesktop = getAppDeskop();
 			if (appDesktop != null)
 				appDesktop.setClientInfo(clientInfo);
 			String ua = Servlets.getUserAgent((ServletRequest) Executions.getCurrent().getNativeRequest());

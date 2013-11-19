@@ -17,6 +17,9 @@
 
 package org.adempiere.webui.session;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
@@ -24,6 +27,7 @@ import javax.servlet.http.HttpSession;
 
 import org.adempiere.util.ServerContext;
 import org.adempiere.util.ServerContextURLHandler;
+import org.adempiere.webui.AdempiereWebUI;
 import org.compiere.model.MSession;
 import org.compiere.util.Env;
 import org.zkoss.util.Locales;
@@ -37,8 +41,10 @@ import org.zkoss.zk.ui.event.EventThreadCleanup;
 import org.zkoss.zk.ui.event.EventThreadInit;
 import org.zkoss.zk.ui.event.EventThreadResume;
 import org.zkoss.zk.ui.event.EventThreadSuspend;
+import org.zkoss.zk.ui.sys.DesktopCache;
 import org.zkoss.zk.ui.sys.DesktopCtrl;
 import org.zkoss.zk.ui.sys.ServerPush;
+import org.zkoss.zk.ui.sys.SessionCtrl;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zk.ui.util.DesktopInit;
 import org.zkoss.zk.ui.util.ExecutionCleanup;
@@ -65,6 +71,19 @@ public class SessionContextListener implements ExecutionInit,
     	Session session = exec.getDesktop().getSession();
 		Properties ctx = (Properties)session.getAttribute(SESSION_CTX);
 		HttpSession httpSession = (HttpSession)session.getNativeSession();
+		//create empty context if there's no valid native session
+		if (httpSession == null)
+		{
+			ctx = new Properties();
+			ctx.put(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER, new ServerContextURLHandler() {
+				public void showURL(String url) {
+					SessionManager.getAppDesktop().showURL(url, true);
+				}
+			});
+			ServerContext.setCurrentInstance(ctx);
+			return;
+		}
+		
 		if (ctx != null)
 		{
 			//verify ctx
@@ -107,6 +126,8 @@ public class SessionContextListener implements ExecutionInit,
 		    	//set locale
 		        Locales.setThreadLocal(Env.getLanguage(ServerContext.getCurrentInstance()).getLocale());
 	    	}
+    		Properties ctx = ServerContext.getCurrentInstance();
+    		ctx.put(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(exec.getDesktop()));
 	    }
     }
 
@@ -283,7 +304,7 @@ public class SessionContextListener implements ExecutionInit,
 		HttpSession httpSession = (HttpSession)session.getNativeSession();
 		//verify ctx
 		String cacheId = ctx.getProperty(SERVLET_SESSION_ID);
-		if (cacheId == null || !cacheId.equals(httpSession.getId()) )
+		if (cacheId == null || httpSession == null || !cacheId.equals(httpSession.getId()) )
 		{
 			return false;
 		}
@@ -323,10 +344,12 @@ public class SessionContextListener implements ExecutionInit,
     	}
 		int AD_Session_ID = Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID");
 		if (AD_Session_ID > 0) {
-			String key = "ad_session."+AD_Session_ID+".desktop";
-			String dtid = (String) Env.getCtx().get(key);
-			if (dtid != null) {
-				if (!dtid.equals(desktop.getId())) {
+			String key = getSessionDesktopListKey(AD_Session_ID);
+			@SuppressWarnings("unchecked")
+			List<String> list = (List<String>) Env.getCtx().get(key);
+			if (list != null) {
+				list.remove(desktop.getId());
+				if (!isEmpty(list, desktop.getSession())) {
 					return;
 				} else {
 					Env.getCtx().remove(key);
@@ -341,6 +364,38 @@ public class SessionContextListener implements ExecutionInit,
 			}
 			SessionManager.logoutSessionAfterBrowserDestroyed();
 		}
+	}
+
+	private boolean isEmpty(List<String> list, Session session) {
+		if (list.isEmpty())
+			return true;
+		
+		if (session == null)
+			return false;
+		
+		DesktopCache desktopCache = ((SessionCtrl)session).getDesktopCache();
+		if (desktopCache == null)
+			return false;
+		
+		int count = 0;
+		for(String dtid : list) {
+			Desktop desktop = desktopCache.getDesktopIfAny(dtid);
+			if (desktop == null) continue;
+			if (desktop.getFirstPage() == null) continue;
+			Collection<Component> roots = desktop.getFirstPage().getRoots();
+			if (roots == null || roots.isEmpty()) continue;
+			boolean found = false;
+			for (Component root : roots) {
+				if (root instanceof AdempiereWebUI) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) continue;
+			count++;
+		}
+		
+		return count == 0;
 	}
 
 	@Override
@@ -358,7 +413,32 @@ public class SessionContextListener implements ExecutionInit,
 				mSession.setProcessed(false);
 				mSession.saveEx();
 			}
-			Env.getCtx().put("ad_session."+mSession.getAD_Session_ID()+".desktop", desktop.getId());
+			addDesktopId(mSession.getAD_Session_ID(), desktop.getId());
+		} 
+	}
+	
+	public static void addDesktopId(int AD_Session_ID, String dtid)
+	{
+		String key = getSessionDesktopListKey(AD_Session_ID);
+		@SuppressWarnings("unchecked")
+		List<String> list = (List<String>) Env.getCtx().get(key);
+		if (list == null) {
+			list = new ArrayList<String>();
+			Env.getCtx().put(key, list);
 		}
+		if (!list.contains(dtid))
+		{
+			list.add(dtid);
+		}
+	}
+	
+	/**
+	 * @param AD_Session_ID
+	 * @return desktop list key
+	 */
+	public static String getSessionDesktopListKey(int AD_Session_ID)
+	{
+		String key = "ad_session."+AD_Session_ID+".desktop";
+		return key;
 	}
 }
