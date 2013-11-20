@@ -95,13 +95,10 @@ public class TableIndexValidate extends SvrProcess {
 		else if (!found)
 		{
 			String sql = index.getDDL();
-			int rvalue = DB.executeUpdate(sql, (Object[]) null, true, trxName);
+			int rvalue = DB.executeUpdateEx(sql, (Object[]) null, trxName);
 			if (pi != null)
 				pi.addLog(0, null, new BigDecimal(rvalue), sql);
-			if (rvalue == -1)
-				throw new AdempiereException(Msg.getMsg(ctx, "Failed to create index"));
-			else
-				return Msg.getMsg(ctx, "CreatedIndexSuccess");
+			return Msg.getMsg(ctx, "CreatedIndexSuccess");
 		}
 		else
 		{
