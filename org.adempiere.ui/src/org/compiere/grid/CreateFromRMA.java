@@ -48,12 +48,7 @@ public abstract class CreateFromRMA extends CreateFrom {
 	public boolean dynInit() throws Exception 
 	{
 		log.config("");
-		
-		boolean isSOTrx = true;
-		String value = Env.getContext(Env.getCtx(), getGridTab().getWindowNo(), MRMA.COLUMNNAME_IsSOTrx);
-		if (value != null && value.equalsIgnoreCase("N"))
-			isSOTrx = false;
-        setTitle(isSOTrx ? "Customer" : "Vendor" + " RMA - Create Lines From");
+		setTitle(Msg.getElement(Env.getCtx(), "M_RMA_ID") + " .. " + Msg.translate(Env.getCtx(), "CreateFrom"));
 
 		return true;
 	}
@@ -187,9 +182,9 @@ public abstract class CreateFromRMA extends CreateFrom {
 		//  Header Info
         Vector<String> columnNames = new Vector<String>(7);
         columnNames.add(Msg.getMsg(Env.getCtx(), "Select"));
-        columnNames.add("Line");
+        columnNames.add(Msg.translate(Env.getCtx(), "Line"));
         columnNames.add(Msg.translate(Env.getCtx(), "M_Product_ID"));
-        columnNames.add("ASI");
+        columnNames.add(Msg.translate(Env.getCtx(), "SerNo"));
         columnNames.add(Msg.translate(Env.getCtx(), "Quantity"));
         columnNames.add(Msg.getElement(Env.getCtx(), "QtyDelivered", false));
 	    
