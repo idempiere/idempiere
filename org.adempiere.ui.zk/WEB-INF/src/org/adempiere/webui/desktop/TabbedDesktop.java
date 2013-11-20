@@ -27,6 +27,7 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.panel.ADForm;
+import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.window.FDialog;
@@ -293,6 +294,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     		windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, title, true, true);
     	else
     		windowContainer.addWindow(tabPanel, title, true);
+    	if (window instanceof IHelpContext)
+			Events.sendEvent(new Event(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, window));
    	}
 
 	/**
