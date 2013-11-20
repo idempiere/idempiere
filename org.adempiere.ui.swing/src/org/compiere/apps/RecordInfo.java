@@ -34,6 +34,8 @@ import javax.swing.table.DefaultTableModel;
 
 import org.compiere.grid.VTable;
 import org.compiere.model.DataStatusEvent;
+import org.compiere.model.GridTab;
+import org.compiere.model.GridTable;
 import org.compiere.model.MChangeLog;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
@@ -41,6 +43,7 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
+import org.compiere.model.PO;
 import org.compiere.swing.CDialog;
 import org.compiere.swing.CPanel;
 import org.compiere.swing.CScrollPane;
@@ -51,6 +54,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 
 /**
  * Record Info (Who) With Change History
@@ -182,8 +186,30 @@ public class RecordInfo extends CDialog
 				.append(" - ").append(m_dateTimeFormat.format(dse.Updated)).append("\n");
 		}
 		if (dse.Info != null && dse.Info.length() > 0)
-			m_info.append("\n (").append(dse.Info).append(")");
-		
+			m_info.append("\n ").append(dse.Info).append("");
+
+		//get uuid
+		GridTable gridTable = null;
+		if (dse.getSource() instanceof GridTab) 
+		{
+			GridTab gridTab = (GridTab) dse.getSource();
+			gridTable = gridTab.getTableModel();
+		}
+		else if (dse.getSource() instanceof GridTable)
+		{
+			gridTable = (GridTable) dse.getSource();			
+		}
+		if (gridTable != null && dse.getCurrentRow() >= 0 && dse.getCurrentRow() < gridTable.getRowCount())
+		{
+			PO po = gridTable.getPO(dse.getCurrentRow());
+			if (po != null) {
+				String uuidcol = po.getUUIDColumnName();
+				String uuid = po.get_ValueAsString(uuidcol);
+				if (!Util.isEmpty(uuid))
+					m_info.append("\n ").append(uuidcol).append("=").append(uuid);
+			}
+		}
+
 		//	Title
 		if (dse.AD_Table_ID != 0)
 		{
