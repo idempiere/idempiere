@@ -64,6 +64,7 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
+import org.zkoss.zul.Vbox;
 
 /**
  * 	Fixed length file import
@@ -113,7 +114,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 
 	private Div previewPanel = new Div();
 
-	private Hbox northPanel = new Hbox();
+	private Vbox northPanel = new Vbox();
 
 	private Div centerPanel = new Div();
 
@@ -173,6 +174,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			fCharset.appendItem(charsets[i].displayName(), charsets[i]);
 		
 		bFile.setLabel(Msg.getMsg(Env.getCtx(), "FileImportFile"));
+		bFile.setSclass("txt-btn");
 		bFile.setTooltiptext(Msg.getMsg(Env.getCtx(), "FileImportFileInfo"));
 		bFile.setUpload(AdempiereWebUI.getUploadSetting());
 		bFile.addEventListener(Events.ON_UPLOAD, this);
@@ -197,29 +199,34 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		bPrevious.setTooltiptext(Msg.getMsg(Env.getCtx(), "Previous"));
 		bPrevious.setLabel("<");
 		bPrevious.addEventListener(Events.ON_CLICK, this);
-		
-		northPanel.appendChild(bFile);
-		northPanel.appendChild(fCharset);
-		northPanel.appendChild(info);
-		northPanel.appendChild(labelFormat);
-		northPanel.appendChild(pickFormat);
-		northPanel.appendChild(bPrevious);
-		northPanel.appendChild(record);
-		northPanel.appendChild(bNext);
-		
-		rawData.setWidth("100%");
-		rawData.setCols(80);
+				
+		Hbox hbox = new Hbox();
+		hbox.setAlign("center");
+		hbox.appendChild(bFile);
+		hbox.appendChild(fCharset);
+		hbox.appendChild(info);
+		hbox.appendChild(labelFormat);
+		hbox.appendChild(pickFormat);
+		hbox.appendChild(bPrevious);
+		hbox.appendChild(record);
+		hbox.appendChild(bNext);
+				
+		rawData.setHflex("1");
 		rawData.setRows(MAX_SHOWN_LINES);
-		rawData.setHeight("40%");
+		rawData.setHeight("100%");
 		
-		previewPanel.setWidth("100%");
-		previewPanel.setHeight("58%");
+		northPanel.setHflex("1");
+		northPanel.setVflex("0");
+		northPanel.appendChild(hbox);
+		northPanel.appendChild(rawData);
+		northPanel.appendChild(new Separator());
+		
+		previewPanel.setHflex("1");
+		previewPanel.setVflex("1");
 		previewPanel.setStyle("overflow: auto");
 		
-		centerPanel.setWidth("100%"); // Elaine 2008/11/07 - fix text area is not expanded in IE7
-		centerPanel.setHeight("100%");
-		centerPanel.appendChild(rawData);
-		centerPanel.appendChild(new Separator());
+		centerPanel.setHflex("1");
+		centerPanel.setVflex("1");
 		centerPanel.appendChild(previewPanel);
 		
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
@@ -483,6 +490,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			m_labels[i] = new Label(row.getColumnName());
 			
 			Hbox hbox = new Hbox();
+			hbox.setAlign("center");
 			hbox.setWidth("100%");
 			hbox.setStyle("padding-bottom: 3px");
 			Cell cell = new Cell();
@@ -501,6 +509,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			
 			m_fields[i] = new Textbox();
 			m_fields[i].setStyle("margin-left: 2px");
+			m_fields[i].setWidth("300px");
 			
 			cell.appendChild(m_fields[i]);
 			hbox.appendChild(cell);
