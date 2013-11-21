@@ -485,7 +485,19 @@ public final class ImpFormatRow
 
 		if (sb.length() == 0)
 			return "0";
-		BigDecimal bd = new BigDecimal(sb.toString());
+		
+		BigDecimal bd = null;
+		try
+		{
+			bd = new BigDecimal(sb.toString());
+		}
+		catch (NumberFormatException pe)
+		{
+			log.log(Level.SEVERE, "ImpFormatRow.parseNumber - " + info, pe);
+		}
+		if (bd == null)
+			bd = BigDecimal.ZERO;
+		
 		if (m_divideBy100)					//	assumed two decimal scale
 			bd = bd.divide(Env.ONEHUNDRED, 2, BigDecimal.ROUND_HALF_UP);
 		return bd.toString();
