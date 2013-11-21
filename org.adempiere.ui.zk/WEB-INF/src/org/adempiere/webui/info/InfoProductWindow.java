@@ -163,7 +163,7 @@ public class InfoProductWindow extends InfoWindow {
 		warehouseTbl.setMultiSelection(false);
 		warehouseTbl.setShowTotals(true);
 		warehouseTbl.autoSize();
-        warehouseTbl.getModel().addTableModelListener(this);
+//        warehouseTbl.getModel().addTableModelListener(this);
 
         ColumnInfo[] s_layoutSubstitute = new ColumnInfo[]{
         		new ColumnInfo(Msg.translate(Env.getCtx(), "Warehouse"), "orgname", String.class),
@@ -182,7 +182,7 @@ public class InfoProductWindow extends InfoWindow {
         m_sqlSubstitute = substituteTbl.prepareTable(s_layoutSubstitute, s_sqlFrom, s_sqlWhere, false, "M_PRODUCT_SUBSTITUTERELATED_V");        
         substituteTbl.setMultiSelection(false);
         substituteTbl.autoSize();
-        substituteTbl.getModel().addTableModelListener(this);
+//        substituteTbl.getModel().addTableModelListener(this);
 
         ColumnInfo[] s_layoutRelated = new ColumnInfo[]{
         		new ColumnInfo(Msg.translate(Env.getCtx(), "Warehouse"), "orgname", String.class),
@@ -201,7 +201,7 @@ public class InfoProductWindow extends InfoWindow {
         m_sqlRelated = relatedTbl.prepareTable(s_layoutRelated, s_sqlFrom, s_sqlWhere, false, "M_PRODUCT_SUBSTITUTERELATED_V");
         relatedTbl.setMultiSelection(false);
         relatedTbl.autoSize();
-        relatedTbl.getModel().addTableModelListener(this);
+//        relatedTbl.getModel().addTableModelListener(this);
 
         //Available to Promise Tab
         m_tableAtp = ListboxFactory.newDataTable();
@@ -227,7 +227,7 @@ public class InfoProductWindow extends InfoWindow {
         m_sqlProductprice = productpriceTbl.prepareTable(s_layoutProductPrice, s_sqlFrom, s_sqlWhere, false, "pp") + " ORDER BY plv.ValidFrom DESC";
         productpriceTbl.setMultiSelection(false);
         productpriceTbl.autoSize();
-        productpriceTbl.getModel().addTableModelListener(this);
+//        productpriceTbl.getModel().addTableModelListener(this);
         
         tabbedPane = new Tabbox();
         tabbedPane.setHeight("100%");
