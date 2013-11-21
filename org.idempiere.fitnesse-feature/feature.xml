@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.fitnesse"
       label="Fitnesse Feature"
-      version="1.0.0.qualifier">
+      version="2.0.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -20,28 +20,28 @@
          id="org.idempiere.fitnesse.fixture"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.idempiere.fitnesse.server"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.idempiere.ui.zk.selenium"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.idempiere.fitrecorder"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
 </feature>

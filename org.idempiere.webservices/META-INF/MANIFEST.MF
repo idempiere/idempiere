@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Webservices
 Bundle-SymbolicName: org.idempiere.webservices;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-Activator: org.idempiere.webservices.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.activation;version="1.1.1",
@@ -55,9 +55,9 @@ Import-Package: javax.activation;version="1.1.1",
  org.apache.xerces.xs.datatypes;version="2.9.0",
  org.apache.xml.serialize;version="2.9.0",
  org.osgi.framework;version="1.6.0"
-Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
- org.adempiere.report.jasper.library;bundle-version="1.0.0",
- org.adempiere.ui;bundle-version="1.0.0",
+Require-Bundle: org.adempiere.base;bundle-version="2.0.0",
+ org.adempiere.report.jasper.library;bundle-version="2.0.0",
+ org.adempiere.ui;bundle-version="2.0.0",
  org.apache.ecs;bundle-version="1.0.0"
 Bundle-ClassPath: .,
  WEB-INF/lib/spring-osgi-extender-1.2.1.jar,

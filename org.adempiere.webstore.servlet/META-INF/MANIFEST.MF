@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Servlet
 Bundle-SymbolicName: org.adempiere.webstore.servlet;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-Vendor: Adempiere.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.compiere.wstore
-Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
+Require-Bundle: org.adempiere.base;bundle-version="2.0.0",
  org.eclipse.equinox.http.registry
 Import-Package: javax.servlet,
  javax.servlet.http,

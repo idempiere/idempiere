@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.server"
       label="iDempiere Server-feature"
-      version="1.0.0.qualifier">
+      version="2.0.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -18,16 +18,16 @@
 
    <includes
          id="org.adempiere.replication.server"
-         version="0.0.0"
+         version="2.0.0.qualifier"
          optional="true"/>
 
    <includes
          id="org.adempiere.ui.zk"
-         version="0.0.0"/>
+         version="2.0.0.qualifier"/>
 
    <includes
          id="org.adempiere.webstore"
-         version="0.0.0"
+         version="2.0.0.qualifier"
          optional="true"/>
 
    <includes
@@ -36,10 +36,10 @@
 
    <includes
          id="org.idempiere.felix.webconsole"
-         version="0.0.0"/>
+         version="2.0.0.qualifier"/>
 
    <requires>
-      <import feature="org.adempiere.base" version="1.0.0" match="compatible"/>
+      <import feature="org.adempiere.base" version="2.0.0" match="compatible"/>
    </requires>
 
    <plugin
@@ -132,21 +132,21 @@
          id="org.adempiere.report.jasper.webapp"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.server"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.tomcat.config"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.0.0"
          fragment="true"/>
 
    <plugin
@@ -282,7 +282,7 @@
          id="org.adempiere.install"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="2.0.0.qualifier"/>
 
    <plugin
          id="org.adempiere.eclipse.equinox.http.servlet"
@@ -316,7 +316,7 @@
          id="org.idempiere.webservices"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
    <plugin

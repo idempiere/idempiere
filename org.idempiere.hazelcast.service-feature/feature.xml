@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.hazelcast.service"
       label="Hazelcast Service Feature"
-      version="1.0.0.qualifier">
+      version="2.0.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -20,7 +20,7 @@
          id="org.idempiere.hazelcast.service"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
    <plugin
@@ -42,7 +42,7 @@
          id="org.idempiere.hazelcast.service.config"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.0.0"
          fragment="true"/>
 
 </feature>
