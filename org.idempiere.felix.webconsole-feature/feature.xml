@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.felix.webconsole"
       label="Felix Web Console Feature"
-      version="1.0.0.qualifier">
+      version="2.0.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]

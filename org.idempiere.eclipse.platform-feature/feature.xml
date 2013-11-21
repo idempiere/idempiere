@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.eclipse.platform"
       label="Eclipse Platform for iDempiere"
-      version="1.0.0.qualifier"
+      version="2.0.0.qualifier"
       provider-name="www.idempiere.org">
 
    <description url="http://www.example.com/description">
@@ -77,14 +77,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-	<plugin
+
+   <plugin
          id="org.eclipse.core.net"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.equinox.launcher"
          os="linux,macosx,win32"
@@ -100,5 +100,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>                  
+         unpack="false"/>
+
 </feature>

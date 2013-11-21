@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.payment.processor"
       label="Payment Processor"
-      version="1.0.0.qualifier">
+      version="2.0.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -17,14 +17,14 @@
    </license>
 
    <requires>
-      <import feature="org.adempiere.base" version="1.0.0.qualifier"/>
+      <import feature="org.adempiere.base" version="2.0.0.qualifier"/>
    </requires>
 
    <plugin
          id="org.adempiere.payment.processor"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
 </feature>

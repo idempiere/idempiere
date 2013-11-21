@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.replication.server"
       label="Replication Server-feature"
-      version="1.0.0.qualifier">
+      version="2.0.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -17,16 +17,16 @@
    </license>
 
    <requires>
-      <import feature="org.adempiere.base" version="1.0.0.qualifier"/>
-      <import feature="org.adempiere.replication" version="1.0.0.qualifier"/>
-      <import plugin="org.adempiere.server" version="1.0.0" match="greaterOrEqual"/>
+      <import feature="org.adempiere.base" version="2.0.0.qualifier"/>
+      <import feature="org.adempiere.replication" version="2.0.0.qualifier"/>
+      <import plugin="org.adempiere.server" version="2.0.0.qualifier" />
    </requires>
 
    <plugin
          id="org.adempiere.replication.server"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
 </feature>

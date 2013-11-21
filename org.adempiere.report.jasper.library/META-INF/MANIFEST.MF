@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JasperReports Dependency
 Bundle-SymbolicName: org.adempiere.report.jasper.library
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-ClassPath: lib/commons-beanutils-1.8.0.jar,
  lib/commons-digester-2.1.jar,
  lib/jasperreports-5.1.2.jar,

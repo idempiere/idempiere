@@ -191,8 +191,14 @@ public class DataEngine
 			return null;
 		}
 		if (format.isTranslationView() && tableName.toLowerCase().endsWith("_v"))	//	_vt not just _v
-			tableName += "t";
-		format.setTranslationViewQuery (query);
+		{
+			boolean hasVT = DB.isTableOrViewExists(tableName+"t");
+			if (hasVT)
+			{
+				tableName += "t";
+				format.setTranslationViewQuery (query);
+			}
+		}		
 		//
 		PrintData pd = getPrintDataInfo (ctx, format, query, reportName, tableName);
 		if (pd == null)

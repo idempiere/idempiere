@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PostgresqlProvider
 Bundle-SymbolicName: org.compiere.db.postgresql.provider;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  postgresql-9.2-1004.jdbc4.jar,
  c3p0-0.9.2.jar,
  mchange-commons-java-0.2.3.3.jar
-Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
- org.adempiere.install;bundle-version="1.0.0"
+Require-Bundle: org.adempiere.base;bundle-version="2.0.0",
+ org.adempiere.install;bundle-version="2.0.0"
 Import-Package: junit.framework;version="3.8.2",
  org.junit;version="4.8.1",
  org.osgi.framework

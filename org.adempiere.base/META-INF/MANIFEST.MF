@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.adempiere.base
 Bundle-SymbolicName: org.adempiere.base;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-ClassPath: base.jar,
  bsh-2.0b5.jar,
  bsh-engine.jar,

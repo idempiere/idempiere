@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.adempiere.extend
 Bundle-SymbolicName: org.adempiere.extend;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-ClassPath: extend.jar,
  spiffy-with_source-all-0.05.jar
 Eclipse-RegisterBuddy: org.adempiere.tools
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: compiere.model,
  test
-Fragment-Host: org.adempiere.base;bundle-version="0.0.0"
+Fragment-Host: org.adempiere.base;bundle-version="2.0.0"
 Eclipse-PatchFragment: true
 Import-Package: junit.framework;version="3.8.2",
  org.junit;version="4.8.2",

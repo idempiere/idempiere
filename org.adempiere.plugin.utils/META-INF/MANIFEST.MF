@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Plugin Utils
 Bundle-SymbolicName: org.adempiere.plugin.utils
-Bundle-Version: 0.0.0.1
+Bundle-Version: 2.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.adempiere.base,
  org.adempiere.util,

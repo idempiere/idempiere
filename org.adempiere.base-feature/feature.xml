@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.base"
       label="Adempiere Base"
-      version="1.0.0.qualifier">
+      version="2.0.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -18,50 +18,50 @@
 
    <includes
          id="org.compiere.db.provider"
-         version="0.0.0"/>
+         version="2.0.0.qualifier"/>
 
    <includes
          id="org.adempiere.payment.processor"
-         version="0.0.0"/>
+         version="2.0.0.qualifier"/>
 
    <includes
          id="org.adempiere.pipo"
-         version="0.0.0"/>
+         version="2.0.0.qualifier"/>
 
    <includes
          id="org.adempiere.replication"
-         version="0.0.0"/>
+         version="2.0.0.qualifier"/>
 
    <includes
          id="org.adempiere.report.jasper"
-         version="0.0.0"/>
+         version="2.0.0.qualifier"/>
 
    <plugin
          id="org.adempiere.base"
          download-size="0"
          install-size="0"
-         version="1.0.0.qualifier"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.base.callout"
          download-size="0"
          install-size="0"
-         version="1.0.0.qualifier"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.base.process"
          download-size="0"
          install-size="0"
-         version="1.0.0.qualifier"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.extend"
          download-size="0"
          install-size="0"
-         version="1.0.0.qualifier"
+         version="2.0.0.qualifier"
          fragment="true"
          unpack="false"/>
 
@@ -69,7 +69,7 @@
          id="org.adempiere.ui"
          download-size="0"
          install-size="0"
-         version="1.0.0.qualifier"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
    <plugin
@@ -98,6 +98,7 @@
          install-size="0"
          version="1.4.5"
          unpack="false"/>
+
    <plugin
          id="com.springsource.javax.activation"
          download-size="0"
@@ -249,7 +250,7 @@
          id="org.adempiere.install"
          download-size="0"
          install-size="0"
-         version="1.0.0.qualifier"/>
+         version="2.0.0.qualifier"/>
 
    <plugin
          id="org.eclipse.osgi.services"

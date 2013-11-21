@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="iDempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.server_product" application="org.adempiere.server.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
-
+<product name="iDempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.server_product" application="org.adempiere.server.application" version="2.0.0" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -15,7 +14,6 @@
 
    <windowImages/>
 
-
    <launcher name="idempiere">
       <solaris/>
       <win useIco="false">
@@ -23,19 +21,17 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
    </plugins>
 
    <features>
-      <feature id="org.adempiere.base" version="1.0.0.qualifier"/>
-      <feature id="org.adempiere.server" version="1.0.0.qualifier"/>
-      <feature id="org.idempiere.hazelcast.service" version="1.0.0.qualifier"/>
-      <feature id="org.adempiere.pipo" version="1.0.0.qualifier"/>
+      <feature id="org.adempiere.base" version="2.0.0.qualifier"/>
+      <feature id="org.adempiere.server" version="2.0.0.qualifier"/>
+      <feature id="org.idempiere.hazelcast.service" version="2.0.0.qualifier"/>
+      <feature id="org.adempiere.pipo" version="2.0.0.qualifier"/>
    </features>
 
    <configurations>

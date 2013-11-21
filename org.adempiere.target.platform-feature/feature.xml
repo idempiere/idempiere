@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.target.platform"
       label="Adempiere Target Platform"
-      version="1.0.0.qualifier"
+      version="2.0.0.qualifier"
       provider-name="Adempiere.org">
 
    <description url="http://www.example.com/description">
@@ -34,7 +34,7 @@
 
    <includes
          id="org.adempiere.bundles.external"
-         version="0.0.0"/>
+         version="2.0.0.qualifier"/>
 
    <includes
          id="org.eclipse.gemini.web.feature"

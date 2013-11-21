@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.bundles.external"
       label="External bundles"
-      version="1.0.0.qualifier"
+      version="2.0.0.qualifier"
       provider-name="Adempiere.org">
 
    <description url="http://www.example.com/description">
@@ -134,5 +134,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>  
+         unpack="false"/>
+
 </feature>
