@@ -1244,6 +1244,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		if (format == null)
 			return null;
 		//
+		format.setTranslationLanguage(format.getLanguage());
+		//
 		PrintInfo info = new PrintInfo (pi);
 		info.setAD_Table_ID(AD_Table_ID);
 		
@@ -1507,8 +1509,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		//	Get Format & Data
 		MPrintFormat format = MPrintFormat.get (ctx, AD_PrintFormat_ID, false);
 		format.setLanguage(language);		//	BP Language if Multi-Lingual
-	//	if (!Env.isBaseLanguage(language, DOC_TABLES[type]))
-			format.setTranslationLanguage(language);
+		format.setTranslationLanguage(language);
 		//	query
 		MQuery query = new MQuery(format.getAD_Table_ID());
 		query.addRestriction(DOC_IDS[type], MQuery.EQUAL, Record_ID);
