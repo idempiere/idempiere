@@ -557,6 +557,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     			model = new ListModelTable(subList);
     			model.setSorter(this);
 	            model.addTableModelListener(this);
+	            model.setMultiple(p_multipleSelection);
 	            contentPanel.setData(model, null);
 
 	            pageNo = 0;
@@ -572,6 +573,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	            model = new ListModelTable(readLine(0, -1));
 	            model.setSorter(this);
 	            model.addTableModelListener(this);
+	            model.setMultiple(p_multipleSelection);
 	            contentPanel.setData(model, null);
         	}
         }
@@ -586,6 +588,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         	model = new ListModelTable(new ArrayList<Object>());
         	model.setSorter(this);
             model.addTableModelListener(this);
+            model.setMultiple(p_multipleSelection);
             contentPanel.setData(model, null);
         }
         int no = m_count;
@@ -1177,6 +1180,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         			model = new ListModelTable(subList);
         			model.setSorter(this);
     	            model.addTableModelListener(this);
+    	            model.setMultiple(p_multipleSelection);
     	            contentPanel.setData(model, null);
 
     				contentPanel.setSelectedIndex(0);

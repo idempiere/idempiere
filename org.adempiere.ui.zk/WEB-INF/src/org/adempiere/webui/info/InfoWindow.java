@@ -822,7 +822,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     
 	@Override
 	protected boolean hasZoom() {
-		return !isLookup() && infoWindow != null && !infoWindow.getAD_Table().isView();
+		return !isLookup() && infoWindow != null && !MTable.get(Env.getCtx(), infoWindow.getAD_Table_ID()).isView();
 	}
 
 	@Override
