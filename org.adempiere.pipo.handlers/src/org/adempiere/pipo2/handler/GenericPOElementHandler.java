@@ -152,7 +152,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 				}
 
 				if (createElement) {
-					if (po.get_ID() > 0) {
+					if (po.get_KeyColumns() != null && po.get_KeyColumns().length == 1 && po.get_ID() > 0) {
 						ElementHandler handler = ctx.packOut.getHandler(po.get_TableName());
 						if (handler != null && !handler.getClass().equals(this.getClass()) ) {
 							handler.packOut(ctx.packOut, document, ctx.logDocument, po.get_ID());
