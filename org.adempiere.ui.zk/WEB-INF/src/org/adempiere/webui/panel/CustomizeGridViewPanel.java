@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.adempiere.model.MTabCustomization;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.GridView;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -49,7 +50,6 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
 import org.compiere.util.ValueNamePair;
-import org.zkoss.zhtml.Span;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -58,10 +58,9 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Div;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Vbox;
 
 /**
  * 
@@ -95,7 +94,7 @@ public class CustomizeGridViewPanel extends Panel
 		m_AD_User_ID = AD_User_ID;
 		m_columnsWidth = columnsWidth;
 		tableSeqs = gridFieldIds;
-		this.setStyle("position : absolute;height: 460px; width:600px; margin: none; border: none;");
+		this.setStyle("position : relative;height: 100%; width:100%; margin: none; border: none; padding: none;");
 	}	//	
 
 	/**	Logger			*/
@@ -107,10 +106,14 @@ public class CustomizeGridViewPanel extends Panel
 	//	UI variables
 	private Label noLabel = new Label();
 	private Label yesLabel = new Label();
-	private Button bAdd = new Button();
-	private Button bRemove = new Button();
-	private Button bUp = new Button();
-	private Button bDown = new Button();
+	private Button bAdd = ButtonFactory.createButton(null,
+			ThemeManager.getThemeResource("images/MoveLeft16.png"), null);
+	private Button bRemove = ButtonFactory.createButton(null,
+			ThemeManager.getThemeResource("images/MoveRight16.png"), null);
+	private Button bUp = ButtonFactory.createButton(null,
+			ThemeManager.getThemeResource("images/MoveUp16.png"), null);
+	private Button bDown = ButtonFactory.createButton(null,
+			ThemeManager.getThemeResource("images/MoveDown16.png"), null);
 	private Checkbox chkSaveWidth = new Checkbox();
 	private Label lblGridMode = new Label();
 	private Listbox lstGridMode = new Listbox();
@@ -123,20 +126,17 @@ public class CustomizeGridViewPanel extends Panel
 
 	private boolean uiCreated;
 	private boolean m_saved = false;
-
-	/**
-	 * 	Static Layout
-	 * 	@throws Exception
+	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
+	
+/**
+	 * Static Layout
+	 * 
+	 * @throws Exception
 	 */
-	private void init() throws Exception
-	{
+	private void init() throws Exception {
 		Borderlayout layout = new Borderlayout();
-		layout.setStyle("position: absolute; width: 600px; height: 100%; border: none; margin: none;");
-		Panel centerPanel = new Panel();
-		centerPanel.setStyle("border: none; margin: none");
-		centerPanel.setHeight("100%");
+		layout.setStyle("position: absolute; width: 100%; height: 100%; border: none; margin: none; padding: none;");
 		Center center = new Center();
-		center.setStyle("border: none; margin: none");
 
 		noLabel.setValue(Msg.getMsg(Env.getCtx(), "Available"));
 		yesLabel.setValue(Msg.getMsg(Env.getCtx(), "Selected"));
@@ -166,11 +166,13 @@ public class CustomizeGridViewPanel extends Panel
 		};
 		yesModel.setMultiple(true);
 		noModel.setMultiple(true);
-		
-		bAdd.setImage(ThemeManager.getThemeResource("images/Next24.png"));
+
+		LayoutUtils.addSclass("btn-small", bAdd);
+		LayoutUtils.addSclass("btn-sorttab small-img-btn", bAdd);
 		bAdd.addEventListener(Events.ON_CLICK, actionListener);
 
-		bRemove.setImage(ThemeManager.getThemeResource("images/Previous24.png"));
+		LayoutUtils.addSclass("btn-small", bRemove);
+		LayoutUtils.addSclass("btn-sorttab small-img-btn", bRemove);
 		bRemove.addEventListener(Events.ON_CLICK, actionListener);
 
 		EventListener<Event> crossListMouseListener = new DragListener();
@@ -186,110 +188,99 @@ public class CustomizeGridViewPanel extends Panel
 			}
 		};
 
-		bUp.setImage(ThemeManager.getThemeResource("images/Parent24.png"));
+		LayoutUtils.addSclass("btn-small", bUp);
+		LayoutUtils.addSclass("btn-sorttab small-img-btn", bUp);
 		bUp.addEventListener(Events.ON_CLICK, actionListener);
 
-		bDown.setImage(ThemeManager.getThemeResource("images/Detail24.png"));
+		LayoutUtils.addSclass("btn-small", bDown);
+		LayoutUtils.addSclass("btn-sorttab small-img-btn", bDown);
 		bDown.addEventListener(Events.ON_CLICK, actionListener);
 		
 		ListHead listHead = new ListHead();
 		listHead.setParent(yesList);
 		ListHeader listHeader = new ListHeader();
 		listHeader.appendChild(yesLabel);
+
+		Hlayout yesButtonLayout = new Hlayout();
+
+		yesButtonLayout.appendChild(bUp);
+		yesButtonLayout.appendChild(bDown);
+		listHeader.appendChild(yesButtonLayout);
+		yesButtonLayout.setStyle("display: inline-block; float: right;");
 		listHeader.setParent(listHead);
 
 		listHead = new ListHead();
 		listHead.setParent(noList);
 		listHeader = new ListHeader();
 		listHeader.appendChild(noLabel);
+
+		Hlayout noButtonLayout = new Hlayout();
+
+		noButtonLayout.appendChild(bRemove);
+		noButtonLayout.appendChild(bAdd);
+		listHeader.appendChild(noButtonLayout);
+		noButtonLayout.setStyle("display: inline-block; float: right;");
 		listHeader.setParent(listHead);
 
-		Span span = new Span();
-		span.setParent(centerPanel);
-		span.setStyle("height: 90%; display: inline-block; width: 250px; border:none; margin: none;");
-		span.appendChild(noList);
-		Vbox vbox = new Vbox();
-		vbox.setStyle("border: none; margin: none;");
-		vbox.appendChild(bAdd);
-		vbox.appendChild(bRemove);
-		span = new Span();
-		span.setParent(centerPanel);
-		span.setStyle("height: 90%; display: inline-block; width: 50px; border:none; margin: none;");
-		span.appendChild(vbox);
+		Hlayout hlayout = new Hlayout();
 
-		span = new Span();
-		span.setParent(centerPanel);
-		span.setStyle("height: 90%; display: inline-block; width: 250px; border:none; margin: none;");
-		span.appendChild(yesList);
-		yesList.setStyle("margin: none");
-		vbox = new Vbox();
-		vbox.appendChild(bUp);
-		vbox.appendChild(bDown);
-		vbox.setStyle("border: none; margin: none");
-		span = new Span();
-		span.setParent(centerPanel);
-		span.setStyle("height: 90%; display: inline-block; width: 50px; border:none; margin: none;");
-		span.appendChild(vbox);
-		
-		Div div = new Div();
-		div.setStyle("margin-top:5px");
-		div.appendChild(chkSaveWidth);
-		chkSaveWidth.setLabel(Msg.getMsg(Env.getCtx(), "SaveColumnWidth"));
-		centerPanel.appendChild(div);
+		hlayout.setVflex("true");
+		hlayout.setHflex("true");
+		hlayout.setStyle("margin: auto; margin-top: 2px;");
 
-		Separator sep = new Separator("vertical");
-		sep.setSpacing("200px");
-		div.appendChild(sep);
-		lblGridMode.setValue(Msg.getMsg(Env.getCtx(), "OpenInGridMode"));
-		div.appendChild(lblGridMode);
-		lstGridMode.setMold("select");		
-		div.appendChild(lstGridMode);
-		centerPanel.appendChild(div);
+		noList.setHflex("1");
+		noList.setVflex(true);
+		hlayout.appendChild(noList);
 
-		center.appendChild(centerPanel);
-		centerPanel.setVflex("1");
-		centerPanel.setHflex("1");
+		yesList.setVflex(true);
+		yesList.setHflex("1");
+		hlayout.appendChild(yesList);
+
+		center.appendChild(hlayout);
+
 		layout.appendChild(center);
-		
+
 		South south = new South();
-		south.setStyle("border: none; margin: none");
+		south.setStyle("border: none; margin: 0; padding: 0; ");
 		Panel southPanel = new Panel();
-		south.setHeight("35px");
-		south.setStyle("text-align: right;");
-		southPanel.setStyle("margin-top: 2px; margin-right: 4px");
-		Button bOK = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
-		bOK.setId("Ok");
-		EventListener<Event> onClickListener = new EventListener<Event>()
-		{
 
-			public void onEvent(Event event) throws Exception
-			{
-				if (Events.ON_CLICK.equals(event.getName()))
-				{
-					saveData();
-				}
-			}
+		Separator sep = new Separator();
+		sep.setSpacing("2px");
+		southPanel.appendChild(sep);
 		
-		};		
-		bOK.addActionListener(onClickListener);
-		southPanel.appendChild(bOK);
-		Button btn = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL);
-		btn.setId("Cancel");
-		EventListener<Event> onClickCancelListener = new EventListener<Event>()
-		{
+		southPanel.appendChild(chkSaveWidth);
+		chkSaveWidth.setLabel(Msg.getMsg(Env.getCtx(), "SaveColumnWidth"));
 
-			public void onEvent(Event event) throws Exception
-			{
-				if (Events.ON_CLICK.equals(event.getName()))
-				{
+		sep = new Separator("vertical");
+		sep.setSpacing("200px");
+		southPanel.appendChild(sep);
+		lblGridMode.setValue(Msg.getMsg(Env.getCtx(), "OpenInGridMode"));
+		southPanel.appendChild(lblGridMode);
+		lstGridMode.setMold("select");
+		lstGridMode.setStyle("margin-left: 2px");
+		southPanel.appendChild(lstGridMode);
+		
+		sep = new Separator();
+		sep.setSpacing("2px");
+		southPanel.appendChild(sep);
+
+		LayoutUtils.addSclass("dialog-footer", confirmPanel);
+
+		EventListener<Event> onClickListener = new EventListener<Event>() {
+			public void onEvent(Event event) throws Exception {
+				if (event.getTarget().equals(
+						confirmPanel.getButton(ConfirmPanel.A_OK))) {
+					saveData();
+				} else if (event.getTarget().equals(
+						confirmPanel.getButton(ConfirmPanel.A_CANCEL))) {
 					getParent().detach();
 				}
 			}
+
 		};
-		
-		btn.addActionListener(onClickCancelListener);
-		
-		southPanel.appendChild(btn);
+
+		confirmPanel.addActionListener(onClickListener);
+		southPanel.appendChild(confirmPanel);
 		south.appendChild(southPanel);
 		layout.appendChild(south);
 

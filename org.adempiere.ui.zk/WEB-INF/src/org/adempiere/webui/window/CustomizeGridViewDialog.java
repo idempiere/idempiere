@@ -39,6 +39,7 @@ public class CustomizeGridViewDialog extends Window {
 		this.setWidth("600px");
 		this.setHeight("500px");
 		this.setBorder("normal");
+		this.setSclass("popup-dialog");
 		appendChild(customizePanel);
 		customizePanel.createUI();
 		customizePanel.query();
