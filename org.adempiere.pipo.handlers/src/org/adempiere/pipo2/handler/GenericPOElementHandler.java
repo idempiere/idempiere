@@ -18,6 +18,7 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,13 +29,14 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.DataElementParameters;
+import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PIPOContext;
+import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PackoutItem;
 import org.adempiere.pipo2.PoExporter;
-import org.adempiere.pipo2.Element;
-import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
+import org.compiere.model.MColumn;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -88,6 +90,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 			return;
 		}
 		po.saveEx();
+		element.recordId = po.get_ID();
 	}
 
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
@@ -108,6 +111,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 		int tableId = Env.getContextAsInt(ctx.ctx, DataElementParameters.AD_TABLE_ID);
 		String tableName = MTable.getTableName(ctx.ctx, tableId);
 		List<String> excludes = defaultExcludeList(tableName);
+		boolean checkExcluded = ! sql.toLowerCase().startsWith("select *");
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
@@ -121,6 +125,31 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 					continue;
 				
 				boolean createElement = isPackOutElement(ctx, po);
+
+				if (checkExcluded) { // IDEMPIERE-1563
+					MTable table = MTable.get(ctx.ctx, tableId);
+					for (MColumn column : table.getColumns(false)) {
+						try {
+							rs.findColumn(column.getColumnName());
+						} catch (SQLException e) {
+							if (column.getColumnName().equals("AD_Client_ID") || column.getColumnName().equals("AD_Org_ID")) {
+								throw new Exception("SQL Statement must include AD_Client_ID and AD_Org_ID");
+							}
+							if (!excludes.contains(column.getColumnName().toLowerCase())) {
+								excludes.add(column.getColumnName().toLowerCase());
+							}
+						}
+					}
+					for (String keycol : po.get_KeyColumns()) {
+						if (excludes.contains(keycol.toLowerCase())) {
+							throw new Exception("SQL Statement must include key columns");
+						}
+					}
+					if (excludes.contains(po.getUUIDColumnName().toLowerCase())) {
+						throw new Exception("SQL Statement must include UUID column");
+					}
+					checkExcluded = false;
+				}
 
 				if (createElement) {
 					if (po.get_ID() > 0) {
@@ -136,6 +165,12 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						document.startElement("","", tableName, atts);
 						PoExporter filler = new PoExporter(ctx, document, po);
 						filler.export(excludes, true);
+						ctx.packOut.getCtx().ctx.put("Table_Name",tableName);
+						try {
+							new CommonTranslationHandler().packOut(ctx.packOut,document,null,po.get_ID());
+						} catch(Exception e) {
+							if (log.isLoggable(Level.INFO)) log.info(e.toString());
+						}
 					}
 				}
 
