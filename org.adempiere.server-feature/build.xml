@@ -39,8 +39,8 @@
 		</condition>
 		<echo message="Windows=${isWindows}" />
 
-		<copy file="plugins/org.adempiere.tomcat.config_1.0.0/META-INF/tomcat/serverTemplate.xml"
-			tofile="plugins/org.adempiere.tomcat.config_1.0.0/META-INF/tomcat/server.xml" filtering="yes" overwrite="yes"/>
+		<copy file="plugins/org.adempiere.tomcat.config_2.0.0/META-INF/tomcat/serverTemplate.xml"
+			tofile="plugins/org.adempiere.tomcat.config_2.0.0/META-INF/tomcat/server.xml" filtering="yes" overwrite="yes"/>
 
 	</target>
 
