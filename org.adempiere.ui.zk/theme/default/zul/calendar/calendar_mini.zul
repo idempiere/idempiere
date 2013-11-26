@@ -10,7 +10,7 @@
 	var refresh = Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Refresh"));
 ]]></zscript>
 <style src="/theme/default/zul/calendar/calendar.css"/>
-<calendars firstDayOfWeek="Monday" mold="month" id="cal">
+<calendars firstDayOfWeek="Monday" mold="month" id="cal" xmlns:w="client" w:onBind="try{_overrideMsgCal(); var me=this; setTimeout(function(){me.onSize();},50); }catch(error){} ">
 	<toolbar sclass="calendar-toolbar">
 		<div class="float-left">
 			<hbox>

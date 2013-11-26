@@ -47,6 +47,7 @@ import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 import org.zkforge.keylistener.Keylistener;
 import org.zkoss.web.Attributes;
 import org.zkoss.web.servlet.Servlets;
@@ -196,6 +197,16 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		}
     	Env.verifyLanguage(ctx, language);
     	Env.setContext(ctx, Env.LANGUAGE, language.getAD_Language()); //Bug
+
+    	StringBuilder calendarMsgScript = new StringBuilder();
+		String monthMore = Msg.getMsg(ctx,"more");
+		String dayMore = Msg.getMsg(ctx,"more");
+		calendarMsgScript.append("function _overrideMsgCal() { msgcal.monthMORE = '+{0} ")
+			.append(monthMore).append("';");
+		calendarMsgScript.append("msgcal.dayMORE = '+{0} ")
+			.append(dayMore).append("'; }");
+		AuScript auscript = new AuScript(calendarMsgScript.toString());
+		Clients.response(auscript);
 
 		//	Create adempiere Session - user id in ctx
         Session currSess = Executions.getCurrent().getDesktop().getSession();
