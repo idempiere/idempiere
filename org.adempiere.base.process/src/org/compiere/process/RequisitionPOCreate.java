@@ -382,7 +382,7 @@ public class RequisitionPOCreate extends SvrProcess
 		{
 			m_order.load(get_TrxName());
 			String message = Msg.parseTranslation(getCtx(), "@GeneratedPO@ " + m_order.getDocumentNo());
-			addLog(0, null, m_order.getGrandTotal(), message, m_order.get_Table_ID(), m_order.getC_Order_ID());
+			addBufferLog(0, null, m_order.getGrandTotal(), message, m_order.get_Table_ID(), m_order.getC_Order_ID());
 		}
 		m_order = null;
 		m_orderLine = null;

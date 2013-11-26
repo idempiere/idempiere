@@ -175,7 +175,7 @@ public class RfQCreatePO extends SvrProcess
 					order.setSalesRep_ID(rfq.getSalesRep_ID());
 					order.saveEx();
 					noOrders++;
-					addLog(0, null, null, order.getDocumentNo(), order.get_Table_ID(), order.getC_Order_ID());
+					addBufferLog(0, null, null, order.getDocumentNo(), order.get_Table_ID(), order.getC_Order_ID());
 				}
 				//	For all Qtys
 				MRfQResponseLineQty[] qtys = line.getQtys(false);

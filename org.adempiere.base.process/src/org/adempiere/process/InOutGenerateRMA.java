@@ -265,8 +265,7 @@ public class InOutGenerateRMA extends SvrProcess
         }
         
         // Add processing information to process log
-        addLog(shipment.getM_InOut_ID(), shipment.getMovementDate(), null, processMsg.toString(),shipment.get_Table_ID(),shipment.getM_InOut_ID()
-);
+        addBufferLog(shipment.getM_InOut_ID(), shipment.getMovementDate(), null, processMsg.toString(),shipment.get_Table_ID(),shipment.getM_InOut_ID());
         m_created++;
     }
     

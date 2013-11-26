@@ -22,6 +22,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -54,6 +56,26 @@ public abstract class SvrProcess implements ProcessCall
 	public static final String PROCESS_INFO_CTX_KEY = "ProcessInfo";
 	public static final String PROCESS_UI_CTX_KEY = "ProcessUI";
 	
+	private List<ProcessInfoLog> listEntryLog;  
+
+	/**
+	 * Add log to buffer, only process total success, flush buffer
+	 * @param id
+	 * @param date
+	 * @param number
+	 * @param msg
+	 * @param tableId
+	 * @param recordId
+	 */
+	public void addBufferLog(int id, Timestamp date, BigDecimal number, String msg, int tableId ,int recordId) {
+		ProcessInfoLog entryLog = new ProcessInfoLog(id, date, number, msg, tableId, recordId);
+		
+		if (listEntryLog == null)
+			listEntryLog = new ArrayList<ProcessInfoLog>();
+		
+		listEntryLog.add(entryLog);
+	}
+
 	/**
 	 *  Server Process.
 	 * 	Note that the class is initiated by startProcess.
@@ -191,7 +213,10 @@ public abstract class SvrProcess implements ProcessCall
 		//transaction should rollback if there are error in process
 		if ("@Error@".equals(msg))
 			success = false;
-		
+
+		if (success)
+			flushBufferLog();
+
 		//	Parse Variables
 		msg = Msg.parseTranslation(m_ctx, msg);
 		m_pi.setSummary (msg, !success);
@@ -449,7 +474,7 @@ public abstract class SvrProcess implements ProcessCall
 		if (m_pi != null)
 			m_pi.addLog(id, date, number, msg,tableId,recordId);
 		
-		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg +" - "+tableId);
+		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg + " - " + tableId + " - " + recordId);
 	}	//	addLog
 
 	/**************************************************************************
@@ -475,6 +500,17 @@ public abstract class SvrProcess implements ProcessCall
 		if (msg != null)
 			addLog (0, null, null, msg);
 	}	//	addLog
+
+	private void flushBufferLog () {
+		if (listEntryLog == null)
+			return;
+
+		for (ProcessInfoLog entryLog : listEntryLog) {
+			if (m_pi != null)
+				m_pi.addLog(entryLog);
+			if (log.isLoggable(Level.INFO)) log.info(entryLog.getP_ID() + " - " + entryLog.getP_Date() + " - " + entryLog.getP_Number() + " - " + entryLog.getP_Msg() + " - " + entryLog.getAD_Table_ID() + " - " + entryLog.getRecord_ID());
+		}							
+	}
 
 	/**************************************************************************
 	 * 	Execute function

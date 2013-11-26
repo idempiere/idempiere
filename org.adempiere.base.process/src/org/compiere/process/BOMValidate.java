@@ -108,7 +108,7 @@ public class BOMValidate extends SvrProcess
 			while (rs.next ())
 			{
 				String info = validateProduct(new MProduct(getCtx(), rs.getInt("M_Product_ID"), get_TrxName()));
-				addLog(0, null, null, info, MProduct.Table_ID, rs.getInt("M_Product_ID"));
+				addBufferLog(0, null, null, info, MProduct.Table_ID, rs.getInt("M_Product_ID"));
 				counter++;
 			}
 		}

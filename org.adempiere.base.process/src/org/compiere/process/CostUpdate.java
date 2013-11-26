@@ -338,7 +338,7 @@ public class CostUpdate extends SvrProcess
 						msg.append(m_docType.getName()).append(" ").append(inventoryDoc.getDocumentNo());
 					else
 						msg.append(m_docType.get_Translation(I_C_DocType.COLUMNNAME_Name)).append(" ").append(inventoryDoc.getDocumentNo());
-					addLog(getAD_PInstance_ID(), null, null, msg.toString(), I_M_Inventory.Table_ID, inventoryDoc.getM_Inventory_ID());
+					addBufferLog(getAD_PInstance_ID(), null, null, msg.toString(), I_M_Inventory.Table_ID, inventoryDoc.getM_Inventory_ID());
 				}
 			}
 		}

@@ -68,7 +68,7 @@ public class ConvertLead extends SvrProcess {
 			bp.setName(lead.getName());
 		
 		bp.saveEx();
-		addLog(bp.getC_BPartner_ID(), null, null, "@C_BPartner_ID@ @Created@", MBPartner.Table_ID, bp.getC_BPartner_ID());
+		addBufferLog(bp.getC_BPartner_ID(), null, null, "@C_BPartner_ID@ @Created@", MBPartner.Table_ID, bp.getC_BPartner_ID());
 		
 		lead.setC_BPartner_ID(bp.getC_BPartner_ID());
 		
@@ -139,7 +139,7 @@ public class ConvertLead extends SvrProcess {
 			
 			op.saveEx();
 			
-			addLog(op.getC_Opportunity_ID(), null, null, "@C_Opportunity_ID@ @Created@", MOpportunity.Table_ID, op.getC_Opportunity_ID());
+			addBufferLog(op.getC_Opportunity_ID(), null, null, "@C_Opportunity_ID@ @Created@", MOpportunity.Table_ID, op.getC_Opportunity_ID());
 		}
 		
 		lead.setIsSalesLead(false);
