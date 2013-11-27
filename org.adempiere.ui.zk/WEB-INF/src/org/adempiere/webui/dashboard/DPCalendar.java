@@ -38,6 +38,7 @@ import org.compiere.model.PO;
 import org.compiere.model.X_R_RequestType;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxEventListener;
@@ -49,7 +50,6 @@ import org.zkoss.calendar.Calendars;
 import org.zkoss.calendar.api.CalendarEvent;
 import org.zkoss.calendar.event.CalendarsEvent;
 import org.zkoss.calendar.impl.SimpleCalendarModel;
-import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -397,7 +397,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	private void updateDateLabel() {
 		Date b = calendars.getBeginDate();
 		Date e = calendars.getEndDate();
-		SimpleDateFormat sdfV = new SimpleDateFormat("yyyy/MMM/dd", Locales.getCurrent());
+		SimpleDateFormat sdfV = DisplayType.getDateFormat();
 		sdfV.setTimeZone(calendars.getDefaultTimeZone());
 		lblDate.setValue(sdfV.format(b) + " - " + sdfV.format(e));
 	}
