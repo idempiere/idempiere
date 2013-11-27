@@ -401,79 +401,122 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			if (field.getColumnName().equalsIgnoreCase(query.getZoomColumnName()))
 			{
 				gridWindow.initTab(tabIndex);
-				int parentId = DB.getSQLValue(null, "SELECT " + gTab.getLinkColumnName() + " FROM " + gTab.getTableName() + " WHERE " + query.getWhereClause());
-				if (parentId > 0)
+				int[] parentIds = DB.getIDsEx(null, "SELECT " + gTab.getLinkColumnName() + " FROM " + gTab.getTableName() + " WHERE " + query.getWhereClause());
+				if (parentIds.length > 0)
 				{
-					Map<Integer, Object[]>parentMap = new TreeMap<Integer, Object[]>();
-					int index = tabIndex;
-					int oldpid = parentId;
-					GridTab currentTab = gTab;
-					while (index > 0)
+					GridTab parentTab = null;
+					Map<Integer, MQuery>queryMap = new TreeMap<Integer, MQuery>();
+
+					for (int parentId : parentIds)
 					{
-						index--;
-						GridTab pTab = gridWindow.getTab(index);
-						if (pTab.getTabLevel() < currentTab.getTabLevel())
+						Map<Integer, Object[]>parentMap = new TreeMap<Integer, Object[]>();
+						int index = tabIndex;
+						int oldpid = parentId;
+						GridTab currentTab = gTab;
+						while (index > 0)
 						{
-							gridWindow.initTab(index);
-							if (index > 0)
+							index--;
+							GridTab pTab = gridWindow.getTab(index);
+							if (pTab.getTabLevel() < currentTab.getTabLevel())
 							{
-								if (pTab.getLinkColumnName() != null && pTab.getLinkColumnName().trim().length() > 0)
+								if (parentTab == null)
+									parentTab = pTab;
+								gridWindow.initTab(index);
+								if (index > 0)
 								{
-									int pid = DB.getSQLValue(null, "SELECT " + pTab.getLinkColumnName() + " FROM " + pTab.getTableName() + " WHERE " + currentTab.getLinkColumnName() + " = ?", oldpid);
-									if (pid > 0)
+									if (pTab.getLinkColumnName() != null && pTab.getLinkColumnName().trim().length() > 0)
 									{
-										parentMap.put(index, new Object[]{currentTab.getLinkColumnName(), oldpid});
-										oldpid = pid;
-										currentTab = pTab;
-									}
-									else
-									{
-										parentMap.clear();
-										break;
+										int pid = DB.getSQLValue(null, "SELECT " + pTab.getLinkColumnName() + " FROM " + pTab.getTableName() + " WHERE " + currentTab.getLinkColumnName() + " = ?", oldpid);
+										if (pid > 0)
+										{
+											parentMap.put(index, new Object[]{currentTab.getLinkColumnName(), oldpid});
+											oldpid = pid;
+											currentTab = pTab;
+										}
+										else
+										{
+											parentMap.clear();
+											break;
+										}
 									}
 								}
+								else
+								{
+									parentMap.put(index, new Object[]{currentTab.getLinkColumnName(), oldpid});
+								}
+							}
+						}
+	
+						for(Map.Entry<Integer, Object[]> entry : parentMap.entrySet())
+						{
+							GridTab pTab = gridWindow.getTab(entry.getKey());
+							Object[] value = entry.getValue();
+							MQuery pquery = queryMap.get(entry.getKey());
+							if (pquery == null) 
+							{
+								pquery = new MQuery(pTab.getAD_Table_ID());
+								queryMap.put(entry.getKey(), pquery);
+								pquery.addRestriction((String)value[0], "=", value[1]);
 							}
 							else
 							{
-								parentMap.put(index, new Object[]{currentTab.getLinkColumnName(), oldpid});
+								pquery.addRestriction((String)value[0], "=", value[1], null, null, false, 0);
 							}
 						}
 					}
 
-					for(Map.Entry<Integer, Object[]> entry : parentMap.entrySet())
+					for (Map.Entry<Integer, MQuery> entry : queryMap.entrySet())
 					{
 						GridTab pTab = gridWindow.getTab(entry.getKey());
-						Object[] value = entry.getValue();
-						MQuery pquery = new MQuery(pTab.getAD_Table_ID());
-						pquery.addRestriction((String)value[0], "=", value[1]);						
 						IADTabpanel tp = adTabbox.findADTabpanel(pTab);
         				tp.createUI();
         				if (tp.getTabLevel() == 0)
         				{
-        					pTab.setQuery(pquery);
+        					pTab.setQuery(entry.getValue());
         					tp.query();
         				}
         				else 
         				{
         					tp.query();
-        					pTab.setQuery(pquery);
+        					pTab.setQuery(entry.getValue());
         					tp.query();
-        				}        				
+        				}
 					}
 
 					MQuery targetQuery = new MQuery(gTab.getAD_Table_ID());
-					targetQuery.addRestriction(gTab.getLinkColumnName(), "=", parentId);
+					targetQuery.addRestriction(gTab.getLinkColumnName(), "=", parentTab.getRecord_ID());
 					gTab.setQuery(targetQuery);
 					IADTabpanel gc = null;
 					gc = adTabbox.findADTabpanel(gTab);
 					gc.createUI();
 					gc.query(false, 0, 0);
 
+					int zoomColumnIndex = -1;
 					GridTable table = gTab.getTableModel();
+					for (int i = 0; i < table.getColumnCount(); i++)
+					{
+						if (table.getColumnName(i).equalsIgnoreCase(query.getZoomColumnName()))
+						{
+							zoomColumnIndex = i;
+							break;
+						}
+					}
     				int count = table.getRowCount();
     				for(int i = 0; i < count; i++)
     				{
-    					int id = table.getKeyID(i);
+    					int id = -1;
+    					if (zoomColumnIndex >= 0) 
+    					{
+    						Object zoomValue = table.getValueAt(i, zoomColumnIndex);
+    						if (zoomValue != null && zoomValue instanceof Number)
+    						{
+    							id = ((Number)zoomValue).intValue();
+    						}
+    					}
+    					else
+    					{
+    						id = table.getKeyID(i);
+    					}
     					if (id == ((Integer)query.getZoomValue()).intValue())
     					{
     						setActiveTab(gridWindow.getTabIndex(gTab), null);
