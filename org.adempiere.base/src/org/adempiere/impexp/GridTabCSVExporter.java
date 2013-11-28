@@ -16,9 +16,11 @@ package org.adempiere.impexp;
 
 import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +49,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluator;
+import org.compiere.util.Ini;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.supercsv.cellprocessor.FmtBool;
@@ -76,7 +79,10 @@ public class GridTabCSVExporter implements IGridTabExporter
 		MTable table= null;
 		MTable tableDetail = null;
 		try {
-			mapWriter = new CsvMapWriter(new FileWriter(file), CsvPreference.STANDARD_PREFERENCE);
+			FileOutputStream fileOut = new FileOutputStream (file); 			
+			OutputStreamWriter oStrW = new OutputStreamWriter(fileOut, Ini.getCharset());
+			BufferedWriter bw = new BufferedWriter(oStrW); 
+			mapWriter = new CsvMapWriter(bw, CsvPreference.STANDARD_PREFERENCE);
 			String isValidTab = isValidTabToExport(gridTab);
 			if(isValidTab!=null){
 			   throw new AdempiereException(isValidTab);

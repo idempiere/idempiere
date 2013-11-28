@@ -24,10 +24,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.Callout;
 import org.compiere.model.X_AD_ImpFormat_Row;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Import Format Row with parsing capability
@@ -390,7 +392,7 @@ public final class ImpFormatRow
 
 	
 	/**
-	 *	Return date as YYYY-MM-DD HH24:MI:SS	(JDBC Timestamp format w/o miliseconds)
+	 *	Return date as YYYY-MM-DD HH24:MI:SS	(JDBC Timestamp format w/o milliseconds)
 	 *  @param info data
 	 *  @return date as JDBC format String
 	 */
@@ -400,7 +402,8 @@ public final class ImpFormatRow
 		{
 			try
 			{
-				m_dformat = new SimpleDateFormat(m_dataFormat);
+				if (!Util.isEmpty(m_dataFormat))
+					m_dformat = new SimpleDateFormat(m_dataFormat);
 			}
 			catch (Exception e)
 			{
@@ -418,13 +421,12 @@ public final class ImpFormatRow
 		}
 		catch (ParseException pe)
 		{
-			log.log(Level.SEVERE, "ImpFormatRow.parseDate - " + info, pe);
+			String msg = pe.getLocalizedMessage() + ": Pattern[" + m_dformat.toPattern() + "]  Data[" + info + "]";
+			throw new AdempiereException(msg);
 		}
-		if (ts == null)
-			ts = new Timestamp (System.currentTimeMillis());
 		//
 		String dateString = ts.toString();
-		return dateString.substring(0, dateString.indexOf('.'));	//	cut off miliseconds
+		return dateString.substring(0, dateString.indexOf('.'));	//	cut off milliseconds
 	}	//	parseNumber
 
 	/**
