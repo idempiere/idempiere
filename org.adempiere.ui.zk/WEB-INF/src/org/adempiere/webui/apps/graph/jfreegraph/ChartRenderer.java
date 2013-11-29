@@ -1,9 +1,10 @@
-package org.adempiere.webui.util;
+package org.adempiere.webui.apps.graph.jfreegraph;
 
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.logging.Level;
 
+import org.adempiere.apps.graph.ChartBuilder;
 import org.adempiere.webui.apps.AEnv;
 import org.compiere.model.MChart;
 import org.compiere.model.MQuery;
@@ -33,11 +34,13 @@ import org.zkoss.zul.Imagemap;
  * @author hengsin
  *
  */
-public class ChartRenderer {
+/* package */ class ChartRenderer {
 
 	private static final CLogger log = CLogger.getCLogger(ChartRenderer.class);
 	
 	private MChart chartModel;
+
+	private ChartBuilder chartBuilder;
 
 	/**
 	 * @param chartModel
@@ -52,7 +55,9 @@ public class ChartRenderer {
 	 * @param width
 	 */
 	public void render(Component parent, int width, int height) {
-		JFreeChart chart = chartModel.createChart();
+		chartBuilder = new ChartBuilder(chartModel);
+		JFreeChart chart = chartBuilder.createChart();
+		chart.getPlot().setForegroundAlpha(0.6f);
 		
 		ChartRenderingInfo info = new ChartRenderingInfo();
 		BufferedImage bi = chart.createBufferedImage(width, height,
@@ -136,7 +141,7 @@ public class ChartRenderer {
 	}
 	
 	public void chartMouseClicked(String key, String category) {
-		MQuery query = chartModel.getQuery("null".equals(category) ? key : category + "__" + key);
+		MQuery query = chartBuilder.getQuery("null".equals(category) ? key : category + "__" + key);
 		if (query != null)
 			AEnv.zoom(query);
 	}

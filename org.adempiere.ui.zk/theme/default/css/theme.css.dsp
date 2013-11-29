@@ -1660,15 +1660,16 @@ table.z-vbox > tbody > tr > td > table {
 .performance-indicator {
 	margin: auto; 
 	position: relative; 
-	width: 120px !important;
 }
 
 .performance-indicator img {
 	height: 120px;
 	width: 120px;
+	display: block;
+	margin: auto;
 }
 
-.window-view-pi .performance-indicator {
+.window-view-pi .performance-indicator img {
 	width: 180px !important;
 }
 

@@ -13,36 +13,22 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.graph;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.LinearGradientPaint;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+import org.adempiere.base.Service;
+import org.adempiere.webui.apps.graph.model.IndicatorModel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.theme.ThemeManager;
-import org.compiere.model.MColorSchema;
 import org.compiere.model.MGoal;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.encoders.EncoderUtil;
-import org.jfree.chart.encoders.ImageFormat;
-import org.jfree.chart.plot.DialShape;
-import org.jfree.chart.plot.MeterInterval;
-import org.jfree.chart.plot.MeterPlot;
-import org.jfree.data.Range;
-import org.jfree.data.general.DefaultValueDataset;
-import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Image;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 
@@ -135,11 +121,24 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 		return m_goal;
 	}	//	getGoal
 
-	private  JFreeChart createChart()
+     /**
+	 * 	Init Graph Display
+	 *  Kinamo (pelgrim)
+	 */
+	private void init()
 	{
-		JFreeChart chart = null;
-
-		//	Set Text
+		IChartRendererService renderer = Service.locator().locate(IChartRendererService.class).getService();
+		IndicatorModel model = new IndicatorModel();
+		model.goalModel = m_goal;
+		model.chartBackground = chartBackground;
+		model.dialBackground = dialBackground;
+		model.needleColor = needleColor;
+		model.tickColor = tickColor;
+		renderer.renderPerformanceIndicator(this, chartWidth, chartHeight, model);
+		
+		this.getFirstChild().addEventListener(Events.ON_CLICK, this);
+		
+		// Set Text
 		StringBuilder text = new StringBuilder(m_goal.getName());
 		if (m_goal.isTarget())
 			text.append(": ").append(m_goal.getPercent()).append("%");
@@ -157,96 +156,17 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 			text.append(" ").append(Msg.getMsg(Env.getCtx(), "of")).append(" ")
 				.append(s_format.format(m_goal.getMeasureTarget()));
 		setTooltiptext(text.toString());
-		//
-        DefaultValueDataset data = new DefaultValueDataset((float)m_goal.getPercent());
-        MeterPlot plot = new MeterPlot(data);
-
-        MColorSchema colorSchema = m_goal.getColorSchema();
-        int rangeLo = 0; int rangeHi=0;
-        Point2D start = new Point2D.Float(0, 0);
-        Point2D end = new Point2D.Float(50, 50);
-        float[] dist = {0.0f, 0.2f, 0.45f, 0.75f, 1.0f};
-        for (int i=1; i<=4; i++){
-            switch (i) {
-             case 1: rangeHi = colorSchema.getMark1Percent(); break;
-             case 2: rangeHi = colorSchema.getMark2Percent(); break;
-             case 3: rangeHi = colorSchema.getMark3Percent(); break;
-             case 4: rangeHi = colorSchema.getMark4Percent(); break;
-            }
-            if (rangeHi==9999)
-            	rangeHi = (int) Math.floor(rangeLo*1.5);
-            if (rangeLo < rangeHi) {            	
-                Color[] colors = {colorSchema.getColor(rangeHi).brighter().brighter(), 
-                		colorSchema.getColor(rangeHi).brighter(), colorSchema.getColor(rangeHi), 
-                		colorSchema.getColor(rangeHi).darker(), colorSchema.getColor(rangeHi).darker().darker()};
-                LinearGradientPaint p =
-                    new LinearGradientPaint(start, end, dist, colors);
-                
-            	plot.addInterval(new MeterInterval("Normal", //label
-                 	  new Range(rangeLo, rangeHi), //range
-                 	  p,
-                 	  new BasicStroke(7.0f),
-                 	  dialBackground
-                ));
-            	rangeLo = rangeHi;
-            }
-        }
-        plot.setRange(new Range(0,rangeLo));
-        plot.setDialBackgroundPaint(dialBackground);
-        plot.setUnits("");
-        plot.setDialShape(DialShape.CHORD);
-        plot.setNeedlePaint(needleColor);
-        plot.setTickSize(2000);
-        plot.setTickLabelFont(new Font("SansSerif", Font.BOLD, 8));
-        plot.setValueFont(new Font("SansSerif", Font.BOLD, 8));
-        plot.setNoDataMessageFont(new Font("SansSerif", Font.BOLD, 8));
-        plot.setTickLabelPaint(tickColor);
-        plot.setValuePaint(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-        plot.setTickPaint(tickColor);
-        //
-        chart = new JFreeChart( "", new Font("SansSerif", Font.BOLD, 9), plot,false);
-
-		return chart;
+			
+		invalidate();
 	}
-
-     /**
-	 * 	Init Graph Display
-	 *  Kinamo (pelgrim)
-	 */
-	private void init()
-	{
-		JFreeChart chart = createChart();
-		chart.setBackgroundPaint(chartBackground);
-		chart.setAntiAlias(true);
-		BufferedImage bi = chart.createBufferedImage(chartWidth, chartHeight, BufferedImage.TRANSLUCENT , null);
-		try {
-		    byte[] bytes = EncoderUtil.encode(bi, ImageFormat.PNG, true);
-
-		    AImage image = new AImage("", bytes);
-		    Image myImage = new Image();
-		    myImage.setContent(image);
-		    appendChild(myImage);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-	    invalidate();
-	}
-
-
-	/**
-	 * 	Update Display Data
-	 */
-	protected void updateDisplay()
-	{
-		chartPanel.setChart(createChart());
-	    invalidate();
-	}	//	updateData
 
 	public void onEvent(Event event) throws Exception
 	{
+		if (event.getTarget() == this.getFirstChild())
+		{
+			event.stopPropagation();
+			Events.sendEvent(Events.ON_CLICK, this, event.getData());
+		}
 	}
 	
 	public String getTitle() 

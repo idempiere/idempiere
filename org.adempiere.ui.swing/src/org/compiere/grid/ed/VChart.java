@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.VetoableChangeListener;
 
+import org.adempiere.apps.graph.ChartBuilder;
 import org.compiere.apps.AEnv;
 import org.compiere.model.GridField;
 import org.compiere.model.MChart;
@@ -34,6 +35,7 @@ public class VChart extends CPanel implements ChartMouseListener, VEditor {
 	private static final long serialVersionUID = 1L;
 	ChartPanel chartPanel;
 	MChart chartModel;
+	private ChartBuilder chartBuilder;
 	/**
 	 * 	Constructor
 	 */
@@ -52,7 +54,8 @@ public class VChart extends CPanel implements ChartMouseListener, VEditor {
 
 	public void createChart()
 	{
-		JFreeChart chart = chartModel.createChart();
+		chartBuilder = new ChartBuilder(chartModel);
+		JFreeChart chart = chartBuilder.createChart();
 		if (chartPanel != null)
 			remove(chartPanel);
 	
@@ -131,7 +134,7 @@ public class VChart extends CPanel implements ChartMouseListener, VEditor {
 				if ( key == null )
 					return;
 				
-				MQuery query = chartModel.getQuery(seriesName == null ? key : seriesName+"__"+key);
+				MQuery query = chartBuilder.getQuery(seriesName == null ? key : seriesName+"__"+key);
 				
 				if (query != null)
 					AEnv.zoom(query);

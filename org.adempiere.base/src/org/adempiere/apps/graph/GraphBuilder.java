@@ -16,6 +16,7 @@ package org.adempiere.apps.graph;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import org.compiere.model.MGoal;
 import org.compiere.model.MMeasure;
@@ -245,6 +246,11 @@ public class GraphBuilder {
 
 		ArrayList<GraphColumn>list = measure.getGraphColumnList(getMGoal());
 
+		loadDataSet(list);
+		return list;
+	}
+
+	public void loadDataSet(List<GraphColumn> list) {
 		pieDataset = new DefaultPieDataset();
 		dataset = new DefaultCategoryDataset();
 		for (int i = 0; i < list.size(); i++){
@@ -260,6 +266,5 @@ public class GraphBuilder {
 					list.get(i).getLabel());
 			pieDataset.setValue(list.get(i).getLabel(), list.get(i).getValue());
 		}
-		return list;
 	}
 }

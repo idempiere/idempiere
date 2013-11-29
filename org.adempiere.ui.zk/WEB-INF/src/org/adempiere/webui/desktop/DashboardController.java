@@ -29,8 +29,10 @@ import java.util.logging.Level;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.WGraph;
 import org.adempiere.webui.apps.graph.WPerformanceDetail;
+import org.adempiere.webui.apps.graph.model.ChartModel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.dashboard.DashboardRunnable;
@@ -38,7 +40,6 @@ import org.adempiere.webui.factory.IDashboardGadgetFactory;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
-import org.adempiere.webui.util.ChartRenderer;
 import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MChart;
@@ -382,7 +383,6 @@ public class DashboardController implements EventListener<Event> {
 	        		chartPanel.addEventListener(Events.ON_AFTER_SIZE, new EventListener<AfterSizeEvent>() {
 						@Override
 						public void onEvent(AfterSizeEvent event) throws Exception {
-			        		ChartRenderer renderer = new ChartRenderer(chartModel);
 			        		int width = event.getWidth()*90/100;
 			        		int height = event.getHeight();
 			        		//set normal height
@@ -391,7 +391,10 @@ public class DashboardController implements EventListener<Event> {
 			        			chartPanel.setHeight(height+"px");
 			        		}
 			        		chartPanel.getChildren().clear();
-			        		renderer.render(chartPanel, width, height);
+			        		ChartModel model = new ChartModel();
+			        		model.chart = chartModel;
+			        		IChartRendererService renderer = Service.locator().locate(IChartRendererService.class).getService();
+			        		renderer.renderChart(chartPanel, width, height, model);
 						}
 					});
 	        	}

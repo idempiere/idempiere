@@ -14,15 +14,14 @@
 package org.adempiere.webui.apps.graph;
 
 import java.awt.Point;
-import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.logging.Level;
+import java.util.Collections;
 
-import org.adempiere.apps.graph.GraphBuilder;
 import org.adempiere.apps.graph.GraphColumn;
+import org.adempiere.base.Service;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.apps.graph.model.GoalModel;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
@@ -30,19 +29,10 @@ import org.compiere.model.MGoal;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
-import org.compiere.model.MQuery;
+import org.compiere.model.MMeasure;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.jfree.chart.ChartMouseEvent;
-import org.jfree.chart.ChartRenderingInfo;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.encoders.EncoderUtil;
-import org.jfree.chart.encoders.ImageFormat;
-import org.jfree.chart.entity.CategoryItemEntity;
-import org.jfree.chart.entity.ChartEntity;
-import org.jfree.chart.entity.PieSectionEntity;
-import org.zkoss.image.AImage;
 import org.zkoss.zhtml.A;
 import org.zkoss.zhtml.Br;
 import org.zkoss.zhtml.Table;
@@ -54,13 +44,10 @@ import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.East;
-import org.zkoss.zul.Area;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Imagemap;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Toolbar;
@@ -100,18 +87,21 @@ public class WGraph extends Div implements IdSpace {
 	 */
 	ArrayList<GraphColumn> list = new ArrayList<GraphColumn>();
 
-	private GraphBuilder builder;
-
 	private boolean m_chartSelection;
 
 	private int zoomFactor = 0;
+
+	private MGoal m_goal;
+
+	private String m_xAxisLabel;
+
+	private String m_yAxisLabel;
 
 	/**
 	 * Constructor
 	 */
 	public WGraph() {
 		super();
-		builder = new GraphBuilder();		
 		panel = new Panel();
 	} // BarGraph
 
@@ -154,9 +144,9 @@ public class WGraph extends Div implements IdSpace {
 	 */
 	public void setGoal(MGoal goal)
 	{
-		builder.setMGoal(goal);
-		builder.setYAxisLabel(goal.getName());
-		builder.setXAxisLabel(goal.getXAxisText());
+		m_goal = goal;
+		m_yAxisLabel = goal.getName();
+		m_xAxisLabel = goal.getXAxisText();
 	}
 
 	/**
@@ -194,10 +184,7 @@ public class WGraph extends Div implements IdSpace {
 		}
 		
 		if (m_renderChart) {
-			JFreeChart chart = builder.createChart(builder.getMGoal()
-					.getChartType());
-
-			render(chart);
+			renderChart((String)null);
 		}
 		if (m_renderTable) {
 			if (m_renderChart) {
@@ -218,8 +205,16 @@ public class WGraph extends Div implements IdSpace {
 	}
 	
 	private void loadData() {
-		list = builder.loadData();
+		//	Calculated
+		MMeasure measure = m_goal.getMeasure();
+		if (measure == null)
+		{
+			log.warning("No Measure for " + m_goal);
+			return;
+		}
 
+		list = measure.getGraphColumnList(m_goal);
+		
 		if (m_renderChart && m_chartSelection) {
 			Toolbar toolbar = new Toolbar();
 			panel.appendChild(toolbar);
@@ -239,95 +234,32 @@ public class WGraph extends Div implements IdSpace {
 					Object value = evt.getNewValue();
 					if (value == null || value.toString().trim().length() == 0)
 						return;
-					JFreeChart chart = null;
-					chart = builder.createChart(value.toString());
-					if (chart != null)
-						render(chart);
+					renderChart(value.toString());
 				}
 
 			});
 		}
 	} // loadData
 
-	private void render(JFreeChart chart) {
-		ChartRenderingInfo info = new ChartRenderingInfo();
+	private void renderChart(String type) {
 		int width = 560;
 		int height = 400;
-		if (zoomFactor > 0) {
-			width = width * zoomFactor / 100;
-			height = height * zoomFactor / 100;
+		if (panel.getPanelchildren() != null) {
+			panel.getPanelchildren().getChildren().clear();
+		} else {
+			Panelchildren pc = new Panelchildren();
+			panel.appendChild(pc);
 		}
-		if (m_hideTitle) {
-			chart.setTitle("");
-		}
-		BufferedImage bi = chart.createBufferedImage(width, height,
-				BufferedImage.TRANSLUCENT, info);
-		try {
-			byte[] bytes = EncoderUtil.encode(bi, ImageFormat.PNG, true);
-
-			AImage image = new AImage("", bytes);
-			Imagemap myImage = new Imagemap();
-
-			myImage.setContent(image);
-			if (panel.getPanelchildren() != null) {
-				panel.getPanelchildren().getChildren().clear();
-				panel.getPanelchildren().appendChild(myImage);
-			} else {
-				Panelchildren pc = new Panelchildren();
-				panel.appendChild(pc);
-				pc.appendChild(myImage);
-			}
-
-			int count = 0;
-			for (Iterator<?> it = info.getEntityCollection().getEntities()
-					.iterator(); it.hasNext();) {
-				ChartEntity entity = (ChartEntity) it.next();
-
-				String key = null;
-				if (entity instanceof CategoryItemEntity) {
-					Comparable<?> colKey = ((CategoryItemEntity) entity)
-							.getColumnKey();
-					if (colKey != null) {
-						key = colKey.toString();
-					}
-				} else if (entity instanceof PieSectionEntity) {
-					Comparable<?> sectionKey = ((PieSectionEntity) entity)
-							.getSectionKey();
-					if (sectionKey != null) {
-						key = sectionKey.toString();
-					}
-				}
-				if (key == null) {
-					continue;
-				}
-
-				Area area = new Area();
-				myImage.appendChild(area);
-				area.setCoords(entity.getShapeCoords());
-				area.setShape(entity.getShapeType());
-				area.setTooltiptext(entity.getToolTipText());
-				area.setId(count+"_WG_" + key);
-				count++;
-			}
-
-			myImage.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-				public void onEvent(Event event) throws Exception {
-					MouseEvent me = (MouseEvent) event;
-					String areaId = me.getArea();
-					if (areaId != null) {
-						for (int i = 0; i < list.size(); i++) {
-							String s = "_WG_" + list.get(i).getLabel();
-							if (areaId.endsWith(s)) {
-								chartMouseClicked(i);
-								return;
-							}
-						}
-					}
-				}
-			});
-		} catch (Exception e) {
-			log.log(Level.SEVERE, "", e);
-		}
+		IChartRendererService renderer = Service.locator().locate(IChartRendererService.class).getService();
+		GoalModel goalModel = new GoalModel();
+		goalModel.goal = m_goal;
+		goalModel.chartType = type != null ? type : m_goal.getChartType();
+		goalModel.columnList = Collections.unmodifiableList(list);
+		goalModel.showTitle = !m_hideTitle;
+		goalModel.xAxisLabel = m_xAxisLabel;
+		goalModel.yAxisLabel = m_yAxisLabel;
+		goalModel.zoomFactor = zoomFactor;
+		renderer.renderPerformanceGraph(panel.getPanelchildren(), width, height, goalModel);
 	}
 
 	/**
@@ -343,7 +275,7 @@ public class WGraph extends Div implements IdSpace {
 	 * @return Returns the x_AxisLabel.
 	 */
 	public String getX_AxisLabel() {
-		return builder.getXAxisLabel();
+		return m_xAxisLabel;
 	} // getX_AxisLabel
 
 	/**
@@ -351,14 +283,14 @@ public class WGraph extends Div implements IdSpace {
 	 *            The x_AxisLabel to set.
 	 */
 	public void setX_AxisLabel(String axisLabel) {
-		builder.setXAxisLabel(axisLabel);
+		m_xAxisLabel = axisLabel;
 	} // setX_AxisLabel
 
 	/**
 	 * @return Returns the y_AxisLabel.
 	 */
 	public String getY_AxisLabel() {
-		return builder.getYAxisLabel();
+		return m_yAxisLabel;
 	} // getY_AxisLabel
 
 	/**
@@ -366,7 +298,7 @@ public class WGraph extends Div implements IdSpace {
 	 *            The y_AxisLabel to set.
 	 */
 	public void setY_AxisLabel(String axisLabel) {
-		builder.setYAxisLabel(axisLabel);
+		m_yAxisLabel = axisLabel;
 	} // setY_AxisLabel
 
 	/**
@@ -431,27 +363,6 @@ public class WGraph extends Div implements IdSpace {
 		m_renderChart = mRenderChart;
 	}
 
-	/**************************************************************************
-	 * Paint Component
-	 * 
-	 * @param g
-	 *            graphics
-	 */
-
-	public void chartMouseClicked(int index) {
-		GraphColumn bgc = list.get(index);
-		if (null == bgc)
-			return;
-		MQuery query = bgc.getMQuery(builder.getMGoal());
-		if (query != null)
-			AEnv.zoom(query);
-		else
-			log.warning("Nothing to zoom to - " + bgc);
-	}
-
-	public void chartMouseMoved(ChartMouseEvent event) {
-	}
-
 	/**
 	 * 
 	 * @return GraphColumn[]
@@ -484,7 +395,7 @@ public class WGraph extends Div implements IdSpace {
 		td.setDynamicProperty("colspan", "2");
 		td.setSclass("pa-tdcontent");
 		tr.appendChild(td);
-		text = new Text(builder.getMGoal().getMeasureTarget().setScale(2,
+		text = new Text(m_goal.getMeasureTarget().setScale(2,
 				BigDecimal.ROUND_HALF_UP).toPlainString());
 		td.appendChild(text);
 
@@ -499,7 +410,7 @@ public class WGraph extends Div implements IdSpace {
 		td.setDynamicProperty("colspan", "2");
 		td.setSclass("pa-tdcontent");
 		tr.appendChild(td);
-		text = new Text(builder.getMGoal().getMeasureActual().setScale(2,
+		text = new Text(m_goal.getMeasureActual().setScale(2,
 				BigDecimal.ROUND_HALF_UP).toPlainString());
 		td.appendChild(text);
 
@@ -512,7 +423,7 @@ public class WGraph extends Div implements IdSpace {
 		td.setDynamicProperty("rowspan", bList.length);
 		td.setSclass("pa-label");
 		td.setDynamicProperty("valign", "top");
-		text = new Text(builder.getMGoal().getXAxisText());
+		text = new Text(m_goal.getXAxisText());
 		td.appendChild(text);
 
 		for (int k = 0; k < bList.length; k++) {
@@ -531,7 +442,7 @@ public class WGraph extends Div implements IdSpace {
 			td.setSclass("pa-tdvalue");
 			tr.appendChild(td);
 			BigDecimal value = BigDecimal.valueOf(bgc.getValue());
-			if (bgc.getMQuery(builder.getMGoal()) != null) {				
+			if (bgc.getMQuery(m_goal) != null) {				
 				A a = new A();
 				a.setSclass("pa-hrefNode");
 				td.appendChild(a);
@@ -545,8 +456,7 @@ public class WGraph extends Div implements IdSpace {
 							int index = Integer.parseInt(String.valueOf(ss));
 							GraphColumn[] colList = getGraphColumnList();
 							if ((index >= 0) && (index < colList.length))
-								AEnv.zoom(colList[index].getMQuery(builder
-										.getMGoal()));
+								AEnv.zoom(colList[index].getMQuery(m_goal));
 						}
 					}
 
@@ -564,11 +474,11 @@ public class WGraph extends Div implements IdSpace {
 		td = new Td();
 		td.setDynamicProperty("colspan", "3");
 		tr.appendChild(td);
-		text = new Text(builder.getMGoal().getDescription());
+		text = new Text(m_goal.getDescription());
 		td.appendChild(text);
 		Br br = new Br();
 		td.appendChild(br);
-		text = new Text(stripHtml(builder.getMGoal().getColorSchema()
+		text = new Text(stripHtml(m_goal.getColorSchema()
 						.getDescription(), true));
 		td.appendChild(text);				
 	}

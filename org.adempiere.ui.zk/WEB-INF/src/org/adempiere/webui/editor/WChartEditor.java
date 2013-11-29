@@ -14,7 +14,9 @@
 package org.adempiere.webui.editor;
 
 
-import org.adempiere.webui.util.ChartRenderer;
+import org.adempiere.base.Service;
+import org.adempiere.webui.apps.graph.IChartRendererService;
+import org.adempiere.webui.apps.graph.model.ChartModel;
 import org.compiere.model.GridField;
 import org.compiere.model.MChart;
 import org.compiere.util.CLogger;
@@ -50,7 +52,6 @@ public class WChartEditor extends WEditor
     }
 
     private void createChart() {
-        ChartRenderer renderer = new ChartRenderer(chartModel);
         Panel panel = getComponent();
         if (panel.getPanelchildren() != null) {
 			panel.getPanelchildren().getChildren().clear();
@@ -59,7 +60,10 @@ public class WChartEditor extends WEditor
 			panel.appendChild(pc);
 			pc.setSclass("chart-field");
 		}
-        renderer.render(panel.getPanelchildren(), 400, chartModel.getWinHeight());
+        ChartModel model = new ChartModel();
+        model.chart = chartModel;
+        IChartRendererService renderer = Service.locator().locate(IChartRendererService.class).getService();
+        renderer.renderChart(panel.getPanelchildren(), 400, chartModel.getWinHeight(), model);
     }
     
     @Override

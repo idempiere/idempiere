@@ -86,6 +86,7 @@ public class DPPerformance extends DashboardPanel {
 			script = script + "grid.parent().height(grid.css('height'));}, 500);";
 			if (Executions.getCurrent() != null)
 				Clients.response(new AuScript(script));
+			this.getFirstChild().invalidate();
 		}
 	}
 }

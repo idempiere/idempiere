@@ -66,8 +66,6 @@ public class WPAPanel extends Panel implements EventListener<Event>
 		setSclass("performance-panel");
 		Grid grid = new Grid();
 		appendChild(grid);
-		int gh = options != null && options.chartHeight > 0 ? options.chartHeight+60 : 180; 
-		grid.setHeight((m_goals.length + (m_goals.length % 2)) * gh / 2 + "px");
 		grid.makeNoStrip();
 
 		Rows rows = new Rows();
