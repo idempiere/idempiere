@@ -271,7 +271,7 @@ public class InvoiceGenerate extends SvrProcess
 						if (completeOrder && !fullyDelivered)
 						{
 							if (log.isLoggable(Level.FINE)) log.fine("Failed CompleteOrder - " + oLine);
-							addLog(0, null, null,"Failed CompleteOrder - " + oLine,oLine.get_Table_ID(),oLine.getC_OrderLine_ID()); // Elaine 2008/11/25
+							addBufferLog(0, null, null,"Failed CompleteOrder - " + oLine,oLine.get_Table_ID(),oLine.getC_OrderLine_ID()); // Elaine 2008/11/25
 							completeOrder = false;
 							break;
 						}
@@ -291,7 +291,7 @@ public class InvoiceGenerate extends SvrProcess
 						{
 							if (log.isLoggable(Level.FINE)) log.fine("Failed: " + order.getInvoiceRule() 
 								+ " - ToInvoice=" + toInvoice + " - " + oLine);
-							addLog(0, null, null,"Failed: " + order.getInvoiceRule() 
+							addBufferLog(0, null, null,"Failed: " + order.getInvoiceRule() 
 								+ " - ToInvoice=" + toInvoice + " - " + oLine,oLine.get_Table_ID(),oLine.getC_OrderLine_ID());
 						}
 					}	//	for all order lines
@@ -489,14 +489,14 @@ public class InvoiceGenerate extends SvrProcess
 			if (!m_invoice.processIt(p_docAction))
 			{
 				log.warning("completeInvoice - failed: " + m_invoice);
-				addLog(0, null, null,"completeInvoice - failed: " + m_invoice,m_invoice.get_Table_ID(),m_invoice.getC_Invoice_ID()); // Elaine 2008/11/25
+				addBufferLog(0, null, null,"completeInvoice - failed: " + m_invoice,m_invoice.get_Table_ID(),m_invoice.getC_Invoice_ID()); // Elaine 2008/11/25
 				throw new IllegalStateException("Invoice Process Failed: " + m_invoice + " - " + m_invoice.getProcessMsg());
 				
 			}
 			m_invoice.saveEx();
 
 			String message = Msg.parseTranslation(getCtx(), "@InvoiceProcessed@ " + m_invoice.getDocumentNo());
-			addLog(m_invoice.getC_Invoice_ID(), m_invoice.getDateInvoiced(), null, message, m_invoice.get_Table_ID(), m_invoice.getC_Invoice_ID());
+			addBufferLog(m_invoice.getC_Invoice_ID(), m_invoice.getDateInvoiced(), null, message, m_invoice.get_Table_ID(), m_invoice.getC_Invoice_ID());
 			m_created++;
 		}
 		m_invoice = null;

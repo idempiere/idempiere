@@ -224,7 +224,7 @@ public class ExpenseAPInvoice extends SvrProcess
 			throw new IllegalStateException("Cannot save Invoice");
 		//
 		m_noInvoices++;
-		addLog(invoice.get_ID(), invoice.getDateInvoiced(), 
+		addBufferLog(invoice.get_ID(), invoice.getDateInvoiced(), 
 			invoice.getGrandTotal(), invoice.getDocumentNo(), invoice.get_Table_ID(), invoice.getC_Invoice_ID());
 	}	//	completeInvoice
 

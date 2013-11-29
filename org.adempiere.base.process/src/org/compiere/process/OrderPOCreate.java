@@ -210,7 +210,7 @@ public class OrderPOCreate extends SvrProcess
 				{
 					po = createPOForVendor(rs.getInt(1), so);
 					String message = Msg.parseTranslation(getCtx(), "@OrderCreated@ " + po.getDocumentNo());
-					addLog(0, null, null, message, po.get_Table_ID(), po.getC_Order_ID());
+					addBufferLog (0, null, null, message, po.get_Table_ID(), po.getC_Order_ID());
 					counter++;
 				}
 

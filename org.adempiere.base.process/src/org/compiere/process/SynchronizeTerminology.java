@@ -138,7 +138,9 @@ public class SynchronizeTerminology extends SvrProcess
 				+" 	WHERE NOT EXISTS"
 				+" 	(SELECT 1 FROM AD_COLUMN c WHERE UPPER(e.ColumnName)=UPPER(c.ColumnName))"
 				+" 	AND NOT EXISTS"
-				+" 	(SELECT 1 FROM AD_PROCESS_PARA p WHERE UPPER(e.ColumnName)=UPPER(p.ColumnName)))";
+				+" 	(SELECT 1 FROM AD_PROCESS_PARA p WHERE UPPER(e.ColumnName)=UPPER(p.ColumnName))"
+				+" 	AND NOT EXISTS"
+				+" 	(SELECT 1 FROM AD_INFOCOLUMN i WHERE UPPER(e.ColumnName)=UPPER(i.ColumnName)))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows deleted: "+no);
 			trx.commit(true);
@@ -147,7 +149,9 @@ public class SynchronizeTerminology extends SvrProcess
 				+" 	WHERE AD_Element_ID >= 1000000 AND NOT EXISTS"
 				+" 	(SELECT 1 FROM AD_COLUMN c WHERE UPPER(e.ColumnName)=UPPER(c.ColumnName))"
 				+" 	AND NOT EXISTS"
-				+" 	(SELECT 1 FROM AD_PROCESS_PARA p WHERE UPPER(e.ColumnName)=UPPER(p.ColumnName))";
+				+" 	(SELECT 1 FROM AD_PROCESS_PARA p WHERE UPPER(e.ColumnName)=UPPER(p.ColumnName))"
+				+" 	AND NOT EXISTS"
+				+" 	(SELECT 1 FROM AD_INFOCOLUMN i WHERE UPPER(e.ColumnName)=UPPER(i.ColumnName))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows deleted: "+no);
 			trx.commit(true);

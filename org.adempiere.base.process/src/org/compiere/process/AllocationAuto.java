@@ -399,7 +399,7 @@ public class AllocationAuto extends SvrProcess
 								if (payment.allocateIt())
 								{
 									String message = Msg.parseTranslation(getCtx(), "@PaymentAllocated@ " + payment.getDocumentNo() + " [1]");
-									addLog(0, payment.getDateAcct(), openAmt, message, payment.get_Table_ID(), payment.getC_Payment_ID());
+									addBufferLog(0, payment.getDateAcct(), openAmt, message, payment.get_Table_ID(), payment.getC_Payment_ID());
 									count++;
 								}
 								break;
@@ -444,7 +444,7 @@ public class AllocationAuto extends SvrProcess
 					if (payment.allocateIt())
 					{
 						String message = Msg.parseTranslation(getCtx(), "@PaymentAllocated@ " + payment.getDocumentNo() + " [n]");
-						addLog(0, payment.getDateAcct(), availableAmt, message);
+						addBufferLog(0, payment.getDateAcct(), availableAmt, message, payment.get_Table_ID(), payment.getC_Payment_ID());
 						count++;
 					}
 				}

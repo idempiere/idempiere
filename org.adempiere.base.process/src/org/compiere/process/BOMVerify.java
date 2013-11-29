@@ -182,7 +182,7 @@ public class BOMVerify extends SvrProcess
 					if (p_fromButton)
 						addLog(0, null, null, product.getValue() + " recursively contains " + pp.getValue());
 					else
-						addLog(0, null, null, product.getValue() + " recursively contains " + pp.getValue(), MProduct.Table_ID, product.getM_Product_ID());
+						addBufferLog(0, null, null, product.getValue() + " recursively contains " + pp.getValue(), MProduct.Table_ID, product.getM_Product_ID());
 				}
 				else
 				{
@@ -200,7 +200,7 @@ public class BOMVerify extends SvrProcess
 			if (p_fromButton)
 				addLog(0, null, null, product.getValue() + " does not have lines");
 			else
-				addLog(0, null, null, product.getValue() + " does not have lines", MProduct.Table_ID, product.getM_Product_ID());
+				addBufferLog(0, null, null, product.getValue() + " does not have lines", MProduct.Table_ID, product.getM_Product_ID());
 		}
 
 		checkedproducts.add(product);

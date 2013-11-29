@@ -150,6 +150,7 @@ public class RequestInvoice extends SvrProcess
 		catch (Exception e)
 		{
 			log.log (Level.SEVERE, sql.toString(), e);
+			throw e;
 		}
 		finally
 		{
@@ -180,7 +181,7 @@ public class RequestInvoice extends SvrProcess
 				}
 				m_invoice.saveEx();
 				String message = Msg.parseTranslation(getCtx(), "@InvoiceProcessed@ " + m_invoice.getDocumentNo());
-				addLog(0, null, m_invoice.getGrandTotal(), message, m_invoice.get_Table_ID(), m_invoice.getC_Invoice_ID());
+				addBufferLog(0, null, m_invoice.getGrandTotal(), message, m_invoice.get_Table_ID(), m_invoice.getC_Invoice_ID());
 			}
 		}
 		m_invoice = null;

@@ -4,7 +4,8 @@ Bundle-Name: UI base
 Bundle-SymbolicName: org.adempiere.ui;singleton:=true
 Bundle-Version: 2.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.adempiere.base;bundle-version="2.0.0"
+Require-Bundle: org.adempiere.base;bundle-version="2.0.0",
+ org.apache.xerces;bundle-version="2.9.0"
 Export-Package: org.compiere.apps,
  org.compiere.apps.form,
  org.compiere.apps.wf,

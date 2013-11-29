@@ -37,6 +37,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.X_R_RequestType;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -52,7 +53,6 @@ import org.zkoss.calendar.event.CalendarsEvent;
 import org.zkoss.calendar.impl.SimpleCalendarEvent;
 import org.zkoss.calendar.impl.SimpleCalendarModel;
 import org.zkoss.image.AImage;
-import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -410,7 +410,7 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 	private void updateDateLabel() {
 		Date b = calendars.getBeginDate();
 		Date e = calendars.getEndDate();
-		SimpleDateFormat sdfV = new SimpleDateFormat("yyyy/MMM/dd", Locales.getCurrent());
+		SimpleDateFormat sdfV = DisplayType.getDateFormat();
 		sdfV.setTimeZone(calendars.getDefaultTimeZone());
 		lblDate.setValue(sdfV.format(b) + " - " + sdfV.format(e));
 	}

@@ -164,7 +164,7 @@ public class BankTransfer extends SvrProcess
 			throw new IllegalStateException("Payment Process Failed: " + paymentBankFrom + " - " + paymentBankFrom.getProcessMsg());
 		}
 		paymentBankFrom.saveEx();
-		addLog(paymentBankFrom.getC_Payment_ID(), paymentBankFrom.getDateTrx(),
+		addBufferLog(paymentBankFrom.getC_Payment_ID(), paymentBankFrom.getDateTrx(),
 				null, paymentBankFrom.getC_DocType().getName() + " " + paymentBankFrom.getDocumentNo(),
 				MPayment.Table_ID, paymentBankFrom.getC_Payment_ID());
 		m_created++;
@@ -190,7 +190,7 @@ public class BankTransfer extends SvrProcess
 			throw new IllegalStateException("Payment Process Failed: " + paymentBankTo + " - " + paymentBankTo.getProcessMsg());
 		}
 		paymentBankTo.saveEx();
-		addLog(paymentBankTo.getC_Payment_ID(), paymentBankTo.getDateTrx(),
+		addBufferLog(paymentBankTo.getC_Payment_ID(), paymentBankTo.getDateTrx(),
 				null, paymentBankTo.getC_DocType().getName() + " " + paymentBankTo.getDocumentNo(),
 				MPayment.Table_ID, paymentBankTo.getC_Payment_ID());
 		m_created++;
