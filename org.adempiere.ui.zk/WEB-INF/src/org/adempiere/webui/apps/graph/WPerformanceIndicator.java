@@ -15,6 +15,7 @@ package org.adempiere.webui.apps.graph;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Map;
 
 import org.adempiere.base.Service;
@@ -26,6 +27,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.jfree.chart.ChartPanel;
+import org.zkoss.zk.ui.event.AfterSizeEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -60,10 +62,6 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 	public WPerformanceIndicator(MGoal goal, Options options)
 	{
 		if (options != null) {
-			if (options.chartHeight > 0)
-				chartHeight = options.chartHeight;
-			if (options.chartWidth > 0)
-				chartWidth = options.chartWidth;
 			if (options.colorMap != null) {
 				Color color = options.colorMap.get(CHART_BACKGROUND);
 				if (color != null)
@@ -104,8 +102,6 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 	private Menuitem 			mRefresh = new Menuitem(Msg.getMsg(Env.getCtx(), "Refresh"), ThemeManager.getThemeResource("images/Refresh16.png"));
 
 	private Color chartBackground = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-	private int chartWidth = 120;
-	private int chartHeight = 120;
 	private Color dialBackground = Color.white;
 	private Color needleColor = Color.darkGray;
 	private Color tickColor = Color.darkGray;
@@ -126,18 +122,7 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 	 *  Kinamo (pelgrim)
 	 */
 	private void init()
-	{
-		IChartRendererService renderer = Service.locator().locate(IChartRendererService.class).getService();
-		IndicatorModel model = new IndicatorModel();
-		model.goalModel = m_goal;
-		model.chartBackground = chartBackground;
-		model.dialBackground = dialBackground;
-		model.needleColor = needleColor;
-		model.tickColor = tickColor;
-		renderer.renderPerformanceIndicator(this, chartWidth, chartHeight, model);
-		
-		this.getFirstChild().addEventListener(Events.ON_CLICK, this);
-		
+	{								
 		// Set Text
 		StringBuilder text = new StringBuilder(m_goal.getName());
 		if (m_goal.isTarget())
@@ -157,26 +142,62 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 				.append(s_format.format(m_goal.getMeasureTarget()));
 		setTooltiptext(text.toString());
 			
-		invalidate();
+		addEventListener(Events.ON_AFTER_SIZE, this);
 	}
 
 	public void onEvent(Event event) throws Exception
 	{
-		if (event.getTarget() == this.getFirstChild())
+		if (Events.ON_AFTER_SIZE.equals(event.getName())) 
+		{
+			onAfterSize((AfterSizeEvent) event);
+		}
+		else if (event.getTarget() == this.getFirstChild())
 		{
 			event.stopPropagation();
 			Events.sendEvent(Events.ON_CLICK, this, event.getData());
 		}
 	}
 	
+	private void onAfterSize(AfterSizeEvent event) {
+		int width = event.getWidth();
+		int height = event.getHeight();
+		//set normal height
+		if (height == 0) {
+			height = width > 300 ? width * 40 / 100 : width * 85 / 100;
+			this.setHeight(height+"px");
+		} else {
+			int ratio = (height * 100) / width;
+			if (ratio > 85 || ratio < 50) {
+				height = width > 300 ? width * 40 / 100 : width * 85 / 100;
+				this.setHeight(height+"px");
+			} 
+		}
+		this.getChildren().clear();
+		renderChart(width, height);		
+	}
+
 	public String getTitle() 
 	{
 		return m_text;
 	}
 	
+	private void renderChart(int chartWidth, int chartHeight) 
+	{
+		IndicatorModel model = new IndicatorModel();
+		model.goalModel = m_goal;
+		model.chartBackground = chartBackground;
+		model.dialBackground = dialBackground;
+		model.needleColor = needleColor;
+		model.tickColor = tickColor;
+		List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
+		for (IChartRendererService renderer : list) { 
+			if (renderer.renderPerformanceIndicator(this, chartWidth, chartHeight, model))
+				break;
+		}
+		this.getFirstChild().addEventListener(Events.ON_CLICK, this);
+	}
+	
 	public static class Options {
 		public Map<String, Color> colorMap;
-		public int chartWidth;
-		public int chartHeight;
-	}
+	}	
 }

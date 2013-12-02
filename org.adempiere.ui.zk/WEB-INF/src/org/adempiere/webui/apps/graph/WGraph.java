@@ -17,6 +17,7 @@ import java.awt.Point;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.adempiere.apps.graph.GraphColumn;
 import org.adempiere.base.Service;
@@ -250,7 +251,6 @@ public class WGraph extends Div implements IdSpace {
 			Panelchildren pc = new Panelchildren();
 			panel.appendChild(pc);
 		}
-		IChartRendererService renderer = Service.locator().locate(IChartRendererService.class).getService();
 		GoalModel goalModel = new GoalModel();
 		goalModel.goal = m_goal;
 		goalModel.chartType = type != null ? type : m_goal.getChartType();
@@ -259,7 +259,11 @@ public class WGraph extends Div implements IdSpace {
 		goalModel.xAxisLabel = m_xAxisLabel;
 		goalModel.yAxisLabel = m_yAxisLabel;
 		goalModel.zoomFactor = zoomFactor;
-		renderer.renderPerformanceGraph(panel.getPanelchildren(), width, height, goalModel);
+		List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
+		for (IChartRendererService renderer : list) {
+			if (renderer.renderPerformanceGraph(panel.getPanelchildren(), width, height, goalModel))
+				break;
+		}
 	}
 
 	/**

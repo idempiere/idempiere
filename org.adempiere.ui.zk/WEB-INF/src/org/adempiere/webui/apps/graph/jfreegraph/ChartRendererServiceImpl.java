@@ -53,7 +53,7 @@ public class ChartRendererServiceImpl implements IChartRendererService {
 	private final static CLogger log = CLogger.getCLogger(ChartRendererServiceImpl.class);
 	
 	@Override
-	public void renderPerformanceIndicator(Component parent, int chartWidth, int chartHeight, IndicatorModel model) {
+	public boolean renderPerformanceIndicator(Component parent, int chartWidth, int chartHeight, IndicatorModel model) {
 		PerformanceGraphBuilder builder = new PerformanceGraphBuilder();
 		JFreeChart chart = builder.createIndicatorChart(model);
 		chart.setBackgroundPaint(model.chartBackground);
@@ -70,11 +70,13 @@ public class ChartRendererServiceImpl implements IChartRendererService {
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			return false;
 		}
+		return true;
 	}
 
 	@Override
-	public void renderPerformanceGraph(Component parent, int chartWidth, int chartHeight, final GoalModel goalModel) {
+	public boolean renderPerformanceGraph(Component parent, int chartWidth, int chartHeight, final GoalModel goalModel) {
 		GraphBuilder builder = new GraphBuilder();
 		builder.setMGoal(goalModel.goal);
 		builder.setXAxisLabel(goalModel.xAxisLabel);
@@ -151,7 +153,9 @@ public class ChartRendererServiceImpl implements IChartRendererService {
 			});
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "", e);
+			return false;
 		}
+		return true;
 	}
 	
 	private void chartMouseClicked(MGoal goal, GraphColumn bgc) {
@@ -165,9 +169,10 @@ public class ChartRendererServiceImpl implements IChartRendererService {
 	}
 
 	@Override
-	public void renderChart(Component parent, int width, int height,
+	public boolean renderChart(Component parent, int width, int height,
 			ChartModel chartModel) {
 		ChartRenderer renderer = new ChartRenderer(chartModel.chart);
 		renderer.render(parent, width, height);
+		return true;
 	}
 }

@@ -14,6 +14,8 @@
 package org.adempiere.webui.editor;
 
 
+import java.util.List;
+
 import org.adempiere.base.Service;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.model.ChartModel;
@@ -62,8 +64,11 @@ public class WChartEditor extends WEditor
 		}
         ChartModel model = new ChartModel();
         model.chart = chartModel;
-        IChartRendererService renderer = Service.locator().locate(IChartRendererService.class).getService();
-        renderer.renderChart(panel.getPanelchildren(), 400, chartModel.getWinHeight(), model);
+        List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
+		for (IChartRendererService renderer : list) {
+			if (renderer.renderChart(panel.getPanelchildren(), 400, chartModel.getWinHeight(), model))
+				break;
+		}
     }
     
     @Override

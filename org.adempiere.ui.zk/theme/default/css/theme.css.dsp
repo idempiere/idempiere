@@ -1663,14 +1663,11 @@ table.z-vbox > tbody > tr > td > table {
 }
 
 .performance-indicator img {
-	height: 120px;
-	width: 120px;
 	display: block;
 	margin: auto;
 }
 
 .window-view-pi .performance-indicator img {
-	width: 180px !important;
 }
 
 .performance-indicator-box {

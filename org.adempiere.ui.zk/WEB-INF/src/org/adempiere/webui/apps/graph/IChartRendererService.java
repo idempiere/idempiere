@@ -31,8 +31,9 @@ public interface IChartRendererService {
 	 * @param chartWidth
 	 * @param chartHeight
 	 * @param model
+	 * @return true if render successfully
 	 */
-	public void renderPerformanceIndicator(Component parent, int chartWidth, int chartHeight, IndicatorModel model);
+	public boolean renderPerformanceIndicator(Component parent, int chartWidth, int chartHeight, IndicatorModel model);
 	
 	/**
 	 * render chart for PA_Goal
@@ -40,8 +41,9 @@ public interface IChartRendererService {
 	 * @param chartWidth
 	 * @param chartHeight
 	 * @param goalModel
+	 * @return true if render successfully
 	 */
-	public void renderPerformanceGraph(Component parent, int chartWidth, int chartHeight, GoalModel goalModel);
+	public boolean renderPerformanceGraph(Component parent, int chartWidth, int chartHeight, GoalModel goalModel);
 	
 	/**
 	 * render chart for AD_Chart
@@ -49,6 +51,7 @@ public interface IChartRendererService {
 	 * @param width
 	 * @param height
 	 * @param chartModel
+	 * @return true if render successfully
 	 */
-	public void renderChart(Component parent, int width, int height, ChartModel chartModel);
+	public boolean renderChart(Component parent, int width, int height, ChartModel chartModel);
 }
