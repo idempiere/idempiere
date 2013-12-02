@@ -417,6 +417,8 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	}
 
 	private void onOK() {
+		if (!parameterPanel.validateParameters())
+			return;
 		this.startProcess();
 	}
 

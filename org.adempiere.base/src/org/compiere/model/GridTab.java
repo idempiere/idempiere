@@ -3187,13 +3187,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		int parentLevel = currentLevel-1;
 		if (parentLevel < 0)
 			return tabNo;
-			while (parentLevel != currentLevel)
-			{
-				tabNo--;
-				currentLevel = Env.getContextAsInt(m_vo.ctx, m_vo.WindowNo, tabNo, GridTab.CTX_TabLevel);
-				if (tabNo == 0)
-					break;
-			}
+		while (parentLevel != currentLevel)
+		{
+			tabNo--;
+			currentLevel = Env.getContextAsInt(m_vo.ctx, m_vo.WindowNo, tabNo, GridTab.CTX_TabLevel);
+			if (tabNo == 0)
+				break;
+		}
 		return tabNo;
 	}
 

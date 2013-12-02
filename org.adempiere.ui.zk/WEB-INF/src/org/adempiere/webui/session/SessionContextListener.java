@@ -69,8 +69,15 @@ public class SessionContextListener implements ExecutionInit,
      */
     public static void setupExecutionContextFromSession(Execution exec) {
     	Session session = exec.getDesktop().getSession();
-		Properties ctx = (Properties)session.getAttribute(SESSION_CTX);
-		HttpSession httpSession = (HttpSession)session.getNativeSession();
+		Properties ctx = null;
+		//catch potential Session already invalidated exception
+		boolean sessionInvalidated = false;
+		try {
+			ctx = (Properties)session.getAttribute(SESSION_CTX);
+		} catch (IllegalStateException e) {
+			sessionInvalidated = true;
+		}
+		HttpSession httpSession = sessionInvalidated ? null : (HttpSession)session.getNativeSession();
 		//create empty context if there's no valid native session
 		if (httpSession == null)
 		{
@@ -217,14 +224,10 @@ public class SessionContextListener implements ExecutionInit,
 	public void complete(Component comp, Event evt) throws Exception
 	{
 		//in servlet thread
-		try {
-			if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
-	    	{
-	    		setupExecutionContextFromSession(Executions.getCurrent());
-	    	}
-		} catch (IllegalStateException e) {
-			//safe to ignore session already invalidated
-		}
+		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
+    	{
+    		setupExecutionContextFromSession(Executions.getCurrent());
+    	}
 	}
 
     /**
@@ -309,7 +312,13 @@ public class SessionContextListener implements ExecutionInit,
 			return false;
 		}
 		
-		Properties sessionCtx = (Properties) session.getAttribute(SESSION_CTX);
+		Properties sessionCtx = null;
+		//catch invalidated session exception
+		try {
+			sessionCtx = (Properties) session.getAttribute(SESSION_CTX);
+		} catch (IllegalStateException e) {
+			return false;
+		}
 		if (sessionCtx != null) 
 		{
 			if (Env.getAD_Client_ID(sessionCtx) != Env.getAD_Client_ID(ctx))
@@ -341,6 +350,8 @@ public class SessionContextListener implements ExecutionInit,
 		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
     	{
 			setupExecutionContextFromSession(Executions.getCurrent());
+			if (Env.getCtx().getProperty(SERVLET_SESSION_ID) == null)
+				return;
     	}
 		int AD_Session_ID = Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID");
 		if (AD_Session_ID > 0) {
