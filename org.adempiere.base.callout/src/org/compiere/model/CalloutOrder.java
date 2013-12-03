@@ -289,7 +289,18 @@ public class CalloutOrder extends CalloutEngine
 				{	//	get default PriceList
 					int i = Env.getContextAsInt(ctx, "#M_PriceList_ID");
 					if (i != 0)
-						mTab.setValue("M_PriceList_ID", new Integer(i));
+					{
+						MPriceList pl = new MPriceList(ctx, i, null);
+						if (IsSOTrx == pl.isSOPriceList())
+							mTab.setValue("M_PriceList_ID", new Integer(i));
+						else
+						{
+							String sql2 = "SELECT M_PriceList_ID FROM M_PriceList WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive='Y' ORDER BY IsDefault DESC";
+							ii = DB.getSQLValue (null, sql2, Env.getAD_Client_ID(ctx), IsSOTrx);
+							if (ii != 0)
+								mTab.setValue("M_PriceList_ID", new Integer(ii));
+						}
+					}
 				}
 
 				//	Bill-To
@@ -494,7 +505,18 @@ public class CalloutOrder extends CalloutEngine
 				{	//	get default PriceList
 					int i = Env.getContextAsInt(ctx, "#M_PriceList_ID");
 					if (i != 0)
-						mTab.setValue("M_PriceList_ID", new Integer(i));
+					{
+						MPriceList pl = new MPriceList(ctx, i, null);
+						if (IsSOTrx == pl.isSOPriceList())
+							mTab.setValue("M_PriceList_ID", new Integer(i));
+						else
+						{
+							String sql2 = "SELECT M_PriceList_ID FROM M_PriceList WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive='Y' ORDER BY IsDefault DESC";
+							ii = DB.getSQLValue (null, sql2, Env.getAD_Client_ID(ctx), IsSOTrx);
+							if (ii != 0)
+								mTab.setValue("M_PriceList_ID", new Integer(ii));
+						}
+					}
 				}
 
 				int bill_Location_ID = rs.getInt("Bill_Location_ID");
