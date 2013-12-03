@@ -2429,8 +2429,7 @@ public final class MPayment extends X_C_Payment
 		}
 		//
 		setC_Invoice_ID(0);
-		if (!accrual)
-			setIsAllocated(false);
+		setIsAllocated(false);
 	}	//	deallocate
 
 	/**
@@ -2626,40 +2625,37 @@ public final class MPayment extends X_C_Payment
 		setReversal_ID(reversal.getC_Payment_ID());
 		
 		StringBuilder info = new StringBuilder(reversal.getDocumentNo());
-		if (!accrual)
-		{
-			//	Create automatic Allocation
-			MAllocationHdr alloc = new MAllocationHdr (getCtx(), false, 
-				getDateTrx(), getC_Currency_ID(),
-				Msg.translate(getCtx(), "C_Payment_ID")	+ ": " + reversal.getDocumentNo(), get_TrxName());
-			alloc.setAD_Org_ID(getAD_Org_ID());
-			if (!alloc.save())
-				log.warning("Automatic allocation - hdr not saved");
-			else
-			{
-				//	Original Allocation
-				MAllocationLine aLine = new MAllocationLine (alloc, getPayAmt(true), 
-					Env.ZERO, Env.ZERO, Env.ZERO);
-				aLine.setDocInfo(getC_BPartner_ID(), 0, 0);
-				aLine.setPaymentInfo(getC_Payment_ID(), 0);
-				if (!aLine.save(get_TrxName()))
-					log.warning("Automatic allocation - line not saved");
-				//	Reversal Allocation
-				aLine = new MAllocationLine (alloc, reversal.getPayAmt(true), 
-					Env.ZERO, Env.ZERO, Env.ZERO);
-				aLine.setDocInfo(reversal.getC_BPartner_ID(), 0, 0);
-				aLine.setPaymentInfo(reversal.getC_Payment_ID(), 0);
-				if (!aLine.save(get_TrxName()))
-					log.warning("Automatic allocation - reversal line not saved");
-			}
-			// added AdempiereException by zuhri
-			if (!alloc.processIt(DocAction.ACTION_Complete))
-				throw new AdempiereException("Failed when processing document - " + alloc.getProcessMsg());
-			// end added
-			alloc.saveEx(get_TrxName());
-			//			
-			info.append(" - @C_AllocationHdr_ID@: ").append(alloc.getDocumentNo());
-		}
+
+		//	Create automatic Allocation
+		MAllocationHdr alloc = new MAllocationHdr (getCtx(), false, 
+			( accrual ? dateAcct : getDateTrx() ), 
+			getC_Currency_ID(),
+			Msg.translate(getCtx(), "C_Payment_ID")	+ ": " + reversal.getDocumentNo(), get_TrxName());
+		alloc.setAD_Org_ID(getAD_Org_ID());
+		alloc.saveEx(get_TrxName());
+
+		//	Original Allocation
+		MAllocationLine aLine = new MAllocationLine (alloc, getPayAmt(true), 
+			Env.ZERO, Env.ZERO, Env.ZERO);
+		aLine.setDocInfo(getC_BPartner_ID(), 0, 0);
+		aLine.setPaymentInfo(getC_Payment_ID(), 0);
+		if (!aLine.save(get_TrxName()))
+			log.warning("Automatic allocation - line not saved");
+		//	Reversal Allocation
+		aLine = new MAllocationLine (alloc, reversal.getPayAmt(true), 
+			Env.ZERO, Env.ZERO, Env.ZERO);
+		aLine.setDocInfo(reversal.getC_BPartner_ID(), 0, 0);
+		aLine.setPaymentInfo(reversal.getC_Payment_ID(), 0);
+		if (!aLine.save(get_TrxName()))
+			log.warning("Automatic allocation - reversal line not saved");
+		
+		// added AdempiereException by zuhri
+		if (!alloc.processIt(DocAction.ACTION_Complete))
+			throw new AdempiereException("Failed when processing document - " + alloc.getProcessMsg());
+		// end added
+		alloc.saveEx(get_TrxName());
+		//			
+		info.append(" - @C_AllocationHdr_ID@: ").append(alloc.getDocumentNo());
 		
 		//	Update BPartner
 		if (getC_BPartner_ID() != 0)

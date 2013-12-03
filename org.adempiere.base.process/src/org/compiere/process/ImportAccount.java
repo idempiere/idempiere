@@ -358,12 +358,11 @@ public class ImportAccount extends SvrProcess
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.CONFIG)) log.config("Not Found Parent ElementValue=" + no);
 		//
-		sql = new StringBuilder ("SELECT i.ParentElementValue_ID, i.I_ElementValue_ID,")
+		sql = new StringBuilder ("SELECT COALESCE(i.ParentElementValue_ID, 0), i.I_ElementValue_ID,")
 			.append(" e.AD_Tree_ID, i.C_ElementValue_ID, i.Value||'-'||i.Name AS Info ")
 			.append("FROM I_ElementValue i")
 			.append(" INNER JOIN C_Element e ON (i.C_Element_ID=e.C_Element_ID) ")
 			.append("WHERE i.C_ElementValue_ID IS NOT NULL AND e.AD_Tree_ID IS NOT NULL")
-			.append(" AND i.ParentElementValue_ID IS NOT NULL")
 			.append(" AND i.I_IsImported='Y' AND Processed='N' AND i.AD_Client_ID=").append(m_AD_Client_ID);
 		int noParentUpdate = 0;
 		try

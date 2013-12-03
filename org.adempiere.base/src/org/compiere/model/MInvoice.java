@@ -928,11 +928,16 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		{
 			int ii = Env.getContextAsInt(getCtx(), "#M_PriceList_ID");
 			if (ii != 0)
-				setM_PriceList_ID(ii);
-			else
 			{
-				String sql = "SELECT M_PriceList_ID FROM M_PriceList WHERE AD_Client_ID=? AND IsDefault='Y'";
-				ii = DB.getSQLValue (null, sql, getAD_Client_ID());
+				MPriceList pl = new MPriceList(getCtx(), ii, null);
+				if (isSOTrx() == pl.isSOPriceList())
+					setM_PriceList_ID(ii);
+			}
+			
+			if (getM_PriceList_ID() == 0)
+			{
+				String sql = "SELECT M_PriceList_ID FROM M_PriceList WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive='Y' ORDER BY IsDefault DESC";
+				ii = DB.getSQLValue (null, sql, getAD_Client_ID(), isSOTrx());
 				if (ii != 0)
 					setM_PriceList_ID (ii);
 			}
