@@ -75,6 +75,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
@@ -388,6 +389,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private int cacheEnd;
 	private boolean m_useDatabasePaging = false;
 	private BusyDialog progressWindow;
+	private Listitem m_lastOnSelectItem;
 
 	private static final String[] lISTENER_EVENTS = {};
 
@@ -740,6 +742,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				return;
 		}
 		contentPanel.addEventListener(Events.ON_DOUBLE_CLICK, this);
+		contentPanel.addEventListener(Events.ON_SELECT, this);
 	}
 
     protected void insertPagingComponent() {
@@ -1124,8 +1127,19 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             {
                 onOk();
             }
+            else if (event.getTarget() == contentPanel && event.getName().equals(Events.ON_SELECT))
+            {
+            	m_lastOnSelectItem = null;
+            	SelectEvent<?, ?> selectEvent = (SelectEvent<?, ?>) event;
+            	if (selectEvent.getReference() != null && selectEvent.getReference() instanceof Listitem)
+            		m_lastOnSelectItem = (Listitem) selectEvent.getReference();
+            }
             else if (event.getTarget() == contentPanel && event.getName().equals(Events.ON_DOUBLE_CLICK))
             {
+            	if (contentPanel.isMultiple()) {
+            		if (m_lastOnSelectItem != null)
+            			contentPanel.setSelectedItem(m_lastOnSelectItem);
+            	}
             	onDoubleClick();
             }
             else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_REFRESH)))
