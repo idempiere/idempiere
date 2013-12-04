@@ -71,7 +71,7 @@ public class InfoProductWindow extends InfoWindow {
     private Textbox fieldDescription;
     
     /** ASI							*/
-	private int	m_M_AttributeSetInstance_ID;
+    protected int	m_M_AttributeSetInstance_ID;
 
 	private Borderlayout contentBorderLayout;
 	
