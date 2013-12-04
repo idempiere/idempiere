@@ -510,6 +510,8 @@ public class CalloutInvoice extends CalloutEngine
 		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, "M_Product_ID");
 		int M_PriceList_ID = Env.getContextAsInt(ctx, WindowNo, "M_PriceList_ID");
 		int StdPrecision = MPriceList.getStandardPrecision(ctx, M_PriceList_ID);
+		MPriceList pl = new MPriceList(ctx, M_PriceList_ID, null);
+		boolean isEnforcePriceLimit = pl.isEnforcePriceLimit();
 		BigDecimal QtyEntered, QtyInvoiced, PriceEntered, PriceActual, PriceLimit, Discount, PriceList;
 		//	get values
 		QtyEntered = (BigDecimal)mTab.getValue("QtyEntered");
@@ -630,7 +632,7 @@ public class CalloutInvoice extends CalloutEngine
 
 		//	Check PriceLimit
 		String epl = Env.getContext(ctx, WindowNo, "EnforcePriceLimit");
-		boolean enforce = Env.isSOTrx(ctx, WindowNo) && epl != null && epl.equals("Y");
+		boolean enforce = Env.isSOTrx(ctx, WindowNo) && epl != null && !epl.equals("") ? epl.equals("Y") : isEnforcePriceLimit;
 		if (enforce && MRole.getDefault().isOverwritePriceLimit())
 			enforce = false;
 		//	Check Price Limit?
