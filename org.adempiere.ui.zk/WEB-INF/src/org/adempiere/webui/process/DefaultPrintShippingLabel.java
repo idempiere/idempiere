@@ -20,6 +20,7 @@ import org.adempiere.process.IPrintShippingLabel;
 import org.adempiere.webui.FedexLabelWindow;
 import org.adempiere.webui.LabelAppletWindow;
 import org.adempiere.webui.UPSHtmlLabelWindow;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MAttachment;
@@ -46,9 +47,15 @@ public class DefaultPrintShippingLabel implements IPrintShippingLabel
 			}
 			if (list.size() > 0) 
 			{
-				LabelAppletWindow law = new LabelAppletWindow(list);
-				law.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-				SessionManager.getAppDesktop().showWindow(law);
+				final List<byte[]> dataList = list;
+				AEnv.executeAsyncDesktopTask(new Runnable() {
+					@Override
+					public void run() {
+						LabelAppletWindow law = new LabelAppletWindow(dataList);
+						law.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+						SessionManager.getAppDesktop().showWindow(law);
+					}
+				});
 			}
 		}
 		return list.size() + " labels loaded.";
@@ -70,15 +77,28 @@ public class DefaultPrintShippingLabel implements IPrintShippingLabel
 			}
 			if (htmls.size() > 0) 
 			{
-				Window labelWindow = new UPSHtmlLabelWindow(htmls, images);
-				labelWindow.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-				SessionManager.getAppDesktop().showWindow(labelWindow);
+				final List<MAttachmentEntry> htmlList = htmls;
+				final List<MAttachmentEntry> imageList = images;
+				AEnv.executeAsyncDesktopTask(new Runnable() {
+					@Override
+					public void run() {
+						Window labelWindow = new UPSHtmlLabelWindow(htmlList, imageList);
+						labelWindow.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+						SessionManager.getAppDesktop().showWindow(labelWindow);
+					}
+				});
 			}
 			else if(images.size() > 0) 
 			{
-				Window labelWindow = new FedexLabelWindow(images);
-				labelWindow.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-				SessionManager.getAppDesktop().showWindow(labelWindow);
+				final List<MAttachmentEntry> imageList = images;
+				AEnv.executeAsyncDesktopTask(new Runnable() {
+					@Override
+					public void run() {
+						Window labelWindow = new FedexLabelWindow(imageList);
+						labelWindow.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+						SessionManager.getAppDesktop().showWindow(labelWindow);
+					}
+				});				
 			}
 		}
 		return htmls.size() + " labels loaded.";

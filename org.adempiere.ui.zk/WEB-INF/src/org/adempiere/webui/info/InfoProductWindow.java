@@ -121,24 +121,6 @@ public class InfoProductWindow extends InfoWindow {
 			}
 			where.append("p.IsSummary='N' ");
 		}
-		
-		for(WEditor editor : editors) {
-			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("C_BPartner_ID")) {
-				Number value = (Number) editor.getValue();
-				if (value == null || value.intValue() == 0)
-				{
-					if (where.length() > 0) {
-						where.append(" AND ");
-					}
-					
-					where.append("CASE WHEN ppo.m_product_id > 0 THEN ppo.C_BPartner_ID IN (");				
-					where.append("SELECT MAX(ppo.C_BPartner_ID) FROM M_Product_PO ppo ");	
-					where.append("WHERE p.M_Product_ID=ppo.M_Product_ID AND ppo.IsCurrentVendor='Y' AND ppo.IsActive='Y') ");
-					where.append("ELSE 1 = 1 END ");
-				}
-				break;
-			}
-		}
 		return where.toString();
 	}
 
