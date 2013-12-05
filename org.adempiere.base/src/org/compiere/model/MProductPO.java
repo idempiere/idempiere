@@ -105,9 +105,12 @@ public class MProductPO extends X_M_Product_PO
 				)
 			) 
 		{
-			String sql = "UPDATE M_Product_PO SET IsCurrentVendor='N' WHERE IsActive='Y' AND IsCurrentVendor='Y' AND C_BPartner_ID!=? AND M_Product_ID=?";			
-			int no = DB.executeUpdate(sql, new Object[] {getC_BPartner_ID(), getM_Product_ID()}, false, get_TrxName());
-			if (log.isLoggable(Level.FINEST)) log.finest("Updated M_Product_PO.IsCurrentVendor #" + no);
+			if (isActive() && isCurrentVendor())
+			{
+				String sql = "UPDATE M_Product_PO SET IsCurrentVendor='N' WHERE IsActive='Y' AND IsCurrentVendor='Y' AND C_BPartner_ID!=? AND M_Product_ID=?";			
+				int no = DB.executeUpdate(sql, new Object[] {getC_BPartner_ID(), getM_Product_ID()}, false, get_TrxName());
+				if (log.isLoggable(Level.FINEST)) log.finest("Updated M_Product_PO.IsCurrentVendor #" + no);
+			}
 		}
 		
 		return true;
