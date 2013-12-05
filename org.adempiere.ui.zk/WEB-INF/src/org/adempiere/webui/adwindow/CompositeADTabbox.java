@@ -166,7 +166,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 							if (!tabPanel.getGridTab().dataDelete()) {
 								showLastError();
 							} else {
-								adWindowPanel.onRefresh(false);
+								adWindowPanel.onRefresh(true);
 							}
 						}
 					});
@@ -199,9 +199,8 @@ public class CompositeADTabbox extends AbstractADTabbox
 									}
 								}
 								
-								tabPanel.refresh();
-								tabPanel.dynamicDisplay(0);
-								adWindowPanel.getStatusBar().setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted")+": "+count, false);								
+								adWindowPanel.onRefresh(true);
+								adWindowPanel.getStatusBar().setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted")+": "+count, false);
 							}
 						}
 					});
