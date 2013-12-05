@@ -19,6 +19,9 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+
+import org.compiere.util.DB;
 
 /**
  *	Product PO Model
@@ -31,8 +34,7 @@ public class MProductPO extends X_M_Product_PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -747761340543484440L;
-
+	private static final long serialVersionUID = -1883198806060209516L;
 
 	/**
 	 * 	Get current PO of Product
@@ -83,5 +85,32 @@ public class MProductPO extends X_M_Product_PO
 	{
 		super(ctx, rs, trxName);
 	}	//	MProductPO
+
+	/**
+	 * Before Save
+	 * @param newRecord new
+	 * @return true
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) 
+	{
+		if ((newRecord && isActive() && isCurrentVendor()) || 
+				(!newRecord &&
+						(
+								(is_ValueChanged("IsActive") && isActive()) // now active
+								|| (is_ValueChanged("IsCurrentVendor") && isCurrentVendor()) // now current vendor
+								|| is_ValueChanged("C_BPartner_ID")
+								|| is_ValueChanged("M_Product_ID") 
+						)
+				)
+			) 
+		{
+			String sql = "UPDATE M_Product_PO SET IsCurrentVendor='N' WHERE IsActive='Y' AND IsCurrentVendor='Y' AND C_BPartner_ID!=? AND M_Product_ID=?";			
+			int no = DB.executeUpdate(sql, new Object[] {getC_BPartner_ID(), getM_Product_ID()}, false, get_TrxName());
+			if (log.isLoggable(Level.FINEST)) log.finest("Updated M_Product_PO.IsCurrentVendor #" + no);
+		}
+		
+		return true;
+	}
 
 }	//	MProductPO
