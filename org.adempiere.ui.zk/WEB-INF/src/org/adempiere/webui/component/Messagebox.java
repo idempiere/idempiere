@@ -28,6 +28,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zhtml.Text;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -244,7 +245,20 @@ public class Messagebox extends Window implements EventListener<Event>
 		this.setSizable(true);
 
 		this.setVisible(true);
-		this.setId("MessageBox_"+AdempiereIdGenerator.escapeId(title));
+		String id = "MessageBox_"+AdempiereIdGenerator.escapeId(title);
+		//make sure id is unique
+		Page page = AEnv.getDesktop().getFirstPage();
+		Component fellow = page.getFellowIfAny(id);
+		if (fellow != null) {
+			int count = 0;
+			String newId = null;
+			while (fellow != null) {
+				newId = id + "_" + ++count;
+				fellow = page.getFellowIfAny(newId);				
+			}
+			id = newId;
+		}
+		this.setId(id);
 		AEnv.showCenterScreen(this);
 
 		return returnValue;

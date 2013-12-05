@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.EventObject;
 
+import org.idempiere.fa.util.Util;
+
 /**
  *  Data Status Event
  *  <p>
@@ -336,5 +338,18 @@ public final class DataStatusEvent extends EventObject implements Serializable
 	{
 		return m_confirmed;
 	}	//  isConfirmed
+
+	public boolean isEqual(DataStatusEvent e) {
+		if (e == null) return false;
+		
+		return e.m_changed == m_changed &&
+			   e.m_inserting == m_inserting &&
+			   e.m_isError == m_isError &&
+			   e.m_isWarning == m_isWarning &&
+			   Util.equals(e.m_AD_Message, m_AD_Message) &&
+			   e.m_changedColumn == m_changedColumn &&
+			   Util.equals(e.m_columnName, m_columnName) &&
+			   e.m_currentRow == m_currentRow;
+	}
 
 }	//	DataStatusEvent

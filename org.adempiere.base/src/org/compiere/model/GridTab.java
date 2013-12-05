@@ -2227,7 +2227,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @param e event
 	 */
 	public void dataStatusChanged (DataStatusEvent e)
-	{
+	{		
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - " + e.toString());
 		int oldCurrentRow = e.getCurrentRow();
 		m_DataStatusEvent = e;          //  save it
@@ -2238,6 +2238,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//  set current row
 		m_DataStatusEvent = e;          //  setCurrentRow clear it, need to save again
 		m_DataStatusEvent.setCurrentRow(m_currentRow);
+					
 		//  Same row - update value
 		if (oldCurrentRow == m_currentRow)
 		{
@@ -2248,8 +2249,25 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				field.setValue(value, m_mTable.isInserting());
 			}
 		}
-		else    //  Redistribute Info with current row info
-			fireDataStatusChanged(m_DataStatusEvent);
+		else    
+		{
+			//  Redistribute Info with current row info
+			//  Avoid firing of duplicate event
+			boolean fire = true;
+			if (m_lastDataStatusEvent != null)
+			{
+				if (System.currentTimeMillis() - m_lastDataStatusEventTime < 200)
+				{
+					if (m_lastDataStatusEvent.isEqual(m_DataStatusEvent))
+					{
+						fire = false;
+					}
+				}
+			}
+			
+			if (fire)
+				fireDataStatusChanged(m_DataStatusEvent);
+		}
 
 		//reset
 		m_lastDataStatusEventTime = System.currentTimeMillis();
