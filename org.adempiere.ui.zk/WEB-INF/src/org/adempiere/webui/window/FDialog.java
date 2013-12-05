@@ -62,7 +62,7 @@ public class FDialog
 
 		if (message != null && message.length() > 0)
 		{
-			out.append("\n").append(message);
+			out.append("<br>").append(message);
 		}
 
 		return out;
