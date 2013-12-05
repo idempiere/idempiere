@@ -167,7 +167,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     //
     /** List of WEditors            */
     private ArrayList<WEditor>          m_sEditors = new ArrayList<WEditor>();
-    private ArrayList<ToolBarButton>     	m_sEditorsFlag = new ArrayList<ToolBarButton>();
+    private ArrayList<ToolBarButton>    m_sEditorsFlag = new ArrayList<ToolBarButton>();
     private ArrayList<WEditor>          m_sEditorsTo = new ArrayList<WEditor>();
     /** For Grid Controller         */
     public static final int     TABNO = 99;
@@ -1085,7 +1085,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         div.appendChild(fieldEditor);
         if (editorTo != null) {
         	ToolBarButton editorFlag = new ToolBarButton();
-        	editorFlag.setLabel(".. to ..");
+        	editorFlag.setLabel(".. " + Msg.getMsg(Env.getCtx(), "search.result.to") + " ..");
         	editorFlag.setStyle("margin-left: 5px; margin-right: 5px;");
             m_sEditorsFlag.add(editorFlag);
             editorFlag.setMode("toggle");
