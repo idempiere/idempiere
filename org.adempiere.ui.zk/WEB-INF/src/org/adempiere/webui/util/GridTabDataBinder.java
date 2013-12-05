@@ -195,9 +195,9 @@ public class GridTabDataBinder implements ValueChangeListener {
 		
 		for (int i = 0; i < values.length; i++)
 		{
-			if (!gridTab.dataNew(true))
+			if (!gridTab.dataNew(false))
 			{
-				throw new IllegalStateException("Could not clone tab");
+				throw new IllegalStateException("Could not create new row");
 			}
 			
 			gridTab.setValue(columnName, values[i]);
@@ -209,10 +209,9 @@ public class GridTabDataBinder implements ValueChangeListener {
 			
 			if (!gridTab.dataSave(false))
 			{
-				throw new IllegalStateException("Could not update tab");
-			}
-			
-			gridTab.setCurrentRow(oldRow);
+				throw new IllegalStateException("Could not update row");
+			}						
 		}
+		gridTab.setCurrentRow(oldRow);
 	}
 }

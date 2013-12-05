@@ -18,12 +18,15 @@ package org.compiere.model;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  * 	Request Mail Template Model.
@@ -221,6 +224,14 @@ public class MMailText extends X_R_MailText
 		Object value = null;
 		if (col != null && col.isSecure()) {
 			value = "********";
+		} else if (col.getAD_Reference_ID() == DisplayType.Date || col.getAD_Reference_ID() == DisplayType.DateTime || col.getAD_Reference_ID() == DisplayType.Time) {
+			SimpleDateFormat sdf = DisplayType.getDateFormat(col.getAD_Reference_ID());
+			value = sdf.format (po.get_Value(index));	
+		} else if (col.getAD_Reference_ID() == DisplayType.YesNo) {
+			if (po.get_ValueAsBoolean(variable))
+				value = Msg.getMsg(Env.getCtx(), "Yes");
+			else
+				value = Msg.getMsg(Env.getCtx(), "No");
 		} else {
 			value = po.get_Value(index);
 		}

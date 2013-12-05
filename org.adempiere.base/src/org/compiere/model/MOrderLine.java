@@ -870,6 +870,19 @@ public class MOrderLine extends X_C_OrderLine
 			//	Check if on Price list
 			if (m_productPrice == null)
 				getProductPricing(m_M_PriceList_ID);
+			// IDEMPIERE-1574 Sales Order Line lets Price under the Price Limit when updating
+			//	Check PriceLimit
+			boolean enforce = m_IsSOTrx && m_parent.getM_PriceList().isEnforcePriceLimit();
+			if (enforce && MRole.getDefault().isOverwritePriceLimit())
+				enforce = false;
+			//	Check Price Limit?
+			if (enforce && getPriceLimit() != Env.ZERO
+			  && getPriceActual().compareTo(getPriceLimit()) < 0)
+			{
+				log.saveError("UnderLimitPrice", "PriceEntered=" + getPriceEntered() + ", PriceLimit=" + getPriceLimit()); 
+				return false;
+			}
+			//
 			if (!m_productPrice.isCalculated())
 			{
 				throw new ProductNotOnPriceListException(m_productPrice, getLine());

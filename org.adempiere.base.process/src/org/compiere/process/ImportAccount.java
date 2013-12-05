@@ -25,6 +25,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MColumn;
 import org.compiere.model.MElementValue;
 import org.compiere.model.X_I_ElementValue;
 import org.compiere.util.DB;
@@ -656,8 +657,14 @@ public class ImportAccount extends SvrProcess
 					}	//	replace combination
 				}	//	need to update
 			}	//	for all default accounts
-			else
-				log.log(Level.SEVERE, "Account not found " + sql);
+			else {
+				// check if column is active before logging on SEVERE level
+				int columnID = MColumn.getColumn_ID(TableName, ColumnName);
+				if (new MColumn(getCtx(), columnID, get_TrxName()).isActive())
+					log.log(Level.SEVERE, "Account not found " + sql);
+				else
+					log.log(Level.WARNING, "The account " + ColumnName + " is deprecated, you should consider removing it from your import file");
+			}
 		}
 		catch (SQLException e)
 		{
