@@ -11,5 +11,5 @@ AND po.C_BPartner_ID NOT IN (
 	AND ppo.M_Product_ID = po.M_Product_ID
 );
 
-SELECT register_migration_script('201312051535_IDEMPIERE-337') FROM dual
+SELECT register_migration_script('201312051535_IDEMPIERE-337.sql') FROM dual
 ;
