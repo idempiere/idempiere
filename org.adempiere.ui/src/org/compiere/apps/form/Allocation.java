@@ -30,6 +30,7 @@ import org.compiere.model.MAllocationLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MPayment;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.process.DocAction;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -422,8 +423,9 @@ public class Allocation
 			{
 				if ( applied.signum() == -open.signum() )
 					applied = applied.negate();
-				if ( open.abs().compareTo( applied.abs() ) < 0 )
-							applied = open;
+				if (! MSysConfig.getBooleanValue("ALLOW_OVER_APPLIED_PAYMENT", false, Env.getAD_Client_ID(Env.getCtx())))
+					if ( open.abs().compareTo( applied.abs() ) < 0 )
+						applied = open;
 			}
 			
 			payment.setValueAt(applied, row, i_payment);
