@@ -91,6 +91,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	protected WEditorPopupMenu popupMenu;
 
 	private boolean tableEditor;
+	
+	private boolean isProcessParameter;
 
     public WEditor(Component comp, GridField gridField) {
     	this(comp, gridField, -1);
@@ -208,7 +210,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         label = new Label("");
         label.setValue(strLabel);
         label.setTooltiptext(description);
-
+        label.setMandatory(mandatory);
+        
         this.setMandatory (mandatory);
 
         if (readOnly || !updateable)
@@ -546,7 +549,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	}
 	
 	public boolean isMandatoryStyle() {
-		return mandatory && !readOnly && getGridField().isEditable(true) && isNullOrEmpty();
+		return mandatory && !readOnly && (isProcessParameter || getGridField().isEditable(true)) && isNullOrEmpty();
 	}
 
 	public boolean isNullOrEmpty() {
@@ -631,6 +634,14 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 				return true;
 		}		
 		return false;
+	}
+	
+	public boolean isProcessParameter() {
+		return isProcessParameter;
+	}
+
+	public void setProcessParameter(boolean isProcessParameter) {
+		this.isProcessParameter = isProcessParameter;
 	}
 
 	private static final String STYLE_ZOOMABLE_LABEL = "cursor: pointer; text-decoration: underline;";

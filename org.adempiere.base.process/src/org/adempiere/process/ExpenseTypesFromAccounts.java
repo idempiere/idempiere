@@ -81,8 +81,9 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
         ProcessInfoParameter[] para = getParameter();
         for (int i = 0; i < para.length; i++) {
             String name = para[i].getParameterName();
-            if (para[i].getParameter() == null);
-              else if (name.equals("M_Product_Category_ID")) {
+            if (para[i].getParameter() == null) {
+            	// nothing
+            } else if (name.equals("M_Product_Category_ID")) {
 				m_productCategoryId = para[i].getParameterAsInt();
             } else if (name.equals("C_AcctSchema_ID")) {
 				m_acctSchemaId = para[i].getParameterAsInt();

@@ -21,7 +21,7 @@ AS
 	CURSOR	CUR_BPLoc	IS
 		SELECT	IsRemitTo, C_Location_ID
 		FROM	C_BPartner_Location
-		WHERE	C_BPartner_ID=p_C_BPartner_ID
+		WHERE	C_BPartner_ID=p_C_BPartner_ID AND IsActive='Y'
 		ORDER BY IsRemitTo DESC;
 BEGIN
 	FOR l IN CUR_BPLoc LOOP
