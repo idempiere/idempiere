@@ -16,7 +16,8 @@ public class WViewPI extends ADForm {
 		options.chartHeight = 180;
 		options.chartWidth = 180;
 		WPAPanel paPanel = WPAPanel.get(options);
-		appendChild(paPanel);
+		if (paPanel != null)
+			appendChild(paPanel);
 	}
 
 }
