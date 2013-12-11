@@ -872,7 +872,7 @@ public class MOrderLine extends X_C_OrderLine
 				getProductPricing(m_M_PriceList_ID);
 			// IDEMPIERE-1574 Sales Order Line lets Price under the Price Limit when updating
 			//	Check PriceLimit
-			boolean enforce = m_IsSOTrx && m_parent.getM_PriceList().isEnforcePriceLimit();
+			boolean enforce = m_IsSOTrx && getParent().getM_PriceList().isEnforcePriceLimit();
 			if (enforce && MRole.getDefault().isOverwritePriceLimit())
 				enforce = false;
 			//	Check Price Limit?

@@ -109,6 +109,8 @@ public class MMeasure extends X_PA_Measure
 			String sql = mc.getSqlBarChart(goal.getRestrictions(false),
 					goal.getMeasureDisplay(), goal.getDateFrom(),
 					MRole.getDefault());	//	logged in role
+			if (sql.indexOf("@") >= 0)
+				sql = Env.parseContext(getCtx(), 0, sql, false, false);
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try
