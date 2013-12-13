@@ -867,7 +867,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 					enforce = false;
 				//	Check Price Limit?
 				if (enforce && getPriceLimit() != Env.ZERO
-				  && getPriceActual().compareTo(getPriceLimit()) < 0)
+				  && getPriceEntered().compareTo(getPriceLimit()) < 0)
 				{
 					log.saveError("UnderLimitPrice", "PriceEntered=" + getPriceEntered() + ", PriceLimit=" + getPriceLimit()); 
 					return false;

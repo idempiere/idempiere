@@ -367,7 +367,11 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		//  BPartner - load Order/Invoice/Shipment
 		if (e.getPropertyName().equals("C_BPartner_ID"))
 		{
-			int C_BPartner_ID = ((Integer)e.getNewValue()).intValue();
+			int C_BPartner_ID = 0; 
+			if (e.getNewValue() != null){
+				C_BPartner_ID = ((Integer)e.getNewValue()).intValue();
+			}
+			
 			initBPOrderDetails (C_BPartner_ID, true);
 		}
 		window.tableChanged(null);
