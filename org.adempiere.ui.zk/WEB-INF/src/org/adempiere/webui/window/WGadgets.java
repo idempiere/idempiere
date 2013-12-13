@@ -230,51 +230,57 @@ public class WGadgets extends Window implements  EventListener<Event>{
 	{
 		Properties ctx = Env.getCtx();
 			
-		int AD_CLient_ID =Env.getAD_Client_ID(ctx);
+		int AD_Client_ID =Env.getAD_Client_ID(ctx);
 		int AD_Role_ID = Env.getAD_Role_ID(ctx);
 		int AD_User_ID = Env.getAD_User_ID(ctx);
 				
 		noItems.removeAll(noItems);
 		yesItems.removeAll(yesItems);
-		String query = " SELECT ct.PA_DashboardContent_ID, ct.Name "
-					+" FROM PA_DashboardContent ct"
-					+" WHERE ct.AD_Client_ID IN (0,?)"
-					+" AND ct.IsActive='Y'"
-					+" AND ct.PA_DashboardContent_ID NOT IN ("
-					+" SELECT pre.PA_DashboardContent_ID"
-					+" FROM PA_DashboardPreference pre"
-					+" WHERE pre.AD_Client_ID IN (0,?)"					
-					+" AND pre.AD_Role_ID = ?"
-					+" AND pre.AD_User_ID = ?"
-					+" AND pre.AD_Org_ID=0 "
-					+" AND pre.IsActive='Y') " 
-					+" AND (" 
-					+" ct.PA_DashboardContent_ID NOT IN ( SELECT PA_DashboardContent_ID "
-					+"  FROM  PA_DashboardContent_Access"
-					+"   WHERE IsActive='Y' AND AD_Client_ID IN (0, ?))" 
-					+" OR ct.PA_DashboardContent_ID IN ( SELECT cta.PA_DashboardContent_ID " 
-					+"  FROM PA_DashboardContent_Access cta "
-					+" WHERE cta.IsActive='Y'"
-					+" AND coalesce(cta.AD_Role_ID, ?) = ?"
-					+" AND coalesce(cta.AD_User_ID, ?) = ?"
-					+" AND cta.AD_Client_ID in (0,?) ) " 
-					+" )";
-		
+		String query = ""
+				+ "SELECT ct.PA_DashboardContent_ID, "
+				+ "       ct.Name "
+				+ "FROM   PA_DashboardContent ct "
+				+ "WHERE  ct.AD_Client_ID IN ( 0, ? ) "
+				+ "       AND ct.IsActive = 'Y' "
+				+ "       AND ct.PA_DashboardContent_ID NOT IN (SELECT pre.PA_DashboardContent_ID "
+				+ "                                             FROM   PA_DashboardPreference pre "
+				+ "                                             WHERE  pre.AD_Client_ID IN ( 0, ? ) "
+				+ "                                                    AND pre.AD_Role_ID = ? "
+				+ "                                                    AND pre.AD_User_ID = ? "
+				+ "                                                    AND pre.AD_Org_ID = 0 "
+				+ "                                                    AND pre.IsActive = 'Y') "
+				+ "       AND ( ct.PA_DashboardContent_ID NOT IN (SELECT cta.PA_DashboardContent_ID "
+				+ "                                               FROM   PA_DashboardContent_Access cta "
+				+ "                                               WHERE  cta.IsActive = 'N' "
+				+ "                                                      AND COALESCE(cta.AD_Role_ID, ?) = ? "
+				+ "                                                      AND COALESCE(cta.AD_User_ID, ?) = ? "
+				+ "                                                      AND cta.AD_Client_ID IN ( 0, ? )) "
+				+ "              OR ct.PA_DashboardContent_ID IN (SELECT cta.PA_DashboardContent_ID "
+				+ "                                               FROM   PA_DashboardContent_Access cta "
+				+ "                                               WHERE  cta.IsActive = 'Y' "
+				+ "                                                      AND COALESCE(cta.AD_Role_ID, ?) = ? "
+				+ "                                                      AND COALESCE(cta.AD_User_ID, ?) = ? "
+				+ "                                                      AND cta.AD_Client_ID IN ( 0, ? )) ) ";
+
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
 		
 		try {
 			pstmt = DB.prepareStatement(query, null);
-			pstmt.setInt(1, AD_CLient_ID);
-			pstmt.setInt(2, AD_CLient_ID);
+			pstmt.setInt(1, AD_Client_ID);
+			pstmt.setInt(2, AD_Client_ID);
 			pstmt.setInt(3, AD_Role_ID);
 			pstmt.setInt(4, AD_User_ID);
-			pstmt.setInt(5, AD_CLient_ID);
+			pstmt.setInt(5, AD_Role_ID);
 			pstmt.setInt(6, AD_Role_ID);
-			pstmt.setInt(7, AD_Role_ID);
+			pstmt.setInt(7, AD_User_ID);
 			pstmt.setInt(8, AD_User_ID);
-			pstmt.setInt(9, AD_User_ID);
-			pstmt.setInt(10, AD_CLient_ID);
+			pstmt.setInt(9, AD_Client_ID);
+			pstmt.setInt(10, AD_Role_ID);
+			pstmt.setInt(11, AD_Role_ID);
+			pstmt.setInt(12, AD_User_ID);
+			pstmt.setInt(13, AD_User_ID);
+			pstmt.setInt(14, AD_Client_ID);
 			rs = pstmt.executeQuery();
 		
 			while (rs.next()) {
@@ -298,7 +304,7 @@ public class WGadgets extends Window implements  EventListener<Event>{
 				    +" AND IsActive='Y'";
 		
 		Query query1 =new Query(ctx,MDashboardPreference.Table_Name, where, null);
-		query1.setParameters(new Object[]{AD_User_ID,AD_Role_ID ,AD_CLient_ID});
+		query1.setParameters(new Object[]{AD_User_ID,AD_Role_ID ,AD_Client_ID});
 		List<MDashboardPreference> preference=query1.list();
 
 	    if(preference.size() > 0){

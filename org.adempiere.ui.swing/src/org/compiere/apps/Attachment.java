@@ -65,6 +65,11 @@ public final class Attachment extends CDialog
 	private static final long serialVersionUID = 2497487523050526742L;
 
 	/**
+	 * Save the last path selected
+	 */
+	private static String lastPath = null;
+
+	/**
 	 *	Constructor.
 	 *	loads Attachment, if ID <> 0
 	 *  @param frame frame
@@ -424,7 +429,8 @@ public final class Attachment extends CDialog
 	private void loadFile()
 	{
 		log.info("");
-		JFileChooser chooser = new JFileChooser();
+		JFileChooser chooser = new JFileChooser(lastPath);
+		
 		chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 		chooser.setDialogTitle(Msg.getMsg(Env.getCtx(), "AttachmentNew"));
 		chooser.setMultiSelectionEnabled(true);
@@ -462,6 +468,10 @@ public final class Attachment extends CDialog
 					m_change = true;
 				}
 			}
+		}
+		// Save path of file
+		if (files.length>0) {
+			lastPath = files[0].getParentFile().getAbsolutePath();
 		}
 	}	//	getFileName
 

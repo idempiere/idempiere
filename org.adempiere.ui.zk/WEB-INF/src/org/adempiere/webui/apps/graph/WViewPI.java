@@ -14,6 +14,7 @@ public class WViewPI extends ADForm {
 		this.setSclass("window-view-pi");
 		WPerformanceIndicator.Options options = new WPerformanceIndicator.Options();
 		WPAPanel paPanel = WPAPanel.get(options);
-		appendChild(paPanel);
+		if (paPanel != null)
+			appendChild(paPanel);
 	}
 }

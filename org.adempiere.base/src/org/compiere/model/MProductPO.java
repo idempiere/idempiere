@@ -19,9 +19,10 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 
+import org.adempiere.exceptions.DBException;
 import org.compiere.util.DB;
+import org.compiere.util.Msg;
 
 /**
  *	Product PO Model
@@ -105,11 +106,12 @@ public class MProductPO extends X_M_Product_PO
 				)
 			) 
 		{
-			if (isActive() && isCurrentVendor())
-			{
-				String sql = "UPDATE M_Product_PO SET IsCurrentVendor='N' WHERE IsActive='Y' AND IsCurrentVendor='Y' AND C_BPartner_ID!=? AND M_Product_ID=?";			
-				int no = DB.executeUpdate(sql, new Object[] {getC_BPartner_ID(), getM_Product_ID()}, false, get_TrxName());
-				if (log.isLoggable(Level.FINEST)) log.finest("Updated M_Product_PO.IsCurrentVendor #" + no);
+			int cnt = DB.getSQLValue(get_TrxName(),
+							"SELECT COUNT(*) FROM M_Product_PO WHERE IsActive='Y' AND IsCurrentVendor='Y' AND C_BPartner_ID!=? AND M_Product_ID=?",
+							getC_BPartner_ID(), getM_Product_ID());
+			if (cnt > 0) {
+				log.saveError("SaveError", Msg.getMsg(getCtx(), DBException.SAVE_ERROR_NOT_UNIQUE_MSG, true) + Msg.getElement(getCtx(), COLUMNNAME_IsCurrentVendor));
+				return false;
 			}
 		}
 		

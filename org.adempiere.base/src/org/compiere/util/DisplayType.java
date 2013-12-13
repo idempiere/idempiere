@@ -608,7 +608,7 @@ public final class DisplayType
 			if (fieldLength == 1)
 				return "CHAR(" + fieldLength + ")";
 			else
-				return "NVARCHAR2(" + fieldLength + ")";
+				return "VARCHAR2(" + fieldLength + ")";
 		}
 		if (displayType == DisplayType.Color) // this condition is never reached - filtered above in isID
 		{
@@ -635,7 +635,7 @@ public final class DisplayType
 		if (!DisplayType.isText(displayType))
 			s_log.severe("Unhandled Data Type = " + displayType);
 
-		return "NVARCHAR2(" + fieldLength + ")";
+		return "VARCHAR2(" + fieldLength + ")";
 	}	//	getSQLDataType
 
 	/**
