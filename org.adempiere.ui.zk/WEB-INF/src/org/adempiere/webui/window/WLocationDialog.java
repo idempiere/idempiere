@@ -130,11 +130,6 @@ public class WLocationDialog extends Window implements EventListener<Event>
 	private boolean inCountryAction;
 	private boolean inOKAction;
 
-	/** The "route" key  */
-	private static final String TO_ROUTE = Msg.getMsg(Env.getCtx(), "Route");
-	/** The "to link" key  */
-	private static final String TO_LINK = Msg.getMsg(Env.getCtx(), "Map");
-
 	private Button toLink;
 	private Button toRoute;
 	private GridField m_GridField = null;
@@ -263,10 +258,10 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		confirmPanel = new ConfirmPanel(true);
 		confirmPanel.addActionListener(this);
 
-		toLink = new Button(TO_LINK);
+		toLink = new Button(Msg.getMsg(Env.getCtx(), "Map"));
 		LayoutUtils.addSclass("txt-btn", toLink);
 		toLink.addEventListener(Events.ON_CLICK,this);
-		toRoute = new Button(TO_ROUTE);
+		toRoute = new Button(Msg.getMsg(Env.getCtx(), "Route"));
 		LayoutUtils.addSclass("txt-btn", toRoute);
 		toRoute.addEventListener(Events.ON_CLICK,this);
 
