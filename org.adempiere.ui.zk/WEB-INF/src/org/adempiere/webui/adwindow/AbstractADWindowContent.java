@@ -2766,7 +2766,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		if (Executions.getCurrent() != null)
 		{
-			if (notPrint)		//	refresh if not print
+			if (notPrint || pi.isError()) // show process info if it is not print or have error
 			{
 				updateUI(pi);
 			}
@@ -2777,7 +2777,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				//acquire desktop, 2 second timeout
 				Executions.activate(getComponent().getDesktop(), 2000);
 				try {
-					if (notPrint)		//	refresh if not print
+					if (notPrint || pi.isError()) // show process info if it is not print or have error
 					{
 						updateUI(pi);
 					}
