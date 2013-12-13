@@ -1,3 +1,14 @@
+/******************************************************************************
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *****************************************************************************/
 package org.adempiere.pipo.srv;
 
 import java.io.File;
@@ -27,9 +38,26 @@ public class PipoDictionaryService implements IDictionaryService {
 		try {
 			PackIn packIn = new PackIn();
 			packIn.setPackageName(context.getBundle().getSymbolicName());
-			packIn.setPackageVersion((String) context.getBundle().getHeaders().get("Bundle-Version"));
+			
+			//get package version from file name suffix or bundle header
+			String packageVersion = null;
+			String fileName = packageFile.getName();
+			int versionSeparatorPos = fileName.lastIndexOf("_");
+			if (versionSeparatorPos > 0) {
+				int dotPos = fileName.lastIndexOf(".");
+				if (dotPos > 0 && dotPos > versionSeparatorPos) {
+					String version = fileName.substring(versionSeparatorPos+1, dotPos);
+					if (version.split("[.]").length == 3) {
+						packageVersion = version;
+					}
+				}
+			}
+			//no version string from file name suffix, get it from bundle header
+			if (packageVersion == null)
+				packageVersion = (String) context.getBundle().getHeaders().get("Bundle-Version");
+			
+			packIn.setPackageVersion(packageVersion);
 			packIn.setUpdateDictionary(false);
-//			packIn.setPackageDirectory(getPackageDir());
 
 			X_AD_Package_Imp_Proc adPackageImp = new X_AD_Package_Imp_Proc(Env.getCtx(),
 					0, trxName);
