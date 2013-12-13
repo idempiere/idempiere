@@ -305,7 +305,7 @@ public final class ImpFormat
 	private static void loadRows (ImpFormat format, int ID)
 	{
 		String sql = "SELECT f.SeqNo,c.ColumnName,f.StartNo,f.EndNo,f.DataType,c.FieldLength,"		//	1..6
-					+ "f.DataFormat,f.DecimalPoint,f.DivideBy100,f.ConstantValue,f.Callout "				//	7..11
+					+ "f.DataFormat,f.DecimalPoint,f.DivideBy100,f.ConstantValue,f.Callout,f.Name "	//	7..12
 					+ "FROM AD_ImpFormat_Row f,AD_Column c "
 					+ "WHERE f.AD_ImpFormat_ID=? AND f.AD_Column_ID=c.AD_Column_ID AND f.IsActive='Y'"
 					+ "ORDER BY f.SeqNo";
@@ -319,7 +319,7 @@ public final class ImpFormat
 			while (rs.next())
 			{
 				ImpFormatRow row = new ImpFormatRow (rs.getInt(1),
-					rs.getString(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getInt(6));
+					rs.getString(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getInt(6), rs.getString(12));
 				//
 				row.setFormatInfo(rs.getString(7), rs.getString(8),
 					rs.getString(9).equals("Y"),
