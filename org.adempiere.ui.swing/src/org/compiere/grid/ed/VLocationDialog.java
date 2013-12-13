@@ -213,11 +213,6 @@ public class VLocationDialog extends CDialog
 
 	private boolean inCountryAction;
 	private boolean inOKAction;
-	
-	/** The "route" key  */
-	private static final String TO_ROUTE = Msg.getMsg(Env.getCtx(), "Route");
-	/** The "to link" key  */
-	private static final String TO_LINK = Msg.getMsg(Env.getCtx(), "Map");
 
 	private JButton toLink  	= new JButton();
 	private JButton toRoute 	= new JButton();
@@ -246,14 +241,14 @@ public class VLocationDialog extends CDialog
 		southPanel.add(confirmPanel, BorderLayout.NORTH);
 		
 		//BEGIN fernandinho/ricardo
-		toLink.setText(TO_LINK);
+		toLink.setText(Msg.getMsg(Env.getCtx(), "Map"));
 		toLink.addActionListener(this);
 		toLink.setMargin(ConfirmPanel.s_insets);
 		confirmPanel.addComponent(toLink);
 		if (MLocation.LOCATION_MAPS_URL_PREFIX == null)
 			toLink.setVisible(false);
 
-		toRoute.setText(TO_ROUTE);
+		toRoute.setText(Msg.getMsg(Env.getCtx(), "Route"));
 		toRoute.addActionListener(this);
 		toRoute.setMargin(ConfirmPanel.s_insets);
 		confirmPanel.addComponent(toRoute);
