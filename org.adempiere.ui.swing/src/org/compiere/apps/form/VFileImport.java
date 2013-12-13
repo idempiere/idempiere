@@ -391,7 +391,7 @@ public class VFileImport extends CPanel
 		for (int i = 0; i < size; i++)
 		{
 			ImpFormatRow row = m_format.getRow(i);
-			m_labels[i] = new JLabel (row.getColumnName());
+			m_labels[i] = new JLabel (row.getName());
 			previewPanel.add(m_labels[i], new GridBagConstraints(i, 0, 1, 1, 1.0, 1.0,
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0));
 			//

@@ -480,7 +480,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		{
 			ImpFormatRow row = m_format.getRow(i);
 			
-			m_labels[i] = new Label(row.getColumnName());
+			m_labels[i] = new Label(row.getName());
 			
 			Hbox hbox = new Hbox();
 			hbox.setWidth("100%");

@@ -52,11 +52,13 @@ public final class ImpFormatRow
 	 *  @param endNo and no
 	 *  @param dataType data type - see constants DATATYPE_
 	 *  @param maxLength if String it is the maximum length (truncated)
+	 *  @param name column label
 	 */
-	public ImpFormatRow(int seqNo, String columnName, int startNo, int endNo, String dataType, int maxLength)
+	public ImpFormatRow(int seqNo, String columnName, int startNo, int endNo, String dataType, int maxLength, String name)
 	{
 		m_seqNo = seqNo;
 		setColumnName(columnName);
+		setName(name);
 		m_startNo = startNo;
 		m_endNo = endNo;
 		setDataType (dataType);
@@ -80,6 +82,7 @@ public final class ImpFormatRow
 
 	private int 				m_seqNo;
 	private String				m_columnName;
+	private String				m_name;
 	private int 				m_startNo = 0;
 	private int 				m_endNo = 0;
 	private String				m_dataType;
@@ -172,6 +175,27 @@ public final class ImpFormatRow
 	{
 		return m_columnName;
 	}   //  getColumnName
+
+	/**
+	 *	Name
+	 *  @param Name name
+	 */
+	public void setName (String name)
+	{
+		if (name == null || name.length() == 0)
+			throw new IllegalArgumentException("Name must be at least 1 char");
+		else
+			m_name = name;
+	}   //  setName
+
+	/**
+	 *  Get Name
+	 *  @return Name
+	 */
+	public String getName()
+	{
+		return m_name;
+	}   //  getName
 
 	/**
 	 *	Data Type
