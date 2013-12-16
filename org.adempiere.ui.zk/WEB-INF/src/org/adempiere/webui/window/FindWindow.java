@@ -355,7 +355,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         contentSimple.setStyle("width: 100%; position: relative");
         contentSimple.makeNoStrip();
         contentSimple.setHflex("1");
-        contentSimple.setSizedByContent(true);
         
         Columns columns = new Columns();
         Column column = new Column();
@@ -441,7 +440,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         confirmPanel.setPack("end");
 
         advancedPanel = new Listbox();
-        advancedPanel.setSizedByContent(true);
         ListHead listhead = new ListHead();
         listhead.setSizable(true);
 
@@ -576,7 +574,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         winAdvanced = new Window();
         winLookupRecord = new Window();
         Tabpanel tabPanel = new Tabpanel();
-        tabPanel.setStyle("height: 100%; width: 99%; padding-right: 2px; margin: auto;");
+        tabPanel.setStyle("height: 100%; width: 100%; padding-right: 2px; margin: auto;");
         tabPanel.appendChild(winLookupRecord);
         tabPanel.setId("simpleSearch");
         winMain.addTab(tabPanel, Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", ""),false, true);

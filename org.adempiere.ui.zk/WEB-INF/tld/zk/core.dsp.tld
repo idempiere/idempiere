@@ -70,6 +70,18 @@ Copyright (C) 2005 Potix Corporation. All Rights Reserved.
 		</description>
 	</function>
 
+
+	<function>
+		<name>isEditionValid</name>
+		<function-class>org.zkoss.zk.fn.ZkFns</function-class>
+		<function-signature>
+	boolean isEditionValid()
+		</function-signature>
+		<description>
+	Returns the edition whether valid or invalid.
+		</description>
+	</function>
+
 	<function>
 		<name>encodeWithZK</name>
 		<function-class>org.zkoss.zk.fn.ZkFns</function-class>

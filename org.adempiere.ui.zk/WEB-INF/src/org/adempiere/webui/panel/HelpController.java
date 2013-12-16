@@ -65,7 +65,7 @@ public class HelpController
 	public HelpController()
     {
 		dashboardLayout = new Anchorlayout();
-        dashboardLayout.setSclass("dashboard-layout slimScroll");
+        dashboardLayout.setSclass("dashboard-layout");
         dashboardLayout.setVflex("1");
         dashboardLayout.setHflex("1");
     }
@@ -73,7 +73,7 @@ public class HelpController
 	public void render(Component parent, IDesktop desktopImpl)
     {
     	Style style = new Style();
-		style.setContent(".z-anchorlayout-body { overflow:auto } .z-anchorchildren { overflow:visible } ");
+		style.setContent(".z-anchorlayout { overflow:auto } .z-anchorchildren { overflow:visible } ");
 		style.setPage(parent.getPage());
 		
 		parent.appendChild(dashboardLayout);

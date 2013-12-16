@@ -38,10 +38,7 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	<javascript src="/js/persist-min.js" charset="UTF-8"/>
 	<javascript src="/js/token.js" charset="UTF-8"/>
 	<javascript src="/js/window.js" charset="UTF-8"/>
-	<!-- The bug workaround by the following patch should have been fixed in 6.5.2 -->
-	<!-- javascript src="/js/jquery-patch.js" charset="UTF-8"/-->
 	<javascript src="/js/jquery.slimscroll.min.js" charset="UTF-8"/>
-	<javascript src="/js/jquery-ui-1.10.1.min.js" charset="UTF-8"/>
 	<javascript src="/js/html2canvas.js" charset="UTF-8"/>
 
 	<javascript package="jawwa.atmosphere" merge="false" />

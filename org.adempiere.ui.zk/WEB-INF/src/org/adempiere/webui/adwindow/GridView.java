@@ -483,6 +483,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 						if (headerWidth > estimatedWidth)
 							estimatedWidth = headerWidth;
 						
+						//TODO: test whether still needed for zk7
 						//hflex=min for first column not working well
 						if (i > 0)
 						{

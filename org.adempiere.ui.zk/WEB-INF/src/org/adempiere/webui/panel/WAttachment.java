@@ -264,9 +264,11 @@ public class WAttachment extends Window implements EventListener<Event>
 
 		bLoad.setImage(ThemeManager.getThemeResource("images/Import24.png"));
 		bLoad.setSclass("img-btn");
-		bLoad.setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);
+		bLoad.setId("bLoad");
+//		bLoad.setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);
 		bLoad.setTooltiptext(Msg.getMsg(Env.getCtx(), "Load"));
-		bLoad.setUpload(AdempiereWebUI.getUploadSetting());
+//		bLoad.setUpload(AdempiereWebUI.getUploadSetting());
+		bLoad.setUpload("true,accept=audio/*|video/*|image/*|MIME_type,native");
 		bLoad.addEventListener(Events.ON_UPLOAD, this);
 
 		bDelete.addEventListener(Events.ON_CLICK, this);

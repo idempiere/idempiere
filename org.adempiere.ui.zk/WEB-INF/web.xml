@@ -148,7 +148,7 @@
 	</mime-mapping>
 	<mime-mapping>
 		<extension>js</extension>
-		<mime-type>application/x-javascript</mime-type>
+		<mime-type>text/javascript</mime-type>
 	</mime-mapping>
 	<mime-mapping>
 		<extension>pdf</extension>

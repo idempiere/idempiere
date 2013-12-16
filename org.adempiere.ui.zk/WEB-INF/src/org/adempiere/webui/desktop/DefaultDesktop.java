@@ -314,7 +314,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		w.getChildren().clear();
 		sideController.render(w, this, false);
 		
-		Clients.response(new AuScript("$('.slimScroll .z-anchorlayout-body').slimScroll({height: '100%',railVisible: true, alwaysVisible: false});"));				
+		Clients.response(new AuScript("$('.slimScroll.z-anchorlayout').slimScroll({height: '100%',railVisible: true, alwaysVisible: false});"));				
 	}
 
 	public void onEvent(Event event)
