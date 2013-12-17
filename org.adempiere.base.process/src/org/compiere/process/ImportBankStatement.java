@@ -364,7 +364,7 @@ public class ImportBankStatement extends SvrProcess
 		//Import Bank Statement
 		sql = new StringBuilder("SELECT * FROM I_BankStatement")
 			.append(" WHERE I_IsImported='N'")
-			.append(" ORDER BY C_BankAccount_ID, Name, EftStatementDate, EftStatementReference");
+			.append(" ORDER BY C_BankAccount_ID, Name, StatementDate, ReferenceNo");
 			
 		MBankStatement statement = null;
 		MBankAccount account = null;
@@ -448,7 +448,7 @@ public class ImportBankStatement extends SvrProcess
 					statement.setDescription(imp.getDescription());
 					statement.setEftStatementReference(imp.getEftStatementReference());
 					statement.setEftStatementDate(imp.getEftStatementDate());
-					if (statement.save())
+					if (statement.save(get_TrxName()))
 					{
 						noInsert++;
 					}
@@ -496,7 +496,7 @@ public class ImportBankStatement extends SvrProcess
 				line.setEftAmt(imp.getEftAmt());
 				
 				//	Save statement line
-				if (line.save())
+				if (line.save(get_TrxName()))
 				{
 					imp.setC_BankStatement_ID(statement.getC_BankStatement_ID());
 					imp.setC_BankStatementLine_ID(line.getC_BankStatementLine_ID());

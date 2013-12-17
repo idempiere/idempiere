@@ -304,8 +304,18 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		
 		if (log.isLoggable(Level.FINE)) log.fine(m_mLocator.toString());
 		
-		if (m_mLocator.getSize()==0 || (m_mLocator.getSize()==1 && m_mLocator.get(m_mLocator.getElementAt(0))==null))
-			throw new AdempiereUserError(Msg.getMsg(Env.getCtx(), "DRP-001", false));			
+		if (m_mLocator.getSize()==0)
+		{
+			throw new AdempiereUserError(Msg.getMsg(Env.getCtx(), "DRP-001", false));
+		}
+		else if (m_mLocator.getSize()==1)
+		{
+			MLocator locator = (MLocator) m_mLocator.getElementAt(0);
+			if (locator == null || locator.getM_Locator_ID() <= 0)
+			{
+				throw new AdempiereUserError(Msg.getMsg(Env.getCtx(), "DRP-001", false));
+			}
+		}
 		
 		for (int i = 0; i < m_mLocator.getSize(); i++)
 		{

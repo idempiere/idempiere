@@ -101,7 +101,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2181155164268688340L;
+	private static final long serialVersionUID = 4223765688790104180L;
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 
@@ -231,6 +231,10 @@ public class GridTable extends AbstractTableModel
 
 	private final static Integer NEW_ROW_ID = Integer.valueOf(-1);
 	private static final int DEFAULT_FETCH_SIZE = 200;
+
+	/** Keep track of last sorted column index and sort direction */
+	private int 				m_lastSortColumnIndex = -1;
+	private boolean 			m_lastSortedAscending = true;
 
 	/**
 	 *	Set Table Name
@@ -890,6 +894,13 @@ public class GridTable extends AbstractTableModel
 		}
 		if (getRowCount() == 0)
 			return;
+		
+		boolean isSameSortEntries = (col == m_lastSortColumnIndex && ascending == m_lastSortedAscending);
+		if (!isSameSortEntries)
+		{
+			m_lastSortColumnIndex = col;
+			m_lastSortedAscending = ascending;
+		}
 
 		//cache changed row
 		Object[] changedRow = m_rowChanged >= 0 ? getDataAtRow(m_rowChanged) : null;
@@ -948,10 +959,14 @@ public class GridTable extends AbstractTableModel
 				m_sort.get(i).data = null;
 			}
 		}
-		//	update UI
-		fireTableDataChanged();
-		//  Info detected by MTab.dataStatusChanged and current row set to 0
-		fireDataStatusIEvent("Sorted", "#" + m_sort.size());
+		
+		if (!isSameSortEntries)
+		{
+			//	update UI
+			fireTableDataChanged();
+			//  Info detected by MTab.dataStatusChanged and current row set to 0
+			fireDataStatusIEvent("Sorted", "#" + m_sort.size());
+		}
 	}	//	sort
 
 	/**
@@ -2919,6 +2934,11 @@ public class GridTable extends AbstractTableModel
 		m_changed = false;
 		m_rowChanged = -1;
 		m_inserting = false;
+		if (m_lastSortColumnIndex >= 0)
+		{
+			loadComplete();
+			sort(m_lastSortColumnIndex, m_lastSortedAscending);
+		}
 		fireTableDataChanged();
 		if (fireStatusEvent)
 			fireDataStatusIEvent(DATA_REFRESH_MESSAGE, "");
@@ -3846,5 +3866,13 @@ public class GridTable extends AbstractTableModel
 	
 	public String get_TrxName() {
 		return m_trxName;
+	}
+	
+	/**
+	 * reset the cache sort state ( sort column and sort ascending )
+	 */
+	public void resetCacheSortState() {
+		m_lastSortColumnIndex = -1;
+		m_lastSortedAscending = true;
 	}
 }
