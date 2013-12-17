@@ -2200,6 +2200,7 @@ public final class MPayment extends X_C_Payment
 				Msg.translate(getCtx(), "C_Payment_ID")	+ ": " + getDocumentNo(), 
 				get_TrxName());
 		alloc.setAD_Org_ID(getAD_Org_ID());
+		alloc.setDateAcct(getDateAcct()); // in case date acct is different from datetrx in payment; IDEMPIERE-1532 tbayen
 		if (!alloc.save())
 		{
 			log.severe("P.Allocations not created");
@@ -2628,10 +2629,11 @@ public final class MPayment extends X_C_Payment
 
 		//	Create automatic Allocation
 		MAllocationHdr alloc = new MAllocationHdr (getCtx(), false, 
-			( accrual ? dateAcct : getDateTrx() ), 
+			getDateTrx(), 
 			getC_Currency_ID(),
 			Msg.translate(getCtx(), "C_Payment_ID")	+ ": " + reversal.getDocumentNo(), get_TrxName());
 		alloc.setAD_Org_ID(getAD_Org_ID());
+		alloc.setDateAcct(dateAcct); // dateAcct variable already take into account the accrual parameter
 		alloc.saveEx(get_TrxName());
 
 		//	Original Allocation
