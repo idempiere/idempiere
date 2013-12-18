@@ -364,7 +364,7 @@ public class ImportBankStatement extends SvrProcess
 		//Import Bank Statement
 		sql = new StringBuilder("SELECT * FROM I_BankStatement")
 			.append(" WHERE I_IsImported='N'")
-			.append(" ORDER BY C_BankAccount_ID, Name, StatementDate, ReferenceNo");
+			.append(" ORDER BY C_BankAccount_ID, Name, StatementDate, EftStatementReference");
 			
 		MBankStatement statement = null;
 		MBankAccount account = null;

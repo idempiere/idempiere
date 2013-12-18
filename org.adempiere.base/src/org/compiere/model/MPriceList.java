@@ -240,9 +240,6 @@ public class MPriceList extends X_M_PriceList
 	{
 		if (valid == null)
 			valid = new Timestamp (System.currentTimeMillis());
-		//	Assume there is no later
-		if (m_plv != null && m_plv.getValidFrom().before(valid))
-			return m_plv;
 
 		final String whereClause = "M_PriceList_ID=? AND TRUNC(ValidFrom)<=?";
 		m_plv = new Query(getCtx(), I_M_PriceList_Version.Table_Name, whereClause, get_TrxName())
