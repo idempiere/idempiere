@@ -1096,9 +1096,9 @@ public class MInvoiceLine extends X_C_InvoiceLine
 					// end MZ
 					if (base.signum() != 0)
 					{
-						BigDecimal result = getLineNetAmt().multiply(base);
-						result = result.divide(total, BigDecimal.ROUND_HALF_UP);
-						lca.setAmt(result.doubleValue(), getPrecision());
+						double result = getLineNetAmt().multiply(base).doubleValue();
+						result /= total.doubleValue();
+						lca.setAmt(result, getPrecision());
 					}
 					if (!lca.save()){
 						msgreturn = new StringBuilder("Cannot save line Allocation = ").append(lca);
@@ -1221,9 +1221,9 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			// end MZ
 			if (base.signum() != 0)
 			{
-				BigDecimal result = getLineNetAmt().multiply(base);
-				result = result.divide(total, BigDecimal.ROUND_HALF_UP);
-				lca.setAmt(result.doubleValue(), getPrecision());
+				double result = getLineNetAmt().multiply(base).doubleValue();
+				result /= total.doubleValue();
+				lca.setAmt(result, getPrecision());
 			}
 			if (!lca.save()){
 				msgreturn = new StringBuilder("Cannot save line Allocation = ").append(lca);
