@@ -1068,7 +1068,27 @@ public class MOrder extends X_C_Order implements DocAction
 				}
 			}
 		}
-		
+
+		// IDEMPIERE-1597 Price List and Date must be not-updateable
+		if (!newRecord && (is_ValueChanged(COLUMNNAME_M_PriceList_ID) || is_ValueChanged(COLUMNNAME_DateOrdered))) {
+			int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM C_OrderLine WHERE C_Order_ID=? AND M_Product_ID>0", getC_Order_ID());
+			if (cnt > 0) {
+				if (is_ValueChanged(COLUMNNAME_M_PriceList_ID)) {
+					log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangePl"));
+					return false;
+				}
+				if (is_ValueChanged(COLUMNNAME_DateOrdered)) {
+					MPriceList pList =  MPriceList.get(getCtx(), getM_PriceList_ID(), null);
+					MPriceListVersion plOld = pList.getPriceListVersion((Timestamp)get_ValueOld(COLUMNNAME_DateOrdered));
+					MPriceListVersion plNew = pList.getPriceListVersion((Timestamp)get_Value(COLUMNNAME_DateOrdered));
+					if (plNew == null || !plNew.equals(plOld)) {
+						log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangeDateOrdered"));
+						return false;
+					}
+				}
+			}
+		}
+
 		return true;
 	}	//	beforeSave
 	
