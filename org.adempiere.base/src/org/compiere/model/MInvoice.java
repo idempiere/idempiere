@@ -986,7 +986,27 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			if (order.getC_CashPlanLine_ID() > 0)
 				setC_CashPlanLine_ID(order.getC_CashPlanLine_ID());
 		}
-		
+
+		// IDEMPIERE-1597 Price List and Date must be not-updateable
+		if (!newRecord && (is_ValueChanged(COLUMNNAME_M_PriceList_ID) || is_ValueChanged(COLUMNNAME_DateInvoiced))) {
+			int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM C_InvoiceLine WHERE C_Invoice_ID=? AND M_Product_ID>0", getC_Invoice_ID());
+			if (cnt > 0) {
+				if (is_ValueChanged(COLUMNNAME_M_PriceList_ID)) {
+					log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangePlIn"));
+					return false;
+				}
+				if (is_ValueChanged(COLUMNNAME_DateInvoiced)) {
+					MPriceList pList =  MPriceList.get(getCtx(), getM_PriceList_ID(), null);
+					MPriceListVersion plOld = pList.getPriceListVersion((Timestamp)get_ValueOld(COLUMNNAME_DateInvoiced));
+					MPriceListVersion plNew = pList.getPriceListVersion((Timestamp)get_Value(COLUMNNAME_DateInvoiced));
+					if (plNew == null || !plNew.equals(plOld)) {
+						log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangeDateInvoiced"));
+						return false;
+					}
+				}
+			}
+		}
+
 		return true;
 	}	//	beforeSave
 
