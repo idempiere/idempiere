@@ -1676,14 +1676,16 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			ADTabpanel adtabpanel = (ADTabpanel) iadtabpanel;
 			Grid grid = adtabpanel.getGridView().getListbox();
 			Columns columns = grid.getColumns();
-			List<?> list = columns.getChildren();
-			for(int i = 0; i < list.size(); i++)
-			{
-				Component c = (Component) list.get(i);
-				if (c instanceof Column) {
-					Column column = (Column) c;
-					if (!"natural".equals(column.getSortDirection())) {
-						return column;
+			if (columns != null) {
+				List<?> list = columns.getChildren();
+				for(int i = 0; i < list.size(); i++)
+				{
+					Component c = (Component) list.get(i);
+					if (c instanceof Column) {
+						Column column = (Column) c;
+						if (!"natural".equals(column.getSortDirection())) {
+							return column;
+						}
 					}
 				}
 			}
