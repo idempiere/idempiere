@@ -114,15 +114,19 @@ html,body {
 }
 
 .desktop-header {
-	background-color: #F4F4F4;
+	background-color: #E4E4E4;
 	width: 100%;
 	height: 46px;
-	border-bottom: 1px solid #C5C5C5;
+	border-bottom: 1px solid #C5C5C5 !important;
 }
 
 .desktop-header-font {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
+}
+
+.desktop-header-username {
+	padding-right: 6px;
 }
 
 .desktop-header-username:hover {
@@ -418,14 +422,6 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	padding-top: 8px;
 }
 
-.z-comboitem-image { 
-	--vertical-align:top; 
-}
-
-.z-combobox input {
-	--vertical-align:top;
-}
-
 .menu-panel .z-toolbar-panel {
 	padding-right: 0;
 }
@@ -446,12 +442,12 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	padding-top: 4px; 
 }
 
-.desktop-left-column + .z-west-splitter {
+.desktop-left-column + .z-west-splitter,  .desktop-left-column.z-west {
 	border-top: none; 
 	border-right: 1px solid #c5c5c5;
 }
 
-.desktop-right-column + .z-east-splitter {
+.desktop-right-column + .z-east-splitter,  .desktop-right-column.z-east {
 	border-top: none; 
 	border-left: 1px solid #c5c5c5;
 }
@@ -468,8 +464,8 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	border-left: none;
 }
 
-.desktop-left-column .z-west-header, .desktop-right-column .z-east-header {
-	border-top: 1px solid #c5c5c5;
+.desktop-layout > div > .z-west-collapsed, .desktop-layout > div > .z-east-collapsed {
+	border-top: none;
 }
 
 .desktop-left-column .z-anchorlayout, .desktop-right-column .z-anchorlayout {
@@ -896,12 +892,26 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .adtab-form-borderlayout .z-south-collapsed:before { 
 	content: '${u:cleanAmp(u:getMsg(u:getCtx(), "Detail"))}';
-	position: relative; 
+	position: absolute; 
 	font-size: 12px; 
 	font-weight: bold;
-	top: 3px;
+	text-align: center;
+	line-height: 12px;
 	left: 4px;
-	z-index: -1;
+	height: 12px;
+}
+
+.z-south-collapsed {
+	height: 24px;
+}
+
+.z-south-collapsed:hover, .z-east-collapsed:hover, .z-west-collapsed:hover, .z-north-collapsed:hover {
+	box-shadow:inset 0 0 8px rgba(197,197,197,0.5);
+}
+
+.z-south-collapsed .z-borderlayout-icon {
+	height: 12px;
+	line-height: 12px;
 }
 			
 .z-grid tbody tr.highlight td.z-cell { 
@@ -1014,12 +1024,20 @@ input:focus, textarea:focus, .z-combobox-input:focus, z-datebox-input:focus {
 
 .z-west-collapsed {
 	cursor: pointer;
-	border-top: none;
+	width: 24px;
+}
+
+.z-west-collapsed > .z-borderlayout-icon {
+	width: 12px; right: auto;
 }
 
 .z-east-collapsed {
 	cursor: pointer;
-	border-top: none;
+	width: 24px;
+}
+.z-east-collapsed > .z-borderlayout-icon {
+	width: 12px; 
+	left: auto;
 }
 
 <%-- FOCUSED FIELD in different color --%>
@@ -1139,6 +1157,21 @@ tr.z-group {
 	border-bottom: 1px solid #CFCFCF !important;
 	border-top: 1px solid #CFCFCF !important;
 	padding: 4px 5px;
+}
+
+.z-group-icon {
+	display: inline-block;
+	font-family: FontAwesome;
+	font-weight: normal;
+	font-style: normal;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.z-group-icon-close:before {
+	content: "\f0da";
+}
+.z-group-icon-open:before {
+	content: "\f0d7";
 }
 
 <%-- Tablet --%>
