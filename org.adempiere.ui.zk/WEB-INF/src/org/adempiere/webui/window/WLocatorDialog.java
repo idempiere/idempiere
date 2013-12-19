@@ -43,6 +43,7 @@ import org.adempiere.webui.component.Window;
 import org.compiere.model.MLocator;
 import org.compiere.model.MLocatorLookup;
 import org.compiere.model.MRole;
+import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -303,6 +304,19 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		
 		if (log.isLoggable(Level.FINE)) log.fine(m_mLocator.toString());
 		
+		if (m_mLocator.getSize()==0)
+		{
+			throw new AdempiereUserError(Msg.getMsg(Env.getCtx(), "DRP-001", false));
+		}
+		else if (m_mLocator.getSize()==1)
+		{
+			MLocator locator = (MLocator) m_mLocator.getElementAt(0);
+			if (locator == null || locator.getM_Locator_ID() <= 0)
+			{
+				throw new AdempiereUserError(Msg.getMsg(Env.getCtx(), "DRP-001", false));
+			}
+		}
+		
 		for (int i = 0; i < m_mLocator.getSize(); i++)
 		{
 			Object obj = m_mLocator.getElementAt(i);
@@ -552,7 +566,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		if (m_change)
 		{
 			ListItem listitem = lstLocator.getSelectedItem();
-			MLocator l = (MLocator)listitem.getValue();
+			MLocator l = listitem != null ? (MLocator)listitem.getValue() : null;
 			
 			if (l != null)
 				return l.getM_Locator_ID() == m_M_Locator_ID;

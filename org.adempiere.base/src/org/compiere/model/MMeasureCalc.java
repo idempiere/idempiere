@@ -235,6 +235,8 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 				.append("')=TRUNC(").append(DB.TO_DATE(date)).append(",'").append(trunc).append("')");
 		}
 		String finalSQL = addRestrictions(sql.toString(), restrictions, role);
+		if (finalSQL.indexOf("@") >= 0)
+			finalSQL = Env.parseContext(getCtx(), 0, finalSQL, false, false);
 		//	Execute
 		StringBuilder where = new StringBuilder();
 		PreparedStatement pstmt = null;

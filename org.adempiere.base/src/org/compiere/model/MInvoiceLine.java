@@ -862,12 +862,12 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				setPrice();
 				// IDEMPIERE-1574 Sales Order Line lets Price under the Price Limit when updating
 				//	Check PriceLimit
-				boolean enforce = m_IsSOTrx && m_parent.getM_PriceList().isEnforcePriceLimit();
+				boolean enforce = m_IsSOTrx && getParent().getM_PriceList().isEnforcePriceLimit();
 				if (enforce && MRole.getDefault().isOverwritePriceLimit())
 					enforce = false;
 				//	Check Price Limit?
 				if (enforce && getPriceLimit() != Env.ZERO
-				  && getPriceActual().compareTo(getPriceLimit()) < 0)
+				  && getPriceEntered().compareTo(getPriceLimit()) < 0)
 				{
 					log.saveError("UnderLimitPrice", "PriceEntered=" + getPriceEntered() + ", PriceLimit=" + getPriceLimit()); 
 					return false;
@@ -1096,9 +1096,9 @@ public class MInvoiceLine extends X_C_InvoiceLine
 					// end MZ
 					if (base.signum() != 0)
 					{
-						BigDecimal result = getLineNetAmt().multiply(base);
-						result = result.divide(total, BigDecimal.ROUND_HALF_UP);
-						lca.setAmt(result.doubleValue(), getPrecision());
+						double result = getLineNetAmt().multiply(base).doubleValue();
+						result /= total.doubleValue();
+						lca.setAmt(result, getPrecision());
 					}
 					if (!lca.save()){
 						msgreturn = new StringBuilder("Cannot save line Allocation = ").append(lca);
@@ -1221,9 +1221,9 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			// end MZ
 			if (base.signum() != 0)
 			{
-				BigDecimal result = getLineNetAmt().multiply(base);
-				result = result.divide(total, BigDecimal.ROUND_HALF_UP);
-				lca.setAmt(result.doubleValue(), getPrecision());
+				double result = getLineNetAmt().multiply(base).doubleValue();
+				result /= total.doubleValue();
+				lca.setAmt(result, getPrecision());
 			}
 			if (!lca.save()){
 				msgreturn = new StringBuilder("Cannot save line Allocation = ").append(lca);

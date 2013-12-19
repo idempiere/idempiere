@@ -282,7 +282,8 @@ public class ProcessParameterPanel extends Panel implements
 		Row row = new Row();
 
 		// The Editor
-		WEditor editor = WebEditorFactory.getEditor(mField, false);		
+		WEditor editor = WebEditorFactory.getEditor(mField, false);
+		editor.setProcessParameter(true);
 		editor.getComponent().addEventListener(Events.ON_FOCUS, this);
 		editor.getComponent().addEventListener(Events.ON_BLUR, this);		
 		editor.addValueChangeListener(this);
@@ -337,6 +338,7 @@ public class ProcessParameterPanel extends Panel implements
 			m_mFields2.add(mField2);
 			// The Editor
 			WEditor editor2 = WebEditorFactory.getEditor(mField2, false);
+			editor2.setProcessParameter(true);
 			//override attribute
 			editor2.getComponent().setWidgetAttribute("columnName", mField2.getColumnName()+"_To");
 			editor2.getComponent().addEventListener(Events.ON_FOCUS, this);

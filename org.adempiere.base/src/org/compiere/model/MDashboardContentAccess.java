@@ -54,38 +54,54 @@ public class MDashboardContentAccess extends X_PA_DashboardContent_Access {
 		parameters.add(AD_Client_ID);
 		
 		StringBuffer sql= new StringBuffer();
+		// First part : dashboards not configured in access and flagged to be shown in login (this is intended to show new dashboards, otherwise new dashboards won't be shown unless the user go and configure them)
 		sql.append("SELECT PA_DashboardContent_ID,ColumnNo ")
 		   .append(" FROM PA_DashboardContent ")
 		   .append(" WHERE PA_DashboardContent_ID NOT IN (")
 		   .append("  SELECT PA_DashboardContent_ID ")
 		   .append("  FROM  PA_DashboardContent_Access" )
-		   .append("   WHERE IsActive='Y' AND AD_Client_ID IN (0, ?))")
+		   .append("   WHERE AD_Client_ID IN (0, ?))")
 		   .append(" AND IsShowInLogin='Y'")
 		   .append(" AND IsActive='Y' AND AD_Client_ID IN (0, ?)")
 		   .append(" UNION  ALL")
+		   // Second part : second part is to process the dashboards configured in content access
 		   .append(" SELECT ct.PA_DashboardContent_ID,ct.ColumnNo")
 		   .append(" FROM  PA_DashboardContent ct")
 		   .append(" INNER JOIN PA_DashboardContent_Access cta on (ct.PA_DashboardContent_ID = cta.PA_DashboardContent_ID)")
 		   .append(" WHERE cta.IsActive='Y'")
 		   .append(" AND ct.IsActive='Y'");
 				
-		if(AD_Role >= 0){
-			sql.append(" AND coalesce(cta.AD_Role_ID, ?) = ?");			  
+		if(AD_Role >= 0) {
+			sql.append(" AND COALESCE(cta.AD_Role_ID, ?) = ?");			  
 			parameters.add(AD_Role);
 			parameters.add(AD_Role);
 		}
-		
-		if (AD_User >= 0){
-			sql.append(" AND coalesce(cta.AD_User_ID, ?) = ?");
+		if (AD_User >= 0) {
+			sql.append(" AND COALESCE(cta.AD_User_ID, ?) = ?");
 			parameters.add(AD_User);
 			parameters.add(AD_User);
 		}
 
 		sql.append(" AND cta.AD_Client_ID in (0,?)");
 		parameters.add(AD_Client_ID);
-		
+
+		// New part : remove dashboard if inactive records 
+		sql.append(" AND ct.PA_DashboardContent_ID NOT IN (SELECT PA_DashboardContent_ID FROM PA_DashboardContent_Access WHERE IsActive='N' AND ct.AD_Client_ID in (0,?)");
+		parameters.add(AD_Client_ID);
+		if (AD_Role >= 0) {
+			sql.append(" AND COALESCE(ct.AD_Role_ID, ?) = ?");			  
+			parameters.add(AD_Role);
+			parameters.add(AD_Role);
+		}
+		if (AD_User >= 0) {
+			sql.append(" AND COALESCE(ct.AD_User_ID, ?) = ?");
+			parameters.add(AD_User);
+			parameters.add(AD_User);
+		}
+		sql.append(")");
+
         sql.append(" ORDER BY ColumnNo");
- 
+
         PreparedStatement pstmt=null;
         ResultSet rs = null;
         

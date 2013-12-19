@@ -852,16 +852,7 @@ public class Doc_Invoice extends Doc
 			if (X_M_Cost.COSTINGMETHOD_AverageInvoice.equals(costingMethod) || X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod))
 			{
 			
-				//	Convert to AcctCurrency			
-				BigDecimal allocationAmt =  lca.getAmt();
-				if (getC_Currency_ID() != as.getC_Currency_ID())
-					allocationAmt = MConversionRate.convert(getCtx(), allocationAmt,
-						getC_Currency_ID(), as.getC_Currency_ID(),
-						getDateAcct(), getC_ConversionType_ID(),
-						getAD_Client_ID(), getAD_Org_ID());
-				if (allocationAmt.scale() > as.getCostingPrecision())
-					allocationAmt = allocationAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);			
-							
+				BigDecimal allocationAmt =  lca.getAmt();																		
 				BigDecimal estimatedAmt = BigDecimal.ZERO;
 				if (lca.getM_InOutLine_ID() > 0)
 				{
@@ -921,11 +912,20 @@ public class Doc_Invoice extends Doc
 				boolean zeroQty = false;
 				try {
 					savepoint = trx.setSavepoint(null);
+					BigDecimal costDetailAmt = costAdjustmentAmt;
+					//convert to accounting schema currency
+					if (getC_Currency_ID() != as.getC_Currency_ID())
+						costDetailAmt = MConversionRate.convert(getCtx(), costDetailAmt,
+							getC_Currency_ID(), as.getC_Currency_ID(),
+							getDateAcct(), getC_ConversionType_ID(),
+							getAD_Client_ID(), getAD_Org_ID());
+					if (costDetailAmt.scale() > as.getCostingPrecision())
+						costDetailAmt = costDetailAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
 					
 					if (!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
 							lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
 							C_InvoiceLine_ID, lca.getM_CostElement_ID(),
-							costAdjustmentAmt, lca.getQty(),
+							costDetailAmt, lca.getQty(),
 							desc, getTrxName())) {
 						throw new RuntimeException("Failed to create cost detail record.");
 					}				
