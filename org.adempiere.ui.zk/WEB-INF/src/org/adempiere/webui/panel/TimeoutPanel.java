@@ -21,6 +21,7 @@ import org.zkoss.zhtml.Script;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
@@ -143,6 +144,7 @@ public class TimeoutPanel extends Window implements
 				timer.stop();
 				SessionManager.logoutSession();
 				Executions.sendRedirect("/index.zul");
+				Clients.confirmClose(null);
 		}
 	}
 }
