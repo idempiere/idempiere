@@ -58,7 +58,6 @@ public class Window extends org.zkoss.zul.Window
     public Window()
     {
         super();
-        setShadow(false);
     }
     
     /**

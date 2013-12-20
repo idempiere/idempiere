@@ -1346,8 +1346,12 @@ tbody.z-grid-empty-body td {
 }
 
 <%-- toolbar popup dialog --%>	
-.toolbar-popup-window .z-window-popup .z-window-content {
-	--margin-top: 6px;
+.toolbar-popup-window {
+	border-left: 1px solid #c5c5c5;
+	border-right: 1px solid #c5c5c5;
+}
+.toolbar-popup-window.z-window.z-window-noheader {
+	padding: 4px;
 }
 
 .toolbar-popup-window.process-buttons-popup .z-button {
@@ -1442,6 +1446,10 @@ span.grid-combobox-editor {
 	font-weight: bold;
 }
 
+.z-window {
+	padding: 0px;
+}
+
 .z-window-embedded .z-window-content {
 	border: none;
 }
@@ -1451,23 +1459,12 @@ span.grid-combobox-editor {
 	border: none;
 }
 
-.z-window-overlapped .z-window-header, .z-window-popup .z-window-header, 
-.z-window-modal .z-window-header, .z-window-highlighted .z-window-header, .embedded-dialog .z-window-embedded. .z-window-header {
-	padding-top: 3px;
-}
-
-.z-window .z-window-header {
+.z-window-header {
+	padding: 4px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
 	background-color: #484848;
-}
-
-.z-window-overlapped .z-window-content, .z-window-popup .z-window-content, 
-.z-window-modal .z-window-content, .z-window-highlighted .z-window-content, 
-.embedded-dialog .z-window-embedded .z-window-content
-{
-	padding-left: 1px;
-	border-left: 1px solid #c5c5c5;
-	padding-right: 1px;
-	border-right: 1px solid #c5c5c5;
+	border-color: #484848;
 }
 
 .z-window-overlapped, .z-window-popup, .z-window-modal, .z-window-highlighted, 
@@ -1475,7 +1472,6 @@ span.grid-combobox-editor {
 {
 	background-color: #fff;
 	margin: 0px;
-	padding-bottom: 3px;
 }
 
 .z-window-overlapped .z-window-header,
@@ -1485,12 +1481,6 @@ span.grid-combobox-editor {
 {
 	color: #fff;
 	font-weight: bold;
-}
-
-.z-window-overlapped, .z-window-modal, .z-window-highlighted
-{
-	border-top: 1px solid #c5c5c5 !important;
-	border-bottom: 1px solid #c5c5c5 !important;
 }
 
 .z-window-header, .z-window-content {
@@ -1615,7 +1605,9 @@ font-size: 0;
 	padding: 0px;
 	background-color: #f5f5f5;
 }
-
+.popup-dialog > .z-window-content, .info-panel > .z-window-content {
+	padding: 0px;
+}
 .popup-dialog .dialog-content {
 	padding: 8px !important;
 	margin-bottom: 20px !important;
@@ -1626,7 +1618,7 @@ font-size: 0;
 }
 
 .popup-dialog.z-window-highlighted .dialog-footer {
-	padding: 12px 15px 5px 15px !important;
+	padding: 12px 15px 8px 15px !important;
 }
 
 .dialog-footer {
