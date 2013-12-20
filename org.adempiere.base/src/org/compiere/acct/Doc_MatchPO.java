@@ -139,6 +139,19 @@ public class Doc_MatchPO extends Doc
 			return facts;
 		}
 
+		if (m_M_InOutLine_ID == 0)
+		{
+			MMatchPO[] matchPOs = MMatchPO.getOrderLine(getCtx(), m_oLine.getC_OrderLine_ID(), getTrxName());
+			for (MMatchPO matchPO : matchPOs)
+			{
+				if (matchPO.getM_InOutLine_ID() > 0 && matchPO.getC_InvoiceLine_ID() == 0)
+				{
+					m_M_InOutLine_ID = matchPO.getM_InOutLine_ID();
+					break;
+				}
+			}
+		}
+
 		if (m_M_InOutLine_ID == 0)	//  No posting if not matched to Shipment
 		{
 			p_Error = "No posting if not matched to Shipment";

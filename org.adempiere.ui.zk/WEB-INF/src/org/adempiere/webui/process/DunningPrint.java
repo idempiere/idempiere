@@ -123,7 +123,7 @@ public class DunningPrint extends SvrProcess
 		int count = 0;
 		int errors = 0;
 		MDunningRunEntry[] entries = run.getEntries(false);
-		List<File> pdfList = new ArrayList<File>();
+		final List<File> pdfList = new ArrayList<File>();
 		for (int i = 0; i < entries.length; i++)
 		{
 			MDunningRunEntry entry = entries[i];
@@ -258,6 +258,18 @@ public class DunningPrint extends SvrProcess
 			return msgreturn.toString();
 		}
 		
+		AEnv.executeAsyncDesktopTask(new Runnable() {			
+			@Override
+			public void run() {
+				showReports(pdfList);
+			}
+		});
+		
+		StringBuilder msgreturn = new StringBuilder("@Printed@=").append(count);
+		return msgreturn.toString();
+	}	//	doIt
+
+	private void showReports(List<File> pdfList) {
 		if (pdfList.size() > 1) {
 			try {
 				File outFile = File.createTempFile("DunningPrint", ".pdf");					
@@ -278,8 +290,6 @@ public class DunningPrint extends SvrProcess
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}
 		}
-		StringBuilder msgreturn = new StringBuilder("@Printed@=").append(count);
-		return msgreturn.toString();
-	}	//	doIt
+	}
 	
 }	//	DunningPrint
