@@ -120,7 +120,9 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        }
 	        if (!tableEditor)
 	        	getComponent().setCols(displayLength);
-	        if (gridField.getDisplayType() == DisplayType.Text)
+	        if (tableEditor)
+	        	getComponent().setMultiline(false);
+	        else if (gridField.getDisplayType() == DisplayType.Text)
 	        {
 	            getComponent().setMultiline(true);
 	        }
@@ -134,7 +136,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        }
 	        else
 	            getComponent().setMultiline(false);
-	        getComponent().setRows(gridField.getNumLines() <= 0 ? 1 : gridField.getNumLines());
+	        getComponent().setRows(gridField.getNumLines() <= 0 || tableEditor ? 1 : gridField.getNumLines());	        
 	        if (getComponent().getRows() > 1)
 	        	getComponent().setHeight("100%");
 

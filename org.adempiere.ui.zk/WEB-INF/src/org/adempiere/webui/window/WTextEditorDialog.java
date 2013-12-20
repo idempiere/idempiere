@@ -76,11 +76,13 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		setWidth("800px");
 		setStyle("position: absolute;");
 		setSizable(false);
+		setSclass("popup-dialog");
 		
 		Vlayout vbox = new Vlayout();
 		appendChild(vbox);
 		vbox.setWidth("100%");
 		vbox.setVflex("true");
+		vbox.setSclass("dialog-content");
 		
 		tabbox = new Tabbox();
 		vbox.appendChild(tabbox);
@@ -125,14 +127,17 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		
 		vbox.appendChild(new Separator());
 		
+		Div footer = new Div();
+		footer.setSclass("dialog-footer");
 		ConfirmPanel confirmPanel = new ConfirmPanel(true);
-		vbox.appendChild(confirmPanel);
+		footer.appendChild(confirmPanel);
 		confirmPanel.addButton(confirmPanel.createButton(ConfirmPanel.A_RESET));
 		confirmPanel.addActionListener(this);
+		appendChild(footer);
 		
 		if (maxSize > 0) {
 			status = new Label();			
-			appendChild(status);
+			footer.appendChild(status);
 			updateStatus(text.length());
 			
 			status.setStyle("margin-top:10px;");

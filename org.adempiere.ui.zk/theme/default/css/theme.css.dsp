@@ -1350,8 +1350,12 @@ tbody.z-grid-empty-body td {
 	border-left: 1px solid #c5c5c5;
 	border-right: 1px solid #c5c5c5;
 }
+.toolbar-popup-window .z-window-content {
+	padding: 0px;
+}
 .toolbar-popup-window.z-window.z-window-noheader {
 	padding: 4px;
+	padding-bottom: 0px;
 }
 
 .toolbar-popup-window.process-buttons-popup .z-button {
@@ -1361,7 +1365,8 @@ tbody.z-grid-empty-body td {
 	margin: auto;
 }
 
-.toolbar-popup-window-cnt {
+.toolbar-popup-window.process-buttons-popup .toolbar-popup-window-cnt {
+	padding: 8px;
 }
 
 .toolbar-popup-window::before {
@@ -1384,6 +1389,10 @@ tbody.z-grid-empty-body td {
 	left: 10px;
 	position: absolute;
 	top: -6px;
+}
+
+.toolbar-popup-window .dialog-footer {
+	padding: 4px;
 }
 
 .adwindow-detailpane-sub-tab::before {
@@ -1465,6 +1474,10 @@ span.grid-combobox-editor {
 	border-top-right-radius: 3px;
 	background-color: #484848;
 	border-color: #484848;
+}
+.z-window-embedded > .z-window-header {
+	border-radius: 0px;
+	background-color: transparent;
 }
 
 .z-window-overlapped, .z-window-popup, .z-window-modal, .z-window-highlighted, 
@@ -1607,10 +1620,12 @@ font-size: 0;
 }
 .popup-dialog > .z-window-content, .info-panel > .z-window-content {
 	padding: 0px;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
 }
 .popup-dialog .dialog-content {
 	padding: 8px !important;
-	margin-bottom: 20px !important;
+	--margin-bottom: 20px !important;
 }
 
 .popup-dialog.z-window-overlapped .dialog-footer {
@@ -1919,4 +1934,12 @@ table.z-vbox > tbody > tr > td > table {
 }
 .dashboard-widget.dashboard-widget-max .chart-gadget {
 	height: 100% !important; 
+}
+
+<%-- text overflow for grid cell --%>
+.z-cell > span.z-label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: inline-block;
+	width: 100%;
 }

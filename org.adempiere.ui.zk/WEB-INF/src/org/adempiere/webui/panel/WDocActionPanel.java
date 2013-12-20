@@ -48,6 +48,7 @@ import org.compiere.wf.MWFActivity;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -280,13 +281,15 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 	    rows.appendChild(rowLabel);
 	    rows.appendChild(rowSpacer);
 	    
-	    vlayout.appendChild(confirmPanel);
-		LayoutUtils.addSclass("dialog-footer", confirmPanel);
+	    Div footer = new Div();
+	    footer.setSclass("dialog-footer");
+	    vlayout.appendChild(footer);
+	    footer.appendChild(confirmPanel);
+	    confirmPanel.setVflex("min");
 	    
 	    this.setTitle(Msg.translate(Env.getCtx(), "DocAction"));
 	    this.setWidth("410px");
 	    this.setBorder("normal");
-	    this.setStyle("position: absolute; margin: 0; padding: 0");
 	    this.setZindex(1000);
 	}
 
