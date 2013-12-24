@@ -73,7 +73,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2133132636255923989L;
+	private static final long serialVersionUID = -5723251182432810379L;
 
 	protected Grid parameterGrid;
 	private Borderlayout layout;
@@ -339,7 +339,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected String getSQLWhere() {
 		StringBuilder builder = new StringBuilder();
 		MTable table = MTable.get(Env.getCtx(), infoWindow.getAD_Table_ID());
-		if (table.get_ColumnIndex("IsActive") >=0 ) {
+		if (!hasIsActiveEditor() && table.get_ColumnIndex("IsActive") >=0 ) {
 			if (p_whereClause != null && p_whereClause.trim().length() > 0) {
 				builder.append(" AND ");
 			}
@@ -383,7 +383,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					} else if (p_whereClause != null && p_whereClause.trim().length() > 0) {
 						builder.append(" AND ");
 						if (!checkAND.isChecked()) builder.append(" ( ");
-					}	
+					} else if (hasIsActiveEditor() && !checkAND.isChecked()) {
+						builder.append(" ( ");
+					}
 				} else {
 					builder.append(checkAND.isChecked() ? " AND " : " OR ");
 				}
@@ -957,4 +959,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 		return true;
 	}	//	testCount
+
+	/** Return true if there is a 'IsActive' criteria */
+	boolean hasIsActiveEditor() {
+		for (WEditor editor : editors) {
+			if (editor.getGridField() != null && "IsActive".equals(editor.getGridField().getColumnName())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
