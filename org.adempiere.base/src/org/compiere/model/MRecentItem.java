@@ -280,7 +280,7 @@ public class MRecentItem extends X_AD_RecentItem
 		String windowName;
 		MWindow win = MWindow.get(getCtx(), getAD_Window_ID());
 		MUserDefWin userDef = MUserDefWin.getBestMatch(getCtx(), getAD_Window_ID());
-		if (userDef != null) {
+		if (userDef != null && !Util.isEmpty(userDef.getName())) {
 			windowName = userDef.getName();
 		} else {
 			windowName = win.get_Translation("Name");
