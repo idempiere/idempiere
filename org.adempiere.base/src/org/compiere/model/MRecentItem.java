@@ -29,6 +29,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
 import org.osgi.service.event.Event;
@@ -278,7 +279,7 @@ public class MRecentItem extends X_AD_RecentItem
 	public String getLabel() {
 		String windowName;
 		MUserDefWin userDef = MUserDefWin.getBestMatch(getCtx(), getAD_Window_ID());
-		if (userDef != null) {
+		if (userDef != null && !Util.isEmpty(userDef.getName())) {
 			windowName = userDef.getName();
 		} else {
 			MWindow win = new MWindow(getCtx(), getAD_Window_ID(), null);
