@@ -606,7 +606,7 @@ public final class DB
 	public static boolean isBuildOK (Properties ctx)
 	{
 //    Check Build
-        String buildClient = Adempiere.getImplementationVersion();
+        String buildClient = Adempiere.getVersion();
         String buildDatabase = "";
         boolean failOnBuild = false;
         String sql = "SELECT LastBuildInfo, IsFailOnBuildDiffer FROM AD_System";
@@ -650,10 +650,18 @@ public final class DB
         	log.warning(msg);
         	return true;
         }
-    	JOptionPane.showMessageDialog (null,
-    			msg,
-    			title, JOptionPane.ERROR_MESSAGE);
-    	Env.exitEnv(1);
+        
+        if (Ini.isClient())
+        {
+	    	JOptionPane.showMessageDialog (null,
+	    			msg,
+	    			title, JOptionPane.ERROR_MESSAGE);
+	    	Env.exitEnv(1);
+        }
+        else
+        {
+        	log.log(Level.SEVERE, msg);
+        }
     	return false;
 	}   //  isDatabaseOK
 

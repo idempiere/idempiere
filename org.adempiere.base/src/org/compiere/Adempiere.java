@@ -160,6 +160,13 @@ public final class Adempiere
 				return bundle.getVersion().toString();
 			}
 		}
+		else
+		{
+			Bundle bundle = Platform.getBundle("org.adempiere.base");
+			if (bundle != null) {
+				return bundle.getVersion().toString();
+			}
+		}
 		return "Unknown";
 	}   //  getVersion
 
@@ -586,10 +593,20 @@ public final class Adempiere
 			log.severe ("No Database");
 			return false;
 		}
+		
+		//	Check Build
+		if (!DB.isBuildOK(Env.getCtx()))
+		{
+			if (isClient)
+				System.exit(1);
+			log = null;
+			return false;
+		}
+		
 		MSystem system = MSystem.get(Env.getCtx());	//	Initializes Base Context too
 		if (system == null)
 			return false;
-
+		
 		//	Initialize main cached Singletons
 		ModelValidationEngine.get();
 		try
@@ -633,7 +650,7 @@ public final class Adempiere
 		{
 			log.warning("Not started: " + className + " - " + e.getMessage());
 		}
-
+		
 		if (!isClient)
 			DB.updateMail();
 		
