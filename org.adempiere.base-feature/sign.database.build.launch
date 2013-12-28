@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
+<booleanAttribute key="append.args" value="true"/>
+<stringAttribute key="application" value="org.adempiere.base.SignDatabaseBuildApplication"/>
+<booleanAttribute key="askclear" value="true"/>
+<booleanAttribute key="automaticAdd" value="false"/>
+<booleanAttribute key="automaticValidate" value="false"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="true"/>
+<booleanAttribute key="clearws" value="false"/>
+<booleanAttribute key="clearwslog" value="false"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/sign.database.build"/>
+<booleanAttribute key="default" value="false"/>
+<booleanAttribute key="includeOptional" value="true"/>
+<stringAttribute key="location" value="${workspace_loc}/../runtime-sign.database.build"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc}"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<stringAttribute key="product" value="org.adempiere.server.server_product"/>
+<stringAttribute key="selected_target_plugins" value="com.springsource.javax.ejb@default:default,com.springsource.javax.jms@default:default,com.springsource.javax.mail@default:default,com.springsource.javax.management.j2ee@default:default,com.springsource.javax.persistence@default:default,com.springsource.javax.transaction@default:default,com.springsource.javax.xml.rpc@default:default,com.springsource.javax.xml.soap@default:default,com.springsource.net.sf.cglib@default:default,com.springsource.org.aopalliance@default:default,com.springsource.org.apache.activemq@default:default,com.springsource.org.apache.commons.logging@default:default,com.springsource.org.apache.kahadb@default:default,javax.el@default:default,javax.servlet@default:default,javax.xml@default:default,org.apache.ant@default:default,org.apache.batik.bridge@default:default,org.apache.batik.css@default:default,org.apache.batik.dom.svg@default:default,org.apache.batik.dom@default:default,org.apache.batik.ext.awt@default:default,org.apache.batik.extension@default:default,org.apache.batik.parser@default:default,org.apache.batik.util.gui@default:default,org.apache.batik.util@default:default,org.apache.batik.xml@default:default,org.apache.commons.codec@default:default,org.apache.commons.collections@default:default,org.apache.commons.logging@default:default,org.apache.commons.net@default:default,org.apache.poi@default:default,org.apache.xerces@default:default,org.apache.xml.resolver@default:default,org.apache.xml.serializer@default:default,org.eclipse.ant.core@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.runtime.compatibility.auth@default:default,org.eclipse.core.runtime@default:true,org.eclipse.core.variables@default:default,org.eclipse.equinox.app@default:default,org.eclipse.equinox.common@2:true,org.eclipse.equinox.ds@1:true,org.eclipse.equinox.http.registry@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.equinox.util@default:default,org.eclipse.osgi.services@default:default,org.eclipse.osgi@-1:true,org.hamcrest.core@default:default,org.junit@default:default,org.restlet.ext.net@default:default,org.restlet.ext.ssl@default:default,org.restlet@default:default,org.springframework.aop@default:default,org.springframework.beans@default:default,org.springframework.context@default:default,org.springframework.core@default:default,org.w3c.css.sac@default:default,org.w3c.dom.smil@default:default,org.w3c.dom.svg@default:default"/>
+<stringAttribute key="selected_workspace_plugins" value="org.adempiere.base@default:default,org.adempiere.eclipse.equinox.http.servlet@default:default,org.adempiere.eclipse.equinox.http.servletbridge@default:default,org.adempiere.eclipse.equinox.servletbridge@default:default,org.adempiere.extend@default:false,org.adempiere.install@default:default,org.adempiere.plugin.utils@default:default,org.adempiere.report.jasper.library@default:default,org.adempiere.ui@default:default,org.apache.ecs@default:default,org.compiere.db.oracle.provider@default:default,org.compiere.db.postgresql.provider@default:default,org.idempiere.fitrecorder@default:default,org.idempiere.webservices@default:default,org.w3c.dom.fragment@default:false"/>
+<booleanAttribute key="show_selected_only" value="false"/>
+<stringAttribute key="templateConfig" value="${target_home}/configuration/config.ini"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useCustomFeatures" value="false"/>
+<booleanAttribute key="useDefaultConfig" value="true"/>
+<booleanAttribute key="useDefaultConfigArea" value="true"/>
+<booleanAttribute key="useProduct" value="false"/>
+</launchConfiguration>

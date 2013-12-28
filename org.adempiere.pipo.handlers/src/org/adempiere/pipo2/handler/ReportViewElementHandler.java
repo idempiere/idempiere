@@ -136,8 +136,8 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 			document.endElement("", "", X_AD_ReportView.Table_Name);
 		}
 		
-		sql = "SELECT AD_PrintFormat_ID FROM AD_PrintFormat WHERE AD_ReportView_ID= "
-					+ AD_ReportView_ID;
+		sql = "SELECT AD_PrintFormat_ID FROM AD_PrintFormat WHERE AD_ReportView_ID="
+					+ AD_ReportView_ID + " AND AD_Client_ID=" + Env.getAD_Client_ID(ctx.ctx);
 		pstmt = null;
 		rs = null;
 		try {

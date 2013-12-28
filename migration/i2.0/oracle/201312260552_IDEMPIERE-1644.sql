@@ -8,7 +8,7 @@ UPDATE AD_Column SET FieldLength=60,Updated=TO_DATE('2013-12-26 12:22:23','YYYY-
 
 -- Dec 26, 2013 12:22:34 PM MYT
 -- IDEMPIERE-1644 Length 22 for AD_PrintFormatItem.FormatPattern is too short
-ALTER TABLE AD_PrintFormatItem MODIFY FormatPattern VARCHAR2(60) DEFAULT NULL 
+ALTER TABLE AD_PrintFormatItem MODIFY FormatPattern NVARCHAR2(60) DEFAULT NULL 
 ;
 
 SELECT register_migration_script('201312260552_IDEMPIERE-1644.sql') FROM dual
