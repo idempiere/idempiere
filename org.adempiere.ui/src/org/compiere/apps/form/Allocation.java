@@ -408,7 +408,7 @@ public class Allocation
 				// selection of payment row
 				if (((Boolean)payment.getValueAt(row, 0)).booleanValue())
 				{
-					applied = open;   //  Open Amount
+					applied = open.signum() > 0 ? open : BigDecimal.ZERO;   //  Open Amount
 					if (totalDiff.abs().compareTo(applied.abs()) < 0			// where less is available to allocate than open
 							&& totalDiff.signum() == -applied.signum() )    	// and the available amount has the opposite sign
 						applied = totalDiff.negate();						// reduce the amount applied to what's available
@@ -421,7 +421,7 @@ public class Allocation
 			
 			if (col == i_payment)
 			{
-				if ( applied.signum() == -open.signum() )
+				if ( open.signum() > 0 && applied.signum() == -open.signum() )
 					applied = applied.negate();
 				if (! MSysConfig.getBooleanValue("ALLOW_OVER_APPLIED_PAYMENT", false, Env.getAD_Client_ID(Env.getCtx())))
 					if ( open.abs().compareTo( applied.abs() ) < 0 )
