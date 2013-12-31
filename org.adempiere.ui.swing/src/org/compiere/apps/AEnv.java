@@ -1088,7 +1088,7 @@ public final class AEnv
 	 */
 	public static void removeWindow (int WindowNo)
 	{
-		if (WindowNo < s_windows.size())
+		if (WindowNo>=0 && WindowNo < s_windows.size())
 			s_windows.set(WindowNo, null);
 	}	//	removeWindow
 

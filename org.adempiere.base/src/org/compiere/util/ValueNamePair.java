@@ -62,6 +62,8 @@ public final class ValueNamePair extends NamePair
 	 */
 	public String getID()
 	{
+		if("".equals(m_value))
+			return null;
 		return m_value;
 	}	//	getID
 
