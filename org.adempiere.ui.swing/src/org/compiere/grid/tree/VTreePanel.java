@@ -913,25 +913,46 @@ public final class VTreePanel extends CPanel
 	 */
 	private void barRemove()
 	{
-		//the button in on a JToolBar which is on a CPanel
+		/*
+		 * Sidebar Hierachie:
+		 * JXTaskPaneContainer (instance variable: bar)
+		 * --JXTaskPane (parentPanel)
+		 * ----JXCollapsiblePane
+		 * ------JXCollapsiblePane$WrapperContainer
+		 * --------JXPanel
+		 * ----------JToolBar (parentBar)
+		 */
+		
+		//The button in on a JToolBar
 		JToolBar parentBar = (JToolBar) m_buttonSelected.getParent();
+				
+		//Get JXTaskPane for JToolBar (we want to remove this one from the "bar" if there are no more nodes) 
 		Container parentPanel = null;
 		if(parentBar!=null){
-			parentPanel = parentBar.getParent();
+			parentPanel = parentBar.getParent().getParent().getParent().getParent();
 		}
+						
+		//Remove the entry from the JToolBar
 		for (JToolBar jt : toolbar) {
 			jt.remove(m_buttonSelected);
 		}
 
-		if(parentPanel != null && parentBar.getComponentCount()==1){
-			//only label left
+		//If we found the JXTaskPane for our toolbar and the toolbar is now empty, we want to remove the whole JXTaskPane
+		if(parentPanel != null && parentBar.getComponentCount()==0){
+			
+			//Remove JXTaskPane from JXTaskPaneContainer
 			bar.remove(parentPanel);
-			//remove from toolBarMap..
+			
+			//Remove JToolBar from the toolBarMap..
 			toolbarMap.values().remove(parentBar);
 			
 		}
+		
+		//Recreate the Sidebar
 		bar.validate();
 		bar.repaint();
+		
+		//Persist the changes
 		barDBupdate(false, Integer.parseInt(m_buttonSelected.getActionCommand()));
 	}   //  barRemove
 
