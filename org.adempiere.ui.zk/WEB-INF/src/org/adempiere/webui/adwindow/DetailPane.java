@@ -664,12 +664,18 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			readOnly = true;
 		
 		boolean insertRecord = !readOnly;
+    	boolean deleteRecord = !readOnly;
+
 		if (insertRecord)
         {
             insertRecord = adtab.getGridTab().isInsertRecord();
         }
         boolean enableNew = !changed && insertRecord && !adtab.getGridTab().isSortTab();
-        boolean enableDelete = !changed && !readOnly && !adtab.getGridTab().isSortTab();
+		if (deleteRecord)
+        {
+			deleteRecord = adtab.getGridTab().isDeleteRecord();
+        }
+        boolean enableDelete = !changed && deleteRecord && !adtab.getGridTab().isSortTab();
         
         ADWindow adwindow = ADWindow.findADWindow(this);
         if (adwindow == null)

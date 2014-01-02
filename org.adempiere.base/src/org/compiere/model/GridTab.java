@@ -1583,6 +1583,17 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	}	//	isInsertRecord
 
 	/**
+	 *	Can we Delete Records?
+	 *  @return true not read only and allowed
+	 */
+	public boolean isDeleteRecord()
+	{
+		if (isReadOnly())
+			return false;
+		return m_vo.IsDeleteable;
+	}	//	isDeleteRecord
+
+	/**
 	 *	Is the Tab Visible.
 	 *	Called when constructing the window.
 	 *  @return true, if displayed

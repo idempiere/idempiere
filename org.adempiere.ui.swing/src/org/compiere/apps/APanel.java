@@ -1231,12 +1231,15 @@ public final class APanel extends CPanel
 			changed = false;
 		boolean readOnly = m_curTab.isReadOnly();
 		boolean insertRecord = !readOnly;
+		boolean deleteRecord = !readOnly;
 		if (insertRecord)
 			insertRecord = m_curTab.isInsertRecord();
 		aNew.setEnabled(!changed && insertRecord);
 		aCopy.setEnabled(!changed && insertRecord);
 		aRefresh.setEnabled(!changed);
-		aDelete.setEnabled(!changed && !readOnly);
+		if (deleteRecord)
+			deleteRecord = m_curTab.isDeleteRecord();
+		aDelete.setEnabled(!changed && deleteRecord);
 		aDeleteSelection.setEnabled(!changed && !readOnly);
 		//
 		if (readOnly && m_curTab.isAlwaysUpdateField())
