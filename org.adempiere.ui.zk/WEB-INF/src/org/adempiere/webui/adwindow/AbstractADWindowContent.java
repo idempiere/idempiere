@@ -1584,7 +1584,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	adTabbox.evaluate(e);
         }
 
-        toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted());
+        toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !adTabbox.getSelectedGridTab().isNew());
         toolbar.enableReport(true);
         toolbar.enableExport(!adTabbox.getSelectedGridTab().isSortTab());
         toolbar.enableFileImport(!changed && !adTabbox.getSelectedGridTab().isSortTab() && adTabbox.getSelectedGridTab().isInsertRecord());
