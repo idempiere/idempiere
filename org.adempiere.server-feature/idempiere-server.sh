@@ -13,4 +13,5 @@ echo ===================================
 echo Starting iDempiere Server
 echo ===================================
 
-$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -XX:MaxPermSize=192m -jar plugins/org.eclipse.equinox.launcher_1.*.jar -console 12612 -application org.adempiere.server.application
+BASE=`dirname $( readlink -f idempiere-server.sh )`
+$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -XX:MaxPermSize=192m -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -console 12612 -application org.adempiere.server.application
