@@ -13,37 +13,41 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
-import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.ListboxFactory;
 import org.adempiere.webui.component.Panel;
-import org.adempiere.webui.component.WAppsAction;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.panel.StatusBarPanel;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.grid.CreateFrom;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 
 public class WCreateFromWindow extends Window implements EventListener<Event>, WTableModelListener, DialogEvents
 {
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3703236565441597403L;
+	private static final long serialVersionUID = 1525723342123192509L;
+
 	private CreateFrom createFrom;
 	private int windowNo;
 	
@@ -54,9 +58,10 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 
 	private boolean isCancel;
 	
-	public static final String SELECT_ALL = "SelectAll";
+	public static final String SELECT_DESELECT_ALL = "SelectAll";
+	private ToolBarButton selectAllAction = new ToolBarButton(SELECT_DESELECT_ALL);
+	private boolean checkAllSelected = true;
 
-	
 	public WCreateFromWindow(CreateFrom createFrom, int windowNo)
 	{
 		super();
@@ -91,18 +96,19 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		Center center = new Center();
         contentPane.appendChild(center);
 		center.appendChild(dataTable);
-		
-		WAppsAction selectAllAction = new WAppsAction (SELECT_ALL, null, null);
-		Button selectAllButton = selectAllAction.getButton();
-		confirmPanel.addComponentsLeft(selectAllButton);
-		selectAllButton.addActionListener(this);
-		
+
+		selectAllAction.setMode("toggle");
+		selectAllAction.setImage(ThemeManager.getThemeResource("images/SelectAll24.png"));
+		selectAllAction.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), SELECT_DESELECT_ALL)));
+		selectAllAction.addEventListener(Events.ON_CLICK, this);
+
 		South south = new South();
 		contentPane.appendChild(south);
 		Panel southPanel = new Panel();
 		south.appendChild(southPanel);
 		southPanel.appendChild(new Separator());
 		southPanel.appendChild(confirmPanel);
+		southPanel.appendChild(selectAllAction);
 
 		southPanel.appendChild(new Separator());
 		southPanel.appendChild(statusBar);
@@ -145,13 +151,16 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		}
 		// Select All
 		// Trifon
-		else if (e.getTarget().getId().equals(SELECT_ALL)) {
+		else if (e.getTarget().equals(selectAllAction)) {
 			ListModelTable model = dataTable.getModel();
 			int rows = model.getSize();
-			for (int i = 0; i < rows; i++)
-			{
-				model.setValueAt(new Boolean(true), i, 0);
+			Boolean selectAll = selectAllAction.isPressed() ? Boolean.FALSE : Boolean.TRUE;
+			selectAllAction.setPressed(! selectAllAction.isPressed());
+			checkAllSelected = false;
+			for (int i = 0; i < rows; i++) {
+				model.setValueAt(selectAll, i, 0);
 			}
+			checkAllSelected = true;
 			//refresh
 			dataTable.setModel(model);
 			info();
@@ -166,6 +175,18 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 			type = e.getType();
 			if (type != WTableModelEvent.CONTENTS_CHANGED)
 				return;
+
+			if (checkAllSelected && e.getColumn() == 0) {
+				ListModelTable model = dataTable.getModel();
+				boolean rowUnSelected = false;
+				for (int i = 0; i < model.getRowCount(); i++) {
+					if ( ! (Boolean) model.getValueAt(i, 0) ) {
+						rowUnSelected = true;
+						break;
+					}
+				}
+				selectAllAction.setPressed(! rowUnSelected);
+			}
 		}
 		info();
 	}
