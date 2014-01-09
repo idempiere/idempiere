@@ -180,6 +180,19 @@ public interface I_AD_InfoWindow
 	  */
 	public String getHelp();
 
+    /** Column name ImageURL */
+    public static final String COLUMNNAME_ImageURL = "ImageURL";
+
+	/** Set Image URL.
+	  * URL of  image
+	  */
+	public void setImageURL (String ImageURL);
+
+	/** Get Image URL.
+	  * URL of  image
+	  */
+	public String getImageURL();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -218,6 +231,19 @@ public interface I_AD_InfoWindow
 	  * Select Distinct
 	  */
 	public boolean isDistinct();
+
+    /** Column name IsShowInDashboard */
+    public static final String COLUMNNAME_IsShowInDashboard = "IsShowInDashboard";
+
+	/** Set Show in Dashboard.
+	  * Show the dashlet in the dashboard
+	  */
+	public void setIsShowInDashboard (boolean IsShowInDashboard);
+
+	/** Get Show in Dashboard.
+	  * Show the dashlet in the dashboard
+	  */
+	public boolean isShowInDashboard();
 
     /** Column name IsValid */
     public static final String COLUMNNAME_IsValid = "IsValid";
@@ -279,6 +305,21 @@ public interface I_AD_InfoWindow
 
 	/** Get Process Now	  */
 	public boolean isProcessing();
+
+    /** Column name SeqNo */
+    public static final String COLUMNNAME_SeqNo = "SeqNo";
+
+	/** Set Sequence.
+	  * Method of ordering records;
+ lowest number comes first
+	  */
+	public void setSeqNo (int SeqNo);
+
+	/** Get Sequence.
+	  * Method of ordering records;
+ lowest number comes first
+	  */
+	public int getSeqNo();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

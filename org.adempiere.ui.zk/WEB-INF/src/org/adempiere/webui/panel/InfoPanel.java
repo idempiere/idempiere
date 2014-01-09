@@ -51,15 +51,6 @@ import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
-import org.compiere.model.I_A_Asset;
-import org.compiere.model.I_C_BPartner;
-import org.compiere.model.I_C_CashLine;
-import org.compiere.model.I_C_Invoice;
-import org.compiere.model.I_C_Order;
-import org.compiere.model.I_C_Payment;
-import org.compiere.model.I_M_InOut;
-import org.compiere.model.I_M_Product;
-import org.compiere.model.I_S_ResourceAssignment;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
@@ -96,11 +87,11 @@ import org.zkoss.zul.ext.Sortable;
  */
 public abstract class InfoPanel extends Window implements EventListener<Event>, WTableModelListener, Sortable<Object>, IHelpContext
 {
-
 	/**
-	 * generated serial version ID
+	 * 
 	 */
-	private static final long serialVersionUID = 325050327514511004L;
+	private static final long serialVersionUID = 6189936771781956451L;
+
 	private final static int PAGE_SIZE = 100;
 	
 	protected Map<String, WEditor> editorMap = new HashMap<String, WEditor>();
@@ -113,118 +104,15 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     }
 
 	/**
-	 * Show BPartner Info (non modal)
-	 * @param WindowNo window no
+	 * Show panel based on tablename (non modal)
+	 * @param tableName
 	 */
-	public static void showBPartner (int WindowNo)
+    public static void showPanel (String tableName)
 	{
-		InfoPanel info = InfoManager.create(WindowNo, I_C_BPartner.Table_Name,
-				I_C_BPartner.COLUMNNAME_C_BPartner_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showBPartner
-
-	/**
-	 * Show Asset Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 */
-	public static void showAsset (int WindowNo)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_A_Asset.Table_Name, I_A_Asset.COLUMNNAME_A_Asset_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showBPartner
-
-	/**
-	 * Show Product Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 */
-	public static void showProduct (int WindowNo)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_M_Product.Table_Name, I_M_Product.COLUMNNAME_M_Product_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showProduct
-
-	/**
-	 * Show Order Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 * @param value query value
-	 */
-	public static void showOrder (int WindowNo, String value)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_C_Order.Table_Name, I_C_Order.COLUMNNAME_C_Order_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showOrder
-
-	/**
-	 * Show Invoice Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 * @param value query value
-	 */
-	public static void showInvoice (int WindowNo, String value)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_C_Invoice.Table_Name, I_C_Invoice.COLUMNNAME_C_Invoice_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showInvoice
-
-	/**
-	 * Show Shipment Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 * @param value query value
-	 */
-	public static void showInOut (int WindowNo, String value)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_M_InOut.Table_Name, I_M_InOut.COLUMNNAME_M_InOut_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showInOut
-
-	/**
-	 * Show Payment Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 * @param value query value
-	 */
-	public static void showPayment (int WindowNo, String value)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_C_Payment.Table_Name, I_C_Payment.COLUMNNAME_C_Payment_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showPayment
-
-	/**
-	 * Show Cash Line Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 * @param value query value
-	 */
-	public static void showCashLine (int WindowNo, String value)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_C_CashLine.Table_Name, I_C_CashLine.COLUMNNAME_C_CashLine_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showCashLine
-
-	/**
-	 * Show Assignment Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 * @param value query value
-	 */
-	public static void showAssignment (int WindowNo, String value)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_S_ResourceAssignment.Table_Name, I_S_ResourceAssignment.COLUMNNAME_S_ResourceAssignment_ID, "", false, "", false);
+		InfoPanel info = InfoManager.create(0, tableName, tableName + "_ID", "", false, "", false);
 		info.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 		AEnv.showWindow(info);
-	}   //  showAssignment
+	}	// showPanel
 
 	/** Window Width                */
 	static final int        INFO_WIDTH = 800;
