@@ -266,6 +266,7 @@ public abstract class Doc
 			log.severe(msg);
 			throw new IllegalArgumentException(msg);
 		}
+		p_po.load(p_po.get_TrxName()); // reload the PO to get any virtual column that was not obtained using the rs (IDEMPIERE-775)
 
 		//	DocStatus
 		int index = p_po.get_ColumnIndex("DocStatus");
