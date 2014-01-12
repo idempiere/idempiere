@@ -167,7 +167,7 @@ public final class APanel extends CPanel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -253840959387736456L;
+	private static final long serialVersionUID = 8668865618093531311L;
 
 	private boolean isNested = false;
 	private boolean ToolBarMenuRestictionLoaded = false;
@@ -1261,7 +1261,7 @@ public final class APanel extends CPanel
 			aHistory.setPressed(!m_curTab.isOnlyCurrentRows());
 
 		//	Transaction info
-		String trxInfo = m_curTab.getTrxInfo();
+		String trxInfo = m_curTab.getStatusLine();
 		if (trxInfo != null)
 			statusBar.setInfo(trxInfo);
 

@@ -1532,7 +1532,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         //  Transaction info
         if (!detailTab)
         {
-	        String trxInfo = adTabbox.getSelectedGridTab().getTrxInfo();
+	        String trxInfo = adTabbox.getSelectedGridTab().getStatusLine();
 	        if (trxInfo != null)
 	        {
 	            statusBar.setInfo(trxInfo);
