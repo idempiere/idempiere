@@ -26,11 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ChoiceFormat;
-import java.text.DecimalFormat;
-import java.text.Format;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -116,7 +112,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2502318175715266604L;
+	private static final long serialVersionUID = 3747471319239796736L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -2048,71 +2044,34 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		MStatusLine sl = MStatusLine.getSL(getAD_Window_ID(), getAD_Tab_ID(), getAD_Table_ID());
 		if (sl != null)
 		{
-			String sql = sl.getSQLStatement();
-
-			if (sql.indexOf("@") >= 0) {
-				sql = Env.parseContext(Env.getCtx(), getWindowNo(), sql, false, false);
-				if (sql.length() == 0) {
-					return null;
-				}
-			}
-
-			if (log.isLoggable(Level.FINE)) log.fine(m_vo.TableName);
-			MessageFormat mf = null;
-			String msgValue = sl.getAD_Message().getValue();
-			try
-			{
-				mf = new MessageFormat(Msg.getMsg(Env.getAD_Language(m_vo.ctx), msgValue), Env.getLanguage(m_vo.ctx).getLocale());
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, msgValue + "=" + Msg.getMsg(Env.getAD_Language(m_vo.ctx), msgValue), e);
-			}
-			if (mf == null)
-				return null;
-
-			Format[] fmts = mf.getFormatsByArgumentIndex();
-			Object[] arguments = new Object[fmts.length];
-			boolean filled = false;
-
-			PreparedStatement stmt = null;
-			ResultSet rs = null;
-			try
-			{
-				stmt = DB.prepareStatement(sql, null);
-				rs = stmt.executeQuery();
-				if (rs.next())
-				{
-					for (int idx = 0; idx < fmts.length; idx++) {
-						Format fmt = fmts[idx];
-						Object obj;
-						if (fmt instanceof DecimalFormat || fmt instanceof ChoiceFormat) {
-							obj = rs.getDouble(idx+1);
-						} else if (fmt instanceof SimpleDateFormat) {
-							obj = rs.getTimestamp(idx+1);
-						} else {
-							obj = rs.getString(idx+1);
-						}
-						arguments[idx] = obj;
-					}
-					filled = true;
-				}
-			}
-			catch (SQLException e)
-			{
-				log.log(Level.WARNING, sql, e);
-			}
-			finally
-			{
-				DB.close(rs, stmt);
-				rs = null; stmt = null;
-			}
-			if (filled)
-				return mf.format(arguments);
+			String line = sl.parseLine(getWindowNo());
+			return line;
 		}
 
 		return null;
 	}	// getStatusLine
+
+	/**************************************************************************
+	 *	Widget support
+	 *	Depending on Window/Tab returns widget lines info
+	 *  @return info
+	 */
+	public String getStatusLinesWidget() {
+		MStatusLine[] wls = MStatusLine.getStatusLinesWidget(getAD_Window_ID(), getAD_Tab_ID(), getAD_Table_ID());
+		if (wls != null && wls.length > 0)
+		{
+			StringBuilder lines = new StringBuilder();
+			for (MStatusLine wl : wls) {
+				String line = wl.parseLine(getWindowNo());
+				if (line != null) {
+					lines.append(line).append("<br>");
+				}
+			}
+			if (lines.length() > 0)
+				return lines.toString();
+		}
+		return null;
+	} // getWidgetLines
 
 	/**
 	 *  Load Dependent Information
@@ -3366,4 +3325,5 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		selection.clear();
 	}
+
 }	//	GridTab
