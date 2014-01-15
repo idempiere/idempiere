@@ -31,7 +31,7 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20131211L;
 
     /** Standard Constructor */
     public X_C_NonBusinessDay (Properties ctx, int C_NonBusinessDay_ID, String trxName)
@@ -96,6 +96,34 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
 	public int getC_Calendar_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Calendar_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_Name)
+			.getPO(getC_Country_ID(), get_TrxName());	}
+
+	/** Set Country.
+		@param C_Country_ID 
+		Country 
+	  */
+	public void setC_Country_ID (int C_Country_ID)
+	{
+		if (C_Country_ID < 1) 
+			set_Value (COLUMNNAME_C_Country_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Country_ID, Integer.valueOf(C_Country_ID));
+	}
+
+	/** Get Country.
+		@return Country 
+	  */
+	public int getC_Country_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Country_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
