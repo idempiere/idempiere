@@ -208,4 +208,17 @@ public interface I_AD_ZoomCondition
 	  * Fully qualified SQL WHERE clause
 	  */
 	public String getWhereClause();
+
+    /** Column name ZoomLogic */
+    public static final String COLUMNNAME_ZoomLogic = "ZoomLogic";
+
+	/** Set Zoom Logic.
+	  * the result determines if the zoom condition is applied
+	  */
+	public void setZoomLogic (String ZoomLogic);
+
+	/** Get Zoom Logic.
+	  * the result determines if the zoom condition is applied
+	  */
+	public String getZoomLogic();
 }
