@@ -144,6 +144,10 @@ public class DataEngine
 
 		if (format == null)
 			throw new IllegalStateException ("No print format");
+
+		 if (format.getJasperProcess_ID() > 0)
+			 return null;
+
 		String tableName = null;
 		String reportName = format.getName();
 		//
