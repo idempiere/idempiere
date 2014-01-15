@@ -35,7 +35,7 @@ public class ProcessInfoParameter implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4536416337960754407L;
+	private static final long serialVersionUID = -8571973325856537109L;
 
 	/**
 	 *  Construct Parameter
@@ -171,6 +171,19 @@ public class ProcessInfoParameter implements Serializable
 		return "Y".equals(m_Parameter_To);
 	}
 	
+	/**
+	 * Method getParameter_To as Timestamp
+	 * @return Timestamp
+	 */
+	public Timestamp getParameter_ToAsTimestamp()
+	{
+		if (m_Parameter_To == null)
+			return null;
+		if (m_Parameter_To instanceof Timestamp)
+			return (Timestamp) m_Parameter_To;
+		return null;
+	}  // getParameter_ToAsTimestamp
+
 	/**
 	 * Method getParameter as Timestamp
 	 * @return Object
