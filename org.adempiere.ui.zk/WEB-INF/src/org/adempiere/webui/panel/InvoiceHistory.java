@@ -34,9 +34,9 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.info.InfoProductWindow;
 import org.compiere.model.MDocType;
 import org.compiere.model.MPriceList;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -60,7 +60,9 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7426909865199278220L;
+	private static final long serialVersionUID = 8742214467478030802L;
+
+	boolean showDetailATP = false;
 
 	/**
 	 *	Show History
@@ -94,6 +96,8 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		
 		this.setSclass("popup-dialog");
 		AEnv.showCenterWindow(parent, this);
+		if (parent instanceof InfoProductWindow)
+			showDetailATP = ((InfoProductWindow)parent).isShowDetailATP();
 	}	//	InvoiceHistory
 
 	private int		m_C_BPartner_ID;
@@ -598,10 +602,9 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		columnNames.add(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));
 
 		//	Fill Storage Data
-		boolean showDetail = CLogMgt.isLevelFine();
 		String sql = "SELECT s.QtyOnHand, s.QtyReserved, s.QtyOrdered,"
 			+ " productAttribute(s.M_AttributeSetInstance_ID), s.M_AttributeSetInstance_ID,";
-		if (!showDetail)
+		if (!showDetailATP)
 			sql = "SELECT SUM(s.QtyOnHand), SUM(s.QtyReserved), SUM(s.QtyOrdered),"
 				+ " productAttribute(s.M_AttributeSetInstance_ID), 0,";
 		sql += " w.Name, l.Value "
@@ -614,7 +617,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		if (m_M_AttributeSetInstance_ID > 0)
 			sql += " AND s.M_AttributeSetInstance_ID=?";
 		sql += " AND (s.QtyOnHand<>0 OR s.QtyReserved<>0 OR s.QtyOrdered<>0)";
-		if (!showDetail)
+		if (!showDetailATP)
 			sql += " GROUP BY productAttribute(s.M_AttributeSetInstance_ID), w.Name, l.Value";
 		sql += " ORDER BY l.Value";
 		
@@ -643,7 +646,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 				line.add(new Double(rs.getDouble(2)));  //  QtyReserved
 				line.add(rs.getString(7));      		//  Locator
 				String asi = rs.getString(4);
-				if (showDetail && (asi == null || asi.length() == 0))
+				if (showDetailATP && (asi == null || asi.length() == 0))
 					asi = "{" + rs.getInt(5) + "}";
 				line.add(asi);							//  ASI
 				line.add(null);							//  DocumentNo
@@ -710,7 +713,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 				line.add(qtyReserved);					//  QtyReserved
 				line.add(null);				      		//  Locator
 				String asi = rs.getString(3);
-				if (showDetail && (asi == null || asi.length() == 0))
+				if (showDetailATP && (asi == null || asi.length() == 0))
 					asi = "{" + rs.getInt(4) + "}";
 				line.add(asi);							//  ASI
 				line.add(rs.getString(7));				//  DocumentNo
