@@ -330,9 +330,17 @@ public class TableElement extends PrintElement
 				Serializable dataItem = m_data.getRowData().get(dataCol);
 				if (dataItem == null)
 				{
-					dimensions.set(dataCol, new Dimension2DImpl());
-					continue;
-				}										
+					//ensure fixed column width respected even when data is null
+					if (m_columnMaxWidth[col] != 0 && m_columnMaxWidth[col] != -1 && m_fixedWidth[col])
+					{
+						dataItem = " ";
+					}
+					else
+					{
+						dimensions.set(dataCol, new Dimension2DImpl());
+						continue;
+					}										
+				}									
 				String string = dataItem.toString();
 				if (string.length() == 0)
 				{
