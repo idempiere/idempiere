@@ -332,7 +332,7 @@ public class TableElement extends PrintElement
 				{
 					dimensions.set(dataCol, new Dimension2DImpl());
 					continue;
-				}
+				}										
 				String string = dataItem.toString();
 				if (string.length() == 0)
 				{
@@ -1196,6 +1196,9 @@ public class TableElement extends PrintElement
 		if (pageXindex+1 < m_firstColumnOnPage.size())
 			nextPageColumn = ((Integer)m_firstColumnOnPage.get(pageXindex+1)).intValue();
 		//
+		if (pageYindex >= m_firstRowOnPage.size())  {
+			pageYindex = m_firstRowOnPage.size() - 1;
+		}
 		int firstRow = ((Integer)m_firstRowOnPage.get(pageYindex)).intValue();
 		int nextPageRow = m_data.getRowCount();				//	no of rows
 		if (pageYindex+1 < m_firstRowOnPage.size())
