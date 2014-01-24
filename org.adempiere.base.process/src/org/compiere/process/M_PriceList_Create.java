@@ -90,7 +90,7 @@ public class M_PriceList_Create extends SvrProcess {
 	protected String doIt() throws Exception {
 		StringBuilder sql = new StringBuilder();
 		StringBuilder sqlupd = new StringBuilder();
-		StringBuilder sqldel = new StringBuilder();
+		String sqldel;
 		StringBuilder sqlins = new StringBuilder();
 		int cntu = 0;
 		int cntd = 0;
@@ -233,12 +233,10 @@ public class M_PriceList_Create extends SvrProcess {
 		//	Delete Old Data	
 		//
 		if (p_DeleteOld.equals("Y")) {
-			sqldel.append("DELETE M_ProductPrice ")
-					.append(" WHERE	M_PriceList_Version_ID = ")
-					.append(p_PriceList_Version_ID);
-			cntd = DB.executeUpdate(sqldel.toString(), get_TrxName());
+			sqldel = "DELETE M_ProductPrice WHERE	M_PriceList_Version_ID=?";
+			cntd = DB.executeUpdate(sqldel, p_PriceList_Version_ID, get_TrxName());
 			if (cntd == -1)
-				raiseError(" DELETE	M_ProductPrice ", sqldel.toString());
+				raiseError(" DELETE	M_ProductPrice ", sqldel);
 			totd += cntd;
 			message = new StringBuilder("@Deleted@=").append(cntd).append(" - ");
 			if (log.isLoggable(Level.FINE)) log.fine("Deleted " + cntd);
@@ -287,12 +285,10 @@ public class M_PriceList_Create extends SvrProcess {
 					//
 					//Clear Temporary Table
 					//
-					sqldel = new StringBuilder("DELETE FROM T_Selection WHERE AD_PInstance_ID=");
-									sqldel.append(m_AD_PInstance_ID);
-									
-					cntd = DB.executeUpdate(sqldel.toString(), get_TrxName());
+					sqldel = "DELETE FROM T_Selection WHERE AD_PInstance_ID=?";
+					cntd = DB.executeUpdate(sqldel, m_AD_PInstance_ID, get_TrxName());
 					if (cntd == -1)
-						raiseError(" DELETE	T_Selection ", sqldel.toString());
+						raiseError(" DELETE	T_Selection ", sqldel);
 					totd += cntd;
 					if (log.isLoggable(Level.FINE)) log.fine("Deleted " + cntd);
 					//
@@ -404,15 +400,10 @@ public class M_PriceList_Create extends SvrProcess {
 					v_temp = rsCurgen.getInt("M_PriceList_Version_Base_ID");
 					if (rsCurgen.wasNull() || v_temp != p_PriceList_Version_ID) {
 
-						sqldel = new StringBuilder("DELETE M_ProductPrice pp");
-									 sqldel.append(" WHERE pp.M_PriceList_Version_ID = ");
-									 sqldel.append(p_PriceList_Version_ID);
-									 sqldel.append(" AND EXISTS (SELECT t_selection_id FROM T_Selection s WHERE pp.M_Product_ID=s.T_Selection_ID");
-									 sqldel.append(" AND s.AD_PInstance_ID=").append(m_AD_PInstance_ID).append(")");
-
-						cntd = DB.executeUpdate(sqldel.toString(), get_TrxName());
+						sqldel = "DELETE M_ProductPrice pp WHERE pp.M_PriceList_Version_ID=? AND EXISTS (SELECT t_selection_id FROM T_Selection s WHERE pp.M_Product_ID=s.T_Selection_ID AND s.AD_PInstance_ID=?)";
+						cntd = DB.executeUpdate(sqldel, new Object[]{p_PriceList_Version_ID, m_AD_PInstance_ID}, false, get_TrxName());
 						if (cntd == -1)
-							raiseError(" DELETE	M_ProductPrice ", sqldel.toString());
+							raiseError(" DELETE	M_ProductPrice ", sqldel);
 						totd += cntd;
 						message.append(", @Deleted@=").append(cntd);
 						if (log.isLoggable(Level.FINE)) log.fine("Deleted " + cntd);
@@ -831,10 +822,10 @@ public class M_PriceList_Create extends SvrProcess {
 				//
 				//	Delete Temporary Selection
 				//
-				sqldel = new StringBuilder("DELETE FROM T_Selection ");
-				cntd = DB.executeUpdate(sqldel.toString(), get_TrxName());
+				sqldel = "DELETE FROM T_Selection WHERE AD_PInstance_ID=?";
+				cntd = DB.executeUpdate(sqldel, m_AD_PInstance_ID, get_TrxName());
 				if (cntd == -1)
-					raiseError(" DELETE	T_Selection ", sqldel.toString());
+					raiseError(" DELETE	T_Selection ", sqldel);
 				totd += cntd;
 				if (log.isLoggable(Level.FINE)) log.fine("Deleted " + cntd);
 				
