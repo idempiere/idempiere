@@ -31,7 +31,7 @@ public class PoExporter {
 		try {
 			//default trim to false for print item label since trailing space is commonly use 
 			//for formatting purpose
-			if (qName.equalsIgnoreCase("PrintName")) {
+			if (qName.equalsIgnoreCase("PrintName") || qName.equalsIgnoreCase("UserLevel")) {
 				atts.addAttribute("", "", "trim", "CDATA", "false");
 			}
 			transformerHandler.startElement("", "", qName, atts);

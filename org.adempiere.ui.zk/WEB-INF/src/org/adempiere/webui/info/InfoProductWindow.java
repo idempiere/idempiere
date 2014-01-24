@@ -13,6 +13,7 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.ListboxFactory;
@@ -31,7 +32,6 @@ import org.adempiere.webui.session.SessionManager;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.model.MDocType;
 import org.compiere.model.MRole;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -48,11 +48,10 @@ import org.zkoss.zul.South;
  *
  */
 public class InfoProductWindow extends InfoWindow {
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4939032152860189380L;
+	private static final long serialVersionUID = 4817648658129732541L;
 
 	private Tabbox tabbedPane;
 	private WListbox warehouseTbl;
@@ -64,6 +63,9 @@ public class InfoProductWindow extends InfoWindow {
     //Available to Promise Tab
 	private WListbox m_tableAtp;
 	
+	// Group atp by warehouse or non
+	private Checkbox chbShowDetailAtp;
+
 	//IDEMPIERE-337
     private WListbox productpriceTbl;
     private String m_sqlProductprice;
@@ -275,6 +277,21 @@ public class InfoProductWindow extends InfoWindow {
 		desktopTabPanel = new Tabpanel();
 		desktopTabPanel.setHeight("100%");
 		desktopTabPanel.appendChild(m_tableAtp);
+		// IDEMPIERE-1692
+		chbShowDetailAtp = new Checkbox();
+		chbShowDetailAtp.setLabel(Msg.getMsg(Env.getCtx(), "showDetailAtp", true));
+		chbShowDetailAtp.setTooltiptext(Msg.getMsg(Env.getCtx(), "showDetailAtp", false));
+		chbShowDetailAtp.addActionListener(new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				if (contentPanel.getLayout() != null) {
+					int M_Warehouse_ID = getSelectedWarehouseId();
+					int m_M_Product_ID = getSelectedRowKey();
+					initAtpTab(M_Warehouse_ID, m_M_Product_ID);
+				}
+			}
+		});
+		desktopTabPanel.appendChild(chbShowDetailAtp);
 		tabPanels.appendChild(desktopTabPanel);
 		
 		tab = new Tab(Msg.translate(Env.getCtx(), "Price"));
@@ -631,7 +648,7 @@ public class InfoProductWindow extends InfoWindow {
 		columnNames.add(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));
 
 		//	Fill Storage Data
-		boolean showDetail = CLogMgt.isLevelFine();
+		boolean showDetail = isShowDetailATP();
 		String sql = "SELECT s.QtyOnHand, s.QtyReserved, s.QtyOrdered,"
 			+ " productAttribute(s.M_AttributeSetInstance_ID), s.M_AttributeSetInstance_ID,";
 		if (!showDetail)
@@ -776,6 +793,10 @@ public class InfoProductWindow extends InfoWindow {
 		//
 		m_tableAtp.autoSize();
 	}	//	initAtpTab
+
+	public boolean isShowDetailATP() {
+		return chbShowDetailAtp.isChecked();
+	}
 
 	@Override
 	protected void showHistory() {
