@@ -62,6 +62,7 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.I_AD_Preference;
 import org.compiere.model.MLookup;
 import org.compiere.model.MPreference;
+import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
@@ -120,11 +121,10 @@ import org.zkoss.zul.impl.XulElement;
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
 DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 {
-
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -6748431395547118246L;
+	private static final long serialVersionUID = 2592856355985389339L;
 
 	private static final String ON_SAVE_OPEN_PREFERENCE_EVENT = "onSaveOpenPreference";
 
@@ -942,6 +942,22 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
 
     /**
+     * @return TreePanel
+     */
+    public ADTreePanel getTreePanel()
+    {
+    	return treePanel;
+    }
+
+    /**
+     * @return TreePanel
+     */
+    public String getTreeDisplayedOn()
+    {
+    	return gridTab.getTreeDisplayedOn();
+    }
+
+    /**
      * Refresh current row
      */
     public void refresh()
@@ -1202,6 +1218,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         //sync tree 
         if (treePanel != null) 
         {
+        	if (getTreeDisplayedOn().equals(MTab.TREEDISPLAYEDON_MasterTab))
+        		treePanel.getParent().setVisible(!isDetailPaneMode());
+        	else if (getTreeDisplayedOn().equals(MTab.TREEDISPLAYEDON_DetailTab))
+        		treePanel.getParent().setVisible(isDetailPaneMode());
+
         	if ("Deleted".equalsIgnoreCase(e.getAD_Message()))
         	{
         		if (e.Record_ID != null && e.Record_ID instanceof Integer && ((Integer)e.Record_ID != gridTab.getRecord_ID()))

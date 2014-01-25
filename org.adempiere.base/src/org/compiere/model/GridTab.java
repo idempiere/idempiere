@@ -112,7 +112,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3747471319239796736L;
+	private static final long serialVersionUID = 1583164211079643636L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -1664,6 +1664,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		return m_vo.HasTree;
 	}   //  isTreeTab
+
+	/**
+	 * Where the tree should be shown
+	 * @return master, detail or both
+	 */
+	public String getTreeDisplayedOn()
+	{
+		return m_vo.TreeDisplayedOn;
+	}   //  getTreeDisplayedOn
 
 	/**
 	 *	Get Tab ID
