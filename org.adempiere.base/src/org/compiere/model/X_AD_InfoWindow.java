@@ -30,7 +30,7 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140108L;
+	private static final long serialVersionUID = 20140124L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName)
@@ -143,6 +143,34 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public String getAD_InfoWindow_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_AD_InfoWindow_UU);
+	}
+
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
+			.getPO(getAD_Process_ID(), get_TrxName());	}
+
+	/** Set Process.
+		@param AD_Process_ID 
+		Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID)
+	{
+		if (AD_Process_ID < 1) 
+			set_Value (COLUMNNAME_AD_Process_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
+	}
+
+	/** Get Process.
+		@return Process or Report
+	  */
+	public int getAD_Process_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException

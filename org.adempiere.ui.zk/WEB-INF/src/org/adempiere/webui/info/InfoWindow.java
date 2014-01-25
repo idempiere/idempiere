@@ -14,6 +14,8 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.component.Borderlayout;
+import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -54,7 +56,6 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
@@ -67,13 +68,14 @@ import org.zkoss.zul.Vbox;
 /**
  * AD_InfoWindow implementation
  * @author hengsin
+ * @contributor red1 IDEMPIERE-1711 with final review by Hengsin
  *
  */
 public class InfoWindow extends InfoPanel implements ValueChangeListener, EventListener<Event> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5723251182432810379L;
+	private static final long serialVersionUID = -8641832995439101215L;
 
 	protected Grid parameterGrid;
 	private Borderlayout layout;
@@ -93,7 +95,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected String queryValue;
 	
 	private List<GridField> gridFields;
-	private int AD_InfoWindow_ID;
 	private Checkbox checkAND;
     
 	/**
@@ -122,6 +123,19 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				lookup);		
 		this.queryValue = queryValue;
 		this.AD_InfoWindow_ID = AD_InfoWindow_ID;
+
+		//red1 IDEMPIERE-1711 (Hengsin advised this minimal coding way)
+		infoWindow = new MInfoWindow(Env.getCtx(), AD_InfoWindow_ID, null);
+   		if (infoWindow.getAD_Process_ID() > 0)
+   		{
+   			p_multipleSelection = true;
+   			hasProcess = true;
+        	Button b = confirmPanel.createButton(ConfirmPanel.A_PROCESS);
+            confirmPanel.addComponentsLeft(b);
+            b.addEventListener(Events.ON_CLICK, this);
+        }
+        //red1  -- end --
+
 		infoContext = new Properties(Env.getCtx());
 		p_loadedOK = loadInfoDefinition(); 
 		if (loadedOK()) {
@@ -526,6 +540,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		renderFooter(south);		
 		
 		confirmPanel.getButton(ConfirmPanel.A_ZOOM).setVisible(hasZoom());
+		confirmPanel.getButton(ConfirmPanel.A_ZOOM).setDisabled(true);
+		if (hasProcess)
+			confirmPanel.getButton(ConfirmPanel.A_PROCESS).setDisabled(true);
+
 	}
 
 	protected void renderFooter(South south) {		
@@ -825,6 +843,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	@Override
 	protected boolean hasZoom() {
 		return !isLookup() && infoWindow != null && !MTable.get(Env.getCtx(), infoWindow.getAD_Table_ID()).isView();
+	}
+
+	@Override
+	protected boolean hasProcess() {  //red1 IDEMPIERE-1711 to retain InfoWindow.process_ID > 0 as true
+		return hasProcess;
 	}
 
 	@Override
