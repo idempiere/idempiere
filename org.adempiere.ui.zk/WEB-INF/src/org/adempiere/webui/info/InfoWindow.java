@@ -3,6 +3,7 @@
  */
 package org.adempiere.webui.info;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +14,7 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
+import org.adempiere.model.MInfoRelated;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Button;
@@ -22,8 +24,15 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
+import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
+import org.adempiere.webui.component.Tab;
+import org.adempiere.webui.component.Tabbox;
+import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.component.Tabpanels;
+import org.adempiere.webui.component.Tabs;
+import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
@@ -32,6 +41,7 @@ import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.minigrid.ColumnInfo;
+import org.compiere.minigrid.EmbedWinInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.AccessSqlParser;
 import org.compiere.model.AccessSqlParser.TableInfo;
@@ -56,6 +66,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SwipeEvent;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
@@ -68,14 +79,14 @@ import org.zkoss.zul.Vbox;
 /**
  * AD_InfoWindow implementation
  * @author hengsin
- * @contributor red1 IDEMPIERE-1711 with final review by Hengsin
- *
+ * @contributor red1 	IDEMPIERE-1711 Process button (reviewed by Hengsin)
+ * @contributor xolali 	IDEMPIERE-1045 Sub-Info Tabs  (reviewed by red1)
  */
 public class InfoWindow extends InfoPanel implements ValueChangeListener, EventListener<Event> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8641832995439101215L;
+	private static final long serialVersionUID = -5198550045241794995L;
 
 	protected Grid parameterGrid;
 	private Borderlayout layout;
@@ -84,6 +95,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     protected List<WEditor> editors;
     protected List<WEditor> identifiers;
     protected Properties infoContext;
+
+    /** embedded Panel **/
+    Tabbox embeddedPane = new Tabbox();
+    ArrayList <EmbedWinInfo> embeddedWinList = new ArrayList <EmbedWinInfo>();
 
 	/** Max Length of Fields */
     public static final int FIELDLENGTH = 20;
@@ -136,8 +151,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         }
         //red1  -- end --
 
+   		//Xolali IDEMPIERE-1045
+   		contentPanel.addActionListener(new EventListener<Event>() {
+   			public void onEvent(Event event) throws Exception {
+   				int row = contentPanel.getSelectedRow();
+   				if (row >= 0) {
+   					for (EmbedWinInfo embed : embeddedWinList) {
+   						refresh(contentPanel.getValueAt(row,0),embed);
+   					}// refresh for all
+   				}
+   			}
+   		}); //xolali --end-
+
 		infoContext = new Properties(Env.getCtx());
 		p_loadedOK = loadInfoDefinition(); 
+		loadInfoRelatedTabs();
 		if (loadedOK()) {
 			if (isLookup()) {
 				Env.clearTabContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO);
@@ -259,6 +287,89 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		} else {
 			return false;
 		}
+	}
+
+	//private MInfoColumn[] topinfoColumns;//infoWindow.getInfoColumns(tableInfos);
+	private boolean loadInfoRelatedTabs() {
+		if (infoWindow == null)
+			return false;
+
+		// topinfoColumns = infoWindow.getInfoColumns();
+		MInfoRelated[] relatedInfoList = infoWindow.getInfoRelated(true);
+		Tabpanels tabPanels = new Tabpanels();
+		Tabs tabs = new Tabs();
+
+		if (relatedInfoList.length > 0) { // setup the panel
+
+			//embeddedPane.setTitle(Msg.translate(Env.getCtx(), "Related Information"));
+			embeddedPane.setHeight("100%");
+			//tabPanels = new Tabpanels();
+			embeddedPane.appendChild(tabPanels);
+			//tabs = new Tabs();
+			embeddedPane.appendChild(tabs);
+
+		}
+
+		//	for(int i=0; i <  relatedinfoList.length - 1 ; i++) {
+		for (MInfoRelated relatedInfo:relatedInfoList) {
+
+			String tableName = null;		
+			int infoRelatedID = relatedInfo.getRelatedInfo_ID(); 
+
+			MInfoWindow embedInfo = new MInfoWindow(Env.getCtx(), infoRelatedID, null);
+
+			AccessSqlParser sqlParser = new AccessSqlParser("SELECT * FROM " + embedInfo.getFromClause());
+			TableInfo[] tableInfos = sqlParser.getTableInfo(0);
+			if (tableInfos[0].getSynonym() != null && tableInfos[0].getSynonym().trim().length() > 0){
+				tableName = tableInfos[0].getSynonym().trim();
+			}
+
+			WListbox embeddedTbl = new WListbox();
+			String m_sqlEmbedded;
+
+			//MInfoWindow.getInfoWindow(infoRelatedID);
+
+			if (embedInfo != null) {
+				ArrayList<ColumnInfo> list = new ArrayList<ColumnInfo>();
+				list = getInfoColumnslayout(embedInfo);
+				//  Convert ArrayList to Array
+				ColumnInfo[] s_layoutEmbedded  = new ColumnInfo[list.size()];
+				list.toArray(s_layoutEmbedded);
+
+				/**	From Clause							*/
+				String s_sqlFrom = embedInfo.getFromClause();
+				/** Where Clause						*/
+				String s_sqlWhere = relatedInfo.getLinkColumnName() + "=?";
+				m_sqlEmbedded = embeddedTbl.prepareTable(s_layoutEmbedded, s_sqlFrom, s_sqlWhere, false, tableName);
+
+				embeddedTbl.setMultiSelection(false);
+
+				embeddedTbl.autoSize();
+
+				embeddedTbl.getModel().addTableModelListener(this);
+
+				//Xolali - add embeddedTbl to list, add m_sqlembedded to list
+				EmbedWinInfo ewinInfo = new EmbedWinInfo(embedInfo,embeddedTbl,m_sqlEmbedded,relatedInfo.getLinkColumnName(), relatedInfo.getLinkInfoColumn());
+				embeddedWinList.add(ewinInfo);
+
+				MInfoWindow riw = (MInfoWindow) relatedInfo.getRelatedInfo();
+				String tabTitle;
+				if (riw != null)
+					tabTitle = Util.cleanAmp(riw.get_Translation("Name"));
+				else
+					tabTitle = relatedInfo.getName();
+				Tab tab = new Tab(tabTitle);
+				tabs.appendChild(tab);
+				Tabpanel desktopTabPanel = new Tabpanel();
+				//desktopTabPanel.
+				desktopTabPanel.setHeight("100%");
+				desktopTabPanel.appendChild(embeddedTbl);
+				tabPanels.appendChild(desktopTabPanel);
+			}
+
+		}
+
+		return true;
 	}
 
 	protected void prepareTable() {		
@@ -566,7 +677,51 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		div.setVflex("1");
 		div.setHflex("1");
 		div.appendChild(contentPanel);				
-		center.appendChild(div);
+
+		Borderlayout inner = new Borderlayout();
+		inner.setWidth("100%");
+		inner.setHeight("100%");
+		int height = SessionManager.getAppDesktop().getClientInfo().desktopHeight * 90 / 100;
+		if (isLookup())
+			inner.setStyle("border: none; position: relative; ");
+		else
+			inner.setStyle("border: none; position: absolute; ");
+		inner.appendCenter(div);
+		//true will conflict with listbox scrolling
+		inner.getCenter().setAutoscroll(false);
+
+		if (embeddedWinList.size() > 0) {
+			South south = new South();
+			int detailHeight = (height * 25 / 100);
+			south.setHeight(detailHeight + "px");
+			south.setAutoscroll(true);
+			south.setCollapsible(true);
+			south.setSplittable(true);
+			south.setTitle(Msg.translate(Env.getCtx(), "Related Information"));
+			south.setTooltiptext(Msg.translate(Env.getCtx(), "Related Information"));
+
+			south.addEventListener(Events.ON_SWIPE, new EventListener<SwipeEvent>() {
+				@Override
+				public void onEvent(SwipeEvent event) throws Exception {
+					South south = (South) event.getTarget();
+					if ("down".equals(event.getSwipeDirection())) {
+						south.setOpen(false);
+					}
+				}
+			});
+			south.setSclass("south-collapsible-with-title");
+			south.setAutoscroll(true);
+			//south.sets
+			inner.appendChild(south);
+			embeddedPane.setSclass("info-product-tabbedpane");
+			embeddedPane.setVflex("1");
+			embeddedPane.setHflex("1");
+
+			south.appendChild(embeddedPane);
+
+		}// render embedded
+
+		center.appendChild(inner);
 	}
 
 	protected void renderParameterPane(North north) {
@@ -983,7 +1138,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return true;
 	}	//	testCount
 
-	/** Return true if there is a 'IsActive' criteria */
+	/** Return true if there is an 'IsActive' criteria */
 	boolean hasIsActiveEditor() {
 		for (WEditor editor : editors) {
 			if (editor.getGridField() != null && "IsActive".equals(editor.getGridField().getColumnName())) {
@@ -991,6 +1146,224 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * @author xolali IDEMPIERE-1045
+	 * getInfoColumnslayout(MInfoWindow info)
+	 */
+	public ArrayList<ColumnInfo> getInfoColumnslayout(MInfoWindow info){
+
+		AccessSqlParser sqlParser = new AccessSqlParser("SELECT * FROM " + info.getFromClause());
+		TableInfo[] tableInfos = sqlParser.getTableInfo(0);
+
+		MInfoColumn[] infoColumns = info.getInfoColumns(tableInfos);
+		ArrayList<ColumnInfo> list = new ArrayList<ColumnInfo>();
+		String keyTableAlias = tableInfos[0].getSynonym() != null && tableInfos[0].getSynonym().trim().length() > 0
+				? tableInfos[0].getSynonym()
+						: tableInfos[0].getTableName();
+
+				String keySelectClause = keyTableAlias + "." + p_keyColumn;
+
+				for (MInfoColumn infoColumn : infoColumns)
+				{
+					if (infoColumn.isDisplayed(infoContext, p_WindowNo))
+					{
+						ColumnInfo columnInfo = null;
+						if (infoColumn.getAD_Reference_ID() == DisplayType.ID)
+						{
+							if (infoColumn.getSelectClause().equalsIgnoreCase(keySelectClause))
+								continue;
+
+							columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
+						}
+						else if (DisplayType.isLookup(infoColumn.getAD_Reference_ID()))
+						{
+							if (infoColumn.getAD_Reference_ID() == DisplayType.List)
+							{
+								columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), ValueNamePair.class, (String)null);
+							}
+							else
+							{
+								GridField field = getGridField(infoColumn);
+								columnInfo = createLookupColumnInfo(tableInfos, field, infoColumn);
+							}
+						}
+						else
+						{
+							columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
+						}
+						columnInfo.setColDescription(infoColumn.get_Translation("Description"));
+						columnInfo.setGridField(getGridField(infoColumn));
+						list.add(columnInfo);
+					}
+
+				}
+
+				return   list;
+	}
+
+	/**
+	 * @author xolali IDEMPIERE-1045
+	 * refresh(Object obj, EmbedWinInfo relatedInfo)
+	 */
+	private void refresh(Object obj, EmbedWinInfo relatedInfo)
+	{
+		StringBuilder sql = new StringBuilder();
+		sql.append(relatedInfo.getInfoSql()); // delete get sql method from MInfoWindow
+		if (log.isLoggable(Level.FINEST))
+			log.finest(sql.toString());
+		IDColumn ID = (IDColumn) obj;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(relatedInfo.getInfoSql(), null);
+			pstmt.setObject(1, ID.getRecord_ID());
+			rs = pstmt.executeQuery();
+			loadEmbedded(rs, relatedInfo);
+		}
+		catch (Exception e)
+		{
+			log.log(Level.WARNING, sql.toString(), e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+	}	//	refresh
+
+	/**
+	 * @author xolali IDEMPIERE-1045
+	 * loadEmbedded(ResultSet rs, EmbedWinInfo info)
+	 */
+	public void loadEmbedded(ResultSet rs, EmbedWinInfo info) throws SQLException{
+
+		ListModelTable model;
+		ArrayList<ColumnInfo> list = new ArrayList<ColumnInfo>();
+		list = getInfoColumnslayout(info.getInfowin());
+
+		//  Convert ArrayList to Array
+		ColumnInfo[] s_layoutEmbedded  = new ColumnInfo[list.size()];
+		list.toArray(s_layoutEmbedded);	
+		List<Object> data = new ArrayList<Object>();
+		ArrayList<Object> lines =  new ArrayList<Object>();
+
+		while (rs.next())
+		{
+			try {
+				data = readData(rs, s_layoutEmbedded);
+			} catch (SQLException e) {
+				//Xolali - Auto-generated catch block
+				e.printStackTrace();
+			}
+			lines.add(data);
+		}
+		model = new ListModelTable(lines);
+
+		WListbox content = (WListbox) info.getInfoTbl();
+		content.setData(model, null);
+	}
+
+	/**
+	 * @author xolali IDEMPIERE-1045
+	 * GridField getGridField(MInfoColumn infoColumn)
+	 */
+	private GridField getGridField(MInfoColumn infoColumn){
+		String columnName = infoColumn.getColumnName();
+		GridFieldVO vo = GridFieldVO.createParameter(infoContext, p_WindowNo, 0,
+				columnName, infoColumn.get_Translation("Name"), infoColumn.getAD_Reference_ID(),
+				infoColumn.getAD_Reference_Value_ID(), false, false);
+		if (infoColumn.getAD_Val_Rule_ID() > 0) {
+			vo.ValidationCode = infoColumn.getAD_Val_Rule().getCode();
+			if (vo.lookupInfo != null) {
+				vo.lookupInfo.ValidationCode = vo.ValidationCode;
+				vo.lookupInfo.IsValidated = false;
+			}
+		}
+		vo.DisplayLogic = infoColumn.getDisplayLogic() != null ? infoColumn.getDisplayLogic() : "";
+		String desc = infoColumn.get_Translation("Description");
+		vo.Description = desc != null ? desc : "";
+		String help = infoColumn.get_Translation("Help");
+		vo.Help = help != null ? help : "";
+		GridField gridField = new GridField(vo);
+
+		return gridField;
+	}
+
+	private  ArrayList<Object> readData(ResultSet rs, ColumnInfo[] p_layout) throws SQLException {
+
+		int colOffset = 1;  //  columns start with 1
+		ArrayList<Object> data = new ArrayList<Object>();
+		for (int col = 0; col < p_layout.length; col++)
+		{
+			Object value = null;
+			Class<?> c = p_layout[col].getColClass();
+			int colIndex = col + colOffset;
+			if (c == IDColumn.class)
+			{
+				value = new IDColumn(rs.getInt(colIndex));
+			}
+			else if (c == Boolean.class)
+				value = new Boolean("Y".equals(rs.getString(colIndex)));
+			else if (c == Timestamp.class)
+				value = rs.getTimestamp(colIndex);
+			else if (c == BigDecimal.class)
+				value = rs.getBigDecimal(colIndex);
+			else if (c == Double.class)
+				value = new Double(rs.getDouble(colIndex));
+			else if (c == Integer.class)
+				value = new Integer(rs.getInt(colIndex));
+			else if (c == KeyNamePair.class)
+			{
+				if (p_layout[col].isKeyPairCol())
+				{
+					String display = rs.getString(colIndex);
+					int key = rs.getInt(colIndex+1);
+					if (! rs.wasNull()) {
+						value = new KeyNamePair(key, display);
+					}
+					colOffset++;
+				}
+				else
+				{
+					int key = rs.getInt(colIndex);
+					if (! rs.wasNull()) {
+						WEditor editor = editorMap.get(p_layout[col].getColSQL()); // rework this, it will fail
+						if (editor != null)
+						{
+							editor.setValue(key);
+							value = new KeyNamePair(key, editor.getDisplayTextForGridView(key));
+						}
+						else
+						{
+							value = new KeyNamePair(key, Integer.toString(key));
+						}
+					}
+				}
+			}
+			else if (c == ValueNamePair.class)
+			{
+				String key = rs.getString(colIndex);
+				WEditor editor = editorMap.get(p_layout[col].getColSQL());
+				if (editor != null)
+				{
+					value = new ValueNamePair(key, editor.getDisplayTextForGridView(key));
+				}
+				else
+				{
+					value = new ValueNamePair(key, key);
+				}
+			}
+			else
+			{
+				value = rs.getString(colIndex);
+			}
+			data.add(value);
+		}
+
+		return data;
 	}
 
 }
