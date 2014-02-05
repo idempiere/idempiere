@@ -229,6 +229,21 @@ public class DocumentEngine implements DocAction
 	 */
 	public boolean processIt (String processAction, String docAction)
 	{
+		//ensure doc status not change by other session
+		if (m_document instanceof PO) {
+			PO docPO = (PO) m_document;
+			if (docPO.get_ID() > 0 && docPO.get_TrxName() != null && docPO.get_ValueOld("DocStatus") != null) {
+				DB.getDatabase().forUpdate(docPO, 30);
+				String docStatusOriginal = (String) docPO.get_ValueOld("DocStatus");
+				String currentStatus = DB.getSQLValueString((String)null, 
+						"SELECT DocStatus FROM " + docPO.get_TableName() + " WHERE " + docPO.get_KeyColumns()[0] + " = ? ", 
+						docPO.get_ID());
+				if (!docStatusOriginal.equals(currentStatus) && currentStatus != null) {
+					throw new IllegalStateException("Document status have been change by other session, please refresh your window and try again. " + docPO.toString());
+				}
+			}
+		}
+				
 		m_message = null;
 		m_action = null;
 		//	Std User Workflows - see MWFNodeNext.isValidFor
@@ -1269,21 +1284,6 @@ public class DocumentEngine implements DocAction
 	 */
 	public static boolean processIt(DocAction doc, String processAction) {
 		boolean success = false;
-		
-		//ensure doc status not change by other session
-		if (doc instanceof PO) {
-			PO docPO = (PO) doc;
-			if (docPO.get_ID() > 0 && docPO.get_TrxName() != null && docPO.get_ValueOld("DocStatus") != null) {
-				DB.getDatabase().forUpdate(docPO, 30);
-				String docStatusOriginal = (String) docPO.get_ValueOld("DocStatus");
-				String currentStatus = DB.getSQLValueString((String)null, 
-						"SELECT DocStatus FROM " + docPO.get_TableName() + " WHERE " + docPO.get_KeyColumns()[0] + " = ? ", 
-						docPO.get_ID());
-				if (!docStatusOriginal.equals(currentStatus) && currentStatus != null) {
-					throw new IllegalStateException("Document status have been change by other session, please refresh your window and try again. " + docPO.toString());
-				}
-			}
-		}
 		
 		DocumentEngine engine = new DocumentEngine(doc, doc.getDocStatus());
 		success = engine.processIt(processAction, doc.getDocAction());

@@ -1,5 +1,6 @@
 package org.adempiere.pipo2;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -7,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MAttachment;
+import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -285,25 +288,54 @@ public class PoFiller{
 	private void setBlob(String qName) {
 		Element pe = element.properties.get(qName);
 		String value = pe != null ? pe.contents.toString() : null;
-		Object data = null;
 		if (value != null && value.trim().length() > 0) {
-			String[] component = value.split("[|]");
-			if (component.length == 2) {
-				String fileName = component[0];
-				String dataType = component[1];
+			if (po instanceof MAttachment && "BinaryData".equals(qName)) {
 				PackIn packIn = ctx.packIn;
-				try {
-					byte[] bytes = packIn.readBlob(fileName);
-					if ("byte[]".equals(dataType)) {
-						data = bytes;
-					} else {
-						data = new String(bytes, "UTF-8");
+				String fileName = null;
+				String[] component = value.split("[|]");
+				if (component.length == 2) {
+					fileName = component[0];
+					File[] files;
+					try {
+						files = packIn.readFilesFromBlob(fileName);
+					} catch (IOException e) {
+						throw new AdempiereException(e.getLocalizedMessage(), e);
 					}
-				} catch (IOException e) {
-					throw new AdempiereException(e.getLocalizedMessage(), e);
+					MAttachment attach = ((MAttachment)po);
+					for (File file : files) {
+						boolean found = false;
+						for (MAttachmentEntry entry : attach.getEntries()) {
+							if (entry.getName().equals(file.getName())) {
+								found = true;
+								attach.updateEntry(entry.getIndex(), file);
+							}
+						}
+						if (! found)
+							attach.addEntry(file);
+					}
 				}
+			} else {
+				Object data = null;
+				byte[] bytes = null;
+				String fileName = null;
+				String[] component = value.split("[|]");
+				if (component.length == 2) {
+					fileName = component[0];
+					String dataType = component[1];
+					PackIn packIn = ctx.packIn;
+					try {
+						bytes = packIn.readBlob(fileName);
+						if ("byte[]".equals(dataType)) {
+							data = bytes;
+						} else {
+							data = new String(bytes, "UTF-8");
+						}
+					} catch (IOException e) {
+						throw new AdempiereException(e.getLocalizedMessage(), e);
+					}
+				}
+				po.set_ValueNoCheck(qName, data);
 			}
 		}
-		po.set_ValueNoCheck(qName, data);
 	}
 }
