@@ -42,8 +42,8 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4741060210080877182L;
-	
+	private static final long serialVersionUID = -2008818748067665365L;
+
 	public final static String PDF_FONT_DIR = "PDF_FONT_DIR";
 	public final static String TWOPACK_HANDLE_TRANSLATIONS = "2PACK_HANDLE_TRANSLATIONS";
 	public static final String ZK_DESKTOP_CLASS = "ZK_DESKTOP_CLASS";
@@ -122,6 +122,8 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String TAX_SAVE_REQUEST_RESPONSE_LOG = "TAX_SAVE_REQUEST_RESPONSE_LOG";
 	public static final String ADDRESS_SAVE_REQUEST_RESPONSE_LOG = "ADDRESS_SAVE_REQUEST_RESPONSE_LOG";
 	public static final String VALIDATE_MATCHING_TO_ORDERED_QTY = "VALIDATE_MATCHING_TO_ORDERED_QTY";
+	public static final String DPVIEWS_SHOWINFOACCOUNT = "DPViews_ShowInfoAccount";
+	public static final String DPVIEWS_SHOWINFOSCHEDULE = "DPViews_ShowInfoSchedule";
 
 	/**
 	 * 	Standard Constructor

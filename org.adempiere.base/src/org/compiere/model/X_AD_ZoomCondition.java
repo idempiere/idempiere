@@ -29,7 +29,7 @@ public class X_AD_ZoomCondition extends PO implements I_AD_ZoomCondition, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20131127L;
 
     /** Standard Constructor */
     public X_AD_ZoomCondition (Properties ctx, int AD_ZoomCondition_ID, String trxName)
@@ -41,7 +41,6 @@ public class X_AD_ZoomCondition extends PO implements I_AD_ZoomCondition, I_Pers
 			setAD_Window_ID (0);
 			setAD_ZoomCondition_ID (0);
 			setName (null);
-			setWhereClause (null);
         } */
     }
 
@@ -232,5 +231,22 @@ public class X_AD_ZoomCondition extends PO implements I_AD_ZoomCondition, I_Pers
 	public String getWhereClause () 
 	{
 		return (String)get_Value(COLUMNNAME_WhereClause);
+	}
+
+	/** Set Zoom Logic.
+		@param ZoomLogic 
+		the result determines if the zoom condition is applied
+	  */
+	public void setZoomLogic (String ZoomLogic)
+	{
+		set_Value (COLUMNNAME_ZoomLogic, ZoomLogic);
+	}
+
+	/** Get Zoom Logic.
+		@return the result determines if the zoom condition is applied
+	  */
+	public String getZoomLogic () 
+	{
+		return (String)get_Value(COLUMNNAME_ZoomLogic);
 	}
 }

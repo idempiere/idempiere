@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
@@ -61,6 +62,7 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.I_AD_Preference;
 import org.compiere.model.MLookup;
 import org.compiere.model.MPreference;
+import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
@@ -119,11 +121,10 @@ import org.zkoss.zul.impl.XulElement;
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
 DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 {
-
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -6748431395547118246L;
+	private static final long serialVersionUID = 2592856355985389339L;
 
 	private static final String ON_SAVE_OPEN_PREFERENCE_EVENT = "onSaveOpenPreference";
 
@@ -614,17 +615,14 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         if (gridTab.isTreeTab() && treePanel != null) {
         	int AD_Tree_ID = Env.getContextAsInt (Env.getCtx(), getWindowNo(), "AD_Tree_ID", true);
         	int AD_Tree_ID_Default = MTree.getDefaultAD_Tree_ID (Env.getAD_Client_ID(Env.getCtx()), gridTab.getKeyColumnName());
-        	if (gridTab.getRecord_ID() >= 0) {
-        		if (AD_Tree_ID != 0) {
-        			treePanel.initTree(AD_Tree_ID, windowNo);
-        			Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
-        		} else if (AD_Tree_ID_Default != 0) {
-        			treePanel.initTree(AD_Tree_ID_Default, windowNo);
-        			Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
-        		}
-        	} else {
-        		treePanel.getTree().clear();
-        	}
+        	
+    		if (AD_Tree_ID != 0) {
+    			treePanel.initTree(AD_Tree_ID, windowNo);
+    			Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
+    		} else if (AD_Tree_ID_Default != 0) {
+    			treePanel.initTree(AD_Tree_ID_Default, windowNo);
+    			Events.echoEvent(ON_DEFER_SET_SELECTED_NODE, this, null);
+    		}        	
         }
 
         if (!gridTab.isSingleRow() && !isGridView())
@@ -944,6 +942,22 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
 
     /**
+     * @return TreePanel
+     */
+    public ADTreePanel getTreePanel()
+    {
+    	return treePanel;
+    }
+
+    /**
+     * @return TreePanel
+     */
+    public String getTreeDisplayedOn()
+    {
+    	return gridTab.getTreeDisplayedOn();
+    }
+
+    /**
      * Refresh current row
      */
     public void refresh()
@@ -1144,7 +1158,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		{
 			if (nodeID > 0 && logger.isLoggable(Level.WARNING))
 				logger.log(Level.WARNING, "Tab does not have ID with Node_ID=" + nodeID);
-			return;
+			if (gridTab.getCurrentRow() >= 0) 
+			{
+				gridTab.setCurrentRow(gridTab.getCurrentRow(), true);
+			}
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(),"RecordIsNotInCurrentSearch"));
 		}
 
 		//  Navigate to node row
@@ -1200,6 +1218,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         //sync tree 
         if (treePanel != null) 
         {
+        	if (getTreeDisplayedOn().equals(MTab.TREEDISPLAYEDON_MasterTab))
+        		treePanel.getParent().setVisible(!isDetailPaneMode());
+        	else if (getTreeDisplayedOn().equals(MTab.TREEDISPLAYEDON_DetailTab))
+        		treePanel.getParent().setVisible(isDetailPaneMode());
+
         	if ("Deleted".equalsIgnoreCase(e.getAD_Message()))
         	{
         		if (e.Record_ID != null && e.Record_ID instanceof Integer && ((Integer)e.Record_ID != gridTab.getRecord_ID()))
@@ -1228,26 +1251,21 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         		if (refresh)
         		{
         			int AD_Tree_ID = Env.getContextAsInt (Env.getCtx(), getWindowNo(), "AD_Tree_ID", true);
-        			if (gridTab.getRecord_ID()>=0) 
-        			{
-        				if (AD_Tree_ID != 0)
-        				{
-                			if (treePanel.initTree(AD_Tree_ID, windowNo))
-                				echoDeferSetSelectedNodeEvent();
-                			else
-                				setSelectedNode(gridTab.getRecord_ID());
-                			
-                		}   
-        				else
-        				{
-        					AD_Tree_ID = MTree.getDefaultAD_Tree_ID (Env.getAD_Client_ID(Env.getCtx()), gridTab.getKeyColumnName());
-        					treePanel.initTree(AD_Tree_ID, windowNo);
-        				}
-					}
-        			else
-        			{	
-    					treePanel.getTree().clear();
-        			}	
+        		
+    				if (AD_Tree_ID != 0)
+    				{
+            			if (treePanel.initTree(AD_Tree_ID, windowNo))
+            				echoDeferSetSelectedNodeEvent();
+            			else
+            				setSelectedNode(gridTab.getRecord_ID());
+            			
+            		}   
+    				else
+    				{
+    					AD_Tree_ID = MTree.getDefaultAD_Tree_ID (Env.getAD_Client_ID(Env.getCtx()), gridTab.getKeyColumnName());
+    					treePanel.initTree(AD_Tree_ID, windowNo);
+    				}
+					
 				}    
         		
         	}else if(e.isInserting() && gridTab.getRecord_ID() < 0 && gridTab.getTabLevel() > 0 )

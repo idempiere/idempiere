@@ -30,7 +30,7 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20140125L;
 
     /** Standard Constructor */
     public X_AD_Tab (Properties ctx, int AD_Tab_ID, String trxName)
@@ -57,6 +57,8 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 			setSeqNo (0);
 // @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_Tab WHERE AD_Window_ID=@AD_Window_ID@
 			setTabLevel (0);
+			setTreeDisplayedOn (null);
+// B
         } */
     }
 
@@ -817,6 +819,32 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** TreeDisplayedOn AD_Reference_ID=200074 */
+	public static final int TREEDISPLAYEDON_AD_Reference_ID=200074;
+	/** Both = B */
+	public static final String TREEDISPLAYEDON_Both = "B";
+	/** DetailTab = D */
+	public static final String TREEDISPLAYEDON_DetailTab = "D";
+	/** MasterTab = M */
+	public static final String TREEDISPLAYEDON_MasterTab = "M";
+	/** Set Tree displayed.
+		@param TreeDisplayedOn 
+		The tree can be displayed on master tab, detail tab or both
+	  */
+	public void setTreeDisplayedOn (String TreeDisplayedOn)
+	{
+
+		set_Value (COLUMNNAME_TreeDisplayedOn, TreeDisplayedOn);
+	}
+
+	/** Get Tree displayed.
+		@return The tree can be displayed on master tab, detail tab or both
+	  */
+	public String getTreeDisplayedOn () 
+	{
+		return (String)get_Value(COLUMNNAME_TreeDisplayedOn);
 	}
 
 	/** Set Sql WHERE.

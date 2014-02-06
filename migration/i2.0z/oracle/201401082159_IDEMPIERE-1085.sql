@@ -1,0 +1,79 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Jan 8, 2014 9:54:55 PM COT
+-- IDEMPIERE-1085 Loading Info windows dynamically
+UPDATE AD_InfoWindow SET SeqNo=10,Updated=TO_DATE('2014-01-08 21:54:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_InfoWindow_ID=200000
+;
+
+-- Jan 8, 2014 9:55:06 PM COT
+UPDATE AD_InfoWindow SET SeqNo=20,Updated=TO_DATE('2014-01-08 21:55:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_InfoWindow_ID=200001
+;
+
+-- Jan 8, 2014 9:55:38 PM COT
+UPDATE AD_InfoWindow SET SeqNo=30,Updated=TO_DATE('2014-01-08 21:55:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_InfoWindow_ID=200002
+;
+
+-- Jan 8, 2014 9:55:47 PM COT
+UPDATE AD_InfoWindow SET SeqNo=40,Updated=TO_DATE('2014-01-08 21:55:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_InfoWindow_ID=200003
+;
+
+-- Jan 8, 2014 9:55:55 PM COT
+UPDATE AD_InfoWindow SET SeqNo=50,Updated=TO_DATE('2014-01-08 21:55:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_InfoWindow_ID=200004
+;
+
+-- Jan 8, 2014 9:56:05 PM COT
+UPDATE AD_InfoWindow SET SeqNo=60,Updated=TO_DATE('2014-01-08 21:56:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_InfoWindow_ID=200005
+;
+
+-- Jan 8, 2014 9:56:12 PM COT
+UPDATE AD_InfoWindow SET SeqNo=70,Updated=TO_DATE('2014-01-08 21:56:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_InfoWindow_ID=200006
+;
+
+-- Jan 8, 2014 9:56:16 PM COT
+UPDATE AD_InfoWindow SET SeqNo=80,Updated=TO_DATE('2014-01-08 21:56:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_InfoWindow_ID=200007
+;
+
+-- Jan 8, 2014 9:58:41 PM COT
+UPDATE AD_Field SET SeqNoGrid=30,IsDisplayedGrid='Y' WHERE AD_Field_ID=202197
+;
+
+-- Jan 8, 2014 9:58:41 PM COT
+UPDATE AD_Field SET SeqNoGrid=40,IsDisplayedGrid='Y' WHERE AD_Field_ID=13573
+;
+
+-- Jan 8, 2014 9:58:41 PM COT
+UPDATE AD_Field SET SeqNoGrid=50,IsDisplayedGrid='Y' WHERE AD_Field_ID=13582
+;
+
+-- Jan 8, 2014 9:58:41 PM COT
+UPDATE AD_Field SET SeqNoGrid=60,IsDisplayedGrid='Y' WHERE AD_Field_ID=201628
+;
+
+-- Jan 8, 2014 9:58:42 PM COT
+UPDATE AD_Field SET SeqNoGrid=70,IsDisplayedGrid='Y' WHERE AD_Field_ID=13571
+;
+
+-- Jan 8, 2014 9:58:42 PM COT
+UPDATE AD_Field SET SeqNoGrid=80,IsDisplayedGrid='Y' WHERE AD_Field_ID=13580
+;
+
+-- Jan 8, 2014 9:58:42 PM COT
+UPDATE AD_Field SET SeqNoGrid=90,IsDisplayedGrid='Y' WHERE AD_Field_ID=201639
+;
+
+-- Jan 8, 2014 9:58:42 PM COT
+UPDATE AD_Field SET SeqNoGrid=100,IsDisplayedGrid='Y' WHERE AD_Field_ID=201807
+;
+
+-- Jan 8, 2014 9:58:42 PM COT
+UPDATE AD_Field SET SeqNoGrid=110,IsDisplayedGrid='Y' WHERE AD_Field_ID=202198
+;
+
+-- Jan 8, 2014 9:58:42 PM COT
+UPDATE AD_Field SET SeqNoGrid=120,IsDisplayedGrid='Y' WHERE AD_Field_ID=202196
+;
+
+SELECT register_migration_script('201401082159_IDEMPIERE-1085.sql') FROM dual
+;
+

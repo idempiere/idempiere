@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.compiere.impexp.BankStatementLoaderInterface;
  
  
@@ -118,8 +119,13 @@ import org.compiere.impexp.BankStatementLoaderInterface;
 		try
 		{
 			if (log.isLoggable(Level.INFO)) log.info( "MBankStatementLoader Class Name=" + getStmtLoaderClass());
-			Class<?> bsrClass = Class.forName(getStmtLoaderClass());
-			m_loader = (BankStatementLoaderInterface) bsrClass.newInstance();
+			// load the BankStatementLoader class via OSGi Service definition from a plugin
+			m_loader = Core.getBankStatementLoader(getStmtLoaderClass());
+			if(m_loader==null){
+				// if no OSGi plugin is found try the legacy way (in my own classpath)
+				Class<?> bsrClass = Class.forName(getStmtLoaderClass());
+				m_loader = (BankStatementLoaderInterface) bsrClass.newInstance();
+			}
 		}
 		catch(Exception e)
 		{

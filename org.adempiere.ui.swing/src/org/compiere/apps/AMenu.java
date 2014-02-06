@@ -287,13 +287,6 @@ public final class AMenu extends CFrame
 			if (!login.isConnected() || !login.isOKpressed())
 				AEnv.exit(1);
 		}
-
-		//  Check Build
-		if (!DB.isBuildOK(m_ctx))
-			AEnv.exit(1);
-
-		//  Check DB	(AppsServer Version checked in Login)
-		DB.isDatabaseOK(m_ctx);
 	}	//	initSystem
 
 	//	UI

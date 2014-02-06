@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -35,6 +36,7 @@ import java.util.logging.Level;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
+import org.adempiere.webui.apps.WProcessCtl;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.WListItemRenderer;
@@ -49,26 +51,22 @@ import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.part.ITabOnSelectHandler;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.window.FDialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
-import org.compiere.model.I_A_Asset;
-import org.compiere.model.I_C_BPartner;
-import org.compiere.model.I_C_CashLine;
-import org.compiere.model.I_C_Invoice;
-import org.compiere.model.I_C_Order;
-import org.compiere.model.I_C_Payment;
-import org.compiere.model.I_M_InOut;
-import org.compiere.model.I_M_Product;
-import org.compiere.model.I_S_ResourceAssignment;
 import org.compiere.model.MInfoWindow;
+import org.compiere.model.MPInstance;
+import org.compiere.model.MProcess;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
+import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Page;
@@ -93,16 +91,18 @@ import org.zkoss.zul.ext.Sortable;
  * Zk Port 
  * @author Elaine
  * @version	Info.java Adempiere Swing UI 3.4.1
+ * 
+ * @contributor red1 IDEMPIERE-1711 with final review by HengSin 
  */
 public abstract class InfoPanel extends Window implements EventListener<Event>, WTableModelListener, Sortable<Object>, IHelpContext
 {
-
 	/**
-	 * generated serial version ID
+	 * 
 	 */
-	private static final long serialVersionUID = 325050327514511004L;
+	private static final long serialVersionUID = 2823393272482373014L;
+
 	private final static int PAGE_SIZE = 100;
-	
+	protected boolean hasProcess = false;
 	protected Map<String, WEditor> editorMap = new HashMap<String, WEditor>();
 	
     public static InfoPanel create (int WindowNo,
@@ -113,118 +113,15 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     }
 
 	/**
-	 * Show BPartner Info (non modal)
-	 * @param WindowNo window no
+	 * Show panel based on tablename (non modal)
+	 * @param tableName
 	 */
-	public static void showBPartner (int WindowNo)
+    public static void showPanel (String tableName)
 	{
-		InfoPanel info = InfoManager.create(WindowNo, I_C_BPartner.Table_Name,
-				I_C_BPartner.COLUMNNAME_C_BPartner_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showBPartner
-
-	/**
-	 * Show Asset Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 */
-	public static void showAsset (int WindowNo)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_A_Asset.Table_Name, I_A_Asset.COLUMNNAME_A_Asset_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showBPartner
-
-	/**
-	 * Show Product Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 */
-	public static void showProduct (int WindowNo)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_M_Product.Table_Name, I_M_Product.COLUMNNAME_M_Product_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showProduct
-
-	/**
-	 * Show Order Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 * @param value query value
-	 */
-	public static void showOrder (int WindowNo, String value)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_C_Order.Table_Name, I_C_Order.COLUMNNAME_C_Order_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showOrder
-
-	/**
-	 * Show Invoice Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 * @param value query value
-	 */
-	public static void showInvoice (int WindowNo, String value)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_C_Invoice.Table_Name, I_C_Invoice.COLUMNNAME_C_Invoice_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showInvoice
-
-	/**
-	 * Show Shipment Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 * @param value query value
-	 */
-	public static void showInOut (int WindowNo, String value)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_M_InOut.Table_Name, I_M_InOut.COLUMNNAME_M_InOut_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showInOut
-
-	/**
-	 * Show Payment Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 * @param value query value
-	 */
-	public static void showPayment (int WindowNo, String value)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_C_Payment.Table_Name, I_C_Payment.COLUMNNAME_C_Payment_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showPayment
-
-	/**
-	 * Show Cash Line Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 * @param value query value
-	 */
-	public static void showCashLine (int WindowNo, String value)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_C_CashLine.Table_Name, I_C_CashLine.COLUMNNAME_C_CashLine_ID, "", false, "", false);
-		AEnv.showWindow(info);
-	}   //  showCashLine
-
-	/**
-	 * Show Assignment Info (non modal)
-	 * @param frame Parent Frame
-	 * @param WindowNo window no
-	 * @param value query value
-	 */
-	public static void showAssignment (int WindowNo, String value)
-	{
-		InfoPanel info = InfoManager.create(WindowNo,
-				I_S_ResourceAssignment.Table_Name, I_S_ResourceAssignment.COLUMNNAME_S_ResourceAssignment_ID, "", false, "", false);
+		InfoPanel info = InfoManager.create(0, tableName, tableName + "_ID", "", false, "", false);
 		info.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 		AEnv.showWindow(info);
-	}   //  showAssignment
+	}	// showPanel
 
 	/** Window Width                */
 	static final int        INFO_WIDTH = 800;
@@ -309,9 +206,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			setWidth("100%");
 			setHeight("100%");
 			setStyle("position: absolute");
+			if (p_multipleSelection) hasProcess = true; //red1 IDEMPIERE-1711 !isLookUp() and is multipleSelection so add Process button first
 		}
 
-        confirmPanel = new ConfirmPanel(true, true, false, true, true, true);  // Elaine 2008/12/16
+        confirmPanel = new ConfirmPanel(true, true, false, true, true, true, true, hasProcess);  // Elaine 2008/12/16 //red1 hasProcess checked by isLookup()
         confirmPanel.addActionListener(Events.ON_CLICK, this);
         confirmPanel.setHflex("1");
 
@@ -392,6 +290,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private Listitem m_lastOnSelectItem;
 
 	private static final String[] lISTENER_EVENTS = {};
+	//red1 added for embedded Process feature
+	protected int AD_InfoWindow_ID;
+    private ProcessInfo m_pi = null;
+	private MProcess m_process = null;
 
 	/**
 	 *  Loaded correctly
@@ -910,6 +812,19 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         return selectedDataList;
     }   //  getSelectedRowKeys
 
+    /**
+	 *	Get selected Keys as Collection
+	 *  @return selected keys (Integers)
+	 */
+	public Collection<Integer> getSelectedKeysCollection()
+	{
+		m_ok = true;
+		saveSelection();
+		if (!m_ok || m_results.size() == 0)
+			return null;	
+		return m_results;
+	}
+
 	/**
 	 *	Get selected Keys
 	 *  @return selected keys (Integers)
@@ -1009,18 +924,20 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 *  Enable OK, History, Zoom if row/s selected
      *  ---
-     *  Changes: Changed the logic for accomodating multiple selection
+     *  Changes: Changed the logic for accommodating multiple selection
      *  @author ashley
 	 */
 	protected void enableButtons ()
 	{
-		boolean enable = (contentPanel.getSelectedCount() == 1);
-		confirmPanel.getOKButton().setEnabled(contentPanel.getSelectedCount() > 0);
+		boolean enable = (contentPanel.getSelectedCount() > 0);
+		confirmPanel.getOKButton().setEnabled(contentPanel.getSelectedCount() > 0); //red1 allow Process for 1 or more records
 
 		if (hasHistory())
 			confirmPanel.getButton(ConfirmPanel.A_HISTORY).setEnabled(enable);
 		if (hasZoom())
-			confirmPanel.getButton(ConfirmPanel.A_ZOOM).setEnabled(enable);
+			confirmPanel.getButton(ConfirmPanel.A_ZOOM).setEnabled( (contentPanel.getSelectedCount() == 1) ); //red1 only zoom for single record
+		if (hasProcess())
+			confirmPanel.getButton(ConfirmPanel.A_PROCESS).setEnabled(enable);
 	}   //  enableButtons
 	//
 
@@ -1057,6 +974,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 *  Customize dialog
 	 *	To be overwritten by concrete classes
 	 */
+	protected boolean hasProcess()				{return false;}
+	/**
+	 *  Customize dialog
+	 *	To be overwritten by concrete classes
+	 */	
 	protected void customize()					{}
 	/**
 	 *  Has Customize (false)
@@ -1177,6 +1099,45 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
                     	this.detach();
                 }
             }
+            //red1 handle process_ID 	
+            else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_PROCESS)))
+            {
+            	if (hasProcess) {
+            		infoWindow = new MInfoWindow(Env.getCtx(), AD_InfoWindow_ID, null);
+            		m_process = MProcess.get(Env.getCtx(), infoWindow.getAD_Process_ID());
+            		m_pi = new ProcessInfo(m_process.getName(),
+            				infoWindow.getAD_Process_ID());
+            		m_pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
+            		m_pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
+
+            		MPInstance instance = new MPInstance(Env.getCtx(), infoWindow.getAD_Process_ID(), 0);
+            		instance.saveEx();
+            		// store in T_Selection table selected rows for Execute Process that retrieves from T_Selection in code.
+            		DB.createT_Selection(instance.getAD_PInstance_ID(), getSelectedKeysCollection(),
+        				null);
+            		//clear back 
+            		m_results.clear();
+            		// Execute Process
+            		m_pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());
+            		
+            		//HengSin - to let process end with message and requery
+            		WProcessCtl.process(p_WindowNo, m_pi, (Trx)null, new EventListener<Event>() {
+
+						@Override
+						public void onEvent(Event event) throws Exception {
+							if (!m_pi.isError()) {
+								Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", null));
+							}
+							if (m_pi.isError())
+								FDialog.error(p_WindowNo, m_pi.getSummary());
+							else
+								FDialog.info(p_WindowNo, null, m_pi.getSummary());
+					//HengSin -- end --
+						}
+					});
+               		confirmPanel.getButton(ConfirmPanel.A_PROCESS).setEnabled(false);
+             	}
+            } //red1 IDEMPIERE-1711 --end--
             else if (event.getTarget() == paging)
             {
             	int pgNo = paging.getActivePage();

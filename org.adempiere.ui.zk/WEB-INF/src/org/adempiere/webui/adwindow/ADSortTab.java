@@ -75,7 +75,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1775234591903753429L;
+	private static final long serialVersionUID = -4161399343247477912L;
 
 	/**
 	 *	Sort Tab Constructor
@@ -1014,6 +1014,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 		yesList.setModel(yesModel);
 		noList.setItemRenderer(noModel);
 		noList.setModel(noModel);
+	}
+
+	public ADTreePanel getTreePanel() {
+		return null;
 	}
 }	//ADSortTab
 

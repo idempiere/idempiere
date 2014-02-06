@@ -2965,6 +2965,11 @@ public class GridTable extends AbstractTableModel
 		m_changed = false;
 		m_rowChanged = -1;
 		m_inserting = false;
+		if (m_lastSortColumnIndex >= 0)
+		{
+			loadComplete();
+			sort(m_lastSortColumnIndex, m_lastSortedAscending);
+		}
 		if (fireEvents) {
 			fireTableDataChanged();
 			fireDataStatusIEvent(DATA_REFRESH_MESSAGE, "");

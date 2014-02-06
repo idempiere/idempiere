@@ -30,7 +30,7 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20140124L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName)
@@ -47,6 +47,8 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 // N
 			setIsDistinct (false);
 // N
+			setIsShowInDashboard (true);
+// Y
 			setIsValid (false);
 // N
 			setName (null);
@@ -141,6 +143,34 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public String getAD_InfoWindow_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_AD_InfoWindow_UU);
+	}
+
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
+			.getPO(getAD_Process_ID(), get_TrxName());	}
+
+	/** Set Process.
+		@param AD_Process_ID 
+		Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID)
+	{
+		if (AD_Process_ID < 1) 
+			set_Value (COLUMNNAME_AD_Process_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
+	}
+
+	/** Get Process.
+		@return Process or Report
+	  */
+	public int getAD_Process_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
@@ -242,6 +272,23 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	/** Set Image URL.
+		@param ImageURL 
+		URL of  image
+	  */
+	public void setImageURL (String ImageURL)
+	{
+		set_Value (COLUMNNAME_ImageURL, ImageURL);
+	}
+
+	/** Get Image URL.
+		@return URL of  image
+	  */
+	public String getImageURL () 
+	{
+		return (String)get_Value(COLUMNNAME_ImageURL);
+	}
+
 	/** Set Default.
 		@param IsDefault 
 		Default value
@@ -281,6 +328,30 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public boolean isDistinct () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsDistinct);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Show in Dashboard.
+		@param IsShowInDashboard 
+		Show the dashlet in the dashboard
+	  */
+	public void setIsShowInDashboard (boolean IsShowInDashboard)
+	{
+		set_Value (COLUMNNAME_IsShowInDashboard, Boolean.valueOf(IsShowInDashboard));
+	}
+
+	/** Get Show in Dashboard.
+		@return Show the dashlet in the dashboard
+	  */
+	public boolean isShowInDashboard () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowInDashboard);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 
@@ -392,6 +463,26 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Sequence.
+		@param SeqNo 
+		Method of ordering records; lowest number comes first
+	  */
+	public void setSeqNo (int SeqNo)
+	{
+		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
+	}
+
+	/** Get Sequence.
+		@return Method of ordering records; lowest number comes first
+	  */
+	public int getSeqNo () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Sql WHERE.

@@ -21,14 +21,18 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -223,6 +227,27 @@ public class PackIn {
 			}
 		}
 		return data;
+	}
+
+	public File[] readFilesFromBlob(String fileName) throws IOException {
+		ZipFile zf = new ZipFile(m_packageDirectory+File.separator+"blobs"+File.separator+fileName);
+		Enumeration<?> e = zf.entries();
+		ArrayList<File> files = new ArrayList<File>();
+		while (e.hasMoreElements()) {
+			ZipEntry ze = (ZipEntry) e.nextElement();
+			File file = new File(ze.getName());
+			FileOutputStream fout = new FileOutputStream(file);
+			InputStream in = zf.getInputStream(ze);
+			for (int c = in.read(); c != -1; c = in.read()) {
+				fout.write(c);
+			}
+			in.close();
+			fout.close();
+			files.add(file);
+		}
+		File[] retValue = new File[files.size()];
+		files.toArray(retValue);
+		return retValue;
 	}
 
 	/**

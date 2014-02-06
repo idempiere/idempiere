@@ -28,16 +28,24 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 
 /**
  * Ported from org.compiere.apps.ProcessCtl
  * @author hengsin
+ * @contributor red1 IDEMPIERE-1711 with final review by Hengsin
  *
  */
 public class WProcessCtl extends AbstractProcessCtl {
 	
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(WProcessCtl.class);
+	
+	public static void process (int WindowNo, ProcessInfo pi, Trx trx)
+	{
+		process(WindowNo, pi, trx, null);
+	}
 	
 	/**
 	 *	Process Control
@@ -54,36 +62,38 @@ public class WProcessCtl extends AbstractProcessCtl {
 	 *  @param pi ProcessInfo process info
 	 *  @param trx Transaction
 	 */
-	public static void process (int WindowNo, ProcessInfo pi, Trx trx)
+	public static void process (int WindowNo, ProcessInfo pi, Trx trx, EventListener<Event> listener)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("WindowNo=" + WindowNo + " - " + pi);
 
-		MPInstance instance = null; 
-		try 
-		{ 
-			instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getRecord_ID()); 
-		} 
-		catch (Exception e) 
-		{ 
-			pi.setSummary (e.getLocalizedMessage()); 
-			pi.setError (true); 
-			log.warning(pi.toString()); 
-		} 
-		catch (Error e) 
-		{ 
-			pi.setSummary (e.getLocalizedMessage()); 
-			pi.setError (true); 
-			log.warning(pi.toString()); 
+		if (pi.getAD_PInstance_ID() < 1) { //red1 bypass if PInstance exists
+			MPInstance instance = null;
+			try
+			{
+				instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getRecord_ID());
+			}
+			catch (Exception e)
+			{
+				pi.setSummary (e.getLocalizedMessage());
+				pi.setError (true);
+				log.warning(pi.toString());
+			}
+			catch (Error e)
+			{
+				pi.setSummary (e.getLocalizedMessage());
+				pi.setError (true);
+				log.warning(pi.toString());
+			}
+			if (!instance.save())
+			{
+				pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessNoInstance"));
+				pi.setError (true);
+			}
+			pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
 		}
-		if (!instance.save())
-		{
-			pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessNoInstance"));
-			pi.setError (true);
-		}
-		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
 
 		//	Get Parameters (Dialog)
-		ProcessModalDialog para = new ProcessModalDialog(WindowNo, pi, false);
+		ProcessModalDialog para = new ProcessModalDialog(listener, WindowNo, pi, false);
 		if (para.isValid())
 		{
 			para.setWidth("500px");
@@ -116,32 +126,34 @@ public class WProcessCtl extends AbstractProcessCtl {
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("WindowNo=" + WindowNo + " - " + pi);
 
-		MPInstance instance = null; 
-		try 
-		{ 
-			instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getRecord_ID()); 
-		} 
-		catch (Exception e) 
-		{ 
-			pi.setSummary (e.getLocalizedMessage()); 
-			pi.setError (true); 
-			log.warning(pi.toString()); 
-			return; 
-		} 
-		catch (Error e) 
-		{ 
-			pi.setSummary (e.getLocalizedMessage()); 
-			pi.setError (true); 
-			log.warning(pi.toString()); 
-			return; 
+		if (pi.getAD_PInstance_ID() < 1) { //red1 bypass if PInstance exists
+			MPInstance instance = null;
+			try
+			{
+				instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getRecord_ID());
+			}
+			catch (Exception e)
+			{
+				pi.setSummary (e.getLocalizedMessage());
+				pi.setError (true);
+				log.warning(pi.toString());
+				return;
+			}
+			catch (Error e)
+			{
+				pi.setSummary (e.getLocalizedMessage());
+				pi.setError (true);
+				log.warning(pi.toString());
+				return;
+			}
+			if (!instance.save())
+			{
+				pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessNoInstance"));
+				pi.setError (true);
+				return;
+			}
+			pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
 		}
-		if (!instance.save())
-		{
-			pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessNoInstance"));
-			pi.setError (true);
-			return;
-		}
-		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
 
 		//	Get Parameters
 		if (parameter != null) {

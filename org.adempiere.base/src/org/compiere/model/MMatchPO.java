@@ -791,8 +791,25 @@ public class MMatchPO extends X_M_MatchPO
 				if (mpi[i].getC_InvoiceLine_ID() != 0 && 
 						mpi[i].getM_AttributeSetInstance_ID() == getM_AttributeSetInstance_ID()) 
 				{
-					setC_InvoiceLine_ID(mpi[i].getC_InvoiceLine_ID());
-					break;
+					if (mpi[i].getQty().compareTo(getQty()) == 0)  // same quantity
+					{
+						setC_InvoiceLine_ID(mpi[i].getC_InvoiceLine_ID());
+						break;
+					}
+					else // create MatchPO record for PO-Invoice if different quantity
+					{
+						MInvoiceLine il = new MInvoiceLine(getCtx(), mpi[i].getC_InvoiceLine_ID(), get_TrxName());						
+						MMatchPO match = new MMatchPO(il, getDateTrx(), mpi[i].getQty());
+						match.setC_OrderLine_ID(getC_OrderLine_ID());
+						if (!match.save())
+						{
+							String msg = "Failed to create match po";
+							ValueNamePair error = CLogger.retrieveError();
+							if (error != null)
+								msg = msg + " " + error.getName();
+							throw new RuntimeException(msg);
+						}
+					}
 				}
 			}
 		}

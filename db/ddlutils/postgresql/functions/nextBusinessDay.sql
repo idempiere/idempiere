@@ -1,4 +1,4 @@
-CREATE FUNCTION nextbusinessday(p_date timestamp with time zone, p_ad_client_id numeric) RETURNS timestamp with time zone
+CREATE OR REPLACE FUNCTION nextbusinessday(p_date timestamp with time zone, p_ad_client_id numeric) RETURNS timestamp with time zone
     AS $$
 /**
 *This file is part of Adempiere ERP Bazaar
@@ -29,6 +29,7 @@ DECLARE
 	v_Saturday	numeric	:= TO_CHAR(TO_DATE('2000-01-01', 'YYYY-MM-DD'), 'D');
 	v_Sunday	numeric	:= (case when v_Saturday = 7 then 1 else v_Saturday + 1 end);
 	v_isHoliday	boolean	:= true;
+	v_country       c_country.c_country_id%type;
 	nbd C_NonBusinessDay%ROWTYPE;
 begin
 	v_isHoliday := true;
@@ -40,9 +41,16 @@ begin
 				END INTO v_offset;
 		v_nextDate := v_nextDate + v_offset::integer;
 		v_isHoliday := false;
+		SELECT COALESCE(MAX(co.c_country_id), 100) 
+		INTO   v_country
+		FROM   ad_client cl 
+		       JOIN ad_language l ON cl.ad_language = l.ad_language 
+		       JOIN c_country co ON l.countrycode = co.countrycode 
+		WHERE  cl.ad_client_id = p_ad_client_id;
 		FOR nbd IN	SELECT * 
 					FROM C_NonBusinessDay 
 					WHERE AD_Client_ID=p_AD_Client_ID and IsActive ='Y' and Date1 >= v_nextDate
+					    AND COALESCE(C_Country_ID,0) IN (0, v_country)
 					ORDER BY Date1
 		LOOP
 			exit when v_nextDate <> trunc(nbd.Date1);

@@ -200,6 +200,15 @@ public interface I_AD_ToolBarButton
 	  */
 	public boolean isActive();
 
+    /** Column name IsAddSeparator */
+    public static final String COLUMNNAME_IsAddSeparator = "IsAddSeparator";
+
+	/** Set Add Separator	  */
+	public void setIsAddSeparator (boolean IsAddSeparator);
+
+	/** Get Add Separator	  */
+	public boolean isAddSeparator();
+
     /** Column name IsAdvancedButton */
     public static final String COLUMNNAME_IsAdvancedButton = "IsAdvancedButton";
 

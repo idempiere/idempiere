@@ -138,12 +138,17 @@ public class DataEngine
 	 */
 	public PrintData getPrintData (Properties ctx, MPrintFormat format, MQuery query, boolean summary)
 	{
+		MQuery queryCopy = query.deepCopy();
 
 		/** Report Summary FR [ 2011569 ]**/ 
 		m_summary = summary; 
 
 		if (format == null)
 			throw new IllegalStateException ("No print format");
+
+		 if (format.getJasperProcess_ID() > 0)
+			 return null;
+
 		String tableName = null;
 		String reportName = format.getName();
 		//
@@ -167,7 +172,7 @@ public class DataEngine
 					// Add WhereClause restriction from AD_ReportView - teo_sarca BF [ 1761891 ]
 					String whereClause = rs.getString(4);
 					if (!Util.isEmpty(whereClause))
-						query.addRestriction(whereClause);
+						queryCopy.addRestriction(whereClause);
 				}
 			}
 			catch (SQLException e)
@@ -196,11 +201,11 @@ public class DataEngine
 			if (hasVT)
 			{
 				tableName += "t";
-				format.setTranslationViewQuery (query);
+				format.setTranslationViewQuery (queryCopy);
 			}
 		}		
 		//
-		PrintData pd = getPrintDataInfo (ctx, format, query, reportName, tableName);
+		PrintData pd = getPrintDataInfo (ctx, format, queryCopy, reportName, tableName);
 		if (pd == null)
 			return null;
 		loadPrintData(pd, format);

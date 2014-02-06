@@ -78,6 +78,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
+import org.compiere.model.I_M_Product;
 import org.compiere.model.MImage;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
@@ -1531,11 +1532,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         //  Transaction info
         if (!detailTab)
         {
-	        String trxInfo = adTabbox.getSelectedGridTab().getTrxInfo();
+        	GridTab gt = adTabbox.getSelectedGridTab();
+	        String trxInfo = gt.getStatusLine();
 	        if (trxInfo != null)
 	        {
 	            statusBar.setInfo(trxInfo);
 	        }
+	        SessionManager.getAppDesktop().updateHelpQuickInfo(gt);
         }
 
 	    //  Check Attachment
@@ -1596,7 +1599,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	adTabbox.evaluate(e);
         }
 
-        toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted());
+        toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !adTabbox.getSelectedGridTab().isNew());
         toolbar.enableReport(true);
         toolbar.enableExport(!adTabbox.getSelectedGridTab().isSortTab());
         toolbar.enableFileImport(!changed && !adTabbox.getSelectedGridTab().isSortTab() && adTabbox.getSelectedGridTab().isInsertRecord());
@@ -2319,7 +2322,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
 	public void onProductInfo()
 	{
-		InfoPanel.showProduct(0);
+		InfoPanel.showPanel(I_M_Product.Table_Name);
 	}
 	//
 

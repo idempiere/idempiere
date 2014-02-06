@@ -24,11 +24,10 @@ import org.compiere.util.Env;
  *
  */
 public class MToolBarButton extends X_AD_ToolBarButton {
-
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -2809601337584187559L;
+	private static final long serialVersionUID = -7909388573996489685L;
 
 	/**
 	 * @param ctx
@@ -54,20 +53,22 @@ public class MToolBarButton extends X_AD_ToolBarButton {
 		
 		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), Table_ID), "AD_Tab_ID=? AND Action=? AND AD_Process_ID IS NOT NULL", trxName);
 		List<MToolBarButton> list = query.setParameters(AD_Tab_ID, "W").setOnlyActiveRecords(true)
-				.setOrderBy("SeqNo").list();
+				.setOrderBy("CASE WHEN COALESCE(SeqNo,0)=0 THEN AD_ToolBarButton_ID ELSE SeqNo END").list();
 		if (list != null && !list.isEmpty()) {
 			buttons = list.toArray(buttons);
 		}
 		
 		return buttons;
 	}
-	
-	public static MToolBarButton[] getOfWindow(int AD_Window_ID, String trxName) {
+
+	public static MToolBarButton[] getToolbarButtons(String action, String trxName) {
 		MToolBarButton[] buttons = new MToolBarButton[0];
-		
-		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), Table_ID), "Action=?" +
-				" AND IsCustomization='Y' AND ActionClassName IS NOT NULL", trxName);
-		List<MToolBarButton> list = query.setParameters("W").setOnlyActiveRecords(true).list();
+
+		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), Table_ID),
+				"Action=? AND (AD_ToolbarButton_ID<=? OR ActionClassName IS NOT NULL) AND AD_Tab_ID IS NULL", trxName);
+		List<MToolBarButton> list = query.setParameters(action, MTable.MAX_OFFICIAL_ID)
+				.setOnlyActiveRecords(true)
+				.setOrderBy("CASE WHEN COALESCE(SeqNo,0)=0 THEN AD_ToolBarButton_ID ELSE SeqNo END").list();
 		if (list != null && !list.isEmpty()) {
 			buttons = list.toArray(buttons);
 		}

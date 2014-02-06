@@ -32,6 +32,7 @@ import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.MTab;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluator;
@@ -581,6 +582,13 @@ public class CompositeADTabbox extends AbstractADTabbox
 							}
 							if (selectDetailPanel instanceof ADTabpanel)
 								((ADTabpanel)selectDetailPanel).activated = true;
+
+							if (selectDetailPanel.getGridTab().isTreeTab()) {
+								if (selectDetailPanel.getGridTab().getTreeDisplayedOn().equals(MTab.TREEDISPLAYEDON_MasterTab))
+									selectDetailPanel.getTreePanel().getParent().setVisible(false);
+								else
+									selectDetailPanel.getTreePanel().getParent().setVisible(true);
+							}
 						}
 					}
 				}				

@@ -47,6 +47,7 @@ import org.compiere.model.MJournalGenerator;
 import org.compiere.model.MJournalGeneratorLine;
 import org.compiere.model.MJournalGeneratorSource;
 import org.compiere.model.MJournalLine;
+import org.compiere.model.MPeriod;
 import org.compiere.model.MProduct;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -419,6 +420,9 @@ public class GLJournalGenerate extends SvrProcess
 			        j.setC_DocType_ID(journalGenerator.getC_DocType_ID());
 			        j.setControlAmt(Env.ZERO);
 			        j.setDateAcct(p_DateAcct);
+					int C_Period_ID = MPeriod.getC_Period_ID(getCtx(), p_DateAcct, j.getAD_Org_ID());
+					if (C_Period_ID > 0)
+						j.setC_Period_ID(C_Period_ID);
 			        j.setDateDoc(p_DateAcct);
 			        j.setDescription(journalGenerator.getDescription());
 			        j.setDocumentNo(p_DocumentNo);

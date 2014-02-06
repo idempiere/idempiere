@@ -54,6 +54,7 @@ import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.Adempiere;
 import org.compiere.model.GridField;
+import org.compiere.model.GridTab;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
@@ -99,16 +100,16 @@ import org.zkoss.zul.West;
  */
 public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, EventHandler, DesktopCleanup
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7495898481342426458L;
+
 	private static final String IMAGES_UPARROW_PNG = "images/collapse-header.png";
 
 	private static final String IMAGES_DOWNARROW_PNG = "images/expand-header.png";
 	
 	private static final String IMAGES_CONTEXT_HELP_PNG = "images/Help16.png";
-
-	/**
-	 * generated serial version ID
-	 */
-	private static final long serialVersionUID = -8203958978173990301L;
 
 	@SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(DefaultDesktop.class);
@@ -593,6 +594,11 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	@Override
 	public void updateHelpTooltip(GridField gridField) {
 		helpController.renderToolTip(gridField);
+	}
+
+	@Override
+	public void updateHelpQuickInfo(GridTab gridTab) {
+		helpController.renderQuickInfo(gridTab);
 	}
 
 	@Override

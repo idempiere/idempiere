@@ -1623,8 +1623,14 @@ public final class MPayment extends X_C_Payment
 		if (pAllocs.length > 0) {
 			for (MPaymentAllocate pAlloc : pAllocs)
 				sumPaymentAllocates = sumPaymentAllocates.add(pAlloc.getAmount());
-			if (getPayAmt().compareTo(sumPaymentAllocates) != 0)
+			if (getPayAmt().compareTo(sumPaymentAllocates) != 0) {
+				if (isReceipt() && getPayAmt().compareTo(sumPaymentAllocates) < 0) {
+					if (MSysConfig.getBooleanValue("ALLOW_OVER_APPLIED_PAYMENT", false, Env.getAD_Client_ID(Env.getCtx()))) {
+						return true;
+					}
+				}
 				return false;
+			}
 		}
 		return true;
 	}
