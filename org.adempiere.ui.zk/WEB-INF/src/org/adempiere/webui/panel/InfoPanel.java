@@ -1282,7 +1282,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     }
 
     public void zoom()
-    {
+    {    	
+    	Integer recordId = contentPanel.getSelectedRowKey();
+    	// prevent NPE when double click is raise but no recore is selected
+    	if (recordId == null)
+    		return;
+    	
     	if (listeners != null && listeners.size() > 0)
     	{
 	        ValueChangeEvent event = new ValueChangeEvent(this,"zoom",
@@ -1290,8 +1295,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	        fireValueChange(event);
     	}
     	else
-    	{
-    		Integer recordId = contentPanel.getSelectedRowKey();
+    	{    		
     		int AD_Table_ID = MTable.getTable_ID(p_tableName);
     		if (AD_Table_ID <= 0)
     		{
