@@ -357,6 +357,12 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 	}
 
 	private void setValueAndClose() {
+		String statusSql = "SELECT DocStatus FROM " + gridTab.getTableName() 
+				+ " WHERE " + gridTab.getKeyColumnName() + " = ? ";
+		String currentStatus = DB.getSQLValueString((String)null, statusSql, gridTab.getKeyID(gridTab.getCurrentRow()));
+		if (DocStatus != null && !DocStatus.equals(currentStatus)) {
+			throw new IllegalStateException(Msg.getMsg(Env.getCtx(), "DocStatusChanged"));
+		}
 		m_OKpressed = true;
 		setValue();
 		detach();
