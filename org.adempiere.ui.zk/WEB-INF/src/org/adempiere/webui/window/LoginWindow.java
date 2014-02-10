@@ -180,7 +180,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 			loginName = user.getLDAPUser() != null ? user.getLDAPUser() : user.getName();
     	loginOk(loginName, true, login.getClients());
     	getDesktop().getSession().setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
-    	
+    	pnlRole.isChangeRole = true;
     	pnlRole.changeRole(ctx);
     }
 }
