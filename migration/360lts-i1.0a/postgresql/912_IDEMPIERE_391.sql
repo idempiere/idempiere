@@ -1639,6 +1639,7 @@ from c_acctprocessor
 where not exists (select 1 from ad_schedule where 
 coalesce(c_acctprocessor.frequencytype,' ')         =coalesce(ad_schedule.frequencytype,' ') and
 coalesce(c_acctprocessor.frequency,-1)              =coalesce(ad_schedule.frequency,-1)
+and ad_schedule.scheduletype='F'
 )
 ) as x
 ;
@@ -1653,6 +1654,7 @@ from ad_alertprocessor
 where not exists (select 1 from ad_schedule where 
 coalesce(ad_alertprocessor.frequencytype,' ')         =coalesce(ad_schedule.frequencytype,' ') and
 coalesce(ad_alertprocessor.frequency,-1)              =coalesce(ad_schedule.frequency,-1)
+and ad_schedule.scheduletype='F'
 )
 ) as x
 ;
@@ -1667,6 +1669,7 @@ from r_requestprocessor
 where not exists (select 1 from ad_schedule where 
 coalesce(r_requestprocessor.frequencytype,' ')         =coalesce(ad_schedule.frequencytype,' ') and
 coalesce(r_requestprocessor.frequency,-1)              =coalesce(ad_schedule.frequency,-1)
+and ad_schedule.scheduletype='F'
 )
 ) as x
 ;
@@ -1681,6 +1684,7 @@ from ad_workflowprocessor
 where not exists (select 1 from ad_schedule where 
 coalesce(ad_workflowprocessor.frequencytype,' ')         =coalesce(ad_schedule.frequencytype,' ') and
 coalesce(ad_workflowprocessor.frequency,-1)              =coalesce(ad_schedule.frequency,-1)
+and ad_schedule.scheduletype='F'
 )
 ) as x
 ;
