@@ -109,33 +109,33 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	}	//	init
 
 	//  Static Variables
-	private Panel centerPanel = new Panel();
-	private ConfirmPanel southPanel = new ConfirmPanel(true, false, false, false, false, false, false);
-	private Grid centerLayout = GridFactory.newGridLayout();
-	private Button bPrint = southPanel.createButton(ConfirmPanel.A_PRINT);
-	private Button bExport = southPanel.createButton(ConfirmPanel.A_EXPORT);
-	private Button bCancel = southPanel.getButton(ConfirmPanel.A_CANCEL);
-	private Button bProcess = southPanel.createButton(ConfirmPanel.A_PROCESS);
-	private Label lPaySelect = new Label();
-	private WSearchEditor paySelectSearch = null;
-	private Label lBank = new Label();
-	private Label fBank = new Label();
-	private Label lPaymentRule = new Label();
-	private Listbox fPaymentRule = ListboxFactory.newDropdownListbox();
-	private Label lDocumentNo = new Label();
-	private WNumberEditor fDocumentNo = new WNumberEditor();
-	private Label lNoPayments = new Label();
-	private Label fNoPayments = new Label();
-	private Label lBalance = new Label();
-	private WNumberEditor fBalance = new WNumberEditor();
-	private Label lCurrency = new Label();
-	private Label fCurrency = new Label();
+	protected Panel centerPanel = new Panel();
+	protected ConfirmPanel southPanel = new ConfirmPanel(true, false, false, false, false, false, false);
+	protected Grid centerLayout = GridFactory.newGridLayout();
+	protected Button bPrint = southPanel.createButton(ConfirmPanel.A_PRINT);
+	protected Button bExport = southPanel.createButton(ConfirmPanel.A_EXPORT);
+	protected Button bCancel = southPanel.getButton(ConfirmPanel.A_CANCEL);
+	protected Button bProcess = southPanel.createButton(ConfirmPanel.A_PROCESS);
+	protected Label lPaySelect = new Label();
+	protected WSearchEditor paySelectSearch = null;
+	protected Label lBank = new Label();
+	protected Label fBank = new Label();
+	protected Label lPaymentRule = new Label();
+	protected Listbox fPaymentRule = ListboxFactory.newDropdownListbox();
+	protected Label lDocumentNo = new Label();
+	protected WNumberEditor fDocumentNo = new WNumberEditor();
+	protected Label lNoPayments = new Label();
+	protected Label fNoPayments = new Label();
+	protected Label lBalance = new Label();
+	protected WNumberEditor fBalance = new WNumberEditor();
+	protected Label lCurrency = new Label();
+	protected Label fCurrency = new Label();
 
 	/**
 	 *  Static Init
 	 *  @throws Exception
 	 */
-	private void zkInit() throws Exception
+	protected void zkInit() throws Exception
 	{
 		//
 		centerPanel.appendChild(centerLayout);
@@ -196,7 +196,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	/**
 	 *  Dynamic Init
 	 */
-	private void dynInit()
+	protected void dynInit()
 	{
 		//  C_PaySelection_ID
 		int AD_Column_ID = COLUMN_C_PAYSELECTIONCHECK_C_PAYSELECTION_ID;        //  C_PaySelectionCheck.C_PaySelection_ID
@@ -254,7 +254,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	/**
 	 *  PaySelect changed - load Bank
 	 */
-	private void loadPaySelectInfo()
+	protected void loadPaySelectInfo()
 	{
 		log.info( "VPayPrint.loadPaySelectInfo");
 		if (m_C_PaySelection_ID <= 0)
@@ -273,7 +273,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	/**
 	 *  Bank changed - load PaymentRule
 	 */
-	private void loadPaymentRule()
+	protected void loadPaymentRule()
 	{
 		log.info("");
 		if (m_C_BankAccount_ID == -1)
@@ -296,7 +296,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	 *  PaymentRule changed - load DocumentNo, NoPayments,
 	 *  enable/disable EFT, Print
 	 */
-	private void loadPaymentRuleInfo()
+	protected void loadPaymentRuleInfo()
 	{
 		if (fPaymentRule.getSelectedItem() == null)
 			return;
@@ -326,7 +326,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	/**************************************************************************
 	 *  Export payments to file
 	 */
-	private void cmd_export()
+	protected void cmd_export()
 	{
 		String PaymentRule = fPaymentRule.getSelectedItem().toValueNamePair().getValue();
 		log.info(PaymentRule);
@@ -397,7 +397,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	/**
 	 *  Create EFT payment
 	 */
-	private void cmd_EFT()
+	protected void cmd_EFT()
 	{
 		String PaymentRule = fPaymentRule.getSelectedItem().toValueNamePair().getValue();
 		log.info(PaymentRule);
@@ -409,7 +409,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	/**
 	 *  Print Checks and/or Remittance
 	 */
-	private void cmd_print()
+	protected void cmd_print()
 	{
 		String PaymentRule = fPaymentRule.getSelectedItem().toValueNamePair().getValue();
 		log.info(PaymentRule);
@@ -521,7 +521,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	 *  @param PaymentRule Payment Rule
 	 *  @return true if payments were created
 	 */
-	private boolean getChecks(String PaymentRule)
+	protected boolean getChecks(String PaymentRule)
 	{
 		//  do we have values
 		if (m_C_PaySelection_ID <= 0 || m_C_BankAccount_ID == -1
