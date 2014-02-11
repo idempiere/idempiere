@@ -220,9 +220,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 			treeitemwf.setOpen(true);
 		addNodes(wfwizard, treeitemwf);
 
-		if(allFinished && showColors.isChecked()){
-			wizardLabel.setZclass("tree-wsetupwizard-finished-all");
-		}
+		if (showColors.isChecked())
+			wizardLabel.setZclass(allFinished ? "tree-wsetupwizard-finished-all" : "tree-wsetupwizard-open-tasks");			
 		
 		treeitemwf.setAttribute("AD_Workflow_ID", wfwizard.getAD_Workflow_ID());
 		if (prevti != null && prevti.getAttribute("AD_Workflow_ID") != null) {
@@ -593,6 +592,9 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	}	//	propertyChange
 
 	private void showItem(Treeitem ti) {
+		if (ti == null)
+			return;
+		
 		if (ti.getAttribute("AD_Workflow_ID") != null) {
 			ti.setOpen(true);
 			// MWorkflow
