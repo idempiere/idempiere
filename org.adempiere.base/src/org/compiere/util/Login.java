@@ -1498,7 +1498,12 @@ public class Login
 		sql.append(" AND r.IsMasterRole='N'");
 		sql.append(" AND u.IsActive='Y' AND EXISTS (SELECT * FROM AD_Client c WHERE u.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
 		// don't show roles without org access
-		sql.append(" AND (r.isaccessallorgs='Y' OR EXISTS (SELECT 1 FROM AD_Role_OrgAccess ro WHERE ro.AD_Role_ID=r.AD_Role_ID AND ro.IsActive='Y'))");
+		sql.append(" AND (");
+		sql.append(" (r.isaccessallorgs='Y' OR EXISTS (SELECT 1 FROM AD_Role_OrgAccess ro WHERE ro.AD_Role_ID=r.AD_Role_ID AND ro.IsActive='Y'))");
+		// show roll with isuseuserorgaccess = "Y" when Exist org in AD_User_Orgaccess
+		sql.append(" OR ");
+		sql.append(" (r.isuseuserorgaccess='Y' AND EXISTS (SELECT 1 FROM AD_User_Orgaccess uo WHERE uo.AD_User_ID=u.AD_User_ID AND uo.IsActive='Y')) ");
+		sql.append(")");
 		sql.append(" ORDER BY r.Name");
 
 		PreparedStatement pstmt = null;
