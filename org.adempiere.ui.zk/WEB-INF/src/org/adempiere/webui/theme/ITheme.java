@@ -48,6 +48,7 @@ public interface ITheme {
 
 	//stylesheet url
 	public static final String THEME_STYLESHEET = "/css/theme.css.dsp";
+	//http://books.zkoss.org/wiki/ZK_Developer's_Reference/Internationalization/Locale-Dependent_Resources#Specifying_Locale-_and_browser-dependent_URL
 	public static final String THEME_STYLESHEET_BY_BROWSER = "/css/theme*.css.dsp*";
 	
 	//theme preference
