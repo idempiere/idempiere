@@ -1,13 +1,19 @@
 package org.compiere.process;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.I_M_ProductionPlan;
 import org.compiere.model.MClient;
 import org.compiere.model.MProduction;
 import org.compiere.model.MProductionLine;
-import org.compiere.util.AdempiereSystemError;
+import org.compiere.model.MProductionPlan;
+import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 
 /**
@@ -41,60 +47,87 @@ public class ProductionProcess extends SvrProcess {
 		}
 		
 		p_M_Production_ID = getRecord_ID();
-		m_production = new MProduction(getCtx(), p_M_Production_ID, get_TrxName());
+		if (p_M_Production_ID > 0)
+			m_production = new MProduction(getCtx(), p_M_Production_ID, get_TrxName());
 
 	}	//prepare
 
 	@Override
 	protected String doIt() throws Exception {
-		
-		
-		if ( m_production.get_ID() == 0 )
+		if ( m_production == null || m_production.get_ID() == 0 )
 			throw new AdempiereUserError("Could not load production header");
 		
-		if ( m_production.getIsCreated().equals("N") )
-			return "Not created";
-		
-		if ( m_production.isProcessed() )
-			return "Already processed";
-		
-		
-		return processLines();
-			
+		try {
+			int processed = ProductionProcess.procesProduction(m_production, p_MovementDate, mustBeStocked);
+			StringBuilder msgreturn = new StringBuilder("@Processed@ #").append(processed);
+			return msgreturn.toString();
+		} catch (Exception e) {
+			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			return e.getMessage();
+		}
 	}
 
-	protected String processLines() throws Exception {
+	public static int procesProduction(MProduction production, Timestamp movementDate, boolean mustBeStocked) {
+		if ( production.getIsCreated().equals("N") )
+			throw new AdempiereUserError("Not created");
 		
-		int processed = 0;
-		m_production.setMovementDate(p_MovementDate);
-		MProductionLine[] lines = m_production.getLines();
+		if ( production.isProcessed() )
+			throw new AdempiereUserError("Already processed");
+		
+		if (movementDate != null)
+			production.setMovementDate(movementDate);
 		StringBuilder errors = new StringBuilder();
-		for ( int i = 0; i<lines.length; i++) {
-			errors.append( lines[i].createTransactions(m_production.getMovementDate(), mustBeStocked) );
-			//TODO error handling 
-			lines[i].setProcessed( true );
-			lines[i].saveEx(get_TrxName());
-			processed++;
+		int processed = 0;
+		
+		if (!production.isUseProductionPlan()) {
+			MProductionLine[] lines = production.getLines();
+			errors.append(processLines(production, lines, mustBeStocked));
+			if (errors.length() > 0) {
+				throw new AdempiereException(errors.toString());
+			}
+			processed = processed + lines.length;
+		} else {
+			Query planQuery = new Query(Env.getCtx(), I_M_ProductionPlan.Table_Name, "M_ProductionPlan.M_Production_ID=?", production.get_TrxName());
+			List<MProductionPlan> plans = planQuery.setParameters(production.getM_Production_ID()).list();
+			for(MProductionPlan plan : plans) {
+				MProductionLine[] lines = plan.getLines();
+				if (lines.length > 0) {
+					errors.append(processLines(production, lines, mustBeStocked));
+					if (errors.length() > 0) {
+						throw new AdempiereException(errors.toString());
+					}
+					processed = processed + lines.length;
+				}
+				plan.setProcessed(true);
+				plan.saveEx();
+			}
 		}
 		
-		if ( errors.toString().compareTo("") != 0 ) {
-			log.log(Level.WARNING, errors.toString() );
-			throw new AdempiereSystemError(errors.toString());
-		}
+		production.setProcessed(true);		
+		production.saveEx();
 		
-		m_production.setProcessed(true);
-		
-		m_production.saveEx(get_TrxName());
-
 		/* Immediate accounting */
 		if (MClient.isClientAccountingImmediate()) {
 			@SuppressWarnings("unused")
-			String ignoreError = DocumentEngine.postImmediate(getCtx(), getAD_Client_ID(), m_production.get_Table_ID(), m_production.get_ID(), true, get_TrxName());						
+			String ignoreError = DocumentEngine.postImmediate(Env.getCtx(), production.getAD_Client_ID(), production.get_Table_ID(), production.get_ID(), true, production.get_TrxName());						
 		}
-
-		StringBuilder msgreturn = new StringBuilder("@Processed@ #").append(processed);
-		return msgreturn.toString();
+		
+		return processed;		
 	}
-
-
+	
+	protected static String processLines(MProduction production, MProductionLine[] lines, boolean mustBeStocked) {
+		
+		StringBuilder errors = new StringBuilder();
+		for ( int i = 0; i<lines.length; i++) {
+			String error = lines[i].createTransactions(production.getMovementDate(), mustBeStocked);
+			if (!Util.isEmpty(error)) {
+				errors.append(error);
+			} else { 
+				lines[i].setProcessed( true );
+				lines[i].saveEx(production.get_TrxName());
+			}
+		}
+		
+		return errors.toString();				
+	}
 }
