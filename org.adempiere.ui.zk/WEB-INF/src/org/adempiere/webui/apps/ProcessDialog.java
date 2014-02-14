@@ -858,7 +858,9 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 
 	@Override
 	public void statusUpdate(String message) {
-		Executions.schedule(getDesktop(), this, new Event(ON_STATUS_UPDATE, this, message));
+		Desktop desktop = getDesktop();
+		if (desktop != null && desktop.isAlive())
+			Executions.schedule(desktop, this, new Event(ON_STATUS_UPDATE, this, message));
 	}
 
 	@Override
