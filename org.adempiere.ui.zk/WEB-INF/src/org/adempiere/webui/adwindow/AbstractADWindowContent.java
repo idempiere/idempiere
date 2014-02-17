@@ -2392,7 +2392,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 							dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 								@Override
 								public void onEvent(Event event) throws Exception {
-									postCallback.onCallback(dialog.isCancel());
+									postCallback.onCallback(!dialog.isCancel());
 								}
 							});
 						}

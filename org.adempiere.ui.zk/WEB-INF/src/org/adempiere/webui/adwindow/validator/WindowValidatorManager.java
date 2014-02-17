@@ -28,15 +28,18 @@ public class WindowValidatorManager implements BundleActivator, ServiceTrackerCu
 			ServiceReference<WindowValidator> reference) {
 		WindowValidator service = context.getService(reference);
 		String uuid = (String) reference.getProperty("AD_Window_UU");
-		if (uuid == null || "*".equals(uuid))
+		System.out.println("service="+service+" uuid="+uuid);
+		if (uuid == null || "*".equals(uuid)) {
 			globalValidators.add(service);
+			return service;
+		}
 		
 		List<WindowValidator> list = validatorMap.get(uuid);
 		if (list == null) {
 			list = new ArrayList<WindowValidator>();
 			validatorMap.put(uuid, list);
 		}
-		list.add(service);
+		list.add(service);				
 		
 		return service;
 	}
