@@ -50,7 +50,7 @@ public class MReportTree
 	 */
 	public static MReportTree get (Properties ctx, int PA_Hierarchy_ID, String ElementType)
 	{
-		String key = PA_Hierarchy_ID + ElementType;
+		String key = Env.getAD_Client_ID(ctx) + "_" + PA_Hierarchy_ID + ElementType;
 		MReportTree tree = (MReportTree)s_trees.get(key);
 		if (tree == null)
 		{
