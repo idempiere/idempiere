@@ -79,7 +79,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1071903027424763936L;
+	private static final long serialVersionUID = 4068073033610726196L;
 
 	protected LoginWindow wndLogin;
 	protected Login login;
@@ -101,11 +101,19 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	protected boolean m_show = true;
 
 	private RolePanel component;
-	
-	public boolean isChangeRole = false;
-	
+
+	private boolean isChangeRole = false;
+
+	public boolean isChangeRole() {
+		return isChangeRole;
+	}
+
+	public void setChangeRole(boolean isChangeRole) {
+		this.isChangeRole = isChangeRole;
+	}
+
 	// backup old value
-	private Properties b_ctx = null;
+	private Properties ctxBeforeChangeRole = null;
 
 	private static final String ON_DEFER_LOGOUT = "onDeferLogout";
 
@@ -517,14 +525,14 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         }
         else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
         {
-        	if (isChangeRole){
-        		changeRole(b_ctx);
+        	if (isChangeRole()) {
+        		changeRole(ctxBeforeChangeRole);
         		validateRoles();
-        	}else{
+        	} else {
+        		ctxBeforeChangeRole = null;
         		SessionManager.logoutSession();
-                wndLogin.loginCancelled();
+        		wndLogin.loginCancelled();
         	}
-            
         }
 		else if (ON_DEFER_LOGOUT.equals(event.getName()))
 		{
@@ -548,7 +556,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     }
     
     public void changeRole(Properties ctx) {
-    	b_ctx = ctx;
+    	ctxBeforeChangeRole = ctx;
     	int AD_Client_ID = Env.getAD_Client_ID(ctx);
     	lstClient.setValue(AD_Client_ID);
     	updateRoleList();
