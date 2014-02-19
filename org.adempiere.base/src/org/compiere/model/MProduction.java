@@ -310,4 +310,17 @@ public class MProduction extends X_M_Production {
 		return true;
 	}
 
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (getM_Product_ID() > 0) {
+			if (isUseProductionPlan()) {
+				setIsUseProductionPlan(false);
+			}
+		} else { 
+			if (!isUseProductionPlan()) {
+				setIsUseProductionPlan(true);
+			}
+		}
+		return true;
+	}
 }

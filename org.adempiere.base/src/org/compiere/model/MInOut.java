@@ -1382,7 +1382,7 @@ public class MInOut extends X_M_InOut implements DocAction
 							}
 							else
 							{
-								if (ma.getMovementQty().compareTo(orderedQtyToUpdate) >= 0)
+								if (orderedQtyToUpdate.compareTo(ma.getMovementQty()) >= 0)
 								{
 									orderedQtyToUpdate = orderedQtyToUpdate.subtract(ma.getMovementQty());
 									reservedDiff = ma.getMovementQty().negate();

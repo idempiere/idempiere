@@ -1,10 +1,14 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.logging.Level;
 
+import org.compiere.model.I_M_ProductionPlan;
 import org.compiere.model.MProduction;
+import org.compiere.model.MProductionPlan;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -95,25 +99,33 @@ public class ProductionCreate extends SvrProcess {
 	protected String createLines() throws Exception {
 		
 		int created = 0;
-		isBom(m_production.getM_Product_ID());
-		
-		if (!costsOK(m_production.getM_Product_ID())) {
-			String msg = "Excessive difference in standard costs";
-			if (MSysConfig.getBooleanValue("MFG_ValidateCostsDifferenceOnCreate", false, getAD_Client_ID())) {
-			throw new AdempiereUserError("Excessive difference in standard costs");
-			} else {
-				log.warning(msg);
+		if (!m_production.isUseProductionPlan()) {
+			validateEndProduct(m_production.getM_Product_ID());
+			
+			if (!recreate && "Y".equalsIgnoreCase(m_production.getIsCreated()))
+				throw new AdempiereUserError("Production already created.");
+			
+			if (newQty != null )
+				m_production.setProductionQty(newQty);
+			
+			m_production.deleteLines(get_TrxName());
+			created = m_production.createLines(mustBeStocked);
+		} else {
+			Query planQuery = new Query(getCtx(), I_M_ProductionPlan.Table_Name, "M_ProductionPlan.M_Production_ID=?", get_TrxName());
+			List<MProductionPlan> plans = planQuery.setParameters(m_production.getM_Production_ID()).list();
+			for(MProductionPlan plan : plans) {
+				validateEndProduct(plan.getM_Product_ID());
+				
+				if (!recreate && "Y".equalsIgnoreCase(m_production.getIsCreated()))
+					throw new AdempiereUserError("Production already created.");
+				
+				plan.deleteLines(get_TrxName());
+				int n = plan.createLines(mustBeStocked);
+				if ( n == 0 ) 
+				{return "Failed to create production lines"; }
+				created = created + n;
 			}
 		}
-		
-		if (!recreate && "Y".equalsIgnoreCase(m_production.getIsCreated()))
-			throw new AdempiereUserError("Production already created.");
-		
-		if (newQty != null )
-			m_production.setProductionQty(newQty);
-		
-		m_production.deleteLines(get_TrxName());
-		created = m_production.createLines(mustBeStocked);
 		if ( created == 0 ) 
 		{return "Failed to create production lines"; }
 		
@@ -122,6 +134,19 @@ public class ProductionCreate extends SvrProcess {
 		m_production.save(get_TrxName());
 		StringBuilder msgreturn = new StringBuilder().append(created).append(" production lines were created");
 		return msgreturn.toString();
+	}
+
+	private void validateEndProduct(int M_Product_ID) throws Exception {
+		isBom(M_Product_ID);
+		
+		if (!costsOK(M_Product_ID)) {
+			String msg = "Excessive difference in standard costs";
+			if (MSysConfig.getBooleanValue("MFG_ValidateCostsDifferenceOnCreate", false, getAD_Client_ID())) {
+				throw new AdempiereUserError("Excessive difference in standard costs");
+			} else {
+				log.warning(msg);
+			}
+		}
 	}
 	
 	protected void isBom(int M_Product_ID) throws Exception

@@ -33,7 +33,7 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20140212L;
 
     /** Standard Constructor */
     public X_M_Production (Properties ctx, int M_Production_ID, String trxName)
@@ -43,6 +43,8 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
         {
 			setDocumentNo (null);
 			setIsCreated (null);
+// N
+			setIsUseProductionPlan (false);
 // N
 			setM_Locator_ID (0);
 			setMovementDate (new Timestamp( System.currentTimeMillis() ));
@@ -359,6 +361,27 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	public String getIsCreated () 
 	{
 		return (String)get_Value(COLUMNNAME_IsCreated);
+	}
+
+	/** Set Use Production Plan.
+		@param IsUseProductionPlan Use Production Plan	  */
+	public void setIsUseProductionPlan (boolean IsUseProductionPlan)
+	{
+		set_Value (COLUMNNAME_IsUseProductionPlan, Boolean.valueOf(IsUseProductionPlan));
+	}
+
+	/** Get Use Production Plan.
+		@return Use Production Plan	  */
+	public boolean isUseProductionPlan () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsUseProductionPlan);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	public I_M_Locator getM_Locator() throws RuntimeException

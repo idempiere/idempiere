@@ -253,6 +253,15 @@ public interface I_M_Production
 	/** Get Records created	  */
 	public String getIsCreated();
 
+    /** Column name IsUseProductionPlan */
+    public static final String COLUMNNAME_IsUseProductionPlan = "IsUseProductionPlan";
+
+	/** Set Use Production Plan	  */
+	public void setIsUseProductionPlan (boolean IsUseProductionPlan);
+
+	/** Get Use Production Plan	  */
+	public boolean isUseProductionPlan();
+
     /** Column name M_Locator_ID */
     public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
 
