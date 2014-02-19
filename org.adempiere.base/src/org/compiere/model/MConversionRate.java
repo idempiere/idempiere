@@ -32,7 +32,6 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
 
 /**
@@ -403,8 +402,11 @@ public class MConversionRate extends X_C_Conversion_Rate
 
 		//	Date Range Check
 		Timestamp from = getValidFrom();
-		if (getValidTo() == null)
-			setValidTo (TimeUtil.getDay(2056, 1, 29));	//	 no exchange rates after my 100th birthday
+		if (getValidTo() == null) {
+			// setValidTo (TimeUtil.getDay(2056, 1, 29));	//	 no exchange rates after my 100th birthday
+			log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_ValidTo));
+			return false;
+		}
 		Timestamp to = getValidTo();
 		
 		if (to.before(from))
