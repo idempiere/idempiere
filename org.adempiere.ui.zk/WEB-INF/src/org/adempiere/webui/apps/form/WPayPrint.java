@@ -52,7 +52,10 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaymentBatch;
+import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
+import org.compiere.process.ProcessInfo;
+import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -428,9 +431,22 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.CHECK, check.get_ID());
 			try
 			{
-				File file = File.createTempFile("WPayPrint", null);
-				re.getPDF(file);
-				pdfList.add(file);
+				MPrintFormat format = re.getPrintFormat();
+				if (format.getJasperProcess_ID() > 0)	
+				{
+					ProcessInfo pi = new ProcessInfo("", format.getJasperProcess_ID());
+					pi.setRecord_ID(check.get_ID());
+					pi.setIsBatch(true);
+					
+					ServerProcessCtl.process(pi, null);
+					pdfList.add(pi.getPDFReport());
+				}
+				else
+				{
+					File file = File.createTempFile("WPayPrint", null);
+					re.getPDF(file);
+					pdfList.add(file);
+				}
 			}
 			catch (Exception e)
 			{
@@ -479,9 +495,22 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 						ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.REMITTANCE, check.get_ID());
 						try
 						{
-							File file = File.createTempFile("WPayPrint", null);
-							re.getPDF(file);
-							pdfList.add(file);
+							MPrintFormat format = re.getPrintFormat();
+							if (format.getJasperProcess_ID() > 0)	
+							{
+								ProcessInfo pi = new ProcessInfo("", format.getJasperProcess_ID());
+								pi.setRecord_ID(check.get_ID());
+								pi.setIsBatch(true);
+								
+								ServerProcessCtl.process(pi, null);
+								pdfList.add(pi.getPDFReport());
+							}
+							else
+							{
+								File file = File.createTempFile("WPayPrint", null);
+								re.getPDF(file);
+								pdfList.add(file);
+							}
 						}
 						catch (Exception e)
 						{
