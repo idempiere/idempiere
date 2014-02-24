@@ -26,6 +26,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Business Partner Group Model 
@@ -58,6 +59,21 @@ public class MBPGroup extends X_C_BP_Group
 		return retValue;
 	}	//	get
 
+	/**
+	 * 
+	 * @param ctx
+	 * @param C_BP_Group_ID
+	 * @param trxName
+	 * @return MBPGroup
+	 */
+	public static MBPGroup get (Properties ctx, int C_BP_Group_ID, String trxName)
+	{
+		if (Util.isEmpty(trxName, true))
+			return get(ctx, C_BP_Group_ID);
+		else
+			return new MBPGroup (ctx, C_BP_Group_ID, trxName);
+	}
+	
 	/**
 	 * 	Get Default MBPGroup
 	 *	@param ctx context
