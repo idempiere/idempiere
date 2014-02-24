@@ -39,7 +39,7 @@ public class MBPGroup extends X_C_BP_Group
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3037428352124938328L;
+	private static final long serialVersionUID = -5323639776872742839L;
 
 	/**
 	 * 	Get MBPGroup from Cache

@@ -47,7 +47,7 @@ public class MBPartner extends X_C_BPartner
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3669895599574182217L;
+	private static final long serialVersionUID = -4308267492285903865L;
 
 	/**
 	 * 	Get Empty Template Business Partner
