@@ -758,7 +758,7 @@ public class Allocation
 		}	
 		
 		if ( unmatchedApplied.signum() != 0 )
-			log.log(Level.SEVERE, "Allocation not balanced -- out by " + unmatchedApplied );
+			throw new AdempiereException("Allocation not balanced -- out by " + unmatchedApplied);
 
 		//	Should start WF
 		if (alloc.get_ID() != 0)
