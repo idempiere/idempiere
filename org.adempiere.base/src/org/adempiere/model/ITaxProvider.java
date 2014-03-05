@@ -26,23 +26,35 @@ import org.compiere.process.ProcessInfo;
  * Tax provider interface
  * @author Elaine
  *
+ * @contributor Murilo H. Torquato <muriloht@devcoffee.com.br>
+ *
  */
 public interface ITaxProvider {
 		
 	public boolean calculateOrderTaxTotal(MTaxProvider provider, MOrder order);
 	
 	public boolean updateOrderTax(MTaxProvider provider, MOrderLine line);
-	
+
+	public boolean recalculateTax(MTaxProvider provider, MOrderLine line, boolean newRecord);
+
+	public boolean updateHeaderTax(MTaxProvider provider, MOrderLine line);
+
 	public boolean calculateInvoiceTaxTotal(MTaxProvider provider, MInvoice invoice);
 
 	public boolean updateInvoiceTax(MTaxProvider provider, MInvoiceLine line);
 	
 	public boolean recalculateTax(MTaxProvider provider, MInvoiceLine line, boolean newRecord);
-	
+
+	public boolean updateHeaderTax(MTaxProvider provider, MInvoiceLine line);
+
 	public boolean calculateRMATaxTotal(MTaxProvider provider, MRMA rma);
 	
 	public boolean updateRMATax(MTaxProvider provider, MRMALine line);
-	
+
+	public boolean recalculateTax(MTaxProvider provider, MRMALine line, boolean newRecord);
+
+	public boolean updateHeaderTax(MTaxProvider provider, MRMALine line);
+
 	public String validateConnection(MTaxProvider provider, ProcessInfo pi) throws Exception;
 	
 }

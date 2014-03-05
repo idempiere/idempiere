@@ -18,6 +18,8 @@ import java.util.ArrayList;
 
 import org.adempiere.model.ITaxProvider;
 import org.compiere.process.ProcessInfo;
+import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -25,9 +27,14 @@ import org.compiere.util.Msg;
  * Standard tax provider
  * @author Elaine
  *
+ * @contributor Murilo H. Torquato <muriloht@devcoffee.com.br>
+ *
  */
 public class StandardTaxProvider implements ITaxProvider {
-	
+
+	/**	Logger							*/
+	protected transient CLogger	log = CLogger.getCLogger (getClass());
+
 	@Override
 	public boolean calculateOrderTaxTotal(MTaxProvider provider, MOrder order) {
 		//	Lines
@@ -111,6 +118,51 @@ public class StandardTaxProvider implements ITaxProvider {
     	if (mtax.getC_TaxProvider_ID() == 0)
     		return line.updateOrderTax(false);
     	return true;
+	}
+
+	@Override
+	public boolean recalculateTax(MTaxProvider provider, MOrderLine line, boolean newRecord)
+	{
+		if (!newRecord && line.is_ValueChanged(MOrderLine.COLUMNNAME_C_Tax_ID) && !line.getParent().isProcessed())
+		{
+			MTax mtax = new MTax(line.getCtx(), line.getC_Tax_ID(), line.get_TrxName());
+	    	if (mtax.getC_TaxProvider_ID() == 0)
+	    	{
+				//	Recalculate Tax for old Tax
+				if (!line.updateOrderTax(true))
+					return false;
+	    	}
+		}
+		return line.updateHeaderTax();
+	}
+
+	@Override
+	public boolean updateHeaderTax(MTaxProvider provider, MOrderLine line)
+	{
+		//		Update Order Header
+		String sql = "UPDATE C_Order i"
+			+ " SET TotalLines="
+				+ "(SELECT COALESCE(SUM(LineNetAmt),0) FROM C_OrderLine il WHERE i.C_Order_ID=il.C_Order_ID) "
+			+ "WHERE C_Order_ID=" + line.getC_Order_ID();
+		int no = DB.executeUpdate(sql, line.get_TrxName());
+		if (no != 1)
+			log.warning("(1) #" + no);
+
+		if (line.isTaxIncluded())
+			sql = "UPDATE C_Order i "
+				+ " SET GrandTotal=TotalLines "
+				+ "WHERE C_Order_ID=" + line.getC_Order_ID();
+		else
+			sql = "UPDATE C_Order i "
+				+ " SET GrandTotal=TotalLines+"
+					+ "(SELECT COALESCE(SUM(TaxAmt),0) FROM C_OrderTax it WHERE i.C_Order_ID=it.C_Order_ID) "
+					+ "WHERE C_Order_ID=" + line.getC_Order_ID();
+		no = DB.executeUpdate(sql, line.get_TrxName());
+		if (no != 1)
+			log.warning("(2) #" + no);
+
+		line.clearParent();
+		return no == 1;
 	}
 
 	@Override
@@ -212,6 +264,35 @@ public class StandardTaxProvider implements ITaxProvider {
 	}
 
 	@Override
+	public boolean updateHeaderTax(MTaxProvider provider, MInvoiceLine line)
+	{
+		//		Update Invoice Header
+		String sql = "UPDATE C_Invoice i"
+			+ " SET TotalLines="
+				+ "(SELECT COALESCE(SUM(LineNetAmt),0) FROM C_InvoiceLine il WHERE i.C_Invoice_ID=il.C_Invoice_ID) "
+			+ "WHERE C_Invoice_ID=?";
+		int no = DB.executeUpdateEx(sql, new Object[]{line.getC_Invoice_ID()}, line.get_TrxName());
+		if (no != 1)
+			log.warning("(1) #" + no);
+
+		if (line.isTaxIncluded())
+			sql = "UPDATE C_Invoice i "
+				+ " SET GrandTotal=TotalLines "
+				+ "WHERE C_Invoice_ID=?";
+		else
+			sql = "UPDATE C_Invoice i "
+				+ " SET GrandTotal=TotalLines+"
+					+ "(SELECT COALESCE(SUM(TaxAmt),0) FROM C_InvoiceTax it WHERE i.C_Invoice_ID=it.C_Invoice_ID) "
+					+ "WHERE C_Invoice_ID=?";
+		no = DB.executeUpdateEx(sql, new Object[]{line.getC_Invoice_ID()}, line.get_TrxName());
+		if (no != 1)
+			log.warning("(2) #" + no);
+		line.clearParent();
+
+		return no == 1;
+	}
+
+	@Override
 	public boolean calculateRMATaxTotal(MTaxProvider provider, MRMA rma) {
 		//	Lines
 		BigDecimal totalLines = Env.ZERO;
@@ -293,6 +374,40 @@ public class StandardTaxProvider implements ITaxProvider {
     	if (mtax.getC_TaxProvider_ID() == 0)
     		return line.updateOrderTax(false);
     	return true;
+	}
+
+	@Override
+	public boolean recalculateTax(MTaxProvider provider, MRMALine line, boolean newRecord)
+	{
+		if (!newRecord && line.is_ValueChanged(MRMALine.COLUMNNAME_C_Tax_ID) && !line.getParent().isProcessed())
+		{
+			MTax mtax = new MTax(line.getCtx(), line.getC_Tax_ID(), line.get_TrxName());
+	    	if (mtax.getC_TaxProvider_ID() == 0)
+	    	{
+				//	Recalculate Tax for old Tax
+				if (!line.updateOrderTax(true))
+					return false;
+	    	}
+		}
+
+        return line.updateHeaderAmt();
+	}
+
+	@Override
+	public boolean updateHeaderTax(MTaxProvider provider, MRMALine line)
+	{
+		//	Update RMA Header
+		String sql = "UPDATE M_RMA "
+			+ " SET Amt="
+				+ "(SELECT COALESCE(SUM(LineNetAmt),0) FROM M_RMALine WHERE M_RMA.M_RMA_ID=M_RMALine.M_RMA_ID) "
+			+ "WHERE M_RMA_ID=?";
+		int no = DB.executeUpdateEx(sql, new Object[]{line.getM_RMA_ID()}, line.get_TrxName());
+		if (no != 1)
+			log.warning("(1) #" + no);
+
+		line.clearParent();
+
+		return no == 1;
 	}
 
 	@Override

@@ -58,7 +58,7 @@ public class MOrderLine extends X_C_OrderLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5740772832684028526L;
+	private static final long serialVersionUID = -6972864309223293705L;
 
 	/**
 	 * 	Get Order Unreserved Qty
@@ -1019,14 +1019,12 @@ public class MOrderLine extends X_C_OrderLine
 	{
 		if (!success)
 			return success;
-		if (!newRecord && is_ValueChanged("C_Tax_ID"))
-		{
-			//	Recalculate Tax for old Tax
-			if (!getParent().isProcessed())
-				if (!updateOrderTax(true))
-					return false;
-		}
-		return updateHeaderTax();
+		MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
+        MTaxProvider provider = new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName());
+		ITaxProvider calculator = Core.getTaxProvider(provider);
+		if (calculator == null)
+			throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+    	return calculator.recalculateTax(provider, this, newRecord);
 	}	//	afterSave
 
 	/**
@@ -1054,7 +1052,7 @@ public class MOrderLine extends X_C_OrderLine
 	 * 
 	 * @author teo_sarca [ 1583825 ]
 	 */
-	protected boolean updateOrderTax(boolean oldTax) {
+	public boolean updateOrderTax(boolean oldTax) {
 		MOrderTax tax = MOrderTax.get (this, getPrecision(), oldTax, get_TrxName());
 		if (tax != null) {
 			if (!tax.calculateTaxFromLines())
@@ -1075,43 +1073,27 @@ public class MOrderLine extends X_C_OrderLine
 	 *	Update Tax & Header
 	 *	@return true if header updated
 	 */
-	private boolean updateHeaderTax()
+	public boolean updateHeaderTax()
 	{
-		//	Recalculate Tax for this Tax
-		if (!getParent().isProcessed())
-		{
-			MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
-	        MTaxProvider provider = new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName());
-			ITaxProvider calculator = Core.getTaxProvider(provider);
-			if (calculator == null)
-				throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
-	    	if (!calculator.updateOrderTax(provider, this))
-				return false;
-		}
-		
-		//	Update Order Header
-		String sql = "UPDATE C_Order i"
-			+ " SET TotalLines="
-				+ "(SELECT COALESCE(SUM(LineNetAmt),0) FROM C_OrderLine il WHERE i.C_Order_ID=il.C_Order_ID) "
-			+ "WHERE C_Order_ID=" + getC_Order_ID();
-		int no = DB.executeUpdate(sql, get_TrxName());
-		if (no != 1)
-			log.warning("(1) #" + no);
 
-		if (isTaxIncluded())
-			sql = "UPDATE C_Order i "
-				+ " SET GrandTotal=TotalLines "
-				+ "WHERE C_Order_ID=" + getC_Order_ID();
-		else
-			sql = "UPDATE C_Order i "
-				+ " SET GrandTotal=TotalLines+"
-					+ "(SELECT COALESCE(SUM(TaxAmt),0) FROM C_OrderTax it WHERE i.C_Order_ID=it.C_Order_ID) "
-					+ "WHERE C_Order_ID=" + getC_Order_ID();
-		no = DB.executeUpdate(sql, get_TrxName());
-		if (no != 1)
-			log.warning("(2) #" + no);
-		m_parent = null;
-		return no == 1;
+		// Update header only if the document is not processed
+		if (isProcessed() && !is_ValueChanged(COLUMNNAME_Processed))
+			return true;
+
+		MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
+        MTaxProvider provider = new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName());
+		ITaxProvider calculator = Core.getTaxProvider(provider);
+		if (calculator == null)
+			throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+    	if (!calculator.updateOrderTax(provider, this))
+			return false;
+
+    	return calculator.updateHeaderTax(provider, this);
+
 	}	//	updateHeaderTax
-	
+
+	public void clearParent()
+	{
+		this.m_parent = null;
+	}
 }	//	MOrderLine

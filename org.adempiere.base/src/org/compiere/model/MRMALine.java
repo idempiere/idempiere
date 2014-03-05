@@ -40,7 +40,7 @@ public class MRMALine extends X_M_RMALine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4358572588500923170L;
+	private static final long serialVersionUID = -3459158383642518763L;
 
 	/**
 	 * 	Standard Constructor
@@ -439,15 +439,12 @@ public class MRMALine extends X_M_RMALine
     {
         if (!success)
             return success;
-        if (!newRecord && is_ValueChanged("C_Tax_ID"))
-		{
-			//	Recalculate Tax for old Tax
-			if (!getParent().isProcessed())
-				if (!updateOrderTax(true))
-					return false;
-		}
-        
-        return updateHeaderAmt();
+		MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
+        MTaxProvider provider = new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName());
+		ITaxProvider calculator = Core.getTaxProvider(provider);
+		if (calculator == null)
+			throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+    	return calculator.recalculateTax(provider, this, newRecord);
     }
     
     @Override
@@ -462,36 +459,21 @@ public class MRMALine extends X_M_RMALine
 	 *	Update Amount on Header
 	 *	@return true if header updated
 	 */
-	private boolean updateHeaderAmt()
+	public boolean updateHeaderAmt()
 	{
 		// Update header only if the document is not processed
 		if (isProcessed() && !is_ValueChanged(COLUMNNAME_Processed))
 			return true;
 
-		// Recalculate Tax for this Tax
-		if (!getParent().isProcessed())
-		{
-			MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
-	        MTaxProvider provider = new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName());
-			ITaxProvider calculator = Core.getTaxProvider(provider);
-			if (calculator == null)
-				throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
-	    	if (!calculator.updateRMATax(provider, this))
-				return false;
-		}
-		
-		//	Update RMA Header
-		String sql = "UPDATE M_RMA "
-			+ " SET Amt="
-				+ "(SELECT COALESCE(SUM(LineNetAmt),0) FROM M_RMALine WHERE M_RMA.M_RMA_ID=M_RMALine.M_RMA_ID) "
-			+ "WHERE M_RMA_ID=?";
-		int no = DB.executeUpdateEx(sql, new Object[]{getM_RMA_ID()}, get_TrxName());
-		if (no != 1)
-			log.warning("(1) #" + no);
+		MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
+        MTaxProvider provider = new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName());
+		ITaxProvider calculator = Core.getTaxProvider(provider);
+		if (calculator == null)
+			throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+    	if (!calculator.updateRMATax(provider, this))
+			return false;
 
-		m_parent = null;
-
-		return no == 1;
+    	return calculator.updateHeaderTax(provider, this);
 	}	//	updateHeaderTax
 
     /**
@@ -683,5 +665,9 @@ public class MRMALine extends X_M_RMALine
         }
         return m_ioLine.getM_Locator_ID();
     }
-    
+
+	public void clearParent()
+	{
+		this.m_parent = null;
+	}
 }	//	MRMALine

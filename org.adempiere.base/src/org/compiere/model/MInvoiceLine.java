@@ -54,7 +54,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8065144330439104363L;
+	private static final long serialVersionUID = -6174490999732876285L;
 
 	/**
 	 * 	Get Invoice Line referencing InOut Line
@@ -989,7 +989,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	 *	Update Tax & Header
 	 *	@return true if header updated with tax
 	 */
-	protected boolean updateHeaderTax()
+	public boolean updateHeaderTax()
 	{
 		// Update header only if the document is not processed - teo_sarca BF [ 2317305 ]
 		if (isProcessed() && !is_ValueChanged(COLUMNNAME_Processed))
@@ -1004,30 +1004,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
     	if (!calculator.updateInvoiceTax(provider, this))
 			return false;
 
-		//	Update Invoice Header
-		String sql = "UPDATE C_Invoice i"
-			+ " SET TotalLines="
-				+ "(SELECT COALESCE(SUM(LineNetAmt),0) FROM C_InvoiceLine il WHERE i.C_Invoice_ID=il.C_Invoice_ID) "
-			+ "WHERE C_Invoice_ID=?";
-		int no = DB.executeUpdateEx(sql, new Object[]{getC_Invoice_ID()}, get_TrxName());
-		if (no != 1)
-			log.warning("(1) #" + no);
-
-		if (isTaxIncluded())
-			sql = "UPDATE C_Invoice i "
-				+ " SET GrandTotal=TotalLines "
-				+ "WHERE C_Invoice_ID=?";
-		else
-			sql = "UPDATE C_Invoice i "
-				+ " SET GrandTotal=TotalLines+"
-					+ "(SELECT COALESCE(SUM(TaxAmt),0) FROM C_InvoiceTax it WHERE i.C_Invoice_ID=it.C_Invoice_ID) "
-					+ "WHERE C_Invoice_ID=?";
-		no = DB.executeUpdateEx(sql, new Object[]{getC_Invoice_ID()}, get_TrxName());
-		if (no != 1)
-			log.warning("(2) #" + no);
-		m_parent = null;
-
-		return no == 1;
+		return calculator.updateHeaderTax(provider, this);
 	}	//	updateHeaderTax
 
 
@@ -1376,4 +1353,10 @@ public class MInvoiceLine extends X_C_InvoiceLine
 							+" AND "+MMatchInv.COLUMNNAME_Processed+"=?";
 		return DB.getSQLValueBDEx(get_TrxName(), sql, getC_InvoiceLine_ID(), true);
 	}
+
+	public void clearParent()
+	{
+		this.m_parent = null;
+	}
+
 }	//	MInvoiceLine
