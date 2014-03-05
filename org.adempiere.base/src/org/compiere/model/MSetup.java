@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
@@ -108,7 +109,8 @@ public final class MSetup
 	 *  @return true if created
 	 */
 	public boolean createClient (String clientName, String orgValue, String orgName,
-		String userClient, String userOrg, String phone, String phone2, String fax, String eMail, String taxID)
+		String userClient, String userOrg, String phone, String phone2, String fax, String eMail, String taxID,
+		String adminEmail, String userEmail)
 	{
 		log.info(clientName);
 		m_trx.start();
@@ -276,19 +278,22 @@ public final class MSetup
 		 *  - Client
 		 *  - Org
 		 */
+		MUser clientAdminUser = new MUser(m_ctx, 0, m_trx.getTrxName());
+
 		name = userClient;
 		if (name == null || name.length() == 0)
 			name = m_clientName + "Client";
-		AD_User_ID = getNextID(AD_Client_ID, "AD_User");
-		AD_User_Name = name;
-		name = DB.TO_STRING(name);
-		sql = "INSERT INTO AD_User(" + m_stdColumns + ",AD_User_ID,"
-			+ "Name,Description,Password)"
-			+ " VALUES (" + m_stdValues + "," + AD_User_ID + ","
-			+ name + "," + name + "," + name + ")";
-		no = DB.executeUpdate(sql, m_trx.getTrxName());
-		if (no != 1)
-		{
+
+		clientAdminUser.setPassword(name);
+		clientAdminUser.setDescription(name);
+		clientAdminUser.setName(name);
+		clientAdminUser.setAD_Client_ID(AD_Client_ID);
+		clientAdminUser.setAD_Org_ID(0);
+		clientAdminUser.setEMail(adminEmail);
+
+		try {
+			clientAdminUser.saveEx();
+		} catch (AdempiereException ex) {
 			String err = "Admin User NOT inserted - " + AD_User_Name;
 			log.log(Level.SEVERE, err);
 			m_info.append(err);
@@ -296,22 +301,33 @@ public final class MSetup
 			m_trx.close();
 			return false;
 		}
+
+		AD_User_ID = clientAdminUser.getAD_User_ID();
+		AD_User_Name = name;
+
 		//  Info
 		m_info.append(Msg.translate(m_lang, "AD_User_ID")).append("=").append(AD_User_Name).append("/").append(AD_User_Name).append("\n");
+
+		MUser clientUser = new MUser(m_ctx, 0, m_trx.getTrxName());
+
+		name = userClient;
+		if (name == null || name.length() == 0)
+			name = m_clientName + "Client";
 
 		name = userOrg;
 		if (name == null || name.length() == 0)
 			name = m_clientName + "Org";
-		AD_User_U_ID = getNextID(AD_Client_ID, "AD_User");
-		AD_User_U_Name = name;
-		name = DB.TO_STRING(name);
-		sql = "INSERT INTO AD_User(" + m_stdColumns + ",AD_User_ID,"
-			+ "Name,Description,Password)"
-			+ " VALUES (" + m_stdValues + "," + AD_User_U_ID + ","
-			+ name + "," + name + "," + name + ")";
-		no = DB.executeUpdate(sql, m_trx.getTrxName());
-		if (no != 1)
-		{
+
+		clientUser.setPassword(name);
+		clientUser.setDescription(name);
+		clientUser.setName(name);
+		clientUser.setAD_Client_ID(AD_Client_ID);
+		clientUser.setAD_Org_ID(0);
+		clientUser.setEMail(userEmail);
+
+		try {
+			clientUser.saveEx();
+		} catch (AdempiereException ex) {
 			String err = "Org User NOT inserted - " + AD_User_U_Name;
 			log.log(Level.SEVERE, err);
 			m_info.append(err);
@@ -319,6 +335,9 @@ public final class MSetup
 			m_trx.close();
 			return false;
 		}
+
+		AD_User_U_ID = clientUser.getAD_User_ID();
+		AD_User_U_Name = name;
 		//  Info
 		m_info.append(Msg.translate(m_lang, "AD_User_ID")).append("=").append(AD_User_U_Name).append("/").append(AD_User_U_Name).append("\n");
 

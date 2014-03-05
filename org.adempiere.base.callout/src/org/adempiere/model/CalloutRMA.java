@@ -85,10 +85,14 @@ public class CalloutRMA extends CalloutEngine {
 		if (invoiceLine_ID != 0) 
 		{
 			MInvoiceLine invoiceLine = new MInvoiceLine(ctx, invoiceLine_ID, null);
-			if (invoiceLine.getM_Product_ID() != 0)
+			if (invoiceLine.getM_Product_ID() != 0) {
 				mTab.setValue(MRMALine.COLUMNNAME_M_Product_ID, invoiceLine.getM_Product_ID());
-			if (invoiceLine.getC_Charge_ID() != 0)
+				mTab.setValue(MRMALine.COLUMNNAME_C_Charge_ID, null);
+			}
+			if (invoiceLine.getC_Charge_ID() != 0) {
 				mTab.setValue(MRMALine.COLUMNNAME_C_Charge_ID, invoiceLine.getC_Charge_ID());
+				mTab.setValue(MRMALine.COLUMNNAME_M_Product_ID, null);
+			}
 			mTab.setValue(MRMALine.COLUMNNAME_Qty, invoiceLine.getQtyEntered());
 			mTab.setValue(MRMALine.COLUMNNAME_Amt, invoiceLine.getPriceEntered());
 			mTab.setValue(MRMALine.COLUMNNAME_C_Tax_ID, invoiceLine.getC_Tax_ID());
@@ -102,10 +106,14 @@ public class CalloutRMA extends CalloutEngine {
 		else if (iol.getC_OrderLine_ID() != 0) 
 		{
 			MOrderLine orderLine = new MOrderLine(ctx, iol.getC_OrderLine_ID(), null);
-			if (orderLine.getM_Product_ID() != 0)
+			if (orderLine.getM_Product_ID() != 0) {
 				mTab.setValue(MRMALine.COLUMNNAME_M_Product_ID, orderLine.getM_Product_ID());
-			if (orderLine.getC_Charge_ID() != 0)
+			    mTab.setValue(MRMALine.COLUMNNAME_C_Charge_ID, null);
+			}
+			if (orderLine.getC_Charge_ID() != 0) {
 				mTab.setValue(MRMALine.COLUMNNAME_C_Charge_ID, orderLine.getC_Charge_ID());
+				mTab.setValue(MRMALine.COLUMNNAME_M_Product_ID, null);
+			}
 			mTab.setValue(MRMALine.COLUMNNAME_Qty, orderLine.getQtyEntered());
 			mTab.setValue(MRMALine.COLUMNNAME_Amt, orderLine.getPriceEntered());
 			mTab.setValue(MRMALine.COLUMNNAME_C_Tax_ID, orderLine.getC_Tax_ID());

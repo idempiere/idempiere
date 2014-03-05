@@ -295,9 +295,17 @@ public class Doc_MatchPO extends Doc
 				//	No Costs yet - no PPV
 				if (costs == null || costs.signum() == 0)
 				{
-					p_Error = "Resubmit - No Costs for " + product.getName();
-					log.log(Level.SEVERE, p_Error);
-					return null;
+					//ok if purchase price is zero too
+					if (m_oLine.getPriceActual().signum() == 0) 
+					{
+						costs = BigDecimal.ZERO;
+					}
+					else
+					{
+						p_Error = "Resubmit - No Costs for " + product.getName();
+						log.log(Level.SEVERE, p_Error);
+						return null;
+					}
 				}
 	
 				//	Difference

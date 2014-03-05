@@ -2381,8 +2381,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	private void deAllocate(boolean accrual)
 	{
-		if (getC_Order_ID() != 0)
-			setC_Order_ID(0);
+		// if (getC_Order_ID() != 0) setC_Order_ID(0); // IDEMPIERE-1764
 	//	if (getC_Invoice_ID() == 0)
 	//		return;
 		//	De-Allocate all 
@@ -2577,7 +2576,7 @@ public final class MPayment extends X_C_Payment
 		MPayment reversal = new MPayment (getCtx(), 0, get_TrxName());
 		copyValues(this, reversal);
 		reversal.setClientOrg(this);
-		reversal.setC_Order_ID(0);
+		// reversal.setC_Order_ID(0); // IDEMPIERE-1764
 		reversal.setC_Invoice_ID(0);
 		reversal.setDateAcct(dateAcct);
 		//

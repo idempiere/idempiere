@@ -412,6 +412,7 @@ public class Doc_InOut extends Doc
 					int C_OrderLine_ID = line.getC_OrderLine_ID();
 					if (C_OrderLine_ID > 0)
 					{
+						orderLine = new MOrderLine (getCtx(), C_OrderLine_ID, getTrxName());
 						MOrderLandedCostAllocation[] allocations = MOrderLandedCostAllocation.getOfOrderLine(C_OrderLine_ID, getTrxName());
 						for(MOrderLandedCostAllocation allocation : allocations) 
 						{														
@@ -421,15 +422,15 @@ public class Doc_InOut extends Doc
 							landedCost = landedCost.add(amt);							
 						}
 					}
+															
 					//get costing method for product					
 					if (MAcctSchema.COSTINGMETHOD_AveragePO.equals(costingMethod) ||
 						MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(costingMethod) ||
 						MAcctSchema.COSTINGMETHOD_LastPOPrice.equals(costingMethod) )
-					{						
+					{
 						// Low - check if c_orderline_id is valid
-						if (C_OrderLine_ID > 0)
+						if (orderLine != null)
 						{
-						    orderLine = new MOrderLine (getCtx(), C_OrderLine_ID, getTrxName());
 						    // Elaine 2008/06/26
 						    C_Currency_ID = orderLine.getC_Currency_ID();
 						    //

@@ -474,7 +474,7 @@ public class VSetup extends CPanel
 		m_frame.setBusyTimer(45);
 		//  Step 1
 		boolean ok = ms.createClient(fClientName.getText(), fOrgValue.getText(), fOrgName.getText(),
-			fUserClient.getText(), fUserOrg.getText(), null, null, null, null, null);
+			fUserClient.getText(), fUserOrg.getText(), null, null, null, null, null, null, null); // this form is not used
 		String info = ms.getInfo();
 
 		if (ok)
