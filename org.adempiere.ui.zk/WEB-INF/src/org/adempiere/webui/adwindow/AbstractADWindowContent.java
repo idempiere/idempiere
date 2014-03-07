@@ -1925,6 +1925,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				{
 		    		String statusLine = statusBar.getStatusLine();
 		    		adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
+		    		adTabbox.getSelectedGridTab().refreshParentTabs();
 		    		statusBar.setStatusLine(statusLine);
 		    	}
 				if (dirtyTabpanel != null) {
