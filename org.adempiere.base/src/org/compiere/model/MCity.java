@@ -29,7 +29,7 @@ import org.compiere.util.CLogger;
  *
  *  @author 	Mario Calderon / Carlos Ruiz
  */
-public final class MCity extends X_C_City
+public class MCity extends X_C_City
 	implements Comparator<Object>, Serializable
 {
 	/**

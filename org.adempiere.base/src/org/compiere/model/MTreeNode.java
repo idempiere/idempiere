@@ -33,7 +33,7 @@ import org.compiere.wf.MWFNode;
  *  @author 	Jorg Janke
  *  @version 	$Id: MTreeNode.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public final class MTreeNode extends DefaultMutableTreeNode
+public class MTreeNode extends DefaultMutableTreeNode
 {
 	/**
 	 * 
