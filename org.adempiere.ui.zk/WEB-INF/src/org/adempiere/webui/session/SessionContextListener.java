@@ -17,7 +17,6 @@
 
 package org.adempiere.webui.session;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -133,8 +132,6 @@ public class SessionContextListener implements ExecutionInit,
 		    	//set locale
 		        Locales.setThreadLocal(Env.getLanguage(ServerContext.getCurrentInstance()).getLocale());
 	    	}
-    		Properties ctx = ServerContext.getCurrentInstance();
-    		ctx.put(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(exec.getDesktop()));
 	    }
     }
 

@@ -30,6 +30,7 @@ import org.adempiere.util.ServerContext;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
+import org.adempiere.webui.apps.DesktopRunnable;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.component.Tab;
@@ -265,7 +266,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 			}
 		};
 
-		Adempiere.getThreadPoolExecutor().submit(runnable);
+		Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(runnable,layout.getDesktop()));
 
 		ToolBar toolbar = new ToolBar();
         windowContainer.getComponent().appendChild(toolbar);

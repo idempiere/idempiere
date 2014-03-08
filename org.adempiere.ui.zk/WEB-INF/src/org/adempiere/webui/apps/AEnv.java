@@ -34,7 +34,6 @@ import java.util.logging.Level;
 
 import javax.servlet.ServletRequest;
 
-import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionManager;
@@ -741,8 +740,7 @@ public final class AEnv
 		if (inUIThread) {
 			return Executions.getCurrent().getDesktop();
 		} else {
-			@SuppressWarnings("unchecked")
-			WeakReference<Desktop> ref = (WeakReference<Desktop>) Env.getCtx().get(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY);
+			WeakReference<Desktop> ref = DesktopRunnable.getThreadLocalDesktop();
 			return ref != null ? ref.get() : null;
 		}
 	}

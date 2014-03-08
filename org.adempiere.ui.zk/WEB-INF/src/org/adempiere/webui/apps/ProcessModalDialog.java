@@ -17,7 +17,6 @@
 package org.adempiere.webui.apps;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,8 +29,6 @@ import java.util.logging.Level;
 import org.adempiere.util.Callback;
 import org.adempiere.util.ContextRunnable;
 import org.adempiere.util.IProcessUI;
-import org.adempiere.util.ServerContext;
-import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -50,7 +47,6 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -379,15 +375,8 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	 * internal use, don't call this directly
 	 */
 	public void runProcess() {	
-		//prepare context for background thread
-		Properties context = ServerContext.getCurrentInstance();
-		if (context.get(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY) == null) {
-			Desktop desktop = this.getDesktop();
-			context.put(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(desktop));
-		}
-		
 		processDialogRunnable = new ProcessDialogRunnable();
-		future = Adempiere.getThreadPoolExecutor().submit(processDialogRunnable);
+		future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(processDialogRunnable, getDesktop()));
 	}
 	
 	private void hideBusyDialog() {
