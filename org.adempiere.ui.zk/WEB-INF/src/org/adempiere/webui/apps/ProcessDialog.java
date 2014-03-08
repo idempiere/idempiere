@@ -105,9 +105,10 @@ import com.lowagie.text.pdf.PdfWriter;
 public class ProcessDialog extends Window implements EventListener<Event>, IProcessUI, IHelpContext
 {
 	/**
-	 * generate serial version ID
+	 * 
 	 */
-	private static final long serialVersionUID = 5545731871518761455L;
+	private static final long serialVersionUID = 6316822220179816250L;
+
 	private static final String MESSAGE_DIV_STYLE = "max-height: 150pt; overflow: auto; margin: 10px;";	
 	private Div messageDiv;
 	private Center center;

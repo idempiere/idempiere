@@ -77,7 +77,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6505634026383902627L;
+	private static final long serialVersionUID = 5875869799688466929L;
 
 	private static final String SAVED_CONTEXT = "saved.context";
 	

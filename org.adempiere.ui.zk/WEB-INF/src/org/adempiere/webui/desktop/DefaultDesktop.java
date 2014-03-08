@@ -100,16 +100,16 @@ import org.zkoss.zul.West;
  */
 public class DefaultDesktop extends TabbedDesktop implements MenuListener, Serializable, EventListener<Event>, EventHandler, DesktopCleanup
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3578277408025379219L;
+
 	private static final String IMAGES_UPARROW_PNG = "images/collapse-header.png";
 
 	private static final String IMAGES_DOWNARROW_PNG = "images/expand-header.png";
 	
 	private static final String IMAGES_CONTEXT_HELP_PNG = "images/Help16.png";
-
-	/**
-	 * generated serial version ID
-	 */
-	private static final long serialVersionUID = -8203958978173990301L;
 
 	@SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(DefaultDesktop.class);

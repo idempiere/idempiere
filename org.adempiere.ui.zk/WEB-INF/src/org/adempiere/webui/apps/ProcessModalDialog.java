@@ -70,13 +70,14 @@ import org.zkoss.zul.Vlayout;
  */
 public class ProcessModalDialog extends Window implements EventListener<Event>, IProcessUI, DialogEvents
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3708004619583382450L;
+
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
 	private static final String ON_COMPLETE = "onComplete";
 	
-	/**
-	 * generated serial version ID
-	 */
-	private static final long serialVersionUID = -7109707014309321369L;
 	private boolean m_autoStart;
 	private VerticalBox dialogBody;
 	
