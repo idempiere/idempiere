@@ -16,8 +16,10 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
@@ -26,6 +28,7 @@ import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Panel;
+import org.adempiere.webui.component.Searchbox;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.SimpleTreeModel;
 import org.adempiere.webui.panel.ADForm;
@@ -47,6 +50,7 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.DefaultTreeNode;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.East;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.ListModel;
@@ -61,17 +65,11 @@ import org.zkoss.zul.Treeitem;
 /**
  *	Tree Maintenance
  *	
- *  @author Jorg Janke
+ *  @author Jorg Janke (modify: Sergio Oropeza sergioropeza@gmail.com, soropeza@dcsla.com	06/03/2014)
  *  @version $Id: VTreeMaintenance.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
 public class WTreeMaintenance extends TreeMaintenance implements IFormController, EventListener<Event>
 {
-	/**
-	 * 
-	 */
-	@SuppressWarnings("unused")
-	private static final long serialVersionUID = 3630156132596215136L;
-	
 	private CustomForm form = new CustomForm();	
 	
 	private Borderlayout	mainLayout	= new Borderlayout ();
@@ -84,6 +82,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	private Button			bDeleteAll	= new Button ();
 	private Checkbox		cbAllNodes	= new Checkbox ();
 	private Label			treeInfo	= new Label ();
+	private Searchbox      searchBox   = new Searchbox();
 	//
 	@SuppressWarnings("unused")
 	private Splitter		splitPane	= new Splitter();
@@ -156,6 +155,8 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		North north = new North();
 		mainLayout.appendChild(north);
 		north.appendChild(northPanel);
+		north.setHflex("1");
+		north.setVflex("1");
 		northPanel.setWidth("100%");
 		//
 		Hbox hbox = new Hbox();
@@ -177,10 +178,20 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		cell.appendChild(treeInfo);
 		hbox.appendChild (cell);
 		hbox.appendChild (new Space());
-		hbox.appendChild (bAddAll);
-		hbox.appendChild (bAdd);
-		hbox.appendChild (bDelete);
-		hbox.appendChild (bDeleteAll);
+
+		Div div = new Div();
+		div.appendChild (bAddAll);
+		div.appendChild (bAdd);
+		div.appendChild (bDelete);
+		div.appendChild (bDeleteAll);
+
+		searchBox.addEventListener(Events.ON_CLICK, this);
+		searchBox.getTextbox().addEventListener(Events.ON_OK, this);
+		searchBox.getButton().setImage(ThemeManager.getThemeResource("images/Find16.png"));
+		searchBox.setToolTipText(Msg.getCleanMsg(Env.getCtx(), "TreeSearch"));
+		searchBox.setWidth("200px");
+		div.appendChild(searchBox);
+		hbox.appendChild(div);
 		//
 		Center center = new Center();
 		mainLayout.appendChild(center);	
@@ -244,13 +255,32 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 			onListSelection(e);
 		else if (e.getTarget() == centerTree)
 			onTreeSelection(e);
+		else if (e.getTarget() == searchBox.getButton() || e.getTarget() == searchBox.getTextbox())
+			searchElement();
 	}	//	actionPerformed
 
-	
+	private void searchElement() {
+		String filter = searchBox.getText() == null ? "" : searchBox.getText();
+		filter = deleteAccents(filter.trim().toUpperCase());
+		action_loadTree(filter);
+	}
+
+	private String deleteAccents(String text) {
+	    String nfdNormalizedString = Normalizer.normalize(text, Normalizer.Form.NFD); 
+	    Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+	    text = pattern.matcher(nfdNormalizedString).replaceAll("");
+		return text;
+	}
+
+	private void action_loadTree() {
+		action_loadTree(null);
+	}
+
 	/**
 	 * 	Action: Fill Tree with all nodes
+	 * @param filter 
 	 */
-	private void action_loadTree()
+	private void action_loadTree(String filter)
 	{
 		KeyNamePair tree = treeField.getSelectedItem().toKeyNamePair();
 		log.info("Tree=" + tree);
@@ -268,16 +298,16 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		bAdd.setEnabled(!m_tree.isAllNodes());
 		bDelete.setEnabled(!m_tree.isAllNodes());
 		bDeleteAll.setEnabled(!m_tree.isAllNodes());
-		//
-		/*String fromClause = m_tree.getSourceTableName(false);	//	fully qualified
-		String columnNameX = m_tree.getSourceTableName(true);
-		String actionColor = m_tree.getActionColorName();*/
 		
 		//	List
 		SimpleListModel model = new SimpleListModel();
 		ArrayList<ListItem> items = getTreeItemData();
-		for(ListItem item : items)
-			model.addElement(item);
+		for (ListItem item : items) {
+			String valueItem = item.toString() == null ? "" : deleteAccents(item.toString().toUpperCase());
+			if (filter == null || filter.length() == 0 || valueItem.contains(filter)) {
+				model.addElement(item);
+			}
+		}
 		
 		if (log.isLoggable(Level.CONFIG)) log.config("#" + model.getSize());
 		centerList.setItemRenderer(model);
@@ -342,14 +372,16 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		log.info(tn.toString());
 		ListModel<Object> model = centerList.getModel();
 		int size = model.getSize();
-		int index = -1;
-		for (index = 0; index < size; index++)
+		int found = -1;
+		for (int index = 0; index < size; index++)
 		{
 			ListItem item = (ListItem)model.getElementAt(index);
-			if (item.id == tn.getNode_ID())
+			if (item.id == tn.getNode_ID()) {
+				found = index;
 				break;
+			}
 		}
-		centerList.setSelectedIndex(index);
+		centerList.setSelectedIndex(found);
 	}	//	propertyChange
 
 	/**
