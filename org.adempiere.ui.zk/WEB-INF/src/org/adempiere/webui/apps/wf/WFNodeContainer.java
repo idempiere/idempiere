@@ -49,6 +49,7 @@ public class WFNodeContainer
 	private int currentRow = 1;
 	private int currentColumn = 0;
 	private int noOfColumns = 4;
+	private int maxColumn = 0;
 	private int rowCount = 0;
 
 	private WorkflowGraphScene graphScene = new WorkflowGraphScene();
@@ -146,6 +147,9 @@ public class WFNodeContainer
 		w.setRow(currentRow);
 
 		nodes[currentColumn - 1] = node.getAD_WF_Node_ID();
+		if (currentColumn > maxColumn) {
+			maxColumn = currentColumn;
+		}
 
 		if (currentRow < oldRow) {
 			currentRow = oldRow;
@@ -225,6 +229,10 @@ public class WFNodeContainer
 
 	public int getColumnCount() {
 		return noOfColumns;
+	}
+
+	public int getMaxColumnWithNode() {
+		return maxColumn;
 	}
 
 	public GraphScene<Integer, MWFNodeNext> getGraphScene() {
