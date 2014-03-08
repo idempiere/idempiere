@@ -37,7 +37,7 @@ import org.compiere.util.Msg;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MPaySelectionCheck.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
  */
-public final class MPaySelectionCheck extends X_C_PaySelectionCheck
+public class MPaySelectionCheck extends X_C_PaySelectionCheck
 {
 	/**
 	 * 

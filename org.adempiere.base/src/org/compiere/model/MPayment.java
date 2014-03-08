@@ -77,7 +77,7 @@ import org.compiere.util.ValueNamePair;
  *  @author Carlos Ruiz - globalqss [ 2141475 ] Payment <> allocations must not be completed - implement lots of validations on prepareIt
  *  @version 	$Id: MPayment.java,v 1.4 2006/10/02 05:18:39 jjanke Exp $
  */
-public final class MPayment extends X_C_Payment 
+public class MPayment extends X_C_Payment 
 	implements DocAction, ProcessCall, PaymentInterface
 {
 

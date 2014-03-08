@@ -26,6 +26,7 @@ import org.compiere.model.MTree_NodeMM;
 import org.compiere.model.MTree_NodePR;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 public class TreeMaintenance {
@@ -51,14 +52,29 @@ public class TreeMaintenance {
 		String fromClause = m_tree.getSourceTableName(false);	//	fully qualified
 		String columnNameX = m_tree.getSourceTableName(true);
 		String actionColor = m_tree.getActionColorName();
-		
-		String sql = "SELECT t." + columnNameX 
-			+ "_ID,t.Name,t.Description,t.IsSummary,"
-			+ actionColor
-			+ " FROM " + fromClause
-		//	+ " WHERE t.IsActive='Y'"	//	R/O
-			+ " ORDER BY 2";
-		sql = MRole.getDefault().addAccessSQL(sql, 
+		String fieldName = null;
+		String fieldDescription = null;
+		String join = null;
+		if (m_tree.getTreeType().equals(MTree.TREETYPE_Menu) // IDEMPIERE-1581 (see MTree.getNodeDetails)
+			&& ! Env.isBaseLanguage(Env.getCtx(), "AD_Menu")) {
+			fieldName = "trl.Name";
+			fieldDescription ="trl.Description";
+			join = " LEFT JOIN AD_Menu_Trl trl ON (t.AD_Menu_ID = trl.AD_Menu_ID AND trl.AD_Language='"
+				+ Env.getAD_Language(Env.getCtx()) + "')";
+		} else {
+			fieldName ="t.Name";
+			fieldDescription ="t.Description";
+			join = "";
+		}
+
+		StringBuilder sqlb = new StringBuilder("SELECT t.")
+			.append(columnNameX) 
+			.append("_ID,").append(fieldName).append(",").append(fieldDescription).append(",t.IsSummary,")
+			.append(actionColor)
+			.append(" FROM ").append(fromClause).append(join)
+		//	.append(" WHERE t.IsActive='Y'") // R/O
+			.append(" ORDER BY 2");
+		String sql = MRole.getDefault().addAccessSQL(sqlb.toString(),
 			"t", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 		log.config(sql);
 		//	

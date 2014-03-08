@@ -125,10 +125,10 @@ public class VTreeMaintenance extends TreeMaintenance
 		cbAllNodes.setEnabled (false);
 		cbAllNodes.setText (Msg.translate(Env.getCtx(), "IsAllNodes"));
 		treeInfo.setText (" ");
-		bAdd.setToolTipText("Add to Tree");
-		bAddAll.setToolTipText("Add ALL to Tree");
-		bDelete.setToolTipText("Delete from Tree");
-		bDeleteAll.setToolTipText("Delete ALL from Tree");
+		bAdd.setToolTipText(Msg.getMsg(Env.getCtx(), "AddToTree"));
+		bAddAll.setToolTipText(Msg.getMsg(Env.getCtx(), "AddAllToTree"));
+		bDelete.setToolTipText(Msg.getMsg(Env.getCtx(), "DeleteFromTree"));
+		bDeleteAll.setToolTipText(Msg.getMsg(Env.getCtx(), "DeleteAllFromTree"));
 		bAdd.addActionListener(this);
 		bAddAll.addActionListener(this);
 		bDelete.addActionListener(this);

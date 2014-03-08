@@ -144,10 +144,10 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		cbAllNodes.setEnabled (false);
 		cbAllNodes.setText (Msg.translate(Env.getCtx(), "IsAllNodes"));
 		treeInfo.setText (" ");
-		bAdd.setTooltiptext("Add to Tree");
-		bAddAll.setTooltiptext("Add ALL to Tree");
-		bDelete.setTooltiptext("Delete from Tree");
-		bDeleteAll.setTooltiptext("Delete ALL from Tree");
+		bAdd.setTooltiptext(Msg.getMsg(Env.getCtx(), "AddToTree"));
+		bAddAll.setTooltiptext(Msg.getMsg(Env.getCtx(), "AddAllToTree"));
+		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "DeleteFromTree"));
+		bDeleteAll.setTooltiptext(Msg.getMsg(Env.getCtx(), "DeleteAllFromTree"));
 		bAdd.addActionListener(this);
 		bAddAll.addActionListener(this);
 		bDelete.addActionListener(this);

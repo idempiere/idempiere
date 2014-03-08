@@ -77,7 +77,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6505634026383902627L;
+	private static final long serialVersionUID = 5875869799688466929L;
 
 	private static final String SAVED_CONTEXT = "saved.context";
 	
@@ -103,8 +103,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 	public static final String EXECUTION_CARRYOVER_SESSION_KEY = "execution.carryover";
 
-	public static final String ZK_DESKTOP_SESSION_KEY = "zk.desktop";
-	
 	private static final String CLIENT_INFO = "client.info";
 	
 	private static boolean eventThreadEnabled = false;
@@ -246,7 +244,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		IDesktop appDesktop = createDesktop();
 		appDesktop.setClientInfo(clientInfo);
 		appDesktop.createPart(this.getPage());
-		ctx.put(ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(this.getPage().getDesktop()));
 		this.getPage().getDesktop().setAttribute(APPLICATION_DESKTOP_KEY, new WeakReference<IDesktop>(appDesktop));
 		
 		//track browser tab per session

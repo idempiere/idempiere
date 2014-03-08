@@ -41,7 +41,7 @@ import static org.compiere.model.SystemIDs.*;
  *   * @author Michael Judd (Akuna Ltd)
  * 				<li>BF [ 2695078 ] Country is not translated on invoice
  */
-public final class MCountry extends X_C_Country
+public class MCountry extends X_C_Country
 	implements Comparator<Object>, Serializable
 {
 	/**

@@ -147,7 +147,7 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, String trxName)
 	{
-		MCostDetail cd = get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
+		MCostDetail cd = get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID+" AND M_Product_ID="+M_Product_ID, 
 			C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
 		//
 		if (cd == null)		//	createNew
@@ -921,6 +921,16 @@ public class MCostDetail extends X_M_CostDetail
 	private boolean process (MAcctSchema as, MProduct product, MCostElement ce, 
 		int Org_ID, int M_ASI_ID)
 	{
+		//handle compatibility issue between average invoice and average po
+		String costingMethod = product.getCostingMethod(as);
+		if (X_M_Cost.COSTINGMETHOD_AverageInvoice.equals(costingMethod)) {
+			if (ce.isAveragePO())
+				return true;
+		} else if (X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod)) {
+			if (ce.isAverageInvoice())
+				return true;
+		}
+		
 		MCost cost = MCost.get(product, M_ASI_ID, as, 
 			Org_ID, ce.getM_CostElement_ID(), get_TrxName());
 		
@@ -1139,7 +1149,7 @@ public class MCostDetail extends X_M_CostDetail
 				{
 					if (adjustment)
 					{
-						String costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
+						costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
 						if (MCostElement.COSTINGMETHOD_AverageInvoice.equals(costingMethod))
 						{
 							cost.setWeightedAverage(amt.multiply(cost.getCurrentQty()), qty);
@@ -1164,7 +1174,7 @@ public class MCostDetail extends X_M_CostDetail
 			{
 				if (adjustment)
 				{
-					String costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
+					costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
 					if (MCostElement.COSTINGMETHOD_AveragePO.equals(costingMethod))
 					{
 						cost.setWeightedAverage(amt.multiply(cost.getCurrentQty()), qty);
@@ -1234,7 +1244,7 @@ public class MCostDetail extends X_M_CostDetail
 			{
 				if (adjustment)
 				{
-					String costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
+					costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
 					if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 					{
 						cost.add(amt.multiply(cost.getCurrentQty()), qty);					

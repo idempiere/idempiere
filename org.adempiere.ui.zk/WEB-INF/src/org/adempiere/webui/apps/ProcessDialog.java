@@ -6,7 +6,6 @@ import static org.compiere.model.SystemIDs.PROCESS_M_INOUT_GENERATE;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.lang.ref.WeakReference;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,8 +19,6 @@ import java.util.logging.Level;
 import org.adempiere.util.Callback;
 import org.adempiere.util.ContextRunnable;
 import org.adempiere.util.IProcessUI;
-import org.adempiere.util.ServerContext;
-import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -108,9 +105,10 @@ import com.lowagie.text.pdf.PdfWriter;
 public class ProcessDialog extends Window implements EventListener<Event>, IProcessUI, IHelpContext
 {
 	/**
-	 * generate serial version ID
+	 * 
 	 */
-	private static final long serialVersionUID = 5545731871518761455L;
+	private static final long serialVersionUID = 6316822220179816250L;
+
 	private static final String MESSAGE_DIV_STYLE = "max-height: 150pt; overflow: auto; margin: 10px;";	
 	private Div messageDiv;
 	private Center center;
@@ -347,15 +345,8 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	}
 
 	public void runProcess() {
-		//prepare context for background thread
-		Properties context = ServerContext.getCurrentInstance();
-		if (context.get(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY) == null) {
-			Desktop desktop = this.getDesktop();
-			context.put(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(desktop));
-		}		
-		
 		processDialogRunnable = new ProcessDialogRunnable();
-		future = Adempiere.getThreadPoolExecutor().submit(processDialogRunnable);
+		future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(processDialogRunnable, getDesktop()));
 	}
 	
 	private void onComplete() {

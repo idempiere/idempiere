@@ -187,14 +187,15 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 
 		try {
 			int row = nodeContainer.getRowCount();
+			int maxCol = nodeContainer.getMaxColumnWithNode();
 			for(int i = 0; i < row; i++) {
 				Tr tr = new Tr();
 				table.appendChild(tr);
-				for(int c = 0; c < 4; c++) {
+				for(int c = 0; c < maxCol; c++) {
 					BufferedImage t = new BufferedImage(WFGraphLayout.COLUMN_WIDTH, WFGraphLayout.ROW_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 					Graphics2D tg = t.createGraphics();
 					Td td = new Td();
-//					td.setStyle("border: 1px dotted lightgray");
+					td.setSclass("workflow-panel-table");
 					tr.appendChild(td);
 					
 					int x = c * WFGraphLayout.COLUMN_WIDTH;
