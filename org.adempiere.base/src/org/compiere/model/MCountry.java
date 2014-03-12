@@ -16,21 +16,21 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import static org.compiere.model.SystemIDs.COUNTRY_US;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
-import static org.compiere.model.SystemIDs.*;
 
 /**
  *	Location Country Model (Value Object)
@@ -47,8 +47,7 @@ public class MCountry extends X_C_Country
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3098295201595847612L;
-
+	private static final long serialVersionUID = -4015127112992493778L;
 
 	/**
 	 * 	Get Country (cached)
@@ -59,14 +58,13 @@ public class MCountry extends X_C_Country
 	public static MCountry get (Properties ctx, int C_Country_ID)
 	{
 		loadAllCountriesIfNeeded(ctx);
-		String key = String.valueOf(C_Country_ID);
-		MCountry c = (MCountry)s_countries.get(key);
+		MCountry c = s_countries.get(C_Country_ID);
 		if (c != null)
 			return c;
 		c = new MCountry (ctx, C_Country_ID, null);
 		if (c.getC_Country_ID() == C_Country_ID)
 		{
-			s_countries.put(key, c);
+			s_countries.put(C_Country_ID, c);
 			return c;
 		}
 		return null;
@@ -79,8 +77,14 @@ public class MCountry extends X_C_Country
 	 */
 	public static MCountry getDefault (Properties ctx)
 	{
-		loadAllCountriesIfNeeded(ctx);
-		return s_default;
+		int clientID = Env.getAD_Client_ID(ctx);
+		MCountry c = s_default.get(clientID);
+		if (c != null)
+			return c;
+
+		loadDefaultCountry(ctx);
+		c = s_default.get(clientID);
+		return c;
 	}	//	get
 
 	/**
@@ -112,42 +116,52 @@ public class MCountry extends X_C_Country
 	{
 		MClient client = MClient.get (ctx);
 		MLanguage lang = MLanguage.get(ctx, client.getAD_Language());
-		MCountry usa = null;
 		//
-		s_countries = new CCache<String,MCountry>(Table_Name, 250);
-		String sql = "SELECT * FROM C_Country WHERE IsActive='Y'";
-		Statement stmt = null;
-		ResultSet rs = null;
-		try
-		{
-			stmt = DB.createStatement();
-			rs = stmt.executeQuery(sql);
-			while(rs.next())
-			{
-				MCountry c = new MCountry (ctx, rs, null);
-				s_countries.put(String.valueOf(c.getC_Country_ID()), c);
-				//	Country code of Client Language
-				if (lang != null && lang.getCountryCode().equals(c.getCountryCode()))
-					s_default = c;
-				if (c.getC_Country_ID() == COUNTRY_US)		//	USA
-					usa = c;
-			}
+		s_countries = new CCache<Integer,MCountry>(Table_Name, 250);
+		List<MCountry> countries = new Query(ctx, Table_Name, "", null)
+			.setOnlyActiveRecords(true)
+			.list();
+		for (MCountry c : countries) {
+			s_countries.put(c.getC_Country_ID(), c);
+			//	Country code of Client Language
+			if (lang != null && lang.getCountryCode().equals(c.getCountryCode()))
+				s_default.put(client.getAD_Client_ID(), c);
 		}
-		catch (SQLException e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, stmt);
-			rs = null;
-			stmt = null;
-		}
-		if (s_default == null)
-			s_default = usa;
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("#" + s_countries.size() 
 			+ " - Default=" + s_default);
 	}	//	loadAllCountries
+
+	/**
+	 * Load Default Country for actual client on context
+	 * @param ctx
+	 */
+	private static void loadDefaultCountry(Properties ctx) {
+		loadAllCountriesIfNeeded(ctx);
+		MClient client = MClient.get (ctx);
+		MCountry found = s_default.get(client.getAD_Client_ID());
+		if (found != null)
+			return;
+
+		MLanguage lang = MLanguage.get(ctx, client.getAD_Language());
+		MCountry usa = null;
+
+		for (Entry<Integer, MCountry> cachedEntry : s_countries.entrySet()) {
+			MCountry c = cachedEntry.getValue();
+			//	Country code of Client Language
+			if (lang != null && lang.getCountryCode().equals(c.getCountryCode())) {
+				found = c;
+				break;
+			}
+			if (c.getC_Country_ID() == COUNTRY_US)		//	USA
+				usa = c;
+		}
+		if (found != null)
+			s_default.put(client.getAD_Client_ID(), found);
+		else
+			s_default.put(client.getAD_Client_ID(), usa);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("#" + s_countries.size() 
+			+ " - Default=" + s_default);
+	}
 
 	/**
 	 *	Return Language
@@ -177,9 +191,9 @@ public class MCountry extends X_C_Country
 	private static String		s_AD_Language = null;
 	
 	/**	Country Cache					*/
-	private static CCache<String,MCountry>	s_countries = null;
+	private static CCache<Integer,MCountry>	s_countries = null;
 	/**	Default Country 				*/
-	private static MCountry		s_default = null;
+	private static CCache<Integer,MCountry>	s_default = new CCache<Integer,MCountry>(Table_Name, 3);
 	/**	Static Logger					*/
 	private static CLogger		s_log = CLogger.getCLogger (MCountry.class);
 	//	Default DisplaySequence	*/
