@@ -1240,11 +1240,7 @@ public class Login
 
 		if (system.isLDAP())
 		{
-			authenticated = system.isLDAP(app_user, app_pwd);
-			if (authenticated){
-				app_pwd = null;
-				authenticated=true;
-			}
+			authenticated = system.isLDAP(app_user, app_pwd);			
 			// if not authenticated, use AD_User as backup
 		}
 
@@ -1328,12 +1324,16 @@ public class Login
 			}
 			clientsValidated.add(user.getAD_Client_ID());
 			boolean valid = false;
-			if (hash_password) {
+			// authenticated by ldap
+			if (authenticated){
+				valid = true;
+			} else if (hash_password) {
 				valid = user.authenticateHash(app_pwd);
 			} else {
 				// password not hashed
 				valid = user.getPassword() != null && user.getPassword().equals(app_pwd);
-			}
+			}			
+			
 			if (valid ) {			
 				if (user.isLocked())
 				{
@@ -1341,7 +1341,10 @@ public class Login
 					continue;
 				}
 				
-				if (user.isExpired())
+				if (authenticated){
+					// use Ldap because don't check password age
+				}
+				else if (user.isExpired())
 					isPasswordExpired = true;
 				else if (MAX_PASSWORD_AGE > 0 && !user.isNoPasswordReset())
 				{

@@ -57,7 +57,7 @@ public class InOutGenerate extends SvrProcess
 	/** Include Orders w. unconfirmed Shipments	*/
 	private boolean		p_IsUnconfirmedInOut = false;
 	/** DocAction				*/
-	private String		p_docAction = DocAction.ACTION_Complete;
+	private String		p_docAction = DocAction.ACTION_None;
 	/** Consolidate				*/
 	private boolean		p_ConsolidateDocument = true;
     /** Shipment Date                       */
@@ -123,9 +123,6 @@ public class InOutGenerate extends SvrProcess
 					m_movementDate = new Timestamp(System.currentTimeMillis());
 			} else
 				m_movementDate = p_DateShipped;
-			//	DocAction check
-			if (!DocAction.ACTION_Complete.equals(p_docAction))
-				p_docAction = DocAction.ACTION_Prepare;
 		}
 	}	//	prepare
 
@@ -244,7 +241,7 @@ public class InOutGenerate extends SvrProcess
 				if (!p_IsUnconfirmedInOut)
 					where.append(" AND NOT EXISTS (SELECT * FROM M_InOutLine iol")
 							.append(" INNER JOIN M_InOut io ON (iol.M_InOut_ID=io.M_InOut_ID) ")
-								.append("WHERE iol.C_OrderLine_ID=C_OrderLine.C_OrderLine_ID AND io.DocStatus IN ('IP','WC'))");
+								.append("WHERE iol.C_OrderLine_ID=C_OrderLine.C_OrderLine_ID AND io.DocStatus IN ('DR','IN','IP','WC'))");
 				//	Deadlock Prevention - Order by M_Product_ID
 				MOrderLine[] lines = order.getLines (where.toString(), "C_BPartner_Location_ID, M_Product_ID");
 				for (int i = 0; i < lines.length; i++)
@@ -269,7 +266,7 @@ public class InOutGenerate extends SvrProcess
 					BigDecimal unconfirmedShippedQty = Env.ZERO;
 					if (p_IsUnconfirmedInOut && product != null && toDeliver.signum() != 0)
 					{
-						String where2 = "EXISTS (SELECT * FROM M_InOut io WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID AND io.DocStatus IN ('IP','WC'))";
+						String where2 = "EXISTS (SELECT * FROM M_InOut io WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID AND io.DocStatus IN ('DR','IN','IP','WC'))";
 						MInOutLine[] iols = MInOutLine.getOfOrderLine(getCtx(), 
 							line.getC_OrderLine_ID(), where2, null);
 						for (int j = 0; j < iols.length; j++) 
@@ -574,11 +571,13 @@ public class InOutGenerate extends SvrProcess
 	{
 		if (m_shipment != null)
 		{
-			//	Fails if there is a confirmation
-			if (!m_shipment.processIt(p_docAction)) {
-				log.warning("Failed: " + m_shipment);
-				throw new IllegalStateException("Shipment Process Failed: " + m_shipment + " - " + m_shipment.getProcessMsg());
-				
+			if (!DocAction.ACTION_None.equals(p_docAction))
+			{
+				//	Fails if there is a confirmation
+				if (!m_shipment.processIt(p_docAction)) {
+					log.warning("Failed: " + m_shipment);
+					throw new IllegalStateException("Shipment Process Failed: " + m_shipment + " - " + m_shipment.getProcessMsg());
+				}
 			}
 			m_shipment.saveEx();
 			String message = Msg.parseTranslation(getCtx(), "@ShipmentProcessed@ " + m_shipment.getDocumentNo());

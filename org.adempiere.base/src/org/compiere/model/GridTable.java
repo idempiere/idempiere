@@ -1056,6 +1056,12 @@ public class GridTable extends AbstractTableModel
 			{}
 			loops++;
 		}
+		if (m_sort.size() == 0) {
+			// check if there is a DB error saved to show
+			Exception savedEx = CLogger.retrieveException();
+			if (savedEx != null)
+				throw new IllegalStateException(savedEx);
+		}
 		if (row >= m_sort.size()) {
 			throw new IllegalStateException("Timeout loading row " + (row+1));
 		}
@@ -3512,7 +3518,8 @@ public class GridTable extends AbstractTableModel
 			}
 			catch (SQLException e)
 			{
-				log.log(Level.SEVERE, m_SQL, e);
+				log.saveError(e.getLocalizedMessage(), e);
+				throw new DBException(e);
 			}
 		}
 

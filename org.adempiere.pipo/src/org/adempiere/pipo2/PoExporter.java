@@ -12,6 +12,8 @@ import org.compiere.model.PO;
 import org.compiere.model.POInfo;
 import org.compiere.model.X_AD_Client;
 import org.compiere.model.X_AD_Org;
+import org.compiere.model.X_C_Location;
+import org.compiere.model.X_M_Locator;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.xml.sax.SAXException;
@@ -275,6 +277,10 @@ public class PoExporter {
 				addBlob(columnName);
 			} else if (columnName.equals(po.getUUIDColumnName()) && po.get_Value(columnName) == null) {
 				continue;
+			} else if (DisplayType.Locator == displayType) {
+			    addTableReference(columnName, X_M_Locator.Table_Name, new AttributesImpl());
+			} else if (DisplayType.Location == displayType) {
+			    addTableReference(columnName, X_C_Location.Table_Name, new AttributesImpl());
 			} else {
 				add(columnName, "", new AttributesImpl());
 			}

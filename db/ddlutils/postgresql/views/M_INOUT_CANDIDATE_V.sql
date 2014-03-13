@@ -27,7 +27,7 @@ WHERE	(o.DocStatus = 'CO' AND o.IsDelivered='N')  --  Status must be CO - not CL
     --  Not confirmed shipment
     AND NOT EXISTS (SELECT * FROM M_InOutLine iol 
         INNER JOIN M_InOut io ON (iol.M_InOut_ID=io.M_InOut_ID)
-        WHERE iol.C_OrderLine_ID=l.C_OrderLine_ID AND io.DocStatus IN ('IP','WC'))
+        WHERE iol.C_OrderLine_ID=l.C_OrderLine_ID AND io.DocStatus IN ('DR','IN','IP','WC'))
 	--
 GROUP BY o.AD_Client_ID, o.AD_Org_ID, o.C_BPartner_ID, o.C_Order_ID,
 	o.DocumentNo, o.DateOrdered, o.C_DocType_ID,

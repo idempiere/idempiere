@@ -675,9 +675,9 @@ public class MLookupFactory
 			embedSQL.append(BaseTable).append(".").append(BaseColumn);
 			embedSQL.append("=").append(TableNameAlias).append(".").append(KeyColumn);
 		} else if (translated) {
-			embedSQL.append(TableNameAlias).append(".").append(BaseColumn).append("=").append(column.getColumnSQL());
+			embedSQL.append(TableNameAlias).append(".").append(KeyColumn).append("=").append(column.getColumnSQL());
 		} else {
-			embedSQL.append(BaseColumn).append("=").append(column.getColumnSQL());
+			embedSQL.append(KeyColumn).append("=").append(column.getColumnSQL());
 		}
 
 		return embedSQL.toString();

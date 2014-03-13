@@ -127,9 +127,14 @@ public class MOrder extends X_C_Order implements DocAction
 		to.setIsTransferred (false);
 		to.setPosted (false);
 		to.setProcessed (false);
-		if (counter)
+		if (counter) {
 			to.setRef_Order_ID(from.getC_Order_ID());
-		else
+			MOrg org = MOrg.get(from.getCtx(), from.getAD_Org_ID());
+			int counterC_BPartner_ID = org.getLinkedC_BPartner_ID(trxName);
+			if (counterC_BPartner_ID == 0)
+				return null;
+			to.setBPartner(MBPartner.get(from.getCtx(), counterC_BPartner_ID));
+		} else
 			to.setRef_Order_ID(0);
 		//
 		if (!to.save(trxName))
@@ -2338,9 +2343,9 @@ public class MOrder extends X_C_Order implements DocAction
 		counter.setAD_Org_ID(counterAD_Org_ID);
 		counter.setM_Warehouse_ID(counterOrgInfo.getM_Warehouse_ID());
 		//
-		counter.setBPartner(counterBP);
+//		counter.setBPartner(counterBP); // was set on copyFrom
 		counter.setDatePromised(getDatePromised());		// default is date ordered 
-		//	Refernces (Should not be required
+		//	References (Should not be required)
 		counter.setSalesRep_ID(getSalesRep_ID());
 		counter.saveEx(get_TrxName());
 		
