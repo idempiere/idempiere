@@ -48,7 +48,7 @@ public class MColumn extends X_AD_Column
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4321132594207949196L;
+	private static final long serialVersionUID = -4372212315789445915L;
 
 	/**
 	 * 	Get MColumn from Cache
@@ -732,6 +732,102 @@ public class MColumn extends X_AD_Column
 		}
 
 		return foreignTable;
+	}
+
+	public void setSmartDefaults() { // IDEMPIERE-1649 - dup code on Callout_AD_Column.columnName
+		if (MColumn.isSuggestSelectionColumn(getColumnName(), true))
+			setIsSelectionColumn(true);
+
+		// IDEMPIERE-1011
+		if (PO.getUUIDColumnName(getAD_Table().getTableName()).equals(getColumnName())) {
+			// UUID column
+			setAD_Reference_ID(DisplayType.String);
+			setAD_Val_Rule_ID(0);
+			setAD_Reference_Value_ID(0);
+			setFieldLength(36);
+			setDefaultValue(null);
+			setMandatoryLogic(null);
+			setReadOnlyLogic(null);
+			setIsIdentifier(false);
+			setIsUpdateable(false);
+			setIsAlwaysUpdateable(false);
+			setIsKey(true);
+		} else if (getAD_Table().getTableName().concat("_ID").equals(getColumnName())) {
+			// ID key column
+			setAD_Reference_ID(DisplayType.ID);
+			setAD_Val_Rule_ID(0);
+			setAD_Reference_Value_ID(0);
+			setFieldLength(22);
+			setDefaultValue(null);
+			setMandatoryLogic(null);
+			setReadOnlyLogic(null);
+			setIsIdentifier(false);
+			setIsUpdateable(false);
+			setIsAlwaysUpdateable(false);
+		} else {
+			// get defaults from most used case
+			String sql = ""
+					+ "SELECT AD_Reference_ID, "
+					+ "       AD_Val_Rule_ID, "
+					+ "       AD_Reference_Value_ID, "
+					+ "       FieldLength, "
+					+ "       DefaultValue, "
+					+ "       MandatoryLogic, "
+					+ "       ReadOnlyLogic, "
+					+ "       IsIdentifier, "
+					+ "       IsUpdateable, "
+					+ "       IsAlwaysUpdateable, "
+					+ "       FKConstraintType,"	
+					+ "       COUNT(*) "
+					+ "FROM   AD_Column "
+					+ "WHERE  ColumnName = ? "
+					+ "GROUP  BY AD_Reference_ID, "
+					+ "          AD_Val_Rule_ID, "
+					+ "          AD_Reference_Value_ID, "
+					+ "          FieldLength, "
+					+ "          DefaultValue, "
+					+ "          MandatoryLogic, "
+					+ "          ReadOnlyLogic, "
+					+ "          IsIdentifier, "
+					+ "          IsUpdateable, "
+					+ "          IsAlwaysUpdateable, "
+					+ "          FKConstraintType "
+					+ "ORDER  BY COUNT(*) DESC ";
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
+			{
+				pstmt = DB.prepareStatement(sql, null);
+				pstmt.setString(1, getColumnName());
+				rs = pstmt.executeQuery();
+				if (rs.next()) {
+					int ad_reference_id = rs.getInt(1);
+					if (ad_reference_id == DisplayType.ID)
+						ad_reference_id = DisplayType.TableDir;
+					setAD_Reference_ID(ad_reference_id);
+					setAD_Val_Rule_ID(rs.getInt(2));
+					setAD_Reference_Value_ID(rs.getInt(3));
+					setFieldLength(rs.getInt(4));
+					setDefaultValue(rs.getString(5));
+					setMandatoryLogic(rs.getString(6));
+					setReadOnlyLogic(rs.getString(7));
+					setIsIdentifier("Y".equals(rs.getString(8)));
+					setIsUpdateable("Y".equals(rs.getString(9)));
+					setIsAlwaysUpdateable("Y".equals(rs.getString(10)));
+					setFKConstraintType(rs.getString(11));
+				}
+			}
+			catch (SQLException e)
+			{
+				throw new DBException(e);
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
+			}
+		}
 	}
 
 }	//	MColumn
