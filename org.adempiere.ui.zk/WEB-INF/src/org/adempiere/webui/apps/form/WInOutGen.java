@@ -138,7 +138,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 		lDocAction.setText(Msg.translate(Env.getCtx(), "DocAction"));
 		MLookup docActionL = MLookupFactory.get(Env.getCtx(), form.getWindowNo(), 4324 /* M_InOut.DocAction */,
 				DisplayType.List, Env.getLanguage(Env.getCtx()), "DocAction", 135 /* _Document Action */,
-				false, "AD_Ref_List.Value IN ('CO','PR')");
+				false, "AD_Ref_List.Value IN ('CO','PR','--')");
 		docAction = new WTableDirEditor("DocAction", true, false, true,docActionL);
 		docAction.setValue(DocAction.ACTION_Complete);
 		// docAction.addValueChangeListener(this); // IDEMPIERE-768
