@@ -69,6 +69,8 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.South;
 
+import com.lowagie.text.pdf.PdfReader;
+
 /**
  *  Payment Print & Export
  *
@@ -379,7 +381,6 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 					{
 						if (result)
 						{
-//							int lastDocumentNo =
 							MPaySelectionCheck.confirmPrint (m_checks, m_batch);
 							//	document No not updated
 						}
@@ -418,34 +419,52 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		log.info(PaymentRule);
 		if (!getChecks(PaymentRule))
 			return;
-
-		//	Update BankAccountDoc
-		int lastDocumentNo = MPaySelectionCheck.confirmPrint (m_checks, m_batch);
+		
+		//  get document no
+		int startDocumentNo = ((Number)fDocumentNo.getValue()).intValue();
+		if (log.isLoggable(Level.CONFIG)) log.config("DocumentNo=" + startDocumentNo);
 
 		//	for all checks
 		List<File> pdfList = new ArrayList<File>();
+		int lastDocumentNo = startDocumentNo;
 		for (int i = 0; i < m_checks.length; i++)
 		{
 			MPaySelectionCheck check = m_checks[i];
+			
+			//	Set new Check Document No
+			check.setDocumentNo(String.valueOf(lastDocumentNo));
+			check.saveEx(); 
+			
+			//	Update BankAccountDoc
+			MPaySelectionCheck.confirmPrint(m_checks[i], m_batch);
+
 			//	ReportCtrl will check BankAccountDoc for PrintFormat
 			ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.CHECK, check.get_ID());
 			try
 			{
 				MPrintFormat format = re.getPrintFormat();
+				File pdfFile = null;
 				if (format.getJasperProcess_ID() > 0)	
 				{
 					ProcessInfo pi = new ProcessInfo("", format.getJasperProcess_ID());
 					pi.setRecord_ID(check.get_ID());
 					pi.setIsBatch(true);
-					
+										
 					ServerProcessCtl.process(pi, null);
-					pdfList.add(pi.getPDFReport());
+					pdfFile = pi.getPDFReport();
 				}
 				else
 				{
-					File file = File.createTempFile("WPayPrint", null);
-					re.getPDF(file);
-					pdfList.add(file);
+					pdfFile = File.createTempFile("WPayPrint", null);
+					re.getPDF(pdfFile);
+				}
+				
+				if (pdfFile != null)
+				{
+					// increase the check document no by the number of pages of the generated pdf file
+					PdfReader document = new PdfReader(pdfFile.getAbsolutePath());
+					lastDocumentNo += document.getNumberOfPages(); 
+					pdfList.add(pdfFile);
 				}
 			}
 			catch (Exception e)
@@ -471,10 +490,11 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		}
 		final SimplePDFViewer chequeViewerRef = chequeViewer;
 
-		if (lastDocumentNo != 0)
+		//	Update Check Next Document No		
+		if (startDocumentNo != lastDocumentNo)
 		{
 			StringBuilder sb = new StringBuilder();
-			sb.append("UPDATE C_BankAccountDoc SET CurrentNext=").append(++lastDocumentNo)
+			sb.append("UPDATE C_BankAccountDoc SET CurrentNext=").append(lastDocumentNo)
 				.append(" WHERE C_BankAccount_ID=").append(m_C_BankAccount_ID)
 				.append(" AND PaymentRule='").append(PaymentRule).append("'");
 			DB.executeUpdate(sb.toString(), null);
@@ -561,13 +581,10 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			return false;
 		}
 
-		//  get data
-		int startDocumentNo = ((Number)fDocumentNo.getValue()).intValue();
-
-		if (log.isLoggable(Level.CONFIG)) log.config("C_PaySelection_ID=" + m_C_PaySelection_ID + ", PaymentRule=" +  PaymentRule + ", DocumentNo=" + startDocumentNo);
-		//
-		//	get Slecetions
-		m_checks = MPaySelectionCheck.get(m_C_PaySelection_ID, PaymentRule, startDocumentNo, null);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_PaySelection_ID=" + m_C_PaySelection_ID + ", PaymentRule=" +  PaymentRule);
+		
+		//	get payment selection checks without check no assignment
+		m_checks = MPaySelectionCheck.get(m_C_PaySelection_ID, PaymentRule, null);
 
 		//
 		if (m_checks == null || m_checks.length == 0)
