@@ -162,6 +162,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		hbox.setStyle("padding: 3px;");
 		hbox.setAlign("center");
 		hbox.setHflex("1");
+		hbox.setVflex("1");
 		northPanel.appendChild(hbox);
 		
 		hbox.appendChild (new Space());
