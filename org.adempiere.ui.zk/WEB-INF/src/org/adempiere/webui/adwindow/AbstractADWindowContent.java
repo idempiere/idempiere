@@ -1656,6 +1656,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		IADTabpanel headerTab = adTabbox.getSelectedTabpanel();
 		IADTabpanel detailTab = adTabbox.getSelectedDetailADTabpanel();
 		adTabbox.getSelectedGridTab().dataRefreshAll(fireEvent, true);
+		adTabbox.getSelectedGridTab().refreshParentTabs();
 		headerTab.dynamicDisplay(0);
 		if (detailTab != null)
 		{
@@ -2089,6 +2090,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				if(result)
 		    	{
 		    		adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
+		    		adTabbox.getSelectedGridTab().refreshParentTabs();
 		    		IADTabpanel dirtyTabpanel = (IADTabpanel) Executions.getCurrent().removeAttribute("adtabpane.saved");
 		    		if (dirtyTabpanel != null && dirtyTabpanel.getGridTab().isDetail()) {
 		    			try {
@@ -2131,6 +2133,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				{
 		        	//error will be catch in the dataStatusChanged event
 		            adTabbox.getSelectedGridTab().dataDelete();
+		    		adTabbox.getSelectedGridTab().refreshParentTabs();
 
 		            adTabbox.getSelectedTabpanel().dynamicDisplay(0);
 		            focusToActivePanel();
@@ -2170,6 +2173,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 								count++;
 							}
 						}
+			    		adTabbox.getSelectedGridTab().refreshParentTabs();
 						
 						adTabbox.getSelectedTabpanel().dynamicDisplay(0);
 						statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted")+": "+count, false);
