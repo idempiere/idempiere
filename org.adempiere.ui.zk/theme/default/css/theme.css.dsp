@@ -1087,12 +1087,12 @@ input:focus, textarea:focus, .z-combobox-input:focus, z-datebox-input:focus {
 	display: inline-block;
 	background-color: transparent;
 	background-image: none;
-	width: 19px;
+	width: 20px;
 	height: 18px;
 	border: none;
 	position: absolute;
-	right: 2px;
-	top: 1px;
+	right: 1px;
+	top: 2px;
 }
 
 .editor-button :hover {
@@ -1102,8 +1102,8 @@ input:focus, textarea:focus, .z-combobox-input:focus, z-datebox-input:focus {
 .editor-button img {
 	vertical-align: top;
 	text-align: left;
-	width: 16px;
-	height: 16px;
+	width: 18px;
+	height: 18px;
 	padding: 1px 1px;
 }
 
