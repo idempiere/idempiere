@@ -405,6 +405,16 @@ public class Doc_MatchInv extends Doc
 			
 			line = fact.createLine(null, account, as.getC_Currency_ID(), ipv);
 			updateFactLine(line);
+		} else if (X_M_Cost.COSTINGMETHOD_AverageInvoice.equals(costingMethod) && !zeroQty) {
+			MAccount account = m_pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			
+			FactLine line = fact.createLine(null,
+					m_pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as),
+					as.getC_Currency_ID(), ipv.negate());
+			updateFactLine(line);
+			
+			line = fact.createLine(null, account, as.getC_Currency_ID(), ipv);
+			updateFactLine(line);
 		}
 	}
 

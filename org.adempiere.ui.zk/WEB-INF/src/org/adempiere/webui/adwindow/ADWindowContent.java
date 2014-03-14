@@ -67,7 +67,7 @@ public class ADWindowContent extends AbstractADWindowContent
 
     private Div contentArea;
 
-    public ADWindowContent(Properties ctx, int windowNo, int adWindowId)
+	public ADWindowContent(Properties ctx, int windowNo, int adWindowId)
     {
         super(ctx, windowNo, adWindowId);
     }
@@ -226,9 +226,9 @@ public class ADWindowContent extends AbstractADWindowContent
 		 * generated serial id
 		 */
 		private static final long serialVersionUID = 6104341168705201721L;
-		private ADWindowContent content;
+		private AbstractADWindowContent content;
 
-		protected ADWindowVlayout(ADWindowContent content) {
+		protected ADWindowVlayout(AbstractADWindowContent content) {
 			super();
 			this.content = content;
 		}
@@ -240,5 +240,5 @@ public class ADWindowContent extends AbstractADWindowContent
 				SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, content);
 			} catch (Exception e){}
 		}
-	}
+	}	
 }

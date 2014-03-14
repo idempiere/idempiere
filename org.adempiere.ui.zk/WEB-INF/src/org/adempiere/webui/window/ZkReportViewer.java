@@ -21,7 +21,6 @@ import static org.compiere.model.SystemIDs.WINDOW_PRINTFORMAT;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.StringWriter;
-import java.lang.ref.WeakReference;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,11 +35,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pdf.Document;
 import org.adempiere.util.ContextRunnable;
-import org.adempiere.util.ServerContext;
-import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
+import org.adempiere.webui.apps.DesktopRunnable;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Checkbox;
@@ -138,7 +136,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6208607687967139151L;
+	private static final long serialVersionUID = 3463776496724974142L;
 
 	/** Window No					*/
 	private int                 m_WindowNo = -1;
@@ -461,21 +459,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	}
 
 	private void renderReport() {
-		//prepare context for background thread
-		Properties context = ServerContext.getCurrentInstance();
-		if (context.get(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY) == null) {
-			Desktop desktop = this.getDesktop();
-			context.put(AdempiereWebUI.ZK_DESKTOP_SESSION_KEY, new WeakReference<Desktop>(desktop));
-		}
-				
 		media = null;
 		Listitem selected = previewType.getSelectedItem();
 		if (selected == null || "PDF".equals(selected.getValue())) {
-			future = Adempiere.getThreadPoolExecutor().submit(new PDFRendererRunnable(this));
+			future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new PDFRendererRunnable(this),getDesktop()));
 		} else if ("HTML".equals(previewType.getSelectedItem().getValue())) {
-			future = Adempiere.getThreadPoolExecutor().submit(new HTMLRendererRunnable(this));
+			future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new HTMLRendererRunnable(this),getDesktop()));
 		} else if ("XLS".equals(previewType.getSelectedItem().getValue())) {			
-			future = Adempiere.getThreadPoolExecutor().submit(new XLSRendererRunnable(this));
+			future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new XLSRendererRunnable(this),getDesktop()));
 		}						
 	}
 

@@ -14,6 +14,7 @@
 package org.adempiere.webui.desktop;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.adempiere.webui.AdempiereWebUI;
@@ -26,6 +27,7 @@ import org.compiere.model.MMenu;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Window.Mode;
@@ -39,13 +41,10 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 
 	private transient ClientInfo clientInfo;
 
-	private List<Object> windows = null;
-
 	@SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(AbstractDesktop.class);
 
 	public AbstractDesktop() {
-		windows = new ArrayList<Object>();
 	}
 	
 	/**
@@ -112,6 +111,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	 * @param win
 	 */
 	public int registerWindow(Object win) {
+		List<Object> windows = getWindows();
 		int retValue = windows.size();
 		windows.add(win);
 		return retValue;
@@ -121,6 +121,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	 * @param WindowNo
 	 */
 	public void unregisterWindow(int WindowNo) {
+		List<Object> windows = getWindows();
 		if (WindowNo < windows.size())
 			windows.set(WindowNo, null);
 		Env.clearWinContext(WindowNo);
@@ -132,6 +133,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
      * @return Object
      */
 	public Object findWindow(int WindowNo) {
+		List<Object> windows = getWindows();
 		if (WindowNo < windows.size())
 			return windows.get(WindowNo);
 		else
@@ -297,7 +299,14 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
    	}   	
 
     protected List<Object> getWindows(){
-    	return windows;
+    	Session session = getComponent().getDesktop().getSession();
+    	@SuppressWarnings("unchecked")
+		List<Object> list = (List<Object>) session.getAttribute("windows.list");
+    	if (list == null) {
+    		list = new ArrayList<Object>();
+    		session.setAttribute("windows.list", list);
+    	}
+    	return Collections.synchronizedList(list);
     }
 
 }

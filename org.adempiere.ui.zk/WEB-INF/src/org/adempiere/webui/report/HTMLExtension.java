@@ -61,7 +61,7 @@ public class HTMLExtension implements IHTMLExtension {
 		href.setStyle("text-decoration: none; font-size: 11px; vertical-align: middle;");
 		href.addAttribute("onclick", "parent.zoom('" 
 				+ componentId + "', '" 
-				+ dataElement.getColumnName() + "', '" 
+				+ dataElement.getForeignColumnName() + "', '" 
 				+ dataElement.getValueAsString() + "')");
 		window.addElement(href);
 		menu.addElement(window);									

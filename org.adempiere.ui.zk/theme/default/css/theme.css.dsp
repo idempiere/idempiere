@@ -1762,6 +1762,10 @@ table.z-vbox > tbody > tr > td > table {
 .workflow-activity-form {
 }
 
+.workflow-panel-table {
+	border: 0px;
+}
+
 <%-- find window --%>
 .find-window {
 }

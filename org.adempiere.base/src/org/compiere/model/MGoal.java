@@ -95,7 +95,7 @@ public class MGoal extends X_PA_Goal
 			rs = null; pstmt = null;
 		}
 		if (list.size() == 0)
-			s_log.log (Level.WARNING, Msg.getMsg(ctx, "FindZeroRecords"));
+			s_log.log (Level.INFO, Msg.getMsg(ctx, "FindZeroRecords"));
 		MGoal[] retValue = new MGoal[list.size ()];
 		list.toArray (retValue);
 		return retValue;

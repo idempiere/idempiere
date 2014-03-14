@@ -163,6 +163,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		if (counter)
 		{
 			to.setRef_Invoice_ID(from.getC_Invoice_ID());
+			MOrg org = MOrg.get(from.getCtx(), from.getAD_Org_ID());
+			int counterC_BPartner_ID = org.getLinkedC_BPartner_ID(trxName);
+			if (counterC_BPartner_ID == 0)
+				return null;
+			to.setBPartner(MBPartner.get(from.getCtx(), counterC_BPartner_ID));
 			//	Try to find Order link
 			if (from.getC_Order_ID() != 0)
 			{
@@ -1828,6 +1833,18 @@ public class MInvoice extends X_C_Invoice implements DocAction
 						matchPO++;
 						if (!po.isPosted() && po.getM_InOutLine_ID() > 0) // match po don't post if receipt is not assigned, and it doesn't create avg po record
 							addDocsPostProcess(po);
+						
+						MMatchInv[] matchInvoices = MMatchInv.getInvoiceLine(getCtx(), line.getC_InvoiceLine_ID(), get_TrxName());
+						if (matchInvoices != null && matchInvoices.length > 0) 
+						{
+							for(MMatchInv matchInvoice : matchInvoices)
+							{
+								if (!matchInvoice.isPosted())
+								{
+									addDocsPostProcess(matchInvoice);
+								}
+							}
+						}
 					}
 				}
 			}
@@ -2157,8 +2174,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		counter.setAD_Org_ID(counterAD_Org_ID);
 	//	counter.setM_Warehouse_ID(counterOrgInfo.getM_Warehouse_ID());
 		//
-		counter.setBPartner(counterBP);
-		//	Refernces (Should not be required
+//		counter.setBPartner(counterBP);// was set on copyFrom
+		//	References (Should not be required)
 		counter.setSalesRep_ID(getSalesRep_ID());
 		counter.saveEx(get_TrxName());
 

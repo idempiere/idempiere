@@ -40,7 +40,7 @@ import static org.compiere.model.SystemIDs.*;
  *  @author 	Jorg Janke
  *  @version 	$Id: MRegion.java,v 1.3 2006/07/30 00:58:36 jjanke Exp $
  */
-public final class MRegion extends X_C_Region
+public class MRegion extends X_C_Region
 	implements Comparator<Object>, Serializable
 {
 	/**

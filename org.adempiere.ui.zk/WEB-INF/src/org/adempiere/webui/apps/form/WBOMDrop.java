@@ -23,9 +23,10 @@ package org.adempiere.webui.apps.form;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -56,19 +57,22 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Caption;
-import org.zkoss.zul.Cell;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
-import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Layout;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
+import org.zkoss.zul.Vlayout;
 
 
 
@@ -77,7 +81,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5065364554398280623L;
+	private static final long serialVersionUID = 8864346687201400591L;
 
 	/**	Product to create BOMs from	*/
 	private MProduct m_product;
@@ -101,6 +105,12 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	/**	List of all products		*/
 	private ArrayList<Integer> m_productList = new ArrayList<Integer>();
 	
+	/** list child panel of each checkbox */
+	private ArrayList<Layout> m_childPanelList = new ArrayList<Layout>();
+
+	/** list panel container checkbox and child panel*/
+	private ArrayList<Layout> m_containPanel = new ArrayList<Layout>();
+	
 	/** Alternative Group Lists		*/
 	private HashMap<String, Radiogroup> m_buttonGroups = new HashMap<String,Radiogroup>();
 
@@ -117,7 +127,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	private Groupbox grpSelectionPanel = new Groupbox();
 	
 	private Groupbox grpSelectProd = new Groupbox();
-	
+	private int indend = 20;
 	public WBOMDrop()
 	{}
 	
@@ -175,6 +185,18 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		
 		m_qtyList = null;
 		
+		if (m_childPanelList  != null) {
+			m_childPanelList.clear();
+		}
+
+		m_childPanelList = null;
+
+		if (m_containPanel  != null) {
+			m_containPanel.clear();
+		}
+
+		m_containPanel = null;
+
 		if (m_buttonGroups != null)
 			m_buttonGroups.clear();
 		m_buttonGroups = null;
@@ -380,6 +402,8 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		m_productList.clear();
 		m_qtyList.clear();
 		m_buttonGroups.clear();
+		m_childPanelList.clear();
+		m_containPanel.clear();
 		
 		this.appendChild(new Separator());
 		this.appendChild(grpSelectionPanel);
@@ -403,9 +427,27 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 				;//this.setsetToolTipText(m_product.getDescription());
 			
 			m_bomLine = 0;
-			addBOMLines(m_product, m_qty);
+			maxBomDeep = getDeepBom (m_product, 0);
+			addBOMLines(m_product, m_qty, grpSelectProd, 0);
+			updateBomList();
 		}
 	}	//	createMainPanel
+
+	private int maxBomDeep = 0;
+	
+	private int getDeepBom (MProduct product, int curentBomDeep) {
+		int bomDeep = curentBomDeep;
+		if (product.isBOM()) {
+			MProductBOM[] bomLines = MProductBOM.getBOMLines(product);
+			for (MProductBOM bomLine : bomLines) {
+				int testBomDeep = getDeepBom(bomLine.getProduct(), curentBomDeep + 1);
+				if (testBomDeep > bomDeep) {
+					bomDeep = testBomDeep;
+				}
+			}
+		}
+		return bomDeep;
+	}
 
 	/**
 	 * 	Add BOM Lines to this.
@@ -414,15 +456,20 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	 * 	@param qty quantity
 	 */
 	
-	private void addBOMLines (MProduct product, BigDecimal qty)
+	private void addBOMLines (MProduct product, BigDecimal qty, Component parentPanel, int bomLevel)
 	{
 		MProductBOM[] bomLines = MProductBOM.getBOMLines(product);
-		
+		//sort, gourp alter product with together
+		Arrays.sort(bomLines, new Comparator<MProductBOM>() {
+			@Override
+			public int compare(MProductBOM arg0, MProductBOM arg1) {
+				return arg0.getBOMType().compareTo(arg1.getBOMType());
+			}
+		});
+
 		for (int i = 0; i < bomLines.length; i++)
 		{
-			grpSelectProd.appendChild(new Separator());
-			addBOMLine (bomLines[i], qty);
-			grpSelectProd.appendChild(new Separator());
+			addBOMLine (bomLines[i], qty, parentPanel, bomLevel);
 		}
 		
 		if (log.isLoggable(Level.FINE)) log.fine("#" + bomLines.length);
@@ -435,7 +482,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	 * 	@param qty quantity
 	 */
 	
-	private void addBOMLine (MProductBOM line, BigDecimal qty)
+	private void addBOMLine (MProductBOM line, BigDecimal qty, Component parentPanel, int bomLevel)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine(line.toString());
 		String bomType = line.getBOMType();
@@ -449,11 +496,20 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		if (product == null)
 			return;
 		
-		if (product.isBOM() && product.isVerified())
-			addBOMLines (product, lineQty);		//	recursive
-		else
-			addDisplay (line.getM_Product_ID(),
-				product.getM_Product_ID(), bomType, product.getName(), lineQty);
+		Layout producPanel = addDisplay (line.getM_Product_ID(),
+					product.getM_Product_ID(), bomType, product.getName(), lineQty, parentPanel, bomLevel);
+		m_containPanel.add(producPanel);
+		
+		if (product.isBOM() && product.isVerified()) {
+			Vlayout childPanel = createVlayoutPanel("100%");
+			m_childPanelList.add(childPanel);
+			producPanel.appendChild(childPanel); 
+			addBOMLines (product, lineQty, childPanel, bomLevel + 1);		//	recursive
+
+		} else {
+			m_childPanelList.add(null);
+		}
+			
 	}	//	addBOMLine
 
 	/**
@@ -465,90 +521,116 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	 *	@param lineQty qty
 	 */
 	
-	private void addDisplay (int parentM_Product_ID,
-		int M_Product_ID, String bomType, String name, BigDecimal lineQty)
+	private Layout addDisplay (int parentM_Product_ID,
+		int M_Product_ID, String bomType, String name, BigDecimal lineQty, Component parentPanel, int bomLevel)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("M_Product_ID=" + M_Product_ID + ",Type=" + bomType + ",Name=" + name + ",Qty=" + lineQty);
 		
-		boolean selected = true;
-		
-		Hbox boxQty = new Hbox();
-		boxQty.setWidth("100%");
-		Cell cell = new Cell();
-		cell.setWidth("10%");
-		
-		if (MProductBOM.BOMTYPE_StandardPart.equals(bomType))
-		{
-			String title = "";
-			Checkbox cb = new Checkbox();
-			cb.setLabel(title);
-			cb.setChecked(true);
-			cb.setEnabled(false);
+		boolean selected = false;
 
-			m_selectionList.add(cb);
-			cell.appendChild(cb);
-		}
-		else if (MProductBOM.BOMTYPE_OptionalPart.equals(bomType))
-		{
-			String title = Msg.getMsg(Env.getCtx(), "Optional");
-			Checkbox cb = new Checkbox();
-			cb.setLabel(title);
-			cb.setChecked(false);
-			selected = false;
-			cb.addEventListener(Events.ON_CHECK, this);
-			
-			m_selectionList.add(cb);
-			cell.appendChild(cb);
-		}
-		else	//	Alternative
-		{
-			String title = Msg.getMsg(Env.getCtx(), "Alternative") + " " + bomType;
-			Radio b = new Radio();
-			b.setLabel(title);
-			String groupName = String.valueOf(parentM_Product_ID) + "_" + bomType;
-			Radiogroup group = m_buttonGroups.get(groupName);
-			
-			if (group == null)
-			{
-				if (log.isLoggable(Level.FINE)) log.fine("ButtonGroup=" + groupName);
-				group = new Radiogroup();
-				m_buttonGroups.put(groupName, group);
-				group.appendChild(b);
-				b.setSelected(true);		//	select first one
-			}
-			else
-			{
-				group.appendChild(b);
-				b.setSelected(false);
-				selected = false;
-			}
-			b.addEventListener(Events.ON_CLICK, this);
-			m_selectionList.add(b);
-			cell.appendChild(b);
-		}
-		boxQty.appendChild(cell);
+		//Container info of product (checkBox or radio box,product name, qty input)
+		Layout productPanel = null;
+		productPanel = createHlayoutPanel("100%");
 		
-		//	Add to List & display
+		//Container productPanel because, this container will contain child of this product by vertical
+		Layout outerProductPanel = new Vlayout();
+		outerProductPanel.appendChild(productPanel);
+
+		// checkbox or radio button for select product
+		Div selectPanel = createDivPanel(25);
+		org.zkoss.zul.Checkbox rd = null;
+		boolean isStandard = MProductBOM.BOMTYPE_StandardPart.equals(bomType);
+		
+		if (MProductBOM.BOMTYPE_StandardPart.equals(bomType) || MProductBOM.BOMTYPE_OptionalPart.equals(bomType))
+		{
+			rd = new Checkbox();
+			rd.setChecked(isStandard);
+			rd.setDisabled(isStandard);
+			selected = isStandard;
+		} else {	//	Alternative
+			rd = new Radio();
+		}
+		selectPanel.appendChild(rd);
+		m_selectionList.add(rd);
+		productPanel.appendChild(selectPanel);
+		if (!isStandard)
+			rd.addEventListener(Events.ON_CHECK, this);
+
+		Div rightInden = createDivPanel((maxBomDeep - bomLevel) * indend);
+		productPanel.appendChild(rightInden);
+
+		//	Add to List
 		m_productList.add (new Integer(M_Product_ID));
-		Decimalbox qty = new Decimalbox();
-		qty.setValue(lineQty);
-		qty.setReadonly(!selected);
-		m_qtyList.add(qty);
-		
+
+		// add product name
+		selectPanel = createDivPanel(200);
 		Label label = new Label(name);
 		HtmlBasedComponent c = (HtmlBasedComponent) label.rightAlign();
 		c.setStyle(c.getStyle() + ";margin-right: 5px");
-		cell = new Cell();
-		cell.setWidth("40%");
-		cell.appendChild(c);
-		boxQty.appendChild(cell);
-		cell = new Cell();
-		cell.setWidth("50%");
-		cell.appendChild(qty);
-		boxQty.appendChild(cell);
+		selectPanel.appendChild(c);
+		productPanel.appendChild(selectPanel);
 
-		grpSelectProd.appendChild(boxQty);
+		// qty input control
+		selectPanel = createDivPanel(200);
+		Decimalbox qty = new Decimalbox();
+		qty.setValue(lineQty);
+		selectPanel.appendChild(qty);
+		productPanel.appendChild(selectPanel);
+		m_qtyList.add(qty);
+
+		// outer container for indent contain index box and product panel
+		Layout outerContainer = createHlayoutPanel("100%");
+		parentPanel.appendChild(outerContainer);
+
+		if (!parentPanel.equals(grpSelectProd)) {
+			// indent 
+			Div cellInden = createDivPanel(indend);
+			outerContainer.appendChild(cellInden);
+		}
+
+		// add product panel to parent, with radio, add to radio group
+		if (MProductBOM.BOMTYPE_StandardPart.equals(bomType) || MProductBOM.BOMTYPE_OptionalPart.equals(bomType)) {
+			outerContainer.appendChild(outerProductPanel);
+		} else {
+			String groupName = String.valueOf(parentM_Product_ID) + "_" + bomType;
+			Radiogroup group = m_buttonGroups.get(groupName);
+			
+			if (group == null) {
+				if (log.isLoggable(Level.FINE)) log.fine("ButtonGroup=" + groupName);
+				group = new Radiogroup();
+				m_buttonGroups.put(groupName, group);
+				rd.setChecked(true);
+				selected = true;
+
+				outerContainer.appendChild(group);
+			}
+			group.appendChild(outerProductPanel);
+		}
+		
+		qty.setReadonly(!selected);
+		return outerProductPanel;
 	}	//	addDisplay
+
+	private Div createDivPanel (int with) {
+		Div divPanel = new Div ();
+		divPanel.setWidth(String.format("%1$spx", with));
+		divPanel.setStyle("padding-right:0;padding-left:0");
+		return divPanel; 
+	}
+
+	private Hlayout createHlayoutPanel (String width) {
+		Hlayout layout = new Hlayout();
+		layout.setSpacing("0");
+		layout.setWidth(width);
+		return layout;
+	}
+
+	private Vlayout createVlayoutPanel (String width) {
+		Vlayout layout = new Vlayout();
+		layout.setSpacing("0");
+		layout.setWidth(width);
+		return layout;
+	}
 
 	/**************************************************************************
 	 *	Action Listener
@@ -561,39 +643,32 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		Object source = e.getTarget();
 
 		//	Toggle Qty Enabled
-		if (source instanceof Checkbox || source instanceof Radio)
+		if (source instanceof org.zkoss.zul.Checkbox)
 		{
-			cmd_selection (source);
-			//	need to de-select the others in group	
-			if (source instanceof Radio)
-			{
-				//	find Button Group
-				Iterator<Radiogroup> it = m_buttonGroups.values().iterator();
+			org.zkoss.zul.Checkbox chbSource = (org.zkoss.zul.Checkbox)source;
+			// set enable or disable qty input of this source
+			int index = m_selectionList.indexOf(chbSource);
+			m_qtyList.get(index).setReadonly(!chbSource.isChecked());
+
+			// disable qty of other radio in group
+			if (chbSource instanceof Radio) {
+				// find Button Group
+				Radiogroup group = ((Radio)chbSource).getRadiogroup();
+				List<Radio> lsRadio = group.getItems();
 				
-				while (it.hasNext())
-				{
-					Radiogroup group = it.next();
-					Enumeration<?> en = (Enumeration<?>) group.getChildren();
-				
-					while (en.hasMoreElements())
-					{
-						//	We found the group
-						if (source == en.nextElement())
-						{
-							Enumeration<?> info = (Enumeration<?>) group.getChildren();
-							
-							while (info.hasMoreElements())
-							{
-								Object infoObj = (Object)info.nextElement();
-								if (source != infoObj)
-									cmd_selection(infoObj);
-							}
-						}
+				for (Radio testRadio : lsRadio) {
+					if (!chbSource.equals(testRadio)) {						
+						// fix unknow error. at fisrt event, prev radio checkbox also is checked
+						testRadio.setChecked(false);
+						// set qty input of uncheck radio button
+						index = m_selectionList.indexOf(testRadio);
+						m_qtyList.get(index).setReadonly(true);
 					}
 				}
 			}
-		}	//	JCheckBox or JRadioButton
 			
+			updateBomList();
+		}	//	JCheckBox or JRadioButton
 		//	Product / Qty
 		else if (source == productField || source == productQty)
 		{
@@ -713,44 +788,45 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	}	//	actionPerformed
 
 	/**
+	 * update display of bom tree
+	 * for item is not selected, hidden child of it.
+	 */
+	protected void updateBomList() {
+		int index = 0;
+		for(org.zkoss.zul.Checkbox chbSource : m_selectionList) {
+			index = m_selectionList.indexOf(chbSource);
+			Layout childPanel = m_childPanelList.get(index);
+			Layout containPanel = m_containPanel.get(index);
+
+			if (childPanel != null && chbSource.isChecked() && !containPanel.getChildren().contains(childPanel)) {
+				containPanel.appendChild(childPanel);
+			} else if (childPanel != null && !chbSource.isChecked() && containPanel.getChildren().contains(childPanel)) {
+				childPanel.detach();
+			}
+		}
+		// add or remove child panel of selected radio		
+	}
+	
+	private List <org.zkoss.zul.Checkbox> displayList = new ArrayList <org.zkoss.zul.Checkbox>();
+	/**
+	 * return list of checkbox is display
+	 * @return
+	 */
+	private List <org.zkoss.zul.Checkbox> getDisplayList () {
+		displayList.clear();
+		for(org.zkoss.zul.Checkbox chbSource : m_selectionList) {
+			if (chbSource.getPage() != null) {
+				displayList.add(chbSource);
+			}
+		}
+		return displayList;
+	}
+
+	/**
 	 * 	Enable/disable qty based on selection
 	 *	@param source JCheckBox or JRadioButton
 	 */
-	
-	private void cmd_selection (Object source)
-	{
-		for (int i = 0; i < m_selectionList.size(); i++)
-		{
-			if (source == m_selectionList.get(i))
-			{
-				boolean selected = isSelectionSelected(source);
-				Decimalbox qty = m_qtyList.get(i);
-				qty.setReadonly(!selected);
-				return;
-			}
-		}
-		log.log(Level.SEVERE, "not found - " + source);
-	}	//	cmd_selection
-
-	/**
-	 * 	Is Selection Selected
-	 *	@param source CheckBox or RadioButton
-	 *	@return true if selected
-	 */
-	
-	private boolean isSelectionSelected (Object source)
-	{
-		boolean retValue = false;
 		
-		if (source instanceof Checkbox)
-			retValue = ((Checkbox)source).isChecked();
-		else if (source instanceof Radio)
-			retValue = ((Radio)source).isChecked();
-		else
-			log.log(Level.SEVERE, "Not valid - " + source);
-		
-		return retValue;
-	}	//	isSelected
 
 	private boolean onSave()
 	{
@@ -839,10 +915,12 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		int lineCount = 0;
 		try 
 		{
-			//for all bom lines
-			for (int i = 0; i < m_selectionList.size(); i++) 
+			//for all display bom lines
+			List<org.zkoss.zul.Checkbox> displayList = getDisplayList ();
+			for (org.zkoss.zul.Checkbox displayChb : displayList) 
 			{
-				if (isSelectionSelected(m_selectionList.get(i))) 
+				int i = m_selectionList.indexOf(displayChb);
+				if (m_selectionList.get(i).isChecked()) 
 				{
 					BigDecimal qty = m_qtyList.get(i).getValue();
 					int M_Product_ID = m_productList.get(i).intValue();
@@ -893,9 +971,11 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		//	for all bom lines
 		try 
 		{
-			for (int i = 0; i < m_selectionList.size(); i++)
+			List<org.zkoss.zul.Checkbox> displayList = getDisplayList ();
+			for (org.zkoss.zul.Checkbox displayChb : displayList) 
 			{
-				if (isSelectionSelected(m_selectionList.get(i)))
+				int i = m_selectionList.indexOf(displayChb);
+				if (m_selectionList.get(i).isChecked())
 				{
 					BigDecimal qty = m_qtyList.get(i).getValue();
 					int M_Product_ID = m_productList.get(i).intValue();
@@ -944,9 +1024,11 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		//	for all bom lines
 		try 
 		{
-			for (int i = 0; i < m_selectionList.size(); i++)
+			List<org.zkoss.zul.Checkbox> displayList = getDisplayList ();
+			for (org.zkoss.zul.Checkbox displayChb : displayList)
 			{
-				if (isSelectionSelected(m_selectionList.get(i)))
+				int i = m_selectionList.indexOf(displayChb);
+				if (m_selectionList.get(i).isChecked())
 				{
 					BigDecimal qty = m_qtyList.get(i).getValue();
 					int M_Product_ID = m_productList.get(i).intValue();

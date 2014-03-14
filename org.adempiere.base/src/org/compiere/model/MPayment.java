@@ -77,7 +77,7 @@ import org.compiere.util.ValueNamePair;
  *  @author Carlos Ruiz - globalqss [ 2141475 ] Payment <> allocations must not be completed - implement lots of validations on prepareIt
  *  @version 	$Id: MPayment.java,v 1.4 2006/10/02 05:18:39 jjanke Exp $
  */
-public final class MPayment extends X_C_Payment 
+public class MPayment extends X_C_Payment 
 	implements DocAction, ProcessCall, PaymentInterface
 {
 
@@ -2381,8 +2381,7 @@ public final class MPayment extends X_C_Payment
 	 */
 	private void deAllocate(boolean accrual)
 	{
-		if (getC_Order_ID() != 0)
-			setC_Order_ID(0);
+		// if (getC_Order_ID() != 0) setC_Order_ID(0); // IDEMPIERE-1764
 	//	if (getC_Invoice_ID() == 0)
 	//		return;
 		//	De-Allocate all 
@@ -2577,7 +2576,7 @@ public final class MPayment extends X_C_Payment
 		MPayment reversal = new MPayment (getCtx(), 0, get_TrxName());
 		copyValues(this, reversal);
 		reversal.setClientOrg(this);
-		reversal.setC_Order_ID(0);
+		// reversal.setC_Order_ID(0); // IDEMPIERE-1764
 		reversal.setC_Invoice_ID(0);
 		reversal.setDateAcct(dateAcct);
 		//

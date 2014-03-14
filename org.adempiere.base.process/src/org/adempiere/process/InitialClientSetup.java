@@ -36,12 +36,15 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MCity;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MSetup;
+import org.compiere.model.MSysConfig;
 import org.compiere.print.PrintUtil;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
+import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Util;
 
 /**
  * 	Process to create a new client (tenant)
@@ -76,6 +79,8 @@ public class InitialClientSetup extends SvrProcess
 	private boolean p_IsUseCampaignDimension = false;
 	private boolean p_IsUseSalesRegionDimension = false;
 	private String p_CoAFile = null;
+	private String p_AdminUserEmail = null;
+	private String p_NormalUserEmail = null;
 
 	/** WindowNo for this process */
 	public static final int     WINDOW_THIS_PROCESS = 9999;
@@ -137,6 +142,10 @@ public class InitialClientSetup extends SvrProcess
 				p_EMail = (String) para[i].getParameter();
 			else if (name.equals("TaxID"))
 				p_TaxID = (String) para[i].getParameter();
+			else if (name.equals("AdminUserEmail"))
+				p_AdminUserEmail = (String) para[i].getParameter();
+			else if (name.equals("NormalUserEmail"))
+				p_NormalUserEmail = (String) para[i].getParameter();
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
@@ -205,6 +214,17 @@ public class InitialClientSetup extends SvrProcess
 		}
 
 		// Validate existence and read permissions on CoA file
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+		if (email_login) {
+			if (Util.isEmpty(p_AdminUserEmail)) 
+				throw new AdempiereException("AdminUserEmail is required");
+			if (! EMail.validate(p_AdminUserEmail)) 
+				throw new AdempiereException("AdminUserEmail " + p_AdminUserEmail + " is incorrect");
+			if (Util.isEmpty(p_NormalUserEmail)) 
+				throw new AdempiereException("NormalUserEmail is required");
+			if (! EMail.validate(p_NormalUserEmail)) 
+				throw new AdempiereException("NormalUserEmail " + p_NormalUserEmail + " is incorrect");
+		}
 		File coaFile = new File(p_CoAFile);
 		if (!coaFile.exists())
 			throw new AdempiereException("CoaFile " + p_CoAFile + " does not exist");
@@ -219,7 +239,7 @@ public class InitialClientSetup extends SvrProcess
 		MSetup ms = new MSetup(Env.getCtx(), WINDOW_THIS_PROCESS);
 
 		if (! ms.createClient(p_ClientName, p_OrgValue, p_OrgName, p_AdminUserName, p_NormalUserName
-				, p_Phone, p_Phone2, p_Fax, p_EMail, p_TaxID)) {
+				, p_Phone, p_Phone2, p_Fax, p_EMail, p_TaxID, p_AdminUserEmail, p_NormalUserEmail)) {
 			ms.rollback();
 			throw new AdempiereException("Create client failed");
 		}

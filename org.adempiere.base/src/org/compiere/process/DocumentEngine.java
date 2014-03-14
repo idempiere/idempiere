@@ -48,6 +48,7 @@ import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.eevolution.model.I_DD_Order;
 import org.eevolution.model.I_HR_Process;
@@ -235,11 +236,13 @@ public class DocumentEngine implements DocAction
 			if (docPO.get_ID() > 0 && docPO.get_TrxName() != null && docPO.get_ValueOld("DocStatus") != null) {
 				DB.getDatabase().forUpdate(docPO, 30);
 				String docStatusOriginal = (String) docPO.get_ValueOld("DocStatus");
-				String currentStatus = DB.getSQLValueString((String)null, 
-						"SELECT DocStatus FROM " + docPO.get_TableName() + " WHERE " + docPO.get_KeyColumns()[0] + " = ? ", 
-						docPO.get_ID());
+				String statusSql = "SELECT DocStatus FROM " + docPO.get_TableName() + " WHERE " + docPO.get_KeyColumns()[0] + " = ? ";
+				String currentStatus = DB.getSQLValueString((String)null, statusSql, docPO.get_ID());
 				if (!docStatusOriginal.equals(currentStatus) && currentStatus != null) {
-					throw new IllegalStateException("Document status have been change by other session, please refresh your window and try again. " + docPO.toString());
+					currentStatus = DB.getSQLValueString(docPO.get_TrxName(), statusSql, docPO.get_ID());
+					if (!docStatusOriginal.equals(currentStatus)) {
+						throw new IllegalStateException(Msg.getMsg(docPO.getCtx(), "DocStatusChanged") + " " + docPO.toString());
+					}
 				}
 			}
 		}

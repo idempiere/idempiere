@@ -157,6 +157,21 @@ public class TabCreateFields extends SvrProcess
 					}
 				}
 
+				//set display logic for accounting dimensions
+				if (column.getColumnName().equalsIgnoreCase("AD_OrgTrx_ID")){
+					field.setDisplayLogic("@$Element_OT@=Y");
+				} else if (column.getColumnName().equalsIgnoreCase("C_Campaign_ID")) {
+					field.setDisplayLogic("@$Element_MC@=Y");
+				} else if (column.getColumnName().equalsIgnoreCase("C_Activity_ID")) {
+					field.setDisplayLogic("@$Element_AY@=Y");
+				} else if (column.getColumnName().equalsIgnoreCase("C_Project_ID")) {
+					field.setDisplayLogic("@$Element_PJ@=Y");
+				} else if (column.getColumnName().equalsIgnoreCase("User1_ID")) {
+					field.setDisplayLogic("@$Element_U1@=Y");
+				} else if (column.getColumnName().equalsIgnoreCase("User2_ID")) {
+					field.setDisplayLogic("@$Element_U2@=Y");
+				}  
+
 				if (field.save())
 				{
 					addLog(0, null, null, column.getName());

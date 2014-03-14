@@ -18,7 +18,7 @@ public class MProductionLine extends X_M_ProductionLine {
 	 */
 	private static final long serialVersionUID = 5939914729719167512L;
 
-	private MProduction parent;
+	private MProduction productionParent;
 
 
 	/**
@@ -33,8 +33,8 @@ public class MProductionLine extends X_M_ProductionLine {
 		{
 			setLine (0);	// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_ProductionLine WHERE M_Production_ID=@M_Production_ID@
 			setM_AttributeSetInstance_ID (0);
-			setM_Locator_ID (0);	// @M_Locator_ID@
-			setM_Product_ID (0);
+//			setM_Locator_ID (0);	// @M_Locator_ID@
+//			setM_Product_ID (0);
 			setM_ProductionLine_ID (0);
 			setM_Production_ID (0);
 			setMovementQty (Env.ZERO);
@@ -57,9 +57,15 @@ public class MProductionLine extends X_M_ProductionLine {
 		setM_Production_ID( header.get_ID());
 		setAD_Client_ID(header.getAD_Client_ID());
 		setAD_Org_ID(header.getAD_Org_ID());
-		parent = header;
+		productionParent = header;
 	}
 	
+	public MProductionLine( MProductionPlan header ) {
+		super( header.getCtx(), 0, header.get_TrxName() );
+		setM_ProductionPlan_ID( header.get_ID());
+		setAD_Client_ID(header.getAD_Client_ID());
+		setAD_Org_ID(header.getAD_Org_ID());
+	}
 	
 
 	/**
@@ -89,7 +95,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		
 		if (log.isLoggable(Level.FINEST))	log.log(Level.FINEST, "asi Description is: " + asiString);
 		// create transactions for finished goods
-		if ( getMovementQty().compareTo(Env.ZERO) > 0 ) {
+		if ( getM_Product_ID() == getEndProduct_ID()) {
 			
 			Timestamp dateMPolicy = date;
 			if(getM_AttributeSetInstance_ID()>0){
@@ -132,66 +138,68 @@ public class MProductionLine extends X_M_ProductionLine {
 		MTransaction matTrx = null;
 		BigDecimal qtyToMove = getMovementQty().negate();
 
-		for (int sl = 0; sl < storages.length; sl++) {
-
-			BigDecimal lineQty = storages[sl].getQtyOnHand();
-			
-			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "QtyAvailable " + lineQty );
-			if (lineQty.signum() > 0) 
-			{
-				if (lineQty.compareTo(qtyToMove ) > 0)
-						lineQty = qtyToMove;
-
-				MAttributeSetInstance slASI = new MAttributeSetInstance(getCtx(),
-						storages[sl].getM_AttributeSetInstance_ID(),get_TrxName());
-				String slASIString = slASI.getDescription();
-				if (slASIString == null)
-					slASIString = "";
+		if (qtyToMove.signum() > 0) {
+			for (int sl = 0; sl < storages.length; sl++) {
+	
+				BigDecimal lineQty = storages[sl].getQtyOnHand();
 				
-				if (log.isLoggable(Level.FINEST))log.log(Level.FINEST,"slASI-Description =" + slASIString);
-					
-				if ( slASIString.compareTo(asiString) == 0
-						|| asi.getM_AttributeSet_ID() == 0  )  
-				//storage matches specified ASI or is a costing asi (inc. 0)
-			    // This process will move negative stock on hand quantities
+				if (log.isLoggable(Level.FINE))log.log(Level.FINE, "QtyAvailable " + lineQty );
+				if (lineQty.signum() > 0) 
 				{
-					lineMA = MProductionLineMA.get(this,storages[sl].getM_AttributeSetInstance_ID(),storages[sl].getDateMaterialPolicy());
-					lineMA.setMovementQty(lineMA.getMovementQty().add(lineQty.negate()));
-					if ( !lineMA.save(get_TrxName()) ) {
-						log.log(Level.SEVERE, "Could not save MA for " + toString());
-						errorString.append("Could not save MA for " + toString() + "\n" );
-					} else {
-						if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Saved MA for " + toString());
+					if (lineQty.compareTo(qtyToMove ) > 0)
+							lineQty = qtyToMove;
+	
+					MAttributeSetInstance slASI = new MAttributeSetInstance(getCtx(),
+							storages[sl].getM_AttributeSetInstance_ID(),get_TrxName());
+					String slASIString = slASI.getDescription();
+					if (slASIString == null)
+						slASIString = "";
+					
+					if (log.isLoggable(Level.FINEST))log.log(Level.FINEST,"slASI-Description =" + slASIString);
+						
+					if ( slASIString.compareTo(asiString) == 0
+							|| asi.getM_AttributeSet_ID() == 0  )  
+					//storage matches specified ASI or is a costing asi (inc. 0)
+				    // This process will move negative stock on hand quantities
+					{
+						lineMA = MProductionLineMA.get(this,storages[sl].getM_AttributeSetInstance_ID(),storages[sl].getDateMaterialPolicy());
+						lineMA.setMovementQty(lineMA.getMovementQty().add(lineQty.negate()));
+						if ( !lineMA.save(get_TrxName()) ) {
+							log.log(Level.SEVERE, "Could not save MA for " + toString());
+							errorString.append("Could not save MA for " + toString() + "\n" );
+						} else {
+							if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Saved MA for " + toString());
+						}
+						matTrx = new MTransaction (getCtx(), getAD_Org_ID(), 
+								"P-", 
+								getM_Locator_ID(), getM_Product_ID(), asi.get_ID(), 
+								lineQty.negate(), date, get_TrxName());
+						matTrx.setM_ProductionLine_ID(get_ID());
+						if ( !matTrx.save(get_TrxName()) ) {
+							log.log(Level.SEVERE, "Could not save transaction for " + toString());
+							errorString.append("Could not save transaction for " + toString() + "\n");
+						} else {
+							if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Saved transaction for " + toString());
+						}
+						storages[sl].changeQtyOnHand(lineQty, false);
+						if ( !storages[sl].save(get_TrxName()) )  {
+							log.log(Level.SEVERE, "Could not update storage for " + toString());
+							errorString.append("Could not update storage for " + toString() + "\n");
+						}
+						qtyToMove = qtyToMove.subtract(lineQty);
+						if (log.isLoggable(Level.FINE))log.log(Level.FINE, getLine() + " Qty moved = " + lineQty + ", Remaining = " + qtyToMove );
 					}
-					matTrx = new MTransaction (getCtx(), getAD_Org_ID(), 
-							"P-", 
-							getM_Locator_ID(), getM_Product_ID(), asi.get_ID(), 
-							lineQty.negate(), date, get_TrxName());
-					matTrx.setM_ProductionLine_ID(get_ID());
-					if ( !matTrx.save(get_TrxName()) ) {
-						log.log(Level.SEVERE, "Could not save transaction for " + toString());
-						errorString.append("Could not save transaction for " + toString() + "\n");
-					} else {
-						if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Saved transaction for " + toString());
-					}
-					storages[sl].changeQtyOnHand(lineQty, false);
-					if ( !storages[sl].save(get_TrxName()) )  {
-						log.log(Level.SEVERE, "Could not update storage for " + toString());
-						errorString.append("Could not update storage for " + toString() + "\n");
-					}
-					qtyToMove = qtyToMove.subtract(lineQty);
-					if (log.isLoggable(Level.FINE))log.log(Level.FINE, getLine() + " Qty moved = " + lineQty + ", Remaining = " + qtyToMove );
 				}
-			}
-			
-			if ( qtyToMove.signum() == 0 )			
-				break;
-			
-		} // for available storages
+				
+				if ( qtyToMove.signum() == 0 )			
+					break;
+				
+			} // for available storages
+		}
 		
 		
 		if ( !( qtyToMove.signum() == 0) ) {
-			if (mustBeStocked)
+			if (mustBeStocked && qtyToMove.signum() > 0)
 			{
 				MLocator loc = new MLocator(getCtx(), getM_Locator_ID(), get_TrxName());
 				errorString.append( "Insufficient qty on hand of " + prod.toString() + " at "
@@ -252,6 +260,16 @@ public class MProductionLine extends X_M_ProductionLine {
 		
 	}
 
+	private int getEndProduct_ID() {
+		if (productionParent != null) {
+			return productionParent.getM_Product_ID();
+		} else if (getM_Production_ID() > 0) {
+			return getM_Production().getM_Product_ID();
+		} else {
+			return getM_ProductionPlan().getM_Product_ID();
+		}
+	}
+
 	private int deleteMA() {
 		String sql = "DELETE FROM M_ProductionLineMA WHERE M_ProductionLine_ID = " + get_ID();
 		int count = DB.executeUpdateEx( sql, get_TrxName() );
@@ -266,14 +284,26 @@ public class MProductionLine extends X_M_ProductionLine {
 	}
 
 	@Override
-	protected boolean beforeSave(boolean newRecord) {
-		if (parent == null )
-			parent = new MProduction(getCtx(), getM_Production_ID(), get_TrxName());
+	protected boolean beforeSave(boolean newRecord) 
+	{
+		if (productionParent == null && getM_Production_ID() > 0)
+			productionParent = new MProduction(getCtx(), getM_Production_ID(), get_TrxName());
 
-		if ( parent.getM_Product_ID() == getM_Product_ID() && parent.getProductionQty().signum() == getMovementQty().signum())
-			setIsEndProduct(true);
+		if (getM_Production_ID() > 0) 
+		{
+			if ( productionParent.getM_Product_ID() == getM_Product_ID() && productionParent.getProductionQty().signum() == getMovementQty().signum())
+				setIsEndProduct(true);
+			else 
+				setIsEndProduct(false);
+		} 
 		else 
-			setIsEndProduct(false);
+		{
+			I_M_ProductionPlan plan = getM_ProductionPlan();
+			if (plan.getM_Product_ID() == getM_Product_ID() && plan.getProductionQty().signum() == getMovementQty().signum())
+				setIsEndProduct(true);
+			else 
+				setIsEndProduct(false);
+		}
 		
 		if ( isEndProduct() && getM_AttributeSetInstance_ID() != 0 )
 		{
@@ -295,6 +325,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		{
 			setMovementQty(getQtyUsed().negate());
 		}
+		
 		return true;
 	}
 	

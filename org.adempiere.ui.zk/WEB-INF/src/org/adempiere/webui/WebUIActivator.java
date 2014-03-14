@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui;
 
+import org.adempiere.webui.adwindow.validator.WindowValidatorManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -30,6 +31,8 @@ public class WebUIActivator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		bundleContext = context;
+		WindowValidatorManager validatorMgr = new WindowValidatorManager();
+		validatorMgr.start(context);
 	}
 
 	/* (non-Javadoc)
@@ -38,6 +41,7 @@ public class WebUIActivator implements BundleActivator {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		bundleContext = null;
+		WindowValidatorManager.getInstance().stop(context);
 	}
 
 	public static BundleContext getBundleContext() {

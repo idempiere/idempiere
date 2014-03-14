@@ -46,6 +46,30 @@ public class Tax
 	/**	Logger							*/
 	static private CLogger			log = CLogger.getCLogger (Tax.class);
 
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param M_Product_ID
+	 * @param C_Charge_ID
+	 * @param billDate
+	 * @param shipDate
+	 * @param AD_Org_ID
+	 * @param M_Warehouse_ID
+	 * @param billC_BPartner_Location_ID
+	 * @param shipC_BPartner_Location_ID
+	 * @param IsSOTrx
+	 * @deprecated
+	 * @return
+	 */
+	public static int get (Properties ctx, int M_Product_ID, int C_Charge_ID,
+			Timestamp billDate, Timestamp shipDate,
+			int AD_Org_ID, int M_Warehouse_ID,
+			int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
+			boolean IsSOTrx) {
+		return get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate, AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID, IsSOTrx, null);
+	}
+	
 	
 	/**************************************************************************
 	 *	Get Tax ID - converts parameters to call Get Tax.
@@ -76,18 +100,41 @@ public class Tax
 		Timestamp billDate, Timestamp shipDate,
 		int AD_Org_ID, int M_Warehouse_ID,
 		int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
-		boolean IsSOTrx)
+		boolean IsSOTrx, String trxName)
 	{
 		if (M_Product_ID != 0)
 			return getProduct (ctx, M_Product_ID, billDate, shipDate, AD_Org_ID, M_Warehouse_ID,
-				billC_BPartner_Location_ID, shipC_BPartner_Location_ID, IsSOTrx);
+				billC_BPartner_Location_ID, shipC_BPartner_Location_ID, IsSOTrx, trxName);
 		else if (C_Charge_ID != 0)
 			return getCharge (ctx, C_Charge_ID, billDate, shipDate, AD_Org_ID, M_Warehouse_ID,
-				billC_BPartner_Location_ID, shipC_BPartner_Location_ID, IsSOTrx);
+				billC_BPartner_Location_ID, shipC_BPartner_Location_ID, IsSOTrx, trxName);
 		else
-			return getExemptTax (ctx, AD_Org_ID);
+			return getExemptTax (ctx, AD_Org_ID, trxName);
 	}	//	get
 
+	/**
+	 * 
+	 * @param ctx
+	 * @param C_Charge_ID
+	 * @param billDate
+	 * @param shipDate
+	 * @param AD_Org_ID
+	 * @param M_Warehouse_ID
+	 * @param billC_BPartner_Location_ID
+	 * @param shipC_BPartner_Location_ID
+	 * @param IsSOTrx
+	 * @return
+	 * @deprecated
+	 */
+	public static int getCharge (Properties ctx, int C_Charge_ID,
+			Timestamp billDate, Timestamp shipDate,
+			int AD_Org_ID, int M_Warehouse_ID,
+			int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
+			boolean IsSOTrx) {
+		return getCharge(ctx, C_Charge_ID, billDate, shipDate, AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID, IsSOTrx, null);
+	}
+	
+	
 	/**
 	 *	Get Tax ID - converts parameters to call Get Tax.
 	 *  <pre>
@@ -118,7 +165,7 @@ public class Tax
 		Timestamp billDate, Timestamp shipDate,
 		int AD_Org_ID, int M_Warehouse_ID,
 		int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
-		boolean IsSOTrx)
+		boolean IsSOTrx, String trxName)
 	{
 		/* ship location from warehouse is plainly ignored below */
 		// if (M_Warehouse_ID <= 0)
@@ -152,7 +199,7 @@ public class Tax
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql, trxName);
 			pstmt.setInt (1, M_Warehouse_ID);
 			pstmt.setInt (2, C_Charge_ID);
 			pstmt.setInt (3, AD_Org_ID);
@@ -182,7 +229,7 @@ public class Tax
 			}
 			else if ("Y".equals (IsTaxExempt))
 			{
-				return getExemptTax (ctx, AD_Org_ID);
+				return getExemptTax (ctx, AD_Org_ID, trxName);
 			}
 		}
 		catch (SQLException e)
@@ -213,9 +260,31 @@ public class Tax
 		  + ", shipToC_Location_ID=" + shipToC_Location_ID);
 		return get (ctx, C_TaxCategory_ID, IsSOTrx,
 		  shipDate, shipFromC_Location_ID, shipToC_Location_ID,
-		  billDate, billFromC_Location_ID, billToC_Location_ID);
+		  billDate, billFromC_Location_ID, billToC_Location_ID, trxName);
 	}	//	getCharge
 
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param M_Product_ID
+	 * @param billDate
+	 * @param shipDate
+	 * @param AD_Org_ID
+	 * @param M_Warehouse_ID
+	 * @param billC_BPartner_Location_ID
+	 * @param shipC_BPartner_Location_ID
+	 * @param IsSOTrx
+	 * @return
+	 * @deprecated
+	 */
+	public static int getProduct (Properties ctx, int M_Product_ID,
+			Timestamp billDate, Timestamp shipDate,
+			int AD_Org_ID, int M_Warehouse_ID,
+			int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
+			boolean IsSOTrx) {
+		return getProduct(ctx, M_Product_ID, billDate, shipDate, AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID, IsSOTrx, null);
+	}
 
 	/**
 	 *	Get Tax ID - converts parameters to call Get Tax.
@@ -246,7 +315,7 @@ public class Tax
 		Timestamp billDate, Timestamp shipDate,
 		int AD_Org_ID, int M_Warehouse_ID,
 		int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
-		boolean IsSOTrx)
+		boolean IsSOTrx, String trxName)
 	{
 		String variable = "";
 		int C_TaxCategory_ID = 0;
@@ -273,7 +342,7 @@ public class Tax
 				+ " AND o.AD_Org_ID=?"
 				+ " AND il.C_BPartner_Location_ID=?"
 				+ " AND sl.C_BPartner_Location_ID=?";
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, M_Warehouse_ID);
 			pstmt.setInt(2, M_Product_ID);
 			pstmt.setInt(3, AD_Org_ID);
@@ -298,7 +367,7 @@ public class Tax
 			if (found && "Y".equals(IsTaxExempt))
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("getProduct - Business Partner is Tax exempt");
-				return getExemptTax(ctx, AD_Org_ID);
+				return getExemptTax(ctx, AD_Org_ID, trxName);
 			}
 			else if (found)
 			{
@@ -318,7 +387,7 @@ public class Tax
 					+ ", shipToC_Location_ID=" + shipToC_Location_ID);
 				return get(ctx, C_TaxCategory_ID, IsSOTrx,
 					shipDate, shipFromC_Location_ID, shipToC_Location_ID,
-					billDate, billFromC_Location_ID, billToC_Location_ID);
+					billDate, billFromC_Location_ID, billToC_Location_ID, trxName);
 			}
 
 			// ----------------------------------------------------------------
@@ -328,7 +397,7 @@ public class Tax
 		//	M_Product_ID				->	C_TaxCategory_ID
 			variable = "M_Product_ID";
 			sql = "SELECT C_TaxCategory_ID FROM M_Product WHERE M_Product_ID=?";
-			C_TaxCategory_ID = DB.getSQLValueEx(null, sql, M_Product_ID);
+			C_TaxCategory_ID = DB.getSQLValueEx(trxName, sql, M_Product_ID);
 			found = C_TaxCategory_ID != -1;
 			if (C_TaxCategory_ID <= 0)
 			{
@@ -339,7 +408,7 @@ public class Tax
 		//	AD_Org_ID					->	billFromC_Location_ID
 			variable = "AD_Org_ID";
 			sql = "SELECT C_Location_ID FROM AD_OrgInfo WHERE AD_Org_ID=?";
-			billFromC_Location_ID = DB.getSQLValueEx(null, sql, AD_Org_ID);
+			billFromC_Location_ID = DB.getSQLValueEx(trxName, sql, AD_Org_ID);
 			found = billFromC_Location_ID != -1;
 			if (billFromC_Location_ID <= 0)
 			{
@@ -352,7 +421,7 @@ public class Tax
 				+ " FROM C_BPartner_Location l"
 				+ " INNER JOIN C_BPartner b ON (l.C_BPartner_ID=b.C_BPartner_ID) "
 				+ " WHERE C_BPartner_Location_ID=?";
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, billC_BPartner_Location_ID);
 			rs = pstmt.executeQuery();
 			found = false;
@@ -370,7 +439,7 @@ public class Tax
 				throw new TaxCriteriaNotFoundException(variable, billC_BPartner_Location_ID);
 			}
 			if ("Y".equals(IsTaxExempt))
-				return getExemptTax(ctx, AD_Org_ID);
+				return getExemptTax(ctx, AD_Org_ID, trxName);
 
 			//  Reverse for PO
 			if (!IsSOTrx)
@@ -389,7 +458,7 @@ public class Tax
 		//	M_Warehouse_ID				->	shipFromC_Location_ID
 			variable = "M_Warehouse_ID";
 			sql = "SELECT C_Location_ID FROM M_Warehouse WHERE M_Warehouse_ID=?";
-			shipFromC_Location_ID = DB.getSQLValueEx(null, sql, M_Warehouse_ID);
+			shipFromC_Location_ID = DB.getSQLValueEx(trxName, sql, M_Warehouse_ID);
 			found = shipFromC_Location_ID != -1;
 			if (shipFromC_Location_ID <= 0)
 			{
@@ -399,7 +468,7 @@ public class Tax
 		//	shipC_BPartner_Location_ID 	->	shipToC_Location_ID
 			variable = "C_BPartner_Location_ID";
 			sql = "SELECT C_Location_ID FROM C_BPartner_Location WHERE C_BPartner_Location_ID=?";
-			shipToC_Location_ID = DB.getSQLValueEx(null, sql, shipC_BPartner_Location_ID);
+			shipToC_Location_ID = DB.getSQLValueEx(trxName, sql, shipC_BPartner_Location_ID);
 			found = shipToC_Location_ID != -1;
 			if (shipToC_Location_ID <= 0)
 			{
@@ -428,24 +497,25 @@ public class Tax
 
 		return get (ctx, C_TaxCategory_ID, IsSOTrx,
 			shipDate, shipFromC_Location_ID, shipToC_Location_ID,
-			billDate, billFromC_Location_ID, billToC_Location_ID);
+			billDate, billFromC_Location_ID, billToC_Location_ID, trxName);
 	}	//	getProduct
 
 	/**
 	 * Get Exempt Tax Code
 	 * @param ctx context
 	 * @param AD_Org_ID org to find client
+	 * @param trxName	Transaction
 	 * @return C_Tax_ID
 	 * @throws TaxNoExemptFoundException if no tax exempt found
 	 */
-	private static int getExemptTax (Properties ctx, int AD_Org_ID)
+	private static int getExemptTax (Properties ctx, int AD_Org_ID, String trxName)
 	{
 		final String sql = "SELECT t.C_Tax_ID "
 			+ "FROM C_Tax t"
 			+ " INNER JOIN AD_Org o ON (t.AD_Client_ID=o.AD_Client_ID) "
 			+ "WHERE t.IsTaxExempt='Y' AND o.AD_Org_ID=? "
 			+ "ORDER BY t.Rate DESC";
-		int C_Tax_ID = DB.getSQLValueEx(null, sql, AD_Org_ID);
+		int C_Tax_ID = DB.getSQLValueEx(trxName, sql, AD_Org_ID);
 		if (log.isLoggable(Level.FINE)) log.fine("getExemptTax - TaxExempt=Y - C_Tax_ID=" + C_Tax_ID);
 		if (C_Tax_ID <= 0)
 		{
@@ -469,13 +539,14 @@ public class Tax
 	 *	@param billDate invoice date
 	 *	@param billFromC_Location_ID invoice from
 	 *	@param billToC_Location_ID invoice to
+	 *  @param trxName	Transaction
 	 *	@return C_Tax_ID
 	 *  @throws TaxNotFoundException if no tax found for given criteria
 	 */
 	protected static int get (Properties ctx,
 		int C_TaxCategory_ID, boolean IsSOTrx,
 		Timestamp shipDate, int shipFromC_Location_ID, int shipToC_Location_ID,
-		Timestamp billDate, int billFromC_Location_ID, int billToC_Location_ID)
+		Timestamp billDate, int billFromC_Location_ID, int billToC_Location_ID, String trxName)
 	{
 		//	C_TaxCategory contains CommodityCode
 		
@@ -490,8 +561,8 @@ public class Tax
 		}
 
 		MTax[] taxes = MTax.getAll (ctx);
-		MLocation lFrom = new MLocation (ctx, billFromC_Location_ID, null); 
-		MLocation lTo = new MLocation (ctx, billToC_Location_ID, null); 
+		MLocation lFrom = new MLocation (ctx, billFromC_Location_ID, trxName); 
+		MLocation lTo = new MLocation (ctx, billToC_Location_ID, trxName); 
 		if (log.isLoggable(Level.FINER)){
 			log.finer("From=" + lFrom);
 			log.finer("To=" + lTo);

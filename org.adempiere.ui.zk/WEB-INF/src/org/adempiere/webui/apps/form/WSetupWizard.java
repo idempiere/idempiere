@@ -115,6 +115,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	
 	private boolean expandTree = false;
 	private boolean allFinished = true;
+	private boolean allPending = true;
 	private Vbox centerBox = new Vbox();
 	private Vbox centerBoxdown = new Vbox();
 	private Vbox westdown = new Vbox();
@@ -196,6 +197,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 
 	protected void addWfEntry(MWorkflow wfwizard) {
 		allFinished = true;
+		allPending = true;
 		Treechildren treeChildren = wfnodeTree.getTreechildren();
 		Treeitem treeitemwf = new Treeitem();
 		treeChildren.appendChild(treeitemwf);
@@ -220,9 +222,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 			treeitemwf.setOpen(true);
 		addNodes(wfwizard, treeitemwf);
 
-		if(allFinished && showColors.isChecked()){
-			wizardLabel.setZclass("tree-wsetupwizard-finished-all");
-		}
+		if (showColors.isChecked() && (allFinished || !allPending))
+			wizardLabel.setZclass(allFinished ? "tree-wsetupwizard-finished-all" : "tree-wsetupwizard-open-tasks");			
 		
 		treeitemwf.setAttribute("AD_Workflow_ID", wfwizard.getAD_Workflow_ID());
 		if (prevti != null && prevti.getAttribute("AD_Workflow_ID") != null) {
@@ -248,21 +249,27 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 			if (MWizardProcess.WIZARDSTATUS_Finished.equals(status)){
 				nodeLabel.setZclass("tree-wsetupwizard-finished");
 				allFinished = allFinished && true;
+				allPending = allPending && false;
 			}else if (MWizardProcess.WIZARDSTATUS_Skipped.equals(status)) {
 				nodeLabel.setZclass("tree-wsetupwizard-skipped");
 				allFinished = allFinished && true;
+				allPending = allPending && false;
 			}else if (MWizardProcess.WIZARDSTATUS_Delayed.equals(status)) {
 				nodeLabel.setZclass("tree-wsetupwizard-delayed");
 				allFinished = allFinished && false;
+				allPending = allPending && false;
 			}else if (MWizardProcess.WIZARDSTATUS_In_Progress.equals(status)) {
 				nodeLabel.setZclass("tree-wsetupwizard-in-progress");
 				allFinished = allFinished && false;
+				allPending = allPending && false;
 			}else if (MWizardProcess.WIZARDSTATUS_Pending.equals(status)) {
 				nodeLabel.setZclass("tree-wsetupwizard-pending");
 				allFinished = allFinished && false;
+				allPending = allPending && true;
 			}else {
 				nodeLabel.setZclass("tree-setupwizard-nostatus");
 				allFinished = false;
+				allPending = allPending && true;
 			}
 		}else{
 			nodeLabel.setStyle("margin-left:20px;");
@@ -476,6 +483,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		} else if (e.getTarget() == bOK) {
 			int userid = 0;
 			allFinished=true;
+			allPending=true;
 			if (!userField.isNullOrEmpty())
 				userid = (Integer)userField.getValue();
 			if (save(notesField.getText(), (String) statusField.getValue(), userid))
@@ -496,7 +504,10 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 
 	private void showColors() {
 		if (showColors.isChecked())
+		{
 			allFinished = true;
+			allPending = true;
+		}
 		repaintTree();
 	}
 
@@ -593,6 +604,9 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	}	//	propertyChange
 
 	private void showItem(Treeitem ti) {
+		if (ti == null)
+			return;
+		
 		if (ti.getAttribute("AD_Workflow_ID") != null) {
 			ti.setOpen(true);
 			// MWorkflow

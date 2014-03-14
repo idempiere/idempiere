@@ -1240,11 +1240,7 @@ public class Login
 
 		if (system.isLDAP())
 		{
-			authenticated = system.isLDAP(app_user, app_pwd);
-			if (authenticated){
-				app_pwd = null;
-				authenticated=true;
-			}
+			authenticated = system.isLDAP(app_user, app_pwd);			
 			// if not authenticated, use AD_User as backup
 		}
 
@@ -1328,12 +1324,16 @@ public class Login
 			}
 			clientsValidated.add(user.getAD_Client_ID());
 			boolean valid = false;
-			if (hash_password) {
+			// authenticated by ldap
+			if (authenticated){
+				valid = true;
+			} else if (hash_password) {
 				valid = user.authenticateHash(app_pwd);
 			} else {
 				// password not hashed
 				valid = user.getPassword() != null && user.getPassword().equals(app_pwd);
-			}
+			}			
+			
 			if (valid ) {			
 				if (user.isLocked())
 				{
@@ -1341,7 +1341,10 @@ public class Login
 					continue;
 				}
 				
-				if (user.isExpired())
+				if (authenticated){
+					// use Ldap because don't check password age
+				}
+				else if (user.isExpired())
 					isPasswordExpired = true;
 				else if (MAX_PASSWORD_AGE > 0 && !user.isNoPasswordReset())
 				{
@@ -1498,7 +1501,12 @@ public class Login
 		sql.append(" AND r.IsMasterRole='N'");
 		sql.append(" AND u.IsActive='Y' AND EXISTS (SELECT * FROM AD_Client c WHERE u.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
 		// don't show roles without org access
-		sql.append(" AND (r.isaccessallorgs='Y' OR EXISTS (SELECT 1 FROM AD_Role_OrgAccess ro WHERE ro.AD_Role_ID=r.AD_Role_ID AND ro.IsActive='Y'))");
+		sql.append(" AND (");
+		sql.append(" (r.isaccessallorgs='Y' OR EXISTS (SELECT 1 FROM AD_Role_OrgAccess ro WHERE ro.AD_Role_ID=r.AD_Role_ID AND ro.IsActive='Y'))");
+		// show roll with isuseuserorgaccess = "Y" when Exist org in AD_User_Orgaccess
+		sql.append(" OR ");
+		sql.append(" (r.isuseuserorgaccess='Y' AND EXISTS (SELECT 1 FROM AD_User_Orgaccess uo WHERE uo.AD_User_ID=u.AD_User_ID AND uo.IsActive='Y')) ");
+		sql.append(")");
 		sql.append(" ORDER BY r.Name");
 
 		PreparedStatement pstmt = null;

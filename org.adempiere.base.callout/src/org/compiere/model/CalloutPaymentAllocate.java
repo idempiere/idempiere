@@ -109,7 +109,7 @@ public class CalloutPaymentAllocate extends CalloutEngine
 				mTab.setValue("Amount", InvoiceOpen.subtract(DiscountAmt));
 				mTab.setValue("DiscountAmt", DiscountAmt);
 				//  reset as dependent fields get reset
-				Env.setContext(ctx, WindowNo, "C_Invoice_ID", C_Invoice_ID.toString());
+				Env.setContext(ctx, WindowNo, mTab.getTabNo(), "C_Invoice_ID", C_Invoice_ID.toString());
 				mTab.setValue("C_Invoice_ID", C_Invoice_ID);
 			}
 		}
@@ -146,8 +146,8 @@ public class CalloutPaymentAllocate extends CalloutEngine
 	{
 		if (isCalloutActive())		//	assuming it is resetting value
 			return "";
-		//	No Invoice
-		int C_Invoice_ID = Env.getContextAsInt(ctx, WindowNo, "C_Invoice_ID");
+		//	No Invoice		
+		int C_Invoice_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_Invoice_ID");
 		if (C_Invoice_ID == 0)
 			return "";
 		//	Get Info from Tab
@@ -173,8 +173,8 @@ public class CalloutPaymentAllocate extends CalloutEngine
 		//  PayAmt - calculate write off
 		if (colName.equals("Amount"))
 		{
-			WriteOffAmt = InvoiceAmt.subtract(Amount).subtract(DiscountAmt).subtract(OverUnderAmt);
-			mTab.setValue("WriteOffAmt", WriteOffAmt);
+			OverUnderAmt = InvoiceAmt.subtract(Amount).subtract(DiscountAmt).subtract(WriteOffAmt);
+			mTab.setValue("OverUnderAmt", OverUnderAmt);
 		}
 		else    //  calculate Amount
 		{

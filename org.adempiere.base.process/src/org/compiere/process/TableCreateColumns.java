@@ -273,38 +273,12 @@ public class TableCreateColumns extends SvrProcess
 			column.setAD_Element_ID (element.getAD_Element_ID ());
 			//
 			column.setIsMandatory ("NO".equals (nullable));
-			// Key
-			if (columnName.equalsIgnoreCase (tableName + "_ID"))
-			{
-				column.setIsKey (true);
-				column.setAD_Reference_ID (DisplayType.ID);
-				column.setIsUpdateable(false);
-			}
-		    //handle uuid column   xolali bug IDEMPIERE-971
-			if (columnName.equalsIgnoreCase (PO.getUUIDColumnName(table.getTableName())))
-			{
-				column.setAD_Reference_ID (DisplayType.String);
-				column.setIsUpdateable(false);
-				column.setIsAllowCopy(false);
-			}
-			
+
 			// Account
 			// bug [ 1637912 ] 
-			else if (columnName.toUpperCase ().endsWith("_ACCT")
+			if (columnName.toUpperCase ().endsWith("_ACCT")
 				&& size == 10)
 				column.setAD_Reference_ID (DisplayType.Account);
-			// Account
-			else if (columnName.equalsIgnoreCase ("C_Location_ID"))
-				column.setAD_Reference_ID (DisplayType.Location);
-			// Product Attribute
-			else if (columnName.equalsIgnoreCase ("M_AttributeSetInstance_ID"))
-				column.setAD_Reference_ID (DisplayType.PAttribute);
-			// SalesRep_ID (=User)
-			else if (columnName.equalsIgnoreCase ("SalesRep_ID"))
-			{
-				column.setAD_Reference_ID (DisplayType.Table);
-				column.setAD_Reference_Value_ID (190);
-			}
 			// ID
 			else if (columnName.toUpperCase().endsWith ("_ID"))
 				column.setAD_Reference_ID (DisplayType.TableDir);
@@ -315,20 +289,6 @@ public class TableCreateColumns extends SvrProcess
 				|| columnName.equalsIgnoreCase ("Created")
 				|| columnName.equalsIgnoreCase ("Updated"))
 				column.setAD_Reference_ID (DisplayType.DateTime);
-			// CreatedBy/UpdatedBy (=User)
-			else if (columnName.equalsIgnoreCase ("CreatedBy")
-				|| columnName.equalsIgnoreCase ("UpdatedBy"))
-			{
-				column.setAD_Reference_ID (DisplayType.Table);
-				column.setAD_Reference_Value_ID (110);
-				column.setIsUpdateable(false);
-			}
-			//	Entity Type
-			else if (columnName.equalsIgnoreCase ("EntityType"))
-			{
-				column.setAD_Reference_ID (DisplayType.Table);
-				column.setAD_Reference_Value_ID (389);
-			}
 			// CLOB
 			else if (dataType == Types.CLOB)
 				column.setAD_Reference_ID (DisplayType.TextLong);
@@ -348,14 +308,6 @@ public class TableCreateColumns extends SvrProcess
 			// List
 			else if (size < 4 && dataType == Types.CHAR)
 				column.setAD_Reference_ID (DisplayType.List);
-			// Name, DocumentNo
-			else if (columnName.equalsIgnoreCase ("Name")
-				|| columnName.equals ("DocumentNo"))
-			{
-				column.setAD_Reference_ID (DisplayType.String);
-				column.setIsIdentifier (true);
-				column.setSeqNo (1);
-			}
 			// String, Text
 			else if (dataType == Types.CHAR || dataType == Types.VARCHAR
 				|| typeName.startsWith ("NVAR")
@@ -381,6 +333,8 @@ public class TableCreateColumns extends SvrProcess
 			else
 				column.setAD_Reference_ID (DisplayType.String);
 			
+			column.setSmartDefaults();
+
 			column.setFieldLength (size);
 			if (column.isUpdateable()
 				&& (table.isView()
@@ -390,10 +344,6 @@ public class TableCreateColumns extends SvrProcess
 					|| columnName.toUpperCase().equals("UPDATED") ))
 				column.setIsUpdateable(false);
 			
-			// Check if is a possible selection column
-			if (MColumn.isSuggestSelectionColumn(column.getColumnName(), false))
-				column.setIsSelectionColumn(true);
-
 			//	Done
 			if (column.save ())
 			{
