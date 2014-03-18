@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/ckez.jar" sourcepath="lib/src/ckez-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/calendar.jar" sourcepath="lib/src/calendar-source.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/calendar.jar" sourcepath="lib/src/calendar-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/asm.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/cglib.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-el.jar"/>
