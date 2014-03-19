@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -1352,9 +1353,9 @@ public final class MSetup
 	{
 		int AD_Preference_ID = getNextID(getAD_Client_ID(), "AD_Preference");
 		StringBuilder sqlCmd = new StringBuilder ("INSERT INTO AD_Preference ");
-		sqlCmd.append("(AD_Preference_ID,").append(m_stdColumns).append(",");
+		sqlCmd.append("(AD_Preference_ID,").append("AD_Preference_UU,").append(m_stdColumns).append(",");
 		sqlCmd.append("Attribute,Value,AD_Window_ID) VALUES (");
-		sqlCmd.append(AD_Preference_ID).append(",").append(m_stdValues).append(",");
+		sqlCmd.append(AD_Preference_ID).append(",").append(DB.TO_STRING(UUID.randomUUID().toString())).append(",").append(m_stdValues).append(",");
 		sqlCmd.append("'").append(Attribute).append("','").append(Value).append("',");
 		if (AD_Window_ID == 0)
 			sqlCmd.append("NULL)");
