@@ -104,6 +104,8 @@ public class GridTabCSVExporter implements IGridTabExporter
 				if(DisplayType.Location == field.getDisplayType()){
 				   specialHDispayType = DisplayType.Location;
 				   continue;
+				} else if (! (field.isDisplayed() || field.isDisplayedGrid())) {
+				   continue;	
 				}
 				String headName = resolveColumnName(table, column);
 				headArray.add(headName);
@@ -525,7 +527,10 @@ public class GridTabCSVExporter implements IGridTabExporter
 				int AD_Field_ID = Integer.parseInt(fieldIdStr);
 				for (GridField gridField : tmpFields) 
 				{
-					if(gridField.isVirtualColumn() || gridField.isEncrypted() || gridField.isEncryptedColumn())
+					if (   gridField.isVirtualColumn()
+						|| gridField.isEncrypted()
+						|| gridField.isEncryptedColumn()
+						|| !(gridField.isDisplayed() || gridField.isDisplayedGrid()))
 						continue;
 					
 					if (gridField.getAD_Field_ID() == AD_Field_ID) 
@@ -549,7 +554,10 @@ public class GridTabCSVExporter implements IGridTabExporter
 					continue;
 				if (DisplayType.Button == MColumn.get(Env.getCtx(),field.getAD_Column_ID()).getAD_Reference_ID())
 					continue;
-				if (field.isVirtualColumn() || field.isEncrypted() || field.isEncryptedColumn())
+				if (   field.isVirtualColumn()
+					|| field.isEncrypted()
+					|| field.isEncryptedColumn()
+					|| !(field.isDisplayed() || field.isDisplayedGrid()))
 					continue;
 				if (field.isParentValue() || (!field.isReadOnly() && field.isDisplayedGrid()))
 					gridFieldList.add(field);
