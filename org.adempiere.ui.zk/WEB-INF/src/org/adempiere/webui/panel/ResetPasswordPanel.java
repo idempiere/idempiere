@@ -506,6 +506,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     		return false;
 
         MMailText mailText = new MMailText(m_ctx, R_MailText_ID, null);    	
+		mailText.setLanguage(Env.getContext(m_ctx, "#AD_Language"));
 		to.set_ValueOfColumn("Password", newPassword); // will be hashed and validate on saveEx
     	mailText.setUser(to);
 		String message = mailText.getMailText(true);
