@@ -54,7 +54,7 @@ public class DefaultLookupFactory implements ILookupFactory{
 		}
 		else if (gridFieldVO.displayType == Payment)
 		{
-			lookup = new MPaymentLookup (gridFieldVO.ctx, gridFieldVO.WindowNo, gridFieldVO.AD_Column_ID);
+			lookup = new MPaymentLookup (gridFieldVO.ctx, gridFieldVO.WindowNo, gridFieldVO.ValidationCode);
 		}
 		else if (DisplayType.isLookup(gridFieldVO.displayType) && gridFieldVO.lookupInfo != null)
 		{
