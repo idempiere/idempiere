@@ -17,7 +17,7 @@
 
 # initialization
 # adjust these variables to your environment
-IDEMPIERE_HOME=/home/idempiere/idempiere-server
+IDEMPIERE_HOME=/opt/idempiere-server
 ENVFILE=$IDEMPIERE_HOME/utils/myEnvironment.sh
 IDEMPIEREUSER=idempiere
 
@@ -136,9 +136,6 @@ case "$1" in
     stop)
 	stop
 	;;
-    reload)
-	restart
-	;;
     restart)
 	restart
 	;;
@@ -149,7 +146,7 @@ case "$1" in
 	status
 	;;
     *)
-	echo $"Usage: $0 {start|stop|reload|restart|condrestart|status}"
+	echo $"Usage: $0 {start|stop|restart|condrestart|status}"
 	exit 1
 esac
 
