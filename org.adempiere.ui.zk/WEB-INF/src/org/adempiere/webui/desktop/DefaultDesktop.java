@@ -237,6 +237,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         busyDialog.setShadow(false);
         homeTab.appendChild(busyDialog);
         
+        // register as 0
+        registerWindow(homeTab);
+        
         BroadcastMessageWindow messageWindow = new BroadcastMessageWindow(pnlHead);
         BroadcastMsgUtil.showPendingMessage(Env.getAD_User_ID(Env.getCtx()), messageWindow);
         
@@ -307,16 +310,12 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	{		
 		homeTab.getChildren().clear();		
 
-		//register as 0
-        registerWindow(homeTab);
-        
 		dashboardController.render(homeTab, this, true);
 	
 		West w = layout.getWest();
 		w.getChildren().clear();
 		sideController.render(w, this, false);
 		
-		Clients.response(new AuScript("$('.slimScroll.z-anchorlayout').slimScroll({height: '100%',railVisible: true, alwaysVisible: false});"));				
 	}
 
 	public void onEvent(Event event)

@@ -105,7 +105,7 @@ public class DashboardController implements EventListener<Event> {
 	
 	public DashboardController() {
 		dashboardLayout = new Anchorlayout();
-        dashboardLayout.setSclass("dashboard-layout slimScroll");
+		dashboardLayout.setSclass("dashboard-layout");
         dashboardLayout.setVflex("1");
         dashboardLayout.setHflex("1");
         
