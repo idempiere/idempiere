@@ -233,6 +233,12 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				infoPanel.detach();
 		 	 	infoPanel = null;
 		 	}
+			// hsv: fix to when switch has text => emtpy text, don't show info panel
+			if ("".equals(getComponent().getText().trim())){
+				actionCombo(null);
+				resetButtonState();
+				return;
+			}
 			actionText(getComponent().getText());
 		}
 		else if ((Events.ON_OK.equals(e.getName()))) {
@@ -264,14 +270,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	{
 		if ("FieldValue".equals(evt.getPropertyName()))
 		{
-			if ( evt.getNewValue()== null)
-			{
-				actionRefresh("");
-			}
-			else
-			{
-				actionRefresh(evt.getNewValue());
-			}
+			actionRefresh(evt.getNewValue());
 		}
 	}
 
@@ -578,12 +577,14 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 					if (log.isLoggable(Level.CONFIG)) log.config(getColumnName() + " - Result = null (cancelled)");
 					if (value != null) 
 					{
-						if (lookup.getDisplay(value).equals(getComponent().getText()))
-						{
-							return;
+						if (!lookup.getDisplay(value).equals(getComponent().getText())){
+							getComponent().setText(lookup.getDisplay(value));
+							
 						}
-					}
-					actionCombo(null);
+					}else{
+						getComponent().setText("");
+						actionCombo(null);
+					}						
 				}
 				else
 				{
