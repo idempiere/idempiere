@@ -34,6 +34,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.WebDoc;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
 
 public class HelpWindow extends Window {
@@ -65,8 +66,11 @@ public class HelpWindow extends Window {
 		centerPane.setAutoscroll(true);
 		borderlayout.appendChild(centerPane);
 		
+		Div div = new Div();
+		centerPane.appendChild(div);
+		div.setStyle("width: 100%; height: 100%; overflow: auto;");
 		Html html = new Html();
-		centerPane.appendChild(html);
+		div.appendChild(html);
 		
 		WebDoc doc = WebDoc.create(true);
 		
