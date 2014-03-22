@@ -212,7 +212,6 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
     {
     	Toolbarbutton newBtn = new Toolbarbutton(null, ThemeManager.getThemeResource("images/New10.png"));
     	newBtn.setSclass("menu-href-newbtn");
-    	newBtn.setStyle("padding-left:3px; margin-bottom:5px");
     	return newBtn;
     }
     

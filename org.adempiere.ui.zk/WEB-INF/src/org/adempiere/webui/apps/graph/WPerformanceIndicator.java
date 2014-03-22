@@ -161,6 +161,9 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 	private void onAfterSize(AfterSizeEvent event) {
 		int width = event.getWidth();
 		int height = event.getHeight();
+		if (width == 0 && height == 0)
+			return;
+		
 		//set normal height
 		if (height == 0) {
 			height = width > 300 ? width * 40 / 100 : width * 85 / 100;

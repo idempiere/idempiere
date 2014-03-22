@@ -154,9 +154,25 @@ html,body {
 	height: 16px;
 }
 
+.menu-href-newbtn {
+	height: 17px;
+	line-height: 10px;
+	padding: 1px 1px;
+	padding-bottom: 2px;
+	padding-left: 2px;
+	margin-bottom: 2px;
+}
+
 .menu-href-newbtn img {
 	width: 10px;
 	height: 10px;
+}
+
+.menu-href-newbtn .z-toolbarbutton-content {
+	height: 10px;
+	width: 10px;
+	display: inline-block;
+	line-height: 10px;
 }
 
 .z-toolbar.z-toolbar-tabs {
@@ -181,6 +197,8 @@ html,body {
 
 .fav-new-btn {
 	margin-left: 4px;
+	margin-bottom: 3px;
+	padding-left: 1px;
 }
 
 .fav-new-btn img {
@@ -405,7 +423,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	margin: 0;
 	padding: 0;
 	border: 0;
-	position: absolute !important;
+	position: relative !important;
 	background-color: #FFFFFF
 }
 
@@ -742,8 +760,8 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .adwindow-status-docinfo {
 	display: inline-block;
-	float: right;
-	padding-right: 4px;
+	position: absolute;
+	right: 4px;
 }
 
 .docstatus-normal .z-label {
@@ -805,6 +823,9 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 .adwindow-detailpane-toolbar .z-toolbarbutton {
 	float: left;
 	display: inline-block;
+	padding: 0px;
+	padding-left: 1px;
+	width: 20px;
 }
 
 .adwindow-detailpane-toolbar .z-toolbarbutton img {
@@ -920,7 +941,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .z-grid tbody tr.highlight td.row-indicator-selected {
-	background-color: transparent !important;
+	background-color: #FFFFCC !important;
 	background-image: url(${c:encodeURL('/theme/default/images/EditRecord16.png')}) !important;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -1088,7 +1109,8 @@ input:focus, textarea:focus, .z-combobox-input:focus, z-datebox-input:focus {
 	background-color: transparent;
 	background-image: none;
 	width: 20px;
-	height: 18px;
+	height: 22px;
+	min-height: 22px;
 	border: none;
 	position: absolute;
 	right: 1px;
@@ -1096,7 +1118,8 @@ input:focus, textarea:focus, .z-combobox-input:focus, z-datebox-input:focus {
 }
 
 .editor-button :hover {
-	background-color: #ddd;
+	-webkit-filter: contrast(1.5);
+	filter: contrast(150%);
 }
 
 .editor-button img {
@@ -1789,6 +1812,7 @@ table.z-vbox > tbody > tr > td > table {
 
 <%-- help window --%>
 .help-window {
+	position: relative;
 }
 .help-window-header {
 	padding: 10px 0 10px 20px;
@@ -1894,12 +1918,13 @@ table.z-vbox > tbody > tr > td > table {
 	width: 100%;
 }
 .payment-rule-editor .z-combobox-input {
-	box-sizing: border-box;
-	-moz-box-sizing: border-box; /* Firefox */
 	display: inline-block;
 	padding-right: 44px; 
 	width: 100%;
-	height: 21px;
+	height: 24px;
+	border-bottom-right-radius: 6px;
+	border-top-right-radius: 6px;
+	border-right: 0px;
 }
 .payment-rule-editor .z-combobox-input:focus {
 	border: 1px solid #0000ff;
@@ -1908,16 +1933,9 @@ table.z-vbox > tbody > tr > td > table {
 	padding-right: 22px !important;
 }
 .payment-rule-editor .z-combobox-button {
-	padding: 0px;
-	margin: 0px;
-	display: inline-block;
-	border: none;
 	position: absolute;
-	right: 22px;
+	right: 0px;
 	top: 1px;
-}
-.payment-rule-editor .z-combobox.no-button .z-combobox-button {
-	right: 1px;
 }
 .payment-rule-editor .z-combobox .z-combobox-button-hover {
 	background-color: #ddd;
@@ -1925,10 +1943,7 @@ table.z-vbox > tbody > tr > td > table {
 }
 .payment-rule-editor .editor-button {
 	border-radius: 0px;
-}
-.payment-rule-editor .editor-button :hover {
-	border-radius: 0px;
-	background-color: #ddd;
+	right: 24px;
 }
 
 <%-- chart --%>
@@ -1946,4 +1961,32 @@ table.z-vbox > tbody > tr > td > table {
 	text-overflow: ellipsis;
 	display: inline-block;
 	width: 100%;
+}
+
+.z-column-content, .z-listheader-content, .z-listcell-content {
+	padding: 2px 3px 1px;
+}
+
+.z-grid-body .z-cell {
+	padding: 2px 3px;
+}
+
+.z-treecell-content {
+	padding: 2px 1px;
+}
+
+.z-tab-button :hover {
+	color: blue;
+}
+
+.z-row .z-cell, .z-listitem .z-listcell, .z-listitem.z-listitem-selected>.z-listcell {
+	border-left: 1px solid #cfcfcf;
+}
+
+.z-grid-emptybody td {
+	text-align: left;
+}
+
+.z-grid-body {
+	background-color: #FFF;
 }
