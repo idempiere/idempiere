@@ -19,6 +19,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.InfoPanel;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.InfoSchedule;
 import org.compiere.model.MInfoWindow;
@@ -135,9 +136,8 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 
 					if (infoWindowID<=0)
 						return;
-
-					String tableName = MTable.getTableName(Env.getCtx(), new MInfoWindow(Env.getCtx(), infoWindowID, null).getAD_Table_ID());
-					InfoPanel.showPanel(tableName);
+					
+					SessionManager.getAppDesktop().openInfo(infoWindowID);
 				}
 			}
 		}
