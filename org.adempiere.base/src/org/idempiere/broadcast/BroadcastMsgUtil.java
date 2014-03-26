@@ -78,8 +78,7 @@ public class BroadcastMsgUtil
 					if (! user.isActive())
 							continue;
 					MNote note = new MNote(Env.getCtx(), 0, trxName);
-					if (MBroadcastMessage.TARGET_Everybody.equals(mbMessage.getTarget()))
-						note.setClientOrg(user.getAD_Client_ID(), 0);
+					note.setClientOrg(user.getAD_Client_ID(), 0);
 					note.setAD_BroadcastMessage_ID(messageID);
 					note.setAD_User_ID(userID);
 					note.setAD_Message_ID(0);
