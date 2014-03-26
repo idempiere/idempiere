@@ -26,6 +26,7 @@ import org.adempiere.webui.part.AbstractUIPart;
 import org.compiere.model.MMenu;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.event.Event;
@@ -122,7 +123,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	 */
 	public void unregisterWindow(int WindowNo) {
 		List<Object> windows = getWindows();
-		if (WindowNo < windows.size())
+		if (windows != null && WindowNo < windows.size())
 			windows.set(WindowNo, null);
 		Env.clearWinContext(WindowNo);
 	}
@@ -134,7 +135,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
      */
 	public Object findWindow(int WindowNo) {
 		List<Object> windows = getWindows();
-		if (WindowNo < windows.size())
+		if (windows != null && WindowNo < windows.size())
 			return windows.get(WindowNo);
 		else
 			return null;
@@ -299,14 +300,19 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
    	}   	
 
     protected List<Object> getWindows(){
-    	Session session = getComponent().getDesktop().getSession();
-    	@SuppressWarnings("unchecked")
-		List<Object> list = (List<Object>) session.getAttribute("windows.list");
-    	if (list == null) {
-    		list = new ArrayList<Object>();
-    		session.setAttribute("windows.list", list);
+    	Desktop desktop = getComponent().getDesktop();
+    	if (desktop != null) {
+	    	Session session = desktop.getSession();
+	    	@SuppressWarnings("unchecked")
+			List<Object> list = (List<Object>) session.getAttribute("windows.list");
+	    	if (list == null) {
+	    		list = new ArrayList<Object>();
+	    		session.setAttribute("windows.list", list);
+	    	}
+	    	return Collections.synchronizedList(list);
+    	} else {
+    		return null;
     	}
-    	return Collections.synchronizedList(list);
     }
 
 }
