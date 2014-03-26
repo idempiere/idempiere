@@ -28,10 +28,19 @@ RETURNS NUMERIC AS $body$
  
  ************************************************************************/
 DECLARE
+	v_Precision         NUMERIC := 0;
+    v_Min            	NUMERIC := 0;
 	v_AllocatedAmt		NUMERIC := 0;
     	v_PayAmt        	NUMERIC;
     	r   			RECORD;
 BEGIN
+	SELECT StdPrecision
+	    INTO v_Precision
+	    FROM C_Currency
+	    WHERE C_Currency_ID = p_C_Currency_ID;
+
+	SELECT 1/10^v_Precision INTO v_Min;
+	
     --  Charge - nothing available
     SELECT 
       INTO v_PayAmt MAX(PayAmt) 
@@ -53,8 +62,15 @@ BEGIN
 		v_AllocatedAmt := v_AllocatedAmt
 			+ currencyConvert(r.Amount, r.C_Currency_ID, p_C_Currency_ID, r.DateTrx, null, r.AD_Client_ID, r.AD_Org_ID);
 	END LOOP;
-	--	Round to penny
-	v_AllocatedAmt := ROUND(COALESCE(v_AllocatedAmt,0), 2);
+	
+	--	Ignore Rounding
+	IF (v_AllocatedAmt > -v_Min AND v_AllocatedAmt < v_Min) THEN
+		v_AllocatedAmt := 0;
+	END IF;
+
+	--	Round to currency precision
+	v_AllocatedAmt := ROUND(COALESCE(v_AllocatedAmt,0), v_Precision);
+	
 	RETURN	v_AllocatedAmt;
 END;
 

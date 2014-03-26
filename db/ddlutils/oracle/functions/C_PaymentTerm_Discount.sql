@@ -24,6 +24,8 @@ RETURN NUMBER
  ************************************************************************/
 
 AS
+	v_Precision			NUMBER := 0;
+    v_Min				NUMBER := 0;
 	Discount			NUMBER := 0;
 	CURSOR Cur_PT	IS
 		SELECT	*
@@ -34,6 +36,13 @@ AS
 	Add1Date			NUMBER := 0;
 	Add2Date			NUMBER := 0;
 BEGIN
+	SELECT StdPrecision
+	    INTO v_Precision
+	    FROM C_Currency
+	    WHERE C_Currency_ID = Currency_ID;
+
+	SELECT POWER(1/10,v_Precision) INTO v_Min FROM DUAL;
+	
 	--	No Data - No Discount
 	IF (Amount IS NULL OR PaymentTerm_ID IS NULL OR DocDate IS NULL) THEN
 		RETURN 0;
@@ -60,7 +69,15 @@ BEGIN
 			Discount := Amount * p.Discount2 / 100;
 		END IF;	
 	END LOOP;
-	--
-    RETURN ROUND(NVL(Discount,0), 2);	--	fixed rounding
+	
+	--	Ignore Rounding
+	IF (Discount > -v_Min AND Discount < v_Min) THEN
+		Discount := 0;
+	END IF;
+
+	--	Round to currency precision
+	Discount := ROUND(COALESCE(Discount,0), v_Precision);
+	
+	RETURN	Discount;
 END paymentTermDiscount;
 /

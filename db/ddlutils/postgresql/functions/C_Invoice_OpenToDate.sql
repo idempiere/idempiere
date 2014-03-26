@@ -44,6 +44,8 @@ AS
 $BODY$
 DECLARE
 	v_Currency_ID  numeric(10);
+	v_Precision         NUMERIC := 0;
+    v_Min            	NUMERIC := 0;
 	v_TotalOpenAmt   numeric := 0;
 	v_PaidAmt           numeric := 0;
 	v_Remaining         numeric := 0;
@@ -66,6 +68,13 @@ BEGIN
    RETURN NULL;
  END;
 --  DBMS_OUTPUT.PUT_LINE('== C_Invoice_ID=' || p_C_Invoice_ID || ', Total=' || v_TotalOpenAmt || ', AP=' || v_MultiplierAP || ', CM=' || v_MultiplierCM);
+
+	SELECT StdPrecision
+	    INTO v_Precision
+	    FROM C_Currency
+	    WHERE C_Currency_ID = v_Currency_ID;
+
+	SELECT 1/10^v_Precision INTO v_Min;
 
  -- Calculate Allocated Amount
  FOR allocationline IN  
@@ -112,14 +121,15 @@ BEGIN
     END IF;
 --  DBMS_OUTPUT.PUT_LINE('== Total=' || v_TotalOpenAmt);
 
- -- Ignore Rounding
- IF (v_TotalOpenAmt BETWEEN -0.00999 AND 0.00999) THEN
-  v_TotalOpenAmt := 0;
- END IF;
+	--	Ignore Rounding
+	IF (v_TotalOpenAmt > -v_Min AND v_TotalOpenAmt < v_Min) THEN
+		v_TotalOpenAmt := 0;
+	END IF;
 
- -- Round to penny
- v_TotalOpenAmt := ROUND(COALESCE(v_TotalOpenAmt,0), 2);
- RETURN v_TotalOpenAmt;
+	--	Round to currency precision
+	v_TotalOpenAmt := ROUND(COALESCE(v_TotalOpenAmt,0), v_Precision);
+	
+	RETURN v_TotalOpenAmt;
 END;
 $BODY$
   LANGUAGE 'plpgsql' ;

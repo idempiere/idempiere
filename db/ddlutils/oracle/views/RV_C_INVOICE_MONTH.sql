@@ -3,21 +3,22 @@ CREATE OR REPLACE VIEW RV_C_INVOICE_MONTH
  LINELISTAMT, LINELIMITAMT, LINEDISCOUNTAMT, LINEDISCOUNT, LINEOVERLIMITAMT, 
  LINEOVERLIMIT, ISSOTRX)
 AS 
-SELECT AD_Client_ID, AD_Org_ID, SalesRep_ID,
-	firstOf(DateInvoiced, 'MM') AS DateInvoiced,	--	DD Day, DY Week, MM Month
+SELECT il.AD_Client_ID, il.AD_Org_ID, il.SalesRep_ID,
+	firstOf(il.DateInvoiced, 'MM') AS DateInvoiced,	--	DD Day, DY Week, MM Month
 	SUM(LineNetAmt) AS LineNetAmt,
 	SUM(LineListAmt) AS LineListAmt,
 	SUM(LineLimitAmt) AS LineLimitAmt,
 	SUM(LineDiscountAmt) AS LineDiscountAmt,
 	CASE WHEN SUM(LineListAmt)=0 THEN 0 ELSE
-	  ROUND((SUM(LineListAmt)-SUM(LineNetAmt))/SUM(LineListAmt)*100,2) END AS LineDiscount,
+	  currencyRound((SUM(LineListAmt)-SUM(LineNetAmt))/SUM(LineListAmt)*100,i.C_Currency_ID,'N') END AS LineDiscount,
 	SUM(LineOverLimitAmt) AS LineOverLimitAmt,
 	CASE WHEN SUM(LineNetAmt)=0 THEN 0 ELSE
-	  100-ROUND((SUM(LineNetAmt)-SUM(LineOverLimitAmt))/SUM(LineNetAmt)*100,2) END AS LineOverLimit,
-    IsSOTrx
-FROM RV_C_InvoiceLine
-GROUP BY AD_Client_ID, AD_Org_ID, SalesRep_ID,
-	firstOf(DateInvoiced, 'MM'), IsSOTrx;
+	  100-currencyRound((SUM(LineNetAmt)-SUM(LineOverLimitAmt))/SUM(LineNetAmt)*100,i.C_Currency_ID,'N') END AS LineOverLimit,
+    il.IsSOTrx
+FROM RV_C_InvoiceLine il 
+	INNER JOIN C_Invoice i ON (i.C_Invoice_ID=il.C_Invoice_ID)
+GROUP BY il.AD_Client_ID, il.AD_Org_ID, il.SalesRep_ID,
+	firstOf(il.DateInvoiced, 'MM'), il.IsSOTrx, i.C_Currency_ID;
 
 
 

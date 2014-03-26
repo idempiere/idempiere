@@ -10,14 +10,15 @@ SELECT il.AD_Client_ID, il.AD_Org_ID, il.M_Product_ID,
 	SUM(il.LineLimitAmt) AS LineLimitAmt,
 	SUM(il.LineDiscountAmt) AS LineDiscountAmt,
 	CASE WHEN SUM(LineListAmt)=0 THEN 0 ELSE
-	  ROUND((SUM(LineListAmt)-SUM(LineNetAmt))/SUM(LineListAmt)*100,2) END AS LineDiscount,
+	  currencyRound((SUM(LineListAmt)-SUM(LineNetAmt))/SUM(LineListAmt)*100,i.C_Currency_ID,'N') END AS LineDiscount,
 	SUM(LineOverLimitAmt) AS LineOverLimitAmt,
 	CASE WHEN SUM(LineNetAmt)=0 THEN 0 ELSE
-	  100-ROUND((SUM(LineNetAmt)-SUM(LineOverLimitAmt))/SUM(LineNetAmt)*100,2) END AS LineOverLimit,
-	SUM(QtyInvoiced) AS QtyInvoiced, IsSOTrx
+	  100-currencyRound((SUM(LineNetAmt)-SUM(LineOverLimitAmt))/SUM(LineNetAmt)*100,i.C_Currency_ID,'N') END AS LineOverLimit,
+	SUM(QtyInvoiced) AS QtyInvoiced, il.IsSOTrx
 FROM RV_C_InvoiceLine il
+	INNER JOIN C_Invoice i ON (i.C_Invoice_ID=il.C_Invoice_ID)
 GROUP BY il.AD_Client_ID, il.AD_Org_ID, il.M_Product_ID,
-	firstOf(il.DateInvoiced, 'MM'), IsSOTrx;
+	firstOf(il.DateInvoiced, 'MM'), il.IsSOTrx, i.C_Currency_ID;
 
 
 
