@@ -437,6 +437,20 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 				m_processMsg = "No Business Partner";
 				return DocAction.STATUS_Invalid;
 			}
+
+			// IDEMPIERE-1850 - validate date against related docs
+			if (line.getC_Invoice_ID() > 0) {
+				if (line.getC_Invoice().getDateAcct().after(getDateAcct())) {
+					m_processMsg = "Wrong allocation date";
+					return DocAction.STATUS_Invalid;
+				}
+			}
+			if (line.getC_Payment_ID() > 0) {
+				if (line.getC_Payment().getDateAcct().after(getDateAcct())) {
+					m_processMsg = "Wrong allocation date";
+					return DocAction.STATUS_Invalid;
+				}
+			}
 		}
 		setApprovalAmt(approval);
 		//
