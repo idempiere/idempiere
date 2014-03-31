@@ -8,4 +8,5 @@ Require-Bundle: org.adempiere.base;bundle-version="2.0.0"
 Eclipse-RegisterBuddy: org.adempiere.base
 Service-Component: OSGI-INF/costadjustmentcalloutfactory.xml
 Bundle-ActivationPolicy: lazy
+Export-Package: org.compiere.model
 
