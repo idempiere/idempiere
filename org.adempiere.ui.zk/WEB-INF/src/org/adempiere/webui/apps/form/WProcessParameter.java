@@ -73,21 +73,21 @@ public class WProcessParameter implements IFormController {
 						if (DisplayType.isNumeric(processPara.getAD_Reference_ID())) {
 							if (para.getP_Number() != null)
 								schedulerPara.setParameterDefault(para.getP_Number().toString());
-							if (para.getP_Number_To() != null) 
+							if (processPara.isRange() && para.getP_Number_To() != null) 
 								schedulerPara.setParameterToDefault(para.getP_Number_To().toString());
 						} else if (DisplayType.isID(processPara.getAD_Reference_ID())) {
 							if (para.getP_Number() != null)
 								schedulerPara.setParameterDefault(Integer.toString(para.getP_Number().intValue()));
-							if (para.getP_Number_To() != null)
+							if (processPara.isRange() && para.getP_Number_To() != null)
 								schedulerPara.setParameterToDefault(Integer.toString(para.getP_Number_To().intValue()));
 						} else if (DisplayType.isDate(processPara.getAD_Reference_ID())) {
 							if (para.getP_Date() != null)
 								schedulerPara.setParameterDefault(para.getP_Date().toString());
-							if (para.getP_Date_To() != null)
+							if (processPara.isRange() && para.getP_Date_To() != null)
 								schedulerPara.setParameterToDefault(para.getP_Date_To().toString());
 						} else {
 							schedulerPara.setParameterDefault(para.getP_String());
-							if (para.getP_String_To() != null)
+							if (processPara.isRange() && para.getP_String_To() != null)
 								schedulerPara.setParameterToDefault(para.getP_String_To());
 						}
 						if (!Util.isEmpty(para.getInfo())) {
