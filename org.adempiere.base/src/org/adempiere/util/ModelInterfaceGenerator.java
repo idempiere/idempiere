@@ -823,7 +823,11 @@ public class ModelInterfaceGenerator
 			.append("WHERE (TableName IN ('RV_WarehousePrice','RV_BPartner')")	//	special views
 			.append(" OR IsView='N')")
 			.append(" AND IsActive = 'Y' AND TableName NOT LIKE '%_Trl' ");
-		sql.append(" AND TableName LIKE ").append(tableLike);
+		// Autodetect if we need to use IN or LIKE clause - teo_sarca [ 3020640 ]
+		if (tableLike.indexOf(",") == -1)
+			sql.append(" AND TableName LIKE ").append(tableLike);
+		else
+			sql.append(" AND TableName IN (").append(tableLike).append(")"); // only specific tables
 		sql.append(" AND ").append(entityTypeFilter.toString());
 		sql.append(" ORDER BY TableName");
 
