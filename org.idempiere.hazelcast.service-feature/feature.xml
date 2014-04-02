@@ -24,14 +24,14 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.slf4j.api"
+         id="org.slf4j.api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.slf4j.jcl"
+         id="org.slf4j.jcl"
          download-size="0"
          install-size="0"
          version="0.0.0"

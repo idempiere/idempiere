@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rm:rmap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:maven="http://www.eclipse.org/buckminster/MavenProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
-  <rm:locator pattern="^org\.apache\.poi$" searchPathRef="workspace.bundle.jar"/>
-  <rm:locator pattern="^com\.springsource\.javax\.mail$" searchPathRef="workspace.bundle.jar"/>
-  <rm:locator pattern="^com\.springsource\.javax\.activation$" searchPathRef="workspace.bundle.jar"/>
+  <rm:locator pattern="^org\.apache\.poi$" searchPathRef="orbit"/>
   <rm:locator searchPathRef="workspace.bundle.jar" failOnError="false"/>
+  <rm:locator pattern="^org\.eclipse\.jdt\.core\.compiler\.batch$" searchPathRef="gemini" failOnError="false"/>
   <rm:locator pattern="^org\.eclipse(\..+)?" searchPathRef="equinox" failOnError="false"/>
   <rm:locator pattern="^org\.sat4j(\..+)?" searchPathRef="equinox"/>
   <rm:locator pattern="^org\.slf4j(\..+)?" searchPathRef="orbit"/>
@@ -12,7 +11,6 @@
   <rm:locator pattern="^org\.eclipse\.gemini(\..+)?" searchPathRef="gemini" failOnError="false"/>
   <rm:locator pattern="^org\.eclipse\.virgo(\..+)?" searchPathRef="gemini" failOnError="false"/>
   <rm:locator pattern="^com\.springsource(\..+)?" searchPathRef="gemini" failOnError="false"/>
-  <rm:locator pattern="^org\.springframework(\..+)?" searchPathRef="gemini" failOnError="false"/>
   <rm:locator pattern="^javax(\..+)?" searchPathRef="gemini" failOnError="false"/>
   <rm:locator pattern="^org\.restlet(\..+)?" searchPathRef="restlet.maven" failOnError="false"/>
   <rm:locator pattern="^com\.springsource(\..+)?" searchPathRef="spring.external.maven" failOnError="false"/>
@@ -23,7 +21,7 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://download.eclipse.org/releases/indigo"/>
+      <rm:uri format="http://download.eclipse.org/releases/kepler"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="workspace.bundle.project">
@@ -58,12 +56,12 @@
     <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/"/>
+      <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository/"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="gemini">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2">
-      <rm:uri format="http://download.eclipse.org/gemini/updates/web/2.0.1/"/>
+      <rm:uri format="http://download.eclipse.org/gemini/updates/web/2.2.2/"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="restlet.maven">
@@ -91,7 +89,6 @@
         <maven:entry artifactId="com.springsource.org.apache.activemq" groupId="org.apache.activemq" name="com.springsource.org.apache.activemq"/>
         <maven:entry artifactId="com.springsource.org.apache.kahadb" groupId="org.apache.activemq" name="com.springsource.org.apache.kahadb"/>
         <maven:entry artifactId="com.springsource.javax.management.j2ee" groupId="org.apache.geronimo.specs" name="com.springsource.javax.management.j2ee"/>
-        <maven:entry artifactId="com.springsource.slf4j.jcl" groupId="org.slf4j" name="com.springsource.slf4j.jcl"/>
       </maven:mappings>
     </rm:provider>
   </rm:searchPath>

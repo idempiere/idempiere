@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <?artifactRepository version='1.1.0'?>
-<repository name='file:/home/hengsin/workspace/idempiere-trekglobal/lib/ - artifacts' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1'>
+<repository name='file:/home/hengsin/workspace/idempiere-zk7-test/lib/ - artifacts' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1'>
   <properties size='2'>
-    <property name='p2.timestamp' value='1357720877759'/>
+    <property name='p2.timestamp' value='1396453941058'/>
     <property name='p2.compressed' value='false'/>
   </properties>
   <mappings size='3'>
@@ -10,7 +10,7 @@
     <rule filter='(&amp; (classifier=binary))' output='${repoUrl}/binary/${id}_${version}'/>
     <rule filter='(&amp; (classifier=org.eclipse.update.feature))' output='${repoUrl}/features/${id}_${version}.jar'/>
   </mappings>
-  <artifacts size='6'>
+  <artifacts size='4'>
     <artifact classifier='osgi.bundle' id='org.apache.felix.webconsole.plugins.packageadmin' version='1.0.0'>
       <properties size='3'>
         <property name='artifact.size' value='26195'/>
@@ -18,11 +18,11 @@
         <property name='download.md5' value='0d0b1172a4bb948dc62b8fca8310c179'/>
       </properties>
     </artifact>
-    <artifact classifier='osgi.bundle' id='org.apache.poi' version='3.7.0'>
+    <artifact classifier='osgi.bundle' id='com.sun.mail.javax.mail' version='1.5.1'>
       <properties size='3'>
-        <property name='artifact.size' value='1651480'/>
-        <property name='download.size' value='1651480'/>
-        <property name='download.md5' value='982062b95e5299e63d25de5144f5b136'/>
+        <property name='artifact.size' value='545362'/>
+        <property name='download.size' value='545362'/>
+        <property name='download.md5' value='7568b973bb2e3cc6f150ad908ddf349f'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='org.apache.felix.webconsole.plugins.memoryusage' version='1.0.4'>
@@ -37,20 +37,6 @@
         <property name='artifact.size' value='591992'/>
         <property name='download.size' value='591992'/>
         <property name='download.md5' value='8f1ea912ae02473b9fd84389ec6f647f'/>
-      </properties>
-    </artifact>
-    <artifact classifier='osgi.bundle' id='com.springsource.javax.mail' version='1.4.5'>
-      <properties size='3'>
-        <property name='artifact.size' value='570498'/>
-        <property name='download.size' value='570498'/>
-        <property name='download.md5' value='a867863806ddab9b8cecd115fe56159c'/>
-      </properties>
-    </artifact>
-    <artifact classifier='osgi.bundle' id='com.springsource.javax.activation' version='1.1.1'>
-      <properties size='3'>
-        <property name='artifact.size' value='12359'/>
-        <property name='download.size' value='12359'/>
-        <property name='download.md5' value='4ffafe635551f1f1096dffc01a7e0c50'/>
       </properties>
     </artifact>
   </artifacts>

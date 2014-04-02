@@ -27,22 +27,19 @@
          id="org.adempiere.webstore"
          download-size="0"
          install-size="0"
-         version="2.0.0.qualifier"
-         unpack="false"/>
+         version="2.0.0.qualifier"/>
 
    <plugin
          id="org.adempiere.webstore.resource"
          download-size="0"
          install-size="0"
          version="2.0.0.qualifier"
-         fragment="true"
-         unpack="false"/>
+         fragment="true"/>
 
    <plugin
          id="org.adempiere.webstore.servlet"
          download-size="0"
          install-size="0"
-         version="2.0.0.qualifier"
-         unpack="false"/>
+         version="2.0.0.qualifier"/>
 
 </feature>

@@ -8,8 +8,8 @@ Require-Bundle: org.adempiere.base;bundle-version="2.0.0"
 Export-Package: org.adempiere.process,
  org.compiere.process,
  org.idempiere.process
-Import-Package: javax.mail;version="1.4.5",
- javax.mail.internet;version="1.4.5",
+Import-Package: javax.mail;version="1.5",
+ javax.mail.internet;version="1.5",
  javax.servlet;version="2.5.0",
  javax.servlet.http;version="2.5.0",
  org.apache.commons.collections.keyvalue;version="3.2.0"
