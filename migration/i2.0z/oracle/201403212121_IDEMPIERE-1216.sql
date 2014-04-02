@@ -94,7 +94,7 @@ UPDATE AD_Column SET FKConstraintName='UpdatedBy_GLCategoryTrl', FKConstraintTyp
 ;
 
 -- Mar 21, 2014 8:24:10 PM CET
-CREATE TABLE GL_Category_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, GL_Category_ID NUMBER(10) NOT NULL, GL_Category_Trl_UU VARCHAR2(36) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR2(60) DEFAULT NULL , Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT GL_Category_Trl_Key PRIMARY KEY (AD_Language, GL_Category_ID), CONSTRAINT GL_Category_Trl_UU_idx UNIQUE (GL_Category_Trl_UU))
+CREATE TABLE GL_Category_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, GL_Category_ID NUMBER(10) NOT NULL, GL_Category_Trl_UU VARCHAR2(36) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name NVARCHAR2(60) DEFAULT NULL , Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT GL_Category_Trl_Key PRIMARY KEY (AD_Language, GL_Category_ID), CONSTRAINT GL_Category_Trl_UU_idx UNIQUE (GL_Category_Trl_UU))
 ;
 
 -- Mar 21, 2014 8:24:10 PM CET
@@ -1997,7 +1997,7 @@ UPDATE AD_Column SET FKConstraintName='UpdatedBy_AAssetGroupTrl', FKConstraintTy
 ;
 
 -- Mar 21, 2014 9:10:12 PM CET
-CREATE TABLE A_Asset_Group_Trl (A_Asset_Group_ID NUMBER(10) NOT NULL, A_Asset_Group_Trl_UU VARCHAR2(36) DEFAULT NULL , AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description VARCHAR2(255) DEFAULT NULL , Help VARCHAR2(2000) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT A_Asset_Group_Trl_Key PRIMARY KEY (A_Asset_Group_ID, AD_Language), CONSTRAINT A_Asset_Group_Trl_UU_idx UNIQUE (A_Asset_Group_Trl_UU))
+CREATE TABLE A_Asset_Group_Trl (A_Asset_Group_ID NUMBER(10) NOT NULL, A_Asset_Group_Trl_UU VARCHAR2(36) DEFAULT NULL , AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description NVARCHAR2(255) DEFAULT NULL , Help NVARCHAR2(2000) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name NVARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT A_Asset_Group_Trl_Key PRIMARY KEY (A_Asset_Group_ID, AD_Language), CONSTRAINT A_Asset_Group_Trl_UU_idx UNIQUE (A_Asset_Group_Trl_UU))
 ;
 
 -- Mar 21, 2014 9:10:13 PM CET
@@ -2049,7 +2049,7 @@ UPDATE AD_Column SET FKConstraintName='UpdatedBy_ADBroadcastMessageTr', FKConstr
 ;
 
 -- Mar 21, 2014 9:10:40 PM CET
-CREATE TABLE AD_BroadcastMessage_Trl (AD_BroadcastMessage_ID NUMBER(10) NOT NULL, AD_BroadcastMessage_Trl_UU VARCHAR2(36) DEFAULT NULL , AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, BroadcastMessage VARCHAR2(2000) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT AD_BroadcastMessage_Trl_Key PRIMARY KEY (AD_BroadcastMessage_ID, AD_Language), CONSTRAINT AD_BroadcastMessage_Trl_UU_idx UNIQUE (AD_BroadcastMessage_Trl_UU))
+CREATE TABLE AD_BroadcastMessage_Trl (AD_BroadcastMessage_ID NUMBER(10) NOT NULL, AD_BroadcastMessage_Trl_UU VARCHAR2(36) DEFAULT NULL , AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, BroadcastMessage NVARCHAR2(2000) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT AD_BroadcastMessage_Trl_Key PRIMARY KEY (AD_BroadcastMessage_ID, AD_Language), CONSTRAINT AD_BroadcastMessage_Trl_UU_idx UNIQUE (AD_BroadcastMessage_Trl_UU))
 ;
 
 -- Mar 21, 2014 9:10:40 PM CET
@@ -2101,7 +2101,7 @@ UPDATE AD_Column SET FKConstraintName='UpdatedBy_ADChartTrl', FKConstraintType='
 ;
 
 -- Mar 21, 2014 9:10:54 PM CET
-CREATE TABLE AD_Chart_Trl (AD_Chart_ID NUMBER(10) NOT NULL, AD_Chart_Trl_UU VARCHAR2(36) DEFAULT NULL , AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description VARCHAR2(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT AD_Chart_Trl_Key PRIMARY KEY (AD_Chart_ID, AD_Language), CONSTRAINT AD_Chart_Trl_UU_idx UNIQUE (AD_Chart_Trl_UU))
+CREATE TABLE AD_Chart_Trl (AD_Chart_ID NUMBER(10) NOT NULL, AD_Chart_Trl_UU VARCHAR2(36) DEFAULT NULL , AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description NVARCHAR2(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name NVARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT AD_Chart_Trl_Key PRIMARY KEY (AD_Chart_ID, AD_Language), CONSTRAINT AD_Chart_Trl_UU_idx UNIQUE (AD_Chart_Trl_UU))
 ;
 
 -- Mar 21, 2014 9:10:55 PM CET
@@ -2153,7 +2153,7 @@ UPDATE AD_Column SET FKConstraintName='UpdatedBy_ADColorTrl', FKConstraintType='
 ;
 
 -- Mar 21, 2014 9:11:15 PM CET
-CREATE TABLE AD_Color_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Color_ID NUMBER(10) NOT NULL, AD_Color_Trl_UU VARCHAR2(36) DEFAULT NULL , AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT AD_Color_Trl_Key PRIMARY KEY (AD_Color_ID, AD_Language), CONSTRAINT AD_Color_Trl_UU_idx UNIQUE (AD_Color_Trl_UU))
+CREATE TABLE AD_Color_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Color_ID NUMBER(10) NOT NULL, AD_Color_Trl_UU VARCHAR2(36) DEFAULT NULL , AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name NVARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT AD_Color_Trl_Key PRIMARY KEY (AD_Color_ID, AD_Language), CONSTRAINT AD_Color_Trl_UU_idx UNIQUE (AD_Color_Trl_UU))
 ;
 
 -- Mar 21, 2014 9:11:15 PM CET
@@ -2205,7 +2205,7 @@ UPDATE AD_Column SET FKConstraintName='UpdatedBy_ADPrintColorTrl', FKConstraintT
 ;
 
 -- Mar 21, 2014 9:11:30 PM CET
-CREATE TABLE AD_PrintColor_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, AD_PrintColor_ID NUMBER(10) NOT NULL, AD_PrintColor_Trl_UU VARCHAR2(36) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT AD_PrintColor_Trl_Key PRIMARY KEY (AD_Language, AD_PrintColor_ID), CONSTRAINT AD_PrintColor_Trl_UU_idx UNIQUE (AD_PrintColor_Trl_UU))
+CREATE TABLE AD_PrintColor_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, AD_PrintColor_ID NUMBER(10) NOT NULL, AD_PrintColor_Trl_UU VARCHAR2(36) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name NVARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT AD_PrintColor_Trl_Key PRIMARY KEY (AD_Language, AD_PrintColor_ID), CONSTRAINT AD_PrintColor_Trl_UU_idx UNIQUE (AD_PrintColor_Trl_UU))
 ;
 
 -- Mar 21, 2014 9:11:30 PM CET
@@ -2257,7 +2257,7 @@ UPDATE AD_Column SET FKConstraintName='UpdatedBy_CActivityTrl', FKConstraintType
 ;
 
 -- Mar 21, 2014 9:11:44 PM CET
-CREATE TABLE C_Activity_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, C_Activity_ID NUMBER(10) NOT NULL, C_Activity_Trl_UU VARCHAR2(36) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description VARCHAR2(255) DEFAULT NULL , Help VARCHAR2(2000) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT C_Activity_Trl_Key PRIMARY KEY (AD_Language, C_Activity_ID), CONSTRAINT C_Activity_Trl_UU_idx UNIQUE (C_Activity_Trl_UU))
+CREATE TABLE C_Activity_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, C_Activity_ID NUMBER(10) NOT NULL, C_Activity_Trl_UU VARCHAR2(36) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description NVARCHAR2(255) DEFAULT NULL , Help NVARCHAR2(2000) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name NVARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT C_Activity_Trl_Key PRIMARY KEY (AD_Language, C_Activity_ID), CONSTRAINT C_Activity_Trl_UU_idx UNIQUE (C_Activity_Trl_UU))
 ;
 
 -- Mar 21, 2014 9:11:44 PM CET
@@ -2309,7 +2309,7 @@ UPDATE AD_Column SET FKConstraintName='UpdatedBy_CCampaignTrl', FKConstraintType
 ;
 
 -- Mar 21, 2014 9:11:57 PM CET
-CREATE TABLE C_Campaign_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, C_Campaign_ID NUMBER(10) NOT NULL, C_Campaign_Trl_UU VARCHAR2(36) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description VARCHAR2(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT C_Campaign_Trl_Key PRIMARY KEY (AD_Language, C_Campaign_ID), CONSTRAINT C_Campaign_Trl_UU_idx UNIQUE (C_Campaign_Trl_UU))
+CREATE TABLE C_Campaign_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, C_Campaign_ID NUMBER(10) NOT NULL, C_Campaign_Trl_UU VARCHAR2(36) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description NVARCHAR2(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name NVARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT C_Campaign_Trl_Key PRIMARY KEY (AD_Language, C_Campaign_ID), CONSTRAINT C_Campaign_Trl_UU_idx UNIQUE (C_Campaign_Trl_UU))
 ;
 
 -- Mar 21, 2014 9:11:57 PM CET
@@ -2361,7 +2361,7 @@ UPDATE AD_Column SET FKConstraintName='UpdatedBy_CRegionTrl', FKConstraintType='
 ;
 
 -- Mar 21, 2014 9:12:08 PM CET
-CREATE TABLE C_Region_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, C_Region_ID NUMBER(10) NOT NULL, C_Region_Trl_UU VARCHAR2(36) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT C_Region_Trl_Key PRIMARY KEY (AD_Language, C_Region_ID), CONSTRAINT C_Region_Trl_UU_idx UNIQUE (C_Region_Trl_UU))
+CREATE TABLE C_Region_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, C_Region_ID NUMBER(10) NOT NULL, C_Region_Trl_UU VARCHAR2(36) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name NVARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT C_Region_Trl_Key PRIMARY KEY (AD_Language, C_Region_ID), CONSTRAINT C_Region_Trl_UU_idx UNIQUE (C_Region_Trl_UU))
 ;
 
 -- Mar 21, 2014 9:12:08 PM CET
@@ -2413,7 +2413,7 @@ UPDATE AD_Column SET FKConstraintName='UpdatedBy_CSalesRegionTrl', FKConstraintT
 ;
 
 -- Mar 21, 2014 9:12:18 PM CET
-CREATE TABLE C_SalesRegion_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, C_SalesRegion_ID NUMBER(10) NOT NULL, C_SalesRegion_Trl_UU VARCHAR2(36) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description VARCHAR2(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT C_SalesRegion_Trl_Key PRIMARY KEY (AD_Language, C_SalesRegion_ID), CONSTRAINT C_SalesRegion_Trl_UU_idx UNIQUE (C_SalesRegion_Trl_UU))
+CREATE TABLE C_SalesRegion_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, C_SalesRegion_ID NUMBER(10) NOT NULL, C_SalesRegion_Trl_UU VARCHAR2(36) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description NVARCHAR2(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name NVARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT C_SalesRegion_Trl_Key PRIMARY KEY (AD_Language, C_SalesRegion_ID), CONSTRAINT C_SalesRegion_Trl_UU_idx UNIQUE (C_SalesRegion_Trl_UU))
 ;
 
 -- Mar 21, 2014 9:12:18 PM CET
@@ -2465,7 +2465,7 @@ UPDATE AD_Column SET FKConstraintName='UpdatedBy_MPriceListTrl', FKConstraintTyp
 ;
 
 -- Mar 21, 2014 9:12:35 PM CET
-CREATE TABLE M_PriceList_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description VARCHAR2(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, M_PriceList_ID NUMBER(10) NOT NULL, M_PriceList_Trl_UU VARCHAR2(36) DEFAULT NULL , Name VARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT M_PriceList_Trl_Key PRIMARY KEY (AD_Language, M_PriceList_ID), CONSTRAINT M_PriceList_Trl_UU_idx UNIQUE (M_PriceList_Trl_UU))
+CREATE TABLE M_PriceList_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description NVARCHAR2(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, M_PriceList_ID NUMBER(10) NOT NULL, M_PriceList_Trl_UU VARCHAR2(36) DEFAULT NULL , Name NVARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT M_PriceList_Trl_Key PRIMARY KEY (AD_Language, M_PriceList_ID), CONSTRAINT M_PriceList_Trl_UU_idx UNIQUE (M_PriceList_Trl_UU))
 ;
 
 -- Mar 21, 2014 9:12:35 PM CET
@@ -2517,7 +2517,7 @@ UPDATE AD_Column SET FKConstraintName='UpdatedBy_MProductCategoryTrl', FKConstra
 ;
 
 -- Mar 21, 2014 9:12:48 PM CET
-CREATE TABLE M_Product_Category_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description VARCHAR2(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, M_Product_Category_ID NUMBER(10) NOT NULL, M_Product_Category_Trl_UU VARCHAR2(36) DEFAULT NULL , Name VARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT M_Product_Category_Trl_Key PRIMARY KEY (AD_Language, M_Product_Category_ID), CONSTRAINT M_Product_Category_Trl_UU_idx UNIQUE (M_Product_Category_Trl_UU))
+CREATE TABLE M_Product_Category_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description NVARCHAR2(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, M_Product_Category_ID NUMBER(10) NOT NULL, M_Product_Category_Trl_UU VARCHAR2(36) DEFAULT NULL , Name NVARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT M_Product_Category_Trl_Key PRIMARY KEY (AD_Language, M_Product_Category_ID), CONSTRAINT M_Product_Category_Trl_UU_idx UNIQUE (M_Product_Category_Trl_UU))
 ;
 
 -- Mar 21, 2014 9:12:48 PM CET
@@ -2569,7 +2569,7 @@ UPDATE AD_Column SET FKConstraintName='UpdatedBy_MPriceListVersionTrl', FKConstr
 ;
 
 -- Mar 21, 2014 9:12:58 PM CET
-CREATE TABLE M_PriceList_Version_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, M_PriceList_Version_ID NUMBER(10) NOT NULL, M_PriceList_Version_Trl_UU VARCHAR2(36) DEFAULT NULL , Name VARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT M_PriceList_Version_Trl_Key PRIMARY KEY (AD_Language, M_PriceList_Version_ID), CONSTRAINT M_PriceList_Version_Trl_UU_idx UNIQUE (M_PriceList_Version_Trl_UU))
+CREATE TABLE M_PriceList_Version_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, M_PriceList_Version_ID NUMBER(10) NOT NULL, M_PriceList_Version_Trl_UU VARCHAR2(36) DEFAULT NULL , Name NVARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT M_PriceList_Version_Trl_Key PRIMARY KEY (AD_Language, M_PriceList_Version_ID), CONSTRAINT M_PriceList_Version_Trl_UU_idx UNIQUE (M_PriceList_Version_Trl_UU))
 ;
 
 -- Mar 21, 2014 9:12:58 PM CET
@@ -2610,7 +2610,7 @@ INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Column_UU,AD_Element_ID,AD_O
 ;
 
 -- Mar 22, 2014 1:29:23 PM CET
-ALTER TABLE AD_Chart_Trl ADD DomainLabel VARCHAR2(60) DEFAULT NULL 
+ALTER TABLE AD_Chart_Trl ADD DomainLabel NVARCHAR2(60) DEFAULT NULL 
 ;
 
 -- Mar 22, 2014 1:29:37 PM CET
@@ -2618,7 +2618,7 @@ INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Column_UU,AD_Element_ID,AD_O
 ;
 
 -- Mar 22, 2014 1:29:39 PM CET
-ALTER TABLE AD_Chart_Trl ADD RangeLabel VARCHAR2(60) DEFAULT NULL 
+ALTER TABLE AD_Chart_Trl ADD RangeLabel NVARCHAR2(60) DEFAULT NULL 
 ;
 
 -- Mar 22, 2014 1:30:05 PM CET
@@ -2773,7 +2773,7 @@ UPDATE AD_Column SET FKConstraintName='UpdatedBy_CSalesStageTrl', FKConstraintTy
 ;
 
 -- Mar 24, 2014 9:03:40 AM CET
-CREATE TABLE C_SalesStage_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, C_SalesStage_ID NUMBER(10) NOT NULL, C_SalesStage_Trl_UU VARCHAR2(36) DEFAULT NULL , Description VARCHAR2(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT C_SalesStage_Trl_Key PRIMARY KEY (AD_Language, C_SalesStage_ID), CONSTRAINT C_SalesStage_Trl_UU_idx UNIQUE (C_SalesStage_Trl_UU))
+CREATE TABLE C_SalesStage_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, C_SalesStage_ID NUMBER(10) NOT NULL, C_SalesStage_Trl_UU VARCHAR2(36) DEFAULT NULL , Description NVARCHAR2(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name NVARCHAR2(60) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT C_SalesStage_Trl_Key PRIMARY KEY (AD_Language, C_SalesStage_ID), CONSTRAINT C_SalesStage_Trl_UU_idx UNIQUE (C_SalesStage_Trl_UU))
 ;
 
 -- Mar 24, 2014 9:03:41 AM CET

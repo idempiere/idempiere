@@ -397,10 +397,10 @@ public class ChartBuilder {
 
 	private JFreeChart createXYBarChart() {
 		JFreeChart chart = ChartFactory.createXYBarChart(
-				chartModel.getName(),         // chart title
-				chartModel.getDomainLabel(),               // domain axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_Name),         // chart title
+				chartModel.get_Translation(MChart.COLUMNNAME_DomainLabel),               // domain axis label
 				true,
-				chartModel.getRangeLabel(),                  // range axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_RangeLabel),                  // range axis label
 				getXYDataset(),                  // data
 				X_AD_Chart.CHARTORIENTATION_Horizontal.equals(chartModel.getChartOrientation()) 
 				? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL, // orientation
@@ -415,9 +415,9 @@ public class ChartBuilder {
 	
 	private JFreeChart createTimeSeriesChart() {
 		JFreeChart chart = ChartFactory.createTimeSeriesChart(
-				chartModel.getName(),         // chart title
-				chartModel.getDomainLabel(),               // domain axis label
-				chartModel.getRangeLabel(),                  // range axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_Name),         // chart title
+				chartModel.get_Translation(MChart.COLUMNNAME_DomainLabel),               // domain axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_RangeLabel),                  // range axis label
 				getXYDataset(),                  // data
 				chartModel.isDisplayLegend(),                     // include legend
 				true,                     // tooltips?
@@ -430,9 +430,9 @@ public class ChartBuilder {
 	
 	private JFreeChart createWaterfallChart() {
 		JFreeChart chart = ChartFactory.createWaterfallChart(
-				chartModel.getName(),         // chart title
-				chartModel.getDomainLabel(),               // domain axis label
-				chartModel.getRangeLabel(),                  // range axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_Name),         // chart title
+				chartModel.get_Translation(MChart.COLUMNNAME_DomainLabel),               // domain axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_RangeLabel),                  // range axis label
 				getCategoryDataset(),                  // data
 				X_AD_Chart.CHARTORIENTATION_Horizontal.equals(chartModel.getChartOrientation()) 
 					? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL, // orientation
@@ -446,21 +446,21 @@ public class ChartBuilder {
 	}
 
 	private JFreeChart createRingChart() {
-		final JFreeChart chart = ChartFactory.createRingChart(chartModel.getName(),
+		final JFreeChart chart = ChartFactory.createRingChart(chartModel.get_Translation(MChart.COLUMNNAME_Name),
 				getPieDataset(), chartModel.isDisplayLegend(), true, true);
 	
 		return chart;
 	}
 
 	private JFreeChart createPieChart() {
-		final JFreeChart chart = ChartFactory.createPieChart(chartModel.getName(),
+		final JFreeChart chart = ChartFactory.createPieChart(chartModel.get_Translation(MChart.COLUMNNAME_Name),
 				getPieDataset(), false, true, true);
 	
 		return chart;
 	}
 
 	private JFreeChart create3DPieChart() {
-		final JFreeChart chart = ChartFactory.createPieChart3D(chartModel.getName(),
+		final JFreeChart chart = ChartFactory.createPieChart3D(chartModel.get_Translation(MChart.COLUMNNAME_Name),
 				getPieDataset(), false, true, true);
 	
 		return chart;
@@ -468,9 +468,9 @@ public class ChartBuilder {
 
 	private JFreeChart createBarChart() {
 		JFreeChart chart = ChartFactory.createBarChart(
-				chartModel.getName(),         // chart title
-				chartModel.getDomainLabel(),               // domain axis label
-				chartModel.getRangeLabel(),                  // range axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_Name),         // chart title
+				chartModel.get_Translation(MChart.COLUMNNAME_DomainLabel),               // domain axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_RangeLabel),                  // range axis label
 				getCategoryDataset(),                  // data
 				X_AD_Chart.CHARTORIENTATION_Horizontal.equals(chartModel.getChartOrientation()) 
 				? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL, // orientation
@@ -491,9 +491,9 @@ public class ChartBuilder {
 
 	private JFreeChart create3DBarChart() {
 		JFreeChart chart = ChartFactory.createBarChart3D(
-				chartModel.getName(),         // chart title
-				chartModel.getDomainLabel(),               // domain axis label
-				chartModel.getRangeLabel(),                  // range axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_Name),         // chart title
+				chartModel.get_Translation(MChart.COLUMNNAME_DomainLabel),               // domain axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_RangeLabel),                  // range axis label
 				getCategoryDataset(),                  // data
 				X_AD_Chart.CHARTORIENTATION_Horizontal.equals(chartModel.getChartOrientation()) 
 				? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL, // orientation
@@ -508,9 +508,9 @@ public class ChartBuilder {
 
 	private JFreeChart createStackedBarChart() {
 		JFreeChart chart = ChartFactory.createStackedBarChart(
-				chartModel.getName(),         // chart title
-				chartModel.getDomainLabel(),               // domain axis label
-				chartModel.getRangeLabel(),                  // range axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_Name),         // chart title
+				chartModel.get_Translation(MChart.COLUMNNAME_DomainLabel),               // domain axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_RangeLabel),                  // range axis label
 				getCategoryDataset(),                  // data
 				X_AD_Chart.CHARTORIENTATION_Horizontal.equals(chartModel.getChartOrientation()) 
 				? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL, // orientation
@@ -532,9 +532,9 @@ public class ChartBuilder {
 
 	private JFreeChart create3DStackedBarChart() {
 		JFreeChart chart = ChartFactory.createStackedBarChart3D(
-				chartModel.getName(),         // chart title
-				chartModel.getDomainLabel(),               // domain axis label
-				chartModel.getRangeLabel(),                  // range axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_Name),         // chart title
+				chartModel.get_Translation(MChart.COLUMNNAME_DomainLabel),               // domain axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_RangeLabel),                  // range axis label
 				getCategoryDataset(),                  // data
 				X_AD_Chart.CHARTORIENTATION_Horizontal.equals(chartModel.getChartOrientation()) 
 				? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL, // orientation
@@ -550,9 +550,9 @@ public class ChartBuilder {
 	private JFreeChart createAreaChart() {
 		// create the chart...
 		JFreeChart chart = ChartFactory.createAreaChart(
-				chartModel.getName(),         // chart title
-				chartModel.getDomainLabel(),               // domain axis label
-				chartModel.getRangeLabel(),                  // range axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_Name),         // chart title
+				chartModel.get_Translation(MChart.COLUMNNAME_DomainLabel),               // domain axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_RangeLabel),                  // range axis label
 				getCategoryDataset(),                  // data
 				X_AD_Chart.CHARTORIENTATION_Horizontal.equals(chartModel.getChartOrientation()) 
 				? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL, // orientation
@@ -568,9 +568,9 @@ public class ChartBuilder {
 	private JFreeChart createStackedAreaChart() {
 		// create the chart...
 		JFreeChart chart = ChartFactory.createStackedAreaChart(
-				chartModel.getName(),         // chart title
-				chartModel.getDomainLabel(),               // domain axis label
-				chartModel.getRangeLabel(),                  // range axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_Name),         // chart title
+				chartModel.get_Translation(MChart.COLUMNNAME_DomainLabel),               // domain axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_RangeLabel),                  // range axis label
 				getCategoryDataset(),                  // data
 				X_AD_Chart.CHARTORIENTATION_Horizontal.equals(chartModel.getChartOrientation()) 
 				? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL, // orientation
@@ -586,9 +586,9 @@ public class ChartBuilder {
 	private JFreeChart createLineChart() {
 		// create the chart...
 		JFreeChart chart = ChartFactory.createLineChart(
-				chartModel.getName(),         // chart title
-				chartModel.getDomainLabel(),               // domain axis label
-				chartModel.getRangeLabel(),                  // range axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_Name),         // chart title
+				chartModel.get_Translation(MChart.COLUMNNAME_DomainLabel),               // domain axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_RangeLabel),                  // range axis label
 				getCategoryDataset(),                  // data
 				X_AD_Chart.CHARTORIENTATION_Horizontal.equals(chartModel.getChartOrientation()) 
 				? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL, // orientation
@@ -605,9 +605,9 @@ public class ChartBuilder {
 	private JFreeChart create3DLineChart() {
 		// create the chart...
 		JFreeChart chart = ChartFactory.createLineChart3D(
-				chartModel.getName(),         // chart title
-				chartModel.getDomainLabel(),               // domain axis label
-				chartModel.getRangeLabel(),                  // range axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_Name),         // chart title
+				chartModel.get_Translation(MChart.COLUMNNAME_DomainLabel),               // domain axis label
+				chartModel.get_Translation(MChart.COLUMNNAME_RangeLabel),                  // range axis label
 				getCategoryDataset(),                  // data
 				X_AD_Chart.CHARTORIENTATION_Horizontal.equals(chartModel.getChartOrientation()) 
 				? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL, // orientation
