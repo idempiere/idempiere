@@ -769,6 +769,13 @@ public class Login
 			log.severe("Refused: " + error);
 			return error;
 		}
+
+		// IDEMPIERE-1717 Maintenance mode
+		if (! MRole.get(m_ctx, AD_Role_ID).isAccessAdvanced()) {
+			if (MSysConfig.getBooleanValue("SYSTEM_IN_MAINTENANCE_MODE", false, AD_Client_ID))
+				return Msg.getMsg(m_ctx, "SystemInMaintenance");
+		}
+
 		return null;
 	}	//	validateLogin
 	
