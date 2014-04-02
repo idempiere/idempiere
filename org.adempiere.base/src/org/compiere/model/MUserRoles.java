@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Msg;
 
 /**
  *	User Roles Model
@@ -33,8 +34,7 @@ public class MUserRoles extends X_AD_User_Roles
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2659323298844769713L;
-
+	private static final long serialVersionUID = 5850010835736994376L;
 
 	/**
 	 * 	Get User Roles Of Role
@@ -132,5 +132,39 @@ public class MUserRoles extends X_AD_User_Roles
 	{
 		set_ValueNoCheck ("AD_Role_ID", new Integer(AD_Role_ID));
 	}	//	setAD_Role_ID
+
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		// IDEMPIERE-1410
+		if (! MRole.getDefault().isAccessAdvanced()) {
+			MRole role = new MRole(getCtx(), getAD_Role_ID(), get_TrxName());
+			if (role.isAccessAdvanced()) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
+				return false;
+			}
+			if (! newRecord && is_ValueChanged(COLUMNNAME_AD_Role_ID)) {
+				MRole oldrole = new MRole(getCtx(), get_ValueOldAsInt(COLUMNNAME_AD_Role_ID), get_TrxName());
+				if (oldrole.isAccessAdvanced()) {
+					log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+
+	@Override
+	protected boolean beforeDelete() {
+		// IDEMPIERE-1410
+		if (! MRole.getDefault().isAccessAdvanced()) {
+			MRole role = new MRole(getCtx(), getAD_Role_ID(), get_TrxName());
+			if (role.isAccessAdvanced()) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
+				return false;
+			}
+		}
+		return true;
+	}
 
 }	//	MUserRoles
