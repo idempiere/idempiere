@@ -511,6 +511,20 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		}
 		
 		String script = "jq('#"+row.getUuid()+"').addClass('highlight').siblings().removeClass('highlight')";
+
+		Boolean isActive = null;
+		Object isActiveValue = gridTab.getValue(currentRowIndex, "IsActive");
+		if (isActiveValue != null) {
+			if ("true".equalsIgnoreCase(isActiveValue.toString())) {							
+				isActive = Boolean.TRUE;
+			} else {
+				isActive = Boolean.FALSE;
+			}
+		}
+		if (isActive != null && !isActive.booleanValue()) {
+			script = "jq('#"+row.getUuid()+"').addClass('grid-inactive-row').siblings().removeClass('highlight')";
+		}
+		
 		Clients.response(new AuScript(script));
 	}
 
