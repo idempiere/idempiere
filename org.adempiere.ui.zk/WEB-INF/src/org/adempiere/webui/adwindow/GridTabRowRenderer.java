@@ -361,7 +361,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		Grid grid = (Grid) row.getParent().getParent();
 		org.zkoss.zul.Columns columns = grid.getColumns();
 
-		int rowIndex = row.getParent().getChildren().indexOf(row);
+		int rowIndex = index;
 		if (paging != null && paging.getPageSize() > 0) {
 			rowIndex = (paging.getActivePage() * paging.getPageSize()) + rowIndex;
 		}
