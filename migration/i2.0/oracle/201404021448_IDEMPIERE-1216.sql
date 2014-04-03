@@ -7,7 +7,7 @@ UPDATE AD_Column SET FieldLength=120,Updated=TO_DATE('2014-04-02 14:46:52','YYYY
 ;
 
 -- Apr 2, 2014 2:46:54 PM COT
-ALTER TABLE PA_DashboardContent_Trl MODIFY Name VARCHAR2(120)
+ALTER TABLE PA_DashboardContent_Trl MODIFY Name NVARCHAR2(120)
 ;
 
 SELECT register_migration_script('201404021448_IDEMPIERE-1216.sql') FROM dual
