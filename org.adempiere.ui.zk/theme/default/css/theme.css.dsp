@@ -922,6 +922,20 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	left: 4px;
 	z-index: -1;
 }
+
+.z-grid tbody tr.grid-inactive-row td.z-cell {
+	background-image: none !important;
+	background-color: #DCDAD4 !important;
+}
+
+.z-grid tbody tr.grid-inactive-row td.row-indicator-seld {
+	background-color: transparent !important;
+	background-image: url(${c:encodeURL('/theme/default/images/EditRecord16.png')}) !important;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 16px 16px;  
+	cursor: pointer;
+}
 			
 .z-grid tbody tr.highlight td.z-cell { 
 	background-color: #FFFFCC !important;
