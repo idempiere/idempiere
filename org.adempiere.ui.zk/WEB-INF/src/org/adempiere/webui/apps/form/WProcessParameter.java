@@ -71,14 +71,14 @@ public class WProcessParameter implements IFormController {
 					if (processPara.getColumnName().equals(para.getParameterName())) {
 						schedulerPara.setAD_Process_Para_ID(processPara.getAD_Process_Para_ID());
 						if (DisplayType.isNumeric(processPara.getAD_Reference_ID())) {
-							if (para.getP_Number() != null)
+							if (para.get_Value(MPInstancePara.COLUMNNAME_P_Number) != null)
 								schedulerPara.setParameterDefault(para.getP_Number().toString());
-							if (processPara.isRange() && para.getP_Number_To() != null) 
+							if (processPara.isRange() && para.get_Value(MPInstancePara.COLUMNNAME_P_Number_To) != null) 
 								schedulerPara.setParameterToDefault(para.getP_Number_To().toString());
 						} else if (DisplayType.isID(processPara.getAD_Reference_ID())) {
-							if (para.getP_Number() != null)
+							if (para.get_Value(MPInstancePara.COLUMNNAME_P_Number) != null)
 								schedulerPara.setParameterDefault(Integer.toString(para.getP_Number().intValue()));
-							if (processPara.isRange() && para.getP_Number_To() != null)
+							if (processPara.isRange() && para.get_Value(MPInstancePara.COLUMNNAME_P_Number_To) != null)
 								schedulerPara.setParameterToDefault(Integer.toString(para.getP_Number_To().intValue()));
 						} else if (DisplayType.isDate(processPara.getAD_Reference_ID())) {
 							if (para.getP_Date() != null)
