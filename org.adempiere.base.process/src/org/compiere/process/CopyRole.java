@@ -108,8 +108,8 @@ public class CopyRole extends SvrProcess
 				sql.append(") ");
 			sql.append("SELECT ").append(m_AD_Client_ID)
 				.append(", ").append(m_AD_Org_ID)
-				.append(", getdate(), ").append(Env.getAD_User_ID(Env.getCtx()))
-				.append(", getdate(), ").append(Env.getAD_User_ID(Env.getCtx()))
+				.append(", SYSDATE, ").append(Env.getAD_User_ID(Env.getCtx()))
+				.append(", SYSDATE, ").append(Env.getAD_User_ID(Env.getCtx()))
 				.append(", ").append(m_AD_Role_ID_To)
 				.append(", ").append(keycolumn)
 				.append(", IsActive ");

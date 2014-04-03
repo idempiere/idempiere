@@ -2778,9 +2778,10 @@ public final class MRole extends X_AD_Role
 		+" SELECT 1 FROM AD_User_Roles ur"
 		+" INNER JOIN AD_User_Substitute us ON (us.AD_User_ID=ur.AD_User_ID)"
 		+" WHERE ur.AD_Role_ID=AD_Role.AD_Role_ID AND ur.IsActive='Y' AND us.IsActive='Y'"
-		+" AND (us.ValidFrom IS NULL OR us.ValidFrom <= getdate())"
-		+" AND (us.ValidTo IS NULL OR us.ValidTo >= getdate())"
+		+" AND (us.ValidFrom IS NULL OR us.ValidFrom <= SYSDATE)"
+		+" AND (us.ValidTo IS NULL OR us.ValidTo >= SYSDATE)"
 		+" AND us.Substitute_ID=?)";
+
 		List<MRole> list = new Query(getCtx(), Table_Name, whereClause, get_TrxName())
 		.setParameters(new Object[]{AD_User_ID})
 		.setClient_ID()
