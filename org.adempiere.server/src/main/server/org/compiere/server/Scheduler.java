@@ -18,6 +18,9 @@ package org.compiere.server;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
@@ -40,10 +43,12 @@ import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.process.ServerProcessCtl;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 
 
 /**
@@ -402,6 +407,39 @@ public class Scheduler extends AdempiereServer
 		if (variable == null
 			|| (variable != null && variable.length() == 0))
 			value = null;
+		else if (variable.startsWith("@SQL=")) {
+			String	defStr = "";
+			String sql = variable.substring(5);	//	w/o tag
+			//sql = Env.parseContext(m_vo.ctx, m_vo.WindowNo, sql, false, true);	//	replace variables
+			//hengsin, capture unparseable error to avoid subsequent sql exception
+			sql = Env.parseContext(m_schedulerctx, 0, sql, false, false);	//	replace variables
+			if (sql.equals(""))
+				log.log(Level.WARNING, "(" + sPara.getColumnName() + ") - Default SQL variable parse failed: " + variable);
+			else {
+				PreparedStatement stmt = null;
+				ResultSet rs = null;
+				try {
+					stmt = DB.prepareStatement(sql, null);
+					rs = stmt.executeQuery();
+					if (rs.next())
+						defStr = rs.getString(1);
+					else {
+						if (log.isLoggable(Level.INFO))
+							log.log(Level.INFO, "(" + sPara.getColumnName() + ") - no Result: " + sql);
+					}
+				}
+				catch (SQLException e) {
+					log.log(Level.WARNING, "(" + sPara.getColumnName() + ") " + sql, e);
+				}
+				finally{
+					DB.close(rs, stmt);
+					rs = null;
+					stmt = null;
+				}
+			}
+			if (!Util.isEmpty(defStr))
+				value = defStr;
+		}	//	SQL Statement
 		else if (  variable.indexOf('@') != -1
 				&& variable.indexOf('@') != variable.lastIndexOf('@'))	//	we have a variable / BF [1926032]
 		{
