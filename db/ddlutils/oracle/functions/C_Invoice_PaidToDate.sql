@@ -34,6 +34,8 @@ RETURN NUMBER
  *
  ************************************************************************/
 AS
+	v_Precision         NUMBER := 0;
+    v_Min            	NUMBER := 0;
 	v_MultiplierAP		NUMBER := 1;
 	v_PaymentAmt		NUMBER := 0;
 	CURSOR	Cur_Alloc	IS
@@ -46,6 +48,13 @@ AS
           AND   a.IsActive='Y'
 		  AND a.DateAcct <= p_DateAcct;
 BEGIN
+	SELECT StdPrecision
+	    INTO v_Precision
+	    FROM C_Currency
+	    WHERE C_Currency_ID = p_C_Currency_ID;
+
+	SELECT POWER(1/10,v_Precision) INTO v_Min FROM DUAL;
+	
 	--	Default
 	IF (p_MultiplierAP IS NOT NULL) THEN
 		v_MultiplierAP := p_MultiplierAP;
@@ -56,7 +65,15 @@ BEGIN
 			+ Currencyconvert(a.Amount + a.DisCountAmt + a.WriteOffAmt,
 				a.C_Currency_ID, p_C_Currency_ID, a.DateTrx, NULL, a.AD_Client_ID, a.AD_Org_ID);
 	END LOOP;
-	--
-	RETURN	ROUND(NVL(v_PaymentAmt,0), 2) * v_MultiplierAP;
+	
+	--	Ignore Rounding
+	IF (v_PaymentAmt > -v_Min AND v_PaymentAmt < v_Min) THEN
+		v_PaymentAmt := 0;
+	END IF;
+
+	--	Round to currency precision
+	v_PaymentAmt := ROUND(COALESCE(v_PaymentAmt,0), v_Precision);
+	
+	RETURN	v_PaymentAmt * v_MultiplierAP;
 END InvoicepaidToDate;
 /

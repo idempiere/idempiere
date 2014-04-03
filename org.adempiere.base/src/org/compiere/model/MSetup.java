@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -345,20 +346,20 @@ public final class MSetup
 		 *  Create User-Role
 		 */
 		//  ClientUser          - Admin & User
-		sql = "INSERT INTO AD_User_Roles(" + m_stdColumns + ",AD_User_ID,AD_Role_ID)"
-			+ " VALUES (" + m_stdValues + "," + AD_User_ID + "," + admin.getAD_Role_ID() + ")";
-		no = DB.executeUpdate(sql, m_trx.getTrxName());
+		sql = "INSERT INTO AD_User_Roles(" + m_stdColumns + ",AD_User_ID,AD_Role_ID,AD_User_Roles_UU)"
+			+ " VALUES (" + m_stdValues + "," + AD_User_ID + "," + admin.getAD_Role_ID() + "," + DB.TO_STRING(UUID.randomUUID().toString()) + ")";
+		no = DB.executeUpdateEx(sql, m_trx.getTrxName());
 		if (no != 1)
 			log.log(Level.SEVERE, "UserRole ClientUser+Admin NOT inserted");
-		sql = "INSERT INTO AD_User_Roles(" + m_stdColumns + ",AD_User_ID,AD_Role_ID)"
-			+ " VALUES (" + m_stdValues + "," + AD_User_ID + "," + user.getAD_Role_ID() + ")";
-		no = DB.executeUpdate(sql, m_trx.getTrxName());
+		sql = "INSERT INTO AD_User_Roles(" + m_stdColumns + ",AD_User_ID,AD_Role_ID,AD_User_Roles_UU)"
+			+ " VALUES (" + m_stdValues + "," + AD_User_ID + "," + user.getAD_Role_ID() + "," + DB.TO_STRING(UUID.randomUUID().toString()) + ")";
+		no = DB.executeUpdateEx(sql, m_trx.getTrxName());
 		if (no != 1)
 			log.log(Level.SEVERE, "UserRole ClientUser+User NOT inserted");
 		//  OrgUser             - User
-		sql = "INSERT INTO AD_User_Roles(" + m_stdColumns + ",AD_User_ID,AD_Role_ID)"
-			+ " VALUES (" + m_stdValues + "," + AD_User_U_ID + "," + user.getAD_Role_ID() + ")";
-		no = DB.executeUpdate(sql, m_trx.getTrxName());
+		sql = "INSERT INTO AD_User_Roles(" + m_stdColumns + ",AD_User_ID,AD_Role_ID,AD_User_Roles_UU)"
+			+ " VALUES (" + m_stdValues + "," + AD_User_U_ID + "," + user.getAD_Role_ID() + "," + DB.TO_STRING(UUID.randomUUID().toString()) + ")";
+		no = DB.executeUpdateEx(sql, m_trx.getTrxName());
 		if (no != 1)
 			log.log(Level.SEVERE, "UserRole OrgUser+Org NOT inserted");
 
@@ -564,11 +565,11 @@ public final class MSetup
 				{
 					sqlCmd = new StringBuffer ("INSERT INTO C_AcctSchema_Element(");
 					sqlCmd.append(m_stdColumns).append(",C_AcctSchema_Element_ID,C_AcctSchema_ID,")
-						.append("ElementType,Name,SeqNo,IsMandatory,IsBalanced) VALUES (");
+						.append("ElementType,Name,SeqNo,IsMandatory,IsBalanced,C_AcctSchema_Element_UU) VALUES (");
 					sqlCmd.append(m_stdValues).append(",").append(C_AcctSchema_Element_ID).append(",").append(m_as.getC_AcctSchema_ID()).append(",")
 						.append("'").append(ElementType).append("','").append(name).append("',").append(SeqNo).append(",'")
-						.append(IsMandatory).append("','").append(IsBalanced).append("')");
-					no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+						.append(IsMandatory).append("','").append(IsBalanced).append("',").append(DB.TO_STRING(UUID.randomUUID().toString())).append(")");
+					no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 					if (no == 1)
 						m_info.append(Msg.translate(m_lang, "C_AcctSchema_Element_ID")).append("=").append(name).append("\n");
 
@@ -577,7 +578,7 @@ public final class MSetup
 					{
 						sqlCmd = new StringBuffer ("UPDATE C_AcctSchema_Element SET Org_ID=");
 						sqlCmd.append(getAD_Org_ID()).append(" WHERE C_AcctSchema_Element_ID=").append(C_AcctSchema_Element_ID);
-						no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+						no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 						if (no != 1)
 							log.log(Level.SEVERE, "Default Org in AcctSchemaElement NOT updated");
 					}
@@ -586,7 +587,7 @@ public final class MSetup
 						sqlCmd = new StringBuffer ("UPDATE C_AcctSchema_Element SET C_ElementValue_ID=");
 						sqlCmd.append(C_ElementValue_ID).append(", C_Element_ID=").append(C_Element_ID);
 						sqlCmd.append(" WHERE C_AcctSchema_Element_ID=").append(C_AcctSchema_Element_ID);
-						no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+						no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 						if (no != 1)
 							log.log(Level.SEVERE, "Default Account in AcctSchemaElement NOT updated");
 					}
@@ -769,7 +770,7 @@ public final class MSetup
 		sqlCmd.append("C_AcctSchema1_ID=").append(m_as.getC_AcctSchema_ID())
 			.append(", C_Calendar_ID=").append(m_calendar.getC_Calendar_ID())
 			.append(" WHERE AD_Client_ID=").append(m_client.getAD_Client_ID());
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
 		{
 			String err = "ClientInfo not updated";
@@ -986,19 +987,19 @@ public final class MSetup
 		int C_Channel_ID = getNextID(getAD_Client_ID(), "C_Channel");
 		sqlCmd = new StringBuffer("INSERT INTO C_Channel ");
 		sqlCmd.append("(C_Channel_ID,Name,");
-		sqlCmd.append(m_stdColumns).append(") VALUES (");
+		sqlCmd.append(m_stdColumns).append(",C_Channel_UU) VALUES (");
 		sqlCmd.append(C_Channel_ID).append(",").append(defaultEntry);
-		sqlCmd.append(m_stdValues).append(")");
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		sqlCmd.append(m_stdValues).append(",").append(DB.TO_STRING(UUID.randomUUID().toString())).append(")");
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
 			log.log(Level.SEVERE, "Channel NOT inserted");
 		int C_Campaign_ID = getNextID(getAD_Client_ID(), "C_Campaign");
 		sqlCmd = new StringBuffer("INSERT INTO C_Campaign ");
 		sqlCmd.append("(C_Campaign_ID,C_Channel_ID,").append(m_stdColumns).append(",");
-		sqlCmd.append(" Value,Name,Costs) VALUES (");
+		sqlCmd.append(" Value,Name,Costs,C_Campaign_UU) VALUES (");
 		sqlCmd.append(C_Campaign_ID).append(",").append(C_Channel_ID).append(",").append(m_stdValues).append(",");
-		sqlCmd.append(defaultEntry).append(defaultEntry).append("0)");
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		sqlCmd.append(defaultEntry).append(defaultEntry).append("0").append(",").append(DB.TO_STRING(UUID.randomUUID().toString())).append(")");
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no == 1)
 			m_info.append(Msg.translate(m_lang, "C_Campaign_ID")).append("=").append(defaultName).append("\n");
 		else
@@ -1010,7 +1011,7 @@ public final class MSetup
 			sqlCmd.append("C_Campaign_ID=").append(C_Campaign_ID);
 			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
 			sqlCmd.append(" AND ElementType='MC'");
-			no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+			no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 			if (no != 1)
 				log.log(Level.SEVERE, "AcctSchema ELement Campaign NOT updated");
 		}
@@ -1019,10 +1020,10 @@ public final class MSetup
 		int C_SalesRegion_ID = getNextID(getAD_Client_ID(), "C_SalesRegion");
 		sqlCmd = new StringBuffer ("INSERT INTO C_SalesRegion ");
 		sqlCmd.append("(C_SalesRegion_ID,").append(m_stdColumns).append(",");
-		sqlCmd.append(" Value,Name,IsSummary) VALUES (");
+		sqlCmd.append(" Value,Name,IsSummary,C_SalesRegion_UU) VALUES (");
 		sqlCmd.append(C_SalesRegion_ID).append(",").append(m_stdValues).append(", ");
-		sqlCmd.append(defaultEntry).append(defaultEntry).append("'N')");
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		sqlCmd.append(defaultEntry).append(defaultEntry).append("'N'").append(",").append(DB.TO_STRING(UUID.randomUUID().toString())).append(")");
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no == 1)
 			m_info.append(Msg.translate(m_lang, "C_SalesRegion_ID")).append("=").append(defaultName).append("\n");
 		else
@@ -1034,7 +1035,7 @@ public final class MSetup
 			sqlCmd.append("C_SalesRegion_ID=").append(C_SalesRegion_ID);
 			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
 			sqlCmd.append(" AND ElementType='SR'");
-			no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+			no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 			if (no != 1)
 				log.log(Level.SEVERE, "AcctSchema ELement SalesRegion NOT updated");
 		}
@@ -1073,7 +1074,7 @@ public final class MSetup
 		sqlCmd.append("C_BPartner_ID=").append(bp.getC_BPartner_ID());
 		sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
 		sqlCmd.append(" AND ElementType='BP'");
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
 			log.log(Level.SEVERE, "AcctSchema Element BPartner NOT updated");
 		createPreference("C_BPartner_ID", String.valueOf(bp.getC_BPartner_ID()), 143);
@@ -1098,13 +1099,14 @@ public final class MSetup
 		int C_TaxCategory_ID = getNextID(getAD_Client_ID(), "C_TaxCategory");
 		sqlCmd = new StringBuffer ("INSERT INTO C_TaxCategory ");
 		sqlCmd.append("(C_TaxCategory_ID,").append(m_stdColumns).append(",");
-		sqlCmd.append(" Name,IsDefault) VALUES (");
+		sqlCmd.append(" Name,IsDefault,C_TaxCategory_UU) VALUES (");
 		sqlCmd.append(C_TaxCategory_ID).append(",").append(m_stdValues).append(", ");
 		if (C_Country_ID == COUNTRY_US)    // US
-			sqlCmd.append("'Sales Tax','Y')");
+			sqlCmd.append("'Sales Tax','Y',");
 		else
-			sqlCmd.append(defaultEntry).append("'Y')");
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+			sqlCmd.append(defaultEntry).append("'Y',");
+		sqlCmd.append(DB.TO_STRING(UUID.randomUUID().toString())).append(")");
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
 			log.log(Level.SEVERE, "TaxCategory NOT inserted");
 		
@@ -1112,7 +1114,7 @@ public final class MSetup
 		sqlCmd.append(" SELECT l.AD_Language,t.C_TaxCategory_ID, t.Description,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy FROM AD_Language l, C_TaxCategory t");
 		sqlCmd.append(" WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.C_TaxCategory_ID=").append(C_TaxCategory_ID);
 		sqlCmd.append(" AND NOT EXISTS (SELECT * FROM C_TaxCategory_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.C_TaxCategory_ID=t.C_TaxCategory_ID)");
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no < 0)
 			log.log(Level.SEVERE, "TaxCategory Translation NOT inserted");
 
@@ -1141,7 +1143,7 @@ public final class MSetup
 		sqlCmd.append("M_Product_ID=").append(product.getM_Product_ID());
 		sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
 		sqlCmd.append(" AND ElementType='PR'");
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
 			log.log(Level.SEVERE, "AcctSchema Element Product NOT updated");
 
@@ -1155,7 +1157,7 @@ public final class MSetup
 		loc.saveEx();
 		sqlCmd = new StringBuffer ("UPDATE AD_OrgInfo SET C_Location_ID=");
 		sqlCmd.append(loc.getC_Location_ID()).append(" WHERE AD_Org_ID=").append(getAD_Org_ID());
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
 			log.log(Level.SEVERE, "Location NOT inserted");
 		createPreference("C_Country_ID", String.valueOf(C_Country_ID), 0);
@@ -1187,7 +1189,7 @@ public final class MSetup
 //		sqlCmd.append(",C_UOM_Length_ID=");
 //		sqlCmd.append(",C_UOM_Time_ID=");
 		sqlCmd.append(" WHERE AD_Client_ID=").append(getAD_Client_ID());
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
 		{
 			String err = "ClientInfo not updated";
@@ -1246,7 +1248,7 @@ public final class MSetup
 		//  Update User
 		sqlCmd = new StringBuffer ("UPDATE AD_User SET C_BPartner_ID=");
 		sqlCmd.append(bpCU.getC_BPartner_ID()).append(" WHERE AD_User_ID=").append(AD_User_U_ID);
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
 			log.log(Level.SEVERE, "User of SalesRep (User) NOT updated");
 
@@ -1272,7 +1274,7 @@ public final class MSetup
 		//  Update User
 		sqlCmd = new StringBuffer ("UPDATE AD_User SET C_BPartner_ID=");
 		sqlCmd.append(bpCA.getC_BPartner_ID()).append(" WHERE AD_User_ID=").append(AD_User_ID);
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
 			log.log(Level.SEVERE, "User of SalesRep (Admin) NOT updated");
 
@@ -1281,10 +1283,10 @@ public final class MSetup
 		int C_PaymentTerm_ID = getNextID(getAD_Client_ID(), "C_PaymentTerm");
 		sqlCmd = new StringBuffer ("INSERT INTO C_PaymentTerm ");
 		sqlCmd.append("(C_PaymentTerm_ID,").append(m_stdColumns).append(",");
-		sqlCmd.append("Value,Name,NetDays,GraceDays,DiscountDays,Discount,DiscountDays2,Discount2,IsDefault) VALUES (");
+		sqlCmd.append("Value,Name,NetDays,GraceDays,DiscountDays,Discount,DiscountDays2,Discount2,IsDefault,C_PaymentTerm_UU) VALUES (");
 		sqlCmd.append(C_PaymentTerm_ID).append(",").append(m_stdValues).append(",");
-		sqlCmd.append("'Immediate','Immediate',0,0,0,0,0,0,'Y')");
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		sqlCmd.append("'Immediate','Immediate',0,0,0,0,0,0,'Y'").append(",").append(DB.TO_STRING(UUID.randomUUID().toString())).append(")");
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
 			log.log(Level.SEVERE, "PaymentTerm NOT inserted");
 
@@ -1292,10 +1294,10 @@ public final class MSetup
 		C_Cycle_ID = getNextID(getAD_Client_ID(), "C_Cycle");
 		sqlCmd = new StringBuffer ("INSERT INTO C_Cycle ");
 		sqlCmd.append("(C_Cycle_ID,").append(m_stdColumns).append(",");
-		sqlCmd.append(" Name,C_Currency_ID) VALUES (");
+		sqlCmd.append(" Name,C_Currency_ID,C_Cycle_UU) VALUES (");
 		sqlCmd.append(C_Cycle_ID).append(",").append(m_stdValues).append(", ");
-		sqlCmd.append(defaultEntry).append(C_Currency_ID).append(")");
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		sqlCmd.append(defaultEntry).append(C_Currency_ID).append(",").append(DB.TO_STRING(UUID.randomUUID().toString())).append(")");
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
 			log.log(Level.SEVERE, "Cycle NOT inserted");
 
@@ -1307,10 +1309,10 @@ public final class MSetup
 		int C_Project_ID = getNextID(getAD_Client_ID(), "C_Project");
 		sqlCmd = new StringBuffer ("INSERT INTO C_Project ");
 		sqlCmd.append("(C_Project_ID,").append(m_stdColumns).append(",");
-		sqlCmd.append(" Value,Name,C_Currency_ID,IsSummary) VALUES (");
+		sqlCmd.append(" Value,Name,C_Currency_ID,IsSummary,C_Project_UU) VALUES (");
 		sqlCmd.append(C_Project_ID).append(",").append(m_stdValuesOrg).append(", ");
-		sqlCmd.append(defaultEntry).append(defaultEntry).append(C_Currency_ID).append(",'N')");
-		no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		sqlCmd.append(defaultEntry).append(defaultEntry).append(C_Currency_ID).append(",'N'").append(",").append(DB.TO_STRING(UUID.randomUUID().toString())).append(")");
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no == 1)
 			m_info.append(Msg.translate(m_lang, "C_Project_ID")).append("=").append(defaultName).append("\n");
 		else
@@ -1322,7 +1324,7 @@ public final class MSetup
 			sqlCmd.append("C_Project_ID=").append(C_Project_ID);
 			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
 			sqlCmd.append(" AND ElementType='PJ'");
-			no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+			no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 			if (no != 1)
 				log.log(Level.SEVERE, "AcctSchema ELement Project NOT updated");
 		}
@@ -1352,15 +1354,15 @@ public final class MSetup
 	{
 		int AD_Preference_ID = getNextID(getAD_Client_ID(), "AD_Preference");
 		StringBuilder sqlCmd = new StringBuilder ("INSERT INTO AD_Preference ");
-		sqlCmd.append("(AD_Preference_ID,").append(m_stdColumns).append(",");
+		sqlCmd.append("(AD_Preference_ID,").append("AD_Preference_UU,").append(m_stdColumns).append(",");
 		sqlCmd.append("Attribute,Value,AD_Window_ID) VALUES (");
-		sqlCmd.append(AD_Preference_ID).append(",").append(m_stdValues).append(",");
+		sqlCmd.append(AD_Preference_ID).append(",").append(DB.TO_STRING(UUID.randomUUID().toString())).append(",").append(m_stdValues).append(",");
 		sqlCmd.append("'").append(Attribute).append("','").append(Value).append("',");
 		if (AD_Window_ID == 0)
 			sqlCmd.append("NULL)");
 		else
 			sqlCmd.append(AD_Window_ID).append(")");
-		int no = DB.executeUpdate(sqlCmd.toString(), m_trx.getTrxName());
+		int no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
 			log.log(Level.SEVERE, "Preference NOT inserted - " + Attribute);
 	}   //  createPreference

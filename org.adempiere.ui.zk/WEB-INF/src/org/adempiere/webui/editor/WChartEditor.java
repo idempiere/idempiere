@@ -83,7 +83,7 @@ public class WChartEditor extends WEditor
      @Override
     public String getDisplay()
     {
-    	 return chartModel.getName();
+    	 return chartModel.get_Translation(MChart.COLUMNNAME_Name);
     }
 
     @Override

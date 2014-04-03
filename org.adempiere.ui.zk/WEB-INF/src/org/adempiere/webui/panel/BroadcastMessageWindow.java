@@ -52,11 +52,11 @@ import org.zkoss.zul.South;
  *
  */
 public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup,EventListener<Event>{
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5990080817061314383L;
+	private static final long serialVersionUID = 1849434312706721390L;
+
 	private static CLogger log = CLogger.getCLogger(BroadcastMessageWindow.class);
 	public static final int PRESSED_PREV = 1;
 	public static final int PRESSED_NEXT = 2;
@@ -112,7 +112,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		Div htmlDiv = new Div();
 		//textMsgContent = new Label();
 		htmlDiv.appendChild(textMsgContent);
-		textMsgContent.setContent(mbMessages.get(0).getBroadcastMessage());
+		textMsgContent.setContent(mbMessages.get(0).get_Translation(MBroadcastMessage.COLUMNNAME_BroadcastMessage));
 		htmlDiv.setFocus(true);
 		htmlDiv.setStyle("display: table-cell; vertical-align: middle; text-align: center;");
 		Div divAlign = new Div();
@@ -292,7 +292,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		}
 		
 		textMsgNo.setValue((currMsg+1)+"/"+noOfMsgs);
-		textMsgContent.setContent(mbMessage.getBroadcastMessage());
+		textMsgContent.setContent(mbMessage.get_Translation(MBroadcastMessage.COLUMNNAME_BroadcastMessage));
 		
 		if (!isTest && mbMessage.isLogAcknowledge()) {
 			boolean ack = hashMessages.get(mbMessage.get_ID());

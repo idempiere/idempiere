@@ -27,6 +27,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -35,24 +36,23 @@ import org.compiere.util.ValueNamePair;
  *
  */
 public class MPaymentLookup extends Lookup implements Serializable {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6863672221350217533L;
-	
+	private static final long serialVersionUID = 6505672741140583659L;
+
 	/**	Context					*/
 	private Properties 		m_ctx;
 	/** IsSOTrx					*/
 	private boolean			m_isSOTrx = false;
-	/** AD_Column_ID			*/
-	private int				m_AD_Column_ID;
+	/** Validation Code			*/
+	private String			m_validationCode;
 	
-	public MPaymentLookup(Properties ctx, int windowNo, int columnID) {
+	public MPaymentLookup(Properties ctx, int windowNo, String validationCode) {
 		super(DisplayType.TableDir, windowNo);
 		m_ctx = ctx;
-		m_AD_Column_ID = columnID;
 		m_isSOTrx = "Y".equals(Env.getContext(Env.getCtx(), windowNo, "IsSOTrx"));
+		m_validationCode = validationCode; 
 	}
 
 	@Override
@@ -159,15 +159,9 @@ public class MPaymentLookup extends Lookup implements Serializable {
 	
 	public String getValidation()
 	{
-		StringBuilder sb = new StringBuilder();		
-		sb.append("SELECT vr.Code ");
-		sb.append("FROM AD_Column c");
-		sb.append(" LEFT OUTER JOIN AD_Val_Rule vr ON (c.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) ");
-		sb.append("WHERE c.AD_Column_ID=?");
-		String validation = DB.getSQLValueString(null, sb.toString(), m_AD_Column_ID);
-		if (validation == null)
+		if (Util.isEmpty(m_validationCode, true))
 			return "";
-		return validation.trim();
+		return m_validationCode.trim();
 	}
 	
 	private String getWhereClause()

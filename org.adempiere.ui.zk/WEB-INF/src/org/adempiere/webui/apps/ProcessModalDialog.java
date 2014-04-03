@@ -505,7 +505,9 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 				if (log.isLoggable(Level.INFO))log.log(Level.INFO, "Process Info="+m_pi+" AD_Client_ID="+Env.getAD_Client_ID(Env.getCtx()));
 				WProcessCtl.process(ProcessModalDialog.this, m_WindowNo, parameterPanel, m_pi, null);
 			} catch (Exception ex) {
-				FDialog.error(m_WindowNo, ex.getLocalizedMessage());
+				m_pi.setError(true);
+				m_pi.setSummary(ex.getLocalizedMessage());
+				log.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
 			} finally {
 				Executions.schedule(getDesktop(), ProcessModalDialog.this, new Event(ON_COMPLETE, ProcessModalDialog.this, null));
 			}

@@ -55,8 +55,8 @@ public class FactReconcile {
 		Vector<String> columnNames = new Vector<String>();
 		columnNames.add(Msg.translate(Env.getCtx(), "Amt"));
 		//columnNames.add(Msg.translate(Env.getCtx(), "AmtAcct"));
-		columnNames.add("DR/CR");
-		columnNames.add("Fact Acct");
+		columnNames.add(Msg.translate(Env.getCtx(), "DR/CR"));
+		columnNames.add(Msg.translate(Env.getCtx(), "Selected"));
 		columnNames.add(Msg.translate(Env.getCtx(), "C_BPartner_ID"));
 		columnNames.add(Msg.translate(Env.getCtx(), "DateAcct"));
 		columnNames.add(Msg.translate(Env.getCtx(), "GL_Category_ID"));
@@ -74,16 +74,20 @@ public class FactReconcile {
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		
-		StringBuilder sql = new StringBuilder("SELECT abs(fa.amtacctdr-fa.amtacctcr), (fa.amtacctdr-fa.amtacctcr)," // 1-2
-				+ " (CASE WHEN (fa.amtacctdr-fa.amtacctcr) < 0 THEN 'CR' ELSE 'DR' END), fa.Fact_Acct_ID, bp.name, DateAcct,"
-				+ " glc.name, p.name, Qty, fa.Description, r.MatchCode, fa.DateTrx, o.value"
-				+ " FROM Fact_Acct fa"
-				+ " LEFT OUTER JOIN Fact_Reconciliation r ON (fa.Fact_Acct_ID=r.Fact_Acct_ID)"
-				+ " LEFT OUTER JOIN C_BPartner bp ON (fa.C_BPartner_ID=bp.C_BPartner_ID)"
-				+ " LEFT OUTER JOIN AD_Org o ON (o.AD_Org_ID=fa.AD_Org_ID)"
-				+ " LEFT OUTER JOIN M_Product p ON (p.M_Product_ID=fa.M_Product_ID)"
-				+ " LEFT OUTER JOIN GL_Category glc ON (fa.GL_Category_ID=glc.GL_Category_ID)"
-				+ " WHERE fa.AD_Client_ID=?");
+		StringBuilder sql = new StringBuilder("SELECT abs(fa.amtacctdr-fa.amtacctcr), (fa.amtacctdr-fa.amtacctcr),") // 1-2
+				.append(" (CASE WHEN (fa.amtacctdr-fa.amtacctcr) < 0 THEN ")
+				.append(DB.TO_STRING(Msg.translate(Env.getCtx(), "CR")))
+				.append(" ELSE ")
+				.append(DB.TO_STRING(Msg.translate(Env.getCtx(), "DR")))
+				.append(" END), fa.Fact_Acct_ID, bp.name, DateAcct,")
+				.append(" glc.name, p.name, Qty, fa.Description, r.MatchCode, fa.DateTrx, o.value")
+				.append(" FROM Fact_Acct fa")
+				.append(" LEFT OUTER JOIN Fact_Reconciliation r ON (fa.Fact_Acct_ID=r.Fact_Acct_ID)")
+				.append(" LEFT OUTER JOIN C_BPartner bp ON (fa.C_BPartner_ID=bp.C_BPartner_ID)")
+				.append(" LEFT OUTER JOIN AD_Org o ON (o.AD_Org_ID=fa.AD_Org_ID)")
+				.append(" LEFT OUTER JOIN M_Product p ON (p.M_Product_ID=fa.M_Product_ID)")
+				.append(" LEFT OUTER JOIN GL_Category glc ON (fa.GL_Category_ID=glc.GL_Category_ID)")
+				.append(" WHERE fa.AD_Client_ID=?");
 		
 		// role security
 		sql = new StringBuilder( MRole.getDefault(Env.getCtx(), false).addAccessSQL( sql.toString(), "fa", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO ) );

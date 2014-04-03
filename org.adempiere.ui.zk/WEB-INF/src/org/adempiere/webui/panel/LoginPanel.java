@@ -190,6 +190,8 @@ public class LoginPanel extends Window implements EventListener<Event>
 		});
 
         // Make the default language the language of client System
+        // TODO: possible improvement to check if the first default browser language is supported and default to it
+        //   Executions.getCurrent().getHeader("accept-language");
         String defaultLanguage = MClient.get(ctx, 0).getAD_Language();
         for(int i = 0; i < lstLanguage.getItemCount(); i++)
         {
@@ -414,6 +416,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         {
         	btnResetPasswordClicked();
         }
+        /* code below commented per security issue IDEMPIERE-1797 reported
         // Elaine 2009/02/06 - initial language
         else if (event.getName().equals(Events.ON_CHANGE))
         {
@@ -422,6 +425,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         		onUserIdChange(-1);
         	}
         }        
+        */
         else if (event.getName().equals(ON_LOAD_TOKEN)) 
         {
         	BrowserToken.load(txtUserId);

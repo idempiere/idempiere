@@ -190,12 +190,13 @@ public class WindowElementHandler extends AbstractElementHandler {
 		}
 
 		// Preference Tag
-		sql = "SELECT AD_Preference_ID FROM AD_PREFERENCE WHERE AD_WINDOW_ID = ?";
+		sql = "SELECT AD_Preference_ID FROM AD_PREFERENCE WHERE AD_WINDOW_ID = ? AND AD_CLIENT_ID = ?";
 		pstmt = null;
 		rs = null;
 		try {
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
 			pstmt.setInt(1, AD_Window_ID);
+			pstmt.setInt(2, Env.getAD_Client_ID(ctx.ctx));
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				createPreference(ctx, document, rs.getInt("AD_Preference_ID"));

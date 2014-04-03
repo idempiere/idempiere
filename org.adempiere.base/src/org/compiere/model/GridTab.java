@@ -1402,7 +1402,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!isDetail())
 			return true;
 		//	Same link column value
-		String value = Env.getContext(m_vo.ctx, m_vo.WindowNo, getLinkColumnName());
+		String value = Env.getContext(m_vo.ctx, m_vo.WindowNo, this.getParentTabNo(), getLinkColumnName());
 		return m_linkValue.equals(value);
 	}	//	isCurrent
 

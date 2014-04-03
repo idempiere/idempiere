@@ -810,9 +810,8 @@ public class GridTabCSVImporter implements IGridTabImporter
 	   
 	   if (header.get(i).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID)))
 	   {
-		   //without Region or Country any address would be invalid 
+		   //without Country any address would be invalid 
 		   boolean thereIsCountry = false ;
-		   boolean thereIsRegion  = false; 
 		   boolean isEmptyRow = true;
 		   for(int j= i;j< header.size();j++){
 			   if(!header.get(j).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID)))
@@ -826,8 +825,6 @@ public class GridTabCSVImporter implements IGridTabImporter
 			   String columnName = header.get(j);	
 			   Object value = tmpRow.get(j);   
 			   if(value!=null){ 
-				  if(columnName.contains("RegionName")||columnName.contains("C_Region_ID")) 
-				     thereIsRegion = true;
 				  if(columnName.contains("C_Country_ID"))
 					 thereIsCountry= true;
 			   }else
@@ -849,8 +846,8 @@ public class GridTabCSVImporter implements IGridTabImporter
 			   isEmptyRow=false;
 	      }	   
 		  MColumn column = MColumn.get(Env.getCtx(), field.getAD_Column_ID());		
-		  if((field.isMandatory(true) || column.isMandatory()) && !isEmptyRow && (!thereIsRegion || !thereIsCountry)) 
-			  return new StringBuilder(Msg.getMsg(Env.getCtx(), "FillMandatory")+" "+field.getColumnName()+"["+(thereIsRegion==true?"Region":"C_Country_ID")+"]");
+		  if((field.isMandatory(true) || column.isMandatory()) && !isEmptyRow && !thereIsCountry) 
+			  return new StringBuilder(Msg.getMsg(Env.getCtx(), "FillMandatory")+" "+field.getColumnName()+"["+"C_Country_ID]");
 	   }
 	   return null;
 	}	

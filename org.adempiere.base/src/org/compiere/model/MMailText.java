@@ -27,6 +27,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Request Mail Template Model.
@@ -39,7 +40,7 @@ public class MMailText extends X_R_MailText
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9121875595478208460L;
+	private static final long serialVersionUID = -3278575461023934790L;
 
 	/**
 	 * 	Standard Constructor
@@ -79,6 +80,7 @@ public class MMailText extends X_R_MailText
 	private String		m_MailText3 = null;
 	/** Translation Cache	*/
 	private static CCache<String,MMailTextTrl> s_cacheTrl = new CCache<String,MMailTextTrl> (Table_Name, 20);
+	private String m_language = null;
 	
 	/**
 	 * 	Get parsed/translated Mail Text
@@ -323,13 +325,19 @@ public class MMailText extends X_R_MailText
 	 */
 	private void translate()
 	{
-		if (m_bpartner != null && m_bpartner.getAD_Language() != null)
+		//	Default if no Translation
+		m_MailHeader = super.getMailHeader();
+		m_MailText = super.getMailText();
+		m_MailText2 = super.getMailText2();
+		m_MailText3 = super.getMailText3();
+		if ((m_bpartner != null && m_bpartner.getAD_Language() != null) || !Util.isEmpty(m_language))
 		{
-			StringBuilder key = new StringBuilder().append(m_bpartner.getAD_Language()).append(get_ID());
+			String adLanguage = m_bpartner != null ? m_bpartner.getAD_Language() : m_language;
+			StringBuilder key = new StringBuilder().append(adLanguage).append(get_ID());
 			MMailTextTrl trl = s_cacheTrl.get(key.toString());
 			if (trl == null)
 			{
-				trl = getTranslation(m_bpartner.getAD_Language());
+				trl = getTranslation(adLanguage);
 				if (trl != null)
 					s_cacheTrl.put(key.toString(), trl);
 			}
@@ -341,11 +349,6 @@ public class MMailText extends X_R_MailText
 				m_MailText3 = trl.MailText3;
 			}
 		}
-		//	No Translation
-		m_MailHeader = super.getMailHeader();
-		m_MailText = super.getMailText();
-		m_MailText2 = super.getMailText2();
-		m_MailText3 = super.getMailText3();
 	}	//	translate
 	
 	/**
@@ -406,4 +409,9 @@ public class MMailText extends X_R_MailText
 		String		MailText3 = null;
 	}	//	MMailTextTrl
 	
+	public void setLanguage(String language)
+	{
+		m_language = language;
+	}
+
 }	//	MMailText

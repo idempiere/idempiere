@@ -13,7 +13,7 @@ SELECT s.ad_client_id,
 		sum(ms.qtyonhand - ms.qtyreserved) AS qtyavailable, 
 		sum(ms.qtyonhand) AS qtyonhand, 
 		sum(ms.qtyreserved) AS qtyreserved,
-		ROUND(MAX(mpr.pricestd),0) AS pricestd, 
+		currencyRound(MAX(mpr.pricestd),mpl.C_Currency_ID,'N') AS pricestd, 
 		mpr.m_pricelist_version_id, 
 		mw.m_warehouse_id, 
 		org.name AS orgname
@@ -22,7 +22,9 @@ SELECT s.ad_client_id,
    JOIN m_product mp ON ms.m_product_id = mp.m_product_id
    JOIN m_locator ml ON ms.m_locator_id = ml.m_locator_id
    JOIN m_warehouse mw ON ml.m_warehouse_id = mw.m_warehouse_id
-   JOIN m_productprice mpr ON ms.m_product_id = mpr.m_product_id
+   JOIN m_productprice mpr ON ms.m_product_id = mpr.m_product_id 
+   JOIN m_pricelist_version mplv ON mplv.m_pricelist_version_id = mpr.m_pricelist_version_id 
+   JOIN m_pricelist mpl ON mplv.m_pricelist_id = mpl.m_pricelist_id 
    JOIN ad_org org ON org.ad_org_id = mw.ad_org_id
    GROUP BY s.ad_client_id, 
    			s.ad_org_id, 
@@ -36,7 +38,8 @@ SELECT s.ad_client_id,
    			mw.m_warehouse_id, 
    			mpr.m_pricelist_version_id, 
    			org.name,  
-   			mp.name
+   			mp.name,
+			mpl.C_Currency_ID 
 	UNION 
          SELECT r.ad_client_id, 
          	r.ad_org_id, 
@@ -52,7 +55,7 @@ SELECT s.ad_client_id,
 			sum(ms.qtyonhand - ms.qtyreserved) AS qtyavailable, 
 			sum(ms.qtyonhand) AS qtyonhand, 
 			sum(ms.qtyreserved) AS qtyreserved, 
-			ROUND(MAX(mpr.pricestd),0) AS pricestd, 
+			currencyRound(MAX(mpr.pricestd),mpl.C_Currency_ID,'N') AS pricestd, 
 			mpr.m_pricelist_version_id, 
 			mw.m_warehouse_id, 
 			org.name AS orgname
@@ -61,7 +64,9 @@ SELECT s.ad_client_id,
    JOIN m_product mp ON ms.m_product_id = mp.m_product_id
    JOIN m_locator ml ON ms.m_locator_id = ml.m_locator_id
    JOIN m_warehouse mw ON ml.m_warehouse_id = mw.m_warehouse_id
-   JOIN m_productprice mpr ON ms.m_product_id = mpr.m_product_id
+   JOIN m_productprice mpr ON ms.m_product_id = mpr.m_product_id 
+   JOIN m_pricelist_version mplv ON mplv.m_pricelist_version_id = mpr.m_pricelist_version_id 
+   JOIN m_pricelist mpl ON mplv.m_pricelist_id = mpl.m_pricelist_id 
    JOIN ad_org org ON org.ad_org_id = mw.ad_org_id 
    GROUP BY r.ad_client_id, 
    			r.ad_org_id, 
@@ -75,4 +80,5 @@ SELECT s.ad_client_id,
    			mw.m_warehouse_id, 
    			mpr.m_pricelist_version_id, 
    			org.name,  
-   			mp.name;
+   			mp.name,
+			mpl.C_Currency_ID;

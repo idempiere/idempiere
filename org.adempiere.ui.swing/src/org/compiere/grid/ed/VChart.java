@@ -28,11 +28,11 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.TimeSeriesDataItem;
 
 public class VChart extends CPanel implements ChartMouseListener, VEditor {
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 4089566607789995074L;
+
 	ChartPanel chartPanel;
 	MChart chartModel;
 	private ChartBuilder chartBuilder;
@@ -80,7 +80,7 @@ public class VChart extends CPanel implements ChartMouseListener, VEditor {
 	public void dispose() {}
 
 	@Override
-	public String getName() {return chartModel.getName();}
+	public String getName() {return chartModel.get_Translation(MChart.COLUMNNAME_Name);}
 
 	@Override
 	public void removeVetoableChangeListener(VetoableChangeListener listener) {}

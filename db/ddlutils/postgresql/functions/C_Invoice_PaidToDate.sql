@@ -45,10 +45,19 @@ RETURNS numeric
 AS
 $BODY$
 DECLARE
+	v_Precision         NUMERIC := 0;
+    v_Min            	NUMERIC := 0;
 	v_MultiplierAP		numeric := 1;
 	v_PaymentAmt		numeric := 0;
 	allocation 		record;
 BEGIN
+	SELECT StdPrecision
+	    INTO v_Precision
+	    FROM C_Currency
+	    WHERE C_Currency_ID = p_C_Currency_ID;
+
+	SELECT 1/10^v_Precision INTO v_Min;
+	
 	--	Default
 	IF (p_MultiplierAP IS NOT NULL) THEN
 		v_MultiplierAP := p_MultiplierAP;
@@ -64,8 +73,16 @@ BEGIN
 			+ Currencyconvert(allocation.Amount + allocation.DisCountAmt + allocation.WriteOffAmt,
 				allocation.C_Currency_ID, p_C_Currency_ID, allocation.DateTrx, NULL, allocation.AD_Client_ID, allocation.AD_Org_ID);
 	END LOOP;
-	--
-	RETURN	ROUND(COALESCE(v_PaymentAmt,0), 2) * v_MultiplierAP;
+	
+	--	Ignore Rounding
+	IF (v_PaymentAmt > -v_Min AND v_PaymentAmt < v_Min) THEN
+		v_PaymentAmt := 0;
+	END IF;
+
+	--	Round to currency precision
+	v_PaymentAmt := ROUND(COALESCE(v_PaymentAmt,0), v_Precision);
+	
+	RETURN	v_PaymentAmt * v_MultiplierAP;
 END;	
 $BODY$
 LANGUAGE 'plpgsql' ;
