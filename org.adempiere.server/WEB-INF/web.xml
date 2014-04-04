@@ -97,6 +97,6 @@
 		</user-data-constraint>
 	</security-constraint>
 	<welcome-file-list>
-		<welcome-file>idempiere.html</welcome-file>
+		<welcome-file>idempiere.jsp</welcome-file>
 	</welcome-file-list>
 </web-app>

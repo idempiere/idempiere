@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/server"/>
 	<classpathentry kind="src" path="src/main/servlet"/>
+	<classpathentry kind="src" path="src/main/home"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/jardiff.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/jnlp-servlet.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
