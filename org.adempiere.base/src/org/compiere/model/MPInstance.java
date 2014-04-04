@@ -25,8 +25,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *  Process Instance Model
@@ -40,11 +42,12 @@ import org.compiere.util.Env;
  */
 public class MPInstance extends X_AD_PInstance
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3952972645135787655L;
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -5848424269552679604L;
+	private static CLogger		s_log = CLogger.getCLogger (MPInstance.class);
 
 	/**
 	 * 	Standard Constructor
@@ -130,6 +133,7 @@ public class MPInstance extends X_AD_PInstance
 		final String whereClause = "AD_PInstance_ID=?";
 		List <MPInstancePara> list = new Query(getCtx(), I_AD_PInstance_Para.Table_Name, whereClause, null) // @TODO: Review implications of using transaction 
 		.setParameters(getAD_PInstance_ID())
+		.setOrderBy("SeqNo, ParameterName")
 		.list();
 
 		//
@@ -349,4 +353,78 @@ public class MPInstance extends X_AD_PInstance
 		ip.saveEx();
 		return ip;
 	}
+	
+	public static List<MPInstance> get(Properties ctx, int AD_Process_ID, int AD_User_ID) {
+		List<MPInstance> list = new ArrayList<MPInstance>();
+		List<String> paramsStrAdded = new ArrayList<String>();
+
+		List<MPInstance> namedInstances = new Query(ctx, Table_Name, "AD_Process_ID=? AND AD_User_ID=? AND Name IS NOT NULL", null)
+			.setClient_ID()
+			.setOnlyActiveRecords(true)
+			.setParameters(AD_Process_ID, AD_User_ID)
+			.setOrderBy("Name")
+			.list();
+		for (MPInstance namedInstance : namedInstances) {
+			list.add(namedInstance);
+			paramsStrAdded.add(namedInstance.getParamsStr());
+		}
+
+		// unnamed instances
+		int lastRunCount = MSysConfig.getIntValue("LASTRUN_RECORD_COUNT", 5, Env.getAD_Client_ID(ctx));
+		if (lastRunCount > 0) {
+			// using JDBC instead of Query for performance reasons, AD_PInstance can be huge
+			String sql = "SELECT * FROM AD_PInstance "
+					+ " WHERE AD_Process_ID=? AND AD_User_ID=? AND IsActive='Y' AND AD_Client_ID=? AND Name IS NULL" 
+					+ " ORDER BY Created DESC";
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			int cnt = 0;
+			try {
+				pstmt = DB.prepareStatement(sql, null);
+				pstmt.setInt(1, AD_Process_ID);
+				pstmt.setInt(2, AD_User_ID);
+				pstmt.setInt(3, Env.getAD_Client_ID(ctx));
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					MPInstance unnamedInstance = new MPInstance(ctx, rs, null);
+					String paramsStr = unnamedInstance.getParamsStr();
+					if (! paramsStrAdded.contains(paramsStr)) {
+						unnamedInstance.setName(Msg.getMsg(ctx, "LastRun") + " " + unnamedInstance.getCreated());
+						list.add(unnamedInstance);
+						paramsStrAdded.add(paramsStr);
+						cnt++;
+						if (cnt == lastRunCount)
+							break;
+					}
+				}
+			} catch (Exception e)
+			{
+				s_log.log(Level.SEVERE, "Error while Fetching last run records", e);
+			} finally {
+				DB.close(rs, pstmt);
+				rs = null; pstmt = null;
+			}
+		}
+
+		return list;
+	}
+
+	private String getParamsStr() {
+		StringBuilder cksum = new StringBuilder();
+		for (MPInstancePara ip : getParameters()) {
+			cksum.append("(")
+			.append(ip.getParameterName()).append("|")
+			.append(ip.getP_String()).append("|")
+			.append(ip.getP_String_To()).append("|")
+			.append(ip.getP_Number()).append("|")
+			.append(ip.getP_Number_To()).append("|")
+			.append(ip.getP_Date()).append("|")
+			.append(ip.getP_Date_To()).append("|")
+			.append(ip.getInfo()).append("|")
+			.append(ip.getInfo_To()).append("|")
+			.append(")");
+		}
+		return cksum.toString();
+	}
+
 }	//	MPInstance

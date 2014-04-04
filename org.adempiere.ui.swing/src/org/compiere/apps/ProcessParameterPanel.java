@@ -40,6 +40,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.MClient;
 import org.compiere.model.MLookup;
+import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.process.ProcessInfo;
 import org.compiere.swing.CLabel;
@@ -65,7 +66,7 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3871379020889713432L;
+	private static final long serialVersionUID = -111202562692738248L;
 
 		/**
 		 *	Dynamic generated Parameter panel.
@@ -638,6 +639,64 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 			return true;
 		}	//	saveParameters
 		
+		/* 
+		 * load parameters from saved instance
+		 */
+		public boolean loadParameters(MPInstance instance)
+		{
+			log.config("");
+
+			MPInstancePara[] params = instance.getParameters();
+			for (int j = 0; j < m_mFields.size(); j++)
+			{
+				GridField mField = (GridField)m_mFields.get(j);
+
+				//	Get Values
+				VEditor editor = (VEditor)m_vEditors.get(j);
+				VEditor editor2 = (VEditor)m_vEditors2.get(j);
+
+				editor.setValue(null);
+				if (editor2 != null)
+					editor2.setValue(null);
+
+				for ( int i = 0; i<params.length; i++)
+				{
+					MPInstancePara para = params[i];
+					para.getParameterName();
+
+					if ( mField.getColumnName().equals(para.getParameterName()) )
+					{
+
+						if (para.getP_Date() != null || para.getP_Date_To() != null )
+						{
+							editor.setValue(para.getP_Date());
+							if (editor2 != null )
+								editor2.setValue(para.getP_Date_To());
+						}
+						//	String
+						else if ( para.getP_String() != null || para.getP_String_To() != null )
+						{
+							editor.setValue(para.getP_String());
+							if (editor2 != null)
+								editor2.setValue(para.getP_String_To());
+						}
+						else if ( !Env.ZERO.equals(para.getP_Number()) || !Env.ZERO.equals(para.getP_Number_To()) )
+						{
+							editor.setValue(para.getP_Number());
+							if (editor2 != null)
+								editor2.setValue(para.getP_Number_To());
+						}
+
+						log.fine(para.toString());
+						break;
+					}
+				} // for every saved parameter
+
+			}	//	for every field
+
+			return true;
+		}	//	saveParameters
+
 		/**
 		 * Restore window context.
 		 * @author teo_sarca [ 1699826 ]
