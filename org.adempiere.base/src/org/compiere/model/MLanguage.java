@@ -425,10 +425,10 @@ public class MLanguage extends X_AD_Language
 		StringBuilder keyColumn = new StringBuilder(baseTable).append("_ID");
 		StringBuilder insert = new StringBuilder("INSERT INTO ").append(tableName)
 							.append("(AD_Language,IsTranslated, AD_Client_ID,AD_Org_ID, ")
-							.append("Createdby,UpdatedBy, ")
+							.append("Createdby,UpdatedBy,Created,Updated, ")
 							.append(keyColumn).append(cols).append(") ")
 							.append("SELECT '").append(getAD_Language()).append("','N', AD_Client_ID,AD_Org_ID, ")
-							.append(AD_User_ID).append(",").append(AD_User_ID).append(", ")
+							.append(AD_User_ID).append(",").append(AD_User_ID).append(", SysDate, SysDate, ")
 							.append(keyColumn).append(cols)
 							.append(" FROM ").append(baseTable)
 							.append(" WHERE ").append(keyColumn).append(" NOT IN (SELECT ").append(keyColumn)
