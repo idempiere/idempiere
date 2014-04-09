@@ -401,6 +401,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		Vector<String> columnNames = new Vector<String>();
 		columnNames.add(Msg.translate(Env.getCtx(), m_C_BPartner_ID == 0 ? "C_BPartner_ID" : "M_Product_ID"));
 		columnNames.add(Msg.translate(Env.getCtx(), "PriceActual"));
+		columnNames.add(Msg.translate(Env.getCtx(), "C_Currency_ID"));
 		columnNames.add(Msg.translate(Env.getCtx(), reserved ? "QtyReserved" : "QtyOrdered"));
 		columnNames.add(Msg.translate(Env.getCtx(), "Discount"));
 		columnNames.add(Msg.translate(Env.getCtx(), "DocumentNo"));
@@ -411,7 +412,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		Vector<Vector<Object>> data = null;
 		if (m_C_BPartner_ID == 0)
 		{
-			String sql = "SELECT bp.Name, ol.PriceActual,ol.PriceList,ol.QtyReserved,"
+			String sql = "SELECT bp.Name, ol.PriceActual,c.Iso_Code,ol.PriceList,ol.QtyReserved,"
 				+ "o.DateOrdered,dt.PrintName || ' ' || o.DocumentNo As DocumentNo, "
 				+ "w.Name,"
 				+ "ol.Discount, 0 "															// 8,9=M_PriceList_ID
@@ -420,6 +421,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 				+ " INNER JOIN C_DocType dt ON (o.C_DocType_ID=dt.C_DocType_ID)"
 				+ " INNER JOIN M_Warehouse w ON (ol.M_Warehouse_ID=w.M_Warehouse_ID)"
 				+ " INNER JOIN C_BPartner bp  ON (o.C_BPartner_ID=bp.C_BPartner_ID) "
+				+ " INNER JOIN C_Currency c ON (o.C_Currency_ID=c.C_Currency_ID) "
 				+ "WHERE ol.QtyReserved<>0"
 				+ " AND ol.M_Product_ID=?"
 				+ " AND o.IsSOTrx=" + (reserved ? "'Y'" : "'N'")
@@ -428,7 +430,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		}
 		else
 		{
-			String sql = "SELECT p.Name, ol.PriceActual,ol.PriceList,ol.QtyReserved,"
+			String sql = "SELECT p.Name, ol.PriceActual,c.Iso_Code,ol.PriceList,ol.QtyReserved,"
 				+ "o.DateOrdered,dt.PrintName || ' ' || o.DocumentNo As DocumentNo, " 
 				+ "w.Name,"
 				+ "ol.Discount, 0 "															// 8,9=M_PriceList_ID
@@ -437,6 +439,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 				+ " INNER JOIN C_DocType dt ON (o.C_DocType_ID=dt.C_DocType_ID)"
 				+ " INNER JOIN M_Warehouse w ON (ol.M_Warehouse_ID=w.M_Warehouse_ID)"
 				+ " INNER JOIN M_Product p  ON (ol.M_Product_ID=p.M_Product_ID) "
+				+ " INNER JOIN C_Currency c ON (o.C_Currency_ID=c.C_Currency_ID) "
 				+ "WHERE ol.QtyReserved<>0"
 				+ " AND o.C_BPartner_ID=?"
 				+ " AND o.IsSOTrx=" + (reserved ? "'Y'" : "'N'")
@@ -452,11 +455,12 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 			//
 			m_tableReserved.setColumnClass(0, String.class, true);      //  Product/Partner
 			m_tableReserved.setColumnClass(1, BigDecimal.class, true);  //  Price
-			m_tableReserved.setColumnClass(2, Double.class, true);      //  Quantity
-			m_tableReserved.setColumnClass(3, BigDecimal.class, true);  //  Discount (%)
-			m_tableReserved.setColumnClass(4, String.class, true);      //  DocNo
-			m_tableReserved.setColumnClass(5, Timestamp.class, true);   //  Date
-			m_tableReserved.setColumnClass(6, String.class, true);   	  //  Warehouse
+			m_tableReserved.setColumnClass(2, String.class, true);  	 //  Currency
+			m_tableReserved.setColumnClass(3, Double.class, true);      //  Quantity
+			m_tableReserved.setColumnClass(4, BigDecimal.class, true);  //  Discount (%)
+			m_tableReserved.setColumnClass(5, String.class, true);      //  DocNo
+			m_tableReserved.setColumnClass(6, Timestamp.class, true);   //  Date
+			m_tableReserved.setColumnClass(7, String.class, true);   	  //  Warehouse
 			//
 			m_tableReserved.autoSize();
 		}
@@ -467,11 +471,12 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 			//
 			m_tableOrdered.setColumnClass(0, String.class, true);      //  Product/Partner
 			m_tableOrdered.setColumnClass(1, BigDecimal.class, true);  //  Price
-			m_tableOrdered.setColumnClass(2, Double.class, true);      //  Quantity
-			m_tableOrdered.setColumnClass(3, BigDecimal.class, true);  //  Discount (%)
-			m_tableOrdered.setColumnClass(4, String.class, true);      //  DocNo
-			m_tableOrdered.setColumnClass(5, Timestamp.class, true);   //  Date
-			m_tableOrdered.setColumnClass(6, String.class, true);   	  //  Warehouse
+			m_tableOrdered.setColumnClass(2, String.class, true);  	 //  Currency
+			m_tableOrdered.setColumnClass(3, Double.class, true);      //  Quantity
+			m_tableOrdered.setColumnClass(4, BigDecimal.class, true);  //  Discount (%)
+			m_tableOrdered.setColumnClass(5, String.class, true);      //  DocNo
+			m_tableOrdered.setColumnClass(6, Timestamp.class, true);   //  Date
+			m_tableOrdered.setColumnClass(7, String.class, true);   	  //  Warehouse
 			//
 			m_tableOrdered.autoSize();
 		}

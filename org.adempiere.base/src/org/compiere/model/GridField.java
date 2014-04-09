@@ -769,8 +769,17 @@ public class GridField
 			{
 				// try timestamp format - then date format -- [ 1950305 ]
 				java.util.Date date = null;
+				SimpleDateFormat dateTimeFormat = DisplayType.getTimestampFormat_Default();
+				SimpleDateFormat dateFormat = DisplayType.getDateFormat_JDBC();
+				SimpleDateFormat timeFormat = DisplayType.getTimeFormat_Default();
 				try {
-					date = DisplayType.getTimestampFormat_Default().parse (value);
+					if (m_vo.displayType == DisplayType.Date) {
+						date = dateFormat.parse (value);
+					} else if (m_vo.displayType == DisplayType.Time) {
+						date = timeFormat.parse (value);
+					} else {
+						date = dateTimeFormat.parse (value);
+					}
 				} catch (java.text.ParseException e) {
 					date = DisplayType.getDateFormat_JDBC().parse (value);
 				}

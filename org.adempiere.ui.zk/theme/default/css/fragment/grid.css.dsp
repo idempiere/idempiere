@@ -1,5 +1,19 @@
 <%@ taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c" %>
 <%@ taglib uri="http://www.idempiere.org/dsp/web/util" prefix="u" %>
+.z-grid tbody tr.grid-inactive-row td.z-cell {
+	background-image: none !important;
+	background-color: #DCDAD4 !important;
+}
+
+.z-grid tbody tr.grid-inactive-row td.row-indicator-selected {
+	background-color: #DCDAD4 !important;
+	background-image: url(${c:encodeURL('/theme/default/images/EditRecord16.png')}) !important;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 16px 16px;  
+	cursor: pointer;
+}
+
 .z-grid tbody tr.highlight td.z-cell { 
 	background-color: #FFFFCC !important;
 	background-image: none !important;

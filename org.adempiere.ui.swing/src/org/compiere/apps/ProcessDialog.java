@@ -16,20 +16,27 @@
  *****************************************************************************/
 package org.compiere.apps;
 
+import static org.compiere.model.SystemIDs.PROCESS_C_INVOICE_GENERATE;
+import static org.compiere.model.SystemIDs.PROCESS_M_INOUT_GENERATE;
+
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GraphicsConfiguration;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -39,18 +46,23 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.Callback;
 import org.adempiere.util.IProcessUI;
-import static org.compiere.model.SystemIDs.*;
+import org.compiere.model.MPInstance;
+import org.compiere.model.MPInstancePara;
 import org.compiere.print.ReportCtl;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.swing.CButton;
+import org.compiere.swing.CComboBox;
 import org.compiere.swing.CFrame;
+import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
+import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Dialog to Start process.
@@ -75,7 +87,7 @@ public class ProcessDialog extends CFrame
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7486479305726277406L;
+	private static final long serialVersionUID = 2435351857958558386L;
 
 	/**
 	 * 	@deprecated
@@ -194,6 +206,11 @@ public class ProcessDialog extends CFrame
 	private ProcessParameterPanel parameterPanel = null;
 	private JSeparator separator = new JSeparator();
 	private ProcessInfo m_pi = null;
+	private CComboBox fSavedName = new CComboBox();
+	private CButton bSave = new CButton();
+	private CButton bDelete = new CButton();
+	private List<MPInstance> savedParams;
+	private CLabel lSaved = new CLabel(Msg.getMsg(Env.getCtx(), "SavedParameter"));
 
 	/**
 	 *	Static Layout
@@ -207,6 +224,19 @@ public class ProcessDialog extends CFrame
 		dialog.setMinimumSize(new Dimension(500, 200));
 		bOK.addActionListener(this);
 		bPrint.addActionListener(this);
+		fSavedName.setToolTipText (Msg.getMsg(Env.getCtx(),"SavedParameter"));
+		fSavedName.setEditable(true);
+		fSavedName.addActionListener(this);
+		bSave.setIcon(new ImageIcon(org.compiere.Adempiere.class.getResource("images/Save24.gif")));
+		bSave.setMargin(new Insets(2, 2, 2, 2));
+		bSave.setToolTipText(Msg.getMsg(Env.getCtx(),"Save"));
+		bSave.addActionListener(this);
+		bSave.setEnabled(false);
+		bDelete.setIcon(new ImageIcon(org.compiere.Adempiere.class.getResource("images/Delete24.gif")));
+		bDelete.setMargin(new Insets(2, 2, 2, 2));
+		bDelete.setToolTipText(Msg.getMsg(Env.getCtx(),"Delete"));
+		bDelete.addActionListener(this);
+		bDelete.setEnabled(false);
 		//
 		southPanel.setLayout(southLayout);
 		southLayout.setAlignment(FlowLayout.RIGHT);
@@ -216,7 +246,12 @@ public class ProcessDialog extends CFrame
 		message.setFocusable(true);
 		getContentPane().add(dialog);
 		dialog.add(southPanel, BorderLayout.SOUTH);
-		southPanel.add(bPrint, null);
+
+		southPanel.add(lSaved,"wrap");
+		southPanel.add(fSavedName, "w :200:");
+		southPanel.add(bSave, null);
+		southPanel.add(bDelete, null);
+		southPanel.add(bPrint, "span, split 2, align right, pushx");
 		southPanel.add(bOK, null);
 		dialog.add(messagePane, BorderLayout.NORTH);
 		messagePane.setBorder(null);
@@ -337,9 +372,25 @@ public class ProcessDialog extends CFrame
 		if(m_ShowHelp != null && m_ShowHelp.equals("S"))
 			bOK.doClick();
 		
+		querySaved();
+
 		dialog.revalidate();
 		return true;
 	}	//	init
+
+	private void querySaved() {
+		//user query
+		savedParams = MPInstance.get(Env.getCtx(), m_AD_Process_ID, Env.getContextAsInt(Env.getCtx(), "#AD_User_ID"));
+		String[] queries = new String[savedParams.size()+1];
+		int i = 0;
+		queries[i++] = "";
+		for (MPInstance instance : savedParams)
+		{
+			queries[i++] = instance.getName();
+		}
+		fSavedName.setModel(new DefaultComboBoxModel(queries));
+		fSavedName.setValue("");
+	}
 
 	/**
 	 *	ActionListener (Start)
@@ -347,6 +398,13 @@ public class ProcessDialog extends CFrame
 	 */
 	public void actionPerformed (ActionEvent e)
 	{
+
+		String saveName = null;
+		if (fSavedName.getSelectedItem() != null)
+			saveName = fSavedName.getSelectedItem().toString();
+
+		boolean lastRun = ("** " + Msg.getMsg(Env.getCtx(), "LastRun") + " **").equals(saveName);
+
 		if (e.getSource() == bOK)
 		{
 			if (bOK.getText().length() == 0)
@@ -357,11 +415,91 @@ public class ProcessDialog extends CFrame
 				ProcessCtl.process(this, m_WindowNo, parameterPanel, m_pi, null);
 			}
 		}
+		else if (e.getSource() == fSavedName) 
+		{
+			if (savedParams != null && saveName != null)
+			{
+				for (int i = 0; i < savedParams.size(); i++) 
+				{
+					if (savedParams.get(i).getName().equals(saveName))
+					{
+						loadSavedParams(savedParams.get(i));
+					}
+				}
+			}
+			boolean enabled = !Util.isEmpty(saveName);
+			bSave.setEnabled(enabled && !lastRun);
+			bDelete.setEnabled(enabled && fSavedName.getSelectedIndex() > -1 && !lastRun);
+		}
+		else if (e.getSource() == bSave && fSavedName != null && !lastRun)
+		{
+			// Update existing
+			if (fSavedName.getSelectedIndex() > -1 && savedParams != null)
+			{
+				for (int i = 0; i < savedParams.size(); i++) 
+				{
+					if (savedParams.get(i).getName().equals(saveName))
+					{
+						m_pi.setAD_PInstance_ID(savedParams.get(i).getAD_PInstance_ID());
+						for (MPInstancePara para : savedParams.get(i).getParameters())
+						{
+							para.deleteEx(true);
+						}
+						parameterPanel.saveParameters();
+					}
+				}
+			}
+			// create new
+			else {
+				MPInstance instance = null; 
+				try 
+				{ 
+					instance = new MPInstance(Env.getCtx(), m_pi.getAD_Process_ID(), m_pi.getRecord_ID()); 
+					instance.setName(saveName);
+					instance.saveEx();
+
+					m_pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());
+					// Get Parameters
+					if (parameterPanel != null) {
+						if (!parameterPanel.saveParameters())
+						{
+							throw new AdempiereSystemError(Msg.getMsg(Env.getCtx(), "SaveParameterError"));
+						}
+					}
+				} 
+				catch (Exception ex) 
+				{ 
+					ADialog.warn(m_WindowNo, this, ex.getLocalizedMessage());
+				}
+			}
+			querySaved();
+			fSavedName.setSelectedItem(saveName);
+		}
+		else if (e.getSource() == bDelete && fSavedName != null && !lastRun )
+		{
+			Object o = fSavedName.getSelectedItem();
+			if (savedParams != null && o != null)
+			{
+				String selected = o.toString();
+				for (int i = 0; i < savedParams.size(); i++) 
+				{
+					if (savedParams.get(i).getName().equals(selected))
+					{
+						savedParams.get(i).deleteEx(true);
+					}
+				}
+			}
+			querySaved();
+		}
 
 		else if (e.getSource() == bPrint)
 			printScreen();
 	}	//	actionPerformed
 
+
+	private void loadSavedParams(MPInstance instance) {
+		parameterPanel.loadParameters(instance);
+	}
 
 	/**
 	 *  Lock User Interface

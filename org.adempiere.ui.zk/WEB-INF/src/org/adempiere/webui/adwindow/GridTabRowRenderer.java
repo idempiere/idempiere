@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.adempiere.util.GridRowCtx;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.EditorBox;
@@ -390,6 +391,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		
 		row.appendChild(cell);
 		
+		Boolean isActive = null;
 		int colIndex = -1;
 		for (int i = 0; i < columnCount; i++) {
 			if (editors.get(gridPanelFields[i]) == null) {
@@ -413,6 +415,15 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
     			//	Default Focus
     			if (defaultFocusField == null && gridPanelFields[i].isDefaultFocus())
     				defaultFocusField = editor;
+			}
+			
+			if ("IsActive".equals(gridPanelFields[i].getColumnName())) {
+				isActive = Boolean.FALSE;
+				if (currentValues[i] != null) {
+					if ("true".equalsIgnoreCase(currentValues[i].toString())) {
+						isActive = Boolean.TRUE;
+					}
+				}
 			}
 			
 			if (!gridPanelFields[i].isDisplayedGrid() || gridPanelFields[i].isToolbarButton()) {
@@ -453,6 +464,21 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		row.addEventListener(Events.ON_CLICK, rowListener);
 		row.addEventListener(Events.ON_OK, rowListener);
 		row.setTooltiptext("Row " + (rowIndex+1));
+		
+		if (isActive == null) {
+			Object isActiveValue = gridTab.getValue(rowIndex, "IsActive");
+			if (isActiveValue != null) {
+				if ("true".equalsIgnoreCase(isActiveValue.toString())) {							
+					isActive = Boolean.TRUE;
+				} else {
+					isActive = Boolean.FALSE;
+				}
+			}
+		}
+		if (isActive != null && !isActive.booleanValue()) {
+			LayoutUtils.addSclass("grid-inactive-row", row);
+		}
+
 	}
 
 	/**
@@ -485,6 +511,20 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		}
 		
 		String script = "jq('#"+row.getUuid()+"').addClass('highlight').siblings().removeClass('highlight')";
+
+		Boolean isActive = null;
+		Object isActiveValue = gridTab.getValue(currentRowIndex, "IsActive");
+		if (isActiveValue != null) {
+			if ("true".equalsIgnoreCase(isActiveValue.toString())) {							
+				isActive = Boolean.TRUE;
+			} else {
+				isActive = Boolean.FALSE;
+			}
+		}
+		if (isActive != null && !isActive.booleanValue()) {
+			script = "jq('#"+row.getUuid()+"').addClass('grid-inactive-row').siblings().removeClass('highlight')";
+		}
+		
 		Clients.response(new AuScript(script));
 	}
 
