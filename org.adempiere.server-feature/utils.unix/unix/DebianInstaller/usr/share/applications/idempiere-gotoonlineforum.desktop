@@ -1,0 +1,10 @@
+[Desktop Entry]
+Terminal=false
+MultipleArgs=true
+Type=Link
+URL=https://groups.google.com/forum/?fromgroups#!forum/idempiere
+Categories=Applications;
+Icon=idempiere-gotoonlineforum.png
+Encoding=UTF-8
+Name=Go To Online Forum
+Name[es]=Ir a Foro en Línea

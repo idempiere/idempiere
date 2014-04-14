@@ -1,0 +1,10 @@
+[Desktop Entry]
+Exec=gksudo "su -c idempiere '/opt/idempiere-server/idempiere-server.sh'"
+Terminal=true
+MultipleArgs=true
+Type=Application
+Categories=Applications;
+Icon=idempiere-start.png
+Encoding=UTF-8
+Name=Start Server
+Name[es]=Iniciar Servidor

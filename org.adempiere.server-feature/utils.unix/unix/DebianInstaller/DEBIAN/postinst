@@ -1,0 +1,116 @@
+#!/bin/sh
+
+if [ "$1" != "configure" ]
+then
+    exit 0
+fi
+
+if [ -z "$2" ]
+then
+    MODE=install
+else
+    MODE=upgrade
+fi
+
+if [ -x "/etc/init.d/idempiere" ]; then
+	update-rc.d idempiere defaults >/dev/null
+	if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+		invoke-rc.d idempiere start || exit 0
+	else
+		/etc/init.d/idempiere start || exit 0
+	fi
+fi
+
+echo "Executing Post-install steps..."
+
+if [ "$MODE" = "install" ]
+then
+    if `grep -q ^idempiere: /etc/group`
+    then
+	    echo ""
+    else
+	    /usr/sbin/groupadd idempiere
+    fi
+    id idempiere > /dev/null 2>&1
+    status=$?
+    if test $status -eq 0
+    then
+            groups idempiere | grep idempiere > /dev/null
+	    status=$?
+            if test $status != 0
+            then
+                    /usr/sbin/usermod -G idempiere idempiere
+            fi
+    else
+            /usr/sbin/useradd -g idempiere -d /opt/idempiere-server -s /bin/bash idempiere
+    fi
+
+# End MODE=install
+fi
+
+if [ "$MODE" = "install" ]
+then
+    # Start Menu icons
+    
+    mergefile()
+    {
+        MENUFILE="$1"
+    
+        if [ -z "$MENUFILE" ]
+        then
+            return
+        fi
+    
+    	TFILE="$(mktemp)" || TFILE="/tmp/idempiereapplications.tmp"
+    	(sed -n '1,/<\/Menu>/p' "$MENUFILE" ; cat /opt/idempiere-server/utils/unix/idempiere-merge-debian.menu ; sed -n '1,/<\/Menu>/!p' "$MENUFILE" ) > "$TFILE"
+    	cp -f "$TFILE" "$MENUFILE"
+    	rm -f "$TFILE"
+    }
+    
+    if [ -f /etc/xdg/menus/gnome-applications.menu ]
+    then
+    	mergefile /etc/xdg/menus/gnome-applications.menu
+    fi
+    if [ -f /etc/xdg/menus/kde-applications.menu ]
+    then
+    	mergefile /etc/xdg/menus/kde-applications.menu
+    fi
+    if [ -f /etc/xdg/menus/applications.menu ]
+    then
+    	mergefile /etc/xdg/menus/applications.menu
+    fi
+    
+# End MODE=install
+fi
+
+/bin/chown -R idempiere:idempiere /opt/idempiere-server
+/bin/chown idempiere:idempiere /etc/default/idempiere
+/bin/chown idempiere:idempiere /etc/init.d/idempiere
+/bin/chown idempiere:idempiere /etc/xdg/menus/idempiere.menu
+/bin/chown idempiere:idempiere /usr/share/applications/idempiere-backup.desktop
+/bin/chown idempiere:idempiere /usr/share/applications/idempiere-gotoonlineforum.desktop
+/bin/chown idempiere:idempiere /usr/share/applications/idempiere-homepage.desktop
+/bin/chown idempiere:idempiere /usr/share/applications/idempiere-readdocumentation.desktop
+/bin/chown idempiere:idempiere /usr/share/applications/idempiere-restore.desktop
+/bin/chown idempiere:idempiere /usr/share/applications/idempiere-startserver.desktop
+/bin/chown idempiere:idempiere /usr/share/applications/idempiere-webclient.desktop
+/bin/chown idempiere:idempiere /usr/share/desktop-directories/idempiere.directory
+/bin/chown idempiere:idempiere /usr/share/desktop-directories/idempiere-gethelp.directory
+/bin/chown idempiere:idempiere /usr/share/pixmaps/idempiere-backup.png
+/bin/chown idempiere:idempiere /usr/share/pixmaps/idempiere-gethelp.png
+/bin/chown idempiere:idempiere /usr/share/pixmaps/idempiere-gotoonlineforum.png
+/bin/chown idempiere:idempiere /usr/share/pixmaps/idempiere.png
+/bin/chown idempiere:idempiere /usr/share/pixmaps/idempiere-readdocumentation.png
+/bin/chown idempiere:idempiere /usr/share/pixmaps/idempiere-restore.png
+/bin/chown idempiere:idempiere /usr/share/pixmaps/idempiere-start.png
+
+CONFIGURATION=/etc/default/idempiere
+[ -f "$CONFIGURATION" ] && . "$CONFIGURATION"
+
+if [ "$CONFIGURE_RUN" != "true" ]
+then
+    echo "You must run '/etc/init.d/idempiere configure' as the root user to configure the application."
+    echo
+fi
+
+exit 0
