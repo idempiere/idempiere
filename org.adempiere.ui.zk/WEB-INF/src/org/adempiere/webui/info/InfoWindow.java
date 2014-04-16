@@ -182,8 +182,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	private void processQueryValue() {
-		//try first 2 only
-		for(int i = 0; i < identifiers.size() && i < 2; i++) {
+		for (int i = 0; i < identifiers.size(); i++) {
 			WEditor editor = identifiers.get(i);
 			editor.setValue(queryValue);
 			testCount();

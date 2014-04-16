@@ -924,6 +924,12 @@ public class GridTabCSVImporter implements IGridTabImporter
 						      break;
 						   }   
 					   }
+					}else if(isForeing && masterRecord==null && gridTab.getTabLevel()>0){
+						Object master =gridTab.getParentTab().getValue(foreignColumn);
+						if (master!=null && value!=null && !master.toString().equals(value)){
+							logMsg = header.get(i)+" - "+Msg.getMsg(Env.getCtx(),"DiffParentValue", new Object[] {master.toString(),value});
+							break;
+						}			
 					}else if (masterRecord==null && isDetail){
 						MColumn column = MColumn.get(Env.getCtx(),field.getAD_Column_ID());
 						String foreignTable = column.getReferenceTableName();

@@ -25,6 +25,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
@@ -2373,4 +2374,92 @@ public final class DB
 		}
 		return false;
 	}
+
+    /**
+     * Get an array of objects from sql (one per each column on the select clause), column indexing starts with 0
+     * @param trxName trx
+     * @param sql sql
+     * @param params array of parameters
+     * @return null if not found
+     * @throws DBException if there is any SQLException
+     */
+	public static List<Object> getSQLValueObjectsEx(String trxName, String sql, Object... params) {
+		List<Object> retValue = new ArrayList<Object>();
+    	PreparedStatement pstmt = null;
+    	ResultSet rs = null;
+    	try
+    	{
+    		pstmt = prepareStatement(sql, trxName);
+    		setParameters(pstmt, params);
+    		rs = pstmt.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+    		if (rs.next()) {
+    			for (int i=1; i<=rsmd.getColumnCount(); i++) {
+    				Object obj = rs.getObject(i);
+        			if (rs.wasNull())
+        				retValue.add(null);
+        			else
+        				retValue.add(obj);
+    			}
+    		} else {
+    			retValue = null;
+    		}
+    	}
+    	catch (SQLException e)
+    	{
+    		throw new DBException(e, sql);
+    	}
+    	finally
+    	{
+    		close(rs, pstmt);
+    		rs = null; pstmt = null;
+    	}
+    	return retValue;
+	}
+
+    /**
+     * Get an array of arrays of objects from sql (one per each row, and one per each column on the select clause), column indexing starts with 0
+     * WARNING: This method must be used just for queries returning few records, using it for many records implies heavy memory consumption
+     * @param trxName trx
+     * @param sql sql
+     * @param params array of parameters
+     * @return null if not found
+     * @throws DBException if there is any SQLException
+     */
+	public static List<List<Object>> getSQLArrayObjectsEx(String trxName, String sql, Object... params) {
+		List<List<Object>> rowsArray = new ArrayList<List<Object>>();
+    	PreparedStatement pstmt = null;
+    	ResultSet rs = null;
+    	try
+    	{
+    		pstmt = prepareStatement(sql, trxName);
+    		setParameters(pstmt, params);
+    		rs = pstmt.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+    		while (rs.next()) {
+    			List<Object> retValue = new ArrayList<Object>();
+    			for (int i=1; i<=rsmd.getColumnCount(); i++) {
+    				Object obj = rs.getObject(i);
+        			if (rs.wasNull())
+        				retValue.add(null);
+        			else
+        				retValue.add(obj);
+    			}
+    			rowsArray.add(retValue);
+    		}
+    	}
+    	catch (SQLException e)
+    	{
+    		throw new DBException(e, sql);
+    	}
+    	finally
+    	{
+    		close(rs, pstmt);
+    		rs = null; pstmt = null;
+    	}
+    	if (rowsArray.size() == 0)
+    		return null;
+    	return rowsArray;
+	}
+
 }	//	DB
