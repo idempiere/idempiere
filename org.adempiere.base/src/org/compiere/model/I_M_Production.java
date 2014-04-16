@@ -205,6 +205,32 @@ public interface I_M_Production
 	  */
 	public String getDescription();
 
+    /** Column name DocAction */
+    public static final String COLUMNNAME_DocAction = "DocAction";
+
+	/** Set Document Action.
+	  * The targeted status of the document
+	  */
+	public void setDocAction (String DocAction);
+
+	/** Get Document Action.
+	  * The targeted status of the document
+	  */
+	public String getDocAction();
+
+    /** Column name DocStatus */
+    public static final String COLUMNNAME_DocStatus = "DocStatus";
+
+	/** Set Document Status.
+	  * The current status of the document
+	  */
+	public void setDocStatus (String DocStatus);
+
+	/** Get Document Status.
+	  * The current status of the document
+	  */
+	public String getDocStatus();
+
     /** Column name DocumentNo */
     public static final String COLUMNNAME_DocumentNo = "DocumentNo";
 
@@ -237,12 +263,12 @@ public interface I_M_Production
 	/** Set Complete.
 	  * It is complete
 	  */
-	public void setIsComplete (String IsComplete);
+	public void setIsComplete (boolean IsComplete);
 
 	/** Get Complete.
 	  * It is complete
 	  */
-	public String getIsComplete();
+	public boolean isComplete();
 
     /** Column name IsCreated */
     public static final String COLUMNNAME_IsCreated = "IsCreated";
@@ -401,6 +427,21 @@ public interface I_M_Production
 	  */
 	public BigDecimal getProductionQty();
 
+    /** Column name Reversal_ID */
+    public static final String COLUMNNAME_Reversal_ID = "Reversal_ID";
+
+	/** Set Reversal ID.
+	  * ID of document reversal
+	  */
+	public void setReversal_ID (int Reversal_ID);
+
+	/** Get Reversal ID.
+	  * ID of document reversal
+	  */
+	public int getReversal_ID();
+
+	public org.compiere.model.I_M_Production getReversal() throws RuntimeException;
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
@@ -420,12 +461,12 @@ public interface I_M_Production
     /** Column name User1_ID */
     public static final String COLUMNNAME_User1_ID = "User1_ID";
 
-	/** Set User List 1.
+	/** Set User Element List 1.
 	  * User defined list element #1
 	  */
 	public void setUser1_ID (int User1_ID);
 
-	/** Get User List 1.
+	/** Get User Element List 1.
 	  * User defined list element #1
 	  */
 	public int getUser1_ID();
@@ -435,12 +476,12 @@ public interface I_M_Production
     /** Column name User2_ID */
     public static final String COLUMNNAME_User2_ID = "User2_ID";
 
-	/** Set User List 2.
+	/** Set User Element List 2.
 	  * User defined list element #2
 	  */
 	public void setUser2_ID (int User2_ID);
 
-	/** Get User List 2.
+	/** Get User Element List 2.
 	  * User defined list element #2
 	  */
 	public int getUser2_ID();

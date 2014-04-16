@@ -41,6 +41,7 @@ import org.compiere.model.MJournalBatch;
 import org.compiere.model.MMovement;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPayment;
+import org.compiere.model.MProduction;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
@@ -1111,6 +1112,27 @@ public class DocumentEngine implements DocAction
 					options[index++] = DocumentEngine.ACTION_Void;
 					options[index++] = DocumentEngine.ACTION_ReActivate;
 				}
+		}
+		/********************
+		 *  Production
+		 */
+		else if (AD_Table_ID == MProduction.Table_ID)
+		{
+			//	Draft                       ..  DR/IP/IN
+			if (docStatus.equals(DocumentEngine.STATUS_Drafted)
+					|| docStatus.equals(DocumentEngine.STATUS_InProgress)
+					|| docStatus.equals(DocumentEngine.STATUS_Invalid))
+			{
+				options[index++] = DocumentEngine.ACTION_Prepare;
+			}
+			//	Complete                    ..  CO
+			else if (docStatus.equals(DocumentEngine.STATUS_Completed))
+			{
+				options[index++] = DocumentEngine.ACTION_Void;
+				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
+			}
+
 		}
 		/********************
 		 *  Manufacturing Cost Collector
