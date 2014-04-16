@@ -508,7 +508,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	String uidColumn = po.getUUIDColumnName();
     	String[] keys = po.get_KeyColumns();
     	if (Util.isEmpty((String)po.get_Value(uidColumn)) && (keys == null || keys.length != 1 || po.get_ID() > MTable.MAX_OFFICIAL_ID)) {
-			throw new IllegalStateException("2Pack doesn't work with record without official Id and UUID");
+			throw new IllegalStateException("2Pack doesn't work with record without official Id and UUID -> " + po.getUUIDColumnName());
 		}
     }
 

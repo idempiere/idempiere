@@ -36,6 +36,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
 
@@ -91,6 +92,7 @@ public class UUIDGenerator extends SvrProcess {
 			while(rs.next()) {
 				int AD_Table_ID = rs.getInt(1);
 				String cTableName = rs.getString(2);
+				statusUpdate(Msg.getMsg(getCtx(), "Processing") + " " + cTableName);
 
 				String columnName = PO.getUUIDColumnName(cTableName);
 				int AD_Column_ID = DB.getSQLValue(null, "SELECT AD_Column_ID FROM AD_Column Where AD_Table_ID = ? AND ColumnName = ?", AD_Table_ID, columnName);
