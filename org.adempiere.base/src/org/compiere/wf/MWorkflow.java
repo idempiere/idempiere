@@ -973,6 +973,7 @@ public class MWorkflow extends X_AD_Workflow
 		if (!docAction.equals(po.get_Value(column.getColumnName())))
 		{
 			po.set_ValueOfColumn(column.getColumnName(), docAction);
+			po.saveEx();
 		}
 		ProcessInfo processInfo = new ProcessInfo (((DocAction)po).getDocumentInfo(),column.getAD_Process_ID(),po.get_Table_ID(),po.get_ID());
 		processInfo.setTransactionName(po.get_TrxName());
