@@ -1874,7 +1874,7 @@ public final class Env
 			if (table.getPO_Window_ID() != 0)
 			{
 				String whereClause = table.getTableName() + "_ID=" + Record_ID;
-				isSOTrx = DB.isSOTrx(table.getTableName(), whereClause);
+				isSOTrx = DB.isSOTrx(table.getTableName(), whereClause, windowNo);
 				if (!isSOTrx)
 					AD_Window_ID = table.getPO_Window_ID();
 			}

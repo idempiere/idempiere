@@ -1695,9 +1695,10 @@ public final class DB
 	 * 	Assumes Sales Order. Queries IsSOTrx of table with where clause
 	 *	@param TableName table
 	 *	@param whereClause where clause
+	 *  @param windowNo
 	 *	@return true (default) or false if tested that not SO
 	 */
-	public static boolean isSOTrx (String TableName, String whereClause)
+	public static boolean isSOTrx (String TableName, String whereClause, int windowNo)
 	{
         if (TableName == null || TableName.length() == 0)
         {
@@ -1710,7 +1711,7 @@ public final class DB
             return true;
         }
         //
-        boolean isSOTrx = true;
+        Boolean isSOTrx = null;
         boolean noIsSOTrxColumn = false;
         if (MTable.get(Env.getCtx(), TableName).getColumn("IsSOTrx") == null) {
         	noIsSOTrxColumn = true;
@@ -1724,7 +1725,7 @@ public final class DB
         		pstmt = DB.prepareStatement (sql, null);
         		rs = pstmt.executeQuery ();
         		if (rs.next ())
-        			isSOTrx = "Y".equals(rs.getString(1));
+        			isSOTrx = Boolean.valueOf("Y".equals(rs.getString(1)));
         	}
         	catch (Exception e)
         	{
@@ -1754,7 +1755,7 @@ public final class DB
         			pstmt2 = DB.prepareStatement (sql, null);
         			rs2 = pstmt2.executeQuery ();
         			if (rs2.next ())
-        				isSOTrx = "Y".equals(rs2.getString(1));
+        				isSOTrx = Boolean.valueOf("Y".equals(rs2.getString(1)));
         		}
         		catch (Exception ee)
         		{
@@ -1770,9 +1771,20 @@ public final class DB
         }
         if (noIsSOTrxColumn)
         	if (log.isLoggable(Level.FINEST))log.log(Level.FINEST, TableName + " - No SOTrx");
-        return isSOTrx;
+        if (isSOTrx == null) {
+        	if (windowNo >= 0) {
+        		// check context
+        		isSOTrx = Boolean.valueOf("Y".equals(Env.getContext(Env.getCtx(), windowNo, "IsSOTrx")));
+        	} else {
+            	isSOTrx = Boolean.TRUE;
+        	}
+        }
+        return isSOTrx.booleanValue();
 	}	//	isSOTrx
 
+	public static boolean isSOTrx (String TableName, String whereClause) {
+		return isSOTrx (TableName, whereClause, -1);
+	}
 
 	/**************************************************************************
 	 *	Get next number for Key column = 0 is Error.
