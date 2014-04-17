@@ -43,7 +43,7 @@ INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Column_ID,IsMand
 ;
 
 -- Mar 18, 2014 2:46:24 PM MYT
-ALTER TABLE M_Production ADD DocAction CHAR(2) NOT NULL DEFAULT 'CO'
+ALTER TABLE M_Production ADD (DocAction CHAR(2) DEFAULT 'CO' NOT NULL)
 ;
 
 -- Mar 18, 2014 2:46:29 PM MYT
@@ -51,7 +51,7 @@ INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Column_ID,IsMand
 ;
 
 -- Mar 18, 2014 2:46:29 PM MYT
-ALTER TABLE M_Production ADD DocStatus VARCHAR2(2) NOT NULL DEFAULT 'DR'
+ALTER TABLE M_Production ADD (DocStatus VARCHAR2(2) DEFAULT 'DR' NOT NULL)
 ;
 
 UPDATE M_Production set DocAction='CL', DocStatus='CO' WHERE IsCreated='Y' AND Processed='Y'
