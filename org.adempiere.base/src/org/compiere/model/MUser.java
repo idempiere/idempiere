@@ -926,7 +926,7 @@ public class MUser extends X_AD_User
 			}
 		}
 			
-		if (newRecord || is_ValueChanged("Password")) {
+		if (getPassword() != null && getPassword().length() > 0 && (newRecord || is_ValueChanged("Password"))) {
 			// Validate password policies / IDEMPIERE-221
 			if (get_ValueOld("Salt") == null && get_Value("Salt") != null) { // being hashed
 				;
