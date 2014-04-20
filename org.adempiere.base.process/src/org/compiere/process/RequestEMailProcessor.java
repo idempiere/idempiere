@@ -38,10 +38,10 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Store;
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAttachment;
+import org.compiere.model.MColumn;
 import org.compiere.model.MRequest;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogMgt;
@@ -311,6 +311,8 @@ public class RequestEMailProcessor extends SvrProcess
 						Message[] deleted = inbox.expunge();
 						
 						noRequest++;
+					} else {
+						noError++;
 					}
 				} catch (Exception e) {
 					if (log.isLoggable(Level.INFO)) log.info("message " + hdrs[0] + " threw error");
@@ -371,20 +373,27 @@ public class RequestEMailProcessor extends SvrProcess
 		}
 		// Message-ID as documentNo
 		String[] hdrs = msg.getHeader("Message-ID");
+		// set DocumentNo
+		int maxlen = MColumn.get(getCtx(), MRequest.Table_Name, MRequest.COLUMNNAME_DocumentNo).getFieldLength();
+		String documentNo = hdrs[0];
+		if (documentNo.startsWith("<") && documentNo.endsWith(">"))
+			documentNo = documentNo.substring(1, documentNo.length()-1);
+		if (documentNo.length() > maxlen)
+			documentNo = documentNo.substring(0,30);
 		
 		// Review if the e-mail was already created, comparing Message-ID+From+body
 		int retValuedup = 0;
-		String sqldup = "select r_request_id from r_request "
-			 + "where ad_client_id = ? "
-			 + "and documentno = ? "
-			 + "and startdate = ?";
+		String sqldup = "SELECT R_Request_ID FROM R_Request "
+			 + "WHERE AD_Client_ID = ? "
+			 + "AND DocumentNo = ? "
+			 + "AND StartDate = ?";
 		PreparedStatement pstmtdup = null;
 		ResultSet rsdup = null;
 		try 
 		{
 			pstmtdup = DB.prepareStatement (sqldup, null);
 			pstmtdup.setInt(1, getAD_Client_ID());
-			pstmtdup.setString(2, hdrs[0].substring(0,30));
+			pstmtdup.setString(2, documentNo);
 			pstmtdup.setTimestamp(3, new Timestamp(msg.getSentDate().getTime()));
 			rsdup = pstmtdup.executeQuery ();
 			if (rsdup.next ())
@@ -463,8 +472,7 @@ public class RequestEMailProcessor extends SvrProcess
 		msgreq = new StringBuilder("FROM: ") .append(from[0].toString()).append("\n").append(getMessage(msg));
 		req.setResult(msgreq.toString());
 		// Message-ID as documentNo
-		if (hdrs != null)
-			req.setDocumentNo(hdrs[0].substring(0,30));
+		req.setDocumentNo(documentNo);
 
 		// Default request type for this process
 		if (R_RequestType_ID > 0)
@@ -555,9 +563,8 @@ public class RequestEMailProcessor extends SvrProcess
 
 						String disposition = part.getDisposition();
 
-						if ((disposition != null) && 
-								((disposition.equals(Part.ATTACHMENT) || 
-										(disposition.equals(Part.INLINE))))) {
+						if (   disposition != null
+							&& (disposition.equalsIgnoreCase(Part.ATTACHMENT) || disposition.equalsIgnoreCase(Part.INLINE))) {
 
 							MAttachment attach = req.createAttachment();
 
