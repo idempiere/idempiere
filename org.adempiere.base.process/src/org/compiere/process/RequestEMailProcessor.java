@@ -19,6 +19,7 @@ package org.compiere.process;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.UnknownHostException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,7 +39,9 @@ import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Store;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAttachment;
+import org.compiere.model.MColumn;
 import org.compiere.model.MRequest;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogMgt;
@@ -54,6 +57,7 @@ import org.compiere.util.EMailAuthenticator;
 public class RequestEMailProcessor extends SvrProcess
 {
 	protected String	p_IMAPHost = null;
+	protected int		p_IMAPPort = 143;
 	protected String	p_IMAPUser = null;
 	protected String	p_IMAPPwd = null;
 	protected String	p_RequestFolder = null;
@@ -133,7 +137,20 @@ public class RequestEMailProcessor extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
+		int portStartIndex = p_IMAPHost.lastIndexOf(":");
+		if (portStartIndex > 0){
+			String strPort = p_IMAPHost.substring(portStartIndex + 1, p_IMAPHost.length());
+			p_IMAPHost = p_IMAPHost.substring(0, portStartIndex);
+			try{
+				p_IMAPPort = Integer.parseInt(strPort);				
+			}catch (Exception ex){
+				throw new AdempiereException("Error format port : " + strPort);
+			}			
+		}else if (p_IMAPHost.startsWith("imap.gmail.com")){
+			p_IMAPPort = 993;
+		}
 		if (log.isLoggable(Level.INFO)) log.info("doIt - IMAPHost=" + p_IMAPHost +
+					   " IMAPPort=" + p_IMAPPort  +
 				       " IMAPUser=" + p_IMAPUser  +
 				       // " IMAPPwd=" + p_IMAPPwd +
 				       " RequestFolder=" + p_RequestFolder +
@@ -145,21 +162,27 @@ public class RequestEMailProcessor extends SvrProcess
 			getSession();
 			getStore();
 			processInBox();
+		} catch (MessagingException mailEx) {
+			if (mailEx.getNextException() != null && mailEx.getNextException() instanceof UnknownHostException){
+				throw new AdempiereException("Error host : " + mailEx.getMessage());
+			} else {
+				throw new AdempiereException("Error when make connect to email server : " + mailEx.getMessage());
+			}
+		} catch (AdempiereException ae) {
+			throw ae;
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			log.log(Level.SEVERE, "processInBox", e);
+			throw e;
+		}finally {
+//			Cleanup
+			try
+			{
+				if ( m_store != null && m_store.isConnected())
+					m_store.close();				
+			} catch(Exception ex) {}			
 		}
-		//	Cleanup
-		try
-		{
-			if (m_store.isConnected())
-				m_store.close();
-		}
-		catch (Exception e)
-		{
-		}
-		
+
 		StringBuilder msgreturn = new StringBuilder("processInBox - Total=").append(noProcessed) 
 				.append(" - Requests=").append(noRequest)
 				.append(" - Errors=").append(noError);
@@ -178,13 +201,14 @@ public class RequestEMailProcessor extends SvrProcess
 		
 		//	Session
 		Properties props = System.getProperties();
-		props.put("mail.store.protocol", "smtp");
-		props.put("mail.transport.protocol", "smtp");
+		props.put("mail.store.protocol", "imap");
+		props.put("mail.transport.protocol", "imap");
 		props.put("mail.host", p_IMAPHost);
-		props.put("mail.smtp.auth","true");
+		props.put("mail.imap.port", p_IMAPPort);
+		
 		EMailAuthenticator auth = new EMailAuthenticator (p_IMAPUser, p_IMAPPwd);
 		//
-		m_session = Session.getDefaultInstance(props, auth);
+		m_session = Session.getInstance(props, auth);
 		m_session.setDebug(CLogMgt.isLevelFinest());
 		if (log.isLoggable(Level.FINE)) log.fine("getSession - " + m_session);
 		return m_session;
@@ -204,7 +228,10 @@ public class RequestEMailProcessor extends SvrProcess
 			throw new IllegalStateException("No Session");
 		
 		//	Get IMAP Store
-		m_store = m_session.getStore("imap");
+		if (p_IMAPHost.startsWith("imap.gmail.com"))
+			m_store = m_session.getStore("imaps");
+		else
+			m_store = m_session.getStore("imap");
 		//	Connect
 		m_store.connect();
 		//
@@ -227,7 +254,7 @@ public class RequestEMailProcessor extends SvrProcess
 		//	Open Inbox
 		Folder inbox = folder.getFolder(p_InboxFolder);
 		if (!inbox.exists())
-			throw new IllegalStateException("No Inbox");
+			throw new AdempiereException ("Wrong inbox name : " + p_InboxFolder);
 		inbox.open(Folder.READ_WRITE);
 		if (log.isLoggable(Level.FINE)) log.fine("processInBox - " + inbox.getName() 
 			+ "; Messages Total=" + inbox.getMessageCount()
@@ -236,7 +263,7 @@ public class RequestEMailProcessor extends SvrProcess
 		//	Open Request
 		Folder requestFolder = folder.getFolder(p_RequestFolder);
 		if (!requestFolder.exists() && !requestFolder.create(Folder.HOLDS_MESSAGES))
-			throw new IllegalStateException("Cannot create Request Folder");
+			throw new AdempiereException ("Cannot create request folder : " + p_RequestFolder);		
 		requestFolder.open(Folder.READ_WRITE);
 
 		//	Open Workflow
@@ -248,7 +275,7 @@ public class RequestEMailProcessor extends SvrProcess
 		//	Open Error
 		Folder errorFolder = folder.getFolder(p_ErrorFolder);
 		if (!errorFolder.exists() && !errorFolder.create(Folder.HOLDS_MESSAGES))
-			throw new IllegalStateException("Cannot create Error Folder");
+			throw new AdempiereException ("Cannot create Error Folder : " + p_ErrorFolder);			
 		errorFolder.open(Folder.READ_WRITE);
 		
 		//	Messages
@@ -284,6 +311,8 @@ public class RequestEMailProcessor extends SvrProcess
 						Message[] deleted = inbox.expunge();
 						
 						noRequest++;
+					} else {
+						noError++;
 					}
 				} catch (Exception e) {
 					if (log.isLoggable(Level.INFO)) log.info("message " + hdrs[0] + " threw error");
@@ -344,20 +373,27 @@ public class RequestEMailProcessor extends SvrProcess
 		}
 		// Message-ID as documentNo
 		String[] hdrs = msg.getHeader("Message-ID");
+		// set DocumentNo
+		int maxlen = MColumn.get(getCtx(), MRequest.Table_Name, MRequest.COLUMNNAME_DocumentNo).getFieldLength();
+		String documentNo = hdrs[0];
+		if (documentNo.startsWith("<") && documentNo.endsWith(">"))
+			documentNo = documentNo.substring(1, documentNo.length()-1);
+		if (documentNo.length() > maxlen)
+			documentNo = documentNo.substring(0,30);
 		
 		// Review if the e-mail was already created, comparing Message-ID+From+body
 		int retValuedup = 0;
-		String sqldup = "select r_request_id from r_request "
-			 + "where ad_client_id = ? "
-			 + "and documentno = ? "
-			 + "and startdate = ?";
+		String sqldup = "SELECT R_Request_ID FROM R_Request "
+			 + "WHERE AD_Client_ID = ? "
+			 + "AND DocumentNo = ? "
+			 + "AND StartDate = ?";
 		PreparedStatement pstmtdup = null;
 		ResultSet rsdup = null;
 		try 
 		{
 			pstmtdup = DB.prepareStatement (sqldup, null);
 			pstmtdup.setInt(1, getAD_Client_ID());
-			pstmtdup.setString(2, hdrs[0].substring(0,30));
+			pstmtdup.setString(2, documentNo);
 			pstmtdup.setTimestamp(3, new Timestamp(msg.getSentDate().getTime()));
 			rsdup = pstmtdup.executeQuery ();
 			if (rsdup.next ())
@@ -436,8 +472,7 @@ public class RequestEMailProcessor extends SvrProcess
 		msgreq = new StringBuilder("FROM: ") .append(from[0].toString()).append("\n").append(getMessage(msg));
 		req.setResult(msgreq.toString());
 		// Message-ID as documentNo
-		if (hdrs != null)
-			req.setDocumentNo(hdrs[0].substring(0,30));
+		req.setDocumentNo(documentNo);
 
 		// Default request type for this process
 		if (R_RequestType_ID > 0)
@@ -528,9 +563,8 @@ public class RequestEMailProcessor extends SvrProcess
 
 						String disposition = part.getDisposition();
 
-						if ((disposition != null) && 
-								((disposition.equals(Part.ATTACHMENT) || 
-										(disposition.equals(Part.INLINE))))) {
+						if (   disposition != null
+							&& (disposition.equalsIgnoreCase(Part.ATTACHMENT) || disposition.equalsIgnoreCase(Part.INLINE))) {
 
 							MAttachment attach = req.createAttachment();
 
