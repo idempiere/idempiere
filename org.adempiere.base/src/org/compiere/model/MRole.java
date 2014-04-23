@@ -2581,12 +2581,15 @@ public final class MRole extends X_AD_Role
 				while (rs.next()) {
 					String op = rs.getString(1);
 					String active=rs.getString(2);
-					if ("N".equals(active) && validOptions.contains(op)) {
-						validOptions.remove(op);
+					if ("N".equals(active)) {
+						if (validOptions.contains(op)) {
+							validOptions.remove(op);
+						}
 					} else {
-					  if (!validOptions.contains(op))
-						  validOptions.add(op);
-					} 				
+						if (!validOptions.contains(op)) {
+							validOptions.add(op);
+						}
+					} 
 				}
 			}
 
