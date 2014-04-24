@@ -57,7 +57,6 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.Query;
-import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.process.ServerProcessCtl;
@@ -667,6 +666,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		{			
 			ProcessInfo m_pi = getProcessInfo();
 			m_pi.setIsBatch(true);
+			m_pi.setPrintPreview(true);
 			
 			MPInstance instance = new MPInstance(m_ctx, m_pi.getAD_PInstance_ID(), null);
 			String notificationType = instance.getNotificationType();
@@ -687,36 +687,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 					boolean isReport = (process.isReport() || process.getAD_ReportView_ID() > 0 || process.getJasperReport() != null || process.getAD_PrintFormat_ID() > 0);
 					if (isReport)
 					{
-						ReportEngine re = ReportEngine.get(m_ctx, m_pi);
-						if(re != null && re.getPrintFormat().getJasperProcess_ID() > 0)
-						{
-							ProcessInfo jasperpi = new ProcessInfo ("", re.getPrintFormat().getJasperProcess_ID());
-							jasperpi.setIsBatch(true);
-							ServerProcessCtl.process(jasperpi, null);
-							File report = jasperpi.getPDFReport();
-							if (report != null)
-								download(report);
-						}
-						else if (process.getJasperReport() != null)
-						{
-							download(m_pi.getPDFReport());
-						}
-						else
-						{
-							if (re == null)
-								log.log(Level.SEVERE, "Cannot create Report AD_Process_ID=" + process.getAD_Process_ID() + " - " + process.getName());
-							else
-							{
-								File report = re.getPDF();
-								if (report != null)
-									download(report);
-							}
-						}
+						download(m_pi.getPDFReport());
 					}
 					
-					File generatedFile = m_pi.isExport() ? m_pi.getExportFile() : m_pi.getPDFReport();
-					if (generatedFile != null)
-						download(generatedFile);										
+					if (m_pi.isExport() && m_pi.getExportFile() != null)
+						download(m_pi.getExportFile());										
 				}
 				
 				if (sendEmail)

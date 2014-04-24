@@ -41,7 +41,6 @@ import org.compiere.model.MScheduler;
 import org.compiere.model.MSchedulerLog;
 import org.compiere.model.MSchedulerPara;
 import org.compiere.model.MUser;
-import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.process.ServerProcessCtl;
@@ -173,6 +172,7 @@ public class Scheduler extends AdempiereServer
 		pi.setAD_Client_ID(m_model.getAD_Client_ID());
 		pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
 		pi.setIsBatch(true);
+		pi.setPrintPreview(true);
 		MUser from = new MUser(getCtx(), pi.getAD_User_ID(), null);
 		
 		ServerProcessCtl.process(pi, m_trx);
@@ -220,31 +220,7 @@ public class Scheduler extends AdempiereServer
 			ProcessInfoUtil.setLogFromDB(pi);
 			List<File> fileList = new ArrayList<File>();
 			if (isReport) {
-				//	Report
-				ReportEngine re = ReportEngine.get(m_schedulerctx, pi);
-				
-				if(re != null && re.getPrintFormat().getJasperProcess_ID() > 0)
-				{
-					// We have a Jasper Print Format
-					// ==============================
-					ProcessInfo jasperpi = new ProcessInfo ("", re.getPrintFormat().getJasperProcess_ID());
-					jasperpi.setIsBatch(true);
-					ServerProcessCtl.process(jasperpi, null);
-					fileList.add(jasperpi.getPDFReport());
-				}
-				else if (process.getJasperReport() != null)
-				{
-					fileList.add(pi.getPDFReport());
-				}
-				else
-				{
-					// Standard Print Format (Non-Jasper)
-					// ==================================
-					if (re == null)
-						return "Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
-						+ " - " + process.getName();
-					fileList.add(re.getPDF());
-				}
+				fileList.add(pi.getPDFReport());
 			}
 			if (pi.isExport() && pi.getExportFile() != null)
 			{
@@ -303,7 +279,7 @@ public class Scheduler extends AdempiereServer
 					if (fileList != null && !fileList.isEmpty()) {
 						client.sendEMailAttachments(from, user, m_model.getName(), m_model.getDescription(), fileList);
 					} else {
-						client.sendEMail(from, user, m_model.getName(), pi.getSummary() + " " + pi.getLogInfo(), null);
+						client.sendEMail(from, user, m_model.getName(), pi.getSummary() + " " + pi.getLogInfo(true), null, true);
 					}
 				}
 				
@@ -366,7 +342,7 @@ public class Scheduler extends AdempiereServer
 							|| DisplayType.isID(sPara.getDisplayType()))
 						{
 							BigDecimal bd = toBigDecimal(value);
-							iPara.setP_Number(bd);
+							iPara.setP_Number(bd);							
 							if (toValue != null)
 							{
 								bd = toBigDecimal(toValue);
