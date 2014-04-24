@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -159,6 +160,7 @@ public class Scheduler extends AdempiereServer
 		if (log.isLoggable(Level.INFO)) log.info(process.toString());
 		
 		boolean isReport = (process.isReport() || process.getAD_ReportView_ID() > 0 || process.getJasperReport() != null || process.getAD_PrintFormat_ID() > 0);
+		String schedulerName = Env.parseContext(m_schedulerctx, -1, m_model.getName(), false, true);
 		
 		//	Process (see also MWFActivity.performWork
 		int AD_Table_ID = m_model.getAD_Table_ID();
@@ -192,20 +194,20 @@ public class Scheduler extends AdempiereServer
 				if (email)
 				{
 					MClient client = MClient.get(m_model.getCtx(), m_model.getAD_Client_ID());
-					client.sendEMail(from, user, process.getName(), pi.getSummary() + " " + pi.getLogInfo(), null);
+					client.sendEMail(from, user, schedulerName, pi.getSummary() + " " + pi.getLogInfo(), null);
 				}
 				if (notice) {
 					int AD_Message_ID = 442; // HARDCODED ProcessRunError
 					MNote note = new MNote(getCtx(), AD_Message_ID, supervisor, null);
 					note.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
-					note.setTextMsg(pi.getSummary());
+					note.setTextMsg(schedulerName+"\n"+pi.getSummary());
 					note.setRecord(MPInstance.Table_ID, pi.getAD_PInstance_ID());
 					note.saveEx();
 					String log = pi.getLogInfo(true);
 					if (log != null &&  log.trim().length() > 0) {
 						MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
 						attachment.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
-						attachment.setTextMsg(m_model.getName());
+						attachment.setTextMsg(schedulerName);
 						attachment.addEntry("ProcessLog.html", log.getBytes("UTF-8"));
 						attachment.saveEx();
 					}
@@ -240,11 +242,11 @@ public class Scheduler extends AdempiereServer
 					MNote note = new MNote(getCtx(), AD_Message_ID, userIDs[i].intValue(), null);
 					note.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
 					if (isReport) {
-						note.setTextMsg(m_model.getName());
+						note.setTextMsg(schedulerName);
 						note.setDescription(m_model.getDescription());
 						note.setRecord(AD_Table_ID, Record_ID);
 					} else {
-						note.setTextMsg(m_model.getName() + "\n" + pi.getSummary());
+						note.setTextMsg(schedulerName + "\n" + pi.getSummary());
 						note.setRecord(MPInstance.Table_ID, pi.getAD_PInstance_ID());
 					}
 					if (note.save()) {
@@ -253,7 +255,7 @@ public class Scheduler extends AdempiereServer
 							//	Attachment
 							attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
 							attachment.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
-							attachment.setTextMsg(m_model.getName());
+							attachment.setTextMsg(schedulerName);
 							for (File entry : fileList)
 								attachment.addEntry(entry);
 							
@@ -263,7 +265,7 @@ public class Scheduler extends AdempiereServer
 							if (attachment == null) {
 								attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
 								attachment.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
-								attachment.setTextMsg(m_model.getName());
+								attachment.setTextMsg(schedulerName);
 							}
 							attachment.addEntry("ProcessLog.html", log.getBytes("UTF-8"));
 							attachment.saveEx();
@@ -277,9 +279,9 @@ public class Scheduler extends AdempiereServer
 				{
 					MClient client = MClient.get(m_model.getCtx(), m_model.getAD_Client_ID());
 					if (fileList != null && !fileList.isEmpty()) {
-						client.sendEMailAttachments(from, user, m_model.getName(), m_model.getDescription(), fileList);
+						client.sendEMailAttachments(from, user, schedulerName, m_model.getDescription(), fileList);
 					} else {
-						client.sendEMail(from, user, m_model.getName(), pi.getSummary() + " " + pi.getLogInfo(true), null, true);
+						client.sendEMail(from, user, schedulerName, pi.getSummary() + " " + pi.getLogInfo(), null);
 					}
 				}
 				
@@ -341,6 +343,7 @@ public class Scheduler extends AdempiereServer
 						if (DisplayType.isNumeric(sPara.getDisplayType())
 							|| DisplayType.isID(sPara.getDisplayType()))
 						{
+							DecimalFormat decimalFormat = DisplayType.getNumberFormat(sPara.getDisplayType());
 							BigDecimal bd = toBigDecimal(value);
 							iPara.setP_Number(bd);							
 							if (toValue != null)
@@ -348,16 +351,33 @@ public class Scheduler extends AdempiereServer
 								bd = toBigDecimal(toValue);
 								iPara.setP_Number_To(bd);
 							}
+							if (Util.isEmpty(paraDesc)) 
+							{
+								String info = decimalFormat.format(iPara.getP_Number());
+								if (iPara.getP_Number_To() != null)
+									info = info + " - " + decimalFormat.format(iPara.getP_Number_To());
+								iPara.setInfo(info);
+							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + bd + "=)");
 						}
 						else if (DisplayType.isDate(sPara.getDisplayType()))
 						{
+							SimpleDateFormat dateFormat = DisplayType.getDateFormat(sPara.getDisplayType());
 							Timestamp ts = toTimestamp(value);
 							iPara.setP_Date(ts);
 							if (toValue != null) {
 								ts = toTimestamp(toValue);
 								iPara.setP_Date_To(ts);
+							}
+							if (Util.isEmpty(paraDesc)) 
+							{
+								String info = dateFormat.format(iPara.getP_Date());
+								if (iPara.getP_Date_To() != null)
+								{
+									info = info + " - " + dateFormat.format(iPara.getP_Date_To());
+								}
+								iPara.setInfo(info);
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + ts + "=)");
@@ -368,6 +388,15 @@ public class Scheduler extends AdempiereServer
 							if (toValue != null) 
 							{
 								iPara.setP_String_To(toValue.toString());
+							}
+							if (Util.isEmpty(paraDesc))
+							{
+								String info = iPara.getP_String();
+								if (iPara.getP_String_To() != null)
+								{
+									info = info + " - " + iPara.getP_String_To();
+								}
+								iPara.setInfo(info);
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable
