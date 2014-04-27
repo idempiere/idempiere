@@ -1706,6 +1706,10 @@ public class MInOut extends X_M_InOut implements DocAction
 		if ( isSOTrx() || !isDropShip() || getC_Order_ID() == 0 )
 			return null;
 
+		int linkedOrderID = new MOrder (getCtx(), getC_Order_ID(), get_TrxName()).getLink_Order_ID();
+		if (linkedOrderID <= 0)
+			return null;
+
 		//	Document Type
 		int C_DocTypeTarget_ID = 0;
 		MDocType[] shipmentTypes = MDocType.getOfDocBaseType(getCtx(), MDocType.DOCBASETYPE_MaterialDelivery);
@@ -1720,18 +1724,12 @@ public class MInOut extends X_M_InOut implements DocAction
 		MInOut dropShipment = copyFrom(this, getMovementDate(), getDateAcct(),
 			C_DocTypeTarget_ID, !isSOTrx(), false, get_TrxName(), true);
 
-		int linkedOrderID = new MOrder (getCtx(), getC_Order_ID(), get_TrxName()).getLink_Order_ID();
-		if (linkedOrderID != 0)
-		{
-			dropShipment.setC_Order_ID(linkedOrderID);
+		dropShipment.setC_Order_ID(linkedOrderID);
 
-			// get invoice id from linked order
-			int invID = new MOrder (getCtx(), linkedOrderID, get_TrxName()).getC_Invoice_ID();
-			if ( invID != 0 )
-				dropShipment.setC_Invoice_ID(invID);
-		}
-		else
-			return null;
+		// get invoice id from linked order
+		int invID = new MOrder (getCtx(), linkedOrderID, get_TrxName()).getC_Invoice_ID();
+		if ( invID != 0 )
+			dropShipment.setC_Invoice_ID(invID);
 
 		dropShipment.setC_BPartner_ID(getDropShip_BPartner_ID());
 		dropShipment.setC_BPartner_Location_ID(getDropShip_Location_ID());

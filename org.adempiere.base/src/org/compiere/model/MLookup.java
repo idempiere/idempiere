@@ -575,7 +575,7 @@ public final class MLookup extends Lookup implements Serializable
 		if (m_info.ZoomWindowPO == 0 || query == null)
 			return m_info.ZoomWindow;
 		//	Need to check SO/PO
-		boolean isSOTrx = DB.isSOTrx(m_info.TableName, query.getWhereClause(false));
+		boolean isSOTrx = DB.isSOTrx(m_info.TableName, query.getWhereClause(false), m_info.WindowNo);
 		//
 		return getZoom(isSOTrx);
 	}	//	getZoom

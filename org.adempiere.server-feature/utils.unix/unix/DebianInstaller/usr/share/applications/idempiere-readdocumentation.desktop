@@ -1,0 +1,10 @@
+[Desktop Entry]
+Terminal=false
+MultipleArgs=true
+Type=Link
+URL=http://wiki.idempiere.org
+Categories=Applications;
+Icon=idempiere-readdocumentation.png
+Encoding=UTF-8
+Name=Read Documentation
+Name[es]=Leer Documentación

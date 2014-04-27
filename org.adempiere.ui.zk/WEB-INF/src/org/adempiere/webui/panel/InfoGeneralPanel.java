@@ -122,7 +122,8 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		if (queryValue != null && queryValue.length() > 0)
         {
 			MTable table = MTable.get(Env.getCtx(), p_tableName);
-			if (table.getIdentifierColumns().length > 1) 
+			if (   table.getIdentifierColumns().length > 1
+				&& !p_tableName.startsWith("AD_"))  // 32 AD tables with identifiers containing _
 			{
 				String separator = I_C_ElementValue.Table_Name.equalsIgnoreCase(p_tableName) ? "-" : "_";
 				if (txt2.isVisible())

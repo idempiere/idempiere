@@ -1,0 +1,17 @@
+#!/bin/sh
+
+
+if [ "$1" != "remove" ]
+then
+    exit 0
+fi
+
+if [ -x "/etc/init.d/idempiere" ]; then
+	if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+		invoke-rc.d idempiere stop || exit 0
+	else
+		/etc/init.d/idempiere stop || exit 0
+	fi
+fi
+
+exit 0

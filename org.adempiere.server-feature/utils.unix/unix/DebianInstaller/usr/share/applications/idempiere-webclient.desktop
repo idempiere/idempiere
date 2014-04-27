@@ -1,0 +1,10 @@
+[Desktop Entry]
+Terminal=false
+MultipleArgs=true
+Type=Link
+URL=https://localhost:8443/webui
+Categories=Applications;
+Icon=idempiere-gotoonlineforum.png
+Encoding=UTF-8
+Name=iDempiere Web Client
+Name[es]=Cliente Web iDempiere

@@ -211,8 +211,7 @@ public class MPInstance extends X_AD_PInstance
 			MRole role = MRole.get(getCtx(), AD_Role_ID);
 			Boolean access = role.getProcessAccess(AD_Process_ID);
 			if (access == null || !access.booleanValue())
-				throw new IllegalAccessError("Cannot access Process " + AD_Process_ID
-					+ " with role: " + role.getName());
+				throw new IllegalAccessError(Msg.getMsg(getCtx(), "CannotAccessProcess", new Object[] {AD_Process_ID, role.getName()}));
 		}
 		super.setAD_Process_ID (AD_Process_ID);
 	}	//	setAD_Process_ID

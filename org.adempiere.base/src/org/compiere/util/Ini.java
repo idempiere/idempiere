@@ -178,7 +178,7 @@ public final class Ini implements Serializable
 	/** Charset */
 	public static final String P_CHARSET = "Charset";
 	/** Charser Default Value */
-	private static final String DEFAULT_CHARSET = Charset.defaultCharset().name();
+	private static final String DEFAULT_CHARSET = "UTF-8";
 
 	/** Load tab fields meta data using background thread **/
 	public static final String P_LOAD_TAB_META_DATA_BG = "LoadTabMetaDataBackground";
