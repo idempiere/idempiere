@@ -876,16 +876,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     			}
     		}
     	}
-    	else if (event.getName().equals(Events.ON_BLUR)) {
-    		for (WEditor editor : editors)
-    		{
-    			if (editor.isComponentOfEditor(event.getTarget()))
-    			{
-        			SessionManager.getAppDesktop().updateHelpTooltip(null);
-        			return;
-    			}
-    		}
-    	}
     	else
     	{
     		super.onEvent(event);
@@ -899,7 +889,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			for (WEditor editor : editors)
 			{
 				editor.getComponent().addEventListener(Events.ON_FOCUS, this);
-				editor.getComponent().addEventListener(Events.ON_BLUR, this);
 			}
 		}
 	}
