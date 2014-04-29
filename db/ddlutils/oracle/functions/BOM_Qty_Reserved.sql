@@ -65,12 +65,13 @@ BEGIN
 	--	Stocked item
 	ELSIF (v_IsStocked='Y') THEN
 		--	Get ProductQty
-		SELECT 	NVL(SUM(QtyReserved), 0)
+		SELECT 	NVL(SUM(Qty), 0)
 		  INTO	v_ProductQty
-		FROM 	M_STORAGE s
+		FROM 	M_StorageReservation
 		WHERE M_Product_ID=p_Product_ID
-		  AND EXISTS (SELECT * FROM M_LOCATOR l WHERE s.M_Locator_ID=l.M_Locator_ID
-		  	AND l.M_Warehouse_ID=v_Warehouse_ID);
+		  AND M_Warehouse_ID=v_Warehouse_ID
+		  AND IsSOTrx='Y'
+		  AND IsActive='Y';
 		--
 		RETURN v_ProductQty;
 	END IF;
@@ -81,12 +82,13 @@ BEGIN
 		--	Stocked Items "leaf node"
 		IF (bom.ProductType = 'I' AND bom.IsStocked = 'Y') THEN
 			--	Get ProductQty
-			SELECT 	NVL(SUM(QtyReserved), 0)
+			SELECT 	NVL(SUM(Qty), 0)
 			  INTO	v_ProductQty
-			FROM 	M_STORAGE s
-			WHERE 	M_Product_ID=bom.M_ProductBOM_ID
-			  AND EXISTS (SELECT * FROM M_LOCATOR l WHERE s.M_Locator_ID=l.M_Locator_ID
-			  	AND l.M_Warehouse_ID=v_Warehouse_ID);
+			FROM 	M_StorageReservation
+			WHERE M_Product_ID=bom.M_ProductBOM_ID
+			  AND M_Warehouse_ID=v_Warehouse_ID
+			  AND IsSOTrx='Y'
+			  AND IsActive='Y';
 			--	Get Rounding Precision
 			SELECT 	NVL(MAX(u.StdPrecision), 0)
 			  INTO	v_StdPrecision

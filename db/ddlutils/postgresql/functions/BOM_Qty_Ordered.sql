@@ -24,7 +24,6 @@ BEGIN
 	IF (v_Warehouse_ID IS NULL) THEN
 		RETURN 0;
 	END IF;
---	DBMS_OUTPUT.PUT_LINE(''Warehouse='' || v_Warehouse_ID);
 
 	--	Check, if product exists and if it is stocked
 	BEGIN
@@ -44,18 +43,18 @@ BEGIN
 	--	Stocked item
 	ELSIF (v_IsStocked='Y') THEN
 		--	Get ProductQty
-		SELECT 	COALESCE(SUM(QtyOrdered), 0)
+		SELECT 	COALESCE(SUM(Qty), 0)
 		  INTO	v_ProductQty
-		FROM 	M_STORAGE s
-		WHERE 	M_Product_ID=p_Product_ID
-		  AND EXISTS (SELECT * FROM M_LOCATOR l WHERE s.M_Locator_ID=l.M_Locator_ID
-		  	AND l.M_Warehouse_ID=v_Warehouse_ID);
+		FROM 	M_StorageReservation
+		WHERE M_Product_ID=p_Product_ID
+		  AND M_Warehouse_ID=v_Warehouse_ID
+		  AND IsSOTrx='N'
+		  AND IsActive='Y';
 		--
 		RETURN v_ProductQty;
 	END IF;
 
 	--	Go though BOM
---	DBMS_OUTPUT.PUT_LINE(''BOM'');
 	FOR bom IN  		
 	--	Get BOM Product info
 		SELECT b.M_ProductBOM_ID, b.BOMQty, p.IsBOM, p.IsStocked, p.ProductType
@@ -68,12 +67,13 @@ BEGIN
 		--	Stocked Items "leaf node"
 		IF (bom.ProductType = 'I' AND bom.IsStocked = 'Y') THEN
 			--	Get ProductQty
-			SELECT 	COALESCE(SUM(QtyOrdered), 0)
+			SELECT 	COALESCE(SUM(Qty), 0)
 			  INTO	v_ProductQty
-			FROM 	M_STORAGE s
-			WHERE 	M_Product_ID=bom.M_ProductBOM_ID
-			  AND EXISTS (SELECT * FROM M_LOCATOR l WHERE s.M_Locator_ID=l.M_Locator_ID
-			  	AND l.M_Warehouse_ID=v_Warehouse_ID);
+			FROM 	M_StorageReservation
+			WHERE M_Product_ID=p_Product_ID
+			  AND M_Warehouse_ID=v_Warehouse_ID
+			  AND IsSOTrx='N'
+			  AND IsActive='Y';
 			--	Get Rounding Precision
 			SELECT 	COALESCE(MAX(u.StdPrecision), 0)
 			  INTO	v_StdPrecision
@@ -114,6 +114,5 @@ BEGIN
 	RETURN 0;
 END;
 $BODY$
-LANGUAGE 'plpgsql'
-;
+  LANGUAGE plpgsql VOLATILE;
 
